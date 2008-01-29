@@ -23,7 +23,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include <qdatetime.h>
+#include <QDateTime>
 #include <QByteArray>
 #include <QQueue>
 
