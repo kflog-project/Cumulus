@@ -36,11 +36,11 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <signal.h>
-#include <qstring.h>
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <QString>
 
 #include "vector.h"
 #include "glider.h"

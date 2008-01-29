@@ -20,9 +20,9 @@
 
 #include "gpgga.h"
 #include <iostream>
-#include <qdatetime.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <QDateTime>
 
 using namespace std;
 

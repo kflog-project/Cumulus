@@ -18,7 +18,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qtimer.h>
+#include <QTimer>
+
 #include "vector.h"
 #include "gpgga.h"
 #include "gprmc.h"
