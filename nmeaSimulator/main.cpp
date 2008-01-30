@@ -2,7 +2,8 @@
                           main.cpp  -  description
                              -------------------
     begin                : 23.12.2003 
-    copyright            : (C) 2003 by Eckhard Völlm 
+    copyright            : (C) 2003 by Eckhard Völlm
+                               2008 Axel Pauli portage to Qt 4.3
     email                : eckhard@kflog.org
 
     $Id$
@@ -276,7 +277,7 @@ int main(int argc, char **argv)
            << "              device=[path to named pipe]: write into this pipe, default is /tmp/nmeasim" << endl
            << "            Note: all values can also be specified as float, like 110.5 " << endl << endl
            << "Example: nmea str lat=48:31:48N lon=009:24:00E speed=125 winddir=270" << endl << endl
-           << "NMEA output is written into named pipe." << endl
+           << "NMEA output is written into named pipe '" << device.toLatin1().data() << "'." << endl
            << "Cumulus should use the same device name to get these data." << endl;
 
         exit (0);
