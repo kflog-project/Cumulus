@@ -1,0 +1,274 @@
+/***************************************************************************
+                          altitude.h  -  general altitude representation
+                             -------------------
+    begin                : Sat Jul 20 2002
+    copyright            : (C) 2002 by Andre Somers
+    email                : andre@kflog.org
+ 
+    This file is part of Cumulus.
+
+    $Id$
+ 
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef ALTITUDE_H
+#define ALTITUDE_H
+
+#include "distance.h"
+
+/**
+  * @short Abstract altitude
+  *
+  * This class provides an altitude object, which can represent it's data in any major format.
+  * @author Andre Somers
+  */
+
+class Altitude : public Distance
+{
+public:
+    /*
+     * Altitude units
+     */
+    enum altitude{meters=0, feet=1, kilometers=2, miles=3, nautmiles=4, flightlevel=5};      //just an extention of distance
+
+public:
+    Altitude();
+    /**
+     * Constructor
+     *
+     * Initializes the object to meters.
+     */
+    Altitude(int meters);
+
+    /**
+     * Constructor
+     *
+     * Initializes the object to meters.
+     */
+    Altitude(double meters);
+
+    /**
+     * copy constructor
+     */
+    Altitude(const Altitude&);
+
+    /**
+     * copy constructor
+     */
+    Altitude(const Distance&);
+
+    /**
+     * destuctor
+     */
+    ~Altitude();
+
+    /**
+     * Sets the unit for altitudes. This unit is used to return the correct string
+     * in @ref getText.
+     */
+    static void setUnit(altitude unit);
+
+    /**
+     * returns the current set unit
+     */
+    static const altitude getUnit()
+    {
+        return _altitudeUnit;
+    };
+
+    /**
+     * Represent an altitude as a string.
+     *
+     * @return A string containing the altitude in the set unit (see @ref setUnit).
+     * The string that identifies the unit used is added if withUnit is true.
+     *
+     * example:
+     * <pre>
+     *    getText(1,true,1)
+     * </pre>
+     * with the altitude unit set to feet would return "3.2 ft".
+     *
+     * @param meter The altitude expressed in meters
+     * @param withUnit determines if the unit-string is included in the output
+     * @param precision number of digits after the decimal separator
+     */
+    static QString getText(double meter, bool withUnit, int precision=1);
+
+    /**
+     * Get current unit as text
+     */
+    static QString getUnitText();
+
+    /**
+     * Converts a distance from the current units to meters.
+     */
+    static double convertToMeters(double dist);
+
+    /**
+     * Basicly the same as @ref getText, but returns the internally stored altitude.
+     */
+    QString getText(bool withUnit, uint precision=1) const;
+
+    /* Get Altitude as Flightlevel */
+    //  double getFL(double pressure) const;
+    /**
+     *Get altitude as flightlevel (at standard pressure)
+     */
+    double getFL() const;
+
+
+    /**
+     * implements == operator for altitude
+     */
+    bool operator == (const Altitude& x) const
+    {
+        return _dist == x.getMeters();
+    };
+
+    /**
+     * implements < operator for altitude
+     */
+    bool operator < (const Altitude& x) const
+    {
+        return _dist < x.getMeters();
+    };
+
+    /**
+     * implements > operator for altitude
+     */
+    bool operator > (const Altitude& x) const
+    {
+        return _dist > x.getMeters();
+    };
+
+    /**
+     * implements >= operator for altitude
+     */
+    bool operator >= (const Altitude& x) const
+    {
+        return _dist >= x.getMeters();
+    };
+
+    /**
+     * implements <= operator for altitude
+     */
+    bool operator <= (const Altitude& x) const
+    {
+        return _dist <= x.getMeters();
+    };
+
+    /**
+     * implements != operator for altitude
+     */
+    bool operator != (const Altitude& x) const
+    {
+        return _dist != x.getMeters();
+    };
+
+    /**
+     * implements minus altitude
+     */
+    Altitude operator - (const Altitude& x) const
+    {
+        return Altitude( _dist - x.getMeters() );
+    };
+
+    /**
+     * implements minus assignment altitude
+     */
+    Altitude& operator -= (const Altitude& x)
+    {
+         _dist -= x.getMeters();
+         return *this;
+    };
+
+    /**
+     * implements plus altitude
+     */
+    Altitude operator + (const Altitude& x) const
+    {
+        return Altitude( _dist + x.getMeters() );
+    };
+
+    /**
+     * implements plus assignment altitude
+     */
+    Altitude& operator += (const Altitude& x)
+    {
+         _dist += x.getMeters();
+         return *this;
+    };
+
+protected:
+    static altitude _altitudeUnit;
+};
+
+
+/**
+ * @short Collection of the different expressions for the current altitude
+ * @author André Somers
+ *
+ * This struct contains different representations for the current altitude.
+ * There are different ways to express the current altitude, and there are
+ * some uncertainties too. All that data can be stored in this struct, so it
+ * can be nicely passed as a single parameter.
+ */
+struct AltitudeCollection
+{
+    /**
+     * The altitude according to the GPS.
+     * Given in MSL.
+     */
+    Altitude gpsAltitude;
+
+    /**
+     * The standard pressure altitude derived from the GPS altitude.
+     * Given in STD.
+     */
+    Altitude stdAltitude;
+
+    /**
+     * The pressure altitude (if available, else it should be deduced from the GPS altitude).
+     * Given in MSL.
+     */
+    Altitude pressureAltitude;
+
+    /**
+     * Average altitude above terrain (GND). Based on pressure atitude.
+     * Because our terrain data does not return the exact terrain height for a given point, but
+     * only a minimum and a maximum, we return the average as the gndAltitude. The @ref
+     * gndMinAltitude and @ref gndMaxAltitude are used for purposed like checking airspace
+     * violations.
+     *
+     * @see gndMinAltitude, @see gndMaxAltitude
+     */
+    Altitude gndAltitude;
+
+    /**
+     * The estimation for the error for the altitude we have above the terrain. This only includes
+     * the error caused by the way the gndAltitude is calculated, not by any GPS errors.
+     *
+     * @see gndAltitude, @see gpsAltitudeError
+     */
+    Distance gndAltitudeError;
+
+    /**
+     * The estimation for the error in the gps measurement for the altitude. This data is taken from
+     * the GPS if available.
+     *
+     * @see gndAltitude, @see gndAltitudeError
+     */
+    Distance gpsAltitudeError;
+
+};
+
+#endif

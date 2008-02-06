@@ -44,159 +44,159 @@
  * in the same directory as cumulus.
  */
 class GPSCon : public QObject
-{
-  Q_OBJECT
-
-    public:
-
-  GPSCon(QObject*, const char *path);
-
-  virtual ~GPSCon();
-
-  /**
-   * This function returns the currently used bautrate for this connection
-   */
-  int currentBautrate()const
   {
-    return ioSpeed;
-  };
+    Q_OBJECT
 
-  /**
-   * This function returns the currently used device for this connection
-   */
-  QString currentDevice()const
-  {
-    return device;
-  };
+  public:
 
-  /** This function returns the current pid of the client process or
-   * -1 if there isn't any
-   */
-  int getPid() const
-  {
-    return pid;
-  };
+    GPSCon(QObject*, const char *path);
 
-  /**
-   * Sends nmea input sentence to GPS receiver. Checksum is calculated by
-   * this routine. Don't add an asterix at the end of the passed sentence! 
-   * That is part of the check sum.
-   */
-  void sendSentence(const QString&);
+    virtual ~GPSCon();
 
-  /**
-   * Serial device and speed are sent to the client, that it can
-   * opens the appropriate device for receiving.
-   */
-  bool startGpsReceiving();
+    /**
+     * This function returns the currently used bautrate for this connection
+     */
+    int currentBautrate()const
+      {
+        return ioSpeed;
+      };
 
-  /**
-   * Stops the gps receiver on the client side.
-   */
-  bool stopGpsReceiving();
+    /**
+     * This function returns the currently used device for this connection
+     */
+    QString currentDevice()const
+      {
+        return device;
+      };
 
- signals:
-  /**
-   * This signal is send every time a new sentence has arrived.
-   */
-  void newSentence(const QString& sentence);
+    /** This function returns the current pid of the client process or
+     * -1 if there isn't any
+     */
+    int getPid() const
+      {
+        return pid;
+      };
 
-  /**
-   * This signal is send, if the gps connection has been lost
-   */
-  void gpsConnectionLost();
+    /**
+     * Sends nmea input sentence to GPS receiver. Checksum is calculated by
+     * this routine. Don't add an asterix at the end of the passed sentence! 
+     * That is part of the check sum.
+     */
+    void sendSentence(const QString&);
+
+    /**
+     * Serial device and speed are sent to the client, that it can
+     * opens the appropriate device for receiving.
+     */
+    bool startGpsReceiving();
+
+    /**
+     * Stops the gps receiver on the client side.
+     */
+    bool stopGpsReceiving();
+
+  signals:
+    /**
+     * This signal is send every time a new sentence has arrived.
+     */
+    void newSentence(const QString& sentence);
+
+    /**
+     * This signal is send, if the gps connection has been lost
+     */
+    void gpsConnectionLost();
 
 
- private://methods
-  /**
-   * Starts a new gps client process via fork/exec or checks, if process is
-   * alive. Alive check is triggered by timer routine every 10s. If process
-   * is down, a new one will be started.
-   */
-  bool startClientProcess();
+  private://methods
+    /**
+     * Starts a new gps client process via fork/exec or checks, if process is
+     * alive. Alive check is triggered by timer routine every 10s. If process
+     * is down, a new one will be started.
+     */
+    bool startClientProcess();
 
-  /**
-   * Stores process identifier of forked client
-   */
-  void setPid( pid_t newPid )
-  {
-    pid = newPid;
-  };
+    /**
+     * Stores process identifier of forked client
+     */
+    void setPid( pid_t newPid )
+    {
+      pid = newPid;
+    };
 
-  /**
-   * Reads a client message from the socket. The protocol consists of two
-   * parts. First the message length is read as unsigned integer, after that
-   * the actual message as 8 bit character string.
-   */
-  void readClientMessage( uint index, QString &result );
+    /**
+     * Reads a client message from the socket. The protocol consists of two
+     * parts. First the message length is read as unsigned integer, after that
+     * the actual message as 8 bit character string.
+     */
+    void readClientMessage( uint index, QString &result );
 
-  /**
-   * Writes a client message to the socket. The protocol consists of two
-   * parts. First the message length is read as unsigned integer, after that
-   * the actual message as 8 bit character string.
-   */
-  void writeClientMessage( uint index, const char *msg  );
+    /**
+     * Writes a client message to the socket. The protocol consists of two
+     * parts. First the message length is read as unsigned integer, after that
+     * the actual message as 8 bit character string.
+     */
+    void writeClientMessage( uint index, const char *msg  );
 
-  /**
-   * Query the client, if NMEA records are available. If true, the data will
-   * be hand over to the cumulus process.
-   */
-  void queryClient();
+    /**
+     * Query the client, if NMEA records are available. If true, the data will
+     * be hand over to the cumulus process.
+     */
+    void queryClient();
 
 
   private slots:
-  /**
-   * This slot is triggered by the QT main loop and is used to handle the
-   * notification events from the client.
-   */
-  void slot_NotificationEvent(int socket);
+    /**
+     * This slot is triggered by the QT main loop and is used to handle the
+     * notification events from the client.
+     */
+    void slot_NotificationEvent(int socket);
 
-  /**
-   * This slot is triggered by the QT main loop and is used to handle the
-   * listen socket events. The gps client tries to connect to the cumulus
-   * process. There are two connections opened by the client, first as data
-   * channel, second as notification channel.
-   */
-  void slot_ListenEvent(int socket);
+    /**
+     * This slot is triggered by the QT main loop and is used to handle the
+     * listen socket events. The gps client tries to connect to the cumulus
+     * process. There are two connections opened by the client, first as data
+     * channel, second as notification channel.
+     */
+    void slot_ListenEvent(int socket);
 
-  /**
-   * This timeout method is used, to call the method startClientProcess(),
-   * when the timer is expired. This is the alive check for the forked
-   * gpsClient process and ensures the cleaning up of zombies.
-   */
-  void slot_Timeout();
+    /**
+     * This timeout method is used, to call the method startClientProcess(),
+     * when the timer is expired. This is the alive check for the forked
+     * gpsClient process and ensures the cleaning up of zombies.
+     */
+    void slot_Timeout();
 
- private: //members
-  // gpsClient program name with path
-  QString exe;
+  private: //members
+    // gpsClient program name with path
+    QString exe;
 
-  // start client process flag, used for debugging purposes only
-  bool startClient;
+    // start client process flag, used for debugging purposes only
+    bool startClient;
 
-  // Pid of gps client process
-  pid_t pid;
+    // Pid of gps client process
+    pid_t pid;
 
-  // Nofifier for QT main loop
-  QSocketNotifier *listenNotifier;
-  QSocketNotifier *clientNotifier;
+    // Nofifier for QT main loop
+    QSocketNotifier *listenNotifier;
+    QSocketNotifier *clientNotifier;
 
-  // used as timeout control for connection supervison
-  QTimer *timer;
+    // used as timeout control for connection supervison
+    QTimer *timer;
 
-  // Time of last client query
-  QTime lastQuery;
+    // Time of last client query
+    QTime lastQuery;
 
-  // Socket port for ipc to server process
-  ushort ipcPort;
+    // Socket port for ipc to server process
+    ushort ipcPort;
 
-  // IPC instance to client process
-  Ipc::Server server;
+    // IPC instance to client process
+    Ipc::Server server;
 
-  // RX/TX rate of serial device
-  uint ioSpeed;
+    // RX/TX rate of serial device
+    uint ioSpeed;
 
-  // Serial device
-  QString device;
-};
+    // Serial device
+    QString device;
+  };
 
 #endif
