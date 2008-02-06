@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Cumulus Settings</title>
+</head>
+
+<body >
+
+    <table width="100%">
+    <tr>
+    <td></td>
+    <td align="center"><a href="cumulus.html">start</a></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td align="left"><a href="cumulus-settings-sector.html">back</a></td>
+    <td align="center"><a href="cumulus-settings.html">overview</a></td>
+    <td align="right"><a href="cumulus-settings-map.html">next</a></td>
+    </tr>
+    </table>
+
+<h3 align="center">Settings</h3>
+
+    <p><b>GPS</b><p> Here you can enter connection information on your
+    GPS.  Select the correct device and baud rate for your GPS.
+    Please refer to your GPS manual for these values.  For most serial
+    devices, device /dev/ttyS0 will do, for Compact Flash /dev/ttyS3
+    is most common.  For Blue Tooth devices use /dev/rfcomm0. Cumulus
+    can also detect the correct device automaticly for compact flash
+    units. Choose <i>CF</i> to autodetect a CF gps. The default NMEA
+    connection speed is 4800 bps. If your device not contained in the
+    selection list, you can change one of the predefined entries to
+    your need.
+    </p>
+
+    <p>
+    Some gps devices can be initialized by saved position data to find
+    a satellite signal more quickly. To enable this check <i>Soft
+    start</i>.  If this does not work, a <i>Hard start</i> can be
+    forced when Cumulus starts up.  If there are still problems to get
+    the device working, a <i>Reset to factory settings</i> can be
+    initiated by pressing the button.
+    </p>
+    <p>
+    Most of the GPS devices send MSL (mean sea level) altitudes but
+    some send HAE (Height above elipsoid.) If your displayed altitude
+    deviate always by a constant factor, try the other setting for
+    your GPS. If that will not help, you can select the Altitude
+    <i>User</i> mode and add an own altitude correction in the spin
+    box below.
+    </p>
+    <p>Cumulus can provide you with some status information on your
+    GPS reception. If you want to know what satelites are in view,
+    where they are, how strong their signal is, or if you want to 
+    take a look at the raw NMEA stream of your GPS, use the 
+    <b><i>G</i></b> key or click on the GPS status indicator in the
+    statusbar. This will open a status dialog for the GPS.
+    <p>
+    Cumulus is able to synchronize the PDA system clock to the GPS
+    time, if the option <i>Update system clock</i>is activated. But
+    this will only work, if cumulus is running as user root.
+
+    <table width="100%">
+    <tr>
+    <td></td>
+    <td align="center"><a href="cumulus.html">start</a></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td align="left"><a href="cumulus-settings-sector.html">back</a></td>
+    <td align="center"><a href="cumulus-settings.html">overview</a></td>
+    <td align="right"><a href="cumulus-settings-map.html">next</a></td>
+    </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Cumulus Maps</title>
+</head>
+<body >
+
+    <table width="100%">
+    <tr>
+    <td align="left"><a href="cumulus-gettingstarted.html">back</a></td>
+    <td align="center"><a href="cumulus.html">start</a></td>
+    <td align="right"><a href="cumulus-settings.html">next</a></td>
+    </tr>
+    </table>
+
+<h3 align="center">Maps</h3>
+    <p>Cumulus uses the same sets of maps as KFLog does. They are freely available for download at
+    <A HREF="http://www.kflog.org/maproom">www.kflog.org/maproom</A>. For maximum results,
+     you need all the different kinds of map files you can get there.
+     
+     <p>There are:
+
+    <ul>
+        <li><a href="http://www.kflog.org/maproom/ground-and-terrain-data">Ground Maps</a>
+            with streets, highways, cities, rivers, lakes, and terrain data with elevation
+            information.
+        </li>
+
+        <li>Airspaces, <b>Not more up to date! Please use other sources,
+            e.g. <a href="http://www.segelflug.de/segelflieger/michael.meier/download/OPENAIR.TXT">OPENAIR.TXT</a></b>
+        </li>
+
+        <li>Airfields, <b>Not more up to date! Please use other sources,
+            e.g. <a href="#Welt2000">Welt2000</a></b></li>
+    </ul>
+
+
+     Only install the airfields and airspaces maps for the area you need,
+     this will make Cumulus faster. The other maps are not concerned of that.
+    <p>
+    The maps can be installed in any of three places:
+    <ul>
+      <li>On the PDA itself, in $HOME/Applications/cumulus/maps/. This is the preferred location.
+          Cumulus will try this directory first.</li>
+      <li>On the CF card, in a directory /maps under the root.</li>
+      <li>On the SD card, also in a directory /maps under the root.</li>
+    </ul>
+    </p>
+
+    The airfield and the airspace files have to be put in extra
+    subdirectories in <i>maps</i> with the names <i>airfields</i> and
+    <i>airspace</i> respectively. See below for more information on
+    these map files.
+
+    <p>Maps, just like waypoints and tasks, will be shared with KFLog/Embedded.
+
+    <p>If you experience memory problems running Cumulus, you can
+    choose not to install certain map sets. You could for instance
+    skip the terrain maps. This will disable the display of terrain
+    features (the isolines), but it will also save memory and reduce
+    map loading and drawing time. It is advisable at least to use the
+    Ground maps, because you will end up with a blue background
+    otherwise, which is not very helpfull in navigation.
+
+    <p>The maps you install are not projected. This is done on
+    loading. Because this is a computationally complex operation, the
+    resulting maps are stored again with a <i>.kfc or .txc</i>
+    extension. For many maps, these files are a bit smaller than the
+    original files. The next time Cumulus needs to load the file, it
+    first tries to load this <i>compiled</i> file to improve speed. In
+    the <a href="cumulus-settings-map-advanced.html"> advanced map
+    settings</a> you can modify the behaviour of Cumulus for map
+    projection and map compilation.</p>
+
+    <p><b>OpenAir SUA map files</b></p>
+
+    <p>In addition to the binary KFLog aeronautical mapfiles, Cumulus
+    also supports the commonly available OpenAir SUA file format for
+    airspaces. Just put the map files in the same place you would put
+    your binary airspaces files and make sure they have the
+    <i>.txt</i> extension written in <b>lower</b> letters. You can mix
+    binary and OpenAir map files as you please. Cumulus does not
+    obey the instructions on pens, colors and the like. Instead,
+    Cumulus maps the airspace types indicated in the AC records to the
+    internal Cumulus airspace types and uses the same settings as used
+    for the binary map files.</p>
+
+    <p>In addition to the OpenAir files themselves, you can add a file
+    to configure the mapping of airspace types from the OpenAir file
+    to the types Cumulus uses. Cumulus uses the following types:
+
+      <ul>
+      <li>AirA
+      <li>AirB
+      <li>AirC
+      <li>AirD
+      <li>AirElow
+      <li>AirEhigh
+      <li>AirF
+      <li>ControlC
+      <li>ControlD
+      <li>Danger
+      <li>Restricted
+      <li>LowFlight
+      <li>Tmz
+      <li>SuSector
+      </ul>
+
+    In order to create a mapping file, create a file with the same
+    basename as the OpenAir file (without the <i>.txt</i> extension)
+    and append <i>_mappings.conf</i> to the basename.</p>
+
+    <P>Example: Sourcefile=<i>openair.txt</i>, Mappingfile=<i>openair_mappings.conf</i></p>
+
+    <p>The mapping file must be placed in the same directory as the
+    OpenAir file is contained. The used syntax in the file is
+    simple. Empty lines and lines starting with <i>#</i> or <i>*</i>
+    are ignored and can be used for comments. The rest of the lines
+    should contain entries in the form <i>key = value</i>, one entry per
+    line. The key is the airspace type in the OpenAir file you wish
+    to map and the value is the corresponding Cumulus type you wish
+    to assign. The default mappings are:</p>
+
+      <ul>
+      <li>A = AirA
+      <li>B = AirB
+      <li>C = AirC
+      <li>D = AirD
+      <li>E = AirElow
+      <li>F = AirF
+      <li>GP = Restricted
+      <li>R = Restricted
+      <li>TRA = Restricted
+      <li>Q = Danger
+      <li>CTR = ControlC
+      <li>TMZ = Tmz
+      <li>W = AirEhigh
+      <li>GSEC = SuSector
+      </ul>
+
+   <p>You only need to define the values you actually want to change
+   in the file. These instructions will overwrite the default
+   mappings.
+
+   <P>Example: <i>CTR=ControlD</i></p>
+
+   <P>This statement changes the default assignment <i>ControlC</i> to
+   <i>ControlD</i>.<b>Consider that the mappings are case sensitive.</b>
+
+   <a name="Welt2000"></a>
+
+    <p><b>Usage of Welt 2000 airfield data</b></p>
+
+    <p>In addition to the binary KFLog airfield files, cumulus also is
+    able to read the available welt 2000 data format for
+    airfields. These data are provided by Michael Meier as one big file
+
+    <a href="http://www.segelflug.de/segelflieger/michael.meier/download/WELT2000.TXT">here.</a>
+
+    <p>Just install this file in the same place you would install your
+    binary airfield files and make sure that it carry the name
+    <i>welt2000.txt</i>. It is <b>not recommended</b> that you mix
+    KFLog binary airfield files together with a welt 2000 airfield
+    file. That can cause a lot of confusion, if the same countries are
+    read in twice. Because a welt2000.txt file covers the whole world,
+    the amount of data to be read in must be limited in a senseful
+    kind. Cumulus provides for that two ways:</p>
+
+    <ul>
+      <li> Filtering by countries to be defined under the
+      configuration setup of advanced maps. See <a
+      href="cumulus-settings-map-advanced.html#Welt2000Filter">
+      advanced map settings</a> for more information.
+
+      <li> Filtering by countries to be defined in a configuration
+      file with the name <i>welt2000.conf</i>. See below how to do
+      that. That is an old option and should not more used. Please
+      make your filter definitions via the cumulus GUI as described
+      above. <b>Note!</b> A filter rule setup via the GUI will
+      overwrite the rules defined in the configuration file.
+    </ul>
+
+    <p>One disadvantage of welt 2000 is that it knows only three types of
+    airfield elements (Airfield, Glider Field, Ultra Light Field) but
+    cumulus a lot more. This lack can be overcome by an additional
+    provided mapping. You can map short names or ICAO identifiers of
+    the welt 2000 file entries into other cumulus map elements by
+    using a simple syntax to be defined in a configuration file. The
+    configuration file has to carry the name <i>welt2000.conf</i> and
+    must be located in the same directory where the source file
+    <i>welt2000.txt</i> is to find. The file provides the following
+    syntax:
+
+    <ul>
+    <li> A comment line starts with a <i>#</i> hashmark or a <i>$</i>
+    dollar sign and ends with the newline.
+
+    <li><b>FILTER countries=</b><i>country_1[,...,country_n]</i>
+    <br>This line defines a country filter rule. Several countries can
+    be entered after the equal sign in one line as list separated by
+    commas. The country identifiers have to be coded according to
+    ISO-3166. If such rule is defined, only the listed countries will
+    be extracted from the welt 2000 source file. That should be the
+    common way to get the desired subset of airfield data from the
+    whole source. It is possible to define more than one filter rule.
+
+    <li><b>MAP_SHORT_NAME</b> <i>short-name</i>=<i>map-element-of-cumulus</i>
+
+    <br>This line defines a rule for mapping of a short name (first
+    six left standing characters) of a welt 2000 entry at a special
+    cumulus map element.
+
+    <li><b>MAP_ICAO</b> <i>icao-sign</i>=<i>map-element-of-cumulus</i>
+
+    <br>This line defines a rule for mapping of an ICAO identifier of
+    a welt 2000 entry at a special cumulus map element.
+    </ul>
+
+    The supported cumulus map elements for airfields are:
+
+    <ul>
+    <li>IntAirport
+    <li>Airport
+    <li>MilAirport
+    <li>CivMilAirport
+    <li>Airfield
+    <li>ClosedAirfield
+    <li>CivHeliport
+    <li>MilHeliport
+    <li>AmbHeliport
+    <li>Glidersite
+    <li>UltraLight
+    <li>HangGlider
+    </ul>
+
+    <b>Consider that the cumulus map elements used in mapping rules
+    are case sensitive.</b>
+
+    <p>Short example of a welt2000.conf file:
+
+    <p># Example of a welt2000.conf file, starting with a comment line
+    <br>$ This is also a comment line
+    <br>#
+    <br># Now follows a country filter definition rule
+    <br># Only the coutries Germany, Poland and Czechia will be extracted from the welt2000.txt source
+    <br>FILTER countries=de,pl,cz
+    <br>#
+    <br># Now follows an ICAO identifier mapping rule
+    <br># The german airport Berlin-Sch&ouml;nefeld is mapped at an international airport element
+    <br>MAP_ICAO EDDB=IntAirport
+    <br>#
+    <br># Now follows a short name mapping rule
+    <br># The german military airport Holzdorf is mapped at a military airport element
+    <br>MAP_SHORT_NAME HOLZD1=MilAirport
+
+    <p><b>Please note the following!</b> If a new welt2000.txt file has
+    been installed the first run of cumulus after that needs a longer
+    time (ca. 20-40 seconds) to extract the desired data from it.
+    Cumulus generates a compressed file of the extracted data
+    reuseable by further runs of it. This file carry the name
+    <i>welt2000.txc</i> and will be reused, so long the original
+    source, the configuration file, the map projection or the home
+    position are not changed. This behaviour minimize the read in
+    time after a restart.
+
+    <p>If you make necessary corrections on the data of the welt 2000
+    file, please report all this changes to Michael Meier, who
+    provides and maintains the source. His email address is to find in
+    the header part of the welt 2000 file.
+
+    <p><table width="100%">
+    <tr>
+    <td align="left"><a href="cumulus-gettingstarted.html">back</a></td>
+    <td align="center"><a href="cumulus.html">start</a></td>
+    <td align="right"><a href="cumulus-settings.html">next</a></td>
+    </tr>
+    </table>
+</body>
+</html>

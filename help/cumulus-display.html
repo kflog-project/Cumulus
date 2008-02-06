@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Cumulus Display</title>
+</head>
+
+<body >
+
+    <table width="100%">
+    <tr>
+    <td align="left"><a href="cumulus-preflight-settings-common.html">back</a></td>
+    <td align="center"><a href="cumulus.html">start</a></td>
+    <td align="right"><a href="cumulus-usage.html">next</a></td>
+    </tr>
+    </table>
+
+<h3 align="center">Display</h3>
+    <p> The main view of Cumulus consists of three rows of information, a map below, and a
+        status bar. This screen is also called the map view.</p>
+
+    <p> <b>Flight information</b><p>
+        The indicators on the top three rows indicate:
+        <ul>
+          <li><b>Trk</b> - Track (also indicated by the direction of the glider symbol)</li>
+          <li><b>Brg</b> - Bearing to target. Tipping on number shows for five 
+                           seconds with red background the reverse course.</li>
+          <li><b>Arrow</b> - Bearing to target relative to the current heading.</li>
+          <li><b>Dis/Eta</b> - Distance respectively estimated time of arrival to selected target.
+                               Tip on label to toggle display.</li>
+          <li><b>Gs</b> - Current ground speed</li>
+          <li><b>Msl/Gnd</b> - Current Altitude above MSL/Ground. Tip on the number to toggle display.</li>
+          <li><b>Arv</b> - Arrival Altitude above (positive) or below (negative)
+                           about selected target <a href="#glidepath"> (see glide path)</a> </li>
+          <li><b>To</b> - Selected target and in parentheses its elevation.
+                          Tip on label to select another target. </li>
+          <li><b>Var</b> - Variometer display derived from gps altitude. Tip on label
+                           brings up a dialog box where you can change the integration time.
+          <li><b>Wd</b> - Wind speed and direction. Wind and Vario display can be toggled with LD display.
+                          Tip on label Wd will toggle the display.</li>
+          <li><b>LD</b> - Required and current LD to selected target. Can be toggled with Wind and Vario display.
+                          Tip on label LD will toggle the display.
+                          <a href="#ld"> See also LD paragraph for more info.</a> </li>
+          <li><b>Mc</b> - McCready value used for glide path and best speed calculation.
+                          Tip to open the in flight dialog.</li>
+          <li><b>S2f</b> - Best airspeed for current McCready, variometer and wind information</li>
+        </ul>
+
+        Of course, all information are displayed in the units you selected in the
+        <a href="cumulus-settings-units.html">Units Settings</a> dialog.</p>
+
+        <p><b>Map</b><p>
+        The map displays a graphical representation of the current position
+        (indicated by the intersection of the fuselage and the wings in the glider symbol)
+        and heading (indicated by the rotation of the glider symbol). If there is no GPS fix,
+        Cumulus displays an X symbol in stead of a glider. See <a href="cumulus-manual.html">
+        manual navigation mode</a> for more details. The current scale is displayed in the
+        scale indicator in the lower right corner of the map.<br>
+        <br>
+        The map shows the terrain elevation by using colors. The detail level of this display changes
+        with the zoom factor: more zoom is more detail in the terrain shapes. You can turn off the
+        drawing of the elevations from the <a href="cumulus-settings-map.html">Map Settings</a> dialog.<br>
+        <br>
+        Depending on the maps you installed, Cumulus displays airports (the type is indicated by the
+        standard ICAO symbol), cities (yellow), highways (red/white), roads (red) and railroads (dark grey),
+        water (blue). Not all details are displayed in all zoom factors. Also Cumulus displays airspace
+        structures. The different types are indicated by using different colors. For basic information on an
+        airport or airspace structure simply touch the related symbol or area on the screen. You will get
+        displayed then the info on the interesting object in a pop up window. The window disappears after a
+        certain time automatically. This time behaviour can be configured more in detail in the menu
+        <i>General Setup</i> under the tab <a href="cumulus-settings-information.html">Information</a>.
+        <br>
+        If you press-and-hold on an airfield, you will get detailed information on this item.
+        You can add airfields to your waypoint list if it isn't in the
+        list already. Added waypoints will have a <i>normal</i> priority.
+	<br>
+	Cumulus can calculate what airfields or waypoints are in
+	reach. These waypoints get a green circle beneath them. If a
+	point is within reach below the entered safety altitude, it
+	gets a magenta circle beneath it. The line to the currently
+	selected waypoint is coloured to match, and will be in red if
+	the waypoint is not within reach.
+
+        <p><b>Status bar</b><p>
+
+        The status bar displays three things. The first item tells the
+        mode Cumulus is operating in. If no GPS connection has been
+        established this will set to <i>Man</i>. Otherwise it will set
+        to <i>GPS</i> and the number of received satellites.<p> The
+        second item in the status bar is a combination between logging
+        and flight indicator. It displays at the left side a <i>L</i>
+        if igc-logging is enabled. <i>Ls</i> is displayed if the
+        logger is in standby mode. The indicator will light up bold
+        every time an entry is made.  The flight status symbol is
+        either shown in the center of the box alone, if logging is not
+        active or right beside of the logging indicator.
+
+        <p>The following characters are used for flight state display:
+
+       <ul>
+        <li><b>?</b> - Unknown
+        <li><b>C</b> - Cruising
+        <li><b>L</b> - Circling Left
+        <li><b>R</b> - Circling Right
+        <li><b>S</b> - Standstill
+        <li><b>W</b> - Wave
+       </ul>
+        The right part of the status bar indicates the current position in longitude and latitude.<p>
+        If you want to maximize the screen area for the map display,
+        you can disable the status bar via the menu entry <i>View/Statusbar</i>.
+       </p>
+
+       <p><b>Glide path</b><p><a name="glidepath">
+       The glide path indicator gives you an estimation on whether or not your selected target is in reach. It
+       calculates the performance of your glider using the entered polar-values on the Settings dialog's
+       <a href="cumulus-settings-glider.html">Glider tab</a>.
+       It is assumed that you fly at the indicated best airspeed for the current McCready value.
+       You can enter a minimal arrival altitude on the
+       <a href="cumulus-settings-personal.html">Personal tab</a>.<br>
+       If the indicator shows a negative value, you are under glide path and the target is not in reach. If you
+       are above glide path, the target is in reach, and you can probably fly a bit faster to reach it sooner,
+       depending on the polar of your glider.</p>
+
+       <p><b>LD-Display</b><p><a name="ld">
+       Becide the glide path indicator you can check too with the LD display, if you are on the right way.
+       Precondition for the LD calculation is, that you have selected a target otherwise nothing is displayed.
+       The LD display consists of two values, devided by a slash. On the left side the required LD to the selected
+       target is displayed. Safety altitude and elevation of the target are considered in the calculation. On the
+       right side the current LD is displayed calculated over the last 60s. If the current LD is higher as the
+       required LD you should be on a safe way to your selected target. When you have climbed or you could fly on
+       the same altitude level in the last 60s the display shows a value like <i>&gt;99</i>.
+       If the calculation result is not sensefull, a dash is shown as result in the display.</p>
+
+    <table width="100%">
+    <tr>
+    <td align="left"><a href="cumulus-preflight-settings-common.html">back</a></td>
+    <td align="center"><a href="cumulus.html">start</a></td>
+    <td align="right"><a href="cumulus-usage.html">next</a></td>
+    </tr>
+    </table>
+</body>
+</html>
