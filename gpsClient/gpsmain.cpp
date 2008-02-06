@@ -30,7 +30,7 @@ using namespace std;
 #include <sys/time.h>
 #include <iostream>
 
-#include <QString>
+#include <qstring.h>
 
 #include "signalhandler.h"
 #include "gpsclient.h"
