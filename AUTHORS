@@ -1,0 +1,29 @@
+Cumulus is developed by:
+  André Somers <andre@kflog.org>
+  Eggert Ehmke <eggert@kflog.org>
+
+Contributions by:
+  Axel Pauli <axel@kflog.org>
+  Derrick Steed
+  Eckhard Völlm
+  Josua Dietze
+  Hendrik Hoeth
+  Hendrik Müller
+  Michael Enke
+  Stephan Danner
+
+Current Maintainer:
+  Axel Pauli <axel@kflog.org>
+
+The latest version can be found on http://cumulus.kflog.org
+
+Cumulus is a fork of KFLog, the K-Flightlog analyzer
+See http://www.kflog.org/cumulus
+
+Implementation (KFLog):
+
+  Heiner Lamprecht <heiner@kflog.org>
+  Florian Ehinger <florian@kflog.org>
+  Harald Maier <harry@kflog.org>
+  Thomas Nielsen <thomas.nielsen@telelogic.com>
+

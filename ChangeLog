@@ -1,0 +1,394 @@
+$Id$
+
+Cumulus changelog
+=================
+[+] Added feature
+[-] Removed
+[o] Modified
+
+#=================================================================================#
+# Please add your changes always on top according to the following format rule:   #
+#                                                                                 #
+# [<what>] <Date as YYY-MM-DD> <Short name sign>: <description of modification>   #
+#                                                                                 #
+# Thankyou Axel ;-))                                                              #
+#=================================================================================#
+
+Cumulus 2.0.0 (Development based on Qt4.x/X11)
+---------------------------
+[+] 2008-02-08 AP: Portage of cumulus from Qtopia and Qt2.3.7/X11 finished.
+                   First build of a release on Qt/X11 with several porting bugs.
+		   Optimization of widgets is also required.
+
+Cumulus 1.3.1 (Development)
+-------------------
+
+[o] 2007-03-13 AP: Display of Airspace and Airspace warnings modified. HTML list replaced by HTML table
+                   with borders. That enables more space for the messages.
+[-] 2007-03-11 AP: Altutide Bug in OpenAir parser fixed. Meters were calculated wrong to feet.
+[+] 2007-03-11 AP: Welt 2000 configuration now possible via user GUI. You can define countries
+                   resp. radius around home position from config dialog. If home position
+                   or configuration is changed, an automatic reload of welt 2000 data is triggered.
+[o] 2007-03-10 AP: English and german online help pages updated
+[o] 2007-03-09 ME: Select last GPS device in config dialog, if possible
+[o] 2007-03-08 AP: Qtopia global statusbar message class exchanged against map view statusbar
+                   message class.
+[+] Task editor extended, toggle added for switching between waypoint and airfield
+    list without new loading. That makes the toggle faster, if the lists are long.
+    (supplied by Michael Enke)
+[-] Bugfix: Endless loop in listviewfilter fixed by Michael Enke
+[-] Bugfix: Activated task has been removed, if task menu has left with cancel button.
+[+] Task info widget added, which pops up during taskpoint switch and displays
+    information about the next target (distance, duration, eta).
+[-] Bugfix: Menu point Info was always active, whether waypoint was selected or not.
+[+] IGC logger record interval is now configurable (1-60s) in preflight dialog tabulator common
+[+] Task planning page cruising speed box added, as task display is task list now used,
+    line with total items distance, cruising speed, time inserted in task display.
+[+] Sunrise and sunset time calculations added. Available now in different menus
+[+] New config dialog Sector added which allows the defining of different schemes
+    (Cylinder/Sector) to be used as turn points in flight tasks. Photo sector or cylinder
+    are configurable in radius and angle. Drawing routines adapted to the new bahaviour.
+    Turnpoint switch operates in two modes now, nearst or touched configurable via sector tabulator.
+[-] Config dialogs in layout changed, so that status bar is not more hidden. Was problem for IPAQ
+    users, the could not reach the virtual keybord.
+[+] Additional arrival information added to waypoint- and taskpoint dialog.
+[-] Bugfix: Altitude comparison operators for less, less equal, greater and
+    greater equal were in wrong order
+[+] Glidepath calculation to final target over several taskpoints inserted in taskpoint display
+[-] Different problems fixed in view handling, Some accelerators did not work correct due to
+    wrong settings.
+[o] Font size of menu bar increased for a better handling in flight
+[+] Tipping on bearing widget in map view will show for 5s the reverse course.
+    In this case the background color of the widget is changed to red.
+[+] Nmea simulator integrated into cumulus as extra tool. The connection is
+    realized via a named pipe so that no serial interfaces are needed.
+[-] Lost of selected waypoint fixed after leave of configuration dialog
+[-] Crash fixed after projection change during receiving GPS data.
+[+] Added manual mode during flight (Michael)
+[o] close GPS status dialog on G or Enter or Escape (Michael)
+[o] Have Altitude "Std" as FL, removed flightlevel from Setup-Units
+
+
+Cumulus 1.3 (23.12.2006)
+-------------------
+[o] Changed icons for village (supplied by Stephan Danner)
+[+] Added manual GPS altitude correction option in GPS settings page
+[-] Bugfix: Wrong drawing of sectors of flight tasks fixed
+[o] Computing of bearing precision improved, not more dependent on current map scale
+[o] Some modifications to make Cumulus behave better on larger screens
+[+] Clicking on the GPS status indicator in the statusbar will open the GPS status dialog.
+[o] In-flight spinboxes modified to use easier to use horizontal layout
+[-] Bugfix: sometimes lines for for instance tasks were drawn on places they were not
+    supposed to be.
+[+] Readin of UL-Fields enabled from Airfieldfiles, display was already realized
+[-] Defaults for unknown air/glider field items updated. Should now display the string unknown
+    instead of senseless values.
+[-] Bugfix: wrong formating of waypoint information fixed
+[-] Bugfix: resume handling for CF device fixed
+[-] Bugfix: use unit setting for McCready in in-flight dialog (fix by Hendrik Hoeth)
+[o] Open the tasklist instead of the waypoint list on clicking the waypoint info box if a
+    task has been selected.
+[-] Bugfix: fixed problems with tasks: waypoint type was messed up and not stored in task
+    (fix by Hendrik Hoeth)
+[+] Semi-transparent fill added to airspaces. The fill intensity varies with the vertical
+    separation with the airspace structure.
+[-] Bugfix: fixed problem with vertical airspace warnings
+[+] Warning suppress time introduced to suppress multiple warnings during flight in the near of
+    an airspace border for a certain configurable time in minutes
+[-] Bugfix: SL5500 and Opie, wrong rotation of tranparent airspaces fixed
+[+] OpenAir parser available as alternative source for airspaces
+[-] Bugfix: first open airspace file was never read
+[-] Bugfix: openair parser (uninitialized variable, SFC added as add. GND)
+[-] Bugfix: update of window caption during move away from a touched airspace
+[-] Bugfix: openair parser considers now airspace foxtrott
+[-] Bugfix: bearing calculation improved in openair parser
+[-] Bugfix: openair parser considers now airspaces TMZ and TRA
+[o] Airspace TMZ color changed from green to blue
+[+] openair parser improved by additional mapping possibility provided as configuration file,
+    Help descriptions for English and German updated
+[+] Custom mappings for OpenAir airspace types can now be added by placing a simple mapping
+    file with the map file itself. Changed default CTR mapping back to AS-C. 
+[+] Welt 2000 data base is available as alternative airfield source now
+    Help descriptions for English and German updated
+[-] Bugfix: elevation error in welt 2000 parser fixed, usage extended from 3 digits to 4
+[+] OpenAir generates precompiled files after parsing now, that will sensible reduce the read time after restart 
+[+] Airspace filling is now configurable. A filling percentage can be set for each "nearness".
+    The filling can change when there are changes in the nearness of the airspace.
+[+] Altimeter toggle mode is now configurable via the general setup information tabulator
+[o] Optimized drawing speed of transparent regions (used for airspace drawing).
+[o] Cleaned up map drawing routines.
+[o] Make polar display adapt to screen size.
+[+] Added sector type SuSector, to be used for special sectors like Glider only sectors.
+[+] Airspace can now be forced to be drawn if it is close to your current altitude.
+[o] Made sure airspaces are drawn in the correct order by sorting them by ceiling and floor levels.
+[o] Improved loading speed for airfield type files.
+[o] Optimisations added (and later on fixed again) for Isoline drawing. Fix suggested by Johua Dietze.
+[+] Calculation and display of required and current LD to a selected target added, display is toggled in
+    map view together with variometer and wind widget
+[+] Help description updated with LD feature
+[-] task.tsk file moved from $HOME to $HOME/Applications/cumulus
+[-] Bugfix: Task distance computing and sector drawing (supplied by Michael Enke)
+[-] Bugfix: Task and waypoint lists with more then 10 entries (supplied by Michael Enke)
+[+] Some basic support added for Zaurus C3200 (supplied by Michael Enke)
+[-] Polycon clipper added for airspace drawing to prevent crashes on high zoom levels
+    by using of old sharp ROMs (supplied by Michael Enke)
+[+] automatic retry to open GPS blue tooth device /dev/rfcomm... added (supplied by Michael Enke)
+[+] waypoint selection choice extended by compulsary reporting point and radio facilities (VOR, VORTAC, VOR/DME, NDB)
+[o] Boxes min. arrival altitude and qnh moved from personal settings tabulator to preflight misc tabulator.
+    Preflight Misc. tabulator renamed to Common.
+[+] Automatic switch to next turnpoint in flighttask added (supplied by Michael Enke)
+    Turnpoint radius can be adjusted in Preflight Task settings page under tabulator common
+[+] Automatic selection of first target point, if a flight task is selected
+[+] Automatic selection of current selected waypoint in flighttask list
+[-] Bugfix: rounding problems in double spin box fixed
+
+
+Cumulus 1.2.1 (2.3.2005)
+------------------------
+[+] Runways draw in their direction from database
+[+] Dialog to select an airfield not in waypoint list
+[+] Dialog with an overview of your selected task and select waypoints from it.
+[o] All list-type views (Waypoint list, Reachable list, Airfield list, Task list) are now 
+    combined using tabs.
+[o] Some profiling led to some optimisations that speed up Cumulus significantly.
+[o] To support Ms Windows users better, the case of the filenames for maps doesn't matter
+    any longer.
+[o] Bigger fonts for text above the map.
+[+] List of all airfields available.
+[+] Task creation and editing from within Cumulus added.
+[-] Bugfix: tasks did not take notice of selected units.
+[-] Bugfix: start and finish sectors were sometimes drawn in the wrong direction.
+[+] Graphical indication of the wind (arrow) added to map.
+[o] Airfields and waypoints on the map are easier to select now.
+[-] Bugfix: min. arrival altitude not more setable
+[+] Glider dialog extended by added load and empty weight boxes. Bug fixed, that
+    edited glider was not saved, if no glider selection has been done.
+[+] Preflight dialog extended by added load box.
+[+] Command buttons in list widgets enlarged for a better hit. Selections can be
+    done by using center key now
+[-] Bugfix: double adding of waypoints in waypoint list fixed
+[+] ETA added as toggle with distance in mapview
+[-] Bugfix: core dump occured after map projection change, if map was not
+    redrawn and airfield or airspace info were requested.
+[+] System clock can be synchronized with GPS time
+[-] Bugfix: KFlog changed the Airspacefile version number from 100->101, did the same for cumulus
+[+] Message handler added for Q messages (qDebug, qWarning, qFatal)
+    via config option UseSystemLog you can redirect all output into the system logfile for better debugging
+[-] Bugfix: Opie has a bug in the routing of hardware keys, althrough keybord was grabbed by cumulus
+            Problem fixed with a workaround, Bug report to Opie submitted
+[-] Bugfix: Problem solved in automatic CF card device regognizing. Second path added for OpenZaurus.
+[-] Bugfix: Screen saver problems again fixed, hope now successfully ;)
+[-] Bugfix: Airspace Warning Popup windows reenabled after overwrite of qwsEvent method in QPEApplication class,
+            solved also problem with hardware key regognizing and routing
+[-] Bugfix: Airspace Warning message texts were sometimes not fully readable
+[o] Most of the configuration items moved to class GeneralConfig
+[o] Map icon directory /opt/QtPalmtop/mapicons renamed to /opt/QtPalmtop/cumulus, cumulus.png 
+    also move into this new location
+[+] GPS status dialog. Displays an overview of the currently available satelites. Press 'G' to display.
+[o] Speedup for selecting a waypoint or an airfield from the list.
+[-] Bugfix: Wind arrow for 360 was missing
+[o] A warning is being issued when the config dialog is cancelled and gliderlist or the advanced map 
+    settings have been modified.
+[+] Display arrival altitude for all waypoints if requested.
+
+
+Cumulus 1.2 (17.4.2004)
+-----------------------
+[+] Horizontal/Vertical warning distance in tab Airspace considers selected altitude unit.
+    unit meter -> input in meters, unit ft,FL -> input in feet
+[+] Minimal arrival altitude in tab Personal considers selected altitude unit.
+    unit meter -> input in meters, unit ft,FL -> input in feet
+[+] Settings Information extended by info display time
+[+] New position format (degrees and decimal minutes) added
+[-] Bugfix: last seletected entry in unit items not reloaded
+[o] Runways now displayed in usual two digit format together with the opposite direction
+[-] Bugfix: sounds now work on all supported devices
+[+] Addition of 'active' info boxes: Clicking on the To box shows the waypoint list,
+    clicking on the McCready value displays the In Flight Settings dialog.
+[+] Key assignments are hardware dependent.
+[+] Cumulus defaults to the last selected glider.
+[+] List of nearest sites added
+[o] added relative bearing, red color for non reachable sites, blue for sites reachable
+    below the safety altitude. Sorting support for all kind of columns.
+[o] Info page allows selection without need for adding to WP list
+[+] Display of Waypoint types as icon in the map
+[+] Indication of altitude reletive to the ground possible (note that this is an APPROXIMATION)
+[+] Altimeter can be configured in toggling mode in Cumulus.conf
+[+] GPS config tab extended by Altitude item
+[-] GNSS altitude calculation was wrong, fixed
+[o] Variometer calculation uses global flight sample list now and not more its own one
+[+] Variometer integration time can be adjusted via dialog box
+[+] Automatic recompile of map sources after projection parameters have been changed
+[-] Many memoryleaks and initialisation problems fixed (thanks to Valgrind and Axel!)
+[+] Unneeded maps are automaticly unloaded if the available memory runs low. New maps are no
+    longer loaded if there isn't enough free memory. The unload policy is configurable.
+[o] Maps are automaticly re-compiled if the projection has been changed.
+[+] The log can optionally autostart when Cumulus detects a change in flightmode.
+[o] The hardwaretype is now inserted in the IGC log.
+[+] Reachability of sites represented in map via coloured circle behind the icon in green
+    (reachable) or magenta (reachable below safety altitude). The reachability of the
+    currently selected waypoint is shown through a colouring of the direction line, using
+    the same colours and red for not reachable.
+[o] Waypoints created from the mapview no longer have seconds in their name, and get the
+    elevation of the current position.
+[-] Bugfix that caused maploading problems when used on the southern hemisphere.
+[+] Arrival altitude and distance appears on the quick info and detailed info for airfields
+    and waypoints (if known.)
+[+] GPS module as subprocess outhoused
+[-] suppression of creation of multiple waypoints with R key at the same position
+[-] Bugfix: Add selected waypoint button was only useable once after cumulus start.
+[-] Bugfix: diverse memory problems fixed in waypoint lists
+[+] The waypointlist can now be filtered to gain faster access to the item you are
+    looking for.
+[-] Canceling of current waypoint selection during waypoint deletion fixed.
+[-] Display of wrong airfield waypoint info fixed, if two airfield waypoints have the same name.
+    ICAO code added to the comparison.
+[+] Cancel waypoint selection button activated in Info page
+[+] Set Home position button in Info page introduced
+[+] Set Home position button in Waypoint list introduced
+[o] Add Waypoint and set Home are no longer available in flight from the waypoint info,
+    but only in standstill or manuell mode.
+
+Cumulus 1.1 (24/01/2004)
+------------------------
+[-] Bugfix: glide path now based on actual speed
+[+] Forests can now be turned off in the map, color of forests changed to green
+[-] Crash with loading maps containing Trail objects
+[+] McCready value for best speed calculation
+[+] first variometer and wind calculation
+[+] Play sound when GPS status changes
+[+] Remember actual position by pressing 'R'
+[+] "Are you sure" message box when terminating
+[+] Water ballast and bugs included in polar calculation
+[+] New implemented menu replaces some keyboard shortcuts
+[+] In flight dialog to set McCready, water and bugs
+[-] Bug in creating logfiles if the directory does not exist
+[o] Some layout changes
+[-] Bug that prevented use on Western and Southern hemisperes
+[-] Bug that caused freeze when drawing far-away waypoints
+[+] Added Eggert to authors in help file and about box.
+[+] Implemented airspace warning with sound
+[+] New "What's this" help menu entry
+[+] Now also waypoint infos can be displayed by mouse/stylus click
+[+] Dialogs stay on top when application is switched
+[+] Homesite determines standard hemisphere in dialogs where lat/lon is asked.
+[+] Multiple gliders can now be configured
+[+] Preflight dialog that combines selecting a glider, setting a co-pilot,
+    setting waterbalast and selecting a task.
+[+] Map file are now stored in a projected format with first loading. The
+    original file is optionally deleted. This makes for a huge speedincrease
+    in loading maps! Thanks to Jushua Dietze!
+[+] The compiled files are much smaller than the original files.
+[+] Waypoint labels can now be turned off and on, both in the Settings
+    and in during flight. Use the A key or the menu for that.
+[-] Axel Pauli removed a memory leak and other problems from the GPS connection
+    code. No more lost sentences! Also optimized and trimmed down to the essentials.
+    Thanks Axel!
+[+] Information in popups is shown longer if there are more items in the list. Made
+    configurable by Axel.
+[o] The H button now is used instead of the Home button in manual navigation.
+[o] Layout of main screen changed for better readability.
+[+] You can now select waypoints directly from the map.
+[+] You can now choose different projections to use, and modify the parameters used
+    for the projection from the Advanced map configuration page.
+[+] Sound warnings can be turned on and off.
+[o] Many bugs in flightmode detection and windcalculation fixed.
+[-] Bug in the calculation of flightlevels.
+
+And many other things we don't quite remember now...
+
+
+Cumulus 1.0 (31-10-2002)
+------------------------
+[o] derived from 0.5 beta
+
+
+Cumulus 0.5 beta (not released)
+-------------------------------
+[-] Bug in the calculation of flightlevels.
+[+] Added some details in the PDA-documentation (cumulus.html)
+[o] More optimized functioncalls (thanks Eggert!)
+[-] Unnesecairy double serial connection instantiation.
+[-] Unnesecairy double mapmatrix creation when changing zoomfactor.
+[+] Confirmationdialog before stopping logging.
+[+] Line from current position to waypoint as visual indication of direction of waypoint.
+[o] The algorithm that determined if an isoline was drawn at a certain zoomlevel caused
+    problems with the lower levels: sometimes no land was drawn at all. The algorithm has
+    been modified to solve this problem. Also, a finer devision has been made, causing
+    less lines to be drawn in the higher mapscales but at better intervals.
+[+] Basic task support. The selected task is drawn on the map with photosectors. There are still
+    some problems with line not being drawn or being drawn in the wrong place. Working on that!
+[-] Bug wich caused Cumulus to crash if you tried to center on a waypoint while none was
+    selected.(thanks Eggert!)
+[o] Improved the drawing of the symbols on the map. Its a bit faster now. (thanks Eggert!)
+[+] Added a mapconfiguration tab in the settings dialog. You can turn the bearing-lines and the
+    isolines on and off.
+[o] Changed the source directory structure.
+[+] Added an about box, available with SHIFT+V. (thanks Eggert!)
+[+] Cumulus now disables the automatic power-off of the Zaurus while it's running. (thanks Eggert!)
+[-] Unnecessary destruction and recreation of serial connection when changing other settings.
+[o] Modified the connection-speed list in GPS setting tab to include more speeds and not to
+    allow other values than the pre-defined ones, since they were not recognized anyway.
+    Serial connection speeds of 600 up to 57400 baud are now supported.
+[o] Authors emailaddress changed to andre@kflog.org.
+[o] Changed changed-symbol in this log from [*] to [o] to make it stand out better against
+    the [+] added symbol.
+[o] Optimalisations in the serial communication unit and MNEA analyser (Eggert).
+[+] The statusbar now displays the number of satelites in view (Eggert).
+[+] The mouse/stylus can be used to show airfield and airspace info (Eggert).
+[+] The serial port is resetted and reactivated in case of cf card interface after resume (Eggert)
+[o] New helpfile structure.
+[+] Screen to indicate what's happening during long operations.
+[o] Some changes in the maploading. Maps load way faster now.
+[+] Info is send to the GPS after a resume, to decrease GPS aquisition time.
+[+] Basic glider polar calculation, glide path information and graphical polar display.
+[+] Added options not to load isolines, roads, highways, railroads, cities and waterways.
+[-] Bug with the taskselection where not selecting a task and pressing OK would result in a crash.
+[+] Waypoints can be added from the detailed airfield information display now.
+
+
+Cumulus 0.4 beta (13/09/2002)
+-----------------------------
+[+] Changelog!
+[+] You can now also delete waypoints.
+[o] Elevations and runwaylengths in the waypointeditor are now
+    displayed and entered in the correct units (which is displayed).
+[o] Application now starts with homesite as mapcenter.
+[-] Size :-) The app has become smaller.
+[-] Fixed problem with maploading.
+[-] Removed ugly workaround (thanks Eggert!)
+[o] Several functioncalls optimized (thanks Eggert!)
+[+] Caching mapredraws, resulting in fewer redraws thus better performance.
+    It also results in a small if a redraw is needed, because Cumulus waits
+    for a small time to see if there are other changes that may result in a
+    mapredraw.
+[o] Current position is now displayed in centerarea of the map, not only
+    in the center itself. Result is less redraws.
+[+] Statusmessage if the zoom on waypoint can't be executed
+[-] Bug in startup, resulting in an invalid maptile-reference
+    This did not result in a problem on the desktop, but chrashed the Z
+[-] Bug where the map would not return to the GPS position, if the GPS
+    connection was temporary lost and the map had been moved manually in
+    the meantime.
+[o] Maximum scale raised from 800 to 1000 meters/pixel (so,
+    about 200x200 km map). We must check if that is still workable or not.
+[+] You can now edit a waypoint's comment field.
+
+
+Cumulus 0.3 beta (08/09/2002)
+-----------------------------
+[+] Manual navigation mode
+[+] Waypoint editor
+[+] Waypoint labels are drawn on the 'inside' of the map
+[+] Scale indicator on the map, in the correct units
+[-] Couple of bugs
+
+
+Cumulus 0.2 beta
+----------------
+Sorry, don't know anymore.
+
+
+Cumulus 0.1 beta
+----------------
+[+] First public release.
