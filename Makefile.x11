@@ -1,0 +1,106 @@
+################################################################################
+# Makefile to build a Cumulus release based on Qt4.x/X11
+#
+# Copyright (c): 2008 by Axel Pauli (axel@kflog.org)
+# 
+# $Id$
+#
+# This file is distributed under the terms of the General Public Licence.
+# See the file COPYING for more information.
+#
+################################################################################
+
+VERSION = 2.0.0-r1
+
+# adapt install path to your needs if necessary
+INSTALL_PATH = /opt/cumulus
+
+# adapt call pathes to your needs if necessary
+QMAKE    = qmake
+LRELEASE = lrelease
+
+all:	qmake resetdate
+	cd cumulus; make
+	cd gpsClient; make
+	cd nmeaSimulator; make
+
+.PHONY : clean
+clean:
+	@if [ -f cumulus/Makefile ]; \
+	then \
+		cd cumulus; make distclean; rm -f Makefile; \
+	fi
+	@if [ -f gpsClient/Makefile ]; \
+	then \
+		cd gpsClient; make distclean; rm -f Makefile; \
+	fi
+	@if [ -f nmeaSimulator/Makefile ]; \
+	then \
+		cd nmeaSimulator; make distclean; rm -f Makefile; \
+	fi
+	@echo "Build area cleaned"
+
+.PHONY : check_dir
+check_dir:
+	@if [ ! -w  $(INSTALL_PATH) ]; \
+	then \
+		echo "Install Directory '$(INSTALL_PATH)' not writeable - Are you root?"; \
+		exit 99; \
+	fi
+
+.PHONY : install
+install: check_dir deinstall install_lang
+	@echo '===== Installing Cumulus $(VERSION) under $(INSTALL_PATH) ====='
+	install -d $(INSTALL_PATH)/bin
+	install -d $(INSTALL_PATH)/etc
+	install -d $(INSTALL_PATH)/help/en
+	install -d $(INSTALL_PATH)/icons
+	install -d $(INSTALL_PATH)/icons/small
+	install -d $(INSTALL_PATH)/icons/windarrows
+	install -d $(INSTALL_PATH)/locale/$(LANG)
+	install -d $(INSTALL_PATH)/sounds
+	install --mode=755 cumulus/cumulus $(INSTALL_PATH)/bin
+	install --mode=755 gpsClient/gpsClient $(INSTALL_PATH)/bin
+	install --mode=755 nmeaSimulator/nmeaSimu $(INSTALL_PATH)/bin
+	install --mode=644 etc/glider.pol $(INSTALL_PATH)/etc
+	install --mode=644 icons/*.xpm $(INSTALL_PATH)/icons
+	install --mode=644 icons/*.png $(INSTALL_PATH)/icons
+	install --mode=644 icons/small/* $(INSTALL_PATH)/icons/small
+	install --mode=644 icons/windarrows/* $(INSTALL_PATH)/icons/windarrows
+	install --mode=644 help/*.html icons/cumulus.png $(INSTALL_PATH)/help/en
+	install --mode=644 sounds/Alarm.wav $(INSTALL_PATH)/sounds
+
+.PHONY : install_lang
+install_lang:
+	install -d $(INSTALL_PATH)/locale/$(LANG)
+	install --mode=644 cumulus/cumulus_de_DE.qm $(INSTALL_PATH)/locale/$(LANG)/cumulus_$(LANG).qm
+
+.PHONY : deinstall
+deinstall:
+	rm -rf $(INSTALL_PATH)/*
+
+.PHONY : langpacks
+langpacks: langpack_de
+	@echo 'All language packs created'
+
+.PHONY : langpack_de
+langpack_de:
+	cd cumulus; $(LRELEASE) -verbose -nounfinished cumulus_de.ts -qm cumulus_de_DE.qm
+
+.PHONY : release
+release: clean all langpacks
+
+qmake: cumulus/Makefile gpsClient/Makefile nmeaSimulator/Makefile
+
+.PHONY : resetdate
+resetdate:
+	rm -rf cumulus/cumulusapp.o
+
+cumulus/Makefile: cumulus/cumulusX11.pro
+	cd cumulus; $(QMAKE) cumulusX11.pro -o Makefile
+
+gpsClient/Makefile: gpsClient/gpsClientX11.pro
+	cd gpsClient; $(QMAKE) gpsClientX11.pro -o Makefile
+
+nmeaSimulator/Makefile: nmeaSimulator/simuX11.pro
+	cd nmeaSimulator; $(QMAKE) simuX11.pro -o Makefile
