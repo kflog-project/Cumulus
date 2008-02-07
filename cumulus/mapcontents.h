@@ -162,6 +162,11 @@ class MapContents : public QObject
   };
 
   /**
+   * @saves the current waypoint list
+   */
+  void saveWaypointList();
+
+  /**
    * Write property of FlightTask * currentTask.
    */
   void setCurrentTask( FlightTask * _newVal);

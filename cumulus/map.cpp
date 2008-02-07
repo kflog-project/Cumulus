@@ -51,18 +51,6 @@
 #include "waypoint.h"
 #include "wpeditdialog.h"
 
-// Festlegen der Groesse der Pixmaps auf Desktop-Groesse
-// PDA Zaurus width=240, height=320
-#define PIX_WIDTH  QApplication::desktop()->screenGeometry().width()
-#define PIX_HEIGHT QApplication::desktop()->screenGeometry().height()
-
-// These values control the borders at which to pan the map
-// NOTE: These values are only for testing, and need revision.
-#define MIN_X_TO_PAN 30
-#define MAX_X_TO_PAN QApplication::desktop()->screenGeometry().width()-30
-#define MIN_Y_TO_PAN 30
-#define MAX_Y_TO_PAN QApplication::desktop()->screenGeometry().height()-30
-
 extern CumulusApp      *_globalCumulusApp;
 extern MapContents     *_globalMapContents;
 extern MapMatrix       *_globalMapMatrix;
@@ -71,8 +59,7 @@ extern MapView         *_globalMapView;
 
 Map *Map::instance=0;
 
-Map::Map(QWidget* parent, const char* name)
-    :QWidget(parent, name),
+Map::Map(QWidget* parent, const char* name) : QWidget(parent, name),
     preSnapPoint(-999, -999), prePos(-50, -50), preCur1(-50, -50),
     preCur2(-50, -50), planning(-1)
 {
@@ -94,11 +81,11 @@ Map::Map(QWidget* parent, const char* name)
   mode = northUp;
   m_sceduledFromLayer = topLayer;
   ShowGlider = false;
-  setMutex (false);
+  setMutex(false);
 
   //install an event filter on the map object itself, so all events are
   //routed through eventFilter()
-  installEventFilter(this);
+  //installEventFilter(this);
 
   //setup progressive zooming values
   zoomProgressive = 0;
@@ -109,6 +96,7 @@ Map::Map(QWidget* parent, const char* name)
       zoomProgressiveVal[i] = zoomProgressiveVal[i-1] * 1.25;
     }
 
+  // Set pixmaps first to the size of the parent
   m_pixBaseMap        = QPixmap( parent->size() );
   m_pixAeroMap        = QPixmap( parent->size() );
   m_pixNavigationMap  = QPixmap( parent->size() );
@@ -428,7 +416,7 @@ void Map::mouseReleaseEvent(QMouseEvent* event)
 
 void Map::paintEvent(QPaintEvent* event)
 {
-  qDebug("Map.paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d, ",
+  qDebug("Map.paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d",
          event->rect().width(), event->rect().height(),
          event->rect().left(), event->rect().top() );
 
@@ -470,7 +458,8 @@ void Map::__drawAirspaces(bool reset)
   QPainter cuAeroMapP;
 
   cuAeroMapP.begin(&m_pixAeroMap);
-
+  cuAeroMapP.setClipping(true);
+  
   QTime t;
   t.start();
 
@@ -563,6 +552,7 @@ void Map::__drawGrid()
 
   gridP.begin(&m_pixAeroMap);
   gridP.setBrush(Qt::NoBrush);
+  gridP.setClipping(true);
 
   // die Kanten des Bereichs
   const int lon1 = mapBorder.left() / 600000 - 1;
@@ -617,6 +607,7 @@ void Map::__drawGrid()
               cP = _globalMapMatrix->wgsToMap(
                      (int)rint(((lat2 + loop + ( loop2 * ( step / 60.0 ) ) ) * 600000)),
                      (int)rint(((lon1 + (lonloop / 10.0)) * 600000)));
+                     
               pointArraySmall.setPoint(lonloop, cP);
             }
 
@@ -624,6 +615,7 @@ void Map::__drawGrid()
             gridP.setPen(QPen(Qt::black, 1, Qt::DashLine));
           else
             gridP.setPen(QPen(Qt::black, 1, Qt::DotLine));
+            
           gridP.drawPolyline(_globalMapMatrix->map(pointArraySmall));
         }
       // Draw the main lines
@@ -710,18 +702,18 @@ void Map::__drawTrail()
   //minTime.addSecs(-maxSecs);
   QPoint pos;
   QPoint lastPos;
-  uint loop=5;
+  uint loop = 0;
   uint sampleCnt = calculator->samplelist->count();
   lastPos=_globalMapMatrix->map(_globalMapMatrix->wgsToMap(calculator->samplelist->at(0)->position));
   p.setPen(pen1);
 
   while (loop < sampleCnt && calculator->samplelist->at(loop)->time >= minTime)
     {
-      pos=_globalMapMatrix->map(_globalMapMatrix->wgsToMap(calculator->samplelist->at(loop)->position));
+      pos = _globalMapMatrix->map(_globalMapMatrix->wgsToMap(calculator->samplelist->at(loop)->position));
       p.drawLine(pos,lastPos);
       lastPos=pos;
 
-      loop+=5;
+      loop += 5;
     }
   p.end();
 }
@@ -740,50 +732,17 @@ void Map::setDrawing(bool isEnable)
 
 void Map::resizeEvent(QResizeEvent* event)
 {
-  static QSize lastSize;
-
   qDebug("Map::resizeEvent(): w=%d, h=%d", event->size().width(), event->size().height() );
-  
-  if(!event->size().isEmpty())
-    {
-      CumulusApp::appView view = _globalCumulusApp->getView();
-
-      if( view != CumulusApp::mapView )
-        {
-          // we are not in the map view and ignore this event but store
-          // the old size for later use
-          lastSize = event->oldSize();
-          qDebug("Map::resizeEvent: event is ignored, not in mapView");
-          return;
-        }
-
-      if( lastSize == event->size() )
-        {
-          // No difference in the size, we ignore this event. Can happen,
-          // if a previous event has been ignored.
-          return;
-        }
-
-      // We do save the last window size for later use.
-      lastSize = event->size();
-
-      qDebug("Map::resizeEvent: event is queued for later execution");
-
-      // Queue resize event for later execution. There is only the
-      // last request considered.
-      _isResizeEvent = true;
-      resizeEventSize = event->size();
-      // @AP: execute it later, all other will cause crashes
-      sceduleRedraw();
-    }
-
-  // emit changed(event->size());
+  // set resize flag
+  _isResizeEvent = true;
+  // start redrawing of map
+  slotDraw();
 }
 
 
 void Map::__redrawMap(mapLayer fromLayer)
 {
-  //qDebug("Map::__redrawMap");
+  qDebug("Map::__redrawMap from layer=%d", fromLayer);
 
   if( ! _isEnable )
     {
@@ -813,8 +772,8 @@ void Map::__redrawMap(mapLayer fromLayer)
   if( _isResizeEvent )
     {
       _isResizeEvent = false;
-      _globalMapMatrix->createMatrix(resizeEventSize);
-      m_pixBaseMap.resize(resizeEventSize);
+      _globalMapMatrix->createMatrix(size());
+      m_pixBaseMap.resize(size());
       m_pixBaseMap.fill(Qt::white);
     }
 
@@ -852,16 +811,19 @@ void Map::__redrawMap(mapLayer fromLayer)
   // unlock mutex
   setMutex(false);
 
-  // The paint event will take care of actually using the buffer.
-  //paintEvent( (QPaintEvent *) 0 );
-  // @AP: Qt 4.3 complains it, when paintEvent is called directly
-  update();
+  // Repaints the widget directly by calling paintEvent() immediately,
+  // unless updates are disabled or the widget is hidden.
+  // @AP: Qt 4.3 complains about it, when paintEvent is called directly
+  qDebug("Map::__redrawMap: repaint() is called");
+  repaint();
+  qDebug("Map::__redrawMap: repaint() was called");
+
 
   // @AP: check, if a pending redraw request is active. In this case
   // the scheduler timers will be restarted to handle it.
   if( _isRedrawEvent )
     {
-      //qDebug("Map::__redrawMap(): queued redraw event found, schedule Redraw");
+      qDebug("Map::__redrawMap(): queued redraw event found, schedule Redraw");
       _isRedrawEvent = false;
       sceduleRedraw();
     }
@@ -870,13 +832,12 @@ void Map::__redrawMap(mapLayer fromLayer)
   // scheduler timers will be restarted to handle it.
   if( _isResizeEvent )
     {
-      //qDebug("Map::__redrawMap(): queued resize event found, schedule Redraw");
+      qDebug("Map::__redrawMap(): queued resize event found, schedule Redraw");
       sceduleRedraw();
     }
 
   return;
 }
-
 
 /**
  * Draws the base layer of the map.
@@ -900,7 +861,7 @@ void Map::__drawBaseLayer()
   _globalMapContents->proofeSection();
 
 
-  qDebug("Map::__drawBaseLayer(): zoomFactor=%f, loopLevel=%d",
+  qDebug("Map::__drawBaseLayer(): zoomFactor=%f, QAppLoopLevel=%d",
          zoomFactor, qApp->loopLevel() );
 
   double cs = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
@@ -913,7 +874,8 @@ void Map::__drawBaseLayer()
   //first, draw the iso lines
   _globalMapContents->drawIsoList(&baseMapP);
 
-  qApp->processEvents();  // ensure time for GPS processing
+  // ensure time for GPS processing
+  qApp->processEvents(QEventLoop::ExcludeUserInputEvents|QEventLoop::X11ExcludeTimers);
 
   // next, draw the topographical elements and the cities
   _globalMapContents->drawList(&baseMapP, MapContents::TopoList);
@@ -1044,7 +1006,7 @@ void Map::slotDraw()
 // will be queued only.
 void Map::slotRedrawMap()
 {
-  //qDebug("Map::slotRedrawMap(): LoopLevel=%d", qApp->loopLevel());
+  qDebug("Map::slotRedrawMap(): LoopLevel=%d", qApp->loopLevel());
 
   // @AP: Don't allows changes on matrix data during drawing!!!
 
@@ -1061,7 +1023,6 @@ void Map::slotRedrawMap()
   redrawTimerShort->stop();
   redrawTimerLong->stop();
 
-  //emit changed(this->size());
   __redrawMap(m_sceduledFromLayer);
   m_sceduledFromLayer = topLayer;
 }
@@ -1180,8 +1141,6 @@ void Map::slotCenterToTask()
   */
 }
 
-
-
 /**
  * search for a waypoint
  * First look in task itself
@@ -1226,6 +1185,7 @@ bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, Q3PtrList<wayPo
        *  Should be done for all Point-data
        */
       QList<int> contentArray;
+      
       contentArray.append( MapContents::GliderList );
       contentArray.append( MapContents::AirportList );
 
@@ -1270,10 +1230,14 @@ bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, Q3PtrList<wayPo
 void Map::__drawWaypoints(QPainter* wpPainter)
 {
   int i, n;
-  Q3PtrList<wayPoint> * wpList;
+  Q3PtrList<wayPoint> *wpList;
   wayPoint * wp;
   bool isSelected;
-  QRect testRect(-10, -10, PIX_WIDTH+20, PIX_HEIGHT+20);
+
+  int w = this->size().width();
+  int h = this->size().height();
+
+  QRect testRect(-10, -10, w + 20, h + 20);
   QString labelText;
   Altitude alt;
   Distance dist;
@@ -1805,9 +1769,7 @@ void Map::__drawGlider()
   int Rx=_globalMapMatrix->map(projPos).x();
   int Ry=_globalMapMatrix->map(projPos).y();
   //don't continue if we get a bizarre result
-  if (Rx < -10000)
-    return;
-  if (Rx > 10000)
+  if (Rx < -10000 || Rx > 10000)
     return;
 
   int rot=calcGliderRotation();
@@ -1833,9 +1795,7 @@ void Map::__drawX()
   int Rx=_globalMapMatrix->map(projPos).x();
   int Ry=_globalMapMatrix->map(projPos).y();
   //don't continue if we get a bizarre result
-  if (Rx < -10000)
-    return;
-  if (Rx > 10000)
+  if (Rx < -10000 || Rx > 10000)
     return;
 
   if(!ShowGlider)
@@ -1940,7 +1900,8 @@ void Map::slotZoomOut()
  */
 void Map::sceduleRedraw(mapLayer fromLayer)
 {
-  //qDebug("Map::sceduleRedraw(): loopLevel=%d", qApp->loopLevel() );
+  qDebug("Map::sceduleRedraw(): mapLayer=%d, loopLevel=%d", fromLayer, qApp->loopLevel() );
+
   if( !_isEnable )
     {
       _isRedrawEvent = false;
@@ -2246,7 +2207,7 @@ void Map::checkAirspace(const QPoint& pos)
 
           // qDebug("airspace warning timer %dms, LoopLevel=%d",
           // showTime, qApp->loopLevel() );
-          WhatsThat * box=new WhatsThat(this, text, 0, "", showTime);
+          WhatsThat *box = new WhatsThat(this, text, 0, "", showTime);
           box->show();
           return;
         }
@@ -2277,7 +2238,7 @@ bool Map::eventFilter(QObject * , QEvent * )
 {
   if (_mutex)
     {
-      //qDebug("eventfilter blocked event.");
+      qDebug("Map::eventFilter has blocked event.");
       return true; //stop all events while we're redrawing the map!
     }
   return false;

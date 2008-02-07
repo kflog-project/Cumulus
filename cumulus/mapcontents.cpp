@@ -277,6 +277,12 @@ MapContents::~MapContents()
   wpCat.write( 0, &wpList );
 }
 
+  // save the current waypoint list
+void MapContents::saveWaypointList()
+{
+  WaypointCatalog wpCat;
+  wpCat.write( 0, &wpList );
+}
 
 // JD: Here is the new code for managing plain and precomputed map files */
 bool MapContents::__readTerrainFile(const int fileSecID,
@@ -3008,11 +3014,11 @@ void MapContents::drawIsoList(QPainter* targetP)
   _lastIsoEntry=0;
   _isoLevelReset=true;
 
-
   /* Determine how fine graded we are going to draw the isolines.
    * If the bigger the scale, the more lines we will skip   */
   int interval=1; //in principle, we draw every line
   int scale = (int)_globalMapMatrix->getScale(MapMatrix::CurrentScale);
+
   if (_globalMapConfig->getdrawIsoLines()) {
     if (scale>1500)
       interval=15; //
@@ -3036,40 +3042,6 @@ void MapContents::drawIsoList(QPainter* targetP)
     interval=9999;              // Make sure we are only drawing _one_ level.
   }
 
-  /* switched off for now
-  //try to find the highest isoline that covers the entire map
-  bool foundCovering;
-  bool everFoundCovering=false;
-  int listIndex=-1;
-  Isohypse * lastFound;
-  for(Q3PtrList<Isohypse>* iso = isoList.at(2); iso; iso = isoList.next()) {
-  // qDebug("checking level %d: items %d", isoList.at(), iso->count());
-  if (isoList.at() > ISO_LINE_NUM) break;
-
-  foundCovering=false;
-  for(Isohypse* iso2 = iso->first(); iso2; iso2 = iso->next()) {
-  if (iso2->coversMap()) {
-  foundCovering=true;
-  everFoundCovering=true;
-  lastFound=iso2;
-  listIndex=isoList.at();
-  //          qDebug("found covering!");
-  break;
-  }
-  }
-  //if (!foundCovering)
-  //break;
-  }
-  if (everFoundCovering)
-  qDebug("last covering elevation level: %d (level %d)", lastFound->getElevation(), listIndex);
-  else
-  qDebug("No covering found!");
-
-  //targetP->fillRect(_globalMapMatrix->getMapBorder(),QBrush(_globalMapConfig->getIsoColor(height), QBrush::SolidPattern));
-  //return;
-  isoListEntry* entry=new isoListEntry(new QRegion(_globalMapMatrix->getMapBorder()), lastFound->getElevation());
-  regIsoLines.append(entry);
-  */
   int lastHeight=9999;
   int group=9999;
   bool groupDrawn=false;
@@ -3077,6 +3049,7 @@ void MapContents::drawIsoList(QPainter* targetP)
   // qDebug("group: %d, interval: %d, scale: %d, heigth: %d, count: %d",group,interval,scale,height,iso->count());
   bool isolines = false;
   targetP->setPen(QPen(Qt::black, 1, Qt::NoPen));
+
   if (_globalMapConfig->getShowIsolineBorders()) {
     if( scale < 160 ) { // Draw Lines at higher scales
       targetP->setPen(QPen(Qt::black, 1, Qt::DotLine));
@@ -3087,8 +3060,8 @@ void MapContents::drawIsoList(QPainter* targetP)
   interval=1;
   targetP->save();
   targetP->setClipping(true);
+
   for(Q3PtrList<Isohypse>* iso = isoList.first(); iso; iso = isoList.next())
-    //    for(Q3PtrList<Isohypse>* iso = isoList.at(listIndex); iso; iso = isoList.next())
     {
       //if (isoList.at()>1) break;
       if(iso->count() == 0)
@@ -3108,7 +3081,7 @@ void MapContents::drawIsoList(QPainter* targetP)
         }
 
       groupDrawn=true;
-      //        if (interval==1 || height <= 1 || isoList.at()==listIndex)
+
       if (interval==1 || height <= 1)
         {
           groupDrawn=false; //skip the rest, result is less devisions->faster!
@@ -3129,7 +3102,9 @@ void MapContents::drawIsoList(QPainter* targetP)
 
       for(Isohypse* iso2 = iso->first(); iso2; iso2 = iso->next())
         {
-          QRegion * reg = iso2->drawRegion(targetP, 0, !groupDrawn, isolines);
+          QRegion * reg = iso2->drawRegion(targetP, 0,
+                                           _globalMapView->rect(),
+                                           !groupDrawn, isolines);
           // QRegion * reg = iso2->drawRegion(targetP, maskP, true, true, 1  );
           if (reg) {
             IsoListEntry* entry = new IsoListEntry(reg, iso2->getElevation());

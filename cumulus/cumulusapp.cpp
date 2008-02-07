@@ -1,15 +1,16 @@
 /***************************************************************************
-                       cumulusapp.cpp  -  main application object
+ cumulusapp.cpp  -  main application class
                           -------------------
  begin                : Sun Jul 21 2002
- copyright            : (C) 2002 by Andre Somers, 2007 Axel pauli
+ copyright            : (C) 2002 by Andre Somers
+ ported to Qt4.3/X11  : (C) 2008 by Axel pauli
  email                : andre@kflog.org, axel@kflog.org
- 
+
   This file is distributed under the terms of the General Public
   Licence. See the file COPYING for more information.
- 
+
   $Id$
- 
+
 ****************************************************************************/
 
 /***************************************************************************
@@ -88,37 +89,21 @@ MapConfig *_globalMapConfig = (MapConfig *) 0;
 MapView *_globalMapView = (MapView *) 0;
 
 
-//* @ee if we have a cf card receiver, it must be resumed after the
-//* Zaurus has been resumed from sleep */
-
-
-static void resumeCF ( int sig )    // @AP: no need for global scope
+// A signal SIGCONT has been catched. It is send out
+// when the cumulus process was stopped and then reactivated.
+// We have to renew the connection to our GPS Receiver.
+static void resumeGpsConnection( int sig )
 {
-  // let's get rid of that shell script system ("cfgps");
-  // we can do it internally
-  // resume card and do stty if neccesary
-
-  system(
-    "READY=`cardctl status 0 | grep ready | wc -l`;"
-    "if [ $READY -gt 0 ];"
-    "then"
-    "  echo \"Cumulus: CF-Card ready\";"
-    "else"
-    "  echo \"Cumulus: Executing CF cardctl resume\";"
-    "  cardctl resume;"
-    "fi;" );
-
-  if ( sig )
+  if ( sig == SIGCONT )
     {
       gps->forceReset();
       // @ee reinstall signal handler
-      signal ( SIGCONT, resumeCF );
+      signal ( SIGCONT, resumeGpsConnection );
     }
 }
 
-
 /** As the name tells ...
-  * 
+  *
   */
 void CumulusApp::playSound( const QString *name )
 {
@@ -224,7 +209,6 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
       cuApps.mkdir( QDir::homeDirPath() + "/cumulus" );
     }
 
-
   // @AS: Grab the keyboard to get all hardware keys (f1..f12) too
   setFocusPolicy( Qt::StrongFocus );
   setFocus();
@@ -324,7 +308,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
   // set dynamical Info
   viewMap->getAltitudeWidget()->setPreText( _altimeterModeDlg->Pretext() );
 
-  //create connections between the components
+  // create connections between the components
   connect( _globalMapMatrix, SIGNAL( matrixChanged() ),
            viewMap->_theMap, SLOT( slotRedraw() ) );
   connect( _globalMapMatrix, SIGNAL( projectionChanged() ),
@@ -541,8 +525,11 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
 
   accManualNav->connectItem( accManualNav->insertItem( Qt::Key_F9 ),
                              this, SLOT( slotSwitchToWPListView() ) );
+  // Consider qwertz keyboards y <-> z are interchanged
+  accManualNav->connectItem( accManualNav->insertItem( Qt::Key_Y ),
+                             viewMap->_theMap , SLOT( slotZoomIn() ) );
 
-  // setting of McCready accelerators.
+  // GPS navigation accelerators. These are only available if there is a GPS connection
   accGpsNav->connectItem( accGpsNav->insertItem( Qt::Key_Up ),
                           calculator, SLOT( slot_McUp() ) );
 
@@ -554,6 +541,15 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
 
   accGpsNav->connectItem( accGpsNav->insertItem( Qt::Key_F9 ),
                           this, SLOT( slotSwitchToWPListView() ) );
+  // Zoom in map
+  accGpsNav->connectItem( accGpsNav->insertItem( Qt::Key_Right ),
+                          viewMap->_theMap , SLOT( slotZoomIn() ) );
+  // Consider qwertz keyboards y <-> z are interchanged
+  accGpsNav->connectItem( accGpsNav->insertItem( Qt::Key_Y ),
+                          viewMap->_theMap , SLOT( slotZoomIn() ) );
+  // Zoom out map
+  accGpsNav->connectItem( accGpsNav->insertItem( Qt::Key_Left ),
+                          viewMap->_theMap , SLOT( slotZoomOut() ) );
 
   // setting of menu bar accelerators.
   accMenuBar->connectItem( accMenuBar->insertItem( Qt::Key_Space ),
@@ -561,9 +557,6 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
 
   accMenuBar->connectItem( accMenuBar->insertItem( Qt::Key_M ),
                            this, SLOT( slotToggleMenu() ) );
-
-  accMenuBar->connectItem( accMenuBar->insertItem( Qt::Key_F11 ),
-                           this, SLOT( slotToggleMenu() ) ); // F11 menu button Qtopia
 
   accMenuBar->connectItem( accMenuBar->insertItem( Qt::Key_F12 ),
                            this, SLOT( slotToggleMenu() ) ); // F12 menu button Opie
@@ -577,8 +570,8 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
   calculator->setGlider( GliderList::getStoredSelection() );
   QString gt = calculator->gliderType();
 
-  if ( !gt.isEmpty() )
-    setCaption ( "Cumulus - " + gt );
+  if ( !gt.isEmpty() ) setCaption ( "Cumulus - " + gt );
+  
   viewMap->_theMap->setDrawing( true );
 
   // This actions initiates the map loading procedures
@@ -742,15 +735,6 @@ void CumulusApp::initActions()
   connect ( actionZoomOutZ, SIGNAL( activated() ),
             viewMap->_theMap , SLOT( slotZoomOut() ) );
 
-  actionZoomIn = new Q3Action ( tr( "Zoom in" ), tr( "Zoom in" ),
-                                Qt::Key_Right, this );
-  connect ( actionZoomIn, SIGNAL( activated() ),
-            viewMap->_theMap , SLOT( slotZoomIn() ) );
-  actionZoomOut = new Q3Action ( tr( "Zoom out" ), tr( "Zoom out" ),
-                                 Qt::Key_Left, this );
-  connect ( actionZoomOut, SIGNAL( activated() ),
-            viewMap->_theMap , SLOT( slotZoomOut() ) );
-
   actionToggleWpLabels = new Q3Action ( tr( "Waypoint labels" ), tr( "Waypoint labels" ),
                                         Qt::Key_A, this, 0, true );
   actionToggleWpLabels->setOn( _globalMapConfig->getShowWpLabels() );
@@ -843,8 +827,6 @@ void  CumulusApp::toggelActions( const bool toggle )
   actionViewGPSStatus->setEnabled( toggle );
   actionZoomInZ->setEnabled( toggle );
   actionZoomOutZ->setEnabled( toggle );
-  actionZoomIn->setEnabled( toggle );
-  actionZoomOut->setEnabled( toggle );
   actionToggleWpLabels->setEnabled( toggle );
   actionToggleWpLabelsEI->setEnabled( toggle );
   actionEnsureVisible->setEnabled( toggle );
@@ -1425,7 +1407,7 @@ void CumulusApp::slotRememberWaypoint()
 void CumulusApp::slot_readconfig()
 {
   // @AP: WARNING POPUP crash test statement, please let it commented out here
-  // viewMap->_theMap->checkAirspace(calculator->getlastPosition());
+  // viewMap->theMap->checkAirspace(calculator->getlastPosition());
 
   GeneralConfig * conf = GeneralConfig::instance();
 
@@ -1442,15 +1424,13 @@ void CumulusApp::slot_readconfig()
   _globalMapConfig->slotReadConfig();
   viewTP->slot_updateTask();
 
-  // configure GPS
+  // configure reconnect of GPS receiver in case of process stop
   QString device = conf->getGpsDevice();
 
-  // @ee we assume only cf card receivers have this device
-  if ( device == "/dev/ttyS3" || device == "/dev/ttySA3" || device == "CF" )
+  if( device.startsWith("/dev/" ) )
     {
-      resumeCF ( 0 );
       // @ee install signal handler
-      signal ( SIGCONT, resumeCF );
+      signal ( SIGCONT, resumeGpsConnection );
     }
 
   GPSNMEA::DeliveredAltitude altRef = ( GPSNMEA::DeliveredAltitude ) conf->getGpsAltitude();

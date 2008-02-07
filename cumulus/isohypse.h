@@ -19,6 +19,8 @@
 #ifndef ISOHYPSE_H
 #define ISOHYPSE_H
 
+#include <QRect>
+
 #include "lineelement.h"
 
 /**
@@ -50,7 +52,8 @@ class Isohypse : public LineElement
      * @param  targetP  The painter to draw the element into.
      * @param  maskP  The maskpainter for targetP
      */
-    virtual QRegion * drawRegion(QPainter* targetP, QPainter*, bool really_draw, bool isolines=false);
+    virtual QRegion *drawRegion(QPainter* targetP, QPainter*, const QRect &viewRect,
+                                bool really_draw, bool isolines=false);
 
     /**
      * @return the elevation of the line

@@ -16,8 +16,7 @@
  **
  ***********************************************************************/
 
-#include <QApplication>
-#include <QDesktopWidget>
+#include <QRegion>
 
 #include "isohypse.h"
 #include "mapmatrix.h"
@@ -34,6 +33,7 @@ Isohypse::~Isohypse()
 
 
 QRegion* Isohypse::drawRegion( QPainter* targetP, QPainter* /*maskP*/,
+                               const QRect &viewRect,
                                bool really_draw, bool isolines )
 {
 
@@ -44,9 +44,10 @@ QRegion* Isohypse::drawRegion( QPainter* targetP, QPainter* /*maskP*/,
 
       if(really_draw)
         {
-          QRect viewRect = QApplication::desktop()->screenGeometry();
+          QRegion viewReg( viewRect );
+          QRegion drawReg = reg->intersect( viewReg );
 
-          targetP->setClipRegion( viewRect );
+          targetP->setClipRegion( drawReg );
           targetP->fillRect( viewRect, targetP->brush() );
 
           if( isolines )

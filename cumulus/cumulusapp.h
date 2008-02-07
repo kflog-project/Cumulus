@@ -278,10 +278,6 @@ class CumulusApp : public QMainWindow
 
     void slotPreFlight(const char *tabName);
 
-    // @AP: store content of /proc/sys/vm/freepg_signal_proc file
-    char freepgContent[128];
-    uint freepgContentLen;
-
     Q3Action* actionToggleMenu;
     Q3Action* actionFileQuit;
     Q3Action* actionViewInfo;
@@ -292,9 +288,7 @@ class CumulusApp : public QMainWindow
     Q3Action* actionViewGPSStatus;
     Q3Action* actionToggleStatusbar;
     Q3Action* actionZoomInZ;
-    Q3Action* actionZoomIn;
     Q3Action* actionZoomOutZ;
-    Q3Action* actionZoomOut;
     Q3Action* actionToggleWpLabels;
     Q3Action* actionToggleWpLabelsEI;
     Q3Action* actionToggleLogging;

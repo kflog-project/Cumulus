@@ -25,7 +25,6 @@
 #include "mapcontents.h"
 #include "mapconfig.h"
 #include "wpeditdialog.h"
-#include "waypointcatalog.h"
 #include "cumulusapp.h"
 
 extern MapContents * _globalMapContents;
@@ -235,18 +234,17 @@ void WaypointListView::slot_deleteWP()
     //first, make sure our waypointlist filter is won't interfere
     filter->restoreListViewItems();
 
-    //next, obtain a reference to the waypoint
+    // next, obtain a reference to the waypoint
     wayPoint *wp=getSelectedWaypoint();
 
     emit deleteWaypoint(wp); // cancel the selected waypoint
 
-    //remove from waypointlist in MapContents
+    // remove from waypointlist in MapContents
     _globalMapContents->getWaypointList()->remove( wp );
-    //remove from catalog and save catalog
-    WaypointCatalog wpCat;
-    wpCat.write( 0, _globalMapContents->getWaypointList() );
+    // save the modified catalog
+    _globalMapContents->saveWaypointList();
 
-    //remove from listView
+    // remove from listView
     delete list->selectedItem();
     par->viewMap->_theMap->quickDraw();
     filter->reset(true);
@@ -292,8 +290,8 @@ void WaypointListView::slot_wpAdded(wayPoint * wp)
     // qDebug("WaypointListView::slot_wpAdded(): name=%s",wp->name.latin1());
 
     _globalMapContents->getWaypointList()->append(newWp);
-    WaypointCatalog wpCat;
-    wpCat.write( 0, _globalMapContents->getWaypointList() );
+    // save the modified catalog
+    _globalMapContents->saveWaypointList();
 
     par->viewMap->_theMap->quickDraw();
   }
