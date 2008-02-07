@@ -14,14 +14,17 @@ Cumulus changelog
 # Thankyou Axel ;-))                                                              #
 #=================================================================================#
 
-Cumulus 2.0.0 (Development based on Qt4.x/X11)
----------------------------
-[+] 2008-02-08 AP: Portage of cumulus from Qtopia and Qt2.3.7/X11 finished.
+----------------------------------------------
+Cumulus 2.0.0 (Development based on X11/Qt-4.3)
+-----------------------------------------------
+[+] 2008-02-08 AP: Portage of cumulus from Qtopia-2.0 and Qt-2.3.7 to X11/Qt-4.3 finished.
                    First build of a release on Qt/X11 with several porting bugs.
 		   Optimization of widgets is also required.
 
-Cumulus 1.3.1 (Development)
--------------------
+	
+-------------------------------------------------------
+Cumulus 1.3.1 (Development based on Qtopia-2.0 Qt-2.3.7)
+-------------------------------------------------------
 
 [o] 2007-03-13 AP: Display of Airspace and Airspace warnings modified. HTML list replaced by HTML table
                    with borders. That enables more space for the messages.

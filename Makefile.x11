@@ -73,6 +73,7 @@ install: check_dir deinstall install_lang
 .PHONY : install_lang
 install_lang:
 	install -d $(INSTALL_PATH)/locale/$(LANG)
+	test -f cumulus/cumulus_de_DE.qm  || touch cumulus/cumulus_de_DE.qm
 	install --mode=644 cumulus/cumulus_de_DE.qm $(INSTALL_PATH)/locale/$(LANG)/cumulus_$(LANG).qm
 
 .PHONY : deinstall
