@@ -104,13 +104,15 @@ public:
      * @param opacity Sets the opacity of the painter to opacity. The
      * value should be in the range 0.0 to 1.0, where 0.0 is fully
      * transparent and 1.0 is fully opaque.
-     *
-     * @param  createRegion If set to true, a new region element is created
-     *                      and returned. If set to false, 0 is returned
-     *                      instead.
      */
-    QRegion* drawRegion( QPainter* targetP, const QRect &viewRect,
-                         qreal opacity = 0.0, bool createRegion = true );
+    void drawRegion( QPainter* targetP, const QRect &viewRect, qreal opacity = 0.0 );
+
+
+    /**
+     * Return a pointer to the mapped airspace region data. The caller takes
+     * the ownership about the returned object.
+     */
+    QRegion* createRegion();
 
     /**
      * Returns the upper limit of the airspace.

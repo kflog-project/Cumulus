@@ -1666,8 +1666,8 @@ void CumulusApp::slotMapDrawEvent( bool drawEvent )
       
       if( view == mapView )
        {
-         //accManualNav->setEnabled( false );
-         //accGpsNav->setEnabled( false );
+         accManualNav->setEnabled( false );
+         accGpsNav->setEnabled( false );
        }
      }
    else
@@ -1676,8 +1676,8 @@ void CumulusApp::slotMapDrawEvent( bool drawEvent )
 
        if( view == mapView )
          {
-           //accManualNav->setEnabled( !gps->getConnected() || calculator->isManualInFlight());
-           //accGpsNav->setEnabled( gps->getConnected() && !calculator->isManualInFlight() );
+           accManualNav->setEnabled( !gps->getConnected() || calculator->isManualInFlight());
+           accGpsNav->setEnabled( gps->getConnected() && !calculator->isManualInFlight() );
          }
      }
 }

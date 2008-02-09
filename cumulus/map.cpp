@@ -101,11 +101,13 @@ Map::Map(QWidget* parent, const char* name) : QWidget(parent, name),
   m_pixAeroMap        = QPixmap( parent->size() );
   m_pixNavigationMap  = QPixmap( parent->size() );
   m_pixInformationMap = QPixmap( parent->size() );
+  m_pixPaintBuffer    = QPixmap( parent->size() );
 
   m_pixBaseMap.fill(Qt::white);
   m_pixAeroMap.fill(Qt::white);
   m_pixNavigationMap.fill(Qt::white);
   m_pixInformationMap.fill(Qt::white);
+  m_pixPaintBuffer.fill(Qt::white);
 
   airspaceRegList.setAutoDelete(true);
 
@@ -427,12 +429,12 @@ void Map::paintEvent(QPaintEvent* event)
   if( mutex() )
     {
       qDebug("Map::paintEvent(): mutex is locked, returning");
-      return;
     }
 
-  // bitBlt(this, event->rect().topLeft(), &m_pixInformationMap, event->rect());
+  // We copy always the content from the m_pixPaintBuffer to the paint
+  // device.
   QPainter p(this);
-  p.drawPixmap( event->rect().left(), event->rect().top(), m_pixInformationMap,
+  p.drawPixmap( event->rect().left(), event->rect().top(), m_pixPaintBuffer,
                 0, 0, event->rect().width(), event->rect().height() );
 
   qDebug("Map.paintEvent(): return");
@@ -462,7 +464,6 @@ void Map::__drawAirspaces(bool reset)
   QPainter cuAeroMapP;
 
   cuAeroMapP.begin(&m_pixAeroMap);
-  cuAeroMapP.setClipping(true);
 
   QTime t;
   t.start();
@@ -476,19 +477,23 @@ void Map::__drawAirspaces(bool reset)
       airspaceRegList.clear();
     }
 
-  GeneralConfig* settings = GeneralConfig::instance();
-  bool fillAirspace = settings->getAirspaceFillingEnabled();
-  bool forcedDrawing = settings->getForceAirspaceDrawingEnabled();
+  GeneralConfig* settings     = GeneralConfig::instance();
+  bool fillAirspace           = settings->getAirspaceFillingEnabled();
+  bool forcedDrawing          = settings->getForceAirspaceDrawingEnabled();
+  AirspaceWarningDistance awd = settings->getAirspaceWarningDistances();
+  AltitudeCollection alt      = calculator->getAltitudeCollection();
+  QPoint pos                  = calculator->getlastPosition();
 
-  qreal airspaceOpacity = 0.0; // fully transparent
+  qreal airspaceOpacity = 100.0; // no transparency
 
-  unsigned int forcedMinimumCeil = (unsigned int) rint(settings->getForceAirspaceDrawingDistance().getMeters() +
+  uint forcedMinimumCeil = (uint) rint(settings->getForceAirspaceDrawingDistance().getMeters() +
                                    calculator->getlastAltitude().getMeters());
 
-  for(unsigned int loop = 0; loop < _globalMapContents->getListLength(
-        MapContents::AirspaceList); loop++)
+  for( uint loop = 0;
+       loop < _globalMapContents->getListLength( MapContents::AirspaceList);
+       loop++ )
     {
-      currentAirS = (Airspace*)_globalMapContents->getElement(MapContents::AirspaceList, loop);
+      currentAirS = (Airspace*) _globalMapContents->getElement(MapContents::AirspaceList, loop);
 
       //airspaces we don't draw, we don't warn for either (and vise versa)
       if( !settings->getAirspaceWarningEnabled( currentAirS->getTypeID() ) )
@@ -504,21 +509,40 @@ void Map::__drawAirspaces(bool reset)
             }
         }
 
-      reg = currentAirS->drawRegion(&cuAeroMapP, this->rect(), 0.0, reset);
-
-      if (reg)
+      if( reset )
         {
-          //create a new region for this airspace
-          region = new AirRegion(reg, currentAirS);
+          // we have to create a new region for that airspace and put
+          // it in the airspace region list.
+          region = new AirRegion( currentAirS->createRegion(), currentAirS ) ;
           airspaceRegList.append(region);
         }
       else
         {
-          //reuse an existing region
+          // try to reuse an existing region
           region = currentAirS->getAirRegion();
 
-          if (region) reg = region->region;
+          if( region )
+            {
+              reg = region->region;
+            }
         }
+
+      if( region && fillAirspace )
+        {
+          Airspace::ConflictType hConflict = region->conflicts( pos, awd );
+          Airspace::ConflictType vConflict = currentAirS->conflicts( alt, awd );
+          Airspace::ConflictType rConflict = Airspace::none; // resulting conflict
+
+          if( hConflict != Airspace::none && vConflict != Airspace::none )
+            {
+              // we have a real conflict, determine the higher priority
+              rConflict = (hConflict < vConflict ? hConflict : vConflict);
+            }
+
+          airspaceOpacity = (qreal) settings->airspaceFilling( vConflict, rConflict );
+        }
+
+      currentAirS->drawRegion(&cuAeroMapP, this->rect(), airspaceOpacity );
     }
 
   cuAeroMapP.end();
@@ -798,6 +822,9 @@ void Map::__redrawMap(mapLayer fromLayer)
   if (fromLayer < topLayer)
     __drawInformationLayer();
 
+  // copy the new map content into the paint buffer
+  m_pixPaintBuffer = m_pixInformationMap;
+
   // unlock mutex
   setMutex(false);
 
@@ -840,8 +867,7 @@ void Map::__redrawMap(mapLayer fromLayer)
  */
 void Map::__drawBaseLayer()
 {
-  if( !_isEnable )
-    return;
+  if( !_isEnable ) return;
 
   // erase the base layer (fill with light blue color)
   m_pixBaseMap.fill(QColor(96,128,248));
@@ -955,14 +981,12 @@ void Map::__drawInformationLayer()
 
   //draw the task (if enabled)
   __drawPlannedTask();
+
   //draw the trail (if enabled)
   __drawTrail();
 
   //draw the wind arrow
   //drawing the wind arrow is a matter of bit blitting a piece of the windArrow pixmap
-
-  // bitBlt(&m_pixInformationMap, 4, 4, &windArrow, windArrow.width()/4,windArrow.width()/4, 36, 36);
-
   QPainter p(&m_pixInformationMap);
   p.drawPixmap( 4, 4, windArrow, windArrow.width()/4, windArrow.width()/4, 36, 36);
 
@@ -1444,11 +1468,12 @@ void Map::slotWaypointCatalogChanged(WaypointCatalog* /*c*/)
 
 
 /** This function sets the map rotation and redraws the map if the
-    maprotation differs too much from the current maprotation. */
+    map rotation differs too much from the current map rotation. */
 void Map::setMapRot(int newRotation)
 {
   // qDebug("Map::setMapRot");
   mapRot=newRotation;
+
   if (abs(mapRot-curMapRot) >= 2)
     {
       sceduleRedraw(baseLayer);
@@ -1468,7 +1493,6 @@ void Map::setHeading( const int& _newVal)
 {
   heading = _newVal;
   setMapRot(calcMapRotation());
-  __redrawMap(informationLayer);
 }
 
 
@@ -1717,7 +1741,7 @@ void Map::slot_position(const QPoint& newPos, const int source)
           
           if (!_globalMapMatrix->isInCenterArea(newPos))
             {
-              // qDebug("Map::slot_position:sceduleRedraw()");
+              qDebug("Map::slot_position:sceduleRedraw()");
               sceduleRedraw();
             }
           else
@@ -1941,8 +1965,7 @@ void Map::slotSetScale(const double& newScale)
  */
 void Map::__drawDirectionLine(const QPoint& from)
 {
-  if (!_globalMapConfig->getdrawBearing())
-    return;
+  if (!_globalMapConfig->getdrawBearing()) return;
 
   if (calculator && calculator->getselectedWp())
     {
@@ -1958,7 +1981,6 @@ void Map::__drawDirectionLine(const QPoint& from)
 
       QPainter lineP;
       lineP.begin(&m_pixInformationMap);
-
       lineP.setClipping(true);
       lineP.setPen(QPen(col, 3, Qt::DashLine));
       lineP.drawLine(from, to);

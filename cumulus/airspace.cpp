@@ -92,47 +92,28 @@ Airspace::~Airspace()
 }
 
 
-QRegion* Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
-                               qreal opacity, bool createRegion )
+void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
+                           qreal opacity )
 {
   if(!glConfig->isBorder(typeID) || !__isVisible())
     {
-      return 0;
+      return;
     }
-
-  extern CuCalc* calculator;
 
   QPolygon tP = glMapMatrix->map(projPolygon);
   QRegion reg( tP );
-  //AirRegion region( reg, *this );
+  QBrush drawB;
 
-  GeneralConfig* settings = GeneralConfig::instance();
-  bool fillAirspace = settings->getAirspaceFillingEnabled();
-  AirspaceWarningDistance awd = settings->getAirspaceWarningDistances();
-
-  if( fillAirspace == false )
+  if( opacity == 100.0 ) // no transparency
     {
-      opacity = 0.0; // fully transparent
+      drawB = glConfig->getDrawBrush(typeID);
     }
   else
     {
-      AltitudeCollection alt = calculator->getAltitudeCollection();
-      QPoint pos = calculator->getlastPosition();
-
-      Airspace::ConflictType hConflict =  Airspace::none;// region.conflicts( pos, awd );
-      Airspace::ConflictType vConflict = conflicts( alt, awd );
-      Airspace::ConflictType rConflict = Airspace::none; // resulting conflict
-
-      if( hConflict != Airspace::none && vConflict != Airspace::none )
-        {
-          // we have a real conflict, determine the higher priority
-          rConflict = (hConflict < vConflict ? hConflict : vConflict);
-        }
-
-      opacity = (qreal) settings->airspaceFilling( vConflict, rConflict );
+      drawB.setStyle( Qt::SolidPattern );
     }
 
-  QBrush drawB = glConfig->getDrawBrush(typeID);
+
   QPen drawP = glConfig->getDrawPen(typeID);
   drawP.setJoinStyle(Qt::RoundJoin);
 
@@ -149,7 +130,7 @@ QRegion* Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
       // Draw airspace filled with opacity factor
       targetP->setOpacity( opacity );
       targetP->fillRect( viewRect, targetP->brush() );
-      drawB = Qt::NoBrush;
+      targetP->setBrush(Qt::NoBrush);
     }
 
   targetP->drawPolygon(tP);
@@ -158,14 +139,19 @@ QRegion* Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
     (projPointArray), so our precision isn't depending on the current
     scale */
 
-  if (createRegion)
-    {
-      return (new QRegion(reg));
-    }
-
-  return 0;
+  return;
 }
 
+/**
+ * Return a pointer to the mapped airspace region data. The caller takes
+ * the ownership about the returned object.
+ */
+QRegion* Airspace::createRegion()
+{
+  QPolygon tP = glMapMatrix->map(projPolygon);
+
+  return (new QRegion(tP));
+}
 
 /**
  * Returns a text representing the type of the airspace

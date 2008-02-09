@@ -475,12 +475,20 @@ class Map : public QWidget
 
     //the basic layer of the map
     QPixmap m_pixBaseMap;
+
     //the map, but now including the aeronautical elements
     QPixmap m_pixAeroMap;
+
     //the map, but now including the navigational elements
     QPixmap m_pixNavigationMap;
+
     //the map, but now including the informational elements
     QPixmap m_pixInformationMap;
+
+    // this map is used as overall buffer, to make the last painted
+    // map available for paint events even the map is redrawn and
+    // new data are are requested by the window system.
+    QPixmap m_pixPaintBuffer;
 
     //contains a strip with windarrows in different directions
     QPixmap windArrow;
