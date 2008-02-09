@@ -107,6 +107,14 @@ public:
      */
     void drawRegion( QPainter* targetP, const QRect &viewRect, qreal opacity = 0.0 );
 
+    /**
+     * Tells the caller, if the airspace is drawable or not
+     */
+    
+    bool isDrawable()
+    {
+      return ( glConfig->isBorder(typeID) && __isVisible() );
+    };
 
     /**
      * Return a pointer to the mapped airspace region data. The caller takes

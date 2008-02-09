@@ -509,6 +509,12 @@ void Map::__drawAirspaces(bool reset)
             }
         }
 
+      if( ! currentAirS->isDrawable() )
+        {
+          // Not of interest, step away
+          continue;
+        }
+
       if( reset )
         {
           // we have to create a new region for that airspace and put

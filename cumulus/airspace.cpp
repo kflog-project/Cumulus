@@ -91,10 +91,13 @@ Airspace::~Airspace()
   }
 }
 
-
 void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
                            qreal opacity )
 {
+  // qDebug("Airspace::drawRegion(): TypeId=%d, opacity=%f, Name=%s",
+  //        typeID, opacity, getInfoString().latin1() );
+
+
   if(!glConfig->isBorder(typeID) || !__isVisible())
     {
       return;
@@ -102,20 +105,21 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
 
   QPolygon tP = glMapMatrix->map(projPolygon);
   QRegion reg( tP );
-  QBrush drawB;
 
-  if( opacity == 100.0 ) // no transparency
+  QBrush drawB = glConfig->getDrawBrush(typeID);
+
+  if( opacity < 100.0 )
     {
-      drawB = glConfig->getDrawBrush(typeID);
-    }
-  else
-    {
+      // use transparent filled air regions
       drawB.setStyle( Qt::SolidPattern );
     }
 
-
   QPen drawP = glConfig->getDrawPen(typeID);
   drawP.setJoinStyle(Qt::RoundJoin);
+  // increase drawPen, it is to small under X11
+  drawP.setWidth(drawP.width() + 4);
+
+  // qDebug("PenWidth=%d", drawP.width() );
 
   QRegion viewReg( viewRect );
   QRegion drawReg = reg.intersect( viewReg );
@@ -128,9 +132,10 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
   if( opacity < 100.0 )
     {
       // Draw airspace filled with opacity factor
-      targetP->setOpacity( opacity );
+      targetP->setOpacity( opacity/100.0 );
       targetP->fillRect( viewRect, targetP->brush() );
       targetP->setBrush(Qt::NoBrush);
+      targetP->setOpacity( 1.0 );
     }
 
   targetP->drawPolygon(tP);
@@ -200,7 +205,6 @@ QString Airspace::getInfoString() const
   QString text, tempL, tempU;
 
   QString type;
-
 
   switch(lLimitType) {
   case MSL:

@@ -333,10 +333,10 @@ bool MapContents::__readTerrainFile(const int fileSecID,
   QString kflPathName, kfcPathName, pathName;
   QString kflName, kfcName;
 
-  kflName.sprintf("%c_%.5d.kfl", fileTypeID, fileSecID);
+  kflName.sprintf("landscape/%c_%.5d.kfl", fileTypeID, fileSecID);
   kflExists = locateFile(kflName, kflPathName);
 
-  kfcName.sprintf("%c_%.5d.kfc", fileTypeID, fileSecID);
+  kfcName.sprintf("landscape/%c_%.5d.kfc", fileTypeID, fileSecID);
   kfcExists = locateFile(kfcName, kfcPathName);
 
   if ( ! (kflExists || kfcExists) ) {
@@ -1594,10 +1594,10 @@ bool MapContents::__readBinaryFile(const int fileSecID,
   QString kflPathName, kfcPathName, pathName;
   QString kflName, kfcName;
 
-  kflName.sprintf("%c_%.5d.kfl", fileTypeID, fileSecID);
+  kflName.sprintf("landscape/%c_%.5d.kfl", fileTypeID, fileSecID);
   kflExists = locateFile(kflName, kflPathName);
 
-  kfcName.sprintf("%c_%.5d.kfc", fileTypeID, fileSecID);
+  kfcName.sprintf("landscape/%c_%.5d.kfc", fileTypeID, fileSecID);
   kfcExists = locateFile(kfcName, kfcPathName);
 
   if ( ! (kflExists || kfcExists) ) {
