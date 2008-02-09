@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
-**                   2007 Axel Pauli
+**                   2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -24,11 +24,10 @@
 #include <Q3PtrCollection>
 #include <Q3PtrList>
 #include <QPainter>
+#include <QRect>
 
 #include "altitude.h"
 #include "lineelement.h"
-
-
 
 /**
   * @short Collection of distances to airspaces
@@ -110,7 +109,8 @@ public:
      *                      and returned. If set to false, 0 is returned
      *                      instead.
      */
-    QRegion* drawRegion( QPainter* targetP, qreal opacity = 0.0, bool createRegion = true );
+    QRegion* drawRegion( QPainter* targetP, const QRect &viewRect,
+                         qreal opacity = 0.0, bool createRegion = true );
 
     /**
      * Returns the upper limit of the airspace.

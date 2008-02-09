@@ -901,16 +901,22 @@ bool MapConfig::getShowWpLabels() const
     return bShowWpLabels;
 }
 
+void MapConfig::setShowWpLabels(bool show)
+{
+    bShowWpLabels=show;
+    GeneralConfig::instance()->setMapShowWaypointLabels( show );
+}
+
 
 bool MapConfig::getShowWpLabelsExtraInfo() const
 {
     return bShowWpLabelsExtraInfo;
 }
 
-
-void MapConfig::setShowWpLabels(bool show)
+void MapConfig::setShowWpLabelsExtraInfo(bool show)
 {
-    bShowWpLabels=show;
+  bShowWpLabelsExtraInfo = show;
+  GeneralConfig::instance()->setMapShowWaypointLabelsExtraInfo( show );
 }
 
 

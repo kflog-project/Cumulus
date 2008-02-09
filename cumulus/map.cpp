@@ -416,7 +416,11 @@ void Map::mouseReleaseEvent(QMouseEvent* event)
 
 void Map::paintEvent(QPaintEvent* event)
 {
-  qDebug("Map.paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d",
+  QDateTime dt = QDateTime::currentDateTime();
+  QString dtStr = dt.toString(Qt::ISODate);
+
+  qDebug("%s: Map::paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d",
+         dtStr.toAscii().data(),
          event->rect().width(), event->rect().height(),
          event->rect().left(), event->rect().top() );
 
@@ -459,14 +463,13 @@ void Map::__drawAirspaces(bool reset)
 
   cuAeroMapP.begin(&m_pixAeroMap);
   cuAeroMapP.setClipping(true);
-  
+
   QTime t;
   t.start();
 
   Airspace* currentAirS;
   QRegion * reg = 0;
   AirRegion* region = 0;
-  QColor c;
 
   if( reset )
     {
@@ -479,19 +482,13 @@ void Map::__drawAirspaces(bool reset)
 
   qreal airspaceOpacity = 0.0; // fully transparent
 
-  AirspaceWarningDistance awd = settings->getAirspaceWarningDistances();
-
-  AltitudeCollection alt = calculator->getAltitudeCollection();
-  QPoint pos = calculator->getlastPosition();
-
   unsigned int forcedMinimumCeil = (unsigned int) rint(settings->getForceAirspaceDrawingDistance().getMeters() +
                                    calculator->getlastAltitude().getMeters());
 
   for(unsigned int loop = 0; loop < _globalMapContents->getListLength(
         MapContents::AirspaceList); loop++)
     {
-      currentAirS = (Airspace*)_globalMapContents->getElement(
-                      MapContents::AirspaceList, loop);
+      currentAirS = (Airspace*)_globalMapContents->getElement(MapContents::AirspaceList, loop);
 
       //airspaces we don't draw, we don't warn for either (and vise versa)
       if( !settings->getAirspaceWarningEnabled( currentAirS->getTypeID() ) )
@@ -507,22 +504,7 @@ void Map::__drawAirspaces(bool reset)
             }
         }
 
-      if( fillAirspace )
-        {
-          Airspace::ConflictType hConflict = region->conflicts( pos, awd );
-          Airspace::ConflictType vConflict = currentAirS->conflicts( alt, awd );
-          Airspace::ConflictType rConflict = Airspace::none; // resulting conflict
-
-          if( hConflict != Airspace::none && vConflict != Airspace::none )
-            {
-              // we have a real conflict, determine the higher priority
-              rConflict = (hConflict < vConflict ? hConflict : vConflict);
-            }
-
-          airspaceOpacity = (qreal) settings->airspaceFilling( vConflict, rConflict );
-        }
-
-      reg = currentAirS->drawRegion(&cuAeroMapP, reset);
+      reg = currentAirS->drawRegion(&cuAeroMapP, this->rect(), 0.0, reset);
 
       if (reg)
         {
@@ -534,8 +516,8 @@ void Map::__drawAirspaces(bool reset)
         {
           //reuse an existing region
           region = currentAirS->getAirRegion();
-          if (region)
-            reg = region->region;
+
+          if (region) reg = region->region;
         }
     }
 
@@ -607,7 +589,7 @@ void Map::__drawGrid()
               cP = _globalMapMatrix->wgsToMap(
                      (int)rint(((lat2 + loop + ( loop2 * ( step / 60.0 ) ) ) * 600000)),
                      (int)rint(((lon1 + (lonloop / 10.0)) * 600000)));
-                     
+
               pointArraySmall.setPoint(lonloop, cP);
             }
 
@@ -615,7 +597,7 @@ void Map::__drawGrid()
             gridP.setPen(QPen(Qt::black, 1, Qt::DashLine));
           else
             gridP.setPen(QPen(Qt::black, 1, Qt::DotLine));
-            
+
           gridP.drawPolyline(_globalMapMatrix->map(pointArraySmall));
         }
       // Draw the main lines
@@ -746,7 +728,7 @@ void Map::__redrawMap(mapLayer fromLayer)
 
   if( ! _isEnable )
     {
-      //qDebug("__redrawMap() disabled");
+      qDebug("Map::__redrawMap() disabled");
       // @AP: we reset also the redraw request flag.
       _isRedrawEvent = false;
       return;
@@ -757,9 +739,11 @@ void Map::__redrawMap(mapLayer fromLayer)
       // @AP: we queue only the redraw request, timer will be started
       // again by __redrawMap() method.
       _isRedrawEvent = true;
-      //qDebug("Map::__redrawMap(): mutex is locked, returning");
+      qDebug("Map::__redrawMap(): mutex is locked, returning");
       return;
-      //TODO make a bit smarter. We only need to scedule a redraw if the layer is beneath the one we are currently redrawing, and then only to the level requested.
+      //TODO make a bit smarter. We only need to scedule a redraw if
+      //the layer is beneath the one we are currently redrawing, and
+      //then only to the level requested.
     }
 
   // set mutex to block recursive entries and unwanted data
@@ -772,9 +756,8 @@ void Map::__redrawMap(mapLayer fromLayer)
   if( _isResizeEvent )
     {
       _isResizeEvent = false;
-      _globalMapMatrix->createMatrix(size());
-      m_pixBaseMap.resize(size());
-      m_pixBaseMap.fill(Qt::white);
+      // reset layer to base layer, that all will be redrawn
+      fromLayer = baseLayer;
     }
 
   //set the map rotation
@@ -783,7 +766,8 @@ void Map::__redrawMap(mapLayer fromLayer)
   // draw the layers we need to refresh
   if (fromLayer < aeroLayer)
     {
-      // initialize map matrix
+      // Draw the base layer, which contains the landscape elements.
+      // First initialize map matrix
       _globalMapMatrix->slotSetScale(zoomFactor);
 
       if(calculator->isManualInFlight() || !ShowGlider)
@@ -794,8 +778,14 @@ void Map::__redrawMap(mapLayer fromLayer)
         {
           _globalMapMatrix->slotCenterTo(curGPSPos.x(), curGPSPos.y());
         }
+
       zoomFactor = _globalMapMatrix->getScale(); //read back from matrix!
+      
       _globalMapMatrix->createMatrix(this->size());
+      
+      // initialize the base pixmap
+      m_pixBaseMap.resize(size());
+      m_pixBaseMap.fill(Qt::white);
 
       //actually start doing our drawing
       __drawBaseLayer();
@@ -814,16 +804,19 @@ void Map::__redrawMap(mapLayer fromLayer)
   // Repaints the widget directly by calling paintEvent() immediately,
   // unless updates are disabled or the widget is hidden.
   // @AP: Qt 4.3 complains about it, when paintEvent is called directly
-  qDebug("Map::__redrawMap: repaint() is called");
-  repaint();
-  qDebug("Map::__redrawMap: repaint() was called");
+  QDateTime dt = QDateTime::currentDateTime();
+  QString dtStr = dt.toString(Qt::ISODate);
 
+  qDebug("%s: Map::__redrawMap: repaint(%dx%d) is called",
+         dtStr.toAscii().data(), this->rect().width(),this->rect().height() );
+  repaint( this->rect() );
+  qDebug("Map::__redrawMap: repaint() was called");
 
   // @AP: check, if a pending redraw request is active. In this case
   // the scheduler timers will be restarted to handle it.
   if( _isRedrawEvent )
     {
-      qDebug("Map::__redrawMap(): queued redraw event found, schedule Redraw");
+      qDebug("============== Map::__redrawMap(): queued redraw event found, schedule Redraw =======");
       _isRedrawEvent = false;
       sceduleRedraw();
     }
@@ -873,9 +866,6 @@ void Map::__drawBaseLayer()
 
   //first, draw the iso lines
   _globalMapContents->drawIsoList(&baseMapP);
-
-  // ensure time for GPS processing
-  qApp->processEvents(QEventLoop::ExcludeUserInputEvents|QEventLoop::X11ExcludeTimers);
 
   // next, draw the topographical elements and the cities
   _globalMapContents->drawList(&baseMapP, MapContents::TopoList);
@@ -1015,7 +1005,7 @@ void Map::slotRedrawMap()
       // @AP: we queue only the redraw request, timer will be
       // started again by __redrawMap() method.
       _isRedrawEvent = true;
-      //qDebug("Map::slotRedrawMap(): is locked by mutex, returning");
+      qDebug("Map::slotRedrawMap(): is locked by mutex, returning");
       return;
     }
 
@@ -1185,7 +1175,7 @@ bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, Q3PtrList<wayPo
        *  Should be done for all Point-data
        */
       QList<int> contentArray;
-      
+
       contentArray.append( MapContents::GliderList );
       contentArray.append( MapContents::AirportList );
 
@@ -1724,6 +1714,7 @@ void Map::slot_position(const QPoint& newPos, const int source)
       if (curMANPos!=newPos)
         {
           curMANPos=newPos;
+          
           if (!_globalMapMatrix->isInCenterArea(newPos))
             {
               // qDebug("Map::slot_position:sceduleRedraw()");
@@ -1927,7 +1918,7 @@ void Map::sceduleRedraw(mapLayer fromLayer)
 
     }
 
-  redrawTimerShort->start(800, true);
+  redrawTimerShort->start(1000, true);
 }
 
 

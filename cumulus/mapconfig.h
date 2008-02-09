@@ -171,10 +171,7 @@ public:
     bool getShowWpLabels() const;
     void setShowWpLabels(bool);
     bool getShowWpLabelsExtraInfo() const;
-    void setShowWpLabelsExtraInfo(bool newvalue)
-    {
-        bShowWpLabelsExtraInfo = newvalue;
-    };
+    void setShowWpLabelsExtraInfo(bool);
     bool getLoadRoads() const;
     bool getLoadHighways() const;
     bool getLoadRailroads() const;

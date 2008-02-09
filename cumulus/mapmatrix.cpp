@@ -426,7 +426,7 @@ void MapMatrix::slotSetScale(const double& nScale)
   //createMatrix(matrixSize);
   //emit matrixChanged();
   _MaxScaleToCScaleRatio=int((MIN_SCALE/cScale)*(MAX_SCALE));
-  qDebug("Set new scale to %f ratio: %d ",cScale,_MaxScaleToCScaleRatio );
+  qDebug("MapMatrix::slotSetScale(): Set new scale to %f ratio: %d ",cScale,_MaxScaleToCScaleRatio );
 }
 
 

@@ -4,12 +4,12 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002 by Andre Somers, 2008 Axel Pauli
     email                : andre@kflog.org, axel@kflog.org
- 
+
     This file is distributed under the terms of the General Public
     Licence. See the file COPYING for more information.
- 
+
     $Id$
- 
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -186,6 +186,8 @@ class CumulusApp : public QMainWindow
     void slotGpsStatusDialog();
     /** use manual navigation even if GPS signal received */
     void slotToggleManualInFlight(bool);
+    /** used to allow or disable user keys processing during map drawing */
+    void slotMapDrawEvent(bool);
 
   protected: //methods
     /**

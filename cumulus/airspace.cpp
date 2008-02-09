@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **   Modified:       2007 by Axel Pauli
+ **   Modified:       2008 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -16,11 +16,12 @@
  **
  ***********************************************************************/
 
-#include <QApplication>
-#include <QDesktopWidget>
+#include <QRegion>
 
 #include "airspace.h"
 #include "airregion.h"
+#include "generalconfig.h"
+#include "cucalc.h"
 
 Airspace::Airspace(QString n, BaseMapElement::objectType t, QPolygon pG,
                    int u, BaseMapElement::elevationType uType,
@@ -91,28 +92,63 @@ Airspace::~Airspace()
 }
 
 
-QRegion* Airspace::drawRegion( QPainter* targetP, qreal opacity, bool createRegion )
+QRegion* Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
+                               qreal opacity, bool createRegion )
 {
   if(!glConfig->isBorder(typeID) || !__isVisible())
-    return 0;
+    {
+      return 0;
+    }
+
+  extern CuCalc* calculator;
 
   QPolygon tP = glMapMatrix->map(projPolygon);
+  QRegion reg( tP );
+  //AirRegion region( reg, *this );
+
+  GeneralConfig* settings = GeneralConfig::instance();
+  bool fillAirspace = settings->getAirspaceFillingEnabled();
+  AirspaceWarningDistance awd = settings->getAirspaceWarningDistances();
+
+  if( fillAirspace == false )
+    {
+      opacity = 0.0; // fully transparent
+    }
+  else
+    {
+      AltitudeCollection alt = calculator->getAltitudeCollection();
+      QPoint pos = calculator->getlastPosition();
+
+      Airspace::ConflictType hConflict =  Airspace::none;// region.conflicts( pos, awd );
+      Airspace::ConflictType vConflict = conflicts( alt, awd );
+      Airspace::ConflictType rConflict = Airspace::none; // resulting conflict
+
+      if( hConflict != Airspace::none && vConflict != Airspace::none )
+        {
+          // we have a real conflict, determine the higher priority
+          rConflict = (hConflict < vConflict ? hConflict : vConflict);
+        }
+
+      opacity = (qreal) settings->airspaceFilling( vConflict, rConflict );
+    }
 
   QBrush drawB = glConfig->getDrawBrush(typeID);
   QPen drawP = glConfig->getDrawPen(typeID);
   drawP.setJoinStyle(Qt::RoundJoin);
 
-  QRect viewRect = QApplication::desktop()->screenGeometry();
-  targetP->setClipRegion( viewRect );
+  QRegion viewReg( viewRect );
+  QRegion drawReg = reg.intersect( viewReg );
 
   targetP->setPen(drawP);
   targetP->setBrush(drawB);
+
+  targetP->setClipRegion( drawReg );
 
   if( opacity < 100.0 )
     {
       // Draw airspace filled with opacity factor
       targetP->setOpacity( opacity );
-      targetP->drawPolygon(tP);
+      targetP->fillRect( viewRect, targetP->brush() );
       drawB = Qt::NoBrush;
     }
 
@@ -124,7 +160,7 @@ QRegion* Airspace::drawRegion( QPainter* targetP, qreal opacity, bool createRegi
 
   if (createRegion)
     {
-      return (new QRegion(tP));
+      return (new QRegion(reg));
     }
 
   return 0;

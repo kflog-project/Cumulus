@@ -257,12 +257,6 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   sep->setFrameShape(QFrame::HLine);
   topLayout->addWidget(sep);
 
-  //Add Map widget
-  //QCanvasView *map = new QCanvasView(this);
-  //  QFrame* mapframe=new QFrame(this, "mapframe");
-  //  mapframe->setFrameStyle(QFrame::Panel | QFrame::Raised);
-  // topLayout->addSpacing(1);
-
   QBoxLayout *MapLayout = new QHBoxLayout(topLayout);
   _theMap = new Map(this, "map");
   MapLayout->addSpacing(1);
@@ -274,13 +268,14 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   //Add statusbar widget
   _statusbar = new QStatusBar(this, "status");
   _statusbar->setSizeGripEnabled(false);
+  _statusbar->setMaximumHeight(25);
 
   _statusGps = new CuLabel(tr("Man"),_statusbar);
   //  _statusGps->setFrameStyle(QFrame::Panel | QFrame::Sunken);
   _statusGps->setFrameStyle(QFrame::NoFrame);
   _statusGps->setAlignment(Qt::AlignCenter);
   _statusGps->setMargin(0);
-  _statusGps->setMaximumSize(28,15);
+  _statusGps->setMaximumSize(30,15);
   _statusGps->setMinimumSize(10,15);
   _statusbar->addWidget(_statusGps);
   connect(_statusGps, SIGNAL(mousePress()),
@@ -303,7 +298,7 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   _statusFiller->setMaximumSize(this->width(),15);
   _statusbar->addWidget(_statusFiller, 10);
 
-  _statusbar->setMaximumSize(this->width(),18);
+  _statusbar->setMaximumSize(this->width(),20);
   //  _statusbar->setFrameStyle(QFrame::Raised);
 
   loggingTimer = new QTimer(this);

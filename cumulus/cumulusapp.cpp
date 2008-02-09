@@ -221,19 +221,16 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
 
   // use showMaximized() only for PDA
   show();
-  qApp->processEvents(QEventLoop::ExcludeUserInputEvents|QEventLoop::ExcludeSocketNotifiers);
 
 #warning switch screensaver off, if necessary
 
   ws = new WaitScreen( this, "Waitscreen" );
 
-  ws->slot_SetText1( tr( "Creating map matrix..." ) );
+  ws->slot_SetText1( tr( "Creating map elements..." ) );
   _globalMapMatrix = new MapMatrix( this );
 
-  ws->slot_SetText1( tr( "Loading map contents..." ) );
   _globalMapContents = new MapContents( this, ws );
 
-  ws->slot_SetText1( tr( "Loading map config..." ) );
   _globalMapConfig = new MapConfig( this );
 
   BaseMapElement::initMapElement( _globalMapMatrix, _globalMapConfig );
@@ -250,6 +247,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
            _globalMapMatrix, SLOT( slotInitMatrix() ) );
 
   _globalMapConfig->slotReadConfig();
+
   _altimeterModeDlg = new AltimeterModeDialog( this );
   _varioModeDlg = new VarioModeDialog( this );
 
@@ -304,7 +302,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
   initActions();
   initMenuBar();
 
-  ws->slot_SetText1( tr( "Setting up object connections..." ) );
+  ws->slot_SetText1( tr( "Setting up connections..." ) );
   // set dynamical Info
   viewMap->getAltitudeWidget()->setPreText( _altimeterModeDlg->Pretext() );
 
@@ -313,8 +311,12 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
            viewMap->_theMap, SLOT( slotRedraw() ) );
   connect( _globalMapMatrix, SIGNAL( projectionChanged() ),
            _globalMapContents, SLOT( slotReloadMapData() ) );
+
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewMap->_theMap, SLOT( slotDraw() ) );
+
+  connect( viewMap->_theMap, SIGNAL( isRedrawing( bool ) ),
+           this, SLOT( slotMapDrawEvent( bool ) ) );
 
   connect( _altimeterModeDlg, SIGNAL( newAltimeterMode() ),
            this, SLOT( slotNewAltimeterMode() ) );
@@ -394,6 +396,8 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
            this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
   connect( viewMap->_theMap, SIGNAL( airspaceWarning( const QString&, const bool ) ),
            this, SLOT( slotNotification( const QString&, const bool ) ) );
+  connect( viewMap, SIGNAL( toggleLDCalculation( const bool ) ),
+           calculator, SLOT( slot_toggleLDCalculation(const bool) ) );
 
   connect( viewInfo, SIGNAL( waypointAdded( wayPoint* ) ),
            viewWP, SLOT( slot_wpAdded( wayPoint* ) ) );
@@ -407,7 +411,6 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
 
   connect( calculator, SIGNAL( newWaypoint( const wayPoint* ) ),
            this, SLOT( slotWaypointChanged( const wayPoint* ) ) );
-
   connect( calculator, SIGNAL( newWaypoint( const wayPoint* ) ),
            viewMap, SLOT( slot_Waypoint( const wayPoint* ) ) );
   connect( calculator, SIGNAL( newBearing( int ) ),
@@ -446,9 +449,6 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
            viewMap, SLOT( slot_wind( Vector& ) ) );
   connect( calculator, SIGNAL( newLD( const double&, const double&) ),
            viewMap, SLOT( slot_LD( const double&, const double&) ) );
-  connect( viewMap, SIGNAL( toggleLDCalculation( const bool ) ),
-           calculator, SLOT( slot_toggleLDCalculation(const bool) ) );
-
   connect( calculator, SIGNAL( flightModeChanged( CuCalc::flightmode ) ),
            viewMap, SLOT( setFlightStatus() ) );
   connect( calculator, SIGNAL( flightModeChanged( CuCalc::flightmode ) ),
@@ -571,7 +571,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
   QString gt = calculator->gliderType();
 
   if ( !gt.isEmpty() ) setCaption ( "Cumulus - " + gt );
-  
+
   viewMap->_theMap->setDrawing( true );
 
   // This actions initiates the map loading procedures
@@ -1653,4 +1653,31 @@ void CumulusApp::slotToggleManualInFlight(bool on)
   calculator->setManualInFlight(on);
   accManualNav->setEnabled( on );
   accGpsNav->setEnabled( !on );
+}
+
+/** Used to allow or disable user keys processing during map drawing. */
+void CumulusApp::slotMapDrawEvent( bool drawEvent )
+{
+   if( drawEvent )
+     {
+      // Disable menu accelerator during drawing to avoid
+      // event avalanche, if the user holds the key down longer.
+      accMenuBar->setEnabled( false );
+      
+      if( view == mapView )
+       {
+         //accManualNav->setEnabled( false );
+         //accGpsNav->setEnabled( false );
+       }
+     }
+   else
+     {
+       accMenuBar->setEnabled( true );
+
+       if( view == mapView )
+         {
+           //accManualNav->setEnabled( !gps->getConnected() || calculator->isManualInFlight());
+           //accGpsNav->setEnabled( gps->getConnected() && !calculator->isManualInFlight() );
+         }
+     }
 }

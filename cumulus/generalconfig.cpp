@@ -50,6 +50,7 @@ GeneralConfig::GeneralConfig() : QSettings( QSettings::UserScope, "Cumulus" )
 
 GeneralConfig::~GeneralConfig()
 {
+  qDebug("GeneralConfig::~GeneralConfig(): is called");
   save();
   _theInstance=0;
   _airspaceWarningGeneral=true;
@@ -172,8 +173,8 @@ void GeneralConfig::load()
   _mapBearLine                    = value( "BearLine", true ).toBool();
   _mapLoadIsoLines                = value( "LoadIsoLines", true ).toBool();
   _mapShowIsoLineBorders          = value( "ShowIsoLineBorders", false ).toBool();
-  _mapShowWaypointLabels          = value( "ShowWaypointLabels", true ).toBool();
-  _mapShowWaypointLabelsExtraInfo = value( "ShowWaypointLabelsExtraInfo", true ).toBool();
+  _mapShowWaypointLabels          = value( "ShowWaypointLabels", false ).toBool();
+  _mapShowWaypointLabelsExtraInfo = value( "ShowWaypointLabelsExtraInfo", false ).toBool();
   _mapLoadRoads                   = value( "LoadRoads", true ).toBool();
   _mapLoadHighways                = value( "LoadHighways", true ).toBool();
   _mapLoadRailroads               = value( "LoadRailroads", true ).toBool();

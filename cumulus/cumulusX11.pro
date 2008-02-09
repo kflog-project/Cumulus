@@ -193,7 +193,7 @@ INTERFACES  =
 TARGET      = cumulus
 DESTDIR     = .
 INCLUDEPATH += ../ 
-QMAKE_CXXFLAGS  += -DOPIE 
+QMAKE_CXXFLAGS  += -fno-default-inline -fno-inline
 LIBS += -lstdc++
 
 TRANSLATIONS    = \

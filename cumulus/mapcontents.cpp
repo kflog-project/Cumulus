@@ -2322,7 +2322,6 @@ void MapContents::proofeSection()
     }
 
     ws->hide();
-    qApp->processEvents();
     isFirst = false;
     mutex = false; // unlock mutex
 }
@@ -2807,6 +2806,7 @@ void MapContents::slotReloadWelt2000Data()
   gps->blockSignals( true );
 
   // clear event queue
+  qDebug("========= MapContents::slotReloadWelt2000Data() calls processEvents =========");
   QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
 
   airportList.clear();
