@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers
+**   Copyright (c):  2004 by André Somers, 2008 Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -44,7 +44,7 @@ TaskListView::TaskListView( QWidget *parent, const char *name,
   _selectText = tr("Select");
   _unselectText = tr("Unselect");
 
-  resize(parent->size());
+  // resize(parent->size());
 
   if( bold )
     {

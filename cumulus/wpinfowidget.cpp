@@ -223,6 +223,8 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint *wp)
 void WPInfoWidget::showEvent(QShowEvent *)
 {
   // qDebug("WPInfoWidget::showEvent(): name=%s", name());
+  // resize to size of parent, could be changed in the meantime as the widget was hided
+  resize(cuApp->size());
   // set focus to text widget
   text->setFocus();
 }

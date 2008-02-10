@@ -343,8 +343,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
 
   if (found)
     {
-      emit waypointSelected(w)
-      ;
+      emit waypointSelected(w);
       return;
     }
 

@@ -314,6 +314,7 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
 
 MapView::~MapView()
 {
+  // qDebug("MapView::~MapView() destructor is called");
   delete elements;
 }
 

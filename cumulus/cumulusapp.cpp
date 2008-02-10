@@ -157,6 +157,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
 {
   _globalCumulusApp = this;
   menuBarVisible = false;
+  listViewTabs = 0;
 
   // get last saved window geometrie from generalconfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
@@ -272,10 +273,10 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
 
   QFont fnt( "Helvetica", 12, QFont::Bold );
 
-  viewWP = new WaypointListView( this, "WaypointListView" );
-  viewAF = new AirfieldListView( this, "AirfieldListView" );
-  viewRP = new ReachpointListView( this, "ReachpointListView" );
-  viewTP = new TaskListView( this, "TaskListView" );
+  viewWP = new WaypointListView( 0, "WaypointListView" );
+  viewAF = new AirfieldListView( 0, "AirfieldListView" );
+  viewRP = new ReachpointListView( 0, "ReachpointListView" );
+  viewTP = new TaskListView( 0, "TaskListView" );
   viewWP->setFont( fnt );
   viewAF->setFont( fnt );
   viewRP->setFont( fnt );
@@ -1003,7 +1004,6 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
 
       listViewTabs->hide();
       viewInfo->hide();
-      setCentralWidget( viewMap );
       viewMap->show();
 
       accAfView->setEnabled( false );
@@ -1022,13 +1022,12 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       break;
 
     case wpView:
-
+      qDebug("wpView");
       menuBar()->hide();
       viewMap->hide();
       viewInfo->hide();
-      setCentralWidget( listViewTabs );
       listViewTabs->showPage( viewWP );
-      listViewTabs->showMaximized();
+      listViewTabs->show();
 
       accAfView->setEnabled( false );
       accWpView->setEnabled( true );
@@ -1047,9 +1046,8 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       menuBar()->hide();
       viewMap->hide();
       viewInfo->hide();
-      setCentralWidget( listViewTabs );
       listViewTabs->showPage( viewRP );
-      listViewTabs->showMaximized();
+      listViewTabs->show();
 
       accAfView->setEnabled( false );
       accRpView->setEnabled( true );
@@ -1069,9 +1067,8 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       viewMap->hide();
       viewInfo->hide();
       viewAF->fillWpList();
-      setCentralWidget( listViewTabs );
       listViewTabs->showPage( viewAF );
-      listViewTabs->showMaximized();
+      listViewTabs->show();
 
       accAfView->setEnabled( true );
       accRpView->setEnabled( false );
@@ -1097,9 +1094,8 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       viewMap->hide();
       viewInfo->hide();
       viewAF->fillWpList();
-      setCentralWidget( listViewTabs );
       listViewTabs->showPage( viewTP );
-      listViewTabs->showMaximized();
+      listViewTabs->show();
 
       accAfView->setEnabled( false );
       accRpView->setEnabled( false );
@@ -1114,6 +1110,8 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       break;
 
     case infoView:
+
+      qDebug("infoView");
 
       if ( ! wp )
         {
@@ -1221,7 +1219,7 @@ void CumulusApp::slotSwitchToTaskListView()
 /** This slot is called to switch to the info view. */
 void CumulusApp::slotSwitchToInfoView()
 {
-  //qDebug("CumulusApp::slotSwitchToInfoView()");
+  qDebug("CumulusApp::slotSwitchToInfoView()");
   if ( view == wpView )
     {
       setView( infoView, viewWP->getSelectedWaypoint() );
@@ -1681,3 +1679,17 @@ void CumulusApp::slotMapDrawEvent( bool drawEvent )
          }
      }
 }
+
+
+// resize the list view tabs, if requested
+void CumulusApp::resizeEvent(QResizeEvent* event)
+{
+  qDebug("CumulusApp::resizeEvent(): w=%d, h=%d", event->size().width(), event->size().height() );
+  // resize list view tabs, if current widget was modified
+
+  if( listViewTabs )
+    {
+      listViewTabs->resize( event->size() );
+    }
+}
+

@@ -29,7 +29,6 @@
 #include <Q3PtrList>
 #include <QEvent>
 #include <QResizeEvent>
-#include <QResizeEvent>
 
 #include "waypoint.h"
 #include "airspace.h"

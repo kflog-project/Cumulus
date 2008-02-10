@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers
+**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -35,13 +35,17 @@ AirfieldListView::AirfieldListView(QMainWindow *parent, const char *name ) : QWi
 {
   listFilled = false;
   par=parent;
-  resize(parent->size());
   QBoxLayout *topLayout = new QVBoxLayout( this );
 
   list= new Q3ListView(this, "airfieldlist");
-  list->addColumn(tr("Name"),75);
-  list->addColumn(tr("Description"),100);
-  list->addColumn(tr("ICAO"),40);
+
+//   list->addColumn(tr("Name"),75);
+//   list->addColumn(tr("Description"),100);
+//   list->addColumn(tr("ICAO"),40);
+
+  list->addColumn(tr("Name"));
+  list->addColumn(tr("Description"));
+  list->addColumn(tr("ICAO"));
 
   list->setAllColumnsShowFocus(true);
   list->setSorting(0,true);
@@ -49,6 +53,7 @@ AirfieldListView::AirfieldListView(QMainWindow *parent, const char *name ) : QWi
   topLayout->addWidget(filter);
 
   topLayout->addWidget(list,10);
+
   QBoxLayout *buttonrow=new QHBoxLayout(topLayout);
 
   QPushButton *cmdClose = new QPushButton(tr("Close"), this);

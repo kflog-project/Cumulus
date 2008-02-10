@@ -33,6 +33,7 @@
 #include <QEvent>
 #include <Q3Accel>
 #include <QTabWidget>
+#include <QResizeEvent>
 
 #include "mapview.h"
 #include "waypointlistview.h"
@@ -194,6 +195,11 @@ class CumulusApp : public QMainWindow
      * Reimplemented from QObject
      */
     bool eventFilter(QObject*, QEvent*);
+
+    /**
+     * Redefinition of the resizeEvent.
+     */
+    virtual void resizeEvent(QResizeEvent* event);
 
     /**
      * No descriptions

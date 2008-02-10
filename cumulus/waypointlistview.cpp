@@ -33,7 +33,6 @@ extern MapConfig * _globalMapConfig;
 WaypointListView::WaypointListView(CumulusApp *parent, const char *name ) : QWidget(parent,name)
 {
   par=parent;
-  resize(parent->size());
   QBoxLayout *topLayout = new QVBoxLayout( this );
   QBoxLayout *editrow=new QHBoxLayout(topLayout);
 
@@ -61,9 +60,12 @@ WaypointListView::WaypointListView(CumulusApp *parent, const char *name ) : QWid
   editrow->addWidget(cmdHome);
 
   list= new Q3ListView(this, "waypointlist");
-  list->addColumn(tr("Name"),95);
-  list->addColumn(tr("Description"),100);
-  list->addColumn(tr("ICAO"),40);
+  //list->addColumn(tr("Name"),95);
+  //list->addColumn(tr("Description"),100);
+  //list->addColumn(tr("ICAO"),40);
+  list->addColumn(tr("Name"));
+  list->addColumn(tr("Description"));
+  list->addColumn(tr("ICAO"));
 
   list->setAllColumnsShowFocus(true);
 
