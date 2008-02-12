@@ -1,0 +1,68 @@
+Building and installing Cumulus for X11 and Qt4.x
+
+These are the instructions to build and install Cumulus from source under Linux.
+
+Step 1)
+
+You will need to set up a building-environment for Qt4.x under X11 with Qt3
+support if it is not already available. Download a X11/Qt release from
+ftp.trolltech.com/qt/source. I recommend at the moment the release:
+
+ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-4.3.3.tar.gz
+
+I did the portage with this release. To install it follow the instructions of
+Trolltech. For cumulus you need the Qt3 support. Do not forget to activate it
+during run of configure script. If you want to debug Qt it is recommend to
+activate the debug option during configure script run.
+
+If you want to use your own built Qt version, you should add the
+<QT_INSTALLDIR>/bin component at the first position of your PATH variable.
+
+e.g. BASH example
+
+	export $PATH=<QT_INSTALLDIR>/bin:$PATH
+
+Step 3)
+ 
+Checkout a cumulus snapshot file tree in a local directory of your Linux desktop with:
+
+	a) svn co https://svn.heiner-lamprecht.de/svn/repos/cumulus/qt4/trunk
+	b) svn export https://svn.heiner-lamprecht.de/svn/repos/cumulus/qt4/trunk
+
+Variant b) is free from any snv overhead like .svn directories.
+
+Step 4)
+
+Go into the local root of your checkout directory. To build the cumulus application issue the following command:
+
+	make -f Makefile.x11
+
+Step 5)
+
+To install cumulus issue the following command:
+
+	make -f Makefile.x11 install
+
+The default installation directory of the application is /opt/cumulus. You need root access to do the installation there. If you would prefer another installation place, you can change the installation directory during call of make install in the following way:
+
+	make -f Makefile.x11 INSTALL_PATH=<my-install-path> install
+
+Step 6)
+
+To start cumulus issue the command:
+
+	$INSTALL_PATH/bin/cumulus
+
+The needed maps can be installed under:
+
+$HOME/maps or $INSTALL_PATH/maps
+
+The structure is
+
+    +-airfields
+maps+-airspace
+    +-landscape
+
+Note, that cumulus does up to now only support airspace files in open air format. The former support of KFLog airspace files has been removed. For airfield files the welt 2000 data base should be used. The KFLog files are out of date. See cumulus help for more information.
+
+Task files are stores now under $HOME/cumulus as tasks.tsk. The cumulus configuration file is to find under $HOME/.config/Cumulus.conf 
