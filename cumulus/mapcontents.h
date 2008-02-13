@@ -298,20 +298,13 @@ class MapContents : public QObject
   void mapDataReloaded();
 
  private:
+
   /**
    * Reads a binary map file containing airfields.
    *
    * @param  fileName  The path and name of the airfield-file.
    */
   bool __readAirfieldFile(const QString& pathName);
-
-  /**
-   * Reads a binary map file containing airspaces.
-   *
-   * @param  fileName  The path and name of the airspace-file.
-   */
-  // Not more supported by cumulus X11, AP 02.02.2008
-  // bool __readAirspaceFile(const QString& pathName);
 
   /**
    * Reads a new binary map file.
