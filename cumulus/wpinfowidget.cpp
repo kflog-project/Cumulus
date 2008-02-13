@@ -418,11 +418,14 @@ void WPInfoWidget::slot_setAsHome()
     return;
   }
 
+  slot_KeepOpen(); // Stop timer
+
   int answer= QMessageBox::warning(this,tr("Set home site?"),
 				   tr("Do you want to use site\n%1\nas your new home site?").arg(_wp->name),
 				   QMessageBox::Ok | QMessageBox::Default,
 				   QMessageBox::Cancel | QMessageBox::Escape );
-  if (answer == 1) { //ok was chosen
+
+  if( answer == QMessageBox::Ok ) {
     // Save new data as home position
     GeneralConfig *conf = GeneralConfig::instance();
 

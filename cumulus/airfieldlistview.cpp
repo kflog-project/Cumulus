@@ -228,7 +228,7 @@ void AirfieldListView::slot_setHome()
                                    tr("Do you want to use airfield\n%1\nas your homesite?").arg(_wp->name),
                                    QMessageBox::Ok | QMessageBox::Default,
                                    QMessageBox::Cancel | QMessageBox::Escape );
-  if (answer == 1) { //ok was chosen
+  if( answer == QMessageBox::Ok ) {
 
     // Save new data as home position
     GeneralConfig *conf = GeneralConfig::instance();

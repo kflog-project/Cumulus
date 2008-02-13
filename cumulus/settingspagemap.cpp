@@ -45,7 +45,7 @@ SettingsPageMap::SettingsPageMap(QWidget *parent, const char *name ) : QWidget(p
   topLayout->addWidget(cmdAdvanced, row++, 1, Qt::AlignRight);
 
   connect(cmdAdvanced, SIGNAL(clicked()),
-          advancedPage, SLOT(showMaximized()));
+          advancedPage, SLOT(show()));
 }
 
 

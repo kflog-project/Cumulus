@@ -22,7 +22,6 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QMessageBox>
 #include <QDateTime>
 #include <QRect>
 

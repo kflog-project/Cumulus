@@ -131,7 +131,7 @@ void PreFlightMiscPage::save()
                                            QMessageBox::Yes,
                                            QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
 
-          if (answer==QMessageBox::Yes)
+          if( answer==QMessageBox::Yes )
             {
               log->Standby();
             }

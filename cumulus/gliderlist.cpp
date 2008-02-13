@@ -103,7 +103,7 @@ void SettingsPageGliderList::slot_delete()
                                      QMessageBox::Ok,
                                      QMessageBox::Cancel | QMessageBox::Escape | QMessageBox::Default);
 
-    if (answer == 1) { //ok was chosen
+    if( answer == QMessageBox::Ok ) {
         list->slot_Deleted(_tmpGlider);
     }
 }

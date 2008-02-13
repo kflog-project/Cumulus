@@ -232,7 +232,7 @@ void WaypointListView::slot_deleteWP()
                                    QMessageBox::Ok,
                                    QMessageBox::Cancel | QMessageBox::Escape | QMessageBox::Default);
 
-  if (answer == 1) { //ok was chosen
+  if( answer == QMessageBox::Ok ) {
     //first, make sure our waypointlist filter is won't interfere
     filter->restoreListViewItems();
 

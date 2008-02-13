@@ -100,7 +100,8 @@ void PreFlightDialog::accept()
                                 "</qt>"),
                              QMessageBox::Ok | QMessageBox::Default,
                              QMessageBox::Cancel | QMessageBox::Escape );
-      if( answer != 1 )
+
+      if( answer != QMessageBox::Ok )
         {
           // do nothing change
           delete newTask;

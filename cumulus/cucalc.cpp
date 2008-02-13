@@ -316,7 +316,8 @@ void CuCalc::slot_WaypointChange(wayPoint *newWp, bool userAction)
                                "</qt>"),
                             QMessageBox::Ok | QMessageBox::Default,
                             QMessageBox::Cancel | QMessageBox::Escape );
-    if( answer != 1 )
+
+    if( answer != QMessageBox::Ok )
       {
         // do nothing change
         return;

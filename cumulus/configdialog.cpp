@@ -163,12 +163,13 @@ void ConfigDialog::reject()
                                       tr("Save all changes"),
                                       QString::null,
                                       0);
-      if (answer == 1)
+      if( answer == QMessageBox::Ok )
         { //the user pressed cancel
           accept();
-          return; //abort closing dialog
+          return;
         }
     }
+
   Q3TabDialog::reject();
   emit reload();
   delete this;

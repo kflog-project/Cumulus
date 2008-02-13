@@ -422,7 +422,8 @@ void TaskList::slotDeleteTask()
                             "</qt>"),
                          QMessageBox::Ok | QMessageBox::Default,
                          QMessageBox::Cancel | QMessageBox::Escape );
-  if( answer != 1 )
+
+  if( answer != QMessageBox::Ok )
     {
       return;
     }

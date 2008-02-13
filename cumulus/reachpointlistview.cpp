@@ -17,7 +17,6 @@
 
 #include <QPushButton>
 #include <Q3PtrList>
-#include <QMessageBox>
 #include <QFont>
 #include <Q3ListViewItem>
 
