@@ -13,7 +13,7 @@
 VERSION = 2.0.0-r1
 
 # adapt install path to your needs if necessary
-INSTALL_PATH = /opt/cumulus
+INSTALL_ROOT = /opt/cumulus
 
 # adapt call pathes to your needs if necessary
 QMAKE    = qmake
@@ -42,43 +42,43 @@ clean:
 
 .PHONY : check_dir
 check_dir:
-	@if [ ! -w  $(INSTALL_PATH) ]; \
+	@if [ ! -w  $(INSTALL_ROOT) ]; \
 	then \
-		echo "Install Directory '$(INSTALL_PATH)' not writeable - Are you root?"; \
+		echo "Install Directory '$(INSTALL_ROOT)' not writeable - Are you root?"; \
 		exit 99; \
 	fi
 
 .PHONY : install
 install: check_dir deinstall install_lang
-	@echo '===== Installing Cumulus $(VERSION) under $(INSTALL_PATH) ====='
-	install -d $(INSTALL_PATH)/bin
-	install -d $(INSTALL_PATH)/etc
-	install -d $(INSTALL_PATH)/help/en
-	install -d $(INSTALL_PATH)/icons
-	install -d $(INSTALL_PATH)/icons/small
-	install -d $(INSTALL_PATH)/icons/windarrows
-	install -d $(INSTALL_PATH)/locale/$(LANG)
-	install -d $(INSTALL_PATH)/sounds
-	install --mode=755 cumulus/cumulus $(INSTALL_PATH)/bin
-	install --mode=755 gpsClient/gpsClient $(INSTALL_PATH)/bin
-	install --mode=755 nmeaSimulator/nmeaSimu $(INSTALL_PATH)/bin
-	install --mode=644 etc/glider.pol $(INSTALL_PATH)/etc
-	install --mode=644 icons/*.xpm $(INSTALL_PATH)/icons
-	install --mode=644 icons/*.png $(INSTALL_PATH)/icons
-	install --mode=644 icons/small/* $(INSTALL_PATH)/icons/small
-	install --mode=644 icons/windarrows/* $(INSTALL_PATH)/icons/windarrows
-	install --mode=644 help/*.html icons/cumulus.png $(INSTALL_PATH)/help/en
-	install --mode=644 sounds/Alarm.wav $(INSTALL_PATH)/sounds
+	@echo '===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====='
+	install -d $(INSTALL_ROOT)/bin
+	install -d $(INSTALL_ROOT)/etc
+	install -d $(INSTALL_ROOT)/help/en
+	install -d $(INSTALL_ROOT)/icons
+	install -d $(INSTALL_ROOT)/icons/small
+	install -d $(INSTALL_ROOT)/icons/windarrows
+	install -d $(INSTALL_ROOT)/locale/$(LANG)
+	install -d $(INSTALL_ROOT)/sounds
+	install --mode=755 cumulus/cumulus $(INSTALL_ROOT)/bin
+	install --mode=755 gpsClient/gpsClient $(INSTALL_ROOT)/bin
+	install --mode=755 nmeaSimulator/nmeaSimu $(INSTALL_ROOT)/bin
+	install --mode=644 etc/glider.pol $(INSTALL_ROOT)/etc
+	install --mode=644 icons/*.xpm $(INSTALL_ROOT)/icons
+	install --mode=644 icons/*.png $(INSTALL_ROOT)/icons
+	install --mode=644 icons/small/* $(INSTALL_ROOT)/icons/small
+	install --mode=644 icons/windarrows/* $(INSTALL_ROOT)/icons/windarrows
+	install --mode=644 help/*.html icons/cumulus.png $(INSTALL_ROOT)/help/en
+	install --mode=644 sounds/Alarm.wav $(INSTALL_ROOT)/sounds
 
 .PHONY : install_lang
 install_lang:
-	install -d $(INSTALL_PATH)/locale/$(LANG)
+	install -d $(INSTALL_ROOT)/locale/$(LANG)
 	test -f cumulus/cumulus_de_DE.qm  || touch cumulus/cumulus_de_DE.qm
-	install --mode=644 cumulus/cumulus_de_DE.qm $(INSTALL_PATH)/locale/$(LANG)/cumulus_$(LANG).qm
+	install --mode=644 cumulus/cumulus_de_DE.qm $(INSTALL_ROOT)/locale/$(LANG)/cumulus_$(LANG).qm
 
 .PHONY : deinstall
 deinstall:
-	rm -rf $(INSTALL_PATH)/*
+	rm -rf $(INSTALL_ROOT)/*
 
 .PHONY : langpacks
 langpacks: langpack_de

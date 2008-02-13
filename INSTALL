@@ -29,11 +29,11 @@ Checkout a cumulus snapshot file tree in a local directory of your Linux desktop
 	a) svn co https://svn.heiner-lamprecht.de/svn/repos/cumulus/qt4/trunk
 	b) svn export https://svn.heiner-lamprecht.de/svn/repos/cumulus/qt4/trunk
 
-Variant b) is free from any snv overhead like .svn directories.
+Variant b) is free from any svn overhead like .svn directories.
 
 Step 4)
 
-Go into the local root of your checkout directory. To build the cumulus application issue the following command:
+Go into the root of your checkout directory. To build the cumulus application issue the following command:
 
 	make -f Makefile.x11
 
@@ -45,24 +45,39 @@ To install cumulus issue the following command:
 
 The default installation directory of the application is /opt/cumulus. You need root access to do the installation there. If you would prefer another installation place, you can change the installation directory during call of make install in the following way:
 
-	make -f Makefile.x11 INSTALL_PATH=<my-install-path> install
+	make -f Makefile.x11 INSTALL_ROOT=<my-install-path> install
 
 Step 6)
+
+The needed map data (airfields, airspaces and landscape) have to be installed under:
+
+$HOME/maps or $INSTALL_ROOT/maps
+
+The structure has modified a little bit and look like
+
+        +-airfields
+.../maps+-airspaces
+        +-landscape
+
+Note, that cumulus does up to now only support airspace files in open air format. The former support of KFLog airspace files has been removed.
+
+For airfield files the welt 2000 data base should be used. The KFLog files are out of date. See cumulus help for more information.
+
+The landscape files can be downloaded from the KFLog Map room. Follow the link below to get them.
+
+http://www.kflog.org/maproom/ground-and-terrain-data
+
+Step 7)
 
 To start cumulus issue the command:
 
 	$INSTALL_PATH/bin/cumulus
 
-The needed maps can be installed under:
 
-$HOME/maps or $INSTALL_PATH/maps
+Personal stuff is stored under $HOME/cumulus. There you can find here the task file 'tasks.tsk' and the waypoint file 'cumulus.kwp'
 
-The structure is
+The cumulus configuration file is to find under $HOME/.config/Cumulus.conf.
 
-    +-airfields
-maps+-airspace
-    +-landscape
+Under INSTALL_ROOT/bin you can find a NMEA simulator with name 'nmeaSimu'. You can use it for generation of NMEA data. Call it without any arguments and you will get a help usage displayed. The output of the simulator is written in a named pipe. Select in Cumulus as GPS device /tmp/nmeasim and cumulus will read the data from the simulator.
 
-Note, that cumulus does up to now only support airspace files in open air format. The former support of KFLog airspace files has been removed. For airfield files the welt 2000 data base should be used. The KFLog files are out of date. See cumulus help for more information.
-
-Task files are stores now under $HOME/cumulus as tasks.tsk. The cumulus configuration file is to find under $HOME/.config/Cumulus.conf 
+Have fun with cumulus ...
