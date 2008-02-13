@@ -33,7 +33,7 @@ Variant b) is free from any svn overhead like .svn directories.
 
 Step 4)
 
-Go into the root of your checkout directory. To build the cumulus application issue the following command:
+Go into the trunk directory of your checkout copy. To build the cumulus application issue the following command:
 
 	make -f Makefile.x11
 
