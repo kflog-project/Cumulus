@@ -88,12 +88,12 @@ uint OpenAirParser::load( Q3PtrList<Airspace>& list )
   uint loadCounter = 0; // number of successfully loaded files
 
   QStringList preselect;
-  MapContents::addDir(preselect, MapContents::mapDir1 + "/airspace", "*.txt");
-  MapContents::addDir(preselect, MapContents::mapDir1 + "/airspace", "*.txc");
-  MapContents::addDir(preselect, MapContents::mapDir2 + "/airspace", "*.txt");
-  MapContents::addDir(preselect, MapContents::mapDir2 + "/airspace", "*.txc");
-  MapContents::addDir(preselect, MapContents::mapDir3 + "/airspace", "*.txt");
-  MapContents::addDir(preselect, MapContents::mapDir3 + "/airspace", "*.txc");
+  MapContents::addDir(preselect, MapContents::mapDir1 + "/airspaces", "*.txt");
+  MapContents::addDir(preselect, MapContents::mapDir1 + "/airspaces", "*.txc");
+  MapContents::addDir(preselect, MapContents::mapDir2 + "/airspaces", "*.txt");
+  MapContents::addDir(preselect, MapContents::mapDir2 + "/airspaces", "*.txc");
+  MapContents::addDir(preselect, MapContents::mapDir3 + "/airspaces", "*.txt");
+  MapContents::addDir(preselect, MapContents::mapDir3 + "/airspaces", "*.txc");
 
   if(preselect.count() == 0) {
     qWarning( "OpenAirParser: No Open Air files could be found in the map directories" );
@@ -130,7 +130,7 @@ uint OpenAirParser::load( Q3PtrList<Airspace>& list )
     txtName = txcName;
     txtName.replace( txtName.length()-1, 1, QString("t") );
 
-    if ( txtName == preselect.first() ) {
+    if ( ! preselect.isEmpty() && txtName == preselect.first() ) {
       preselect.remove( preselect.begin() );
       // We found the related source file and will do some checks to
       // decide which type of file will be read in.
