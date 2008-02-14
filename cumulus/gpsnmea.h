@@ -2,11 +2,11 @@
                           gpsnmea.h  - NMEA sentence decoding
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by Andre Somers, 2007 Axel Pauli
-    email                : axel@kflog.org, axel@kflog.org
- 
+    copyright            : (C) 2002 by Andre Somers, 2008 by Axel Pauli
+    email                : axel@kflog.org
+
     $Id$
- 
+
 ***************************************************************************/
 
 /***************************************************************************
@@ -76,7 +76,7 @@ class GPSNMEA : public QObject
   public:
 
     /**
-     * defines for altitude bases delivered by gps unit 
+     * defines for altitude bases delivered by gps unit
      */
     enum DeliveredAltitude{MSL=0, HAE=1, USER=2};
     enum connectedStatus{notConnected=0, noFix=1, validFix=2};
@@ -86,7 +86,7 @@ class GPSNMEA : public QObject
     GPSNMEA(QObject*);
     virtual ~GPSNMEA();
     /**
-     * @Returns the current GPS connection status. True if connected, false if not. 
+     * @Returns the current GPS connection status. True if connected, false if not.
      */
     bool getConnected();
 
@@ -309,11 +309,6 @@ class GPSNMEA : public QObject
     void sendLastFix (bool hard, bool soft);
     /** Set system date/time. Input is utc related. */
     void setSystemClock( const QDateTime& utcDt );
-    /** Called if a slot is connected to a signal */
-    void connectNotify( const char * signal );
-    /** Called if a slot is disconnected from a signal */
-    void disconnectNotify( const char * signal );
-
 
   private: // Private attributes
 
@@ -353,15 +348,12 @@ class GPSNMEA : public QObject
     Altitude _userAltitudeCorrection;
     /** Flag to ignore a lost connection, caused by a system clock update */
     bool _ignoreConnectionLost;
-    /** Counter to count the connections to our SatelitesInView() signal */
-    uint cntSIVConnections;
     /** SIV sentence count */
     uint cntSIVSentence;
     /** Published SIV list */
     QList<SIVInfo> sivInfo;
     /** Internal SIV list */
     QList<SIVInfo> sivInfoInternal;
-
 
   private slots: // Private slots
 

@@ -2,11 +2,11 @@
     gpsnmea.cpp  -  Cumulus NMEA interpreter
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by Andre Somers, 2008 Axel Pauli
+    copyright            : (C) 2002 by Andre Somers, 2008 by Axel Pauli
     email                : axel@kflog.org
- 
+
     $Id$
- 
+
 ***************************************************************************/
 
 /***************************************************************************
@@ -32,7 +32,6 @@
 #include "mapmatrix.h"
 #include "mapcalc.h"
 #include "mapview.h"
-
 
 #include "generalconfig.h"
 
@@ -62,7 +61,6 @@ GPSNMEA::GPSNMEA(QObject* parent)
   _lastSpeed=Speed(-1.0);
   _lastHeading=-1;
   _lastDate=QDate::currentDate(); // set date to a valid value
-  cntSIVConnections = 0;
   cntSIVSentence = 1;
 
   //init satellite info
@@ -227,12 +225,8 @@ void GPSNMEA::slot_sentence(const QString& sentenceIn)
           else
             if (slst[0]=="$GPGSV")
               { // GSV - GNSS Satellites in View
-                //if ( cntSIVConnections > 0 ) {
                 // qDebug("%s", sentenceIn.toLatin1().data());
                 __ExtractSatsInView(slst);
-                //}
-                // At the moment, we are only interested in the number of them in view.
-                //__ExtractSatcount(slst[3]);
               }
             else
               if (slst[0]=="$CLK") // maybe this is specific to Fortuna PocketTrack
@@ -261,7 +255,7 @@ QTime GPSNMEA::__ExtractTime(const QString& timestring)
   // format is defined as hhmmss.sss. But we will not use it to avoid problems
   // with our fixes.
 
-  QTime res=QTime( hh.toInt() ,mm.toInt(), ss.toInt() );
+  QTime res = QTime( hh.toInt(), mm.toInt(), ss.toInt() );
 
   // @AP: don't overtake invalid times. They will cause invalid fixes!
   if( ! res.isValid() )
@@ -333,10 +327,10 @@ Speed GPSNMEA::__ExtractKnotSpeed(const QString& speedstring)
 /** This function converts the coordinate data from the NMEA sentence to the internal QPoint format. */
 QPoint GPSNMEA::__ExtractCoord(const QString& slat, const QString& slatNS, const QString& slon, const QString& slonEW)
 {
-  /*The internal KFLog format for coordinates represents coordinates in 10.000'st of a minute.
-    So, one minute corresponds to 10.000, one degree to 600.000 and one second to 167.
+  /* The internal KFLog format for coordinates represents coordinates in 10.000'st of a minute.
+     So, one minute corresponds to 10.000, one degree to 600.000 and one second to 167.
 
-    KFLogCoord = degrees * 600000 + minutes * 10000
+     KFLogCoord = degrees * 600000 + minutes * 10000
   */
 
   int lat,  lon;
@@ -801,7 +795,7 @@ void GPSNMEA::forceReset ()
 
 
 /** This function calculates the checksum in the sentence.
- 
+
 NMEA-0183 Standard
 The optional checksum field consists of a "*" and two hex digits
 representing the exclusive OR of all characters between, but not
@@ -988,20 +982,3 @@ void GPSNMEA::__ExtractSatsInView(const QString& id, const QString& elev, const 
   sivInfoInternal.append(sivi);
   //qDebug("new sivi info (snr: %d", sivi->db);
 }
-
-
-/** Called if a slot is connected to a signal */
-void GPSNMEA::connectNotify( const char * /*signal*/ )
-{
-  if (receivers("newSatInViewInfo()") != 0)
-    cntSIVConnections = 1;
-}
-
-
-/** Called if a slot is disconnected from a signal */
-void GPSNMEA::disconnectNotify( const char * /*signal*/ )
-{
-  if (receivers("newSatInViewInfo()") == 0)
-    cntSIVConnections = 0;
-}
-
