@@ -6,27 +6,36 @@ Cumulus changelog
 [-] Removed
 [o] Modified
 
-#=================================================================================#
-# Please add your changes always on top according to the following format rule:   #
-#                                                                                 #
-# [<what>] <Date as YYY-MM-DD> <Short name sign>: <description of modification>   #
-#                                                                                 #
-# Thankyou Axel ;-))                                                              #
-#=================================================================================#
+#===============================================================================#
+# Please add your changes always on top according to the following format rule: #
+#                                                                               #
+# [<what>] <Date as YYY-MM-DD> <Short name sign>: <description of modification> #
+#                                                                               #
+# Thankyou Axel ;-))                                                            #
+#===============================================================================#
 
-----------------------------------------------
-Cumulus 2.0.0 (Development based on X11/Qt-4.3)
------------------------------------------------
+-------------------------------------------------
+Cumulus 2.0.0 (Development based on X11/Qt-4.3.3)
+-------------------------------------------------
+
+[-] 2008-02-13 AP: Bugfix: partly wrong usage of QMessageBox. The result was
+                   checked against a hard coded interger value instead using
+                   the QMessageBox enumration types. The enums are modified
+                   to Qt4, therefore the hard coded compare did not work.
 [o] 2008-02-12 AP: Ground, Map and Terrain files moved to the new subdirectory landscape under maps
 [o] 2008-02-12 AP: Subdirectory maps/airspace renamed to maps/airspaces
 [o] 2008-02-12 AP: Maps are searched now under $INSTALL_DIR/maps and $HOME/maps
 [-] 2008-02-12 AP: Support for KFLog airspace files has been removed. Only open air files
                    are read in up to now.
+[-] 2008-02-09 AP: Bugfix: Left and right key where bound in manual mode to
+                   map zoom and position move. Map zoom was removed to fix it.
+[-] 2008-02-09 AP: Bugfix: States of menu items show waypoint labels and show
+                   waypoint extra info were never saved.
 [+] 2008-02-08 AP: Portage of cumulus from Qtopia-2.0 and Qt-2.3.7 to X11/Qt-4.3 finished.
                    First build of a release based on Qt/X11 with several porting bugs.
-		   Optimization of widgets is also required.
+                   Optimization of widgets is also required.
 
-	
+
 -------------------------------------------------------
 Cumulus 1.3.1 (Development based on Qtopia-2.0 Qt-2.3.7)
 -------------------------------------------------------
@@ -115,11 +124,11 @@ Cumulus 1.3 (23.12.2006)
 [+] openair parser improved by additional mapping possibility provided as configuration file,
     Help descriptions for English and German updated
 [+] Custom mappings for OpenAir airspace types can now be added by placing a simple mapping
-    file with the map file itself. Changed default CTR mapping back to AS-C. 
+    file with the map file itself. Changed default CTR mapping back to AS-C.
 [+] Welt 2000 data base is available as alternative airfield source now
     Help descriptions for English and German updated
 [-] Bugfix: elevation error in welt 2000 parser fixed, usage extended from 3 digits to 4
-[+] OpenAir generates precompiled files after parsing now, that will sensible reduce the read time after restart 
+[+] OpenAir generates precompiled files after parsing now, that will sensible reduce the read time after restart
 [+] Airspace filling is now configurable. A filling percentage can be set for each "nearness".
     The filling can change when there are changes in the nearness of the airspace.
 [+] Altimeter toggle mode is now configurable via the general setup information tabulator
@@ -156,7 +165,7 @@ Cumulus 1.2.1 (2.3.2005)
 [+] Runways draw in their direction from database
 [+] Dialog to select an airfield not in waypoint list
 [+] Dialog with an overview of your selected task and select waypoints from it.
-[o] All list-type views (Waypoint list, Reachable list, Airfield list, Task list) are now 
+[o] All list-type views (Waypoint list, Reachable list, Airfield list, Task list) are now
     combined using tabs.
 [o] Some profiling led to some optimisations that speed up Cumulus significantly.
 [o] To support Ms Windows users better, the case of the filenames for maps doesn't matter
@@ -190,12 +199,12 @@ Cumulus 1.2.1 (2.3.2005)
             solved also problem with hardware key regognizing and routing
 [-] Bugfix: Airspace Warning message texts were sometimes not fully readable
 [o] Most of the configuration items moved to class GeneralConfig
-[o] Map icon directory /opt/QtPalmtop/mapicons renamed to /opt/QtPalmtop/cumulus, cumulus.png 
+[o] Map icon directory /opt/QtPalmtop/mapicons renamed to /opt/QtPalmtop/cumulus, cumulus.png
     also move into this new location
 [+] GPS status dialog. Displays an overview of the currently available satelites. Press 'G' to display.
 [o] Speedup for selecting a waypoint or an airfield from the list.
 [-] Bugfix: Wind arrow for 360 was missing
-[o] A warning is being issued when the config dialog is cancelled and gliderlist or the advanced map 
+[o] A warning is being issued when the config dialog is cancelled and gliderlist or the advanced map
     settings have been modified.
 [+] Display arrival altitude for all waypoints if requested.
 
