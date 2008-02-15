@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -19,16 +19,16 @@
 #define WPEDITDIALOG_H
 
 #include <QWidget>
-#include <Q3TabDialog>
+#include <QDialog>
 #include <QTextEdit>
 #include "waypoint.h"
 
 /**
  * The WPEditDialog allows the editing of waypoint.
- * @author André Somers
+ * @author Andrï¿½ Somers
  */
 
-class WPEditDialog : public Q3TabDialog
+class WPEditDialog : public QDialog
 {
     Q_OBJECT
 public:
