@@ -78,7 +78,12 @@ install_lang:
 
 .PHONY : deinstall
 deinstall:
-	cd $(INSTALL_ROOT); rm -rf bin etc help icons locale sounds
+	@if [ -d  $(INSTALL_ROOT)/maps ]; \
+	then \
+	        cd $(INSTALL_ROOT); rm -rf bin etc help icons locale sounds; \
+        else \
+                rm -rf $(INSTALL_ROOT)/*; \
+        fi
 
 .PHONY : langpacks
 langpacks: langpack_de
