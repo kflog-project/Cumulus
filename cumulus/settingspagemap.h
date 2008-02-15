@@ -28,6 +28,7 @@
 #include <QStringList>
 #include <QLineEdit>
 #include <QSpinBox>
+#include <QHBoxLayout>
 
 #include "coordedit.h"
 #include "projectionbase.h"
@@ -169,6 +170,9 @@ protected:
 
     // Radius around home position for welt 2000 data file
     QSpinBox* homeRadius;
+
+    // ok and cancel button
+    QHBoxLayout* buttonBox;
 
     /**
      * Reimplemented from QDialog

@@ -31,7 +31,7 @@ SettingsPageMap::SettingsPageMap(QWidget *parent, const char *name ) : QWidget(p
   advancedPage = new SettingsPageMapAdv(this, "advancedMapPage");
 
   lvLoadOptions = new Q3ListView(this, "loadoptionlist");
-  lvLoadOptions->addColumn(tr("Load / show map object"),192);
+  lvLoadOptions->addColumn(tr("Load / show map object"),180);
   lvLoadOptions->setAllColumnsShowFocus(true);
   topLayout->addMultiCellWidget(lvLoadOptions,0,0,0,1);
   topLayout->setRowStretch(row++,100);
@@ -144,10 +144,12 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent, const char *name)
   currentProjType = ProjectionBase::Unknown;
 
   setCaption(tr("Advanced map settings"));
-  QGridLayout * topLayout = new QGridLayout(this, 7, 2, 5);
+
+  QGridLayout *topLayout = new QGridLayout(this);
+
   int row=0;
 
-  topLayout->addWidget(new QLabel(tr("Projection:"), this), row,0);
+  topLayout->addWidget(new QLabel(tr("Projection:"), this), row, 0 );
   cmbProjection=new QComboBox(this);
   topLayout->addWidget(cmbProjection, row++, 1);
   cmbProjection->insertItem(tr("Lambert"));
@@ -155,15 +157,15 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent, const char *name)
   connect(cmbProjection, SIGNAL(activated(int)),
           this, SLOT(slotSelectProjection(int)));
 
-  topLayout->addWidget(new QLabel(tr("1. St. Parallel:"), this), row,0);
+  topLayout->addWidget(new QLabel(tr("1. St. Parallel:"), this), row, 0);
   edtLat1=new LatEdit(this);
   topLayout->addWidget(edtLat1, row++, 1);
 
-  topLayout->addWidget(new QLabel(tr("2. St. Parallel:"), this), row,0);
+  topLayout->addWidget(new QLabel(tr("2. St. Parallel:"), this), row, 0);
   edtLat2=new LatEdit(this);
   topLayout->addWidget(edtLat2, row++, 1);
 
-  topLayout->addWidget(new QLabel(tr("Origin Lon.:"), this), row,0);
+  topLayout->addWidget(new QLabel(tr("Origin Lon.:"), this), row, 0);
   edtLon=new LongEdit(this);
   topLayout->addWidget(edtLon, row++, 1);
 
@@ -172,7 +174,7 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent, const char *name)
   //------------------------------------------------------------------------------
 
   Q3GroupBox* weltGroup = new Q3GroupBox( tr("Welt2000"), this );
-  topLayout->addMultiCellWidget( weltGroup, row, row ,0, 1 );
+  topLayout->addWidget( weltGroup, row, 0, 1, 2 );
   row++;
 
   QGridLayout* weltLayout = new QGridLayout( weltGroup, 3, 3, 5 );
@@ -224,18 +226,29 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent, const char *name)
 
   chkDeleteAfterCompile = new QCheckBox(tr("Delete original maps after compiling"),
                                         this );
-  topLayout->addMultiCellWidget(chkDeleteAfterCompile, row, row ,0, 1);
+  topLayout->addWidget(chkDeleteAfterCompile, row, 0, 1, 2);
   row++;
 
-  chkUnloadUnneeded = new QCheckBox(tr("Immediately unload unneeded maps"),
-                                    this );
-  topLayout->addMultiCellWidget(chkUnloadUnneeded, row, row ,0, 1);
+  chkUnloadUnneeded = new QCheckBox(tr("Immediately unload unneeded maps"), this );
+  topLayout->addWidget(chkUnloadUnneeded, row, 0, 1, 2);
   row++;
 
   topLayout->setRowStretch(row, 20);
 
+  buttonBox           = new QHBoxLayout();
+  QPushButton *ok     = new QPushButton(tr("Ok"));
+  QPushButton *cancel = new QPushButton(tr("Cancel"));
+
+  buttonBox->addWidget(ok);
+  buttonBox->addWidget(cancel);
+
+  topLayout->addLayout( buttonBox, row, 1, 1, 2, Qt::AlignRight );
+
   connect( countryFilter, SIGNAL(textChanged(const QString&)),
            this, SLOT(slot_filterChanged(const QString&)) );
+
+  connect( ok, SIGNAL(clicked()), this, SLOT(accept()) );
+  connect( cancel, SIGNAL(clicked()), this, SLOT(reject()) );
   
 }
 
@@ -370,12 +383,11 @@ void SettingsPageMapAdv::reject()
   QDialog::reject();
 }
 
-// We will check, if the contry entires of welt 2000 are correct. If
+// We will check, if the country entires of welt 2000 are correct. If
 // not a warning message is displayed and the accept is rejected.
 void SettingsPageMapAdv::accept()
 {
-   QStringList clist = QStringList::split( QRegExp("[, ]"),
-                                          countryFilter->text() );
+  QStringList clist = countryFilter->text().split( QRegExp("[, ]"), QString::SkipEmptyParts );
 
   for( QStringList::Iterator it = clist.begin(); it != clist.end(); ++it )
     {
