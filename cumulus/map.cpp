@@ -747,13 +747,6 @@ void Map::resizeEvent(QResizeEvent* event)
          event->size().width(), event->size().height(),
          m_pixPaintBuffer.width(), m_pixPaintBuffer.height() );
 
-  // check, what size was changed
-  if( event->size() == m_pixPaintBuffer.size() )
-    {
-      qDebug("Map::resizeEvent(): EventSize=BufferSize->ignore Event");
-      return; // we assume, that the menu bar has been hidden and ignore this event
-    }
-
   if( event->size().width()  == m_pixPaintBuffer.width() &&
       event->size().height() < m_pixPaintBuffer.height() &&
       (m_pixPaintBuffer.height() - event->size().height()) <= 35 )
