@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -70,10 +70,10 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent, const char *na
 
   // init comboboxes
   QStringList &tlist = BaseMapElement::getSortedTranslationList();
-
   for( int i=0; i < tlist.size(); i++ )
     {
-      cmbType->insertItem( tlist.at(i) );
+	if (!tlist.at(i).isEmpty())
+          cmbType->insertItem( tlist.at(i) );
     }
 
   QLabel * lblGCall = new QLabel(tr("Importance:"), this);
