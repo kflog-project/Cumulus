@@ -269,6 +269,8 @@ class MapView : public QWidget
     QLabel* _statusFlightstatus;
     /** reference to filler for statusbar */
     QLabel* _statusFiller;
+    /** reference to menu toggle */
+    CuLabel* _menuToggle;
     /** timer to reset font for logging indicator */
     QTimer* loggingTimer;
     /** index of mode select button 0: MSL,  1: GND */
