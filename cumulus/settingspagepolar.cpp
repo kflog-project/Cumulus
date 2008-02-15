@@ -52,11 +52,9 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, const char *name, Glider *
   topLayout->addMultiCellWidget(comboType,row,row,1,4);
   topLayout->addRowSpacing(row++,10);
 
-  bgSeats=new Q3ButtonGroup(1, Qt::Vertical, tr("Seats"),this);
-  QRadioButton * seatsOne=new QRadioButton(tr("Single"),this);
-  QRadioButton * seatsTwo=new QRadioButton(tr("Double"),this);
-  bgSeats->insert(seatsOne);
-  bgSeats->insert(seatsTwo);
+  bgSeats=new QGroupBox(tr("Seats"),this);
+  seatsOne=new QRadioButton(tr("Single"),bgSeats);
+  seatsTwo=new QRadioButton(tr("Double"),bgSeats);
   seatsOne->setChecked(true);
   bgSeats->hide();
 
@@ -115,8 +113,8 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, const char *name, Glider *
   topLayout->addWidget(spinV3,row,1);
   topLayout->addWidget(new QLabel(tr("km/h"), this),row,2);
   spinW3 = new QDoubleSpinBox(this);
-  spinW2->setRange(-5.0, 0);
-  spinW2->setSingleStep(0.01);
+  spinW3->setRange(-5.0, 0);
+  spinW3->setSingleStep(0.01);
   spinW3->setButtonSymbols(QSpinBox::PlusMinus);
   topLayout->addWidget(spinW3,row,3);
   topLayout->addWidget(new QLabel(tr("m/s"), this),row++,4);
@@ -155,20 +153,22 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, const char *name, Glider *
   connect (buttonShow, SIGNAL(clicked()),
            this, SLOT(slotButtonShow()));
 
-  _polars.setAutoDelete(true);
   readPolarData();
   slot_load();
 }
 
 
 SettingsPagePolar::~SettingsPagePolar()
-{}
+{
+  while (!_polars.isEmpty())
+    delete _polars.takeFirst();	
+}
 
 
 Polar* SettingsPagePolar::getPolar()
 {
   int pos = comboType->currentItem();
-  if (pos >= 0 && (uint)pos < _polars.count())
+  if ((pos >= 0) && (pos < _polars.count()))
     return _polars.at(pos);
   else
     return NULL;
@@ -197,7 +197,10 @@ void SettingsPagePolar::slot_load()
     edtGCall->setText(_glider->callsign());
 
     spinWater->setValue(_glider->maxWater());
-    bgSeats->setButton(int(_glider->seats())); //ugly shortcut (but hey, it works! ;-) )
+    if (_glider->seats() == 2)
+      seatsTwo->setChecked(true);
+    else
+      seatsOne->setChecked(true);
 
     spinV1->setValue(_glider->polar()->v1().getKph());
     spinV2->setValue(_glider->polar()->v2().getKph());
@@ -224,7 +227,10 @@ void SettingsPagePolar::slot_save()
   _glider->setRegistration(edtGReg->text().stripWhiteSpace());
   _glider->setCallsign(edtGCall->text().stripWhiteSpace());
   _glider->setMaxWater(spinWater->value());
-  _glider->setSeats(Glider::seat(bgSeats->id(bgSeats->selected())));    //ugly shortcut
+  if (seatsTwo->isChecked())
+    _glider->setSeats(Glider::doubleSeater);
+  else
+    _glider->setSeats(Glider::singleSeater);
 
   Speed V1, V2, V3, W1, W2, W3;
   V1.setKph(spinV1->value());
@@ -388,7 +394,11 @@ void SettingsPagePolar::slotActivated(const QString& /*type*/)
     double load = _polar->grossWeight() - _polar->emptyWeight();
     addedLoad->setValue((int) load);
     spinWater->setValue(_polar->maxWater());
-    bgSeats->setButton(int(_polar->seats()-1)) ;
+    if (_polar->seats() == 2)
+      seatsTwo->setChecked(true);
+    else
+      seatsOne->setChecked(true);
+
   }
 
   _glider->setPolar(_polar);

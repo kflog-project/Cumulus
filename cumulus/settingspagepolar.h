@@ -23,8 +23,9 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
-#include <Q3PtrList>
-#include <Q3ButtonGroup>
+#include <QRadioButton>
+#include <QList>
+#include <QGroupBox>
 
 #include "coordedit.h"
 #include "polar.h"
@@ -91,14 +92,16 @@ protected:
     QSpinBox* emptyWeight;
     QSpinBox* addedLoad;
     QSpinBox* spinWater;
-    Q3ButtonGroup* bgSeats;
+    QGroupBox* bgSeats;
+    QRadioButton* seatsOne;
+    QRadioButton* seatsTwo;
 
     virtual void accept();
 
 
 private:
     void readPolarData ();
-    Q3PtrList<Polar> _polars;
+    QList<Polar*> _polars;
     Glider * _glider;
     Polar  * _polar;
     bool isNew;
