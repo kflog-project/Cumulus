@@ -664,6 +664,7 @@ void CumulusApp::initMenuBar()
   //  actionHelp->addTo(helpMenu);
   //  actionWhatsThis->addTo( helpMenu );
   actionHelpAboutApp->addTo( helpMenu );
+  actionHelpAboutQt->addTo( helpMenu );
 
   menuBar()->setFont( font );
 
@@ -798,8 +799,14 @@ void CumulusApp::initActions()
 
   actionHelpAboutApp = new Q3Action( tr( "About Cumulus" ), tr( "About Cumulus" ),
                                      Qt::Key_V, this );
+
   connect( actionHelpAboutApp, SIGNAL( activated() ),
            this, SLOT( slotVersion() ) );
+
+  actionHelpAboutQt = new Q3Action( tr( "About Qt" ), tr( "About Qt" ),
+                                     Qt::Key_Q, this );
+
+  connect( actionHelpAboutQt, SIGNAL(activated()), qApp, SLOT(aboutQt()) );
 }
 
 /**

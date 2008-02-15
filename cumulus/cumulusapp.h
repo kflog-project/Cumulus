@@ -308,6 +308,7 @@ class CumulusApp : public QMainWindow
     Q3Action* actionSetupInFlight;
     Q3Action* actionHelp;
     Q3Action* actionHelpAboutApp;
+    Q3Action* actionHelpAboutQt;
     Q3Action* actionWhatsThis;
     /** file_menu contains all items of the menubar entry "File" */
     Q3PopupMenu *fileMenu;
