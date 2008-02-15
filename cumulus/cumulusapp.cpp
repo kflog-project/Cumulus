@@ -273,10 +273,10 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
 
   QFont fnt( "Helvetica", 12, QFont::Bold );
 
-  viewWP = new WaypointListView( 0, "WaypointListView" );
-  viewAF = new AirfieldListView( 0, "AirfieldListView" );
-  viewRP = new ReachpointListView( 0, "ReachpointListView" );
-  viewTP = new TaskListView( 0, "TaskListView" );
+  viewWP = new WaypointListView( this, "WaypointListView" );
+  viewAF = new AirfieldListView( this, "AirfieldListView" );
+  viewRP = new ReachpointListView( this, "ReachpointListView" );
+  viewTP = new TaskListView( this, "TaskListView" );
   viewWP->setFont( fnt );
   viewAF->setFont( fnt );
   viewRP->setFont( fnt );
