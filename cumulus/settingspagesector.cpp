@@ -56,8 +56,8 @@ SettingsPageSector::SettingsPageSector( QWidget *parent, const char *name ) :
   QRadioButton* cylinder = new QRadioButton( tr("Cylinder"), csScheme );
   QRadioButton* sector   = new QRadioButton( tr("Sector"), csScheme );
   
-  cylinder->setMaximumHeight(11);
-  sector->setMaximumHeight(11);
+  cylinder->setMaximumHeight(15);
+  sector->setMaximumHeight(15);
   cylinder->setEnabled(true);
   sector->setEnabled(true);
   sector->setChecked(true);
@@ -74,8 +74,8 @@ SettingsPageSector::SettingsPageSector( QWidget *parent, const char *name ) :
   QRadioButton* nearst   = new QRadioButton( tr("Nearst"), ntScheme );
   QRadioButton* touched  = new QRadioButton( tr("Touched"), ntScheme );
  
-  nearst->setMaximumHeight(11);
-  touched->setMaximumHeight(11);
+  nearst->setMaximumHeight(15);
+  touched->setMaximumHeight(15);
   nearst->setEnabled(true);
   touched->setEnabled(true);
   touched->setChecked(true);
