@@ -16,8 +16,10 @@ ftp.trolltech.com/qt/source. I recommend at the moment the release:
 
 ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-4.3.3.tar.gz
 
-I did the portage with this release. To install it follow the instructions of Trolltech. For cumulus you need the Qt3 support. Do not forget to activate it
-during run of configure script. If you want to debug cumulus together with Qt it is recommend to activate the debug option during run of the configure script.
+I did the portage with this release. To install it follow the instructions of Trolltech.
+For cumulus you need the Qt3 support. Do not forget to activate it
+during run of configure script. If you want to debug cumulus together with Qt it is
+recommend to activate the debug option during run of the configure script.
 
 If you want to use your own built Qt version, you should add the
 <QT_INSTALLDIR>/bin component at the first position of your PATH variable.
