@@ -427,7 +427,7 @@ void Map::paintEvent(QPaintEvent* event)
 
   if( mutex() )
     {
-      qDebug("Map::paintEvent(): mutex is locked, returning");
+      qDebug("Map::paintEvent(): mutex is locked");
     }
 
   // We copy always the content from the m_pixPaintBuffer to the paint
@@ -743,7 +743,25 @@ void Map::setDrawing(bool isEnable)
 
 void Map::resizeEvent(QResizeEvent* event)
 {
-  qDebug("Map::resizeEvent(): w=%d, h=%d", event->size().width(), event->size().height() );
+  qDebug("Map::resizeEvent(): w=%d, h=%d, pbw=%d, pbh=%d",
+         event->size().width(), event->size().height(),
+         m_pixPaintBuffer.width(), m_pixPaintBuffer.height() );
+
+  // check, what size was changed
+  if( event->size() == m_pixPaintBuffer.size() )
+    {
+      qDebug("Map::resizeEvent(): EventSize=BufferSize->ignore Event");
+      return; // we assume, that the menu bar has been hidden and ignore this event
+    }
+
+  if( event->size().width()  == m_pixPaintBuffer.width() &&
+      event->size().height() < m_pixPaintBuffer.height() &&
+      (m_pixPaintBuffer.height() - event->size().height()) <= 35 )
+    {
+      qDebug("Map::resizeEvent(): EventSize >= BufferSize-35 ->ignore Event");
+      return; // we assume, that the menu bar has been opened and ignore this event
+    }
+
   // set resize flag
   _isResizeEvent = true;
   // start redrawing of map
