@@ -140,10 +140,7 @@ public:
   /**
    * Get sorted translations
    */
-  static QStringList& getSortedTranslationList()
-    {
-      return sortedTranslations;
-    };
+  static QStringList& getSortedTranslationList();
 
   /**
    * Write property of int MapSegment.

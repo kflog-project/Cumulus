@@ -121,9 +121,9 @@ void BaseMapElement::loadTranslations()
 
   // load sorted translation strings
   for( int i=0; i < objectTranslations.size(); i++ )
-    {
-      sortedTranslations.append( objectTranslations.value(i) );
-    }
+  {
+    sortedTranslations.append( objectTranslations.value(i) );
+  }
 
   sortedTranslations.sort();
 }
@@ -137,6 +137,19 @@ void BaseMapElement::printMapElement(QPainter* , bool )
 void BaseMapElement::drawMapElement(QPainter* , QPainter* )
 {
   qWarning("BaseMapElement::drawMapElement");
+}
+
+/**
+  * Get sorted translations
+  */
+QStringList& BaseMapElement::getSortedTranslationList() {
+  if( objectTranslations.isEmpty() ) {
+    // Load object - translation data
+    loadTranslations();
+  }
+  qDebug ("BaseMapElement::getSortedTranslationList: size: %d", objectTranslations.size());
+
+  return sortedTranslations;
 }
 
 
