@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -15,6 +15,12 @@
 **
 ***********************************************************************/
 
+#include <QPushButton>
+#include <QTabWidget>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
+
 #include "wpeditdialog.h"
 #include "wpeditdialogpagegeneral.h"
 #include "wpeditdialogpageaero.h"
@@ -22,27 +28,27 @@
 #include "mapmatrix.h"
 
 WPEditDialog::WPEditDialog(QWidget *parent, const char *name, wayPoint * wp ):
-  Q3TabDialog(parent,name, false, Qt::WStyle_StaysOnTop)
+  QDialog(parent,name, false, Qt::WStyle_StaysOnTop)
 {
     if (wp==0) {
-        this->setCaption(tr("New Waypoint"));
+        setWindowTitle(tr("New Waypoint"));
     } else {
-        this->setCaption(tr("Edit Waypoint"));
+        setWindowTitle(tr("Edit Waypoint"));
     }
     _wp = wp;
 
-    setOkButton();
-    setCancelButton();
-
     WPEditDialogPageGeneral * pageGeneral=new WPEditDialogPageGeneral(this);
-    addTab(pageGeneral, tr("&General"));
-
     WPEditDialogPageAero * pageAero=new WPEditDialogPageAero(this);
-    addTab(pageAero, tr("&Aero"));
-
     comment=new QTextEdit(this);
     comment->setWordWrapMode(QTextOption::WordWrap);
-    addTab(comment, tr("&Comments"));
+
+    QTabWidget* tabWidget = new QTabWidget (this);
+    tabWidget->addTab(pageGeneral, tr("&General"));
+    tabWidget->addTab(pageAero, tr("&Aero"));
+    tabWidget->addTab(comment, tr("&Comments"));
+
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                      | QDialogButtonBox::Cancel);
 
     connect(this, SIGNAL(aboutToShow()),
             this, SLOT(slot_LoadCurrent()));
@@ -54,9 +60,16 @@ WPEditDialog::WPEditDialog(QWidget *parent, const char *name, wayPoint * wp ):
             pageGeneral, SLOT(slot_save(wayPoint *)));
     connect(this, SIGNAL(save(wayPoint *)),
             pageAero, SLOT(slot_save(wayPoint *)));
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    showPage(comment);
-    showPage(pageGeneral);
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget(tabWidget);
+    mainLayout->addWidget(buttonBox);
+    setLayout (mainLayout);
+
+    tabWidget->showPage(comment);
+    tabWidget->showPage(pageGeneral);
 }
 
 
@@ -80,6 +93,7 @@ extern MapMatrix   *_globalMapMatrix;
 /** Called if OK button is pressed? */
 void WPEditDialog::accept()
 {
+    qDebug ("WPEditDialog::accept");
     if (_wp==0) {
         _wp=new wayPoint;
         _wp->comment=comment->text();
@@ -95,6 +109,6 @@ void WPEditDialog::accept()
     }
 
     emit save(_wp);
-    Q3TabDialog::accept();
+    QDialog::accept();
     emit wpListChanged(_wp);
 }
