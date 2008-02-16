@@ -36,10 +36,10 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, const char *name, Glider *
   : QDialog(parent,name, false, Qt::WStyle_StaysOnTop)
 {
   if (glider==0) {
-    this->setCaption(tr("New Glider"));
+    setCaption(tr("New Glider"));
     isNew = true;
   } else {
-    this->setCaption(tr("Edit Glider"));
+    setCaption(tr("Edit Glider"));
     isNew = false;
   }
   _glider=glider;
@@ -321,6 +321,8 @@ void SettingsPagePolar::readPolarData ()
       }
       _polars.append(pol);
     }
+    QString firstGlider = comboType->itemText(0);
+    slotActivated (firstGlider);
   } else {
     _globalMapView->message( tr("Missing polar file") );
     qWarning ("Could not open polar file: %s", file.name().toLatin1().data());
@@ -374,7 +376,7 @@ void SettingsPagePolar::readPolarData ()
 
 
 /** called when a glider type has been selected */
-void SettingsPagePolar::slotActivated(const QString& /*type*/)
+void SettingsPagePolar::slotActivated(const QString& type)
 {
   // qDebug ("SettingsPagePolar::slotActivated(%s)", type.toLatin1().data());
   if(!_glider) {
@@ -402,6 +404,7 @@ void SettingsPagePolar::slotActivated(const QString& /*type*/)
   }
 
   _glider->setPolar(_polar);
+  _glider->setType (type);
 }
 
 
