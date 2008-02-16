@@ -397,7 +397,7 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent,
   altUnit = Altitude::getUnit();
   QString unit = (altUnit == Altitude::meters) ? "m" : "ft";
 
-  QBoxLayout * topLayout = new QVBoxLayout(this, 5);
+  QVBoxLayout *topLayout = new QVBoxLayout(this, 5);
 
   enableWarning = new QCheckBox(tr("Enable Airspace Warning"), this, "EnableWarnings");
   enableWarning->setChecked(true);
@@ -408,7 +408,7 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent,
   separations = new QWidget(this);
   topLayout->addWidget(separations);
 
-  QGridLayout * mVGroupLayout = new QGridLayout(separations, 7, 5, 5);
+  QGridLayout* mVGroupLayout = new QGridLayout(separations);
   int row=0;
   mVGroupLayout->addRowSpacing(0,8);
   row++;
@@ -473,6 +473,23 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent,
   row++;
 
   topLayout->addStretch(5);
+
+  QGridLayout* buttonBox = new QGridLayout;
+  QPushButton *ok        = new QPushButton(tr("Ok"));
+  QPushButton *cancel    = new QPushButton(tr("Cancel"));
+
+  buttonBox->setColumnStretch(0, 100);
+  buttonBox->setHorizontalSpacing (5);
+  buttonBox->addWidget(ok, 0, 1, Qt::AlignRight);
+  buttonBox->addWidget(cancel, 0, 2, Qt::AlignRight);
+
+  QWidget* buttonWt = new QWidget(this);
+  buttonWt->setLayout( buttonBox );
+
+  connect( ok, SIGNAL(clicked()), this, SLOT(accept()) );
+  connect( cancel, SIGNAL(clicked()), this, SLOT(reject()) );
+
+  topLayout->addWidget( buttonWt );
 }
 
 
@@ -575,6 +592,7 @@ void SettingsPageAirspaceWarnings::slot_query_close( bool& warn, QStringList& wa
 void SettingsPageAirspaceWarnings::reject()
 {
   slot_load();
+  QDialog::reject(); 
 }
 
 void SettingsPageAirspaceWarnings::enabledToggled( bool enabled )

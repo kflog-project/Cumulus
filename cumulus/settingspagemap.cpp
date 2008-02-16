@@ -247,7 +247,7 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent, const char *name)
   connect( countryFilter, SIGNAL(textChanged(const QString&)),
            this, SLOT(slot_filterChanged(const QString&)) );
 
-  connect( ok, SIGNAL(clicked()), this, SLOT(accept()) );
+  connect( ok, SIGNAL(clicked()), this, SLOT(slot_save()) );
   connect( cancel, SIGNAL(clicked()), this, SLOT(reject()) );
   
 }
