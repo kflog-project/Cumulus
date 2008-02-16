@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2004 by Axel Pauli (axel.pauli@onlinehome.de)
+ **   Copyright (c): 2004, 2008 by Axel Pauli (axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -31,7 +31,7 @@ VarioModeDialog::VarioModeDialog (QWidget *parent) :
   QDialog( parent, "VarioModeDialog", true,
            Qt::WStyle_StaysOnTop )
 {
-  setCaption (tr("Vario"));
+  setWindowTitle (tr("Vario"));
   QGridLayout* topLayout = new QGridLayout(this, 8, 3, 5);
 
   QFont fnt( "Helvetica", 16, QFont::Bold  );

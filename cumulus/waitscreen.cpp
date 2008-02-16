@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andre Somers, 2007 Axel Pauli
+**   Copyright (c):  2002 by Andre Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -31,7 +31,7 @@ WaitScreen::WaitScreen(QWidget *parent, const char *name)
         : QDialog(parent,name,false,Qt::WStyle_Customize | Qt::WStyle_StaysOnTop | Qt::WStyle_NoBorderEx | Qt::WStyle_Title)
 {
     _screenUsage = true;
-    QWidget::setCaption(tr("Please wait..."));
+    QWidget::setWindowTitle(tr("Please wait..."));
 
     QGridLayout * backLayout = new QGridLayout(this, 3,3,0);
     QGridLayout * topLayout = new QGridLayout(3,2,5);

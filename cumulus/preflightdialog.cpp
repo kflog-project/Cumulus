@@ -30,7 +30,7 @@ extern MapContents * _globalMapContents;
 PreFlightDialog::PreFlightDialog(QWidget * parent, const char * name):
     Q3TabDialog(parent, "PreFlightDialog", true, Qt::WStyle_StaysOnTop)
 {
-  setCaption(tr("Cumulus Preflight settings"));
+  setWindowTitle(tr("Cumulus Preflight settings"));
   setOkButton();
   setCancelButton();
 

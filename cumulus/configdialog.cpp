@@ -25,7 +25,7 @@ ConfigDialog::ConfigDialog(QWidget * parent, const char * name) :
 {
   // qDebug("height=%d, width=%d", parent->height(), parent->width());
 
-  setCaption(tr("Cumulus settings"));
+  setWindowTitle(tr("Cumulus settings"));
   setOkButton();
   setCancelButton();
 

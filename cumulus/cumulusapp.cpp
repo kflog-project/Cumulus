@@ -139,7 +139,7 @@ void CumulusApp::slotNotification( const QString& msg, const bool sound )
 {
   if ( msg.isEmpty() )
     {
-      setCaption ( "Cumulus: " + calculator->gliderType() );
+      setWindowTitle( "Cumulus: " + calculator->gliderType() );
       return ;
     }
 
@@ -148,7 +148,7 @@ void CumulusApp::slotNotification( const QString& msg, const bool sound )
       playSound();
     }
 
-  setCaption ( msg + " " );
+  setWindowTitle( msg + " " );
   viewMap->message( msg );
 }
 
@@ -218,7 +218,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
   this->installEventFilter( this );
 
   setIcon( GeneralConfig::instance()->loadPixmap( "cumulus.png" ) );
-  setCaption( "Cumulus" );
+  setWindowTitle( "Cumulus" );
 
   // use showMaximized() only for PDA
   show();
@@ -571,7 +571,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
   calculator->setGlider( GliderList::getStoredSelection() );
   QString gt = calculator->gliderType();
 
-  if ( !gt.isEmpty() ) setCaption ( "Cumulus - " + gt );
+  if ( !gt.isEmpty() ) setWindowTitle ( "Cumulus - " + gt );
 
   viewMap->_theMap->setDrawing( true );
 
@@ -1577,7 +1577,7 @@ void CumulusApp::slotPreFlight(const char *tabName)
 void CumulusApp::slotPreFlightDataChanged()
 {
   // qDebug("CumulusApp::slotPreFlightDataChanged()");
-  setCaption ( "Cumulus - " + calculator->gliderType() );
+  setWindowTitle( "Cumulus - " + calculator->gliderType() );
 
   if ( _globalMapContents->getCurrentTask() == 0 )
     {

@@ -46,14 +46,14 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
     {
       planTask = task;
       editState = TaskDialog::edit;
-      this->setCaption(planTask->getTaskTypeString());
+      this->setWindowTitle(planTask->getTaskTypeString());
       editedTaskName = task->getTaskName();
     }
   else
     {
       planTask = new FlightTask( 0, false, "" );
       editState = TaskDialog::create;
-      this->setCaption(tr("New Task"));
+      this->setWindowTitle(tr("New Task"));
     }
 
   taskName = new QLineEdit( this );
@@ -173,7 +173,7 @@ void TaskDialog::__showTask()
 {
   if( taskWPList.count() == 0 )
     {
-      this->setCaption(tr("New Task"));
+      this->setWindowTitle(tr("New Task"));
       return;
     }
 
@@ -182,7 +182,7 @@ void TaskDialog::__showTask()
   QString txt = planTask->getTaskTypeString() +
                 " / " + planTask->getTaskDistanceString();
 
-  this->setCaption(txt);
+  this->setWindowTitle(txt);
 
   Q3PtrList<wayPoint> tmpList = planTask->getWPList();
 

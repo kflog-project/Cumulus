@@ -31,7 +31,7 @@ extern MapConfig * _globalMapConfig;
 GliderFlightDialog::GliderFlightDialog (QWidget *parent)
         : QDialog(parent, "gliderflightdialog", true, Qt::WStyle_StaysOnTop)
 {
-    setCaption (tr("Set Flight Parameters"));
+    setWindowTitle (tr("Set Flight Parameters"));
     QGridLayout* topLayout = new QGridLayout(this, 3,3,5);
 
     QFont fnt( "Helvetica", 16, QFont::Bold  );
