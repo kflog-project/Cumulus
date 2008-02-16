@@ -143,7 +143,7 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent, const char *name)
 {
   currentProjType = ProjectionBase::Unknown;
 
-  setCaption(tr("Advanced map settings"));
+  setWindowTitle(tr("Advanced map settings"));
 
   QGridLayout *topLayout = new QGridLayout(this);
 
