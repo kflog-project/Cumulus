@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Eckhard Voellm 
+**   Copyright (c):  2004 by Eckhard Voellm
+**                   2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -33,7 +34,7 @@ int AltimeterModeDialog::_mode = 0; // MSL mode
 AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
     : QDialog(parent, "altimetermodedialog", true, Qt::WStyle_StaysOnTop)
 {
-  setCaption (tr("Altimeter"));
+  setWindowTitle(tr("Altimeter"));
   QGridLayout* topLayout = new QGridLayout(this, 3,3,5);
 
   QFont fnt( "Helvetica", 16, QFont::Bold  );
