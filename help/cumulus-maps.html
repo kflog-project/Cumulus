@@ -40,16 +40,17 @@
     <p>
     The maps can be installed in any of three places:
     <ul>
-      <li>On the PDA itself, in $HOME/Applications/cumulus/maps/. This is the preferred location.
+      <li>In $HOME/maps/. This is the preferred location.
           Cumulus will try this directory first.</li>
-      <li>On the CF card, in a directory /maps under the root.</li>
+      <li>In the in installlation area, normally under /opt/cumulus/maps.</li>
       <li>On the SD card, also in a directory /maps under the root.</li>
     </ul>
     </p>
 
-    The airfield and the airspace files have to be put in extra
+    The ground data files have to be put in a subdirectory <i>landscape</i>.
+    The airfield and the airspace files have to be put in 
     subdirectories in <i>maps</i> with the names <i>airfields</i> and
-    <i>airspace</i> respectively. See below for more information on
+    <i>airspaces</i> respectively. See below for more information on
     these map files.
 
     <p>Maps, just like waypoints and tasks, will be shared with KFLog/Embedded.
