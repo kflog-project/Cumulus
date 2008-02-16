@@ -25,7 +25,7 @@ PolarDialog::PolarDialog(const Polar* polar, QWidget* parent)
     _polar = const_cast<Polar*>(polar);
 
     setBackgroundColor (Qt::white);
-    setCaption (polar->name());
+    setWindowTitle (polar->name());
 
     acc = new Q3Accel(this);
 
