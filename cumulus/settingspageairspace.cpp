@@ -193,9 +193,10 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent,
     const char *name)
     : QDialog(parent, name, true, Qt::WStyle_StaysOnTop)
 {
-  setCaption(tr("Airspace filling settings"));
+  setWindowTitle(tr("Airspace filling settings"));
+  setSizeGripEnabled(false);
 
-  QBoxLayout * topLayout = new QVBoxLayout(this, 5);
+  QVBoxLayout * topLayout = new QVBoxLayout(this);
 
   m_enableFilling = new QCheckBox(tr("Enable airspace filling"),
                                   this, "enable_airspace_filling");
@@ -206,7 +207,7 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent,
   m_separations = new QWidget(this);
   topLayout->addWidget(m_separations);
 
-  QGridLayout * mVGroupLayout = new QGridLayout(m_separations, 7,5,5);
+  QGridLayout * mVGroupLayout = new QGridLayout(m_separations);
   int row=0;
   mVGroupLayout->addRowSpacing(0,8);
   row++;
@@ -291,6 +292,23 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent,
   row++;
 
   topLayout->addStretch(5);
+
+  QGridLayout* buttonBox = new QGridLayout;
+  QPushButton *ok        = new QPushButton(tr("Ok"));
+  QPushButton *cancel    = new QPushButton(tr("Cancel"));
+
+  buttonBox->setColumnStretch(0, 100);
+  buttonBox->setHorizontalSpacing (5);
+  buttonBox->addWidget(ok, 0, 1, Qt::AlignRight);
+  buttonBox->addWidget(cancel, 0, 2, Qt::AlignRight);
+
+  QWidget* buttonWt = new QWidget(this);
+  buttonWt->setLayout( buttonBox );
+
+  connect( ok, SIGNAL(clicked()), this, SLOT(accept()) );
+  connect( cancel, SIGNAL(clicked()), this, SLOT(reject()) );
+
+  topLayout->addWidget( buttonWt );
 }
 
 
@@ -372,6 +390,7 @@ void SettingsPageAirspaceFilling::slot_query_close(bool& warn, QStringList& warn
 void SettingsPageAirspaceFilling::reject()
 {
   slot_load();
+  QDialog::reject(); 
 }
 
 
@@ -389,7 +408,7 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent,
     const char *name)
     : QDialog(parent, name, true, Qt::WStyle_StaysOnTop)
 {
-  setCaption(tr("Airspace warning settings"));
+  setWindowTitle(tr("Airspace warning settings"));
 
   // save current altitude unit. This unit must be considered during
   // storage. The internal storage is always in meters.
@@ -397,7 +416,7 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent,
   altUnit = Altitude::getUnit();
   QString unit = (altUnit == Altitude::meters) ? "m" : "ft";
 
-  QVBoxLayout *topLayout = new QVBoxLayout(this, 5);
+  QVBoxLayout *topLayout = new QVBoxLayout(this);
 
   enableWarning = new QCheckBox(tr("Enable Airspace Warning"), this, "EnableWarnings");
   enableWarning->setChecked(true);

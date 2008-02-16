@@ -33,18 +33,18 @@
 extern MapView *_globalMapView;
 
 SettingsPagePolar::SettingsPagePolar(QWidget *parent, const char *name, Glider * glider )
-  : QDialog(parent,name, false, Qt::WStyle_StaysOnTop)
+  : QDialog(parent,name, true, Qt::WStyle_StaysOnTop)
 {
   if (glider==0) {
-    setCaption(tr("New Glider"));
+    setWindowTitle(tr("New Glider"));
     isNew = true;
   } else {
-    setCaption(tr("Edit Glider"));
+    setWindowTitle(tr("Edit Glider"));
     isNew = false;
   }
   _glider=glider;
 
-  QGridLayout* topLayout = new QGridLayout(this, 10, 5, 5);
+  QGridLayout* topLayout = new QGridLayout(this);
   int row=0;
 
   topLayout->addWidget(new QLabel(tr("Glider type:"), this), row, 0);
@@ -139,6 +139,24 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, const char *name, Glider *
   buttonShow = new QPushButton (tr("Show Polar"), this);
   topLayout->addMultiCellWidget(buttonShow, row, row, 3, 4);
   row++;
+
+  // Add ok and cancel buttons
+  QGridLayout* buttonBox = new QGridLayout;
+  QPushButton *ok        = new QPushButton(tr("Ok"));
+  QPushButton *cancel    = new QPushButton(tr("Cancel"));
+
+  buttonBox->setColumnStretch(0, 100);
+  buttonBox->setHorizontalSpacing (5);
+  buttonBox->addWidget(ok, 0, 1, Qt::AlignRight);
+  buttonBox->addWidget(cancel, 0, 2, Qt::AlignRight);
+
+  QWidget* buttonWt = new QWidget(this);
+  buttonWt->setLayout( buttonBox );
+
+  connect( ok, SIGNAL(clicked()), this, SLOT(accept()) );
+  connect( cancel, SIGNAL(clicked()), this, SLOT(reject()) );
+
+  topLayout->addWidget( buttonWt, row, 0, 1, 6 );
 
   topLayout->setColStretch (0, 10);
   topLayout->setColStretch (1, 20);

@@ -26,35 +26,36 @@
 SettingsPagePersonal::SettingsPagePersonal(QWidget *parent, const char *name ) :
     QWidget(parent,name), loadConfig(true)
 {
-  QGridLayout * topLayout = new QGridLayout(this, 8, 3, 5);
+  QGridLayout* topLayout = new QGridLayout(this);
   int row=0;
 
   QLabel * lbl = new QLabel(tr("Pilot name:"), this);
   topLayout->addWidget(lbl, row, 0);
   edtName = new QLineEdit(this);
-  topLayout->addMultiCellWidget(edtName, row, row, 1, 2);
+  topLayout->addWidget(edtName, row, 1, 1, 2);
   row++;
 
   lbl = new QLabel(tr("Date of birth:"), this);
   topLayout->addWidget(lbl, row, 0);
   edtBirth = new QLineEdit(this);
-  topLayout->addMultiCellWidget(edtBirth, row, row, 1, 2);
+  topLayout->addWidget(edtBirth, row, 1, 1, 2);
+  row++;
 
-  topLayout->addRowSpacing(row++, 15);
+  topLayout->setRowMinimumHeight(row++, 10);
 
   lbl = new QLabel(tr("Home site lat.:"), this);
   topLayout->addWidget(lbl, row, 0);
   edtHomeLat = new LatEdit(this, "HomeLat");
-  topLayout->addMultiCellWidget(edtHomeLat, row, row, 1, 2);
+  topLayout->addWidget(edtHomeLat, row, 1, 1, 2);
   row++;
 
   lbl = new QLabel(tr("Home site lon.:"), this);
   topLayout->addWidget(lbl, row, 0);
   edtHomeLong = new LongEdit(this, "HomeLong");
-  topLayout->addMultiCellWidget(edtHomeLong, row, row, 1, 2);
+  topLayout->addWidget(edtHomeLong, row, 1, 1, 2);
   row++;
 
-  //topLayout->addRowSpacing(row++,10);
+  topLayout->setRowStretch(row,10);
 }
 
 SettingsPagePersonal::~SettingsPagePersonal()

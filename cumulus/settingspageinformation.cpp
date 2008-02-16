@@ -23,77 +23,77 @@
 #include "settingspageinformation.h"
 
 SettingsPageInformation::SettingsPageInformation( QWidget *parent, const char *name )
-        : QWidget(parent,name),
-        loadConfig(true)
+        : QWidget(parent,name), loadConfig(true)
 {
     int row=0;
+    QGridLayout *topLayout = new QGridLayout( this );
 
-    QGridLayout *topLayout = new QGridLayout( this, 10, 4, 3 );
+    topLayout->setRowStretch(row++, 10);
 
     topLayout->addWidget(new QLabel(tr("0...60 s"), this,
-                                    "labelSeconds"), row, 3 );
+                                    "labelSeconds"), row, 2 );
     row++;
 
     topLayout->addWidget(new QLabel(tr("Airfield display time:"), this,
                                     "labelAirfield"),row,0);
     spinAirfield = new QSpinBox(0, 60, 1, this, "spinAirfield");
     spinAirfield->setButtonSymbols(QSpinBox::PlusMinus);
-    topLayout->addWidget( spinAirfield, row, 3 );
+    topLayout->addWidget( spinAirfield, row, 2 );
     row++;
 
     topLayout->addWidget(new QLabel(tr("Airspace display time:"), this,
                                     "labelAirspace"),row,0);
     spinAirspace = new QSpinBox(0, 60, 1, this, "spinAirspace");
     spinAirspace->setButtonSymbols(QSpinBox::PlusMinus);
-    topLayout->addWidget( spinAirspace, row, 3 );
+    topLayout->addWidget( spinAirspace, row, 2 );
     row++;
 
     topLayout->addWidget(new QLabel(tr("Info display time:"), this,
                                     "labelInfo" ),row,0);
     spinInfo = new QSpinBox(0, 60, 1, this, "spinInfo");
     spinInfo->setButtonSymbols(QSpinBox::PlusMinus);
-    topLayout->addWidget( spinInfo, row, 3 );
+    topLayout->addWidget( spinInfo, row, 2 );
     row++;
 
     topLayout->addWidget(new QLabel(tr("Waypoint display time:"), this,
                                     "labelWaypoint"),row,0);
     spinWaypoint = new QSpinBox(0, 60, 1, this, "spinWaypoint");
     spinWaypoint->setButtonSymbols(QSpinBox::PlusMinus);
-    topLayout->addWidget( spinWaypoint, row, 3 );
+    topLayout->addWidget( spinWaypoint, row, 2 );
     row++;
 
     topLayout->addWidget(new QLabel(tr("Warning display time:"), this,
                                     "labelWarning" ),row,0);
     spinWarning = new QSpinBox(0, 60, 1, this, "spinWarning");
     spinWarning->setButtonSymbols(QSpinBox::PlusMinus);
-    topLayout->addWidget( spinWarning, row, 3 );
+    topLayout->addWidget( spinWarning, row, 2 );
     row++;
 
     topLayout->addWidget(new QLabel(tr("Warning suppress time (min):"), this,
                                     "labelSuppress" ),row,0);
     spinSuppress = new QSpinBox(0, 600, 1, this, "spinSuppress");
     spinSuppress->setButtonSymbols(QSpinBox::PlusMinus);
-    topLayout->addWidget( spinSuppress, row, 3 );
+    topLayout->addWidget( spinSuppress, row, 2 );
     row++;
 
     checkAlarmSound = new QCheckBox(tr("Alarm Sound"), this, "chkAlarmSound");
     checkAlarmSound->setChecked(true);
-    topLayout->addMultiCellWidget( checkAlarmSound, row, row, 0, 3 );
+    topLayout->addWidget( checkAlarmSound, row, 0, 1, 3 );
     row++;
 
     calculateNearestSites = new QCheckBox(tr("Nearest Site Calculator"),
                                           this, "calcNearest");
     calculateNearestSites->setChecked(true);
-    topLayout->addMultiCellWidget( calculateNearestSites, row, row, 0, 3 );
+    topLayout->addWidget( calculateNearestSites, row, 0, 1, 3 );
     row++;
 
     checkAltimeterToggle = new QCheckBox(tr("Toggle altimeter on tip"),
                                           this, "altimeterToggle");
     checkAltimeterToggle->setChecked(false);
-    topLayout->addMultiCellWidget( checkAltimeterToggle, row, row, 0, 1 );
+    topLayout->addWidget( checkAltimeterToggle, row, 0, 1, 2 );
 
     buttonReset = new QPushButton (tr("Defaults"), this);
-    topLayout->addMultiCellWidget( buttonReset, row, row, 2, 3, Qt::AlignRight );
+    topLayout->addWidget( buttonReset, row, 2, Qt::AlignRight );
     row++;
 
     connect( buttonReset, SIGNAL(clicked()),
@@ -111,9 +111,13 @@ void SettingsPageInformation::slot_load()
     // boxes
 
     if( loadConfig )
+      {
         loadConfig = false;
+      }
     else
+      {
         return;
+      }
 
     GeneralConfig *conf = GeneralConfig::instance();
 
