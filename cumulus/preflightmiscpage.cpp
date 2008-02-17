@@ -19,7 +19,6 @@
 
 #include <QLabel>
 #include <QMessageBox>
-#include <QValidator>
 #include <QGridLayout>
 
 #include "preflightmiscpage.h"
@@ -29,12 +28,11 @@
 
 PreFlightMiscPage::PreFlightMiscPage(QWidget *parent, const char *name ) : QWidget(parent,name)
 {
-  QGridLayout *topLayout = new QGridLayout(this, 6, 3, 5);
+  QGridLayout *topLayout = new QGridLayout(this);
   int row = 0;
 
   QLabel *lbl = new QLabel(tr("Minimal arrival altitude:"), this);
   topLayout->addWidget(lbl, row, 0);
-  topLayout->addRowSpacing(row, 25);
 
   // get current set altitude unit. This unit must be considered during
   // storage. The internal storage is always in meters.
@@ -79,11 +77,15 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent, const char *name ) : QWidg
   topLayout->addWidget(new QLabel( "s", this), row, 2);
   row++;
 
-  topLayout->addRowSpacing(row, 50);
+  topLayout->setRowMinimumHeight( row, 25);
+  row++;
 
   chkLogAutoStart = new QCheckBox(tr("Autostart logging"),this,"log_autostart");
-  topLayout->addMultiCellWidget( chkLogAutoStart, row, row, 0, 2 );
+  topLayout->addWidget( chkLogAutoStart, row, 0, 1, 3 );
   chkLogAutoStart->setChecked(IgcLogger::instance()->getisStandby());
+  row++;
+
+  topLayout->setRowStretch( row, 10 );
 }
 
 
