@@ -15,7 +15,6 @@
 **
 ***********************************************************************/
 
-#include <Q3Accel>
 #include <QMessageBox>
 #include <QDialogButtonBox>
 #include <QShortcut>
@@ -47,9 +46,6 @@ PreFlightDialog::PreFlightDialog(QWidget * parent, const char * name):
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                  | QDialogButtonBox::Cancel);
 
-  Q3Accel *acc = new Q3Accel(this);
-  acc->connectItem(acc->insertItem(Qt::Key_Space),
-                   this, SLOT(accept()));
   QShortcut* scLeft = new QShortcut(this);
   QShortcut* scRight = new QShortcut(this);
   QShortcut* scSpace = new QShortcut(this);
