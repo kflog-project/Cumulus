@@ -30,6 +30,7 @@
 #include <QDateTime>
 #include <QFont>
 #include <QRegExp>
+#include <QShortcut>
 
 #include "tpinfowidget.h"
 #include "generalconfig.h"
@@ -86,10 +87,13 @@ TPInfoWidget::TPInfoWidget( QWidget *parent, const char *name ) :
   connect(timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()));
 
   // activate keyboard shotcut space, ok for close of widget
-  accClose = new Q3Accel( this );
-  accClose->connectItem( accClose->insertItem( Qt::Key_Space ),
+  QShortcut* scSpace = new QShortcut( this );
+  QShortcut* scClose = new QShortcut( this );
+  scSpace->setKey( Qt::Key_Space );
+  scSpace->setKey( 0x104d );
+  connect( scSpace, SIGNAL(activated()),
                          this, SLOT( slot_Close() ));
-  accClose->connectItem( accClose->insertItem( 0x104d ),
+  connect( scClose, SIGNAL(activated()),
                          this, SLOT( slot_Close() ));
 }
 

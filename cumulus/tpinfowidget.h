@@ -31,7 +31,6 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QHBoxLayout>
-#include <Q3Accel>
 
 #include "distance.h"
 #include "speed.h"
@@ -114,9 +113,6 @@ private: // Private objects
    * want to display.
    */
   QTextEdit *text;
-
-  /** Accelerator for closing widget */
-  Q3Accel *accClose;
 
   /**  */
   QPushButton *cmdClose;
