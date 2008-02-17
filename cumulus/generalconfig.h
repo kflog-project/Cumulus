@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2004 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -31,7 +31,7 @@
 
 /**
   * @short Configuration encapsulation class
-  * @author André Somers
+  * @author Andrï¿½ Somers
   *
   * This class is used to store and retrieve all kinds of
   * configuration options. This class is a singleton class. Use the
@@ -79,12 +79,16 @@ public:
     Nearst=0,
     Touched=1
   };
+
+private:
   /**
+   * is private, this is a singleton class
    * Constructor. The relevant settings are loaded on construction.
    * @see load
    */
-  
     GeneralConfig();
+
+public:
     /**
      * Destructor. The contained settings are stored before destruction.
      * @see save
