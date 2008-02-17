@@ -16,6 +16,7 @@
 ***********************************************************************/
 
 #include <QKeySequence>
+#include <QShortcut>
 
 #include "polardialog.h"
 
@@ -27,22 +28,35 @@ PolarDialog::PolarDialog(const Polar* polar, QWidget* parent)
     setBackgroundColor (Qt::white);
     setWindowTitle (polar->name());
 
-    acc = new Q3Accel(this);
+    QShortcut* rcUp =        new QShortcut(this);
+    QShortcut* rcDown =      new QShortcut(this);
+    QShortcut* rcShiftUp =   new QShortcut(this);
+    QShortcut* rcShiftDown = new QShortcut(this);
+    QShortcut* rcLeft =      new QShortcut(this);
+    QShortcut* rcRight =     new QShortcut(this);
+    QShortcut* rcSpace =     new QShortcut(this);
+    rcUp->setKey        (Qt::Key_Up);
+    rcDown->setKey      (Qt::Key_Down);
+    rcShiftUp->setKey   (Qt::Key_Up + Qt::SHIFT);
+    rcShiftDown->setKey (Qt::Key_Down + Qt::SHIFT);
+    rcLeft->setKey      (Qt::Key_Left);
+    rcRight->setKey     (Qt::Key_Right);
+    rcSpace->setKey     (Qt::Key_Space);
 
-    acc->connectItem(acc->insertItem(Qt::Key_Up),
-                     this, SLOT(slot_keyup()));
-    acc->connectItem(acc->insertItem(Qt::Key_Down),
-                     this, SLOT(slot_keydown()));
-    acc->connectItem(acc->insertItem(Qt::Key_Up + Qt::SHIFT),
-                     this, SLOT(slot_shiftkeyup()));
-    acc->connectItem(acc->insertItem(Qt::Key_Down + Qt::SHIFT),
-                     this, SLOT(slot_shiftkeydown()));
-    acc->connectItem(acc->insertItem(Qt::Key_Left),
-                     this, SLOT(slot_keyleft()));
-    acc->connectItem(acc->insertItem(Qt::Key_Right),
-                     this, SLOT(slot_keyright()));
-    acc->connectItem(acc->insertItem(Qt::Key_Space),
-                     this, SLOT(slot_keyhome()));
+    connect(rcUp,       SIGNAL(activated()),
+            this,       SLOT(slot_keyup()));
+    connect(rcDown,     SIGNAL(activated()),
+            this,       SLOT(slot_keydown()));
+    connect(rcShiftUp,  SIGNAL(activated()),
+            this,       SLOT(slot_shiftkeyup()));
+    connect(rcShiftDown,SIGNAL(activated()),
+            this,       SLOT(slot_shiftkeydown()));
+    connect(rcLeft,     SIGNAL(activated()),
+            this,       SLOT(slot_keyleft()));
+    connect(rcRight,    SIGNAL(activated()),
+            this,       SLOT(slot_keyright()));
+    connect(rcSpace,    SIGNAL(activated()),
+            this,       SLOT(slot_keyhome()));
     show();
 }
 

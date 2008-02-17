@@ -19,7 +19,7 @@
 #define POLARDIALOG_H
 
 #include <QDialog>
-#include <Q3Accel>
+#include <QShortcut>
 
 #include "speed.h"
 #include "polar.h"
@@ -33,7 +33,6 @@ class PolarDialog : public QDialog
 public:
     PolarDialog(const Polar*, QWidget*);
     virtual ~PolarDialog();
-    Q3Accel *acc;
 
 public slots:
     void slot_keyup();
