@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2003 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -119,13 +119,13 @@ void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
 }
 void GpsStatusDialog::accept()
 {
-  delete this;
+  //delete this;
 }
 
 
 void GpsStatusDialog::reject()
 {
-  delete this;
+  //delete this;
 }
 
 
