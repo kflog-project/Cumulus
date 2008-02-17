@@ -52,10 +52,13 @@ PreFlightDialog::PreFlightDialog(QWidget * parent, const char * name):
                    this, SLOT(accept()));
   QShortcut* scLeft = new QShortcut(this);
   QShortcut* scRight = new QShortcut(this);
+  QShortcut* scSpace = new QShortcut(this);
   scLeft->setKey (Qt::Key_Left);
   scRight->setKey (Qt::Key_Right);
+  scSpace->setKey (Qt::Key_Space);
   connect(scLeft,    SIGNAL(activated()),this, SLOT(keyLeft()));
   connect(scRight,   SIGNAL(activated()),this, SLOT(keyRight()));
+  connect(scSpace,   SIGNAL(activated()),this, SLOT(accept()));
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
