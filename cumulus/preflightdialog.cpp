@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2003 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -17,7 +17,8 @@
 
 #include <Q3Accel>
 #include <QMessageBox>
-#include <Q3TabDialog>
+#include <QDialogButtonBox>
+#include <QShortcut>
 
 #include "preflightdialog.h"
 #include "mapcontents.h"
@@ -28,40 +29,52 @@
 extern MapContents * _globalMapContents;
 
 PreFlightDialog::PreFlightDialog(QWidget * parent, const char * name):
-    Q3TabDialog(parent, "PreFlightDialog", true, Qt::WStyle_StaysOnTop)
+    QDialog(parent, "PreFlightDialog", true, Qt::WStyle_StaysOnTop)
 {
   setWindowTitle(tr("Cumulus Preflight settings"));
-  setOkButton();
-  setCancelButton();
+
+  tabWidget = new QTabWidget (this);
 
   gliderpage = new PreFlightGliderPage(this,"gliderpage");
-  addTab(gliderpage, tr("&Glider"));
+  tabWidget->addTab(gliderpage, tr("&Glider"));
 
   taskpage=new TaskList(this, "taskpage");
-  addTab(taskpage, tr("&Task"));
+  tabWidget->addTab(taskpage, tr("&Task"));
 
   miscpage =new PreFlightMiscPage(this,"miscpage");
-  addTab(miscpage, tr("&Common"));
+  tabWidget->addTab(miscpage, tr("&Common"));
+
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                 | QDialogButtonBox::Cancel);
 
   Q3Accel *acc = new Q3Accel(this);
   acc->connectItem(acc->insertItem(Qt::Key_Space),
                    this, SLOT(accept()));
-  acc->connectItem(acc->insertItem(Qt::Key_Left),
-                   this, SLOT(keyLeft()));
-  acc->connectItem(acc->insertItem(Qt::Key_Right),
-                   this, SLOT(keyRight()));
+  QShortcut* scLeft = new QShortcut(this);
+  QShortcut* scRight = new QShortcut(this);
+  scLeft->setKey (Qt::Key_Left);
+  scRight->setKey (Qt::Key_Right);
+  connect(scLeft,    SIGNAL(activated()),this, SLOT(keyLeft()));
+  connect(scRight,   SIGNAL(activated()),this, SLOT(keyRight()));
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  mainLayout->addWidget(tabWidget);
+  mainLayout->addWidget(buttonBox);
+  setLayout(mainLayout);
 
   miscpage->load();
 
   //check to see which tab to bring forward
   if (QString (name) == "taskselection")
-    {
-      showPage (taskpage);
-    }
+  {
+    tabWidget->showPage (taskpage);
+  }
   else
-    {
-      showPage (gliderpage);
-    }
+  {
+    tabWidget->showPage (gliderpage);
+  }
 
   show();
 }
@@ -152,33 +165,33 @@ void PreFlightDialog::reject()
 
 void PreFlightDialog::keyRight()
 {
-  if( currentPage() == gliderpage )
+  if( tabWidget->currentPage() == gliderpage )
     {
-      showPage(taskpage);
+      tabWidget->showPage(taskpage);
     }
-  else if( currentPage() == taskpage )
+  else if( tabWidget->currentPage() == taskpage )
     {
-      showPage(miscpage);
+      tabWidget->showPage(miscpage);
     }
-  else if( currentPage() == miscpage )
+  else if( tabWidget->currentPage() == miscpage )
     {
-      showPage(gliderpage);
+      tabWidget->showPage(gliderpage);
     }
 }
 
 
 void PreFlightDialog::keyLeft()
 {
-  if(  currentPage() == miscpage )
+  if(  tabWidget->currentPage() == miscpage )
     {
-      showPage(taskpage);
+      tabWidget->showPage(taskpage);
     }
-  else if(  currentPage() == taskpage )
+  else if(  tabWidget->currentPage() == taskpage )
     {
-      showPage(gliderpage);
+      tabWidget->showPage(gliderpage);
     }
-  else if(  currentPage() == gliderpage )
+  else if(  tabWidget->currentPage() == gliderpage )
     {
-      showPage(miscpage);
+      tabWidget->showPage(miscpage);
     }
 }

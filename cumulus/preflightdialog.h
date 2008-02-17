@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2003 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -18,7 +18,8 @@
 #ifndef PREFLIGHTDIALOG_H
 #define PREFLIGHTDIALOG_H
 
-#include <Q3TabDialog>
+#include <QDialog>
+#include <QTabWidget>
 #include "tasklist.h"
 
 class PreFlightGliderPage;
@@ -26,12 +27,12 @@ class PreFlightMiscPage;
 
 /**
  * @short dialog for pre-flight settings
- * @author André Somers
+ * @author Andrï¿½ Somers
  *
  * This dialog provides an interface to set all the pre-flight settings like
  * glidertype, co-pilot, task, amount of water taken on, etc.
  */
-class PreFlightDialog : public Q3TabDialog
+class PreFlightDialog : public QDialog
 {
     Q_OBJECT
 public:
@@ -80,7 +81,7 @@ private:
     TaskList *taskpage;
     PreFlightGliderPage *gliderpage;
     PreFlightMiscPage *miscpage;
-
+    QTabWidget* tabWidget;
 };
 
 #endif
