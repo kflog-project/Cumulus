@@ -157,7 +157,7 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
   connect( listSelectCB, SIGNAL(activated(int)),
            this, SLOT(slotToggleList(int)));
 
-  showMaximized();
+  show();
 }
 
 
