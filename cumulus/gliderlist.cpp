@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -25,7 +25,8 @@
 #include "settingspagepolar.h"
 
 
-SettingsPageGliderList::SettingsPageGliderList(QWidget *parent, const char *name ) : QWidget(parent,name)
+SettingsPageGliderList::SettingsPageGliderList(QWidget *parent, const char *name )
+	: QWidget(parent,name)
 {
     resize(parent->size());
     QBoxLayout *topLayout = new QVBoxLayout( this, 5 );
@@ -75,7 +76,7 @@ void SettingsPageGliderList::showEvent(QShowEvent *)
 /** Called when a new glider needs to be made. */
 void SettingsPageGliderList::slot_new()
 {
-    SettingsPagePolar * dlg=new SettingsPagePolar(0, "glidereditor", 0);
+    SettingsPagePolar * dlg=new SettingsPagePolar(this, "glidereditor", 0);
     connect(dlg, SIGNAL(newGlider(Glider*)), list, SLOT(slot_Added(Glider *)));
 
     dlg->show();
@@ -85,7 +86,7 @@ void SettingsPageGliderList::slot_new()
 /** Called when the selected glider needs must be opened in the editor */
 void SettingsPageGliderList::slot_edit()
 {
-    SettingsPagePolar * dlg=new SettingsPagePolar(0, "glidereditor", list->getSelectedGlider());
+    SettingsPagePolar * dlg=new SettingsPagePolar(this, "glidereditor", list->getSelectedGlider());
     connect(dlg, SIGNAL(editedGlider(Glider *)), list, SLOT(slot_Edited(Glider *)));
 
     dlg->show();
@@ -117,6 +118,7 @@ void SettingsPageGliderList::slot_load()
 
 void SettingsPageGliderList::slot_save()
 {
+qDebug ("SettingsPageGliderList::slot_save");
     list->save();
 }
 
@@ -169,7 +171,7 @@ void GliderList::fillList()
     int i=1;
 
     while(config.contains(keyname.arg(i))) {
-        Glider * glider=new Glider;
+        Glider * glider=new Glider();
         if (glider->load(&config ,i)) {
             Gliders.append(glider);
             new Q3ListViewItem(this, glider->type(), glider->registration(), glider->callsign(), QString::number(glider->lastSafeID()));
@@ -331,7 +333,7 @@ Glider * GliderList::getStoredSelection()
     int i=1;
     
     while(config.contains(keyname.arg(i))) {
-      Glider * glider=new Glider;
+      Glider * glider=new Glider();
       if (glider->load(&config ,i)) {
         if (glider->registration()==stored) {
           return glider;
