@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -16,44 +16,49 @@
  ***********************************************************************/
 
 #include <QMessageBox>
+#include <QDialogButtonBox>
 
 #include "configdialog.h"
 
 
 ConfigDialog::ConfigDialog(QWidget * parent, const char * name) :
-    Q3TabDialog(parent, name, false, Qt::WStyle_StaysOnTop), loadConfig(true)
+    QDialog(parent, name, false, Qt::WStyle_StaysOnTop), loadConfig(true)
 {
   // qDebug("height=%d, width=%d", parent->height(), parent->width());
 
   setWindowTitle(tr("Cumulus settings"));
-  setOkButton();
-  setCancelButton();
+
+  QTabWidget* tabWidget = new QTabWidget (this);
 
   spp=new SettingsPagePersonal(this);
-  addTab(spp, tr("&Personal"));
+  tabWidget->addTab(spp, tr("&Personal"));
 
   spgl=new SettingsPageGliderList(this);
-  addTab(spgl, tr("G&liders"));
+  tabWidget->addTab(spgl, tr("G&liders"));
 
   sps=new SettingsPageSector(this);
-  addTab(sps, tr("&Sector"));
+  tabWidget->addTab(sps, tr("&Sector"));
 
   spg=new SettingsPageGPS(this);
-  addTab(spg, tr("&GPS"));
+  tabWidget->addTab(spg, tr("&GPS"));
 
   spm=new SettingsPageMap(this);
-  addTab(spm, tr("&Map"));
+  tabWidget->addTab(spm, tr("&Map"));
 
   spa=new SettingsPageAirspace(this);
-  addTab(spa, tr("&Airspace"));
+  tabWidget->addTab(spa, tr("&Airspace"));
 
   spu=new SettingsPageUnits(this);
-  addTab(spu, tr("&Units"));
+  tabWidget->addTab(spu, tr("&Units"));
 
   spi=new SettingsPageInformation(this);
-  addTab(spi, tr("&Information"));
+  tabWidget->addTab(spi, tr("&Information"));
 
-  connect(this, SIGNAL(aboutToShow()), this, SLOT(slot_LoadCurrent()));
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                 | QDialogButtonBox::Cancel);
+
+//   there is no aboutToShow in QDialog
+//  connect(this, SIGNAL(aboutToShow()), this, SLOT(slot_LoadCurrent()));
   connect(this, SIGNAL(load()), spp, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spgl, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spg, SLOT(slot_load()));
@@ -80,8 +85,16 @@ ConfigDialog::ConfigDialog(QWidget * parent, const char * name) :
           spm, SLOT(slot_query_close(bool&, QStringList&)));
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
           spa, SLOT(slot_query_close(bool&, QStringList&)));
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-  showPage(spp);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  mainLayout->addWidget(tabWidget);
+  mainLayout->addWidget(buttonBox);
+  setLayout(mainLayout);
+
+  slot_LoadCurrent();
+  tabWidget->showPage(spp);
 }
 
 
@@ -99,12 +112,13 @@ void ConfigDialog::slot_LoadCurrent()
   // config tabs. This can appear, if the screen keypad is pop up and
   // pop down. In this case the signal aboutToShow() is fired.
 
-  // qDebug("slot_LoadCurrent() in config.cpp is called");
+  // qDebug("slot_LoadCurrent() in configdialog.cpp is called");
 
   if( loadConfig )
     loadConfig = false;
-  else
+  else {
     return;
+  }
 
   emit load();
 }
@@ -113,12 +127,13 @@ void ConfigDialog::slot_LoadCurrent()
 /** Called if OK button is pressed */
 void ConfigDialog::accept()
 {
+qDebug ("ConfigDialog::accept");
   // save change states before restoring of data
   bool projectionChange = spm->advancedPage->checkIsProjectionChanged();
   bool welt2000Change   = spm->advancedPage->checkIsWelt2000Changed();
 
   emit save();
-  Q3TabDialog::accept();
+  QDialog::accept();
   emit settingsChanged();
 
   if( projectionChange == false && welt2000Change == true )
@@ -130,7 +145,7 @@ void ConfigDialog::accept()
       emit welt2000ConfigChanged();
     }
 
-  delete this;
+  //delete this;
 }
 
 
@@ -170,7 +185,7 @@ void ConfigDialog::reject()
         }
     }
 
-  Q3TabDialog::reject();
+  QDialog::reject();
   emit reload();
-  delete this;
+  //delete this;
 }

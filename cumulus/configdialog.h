@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -18,7 +18,7 @@
 #ifndef CONFIGDIALOG_H
 #define CONFIGDIALOG_H
 
-#include <Q3TabDialog>
+#include <QDialog>
 #include <QStringList>
 
 #include "settingspagepersonal.h"
@@ -34,10 +34,10 @@
   * @short Configuration dialog
   *
   * This is the configuration dialog for Cumulus
-  * @author André Somers
+  * @author Andrï¿½ Somers
   * @version $Id$
   */
-class ConfigDialog : public Q3TabDialog
+class ConfigDialog : public QDialog
   {
     Q_OBJECT
   public:
