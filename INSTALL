@@ -1,18 +1,21 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt4.x for Linux/Unix
 
-Last update: 2008-02-14 by Axel Pauli
+Last update: 2008-02-18 by Axel Pauli
 
 SVN info: $Id$
 ===============================================================================
 
-These are the instructions to build and install Cumulus from source under Linux.
+These are the instructions to build and install Cumulus from source under
+Linux/Unix.
 
 Step 1)
 
 You will need to set up a building-environment for Qt4.x under X11 with Qt3
-support if it is not already available. Download a X11/Qt release from
-ftp.trolltech.com/qt/source. I recommend at the moment the release:
+support. If it is already available you can continue with step 2)
+
+Otherwise download a X11/Qt release from ftp.trolltech.com/qt/source. I
+recommend at the moment the release:
 
 ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-4.3.3.tar.gz
 
@@ -28,25 +31,24 @@ e.g. BASH example
 
 	export $PATH=<QT_INSTALLDIR>/bin:$PATH
 
-Step 3)
+Step 2)
 
 Checkout a cumulus snapshot file tree in a local directory of your Linux desktop
 with:
 
 	a) svn co https://svn.heiner-lamprecht.de/svn/repos/cumulus/qt4/trunk
-	b) svn export
-https://svn.heiner-lamprecht.de/svn/repos/cumulus/qt4/trunk
+	b) svn export https://svn.heiner-lamprecht.de/svn/repos/cumulus/qt4/trunk
 
 Variant b) is free from any svn overhead like .svn directories.
 
-Step 4)
+Step 3)
 
 Go into the trunk directory of your checkout copy. To build the cumulus
 application issue the following command:
 
 	make -f Makefile.x11
 
-Step 5)
+Step 4)
 
 To install cumulus issue the following command:
 
@@ -61,7 +63,7 @@ following way:
 
 	make -f Makefile.x11 INSTALL_ROOT=<my-install-path> install
 
-Step 6)
+Step 5)
 
 The needed map data (airfields, airspaces and landscape) have to be installed
 under:
@@ -76,18 +78,19 @@ The old structure has been modified a little bit and look like
 .../maps+-airspaces (Only open air file format is supported)
         +-landscape (Use map data from KFLog map room)
 
-Note, that cumulus does up to now only support airspace files in open air
+Note, that cumulus does support up to now only airspace files in open air
 format. The former support of KFLog airspace files has been removed.
 
 For airfields the welt 2000 data base should be used. The KFLog files are out of
-date. See cumulus help for more information how to get it.
+date. See cumulus help under trunk/help/index.html for more information how to
+get it.
 
 The landscape files can be downloaded from the KFLog Map room. Follow the link
 below to get them.
 
 http://www.kflog.org/maproom/ground-and-terrain-data
 
-Step 7)
+Step 6)
 
 To start cumulus issue the command:
 
@@ -99,7 +102,7 @@ Personal stuff is stored under $HOME/cumulus. There you can find the task file
 
 The cumulus configuration file is stored under $HOME/.config/Cumulus.conf.
 
-Step 8)
+Step 7)
 
 Usage of NMEA Simulator
 
