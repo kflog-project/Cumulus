@@ -19,6 +19,7 @@
 #include <QGridLayout>
 #include <Q3HGroupBox>
 #include <QMessageBox>
+#include <QDialogButtonBox>
 
 #include "settingspagemap.h"
 #include "generalconfig.h"
@@ -235,20 +236,16 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent, const char *name)
 
   topLayout->setRowStretch(row, 20);
 
-  buttonBox           = new QHBoxLayout();
-  QPushButton *ok     = new QPushButton(tr("Ok"));
-  QPushButton *cancel = new QPushButton(tr("Cancel"));
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                 | QDialogButtonBox::Cancel);
 
-  buttonBox->addWidget(ok);
-  buttonBox->addWidget(cancel);
-
-  topLayout->addLayout( buttonBox, row, 1, 1, 2, Qt::AlignRight );
+  topLayout->addWidget( buttonBox, row, 1, 1, 2 );
 
   connect( countryFilter, SIGNAL(textChanged(const QString&)),
            this, SLOT(slot_filterChanged(const QString&)) );
 
-  connect( ok, SIGNAL(clicked()), this, SLOT(slot_save()) );
-  connect( cancel, SIGNAL(clicked()), this, SLOT(reject()) );
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
   
 }
 
@@ -383,7 +380,7 @@ void SettingsPageMapAdv::reject()
   QDialog::reject();
 }
 
-// We will check, if the country entires of welt 2000 are correct. If
+// We will check, if the country entries of welt 2000 are correct. If
 // not a warning message is displayed and the accept is rejected.
 void SettingsPageMapAdv::accept()
 {

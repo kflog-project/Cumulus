@@ -22,6 +22,7 @@
 #include <QRadioButton>
 #include <QMessageBox>
 #include <QString>
+#include <QDialogButtonBox>
 
 #include "polardialog.h"
 #include "settingspagepolar.h"
@@ -141,30 +142,19 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, const char *name, Glider *
   row++;
 
   // Add ok and cancel buttons
-  QGridLayout* buttonBox = new QGridLayout;
-  QPushButton *ok        = new QPushButton(tr("Ok"));
-  QPushButton *cancel    = new QPushButton(tr("Cancel"));
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                 | QDialogButtonBox::Cancel);
 
-  buttonBox->setColumnStretch(0, 100);
-  buttonBox->setHorizontalSpacing (5);
-  buttonBox->addWidget(ok, 0, 1, Qt::AlignRight);
-  buttonBox->addWidget(cancel, 0, 2, Qt::AlignRight);
+  topLayout->addWidget( buttonBox, row, 0, 1, 6 );
 
-  QWidget* buttonWt = new QWidget(this);
-  buttonWt->setLayout( buttonBox );
-
-  connect( ok, SIGNAL(clicked()), this, SLOT(accept()) );
-  connect( cancel, SIGNAL(clicked()), this, SLOT(reject()) );
-
-  topLayout->addWidget( buttonWt, row, 0, 1, 6 );
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
   topLayout->setColStretch (0, 10);
   topLayout->setColStretch (1, 20);
   topLayout->setColStretch (2, 10);
-  //topLayout->setRowStretch(row,10);
 
   show();
-  topLayout->activate();
 
   connect (comboType, SIGNAL(activated(const QString&)),
            this, SLOT(slotActivated(const QString&)));

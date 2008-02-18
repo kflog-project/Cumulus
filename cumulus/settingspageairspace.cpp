@@ -18,6 +18,7 @@
 #include <cmath>
 
 #include <QLabel>
+#include <QDialogButtonBox>
 
 #include "airspace.h"
 #include "basemapelement.h"
@@ -293,22 +294,13 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent,
 
   topLayout->addStretch(5);
 
-  QGridLayout* buttonBox = new QGridLayout;
-  QPushButton *ok        = new QPushButton(tr("Ok"));
-  QPushButton *cancel    = new QPushButton(tr("Cancel"));
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                 | QDialogButtonBox::Cancel);
 
-  buttonBox->setColumnStretch(0, 100);
-  buttonBox->setHorizontalSpacing (5);
-  buttonBox->addWidget(ok, 0, 1, Qt::AlignRight);
-  buttonBox->addWidget(cancel, 0, 2, Qt::AlignRight);
+  topLayout->addWidget( buttonBox );
 
-  QWidget* buttonWt = new QWidget(this);
-  buttonWt->setLayout( buttonBox );
-
-  connect( ok, SIGNAL(clicked()), this, SLOT(accept()) );
-  connect( cancel, SIGNAL(clicked()), this, SLOT(reject()) );
-
-  topLayout->addWidget( buttonWt );
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
 
@@ -493,22 +485,13 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent,
 
   topLayout->addStretch(5);
 
-  QGridLayout* buttonBox = new QGridLayout;
-  QPushButton *ok        = new QPushButton(tr("Ok"));
-  QPushButton *cancel    = new QPushButton(tr("Cancel"));
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                 | QDialogButtonBox::Cancel);
 
-  buttonBox->setColumnStretch(0, 100);
-  buttonBox->setHorizontalSpacing (5);
-  buttonBox->addWidget(ok, 0, 1, Qt::AlignRight);
-  buttonBox->addWidget(cancel, 0, 2, Qt::AlignRight);
+  topLayout->addWidget( buttonBox );
 
-  QWidget* buttonWt = new QWidget(this);
-  buttonWt->setLayout( buttonBox );
-
-  connect( ok, SIGNAL(clicked()), this, SLOT(accept()) );
-  connect( cancel, SIGNAL(clicked()), this, SLOT(reject()) );
-
-  topLayout->addWidget( buttonWt );
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
 
