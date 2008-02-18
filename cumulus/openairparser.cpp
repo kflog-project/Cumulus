@@ -89,16 +89,38 @@ uint OpenAirParser::load( Q3PtrList<Airspace>& list )
 
   QStringList preselect;
   MapContents::addDir(preselect, MapContents::mapDir1 + "/airspaces", "*.txt");
+  MapContents::addDir(preselect, MapContents::mapDir1 + "/airspaces", "*.TXT");
   MapContents::addDir(preselect, MapContents::mapDir1 + "/airspaces", "*.txc");
+
   MapContents::addDir(preselect, MapContents::mapDir2 + "/airspaces", "*.txt");
+  MapContents::addDir(preselect, MapContents::mapDir2 + "/airspaces", "*.TXT");
   MapContents::addDir(preselect, MapContents::mapDir2 + "/airspaces", "*.txc");
+
   MapContents::addDir(preselect, MapContents::mapDir3 + "/airspaces", "*.txt");
+  MapContents::addDir(preselect, MapContents::mapDir3 + "/airspaces", "*.TXT");
   MapContents::addDir(preselect, MapContents::mapDir3 + "/airspaces", "*.txc");
 
   if(preselect.count() == 0) {
     qWarning( "OpenAirParser: No Open Air files could be found in the map directories" );
     return loadCounter;
   }
+
+
+  // First check, if we have found a file name in upper letters. May
+  // be true, if a file was downloaded from welt 2000. We will convert
+  // such a file name to lower cases and replace it in the file list.
+  for( int i = 0; i < preselect.size(); ++i )
+    {
+      if ( preselect.at(i).endsWith( ".TXT" ) )
+        {
+          QFileInfo fInfo = preselect.at(i);
+          QString path    = fInfo.absolutePath();
+          QString fn      = fInfo.fileName().toLower();
+          QString newFn   = path + "/" + fn;
+          QFile::rename( preselect.at(i), newFn );
+          preselect[i] = newFn;
+        }
+    }
 
   // source files follows compiled files
   preselect.sort();
@@ -107,7 +129,7 @@ uint OpenAirParser::load( Q3PtrList<Airspace>& list )
     QString txtName, txcName;
     _doCompile = false;
 
-    if ( preselect.first().contains( QString(".txt") ) ) {
+    if ( preselect.first().endsWith( QString(".txt") ) ) {
       // there can't be the same name txc after this txt
       // parse found txt file
       txtName = preselect.first();
