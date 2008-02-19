@@ -153,8 +153,8 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent, const char *name)
   topLayout->addWidget(new QLabel(tr("Projection:"), this), row, 0 );
   cmbProjection=new QComboBox(this);
   topLayout->addWidget(cmbProjection, row++, 1);
-  cmbProjection->insertItem(tr("Lambert"));
-  cmbProjection->insertItem(tr("Plate Carée"));
+  cmbProjection->addItem(tr("Lambert"));
+  cmbProjection->addItem(tr("Plate Carée"));
   connect(cmbProjection, SIGNAL(activated(int)),
           this, SLOT(slotSelectProjection(int)));
 
