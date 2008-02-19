@@ -100,12 +100,13 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
   taskLayout->addWidget( upButton, 4, 7, Qt::AlignCenter );
   taskLayout->addWidget( downButton, 5, 7, Qt::AlignCenter );
 
-  listSelectCB = new QComboBox(false, this);
+  listSelectCB = new QComboBox(this);
+  listSelectCB->setEditable(false);
   listSelectText[0] = tr("Waypoints");
   listSelectText[1] = tr("Airfields");
 
   for(int i=0; i<NUM_LISTS; i++) {
-    listSelectCB->insertItem(listSelectText[i], i);
+    listSelectCB->addItem(listSelectText[i], i);
     waypointList[i] = new Q3ListView( this, "waypointList" );
     waypointList[i]->addColumn( tr("Name") );
     waypointList[i]->addColumn( tr("Description") );
