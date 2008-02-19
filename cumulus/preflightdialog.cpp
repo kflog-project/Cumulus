@@ -46,12 +46,9 @@ PreFlightDialog::PreFlightDialog(QWidget * parent, const char * name):
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                  | QDialogButtonBox::Cancel);
 
-  QShortcut* scLeft = new QShortcut(this);
-  QShortcut* scRight = new QShortcut(this);
-  QShortcut* scSpace = new QShortcut(this);
-  scLeft->setKey (Qt::Key_Left);
-  scRight->setKey (Qt::Key_Right);
-  scSpace->setKey (Qt::Key_Space);
+  QShortcut* scLeft = new QShortcut(Qt::Key_Left, this);
+  QShortcut* scRight = new QShortcut(Qt::Key_Right, this);
+  QShortcut* scSpace = new QShortcut(Qt::Key_Space, this);
   connect(scLeft,    SIGNAL(activated()),this, SLOT(keyLeft()));
   connect(scRight,   SIGNAL(activated()),this, SLOT(keyRight()));
   connect(scSpace,   SIGNAL(activated()),this, SLOT(accept()));
