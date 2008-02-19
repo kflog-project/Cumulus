@@ -33,21 +33,25 @@ SettingsPageUnits::SettingsPageUnits(QWidget *parent, const char *name ) : QWidg
 
   QLabel * lblAlt = new QLabel(tr("Altitude:"), this);
   topLayout->addWidget(lblAlt,row,0);
-  UnitAlt = new QComboBox(false, this, "UnitAlt");
+  UnitAlt = new QComboBox(this);
+  UnitAlt->setObjectName("UnitAlt");
+  UnitAlt->setEditable(false);
   topLayout->addWidget(UnitAlt,row++,1);
-  UnitAlt->insertItem(tr("meters"));
-  UnitAlt->insertItem(tr("feet"));
+  UnitAlt->addItem(tr("meters"));
+  UnitAlt->addItem(tr("feet"));
   altitudes[0]=int(Altitude::meters);
   altitudes[1]=int(Altitude::feet);
 
   QLabel * lblSpeed = new QLabel(tr("Speed:"), this);
   topLayout->addWidget(lblSpeed,row,0);
-  UnitSpeed = new QComboBox(false, this, "UnitSpeed");
+  UnitSpeed = new QComboBox(this);
+  UnitSpeed->setObjectName("UnitSpeed");
+  UnitSpeed->setEditable(false);
   topLayout->addWidget(UnitSpeed,row++,1);
-  UnitSpeed->insertItem(tr("meters per second"));
-  UnitSpeed->insertItem(tr("kilometers per hour"));
-  UnitSpeed->insertItem(tr("knots"));
-  UnitSpeed->insertItem(tr("miles per hour"));
+  UnitSpeed->addItem(tr("meters per second"));
+  UnitSpeed->addItem(tr("kilometers per hour"));
+  UnitSpeed->addItem(tr("knots"));
+  UnitSpeed->addItem(tr("miles per hour"));
   speeds[0]=Speed::metersPerSecond;
   speeds[1]=Speed::kilometersPerHour;
   speeds[2]=Speed::knots;
@@ -55,38 +59,44 @@ SettingsPageUnits::SettingsPageUnits(QWidget *parent, const char *name ) : QWidg
 
   QLabel * lblDistance = new QLabel(tr("Distance:"), this);
   topLayout->addWidget(lblDistance,row,0);
-  UnitDistance = new QComboBox(false, this, "UnitDistance");
+  UnitDistance = new QComboBox(this);
+  UnitDistance->setObjectName("UnitDistance");
+  UnitDistance->setEditable(false);
   topLayout->addWidget(UnitDistance,row++,1);
-  UnitDistance->insertItem(tr("kilometers"));
-  UnitDistance->insertItem(tr("miles"));
-  UnitDistance->insertItem(tr("nautical miles"));
+  UnitDistance->addItem(tr("kilometers"));
+  UnitDistance->addItem(tr("miles"));
+  UnitDistance->addItem(tr("nautical miles"));
   distances[0]=Distance::kilometers;
   distances[1]=Distance::miles;
   distances[2]=Distance::nautmiles;
 
   QLabel * lblVario = new QLabel(tr("Vario:"), this);
   topLayout->addWidget(lblVario,row,0);
-  UnitVario = new QComboBox(false, this, "UnitVario");
+  UnitVario = new QComboBox(this);
+  UnitVario->setObjectName("UnitVario");
+  UnitVario->setEditable(false);
   topLayout->addWidget(UnitVario,row++,1);
-  UnitVario->insertItem(tr("meters per second"));
-  UnitVario->insertItem(tr("feet per minute"));
-  UnitVario->insertItem(tr("knots"));
+  UnitVario->addItem(tr("meters per second"));
+  UnitVario->addItem(tr("feet per minute"));
+  UnitVario->addItem(tr("knots"));
   varios[0]=Speed::metersPerSecond;
   varios[1]=Speed::feetPerMinute;
   varios[2]=Speed::knots;
 
   QLabel * lblWind = new QLabel(tr("Wind:"), this);
   topLayout->addWidget(lblWind,row,0);
-  UnitWind = new QComboBox(false, this, "UnitWind");
+  UnitWind = new QComboBox(this);
+  UnitWind->setObjectName("UnitWind");
+  UnitWind->setEditable(false);
   topLayout->addWidget(UnitWind,row++,1);
 #warning FIXME We need some changes in the Speed object to make it possible to get a separate windspeed unit.
 
-  UnitWind->insertItem(tr("Same as Speed"));
-  UnitWind->insertItem(tr("meters per second"));
-  UnitWind->insertItem(tr("kilometers per hour"));
-  UnitWind->insertItem(tr("knots"));
-  UnitWind->insertItem(tr("miles per hour"));
-  //UnitWind->insertItem(tr("beaufort"));
+  UnitWind->addItem(tr("Same as Speed"));
+  UnitWind->addItem(tr("meters per second"));
+  UnitWind->addItem(tr("kilometers per hour"));
+  UnitWind->addItem(tr("knots"));
+  UnitWind->addItem(tr("miles per hour"));
+  //UnitWind->addItem(tr("beaufort"));
   winds[0]=Speed::metersPerSecond;
   winds[1]=Speed::kilometersPerHour;
   winds[2]=Speed::knots;
@@ -95,10 +105,12 @@ SettingsPageUnits::SettingsPageUnits(QWidget *parent, const char *name ) : QWidg
 
   QLabel * lblDegrees = new QLabel(tr("Position:"), this);
   topLayout->addWidget(lblDegrees,row,0);
-  UnitPosition = new QComboBox(false, this, "");
+  UnitPosition = new QComboBox(this);
+  UnitPosition->setObjectName("UnitPosition");
+  UnitPosition->setEditable(false);
   topLayout->addWidget(UnitPosition,row++,1);
-  UnitPosition->insertItem(tr("ddd°mm'ss\""));
-  UnitPosition->insertItem(tr("ddd°mm.mmm\'"));
+  UnitPosition->addItem(tr("ddd°mm'ss\""));
+   UnitPosition->addItem(tr("ddd°mm.mmm\'"));
   positions[0]=WGSPoint::DMS;
   positions[1]=WGSPoint::DDM;
 
@@ -137,11 +149,11 @@ void SettingsPageUnits::slot_load()
 
   //set the static units for distances, speeds and altitudes. A signal that these (may) have
   //changed is emitted by the container, ConfigDialog
-  Distance::setUnit(Distance::distanceUnit(distances[UnitDistance->currentItem()]));
-  Speed::setHorizontalUnit(Speed::speedUnit(speeds[UnitSpeed->currentItem()]));
-  Speed::setVerticalUnit(Speed::speedUnit(varios[UnitVario->currentItem()]));
-  Altitude::setUnit(Altitude::altitude(altitudes[UnitAlt->currentItem()]));
-  WGSPoint::setFormat(WGSPoint::Format(positions[UnitPosition->currentItem()]));
+  Distance::setUnit(Distance::distanceUnit(distances[UnitDistance->currentIndex()]));
+  Speed::setHorizontalUnit(Speed::speedUnit(speeds[UnitSpeed->currentIndex()]));
+  Speed::setVerticalUnit(Speed::speedUnit(varios[UnitVario->currentIndex()]));
+  Altitude::setUnit(Altitude::altitude(altitudes[UnitAlt->currentIndex()]));
+  WGSPoint::setFormat(WGSPoint::Format(positions[UnitPosition->currentIndex()]));
 }
 
 
@@ -150,21 +162,21 @@ void SettingsPageUnits::slot_save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
   // set the entries
-  conf->setUnitAlt( altitudes[UnitAlt->currentItem()] );
-  conf->setUnitSpeed( speeds[UnitSpeed->currentItem()] );
-  conf->setUnitDist( distances[UnitDistance->currentItem()] );
-  conf->setUnitVario( varios[UnitVario->currentItem()] );
-  conf->setUnitWind( winds[UnitWind->currentItem()] );
-  conf->setUnitPos( positions[UnitPosition->currentItem()] );
+  conf->setUnitAlt( altitudes[UnitAlt->currentIndex()] );
+  conf->setUnitSpeed( speeds[UnitSpeed->currentIndex()] );
+  conf->setUnitDist( distances[UnitDistance->currentIndex()] );
+  conf->setUnitVario( varios[UnitVario->currentIndex()] );
+  conf->setUnitWind( winds[UnitWind->currentIndex()] );
+  conf->setUnitPos( positions[UnitPosition->currentIndex()] );
   conf->save();
 
   //set the static units for distances, speeds and altitudes. A signal that these (may) have
   //changed is emitted by the container, ConfigDialog
-  Distance::setUnit(Distance::distanceUnit(distances[UnitDistance->currentItem()]));
-  Speed::setHorizontalUnit(Speed::speedUnit(speeds[UnitSpeed->currentItem()]));
-  Speed::setVerticalUnit(Speed::speedUnit(varios[UnitVario->currentItem()]));
-  Altitude::setUnit(Altitude::altitude(altitudes[UnitAlt->currentItem()]));
-  WGSPoint::setFormat(WGSPoint::Format(positions[UnitPosition->currentItem()]));
+  Distance::setUnit(Distance::distanceUnit(distances[UnitDistance->currentIndex()]));
+  Speed::setHorizontalUnit(Speed::speedUnit(speeds[UnitSpeed->currentIndex()]));
+  Speed::setVerticalUnit(Speed::speedUnit(varios[UnitVario->currentIndex()]));
+  Altitude::setUnit(Altitude::altitude(altitudes[UnitAlt->currentIndex()]));
+  WGSPoint::setFormat(WGSPoint::Format(positions[UnitPosition->currentIndex()]));
 }
 
 
@@ -189,9 +201,9 @@ int SettingsPageUnits::searchItem(int * p, int value, int max)
 /** this slot is called when a unit has been changed, to make sure this unit is in effect immediatly. */
 void SettingsPageUnits::slotUnitChanged()
 {
-  Distance::setUnit(Distance::distanceUnit(distances[UnitDistance->currentItem()]));
-  Speed::setHorizontalUnit(Speed::speedUnit(speeds[UnitSpeed->currentItem()]));
-  Speed::setVerticalUnit(Speed::speedUnit(varios[UnitVario->currentItem()]));
-  Altitude::setUnit(Altitude::altitude(altitudes[UnitAlt->currentItem()]));
-  WGSPoint::setFormat(WGSPoint::Format(positions[UnitPosition->currentItem()]));
+  Distance::setUnit(Distance::distanceUnit(distances[UnitDistance->currentIndex()]));
+  Speed::setHorizontalUnit(Speed::speedUnit(speeds[UnitSpeed->currentIndex()]));
+  Speed::setVerticalUnit(Speed::speedUnit(varios[UnitVario->currentIndex()]));
+  Altitude::setUnit(Altitude::altitude(altitudes[UnitAlt->currentIndex()]));
+  WGSPoint::setFormat(WGSPoint::Format(positions[UnitPosition->currentIndex()]));
 }
