@@ -73,7 +73,7 @@ TaskList::TaskList( QWidget* parent, const char* name )
   splitter->setOpaqueResize( true );
   taskListView = new Q3ListView( splitter );
 
-  taskListView->addColumn( tr("No"), 20 );
+  taskListView->addColumn( tr("No") );
   taskListView->addColumn( tr("Name") );
   taskListView->addColumn( tr("Type") );
   taskListView->setColumnAlignment(taskListView->addColumn( tr("Distance") ), Qt::AlignRight);
@@ -457,7 +457,7 @@ bool TaskList::saveTaskList()
   QTextStream stream( &f );
 
   // writing file-header
-  stream << "# KFlog/Cumulus-Task-File" << endl;
+  stream << "# KFLog/Cumulus-Task-File" << endl;
 
   for( uint i=0; i < taskList.count(); i++ )
     {
