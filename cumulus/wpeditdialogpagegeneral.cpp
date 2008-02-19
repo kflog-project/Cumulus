@@ -65,7 +65,9 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent, const char *na
 
   QLabel * lblGReg = new QLabel(tr("Type:"), this);
   topLayout->addWidget(lblGReg,row,0);
-  cmbType = new QComboBox(false, this, "Type");
+  cmbType = new QComboBox(this);
+  cmbType->setObjectName("Type");
+  cmbType->setEditable(false);
   topLayout->addWidget(cmbType,row++,1);
 
   // init comboboxes
@@ -73,16 +75,18 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent, const char *na
   for( int i=0; i < tlist.size(); i++ )
     {
 	if (!tlist.at(i).isEmpty())
-          cmbType->insertItem( tlist.at(i) );
+          cmbType->addItem( tlist.at(i) );
     }
 
   QLabel * lblGCall = new QLabel(tr("Importance:"), this);
   topLayout->addWidget(lblGCall,row,0);
-  cmbImportance = new QComboBox(false, this, "Importance");
+  cmbImportance = new QComboBox(this);
+  cmbImportance->setObjectName("Importance");
+  cmbImportance->setEditable(false);
   topLayout->addWidget(cmbImportance,row++,1);
-  cmbImportance->insertItem(tr("low"));
-  cmbImportance->insertItem(tr("normal"));
-  cmbImportance->insertItem(tr("high"));
+  cmbImportance->addItem(tr("low"));
+  cmbImportance->addItem(tr("normal"));
+  cmbImportance->addItem(tr("high"));
 
   topLayout->setRowStretch(row++,10);
 }
