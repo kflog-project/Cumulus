@@ -62,7 +62,9 @@ WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent, const char *name ):
 
   QLabel * lblSurface = new QLabel(tr("Surface:"), this);
   topLayout->addWidget(lblSurface,row,0);
-  cmbSurface = new QComboBox(false, this, "Surface");
+  cmbSurface = new QComboBox(this);
+  cmbSurface->setObjectName("Surface");
+  cmbSurface->setEditable(false);
   topLayout->addWidget(cmbSurface,row++,1);
 
   // init combobox
@@ -70,7 +72,7 @@ WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent, const char *name ):
 
   for( int i=0; i < tlist.size(); i++ )
     {
-      cmbSurface->insertItem( tlist.at(i) );
+      cmbSurface->addItem( tlist.at(i) );
     }
 
   cmbSurface->setCurrentItem(cmbSurface->count()-1);
