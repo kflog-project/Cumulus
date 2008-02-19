@@ -21,6 +21,7 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QToolTip>
 
 #include "airport.h"
 #include "taskdialog.h"
@@ -35,7 +36,7 @@ extern CumulusApp  *_globalCumulusApp;
 
 TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskNamesInUse,
                         FlightTask* task ) :
-    QDialog( parent, name, false, Qt::WStyle_StaysOnTop ),
+    QDialog( parent, name, true, Qt::WStyle_StaysOnTop ),
     taskNamesInUse( taskNamesInUse )
 {
   wpList = _globalMapContents->getWaypointList();
@@ -60,10 +61,10 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
   taskName->setBackgroundMode( Qt::PaletteLight );
 
   taskList = new Q3ListView( this, "taskList" );
-  taskList->addColumn( tr("Id"), 16 );
-  taskList->addColumn( tr("Type"), 45 );
-  taskList->addColumn( tr("Waypoint"), 90 );
-  taskList->addColumn( tr("Distance"), 60 );
+  taskList->addColumn( tr("Id") );
+  taskList->addColumn( tr("Type") );
+  taskList->addColumn( tr("Waypoint") );
+  taskList->addColumn( tr("Distance") );
 
   taskList->setColumnAlignment( 3, Qt::AlignRight );
 
@@ -74,36 +75,63 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
   QPushButton* upButton = new QPushButton( this );
   upButton->setPixmap( GeneralConfig::instance()->loadPixmap( "moveup.png") );
   upButton->setFlat(true);
+  upButton->setToolTip( tr("move line up") );
 
   QPushButton* downButton = new QPushButton( this );
   downButton->setPixmap( GeneralConfig::instance()->loadPixmap( "movedown.png") );
   downButton->setFlat(true);
+  downButton->setToolTip( tr("move line down") );
 
   QPushButton* invertButton = new QPushButton( this );
   invertButton->setPixmap( GeneralConfig::instance()->loadPixmap( "invert.png") );
   invertButton->setFlat(true);
+  invertButton->setToolTip( tr("reverse order") );
 
   QPushButton* addButton = new QPushButton( this );
   addButton->setPixmap( GeneralConfig::instance()->loadPixmap( "moveup.png") );
   addButton->setFlat(true);
+  addButton->setToolTip( tr("add waypoint") );
 
   QPushButton* delButton = new QPushButton( this );
   delButton->setPixmap( GeneralConfig::instance()->loadPixmap( "movedown.png") );
   delButton->setFlat(true);
+  delButton->setToolTip( tr("remove waypoint") );
 
-  QGridLayout* taskLayout = new QGridLayout( this, 12, 8, 2, 1);
+  QPushButton* okButton = new QPushButton( this );
+  okButton->setPixmap( GeneralConfig::instance()->loadPixmap( "standardbutton-apply-16.png") );
+  okButton->setFlat(true);
+  okButton->setToolTip( tr("save task") );
 
-  taskLayout->addMultiCellWidget( new QLabel( tr("Task Name:"), this ), 0, 0, 0, 0 );
-  taskLayout->addMultiCellWidget( taskName, 0, 0, 1, 6 );
-  taskLayout->addMultiCellWidget( taskList, 2, 6, 0, 6 );
-  taskLayout->addWidget( invertButton, 3, 7, Qt::AlignCenter );
-  taskLayout->addWidget( upButton, 4, 7, Qt::AlignCenter );
-  taskLayout->addWidget( downButton, 5, 7, Qt::AlignCenter );
+  QPushButton* cancelButton = new QPushButton( this );
+  cancelButton->setPixmap( GeneralConfig::instance()->loadPixmap( "standardbutton-cancel-16.png") );
+  cancelButton->setFlat(true);
+  cancelButton->setToolTip( tr("cancel task") );
+
+  QGridLayout* taskLayout = new QGridLayout( this );
+  taskLayout->setSpacing(2);
+
+  taskLayout->addWidget( new QLabel( tr("Task Name:"), this ), 0, 0 );
+  taskLayout->addWidget( taskName, 0, 1, 1, 6 );
+  taskLayout->addWidget( taskList, 1, 0, 4, 7 );
+  taskLayout->addWidget( invertButton, 2, 7, Qt::AlignCenter );
+  taskLayout->addWidget( upButton,     3, 7, Qt::AlignCenter );
+  taskLayout->addWidget( downButton,   4, 7, Qt::AlignCenter );
 
   listSelectCB = new QComboBox(this);
   listSelectCB->setEditable(false);
   listSelectText[0] = tr("Waypoints");
   listSelectText[1] = tr("Airfields");
+
+  taskLayout->setRowMinimumHeight( 6, 2 );
+
+  taskLayout->addWidget( listSelectCB, 7, 0 );
+  taskLayout->addWidget( addButton,    7, 2, Qt::AlignCenter  );
+  taskLayout->addWidget( delButton,    7, 3, Qt::AlignCenter  );
+  taskLayout->addWidget( okButton,     7, 5, Qt::AlignCenter  );
+  taskLayout->addWidget( cancelButton, 7, 6, Qt::AlignCenter  );
+
+  taskLayout->setColumnStretch( 1, 10 );
+  taskLayout->setColumnStretch( 4, 10 );
 
   for(int i=0; i<NUM_LISTS; i++) {
     listSelectCB->addItem(listSelectText[i], i);
@@ -114,21 +142,17 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
     waypointList[i]->setAllColumnsShowFocus( true );
     waypointList[i]->setFocus();
     filter[i] = new ListViewFilter(waypointList[i], this, "listfilter");
-    taskLayout->addMultiCellWidget( filter[i], 10, 10, 0, 7 );
-    taskLayout->addMultiCellWidget( waypointList[i], 11, 11, 0, 7 );
+
+    taskLayout->addWidget( filter[i], 10, 0, 1, 8 );
+    taskLayout->addWidget( waypointList[i], 11, 0, 1, 8 );
   }
+
   _globalCumulusApp->viewWP->fillWpList(wpList, waypointList[0], filter[0]);
   _globalCumulusApp->viewAF->fillWpList(waypointList[1], filter[1]);
-
-  taskLayout->addWidget( listSelectCB, 8, 0 );
-  taskLayout->addWidget( addButton, 8, 2, Qt::AlignCenter  );
-  taskLayout->addWidget( delButton, 8, 3, Qt::AlignCenter  );
 
   // first selection is WPList if wp's are defined
   slotToggleList(wpList->count() ? 0 : 1);
 
-  taskLayout->addRowSpacing( 7, 2 );
-  taskLayout->addRowSpacing( 9, 2 );
 
   if( editState == TaskDialog::edit )
     {
@@ -155,6 +179,12 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
            this, SLOT( slotMoveWaypointDown() ) );
   connect( invertButton, SIGNAL( clicked() ),
            this, SLOT( slotInvertWaypoints() ) );
+
+  connect( okButton, SIGNAL( clicked() ),
+           this, SLOT( accept() ) );
+  connect( cancelButton, SIGNAL( clicked() ),
+           this, SLOT( reject() ) );
+
   connect( listSelectCB, SIGNAL(activated(int)),
            this, SLOT(slotToggleList(int)));
 
@@ -165,9 +195,11 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
 TaskDialog::~TaskDialog()
 {
   // qDebug("TaskDialog::~TaskDialog()");
-  for(int i=0; i<NUM_LISTS; i++) {
-    waypointList[i]->clear();
-  }
+
+  for(int i=0; i<NUM_LISTS; i++)
+    {
+      waypointList[i]->clear();
+    }
 }
 
 void TaskDialog::__showTask()
