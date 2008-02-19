@@ -49,7 +49,8 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, const char *name, Glider *
   int row=0;
 
   topLayout->addWidget(new QLabel(tr("Glider type:"), this), row, 0);
-  comboType = new QComboBox(true,this);
+  comboType = new QComboBox(this);
+  comboType->setEditable(true);
   topLayout->addMultiCellWidget(comboType,row,row,1,4);
   topLayout->addRowSpacing(row++,10);
 
@@ -176,7 +177,7 @@ SettingsPagePolar::~SettingsPagePolar()
 
 Polar* SettingsPagePolar::getPolar()
 {
-  int pos = comboType->currentItem();
+  int pos = comboType->currentIndex();
   if ((pos >= 0) && (pos < _polars.count()))
     return _polars.at(pos);
   else
@@ -303,7 +304,7 @@ void SettingsPagePolar::readPolarData ()
         continue;
       QStringList list = line.split( ",", QString::KeepEmptyParts );
       QString glidertype = list[0];
-      comboType->insertItem (glidertype);
+      comboType->addItem (glidertype);
 
       // the sink values are positive in this file; we need them negative
       Speed v1,w1,v2,w2,v3,w3;
@@ -361,7 +362,7 @@ void SettingsPagePolar::readPolarData ()
         if (line[0] == '*')
           continue;
         QStringList list = QStringList::split(',',line,TRUE);
-        comboType->insertItem (glidertype);
+        comboType->addItem (glidertype);
 
         // vertical speeds are already negative in these files !
         Speed v1,w1,v2,w2,v3,w3;
