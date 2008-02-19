@@ -31,54 +31,60 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent, const char *name ) : QWidget(p
     int row=0;
 
     topLayout->addWidget(new QLabel(tr("Serial Device:"), this),row,0);
-    GpsDev = new QComboBox(true, this, "GPSDevice");
+    GpsDev = new QComboBox(this);
+    GpsDev->setObjectName ("GPSDevice");
+    GpsDev->setEditable (true);
     topLayout->addWidget(GpsDev,row++,2);
 
     if( HWINFO->getType() == HwInfo::ipaq39xx ) {
-        GpsDev->insertItem("/dev/tts/0");   // ipaq 39xx does only support this one
-        GpsDev->insertItem("/dev/rfcomm0");
-        GpsDev->insertItem("/dev/rfcomm1");
+        GpsDev->addItem("/dev/tts/0");   // ipaq 39xx does only support this one
+        GpsDev->addItem("/dev/rfcomm0");
+        GpsDev->addItem("/dev/rfcomm1");
     }
     else if( HWINFO->getType() == HwInfo::ipaq38xx )
-        GpsDev->insertItem("/dev/ttySA0");   // ipaq 38xx does only support this one
+        GpsDev->addItem("/dev/ttySA0");   // ipaq 38xx does only support this one
     else {
-        GpsDev->insertItem("/dev/ttyS0");
-        GpsDev->insertItem("/dev/ttyS1");
-        GpsDev->insertItem("/dev/ttyS2");
-        GpsDev->insertItem("/dev/ttyS3");
+        GpsDev->addItem("/dev/ttyS0");
+        GpsDev->addItem("/dev/ttyS1");
+        GpsDev->addItem("/dev/ttyS2");
+        GpsDev->addItem("/dev/ttyS3");
 
 	// Blue Tooth default devices
-        GpsDev->insertItem("/dev/rfcomm0");
-        GpsDev->insertItem("/dev/rfcomm1");
+        GpsDev->addItem("/dev/rfcomm0");
+        GpsDev->addItem("/dev/rfcomm1");
 
 	// automatic search for serial compact flash GPS devices
-        GpsDev->insertItem("CF");
+        GpsDev->addItem("CF");
     }
 
-    GpsDev->insertItem(NMEASIM_DEVICE);
+    GpsDev->addItem(NMEASIM_DEVICE);
 
     topLayout->addWidget(new QLabel(tr("Transfer rate (bps):"), this),row,0);
-    GpsSpeed = new QComboBox(false, this, "GPSSpeed");
+    GpsSpeed = new QComboBox(this);
+    GpsSpeed->setObjectName("GPSSpeed");
+    GpsSpeed->setEditable(false);
     topLayout->addWidget(GpsSpeed,row++,2);
-    GpsSpeed->insertItem("57600");
-    GpsSpeed->insertItem("38400");
-    GpsSpeed->insertItem("19200");
-    GpsSpeed->insertItem("9600");
-    GpsSpeed->insertItem("4800");
-    GpsSpeed->insertItem("2400");
-    GpsSpeed->insertItem("1200");
-    GpsSpeed->insertItem("600");
+    GpsSpeed->addItem("57600");
+    GpsSpeed->addItem("38400");
+    GpsSpeed->addItem("19200");
+    GpsSpeed->addItem("9600");
+    GpsSpeed->addItem("4800");
+    GpsSpeed->addItem("2400");
+    GpsSpeed->addItem("1200");
+    GpsSpeed->addItem("600");
 
     // @AP: Some GPS CF Cards (e.g. BC-307) deliver only height above the WGS 84
     // ellipsoid in GGA record. This is not deriveable from the received
     // record. Therefore we need an additional configuration entry :(
 
     topLayout->addWidget(new QLabel(tr("Altitude:"), this),row,0);
-    GpsAltitude = new QComboBox(false, this, "GPSAltitude");
+    GpsAltitude = new QComboBox(this);
+    GpsAltitude->setObjectName("GPSAltitude");
+    GpsAltitude->setEditable(false);
     topLayout->addWidget(GpsAltitude,row++,2);
-    GpsAltitude->insertItem(tr("MSL"));
-    GpsAltitude->insertItem(tr("HAE"));
-    GpsAltitude->insertItem(tr("User"));
+    GpsAltitude->addItem(tr("MSL"));
+    GpsAltitude->addItem(tr("HAE"));
+    GpsAltitude->addItem(tr("User"));
 
     //AS: Some GPS units (like the Pretec) don't include any form of HAE correction.
     //For these, the user can manually enter the correction.
@@ -162,9 +168,9 @@ void SettingsPageGPS::slot_save()
 
     conf->setGpsDevice( GpsDev->currentText() );
     conf->setGpsSpeed( GpsSpeed->currentText().toInt() );
-    conf->setGpsAltitude( GPSNMEA::DeliveredAltitude(GpsAltitude->currentItem()) );
+    conf->setGpsAltitude( GPSNMEA::DeliveredAltitude(GpsAltitude->currentIndex()) );
 
-    if( GpsAltitude->currentItem() == GPSNMEA::USER ) {
+    if( GpsAltitude->currentIndex() == GPSNMEA::USER ) {
         conf->setGpsUserAltitudeCorrection( Altitude(spinUserCorrection->value()) );
     } else {
         conf->setGpsUserAltitudeCorrection( 0 );
