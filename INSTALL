@@ -82,7 +82,7 @@ Note, that cumulus does support up to now only airspace files in open air
 format. The former support of KFLog airspace files has been removed.
 
 For airfields the welt 2000 data base should be used. The KFLog files are out of
-date. See cumulus help under trunk/help/index.html for more information how to
+date. See cumulus help under trunk/help/en/index.html for more information how to
 get it.
 
 The landscape files can be downloaded from the KFLog Map room. Follow the link
