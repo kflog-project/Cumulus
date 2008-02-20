@@ -25,6 +25,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
+#include "target.h"
 #include "tasklist.h"
 #include "generalconfig.h"
 #include "mapmatrix.h"
@@ -193,7 +194,7 @@ bool TaskList::slotLoadTask()
 # warning task list file 'tasks.tsk' is stored  at $HOME/cumulus/tasks.tsk
 
   // currently hardcoded ...
-  QFile f( QDir::homeDirPath() + "cumulus/tasks.tsk" );
+  QFile f( QDir::homeDirPath() + "/cumulus/tasks.tsk" );
 
   if( !f.open( IO_ReadOnly ) )
     {
@@ -457,7 +458,11 @@ bool TaskList::saveTaskList()
   QTextStream stream( &f );
 
   // writing file-header
-  stream << "# KFLog/Cumulus-Task-File" << endl;
+  QDateTime dt = QDateTime::currentDateTime();
+  QString dtStr = dt.toString(Qt::ISODate);
+
+  stream << "# KFLog/Cumulus-Task-File created at " 
+         << dtStr << " by Cumulus " << CU_VERSION << endl;
 
   for( uint i=0; i < taskList.count(); i++ )
     {
