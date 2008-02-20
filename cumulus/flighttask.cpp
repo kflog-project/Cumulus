@@ -27,6 +27,7 @@
 
 #include "flighttask.h"
 #include "generalconfig.h"
+#include "map.h"
 #include "mapcalc.h"
 #include "cucalc.h"
 #include "speed.h"
@@ -553,9 +554,9 @@ void FlightTask::drawMapElement( QPainter* painter,
   const int ora = (int) rint(OUTR / glMapMatrix->getScale());
   const int ira = (int) rint(INR / glMapMatrix->getScale());
   
-  // fetch desktop measures
-  const int w = QApplication::desktop()->screenGeometry().width();
-  const int h = QApplication::desktop()->screenGeometry().height();
+  // fetch map measures
+  const int w = Map::getInstance()->size().width();
+  const int h = Map::getInstance()->size().height();
   
   // qDebug("QDesktop: w=%d, h=%d, ora=%d", w, h, ora );
   
@@ -839,7 +840,7 @@ void FlightTask::drawCircle( QPainter* painter, QPoint& centerCoordinate,
 
       // A valid color has passed, we have to fill the shape
       painter->setBrush( fillColor );
-      painter->setOpacity( ALPHA );
+      painter->setOpacity( ALPHA/100.0 );
       painter->setPen( Qt::NoPen );
       painter->drawEllipse( centerCoordinate.x()-radius, centerCoordinate.y()-radius,
                             radius*2, radius*2 );
@@ -851,7 +852,7 @@ void FlightTask::drawCircle( QPainter* painter, QPoint& centerCoordinate,
       // We draw the shape after the filling because filling would
       // overwrite our shape
       painter->setBrush(Qt::NoBrush);
-      painter->setPen(QPen(Qt::black));
+      painter->setPen(QPen(QColor(Qt::black), 2));
       painter->drawEllipse( centerCoordinate.x()-radius, centerCoordinate.y()-radius,
                             radius*2, radius*2 );      
     }  
@@ -909,7 +910,7 @@ void FlightTask::drawSector( QPainter* painter,
 
       // A valid color has passed, we have to fill the shape
       painter->setBrush( fillColor );
-      painter->setOpacity( ALPHA );
+      painter->setOpacity( ALPHA/100.0 );
       painter->setPen( Qt::NoPen );
       painter->drawPath( pp );
       painter->setOpacity( 1.0 );
@@ -920,7 +921,7 @@ void FlightTask::drawSector( QPainter* painter,
       // We draw the shape after the filling because filling would
       // overwrite our shape
       painter->setBrush(Qt::NoBrush);
-      painter->setPen(QPen(Qt::black));
+      painter->setPen(QPen(QColor(Qt::black), 2));
       painter->drawPath( pp );
     }
 }
