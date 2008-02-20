@@ -154,7 +154,7 @@ void GeneralConfig::load()
                                                          GeneralConfig::Touched ).toInt();
   _taskDrawShape  = value( "DrawShape", true ).toBool();
   _taskFillShape  = value( "FillShape", true ).toBool();
-  _taskShapeAlpha = value( "ShapeAlpha", 64 ).toInt(); // transparency is in %
+  _taskShapeAlpha = value( "ShapeAlpha", 20 ).toInt(); // transparency is in %
   endGroup();
 
   beginGroup("Task Scheme Cylinder");
