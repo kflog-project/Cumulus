@@ -144,7 +144,7 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
     filter[i] = new ListViewFilter(waypointList[i], this, "listfilter");
 
     taskLayout->addWidget( filter[i], 10, 0, 1, 8 );
-    taskLayout->addWidget( waypointList[i], 11, 0, 1, 8 );
+    taskLayout->addWidget( waypointList[i], 11, 0, 4, 8 );
   }
 
   _globalCumulusApp->viewWP->fillWpList(wpList, waypointList[0], filter[0]);
