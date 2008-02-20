@@ -72,7 +72,7 @@ TaskListView::TaskListView( QWidget *parent, const char *name,
   list->addColumn(tr("Dist"));
   list->addColumn(tr("Time"));
   list->addColumn(tr("Description"));
-  list->addColumn(tr("SS"), 40);
+  list->addColumn(tr("SS"));
 
   list->setColumnAlignment( 2, Qt::AlignRight ); 
   list->setColumnAlignment( 3, Qt::AlignRight ); 
