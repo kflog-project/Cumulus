@@ -2,7 +2,7 @@
                           altitude.h  -  general altitude representation
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by Andre Somers
+    copyright            : (C) 2002 by André Somers
     email                : andre@kflog.org
  
     This file is part of Cumulus.
@@ -29,7 +29,7 @@
   * @short Abstract altitude
   *
   * This class provides an altitude object, which can represent it's data in any major format.
-  * @author Andre Somers
+  * @author André Somers
   */
 
 class Altitude : public Distance
@@ -215,7 +215,7 @@ protected:
 
 /**
  * @short Collection of the different expressions for the current altitude
- * @author Andr� Somers
+ * @author André Somers
  *
  * This struct contains different representations for the current altitude.
  * There are different ways to express the current altitude, and there are
