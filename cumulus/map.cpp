@@ -1178,10 +1178,6 @@ void Map::slotCenterToTask()
  */
 bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, QList<wayPoint*> &taskPointList)
 {
-  unsigned int i;
-  struct wayPoint *tmpPoint;
-  QPoint sitePos;
-  double dX, dY;
   // Radius for Mouse Snapping
   double delta(12.0);
 
@@ -1191,14 +1187,13 @@ bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, QList<wayPoint*
     }
 
   bool found = false;
-  RadioPoint *hitElement;
 
-  for(i = 0; i < taskPointList.count(); i++)
+  for(int i = 0; i < taskPointList.count(); i++)
     {
-      tmpPoint = taskPointList.at(i);
-      sitePos = _globalMapMatrix->map(_globalMapMatrix->wgsToMap(tmpPoint->origP));
-      dX = abs(sitePos.x() - current.x());
-      dY = abs(sitePos.y() - current.y());
+      wayPoint *tmpPoint = taskPointList.at(i);
+      QPoint sitePos ( _globalMapMatrix->map(_globalMapMatrix->wgsToMap(tmpPoint->origP)));
+      double dX = abs(sitePos.x() - current.x());
+      double dY = abs(sitePos.y() - current.y());
 
       // Abstand entspricht der Icon-Groesse
       if (dX < delta && dY < delta)
@@ -1223,10 +1218,10 @@ bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, QList<wayPoint*
         {
           for(unsigned int loop = 0; loop < _globalMapContents->getListLength(contentArray.at(n)); loop++)
             {
-              hitElement = (RadioPoint*)_globalMapContents->getElement(contentArray.at(n), loop);
-              sitePos = hitElement->getMapPosition();
-              dX = abs(sitePos.x() - current.x());
-              dY = abs(sitePos.y() - current.y());
+              RadioPoint *hitElement = (RadioPoint*)_globalMapContents->getElement(contentArray.at(n), loop);
+              QPoint sitePos (hitElement->getMapPosition());
+              double dX = abs(sitePos.x() - current.x());
+              double dY = abs(sitePos.y() - current.y());
 
               if (dX < delta && dY < delta)
                 {
