@@ -19,7 +19,6 @@
 #define WINDMEASUREMENTLIST_H
 
 #include <QTime>
-#include <Q3PtrCollection>
 
 #include "limitedlist.h"
 #include "altitude.h"
