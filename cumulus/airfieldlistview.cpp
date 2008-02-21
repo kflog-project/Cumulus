@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -17,7 +17,6 @@
 
 #include "airfieldlistview.h"
 
-#include <Q3PtrList>
 #include <QMessageBox>
 #include <QRegExp>
 #include <QFont>
