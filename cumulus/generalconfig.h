@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Andr� Somers, 2008 Axel Pauli
+**   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -31,7 +31,7 @@
 
 /**
   * @short Configuration encapsulation class
-  * @author Andr� Somers
+  * @author André Somers
   *
   * This class is used to store and retrieve all kinds of
   * configuration options. This class is a singleton class. Use the
