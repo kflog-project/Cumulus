@@ -19,7 +19,7 @@
 #define ISOLIST_H
 
 #include <QRegion>
-#include <Q3PtrList>
+#include <QList>
 #include <Q3PtrCollection>
 
 /**
@@ -81,9 +81,21 @@ class IsoListEntry
 
   QRegion* region;
   int height;
+
+  /**
+  * Compares two items, in this case, IsoListEntries.
+  *
+  * The items are compared by height only. The result is a reverse sorted
+  * list, highest entry at lowest position.
+  */
+  bool operator < (const IsoListEntry& other) const
+  {
+    return height < other.height;
+  };
+
 };
 
-class IsoList : public Q3PtrList<IsoListEntry>
+class IsoList : public QList<IsoListEntry*>
 {
  public:
 
@@ -94,13 +106,9 @@ class IsoList : public Q3PtrList<IsoListEntry>
     clear();
   };
 
- protected:
-
-  /**
-   * Compares two items, in this case, BaseMapElements.
-   * The items are compared by name only.
-   */
-  virtual int compareItems (Q3PtrCollection::Item item1, Q3PtrCollection::Item item2);
+  void sort () {
+    qSort (begin(), end());
+  };
 
 };
 
