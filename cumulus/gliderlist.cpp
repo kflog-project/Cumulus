@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andr� Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -145,7 +145,6 @@ GliderList::GliderList(QWidget * parent, const char * name):Q3ListView(parent,na
     addColumn(tr("Callsign"),45);
 
     setAllColumnsShowFocus(true);
-    Gliders.setAutoDelete(true);
     _added=0;
     _changed=false;
     //connect (this, SIGNAL(selectionChanged(QListviewItem*)), this, SLOT(slotSelectionChanged(QListviewItem*)));
@@ -154,7 +153,9 @@ GliderList::GliderList(QWidget * parent, const char * name):Q3ListView(parent,na
 
 GliderList::~GliderList()
 {
-    // qDebug("GliderList::~GliderList() is called");
+  // qDebug("GliderList::~GliderList() is called");
+  qDeleteAll (Gliders);
+  Gliders.clear();
 }
 
 
@@ -247,7 +248,7 @@ Glider * GliderList::getSelectedGlider(bool take)
       glider=Gliders.at(i);
       if (glider->lastSafeID()==li->text(3).toInt()) {
         if (take) {
-          return Gliders.take(i);
+          return Gliders.takeAt(i);
         } else {
           return glider;
         }
@@ -313,7 +314,8 @@ void GliderList::slot_Deleted(Glider * glider)
         }
 
         //remove from catalog
-        Gliders.removeRef(glider);
+        int index = Gliders.indexOf (glider);
+        Gliders.removeAt(index);
         //save();
         _changed = true;
     }

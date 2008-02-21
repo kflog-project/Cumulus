@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -21,14 +21,13 @@
 #include <QWidget>
 #include <QBoxLayout>
 #include <Q3ListView>
-#include <Q3PtrList>
 #include <QStringList>
 
 #include "glider.h"
 
 /**
  * This widget provides a list of gliders and a means to select one.
- * @author André Somers
+ * @author AndrÃ© Somers
  */
 
 
@@ -53,7 +52,7 @@ public:
 
     void save();
 
-    Q3PtrList<Glider> Gliders;
+    QList<Glider*> Gliders;
 
     bool has_changed()
     {
@@ -106,7 +105,7 @@ private:
  * This widget provides an interface to add, edit and delete gliders
  * from the gliderlist.
  *
- * @author André Somers
+ * @author AndrÃ© Somers
  */
 
 class SettingsPageGliderList : public QWidget
