@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2005 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2005 by AndrÃ© Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -81,7 +81,7 @@ OpenAirParser::~OpenAirParser()
  *   file should be added to.
  */
 
-uint OpenAirParser::load( Q3PtrList<Airspace>& list )
+uint OpenAirParser::load( QList<Airspace*>& list )
 {
   QTime t;
   t.start();
@@ -236,7 +236,7 @@ uint OpenAirParser::load( Q3PtrList<Airspace>& list )
 }
 
 
-bool OpenAirParser::parse(const QString& path, Q3PtrList<Airspace>& list)
+bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
 {
   QTime t;
   t.start();
@@ -1151,7 +1151,7 @@ void OpenAirParser::addArc(const double& rX, const double& rY,
  * @param list All airspace objects have to be stored in this list
  * @returns true (success) or false (error occured)
  */
-bool OpenAirParser::readCompiledFile( QString &path, Q3PtrList<Airspace>& list )
+bool OpenAirParser::readCompiledFile( QString &path, QList<Airspace*>& list )
 {
   QTime t;
   t.start();

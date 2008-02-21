@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2005 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2005 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -19,7 +19,7 @@
 #define _openairparser_h
 
 #include <QString>
-#include <Q3PtrList>
+#include <QList>
 #include <QMap>
 #include <QRect>
 #include <QDateTime>
@@ -47,7 +47,7 @@ class QString;
  * For a file named airspace.txt, the matching mapping file would be
  * named airspace_mappings.conf in be placed in the same directory.
  *
- * @author André Somers, Axel Pauli
+ * @author AndrÃ© Somers, Axel Pauli
  * @version $Id$
  */
 class OpenAirParser
@@ -73,7 +73,7 @@ public:
      *   file should be added to.
      */
 
-    uint load( Q3PtrList<Airspace>& list );
+    uint load( QList<Airspace*>& list );
 
 private:  //memberfunctions
 
@@ -86,7 +86,7 @@ private:  //memberfunctions
      * @param list the list of Airspace objects the objects in this
      *   file should be added to.
      */
-    bool parse(const QString& path, Q3PtrList<Airspace>& list);
+    bool parse(const QString& path, QList<Airspace*>& list);
 
 
     void resetState();
@@ -118,7 +118,7 @@ private:  //memberfunctions
      * @param list All airspace objects have to be stored in this list
      * @returns true (success) or false (error occured)
      */
-    bool readCompiledFile( QString &path, Q3PtrList<Airspace>& list );
+    bool readCompiledFile( QString &path, QList<Airspace*>& list );
 
     /**
      * Get the header data of a compiled file and put it in the class
@@ -130,7 +130,7 @@ private:  //memberfunctions
     bool setHeaderData( QString &path );
 
 private: //members
-    Q3PtrList<Airspace> _airlist;
+    QList<Airspace*> _airlist;
     uint _lineNumber;
     uint _objCounter; // counter for allocated objects
     bool _isCurrentAirspace;
