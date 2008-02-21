@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2007 Axel Pauli
+**   Copyright (c):  2002 by AndrÃ© Somers, 2007 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -18,10 +18,10 @@
 #ifndef LIMITEDLIST_H
 #define LIMITEDLIST_H
 
-#include <Q3PtrList>
+#include <QList>
 
 /**
-  *@author André Somers
+  *@author AndrÃ© Somers
   * @short Template for a list which limits the number of items it contains.
   *
   * The LimitedList template class implements a QList-based list with a
@@ -32,7 +32,7 @@
   * item from the list.
   */
 template <class type>
-class LimitedList : public Q3PtrList <type>
+class LimitedList : public QList <type*>
 {
 
 public:
@@ -52,7 +52,7 @@ public:
       * add should be used to add items to the list. It automatically checks if
       * it needs to delete an item afterwards.
       */
-    void add ( const type *d );
+    void add ( type *d );
 
     /**
      * Sets the new limit for the number of items in the list. If the new list
@@ -93,25 +93,26 @@ template <class type>
 LimitedList<type>::LimitedList(uint limit)
 {
     _limit=limit;
-    Q3PtrList<type>::setAutoDelete(true);
+    //QList<type*>::setAutoDelete(true);
 }
 
 
 template <class type>
 LimitedList<type>::~LimitedList()
-{}
+{
+}
 
 
 template <class type>
 void LimitedList<type>::add
-    ( const type *d )
+    ( type *d )
 {
-    Q3PtrList<type>::prepend(d);
-    if (Q3PtrList<type>::count()>
+    QList<type*>::prepend(d);
+    if (QList<type*>::count()>
             _limit) {
         uint o = getLeastImportantItem();
-        if (o<Q3PtrList<type>::count())
-            Q3PtrList<type>::remove(o);
+        if (o<QList<type*>::count())
+            QList<type*>::removeAt(o);
     }
 }
 
@@ -119,7 +120,7 @@ void LimitedList<type>::add
 template <class type>
 uint LimitedList<type>::getLeastImportantItem()
 {
-    return Q3PtrList<type>::count()-1;
+    return QList<type*>::count()-1;
 }
 
 
@@ -130,12 +131,12 @@ void LimitedList<type>::setLimit(uint limit)
     _limit=limit;
 
     //make sure the list is not longer than the new limit
-    while (Q3PtrList<type>::count()>
+    while (QList<type*>::count()>
             _limit) {
         uint o=getLeastImportantItem();
-        if (o>Q3PtrList<type>::count())
+        if (o>QList<type*>::count())
             break;  //make sure we don't end up in an endless loop
-        Q3PtrList<type>::remove(o);
+        QList<type*>::removeAt(o);
     }
 }
 
