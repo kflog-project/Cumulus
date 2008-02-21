@@ -191,7 +191,7 @@ void TPInfoWidget::prepareSwitchText( const uint currentTpIndex,
       return;
     }
 
-  Q3PtrList<wayPoint> wpList = task->getWPList();
+  QList<wayPoint*> wpList = task->getWPList();
 
   if( wpList.count() < 4 || wpList.count() <= currentTpIndex+1 )
     {
@@ -562,7 +562,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
       return;
     }
 
-  Q3PtrList<wayPoint> wpList = task->getWPList();
+  QList<wayPoint*> wpList = task->getWPList();
 
   if( wpList.count() < 4 )
     {
