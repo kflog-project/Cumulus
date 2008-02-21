@@ -66,10 +66,6 @@ protected:
      */
     virtual uint getLeastImportantItem();
 
-    /**
-     * Compares two measurements by altitude.
-     */
-    bool lessThan(const WindMeasurement& s1, const WindMeasurement& s2);
 
 };
 
