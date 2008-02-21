@@ -21,8 +21,6 @@
 
 #include <QDateTime>
 #include <QPolygon>
-#include <Q3PtrCollection>
-#include <Q3PtrList>
 #include <QPainter>
 #include <QRect>
 
@@ -35,7 +33,7 @@
   * This class holds a set of six distances to airspaces, used to warn the user if he's getting
   * (too) close to an airspace.
   *
-  * @author Andre Somers
+  * @author André Somers
   */
 struct AirspaceWarningDistance
 {
@@ -232,6 +230,22 @@ public:
         m_airRegion = region;
     }
 
+    /**
+     * Compares two items, in this case, Airspaces.
+     * The items are compared on their levels. Because cumulus provides a view
+     * where the user looks down on the map, the first airspace you'll see is the
+     * one with the highest ceiling. So, an item with a heigher ceiling is
+     * bigger than an item with a lower ceiling. In case these are the same,
+     * the item with the bigger floor will be the bigger item.
+     *
+     * The airspaces in the list are sorted in this way to make sure they are
+     * stacked correctly. This has become important with the introduction of
+     * transparent airspaces. By sorting the airspaces like this, the lower ones
+     * will be drawn first, and the higher ones on top of them.
+     */
+    bool operator < (const Airspace& other) const;
+
+
 private:
     /**
      * Contains the lower limit.
@@ -270,29 +284,16 @@ private:
 };
 
 /**
- * Specialized QList for Airspaces. The compareItems member function
+ * Specialized QList for Airspaces. The sort member function
  * has been re-implemented to make it possible to sort items based on their
  * levels.
  */
-class SortableAirspaceList : public Q3PtrList<Airspace>
+class SortableAirspaceList : public QList<Airspace*>
 {
-
-protected:
-
-    /**
-     * Compares two items, in this case, Airspaces.
-     * The items are compared on their levels. Because cumulus provides a view
-     * where the user looks down on the map, the first airspace you'll see is the
-     * one with the highest ceiling. So, an item with a heigher ceiling is
-     * bigger than an item with a lower ceiling. In case these are the same,
-     * the item with the bigger floor will be the bigger item.
-     *
-     * The airspaces in the list are sorted in this way to make sure they are
-     * stacked correctly. This has become important with the introduction of
-     * transparent airspaces. By sorting the airspaces like this, the lower ones
-     * will be drawn first, and the higher ones on top of them.
-     */
-    virtual int compareItems (Q3PtrCollection::Item item1, Q3PtrCollection::Item item2);
+public:
+  void sort () {
+    qSort (begin(), end());
+  };
 };
 
 #endif

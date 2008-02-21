@@ -333,30 +333,17 @@ Airspace::ConflictType Airspace::conflicts (const AltitudeCollection& alt,
   return none;
 }
 
-
-
-int SortableAirspaceList::compareItems (Q3PtrCollection::Item item1, Q3PtrCollection::Item item2)
+bool Airspace::operator < (const Airspace& other) const
 {
-  Airspace* a1=static_cast<Airspace*>(item1);
-  Airspace* a2=static_cast<Airspace*>(item2);
-
-  int a1C = a1->getUpperL(), a2C = a2->getUpperL();
+  int a1C = getUpperL(), a2C = other.getUpperL();
   if (a1C > a2C) {
-    return 1;
+    return false;
   } else if (a1C < a2C) {
-    return -1;
+    return true;
   } else { //equal
-    int a1F = a1->getLowerL(), a2F = a2->getLowerL();
-    if (a1F > a2F) {
-      return 1;
-    } else if (a1F < a2F) {
-      return -1;
-    } else {
-      return 0;
-    }
+    int a1F = getLowerL(), a2F = other.getLowerL();
+    return (a1F < a2F);
   }
-
-  return 0;
 }
 
 
