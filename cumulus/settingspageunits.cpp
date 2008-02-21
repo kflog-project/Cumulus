@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -109,8 +109,8 @@ SettingsPageUnits::SettingsPageUnits(QWidget *parent, const char *name ) : QWidg
   UnitPosition->setObjectName("UnitPosition");
   UnitPosition->setEditable(false);
   topLayout->addWidget(UnitPosition,row++,1);
-  UnitPosition->addItem(tr("ddd°mm'ss\""));
-   UnitPosition->addItem(tr("ddd°mm.mmm\'"));
+  UnitPosition->addItem(tr("dddÂ°mm'ss\""));
+  UnitPosition->addItem(tr("dddÂ°mm.mmm\'"));
   positions[0]=WGSPoint::DMS;
   positions[1]=WGSPoint::DDM;
 
