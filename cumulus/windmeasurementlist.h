@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2007 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2007 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -28,18 +28,20 @@
 /**
  * Contains a single wind measurement
  */
-struct WindMeasurement
+class WindMeasurement
 {
+public:
     Vector vector;
     int quality;
     QTime time;
     Altitude altitude;
+    bool operator < (const WindMeasurement& other) const;
 };
 
 /**
  * The WindMeasurementList is a list that can contain and
  * process windmeasurements.
- * @author André Somers
+ * @author AndrÃ© Somers
  */
 class WindMeasurementList : protected LimitedList<WindMeasurement>
 {
@@ -67,7 +69,7 @@ protected:
     /**
      * Compares two measurements by altitude.
      */
-    int compareItems(Q3PtrCollection::Item s1, Q3PtrCollection::Item s2);
+    bool lessThan(const WindMeasurement& s1, const WindMeasurement& s2);
 
 };
 

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2007 Axel Pauli
+**   Copyright (c):  2002 by AndrÃ© Somers, 2007 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -98,8 +98,8 @@ void WindMeasurementList::addMeasurement(Vector vector, Altitude alt, int qualit
     wind->quality=quality;
     wind->altitude=alt;
     wind->time=QTime::currentTime();
-    //add(wind);
-    inSort(wind);
+    append(wind);
+    qSort(first(), last());
 }
 
 
@@ -131,9 +131,9 @@ uint WindMeasurementList::getLeastImportantItem()
 }
 
 
-int WindMeasurementList::compareItems(Q3PtrCollection::Item s1, Q3PtrCollection::Item s2)
+bool WindMeasurement::operator < (const WindMeasurement& other) const
 {
     //return the difference between the altitudes in item 1 and item 2
-    return (int)(((WindMeasurement*)s1)->altitude - ((WindMeasurement*)s2)->altitude).getMeters();
+    return (altitude < other.altitude);
 }
 
