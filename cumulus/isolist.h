@@ -20,7 +20,6 @@
 
 #include <QRegion>
 #include <QList>
-#include <Q3PtrCollection>
 
 /**
  * @short Entry in the isolist
