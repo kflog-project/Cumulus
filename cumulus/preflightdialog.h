@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by Andr� Somers, 2008 Axel Pauli
+**   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -27,7 +27,7 @@ class PreFlightMiscPage;
 
 /**
  * @short dialog for pre-flight settings
- * @author Andr� Somers
+ * @author André Somers
  *
  * This dialog provides an interface to set all the pre-flight settings like
  * glidertype, co-pilot, task, amount of water taken on, etc.
