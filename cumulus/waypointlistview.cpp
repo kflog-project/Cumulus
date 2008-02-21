@@ -18,7 +18,6 @@
 #include "waypointlistview.h"
 
 #include <QPushButton>
-#include <Q3PtrList>
 #include <QMessageBox>
 
 #include "generalconfig.h"
@@ -100,7 +99,7 @@ WaypointListView::~WaypointListView()
 
 
 /** Retreives the waypoints from the mapcontents, and fills the list. */
-void WaypointListView::fillWpList(Q3PtrList<wayPoint> *wpList, Q3ListView *list, ListViewFilter *filter)
+void WaypointListView::fillWpList(QList<wayPoint*> *wpList, Q3ListView *list, ListViewFilter *filter)
 {
   if( list == 0 ) {
     list = WaypointListView::list;

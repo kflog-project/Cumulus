@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers
+**   Copyright (c):  2002 by AndrÃ© Somers
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -20,7 +20,6 @@
 
 #include <QWidget>
 #include <Q3ListView>
-#include <Q3PtrList>
 #include <QBoxLayout>
 #include <QPushButton>
 
@@ -32,7 +31,7 @@ class CumulusApp;
 
 /**
  * This widget provides a list of waypoints and a means to select one.
- * @author André Somers
+ * @author Andrï¿½ Somers
  */
 class WaypointListView : public QWidget
 {
@@ -51,7 +50,7 @@ public:
      * Retreives the waypoints from the mapcontents, and fills
      * the list.
      */
-    void fillWpList(Q3PtrList<wayPoint> *, Q3ListView *list = 0, ListViewFilter *filter = 0);
+    void fillWpList(QList<wayPoint*> *, Q3ListView *list = 0, ListViewFilter *filter = 0);
 
 public slots: // Public slots
     /**
