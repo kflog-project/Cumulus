@@ -346,7 +346,7 @@ void SettingsPagePolar::readPolarData ()
   // these files are in winpilot format: one file per polar
   DocLnkSet docs;
   Global::findDocuments(&docs, "cumulus/polar");
-  Q3PtrList<DocLnk> list = docs.children();
+  QList<DocLnk*> list = docs.children();
 
   // qDebug ("found %d polars in document folder", list.count());
   for (DocLnk* doc = list.first(); doc; doc = list.next()) {
