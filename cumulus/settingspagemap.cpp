@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -154,7 +154,7 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent, const char *name)
   cmbProjection=new QComboBox(this);
   topLayout->addWidget(cmbProjection, row++, 1);
   cmbProjection->addItem(tr("Lambert"));
-  cmbProjection->addItem(tr("Plate Carée"));
+  cmbProjection->addItem(tr("Plate CarÃ©e"));
   connect(cmbProjection, SIGNAL(activated(int)),
           this, SLOT(slotSelectProjection(int)));
 
@@ -345,7 +345,7 @@ void SettingsPageMapAdv::slotSelectProjection(int index)
     edtLon->setKFLogDegree(lambertOrigin);
     currentProjType = ProjectionBase::Lambert;
     break;
-  case 1:    // Plate Carée
+  case 1:    // Plate CarÃ©e
   default:   // take this if index is unknown
     edtLat2->setEnabled(false);
     edtLon->setEnabled(false);
