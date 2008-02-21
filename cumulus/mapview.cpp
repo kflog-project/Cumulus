@@ -448,8 +448,8 @@ void MapView::slot_RelBearing(int relbearing)
   while (relbearing < 0)
     relbearing += 360;
   int rot=((relbearing+7)/15) % 24;  //we only want to rotate in steps of 15 degrees. Finer is not usefull.
-  QPixmap arrow (20,20);
-  bitBlt(&arrow, 0, 0, &_arrows, rot*20, 0, 20, 20);
+  QPixmap arrow = _arrows.copy( rot*20, 0, 20, 20 );
+
   _rel_bearing->setPixmap (arrow);
 }
 
@@ -527,7 +527,9 @@ void MapView::slotGPSStatus(GPSNMEA::connectedStatus status)
       _speed->setValue("-");
       _altitude->setValue("-");
     }
+
   _theMap->setShowGlider(status==GPSNMEA::validFix); //only show glider symbol if the GPS is connected.
+
   if(status==GPSNMEA::validFix)
     {
       cuApp->actionToggleManualInFlight->setEnabled(true);
