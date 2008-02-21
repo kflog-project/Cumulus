@@ -21,7 +21,7 @@
 #define WAYPOINTCATALOG_H
 
 #include <QString>
-#include <Q3PtrList>
+#include <QList>
 
 #include "waypoint.h"
 
@@ -35,10 +35,10 @@ class WaypointCatalog
   ~WaypointCatalog();
 
   /** read in catalog from file name */
-  bool read( QString *catalog, Q3PtrList<wayPoint> *wpList );
+  bool read( QString *catalog, QList<wayPoint*> *wpList );
   
   /** write out catalog to file name */
-  bool write( QString *catalog, Q3PtrList<wayPoint> *wpList );
+  bool write( QString *catalog, QList<wayPoint*> *wpList );
 };
 
 #endif

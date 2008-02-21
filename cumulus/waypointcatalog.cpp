@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2001 by Harald Maier, 2002 André Somers,
+ **   Copyright (c):  2001 by Harald Maier, 2002 AndrÃ© Somers,
  **                   2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
@@ -41,7 +41,7 @@ WaypointCatalog::~WaypointCatalog()
 {}
 
 /** read a catalog from file */
-bool WaypointCatalog::read( QString *catalog, Q3PtrList<wayPoint> *wpList )
+bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
 {
   QString fName;
 
@@ -198,7 +198,7 @@ bool WaypointCatalog::read( QString *catalog, Q3PtrList<wayPoint> *wpList )
 
 
 /** write a catalog to file */
-bool WaypointCatalog::write( QString *catalog, Q3PtrList<wayPoint> *wpList )
+bool WaypointCatalog::write( QString *catalog, QList<wayPoint*> *wpList )
 {
   QString fName;
 
@@ -246,9 +246,9 @@ bool WaypointCatalog::write( QString *catalog, Q3PtrList<wayPoint> *wpList )
       out << qint8(FILE_TYPE_WAYPOINTS);
       out << quint16(WP_FILE_FORMAT_ID_2); //use the new format with importance field.
 
-      Q3PtrListIterator<wayPoint> it(*wpList);
-      for ( wayPoint *w = it.current(); w; w = ++it )
+      for (int i = 0; i < wpList->count(); i++)
         {
+          wayPoint* w = wpList->at(i);
           wpName=w->name;
           wpDescription=w->description;
           wpICAO=w->icao;
