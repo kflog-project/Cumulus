@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel Pauli
+ **   Copyright (c):  2004 by Eckhard Vï¿½llm, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -23,7 +23,7 @@
 
 #include <QObject>
 #include <QPoint>
-#include <Q3PtrList>
+#include <QList>
 #include <QMap>
 #include <Q3PtrCollection>
 
@@ -67,7 +67,7 @@ class ReachablePoint
                  int bearing,
                  Altitude arrivAlt );
 
-  Distance getDistance()
+  Distance getDistance() const
   {
     return _distance;
   };
@@ -77,12 +77,12 @@ class ReachablePoint
     _distance=d;
   };
 
-  QString getName()
+  QString getName() const
   {
     return _wp->name;
   };
 
-  QString getDescription()
+  QString getDescription() const
   {
     return _wp->description;
   };
@@ -92,27 +92,27 @@ class ReachablePoint
     _orignAfl=o;
   };
 
-  bool isOrignAfl()
+  bool isOrignAfl() const
   {
     return _orignAfl;
   };
 
-  int getElevation()
+  int getElevation() const
   {
     return _wp->elevation;
   };
 
-  int getType()
+  int getType() const
   {
     return _wp->type;
   };
 
-  Altitude getArrivalAlt()
+  Altitude getArrivalAlt() const
   {
     return _arrivalAlt;
   };
 
-  int getBearing()
+  int getBearing() const
   {
     return _bearing;
   };
@@ -122,12 +122,12 @@ class ReachablePoint
     _bearing=b;
   };
 
-  WGSPoint& getWgsPos()
+  WGSPoint& getWgsPos() const
   {
     return _wp->origP;
   };
 
-  wayPoint * getWaypoint()
+  wayPoint * getWaypoint() const
   {
     return _wp;
   };
@@ -141,6 +141,11 @@ class ReachablePoint
 
   reachable getReachable();
 
+  /**
+   * compares two entries to sort list either by distance or arrival alt
+   */
+  bool operator < (const ReachablePoint& other) const;
+
  private:
   bool         _orignAfl; // orign is from airfield list
   wayPoint     *_wp;
@@ -152,11 +157,11 @@ class ReachablePoint
 
 /**
  * @short A list of reachable points
- * @author Eckhard Völlm
+ * @author Eckhard Vï¿½llm
  * The list of reachables points maintains the distance and arrival
  * altitudes for points in the region of the current position.
  */
-class ReachableList: public QObject, Q3PtrList<ReachablePoint>
+class ReachableList: public QObject, QList<ReachablePoint*>
 {
   Q_OBJECT
 
@@ -201,11 +206,6 @@ class ReachableList: public QObject, Q3PtrList<ReachablePoint>
   void show();
 
   /**
-   * compares two entries to sort list either by distance or arrival alt
-   */
-  int compareItems (Q3PtrCollection::Item i1, Q3PtrCollection::Item i2);
-
-  /**
    * returns number of sites
    */
   const int getNumberSites() const;
@@ -215,7 +215,7 @@ class ReachableList: public QObject, Q3PtrList<ReachablePoint>
    */
   ReachablePoint *getSite( const int index );
 
-  Q3PtrList<ReachablePoint> *getList()
+  QList<ReachablePoint*> *getList()
   {
     return this;
   };
@@ -271,6 +271,14 @@ class ReachableList: public QObject, Q3PtrList<ReachablePoint>
     return safetyAlt;
   };
 
+  /**
+   * @returns The modeAltitude
+   */
+  static const bool getModeAltitude()
+  {
+    return modeAltitude;
+  };
+
  private:
 
   void calculateGlidePath();
@@ -296,9 +304,9 @@ class ReachableList: public QObject, Q3PtrList<ReachablePoint>
   Speed       lastMc;
   double      _maxReach;
   int         tick;
-  bool        modeAltitude;
   bool        initValuesOK;
 
+  static bool modeAltitude;
   static int safetyAlt;
   static QMap<QString, int> arrivalAltMap;
   static QMap<QString, Distance> distanceMap;

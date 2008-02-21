@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel pauli
+ **   Copyright (c):  2004 by Eckhard Vï¿½llm, 2008 Axel pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -43,6 +43,8 @@ int  ReachableList::safetyAlt = 0;
 
 QMap<QString, int> ReachableList::arrivalAltMap;
 QMap<QString, Distance> ReachableList::distanceMap;
+bool ReachableList::modeAltitude;
+
 
 // construct from airfield database
 ReachablePoint::ReachablePoint(QString name,
@@ -118,40 +120,25 @@ reachable ReachablePoint::getReachable()
     return no;
 }
 
+bool ReachablePoint::operator < (const ReachablePoint& other) const
+{
+  if( ReachableList::getModeAltitude() ) {
+    return (getArrivalAlt().getMeters() < other.getArrivalAlt().getMeters());
+  } else {
+    return (getDistance().getKilometers() > other.getDistance().getKilometers());
+  }
+}
 
 ReachableList::ReachableList(QObject *parent) : QObject(parent)
 {
   GeneralConfig *conf = GeneralConfig::instance();
   safetyAlt = (int) conf->getSafetyAltitude().getMeters();
 
-  setAutoDelete( true );
   lastAltitude = 0.0;
   _maxReach = 0.0;
   tick = 0;
   modeAltitude = false;
   initValuesOK = false;
-}
-
-
-int ReachableList::compareItems (Q3PtrCollection::Item i1, Q3PtrCollection::Item i2)
-{
-  int ret;
-  if( modeAltitude ) {
-    if(      ((ReachablePoint *)i1)->getArrivalAlt().getMeters() <
-             ((ReachablePoint *)i2)->getArrivalAlt().getMeters()
-             )
-      ret = 1;
-    else
-      ret = -1;
-  } else {
-    if(        ((ReachablePoint *)i1)->getDistance().getKilometers() >
-               ((ReachablePoint *)i2)->getDistance().getKilometers()
-               )
-      ret = 1;
-    else
-      ret = -1;
-  }
-  return ( ret );
 }
 
 
@@ -180,7 +167,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
   //qDebug("bounding box: (%d, %d), (%d, %d) (%d x %d km)", bbox.left(),bbox.top(),bbox.right(),bbox.bottom(),0,0);
 
   if( item == MapContents::WaypointList ) {   // Waypoints have differnet structure treat them here
-    Q3PtrList<wayPoint> *pWPL = _globalMapContents->getWaypointList();
+    QList<wayPoint*> *pWPL = _globalMapContents->getWaypointList();
     // qDebug("Nr of Waypoints: %d", pWPL->count() );
     for(unsigned int i=0; i<pWPL->count(); i++ ) {
       WGSPoint pt = pWPL->at(i)->origP;
@@ -250,7 +237,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
                                                site->getRunway(0).surface,
                                                site->getRunway(0).isOpen );
       append(rp);
-      // qDebug("%s(%d) %f %d° %d", (const char *)rp->getName(), rp->getElevation(),  rp->getDistance().getKilometers(), rp->getBearing(), (int)rp->getArrivalAlt().getMeters() );
+      // qDebug("%s(%d) %f %dï¿½ %d", (const char *)rp->getName(), rp->getElevation(),  rp->getDistance().getKilometers(), rp->getBearing(), (int)rp->getArrivalAlt().getMeters() );
 
     }
   }
@@ -329,15 +316,15 @@ void ReachableList::calculateGlidePath()
 {
   QTime t;
   t.start();
-  int count = 0;
+  int counter = 0;
   calcInitValues();
   Distance distance;
-  ReachablePoint *p;
   arrivalAltMap.clear();
   distanceMap.clear();
 
-  for( p=first(); p; p=next() ) {
+  for (int i = 0; i < count(); i++) {
     // recalculate Distance
+    ReachablePoint *p = at(i);
     WGSPoint pt = p->getWaypoint()->origP;
     distance.setKilometers(dist(&lastPosition,&pt));
     p->setDistance( distance );
@@ -357,11 +344,11 @@ void ReachableList::calculateGlidePath()
     arrivalAltMap[ coordinateString ( pt ) ] = (int) arrivalAlt.getMeters()+safetyAlt;
     distanceMap[ coordinateString ( pt ) ] = distance;
     if( arrivalAlt.getMeters() > 0 )
-      count++;
+      counter++;
   }
   modeAltitude = true;
-  sort();
-  // qDebug("Number of reachable sites (arriv >0): %d", count );
+  qSort(begin(), end());
+  // qDebug("Number of reachable sites (arriv >0): %d", counter );
   // qDebug("Time for glide path calculation: %d msec", t.restart() );
   emit newReachList();
 }
@@ -405,7 +392,7 @@ void ReachableList::calculateFullList()
   addItemsToList(MapContents::WaypointList);
   // qDebug("Number of potential reachable sites: %d", count() );
   modeAltitude = false;
-  sort();
+  qSort(begin(), end());
   removeDoubles();
   // qDebug("Number of potential reachable sites (after pruning): %d", count() );
   int size = count();
@@ -423,16 +410,19 @@ void ReachableList::calculateFullList()
 // prints list to qDebug interface
 void ReachableList::show()
 {
-  ReachablePoint *p;
-  for( p=first(); p; p=next() ) {
-    qDebug("%s(%d) %f %d° %d", (const char *)p->getName(), p->getElevation(),  p->getDistance().getKilometers(), p->getBearing(), (int)p->getArrivalAlt().getMeters() );
+  for (int i = 0; i < count(); i++) {
+    ReachablePoint *p = at(i);
+    qDebug("%s(%d) %f %dï¿½ %d", (const char *)p->getName(), p->getElevation(),  p->getDistance().getKilometers(), p->getBearing(), (int)p->getArrivalAlt().getMeters() );
 
   }
 }
 
 
 ReachableList::~ReachableList()
-{}
+{
+  while (!isEmpty())
+    delete takeFirst();
+}
 
 // returns number of sites
 const int ReachableList::getNumberSites() const
@@ -514,7 +504,7 @@ void ReachableList::removeDoubles()
 
   for (int i=removeList.count()-1; i>=0; i--) {
     //qDebug("Removing point %d (%s)", removeList.at(i),at(removeList.at(i))->getWaypoint()->name.latin1());
-    remove( removeList.at(i) );
+    removeAt( removeList.at(i) );
   }
 }
 
