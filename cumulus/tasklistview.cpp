@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2008 Axel pauli
+**   Copyright (c):  2004 by AndrÃ© Somers, 2008 Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -20,7 +20,6 @@
 ***********************************************************************/
 
 #include <QDesktopWidget>
-#include <Q3PtrList>
 #include <QFont>
 
 #include "cumulusapp.h"
@@ -267,7 +266,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   // it in tasklist as selected too.
   const wayPoint *calcWp = calculator->getselectedWp();
 
-  Q3PtrList<wayPoint> tmpList = _task->getWPList();
+  QList<wayPoint*> tmpList = _task->getWPList();
 
   for( uint loop = tmpList.count(); loop > 0; loop-- ) {
     // qDebug("Getting item %d",loop-1);
