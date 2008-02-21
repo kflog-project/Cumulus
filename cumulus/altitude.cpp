@@ -2,7 +2,7 @@
                           altitude.cpp  -  description
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by Andre Somers
+    copyright            : (C) 2002 by André Somers
     email                : andre@kflog.org
 
     This file is part of Cumulus
