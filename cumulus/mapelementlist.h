@@ -19,7 +19,6 @@
 #define MAPELEMENTLIST_H
 
 #include <QObject>
-#include <Q3PtrCollection>
 #include <QList>
 #include <QTimer>
 #include <QSet>
