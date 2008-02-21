@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel pauli
+**   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -31,7 +31,7 @@
 
 /**
  * This widget provides a list of waypoints and a means to select one.
- * @author André Somers
+ * @author AndrÃ© Somers
  */
 
 class AirfieldListView : public QWidget
