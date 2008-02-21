@@ -35,12 +35,12 @@ MapElementList::~MapElementList()
 
 
 // Filter out double elements
-void MapElementList::append(const BaseMapElement* elem)
+void MapElementList::append(BaseMapElement* elem)
 {
 
   if( !m_set.contains(elem->getName()) )
     {
-      Q3PtrList<BaseMapElement>::append(elem);
+      QList<BaseMapElement*>::append(elem);
       m_set.insert( elem->getName() );
     }
   else
@@ -49,12 +49,6 @@ void MapElementList::append(const BaseMapElement* elem)
     }
 
   m_timer->start(10000);
-}
-
-
-int MapElementList::compareItems (Q3PtrCollection::Item i1, Q3PtrCollection::Item i2)
-{
-  return ((BaseMapElement*)i1)->getName().compare(((BaseMapElement*)i2)->getName());
 }
 
 

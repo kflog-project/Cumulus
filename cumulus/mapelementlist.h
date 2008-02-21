@@ -20,7 +20,7 @@
 
 #include <QObject>
 #include <Q3PtrCollection>
-#include <Q3PtrList>
+#include <QList>
 #include <QTimer>
 #include <QSet>
 
@@ -30,7 +30,7 @@
  * @author Eggert Ehmke
  */
 
-class MapElementList : public QObject, public Q3PtrList<BaseMapElement>
+class MapElementList : public QObject, public QList<BaseMapElement*>
 {
   Q_OBJECT
 
@@ -50,15 +50,7 @@ class MapElementList : public QObject, public Q3PtrList<BaseMapElement>
    * allready contain the item, it is added. Otherwise
    * it is disgarded.
    */
-  void append (const BaseMapElement* elem);
-
- protected:
-
-  /**
-   * Compares two items, in this case, BaseMapElements.
-   * The items are compared by name only.
-   */
-  virtual int compareItems (Q3PtrCollection::Item item1, Q3PtrCollection::Item item2);
+  void append (BaseMapElement* elem);
 
  private:
 
