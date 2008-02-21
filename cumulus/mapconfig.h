@@ -3,7 +3,7 @@
 **   mapconfig.h
 **
 **   This file is part of Cumulus.
-**   It is modified for Cumulus by André Somers in 2002 and
+**   It is modified for Cumulus by AndrÃ© Somers in 2002 and
 **   by Axel pauli in 2008
 **
 ************************************************************************
@@ -20,7 +20,7 @@
 #ifndef MAPCONFIG_H
 #define MAPCONFIG_H
 
-#include <Q3PtrList>
+#include <QList>
 #include <QObject>
 #include <QPen>
 #include <QBrush>
@@ -33,7 +33,7 @@
  * one element per application.
  *
  * All printing-related code has been removed for Cumulus, because printing
- * will not be supported on the PDA. (André Somers)
+ * will not be supported on the PDA. (AndrÃ© Somers)
  *
  * @author Heiner Lamprecht, Florian Ehinger
  * @version $Id$
@@ -233,55 +233,55 @@ private:
      */
     QPen __getPen(unsigned int typeID, int sIndex);
 
-    Q3PtrList<QColor> topographyColorList;
+    QList<QColor*> topographyColorList;
 
-    Q3PtrList<QPen> airAPenList;
-    Q3PtrList<QBrush> airABrushList;
-    Q3PtrList<QPen> airBPenList;
-    Q3PtrList<QBrush> airBBrushList;
-    Q3PtrList<QPen> airCPenList;
-    Q3PtrList<QBrush> airCBrushList;
-    Q3PtrList<QPen> airDPenList;
-    Q3PtrList<QBrush> airDBrushList;
-    Q3PtrList<QPen> airElPenList;
-    Q3PtrList<QBrush> airElBrushList;
-    Q3PtrList<QPen> airEhPenList;
-    Q3PtrList<QBrush> airEhBrushList;
-    Q3PtrList<QPen> airFPenList;
-    Q3PtrList<QBrush> airFBrushList;
-    Q3PtrList<QPen> ctrCPenList;
-    Q3PtrList<QBrush> ctrCBrushList;
-    Q3PtrList<QPen> ctrDPenList;
-    Q3PtrList<QBrush> ctrDBrushList;
-    Q3PtrList<QPen> lowFPenList;
-    Q3PtrList<QBrush> lowFBrushList;
-    Q3PtrList<QPen> dangerPenList;
-    Q3PtrList<QBrush> dangerBrushList;
-    Q3PtrList<QPen> restrPenList;
-    Q3PtrList<QBrush> restrBrushList;
-    Q3PtrList<QPen> tmzPenList;
-    Q3PtrList<QBrush> tmzBrushList;
-    Q3PtrList<QPen> suSectorPenList;
-    Q3PtrList<QBrush> suSectorBrushList;
+    QList<QPen*> airAPenList;
+    QList<QBrush*> airABrushList;
+    QList<QPen*> airBPenList;
+    QList<QBrush*> airBBrushList;
+    QList<QPen*> airCPenList;
+    QList<QBrush*> airCBrushList;
+    QList<QPen*> airDPenList;
+    QList<QBrush*> airDBrushList;
+    QList<QPen*> airElPenList;
+    QList<QBrush*> airElBrushList;
+    QList<QPen*> airEhPenList;
+    QList<QBrush*> airEhBrushList;
+    QList<QPen*> airFPenList;
+    QList<QBrush*> airFBrushList;
+    QList<QPen*> ctrCPenList;
+    QList<QBrush*> ctrCBrushList;
+    QList<QPen*> ctrDPenList;
+    QList<QBrush*> ctrDBrushList;
+    QList<QPen*> lowFPenList;
+    QList<QBrush*> lowFBrushList;
+    QList<QPen*> dangerPenList;
+    QList<QBrush*> dangerBrushList;
+    QList<QPen*> restrPenList;
+    QList<QBrush*> restrBrushList;
+    QList<QPen*> tmzPenList;
+    QList<QBrush*> tmzBrushList;
+    QList<QPen*> suSectorPenList;
+    QList<QBrush*> suSectorBrushList;
 
-    Q3PtrList<QPen> highwayPenList;
-    Q3PtrList<QPen> roadPenList;
-    Q3PtrList<QPen> trailPenList;
-    Q3PtrList<QPen> railPenList;
-    Q3PtrList<QPen> rail_dPenList;
-    Q3PtrList<QPen> aerialcablePenList;
-    Q3PtrList<QPen> riverPenList;
-    Q3PtrList<QPen> river_tPenList;
-    Q3PtrList<QBrush> river_tBrushList;
-    Q3PtrList<QPen> canalPenList;
-    Q3PtrList<QPen> cityPenList;
-    Q3PtrList<QBrush> cityBrushList;
-    Q3PtrList<QPen> forestPenList;
-    Q3PtrList<QPen> glacierPenList;
-    Q3PtrList<QPen> packicePenList;
-    Q3PtrList<QBrush> forestBrushList;
-    Q3PtrList<QBrush> glacierBrushList;
-    Q3PtrList<QBrush> packiceBrushList;
+    QList<QPen*> highwayPenList;
+    QList<QPen*> roadPenList;
+    QList<QPen*> trailPenList;
+    QList<QPen*> railPenList;
+    QList<QPen*> rail_dPenList;
+    QList<QPen*> aerialcablePenList;
+    QList<QPen*> riverPenList;
+    QList<QPen*> river_tPenList;
+    QList<QBrush*> river_tBrushList;
+    QList<QPen*> canalPenList;
+    QList<QPen*> cityPenList;
+    QList<QBrush*> cityBrushList;
+    QList<QPen*> forestPenList;
+    QList<QPen*> glacierPenList;
+    QList<QPen*> packicePenList;
+    QList<QBrush*> forestBrushList;
+    QList<QBrush*> glacierBrushList;
+    QList<QBrush*> packiceBrushList;
     /**
      */
     bool* airABorder;
