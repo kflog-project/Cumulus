@@ -2,7 +2,7 @@
     gpsnmea.cpp  -  Cumulus NMEA interpreter
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by Andre Somers, 2008 by Axel Pauli
+    copyright            : (C) 2002 by André Somers, 2008 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$

@@ -2,7 +2,7 @@
                           gpsnmea.h  - NMEA sentence decoding
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by Andre Somers, 2008 by Axel Pauli
+    copyright            : (C) 2002 by André Somers, 2008 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -37,7 +37,7 @@
  * This class provided the interprettation of the NMEA sentences, and
  * provides access to the last know data.
  *
- *@author Andre Somers
+ *@author André Somers
  */
 struct SatInfo
   {
