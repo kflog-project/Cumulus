@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andr� Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -25,7 +25,7 @@
 
 /**
  * The WPEditDialog allows the editing of waypoint.
- * @author Andr� Somers
+ * @author André Somers
  */
 
 class WPEditDialog : public QDialog
