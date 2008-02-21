@@ -42,8 +42,6 @@ TaskList::TaskList( QWidget* parent, const char* name )
     : QWidget( parent, name ),
     editTask(0)
 {
-  taskList.setAutoDelete(true);
-
   QVBoxLayout* taskLayout = new QVBoxLayout( this, 5 );
   QHBoxLayout *editrow=new QHBoxLayout(taskLayout, 0);
 
@@ -106,6 +104,8 @@ TaskList::TaskList( QWidget* parent, const char* name )
 TaskList::~TaskList()
 {
   // qDebug("TaskList::~TaskList()");
+  qDeleteAll(taskList);
+  taskList.clear();
 }
 
 /** new value in spin box set */
@@ -177,9 +177,8 @@ FlightTask* TaskList::takeSelectedTask()
 
   // Nice trick, take selected element from list to prevent deletion of it, if
   // destruction of list is called.
-  FlightTask* task = taskList.take( id.toInt() - 1 );
-
-  return task;
+  int index = id.toInt() - 1;
+  return taskList.takeAt( index );
 }
 
 
@@ -209,8 +208,7 @@ bool TaskList::slotLoadTask()
   bool isTask( false );
   QString numTask, taskName;
   QStringList tmpList;
-  wayPoint* wp;
-  Q3PtrList<wayPoint> *wpList = 0;
+  QList<wayPoint*> *wpList = 0;
 
   while( !stream.atEnd() )
     {
@@ -231,8 +229,8 @@ bool TaskList::slotLoadTask()
             }
           else
             {
-              wpList = new Q3PtrList<wayPoint>;
-              wpList->setAutoDelete(true);
+              wpList = new QList<wayPoint*>;
+              //wpList->setAutoDelete(true);
             }
 
           tmpList = line.split( ",", QString::KeepEmptyParts );
@@ -241,8 +239,8 @@ bool TaskList::slotLoadTask()
       else if( line.mid( 0, 2 ) == "TW" && isTask )
         {
           // new wp ...
-          wpList->append( new wayPoint );
-          wp = wpList->current();
+          wayPoint* wp = new wayPoint ();
+          wpList->append( wp );
 
           tmpList = line.split( ",", QString::KeepEmptyParts );
 
@@ -265,15 +263,16 @@ bool TaskList::slotLoadTask()
         {
           // task complete
           isTask = false;
-          taskList.append( new FlightTask( wpList, true,
-                                           taskName, cruisingSpeed->value() ) );
+          FlightTask* task = new FlightTask( wpList, true,
+                                           taskName, cruisingSpeed->value() );
+          taskList.append( task );
 
           wpList = 0; // ownership was overtaken by FlighTask
           numTask.sprintf( "%02d", taskList.count() );
 
           Q3ListViewItem *newItem = new Q3ListViewItem( taskListView, numTask,
-                                    taskName, taskList.current()->getTaskTypeString(),
-                                    taskList.current()->getTaskDistanceString() );
+                                    taskName, task->getTaskTypeString(),
+                                    task->getTaskDistanceString() );
 
           taskListView->insertItem(newItem);
           // save task name
@@ -292,6 +291,7 @@ bool TaskList::slotLoadTask()
   if( wpList != 0 )
     {
       // remove all elements from previous uncomplete step
+      qDeleteAll (*wpList);
       wpList->clear();
       delete wpList;
     }
@@ -376,12 +376,12 @@ void TaskList::slotEditTaskList( FlightTask *editedTask)
   // qDebug("TaskList::slotEditTaskList()");
 
   // search task item being edited
-  int index = taskList.findRef( editTask );
+  int index = taskList.indexOf( editTask );
 
   if( index != -1 )
     {
       // remove old item
-      taskList.remove( (uint) index );
+      taskList.removeAt( index );
       // put new item on old position
       taskList.insert( (uint) index, editedTask );
     }
@@ -436,7 +436,7 @@ void TaskList::slotDeleteTask()
   _globalMapContents->setCurrentTask(0);
 
   uint no = id.toUInt() - 1;
-  taskList.remove( no );
+  taskList.removeAt( no );
   saveTaskList();
   taskContent->clear();
   taskListView->clear();
@@ -467,7 +467,7 @@ bool TaskList::saveTaskList()
   for( uint i=0; i < taskList.count(); i++ )
     {
       FlightTask *task = taskList.at(i);
-      Q3PtrList<wayPoint> wpList = task->getWPList();
+      QList<wayPoint*> wpList = task->getWPList();
 
       stream << "TS," << task->getTaskName() << "," << wpList.count() << endl;
 

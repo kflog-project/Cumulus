@@ -18,7 +18,7 @@
 #ifndef TASKLIST_H
 #define TASKLIST_H
 
-#include <Q3PtrList>
+#include <QList>
 #include <Q3ListView>
 #include <QWidget>
 #include <QStringList>
@@ -86,7 +86,7 @@ private:
     /** */
     TaskListView* taskContent;
     /** */
-    Q3PtrList<FlightTask> taskList;
+    QList<FlightTask*> taskList;
     /** */
     static uint lastSelection;
     /** flight task being edited */
