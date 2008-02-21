@@ -2,7 +2,7 @@
  cumulusapp.cpp  -  main application class
                           -------------------
  begin                : Sun Jul 21 2002
- copyright            : (C) 2002 by Andre Somers
+ copyright            : (C) 2002 by André Somers
  ported to Qt4.3/X11  : (C) 2008 by Axel pauli
  email                : andre@kflog.org, axel@kflog.org
 
@@ -29,12 +29,13 @@
 #include <signal.h>
 #include <sys/ioctl.h>
 
+#include <QTextCodec>
 #include <QtGlobal>
 #include <QDesktopWidget>
 #include <QFile>
 #include <QDateTime>
 #include <QDir>
-#include <Q3PtrList>
+#include <QList>
 #include <QMessageBox>
 #include <QSound>
 
@@ -158,6 +159,9 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
   _globalCumulusApp = this;
   menuBarVisible = false;
   listViewTabs = 0;
+
+  // Eggert: make sure the app uses utf8 encoding for translated widgets
+  QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
 
   // get last saved window geometrie from generalconfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
@@ -1376,7 +1380,7 @@ void CumulusApp::slotRememberWaypoint()
   // duplicates.
 
   QPoint pos = calculator->getlastPosition();
-  Q3PtrList<wayPoint>* wpList = _globalMapContents->getWaypointList();
+  QList<wayPoint*>* wpList = _globalMapContents->getWaypointList();
 
   for ( uint i = 0; i < wpList->count(); i++ )
     {

@@ -2,7 +2,7 @@
                           cumulusapp.h  -  main application object
                              -------------------
     begin                : Sun Jul 21 2002
-    copyright            : (C) 2002 by Andre Somers, 2008 Axel Pauli
+    copyright            : (C) 2002 by André Somers, 2008 Axel Pauli
     email                : andre@kflog.org, axel@kflog.org
 
     This file is distributed under the terms of the General Public
@@ -51,7 +51,7 @@
 
 /**
  * @short This class provides the main application for Cumulus.
- * @author Andre Somers
+ * @author André Somers
  */
 
 class CumulusApp : public QMainWindow
