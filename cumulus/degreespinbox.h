@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -23,7 +23,7 @@
 
 /**
  * A spinbox that can be used to enter a runway heading
- * @author André Somers
+ * @author AndrÃ© Somers
  */
 class DegreeSpinBox : public QSpinBox
 {
