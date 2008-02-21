@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -20,7 +20,6 @@
 #include <stdlib.h>
 #include <cmath>
 #include <QMessageBox>
-#include <Q3PtrList>
 
 #include "generalconfig.h"
 #include "cucalc.h"
@@ -104,6 +103,8 @@ CuCalc::CuCalc(QObject* parent) : QObject(parent)
 
 CuCalc::~CuCalc()
 {
+  qDeleteAll(*samplelist);
+  samplelist->clear();
   delete samplelist;
   delete _glider;
 
@@ -358,7 +359,7 @@ void CuCalc::slot_WaypointChange(wayPoint *newWp, bool userAction)
     FlightTask *task = _globalMapContents->getCurrentTask();
 
     if( task != 0 ) {
-      Q3PtrList<wayPoint> wpList = task->getWPList();
+      QList<wayPoint*> wpList = task->getWPList();
 
       // Tasks with less 4 entries are incomplete! The selection
       // of the start point is also senseless. Therefore we start with one.
@@ -436,7 +437,7 @@ void CuCalc::calcDistance( bool autoWpSwitch )
   }
 
   // load waypoint list from task
-  Q3PtrList<wayPoint> wpList = task->getWPList();
+  QList<wayPoint*> wpList = task->getWPList();
 
   // Load active task switch scheme. Switch to next TP can be executed
   // by nearst to TP or touched TP sector/cylinder.
