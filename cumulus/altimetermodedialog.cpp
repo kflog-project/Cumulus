@@ -19,6 +19,7 @@
 #include <QLabel>
 #include <QFont>
 #include <QDialogButtonBox>
+#include <QGroupBox>
 #include <QBoxLayout>
 
 #include "generalconfig.h"
@@ -39,12 +40,11 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   QFont fnt( "Helvetica", 16, QFont::Bold  );
   this->setFont(fnt);
 
-  altMode = new QGroupBox(tr("Altimeter Mode"), this);
+  QGroupBox* altMode = new QGroupBox(tr("Altimeter Mode"), this);
   _msl=new QRadioButton(tr("MSL"),altMode);
   _gnd=new QRadioButton(tr("AGL"),altMode);
   _std=new QRadioButton(tr("STD"),altMode);
   _msl->setChecked(true);
-  altMode->hide();
 
   _msl->setEnabled(true);
   _gnd->setEnabled(true);
@@ -53,14 +53,20 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                  | QDialogButtonBox::Cancel);
 
-  QHBoxLayout* modesLayout = new QHBoxLayout;
-  modesLayout->addWidget(_msl);
-  modesLayout->addWidget(_gnd);
-  modesLayout->addWidget(_std);
+  QHBoxLayout* modeLayout = new QHBoxLayout(this);
+  modeLayout->addWidget(altMode);
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
-  mainLayout->addLayout(modesLayout);
-  mainLayout->addWidget (buttonBox);
+  QHBoxLayout* radioLayout = new QHBoxLayout(altMode);
+  radioLayout->addWidget(_msl);
+  radioLayout->addWidget(_gnd);
+  radioLayout->addWidget(_std);
+
+  QVBoxLayout* buttonLayout = new QVBoxLayout();
+  buttonLayout->addWidget(buttonBox);
+
+  QVBoxLayout* mainLayout = new QVBoxLayout(this);
+  mainLayout->addLayout(modeLayout);
+  mainLayout->addLayout(buttonLayout);
   setLayout (mainLayout);
 
   timeout = new QTimer(this);

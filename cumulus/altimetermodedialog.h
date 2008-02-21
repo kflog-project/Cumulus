@@ -20,7 +20,6 @@
 
 #include <QDialog>
 #include <QTimer>
-#include <QGroupBox>
 #include <QRadioButton>
 
 
@@ -42,7 +41,6 @@ protected:
   void accept ();
   void save (int mode); // 0: MSL,  1: GND,  2: STD
 private:
-  QGroupBox * altMode;
   QTimer* timeout;
   int _time;
   static int _mode;  	 // 0: MSL,  1: GND,  2: STD
