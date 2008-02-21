@@ -217,38 +217,16 @@ MapContents::MapContents(QObject* parent, WaitScreen * waitscreen)
   sectionArray.resize(MAX_FILE_COUNT);
   sectionArray.fill(false);
 
-  // Wir nehmen zun‰chst 4 Schachtelungstiefen an ...
+  // Wir nehmen zun√§chst 4 Schachtelungstiefen an ...
   for(unsigned int loop = 0; loop < ( ISO_LINE_NUM * 4 ); loop++) {
-    Q3PtrList<Isohypse> *list = new Q3PtrList<Isohypse>;
-    list->setAutoDelete(true);
+    QList<Isohypse*> *list = new QList<Isohypse*>;
     isoList.append(list);
   }
 
-  airportList.setAutoDelete(true);
-  airspaceList.setAutoDelete(true);
-  cityList.setAutoDelete(true);
-  gliderList.setAutoDelete(true);
-  //  flightList.setAutoDelete(true);
-  hydroList.setAutoDelete(true);
-  lakeList.setAutoDelete(true);
-  isoList.setAutoDelete(true);
-  landmarkList.setAutoDelete(true);
-  navList.setAutoDelete(true);
-  obstacleList.setAutoDelete(true);
-  outList.setAutoDelete(true);
-  railList.setAutoDelete(true);
-  regIsoLines.setAutoDelete(true);
   _nextIsoLevel=10000;
   _lastIsoLevel=-1;
   _isoLevelReset=true;
   _lastIsoEntry=0;
-  reportList.setAutoDelete(true);
-  highwayList.setAutoDelete(true);
-  roadList.setAutoDelete(true);
-  //  stationList.setAutoDelete(true);
-  topoList.setAutoDelete(true);
-  villageList.setAutoDelete(true);
-  wpList.setAutoDelete(true);
 
   // read in waypoint list
   WaypointCatalog wpCat;
@@ -268,13 +246,81 @@ MapContents::MapContents(QObject* parent, WaitScreen * waitscreen)
 
 MapContents::~MapContents()
 {
-  if( currentTask != 0 ) {
-    delete currentTask;
-  }
+  delete currentTask;
 
   // save the current waypoint list
   WaypointCatalog wpCat;
   wpCat.write( 0, &wpList );
+
+  qDeleteAll (airportList);
+  airportList.clear();
+
+  qDeleteAll (obstacleList);
+  obstacleList.clear();
+
+  qDeleteAll (airspaceList);
+  airspaceList.clear();
+
+  qDeleteAll (cityList);
+  cityList.clear();
+
+  qDeleteAll (gliderList);
+  gliderList.clear();
+
+//  qDeleteAll (flightList);
+//  flightList.clear();
+
+  qDeleteAll (hydroList);
+  hydroList.clear();
+
+  qDeleteAll (lakeList);
+  lakeList.clear();
+
+  for (int i=isoList.count()-1; i>=0;i--) {
+    qDeleteAll(*isoList.at(i));
+    isoList.at(i)->clear();
+  }
+  qDeleteAll (isoList);
+  isoList.clear();
+
+  qDeleteAll (landmarkList);
+  landmarkList.clear();
+
+  qDeleteAll (navList);
+  navList.clear();
+
+  qDeleteAll (obstacleList);
+  obstacleList.clear();
+
+  qDeleteAll (outList);
+  outList.clear();
+
+  qDeleteAll (railList);
+  railList.clear();
+
+  qDeleteAll (regIsoLines);
+  regIsoLines.clear();
+
+  qDeleteAll (reportList);
+  reportList.clear();
+
+  qDeleteAll (highwayList);
+  highwayList.clear();
+
+  qDeleteAll (roadList);
+  roadList.clear();
+
+//  qDeleteAll (stationList);
+//  stationList.clear();
+
+  qDeleteAll (topoList);
+  topoList.clear();
+
+  qDeleteAll (villageList);
+  villageList.clear();
+
+  qDeleteAll (wpList);
+  wpList.clear();
 }
 
   // save the current waypoint list
@@ -2045,42 +2091,42 @@ void MapContents::unloadMaps(unsigned int distance)
 }
 
 
-void MapContents::unloadMapObjects(Q3PtrList<LineElement> * list)
+void MapContents::unloadMapObjects(QList<LineElement*> * list)
 {
   for (int i=list->count()-1; i>=0;i--) {
     if (!sectionArray[list->at(i)->getMapSegment()]) {
-      list->remove(i);
+      list->removeAt(i);
     }
   }
 }
 
 
-void MapContents::unloadMapObjects(Q3PtrList<SinglePoint> * list)
+void MapContents::unloadMapObjects(QList<SinglePoint*> * list)
 {
   for (int i=list->count()-1; i>=0;i--) {
     if (!sectionArray[list->at(i)->getMapSegment()]) {
-      list->remove(i);
+      list->removeAt(i);
     }
   }
 }
 
 
-void MapContents::unloadMapObjects(Q3PtrList<RadioPoint> * list)
+void MapContents::unloadMapObjects(QList<RadioPoint*> * list)
 {
   for (int i=list->count()-1; i>=0;i--) {
     if (!sectionArray[list->at(i)->getMapSegment()]) {
-      list->remove(i);
+      list->removeAt(i);
     }
   }
 }
 
 
-void MapContents::unloadMapObjects(Q3PtrList< Q3PtrList<Isohypse> > * list)
+void MapContents::unloadMapObjects(QList< QList<Isohypse*>*>* list)
 {
   for (int i=list->count()-1; i>=0;i--) {
     for (int j=list->at(i)->count()-1; j>=0;j--) {
       if (!sectionArray[list->at(i)->at(j)->getMapSegment()]) {
-        list->at(i)->remove(j);
+        list->at(i)->removeAt(j);
       }
     }
   }
@@ -2262,8 +2308,7 @@ void MapContents::slotReloadMapData()
 
   // Wir nehmen zunaechst 4 Schachtelungstiefen an ...
   for(unsigned int loop = 0; loop < ( ISO_LINE_NUM * 4 ); loop++) {
-    Q3PtrList<Isohypse> *list = new Q3PtrList<Isohypse>;
-    list->setAutoDelete(true);
+    QList<Isohypse*> *list = new QList<Isohypse*>;
     isoList.append(list);
   }
 
@@ -2360,53 +2405,53 @@ void MapContents::printContents(QPainter* targetPainter, bool isText)
 {
   proofeSection();
 
-  for(BaseMapElement* topo = topoList.first(); topo; topo = topoList.next())
-    topo->printMapElement(targetPainter, isText);
+  for (int i = 0; i < topoList.size(); i++)
+    topoList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* hydro = hydroList.first(); hydro; hydro = hydroList.next())
-    hydro->printMapElement(targetPainter, isText);
+  for (int i = 0; i < hydroList.size(); i++)
+    hydroList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* lake = lakeList.first(); lake; lake = lakeList.next())
-    lake->printMapElement(targetPainter, isText);
+  for (int i = 0; i < lakeList.size(); i++)
+    lakeList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* rail = railList.first(); rail; rail = railList.next())
-    rail->printMapElement(targetPainter, isText);
+  for (int i = 0; i < railList.size(); i++)
+    railList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* highway = highwayList.first(); highway; highway = highwayList.next())
-    highway->printMapElement(targetPainter, isText);
+  for (int i = 0; i < highwayList.size(); i++)
+    highwayList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* road = roadList.first(); road; road = roadList.next())
-    road->printMapElement(targetPainter, isText);
+  for (int i = 0; i < roadList.size(); i++)
+    roadList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* city = cityList.first(); city; city = cityList.next())
-    city->printMapElement(targetPainter, isText);
+  for (int i = 0; i < cityList.size(); i++)
+    cityList.at(i)->printMapElement(targetPainter, isText);
 
-  //  for(BaseMapElement* village = villageList.first(); village; village = villageList.next())
-  //      village->printMapElement(targetPainter, isText);
+  //  for (int i = 0; i < villageList.size(); i++)
+  //      villageList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* nav = navList.first(); nav; nav = navList.next())
-    nav->printMapElement(targetPainter, isText);
+  for (int i = 0; i < navList.size(); i++)
+    navList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* airspace = airspaceList.first(); airspace; airspace = airspaceList.next())
-    airspace->printMapElement(targetPainter, isText);
+  for (int i = 0; i < airspaceList.size(); i++)
+    airspaceList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* obstacle = obstacleList.first(); obstacle; obstacle = obstacleList.next())
-    obstacle->printMapElement(targetPainter, isText);
+  for (int i = 0; i < obstacleList.size(); i++)
+    obstacleList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* report = reportList.first(); report; report = reportList.next())
-    report->printMapElement(targetPainter, isText);
+  for (int i = 0; i < reportList.size(); i++)
+    reportList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* landmark = landmarkList.first(); landmark; landmark = landmarkList.next())
-    landmark->printMapElement(targetPainter, isText);
+  for (int i = 0; i < landmarkList.size(); i++)
+    landmarkList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* airport = airportList.first(); airport; airport = airportList.next())
-    airport->printMapElement(targetPainter, isText);
+  for (int i = 0; i < airportList.size(); i++)
+    airportList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* glider = gliderList.first(); glider; glider = gliderList.next())
-    glider->printMapElement(targetPainter, isText);
+  for (int i = 0; i < gliderList.size(); i++)
+    gliderList.at(i)->printMapElement(targetPainter, isText);
 
-  for(BaseMapElement* out = outList.first(); out; out = outList.next())
-    out->printMapElement(targetPainter, isText);
+  for (int i = 0; i < outList.size(); i++)
+    outList.at(i)->printMapElement(targetPainter, isText);
 }
 
 
@@ -2414,7 +2459,7 @@ void MapContents::drawList(QPainter* targetPainter,
                            unsigned int listID)
 {
   //const char *list="";
-  uint len = 0;
+  //uint len = 0;
 
   //QTime t;
   //t.start();
@@ -2425,98 +2470,98 @@ void MapContents::drawList(QPainter* targetPainter,
   switch(listID) {
   case AirportList:
     //list="AirportList";
-    len=airportList.count();
-    for(BaseMapElement* airport = airportList.first(); airport; airport = airportList.next())
-      airport->drawMapElement(targetPainter, maskPainter);
+    //len=airportList.count();
+    for (int i = 0; i < airportList.size(); i++)
+      airportList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case GliderList:
     //list="GliderList";
-    len=gliderList.count();
-    for(BaseMapElement* glider = gliderList.first(); glider; glider = gliderList.next())
-      glider->drawMapElement(targetPainter, maskPainter);
+    //len=gliderList.count();
+    for (int i = 0; i < gliderList.size(); i++)
+      gliderList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case OutList:
     //list="OutList";
-    len=outList.count();
-    for(BaseMapElement* out = outList.first(); out; out = outList.next())
-      out->drawMapElement(targetPainter, maskPainter);
+    //len=outList.count();
+    for (int i = 0; i < outList.size(); i++)
+      outList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case NavList:
     //list="NavList";
-    len=navList.count();
-    for(BaseMapElement* nav = navList.first(); nav; nav = navList.next())
-      nav->drawMapElement(targetPainter, maskPainter);
+    //len=navList.count();
+    for (int i = 0; i < navList.size(); i++)
+      navList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case AirspaceList:
     //list="AirspaceList";
-    len=airspaceList.count();
-    for(BaseMapElement* airspace = airspaceList.first(); airspace; airspace = airspaceList.next())
-      airspace->drawMapElement(targetPainter, maskPainter);
+    //len=airspaceList.count();
+    for (int i = 0; i < airspaceList.size(); i++)
+      airspaceList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case ObstacleList:
     //list="ObstacleList";
-    len=obstacleList.count();
-    for(BaseMapElement* obstacle = obstacleList.first(); obstacle; obstacle = obstacleList.next())
-      obstacle->drawMapElement(targetPainter, maskPainter);
+    //len=obstacleList.count();
+    for (int i = 0; i < obstacleList.size(); i++)
+      obstacleList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case ReportList:
     //list="ReportList";
-    len=reportList.count();
-    for(BaseMapElement* report = reportList.first(); report; report = reportList.next())
-      report->drawMapElement(targetPainter, maskPainter);
+    //len=reportList.count();
+    for (int i = 0; i < reportList.size(); i++)
+      reportList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case CityList:
     //list="CityList";
-    len=cityList.count();
-    for(BaseMapElement* city = cityList.first(); city; city = cityList.next())
-      city->drawMapElement(targetPainter, maskPainter);
+    //len=cityList.count();
+    for (int i = 0; i < cityList.size(); i++)
+      cityList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case VillageList:
     //list="VillageList";
-    for(BaseMapElement* village = villageList.first(); village; village = villageList.next())
-      village->drawMapElement(targetPainter, maskPainter);
+    for (int i = 0; i < villageList.size(); i++)
+      villageList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case LandmarkList:
     //list="LandmarkList";
-    len=landmarkList.count();
-    for(BaseMapElement* landmark = landmarkList.first(); landmark; landmark = landmarkList.next())
-      landmark->drawMapElement(targetPainter, maskPainter);
+    //len=landmarkList.count();
+    for (int i = 0; i < landmarkList.size(); i++)
+      landmarkList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case HighwayList:
     //list="HighwayList";
-    len=highwayList.count();
-    for(BaseMapElement* highway = highwayList.first(); highway; highway = highwayList.next())
-      highway->drawMapElement(targetPainter, maskPainter);
+    //len=highwayList.count();
+    for (int i = 0; i < highwayList.size(); i++)
+      highwayList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case RoadList:
     //list="RoadList";
-    len=roadList.count();
-    for(BaseMapElement* road = roadList.first(); road; road = roadList.next())
-      road->drawMapElement(targetPainter, maskPainter);
+    //len=roadList.count();
+    for (int i = 0; i < roadList.size(); i++)
+      roadList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case RailList:
     //list="RailList";
-    len=railList.count();
-    for(BaseMapElement* rail = railList.first(); rail; rail = railList.next())
-      rail->drawMapElement(targetPainter, maskPainter);
+    //len=railList.count();
+    for (int i = 0; i < railList.size(); i++)
+      railList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case HydroList:
     //list="HydroList";
-    len=hydroList.count();
-    for(BaseMapElement* hydro = hydroList.first(); hydro; hydro = hydroList.next())
-      hydro->drawMapElement(targetPainter, maskPainter);
+    //len=hydroList.count();
+    for (int i = 0; i < hydroList.size(); i++)
+      hydroList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case LakeList:
     //list="LakeList";
-    len=lakeList.count();
-    for(BaseMapElement* lake = lakeList.first(); lake; lake = lakeList.next())
-      lake->drawMapElement(targetPainter, maskPainter);
+    //len=lakeList.count();
+    for (int i = 0; i < lakeList.size(); i++)
+      lakeList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   case TopoList:
     //list="TopoList";
-    len=topoList.count();
-    for(BaseMapElement* topo = topoList.first(); topo; topo = topoList.next())
-      topo->drawMapElement(targetPainter, maskPainter);
+    //len=topoList.count();
+    for (int i = 0; i < topoList.size(); i++)
+      topoList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
   default:
     qWarning("MapContents::drawList(): unknown listID %d", listID);
@@ -2588,12 +2633,13 @@ void MapContents::drawIsoList(QPainter* targetP)
   targetP->save();
   targetP->setClipping(true);
 
-  for(Q3PtrList<Isohypse>* iso = isoList.first(); iso; iso = isoList.next())
-    {
+  for (int i = 0; i < isoList.size(); i++)
+  {
+      QList<Isohypse*>* iso = isoList.at(i);
       //if (isoList.at()>1) break;
-      if(iso->count() == 0)
+      if(iso->size() == 0)
         continue;
-      Isohypse* first = iso->getFirst();
+      Isohypse* first = iso->first();
 
       for(unsigned int pos = 0; pos < ISO_LINE_NUM; pos++)
         {
@@ -2627,8 +2673,9 @@ void MapContents::drawIsoList(QPainter* targetP)
 
       targetP->setBrush(QBrush(_globalMapConfig->getIsoColor(height), Qt::SolidPattern));
 
-      for(Isohypse* iso2 = iso->first(); iso2; iso2 = iso->next())
-        {
+      for (int j = 0; j < iso->size(); j++)
+      {
+          Isohypse* iso2 = iso->at(j);
           QRegion * reg = iso2->drawRegion(targetP, 0,
                                            _globalMapView->rect(),
                                            !groupDrawn, isolines);
@@ -2638,8 +2685,8 @@ void MapContents::drawIsoList(QPainter* targetP)
             regIsoLines.append(entry);
             //qDebug("  added Iso: %04x, %d", (int)reg, iso2->getElevation() );
           }
-        }
-    }
+      }
+  }
   targetP->restore();
   regIsoLines.sort();
   _isoLevelReset=false;

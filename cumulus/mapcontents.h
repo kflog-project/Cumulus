@@ -21,7 +21,7 @@
 
 #include <QBitArray>
 #include <QFile>
-#include <Q3PtrList>
+#include <QList>
 #include <QStringList>
 #include <QPointer>
 #include <QDateTime>
@@ -156,7 +156,7 @@ class MapContents : public QObject
   /**
    * @returns the waypoint list
    */
-  Q3PtrList<wayPoint>* getWaypointList()
+  QList<wayPoint*>* getWaypointList()
   {
     return &wpList;
   };
@@ -213,13 +213,13 @@ class MapContents : public QObject
    * Deletes all map items that are not in the sectionArray from the given list.
    * Used by @ref unloadMaps to do the actual deleting.
    */
-  void unloadMapObjects(Q3PtrList<LineElement> * list);
+  void unloadMapObjects(QList<LineElement*> * list);
 
-  void unloadMapObjects(Q3PtrList<SinglePoint> * list);
+  void unloadMapObjects(QList<SinglePoint*> * list);
 
-  void unloadMapObjects(Q3PtrList<RadioPoint> * list);
+  void unloadMapObjects(QList<RadioPoint*> * list);
 
-  void unloadMapObjects(Q3PtrList< Q3PtrList<Isohypse> > * list);
+  void unloadMapObjects(QList< QList<Isohypse*>* > * list);
 
   /**
    * This function checks all possible mapdirectories for the
@@ -344,7 +344,7 @@ class MapContents : public QObject
    * addSitesList contains all, ultra-light,
    * hang-glider-sites, free-ballon-sites, parachute-jumping-sites.
    */
-  Q3PtrList<SinglePoint> addSitesList;
+  QList<SinglePoint*> addSitesList;
 
   /**
    * outList contains all outlanding-fields.
@@ -354,7 +354,7 @@ class MapContents : public QObject
   /**
    * navList contains all radio navigation facilities.
    */
-  Q3PtrList<RadioPoint> navList;
+  QList<RadioPoint*> navList;
 
   /**
    * airspaceList contails all airspaces. The sort funtion on this
@@ -369,61 +369,61 @@ class MapContents : public QObject
    * obstacleList contains all obstacles and -groups, as well
    * as the spots and passes.
    */
-  Q3PtrList<SinglePoint> obstacleList;
+  QList<SinglePoint*> obstacleList;
 
   /**
    * reportList contains all reporting points.
    */
-  Q3PtrList<SinglePoint> reportList;
+  QList<SinglePoint*> reportList;
 
   /**
    * cityList contails all cities.
    */
-  Q3PtrList<LineElement> cityList;
+  QList<LineElement*> cityList;
 
   /**
    * villageList contains all villages.
    */
-  Q3PtrList<SinglePoint> villageList;
+  QList<SinglePoint*> villageList;
 
   /**
    * landmarkList contains all landmarks.
    */
-  Q3PtrList<SinglePoint> landmarkList;
+  QList<SinglePoint*> landmarkList;
 
   /**
    * highwayList contails all highways.
    */
-  Q3PtrList<LineElement> highwayList;
+  QList<LineElement*> highwayList;
 
   /**
    * roadList contails all roads.
    */
-  Q3PtrList<LineElement> roadList;
+  QList<LineElement*> roadList;
   /**
    * railList contains all railways and aerial railways.
    */
-  Q3PtrList<LineElement> railList;
+  QList<LineElement*> railList;
   /**
    * stationList contains all stations.
    */
-  //    Q3PtrList<SinglePoint> stationList;
+  //    QList<SinglePoint*> stationList;
   /**
    * hydroList contains all shorelines, rivers, ...
    */
-  Q3PtrList<LineElement> hydroList;
+  QList<LineElement*> hydroList;
   /**
    * hydroList contains all lakes, ...
    */
-  Q3PtrList<LineElement> lakeList;
+  QList<LineElement*> lakeList;
   /**
    * topoList contains all topographical objects.
    */
-  Q3PtrList<LineElement> topoList;
+  QList<LineElement*> topoList;
   /**
    * isohypseList contains all isohypses.
    */
-  Q3PtrList< Q3PtrList<Isohypse> > isoList;
+  QList< QList<Isohypse*>* > isoList;
   /**
    * List of all map-sections. Contains a "1" for all fully loaded section-files,
    * otherwise "0".
@@ -488,7 +488,7 @@ class MapContents : public QObject
   /*
    * This list is reset every time the current WaypointCatalog is changed.
    */
-  Q3PtrList<wayPoint> wpList;
+  QList<wayPoint*> wpList;
 
 };
 
