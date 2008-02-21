@@ -40,7 +40,6 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
     taskNamesInUse( taskNamesInUse )
 {
   wpList = _globalMapContents->getWaypointList();
-  taskWPList.setAutoDelete(true);
   lastSelectedItem = -1;
 
   if( task )
@@ -158,7 +157,7 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
     {
       taskName->setText( planTask->getTaskName() );
 
-      Q3PtrList<wayPoint> tmpList = planTask->getWPList();
+      QList<wayPoint*> tmpList = planTask->getWPList();
 
       // @AP: Make a deep copy from all elements of the list
       for( uint i=0; i < tmpList.count(); i++ )
@@ -196,6 +195,9 @@ TaskDialog::~TaskDialog()
 {
   // qDebug("TaskDialog::~TaskDialog()");
 
+  qDeleteAll (taskWPList);
+  taskWPList.clear();
+
   for(int i=0; i<NUM_LISTS; i++)
     {
       waypointList[i]->clear();
@@ -217,7 +219,7 @@ void TaskDialog::__showTask()
 
   this->setWindowTitle(txt);
 
-  Q3PtrList<wayPoint> tmpList = planTask->getWPList();
+  QList<wayPoint*> tmpList = planTask->getWPList();
 
   taskList->clear();
 
@@ -282,7 +284,7 @@ void TaskDialog::slotRemoveWaypoint()
 
   int id( taskList->selectedItem()->text(0).toInt() );
 
-  taskWPList.remove( id );
+  taskWPList.removeAt( id );
   taskList->takeItem( taskList->selectedItem() );
 
   __showTask();
@@ -300,7 +302,9 @@ void TaskDialog::slotInvertWaypoints()
   // invert list order
   for( int i= (int) taskWPList.count()-2; i >= 0; i-- )
     {
-      taskWPList.append( taskWPList.take(i) );
+      wayPoint* wp = taskWPList.at(i);
+      taskWPList.removeAt(i);
+      taskWPList.append( wp );
     }
 
   __showTask();
@@ -414,9 +418,7 @@ void TaskDialog::slotMoveWaypointUp()
 
   lastSelectedItem = id - 1;
 
-  wayPoint* tmp = taskWPList.take( id );
-
-  taskWPList.insert( id - 1, tmp );
+  taskWPList.move(id, id-1);
 
   __showTask();
 }
@@ -434,9 +436,7 @@ void TaskDialog::slotMoveWaypointDown()
 
   lastSelectedItem = id + 1;
 
-  wayPoint* tmp = taskWPList.take( id );
-
-  taskWPList.insert( id + 1, tmp );
+  taskWPList.move(id,  id + 1);
 
   __showTask();
 }

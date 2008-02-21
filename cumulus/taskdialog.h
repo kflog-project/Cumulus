@@ -18,7 +18,7 @@
 #ifndef TASK_H
 #define TASK_H
 
-#include <Q3PtrList>
+#include <QList>
 #include <QString>
 #include <Q3ListView>
 #include <QLineEdit>
@@ -88,7 +88,7 @@ private:
     void __showTask();
 
     /** create a deep copy of the waypoint list */
-    Q3PtrList<wayPoint> *copyWpList();
+    QList<wayPoint*> *copyWpList();
 
     /** */
     Q3ListView* taskList;
@@ -105,9 +105,9 @@ private:
     /** */
     ListViewFilter* filter[NUM_LISTS];
     /** */
-    Q3PtrList<wayPoint> *wpList;
+    QList<wayPoint*> *wpList;
     /** */
-    Q3PtrList<wayPoint> taskWPList;
+    QList<wayPoint*> taskWPList;
     /** */
     FlightTask* planTask;
     /** Flag for indication of edit state */
