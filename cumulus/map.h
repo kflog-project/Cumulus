@@ -26,7 +26,7 @@
 #include <QTimer>
 #include <QPixmap>
 #include <QString>
-#include <Q3PtrList>
+#include <QList>
 #include <QEvent>
 #include <QResizeEvent>
 
@@ -412,7 +412,7 @@ class Map : public QWidget
      *   Second look in map contents
      */
     bool __getTaskWaypoint(QPoint current, struct wayPoint *wp,
-                           Q3PtrList<wayPoint> &taskPointList);
+                           QList<wayPoint*> &taskPointList);
 
     /**
      * Draws the glidersymbol on the pixmap
@@ -508,7 +508,7 @@ class Map : public QWidget
      * Contains the regions of all visible airspaces. The list is needed to
      * find the airspace-data when the users selects a airspace in the map.
      */
-    Q3PtrList<AirRegion> airspaceRegList;
+    QList<AirRegion*> airspaceRegList;
 
     //contains the layer the next redraw should start from
     mapLayer m_sceduledFromLayer;

@@ -109,8 +109,6 @@ Map::Map(QWidget* parent, const char* name) : QWidget(parent, name),
   m_pixInformationMap.fill(Qt::white);
   m_pixPaintBuffer.fill(Qt::white);
 
-  airspaceRegList.setAutoDelete(true);
-
   setBackgroundColor(Qt::white);
 
   redrawTimerShort = new QTimer(this);
@@ -133,7 +131,10 @@ Map::Map(QWidget* parent, const char* name) : QWidget(parent, name),
 
 
 Map::~Map()
-{}
+{
+  qDeleteAll(airspaceRegList);
+  airspaceRegList.clear();
+}
 
 /**
  * Display Info about Airspace items
@@ -307,12 +308,11 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
 
   // let's show waypoints
   // @AP: On map scale higher as 1024 we don't evelute anything
-  for( Q3PtrListIterator<wayPoint> it (*(_globalMapContents->getWaypointList()))
-       ;
-       it.current() && cs <= 1024.0;
-       ++it )
+  for (int i = 0; i < _globalMapContents->getWaypointList()->count(); i++)
     {
-      wayPoint* wp = it.current();
+      if (cs > 1024.0)
+        break;
+      wayPoint* wp = _globalMapContents->getWaypointList()->at(i);
 
       // consider only points, which are visible on the map
       if( (uint) wp->importance < _globalMapMatrix->currentDrawScale() )
@@ -1176,7 +1176,7 @@ void Map::slotCenterToTask()
  * First look in task itself
  * Second look in map contents
  */
-bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, Q3PtrList<wayPoint> &taskPointList)
+bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, QList<wayPoint*> &taskPointList)
 {
   unsigned int i;
   struct wayPoint *tmpPoint;
@@ -1260,7 +1260,7 @@ bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, Q3PtrList<wayPo
 void Map::__drawWaypoints(QPainter* wpPainter)
 {
   int i, n;
-  Q3PtrList<wayPoint> *wpList;
+  QList<wayPoint*> *wpList;
   wayPoint * wp;
   bool isSelected;
 
