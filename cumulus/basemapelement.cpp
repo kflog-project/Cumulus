@@ -165,3 +165,9 @@ void BaseMapElement::setMapSegment( const unsigned int& _newVal)
 {
   MapSegment = _newVal;
 }
+
+bool BaseMapElement::operator < (const BaseMapElement& other) const
+{
+  return getName() < other.getName();
+}
+

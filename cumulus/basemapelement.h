@@ -152,6 +152,8 @@ public:
    */
   virtual const unsigned int& getMapSegment();
 
+  bool operator < (const BaseMapElement& other) const;
+
  protected:
   /**
    * Proofes, if the object is in the drawing-area of the map.
