@@ -2,7 +2,7 @@
                           igclogger.cpp  -  description
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by Andre Somers, 2008 Axel Pauli
+    copyright            : (C) 2002 by André Somers, 2008 Axel Pauli
     email                : andre@kflog.org, axel@kflog.org
 
     This file is part of Cumulus
@@ -237,7 +237,7 @@ void IgcLogger::writeHeaders()
     return; // no task active
   }
 
-  Q3PtrList<wayPoint> wpList = task->getWPList();
+  QList<wayPoint*> wpList = task->getWPList();
 
   if( wpList.count() < 4 ) {
     return; // too less waypoints
