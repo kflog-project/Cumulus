@@ -18,8 +18,8 @@
 
 #include <QLabel>
 #include <QFont>
-#include <QRadioButton>
-#include <QGridLayout>
+#include <QDialogButtonBox>
+#include <QBoxLayout>
 
 #include "generalconfig.h"
 #include "altimetermodedialog.h"
@@ -35,41 +35,39 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
     : QDialog(parent, "altimetermodedialog", true, Qt::WStyle_StaysOnTop)
 {
   setWindowTitle(tr("Altimeter"));
-  QGridLayout* topLayout = new QGridLayout(this, 3,3,5);
 
   QFont fnt( "Helvetica", 16, QFont::Bold  );
   this->setFont(fnt);
 
-  GeneralConfig *conf = GeneralConfig::instance();
+  altMode = new QGroupBox(tr("Altimeter Mode"), this);
+  _msl=new QRadioButton(tr("MSL"),altMode);
+  _gnd=new QRadioButton(tr("AGL"),altMode);
+  _std=new QRadioButton(tr("STD"),altMode);
+  _msl->setChecked(true);
+  altMode->hide();
 
-  _mode = conf->getAltimeterMode();
-  _toggling_mode = conf->getAltimeterToggleMode();
+  _msl->setEnabled(true);
+  _gnd->setEnabled(true);
+  _std->setEnabled(true);
 
-  int row = 0;
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                 | QDialogButtonBox::Cancel);
 
-  altMode = new Q3ButtonGroup(1, Qt::Vertical, tr("Altimeter Mode"),this);
-  QRadioButton * msl=new QRadioButton(tr("MSL"),altMode);
-  QRadioButton * gnd=new QRadioButton(tr("AGL"),altMode);
-  QRadioButton * std=new QRadioButton(tr("STD"),altMode);
-  msl->setChecked(true);
-  topLayout->addMultiCellWidget(altMode,row,row,0,2, Qt::AlignCenter);
-  row++;
-  msl->setEnabled(true);
-  gnd->setEnabled(true);
-  std->setEnabled(true);
-  altMode->setButton(_mode);
+  QHBoxLayout* modesLayout = new QHBoxLayout;
+  modesLayout->addWidget(_msl);
+  modesLayout->addWidget(_gnd);
+  modesLayout->addWidget(_std);
 
-  buttonOK = new QPushButton(tr("OK"), this);
-  // buttonOK->setFont(fnt1);
-  topLayout->addWidget (buttonOK, row, 2);
-  buttonCancel = new QPushButton (tr("Cancel"), this);
-  // buttonCancel->setFont(fnt1);
-  topLayout->addWidget (buttonCancel, row++, 0);
+  QVBoxLayout* mainLayout = new QVBoxLayout;
+  mainLayout->addLayout(modesLayout);
+  mainLayout->addWidget (buttonBox);
+  setLayout (mainLayout);
 
   timeout = new QTimer(this);
   connect (timeout, SIGNAL(timeout()), this, SLOT(reject()));
-  connect (buttonOK, SIGNAL(clicked()), this, SLOT(accept()));
-  connect (buttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect (buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect (buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  load();
 }
 
 QString AltimeterModeDialog::Pretext()
@@ -95,6 +93,20 @@ void AltimeterModeDialog::load()
 
   _mode = conf->getAltimeterMode();
   _toggling_mode = conf->getAltimeterToggleMode();
+
+  switch (_mode) {
+    case 0:
+      _msl->setChecked(true);
+      break;
+    case 1:
+      _gnd->setChecked(true);
+      break;
+    case 2:
+      _std->setChecked(true);
+      break;
+    default:
+      qFatal("AltimeterModeDialog::load(): invalid mode: %d", _mode);
+  }
 
   setTimer();
 }
@@ -146,7 +158,13 @@ void AltimeterModeDialog::save(int mode)
 
 void AltimeterModeDialog::accept()
 {
-  int selected_mode = altMode->id(altMode->selected());
+  int selected_mode = 0;
+  if (_msl->isChecked())
+    selected_mode = 0;
+  else if (_gnd->isChecked())
+    selected_mode = 1;
+  else if (_std->isChecked())
+    selected_mode = 2;
 
   if(  selected_mode != _mode )
     {

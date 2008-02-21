@@ -19,9 +19,10 @@
 #define ALTIMETERMODEDIALOG_H
 
 #include <QDialog>
-#include <QPushButton>
 #include <QTimer>
-#include <Q3ButtonGroup>
+#include <QGroupBox>
+#include <QRadioButton>
+
 
 /**
   *@author Eckhard Voellm 
@@ -41,13 +42,15 @@ protected:
   void accept ();
   void save (int mode); // 0: MSL,  1: GND,  2: STD
 private:
-  Q3ButtonGroup * altMode;
-  QPushButton* buttonOK;
-  QPushButton* buttonCancel;
+  QGroupBox * altMode;
   QTimer* timeout;
   int _time;
   static int _mode;  	 // 0: MSL,  1: GND,  2: STD
   bool _toggling_mode;   // 1: On
+  QRadioButton * _msl;
+  QRadioButton * _gnd;
+  QRadioButton * _std;
+
 private slots:
   void setTimer();
 signals:
