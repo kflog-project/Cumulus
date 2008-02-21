@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel pauli
+**   Copyright (c):  2004 by Eckhard Vï¿½llm, 2008 Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -16,7 +16,6 @@
 ***********************************************************************/
 
 #include <QPushButton>
-#include <Q3PtrList>
 #include <QFont>
 #include <Q3ListViewItem>
 
@@ -122,24 +121,24 @@ void ReachpointListView::fillRpList()
     sname = si->text(0);
   list->clear();
   // Create a pointer to the list of nearest sites
-  Q3PtrList<ReachablePoint> *pl = calculator->getReachList()->getList();
-  ReachablePoint *rp;
+  QList<ReachablePoint*> *pl = calculator->getReachList()->getList();
   int num = 0;
   // Do a loop over all entries in the table of nearest sites
-  for (rp=pl->first(); rp &&
-         num < calculator->getReachList()->getMaxNrOfSites();
-       rp=pl->next(), num++ ) {
+  for (int i = 0; i < pl->count()&&
+         num < calculator->getReachList()->getMaxNrOfSites(); i++, num++) {
+    ReachablePoint *rp = pl->at(i);
+
     if( !_outlandShow && (rp->getType() == BaseMapElement::Outlanding) )
       continue;
 
     // Setup string for bearing
-    QString bearing=QString("%1°").arg(rp->getBearing());
+    QString bearing=QString("%1Â°").arg(rp->getBearing());
     // Calculate relative bearing too, very cool feature
     int relbearing = rp->getBearing() - calculator->getlastHeading();
 
     while (relbearing < 0)
       relbearing += 360;
-    // This string is unly used for sorting and is eclipsed by next field
+    // This string is only used for sorting and is eclipsed by next field
     QString RB = QString("  %1").arg(relbearing);
 
     // calculate sunset
