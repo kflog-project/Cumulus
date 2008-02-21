@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2003 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -36,7 +36,7 @@ class GPSSnrDisplay;
   *@short dialog displaying the GPS status
   *This dialog provides info on the current GPS status, including statalites
   *tracked, elevation, azimuth and signal strengths.
-  *@author André Somers
+  *@author AndrÃ© Somers
   */
 class GpsStatusDialog : public QDialog
 {
