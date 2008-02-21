@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2004 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -19,7 +19,7 @@
 #define LISTVIEWFILTER_H
 
 #include <QWidget>
-#include <Q3PtrList>
+#include <QList>
 #include <Q3ListView>
 #include <Q3ListViewItem>
 #include <QPushButton>
@@ -28,8 +28,8 @@ class QPushButton;
 
 class ListViewFilterItem;
 
-typedef Q3PtrList<ListViewFilterItem> filterSet;
-typedef Q3PtrList<Q3ListViewItem> itemList;
+typedef QList<ListViewFilterItem*> filterSet;
+typedef QList<Q3ListViewItem*> itemList;
 
 class ListViewFilterItem
 {
@@ -70,7 +70,7 @@ private:
 
 /**
  * Creates a filterbar for a Q3ListView in order to quickly filter the listview.
- * @author André Somers
+ * @author AndrÃ© Somers
  */
 class ListViewFilter : public QWidget
 {
@@ -105,7 +105,7 @@ private:
     //reference to listview
     Q3ListView * _lv;
     //list of buttons
-    Q3PtrList<QPushButton> _buttonList;
+    QList<QPushButton*> _buttonList;
     //active filter
     ListViewFilterItem * _activeFilter;
     //root of the filter tree

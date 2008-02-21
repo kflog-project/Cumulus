@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2004 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -233,12 +233,14 @@ ListViewFilterItem::ListViewFilterItem(ListViewFilterItem * parent)
     from="";
     to="";
     _split=false;
-    subfilters.setAutoDelete(true);
 }
 
 
 ListViewFilterItem::~ListViewFilterItem()
-{}
+{
+  qDeleteAll(subfilters);
+  subfilters.clear();
+}
 
 
 void ListViewFilterItem::addToList(Q3ListView * lv, bool isRecursive)
