@@ -8,7 +8,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers
+**   Copyright (c):  2004 by AndrÃ© Somers
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
