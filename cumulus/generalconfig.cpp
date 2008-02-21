@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by André Somers, 2007 Axel Pauli
+ **   Copyright (c):  2004 by AndrÃ© Somers, 2007 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
