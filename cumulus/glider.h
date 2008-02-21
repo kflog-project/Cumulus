@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2003 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -28,7 +28,7 @@
  * on a glider: it's type, it's registration, callsign, polaire,
  * two- or single seater, maximum water capacity, etc.
  * 
- * @author André Somers
+ * @author AndrÃ© Somers
  */
 
 class Glider : public QObject
