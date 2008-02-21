@@ -112,7 +112,10 @@ Map::Map(QWidget* parent, const char* name) : QWidget(parent, name),
   setBackgroundColor(Qt::white);
 
   redrawTimerShort = new QTimer(this);
+  redrawTimerShort->setSingleShot(true);
+
   redrawTimerLong  = new QTimer(this);
+  redrawTimerLong->setSingleShot(true);
 
   connect( redrawTimerShort, SIGNAL(timeout()),
            this, SLOT(slotRedrawMap()));
@@ -166,7 +169,7 @@ void Map::__displayMapInfo(const QPoint& current)
           tr("Airspace&nbsp;Structure") +
           "</th></tr>";
 
-  for(unsigned int loop = 0; loop < airspaceRegList.count(); loop++)
+  for( int loop = 0; loop < airspaceRegList.count(); loop++ )
     {
       if(airspaceRegList.at(loop)->region->contains(current))
         {
@@ -1001,11 +1004,14 @@ void Map::__drawInformationLayer()
   //draw the trail (if enabled)
   __drawTrail();
 
-  //draw the wind arrow
+  //draw the wind arrow, if pixmap was initialized by slot slotNewWind
   //drawing the wind arrow is a matter of bit blitting a piece of the windArrow pixmap
-  QPainter p(&m_pixInformationMap);
-  p.drawPixmap( 4, 4, windArrow, windArrow.width()/4, windArrow.width()/4, 36, 36);
-
+  if( ! windArrow.isNull() )
+    {
+      QPainter p(&m_pixInformationMap);
+      p.drawPixmap( 4, 4, windArrow, windArrow.width()/4, windArrow.width()/4, 36, 36);
+    }
+    
   //draw a location symbol on the buffer
   if (ShowGlider)
     {
@@ -1187,6 +1193,7 @@ bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, QList<wayPoint*
     }
 
   bool found = false;
+
 
   for(int i = 0; i < taskPointList.count(); i++)
     {
@@ -1725,7 +1732,7 @@ void Map::slot_position(const QPoint& newPos, const int source)
               // show up at the same location
               curMANPos = curGPSPos;
 
-              if (!_globalMapMatrix->isInCenterArea(newPos))
+              if (!_globalMapMatrix->isInCenterArea(newPos) || mutex() )
                 {
                   // qDebug("Map::slot_position:sceduleRedraw()");
                   // this is the slow redraw
@@ -1749,8 +1756,8 @@ void Map::slot_position(const QPoint& newPos, const int source)
       if (curMANPos!=newPos)
         {
           curMANPos=newPos;
-          
-          if (!_globalMapMatrix->isInCenterArea(newPos))
+
+          if( !_globalMapMatrix->isInCenterArea(newPos) || mutex() )
             {
               qDebug("Map::slot_position:sceduleRedraw()");
               sceduleRedraw();
@@ -1792,11 +1799,16 @@ void Map::__drawGlider()
   //get the projected coordinates of the current position
   QPoint projPos=_globalMapMatrix->wgsToMap(curGPSPos);
   //map them to a coordinate on the pixmap
-  int Rx=_globalMapMatrix->map(projPos).x();
-  int Ry=_globalMapMatrix->map(projPos).y();
-  //don't continue if we get a bizarre result
-  if (Rx < -10000 || Rx > 10000)
-    return;
+  int Rx = _globalMapMatrix->map(projPos).x();
+  int Ry = _globalMapMatrix->map(projPos).y();
+
+  QRect rect( QPoint(), size() );
+
+  //don't continue if position is outside of window's viewport
+  if( ! rect.contains( Rx, Ry, false ) )
+    {
+      return;
+    }
 
   int rot=calcGliderRotation();
   rot=((rot+7)/15) % 24;  //we only want to rotate in steps of 15 degrees. Finer is not usefull.
@@ -1818,11 +1830,16 @@ void Map::__drawX()
   //get the projected coordinates of the current position
   QPoint projPos=_globalMapMatrix->wgsToMap(curMANPos);
   //map them to a coordinate on the pixmap
-  int Rx=_globalMapMatrix->map(projPos).x();
-  int Ry=_globalMapMatrix->map(projPos).y();
-  //don't continue if we get a bizarre result
-  if (Rx < -10000 || Rx > 10000)
-    return;
+  int Rx = _globalMapMatrix->map(projPos).x();
+  int Ry = _globalMapMatrix->map(projPos).y();
+
+  QRect rect( QPoint(), size() );
+
+  //don't continue if position is outside of window's viewport
+  if( ! rect.contains( Rx, Ry, false ) )
+    {
+      return;
+    }
 
   if(!ShowGlider)
     {
@@ -1830,9 +1847,7 @@ void Map::__drawX()
       __drawDirectionLine(QPoint(Rx,Ry));
     }
 
-  // @ee bitblt preloaded pixmap
-  // bitBlt(&m_pixInformationMap, Rx-10, Ry-10, &_cross);
-
+  // @ee draw preloaded pixmap
   QPainter p(&m_pixInformationMap);
   p.drawPixmap(  Rx-10, Ry-10, _cross );
 }
@@ -1949,11 +1964,11 @@ void Map::sceduleRedraw(mapLayer fromLayer)
   // qDebug("Map::sceduleRedraw");
   if (!redrawTimerLong->isActive() && ShowGlider)
     {
-      redrawTimerLong->start(1500, true);
+      redrawTimerLong->start(1500);
 
     }
 
-  redrawTimerShort->start(1000, true);
+  redrawTimerShort->start(1000);
 }
 
 
@@ -2029,7 +2044,7 @@ void Map::checkAirspace(const QPoint& pos)
   bool warn = false; // warning flag
 
   // check if there are overlaps between the region around our current position and airspaces
-  for (unsigned int loop = 0; loop < airspaceRegList.count(); loop++)
+  for( int loop = 0; loop < airspaceRegList.count(); loop++ )
     {
       pSpace = airspaceRegList.at(loop)->airspace;
 
