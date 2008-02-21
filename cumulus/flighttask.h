@@ -23,7 +23,7 @@
 
 #include <QObject>
 #include <QString>
-#include <Q3PtrList>
+#include <QList>
 #include <QPoint>
 #include <QPolygonF>
 #include <QPainter>
@@ -64,7 +64,7 @@ class FlightTask : public BaseMapElement
    * @param  speed the planned cruising speed
    *
    */
-  FlightTask( Q3PtrList<wayPoint> *wpList=0, bool fai=true, 
+  FlightTask( QList<wayPoint*> *wpList=0, bool fai=true, 
               QString taskName=QObject::tr("unknown"), int speed=0 );
 
   /**
@@ -104,7 +104,7 @@ class FlightTask : public BaseMapElement
   /**
    * Returns the waypoint list by reference
    */
-  Q3PtrList<wayPoint>& getWPList()
+  QList<wayPoint*>& getWPList()
   {
     return *wpList;
   };
@@ -113,14 +113,14 @@ class FlightTask : public BaseMapElement
    * Returns a deep copy of the waypoint list. The ownership of the
    * list is overtaken by the caller.
    */
-  Q3PtrList<wayPoint> *getCopiedWPList();
+  QList<wayPoint*> *getCopiedWPList();
 
   /**
    * Returns a deep copy of the passed waypoint list. The ownership of
    * the list is overtaken by the caller. For convenvience provided as
    * static method.
    */
-  static Q3PtrList<wayPoint> *copyWpList(Q3PtrList<wayPoint> *wpList);
+  static QList<wayPoint*> *copyWpList(QList<wayPoint*> *wpList);
 
   /**
    * Returns the type of the task.
@@ -181,7 +181,7 @@ class FlightTask : public BaseMapElement
   QString getPointsString() const;
 
   /** */
-  void setWaypointList(Q3PtrList<wayPoint> *newWpList);
+  void setWaypointList(QList<wayPoint*> *newWpList);
 
   /** */
   void addWaypoint( wayPoint *newWP );
@@ -357,7 +357,7 @@ class FlightTask : public BaseMapElement
   void __setTaskPointTypes();
 
   /** */
-  Q3PtrList<wayPoint> *wpList;
+  QList<wayPoint*> *wpList;
 
   /**
    * if true, FAI rules will be taken into account
@@ -385,7 +385,7 @@ class FlightTask : public BaseMapElement
   /** Total length */
   double distance_total;
 
-  /** WertungsDistanz für DMST*/
+  /** WertungsDistanz fï¿½r DMST*/
   double distance_wert;
 
   /** Task length */

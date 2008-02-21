@@ -38,7 +38,7 @@
 extern CuCalc      *calculator;
 extern MapMatrix   *_globalMapMatrix;
 
-FlightTask::FlightTask( Q3PtrList<wayPoint> *wpListIn,
+FlightTask::FlightTask( QList<wayPoint*> *wpListIn,
                         bool faiRules,
                         QString taskName,
                         int speed ) :
@@ -62,10 +62,8 @@ FlightTask::FlightTask( Q3PtrList<wayPoint> *wpListIn,
   if( wpList == 0 )
     {
       // no, so let us create a new one
-      wpList = new Q3PtrList<wayPoint>;
+      wpList = new QList<wayPoint*>;
     }
-
-  wpList->setAutoDelete( true );
 
   if( _taskName.isNull() )
     {
@@ -92,7 +90,7 @@ FlightTask::FlightTask( const FlightTask& inst )
 
   // create a deep copy of the waypoint list
   wpList = copyWpList( inst.wpList );
-  wpList->setAutoDelete( true );
+  //wpList->setAutoDelete( true );
 
   task_end = inst.task_end;
   task_begin = inst.task_begin;
@@ -111,6 +109,7 @@ FlightTask::FlightTask( const FlightTask& inst )
 FlightTask::~FlightTask()
 {
   // qDebug("FlightTask::~FlightTask(): name=%s, %X", _taskName.latin1(), this );
+  qDeleteAll(*wpList);
   wpList->clear();
   delete wpList;
 }
@@ -157,7 +156,7 @@ void FlightTask::__determineTaskType()
           break;
 
         case 1:
-          // Zielrückkehr
+          // ZielrÃ¼ckkehr
           flightType = FlightTask::ZielR;
           break;
 
@@ -173,11 +172,11 @@ void FlightTask::__determineTaskType()
 
         case 3:
           // Start auf Schenkel oder Vieleck
-          // Vieleck Ja/Nein kann endgültig erst bei der Analyse des Fluges
+          // Vieleck Ja/Nein kann endgÃ¼ltig erst bei der Analyse des Fluges
           // bestimmt werden!
           //
           // Erste Abfrage je nachdem ob Vieleck oder Dreieck mehr Punkte geben
-          // würde
+          // wÃ¼rde
           distance_task_d = distance_task - wpList->at(2)->distance
                             - wpList->at(5)->distance + dist(wpList->at(2), wpList->at(4));
 
@@ -205,7 +204,7 @@ void FlightTask::__determineTaskType()
           break;
 
         case 5:
-          // 2x Dreieck nur als FAI gültig
+          // 2x Dreieck nur als FAI gÃ¼ltig
           flightType = Unknown;
           if( (distance_task / 2 <= 100) && (wpList->at(1) == wpList->at(4)) &&
               (wpList->at(2) == wpList->at(5)) &&
@@ -1133,7 +1132,7 @@ int FlightTask::calculateFinalGlidePath( const int taskPointIndex,
     }
 
 #ifdef CUMULUS_DEBUG
-  qDebug( "WP=%s, Bearing=%.1f°, Dist=%.1fkm, Ele=%dm, ArrAlt=%.1f",
+  qDebug( "WP=%s, Bearing=%.1fï¿½, Dist=%.1fkm, Ele=%dm, ArrAlt=%.1f",
           wpList->at( taskPointIndex )->name.latin1(),
           bearing*180/M_PI,
           distance,
@@ -1156,7 +1155,7 @@ int FlightTask::calculateFinalGlidePath( const int taskPointIndex,
                                    wpList->at( i+1 )->elevation,
                                    arrAlt, speed );
 #ifdef CUMULUS_DEBUG
-      qDebug( "WP=%s, Bearing=%.1f°, Dist=%.1fkm, Ele=%dm, ArrAlt=%.1f",
+      qDebug( "WP=%s, Bearing=%.1fï¿½, Dist=%.1fkm, Ele=%dm, ArrAlt=%.1f",
               wpList->at( i+1 )->name.latin1(),
               wpList->at( i+1 )->bearing*180/M_PI,
               wpList->at( i+1 )->distance,
@@ -1273,7 +1272,7 @@ QString FlightTask::getSpeedString() const
 /**
  * Overtakes a waypoint list. All single elements are deep copied.
  */
-void FlightTask::setWaypointList(Q3PtrList<wayPoint> *newWpList)
+void FlightTask::setWaypointList(QList<wayPoint*> *newWpList)
 {
   if( newWpList == 0 )
     {
@@ -1338,7 +1337,7 @@ void FlightTask::addWaypoint( wayPoint *newWp )
  * Returns a deep copy of the waypoint list. The ownership of the list
  * is overtaken by the caller.
  */
-Q3PtrList<wayPoint> *FlightTask::getCopiedWPList()
+QList<wayPoint*> *FlightTask::getCopiedWPList()
 {
   return copyWpList( wpList );
 }
@@ -1347,9 +1346,9 @@ Q3PtrList<wayPoint> *FlightTask::getCopiedWPList()
    * Returns a deep copy of the input list. The ownership of the
    * list is overtaken by the caller.
    */
-Q3PtrList<wayPoint> *FlightTask::copyWpList(Q3PtrList<wayPoint> *wpListIn)
+QList<wayPoint*> *FlightTask::copyWpList(QList<wayPoint*> *wpListIn)
 {
-  Q3PtrList<wayPoint> *outList = new Q3PtrList<wayPoint>;
+  QList<wayPoint*> *outList = new QList<wayPoint*>;
 
   if( wpListIn == 0 )
     {
