@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2008 Axel pauli
+**   Copyright (c):  2004 by AndrÃ© Somers, 2008 Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -26,7 +26,7 @@
 
 /**
  * @short Container for @ref Airspace objects with a QRegion
- * @author André Somers
+ * @author AndrÃ© Somers
  *
  * Contains the regions of all visible airspaces. The map maintains a list to
  * find the airspace-data when the users selects a airspace in the map.
