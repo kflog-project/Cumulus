@@ -77,6 +77,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
 
 GpsStatusDialog::~GpsStatusDialog()
 {
+  // qDebug("GpsStatusDialog::~GpsStatusDialog()");
   disconnect(gps, SIGNAL(newSentence(const QString&)),
              this, SLOT(slot_Sentence(const QString&)));
   disconnect(gps, SIGNAL(newSatInViewInfo()),
@@ -119,13 +120,15 @@ void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
 }
 void GpsStatusDialog::accept()
 {
-  //delete this;
+  // qDebug("GpsStatusDialog::accept()");
+  delete this;
 }
 
 
 void GpsStatusDialog::reject()
 {
-  //delete this;
+  // qDebug("GpsStatusDialog::reject()");
+  delete this;
 }
 
 
