@@ -40,13 +40,13 @@ public:
 /**
  * The WindMeasurementList is a list that can contain and
  * process windmeasurements.
- * @author AndrÃ© Somers
+ * @author André Somers
  */
-class WindMeasurementList : protected LimitedList<WindMeasurement>
+class WindMeasurementList : public LimitedList<WindMeasurement>
 {
 public:
     WindMeasurementList();
-    ~WindMeasurementList();
+    virtual ~WindMeasurementList();
 
     /**
      * Returns the weighted mean windvector over the stored values, or 0
@@ -63,9 +63,7 @@ protected:
      * getLeastImportantItem is called to identify the item that should be
      * removed if the list is too full. Reimplemented from LimitedList.
      */
-    virtual uint getLeastImportantItem();
-
-
+    virtual int getLeastImportantItemIndex() const;
 };
 
 #endif

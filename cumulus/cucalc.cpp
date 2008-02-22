@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <cmath>
 #include <QMessageBox>
+#include <QtGlobal>
 
 #include "generalconfig.h"
 #include "cucalc.h"
@@ -41,7 +42,8 @@ extern CumulusApp  *_globalCumulusApp;
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 
-CuCalc::CuCalc(QObject* parent) : QObject(parent)
+CuCalc::CuCalc(QObject* parent) : QObject(parent),
+                                  samplelist( LimitedList<flightSample>( MAX_SAMPLECOUNT ) )
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -65,7 +67,6 @@ CuCalc::CuCalc(QObject* parent) : QObject(parent)
   lastMc = 0.0;
   _polar = NULL;
   _vario = new Vario (this);
-  samplelist = new LimitedList <flightsample> (MAX_SAMPLECOUNT);
   _windAnalyser = new WindAnalyser(this);
   _reachablelist = new ReachableList(this);
   _windStore = new WindStore(this);
@@ -103,9 +104,6 @@ CuCalc::CuCalc(QObject* parent) : QObject(parent)
 
 CuCalc::~CuCalc()
 {
-  qDeleteAll(*samplelist);
-  samplelist->clear();
-  delete samplelist;
   delete _glider;
 
   if( selectedWp != 0 ) {
@@ -363,7 +361,7 @@ void CuCalc::slot_WaypointChange(wayPoint *newWp, bool userAction)
 
       // Tasks with less 4 entries are incomplete! The selection
       // of the start point is also senseless. Therefore we start with one.
-      for( uint i=1; i < wpList.count() && wpList.count() > 3; i++ ) {
+      for( int i=1; i < wpList.count() && wpList.count() > 3; i++ ) {
         if( selectedWp->origP == wpList.at(i)->origP &&
             selectedWp->taskPointIndex == wpList.at(i)->taskPointIndex ) {
           selectedWpInList = i;
@@ -514,7 +512,7 @@ void CuCalc::calcDistance( bool autoWpSwitch )
     wpTouched      = false;
     wpTouchCounter = 0;
 
-    if( wpList.count() > (uint)selectedWpInList + 1 ) {
+    if( wpList.count() > selectedWpInList + 1 ) {
       // this loop excludes the last WP
       wayPoint *lastWp = wpList.at(selectedWpInList);
       selectedWpInList++;
@@ -610,12 +608,12 @@ void CuCalc::calcETA()
     if required */
 void CuCalc::calcLD()
 {
-  if( ! selectedWp || _calculateLD == false || samplelist->count() < 2 ) {
+  if( ! selectedWp || _calculateLD == false || samplelist.count() < 2 ) {
     return;
   }
 
-  flightsample *start = 0;
-  flightsample *end   = samplelist->at(0);
+  const flightSample *start = 0;
+  const flightSample *end = &samplelist.at(0);
   int timeDiff = 0;
   double distance = 0.0;
   double newCurrentLD = -1.0;
@@ -623,9 +621,9 @@ void CuCalc::calcLD()
   bool notify = false;
 
   // first calculate current LD
-  for( uint i = 1; i < samplelist->count(); i++ ) {
+  for( int i = 1; i < samplelist.count(); i++ ) {
 
-    timeDiff = (samplelist->at(i)->time).msecsTo(end->time);
+    timeDiff = (samplelist.at(i).time).msecsTo(end->time);
 
     if( timeDiff >= 60*1000 ) {
       break;
@@ -635,11 +633,11 @@ void CuCalc::calcLD()
     // distance += dist( &samplelist->at(i-1)->position, &samplelist->at(i)->position ) * 1000;
 
     // summarize single distances from speed
-    distance += samplelist->at(i)->vector.getSpeed().getMps();
+    distance += samplelist[i].vector.getSpeed().getMps();
 
     // qDebug( "i=%d, dist=%f", i, distance );
     // store start record
-    start = samplelist->at(i);
+    start = &samplelist[i];
   }
 
   if( ! start ) {
@@ -978,14 +976,14 @@ void CuCalc::slot_newFix()
   }
 
   // create a new sample struct
-  flightsample *sample = new flightsample;
+  flightSample sample;
 
   // fill it with the relevant data
-  sample->time=gps->getLastTime();
-  sample->altitude.setMeters(lastAltitude.getMeters());
-  sample->GNSSAltitude.setMeters(lastGNSSAltitude.getMeters());
-  sample->position=lastPosition;
-  sample->vector.setAngleAndSpeed(lastHeading, lastSpeed);
+  sample.time=gps->getLastTime();
+  sample.altitude.setMeters(lastAltitude.getMeters());
+  sample.GNSSAltitude.setMeters(lastGNSSAltitude.getMeters());
+  sample.position=lastPosition;
+  sample.vector.setAngleAndSpeed(lastHeading, lastSpeed);
 
   //qDebug("Speed in sample: %d kph", int(lastSpeed.getKph()));
   //qDebug("Direction in sample: %d degrees", int(lastHeading));
@@ -995,10 +993,10 @@ void CuCalc::slot_newFix()
   Vector airspeed = groundspeed + lastWind;
   // qDebug ("airspeed: %d/%f", airspeed.getAngleDeg(), airspeed.getSpeed().getKph());
   if( lastWind.getSpeed().getKph() != 0 )
-    sample->airspeed = airspeed.getSpeed();
+    sample.airspeed = airspeed.getSpeed();
 
   // add to the samplelist
-  samplelist->add(sample);
+  samplelist.add(sample);
   lastSample = sample;
 
   // call vario calculation, if required
@@ -1072,17 +1070,18 @@ void CuCalc::determineFlightStatus()
   */
 #define TIMEFRAME 10
 
-  if (samplelist->count()<5)
+  if (samplelist.count() < 5)
     return; //we need to have some samples in order to be able to analyse anything.
 
   flightmode newFlightMode=unknown;
 
   //get headings from the last two samples
-  int lastHead=samplelist->at(0)->vector.getAngleDeg();
-  int prevHead=samplelist->at(1)->vector.getAngleDeg();
+  int lastHead=samplelist[0].vector.getAngleDeg();
+  int prevHead=samplelist[1].vector.getAngleDeg();
 
   //get the timedifference between these samples
-  int timediff=samplelist->at(1)->time.secsTo(samplelist->at(0)->time);
+  int timediff=samplelist[1].time.secsTo(samplelist[0].time);
+
   if (timediff==0)
     return; //if the time difference is 0, return (just to be sure). This will only cause problems...
 
@@ -1094,7 +1093,7 @@ void CuCalc::determineFlightStatus()
 
   switch (lastFlightMode) {
   case standstill: //we are not moving at all!
-    if (samplelist->at(0)->position == samplelist->at(1)->position) {  //may be too ridgid, GPS errors could cause problems here
+    if (samplelist[0].position == samplelist[1].position) {  //may be too ridgid, GPS errors could cause problems here
       return; //no change in flightmode
     } else {
       newFlightMode=unknown;
@@ -1102,7 +1101,7 @@ void CuCalc::determineFlightStatus()
     break;
 
   case wave: //we are not moving at all, except vertically!  Needs lots of tweaking and testing...
-    if (samplelist->at(0)->position == samplelist->at(1)->position) {  //may be too ridgid, GPS errors could cause problems here
+    if (samplelist[0].position == samplelist[1].position) {  //may be too ridgid, GPS errors could cause problems here
       return; //no change in flightmode
     } else {
       newFlightMode=unknown;
@@ -1111,7 +1110,7 @@ void CuCalc::determineFlightStatus()
 
   case cruising: //we are flying from point A to point B
     if (abs(angleDiff(lastHead, _cruiseDirection)) <  MAXCRUISEANGDIFF &&
-        samplelist->at(0)->vector.getSpeed().getMps()>5) {
+        samplelist[0].vector.getSpeed().getMps()>5) {
       return; //no change in flightmode
     } else {
       newFlightMode=unknown;
@@ -1143,9 +1142,10 @@ void CuCalc::determineFlightStatus()
 
   if (newFlightMode==unknown) {
     //we need some real analysis
-    QTime tmp= samplelist->at(0)->time.addSecs(-TIMEFRAME); //reference time
-    uint ls=1;
-    while((samplelist->at(ls)->time>tmp) && (ls<samplelist->count()-1))
+    QTime tmp= samplelist[0].time.addSecs(-TIMEFRAME); //reference time
+    int ls=1;
+
+    while((samplelist[ls].time > tmp) && ( ls < samplelist.count()-1) )
       ls++;
     //ls now contains the index of the oldest sample we will use for this analysis.
     //Newer samples have lower indices!
@@ -1164,14 +1164,14 @@ void CuCalc::determineFlightStatus()
 
     //loop through the samples to get some basic data we can use to distinguish flightmodes
     for (int i=ls-1;i>=0;i--) {
-      aDiff=angleDiff(samplelist->at(i+1)->vector.getAngleDeg(),samplelist->at(i)->vector.getAngleDeg());
+      aDiff = angleDiff( samplelist[i+1].vector.getAngleDeg(), samplelist[i].vector.getAngleDeg() );
       //qDebug("analysis: angle1=%d, angle2=%d, diff=%d",int(samplelist->at(i+1)->vector.getAngleDeg()),int(samplelist->at(i)->vector.getAngleDeg()), aDiff);
       //qDebug("analysis: position=(%d, %d)", samplelist->at(i)->position.x(),samplelist->at(i)->position.y() );
       totalDirChange += abs(aDiff);
-      maxSpeed=int(MAX(maxSpeed,samplelist->at(i)->vector.getSpeed().getKph()));
-      altChange = int(samplelist->at(i)->altitude.getMeters()-samplelist->at(i+1)->altitude.getMeters());
+      maxSpeed = qMax( maxSpeed, (int) rint(samplelist[i].vector.getSpeed().getKph()));
+      altChange = int(samplelist[i].altitude.getMeters() - samplelist[i+1].altitude.getMeters());
       totalAltChange += altChange;
-      maxAltChange = int(MAX(abs(altChange),maxAltChange));
+      maxAltChange = int(qMax(abs(altChange), maxAltChange));
 
       if (aDiff >  MINTURNANGDIFF)
         mayBeL=false;
@@ -1198,15 +1198,15 @@ void CuCalc::determineFlightStatus()
 
     if (!break_analysis) {
       //get the timedifference between the first and the last sample. This might not be the 20 secs we were planning to use at all!
-      timediff= samplelist->at(ls-1)->time.secsTo(samplelist->at(0)->time);
+      timediff= samplelist[ls-1].time.secsTo(samplelist[0].time);
 
       //see if we might be cruising...
       if (mayBeL && mayBeR) { //basicly, we have been going (almost) strait it seems...
         if (totalDirChange < 2 * timediff) {
-          //qDebug("analysis: distance=%f m, timedifference=%d s",dist(&samplelist->at(ls-1)->position,&samplelist->at(0)->position)*1000,timediff);
-          if (dist(&samplelist->at(ls-1)->position,&samplelist->at(0)->position)*1000>5*timediff) //our average speed should be at least 5 m/s to qualify for cruising
+          //qDebug("analysis: distance=%f m, timedifference=%d s",dist(&samplelist->at(ls-1)->position,&samplelist[0].position)*1000,timediff);
+          if (dist(&samplelist[ls-1].position, &samplelist[0].position)*1000 > 5*timediff) //our average speed should be at least 5 m/s to qualify for cruising
             newFlightMode=cruising;
-          _cruiseDirection=samplelist->at(0)->vector.getAngleDeg();
+          _cruiseDirection=samplelist[0].vector.getAngleDeg();
           // qDebug("Cruise direction: %d.",_cruiseDirection);
         }
         break_analysis=true;
@@ -1228,7 +1228,7 @@ void CuCalc::determineFlightStatus()
 
   if (newFlightMode!=lastFlightMode) {
     lastFlightMode=newFlightMode;
-    samplelist->at(0)->marker=++_marker;
+    samplelist[0].marker=++_marker;
     // qDebug("new flightmode: %d",lastFlightMode);
     emit flightModeChanged(newFlightMode);
   }
@@ -1244,7 +1244,7 @@ void CuCalc::slot_GpsStatus(GPSNMEA::connectedStatus newState)
 
   if (newFlightMode!=lastFlightMode) {
     lastFlightMode=newFlightMode;
-    samplelist->at(0)->marker=++_marker;
+    samplelist[0].marker=++_marker;
     // qDebug("new flightmode: %d",lastFlightMode);
     emit flightModeChanged(newFlightMode);
   }

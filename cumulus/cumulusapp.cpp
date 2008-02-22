@@ -1384,7 +1384,7 @@ void CumulusApp::slotRememberWaypoint()
   QPoint pos = calculator->getlastPosition();
   QList<wayPoint*>* wpList = _globalMapContents->getWaypointList();
 
-  for ( uint i = 0; i < wpList->count(); i++ )
+  for ( int i = 0; i < wpList->count(); i++ )
     {
       wayPoint *wpElem = wpList->at( i );
 

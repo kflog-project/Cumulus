@@ -47,12 +47,12 @@ class WindAnalyser;
 /**
  * @short A single sample from a flight
  *
- * This class represents a single sample of flightdata obtained.
+ * This class represents a single sample of flight data obtained.
  *
  * @author André Somers
  */
 
-class flightsample
+class flightSample
 {
 public:
     /**
@@ -106,7 +106,7 @@ public:
  *
  * This is a Singleton class.
  *
- * @author André Somers
+ * @author Andr� Somers
  */
 
 class CuCalc : public QObject
@@ -238,7 +238,7 @@ public:
     /**
      * Contains a list of samples from the flight
      */
-    LimitedList<flightsample> * samplelist;
+    LimitedList<flightSample> samplelist;
 
     /**
      * Returns the current flightmode
@@ -579,7 +579,7 @@ private: // Private methods
 
 private: // Private attributes
     /** Contains the last flight sample */
-    flightsample * lastSample;
+    flightSample lastSample;
     /** Contains the last calculated bearing */
     int lastBearing;
     /** Contains the last calculated distance to the waypoint */

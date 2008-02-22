@@ -40,12 +40,12 @@ IgcLogger * IgcLogger::_theInstance = 0;
 
 
 IgcLogger::IgcLogger(QObject* parent)
-  : QObject(parent)
+  : QObject(parent),
+    _backtrack(LimitedList<QString> (15))
 {
   timer=new QTimer(this);
   connect( timer, SIGNAL(timeout()), this, SLOT(slotMakeFixEntry()) );
   _logMode=off;
-  _backtrack=new LimitedList<QString>(15);
 }
 
 
@@ -62,7 +62,6 @@ IgcLogger::~IgcLogger()
 {
   if (_logMode==on)
     CloseFile();
-  delete _backtrack;
   _theInstance=0;
 }
 
@@ -99,31 +98,29 @@ void IgcLogger::slotMakeFixEntry()
      timer->changeInterval( GeneralConfig::instance()->getLoggerInterval() * 1000 );
   }
 
-  if( calculator->samplelist->count() == 0 ) {
+  if( calculator->samplelist.count() == 0 ) {
     return; // make sure there is an entry in the list!
   }
 
-  flightsample *lastfix=calculator->samplelist->at(0);
+  const flightSample &lastfix = calculator->samplelist.at(0);
 
   //check if we have a new fix to log
-  if (lastfix->time == lastLoggedFix) {
+  if (lastfix.time == lastLoggedFix) {
     qWarning("No log entry made: no recent fix.");
     //we can add a warning here if there has not been a recent fix for more than a predefined time.
     return;
   }
   
-  lastLoggedFix = lastfix->time;
+  lastLoggedFix = lastfix.time;
   
   //#warning: FIXME: The 'A' represents a valid 3D fix. This should be taken from the GPS!
-  QString *entry=new QString("B" + formatTime(lastfix->time) + formatPosition(lastfix->position) + "A"
-                              + formatAltitude(lastfix->altitude) + formatAltitude(lastfix->GNSSAltitude));
+  QString entry("B" + formatTime(lastfix.time) + formatPosition(lastfix.position) + "A"
+                + formatAltitude(lastfix.altitude) + formatAltitude(lastfix.GNSSAltitude));
   
   if( _logMode==standby ) {
-    _backtrack->add
-      (entry);
+    _backtrack.add(entry);
   } else {
-    _stream << *entry << "\n";
-    delete entry;
+    _stream << entry << "\n";
     emit madeEntry();
     _logfile.flush(); //make sure the file is flushed, so we will not lose data if something goes wrong
   }
@@ -152,7 +149,7 @@ void IgcLogger::Standby()
     CloseFile();
   }
   _logMode=standby;
-  _backtrack->clear();
+  _backtrack.clear();
   Start();
   emit logging(getisLogging());
 }
@@ -259,7 +256,7 @@ void IgcLogger::writeHeaders()
           << taskId.toLatin1().data()
           << "\n";
 
-  for( uint i=0; i < wpList.count(); i++ ) {
+  for( int i=0; i < wpList.count(); i++ ) {
     wayPoint *wp = wpList.at(i);
 
     _stream << "C"
@@ -349,11 +346,11 @@ void IgcLogger::makeSatConstEntry()
 {
 
   if (_logMode>off) {
-    QString entry="F" + formatTime(gps->getLastSatInfo().constellationTime) + gps->getLastSatInfo().constellation;
+    QString entry = "F" + formatTime(gps->getLastSatInfo().constellationTime) +
+      gps->getLastSatInfo().constellation;
 
     if (_logMode==standby) {
-      _backtrack->add
-        (new QString(entry));
+      _backtrack.add(entry);
     } else {
       _stream << entry << "\n";
       emit madeEntry();
@@ -447,11 +444,11 @@ void IgcLogger::slotFlightMode(CuCalc::flightmode mode)
   if ((_logMode==standby) && (mode!=CuCalc::standstill)) {
     _logMode=on;
     CreateLogfile();
-    for (int i = _backtrack->count()-1; i>=0; i--) {
-      qDebug("backtrack %d: %s",i,_backtrack->at(i)->toLatin1().data());
-      _stream<<_backtrack->at(i)->toLatin1().data()<<"\n";
+    for (int i = _backtrack.count()-1; i>=0; i--) {
+      qDebug("backtrack %d: %s",i,_backtrack.at(i).toLatin1().data());
+      _stream << _backtrack.at(i).toLatin1().data()<<"\n";
     }
-    _backtrack->clear(); //make sure we aren't leaving old data behind.
+    _backtrack.clear(); //make sure we aren't leaving old data behind.
   }
 }
 

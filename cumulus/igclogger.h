@@ -182,7 +182,7 @@ private: // Private attributes
       * and logging is triggered, the list is used to write out some older events
       * to the log. This way, we can be sure that the complete start sequence is
       * available in the log. */
-    LimitedList<QString> * _backtrack;
+    LimitedList<QString> _backtrack;
     /** Holds the flightnumber for this day */
     int flightnumber;
     /** A pointer to the instance */

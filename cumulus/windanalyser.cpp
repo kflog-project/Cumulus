@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2007 Axel Pauli
+ **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -81,7 +81,7 @@ void WindAnalyser::slot_newSample()
 {
   if (!active)
     return; //only work if we are in active mode
-  Vector curVec=calculator->samplelist->at(0)->vector;
+  Vector curVec=calculator->samplelist.at(0).vector;
   bool fullCircle=false;
   // qDebug( "WindAnalyser" );
   //circledetection
@@ -143,11 +143,10 @@ void WindAnalyser::slot_newFlightMode(CuCalc::flightmode fm, int marker)
 
   //initialize analyser-parameters
   startmarker=marker;
-  startheading=calculator->samplelist->at(0)->vector.getAngleDeg();
+  startheading=calculator->samplelist[0].vector.getAngleDeg();
   active=true;
-  minVector=calculator->samplelist->at(0)->vector.Clone();
+  minVector=calculator->samplelist[0].vector.Clone();
   maxVector=minVector.Clone();
-
 }
 
 
@@ -209,10 +208,10 @@ void WindAnalyser::slot_newConstellation()
 
   if (!active && curModeOK && satCnt>=minSatCnt) { //we are not active because we had low satcount, but that has been rectified so we become active
     //initialize analyser-parameters
-    startmarker=calculator->samplelist->at(0)->marker;
-    startheading=calculator->samplelist->at(0)->vector.getAngleDeg();
+    startmarker=calculator->samplelist[0].marker;
+    startheading=calculator->samplelist[0].vector.getAngleDeg();
     active=true;
-    minVector=calculator->samplelist->at(0)->vector.Clone();
+    minVector=calculator->samplelist[0].vector.Clone();
     maxVector=minVector.Clone();
   }
 }
