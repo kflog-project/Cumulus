@@ -33,8 +33,10 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
 
   elevAziDisplay = new GPSElevationAzimuthDisplay(this);
   elevAziDisplay->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+
   snrDisplay = new GPSSnrDisplay(this);
   snrDisplay->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+
   nmeaBox = new QTextEdit(this, "nmeabox");
   nmeaBox->setReadOnly(true);
   nmeaBox->document()->setMaximumBlockCount(100);
@@ -99,7 +101,6 @@ void GpsStatusDialog::slot_SIV()
 void GpsStatusDialog::slot_Sentence(const QString& sentence)
 {
   nmeaBox->insertPlainText(sentence.trimmed().append("\n"));
-
 }
 
 
@@ -136,7 +137,7 @@ void GpsStatusDialog::reject()
 
 #define MARGIN 10
 
-GPSElevationAzimuthDisplay::GPSElevationAzimuthDisplay(QWidget * parent):
+GPSElevationAzimuthDisplay::GPSElevationAzimuthDisplay(QWidget *parent):
     QFrame(parent, "ElevationAzimuthDisplay")
 {
   background = new QPixmap();
@@ -149,16 +150,16 @@ GPSElevationAzimuthDisplay::~GPSElevationAzimuthDisplay()
 }
 
 
-void GPSElevationAzimuthDisplay::resizeEvent(QResizeEvent * e)
+void GPSElevationAzimuthDisplay::resizeEvent(QResizeEvent *)
 {
-  QFrame::resizeEvent(e);
-
   width = contentsRect().width();
   height = contentsRect().height();
+
   if (width > height)
     {
       width = height;
     }
+
   width -= ( MARGIN * 2 ); //keep a 10 pixel margin
   center = QPoint(contentsRect().width()/2, contentsRect().height()/2);
 
@@ -177,13 +178,9 @@ void GPSElevationAzimuthDisplay::resizeEvent(QResizeEvent * e)
   p.drawLine(center.x() - ( width / 2 ) -5 , center.y(), center.x() + ( width / 2 ) + 5, center.y());
 }
 
-
-void GPSElevationAzimuthDisplay::paintEvent(QPaintEvent * e)
+void GPSElevationAzimuthDisplay::paintEvent(QPaintEvent *)
 {
-  QFrame::paintEvent(e);
   //copy background to widget
-#warning FIXME bitBlt must be sustituted by another solution
-  // bitBlt(this, contentsRect().left(), contentsRect().top(), background, 0, 0, background->width(), background->height(), true);
   QPainter p(this);
   p.drawPixmap ( contentsRect().left(), contentsRect().top(), *background,
                  0, 0, background->width(), background->height() );
@@ -204,13 +201,11 @@ void GPSElevationAzimuthDisplay::paintEvent(QPaintEvent * e)
 
 }
 
-
 void GPSElevationAzimuthDisplay::setSatInfo(QList<SIVInfo>& list)
 {
   sats = list;
   update();
 }
-
 
 void GPSElevationAzimuthDisplay::drawSat(QPainter * p, const SIVInfo& sivi)
 {
@@ -225,6 +220,7 @@ void GPSElevationAzimuthDisplay::drawSat(QPainter * p, const SIVInfo& sivi)
 
   int R, G;
   int db=MIN(sivi.db * 2, 99);
+
   if (db < 50)
     {
       R=255;
@@ -235,17 +231,17 @@ void GPSElevationAzimuthDisplay::drawSat(QPainter * p, const SIVInfo& sivi)
       R=255 - (255/50 * (db - 50));
       G=255;
     }
+
   p->setBrush(QColor(R,G,0));
   p->fillRect(x - 8, y - 6, 16 , 12 , p->brush());
   p->drawRect(x - 8, y - 6, 16 , 12 );
   p->drawText(x - 8, y - 7, 16 , 12 , Qt::AlignCenter, QString::number(sivi.id) );
-
 }
 
 
 /*************************************************************************************/
 
-GPSSnrDisplay::GPSSnrDisplay(QWidget * parent):
+GPSSnrDisplay::GPSSnrDisplay(QWidget *parent):
     QFrame(parent, "GPSSnrDisplay")
 {
   background = new QPixmap();
@@ -253,18 +249,15 @@ GPSSnrDisplay::GPSSnrDisplay(QWidget * parent):
   mask = new QBitmap();
 }
 
-
 GPSSnrDisplay::~GPSSnrDisplay()
 {
   delete background;
+  delete canvas;
   delete mask;
 }
 
-
-void GPSSnrDisplay::resizeEvent(QResizeEvent * e)
+void GPSSnrDisplay::resizeEvent(QResizeEvent *)
 {
-  QFrame::resizeEvent(e);
-
   width = contentsRect().width();
   height = contentsRect().height();
   center = QPoint(contentsRect().width()/2, contentsRect().height()/2);
@@ -301,15 +294,11 @@ void GPSSnrDisplay::resizeEvent(QResizeEvent * e)
     }
 }
 
-
-void GPSSnrDisplay::paintEvent(QPaintEvent *e)
+void GPSSnrDisplay::paintEvent(QPaintEvent *)
 {
-  QFrame::paintEvent(e);
-#warning FIXME bitBlt must be sustituted by another solution
-  // bitBlt(canvas, 0, 0, background, 0, 0, background->width(), background->height() );
-  QPainter p(canvas);
+  QPainter p;
+  p.begin(canvas);
   p.drawPixmap( 0, 0, *background, 0, 0, background->width(), background->height() );
-
 
   //p.fillRect(0, 0, width, height, this->backgroundColor());
   //draw satelites
@@ -322,14 +311,14 @@ void GPSSnrDisplay::paintEvent(QPaintEvent *e)
         {
           drawSat(&p, &pm, i, sats.count(), sats.at(i));
         }
+
+      p.end();
+
       //copy canvas to widget, masked by the mask
       canvas->setMask(*mask);
 
-#warning FIXME bitBlt must be sustituted by another solution
-      // bitBlt(this, 0, 0, canvas, 0, 0, canvas->width(), canvas->height(), false);
-
-      QPainter p(this);
-      p.drawPixmap( 0, 0, *canvas, 0, 0, canvas->width(), canvas->height() );
+      QPainter pw(this);
+      pw.drawPixmap( 0, 0, *canvas, 0, 0, canvas->width(), canvas->height() );
     }
   else
     {
@@ -339,7 +328,6 @@ void GPSSnrDisplay::paintEvent(QPaintEvent *e)
     }
 }
 
-
 void GPSSnrDisplay::setSatInfo(QList<SIVInfo>& list)
 {
   sats = list;
@@ -347,10 +335,8 @@ void GPSSnrDisplay::setSatInfo(QList<SIVInfo>& list)
 
 }
 
-
 void GPSSnrDisplay::drawSat(QPainter * p, QPainter * pm, int i, int cnt, const SIVInfo& sivi)
 {
-
   int bwidth = width / cnt;
   int left = bwidth * i + 2;
   int db = sivi.db * 2;
@@ -363,6 +349,7 @@ void GPSSnrDisplay::drawSat(QPainter * p, QPainter * pm, int i, int cnt, const S
     {
       p->fillRect(left, height, bwidth - 2, -bheight, Qt::white);
     }
+
   p->setPen(Qt::black);
   p->drawRect(left, height, bwidth - 2, -bheight);
   p->drawText(left+1, height-13, bwidth-4, 12, Qt::AlignCenter, QString::number(sivi.id));
