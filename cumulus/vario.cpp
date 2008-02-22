@@ -50,13 +50,13 @@ void Vario::newAltitude()
     // method. If timer expired the vario will be set to zero.
     _timeOut.start( _intTime+2500, TRUE );
 
-    if( calculator->samplelist->count() < 20 ) {
+    if( calculator->samplelist.count() < 20 ) {
         // to less samples in the list
         return;
     }
 
     int i      = 1; // index for list access
-    int max    = calculator->samplelist->count();
+    int max    = calculator->samplelist.count();
     double sum = 0.0;
 
     bool resultAvailable = false;
@@ -64,13 +64,13 @@ void Vario::newAltitude()
     // Step through the list. Note, the list is invers ordered, last sample at
     // first position.
 
-    QTime startTime = calculator->samplelist->at(0)->time;
+    QTime startTime = calculator->samplelist.at(0).time;
 
     while( i < max ) {
         double energyAlt1 = 0.0;
         double energyAlt2 = 0.0;
-        flightsample *sample1 = calculator->samplelist->at(i-1);
-        flightsample *sample2 = calculator->samplelist->at(i);
+        const flightSample *sample1 = &calculator->samplelist.at(i-1);
+        const flightSample *sample2 = &calculator->samplelist.at(i);
         // calculate energy altitude for both samples
         if( _TEKOn ) {
             energyAlt1 = (sample1->airspeed.getMps() * sample1->airspeed.getMps())/(2*9.81);
@@ -141,7 +141,7 @@ void Vario::slotNewTEKMode( bool newMode )
 }
 
 
-void Vario::slotNewAirspeed(const Speed& airspeed)
+void Vario::slotNewAirspeed(const Speed& /* airspeed */ )
 {
     // qDebug("Vario::slotNewAirspeed");
 }
