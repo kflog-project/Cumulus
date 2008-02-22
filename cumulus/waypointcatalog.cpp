@@ -176,8 +176,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
               if (conf->getHomeWp()->origP == w->origP)
                 {
                   qDebug("Found homesite: %s",wpName.latin1());
-                  wayPoint * wp=new wayPoint(*w); //copy
-                  conf->setHomeWp(wp);
+                  conf->setHomeWp(w);
                 }
             }
 
