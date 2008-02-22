@@ -476,7 +476,7 @@ void Map::__drawAirspaces(bool reset)
 
   if( reset )
     {
-      airspaceRegList.clear();
+      qDeleteAll(airspaceRegList); airspaceRegList.clear();
     }
 
   GeneralConfig* settings     = GeneralConfig::instance();
@@ -703,7 +703,7 @@ void Map::__drawTrail()
   if (!calculator->matchesFlightMode(GeneralConfig::instance()->getDrawTrail()))
     return;
 
-  if (calculator->samplelist->count()<5)
+  if (calculator->samplelist.count()<5)
     {
       return;
     }
@@ -717,13 +717,13 @@ void Map::__drawTrail()
   QPoint pos;
   QPoint lastPos;
   uint loop = 0;
-  uint sampleCnt = calculator->samplelist->count();
-  lastPos=_globalMapMatrix->map(_globalMapMatrix->wgsToMap(calculator->samplelist->at(0)->position));
+  uint sampleCnt = calculator->samplelist.count();
+  lastPos = _globalMapMatrix->map(_globalMapMatrix->wgsToMap(calculator->samplelist.at(0).position));
   p.setPen(pen1);
 
-  while (loop < sampleCnt && calculator->samplelist->at(loop)->time >= minTime)
+  while (loop < sampleCnt && calculator->samplelist.at(loop).time >= minTime)
     {
-      pos = _globalMapMatrix->map(_globalMapMatrix->wgsToMap(calculator->samplelist->at(loop)->position));
+      pos = _globalMapMatrix->map(_globalMapMatrix->wgsToMap(calculator->samplelist.at(loop).position));
       p.drawLine(pos,lastPos);
       lastPos=pos;
 
