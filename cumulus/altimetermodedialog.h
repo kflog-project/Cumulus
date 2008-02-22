@@ -51,6 +51,7 @@ private:
 
 private slots:
   void setTimer();
+  void change_mode (int);
 signals:
   void settingsChanged();
   void newAltimeterMode();

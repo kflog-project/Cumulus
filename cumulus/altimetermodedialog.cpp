@@ -21,6 +21,7 @@
 #include <QDialogButtonBox>
 #include <QGroupBox>
 #include <QBoxLayout>
+#include <QSignalMapper>
 
 #include "generalconfig.h"
 #include "altimetermodedialog.h"
@@ -37,8 +38,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
 {
   setWindowTitle(tr("Altimeter"));
 
-  QFont fnt( "Helvetica", 16, QFont::Bold  );
-  this->setFont(fnt);
+  setFont(QFont ( "Helvetica", 16, QFont::Bold ));
 
   QGroupBox* altMode = new QGroupBox(tr("Altimeter Mode"), this);
   _msl=new QRadioButton(tr("MSL"),altMode);
@@ -53,23 +53,36 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                  | QDialogButtonBox::Cancel);
 
+  QVBoxLayout* mainLayout = new QVBoxLayout(this);
+  mainLayout->setObjectName("mainlayout");
   QHBoxLayout* modeLayout = new QHBoxLayout(this);
+  modeLayout->setObjectName("modelayout");
   modeLayout->addWidget(altMode);
 
   QHBoxLayout* radioLayout = new QHBoxLayout(altMode);
+  radioLayout->setObjectName("radiolayout");
   radioLayout->addWidget(_msl);
   radioLayout->addWidget(_gnd);
   radioLayout->addWidget(_std);
 
-  QVBoxLayout* buttonLayout = new QVBoxLayout();
+  QVBoxLayout* buttonLayout = new QVBoxLayout(this);
+  buttonLayout->setObjectName("buttonlayout");
   buttonLayout->addWidget(buttonBox);
 
-  QVBoxLayout* mainLayout = new QVBoxLayout(this);
   mainLayout->addLayout(modeLayout);
   mainLayout->addLayout(buttonLayout);
   setLayout (mainLayout);
 
   timeout = new QTimer(this);
+  QSignalMapper* signalMapper = new QSignalMapper();
+  connect(_msl, SIGNAL(clicked()), signalMapper, SLOT(map()));
+  signalMapper->setMapping(_msl, 0);
+  connect(_gnd, SIGNAL(clicked()), signalMapper, SLOT(map()));
+  signalMapper->setMapping(_gnd, 1);
+  connect(_std, SIGNAL(clicked()), signalMapper, SLOT(map()));
+  signalMapper->setMapping(_std, 2);
+  connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(change_mode(int)));
+
   connect (timeout, SIGNAL(timeout()), this, SLOT(reject()));
   connect (buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect (buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
@@ -147,7 +160,6 @@ void AltimeterModeDialog::work()
   else
     {
       load();
-      show();
     }
 }
 
@@ -162,22 +174,14 @@ void AltimeterModeDialog::save(int mode)
   emit settingsChanged();
 }
 
+void AltimeterModeDialog::change_mode (int mode) {
+  _mode = mode;
+}
+
 void AltimeterModeDialog::accept()
 {
-  int selected_mode = 0;
-  if (_msl->isChecked())
-    selected_mode = 0;
-  else if (_gnd->isChecked())
-    selected_mode = 1;
-  else if (_std->isChecked())
-    selected_mode = 2;
 
-  if(  selected_mode != _mode )
-    {
-      _mode = selected_mode;
-      // qDebug("New Altimeter Mode: %d", _mode );
-      save(_mode);
-    }
+  save(_mode);
 
   QDialog::accept();
 }
