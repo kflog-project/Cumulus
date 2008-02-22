@@ -280,6 +280,7 @@ MapContents::~MapContents()
     qDeleteAll(*isoList.at(i));
     isoList.at(i)->clear();
   }
+
   qDeleteAll (isoList);
   isoList.clear();
 
@@ -1969,14 +1970,6 @@ void MapContents::unloadMaps(unsigned int distance)
 
   sectionArray &= maskArray;
 
-  //  addSitesList.clear();
-  //  airportList.clear();
-  //  airspaceList.clear();
-  //  gliderList.clear();
-
-  //#define DEBUG_UNLOAD_SUM
-  // #define DEBUG_UNLOAD
-
 #ifdef DEBUG_UNLOAD_SUM
   // save free memory
   int memFreeBegin = HwInfo::instance()->getFreeMemory();
@@ -2286,25 +2279,25 @@ void MapContents::slotReloadMapData()
 
   // qDebug("MapContents::slotReloadMapData() is called");
 
-  addSitesList.clear();
-  airportList.clear();
-  airspaceList.clear();
-  cityList.clear();
-  gliderList.clear();
-  hydroList.clear();
-  lakeList.clear();
-  isoList.clear();
-  landmarkList.clear();
-  navList.clear();
-  obstacleList.clear();
-  outList.clear();
-  railList.clear();
-  reportList.clear();
-  highwayList.clear();
-  roadList.clear();
-  //  stationList.clear();
-  topoList.clear();
-  villageList.clear();
+  qDeleteAll(addSitesList); addSitesList.clear();
+  qDeleteAll(airportList); airportList.clear();
+  qDeleteAll(airspaceList); airspaceList.clear();
+  qDeleteAll(cityList); cityList.clear();
+  qDeleteAll(gliderList); gliderList.clear();
+  qDeleteAll(hydroList); hydroList.clear();
+  qDeleteAll(lakeList); lakeList.clear();
+  qDeleteAll(isoList); isoList.clear();
+  qDeleteAll(landmarkList); landmarkList.clear();
+  qDeleteAll(navList); navList.clear();
+  qDeleteAll(obstacleList); obstacleList.clear();
+  qDeleteAll(outList); outList.clear();
+  qDeleteAll(railList); railList.clear();
+  qDeleteAll(reportList); reportList.clear();
+  qDeleteAll(highwayList); highwayList.clear();
+  qDeleteAll(roadList); roadList.clear();
+  //  qDeleteAll(stationList); stationList.clear();
+  qDeleteAll(topoList); topoList.clear();
+  qDeleteAll(villageList); villageList.clear();
 
   // Wir nehmen zunaechst 4 Schachtelungstiefen an ...
   for(unsigned int loop = 0; loop < ( ISO_LINE_NUM * 4 ); loop++) {
@@ -2334,7 +2327,7 @@ void MapContents::slotReloadMapData()
     }
 
   // Update the waypoint list
-  for(uint loop = 0; loop < wpList.count(); loop++)
+  for( int loop = 0; loop < wpList.count(); loop++ )
     {
       // recalculate projection data
       wpList.at(loop)->projP = _globalMapMatrix->wgsToMap(wpList.at(loop)->origP);
@@ -2381,8 +2374,8 @@ void MapContents::slotReloadWelt2000Data()
   qDebug("========= MapContents::slotReloadWelt2000Data() calls processEvents =========");
   QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
 
-  airportList.clear();
-  gliderList.clear();
+  qDeleteAll(airportList); airportList.clear();
+  qDeleteAll(gliderList);  gliderList.clear();
 
   _globalMapView->message( tr("Reloading Welt2000 started") );
 
@@ -2582,9 +2575,9 @@ void MapContents::drawIsoList(QPainter* targetP)
   extern MapConfig * _globalMapConfig;
   extern MapMatrix * _globalMapMatrix;
   int height = 0;
-  regIsoLines.clear();
   _lastIsoEntry=0;
   _isoLevelReset=true;
+  qDeleteAll(regIsoLines); regIsoLines.clear();
 
   /* Determine how fine graded we are going to draw the isolines.
    * If the bigger the scale, the more lines we will skip   */
