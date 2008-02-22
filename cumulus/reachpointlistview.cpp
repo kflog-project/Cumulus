@@ -132,7 +132,7 @@ void ReachpointListView::fillRpList()
       continue;
 
     // Setup string for bearing
-    QString bearing=QString("%1Â°").arg(rp->getBearing());
+    QString bearing=QString("%1°").arg(rp->getBearing());
     // Calculate relative bearing too, very cool feature
     int relbearing = rp->getBearing() - calculator->getlastHeading();
 
