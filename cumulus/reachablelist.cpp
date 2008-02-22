@@ -169,7 +169,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
   if( item == MapContents::WaypointList ) {   // Waypoints have differnet structure treat them here
     QList<wayPoint*> *pWPL = _globalMapContents->getWaypointList();
     // qDebug("Nr of Waypoints: %d", pWPL->count() );
-    for(unsigned int i=0; i<pWPL->count(); i++ ) {
+    for( int i=0; i<pWPL->count(); i++ ) {
       WGSPoint pt = pWPL->at(i)->origP;
       if (!bbox.contains(pt)) {
         //qDebug("Not in bounding box, so ignore! (distance: %d, (%d, %d), %s)", (int)distance.getKilometers(), pt.x(),pt.y(), pWPL->at(i)->name.latin1());
@@ -384,7 +384,7 @@ void ReachableList::calculateFullList()
   t.start();
   // This info we need from calclulator
   calcInitValues();
-  clear();  // clear list
+  clearList();  // clear list
   // Now add items of different type to the list
   addItemsToList(MapContents::AirportList);
   addItemsToList(MapContents::GliderList);
@@ -439,7 +439,7 @@ ReachablePoint *ReachableList::getSite( int index )
 }
 
 void ReachableList::clearList() {
-  clear();
+  while (!isEmpty()) delete takeFirst();
   arrivalAltMap.clear();
   distanceMap.clear();
 }
