@@ -74,7 +74,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   setLayout (mainLayout);
 
   timeout = new QTimer(this);
-  QSignalMapper* signalMapper = new QSignalMapper();
+  QSignalMapper* signalMapper = new QSignalMapper(this);
   connect(_msl, SIGNAL(clicked()), signalMapper, SLOT(map()));
   signalMapper->setMapping(_msl, 0);
   connect(_gnd, SIGNAL(clicked()), signalMapper, SLOT(map()));
