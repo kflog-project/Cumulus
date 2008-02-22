@@ -30,6 +30,7 @@ MapElementList::MapElementList( QObject * parent, const char * name )
 
 MapElementList::~MapElementList()
 {
+  delete m_timer;
   m_set.clear();
 }
 
