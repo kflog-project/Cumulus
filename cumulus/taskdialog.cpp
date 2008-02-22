@@ -14,7 +14,7 @@
 **   $Id$
 **
 **   Description: This class handles creation and modification of
-**   flight tasks.
+**   flight tasks in a simple editor.
 **
 ***********************************************************************/
 
@@ -132,19 +132,20 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
   taskLayout->setColumnStretch( 1, 10 );
   taskLayout->setColumnStretch( 4, 10 );
 
-  for(int i=0; i<NUM_LISTS; i++) {
-    listSelectCB->addItem(listSelectText[i], i);
-    waypointList[i] = new Q3ListView( this, "waypointList" );
-    waypointList[i]->addColumn( tr("Name") );
-    waypointList[i]->addColumn( tr("Description") );
-    waypointList[i]->addColumn( tr("ICAO") );
-    waypointList[i]->setAllColumnsShowFocus( true );
-    waypointList[i]->setFocus();
-    filter[i] = new ListViewFilter(waypointList[i], this, "listfilter");
+  for(int i=0; i<NUM_LISTS; i++)
+    {
+      listSelectCB->addItem(listSelectText[i], i);
+      waypointList[i] = new Q3ListView( this, "waypointList" );
+      waypointList[i]->addColumn( tr("Name") );
+      waypointList[i]->addColumn( tr("Description") );
+      waypointList[i]->addColumn( tr("ICAO") );
+      waypointList[i]->setAllColumnsShowFocus( true );
+      waypointList[i]->setFocus();
+      filter[i] = new ListViewFilter(waypointList[i], this, "listfilter");
 
-    taskLayout->addWidget( filter[i], 10, 0, 1, 8 );
-    taskLayout->addWidget( waypointList[i], 11, 0, 4, 8 );
-  }
+      taskLayout->addWidget( filter[i], 10, 0, 1, 8 );
+      taskLayout->addWidget( waypointList[i], 11, 0, 4, 8 );
+    }
 
   _globalCumulusApp->viewWP->fillWpList(wpList, waypointList[0], filter[0]);
   _globalCumulusApp->viewAF->fillWpList(waypointList[1], filter[1]);
@@ -160,7 +161,7 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
       QList<wayPoint*> tmpList = planTask->getWPList();
 
       // @AP: Make a deep copy from all elements of the list
-      for( uint i=0; i < tmpList.count(); i++ )
+      for( int i=0; i < tmpList.count(); i++ )
         {
           taskWPList.append( new wayPoint(*tmpList.at(i)) );
         }
@@ -225,7 +226,7 @@ void TaskDialog::__showTask()
 
   QString typeName, distance, idString;
 
-  for(unsigned int loop = 0; loop < tmpList.count(); loop++)
+  for( int loop = 0; loop < tmpList.count(); loop++ )
     {
       wayPoint* wp = tmpList.at( loop );
       typeName = wp->getTaskPointTypeString();
@@ -444,13 +445,17 @@ void TaskDialog::slotMoveWaypointDown()
 /** Toggle between WP/AF/... list on user request */
 void TaskDialog::slotToggleList(int index)
 {
-  for(int i=0; i<NUM_LISTS; i++) {
-    if(i != index) {
-      waypointList[i]->hide();
-      filter[i]->hide();
-    } else {
-      waypointList[i]->show();
-      filter[i]->show();
+  for(int i=0; i<NUM_LISTS; i++)
+    {
+      if(i != index)
+        {
+          waypointList[i]->hide();
+          filter[i]->hide();
+        }
+      else
+        {
+          waypointList[i]->show();
+          filter[i]->show();
+        }
     }
-  }
 }
