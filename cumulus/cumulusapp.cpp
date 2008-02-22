@@ -1292,6 +1292,7 @@ void CumulusApp::slotGliderFlight()
 void CumulusApp::slotAltimeterMode()
 {
   _altimeterModeDlg->work();
+  _altimeterModeDlg->show();
   // qDebug("CumulusApp::slotAltimeterMode()");
 }
 
@@ -1306,6 +1307,7 @@ void CumulusApp::slotNewAltimeterMode()
 void CumulusApp::slotVarioMode()
 {
   _varioModeDlg->load();
+  _varioModeDlg->show();
   // qDebug("slotVarioMode");
 }
 
