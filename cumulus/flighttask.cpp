@@ -126,7 +126,7 @@ void FlightTask::__determineTaskType()
 
   if( wpList->count() > 0 )
     {
-      for(unsigned int loop = 1; loop <= wpList->count() - 1; loop++)
+      for(int loop = 1; loop <= wpList->count() - 1; loop++)
         {
           // qDebug("distance: %f", wpList->at(loop)->distance);
           distance_total += wpList->at(loop)->distance;
@@ -288,7 +288,7 @@ void FlightTask::__determineTaskType()
  * Calculates the task point sector angles in radian. The sector angle
  * between two task points is the bisecting line of the angle.
  */
-double FlightTask::__calculateSectorAngles( uint loop )
+double FlightTask::__calculateSectorAngles( int loop )
 {
   // get configured sector angle
   GeneralConfig *conf = GeneralConfig::instance();
@@ -563,7 +563,7 @@ void FlightTask::drawMapElement( QPainter* painter,
   painter->setClipRegion( viewport );
   painter->setClipping( true );
 
-  for( uint loop=0; loop < wpList->count(); loop++ )
+  for( int loop=0; loop < wpList->count(); loop++ )
     {
       if( flightType == Unknown )
 	{
@@ -716,7 +716,7 @@ void FlightTask::circleSchemeDrawing( QPainter* painter )
   
   QRect viewport( -10-r, -10-r, w+2*r, h+2*r );
 
-  for( uint loop=0; loop < wpList->count(); loop++ )
+  for( int loop=0; loop < wpList->count(); loop++ )
     {
       if( loop )
 	{
@@ -982,7 +982,7 @@ bool FlightTask::checkSector( const Distance& dist2TP,
                               const QPoint& position,
                               const int taskPointIndex )
 {
-  if( (uint) taskPointIndex >= wpList->count() )
+  if( taskPointIndex >= wpList->count() )
     {
       // taskPointIndex out of range
       return false;
@@ -1296,7 +1296,7 @@ void FlightTask::updateTask()
   __setTaskPointTypes();
   __determineTaskType();
 
-  for(uint loop = 0; loop < wpList->count(); loop++)
+  for(int loop = 0; loop < wpList->count(); loop++)
     {
       // number point with index
       wpList->at(loop)->taskPointIndex = loop;
@@ -1311,7 +1311,7 @@ void FlightTask::updateTask()
  */
 void FlightTask::updateProjection()
 {
-  for(uint loop = 0; loop < wpList->count(); loop++)
+  for(int loop = 0; loop < wpList->count(); loop++)
     {
       // calculate projection data
       wpList->at(loop)->projP = _globalMapMatrix->wgsToMap(wpList->at(loop)->origP);
@@ -1356,7 +1356,7 @@ QList<wayPoint*> *FlightTask::copyWpList(QList<wayPoint*> *wpListIn)
       return outList;
     }
 
-  for(uint loop = 0; loop < wpListIn->count(); loop++)
+  for(int loop = 0; loop < wpListIn->count(); loop++)
     {
       wayPoint *wp = new wayPoint( *wpListIn->at(loop) );
       outList->append( wp );

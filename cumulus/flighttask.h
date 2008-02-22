@@ -348,7 +348,7 @@ class FlightTask : public BaseMapElement
    * Calculates the task point sector angles in radian. The sector angle
    * between two task points is the bisecting line of the angle.
    */
-  double __calculateSectorAngles( uint loop );
+  double __calculateSectorAngles( int loop );
 
   /**
    * Sets the status of the waypoints, the durations in seconds and
