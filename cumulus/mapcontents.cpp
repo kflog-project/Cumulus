@@ -217,8 +217,8 @@ MapContents::MapContents(QObject* parent, WaitScreen * waitscreen)
   sectionArray.resize(MAX_FILE_COUNT);
   sectionArray.fill(false);
 
-  // Wir nehmen zunächst 4 Schachtelungstiefen an ...
-  for(unsigned int loop = 0; loop < ( ISO_LINE_NUM * 4 ); loop++) {
+  // Wir nehmen zunaechst 4 Schachtelungstiefen an ...
+  for(int loop = 0; loop < ( ISO_LINE_NUM * 4 ); loop++) {
     QList<Isohypse*> *list = new QList<Isohypse*>;
     isoList.append(list);
   }
@@ -2286,7 +2286,6 @@ void MapContents::slotReloadMapData()
   qDeleteAll(gliderList); gliderList.clear();
   qDeleteAll(hydroList); hydroList.clear();
   qDeleteAll(lakeList); lakeList.clear();
-  qDeleteAll(isoList); isoList.clear();
   qDeleteAll(landmarkList); landmarkList.clear();
   qDeleteAll(navList); navList.clear();
   qDeleteAll(obstacleList); obstacleList.clear();
@@ -2299,8 +2298,17 @@ void MapContents::slotReloadMapData()
   qDeleteAll(topoList); topoList.clear();
   qDeleteAll(villageList); villageList.clear();
 
+  // isoList is a special pointer list
+  for( int i=isoList.count() - 1; i >= 0; i--)
+    {
+      qDeleteAll(*isoList.at(i));
+      isoList.at(i)->clear();
+    }
+
+  qDeleteAll (isoList); isoList.clear();
+  
   // Wir nehmen zunaechst 4 Schachtelungstiefen an ...
-  for(unsigned int loop = 0; loop < ( ISO_LINE_NUM * 4 ); loop++) {
+  for(int loop = 0; loop < ( ISO_LINE_NUM * 4 ); loop++) {
     QList<Isohypse*> *list = new QList<Isohypse*>;
     isoList.append(list);
   }
