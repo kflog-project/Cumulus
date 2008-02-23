@@ -358,7 +358,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
 
 void Map::mousePressEvent(QMouseEvent* event)
 {
-  qDebug("Map::mousePressEvent():");
+  // qDebug("Map::mousePressEvent():");
 
   if( mutex() )
     {
@@ -399,7 +399,7 @@ void Map::mousePressEvent(QMouseEvent* event)
 
 void Map::mouseReleaseEvent(QMouseEvent* event)
 {
-  qDebug("Map::mouseReleaseEvent():");
+  // qDebug("Map::mouseReleaseEvent():");
 
   if( mutex() )
     {
@@ -746,9 +746,9 @@ void Map::setDrawing(bool isEnable)
 
 void Map::resizeEvent(QResizeEvent* event)
 {
-  qDebug("Map::resizeEvent(): w=%d, h=%d, pbw=%d, pbh=%d",
-         event->size().width(), event->size().height(),
-         m_pixPaintBuffer.width(), m_pixPaintBuffer.height() );
+//   qDebug("Map::resizeEvent(): w=%d, h=%d, pbw=%d, pbh=%d",
+//          event->size().width(), event->size().height(),
+//          m_pixPaintBuffer.width(), m_pixPaintBuffer.height() );
 
   if( event->size().width()  == m_pixPaintBuffer.width() &&
       event->size().height() < m_pixPaintBuffer.height() &&
@@ -767,7 +767,14 @@ void Map::resizeEvent(QResizeEvent* event)
 
 void Map::__redrawMap(mapLayer fromLayer)
 {
-  qDebug("Map::__redrawMap from layer=%d", fromLayer);
+  // qDebug("Map::__redrawMap from layer=%d", fromLayer);
+
+  if( isHidden() || ! isVisible() )
+    {
+      // AP: ignore draw request when the window is hidden or not
+      // visible to get the user all power of the device for interactions
+       return;
+    }
 
   if( ! _isEnable )
     {
@@ -782,7 +789,7 @@ void Map::__redrawMap(mapLayer fromLayer)
       // @AP: we queue only the redraw request, timer will be started
       // again by __redrawMap() method.
       _isRedrawEvent = true;
-      qDebug("Map::__redrawMap(): mutex is locked, returning");
+      // qDebug("Map::__redrawMap(): mutex is locked, returning");
       return;
       //TODO make a bit smarter. We only need to scedule a redraw if
       //the layer is beneath the one we are currently redrawing, and
