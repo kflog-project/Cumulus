@@ -417,7 +417,9 @@ void MapView::slot_Bearing(int bearing)
 void MapView::slot_toggleBearing()
 {
   // display invers bearing
-  _bearing->setPalette( QPalette( QColor(Qt::red) ));
+  _bearing->setAutoFillBackground(true);
+  _bearing->setBackgroundRole(QPalette::Window);
+  _bearing->setPalette( QPalette(QColor(Qt::red)) );
   _bearingMode = 0;
   slot_Bearing( _lastBearing );
 
@@ -430,6 +432,8 @@ void MapView::slot_toggleBearing()
 void MapView::slot_resetInversBearing()
 {
   // display bearing in normal mode
+  _bearing->setAutoFillBackground(true);
+  _bearing->setBackgroundRole(QPalette::Window);
   _bearing->setPalette( QPalette( _bearingBGColor ));
   _bearingMode = 1;
   slot_Bearing( _lastBearing );
