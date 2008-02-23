@@ -187,7 +187,7 @@ bool TaskList::slotLoadTask()
 {
   extern MapMatrix * _globalMapMatrix;
 
-  taskList.clear();
+  while( !taskList.isEmpty() ) delete taskList.takeFirst();
   taskNames.clear();
 
 # warning task list file 'tasks.tsk' is stored  at $HOME/cumulus/tasks.tsk
@@ -278,7 +278,7 @@ bool TaskList::slotLoadTask()
           // save task name
           taskNames << taskName;
 
-          if( taskList.count() == lastSelection )
+          if( taskList.count() == (int) lastSelection )
             {
               // restore last selection
               taskListView->setSelected( newItem, true );
@@ -381,9 +381,9 @@ void TaskList::slotEditTaskList( FlightTask *editedTask)
   if( index != -1 )
     {
       // remove old item
-      taskList.removeAt( index );
+      delete taskList.takeAt( index );
       // put new item on old position
-      taskList.insert( (uint) index, editedTask );
+      taskList.insert( index, editedTask );
     }
   else
     {
@@ -436,7 +436,7 @@ void TaskList::slotDeleteTask()
   _globalMapContents->setCurrentTask(0);
 
   uint no = id.toUInt() - 1;
-  taskList.removeAt( no );
+  delete taskList.takeAt( no );
   saveTaskList();
   taskContent->clear();
   taskListView->clear();
@@ -464,14 +464,14 @@ bool TaskList::saveTaskList()
   stream << "# KFLog/Cumulus-Task-File created at " 
          << dtStr << " by Cumulus " << CU_VERSION << endl;
 
-  for( uint i=0; i < taskList.count(); i++ )
+  for( int i=0; i < taskList.count(); i++ )
     {
       FlightTask *task = taskList.at(i);
       QList<wayPoint*> wpList = task->getWPList();
 
       stream << "TS," << task->getTaskName() << "," << wpList.count() << endl;
 
-      for( uint j=0; j < wpList.count(); j++ )
+      for( int j=0; j < wpList.count(); j++ )
         {
           // saving each waypoint ...
           wayPoint* wp = wpList.at(j);
