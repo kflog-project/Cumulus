@@ -420,8 +420,7 @@ void ReachableList::show()
 
 ReachableList::~ReachableList()
 {
-  while (!isEmpty())
-    delete takeFirst();
+  while (!isEmpty()) delete takeFirst();
 }
 
 // returns number of sites
