@@ -196,7 +196,7 @@ TaskDialog::~TaskDialog()
 {
   // qDebug("TaskDialog::~TaskDialog()");
 
-  qDeleteAll (taskWPList);
+  qDeleteAll(taskWPList);
   taskWPList.clear();
 
   for(int i=0; i<NUM_LISTS; i++)
@@ -285,7 +285,7 @@ void TaskDialog::slotRemoveWaypoint()
 
   int id( taskList->selectedItem()->text(0).toInt() );
 
-  taskWPList.removeAt( id );
+  delete taskWPList.takeAt( id );
   taskList->takeItem( taskList->selectedItem() );
 
   __showTask();
