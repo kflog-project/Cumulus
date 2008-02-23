@@ -423,10 +423,10 @@ void Map::paintEvent(QPaintEvent* event)
   QDateTime dt = QDateTime::currentDateTime();
   QString dtStr = dt.toString(Qt::ISODate);
 
-  qDebug("%s: Map::paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d",
-         dtStr.toAscii().data(),
-         event->rect().width(), event->rect().height(),
-         event->rect().left(), event->rect().top() );
+//   qDebug("%s: Map::paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d",
+//          dtStr.toAscii().data(),
+//          event->rect().width(), event->rect().height(),
+//          event->rect().left(), event->rect().top() );
 
   if( mutex() )
     {
@@ -439,7 +439,7 @@ void Map::paintEvent(QPaintEvent* event)
   p.drawPixmap( event->rect().left(), event->rect().top(), m_pixPaintBuffer,
                 0, 0, event->rect().width(), event->rect().height() );
 
-  qDebug("Map.paintEvent(): return");
+  // qDebug("Map.paintEvent(): return");
 }
 
 
@@ -853,10 +853,9 @@ void Map::__redrawMap(mapLayer fromLayer)
   QDateTime dt = QDateTime::currentDateTime();
   QString dtStr = dt.toString(Qt::ISODate);
 
-  qDebug("%s: Map::__redrawMap: repaint(%dx%d) is called",
-         dtStr.toAscii().data(), this->rect().width(),this->rect().height() );
+  // qDebug("%s: Map::__redrawMap: repaint(%dx%d) is called",
+  //       dtStr.toAscii().data(), this->rect().width(),this->rect().height() );
   repaint( this->rect() );
-  qDebug("Map::__redrawMap: repaint() was called");
 
   // @AP: check, if a pending redraw request is active. In this case
   // the scheduler timers will be restarted to handle it.
@@ -1529,7 +1528,8 @@ void Map::setBearing( const int& _newVal)
 }
 
 
-/** calculates the maprotation based on the mapmode, the heading and the bearing. In degrees counterclockwise. */
+/** calculates the maprotation based on the map mode, the heading and
+    the bearing. In degrees counter clockwise. */
 int Map::calcMapRotation()
 {
   switch (mode)
@@ -1546,7 +1546,8 @@ int Map::calcMapRotation()
 }
 
 
-/** calculates the rotation of the glidersymbol based on the mapmode, the heading and the bearing. In degrees counterclockwise. */
+/** calculates the rotation of the glider symbol based on the map mode,
+    the heading and the bearing. In degrees counter clockwise. */
 int Map::calcGliderRotation()
 {
   switch (mode)
@@ -1716,7 +1717,8 @@ void Map::__drawScale()
 /** This slot is called to set a new position. The map object determines if it is necessary to recenter the map, or if the glider can just be drawn on a different position. */
 void Map::slot_position(const QPoint& newPos, const int source)
 {
-  // qDebug("Map::slot_position x:%d y:%d",newPos.x(), newPos.y() );
+  // qDebug("Map::slot_position x=%d y=%d", newPos.x(), newPos.y() );
+
   if( !_isEnable )
     return;
 
@@ -1759,7 +1761,7 @@ void Map::slot_position(const QPoint& newPos, const int source)
 
           if( !_globalMapMatrix->isInCenterArea(newPos) || mutex() )
             {
-              qDebug("Map::slot_position:sceduleRedraw()");
+              // qDebug("Map::slot_position:sceduleRedraw()");
               sceduleRedraw();
             }
           else
