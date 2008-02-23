@@ -118,7 +118,7 @@ const int Airport::text2Item( const QString& text )
   return surfaceTranslations.key( text );
 }
 
-void  Airport::loadTranslations()
+void Airport::loadTranslations()
 {
   // Load translation data
   surfaceTranslations.insert( Airport::NotSet, QObject::tr( "Unknown" ) );
@@ -134,6 +134,21 @@ void  Airport::loadTranslations()
 
   sortedTranslations.sort();  
 }
+
+/**
+ * Get sorted translations
+ */
+QStringList& Airport::getSortedTranslationList() {
+  if( objectTranslations.isEmpty() ) {
+    // Load object - translation data
+    loadTranslations();
+  }
+
+  // qDebug ("Airport::getSortedTranslationList: size: %d", objectTranslations.size());
+
+  return sortedTranslations;
+}
+
 
 void Airport::drawMapElement(QPainter* targetP, QPainter*/* maskP*/)
 {
