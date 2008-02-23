@@ -58,7 +58,6 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
   topLayout->addWidget(snrDisplay, 5);
   topLayout->addWidget(nmeaBox, 5);
 
-
   connect(gps, SIGNAL(newSentence(const QString&)),
           this, SLOT(slot_Sentence(const QString&)));
   connect(gps, SIGNAL(newSatInViewInfo()),
@@ -115,16 +114,14 @@ void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Escape:
       accept();
       break;
-    default:
-      ;
     }
 }
+
 void GpsStatusDialog::accept()
 {
   // qDebug("GpsStatusDialog::accept()");
   delete this;
 }
-
 
 void GpsStatusDialog::reject()
 {
@@ -204,7 +201,8 @@ void GPSElevationAzimuthDisplay::paintEvent(QPaintEvent *)
 void GPSElevationAzimuthDisplay::setSatInfo(QList<SIVInfo>& list)
 {
   sats = list;
-  update();
+  // update();
+  repaint();
 }
 
 void GPSElevationAzimuthDisplay::drawSat(QPainter * p, const SIVInfo& sivi)
@@ -331,8 +329,8 @@ void GPSSnrDisplay::paintEvent(QPaintEvent *)
 void GPSSnrDisplay::setSatInfo(QList<SIVInfo>& list)
 {
   sats = list;
-  update();
-
+  // update();
+  repaint();
 }
 
 void GPSSnrDisplay::drawSat(QPainter * p, QPainter * pm, int i, int cnt, const SIVInfo& sivi)
