@@ -104,8 +104,10 @@ void ReachpointListView::fillRpList()
 {
   int safetyAlt = (int)GeneralConfig::instance()->getSafetyAltitude().getMeters();
 
-  if( calculator == 0 )
+  if( calculator == 0 ) {
     return;
+  }
+
   // int n= calculator->getReachList()->getNumberSites();
   extern MapConfig * _globalMapConfig;
   Q3ListViewItem* si = list->selectedItem();
@@ -117,15 +119,21 @@ void ReachpointListView::fillRpList()
   icon.resize(18,18);
 
   bool selected = false;
-  if( si )
+  if( si ) {
     sname = si->text(0);
+  }
+
   list->clear();
+
   // Create a pointer to the list of nearest sites
   QList<ReachablePoint*> *pl = calculator->getReachList()->getList();
   int num = 0;
+
   // Do a loop over all entries in the table of nearest sites
-  for (int i = 0; i < pl->count()&&
-         num < calculator->getReachList()->getMaxNrOfSites(); i++, num++) {
+  for (int i = 0;
+       i < pl->count() && num < calculator->getReachList()->getMaxNrOfSites();
+       i++, num++) {
+
     ReachablePoint *rp = pl->at(i);
 
     if( !_outlandShow && (rp->getType() == BaseMapElement::Outlanding) )
