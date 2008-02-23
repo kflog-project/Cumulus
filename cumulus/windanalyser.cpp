@@ -167,7 +167,7 @@ void WindAnalyser::_calcWind()
     quality--;
   if (circleCount<1)
     quality--;
-  qDebug("quality %d",quality );
+  // qDebug("quality %d",quality );
 
   if (quality<1)
     return;   //measurment quality too low
@@ -191,10 +191,9 @@ void WindAnalyser::_calcWind()
   result.setSpeed(Speed((maxVector.getSpeed().getMps()-minVector.getSpeed().getMps())/2));
 
   //let the world know about our measurement!
-  qDebug("Wind: %d/%f\n", (int)result.getAngleDeg(),(float)result.getSpeed().getKph());
+  //qDebug("Wind: %d/%f\n", (int)result.getAngleDeg(),(float)result.getSpeed().getKph());
   emit newMeasurement(result,quality);
 }
-
 
 void WindAnalyser::slot_newConstellation()
 {
