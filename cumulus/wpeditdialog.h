@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -41,12 +41,18 @@ public:
     WPEditDialog(QWidget *parent=0,
                  const char *name=0, wayPoint * wp=0);
 
-    ~WPEditDialog();
+    virtual ~WPEditDialog();
 
     /**
      * Called if OK button is pressed
      */
     void accept();
+
+ protected:
+    /**
+     * Redefinition of the showEvent.
+     */
+    virtual void showEvent( QShowEvent *event );
 
 private slots: // Private slots
     /**
@@ -58,13 +64,13 @@ private slots: // Private slots
 signals: // Signals
     /**
      * Signal emitted to indicate the settings should be saved
-     * to the configurationfile
+     * to the configuration file
      */
     void save(wayPoint *);
 
     /**
      * Emitted to indicate that the settings should be
-     * re-) loaded from the configurationfile.
+     * re-) loaded from the configuration file.
      */
     void load(wayPoint *);
 

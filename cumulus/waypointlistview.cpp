@@ -59,9 +59,6 @@ WaypointListView::WaypointListView(CumulusApp *parent, const char *name ) : QWid
   editrow->addWidget(cmdHome);
 
   list= new Q3ListView(this, "waypointlist");
-  //list->addColumn(tr("Name"),95);
-  //list->addColumn(tr("Description"),100);
-  //list->addColumn(tr("ICAO"),40);
   list->addColumn(tr("Name"));
   list->addColumn(tr("Description"));
   list->addColumn(tr("ICAO"));
@@ -95,7 +92,9 @@ WaypointListView::WaypointListView(CumulusApp *parent, const char *name ) : QWid
 
 
 WaypointListView::~WaypointListView()
-{}
+{
+  qDebug("WaypointListView::~WaypointListView()");
+}
 
 
 /** Retreives the waypoints from the mapcontents, and fills the list. */
@@ -197,7 +196,9 @@ wayPoint * WaypointListView::getSelectedWaypoint(Q3ListView *list)
 /** Called when a new waypoint needs to be made. */
 void WaypointListView::slot_newWP()
 {
-  WPEditDialog * dlg=new WPEditDialog(this, "wpeditor", 0);
+  WPEditDialog *dlg=new WPEditDialog(this, "wpeditor", 0);
+  dlg->setAttribute(Qt::WA_DeleteOnClose);
+
   connect(dlg, SIGNAL(wpListChanged(wayPoint *)),
           this, SLOT(slot_wpAdded(wayPoint *)));
 
@@ -208,14 +209,17 @@ void WaypointListView::slot_newWP()
 /** Called when the selected waypoint needs must be opened in the editor */
 void WaypointListView::slot_editWP()
 {
-  wayPoint * wp=getSelectedWaypoint();
-  if (wp) {
-    WPEditDialog * dlg=new WPEditDialog(this, "wpeditor", getSelectedWaypoint());
-    connect(dlg, SIGNAL(wpListChanged(wayPoint *)), this, SLOT(slot_wpEdited(wayPoint *)));
+  wayPoint *wp=getSelectedWaypoint();
+  if (wp)
+    {
+      WPEditDialog *dlg=new WPEditDialog(this, "wpeditor", getSelectedWaypoint());
+      dlg->setAttribute(Qt::WA_DeleteOnClose);
 
-    dlg->show();
-  }
+      connect(dlg, SIGNAL(wpListChanged(wayPoint *)),
+              this, SLOT(slot_wpEdited(wayPoint *)));
 
+      dlg->show();
+    }
 }
 
 
@@ -269,11 +273,9 @@ void WaypointListView::slot_wpEdited(wayPoint * wp)
       filter->reset();
 
       // save modified catalog
-      WaypointCatalog wpCat;
-      wpCat.write( 0, _globalMapContents->getWaypointList() );
+      _globalMapContents->saveWaypointList();
 
-      if (par)      
-	par->viewMap->_theMap->quickDraw();
+      if (par) par->viewMap->_theMap->quickDraw();
     } else
       qDebug("WaypointListView::slot_wpEdited() has empty list");
   }
@@ -296,8 +298,7 @@ void WaypointListView::slot_wpAdded(wayPoint * wp)
     // save the modified catalog
     _globalMapContents->saveWaypointList();
 
-    if (par)
-      par->viewMap->_theMap->quickDraw();
+    if (par) par->viewMap->_theMap->quickDraw();
   }
 }
 
