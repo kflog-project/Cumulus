@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -43,7 +43,7 @@ WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent, const char *name ):
 
   QLabel * lblRun = new QLabel(tr("Runway:"), this);
   topLayout->addWidget(lblRun,row,0);
-  edtRunway = new DegreeSpinBox(this, "Runway");
+  edtRunway = new DegreeSpinBox(this);
   topLayout->addWidget(edtRunway,row++,1);
 
   QLabel * lblLen = new QLabel(tr("Length:"), this);
