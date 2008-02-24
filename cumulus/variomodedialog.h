@@ -19,8 +19,8 @@
 #define VARIOMODEDIALOG_H
 
 #include <QDialog>
-#include <QPushButton>
-#include <Q3ButtonGroup>
+#include <QRadioButton>
+#include <QGroupBox>
 #include <QTimer>
 #include <QSpinBox>
 #include <QLabel>
@@ -61,11 +61,13 @@ signals:
 
 
 private:
-    Q3ButtonGroup* stepGroup;
+    QRadioButton* one;
+    QRadioButton* five;
+    QRadioButton* ten;
+
+    QGroupBox*   stepGroup;
     QSpinBox*    spinTime;
     QSpinBox*    spinTEK;
-    QPushButton* buttonOK;
-    QPushButton* buttonCancel;
     QCheckBox*   TEK;
     QLabel*      TekAdj;
 
@@ -79,7 +81,6 @@ private:
 private slots:
     void setTimer();
     void accept();
-    void reject();
     void change(int newStep);
     void TekChanged( bool newState );
 };

@@ -15,9 +15,10 @@
  **
  ***********************************************************************/
 
-#include <QRadioButton>
+#include <QDialogButtonBox>
 #include <QFont>
 #include <QGridLayout>
+#include <QSignalMapper>
 
 #include "vario.h"
 #include "variomodedialog.h"
@@ -28,109 +29,85 @@
 extern MapConfig * _globalMapConfig;
 
 VarioModeDialog::VarioModeDialog (QWidget *parent) :
-  QDialog( parent, "VarioModeDialog", true,
-           Qt::WStyle_StaysOnTop )
+  QDialog( parent, "VarioModeDialog", true, Qt::WStyle_StaysOnTop )
 {
   setWindowTitle (tr("Vario"));
-  QGridLayout* topLayout = new QGridLayout(this, 8, 3, 5);
 
-  QFont fnt( "Helvetica", 16, QFont::Bold  );
-  this->setFont(fnt);
-  resize( 200, 240 );
+  setFont(QFont ( "Helvetica", 16, QFont::Bold ));
 
-  GeneralConfig *conf = GeneralConfig::instance();
+  QGridLayout* gridLayout = new QGridLayout(this);
+  gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+  gridLayout->setContentsMargins(0, 0, 0, 0);
+  stepGroup = new QGroupBox(tr("Time step width"), this);
 
-  _intTime = conf->getVarioIntegrationTime();
-
-  if( _intTime < 3 ) // check config value
-    {
-      _intTime = INT_TIME; // reset to default
-      conf->setVarioIntegrationTime(_intTime);
-    }
-
-  _TEKComp = conf->getVarioTekCompensation();
-  emit newTEKMode( _TEKComp );
-
-  _TEKAdjust = conf->getVarioTekAdjust();
-  emit newTEKAdjust( _TEKAdjust );
-
-  _curWidth = conf->getVarioStepWidth();
-
-  stepGroup = new Q3ButtonGroup(1, Qt::Vertical, tr("Time step width"), this);
-
-  QRadioButton* one  = new QRadioButton(tr("1"), stepGroup);
-  QRadioButton* five = new QRadioButton(tr("5"), stepGroup);
-  QRadioButton* ten  = new QRadioButton(tr("10"), stepGroup );
-
-
+  one = new QRadioButton(tr("1"), stepGroup);
+  five = new QRadioButton(tr("5"), stepGroup);
+  ten = new QRadioButton(tr("10"), stepGroup);
   one->setEnabled(true);
   five->setEnabled(true);
   ten->setEnabled(true);
 
-  stepGroup->setButton(_curWidth);
+  QHBoxLayout* radioLayout = new QHBoxLayout(stepGroup);
+  radioLayout->addWidget(one);
+  radioLayout->addWidget(five);
+  radioLayout->addWidget(ten);
 
-  int row = 0;
-  topLayout->addMultiCellWidget(stepGroup, row, row+1, 0, 2, Qt::AlignCenter);
-  row+=2;
+  gridLayout->addWidget(stepGroup, 0, 0, 1, 3);
 
-  QLabel* lbl = new QLabel(tr("Time:"), this);
-  topLayout->addWidget(lbl, row, 0);
+  QLabel* label = new QLabel(tr("Time:"), this);
+  gridLayout->addWidget(label, 1, 0, 1, 1);
 
-  spinTime = new QSpinBox( 3, 300, 1, this, "spinTime" );
+  spinTime = new QSpinBox(this);
   spinTime->setButtonSymbols(QSpinBox::PlusMinus);
-  // spinTime->setButtonOrientation(Horizontal);
-  topLayout->addWidget (spinTime, row, 1);
+  gridLayout->addWidget(spinTime, 1, 1, 1, 1);
 
   QLabel* unit = new QLabel(tr("s"), this);
-  topLayout->addWidget (unit, row++, 2);
-
-  topLayout->addRowSpacing(row++, 10);
+  gridLayout->addWidget(unit, 1, 2, 1, 1);
 
   QLabel* TekLbl = new QLabel(tr("TEK Mode:"), this);
-  topLayout->addWidget(TekLbl, row, 0);
+  gridLayout->addWidget(TekLbl, 2, 0, 1, 1);
 
   TEK = new QCheckBox (tr(""), this);
-  topLayout->addWidget (TEK, row++, 1);
+  gridLayout->addWidget(TEK, 2, 1, 1, 1);
 
   TekAdj = new QLabel(tr("TEK Adjust:"), this);
-  topLayout->addWidget(TekAdj, row, 0);
+  gridLayout->addWidget(TekAdj, 3, 0, 1, 1);
 
   spinTEK = new QSpinBox( -100, 100, 1, this, "spinTEK" );
   spinTEK->setButtonSymbols(QSpinBox::PlusMinus);
-  // spinTEK->setButtonOrientation(Horizontal);
-  topLayout->addWidget (spinTEK, row++, 1);
+  gridLayout->addWidget(spinTEK, 3, 1, 1, 1);
 
-  topLayout->addRowSpacing(row++, 10);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                 | QDialogButtonBox::Cancel);
+  gridLayout->addWidget(buttonBox, 4, 0, 1, 3);
 
-  buttonCancel = new QPushButton (tr("Cancel"), this);
-  topLayout->addWidget (buttonCancel, row, 0);
+  setLayout (gridLayout);
 
-  buttonOK = new QPushButton(tr("OK"), this);
-  topLayout->addMultiCellWidget( buttonOK, row, row, 1, 2 );
-  row++;
-
-  // let us take the user's defined info display time
-  _timeout = conf->getInfoDisplayTime();
   timer = new QTimer(this);
+
+  QSignalMapper* signalMapper = new QSignalMapper();
 
   connect(timer, SIGNAL(timeout()),
           this, SLOT(reject()));
-  connect(stepGroup, SIGNAL(clicked(int)),
-          this, SLOT(change(int)));
   connect(TEK, SIGNAL(toggled(bool)),
           this, SLOT(TekChanged(bool)));
-  connect(buttonOK, SIGNAL(clicked()),
-          this, SLOT(accept()));
-  connect(buttonCancel, SIGNAL(clicked()),
-          this, SLOT(reject()));
+  connect (buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect (buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+  connect(one, SIGNAL(clicked()), signalMapper, SLOT(map()));
+  signalMapper->setMapping(one, 0);
+  connect(five, SIGNAL(clicked()), signalMapper, SLOT(map()));
+  signalMapper->setMapping(five, 1);
+  connect(ten, SIGNAL(clicked()), signalMapper, SLOT(map()));
+  signalMapper->setMapping(ten, 2);
+  connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(change(int)));
 
   // restart timer, if value was changed
   connect(spinTime, SIGNAL(valueChanged(int)),
           this, SLOT(setTimer()));
   connect(spinTEK, SIGNAL(valueChanged(int)),
           this, SLOT(setTimer()));
-  connect(stepGroup, SIGNAL(clicked(int)),
-          this, SLOT(setTimer()));
+  load();
 }
 
 
@@ -146,15 +123,25 @@ void VarioModeDialog::TekChanged(bool newState )
 
 void VarioModeDialog::load()
 {
+  qDebug ("VarioModeDialog::load()");
   GeneralConfig *conf = GeneralConfig::instance();
 
   _intTime = conf->getVarioIntegrationTime();
-
   if( _intTime < 3 ) // check config value
     {
       _intTime = INT_TIME; // reset to default
       conf->setVarioIntegrationTime(_intTime);
     }
+
+  _TEKComp = conf->getVarioTekCompensation();
+  emit newTEKMode( _TEKComp );
+
+  _TEKAdjust = conf->getVarioTekAdjust();
+  emit newTEKAdjust( _TEKAdjust );
+
+  _curWidth = conf->getVarioStepWidth();
+  // let us take the user's defined info display time
+  _timeout = conf->getInfoDisplayTime();
 
   spinTEK->setEnabled(_TEKComp);
   spinTime->setValue( _intTime );
@@ -162,7 +149,20 @@ void VarioModeDialog::load()
   TEK->setChecked( _TEKComp );
   spinTime->setFocus();
   change(_curWidth);
-  show();
+
+  switch (_curWidth) {
+    case 0:
+      one->setChecked(true);
+      break;
+    case 1:
+      five->setChecked(true);
+      break;
+    case 2:
+      ten->setChecked(true);
+      break;
+    default:
+      qFatal ("VarioModeDialog::load(): invalid width: %d", _curWidth);
+  }
   setTimer();
 }
 
@@ -224,6 +224,7 @@ void VarioModeDialog::change( int newStep )
 
   spinTime->setLineStep(step);
   spinTime->setMinValue(min);
+  setTimer();
 }
 
 
@@ -231,12 +232,6 @@ void VarioModeDialog::accept()
 {
   save();
   QDialog::accept();
-}
-
-
-void VarioModeDialog::reject()
-{
-  QDialog::reject();
 }
 
 
