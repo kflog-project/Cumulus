@@ -120,10 +120,13 @@ void BaseMapElement::loadTranslations()
   objectTranslations.insert( BaseMapElement::EmptyPoint, QObject::tr( "Empty Point" ) );
 
   // load sorted translation strings
-  for( int i=0; i < objectTranslations.size(); i++ )
-  {
-    sortedTranslations.append( objectTranslations.value(i) );
-  }
+  QHashIterator<int, QString> it(objectTranslations);
+
+  while( it.hasNext() )
+    {
+      it.next();
+      sortedTranslations.append( it.value() );
+    }
 
   sortedTranslations.sort();
 }
@@ -140,14 +143,15 @@ void BaseMapElement::drawMapElement(QPainter* , QPainter* )
 }
 
 /**
-  * Get sorted translations
-  */
+ * Get sorted translations
+ */
 QStringList& BaseMapElement::getSortedTranslationList() {
   if( objectTranslations.isEmpty() ) {
     // Load object - translation data
     loadTranslations();
   }
-  qDebug ("BaseMapElement::getSortedTranslationList: size: %d", objectTranslations.size());
+
+  // qDebug ("BaseMapElement::getSortedTranslationList: size: %d", objectTranslations.size());
 
   return sortedTranslations;
 }

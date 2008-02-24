@@ -127,9 +127,12 @@ void Airport::loadTranslations()
   surfaceTranslations.insert( Airport::Concrete, QObject::tr( "Concrete" ) );
 
   // load sorted translation strings
-  for( int i=0; i < surfaceTranslations.size(); i++ )
+  QHashIterator<int, QString> it(surfaceTranslations);
+
+  while( it.hasNext() )
     {
-      sortedTranslations.append( surfaceTranslations.value(i) );
+      it.next();
+      sortedTranslations.append( it.value() );
     }
 
   sortedTranslations.sort();  
@@ -138,14 +141,15 @@ void Airport::loadTranslations()
 /**
  * Get sorted translations
  */
-QStringList& Airport::getSortedTranslationList() {
-  if( objectTranslations.isEmpty() ) {
-    // Load object - translation data
+QStringList& Airport::getSortedTranslationList()
+{
+  if( surfaceTranslations.isEmpty() ) {
+    // Load surface - translation data
     loadTranslations();
   }
 
-  // qDebug ("Airport::getSortedTranslationList: size: %d", objectTranslations.size());
-
+  // qDebug("Airport::getSortedTranslationList: size: %d", sortedTranslations.size());
+  
   return sortedTranslations;
 }
 
