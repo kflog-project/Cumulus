@@ -36,8 +36,8 @@ VarioModeDialog::VarioModeDialog (QWidget *parent) :
   setFont(QFont ( "Helvetica", 16, QFont::Bold ));
 
   QGridLayout* gridLayout = new QGridLayout(this);
+  gridLayout->setMargin(10);
   gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-  gridLayout->setContentsMargins(0, 0, 0, 0);
   stepGroup = new QGroupBox(tr("Time step width"), this);
 
   one = new QRadioButton(tr("1"), stepGroup);
