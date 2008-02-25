@@ -22,7 +22,6 @@
 #include <QTimer>
 #include <QRadioButton>
 
-
 /**
   *@author Eckhard Voellm 
   */
@@ -33,17 +32,19 @@ class AltimeterModeDialog : public QDialog
 public:
   AltimeterModeDialog(QWidget *parent);
   ~AltimeterModeDialog();
-  void work ();
-  QString Pretext();
-  static int mode() { return _mode; };
+  void work();
+  static QString mode2String();
+  static int mode();
+
 protected:
   void load ();
   void accept ();
   void save (int mode); // 0: MSL,  1: GND,  2: STD
+
 private:
   QTimer* timeout;
   int _time;
-  static int _mode;  	 // 0: MSL,  1: GND,  2: STD
+  int _mode;  	 // 0: MSL,  1: GND,  2: STD
   bool _toggling_mode;   // 1: On
   QRadioButton * _msl;
   QRadioButton * _gnd;
@@ -52,6 +53,7 @@ private:
 private slots:
   void setTimer();
   void change_mode (int);
+
 signals:
   void settingsChanged();
   void newAltimeterMode();

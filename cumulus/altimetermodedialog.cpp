@@ -29,18 +29,17 @@
 #include "glider.h"
 #include "mapconfig.h"
 
-extern MapConfig * _globalMapConfig;
-
-int AltimeterModeDialog::_mode = 0; // MSL mode
+extern MapConfig *_globalMapConfig;
 
 AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
-    : QDialog(parent, "altimetermodedialog", true, Qt::WStyle_StaysOnTop)
+  : QDialog(parent, "altimetermodedialog", true, Qt::WStyle_StaysOnTop),
+    _mode(0)
 {
   setWindowTitle(tr("Altimeter"));
 
   setFont(QFont ( "Helvetica", 16, QFont::Bold ));
 
-  QGroupBox* altMode = new QGroupBox(tr("Altimeter Mode"), this);
+  QGroupBox* altMode = new QGroupBox(tr("Altimeter Mode"));
   _msl=new QRadioButton(tr("MSL"),altMode);
   _gnd=new QRadioButton(tr("AGL"),altMode);
   _std=new QRadioButton(tr("STD"),altMode);
@@ -55,7 +54,8 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   mainLayout->setObjectName("mainlayout");
-  QHBoxLayout* modeLayout = new QHBoxLayout(this);
+
+  QHBoxLayout* modeLayout = new QHBoxLayout();
   modeLayout->setObjectName("modelayout");
   modeLayout->addWidget(altMode);
 
@@ -65,15 +65,15 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   radioLayout->addWidget(_gnd);
   radioLayout->addWidget(_std);
 
-  QVBoxLayout* buttonLayout = new QVBoxLayout(this);
+  QVBoxLayout* buttonLayout = new QVBoxLayout();
   buttonLayout->setObjectName("buttonlayout");
   buttonLayout->addWidget(buttonBox);
 
   mainLayout->addLayout(modeLayout);
   mainLayout->addLayout(buttonLayout);
-  setLayout (mainLayout);
 
   timeout = new QTimer(this);
+  timeout->setSingleShot(true);
   QSignalMapper* signalMapper = new QSignalMapper(this);
   connect(_msl, SIGNAL(clicked()), signalMapper, SLOT(map()));
   signalMapper->setMapping(_msl, 0);
@@ -89,9 +89,9 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   load();
 }
 
-QString AltimeterModeDialog::Pretext()
+QString AltimeterModeDialog::mode2String()
 {
-  switch( _mode )
+  switch( GeneralConfig::instance()->getAltimeterMode() )
     {
     case 0:
       return QString("Msl");
@@ -103,6 +103,11 @@ QString AltimeterModeDialog::Pretext()
     }
 }
 
+int AltimeterModeDialog::mode()
+{
+  return GeneralConfig::instance()->getAltimeterMode();
+}
+
 AltimeterModeDialog::~AltimeterModeDialog()
 {}
 
@@ -111,7 +116,6 @@ void AltimeterModeDialog::load()
   GeneralConfig *conf = GeneralConfig::instance();
 
   _mode = conf->getAltimeterMode();
-  _toggling_mode = conf->getAltimeterToggleMode();
 
   switch (_mode) {
     case 0:
@@ -180,9 +184,7 @@ void AltimeterModeDialog::change_mode (int mode) {
 
 void AltimeterModeDialog::accept()
 {
-
   save(_mode);
-
   QDialog::accept();
 }
 
@@ -192,6 +194,5 @@ void AltimeterModeDialog::setTimer()
   GeneralConfig *conf = GeneralConfig::instance();
 
   _time = conf->getInfoDisplayTime();
-
   timeout->start (_time * 1000);
 }
