@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2007 modified by Axel Pauli
+ **                   2008 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -248,10 +248,6 @@ MapContents::~MapContents()
 {
   delete currentTask;
 
-  // save the current waypoint list
-  WaypointCatalog wpCat;
-  wpCat.write( 0, &wpList );
-
   qDeleteAll (airportList);
   airportList.clear();
 
@@ -266,9 +262,6 @@ MapContents::~MapContents()
 
   qDeleteAll (gliderList);
   gliderList.clear();
-
-//  qDeleteAll (flightList);
-//  flightList.clear();
 
   qDeleteAll (hydroList);
   hydroList.clear();
