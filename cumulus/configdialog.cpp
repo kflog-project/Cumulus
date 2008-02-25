@@ -57,8 +57,6 @@ ConfigDialog::ConfigDialog(QWidget * parent, const char * name) :
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                  | QDialogButtonBox::Cancel);
 
-//   there is no aboutToShow in QDialog
-//  connect(this, SIGNAL(aboutToShow()), this, SLOT(slot_LoadCurrent()));
   connect(this, SIGNAL(load()), spp, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spgl, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spg, SLOT(slot_load()));
