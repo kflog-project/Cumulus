@@ -4,9 +4,9 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002 by Andre Somers, 2008 Axel Pauli
     email                : andre@kflog.org
-    
+
     $Id$
-    
+
 ***************************************************************************/
 
 /***************************************************************************
@@ -37,7 +37,6 @@
 #include "gpsnmea.h"
 #include "cucalc.h"
 #include "map.h"
-
 
 /**
  * This is the main view for the application, provinding the map and
@@ -211,7 +210,13 @@ class MapView : public QWidget
     /**
      * Format and set the FlightStatus string
      */
-    void setFlightStatus();
+    void slot_setFlightStatus();
+
+    /** Opens the inflight glider settings dialog. */
+    void slot_gliderFlightDialog();
+
+    /** Opens the GPS status dialog */
+    void slot_gpsStatusDialog();
 
   signals: // Signals
     /**
@@ -322,6 +327,15 @@ class MapView : public QWidget
      * Reset invers bearing after a timeout
      */
     void slot_resetInversBearing();
+    
+    /** Opens the Variometer settings dialog. */
+    void slot_VarioDialog();
+    
+    /** Opens the Altimeter settings dialog. */
+    void slot_AltimeterDialog();
+    
+    /** Called, if altimeter mode has been changed */
+    void slot_newAltimeterMode();
   };
 
 #endif

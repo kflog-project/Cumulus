@@ -27,9 +27,9 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QWidget>
-#include <QAction>
+#include <Q3Action>
 #include <QMenuBar>
-#include <QMenu>
+#include <Q3PopupMenu>
 #include <QEvent>
 #include <Q3Accel>
 #include <QTabWidget>
@@ -43,9 +43,6 @@
 #include "wpinfowidget.h"
 #include "gpsnmea.h"
 #include "preflightdialog.h"
-#include "gliderflightdialog.h"
-#include "altimetermodedialog.h"
-#include "variomodedialog.h"
 #include "mapinfobox.h"
 #include "waitscreen.h"
 
@@ -106,7 +103,7 @@ class CumulusApp : public QMainWindow
     WPInfoWidget *viewInfo;
     QTabWidget *listViewTabs;
     /** use manual navigation even if GPS signal received */
-    QAction* actionToggleManualInFlight;
+    Q3Action* actionToggleManualInFlight;
 
     Q3Accel *accAfView;
     Q3Accel *accInfoView;
@@ -162,14 +159,6 @@ class CumulusApp : public QMainWindow
     void slotSwitchToInfoView(wayPoint*);
     /** Opens the configdialog. */
     void slotConfig();
-    /** Opens the inflight glider settings dialog. */
-    void slotGliderFlight();
-    /** Opens the inflight Altimeter settings dialog. */
-    void slotAltimeterMode();
-    /** Called if inflight Altimeter settings have changed */
-    void slotNewAltimeterMode();
-    /** Opens the Variometer settings dialog. */
-    void slotVarioMode();
     /** This slot is called if the configuration has changed and at the start of the program to read the initial configuration. */
     void slot_readconfig();
     /** shows version and copyright. */
@@ -183,8 +172,6 @@ class CumulusApp : public QMainWindow
     void slotNotification (const QString&, const bool sound=true);
     /** updates the list of reachable points  */
     void slot_newReachList();
-    /** shows the GPS status dialog */
-    void slotGpsStatusDialog();
     /** use manual navigation even if GPS signal received */
     void slotToggleManualInFlight(bool);
     /** used to allow or disable user keys processing during map drawing */
@@ -228,12 +215,6 @@ class CumulusApp : public QMainWindow
     appView view;
 
     PreFlightDialog* _preFlightDialog;
-
-    GliderFlightDialog* _gliderFlightDlg;
-
-    AltimeterModeDialog* _altimeterModeDlg;
-
-    VarioModeDialog* _varioModeDlg;
 
     bool _taskListVisible, _reachpointListVisible;
 
@@ -286,40 +267,40 @@ class CumulusApp : public QMainWindow
 
     void slotPreFlight(const char *tabName);
 
-    QAction* actionToggleMenu;
-    QAction* actionFileQuit;
-    QAction* actionViewInfo;
-    QAction* actionViewWaypoints;
-    QAction* actionViewAirfields;
-    QAction* actionViewReachpoints;
-    QAction* actionViewTaskpoints;
-    QAction* actionViewGPSStatus;
-    QAction* actionToggleStatusbar;
-    QAction* actionZoomInZ;
-    QAction* actionZoomOutZ;
-    QAction* actionToggleWpLabels;
-    QAction* actionToggleWpLabelsEI;
-    QAction* actionToggleLogging;
-    QAction* actionEnsureVisible;
-    QAction* actionSelectTask;
-    QAction* actionPreFlight;
-    QAction* actionRememberWaypoint;
-    QAction* actionSetupConfig;
-    QAction* actionSetupInFlight;
-    QAction* actionHelp;
-    QAction* actionHelpAboutApp;
-    QAction* actionHelpAboutQt;
-    QAction* actionWhatsThis;
+    Q3Action* actionToggleMenu;
+    Q3Action* actionFileQuit;
+    Q3Action* actionViewInfo;
+    Q3Action* actionViewWaypoints;
+    Q3Action* actionViewAirfields;
+    Q3Action* actionViewReachpoints;
+    Q3Action* actionViewTaskpoints;
+    Q3Action* actionViewGPSStatus;
+    Q3Action* actionToggleStatusbar;
+    Q3Action* actionZoomInZ;
+    Q3Action* actionZoomOutZ;
+    Q3Action* actionToggleWpLabels;
+    Q3Action* actionToggleWpLabelsEI;
+    Q3Action* actionToggleLogging;
+    Q3Action* actionEnsureVisible;
+    Q3Action* actionSelectTask;
+    Q3Action* actionPreFlight;
+    Q3Action* actionRememberWaypoint;
+    Q3Action* actionSetupConfig;
+    Q3Action* actionSetupInFlight;
+    Q3Action* actionHelp;
+    Q3Action* actionHelpAboutApp;
+    Q3Action* actionHelpAboutQt;
+    Q3Action* actionWhatsThis;
     /** file_menu contains all items of the menubar entry "File" */
-    QMenu *fileMenu;
+    Q3PopupMenu *fileMenu;
     /** view_menu contains all items of the menubar entry "View" */
-    QMenu *viewMenu;
+    Q3PopupMenu *viewMenu;
     /** view_menu contains all items of the menubar entry "Map" */
-    QMenu *mapMenu;
+    Q3PopupMenu *mapMenu;
     /** setupMenu contains all items of the menubar entry "Setup" */
-    QMenu *setupMenu;
+    Q3PopupMenu *setupMenu;
     /** view_menu contains all items of the menubar entry "Help" */
-    QMenu *helpMenu;
+    Q3PopupMenu *helpMenu;
     // Wait screen
     WaitScreen *ws;
     // visibility of menu bar

@@ -4,9 +4,9 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002 by Andre Somers, 2008 Axel Pauli
     email                : andre@kflog.org
-    
+
     $Id$
-    
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -39,6 +39,10 @@
 #include "interfaceelements.h"
 #include "multilayout.h"
 #include "filetools.h"
+#include "altimetermodedialog.h"
+#include "gliderflightdialog.h"
+#include "gpsstatusdialog.h"
+#include "variomodedialog.h"
 
 //general KFLOG file token: @KFL
 #define KFLOG_FILE_MAGIC    0x404b464c
@@ -89,8 +93,7 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   _heading->setValue("-");
   _heading->setPreText("Trk");
   HBDSLayout->addWidget( _heading, 18);
-  QWhatsThis::add
-    (_heading, tr("Heading"));
+  QWhatsThis::add(_heading, tr("Heading"));
 
   //add Bearing widget
   _bearingMode = 1; // normal bearing display is default
@@ -103,23 +106,20 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   _bearing->setValue("-");
   _bearing->setPreText("Brg");
   HBDSLayout->addWidget( _bearing, 18);
-  QWhatsThis::add
-    (_bearing, tr("Bearing"));
+  QWhatsThis::add(_bearing, tr("Bearing"));
   connect(_bearing, SIGNAL(mousePress()), this, SLOT(slot_toggleBearing()));
 
   // add relative bearing widget
   _rel_bearing = new QLabel(this,"");
   HBDSLayout->addWidget(_rel_bearing, 7);
-  QWhatsThis::add
-    (_rel_bearing, tr("Relative bearing"));
+  QWhatsThis::add(_rel_bearing, tr("Relative bearing"));
 
   //add Distance widget
   _distance = new MapInfoBox( this );
   _distance->setValue("-");
   _distance->setPreText("Dis");
   HBDSLayout->addWidget( _distance, 20);
-  QWhatsThis::add
-    (_distance, tr("Distance"));
+  QWhatsThis::add(_distance, tr("Distance"));
   connect(_distance, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
 
   //add ETA widget
@@ -127,8 +127,7 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   _eta->setValue("-");
   _eta->setPreText( "Eta" );
   HBDSLayout->addWidget( _eta, 20 );
-  QWhatsThis::add
-    (_eta, tr("Estimated time of arrival"));
+  QWhatsThis::add(_eta, tr("Estimated time of arrival"));
   _eta->hide();
   connect(_eta, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
 
@@ -137,8 +136,7 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   _speed->setValue("-");
   _speed->setPreText("Gs");
   HBDSLayout->addWidget( _speed, 15);
-  QWhatsThis::add
-    (_speed, tr("Speed"));
+  QWhatsThis::add(_speed, tr("Speed"));
 
   //separator
   QFrame * sep=new QFrame(this);
@@ -156,23 +154,22 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
     _flighttime->setValue("02:27");
     FWELayout->addWidget( _flighttime,10 );
   */
+  
   //add Altitude widget
   _altitude = new MapInfoBox( this );
   _altitude->setValue("-");
-  // _altitude->setPreText("Msl");    done now accoring to altimeter setting in cumulusapp
+  _altitude->setPreText(AltimeterModeDialog::mode2String()); // get current mode
   FWELayout->addWidget( _altitude, 20);
-  QWhatsThis::add
-    (_altitude, tr("Altitude"));
+  QWhatsThis::add(_altitude, tr("Altitude"));
   connect(_altitude, SIGNAL(mousePress()),
-          (CumulusApp*)parent, SLOT(slotAltimeterMode()));
+          this, SLOT(slot_AltimeterDialog()));
 
   //add glide path widget
   _glidepath = new MapInfoBox( this );
   _glidepath->setValue("-");
   _glidepath->setPreText("Arv");
   FWELayout->addWidget( _glidepath,23);
-  QWhatsThis::add
-    (_glidepath, tr("Glide path"));
+  QWhatsThis::add(_glidepath, tr("Glide path"));
   connect(_glidepath, SIGNAL(mousePress()),
           (CumulusApp*)parent, SLOT(slotSwitchToReachListView()));
 
@@ -181,8 +178,7 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   _waypoint->setValue("-");
   _waypoint->setPreText("To");
   FWELayout->addWidget( _waypoint, 50);
-  QWhatsThis::add
-    (_waypoint, tr("Waypoint"));
+  QWhatsThis::add(_waypoint, tr("Waypoint"));
   connect(_waypoint, SIGNAL(mousePress()),
           (CumulusApp*)parent, SLOT(slotSwitchToWPListViewExt()));
 
@@ -209,18 +205,16 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   _vario->setValue("-");
   _vario->setPreText("Var");
   VMFGLayout->addWidget(_vario,22);
-  QWhatsThis::add
-    (_vario, tr("Variometer"));
+  QWhatsThis::add(_vario, tr("Variometer"));
   connect(_vario, SIGNAL(mousePress()),
-          (CumulusApp*)parent, SLOT(slotVarioMode()));
+          this, SLOT(slot_VarioDialog()));
 
   //add wind widget; this is head/tailwind, no direction given !
   _wind = new MapInfoBox(this);
   _wind->setValue("-");
   _wind->setPreText("Wd");
   VMFGLayout->addWidget(_wind,30);
-  QWhatsThis::add
-    (_wind, tr("Wind"));
+  QWhatsThis::add(_wind, tr("Wind"));
   connect(_wind, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
 
   //add LD widget
@@ -228,8 +222,7 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   _ld->setValue("-/-");
   _ld->setPreText( "LD" );
   VMFGLayout->addWidget( _ld, 30 );
-  QWhatsThis::add
-    (_ld, tr("required and current LD"));
+  QWhatsThis::add(_ld, tr("required and current LD"));
   _ld->hide();
   connect(_ld, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
 
@@ -238,18 +231,15 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   _mc->setValue("0.0");
   _mc->setPreText("Mc");
   VMFGLayout->addWidget(_mc,20);
-  QWhatsThis::add
-    (_mc, tr("McCready"));
-  connect(_mc, SIGNAL(mousePress()),
-          (CumulusApp*)parent, SLOT(slotGliderFlight()));
+  QWhatsThis::add(_mc, tr("McCready"));
+  connect(_mc, SIGNAL(mousePress()), this, SLOT(slot_gliderFlightDialog()));
 
   //add best speed widget
   _speed2fly = new MapInfoBox(this);
   _speed2fly->setValue("-");
   _speed2fly->setPreText("S2f");
   VMFGLayout->addWidget(_speed2fly,20);
-  QWhatsThis::add
-    (_speed2fly, tr("Best speed"));
+  QWhatsThis::add(_speed2fly, tr("Best speed"));
 
   //separator
   sep=new QFrame(this);
@@ -278,7 +268,7 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   _statusGps->setMaximumSize(30,15);
   _statusGps->setMinimumSize(10,15);
   _statusbar->addWidget(_statusGps);
-  connect(_statusGps, SIGNAL(mousePress()), (CumulusApp*)parent, SLOT(slotGpsStatusDialog()));
+  connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
 
   _statusFlightstatus = new QLabel("<qt>" + tr("?","Unknown") + "</qt>",_statusbar);
   _statusFlightstatus->setFrameStyle(QFrame::Box|QFrame::Plain);
@@ -307,7 +297,6 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   _statusbar->addWidget(_menuToggle);
   connect(_menuToggle, SIGNAL(mousePress()), (CumulusApp*)parent, SLOT(slotToggleMenu()));
 
-
   QFrame* filler = new QFrame(_statusbar);
   filler->setFrameStyle(QFrame::NoFrame);
   _statusbar->addWidget(filler);
@@ -317,7 +306,7 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
 
   loggingTimer = new QTimer(this);
   connect (loggingTimer, SIGNAL(timeout()),
-           this, SLOT(setFlightStatus()));
+           this, SLOT(slot_setFlightStatus()));
   topLayout->addWidget(_statusbar);
   //Activate the layout
   topLayout->activate();
@@ -552,7 +541,7 @@ void MapView::slotGPSStatus(GPSNMEA::connectedStatus status)
 void MapView::slot_LogEntry()
 {
   loggingTimer->start(750, true);
-  setFlightStatus();
+  slot_setFlightStatus();
 }
 
 
@@ -677,8 +666,9 @@ void MapView::slotSatConstellation()
 }
 
 
-/** This slot updates the FlightStatus statusbar-widget with the current logging and flightmode status */
-void MapView::setFlightStatus()
+/** This slot updates the FlightStatus statusbar-widget with the
+    current logging and flightmode status */
+void MapView::slot_setFlightStatus()
 {
   QString status="<qt>";
   //logging status
@@ -962,6 +952,68 @@ void MapView::slot_toggleWindAndLD()
       // switch on vario calculation in calculator
       emit toggleVarioCalculation( true );
     }
+}
+
+/** Opens the Altimeter settings dialog. */
+void MapView::slot_AltimeterDialog()
+{
+  AltimeterModeDialog *amDlg = new AltimeterModeDialog( this );
+  // delete widget during close event
+  amDlg->setAttribute(Qt::WA_DeleteOnClose);
+  
+  connect( amDlg, SIGNAL( newAltimeterMode() ),
+           this, SLOT( slot_newAltimeterMode() ) );
+  connect( amDlg, SIGNAL( settingsChanged() ),
+           calculator, SLOT( slot_settingschanged() ) );
+
+  amDlg->work();
+  amDlg->show();
+}
+
+/** Called, if altimeter mode has been changed */
+void MapView::slot_newAltimeterMode()
+{
+  _altitude->setPreText(AltimeterModeDialog::mode2String());
+}
+
+/** Opens the Variometer settings dialog. */
+void MapView::slot_VarioDialog()
+{
+  VarioModeDialog  *vmDlg = new VarioModeDialog( this );
+  // delete widget during close event
+  vmDlg->setAttribute(Qt::WA_DeleteOnClose);
+
+  connect( vmDlg, SIGNAL( newVarioTime( int ) ),
+           calculator->getVario(), SLOT( slotNewVarioTime( int ) ) );
+  connect( vmDlg, SIGNAL( newTEKMode( bool ) ),
+           calculator->getVario(), SLOT( slotNewTEKMode( bool ) ) );
+  connect( vmDlg, SIGNAL( newTEKAdjust( int ) ),
+           calculator->getVario(), SLOT( slotNewTEKAdjust( int ) ) );
+
+  vmDlg->show();
+}
+
+/** Opens the GPS status dialog */
+void MapView::slot_gpsStatusDialog()
+{
+  GpsStatusDialog *gpsDlg = new GpsStatusDialog( this );
+  // delete widget during close event
+  gpsDlg->setAttribute(Qt::WA_DeleteOnClose);
+  gpsDlg->show();
+}
+
+/** Opens the inflight glider settings dialog. */
+void MapView::slot_gliderFlightDialog()
+{
+  GliderFlightDialog *gfDlg = new GliderFlightDialog( this );
+  // delete widget during close event
+  gfDlg->setAttribute(Qt::WA_DeleteOnClose);
+
+  connect( gfDlg, SIGNAL( settingsChanged() ),
+           calculator, SLOT( slot_settingschanged() ) );
+           
+  gfDlg->load();
+  gfDlg->show();
 }
 
 /**

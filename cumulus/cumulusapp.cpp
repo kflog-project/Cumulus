@@ -55,7 +55,6 @@
 #include "waypoint.h"
 #include "hwinfo.h"
 #include "gliderlist.h"
-#include "gpsstatusdialog.h"
 #include "target.h"
 
 /**
@@ -102,57 +101,6 @@ static void resumeGpsConnection( int sig )
       signal ( SIGCONT, resumeGpsConnection );
     }
 }
-
-/** As the name tells ...
-  *
-  */
-void CumulusApp::playSound( const QString *name )
-{
-  GeneralConfig * conf = GeneralConfig::instance();
-
-  if ( ! conf->getAlarmSoundOn() )
-    {
-      return ;
-    }
-
-  if ( name )
-    {
-      QSound sound( *name );
-      sound.play();
-    }
-  else if( QSound::isAvailable() )
-    {
-      // Default sound is played, if QSound is available
-      QString file = GeneralConfig::instance()->getInstallRoot() + "/sounds/Alarm.wav";
-      qDebug( "SoundFile=%s", file.toLatin1().data() );
-      QSound sound( file );
-      sound.play();
-    }
-  else
-    {
-      // Last default -> do beep only
-      QApplication::beep ();
-    }
-}
-
-
-void CumulusApp::slotNotification( const QString& msg, const bool sound )
-{
-  if ( msg.isEmpty() )
-    {
-      setWindowTitle( "Cumulus: " + calculator->gliderType() );
-      return ;
-    }
-
-  if ( sound )
-    {
-      playSound();
-    }
-
-  setWindowTitle( msg + " " );
-  viewMap->message( msg );
-}
-
 
 CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWindow( parent, flags )
 {
@@ -214,9 +162,10 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
       cuApps.mkdir( QDir::homeDirPath() + "/cumulus" );
     }
 
-  // @AS: Grab the keyboard to get all hardware keys (f1..f12) too
   setFocusPolicy( Qt::StrongFocus );
   setFocus();
+
+  // @AS: Grab the keyboard to get all hardware keys (f1..f12) too
   //grabKeyboard(); // @AP: make problems on Qt4.3/X11
 
   this->installEventFilter( this );
@@ -252,9 +201,6 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
            _globalMapMatrix, SLOT( slotInitMatrix() ) );
 
   _globalMapConfig->slotReadConfig();
-
-  _altimeterModeDlg = new AltimeterModeDialog( this );
-  _varioModeDlg = new VarioModeDialog( this );
 
   ws->slot_SetText1( tr( "Creating views..." ) );
 
@@ -302,14 +248,11 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
   gps->blockSignals( true );
   logger = IgcLogger::instance();
   _preFlightDialog = NULL;
-  _gliderFlightDlg = NULL;
 
   initActions();
   initMenuBar();
 
   ws->slot_SetText1( tr( "Setting up connections..." ) );
-  // set dynamical Info
-  viewMap->getAltitudeWidget()->setPreText( _altimeterModeDlg->Pretext() );
 
   // create connections between the components
   connect( _globalMapMatrix, SIGNAL( matrixChanged() ),
@@ -322,18 +265,6 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
 
   connect( viewMap->_theMap, SIGNAL( isRedrawing( bool ) ),
            this, SLOT( slotMapDrawEvent( bool ) ) );
-
-  connect( _altimeterModeDlg, SIGNAL( newAltimeterMode() ),
-           this, SLOT( slotNewAltimeterMode() ) );
-  connect( _altimeterModeDlg, SIGNAL( settingsChanged() ),
-           calculator, SLOT( slot_settingschanged() ) );
-
-  connect( _varioModeDlg, SIGNAL( newVarioTime( int ) ),
-           calculator->getVario(), SLOT( slotNewVarioTime( int ) ) );
-  connect( _varioModeDlg, SIGNAL( newTEKMode( bool ) ),
-           calculator->getVario(), SLOT( slotNewTEKMode( bool ) ) );
-  connect( _varioModeDlg, SIGNAL( newTEKAdjust( int ) ),
-           calculator->getVario(), SLOT( slotNewTEKAdjust( int ) ) );
 
   connect( calculator, SIGNAL( newAirspeed( const Speed& ) ),
            calculator->getVario(), SLOT( slotNewAirspeed( const Speed& ) ) );
@@ -455,7 +386,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
   connect( calculator, SIGNAL( newLD( const double&, const double&) ),
            viewMap, SLOT( slot_LD( const double&, const double&) ) );
   connect( calculator, SIGNAL( flightModeChanged( CuCalc::flightmode ) ),
-           viewMap, SLOT( setFlightStatus() ) );
+           viewMap, SLOT( slot_setFlightStatus() ) );
   connect( calculator, SIGNAL( flightModeChanged( CuCalc::flightmode ) ),
            logger, SLOT( slotFlightMode( CuCalc::flightmode ) ) );
   connect( calculator, SIGNAL( taskpointSectorTouched() ),
@@ -468,7 +399,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
            this, SLOT( slot_newReachList() ) );
 
   connect( logger, SIGNAL( logging( bool ) ),
-           viewMap, SLOT( setFlightStatus() ) );
+           viewMap, SLOT( slot_setFlightStatus() ) );
   connect( logger, SIGNAL( logging( bool ) ),
            this, SLOT( slot_Logging( bool ) ) );
   connect( logger, SIGNAL( madeEntry() ),
@@ -595,15 +526,11 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
   qDebug( "End startup cumulusapp" );
 }
 
-
 CumulusApp::~CumulusApp()
 {
   // qDebug ("CumulusApp::~CumulusApp()");
 
 #warning switch screensaver on, if necessary
-
-  // @AS: Release the keyboard
-  // releaseKeyboard();
 
 #warning Question: Should we save the main window size on exit?
   // @AP: we do that later
@@ -614,6 +541,54 @@ CumulusApp::~CumulusApp()
   delete logger;
 }
 
+/** As the name tells ...
+  *
+  */
+void CumulusApp::playSound( const QString *name )
+{
+  GeneralConfig * conf = GeneralConfig::instance();
+
+  if ( ! conf->getAlarmSoundOn() )
+    {
+      return ;
+    }
+
+  if ( name )
+    {
+      QSound sound( *name );
+      sound.play();
+    }
+  else if( QSound::isAvailable() )
+    {
+      // Default sound is played, if QSound is available
+      QString file = GeneralConfig::instance()->getInstallRoot() + "/sounds/Alarm.wav";
+      qDebug( "SoundFile=%s", file.toLatin1().data() );
+      QSound sound( file );
+      sound.play();
+    }
+  else
+    {
+      // Last default -> do beep only
+      QApplication::beep ();
+    }
+}
+
+void CumulusApp::slotNotification( const QString& msg, const bool sound )
+{
+  if ( msg.isEmpty() )
+    {
+      setWindowTitle( "Cumulus: " + calculator->gliderType() );
+      return ;
+    }
+
+  if ( sound )
+    {
+      playSound();
+    }
+
+  setWindowTitle( msg + " " );
+  viewMap->message( msg );
+}
 
 void CumulusApp::initMenuBar()
 {
@@ -621,11 +596,11 @@ void CumulusApp::initMenuBar()
   QFont font( "Helvetica", 12 );
   this->setFont( font );
 
-  fileMenu = new QMenu( this );
+  fileMenu = new Q3PopupMenu( this );
   fileMenu->setFont( font );
   actionFileQuit->addTo( fileMenu );
 
-  viewMenu = new QMenu( this );
+  viewMenu = new Q3PopupMenu( this );
   viewMenu->setFont( font );
   actionViewTaskpoints->addTo( viewMenu );
   actionViewTaskpoints->setEnabled( false );
@@ -646,7 +621,7 @@ void CumulusApp::initMenuBar()
 
   actionViewGPSStatus->addTo( viewMenu );
 
-  mapMenu = new QMenu( this );
+  mapMenu = new Q3PopupMenu( this );
   mapMenu->setFont( font );
   actionToggleLogging->addTo( mapMenu );
   actionRememberWaypoint->addTo( mapMenu );
@@ -657,13 +632,13 @@ void CumulusApp::initMenuBar()
   actionZoomInZ->addTo( mapMenu );
   actionZoomOutZ->addTo( mapMenu );
 
-  setupMenu = new QMenu( this );
+  setupMenu = new Q3PopupMenu( this );
   setupMenu->setFont( font );
   actionSetupConfig->addTo( setupMenu );
   actionPreFlight->addTo( setupMenu );
   actionSetupInFlight->addTo( setupMenu );
 
-  helpMenu = new QMenu( this );
+  helpMenu = new Q3PopupMenu( this );
   helpMenu->setFont( font );
   //  actionHelp->addTo(helpMenu);
   //  actionWhatsThis->addTo( helpMenu );
@@ -688,127 +663,129 @@ void CumulusApp::initMenuBar()
 void CumulusApp::initActions()
 {
 
-  actionFileQuit = new QAction( tr( "E&xit" ), this );
+  actionFileQuit = new Q3Action( tr( "Exit" ), tr( "E&xit" ),
+                                 0, this );
+
   connect( actionFileQuit, SIGNAL( activated() ),
            this, SLOT( slotFileQuit() ) );
 
-  actionViewWaypoints = new QAction ( tr( "&Waypoints" ), this );
-  actionViewWaypoints->setShortcut(Qt::Key_W);
-  connect( actionViewWaypoints, SIGNAL( activated() ),
-           this, SLOT( slotSwitchToWPListView() ) );
+  actionViewWaypoints = new Q3Action ( tr( "Waypoints" ), tr( "&Waypoints" ),
+                                       Qt::Key_W, this );
 
-  actionViewAirfields = new QAction ( tr( "&Airfields" ), this );
-  actionViewAirfields->setShortcut(Qt::Key_O);
+  actionViewAirfields = new Q3Action ( tr( "Airfields" ), tr( "&Airfields" ),
+                                       Qt::Key_O, this );
+
+  actionViewReachpoints = new Q3Action ( tr( "Reachable" ), tr( "&Reachable" ),
+                                         Qt::Key_E, this );
+
+  actionViewTaskpoints = new Q3Action ( tr( "Task" ), tr( "&Task" ),
+                                        Qt::Key_T, this );
+
   connect( actionViewAirfields, SIGNAL( activated() ),
            this, SLOT( slotSwitchToAFListView() ) );
-
-  actionViewReachpoints = new QAction ( tr( "&Reachable" ), this );
-  actionViewReachpoints->setShortcut(Qt::Key_E);
+  connect( actionViewWaypoints, SIGNAL( activated() ),
+           this, SLOT( slotSwitchToWPListView() ) );
   connect( actionViewReachpoints, SIGNAL( activated() ),
            this, SLOT( slotSwitchToReachListView() ) );
-
-  actionViewTaskpoints = new QAction ( tr( "&Task" ), this );
-  actionViewTaskpoints->setShortcut(Qt::Key_T);
   connect( actionViewTaskpoints, SIGNAL( activated() ),
            this, SLOT( slotSwitchToTaskListView() ) );
 
-  actionViewInfo = new QAction( tr( "&Info" ), this );
-  actionViewInfo->setShortcut(Qt::Key_I);
+  actionViewInfo = new Q3Action( tr( "Info" ), tr( "&Info" ),
+                                 Qt::Key_I, this );
   connect( actionViewInfo, SIGNAL( activated() ),
            this, SLOT( slotSwitchToInfoView() ) );
 
-  actionToggleStatusbar = new QAction( tr( "&Statusbar" ), this );
-  actionToggleStatusbar->setCheckable(true);
-  actionToggleStatusbar->setOn( true );
+  actionToggleStatusbar = new Q3Action( tr( "Statusbar" ), tr( "&Statusbar" ),
+                                        0, this, 0, true );
   connect( actionToggleStatusbar, SIGNAL( toggled( bool ) ),
            this, SLOT( slotViewStatusBar( bool ) ) );
 
-  actionViewGPSStatus = new QAction( tr( "GPS Status" ), this );
-  actionViewGPSStatus->setShortcut(Qt::Key_G);
-  connect( actionViewGPSStatus, SIGNAL( activated() ),
-           this, SLOT( slotGpsStatusDialog() ) );
+  actionToggleStatusbar->setOn( true );
 
-  actionZoomInZ = new QAction ( tr( "Zoom in" ), this );
-  actionZoomInZ->setShortcut(Qt::Key_Z);
+  actionViewGPSStatus = new Q3Action( tr( "GPS Status" ), tr( "GPS Status" ),
+                                      Qt::Key_G, this );
+  connect( actionViewGPSStatus, SIGNAL( activated() ),
+           viewMap, SLOT( slot_gpsStatusDialog() ) );
+
+  actionZoomInZ = new Q3Action ( tr( "Zoom in" ), tr( "Zoom in" ),
+                                 Qt::Key_Z, this );
   connect ( actionZoomInZ, SIGNAL( activated() ),
             viewMap->_theMap , SLOT( slotZoomIn() ) );
-
-  actionZoomOutZ = new QAction ( tr( "Zoom out" ), this );
-  actionZoomOutZ->setShortcut(Qt::Key_X);
+  actionZoomOutZ = new Q3Action ( tr( "Zoom out" ), tr( "Zoom out" ),
+                                  Qt::Key_X, this );
   connect ( actionZoomOutZ, SIGNAL( activated() ),
             viewMap->_theMap , SLOT( slotZoomOut() ) );
 
-  actionToggleWpLabels = new QAction ( tr( "Waypoint labels" ), this);
-  actionToggleWpLabels->setShortcut(Qt::Key_A);
-  actionToggleWpLabels->setCheckable(true);
+  actionToggleWpLabels = new Q3Action ( tr( "Waypoint labels" ), tr( "Waypoint labels" ),
+                                        Qt::Key_A, this, 0, true );
   actionToggleWpLabels->setOn( _globalMapConfig->getShowWpLabels() );
   connect( actionToggleWpLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleWpLabels( bool ) ) );
 
-  actionToggleWpLabelsEI = new QAction (  tr( "Waypoint extra info" ), this);
-  actionToggleWpLabelsEI->setShortcut(Qt::Key_S);
-  actionToggleWpLabelsEI->setCheckable(true);
+  actionToggleWpLabelsEI = new Q3Action ( tr( "Waypoint extra info" ),
+                                          tr( "Waypoint extra info" ),
+                                          Qt::Key_S, this, 0, true );
   actionToggleWpLabelsEI->setOn( _globalMapConfig->getShowWpLabelsExtraInfo() );
   connect( actionToggleWpLabelsEI, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleWpLabelsExtraInfo( bool ) ) );
 
-  actionToggleLogging = new QAction( tr( "Logging" ), this );
-  actionToggleLogging->setShortcut(Qt::Key_L);
-  actionToggleLogging->setCheckable(true);
+  actionToggleLogging = new Q3Action( tr( "IGC Logging" ), tr( "Logging" ),
+                                      Qt::Key_L, this, 0, true );
   connect ( actionToggleLogging, SIGNAL( activated() ),
             logger, SLOT( slotToggleLogging() ) );
 
-  actionEnsureVisible = new QAction ( tr( "Ensure waypoint visible" ), this );
-  actionEnsureVisible->setShortcut(Qt::Key_V);
+  actionEnsureVisible = new Q3Action ( tr( "Ensure waypoint visible" ),
+                                       tr( "Ensure waypoint visible" ),
+                                       Qt::Key_V, this );
   connect ( actionEnsureVisible, SIGNAL( activated() ),
             this, SLOT( slotEnsureVisible() ) );
 
-  actionSelectTask = new QAction( tr( "Select task" ), this );
-  actionSelectTask->setShortcut(Qt::Key_T + Qt::SHIFT);
+  actionSelectTask = new Q3Action( tr( "Select task" ), tr( "Select task" ),
+                                   Qt::Key_T + Qt::SHIFT, this );
   connect ( actionSelectTask, SIGNAL( activated() ),
             this, SLOT( slotPreFlightTask() ) );
 
-  actionToggleManualInFlight = new QAction( tr( "Manual" ), this );
-  actionToggleManualInFlight->setShortcut(Qt::Key_M + Qt::SHIFT);
+  actionToggleManualInFlight = new Q3Action( tr( "Manual" ), tr( "Manual" ),
+                               Qt::Key_M + Qt::SHIFT, this, 0, true );
   actionToggleManualInFlight->setEnabled(false);
-  actionToggleManualInFlight->setCheckable(true);
   connect( actionToggleManualInFlight, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleManualInFlight( bool ) ) );
 
-  actionPreFlight = new QAction( tr( "Pre Flight" ), this );
-  actionPreFlight->setShortcut(Qt::Key_P);
+  actionPreFlight = new Q3Action( tr( "Pre Flight" ), tr( "Pre Flight" ),
+                                  Qt::Key_P, this );
   connect ( actionPreFlight, SIGNAL( activated() ),
             this, SLOT( slotPreFlightGlider() ) );
 
-  actionRememberWaypoint = new QAction( tr( "Remember waypoint" ), this );
-  actionRememberWaypoint->setShortcut(Qt::Key_R);
+  actionRememberWaypoint = new Q3Action( tr( "Remember waypoint" ),
+                                         tr( "Remember waypoint" ),
+                                         Qt::Key_R, this );
   connect( actionRememberWaypoint, SIGNAL( activated() ),
            this, SLOT( slotRememberWaypoint() ) );
 
-  actionSetupConfig = new QAction( tr ( "General &Setup" ), this );
-  actionSetupConfig->setShortcut(Qt::Key_S + Qt::SHIFT);
+  actionSetupConfig = new Q3Action( tr( "General Setup" ), tr ( "General &Setup" ),
+                                    Qt::Key_S + Qt::SHIFT, this );
   connect ( actionSetupConfig, SIGNAL( activated() ),
             this, SLOT( slotConfig() ) );
 
-  actionSetupInFlight = new QAction( tr ( "In &Flight" ), this );
-  actionSetupInFlight->setShortcut(Qt::Key_F);
+  actionSetupInFlight = new Q3Action( tr( "In Flight" ), tr ( "In &Flight" ),
+                                      Qt::Key_F, this );
   connect ( actionSetupInFlight, SIGNAL( activated() ),
-            this, SLOT( slotGliderFlight() ) );
+            viewMap, SLOT( slot_gliderFlightDialog() ) );
 
-  //  actionHelp = new QAction (tr("&Help"), this);
-  //  actionHelp->setShortcut(Qt::Key_H);
+  //  actionHelp = new Q3Action (tr("Help"), tr("&Help"), Qt::Key_H, this);
   //  connect(actionHelp, SIGNAL(activated()),this,SLOT(slotHelp()));
-
-  // actionWhatsThis = new QAction( tr( "What's this ?" ), this );
+  // actionWhatsThis = new Q3Action( tr( "What's this ?" ), tr( "What's this ?" ), 0, this );
   // connect ( actionWhatsThis, SIGNAL( activated() ), this, SLOT( whatsThis() ) );
 
-  actionHelpAboutApp = new QAction( tr( "About Cumulus" ), this );
-  actionHelpAboutApp->setShortcut(Qt::Key_V);
+  actionHelpAboutApp = new Q3Action( tr( "About Cumulus" ), tr( "About Cumulus" ),
+                                     Qt::Key_V, this );
+
   connect( actionHelpAboutApp, SIGNAL( activated() ),
            this, SLOT( slotVersion() ) );
 
-  actionHelpAboutQt = new QAction( tr( "About Qt" ), this );
-  actionHelpAboutQt->setShortcut(Qt::Key_Q);
+  actionHelpAboutQt = new Q3Action( tr( "About Qt" ), tr( "About Qt" ),
+                                     Qt::Key_Q, this );
+
   connect( actionHelpAboutQt, SIGNAL(activated()), qApp, SLOT(aboutQt()) );
 }
 
@@ -818,8 +795,6 @@ void CumulusApp::initActions()
 
 void  CumulusApp::toggelActions( const bool toggle )
 {
-
-
   actionViewWaypoints->setEnabled( toggle );
   actionViewAirfields->setEnabled( toggle );
 
@@ -1262,54 +1237,20 @@ void CumulusApp::slotSwitchToInfoView( wayPoint* wp )
     }
 }
 
-
 /** Opens the configdialog. */
 void CumulusApp::slotConfig()
 {
-  ConfigDialog * dlg = new ConfigDialog ( this );
-  connect( dlg, SIGNAL( settingsChanged() ),
+  ConfigDialog *cDlg = new ConfigDialog ( this );
+  // delete widget during close event
+  cDlg->setAttribute(Qt::WA_DeleteOnClose);
+
+  connect( cDlg, SIGNAL( settingsChanged() ),
            this, SLOT( slot_readconfig() ) );
-  connect( dlg,  SIGNAL( welt2000ConfigChanged() ),
+  connect( cDlg,  SIGNAL( welt2000ConfigChanged() ),
            _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
 
-  dlg->show();
+  cDlg->show();
 }
-
-
-/** Opens the inflight glider settings dialog. */
-void CumulusApp::slotGliderFlight()
-{
-  if ( _gliderFlightDlg == NULL )
-    _gliderFlightDlg = new GliderFlightDialog ( this );
-  connect( _gliderFlightDlg, SIGNAL( settingsChanged() ),
-           calculator, SLOT( slot_settingschanged() ) );
-  _gliderFlightDlg->load();
-  _gliderFlightDlg->show();
-}
-
-
-void CumulusApp::slotAltimeterMode()
-{
-  _altimeterModeDlg->work();
-  _altimeterModeDlg->show();
-  // qDebug("CumulusApp::slotAltimeterMode()");
-}
-
-
-void CumulusApp::slotNewAltimeterMode()
-{
-  viewMap->getAltitudeWidget() ->setPreText( _altimeterModeDlg->Pretext() );
-  // qDebug("CumulusApp::slotNewAltimeterMode()");
-}
-
-
-void CumulusApp::slotVarioMode()
-{
-  _varioModeDlg->load();
-  _varioModeDlg->show();
-  // qDebug("slotVarioMode");
-}
-
 
 /** Shows version and copyright information */
 void CumulusApp::slotVersion()
@@ -1398,7 +1339,9 @@ void CumulusApp::slotRememberWaypoint()
   wp->name = name;
   wp->origP = calculator->getlastPosition();
   wp->projP = _globalMapMatrix->wgsToMap( wp->origP );
-  wp->description = tr( "created by user" );
+  wp->description = tr( "user created" );
+  wp->comment = tr( "created by user action at " +
+                QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") );
   wp->importance = wayPoint::High; // high to make sure it is visible
   wp->frequency = 0.0;
   wp->runway = 0;
@@ -1419,7 +1362,7 @@ void CumulusApp::slot_readconfig()
   // @AP: WARNING POPUP crash test statement, please let it commented out here
   // viewMap->theMap->checkAirspace(calculator->getlastPosition());
 
-  GeneralConfig * conf = GeneralConfig::instance();
+  GeneralConfig *conf = GeneralConfig::instance();
 
   // configure units
   Distance::setUnit( Distance::distanceUnit( conf->getUnitDist() ) );
@@ -1616,14 +1559,6 @@ void CumulusApp::slotPreFlightDataChanged()
   viewMap->_theMap->quickDraw();
 }
 
-/** Opens the gps status dialog */
-void CumulusApp::slotGpsStatusDialog()
-{
-  GpsStatusDialog *gpsd = new GpsStatusDialog( this );
-  gpsd->show();
-}
-
-
 /** dynamicly updates view for reachable list */
 void CumulusApp::slot_newReachList()
 {
@@ -1673,7 +1608,7 @@ void CumulusApp::slotMapDrawEvent( bool drawEvent )
       // Disable menu accelerator during drawing to avoid
       // event avalanche, if the user holds the key down longer.
       accMenuBar->setEnabled( false );
-      
+
       if( view == mapView )
        {
          accManualNav->setEnabled( false );
@@ -1691,7 +1626,6 @@ void CumulusApp::slotMapDrawEvent( bool drawEvent )
          }
      }
 }
-
 
 // resize the list view tabs, if requested
 void CumulusApp::resizeEvent(QResizeEvent* event)
