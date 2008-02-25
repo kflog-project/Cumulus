@@ -83,9 +83,6 @@ GpsStatusDialog::~GpsStatusDialog()
              this, SLOT(slot_Sentence(const QString&)));
   disconnect(gps, SIGNAL(newSatInViewInfo()),
              this, SLOT(slot_SIV()));
-  //delete snrDisplay;
-  //delete elevAziDisplay;
-  //delete nmeaBox;
 }
 
 
@@ -106,9 +103,9 @@ void GpsStatusDialog::slot_Sentence(const QString& sentence)
 void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
 {
   // close the dialog on key press
+  // qDebug("GpsStatusDialog::keyPressEvent");
   switch(e->key())
     {
-    case Qt::Key_G:
     case Qt::Key_Enter:
     case Qt::Key_Return:
     case Qt::Key_Escape:
@@ -119,14 +116,12 @@ void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
 
 void GpsStatusDialog::accept()
 {
-  // qDebug("GpsStatusDialog::accept()");
-  delete this;
+  QDialog::accept();
 }
 
 void GpsStatusDialog::reject()
 {
-  // qDebug("GpsStatusDialog::reject()");
-  delete this;
+  QDialog::reject();
 }
 
 
