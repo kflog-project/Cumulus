@@ -769,7 +769,7 @@ void Map::__redrawMap(mapLayer fromLayer)
 {
   // qDebug("Map::__redrawMap from layer=%d", fromLayer);
 
-  if( isHidden() || ! isVisible() )
+  if( ! isVisible() )
     {
       // AP: ignore draw request when the window is hidden or not
       // visible to get the user all power of the device for interactions
