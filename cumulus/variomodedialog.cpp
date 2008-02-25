@@ -85,7 +85,7 @@ VarioModeDialog::VarioModeDialog (QWidget *parent) :
 
   timer = new QTimer(this);
 
-  QSignalMapper* signalMapper = new QSignalMapper();
+  QSignalMapper* signalMapper = new QSignalMapper(this);
 
   connect(timer, SIGNAL(timeout()),
           this, SLOT(reject()));
