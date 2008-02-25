@@ -621,11 +621,11 @@ void CumulusApp::initMenuBar()
   QFont font( "Helvetica", 12 );
   this->setFont( font );
 
-  fileMenu = new Q3PopupMenu( this );
+  fileMenu = new QMenu( this );
   fileMenu->setFont( font );
   actionFileQuit->addTo( fileMenu );
 
-  viewMenu = new Q3PopupMenu( this );
+  viewMenu = new QMenu( this );
   viewMenu->setFont( font );
   actionViewTaskpoints->addTo( viewMenu );
   actionViewTaskpoints->setEnabled( false );
@@ -646,7 +646,7 @@ void CumulusApp::initMenuBar()
 
   actionViewGPSStatus->addTo( viewMenu );
 
-  mapMenu = new Q3PopupMenu( this );
+  mapMenu = new QMenu( this );
   mapMenu->setFont( font );
   actionToggleLogging->addTo( mapMenu );
   actionRememberWaypoint->addTo( mapMenu );
@@ -657,13 +657,13 @@ void CumulusApp::initMenuBar()
   actionZoomInZ->addTo( mapMenu );
   actionZoomOutZ->addTo( mapMenu );
 
-  setupMenu = new Q3PopupMenu( this );
+  setupMenu = new QMenu( this );
   setupMenu->setFont( font );
   actionSetupConfig->addTo( setupMenu );
   actionPreFlight->addTo( setupMenu );
   actionSetupInFlight->addTo( setupMenu );
 
-  helpMenu = new Q3PopupMenu( this );
+  helpMenu = new QMenu( this );
   helpMenu->setFont( font );
   //  actionHelp->addTo(helpMenu);
   //  actionWhatsThis->addTo( helpMenu );
@@ -688,128 +688,127 @@ void CumulusApp::initMenuBar()
 void CumulusApp::initActions()
 {
 
-  actionFileQuit = new Q3Action( tr( "Exit" ), tr( "E&xit" ),
-                                 0, this );
-
+  actionFileQuit = new QAction( tr( "E&xit" ), this );
   connect( actionFileQuit, SIGNAL( activated() ),
            this, SLOT( slotFileQuit() ) );
 
-  actionViewWaypoints = new Q3Action ( tr( "Waypoints" ), tr( "&Waypoints" ),
-                                       Qt::Key_W, this );
-
-  actionViewAirfields = new Q3Action ( tr( "Airfields" ), tr( "&Airfields" ),
-                                       Qt::Key_O, this );
-
-  actionViewReachpoints = new Q3Action ( tr( "Reachable" ), tr( "&Reachable" ),
-                                         Qt::Key_E, this );
-
-  actionViewTaskpoints = new Q3Action ( tr( "Task" ), tr( "&Task" ),
-                                        Qt::Key_T, this );
-
-  connect( actionViewAirfields, SIGNAL( activated() ),
-           this, SLOT( slotSwitchToAFListView() ) );
+  actionViewWaypoints = new QAction ( tr( "&Waypoints" ), this );
+  actionViewWaypoints->setShortcut(Qt::Key_W);
   connect( actionViewWaypoints, SIGNAL( activated() ),
            this, SLOT( slotSwitchToWPListView() ) );
+
+  actionViewAirfields = new QAction ( tr( "&Airfields" ), this );
+  actionViewAirfields->setShortcut(Qt::Key_O);
+  connect( actionViewAirfields, SIGNAL( activated() ),
+           this, SLOT( slotSwitchToAFListView() ) );
+
+  actionViewReachpoints = new QAction ( tr( "&Reachable" ), this );
+  actionViewReachpoints->setShortcut(Qt::Key_E);
   connect( actionViewReachpoints, SIGNAL( activated() ),
            this, SLOT( slotSwitchToReachListView() ) );
+
+  actionViewTaskpoints = new QAction ( tr( "&Task" ), this );
+  actionViewTaskpoints->setShortcut(Qt::Key_T);
   connect( actionViewTaskpoints, SIGNAL( activated() ),
            this, SLOT( slotSwitchToTaskListView() ) );
 
-  actionViewInfo = new Q3Action( tr( "Info" ), tr( "&Info" ),
-                                 Qt::Key_I, this );
+  actionViewInfo = new QAction( tr( "&Info" ), this );
+  actionViewInfo->setShortcut(Qt::Key_I);
   connect( actionViewInfo, SIGNAL( activated() ),
            this, SLOT( slotSwitchToInfoView() ) );
 
-  actionToggleStatusbar = new Q3Action( tr( "Statusbar" ), tr( "&Statusbar" ),
-                                        0, this, 0, true );
+  actionToggleStatusbar = new QAction( tr( "&Statusbar" ), this );
+  actionToggleStatusbar->setCheckable(true);
+  actionToggleStatusbar->setOn( true );
   connect( actionToggleStatusbar, SIGNAL( toggled( bool ) ),
            this, SLOT( slotViewStatusBar( bool ) ) );
 
-  actionToggleStatusbar->setOn( true );
-
-  actionViewGPSStatus = new Q3Action( tr( "GPS Status" ), tr( "GPS Status" ),
-                                      Qt::Key_G, this );
+  actionViewGPSStatus = new QAction( tr( "GPS Status" ), this );
+  actionViewGPSStatus->setShortcut(Qt::Key_G);
   connect( actionViewGPSStatus, SIGNAL( activated() ),
            this, SLOT( slotGpsStatusDialog() ) );
 
-  actionZoomInZ = new Q3Action ( tr( "Zoom in" ), tr( "Zoom in" ),
-                                 Qt::Key_Z, this );
+  actionZoomInZ = new QAction ( tr( "Zoom in" ), this );
+  actionZoomInZ->setShortcut(Qt::Key_Z);
   connect ( actionZoomInZ, SIGNAL( activated() ),
             viewMap->_theMap , SLOT( slotZoomIn() ) );
-  actionZoomOutZ = new Q3Action ( tr( "Zoom out" ), tr( "Zoom out" ),
-                                  Qt::Key_X, this );
+
+  actionZoomOutZ = new QAction ( tr( "Zoom out" ), this );
+  actionZoomOutZ->setShortcut(Qt::Key_X);
   connect ( actionZoomOutZ, SIGNAL( activated() ),
             viewMap->_theMap , SLOT( slotZoomOut() ) );
 
-  actionToggleWpLabels = new Q3Action ( tr( "Waypoint labels" ), tr( "Waypoint labels" ),
-                                        Qt::Key_A, this, 0, true );
+  actionToggleWpLabels = new QAction ( tr( "Waypoint labels" ), this);
+  actionToggleWpLabels->setShortcut(Qt::Key_A);
+  actionToggleWpLabels->setCheckable(true);
   actionToggleWpLabels->setOn( _globalMapConfig->getShowWpLabels() );
   connect( actionToggleWpLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleWpLabels( bool ) ) );
 
-  actionToggleWpLabelsEI = new Q3Action ( tr( "Waypoint extra info" ),
-                                          tr( "Waypoint extra info" ),
-                                          Qt::Key_S, this, 0, true );
+  actionToggleWpLabelsEI = new QAction (  tr( "Waypoint extra info" ), this);
+  actionToggleWpLabelsEI->setShortcut(Qt::Key_S);
+  actionToggleWpLabelsEI->setCheckable(true);
   actionToggleWpLabelsEI->setOn( _globalMapConfig->getShowWpLabelsExtraInfo() );
   connect( actionToggleWpLabelsEI, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleWpLabelsExtraInfo( bool ) ) );
 
-  actionToggleLogging = new Q3Action( tr( "IGC Logging" ), tr( "Logging" ),
-                                      Qt::Key_L, this, 0, true );
+  actionToggleLogging = new QAction( tr( "Logging" ), this );
+  actionToggleLogging->setShortcut(Qt::Key_L);
+  actionToggleLogging->setCheckable(true);
   connect ( actionToggleLogging, SIGNAL( activated() ),
             logger, SLOT( slotToggleLogging() ) );
 
-  actionEnsureVisible = new Q3Action ( tr( "Ensure waypoint visible" ),
-                                       tr( "Ensure waypoint visible" ),
-                                       Qt::Key_V, this );
+  actionEnsureVisible = new QAction ( tr( "Ensure waypoint visible" ), this );
+  actionEnsureVisible->setShortcut(Qt::Key_V);
   connect ( actionEnsureVisible, SIGNAL( activated() ),
             this, SLOT( slotEnsureVisible() ) );
 
-  actionSelectTask = new Q3Action( tr( "Select task" ), tr( "Select task" ),
-                                   Qt::Key_T + Qt::SHIFT, this );
+  actionSelectTask = new QAction( tr( "Select task" ), this );
+  actionSelectTask->setShortcut(Qt::Key_T + Qt::SHIFT);
   connect ( actionSelectTask, SIGNAL( activated() ),
             this, SLOT( slotPreFlightTask() ) );
 
-  actionToggleManualInFlight = new Q3Action( tr( "Manual" ), tr( "Manual" ),
-                               Qt::Key_M + Qt::SHIFT, this, 0, true );
+  actionToggleManualInFlight = new QAction( tr( "Manual" ), this );
+  actionToggleManualInFlight->setShortcut(Qt::Key_M + Qt::SHIFT);
   actionToggleManualInFlight->setEnabled(false);
+  actionToggleManualInFlight->setCheckable(true);
   connect( actionToggleManualInFlight, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleManualInFlight( bool ) ) );
 
-  actionPreFlight = new Q3Action( tr( "Pre Flight" ), tr( "Pre Flight" ),
-                                  Qt::Key_P, this );
+  actionPreFlight = new QAction( tr( "Pre Flight" ), this );
+  actionPreFlight->setShortcut(Qt::Key_P);
   connect ( actionPreFlight, SIGNAL( activated() ),
             this, SLOT( slotPreFlightGlider() ) );
 
-  actionRememberWaypoint = new Q3Action( tr( "Remember waypoint" ),
-                                         tr( "Remember waypoint" ),
-                                         Qt::Key_R, this );
+  actionRememberWaypoint = new QAction( tr( "Remember waypoint" ), this );
+  actionRememberWaypoint->setShortcut(Qt::Key_R);
   connect( actionRememberWaypoint, SIGNAL( activated() ),
            this, SLOT( slotRememberWaypoint() ) );
 
-  actionSetupConfig = new Q3Action( tr( "General Setup" ), tr ( "General &Setup" ),
-                                    Qt::Key_S + Qt::SHIFT, this );
+  actionSetupConfig = new QAction( tr ( "General &Setup" ), this );
+  actionSetupConfig->setShortcut(Qt::Key_S + Qt::SHIFT);
   connect ( actionSetupConfig, SIGNAL( activated() ),
             this, SLOT( slotConfig() ) );
-  actionSetupInFlight = new Q3Action( tr( "In Flight" ), tr ( "In &Flight" ),
-                                      Qt::Key_F, this );
+
+  actionSetupInFlight = new QAction( tr ( "In &Flight" ), this );
+  actionSetupInFlight->setShortcut(Qt::Key_F);
   connect ( actionSetupInFlight, SIGNAL( activated() ),
             this, SLOT( slotGliderFlight() ) );
 
-  //  actionHelp = new Q3Action (tr("Help"), tr("&Help"), Qt::Key_H, this);
+  //  actionHelp = new QAction (tr("&Help"), this);
+  //  actionHelp->setShortcut(Qt::Key_H);
   //  connect(actionHelp, SIGNAL(activated()),this,SLOT(slotHelp()));
-  // actionWhatsThis = new Q3Action( tr( "What's this ?" ), tr( "What's this ?" ), 0, this );
+
+  // actionWhatsThis = new QAction( tr( "What's this ?" ), this );
   // connect ( actionWhatsThis, SIGNAL( activated() ), this, SLOT( whatsThis() ) );
 
-  actionHelpAboutApp = new Q3Action( tr( "About Cumulus" ), tr( "About Cumulus" ),
-                                     Qt::Key_V, this );
-
+  actionHelpAboutApp = new QAction( tr( "About Cumulus" ), this );
+  actionHelpAboutApp->setShortcut(Qt::Key_V);
   connect( actionHelpAboutApp, SIGNAL( activated() ),
            this, SLOT( slotVersion() ) );
 
-  actionHelpAboutQt = new Q3Action( tr( "About Qt" ), tr( "About Qt" ),
-                                     Qt::Key_Q, this );
-
+  actionHelpAboutQt = new QAction( tr( "About Qt" ), this );
+  actionHelpAboutQt->setShortcut(Qt::Key_Q);
   connect( actionHelpAboutQt, SIGNAL(activated()), qApp, SLOT(aboutQt()) );
 }
 
