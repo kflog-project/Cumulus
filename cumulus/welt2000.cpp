@@ -447,7 +447,7 @@ bool Welt2000::readConfigEntries( QString &path )
 
   QTextStream ins(&in);
 
-  while( ! in.atEnd() )
+  while( ! ins.atEnd() )
     {
       QString line = ins.readLine();
 
@@ -1234,8 +1234,8 @@ bool Welt2000::parse( QString& path,
         }
     }
 
-  //qDebug( "W2000, Statistics from file %s: Parsing Time=%dms, Sum=%d, Airfields=%d, GL=%d, UL=%d",
-  //        basename(path.toLatin1().data()), t.elapsed(), af+gl+ul, af, gl, ul );
+  qDebug( "W2000, Statistics from file %s: Parsing Time=%dms, Sum=%d, Airfields=%d, GL=%d, UL=%d",
+          basename(path.toLatin1().data()), t.elapsed(), af+gl+ul, af, gl, ul );
 
   return true;
 }
