@@ -133,7 +133,6 @@ qDebug ("ConfigDialog::accept");
   bool welt2000Change   = spm->advancedPage->checkIsWelt2000Changed();
 
   emit save();
-  QDialog::accept();
   emit settingsChanged();
 
   if( projectionChange == false && welt2000Change == true )
@@ -144,10 +143,9 @@ qDebug ("ConfigDialog::accept");
       // a reload of welt 2000 data.
       emit welt2000ConfigChanged();
     }
-
-  //delete this;
+    
+  QDialog::accept();
 }
-
 
 /** Called if the Cancel button is pressed */
 void ConfigDialog::reject()
@@ -157,6 +155,7 @@ void ConfigDialog::reject()
   emit query_close(need_warning, changed_pages);
   QString pagelist;
   QString separator;
+  
   if (need_warning)
     {
       for (int i=0; i<changed_pages.count(); i++)
@@ -171,6 +170,7 @@ void ConfigDialog::reject()
             }
           pagelist+=QString("<li>%1%2</li>").arg(changed_pages[i]).arg(separator);
         }
+        
       int answer=QMessageBox::warning(this,
                                       tr("Close w/o saving?"),
                                       tr("<qt>You have made changes to:<ul>%1</ul> If you continue, these changes will <b>not</b> be saved, and your changes will be lost.<br>Do you wish to close without saving anyway?</qt>").arg(pagelist),
@@ -185,7 +185,6 @@ void ConfigDialog::reject()
         }
     }
 
-  QDialog::reject();
   emit reload();
-  //delete this;
+  QDialog::reject();
 }
