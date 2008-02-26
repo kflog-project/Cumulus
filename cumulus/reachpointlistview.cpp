@@ -33,8 +33,9 @@
 
 extern CuCalc* calculator;
 
-ReachpointListView::ReachpointListView(CumulusApp *parent, const char *name ) : QWidget(parent,name)
+ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
 {
+  setObjectName("ReachpointListView");
   // load pixmap of arrows for relative bearing
   _arrows = GeneralConfig::instance()->loadPixmap("arrows-15.png");
   _newList=true; //make sure we fill our list the first time it is shown

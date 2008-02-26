@@ -37,7 +37,7 @@ class WaypointListView : public QWidget
 {
     Q_OBJECT
 public:
-    WaypointListView(CumulusApp *parent=0, const char *name=0);
+    WaypointListView(CumulusApp *parent=0);
 
     ~WaypointListView();
 
