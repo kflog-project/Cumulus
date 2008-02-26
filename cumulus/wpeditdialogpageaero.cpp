@@ -23,9 +23,11 @@
 #include "distance.h"
 #include "airport.h"
 
-WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent, const char *name ):
-    QWidget(parent,name, Qt::WStyle_StaysOnTop)
+WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent) :
+  QWidget(parent, Qt::WStyle_StaysOnTop)
 {
+  setObjectName("WPEditDialogPageAero");
+
   QGridLayout * topLayout = new QGridLayout(this, 10,2,5);
   int row=0;
 

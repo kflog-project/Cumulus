@@ -27,9 +27,11 @@
 
 extern MapContents * _globalMapContents;
 
-PreFlightDialog::PreFlightDialog(QWidget * parent, const char * name):
-    QDialog(parent, "PreFlightDialog", true, Qt::WStyle_StaysOnTop)
+PreFlightDialog::PreFlightDialog(QWidget * parent, const char *name):
+  QDialog(parent, Qt::WStyle_StaysOnTop)
 {
+  setObjectName("PreFlightDialog");
+  setModal(true);
   setWindowTitle(tr("Cumulus Preflight settings"));
 
   tabWidget = new QTabWidget (this);
@@ -37,7 +39,7 @@ PreFlightDialog::PreFlightDialog(QWidget * parent, const char * name):
   gliderpage = new PreFlightGliderPage(this,"gliderpage");
   tabWidget->addTab(gliderpage, tr("&Glider"));
 
-  taskpage=new TaskList(this, "taskpage");
+  taskpage=new TaskList(this);
   tabWidget->addTab(taskpage, tr("&Task"));
 
   miscpage =new PreFlightMiscPage(this,"miscpage");
@@ -147,7 +149,6 @@ void PreFlightDialog::accept()
 
   emit settingsChanged();
   QDialog::accept();
-  delete this;
 }
 
 
@@ -155,7 +156,6 @@ void PreFlightDialog::reject()
 {
   // qDebug("PreFlightDialog::reject()");
   QDialog::reject();
-  delete this;
 }
 
 

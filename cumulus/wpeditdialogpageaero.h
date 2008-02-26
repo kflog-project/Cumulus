@@ -35,7 +35,7 @@ class WPEditDialogPageAero : public QWidget
     Q_OBJECT
 
   public:
-    WPEditDialogPageAero(QWidget *parent=0, const char *name=0);
+    WPEditDialogPageAero(QWidget *parent=0);
 
     ~WPEditDialogPageAero();
 

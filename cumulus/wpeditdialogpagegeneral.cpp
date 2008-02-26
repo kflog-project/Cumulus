@@ -23,9 +23,11 @@
 #include "altitude.h"
 #include "basemapelement.h"
 
-WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent, const char *name ):
-    QWidget(parent,name, Qt::WStyle_StaysOnTop)
+WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent) :
+ QWidget(parent)
 {
+  setObjectName("WPEditDialogPageGeneral");
+  
   QGridLayout * topLayout = new QGridLayout(this, 9,2,5);
   int row=0;
 

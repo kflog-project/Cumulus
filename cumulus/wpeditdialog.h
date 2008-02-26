@@ -38,8 +38,7 @@ public:
      * @param name A name for this QObject
      * @param wp A waypoint to show the dialog for
      */
-    WPEditDialog(QWidget *parent=0,
-                 const char *name=0, wayPoint * wp=0);
+    WPEditDialog(QWidget *parent=0, wayPoint * wp=0);
 
     virtual ~WPEditDialog();
 
@@ -47,12 +46,6 @@ public:
      * Called if OK button is pressed
      */
     void accept();
-
- protected:
-    /**
-     * Redefinition of the showEvent.
-     */
-    virtual void showEvent( QShowEvent *event );
 
 private slots: // Private slots
     /**

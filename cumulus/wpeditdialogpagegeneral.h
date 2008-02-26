@@ -32,7 +32,7 @@ class WPEditDialogPageGeneral : public QWidget
   {
     Q_OBJECT
   public:
-    WPEditDialogPageGeneral(QWidget *parent=0, const char *name=0);
+    WPEditDialogPageGeneral(QWidget *parent=0 );
 
     ~WPEditDialogPageGeneral();
 

@@ -30,9 +30,12 @@
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 
-WPEditDialog::WPEditDialog(QWidget *parent, const char *name, wayPoint *wp ):
-  QDialog(parent, name, true, Qt::WStyle_StaysOnTop)
+WPEditDialog::WPEditDialog(QWidget *parent, wayPoint *wp ):
+  QDialog(parent, Qt::WStyle_StaysOnTop)
 {
+  setObjectName("WPEditDialog");
+  setModal(true);
+  
   if (wp==0) {
     setWindowTitle(tr("New Waypoint"));
   } else {
@@ -74,6 +77,9 @@ WPEditDialog::WPEditDialog(QWidget *parent, const char *name, wayPoint *wp ):
   setLayout (mainLayout);
 
   tabWidget->setCurrentWidget(pageGeneral);
+  
+  // load data into subwidgets
+  slot_LoadCurrent();
 }
 
 
@@ -81,13 +87,6 @@ WPEditDialog::~WPEditDialog()
 {
   // qDebug("WPEditDialog::~WPEditDialog()");
 }
-
-/** This method is called if the widget becomes visible */
-void WPEditDialog::showEvent( QShowEvent *event )
-{
-  slot_LoadCurrent();
-}
-
 
 /** This slot is called if the user presses the OK button. */
 void WPEditDialog::slot_LoadCurrent()
