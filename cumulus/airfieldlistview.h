@@ -40,7 +40,7 @@ class AirfieldListView : public QWidget
 
 public:
 
-    AirfieldListView(QMainWindow *parent=0, const char *name=0);
+    AirfieldListView(QMainWindow *parent=0);
     ~AirfieldListView();
 
     /**

@@ -21,10 +21,13 @@
 #include "configdialog.h"
 
 
-ConfigDialog::ConfigDialog(QWidget * parent, const char * name) :
-    QDialog(parent, name, false, Qt::WStyle_StaysOnTop), loadConfig(true)
+ConfigDialog::ConfigDialog(QWidget *parent) :
+  QDialog(parent, Qt::WStyle_StaysOnTop), loadConfig(true)
 {
   // qDebug("height=%d, width=%d", parent->height(), parent->width());
+
+  setObjectName("ConfigDialog");
+  setModal(true);
 
   setWindowTitle(tr("Cumulus settings"));
 
@@ -125,7 +128,6 @@ void ConfigDialog::slot_LoadCurrent()
 /** Called if OK button is pressed */
 void ConfigDialog::accept()
 {
-qDebug ("ConfigDialog::accept");
   // save change states before restoring of data
   bool projectionChange = spm->advancedPage->checkIsProjectionChanged();
   bool welt2000Change   = spm->advancedPage->checkIsWelt2000Changed();

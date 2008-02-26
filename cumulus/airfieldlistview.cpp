@@ -30,8 +30,9 @@
 extern MapContents *_globalMapContents;
 extern MapConfig   *_globalMapConfig;
 
-AirfieldListView::AirfieldListView(QMainWindow *parent, const char *name ) : QWidget(parent,name)
+AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)
 {
+  setObjectName("AirfieldListView");
   listFilled = false;
   par=parent;
   QBoxLayout *topLayout = new QVBoxLayout( this );

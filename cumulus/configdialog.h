@@ -44,7 +44,7 @@ class ConfigDialog : public QDialog
     /**
      * Constructor
      */
-    ConfigDialog(QWidget * parent=0, const char * name=0);
+    ConfigDialog(QWidget *parent=0);
 
     /**
      * Destructor
