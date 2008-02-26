@@ -27,9 +27,9 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QWidget>
-#include <Q3Action>
+#include <QAction>
 #include <QMenuBar>
-#include <Q3PopupMenu>
+#include <QMenu>
 #include <QEvent>
 #include <Q3Accel>
 #include <QTabWidget>
@@ -103,7 +103,7 @@ class CumulusApp : public QMainWindow
     WPInfoWidget *viewInfo;
     QTabWidget *listViewTabs;
     /** use manual navigation even if GPS signal received */
-    Q3Action* actionToggleManualInFlight;
+    QAction* actionToggleManualInFlight;
 
     Q3Accel *accAfView;
     Q3Accel *accInfoView;
@@ -267,40 +267,40 @@ class CumulusApp : public QMainWindow
 
     void slotPreFlight(const char *tabName);
 
-    Q3Action* actionToggleMenu;
-    Q3Action* actionFileQuit;
-    Q3Action* actionViewInfo;
-    Q3Action* actionViewWaypoints;
-    Q3Action* actionViewAirfields;
-    Q3Action* actionViewReachpoints;
-    Q3Action* actionViewTaskpoints;
-    Q3Action* actionViewGPSStatus;
-    Q3Action* actionToggleStatusbar;
-    Q3Action* actionZoomInZ;
-    Q3Action* actionZoomOutZ;
-    Q3Action* actionToggleWpLabels;
-    Q3Action* actionToggleWpLabelsEI;
-    Q3Action* actionToggleLogging;
-    Q3Action* actionEnsureVisible;
-    Q3Action* actionSelectTask;
-    Q3Action* actionPreFlight;
-    Q3Action* actionRememberWaypoint;
-    Q3Action* actionSetupConfig;
-    Q3Action* actionSetupInFlight;
-    Q3Action* actionHelp;
-    Q3Action* actionHelpAboutApp;
-    Q3Action* actionHelpAboutQt;
-    Q3Action* actionWhatsThis;
+    QAction* actionToggleMenu;
+    QAction* actionFileQuit;
+    QAction* actionViewInfo;
+    QAction* actionViewWaypoints;
+    QAction* actionViewAirfields;
+    QAction* actionViewReachpoints;
+    QAction* actionViewTaskpoints;
+    QAction* actionViewGPSStatus;
+    QAction* actionToggleStatusbar;
+    QAction* actionZoomInZ;
+    QAction* actionZoomOutZ;
+    QAction* actionToggleWpLabels;
+    QAction* actionToggleWpLabelsEI;
+    QAction* actionToggleLogging;
+    QAction* actionEnsureVisible;
+    QAction* actionSelectTask;
+    QAction* actionPreFlight;
+    QAction* actionRememberWaypoint;
+    QAction* actionSetupConfig;
+    QAction* actionSetupInFlight;
+    QAction* actionHelp;
+    QAction* actionHelpAboutApp;
+    QAction* actionHelpAboutQt;
+    QAction* actionWhatsThis;
     /** file_menu contains all items of the menubar entry "File" */
-    Q3PopupMenu *fileMenu;
+    QMenu *fileMenu;
     /** view_menu contains all items of the menubar entry "View" */
-    Q3PopupMenu *viewMenu;
+    QMenu *viewMenu;
     /** view_menu contains all items of the menubar entry "Map" */
-    Q3PopupMenu *mapMenu;
+    QMenu *mapMenu;
     /** setupMenu contains all items of the menubar entry "Setup" */
-    Q3PopupMenu *setupMenu;
+    QMenu *setupMenu;
     /** view_menu contains all items of the menubar entry "Help" */
-    Q3PopupMenu *helpMenu;
+    QMenu *helpMenu;
     // Wait screen
     WaitScreen *ws;
     // visibility of menu bar
