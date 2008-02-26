@@ -50,12 +50,11 @@ GeneralConfig::GeneralConfig() : QSettings( QSettings::UserScope, "Cumulus" )
 
 GeneralConfig::~GeneralConfig()
 {
-  qDebug("GeneralConfig::~GeneralConfig(): is called");
+  // qDebug("GeneralConfig::~GeneralConfig(): is called");
   save();
   _theInstance=0;
   _airspaceWarningGeneral=true;
   delete _homeWp;
-  sync();
 }
 
 
@@ -90,7 +89,7 @@ void GeneralConfig::load()
   _awd.verBelowVeryClose = value("VerticalWarningDistanceBelowVC", 25.0).toDouble();
 
   _forceDrawing         = value("forceLowAirspaceDrawing", true ).toBool();
-  _forceDrawingDistance = value("forceLowAirspaceDrawingDistance", 300.0).toDouble();
+  _forceDrawingDistance = value("forceLowAirspaceDrawingDistance", 150.0).toDouble();
     
   // Airspace warning types
   _airspaceWarning[BaseMapElement::AirA]       = value("checkAirspaceA", true).toBool();
