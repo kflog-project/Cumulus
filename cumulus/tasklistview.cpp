@@ -32,10 +32,10 @@
 extern MapConfig * _globalMapConfig;
 extern CuCalc* calculator;
 
-TaskListView::TaskListView( QWidget *parent, const char *name,
-                            bool showButtons, bool bold )
-  : QWidget(parent, name)
+TaskListView::TaskListView( QWidget *parent, bool showButtons, bool bold )
+  : QWidget(parent)
 {
+  setObjectName("TaskListView");
   _task=0;
   _selectedWp = 0;
   _currSelectedTp = 0;
