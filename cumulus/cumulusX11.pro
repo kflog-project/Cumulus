@@ -31,6 +31,7 @@ HEADERS     = \
     gpsnmea.h \
     gpsstatusdialog.h \
     coordedit.h \
+    helpbrowser.h \
     hwinfo.h \
     igclogger.h \
     interfaceelements.h \
@@ -126,6 +127,7 @@ SOURCES     = \
     gpsnmea.cpp \
     gpsstatusdialog.cpp \
     coordedit.cpp \
+    helpbrowser.cpp \
     hwinfo.cpp \
     igclogger.cpp \
     ipc.cpp \

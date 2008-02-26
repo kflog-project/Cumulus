@@ -54,6 +54,7 @@
 #include "waypoint.h"
 #include "gliderlist.h"
 #include "target.h"
+#include "helpbrowser.h"
 
 /**
  * Global available instance of this class
@@ -634,8 +635,7 @@ void CumulusApp::initMenuBar()
 
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->setFont( font );
-  //  actionHelp->addTo(helpMenu);
-  //  actionWhatsThis->addTo( helpMenu );
+  helpMenu->addAction( actionHelp );
   helpMenu->addAction( actionHelpAboutApp );
   helpMenu->addAction( actionHelpAboutQt );
 
@@ -776,9 +776,10 @@ void CumulusApp::initActions()
   connect ( actionSetupInFlight, SIGNAL( triggered() ),
             viewMap, SLOT( slot_gliderFlightDialog() ) );
 
-  //  actionHelp = new QAction (tr("&Help"), this);
-  //  actionHelp->setShortcut(Qt::Key_H);
-  //  connect(actionHelp, SIGNAL(triggered()),this,SLOT(slotHelp()));
+  actionHelp = new QAction( tr("&Help" ), this );
+  actionHelp->setShortcut(Qt::Key_H + Qt::SHIFT);
+  addAction( actionHelp );
+  connect( actionHelp, SIGNAL(triggered()), this, SLOT(slotHelp()) );
 
   // actionWhatsThis = new QAction( tr( "What's this ?" ), this );
   // connect ( actionWhatsThis, SIGNAL( triggered() ), this, SLOT( whatsThis() ) );
@@ -1297,6 +1298,16 @@ void CumulusApp::slotVersion()
                                  "</tr>"
                                  "</table>"
                                  "</qt>" ).arg( QString(CU_VERSION) ).arg( QString( __DATE__ )).arg( QString(QT_VERSION_STR) ) ) );
+}
+
+
+/** opens help documentation in browser. */
+void CumulusApp::slotHelp()
+{
+  HelpBrowser *hb = new HelpBrowser(0);
+  hb->setAttribute(Qt::WA_DeleteOnClose);
+  hb->resize( GeneralConfig::instance()->getWindowSize() );
+  hb->show();
 }
 
 void CumulusApp::slotWaypointChanged( const wayPoint *newWp )

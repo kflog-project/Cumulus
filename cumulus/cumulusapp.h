@@ -161,8 +161,6 @@ class CumulusApp : public QMainWindow
     void slotConfig();
     /** This slot is called if the configuration has changed and at the start of the program to read the initial configuration. */
     void slot_readconfig();
-    /** shows version and copyright. */
-    void slotVersion();
     /** Called if the status of the GPS changes, and controls the availability of manual navigation. */
     void slotGpsStatus(GPSNMEA::connectedStatus status);
     /** Opens the pre flight dialog */
@@ -262,6 +260,11 @@ class CumulusApp : public QMainWindow
      */
     void slot_tabChanged(QWidget *);
 
+    /** shows version and copyright. */
+    void slotVersion();
+
+    /** opens help documentation in browser. */
+    void slotHelp();
 
   private:
 
