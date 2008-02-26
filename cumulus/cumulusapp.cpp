@@ -41,7 +41,6 @@
 
 #include "generalconfig.h"
 #include "cumulusapp.h"
-#include "airport.h"
 #include "mapconfig.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"
@@ -53,7 +52,6 @@
 #include "preflightdialog.h"
 #include "wgspoint.h"
 #include "waypoint.h"
-#include "hwinfo.h"
 #include "gliderlist.h"
 #include "target.h"
 
@@ -223,10 +221,10 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
 
   QFont fnt( "Helvetica", 12, QFont::Bold );
 
-  viewWP = new WaypointListView( this, "WaypointListView" );
-  viewAF = new AirfieldListView( this, "AirfieldListView" );
-  viewRP = new ReachpointListView( this, "ReachpointListView" );
-  viewTP = new TaskListView( this, "TaskListView" );
+  viewWP = new WaypointListView( this );
+  viewAF = new AirfieldListView( this );
+  viewRP = new ReachpointListView( this );
+  viewTP = new TaskListView( this );
   viewWP->setFont( fnt );
   viewAF->setFont( fnt );
   viewRP->setFont( fnt );
@@ -595,64 +593,52 @@ void CumulusApp::initMenuBar()
   QFont cf = this->font();
   QFont font( "Helvetica", 12 );
   this->setFont( font );
+  menuBar()->setFont( font );
 
-  fileMenu = new QMenu( this );
+  fileMenu = menuBar()->addMenu(tr("&File"));
   fileMenu->setFont( font );
-  actionFileQuit->addTo( fileMenu );
+  fileMenu->addAction( actionFileQuit );
 
-  viewMenu = new QMenu( this );
+  viewMenu = menuBar()->addMenu(tr("&View"));
   viewMenu->setFont( font );
-  actionViewTaskpoints->addTo( viewMenu );
+  viewMenu->addAction( actionViewTaskpoints );
   actionViewTaskpoints->setEnabled( false );
-  actionViewWaypoints->addTo( viewMenu );
-  actionViewReachpoints->addTo( viewMenu );
-  actionViewAirfields->addTo( viewMenu );
-  actionViewInfo->addTo( viewMenu );
+  viewMenu->addAction( actionViewWaypoints );
+  viewMenu->addAction( actionViewReachpoints );
+  viewMenu->addAction( actionViewAirfields );
+  viewMenu->addAction( actionViewInfo );
   actionViewInfo->setEnabled( false );
+  viewMenu->addSeparator();
+  viewMenu->addAction( actionToggleStatusbar );
+  viewMenu->addAction( actionToggleWpLabels );
+  viewMenu->addAction( actionToggleWpLabelsEI );
+  viewMenu->addSeparator();
+  viewMenu->addAction( actionViewGPSStatus );
 
-  viewMenu->insertSeparator();
-
-  actionToggleStatusbar->addTo( viewMenu );
-  // actionToggleMenu->addTo( viewMenu );
-  actionToggleWpLabels->addTo( viewMenu );
-  actionToggleWpLabelsEI->addTo( viewMenu );
-
-  viewMenu->insertSeparator();
-
-  actionViewGPSStatus->addTo( viewMenu );
-
-  mapMenu = new QMenu( this );
+  mapMenu = menuBar()->addMenu(tr("&Map"));
   mapMenu->setFont( font );
-  actionToggleLogging->addTo( mapMenu );
-  actionRememberWaypoint->addTo( mapMenu );
-  actionSelectTask->addTo( mapMenu );
-  actionToggleManualInFlight->addTo( mapMenu );
-  mapMenu->insertSeparator();
-  actionEnsureVisible->addTo( mapMenu );
-  actionZoomInZ->addTo( mapMenu );
-  actionZoomOutZ->addTo( mapMenu );
+  mapMenu->addAction( actionToggleLogging );
+  mapMenu->addAction( actionRememberWaypoint );
+  mapMenu->addAction( actionSelectTask );
+  mapMenu->addAction( actionToggleManualInFlight );
+  mapMenu->addSeparator();
+  mapMenu->addAction( actionEnsureVisible );
+  mapMenu->addAction( actionZoomInZ );
+  mapMenu->addAction( actionZoomOutZ );
 
-  setupMenu = new QMenu( this );
+  setupMenu = menuBar()->addMenu(tr("&Setup"));
   setupMenu->setFont( font );
-  actionSetupConfig->addTo( setupMenu );
-  actionPreFlight->addTo( setupMenu );
-  actionSetupInFlight->addTo( setupMenu );
+  setupMenu->addAction( actionSetupConfig );
+  setupMenu->addAction( actionPreFlight );
+  setupMenu->addAction( actionSetupInFlight );
 
-  helpMenu = new QMenu( this );
+  helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->setFont( font );
   //  actionHelp->addTo(helpMenu);
   //  actionWhatsThis->addTo( helpMenu );
-  actionHelpAboutApp->addTo( helpMenu );
-  actionHelpAboutQt->addTo( helpMenu );
+  helpMenu->addAction( actionHelpAboutApp );
+  helpMenu->addAction( actionHelpAboutQt );
 
-  menuBar()->setFont( font );
-
-  menuBar()->insertItem( tr( "&File" ),  fileMenu );
-  menuBar()->insertItem( tr( "&View" ),  viewMenu );
-  menuBar()->insertItem( tr( "&Map" ),   mapMenu );
-  menuBar()->insertItem( tr( "&Setup" ), setupMenu );
-  menuBar()->insertSeparator();
-  menuBar()->insertItem( tr( "&Help" ),  helpMenu );
   menuBar()->hide();
 
   this->setFont( cf );
@@ -662,60 +648,72 @@ void CumulusApp::initMenuBar()
 /** initializes all QActions of the application */
 void CumulusApp::initActions()
 {
-  actionFileQuit = new QAction( tr( "E&xit" ), this );
-  connect( actionFileQuit, SIGNAL( activated() ),
+  actionFileQuit = new QAction( tr( "&Exit" ), this );
+  actionFileQuit->setShortcut(Qt::Key_E + Qt::SHIFT);
+  addAction( actionFileQuit );
+  connect( actionFileQuit, SIGNAL( triggered() ),
            this, SLOT( slotFileQuit() ) );
 
   actionViewWaypoints = new QAction ( tr( "&Waypoints" ), this );
   actionViewWaypoints->setShortcut(Qt::Key_W);
-  connect( actionViewWaypoints, SIGNAL( activated() ),
+  addAction( actionViewWaypoints );
+  connect( actionViewWaypoints, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToWPListView() ) );
 
   actionViewAirfields = new QAction ( tr( "&Airfields" ), this );
   actionViewAirfields->setShortcut(Qt::Key_O);
-  connect( actionViewAirfields, SIGNAL( activated() ),
+  addAction( actionViewAirfields );
+  connect( actionViewAirfields, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToAFListView() ) );
 
   actionViewReachpoints = new QAction ( tr( "&Reachable" ), this );
   actionViewReachpoints->setShortcut(Qt::Key_E);
-  connect( actionViewReachpoints, SIGNAL( activated() ),
+  addAction( actionViewReachpoints );
+  connect( actionViewReachpoints, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToReachListView() ) );
 
   actionViewTaskpoints = new QAction ( tr( "&Task" ), this );
   actionViewTaskpoints->setShortcut(Qt::Key_T);
-  connect( actionViewTaskpoints, SIGNAL( activated() ),
+  addAction( actionViewTaskpoints );
+  connect( actionViewTaskpoints, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToTaskListView() ) );
 
   actionViewInfo = new QAction( tr( "&Info" ), this );
   actionViewInfo->setShortcut(Qt::Key_I);
-  connect( actionViewInfo, SIGNAL( activated() ),
+  addAction( actionViewInfo );
+  connect( actionViewInfo, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToInfoView() ) );
 
   actionToggleStatusbar = new QAction( tr( "&Statusbar" ), this );
   actionToggleStatusbar->setCheckable(true);
   actionToggleStatusbar->setOn( true );
+  addAction( actionToggleStatusbar );
   connect( actionToggleStatusbar, SIGNAL( toggled( bool ) ),
            this, SLOT( slotViewStatusBar( bool ) ) );
 
   actionViewGPSStatus = new QAction( tr( "GPS Status" ), this );
   actionViewGPSStatus->setShortcut(Qt::Key_G);
-  connect( actionViewGPSStatus, SIGNAL( activated() ),
-           this, SLOT( slotGpsStatusDialog() ) );
+  addAction( actionViewGPSStatus );
+  connect( actionViewGPSStatus, SIGNAL( triggered() ),
+           viewMap, SLOT( slot_gpsStatusDialog() ) );
 
   actionZoomInZ = new QAction ( tr( "Zoom in" ), this );
   actionZoomInZ->setShortcut(Qt::Key_Z);
-  connect ( actionZoomInZ, SIGNAL( activated() ),
+  addAction( actionZoomInZ );
+  connect ( actionZoomInZ, SIGNAL( triggered() ),
             viewMap->_theMap , SLOT( slotZoomIn() ) );
 
   actionZoomOutZ = new QAction ( tr( "Zoom out" ), this );
   actionZoomOutZ->setShortcut(Qt::Key_X);
-  connect ( actionZoomOutZ, SIGNAL( activated() ),
+  addAction( actionZoomOutZ );
+  connect ( actionZoomOutZ, SIGNAL( triggered() ),
             viewMap->_theMap , SLOT( slotZoomOut() ) );
 
   actionToggleWpLabels = new QAction ( tr( "Waypoint labels" ), this);
   actionToggleWpLabels->setShortcut(Qt::Key_A);
   actionToggleWpLabels->setCheckable(true);
   actionToggleWpLabels->setOn( _globalMapConfig->getShowWpLabels() );
+  addAction( actionToggleWpLabels );
   connect( actionToggleWpLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleWpLabels( bool ) ) );
 
@@ -723,67 +721,78 @@ void CumulusApp::initActions()
   actionToggleWpLabelsEI->setShortcut(Qt::Key_S);
   actionToggleWpLabelsEI->setCheckable(true);
   actionToggleWpLabelsEI->setOn( _globalMapConfig->getShowWpLabelsExtraInfo() );
+  addAction( actionToggleWpLabelsEI );
   connect( actionToggleWpLabelsEI, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleWpLabelsExtraInfo( bool ) ) );
 
   actionToggleLogging = new QAction( tr( "Logging" ), this );
   actionToggleLogging->setShortcut(Qt::Key_L);
   actionToggleLogging->setCheckable(true);
-  connect ( actionToggleLogging, SIGNAL( activated() ),
+  addAction( actionToggleLogging );
+  connect ( actionToggleLogging, SIGNAL( triggered() ),
             logger, SLOT( slotToggleLogging() ) );
 
   actionEnsureVisible = new QAction ( tr( "Ensure waypoint visible" ), this );
   actionEnsureVisible->setShortcut(Qt::Key_V);
-  connect ( actionEnsureVisible, SIGNAL( activated() ),
+  addAction( actionEnsureVisible );
+  connect ( actionEnsureVisible, SIGNAL( triggered() ),
             this, SLOT( slotEnsureVisible() ) );
 
   actionSelectTask = new QAction( tr( "Select task" ), this );
   actionSelectTask->setShortcut(Qt::Key_T + Qt::SHIFT);
-  connect ( actionSelectTask, SIGNAL( activated() ),
+  addAction( actionSelectTask );
+  connect ( actionSelectTask, SIGNAL( triggered() ),
             this, SLOT( slotPreFlightTask() ) );
 
   actionToggleManualInFlight = new QAction( tr( "Manual" ), this );
   actionToggleManualInFlight->setShortcut(Qt::Key_M + Qt::SHIFT);
   actionToggleManualInFlight->setEnabled(false);
   actionToggleManualInFlight->setCheckable(true);
+  addAction( actionToggleManualInFlight );
   connect( actionToggleManualInFlight, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleManualInFlight( bool ) ) );
 
   actionPreFlight = new QAction( tr( "Pre Flight" ), this );
   actionPreFlight->setShortcut(Qt::Key_P);
-  connect ( actionPreFlight, SIGNAL( activated() ),
+  addAction( actionPreFlight );
+  connect ( actionPreFlight, SIGNAL( triggered() ),
             this, SLOT( slotPreFlightGlider() ) );
 
   actionRememberWaypoint = new QAction( tr( "Remember waypoint" ), this );
   actionRememberWaypoint->setShortcut(Qt::Key_R);
-  connect( actionRememberWaypoint, SIGNAL( activated() ),
+  addAction( actionRememberWaypoint );
+  connect( actionRememberWaypoint, SIGNAL( triggered() ),
            this, SLOT( slotRememberWaypoint() ) );
 
   actionSetupConfig = new QAction( tr ( "General &Setup" ), this );
   actionSetupConfig->setShortcut(Qt::Key_S + Qt::SHIFT);
-  connect ( actionSetupConfig, SIGNAL( activated() ),
+  addAction( actionSetupConfig );
+  connect ( actionSetupConfig, SIGNAL( triggered() ),
             this, SLOT( slotConfig() ) );
 
   actionSetupInFlight = new QAction( tr ( "In &Flight" ), this );
   actionSetupInFlight->setShortcut(Qt::Key_F);
-  connect ( actionSetupInFlight, SIGNAL( activated() ),
-            this, SLOT( slotGliderFlight() ) );
+  addAction( actionSetupInFlight );
+  connect ( actionSetupInFlight, SIGNAL( triggered() ),
+            viewMap, SLOT( slot_gliderFlightDialog() ) );
 
   //  actionHelp = new QAction (tr("&Help"), this);
   //  actionHelp->setShortcut(Qt::Key_H);
-  //  connect(actionHelp, SIGNAL(activated()),this,SLOT(slotHelp()));
+  //  connect(actionHelp, SIGNAL(triggered()),this,SLOT(slotHelp()));
 
   // actionWhatsThis = new QAction( tr( "What's this ?" ), this );
-  // connect ( actionWhatsThis, SIGNAL( activated() ), this, SLOT( whatsThis() ) );
+  // connect ( actionWhatsThis, SIGNAL( triggered() ), this, SLOT( whatsThis() ) );
 
   actionHelpAboutApp = new QAction( tr( "About Cumulus" ), this );
-  actionHelpAboutApp->setShortcut(Qt::Key_V);
-  connect( actionHelpAboutApp, SIGNAL( activated() ),
+  actionHelpAboutApp->setShortcut(Qt::Key_V + Qt::SHIFT);
+  addAction( actionHelpAboutApp );
+  connect( actionHelpAboutApp, SIGNAL( triggered() ),
            this, SLOT( slotVersion() ) );
 
   actionHelpAboutQt = new QAction( tr( "About Qt" ), this );
-  actionHelpAboutQt->setShortcut(Qt::Key_Q);
-  connect( actionHelpAboutQt, SIGNAL(activated()), qApp, SLOT(aboutQt()) );
+  actionHelpAboutQt->setShortcut(Qt::Key_Q + Qt::SHIFT);
+  addAction( actionHelpAboutQt );
+  connect( actionHelpAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()) );
 }
 
 /**
@@ -1237,7 +1246,7 @@ void CumulusApp::slotSwitchToInfoView( wayPoint* wp )
 /** Opens the configdialog. */
 void CumulusApp::slotConfig()
 {
-  ConfigDialog *cDlg = new ConfigDialog ( this );
+  ConfigDialog *cDlg = new ConfigDialog( this );
   // delete widget during close event
   cDlg->setAttribute(Qt::WA_DeleteOnClose);
 
@@ -1508,6 +1517,8 @@ void CumulusApp::slotPreFlightTask()
 void CumulusApp::slotPreFlight(const char *tabName)
 {
   _preFlightDialog = new PreFlightDialog( this, tabName );
+  // delete widget during close event
+  _preFlightDialog->setAttribute(Qt::WA_DeleteOnClose);
 
   connect( _preFlightDialog, SIGNAL( settingsChanged() ),
            this, SLOT( slotPreFlightDataChanged() ) );
