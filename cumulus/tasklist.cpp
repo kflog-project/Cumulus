@@ -38,10 +38,11 @@
 uint TaskList::lastSelection = 0;
 
 
-TaskList::TaskList( QWidget* parent, const char* name )
-    : QWidget( parent, name ),
+TaskList::TaskList( QWidget* parent )
+    : QWidget( parent ),
     editTask(0)
 {
+  setObjectName("TaskList");
   QVBoxLayout* taskLayout = new QVBoxLayout( this, 5 );
   QHBoxLayout *editrow=new QHBoxLayout(taskLayout, 0);
 
@@ -80,7 +81,7 @@ TaskList::TaskList( QWidget* parent, const char* name )
   taskListView->setMinimumHeight(20);
   taskListView->setFocus();
 
-  taskContent = new TaskListView( splitter, "TaskRouteDisplay", false, false );
+  taskContent = new TaskListView( splitter, false, false );
 
   // taskContent->setMinimumSize(1,100); //somehow, the layout alone doesn't cut it.
 

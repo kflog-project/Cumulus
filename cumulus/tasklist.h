@@ -34,7 +34,7 @@ class TaskList : public QWidget
 
 public:
     /** */
-    TaskList( QWidget* parent, const char* name );
+    TaskList( QWidget* parent );
 
     /** */
     ~TaskList();
