@@ -37,7 +37,7 @@ class ReachpointListView : public QWidget
 {
     Q_OBJECT
 public:
-    ReachpointListView(CumulusApp *parent=0, const char *name=0);
+    ReachpointListView(CumulusApp *parent=0);
     ~ReachpointListView();
 
     /** Returns a pointer to the currently highlighted waypoint. */

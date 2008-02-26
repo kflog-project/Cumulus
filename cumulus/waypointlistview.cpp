@@ -29,9 +29,11 @@
 extern MapContents * _globalMapContents;
 extern MapConfig * _globalMapConfig;
 
-WaypointListView::WaypointListView(CumulusApp *parent, const char *name ) : QWidget(parent,name)
+WaypointListView::WaypointListView(CumulusApp *parent) : QWidget(parent)
 {
+  setObjectName("WaypointListView");
   par=parent;
+  
   QBoxLayout *topLayout = new QVBoxLayout( this );
   QBoxLayout *editrow=new QHBoxLayout(topLayout);
 
@@ -93,7 +95,7 @@ WaypointListView::WaypointListView(CumulusApp *parent, const char *name ) : QWid
 
 WaypointListView::~WaypointListView()
 {
-  qDebug("WaypointListView::~WaypointListView()");
+  // qDebug("WaypointListView::~WaypointListView()");
 }
 
 
@@ -196,7 +198,7 @@ wayPoint * WaypointListView::getSelectedWaypoint(Q3ListView *list)
 /** Called when a new waypoint needs to be made. */
 void WaypointListView::slot_newWP()
 {
-  WPEditDialog *dlg=new WPEditDialog(this, "wpeditor", 0);
+  WPEditDialog *dlg=new WPEditDialog(this, 0);
   dlg->setAttribute(Qt::WA_DeleteOnClose);
 
   connect(dlg, SIGNAL(wpListChanged(wayPoint *)),
@@ -212,7 +214,7 @@ void WaypointListView::slot_editWP()
   wayPoint *wp=getSelectedWaypoint();
   if (wp)
     {
-      WPEditDialog *dlg=new WPEditDialog(this, "wpeditor", getSelectedWaypoint());
+      WPEditDialog *dlg=new WPEditDialog(this, getSelectedWaypoint());
       dlg->setAttribute(Qt::WA_DeleteOnClose);
 
       connect(dlg, SIGNAL(wpListChanged(wayPoint *)),
