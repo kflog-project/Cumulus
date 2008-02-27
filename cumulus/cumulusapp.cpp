@@ -101,7 +101,8 @@ static void resumeGpsConnection( int sig )
     }
 }
 
-CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWindow( parent, flags )
+CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
+  QMainWindow( parent, flags )
 {
   _globalCumulusApp = this;
   menuBarVisible = false;
@@ -225,12 +226,12 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
           size().height() );
 
   // This is the main widget of cumulus
-  viewMap = new MapView( this, "MapView" );
+  viewMap = new MapView( this );
   _globalMapView = viewMap;
 
   setCentralWidget( viewMap );
 
-  listViewTabs = new QTabWidget( this, "ListViewTabs", Qt::WStyle_StaysOnTop );
+  listViewTabs = new QTabWidget( this );
   listViewTabs->resize( this->size() );
 
   QFont fnt( "Helvetica", 12, QFont::Bold );

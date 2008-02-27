@@ -58,8 +58,10 @@ const int VLINE_BASE = MVW_MAX_ELEMENT;
 const int HLINE_BASE = VLINE_BASE + MAX_LINES;
 
 
-MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
+MapView::MapView(QWidget *parent) : QWidget(parent)
 {
+  setObjectName("MapView");
+
   resize(parent->size());
 
   qDebug( "MapView window size is %dx%d, width=%d, height=%d",
@@ -248,7 +250,7 @@ MapView::MapView(QWidget *parent, const char *name ) : QWidget(parent,name)
   topLayout->addWidget(sep);
 
   QBoxLayout *MapLayout = new QHBoxLayout(topLayout);
-  _theMap = new Map(this, "map");
+  _theMap = new Map(this);
   MapLayout->addSpacing(1);
   MapLayout->addWidget(_theMap, 10);
   MapLayout->addSpacing(1);
@@ -897,7 +899,7 @@ QWidget * MapView::getElement(int typeID, bool resetLineCounter=false)
     case MVW_MAP:
       if (!elements->at(MVW_MAP))
         {
-          m=new Map(this, "mapwidget");
+          m=new Map(this);
           elements->insert(MVW_MAP,m);
           //_theMap=m;
         }

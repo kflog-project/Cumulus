@@ -58,7 +58,7 @@ class MapView : public QWidget
     /**
      * Constructor
      */
-    MapView(QWidget *parent=0, const char *name=0);
+    MapView(QWidget *parent=0);
 
     /**
      * Destructor

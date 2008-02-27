@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
     }
 
   // cumulus as local variable important to get the destructor called !
-  CumulusApp cumulus;
+  CumulusApp cumulus(0, Qt::WindowContextHelpButtonHint);
 
   cumulus.show();
   int result = app.exec();

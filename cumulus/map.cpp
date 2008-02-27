@@ -59,7 +59,7 @@ extern MapView         *_globalMapView;
 
 Map *Map::instance=0;
 
-Map::Map(QWidget* parent, const char* name) : QWidget(parent, name),
+Map::Map(QWidget* parent) : QWidget(parent),
     preSnapPoint(-999, -999), prePos(-50, -50), preCur1(-50, -50),
     preCur2(-50, -50), planning(-1)
 {
@@ -68,6 +68,8 @@ Map::Map(QWidget* parent, const char* name) : QWidget(parent, name),
           parent->size().height(),
           parent->size().width(),
           parent->size().height() );
+
+  setObjectName("Map");
 
   instance = this;
   _lastASInfo = "";

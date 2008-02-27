@@ -96,7 +96,7 @@ class Map : public QWidget
      * creates the icon used as a cursor in the map.
      * It is private because map is a singleton class.
      */
-    Map(QWidget * parent, const char* name);
+    Map(QWidget *parent);
 
     /**
      * Destroys the Map-object.
