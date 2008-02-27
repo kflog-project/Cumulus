@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somer, 2008 Axel paulis
+**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -26,13 +26,13 @@
 
 /**
  * This class represents the GPS settings page
- * @author Heiner Lamprecht
+ * @author André Somers
  */
 class SettingsPageGPS : public QWidget
 {
     Q_OBJECT
 public:
-    SettingsPageGPS(QWidget *parent=0, const char *name=0);
+    SettingsPageGPS(QWidget *parent=0);
     ~SettingsPageGPS();
 
     QComboBox* GpsDev;

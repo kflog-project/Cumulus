@@ -46,9 +46,10 @@ extern MapConfig    *_globalMapConfig;
 extern MapContents  *_globalMapContents;
 extern CuCalc       *calculator;
 
-TPInfoWidget::TPInfoWidget( QWidget *parent, const char *name ) :
-  QWidget( parent, name )
+TPInfoWidget::TPInfoWidget( QWidget *parent ) :
+  QWidget( parent )
 {
+  setObjectName("TPInfoWidget");
   this->parent = parent;
   resize( parent->size() );
 
@@ -180,7 +181,7 @@ void TPInfoWidget::showEvent(QShowEvent *)
  * dist2Next: distance to next taskpoint in kilometers
  *
  */
-void TPInfoWidget::prepareSwitchText( const uint currentTpIndex,
+void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 				      const double dist2Next )
 {
   FlightTask *task = _globalMapContents->getCurrentTask();
@@ -337,7 +338,7 @@ void TPInfoWidget::prepareSwitchText( const uint currentTpIndex,
     // distance in km to final target must be calculated
     double finalDistance = dist2Next;
 
-    for(uint loop=currentTpIndex+2; loop <= wpList.count() - 1; loop++)
+    for( int loop=currentTpIndex+2; loop <= wpList.count() - 1; loop++ )
         {
           // qDebug("distance: %f", wpList.at(loop)->distance);
           finalDistance += wpList.at(loop)->distance;
@@ -593,7 +594,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
   // distance in km to final target must be calculated
   double finalDistance = distance2Target.getKilometers();
 
-  for(uint loop=tpIdx+1; loop <= wpList.count() - 1; loop++)
+  for( int loop=tpIdx+1; loop <= wpList.count() - 1; loop++ )
     {
       // qDebug("distance: %f", wpList.at(loop)->distance);
       finalDistance += wpList.at(loop)->distance;

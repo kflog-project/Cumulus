@@ -26,9 +26,11 @@
 #include "settingspageunits.h"
 #include "generalconfig.h"
 
-SettingsPageUnits::SettingsPageUnits(QWidget *parent, const char *name ) : QWidget(parent,name)
+SettingsPageUnits::SettingsPageUnits(QWidget *parent) : QWidget(parent)
 {
-  QGridLayout * topLayout = new QGridLayout(this);
+  setObjectName("SettingsPageUnits");
+  
+  QGridLayout *topLayout = new QGridLayout(this);
   int row=0;
 
   QLabel * lblAlt = new QLabel(tr("Altitude:"), this);

@@ -29,7 +29,7 @@ class SettingsPageUnits : public QWidget
 {
     Q_OBJECT
 public:
-    SettingsPageUnits(QWidget *parent=0, const char *name=0);
+    SettingsPageUnits(QWidget *parent=0);
     ~SettingsPageUnits();
 
 public slots: // Public slots

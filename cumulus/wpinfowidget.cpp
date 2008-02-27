@@ -40,10 +40,11 @@ extern MapConfig *_globalMapConfig;
 extern MapContents  *_globalMapContents;
 extern CuCalc       *calculator;
 
-WPInfoWidget::WPInfoWidget( CumulusApp *parent, const char *name ) :
-  QWidget(parent, name),
+WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
+  QWidget(parent),
   _wp(0)
 {
+  setObjectName("WPInfoWidget");
   cuApp = parent;
   _lastView = CumulusApp::mapView;
   arrivalInfo = 0;
@@ -458,7 +459,7 @@ void WPInfoWidget::slot_arrival()
   cuApp->accInfoView->setEnabled( false );
 
   // create arrival info widget
-  arrivalInfo = new TPInfoWidget( this, "ArrivalInfo" );
+  arrivalInfo = new TPInfoWidget( this );
   arrivalInfo->prepareArrivalInfoText( _wp );
   arrivalInfo->showTP( false );
 

@@ -25,8 +25,10 @@
 #include "gpscon.h"
 #include "hwinfo.h"
 
-SettingsPageGPS::SettingsPageGPS(QWidget *parent, const char *name ) : QWidget(parent,name)
+SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 {
+    setObjectName("SettingsPageGPS");
+    
     QGridLayout * topLayout = new QGridLayout(this, 5, 3, 5);
     int row=0;
 

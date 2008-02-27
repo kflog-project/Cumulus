@@ -42,7 +42,7 @@ class TPInfoWidget : public QWidget
 
 public:
 
-  TPInfoWidget( QWidget *parent=0, const char *name=0 );
+  TPInfoWidget( QWidget *parent=0 );
 
   virtual ~TPInfoWidget();
 
@@ -60,7 +60,7 @@ public:
    * dist2Next: distance to next taskpoint in km
    *
    */
-  void prepareSwitchText( const uint currentTpIndex,
+  void prepareSwitchText( const int currentTpIndex,
                           const double dist2Next );
   /**
    * This method fills the widget with the arrival info. The info is

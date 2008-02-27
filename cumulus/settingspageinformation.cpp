@@ -22,9 +22,11 @@
 #include "mapdefaults.h"
 #include "settingspageinformation.h"
 
-SettingsPageInformation::SettingsPageInformation( QWidget *parent, const char *name )
-        : QWidget(parent,name), loadConfig(true)
+SettingsPageInformation::SettingsPageInformation( QWidget *parent )
+        : QWidget(parent), loadConfig(true)
 {
+    setObjectName("SettingsPageInformation");
+    
     int row=0;
     QGridLayout *topLayout = new QGridLayout( this );
 

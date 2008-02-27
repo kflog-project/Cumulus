@@ -25,14 +25,14 @@
 
 /**
  * The class manages the pop up window stay times and the alarm sound.
- * @author Axel.Pauli@onlinehome.de
+ * @author Axel Pauli
  */
 class SettingsPageInformation : public QWidget
 {
     Q_OBJECT
 public:
 
-    SettingsPageInformation(QWidget *parent=0, const char *name=0);
+    SettingsPageInformation(QWidget *parent=0);
 
     virtual ~SettingsPageInformation();
 

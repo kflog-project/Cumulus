@@ -538,7 +538,7 @@ void CuCalc::calcDistance( bool autoWpSwitch )
         // switch off all set accelerators
         _globalCumulusApp->setView( CumulusApp::tpSwitchView );
 
-        TPInfoWidget *tpInfo = new TPInfoWidget( _globalCumulusApp, "TaskpointInfo" );
+        TPInfoWidget *tpInfo = new TPInfoWidget( _globalCumulusApp );
         tpInfo->prepareSwitchText( lastWp->taskPointIndex, dist2Next.getKilometers() );
 
         // switch back to map view on close of tp info widget

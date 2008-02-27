@@ -40,7 +40,7 @@ class WPInfoWidget : public QWidget
 
 public:
 
-    WPInfoWidget( CumulusApp *parent=0, const char *name=0 );
+    WPInfoWidget( CumulusApp *parent=0 );
 
     virtual ~WPInfoWidget();
 
