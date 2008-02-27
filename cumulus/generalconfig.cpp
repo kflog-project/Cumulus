@@ -135,6 +135,7 @@ void GeneralConfig::load()
   _disclaimerVersion = value( "Disclaimer", 0).toInt();
   _surname           = value("SurName", "").toString();
   _birthday          = value("Birthday", "").toString();
+  _language          = value("Language", "en").toString();
   endGroup();
 
   // Preflight settings
@@ -358,6 +359,7 @@ void GeneralConfig::save()
   setValue("Disclaimer", _disclaimerVersion);
   setValue("SurName", _surname);
   setValue("Birthday", _birthday);
+  setValue("Language", _language);
   endGroup();
 
   // Preflight data
