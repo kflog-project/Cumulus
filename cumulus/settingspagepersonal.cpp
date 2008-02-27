@@ -23,9 +23,11 @@
 #include "altitude.h"
 #include "settingspagepersonal.h"
 
-SettingsPagePersonal::SettingsPagePersonal(QWidget *parent, const char *name ) :
-    QWidget(parent,name), loadConfig(true)
+SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
+    QWidget(parent), loadConfig(true)
 {
+  setObjectName("SettingsPagePersonal");
+  
   QGridLayout* topLayout = new QGridLayout(this);
   int row=0;
 
@@ -39,6 +41,15 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent, const char *name ) :
   topLayout->addWidget(lbl, row, 0);
   edtBirth = new QLineEdit(this);
   topLayout->addWidget(edtBirth, row, 1, 1, 2);
+  row++;
+  
+  lbl = new QLabel(tr("Language:"), this);
+  topLayout->addWidget(lbl, row, 0);
+  langBox = new QComboBox(this);
+  // langBox->setMaximumWidth(30);
+  langBox->addItem("de");
+  langBox->addItem("en");
+  topLayout->addWidget(langBox, row, 1, 1, 1);
   row++;
 
   topLayout->setRowMinimumHeight(row++, 10);
@@ -71,6 +82,14 @@ void SettingsPagePersonal::slot_load()
 
   edtHomeLat->setKFLogDegree(conf->getHomeLat());
   edtHomeLong->setKFLogDegree(conf->getHomeLon());
+  
+  // search item to be selected
+  int idx = langBox->findText(conf->getLanguage());
+  
+  if( idx != -1 )
+    {
+      langBox->setCurrentIndex(idx);
+    }
 }
 
 /** called to initiate saving to the configurationfile */
@@ -80,6 +99,7 @@ void SettingsPagePersonal::slot_save()
 
   conf->setSurname( edtName->text() );
   conf->setBirthday( edtBirth->text() );
+  conf->setLanguage( langBox->currentText() );
 
   // Check, if string input values have been changed. If not, no
   // storage is done to avoid roundings errors. They can appear if the
