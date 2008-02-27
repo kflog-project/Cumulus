@@ -110,6 +110,19 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
   // Eggert: make sure the app uses utf8 encoding for translated widgets
   QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
 
+#warning FIXME should we have a menu entry for the application font size?
+  // Check the font size and set it bigger if it was to small
+  QFont appFt = QApplication::font() ;
+
+  qDebug("QAppFont pointSize=%d pixelSize=%d",
+         appFt.pointSize(), appFt.pixelSize() );
+
+  if( appFt.pointSize() < 10 )
+    {
+      appFt.setPointSize(10);
+      QApplication::setFont(appFt);
+    }
+  
   // get last saved window geometrie from generalconfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
 
@@ -238,7 +251,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) : QMainWind
   listViewTabs->addTab( viewAF, tr( "Airfields" ) );
 
   // waypoint info widget
-  viewInfo = new WPInfoWidget( this, "WPInfoview" );
+  viewInfo = new WPInfoWidget( this );
 
   viewWP->fillWpList( _globalMapContents->getWaypointList() );
 
@@ -635,7 +648,7 @@ void CumulusApp::initMenuBar()
 
   helpMenu = menuBar()->addMenu(tr("&Help"));
   helpMenu->setFont( font );
-  helpMenu->addAction( actionHelp );
+  helpMenu->addAction( actionHelpCumulus );
   helpMenu->addAction( actionHelpAboutApp );
   helpMenu->addAction( actionHelpAboutQt );
 
@@ -764,22 +777,22 @@ void CumulusApp::initActions()
   connect( actionRememberWaypoint, SIGNAL( triggered() ),
            this, SLOT( slotRememberWaypoint() ) );
 
-  actionSetupConfig = new QAction( tr ( "General &Setup" ), this );
+  actionSetupConfig = new QAction( tr ( "General Setup" ), this );
   actionSetupConfig->setShortcut(Qt::Key_S + Qt::SHIFT);
   addAction( actionSetupConfig );
   connect ( actionSetupConfig, SIGNAL( triggered() ),
             this, SLOT( slotConfig() ) );
 
-  actionSetupInFlight = new QAction( tr ( "In &Flight" ), this );
+  actionSetupInFlight = new QAction( tr ( "In Flight" ), this );
   actionSetupInFlight->setShortcut(Qt::Key_F);
   addAction( actionSetupInFlight );
   connect ( actionSetupInFlight, SIGNAL( triggered() ),
             viewMap, SLOT( slot_gliderFlightDialog() ) );
 
-  actionHelp = new QAction( tr("&Help" ), this );
-  actionHelp->setShortcut(Qt::Key_H + Qt::SHIFT);
-  addAction( actionHelp );
-  connect( actionHelp, SIGNAL(triggered()), this, SLOT(slotHelp()) );
+  actionHelpCumulus = new QAction( tr("Help" ), this );
+  actionHelpCumulus->setShortcut(Qt::Key_Question);
+  addAction( actionHelpCumulus );
+  connect( actionHelpCumulus, SIGNAL(triggered()), this, SLOT(slotHelp()) );
 
   // actionWhatsThis = new QAction( tr( "What's this ?" ), this );
   // connect ( actionWhatsThis, SIGNAL( triggered() ), this, SLOT( whatsThis() ) );
@@ -828,7 +841,9 @@ void  CumulusApp::toggelActions( const bool toggle )
   actionRememberWaypoint->setEnabled( toggle );
   actionSetupConfig->setEnabled( toggle );
   actionSetupInFlight->setEnabled( toggle );
+  actionHelpCumulus->setEnabled( toggle );
   actionHelpAboutApp->setEnabled( toggle );
+  actionHelpAboutQt->setEnabled( toggle );
   actionToggleLogging->setEnabled( toggle );
   // do not toggle actionToggleManualInFlight, status may not be changed
 }
@@ -1304,7 +1319,7 @@ void CumulusApp::slotVersion()
 /** opens help documentation in browser. */
 void CumulusApp::slotHelp()
 {
-  HelpBrowser *hb = new HelpBrowser(0);
+  HelpBrowser *hb = new HelpBrowser(this);
   hb->setAttribute(Qt::WA_DeleteOnClose);
   hb->resize( GeneralConfig::instance()->getWindowSize() );
   hb->show();
@@ -1357,7 +1372,7 @@ void CumulusApp::slotRememberWaypoint()
   wp->origP = calculator->getlastPosition();
   wp->projP = _globalMapMatrix->wgsToMap( wp->origP );
   wp->description = tr( "user created" );
-  wp->comment = tr( "created by user action at " +
+  wp->comment = tr( "created by remember action at " +
                 QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") );
   wp->importance = wayPoint::High; // high to make sure it is visible
   wp->frequency = 0.0;

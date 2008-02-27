@@ -290,7 +290,7 @@ class CumulusApp : public QMainWindow
     QAction* actionRememberWaypoint;
     QAction* actionSetupConfig;
     QAction* actionSetupInFlight;
-    QAction* actionHelp;
+    QAction* actionHelpCumulus;
     QAction* actionHelpAboutApp;
     QAction* actionHelpAboutQt;
     QAction* actionWhatsThis;
