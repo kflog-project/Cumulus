@@ -18,6 +18,8 @@ Cumulus changelog
 Cumulus 2.0.0 (Development based on X11/Qt-4.3.3)
 -------------------------------------------------
 
+[+] 2008-02-27 AP: Help html browser added, Personal Setting expanded
+                   by language selection box for de/en.
 [-] 2008-02-25 AP: Bugfix: welt2000.conf file was never read due to typo
 [-] 2008-02-15 AP: Tried to improve rezize handling, when menu is toggled
 [-] 2008-02-15 AP: Ok and Cancel Button added to Advanced map setting.
