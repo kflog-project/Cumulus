@@ -11,6 +11,8 @@
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
 **
+**   This class is used for displaying the help usage of Cumulus.
+**
 **   $Id$
 **
 ***********************************************************************/
@@ -20,7 +22,6 @@
 
 #include <QWidget>
 #include <QTextBrowser>
-#include <QPushButton>
 
 /**
  * @author Axel Pauli
@@ -34,15 +35,14 @@ class HelpBrowser : public QWidget
 
   HelpBrowser( QWidget *parent=0 );
   virtual ~HelpBrowser();
+  
+  /** catch show events */
+  void showEvent( QShowEvent *event );
 
  private:
 
+  bool firstCall;
   QTextBrowser *browser;
-  QPushButton  *home;
-  QPushButton  *back;
-  QPushButton  *forward;
-  QPushButton  *close;
-
 };
 
 #endif
