@@ -53,6 +53,7 @@ install: check_dir deinstall install_lang
 	@echo '===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====='
 	install -d $(INSTALL_ROOT)/bin
 	install -d $(INSTALL_ROOT)/etc
+	install -d $(INSTALL_ROOT)/help/de
 	install -d $(INSTALL_ROOT)/help/en
 	install -d $(INSTALL_ROOT)/icons
 	install -d $(INSTALL_ROOT)/icons/small
@@ -67,6 +68,7 @@ install: check_dir deinstall install_lang
 	install --mode=644 icons/*.png $(INSTALL_ROOT)/icons
 	install --mode=644 icons/small/* $(INSTALL_ROOT)/icons/small
 	install --mode=644 icons/windarrows/* $(INSTALL_ROOT)/icons/windarrows
+	install --mode=644 help/de/*.html icons/cumulus.png $(INSTALL_ROOT)/help/de
 	install --mode=644 help/en/*.html icons/cumulus.png $(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/Alarm.wav $(INSTALL_ROOT)/sounds
 
