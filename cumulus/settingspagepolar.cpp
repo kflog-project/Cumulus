@@ -173,8 +173,9 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
 
 SettingsPagePolar::~SettingsPagePolar()
 {
-  while (!_polars.isEmpty())
-    delete _polars.takeFirst();	
+#warning ~SettingsPagePolar() FIX delete bug
+//   while (!_polars.isEmpty())
+//     delete _polars.takeFirst();	
 }
 
 
