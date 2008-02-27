@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//DE">
+<html>
+<head>
+  <title>Cumulus Einstellungen</title>
+</head>
+<body>
+
+    <table width="100%">
+    <tr>
+    <td></td>
+    <td align="center"><a href="cumulus.html">Anfang</a></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td align="left"><a href="cumulus-settings-sector.html">zur&uuml;ck</a></td>
+    <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
+    <td align="right"><a href="cumulus-settings-map.html">weiter</a></td>
+    </tr>
+    </table>
+
+<h3 align="center">Einstellungen</h3>
+
+    <p><b>GPS</b><p>
+
+    Hier w&auml;hlen Sie die Ger&auml;teschnittstelle und die korrekte
+    &Uuml;bertragungsrate aus. Lesen Sie das Handbuch Ihres
+    GPS-Empf&auml;ngers um die Daten zu erfahren. Die meisten
+    seriellen Verbindungen arbeiten mit der Ger&auml;teschnittstelle
+    <i>/dev/ttyS0</i>. F&uuml;r Compact Flash Empf&auml;nger ist
+    <i>/dev/ttyS3</i> &uuml;blich, w&auml;hrend Blue Tooth Ger&auml;te mit der
+    Schnittstelle <i>/dev/rfcomm0</i> arbeiten.
+    Cumulus kann automatisch das richtige Ger&auml;t bei CF Kartenbenutzung
+    erkennen, wenn Sie den
+    Eintrag <i>CF</i> ausw&auml;hlen. Die Standard
+    &Uuml;bertragungsrate betr&auml;gt normalerweise 4800 bps.
+    </p>
+
+    <p> Einige GPS-Empf&auml;nger k&ouml;nnen mit gespeicherten
+    Positionsdaten initialisiert werden, so dass sie ihre aktuelle
+    Position schneller erkennen. Aktivieren Sie <i>Soft Start</i>, um
+    dies zu erm&ouml;glichen. Wenn dies nicht ausreicht, aktivieren
+    Sie <i>Hard Start</i>, um den Empf&auml;nger beim Hochlauf von
+    Cumulus zur&uuml;ckzusetzen. Wenn es dennoch Probleme gibt, kann
+    der Knopf <i>Zur&uuml;cksetzen zum Auslieferungszustand</i>
+    benutzt werden.
+
+    <p>
+      Die meisten GPS Ger&auml;te liefern auf MSL (H&ouml;he &uuml;ber NN) bezogene
+H&ouml;henangaben. Einige von ihnen (z.B. CF BC-307) k&ouml;nnen aber auch die HAE (H&ouml;he
+&uuml;ber dem WGS84 Ellipsoid) liefern. Sollten Sie eine konstante Abweichnung in der angezeigten
+H&ouml;he nach oben oder unten feststellen, sollten Sie die jeweils andere Einstellung ausprobieren.
+Sollte dies alles nicht zum Erfolg f&uuml;hren, so w&auml;hlen Sie bitte die
+H&ouml;heneinstellung<em>Nutzer</em>. Nun haben Sie die M&ouml;glichkeit, einen entsprechenden
+&nbsp;H&ouml;henkorrekturwert Ihrer Wahl in der darunter sichtbar werdenden Spinbox einzutragen.
+
+    <p> Cumulus gestattet auch das Abgleichen der Systemuhr des PDA
+    auf die GPS Zeit, wenn diese Option aktiviert wird. Dazu muss das
+    Programm aber unter dem Benutzer root laufen.
+
+    <table width="100%">
+    <tr>
+    <td></td>
+    <td align="center"><a href="cumulus.html">Anfang</a></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td align="left"><a href="cumulus-settings-sector.html">zur&uuml;ck</a></td>
+    <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
+    <td align="right"><a href="cumulus-settings-map.html">weiter</a></td>
+    </tr>
+    </table>
+</body>
+</html>
