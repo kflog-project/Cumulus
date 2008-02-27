@@ -36,12 +36,14 @@ extern MapContents  *_globalMapContents;
  */
 
 // Constructor of class
-SettingsPageSector::SettingsPageSector( QWidget *parent, const char *name ) :
-  QWidget( parent, name ),
+SettingsPageSector::SettingsPageSector( QWidget *parent) :
+  QWidget( parent ),
   loadedCylinderRadius(0),
   loadedInnerSectorRadius(0),
   loadedOuterSectorRadius(0)
 {
+  setObjectName("SettingsPageSector");
+
   GeneralConfig *conf = GeneralConfig::instance();
 
   QGridLayout *topLayout = new QGridLayout( this, 3, 1, 3, 0 );

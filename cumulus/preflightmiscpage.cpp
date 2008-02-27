@@ -26,8 +26,10 @@
 #include "generalconfig.h"
 
 
-PreFlightMiscPage::PreFlightMiscPage(QWidget *parent, const char *name ) : QWidget(parent,name)
+PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) : QWidget(parent)
 {
+  setObjectName("PreFlightMiscPage");
+
   QGridLayout *topLayout = new QGridLayout(this);
   int row = 0;
 

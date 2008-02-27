@@ -22,13 +22,15 @@
 #include "cucalc.h"
 #include "preflightgliderpage.h"
 
-PreFlightGliderPage::PreFlightGliderPage(QWidget *parent, const char *name ) : QWidget(parent,name)
+PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) : QWidget(parent)
 {
+  setObjectName("PreFlightGliderPage");
+
   lastGlider = 0;
 
   QGridLayout * topLayout = new QGridLayout(this, 4,2,5);
 
-  list = new GliderList(this, "gliderlist");
+  list = new GliderList(this);
   topLayout->addMultiCellWidget(list,1,1,1,2);
 
   QLabel * lblCoPilot=new QLabel(tr("Co-pilot:"),this);

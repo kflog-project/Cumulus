@@ -43,7 +43,7 @@ class SettingsPageMap : public QWidget
 {
     Q_OBJECT
 public:
-    SettingsPageMap(QWidget *parent=0, const char *name=0);
+    SettingsPageMap(QWidget *parent=0);
     ~SettingsPageMap();
 
 public slots: // Public slots
@@ -101,7 +101,7 @@ public:
     /**
      * Constructor
      */
-    SettingsPageMapAdv(QWidget *parent=0, const char *name=0);
+    SettingsPageMapAdv(QWidget *parent=0);
 
     /**
      * Destructor

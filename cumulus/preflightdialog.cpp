@@ -36,13 +36,13 @@ PreFlightDialog::PreFlightDialog(QWidget * parent, const char *name):
 
   tabWidget = new QTabWidget (this);
 
-  gliderpage = new PreFlightGliderPage(this,"gliderpage");
+  gliderpage = new PreFlightGliderPage(this);
   tabWidget->addTab(gliderpage, tr("&Glider"));
 
   taskpage=new TaskList(this);
   tabWidget->addTab(taskpage, tr("&Task"));
 
-  miscpage =new PreFlightMiscPage(this,"miscpage");
+  miscpage =new PreFlightMiscPage(this);
   tabWidget->addTab(miscpage, tr("&Common"));
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok

@@ -24,12 +24,14 @@
 #include "settingspagemap.h"
 #include "generalconfig.h"
 
-SettingsPageMap::SettingsPageMap(QWidget *parent, const char *name ) : QWidget(parent,name)
+SettingsPageMap::SettingsPageMap(QWidget *parent) : QWidget(parent)
 {
+  setObjectName("SettingsPageMap");
+
   QGridLayout * topLayout = new QGridLayout(this, 3,2,5);
   int row=0;
 
-  advancedPage = new SettingsPageMapAdv(this, "advancedMapPage");
+  advancedPage = new SettingsPageMapAdv(this);
 
   lvLoadOptions = new Q3ListView(this, "loadoptionlist");
   lvLoadOptions->addColumn(tr("Load / show map object"),180);
@@ -139,9 +141,12 @@ void SettingsPageMap::slot_query_close(bool& warn, QStringList& warnings)
 /*   Advanced map page    */
 /***********************************************************/
 
-SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent, const char *name)
-  : QDialog(parent, name, true)
+SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent) :
+  QDialog(parent)
 {
+  setObjectName("SettingsPageMapAdv");
+  setModal(true);
+
   currentProjType = ProjectionBase::Unknown;
 
   setWindowTitle(tr("Advanced map settings"));

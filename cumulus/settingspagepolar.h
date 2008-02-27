@@ -40,7 +40,7 @@ class SettingsPagePolar : public QDialog
 {
     Q_OBJECT
 public:
-    SettingsPagePolar(QWidget *parent=0, const char *name=0, Glider * glider=0);
+    SettingsPagePolar(QWidget *parent=0, Glider * glider=0);
     ~SettingsPagePolar();
     Polar* getPolar();
 

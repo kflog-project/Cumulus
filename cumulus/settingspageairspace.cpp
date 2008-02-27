@@ -26,20 +26,20 @@
 #include "generalconfig.h"
 #include "settingspageairspace.h"
 
-SettingsPageAirspace::SettingsPageAirspace(QWidget *parent, const char *name )
-    : QWidget(parent,name)
+SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
+  QWidget(parent)
 {
+  setObjectName("SettingsPageAirspace");
+
   // save current altitude unit. This unit must be considered during
   // storage. The internal storage is always in meters.
 
   altUnit = Altitude::getUnit();
   QString unit = (altUnit == Altitude::meters) ? "m" : "ft";
 
-  m_warningsDlg = new SettingsPageAirspaceWarnings( this,
-                  "SettingsPageAirspaceWarnings" );
+  m_warningsDlg = new SettingsPageAirspaceWarnings(this);
 
-  m_fillingDlg = new SettingsPageAirspaceFilling( this,
-                 "SettingsPageAirspaceFilling");
+  m_fillingDlg = new SettingsPageAirspaceFilling(this);
 
   QGridLayout *topLayout = new QGridLayout(this, 3, 5, 3);
   int row=0;
@@ -190,9 +190,8 @@ void SettingsPageAirspace::enabledToggled(bool enabled)
 /*            Filling page                                                    */
 /******************************************************************************/
 
-SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent,
-    const char *name)
-    : QDialog(parent, name, true, Qt::WStyle_StaysOnTop)
+SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
+  QDialog(parent, Qt::WStyle_StaysOnTop)
 {
   setWindowTitle(tr("Airspace filling settings"));
   setSizeGripEnabled(false);
@@ -396,10 +395,11 @@ void SettingsPageAirspaceFilling::enabledToggled(bool enabled)
 /*            Airspace Warning page                                           */
 /******************************************************************************/
 
-SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent,
-    const char *name)
-    : QDialog(parent, name, true, Qt::WStyle_StaysOnTop)
+SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
+  QDialog(parent, Qt::WStyle_StaysOnTop)
 {
+  setObjectName("SettingsPageAirspaceWarnings");
+  setModal(true);
   setWindowTitle(tr("Airspace warning settings"));
 
   // save current altitude unit. This unit must be considered during

@@ -42,9 +42,8 @@ class SettingsPageAirspace : public QWidget
 
   public:
 
-    SettingsPageAirspace(QWidget *parent=0, const char *name=0);
+    SettingsPageAirspace(QWidget *parent=0);
     ~SettingsPageAirspace();
-
 
   public slots: // Public slots
     /**
@@ -107,7 +106,7 @@ class SettingsPageAirspaceFilling: public QDialog
     Q_OBJECT
   public:
 
-    SettingsPageAirspaceFilling(QWidget *parent=0, const char *name=0);
+    SettingsPageAirspaceFilling( QWidget *parent=0 );
     ~SettingsPageAirspaceFilling();
 
     //SettingsPageAirspace takes care of our loading and saving,
@@ -169,7 +168,7 @@ class SettingsPageAirspaceWarnings : public QDialog
     Q_OBJECT
   public:
 
-    SettingsPageAirspaceWarnings( QWidget *parent=0, const char *name=0 );
+    SettingsPageAirspaceWarnings( QWidget *parent=0 );
     ~SettingsPageAirspaceWarnings();
 
     // SettingsPageWarnings takes care of our loading and saving, so

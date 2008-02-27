@@ -33,7 +33,7 @@ class PreFlightGliderPage : public QWidget
   {
     Q_OBJECT
   public:
-    PreFlightGliderPage(QWidget *parent=0, const char *name=0);
+    PreFlightGliderPage(QWidget *parent=0);
     ~PreFlightGliderPage();
     void save();
 

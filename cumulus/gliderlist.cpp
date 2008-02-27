@@ -25,129 +25,131 @@
 #include "settingspagepolar.h"
 
 
-SettingsPageGliderList::SettingsPageGliderList(QWidget *parent, const char *name )
-	: QWidget(parent,name)
+SettingsPageGliderList::SettingsPageGliderList(QWidget *parent) : QWidget(parent)
 {
-    resize(parent->size());
-    QBoxLayout *topLayout = new QVBoxLayout( this, 5 );
-    QBoxLayout *editrow=new QHBoxLayout(topLayout, 0);
+  setObjectName("SettingsPageGliderList");
 
-    editrow->addStretch(10);
+  resize(parent->size());
+  QBoxLayout *topLayout = new QVBoxLayout( this, 5 );
+  QBoxLayout *editrow=new QHBoxLayout(topLayout, 0);
 
-    QPushButton * cmdNew = new QPushButton(this);
-    cmdNew->setPixmap(GeneralConfig::instance()->loadPixmap( "new.png" ));
-    cmdNew->setFlat(true);
-    editrow->addWidget(cmdNew);
+  editrow->addStretch(10);
 
-    QPushButton * cmdEdit = new QPushButton(this);
-    cmdEdit->setPixmap(GeneralConfig::instance()->loadPixmap( "edit.png" ));
-    cmdEdit->setFlat(true);
-    editrow->addWidget(cmdEdit);
+  QPushButton * cmdNew = new QPushButton(this);
+  cmdNew->setPixmap(GeneralConfig::instance()->loadPixmap( "new.png" ));
+  cmdNew->setFlat(true);
+  editrow->addWidget(cmdNew);
 
-    QPushButton * cmdDel = new QPushButton(this);
-    cmdDel->setPixmap(GeneralConfig::instance()->loadPixmap( "trash.png" ));
-    cmdDel->setFlat(true);
-    editrow->addWidget(cmdDel);
-    //cmdDel->setEnabled(false);
+  QPushButton * cmdEdit = new QPushButton(this);
+  cmdEdit->setPixmap(GeneralConfig::instance()->loadPixmap( "edit.png" ));
+  cmdEdit->setFlat(true);
+  editrow->addWidget(cmdEdit);
 
-    list = new GliderList(this, "gliderlist");
+  QPushButton * cmdDel = new QPushButton(this);
+  cmdDel->setPixmap(GeneralConfig::instance()->loadPixmap( "trash.png" ));
+  cmdDel->setFlat(true);
+  editrow->addWidget(cmdDel);
+  //cmdDel->setEnabled(false);
 
-    topLayout->addWidget(list,10);
-    //QBoxLayout *buttonrow=new QHBoxLayout(topLayout);
+  list = new GliderList(this);
 
-    connect(cmdNew,  SIGNAL(clicked()), this, SLOT(slot_new()));
-    connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
-    connect(cmdDel,  SIGNAL(clicked()), this, SLOT(slot_delete()));
+  topLayout->addWidget(list,10);
+  //QBoxLayout *buttonrow=new QHBoxLayout(topLayout);
+
+  connect(cmdNew,  SIGNAL(clicked()), this, SLOT(slot_new()));
+  connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
+  connect(cmdDel,  SIGNAL(clicked()), this, SLOT(slot_delete()));
 }
 
 
 SettingsPageGliderList::~SettingsPageGliderList()
 {
-    // qDebug("SettingsPageGliderList::~SettingsPageGliderList() is called");
+  // qDebug("SettingsPageGliderList::~SettingsPageGliderList() is called");
 }
 
 
 void SettingsPageGliderList::showEvent(QShowEvent *)
 {
-    list->setFocus();
+  list->setFocus();
 }
 
 
 /** Called when a new glider needs to be made. */
 void SettingsPageGliderList::slot_new()
 {
-    SettingsPagePolar * dlg=new SettingsPagePolar(this, "glidereditor", 0);
-    connect(dlg, SIGNAL(newGlider(Glider*)), list, SLOT(slot_Added(Glider *)));
+  SettingsPagePolar *dlg = new SettingsPagePolar(this, 0);
+  connect(dlg, SIGNAL(newGlider(Glider*)), list, SLOT(slot_Added(Glider *)));
 
-    dlg->show();
+  dlg->show();
 }
 
 
 /** Called when the selected glider needs must be opened in the editor */
 void SettingsPageGliderList::slot_edit()
 {
-    SettingsPagePolar * dlg=new SettingsPagePolar(this, "glidereditor", list->getSelectedGlider());
-    connect(dlg, SIGNAL(editedGlider(Glider *)), list, SLOT(slot_Edited(Glider *)));
+  SettingsPagePolar *dlg = new SettingsPagePolar(this, list->getSelectedGlider());
+  connect(dlg, SIGNAL(editedGlider(Glider *)), list, SLOT(slot_Edited(Glider *)));
 
-    dlg->show();
+  dlg->show();
 }
 
 
 /** Called when the selected glider should be deleted from the catalog */
 void SettingsPageGliderList::slot_delete()
 {
-    Glider * _tmpGlider=list->getSelectedGlider();
-    if (!_tmpGlider)
-        return;
+  Glider * _tmpGlider=list->getSelectedGlider();
+  if (!_tmpGlider)
+    return;
 
-    int answer= QMessageBox::warning(this,tr("Delete?"),tr("Delete highlighted\nglider?"),
-                                     QMessageBox::Ok,
-                                     QMessageBox::Cancel | QMessageBox::Escape | QMessageBox::Default);
+  int answer= QMessageBox::warning(this,tr("Delete?"),tr("Delete highlighted\nglider?"),
+                                   QMessageBox::Ok,
+                                   QMessageBox::Cancel | QMessageBox::Escape | QMessageBox::Default);
 
-    if( answer == QMessageBox::Ok ) {
-        list->slot_Deleted(_tmpGlider);
-    }
+  if( answer == QMessageBox::Ok ) {
+    list->slot_Deleted(_tmpGlider);
+  }
 }
 
 
 void SettingsPageGliderList::slot_load()
 {
-    list->fillList();
+  list->fillList();
 }
 
 
 void SettingsPageGliderList::slot_save()
 {
-qDebug ("SettingsPageGliderList::slot_save");
-    list->save();
+  qDebug ("SettingsPageGliderList::slot_save");
+  list->save();
 }
 
 
 /* Called to ask is confirmation on the close is needed. */
 void SettingsPageGliderList::slot_query_close(bool& warn, QStringList& warnings)
 {
-    /*set warn to 'true' if the data has changed. Note that we can NOT just set warn equal to
-      _changed, because that way we might erase a warning flag set by another page! */
-    if (list->has_changed()) {
-        warn = true;
-        warnings.append(tr("the glider list"));
-    }
+  /*set warn to 'true' if the data has changed. Note that we can NOT just set warn equal to
+    _changed, because that way we might erase a warning flag set by another page! */
+  if (list->has_changed()) {
+    warn = true;
+    warnings.append(tr("the glider list"));
+  }
 }
 
 /****************************************************************************
        GliderList
- ****************************************************************************/
+****************************************************************************/
 
-GliderList::GliderList(QWidget * parent, const char * name):Q3ListView(parent,name)
+GliderList::GliderList(QWidget *parent) : Q3ListView(parent)
 {
-    addColumn(tr("Type"),95);
-    addColumn(tr("Registration"),65);
-    addColumn(tr("Callsign"),45);
-
-    setAllColumnsShowFocus(true);
-    _added=0;
-    _changed=false;
-    //connect (this, SIGNAL(selectionChanged(QListviewItem*)), this, SLOT(slotSelectionChanged(QListviewItem*)));
+  setObjectName("GliderList");
+  addColumn(tr("Type"));
+  addColumn(tr("Registration"));
+  addColumn(tr("Callsign"));
+  
+  setAllColumnsShowFocus(true);
+  _added=0;
+  _changed=false;
+  //connect (this, SIGNAL(selectionChanged(QListviewItem*)), this, SLOT(slotSelectionChanged(QListviewItem*)));
 }
 
 
@@ -162,34 +164,34 @@ GliderList::~GliderList()
 /** Retreives the gliders from the configfile, and fills the list. */
 void GliderList::fillList()
 {
-    clear();
-    Gliders.clear();
+  clear();
+  Gliders.clear();
 
-    QSettings config( QSettings::UserScope, "Cumulus" );
-    config.beginGroup("Glider Data");
+  QSettings config( QSettings::UserScope, "Cumulus" );
+  config.beginGroup("Glider Data");
 
-    QString keyname="Glider%1";
-    int i=1;
+  QString keyname="Glider%1";
+  int i=1;
 
-    while(config.contains(keyname.arg(i))) {
-        Glider * glider=new Glider();
-        if (glider->load(&config ,i)) {
-            Gliders.append(glider);
-            new Q3ListViewItem(this, glider->type(), glider->registration(), glider->callsign(), QString::number(glider->lastSafeID()));
-            //li->setPixmap(0, _globalMapConfig->getPixmap(wp->type,false,true));  //we will add a pixmap later, so don't delete li!
-        } else {
-            delete glider; //loading failed!
-        }
-        i++;
+  while(config.contains(keyname.arg(i))) {
+    Glider * glider=new Glider();
+    if (glider->load(&config ,i)) {
+      Gliders.append(glider);
+      new Q3ListViewItem(this, glider->type(), glider->registration(), glider->callsign(), QString::number(glider->lastSafeID()));
+      //li->setPixmap(0, _globalMapConfig->getPixmap(wp->type,false,true));  //we will add a pixmap later, so don't delete li!
+    } else {
+      delete glider; //loading failed!
     }
+    i++;
+  }
 
-    if (i>1) {
-        this->setCurrentItem(this->firstChild());
-    }
+  if (i>1) {
+    this->setCurrentItem(this->firstChild());
+  }
 
-    config.endGroup();
-    // qDebug("GliderList::fillList(): gliders=%d", Gliders.count());
-    _changed = false;
+  config.endGroup();
+  // qDebug("GliderList::fillList(): gliders=%d", Gliders.count());
+  _changed = false;
 }
 
 
@@ -209,8 +211,8 @@ void GliderList::save()
      In case of 5 gliders, the number of iterations is 10, and for 10 glider the number is 45 (worst
      case). That seems acceptable to me. For long lists, it would be more efficient to first sort
      the list, and then compare. */
-  for(uint i=2;i<=Gliders.count();i++) {
-    for(uint j=1;j<i;j++) {
+  for(int i=2;i<=Gliders.count();i++) {
+    for(int j=1;j<i;j++) {
       if(Gliders.at(j-1)->registration()==Gliders.at(i-1)->registration())
         // two gliders have the same registration, append a number to the second one.
         Gliders.at(j-1)->setRegistration(Gliders.at(j-1)->registration() + "(" + QString::number(u++) + ")");
@@ -222,7 +224,7 @@ void GliderList::save()
   //     qDebug("changed %d registrations",u-1);
 
   //store gliderlist
-  for(uint i=1;i<=Gliders.count();i++) {
+  for(int i=1;i<=Gliders.count();i++) {
     // qDebug("saving glider %d",i);
     Gliders.at(i-1)->safe(&config,i);
   }
@@ -302,23 +304,23 @@ void GliderList::slot_Added(Glider * glider)
 
 void GliderList::slot_Deleted(Glider * glider)
 {
-    //remove from listView
-    if ( glider ) {
-        Q3ListViewItemIterator it(this);
+  //remove from listView
+  if ( glider ) {
+    Q3ListViewItemIterator it(this);
 
-        for(;it.current();++it) {
-            if (glider->lastSafeID()==it.current()->text(3).toInt()) {
-                delete it.current();
-                break;
-            }
-        }
-
-        //remove from catalog
-        int index = Gliders.indexOf (glider);
-        Gliders.removeAt(index);
-        //save();
-        _changed = true;
+    for(;it.current();++it) {
+      if (glider->lastSafeID()==it.current()->text(3).toInt()) {
+        delete it.current();
+        break;
+      }
     }
+
+    //remove from catalog
+    int index = Gliders.indexOf (glider);
+    Gliders.removeAt(index);
+    //save();
+    _changed = true;
+  }
 }
 
 

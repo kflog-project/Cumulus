@@ -33,7 +33,7 @@ class PreFlightMiscPage : public QWidget
     Q_OBJECT
 
 public:
-    PreFlightMiscPage(QWidget *parent=0, const char *name=0);
+    PreFlightMiscPage(QWidget *parent=0);
 
     virtual ~PreFlightMiscPage();
 

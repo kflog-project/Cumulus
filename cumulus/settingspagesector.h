@@ -40,7 +40,7 @@ class SettingsPageSector : public QWidget
 
 public:
 
-  SettingsPageSector( QWidget *parent=0, const char *name=0 );
+  SettingsPageSector( QWidget *parent=0);
   
   virtual ~SettingsPageSector();
 

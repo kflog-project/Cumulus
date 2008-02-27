@@ -37,7 +37,7 @@ class GliderList : public Q3ListView
 
 public:
 
-    GliderList(QWidget * parent=0, const char * name=0);
+    GliderList(QWidget *parent=0);
     ~GliderList();
 
     /**
@@ -114,7 +114,7 @@ class SettingsPageGliderList : public QWidget
 
 public:
 
-    SettingsPageGliderList(QWidget *parent=0, const char *name=0);
+    SettingsPageGliderList(QWidget *parent=0);
     ~SettingsPageGliderList();
 
 public slots: // Public slots
