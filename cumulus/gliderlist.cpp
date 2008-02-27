@@ -49,7 +49,6 @@ SettingsPageGliderList::SettingsPageGliderList(QWidget *parent) : QWidget(parent
   cmdDel->setPixmap(GeneralConfig::instance()->loadPixmap( "trash.png" ));
   cmdDel->setFlat(true);
   editrow->addWidget(cmdDel);
-  //cmdDel->setEnabled(false);
 
   list = new GliderList(this);
 
@@ -87,7 +86,15 @@ void SettingsPageGliderList::slot_new()
 /** Called when the selected glider needs must be opened in the editor */
 void SettingsPageGliderList::slot_edit()
 {
-  SettingsPagePolar *dlg = new SettingsPagePolar(this, list->getSelectedGlider());
+  Glider *selectedGlider = list->getSelectedGlider();
+
+  if( selectedGlider == 0 )
+    {
+      // @AP: no glider is selected, ignore the request
+      return;
+    }
+
+  SettingsPagePolar *dlg = new SettingsPagePolar(this, selectedGlider );
   connect(dlg, SIGNAL(editedGlider(Glider *)), list, SLOT(slot_Edited(Glider *)));
 
   dlg->show();
@@ -236,7 +243,7 @@ void GliderList::save()
 
 /** Returns a pointer to the currently highlighted glider. If take is
     true, the glider object is taken from the list too. */
-Glider * GliderList::getSelectedGlider(bool take)
+Glider *GliderList::getSelectedGlider(bool take)
 {
   int i,n;
 
