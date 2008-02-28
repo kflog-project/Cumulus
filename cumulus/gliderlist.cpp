@@ -126,7 +126,6 @@ void SettingsPageGliderList::slot_load()
 
 void SettingsPageGliderList::slot_save()
 {
-  qDebug ("SettingsPageGliderList::slot_save");
   list->save();
 }
 
