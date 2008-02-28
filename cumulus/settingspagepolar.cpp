@@ -158,34 +158,39 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
   topLayout->setColStretch (1, 20);
   topLayout->setColStretch (2, 10);
 
-  show();
-
   connect (comboType, SIGNAL(activated(const QString&)),
            this, SLOT(slotActivated(const QString&)));
   connect (buttonShow, SIGNAL(clicked()),
            this, SLOT(slotButtonShow()));
 
   if (isNew)
-    readPolarData();
-  slot_load();
+    {
+      readPolarData();
+    }
+  else
+    {
+      slot_load();
+    }
+
+  show();
 }
 
 
 SettingsPagePolar::~SettingsPagePolar()
 {
-#warning ~SettingsPagePolar() FIX delete bug
-//   while (!_polars.isEmpty())
-//     delete _polars.takeFirst();	
+   while (!_polars.isEmpty())
+     delete _polars.takeFirst();	
 }
 
 
 Polar* SettingsPagePolar::getPolar()
 {
   int pos = comboType->currentIndex();
+
   if ((pos >= 0) && (pos < _polars.count()))
     return _polars.at(pos);
   else
-    return (Polar *) 0;
+    return static_cast<Polar *> (0);
 }
 
 
@@ -211,6 +216,7 @@ void SettingsPagePolar::slot_load()
     edtGCall->setText(_glider->callsign());
 
     spinWater->setValue(_glider->maxWater());
+
     if (_glider->seats() == Glider::doubleSeater)
       seatsTwo->setChecked(true);
     else
@@ -237,10 +243,12 @@ void SettingsPagePolar::slot_save()
   if(!_glider) {
     _glider=new Glider;
   }
+
   _glider->setType(comboType->currentText().stripWhiteSpace());
   _glider->setRegistration(edtGReg->text().stripWhiteSpace());
   _glider->setCallsign(edtGCall->text().stripWhiteSpace());
   _glider->setMaxWater(spinWater->value());
+
   if (seatsTwo->isChecked())
     _glider->setSeats(Glider::doubleSeater);
   else
@@ -394,10 +402,12 @@ void SettingsPagePolar::readPolarData ()
 /** called when a glider type has been selected */
 void SettingsPagePolar::slotActivated(const QString& type)
 {
-  //qDebug ("SettingsPagePolar::slotActivated(%s)", type.toLatin1().data());
+  // qDebug ("SettingsPagePolar::slotActivated(%s)", type.toLatin1().data());
+
   if(!_glider) {
     _glider=new Glider();
   }
+
   _polar = getPolar();
 
   if (_polar) {
@@ -412,6 +422,7 @@ void SettingsPagePolar::slotActivated(const QString& type)
     double load = _polar->grossWeight() - _polar->emptyWeight();
     addedLoad->setValue((int) load);
     spinWater->setValue(_polar->maxWater());
+
     if (_polar->seats() == 2) {
       seatsTwo->setChecked(true);
     }
@@ -420,7 +431,9 @@ void SettingsPagePolar::slotActivated(const QString& type)
     }
   }
 
-  _glider->setPolar(_polar);
+  // @AP: make a deep copy of polare, because setPolar will remove the
+  // before passed polare
+  _glider->setPolar( new Polar(*_polar));
   _glider->setType (type);
 }
 
