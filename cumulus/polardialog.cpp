@@ -20,9 +20,12 @@
 
 #include "polardialog.h"
 
-PolarDialog::PolarDialog(const Polar* polar, QWidget* parent)
-        : QDialog (parent, "polardialog", true, Qt::WStyle_StaysOnTop)
+PolarDialog::PolarDialog(const Polar* polar, QWidget* parent) :
+  QDialog (parent, Qt::WStyle_StaysOnTop)
 {
+    setObjectName("PolarDialog");
+    setModal(true);
+    
     _polar = const_cast<Polar*>(polar);
 
     setBackgroundColor (Qt::white);

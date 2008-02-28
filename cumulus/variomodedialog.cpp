@@ -26,11 +26,13 @@
 #include "mapconfig.h"
 #include "generalconfig.h"
 
-extern MapConfig * _globalMapConfig;
+extern MapConfig *_globalMapConfig;
 
-VarioModeDialog::VarioModeDialog (QWidget *parent) :
-  QDialog( parent, "VarioModeDialog", true, Qt::WStyle_StaysOnTop )
+VarioModeDialog::VarioModeDialog(QWidget *parent) :
+  QDialog( parent, Qt::WStyle_StaysOnTop )
 {
+  setObjectName("VarioModeDialog");
+  setModal(true);
   setWindowTitle (tr("Vario"));
 
   setFont(QFont ( "Helvetica", 16, QFont::Bold ));

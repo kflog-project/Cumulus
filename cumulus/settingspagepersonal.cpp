@@ -56,13 +56,13 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 
   lbl = new QLabel(tr("Home site lat.:"), this);
   topLayout->addWidget(lbl, row, 0);
-  edtHomeLat = new LatEdit(this, "HomeLat");
+  edtHomeLat = new LatEdit(this);
   topLayout->addWidget(edtHomeLat, row, 1, 1, 2);
   row++;
 
   lbl = new QLabel(tr("Home site lon.:"), this);
   topLayout->addWidget(lbl, row, 0);
-  edtHomeLong = new LongEdit(this, "HomeLong");
+  edtHomeLong = new LongEdit(this);
   topLayout->addWidget(edtHomeLong, row, 1, 1, 2);
   row++;
 

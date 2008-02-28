@@ -34,7 +34,7 @@ class CoordEdit : public QLineEdit
     Q_OBJECT
 public:
 
-    CoordEdit(QWidget *parent=0, const char *name=0);
+    CoordEdit(QWidget *parent=0);
     ~CoordEdit()
     {}
     ;
@@ -88,7 +88,7 @@ class LatEdit : public CoordEdit
 {
     Q_OBJECT
 public:
-    LatEdit(QWidget *parent=0, const char *name=0, const int base=1);
+    LatEdit(QWidget *parent=0, const int base=1);
 
     ~LatEdit(){};
 
@@ -103,7 +103,7 @@ class LongEdit : public CoordEdit
 {
     Q_OBJECT
 public:
-    LongEdit(QWidget *parent=0, const char *name=0, const int base=1);
+    LongEdit(QWidget *parent=0, const int base=1);
 
     ~LongEdit() {};
 
@@ -112,4 +112,5 @@ public:
      */
     void setKFLogDegree(int value);
 };
+
 #endif

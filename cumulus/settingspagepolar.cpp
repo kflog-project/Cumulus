@@ -185,7 +185,7 @@ Polar* SettingsPagePolar::getPolar()
   if ((pos >= 0) && (pos < _polars.count()))
     return _polars.at(pos);
   else
-    return NULL;
+    return (Polar *) 0;
 }
 
 

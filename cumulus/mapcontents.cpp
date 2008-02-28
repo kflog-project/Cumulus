@@ -203,11 +203,11 @@ const QString MapContents::mapDir2 = GeneralConfig::instance()->getInstallRoot()
 const QString MapContents::mapDir3 = "/mnt/card/maps";  //secure digital card
 
 
-MapContents::MapContents(QObject* parent, WaitScreen * waitscreen)
+MapContents::MapContents(QObject* parent, WaitScreen* waitscreen)
   : QObject(parent),
-    airportList(this, "airportList"),
-    gliderList(this, "gliderList"),
-    outList(this, "outList"),
+    airportList(this),
+    gliderList(this),
+    outList(this),
     isFirst(true)
 {
   ws=waitscreen;

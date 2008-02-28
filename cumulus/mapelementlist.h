@@ -37,7 +37,7 @@ class MapElementList : public QObject, public QList<BaseMapElement*>
   /**
    * Constructor
    */
-  MapElementList( QObject * parent=0, const char * name=0 );
+  MapElementList( QObject *parent=0 );
 
   /**
    * Destructor

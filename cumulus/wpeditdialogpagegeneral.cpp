@@ -47,12 +47,12 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent) :
 
   QLabel * lblLat = new QLabel(tr("Latitude:"), this);
   topLayout->addWidget(lblLat,row,0);
-  edtLat = new LatEdit(this, "Lat", conf->getHomeLat());
+  edtLat = new LatEdit(this, conf->getHomeLat());
   topLayout->addWidget(edtLat,row++,1);
 
   QLabel * lblLon = new QLabel(tr("Longitude:"), this);
   topLayout->addWidget(lblLon,row,0);
-  edtLong = new LongEdit(this, "Long", conf->getHomeLon());
+  edtLong = new LongEdit(this, conf->getHomeLon());
   topLayout->addWidget(edtLong,row++,1);
 
   QLabel * lblElev = new QLabel(tr("Elevation:"), this);

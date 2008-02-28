@@ -19,11 +19,12 @@
 #include "mapelementlist.h"
 
 
-MapElementList::MapElementList( QObject * parent, const char * name )
- : QObject(parent, name)
+MapElementList::MapElementList( QObject *parent )
+ : QObject(parent)
 {
+  setObjectName("MapElementList");
   m_timer = new QTimer();
-  m_timer->setSingleShot ( true );
+  m_timer->setSingleShot( true );
   connect(m_timer, SIGNAL(timeout()), SLOT(destroySet()));
 }
 
