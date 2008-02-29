@@ -53,7 +53,6 @@ GeneralConfig::~GeneralConfig()
   // qDebug("GeneralConfig::~GeneralConfig(): is called");
   save();
   _theInstance=0;
-  _airspaceWarningGeneral=true;
   delete _homeWp;
 }
 
@@ -507,8 +506,6 @@ void GeneralConfig::save()
   setValue( "Wind", _unitWind );
   setValue( "Position", _unitPos );
   endGroup();
-
-  sync();
 }
 
 

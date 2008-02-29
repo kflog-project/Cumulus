@@ -191,7 +191,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
 
 #warning switch screensaver off, if necessary
 
-  ws = new WaitScreen( this, "Waitscreen" );
+  ws = new WaitScreen(this);
 
   ws->slot_SetText1( tr( "Creating map elements..." ) );
   _globalMapMatrix = new MapMatrix( this );
@@ -536,6 +536,21 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   gps->blockSignals( false );
 
   show();
+
+  if( ! GeneralConfig::instance()->getAirspaceWarningEnabled() )
+    {
+      int answer= QMessageBox::warning( this,tr("Airspace Warnings?"),
+                                       tr("<b>Airspace warnings are disabled!<br>"
+                                           "Do you want enable them?</b>"),
+                                       QMessageBox::Yes,
+                                       QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
+
+      if (answer==QMessageBox::Yes)
+        {
+          GeneralConfig::instance()->setAirspaceWarningEnabled(true);
+        }
+    }
+
   qDebug( "End startup cumulusapp" );
 }
 
@@ -873,7 +888,7 @@ void CumulusApp::closeEvent ( QCloseEvent* evt )
   playSound();
 
   QMessageBox mb( tr( "Are you sure?" ),
-                  tr( "<qt><b>Cumulus will be terminated.<br>Are you sure?</b></qt>" ),
+                  tr( "<b>Cumulus will be terminated.<br>Are you sure?</b>" ),
                   QMessageBox::Warning,
                   QMessageBox::Yes | QMessageBox::Default,
                   QMessageBox::No,
