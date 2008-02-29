@@ -326,19 +326,37 @@ void ReachableList::calculateGlidePath()
     // recalculate Distance
     ReachablePoint *p = at(i);
     WGSPoint pt = p->getWaypoint()->origP;
-    distance.setKilometers(dist(&lastPosition,&pt));
-    p->setDistance( distance );
-    // recalculate Bearing
-    p->setBearing( int(rint(getBearingWgs(lastPosition, pt) * 180/M_PI)) );
-    // glide path
     Altitude arrivalAlt;
     Speed bestSpeed;
-    if( !calculator->glidePath(p->getBearing(), p->getDistance(),
-                               Altitude(p->getElevation()),
-                               arrivalAlt, bestSpeed ) )
-      return;
 
-    p->setArrivalAlt( arrivalAlt );
+    distance.setKilometers(dist(&lastPosition,&pt));
+
+    if( lastPosition == pt || distance.getMeters() <= 10.0 ) {
+      // @AP: there is nearly no difference between the two points,
+      // therefore we have no distance and no bearing
+      distance.setMeters(0.0);
+      p->setDistance( distance );
+      p->setBearing( 0 );
+      p->setArrivalAlt( calculator->getAltitudeCollection().gpsAltitude  );
+    }
+    else {
+      p->setDistance( distance );
+
+      // recalculate Bearing
+      p->setBearing( int(rint(getBearingWgs(lastPosition, pt) * 180/M_PI)) );
+
+      // glide path
+
+      if( !calculator->glidePath(p->getBearing(), p->getDistance(),
+                                 Altitude(p->getElevation()),
+                                 arrivalAlt, bestSpeed ) )
+        {
+          return;
+        }
+
+      p->setArrivalAlt( arrivalAlt );
+    }
+
     //arrivalAltMap[p->getName()] = (int) arrivalAlt.getMeters()+safetyAlt;
     //distanceMap[p->getName()] = distance;
     arrivalAltMap[ coordinateString ( pt ) ] = (int) arrivalAlt.getMeters()+safetyAlt;
@@ -346,6 +364,7 @@ void ReachableList::calculateGlidePath()
     if( arrivalAlt.getMeters() > 0 )
       counter++;
   }
+
   modeAltitude = true;
   qSort(begin(), end());
   // qDebug("Number of reachable sites (arriv >0): %d", counter );
