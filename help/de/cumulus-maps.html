@@ -28,7 +28,7 @@
         (ground) mit Merkmalen wie Stra&szlig;en, St&auml;dten, Fl&uuml;ssen und Gel&auml;ndekarten (terrain)
         mit H&ouml;henangaben</li>
         
-        <li>Luftr&auml;ume (airspace), <b>Nicht mehr aktuell! Benutzen Sie andere Alternativen,
+        <li>Luftr&auml;ume (airspace), <b>Nicht mehr unterst&uuml;tzt! Benutzen Sie andere Alternativen,
             z.B. <a href="http://www.segelflug.de/segelflieger/michael.meier/download/OPENAIR.TXT">OPENAIR.TXT</a></b></li>
 
         <li>Flugpl&auml;tze (airfields), <b>Nicht mehr aktuell! Benutzen Sie andere Alternativen,
@@ -45,18 +45,18 @@
     <p>
     Die Karten k&ouml;nnen in drei Verzeichnissen installiert werden:
     <ul>
-      <li>Auf dem PDA selbst, in $HOME/Applications/cumulus/maps/. 
-        Dies ist das bevorzugte Verzeichnis. 
-        Hier werden die Karten zuerst gesucht.
+      <li>In $HOME/maps/.
+        Dies ist das bevorzugte Verzeichnis. Hier werden die Karten zuerst gesucht.
       </li>
-      <li>Auf der CompactFlash Card, im Wurzelverzeichnis unter /maps.</li>
+      <li>Im Installationsverzeichnis unter /opt/cumulus/maps.</li>
       <li>Auf der SecureDigital Card, im Wurzelverzeichnis unter /maps.</li>
     </ul>
     </p>
 
-    Die Flugplatz- und Luftraumdateien sind in separaten
+    Die Bodenkarten sind im Unterverzeichnis <i>landscape</i> von <i>maps</i> abzulegen.
+    Die Flugplatz- und Luftraumdateien sind in 
     Unterverzeichnissen von <i>maps</i> mit den Namen <i>airfields</i>
-    bzw. <i>airspace</i> abzulegen.
+    bzw. <i>airspace</i> zu speichern.
 
     <p>Die Karten werden ebenso wie Wegpunkte und Aufgaben mit
     <i>KFLog/Embedded</i> gemeinsam genutzt..
