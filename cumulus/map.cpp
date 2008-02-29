@@ -1718,7 +1718,7 @@ void Map::__drawScale()
 
   //draw text itself
   scaleP.setPen(pen);
-  scaleP.drawText(leftTPos,this->height()-7+txtRect.height()/2,scaleText);
+  scaleP.drawText(leftTPos,this->height()-10+txtRect.height()/2,scaleText);
   scaleP.end();
 }
 

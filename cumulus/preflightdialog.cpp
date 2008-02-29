@@ -27,7 +27,7 @@
 
 extern MapContents * _globalMapContents;
 
-PreFlightDialog::PreFlightDialog(QWidget * parent, const char *name):
+PreFlightDialog::PreFlightDialog(QWidget * parent, const char *name) :
   QDialog(parent, Qt::WStyle_StaysOnTop)
 {
   setObjectName("PreFlightDialog");

@@ -34,7 +34,7 @@ class WaitScreen : public QDialog
 {
     Q_OBJECT
 public:
-    WaitScreen(QWidget *parent=0, const char *name=0);
+    WaitScreen(QWidget *parent=0);
 
     ~WaitScreen();
 

@@ -23,63 +23,55 @@
 #include "mapinfobox.h"
 #include "resource.h"
 
-CuLabel::CuLabel ( QWidget * parent, const char * name, Qt::WFlags f ):
-        QLabel(parent, name, f)
+CuLabel::CuLabel ( QWidget * parent, Qt::WFlags f ):
+  QLabel(parent, f)
 {}
 
-
-CuLabel::CuLabel ( const QString & text, QWidget * parent, const char * name, Qt::WFlags f ):
-        QLabel(text, parent, name, f)
+CuLabel::CuLabel ( const QString & text, QWidget * parent, Qt::WFlags f ):
+  QLabel(text, parent, f)
 {}
-
-
-CuLabel::CuLabel ( QWidget * buddy, const QString & text, QWidget * parent, const char * name, Qt::WFlags f ):
-        QLabel(buddy, text, parent, name, f)
-{}
-
 
 void CuLabel::mousePressEvent ( QMouseEvent * /*e*/ )
 {
-    emit mousePress();
+  emit mousePress();
 }
 
 
 MapInfoBox::MapInfoBox(QWidget * parent, int FontDotsize ):QWidget(parent,"")
 {
-    QFont tfnt( "Helvetica", FontDotsize, QFont::Bold  );
-    //  QFont pfnt( "Helvetica", MIN(4, FontDotsize), QFont::Normal  );
-    QFont pfnt( "Helvetica", 4, QFont::Normal  );
-    QBoxLayout * layout = new QHBoxLayout(this,0);
+  QFont tfnt( "Helvetica", FontDotsize, QFont::Bold  );
+  QFont pfnt( "Helvetica", 4, QFont::Normal  );
+  QBoxLayout * layout = new QHBoxLayout(this,0);
 
-    _ptext = new QLabel(this, "" );
-    _ptext->setFont(pfnt);
-    _ptext->setFixedHeight( 10 );
-    _ptext->setIndent(0);
+  _ptext = new QLabel(this, "" );
+  _ptext->setFont(pfnt);
+  _ptext->setFixedHeight( 10 );
+  _ptext->setIndent(0);
 
-    _text = new QLabel(this, "" );
-    _text->setFont(tfnt);
+  _text = new QLabel(this, "" );
+  _text->setFont(tfnt);
 
-    // avoid clipping of 'g,q,j' for small fonts
-    /*if( FontDotsize <= 10 )
-      {
-        this->setFixedHeight(tfnt.pointSize()+6); 
-        _text->setFixedHeight( tfnt.pointSize()+6 );
-      }
+  // avoid clipping of 'g,q,j' for small fonts
+  /*if( FontDotsize <= 10 )
+    {
+    this->setFixedHeight(tfnt.pointSize()+6); 
+    _text->setFixedHeight( tfnt.pointSize()+6 );
+    }
     else
-      {
-        this->setFixedHeight(tfnt.pointSize());
-        _text->setFixedHeight( tfnt.pointSize());
-      }       */
-    _text->setFixedHeight(MAX(16, FontDotsize));
-    setFixedHeight(MAX(16, FontDotsize));
-    layout->addWidget(_ptext,0,Qt::AlignTop);
-    layout->addWidget(_text,-4,Qt::AlignBottom);
-    layout->addStretch(10);
-    setValue("-");
-    setPreText("");
+    {
+    this->setFixedHeight(tfnt.pointSize());
+    _text->setFixedHeight( tfnt.pointSize());
+    }       */
+  _text->setFixedHeight(MAX(16, FontDotsize));
+  setFixedHeight(MAX(16, FontDotsize));
+  layout->addWidget(_ptext,0,Qt::AlignTop);
+  layout->addWidget(_text,-4,Qt::AlignBottom);
+  layout->addStretch(10);
+  setValue("-");
+  setPreText("");
 
-    _text->installEventFilter(this);
-    _ptext->installEventFilter(this);
+  _text->installEventFilter(this);
+  _ptext->installEventFilter(this);
 }
 
 
@@ -90,50 +82,50 @@ MapInfoBox::~MapInfoBox()
 /** Read property of QString _PreText. */
 const QString& MapInfoBox::getPreText()
 {
-    return _PreText;
+  return _PreText;
 }
 
 
 /** Write property of QString _PreText. */
 void MapInfoBox::setPreText( const QString _newVal)
 {
-    _PreText = _newVal;
-    _ptext->setText(_PreText);
+  _PreText = _newVal;
+  _ptext->setText(_PreText);
 }
 
 
 /** Read property of QString _value. */
 const QString& MapInfoBox::getValue()
 {
-    return _value;
+  return _value;
 }
 
 
 /** Write property of QString _value. */
 void MapInfoBox::setValue( const QString _newVal)
 {
-    _value = _newVal;
-    _text->setText(_value);
+  _value = _newVal;
+  _text->setText(_value);
 }
 
 
 bool MapInfoBox::event(QEvent * e)
 {
-    if (e->type() == QEvent::MouseButtonPress) {
-        emit mousePress() ;
-        return true;
-    }
+  if (e->type() == QEvent::MouseButtonPress) {
+    emit mousePress() ;
+    return true;
+  }
 
-    return QWidget::event( e );
+  return QWidget::event( e );
 }
 
 
 bool MapInfoBox::eventFilter(QObject * o, QEvent * e)
 {
-    if (e->type() == QEvent::MouseButtonPress) {
-        emit mousePress();
-        return true;
-    }
+  if (e->type() == QEvent::MouseButtonPress) {
+    emit mousePress();
+    return true;
+  }
 
-    return QWidget::eventFilter( o, e );
+  return QWidget::eventFilter( o, e );
 }

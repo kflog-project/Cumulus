@@ -35,14 +35,9 @@ class CuLabel : public QLabel
 {
     Q_OBJECT
 public:
-  CuLabel ( QWidget * parent, const char * name = 0, Qt::WFlags f = 0 );
+  CuLabel ( QWidget *parent, Qt::WFlags f = 0 );
 
-  CuLabel ( const QString & text, QWidget * parent,
-            const char * name = 0, Qt::WFlags f = 0 );
-
-  CuLabel ( QWidget * buddy, const QString & text, QWidget * parent,
-            const char * name = 0, Qt::WFlags f = 0 );
-
+  CuLabel ( const QString &text, QWidget *parent, Qt::WFlags f = 0 );
 
 signals:
     /**
