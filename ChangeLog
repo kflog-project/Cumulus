@@ -18,6 +18,12 @@ Cumulus changelog
 Cumulus 2.0.0 (Development based on X11/Qt-4.3.3)
 -------------------------------------------------
 
+[-] 2008-02-29 AP: Bugfix: Wrong display of bearing and altitude in reachable
+                   list, if the distance was nearly zero between current position
+		   and target.
+[-] 2008-02-29 AP: Bugfix: Memory problem in glider list and editor fixed.
+                   It caused a crash if the config dialog was closed and a new
+		   glider was added.
 [+] 2008-02-27 AP: Help html browser added, Personal Setting expanded
                    by language selection box for de/en.
 [-] 2008-02-25 AP: Bugfix: welt2000.conf file was never read due to typo
