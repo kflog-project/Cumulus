@@ -49,7 +49,7 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
   list->addColumn(tr("Name"));
   list->addColumn(tr("Dist"));
   list->addColumn(tr("Brg"));
-  list->addColumn(tr("RB"));
+  list->addColumn(tr("R"), 22); // limit width that only the arrow icon is to see
   list->addColumn(tr("Arv"));
   list->addColumn(tr("SS"));
 
