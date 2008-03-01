@@ -30,19 +30,19 @@
  * @author Axel Pauli
  */
 class VarioModeDialog : public QDialog
-{
+  {
     Q_OBJECT
-public:
+  public:
 
     VarioModeDialog(QWidget *parent);
     ~VarioModeDialog();
 
-public slots:
+  public slots:
     void load();
 
     void save();
 
-signals:
+  signals:
     /**
      * This slot is called, if the integration time has
      * been changed. Passed value in seconds
@@ -60,7 +60,7 @@ signals:
     void newTEKAdjust(int newAdjust);
 
 
-private:
+  private:
     QRadioButton* one;
     QRadioButton* five;
     QRadioButton* ten;
@@ -78,11 +78,11 @@ private:
     bool    _TEKComp;
     int     _TEKAdjust;
 
-private slots:
+  private slots:
     void setTimer();
     void accept();
     void change(int newStep);
     void TekChanged( bool newState );
-};
+  };
 
 #endif

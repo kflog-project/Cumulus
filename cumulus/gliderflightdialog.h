@@ -49,8 +49,6 @@ private:
     QSpinBox* spinWater;
     QSpinBox* spinBugs;
     QPushButton* buttonDump;
-    QPushButton* buttonOK;
-    QPushButton* buttonCancel;
     QTimer* timeout;
     int _time;
 

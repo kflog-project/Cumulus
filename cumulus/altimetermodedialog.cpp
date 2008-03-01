@@ -18,10 +18,11 @@
 
 #include <QLabel>
 #include <QFont>
-#include <QDialogButtonBox>
+#include <QHBoxLayout>
 #include <QGroupBox>
 #include <QBoxLayout>
 #include <QSignalMapper>
+#include <QPushButton>
 
 #include "generalconfig.h"
 #include "altimetermodedialog.h"
@@ -32,9 +33,11 @@
 extern MapConfig *_globalMapConfig;
 
 AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
-  : QDialog(parent, "altimetermodedialog", true, Qt::WStyle_StaysOnTop),
+  : QDialog(parent, Qt::WStyle_StaysOnTop),
     _mode(0)
 {
+  setObjectName("AltimeterModeDialog");
+  setModal(true);
   setWindowTitle(tr("Altimeter"));
 
   setFont(QFont ( "Helvetica", 16, QFont::Bold ));
@@ -49,9 +52,6 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   _gnd->setEnabled(true);
   _std->setEnabled(true);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
-                                 | QDialogButtonBox::Cancel);
-
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   mainLayout->setObjectName("mainlayout");
 
@@ -65,12 +65,19 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   radioLayout->addWidget(_gnd);
   radioLayout->addWidget(_std);
 
-  QVBoxLayout* buttonLayout = new QVBoxLayout();
-  buttonLayout->setObjectName("buttonlayout");
-  buttonLayout->addWidget(buttonBox);
+  // Align ok and cancel button at the left and right side of the
+  // widget to have enough space between them. That shall avoid wrong
+  // button pressing in turbulent air.
+  QPushButton *ok = new QPushButton(tr("OK"), this);
+  QPushButton *cancel = new QPushButton (tr("Cancel"), this);
+
+  QHBoxLayout *butLayout = new QHBoxLayout;
+  butLayout->addWidget( ok );
+  butLayout->addStretch();
+  butLayout->addWidget( cancel );
 
   mainLayout->addLayout(modeLayout);
-  mainLayout->addLayout(buttonLayout);
+  mainLayout->addLayout(butLayout);
 
   timeout = new QTimer(this);
   timeout->setSingleShot(true);
@@ -84,8 +91,9 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(change_mode(int)));
 
   connect (timeout, SIGNAL(timeout()), this, SLOT(reject()));
-  connect (buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect (buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect (ok, SIGNAL(clicked()), this, SLOT(accept()));
+  connect (cancel, SIGNAL(clicked()), this, SLOT(reject()));
+
   load();
 }
 
@@ -194,5 +202,10 @@ void AltimeterModeDialog::setTimer()
   GeneralConfig *conf = GeneralConfig::instance();
 
   _time = conf->getInfoDisplayTime();
-  timeout->start (_time * 1000);
+
+  if( _time > 0 )
+    {
+      timeout->start (_time * 1000);
+    }    setModal(true);
+
 }
