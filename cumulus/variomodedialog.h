@@ -25,6 +25,7 @@
 #include <QSpinBox>
 #include <QLabel>
 #include <QCheckBox>
+#include <QPushButton>
 
 /**
  * @author Axel Pauli
@@ -61,6 +62,7 @@ class VarioModeDialog : public QDialog
 
 
   private:
+
     QRadioButton* one;
     QRadioButton* five;
     QRadioButton* ten;
@@ -70,6 +72,8 @@ class VarioModeDialog : public QDialog
     QSpinBox*    spinTEK;
     QCheckBox*   TEK;
     QLabel*      TekAdj;
+    QPushButton *tekPlus;
+    QPushButton *tekMinus;
 
     QTimer* timer;
     int     _timeout;
@@ -79,10 +83,17 @@ class VarioModeDialog : public QDialog
     int     _TEKAdjust;
 
   private slots:
+
     void setTimer();
     void accept();
     void change(int newStep);
     void TekChanged( bool newState );
+
+    void slot_timePlus();
+    void slot_timeMinus();
+
+    void slot_tekPlus();
+    void slot_tekMinus();
   };
 
 #endif

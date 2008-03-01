@@ -40,8 +40,8 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
 
   QGridLayout* gridLayout = new QGridLayout(this);
   gridLayout->setMargin(5);
-  stepGroup = new QGroupBox(tr("Time step width"), this);
 
+  stepGroup = new QGroupBox(tr("Time step width"), this);
   one = new QRadioButton(tr("1"), stepGroup);
   five = new QRadioButton(tr("5"), stepGroup);
   ten = new QRadioButton(tr("10"), stepGroup);
@@ -54,30 +54,77 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   radioLayout->addWidget(five);
   radioLayout->addWidget(ten);
 
-  gridLayout->addWidget(stepGroup, 0, 0, 1, 3);
+  int row = 0;
+  gridLayout->addWidget(stepGroup, row++, 0, 1, 3);
+
+  //---------------------------------------------------------------------
 
   QLabel* label = new QLabel(tr("Time:"), this);
-  gridLayout->addWidget(label, 1, 0, 1, 1);
+  gridLayout->addWidget(label, row, 0);
 
   spinTime = new QSpinBox(this);
-  spinTime->setButtonSymbols(QSpinBox::PlusMinus);
-  gridLayout->addWidget(spinTime, 1, 1, 1, 1);
+  spinTime->setButtonSymbols(QSpinBox::NoButtons);
+  spinTime->setRange(5, 150);
+
+  QPushButton *timePlus  = new QPushButton("+", this);
+  timePlus->setMaximumWidth( timePlus->size().height() );
+  timePlus->setMinimumWidth( timePlus->size().height() );
+  connect(timePlus, SIGNAL(clicked()), this, SLOT(slot_timePlus()));
+
+  QPushButton *timeMinus = new QPushButton("-", this);
+  timeMinus->setMaximumWidth( timeMinus->size().height() );
+  timeMinus->setMinimumWidth( timeMinus->size().height() );
+  connect(timeMinus, SIGNAL(clicked()), this, SLOT(slot_timeMinus()));
+
+  QHBoxLayout *tSpinLayout = new QHBoxLayout;
+  tSpinLayout->setSpacing(0);
+  tSpinLayout->addWidget(timePlus);
+  tSpinLayout->addWidget(spinTime);
+  tSpinLayout->addWidget(timeMinus);
+  gridLayout->addLayout(tSpinLayout, row, 1);
 
   QLabel* unit = new QLabel(tr("s"), this);
-  gridLayout->addWidget(unit, 1, 2, 1, 1);
+  gridLayout->addWidget(unit, row++, 2);
+
+  //---------------------------------------------------------------------
 
   QLabel* TekLbl = new QLabel(tr("TEK Mode:"), this);
-  gridLayout->addWidget(TekLbl, 2, 0, 1, 1);
+  gridLayout->addWidget(TekLbl, row, 0);
 
   TEK = new QCheckBox (tr(""), this);
-  gridLayout->addWidget(TEK, 2, 1, 1, 1);
+  gridLayout->addWidget(TEK, row++, 1);
+
+  //---------------------------------------------------------------------
 
   TekAdj = new QLabel(tr("TEK Adjust:"), this);
-  gridLayout->addWidget(TekAdj, 3, 0, 1, 1);
+  gridLayout->addWidget(TekAdj, row, 0);
 
-  spinTEK = new QSpinBox( -100, 100, 1, this, "spinTEK" );
-  spinTEK->setButtonSymbols(QSpinBox::PlusMinus);
-  gridLayout->addWidget(spinTEK, 3, 1, 1, 1);
+  spinTEK = new QSpinBox( this );
+  spinTEK->setRange( -100, 100 );
+  spinTEK->setSingleStep( 1 );
+  spinTEK->setButtonSymbols(QSpinBox::NoButtons);
+
+  tekPlus  = new QPushButton("+", this);
+  tekPlus->setMaximumWidth( tekPlus->size().height() );
+  tekPlus->setMinimumWidth( tekPlus->size().height() );
+  connect(tekPlus, SIGNAL(clicked()), this, SLOT(slot_tekPlus()));
+
+  tekMinus = new QPushButton("-", this);
+  tekMinus->setMaximumWidth( tekMinus->size().height() );
+  tekMinus->setMinimumWidth( tekMinus->size().height() );
+  connect(tekMinus, SIGNAL(clicked()), this, SLOT(slot_tekMinus()));
+
+  QHBoxLayout *tekSpinLayout = new QHBoxLayout;
+  tekSpinLayout->setSpacing(0);
+  tekSpinLayout->addWidget(tekPlus);
+  tekSpinLayout->addWidget(spinTEK);
+  tekSpinLayout->addWidget(tekMinus);
+  gridLayout->addLayout(tekSpinLayout, row, 1);
+
+  QLabel* unit1 = new QLabel(tr("%"), this);
+  gridLayout->addWidget(unit1, row++, 2);
+
+  //---------------------------------------------------------------------
 
   // Align ok and cancel button at the left and right side of the
   // widget to have enough space between them. That shall avoid wrong
@@ -90,7 +137,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   butLayout->addStretch();
   butLayout->addWidget( cancel );
 
-  gridLayout->addLayout(butLayout, 4, 0, 1, 3);
+  gridLayout->addLayout(butLayout, row, 0, 1, 3);
   setLayout(gridLayout);
 
   timer = new QTimer(this);
@@ -126,7 +173,10 @@ VarioModeDialog::~VarioModeDialog()
 
 void VarioModeDialog::TekChanged(bool newState )
 {
+  TekAdj->setEnabled(newState);
   spinTEK->setEnabled(newState);
+  tekPlus->setEnabled(newState);
+  tekMinus->setEnabled(newState);
 }
 
 
@@ -136,6 +186,7 @@ void VarioModeDialog::load()
   GeneralConfig *conf = GeneralConfig::instance();
 
   _intTime = conf->getVarioIntegrationTime();
+
   if( _intTime < 3 ) // check config value
     {
       _intTime = INT_TIME; // reset to default
@@ -241,6 +292,26 @@ void VarioModeDialog::change( int newStep )
   setTimer();
 }
 
+
+void  VarioModeDialog::slot_timePlus()
+{
+  spinTime->setValue( spinTime->value() + spinTime->singleStep() );
+}
+
+void  VarioModeDialog::slot_timeMinus()
+{
+  spinTime->setValue( spinTime->value() - spinTime->singleStep() ); 
+}
+
+void  VarioModeDialog::slot_tekPlus()
+{
+  spinTEK->setValue( spinTEK->value() + spinTEK->singleStep() );
+}
+
+void  VarioModeDialog::slot_tekMinus()
+{
+  spinTEK->setValue( spinTEK->value() - spinTEK->singleStep() ); 
+}
 
 void VarioModeDialog::accept()
 {
