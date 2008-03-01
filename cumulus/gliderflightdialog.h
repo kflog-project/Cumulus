@@ -52,9 +52,28 @@ private:
     QTimer* timeout;
     int _time;
 
+    QPushButton* mcPlus;
+    QPushButton* mcMinus;
+
+    QPushButton* waterPlus;
+    QPushButton* waterMinus;
+
+    QPushButton* bugsPlus;
+    QPushButton* bugsMinus;
+    
+
 private slots:
     void slotDump();
     void setTimer();
+
+    void slotMcPlus();
+    void slotMcMinus();
+
+    void slotWaterPlus();
+    void slotWaterMinus();
+
+    void slotBugsPlus();
+    void slotBugsMinus();
 
 signals:
     void settingsChanged();
