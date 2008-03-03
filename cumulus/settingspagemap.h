@@ -21,8 +21,8 @@
 #include <QWidget>
 #include <QDialog>
 #include <QCheckBox>
-#include <Q3ListView>
-#include <Q3CheckListItem>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 #include <QComboBox>
 #include <QPushButton>
 #include <QStringList>
@@ -65,19 +65,19 @@ public slots: // Public slots
 protected:
     QCheckBox * chkDrawDirectionLine;
 
-    Q3ListView * lvLoadOptions;
+    QTableWidget * lvLoadOptions;
 
-    //listitems in listview
-    Q3CheckListItem * liIsolines;
-    Q3CheckListItem * liIsolineBorders;
-    Q3CheckListItem * liWpLabels;
-    Q3CheckListItem * liWpLabelsExtraInfo;
-    Q3CheckListItem * liRoads;
-    Q3CheckListItem * liHighways;
-    Q3CheckListItem * liRailroads;
-    Q3CheckListItem * liCities;
-    Q3CheckListItem * liWaterways;
-    Q3CheckListItem * liForests;  //forests and ice
+    //list items in listview
+    QTableWidgetItem * liIsolines;
+    QTableWidgetItem * liIsolineBorders;
+    QTableWidgetItem * liWpLabels;
+    QTableWidgetItem * liWpLabelsExtraInfo;
+    QTableWidgetItem * liRoads;
+    QTableWidgetItem * liHighways;
+    QTableWidgetItem * liRailroads;
+    QTableWidgetItem * liCities;
+    QTableWidgetItem * liWaterways;
+    QTableWidgetItem * liForests;  //forests and ice
 
     QPushButton * cmdAdvanced;
 

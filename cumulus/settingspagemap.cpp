@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -17,9 +17,11 @@
 
 #include <QLabel>
 #include <QGridLayout>
-#include <Q3HGroupBox>
 #include <QMessageBox>
 #include <QDialogButtonBox>
+#include <QString>
+#include <QHeaderView>
+#include <QGroupBox>
 
 #include "settingspagemap.h"
 #include "generalconfig.h"
@@ -28,27 +30,29 @@ SettingsPageMap::SettingsPageMap(QWidget *parent) : QWidget(parent)
 {
   setObjectName("SettingsPageMap");
 
-  QGridLayout * topLayout = new QGridLayout(this, 3,2,5);
   int row=0;
+  QGridLayout * topLayout = new QGridLayout(this);
+  topLayout->setMargin(5);
 
-  advancedPage = new SettingsPageMapAdv(this);
+  lvLoadOptions = new QTableWidget(10, 1, this);
 
-  lvLoadOptions = new Q3ListView(this, "loadoptionlist");
-  lvLoadOptions->addColumn(tr("Load / show map object"),180);
-  lvLoadOptions->setAllColumnsShowFocus(true);
-  topLayout->addMultiCellWidget(lvLoadOptions,0,0,0,1);
-  topLayout->setRowStretch(row++,100);
+  // hide vertical headers
+  QHeaderView *vHeader = lvLoadOptions->verticalHeader();
+  vHeader->setVisible(false);
+    
+  QTableWidgetItem *item = new QTableWidgetItem( tr("Load / show map object") );
+  lvLoadOptions->setHorizontalHeaderItem( 0, item );
 
-  topLayout->addRowSpacing(row++,10);
+  topLayout->addWidget(lvLoadOptions, row++, 0, 1, 2);
 
   chkDrawDirectionLine = new QCheckBox(tr("Draw Bearing line"), this );
-  topLayout->addWidget(chkDrawDirectionLine,row++,0);
+  topLayout->addWidget(chkDrawDirectionLine, row, 0);
 
   cmdAdvanced = new QPushButton(tr("Advanced..."), this );
   topLayout->addWidget(cmdAdvanced, row++, 1, Qt::AlignRight);
 
-  connect(cmdAdvanced, SIGNAL(clicked()),
-          advancedPage, SLOT(show()));
+  advancedPage = new SettingsPageMapAdv(this);
+  connect(cmdAdvanced, SIGNAL(clicked()), advancedPage, SLOT(show()));
 }
 
 
@@ -64,17 +68,18 @@ void SettingsPageMap::slot_load()
   chkDrawDirectionLine->setChecked(conf->getMapBearLine());
 
   fillLoadOptionList();
+  liIsolines->setCheckState( conf->getMapLoadIsoLines() ? Qt::Checked : Qt::Unchecked );
 
-  liIsolines->setOn(conf->getMapLoadIsoLines());
-  liIsolineBorders->setOn(conf->getMapShowIsoLineBorders());
-  liWpLabels->setOn(conf->getMapShowWaypointLabels());
-  liWpLabelsExtraInfo->setOn(conf->getMapShowWaypointLabelsExtraInfo());
-  liRoads->setOn(conf->getMapLoadRoads());
-  liHighways->setOn(conf->getMapLoadHighways());
-  liRailroads->setOn(conf->getMapLoadRailroads());
-  liCities->setOn(conf->getMapLoadCities());
-  liWaterways->setOn(conf->getMapLoadWaterways());
-  liForests->setOn(conf->getMapLoadForests());
+  liIsolines->setCheckState( conf->getMapLoadIsoLines() ? Qt::Checked : Qt::Unchecked );
+  liIsolineBorders->setCheckState( conf->getMapShowIsoLineBorders() ? Qt::Checked : Qt::Unchecked );
+  liWpLabels->setCheckState( conf->getMapShowWaypointLabels() ? Qt::Checked : Qt::Unchecked );
+  liWpLabelsExtraInfo->setCheckState( conf->getMapShowWaypointLabelsExtraInfo() ? Qt::Checked : Qt::Unchecked );
+  liRoads->setCheckState( conf->getMapLoadRoads() ? Qt::Checked : Qt::Unchecked );
+  liHighways->setCheckState( conf->getMapLoadHighways() ? Qt::Checked : Qt::Unchecked );
+  liRailroads->setCheckState( conf->getMapLoadRailroads() ? Qt::Checked : Qt::Unchecked );
+  liCities->setCheckState( conf->getMapLoadCities() ? Qt::Checked : Qt::Unchecked );
+  liWaterways->setCheckState( conf->getMapLoadWaterways() ? Qt::Checked : Qt::Unchecked );
+  liForests->setCheckState( conf->getMapLoadForests() ? Qt::Checked : Qt::Unchecked );
 
   advancedPage->slot_load();
 }
@@ -87,16 +92,16 @@ void SettingsPageMap::slot_save()
 
   conf->setMapBearLine(chkDrawDirectionLine->isChecked());
 
-  conf->setMapLoadIsoLines(liIsolines->isOn());
-  conf->setMapShowIsoLineBorders(liIsolineBorders->isOn());
-  conf->setMapShowWaypointLabels(liWpLabels->isOn());
-  conf->setMapShowWaypointLabelsExtraInfo(liWpLabelsExtraInfo->isOn());
-  conf->setMapLoadRoads(liRoads->isOn());
-  conf->setMapLoadHighways(liHighways->isOn());
-  conf->setMapLoadRailroads(liRailroads->isOn());
-  conf->setMapLoadCities(liCities->isOn());
-  conf->setMapLoadWaterways(liWaterways->isOn());
-  conf->setMapLoadForests(liForests->isOn());
+  conf->setMapLoadIsoLines( liIsolines->checkState() == Qt::Checked ? true : false );
+  conf->setMapShowIsoLineBorders(liIsolineBorders->checkState() == Qt::Checked ? true : false);
+  conf->setMapShowWaypointLabels(liWpLabels->checkState() == Qt::Checked ? true : false);
+  conf->setMapShowWaypointLabelsExtraInfo(liWpLabelsExtraInfo->checkState() == Qt::Checked ? true : false);
+  conf->setMapLoadRoads(liRoads->checkState() == Qt::Checked ? true : false);
+  conf->setMapLoadHighways(liHighways->checkState() == Qt::Checked ? true : false);
+  conf->setMapLoadRailroads(liRailroads->checkState() == Qt::Checked ? true : false);
+  conf->setMapLoadCities(liCities->checkState() == Qt::Checked ? true : false);
+  conf->setMapLoadWaterways(liWaterways->checkState() == Qt::Checked ? true : false);
+  conf->setMapLoadForests(liForests->checkState() == Qt::Checked ? true : false);
 
   advancedPage->slot_save();
 }
@@ -105,27 +110,51 @@ void SettingsPageMap::slot_save()
 /** Fills the list with loadoptions */
 void SettingsPageMap::fillLoadOptionList()
 {
-  liIsolines=new Q3CheckListItem(lvLoadOptions, tr("Isolines"),
-                                Q3CheckListItem::CheckBox);
-  liIsolineBorders=new Q3CheckListItem(lvLoadOptions, tr("Isoline borders"),
-                                      Q3CheckListItem::CheckBox);
-  liWpLabels=new Q3CheckListItem(lvLoadOptions, tr("Waypoint labels"),
-                                Q3CheckListItem::CheckBox);
-  liWpLabelsExtraInfo=new Q3CheckListItem(lvLoadOptions,
-                                         tr("Waypoint labels - Extra info"),
-                                         Q3CheckListItem::CheckBox);
-  liRoads=new Q3CheckListItem(lvLoadOptions, tr("Roads"),
-                             Q3CheckListItem::CheckBox);
-  liHighways=new Q3CheckListItem(lvLoadOptions, tr("Highways"),
-                                Q3CheckListItem::CheckBox);
-  liRailroads=new Q3CheckListItem(lvLoadOptions, tr("Railroads"),
-                                 Q3CheckListItem::CheckBox);
-  liCities=new Q3CheckListItem(lvLoadOptions, tr("Cities & Villages"),
-                              Q3CheckListItem::CheckBox);
-  liWaterways=new Q3CheckListItem(lvLoadOptions, tr("Rivers & Canals"),
-                                 Q3CheckListItem::CheckBox);
-  liForests=new Q3CheckListItem(lvLoadOptions, tr("Forests & Ice"),
-                               Q3CheckListItem::CheckBox);
+  int row = 0;
+
+  liIsolines = new QTableWidgetItem( tr("Isolines") );
+  liIsolines->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, liIsolines );
+
+  liIsolineBorders = new QTableWidgetItem( tr("Isoline borders") );
+  liIsolineBorders->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, liIsolineBorders );
+        
+  liWpLabels = new QTableWidgetItem( tr("Waypoint labels") );
+  liWpLabels->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, liWpLabels );
+  
+  liWpLabelsExtraInfo = new QTableWidgetItem( tr("Waypoint labels - Extra info") );
+  liWpLabelsExtraInfo->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, liWpLabelsExtraInfo );
+      
+  liRoads = new QTableWidgetItem( tr("Roads") );
+  liRoads->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, liRoads );
+
+  liHighways = new QTableWidgetItem( tr("Highways") );
+  liHighways->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, liHighways );
+
+  liRailroads = new QTableWidgetItem( tr("Railroads") );
+  liRailroads->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, liRailroads );
+
+  liCities = new QTableWidgetItem( tr("Cities & Villages") );
+  liCities->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, liCities );
+
+  liWaterways = new QTableWidgetItem( tr("Rivers & Canals") );
+  liWaterways->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, liWaterways );
+
+  liForests = new QTableWidgetItem( tr("Forests & Ice") );
+  liForests->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, liForests );
+
+  lvLoadOptions->sortItems( 0 );
+  lvLoadOptions->adjustSize();
+  lvLoadOptions->setColumnWidth( 0, lvLoadOptions->maximumViewportSize().width()-20 );
 }
 
 
@@ -179,7 +208,7 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent) :
 
   //------------------------------------------------------------------------------
 
-  Q3GroupBox* weltGroup = new Q3GroupBox( tr("Welt2000"), this );
+  QGroupBox* weltGroup = new QGroupBox( tr("Welt2000"), this );
   topLayout->addWidget( weltGroup, row, 0, 1, 2 );
   row++;
 
@@ -350,7 +379,7 @@ void SettingsPageMapAdv::slotSelectProjection(int index)
     edtLon->setKFLogDegree(lambertOrigin);
     currentProjType = ProjectionBase::Lambert;
     break;
-  case 1:    // Plate CarÃ©e
+  case 1:    // Plate Carée
   default:   // take this if index is unknown
     edtLat2->setEnabled(false);
     edtLon->setEnabled(false);
