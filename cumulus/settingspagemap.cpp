@@ -34,19 +34,16 @@ SettingsPageMap::SettingsPageMap(QWidget *parent) : QWidget(parent)
   QGridLayout * topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
 
-  lvLoadOptions = new QTableWidget(10, 1, this);
+  lvLoadOptions = new QTableWidget(11, 1, this);
 
   // hide vertical headers
   QHeaderView *vHeader = lvLoadOptions->verticalHeader();
   vHeader->setVisible(false);
     
-  QTableWidgetItem *item = new QTableWidgetItem( tr("Load / show map object") );
+  QTableWidgetItem *item = new QTableWidgetItem( tr("Load/Draw map objects") );
   lvLoadOptions->setHorizontalHeaderItem( 0, item );
 
   topLayout->addWidget(lvLoadOptions, row++, 0, 1, 2);
-
-  chkDrawDirectionLine = new QCheckBox(tr("Draw Bearing line"), this );
-  topLayout->addWidget(chkDrawDirectionLine, row, 0);
 
   cmdAdvanced = new QPushButton(tr("Advanced..."), this );
   topLayout->addWidget(cmdAdvanced, row++, 1, Qt::AlignRight);
@@ -55,21 +52,16 @@ SettingsPageMap::SettingsPageMap(QWidget *parent) : QWidget(parent)
   connect(cmdAdvanced, SIGNAL(clicked()), advancedPage, SLOT(show()));
 }
 
-
 SettingsPageMap::~SettingsPageMap()
 {}
-
 
 /** Called to initiate loading of the configurationfile */
 void SettingsPageMap::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  chkDrawDirectionLine->setChecked(conf->getMapBearLine());
-
   fillLoadOptionList();
   liIsolines->setCheckState( conf->getMapLoadIsoLines() ? Qt::Checked : Qt::Unchecked );
-
   liIsolines->setCheckState( conf->getMapLoadIsoLines() ? Qt::Checked : Qt::Unchecked );
   liIsolineBorders->setCheckState( conf->getMapShowIsoLineBorders() ? Qt::Checked : Qt::Unchecked );
   liWpLabels->setCheckState( conf->getMapShowWaypointLabels() ? Qt::Checked : Qt::Unchecked );
@@ -80,6 +72,7 @@ void SettingsPageMap::slot_load()
   liCities->setCheckState( conf->getMapLoadCities() ? Qt::Checked : Qt::Unchecked );
   liWaterways->setCheckState( conf->getMapLoadWaterways() ? Qt::Checked : Qt::Unchecked );
   liForests->setCheckState( conf->getMapLoadForests() ? Qt::Checked : Qt::Unchecked );
+  liTargetLine->setCheckState( conf->getMapBearLine()? Qt::Checked : Qt::Unchecked );
 
   advancedPage->slot_load();
 }
@@ -89,8 +82,6 @@ void SettingsPageMap::slot_load()
 void SettingsPageMap::slot_save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
-
-  conf->setMapBearLine(chkDrawDirectionLine->isChecked());
 
   conf->setMapLoadIsoLines( liIsolines->checkState() == Qt::Checked ? true : false );
   conf->setMapShowIsoLineBorders(liIsolineBorders->checkState() == Qt::Checked ? true : false);
@@ -102,7 +93,8 @@ void SettingsPageMap::slot_save()
   conf->setMapLoadCities(liCities->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadWaterways(liWaterways->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadForests(liForests->checkState() == Qt::Checked ? true : false);
-
+  conf->setMapBearLine(liTargetLine->checkState() == Qt::Checked ? true : false);
+  
   advancedPage->slot_save();
 }
 
@@ -152,11 +144,14 @@ void SettingsPageMap::fillLoadOptionList()
   liForests->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
   lvLoadOptions->setItem( row++, 0, liForests );
 
+  liTargetLine = new QTableWidgetItem( tr("Line to selected target") );
+  liTargetLine->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, liTargetLine );
+
   lvLoadOptions->sortItems( 0 );
   lvLoadOptions->adjustSize();
   lvLoadOptions->setColumnWidth( 0, lvLoadOptions->maximumViewportSize().width()-20 );
 }
-
 
 /* Called to ask is confirmation on the close is needed. */
 void SettingsPageMap::slot_query_close(bool& warn, QStringList& warnings)
@@ -188,7 +183,7 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent) :
   cmbProjection=new QComboBox(this);
   topLayout->addWidget(cmbProjection, row++, 1);
   cmbProjection->addItem(tr("Lambert"));
-  cmbProjection->addItem(tr("Plate CarÃ©e"));
+  cmbProjection->addItem(tr("Plate Carée"));
   connect(cmbProjection, SIGNAL(activated(int)),
           this, SLOT(slotSelectProjection(int)));
 

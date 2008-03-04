@@ -63,7 +63,6 @@ public slots: // Public slots
     void slot_query_close(bool& warn, QStringList& warnings);
 
 protected:
-    QCheckBox * chkDrawDirectionLine;
 
     QTableWidget * lvLoadOptions;
 
@@ -78,6 +77,7 @@ protected:
     QTableWidgetItem * liCities;
     QTableWidgetItem * liWaterways;
     QTableWidgetItem * liForests;  //forests and ice
+    QTableWidgetItem * liTargetLine;
 
     QPushButton * cmdAdvanced;
 
