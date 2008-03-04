@@ -28,9 +28,9 @@
 extern MapView *_globalMapView;
 
 WaitScreen::WaitScreen(QWidget *parent ) :
-  QDialog(parent, Qt::WStyle_Customize | Qt::WStyle_StaysOnTop | Qt::WStyle_NoBorderEx | Qt::WStyle_Title)
+  QDialog(parent, Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::WStyle_Title)
 {
-  setObjectName("");
+  setObjectName("WaitScreen");
   setModal(true);
   _screenUsage = true;
 
@@ -71,11 +71,8 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   _glider.resize (40,40);
   _glider.fill(Glider->backgroundColor());
 
-  // bitBlt(&_glider, 0, 0, &_gliders, 0, 0, 40, 40);
-
   QPainter p(&_glider);
   p.drawPixmap( 0, 0, _gliders, 0, 0, 40, 40);
-    
 
   Glider->setPixmap(_glider);
 }
@@ -102,9 +99,9 @@ void WaitScreen::slot_SetText1(const QString& text)
 
   if( screenUsage() ) {
     show();
-    update();
-    qDebug("========= WaitScreen::slot_SetText1() calls repaint =========");
-    repaint();
+    qDebug("========= WaitScreen::slot_SetText1() calls processEvents =========");
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
+
   } else {
     _globalMapView->message(text);
   }
@@ -136,9 +133,8 @@ void WaitScreen::slot_SetText2(const QString& text)
 
   if( screenUsage() ) {
     show();
-    update();
-    qDebug("========= WaitScreen::slot_SetText2() calls repaint =========");
-    repaint();
+    qDebug("========= WaitScreen::slot_SetText2() calls processEvents =========");
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
   } else {
     _globalMapView->message(shortText);
   }
@@ -166,9 +162,8 @@ void WaitScreen::slot_Progress(int stepsize)
 
       lastRot=rot;
       show();
-      update();
-      qDebug("========= WaitScreen::slot_Progress() calls repaint =========");
-      repaint();
+      qDebug("========= WaitScreen::slot_Progress() calls processEvents =========");
+      QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
     }
   }
 }

@@ -194,6 +194,8 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   ws = new WaitScreen(this);
 
   ws->slot_SetText1( tr( "Creating map elements..." ) );
+  QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
+
   _globalMapMatrix = new MapMatrix( this );
 
   _globalMapContents = new MapContents( this, ws );
@@ -526,16 +528,16 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   // This actions initiates the map loading procedures
   viewMap->_theMap->slotDraw();
 
-  ws->hide();
-  ws->setScreenUsage( false );
   calculator->newSites();  // New sites have been loaded in map draw
   // this call is responsible for setting correct AGL/STD for manual mode,
   // must be called after viewMap->_theMap->draw(), there the AGL info is loaded
   // I do not connect since it is never emitted, only called once here
   calculator->slot_changePosition(MapMatrix::NotSet);
-  gps->blockSignals( false );
 
-  show();
+  ws->setScreenUsage( false );
+  ws->hide();
+
+  gps->blockSignals( false );
 
   if( ! GeneralConfig::instance()->getAirspaceWarningEnabled() )
     {

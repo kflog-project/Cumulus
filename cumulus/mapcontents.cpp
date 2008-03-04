@@ -1888,7 +1888,6 @@ void MapContents::proofeSection()
       _globalMapView->message( tr("Loading maps done") );
     }
 
-    ws->hide();
     isFirst = false;
     mutex = false; // unlock mutex
 }
