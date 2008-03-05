@@ -289,7 +289,7 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
   if (_isCurrentAirspace)
     finishAirspace();
 
-  for (uint i  = 0; i < _airlist.count(); i++) {
+  for (int i  = 0; i < _airlist.count(); i++) {
     list.append(_airlist.at(i));
   }
 
