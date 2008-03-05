@@ -70,6 +70,7 @@ HEADERS     = \
     settingspageairspace.h \
     settingspagegps.h \
     settingspageinformation.h \
+    settingspagemapadv.h \
     settingspagemap.h \
     settingspagepersonal.h \
     settingspagepolar.h \
@@ -160,6 +161,7 @@ SOURCES     = \
     settingspageairspace.cpp \
     settingspagegps.cpp \
     settingspageinformation.cpp \
+    settingspagemapadv.cpp \
     settingspagemap.cpp \
     settingspagepersonal.cpp \
     settingspagepolar.cpp \
