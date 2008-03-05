@@ -15,179 +15,69 @@
 **
 ***********************************************************************/
 
+/**
+ *
+ * contains map-related draw settings
+ *
+ * @author André Somers
+ *
+ */
+
 #ifndef SETTINGSPAGEMAP_H
 #define SETTINGSPAGEMAP_H
 
 #include <QWidget>
-#include <QDialog>
-#include <QCheckBox>
 #include <QTableWidget>
 #include <QTableWidgetItem>
-#include <QComboBox>
-#include <QPushButton>
-#include <QStringList>
-#include <QLineEdit>
-#include <QSpinBox>
-#include <QHBoxLayout>
-
-#include "coordedit.h"
-#include "projectionbase.h"
-#include "distance.h"
-
-/**contains map-related settings
-  *@author André Somers
-  */
-class SettingsPageMapAdv;
 
 class SettingsPageMap : public QWidget
 {
-    Q_OBJECT
-public:
-    SettingsPageMap(QWidget *parent=0);
-    ~SettingsPageMap();
+  Q_OBJECT
 
-public slots: // Public slots
-    /**
-     * Called to initiate saving to the configurationfile.
-     */
-    void slot_save();
+    public:
 
-    /**
-     * Called to initiate loading of the configurationfile
-     */
-    void slot_load();
+  SettingsPageMap(QWidget *parent=0);
+  ~SettingsPageMap();
 
-    /**
-     * Called to ask is confirmation on the close is needed.
-     */
-    void slot_query_close(bool& warn, QStringList& warnings);
+  public slots: // Public slots
+  /**
+   * Called to initiate saving to the configurationfile.
+   */
+  void slot_save();
 
-protected:
+  /**
+   * Called to initiate loading of the configurationfile
+   */
+  void slot_load();
 
-    QTableWidget * lvLoadOptions;
+  /**
+   * Called to ask is confirmation on the close is needed.
+   */
+  void slot_query_close(bool& warn, QStringList& warnings);
 
-    //list items in listview
-    QTableWidgetItem * liIsolines;
-    QTableWidgetItem * liIsolineBorders;
-    QTableWidgetItem * liWpLabels;
-    QTableWidgetItem * liWpLabelsExtraInfo;
-    QTableWidgetItem * liRoads;
-    QTableWidgetItem * liHighways;
-    QTableWidgetItem * liRailroads;
-    QTableWidgetItem * liCities;
-    QTableWidgetItem * liWaterways;
-    QTableWidgetItem * liForests;  //forests and ice
-    QTableWidgetItem * liTargetLine;
+ protected:
 
-    QPushButton * cmdAdvanced;
+  QTableWidget * lvLoadOptions;
 
-public:
+  //list items in listview
+  QTableWidgetItem * liIsolines;
+  QTableWidgetItem * liIsolineBorders;
+  QTableWidgetItem * liWpLabels;
+  QTableWidgetItem * liWpLabelsExtraInfo;
+  QTableWidgetItem * liRoads;
+  QTableWidgetItem * liHighways;
+  QTableWidgetItem * liRailroads;
+  QTableWidgetItem * liCities;
+  QTableWidgetItem * liWaterways;
+  QTableWidgetItem * liForests;  //forests and ice
+  QTableWidgetItem * liTargetLine;
 
-    SettingsPageMapAdv * advancedPage;
+ private: // Private methods
+  /**
+   * Fills the list with load options
+   */
+  void fillLoadOptionList();
 
-private: // Private methods
-    /**
-     * Fills the list with loadoptions
-     */
-    void fillLoadOptionList();
 };
 
-
-class SettingsPageMapAdv : public QDialog
-{
-    Q_OBJECT
-
-public:
-    /**
-     * Constructor
-     */
-    SettingsPageMapAdv(QWidget *parent=0);
-
-    /**
-     * Destructor
-     */
-    ~SettingsPageMapAdv();
-
-    /**
-     * Checks, if the configuration of the projection has been changed
-     */
-    bool checkIsProjectionChanged();
-
-    /**
-     * Checks, if the configuration of the welt 2000 has been changed
-     */
-    bool checkIsWelt2000Changed();
-
-    // SettingsPageMap takes care of our loading and saving,
-    // so it needs access to our internals
-    friend class SettingsPageMap; 
-
-public slots: // Public slots
-    /**
-     * Called to initiate saving to the configurationfile.
-     */
-    void slot_save();
-
-    /**
-     * Called to initiate loading of the configurationfile
-     */
-    void slot_load();
-
-    /**
-     * Called to ask is confirmation on the close is needed.
-     */
-    void slot_query_close(bool& warn, QStringList& warnings);
-
-private slots: // Private slots
-
-    /**
-     * Called if the text of the filter has been changed
-     */
-    void slot_filterChanged( const QString& text );
-
-protected:
-
-    QCheckBox * chkDeleteAfterCompile;
-    QCheckBox * chkUnloadUnneeded;
-    QComboBox * cmbProjection;
-    LatEdit * edtLat1;
-    LatEdit * edtLat2;
-    LongEdit * edtLon;
-
-    int cylinPar;
-    int lambertV1;
-    int lambertV2;
-    int lambertOrigin;
-
-    // variable currentProjType is an enum ProjectionBase::ProjectionType
-    int currentProjType;
-
-    /** saves distance unit set during construction of object */
-    Distance::distanceUnit distUnit;
-
-    // Country filter for welt 2000 data file
-    QLineEdit* countryFilter;
-
-    // Radius around home position for welt 2000 data file
-    QSpinBox* homeRadius;
-
-    // ok and cancel button
-    QHBoxLayout* buttonBox;
-
-    /**
-     * Reimplemented from QDialog
-     * Reload settings from configurationfile so that changes won't
-     * be written to the configuration.
-     */
-    void reject();
-
-    /**
-     * Reimplemented from QDialog. Called if OK button is pressed
-     */
-    void accept();
-
-protected slots:
-
-    void slotSelectProjection(int);
-};
 #endif
