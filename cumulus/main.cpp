@@ -172,8 +172,8 @@ int main(int argc, char *argv[])
   // cumulus as local variable important to get the destructor called !
   CumulusApp cumulus(0, Qt::WindowContextHelpButtonHint);
 
-  cumulus.show();
-  int result = app.exec();
+  // start window manager event processing
+  int result = QApplication::exec();
 
   delete GeneralConfig::instance();
   return result;

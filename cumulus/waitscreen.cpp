@@ -18,8 +18,6 @@
 #include <QFrame>
 #include <QPainter>
 
-#include <libgen.h>
-#include "cumulusapp.h"
 #include "waitscreen.h"
 #include "whatsthat.h"
 #include "mapview.h"
@@ -36,33 +34,34 @@ WaitScreen::WaitScreen(QWidget *parent ) :
 
   setWindowTitle(tr("Please wait..."));
 
-  QGridLayout * backLayout = new QGridLayout(this, 3,3,0);
-  QGridLayout * topLayout = new QGridLayout(3,2,5);
-  backLayout->addLayout(topLayout,1,1);
-  backLayout->addRowSpacing(0,3);
-  backLayout->addRowSpacing(2,3);
-  backLayout->addColSpacing(0,3);
-  backLayout->addColSpacing(2,3);
-  topLayout->addColSpacing(0,45);
+  QGridLayout * backLayout = new QGridLayout(this);
+  QGridLayout * topLayout  = new QGridLayout();
+  topLayout->setMargin(5);
+  
+  backLayout->addLayout(topLayout, 1, 1);
+  
+  backLayout->setRowMinimumHeight(0, 3);
+  backLayout->setRowMinimumHeight(2, 3);
+  backLayout->setColumnMinimumWidth(0, 3);
+  backLayout->setColumnMinimumWidth(2, 3);
+  
+  topLayout->setColumnMinimumWidth(0, 45);
 
   QFrame * frm = new QFrame(this);
   frm->setFrameStyle(QFrame::WinPanel | QFrame::Raised);
-  backLayout->addMultiCellWidget(frm,0,2,0,2);
+  backLayout->addWidget(frm, 0, 0, 3, 3);
 
-  Glider=new QLabel(this);
-  topLayout->addMultiCellWidget(Glider,0,2,0,0);
+  Glider = new QLabel(this);
+  topLayout->addWidget(Glider, 0, 0, 3, 0);
 
-  QLabel * txt=new QLabel(tr("Cumulus is working. Please wait..."),this);
-  topLayout->addWidget(txt,0,1);
+  QLabel * txt = new QLabel(tr("Cumulus is working. Please wait..."), this);
+  topLayout->addWidget(txt, 0, 1);
 
-  Text1=new QLabel(this);
-  topLayout->addWidget(Text1,1,1);
+  Text1 = new QLabel(this);
+  topLayout->addWidget(Text1, 1, 1);
 
-  Text2=new QLabel(this);
-  topLayout->addWidget(Text2,2,1);
-
-  //  Prog=new QLabel(this);
-  //  topLayout->addWidget(Prog,3,1);
+  Text2 = new QLabel(this);
+  topLayout->addWidget(Text2, 2, 1);
 
   progress=0;
   lastRot=0;
@@ -77,16 +76,13 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   Glider->setPixmap(_glider);
 }
 
-
 WaitScreen::~WaitScreen()
 {
 }
 
-
 /** This slot is used to set the main text, such as "Loading maps..." */
 void WaitScreen::slot_SetText1(const QString& text)
 {
-
   Text1->setText(text);
   Text2->setText("");
 
@@ -99,9 +95,8 @@ void WaitScreen::slot_SetText1(const QString& text)
 
   if( screenUsage() ) {
     show();
-    qDebug("========= WaitScreen::slot_SetText1() calls processEvents =========");
-    QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
-
+    qDebug("========= WaitScreen::slot_SetText1() calls repaint =========");
+    repaint();
   } else {
     _globalMapView->message(text);
   }
@@ -133,8 +128,8 @@ void WaitScreen::slot_SetText2(const QString& text)
 
   if( screenUsage() ) {
     show();
-    qDebug("========= WaitScreen::slot_SetText2() calls processEvents =========");
-    QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
+    qDebug("========= WaitScreen::slot_SetText2() calls repaint =========");
+    repaint();
   } else {
     _globalMapView->message(shortText);
   }
@@ -156,14 +151,15 @@ void WaitScreen::slot_Progress(int stepsize)
 
     if (lastRot!=rot) {
       _glider.fill(Glider->backgroundColor());
-      bitBlt(&_glider, 0, 0, &_gliders, rot*40, 0, 40, 40);
-
+      
+      QPainter p(&_glider);
+      p.drawPixmap( 0, 0, _gliders, rot*40, 0, 40, 40);
       Glider->setPixmap(_glider);
 
       lastRot=rot;
       show();
-      qDebug("========= WaitScreen::slot_Progress() calls processEvents =========");
-      QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
+      qDebug("========= WaitScreen::slot_Progress() calls repaint =========");
+      repaint();
     }
   }
 }

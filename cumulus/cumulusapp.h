@@ -2,7 +2,7 @@
                           cumulusapp.h  -  main application object
                              -------------------
     begin                : Sun Jul 21 2002
-    copyright            : (C) 2002 by AndrÃ© Somers, 2008 Axel Pauli
+    copyright            : (C) 2002 by André Somers, 2008 Axel Pauli
     email                : andre@kflog.org, axel@kflog.org
 
     This file is distributed under the terms of the General Public
@@ -265,6 +265,11 @@ class CumulusApp : public QMainWindow
 
     /** opens help documentation in browser. */
     void slotHelp();
+    
+    /** creates the application widgets after the base initialization
+     *  of the core application window.
+     */
+    void slotCreateApplicationWidgets();
 
   private:
 

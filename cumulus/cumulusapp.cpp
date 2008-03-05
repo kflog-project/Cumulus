@@ -2,7 +2,7 @@
  cumulusapp.cpp  -  main application class
                           -------------------
  begin                : Sun Jul 21 2002
- copyright            : (C) 2002 by AndrÃ© Somers
+ copyright            : (C) 2002 by André Somers
  ported to Qt4.3/X11  : (C) 2008 by Axel pauli
  email                : andre@kflog.org, axel@kflog.org
 
@@ -188,13 +188,29 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
 
   // use showMaximized() only for PDA
   show();
+  
+  ws = new WaitScreen(this);
+  ws->show();
+
+  // Here we finished the base initialization and start a timer
+  // to continue startup in another method. This is done, to get
+  // running the window manager event loop. Otherwise the behaviour
+  // of some widgets is undefined.
+  
+  // when the timer expires the cumulus startup is continued
+  QTimer::singleShot(100, this, SLOT(slotCreateApplicationWidgets()));
+}
+
+/** creates the application widgets after the base initialization
+ *  of the core application window.
+*/
+void CumulusApp::slotCreateApplicationWidgets()
+{
+  // qDebug( "CumulusApp::slotCreateApplicationWidgets()" );
 
 #warning switch screensaver off, if necessary
 
-  ws = new WaitScreen(this);
-
   ws->slot_SetText1( tr( "Creating map elements..." ) );
-  QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
 
   _globalMapMatrix = new MapMatrix( this );
 
