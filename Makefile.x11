@@ -60,6 +60,9 @@ install: check_dir deinstall install_lang
 	install -d $(INSTALL_ROOT)/icons/windarrows
 	install -d $(INSTALL_ROOT)/locale/$(LANG)
 	install -d $(INSTALL_ROOT)/sounds
+	install -d $(INSTALL_ROOT)/maps/airfields
+	install -d $(INSTALL_ROOT)/maps/airspaces
+	install -d $(INSTALL_ROOT)/maps/landscape
 	install --mode=755 cumulus/cumulus $(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(INSTALL_ROOT)/bin
