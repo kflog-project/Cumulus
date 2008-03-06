@@ -30,8 +30,9 @@ SettingsPageGliderList::SettingsPageGliderList(QWidget *parent) : QWidget(parent
   setObjectName("SettingsPageGliderList");
 
   resize(parent->size());
-  QBoxLayout *topLayout = new QVBoxLayout( this, 5 );
-  QBoxLayout *editrow=new QHBoxLayout(topLayout, 0);
+  QBoxLayout *topLayout = new QVBoxLayout(this);
+  topLayout->setSpacing(5);
+  QBoxLayout *editrow=new QHBoxLayout(topLayout);
 
   editrow->addStretch(10);
 
@@ -53,7 +54,6 @@ SettingsPageGliderList::SettingsPageGliderList(QWidget *parent) : QWidget(parent
   list = new GliderList(this);
 
   topLayout->addWidget(list,10);
-  //QBoxLayout *buttonrow=new QHBoxLayout(topLayout);
 
   connect(cmdNew,  SIGNAL(clicked()), this, SLOT(slot_new()));
   connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
@@ -334,7 +334,7 @@ void GliderList::slot_Deleted(Glider * glider)
 Glider * GliderList::getStoredSelection()
 {
   QSettings config( QSettings::UserScope, "Cumulus" );
-  config.beginGroup("Glider Data");
+  config.beginGroup("Glider Selection");
   
   QString stored = config.value("lastSelected","").toString();
   
@@ -360,7 +360,7 @@ Glider * GliderList::getStoredSelection()
   config.endGroup();
   // if we end up here, there is no default: either loading failed, or
   // it is not set, or the set glider has been deleted.
-  return NULL;
+  return static_cast<Glider *> (0);
 }
 
 
@@ -368,7 +368,7 @@ Glider * GliderList::getStoredSelection()
 void GliderList::setStoredSelection(Glider* g)
 {
   QSettings config( QSettings::UserScope, "Cumulus" );
-  config.beginGroup("Glider Data");
+  config.beginGroup("Glider Selection");
   config.setValue("lastSelected", g->registration());
   config.endGroup();
 }
