@@ -194,7 +194,7 @@ void ConfigDialog::reject()
         
       int answer=QMessageBox::warning(this,
                                       tr("Close w/o saving?"),
-                                      tr("<qt>You have made changes to:<ul>%1</ul> If you continue, these changes will <b>not</b> be saved, and your changes will be lost.<br>Do you wish to close without saving anyway?</qt>").arg(pagelist),
+                                      tr("<qt>You have made changes to:<ul>%1</ul> If you continue, these changes will <b>not</b> be saved,<br> and your changes will be lost.<p>Do you wish to close without saving anyway?</qt>").arg(pagelist),
                                       tr("Close w/o saving"),
                                       tr("Save all changes"),
                                       QString::null,
