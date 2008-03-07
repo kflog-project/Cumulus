@@ -33,7 +33,7 @@ SettingsPageGliderList::SettingsPageGliderList(QWidget *parent) : QWidget(parent
   QBoxLayout *topLayout = new QVBoxLayout(this);
   topLayout->setSpacing(5);
   QBoxLayout *editrow=new QHBoxLayout(topLayout);
-
+  editrow->setSpacing(0);
   editrow->addStretch(10);
 
   QPushButton * cmdNew = new QPushButton(this);
