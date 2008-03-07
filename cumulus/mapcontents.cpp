@@ -206,7 +206,7 @@ const QString MapContents::mapDir3 = "/mnt/card/maps";  //secure digital card
 MapContents::MapContents(QObject* parent, WaitScreen* waitscreen)
   : QObject(parent),
     airportList(this),
-    gliderList(this),
+    gliderSiteList(this),
     outList(this),
     isFirst(true)
 {
@@ -260,8 +260,8 @@ MapContents::~MapContents()
   qDeleteAll (cityList);
   cityList.clear();
 
-  qDeleteAll (gliderList);
-  gliderList.clear();
+  qDeleteAll (gliderSiteList);
+  gliderSiteList.clear();
 
   qDeleteAll (hydroList);
   hydroList.clear();
@@ -1123,7 +1123,7 @@ bool MapContents::__readAirfieldFile(const QString& pathName)
           // std::cout << "name: " << name << "  RWc: " << (int)rwCount << " rwLength: "<< (int)rwLength << " rwD: " << (int)rwDirection << " rwMaterial: " << (int)rwMaterial << " rwOpen: " << (int)rwOpen << endl;
 
           rw = new runway(rwLength,rwDirection,rwMaterial,rwOpen);
-        gliderList.append(new GliderSite(name, icaoName, gpsName,
+        gliderSiteList.append(new GliderSite(name, icaoName, gpsName,
                                          wgsPos, position, elevation,
                                          frequency, isWinch, rw));
 
@@ -1751,7 +1751,7 @@ void MapContents::proofeSection()
       ws->slot_SetText2(tr("Reading Welt 2000 File"));
       // @AP: Look for and if available load a welt2000 airfield file
       Welt2000 welt2000;
-      welt2000.load( airportList, gliderList );
+      welt2000.load( airportList, gliderSiteList );
 
       QStringList airfields;
 
@@ -1816,7 +1816,7 @@ void MapContents::proofeSection()
         if( isFirst ) {
           // Animate a little bit during first load. later on in flight,
           // we need the time for gps processing.
-          emit progress(3);
+          emit progress(2);
         }
 
         if(0<=secID & secID <=16200) {
@@ -2124,7 +2124,7 @@ unsigned int MapContents::getListLength(int listIndex) const
   case AirportList:
     return airportList.count();
   case GliderList:
-    return gliderList.count();
+    return gliderSiteList.count();
   case OutList:
     return outList.count();
   case NavList:
@@ -2175,7 +2175,7 @@ Airport* MapContents::getAirport(unsigned int index)
 
 GliderSite* MapContents::getGlidersite(unsigned int index)
 {
-  return (GliderSite*)gliderList.at(index);
+  return (GliderSite*)gliderSiteList.at(index);
 }
 
 
@@ -2185,7 +2185,7 @@ BaseMapElement* MapContents::getElement(int listIndex, unsigned int index)
   case AirportList:
     return airportList.at(index);
   case GliderList:
-    return gliderList.at(index);
+    return gliderSiteList.at(index);
   case OutList:
     return outList.at(index);
   case NavList:
@@ -2230,7 +2230,7 @@ SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
   case AirportList:
     return (SinglePoint*)airportList.at(index);
   case GliderList:
-    return (SinglePoint*)gliderList.at(index);
+    return (SinglePoint*)gliderSiteList.at(index);
   case OutList:
     return (SinglePoint*)outList.at(index);
   case NavList:
@@ -2275,7 +2275,7 @@ void MapContents::slotReloadMapData()
   qDeleteAll(airportList); airportList.clear();
   qDeleteAll(airspaceList); airspaceList.clear();
   qDeleteAll(cityList); cityList.clear();
-  qDeleteAll(gliderList); gliderList.clear();
+  qDeleteAll(gliderSiteList); gliderSiteList.clear();
   qDeleteAll(hydroList); hydroList.clear();
   qDeleteAll(lakeList); lakeList.clear();
   qDeleteAll(landmarkList); landmarkList.clear();
@@ -2375,12 +2375,12 @@ void MapContents::slotReloadWelt2000Data()
   QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
 
   qDeleteAll(airportList); airportList.clear();
-  qDeleteAll(gliderList);  gliderList.clear();
+  qDeleteAll(gliderSiteList);  gliderSiteList.clear();
 
   _globalMapView->message( tr("Reloading Welt2000 started") );
 
   Welt2000 welt2000;
-  welt2000.load( airportList, gliderList );
+  welt2000.load( airportList, gliderSiteList );
 
   _globalMapView->message( tr("Reloading Welt2000 finished") );
 
@@ -2440,8 +2440,8 @@ void MapContents::printContents(QPainter* targetPainter, bool isText)
   for (int i = 0; i < airportList.size(); i++)
     airportList.at(i)->printMapElement(targetPainter, isText);
 
-  for (int i = 0; i < gliderList.size(); i++)
-    gliderList.at(i)->printMapElement(targetPainter, isText);
+  for (int i = 0; i < gliderSiteList.size(); i++)
+    gliderSiteList.at(i)->printMapElement(targetPainter, isText);
 
   for (int i = 0; i < outList.size(); i++)
     outList.at(i)->printMapElement(targetPainter, isText);
@@ -2464,98 +2464,130 @@ void MapContents::drawList(QPainter* targetPainter,
   case AirportList:
     //list="AirportList";
     //len=airportList.count();
+    showProgress2WaitScreen( tr("Drawing airports") );
     for (int i = 0; i < airportList.size(); i++)
       airportList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case GliderList:
     //list="GliderList";
-    //len=gliderList.count();
-    for (int i = 0; i < gliderList.size(); i++)
-      gliderList.at(i)->drawMapElement(targetPainter, maskPainter);
+    //len=gliderSiteList.count();
+    showProgress2WaitScreen( tr("Drawing gilder sites") );
+    for (int i = 0; i < gliderSiteList.size(); i++)
+      gliderSiteList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case OutList:
     //list="OutList";
     //len=outList.count();
+    showProgress2WaitScreen( tr("Drawing outlanding sites") );
     for (int i = 0; i < outList.size(); i++)
       outList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case NavList:
     //list="NavList";
     //len=navList.count();
+    showProgress2WaitScreen( tr("Drawing navigation elements") );
     for (int i = 0; i < navList.size(); i++)
       navList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case AirspaceList:
     //list="AirspaceList";
     //len=airspaceList.count();
+    showProgress2WaitScreen( tr("Drawing airspaces") );
     for (int i = 0; i < airspaceList.size(); i++)
       airspaceList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case ObstacleList:
     //list="ObstacleList";
     //len=obstacleList.count();
+    showProgress2WaitScreen( tr("Drawing obstacles") );
     for (int i = 0; i < obstacleList.size(); i++)
       obstacleList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case ReportList:
     //list="ReportList";
     //len=reportList.count();
+    showProgress2WaitScreen( tr("Drawing reporting points") );
     for (int i = 0; i < reportList.size(); i++)
       reportList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case CityList:
     //list="CityList";
     //len=cityList.count();
+    showProgress2WaitScreen( tr("Drawing cities") );
     for (int i = 0; i < cityList.size(); i++)
       cityList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case VillageList:
     //list="VillageList";
+    showProgress2WaitScreen( tr("Drawing villages") );
     for (int i = 0; i < villageList.size(); i++)
       villageList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case LandmarkList:
     //list="LandmarkList";
     //len=landmarkList.count();
+    showProgress2WaitScreen( tr("Drawing landmarks") );
     for (int i = 0; i < landmarkList.size(); i++)
       landmarkList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case HighwayList:
     //list="HighwayList";
     //len=highwayList.count();
+    showProgress2WaitScreen( tr("Drawing highways") );
     for (int i = 0; i < highwayList.size(); i++)
       highwayList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case RoadList:
     //list="RoadList";
     //len=roadList.count();
+    showProgress2WaitScreen( tr("Drawing roads") );
     for (int i = 0; i < roadList.size(); i++)
       roadList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case RailList:
     //list="RailList";
     //len=railList.count();
+    showProgress2WaitScreen( tr("Drawing railroads") );
     for (int i = 0; i < railList.size(); i++)
       railList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case HydroList:
     //list="HydroList";
     //len=hydroList.count();
+    showProgress2WaitScreen( tr("Drawing hydro") );
     for (int i = 0; i < hydroList.size(); i++)
       hydroList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case LakeList:
     //list="LakeList";
     //len=lakeList.count();
+    showProgress2WaitScreen( tr("Drawing lakes") );
     for (int i = 0; i < lakeList.size(); i++)
       lakeList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   case TopoList:
     //list="TopoList";
     //len=topoList.count();
+    showProgress2WaitScreen( tr("Drawing topography") );
     for (int i = 0; i < topoList.size(); i++)
       topoList.at(i)->drawMapElement(targetPainter, maskPainter);
     break;
+
   default:
     qWarning("MapContents::drawList(): unknown listID %d", listID);
     return;
@@ -2628,41 +2660,46 @@ void MapContents::drawIsoList(QPainter* targetP)
 
   for (int i = 0; i < isoList.size(); i++)
   {
-      QList<Isohypse*>* iso = isoList.at(i);
-      //if (isoList.at()>1) break;
-      if(iso->size() == 0)
-        continue;
-      Isohypse* first = iso->first();
-
-      for(unsigned int pos = 0; pos < ISO_LINE_NUM; pos++)
-        {
-          if(isoLines[pos] == first->getElevation()) {
-            if(first->isValley())
-              height = pos + 1;
-            else
-              height = pos + 2;
-
-            break;
-          }
+    showProgress2WaitScreen( tr("Drawing isolines") );
+    QList<Isohypse*>* iso = isoList.at(i);
+    //if (isoList.at()>1) break;
+    if(iso->size() == 0)
+      continue;
+    Isohypse* first = iso->first();
+    
+    for(unsigned int pos = 0; pos < ISO_LINE_NUM; pos++)
+      {
+        if(isoLines[pos] == first->getElevation()) {
+          if(first->isValley())
+            height = pos + 1;
+          else
+            height = pos + 2;
+          
+          break;
         }
-
-      groupDrawn=true;
-
-      if (interval==1 || height <= 1)
-        {
-          groupDrawn=false; //skip the rest, result is less devisions->faster!
-        } else
-        {
-          if (height<lastHeight) {
+      }
+    
+    groupDrawn=true;
+    
+    if (interval==1 || height <= 1)
+      {
+        groupDrawn=false; //skip the rest, result is less devisions->faster!
+      }
+    else
+      {
+        if (height<lastHeight)
+          {
             lastHeight=height;
             group=height/interval;
             groupDrawn=false;
           }
-          if ((height/interval)!=group) {
+
+        if ((height/interval)!=group)
+          {
             group=height/interval;
             groupDrawn=false;
           }
-        }
+      }
 
       targetP->setBrush(QBrush(_globalMapConfig->getIsoColor(height), Qt::SolidPattern));
 
@@ -2680,6 +2717,7 @@ void MapContents::drawIsoList(QPainter* targetP)
           }
       }
   }
+
   targetP->restore();
   regIsoLines.sort();
   _isoLevelReset=false;
@@ -2687,6 +2725,17 @@ void MapContents::drawIsoList(QPainter* targetP)
   qDebug( "IsoList, Length=%d, drawTime=%dms", isoList.count(), t.elapsed() );
 }
 
+/**
+ * shows a progress message at the wait screen, if it is visible
+ */
+void MapContents::showProgress2WaitScreen( QString message )
+{
+  if( ws && ws->isVisible() )
+    {
+      ws->slot_SetText1( message );
+      ws->slot_Progress(1);
+    }
+}
 
 /** This function checks all possible map directories for the map file. If
     found, it returns true and returns the complete path in pathName. */

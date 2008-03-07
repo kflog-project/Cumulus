@@ -95,7 +95,7 @@ void WaitScreen::slot_SetText1(const QString& text)
 
   if( screenUsage() ) {
     show();
-    qDebug("========= WaitScreen::slot_SetText1() calls repaint =========");
+    // qDebug("========= WaitScreen::slot_SetText1() calls repaint =========");
     repaint();
   } else {
     _globalMapView->message(text);
@@ -128,7 +128,7 @@ void WaitScreen::slot_SetText2(const QString& text)
 
   if( screenUsage() ) {
     show();
-    qDebug("========= WaitScreen::slot_SetText2() calls repaint =========");
+    // qDebug("========= WaitScreen::slot_SetText2() calls repaint =========");
     repaint();
   } else {
     _globalMapView->message(shortText);
@@ -158,7 +158,7 @@ void WaitScreen::slot_Progress(int stepsize)
 
       lastRot=rot;
       show();
-      qDebug("========= WaitScreen::slot_Progress() calls repaint =========");
+      // qDebug("========= WaitScreen::slot_Progress() calls repaint =========");
       repaint();
     }
   }

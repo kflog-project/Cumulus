@@ -331,14 +331,19 @@ class MapContents : public QObject
   bool __readTerrainFile(const int fileSecID, const int fileTypeID);
 
   /**
+   * shows a progress message at the wait screen
+   */
+  void showProgress2WaitScreen( QString message );
+
+  /**
    * airportList contains all airports.
    */
   MapElementList airportList;
 
   /**
-   * gliderList contains all glider-sites.
+   * gliderSiteList contains all glider-sites.
    */
-  MapElementList gliderList;
+  MapElementList gliderSiteList;
 
   /**
    * addSitesList contains all, ultra-light,
