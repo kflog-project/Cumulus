@@ -33,6 +33,8 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QHBoxLayout>
+#include <QLineEdit>
+#include <QPushButton>
 
 #include "coordedit.h"
 #include "projectionbase.h"
@@ -91,8 +93,16 @@ class SettingsPageMapAdv : public QWidget
    */
   void slot_filterChanged( const QString& text );
 
+
+  /**
+   * Called if the map selection button is pressed
+   */
+  void slot_openFileDialog();
+
  protected:
 
+  QPushButton * mapSelection;
+  QLineEdit * mapDirectory;
   QCheckBox * chkDeleteAfterCompile;
   QCheckBox * chkUnloadUnneeded;
   QComboBox * cmbProjection;

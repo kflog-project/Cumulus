@@ -19,6 +19,8 @@
 #include <QGridLayout>
 #include <QMessageBox>
 #include <QGroupBox>
+#include <QFileDialog>
+#include <QDir>
 
 #include "settingspagemapadv.h"
 #include "generalconfig.h"
@@ -38,14 +40,21 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent) :
 
   int row=0;
 
+  mapSelection = new QPushButton( tr("Maps"), this );
+  topLayout->addWidget(mapSelection, row, 0 );
+
+  connect(mapSelection, SIGNAL( clicked()), this, SLOT(slot_openFileDialog()) );
+
+  mapDirectory = new QLineEdit( this );
+  topLayout->addWidget(mapDirectory, row++, 1 );
+
   topLayout->addWidget(new QLabel(tr("Projection:"), this), row, 0 );
   cmbProjection=new QComboBox(this);
   topLayout->addWidget(cmbProjection, row++, 1);
   cmbProjection->addItem(tr("Lambert"));
   cmbProjection->addItem(tr("Plate Carée"));
 
-  connect(cmbProjection, SIGNAL(activated(int)),
-          this, SLOT(slotSelectProjection(int)));
+  connect(cmbProjection, SIGNAL(activated(int)), this, SLOT(slotSelectProjection(int)));
 
   topLayout->addWidget(new QLabel(tr("1. St. Parallel:"), this), row, 0);
   edtLat1=new LatEdit(this);
@@ -123,10 +132,8 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent) :
   topLayout->addWidget(chkUnloadUnneeded, row, 0, 1, 2);
   row++;
 
-  topLayout->setColumnStretch(3, 1);
-
   connect( countryFilter, SIGNAL(textChanged(const QString&)),
-           this, SLOT(slot_filterChanged(const QString&)) );  
+           this, SLOT(slot_filterChanged(const QString&)) );
 }
 
 
@@ -137,6 +144,8 @@ SettingsPageMapAdv::~SettingsPageMapAdv()
 void SettingsPageMapAdv::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
+
+  mapDirectory->setText( conf->getMapRootDir() );
 
   chkDeleteAfterCompile->setChecked( conf->getMapDeleteAfterCompile() );
   chkUnloadUnneeded->setChecked( conf->getMapUnload() );
@@ -191,6 +200,7 @@ void SettingsPageMapAdv::slot_save()
 
   GeneralConfig *conf = GeneralConfig::instance();
 
+  conf->setMapRootDir( mapDirectory->text() );
   conf->setMapDeleteAfterCompile( chkDeleteAfterCompile->isChecked() );
   conf->setMapUnload( chkUnloadUnneeded->isChecked() );
   conf->setMapProjectionType( currentProjType );
@@ -229,6 +239,24 @@ void SettingsPageMapAdv::slot_save()
     }
 }
 
+/**
+ * Called if the map selection button is pressed
+ */
+void SettingsPageMapAdv::slot_openFileDialog()
+{
+  QString mapDir = QFileDialog::getExistingDirectory( this,
+                                                      tr("Please select your map directory"),
+                                                      QDir::homePath(),
+                                                      QFileDialog::ShowDirsOnly|
+                                                      QFileDialog::DontResolveSymlinks );
+
+  if( mapDir.isEmpty() )
+    {
+      return; // nothing was selected by the user
+    }
+
+  mapDirectory->setText( mapDir.remove(  mapDir.size()-1, 1 ) );
+}
 
 // selection in the combo box has been changed. index is a reference
 // to the current entry. initialize widgets with the internal values
@@ -278,11 +306,14 @@ void SettingsPageMapAdv::slot_filterChanged( const QString& text )
 /* Called to ask is confirmation on the close is needed. */
 void SettingsPageMapAdv::slot_query_close(bool& warn, QStringList& warnings)
 {
-  /*set warn to 'true' if the data has changed. Note that we can NOT just set warn equal to
-    _changed, because that way we might erase a warning flag set by another page! */
+  /* set warn to 'true' if the data has changed. Note that we can NOT
+    just set warn equal to _changed, because that way we might erase a
+    warning flag set by another page! */
+
   bool changed=false;
   GeneralConfig *conf = GeneralConfig::instance();
 
+  changed = changed || ( mapDirectory->text() != conf->getMapRootDir() );
   changed = changed || ( chkDeleteAfterCompile->isChecked() != conf->getMapDeleteAfterCompile() );
   changed = changed || ( chkUnloadUnneeded->isChecked() != conf->getMapUnload() );
 

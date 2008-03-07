@@ -371,6 +371,18 @@ class GeneralConfig : protected QSettings
     _centerLon = newValue;
   };
 
+  /** gets map root dir */
+  QString getMapRootDir()
+  {
+    return _mapRootDir;
+  };
+
+  /** sets map root dir */
+  void setMapRootDir( QString newValue )
+  {
+    _mapRootDir = newValue;
+  };
+
   /** gets map scale */
   double getMapScale() const
   {
@@ -1114,6 +1126,9 @@ class GeneralConfig : protected QSettings
   int _centerLat;
   // Center Longitude
   int _centerLon;
+
+  // Map root dir
+  QString _mapRootDir;
 
   // Map Scale
   double _mapScale;

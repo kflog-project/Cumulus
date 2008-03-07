@@ -187,6 +187,7 @@ void GeneralConfig::load()
   resetHomeWp();
   _homeWp->origP.setLat( value( "Homesite Latitude", HOME_DEFAULT_LAT).toInt() );
   _homeWp->origP.setLon( value( "Homesite Longitude", HOME_DEFAULT_LON).toInt() );
+  _mapRootDir = value("Map Root", "").toString();
   _centerLat  = value("Center Latitude", HOME_DEFAULT_LAT).toInt();
   _centerLon  = value("Center Longitude", HOME_DEFAULT_LON).toInt();
   _mapScale   = value("Map Scale", 200).toDouble();
@@ -408,6 +409,7 @@ void GeneralConfig::save()
   beginGroup("Map Data");
   setValue("Homesite Latitude", _homeWp->origP.lat());
   setValue("Homesite Longitude", _homeWp->origP.lon());
+  setValue("Map Root", _mapRootDir);
   setValue("Center Latitude", _centerLat);
   setValue("Center Longitude", _centerLon);
   setValue("Map Scale", _mapScale);
