@@ -1200,3 +1200,27 @@ QPixmap GeneralConfig::loadPixmap( const char* pixmapName )
 
   return pm;
 }
+
+/** Returns the expected places of map directories
+    There are: 1. Map directory defined by user
+               2. $HOME/maps
+               3. $INSTALL_DIR/maps
+*/
+QStringList GeneralConfig::getMapDirectories()
+{
+  QStringList mapDirs;
+
+  // First check, if user has defined an own map directory
+
+  if(  ! _mapRootDir.isEmpty() )
+    {
+      mapDirs << _mapRootDir;
+    }
+
+  // next follow $HOME/maps and at last the installation area with
+  // $INSTALL_ROOT/maps
+
+  mapDirs << QDir::homeDirPath() + "/maps" << _installRoot  + "/maps";
+
+  return mapDirs;
+}

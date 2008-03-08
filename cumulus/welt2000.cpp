@@ -101,17 +101,14 @@ bool Welt2000::load( MapElementList& airportList, MapElementList& gliderList )
   QString wu = "WELT2000.TXT";
   QString sd = "/airfields/";
 
-  QString p1l = MapContents::mapDir1 + sd + wl;
-  QString p1u = MapContents::mapDir1 + sd + wu;
-  rename( p1u.toLatin1().data(), p1l.toLatin1().data() );
+  QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
 
-  QString p2l = MapContents::mapDir2 + sd + wl;
-  QString p2u = MapContents::mapDir2 + sd + wu;
-  rename( p2u.toLatin1().data(), p2l.toLatin1().data() );
-
-  QString p3l = MapContents::mapDir3 + sd + wl;
-  QString p3u = MapContents::mapDir3 + sd + wu;
-  rename( p3u.toLatin1().data(), p3l.toLatin1().data() );
+  for( int i = 0; i < mapDirs.size(); ++i )
+    {
+      QString pLower = mapDirs.at(i) + sd + wl;
+      QString pUpper = mapDirs.at(i) + sd + wu;
+      rename( pUpper.toLatin1().data(), pLower.toLatin1().data() );
+    }
 
   QString w2PathTxt;
   QString w2PathTxc;

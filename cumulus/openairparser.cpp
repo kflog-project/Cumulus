@@ -36,6 +36,7 @@
 #include "mapcontents.h"
 #include "projectionbase.h"
 #include "filetools.h"
+#include "generalconfig.h"
 
 // All is prepared for additional calculation, storage and
 // reconstruction of a bounding box. Be free to switch on/off it via
@@ -87,23 +88,21 @@ uint OpenAirParser::load( QList<Airspace*>& list )
   t.start();
   uint loadCounter = 0; // number of successfully loaded files
 
+  QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
   QStringList preselect;
-  MapContents::addDir(preselect, MapContents::mapDir1 + "/airspaces", "*.txt");
-  MapContents::addDir(preselect, MapContents::mapDir1 + "/airspaces", "*.TXT");
-  MapContents::addDir(preselect, MapContents::mapDir1 + "/airspaces", "*.txc");
 
-  MapContents::addDir(preselect, MapContents::mapDir2 + "/airspaces", "*.txt");
-  MapContents::addDir(preselect, MapContents::mapDir2 + "/airspaces", "*.TXT");
-  MapContents::addDir(preselect, MapContents::mapDir2 + "/airspaces", "*.txc");
+  for( int i = 0; i < mapDirs.size(); ++i )
+    {
+      MapContents::addDir(preselect, mapDirs.at(i) + "/airspaces", "*.txt");
+      MapContents::addDir(preselect, mapDirs.at(i) + "/airspaces", "*.TXT");
+      MapContents::addDir(preselect, mapDirs.at(i) + "/airspaces", "*.txc");
+    }
 
-  MapContents::addDir(preselect, MapContents::mapDir3 + "/airspaces", "*.txt");
-  MapContents::addDir(preselect, MapContents::mapDir3 + "/airspaces", "*.TXT");
-  MapContents::addDir(preselect, MapContents::mapDir3 + "/airspaces", "*.txc");
-
-  if(preselect.count() == 0) {
-    qWarning( "OpenAirParser: No Open Air files could be found in the map directories" );
-    return loadCounter;
-  }
+  if(preselect.count() == 0)
+    {
+      qWarning( "OpenAirParser: No Open Air files could be found in the map directories" );
+      return loadCounter;
+    }
 
 
   // First check, if we have found a file name in upper letters. May

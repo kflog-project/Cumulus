@@ -23,6 +23,7 @@
 #include <QPixmap>
 #include <QString>
 #include <QSize>
+#include <QStringList>
 
 #include "airspace.h"
 #include "basemapelement.h"
@@ -370,6 +371,9 @@ class GeneralConfig : protected QSettings
   {
     _centerLon = newValue;
   };
+
+  /** gets the expected places of map directories */
+  QStringList getMapDirectories();
 
   /** gets map root dir */
   QString getMapRootDir()

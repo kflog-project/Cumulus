@@ -21,6 +21,7 @@
 #include <QGroupBox>
 #include <QFileDialog>
 #include <QDir>
+#include <QToolTip>
 
 #include "settingspagemapadv.h"
 #include "generalconfig.h"
@@ -41,6 +42,7 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent) :
   int row=0;
 
   mapSelection = new QPushButton( tr("Maps"), this );
+  mapSelection->setToolTip(tr("Select your personal map directory"));
   topLayout->addWidget(mapSelection, row, 0 );
 
   connect(mapSelection, SIGNAL( clicked()), this, SLOT(slot_openFileDialog()) );
@@ -247,8 +249,7 @@ void SettingsPageMapAdv::slot_openFileDialog()
   QString mapDir = QFileDialog::getExistingDirectory( this,
                                                       tr("Please select your map directory"),
                                                       QDir::homePath(),
-                                                      QFileDialog::ShowDirsOnly|
-                                                      QFileDialog::DontResolveSymlinks );
+                                                      QFileDialog::ShowDirsOnly );
 
   if( mapDir.isEmpty() )
     {

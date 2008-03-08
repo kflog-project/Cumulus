@@ -56,6 +56,7 @@
 #include "flighttask.h"
 #include "gpsnmea.h"
 #include "waypointcatalog.h"
+#include "generalconfig.h"
 
 extern MapView *_globalMapView;
 
@@ -197,11 +198,6 @@ const int MapContents::isoLines[] =
     4750, 5000, 5250, 5500, 5750, 6000, 6250, 6500, 6750, 7000, 7250,
     7500, 7750, 8000, 8250, 8500, 8750
   };
-
-const QString MapContents::mapDir1 = QDir::homeDirPath() + "/maps"; //subdir of homedir
-const QString MapContents::mapDir2 = GeneralConfig::instance()->getInstallRoot() + "/maps"; // INSTALL_ROOT 
-const QString MapContents::mapDir3 = "/mnt/card/maps";  //secure digital card
-
 
 MapContents::MapContents(QObject* parent, WaitScreen* waitscreen)
   : QObject(parent),
@@ -1752,15 +1748,16 @@ void MapContents::proofeSection()
       // @AP: Look for and if available load a welt2000 airfield file
       Welt2000 welt2000;
       welt2000.load( airportList, gliderSiteList );
+      
+      QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
+
+      for( int i = 0; i < mapDirs.size(); ++i )
+        {
+          addDir(preselect, mapDirs.at(i) + "/airfields", "*.kfc");
+          addDir(preselect, mapDirs.at(i) + "/airfields", "*.kfl");          
+        }
 
       QStringList airfields;
-
-      addDir(preselect, mapDir1 + "/airfields", "*.kfc");
-      addDir(preselect, mapDir1 + "/airfields", "*.kfl");
-      addDir(preselect, mapDir2 + "/airfields", "*.kfc");
-      addDir(preselect, mapDir2 + "/airfields", "*.kfl");
-      addDir(preselect, mapDir3 + "/airfields", "*.kfc");
-      addDir(preselect, mapDir3 + "/airfields", "*.kfl");
 
       // Now, we have to test for updated or uncompiled kfls ...
       // Anyone can do it more elegantly?
@@ -2737,66 +2734,53 @@ void MapContents::showProgress2WaitScreen( QString message )
     }
 }
 
-/** This function checks all possible map directories for the map file. If
-    found, it returns true and returns the complete path in pathName. */
+/** This function checks all possible map directories for the map
+    file. If found, it returns true and returns the complete path in
+    pathName. */
 bool MapContents::locateFile(const QString& fileName, QString& pathName)
 {
-  QFile test;
-  test.setName(mapDir1 + "/" + fileName);
-  if (test.exists()) {
-    pathName=test.name();
-    return true;
-  }
+  QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
 
-  test.setName(mapDir2 + "/" + fileName);
-  if (test.exists()) {
-    pathName=test.name();
-    return true;
-  }
+  for( int i = 0; i < mapDirs.size(); ++i )
+    {
+      QFile test;
 
-  test.setName(mapDir3 + "/" + fileName);
-  if (test.exists()) {
-    pathName=test.name();
-    return true;
-  }
+      test.setName( mapDirs.at(i) + "/" + fileName );
 
-  //lower case tests
-  test.setName(mapDir1 + "/" + fileName.lower());
-  if (test.exists()) {
-    pathName=test.name();
-    return true;
-  }
+      if( test.exists() )
+        {
+          pathName=test.name();
+          return true;
+        }      
+    }
 
-  test.setName(mapDir2 + "/" + fileName.lower());
-  if (test.exists()) {
-    pathName=test.name();
-    return true;
-  }
+  // lower case tests
+  for( int i = 0; i < mapDirs.size(); ++i )
+    {
+      QFile test;
 
-  test.setName(mapDir3 + "/" + fileName.lower());
-  if (test.exists()) {
-    pathName=test.name();
-    return true;
-  }
+      test.setName( mapDirs.at(i) + "/" + fileName.toLower() );
 
-  //so, let's try uppercase
-  test.setName(mapDir1 + "/" + fileName.upper());
-  if (test.exists()) {
-    pathName=test.name();
-    return true;
-  }
+      if( test.exists() )
+        {
+          pathName=test.name();
+          return true;
+        }      
+    }
 
-  test.setName(mapDir2 + "/" + fileName.upper());
-  if (test.exists()) {
-    pathName=test.name();
-    return true;
-  }
+  // so, let's try upper case
+  for( int i = 0; i < mapDirs.size(); ++i )
+    {
+      QFile test;
 
-  test.setName(mapDir3 + "/" + fileName.upper());
-  if (test.exists()) {
-    pathName=test.name();
-    return true;
-  }
+      test.setName( mapDirs.at(i) + "/" + fileName.toUpper() );
+
+      if( test.exists() )
+        {
+          pathName=test.name();
+          return true;
+        }      
+    }
 
   return false;
 }
@@ -2812,6 +2796,7 @@ void MapContents::addDir (QStringList& list, const QString& _path, const QString
     return;
 
   QStringList entries (path.entryList());
+
   for (QStringList::Iterator it = entries.begin(); it != entries.end(); ++it ) {
     bool found = false;
     // look for other entries with same filename

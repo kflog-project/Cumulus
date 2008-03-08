@@ -247,11 +247,6 @@ class MapContents : public QObject
    */
   static bool compareProjections(ProjectionBase* p1, ProjectionBase* p2);
 
-  /** Locations of maps */
-  static const QString mapDir1;
-  static const QString mapDir2;
-  static const QString mapDir3;
-
   public slots:
   /** */
   void slotReloadMapData();
