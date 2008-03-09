@@ -187,7 +187,7 @@ void GeneralConfig::load()
   resetHomeWp();
   _homeWp->origP.setLat( value( "Homesite Latitude", HOME_DEFAULT_LAT).toInt() );
   _homeWp->origP.setLon( value( "Homesite Longitude", HOME_DEFAULT_LON).toInt() );
-  _mapRootDir = value("Map Root", "").toString();
+  _mapUserDir  = value("Map Root", "").toString();
   _centerLat  = value("Center Latitude", HOME_DEFAULT_LAT).toInt();
   _centerLon  = value("Center Longitude", HOME_DEFAULT_LON).toInt();
   _mapScale   = value("Map Scale", 200).toDouble();
@@ -409,7 +409,7 @@ void GeneralConfig::save()
   beginGroup("Map Data");
   setValue("Homesite Latitude", _homeWp->origP.lat());
   setValue("Homesite Longitude", _homeWp->origP.lon());
-  setValue("Map Root", _mapRootDir);
+  setValue("Map Root", _mapUserDir);
   setValue("Center Latitude", _centerLat);
   setValue("Center Longitude", _centerLon);
   setValue("Map Scale", _mapScale);
@@ -1209,18 +1209,30 @@ QPixmap GeneralConfig::loadPixmap( const char* pixmapName )
 QStringList GeneralConfig::getMapDirectories()
 {
   QStringList mapDirs;
+  QString     mapHome    = QDir::homeDirPath() + "/maps";
+  QString     mapInstall = _installRoot  + "/maps";
 
   // First check, if user has defined an own map directory
 
-  if(  ! _mapRootDir.isEmpty() )
+  if(  ! _mapUserDir.isEmpty() )
     {
-      mapDirs << _mapRootDir;
+      mapDirs << _mapUserDir;
     }
 
-  // next follow $HOME/maps and at last the installation area with
-  // $INSTALL_ROOT/maps
+  // Next follow $HOME/maps and at last the installation area with
+  // $INSTALL_ROOT/maps.
 
-  mapDirs << QDir::homeDirPath() + "/maps" << _installRoot  + "/maps";
+  if( _mapUserDir != mapHome )
+    {
+      // add only if different
+      mapDirs << mapHome;
+    }
+
+  if( _mapUserDir != mapInstall )
+    {
+      // add only if different
+      mapDirs << mapInstall;
+    }
 
   return mapDirs;
 }

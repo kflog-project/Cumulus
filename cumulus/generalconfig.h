@@ -378,13 +378,13 @@ class GeneralConfig : protected QSettings
   /** gets map root dir */
   QString getMapRootDir()
   {
-    return _mapRootDir;
+    return _mapUserDir;
   };
 
   /** sets map root dir */
   void setMapRootDir( QString newValue )
   {
-    _mapRootDir = newValue;
+    _mapUserDir = newValue;
   };
 
   /** gets map scale */
@@ -1131,8 +1131,8 @@ class GeneralConfig : protected QSettings
   // Center Longitude
   int _centerLon;
 
-  // Map root dir
-  QString _mapRootDir;
+  // Map directory, defined by user
+  QString _mapUserDir;
 
   // Map Scale
   double _mapScale;
