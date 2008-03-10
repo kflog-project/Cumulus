@@ -1642,12 +1642,20 @@ bool CumulusApp::eventFilter( QObject *o , QEvent *e )
   if ( e->type() == QEvent::KeyPress )
     {
       QKeyEvent *k = ( QKeyEvent* ) e;
-      qDebug( "Keycode of pressed key: %d, %%%X", k->key(), k->key() );
 
       if( k->key() == Qt::Key_Space )
         {
           slotToggleMenu();
+          return true;
         }
+      else if( k->key() == Qt::Key_F6 )
+        {
+          // Key for minimize/maximize on Nokia Internet tablet
+          setWindowState(windowState() ^ Qt::WindowFullScreen);
+          return true;
+        }
+
+      qDebug( "Keycode of pressed key: %d, %%%X", k->key(), k->key() );
     }
 
   return QWidget::eventFilter( o, e ); // standard event processing;
