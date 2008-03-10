@@ -58,7 +58,7 @@ install: check_dir deinstall install_lang
 	install -d $(INSTALL_ROOT)/icons
 	install -d $(INSTALL_ROOT)/icons/small
 	install -d $(INSTALL_ROOT)/icons/windarrows
-	install -d $(INSTALL_ROOT)/locale/$(LANG)
+	install -d $(INSTALL_ROOT)/locale
 	install -d $(INSTALL_ROOT)/sounds
 	install -d $(INSTALL_ROOT)/maps/airfields
 	install -d $(INSTALL_ROOT)/maps/airspaces
@@ -77,9 +77,9 @@ install: check_dir deinstall install_lang
 
 .PHONY : install_lang
 install_lang:
-	install -d $(INSTALL_ROOT)/locale/$(LANG)
-	test -f cumulus/cumulus_de_DE.qm  || touch cumulus/cumulus_de_DE.qm
-	install --mode=644 cumulus/cumulus_de_DE.qm $(INSTALL_ROOT)/locale/$(LANG)/cumulus_$(LANG).qm
+	install -d $(INSTALL_ROOT)/locale/de
+	test -f cumulus/cumulus_de.qm  || touch cumulus/cumulus_de.qm
+	install --mode=644 cumulus/cumulus_de.qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
 
 .PHONY : deinstall
 deinstall:
