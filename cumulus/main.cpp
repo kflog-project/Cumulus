@@ -112,24 +112,19 @@ int main(int argc, char *argv[])
       unsetenv("LD_BIND_NOW");
     }
 
-  /* Load language translations for cumulus */
+  /* Load selected language translations for cumulus */
 
-  env = getenv("LANG");
-
-  if( env == 0 )
-    {
-      env = "";
-    }
-
-  QString langFile = QString("cumulus") + QString("_") + QString(env) + ".qm";
-  QString langDir = root + "/locale/" + QString(env);
+  QString langFile = QString("cumulus") + QString("_") + conf->getLanguage() + ".qm";
+  QString langDir = root + "/locale/" + conf->getLanguage();
 
   QTranslator translator;
 
   if( translator.load( langFile, langDir ) )
     {
       app.installTranslator(&translator);
-      qDebug( "Installing translation file %s for language %s", langFile.latin1(), env );
+      qDebug( "Using translation file %s for language %s",
+              langFile.toLatin1().data(),
+              conf->getLanguage().toLatin1().data() );
     }
   else
     {
