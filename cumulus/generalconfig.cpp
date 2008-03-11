@@ -245,6 +245,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Information");
+  _soundPlayer           = value( "SoundPlayer", "" ).toString();
   _airfieldDisplayTime   = value( "AirfieldDisplayTime",
                                   AIRFIELD_DISPLAY_TIME_DEFAULT ).toInt();
   _airspaceDisplayTime   = value( "AirspaceDisplayTime",
@@ -464,6 +465,7 @@ void GeneralConfig::save()
   endGroup();
 
   beginGroup("Information");
+  setValue( "SoundPlayer", _soundPlayer );
   setValue( "AirfieldDisplayTime", _airfieldDisplayTime );
   setValue( "AirspaceDisplayTime", _airspaceDisplayTime );
   setValue( "InfoDisplayTime", _infoDisplayTime );

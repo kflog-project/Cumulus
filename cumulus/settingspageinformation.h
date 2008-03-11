@@ -22,6 +22,7 @@
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QPushButton>
+#include <QLineEdit>
 
 /**
  * The class manages the pop up window stay times and the alarm sound.
@@ -29,45 +30,51 @@
  */
 class SettingsPageInformation : public QWidget
 {
-    Q_OBJECT
-public:
+  Q_OBJECT
+    public:
 
-    SettingsPageInformation(QWidget *parent=0);
+  SettingsPageInformation(QWidget *parent=0);
 
-    virtual ~SettingsPageInformation();
+  virtual ~SettingsPageInformation();
 
 
-public slots: // Public slots
-    /**
-     * Called to initiate saving to the configurationfile.
-    */
-    void slot_save();
+  public slots: // Public slots
+  /**
+   * Called to initiate saving to the configurationfile.
+   */
+  void slot_save();
 
-    /**
-     * Called to initiate loading of the configurationfile
-     */
-    void slot_load();
+  /**
+   * Called to initiate loading of the configurationfile
+   */
+  void slot_load();
 
-private slots:
-    /**
-     * Called to restore the factory settings
-     */
-    void slot_setFactoryDefault();
+  private slots:
+  /**
+   * Called to restore the factory settings
+   */
+  void slot_setFactoryDefault();
 
-private:
+  /**
+   * Called to open a selection file dialog for the sound tool
+   */
+  void slot_openToolDialog();
 
-    QSpinBox*    spinAirfield;
-    QSpinBox*    spinAirspace;
-    QSpinBox*    spinWaypoint;
-    QSpinBox*    spinWarning;
-    QSpinBox*    spinInfo;
-    QSpinBox*    spinSuppress;
-    QCheckBox*   checkAlarmSound;
-    QCheckBox*   calculateNearestSites;
-    QCheckBox*   checkAltimeterToggle;
-    QPushButton* buttonReset;
+ private:
 
-    bool loadConfig; // control loading of config data
+  QLineEdit*   soundTool;
+  QSpinBox*    spinAirfield;
+  QSpinBox*    spinAirspace;
+  QSpinBox*    spinWaypoint;
+  QSpinBox*    spinWarning;
+  QSpinBox*    spinInfo;
+  QSpinBox*    spinSuppress;
+  QCheckBox*   checkAlarmSound;
+  QCheckBox*   calculateNearestSites;
+  QCheckBox*   checkAltimeterToggle;
+  QPushButton* buttonReset;
+
+  bool loadConfig; // control loading of config data
 
 };
 

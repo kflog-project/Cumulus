@@ -737,6 +737,18 @@ class GeneralConfig : protected QSettings
   /** sets max nearest site calculator sites */
   void setMaxNearestSiteCalculatorSites(const int newValue);
 
+  /** Gets the user sound player */
+  QString &getSoundPlayer()
+    {
+      return _soundPlayer;
+    };
+
+  /** Sets the user sound player */
+  void setSoundPlayer( const QString newValue )
+  {
+    _soundPlayer = newValue;
+  };
+
   /** gets AirfieldDisplayTime */
   int getAirfieldDisplayTime() const;
   /** sets AirfieldDisplayTime */
@@ -1220,6 +1232,8 @@ class GeneralConfig : protected QSettings
   // maximum sites considered by nearest site calculator
   int _maxNearestSiteCalculatorSites;
 
+  // sound player seleted by user
+  QString _soundPlayer;
   // AirfieldDisplayTime
   int _airfieldDisplayTime;
   // AirspaceDisplayTime
