@@ -4,7 +4,7 @@
  begin                : Sun Jul 21 2002
  copyright            : (C) 2002 by André Somers
  ported to Qt4.3/X11  : (C) 2008 by Axel pauli
- email                : andre@kflog.org, axel@kflog.org
+ email                : axel@kflog.org
 
   This file is distributed under the terms of the General Public
   Licence. See the file COPYING for more information.
@@ -17,7 +17,7 @@
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
+ *   the Free Software Foundation; either version 3 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
@@ -37,7 +37,6 @@
 #include <QDir>
 #include <QList>
 #include <QMessageBox>
-#include <QSound>
 
 #include "generalconfig.h"
 #include "cumulusapp.h"
@@ -55,6 +54,7 @@
 #include "gliderlist.h"
 #include "target.h"
 #include "helpbrowser.h"
+#include "sound.h"
 
 /**
  * Global available instance of this class
@@ -161,11 +161,6 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   qDebug( "QDir::homeDirPath()=%s", QDir::homeDirPath().toLatin1().data() );
   qDebug( "DISPLAY=%s", qwsdisplay ? qwsdisplay : "NULL" );
 
-  if( ! QSound::isAvailable() )
-    {
-      qWarning( "QSound is not available on this device!" );
-    }
-
   // Check, if in users home a cumulus application directory exists,
   // otherwise create it.
   QDir cuApps( QDir::homeDirPath() + "/cumulus" );
@@ -266,7 +261,7 @@ void CumulusApp::slotCreateApplicationWidgets()
   _taskListVisible = false;
   _reachpointListVisible = false;
   listViewTabs->addTab( viewWP, tr( "Waypoints" ) );
-  //listViewTabs->addTab( viewRP, tr( "Reachable" ) ); --> added in slot_readconfig
+  //listViewTabs->addTab( viewRP, tr( "Reachable" ) ); --> added in slotReadconfig
   listViewTabs->addTab( viewAF, tr( "Airfields" ) );
 
   // waypoint info widget
@@ -362,7 +357,7 @@ void CumulusApp::slotCreateApplicationWidgets()
   connect( viewMap->_theMap, SIGNAL( waypointSelected( wayPoint* ) ),
            this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
   connect( viewMap->_theMap, SIGNAL( airspaceWarning( const QString&, const bool ) ),
-           this, SLOT( slotNotification( const QString&, const bool ) ) );
+           this, SLOT( slotAlarm( const QString&, const bool ) ) );
   connect( viewMap, SIGNAL( toggleLDCalculation( const bool ) ),
            calculator, SLOT( slot_toggleLDCalculation(const bool) ) );
 
@@ -530,7 +525,7 @@ void CumulusApp::slotCreateApplicationWidgets()
 
   calculator->setPosition( _globalMapMatrix->getMapCenter( false ) );
 
-  slot_readconfig();
+  slotReadconfig();
   setView( mapView );
 
   // set the default glider to be the last one selected.
@@ -590,33 +585,38 @@ CumulusApp::~CumulusApp()
 /** As the name tells ...
   *
   */
-void CumulusApp::playSound( const QString *name )
+void CumulusApp::playSound( const char *name )
 {
-  GeneralConfig * conf = GeneralConfig::instance();
-
-  if ( ! conf->getAlarmSoundOn() )
+  if ( ! GeneralConfig::instance()->getAlarmSoundOn() )
     {
       return ;
     }
 
-  if ( name )
+  if ( name && QString(name) == "beep" )
     {
-      QSound sound( *name );
-      sound.play();
+       QApplication::beep();
+       return;
     }
-  else if( QSound::isAvailable() )
+  
+  QString sound;
+
+  if( name && QString(name) == "notify" )
     {
-      // Default sound is played, if QSound is available
-      QString file = GeneralConfig::instance()->getInstallRoot() + "/sounds/Alarm.wav";
-      qDebug( "SoundFile=%s", file.toLatin1().data() );
-      QSound sound( file );
-      sound.play();
+      sound = GeneralConfig::instance()->getInstallRoot() + "/sounds/Notify.wav";
     }
-  else
+  else if( name && QString(name) == "alarm" )
     {
-      // Last default -> do beep only
-      QApplication::beep ();
+      sound = GeneralConfig::instance()->getInstallRoot() + "/sounds/Alarm.wav";
     }
+  else if( name )
+    {
+      sound = *name;
+    }
+
+  // The sound is played in an extra thread
+  Sound *player = new Sound( sound );
+
+  player->start( QThread::HighestPriority );
 }
 
 void CumulusApp::slotNotification( const QString& msg, const bool sound )
@@ -629,7 +629,24 @@ void CumulusApp::slotNotification( const QString& msg, const bool sound )
 
   if ( sound )
     {
-      playSound();
+      playSound("notify");
+    }
+
+  setWindowTitle( msg + " " );
+  viewMap->message( msg );
+}
+
+void CumulusApp::slotAlarm( const QString& msg, const bool sound )
+{
+  if ( msg.isEmpty() )
+    {
+      setWindowTitle( "Cumulus: " + calculator->gliderType() );
+      return ;
+    }
+
+  if ( sound )
+    {
+      playSound("alarm");
     }
 
   setWindowTitle( msg + " " );
@@ -903,7 +920,7 @@ void CumulusApp::closeEvent ( QCloseEvent* evt )
       return;
     }
 
-  playSound();
+  playSound("notify");
 
   QMessageBox mb( tr( "Are you sure?" ),
                   tr( "<b>Cumulus will be terminated.<br>Are you sure?</b>" ),
@@ -1301,7 +1318,7 @@ void CumulusApp::slotConfig()
   cDlg->setAttribute(Qt::WA_DeleteOnClose);
 
   connect( cDlg, SIGNAL( settingsChanged() ),
-           this, SLOT( slot_readconfig() ) );
+           this, SLOT( slotReadconfig() ) );
   connect( cDlg,  SIGNAL( welt2000ConfigChanged() ),
            _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
 
@@ -1423,7 +1440,7 @@ void CumulusApp::slotRememberWaypoint()
 
 /** This slot is called if the configuration has changed and at the
     start of the program to read the initial configuration. */
-void CumulusApp::slot_readconfig()
+void CumulusApp::slotReadconfig()
 {
   // @AP: WARNING POPUP crash test statement, please let it commented out here
   // viewMap->theMap->checkAirspace(calculator->getlastPosition());
@@ -1510,7 +1527,7 @@ void CumulusApp::slotGpsStatus( GPSNMEA::connectedStatus status )
       viewMap->message( tr( "GPS lost" ) );
     }
 
-  playSound();
+  playSound("notify");
 
   if ( ( status < GPSNMEA::validFix || calculator->isManualInFlight()) && ( view == mapView ) )
     {  // no GPS data

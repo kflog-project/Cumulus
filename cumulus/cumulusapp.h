@@ -89,7 +89,7 @@ class CumulusApp : public QMainWindow
     /**
      * play some sound
      */
-    static void playSound(const QString *name=0);
+    void playSound(const char *name=0);
 
   public: // Public attributes
     /**
@@ -160,7 +160,7 @@ class CumulusApp : public QMainWindow
     /** Opens the configdialog. */
     void slotConfig();
     /** This slot is called if the configuration has changed and at the start of the program to read the initial configuration. */
-    void slot_readconfig();
+    void slotReadconfig();
     /** Called if the status of the GPS changes, and controls the availability of manual navigation. */
     void slotGpsStatus(GPSNMEA::connectedStatus status);
     /** Opens the pre flight dialog */
@@ -168,6 +168,8 @@ class CumulusApp : public QMainWindow
     void slotPreFlightTask();
     /** shows resp. signals a notifiation */
     void slotNotification (const QString&, const bool sound=true);
+    /** shows resp. signals an alarm */
+    void slotAlarm (const QString&, const bool sound=true);
     /** updates the list of reachable points  */
     void slot_newReachList();
     /** use manual navigation even if GPS signal received */
