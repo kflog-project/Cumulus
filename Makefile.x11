@@ -73,7 +73,7 @@ install: check_dir deinstall install_lang
 	install --mode=644 icons/windarrows/* $(INSTALL_ROOT)/icons/windarrows
 	install --mode=644 help/de/*.html icons/cumulus.png $(INSTALL_ROOT)/help/de
 	install --mode=644 help/en/*.html icons/cumulus.png $(INSTALL_ROOT)/help/en
-	install --mode=644 sounds/Alarm.wav $(INSTALL_ROOT)/sounds
+	install --mode=644 sounds/*.wav $(INSTALL_ROOT)/sounds
 
 .PHONY : install_lang
 install_lang:
