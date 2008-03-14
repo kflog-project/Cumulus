@@ -79,6 +79,7 @@ HEADERS     = \
     signalhandler.h \
     singlepoint.h \
     sonne.h \
+    sound.h \
     speed.h \
     target.h \
     taskdialog.h \
@@ -170,6 +171,7 @@ SOURCES     = \
     signalhandler.cpp \
     singlepoint.cpp \
     sonne.cpp \
+    sound.cpp \
     speed.cpp \
     taskdialog.cpp \
     tasklist.cpp \
