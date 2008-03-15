@@ -90,7 +90,6 @@ FlightTask::FlightTask( const FlightTask& inst )
 
   // create a deep copy of the waypoint list
   wpList = copyWpList( inst.wpList );
-  //wpList->setAutoDelete( true );
 
   task_end = inst.task_end;
   task_begin = inst.task_begin;
@@ -951,20 +950,29 @@ void FlightTask::calculateSector( QPainterPath& pp,
   // Must be turned by 90 degrees to get the right position.
   int w1 = (sba+90) * -1;
 
-  if( ira > 0 && ira <= ora )
+  if( ira == 0 )
     {
+      pp.moveTo( (qreal) ocx + (qreal) ora, (qreal) ocy + (qreal) ora );
       // The big arc around the center point.
-      pp.arcTo( (qreal) ocx,(qreal) ocy, (qreal) (2 * ora), (qreal) (2 * ora), (qreal) (w1+sa/2),(qreal) -sa );
+      pp.arcTo( (qreal) ocx,(qreal) ocy, (qreal) (2 * ora), (qreal) (2 * ora), (qreal) (w1+sa/2),(qreal) -sa );      
+    }
+
+  else if( ira == ora )
+    {
+      // Inner and outer radius are equal, we have to draw a circle
+      pp.addEllipse( (qreal) ocx, (qreal) ocy, (qreal) (2 * ora), (qreal) (2 * ora) );      
+    }
+
+  else if( ira > 0 && ira < ora )
+    {
+      // move pointer to start point
+      pp.arcMoveTo( (qreal) ocx,(qreal) ocy, (qreal) (2 * ora), (qreal) (2 * ora), (qreal) (w1+sa/2) );
+      // The big arc around the center point.
+      pp.arcTo( (qreal) ocx,(qreal) ocy, (qreal) (2 * ora), (qreal) (2 * ora), (qreal) (w1+sa/2), (qreal) -sa );
 
       // The small arc around the center point and opposite to the
       // big arc. Can have the same size as big arc.
       pp.arcTo( (qreal) icx, (qreal) icy, (qreal) (2 * ira), (qreal) (2 * ira), (qreal) (w1 - sa+sa/2), (qreal) -(360-sa) );
-    }
-  else
-    {
-      // We must put the center point into the sector array, if
-      // the inner radius is zero to get a correct shape for drawing.
-      pp.arcTo( (qreal) ocx, (qreal) ocy, (qreal) (2 * ora), (qreal) (2 * ora), (qreal) (w1+sa/2), (qreal) -sa );
     }
 
   pp.closeSubpath();
@@ -1264,7 +1272,7 @@ QString FlightTask::getSpeedString() const
     }
 
   QString v;
-  v.sprintf( "%d %s", cruisingSpeed, Speed::getHorizontalUnitText().latin1() );
+  v.sprintf( "%d %s", cruisingSpeed, Speed::getHorizontalUnitText().toLatin1().data() );
   return v;
 }
 
