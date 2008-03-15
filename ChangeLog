@@ -18,8 +18,11 @@ Cumulus changelog
 Cumulus 2.0.0 (Development based on X11/Qt-4.3.3)
 -------------------------------------------------
 
-[+] 2008-03-08 AP: Directory selection box for map directory definition by the user 
-                   added in configuration dialog of map settings.
+[+] 2008-03-13 AP: File selection box added in configuration dialog of information settings
+                   for sound player selection by the user. QSound does not work sure,
+                   now the user can choice its own sound player.
+[+] 2008-03-08 AP: Directory selection box added in configuration dialog of map settings
+                   for map directory definition by the user 
 [-] 2008-02-29 AP: Bugfix: Wrong display of bearing and altitude in reachable
                    list, if the distance was nearly zero between current position
 		   and target.
