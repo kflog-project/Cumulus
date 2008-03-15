@@ -131,7 +131,7 @@ public:
 
     inline void setSeats(int seats)
     {
-        _seats=QMAX(1, QMIN(2, seats));
+        _seats=qMax(1, qMin(2, seats));
     };
 
     inline int maxWater()const
@@ -141,7 +141,7 @@ public:
 
     inline void setMaxWater(int liters)
     {
-        _maxWater=QMAX(0, liters);
+        _maxWater=qMax(0, liters);
     };
 
 
