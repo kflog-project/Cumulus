@@ -122,11 +122,11 @@ void GeneralConfig::load()
   _totalAirspaceFillings[Airspace::none] =
     qMax(0, qMin(100, value("fillingNoneTotal", 0).toInt()));
   _totalAirspaceFillings[Airspace::near] =
-    qMax(0, qMin(100, value("fillingNearTotal", 35).toInt()));
+    qMax(0, qMin(100, value("fillingNearTotal", 15).toInt()));
   _totalAirspaceFillings[Airspace::veryNear] =
-    qMax(0, qMin(100, value("fillingVeryNearTotal", 45).toInt()));
+    qMax(0, qMin(100, value("fillingVeryNearTotal", 20).toInt()));
   _totalAirspaceFillings[Airspace::inside] =
-    qMax(0, qMin(100, value("fillingInsideTotal", 60).toInt()));
+    qMax(0, qMin(100, value("fillingInsideTotal", 25).toInt()));
   endGroup();
 
   // Personal settings
