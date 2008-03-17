@@ -28,7 +28,7 @@
 
 GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
 {
-  setWindowTitle(tr("Cumulus GPS Status"));
+  setWindowTitle(tr("GPS Status"));
   setModal(true);
 
   elevAziDisplay = new GPSElevationAzimuthDisplay(this);
