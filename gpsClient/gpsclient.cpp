@@ -708,6 +708,8 @@ uint GpsClient::getBaudrate(int rate)
       return B38400;
     case 57600:
       return B57600;
+    case 115200:
+      return B115200;
     default:
       return B4800;
     }
