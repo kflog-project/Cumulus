@@ -260,15 +260,23 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   //Add statusbar widget
   _statusbar = new QStatusBar(this, "status");
   _statusbar->setSizeGripEnabled(false);
-  _statusbar->setMaximumHeight(25);
+  _statusbar->setMaximumHeight(20);
+
+  _menuToggle = new CuLabel( tr("Menu"),_statusbar);
+  _menuToggle->setFrameStyle(QFrame::Box|QFrame::Plain);
+  _menuToggle->setLineWidth(0);
+  _menuToggle->setAlignment(Qt::AlignCenter);
+  _menuToggle->setMargin(0);
+  _statusbar->addWidget(_menuToggle);
+  connect(_menuToggle, SIGNAL(mousePress()), (CumulusApp*)parent, SLOT(slotToggleMenu()));
 
   _statusGps = new CuLabel(tr("Man"),_statusbar);
   _statusGps->setFrameStyle(QFrame::Box|QFrame::Plain);
   _statusGps->setLineWidth(0);
   _statusGps->setAlignment(Qt::AlignCenter);
   _statusGps->setMargin(0);
-  _statusGps->setMaximumSize(30,15);
-  _statusGps->setMinimumSize(10,15);
+  _statusGps->setMaximumWidth(30);
+  _statusGps->setMinimumWidth(10);
   _statusbar->addWidget(_statusGps);
   connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
 
@@ -286,25 +294,13 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusFiller->setLineWidth(0);
   _statusFiller->setAlignment(Qt::AlignCenter);
   _statusFiller->setMargin(0);
-  _statusFiller->setMaximumHeight(15);
-  _statusbar->addWidget(_statusFiller,10);
-
-  _menuToggle = new CuLabel( tr("Menu"),_statusbar);
-  _menuToggle->setFrameStyle(QFrame::Box|QFrame::Plain);
-  _menuToggle->setLineWidth(0);
-  _menuToggle->setAlignment(Qt::AlignCenter);
-  _menuToggle->setMargin(0);
-  _menuToggle->setMaximumSize(30,15);
-  _menuToggle->setMaximumHeight(15);
-  _statusbar->addWidget(_menuToggle);
-  connect(_menuToggle, SIGNAL(mousePress()), (CumulusApp*)parent, SLOT(slotToggleMenu()));
+  _statusbar->addWidget(_statusFiller, 1);
 
   QFrame* filler = new QFrame(_statusbar);
   filler->setFrameStyle(QFrame::NoFrame);
   _statusbar->addWidget(filler);
 
-  _statusbar->setMaximumHeight(20);
-  //  _statusbar->setFrameStyle(QFrame::Raised);
+  // _statusbar->setFrameStyle(QFrame::Raised);
 
   loggingTimer = new QTimer(this);
   connect (loggingTimer, SIGNAL(timeout()),

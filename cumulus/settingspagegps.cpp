@@ -38,6 +38,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     GpsDev->setEditable (true);
     topLayout->addWidget(GpsDev,row++,2);
 
+#ifndef MAEMO
     if( HWINFO->getType() == HwInfo::ipaq39xx ) {
         GpsDev->addItem("/dev/tts/0");   // ipaq 39xx does only support this one
         GpsDev->addItem("/dev/rfcomm0");
@@ -56,8 +57,12 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
         GpsDev->addItem("/dev/rfcomm1");
 
 	// automatic search for serial compact flash GPS devices
-        GpsDev->addItem("CF");
+        // GpsDev->addItem("CF");
     }
+#else
+    GpsDev->addItem("/dev/pts/0");
+    GpsDev->addItem("/dev/pts/1");
+#endif
 
     GpsDev->addItem(NMEASIM_DEVICE);
 
@@ -66,6 +71,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     GpsSpeed->setObjectName("GPSSpeed");
     GpsSpeed->setEditable(false);
     topLayout->addWidget(GpsSpeed,row++,2);
+    GpsSpeed->addItem("115200");
     GpsSpeed->addItem("57600");
     GpsSpeed->addItem("38400");
     GpsSpeed->addItem("19200");

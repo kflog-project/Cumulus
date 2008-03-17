@@ -20,6 +20,7 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <Q3Grid>
+#include <QHBoxLayout>
 
 #include "settingspagesector.h"
 #include "generalconfig.h"
@@ -89,17 +90,15 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   //--------------------------------------------------------------
   
   // as next cylinder group is added
-  cylinderGroup = new Q3GroupBox( tr("Cylinder"), this );
+  cylinderGroup = new QGroupBox( tr("Cylinder"), this );
   topLayout->addWidget( cylinderGroup, 1, 0 ); 
   
   QGridLayout *cylinderLayout = new QGridLayout( cylinderGroup, 5, 4, 10, 2 );
 
   int row = 0;
-  cylinderLayout->addRowSpacing( row, 4 );
-  row++;
+
   QLabel *lbl = new QLabel( tr("Radius:"), cylinderGroup );
   cylinderLayout->addWidget( lbl, row, 0 );
-  cylinderLayout->addRowSpacing( row, 20 );
   
   cylinderRadius = new QDoubleSpinBox( cylinderGroup );
   cylinderRadius->setRange(0.1, 10.0);
@@ -130,7 +129,7 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   cylinderLayout->addWidget( new QLabel( unit, cylinderGroup ), row, 2 );
 
   // as next sector group is added
-  sectorGroup = new Q3GroupBox( tr("Sector"), this );
+  sectorGroup = new QGroupBox( tr("Sector"), this );
   topLayout->addWidget( sectorGroup, 2, 0 ); 
   
   QGridLayout *sectorLayout = new QGridLayout( sectorGroup, 5, 4, 10, 2 );
@@ -170,13 +169,18 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   sectorAngle->setValue( conf->getTaskSectorAngle() );
 
   // as next shape group is added
-  shapeGroup = new Q3GroupBox( 2, Qt::Horizontal, tr("Shape"), this );
+  shapeGroup = new QGroupBox( tr("Shape"), this );
   topLayout->addWidget( shapeGroup, 3, 0 );
 
-  drawShape = new QCheckBox( tr("Draw Shape"), shapeGroup, "Draw Shape" );
-  drawShape->setMaximumHeight( 12 );
-  fillShape = new QCheckBox( tr("Fill Shape"), shapeGroup, "Fill Shape" );
-  fillShape->setMaximumHeight( 12 );
+  QHBoxLayout *hbox = new QHBoxLayout;
+  drawShape = new QCheckBox( tr("Draw Shape"), this );
+  fillShape = new QCheckBox( tr("Fill Shape"), this );
+
+  hbox->addWidget( drawShape );
+  hbox->addWidget( fillShape );
+  hbox->addStretch(1);
+
+  shapeGroup->setLayout(hbox);
 
   drawShape->setChecked( conf->getTaskDrawShape() );
   fillShape->setChecked( conf->getTaskFillShape() );

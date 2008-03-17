@@ -22,7 +22,7 @@
 #include <QCheckBox>
 #include <QSpinBox>
 #include <Q3ButtonGroup>
-#include <Q3GroupBox>
+#include <QGroupBox>
 #include <QDoubleSpinBox>
 
 #include "altitude.h"
@@ -67,17 +67,17 @@ private:
   Q3ButtonGroup* ntScheme; // nearst-touched scheme
 
   // Cylinder widgets
-  Q3GroupBox*     cylinderGroup;
+  QGroupBox*      cylinderGroup;
   QDoubleSpinBox* cylinderRadius; // Radius of cylinder task point in meter or feet
 
   // Sector widgets
-  Q3GroupBox*     sectorGroup;
+  QGroupBox*      sectorGroup;
   QDoubleSpinBox* innerSectorRadius; // inner sector radius of task point in meter or feet
   QDoubleSpinBox* outerSectorRadius; // outer sector radius of task point in meter or feet
   QSpinBox*       sectorAngle;       // 0-180 degrees
     
   // Drawing options
-  Q3GroupBox*    shapeGroup;
+  QGroupBox*     shapeGroup;
   QCheckBox*     drawShape;
   QCheckBox*     fillShape;
 
