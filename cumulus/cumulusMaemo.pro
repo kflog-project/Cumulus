@@ -199,7 +199,7 @@ INTERFACES  =
 TARGET      = cumulus
 DESTDIR     = .
 INCLUDEPATH += ../ 
-QMAKE_CXXFLAGS  += -DMAEMO
+DEFINES += MAEMO
 LIBS += -lstdc++
 
 TRANSLATIONS    = \
