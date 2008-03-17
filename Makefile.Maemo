@@ -1,0 +1,117 @@
+################################################################################
+# Makefile to build a Cumulus release based on Maemo
+#
+# Copyright (c): 2008 by Axel Pauli (axel@kflog.org)
+# 
+# $Id$
+#
+# This file is distributed under the terms of the General Public Licence.
+# See the file COPYING for more information.
+#
+################################################################################
+
+VERSION = 2.0.0-r1
+
+# adapt install path to your needs if necessary
+INSTALL_ROOT = /opt/cumulus
+
+# adapt call pathes to your needs if necessary
+QMAKE    = qmake
+LRELEASE = lrelease
+
+all:	qmake resetdate
+	cd cumulus; make
+	cd gpsClient; make
+	cd nmeaSimulator; make
+
+.PHONY : clean
+clean:
+	@if [ -f cumulus/Makefile ]; \
+	then \
+		cd cumulus; make distclean; rm -f Makefile; \
+	fi
+	@if [ -f gpsClient/Makefile ]; \
+	then \
+		cd gpsClient; make distclean; rm -f Makefile; \
+	fi
+	@if [ -f nmeaSimulator/Makefile ]; \
+	then \
+		cd nmeaSimulator; make distclean; rm -f Makefile; \
+	fi
+	@echo "Build area cleaned"
+
+.PHONY : check_dir
+check_dir:
+	@if [ ! -w  $(INSTALL_ROOT) ]; \
+	then \
+		echo "Install Directory '$(INSTALL_ROOT)' not writeable - Are you root?"; \
+		exit 99; \
+	fi
+
+.PHONY : install
+install: check_dir deinstall install_lang
+	@echo '===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====='
+	install -d $(INSTALL_ROOT)/bin
+	install -d $(INSTALL_ROOT)/etc
+	install -d $(INSTALL_ROOT)/help/de
+	install -d $(INSTALL_ROOT)/help/en
+	install -d $(INSTALL_ROOT)/icons
+	install -d $(INSTALL_ROOT)/icons/small
+	install -d $(INSTALL_ROOT)/icons/windarrows
+	install -d $(INSTALL_ROOT)/locale
+	install -d $(INSTALL_ROOT)/sounds
+	install -d $(INSTALL_ROOT)/maps/airfields
+	install -d $(INSTALL_ROOT)/maps/airspaces
+	install -d $(INSTALL_ROOT)/maps/landscape
+	install --mode=755 cumulus/cumulus $(INSTALL_ROOT)/bin
+	install --mode=755 gpsClient/gpsClient $(INSTALL_ROOT)/bin
+	install --mode=755 nmeaSimulator/nmeaSimu $(INSTALL_ROOT)/bin
+	install --mode=644 etc/glider.pol $(INSTALL_ROOT)/etc
+	install --mode=644 icons/*.xpm $(INSTALL_ROOT)/icons
+	install --mode=644 icons/*.png $(INSTALL_ROOT)/icons
+	install --mode=644 icons/small/* $(INSTALL_ROOT)/icons/small
+	install --mode=644 icons/windarrows/* $(INSTALL_ROOT)/icons/windarrows
+	install --mode=644 help/de/*.html icons/cumulus.png $(INSTALL_ROOT)/help/de
+	install --mode=644 help/en/*.html icons/cumulus.png $(INSTALL_ROOT)/help/en
+	install --mode=644 sounds/*.wav $(INSTALL_ROOT)/sounds
+
+.PHONY : install_lang
+install_lang:
+	install -d $(INSTALL_ROOT)/locale/de
+	test -f cumulus/cumulus_de.qm  || touch cumulus/cumulus_de.qm
+	install --mode=644 cumulus/cumulus_de.qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
+
+.PHONY : deinstall
+deinstall:
+	@if [ -d  $(INSTALL_ROOT)/maps ]; \
+	then \
+	        cd $(INSTALL_ROOT); rm -rf bin etc help icons locale sounds; \
+        else \
+                rm -rf $(INSTALL_ROOT)/*; \
+        fi
+
+.PHONY : langpacks
+langpacks: langpack_de
+	@echo 'All language packs created'
+
+.PHONY : langpack_de
+langpack_de:
+	cd cumulus; $(LRELEASE) -verbose -nounfinished cumulus_de.ts -qm cumulus_de_DE.qm
+
+.PHONY : release
+release: clean all langpacks
+
+qmake: cumulus/Makefile gpsClient/Makefile nmeaSimulator/Makefile
+
+.PHONY : resetdate
+resetdate:
+	rm -rf cumulus/cumulusapp.o
+
+cumulus/Makefile: cumulus/cumulusMaemo.pro
+	cd cumulus; $(QMAKE) cumulusMaemo.pro -o Makefile
+
+gpsClient/Makefile: gpsClient/gpsClientMaemo.pro
+	cd gpsClient; $(QMAKE) gpsClientMaemo.pro -o Makefile
+
+nmeaSimulator/Makefile: nmeaSimulator/simuX11.pro
+	cd nmeaSimulator; $(QMAKE) simuX11.pro -o Makefile
