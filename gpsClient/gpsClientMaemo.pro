@@ -26,4 +26,4 @@ TARGET = gpsClient
 INCLUDEPATH += ../cumulus
 DEFINES += MAEMO
 
-LIBS += -lstdc++ -lgpsbt
+LIBS += -lstdc++ -lgpsbt -lgps -lgpsmgr
