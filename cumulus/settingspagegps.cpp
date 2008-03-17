@@ -60,6 +60,8 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
         // GpsDev->addItem("CF");
     }
 #else
+    GpsDev->addItem("/dev/rfcomm0");
+    GpsDev->addItem("/dev/rfcomm1");
     GpsDev->addItem("/dev/pts/0");
     GpsDev->addItem("/dev/pts/1");
 #endif

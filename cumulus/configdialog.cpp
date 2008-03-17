@@ -28,12 +28,12 @@
 #include "configdialog.h"
 
 ConfigDialog::ConfigDialog(QWidget *parent) :
-  QDialog(parent, Qt::WStyle_StaysOnTop), loadConfig(true)
+  QDialog(parent), loadConfig(true)
 {
   // qDebug("height=%d, width=%d", parent->height(), parent->width());
 
   setObjectName("ConfigDialog");
-  setModal(true);
+  setModal(false);
 
   setWindowTitle(tr("Cumulus settings"));
 
