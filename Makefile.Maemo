@@ -51,6 +51,9 @@ check_dir:
 .PHONY : install
 install: check_dir deinstall install_lang
 	@echo '===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====='
+	strip cumulus/cumulus
+	strip gpsClient/gpsClient
+	strip nmeaSimulator/nmeaSimu
 	install -d $(INSTALL_ROOT)/bin
 	install -d $(INSTALL_ROOT)/etc
 	install -d $(INSTALL_ROOT)/help/de
