@@ -21,7 +21,7 @@
 #include <QWidget>
 #include <QCheckBox>
 #include <QSpinBox>
-#include <Q3ButtonGroup>
+#include <QButtonGroup>
 #include <QGroupBox>
 #include <QDoubleSpinBox>
 
@@ -63,8 +63,8 @@ private slots:
 private:
 
   // active scheme
-  Q3ButtonGroup* csScheme; // cylinder-sector scheme
-  Q3ButtonGroup* ntScheme; // nearst-touched scheme
+  QButtonGroup* csScheme; // cylinder-sector scheme
+  QButtonGroup* ntScheme; // nearst-touched scheme
 
   // Cylinder widgets
   QGroupBox*      cylinderGroup;

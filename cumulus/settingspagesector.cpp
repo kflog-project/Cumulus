@@ -19,8 +19,8 @@
 #include <QRadioButton>
 #include <QLabel>
 #include <QGridLayout>
-#include <Q3Grid>
 #include <QHBoxLayout>
+#include <QGroupBox>
 
 #include "settingspagesector.h"
 #include "generalconfig.h"
@@ -47,64 +47,84 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
 
   GeneralConfig *conf = GeneralConfig::instance();
 
-  QGridLayout *topLayout = new QGridLayout( this, 3, 1, 3, 0 );
+  QGridLayout *topLayout = new QGridLayout( this );
+  topLayout->setMargin(3);
+  topLayout->setSpacing(3);
   
-  Q3Grid *scheme = new Q3Grid( 2, Qt::Horizontal, this, "Scheme" );
-  scheme->setSpacing( 5 );
-  topLayout->addWidget( scheme, 0, 0 );
+  QGroupBox *tsBox = new QGroupBox( tr("TP Scheme"), this );
+  topLayout->addWidget( tsBox, 0, 0 );
 
-  csScheme = new Q3ButtonGroup( 2, Qt::Vertical, tr("TP Scheme"),
-                                scheme, "csScheme" );
+  QRadioButton* cylinder = new QRadioButton( tr("Cylinder"), this );
+  QRadioButton* sector   = new QRadioButton( tr("Sector"), this );
   
-  QRadioButton* cylinder = new QRadioButton( tr("Cylinder"), csScheme );
-  QRadioButton* sector   = new QRadioButton( tr("Sector"), csScheme );
-  
-  cylinder->setMaximumHeight(15);
-  sector->setMaximumHeight(15);
+  csScheme = new QButtonGroup;
+  csScheme->addButton( cylinder, 0 );
+  csScheme->addButton( sector, 1 );
+
+  QVBoxLayout *vbox = new QVBoxLayout;
+  vbox->addWidget( cylinder );
+  vbox->addWidget( sector );
+  vbox->addStretch(1);
+  tsBox->setLayout(vbox);
+
   cylinder->setEnabled(true);
   sector->setEnabled(true);
   sector->setChecked(true);
 
   // set active button as selected
   selectedCSScheme = (int) conf->getActiveCSTaskScheme();
-  csScheme->setButton( selectedCSScheme );
+
+  if( csScheme->button(selectedCSScheme) )
+    {
+      csScheme->button(selectedCSScheme)->setEnabled(true);
+    }
 
   //---------------------------------------------------------------
 
-  ntScheme = new Q3ButtonGroup( 2, Qt::Vertical, tr("Switch Scheme"),
-                                scheme, "ntScheme" );
+  QGroupBox *ssBox = new QGroupBox( tr("Switch Scheme"), this );
+  topLayout->addWidget( ssBox, 0, 1 );
 
-  QRadioButton* nearst   = new QRadioButton( tr("Nearst"), ntScheme );
-  QRadioButton* touched  = new QRadioButton( tr("Touched"), ntScheme );
+  ntScheme = new QButtonGroup;
+
+  QRadioButton* nearst   = new QRadioButton( tr("Nearst"), this );
+  QRadioButton* touched  = new QRadioButton( tr("Touched"), this );
  
-  nearst->setMaximumHeight(15);
-  touched->setMaximumHeight(15);
+  ntScheme->addButton( nearst, 0 );
+  ntScheme->addButton( touched, 1 );
+
+  vbox = new QVBoxLayout;
+  vbox->addWidget( nearst );
+  vbox->addWidget( touched );
+  vbox->addStretch(1);
+  ssBox->setLayout(vbox);
+
   nearst->setEnabled(true);
   touched->setEnabled(true);
   touched->setChecked(true);
 
   // set active button as selected
   selectedNTScheme = (int) conf->getActiveNTTaskScheme();
-  ntScheme->setButton( selectedNTScheme );
+
+  if( ntScheme->button(selectedNTScheme) )
+    {
+      ntScheme->button(selectedNTScheme)->setEnabled(true);
+    }
 
   //--------------------------------------------------------------
-  
-  // as next cylinder group is added
+    // as next cylinder group is added
   cylinderGroup = new QGroupBox( tr("Cylinder"), this );
-  topLayout->addWidget( cylinderGroup, 1, 0 ); 
+  topLayout->addWidget( cylinderGroup, 1, 0, 1, 2 ); 
   
-  QGridLayout *cylinderLayout = new QGridLayout( cylinderGroup, 5, 4, 10, 2 );
+  QHBoxLayout *hbox = new QHBoxLayout;
 
-  int row = 0;
-
-  QLabel *lbl = new QLabel( tr("Radius:"), cylinderGroup );
-  cylinderLayout->addWidget( lbl, row, 0 );
+  QLabel *lbl = new QLabel( tr("Radius:"), this );
+  hbox->addWidget( lbl );
   
-  cylinderRadius = new QDoubleSpinBox( cylinderGroup );
+  cylinderRadius = new QDoubleSpinBox( this );
   cylinderRadius->setRange(0.1, 10.0);
   cylinderRadius->setSingleStep(0.1);
   cylinderRadius->setButtonSymbols(QSpinBox::PlusMinus);
-  cylinderLayout->addWidget( cylinderRadius, row, 1 );
+  hbox->addWidget( cylinderRadius );
   
   // get current distance unit. This unit must be considered during
   // storage. The internal storage is always in meters.
@@ -126,25 +146,29 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
       unit = "nm";
     }
 
-  cylinderLayout->addWidget( new QLabel( unit, cylinderGroup ), row, 2 );
+  hbox->addWidget(new QLabel( unit, this ));
 
+  cylinderGroup->setLayout(hbox);
+
+  //--------------------------------------------------------------
   // as next sector group is added
   sectorGroup = new QGroupBox( tr("Sector"), this );
-  topLayout->addWidget( sectorGroup, 2, 0 ); 
+  topLayout->addWidget( sectorGroup, 2, 0, 1, 2 ); 
   
-  QGridLayout *sectorLayout = new QGridLayout( sectorGroup, 5, 4, 10, 2 );
+  QGridLayout *sectorLayout = new QGridLayout( sectorGroup );
+  sectorLayout->setMargin(10);
+  sectorLayout->setSpacing(3);
 
-  row = 0;
-  sectorLayout->addRowSpacing( row, 4 );
-  row++;
+  int row = 0;
 
   lbl = new QLabel( tr("Inner Radius:"), sectorGroup );
   sectorLayout->addWidget( lbl, row, 0 );
-  sectorLayout->addRowSpacing( row, 15 );
+
   innerSectorRadius = new QDoubleSpinBox( sectorGroup );
   innerSectorRadius->setRange(0.0, 10.0);
   innerSectorRadius->setSingleStep(0.1);
   innerSectorRadius->setButtonSymbols(QSpinBox::PlusMinus);
+
   sectorLayout->addWidget( innerSectorRadius, row, 1 );
   sectorLayout->addWidget( new QLabel( unit, sectorGroup), row, 2 );
 
@@ -161,18 +185,21 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   row++;
   lbl = new QLabel( tr("Angle:"), sectorGroup );
   sectorLayout->addWidget( lbl, row, 0 );
-  sectorAngle = new QSpinBox( 90, 180, 5, sectorGroup );
+  sectorAngle = new QSpinBox( sectorGroup );
+  sectorAngle->setRange( 90, 180 );
+  sectorAngle->setSingleStep( 5 );
   sectorAngle->setButtonSymbols(QSpinBox::PlusMinus);
   sectorAngle->setWrapping( true );
   sectorLayout->addWidget( sectorAngle, row, 1 );
   sectorLayout->addWidget( new QLabel( tr("degree"), sectorGroup), row, 2 );
   sectorAngle->setValue( conf->getTaskSectorAngle() );
 
+  //--------------------------------------------------------------
   // as next shape group is added
   shapeGroup = new QGroupBox( tr("Shape"), this );
-  topLayout->addWidget( shapeGroup, 3, 0 );
+  topLayout->addWidget( shapeGroup, 3, 0, 1, 2 );
 
-  QHBoxLayout *hbox = new QHBoxLayout;
+  hbox = new QHBoxLayout;
   drawShape = new QCheckBox( tr("Draw Shape"), this );
   fillShape = new QCheckBox( tr("Fill Shape"), this );
 
@@ -185,8 +212,8 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   drawShape->setChecked( conf->getTaskDrawShape() );
   fillShape->setChecked( conf->getTaskFillShape() );
 
-  connect( csScheme, SIGNAL(clicked(int)), this, SLOT(slot_buttonPressedCS(int)) );
-  connect( ntScheme, SIGNAL(clicked(int)), this, SLOT(slot_buttonPressedNT(int)) );
+  connect( csScheme, SIGNAL(buttonClicked(int)), this, SLOT(slot_buttonPressedCS(int)) );
+  connect( ntScheme, SIGNAL(buttonClicked(int)), this, SLOT(slot_buttonPressedNT(int)) );
   connect( outerSectorRadius, SIGNAL(valueChanged(double)), this, SLOT(slot_outerSBChanged(double)) );
 }
 
