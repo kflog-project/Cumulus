@@ -256,7 +256,7 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
     Y = double(view->height() - 30 - 120) / double(sink.getMps());
 
     QFont font = p.font();
-    font.setPixelSize(8);
+    font.setPixelSize(12);
     p.setFont (font);
     // draw speed values and vertical grid lines
     p.setPen (Qt::black);

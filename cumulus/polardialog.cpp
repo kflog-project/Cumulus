@@ -17,11 +17,12 @@
 
 #include <QKeySequence>
 #include <QShortcut>
+#include <QFont>
 
 #include "polardialog.h"
 
 PolarDialog::PolarDialog(const Polar* polar, QWidget* parent) :
-  QDialog (parent, Qt::WStyle_StaysOnTop)
+  QDialog(parent)
 {
     setObjectName("PolarDialog");
     setModal(true);
@@ -30,6 +31,7 @@ PolarDialog::PolarDialog(const Polar* polar, QWidget* parent) :
 
     setBackgroundColor (Qt::white);
     setWindowTitle (polar->name());
+    setFont(QFont ( "Helvetica", 12, QFont::Bold ));
 
     QShortcut* rcUp =        new QShortcut(this);
     QShortcut* rcDown =      new QShortcut(this);

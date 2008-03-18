@@ -34,10 +34,10 @@
 extern MapView *_globalMapView;
 
 SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
-  : QDialog(parent, Qt::WStyle_StaysOnTop)
+  : QDialog(parent)
 {
   setObjectName("SettingsPagePolar");
-  setModal(true);
+  setModal(false);
 
   if (glider==0) {
     setWindowTitle(tr("New Glider"));
