@@ -334,10 +334,13 @@ void GliderList::slot_Deleted(Glider * glider)
 Glider * GliderList::getStoredSelection()
 {
   QSettings config( QSettings::UserScope, "Cumulus" );
+
   config.beginGroup("Glider Selection");
-  
   QString stored = config.value("lastSelected","").toString();
-  
+  config.endGroup();
+
+  config.beginGroup("Glider Data");
+
   if (!stored.isEmpty()) {
     QString keyname="Glider%1";
     int i=1;
