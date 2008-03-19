@@ -763,12 +763,21 @@ void CumulusApp::initActions()
 
   actionZoomInZ = new QAction ( tr( "Zoom in" ), this );
   actionZoomInZ->setShortcut(Qt::Key_Z);
+
+#ifdef MAEMO
+  actionZoomInZ->setShortcut(Qt::Key_F7);
+#endif
+
   addAction( actionZoomInZ );
   connect ( actionZoomInZ, SIGNAL( triggered() ),
             viewMap->_theMap , SLOT( slotZoomIn() ) );
 
   actionZoomOutZ = new QAction ( tr( "Zoom out" ), this );
   actionZoomOutZ->setShortcut(Qt::Key_X);
+
+#ifdef MAEMO
+  actionZoomOutZ->setShortcut(Qt::Key_F8);
+#endif
   addAction( actionZoomOutZ );
   connect ( actionZoomOutZ, SIGNAL( triggered() ),
             viewMap->_theMap , SLOT( slotZoomOut() ) );
