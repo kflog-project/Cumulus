@@ -40,12 +40,12 @@ void CuLabel::mousePressEvent ( QMouseEvent * /*e*/ )
 MapInfoBox::MapInfoBox(QWidget * parent, int FontDotsize ):QWidget(parent,"")
 {
   QFont tfnt( "Helvetica", FontDotsize, QFont::Bold  );
-  QFont pfnt( "Helvetica", 4, QFont::Normal  );
+  QFont pfnt( "Helvetica", 12, QFont::Normal  );
   QBoxLayout * layout = new QHBoxLayout(this,0);
 
   _ptext = new QLabel(this, "" );
   _ptext->setFont(pfnt);
-  _ptext->setFixedHeight( 10 );
+  _ptext->setFixedHeight( 16 );
   _ptext->setIndent(0);
 
   _text = new QLabel(this, "" );
@@ -62,8 +62,8 @@ MapInfoBox::MapInfoBox(QWidget * parent, int FontDotsize ):QWidget(parent,"")
     this->setFixedHeight(tfnt.pointSize());
     _text->setFixedHeight( tfnt.pointSize());
     }       */
-  _text->setFixedHeight(MAX(16, FontDotsize));
-  setFixedHeight(MAX(16, FontDotsize));
+  _text->setFixedHeight(MAX(24, FontDotsize));
+  setFixedHeight(MAX(26, FontDotsize+2));
   layout->addWidget(_ptext,0,Qt::AlignTop);
   layout->addWidget(_text,-4,Qt::AlignBottom);
   layout->addStretch(10);

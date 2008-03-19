@@ -21,71 +21,65 @@
 #include <QWidget>
 #include <QTimer>
 #include <QString>
-#include <Q3SimpleRichText>
 
 /**
- * Rip-off from Qt's QWhatsThis system in order to be able to
- * control the lifespan.
+ * Redesign by Axel Pauli at 2008. Now we use the Qt4 official classes
+ * for realization.
+ *
  * @author André Somers
  */
 class WhatsThat : public QWidget
 {
     Q_OBJECT
-public:
-    WhatsThat( QWidget* w, const QString& txt, QWidget* parent,
-               const char* name, int timeout=5000 );
 
-    virtual ~WhatsThat() ;
+      public:
 
-    static uint getInstance()
+  WhatsThat( QWidget* parent, QString& txt, int timeout=5000 );
+
+  virtual ~WhatsThat();
+
+  static uint getInstance()
     {
-        return instance;
+      return instance;
     };
 
-public slots:
-    void hide();
+  public slots:
 
-    /**
-     * Slot that can be connected to the the @ref Map
-     * signal @isRedrawing. This holds deleting the popup
-     * untill redrawing of the map under it is ready.
-     */
-    void mapIsRedrawing(bool);
+  void hide();
 
-protected:
-    void mousePressEvent( QMouseEvent* );
-    void mouseReleaseEvent( QMouseEvent* );
-    void mouseMoveEvent( QMouseEvent* );
-    void keyPressEvent( QKeyEvent* );
-    void paintEvent( QPaintEvent* );
+  /**
+   * Slot that can be connected to the the @ref Map
+   * signal @isRedrawing. This holds deleting the popup
+   * untill redrawing of the map under it is ready.
+   */
+  void mapIsRedrawing(bool);
 
-private:
-    QString text;
-    Q3SimpleRichText* doc;
-    QString anchor;
-    bool pressed;
-    QWidget* widget;
-    QTimer* autohideTimer;
+ protected:
 
-    /**
-     * flag to block hiding of the widget. This is being
-     * set by @ref mapIsRedrawing.
-     */
-    bool blockHide;
+  void mousePressEvent( QMouseEvent* );
+  void keyPressEvent( QKeyEvent* );
 
-    /**
-     * flag to indicate that the popup _should_ be closed,
-     * but we are waying for the mapredrawing to finish. As
-     * soon as that happens, the popup will be closed.
-     */
-    bool waitingForRedraw;
+ private:
 
-private: // Private methods
-    /** Tries to find itself a good position to display. */
-    void position();
+  QTimer* autohideTimer;
 
-    // instance counter
-    static uint instance;
+  /**
+   * flag to block hiding of the widget. This is being
+   * set by @ref mapIsRedrawing.
+   */
+  bool blockHide;
+
+  /**
+   * flag to indicate that the popup _should_ be closed,
+   * but we are waying for the map redrawing to finish. As
+   * soon as that happens, the popup will be closed.
+   */
+  bool waitingForRedraw;
+
+ private: // Private methods
+
+  // instance counter
+  static uint instance;
 
 };
 

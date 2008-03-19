@@ -87,14 +87,21 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //make the main box layout
   QBoxLayout *topLayout = new QVBoxLayout( this );
-  //layout for the Heading, Bearing, Distance and Speed boxes (top line in the main layout)
-  QBoxLayout *HBDSLayout = new QHBoxLayout(topLayout);
+
+  //josh: testing "sidebar" layout
+  QBoxLayout *centerLayout = new QHBoxLayout( topLayout );
+  topLayout->setStretchFactor( centerLayout, 1 );
+
+  QBoxLayout *sideLayout = new QVBoxLayout( centerLayout );
+
+  //layout for the Heading and Bearing boxes
+  QBoxLayout *HBLayout = new QHBoxLayout(sideLayout);
 
   //add Heading widget
-  _heading = new MapInfoBox( this );
+  _heading = new MapInfoBox( this, 24 );
   _heading->setValue("-");
   _heading->setPreText("Trk");
-  HBDSLayout->addWidget( _heading, 18);
+  HBLayout->addWidget( _heading);
   QWhatsThis::add(_heading, tr("Heading"));
 
   //add Bearing widget
@@ -103,51 +110,81 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _bearingTimer = new QTimer(this);
   connect (_bearingTimer, SIGNAL(timeout()),
            this, SLOT(slot_resetInversBearing()));
-  _bearing = new MapInfoBox( this  );
+  _bearing = new MapInfoBox( this, 24 );
   _bearingBGColor = _bearing->backgroundColor();
   _bearing->setValue("-");
   _bearing->setPreText("Brg");
-  HBDSLayout->addWidget( _bearing, 18);
+  HBLayout->addWidget( _bearing);
   QWhatsThis::add(_bearing, tr("Bearing"));
   connect(_bearing, SIGNAL(mousePress()), this, SLOT(slot_toggleBearing()));
 
-  // add relative bearing widget
-  _rel_bearing = new QLabel(this,"");
-  HBDSLayout->addWidget(_rel_bearing, 7);
-  QWhatsThis::add(_rel_bearing, tr("Relative bearing"));
+  //first separator with fixed width to prevent constant resizing of sidebar
+  QFrame * sep=new QFrame(this);
+  sep->setFrameStyle(QFrame::Sunken);
+  sep->setFrameShape(QFrame::HLine);
+  sep->setMinimumWidth(172);
+  sideLayout->addWidget(sep);
+
+  //layout for Vario and Wind/LD
+  QBoxLayout *DERLayout = new QHBoxLayout(sideLayout);
 
   //add Distance widget
   _distance = new MapInfoBox( this );
   _distance->setValue("-");
   _distance->setPreText("Dis");
-  HBDSLayout->addWidget( _distance, 20);
+  DERLayout->addWidget( _distance);
   QWhatsThis::add(_distance, tr("Distance"));
   connect(_distance, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
 
   //add ETA widget
   _eta = new MapInfoBox( this );
   _eta->setValue("-");
-  _eta->setPreText( "Eta" );
-  HBDSLayout->addWidget( _eta, 20 );
+  _eta->setPreText( "ETA" );
+  DERLayout->addWidget( _eta );
   QWhatsThis::add(_eta, tr("Estimated time of arrival"));
   _eta->hide();
   connect(_eta, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
+
+  // add Relative Bearing widget
+  _rel_bearing = new QLabel(this,"");
+  _rel_bearing->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+  _rel_bearing->setAlignment(Qt::AlignHCenter);
+  DERLayout->addWidget(_rel_bearing);
+  QWhatsThis::add(_rel_bearing, tr("Relative bearing"));
+
+  //separator
+  sep=new QFrame(this);
+  sep->setFrameStyle(QFrame::Sunken);
+  sep->setFrameShape(QFrame::HLine);
+  sideLayout->addWidget(sep);
+
+  //layout for Speed and Altitude
+  QBoxLayout *SALayout = new QHBoxLayout(sideLayout);
 
   //add Speed widget
   _speed = new MapInfoBox( this );
   _speed->setValue("-");
   _speed->setPreText("Gs");
-  HBDSLayout->addWidget( _speed, 15);
+  SALayout->addWidget( _speed);
   QWhatsThis::add(_speed, tr("Speed"));
 
+  //add Altitude widget
+  _altitude = new MapInfoBox( this );
+  _altitude->setValue("-");
+  _altitude->setPreText(AltimeterModeDialog::mode2String()); // get current mode
+  SALayout->addWidget( _altitude );
+  QWhatsThis::add(_altitude, tr("Altitude"));
+  connect(_altitude, SIGNAL(mousePress()),
+          this, SLOT(slot_AltimeterDialog()));
+
   //separator
-  QFrame * sep=new QFrame(this);
+  sep=new QFrame(this);
   sep->setFrameStyle(QFrame::Sunken);
   sep->setFrameShape(QFrame::HLine);
-  topLayout->addWidget(sep);
+  sideLayout->addWidget(sep);
 
-  //layout for the Flighttime, Waypoint and Elevation boxes (second line in the main layout)
-  QBoxLayout *FWELayout = new QHBoxLayout(topLayout);
+  //layout for Glide Path and Waypoint
+//  QBoxLayout *GPLayout = new QHBoxLayout(sideLayout);
 
   /*
     //add FlightTime widget
@@ -157,32 +194,36 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
     FWELayout->addWidget( _flighttime,10 );
   */
   
-  //add Altitude widget
-  _altitude = new MapInfoBox( this );
-  _altitude->setValue("-");
-  _altitude->setPreText(AltimeterModeDialog::mode2String()); // get current mode
-  FWELayout->addWidget( _altitude, 20);
-  QWhatsThis::add(_altitude, tr("Altitude"));
-  connect(_altitude, SIGNAL(mousePress()),
-          this, SLOT(slot_AltimeterDialog()));
-
-  //add glide path widget
-  _glidepath = new MapInfoBox( this );
+  //add Glide Path widget
+  _glidepath = new MapInfoBox( this, 24 );
   _glidepath->setValue("-");
-  _glidepath->setPreText("Arv");
-  FWELayout->addWidget( _glidepath,23);
+  _glidepath->setPreText("Arrive");
+  _glidepath->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+  sideLayout->addWidget( _glidepath );
   QWhatsThis::add(_glidepath, tr("Glide path"));
   connect(_glidepath, SIGNAL(mousePress()),
           (CumulusApp*)parent, SLOT(slotSwitchToReachListView()));
 
+  //separator
+  sep=new QFrame(this);
+  sep->setFrameStyle(QFrame::Sunken);
+  sep->setFrameShape(QFrame::HLine);
+  sideLayout->addWidget(sep);
+
   //add Waypoint widget
-  _waypoint = new MapInfoBox( this,10 );
+  _waypoint = new MapInfoBox( this, 16 );
   _waypoint->setValue("-");
   _waypoint->setPreText("To");
-  FWELayout->addWidget( _waypoint, 50);
+  sideLayout->addWidget( _waypoint );
   QWhatsThis::add(_waypoint, tr("Waypoint"));
   connect(_waypoint, SIGNAL(mousePress()),
           (CumulusApp*)parent, SLOT(slotSwitchToWPListViewExt()));
+
+  //separator
+  sep=new QFrame(this);
+  sep->setFrameStyle(QFrame::Sunken);
+  sep->setFrameShape(QFrame::HLine);
+  sideLayout->addWidget(sep);
 
   //add elevation widget
   /*
@@ -193,29 +234,23 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   QWhatsThis::add (_elevation, tr("Elevation"));
   */
 
-  //separator
-  sep=new QFrame(this);
-  sep->setFrameStyle(QFrame::Sunken);
-  sep->setFrameShape(QFrame::HLine);
-  topLayout->addWidget(sep);
+  //layout for Vario and Wind/LD
+  QBoxLayout *VWLLayout = new QHBoxLayout(sideLayout);
 
-  //layout for the Vario, McCready, Speed2fly and Glide Path boxes (third line in the main layout)
-  QBoxLayout *VMFGLayout = new QHBoxLayout(topLayout);
-
-  //add vario widget
+  //add Vario widget
   _vario = new MapInfoBox(this);
   _vario->setValue("-");
   _vario->setPreText("Var");
-  VMFGLayout->addWidget(_vario,22);
+  VWLLayout->addWidget(_vario );
   QWhatsThis::add(_vario, tr("Variometer"));
   connect(_vario, SIGNAL(mousePress()),
           this, SLOT(slot_VarioDialog()));
 
-  //add wind widget; this is head/tailwind, no direction given !
+  //add Wind widget; this is head/tailwind, no direction given !
   _wind = new MapInfoBox(this);
   _wind->setValue("-");
   _wind->setPreText("Wd");
-  VMFGLayout->addWidget(_wind,30);
+  VWLLayout->addWidget(_wind );
   QWhatsThis::add(_wind, tr("Wind"));
   connect(_wind, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
 
@@ -223,41 +258,47 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _ld = new MapInfoBox( this );
   _ld->setValue("-/-");
   _ld->setPreText( "LD" );
-  VMFGLayout->addWidget( _ld, 30 );
+  VWLLayout->addWidget( _ld );
   QWhatsThis::add(_ld, tr("required and current LD"));
   _ld->hide();
   connect(_ld, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
-
-  //add McCready widget
-  _mc = new MapInfoBox( this );
-  _mc->setValue("0.0");
-  _mc->setPreText("Mc");
-  VMFGLayout->addWidget(_mc,20);
-  QWhatsThis::add(_mc, tr("McCready"));
-  connect(_mc, SIGNAL(mousePress()), this, SLOT(slot_gliderFlightDialog()));
-
-  //add best speed widget
-  _speed2fly = new MapInfoBox(this);
-  _speed2fly->setValue("-");
-  _speed2fly->setPreText("S2f");
-  VMFGLayout->addWidget(_speed2fly,20);
-  QWhatsThis::add(_speed2fly, tr("Best speed"));
 
   //separator
   sep=new QFrame(this);
   sep->setFrameStyle(QFrame::Sunken);
   sep->setFrameShape(QFrame::HLine);
-  topLayout->addWidget(sep);
+  sideLayout->addWidget(sep);
 
-  QBoxLayout *MapLayout = new QHBoxLayout(topLayout);
+  //layout for McCready and Best Speed
+  QBoxLayout *MSLayout = new QHBoxLayout(sideLayout);
+
+  //add McCready widget
+  _mc = new MapInfoBox( this );
+  _mc->setValue("0.0");
+  _mc->setPreText("Mc");
+  MSLayout->addWidget( _mc );
+  QWhatsThis::add(_mc, tr("McCready"));
+  connect(_mc, SIGNAL(mousePress()), this, SLOT(slot_gliderFlightDialog()));
+
+  //add Best Speed widget
+  _speed2fly = new MapInfoBox(this);
+  _speed2fly->setValue("-");
+  _speed2fly->setPreText("S2f");
+  MSLayout->addWidget( _speed2fly );
+  QWhatsThis::add(_speed2fly, tr("Best speed"));
+
+  //layout for the map
+  QBoxLayout *MapLayout = new QHBoxLayout(centerLayout);
   _theMap = new Map(this);
-  MapLayout->addSpacing(1);
+  centerLayout->setStretchFactor( MapLayout, 1 );
+//  MapLayout->addSpacing(1);
   MapLayout->addWidget(_theMap, 10);
-  MapLayout->addSpacing(1);
+//  MapLayout->addSpacing(1);
   _theMap->setMode(Map::headUp);
-  topLayout->addSpacing(0);
+//  topLayout->addSpacing(0);
 
-  //Add statusbar widget
+  //--------------------------------------------------------------------
+  // Status bar
   _statusbar = new QStatusBar(this, "status");
   _statusbar->setSizeGripEnabled(false);
   _statusbar->setMaximumHeight(20);
@@ -300,7 +341,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   filler->setFrameStyle(QFrame::NoFrame);
   _statusbar->addWidget(filler);
 
-  // _statusbar->setFrameStyle(QFrame::Raised);
+  //  _statusbar->setFrameStyle(QFrame::Raised);
 
   loggingTimer = new QTimer(this);
   connect (loggingTimer, SIGNAL(timeout()),

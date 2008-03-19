@@ -167,7 +167,7 @@ void Map::__displayMapInfo(const QPoint& current)
 
   bool show = false;
 
-  text += "<table border=1 width=100%><tr><th align=left>" +
+  text += "<table border=1><tr><th align=left>" +
           tr("Airspace&nbsp;Structure") +
           "</th></tr>";
 
@@ -218,7 +218,7 @@ void Map::__displayMapInfo(const QPoint& current)
         }
 
       // qDebug("airspace timer %dms", showTime);
-      WhatsThat * box=new WhatsThat(this, text, this, "", showTime);
+      WhatsThat *box = new WhatsThat(this, text, showTime);
       box->show();
       return;
     }
@@ -2168,7 +2168,7 @@ void Map::checkAirspace(const QPoint& pos)
   _veryNearAS = veryNear;
   _insideAS   = inside;
 
-  QString text = "<qt><table border=1 width=100%><tr><th align=left>" +
+  QString text = "<qt><table border=1><tr><th align=left>" +
                  tr("Airspace&nbsp;Warning") +
                  "</th></tr>";
 
@@ -2257,7 +2257,7 @@ void Map::checkAirspace(const QPoint& pos)
 
           // qDebug("airspace warning timer %dms, LoopLevel=%d",
           // showTime, qApp->loopLevel() );
-          WhatsThat *box = new WhatsThat(this, text, 0, "", showTime);
+          WhatsThat *box = new WhatsThat(this, text, showTime);
           box->show();
           return;
         }

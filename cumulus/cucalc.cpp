@@ -479,7 +479,7 @@ void CuCalc::calcDistance( bool autoWpSwitch )
       // fetch info show time from config and compute it as milli seconds
       int showTime = GeneralConfig::instance()->getInfoDisplayTime() * 1000;
 
-      WhatsThat * box=new WhatsThat( _globalCumulusApp, text, 0, "", showTime );
+      WhatsThat *box = new WhatsThat( _globalCumulusApp, text,  showTime );
       box->show();
     }
     else if( taskEndReached == false ) {
