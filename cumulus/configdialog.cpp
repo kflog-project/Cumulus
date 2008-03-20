@@ -33,7 +33,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   // qDebug("height=%d, width=%d", parent->height(), parent->width());
 
   setObjectName("ConfigDialog");
-  setModal(false);
+  setModal(true);
 
   setWindowTitle(tr("Cumulus settings"));
 

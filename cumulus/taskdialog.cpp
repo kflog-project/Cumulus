@@ -36,9 +36,12 @@ extern CumulusApp  *_globalCumulusApp;
 
 TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskNamesInUse,
                         FlightTask* task ) :
-    QDialog( parent, name, true, Qt::WStyle_StaysOnTop ),
+    QDialog( parent ),
     taskNamesInUse( taskNamesInUse )
 {
+  setObjectName("TaskDialog");
+  setModal(true);
+
   wpList = _globalMapContents->getWaypointList();
   lastSelectedItem = -1;
 
