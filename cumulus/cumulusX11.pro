@@ -67,6 +67,7 @@ HEADERS     = \
     reachpointlistview.h \
     resource.h \
     runway.h \
+    settingspageairfields.h \
     settingspageairspace.h \
     settingspagegps.h \
     settingspageinformation.h \
@@ -159,6 +160,7 @@ SOURCES     = \
     radiopoint.cpp \
     reachablelist.cpp \
     reachpointlistview.cpp \
+    settingspageairfields.cpp \
     settingspageairspace.cpp \
     settingspagegps.cpp \
     settingspageinformation.cpp \
