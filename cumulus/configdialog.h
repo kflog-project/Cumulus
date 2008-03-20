@@ -26,6 +26,7 @@
 #include "settingspageunits.h"
 #include "settingspagemap.h"
 #include "settingspagemapadv.h"
+#include "settingspageairfields.h"
 #include "settingspageairspace.h"
 #include "settingspageinformation.h"
 #include "settingspagesector.h"
@@ -113,6 +114,7 @@ class ConfigDialog : public QDialog
     SettingsPageGPS* spg;
     SettingsPageMapAdv* spma;
     SettingsPageMap* spm;
+    SettingsPageAirfields* spaf;
     SettingsPageAirspace* spa;
     SettingsPageUnits* spu;
     SettingsPageInformation* spi;

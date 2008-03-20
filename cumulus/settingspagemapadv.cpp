@@ -70,60 +70,9 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent) :
   edtLon=new LongEdit(this);
   topLayout->addWidget(edtLon, row++, 1);
 
-  topLayout->addRowSpacing(row++,10);
-
   //------------------------------------------------------------------------------
 
-  QGroupBox* weltGroup = new QGroupBox( tr("Welt2000"), this );
-  topLayout->addWidget( weltGroup, row, 0, 1, 2 );
-  row++;
-
-  QGridLayout* weltLayout = new QGridLayout( weltGroup, 3, 3, 5 );
-  int grow=0;
-  weltLayout->addRowSpacing( grow, 10 );
-  grow++;
-
-  QLabel* lbl = new QLabel( tr("Country Filter:"), (weltGroup ) );
-  weltLayout->addWidget( lbl, grow, 0 );
-  weltLayout->addColSpacing( grow, 10 );
-
-  countryFilter = new QLineEdit( weltGroup );
-  weltLayout->addMultiCellWidget( countryFilter, grow, grow , 1, 2 );
-  grow++;
-
-  // get current distance unit. This unit must be considered during
-  // storage. The internal storage is always in meters.
-  distUnit = Distance::getUnit();
-
-  const char *unit = "";
-
-  // Input accepts different units 
-  if( distUnit == Distance::kilometers )
-    {
-      unit = "km";
-    }
-  else if( distUnit == Distance::miles )
-    {
-      unit = "ml";
-    }
-  else // if( distUnit == Distance::nautmiles )
-    {
-      unit = "nm";
-    }
-
-  lbl = new QLabel( tr("Home Radius:"), (weltGroup ) );
-  weltLayout->addWidget( lbl, grow, 0 );
-  homeRadius = new QSpinBox( 0, 10000, 10, weltGroup );
-  homeRadius->setButtonSymbols(QSpinBox::PlusMinus);
-  weltLayout->addWidget( homeRadius, grow, 1 );
-  weltLayout->addWidget( new QLabel( unit, weltGroup), grow, 2 );
-
-  grow++;
-  weltLayout->addRowSpacing( grow, 5 );
-
-  //------------------------------------------------------------------------------
-
-  topLayout->addRowSpacing(row++,10);
+  topLayout->setRowMinimumHeight(row++,10);
 
   chkDeleteAfterCompile = new QCheckBox(tr("Delete original maps after compiling"),
                                         this );
@@ -134,8 +83,7 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent) :
   topLayout->addWidget(chkUnloadUnneeded, row, 0, 1, 2);
   row++;
 
-  connect( countryFilter, SIGNAL(textChanged(const QString&)),
-           this, SLOT(slot_filterChanged(const QString&)) );
+  topLayout->setRowStretch( row, 10 );
 }
 
 
@@ -165,13 +113,6 @@ void SettingsPageMapAdv::slot_load()
   int projIndex = currentProjType - 1;
   cmbProjection->setCurrentItem(projIndex);
   slotSelectProjection(projIndex);
-
-  countryFilter->setText( conf->getWelt2000CountryFilter() );
-  // @AP: radius value is stored without considering unit.
-  homeRadius->setValue( conf->getWelt2000HomeRadius() );
-
-  // sets home radius enabled/disabled in dependency to filter string
-  slot_filterChanged( countryFilter->text() );
 }
 
 
@@ -210,35 +151,6 @@ void SettingsPageMapAdv::slot_save()
   conf->setLambertParallel2( lambertV2 );
   conf->setLambertOrign( lambertOrigin );
   conf->setCylinderParallel( cylinPar );
-
-  // We will check, if the country entries of welt 2000 are
-  // correct. If not a warning message is displayed and the
-  // modifications are discarded.
-  QStringList clist = countryFilter->text().split( QRegExp("[, ]"), QString::SkipEmptyParts );
-
-  for( QStringList::Iterator it = clist.begin(); it != clist.end(); ++it )
-    {
-      QString s = *it;
-
-      if( s.length() != 2 || s.contains( QRegExp("[A-Za-z]") ) != 2 )
-        {
-          QMessageBox::warning( this, tr("Please check entries"),
-                               tr("Every welt 2000 county sign must consist of two letters! <br>Allowed separators are space and comma.<br>Your modification will not saved!"),
-                                QMessageBox::Ok, QMessageBox::NoButton );
-          return;
-        }
-    }
-
-  conf->setWelt2000CountryFilter( countryFilter->text() );
-
-  if( homeRadius->isEnabled() )
-    {
-      conf->setWelt2000HomeRadius( homeRadius->value() );
-    }
-  else
-    {
-      conf->setWelt2000HomeRadius( 0 );
-    }
 }
 
 /**
@@ -274,7 +186,7 @@ void SettingsPageMapAdv::slotSelectProjection(int index)
     edtLon->setKFLogDegree(lambertOrigin);
     currentProjType = ProjectionBase::Lambert;
     break;
-  case 1:    // Plate Car??e
+  case 1:    // Plate Caree
   default:   // take this if index is unknown
     edtLat2->setEnabled(false);
     edtLon->setEnabled(false);
@@ -284,23 +196,6 @@ void SettingsPageMapAdv::slotSelectProjection(int index)
     currentProjType = ProjectionBase::Cylindric;
     break;
   }
-}
-
-/**
- * Called if the text of the filter has been changed
- */
-void SettingsPageMapAdv::slot_filterChanged( const QString& text )
-{
-  if( text.isEmpty() )
-    {
-      // make widget home radius accessable, if filter string is empty
-      homeRadius->setEnabled(true);
-    }
-  else
-    {
-      // make widget home radius not accessable, if filter string is defined
-      homeRadius->setEnabled(false);      
-    }
 }
 
 
@@ -319,11 +214,10 @@ void SettingsPageMapAdv::slot_query_close(bool& warn, QStringList& warnings)
   changed = changed || ( chkUnloadUnneeded->isChecked() != conf->getMapUnload() );
 
   changed = changed || checkIsProjectionChanged();
-  changed = changed || checkIsWelt2000Changed();
 
   if (changed) {
     warn=true;
-    warnings.append(tr("the advanced map settings"));
+    warnings.append(tr("the map settings"));
   }
 }
 
@@ -348,21 +242,6 @@ bool SettingsPageMapAdv::checkIsProjectionChanged()
 
   changed = changed || ( conf->getMapProjectionType() != currentProjType );
 
-  qDebug( "SettingsPageMapAdv::()checkIsProjectionChanged: %d", changed );
-  return changed;
-}
-
-/**
- * Checks, if the configuration of the welt 2000 has been changed
- */
-bool SettingsPageMapAdv::checkIsWelt2000Changed()
-{
-  bool changed = false;
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  changed = changed || ( conf->getWelt2000CountryFilter() != countryFilter->text() );
-  changed = changed || ( conf->getWelt2000HomeRadius() != homeRadius->value() ) ;
-
-  qDebug( "SettingsPageMapAdv::checkIsWelt2000Changed(): %d", changed );
+  // qDebug( "SettingsPageMapAdv::()checkIsProjectionChanged: %d", changed );
   return changed;
 }

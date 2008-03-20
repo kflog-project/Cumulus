@@ -30,15 +30,10 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QStringList>
-#include <QLineEdit>
-#include <QSpinBox>
-#include <QHBoxLayout>
-#include <QLineEdit>
 #include <QPushButton>
 
 #include "coordedit.h"
 #include "projectionbase.h"
-#include "distance.h"
 
 class SettingsPageMapAdv : public QWidget
 {
@@ -61,18 +56,9 @@ class SettingsPageMapAdv : public QWidget
    */
   bool checkIsProjectionChanged();
 
-  /**
-   * Checks, if the configuration of the welt 2000 has been changed
-   */
-  bool checkIsWelt2000Changed();
-
-  // SettingsPageMap takes care of our loading and saving,
-  // so it needs access to our internals
-  friend class SettingsPageMap; 
-
   public slots: // Public slots
   /**
-   * Called to initiate saving to the configurationfile.
+   * Called to initiate saving to the configuration file.
    */
   void slot_save();
 
@@ -87,12 +73,6 @@ class SettingsPageMapAdv : public QWidget
   void slot_query_close(bool& warn, QStringList& warnings);
 
   private slots: // Private slots
-
-  /**
-   * Called if the text of the filter has been changed
-   */
-  void slot_filterChanged( const QString& text );
-
 
   /**
    * Called if the map selection button is pressed
@@ -117,15 +97,6 @@ class SettingsPageMapAdv : public QWidget
 
   // variable currentProjType is an enum ProjectionBase::ProjectionType
   int currentProjType;
-
-  /** saves distance unit set during construction of object */
-  Distance::distanceUnit distUnit;
-
-  // Country filter for welt 2000 data file
-  QLineEdit* countryFilter;
-
-  // Radius around home position for welt 2000 data file
-  QSpinBox* homeRadius;
 
   protected slots:
 

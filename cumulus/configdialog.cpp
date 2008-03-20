@@ -34,6 +34,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
 
   setObjectName("ConfigDialog");
   setModal(true);
+  setSizeGripEnabled(true);
 
   setWindowTitle(tr("Cumulus settings"));
 
@@ -57,6 +58,9 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   spm=new SettingsPageMap(this);
   tabWidget->addTab(spm, tr("Map Objects"));
 
+  spaf=new SettingsPageAirfields(this);
+  tabWidget->addTab(spaf, tr("Airfields"));
+
   spa=new SettingsPageAirspace(this);
   tabWidget->addTab(spa, tr("Airspace"));
 
@@ -75,6 +79,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   connect(this, SIGNAL(load()), sps, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spma, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spm, SLOT(slot_load()));
+  connect(this, SIGNAL(load()), spaf, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spa, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spu, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spi, SLOT(slot_load()));
@@ -87,6 +92,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   connect(this, SIGNAL(save()), sps, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spma, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spm, SLOT(slot_save()));
+  connect(this, SIGNAL(save()), spaf, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spa, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spi, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spu, SLOT(slot_save()));
@@ -99,6 +105,9 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
 
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
           spm, SLOT(slot_query_close(bool&, QStringList&)));
+
+  connect(this, SIGNAL(query_close(bool&, QStringList& )),
+          spaf, SLOT(slot_query_close(bool&, QStringList&)));
 
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
           spa, SLOT(slot_query_close(bool&, QStringList&)));
@@ -151,7 +160,7 @@ void ConfigDialog::accept()
 
   // save change states before restoring of data
   bool projectionChange = spma->checkIsProjectionChanged();
-  bool welt2000Change   = spma->checkIsWelt2000Changed();
+  bool welt2000Change   = spaf->checkIsWelt2000Changed();
 
   emit save();
   emit settingsChanged();
