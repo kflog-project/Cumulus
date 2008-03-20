@@ -44,7 +44,7 @@
 #endif
 
 // define alive check timeout
-#define ALIVE_TO 10000
+#define ALIVE_TO 15000
 
 extern MapView *_globalMapView;
 
