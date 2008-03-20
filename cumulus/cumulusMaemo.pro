@@ -160,7 +160,7 @@ SOURCES     = \
     radiopoint.cpp \
     reachablelist.cpp \
     reachpointlistview.cpp \
-    settingspageairfields.h \
+    settingspageairfields.cpp \
     settingspageairspace.cpp \
     settingspagegps.cpp \
     settingspageinformation.cpp \
