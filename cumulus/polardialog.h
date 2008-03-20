@@ -45,6 +45,7 @@ public slots:
 
 protected:
     virtual void paintEvent (QPaintEvent*);
+    virtual void mousePressEvent( QMouseEvent* );
 
 private:
     Polar* _polar;
