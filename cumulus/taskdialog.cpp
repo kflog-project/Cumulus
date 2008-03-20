@@ -41,6 +41,7 @@ TaskDialog::TaskDialog( QWidget* parent, const char* name, QStringList &taskName
 {
   setObjectName("TaskDialog");
   setModal(true);
+  setSizeGripEnabled(true);
 
   wpList = _globalMapContents->getWaypointList();
   lastSelectedItem = -1;

@@ -33,6 +33,7 @@ PreFlightDialog::PreFlightDialog(QWidget * parent, const char *name) :
   setObjectName("PreFlightDialog");
   setModal(true);
   setWindowTitle(tr("Cumulus Preflight settings"));
+  setSizeGripEnabled(true);
 
   tabWidget = new QTabWidget (this);
 
