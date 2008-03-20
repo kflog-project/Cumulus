@@ -16,71 +16,72 @@
 **
 ***********************************************************************/
 
-#include <math.h>
-
 #include <QFont>
-#include <QHBoxLayout>
-#include <QTextEdit>
-#include <QToolTip>
 #include <QSizeF>
+#include <QPainter>
 
 #include "whatsthat.h"
 #include "map.h"
 
 uint WhatsThat::instance = 0;
 
+const int vMargin = 5;
+const int hMargin = 5;
+
 WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
-  QWidget( parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint )
+    QWidget( parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint )
 {
   setObjectName("WhatsThat");
+  setAttribute( Qt::WA_DeleteOnClose );
 
   blockHide=false;
   waitingForRedraw=false;
-
-  // qDebug("WhatsThat::WhatsThat()");
   instance++;
 
   autohideTimer = new QTimer(this);
-  setBackgroundRole( QPalette::Window );
-  setPalette( Qt::red );
-  setAutoFillBackground(true);
+  autohideTimer->setSingleShot( true );
 
-  QHBoxLayout *box = new QHBoxLayout( this );
-  box->setMargin( 5 );
+  doc = new QTextDocument( this );
+  doc->setDefaultFont( QFont ("Helvetica", 16 ) );
 
-  QTextEdit *display = new QTextEdit( this );
-  box->addWidget( display );
+  // check, what kind of text has been passed
+  if( txt.contains("<html>", Qt::CaseInsensitive ) ||
+      txt.contains("<qt>", Qt::CaseInsensitive ) )
+    {
+      // qDebug("HTML=%s", txt.latin1());
+      doc->setHtml( txt );
+    }
+  else
+    {
+      //qDebug("PLAIN=%s", txt.latin1());
+      doc->setPlainText( txt );
+    }
 
-  display->setLineWrapMode( QTextEdit::NoWrap );
-  display->setReadOnly( true );
-  display->setText( txt );
-  display->setAlignment( Qt::AlignCenter );
-  display->document()->setDefaultFont( QFont ("Helvetica", 16 ) );
-  display->document()->adjustSize();
+  // get current document size
+  QSize docSize = doc->size().toSize();
 
-  QSizeF docSize = display->document()->size();
+  docW = docSize.width();
+  docH = docSize.height();
 
-  int w = (int) rint( docSize.rwidth() );
-  int h = (int) rint( docSize.rheight() );
+  resize( docW + 2*hMargin, docH + 2*vMargin );
 
-  resize( w+25, h+30 );
-  
+  // qDebug("DocSize: w=%d, h=%d", docW + 2*hMargin, docH + 2*vMargin);
+
   // @AP: Widget will be destroyed, if timer expired. If timeout is
   // zero, manual quit is expected by the user.
 
-  if( timeout > 0 ) {
-    connect(autohideTimer, SIGNAL(timeout()),
-            this, SLOT(hide()));
-    autohideTimer->start(timeout,true);
-  }
-
-  // @AP: We will use a trick here to close the window because
-  // QTextEdit is catching the mouse events.
-  connect( display, SIGNAL(cursorPositionChanged()), this, SLOT(hide()) );
+  if( timeout > 0 )
+    {
+      connect(autohideTimer, SIGNAL(timeout()),
+              this, SLOT(hide()));
+      autohideTimer->start(timeout);
+    }
 
   //@AS: Quick 'n dirty connection to map...
   connect(Map::getInstance(), SIGNAL(isRedrawing(bool)),
           this, SLOT(mapIsRedrawing(bool)));
+
+  repaint();
 }
 
 
@@ -92,21 +93,23 @@ WhatsThat::~WhatsThat()
 
 void WhatsThat::hide()
 {
-  // @AP: stop timer to avoid callbacks into nirvana
   autohideTimer->stop();
 
-  if (blockHide) {
-    waitingForRedraw=true;
-    qDebug("Mapredraw in progress, waiting to finish...");
-  } else {
-    QWidget::close(true);
-  }
+  if (blockHide)
+    {
+      waitingForRedraw=true;
+      qDebug("Mapredraw in progress, waiting to finish...");
+    }
+  else
+    {
+      QWidget::close();
+    }
 }
 
 
 void WhatsThat::mousePressEvent( QMouseEvent* )
 {
-  qDebug("WhatsThat::mousePressEvent()");
+  // qDebug("WhatsThat::mousePressEvent()");
   hide();
 }
 
@@ -116,11 +119,27 @@ void WhatsThat::keyPressEvent( QKeyEvent* )
   hide();
 }
 
+void WhatsThat::paintEvent( QPaintEvent* )
+{
+  QPixmap pm = QPixmap( docW+1, docH+1 );
+  pm.fill(QColor(255, 255, 224)); // LightYellow www.wackerart.de/rgbfarben.html
+
+  QPainter docP;
+
+  docP.begin(&pm);
+  doc->drawContents( &docP );
+  docP.end();
+
+  QPainter p( this );
+  p.fillRect( rect(), Qt::red );
+
+  p.drawPixmap( hMargin, vMargin, pm );
+}
 
 void WhatsThat::mapIsRedrawing(bool redraw)
 {
   blockHide=redraw;
-  
+
   if ((!redraw) && waitingForRedraw)
     {
       hide();

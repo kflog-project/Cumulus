@@ -167,7 +167,7 @@ void Map::__displayMapInfo(const QPoint& current)
 
   bool show = false;
 
-  text += "<table border=1><tr><th align=left>" +
+  text += "<html><table border=1><tr><th align=left>" +
           tr("Airspace&nbsp;Structure") +
           "</th></tr>";
 
@@ -191,7 +191,7 @@ void Map::__displayMapInfo(const QPoint& current)
         }
     }
 
-  text += "</table>";
+  text += "</table></html>";
 
   // @AP: replace long labels to small one, otherwise the window is
   // sometimes to small for display whole line.
@@ -2168,7 +2168,7 @@ void Map::checkAirspace(const QPoint& pos)
   _veryNearAS = veryNear;
   _insideAS   = inside;
 
-  QString text = "<qt><table border=1><tr><th align=left>" +
+  QString text = "<html><table border=1><tr><th align=left>" +
                  tr("Airspace&nbsp;Warning") +
                  "</th></tr>";
 
@@ -2244,7 +2244,7 @@ void Map::checkAirspace(const QPoint& pos)
       return;
     }
 
-  text +="</table></qt>";
+  text +="</table></html>";
 
   // Pop up a warning window with all data to touched airspace
   if ( GeneralConfig::instance()->getAirspaceWarningEnabled(pSpace->getTypeID()) && warn == true )

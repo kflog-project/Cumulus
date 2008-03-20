@@ -209,7 +209,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   no1.sprintf( "%02d", currentTP->taskPointIndex );
   no2.sprintf( "%02d", nextTP->taskPointIndex );
 
-  display += "<center><big><b>" +
+  display += "<html><center><big><b>" +
     tr("Taskpoint switch") + " " + no1 + "->" + no2 +
     "</b></big></center><p>";
 
@@ -416,7 +416,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       }
   }
 
-  display += "</table>";  
+  display += "</table><html>";  
   text->setText( display );
 }
 

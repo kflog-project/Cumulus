@@ -80,7 +80,7 @@ QString GliderSite::getInfoString() const
   QString path = "cumulus/";
 
   elev = Altitude::getText(elevation,true,0).replace(QRegExp("\\s"),"&nbsp;");
-  text = "<QT><TABLE BORDER=0><TR><TD>"
+  text = "<HTML><TABLE BORDER=0><TR><TD>"
     "<IMG SRC=" + path + glConfig->getPixmapName(typeID) + "></TD>"
     "<TD>" + name;
   if (!icao.isEmpty())
@@ -88,7 +88,7 @@ QString GliderSite::getInfoString() const
   text += "<FONT SIZE=-1><BR><BR>" + elev;
   if (!frequency.isEmpty())
     text += "&nbsp;/&nbsp;" + frequency + "&nbsp;Mhz.";
-  text += "&nbsp;&nbsp;</FONT></TD></TR></TABLE></QT>";
+  text += "&nbsp;&nbsp;</FONT></TD></TR></TABLE></HTML>";
 
   return text;
 }

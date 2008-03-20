@@ -21,6 +21,7 @@
 #include <QWidget>
 #include <QTimer>
 #include <QString>
+#include <QTextDocument>
 
 /**
  * Redesign by Axel Pauli at 2008. Now we use the Qt4 official classes
@@ -58,6 +59,7 @@ class WhatsThat : public QWidget
 
   void mousePressEvent( QMouseEvent* );
   void keyPressEvent( QKeyEvent* );
+  void paintEvent( QPaintEvent* );
 
  private:
 
@@ -77,6 +79,13 @@ class WhatsThat : public QWidget
   bool waitingForRedraw;
 
  private: // Private methods
+
+  // text to be displayed
+  QTextDocument *doc;
+  // width of document
+  int docW;
+  // height of document
+  int docH;
 
   // instance counter
   static uint instance;
