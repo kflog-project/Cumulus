@@ -39,6 +39,9 @@ class HelpBrowser : public QWidget
   /** catch show events */
   void showEvent( QShowEvent *event );
 
+  /** catch key events */
+  void keyPressEvent( QKeyEvent *event );
+
  private:
 
   bool firstCall;

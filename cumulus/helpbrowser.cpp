@@ -126,3 +126,11 @@ void HelpBrowser::showEvent( QShowEvent * )
   
   browser->setSource( url );
 }
+
+void HelpBrowser::keyPressEvent( QKeyEvent *event )
+{
+  if( event->key() == Qt::Key_F6 )
+    {
+      setWindowState(windowState() ^ Qt::WindowFullScreen);
+    }
+}
