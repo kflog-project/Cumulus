@@ -109,6 +109,10 @@ CuCalc::~CuCalc()
   if( selectedWp != 0 ) {
     delete selectedWp;
   }
+
+  // save last position as new center position of the map
+  GeneralConfig::instance()->setCenterLat(lastPosition.x());
+  GeneralConfig::instance()->setCenterLon(lastPosition.y());
 }
 
 
@@ -259,6 +263,9 @@ void CuCalc::slot_Heading()
   emit newHeading(lastHeading);
   // if we have no bearing, lastBearing is -1;
   // this is only a small mistake, relBearing points to north
+  //@JD: but wrong showing of new rel.-bearing icon, so bail out
+  if (lastBearing < 0)
+    return;
   emit newRelBearing (lastBearing - lastHeading);
 }
 
@@ -342,9 +349,12 @@ void CuCalc::slot_WaypointChange(wayPoint *newWp, bool userAction)
     wpTouched = false;
     wpTouchCounter = 0;
     taskEndReached = false;
+    //@JD: reset bearing, and no more calculations
+    lastBearing = -1;
+	return;
   }
 
-  else if( selectedWp && userAction && selectedWp->taskPointIndex != -1 ) {
+  if( selectedWp && userAction && selectedWp->taskPointIndex != -1 ) {
     // this was not an automatic switch, it was made manually by the
     // user in the tasklistview or initiated by pressing accept in the
     // preflight dialog.
@@ -466,7 +476,7 @@ void CuCalc::calcDistance( bool autoWpSwitch )
       taskEndReached = true;
       emit taskInfo( tr("Task target reached"), true );
 
-      QString text = "<qt><hr><b><nobr>" +
+      QString text = "<html><hr><b><nobr>" +
         tr("Task Target reached") +
         "</nobr></b><hr>" +
         "<p><b>" +
@@ -474,7 +484,7 @@ void CuCalc::calcDistance( bool autoWpSwitch )
         "</b></p><br><b>" +
         tr("You have reached the <br>task target sector:") +
         "</b><br><br><p align=\"left\"><b>" +
-        selectedWp->name + " (" + selectedWp->description + ")</b></p><br>";
+        selectedWp->name + " (" + selectedWp->description + ")</b></p><br></html>";
 
       // fetch info show time from config and compute it as milli seconds
       int showTime = GeneralConfig::instance()->getInfoDisplayTime() * 1000;
@@ -697,13 +707,14 @@ bool CuCalc::glidePath(int aLastBearing, Distance aDistance,
                        Altitude aElevation, Altitude &arrivalAlt,
                        Speed &bestSpeed )
 {
+
   if (!_polar) {
     arrivalAlt.setInvalid();
     bestSpeed.setInvalid();
     return false;
   }
 
-  // qDebug("Glider=%s", _glider->type().toLatin1().data());
+//  qDebug("Glider=%s", _glider->type().toLatin1().data());
 
   // we use the method described by Bob Hansen
   // get best speed for zero wind V0
@@ -740,14 +751,14 @@ bool CuCalc::glidePath(int aLastBearing, Distance aDistance,
   //qDebug ("ld = %f", ld);
   //qDebug ("bestSpeed: %f", speed.getKph());
   //  qDebug ("lastSpeed: %f", lastSpeed.getKph());
-  //  qDebug ("above: %f", above.getMeters());
+
   return true;
 }
 
 
 void CuCalc::calcGlidePath()
 {
-  //  qDebug ("CuCalc::calcGlidePath");
+//  qDebug ("CuCalc::calcGlidePath");
   Speed speed;
   Altitude above;
   // calculate new glide path
@@ -1303,7 +1314,6 @@ void CuCalc::setGlider(Glider * _newVal)
     _glider = 0;
   }
 
-  // qDebug("CuCalc::setGlider");
 
   if (_newVal) {
     _glider = _newVal;

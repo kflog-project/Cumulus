@@ -2,7 +2,7 @@
                           mapinfobox.cpp  -  description
                              -------------------
     begin                : Sun Jul 21 2002
-    copyright            : (C) 2002 by Andre Somers, 2008 Axel Pauli
+    copyright            : (C) 2002 by Andre Somers, 2008 Axel Pauli, Josua Dietze
     email                : andre@kflog.org
     
     $Id$
@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QBoxLayout>
+#include <QHBoxLayout>
 
 #include "mapinfobox.h"
 #include "resource.h"
@@ -37,36 +37,54 @@ void CuLabel::mousePressEvent ( QMouseEvent * /*e*/ )
 }
 
 
-MapInfoBox::MapInfoBox(QWidget * parent, int FontDotsize ):QWidget(parent,"")
+MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, int fontDotsize ) :
+  QFrame(parent)
 {
-  QFont tfnt( "Helvetica", FontDotsize, QFont::Bold  );
-  QFont pfnt( "Helvetica", 12, QFont::Normal  );
-  QBoxLayout * layout = new QHBoxLayout(this,0);
+  QHBoxLayout * layout = new QHBoxLayout(this);
+  layout->setMargin(0);
+  layout->setSpacing(0);
+  setStyleSheet( QString(
+	"margin: 0px;"
+	"alignment: top;"
+	"padding: 0px;"
+	"font-family: helvetica;"
+	"border-style: solid;"
+	"border-width: 3px;"
+	"border-color: %1;"
+  ).arg( borderColor ) );
 
   _ptext = new QLabel(this, "" );
-  _ptext->setFont(pfnt);
-  _ptext->setFixedHeight( 16 );
+  _ptext->setStyleSheet(
+	"margin-right: 0px;"
+	"border-style: none;"
+	"border-width: 0px;"
+	"alignment: right;"
+	"text-align: right;"
+	"padding: 0px;"
+	"font-family: helvetica;"
+	"font-size: 16px;"
+	"min-width: 27px;"
+	"max-width: 27px;"
+  );
+  _ptext->setAlignment( Qt::AlignRight );
   _ptext->setIndent(0);
 
   _text = new QLabel(this, "" );
-  _text->setFont(tfnt);
+  _text->setIndent(0);
+  _text->setStyleSheet( QString(
+	"border-style: none;"
+	"border-width: 0px;"
+	"background-color: white;"
+	"padding-left: 1px;"
+	"margin: 0px;"
+	"font-family: Vera,vera,helvetica;"
+	"font-size: %1px;"
+	"text-align: left;"
+  ).arg(fontDotsize) );
 
-  // avoid clipping of 'g,q,j' for small fonts
-  /*if( FontDotsize <= 10 )
-    {
-    this->setFixedHeight(tfnt.pointSize()+6); 
-    _text->setFixedHeight( tfnt.pointSize()+6 );
-    }
-    else
-    {
-    this->setFixedHeight(tfnt.pointSize());
-    _text->setFixedHeight( tfnt.pointSize());
-    }       */
-  _text->setFixedHeight(MAX(24, FontDotsize));
-  setFixedHeight(MAX(26, FontDotsize+2));
-  layout->addWidget(_ptext,0,Qt::AlignTop);
-  layout->addWidget(_text,-4,Qt::AlignBottom);
-  layout->addStretch(10);
+  layout->addWidget(_ptext,0);
+  layout->addWidget(_text,10);
+
   setValue("-");
   setPreText("");
 
@@ -76,7 +94,8 @@ MapInfoBox::MapInfoBox(QWidget * parent, int FontDotsize ):QWidget(parent,"")
 
 
 MapInfoBox::~MapInfoBox()
-{}
+{
+}
 
 
 /** Read property of QString _PreText. */

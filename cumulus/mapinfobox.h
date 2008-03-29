@@ -40,9 +40,9 @@ public:
   CuLabel ( const QString &text, QWidget *parent, Qt::WFlags f = 0 );
 
 signals:
-    /**
-     * Emitted when the mouse is pressed over the label
-     */
+
+     // Emitted when the mouse is pressed over the label
+
     void mousePress();
 
 
@@ -56,12 +56,12 @@ private:
  * pre-text, used on the MapView.
  * @author Andre Somers
  */
-class MapInfoBox : public QWidget
+class MapInfoBox : public QFrame
 {
     Q_OBJECT
 
 public:
-    MapInfoBox(QWidget * parent, int FontDotsize=22);
+    MapInfoBox(QWidget * parent, const QString borderColor, int fontDotsize = 36 );
     virtual ~MapInfoBox();
 
     /**

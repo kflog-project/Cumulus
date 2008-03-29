@@ -26,7 +26,6 @@
 #include <QLabel>
 #include <QTimer>
 #include <QPixmap>
-#include <Q3PtrVector>
 #include <QDataStream>
 #include <QBoxLayout>
 #include <QColor>
@@ -289,8 +288,6 @@ class MapView : public QWidget
     /** default bg color */
     QColor _bearingBGColor;
 
-    Q3PtrVector<QWidget> *elements;
-
     QPixmap _arrows;
 
     /** can be CuCalc::GPS or CuCalc::MAN */
@@ -302,9 +299,10 @@ class MapView : public QWidget
     /**
      * Loads a layout definition from the file mentioned in argument @arg name
      */
-    bool loadLayout(QString pathName);
-    bool loadLayoutElement(QDataStream& in, QBoxLayout * l);
-    QWidget *getElement(int typeID, bool resetLineCounter);
+//@JD: currently unused
+//    bool loadLayout(QString pathName);
+//    bool loadLayoutElement(QDataStream& in, QBoxLayout * l);
+//    QWidget *getElement(int typeID, bool resetLineCounter);
 
   private slots:
 
