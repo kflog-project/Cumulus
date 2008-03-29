@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by André Somers, 2007 Axel Pauli
+ **   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -36,8 +36,7 @@ using namespace std;
 GeneralConfig * GeneralConfig::_theInstance=0;
 
 // @AP: We derive here from the QT settings as base class. The config
-// file will be stored in the user home directory as
-// $HOME/.config/Cumulus.conf
+// file will be stored in the user home directory as $HOME/.config/Cumulus.conf
 GeneralConfig::GeneralConfig() : QSettings( QSettings::UserScope, "Cumulus" )
 {
   _homeWp = new wayPoint();
@@ -50,7 +49,6 @@ GeneralConfig::GeneralConfig() : QSettings( QSettings::UserScope, "Cumulus" )
 
 GeneralConfig::~GeneralConfig()
 {
-  // qDebug("GeneralConfig::~GeneralConfig(): is called");
   save();
   _theInstance=0;
   delete _homeWp;
@@ -135,6 +133,7 @@ void GeneralConfig::load()
   _surname           = value("SurName", "").toString();
   _birthday          = value("Birthday", "").toString();
   _language          = value("Language", "en").toString();
+  _framecol          = value("FrameColor", "#687ec6").toString();
   endGroup();
 
   // Preflight settings
@@ -361,6 +360,7 @@ void GeneralConfig::save()
   setValue("SurName", _surname);
   setValue("Birthday", _birthday);
   setValue("Language", _language);
+  setValue("FrameColor", _framecol);
   endGroup();
 
   // Preflight data

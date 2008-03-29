@@ -271,6 +271,17 @@ class GeneralConfig : protected QSettings
     _language = newValue;
   };
 
+  /** Gets the sidebar frame color */
+  QString &getFrameCol()
+    {
+      return _framecol;
+    };
+  /** Sets the sidebar frame color */
+  void setFrameCol( const QString newValue )
+  {
+    _framecol = newValue;
+  };
+
   /** gets qnh */
   int getQNH() const
   {
@@ -1129,6 +1140,8 @@ class GeneralConfig : protected QSettings
   QString _birthday;
   // user language
   QString _language;
+  // frame color
+  QString _framecol;
   // qnh
   int _qnh;
   // logger interval
