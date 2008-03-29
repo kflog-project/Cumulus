@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers / TrollTech
+**   Copyright (c):  2002 by André Somers
 **                   2008 Axel Pauli                
 **
 **   This file is distributed under the terms of the General Public
@@ -34,8 +34,6 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
   setObjectName("WhatsThat");
   setAttribute( Qt::WA_DeleteOnClose );
 
-  blockHide=false;
-  waitingForRedraw=false;
   instance++;
 
   autohideTimer = new QTimer(this);
@@ -77,10 +75,6 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
       autohideTimer->start(timeout);
     }
 
-  //@AS: Quick 'n dirty connection to map...
-  connect(Map::getInstance(), SIGNAL(isRedrawing(bool)),
-          this, SLOT(mapIsRedrawing(bool)));
-
   repaint();
 }
 
@@ -94,16 +88,7 @@ WhatsThat::~WhatsThat()
 void WhatsThat::hide()
 {
   autohideTimer->stop();
-
-  if (blockHide)
-    {
-      waitingForRedraw=true;
-      qDebug("Mapredraw in progress, waiting to finish...");
-    }
-  else
-    {
-      QWidget::close();
-    }
+  QWidget::close();
 }
 
 
@@ -134,15 +119,5 @@ void WhatsThat::paintEvent( QPaintEvent* )
   p.fillRect( rect(), Qt::red );
 
   p.drawPixmap( hMargin, vMargin, pm );
-}
-
-void WhatsThat::mapIsRedrawing(bool redraw)
-{
-  blockHide=redraw;
-
-  if ((!redraw) && waitingForRedraw)
-    {
-      hide();
-    }
 }
 

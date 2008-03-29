@@ -33,7 +33,7 @@ class WhatsThat : public QWidget
 {
     Q_OBJECT
 
-      public:
+  public:
 
   WhatsThat( QWidget* parent, QString& txt, int timeout=5000 );
 
@@ -48,13 +48,6 @@ class WhatsThat : public QWidget
 
   void hide();
 
-  /**
-   * Slot that can be connected to the the @ref Map
-   * signal @isRedrawing. This holds deleting the popup
-   * untill redrawing of the map under it is ready.
-   */
-  void mapIsRedrawing(bool);
-
  protected:
 
   void mousePressEvent( QMouseEvent* );
@@ -63,22 +56,8 @@ class WhatsThat : public QWidget
 
  private:
 
+  /** Timer for automatic window hide */
   QTimer* autohideTimer;
-
-  /**
-   * flag to block hiding of the widget. This is being
-   * set by @ref mapIsRedrawing.
-   */
-  bool blockHide;
-
-  /**
-   * flag to indicate that the popup _should_ be closed,
-   * but we are waying for the map redrawing to finish. As
-   * soon as that happens, the popup will be closed.
-   */
-  bool waitingForRedraw;
-
- private: // Private methods
 
   // text to be displayed
   QTextDocument *doc;
