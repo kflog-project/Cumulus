@@ -1178,8 +1178,6 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
 
     case infoView:
 
-      qDebug("infoView");
-
       if ( ! wp )
         {
           return;
@@ -1340,7 +1338,7 @@ void CumulusApp::slotVersion()
   QMessageBox::about ( this,
                        "Cumulus",
                        QString(tr(
-                                 "<qt>"
+                                 "<html>"
                                  "<table cellspacing=0 cellpadding=0 border=0>"
                                  "<tr>"
                                  "<th>Cumulus X11 version %1</th>"
@@ -1372,7 +1370,7 @@ void CumulusApp::slotVersion()
                                  "<td>Published under the GPL</td>"
                                  "</tr>"
                                  "</table>"
-                                 "</qt>" ).arg( QString(CU_VERSION) ).arg( QString( __DATE__ )).arg( QString(QT_VERSION_STR) ) ) );
+                                 "</html>" ).arg( QString(CU_VERSION) ).arg( QString( __DATE__ )).arg( QString(QT_VERSION_STR) ) ) );
 }
 
 
