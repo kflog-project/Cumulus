@@ -51,6 +51,7 @@ class SettingsPagePersonal : public QWidget
     QComboBox *langBox;
     LatEdit   *edtHomeLat;
     LongEdit  *edtHomeLong;
+    QLineEdit *edtFrameCol;
 
   };
 

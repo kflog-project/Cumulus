@@ -66,6 +66,12 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   topLayout->addWidget(edtHomeLong, row, 1, 1, 2);
   row++;
 
+  lbl = new QLabel(tr("Sidebar frame col.:"), this);
+  topLayout->addWidget(lbl, row, 0);
+  edtFrameCol = new QLineEdit(this);
+  topLayout->addWidget(edtFrameCol, row, 1, 1, 2);
+  row++;
+
   topLayout->setRowStretch(row,10);
 }
 
@@ -83,6 +89,8 @@ void SettingsPagePersonal::slot_load()
   edtHomeLat->setKFLogDegree(conf->getHomeLat());
   edtHomeLong->setKFLogDegree(conf->getHomeLon());
   
+  edtFrameCol->setText( conf->getFrameCol() );
+
   // search item to be selected
   int idx = langBox->findText(conf->getLanguage());
   
@@ -100,6 +108,7 @@ void SettingsPagePersonal::slot_save()
   conf->setSurname( edtName->text() );
   conf->setBirthday( edtBirth->text() );
   conf->setLanguage( langBox->currentText() );
+  conf->setFrameCol( edtFrameCol->text() );
 
   // Check, if string input values have been changed. If not, no
   // storage is done to avoid roundings errors. They can appear if the
