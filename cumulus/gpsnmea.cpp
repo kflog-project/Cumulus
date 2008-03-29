@@ -35,9 +35,10 @@
 
 #include "generalconfig.h"
 
-// @AP: define timeout constants for gps fix supervision
+// @AP: define timeout constants for gps fix supervision in milli seconds.
+//      After this time an alarm is generated.
 
-#define FIX_TO 4000
+#define FIX_TO 25000
 
 extern MapView   *_globalMapView;
 extern MapMatrix *_globalMapMatrix;
