@@ -18,6 +18,10 @@ Cumulus changelog
 Cumulus 2.0.0 (Development based on X11/Qt-4.3.3)
 -------------------------------------------------
 
+[-] 2008-03-29 AP: Bugfix: Last position was never saved as new center position on restart
+                   of cumulus. Fixed now.
+[+] 2008-03-21 AP: New map design introduced. All display boxes are moved from the top to
+                   the left side. Thanks to Josua Dietze for his contribution.
 [+] 2008-03-13 AP: File selection box added in configuration dialog of information settings
                    for sound player selection by the user. QSound does not work sure,
                    now the user can choice its own sound player.
