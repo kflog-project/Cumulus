@@ -419,9 +419,9 @@ void TaskList::slotDeleteTask()
 
   int answer=
     QMessageBox::warning(this,tr("Delete task?"),
-                         tr("<qt>"
+                         tr("<html><b>"
                             "Do you want to delete the selected task?"
-                            "</qt>"),
+                            "</b></html>"),
                          QMessageBox::Ok | QMessageBox::Default,
                          QMessageBox::Cancel | QMessageBox::Escape );
 
