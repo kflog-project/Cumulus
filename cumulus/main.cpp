@@ -164,12 +164,17 @@ int main(int argc, char *argv[])
         }
     }
 
-  // cumulus as local variable important to get the destructor called !
-  CumulusApp cumulus(0, Qt::WindowContextHelpButtonHint);
+  // create the cumulus application
+  CumulusApp *cumulus = new CumulusApp(0, Qt::WindowContextHelpButtonHint);
 
   // start window manager event processing
   int result = QApplication::exec();
 
+  // remove first CumulusApp because class objects inside can call GeneralConfig
+  delete cumulus;
+
+  // remove GeneralConfig, it is created during first call to it
   delete GeneralConfig::instance();
+
   return result;
 }
