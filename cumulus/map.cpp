@@ -202,9 +202,9 @@ void Map::__displayMapInfo(const QPoint& current)
   text.replace( QRegExp("AS-E low "), "AS-El " );
   text.replace( QRegExp("AS-E high "), "AS-Eh " );
 
-  if(show)
+  if( show && WhatsThat::getInstance() == 0 )
     {
-      // Text anzeigen
+      // display text only, if no other display is active
       GeneralConfig *conf = GeneralConfig::instance()
                             ;
       int airspaceTime = conf->getAirspaceDisplayTime();
@@ -218,9 +218,9 @@ void Map::__displayMapInfo(const QPoint& current)
         }
 
       // qDebug("airspace timer %dms", showTime);
+
       WhatsThat *box = new WhatsThat(this, text, showTime);
       box->show();
-      return;
     }
 }
 
@@ -2019,7 +2019,7 @@ void Map::__drawDirectionLine(const QPoint& from)
       QPainter lineP;
       lineP.begin(&m_pixInformationMap);
       lineP.setClipping(true);
-      lineP.setPen(QPen(col, 3, Qt::DashLine));
+      lineP.setPen(QPen(col, 5, Qt::DashLine));
       lineP.drawLine(from, to);
       lineP.end();
     }
