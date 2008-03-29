@@ -405,7 +405,7 @@ void MapView::slot_Waypoint(const wayPoint *wp)
           dest += tr("TP") + idx;
         }
 
-      dest += QString("%1 (%2)").arg(wp->name.left(14)).arg( Altitude::getText(wp->elevation, false, 0));
+      dest += QString("%1 (%2)").arg(wp->name.left(8)).arg( Altitude::getText(wp->elevation, false, 0));
       _waypoint->setValue(dest);
     }
   else
