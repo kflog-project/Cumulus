@@ -126,8 +126,8 @@
 #define ROAD_COLOR_3  QColor(255,100,100)
 #define ROAD_COLOR_4  QColor(255,100,100)
 
-#define ROAD_PEN_1 2
-#define ROAD_PEN_2 2
+#define ROAD_PEN_1 3
+#define ROAD_PEN_2 3
 #define ROAD_PEN_3 1
 #define ROAD_PEN_4 1
 
@@ -143,10 +143,10 @@
 #define HIGH_COLOR_3  QColor(255,100,100)
 #define HIGH_COLOR_4  QColor(255,100,100)
 
-#define HIGH_PEN_1 5
-#define HIGH_PEN_2 4
-#define HIGH_PEN_3 3
-#define HIGH_PEN_4 2
+#define HIGH_PEN_1 6
+#define HIGH_PEN_2 5
+#define HIGH_PEN_3 4
+#define HIGH_PEN_4 3
 
 #define HIGH_PEN_STYLE_1 Qt::SolidLine
 #define HIGH_PEN_STYLE_2 Qt::SolidLine
@@ -159,10 +159,10 @@
 #define RAIL_COLOR_3  QColor(80,80,80)
 #define RAIL_COLOR_4  QColor(80,80,80)
 
-#define RAIL_PEN_1 2
-#define RAIL_PEN_2 2
-#define RAIL_PEN_3 1
-#define RAIL_PEN_4 1
+#define RAIL_PEN_1 3
+#define RAIL_PEN_2 3
+#define RAIL_PEN_3 2
+#define RAIL_PEN_4 2
 
 #define RAIL_PEN_STYLE_1 Qt::DashLine
 #define RAIL_PEN_STYLE_2 Qt::DashLine
@@ -176,10 +176,10 @@
 #define RAIL_D_COLOR_3  QColor(80,80,80)
 #define RAIL_D_COLOR_4  QColor(80,80,80)
 
-#define RAIL_D_PEN_1 2
-#define RAIL_D_PEN_2 2
-#define RAIL_D_PEN_3 1
-#define RAIL_D_PEN_4 1
+#define RAIL_D_PEN_1 3
+#define RAIL_D_PEN_2 3
+#define RAIL_D_PEN_3 2
+#define RAIL_D_PEN_4 2
 
 #define RAIL_D_PEN_STYLE_1 Qt::DashLine
 #define RAIL_D_PEN_STYLE_2 Qt::DashLine
@@ -193,10 +193,10 @@
 #define AERIAL_CABLE_COLOR_3  QColor(80,80,80)
 #define AERIAL_CABLE_COLOR_4  QColor(80,80,80)
 
-#define AERIAL_CABLE_PEN_1 2
-#define AERIAL_CABLE_PEN_2 2
-#define AERIAL_CABLE_PEN_3 1
-#define AERIAL_CABLE_PEN_4 1
+#define AERIAL_CABLE_PEN_1 3
+#define AERIAL_CABLE_PEN_2 3
+#define AERIAL_CABLE_PEN_3 2
+#define AERIAL_CABLE_PEN_4 2
 
 #define AERIAL_CABLE_PEN_STYLE_1 Qt::DashLine
 #define AERIAL_CABLE_PEN_STYLE_2 Qt::DashLine
@@ -650,8 +650,8 @@
 // [Danger]
 #define DNG_PEN_1 4
 #define DNG_PEN_2 3
-#define DNG_PEN_3 2
-#define DNG_PEN_4 1
+#define DNG_PEN_3 3
+#define DNG_PEN_4 2
 
 #define DNG_PEN_STYLE_1 Qt::SolidLine
 #define DNG_PEN_STYLE_2 Qt::SolidLine
