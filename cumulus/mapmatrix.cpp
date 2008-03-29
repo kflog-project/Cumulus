@@ -208,7 +208,7 @@ bool MapMatrix::isSwitchScale2() const
 
 QPoint MapMatrix::getMapCenter(bool) const
 {
-  return QPoint(mapCenterLat,mapCenterLon);
+  return QPoint(mapCenterLat, mapCenterLon);
 }
 
 
@@ -412,8 +412,8 @@ void MapMatrix::createMatrix(const QSize& newSize)
   mapCenterAreaProj=QRect(tempPoint.x() - vqDist,
                           tempPoint.y() - hqDist,
                           2* vqDist, 2* hqDist);
+
   emit displayMatrixValues(getScaleRange(), isSwitchScale());
-  //  emit matrixChanged();
 }
 
 
@@ -468,8 +468,9 @@ void MapMatrix::slotInitMatrix()
     delete currentProjection;
     switch(newProjectionType) {
     case ProjectionBase::Lambert:
-      currentProjection = new ProjectionLambert(conf->getLambertParallel1(),conf->getLambertParallel2(),conf->getLambertOrign());
-      // qDebug("XXXXXXXXXXXXXXXX %i %i",conf->getLambertParallel1(),conf->getLambertParallel2());
+      currentProjection = new ProjectionLambert(conf->getLambertParallel1(),
+                                                conf->getLambertParallel2(),
+                                                conf->getLambertOrign());
       qDebug ("Map projection changed to Lambert");
       break;
       //case ProjectionBase::Cylindric:
@@ -513,11 +514,11 @@ void MapMatrix::slotInitMatrix()
     // original maps be reinstalled if necessary
 
     QMessageBox::warning( 0, "Cumulus",
-                          tr( "<qt>"
+                          tr( "<html>"
                               "<b>Map projection has been changed.</b><p>"
                               "Please ensure that original "
                               "map files are available for recompiling!"
-                              "</qt>" ) );
+                              "</html>" ) );
 
     emit projectionChanged();
   }
