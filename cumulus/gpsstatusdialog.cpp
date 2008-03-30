@@ -30,6 +30,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
 {
   setWindowTitle(tr("GPS Status"));
   setModal(true);
+  setSizeGripEnabled(true);
 
   elevAziDisplay = new GPSElevationAzimuthDisplay(this);
   elevAziDisplay->setFrameStyle(QFrame::Panel | QFrame::Sunken);
