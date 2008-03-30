@@ -24,10 +24,6 @@
 #ifndef CUMULUSAPP_H
 #define CUMULUSAPP_H
 
-#ifdef MAEMO
-#include <libosso.h>
-#endif
-
 #include <QApplication>
 #include <QMainWindow>
 #include <QWidget>
@@ -324,7 +320,6 @@ class CumulusApp : public QMainWindow
 
   private:
 
-    osso_context_t *ossoContext;
     QTimer *ossoDisplayTrigger; // timer for triggering display on
 
   private slots:

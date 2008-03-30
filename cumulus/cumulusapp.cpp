@@ -56,6 +56,18 @@
 #include "helpbrowser.h"
 #include "sound.h"
 
+#ifdef MAEMO
+
+#include <libosso.h>
+
+// @AP: That is a little hack, to avoid the include of all glib
+// functionality in the header file of this class. There are
+// redefinitions of macros in glib and other cumulus header files.
+static osso_context_t *ossoContext = static_cast<osso_context_t *> (0);
+
+#endif
+
+
 /**
  * Global available instance of this class
  */
@@ -181,7 +193,11 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   setIcon( GeneralConfig::instance()->loadPixmap( "cumulus.png" ) );
   setWindowTitle( "Cumulus" );
 
-  // use showMaximized() only for PDA
+#ifdef MAEMO
+  setWindowState(Qt::WindowFullScreen);
+#endif
+
+  // showMaximized(); // only for PDA
   show();
   
   ws = new WaitScreen(this);
@@ -202,8 +218,6 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
 void CumulusApp::slotCreateApplicationWidgets()
 {
   // qDebug( "CumulusApp::slotCreateApplicationWidgets()" );
-
-#warning switch screensaver off, if necessary
 
   ws->slot_SetText1( tr( "Creating map elements..." ) );
 
@@ -596,8 +610,6 @@ CumulusApp::~CumulusApp()
 {
   // qDebug ("CumulusApp::~CumulusApp()");
 
-#warning switch screensaver on, if necessary
-
 #warning Question: Should we save the main window size on exit?
   // @AP: we do that later
   // save main window size
@@ -608,6 +620,7 @@ CumulusApp::~CumulusApp()
 
 #ifdef MAEMO
 
+  // stop maemo screen saver off triggering
   if( ossoContext )
     {
       ossoDisplayTrigger->stop(); 
@@ -1777,17 +1790,24 @@ void CumulusApp::resizeEvent(QResizeEvent* event)
 
 #ifdef MAEMO
 
-/** Called to prevent the switch off of the display */
+/** Called to prevent the switch off of the screen display */
 void CumulusApp::slot_ossoDisplayTrigger()
 {
-  osso_return_t  ret = osso_display_blanking_pause( ossoContext );
-  // osso_return_t  ret = osso_display_state_on( ossoContext );
-
-  if( ret != OSSO_OK )
+  // If the spped is greater or equal 20 km/h we switch off the screen
+  // saver. Otherwise we let all as it is.
+  if( calculator->getlastSpeed().getMps() >= 20.0 )
     {
-      qWarning( "osso_display_blanking_pause() call failed" );
+      // tell maemo that we are in move to avoid blank screen
+      osso_return_t  ret = osso_display_state_on( ossoContext );
+      
+      if( ret != OSSO_OK )
+        {
+          qWarning( "osso_display_blanking_pause() call failed" );
+        }
     }
 
+  // Restart the timer because we use a single shot timer to avoid
+  // multiple triggering in case of delays.
   ossoDisplayTrigger->start( 10000 );
 }
 
