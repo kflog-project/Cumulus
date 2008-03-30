@@ -21,7 +21,6 @@
 #include <QPainter>
 
 #include "whatsthat.h"
-#include "map.h"
 
 uint WhatsThat::instance = 0;
 
