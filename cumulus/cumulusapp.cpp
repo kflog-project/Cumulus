@@ -1780,8 +1780,8 @@ void CumulusApp::resizeEvent(QResizeEvent* event)
 /** Called to prevent the switch off of the display */
 void CumulusApp::slot_ossoDisplayTrigger()
 {
-  // osso_return_t  ret = osso_display_blanking_pause( ossoContext );
-  osso_return_t  ret = osso_display_state_on( ossoContext );
+  osso_return_t  ret = osso_display_blanking_pause( ossoContext );
+  // osso_return_t  ret = osso_display_state_on( ossoContext );
 
   if( ret != OSSO_OK )
     {
