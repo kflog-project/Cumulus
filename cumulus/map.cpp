@@ -1828,8 +1828,6 @@ void Map::__drawGlider()
   __drawDirectionLine(QPoint(Rx,Ry));
 
   // @ee the glider pixmap contains all rotated glider symbols.
-  // bitBlt(&m_pixInformationMap, Rx-20, Ry-20, &_glider, rot*40, 0, 40, 40);
-
   QPainter p(&m_pixInformationMap);
   p.drawPixmap( Rx-20, Ry-20, _glider, rot*40, 0, 40, 40 );
 }
