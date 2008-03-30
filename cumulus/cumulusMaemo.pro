@@ -200,9 +200,9 @@ SOURCES     = \
 INTERFACES  =
 TARGET      = cumulus
 DESTDIR     = .
-INCLUDEPATH += ../ 
+INCLUDEPATH += ../ /usr/lib/glib-2.0/include /usr/include/glib-2.0 /usr/include/dbus-1.0 /usr/lib/dbus-1.0/include
 DEFINES += MAEMO
-LIBS += -lstdc++
+LIBS += -lstdc++ -losso
 
 TRANSLATIONS    = \
     cumulus_de.ts \
