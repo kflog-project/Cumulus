@@ -553,8 +553,8 @@ void CumulusApp::slotCreateApplicationWidgets()
   if( ! GeneralConfig::instance()->getAirspaceWarningEnabled() )
     {
       int answer= QMessageBox::warning( this,tr("Airspace Warnings?"),
-                                       tr("<b>Airspace warnings are disabled!<br>"
-                                           "Do you want enable them?</b>"),
+                                       tr("<hmtl><b>Airspace warnings are disabled!<br>"
+                                           "Do you want enable them?</b></html>"),
                                        QMessageBox::Yes,
                                        QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
 
@@ -563,6 +563,31 @@ void CumulusApp::slotCreateApplicationWidgets()
           GeneralConfig::instance()->setAirspaceWarningEnabled(true);
         }
     }
+
+#ifdef MAEMO
+
+  ossoContext = osso_initialize( "cumulus", CU_VERSION, false, 0 );
+
+  if( ! ossoContext )
+    {
+      qWarning("Could not initialize Osso Library");
+    }
+  else
+    {
+      osso_display_state_on( ossoContext );
+
+      // setup timer to prevent screen blank
+      ossoDisplayTrigger = new QTimer(this);
+      ossoDisplayTrigger->setSingleShot(true);
+
+      connect( ossoDisplayTrigger, SIGNAL(timeout()),
+               this, SLOT(slot_ossoDisplayTrigger()) );
+
+      // start timer with 10s
+      ossoDisplayTrigger->start( 10000 );
+    }
+
+#endif
 
   qDebug( "End startup cumulusapp" );
 }
@@ -580,6 +605,17 @@ CumulusApp::~CumulusApp()
   // GeneralConfig::instance()->save();
 
   delete logger;
+
+#ifdef MAEMO
+
+  if( ossoContext )
+    {
+      ossoDisplayTrigger->stop(); 
+      osso_deinitialize( ossoContext );
+    }
+
+#endif
+
 }
 
 /** As the name tells ...
@@ -1738,4 +1774,22 @@ void CumulusApp::resizeEvent(QResizeEvent* event)
       listViewTabs->resize( event->size() );
     }
 }
+
+#ifdef MAEMO
+
+/** Called to prevent the switch off of the display */
+void CumulusApp::slot_ossoDisplayTrigger()
+{
+  // osso_return_t  ret = osso_display_blanking_pause( ossoContext );
+  osso_return_t  ret = osso_display_state_on( ossoContext );
+
+  if( ret != OSSO_OK )
+    {
+      qWarning( "osso_display_blanking_pause() call failed" );
+    }
+
+  ossoDisplayTrigger->start( 10000 );
+}
+
+#endif
 

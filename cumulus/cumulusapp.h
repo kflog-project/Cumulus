@@ -24,6 +24,10 @@
 #ifndef CUMULUSAPP_H
 #define CUMULUSAPP_H
 
+#ifdef MAEMO
+#include <libosso.h>
+#endif
+
 #include <QApplication>
 #include <QMainWindow>
 #include <QWidget>
@@ -315,6 +319,21 @@ class CumulusApp : public QMainWindow
     WaitScreen *ws;
     // visibility of menu bar
     bool menuBarVisible;
+
+#ifdef MAEMO
+
+  private:
+
+    osso_context_t *ossoContext;
+    QTimer *ossoDisplayTrigger; // timer for triggering display on
+
+  private slots:
+
+    /** Called to prevent the switch off of the display */
+    void slot_ossoDisplayTrigger();
+
+#endif
+
   };
 
 #endif
