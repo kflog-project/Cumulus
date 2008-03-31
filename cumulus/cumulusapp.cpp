@@ -1793,9 +1793,9 @@ void CumulusApp::resizeEvent(QResizeEvent* event)
 /** Called to prevent the switch off of the screen display */
 void CumulusApp::slot_ossoDisplayTrigger()
 {
-  // If the spped is greater or equal 20 km/h we switch off the screen
+  // If the speed is greater or equal 20 km/h we switch off the screen
   // saver. Otherwise we let all as it is.
-  if( calculator->getlastSpeed().getMps() >= 20.0 )
+  if( calculator->getlastSpeed().getKph() >= 20.0 )
     {
       // tell maemo that we are in move to avoid blank screen
       osso_return_t  ret = osso_display_state_on( ossoContext );
@@ -1805,11 +1805,10 @@ void CumulusApp::slot_ossoDisplayTrigger()
           qWarning( "osso_display_blanking_pause() call failed" );
         }
     }
-
+  
   // Restart the timer because we use a single shot timer to avoid
-  // multiple triggering in case of delays.
+  // multiple triggering in case of delays. Next trigger is in 10s.
   ossoDisplayTrigger->start( 10000 );
 }
 
 #endif
-
