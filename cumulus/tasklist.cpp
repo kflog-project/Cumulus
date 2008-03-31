@@ -86,14 +86,12 @@ TaskList::TaskList( QWidget* parent ) :
   taskListView->addColumn( tr("Type") );
   taskListView->setColumnAlignment(taskListView->addColumn( tr("Distance") ), Qt::AlignRight);
   taskListView->setAllColumnsShowFocus( true );
-  taskListView->setMinimumHeight(20);
+  taskListView->setMaximumHeight(100);
   taskListView->setFocus();
 
   taskContent = new TaskListView( splitter, false, false );
 
-  // taskContent->setMinimumSize(1,100); //somehow, the layout alone doesn't cut it.
-
-  taskLayout->addWidget( splitter, 1 );
+  taskLayout->addWidget( splitter );
 
   connect(cmdNew, SIGNAL(clicked()), this, SLOT(slotNewTask()));
   connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slotEditTask()));

@@ -101,6 +101,10 @@ PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
     tabWidget->showPage(gliderpage);
   }
 
+#ifdef MAEMO
+  resize( 480, 480 );
+#endif
+
   show();
 }
 
