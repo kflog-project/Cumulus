@@ -16,8 +16,10 @@
 ***********************************************************************/
 
 #include <QMessageBox>
-#include <QDialogButtonBox>
 #include <QShortcut>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QToolTip>
 
 #include "preflightdialog.h"
 #include "mapcontents.h"
@@ -25,69 +27,90 @@
 #include "preflightmiscpage.h"
 #include "cucalc.h"
 
-extern MapContents * _globalMapContents;
+extern MapContents* _globalMapContents;
 
-PreFlightDialog::PreFlightDialog(QWidget * parent, const char *name) :
+/** Dialog for prefilght settings. To reserve the full vertical space for the
+ *  the content of the tabulators, tabulators are arranged at the
+ *  left side and the ok and cancel buttons are arranged on the right side.
+ */
+
+PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
   QDialog(parent)
 {
   setObjectName("PreFlightDialog");
   setModal(true);
-  setWindowTitle(tr("Cumulus Preflight settings"));
+  setWindowTitle(tr("Preflight settings"));
   setSizeGripEnabled(true);
 
-  tabWidget = new QTabWidget (this);
+  tabWidget = new QTabWidget(this);
+  tabWidget->setTabPosition( QTabWidget::West );
 
   gliderpage = new PreFlightGliderPage(this);
-  tabWidget->addTab(gliderpage, tr("&Glider"));
+  gliderpage->setToolTip(tr("Select a glider to be used"));
+  tabWidget->addTab(gliderpage, tr("Glider"));
 
-  taskpage=new TaskList(this);
-  tabWidget->addTab(taskpage, tr("&Task"));
+  taskpage = new TaskList(this);
+  taskpage->setToolTip(tr("Select or define a flight task"));
+  tabWidget->addTab(taskpage, tr("Task"));
 
-  miscpage =new PreFlightMiscPage(this);
-  tabWidget->addTab(miscpage, tr("&Common"));
+  miscpage = new PreFlightMiscPage(this);
+  miscpage->setToolTip(tr("Define common flight parameters"));
+  tabWidget->addTab(miscpage, tr("Common"));
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
-                                 | QDialogButtonBox::Cancel);
-
-  QShortcut* scLeft = new QShortcut(Qt::Key_Left, this);
+  QShortcut* scLeft  = new QShortcut(Qt::Key_Left, this);
   QShortcut* scRight = new QShortcut(Qt::Key_Right, this);
   QShortcut* scSpace = new QShortcut(Qt::Key_Space, this);
-  connect(scLeft,    SIGNAL(activated()),this, SLOT(keyLeft()));
-  connect(scRight,   SIGNAL(activated()),this, SLOT(keyRight()));
-  connect(scSpace,   SIGNAL(activated()),this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-  QVBoxLayout *mainLayout = new QVBoxLayout;
+  connect(scLeft,  SIGNAL(activated()),this, SLOT(keyLeft()));
+  connect(scRight, SIGNAL(activated()),this, SLOT(keyRight()));
+  connect(scSpace, SIGNAL(activated()),this, SLOT(accept()));
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setPixmap( GeneralConfig::instance()->loadPixmap( "standardbutton-apply-16.png") );
+  ok->setFlat(true);
+  ok->setToolTip( tr("Apply modifications") );
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setPixmap( GeneralConfig::instance()->loadPixmap( "standardbutton-cancel-16.png") );
+  cancel->setFlat(true);
+  cancel->setToolTip( tr("Cancel modifications") );
+
+  connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addWidget( ok );
+  buttonBox->addSpacing(20);
+  buttonBox->addWidget( cancel );
+  buttonBox->addStretch(1);
+
+  QHBoxLayout *mainLayout = new QHBoxLayout(this);
   mainLayout->addWidget(tabWidget);
-  mainLayout->addWidget(buttonBox);
-  setLayout(mainLayout);
+  mainLayout->addLayout(buttonBox);
 
   miscpage->load();
 
   //check to see which tab to bring forward
   if (QString (name) == "taskselection")
   {
-    tabWidget->showPage (taskpage);
+    tabWidget->showPage(taskpage);
   }
   else
   {
-    tabWidget->showPage (gliderpage);
+    tabWidget->showPage(gliderpage);
   }
 
   show();
 }
-
 
 PreFlightDialog::~PreFlightDialog()
 {
   // qDebug("PreFlightDialog::~PreFlightDialog()");
 }
 
-
 void PreFlightDialog::accept()
 {
-
   FlightTask *curTask = _globalMapContents->getCurrentTask();
 
   // Note we have overtaken the ownership about this object!
@@ -106,10 +129,10 @@ void PreFlightDialog::accept()
     {
       int answer=
         QMessageBox::warning(this,tr("Replace previous task?"),
-                             tr("<qt>"
+                             tr("<html><b>"
                                 "Do you want to replace the previous task?<br>"
                                 "Waypoint selection is reset at start position."
-                                "</qt>"),
+                                "</b></html>"),
                              QMessageBox::Ok | QMessageBox::Default,
                              QMessageBox::Cancel | QMessageBox::Escape );
 

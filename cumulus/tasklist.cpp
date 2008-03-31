@@ -37,17 +37,24 @@
 // Initialize static member
 uint TaskList::lastSelection = 0;
 
-
-TaskList::TaskList( QWidget* parent )
-    : QWidget( parent ),
-    editTask(0)
+TaskList::TaskList( QWidget* parent ) :
+  QWidget( parent ),
+  editTask(0)
 {
   setObjectName("TaskList");
-  QVBoxLayout* taskLayout = new QVBoxLayout( this, 5 );
-  QHBoxLayout *editrow=new QHBoxLayout(taskLayout, 0);
-
-  cruisingSpeed = new QSpinBox(0, 1000, 5, this, "CruisingSpeed" );
+  QVBoxLayout* taskLayout = new QVBoxLayout( this );
+  taskLayout->setSpacing(5);
+  taskLayout->setMargin(5);
+  
+  QHBoxLayout* editrow = new QHBoxLayout;
+  editrow->setSpacing(2);
+  taskLayout->addLayout( editrow );
+  
+  cruisingSpeed = new QSpinBox( this );
   cruisingSpeed->setButtonSymbols(QSpinBox::PlusMinus);
+  cruisingSpeed->setRange( 0, 1000);
+  cruisingSpeed->setSingleStep( 5 );
+  
   editrow->addWidget(cruisingSpeed);
   editrow->addWidget(new QLabel( Speed::getHorizontalUnitText(), this));
   cruisingSpeed->setValue( GeneralConfig::instance()->getCruisingSpeed() );
@@ -69,8 +76,9 @@ TaskList::TaskList( QWidget* parent )
   cmdDel->setFlat(true);
   editrow->addWidget(cmdDel);
 
-  QSplitter* splitter = new QSplitter( Qt::Vertical, this, "Splitter" );
+  QSplitter* splitter = new QSplitter( Qt::Vertical, this );
   splitter->setOpaqueResize( true );
+  
   taskListView = new Q3ListView( splitter );
 
   taskListView->addColumn( tr("No") );

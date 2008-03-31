@@ -51,11 +51,14 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons, bool bold )
       this->setFont(fnt);
     }
 
-  QBoxLayout *topLayout = new QVBoxLayout( this );
+  QVBoxLayout *topLayout = new QVBoxLayout( this );
 
-  QBoxLayout *total = new QHBoxLayout( topLayout, 0 );
-  total->setMargin(2);
-  total->setSpacing(5);
+  if( ! showButtons )
+    {
+      topLayout->setMargin(0);
+    }
+
+  QHBoxLayout *total = new QHBoxLayout( topLayout );
 
   distTotal  = new QLabel("", this );
   speedTotal = new QLabel("", this );
@@ -79,10 +82,11 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons, bool bold )
   list->setSorting(-1,false);
   list->setAllColumnsShowFocus(false);
   list->setSelectionMode( Q3ListView::NoSelection );
-  topLayout->addWidget(list,10);
+  topLayout->addWidget(list, 10);
 
   if( showButtons )
     {
+      total->setSpacing(5);
       list->setAllColumnsShowFocus(true);
       list->setSelectionMode( Q3ListView::Single );
 

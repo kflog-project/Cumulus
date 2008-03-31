@@ -20,6 +20,7 @@
 
 #include <QDialog>
 #include <QTabWidget>
+
 #include "tasklist.h"
 
 class PreFlightGliderPage;
@@ -42,13 +43,12 @@ public:
      * @argument name Name of the page to be displayed. Current options: "taskselection".
      *                Any other string will select glider page.
      */
-    PreFlightDialog(QWidget *parent, const char *name);
+    PreFlightDialog(QWidget *parent, const char* name);
 
     /**
      * Destructor
      */
     ~PreFlightDialog();
-
 
 signals:
     /**
