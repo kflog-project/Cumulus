@@ -31,10 +31,11 @@ extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 
 WPEditDialog::WPEditDialog(QWidget *parent, wayPoint *wp ):
-  QDialog(parent, Qt::WStyle_StaysOnTop)
+  QDialog(parent)
 {
   setObjectName("WPEditDialog");
   setModal(true);
+  setSizeGripEnabled(true);
   
   if (wp==0) {
     setWindowTitle(tr("New Waypoint"));
