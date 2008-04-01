@@ -24,6 +24,7 @@
 #include <QMessageBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QList>
 
 #include "target.h"
 #include "tasklist.h"
@@ -76,7 +77,7 @@ TaskList::TaskList( QWidget* parent ) :
   cmdDel->setFlat(true);
   editrow->addWidget(cmdDel);
 
-  QSplitter* splitter = new QSplitter( Qt::Vertical, this );
+  splitter = new QSplitter( Qt::Vertical, this );
   splitter->setOpaqueResize( true );
   
   taskListView = new Q3ListView( splitter );
@@ -86,7 +87,6 @@ TaskList::TaskList( QWidget* parent ) :
   taskListView->addColumn( tr("Type") );
   taskListView->setColumnAlignment(taskListView->addColumn( tr("Distance") ), Qt::AlignRight);
   taskListView->setAllColumnsShowFocus( true );
-  taskListView->setMaximumHeight(100);
   taskListView->setFocus();
 
   taskContent = new TaskListView( splitter, false, false );
@@ -114,6 +114,34 @@ TaskList::~TaskList()
   qDeleteAll(taskList);
   taskList.clear();
 }
+
+void TaskList::showEvent(QShowEvent *)
+{
+  static bool first = true;
+
+  // @AP: With the first show event we set the splitter line to our
+  // desired place. Found no other way to do it better.
+
+  if( first )
+    {
+      first = false;
+
+      // get the heights of the two widgets in the splitter
+      QList<int> sizeList = splitter->sizes();
+
+      int sum = sizeList[0] + sizeList[1];
+
+      if( sum >= 200 )
+        {
+          sizeList[0] = 150;
+          sizeList[1] = sum-150;
+
+          // set the splitter line to a new place
+          splitter->setSizes(sizeList);
+        }
+    }
+}
+
 
 /** new value in spin box set */
 void TaskList::slotCruisingSpeedChanged( int /* value */ )

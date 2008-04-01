@@ -24,6 +24,7 @@
 #include <QStringList>
 #include <QSpinBox>
 #include <QCheckBox>
+#include <QSplitter>
 
 #include "flighttask.h"
 #include "tasklistview.h"
@@ -41,6 +42,9 @@ public:
 
     /** Takes out the selected task from the task list. */
     FlightTask* takeSelectedTask();
+
+  protected:
+    void showEvent(QShowEvent *);
 
 private:
     /** */
@@ -79,6 +83,8 @@ private slots:
 
 private:
 
+    /** splitter widget */
+    QSplitter* splitter;
     /** spin box for crusing speed entry */
     QSpinBox* cruisingSpeed;
     /** */
