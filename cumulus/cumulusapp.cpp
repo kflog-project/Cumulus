@@ -37,6 +37,7 @@
 #include <QDir>
 #include <QList>
 #include <QMessageBox>
+#include <QShortcut>
 
 #include "generalconfig.h"
 #include "cumulusapp.h"
@@ -185,7 +186,6 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   setFocusPolicy( Qt::StrongFocus );
   setFocus();
 
-  // @AS: Grab the keyboard to get all hardware keys (f1..f12) too
   //grabKeyboard(); // @AP: make problems on Qt4.3/X11
 
   this->installEventFilter( this );
@@ -577,6 +577,12 @@ void CumulusApp::slotCreateApplicationWidgets()
           GeneralConfig::instance()->setAirspaceWarningEnabled(true);
         }
     }
+
+  // Cumulus can be closed by using Escape key. This key is also as
+  // hardware key available under Maemo.
+  QShortcut* scExit = new QShortcut( this );
+  scExit->setKey( Qt::Key_Escape );
+  connect( scExit, SIGNAL(activated()), this, SLOT( close() ));
 
 #ifdef MAEMO
 
@@ -1387,7 +1393,7 @@ void CumulusApp::slotVersion()
   QMessageBox::about ( this,
                        "Cumulus",
                        QString(tr(
-                                 "<html>"
+                                 "<html><b>"
                                  "<table cellspacing=0 cellpadding=0 border=0>"
                                  "<tr>"
                                  "<th>Cumulus X11 version %1</th>"
@@ -1419,7 +1425,7 @@ void CumulusApp::slotVersion()
                                  "<td>Published under the GPL</td>"
                                  "</tr>"
                                  "</table>"
-                                 "</html>" ).arg( QString(CU_VERSION) ).arg( QString( __DATE__ )).arg( QString(QT_VERSION_STR) ) ) );
+                                 "<b></html>" ).arg( QString(CU_VERSION) ).arg( QString( __DATE__ )).arg( QString(QT_VERSION_STR) ) ) );
 }
 
 
@@ -1716,14 +1722,15 @@ bool CumulusApp::eventFilter( QObject *o , QEvent *e )
     {
       QKeyEvent *k = ( QKeyEvent* ) e;
 
-      if( k->key() == Qt::Key_Space )
+      if( k->key() == Qt::Key_Space || k->key() == Qt::Key_F4 )
         {
+          // hardware Key F4 for open menu under Maemo
           slotToggleMenu();
           return true;
         }
       else if( k->key() == Qt::Key_F6 )
         {
-          // Key for minimize/maximize on Nokia Internet tablet
+          // hardware Key F6 for maximize/normalize screen under Maemo
           setWindowState(windowState() ^ Qt::WindowFullScreen);
           return true;
         }
