@@ -133,8 +133,8 @@ void TaskList::showEvent(QShowEvent *)
 
       if( sum >= 200 )
         {
-          sizeList[0] = 150;
-          sizeList[1] = sum-150;
+          sizeList[0] = 100;
+          sizeList[1] = sum-100;
 
           // set the splitter line to a new place
           splitter->setSizes(sizeList);
