@@ -1800,9 +1800,13 @@ void CumulusApp::resizeEvent(QResizeEvent* event)
 /** Called to prevent the switch off of the screen display */
 void CumulusApp::slot_ossoDisplayTrigger()
 {
-  // If the speed is greater or equal 20 km/h we switch off the screen
-  // saver. Otherwise we let all as it is.
-  if( calculator->getlastSpeed().getKph() >= 20.0 )
+  // If the speed is greater or equal 20 km/h and we have a connected
+  // gps we switch off the screen saver. Otherwise we let all as it
+  // is.
+
+  qDebug("Speed=%f", calculator->getlastSpeed().getKph());
+
+  if( calculator->getlastSpeed().getKph() >= 20.0 && gps->getConnected() )
     {
       // tell maemo that we are in move to avoid blank screen
       osso_return_t  ret = osso_display_state_on( ossoContext );
