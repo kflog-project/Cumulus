@@ -477,8 +477,6 @@ void TaskEditor::slotToggleList(int index)
         {
           waypointList[i]->show();
           filter[i]->show();
-
-          qDebug("Width=%d",  waypointList[i]->width() );
         }
     }
 }
