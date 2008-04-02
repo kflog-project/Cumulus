@@ -1858,7 +1858,7 @@ void Map::__drawX()
 
   // @ee draw preloaded pixmap
   QPainter p(&m_pixInformationMap);
-  p.drawPixmap(  Rx-10, Ry-10, _cross );
+  p.drawPixmap(  Rx-20, Ry-20, _cross );
 }
 
 
