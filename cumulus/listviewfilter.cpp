@@ -16,7 +16,7 @@
 ***********************************************************************/
 
 #include <QSignalMapper>
-#include <QBoxLayout>
+#include <QHBoxLayout>
 #include <Q3ListViewItemIterator>
 
 #include "listviewfilter.h"
@@ -28,7 +28,9 @@ ListViewFilter::ListViewFilter(Q3ListView *lv, QWidget *parent, const char *name
 {
     _lv=lv;
     QPushButton * cmd;
-    QBoxLayout * layout=new QHBoxLayout(this);
+    QHBoxLayout * layout=new QHBoxLayout(this);
+    layout->setMargin(0);
+
     QSignalMapper * smap=new QSignalMapper(this, "signal mapper");
     connect(smap, SIGNAL(mapped(int)), this, SLOT(cmdPush(int)));
     _rootFilter=0;
