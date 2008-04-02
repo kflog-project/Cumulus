@@ -23,11 +23,16 @@
 #include <QMessageBox>
 #include <QToolTip>
 #include <QFileInfo>
+#include <QFont>
 
 #include "helpbrowser.h"
 #include "generalconfig.h"
 
-// Creates a help browser widget as single window
+/** Creates a help browser widget as single window and loads
+ *  the cumulus help file into it according to the selected
+ *  language. The user can navigate through the text, zoom in and out,
+ *  maximize/normalize the window display size.
+ */
 HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
                                               firstCall(true)
 {
@@ -86,7 +91,7 @@ void HelpBrowser::showEvent( QShowEvent * )
 {  
   if( ! firstCall )
     {
-      // not the first call
+      // ot the first call, ignore this event
       return;
     }
   
@@ -114,10 +119,9 @@ void HelpBrowser::showEvent( QShowEvent * )
     {
       hide();
       
-      QMessageBox::warning( this, "Cumulus - missing file",
-                            tr("The help file was not found.\n"
-                               "Maybe it is not installed?"));
-      
+      QMessageBox::warning( this, "Missing help file",
+                            tr("<html><b>The help file was not found.<br>"
+                               "Maybe it is not installed?</b></html>"));
       QWidget::close();
       return;
     }
@@ -127,10 +131,42 @@ void HelpBrowser::showEvent( QShowEvent * )
   browser->setSource( url );
 }
 
+/** catch certain key events for special handling */
 void HelpBrowser::keyPressEvent( QKeyEvent *event )
 {
+  // Toggle display between full and normal screen. That is a predefined
+  // Maemo hardware key.
   if( event->key() == Qt::Key_F6 )
     {
       setWindowState(windowState() ^ Qt::WindowFullScreen);
+      return;
+    }
+    
+  // Zoom in with key F7. That is a predefined Maemo hardware key for zooming.
+  QFont curFt = font();
+  
+  if( event->key() == Qt::Key_F7 )
+    {
+      if( curFt.pointSize() < 18 )
+        {
+          curFt.setPointSize( curFt.pointSize() + 1 );
+          setFont( curFt );
+          update();
+        }
+        
+      return;
+    }
+
+  // Zoom out with key F8. That is a predefined Maemo hardware key for zooming.
+  if( event->key() == Qt::Key_F8 )
+    {
+      if( curFt.pointSize() > 10 )
+        {
+          curFt.setPointSize( curFt.pointSize() - 1 );
+          setFont( curFt );
+          update();
+        }
+
+      return;
     }
 }
