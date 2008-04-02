@@ -31,7 +31,7 @@
 #include "generalconfig.h"
 #include "mapmatrix.h"
 #include "mapcontents.h"
-#include "taskdialog.h"
+#include "taskeditor.h"
 #include "distance.h"
 #include "speed.h"
 
@@ -346,12 +346,17 @@ bool TaskList::slotLoadTask()
 
 void TaskList::slotNewTask()
 {
-  TaskDialog *td = new TaskDialog(this, "TaskListDialog", taskNames);
+  TaskEditor *te = new TaskEditor(this, taskNames);
 
-  connect( td, SIGNAL(newTask( FlightTask * )), this,
+  connect( te, SIGNAL(newTask( FlightTask * )), this,
            SLOT(slotUpdateTaskList( FlightTask * )));
 
-  td->show();
+#ifdef MAEMO
+  te->showMaximized();
+#else
+  te->show();
+#endif
+
 }
 
 
@@ -394,12 +399,16 @@ void TaskList::slotEditTask()
                                         true,
                                         editTask->getTaskName() );
 
-  TaskDialog *td = new TaskDialog(this, "TaskListDialog", taskNames, modTask  );
+  TaskEditor *te = new TaskEditor(this, taskNames, modTask  );
 
-  connect( td, SIGNAL(editedTask( FlightTask * )),
+  connect( te, SIGNAL(editedTask( FlightTask * )),
            this, SLOT(slotEditTaskList( FlightTask * )));
 
-  td->show();
+#ifdef MAEMO
+  te->showMaximized();
+#else
+  te->show();
+#endif
 }
 
 

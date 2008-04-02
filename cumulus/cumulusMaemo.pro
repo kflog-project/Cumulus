@@ -83,7 +83,7 @@ HEADERS     = \
     sound.h \
     speed.h \
     target.h \
-    taskdialog.h \
+    taskeditor.h \
     tasklist.h \
     tasklistview.h \
     tpinfowidget.h \
@@ -175,7 +175,7 @@ SOURCES     = \
     sonne.cpp \
     sound.cpp \
     speed.cpp \
-    taskdialog.cpp \
+    taskeditor.cpp \
     tasklist.cpp \
     tasklistview.cpp \
     tpinfowidget.cpp \
