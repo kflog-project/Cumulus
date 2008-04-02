@@ -126,7 +126,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
 
 #warning FIXME should we have a menu entry for the application font size?
   // Check the font size and set it bigger if it was to small
-  QFont appFt = QApplication::font() ;
+  QFont appFt = QApplication::font();
 
   qDebug("QAppFont pointSize=%d pixelSize=%d",
          appFt.pointSize(), appFt.pixelSize() );
@@ -218,6 +218,22 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
 void CumulusApp::slotCreateApplicationWidgets()
 {
   // qDebug( "CumulusApp::slotCreateApplicationWidgets()" );
+
+#ifdef MAEMO
+
+  ossoContext = osso_initialize( "cumulus", CU_VERSION, false, 0 );
+
+  if( ! ossoContext )
+    {
+      qWarning("Could not initialize Osso Library");
+    }
+  else
+    {
+      // prevent screen blanking
+      osso_display_blanking_pause( ossoContext );
+    }
+
+#endif
 
   ws->slot_SetText1( tr( "Creating map elements..." ) );
 
@@ -586,15 +602,9 @@ void CumulusApp::slotCreateApplicationWidgets()
 
 #ifdef MAEMO
 
-  ossoContext = osso_initialize( "cumulus", CU_VERSION, false, 0 );
-
-  if( ! ossoContext )
+  if( ossoContext )
     {
-      qWarning("Could not initialize Osso Library");
-    }
-  else
-    {
-      osso_display_state_on( ossoContext );
+      osso_display_blanking_pause( ossoContext );
 
       // setup timer to prevent screen blank
       ossoDisplayTrigger = new QTimer(this);
@@ -1804,13 +1814,11 @@ void CumulusApp::slot_ossoDisplayTrigger()
   // gps we switch off the screen saver. Otherwise we let all as it
   // is.
 
-  qDebug("Speed=%f", calculator->getlastSpeed().getKph());
-
   if( calculator->getlastSpeed().getKph() >= 20.0 && gps->getConnected() )
     {
       // tell maemo that we are in move to avoid blank screen
-      osso_return_t  ret = osso_display_state_on( ossoContext );
-      
+      osso_return_t ret = osso_display_blanking_pause( ossoContext );
+
       if( ret != OSSO_OK )
         {
           qWarning( "osso_display_blanking_pause() call failed" );
