@@ -409,6 +409,7 @@ void TaskList::slotEditTask()
 #else
   te->show();
 #endif
+
 }
 
 

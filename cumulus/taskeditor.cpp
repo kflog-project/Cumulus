@@ -168,6 +168,7 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
       waypointList[i]->addColumn( tr("ICAO") );
       waypointList[i]->setAllColumnsShowFocus( true );
       waypointList[i]->setFocus();
+      waypointList[i]->setMinimumWidth( 420 );
       
       filter[i] = new ListViewFilter(waypointList[i], this, "listfilter");
 
@@ -476,6 +477,8 @@ void TaskEditor::slotToggleList(int index)
         {
           waypointList[i]->show();
           filter[i]->show();
+
+          qDebug("Width=%d",  waypointList[i]->width() );
         }
     }
 }

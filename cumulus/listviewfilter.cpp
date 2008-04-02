@@ -30,6 +30,7 @@ ListViewFilter::ListViewFilter(Q3ListView *lv, QWidget *parent, const char *name
     QPushButton * cmd;
     QHBoxLayout * layout=new QHBoxLayout(this);
     layout->setMargin(0);
+    setMinimumWidth( 5*25 );
 
     QSignalMapper * smap=new QSignalMapper(this, "signal mapper");
     connect(smap, SIGNAL(mapped(int)), this, SLOT(cmdPush(int)));
