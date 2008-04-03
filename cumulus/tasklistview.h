@@ -43,7 +43,7 @@ class TaskListView : public QWidget
 {
     Q_OBJECT
 public:
-  TaskListView( QWidget *parent=0, bool showButtons=true, bool bold=true );
+  TaskListView( QWidget *parent=0, bool showButtons=true );
 
     ~TaskListView();
 

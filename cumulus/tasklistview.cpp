@@ -20,7 +20,6 @@
 ***********************************************************************/
 
 #include <QDesktopWidget>
-#include <QFont>
 
 #include "cumulusapp.h"
 #include "tasklistview.h"
@@ -32,7 +31,7 @@
 extern MapConfig * _globalMapConfig;
 extern CuCalc* calculator;
 
-TaskListView::TaskListView( QWidget *parent, bool showButtons, bool bold )
+TaskListView::TaskListView( QWidget *parent, bool showButtons )
   : QWidget(parent)
 {
   setObjectName("TaskListView");
@@ -42,14 +41,6 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons, bool bold )
   _newSelectedTp = 0;
   _selectText = tr("Select");
   _unselectText = tr("Unselect");
-
-  // resize(parent->size());
-
-  if( bold )
-    {
-      QFont fnt( "Helvetica", 12, QFont::Bold  );
-      this->setFont(fnt);
-    }
 
   QVBoxLayout *topLayout = new QVBoxLayout( this );
 
@@ -95,17 +86,12 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons, bool bold )
       
       /** @ee add a close button */
       QPushButton *cmdClose = new QPushButton(tr("Close"), this);
-      QFont font = cmdClose->font();
-      font.setPixelSize(12);
-      cmdClose->setFont(font);
       buttonrow->addWidget(cmdClose);
       
       QPushButton *cmdInfo = new QPushButton(tr("Info"), this);
-      cmdInfo->setFont(font);
       buttonrow->addWidget(cmdInfo);
       
       cmdSelect = new QPushButton(_selectText, this);
-      cmdSelect->setFont(font);
       buttonrow->addWidget(cmdSelect);
       
       connect(cmdSelect, SIGNAL(clicked()),

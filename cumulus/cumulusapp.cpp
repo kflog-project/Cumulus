@@ -277,7 +277,7 @@ void CumulusApp::slotCreateApplicationWidgets()
   listViewTabs = new QTabWidget( this );
   listViewTabs->resize( this->size() );
 
-  QFont fnt( "Helvetica", 12, QFont::Bold );
+  QFont fnt( "Helvetica", 14, QFont::Bold );
 
   viewWP = new WaypointListView( this );
   viewAF = new AirfieldListView( this );

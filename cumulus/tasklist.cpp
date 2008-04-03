@@ -89,7 +89,7 @@ TaskList::TaskList( QWidget* parent ) :
   taskListView->setAllColumnsShowFocus( true );
   taskListView->setFocus();
 
-  taskContent = new TaskListView( splitter, false, false );
+  taskContent = new TaskListView( splitter, false );
 
   taskLayout->addWidget( splitter );
 
