@@ -274,10 +274,11 @@ void CumulusApp::slotCreateApplicationWidgets()
 
   setCentralWidget( viewMap );
 
+  QFont fnt( "Helvetica", 14, QFont::Bold );
+
   listViewTabs = new QTabWidget( this );
   listViewTabs->resize( this->size() );
-
-  QFont fnt( "Helvetica", 14, QFont::Bold );
+  listViewTabs->setFont( fnt );
 
   viewWP = new WaypointListView( this );
   viewAF = new AirfieldListView( this );

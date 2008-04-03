@@ -51,8 +51,8 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
 
   resize(parent->size());
 
-  QFont bfont( "Helvetica", 12, QFont::Bold  );
-  QFont font( "Helvetica", 12, QFont::Bold  );
+  QFont bfont( "Helvetica", 14, QFont::Bold  );
+  QFont font( "Helvetica", 14, QFont::Bold  );
 
   QBoxLayout *topLayout = new QVBoxLayout( this );
   text = new QTextEdit(this, "WaypointInfo");
@@ -422,7 +422,7 @@ void WPInfoWidget::slot_setAsHome()
   slot_KeepOpen(); // Stop timer
 
   int answer= QMessageBox::warning(this,tr("Set home site?"),
-				   tr("Do you want to use site\n%1\nas your new home site?").arg(_wp->name),
+				   tr("<html><b>Do you want to use site<br>%1<br>as your new home site?</b></html>").arg(_wp->name),
 				   QMessageBox::Ok | QMessageBox::Default,
 				   QMessageBox::Cancel | QMessageBox::Escape );
 
