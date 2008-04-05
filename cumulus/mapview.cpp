@@ -2,8 +2,11 @@
                           mapview.cpp  -  This file is part of Cumulus.
                              -------------------
     begin                : Sun Jul 21 2002
-    copyright            : (C) 2002 by Andre Somers, 2008 Axel Pauli, Josua Dietze
-    email                : andre@kflog.org
+
+    copyright            : (C) 2002 by Andre Somers
+                               2008 Axel Pauli, Josua Dietze
+
+    email                : axel@kflog.org
 
     $Id$
 
@@ -79,11 +82,9 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   // load pixmap of arrows for relative bearing
   _arrows = GeneralConfig::instance()->loadPixmap( "arrows60pix-15.png" );
-
   //make the main box layout
   QBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setSpacing(0);
-//  topLayout->setSizeConstraint( QLayout::SetFixedSize );
 
   //@JD: the new "sidebar" layout
   QBoxLayout *centerLayout = new QHBoxLayout( topLayout );
@@ -127,7 +128,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _glidepath->setValue("-");
   _glidepath->setPreText("Arr");
   GRLayout->addWidget( _glidepath );
-//  QWhatsThis::add(_glidepath, tr("Glide path"));
+
   connect(_glidepath, SIGNAL(mousePress()),
           (CumulusApp*)parent, SLOT(slotSwitchToReachListView()));
 
@@ -136,8 +137,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   QPixmap arrow = _arrows.copy( 24*60, 0, 60, 60 );
   _rel_bearing->setPixmap (arrow);
   GRLayout->addWidget(_rel_bearing);
-//  QWhatsThis::add(_rel_bearing, tr("Relative bearing"));
-
 
   //layout for Distance/ETA and Bearing
   QBoxLayout *DEBLayout = new QHBoxLayout(wayLayout);
@@ -199,44 +198,47 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _heading->setPreText("Trk");
   SHLayout->addWidget( _heading);
 
-  //add Altitude widget (whole line)
-  _altitude = new MapInfoBox( this, conf->getFrameCol() );
-  _altitude->setValue("-");
-  _altitude->setPreText(AltimeterModeDialog::mode2String()); // get current mode
-  commonLayout->addWidget( _altitude );
-  connect(_altitude, SIGNAL(mousePress()),
-          this, SLOT(slot_AltimeterDialog()));
 
-
-  //layout for Vario and Wind/LD
-  QBoxLayout *VWLLayout = new QHBoxLayout(commonLayout);
-  VWLLayout->setSpacing(2);
-
-  //add Vario widget
-  _vario = new MapInfoBox( this, conf->getFrameCol() );
-  _vario->setValue("-");
-  _vario->setPreText("Var");
-  VWLLayout->addWidget(_vario );
-  connect(_vario, SIGNAL(mousePress()),
-          this, SLOT(slot_VarioDialog()));
+  //layout for Wind/LD
+  QBoxLayout *WLLayout = new QHBoxLayout(commonLayout);
+ // SHLayout->setSpacing(2);
 
   //add Wind widget; this is head/tailwind, no direction given !
   _wind = new MapInfoBox( this, conf->getFrameCol() );
   _wind->setValue("-");
   _wind->setPreText("Wd");
-  VWLLayout->addWidget(_wind );
+  WLLayout->addWidget(_wind );
   connect(_wind, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
 
   //add LD widget
   _ld = new MapInfoBox( this, conf->getFrameCol() );
   _ld->setValue("-/-");
   _ld->setPreText( "LD" );
-  VWLLayout->addWidget( _ld );
+  WLLayout->addWidget( _ld );
   _ld->hide();
   connect(_ld, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
 
-  sideLayout->addWidget( commonBar, 3 );
 
+  //layout for Vario and Altitude
+  QBoxLayout *VALayout = new QHBoxLayout(commonLayout);
+  VALayout->setSpacing(2);
+
+  //add Vario widget
+  _vario = new MapInfoBox( this, conf->getFrameCol(), 34, true );
+  _vario->setValue("-");
+  _vario->setPreText("Var");
+  VALayout->addWidget(_vario, 2 );
+  connect(_vario, SIGNAL(mousePress()),
+          this, SLOT(slot_VarioDialog()));
+
+  _altitude = new MapInfoBox( this, conf->getFrameCol() );
+  _altitude->setValue("-");
+  _altitude->setPreText(AltimeterModeDialog::mode2String()); // get current mode
+  VALayout->addWidget( _altitude, 3 );
+  connect(_altitude, SIGNAL(mousePress()),
+          this, SLOT(slot_AltimeterDialog()));
+
+  sideLayout->addWidget( commonBar, 3 );
 
   //widget to group McCready functions
   QWidget *mcBar = new QWidget( this );
@@ -263,7 +265,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _speed2fly->setValue("-");
   _speed2fly->setPreText("S2f");
   MSLayout->addWidget( _speed2fly );
-//  QWhatsThis::add(_speed2fly, tr("Best speed"));
 
   sideLayout->addWidget( mcBar, 1 );
 
@@ -295,11 +296,8 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   QBoxLayout *MapLayout = new QHBoxLayout(centerLayout);
   _theMap = new Map(this);
   centerLayout->setStretchFactor( MapLayout, 1 );
-//  MapLayout->addSpacing(1);
   MapLayout->addWidget(_theMap, 10);
-//  MapLayout->addSpacing(1);
   _theMap->setMode(Map::headUp);
-//  topLayout->addSpacing(0);
 
   //--------------------------------------------------------------------
   // Status bar
@@ -348,8 +346,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   filler->setFrameStyle(QFrame::NoFrame);
   _statusbar->addWidget(filler);
 
-  //  _statusbar->setFrameStyle(QFrame::Raised);
-
   loggingTimer = new QTimer(this);
   connect (loggingTimer, SIGNAL(timeout()),
            this, SLOT(slot_setFlightStatus()));
@@ -368,9 +364,6 @@ MapView::~MapView()
 /** called if heading has changed */
 void MapView::slot_Heading(int head)
 {
-  //  QPoint curPos;
-
-  //    _heading->setValue(QString("%1°").arg(head));
   _heading->setValue(QString("%1").arg( head, 3, 10, QChar('0') ));
   _theMap->setHeading(head);
 }
@@ -630,7 +623,21 @@ void MapView::slot_Mc (const Speed& mc)
 /** This slot is called if a new variometer value has been set */
 void MapView::slot_vario (const Speed& vario)
 {
-  _vario->setValue (vario.getVerticalText(false,1));
+  QString varValue;
+
+  // if altitude has more than 3 digits, vario is rounded to one
+  // digit. Normal vario display is e.g. 1.1 (2 digits plus decimal
+  // point)
+  if( calculator->getAltimeterAltitudeText().size() > 4 )
+    {
+      varValue = vario.getVerticalText(false, 0);
+    }
+  else
+    {
+      varValue = vario.getVerticalText(false, 1);
+    }
+
+  _vario->setValue( varValue );
 }
 
 
@@ -802,7 +809,7 @@ void MapView::slot_toggleWindAndLD()
   if( _wind->isVisible() )
     {
       _wind->hide();
-      _vario->hide();
+//      _vario->hide();
       _ld->show();
       // switch on LD calculation in calculator
       emit toggleLDCalculation( true );

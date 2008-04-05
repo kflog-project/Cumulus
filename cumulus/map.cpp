@@ -131,7 +131,7 @@ Map::Map(QWidget* parent) : QWidget(parent),
 
   /** @ee load icons */
   _cross  = GeneralConfig::instance()->loadPixmap("cross.png");
-  _glider = GeneralConfig::instance()->loadPixmap("gliders.png");
+  _glider = GeneralConfig::instance()->loadPixmap("gliders80pix-15.png");
 }
 
 
@@ -456,7 +456,7 @@ void Map::slotNewWind()
       while( angle > 360 )
         angle -= 360;
       QString resource;
-      resource.sprintf("windarrows/wind-arrow-%d.png", angle );
+      resource.sprintf("windarrows/wind-arrow-80px-%03d.png", angle );
       // qDebug("Loading resource %s", (const char *) resource );
       windArrow = GeneralConfig::instance()->loadPixmap(resource);
     }
@@ -1017,7 +1017,8 @@ void Map::__drawInformationLayer()
   if( ! windArrow.isNull() )
     {
       QPainter p(&m_pixInformationMap);
-      p.drawPixmap( 4, 4, windArrow, windArrow.width()/4, windArrow.width()/4, 36, 36);
+//      p.drawPixmap( 4, 4, windArrow, windArrow.width()/4, windArrow.width()/4, 36, 36);
+      p.drawPixmap( 8, 8, windArrow );
     }
     
   //draw a location symbol on the buffer
@@ -1829,7 +1830,7 @@ void Map::__drawGlider()
 
   // @ee the glider pixmap contains all rotated glider symbols.
   QPainter p(&m_pixInformationMap);
-  p.drawPixmap( Rx-20, Ry-20, _glider, rot*40, 0, 40, 40 );
+  p.drawPixmap( Rx-40, Ry-40, _glider, rot*80, 0, 80, 80 );
 }
 
 

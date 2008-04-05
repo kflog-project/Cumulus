@@ -37,7 +37,7 @@ void CuLabel::mousePressEvent ( QMouseEvent * /*e*/ )
 }
 
 
-MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, int fontDotsize ) :
+MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, int fontDotsize, bool minusInPretext ) :
   QFrame(parent)
 {
   QHBoxLayout * layout = new QHBoxLayout(this);
@@ -53,6 +53,8 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, int fontDots
 	"border-color: %1;"
   ).arg( borderColor ) );
 
+  _preMinus = minusInPretext;
+
   _ptext = new QLabel(this, "" );
   _ptext->setStyleSheet(
 	"margin-right: 0px;"
@@ -63,8 +65,8 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, int fontDots
 	"padding: 0px;"
 	"font-family: helvetica;"
 	"font-size: 16px;"
-	"min-width: 27px;"
-	"max-width: 27px;"
+	"min-width: 25px;"
+	"max-width: 25px;"
   );
   _ptext->setAlignment( Qt::AlignRight );
   _ptext->setIndent(0);
@@ -124,6 +126,14 @@ const QString& MapInfoBox::getValue()
 void MapInfoBox::setValue( const QString _newVal)
 {
   _value = _newVal;
+
+  if ( _preMinus && (_value.length() > 2) )
+    if ( _value.startsWith('-') ) {
+	  _value = _value.remove( 0, 1 );
+      _ptext->setText( _PreText + "<br><img src=../icons/minus.png>" );
+    } else
+      _ptext->setText( _PreText );
+    
   _text->setText(_value);
 }
 

@@ -61,7 +61,7 @@ class MapInfoBox : public QFrame
     Q_OBJECT
 
 public:
-    MapInfoBox(QWidget * parent, const QString borderColor, int fontDotsize = 36 );
+    MapInfoBox(QWidget * parent, const QString borderColor, int fontDotsize = 36, bool minusInPretext = false );
     virtual ~MapInfoBox();
 
     /**
@@ -113,6 +113,8 @@ private: // Private attributes
     QLabel  *_text;
     /** Pointer to the internal pre-text label */
     QLabel  *_ptext;
+    /** If the minus sign is shown in pre-text or text label */ 
+	bool _preMinus;
 };
 
 #endif
