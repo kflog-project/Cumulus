@@ -53,7 +53,7 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   this->parent = parent;
   resize( parent->size() );
 
-  QFont bfont( "Helvetica", 12, QFont::Bold  );
+  QFont bfont( "Helvetica", 14, QFont::Bold  );
   QFont font( "Helvetica", 14 );
 
   QBoxLayout *topLayout = new QVBoxLayout( this );
@@ -65,7 +65,7 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
 
   // qDebug("fontSize=%d", fontSize);
 
-  if( fontSize <= 10 )
+  if( fontSize < 14 )
     {
       text->setFont( font );
     }
@@ -90,8 +90,10 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   // activate keyboard shotcut space, ok for close of widget
   QShortcut* scSpace = new QShortcut( this );
   QShortcut* scClose = new QShortcut( this );
+
   scSpace->setKey( Qt::Key_Space );
-  scSpace->setKey( 0x104d );
+  scSpace->setKey( Qt::Key_Return );
+
   connect( scSpace, SIGNAL(activated()),
                          this, SLOT( slot_Close() ));
   connect( scClose, SIGNAL(activated()),

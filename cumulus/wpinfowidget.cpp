@@ -52,7 +52,6 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
   resize(parent->size());
 
   QFont bfont( "Helvetica", 14, QFont::Bold  );
-  QFont font( "Helvetica", 14, QFont::Bold  );
 
   QBoxLayout *topLayout = new QVBoxLayout( this );
   text = new QTextEdit(this, "WaypointInfo");
@@ -64,13 +63,13 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
 
   // qDebug("fontSize=%d", fontSize);
 
-  if( fontSize <= 10 )
+  if( fontSize < 14 )
     {
       // Set bigger font in text view for a better readability
       text->setFont(QFont( "Helvetica", 14 ));
     }
 
-  buttonrow2=new QHBoxLayout(topLayout);
+  buttonrow2 = new QHBoxLayout(topLayout);
 
   cmdAddWaypoint = new QPushButton(tr("Add Waypoint"), this);
   QFont buttonFont = cmdAddWaypoint->font();
@@ -477,6 +476,7 @@ void WPInfoWidget::slot_arrivalClose()
 
   // get focus back
   text->setFocus();
+  show();
 }
 
 /** get back the current state of cumulus. In flight true, otherwise false */
