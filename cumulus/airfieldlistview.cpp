@@ -19,7 +19,6 @@
 
 #include <QMessageBox>
 #include <QRegExp>
-#include <QFont>
 
 #include "generalconfig.h"
 #include "mapcontents.h"
@@ -38,10 +37,6 @@ AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)
   QBoxLayout *topLayout = new QVBoxLayout( this );
 
   list= new Q3ListView(this, "airfieldlist");
-
-//   list->addColumn(tr("Name"),75);
-//   list->addColumn(tr("Description"),100);
-//   list->addColumn(tr("ICAO"),40);
 
   list->addColumn(tr("Name"));
   list->addColumn(tr("Description"));
