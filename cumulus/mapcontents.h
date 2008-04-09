@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2007 Axel Pauli
+ **                   2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -58,7 +58,7 @@ class MapContents : public QObject
   /**
    * The index of Mapelement-Lists.
    */
-  enum MapContentsListID {NotSet = 0, AirportList, GliderList,
+  enum MapContentsListID {NotSet = 0, AirportList, GliderSiteList,
                           AddSitesList, OutList, NavList, AirspaceList,
                           ObstacleList, ReportList, CityList, VillageList,
                           LandmarkList, HighwayList, HighwayEntryList,

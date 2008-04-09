@@ -2120,7 +2120,7 @@ unsigned int MapContents::getListLength(int listIndex) const
   switch(listIndex) {
   case AirportList:
     return airportList.count();
-  case GliderList:
+  case GliderSiteList:
     return gliderSiteList.count();
   case OutList:
     return outList.count();
@@ -2181,7 +2181,7 @@ BaseMapElement* MapContents::getElement(int listIndex, unsigned int index)
   switch(listIndex) {
   case AirportList:
     return airportList.at(index);
-  case GliderList:
+  case GliderSiteList:
     return gliderSiteList.at(index);
   case OutList:
     return outList.at(index);
@@ -2226,7 +2226,7 @@ SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
   switch(listIndex) {
   case AirportList:
     return (SinglePoint*)airportList.at(index);
-  case GliderList:
+  case GliderSiteList:
     return (SinglePoint*)gliderSiteList.at(index);
   case OutList:
     return (SinglePoint*)outList.at(index);
@@ -2454,24 +2454,21 @@ void MapContents::drawList(QPainter* targetPainter,
   //QTime t;
   //t.start();
 
-  //FIXME remove the maskpainter completely
-  QPainter* maskPainter = 0;
-
   switch(listID) {
   case AirportList:
     //list="AirportList";
     //len=airportList.count();
     showProgress2WaitScreen( tr("Drawing airports") );
     for (int i = 0; i < airportList.size(); i++)
-      airportList.at(i)->drawMapElement(targetPainter, maskPainter);
+      airportList.at(i)->drawMapElement(targetPainter);
     break;
 
-  case GliderList:
+  case GliderSiteList:
     //list="GliderList";
     //len=gliderSiteList.count();
     showProgress2WaitScreen( tr("Drawing gilder sites") );
     for (int i = 0; i < gliderSiteList.size(); i++)
-      gliderSiteList.at(i)->drawMapElement(targetPainter, maskPainter);
+      gliderSiteList.at(i)->drawMapElement(targetPainter);
     break;
 
   case OutList:
@@ -2479,7 +2476,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=outList.count();
     showProgress2WaitScreen( tr("Drawing outlanding sites") );
     for (int i = 0; i < outList.size(); i++)
-      outList.at(i)->drawMapElement(targetPainter, maskPainter);
+      outList.at(i)->drawMapElement(targetPainter);
     break;
 
   case NavList:
@@ -2487,7 +2484,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=navList.count();
     showProgress2WaitScreen( tr("Drawing navigation elements") );
     for (int i = 0; i < navList.size(); i++)
-      navList.at(i)->drawMapElement(targetPainter, maskPainter);
+      navList.at(i)->drawMapElement(targetPainter);
     break;
 
   case AirspaceList:
@@ -2495,7 +2492,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=airspaceList.count();
     showProgress2WaitScreen( tr("Drawing airspaces") );
     for (int i = 0; i < airspaceList.size(); i++)
-      airspaceList.at(i)->drawMapElement(targetPainter, maskPainter);
+      airspaceList.at(i)->drawMapElement(targetPainter);
     break;
 
   case ObstacleList:
@@ -2503,7 +2500,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=obstacleList.count();
     showProgress2WaitScreen( tr("Drawing obstacles") );
     for (int i = 0; i < obstacleList.size(); i++)
-      obstacleList.at(i)->drawMapElement(targetPainter, maskPainter);
+      obstacleList.at(i)->drawMapElement(targetPainter);
     break;
 
   case ReportList:
@@ -2511,7 +2508,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=reportList.count();
     showProgress2WaitScreen( tr("Drawing reporting points") );
     for (int i = 0; i < reportList.size(); i++)
-      reportList.at(i)->drawMapElement(targetPainter, maskPainter);
+      reportList.at(i)->drawMapElement(targetPainter);
     break;
 
   case CityList:
@@ -2519,14 +2516,14 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=cityList.count();
     showProgress2WaitScreen( tr("Drawing cities") );
     for (int i = 0; i < cityList.size(); i++)
-      cityList.at(i)->drawMapElement(targetPainter, maskPainter);
+      cityList.at(i)->drawMapElement(targetPainter);
     break;
 
   case VillageList:
     //list="VillageList";
     showProgress2WaitScreen( tr("Drawing villages") );
     for (int i = 0; i < villageList.size(); i++)
-      villageList.at(i)->drawMapElement(targetPainter, maskPainter);
+      villageList.at(i)->drawMapElement(targetPainter);
     break;
 
   case LandmarkList:
@@ -2534,7 +2531,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=landmarkList.count();
     showProgress2WaitScreen( tr("Drawing landmarks") );
     for (int i = 0; i < landmarkList.size(); i++)
-      landmarkList.at(i)->drawMapElement(targetPainter, maskPainter);
+      landmarkList.at(i)->drawMapElement(targetPainter);
     break;
 
   case HighwayList:
@@ -2542,7 +2539,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=highwayList.count();
     showProgress2WaitScreen( tr("Drawing highways") );
     for (int i = 0; i < highwayList.size(); i++)
-      highwayList.at(i)->drawMapElement(targetPainter, maskPainter);
+      highwayList.at(i)->drawMapElement(targetPainter);
     break;
 
   case RoadList:
@@ -2550,7 +2547,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=roadList.count();
     showProgress2WaitScreen( tr("Drawing roads") );
     for (int i = 0; i < roadList.size(); i++)
-      roadList.at(i)->drawMapElement(targetPainter, maskPainter);
+      roadList.at(i)->drawMapElement(targetPainter);
     break;
 
   case RailList:
@@ -2558,7 +2555,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=railList.count();
     showProgress2WaitScreen( tr("Drawing railroads") );
     for (int i = 0; i < railList.size(); i++)
-      railList.at(i)->drawMapElement(targetPainter, maskPainter);
+      railList.at(i)->drawMapElement(targetPainter);
     break;
 
   case HydroList:
@@ -2566,7 +2563,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=hydroList.count();
     showProgress2WaitScreen( tr("Drawing hydro") );
     for (int i = 0; i < hydroList.size(); i++)
-      hydroList.at(i)->drawMapElement(targetPainter, maskPainter);
+      hydroList.at(i)->drawMapElement(targetPainter);
     break;
 
   case LakeList:
@@ -2574,7 +2571,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=lakeList.count();
     showProgress2WaitScreen( tr("Drawing lakes") );
     for (int i = 0; i < lakeList.size(); i++)
-      lakeList.at(i)->drawMapElement(targetPainter, maskPainter);
+      lakeList.at(i)->drawMapElement(targetPainter);
     break;
 
   case TopoList:
@@ -2582,7 +2579,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=topoList.count();
     showProgress2WaitScreen( tr("Drawing topography") );
     for (int i = 0; i < topoList.size(); i++)
-      topoList.at(i)->drawMapElement(targetPainter, maskPainter);
+      topoList.at(i)->drawMapElement(targetPainter);
     break;
 
   default:
@@ -2703,8 +2700,7 @@ void MapContents::drawIsoList(QPainter* targetP)
       for (int j = 0; j < iso->size(); j++)
       {
           Isohypse* iso2 = iso->at(j);
-          QRegion * reg = iso2->drawRegion(targetP, 0,
-                                           _globalMapView->rect(),
+          QRegion * reg = iso2->drawRegion(targetP, _globalMapView->rect(),
                                            !groupDrawn, isolines);
           // QRegion * reg = iso2->drawRegion(targetP, maskP, true, true, 1  );
           if (reg) {
