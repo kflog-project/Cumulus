@@ -147,7 +147,7 @@
 #define FAI_AREA_HIGH    65
 #define SU_SECTOR        66 // used for other, special sectors
 #define EMPTY_POINT      67 // used for empty points
-#define PROHIBITED	 68 // Prohibited airspace
+#define PROHIBITED       68 // Prohibited airspace
 
 
 /*
