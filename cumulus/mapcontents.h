@@ -342,7 +342,7 @@ class MapContents : public QObject
 
   /**
    * addSitesList contains all, ultra-light,
-   * hang-glider-sites, free-ballon-sites, parachute-jumping-sites.
+   * hang-glider-sites, free-balloon-sites, parachute-jumping-sites.
    */
   QList<SinglePoint*> addSitesList;
 

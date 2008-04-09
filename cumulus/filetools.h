@@ -22,7 +22,7 @@
 
 /**
  * This file contains a set of functions that can be used to write
- * and read more compact binairy files than those written by default
+ * and read more compact binary files than those written by default
  * by Qt. Reductions of over 50% can be reached.
  */
 
