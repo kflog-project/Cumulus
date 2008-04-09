@@ -36,7 +36,7 @@ LineElement::~LineElement()
 }
 
 
-void LineElement::drawMapElement(QPainter* targetP, QPainter* )
+void LineElement::drawMapElement(QPainter* targetP)
 {
   //
   // If the element-type should not be drawn in the actual scale, or if the

@@ -526,8 +526,7 @@ bool FlightTask::isFAI(double d_wp, double d1, double d2, double d3)
  * user configuration.
  */
 
-void FlightTask::drawMapElement( QPainter* painter,
-				 QPainter* /* maskPainter */ )
+void FlightTask::drawMapElement( QPainter* painter )
 {
   // qDebug ("FlightTask::drawMapElement");
 

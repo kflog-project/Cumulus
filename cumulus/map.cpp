@@ -245,7 +245,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
   int delta=0, dX=0, dY=0;
 
   // add WPList !!!
-  int searchList[] = {MapContents::GliderList, MapContents::AirportList};
+  int searchList[] = {MapContents::GliderSiteList, MapContents::AirportList};
   wayPoint *w = (wayPoint *) 0;
 
   // scale uses unit meter/pixel
@@ -989,7 +989,7 @@ void Map::__drawNavigationLayer()
 
   _globalMapContents->drawList(&navP, MapContents::AirportList);
   _globalMapContents->drawList(&navP, MapContents::OutList);
-  _globalMapContents->drawList(&navP, MapContents::GliderList);
+  _globalMapContents->drawList(&navP, MapContents::GliderSiteList);
   __drawWaypoints(&navP);
 
   navP.end();
@@ -1227,7 +1227,7 @@ bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, QList<wayPoint*
        */
       QList<int> contentArray;
 
-      contentArray.append( MapContents::GliderList );
+      contentArray.append( MapContents::GliderSiteList );
       contentArray.append( MapContents::AirportList );
 
       for( int n = 0; n < contentArray.count(); n++)

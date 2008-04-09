@@ -50,9 +50,8 @@ class Isohypse : public LineElement
      * BaseMapElement.
      *
      * @param  targetP  The painter to draw the element into.
-     * @param  maskP  The maskpainter for targetP
      */
-    virtual QRegion *drawRegion(QPainter* targetP, QPainter*, const QRect &viewRect,
+    virtual QRegion *drawRegion(QPainter* targetP, const QRect &viewRect,
                                 bool really_draw, bool isolines=false);
 
     /**

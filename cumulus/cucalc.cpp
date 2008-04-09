@@ -1276,7 +1276,7 @@ CuCalc::flightmode CuCalc::currentFlightMode()
 
 
 /** This slot is used internally to re-emit the flightmode signal with the marker value */
-void CuCalc::_slot_flightModeChanged(CuCalc::flightmode fm)
+void CuCalc::slot_flightModeChanged(CuCalc::flightmode fm)
 {
   emit flightModeChanged(fm, _marker);
 }

@@ -32,8 +32,7 @@ Isohypse::~Isohypse()
 {}
 
 
-QRegion* Isohypse::drawRegion( QPainter* targetP, QPainter* /*maskP*/,
-                               const QRect &viewRect,
+QRegion* Isohypse::drawRegion( QPainter* targetP, const QRect &viewRect,
                                bool really_draw, bool isolines )
 {
 

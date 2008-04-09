@@ -41,7 +41,7 @@ bool SinglePoint::__isVisible() const
 }
 
 
-void SinglePoint::drawMapElement(QPainter* targetP, QPainter* /*maskP*/)
+void SinglePoint::drawMapElement(QPainter* targetP)
 {
   if(!__isVisible()) {
     curPos = QPoint(-50, -50);

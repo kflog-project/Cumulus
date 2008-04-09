@@ -89,9 +89,8 @@ public:
    *
    * The function must be implemented in the child-classes.
    * @param  targetP  The painter to draw the element into.
-   * @param  maskP  The maskpainter for targetP
    */
-  virtual void drawMapElement(QPainter* targetP, QPainter* maskP);
+  virtual void drawMapElement(QPainter* targetP);
 
   /**
    * Virtual function for printing the element.

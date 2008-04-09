@@ -155,9 +155,8 @@ class FlightTask : public BaseMapElement
    * Draws the flight and the task into the given painter. Reimplemented
    * from BaseMapElement.
    * @param  targetP  The painter to draw the element into.
-   * @param  maskP  The maskpainter for targetP - NO LONGER USED
    */
-  void drawMapElement(QPainter* painter, QPainter* maskPainter=0);
+  void drawMapElement(QPainter* painter);
 
   /** */
   QString getTotalDistanceString() const;

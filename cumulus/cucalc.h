@@ -401,7 +401,7 @@ public slots: // Public slots
     /**
      * Connected to the signal flightModeChanged, and used to re-emit with markervalue
      */
-    void _slot_flightModeChanged(CuCalc::flightmode);
+    void slot_flightModeChanged(CuCalc::flightmode);
     /**
      * Called to switch on/off LD calculation
      */

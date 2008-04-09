@@ -137,7 +137,7 @@ void BaseMapElement::printMapElement(QPainter* , bool )
 }
 
 
-void BaseMapElement::drawMapElement(QPainter* , QPainter* )
+void BaseMapElement::drawMapElement(QPainter* )
 {
   qWarning("BaseMapElement::drawMapElement");
 }

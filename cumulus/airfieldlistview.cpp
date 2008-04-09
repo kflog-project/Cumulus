@@ -71,7 +71,7 @@ AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)
           this, SLOT(slot_Selected()));
 
   itemList[0] = MapContents::AirportList;
-  itemList[1] = MapContents::GliderList;
+  itemList[1] = MapContents::GliderSiteList;
   itemList[2] = MapContents::AddSitesList;
   wp = new wayPoint();
 }

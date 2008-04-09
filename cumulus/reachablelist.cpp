@@ -406,7 +406,7 @@ void ReachableList::calculateFullList()
   clearList();  // clear list
   // Now add items of different type to the list
   addItemsToList(MapContents::AirportList);
-  addItemsToList(MapContents::GliderList);
+  addItemsToList(MapContents::GliderSiteList);
   addItemsToList(MapContents::AddSitesList);
   addItemsToList(MapContents::WaypointList);
   // qDebug("Number of potential reachable sites: %d", count() );

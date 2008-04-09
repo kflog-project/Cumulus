@@ -62,9 +62,8 @@ class SinglePoint : public BaseMapElement
    * BaseMapElement.
    *
    * @param  targetP  The painter to draw the element into.
-   * @param  maskP  The maskpainter for targetP
    */
-  virtual void drawMapElement(QPainter* targetP, QPainter* maskP);
+  virtual void drawMapElement(QPainter* targetP);
 
   /**
    * @return the projected position of the element.
