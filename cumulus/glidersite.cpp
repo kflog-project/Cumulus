@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2007 Axel Pauli
+ **                   2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -94,7 +94,7 @@ QString GliderSite::getInfoString() const
 }
 
 
-void GliderSite::drawMapElement(QPainter* targetP, QPainter* /*maskP*/)
+void GliderSite::drawMapElement(QPainter* targetP)
 {
   if(!__isVisible()) {
     curPos = QPoint(-50, -50);
@@ -122,6 +122,7 @@ void GliderSite::drawMapElement(QPainter* targetP, QPainter* /*maskP*/)
       //draw magenta circle
       targetP->drawPixmap(curPos.x() - 9, curPos.y() -9, glConfig->getPixmap("magenta_circle.xpm"));
     }
+
     QPixmap image( glConfig->getPixmapRotatable(typeID, winch) );
     targetP->drawPixmap(curPos.x() - iconSize/2, curPos.y() - iconSize/2, image,
                         shift*iconSize, 0, iconSize, iconSize);

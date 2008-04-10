@@ -107,7 +107,7 @@ class Airport : public RadioPoint
   static QStringList& getSortedTranslationList();
 
   // Draws the element into the given painter.
-  virtual void drawMapElement(QPainter* targetP, QPainter* maskP);
+  virtual void drawMapElement(QPainter* targetP);
 
  private:
   /**

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2007 Axel Pauli
+ **                   2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -24,10 +24,8 @@
 
 /**
  * This class provides handling the glider-sites.
- *
- * @author Heiner Lamprecht, Florian Ehinger
- * @version $Id$
  */
+
 class GliderSite : public RadioPoint
 {
  public:
@@ -94,7 +92,7 @@ class GliderSite : public RadioPoint
   /**
    * Draws the element into the given painter.
    */
-  virtual void drawMapElement(QPainter* targetP, QPainter* maskP);
+  virtual void drawMapElement(QPainter* targetP);
 
  private:
   /**
