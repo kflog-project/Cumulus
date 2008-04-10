@@ -17,6 +17,8 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.0.0 (Development based on X11/Qt-4.3.3)
 -------------------------------------------------
+[-] 2008-04-10 AP: Bugfix: reread of all map files, if user has made a new
+                   map root directory selection.
 [+] 2008-04-02 AP: Task dialog redesiged from vertical to horizontal layout.
                    Class TaskDialog renamed to TaskEditor to get more clearness.
 [-] 2008-04-02 AP: Bugfix: Problem fixed in task dialog, when waypoint list is empty.
