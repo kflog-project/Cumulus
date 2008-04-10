@@ -128,7 +128,7 @@ public:
      *
      * @return the mapped rect
      */
-    
+
     QRect map(const QRect& rect) const
     {
         return worldMatrix.mapRect(rect);
@@ -174,7 +174,7 @@ public:
      */
     QRect getViewBorder() const
       {
-	return viewBorder;
+        return viewBorder;
       };
 
     /**
@@ -183,7 +183,7 @@ public:
      */
     QRect getMapBorder() const
       {
-	return mapBorder;
+        return mapBorder;
       };
 
     /**
@@ -272,7 +272,7 @@ public:
      */
     QPoint getHomeCoord() const
       {
-	return QPoint(homeLat, homeLon);
+        return QPoint(homeLat, homeLon);
       };
 
     /**

@@ -37,7 +37,7 @@ class ProjectionBase
  public:
   /** */
   ProjectionBase();
-    
+
   /** */
   virtual ~ProjectionBase();
 
