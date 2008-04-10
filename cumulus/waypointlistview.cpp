@@ -254,7 +254,7 @@ void WaypointListView::slot_deleteWP()
     // remove from listView
     delete list->selectedItem();
     if (par)    
-      par->viewMap->_theMap->quickDraw();
+      par->viewMap->_theMap->sceduleRedraw(Map::waypoints);
     filter->reset(true);
   }
 }
@@ -277,7 +277,7 @@ void WaypointListView::slot_wpEdited(wayPoint * wp)
       // save modified catalog
       _globalMapContents->saveWaypointList();
 
-      if (par) par->viewMap->_theMap->quickDraw();
+      if (par) par->viewMap->_theMap->sceduleRedraw(Map::waypoints);
     } else
       qDebug("WaypointListView::slot_wpEdited() has empty list");
   }
@@ -300,7 +300,7 @@ void WaypointListView::slot_wpAdded(wayPoint * wp)
     // save the modified catalog
     _globalMapContents->saveWaypointList();
 
-    if (par) par->viewMap->_theMap->quickDraw();
+    if (par) par->viewMap->_theMap->sceduleRedraw(Map::waypoints);
   }
 }
 

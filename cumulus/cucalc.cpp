@@ -98,7 +98,7 @@ CuCalc::CuCalc(QObject* parent) : QObject(parent),
   // make internal connection so the flightModeChanged signal is
   // re-emitted with the marker value
   connect (this, SIGNAL(flightModeChanged(CuCalc::flightmode)),
-           this, SLOT(_slot_flightModeChanged(CuCalc::flightmode)));
+           this, SLOT(slot_flightModeChanged(CuCalc::flightmode)));
 }
 
 

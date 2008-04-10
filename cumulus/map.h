@@ -164,11 +164,6 @@ class Map : public QWidget
     void sceduleRedraw(mapLayer fromLayer = baseLayer);
 
     /**
-     * Only updates the glider symbol and the bearing line
-     */
-    void quickDraw();
-
-    /**
       * This function is used to check if there are airspaces in the proximity of the
       * current position. It shows a warning if there are.
       */
@@ -221,7 +216,7 @@ class Map : public QWidget
      * determines if it is necessary to recenter the map, or if
      * the glider can just be drawn on a different position.
      */
-    void slot_position(const QPoint& newPos, const int source);
+    void slotPosition(const QPoint& newPos, const int source);
 
     /**
      * Used to zoom the map out. Will scedule a redraw.
@@ -239,7 +234,7 @@ class Map : public QWidget
     void slotSetScale(const double& newScale);
 
     /** called to redraw on switch of manual mode */
-    void slot_switchManualInFlight();
+    void slotSwitchManualInFlight();
 
   signals:
     /** */
@@ -281,21 +276,11 @@ class Map : public QWidget
      */
     virtual void mouseReleaseEvent(QMouseEvent* event);
 
-
-  public: // Public attributes
-    QPoint preSnapPoint;
-
-
   private: //methods
     /**
      * set mutex to avoid reentrance
      */
     void setMutex(bool);
-
-    /**
-     * Eventfilter to stop events if redrawing the map. Uses the mutex.
-     */
-    bool eventFilter(QObject *, QEvent *);
 
     /**
      * get mutex to avoid reentrance
@@ -492,13 +477,6 @@ class Map : public QWidget
     //contains a strip with windarrows in different directions
     QPixmap windArrow;
 
-    QPoint prePos;
-    QPoint prePlanPos;
-    QPoint preAnimationPos;
-    QPoint preCur1;
-    QPoint preCur2;
-    int preIndex;
-
     int mapRot;
     int curMapRot;
 
@@ -513,18 +491,9 @@ class Map : public QWidget
     //contains the layer the next redraw should start from
     mapLayer m_sceduledFromLayer;
 
-    // 0 keine Planung 1 Planung 2 Planung Aufgabe Abgeschlossen
-    //      enum planning {NoPlanning = 0, Planning = 1, TaskFinished = 2};
-    int planning;
-    // Index des WP welcher verschoben wird bei planning == 3
-    int moveWPindex;
-    // indicates if a WP was Added in Snapping Mode (Planning)
-    bool lastAdd;
     /** Contains the currently proposed zoomfactor. The actual factor
         used is stored in the MapMatrix. */
     double zoomFactor;
-    // indicates if the mouse is in a snapping area
-    bool isSnapping;
 
     /** reference to the short interval redrawtimer */
     QTimer * redrawTimerShort;

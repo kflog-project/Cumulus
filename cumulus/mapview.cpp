@@ -413,7 +413,7 @@ void MapView::slot_Waypoint(const wayPoint *wp)
       qDebug("Rel. bearing icon reset" );
     }
 
-  _theMap->quickDraw();  // this is not really helpful -> it is: the bearingline won't change otherwise!
+  _theMap->sceduleRedraw(Map::informationLayer);  // this is not really helpful -> it is: the bearingline won't change otherwise!
 }
 
 

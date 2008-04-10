@@ -59,9 +59,7 @@ extern MapView         *_globalMapView;
 
 Map *Map::instance=0;
 
-Map::Map(QWidget* parent) : QWidget(parent),
-    preSnapPoint(-999, -999), prePos(-50, -50), preCur1(-50, -50),
-    preCur2(-50, -50), planning(-1)
+Map::Map(QWidget* parent) : QWidget(parent)
 {
   qDebug( "Map window size is %dx%d, width=%d, height=%d",
           parent->size().width(),
@@ -84,10 +82,6 @@ Map::Map(QWidget* parent) : QWidget(parent),
   m_sceduledFromLayer = topLayer;
   ShowGlider = false;
   setMutex(false);
-
-  //install an event filter on the map object itself, so all events are
-  //routed through eventFilter()
-  //installEventFilter(this);
 
   //setup progressive zooming values
   zoomProgressive = 0;
@@ -212,8 +206,8 @@ void Map::__displayMapInfo(const QPoint& current)
 
       if( airspaceTime != 0 )
         {
-          //qDebug("airspace itemcount=%d", itemcount);
-          showTime = MAX((itemcount * airspaceTime), MIN_POPUP_DISPLAY_TIME);
+          //qDebug("airspace item count=%d", itemcount);
+          showTime = qMax((itemcount * airspaceTime), MIN_POPUP_DISPLAY_TIME);
           showTime *= 1000;
         }
 
@@ -371,16 +365,6 @@ void Map::mousePressEvent(QMouseEvent* event)
   // qDebug("Map::mousePressEvent");
   switch (event->button())
     {
-      // we don't have a mid button on the Z, but ...
-      /*
-        case Qt::MidButton:
-        // Move Map
-        _globalMapMatrix->centerToPoint(event->pos());
-        _globalMapMatrix->createMatrix(this->size());
-        __redrawMap();
-        break;
-      */
-
       // On Zaurus we use the press-on-hold feature
     case Qt::RightButton: // press and hold generates mouse RightButton
       // qDebug("RightButton");
@@ -628,14 +612,14 @@ void Map::__drawGrid()
             }
 
           if(loop2 == (number / 2))
-            gridP.setPen(QPen(Qt::black, 1, Qt::DashLine));
+            gridP.setPen(QPen(Qt::black, lineWidth, Qt::DashLine));
           else
-            gridP.setPen(QPen(Qt::black, 1, Qt::DotLine));
+            gridP.setPen(QPen(Qt::black, lineWidth, Qt::DotLine));
 
           gridP.drawPolyline(_globalMapMatrix->map(pointArraySmall));
         }
       // Draw the main lines
-      gridP.setPen(QPen(Qt::black, 1));
+      gridP.setPen(QPen(Qt::black, lineWidth));
       gridP.drawPolyline(_globalMapMatrix->map(pointArray));
     }
 
@@ -646,7 +630,7 @@ void Map::__drawGrid()
       cP2 = _globalMapMatrix->wgsToMap(lat2 * 600000, (loop * 600000));
 
       // Draw the main longitudes:
-      gridP.setPen(QPen(Qt::black, 1));
+      gridP.setPen(QPen(Qt::black, lineWidth));
       gridP.drawLine(_globalMapMatrix->map(cP), _globalMapMatrix->map(cP2));
 
       // Draw the small lines between:
@@ -661,7 +645,7 @@ void Map::__drawGrid()
                                            (int)rint(((loop + (loop2 * step / 60.0)) * 600000)));
 
           if(loop2 == (number / 2))
-            gridP.setPen(QPen(Qt::black, 1, Qt::DashLine));
+            gridP.setPen(QPen(Qt::black, lineWidth, Qt::DashLine));
           else
             gridP.setPen(QPen(Qt::black, lineWidth, Qt::DotLine));
 
@@ -837,7 +821,6 @@ void Map::__redrawMap(mapLayer fromLayer)
       
       // initialize the base pixmap
       m_pixBaseMap.resize(size());
-      m_pixBaseMap.fill(Qt::white);
 
       //actually start doing our drawing
       __drawBaseLayer();
@@ -899,11 +882,7 @@ void Map::__drawBaseLayer()
   // erase the base layer (fill with light blue color)
   m_pixBaseMap.fill(QColor(96,128,248));
 
-  //set the cursor position to be outside of our view
-  preCur1.setX(-50);
-  preCur2.setX(-50);
-
-  // make sure we have all the mapfiles we need loaded
+  // make sure we have all the map files we need loaded
   _globalMapContents->proofeSection();
 
 
@@ -1013,11 +992,9 @@ void Map::__drawInformationLayer()
   __drawTrail();
 
   //draw the wind arrow, if pixmap was initialized by slot slotNewWind
-  //drawing the wind arrow is a matter of bit blitting a piece of the windArrow pixmap
   if( ! windArrow.isNull() )
     {
       QPainter p(&m_pixInformationMap);
-//      p.drawPixmap( 4, 4, windArrow, windArrow.width()/4, windArrow.width()/4, 36, 36);
       p.drawPixmap( 8, 8, windArrow );
     }
     
@@ -1051,7 +1028,7 @@ void Map::slotDraw()
 // will be queued only.
 void Map::slotRedrawMap()
 {
-  qDebug("Map::slotRedrawMap(): LoopLevel=%d", qApp->loopLevel());
+  // qDebug("Map::slotRedrawMap(): LoopLevel=%d", qApp->loopLevel());
 
   // @AP: Don't allows changes on matrix data during drawing!!!
 
@@ -1490,7 +1467,7 @@ void Map::slotWaypointCatalogChanged(WaypointCatalog* /*c*/)
 {
   // qDebug("Map::slotWaypointCatalogChanged");
   emit changed(this->size());
-  __redrawMap(waypoints);
+  sceduleRedraw(waypoints);
 }
 
 
@@ -1596,7 +1573,7 @@ void Map::setShowGlider( const bool& _newVal)
   if (ShowGlider!=_newVal)
     {
       ShowGlider = _newVal;
-      __redrawMap(informationLayer);
+      sceduleRedraw(informationLayer);
     }
 }
 
@@ -1725,12 +1702,14 @@ void Map::__drawScale()
 
 
 /** This slot is called to set a new position. The map object determines if it is necessary to recenter the map, or if the glider can just be drawn on a different position. */
-void Map::slot_position(const QPoint& newPos, const int source)
+void Map::slotPosition(const QPoint& newPos, const int source)
 {
   // qDebug("Map::slot_position x=%d y=%d", newPos.x(), newPos.y() );
 
   if( !_isEnable )
-    return;
+    {
+      return;
+    }
 
   if(source == CuCalc::GPS)
     {
@@ -1744,7 +1723,7 @@ void Map::slot_position(const QPoint& newPos, const int source)
               // show up at the same location
               curMANPos = curGPSPos;
 
-              if (!_globalMapMatrix->isInCenterArea(newPos) || mutex() )
+              if( !_globalMapMatrix->isInCenterArea(newPos) )
                 {
                   // qDebug("Map::slot_position:sceduleRedraw()");
                   // this is the slow redraw
@@ -1752,8 +1731,8 @@ void Map::slot_position(const QPoint& newPos, const int source)
                 }
               else
                 {
-                  // this is the fast redraw
-                  __redrawMap(informationLayer);
+                  // this is the faster redraw
+                  sceduleRedraw(informationLayer);
                 }
             }
           else
@@ -1782,7 +1761,7 @@ void Map::slot_position(const QPoint& newPos, const int source)
     }
 }
 
-void Map::slot_switchManualInFlight()
+void Map::slotSwitchManualInFlight()
 {
   // show or hide the cross; for switchOn == true, positions are identical
   // the cross is drawn in the scale layer
@@ -1795,12 +1774,12 @@ void Map::slot_switchManualInFlight()
       // and in this the the cross is still visible. So the user may think
       // the switch off was not successfully; To hide the cross immediately,
       // call redraw of scale layer
-      __redrawMap(scale);
+      sceduleRedraw(scale);
       calculator->setPosition(curGPSPos);
     }
   else
     {
-      __redrawMap(scale);
+      sceduleRedraw(scale);
     }
 }
 
@@ -1951,7 +1930,7 @@ void Map::slotZoomOut()
  */
 void Map::sceduleRedraw(mapLayer fromLayer)
 {
-  qDebug("Map::sceduleRedraw(): mapLayer=%d, loopLevel=%d", fromLayer, qApp->loopLevel() );
+  // qDebug("Map::sceduleRedraw(): mapLayer=%d, loopLevel=%d", fromLayer, qApp->loopLevel() );
 
   if( !_isEnable )
     {
@@ -1971,14 +1950,16 @@ void Map::sceduleRedraw(mapLayer fromLayer)
       return;
     }
 
-  // qDebug("Map::sceduleRedraw");
+  // start resp. restart short timer to combine several draw requests to one
+  redrawTimerShort->start(500);
+
   if (!redrawTimerLong->isActive() && ShowGlider)
     {
-      redrawTimerLong->start(1500);
-
+      // Long timer shall ensure, that a map drawing is executed on expiration
+      // in every case. Will be acticated only in GPS mode and not in manuell
+      // mode.
+      redrawTimerLong->start(3000);
     }
-
-  redrawTimerShort->start(1000);
 }
 
 
@@ -2049,7 +2030,7 @@ void Map::checkAirspace(const QPoint& pos)
   Airspace* pSpace = (Airspace *) 0;
   Airspace::ConflictType hConflict=Airspace::none, lastHConflict=Airspace::none,
                                    vConflict=Airspace::none, lastVConflict=Airspace::none,
-                                                                           conflict= Airspace::none, lastConflict= Airspace::none;
+                                   conflict= Airspace::none, lastConflict= Airspace::none;
 
   bool warn = false; // warning flag
 
@@ -2263,13 +2244,6 @@ void Map::checkAirspace(const QPoint& pos)
     }
 }
 
-
-void Map::quickDraw()
-{
-  __redrawMap(navigationLayer);
-}
-
-
 bool Map::mutex()
 {
   return _mutex;
@@ -2280,15 +2254,4 @@ void Map::setMutex(bool m)
 {
   _mutex = m;
   emit isRedrawing(m);
-}
-
-
-bool Map::eventFilter(QObject * , QEvent * )
-{
-  if (_mutex)
-    {
-      qDebug("Map::eventFilter has blocked event.");
-      return true; //stop all events while we're redrawing the map!
-    }
-  return false;
 }

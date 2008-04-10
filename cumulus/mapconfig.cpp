@@ -1,19 +1,19 @@
 /***********************************************************************
-**
-**   mapconfig.cpp
-**
-**   This file is part of cumulus.
-**
-************************************************************************
-**
-**   Copyright (c):  2001 by Heiner Lamprecht, 2008 Axel Pauli
-**
-**   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
-**
-**   $Id$
-**
-***********************************************************************/
+ **
+ **   mapconfig.cpp
+ **
+ **   This file is part of cumulus.
+ **
+ ************************************************************************
+ **
+ **   Copyright (c):  2001 by Heiner Lamprecht, 2008 Axel Pauli
+ **
+ **   This file is distributed under the terms of the General Public
+ **   Licence. See the file COPYING for more information.
+ **
+ **   $Id$
+ **
+ ***********************************************************************/
 
 #include "mapconfig.h"
 #include "generalconfig.h"
@@ -22,298 +22,298 @@
 #include "mapdefaults.h"
 #include "reachablelist.h"
 
-#define READ_TOPO(a,b) \
+#define READ_TOPO(a,b)                          \
   topographyColorList.append(new QColor(b));
 
-#define READ_BORDER(a) \
-    a[0] = true; \
-    a[1] = true; \
-    a[2] = true; \
-    a[3] = true;
+#define READ_BORDER(a)                          \
+  a[0] = true;                                  \
+  a[1] = true;                                  \
+  a[2] = true;                                  \
+  a[3] = true;
 
-#define READ_PEN(G, A, B, C1, C2, C3, C4, P1, P2, P3, P4, \
-    S1, S2, S3, S4) \
-  READ_BORDER(B) \
-    A.append(new QPen(C1, P1, (Qt::PenStyle)S1)); \
-    A.append(new QPen(C2, P2, (Qt::PenStyle)S2)); \
-    A.append(new QPen(C3, P3, (Qt::PenStyle)S3)); \
-    A.append(new QPen(C4, P4, (Qt::PenStyle)S4));
+#define READ_PEN(G, A, B, C1, C2, C3, C4, P1, P2, P3, P4,       \
+                 S1, S2, S3, S4)                                \
+  READ_BORDER(B)                                                \
+    A.append(new QPen(C1, P1, (Qt::PenStyle)S1));               \
+  A.append(new QPen(C2, P2, (Qt::PenStyle)S2));                 \
+  A.append(new QPen(C3, P3, (Qt::PenStyle)S3));                 \
+  A.append(new QPen(C4, P4, (Qt::PenStyle)S4));
 
 
-#define READ_PEN_BRUSH(G, a, B, A, C1, C2, C3, C4, P1, P2, P3, P4, \
-    S1, S2, S3, S4, C7, C8, C9, C10, S7, S8, S9, S10) \
-  READ_PEN(G, a, B, C1, C2, C3, C4, P1, P2, P3, P4, \
-        S1, S2, S3, S4) \
-  A.append(new QBrush(C7,  (Qt::BrushStyle)S7)); \
-  A.append(new QBrush(C8,  (Qt::BrushStyle)S8));   \
-  A.append(new QBrush(C9,  (Qt::BrushStyle)S9));   \
+#define READ_PEN_BRUSH(G, a, B, A, C1, C2, C3, C4, P1, P2, P3, P4,      \
+                       S1, S2, S3, S4, C7, C8, C9, C10, S7, S8, S9, S10) \
+  READ_PEN(G, a, B, C1, C2, C3, C4, P1, P2, P3, P4,                     \
+           S1, S2, S3, S4)                                              \
+    A.append(new QBrush(C7,  (Qt::BrushStyle)S7));                      \
+  A.append(new QBrush(C8,  (Qt::BrushStyle)S8));                        \
+  A.append(new QBrush(C9,  (Qt::BrushStyle)S9));                        \
   A.append(new QBrush(C10, (Qt::BrushStyle)S10));
 
 
 MapConfig::MapConfig(QObject* parent)
-        : QObject(parent), scaleIndex(0), isSwitch(false)
+  : QObject(parent), scaleIndex(0), isSwitch(false)
 {
-    airABorder = new bool[4];
-    airBBorder = new bool[4];
-    airCBorder = new bool[4];
-    airDBorder = new bool[4];
-    airElBorder = new bool[4];
-    airEhBorder = new bool[4];
-    airFBorder = new bool[4];
-    ctrCBorder = new bool[4];
-    ctrDBorder = new bool[4];
-    dangerBorder = new bool[4];
-    lowFBorder = new bool[4];
-    restrBorder = new bool[4];
-    tmzBorder = new bool[4];
-    suSectorBorder = new bool[4];
+  airABorder = new bool[4];
+  airBBorder = new bool[4];
+  airCBorder = new bool[4];
+  airDBorder = new bool[4];
+  airElBorder = new bool[4];
+  airEhBorder = new bool[4];
+  airFBorder = new bool[4];
+  ctrCBorder = new bool[4];
+  ctrDBorder = new bool[4];
+  dangerBorder = new bool[4];
+  lowFBorder = new bool[4];
+  restrBorder = new bool[4];
+  tmzBorder = new bool[4];
+  suSectorBorder = new bool[4];
 
-    trailBorder = new bool[4];
-    roadBorder = new bool[4];
-    highwayBorder = new bool[4];
-    railBorder = new bool[4];
-    rail_dBorder = new bool[4];
-    aerialcableBorder = new bool[4];
-    riverBorder = new bool[4];
-    river_tBorder = new bool[4];
-    canalBorder = new bool[4];
-    cityBorder = new bool[4];
+  trailBorder = new bool[4];
+  roadBorder = new bool[4];
+  highwayBorder = new bool[4];
+  railBorder = new bool[4];
+  rail_dBorder = new bool[4];
+  aerialcableBorder = new bool[4];
+  riverBorder = new bool[4];
+  river_tBorder = new bool[4];
+  canalBorder = new bool[4];
+  cityBorder = new bool[4];
 
-    forestBorder = new bool[4];
-    glacierBorder = new bool[4];
-    packiceBorder = new bool[4];
+  forestBorder = new bool[4];
+  glacierBorder = new bool[4];
+  packiceBorder = new bool[4];
 
-    // qDebug("MapConfig initialized...");
+  // qDebug("MapConfig initialized...");
 }
 
 
 MapConfig::~MapConfig()
 {
-    // @AP: make it easier for valgind, otherwise as memory leaks declarated.
-    delete [] airABorder;
-    delete [] airBBorder;
-    delete [] airCBorder;
-    delete [] airDBorder;
-    delete [] airElBorder;
-    delete [] airEhBorder;
-    delete [] airFBorder;
-    delete [] ctrCBorder;
-    delete [] ctrDBorder;
-    delete [] dangerBorder;
-    delete [] lowFBorder;
-    delete [] restrBorder;
-    delete [] tmzBorder;
-    delete [] suSectorBorder;
-    delete [] trailBorder;
-    delete [] roadBorder;
-    delete [] highwayBorder;
-    delete [] railBorder;
-    delete [] rail_dBorder;
-    delete [] aerialcableBorder;
-    delete [] riverBorder;
-    delete [] river_tBorder;
-    delete [] canalBorder;
-    delete [] cityBorder;
-    delete [] forestBorder;
-    delete [] glacierBorder;
-    delete [] packiceBorder;
+  // @AP: make it easier for valgind, otherwise as memory leaks declarated.
+  delete [] airABorder;
+  delete [] airBBorder;
+  delete [] airCBorder;
+  delete [] airDBorder;
+  delete [] airElBorder;
+  delete [] airEhBorder;
+  delete [] airFBorder;
+  delete [] ctrCBorder;
+  delete [] ctrDBorder;
+  delete [] dangerBorder;
+  delete [] lowFBorder;
+  delete [] restrBorder;
+  delete [] tmzBorder;
+  delete [] suSectorBorder;
+  delete [] trailBorder;
+  delete [] roadBorder;
+  delete [] highwayBorder;
+  delete [] railBorder;
+  delete [] rail_dBorder;
+  delete [] aerialcableBorder;
+  delete [] riverBorder;
+  delete [] river_tBorder;
+  delete [] canalBorder;
+  delete [] cityBorder;
+  delete [] forestBorder;
+  delete [] glacierBorder;
+  delete [] packiceBorder;
 
-    // @AP: lists should be automatic deallocate its members during remove
-    qDeleteAll(topographyColorList);
-    topographyColorList.clear();
-    qDeleteAll(airAPenList);
-    airAPenList.clear();
-    qDeleteAll(airABrushList);
-    airABrushList.clear();
-    qDeleteAll(airBPenList);
-    airBPenList.clear();
-    qDeleteAll(airBBrushList);
-    airBBrushList.clear();
-    qDeleteAll(airCPenList);
-    airCPenList.clear();
-    qDeleteAll(airCBrushList);
-    airCBrushList.clear();
-    qDeleteAll(airDPenList);
-    airDPenList.clear();
-    qDeleteAll(airDBrushList);
-    airDBrushList.clear();
-    qDeleteAll(airElPenList);
-    airElPenList.clear();
-    qDeleteAll(airElBrushList);
-    airElBrushList.clear();
-    qDeleteAll(airEhPenList);
-    airEhPenList.clear();
-    qDeleteAll(airEhBrushList);
-    airEhBrushList.clear();
-    qDeleteAll(airFPenList);
-    airFPenList.clear();
-    qDeleteAll(airFBrushList);
-    airFBrushList.clear();
-    qDeleteAll(ctrCPenList);
-    ctrCPenList.clear();
-    qDeleteAll(ctrCBrushList);
-    ctrCBrushList.clear();
-    qDeleteAll(ctrDPenList);
-    ctrDPenList.clear();
-    qDeleteAll(ctrDBrushList);
-    ctrDBrushList.clear();
-    qDeleteAll(lowFPenList);
-    lowFPenList.clear();
-    qDeleteAll(lowFBrushList);
-    lowFBrushList.clear();
-    qDeleteAll(dangerPenList);
-    dangerPenList.clear();
-    qDeleteAll(dangerBrushList);
-    dangerBrushList.clear();
-    qDeleteAll(restrPenList);
-    restrPenList.clear();
-    qDeleteAll(restrBrushList);
-    restrBrushList.clear();
-    qDeleteAll(tmzPenList);
-    tmzPenList.clear();
-    qDeleteAll(tmzBrushList);
-    tmzBrushList.clear();
-    qDeleteAll(suSectorPenList);
-    suSectorPenList.clear();
-    qDeleteAll(suSectorBrushList);
-    suSectorBrushList.clear();
-    qDeleteAll(highwayPenList);
-    highwayPenList.clear();
-    qDeleteAll(roadPenList);
-    roadPenList.clear();
-    qDeleteAll(trailPenList);
-    trailPenList.clear();
-    qDeleteAll(railPenList);
-    railPenList.clear();
-    qDeleteAll(rail_dPenList);
-    rail_dPenList.clear();
-    qDeleteAll(aerialcablePenList);
-    aerialcablePenList.clear();
-    qDeleteAll(riverPenList);
-    riverPenList.clear();
-    qDeleteAll(river_tPenList);
-    river_tPenList.clear();
-    qDeleteAll(river_tBrushList);
-    river_tBrushList.clear();
-    qDeleteAll(canalPenList);
-    canalPenList.clear();
-    qDeleteAll(cityPenList);
-    cityPenList.clear();
-    qDeleteAll(cityBrushList);
-    cityBrushList.clear();
-    qDeleteAll(forestPenList);
-    forestPenList.clear();
-    qDeleteAll(glacierPenList);
-    glacierPenList.clear();
-    qDeleteAll(packicePenList);
-    packicePenList.clear();
-    qDeleteAll(forestBrushList);
-    forestBrushList.clear();
-    qDeleteAll(glacierBrushList);
-    glacierBrushList.clear();
-    qDeleteAll(packiceBrushList);
-    packiceBrushList.clear();
+  // @AP: lists should be automatic deallocate its members during remove
+  qDeleteAll(topographyColorList);
+  topographyColorList.clear();
+  qDeleteAll(airAPenList);
+  airAPenList.clear();
+  qDeleteAll(airABrushList);
+  airABrushList.clear();
+  qDeleteAll(airBPenList);
+  airBPenList.clear();
+  qDeleteAll(airBBrushList);
+  airBBrushList.clear();
+  qDeleteAll(airCPenList);
+  airCPenList.clear();
+  qDeleteAll(airCBrushList);
+  airCBrushList.clear();
+  qDeleteAll(airDPenList);
+  airDPenList.clear();
+  qDeleteAll(airDBrushList);
+  airDBrushList.clear();
+  qDeleteAll(airElPenList);
+  airElPenList.clear();
+  qDeleteAll(airElBrushList);
+  airElBrushList.clear();
+  qDeleteAll(airEhPenList);
+  airEhPenList.clear();
+  qDeleteAll(airEhBrushList);
+  airEhBrushList.clear();
+  qDeleteAll(airFPenList);
+  airFPenList.clear();
+  qDeleteAll(airFBrushList);
+  airFBrushList.clear();
+  qDeleteAll(ctrCPenList);
+  ctrCPenList.clear();
+  qDeleteAll(ctrCBrushList);
+  ctrCBrushList.clear();
+  qDeleteAll(ctrDPenList);
+  ctrDPenList.clear();
+  qDeleteAll(ctrDBrushList);
+  ctrDBrushList.clear();
+  qDeleteAll(lowFPenList);
+  lowFPenList.clear();
+  qDeleteAll(lowFBrushList);
+  lowFBrushList.clear();
+  qDeleteAll(dangerPenList);
+  dangerPenList.clear();
+  qDeleteAll(dangerBrushList);
+  dangerBrushList.clear();
+  qDeleteAll(restrPenList);
+  restrPenList.clear();
+  qDeleteAll(restrBrushList);
+  restrBrushList.clear();
+  qDeleteAll(tmzPenList);
+  tmzPenList.clear();
+  qDeleteAll(tmzBrushList);
+  tmzBrushList.clear();
+  qDeleteAll(suSectorPenList);
+  suSectorPenList.clear();
+  qDeleteAll(suSectorBrushList);
+  suSectorBrushList.clear();
+  qDeleteAll(highwayPenList);
+  highwayPenList.clear();
+  qDeleteAll(roadPenList);
+  roadPenList.clear();
+  qDeleteAll(trailPenList);
+  trailPenList.clear();
+  qDeleteAll(railPenList);
+  railPenList.clear();
+  qDeleteAll(rail_dPenList);
+  rail_dPenList.clear();
+  qDeleteAll(aerialcablePenList);
+  aerialcablePenList.clear();
+  qDeleteAll(riverPenList);
+  riverPenList.clear();
+  qDeleteAll(river_tPenList);
+  river_tPenList.clear();
+  qDeleteAll(river_tBrushList);
+  river_tBrushList.clear();
+  qDeleteAll(canalPenList);
+  canalPenList.clear();
+  qDeleteAll(cityPenList);
+  cityPenList.clear();
+  qDeleteAll(cityBrushList);
+  cityBrushList.clear();
+  qDeleteAll(forestPenList);
+  forestPenList.clear();
+  qDeleteAll(glacierPenList);
+  glacierPenList.clear();
+  qDeleteAll(packicePenList);
+  packicePenList.clear();
+  qDeleteAll(forestBrushList);
+  forestBrushList.clear();
+  qDeleteAll(glacierBrushList);
+  glacierBrushList.clear();
+  qDeleteAll(packiceBrushList);
+  packiceBrushList.clear();
 }
 
 
 void MapConfig::slotReadConfig()
 {
-    qDeleteAll(topographyColorList);
-    topographyColorList.clear();
-    qDeleteAll(airAPenList);
-    airAPenList.clear();
-    qDeleteAll(airABrushList);
-    airABrushList.clear();
-    qDeleteAll(airBPenList);
-    airBPenList.clear();
-    qDeleteAll(airBBrushList);
-    airBBrushList.clear();
-    qDeleteAll(airCPenList);
-    airCPenList.clear();
-    qDeleteAll(airCBrushList);
-    airCBrushList.clear();
-    qDeleteAll(airDPenList);
-    airDPenList.clear();
-    qDeleteAll(airDBrushList);
-    airDBrushList.clear();
-    qDeleteAll(airElPenList);
-    airElPenList.clear();
-    qDeleteAll(airElBrushList);
-    airElBrushList.clear();
-    qDeleteAll(airEhPenList);
-    airEhPenList.clear();
-    qDeleteAll(airEhBrushList);
-    airEhBrushList.clear();
-    qDeleteAll(airFPenList);
-    airFPenList.clear();
-    qDeleteAll(airFBrushList);
-    airFBrushList.clear();
-    qDeleteAll(ctrCPenList);
-    ctrCPenList.clear();
-    qDeleteAll(ctrCBrushList);
-    ctrCBrushList.clear();
-    qDeleteAll(ctrDPenList);
-    ctrDPenList.clear();
-    qDeleteAll(ctrDBrushList);
-    ctrDBrushList.clear();
-    qDeleteAll(lowFPenList);
-    lowFPenList.clear();
-    qDeleteAll(lowFBrushList);
-    lowFBrushList.clear();
-    qDeleteAll(dangerPenList);
-    dangerPenList.clear();
-    qDeleteAll(dangerBrushList);
-    dangerBrushList.clear();
-    qDeleteAll(restrPenList);
-    restrPenList.clear();
-    qDeleteAll(restrBrushList);
-    restrBrushList.clear();
-    qDeleteAll(tmzPenList);
-    tmzPenList.clear();
-    qDeleteAll(tmzBrushList);
-    tmzBrushList.clear();
-    qDeleteAll(suSectorPenList);
-    suSectorPenList.clear();
-    qDeleteAll(suSectorBrushList);
-    suSectorBrushList.clear();
-    qDeleteAll(highwayPenList);
-    highwayPenList.clear();
-    qDeleteAll(roadPenList);
-    roadPenList.clear();
-    qDeleteAll(trailPenList);
-    trailPenList.clear();
-    qDeleteAll(railPenList);
-    railPenList.clear();
-    qDeleteAll(rail_dPenList);
-    rail_dPenList.clear();
-    qDeleteAll(aerialcablePenList);
-    aerialcablePenList.clear();
-    qDeleteAll(riverPenList);
-    riverPenList.clear();
-    qDeleteAll(river_tPenList);
-    river_tPenList.clear();
-    qDeleteAll(river_tBrushList);
-    river_tBrushList.clear();
-    qDeleteAll(canalPenList);
-    canalPenList.clear();
-    qDeleteAll(cityPenList);
-    cityPenList.clear();
-    qDeleteAll(cityBrushList);
-    cityBrushList.clear();
-    qDeleteAll(forestPenList);
-    forestPenList.clear();
-    qDeleteAll(glacierPenList);
-    glacierPenList.clear();
-    qDeleteAll(packicePenList);
-    packicePenList.clear();
-    qDeleteAll(forestBrushList);
-    forestBrushList.clear();
-    qDeleteAll(glacierBrushList);
-    glacierBrushList.clear();
-    qDeleteAll(packiceBrushList);
-    packiceBrushList.clear();
+  qDeleteAll(topographyColorList);
+  topographyColorList.clear();
+  qDeleteAll(airAPenList);
+  airAPenList.clear();
+  qDeleteAll(airABrushList);
+  airABrushList.clear();
+  qDeleteAll(airBPenList);
+  airBPenList.clear();
+  qDeleteAll(airBBrushList);
+  airBBrushList.clear();
+  qDeleteAll(airCPenList);
+  airCPenList.clear();
+  qDeleteAll(airCBrushList);
+  airCBrushList.clear();
+  qDeleteAll(airDPenList);
+  airDPenList.clear();
+  qDeleteAll(airDBrushList);
+  airDBrushList.clear();
+  qDeleteAll(airElPenList);
+  airElPenList.clear();
+  qDeleteAll(airElBrushList);
+  airElBrushList.clear();
+  qDeleteAll(airEhPenList);
+  airEhPenList.clear();
+  qDeleteAll(airEhBrushList);
+  airEhBrushList.clear();
+  qDeleteAll(airFPenList);
+  airFPenList.clear();
+  qDeleteAll(airFBrushList);
+  airFBrushList.clear();
+  qDeleteAll(ctrCPenList);
+  ctrCPenList.clear();
+  qDeleteAll(ctrCBrushList);
+  ctrCBrushList.clear();
+  qDeleteAll(ctrDPenList);
+  ctrDPenList.clear();
+  qDeleteAll(ctrDBrushList);
+  ctrDBrushList.clear();
+  qDeleteAll(lowFPenList);
+  lowFPenList.clear();
+  qDeleteAll(lowFBrushList);
+  lowFBrushList.clear();
+  qDeleteAll(dangerPenList);
+  dangerPenList.clear();
+  qDeleteAll(dangerBrushList);
+  dangerBrushList.clear();
+  qDeleteAll(restrPenList);
+  restrPenList.clear();
+  qDeleteAll(restrBrushList);
+  restrBrushList.clear();
+  qDeleteAll(tmzPenList);
+  tmzPenList.clear();
+  qDeleteAll(tmzBrushList);
+  tmzBrushList.clear();
+  qDeleteAll(suSectorPenList);
+  suSectorPenList.clear();
+  qDeleteAll(suSectorBrushList);
+  suSectorBrushList.clear();
+  qDeleteAll(highwayPenList);
+  highwayPenList.clear();
+  qDeleteAll(roadPenList);
+  roadPenList.clear();
+  qDeleteAll(trailPenList);
+  trailPenList.clear();
+  qDeleteAll(railPenList);
+  railPenList.clear();
+  qDeleteAll(rail_dPenList);
+  rail_dPenList.clear();
+  qDeleteAll(aerialcablePenList);
+  aerialcablePenList.clear();
+  qDeleteAll(riverPenList);
+  riverPenList.clear();
+  qDeleteAll(river_tPenList);
+  river_tPenList.clear();
+  qDeleteAll(river_tBrushList);
+  river_tBrushList.clear();
+  qDeleteAll(canalPenList);
+  canalPenList.clear();
+  qDeleteAll(cityPenList);
+  cityPenList.clear();
+  qDeleteAll(cityBrushList);
+  cityBrushList.clear();
+  qDeleteAll(forestPenList);
+  forestPenList.clear();
+  qDeleteAll(glacierPenList);
+  glacierPenList.clear();
+  qDeleteAll(packicePenList);
+  packicePenList.clear();
+  qDeleteAll(forestBrushList);
+  forestBrushList.clear();
+  qDeleteAll(glacierBrushList);
+  glacierBrushList.clear();
+  qDeleteAll(packiceBrushList);
+  packiceBrushList.clear();
 
-    READ_TOPO("SubTerrain", LEVEL_SUB)
+  READ_TOPO("SubTerrain", LEVEL_SUB)
     READ_TOPO("0M", LEVEL_0)
     READ_TOPO("10M", LEVEL_10)
     READ_TOPO("25M", LEVEL_25)
@@ -582,429 +582,437 @@ void MapConfig::slotReadConfig()
             
     GeneralConfig *conf = GeneralConfig::instance();
 
-    drawBearing            = conf->getMapBearLine();
-    drawIsoLines           = conf->getMapLoadIsoLines();
-    bShowWpLabels          = conf->getMapShowWaypointLabels();
-    bShowWpLabelsExtraInfo = conf->getMapShowWaypointLabelsExtraInfo();
-    bLoadIsolines          = conf->getMapLoadIsoLines();
-    bShowIsolineBorders    = conf->getMapShowIsoLineBorders();
-    bLoadRoads             = conf->getMapLoadRoads();
-    bLoadHighways          = conf->getMapLoadHighways();
-    bLoadRailroads         = conf->getMapLoadRailroads();
-    bLoadCities            = conf->getMapLoadCities();
-    bLoadWaterways         = conf->getMapLoadWaterways();
-    bLoadForests           = conf->getMapLoadForests();
-    bDeleteAfterMapCompile = conf->getMapDeleteAfterCompile();
-    bUnloadUnneededMap     = conf->getMapUnload();
+  drawBearing            = conf->getMapBearLine();
+  drawIsoLines           = conf->getMapLoadIsoLines();
+  bShowWpLabels          = conf->getMapShowWaypointLabels();
+  bShowWpLabelsExtraInfo = conf->getMapShowWaypointLabelsExtraInfo();
+  bLoadIsolines          = conf->getMapLoadIsoLines();
+  bShowIsolineBorders    = conf->getMapShowIsoLineBorders();
+  bLoadRoads             = conf->getMapLoadRoads();
+  bLoadHighways          = conf->getMapLoadHighways();
+  bLoadRailroads         = conf->getMapLoadRailroads();
+  bLoadCities            = conf->getMapLoadCities();
+  bLoadWaterways         = conf->getMapLoadWaterways();
+  bLoadForests           = conf->getMapLoadForests();
+  bDeleteAfterMapCompile = conf->getMapDeleteAfterCompile();
+  bUnloadUnneededMap     = conf->getMapUnload();
 
-    emit configChanged();
+  emit configChanged();
 }
 
 
 void MapConfig::slotSetMatrixValues(int index, bool sw)
 {
-    isSwitch = sw;
-    scaleIndex = index;
+  isSwitch = sw;
+  scaleIndex = index;
 }
 
 
 QPen MapConfig::getDrawPen(unsigned int typeID)
 {
-    return __getPen(typeID, scaleIndex);
+  return __getPen(typeID, scaleIndex);
 }
 
 
 QPen MapConfig::__getPen(unsigned int typeID, int sIndex)
 {
-    switch(typeID) {
-    case BaseMapElement::Trail:
-        return *trailPenList.at(sIndex);
-    case BaseMapElement::Road:
-        return *roadPenList.at(sIndex);
-    case BaseMapElement::Highway:
-        return *highwayPenList.at(sIndex);
-    case BaseMapElement::Railway:
-        return *railPenList.at(sIndex);
-    case BaseMapElement::Railway_D:
-        return *rail_dPenList.at(sIndex);
-    case BaseMapElement::Aerial_Cable:
-        return *aerialcablePenList.at(sIndex);
-    case BaseMapElement::River:
-    case BaseMapElement::Lake:
-        return *riverPenList.at(sIndex);
-    case BaseMapElement::River_T:
-    case BaseMapElement::Lake_T:
-        return *river_tPenList.at(sIndex);
-    case BaseMapElement::Canal:
-        return *canalPenList.at(sIndex);
-    case BaseMapElement::City:
-        return *cityPenList.at(sIndex);
-    case BaseMapElement::AirA:
-        return *airAPenList.at(sIndex);
-    case BaseMapElement::AirB:
-        return *airBPenList.at(sIndex);
-    case BaseMapElement::AirC:
-        return *airCPenList.at(sIndex);
-    case BaseMapElement::AirD:
-        return *airDPenList.at(sIndex);
-    case BaseMapElement::AirElow:
-        return *airElPenList.at(sIndex);
-    case BaseMapElement::AirEhigh:
-        return *airEhPenList.at(sIndex);
-    case BaseMapElement::AirF:
-        return *airFPenList.at(sIndex);
-    case BaseMapElement::ControlC:
-        return *ctrCPenList.at(sIndex);
-    case BaseMapElement::ControlD:
-        return *ctrDPenList.at(sIndex);
-    case BaseMapElement::Danger:
-        return *dangerPenList.at(sIndex);
-    case BaseMapElement::LowFlight:
-        return *lowFPenList.at(sIndex);
-    case BaseMapElement::Restricted:
-        return *restrPenList.at(sIndex);
-    case BaseMapElement::Tmz:
-        return *tmzPenList.at(sIndex);
-    case BaseMapElement::Forest:
-        return *forestPenList.at(sIndex);
-    case BaseMapElement::Glacier:
-        return *glacierPenList.at(sIndex);
-    case BaseMapElement::PackIce:
-        return *packicePenList.at(sIndex);
-    default:
-        return *roadPenList.at(sIndex);
-    }
+  switch(typeID) {
+  case BaseMapElement::Trail:
+    return *trailPenList.at(sIndex);
+  case BaseMapElement::Road:
+    return *roadPenList.at(sIndex);
+  case BaseMapElement::Highway:
+    return *highwayPenList.at(sIndex);
+  case BaseMapElement::Railway:
+    return *railPenList.at(sIndex);
+  case BaseMapElement::Railway_D:
+    return *rail_dPenList.at(sIndex);
+  case BaseMapElement::Aerial_Cable:
+    return *aerialcablePenList.at(sIndex);
+  case BaseMapElement::River:
+  case BaseMapElement::Lake:
+    return *riverPenList.at(sIndex);
+  case BaseMapElement::River_T:
+  case BaseMapElement::Lake_T:
+    return *river_tPenList.at(sIndex);
+  case BaseMapElement::Canal:
+    return *canalPenList.at(sIndex);
+  case BaseMapElement::City:
+    return *cityPenList.at(sIndex);
+  case BaseMapElement::AirA:
+    return *airAPenList.at(sIndex);
+  case BaseMapElement::AirB:
+    return *airBPenList.at(sIndex);
+  case BaseMapElement::AirC:
+    return *airCPenList.at(sIndex);
+  case BaseMapElement::AirD:
+    return *airDPenList.at(sIndex);
+  case BaseMapElement::AirElow:
+    return *airElPenList.at(sIndex);
+  case BaseMapElement::AirEhigh:
+    return *airEhPenList.at(sIndex);
+  case BaseMapElement::AirF:
+    return *airFPenList.at(sIndex);
+  case BaseMapElement::ControlC:
+    return *ctrCPenList.at(sIndex);
+  case BaseMapElement::ControlD:
+    return *ctrDPenList.at(sIndex);
+  case BaseMapElement::Danger:
+    return *dangerPenList.at(sIndex);
+  case BaseMapElement::LowFlight:
+    return *lowFPenList.at(sIndex);
+  case BaseMapElement::Restricted:
+    return *restrPenList.at(sIndex);
+  case BaseMapElement::Tmz:
+    return *tmzPenList.at(sIndex);
+  case BaseMapElement::Forest:
+    return *forestPenList.at(sIndex);
+  case BaseMapElement::Glacier:
+    return *glacierPenList.at(sIndex);
+  case BaseMapElement::PackIce:
+    return *packicePenList.at(sIndex);
+  default:
+    return *roadPenList.at(sIndex);
+  }
 }
 
 
 bool MapConfig::isBorder(unsigned int typeID)
 {
-    //  return true;
-    switch(typeID) {
-    case BaseMapElement::Trail:
-        return trailBorder[scaleIndex];
-    case BaseMapElement::Road:
-        return roadBorder[scaleIndex];
-    case BaseMapElement::Highway:
-        return highwayBorder[scaleIndex];
-    case BaseMapElement::Railway:
-        return railBorder[scaleIndex];
-    case BaseMapElement::Railway_D:
-        return rail_dBorder[scaleIndex];
-    case BaseMapElement::Aerial_Cable:
-        return aerialcableBorder[scaleIndex];
+  //  return true;
+  switch(typeID) {
+  case BaseMapElement::Trail:
+    return trailBorder[scaleIndex];
+  case BaseMapElement::Road:
+    return roadBorder[scaleIndex];
+  case BaseMapElement::Highway:
+    return highwayBorder[scaleIndex];
+  case BaseMapElement::Railway:
+    return railBorder[scaleIndex];
+  case BaseMapElement::Railway_D:
+    return rail_dBorder[scaleIndex];
+  case BaseMapElement::Aerial_Cable:
+    return aerialcableBorder[scaleIndex];
 
-    case BaseMapElement::Canal:
-        return canalBorder[scaleIndex];
-    case BaseMapElement::River:
-    case BaseMapElement::Lake:
-        return riverBorder[scaleIndex];
-    case BaseMapElement::River_T:
-    case BaseMapElement::Lake_T:
-        return river_tBorder[scaleIndex];
+  case BaseMapElement::Canal:
+    return canalBorder[scaleIndex];
+  case BaseMapElement::River:
+  case BaseMapElement::Lake:
+    return riverBorder[scaleIndex];
+  case BaseMapElement::River_T:
+  case BaseMapElement::Lake_T:
+    return river_tBorder[scaleIndex];
 
-    case BaseMapElement::City:
-        return cityBorder[scaleIndex];
-    case BaseMapElement::AirA:
-        return airABorder[scaleIndex];
-    case BaseMapElement::AirB:
-        return airBBorder[scaleIndex];
-    case BaseMapElement::AirC:
-        return airCBorder[scaleIndex];
-    case BaseMapElement::AirD:
-        return airDBorder[scaleIndex];
-    case BaseMapElement::AirElow:
-        return airElBorder[scaleIndex];
-    case BaseMapElement::AirEhigh:
-        return airEhBorder[scaleIndex];
-    case BaseMapElement::AirF:
-        return airFBorder[scaleIndex];
-    case BaseMapElement::ControlC:
-        return ctrCBorder[scaleIndex];
-    case BaseMapElement::ControlD:
-        return ctrDBorder[scaleIndex];
-    case BaseMapElement::Danger:
-        return dangerBorder[scaleIndex];
-    case BaseMapElement::LowFlight:
-        return lowFBorder[scaleIndex];
-    case BaseMapElement::Restricted:
-        return restrBorder[scaleIndex];
-    case BaseMapElement::Tmz:
-        return tmzBorder[scaleIndex];
-    case BaseMapElement::Forest:
-        return forestBorder[scaleIndex];
-    case BaseMapElement::Glacier:
-        return glacierBorder[scaleIndex];
-    case BaseMapElement::PackIce:
-        return packiceBorder[scaleIndex];
+  case BaseMapElement::City:
+    return cityBorder[scaleIndex];
+  case BaseMapElement::AirA:
+    return airABorder[scaleIndex];
+  case BaseMapElement::AirB:
+    return airBBorder[scaleIndex];
+  case BaseMapElement::AirC:
+    return airCBorder[scaleIndex];
+  case BaseMapElement::AirD:
+    return airDBorder[scaleIndex];
+  case BaseMapElement::AirElow:
+    return airElBorder[scaleIndex];
+  case BaseMapElement::AirEhigh:
+    return airEhBorder[scaleIndex];
+  case BaseMapElement::AirF:
+    return airFBorder[scaleIndex];
+  case BaseMapElement::ControlC:
+    return ctrCBorder[scaleIndex];
+  case BaseMapElement::ControlD:
+    return ctrDBorder[scaleIndex];
+  case BaseMapElement::Danger:
+    return dangerBorder[scaleIndex];
+  case BaseMapElement::LowFlight:
+    return lowFBorder[scaleIndex];
+  case BaseMapElement::Restricted:
+    return restrBorder[scaleIndex];
+  case BaseMapElement::Tmz:
+    return tmzBorder[scaleIndex];
+  case BaseMapElement::Forest:
+    return forestBorder[scaleIndex];
+  case BaseMapElement::Glacier:
+    return glacierBorder[scaleIndex];
+  case BaseMapElement::PackIce:
+    return packiceBorder[scaleIndex];
 
-    }
+  }
 
-    /* Should never happen ... */
-    return true;
+  /* Should never happen ... */
+  return true;
 }
 
 
 QColor MapConfig::getIsoColor(unsigned int heightIndex)
 {
-    return *topographyColorList.at(heightIndex);
+  return *topographyColorList.at(heightIndex);
 }
 
 
 QBrush MapConfig::getDrawBrush(unsigned int typeID)
 {
-    return __getBrush(typeID, scaleIndex);
+  return __getBrush(typeID, scaleIndex);
 }
 
 
 QBrush MapConfig::__getBrush(unsigned int typeID, int sIndex)
 {
-    switch(typeID) {
-    case BaseMapElement::City:
-        return *cityBrushList.at(sIndex);
-    case BaseMapElement::Lake:
-        return QBrush(riverPenList.at(sIndex)->color(), Qt::SolidPattern);
-    case BaseMapElement::AirA:
-        return *airABrushList.at(sIndex);
-    case BaseMapElement::AirB:
-        return *airBBrushList.at(sIndex);
-    case BaseMapElement::AirC:
-        return *airCBrushList.at(sIndex);
-    case BaseMapElement::AirD:
-        return *airDBrushList.at(sIndex);
-    case BaseMapElement::AirElow:
-        return *airElBrushList.at(sIndex);
-    case BaseMapElement::AirEhigh:
-        return *airEhBrushList.at(sIndex);
-    case BaseMapElement::AirF:
-        return *airFBrushList.at(sIndex);
-    case BaseMapElement::ControlC:
-        return *ctrCBrushList.at(sIndex);
-    case BaseMapElement::ControlD:
-        return *ctrDBrushList.at(sIndex);
-    case BaseMapElement::Danger:
-        return *dangerBrushList.at(sIndex);
-    case BaseMapElement::LowFlight:
-        return *lowFBrushList.at(sIndex);
-    case BaseMapElement::Restricted:
-        return *restrBrushList.at(sIndex);
-    case BaseMapElement::Tmz:
-        return *tmzBrushList.at(sIndex);
-    case BaseMapElement::Forest:
-        return *forestBrushList.at(sIndex);
-    }
-    return QBrush();
+  switch(typeID) {
+  case BaseMapElement::City:
+    return *cityBrushList.at(sIndex);
+  case BaseMapElement::Lake:
+    return QBrush(riverPenList.at(sIndex)->color(), Qt::SolidPattern);
+  case BaseMapElement::AirA:
+    return *airABrushList.at(sIndex);
+  case BaseMapElement::AirB:
+    return *airBBrushList.at(sIndex);
+  case BaseMapElement::AirC:
+    return *airCBrushList.at(sIndex);
+  case BaseMapElement::AirD:
+    return *airDBrushList.at(sIndex);
+  case BaseMapElement::AirElow:
+    return *airElBrushList.at(sIndex);
+  case BaseMapElement::AirEhigh:
+    return *airEhBrushList.at(sIndex);
+  case BaseMapElement::AirF:
+    return *airFBrushList.at(sIndex);
+  case BaseMapElement::ControlC:
+    return *ctrCBrushList.at(sIndex);
+  case BaseMapElement::ControlD:
+    return *ctrDBrushList.at(sIndex);
+  case BaseMapElement::Danger:
+    return *dangerBrushList.at(sIndex);
+  case BaseMapElement::LowFlight:
+    return *lowFBrushList.at(sIndex);
+  case BaseMapElement::Restricted:
+    return *restrBrushList.at(sIndex);
+  case BaseMapElement::Tmz:
+    return *tmzBrushList.at(sIndex);
+  case BaseMapElement::Forest:
+    return *forestBrushList.at(sIndex);
+  }
+  return QBrush();
 }
 
 
 QPixmap MapConfig::getPixmapRotatable(unsigned int typeID, bool isWinch)
 {
-    QString iconName(getPixmapName(typeID, isWinch, true));
-    // qDebug("PixmapName: %d %s",typeID, (const char *)iconName );
-    if(isSwitch)
-        return GeneralConfig::instance()->loadPixmap(iconName);
-    else
-        return GeneralConfig::instance()->loadPixmap("small/" + iconName);
+  QString iconName(getPixmapName(typeID, isWinch, true));
+
+  // qDebug("PixmapNameRot: %d %s",typeID, iconName.latin1() );
+
+  if(isSwitch)
+    return GeneralConfig::instance()->loadPixmap(iconName);
+  else
+    return GeneralConfig::instance()->loadPixmap("small/" + iconName);
 }
 
 
 QPixmap MapConfig::getPixmap(unsigned int typeID, bool isWinch, bool smallIcon)
 {
-    QString iconName(getPixmapName(typeID, isWinch));
-    // qDebug("getPixmapName: %d %s",typeID, (const char *)iconName );
-    if(smallIcon)
-        return GeneralConfig::instance()->loadPixmap("small/" + iconName);
-    else
-        return GeneralConfig::instance()->loadPixmap(iconName);
+  QString iconName(getPixmapName(typeID, isWinch));
+
+  // qDebug("getPixmapName,Winch,SmallIcon: %d %s",typeID, iconName.latin1() );
+
+  if(smallIcon)
+    return GeneralConfig::instance()->loadPixmap("small/" + iconName);
+  else
+    return GeneralConfig::instance()->loadPixmap(iconName);
 }
 
 
 QPixmap MapConfig::getPixmap(unsigned int typeID, bool isWinch, QColor color)
 {
-    QString iconName(getPixmapName(typeID, isWinch, false, color));
+  QString iconName(getPixmapName(typeID, isWinch, false, color));
 
-    if(isSwitch)
-        return GeneralConfig::instance()->loadPixmap(iconName);
-    else
-        return GeneralConfig::instance()->loadPixmap("small/" + iconName);
+  // qDebug("getPixmapName,Winch,Color: %d %s",typeID, iconName.latin1() );
+
+  if(isSwitch)
+    return GeneralConfig::instance()->loadPixmap(iconName);
+  else
+    return GeneralConfig::instance()->loadPixmap("small/" + iconName);
 }
 
 
 QPixmap MapConfig::getPixmap(QString iconName)
 {
-    if(isSwitch)
-        return GeneralConfig::instance()->loadPixmap(iconName);
-    else
-        return GeneralConfig::instance()->loadPixmap("small/" + iconName);
+  // qDebug("getPixmapName: %s", iconName.latin1() );
+
+  if(isSwitch)
+    return GeneralConfig::instance()->loadPixmap(iconName);
+  else
+    return GeneralConfig::instance()->loadPixmap("small/" + iconName);
 }
 
 
-bool  MapConfig::isRotatable( unsigned int typeID )
+bool MapConfig::isRotatable( unsigned int typeID )
 {
-    switch(typeID) {
-    case BaseMapElement::Airport:
-    case BaseMapElement::IntAirport:
-    case BaseMapElement::CivMilAirport:
-    case BaseMapElement::Airfield:
-    case BaseMapElement::Glidersite:
-        return true;
-    default:
-        return false;
-    }
+  switch(typeID) {
+  case BaseMapElement::Airport:
+  case BaseMapElement::IntAirport:
+  case BaseMapElement::CivMilAirport:
+  case BaseMapElement::Airfield:
+  case BaseMapElement::Glidersite:
+    return true;
+  default:
+    return false;
+  }
 }
 
 
 QString MapConfig::getPixmapName(unsigned int typeID, bool isWinch, bool rotatable, QColor /*color*/ )
 {
-    QString iconName;
+  QString iconName;
 
-    switch(typeID) {
-    case BaseMapElement::Airport:
-    case BaseMapElement::IntAirport:
-        iconName = "airport";
-        break;
-    case BaseMapElement::MilAirport:
-        iconName = "milairport";
-        break;
-    case BaseMapElement::CivMilAirport:
-        iconName = "civmilair";
-        break;
-    case BaseMapElement::Airfield:
-        iconName = "airfield";
-        break;
-    case BaseMapElement::ClosedAirfield:
-        iconName = "closed";
-        break;
-    case BaseMapElement::CivHeliport:
-        iconName = "civheliport";
-        break;
-    case BaseMapElement::MilHeliport:
-        iconName = "milheliport";
-        break;
-    case BaseMapElement::AmbHeliport:
-        iconName = "ambheliport";
-        break;
-    case BaseMapElement::Glidersite:
-        if(isWinch)
-            iconName = "glider_winch";
-        else
-            iconName = "glider";
-        break;
-    case BaseMapElement::UltraLight:
-        iconName = "ul";
-        break;
-    case BaseMapElement::HangGlider:
-        iconName = "paraglider";
-        break;
-    case BaseMapElement::Parachute:
-        iconName = "jump";
-        break;
-    case BaseMapElement::Balloon:
-        iconName = "balloon";
-        break;
-    case BaseMapElement::CompPoint:
-        iconName = "compoint";
-        break;
-    case BaseMapElement::Landmark:
-        iconName = "landmark";
-        break;
-    case BaseMapElement::Outlanding:
-        iconName = "outlanding";
-        break;
-    case BaseMapElement::Vor:
-        iconName = "vor";
-        break;
-    case BaseMapElement::VorDme:
-        iconName = "vordme";
-        break;
-    case BaseMapElement::VorTac:
-        iconName = "vortac";
-        break;
-    case BaseMapElement::Ndb:
-        iconName = "ndb";
-        break;
-    case BaseMapElement::Obstacle:
-        iconName = "obstacle";
-        break;
-    case BaseMapElement::LightObstacle:
-        iconName = "obst_light";
-        break;
-    case BaseMapElement::ObstacleGroup:
-        iconName = "obst_group";
-        break;
-    case BaseMapElement::LightObstacleGroup:
-        iconName = "obst_group_light";
-        break;
-    case BaseMapElement::Village:
-        iconName = "village";
-        break;
-    case BaseMapElement::Railway:
-        iconName = "railway";
-        break;
-    case BaseMapElement::AerialRailway:
-        iconName = "waypoint";
-        break;
-    case BaseMapElement::Turnpoint:
-        iconName = "waypoint";
-        break;
-    case BaseMapElement::Thermal:
-        iconName = "thermal";
-        break;
-    case BaseMapElement::City:
-        iconName = "waypoint";
-        break;
-    case BaseMapElement::EmptyPoint:
-        iconName = "empty";
-        break;
-
-    default:
-        iconName = "empty";
-        break;
-    }
-    if( rotatable )
-        iconName += "-18.png";  // airfield icons can be rotated 10 deg wise
+  switch(typeID) {
+  case BaseMapElement::Airport:
+  case BaseMapElement::IntAirport:
+    iconName = "airport";
+    break;
+  case BaseMapElement::MilAirport:
+    iconName = "milairport";
+    break;
+  case BaseMapElement::CivMilAirport:
+    iconName = "civmilair";
+    break;
+  case BaseMapElement::Airfield:
+    iconName = "airfield";
+    break;
+  case BaseMapElement::ClosedAirfield:
+    iconName = "closed";
+    break;
+  case BaseMapElement::CivHeliport:
+    iconName = "civheliport";
+    break;
+  case BaseMapElement::MilHeliport:
+    iconName = "milheliport";
+    break;
+  case BaseMapElement::AmbHeliport:
+    iconName = "ambheliport";
+    break;
+  case BaseMapElement::Glidersite:
+    if(isWinch)
+      iconName = "glider_winch";
     else
-        iconName += ".xpm";
-    return iconName;
+      iconName = "glider";
+    break;
+  case BaseMapElement::UltraLight:
+    iconName = "ul";
+    break;
+  case BaseMapElement::HangGlider:
+    iconName = "paraglider";
+    break;
+  case BaseMapElement::Parachute:
+    iconName = "jump";
+    break;
+  case BaseMapElement::Balloon:
+    iconName = "balloon";
+    break;
+  case BaseMapElement::CompPoint:
+    iconName = "compoint";
+    break;
+  case BaseMapElement::Landmark:
+    iconName = "landmark";
+    break;
+  case BaseMapElement::Outlanding:
+    iconName = "outlanding";
+    break;
+  case BaseMapElement::Vor:
+    iconName = "vor";
+    break;
+  case BaseMapElement::VorDme:
+    iconName = "vordme";
+    break;
+  case BaseMapElement::VorTac:
+    iconName = "vortac";
+    break;
+  case BaseMapElement::Ndb:
+    iconName = "ndb";
+    break;
+  case BaseMapElement::Obstacle:
+    iconName = "obstacle";
+    break;
+  case BaseMapElement::LightObstacle:
+    iconName = "obst_light";
+    break;
+  case BaseMapElement::ObstacleGroup:
+    iconName = "obst_group";
+    break;
+  case BaseMapElement::LightObstacleGroup:
+    iconName = "obst_group_light";
+    break;
+  case BaseMapElement::Village:
+    iconName = "village";
+    break;
+  case BaseMapElement::Railway:
+    iconName = "railway";
+    break;
+  case BaseMapElement::AerialRailway:
+    iconName = "waypoint";
+    break;
+  case BaseMapElement::Turnpoint:
+    iconName = "waypoint";
+    break;
+  case BaseMapElement::Thermal:
+    iconName = "thermal";
+    break;
+  case BaseMapElement::City:
+    iconName = "waypoint";
+    break;
+  case BaseMapElement::EmptyPoint:
+    iconName = "empty";
+    break;
+
+  default:
+    iconName = "empty";
+    break;
+  }
+  if( rotatable )
+    iconName += "-18.png";  // airfield icons can be rotated 10 deg wise
+  else
+    iconName += ".xpm";
+  return iconName;
 }
 
 
 /** Returns true if small icons are used, else returns false. */
 bool MapConfig::useSmallIcons() const
 {
-    return !isSwitch;
+  return !isSwitch;
 }
 
 
 /** Read property of bool drawBearing. */
 bool MapConfig::getdrawBearing() const
 {
-    return drawBearing;
+  return drawBearing;
 }
 
 
 /** Read property of bool drawBearing. */
 bool MapConfig::getdrawIsoLines() const
 {
-    return drawIsoLines;
+  return drawIsoLines;
 }
 
 
 bool MapConfig::getShowWpLabels() const
 {
-    return bShowWpLabels;
+  return bShowWpLabels;
 }
 
 void MapConfig::setShowWpLabels(bool show)
 {
-    bShowWpLabels=show;
-    GeneralConfig::instance()->setMapShowWaypointLabels( show );
+  bShowWpLabels=show;
+  GeneralConfig::instance()->setMapShowWaypointLabels( show );
 }
 
 
 bool MapConfig::getShowWpLabelsExtraInfo() const
 {
-    return bShowWpLabelsExtraInfo;
+  return bShowWpLabelsExtraInfo;
 }
 
 void MapConfig::setShowWpLabelsExtraInfo(bool show)
@@ -1017,47 +1025,47 @@ void MapConfig::setShowWpLabelsExtraInfo(bool show)
 /** Returns whether or not the object should be loaded. */
 bool MapConfig::getLoadIsolines() const
 {
-    return bLoadIsolines;
+  return bLoadIsolines;
 }
 
 
 bool MapConfig::getShowIsolineBorders() const
 {
-    return bShowIsolineBorders;
+  return bShowIsolineBorders;
 }
 
 
 bool MapConfig::getLoadRoads() const
 {
-    return bLoadRoads;
+  return bLoadRoads;
 }
 
 
 bool MapConfig::getLoadHighways() const
 {
-    return bLoadHighways;
+  return bLoadHighways;
 }
 
 
 bool MapConfig::getLoadRailroads() const
 {
-    return bLoadRailroads;
+  return bLoadRailroads;
 }
 
 
 bool MapConfig::getLoadCities() const
 {
-    return bLoadCities;
+  return bLoadCities;
 }
 
 
 bool MapConfig::getLoadWaterways() const
 {
-    return bLoadWaterways;
+  return bLoadWaterways;
 }
 
 
 bool MapConfig::getLoadForests() const
 {
-    return bLoadForests;
+  return bLoadForests;
 }

@@ -425,9 +425,9 @@ void CumulusApp::slotCreateApplicationWidgets()
   connect( calculator, SIGNAL( newPosition( const QPoint&, const int ) ),
            viewMap, SLOT( slot_Position( const QPoint&, const int ) ) );
   connect( calculator, SIGNAL( newPosition( const QPoint&, const int ) ),
-           viewMap->_theMap, SLOT( slot_position( const QPoint&, const int ) ) );
+           viewMap->_theMap, SLOT( slotPosition( const QPoint&, const int ) ) );
   connect( calculator, SIGNAL( switchManualInFlight() ),
-           viewMap->_theMap, SLOT( slot_switchManualInFlight() ) );
+           viewMap->_theMap, SLOT( slotSwitchManualInFlight() ) );
   connect( calculator, SIGNAL( glidePath( const Altitude& ) ),
            viewMap, SLOT( slot_GlidePath( const Altitude& ) ) );
   connect( calculator, SIGNAL( bestSpeed( const Speed& ) ),
@@ -1043,23 +1043,23 @@ void CumulusApp::slotToggleMenu()
 void CumulusApp::slotToggleWpLabels( bool toggle )
 {
   _globalMapConfig->setShowWpLabels( toggle );
-  viewMap->_theMap->quickDraw();
+  viewMap->_theMap->sceduleRedraw(Map::waypoints);
 }
 
 
 void CumulusApp::slotToggleWpLabelsExtraInfo( bool toggle )
 {
   _globalMapConfig->setShowWpLabelsExtraInfo( toggle );
-  viewMap->_theMap->quickDraw();
+  viewMap->_theMap->sceduleRedraw(Map::waypoints);
 }
 
 
 void CumulusApp::slotViewStatusBar( bool toggle )
 {
   if ( toggle )
-    viewMap->statusBar() ->show();
+    viewMap->statusBar()->show();
   else
-    viewMap->statusBar() ->hide();
+    viewMap->statusBar()->hide();
 }
 
 
@@ -1531,9 +1531,9 @@ void CumulusApp::slotReadconfig()
   WGSPoint::setFormat( WGSPoint::Format( conf->getUnitPos() ) );
 
   // other config changes
+  _globalMapConfig->slotReadConfig();
   viewMap->slot_settingschange();
   calculator->slot_settingschanged();
-  _globalMapConfig->slotReadConfig();
   viewTP->slot_updateTask();
 
   // configure reconnect of GPS receiver in case of process stop
@@ -1580,7 +1580,7 @@ void CumulusApp::slotReadconfig()
                        this, SLOT( slot_tabChanged( QWidget* ) ) );
               calculator->clearReachable();
               viewRP->fillRpList();   // this clears the listView
-              viewMap->_theMap->quickDraw();
+              viewMap->_theMap->sceduleRedraw(Map::waypoints);
               _reachpointListVisible = false;
             }
         }
@@ -1714,17 +1714,14 @@ void CumulusApp::slotPreFlightDataChanged()
 
   // set the task list view at the current task
   viewTP->slot_setTask( _globalMapContents->getCurrentTask() );
-
-  // quickDraw is enough, no need for sceduleRedraw() since
-  // task line is on top, airspace and below structures not changed in preflight dlg
-  viewMap->_theMap->quickDraw();
+  viewMap->_theMap->sceduleRedraw(Map::task);
 }
 
 /** dynamicly updates view for reachable list */
 void CumulusApp::slot_newReachList()
 {
   viewRP->slot_newList(); //let the view know we have a new list
-  viewMap->_theMap->quickDraw();
+  viewMap->_theMap->sceduleRedraw(Map::waypoints);
 }
 
 
@@ -1814,11 +1811,11 @@ void CumulusApp::resizeEvent(QResizeEvent* event)
 /** Called to prevent the switch off of the screen display */
 void CumulusApp::slot_ossoDisplayTrigger()
 {
-  // If the speed is greater or equal 20 km/h and we have a connected
+  // If the speed is greater or equal 10 km/h and we have a connected
   // gps we switch off the screen saver. Otherwise we let all as it
   // is.
 
-  if( calculator->getlastSpeed().getKph() >= 20.0 && gps->getConnected() )
+  if( calculator->getlastSpeed().getKph() >= 10.0 && gps->getConnected() )
     {
       // tell maemo that we are in move to avoid blank screen
       osso_return_t ret = osso_display_blanking_pause( ossoContext );

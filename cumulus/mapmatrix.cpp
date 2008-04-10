@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2001 by Heiner Lamprecht, 2007 Axel Pauli
+ **   Copyright (c):  2001 by Heiner Lamprecht
+ **                   2008 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -16,6 +17,8 @@
  ***********************************************************************/
 
 #include <cmath>
+
+#include <QtGlobal>
 #include <QMessageBox>
 
 #include "mapcalc.h"
@@ -28,9 +31,6 @@
 // Bei dieser Vergrößerung erfolgt die eigentliche Projektion
 #define MAX_SCALE 50.0   // 40.0
 #define MIN_SCALE 2000.0 // 800.0
-
-#define MAX(a,b)   ( ( a > b ) ? a : b )
-#define MIN(a,b)   ( ( a < b ) ? a : b )
 
 // Mit welchem Radius müssen wir rechnen ???
 // #define RADIUS 6370290 //6370289.509
@@ -47,19 +47,13 @@
 
 MapMatrix::MapMatrix(QObject* parent)
   : QObject(parent),
-    mapCenterLat(0), mapCenterLon(0), printCenterLat(0), printCenterLon(0),
-    homeLat(0), homeLon(0), cScale(0), pScale(0), rotationArc(0), printArc(0),
-    matrixSize(0,0)
+    mapCenterLat(0), mapCenterLon(0),
+    homeLat(0), homeLon(0), cScale(0), pScale(0), rotationArc(0)
 {
   viewBorder.setTop(32000000);
   viewBorder.setBottom(25000000);
   viewBorder.setLeft(2000000);
   viewBorder.setRight(7000000);
-
-  //  printBorder.setTop(32000000);
-  //  printBorder.setBottom(25000000);
-  //  printBorder.setLeft(2000000);
-  //  printBorder.setRight(7000000);
 
   mapCenterArea=QRect(0,0,0,0);
   mapCenterAreaProj=QRect(0,0,0,0);
@@ -69,11 +63,17 @@ MapMatrix::MapMatrix(QObject* parent)
   // call.
 
   GeneralConfig *conf = GeneralConfig::instance();
+  
+  // save current map root directory to detect user changes during run-time
+  mapRootDir = conf->getMapRootDir();
+  
   int projectionType = conf->getMapProjectionType();
 
   if( projectionType == ProjectionBase::Lambert ) {
     // qDebug("MapMatrixConst: Lambert");
-    currentProjection = new ProjectionLambert(conf->getLambertParallel1(),conf->getLambertParallel2(),conf->getLambertOrign());
+    currentProjection = new ProjectionLambert(conf->getLambertParallel1(),
+                                              conf->getLambertParallel2(),
+                                              conf->getLambertOrign());
   } else {
     // qDebug("MapMatrixConst: Cylindric");
     currentProjection = new ProjectionCylindric(conf->getCylinderParallel());
@@ -248,7 +248,6 @@ void MapMatrix::centerToLatLon(const QPoint& center)
 void MapMatrix::slotCenterTo(int latitude, int longitude)
 {
   centerToLatLon(latitude, longitude);
-  //emit matrixChanged();
 }
 
 
@@ -339,10 +338,6 @@ void MapMatrix::__moveMap(int dir)
     mapCenterLat = homeLat;
     mapCenterLon = homeLon;
   }
-
-  // @AP: seems not to be necessary
-  // createMatrix(matrixSize);
-  // emit matrixChanged();
 }
 
 
@@ -353,7 +348,7 @@ void MapMatrix::createMatrix(const QSize& newSize)
 
   /* Set rotating and scaling */
   const double scale = MAX_SCALE / cScale;
-  rotationArc = currentProjection->getRotationArc(tempPoint.x(), tempPoint.y());// + 3.14;
+  rotationArc = currentProjection->getRotationArc(tempPoint.x(), tempPoint.y());
   // qDebug("rotationArc: %f", rotationArc);
   double sinscaled = sin(rotationArc) * scale;
   double cosscaled = cos(rotationArc) * scale;
@@ -396,14 +391,15 @@ void MapMatrix::createMatrix(const QSize& newSize)
   viewBorder.setTop(tCenter.y());
   viewBorder.setLeft(tlCorner.x());
   viewBorder.setRight(trCorner.x());
-  viewBorder.setBottom(MIN(blCorner.y(), brCorner.y()));
+  viewBorder.setBottom( qMin(blCorner.y(), brCorner.y()) );
 
   mapBorder = invertMatrix.map(QRect(0,0, newSize.width(), newSize.height()));
   mapViewSize = newSize;
 
-  //create the mapcenter area definition
+  //create the map center area definition
   int vqDist=-viewBorder.height()/5;
   int hqDist=viewBorder.width()/5;
+  
   mapCenterArea=QRect(mapCenterLat - vqDist, mapCenterLon - hqDist, 2* vqDist, 2* hqDist);
 
   vqDist=mapBorder.height()/5;
@@ -421,10 +417,10 @@ void MapMatrix::slotSetScale(const double& nScale)
 {
   if (nScale <= 0)
     return;
-  cScale=MAX(nScale,scaleBorders[LowerLimit]);
-  cScale = MIN(cScale,scaleBorders[UpperLimit]);
-  //createMatrix(matrixSize);
-  //emit matrixChanged();
+
+  cScale = qMax( (int) nScale, scaleBorders[LowerLimit]);
+  cScale = qMin( (int) cScale, scaleBorders[UpperLimit]);
+
   _MaxScaleToCScaleRatio=int((MIN_SCALE/cScale)*(MAX_SCALE));
   qDebug("MapMatrix::slotSetScale(): Set new scale to %f ratio: %d ",cScale,_MaxScaleToCScaleRatio );
 }
@@ -436,12 +432,10 @@ void MapMatrix::slotInitMatrix()
 
   GeneralConfig *conf = GeneralConfig::instance();
 
-  //
   // The scale is set to 0 in the constructor. Here we read the scale and
-  // the mapcenter only the first time. Otherwise the values would change
-  // after configuring KFLog.
-  //
-  //                                                Fixed 2001-12-14
+  // the map center only the first time. Otherwise the values would change
+  // after configuring Cumulus.
+
   if(cScale <= 0) {
     // @ee we want to center to the last position !
     mapCenterLat = conf->getCenterLat();
@@ -489,19 +483,25 @@ void MapMatrix::slotInitMatrix()
   scaleBorders[Border3]     = conf->getMapBorder3();
   scaleBorders[SwitchScale] = conf->getMapSwitchScale();
 
-  cScale = MIN(cScale, scaleBorders[UpperLimit]);
-  cScale = MAX(cScale, scaleBorders[LowerLimit]);
+  cScale = qMin( (int) cScale, scaleBorders[UpperLimit]);
+  cScale = qMax( (int) cScale, scaleBorders[LowerLimit]);
 
   bool initChanged = false;
 
   if (currentProjection->projectionType() == ProjectionBase::Lambert) {
-    initChanged = ((ProjectionLambert*)currentProjection)->initProjection(
-                                                                          conf->getLambertParallel1(),
-                                                                          conf->getLambertParallel2(),
-                                                                          conf->getLambertOrign() );
-  } else if (currentProjection->projectionType() == ProjectionBase::Cylindric) {
-    initChanged = ((ProjectionCylindric*)currentProjection)->initProjection(
-                                                                            conf->getCylinderParallel() );
+    initChanged = ((ProjectionLambert*)currentProjection)->initProjection( conf->getLambertParallel1(),
+                                                                           conf->getLambertParallel2(),
+                                                                           conf->getLambertOrign() );
+  }
+  else if (currentProjection->projectionType() == ProjectionBase::Cylindric) {
+    initChanged = ((ProjectionCylindric*)currentProjection)->initProjection( conf->getCylinderParallel() );
+  }
+  
+  if( mapRootDir != conf->getMapRootDir() ) {
+    // The user has defined a new map root directory at run-time. We should take
+    // that as new source for map files and trigger a reload of all map files.
+    mapRootDir = conf->getMapRootDir();
+    initChanged = true;
   }
 
   if( initChanged ) {
@@ -515,7 +515,7 @@ void MapMatrix::slotInitMatrix()
 
     QMessageBox::warning( 0, "Cumulus",
                           tr( "<html>"
-                              "<b>Map projection has been changed.</b><p>"
+                              "<b>Map configuration data have been changed.</b><p>"
                               "Please ensure that original "
                               "map files are available for recompiling!"
                               "</html>" ) );
@@ -536,9 +536,10 @@ double MapMatrix::ensureVisible(const QPoint& point)
   double yScale=2.0 * (yDist*1000.0) / mapViewSize.width();
 
   //we obviously need the bigger of the two scales
-  double newScale=MAX(xScale, yScale);
+  double newScale = qMax(xScale, yScale);
+  
   if (newScale < MIN_SCALE) {  //we only zoom if we can fit it on the map with the minimum scale or more
-    newScale=MAX(newScale, MAX_SCALE); //maximum zoom is the minimum scale
+    newScale=qMax(newScale, MAX_SCALE); //maximum zoom is the minimum scale
     cScale=newScale;
 
     return cScale;
