@@ -312,8 +312,6 @@ void CumulusApp::slotCreateApplicationWidgets()
   ws->slot_SetText1( tr( "Setting up connections..." ) );
 
   // create connections between the components
-  connect( _globalMapMatrix, SIGNAL( matrixChanged() ),
-           viewMap->_theMap, SLOT( slotRedraw() ) );
   connect( _globalMapMatrix, SIGNAL( projectionChanged() ),
            _globalMapContents, SLOT( slotReloadMapData() ) );
 
