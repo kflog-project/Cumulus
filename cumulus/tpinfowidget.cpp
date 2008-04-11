@@ -50,6 +50,7 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   QWidget( parent )
 {
   setObjectName("TPInfoWidget");
+  setAttribute( Qt::WA_DeleteOnClose );
   this->parent = parent;
   resize( parent->size() );
 
@@ -115,7 +116,7 @@ void TPInfoWidget::slot_Close()
   hide();
   text->clearFocus();
   emit close();
-  QWidget::close( true );
+  QWidget::close();
 }
 
 /** This slot get called on the timer timeout. If timer expires the

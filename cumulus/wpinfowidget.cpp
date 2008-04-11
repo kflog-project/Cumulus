@@ -54,8 +54,8 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
 
   QFont bfont( "Helvetica", 14, QFont::Bold  );
 
-  QBoxLayout *topLayout = new QVBoxLayout( this );
-  text = new QTextEdit(this, "WaypointInfo");
+  QBoxLayout *topLayout = new QVBoxLayout(this);
+  text = new QTextEdit(this);
   text->setReadOnly(true);
   text->setLineWrapMode(QTextEdit::WidgetWidth);
   topLayout->addWidget(text,10);
@@ -276,6 +276,7 @@ void WPInfoWidget::writeText()
       QString tmp;
       int iTmp;
       bool start = false;
+      QString table = "<p><table cellpadding=5 width=100%>";
 
       itxt+= "<html><big><center><b>" + _wp->description + " (" + _wp->name;
 
@@ -288,7 +289,7 @@ void WPInfoWidget::writeText()
 
       if (_wp->isLandable)
         {
-          itxt+= "</b></center></big>";
+          itxt+= "</b></center>";
 
           iTmp=_wp->surface;
 
@@ -311,36 +312,33 @@ void WPInfoWidget::writeText()
               tmp2.sprintf("<b>%02d/%02d</b>", rw1 < rw2 ? rw1/10 : rw2/10, rw1 < rw2 ? rw2/10 : rw1/10);
             }
 
-          itxt += tmp.sprintf( "<table cellpadding=10><tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (%s)</td>" +
+          itxt += tmp.sprintf( table + "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (%s)</td>" +
                                "<td>" + tr("Length: ") + "</td><td><b>", Airport::item2Text(iTmp).toLatin1().data() );
 
           if( _wp->length <= 0 )
             {
-              itxt += tr("Unknown") + "</b></td>";
+              itxt += tr("Unknown") + "</b></td></tr>";
             }
           else
             {
-              itxt+=tmp.sprintf( "%d m</b></td>", _wp->length );
+              itxt+=tmp.sprintf( "%d m</b></td></tr>", _wp->length );
             }
         }
       else
         {
-          itxt+="<font color=\"#FF0000\"> - " + tr("NOT LANDABLE") + "</font>" +
-                "</b></center></big>" +
-                "<table cellpadding=10><tr>";
+          itxt+=" - <font color=\"#FF0000\">" + tr("NOT LANDABLE") + "</font>" +
+                "</b></center>" + table;
           start = true;
         }
 
       if (_wp->frequency >= 108.0 && _wp->frequency <= 137.0 )
         {
-          itxt+=tmp.sprintf("<td>"+tr("Frequency:")+"</td><td><b>%1.3f MHz</b></td>", _wp->frequency);
+          itxt+=tmp.sprintf("<tr><td>" + tr("Frequency:") + "</td><td><b>%1.3f MHz</b></td>", _wp->frequency);
         }
       else
         {
-          itxt+="<td>"+tr("Frequency:")+"</td><td><b>"+tr("Unknown")+"</b></td>";
+          itxt+="<tr><td>" + tr("Frequency:") + "</td><td><b>" + tr("Unknown") + "</b></td>";
         }
-
-      itxt += ( start == true ) ? "<td colspan=4>&nbsp;</td></tr>" : "</tr>";
 
       // save current unit
       Altitude::altitude currentUnit = Altitude::getUnit();
@@ -356,15 +354,15 @@ void WPInfoWidget::writeText()
 
        if( currentUnit == Altitude::meters )
          {
-           itxt += "<tr><td>"+tr("Elevation:") +
+           itxt += "<td>"+tr("Elevation:") +
              "</td><td><b>" + meters + " / " + feet +
-             "</b></td>";
+             "</b></td></tr>";
          }
        else
          {
-           itxt += "<tr><td>"+tr("Elevation:") +
+           itxt += "<td>"+tr("Elevation:") +
              "</td><td><b>" + feet + " / " + meters +
-             "</b></td>";
+             "</b></td></tr>";
          }
 
       QString sr, ss;
@@ -377,7 +375,7 @@ void WPInfoWidget::writeText()
         {
           // In some areas no results available. In this case we skip
           // this output.
-          itxt += tmp.sprintf( "<td>" + tr("Sunrise:") +
+          itxt += tmp.sprintf( "<tr><td>" + tr("Sunrise:") +
                                "</td><td><b>" +
                                "%s UTC</b></td>",
                                sr.toLatin1().data() );
@@ -387,16 +385,12 @@ void WPInfoWidget::writeText()
                                "%s UTC</b></td></tr>",
                                ss.toLatin1().data() );
         }
-      else
-        {
-          itxt += "<td colspan=4>&nbsp;</td></tr>";
-        }
 
       itxt += "<tr><td>" + tr("Latitude:") + "</td><td><b>" +
         WGSPoint::printPos(_wp->origP.x(),true) + "</b></td>" +
-        "<td>" + tr("Longitute:") + "</td><td><b>" +
+        "<td>" + tr("Longitude:") + "</td><td><b>" +
         WGSPoint::printPos(_wp->origP.y(),false) +
-        "</b></td><td colspan=2>&nbsp;</td></tr>" +
+        "</b></td></tr>" +
         "</table>";
 
       if ((_wp->comment!=QString::null) && (_wp->comment!=""))
@@ -405,7 +399,7 @@ void WPInfoWidget::writeText()
             "</th></tr><tr><td>" + _wp->comment + "</td></tr></table>";
         }
 
-      itxt+="</html>";
+      itxt+="</big></html>";
 
       text->setText(itxt);
     }
@@ -555,6 +549,7 @@ void WPInfoWidget::slot_arrival()
 
   // create arrival info widget
   arrivalInfo = new TPInfoWidget( this );
+  // arrivalInfo->setWindowModality(Qt::WindowModal);
   arrivalInfo->prepareArrivalInfoText( _wp );
   arrivalInfo->showTP( false );
 
