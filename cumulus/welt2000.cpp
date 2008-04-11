@@ -805,13 +805,18 @@ bool Welt2000::parse( QString& path,
         {
           if( icao.startsWith("ET") )
             {
-              // German military airfield
+              // German military airport
               afType = BaseMapElement::MilAirport;
             }
           else if( afName.contains(QRegExp(" MIL$")) )
             {
-              // should be an military airfiled but not 100% sure
+              // should be an military airport but not 100% sure
               afType = BaseMapElement::MilAirport;
+            }
+          else if( icao.startsWith("EDD") )
+            {
+              // German international airport
+              afType = BaseMapElement::IntAirport;
             }
           else
             {
