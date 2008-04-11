@@ -21,6 +21,7 @@
 #include <QMessageBox>
 #include <QFont>
 #include <QRegExp>
+#include <QShortcut>
 
 #include "cumulusapp.h"
 #include "basemapelement.h"
@@ -41,8 +42,8 @@ extern MapContents  *_globalMapContents;
 extern CuCalc       *calculator;
 
 WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
-  QWidget(parent),
-  _wp(0)
+    QWidget(parent),
+    _wp(0)
 {
   setObjectName("WPInfoWidget");
   cuApp = parent;
@@ -76,19 +77,19 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
   cmdAddWaypoint->setFont(bfont);
   buttonrow2->addWidget(cmdAddWaypoint);
   connect(cmdAddWaypoint, SIGNAL(clicked()),
-	  this, SLOT(slot_addAsWaypoint()));
+          this, SLOT(slot_addAsWaypoint()));
 
   cmdSetHome = new QPushButton(tr("New Home"), this);
   cmdSetHome->setFont(bfont);
   buttonrow2->addWidget(cmdSetHome);
   connect(cmdSetHome, SIGNAL(clicked()),
-	  this, SLOT(slot_setAsHome()));
+          this, SLOT(slot_setAsHome()));
 
   cmdArrival = new QPushButton(tr("Arrival"), this);
   cmdArrival->setFont(bfont);
   buttonrow2->addWidget(cmdArrival);
   connect(cmdArrival, SIGNAL(clicked()),
-	  this, SLOT(slot_arrival()));
+          this, SLOT(slot_arrival()));
 
   buttonrow1=new QHBoxLayout(topLayout);
 
@@ -96,47 +97,59 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
   cmdClose->setFont(bfont);
   buttonrow1->addWidget(cmdClose);
   connect(cmdClose, SIGNAL(clicked()),
-	  this, SLOT(slot_SwitchBack()));
+          this, SLOT(slot_SwitchBack()));
+
+  // Activate keyboard shortcut return to close the window too
+  QShortcut* scClose = new QShortcut( this );
+  scClose->setKey( Qt::Key_Return );
+  connect( scClose, SIGNAL(activated()),
+           this, SLOT( slot_SwitchBack() ));
 
   cmdKeep = new QPushButton(tr("Keep"), this);
   cmdKeep->setFont(bfont);
   buttonrow1->addWidget(cmdKeep);
   connect(cmdKeep, SIGNAL(clicked()),
-	  this, SLOT(slot_KeepOpen()));
+          this, SLOT(slot_KeepOpen()));
 
   cmdUnselectWaypoint = new QPushButton(tr("Unselect"), this);
   cmdUnselectWaypoint->setFont(bfont);
   buttonrow1->addWidget(cmdUnselectWaypoint);
   connect(cmdUnselectWaypoint, SIGNAL(clicked()),
-	  this, SLOT(slot_unselectWaypoint()));
+          this, SLOT(slot_unselectWaypoint()));
 
   cmdSelectWaypoint = new QPushButton(tr("Select"), this);
   cmdSelectWaypoint->setFont(bfont);
   buttonrow1->addWidget(cmdSelectWaypoint);
   connect(cmdSelectWaypoint, SIGNAL(clicked()),
-	  this, SLOT(slot_selectWaypoint()));
+          this, SLOT(slot_selectWaypoint()));
 
   timer=new QTimer(this);
   connect(timer, SIGNAL(timeout()),
-	  this, SLOT(slot_timeout()));
+          this, SLOT(slot_timeout()));
 }
 
 WPInfoWidget::~WPInfoWidget()
 {
-  if( _wp ) delete _wp;
+  if( _wp )
+    {
+      delete _wp;
+    }
 }
 
 /** This slot get called on the timer timeout. */
 void WPInfoWidget::slot_timeout()
 {
-  if(--_timerCount==0) {
-    timer->stop();
-    slot_SwitchBack();
-  } else {
-    QString txt;
-    txt.sprintf(tr("Close (%d)"),_timerCount);
-    cmdClose->setText(txt);
-  }
+  if(--_timerCount==0)
+    {
+      timer->stop();
+      slot_SwitchBack();
+    }
+  else
+    {
+      QString txt;
+      txt.sprintf(tr("Close (%d)"),_timerCount);
+      cmdClose->setText(txt);
+    }
 }
 
 /** This method is called by CumulusApp to set the view to
@@ -146,9 +159,10 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint *wp)
   extern MapContents* _globalMapContents;
   extern MapMatrix*   _globalMapMatrix;
 
-  if( wp == 0 ) {
-    return false;
-  }
+  if( wp == 0 )
+    {
+      return false;
+    }
 
   // Check if new point is in waypoint list, so make sure we can add it.
   if (_globalMapContents->getIsInWaypointList(wp))
@@ -159,39 +173,53 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint *wp)
   // check, if current home position is different from waypoint
   QPoint home = _globalMapMatrix->getHomeCoord();
 
-  if( home == wp->origP || inFlight() ) {
-    cmdSetHome->hide();
-  } else {
-    cmdSetHome->show();
-  }
+  if( home == wp->origP || inFlight() )
+    {
+      cmdSetHome->hide();
+    }
+  else
+    {
+      cmdSetHome->show();
+    }
 
   // Check if Waypoint is not selected, so make sure we can select
   // it.
 
   const wayPoint *calcWp = calculator->getselectedWp();
 
-  if( calcWp ) {
-    if( wp->origP == calcWp->origP ) {
-      cmdUnselectWaypoint->show();
-      cmdSelectWaypoint->hide();
-    } else {
+  if( calcWp )
+    {
+      if( wp->origP == calcWp->origP )
+        {
+          cmdUnselectWaypoint->show();
+          cmdSelectWaypoint->hide();
+        }
+      else
+        {
+          cmdSelectWaypoint->show();
+          cmdUnselectWaypoint->hide();
+        }
+    }
+  else
+    {
       cmdSelectWaypoint->show();
       cmdUnselectWaypoint->hide();
     }
-  } else {
-    cmdSelectWaypoint->show();
-    cmdUnselectWaypoint->hide();
-  }
 
-  if( wp->taskPointIndex == 0 ) {
-    // take-off task points are not select or unselectable
-    cmdSelectWaypoint->hide();
-    cmdUnselectWaypoint->hide();
-  }
+  if( wp->taskPointIndex == 0 )
+    {
+      // take-off task points are not select or unselectable
+      cmdSelectWaypoint->hide();
+      cmdUnselectWaypoint->hide();
+    }
 
   // save new values. We make a deep copy to prevent problems with
   // constant methods elsewhere.
-  if( _wp) delete _wp;
+  if( _wp)
+    {
+      delete _wp;
+    }
+
   _wp = new wayPoint(*wp);
   _lastView = lastView;
 
@@ -201,17 +229,20 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint *wp)
   GeneralConfig *conf = GeneralConfig::instance();
   _timerCount = conf->getInfoDisplayTime();
 
-  if( _timerCount > 0 ) {
-    timer->start(1000);
-    QString txt;
-    txt.sprintf(tr("Close (%d)"), _timerCount);
-    cmdClose->setText(txt);
-    cmdKeep->show();
-  } else {
-    // Timer is set to zero, no automatic window close
-    cmdClose->setText(tr("Close"));
-    cmdKeep->hide();
-  }
+  if( _timerCount > 0 )
+    {
+      timer->start(1000);
+      QString txt;
+      txt.sprintf(tr("Close (%d)"), _timerCount);
+      cmdClose->setText(txt);
+      cmdKeep->show();
+    }
+  else
+    {
+      // Timer is set to zero, no automatic window close
+      cmdClose->setText(tr("Close"));
+      cmdKeep->hide();
+    }
 
   show();
   return true;
@@ -232,118 +263,176 @@ void WPInfoWidget::showEvent(QShowEvent *)
 /** This method actually fills the widget with the info. */
 void WPInfoWidget::writeText()
 {
-  if( _wp == 0 ) {
-    text->setText("<qt><big><center><b>" + tr("No waypoint selected") +
-		  "</b></center></big></qt>");
-  } else {
-    //display info on waypoint
-    QString itxt;
-    QString tmp;
-    int iTmp;
-    itxt+= "<qt><big><center><b>" + _wp->description + "<br>(" + _wp->name;
-    if (!_wp->icao.isEmpty())
-      itxt+=",&nbsp;"+ _wp->icao;
-    itxt+= ")</b></center></big><br>";
-    itxt+="<b>" + BaseMapElement::item2Text(_wp->type, tr("(unknown)")) + "</b>";
-
-    if (_wp->isLandable) {
-      iTmp=_wp->surface;
-      if( iTmp > 3 )
-	iTmp = 0;
-      // qDebug("_wp->surface %d", _wp->surface );
-      if (iTmp<0)
-	iTmp=0;
-      QString tmp2;
-      if( _wp->runway < 0 || _wp->runway > 360 ) {
-	// 2250 is used as default for unknown
-	tmp2=tr("Unknown");
-      } else {
-	// @AP: show runway in both directions, start with the lowest one
-	int rw1 =_wp->runway;
-	int rw2 = rw1 <= 180 ? rw1+180 : rw1-180;
-	tmp2.sprintf("<b>%02d/%02d</b>", rw1 < rw2 ? rw1/10 : rw2/10, rw1 < rw2 ? rw2/10 : rw1/10);
-      }
-
-      itxt += tmp.sprintf( "<br><table><tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + ", %s</td></tr><br>" +
-			   "<tr><td>" + tr("Length: ") + "</td><td><b>", Airport::item2Text(iTmp).toLatin1().data() );
-
-      if( _wp->length <= 0 ) {
-	itxt += tr("Unknown") + "</b></td></tr><br>";
-      } else {
-	itxt+=tmp.sprintf( "%d m</b></td></tr><br>", _wp->length );
-      }
-    } else {
-      itxt+="<font color=\"#FF0000\"><b> " + tr("NOT LANDABLE") + "</b></font>" +
-	"<table>";
+  if( _wp == 0 )
+    {
+      text->setText("<html><big><center><b>" +
+                    tr("No waypoint selected") +
+                    "</b></center></big></html>");
     }
+  else
+    {
+      // display info from waypoint
+      QString itxt;
+      QString tmp;
+      int iTmp;
+      bool start = false;
 
-    if (_wp->frequency >= 117.97 && _wp->frequency <= 137.0 ) {
-      itxt+=tmp.sprintf("<tr><td>"+tr("Frequency:")+"</td><td><b>%1.3f</b></td></tr><br>",_wp->frequency);
-    } else {
-      itxt+="<tr><td>"+tr("Frequency:")+"</td><td><b>"+tr("Unknown")+"</b></td></tr>";
+      itxt+= "<html><big><center><b>" + _wp->description + " (" + _wp->name;
+
+      if (!_wp->icao.isEmpty())
+        {
+          itxt+=",&nbsp;"+ _wp->icao;
+        }
+
+      itxt+= ")<p>" + BaseMapElement::item2Text(_wp->type, tr("(unknown)"));
+
+      if (_wp->isLandable)
+        {
+          itxt+= "</b></center></big>";
+
+          iTmp=_wp->surface;
+
+          if( iTmp > 3 )
+            iTmp = 0;
+          // qDebug("_wp->surface %d", _wp->surface );
+          if (iTmp<0)
+            iTmp=0;
+          QString tmp2;
+
+          if( _wp->runway < 0 || _wp->runway > 360 )
+            {
+              tmp2 = tr("Unknown");
+            }
+          else
+            {
+              // @AP: show runway in both directions, start with the lowest one
+              int rw1 =_wp->runway;
+              int rw2 = rw1 <= 180 ? rw1+180 : rw1-180;
+              tmp2.sprintf("<b>%02d/%02d</b>", rw1 < rw2 ? rw1/10 : rw2/10, rw1 < rw2 ? rw2/10 : rw1/10);
+            }
+
+          itxt += tmp.sprintf( "<table cellpadding=10><tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (%s)</td>" +
+                               "<td>" + tr("Length: ") + "</td><td><b>", Airport::item2Text(iTmp).toLatin1().data() );
+
+          if( _wp->length <= 0 )
+            {
+              itxt += tr("Unknown") + "</b></td>";
+            }
+          else
+            {
+              itxt+=tmp.sprintf( "%d m</b></td>", _wp->length );
+            }
+        }
+      else
+        {
+          itxt+="<font color=\"#FF0000\"> - " + tr("NOT LANDABLE") + "</font>" +
+                "</b></center></big>" +
+                "<table cellpadding=10><tr>";
+          start = true;
+        }
+
+      if (_wp->frequency >= 108.0 && _wp->frequency <= 137.0 )
+        {
+          itxt+=tmp.sprintf("<td>"+tr("Frequency:")+"</td><td><b>%1.3f MHz</b></td>", _wp->frequency);
+        }
+      else
+        {
+          itxt+="<td>"+tr("Frequency:")+"</td><td><b>"+tr("Unknown")+"</b></td>";
+        }
+
+      itxt += ( start == true ) ? "<td colspan=4>&nbsp;</td></tr>" : "</tr>";
+
+      // save current unit
+      Altitude::altitude currentUnit = Altitude::getUnit();
+
+      Altitude::setUnit(Altitude::meters);
+      QString meters = Altitude::getText(_wp->elevation, true, 0);
+
+      Altitude::setUnit(Altitude::feet);
+      QString feet = Altitude::getText(_wp->elevation, true, 0);
+
+      // restore save unit
+       Altitude::setUnit(currentUnit);
+
+       if( currentUnit == Altitude::meters )
+         {
+           itxt += "<tr><td>"+tr("Elevation:") +
+             "</td><td><b>" + meters + " / " + feet +
+             "</b></td>";
+         }
+       else
+         {
+           itxt += "<tr><td>"+tr("Elevation:") +
+             "</td><td><b>" + feet + " / " + meters +
+             "</b></td>";
+         }
+
+      QString sr, ss;
+      QDate date = QDate::currentDate();
+
+      // calculate Sunrise and Sunset
+      bool res = Sonne::sonneAufUnter( sr, ss, date, _wp->origP , 0 );
+
+      if( res )
+        {
+          // In some areas no results available. In this case we skip
+          // this output.
+          itxt += tmp.sprintf( "<td>" + tr("Sunrise:") +
+                               "</td><td><b>" +
+                               "%s UTC</b></td>",
+                               sr.toLatin1().data() );
+
+          itxt += tmp.sprintf( "<td>" + tr("Sunset:") +
+                               "</td><td><b>" +
+                               "%s UTC</b></td></tr>",
+                               ss.toLatin1().data() );
+        }
+      else
+        {
+          itxt += "<td colspan=4>&nbsp;</td></tr>";
+        }
+
+      itxt += "<tr><td>" + tr("Latitude:") + "</td><td><b>" +
+        WGSPoint::printPos(_wp->origP.x(),true) + "</b></td>" +
+        "<td>" + tr("Longitute:") + "</td><td><b>" +
+        WGSPoint::printPos(_wp->origP.y(),false) +
+        "</b></td><td colspan=2>&nbsp;</td></tr>" +
+        "</table>";
+
+      if ((_wp->comment!=QString::null) && (_wp->comment!=""))
+        {
+          itxt += "<table cellpadding=5><tr><th align=left>" + tr("Comments") +
+            "</th></tr><tr><td>" + _wp->comment + "</td></tr></table>";
+        }
+
+      itxt+="</html>";
+
+      text->setText(itxt);
     }
-
-    itxt+=tmp.sprintf("<tr><td>"+tr("Elevation:") +
-		      "</td><td><b>%s</b></td></tr>",
-		      Altitude::getText(_wp->elevation, true, 0).latin1());
-
-    QString sr, ss;
-    QDate date = QDate::currentDate();
-
-    // calculate Sunrise and Sunset
-    bool res = Sonne::sonneAufUnter( sr, ss, date, _wp->origP , 0 );
-
-    if( res )
-      {
-	// In some areas no results available. In this cas we skip
-	// this output.
-	itxt+=tmp.sprintf( "<tr><td>" + tr("Sunrise:") +
-			   "</td><td><b>" +
-			   "%s UTC</b></td></tr>",
-			   sr.latin1() );
-
-	itxt+=tmp.sprintf( "<tr><td>" + tr("Sunset:") +
-			   "</td><td><b>" +
-			   "%s UTC</b></td></tr>",
-			   ss.latin1() );
-      }
-
-    itxt += "<tr><td>" + tr("Coord:")+"</td><td>" +
-      WGSPoint::printPos(_wp->origP.x(),true) +
-      "</td></tr> <tr><td>&nbsp;</td><td>" +
-      WGSPoint::printPos(_wp->origP.y(),false) + "</td></tr>" +
-      "</font></table>";
-
-    if ((_wp->comment!=QString::null) && (_wp->comment!="")) {
-      itxt+="<u>"+tr("Comments")+"</u><br>" + _wp->comment;
-    }
-
-    itxt+="</qt>";
-
-    text->setText(itxt);
-  }
 }
 
 
 /** Hide widget and return to the calling view in cumulusApp */
 void WPInfoWidget::slot_SwitchBack()
 {
-  if( arrivalInfo ) {
-    // destroy the arrival widget, user has pressed space button, that
-    // means return from this widget.
-    disconnect( arrivalInfo, SIGNAL(close() ));
-    arrivalInfo->slot_Close();
-    arrivalInfo = 0;       
-  }
+  if( arrivalInfo )
+    {
+      // destroy the arrival widget, user has pressed space button, that
+      // means return from this widget.
+      disconnect( arrivalInfo, SIGNAL(close() ));
+      arrivalInfo->slot_Close();
+      arrivalInfo = 0;
+    }
 
   timer->stop();
   text->clearFocus();
   hide();
 
-  if( _lastView == CumulusApp::infoView ) {
-     // make sure last view isn't this view
-    _lastView = CumulusApp::mapView;
-  }
+  if( _lastView == CumulusApp::infoView )
+    {
+      // make sure last view isn't this view
+      _lastView = CumulusApp::mapView;
+    }
 
   cuApp->setView((CumulusApp::appView)_lastView);
 }
@@ -363,9 +452,10 @@ void WPInfoWidget::slot_unselectWaypoint()
 {
   emit waypointSelected(0, true);
 
-  if( inFlight() ) {
-    return slot_SwitchBack();
-  }
+  if( inFlight() )
+    {
+      return slot_SwitchBack();
+    }
 
   cmdUnselectWaypoint->hide();
   cmdSelectWaypoint->show();
@@ -380,15 +470,17 @@ void WPInfoWidget::slot_selectWaypoint()
   // This slot can be called via an accelerator, e.g. Key_Space. If
   // the select button is not visible we will call the unselect
   // routine. Result is toggling between the two modes.
-  if( cmdUnselectWaypoint->isVisible() ) {
-    return slot_unselectWaypoint();
-  }
+  if( cmdUnselectWaypoint->isVisible() )
+    {
+      return slot_unselectWaypoint();
+    }
 
   emit waypointSelected(_wp, true);
 
-  if( inFlight() ) {
-    return slot_SwitchBack();
-  }
+  if( inFlight() )
+    {
+      return slot_SwitchBack();
+    }
 
   cmdUnselectWaypoint->show();
   cmdSelectWaypoint->hide();
@@ -402,9 +494,10 @@ void WPInfoWidget::slot_addAsWaypoint()
   _wp->importance=wayPoint::High; //importance is high
   emit waypointAdded(_wp);
 
-  if( inFlight() ) {
-    return slot_SwitchBack();
-  }
+  if( inFlight() )
+    {
+      return slot_SwitchBack();
+    }
 
   cmdAddWaypoint->hide();
   slot_KeepOpen();
@@ -414,29 +507,32 @@ void WPInfoWidget::slot_addAsWaypoint()
 /** This slot is called if the Home button is clicked. */
 void WPInfoWidget::slot_setAsHome()
 {
-  if( ! _wp ) {
-    return;
-  }
+  if( ! _wp )
+    {
+      return;
+    }
 
   slot_KeepOpen(); // Stop timer
 
   int answer= QMessageBox::warning(this,tr("Set home site?"),
-				   tr("<html><b>Do you want to use site<br>%1<br>as your new home site?</b></html>").arg(_wp->name),
-				   QMessageBox::Ok | QMessageBox::Default,
-				   QMessageBox::Cancel | QMessageBox::Escape );
+                                   tr("<html><b>Do you want to use site<br>%1<br>as your new home site?</b></html>").arg(_wp->name),
+                                   QMessageBox::Ok | QMessageBox::Default,
+                                   QMessageBox::Cancel | QMessageBox::Escape );
 
-  if( answer == QMessageBox::Ok ) {
-    // Save new data as home position
-    GeneralConfig *conf = GeneralConfig::instance();
+  if( answer == QMessageBox::Ok )
+    {
+      // Save new data as home position
+      GeneralConfig *conf = GeneralConfig::instance();
 
-    conf->setHomeWp(_wp);
-    conf->save();
-    emit newHomePosition( &_wp->origP );
-  }
+      conf->setHomeWp(_wp);
+      conf->save();
+      emit newHomePosition( &_wp->origP );
+    }
 
-  if( inFlight() ) {
-    return slot_SwitchBack();
-  }
+  if( inFlight() )
+    {
+      return slot_SwitchBack();
+    }
 
   slot_KeepOpen();
   cmdSetHome->hide();
@@ -463,14 +559,14 @@ void WPInfoWidget::slot_arrival()
   arrivalInfo->showTP( false );
 
   connect( arrivalInfo, SIGNAL(close()),
-	  this, SLOT(slot_arrivalClose()));
+           this, SLOT(slot_arrivalClose()));
 }
 
 // sets focus back to wp text view after closing arrival widget
 void WPInfoWidget::slot_arrivalClose()
 {
   arrivalInfo = 0;
-  
+
   // switch on all accelerator keys
   cuApp->accInfoView->setEnabled( true );
 
@@ -487,11 +583,11 @@ bool WPInfoWidget::inFlight()
 
   if( calculator->currentFlightMode() == CuCalc::unknown ||
       calculator->currentFlightMode() == CuCalc::standstill ||
-      ! gps->getConnected() ) {
-    return false;
-  }
+      ! gps->getConnected() )
+    {
+      return false;
+    }
 
   return true;
 }
 
-  
