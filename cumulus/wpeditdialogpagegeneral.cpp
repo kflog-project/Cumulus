@@ -28,7 +28,8 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent) :
 {
   setObjectName("WPEditDialogPageGeneral");
   
-  QGridLayout * topLayout = new QGridLayout(this, 9,2,5);
+  QGridLayout * topLayout = new QGridLayout(this);
+  topLayout->setMargin(5);
   int row=0;
 
   GeneralConfig *conf = GeneralConfig::instance();
@@ -42,6 +43,7 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent) :
   QLabel * lblDescription = new QLabel(tr("Description:"), this);
   topLayout->addWidget(lblDescription,row,0);
   edtDescription = new QLineEdit(this);
+  edtDescription->setMaxLength(25); // limit name to 25 characters
   topLayout->addWidget(edtDescription,row++,1);
 
   topLayout->addRowSpacing(row++,10);

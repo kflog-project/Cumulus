@@ -87,12 +87,12 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()));
 
-  // activate keyboard shotcut space, ok for close of widget
+  // activate keyboard shotcuts space and ok for close of widget
   QShortcut* scSpace = new QShortcut( this );
   QShortcut* scClose = new QShortcut( this );
 
   scSpace->setKey( Qt::Key_Space );
-  scSpace->setKey( Qt::Key_Return );
+  scClose->setKey( Qt::Key_Return );
 
   connect( scSpace, SIGNAL(activated()),
                          this, SLOT( slot_Close() ));

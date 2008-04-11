@@ -28,17 +28,20 @@ WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent) :
 {
   setObjectName("WPEditDialogPageAero");
 
-  QGridLayout * topLayout = new QGridLayout(this, 10,2,5);
+  QGridLayout * topLayout = new QGridLayout(this);
+  topLayout->setMargin(5);
   int row=0;
 
   QLabel * lblIcao = new QLabel(tr("ICAO:"), this);
   topLayout->addWidget(lblIcao,row,0);
   edtICAO = new QLineEdit(this);
+  edtICAO->setMaxLength(4); // limit name to 4 characters
   topLayout->addWidget(edtICAO,row++,1);
 
   QLabel * lblFrequency = new QLabel(tr("Frequency:"), this);
   topLayout->addWidget(lblFrequency,row,0);
   edtFrequency = new QLineEdit(this);
+  edtFrequency->setMaxLength(7); // limit name to 7 characters
   topLayout->addWidget(edtFrequency,row++,1);
 
   topLayout->addRowSpacing(row++,10);
