@@ -92,7 +92,7 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   QShortcut* scClose = new QShortcut( this );
 
   scSpace->setKey( Qt::Key_Space );
-  scClose->setKey( Qt::Key_Return );
+  scClose->setKey( Qt::Key_Escape );
 
   connect( scSpace, SIGNAL(activated()),
                          this, SLOT( slot_Close() ));
