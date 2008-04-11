@@ -35,10 +35,10 @@
 class CumulusApp;
 
 class WPInfoWidget : public QWidget
-{
+  {
     Q_OBJECT
 
-public:
+  public:
 
     WPInfoWidget( CumulusApp *parent=0 );
 
@@ -50,7 +50,7 @@ public:
      */
     bool showWP(int lastView, const wayPoint * wp=0);
 
-public slots: // Public slots
+  public slots: // Public slots
 
     /**
      * No descriptions
@@ -65,7 +65,7 @@ public slots: // Public slots
     void slot_KeepOpen();
 
 
-signals: // Signals
+  signals: // Signals
 
     /**
      * Emitted if a waypoint has been added to the list.
@@ -82,14 +82,14 @@ signals: // Signals
      */
     void newHomePosition(const QPoint*);
 
-protected:
+  protected:
 
     /**
      * Called, if the widget will be shown.
      */
     void showEvent(QShowEvent *);
 
-private: // Private methods
+  private: // Private methods
 
     /**
      * Set the visibility of the widget buttons
@@ -108,7 +108,7 @@ private: // Private methods
     void writeText();
 
 
-private slots: // Private slots
+  private slots: // Private slots
 
     /**
      * This slot get called on the timer timeout.
@@ -145,7 +145,7 @@ private slots: // Private slots
      */
     void slot_arrivalClose();
 
-private: // Private attributes
+  private: // Private attributes
 
     /**
      * These are the widget object that actually contains the info we
@@ -190,6 +190,6 @@ private: // Private attributes
 
     /** contains a ref to the parent, the application */
     CumulusApp *cuApp;
-};
+  };
 
 #endif
