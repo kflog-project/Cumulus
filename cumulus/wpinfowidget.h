@@ -23,6 +23,7 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QMainWindow>
+#include <QShortcut>
 
 #include "waypoint.h"
 #include "tpinfowidget.h"
@@ -163,6 +164,8 @@ class WPInfoWidget : public QWidget
     QPushButton * cmdSelectWaypoint;
     QPushButton * cmdUnselectWaypoint;
     QPushButton * cmdArrival;
+
+    QShortcut* scClose;
 
     /** arrival info widget */
     TPInfoWidget * arrivalInfo;

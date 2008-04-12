@@ -70,7 +70,8 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
       text->setFont(QFont( "Helvetica", 14 ));
     }
 
-  buttonrow2 = new QHBoxLayout(topLayout);
+  buttonrow2 = new QHBoxLayout;
+  topLayout->addLayout(buttonrow2);
 
   cmdAddWaypoint = new QPushButton(tr("Add Waypoint"), this);
   QFont buttonFont = cmdAddWaypoint->font();
@@ -91,7 +92,8 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
   connect(cmdArrival, SIGNAL(clicked()),
           this, SLOT(slot_arrival()));
 
-  buttonrow1=new QHBoxLayout(topLayout);
+  buttonrow1=new QHBoxLayout;
+  topLayout->addLayout(buttonrow1);
 
   cmdClose = new QPushButton(tr("Close"), this);
   cmdClose->setFont(bfont);
@@ -100,7 +102,7 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
           this, SLOT(slot_SwitchBack()));
 
   // Activate keyboard shortcut return to close the window too
-  QShortcut* scClose = new QShortcut( this );
+  scClose = new QShortcut( this );
   scClose->setKey( Qt::Key_Return );
   connect( scClose, SIGNAL(activated()),
            this, SLOT( slot_SwitchBack() ));
@@ -146,8 +148,7 @@ void WPInfoWidget::slot_timeout()
     }
   else
     {
-      QString txt;
-      txt.sprintf(tr("Close (%d)"),_timerCount);
+      QString txt = tr("Close (%1)").arg(_timerCount);
       cmdClose->setText(txt);
     }
 }
@@ -232,8 +233,7 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint *wp)
   if( _timerCount > 0 )
     {
       timer->start(1000);
-      QString txt;
-      txt.sprintf(tr("Close (%d)"), _timerCount);
+      QString txt = tr("Close (%1)").arg(_timerCount);
       cmdClose->setText(txt);
       cmdKeep->show();
     }
@@ -312,8 +312,9 @@ void WPInfoWidget::writeText()
               tmp2.sprintf("<b>%02d/%02d</b>", rw1 < rw2 ? rw1/10 : rw2/10, rw1 < rw2 ? rw2/10 : rw1/10);
             }
 
-          itxt += tmp.sprintf( table + "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (%s)</td>" +
-                               "<td>" + tr("Length: ") + "</td><td><b>", Airport::item2Text(iTmp).toLatin1().data() );
+          itxt += table + "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (" +
+            Airport::item2Text(iTmp) + ")</td>" +
+            "<td>" + tr("Length: ") + "</td><td><b>";
 
           if( _wp->length <= 0 )
             {
@@ -543,6 +544,7 @@ void WPInfoWidget::slot_arrival()
     }
 
   slot_KeepOpen(); // Stop timer
+  scClose->setEnabled(false);
 
   // switch off all accelerator keys
   cuApp->accInfoView->setEnabled( false );
@@ -564,6 +566,7 @@ void WPInfoWidget::slot_arrivalClose()
 
   // switch on all accelerator keys
   cuApp->accInfoView->setEnabled( true );
+  scClose->setEnabled(true);
 
   // get focus back
   text->setFocus();
