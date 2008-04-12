@@ -58,7 +58,7 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   QFont font( "Helvetica", 14 );
 
   QBoxLayout *topLayout = new QVBoxLayout( this );
-  text = new QTextEdit(this, "TaskpointInfo");
+  text = new QTextEdit(this);
   text->setReadOnly(true);
   text->setLineWrapMode(QTextEdit::WidgetWidth);
 
@@ -73,7 +73,8 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
 
   topLayout->addWidget(text, 5 );
   
-  buttonrow = new QHBoxLayout(topLayout);
+  buttonrow = new QHBoxLayout;
+  topLayout->addLayout(buttonrow);
   
   cmdClose = new QPushButton(tr("Close"), this);
   cmdClose->setFont(bfont);
@@ -88,17 +89,12 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()));
 
-  // activate keyboard shotcuts space and ok for close of widget
-  QShortcut* scSpace = new QShortcut( this );
+  // activate keyboard shotcuts ok for close of widget
   QShortcut* scClose = new QShortcut( this );
 
-  scSpace->setKey( Qt::Key_Space );
-  scClose->setKey( Qt::Key_Escape );
+  scClose->setKey( Qt::Key_Return );
 
-  connect( scSpace, SIGNAL(activated()),
-                         this, SLOT( slot_Close() ));
-  connect( scClose, SIGNAL(activated()),
-                         this, SLOT( slot_Close() ));
+  connect( scClose, SIGNAL(activated()), this, SLOT( slot_Close() ));
 }
 
 
@@ -130,8 +126,7 @@ void TPInfoWidget::slot_Timeout()
     }
   else
     {
-      QString txt;
-      txt.sprintf( tr("Close (%d)"), _timerCount );
+      QString txt = tr("Close (%1)").arg(_timerCount);
       cmdClose->setText(txt);
     }
 }
@@ -150,8 +145,7 @@ void TPInfoWidget::showTP( bool automaticClose )
   if( _timerCount > 0 && automaticClose )
     {
       timer->start(1000);
-      QString txt;
-      txt.sprintf(tr("Close (%d)"), _timerCount);
+      QString txt = tr("Close (%1)").arg(_timerCount);
       cmdClose->setText(txt);
       cmdKeep->show();
     }
@@ -449,11 +443,11 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
   // Prepare output data
   QString display;
 
-  display += "<center><big><b>" +
+  display += "<html><big><center><b>" +
     tr("Arrival Info") +
-    "</b></big></center><p>";
+    "</b></center><p>";
 
-  display += "<table><tr><th colspan=\"2\" align=\"left\">" +
+  display += "<table cellpadding=5><tr><th colspan=\"2\" align=\"left\">" +
     tr("Selected target") + "</th></tr>" +
     "<tr><td colspan=\"2\">&nbsp;&nbsp;" + wp->name + " (" + wp->description + ")" +
     "</td></tr>";
@@ -671,7 +665,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
 	  ss + " UTC </b></td></tr>";
       }
 
-    display += "</table>";
+    display += "</table></big></html>";
     text->setText( display );
 }
 
