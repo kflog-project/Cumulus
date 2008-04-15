@@ -17,6 +17,10 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.0.0 (Development based on X11/Qt-4.3.3)
 -------------------------------------------------
+
+[-] 2008-04-13 AP: Bugfix: Qt4 portage has failed in using qSort method. It works
+                   only for value and not for pointer elements. I fixed it.
+                   Concerned classes were wind measurement, rechable points, isolines.
 [+] 2008-04-11 AP: Waypoint display format adapted to N800 size
 [-] 2008-04-10 AP: Bugfix: reread of all map files, if user has made a new
                    map root directory selection.
