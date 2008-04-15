@@ -101,7 +101,7 @@ void WindMeasurementList::addMeasurement(Vector vector, Altitude alt, int qualit
   wind.altitude=alt;
   wind.time=QTime::currentTime();
   append(wind);
-  qSort(begin(), end());
+  qSort(begin(), end(), WindMeasurement::lessThan);
 }
 
 /**

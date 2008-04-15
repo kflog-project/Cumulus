@@ -35,6 +35,12 @@ public:
     QTime time;
     Altitude altitude;
     bool operator < (const WindMeasurement& other) const;
+
+    static bool lessThan(const WindMeasurement &w1, const WindMeasurement &w2)
+    {
+      return w1.altitude < w2.altitude;
+    };
+
 };
 
 /**
