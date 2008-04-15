@@ -154,7 +154,6 @@ class ReachablePoint
   Altitude     _arrivalAlt;
 };
 
-
 /**
  * @short A list of reachable points
  * @author Eckhard V�llm
@@ -311,6 +310,21 @@ class ReachableList: public QObject, QList<ReachablePoint*>
   static QMap<QString, int> arrivalAltMap;
   static QMap<QString, Distance> distanceMap;
 
+};
+
+struct CompareReachablePoints
+{
+  bool operator()(const ReachablePoint *r1, const ReachablePoint *r2) const
+  {
+    if( ReachableList::getModeAltitude() )
+      {
+        return (r1->getArrivalAlt().getMeters() < r2->getArrivalAlt().getMeters());
+      }
+    else
+      {
+        return (r1->getDistance().getKilometers() > r2->getDistance().getKilometers());
+      }
+  };
 };
 
 #endif

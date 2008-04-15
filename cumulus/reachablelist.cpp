@@ -366,7 +366,7 @@ void ReachableList::calculateGlidePath()
   }
 
   modeAltitude = true;
-  qSort(begin(), end());
+  std::sort(begin(), end(), CompareReachablePoints());
   // qDebug("Number of reachable sites (arriv >0): %d", counter );
   // qDebug("Time for glide path calculation: %d msec", t.restart() );
   emit newReachList();
@@ -411,7 +411,7 @@ void ReachableList::calculateFullList()
   addItemsToList(MapContents::WaypointList);
   // qDebug("Number of potential reachable sites: %d", count() );
   modeAltitude = false;
-  qSort(begin(), end());
+  std::sort(begin(), end(), CompareReachablePoints() );
   removeDoubles();
   // qDebug("Number of potential reachable sites (after pruning): %d", count() );
   int size = count();
@@ -518,7 +518,7 @@ void ReachableList::removeDoubles()
     } // End of for j
   } // End of for i
 
-  qSort( removeList.begin(), removeList.end() );
+  qSort( removeList.begin(), removeList.end(), qLess<int>() );
 
   for (int i=removeList.count()-1; i>=0; i--) {
     //qDebug("Removing point %d (%s)", removeList.at(i),at(removeList.at(i))->getWaypoint()->name.latin1());
