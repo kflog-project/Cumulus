@@ -1,4 +1,4 @@
-/***********************************************************************
+/**********************************************************************
  **
  **   mapcontents.cpp
  **
@@ -423,7 +423,7 @@ bool MapContents::__readTerrainFile(const int fileSecID,
   emit loadingFile(pathName);
 
   QDataStream in(&mapfile);
-  in.setVersion(2);
+  in.setVersion(QDataStream::Qt_2_0);
 
   qDebug("reading file %s", pathName.toLatin1().data());
 
@@ -590,7 +590,7 @@ bool MapContents::__readTerrainFile(const int fileSecID,
 
   if( compiling ) {
     out.setDevice(&ausgabe);
-    out.setVersion(2);
+    out.setVersion(QDataStream::Qt_2_0);
 
     if(!ausgabe.open(IO_WriteOnly)) {
       mapfile.close();
@@ -680,6 +680,8 @@ bool MapContents::__readTerrainFile(const int fileSecID,
       if(sort_temp != -1) {
         Isohypse* newItem = new Isohypse(pN, elevation, valley, fileSecID);
         isoList.at(sort_temp)->append(newItem);
+        // qDebug("Isohypse added: Size=%d, elevation=%d, valley=%d, fileTypeID=%X",
+        //       pN.size(), elevation, valley ? 1 : 0, fileTypeID );
       }
     }
 
@@ -773,7 +775,7 @@ bool MapContents::__readAirfieldFile(const QString& pathName)
   emit loadingFile(pathName);
 
   QDataStream in(&mapfile);
-  in.setVersion(2);
+  in.setVersion(QDataStream::Qt_2_0);
 
   // Got to initialize "out" stream properly, even if write file is not needed
 
@@ -957,7 +959,7 @@ bool MapContents::__readAirfieldFile(const QString& pathName)
 
   if ( compiling ) {
     out.setDevice(&ausgabe);
-    out.setVersion(2);
+    out.setVersion(QDataStream::Qt_2_0);
 
     if(!ausgabe.open(IO_WriteOnly)) {
       // Can't write data:
@@ -979,7 +981,7 @@ bool MapContents::__readAirfieldFile(const QString& pathName)
     //create and prepare out buffer and the stream to it...
     buffer.open(IO_ReadWrite);
     outbuf.setDevice(&buffer);
-    outbuf.setVersion(2);
+    outbuf.setVersion(QDataStream::Qt_2_0);
   }
 
   /* Now, we need to insert additional data on the projection used
@@ -1268,7 +1270,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
   emit loadingFile(pathName);
 
   QDataStream in(&mapfile);
-  in.setVersion(2);
+  in.setVersion(QDataStream::Qt_2_0);
 
   // qDebug("reading file %s", pathName.toLatin1().data());
 
@@ -1443,7 +1445,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
   if ( compiling ) {
     out.setDevice(&ausgabe);
-    out.setVersion(2);
+    out.setVersion(QDataStream::Qt_2_0);
     if(!ausgabe.open(IO_WriteOnly)) {
       qWarning("Cumulus: Can't open compiled map file %s for writing!"
                " Arborting ...",
@@ -2605,105 +2607,72 @@ void MapContents::drawIsoList(QPainter* targetP)
   _isoLevelReset=true;
   qDeleteAll(regIsoLines); regIsoLines.clear();
 
-  /* Determine how fine graded we are going to draw the isolines.
-   * If the bigger the scale, the more lines we will skip   */
-  int interval=1; //in principle, we draw every line
-  int scale = (int)_globalMapMatrix->getScale(MapMatrix::CurrentScale);
-
-  if (_globalMapConfig->getdrawIsoLines()) {
-    if (scale>1500)
-      interval=15; //
-    else if (scale>1000)
-      interval=10; //
-    else if (scale>725)
-      interval=8; //
-    else if (scale>600)
-      interval=6;  //
-    else if (scale>500)
-      interval=5;  //
-    else if (scale>200)
-      interval=4;  // etc
-    else if (scale>150)
-      interval=3;  // We skip more at zoom 151 and above,
-    else if (scale>100)
-      interval=2;  // But, if the scale is > 100, we skip every other line.
-    else
-      interval=1;
-  } else {
-    interval=9999;              // Make sure we are only drawing _one_ level.
-  }
-
-  int lastHeight=9999;
-  int group=9999;
-  bool groupDrawn=false;
-
-  // qDebug("group: %d, interval: %d, scale: %d, heigth: %d, count: %d",group,interval,scale,height,iso->count());
   bool isolines = false;
+
   targetP->setPen(QPen(Qt::black, 1, Qt::NoPen));
 
-  if (_globalMapConfig->getShowIsolineBorders()) {
-    if( scale < 160 ) { // Draw Lines at higher scales
-      targetP->setPen(QPen(Qt::black, 1, Qt::DotLine));
-      isolines = true;
-    }
-  }
+  if (_globalMapConfig->getShowIsolineBorders())
+    {
+      int scale = (int)rint(_globalMapMatrix->getScale(MapMatrix::CurrentScale)); 
 
-  interval=1;
+      if( scale < 160 )
+        { // Draw Isolines at higher scales
+          targetP->setPen(QPen(Qt::black, 1, Qt::DotLine));
+          isolines = true;
+        }
+    }
+
   targetP->save();
-  targetP->setClipping(true);
 
   for (int i = 0; i < isoList.size(); i++)
   {
     showProgress2WaitScreen( tr("Drawing isolines") );
     QList<Isohypse*>* iso = isoList.at(i);
-    //if (isoList.at()>1) break;
+
     if(iso->size() == 0)
-      continue;
+      {
+        continue;
+      }
+
     Isohypse* first = iso->first();
     
     for(unsigned int pos = 0; pos < ISO_LINE_NUM; pos++)
       {
-        if(isoLines[pos] == first->getElevation()) {
-          if(first->isValley())
-            height = pos + 1;
-          else
-            height = pos + 2;
-          
-          break;
-        }
+        if(isoLines[pos] == first->getElevation())
+          {
+            if(first->isValley())
+              {
+                height = pos + 1;
+              }
+            else
+              {
+                height = pos + 2;
+              }
+            
+            break;
+          }
       }
-    
-    groupDrawn=true;
-    
-    if (interval==1 || height <= 1)
+
+    if( _globalMapConfig->getdrawIsoLines() )
       {
-        groupDrawn=false; //skip the rest, result is less devisions->faster!
+        // choose iso color
+        targetP->setBrush(QBrush(_globalMapConfig->getIsoColor(height), Qt::SolidPattern));
       }
     else
       {
-        if (height<lastHeight)
-          {
-            lastHeight=height;
-            group=height/interval;
-            groupDrawn=false;
-          }
-
-        if ((height/interval)!=group)
-          {
-            group=height/interval;
-            groupDrawn=false;
-          }
+        // Choose a brighter color, when isoline drawing is switched
+        // off by the user to get a better readability.
+        targetP->setBrush(QBrush(_globalMapConfig->getIsoColor(6), Qt::SolidPattern));
       }
-
-      targetP->setBrush(QBrush(_globalMapConfig->getIsoColor(height), Qt::SolidPattern));
 
       for (int j = 0; j < iso->size(); j++)
       {
-          Isohypse* iso2 = iso->at(j);
-          QRegion * reg = iso2->drawRegion(targetP, _globalMapView->rect(),
-                                           !groupDrawn, isolines);
-          // QRegion * reg = iso2->drawRegion(targetP, maskP, true, true, 1  );
-          if (reg) {
+        Isohypse* iso2 = iso->at(j);
+        QRegion * reg = iso2->drawRegion(targetP, _globalMapView->rect(),
+                                         true, isolines);
+        if (reg)
+          {
+            // store drawn region in extra list for elevation finding
             IsoListEntry* entry = new IsoListEntry(reg, iso2->getElevation());
             regIsoLines.append(entry);
             //qDebug("  added Iso: %04x, %d", (int)reg, iso2->getElevation() );
@@ -2715,7 +2684,16 @@ void MapContents::drawIsoList(QPainter* targetP)
   regIsoLines.sort();
   _isoLevelReset=false;
 
-  qDebug( "IsoList, Length=%d, drawTime=%dms", isoList.count(), t.elapsed() );
+  qDebug( "IsoList, drawTime=%dms", t.elapsed() );
+
+  /* QString isos;
+
+  for( int i = 0; i < regIsoLines.count(); i++ )
+    {
+      isos += QString("%1, ").arg(regIsoLines.at(i)->height);
+    }
+  
+    qDebug( isos.toLatin1().data() ); */
 }
 
 /**
@@ -2855,7 +2833,7 @@ QDateTime MapContents::getDateFromMapFile( const QString& path )
   }
 
   QDataStream in(&mapFile);
-  in.setVersion(2);
+  in.setVersion(QDataStream::Qt_2_0);
 
   mapFile.at( 9 );
   in >> createDateTime;
@@ -2928,8 +2906,9 @@ int MapContents::findElevation(const QPoint& coordP, Distance * errorDist)
 {
   extern MapMatrix * _globalMapMatrix;
 
-  IsoListEntry* entry;
-  int height=0;
+  IsoListEntry* entry = 0;
+  int height = 0;
+  double error = 0.0;
     
   QPoint coordP1 = _globalMapMatrix->wgsToMap(coordP.x(), coordP.y());
   QPoint coord = _globalMapMatrix->map(coordP1);
@@ -2937,50 +2916,59 @@ int MapContents::findElevation(const QPoint& coordP, Distance * errorDist)
   IsoList* list = getIsohypseRegions();
 
   // qDebug("list->count() %d", list->count() );
-  double error=0.0;
   //qDebug("==searching for elevation==");
   //qDebug("_lastIsoLevel %d, _nextIsoLevel %d",_lastIsoLevel, _nextIsoLevel);
-  if (_isoLevelReset) {
-    qDebug("findElevation: Bussy rebuilding the isomap. Returning last known result...");
-    return _lastIsoLevel;
-  }
+  if (_isoLevelReset)
+    {
+      qDebug("findElevation: Busy rebuilding the isomap. Returning last known result...");
+      return _lastIsoLevel;
+    }
 
   int cnt = list->count();
 
-  for( int i=0; i<cnt;i++ ) {
-    //    for(int i=list->count()-1; i>=0;i--) {
-    entry = list->at(i);
-    // qDebug("i: %d entry->height %d contains %d",i,entry->height, entry->region->contains(coord) );
-    // qDebug("Point x:%d y:%d", coord.x(), coord.y() );
-    // qDebug("boundingRect l:%d r:%d t:%d b:%d", entry->region->boundingRect().left(),
-    //                                 entry->region->boundingRect().right(),
-    //                                 entry->region->boundingRect().top(),
-    //                                 entry->region->boundingRect().bottom() );
-    if (entry->height>height && /*there is no reason to search a lower level if we allready have a hit on a higher one*/
+  for( int i=0; i<cnt;i++ )
+    {
+      entry = list->at(i);
+      // qDebug("i: %d entry->height %d contains %d",i,entry->height, entry->region->contains(coord) );
+      // qDebug("Point x:%d y:%d", coord.x(), coord.y() );
+      // qDebug("boundingRect l:%d r:%d t:%d b:%d", entry->region->boundingRect().left(),
+      //                                 entry->region->boundingRect().right(),
+      //                                 entry->region->boundingRect().top(),
+      //                                 entry->region->boundingRect().bottom() );
+
+      if (entry->height>height && /*there is no reason to search a lower level if we allready have a hit on a higher one*/
         entry->height <= _nextIsoLevel) /* since the odds of skipping a level between two fixes are not too high, we can ignore higher levels, making searching more efficient.*/
       {
-        if (entry->height==_lastIsoLevel && _lastIsoEntry) {
-          //qDebug("Trying previous entry...");
-          if (_lastIsoEntry->region->contains(coord)) {
+        if (entry->height==_lastIsoLevel && _lastIsoEntry)
+          {
+            //qDebug("Trying previous entry...");
+            if (_lastIsoEntry->region->contains(coord))
+              {
+                height=MAX(height,entry->height);
+                //qDebug("Found on height %d",entry->height);
+                break;
+              }
+          }
+
+        if (entry == _lastIsoEntry)
+          {
+            continue; //we already tried this one, and it wasn't it.
+          }
+
+        //qDebug("Probing on height %d...", entry->height);
+
+        if (entry->region->contains(coord))
+          {
             height=MAX(height,entry->height);
             //qDebug("Found on height %d",entry->height);
+            _lastIsoEntry=entry;
             break;
           }
-        }
-        if (entry == _lastIsoEntry) {
-          continue; //we allready tried this one, and it wasn't it.
-        }
-        //qDebug("Probing on height %d...", entry->height);
-        if (entry->region->contains(coord)) {
-          height=MAX(height,entry->height);
-          //qDebug("Found on height %d",entry->height);
-          _lastIsoEntry=entry;
-          break;
-        }
       }
-  }
+    }
 
   _lastIsoLevel=height;
+
   // The real altitude is between the current and the next
   // isolevel, therefore reduce error by taking the middle
   if( height <100 ) {
@@ -3001,9 +2989,12 @@ int MapContents::findElevation(const QPoint& coordP, Distance * errorDist)
     error=125.0;
   }
 
-  //if errorDist is set, set the correct error margin
+  // if errorDist is set, set the correct error margin
   if (errorDist)
-    errorDist->setMeters(error);
+    {
+      errorDist->setMeters(error);
+    }
+
   return height;
 }
 
