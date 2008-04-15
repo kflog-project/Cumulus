@@ -17,13 +17,14 @@
  ***********************************************************************/
 
 #include <QRegion>
+#include <QString>
 
 #include "isohypse.h"
 #include "mapmatrix.h"
 
 
 Isohypse::Isohypse(QPolygon pG, unsigned int elev, bool isV, unsigned int secID)
-    : LineElement(0, BaseMapElement::Isohypse, pG, isV, secID),
+    : LineElement("", BaseMapElement::Isohypse, pG, isV, secID),
     elevation(elev)
 {}
 

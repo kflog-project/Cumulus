@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2007 by Axel Pauli
+ **   Copyright (c):  2008 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -78,6 +78,16 @@ class IsoListEntry
     return x.height>height;
   }
 
+  bool operator()(const IsoListEntry &iso1, const IsoListEntry &iso2) const
+  {
+    return (iso1.height < iso2.height);
+  };
+
+  bool operator()(const IsoListEntry *iso1, const IsoListEntry *iso2) const
+  {
+    return (iso1->height < iso2->height);
+  };
+
   QRegion* region;
   int height;
 
@@ -92,6 +102,22 @@ class IsoListEntry
     return height < other.height;
   };
 
+  /** @AP: This method is only useable in qSort, if the members to be
+   *  sorted are values and not pointers.
+   */
+  static bool lessThan(const IsoListEntry &i1, const IsoListEntry &i2)
+    {
+      return i1.height < i2.height;
+    };
+};
+
+struct CompareIso
+{
+  // The operator sorts in reverse order
+  bool operator()(const IsoListEntry *iso1, const IsoListEntry *iso2) const
+  {
+    return (iso1->height > iso2->height);
+  };
 };
 
 class IsoList : public QList<IsoListEntry*>
@@ -105,8 +131,12 @@ class IsoList : public QList<IsoListEntry*>
     clear();
   };
 
-  void sort () {
-    qSort (begin(), end());
+  void sort()
+  {
+    // @AP: using std::sort because qSort can not handle pointer
+    // elements
+    std::sort( begin(), end(), CompareIso() );
+    // qSort(begin(), end(), IsoListEntry::lessThan);
   };
 
 };
