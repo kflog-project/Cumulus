@@ -35,6 +35,8 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
   : QWidget(parent)
 {
   setObjectName("TaskListView");
+
+  _showButtons = showButtons;
   _task=0;
   _selectedWp = 0;
   _currSelectedTp = 0;
@@ -142,9 +144,9 @@ void TaskListView::showEvent(QShowEvent *)
 {
   // qDebug("TaskListView::showEvent(): name=%s", name());
 
-  if( name() == QString("TaskRouteDisplay") )
+  if( _showButtons == false )
     {
-      // do nothing as display, there are no buttons avialable
+      // do nothing as display, there are no buttons visible
       return;
     }
 

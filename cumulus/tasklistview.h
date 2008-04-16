@@ -119,6 +119,9 @@ private:
     Q3ListViewItem * _newSelectedTp;
     QString _selectText, _unselectText;
 
+    // flag for showing buttons when true otherwise no
+    bool _showButtons;
+
 private slots:
     /**
      * This slot is called if the user selects a certain waypoint in the task
