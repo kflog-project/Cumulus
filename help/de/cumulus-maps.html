@@ -31,8 +31,8 @@
         <li>Luftr&auml;ume (airspace), <b>Nicht mehr unterst&uuml;tzt! Benutzen Sie andere Alternativen,
             z.B. <a href="http://www.segelflug.de/segelflieger/michael.meier/download/OPENAIR.TXT">OPENAIR.TXT</a></b></li>
 
-        <li>Flugpl&auml;tze (airfields), <b>Nicht mehr aktuell! Benutzen Sie andere Alternativen,
-            z.B. <a href="#Welt2000">Welt2000</a></b></li>
+        <li>Flugpl&auml;tze (airfields), <b>Nicht mehr unterst&uuml;tzt! Benutzen Sie die Welt2000 Datenbasis,
+            <a href="#Welt2000">Welt2000</a></b></li>
     </ul>
 
     Installieren Sie nur die Luftraum- und Flugplatzdateien des
@@ -45,21 +45,25 @@
     <p>
     Die Karten k&ouml;nnen in drei Verzeichnissen installiert werden:
     <ul>
-      <li>In $HOME/maps/.
-        Dies ist das bevorzugte Verzeichnis. Hier werden die Karten zuerst gesucht.
+      <li>In $HOME/maps/
       </li>
       <li>Im Installationsverzeichnis unter /opt/cumulus/maps.</li>
-      <li>Auf der SecureDigital Card, im Wurzelverzeichnis unter /maps.</li>
+      <li>Irgendwo auf der SecureDigital Card.</li>
     </ul>
     </p>
 
+    <p>Wenn Sie die Karten auf der SD Karte installieren, so m&uumlig;ssen Sie
+    anschlie&szlig;end auf der Kartenkonfigurationsseite den Pfad zum Wurzelverzeichnis
+    der installierten Karten eintragen. Dr&uumlig;cken Sie dazu auf den Knopf Karten oben links
+    in der Ecke und navigieren Sie zu Ihrem Installationsverzeichnis, wo die Karten zu finden sind.
+    Diese speichern Sie bitte ab. Ist kein Pfad gesetzt, so werden die Karten in $HOME/maps and
+    /opt/cumulus/maps gesucht.
+
+    <p>
     Die Bodenkarten sind im Unterverzeichnis <i>landscape</i> von <i>maps</i> abzulegen.
     Die Flugplatz- und Luftraumdateien sind in 
     Unterverzeichnissen von <i>maps</i> mit den Namen <i>airfields</i>
     bzw. <i>airspaces</i> zu speichern.
-
-    <p>Die Karten werden ebenso wie Wegpunkte und Aufgaben mit
-    <i>KFLog/Embedded</i> gemeinsam genutzt..
 
     <p>Wenn Sie Speicherprobleme beim Betrieb von Cumulus bekommen,
     k&ouml;nnen Sie sich entscheiden, bestimmte Kartenarten nicht zu
@@ -85,14 +89,11 @@
 
     <p><b>OpenAir SUA Luftraumdateien</b></p>
 
-    Zus&auml;tzlich zu den KFLog Luftraumdateien, die in einem
-    bin&auml;ren Format erstellt sind, ist Cumulus auch in der Lage,
-    OpenAir SUA Dateien zu lesen. Installieren sie diese Dateien im
-    selben Directory wie die KFLog Luftraumdateien und versehen sie
-    diese mit der <b>klein</b> geschrieben Endung <i>.txt</i>. Man
-    kann KFLog Luftraumdateien mit OpenAir Luftraumdateien mixen, nur
-    sollten die Inhalte der Dateien immer zueinander verschieden
-    sein. Cumulus benutzt bei den SUA Dateien standardm&auml;&szlig;ig
+    Cumulus kann nur Luftraumdateien im OpenAir SUA Format lesen.
+    Installieren sie diese Dateien im Unterverzeichnis <i>airspaces</i> 
+    und versehen sie
+    diese mit der <b>klein</b> geschrieben Endung <i>.txt</i>.
+    Cumulus benutzt bei den SUA Dateien standardm&auml;&szlig;ig
     die selbe interne Zuordnung der Luftraumelemente wie bei den KFLog
     Dateien. Da sich aber bestimmte OpenAir Elemente nicht eindeutig
     zuordnen lassen, bietet Cumulus einen zus&auml;tzlichen Mapping
@@ -165,19 +166,15 @@
 
     <p><b>Benutzung von Welt 2000 Flugplatzdaten</b></p>
 
-    <p>Zus&auml;tzlich zu den KFLog Flugplatzdateien, die in einem
-    bin&auml;ren Format erstellt sind, ist Cumulus auch in der Lage,
-    von einer Welt 2000 Datei die Flugplatzdaten zu lesen. Diese
-    werden von Michael Meier als eine gro&szlig;e Datei 
+    <p>Die Flugplatzdaten werden von Cumulus aus der Welt
+    2000 Datei gelesen. Diese
+    wird von Michael Meier als eine gro&szlig;e Datei 
 
     <a href="http://www.segelflug.de/segelflieger/michael.meier/download/WELT2000.TXT">hier</a>
 
-    bereit gestellt. Installieren sie diese Datei im selben
-    Directory wie die KFLog Flugplatzdateien unter den Namen
-    <i>welt2000.txt</i>. Es ist nicht empfehlenswert eine Welt 2000
-    Datei zusammen mit den bin&auml;ren KFLog Flugplatzdateien zu
-    mixen. Dies kann beim Einlesen der gleichen L&auml;nder zu
-    Kunfusionen in Cumulus f&uuml;hren. Da eine Welt 2000 Datei die
+    bereit gestellt. Installieren sie diese Datei im 
+    Unterverzeichnis <i>airfields</i>  unter den Namen
+    <i>welt2000.txt</i>. Da eine Welt 2000 Datei die
     ganze Welt beinhaltet, ist es erforderlich, die eingelesene
     Datenmenge sinvoll zu begrenzen um einen Speicher&uuml;berlauf in
     Cumulus zu vermeiden. Cumulus bietet dazu zwei Wege an:</p>
@@ -192,7 +189,7 @@
       mit dem Namen <i>welt2000.conf</i> definiert sind. Siehe weiter
       unten, wie man das macht. Dies ist eine alte Option und sie
       sollte nicht mehr verwendet werden. Verfahren Sie bitte nach dem
-      vorhergehenden Punkt. <b>Achtung!</b> Eine Filterregel, die über
+      vorhergehenden Punkt. <b>Achtung!</b> Eine Filterregel, die ï¿½ber
       die Cumulus Oberfl&auml;che gemacht wird, &uuml;berschreibt die
       Filterregel aus der Konfigurationsdatei.
     </ul>
