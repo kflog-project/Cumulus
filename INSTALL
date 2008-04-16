@@ -1,7 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt4.x for Linux/Unix
 
-Last update: 2008-02-18 by Axel Pauli
+Last update: 2008-04-16 by Axel Pauli
 
 SVN info: $Id$
 ===============================================================================
@@ -74,16 +74,16 @@ That are the places, where Cumulus will seek for.
 
 The old structure has been modified a little bit and look like
 
-        +-airfields (Welt 2000 data file is recommend to use)
+        +-airfields (Only Welt 2000 data file is supported)
 .../maps+-airspaces (Only open air file format is supported)
         +-landscape (Use map data from KFLog map room)
 
 Note, that cumulus does support up to now only airspace files in open air
-format. The former support of KFLog airspace files has been removed.
+format and as airfield file the welt2000 data file. The former support of
+KFLog airspace and airfield files has been removed.
 
-For airfields the welt 2000 data base should be used. The KFLog files are out of
-date. See cumulus help under trunk/help/en/index.html for more information how to
-get it.
+For airfields the welt 2000 data base has to be used. See cumulus help under
+trunk/help/en/index.html for more information how to get it.
 
 The landscape files can be downloaded from the KFLog Map room. Follow the link
 below to get them.
