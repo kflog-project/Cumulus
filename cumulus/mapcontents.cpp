@@ -65,30 +65,30 @@ extern MapView *_globalMapView;
 
 //general KFLOG file token: @KFL
 #define KFLOG_FILE_MAGIC    0x404b464c
+
 //uncompiled mapfiles
 #define FILE_TYPE_GROUND      0x47
 #define FILE_TYPE_TERRAIN     0x54
 #define FILE_TYPE_MAP         0x4d
 #define FILE_TYPE_AERO        0x41
+
 //compiled mapfiles
 #define FILE_TYPE_GROUND_C    0x67
 #define FILE_TYPE_TERRAIN_C   0x74
 #define FILE_TYPE_MAP_C       0x6d
 #define FILE_TYPE_AIRSPACE_C  0x61  //aero files are split up into airspace and airfield files
 #define FILE_TYPE_AIRFIELD_C  0x62
-//versions
+
+// versions
 #define FILE_FORMAT_ID        101
+
 #define FILE_VERSION_GROUND   100
 
 #define FILE_VERSION_TERRAIN  100
 
 #define FILE_VERSION_MAP      101
 
-#define FILE_VERSION_AIRSPACE 101
-
-#define FILE_VERSION_AIRFIELD 101
-
-//compiled version
+// compiled version
 
 #define FILE_VERSION_GROUND_C   102
 
@@ -96,20 +96,6 @@ extern MapView *_globalMapView;
 
 #define FILE_VERSION_MAP_C      102
 
-#define FILE_VERSION_AIRSPACE_C 102
-
-#define FILE_VERSION_AIRFIELD_C 103
-
-
-#define CHECK_BORDER if(i == 0) {                       \
-    border.north = lat_temp;   border.south = lat_temp; \
-    border.east = lon_temp;    border.west = lon_temp;  \
-  } else {                                              \
-    border.north = MAX(border.north, lat_temp);         \
-    border.south = MIN(border.south, lat_temp);         \
-    border.east = MAX(border.east, lon_temp);           \
-    border.west = MIN(border.west, lon_temp);           \
-  }
 
 #define READ_POINT_LIST\
   if (compiling) {\
@@ -123,70 +109,7 @@ extern MapView *_globalMapView;
   } else\
     ShortLoad(in, pN);\
 
-#define READ_CONTACT_DATA in >> contactCount;                           \
-  if ( compiling ) outbuf << contactCount;                              \
-  for(unsigned int loop = 0; loop < contactCount; loop++) {             \
-    if ( compiling ) {                                                  \
-      in >> frequency;                                                  \
-      in >> contactType;                                                \
-      in >> callSign;                                                   \
-      if( frequency.left(1) == "0" || frequency == "-1" ) {             \
-        iFreq=0;                                                        \
-        qWarning("Airfield frequency of %s is undefined", name.toLatin1().data()); \
-      }                                                                 \
-      else {                                                            \
-        iFreq=frequency.left(3).toInt(&ok)*1000+frequency.right(3).toInt(&ok2)-100000; \
-        if (ok && ok2) {                                                \
-        } else {                                                        \
-          iFreq=0;                                                      \
-          qWarning("Airfield frequency of %s is undefined", name.toLatin1().data()); \
-        }                                                               \
-      }                                                                 \
-      outbuf << iFreq;                                                  \
-      outbuf << contactType;                                            \
-      ShortSave(outbuf, callSign.utf8());                               \
-    }  else {                                                           \
-      in >> iFreq;                                                      \
-      if (iFreq>0) {                                                    \
-        frequency.sprintf("%3d.%03d",(iFreq+100000)/1000,(iFreq)%1000); \
-      } else {                                                          \
-        frequency=tr("Unknown");                                        \
-      }                                                                 \
-      in >> contactType;                                                \
-      ShortLoad (in, utf8_temp);                                        \
-      callSign.fromUtf8(utf8_temp);                                     \
-    }                                                                   \
-                                                                        \
-  }
-// the sprintf statement above is expensive. Find another way...
-
-#define READ_RUNWAY_DATA in >> rwCount;                 \
-  if ( compiling ) outbuf << rwCount;                   \
-  for(unsigned int loop = 0; loop < rwCount; loop++) {  \
-    quint8  dir;                                        \
-    quint16 len;                                        \
-    in >> dir;                                          \
-    in >> len;                                          \
-    if( formatID == FILE_VERSION_AIRFIELD-1 ||          \
-        formatID == FILE_VERSION_AIRFIELD_C-1 ) {       \
-      rwDirection = len;                                \
-      rwLength = dir;                                   \
-      len = rwLength;                                   \
-      dir = rwDirection/10; }                           \
-    else {                                              \
-      rwDirection = dir*10;                             \
-      rwLength = len; }                                 \
-    in >> rwMaterial;                                   \
-    in >> rwOpen;                                       \
-    if ( compiling ) {                                  \
-      outbuf << dir;                                    \
-      outbuf << len;                                    \
-      outbuf << rwMaterial;                             \
-      outbuf << rwOpen;                                 \
-    }                                                   \
-  }
-
-//minimum amount of required free memory to start loading a mapfile
+// minimum amount of required free memory to start loading a mapfile
 #define MINIMUM_FREE_MEMORY 1024*4
 
 // List of altitude-levels (50 in total):
@@ -407,7 +330,7 @@ bool MapContents::__readTerrainFile(const int fileSecID,
 
   QFile mapfile(pathName);
 
-  if( !mapfile.open(IO_ReadOnly) ) {
+  if( !mapfile.open(QIODevice::ReadOnly) ) {
     qWarning("Cumulus: Can't open map file %s for reading", pathName.toLatin1().data() );
 
     if( ! compiling && kflExists ) {
@@ -425,7 +348,7 @@ bool MapContents::__readTerrainFile(const int fileSecID,
   QDataStream in(&mapfile);
   in.setVersion(QDataStream::Qt_2_0);
 
-  qDebug("reading file %s", pathName.toLatin1().data());
+  // qDebug("reading file %s", pathName.toLatin1().data());
 
   qint8 loadTypeID;
   quint16 loadSecID, formatID;
@@ -592,7 +515,7 @@ bool MapContents::__readTerrainFile(const int fileSecID,
     out.setDevice(&ausgabe);
     out.setVersion(QDataStream::Qt_2_0);
 
-    if(!ausgabe.open(IO_WriteOnly)) {
+    if(!ausgabe.open(QIODevice::WriteOnly)) {
       mapfile.close();
       qWarning("Cumulus: Can't open compiled map file %s for writing!"
                " Arborting...",
@@ -709,466 +632,6 @@ bool MapContents::__readTerrainFile(const int fileSecID,
   return true;
 }
 
-
-bool MapContents::__readAirfieldFile(const QString& pathName)
-{
-  QTime t;
-  t.start();
-  extern const MapMatrix * _globalMapMatrix;
-  extern const MapConfig * _globalMapConfig;
-  bool compiling = false;
-  bool ok=false;
-  bool ok2=false;
-  QRect boundingBox;
-
-  QString kfcPathName;
-  QString kflPathName;
-  bool kflExists = false;
-
-  // qDebug ("reading file %s", pathName.toLatin1().data() );
-
-  if(pathName.isEmpty())
-    // File does not exist
-    return false;
-
-  if ( pathName.contains( QString(".kfl") ) ) {
-    // File must be compiled
-    compiling = true;
-    kflPathName = pathName;
-    kfcPathName = pathName;
-    kfcPathName.replace( kfcPathName.length()-1, 1, QString("c") );
-  } else {
-    // compiled file is read
-    kfcPathName = pathName;
-    kflPathName = pathName;
-    kflPathName.replace( kflPathName.length()-1, 1, QString("l") );
-  }
-
-  if( access( kflPathName.toLatin1().data(), R_OK ) == 0 ) {
-    kflExists = true;
-  }
-
-  QFile mapfile(pathName);
-
-  if(!mapfile.open(IO_ReadOnly)) {
-    // Can't read input data:
-    // We need to output a warning...
-    if( ! compiling && kflExists ) {
-      qDebug("Cumulus: Can't open map file %s for reading!"
-             " Try to use file %s.",
-             pathName.toLatin1().data(),kflPathName.toLatin1().data());
-
-      // @AP: make a second try with the source file. Can fail, if
-      // source was removed but we are optimists
-      return __readAirfieldFile(kflPathName);
-    }
-
-    qWarning("Cumulus: Can't open map file %s for reading!"
-             "Arborting ...",
-             pathName.toLatin1().data() );
-
-    return false;
-  }
-
-  //qDebug ("open airfield file: %s", pathName.toLatin1().data());
-
-  emit loadingFile(pathName);
-
-  QDataStream in(&mapfile);
-  in.setVersion(QDataStream::Qt_2_0);
-
-  // Got to initialize "out" stream properly, even if write file is not needed
-
-  qint8 loadTypeID;
-  quint16 formatID;
-  qint32 lat_temp, lon_temp;
-  quint32 magic;
-  QDateTime createDateTime;
-
-  QString name;
-  QByteArray utf8_temp;
-  QString idString, icaoName, gpsName;
-  qint16 elevation;
-  qint8 isWinch, vdf;
-  vdf=0;
-
-  QString frequency;
-  quint16 iFreq;
-  qint8 contactType;
-  QString callSign;
-  quint8 contactCount;
-
-  quint8 rwCount;
-  quint16 rwDirection; // 0 -> 360
-  quint16 rwLength;
-  quint8 rwMaterial;
-  qint8 rwOpen;
-  QPoint position;
-  WGSPoint wgsPos;
-  runway *rw;
-  ProjectionBase * projectionFromFile;
-
-  in >> magic;
-
-  if( magic != KFLOG_FILE_MAGIC ) // wrong source file
-    {
-      mapfile.close();
-
-      if( ! compiling && kflExists )
-        {
-          qWarning("Cumulus: wrong magic key %x read!\n Retry to compile %s.",
-                   magic, kflPathName.toLatin1().data() );
-          return __readAirfieldFile(kflPathName);
-        } else
-        {
-          qWarning("Cumulus: wrong magic key %x read! Arborting ...", magic);
-          return false;
-        }
-    }
-
-  in >> loadTypeID;
-
-  if( ! compiling ) {
-    if( loadTypeID != FILE_TYPE_AIRFIELD_C) {
-      mapfile.close();
-
-      if( kflExists ) {
-        qWarning("Cumulus: wrong load type identifier %x read! "
-                 "Retry to compile %s.",
-                 loadTypeID, kflPathName.toLatin1().data() );
-
-        return __readAirfieldFile(kflPathName);
-      }
-
-      qWarning("Cumulus: wrong load type identifier %x read! "
-               "Aborting ...",
-               loadTypeID );
-
-      return false;
-    }
-  } else {
-    // uncompiled maps have a different format identifier than compiled
-    // maps
-    if(loadTypeID != FILE_TYPE_AERO) {
-      qWarning("Cumulus: wrong load type identifier %x read! Arborting ...",
-               loadTypeID );
-      mapfile.close();
-      return false;
-    }
-  }
-
-  in >> formatID;
-
-  if( ! compiling ) {
-    if( formatID < FILE_VERSION_AIRFIELD_C-1) {
-      // to old ...
-      mapfile.close();
-
-      if( kflExists ) {
-        qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
-                 "Retry to compile %s.",
-                 formatID, FILE_VERSION_AIRFIELD_C-1, kflPathName.toLatin1().data() );
-        return __readAirfieldFile(kflPathName);
-      }
-
-      qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
-               "Aborting ...",
-               formatID, FILE_VERSION_AIRFIELD_C-1 );
-      return false;
-    } else if(formatID > FILE_VERSION_AIRFIELD_C) {
-      // to new ...
-      mapfile.close();
-
-      if( kflExists ) {
-        qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
-                 "Retry to compile %s.",
-                 formatID, FILE_VERSION_AIRFIELD_C, kflPathName.toLatin1().data() );
-        return __readAirfieldFile(kflPathName);
-      }
-
-      qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
-               "Aborting ...",
-               formatID, FILE_VERSION_AIRFIELD_C );
-      return false;
-    }
-  } else {
-    if( formatID < FILE_VERSION_AIRFIELD-1) {
-      // to old ...
-      qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
-               "Aborting ...", formatID, FILE_VERSION_AIRFIELD-1 );
-      mapfile.close();
-      return false;
-    } else if(formatID > FILE_VERSION_AIRFIELD) {
-      // to new ...
-      qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
-               "Aborting ...", formatID, FILE_VERSION_AIRFIELD );
-      mapfile.close();
-      return false;
-    }
-  }
-
-  in >> createDateTime;
-
-  QFileInfo fi( pathName );
-
-  qDebug("Reading File=%s, Magic=%xh, TypeId=%xh, formatId=%d, Date=%s",
-         fi.fileName().toLatin1().data(), magic, loadTypeID, formatID,
-         createDateTime.toString().toLatin1().data() );
-
-  if( ! compiling ) {
-    in >> boundingBox;
-
-    // check projection parameters from file against current used values
-    projectionFromFile = LoadProjection(in);
-    ProjectionBase *currentProjection = _globalMapMatrix->getProjection();
-
-    if( ! compareProjections( projectionFromFile, currentProjection ) ) {
-      delete projectionFromFile;
-      mapfile.close();
-
-      if( kflExists ) {
-        qWarning( "Cumulus: can't use file %s, compiled for another projection!"
-                  "\n Retry to compile %s.",
-                  pathName.toLatin1().data(), kflPathName.toLatin1().data() );
-        return __readAirfieldFile(kflPathName);
-      }
-
-      qWarning( "Cumulus: can't use file %s, compiled for another projection!"
-                " Please install %s",
-                pathName.toLatin1().data(), kflPathName.toLatin1().data() );
-      return false;
-    } else {
-      // Must be deleted after use to avoid memory leak
-      delete projectionFromFile;
-    }
-
-    // because we're using a buffer, the length will be written too. This
-    // has the same type as lat_temp, and we don't need it.
-    in >> lat_temp;
-  }
-
-  // @AP: opening of output file after all input checks have run to
-  // avoid a zero size file.
-
-  QFile ausgabe(kfcPathName);
-  QDataStream out;
-
-  QByteArray bufdata;
-  QBuffer buffer( &bufdata );
-  QDataStream outbuf;
-
-  if ( compiling ) {
-    out.setDevice(&ausgabe);
-    out.setVersion(QDataStream::Qt_2_0);
-
-    if(!ausgabe.open(IO_WriteOnly)) {
-      // Can't write data:
-      // We need to output a warning...
-      qWarning("Cumulus: Can't open compiled map file %s for writing!"
-               "Aborting ...",
-               kfcPathName.toLatin1().data() );
-      mapfile.close();
-      return false;
-    }
-
-    qDebug("writing file %s", kfcPathName.toLatin1().data());
-
-    out << magic;
-    out << qint8(FILE_TYPE_AIRFIELD_C);  //write back as a compiled mapfile
-    out << quint16(FILE_VERSION_AIRFIELD_C);
-    out << createDateTime.addSecs(1);   //set time one second later than the time of the original file
-
-    //create and prepare out buffer and the stream to it...
-    buffer.open(IO_ReadWrite);
-    outbuf.setDevice(&buffer);
-    outbuf.setVersion(QDataStream::Qt_2_0);
-  }
-
-  /* Now, we need to insert additional data on the projection used
-     and the bounding box of the data.
-     Because this data is not complete before the whole file is read,
-     we set up a buffer to output the data itself in compiled format.
-     Afterwards, we write the bounding box and the projection
-     data to the file, and then write the buffer to the file. */
-
-  uint count = 0;
-  uint loop = 0;
-
-  while( ! in.atEnd() ) {
-    BaseMapElement::objectType typeIn = BaseMapElement::NotSelected;
-    in >> (quint8&)typeIn;
-    //check if we support this type.  In theory, we could skip this for compiled files, as we allready are sure of their contents.
-    bool supported;
-    switch (typeIn) {
-    case BaseMapElement::IntAirport:
-    case BaseMapElement::Airport:
-    case BaseMapElement::MilAirport:
-    case BaseMapElement::CivMilAirport:
-    case BaseMapElement::Airfield:
-    case BaseMapElement::ClosedAirfield:
-    case BaseMapElement::CivHeliport:
-    case BaseMapElement::MilHeliport:
-    case BaseMapElement::AmbHeliport:
-    case BaseMapElement::Glidersite:
-    case BaseMapElement::UltraLight:
-      supported=true;
-      break;
-    default:
-      supported=false;
-    }
-
-    //ok, the rest we only need and should do if this type is supported.
-    if (supported) {
-      count++;
-
-      if ( compiling )  {
-        outbuf << (quint8&)typeIn;
-        in >> name;
-        in >> idString;
-        in >> icaoName;
-        in >> gpsName;
-        ShortSave(outbuf, name.utf8());
-        ShortSave(outbuf, idString.utf8());
-        ShortSave(outbuf, icaoName.utf8());
-        ShortSave(outbuf, gpsName.utf8());
-      } else {
-        //in >> utf8_temp;
-        ShortLoad(in, utf8_temp);
-        name=QString::fromUtf8(utf8_temp);
-        //in >> utf8_temp;
-        ShortLoad(in, utf8_temp);
-        idString=QString::fromUtf8(utf8_temp);
-        //in >> utf8_temp;
-        ShortLoad(in, utf8_temp);
-        icaoName=QString::fromUtf8(utf8_temp);
-        //in >> utf8_temp;
-        ShortLoad(in, utf8_temp);
-        gpsName=QString::fromUtf8(utf8_temp);
-      }
-
-      /*
-       * The values must be reset!
-       *
-       * Currently only the last read frequency is passed on to the
-       * Mapelement, because the elements can't handle more than one
-       * frequency yet.
-       *
-       * Runway data is read, but not processed.
-       */
-
-      if ( compiling ) {
-        in >> lat_temp;
-        in >> lon_temp;
-        AddPointToRect(boundingBox, QPoint(lat_temp, lon_temp)); //update the bounding box
-
-        wgsPos.setPos(lat_temp, lon_temp);
-        position = _globalMapMatrix->wgsToMap(wgsPos);
-
-        outbuf << wgsPos;
-        outbuf << position;
-      } else {
-        in >> wgsPos;
-        in >> position;
-      }
-      in >> elevation;
-      if ( compiling )
-        outbuf << elevation;
-
-      switch (typeIn) {
-      case BaseMapElement::IntAirport:
-      case BaseMapElement::Airport:
-      case BaseMapElement::MilAirport:
-      case BaseMapElement::CivMilAirport:
-      case BaseMapElement::Airfield:
-      case BaseMapElement::UltraLight:
-        READ_CONTACT_DATA
-
-          READ_RUNWAY_DATA
-          // std::cout << "name: " << name << "  RWc: " << (int)rwCount << " rwLength: "<< (int)rwLength << " rwD: " << (int)rwDirection << " rwMaterial: " << (int)rwMaterial << " rwOpen: " << (int)rwOpen << std::endl;
-
-          rw = new runway(rwLength,rwDirection,rwMaterial,rwOpen);
-        airportList.append(new Airport(name, icaoName, gpsName, typeIn,
-                                       wgsPos, position, elevation,
-                                       frequency, (bool)vdf, rw ));
-
-        break;
-      case BaseMapElement::ClosedAirfield:
-        rw = new runway(0,0,0,0);
-        airportList.append(new Airport(name, icaoName, gpsName, typeIn,
-                                       wgsPos, position, 0, 0, 0, rw));
-
-        break;
-      case BaseMapElement::CivHeliport:
-      case BaseMapElement::MilHeliport:
-      case BaseMapElement::AmbHeliport:
-
-        READ_CONTACT_DATA
-          rw = new runway(0,0,0,0);
-        airportList.append(new Airport(name, icaoName, gpsName, typeIn,
-                                       wgsPos, position, elevation,
-                                       frequency, 0, rw));
-
-        break;
-      case BaseMapElement::Glidersite:
-
-        in >> isWinch;
-        if ( compiling )
-          outbuf << isWinch;
-
-        READ_CONTACT_DATA
-
-          READ_RUNWAY_DATA
-          // std::cout << "name: " << name << "  RWc: " << (int)rwCount << " rwLength: "<< (int)rwLength << " rwD: " << (int)rwDirection << " rwMaterial: " << (int)rwMaterial << " rwOpen: " << (int)rwOpen << endl;
-
-          rw = new runway(rwLength,rwDirection,rwMaterial,rwOpen);
-        gliderSiteList.append(new GliderSite(name, icaoName, gpsName,
-                                         wgsPos, position, elevation,
-                                         frequency, isWinch, rw));
-
-      default:
-        //nothing happens
-        break;
-      }
-    }  else {  // supported types
-      qWarning ("MapContents::__readAirfieldFile; type not handled in switch: %d", typeIn);
-    }
-
-    // @AP: Performance brake! emit progress calls waitscreen and this
-    // steps into main loop
-    if((++loop % 100) == 0 ) {
-      emit progress(2);
-    }
-  }
-
-  // qDebug("loop=%d", loop);
-  mapfile.close();
-
-  /* So, all data is read, and if we were compiling, the buffer is filled
-     with the output data.
-  */
-
-  if ( compiling ) {
-    buffer.close(); //close our output buffer
-    //write metadata
-    //qDebug("Bounding box is: (%d, %d),(%d, %d)",boundingBox.left(), boundingBox.top(), boundingBox.right(), boundingBox.bottom());
-    out << boundingBox;
-
-    SaveProjection(out, _globalMapMatrix->getProjection());
-    //write data on airfields from bufferdata
-    out << bufdata;
-
-    ausgabe.close();
-    // kfl file is optionally deleted after 'compilation' to save space.
-    if ( _globalMapConfig->getDeleteMapfileAfterCompile() )
-      mapfile.remove();
-  }
-
-  ws->slot_SetText2(tr("Loading map ready"));
-  qDebug("Read AirFieldFile %s in %dms", pathName.toLatin1().data(), t.elapsed());
-  return true;
-}
-
-
 bool MapContents::__readBinaryFile(const int fileSecID,
                                    const char fileTypeID)
 {
@@ -1252,7 +715,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
   QFile mapfile(pathName);
 
-  if(!mapfile.open(IO_ReadOnly)) {
+  if(!mapfile.open(QIODevice::ReadOnly)) {
     if( ! compiling && kflExists ) {
       qDebug("Cumulus: Can't open map file %s for reading!"
              " Try to use file %s",
@@ -1446,7 +909,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
   if ( compiling ) {
     out.setDevice(&ausgabe);
     out.setVersion(QDataStream::Qt_2_0);
-    if(!ausgabe.open(IO_WriteOnly)) {
+    if(!ausgabe.open(QIODevice::WriteOnly)) {
       qWarning("Cumulus: Can't open compiled map file %s for writing!"
                " Arborting ...",
                kfcPathName.toLatin1().data() );
@@ -1740,9 +1203,6 @@ void MapContents::proofeSection()
       OpenAirParser oap;
       oap.load( airspaceList );
 
-      QStringList preselect;
-      QString kflPathName, kfcPathName;
-
       //finally, sort the airspaces
       airspaceList.sort();
 
@@ -1750,57 +1210,6 @@ void MapContents::proofeSection()
       // @AP: Look for and if available load a welt2000 airfield file
       Welt2000 welt2000;
       welt2000.load( airportList, gliderSiteList );
-      
-      QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
-
-      for( int i = 0; i < mapDirs.size(); ++i )
-        {
-          addDir(preselect, mapDirs.at(i) + "/airfields", "*.kfc");
-          addDir(preselect, mapDirs.at(i) + "/airfields", "*.kfl");          
-        }
-
-      QStringList airfields;
-
-      // Now, we have to test for updated or uncompiled kfls ...
-      // Anyone can do it more elegantly?
-
-      if(preselect.count() == 0) {
-        // No mapfiles found
-        emit errorOnMapLoading();
-      } else {
-        preselect.sort(); // now kfls follow kfcs in list ...
-        while ( ! preselect.isEmpty() ) {
-          if ( preselect.first().contains( QString(".kfl") ) ) {
-            // there can't be a same name kfc after this kfl
-            airfields.append( preselect.first() );
-            preselect.remove( preselect.begin() );
-          } else {
-            // we have to check if there's a same name kfl after this kfc
-            kfcPathName = preselect.first();
-            preselect.remove( preselect.begin() );
-            kflPathName = kfcPathName;
-            kflPathName.replace( kflPathName.length()-1, 1, QString("l") );
-            if ( kflPathName == preselect.first() ) {
-              if ( getDateFromMapFile(kflPathName) >
-                   getDateFromMapFile(kfcPathName) ) {
-                airfields.append( kflPathName );
-                qDebug("Airfield file %s has a newer date, recompiling it.",
-                       kflPathName.toLatin1().data() );
-              } else {
-                airfields.append( kfcPathName );
-                // Here we could probably delete the old kfl to avoid confusion
-              }
-              preselect.remove( preselect.begin() );
-            } else {
-              airfields.append( kfcPathName );
-            }
-          }
-        }
-        // Now only the relevant files are in the list
-        for(QStringList::Iterator it = airfields.begin(); it != airfields.end(); it++)
-          // we may have files from different countries, read them all
-          __readAirfieldFile(*it);
-      }
     }
 
     unloadDone = false;
@@ -1839,7 +1248,7 @@ void MapContents::proofeSection()
               }
             }
 
-            qDebug("Going to load section %d", secID);
+            // qDebug("Going to load section %d", secID);
 
             step=0;
             //check to see if parts of this tile has already been loaded before
@@ -1847,7 +1256,7 @@ void MapContents::proofeSection()
             if (it==tilePartMap.end()) { //not found
               hasstep=0;
             } else {
-              hasstep=it.data();
+              hasstep=it.value();
             }
 
             //try loading the currently unloaded files
@@ -2719,11 +2128,11 @@ bool MapContents::locateFile(const QString& fileName, QString& pathName)
     {
       QFile test;
 
-      test.setName( mapDirs.at(i) + "/" + fileName );
+      test.setFileName( mapDirs.at(i) + "/" + fileName );
 
       if( test.exists() )
         {
-          pathName=test.name();
+          pathName=test.fileName();
           return true;
         }      
     }
@@ -2733,11 +2142,11 @@ bool MapContents::locateFile(const QString& fileName, QString& pathName)
     {
       QFile test;
 
-      test.setName( mapDirs.at(i) + "/" + fileName.toLower() );
+      test.setFileName( mapDirs.at(i) + "/" + fileName.toLower() );
 
       if( test.exists() )
         {
-          pathName=test.name();
+          pathName=test.fileName();
           return true;
         }      
     }
@@ -2747,11 +2156,11 @@ bool MapContents::locateFile(const QString& fileName, QString& pathName)
     {
       QFile test;
 
-      test.setName( mapDirs.at(i) + "/" + fileName.toUpper() );
+      test.setFileName( mapDirs.at(i) + "/" + fileName.toUpper() );
 
       if( test.exists() )
         {
-          pathName=test.name();
+          pathName=test.fileName();
           return true;
         }      
     }
@@ -2780,7 +2189,7 @@ void MapContents::addDir (QStringList& list, const QString& _path, const QString
         found = true;
     }
     if (!found)
-      list += path.absFilePath (*it);
+      list += path.absoluteFilePath (*it);
   }
   //  qDebug ("entries: %s", list.join(";").toLatin1().data());
 }
@@ -2826,7 +2235,7 @@ QDateTime MapContents::getDateFromMapFile( const QString& path )
 {
   QDateTime createDateTime;
   QFile mapFile( path );
-  if(!mapFile.open(IO_ReadOnly)) {
+  if(!mapFile.open(QIODevice::ReadOnly)) {
     qWarning("Cumulus: can't open map file %s for reading date", path.toLatin1().data() );
     createDateTime.setDate( QDate(1900,1,1) );
     return createDateTime;
@@ -2835,7 +2244,7 @@ QDateTime MapContents::getDateFromMapFile( const QString& path )
   QDataStream in(&mapFile);
   in.setVersion(QDataStream::Qt_2_0);
 
-  mapFile.at( 9 );
+  mapFile.seek( 9 );
   in >> createDateTime;
   mapFile.close();
   //qDebug("Map file %s created %s", path.toLatin1().data(), createDateTime.toString().toLatin1().data() );

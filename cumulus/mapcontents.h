@@ -295,14 +295,7 @@ class MapContents : public QObject
  private:
 
   /**
-   * Reads a binary map file containing airfields.
-   *
-   * @param  fileName  The path and name of the airfield-file.
-   */
-  bool __readAirfieldFile(const QString& pathName);
-
-  /**
-   * Reads a new binary map file.
+   * Reads a binary map file.
    *
    * @param  fileSecID  The sectionID of the mapfile
    * @param  fileTypeID  The typeID of the mapfile ("G" for ground-data,
@@ -314,7 +307,7 @@ class MapContents : public QObject
   bool __readBinaryFile(const int fileSecID, const char fileTypeID);
 
   /**
-   * Reads a new binary terrain-map file.
+   * Reads a binary terrain-map file.
    *
    * @param  fileSecID  The sectionID of the mapfile
    * @param  fileTypeID  The typeID of the mapfile ("G" for ground-data,
