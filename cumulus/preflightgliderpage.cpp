@@ -16,7 +16,9 @@
 ***********************************************************************/
 
 #include <QLabel>
+#include <QPushButton>
 #include <QGridLayout>
+#include <QToolTip>
 
 #include "glider.h"
 #include "cucalc.h"
@@ -28,41 +30,48 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) : QWidget(parent)
 
   lastGlider = 0;
 
-  QGridLayout * topLayout = new QGridLayout(this, 4,2,5);
+  QGridLayout* topLayout = new QGridLayout(this);
+  topLayout->setMargin(5);
 
   list = new GliderList(this);
-  topLayout->addMultiCellWidget(list,1,1,1,2);
+  topLayout->addWidget(list, 0, 0, 1, 2);
 
-  QLabel * lblCoPilot=new QLabel(tr("Co-pilot:"),this);
-  topLayout->addWidget(lblCoPilot,2,1);
+  QPushButton* deselect = new QPushButton( tr("Deselect"), this );
+  deselect->setToolTip( tr("Reset glider selection") );
+  topLayout->addWidget( deselect, 1, 0 );
+
+  QLabel* lblCoPilot = new QLabel(tr("Co-pilot:"),this);
+  topLayout->addWidget(lblCoPilot,2, 0);
   edtCoPilot=new QLineEdit(this,"edtLineEdit");
-  topLayout->addWidget(edtCoPilot,2,2);
+  topLayout->addWidget(edtCoPilot,2, 1);
 
-  QLabel * lblLoad=new QLabel(tr("Added load:"),this);
-  topLayout->addWidget(lblLoad,3,1);
+  QLabel* lblLoad = new QLabel(tr("Added load:"),this);
+  topLayout->addWidget(lblLoad,3, 0);
   spinLoad=new QSpinBox(this,"spinLoad");
-  topLayout->addWidget(spinLoad,3,2);
+  topLayout->addWidget(spinLoad,3, 1);
   spinLoad->setButtonSymbols(QSpinBox::PlusMinus);
   spinLoad->setMinValue(0);
   spinLoad->setMaxValue(1000);
   spinLoad->setLineStep(5);
 
-  QLabel * lblWater=new QLabel(tr("Water balast:"),this);
-  topLayout->addWidget(lblWater,4,1);
+  QLabel* lblWater = new QLabel(tr("Water balast:"),this);
+  topLayout->addWidget(lblWater,4, 0);
   spinWater=new QSpinBox(this,"spinWater");
-  topLayout->addWidget(spinWater,4,2);
+  topLayout->addWidget(spinWater,4, 1);
   spinWater->setButtonSymbols(QSpinBox::PlusMinus);
   spinWater->setMinValue(0);
   spinWater->setMaxValue(300);
   spinWater->setLineStep(5);
 
-  connect(list,SIGNAL(selectionChanged()),
-          this,SLOT(slot_gliderChanged()));
   list->fillList();
-
+  list->clearSelection();
   getCurrent();
 
-  topLayout->activate();
+  connect(deselect, SIGNAL(clicked()),
+          this, SLOT(slot_gliderDeselected()) );           
+                        
+  connect(list, SIGNAL(selectionChanged()),
+          this, SLOT(slot_gliderChanged()));           
 }
 
 PreFlightGliderPage::~PreFlightGliderPage()
@@ -70,11 +79,10 @@ PreFlightGliderPage::~PreFlightGliderPage()
 
 void PreFlightGliderPage::slot_gliderChanged()
 {
-
   // save co pilot before new selection
   if(lastGlider)
     {
-      if (lastGlider->seats()==Glider::doubleSeater)
+      if (lastGlider->seats() == Glider::doubleSeater)
         {
           lastGlider->setCoPilot(edtCoPilot->text());
         }
@@ -84,10 +92,11 @@ void PreFlightGliderPage::slot_gliderChanged()
         }
     }
 
-  Glider * glider=list->getSelectedGlider();
-  lastGlider=glider;
+  Glider* glider = list->getSelectedGlider();
 
-  if(glider)
+  lastGlider = glider;
+
+  if( glider )
     {
       edtCoPilot->setEnabled(glider->seats()==Glider::doubleSeater);
       edtCoPilot->setText(glider->coPilot());
@@ -99,21 +108,32 @@ void PreFlightGliderPage::slot_gliderChanged()
     }
 }
 
+void PreFlightGliderPage::slot_gliderDeselected()
+{
+  // clear last stored glider
+  lastGlider = 0;
+  // clear list selection
+  list->clearSelection();
+}
+
 void PreFlightGliderPage::getCurrent()
 {
-  Glider * glider=calculator->glider();
-  if (glider==0)
-    return;
+  Glider* glider = calculator->glider();
+
+  if( glider == 0 )
+    {
+      return;
+    }
 
   Q3ListViewItemIterator it(list);
 
   for (;it.current();++it)
     {
-      //select if the registration matches
+      // select if the registration matches
       list->setSelected(it.current(), it.current()->text(1)==glider->registration());
     }
 
-  edtCoPilot->setEnabled(glider->seats()==Glider::doubleSeater);
+  edtCoPilot->setEnabled(glider->seats() == Glider::doubleSeater);
   edtCoPilot->setText(glider->coPilot());
 
   spinLoad->setValue( (int) (glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
@@ -126,7 +146,7 @@ void PreFlightGliderPage::getCurrent()
 
 void PreFlightGliderPage::save()
 {
-  Glider * glider=list->getSelectedGlider(false);
+  Glider* glider = list->getSelectedGlider(false);
 
   if(glider)
     {
@@ -147,6 +167,12 @@ void PreFlightGliderPage::save()
       glider=list->getSelectedGlider(true);
       calculator->setGlider(glider);
       list->setStoredSelection(glider);
+    }
+  else
+    {
+      // no selected glider, reset of stored selection
+      calculator->setGlider( static_cast<Glider *> (0) );
+      list->setStoredSelection( static_cast<Glider *> (0) );
     }
 }
 

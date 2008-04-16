@@ -167,7 +167,7 @@ GliderList::~GliderList()
 }
 
 
-/** Retreives the gliders from the configfile, and fills the list. */
+/** Retreives the gliders from the config file, and fills the list. */
 void GliderList::fillList()
 {
   clear();
@@ -247,6 +247,7 @@ Glider *GliderList::getSelectedGlider(bool take)
   int i,n;
 
   n =  Gliders.count();
+
   Q3ListViewItem* li = this->selectedItem();
 
   // @ee may be null
@@ -263,6 +264,7 @@ Glider *GliderList::getSelectedGlider(bool take)
       }
     }
   }
+
   return 0;
 }
 
@@ -331,7 +333,7 @@ void GliderList::slot_Deleted(Glider * glider)
 
 
 /* Retrieve last selected glider */
-Glider * GliderList::getStoredSelection()
+Glider* GliderList::getStoredSelection()
 {
   QSettings config( QSettings::UserScope, "Cumulus" );
 
@@ -347,6 +349,7 @@ Glider * GliderList::getStoredSelection()
     
     while(config.contains(keyname.arg(i))) {
       Glider * glider=new Glider();
+
       if (glider->load(&config ,i)) {
         if (glider->registration()==stored) {
           return glider;
@@ -368,10 +371,21 @@ Glider * GliderList::getStoredSelection()
 
 
 /* save last selected glider */
-void GliderList::setStoredSelection(Glider* g)
+void GliderList::setStoredSelection(Glider* glider)
 {
   QSettings config( QSettings::UserScope, "Cumulus" );
   config.beginGroup("Glider Selection");
-  config.setValue("lastSelected", g->registration());
+
+  if( glider )
+    {
+      // store last selection
+      config.setValue("lastSelected", glider->registration());
+    }
+  else
+    {
+      // reset last selection
+      config.setValue("lastSelected", "");
+    }
+
   config.endGroup();
 }

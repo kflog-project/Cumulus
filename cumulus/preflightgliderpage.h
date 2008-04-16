@@ -32,15 +32,19 @@
 class PreFlightGliderPage : public QWidget
   {
     Q_OBJECT
+
   public:
+
     PreFlightGliderPage(QWidget *parent=0);
     ~PreFlightGliderPage();
     void save();
 
   protected:
+
     void showEvent(QShowEvent *);
 
   private:
+
     GliderList * list;
     QLineEdit * edtCoPilot;
     QSpinBox * spinLoad;
@@ -50,7 +54,9 @@ class PreFlightGliderPage : public QWidget
     void getCurrent();
 
   private slots:
+
     void slot_gliderChanged();
+    void slot_gliderDeselected();
   };
 
 #endif
