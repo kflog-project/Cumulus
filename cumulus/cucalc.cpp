@@ -973,6 +973,13 @@ void CuCalc::slot_settingschanged ()
   _altimeter_mode = AltimeterModeDialog::mode();
   emit newAltitude(lastAltitude);  // show initial altitude for manual mode
   // qDebug("Settings changed %d",_altimeter_mode );
+
+  // Send last known wind to mapview for update of speed. User maybe
+  // changed the speed unit.
+  if( lastWind.getSpeed().getMps() != 0 )
+    {
+      emit( newWind(lastWind) );
+    }
 }
 
 
@@ -1004,7 +1011,9 @@ void CuCalc::slot_newFix()
   Vector airspeed = groundspeed + lastWind;
   // qDebug ("airspeed: %d/%f", airspeed.getAngleDeg(), airspeed.getSpeed().getKph());
   if( lastWind.getSpeed().getKph() != 0 )
-    sample.airspeed = airspeed.getSpeed();
+    {
+      sample.airspeed = airspeed.getSpeed();
+    }
 
   // add to the samplelist
   samplelist.add(sample);
