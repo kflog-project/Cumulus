@@ -336,6 +336,7 @@ Airspace::ConflictType Airspace::conflicts (const AltitudeCollection& alt,
 bool Airspace::operator < (const Airspace& other) const
 {
   int a1C = getUpperL(), a2C = other.getUpperL();
+
   if (a1C > a2C) {
     return false;
   } else if (a1C < a2C) {

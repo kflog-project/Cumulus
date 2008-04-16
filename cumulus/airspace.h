@@ -283,6 +283,30 @@ private:
     AirRegion* m_airRegion;
 };
 
+struct CompareAirspaces
+{
+  // The operator sorts the airspaces in the expected order
+  bool operator()(const Airspace *as1, const Airspace* as2) const
+  {
+    int a1C = as1->getUpperL(), a2C = as2->getUpperL();
+
+    if (a1C > a2C)
+      {
+        return false;
+      }
+
+    if (a1C < a2C)
+      {
+        return true;
+      }
+
+    // equal
+    int a1F = as1->getLowerL();
+    int a2F = as2->getLowerL();
+    return (a1F < a2F);
+  };
+};
+
 /**
  * Specialized QList for Airspaces. The sort member function
  * has been re-implemented to make it possible to sort items based on their
@@ -291,9 +315,14 @@ private:
 class SortableAirspaceList : public QList<Airspace*>
 {
 public:
-  void sort () {
-    qSort (begin(), end());
+  void sort ()
+  {
+    // @AP: using std::sort because qSort can not handle pointer
+    // elements
+    std::sort( begin(), end(), CompareAirspaces() );
   };
 };
+
+
 
 #endif
