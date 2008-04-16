@@ -202,6 +202,11 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 
   QString display;
   QString no1, no2;
+  QString currentTpDes = currentTP->description;
+  QString nextTpDes    = nextTP->description;
+
+  currentTpDes.replace(  QRegExp(" "), "&nbsp;" );
+  nextTpDes.replace(  QRegExp(" "), "&nbsp;" );
 
   no1.sprintf( "%02d", currentTP->taskPointIndex );
   no2.sprintf( "%02d", nextTP->taskPointIndex );
@@ -212,12 +217,12 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 
   display += "<table cellpadding=5 align=center border=1><tr><th colspan=2 align=left>" +
     tr("Reached target") + " " + no1 + "</th>" +
-    "<th colspan=2 align=left>" + currentTP->name + " (" + currentTP->description + ")" +
+    "<th colspan=2 align=left>" + currentTP->name + "&nbsp;(" + currentTpDes + ")" +
     "</th></tr>";
   
   display += "<tr><th colspan=2 align=\"left\">" +
     tr("Next target") + " " + no2 + "</th>" +
-    "<th colspan=2 align=left>" + nextTP->name + " (" + nextTP->description + ")" +
+    "<th colspan=2 align=left>" + nextTP->name + "&nbsp;(" + nextTpDes + ")" +
     "</th></tr>";
   
   // to avoid wraping in the table we have to code spaces as forced spaces in html
@@ -345,9 +350,13 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     wayPoint *finalTP = wpList.at( wpList.count() - 1 );
     no1.sprintf( "%02d", finalTP->taskPointIndex );
 
+    QString finalTpDes = finalTP->description;
+
+    finalTpDes.replace(  QRegExp(" "), "&nbsp;" );
+
     display += "<tr><th colspan=\"2\" align=\"left\">" +
       tr("Landing target") + " " + no1 + "</th>" +
-      "<th colspan=2 align=left>" + finalTP->name + " (" + finalTP->description + ")" +
+      "<th colspan=2 align=left>" + finalTP->name + "&nbsp;(" + finalTpDes + ")" +
       "</th></tr>";
 
     // distance in km to final target must be calculated
