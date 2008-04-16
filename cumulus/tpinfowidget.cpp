@@ -206,26 +206,26 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   no1.sprintf( "%02d", currentTP->taskPointIndex );
   no2.sprintf( "%02d", nextTP->taskPointIndex );
 
-  display += "<html><center><big><b>" +
+  display += "<html><big><center><b>" +
     tr("Taskpoint switch") + " " + no1 + "->" + no2 +
-    "</b></big></center><p>";
+    "</b></center><p>";
 
-  display += "<table><tr><th colspan=\"2\" align=\"left\">" +
-    tr("Reached target") + " " + no1 + "</th></tr>" +
-    "<tr><td colspan=\"2\">&nbsp;&nbsp;" + currentTP->name + " (" + currentTP->description + ")" +
-    "</td></tr>";
+  display += "<table cellpadding=5 align=center border=1><tr><th colspan=2 align=left>" +
+    tr("Reached target") + " " + no1 + "</th>" +
+    "<th colspan=2 align=left>" + currentTP->name + " (" + currentTP->description + ")" +
+    "</th></tr>";
   
-  display += "<tr><th colspan=\"2\" align=\"left\">" +
-    tr("Next target") + " " + no2 + "</th></tr>" +
-    "<tr><td colspan=\"2\">&nbsp;&nbsp;" + nextTP->name + " (" + nextTP->description + ")" +
-    "</td></tr>";
+  display += "<tr><th colspan=2 align=\"left\">" +
+    tr("Next target") + " " + no2 + "</th>" +
+    "<th colspan=2 align=left>" + nextTP->name + " (" + nextTP->description + ")" +
+    "</th></tr>";
   
   // to avoid wraping in the table we have to code spaces as forced spaces in html
   QString distance = Distance::getText(dist2Next * 1000., true, 1);
   distance.replace(  QRegExp(" "), "&nbsp;" );
 
   display += "<tr><td>&nbsp;&nbsp;" + tr("Distance") + "</td><td align=\"left\"><b>" +
-    distance + "</b></td></tr>";
+    distance + "</b></td>";
 
   Altitude arrivalAlt;
   Speed bestSpeed;
@@ -246,19 +246,24 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     {
       if( arrivalAlt >= minAlt )
         {
-          display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>+" +
-            arrivalAlt.getText(true,0) + "</b></td><tr>";
+          display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>+" +
+            arrivalAlt.getText(true,0) + "</b></td></tr>";
         }
       else if( arrivalAlt.getMeters() > 0.0 ) 
        {
-         display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><font color=\"#FF0000\"><b>" +
-           arrivalAlt.getText(true,0) + "</font></b></td><tr>";
+         display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><font color=\"#FF0000\"><b>" +
+           arrivalAlt.getText(true,0) + "</font></b></td></tr>";
        }
      else
        {
-         display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b><font color=\"#FF00FF\">" +
-           arrivalAlt.getText(true,0) + "</font></b></td><tr>";
+         display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b><font color=\"#FF00FF\">" +
+           arrivalAlt.getText(true,0) + "</font></b></td></tr>";
         }
+    }
+  else
+    {
+      display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>" +
+        tr("unknown") + "</b></td></tr>";
     }
   
   double gs = calculator->getlastSpeed().getMps(); // get last speed
@@ -275,7 +280,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   speed.replace(  QRegExp(" "), "&nbsp;" );
 
   display += "<tr><td>&nbsp;&nbsp;" + tr("Vg") + "</td><td align=\"left\"><b>" +
-    speed + "</b></td></tr>";
+    speed + "</b></td>";
 
   // If speed is to less we do not display any time values
   if( gs > 0.3 )
@@ -285,7 +290,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       QTime qtime(0,0);
       qtime = qtime.addSecs(time2Next);
       
-      display += "<tr><td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
+      display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
         qtime.toString() + "</b></td></tr>";
       
       // ETA as UTC must be done with c-system functions. This QT
@@ -299,7 +304,15 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       eta.sprintf( "%02d:%02d:%02d UTC", gmt->tm_hour, gmt->tm_min, gmt->tm_sec );
       
       display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
-        eta + "</b></td></tr>";
+        eta + "</b></td>";
+    }
+  else
+    {
+      display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
+        tr("unknown") + "</b></td></tr>";
+
+      display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
+        tr("unknown") + "</b></td>";
     }
 
   // calculate sunset for the destination
@@ -312,8 +325,13 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     {
       // In some areas no results available. In this case we skip
       // this output.
-      display += "<tr><td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
+      display += "<td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
         ss + " UTC </b></td></tr>";
+    }
+  else
+    {
+      display += "<td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
+        tr("unknown")+ "</b></td></tr>";      
     }
 
   //-----------------------------------------------------------------------
@@ -328,9 +346,9 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     no1.sprintf( "%02d", finalTP->taskPointIndex );
 
     display += "<tr><th colspan=\"2\" align=\"left\">" +
-      tr("Landing target") + " " + no1 + "</th></tr>" +
-      "<tr><td colspan=\"2\">&nbsp;&nbsp;" + finalTP->name + " (" + finalTP->description + ")" +
-      "</td></tr>";
+      tr("Landing target") + " " + no1 + "</th>" +
+      "<th colspan=2 align=left>" + finalTP->name + " (" + finalTP->description + ")" +
+      "</th></tr>";
 
     // distance in km to final target must be calculated
     double finalDistance = dist2Next;
@@ -347,10 +365,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     distance.replace(  QRegExp(" "), "&nbsp;" );
 
     display += "<tr><td>&nbsp;&nbsp;" + tr("Distance") + "</td><td align=\"left\"><b>" +
-      distance + "</b></td></tr>";
-
-    display += "<tr><td>&nbsp;&nbsp;" + tr("Vg") + "</td><td align=\"left\"><b>" +
-      speed + "</b></td></tr>";
+      distance + "</b></td>";
 
     // calculation of the final arrival altitude
     reach = (reachable) task->calculateFinalGlidePath( currentTpIndex, arrivalAlt, bestSpeed );
@@ -360,18 +375,26 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
         switch (reach)
           {
           case yes:
-            display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>+" +
-              arrivalAlt.getText(true,0) + "</b></td><tr>";
+            display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>+" +
+              arrivalAlt.getText(true,0) + "</b></td></tr>";
             break;
           case no:
-            display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><font color=\"#FF0000\"><b>" +
-              arrivalAlt.getText(true,0) + "</font></b></td><tr>";
+            display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><font color=\"#FF0000\"><b>" +
+              arrivalAlt.getText(true,0) + "</font></b></td></tr>";
             break;
           case belowSavety:
-            display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b><font color=\"#FF00FF\">" +
-              arrivalAlt.getText(true,0) + "</font></b></td><tr>";
+            display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b><font color=\"#FF00FF\">" +
+              arrivalAlt.getText(true,0) + "</font></b></td></tr>";
           }
       }
+    else
+      {
+        display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>" +
+          tr("unknown") + "</b></td></tr>";
+      }
+
+    display += "<tr><td>&nbsp;&nbsp;" + tr("Vg") + "</td><td align=\"left\"><b>" +
+      speed + "</b></td>";
 
     // If speed is to less we do not display any time values
     if( gs > 0.3 )
@@ -381,7 +404,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 	QTime qtime(0,0);
 	qtime = qtime.addSecs(time2Final);
 	
-	display += "<tr><td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
+	display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
 	  qtime.toString() + "</b></td></tr>";
 	
 	// ETA as UTC must be done with c-system functions. This QT
@@ -395,7 +418,15 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 	eta.sprintf( "%02d:%02d:%02d UTC", gmt->tm_hour, gmt->tm_min, gmt->tm_sec );
       
 	display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
-	  eta + "</b></td></tr>";
+	  eta + "</b></td>";
+      }
+    else
+      {
+        display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
+          tr("unknown") + "</b></td></tr>";
+        
+        display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
+          tr("unknown") + "</b></td>";
       }
 
     // calculate sunset for the landing destination
@@ -408,12 +439,17 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       {
 	// In some areas no results available. In this case we skip
 	// this output.
-	display += "<tr><td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
+	display += "<td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
 	  ss + " UTC </b></td></tr>";
+      }
+    else
+      {
+        display += "<td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
+          tr("unknown")+ "</b></td></tr>";      
       }
   }
 
-  display += "</table><html>";  
+  display += "</table></big><html>";  
   text->setText( display );
 }
 
