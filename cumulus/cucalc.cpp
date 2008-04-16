@@ -479,11 +479,11 @@ void CuCalc::calcDistance( bool autoWpSwitch )
       QString text = "<html><hr><b><nobr>" +
         tr("Task Target reached") +
         "</nobr></b><hr>" +
-        "<p><b>" +
+        "<p><center><b>" +
         tr("Congratulations!") +
-        "</b></p><br><b>" +
+        "</b></center></p><br><br><b>" +
         tr("You have reached the <br>task target sector:") +
-        "</b><br><br><p align=\"left\"><b>" +
+        "</b><p align=\"left\"><b>" +
         selectedWp->name + " (" + selectedWp->description + ")</b></p><br></html>";
 
       // fetch info show time from config and compute it as milli seconds
@@ -1322,7 +1322,6 @@ void CuCalc::setGlider(Glider * _newVal)
     delete _glider;
     _glider = 0;
   }
-
 
   if (_newVal) {
     _glider = _newVal;
