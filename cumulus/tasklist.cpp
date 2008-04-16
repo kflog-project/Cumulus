@@ -164,7 +164,7 @@ void TaskList::slotTaskDetails()
       if (taskListView->selectedItem()->text( 1 )==tr("(No tasks defined)"))
         {
           QMessageBox::information( this, 
-                                    tr("Defime a Task"),
+                                    tr("Define a Task"),
                                     tr("Tip on editor icon, to define a task.") );
         };
 
