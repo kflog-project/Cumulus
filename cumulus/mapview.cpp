@@ -47,20 +47,6 @@
 #include "gpsstatusdialog.h"
 #include "variomodedialog.h"
 
-//general KFLOG file token: @KFL
-#define KFLOG_FILE_MAGIC    0x404b464c
-//file type and version
-#define FILE_TYPE 0x4c
-#define FILE_VERSION 0x01
-
-#define MAX_LINES 10   //ten lines max for each direction
-//#define VLINE_BASE MVM_MAX_ELEMENT;
-//#define HLINE_BASE VLINE_BASE+MAX_LINES;
-
-const int VLINE_BASE = MVW_MAX_ELEMENT;
-const int HLINE_BASE = VLINE_BASE + MAX_LINES;
-
-
 MapView::MapView(QWidget *parent) : QWidget(parent)
 {
   setObjectName("MapView");
@@ -201,7 +187,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //layout for Wind/LD
   QBoxLayout *WLLayout = new QHBoxLayout(commonLayout);
- // SHLayout->setSpacing(2);
 
   //add Wind widget; this is head/tailwind, no direction given !
   _wind = new MapInfoBox( this, conf->getFrameCol() );
@@ -335,12 +320,26 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusFlightstatus->setTextFormat(Qt::RichText);
   _statusbar->addWidget(_statusFlightstatus);
 
-  _statusFiller = new QLabel(_statusbar);
-  _statusFiller->setFrameStyle(QFrame::Box|QFrame::Plain);
-  _statusFiller->setLineWidth(0);
-  _statusFiller->setAlignment(Qt::AlignCenter);
-  _statusFiller->setMargin(0);
-  _statusbar->addWidget(_statusFiller, 1);
+  _statusPosition = new QLabel(_statusbar);
+  _statusPosition->setFrameStyle(QFrame::Box|QFrame::Plain);
+  _statusPosition->setLineWidth(0);
+  _statusPosition->setAlignment(Qt::AlignCenter);
+  _statusPosition->setMargin(0);
+  _statusbar->addWidget(_statusPosition);
+
+  _statusGlider = new QLabel(_statusbar);
+  _statusGlider->setFrameStyle(QFrame::Box|QFrame::Plain);
+  _statusGlider->setLineWidth(0);
+  _statusGlider->setAlignment(Qt::AlignCenter);
+  _statusGlider->setMargin(0);
+  _statusbar->addWidget(_statusGlider);
+
+  _statusWarning = new QLabel(_statusbar);
+  _statusWarning->setFrameStyle(QFrame::Box|QFrame::Plain);
+  _statusWarning->setLineWidth(0);
+  _statusWarning->setAlignment(Qt::AlignCenter);
+  _statusWarning->setMargin(0);
+  _statusbar->addWidget(_statusWarning, 1);
 
   QFrame* filler = new QFrame(_statusbar);
   filler->setFrameStyle(QFrame::NoFrame);
@@ -541,8 +540,8 @@ void MapView::slot_Position(const QPoint& position, const int source)
   if(!calculator->isManualInFlight() ||
       calculator->isManualInFlight() && source == CuCalc::MAN)
     {
-      _statusFiller->setText(WGSPoint::printPos(position.x(),true) +
-                             " / " + WGSPoint::printPos(position.y(),false));
+      _statusPosition->setText(" " + WGSPoint::printPos(position.x(),true) +
+                             " / " + WGSPoint::printPos(position.y(),false) + " ");
     }
 
   // remember for slot_settingschange
@@ -551,7 +550,7 @@ void MapView::slot_Position(const QPoint& position, const int source)
 
 
 /** This slot is called if the status of the GPS changes. */
-void MapView::slotGPSStatus(GPSNMEA::connectedStatus status)
+void MapView::slot_GPSStatus(GPSNMEA::connectedStatus status)
 {
   if(status>GPSNMEA::notConnected)
     {
@@ -694,6 +693,23 @@ void MapView::slot_LD( const double& rLD, const double& cLD )
 }
 
 
+/**
+ * This slot is called if the glider selection has been modified
+ */
+void MapView::slot_glider( const QString& glider )
+{
+  _statusGlider->setText( glider );
+}
+
+/**
+ * This slot is called if a warning message shall be displayed
+ */
+void MapView::slot_warning( const QString& warning )
+{
+  _statusWarning->setText( warning );
+}
+
+
 /** This slot is called if the settings have been changed.
  * It refreshes all displayed data because units might have beeen changed.
  */
@@ -712,7 +728,7 @@ void MapView::slot_settingschange()
 
 
 /** This slot is called if the number of satelites changes. */
-void MapView::slotSatConstellation()
+void MapView::slot_SatConstellation()
 {
   if (gps)
     {

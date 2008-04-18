@@ -506,6 +506,12 @@ signals: // Signals
     void newVario (const Speed&);
 
     void newWind (Vector&);
+
+    /**
+     * Sent the name of the glider type, if a new glider has been set. 
+     */
+    void newGlider(const QString&);
+
     /**
      * Sent if the flightmode changes
      */

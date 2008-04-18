@@ -325,9 +325,9 @@ void CumulusApp::slotCreateApplicationWidgets()
            calculator->getVario(), SLOT( slotNewAirspeed( const Speed& ) ) );
 
   connect( gps, SIGNAL( statusChange( GPSNMEA::connectedStatus ) ),
-           viewMap, SLOT( slotGPSStatus( GPSNMEA::connectedStatus ) ) );
+           viewMap, SLOT( slot_GPSStatus( GPSNMEA::connectedStatus ) ) );
   connect( gps, SIGNAL( newSatConstellation() ),
-           viewMap, SLOT( slotSatConstellation() ) );
+           viewMap, SLOT( slot_SatConstellation() ) );
   connect( gps, SIGNAL( statusChange( GPSNMEA::connectedStatus ) ),
            this, SLOT( slotGpsStatus( GPSNMEA::connectedStatus ) ) );
   connect( gps, SIGNAL( newSatConstellation() ),
@@ -440,13 +440,14 @@ void CumulusApp::slotCreateApplicationWidgets()
            viewMap, SLOT( slot_wind( Vector& ) ) );
   connect( calculator, SIGNAL( newLD( const double&, const double&) ),
            viewMap, SLOT( slot_LD( const double&, const double&) ) );
+  connect( calculator, SIGNAL( newGlider( const QString&) ),
+           viewMap, SLOT( slot_glider( const QString&) ) );
   connect( calculator, SIGNAL( flightModeChanged( CuCalc::flightmode ) ),
            viewMap, SLOT( slot_setFlightStatus() ) );
   connect( calculator, SIGNAL( flightModeChanged( CuCalc::flightmode ) ),
            logger, SLOT( slotFlightMode( CuCalc::flightmode ) ) );
   connect( calculator, SIGNAL( taskpointSectorTouched() ),
            logger, SLOT( slotTaskSectorTouched() ) );
-
   connect( calculator, SIGNAL( taskInfo( const QString&, const bool ) ),
            this, SLOT( slotNotification( const QString&, const bool ) ) );
 
@@ -685,26 +686,18 @@ void CumulusApp::playSound( const char *name )
 
 void CumulusApp::slotNotification( const QString& msg, const bool sound )
 {
-  if ( msg.isEmpty() )
-    {
-      setWindowTitle( "Cumulus: " + calculator->gliderType() );
-      return ;
-    }
-
   if ( sound )
     {
       playSound("notify");
     }
 
-  setWindowTitle( msg + " " );
-  viewMap->message( msg );
+  viewMap->slot_warning( msg );
 }
 
 void CumulusApp::slotAlarm( const QString& msg, const bool sound )
 {
   if ( msg.isEmpty() )
     {
-      setWindowTitle( "Cumulus: " + calculator->gliderType() );
       return ;
     }
 
@@ -713,8 +706,7 @@ void CumulusApp::slotAlarm( const QString& msg, const bool sound )
       playSound("alarm");
     }
 
-  setWindowTitle( msg + " " );
-  viewMap->message( msg );
+  viewMap->slot_warning( msg );
 }
 
 void CumulusApp::initMenuBar()

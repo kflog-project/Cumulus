@@ -1300,7 +1300,7 @@ void CuCalc::slot_Wind(Vector& v)
 
 
 /** Read property of Glider glider. */
-Glider * CuCalc::glider() const
+Glider *CuCalc::glider() const
 {
   return _glider;
 }
@@ -1315,21 +1315,27 @@ QString CuCalc::gliderType () const
 }
 
 
-/** Write property of Glider glider. */
+/** Store property of new Glider. */
 void CuCalc::setGlider(Glider * _newVal)
 {
-  if (_glider) {
-    delete _glider;
-    _glider = 0;
-  }
+  if (_glider)
+    {
+      delete _glider;
+      _glider = 0;
+    }
 
-  if (_newVal) {
-    _glider = _newVal;
-    _polar = _glider->polar();
-    calcETA();
-    calcGlidePath();
-    // _reachablelist->calculateFullList();
-  }
+  if (_newVal)
+    {
+      _glider = _newVal;
+      _polar = _glider->polar();
+      calcETA();
+      calcGlidePath();
+      emit newGlider( _glider->type() );
+    }
+  else
+    {
+      emit newGlider( QString::null );
+    }
 }
 
 

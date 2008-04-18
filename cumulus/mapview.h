@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002 by Andre Somers, 2008 Axel Pauli
-    email                : andre@kflog.org
+    email                : axel@kflog.org
 
     $Id$
 
@@ -156,12 +156,12 @@ class MapView : public QWidget
     /**
      * This slot is called if the status of the GPS changes.
      */
-    void slotGPSStatus(GPSNMEA::connectedStatus status);
+    void slot_GPSStatus(GPSNMEA::connectedStatus status);
 
     /**
      * This slot is called if the number of satelites changes.
      */
-    void slotSatConstellation();
+    void slot_SatConstellation();
 
     /**
      * This slot is being called if the altitude has changed.
@@ -200,6 +200,16 @@ class MapView : public QWidget
     void slot_LD( const double& rLD, const double& cLD );
 
     /**
+     * This slot is called if the glider selection has been modified
+     */
+    void slot_glider( const QString& glider );
+
+    /**
+     * This slot is called if a warning message shall be displayed
+     */
+    void slot_warning( const QString& warning );
+
+    /**
      * This slot is called if the settings have been changed.
      * It refreshes all displayed data because units might have
      * been changed.
@@ -217,7 +227,7 @@ class MapView : public QWidget
     /** Opens the GPS status dialog */
     void slot_gpsStatusDialog();
 
-  signals: // Signals
+  signals: // Signals --------------------------------------------------
     /**
      * toggle LD compution on/off
      */
@@ -271,8 +281,12 @@ class MapView : public QWidget
     CuLabel* _statusGps;
     /** reference to flightstatus, including logging status and flightmode */
     QLabel* _statusFlightstatus;
-    /** reference to filler for statusbar */
-    QLabel* _statusFiller;
+    /** reference to position for statusbar */
+    QLabel* _statusPosition;
+    /** reference to selected glider for statusbar */
+    QLabel* _statusGlider;
+    /** reference to warning for statusbar */
+    QLabel* _statusWarning;
     /** reference to menu toggle */
     CuLabel* _menuToggle;
     /** timer to reset font for logging indicator */
@@ -292,17 +306,6 @@ class MapView : public QWidget
 
     /** can be CuCalc::GPS or CuCalc::MAN */
     int lastPositionChangeSource;
-
-
-  private: // Private methods
-
-    /**
-     * Loads a layout definition from the file mentioned in argument @arg name
-     */
-//@JD: currently unused
-//    bool loadLayout(QString pathName);
-//    bool loadLayoutElement(QDataStream& in, QBoxLayout * l);
-//    QWidget *getElement(int typeID, bool resetLineCounter);
 
   private slots:
 
