@@ -578,7 +578,7 @@ void OpenAirParser::initializeStringMapping(const QString& mapFilePath)
   m_stringTypeMap.insert("P", "Prohibited");
   m_stringTypeMap.insert("TRA", "Restricted");
   m_stringTypeMap.insert("Q", "Danger");
-  m_stringTypeMap.insert("CTR", "ControlC");
+  m_stringTypeMap.insert("CTR", "ControlD");
   m_stringTypeMap.insert("TMZ", "Tmz");
   m_stringTypeMap.insert("W", "AirEhigh");
   m_stringTypeMap.insert("GSEC", "SuSector");
