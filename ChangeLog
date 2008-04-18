@@ -18,6 +18,9 @@ Cumulus changelog
 Cumulus 2.0.0 (Development based on X11/Qt-4.3.3)
 -------------------------------------------------
 
+[+] 2008-04-18 AP: Warning display in window title bar removed. Maemo has in full
+                   screen mode no title bar. Instead of in status bar selected glider
+                   and last displayed warning message added.
 [-] 2008-04-17 AP: Support for old KFLog binary airfield files removed. Use welt2000
                    as replacement. 
 [-] 2008-04-13 AP: Bugfix: Qt4 portage has failed in using qSort method. It works
