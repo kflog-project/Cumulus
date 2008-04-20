@@ -18,6 +18,8 @@ Cumulus changelog
 Cumulus 2.0.0 (Development based on X11/Qt-4.3.3)
 -------------------------------------------------
 
+[-] 2008-04-20 AP: Performance improvements for airspace and isoline drawings provided
+                   by Josua Dietze. Thanks to him for his contributions.
 [+] 2008-04-18 AP: Warning display in window title bar removed. Maemo has in full
                    screen mode no title bar. Instead of in status bar selected glider
                    and last displayed warning message added.
