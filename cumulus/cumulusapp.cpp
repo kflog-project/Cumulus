@@ -583,7 +583,7 @@ void CumulusApp::slotCreateApplicationWidgets()
   if( ! GeneralConfig::instance()->getAirspaceWarningEnabled() )
     {
       int answer= QMessageBox::warning( this,tr("Airspace Warnings?"),
-                                       tr("<hmtl><b>Airspace warnings are disabled!<br>"
+                                       tr("<html><b>Airspace warnings are disabled!<br>"
                                            "Do you want enable them?</b></html>"),
                                        QMessageBox::Yes,
                                        QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
