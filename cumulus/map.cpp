@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008 modified by Axel Pauli
+ **                   2008 modified by Axel Pauli, Josua Dietze
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -437,8 +437,12 @@ void Map::slotNewWind()
     {
       int angle = wind.getAngleDeg();
       angle = ((angle+5)/10)*10;  // quantisize modulo 10
-      while( angle > 360 )
-        angle -= 360;
+
+      while( angle >= 360 )
+        {
+          angle -= 360;
+        }
+
       QString resource;
       resource.sprintf("windarrows/wind-arrow-80px-%03d.png", angle );
       // qDebug("Loading resource %s", (const char *) resource );
