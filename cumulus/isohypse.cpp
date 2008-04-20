@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2007 Axel Pauli
+ **                   2008 Axel Pauli, Josua Dietze
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -45,14 +45,12 @@ QRegion* Isohypse::drawRegion( QPainter* targetP, const QRect &viewRect,
   if(glMapMatrix->isVisible(bBox, getTypeID()))
     {
       QPolygon tP = glMapMatrix->map(projPolygon);
+
       QRegion* reg = new QRegion( tP );
 
       if(really_draw)
         {
-          QRegion viewReg( viewRect );
-          QRegion drawReg = reg->intersect( viewReg );
-
-          if( drawReg.boundingRect().isNull() )
+          if( tP.boundingRect().isNull() )
             {
               // ignore null values and return also no region
               delete reg;
@@ -104,8 +102,8 @@ QRegion* Isohypse::drawRegion( QPainter* targetP, const QRect &viewRect,
               skipW = skipH = 0;
             }
 
-          if( drawReg.boundingRect().width() > skipW &&
-              drawReg.boundingRect().height() > skipH )
+          if( tP.boundingRect().width() > skipW &&
+              tP.boundingRect().height() > skipH )
             {
               /* qDebug( "DrawReg: x=%d, y=%d, w=%d, h=%d",
                       drawReg.boundingRect().x(),
@@ -113,8 +111,9 @@ QRegion* Isohypse::drawRegion( QPainter* targetP, const QRect &viewRect,
                       drawReg.boundingRect().width(),
                       drawReg.boundingRect().height() ); */
 
-              targetP->setClipRegion( drawReg );
-              targetP->fillRect( viewRect, targetP->brush() );
+              targetP->setClipRegion( viewRect );
+
+              targetP->drawPolygon(tP);
 
               if( isolines )
                 {

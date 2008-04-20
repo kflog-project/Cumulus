@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **   Modified:       2008 by Axel Pauli
+ **   Modified:       2008 by Axel Pauli, Josua Dietze
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -15,8 +15,6 @@
  **   $Id$
  **
  ***********************************************************************/
-
-#include <QRegion>
 
 #include "airspace.h"
 #include "airregion.h"
@@ -103,8 +101,9 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
       return;
     }
 
+  //@JD: replaced clipping and filling with polygon drawing, regions not needed anymore
+
   QPolygon tP = glMapMatrix->map(projPolygon);
-  QRegion reg( tP );
 
   QBrush drawB = glConfig->getDrawBrush(typeID);
 
@@ -117,23 +116,19 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
   QPen drawP = glConfig->getDrawPen(typeID);
   drawP.setJoinStyle(Qt::RoundJoin);
   // increase drawPen, it is to small under X11
-  drawP.setWidth(drawP.width() + 4);
-
-  // qDebug("PenWidth=%d", drawP.width() );
-
-  QRegion viewReg( viewRect );
-  QRegion drawReg = reg.intersect( viewReg );
+  //@JD: polygon drawing blew it up further for some reason, thus reduced increasing
+  drawP.setWidth(drawP.width() + 1);
 
   targetP->setPen(drawP);
   targetP->setBrush(drawB);
 
-  targetP->setClipRegion( drawReg );
+  targetP->setClipRegion( viewRect );
 
   if( opacity < 100.0 )
     {
       // Draw airspace filled with opacity factor
       targetP->setOpacity( opacity/100.0 );
-      targetP->fillRect( viewRect, targetP->brush() );
+      targetP->drawPolygon(tP);
       targetP->setBrush(Qt::NoBrush);
       targetP->setOpacity( 1.0 );
     }
