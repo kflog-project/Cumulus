@@ -1233,7 +1233,6 @@ void MapContents::proofeSection()
             if( isFirst ) {
               ws->slot_SetText1(tr("Loading maps..."));
             } else {
-              _globalMapView->message(tr("Loading maps..."));
               // @AP: remove of all unused maps to get place
               // in heap. That can be disabled here because
               // the loading routines will also check the
@@ -1244,7 +1243,6 @@ void MapContents::proofeSection()
 
               if (_globalMapConfig->getUnloadUnneededMap()) {
                 unloadMaps(0);
-
               }
             }
 
@@ -1292,8 +1290,6 @@ void MapContents::proofeSection()
 
     if( isFirst ) {
       ws->slot_SetText1(tr("Loading maps done"));
-    } else {
-      _globalMapView->message( tr("Loading maps done") );
     }
 
     isFirst = false;
