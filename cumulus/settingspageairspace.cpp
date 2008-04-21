@@ -19,6 +19,7 @@
 
 #include <QLabel>
 #include <QDialogButtonBox>
+#include <QPushButton>
 
 #include "airspace.h"
 #include "basemapelement.h"
@@ -41,7 +42,9 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   m_fillingDlg = new SettingsPageAirspaceFilling(this);
 
-  QGridLayout *topLayout = new QGridLayout(this, 3, 5, 3);
+  QGridLayout *topLayout = new QGridLayout(this);
+  topLayout->setMargin(3);
+
   int row=0;
 
   lvLoadOptions = new Q3ListView(this, "LoadOptionList");
@@ -191,10 +194,10 @@ void SettingsPageAirspace::enabledToggled(bool enabled)
 /******************************************************************************/
 
 SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
-  QDialog(parent, Qt::WStyle_StaysOnTop)
+  QDialog(parent)
 {
   setWindowTitle(tr("Airspace filling settings"));
-  setSizeGripEnabled(false);
+  setSizeGripEnabled(true);
 
   QVBoxLayout * topLayout = new QVBoxLayout(this);
 
@@ -293,10 +296,20 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
 
   topLayout->addStretch(5);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
-                                 | QDialogButtonBox::Cancel);
+  QPushButton* reset   = new QPushButton(tr("Reset"));
+  QPushButton* defaults = new QPushButton(tr("Default"));
+
+  QDialogButtonBox* buttonBox = new QDialogButtonBox( Qt::Horizontal );
+
+  buttonBox->addButton( reset, QDialogButtonBox::ActionRole );
+  buttonBox->addButton( defaults, QDialogButtonBox::ActionRole );
+  buttonBox->addButton( QDialogButtonBox::Ok );
+  buttonBox->addButton( QDialogButtonBox::Cancel );
 
   topLayout->addWidget( buttonBox );
+
+  connect(reset,    SIGNAL(clicked()), this, SLOT(slot_reset()));
+  connect(defaults, SIGNAL(clicked()), this, SLOT(slot_defaults()));
 
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
@@ -326,6 +339,50 @@ void SettingsPageAirspaceFilling::slot_load()
   m_totalInside      ->setValue(conf->getAirspaceFillingTotal(Airspace::inside));
 }
 
+/**
+ * Called to set all spinboxes to the default value
+ */
+void SettingsPageAirspaceFilling::slot_defaults()
+{
+  if( ! m_enableFilling->isChecked() )
+    {
+      // spinboxes are insensitive, do nothing
+      return;
+    }
+
+  m_verticalNotNear  ->setValue(AS_FILL_NOT_NEAR);
+  m_verticalNear     ->setValue(AS_FILL_NEAR);
+  m_verticalVeryNear ->setValue(AS_FILL_VERY_NEAR);
+  m_verticalInside   ->setValue(AS_FILL_INSIDE);
+
+  m_totalNotNear     ->setValue(AS_FILL_NOT_NEAR);
+  m_totalNear        ->setValue(AS_FILL_NEAR);
+  m_totalVeryNear    ->setValue(AS_FILL_VERY_NEAR);
+  m_totalInside      ->setValue(AS_FILL_INSIDE);
+}
+
+
+/**
+ * Called to reset all spinboxes to zero
+ */
+void SettingsPageAirspaceFilling::slot_reset()
+{
+  if( ! m_enableFilling->isChecked() )
+    {
+      // spinboxes are insensitive, do nothing
+      return;
+    }
+
+  m_verticalNotNear  ->setValue(0);
+  m_verticalNear     ->setValue(0);
+  m_verticalVeryNear ->setValue(0);
+  m_verticalInside   ->setValue(0);
+
+  m_totalNotNear     ->setValue(0);
+  m_totalNear        ->setValue(0);
+  m_totalVeryNear    ->setValue(0);
+  m_totalInside      ->setValue(0);
+}
 
 void SettingsPageAirspaceFilling::slot_save()
 {

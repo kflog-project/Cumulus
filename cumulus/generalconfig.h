@@ -53,6 +53,11 @@
 // default for calculator of nearest sites (true = ON)
 #define NEAREST_SITE_CALCULATOR_DEFAULT true
 
+// default airspace fillings
+#define AS_FILL_NOT_NEAR   0
+#define AS_FILL_NEAR      15
+#define AS_FILL_VERY_NEAR 20
+#define AS_FILL_INSIDE    25
 
 // We do derive from the QT settings class as base class
 class GeneralConfig : protected QSettings

@@ -125,6 +125,16 @@ class SettingsPageAirspaceFilling: public QDialog
     void slot_load();
 
     /**
+     * Called to set all spinboxes to the default value
+     */
+    void slot_defaults();
+
+    /**
+     * Called to reset all spinboxes to zero
+     */
+    void slot_reset();
+
+    /**
      * Called to ask is confirmation on the close is needed.
      */
     void slot_query_close(bool& warn, QStringList& warnings);

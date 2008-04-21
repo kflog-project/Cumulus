@@ -109,22 +109,22 @@ void GeneralConfig::load()
   //airspace filling
   m_airspaceFillingEnabled = value("enableAirspaceFilling", true).toBool();
   _verticalAirspaceFillings[Airspace::none] =
-    qMax(0, qMin(100, value("fillingNoneVertical", 0).toInt()));
+    qMax(0, qMin(100, value("fillingNoneVertical", AS_FILL_NOT_NEAR).toInt()));
   _verticalAirspaceFillings[Airspace::near] =
-    qMax(0, qMin(100, value("fillingNearVertical", 15).toInt()));
+    qMax(0, qMin(100, value("fillingNearVertical", AS_FILL_NEAR).toInt()));
   _verticalAirspaceFillings[Airspace::veryNear] =
-    qMax(0, qMin(100, value("fillingVeryNearVertical", 20).toInt()));
+    qMax(0, qMin(100, value("fillingVeryNearVertical", AS_FILL_VERY_NEAR).toInt()));
   _verticalAirspaceFillings[Airspace::inside] =
-    qMax(0, qMin(100, value("fillingInsideVertical", 25).toInt()));
+    qMax(0, qMin(100, value("fillingInsideVertical", AS_FILL_INSIDE).toInt()));
          
   _totalAirspaceFillings[Airspace::none] =
-    qMax(0, qMin(100, value("fillingNoneTotal", 0).toInt()));
+    qMax(0, qMin(100, value("fillingNoneTotal", AS_FILL_NOT_NEAR).toInt()));
   _totalAirspaceFillings[Airspace::near] =
-    qMax(0, qMin(100, value("fillingNearTotal", 15).toInt()));
+    qMax(0, qMin(100, value("fillingNearTotal", AS_FILL_NEAR).toInt()));
   _totalAirspaceFillings[Airspace::veryNear] =
-    qMax(0, qMin(100, value("fillingVeryNearTotal", 20).toInt()));
+    qMax(0, qMin(100, value("fillingVeryNearTotal", AS_FILL_VERY_NEAR).toInt()));
   _totalAirspaceFillings[Airspace::inside] =
-    qMax(0, qMin(100, value("fillingInsideTotal", 25).toInt()));
+    qMax(0, qMin(100, value("fillingInsideTotal", AS_FILL_INSIDE).toInt()));
   endGroup();
 
   // Personal settings
