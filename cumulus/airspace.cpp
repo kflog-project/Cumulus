@@ -133,6 +133,8 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
       targetP->setOpacity( 1.0 );
     }
 
+  // Draw the outline of the airspace without transparency to get a
+  // good visible line.
   targetP->drawPolygon(tP);
 
   /*#warning: FIXME: we should change to use the plain pointarray
