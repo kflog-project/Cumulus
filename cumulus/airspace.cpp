@@ -124,7 +124,7 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
 
   targetP->setClipRegion( viewRect );
 
-  if( opacity < 100.0 )
+  if( opacity < 100.0 && opacity > 0.0 )
     {
       // Draw airspace filled with opacity factor
       targetP->setOpacity( opacity/100.0 );
@@ -132,9 +132,14 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
       targetP->setBrush(Qt::NoBrush);
       targetP->setOpacity( 1.0 );
     }
+  else if( opacity == 0.0 )
+    {
+      // draw only airspace borders without any filling inside
+      targetP->setBrush(Qt::NoBrush);
+      targetP->setOpacity( 1.0 );
+    }
 
-  // Draw the outline of the airspace without transparency to get a
-  // good visible line.
+  // Draw the outline of the airspace with the selected brush
   targetP->drawPolygon(tP);
 
   /*#warning: FIXME: we should change to use the plain pointarray
