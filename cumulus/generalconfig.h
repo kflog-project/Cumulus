@@ -32,7 +32,7 @@
 
 /**
   * @short Configuration encapsulation class
-  * @author André Somers
+  * @author André Somers, Axel Pauli
   *
   * This class is used to store and retrieve all kinds of
   * configuration options. This class is a singleton class. Use the
@@ -55,9 +55,9 @@
 
 // default airspace fillings
 #define AS_FILL_NOT_NEAR   0
-#define AS_FILL_NEAR      15
-#define AS_FILL_VERY_NEAR 20
-#define AS_FILL_INSIDE    25
+#define AS_FILL_NEAR      10
+#define AS_FILL_VERY_NEAR 15
+#define AS_FILL_INSIDE    20
 
 // We do derive from the QT settings class as base class
 class GeneralConfig : protected QSettings
@@ -126,10 +126,19 @@ class GeneralConfig : protected QSettings
       return _installRoot;
     };
 
+  /** sets the installation root of cumulus */
   void setInstallRoot( QString &newRoot )
   {
     _installRoot = newRoot;
   };
+
+  /** gets the user data directory where waypoint file, task file,
+      glider.pol, logger files are stored */
+  QString getUserDataDirectory();
+
+  /** sets the user data directory where waypoint file, task file,
+      glider.pol,logger files are stored */
+  void setUserDataDirectory( QString newDir );
 
   /** get main window size */
   QSize getWindowSize()
@@ -1116,6 +1125,9 @@ class GeneralConfig : protected QSettings
 
   // Main window size
   QSize _windowSize;
+
+  // user data directory
+  QString _userDataDirectory;
 
   //properties
   //used to store the distances for airspace warnings

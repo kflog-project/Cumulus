@@ -37,11 +37,17 @@ class SettingsPagePersonal : public QWidget
     ~SettingsPagePersonal();
 
   public slots: // Public slots
+
     /** called to initiate saving to the configurationfile */
     void slot_save();
 
     /** Called to initiate loading of the configurationfile. */
     void slot_load();
+
+    private slots:
+
+    /** called to open the directory selection dialog */
+    void slot_openDirectoryDialog();
 
   private:
     bool loadConfig; // control loading of config data
@@ -52,6 +58,7 @@ class SettingsPagePersonal : public QWidget
     LatEdit   *edtHomeLat;
     LongEdit  *edtHomeLong;
     QLineEdit *edtFrameCol;
+    QLineEdit *userDataDir;
 
   };
 

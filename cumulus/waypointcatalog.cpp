@@ -48,7 +48,8 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
   if( !catalog )
     {
       // use default file name
-      fName = GeneralConfig::instance()->getWaypointFile();
+      fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
+              GeneralConfig::instance()->getWaypointFile();
     }
   else
     {
@@ -203,7 +204,9 @@ bool WaypointCatalog::write( QString *catalog, QList<wayPoint*> *wpList )
 
   if( !catalog )
     {
-      fName = GeneralConfig::instance()->getWaypointFile(); // use default
+      // use default file name
+      fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
+              GeneralConfig::instance()->getWaypointFile();
     }
   else
     {

@@ -225,10 +225,10 @@ bool TaskList::slotLoadTask()
   while( !taskList.isEmpty() ) delete taskList.takeFirst();
   taskNames.clear();
 
-# warning task list file 'tasks.tsk' is stored  at $HOME/cumulus/tasks.tsk
+# warning task list file 'tasks.tsk' is stored  at User Data Directory
 
   // currently hardcoded ...
-  QFile f( QDir::homeDirPath() + "/cumulus/tasks.tsk" );
+  QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/tasks.tsk" );
 
   if( !f.open( IO_ReadOnly ) )
     {
@@ -492,7 +492,7 @@ void TaskList::slotDeleteTask()
 bool TaskList::saveTaskList()
 {
   // currently hardcoded ...
-  QFile f( QDir::homeDirPath() + "/cumulus/tasks.tsk" );
+  QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/tasks.tsk" );
 
   if( !f.open( IO_WriteOnly ) )
     {

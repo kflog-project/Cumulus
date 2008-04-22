@@ -292,7 +292,7 @@ void SettingsPagePolar::readPolarData ()
 
   QString path1( GeneralConfig::instance()->getInstallRoot() + "/etc/glider.pol" ); // Linux X11
   QString path2( "/opt/QtPalmtop/lib/cumulus/glider.pol");   // Opie
-  QString path3 (QDir::homeDirPath()+"/Applications/cumulus/glider.pol"); // Linux Desktop
+  QString path3 (GeneralConfig::instance()->getUserDataDirectory() + "/glider.pol"); // Linux Desktop
 
   QFile file(path1);
 

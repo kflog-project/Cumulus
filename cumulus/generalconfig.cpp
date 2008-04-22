@@ -134,6 +134,7 @@ void GeneralConfig::load()
   _birthday          = value("Birthday", "").toString();
   _language          = value("Language", "en").toString();
   _framecol          = value("FrameColor", "#687ec6").toString();
+  _userDataDirectory = value("UserDataDir", QDir::homeDirPath() + "/cumulus").toString();
   endGroup();
 
   // Preflight settings
@@ -216,8 +217,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Waypoint Data");
-  _waypointFile = value( "WaypointFile",
-                         QDir::homeDirPath() + "/cumulus/cumulus.kwp" ).toString();
+  _waypointFile = value( "WaypointFile", "cumulus.kwp" ).toString();
   endGroup();
 
   beginGroup("Variometer");
@@ -361,6 +361,7 @@ void GeneralConfig::save()
   setValue("Birthday", _birthday);
   setValue("Language", _language);
   setValue("FrameColor", _framecol);
+  setValue( "UserDataDir", _userDataDirectory);
   endGroup();
 
   // Preflight data
@@ -1237,4 +1238,48 @@ QStringList GeneralConfig::getMapDirectories()
     }
 
   return mapDirs;
+}
+
+/** gets the user data directory where waypoint file, task file,
+    logger files are stored */
+QString GeneralConfig::getUserDataDirectory()
+{
+  // Check, if directory exists
+  QDir userDir = QDir( _userDataDirectory );
+
+  if( ! userDir.exists() )
+    {
+      // try to create it
+      if( ! userDir.mkpath( _userDataDirectory ) )
+        {
+          // user data directory not createable, fallback is set to
+          // $HOME/cumulus
+          _userDataDirectory = QDir::homePath() + "/cumulus";
+        }
+    }
+
+  return _userDataDirectory;
+}
+
+/** sets the user data directory where waypoint file, task file,
+    glider.pol,logger files are stored */
+void GeneralConfig::setUserDataDirectory( QString newDir )
+{
+  // Check, if directory exists
+  QDir userDir = QDir( newDir );
+
+  if( ! userDir.exists() )
+    {
+      // try to create it
+      if( ! userDir.mkpath( newDir ) )
+        {
+          // user data directory not createable, fallback is set to
+          // $HOME/cumulus
+          _userDataDirectory = QDir::homePath() + "/cumulus";
+        }
+    }
+  else
+    {
+      _userDataDirectory = newDir;
+    }
 }

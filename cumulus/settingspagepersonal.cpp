@@ -18,6 +18,10 @@
 #include <cmath>
 #include <QLabel>
 #include <QGridLayout>
+#include <QPushButton>
+#include <QToolTip>
+#include <QDir>
+#include <QFileDialog>
 
 #include "generalconfig.h"
 #include "altitude.h"
@@ -72,6 +76,16 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   topLayout->addWidget(edtFrameCol, row, 1, 1, 2);
   row++;
 
+  QPushButton* userDirSelection = new QPushButton( tr("Data Directory"), this );
+  userDirSelection->setToolTip(tr("Select your personal data directory"));
+  topLayout->addWidget(userDirSelection, row, 0);
+
+  connect(userDirSelection, SIGNAL( clicked()), this, SLOT(slot_openDirectoryDialog()) );
+
+  userDataDir = new QLineEdit(this);
+  topLayout->addWidget(userDataDir, row, 1, 1, 2);
+  row++;
+
   topLayout->setRowStretch(row,10);
 }
 
@@ -91,6 +105,8 @@ void SettingsPagePersonal::slot_load()
   
   edtFrameCol->setText( conf->getFrameCol() );
 
+  userDataDir->setText( conf->getUserDataDirectory() );
+
   // search item to be selected
   int idx = langBox->findText(conf->getLanguage());
   
@@ -109,6 +125,7 @@ void SettingsPagePersonal::slot_save()
   conf->setBirthday( edtBirth->text() );
   conf->setLanguage( langBox->currentText() );
   conf->setFrameCol( edtFrameCol->text() );
+  conf->setUserDataDirectory( userDataDir->text() );
 
   // Check, if string input values have been changed. If not, no
   // storage is done to avoid roundings errors. They can appear if the
@@ -125,4 +142,19 @@ void SettingsPagePersonal::slot_save()
     }
 
   conf->save();
+}
+
+/** called to open the directory selection dialog */
+void SettingsPagePersonal::slot_openDirectoryDialog()
+{
+  QString dataDir = QFileDialog::getExistingDirectory( this,
+                                                      tr("Please select your data directory"),
+                                                      userDataDir->text(),
+                                                      QFileDialog::ShowDirsOnly );
+  if( dataDir.isEmpty() )
+    {
+      return; // nothing was selected by the user
+    }
+
+  userDataDir->setText( dataDir.remove(  dataDir.size()-1, 1 ) );
 }

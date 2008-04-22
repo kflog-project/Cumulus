@@ -158,9 +158,9 @@ void IgcLogger::Standby()
 /** Creates a log file */
 void IgcLogger::CreateLogfile()
 {
-#warning IGC Logfile is stored at $HOME/cumulus
+#warning IGC Logfile is stored at User Data Directory
 
-  QString path(QDir::homeDirPath() + "/cumulus");
+  QString path(GeneralConfig::instance()->getUserDataDirectory());
 
   QString fname = createFileName(path);
 
