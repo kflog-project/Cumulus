@@ -527,17 +527,24 @@ void Map::__drawAirspaces(bool reset)
 
       if( region && fillAirspace )
         {
-          Airspace::ConflictType hConflict = region->conflicts( pos, awd );
+          // determine lateral conflict
+          Airspace::ConflictType lConflict = region->conflicts( pos, awd );
+
+          // determine vertical conflict
           Airspace::ConflictType vConflict = currentAirS->conflicts( alt, awd );
-          Airspace::ConflictType rConflict = Airspace::none; // resulting conflict
 
-          if( hConflict != Airspace::none && vConflict != Airspace::none )
+          if( lConflict == Airspace::inside )
             {
-              // we have a real conflict, determine the higher priority
-              rConflict = (hConflict < vConflict ? hConflict : vConflict);
+              // We are inside from the lateral position out,
+              // vertical conflict has priority.
+              airspaceOpacity = (qreal) settings->getAirspaceFillingVertical(vConflict);
             }
-
-          airspaceOpacity = (qreal) settings->airspaceFilling( vConflict, rConflict );
+          else
+            {
+              // We are not inside from the lateral position out,
+              // lateral conflict has priority.
+              airspaceOpacity = (qreal) settings->getAirspaceFillingLateral(lConflict);
+            }
         }
 
       currentAirS->drawRegion(&cuAeroMapP, this->rect(), airspaceOpacity );

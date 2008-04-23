@@ -966,14 +966,14 @@ class GeneralConfig : protected QSettings
    * @arg nearness Which filling are you looking for?
    * @returns a percentage filling
    */
-  int getAirspaceFillingTotal(Airspace::ConflictType nearness);
+  int getAirspaceFillingLateral(Airspace::ConflictType nearness);
   /**
    * Set the filling percentages for the indicated "nearness"
    * in both directions.
    * @arg nearness Which filling are you looking for?
    * @arg filling a percentage filling (0-100 inclusive)
    */
-  void setAirspaceFillingTotal(Airspace::ConflictType nearness, int filling);
+  void setAirspaceFillingLateral(Airspace::ConflictType nearness, int filling);
 
   /**
    * @returns the filling for the given nearnesses.
@@ -990,7 +990,7 @@ class GeneralConfig : protected QSettings
     if (!m_airspaceFillingEnabled)
       return 0;
     return qMax(getAirspaceFillingVertical(vertical),
-                getAirspaceFillingTotal(total)
+                getAirspaceFillingLateral(total)
                 );
   }
 
@@ -1136,10 +1136,10 @@ class GeneralConfig : protected QSettings
   bool _airspaceWarning [BaseMapElement::objectTypeSize];
   //display airspace warnings at all?
   bool _airspaceWarningGeneral;
-  //fillings for airspaces
+  // vertical fillings for airspaces
   int _verticalAirspaceFillings[4];
-  //fillings for airspaces
-  int _totalAirspaceFillings[4];
+  // lateral fillings for airspaces
+  int _lateralAirspaceFillings[4];
   //enable airspace filling?
   bool m_airspaceFillingEnabled;
 

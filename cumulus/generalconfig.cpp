@@ -117,14 +117,14 @@ void GeneralConfig::load()
   _verticalAirspaceFillings[Airspace::inside] =
     qMax(0, qMin(100, value("fillingInsideVertical", AS_FILL_INSIDE).toInt()));
          
-  _totalAirspaceFillings[Airspace::none] =
-    qMax(0, qMin(100, value("fillingNoneTotal", AS_FILL_NOT_NEAR).toInt()));
-  _totalAirspaceFillings[Airspace::near] =
-    qMax(0, qMin(100, value("fillingNearTotal", AS_FILL_NEAR).toInt()));
-  _totalAirspaceFillings[Airspace::veryNear] =
-    qMax(0, qMin(100, value("fillingVeryNearTotal", AS_FILL_VERY_NEAR).toInt()));
-  _totalAirspaceFillings[Airspace::inside] =
-    qMax(0, qMin(100, value("fillingInsideTotal", AS_FILL_INSIDE).toInt()));
+  _lateralAirspaceFillings[Airspace::none] =
+    qMax(0, qMin(100, value("fillingNoneLateral", AS_FILL_NOT_NEAR).toInt()));
+  _lateralAirspaceFillings[Airspace::near] =
+    qMax(0, qMin(100, value("fillingNearLateral", AS_FILL_NEAR).toInt()));
+  _lateralAirspaceFillings[Airspace::veryNear] =
+    qMax(0, qMin(100, value("fillingVeryNearLateral", AS_FILL_VERY_NEAR).toInt()));
+  _lateralAirspaceFillings[Airspace::inside] =
+    qMax(0, qMin(100, value("fillingInsideLateral", AS_FILL_INSIDE).toInt()));
   endGroup();
 
   // Personal settings
@@ -348,10 +348,10 @@ void GeneralConfig::save()
   setValue("fillingVeryNearVertical", _verticalAirspaceFillings[Airspace::veryNear]);
   setValue("fillingInsideVertical", _verticalAirspaceFillings[Airspace::inside]);
 
-  setValue("fillingNoneTotal", _totalAirspaceFillings[Airspace::none]);
-  setValue("fillingNearTotal", _totalAirspaceFillings[Airspace::near]);
-  setValue("fillingVeryNearTotal", _totalAirspaceFillings[Airspace::veryNear]);
-  setValue("fillingInsideTotal", _totalAirspaceFillings[Airspace::inside]);
+  setValue("fillingNoneLateral", _lateralAirspaceFillings[Airspace::none]);
+  setValue("fillingNearLateral", _lateralAirspaceFillings[Airspace::near]);
+  setValue("fillingVeryNearLateral", _lateralAirspaceFillings[Airspace::veryNear]);
+  setValue("fillingInsideLateral", _lateralAirspaceFillings[Airspace::inside]);
   endGroup();
 
   // Personal settings
@@ -1155,9 +1155,9 @@ int GeneralConfig::getAirspaceFillingVertical(Airspace::ConflictType nearness)
   return _verticalAirspaceFillings[nearness];
 }
 
-int GeneralConfig::getAirspaceFillingTotal(Airspace::ConflictType nearness)
+int GeneralConfig::getAirspaceFillingLateral(Airspace::ConflictType nearness)
 {
-  return _totalAirspaceFillings[nearness];
+  return _lateralAirspaceFillings[nearness];
 }
 
 void GeneralConfig::setAirspaceFillingVertical(Airspace::ConflictType nearness, int filling)
@@ -1165,9 +1165,9 @@ void GeneralConfig::setAirspaceFillingVertical(Airspace::ConflictType nearness, 
   _verticalAirspaceFillings[nearness] = qMax(0, qMin(100, filling));
 }
 
-void GeneralConfig::setAirspaceFillingTotal(Airspace::ConflictType nearness, int filling)
+void GeneralConfig::setAirspaceFillingLateral(Airspace::ConflictType nearness, int filling)
 {
-  _totalAirspaceFillings[nearness] = qMax(0, qMin(100, filling));
+  _lateralAirspaceFillings[nearness] = qMax(0, qMin(100, filling));
 }
 
 /* Load a pixmap from the cache. If not contained there, insert it. */

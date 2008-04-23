@@ -156,10 +156,10 @@ class SettingsPageAirspaceFilling: public QDialog
     QSpinBox* m_verticalNear;
     QSpinBox* m_verticalVeryNear;
     QSpinBox* m_verticalInside;
-    QSpinBox* m_totalNotNear;
-    QSpinBox* m_totalNear;
-    QSpinBox* m_totalVeryNear;
-    QSpinBox* m_totalInside;
+    QSpinBox* m_lateralNotNear;
+    QSpinBox* m_lateralNear;
+    QSpinBox* m_lateralVeryNear;
+    QSpinBox* m_lateralInside;
 
 
   private slots:

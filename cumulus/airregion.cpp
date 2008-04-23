@@ -154,7 +154,7 @@ Airspace::ConflictType AirRegion::conflicts( const QPoint& pos,
 
     m_lastResult = hConflict;
     m_isNew = false;
-    //qDebug("horizontal conflict: %d, airspace: %s", hConflict, airspace->getName().latin1());
+    // qDebug("horizontal conflict: %d, airspace: %s", hConflict, airspace->getName().latin1());
     return hConflict;
 }
 

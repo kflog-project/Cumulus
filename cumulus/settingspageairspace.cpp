@@ -201,8 +201,7 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
 
   QVBoxLayout * topLayout = new QVBoxLayout(this);
 
-  m_enableFilling = new QCheckBox(tr("Enable airspace filling"),
-                                  this, "enable_airspace_filling");
+  m_enableFilling = new QCheckBox(tr("Enable airspace filling"), this);
 
   connect(m_enableFilling, SIGNAL(toggled(bool)), SLOT(enabledToggled(bool)));
   topLayout->addWidget(m_enableFilling);
@@ -219,7 +218,7 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   QLabel* lbl;
   lbl = new QLabel(tr("Vertical Dist."), m_separations);
   mVGroupLayout->addMultiCellWidget(lbl, row, row, 1, 2);
-  lbl = new QLabel(tr("Total Dist."), m_separations);
+  lbl = new QLabel(tr("Lateral Dist."), m_separations);
   mVGroupLayout->addMultiCellWidget(lbl, row, row, 3, 4);
   row++;
 
@@ -240,14 +239,12 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   //m_verticalNotNear->setEnabled(false);
   lbl = new QLabel(tr("%"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 2);
-  m_totalNotNear = new QSpinBox(0, 100, 1, m_separations);
-  m_totalNotNear->setButtonSymbols(QSpinBox::PlusMinus);
-  mVGroupLayout->addWidget(m_totalNotNear, row, 3);
+  m_lateralNotNear = new QSpinBox(0, 100, 1, m_separations);
+  m_lateralNotNear->setButtonSymbols(QSpinBox::PlusMinus);
+  mVGroupLayout->addWidget(m_lateralNotNear, row, 3);
   lbl = new QLabel(tr("%"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 4);
   row++;
-  //connect(m_totalNotNear, SIGNAL(valueChanged(int)),
-  //        m_verticalNotNear, SLOT(setValue(int)));
 
   //row 2
   lbl = new QLabel(tr("Near"), m_separations);
@@ -257,9 +254,9 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   mVGroupLayout->addWidget(m_verticalNear, row, 1);
   lbl = new QLabel(tr("%"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 2);
-  m_totalNear = new QSpinBox(0, 100, 1, m_separations);
-  m_totalNear->setButtonSymbols(QSpinBox::PlusMinus);
-  mVGroupLayout->addWidget(m_totalNear, row, 3);
+  m_lateralNear = new QSpinBox(0, 100, 1, m_separations);
+  m_lateralNear->setButtonSymbols(QSpinBox::PlusMinus);
+  mVGroupLayout->addWidget(m_lateralNear, row, 3);
   lbl = new QLabel(tr("%"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 4);
   row++;
@@ -272,9 +269,9 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   mVGroupLayout->addWidget(m_verticalVeryNear, row, 1);
   lbl = new QLabel(tr("%"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 2);
-  m_totalVeryNear = new QSpinBox(0, 100, 1, m_separations);
-  m_totalVeryNear->setButtonSymbols(QSpinBox::PlusMinus);
-  mVGroupLayout->addWidget(m_totalVeryNear, row, 3);
+  m_lateralVeryNear = new QSpinBox(0, 100, 1, m_separations);
+  m_lateralVeryNear->setButtonSymbols(QSpinBox::PlusMinus);
+  mVGroupLayout->addWidget(m_lateralVeryNear, row, 3);
   lbl = new QLabel(tr("%"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 4);
   row++;
@@ -287,9 +284,9 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   mVGroupLayout->addWidget(m_verticalInside, row, 1);
   lbl = new QLabel(tr("%"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 2);
-  m_totalInside = new QSpinBox(0, 100, 1, m_separations);
-  m_totalInside->setButtonSymbols(QSpinBox::PlusMinus);
-  mVGroupLayout->addWidget(m_totalInside, row, 3);
+  m_lateralInside = new QSpinBox(0, 100, 1, m_separations);
+  m_lateralInside->setButtonSymbols(QSpinBox::PlusMinus);
+  mVGroupLayout->addWidget(m_lateralInside, row, 3);
   lbl = new QLabel(tr("%"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 4);
   row++;
@@ -333,10 +330,10 @@ void SettingsPageAirspaceFilling::slot_load()
   m_verticalVeryNear ->setValue(conf->getAirspaceFillingVertical(Airspace::veryNear));
   m_verticalInside   ->setValue(conf->getAirspaceFillingVertical(Airspace::inside));
   // qDebug("filling vert inside: %d", conf->getAirspaceFillingVertical(Airspace::inside));
-  m_totalNotNear     ->setValue(conf->getAirspaceFillingTotal(Airspace::none));
-  m_totalNear        ->setValue(conf->getAirspaceFillingTotal(Airspace::near));
-  m_totalVeryNear    ->setValue(conf->getAirspaceFillingTotal(Airspace::veryNear));
-  m_totalInside      ->setValue(conf->getAirspaceFillingTotal(Airspace::inside));
+  m_lateralNotNear     ->setValue(conf->getAirspaceFillingLateral(Airspace::none));
+  m_lateralNear        ->setValue(conf->getAirspaceFillingLateral(Airspace::near));
+  m_lateralVeryNear    ->setValue(conf->getAirspaceFillingLateral(Airspace::veryNear));
+  m_lateralInside      ->setValue(conf->getAirspaceFillingLateral(Airspace::inside));
 }
 
 /**
@@ -350,15 +347,15 @@ void SettingsPageAirspaceFilling::slot_defaults()
       return;
     }
 
-  m_verticalNotNear  ->setValue(AS_FILL_NOT_NEAR);
-  m_verticalNear     ->setValue(AS_FILL_NEAR);
-  m_verticalVeryNear ->setValue(AS_FILL_VERY_NEAR);
-  m_verticalInside   ->setValue(AS_FILL_INSIDE);
+  m_verticalNotNear->setValue(AS_FILL_NOT_NEAR);
+  m_verticalNear->setValue(AS_FILL_NEAR);
+  m_verticalVeryNear->setValue(AS_FILL_VERY_NEAR);
+  m_verticalInside->setValue(AS_FILL_INSIDE);
 
-  m_totalNotNear     ->setValue(AS_FILL_NOT_NEAR);
-  m_totalNear        ->setValue(AS_FILL_NEAR);
-  m_totalVeryNear    ->setValue(AS_FILL_VERY_NEAR);
-  m_totalInside      ->setValue(AS_FILL_INSIDE);
+  m_lateralNotNear->setValue(AS_FILL_NOT_NEAR);
+  m_lateralNear->setValue(AS_FILL_NEAR);
+  m_lateralVeryNear->setValue(AS_FILL_VERY_NEAR);
+  m_lateralInside->setValue(AS_FILL_INSIDE);
 }
 
 
@@ -373,15 +370,15 @@ void SettingsPageAirspaceFilling::slot_reset()
       return;
     }
 
-  m_verticalNotNear  ->setValue(0);
-  m_verticalNear     ->setValue(0);
-  m_verticalVeryNear ->setValue(0);
-  m_verticalInside   ->setValue(0);
+  m_verticalNotNear->setValue(0);
+  m_verticalNear->setValue(0);
+  m_verticalVeryNear->setValue(0);
+  m_verticalInside->setValue(0);
 
-  m_totalNotNear     ->setValue(0);
-  m_totalNear        ->setValue(0);
-  m_totalVeryNear    ->setValue(0);
-  m_totalInside      ->setValue(0);
+  m_lateralNotNear->setValue(0);
+  m_lateralNear->setValue(0);
+  m_lateralVeryNear->setValue(0);
+  m_lateralInside->setValue(0);
 }
 
 void SettingsPageAirspaceFilling::slot_save()
@@ -394,10 +391,10 @@ void SettingsPageAirspaceFilling::slot_save()
   conf->setAirspaceFillingVertical(Airspace::near,     m_verticalNear->value());
   conf->setAirspaceFillingVertical(Airspace::veryNear, m_verticalVeryNear->value());
   conf->setAirspaceFillingVertical(Airspace::inside,   m_verticalInside->value());
-  conf->setAirspaceFillingTotal(Airspace::none,        m_totalNotNear->value());
-  conf->setAirspaceFillingTotal(Airspace::near,        m_totalNear->value());
-  conf->setAirspaceFillingTotal(Airspace::veryNear,    m_totalVeryNear->value());
-  conf->setAirspaceFillingTotal(Airspace::inside,      m_totalInside->value());
+  conf->setAirspaceFillingLateral(Airspace::none,      m_lateralNotNear->value());
+  conf->setAirspaceFillingLateral(Airspace::near,      m_lateralNear->value());
+  conf->setAirspaceFillingLateral(Airspace::veryNear,  m_lateralVeryNear->value());
+  conf->setAirspaceFillingLateral(Airspace::inside,    m_lateralInside->value());
 }
 
 
@@ -418,14 +415,14 @@ void SettingsPageAirspaceFilling::slot_query_close(bool& warn, QStringList& warn
              != m_verticalVeryNear->value();
   changed |= conf->getAirspaceFillingVertical(Airspace::inside)
              != m_verticalInside->value();
-  changed |= conf->getAirspaceFillingTotal(Airspace::none)
-             != m_totalNotNear->value();
-  changed |= conf->getAirspaceFillingTotal(Airspace::near)
-             != m_totalNear->value();
-  changed |= conf->getAirspaceFillingTotal(Airspace::veryNear)
-             != m_totalVeryNear->value();
-  changed |= conf->getAirspaceFillingTotal(Airspace::inside)
-             != m_totalInside->value();
+  changed |= conf->getAirspaceFillingLateral(Airspace::none)
+             != m_lateralNotNear->value();
+  changed |= conf->getAirspaceFillingLateral(Airspace::near)
+             != m_lateralNear->value();
+  changed |= conf->getAirspaceFillingLateral(Airspace::veryNear)
+             != m_lateralVeryNear->value();
+  changed |= conf->getAirspaceFillingLateral(Airspace::inside)
+             != m_lateralInside->value();
 
   if (changed)
     {

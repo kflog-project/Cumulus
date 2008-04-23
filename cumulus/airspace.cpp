@@ -256,7 +256,9 @@ QString Airspace::getInfoString() const
 
 
 /**
- * Returns true if the given altitude conflicts with the airspace properties
+ * Returns true if the given altitude conflicts with the airspace
+ * properties. Only the altitude is considered not the current
+ * position.
  */
 //bool Airspace::conflicts (const Altitude& alt) const
 Airspace::ConflictType Airspace::conflicts (const AltitudeCollection& alt,
@@ -281,7 +283,7 @@ Airspace::ConflictType Airspace::conflicts (const AltitudeCollection& alt,
       lowerAlt.setMeters(1); // we're always above ground
     break;
   case FL:
-    lowerAlt=alt.stdAltitude; // flightlevels are always at pressure altitude!
+    lowerAlt=alt.stdAltitude; // flight levels are always at pressure altitude!
     break;
   case UNLTD:
     _lastVConflict=none;
@@ -309,6 +311,7 @@ Airspace::ConflictType Airspace::conflicts (const AltitudeCollection& alt,
   if ((lowerAlt.getMeters() >= lLimit.getMeters()) &&
       (upperAlt.getMeters() <= uLimit.getMeters())) {
     _lastVConflict=inside;
+    // qDebug("vertical conflict: %d, airspace: %s", _lastVConflict, getName().latin1());
     return inside;
   }
 
