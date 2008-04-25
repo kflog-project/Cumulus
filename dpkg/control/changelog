@@ -1,0 +1,5 @@
+cumulus (__VERSION__) unstable; urgency=low
+
+  * Initial Cumulus Release for Maemo Qt4/X11
+
+ -- Axel Pauli <axel@kflog.org>  Fri, 25 Apr 2008 21:55:51 +0200
