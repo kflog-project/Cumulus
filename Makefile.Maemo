@@ -10,7 +10,8 @@
 #
 ################################################################################
 
-VERSION = 2.0.0-r1
+# Version is determined from the header file target.h
+VERSION = `cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2`
 
 # adapt install path to your needs if necessary
 INSTALL_ROOT = /opt/cumulus
@@ -77,6 +78,71 @@ install: check_dir deinstall install_lang
 	install --mode=644 help/de/*.html icons/cumulus.png $(INSTALL_ROOT)/help/de
 	install --mode=644 help/en/*.html icons/cumulus.png $(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(INSTALL_ROOT)/sounds
+
+# call this target to build a debian Maemo package
+.PHONY : dpkg dpkg_make
+dpkg:
+	@echo "===== Building Cumulus Maemo package for $(VERSION) ====="
+	echo $(MAKE) -f $(MAKEFILE) VERSION=$(VERSION) dpkg_make
+	$(MAKE) -f Makefile.Maemo VERSION=$(VERSION) dpkg_make
+
+# This target will build the debian packge. It is called via another makefile
+# due to the VERSION macro. The special letters apostroph and quotation makrk
+# cause problems in ohter shell commands, if they not expanded before.
+dpkg_make:
+	rm -fr dpkg/cumulus-$(VERSION)
+	mkdir -p dpkg/cumulus-$(VERSION)
+	cd dpkg/cumulus-$(VERSION); \
+	echo '\n' | dh_make -c GPL -e axel@kflog.org -s -n
+	cp dpkg/control/makefile dpkg/cumulus-$(VERSION)
+	cp dpkg/control/copyright dpkg/cumulus-$(VERSION)/debian/
+	cp dpkg/control/control dpkg/cumulus-$(VERSION)/debian/
+	cp dpkg/control/rules dpkg/cumulus-$(VERSION)/debian/
+	cp dpkg/control/README.Debian dpkg/cumulus-$(VERSION)/debian/
+	sed -e "s/__VERSION__/$(VERSION)/g" dpkg/control/changelog > dpkg/cumulus-$(VERSION)/debian/changelog
+	cd dpkg/cumulus-$(VERSION); \
+	dpkg-buildpackage -rfakeroot
+
+# copies all files of cumulus into the debian package area
+.PHONY : dpkg_install
+dpkg_install:
+	@echo '===== Installing Cumulus $(VERSION) under $(DESTDIR)/$(INSTALL_ROOT) ====='
+	strip cumulus/cumulus
+	strip gpsClient/gpsClient
+	strip nmeaSimulator/nmeaSimu
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/etc
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/de
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/en
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons/small
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/locale
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/sounds
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/airfields
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/airspaces
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/landscape
+	install -d $(DESTDIR)/usr/share/applications/hildon
+	install -d $(DESTDIR)/usr/lib
+	install --mode=755 cumulus/cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install --mode=755 gpsClient/gpsClient $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install --mode=755 nmeaSimulator/nmeaSimu $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install --mode=755 dpkg/maemo/aplay $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install --mode=644 etc/glider.pol $(DESTDIR)/$(INSTALL_ROOT)/etc
+	install --mode=644 icons/*.xpm $(DESTDIR)/$(INSTALL_ROOT)/icons
+	install --mode=644 icons/*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
+	install --mode=644 icons/small/* $(DESTDIR)/$(INSTALL_ROOT)/icons/small
+	install --mode=644 icons/windarrows/* $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
+	install --mode=644 help/de/*.html icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
+	install --mode=644 help/en/*.html icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
+	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
+	install --mode=644 dpkg/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
+	install --mode=755 /opt/qt4.3.3//lib/libQt3Support.so.4.3.3 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.3.3//lib/libQtCore.so.4.3.3 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.3.3//lib/libQtGui.so.4.3.3 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.3.3//lib/libQtNetwork.so.4.3.3 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.3.3/lib/libQtSql.so.4.3.3 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.3.3/lib/libQtXml.so.4.3.3 $(DESTDIR)/usr/lib
 
 .PHONY : install_lang
 install_lang:
