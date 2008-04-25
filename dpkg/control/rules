@@ -31,7 +31,7 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	$(MAKE)
+	# $(MAKE)
 	#docbook-to-man debian/cumulus.sgml > cumulus.1
 
 	touch $@
@@ -42,7 +42,7 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) clean
+	#-$(MAKE) clean
 
 	dh_clean 
 
@@ -53,8 +53,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/cumulus.
-	cd ../..; $(MAKE) -f Makefile.Maemo DESTDIR=$(CURDIR)/debian/cumulus dpg_install
-
+	$(MAKE) DESTDIR=$(CURDIR)/debian/cumulus install
 
 # Build architecture-independent files here.
 binary-indep: build install
