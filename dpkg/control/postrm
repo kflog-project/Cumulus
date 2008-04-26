@@ -21,8 +21,6 @@ set -e
 
 case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
-    # remove Qt Libraries
-    rm -f libQt*.4.3.3
     /sbin/ldconfig
     ;;
 
