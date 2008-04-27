@@ -79,12 +79,11 @@ install: check_dir deinstall install_lang
 	install --mode=644 help/en/*.html icons/cumulus.png $(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(INSTALL_ROOT)/sounds
 
-# call this target to build a debian Maemo package
+# call dpkg target to build a debian Maemo package
 .PHONY : dpkg dpkg_make
 dpkg:
-	@echo "===== Building Cumulus Maemo package for $(VERSION) ====="
-	echo $(MAKE) -f $(MAKEFILE) VERSION=$(VERSION) dpkg_make
-	$(MAKE) -f Makefile.Maemo VERSION=$(VERSION) dpkg_make
+	@echo "===== Building OS2008 Maemo package for Cumulus $(VERSION) ====="
+	@$(MAKE) -f Makefile.Maemo VERSION=$(VERSION) dpkg_make
 
 # This target will build the debian packge. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation makrk
@@ -98,10 +97,14 @@ dpkg_make:
 	cp dpkg/control/copyright dpkg/cumulus-$(VERSION)/debian/
 	cp dpkg/control/control dpkg/cumulus-$(VERSION)/debian/
 	cp dpkg/control/rules dpkg/cumulus-$(VERSION)/debian/
+	cp dpkg/control/postinst dpkg/cumulus-$(VERSION)/debian/
+	cp dpkg/control/postrm dpkg/cumulus-$(VERSION)/debian/
+
 	cp dpkg/control/README.Debian dpkg/cumulus-$(VERSION)/debian/
 	sed -e "s/__VERSION__/$(VERSION)/g" dpkg/control/changelog > dpkg/cumulus-$(VERSION)/debian/changelog
 	cd dpkg/cumulus-$(VERSION); \
 	dpkg-buildpackage -rfakeroot
+	rm -f dpkg/cumulus_$(VERSION).dsc dpkg/cumulus_$(VERSION).tar.gz dpkg/cumulus_$(VERSION)_armel.changes
 
 # copies all files of cumulus into the debian package area
 .PHONY : dpkg_install
@@ -137,10 +140,10 @@ dpkg_install:
 	install --mode=644 help/en/*.html icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
-	install --mode=755 /opt/qt4.3.3//lib/libQt3Support.so.4.3.3 $(DESTDIR)/usr/lib
-	install --mode=755 /opt/qt4.3.3//lib/libQtCore.so.4.3.3 $(DESTDIR)/usr/lib
-	install --mode=755 /opt/qt4.3.3//lib/libQtGui.so.4.3.3 $(DESTDIR)/usr/lib
-	install --mode=755 /opt/qt4.3.3//lib/libQtNetwork.so.4.3.3 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.3.3/lib/libQt3Support.so.4.3.3 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.3.3/lib/libQtCore.so.4.3.3 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.3.3/lib/libQtGui.so.4.3.3 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.3.3/lib/libQtNetwork.so.4.3.3 $(DESTDIR)/usr/lib
 	install --mode=755 /opt/qt4.3.3/lib/libQtSql.so.4.3.3 $(DESTDIR)/usr/lib
 	install --mode=755 /opt/qt4.3.3/lib/libQtXml.so.4.3.3 $(DESTDIR)/usr/lib
 
