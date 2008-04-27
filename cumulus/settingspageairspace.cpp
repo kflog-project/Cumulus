@@ -490,7 +490,7 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   row++;
 
   //row 1
-  lbl = new QLabel(tr("Horizontal"), separations);
+  lbl = new QLabel(tr("Lateral"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
   horiWarnDist = new QSpinBox(0, 99999, 1, separations);
   horiWarnDist->setButtonSymbols(QSpinBox::PlusMinus);
