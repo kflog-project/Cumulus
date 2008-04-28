@@ -1,162 +1,133 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-
-
-  
-  
   <title>Cumulus Getting Started</title>
+
+
 </head>
 
 
 <body>
 
-
-
-    
 <table width="100%">
 
-
-    <tbody>
+  <tbody>
 
     <tr>
 
+      <td align="left"><a href="cumulus.html">back</a></td>
 
-    <td align="left"><a href="cumulus.html">back</a></td>
+      <td align="center"><a href="cumulus.html">start</a></td>
 
-
-    <td align="center"><a href="cumulus.html">start</a></td>
-
-
-    <td align="right"><a href="cumulus-maps.html">next</a></td>
-
+      <td align="right"><a href="cumulus-maps.html">next</a></td>
 
     </tr>
 
-
-    
-  
   </tbody>
 </table>
-
-
 
 <h3 align="center">Getting Started</h3>
 
- To take full advantage of
-Cumulus, you need a GPS receiver and a set of map files.
-
+To take full advantage of
+Cumulus, you need a PDA with a GPS receiver and a set of map files.
+Currently Cumulus supports the haredware devices Nokia Internet Tablet
+N800/N810 with Maemo OS2008. It can als o run on a Linux desktop under
+X11/Qt4.
 <dl>
-
 
   <dt><b>PDA</b></dt>
 
-
-
-  <dd>
-   As long as the program runs on the PDA and you are in flight, the automatic shutdown of
-   the screen to save battery life is deactivated. For operation over
-   several hours you need to supply external power to your PDA.
-  </dd>
-
-
+  <dd> As long as the program runs on the PDA and you are in move
+( &gt; 5 Km/h) the automatic shutdown of the screen to save battery
+life is deactivated. If you move slower the screen is switched off
+after your programmed time. If you move faster the screen is
+automatically switched on. For operation over several hours you need to
+supply external power to your PDA. </dd>
 
   <dt><b>GPS</b></dt>
 
+  <dd> You can use any GPS receiver or a bluetooth mouse that can
+be hooked-up to your PDA and outputs NMEA data records, either by using
+a serial or a bluetooth connector. Cumulus can be used without a GPS
+receiver, but is far more usefull with such a device.<br>
 
-  
-   <dd>
-    You can use any GPS receiver or a bluetooth mouse that can be hooked-up to your PDA and
-    outputs NMEA data records, either by using a serial or a blue
-    tooth connector. Cumulus can be
-    used without a GPS receiver, but is far more usefull with such a
-    device.<br>
-
-
-    
-    Once you manage to connect your GPS to Cumulus, select the correct
-    device and baud rate in the <a href="cumulus-settings.html">settings dialog</a>. Refer to your
-    GPS manual for the correct settings. For most serial devices,
-    device <i>/dev/ttyS0</i> will do, for bluetooth
-    <i>/dev/rfcomm </i>is
+Once you manage to connect your GPS to Cumulus, select the correct
+device and baud rate in the <a href="cumulus-settings-gps.html">GPS
+Settings</a>.
+Refer to your GPS manual for the correct settings.
+For most serial devices, device <i>/dev/ttyS0</i> will do,
+for bluetooth <i>/dev/rfcomm </i>is
 most common, for N810 use /dev/pts/0. The default NMEA connection speed
-is 4800 bps for bluetooth we recommend to use 115200 bps,<br>
+is 4800 bps, for bluetooth we recommend to use 115200 bps,<br>
 
     <br>
 
- Press <b><i>G</i></b> to check the GPS status. Use the Escape key to leaf the status page.
-   </dd>
+Press <b><i>G</i></b> to check the GPS status,
+if your GPS device is setup. Use the Escape key to leaf the status
+page.
+  </dd>
 
+  <dt><b>Personal</b></dt>
 
+  <dd>Define in Personal Settings a data directory, where your
+data files containing waypoints, tasks and logger data are to store.
+Recommend is a place on the MMC (Mulitmedia Card). See <a href="cumulus-settings-personal.html">Personal Settings</a>
+for more details.
+  </dd>
+
+  <dt><b>Glider</b></dt>
+
+  <dd>Define in Glider Settings your used gliders. See <a href="cumulus-settings-glider.html">Glider Settings</a>
+for more details.
+  </dd>
 
   <dt><b>Maps</b></dt>
 
-
-  
-  <dd>
-    Cumulus uses the same maps as <i>KFLog</i>, the KDE Flight Logger.
-    Download the maps you need and install them on your PDA or on a MultiMediaCard or SecureDigital Card. See <a href="cumulus-maps.html">maps</a> for more details on downloading
-    and installing maps.
-   </dd>
-
-
-   
-  <dt><b>Waypoints</b></dt>
-
-
-  
-  <dd>
-    Cumulus uses waypoints to facilitate navigation. You can either
-    edit waypoint files on the PDA or prepare them on the desktop
-    using <i>KFLog</i> and transfer them to the PDA. See <a href="cumulus-waypoints.html">waypoints</a> for more details on
-    waypoints.
+  <dd> Cumulus uses the same maps as <i>KFLog</i>,
+the KDE Flight Logger. Download the maps, airspaces and airfields you
+need and install them on
+your PDA. See <a href="cumulus-maps.html">Maps</a> for
+more information.</dd>
+  <dd>Define in
+    <a href="cumulus-settings-map-settings.html">Map
+Settings</a> a data directory for your maps on the MMC&nbsp;and
+install all
+there. Furthermore set the Standard Parallels of the projection to a
+value near your home position to get unskewed draw results.
   </dd>
 
+  <dt><b>Waypoints</b></dt>
 
+  <dd> Cumulus uses waypoints to facilitate navigation. You can
+either edit waypoint files on the PDA or prepare them on the desktop
+using <i>KFLog</i> and transfer them to the PDA. See <a href="cumulus-waypoints.html">waypoints</a> for more
+details on waypoints. </dd>
 
   <dt><b>Tasks</b></dt>
 
+  <dd> Cumulus supports also the definition of flight tasks. You
+can either edit the task file on the PDA or prepare them on the desktop
+using <i>KFLog</i> and transfer them to the PDA. See <a href="cumulus-preflight-settings-task.html">tasks</a>
+for more details on tasks. </dd>
 
-
-  <dd>
-    Cumulus supports also the definition of flight tasks. You can
-    either edit the task file on the PDA or prepare them on the
-    desktop using <i>KFLog</i> and transfer them to the PDA. See <a href="cumulus-preflight-settings-task.html">tasks</a>
-    for more details on tasks.
-  </dd>
-
-
-  
 </dl>
 
-
-
-    
 <table width="100%">
 
-
-    <tbody>
+  <tbody>
 
     <tr>
 
+      <td align="left"><a href="cumulus.html">back</a></td>
 
-    <td align="left"><a href="cumulus.html">back</a></td>
+      <td align="center"><a href="cumulus.html">start</a></td>
 
-
-    <td align="center"><a href="cumulus.html">start</a></td>
-
-
-    <td align="right"><a href="cumulus-maps.html">next</a></td>
-
+      <td align="right"><a href="cumulus-maps.html">next</a></td>
 
     </tr>
 
-
-    
-  
   </tbody>
 </table>
-
 
 </body>
 </html>

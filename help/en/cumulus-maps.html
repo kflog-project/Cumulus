@@ -62,18 +62,19 @@ directory in the map setting configuration page.</li>
 
   <li>In the installlation area, normally under /opt/cumulus/maps.</li>
 
-  <li>Anywhere, e.g. on the SD card. Under Maemo (Nokia Internet
-Tablets) it is recommened to use this location because the internal
+  <li>Anywhere, e.g. on a MMC. Under Maemo (Nokia Internet
+Tablet) it is recommened to use this location because the internal
 memory is limited)</li>
 
 </ul>
 
-<p>If the maps are installed on the SD card, the user must setup
+<p>If the maps are installed on the MMC the user must setup
 the path to the map root directory in the Map Settings configuration
 page (Setup-&gt;General Setup-&gt;Map Setting). Use the Maps
 button to navigate to the appropriate root directory under which the
-maps are to find. If there is no path set the maps are searched only
-under $Home/maps and /opt/cumulus/maps. </p>
+maps are to find. If there is no path setup the maps are searched only
+under $HOME/maps and /opt/cumulus/maps. But these directory are
+unsuitably for the PDA. </p>
 
 <p>The ground data files have to be put in a subdirectory <i>landscape</i>.
 The airfield and the airspace files have to be put in subdirectories in
@@ -95,8 +96,9 @@ resulting maps are stored again with a <i>.kfc or .txc</i>
 extension. For many maps, these files are a bit smaller than the
 original files. The next time Cumulus needs to load the file, it first
 tries to load this <i>compiled</i> file to improve speed.
-In the <a href="cumulus-settings-map-advanced.html">
-advanced map settings</a> you can modify the behaviour of Cumulus
+In the <a href="cumulus-settings-map-settings.html">
+Map Settings</a>&nbsp;page you can modify the behaviour of
+Cumulus
 for map projection and map compilation.</p>
 
 <p><b>OpenAir SUA map files</b></p>
@@ -194,7 +196,7 @@ in the file. These instructions will overwrite the default mappings. </p>
 
 <p>Example: <i>CTR=ControlD</i></p>
 
-<p>This statement changes the default assignment <i>ControlC</i>
+<p>This statement changes the assignment <i>ControlC</i>
 to <i>ControlD</i>.<b>Consider that the mappings are
 case sensitive.</b> <a name="Welt2000"></a> </p>
 
@@ -213,8 +215,8 @@ that two ways:</p>
 <ul>
 
   <li> Filtering by countries to be defined under the
-configuration setup of advanced maps. See <a href="cumulus-settings-map-advanced.html#Welt2000Filter">
-advanced map settings</a> for more information. </li>
+configuration setup of Airfields. See <a href="cumulus-settings-airfields.html#Welt2000Filter">
+Airfields</a> for more information. </li>
 
   <li> Filtering by countries to be defined in a configuration
 file with the name <i>welt2000.conf</i>. See below how to
