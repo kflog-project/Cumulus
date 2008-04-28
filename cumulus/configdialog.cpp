@@ -62,7 +62,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   tabWidget->addTab(spaf, tr("Airfields"));
 
   spa=new SettingsPageAirspace(this);
-  tabWidget->addTab(spa, tr("Airspace"));
+  tabWidget->addTab(spa, tr("Airspaces"));
 
   spu=new SettingsPageUnits(this);
   tabWidget->addTab(spu, tr("Units"));
