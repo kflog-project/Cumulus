@@ -1216,7 +1216,6 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       menuBar()->hide();
       viewMap->hide();
       viewInfo->hide();
-      viewAF->fillWpList();
       listViewTabs->showPage( viewTP );
       listViewTabs->show();
 
