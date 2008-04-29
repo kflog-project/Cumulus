@@ -244,7 +244,11 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Information");
+#ifdef MAEMO
+  _soundPlayer           = value( "SoundPlayer", "/opt/cumulus/bin/aplay" ).toString();
+#else
   _soundPlayer           = value( "SoundPlayer", "" ).toString();
+#endif
   _airfieldDisplayTime   = value( "AirfieldDisplayTime",
                                   AIRFIELD_DISPLAY_TIME_DEFAULT ).toInt();
   _airspaceDisplayTime   = value( "AirspaceDisplayTime",
