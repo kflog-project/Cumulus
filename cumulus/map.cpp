@@ -231,8 +231,6 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
       return;
     }
 
-  // select WayPoint
-  QRegExp blank("[ ]");
   bool found = false;
 
   // Radius for Mouse Snapping
@@ -248,8 +246,15 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
   // snap distance should be 3000m considering scale, otherwise the
   // range is to high on higher sacles.
   delta = (int) rint( 3000. / cs );
+
   // Manhattan-distance to found point.
   int lastDist=2*delta+1;
+
+  // snapRect about the touched position
+  QRect snapRect( current.x()-delta, current.y()-delta, 2*delta, 2*delta );
+
+  //qDebug( "SnapRect %dx%d, delta=%d, w=%d, h=%d",
+  //        current.x()-delta, current.y()-delta, delta, 2*delta, 2*delta );
 
   // @AP: On map scale higher as 1024 we don't evelute anything
   for (int l = 0; l < 2 && cs < 1024.0; l++)
@@ -259,12 +264,20 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
         {
           Airport* hitElement = (Airport*)_globalMapContents->getElement(
                                   searchList[l], loop);
-          QPoint sitePos (hitElement->getMapPosition());
+
+          QPoint sitePos( hitElement->getMapPosition() );
+
+          if( ! snapRect.contains(sitePos) )
+            {
+              // @AP: Point lays outside of snap rectangle, we ignore it
+              continue;
+            }
 
           dX = abs(sitePos.x() - current.x());
           dY = abs(sitePos.y() - current.y());
 
-          // qDebug( "delta=%d, dX=%d, dY=%d, lastDist=%d", delta, dX, dY, lastDist );
+          // qDebug( "pX=%d, pY=%d, cX=%d, cY=%d, delta=%d, dX=%d, dY=%d, lastDist=%d",
+          //         sitePos.x(), sitePos.y(), current.x(), current.y(), delta, dX, dY, lastDist );
 
           // Abstand entspricht der Icon-Groesse
           if (dX < delta && dY < delta)
@@ -274,10 +287,9 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
                   continue; //the point we found earlier was closer
                 }
 
-              //      qDebug ("waypoint: %s", hitElement->getName().latin1());
-              //w = new wayPoint;  // create new wp later, only if added to list
+              // qDebug ("Airport: %s", hitElement->getName().toLatin1().data() );
+
               w = &wp;
-              // w->name = w->name.replace(blank, QString::null).left(6).upper();
               w->name = hitElement->getWPName();
               w->description = hitElement->getName();
               w->type = hitElement->getTypeID();
@@ -297,6 +309,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
 
               found = true;
               lastDist = dX+dY;
+
               if( lastDist < (delta/3) ) //if we're very near, stop searching the list
                 {
                   break;
@@ -310,7 +323,10 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
   for (int i = 0; i < _globalMapContents->getWaypointList()->count(); i++)
     {
       if (cs > 1024.0)
-        break;
+        {
+          break;
+        }
+
       wayPoint* wp = _globalMapContents->getWaypointList()->at(i);
 
       // consider only points, which are visible on the map
@@ -320,6 +336,13 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
         }
 
       QPoint sitePos (_globalMapMatrix->map(wp->projP));
+
+      if( ! snapRect.contains(sitePos) )
+        {
+          // @AP: Point lays outside of snap rectangle, we ignore it
+          continue;
+        }
+
       dX = abs(sitePos.x() - current.x());
       dY = abs(sitePos.y() - current.y());
 
@@ -327,12 +350,19 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
       if (dX < delta && dY < delta)
         {
           if (found && ((dX+dY) > lastDist))
-            { //subtle difference with airfields: replace allready found waypoint if we find a waypoint at the same distance.
-              continue; //the point we found earlier was closer
+            { // subtle difference with airfields: replace already
+              // found waypoint if we find a waypoint at the same
+              // distance.
+              continue; // the point we found earlier was closer
             }
+
           found = true;
           w=wp;
+
+          // qDebug ("Waypoint: %s", w->name.toLatin1().data() );
+
           lastDist = dX+dY;
+
           if (lastDist< (delta/3)) //if we're very near, stop searching the list
             {
               break;
@@ -342,6 +372,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
 
   if (found)
     {
+      // qDebug ("Waypoint: %s", w->name.toLatin1().data() );
       emit waypointSelected(w);
       return;
     }
