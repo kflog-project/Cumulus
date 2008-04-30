@@ -157,7 +157,7 @@ QStringList& Airport::getSortedTranslationList()
 void Airport::drawMapElement(QPainter* targetP)
 {
   if(!__isVisible()) {
-    curPos = QPoint(-50, -50);
+    curPos = QPoint(-5000, -5000);
     return;
   }
 
