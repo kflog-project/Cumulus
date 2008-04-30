@@ -18,6 +18,8 @@ Cumulus changelog
 Cumulus 2.0.0 (Development based on X11/Qt-4.3.3)
 -------------------------------------------------
 
+[-] 2008-04-30 AP: Bugfix: Mouse snapping for info display fixed. On high zoom
+                   level wrong data were snapped.
 [-] 2008-04-23 AP: Airspace filling reworked
 [-] 2008-04-20 AP: Performance improvements for airspace and isoline drawings provided
                    by Josua Dietze. Thanks to him for his contributions.
