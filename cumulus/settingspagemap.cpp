@@ -30,6 +30,7 @@ SettingsPageMap::SettingsPageMap(QWidget *parent) : QWidget(parent)
   topLayout->setMargin(5);
 
   lvLoadOptions = new QTableWidget(11, 1, this);
+  lvLoadOptions->setShowGrid( false );
 
   // hide vertical headers
   QHeaderView *vHeader = lvLoadOptions->verticalHeader();

@@ -21,8 +21,8 @@
 #include <QCheckBox>
 #include <QDialog>
 #include <QGroupBox>
-#include <Q3ListView>
-#include <Q3CheckListItem>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QWidget>
@@ -76,21 +76,21 @@ class SettingsPageAirspace : public QWidget
     QPushButton* cmdWarning;
     QPushButton* cmdFilling;
 
-    Q3ListView*      lvLoadOptions;
-    Q3CheckListItem* drawAirspaceA;
-    Q3CheckListItem* drawAirspaceB;
-    Q3CheckListItem* drawAirspaceC;
-    Q3CheckListItem* drawControlC;
-    Q3CheckListItem* drawAirspaceD;
-    Q3CheckListItem* drawControlD;
-    Q3CheckListItem* drawAirspaceElow;
-    Q3CheckListItem* drawAirspaceEhigh;
-    Q3CheckListItem* drawAirspaceF;
-    Q3CheckListItem* drawRestricted;
-    Q3CheckListItem* drawDanger;
-    Q3CheckListItem* drawLowFlight;
-    Q3CheckListItem* drawTMZ;
-    Q3CheckListItem* drawSuSector;
+    QTableWidget*     lvLoadOptions;
+    QTableWidgetItem* drawAirspaceA;
+    QTableWidgetItem* drawAirspaceB;
+    QTableWidgetItem* drawAirspaceC;
+    QTableWidgetItem* drawControlC;
+    QTableWidgetItem* drawAirspaceD;
+    QTableWidgetItem* drawControlD;
+    QTableWidgetItem* drawAirspaceElow;
+    QTableWidgetItem* drawAirspaceEhigh;
+    QTableWidgetItem* drawAirspaceF;
+    QTableWidgetItem* drawRestricted;
+    QTableWidgetItem* drawDanger;
+    QTableWidgetItem* drawLowFlight;
+    QTableWidgetItem* drawTMZ;
+    QTableWidgetItem* drawSuSector;
 
     QCheckBox*      enableForceDrawing;
     QSpinBox*       spinForceMargin;

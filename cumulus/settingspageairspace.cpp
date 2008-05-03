@@ -20,6 +20,7 @@
 #include <QLabel>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QHeaderView>
 
 #include "airspace.h"
 #include "basemapelement.h"
@@ -47,49 +48,104 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   int row=0;
 
-  lvLoadOptions = new Q3ListView(this, "LoadOptionList");
-  lvLoadOptions->addColumn(tr("Enable Airspace Drawing"),192);
-  lvLoadOptions->setAllColumnsShowFocus(true);
-  topLayout->addMultiCellWidget(lvLoadOptions, row, row, 0, 4);
+  lvLoadOptions = new QTableWidget(14, 1, this);
+  lvLoadOptions->setShowGrid( false );
+
+  // hide vertical headers
+  QHeaderView *vHeader = lvLoadOptions->verticalHeader();
+  vHeader->setVisible(false);
+
+  QTableWidgetItem *item = new QTableWidgetItem( tr("Enable Airspace Drawing") );
+  lvLoadOptions->setHorizontalHeaderItem( 0, item );
+
+  topLayout->addWidget(lvLoadOptions, row, 0, 1, 4);
   row++;
 
-  enableForceDrawing=new QCheckBox(tr("Force drawing for airspace less than"),
-                                   this, "forcedraw");
+  enableForceDrawing = new QCheckBox(tr("Force drawing for airspace less than"), this);
   enableForceDrawing->setChecked(true);
-  topLayout->addMultiCellWidget( enableForceDrawing, row, row, 0, 4 );
+  topLayout->addWidget( enableForceDrawing, row, 0, 1, 4 );
   connect( enableForceDrawing, SIGNAL(toggled(bool)), SLOT(enabledToggled(bool)));
   row++;
 
-  spinForceMargin = new QSpinBox(0, 99999, 1, this);
+  spinForceMargin = new QSpinBox(this);
+  spinForceMargin-> setRange( 0, 99999 );
+  spinForceMargin->setSingleStep( 1 );
   spinForceMargin->setButtonSymbols(QSpinBox::PlusMinus);
 
-  topLayout->addMultiCellWidget( spinForceMargin, row, row, 0, 0 );
-  topLayout->addMultiCellWidget(new QLabel(tr("%1 above me.").arg(unit), this), row, row, 1, 4);
+  topLayout->addWidget( spinForceMargin, row, 0 );
+  topLayout->addWidget(new QLabel(tr("%1 above me.").arg(unit), this), row, 1, 1, 3);
   row++;
 
-  cmdWarning = new QPushButton(tr("Airspace Warnings"), this, "warningOptions");
-  topLayout->addMultiCellWidget(cmdWarning, row, row, 0, 1, Qt::AlignLeft);
+  cmdWarning = new QPushButton(tr("Airspace Warnings"), this);
+  topLayout->addWidget(cmdWarning, row, 0, 1, 2, Qt::AlignLeft);
   connect (cmdWarning, SIGNAL(clicked()), m_warningsDlg, SLOT(show()));
 
-  cmdFilling = new QPushButton(tr("Airspace filling"), this, "fillOptions");
-  topLayout->addMultiCellWidget(cmdFilling, row, row, 3, 4, Qt::AlignRight);
+  cmdFilling = new QPushButton(tr("Airspace filling"), this);
+  topLayout->addWidget(cmdFilling, row, 2, 1, 2, Qt::AlignRight);
   connect (cmdFilling, SIGNAL(clicked()), m_fillingDlg, SLOT(show()));
-  row++;
 
-  drawAirspaceA=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::AirA), Q3CheckListItem::CheckBox);
-  drawAirspaceB=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::AirB), Q3CheckListItem::CheckBox);
-  drawAirspaceC=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::AirC), Q3CheckListItem::CheckBox);
-  drawControlC=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::ControlC), Q3CheckListItem::CheckBox);
-  drawAirspaceD=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::AirD), Q3CheckListItem::CheckBox);
-  drawControlD=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::ControlD), Q3CheckListItem::CheckBox);
-  drawAirspaceElow=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::AirElow), Q3CheckListItem::CheckBox);
-  drawAirspaceEhigh=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::AirEhigh), Q3CheckListItem::CheckBox);
-  drawAirspaceF=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::AirF), Q3CheckListItem::CheckBox);
-  drawRestricted=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::Restricted), Q3CheckListItem::CheckBox);
-  drawDanger=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::Danger), Q3CheckListItem::CheckBox);
-  drawTMZ=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::Tmz), Q3CheckListItem::CheckBox);
-  drawLowFlight=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::LowFlight), Q3CheckListItem::CheckBox);
-  drawSuSector=new Q3CheckListItem(lvLoadOptions, Airspace::getTypeName(BaseMapElement::SuSector), Q3CheckListItem::CheckBox);
+  row = 0;
+
+  drawAirspaceA = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirA) );
+  drawAirspaceA->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawAirspaceA );
+
+  drawAirspaceB = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirB) );
+  drawAirspaceB->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawAirspaceB );
+
+  drawAirspaceC = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirC) );
+  drawAirspaceC->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawAirspaceC );
+
+  drawControlC = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::ControlC) );
+  drawControlC->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawControlC );
+
+  drawAirspaceD = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirD) );
+  drawAirspaceD->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawAirspaceD );
+
+  drawControlD = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::ControlD) );
+  drawControlD->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawControlD );
+
+  drawAirspaceElow = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirElow) );
+  drawAirspaceElow->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawAirspaceElow );
+
+  drawAirspaceEhigh = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirEhigh) );
+  drawAirspaceEhigh->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawAirspaceEhigh );
+
+  drawAirspaceF = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirF) );
+  drawAirspaceF->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawAirspaceF );
+
+  drawRestricted = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::Restricted) );
+  drawRestricted->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawRestricted );
+
+  drawDanger = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::Danger) );
+  drawDanger->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawDanger );
+
+  drawTMZ = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::Tmz) );
+  drawTMZ->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawTMZ );
+
+  drawLowFlight = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::LowFlight) );
+  drawLowFlight->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawLowFlight );
+
+  drawSuSector = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::SuSector) );
+  drawSuSector->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
+  lvLoadOptions->setItem( row++, 0, drawSuSector );
+
+  lvLoadOptions->sortItems( 0 );
+  lvLoadOptions->adjustSize();
+  lvLoadOptions->setColumnWidth( 0, lvLoadOptions->maximumViewportSize().width()-20 );
+
 }
 
 
@@ -114,20 +170,20 @@ void SettingsPageAirspace::slot_load()
       spinForceMargin->setValue((int) rint(conf->getForceAirspaceDrawingDistance().getFeet()));
     }
 
-  drawAirspaceA->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::AirA));
-  drawAirspaceB->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::AirB));
-  drawAirspaceC->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::AirC));
-  drawControlC->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::ControlC));
-  drawAirspaceD->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::AirD));
-  drawControlD->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::ControlD));
-  drawAirspaceElow->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::AirElow));
-  drawAirspaceEhigh->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::AirEhigh));
-  drawAirspaceF->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::AirF));
-  drawRestricted->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::Restricted));
-  drawDanger->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::Danger));
-  drawTMZ->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::Tmz));
-  drawLowFlight->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::LowFlight));
-  drawSuSector->setOn (conf->getAirspaceWarningEnabled(BaseMapElement::SuSector));
+  drawAirspaceA->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirA) ? Qt::Checked : Qt::Unchecked );
+  drawAirspaceB->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirB) ? Qt::Checked : Qt::Unchecked );
+  drawAirspaceC->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirC) ? Qt::Checked : Qt::Unchecked );
+  drawControlC->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::ControlC) ? Qt::Checked : Qt::Unchecked );
+  drawAirspaceD->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirD) ? Qt::Checked : Qt::Unchecked );
+  drawControlD->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::ControlD) ? Qt::Checked : Qt::Unchecked );
+  drawAirspaceElow->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirElow) ? Qt::Checked : Qt::Unchecked );
+  drawAirspaceEhigh->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirEhigh) ? Qt::Checked : Qt::Unchecked );
+  drawAirspaceF->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirF) ? Qt::Checked : Qt::Unchecked );
+  drawRestricted->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::Restricted) ? Qt::Checked : Qt::Unchecked );
+  drawDanger->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::Danger) ? Qt::Checked : Qt::Unchecked );
+  drawTMZ->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::Tmz) ? Qt::Checked : Qt::Unchecked );
+  drawLowFlight->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::LowFlight) ? Qt::Checked : Qt::Unchecked );
+  drawSuSector->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::SuSector) ? Qt::Checked : Qt::Unchecked );
 
   m_fillingDlg->slot_load();
   m_warningsDlg->slot_load();
@@ -152,22 +208,22 @@ void SettingsPageAirspace::slot_save()
     }
 
   conf->setForceAirspaceDrawingDistance(forceDist);
-  conf->setForceAirspaceDrawingEnabled(this->enableForceDrawing->isOn());
+  conf->setForceAirspaceDrawingEnabled(enableForceDrawing->checkState() == Qt::Checked ? true : false);
 
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirA,drawAirspaceA->isOn());
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirB,drawAirspaceB->isOn());
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirC,drawAirspaceC->isOn());
-  conf->setAirspaceWarningEnabled(BaseMapElement::ControlC,drawControlC->isOn());
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirD,drawAirspaceD->isOn());
-  conf->setAirspaceWarningEnabled(BaseMapElement::ControlD,drawControlD->isOn());
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirElow,drawAirspaceElow->isOn());
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirEhigh,drawAirspaceEhigh->isOn());
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirF,drawAirspaceF->isOn());
-  conf->setAirspaceWarningEnabled(BaseMapElement::Restricted,drawRestricted->isOn());
-  conf->setAirspaceWarningEnabled(BaseMapElement::Danger,drawDanger->isOn());
-  conf->setAirspaceWarningEnabled(BaseMapElement::Tmz,drawTMZ->isOn());
-  conf->setAirspaceWarningEnabled(BaseMapElement::LowFlight,drawLowFlight->isOn());
-  conf->setAirspaceWarningEnabled(BaseMapElement::SuSector,drawSuSector->isOn());
+  conf->setAirspaceWarningEnabled(BaseMapElement::AirA,drawAirspaceA->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::AirB,drawAirspaceB->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::AirC,drawAirspaceC->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::ControlC,drawControlC->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::AirD,drawAirspaceD->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::ControlD,drawControlD->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::AirElow,drawAirspaceElow->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::AirEhigh,drawAirspaceEhigh->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::AirF,drawAirspaceF->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::Restricted,drawRestricted->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::Danger,drawDanger->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::Tmz,drawTMZ->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::LowFlight,drawLowFlight->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::SuSector,drawSuSector->checkState() == Qt::Checked ? true : false);
 
   m_fillingDlg->slot_save();
   m_warningsDlg->slot_save();
