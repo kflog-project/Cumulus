@@ -1259,6 +1259,8 @@ QString GeneralConfig::getUserDataDirectory()
           // user data directory not createable, fallback is set to
           // $HOME/cumulus
           _userDataDirectory = QDir::homePath() + "/cumulus";
+          qWarning( "Cannot create user data directory %s",
+                    _userDataDirectory.toLatin1().data() );
         }
     }
 
@@ -1269,6 +1271,8 @@ QString GeneralConfig::getUserDataDirectory()
     glider.pol,logger files are stored */
 void GeneralConfig::setUserDataDirectory( QString newDir )
 {
+  _userDataDirectory = newDir;
+
   // Check, if directory exists
   QDir userDir = QDir( newDir );
 
@@ -1280,10 +1284,7 @@ void GeneralConfig::setUserDataDirectory( QString newDir )
           // user data directory not createable, fallback is set to
           // $HOME/cumulus
           _userDataDirectory = QDir::homePath() + "/cumulus";
+          qWarning( "Cannot create user data directory %s", newDir.toLatin1().data() );
         }
-    }
-  else
-    {
-      _userDataDirectory = newDir;
     }
 }
