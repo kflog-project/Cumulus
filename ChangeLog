@@ -18,6 +18,8 @@ Cumulus changelog
 Cumulus 2.0.0 (Development based on X11/Qt-4.3.3)
 -------------------------------------------------
 
+[-] 2008-05-05 AP: Bugfix: Wind arrow for 360 degrees was not displayed due to missing
+                   icon for that direction.
 [-] 2008-04-30 AP: Bugfix: Mouse snapping for info display fixed. On high zoom
                    level wrong data were snapped.
 [-] 2008-04-23 AP: Airspace filling reworked
@@ -78,7 +80,6 @@ Cumulus 2.0.0 (Development based on X11/Qt-4.3.3)
 [+] 2008-02-08 AP: Portage of cumulus from Qtopia-2.0 and Qt-2.3.7 to X11/Qt-4.3 finished.
                    First build of a release based on Qt/X11 with several porting bugs.
                    Optimization of widgets is also required.
-
 
 -------------------------------------------------------
 Cumulus 1.3.1 (Development based on Qtopia-2.0 Qt-2.3.7)
