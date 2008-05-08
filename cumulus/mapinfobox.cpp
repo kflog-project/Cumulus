@@ -2,8 +2,9 @@
                           mapinfobox.cpp  -  description
                              -------------------
     begin                : Sun Jul 21 2002
-    copyright            : (C) 2002 by Andre Somers, 2008 Axel Pauli, Josua Dietze
-    email                : andre@kflog.org
+    copyright            : (C) 2002 by Andre Somers
+                               2008 by Axel Pauli, Josua Dietze
+    email                : axel@kflog.org
     
     $Id$
     
@@ -19,6 +20,7 @@
  ***************************************************************************/
 
 #include <QHBoxLayout>
+#include <cmath>
 
 #include "mapinfobox.h"
 #include "resource.h"
@@ -54,6 +56,7 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, int fontDots
   ).arg( borderColor ) );
 
   _preMinus = minusInPretext;
+  _maxFontDotsize = fontDotsize;
 
   _ptext = new QLabel(this, "" );
   _ptext->setStyleSheet(
@@ -73,16 +76,6 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, int fontDots
 
   _text = new QLabel(this, "" );
   _text->setIndent(0);
-  _text->setStyleSheet( QString(
-	"border-style: none;"
-	"border-width: 0px;"
-	"background-color: white;"
-	"padding-left: 1px;"
-	"margin: 0px;"
-	"font-family: Vera,vera,helvetica;"
-	"font-size: %1px;"
-	"text-align: left;"
-  ).arg(fontDotsize) );
 
   layout->addWidget(_ptext,0);
   layout->addWidget(_text,10);
@@ -125,16 +118,62 @@ const QString& MapInfoBox::getValue()
 /** Write property of QString _value. */
 void MapInfoBox::setValue( const QString _newVal)
 {
+  int fontDotsize = _maxFontDotsize;
+  int diff;
+
   _value = _newVal;
 
-  if ( _preMinus && (_value.length() > 2) )
-    if ( _value.startsWith('-') ) {
+  _text->setStyleSheet( QString(
+		"border-style: none;"
+		"border-width: 0px;"
+		"background-color: white;"
+		"padding-left: 1px;"
+		"padding-right: 1px;"
+		"margin: 0px;"
+		"font-family: Vera,vera,helvetica;"
+		"font-size: %1px;"
+		"text-align: left;"
+  ).arg(fontDotsize) );
+
+//  qDebug("\n       field: %s",_PreText.toLatin1().data());
+//  qDebug("        width: %d",width());
+//  qDebug("         diff: %d",diff);
+//  qDebug("        value: %s",_value.toLatin1().data());
+  if ( _preMinus )
+    if ( _value.startsWith('-') && _value.size() > 1) {
 	  _value = _value.remove( 0, 1 );
       _ptext->setText( _PreText + "<br><img src=../icons/minus.png>" );
     } else
       _ptext->setText( _PreText );
+//  qDebug("    dispvalue: %s",_value.toLatin1().data());
     
   _text->setText(_value);
+
+  //@JD: set font size dynamically depending on size hint after
+  //     displaying the new value
+
+  diff = minimumSizeHint().width() - width();
+  while ( diff > 5 ) {
+    diff = diff/10;
+    if (diff == 0)
+      diff = 1;
+    fontDotsize = fontDotsize - diff;
+    _text->setStyleSheet( QString(
+		"border-style: none;"
+		"border-width: 0px;"
+		"background-color: white;"
+		"padding-left: 1px;"
+		"padding-right: 1px;"
+		"margin: 0px;"
+		"font-family: Vera,vera,helvetica;"
+		"font-size: %1px;"
+		"text-align: left;"
+    ).arg(fontDotsize) );
+//    qDebug("  fontDotSize: %d",fontDotsize);
+//    qDebug(" minWidthHint: %d\n",minimumSizeHint().width());
+    diff = minimumSizeHint().width() - width();
+//    qDebug("*      newdiff: %d",diff);
+  }
 }
 
 

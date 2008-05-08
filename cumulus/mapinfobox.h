@@ -2,8 +2,9 @@
                           mapinfobox.h  -  description
                              -------------------
     begin                : Sun Jul 21 2002
-    copyright            : (C) 2002 by Andre Somers, 2008 Axel Pauli
-    email                : andre@kflog.org
+    copyright            : (C) 2002 by Andre Somers
+                               2008 by Axel Pauli, Josua Dietze
+    email                : axel@kflog.org
     
     $Id$
     
@@ -42,9 +43,7 @@ public:
 signals:
 
      // Emitted when the mouse is pressed over the label
-
     void mousePress();
-
 
 private:
     void mousePressEvent ( QMouseEvent * e );
@@ -84,13 +83,11 @@ public:
      */
     virtual const QString& getValue();
 
-
 signals:
     /**
      * The mouse is pressed over the widget
      */
     void mousePress();
-
 
 protected:
     /**
@@ -103,8 +100,7 @@ protected:
      */
     bool eventFilter(QObject *, QEvent *);
 
-
-private: // Private attributes
+private:
     /** The text displayed before the value. */
     QString _PreText;
     /** The value of the box */
@@ -113,8 +109,10 @@ private: // Private attributes
     QLabel  *_text;
     /** Pointer to the internal pre-text label */
     QLabel  *_ptext;
+    /** The maximum font size */
+    int _maxFontDotsize;
     /** If the minus sign is shown in pre-text or text label */ 
-	bool _preMinus;
+    bool _preMinus;
 };
 
 #endif
