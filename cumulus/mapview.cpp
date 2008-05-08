@@ -97,7 +97,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   wayLayout->setSpacing(4);
 
   //add Waypoint widget (whole line)
-  _waypoint = new MapInfoBox( this, conf->getFrameCol(), 22 );
+  _waypoint = new MapInfoBox( this, conf->getFrameCol() );
   _waypoint->setValue("-");
   _waypoint->setPreText("To");
   wayLayout->addWidget( _waypoint );
@@ -137,10 +137,10 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //add ETA widget
   _eta = new MapInfoBox( this, conf->getFrameCol() );
+  _eta->hide();
   _eta->setValue("-");
   _eta->setPreText( "Eta" );
   DEBLayout->addWidget( _eta );
-  _eta->hide();
   connect(_eta, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
 
   //add Bearing widget
@@ -197,10 +197,10 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //add LD widget
   _ld = new MapInfoBox( this, conf->getFrameCol() );
+  _ld->hide();
   _ld->setValue("-/-");
   _ld->setPreText( "LD" );
   WLLayout->addWidget( _ld );
-  _ld->hide();
   connect(_ld, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
 
 
@@ -386,7 +386,7 @@ void MapView::slot_Speed(const Speed& speed)
 void MapView::slot_Waypoint(const wayPoint *wp)
 {
   // qDebug("MapView::slot_Waypoint");
-  QString dest;
+  QString dest = "";
 
   if( wp )
     {
@@ -396,8 +396,14 @@ void MapView::slot_Waypoint(const wayPoint *wp)
           idx.sprintf( "%d ", wp->taskPointIndex );
           dest += tr("TP") + idx;
         }
-
-      dest += QString("%1 (%2)").arg(wp->name.left(8)).arg( Altitude::getText(wp->elevation, false, 0));
+      // @JD: suggestion: removal of spaces in wp display -> bigger font
+      for ( int i=0 ; i < wp->name.size() ; i++ ) {
+        if ( wp->name[i] != QChar(' ') )
+          dest += wp->name[i];
+        if ( dest.size() == 8 )
+          break;
+      }
+      dest += QString("(%1)").arg( Altitude::getText(wp->elevation, false, 0));
       _waypoint->setValue(dest);
     }
   else
@@ -727,7 +733,7 @@ void MapView::slot_settingschange()
 }
 
 
-/** This slot is called if the number of satelites changes. */
+/** This slot is called if the number of satellites changes. */
 void MapView::slot_SatConstellation()
 {
   if (gps)
@@ -808,12 +814,14 @@ void MapView::slot_toggleDistanceEta()
     {
       _distance->hide();
       _eta->show();
+      _eta->setValue( _eta->getValue() );
       emit toggleETACalculation( true );
     }
   else
     {
-      _distance->show();
       _eta->hide();
+      _distance->show();
+      _distance->setValue( _distance->getValue() );
       emit toggleETACalculation( false );
     }
 }
@@ -825,22 +833,18 @@ void MapView::slot_toggleWindAndLD()
   if( _wind->isVisible() )
     {
       _wind->hide();
-//      _vario->hide();
       _ld->show();
+      _ld->setValue( _ld->getValue() );
       // switch on LD calculation in calculator
       emit toggleLDCalculation( true );
-      // switch off vario calculation in calculator
-      emit toggleVarioCalculation( false );
     }
   else
     {
-      _vario->show();
       _wind->show();
       _ld->hide();
+      _wind->setValue( _wind->getValue() );
       // switch off LD calculation in calculator
       emit toggleLDCalculation( false );
-      // switch on vario calculation in calculator
-      emit toggleVarioCalculation( true );
     }
 }
 
