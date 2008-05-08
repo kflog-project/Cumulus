@@ -252,17 +252,18 @@ QString Speed::getVerticalText(bool withUnit, uint precision) const
     unit = getUnitText(_verticalUnit);
     speed = getVerticalValue();
 
+    //@JD: If unit is feet/minute set precision to 0. Saves display space
+    //     and should really be sufficient (1 foot/min is 0.005 m/s ...)
+    if ( _verticalUnit == feetPerMinute )
+      precision = 0;
+
     QByteArray prec;
     prec.setNum(precision);
-    double round=0.5/(10^precision);
-
-    if ( fabs(speed) < round )
-        speed=0.0;
 
     if (withUnit) {
-      result.sprintf("%1." + prec + "f %s",speed,unit.toLatin1().data());
+      result.sprintf("%1." + prec + "f %s", speed, unit.toLatin1().data());
     } else {
-        result.sprintf("%1." + prec + "f",speed);
+        result.sprintf("%1." + prec + "f", speed);
     }
     return result;
 }
