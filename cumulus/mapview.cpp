@@ -98,8 +98,8 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //add Waypoint widget (whole line)
   _waypoint = new MapInfoBox( this, conf->getFrameCol() );
-  _waypoint->setValue("-");
   _waypoint->setPreText("To");
+  _waypoint->setValue("-");
   wayLayout->addWidget( _waypoint );
   connect(_waypoint, SIGNAL(mousePress()),
           (CumulusApp*)parent, SLOT(slotSwitchToWPListViewExt()));
@@ -130,16 +130,16 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //add Distance widget
   _distance = new MapInfoBox( this, conf->getFrameCol() );
-  _distance->setValue("-");
   _distance->setPreText("Dis");
+  _distance->setValue("-");
   DEBLayout->addWidget( _distance);
   connect(_distance, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
 
   //add ETA widget
   _eta = new MapInfoBox( this, conf->getFrameCol() );
   _eta->hide();
-  _eta->setValue("-");
   _eta->setPreText( "Eta" );
+  _eta->setValue("-");
   DEBLayout->addWidget( _eta );
   connect(_eta, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
 
@@ -158,7 +158,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   sideLayout->addWidget( wayBar, 3 );
 
-
   //widget to group common displays
   QWidget *commonBar = new QWidget( this );
   commonBar->setFixedWidth(216);
@@ -174,14 +173,14 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //add Speed widget
   _speed = new MapInfoBox( this, "#efefef" );
-  _speed->setValue("-");
   _speed->setPreText("Gs");
+  _speed->setValue("-");
   SHLayout->addWidget( _speed);
 
   //add Heading widget
   _heading = new MapInfoBox( this, "#efefef" );
-  _heading->setValue("-");
   _heading->setPreText("Trk");
+  _heading->setValue("-");
   SHLayout->addWidget( _heading);
 
 
@@ -190,16 +189,16 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //add Wind widget; this is head/tailwind, no direction given !
   _wind = new MapInfoBox( this, conf->getFrameCol() );
-  _wind->setValue("-");
   _wind->setPreText("Wd");
+  _wind->setValue("-");
   WLLayout->addWidget(_wind );
   connect(_wind, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
 
   //add LD widget
   _ld = new MapInfoBox( this, conf->getFrameCol() );
   _ld->hide();
-  _ld->setValue("-/-");
   _ld->setPreText( "LD" );
+  _ld->setValue("-/-");
   WLLayout->addWidget( _ld );
   connect(_ld, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
 
@@ -210,15 +209,15 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //add Vario widget
   _vario = new MapInfoBox( this, conf->getFrameCol(), 34, true );
-  _vario->setValue("-");
   _vario->setPreText("Var");
+  _vario->setValue("-");
   VALayout->addWidget(_vario, 2 );
   connect(_vario, SIGNAL(mousePress()),
           this, SLOT(slot_VarioDialog()));
 
   _altitude = new MapInfoBox( this, conf->getFrameCol() );
-  _altitude->setValue("-");
   _altitude->setPreText(AltimeterModeDialog::mode2String()); // get current mode
+  _altitude->setValue("-");
   VALayout->addWidget( _altitude, 3 );
   connect(_altitude, SIGNAL(mousePress()),
           this, SLOT(slot_AltimeterDialog()));
@@ -240,15 +239,15 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //add McCready widget
   _mc = new MapInfoBox( this, conf->getFrameCol() );
-  _mc->setValue("0.0");
   _mc->setPreText("Mc");
+  _mc->setValue("0.0");
   MSLayout->addWidget( _mc );
   connect(_mc, SIGNAL(mousePress()), this, SLOT(slot_gliderFlightDialog()));
 
   //add Best Speed widget
   _speed2fly = new MapInfoBox( this, "#c6c3c6" );
-  _speed2fly->setValue("-");
   _speed2fly->setPreText("S2f");
+  _speed2fly->setValue("-");
   MSLayout->addWidget( _speed2fly );
 
   sideLayout->addWidget( mcBar, 1 );
@@ -840,8 +839,8 @@ void MapView::slot_toggleWindAndLD()
     }
   else
     {
-      _wind->show();
       _ld->hide();
+      _wind->show();
       _wind->setValue( _wind->getValue() );
       // switch off LD calculation in calculator
       emit toggleLDCalculation( false );

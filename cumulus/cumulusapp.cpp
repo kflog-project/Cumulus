@@ -712,7 +712,13 @@ void CumulusApp::slotAlarm( const QString& msg, const bool sound )
 void CumulusApp::initMenuBar()
 {
   QFont cf = this->font();
+
+#ifndef MAEMO
   QFont font( "Helvetica", 12 );
+#else
+  QFont font( "Helvetica", 14 );
+#endif
+
   this->setFont( font );
   menuBar()->setFont( font );
 

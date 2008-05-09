@@ -72,7 +72,7 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, int fontDots
 	"max-width: 25px;"
   );
   _ptext->setAlignment( Qt::AlignRight );
-  _ptext->setIndent(0);
+  _ptext->setIndent(2);
 
   _text = new QLabel(this, "" );
   _text->setIndent(0);
@@ -153,7 +153,7 @@ void MapInfoBox::setValue( const QString _newVal)
   //     displaying the new value
 
   diff = minimumSizeHint().width() - width();
-  while ( diff > 5 ) {
+  while ( diff > 1 ) {
     diff = diff/10;
     if (diff == 0)
       diff = 1;
