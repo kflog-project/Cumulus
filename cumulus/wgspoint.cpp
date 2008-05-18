@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2008 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -61,14 +61,14 @@ void WGSPoint::calcPos (int coord, int& degree, int& min, int &sec)
     degree = coord / 600000;
     min = (coord % 600000) / 10000;
     sec = (coord % 600000) % 10000;
-    sec = (sec * 60) / 10000;
+    sec = (int) rint((sec * 60) / 10000.0);
 }
 
 
 void WGSPoint::calcPos (int coord, int& degree, double& min)
 {
     degree = coord / 600000;
-    min = ((double) (coord % 600000)) / 10000.0;
+    min = (coord % 600000) / 10000.0;
     // qDebug("Coord=%d, degree=%d, decMin=%f", coord, degree, min);
 }
 
