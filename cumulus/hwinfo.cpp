@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel Pauli
+ **   Copyright (c):  2004 by Eckhard Vï¿½llm, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -24,15 +24,13 @@ using namespace std;
 #include <malloc.h>
 #include <stdio.h>
 
-#include <QApplication>
 #include <QFile>
 #include <QTextStream>
 #include <QString>
 
 #include "hwinfo.h"
 
-
-HwInfo * HwInfo::theInstance = 0;
+HwInfo* HwInfo::theInstance = 0;
 
 HwInfo::HwInfo()
 {
@@ -58,27 +56,24 @@ HwInfo::HwInfo()
 
           if ( line.startsWith( "Hardware" ) )
             {
-              _hwString=line.mid(line.find(":")).stripWhiteSpace();
+              _hwString = line.mid(line.indexOf(":")).trimmed();
+
               cerr << "HwInfo: found HW: '" << line.toLatin1().data() << "'" << endl;
 
-              if ( line.lower().contains( "sharp", false ) )
+              if ( line.toLower().contains( "nokia" ) )
                 {
-                  _hwType = sharp;
-                  if ( line.lower().contains( "terrier", false ) )
-                    _hwSubType = terrier;
-                  else if( line.lower().contains( "collie", false ) )
-                    _hwSubType = collie;
+                  _hwType = nokia;
+
+                  if ( line.toLower().contains( "n800" ) )
+		                {
+                      _hwSubType = n800;
+		                }
+                  else if( line.toLower().contains( "n810" ) )
+                    {
+                      _hwSubType = n810;
+                    }
                 }
-              else if ( line.contains( "ipaq h3800", false ) )
-                _hwType = ipaq38xx;
-              else if ( line.contains( "ipaq h3900", false ) )
-                _hwType = ipaq39xx;
-              else if ( line.contains( "simpad", false ) )
-                _hwType = simpad;
-              else if ( line.contains( "jornada", false ) )
-                _hwType = journada;
-              else if ( line.contains( "ramses", false ) )
-                _hwType = ramses;
+
               break;
             }
 
@@ -97,8 +92,11 @@ HwInfo::HwInfo()
     {
       cerr << "HwInfo: unknown PDA hardware - using default: desktop" << endl;
       _hwType = desktop;
+
       if (_hwString.isEmpty())
-        _hwString="UNKNOWN";
+	     {
+          _hwString="UNKNOWN";
+	     }
     }
 }
 
@@ -129,9 +127,9 @@ int HwInfo::getFreeMemory()
 
           if ( line.startsWith( "MemFree" ) || line.startsWith( "Buffers" ) || line.startsWith( "Cached" ) )
             {
-              posStart=line.find(':');
-              posEnd=line.find(" kB");
-              a = line.mid(posStart+1,posEnd-posStart).stripWhiteSpace().toInt();
+              posStart=line.indexOf(':');
+              posEnd=line.indexOf(" kB");
+              a = line.mid(posStart+1,posEnd-posStart).trimmed().toInt();
               // qDebug( "Usable memory: '%d' (found in string: '%s' taken from line '%s')", a, line.mid(posStart+1,posEnd-posStart).stripWhiteSpace().latin1(), line.latin1());
               res+=a;
             }
@@ -176,10 +174,10 @@ const QString HwInfo::getCfDevice( void )
 
   if( ! f.exists() )
     {
-      f.setName( PATH_CF_INFO1);
+      f.setFileName( PATH_CF_INFO1);
     }
 
-  if ( f.open( IO_ReadOnly ) )
+  if ( f.open( QIODevice::ReadOnly ) )
     {
       QTextStream s( &f );
       while ( !s.atEnd() )
@@ -187,16 +185,16 @@ const QString HwInfo::getCfDevice( void )
           QString line ( s.readLine() );
           if ( line.startsWith( "0" ) )
             {
-              posStart=line.find("ttyS");
-              res="/dev/" + line.mid(posStart,6).stripWhiteSpace();
-              qDebug("CF-Card device %s found.", res.latin1());
+              posStart=line.indexOf("ttyS");
+              res="/dev/" + line.mid(posStart,6).trimmed();
+              qDebug("CF-Card device %s found.", res.toLatin1().data());
             }
         }
       f.close();
     }
   else
     {
-      qWarning( "HwInfo::getCfDevice: Can't open '%s', reverting to default", f.name().latin1()  );
+      qWarning( "HwInfo::getCfDevice: Can't open '%s', reverting to default", f.fileName().toLatin1().data() );
     }
   return res;
 }

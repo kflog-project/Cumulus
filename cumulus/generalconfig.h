@@ -1116,6 +1116,9 @@ class GeneralConfig : protected QSettings
     _taskSectorAngle = newValue;
   };
 
+  /** Get the GPS default device depending on the hardware type */
+  QString getGpsDefaultDevice();
+  
  private:
 
   static GeneralConfig *_theInstance;

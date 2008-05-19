@@ -266,7 +266,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("GPS");
-  _gpsDevice          = value( "Device", "/dev/ttyS0" ).toString();
+  _gpsDevice          = value( "Device", getGpsDefaultDevice() ).toString();
   _gpsSpeed           = value( "Speed", 4800 ).toInt();
   _gpsAltitude        = value( "Altitude", (int) GPSNMEA::MSL ).toInt();
   _gpsAltitudeUserCorrection.setMeters(value( "AltitudeCorrection", 0 ).toInt());
@@ -1288,3 +1288,20 @@ void GeneralConfig::setUserDataDirectory( QString newDir )
         }
     }
 }
+
+/** Get the GPS default device depending on the hardware type */
+QString GeneralConfig::getGpsDefaultDevice()
+{
+  if( HwInfo::instance()->getSubType() == HwInfo::n800 )
+    {
+      return "/dev/rfcomm0";
+    }
+
+  if( HwInfo::instance()->getSubType() == HwInfo::n810 )
+    {
+      return "/dev/pts/0";
+    }
+
+  // Default in unknown case is the serial device  
+  return "/dev/ttyS0";
+} 

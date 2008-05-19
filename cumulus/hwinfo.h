@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard Völlm, 2007 Axel Pauli
+ **   Copyright (c):  2004 by Eckhard Vï¿½llm, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -35,7 +35,7 @@
 
 /**
  * @short Returns information on the underlying hardware
- * @author Eckhard Völlm
+ * @author Eckhard Vï¿½llm
  *
  * This class is used for all hardware depending-functions. It can
  * return things like the type of device, and other usefull hardware
@@ -48,24 +48,14 @@ class HwInfo
     {
       unknown,
       desktop,
-      ipaq38xx,
-      ipaq39xx,
-      sharp,
-      simpad,
-      journada,
-      ramses
+      nokia
     };
 
     enum hwSubType
     {
       other,
-      akita,
-      borzoi,
-      collie,
-      poodle,
-      spitz,
-      terrier,
-      tosa
+      n800,
+      n810
     };
 
     /**

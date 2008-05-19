@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -39,26 +39,13 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     topLayout->addWidget(GpsDev,row++,2);
 
 #ifndef MAEMO
-    if( HWINFO->getType() == HwInfo::ipaq39xx ) {
-        GpsDev->addItem("/dev/tts/0");   // ipaq 39xx does only support this one
-        GpsDev->addItem("/dev/rfcomm0");
-        GpsDev->addItem("/dev/rfcomm1");
-    }
-    else if( HWINFO->getType() == HwInfo::ipaq38xx )
-        GpsDev->addItem("/dev/ttySA0");   // ipaq 38xx does only support this one
-    else {
-        GpsDev->addItem("/dev/ttyS0");
-        GpsDev->addItem("/dev/ttyS1");
-        GpsDev->addItem("/dev/ttyS2");
-        GpsDev->addItem("/dev/ttyS3");
-
-	// Blue Tooth default devices
-        GpsDev->addItem("/dev/rfcomm0");
-        GpsDev->addItem("/dev/rfcomm1");
-
-	// automatic search for serial compact flash GPS devices
-        // GpsDev->addItem("CF");
-    }
+    GpsDev->addItem("/dev/ttyS0");
+    GpsDev->addItem("/dev/ttyS1");
+    GpsDev->addItem("/dev/ttyS2");
+    GpsDev->addItem("/dev/ttyS3");
+    // Bluetooth default devices
+    GpsDev->addItem("/dev/rfcomm0");
+    GpsDev->addItem("/dev/rfcomm1");
 #else
     GpsDev->addItem("/dev/rfcomm0");
     GpsDev->addItem("/dev/rfcomm1");
