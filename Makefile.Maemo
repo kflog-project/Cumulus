@@ -140,12 +140,12 @@ dpkg_install:
 	install --mode=644 help/en/*.html icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
-	install --mode=755 /opt/qt4.4.0/lib/libQt3Support.so.4.1.0 $(DESTDIR)/usr/lib
-	install --mode=755 /opt/qt4.4.0/lib/libQtCore.so.4.1.0 $(DESTDIR)/usr/lib
-	install --mode=755 /opt/qt4.4.0/lib/libQtGui.so.4.1.0 $(DESTDIR)/usr/lib
-	install --mode=755 /opt/qt4.4.0/lib/libQtNetwork.so.4.1.0 $(DESTDIR)/usr/lib
-	install --mode=755 /opt/qt4.4.0/lib/libQtSql.so.4.1.0 $(DESTDIR)/usr/lib
-	install --mode=755 /opt/qt4.4.0/lib/libQtXml.so.4.1.0 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.4.0/lib/libQt3Support.so.4.4.0 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.4.0/lib/libQtCore.so.4.4.0 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.4.0/lib/libQtGui.so.4.4.0 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.4.0/lib/libQtNetwork.so.4.4.0 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.4.0/lib/libQtSql.so.4.4.0 $(DESTDIR)/usr/lib
+	install --mode=755 /opt/qt4.4.0/lib/libQtXml.so.4.4.0 $(DESTDIR)/usr/lib
 
 .PHONY : install_lang
 install_lang:
