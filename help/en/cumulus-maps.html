@@ -41,12 +41,14 @@ can get there. </p>
 Maps</a> with streets, highways, cities, rivers, lakes, and
 terrain data with elevation information. </li>
 
-  <li>Airspaces, <b>Not more supported! Please use other
+  <li>KFLog Airspaces, <b>Not more supported! Please use
+other
 sources, e.g. <a href="http://www.segelflug.de/segelflieger/michael.meier/download/OPENAIR.TXT">OPENAIR.TXT</a></b>
   </li>
 
-  <li>Airfields, <b>Not more supported! Please use welt
-2000 as sources, e.g. <a href="#Welt2000">Welt2000</a></b></li>
+  <li>KFLog Airfields, <b>Not more supported! Please use
+welt
+2000 as source <a href="#Welt2000">Welt2000</a></b></li>
 
 </ul>
 
@@ -73,14 +75,28 @@ the path to the map root directory in the Map Settings configuration
 page (Setup-&gt;General Setup-&gt;Map Setting). Use the Maps
 button to navigate to the appropriate root directory under which the
 maps are to find. If there is no path setup the maps are searched only
-under $HOME/maps and /opt/cumulus/maps. But these directory are
+under $HOME/maps and /opt/cumulus/maps. But these directories are
 unsuitably for the PDA. </p>
 
-<p>The ground data files have to be put in a subdirectory <i>landscape</i>.
-The airfield and the airspace files have to be put in subdirectories in
-<i>maps</i> with the names <i>airfields</i>
-and <i>airspaces</i> respectively. See below for more
-information on these map files. </p>
+<p>The map data have to stored in different subdirectories under
+the selected map root.
+</p>
+
+<ul>
+
+  <li>The ground data files have to be put into a subdirectory <i>landscape</i>.
+  </li>
+
+  <li>The airfield files have to be put into a subdirectory <i>airfields</i>.
+  </li>
+
+  <li>The airspace files have to be put into a subdirectory <i>airspaces</i>.
+  </li>
+
+</ul>
+
+<p>See below for more
+information on these map files.</p>
 
 <p>If you experience memory problems running Cumulus, you can
 choose not to install certain map sets. You could for instance skip the
@@ -197,9 +213,13 @@ in the file. These instructions will overwrite the default mappings. </p>
 <p>Example: <i>CTR=ControlD</i></p>
 
 <p>This statement changes the assignment <i>ControlC</i>
-to <i>ControlD</i>.<b>Consider that the mappings are
-case sensitive.</b> <a name="Welt2000"></a> </p>
+to <i>ControlD</i>.
+</p>
 
+<p><b>Consider that the mappings are
+case sensitive!</b></p>
+
+<a name="Welt2000"></a>
 <p><b>Usage of Welt 2000 airfield data</b></p>
 
 <p>Cumulus uses for airfields the welt 2000 data base. These data
