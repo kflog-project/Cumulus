@@ -68,9 +68,9 @@ public:
     objectTypeSize /* leave this at the end */};
 
   /**
-   * The three types of elevation-data used in the maps.
+   * The five types of elevation-data used in the maps.
    */
-  enum elevationType {NotSet, MSL, GND, FL, UNLTD};
+  enum elevationType {NotSet, MSL, GND, FL, STD, UNLTD};
 
   /**
    * Creates a new (virtual) mapelement.

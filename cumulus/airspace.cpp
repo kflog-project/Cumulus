@@ -40,6 +40,7 @@ Airspace::Airspace(QString n, BaseMapElement::objectType t, QPolygon pG,
     lLim = Distance::mFromFeet*l;
     break;
   case FL:
+  case STD:
     lLim = Distance::mFromFeet*100.0*l;
     break;
   case UNLTD:
@@ -60,6 +61,7 @@ Airspace::Airspace(QString n, BaseMapElement::objectType t, QPolygon pG,
     uLim = Distance::mFromFeet*u;
     break;
   case FL:
+  case STD:
     uLim = Distance::mFromFeet*100.0*u;
     break;
   case UNLTD:
@@ -219,6 +221,7 @@ QString Airspace::getInfoString() const
       tempL = "GND";
     break;
   case FL:
+  case STD:
     tempL.sprintf("%s STD", (const char *)lLimit.getText(true,0));
     break;
   case UNLTD:
@@ -238,6 +241,7 @@ QString Airspace::getInfoString() const
     tempU.sprintf("%s GND", (const char *)uLimit.getText(true,0));
     break;
   case FL:
+  case STD:
     tempU.sprintf("%s STD", (const char *)uLimit.getText(true,0));
     break;
   case UNLTD:
@@ -283,6 +287,7 @@ Airspace::ConflictType Airspace::conflicts (const AltitudeCollection& alt,
       lowerAlt.setMeters(1); // we're always above ground
     break;
   case FL:
+  case STD:
     lowerAlt=alt.stdAltitude; // flight levels are always at pressure altitude!
     break;
   case UNLTD:
@@ -301,6 +306,7 @@ Airspace::ConflictType Airspace::conflicts (const AltitudeCollection& alt,
     upperAlt=alt.gndAltitude - alt.gndAltitudeError;  //we need to use a conservative estimate
     break;
   case FL:
+  case STD:
     upperAlt=alt.stdAltitude;
     break;
   case UNLTD:
