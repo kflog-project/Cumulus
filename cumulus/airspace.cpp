@@ -212,17 +212,19 @@ QString Airspace::getInfoString() const
 
   switch(lLimitType) {
   case MSL:
-    tempL.sprintf("%s MSL", (const char *)lLimit.getText(true,0));
+    tempL.sprintf("%s MSL", lLimit.getText(true,0).toLatin1().data());
     break;
   case GND:
     if(lLimit.getMeters())
-      tempL.sprintf("%s GND", (const char *)lLimit.getText(true,0));
+      tempL.sprintf("%s GND", lLimit.getText(true,0).toLatin1().data());
     else
       tempL = "GND";
     break;
   case FL:
+    tempL.sprintf("FL %d (%s)", (int) rint(lLimit.getFeet()/100.), lLimit.getText(true,0).toLatin1().data());
+    break;  
   case STD:
-    tempL.sprintf("%s STD", (const char *)lLimit.getText(true,0));
+    tempL.sprintf("%s STD", lLimit.getText(true,0).toLatin1().data());
     break;
   case UNLTD:
     tempL = QObject::tr("Unlimited");
@@ -235,17 +237,19 @@ QString Airspace::getInfoString() const
     if(uLimit.getMeters() >= 99999)
       tempU = QObject::tr("Unlimited");
     else
-      tempU.sprintf("%s MSL", (const char *)uLimit.getText(true,0));
+      tempU.sprintf("%s MSL", uLimit.getText(true,0).toLatin1().data());
     break;
   case GND:
-    tempU.sprintf("%s GND", (const char *)uLimit.getText(true,0));
+    tempU.sprintf("%s GND", uLimit.getText(true,0).toLatin1().data());
     break;
   case FL:
+    tempU.sprintf("FL %d (%s)", (int) rint(uLimit.getFeet()/100.), uLimit.getText(true,0).toLatin1().data());
+    break;
   case STD:
-    tempU.sprintf("%s STD", (const char *)uLimit.getText(true,0));
+    tempU.sprintf("%s STD", uLimit.getText(true,0).toLatin1().data());
     break;
   case UNLTD:
-    tempL = QObject::tr("Unlimited");
+    tempU = QObject::tr("Unlimited");
   default:
     ;
   }
