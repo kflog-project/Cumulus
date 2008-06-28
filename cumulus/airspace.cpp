@@ -37,10 +37,10 @@ Airspace::Airspace(QString n, BaseMapElement::objectType t, QPolygon pG,
   switch( lLimitType ) {
   case GND:
   case MSL:
+  case STD:
     lLim = Distance::mFromFeet*l;
     break;
   case FL:
-  case STD:
     lLim = Distance::mFromFeet*100.0*l;
     break;
   case UNLTD:
@@ -58,10 +58,10 @@ Airspace::Airspace(QString n, BaseMapElement::objectType t, QPolygon pG,
   switch( uLimitType ) {
   case GND:
   case MSL:
+  case STD:
     uLim = Distance::mFromFeet*u;
     break;
   case FL:
-  case STD:
     uLim = Distance::mFromFeet*100.0*u;
     break;
   case UNLTD:
