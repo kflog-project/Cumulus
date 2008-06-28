@@ -170,11 +170,11 @@ void Map::__displayMapInfo(const QPoint& current)
       if(airspaceRegList.at(loop)->region->contains(current))
         {
           Airspace* pSpace = airspaceRegList.at(loop)->airspace;
-          //      qDebug ("name: %s", pSpace->getName().latin1());
-          //      qDebug ("lower limit: %d", pSpace->getLowerL());
-          //      qDebug ("upper limit: %d", pSpace->getUpperL());
-          //      qDebug ("lower limit type: %d", pSpace->getLowerT());
-          //      qDebug ("upper limit type: %d", pSpace->getUpperT());
+                // qDebug ("name: %s", pSpace->getName().toLatin1().data());
+                // qDebug ("lower limit: %d", pSpace->getLowerL());
+                // qDebug ("upper limit: %d", pSpace->getUpperL());
+                // qDebug ("lower limit type: %d", pSpace->getLowerT());
+                // qDebug ("upper limit type: %d", pSpace->getUpperT());
           //work around the phenemenon that airspaces tend to appear in the list twice -> this should be dealt with properly!
           if (text.find(pSpace->getInfoString())==-1)
             {     //only add if the string has not been added before
