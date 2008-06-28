@@ -19,6 +19,8 @@
 #ifndef AIRSPACE_H
 #define AIRSPACE_H
 
+#include <math.h>
+
 #include <QDateTime>
 #include <QPolygon>
 #include <QPainter>
@@ -125,7 +127,7 @@ public:
      */
     unsigned int getUpperL() const
     {
-        return (int)uLimit.getMeters();
+      return (unsigned int) rint(uLimit.getMeters());
     };
 
     /**
@@ -133,7 +135,7 @@ public:
      */
     unsigned int getLowerL() const
     {
-        return (int)lLimit.getMeters();
+      return (unsigned int) rint(lLimit.getMeters());
     };
 
     /**
