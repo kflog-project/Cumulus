@@ -699,7 +699,7 @@ void Map::__drawGrid()
 }
 
 
-void Map::__drawPlannedTask()
+void Map::__drawPlannedTask(QPainter *taskP)
 {
   FlightTask* task = (FlightTask*) _globalMapContents->getCurrentTask();
 
@@ -710,15 +710,8 @@ void Map::__drawPlannedTask()
 
   if(task && task->getTypeID() == BaseMapElement::Task)
     {
-
-      // Draw the task
-      QPainter taskP;
-      taskP.begin( &m_pixInformationMap );
-
       // Draw task including sectors
-      task->drawMapElement(&taskP);
-
-      taskP.end();
+      task->drawMapElement(taskP);
     }
 }
 
@@ -989,8 +982,8 @@ void Map::__drawAeroLayer(bool reset)
 
 /**
  * Draws the navigation layer of the map.
- * The navigation layer consists of the airfields, outlanding sites and
- * waypoints.
+ * The navigation layer consists of the airfields, outlanding sites,
+ * waypoints, flight task and the map scale.
  * It is drawn on top of the aero layer.
  */
 void Map::__drawNavigationLayer()
@@ -1012,6 +1005,10 @@ void Map::__drawNavigationLayer()
   _globalMapContents->drawList(&navP, MapContents::OutList);
   _globalMapContents->drawList(&navP, MapContents::GliderSiteList);
   __drawWaypoints(&navP);
+  __drawPlannedTask(&navP);
+
+  // and finaly draw a scale indicator on top of this
+  __drawScale(navP);
 
   navP.end();
 }
@@ -1019,16 +1016,13 @@ void Map::__drawNavigationLayer()
 
 /**
  * Draws the information layer of the map.
- * The information layer consists of the flight task, windarrow, the
- * trail, the position indicator and the scale.
+ * The information layer consists of the windarrow, the
+ * trail and the position indicator.
  * It is drawn on top of the navigation layer.
  */
 void Map::__drawInformationLayer()
 {
   m_pixInformationMap = m_pixNavigationMap;
-
-  //draw the task (if enabled)
-  __drawPlannedTask();
 
   //draw the trail (if enabled)
   __drawTrail();
@@ -1049,9 +1043,6 @@ void Map::__drawInformationLayer()
     {
       __drawX();
     }
-
-  // and finaly draw a scale indicator on top of this
-  __drawScale();
 }
 
 
@@ -1621,12 +1612,8 @@ void Map::setShowGlider( const bool& _newVal)
 
 
 /** Draws a scale indicator on the pixmap. */
-void Map::__drawScale()
+void Map::__drawScale(QPainter& scaleP)
 {
-  QPainter scaleP;
-
-  scaleP.begin(&m_pixInformationMap);
-
   QPen pen;
   QBrush brush(Qt::white);
 
@@ -1739,7 +1726,6 @@ void Map::__drawScale()
   //draw text itself
   scaleP.setPen(pen);
   scaleP.drawText(leftTPos,this->height()-10+txtRect.height()/2,scaleText);
-  scaleP.end();
 }
 
 
@@ -1774,7 +1760,7 @@ void Map::slotPosition(const QPoint& newPos, const int source)
               else
                 {
                   // this is the faster redraw
-                  sceduleRedraw(informationLayer);
+                  __redrawMap(informationLayer);
                 }
             }
           else

@@ -335,7 +335,7 @@ class Map : public QWidget
     /**
      * Draws the Task which is currently planned
      */
-    void __drawPlannedTask();
+    void __drawPlannedTask(QPainter *taskP);
 
     /**
      * Draws the grid on the map.
@@ -355,7 +355,7 @@ class Map : public QWidget
      * Puts the waypoints of the active waypoint catalog to the map
      * @arg wpPainter Painter for the waypoints themselves
      */
-    void __drawWaypoints(QPainter * wpPainter);
+    void __drawWaypoints(QPainter *wpPainter);
 
     /**
      * Draws a trail indicating the flightpath taken, if that feature
@@ -407,7 +407,7 @@ class Map : public QWidget
     /**
      * Draws a scale on the pixmap.
      */
-    void __drawScale();
+    void __drawScale(QPainter& scaleP);
 
     /**
      * Draws the Xsymbol on the pixmap
