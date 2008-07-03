@@ -109,6 +109,8 @@ GPSNMEA::~GPSNMEA()
  */
 void GPSNMEA::slot_sentence(const QString& sentenceIn)
 {
+  // qDebug("GPSNMEA::slot_sentence: %s", sentenceIn.toLatin1().data());
+  
   if( QObject::signalsBlocked() )
     {
       // @AP: If the emitting of signals is blocked, we will ignore
@@ -334,35 +336,46 @@ QPoint GPSNMEA::__ExtractCoord(const QString& slat, const QString& slatNS, const
      KFLogCoord = degrees * 600000 + minutes * 10000
   */
 
-  int lat,  lon;
-  float fLat, fLon;
+  int lat = 0;
+  int lon = 0;
+  float fLat = 0.0;
+  float fLon = 0.0;
+  
+  lat  = slat.left(2).toInt();
+  fLat = slat.mid(2).toFloat();
+  
+  // qDebug ("slat: %s", slat.toLatin1().data());
+  // qDebug ("lat/fLat: %d/%f", lat, fLat);
+  
+  lon  = slon.left(3).toInt();
+  fLon = slon.mid(3).toFloat();
+  
+  // qDebug ("slon: %s", slon.toLatin1().data());
+  // qDebug ("lon/fLon: %d/%f", lon, fLon);
 
-  const char* t = slat.toAscii().data();
-  //  qDebug ("slat: %s", slat.toLatin1().data());
-  sscanf(t,  "%2d %f", &lat, &fLat);
-  //  qDebug ("lat/fLat: %d/%f", lat, fLat);
-  t = slon.toAscii().data();
-  sscanf(t,  "%3d %f", &lon, &fLon);
-
-  int latmin = int(fLat * 1000);
-  int lonmin = int(fLon * 1000);
+  int latmin = (int) rint(fLat * 1000);
+  int lonmin = (int) rint(fLon * 1000);
 
   // convert to internal KFLog format
   int latTemp = lat * 600000 + latmin * 10;
   int lonTemp = lon * 600000 + lonmin * 10;
 
+  // qDebug("latTemp=%d, lonTemp=%d", latTemp, lonTemp);
+
   if(slatNS == "S")
     latTemp = -latTemp;
+  
   if(slonEW == "W")
     lonTemp = -lonTemp;
 
   QPoint res (latTemp, lonTemp);
 
-  if (_lastCoord!=res)
+  if( _lastCoord != res )
     {
       _lastCoord=res;
       emit newPosition();
     }
+    
   return (_lastCoord);
 }
 
