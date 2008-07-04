@@ -22,4 +22,4 @@
 
 #define t_cumulus
 
-#define CU_VERSION "2.0.5"
+#define CU_VERSION "2.0.6"
