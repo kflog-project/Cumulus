@@ -81,12 +81,12 @@ class Map : public QWidget
                    outlandingSites,
                    gliderSites,
                    waypoints,
-                   informationLayer,
                    task,
+                   scale,
+                   informationLayer,
                    trail,
                    wind,
                    position,
-                   scale,
                    topLayer
                   };
 
