@@ -18,10 +18,14 @@ Cumulus changelog
 Cumulus 2.0.x (Development based on X11/Qt-4.4.0)
 -------------------------------------------------
 
+[-] 2008-07-08 HH: Bugfix Openair parser: Two small bugfixes in arced airspaces
+                   makeAngleArc() was using degrees instead of radians
+                   addArc() was sometimes producing corrupt point arrays
+                   because of a rounding error in the calculation of #steps.
 [-] 2008-07-03 HH: Bugfix Openair parser: Comments at the end of lines caused problems.
-                                          Decimal notation of coordinates wasn't handled
-                                          correctly if there was a different number of
-                                          digits than two. Tks to Hendrik.
+                   Decimal notation of coordinates wasn't handled
+                   correctly if there was a different number of
+                   digits than two. Tks to Hendrik.
 [o] 2008-07-03 AP: Map drawing optimized. Some more static things moved from
                    info layer to navi layer. C Function sscanf did not work
                    correct in GPSNMEA parser. Substituted by QString methods.
