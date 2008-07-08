@@ -21,6 +21,12 @@ set -e
 
 case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    # remove symbolic library links created by cumulus
+    for x in libQt3Support.so libQtCore.so libQtGui.so libQtNetwork.so libQtSql.so libQtXml.so
+    do
+        test -L /usr/lib/$x && rm -f /usr/lib/$x*
+    done
+
     /sbin/ldconfig
     ;;
 
