@@ -16,6 +16,8 @@ VERSION = `cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2`
 # current Qt version
 QT_VERSION=4.4.0
 
+DATE=`date +'%a, %d %b %Y %H:%M:%S %z'`
+
 # adapt install path to your needs if necessary
 INSTALL_ROOT = /opt/cumulus
 
@@ -97,14 +99,14 @@ dpkg_make:
 	cd dpkg/cumulus-$(VERSION); \
 	echo '\n' | dh_make -c GPL -e axel@kflog.org -s -n
 	cp dpkg/control/makefile dpkg/cumulus-$(VERSION)
-	sed -e "s/__DATE__/`date`/g" dpkg/control/copyright > dpkg/cumulus-$(VERSION)/debian/copyright
+	sed -e "s/__DATE__/$(DATE)/g" dpkg/control/copyright > dpkg/cumulus-$(VERSION)/debian/copyright
 	cp dpkg/control/control dpkg/cumulus-$(VERSION)/debian/
 	cp dpkg/control/rules dpkg/cumulus-$(VERSION)/debian/
 	cp dpkg/control/postinst dpkg/cumulus-$(VERSION)/debian/
 	cp dpkg/control/postrm dpkg/cumulus-$(VERSION)/debian/
 
-	sed -e "s/__DATE__/`date`/g" dpkg/control/README.Debian dpkg/cumulus-$(VERSION)/debian/README.Debian
-	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/`date`/g" dpkg/control/changelog > dpkg/cumulus-$(VERSION)/debian/changelog
+	sed -e "s/__DATE__/$(DATE)/g" dpkg/control/README.Debian dpkg/cumulus-$(VERSION)/debian/README.Debian
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/control/changelog > dpkg/cumulus-$(VERSION)/debian/changelog
 	cd dpkg/cumulus-$(VERSION); \
 	dpkg-buildpackage -rfakeroot
 	rm -f dpkg/cumulus_$(VERSION).dsc dpkg/cumulus_$(VERSION).tar.gz dpkg/cumulus_$(VERSION)_armel.changes
@@ -130,6 +132,7 @@ dpkg_install:
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/airspaces
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/landscape
 	install -d $(DESTDIR)/usr/share/applications/hildon
+	install -d $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
 	install -d $(DESTDIR)/usr/lib
 	install --mode=755 cumulus/cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(DESTDIR)/$(INSTALL_ROOT)/bin
@@ -140,7 +143,7 @@ dpkg_install:
 	install --mode=644 icons/*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 icons/small/* $(DESTDIR)/$(INSTALL_ROOT)/icons/small
 	install --mode=644 icons/windarrows/* $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
-	install --mode=644 icons/cumulus-desktop.png $(DESTDIR)/usr/share/icons/hicolor
+	install --mode=644 icons/cumulus-desktop.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
 	install --mode=644 help/de/*.html icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install --mode=644 help/en/*.html icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
