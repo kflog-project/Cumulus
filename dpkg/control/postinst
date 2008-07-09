@@ -1,4 +1,5 @@
 #!/bin/sh
+# $Id$
 # postinst script for cumulus
 #
 # see: dh_installdeb(1)
@@ -23,11 +24,20 @@ case "$1" in
     # create symbolic library links for missing libraries
     for x in libQt3Support.so libQtCore.so libQtGui.so libQtNetwork.so libQtSql.so libQtXml.so
     do
-	test -f /usr/lib/$x -o -L /usr/lib/$x || ln -s /opt/cumulus/lib/$x /usr/lib/$x
+      if [ -f /usr/lib/$x ]
+      then
+        # library not needed, remove it to save space
+        rm -f /opt/cumulus/lib/$x
+      else
+        needLibs=yes
+      fi
     done
-
-    # create necessary library links
-    /sbin/ldconfig
+    
+    if [ needLibs = 'yes' ]
+    then
+      # don't update ldconfig cache - only create necessary library links
+      /sbin/ldconfig -n /opt/cumulus/lib
+    fi
 
     # update icon cache
     gtk-update-icon-cache /usr/share/icons/hicolor
