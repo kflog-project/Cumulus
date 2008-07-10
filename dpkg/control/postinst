@@ -28,16 +28,11 @@ case "$1" in
       then
         # library not needed, remove it to save space
         rm -f /opt/cumulus/lib/$x
-      else
-        needLibs=yes
       fi
     done
     
-    if [ needLibs = 'yes' ]
-    then
-      # don't update ldconfig cache - only create necessary library links
-      /sbin/ldconfig -n /opt/cumulus/lib
-    fi
+    # don't update ldconfig cache - only create necessary library links
+    /sbin/ldconfig -n /opt/cumulus/lib
 
     # update icon cache
     gtk-update-icon-cache /usr/share/icons/hicolor
