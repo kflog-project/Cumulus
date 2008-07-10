@@ -1,4 +1,5 @@
 #!/bin/sh
+# $Id$
 # postrm script for cumulus
 #
 # see: dh_installdeb(1)
