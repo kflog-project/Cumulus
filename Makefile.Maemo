@@ -105,7 +105,7 @@ dpkg_make:
 	cp dpkg/control/postinst dpkg/cumulus-$(VERSION)/debian/
 	cp dpkg/control/postrm dpkg/cumulus-$(VERSION)/debian/
 
-	sed -e "s/__DATE__/$(DATE)/g" dpkg/control/README.Debian dpkg/cumulus-$(VERSION)/debian/README.Debian
+	sed -e "s/__DATE__/$(DATE)/g" dpkg/control/README dpkg/cumulus-$(VERSION)/debian/README
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/control/changelog > dpkg/cumulus-$(VERSION)/debian/changelog
 	cd dpkg/cumulus-$(VERSION); \
 	dpkg-buildpackage -rfakeroot
@@ -133,7 +133,6 @@ dpkg_install:
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/landscape
 	install -d $(DESTDIR)/usr/share/applications/hildon
 	install -d $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
-	install -d $(DESTDIR)/usr/lib
 	install --mode=755 dpkg/maemo/start_cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 cumulus/cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(DESTDIR)/$(INSTALL_ROOT)/bin
@@ -144,7 +143,7 @@ dpkg_install:
 	install --mode=644 icons/*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 icons/small/* $(DESTDIR)/$(INSTALL_ROOT)/icons/small
 	install --mode=644 icons/windarrows/* $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
-	install --mode=644 icons/cumulus-desktop.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
+	install --mode=644 icons/cumulus-desktop.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps/cumulus.png
 	install --mode=644 help/de/*.html icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install --mode=644 help/en/*.html icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
@@ -185,7 +184,7 @@ release: clean all langpacks
 # copies change log and debian package to web page
 .PHONY : copy_web
 copy_web:
-	scp -C ChangeLog web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/ChangeLog_`date '+%F'`
+	scp -C ChangeLog web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/ChangeLog_$(VSERSION)_`date '+%F'`
 	scp -C dpkg/cumulus_$(VERSION)_armel.deb web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
 
 qmake: cumulus/Makefile gpsClient/Makefile nmeaSimulator/Makefile
