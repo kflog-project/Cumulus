@@ -109,7 +109,7 @@ dpkg_make:
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/control/changelog > dpkg/cumulus-$(VERSION)/debian/changelog
 	cd dpkg/cumulus-$(VERSION); \
 	dpkg-buildpackage -rfakeroot
-	rm -f dpkg/cumulus_$(VERSION).dsc dpkg/cumulus_$(VERSION).tar.gz dpkg/cumulus_$(VERSION)_armel.changes
+	rm -f dpkg/cumulus_$(VERSION).dsc dpkg/cumulus_$(VERSION).tar.gz
 
 # copies all files of cumulus into the debian package area
 .PHONY : dpkg_install
@@ -185,7 +185,8 @@ release: clean all langpacks
 .PHONY : copy_web
 copy_web:
 	scp -C ChangeLog web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/ChangeLog_$(VSERSION)_`date '+%F'`
-	scp -C dpkg/cumulus_$(VERSION)_armel.deb web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
+	scp -C dpkg/cumulus_$(VERSION)_armel.deb dpkg/cumulus_$(VERSION)_armel.changes \
+	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
 
 qmake: cumulus/Makefile gpsClient/Makefile nmeaSimulator/Makefile
 
