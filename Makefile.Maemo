@@ -104,8 +104,8 @@ dpkg_make:
 	cp dpkg/control/rules dpkg/cumulus-$(VERSION)/debian/
 	cp dpkg/control/postinst dpkg/cumulus-$(VERSION)/debian/
 	cp dpkg/control/postrm dpkg/cumulus-$(VERSION)/debian/
-
-	sed -e "s/__DATE__/$(DATE)/g" dpkg/control/README dpkg/cumulus-$(VERSION)/debian/README
+	sed -e "s/__DATE__/$(DATE)/g" dpkg/control/README > dpkg/cumulus-$(VERSION)/debian/README
+	cp dpkg/cumulus-$(VERSION)/debian/README dpkg/cumulus-$(VERSION)/debian/README.Debian
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/control/changelog > dpkg/cumulus-$(VERSION)/debian/changelog
 	cd dpkg/cumulus-$(VERSION); \
 	dpkg-buildpackage -rfakeroot
