@@ -71,20 +71,30 @@ class GPSNMEA : public QObject
   {
     Q_OBJECT
 
-    friend class GPSCon;
-
   public:
 
     /**
      * defines for altitude bases delivered by gps unit
      */
     enum DeliveredAltitude{MSL=0, HAE=1, USER=2};
+    
     enum connectedStatus{notConnected=0, noFix=1, validFix=2};
 
   public:
 
-    GPSNMEA(QObject*);
+    GPSNMEA(QObject* parent);
+    
     virtual ~GPSNMEA();
+
+    /**
+     * @Returns the current GPS connection device object.
+     * Can be NULL if no defined.
+     */
+     GPSCon *getSerial()
+     {
+        return serial;
+     };
+
     /**
      * @Returns the current GPS connection status. True if connected, false if not.
      */

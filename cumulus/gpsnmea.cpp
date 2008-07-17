@@ -46,8 +46,7 @@ extern MapMatrix *_globalMapMatrix;
 // global gps pointer
 GPSNMEA* gps = 0;
 
-GPSNMEA::GPSNMEA(QObject* parent)
-    : QObject(parent)
+GPSNMEA::GPSNMEA(QObject* parent) : QObject(parent)
 {
   _status=notConnected;
   timeOutFix=new QTimer(this);
@@ -78,9 +77,7 @@ GPSNMEA::GPSNMEA(QObject* parent)
 
   _ignoreConnectionLost = false;
 
-  // We create a GPSCon instance to ensure that the gps client subprocess is
-  // forked.
-
+  // We create only a GPSCon instance. The client process will be started later
   const char *callPath = ( GeneralConfig::instance()->getInstallRoot() + "/bin" ).toAscii().data();
 
   serial = new GPSCon(this, callPath);
