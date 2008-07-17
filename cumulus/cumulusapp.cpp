@@ -578,8 +578,6 @@ void CumulusApp::slotCreateApplicationWidgets()
   ws->setScreenUsage( false );
   ws->hide();
 
-  gps->blockSignals( false );
-
   if( ! GeneralConfig::instance()->getAirspaceWarningEnabled() )
     {
       int answer= QMessageBox::warning( this,tr("Airspace Warnings?"),
@@ -618,6 +616,11 @@ void CumulusApp::slotCreateApplicationWidgets()
     }
 
 #endif
+
+  // Startup GPS client process now for data receiving
+  gps->blockSignals( false );
+  gps->getSerial()->startClientProcess();
+  gps->getSerial()->startGpsReceiving();
 
   qDebug( "End startup cumulusapp" );
 }
