@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c):  2004, 2008 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -52,6 +52,13 @@ class GPSCon : public QObject
     GPSCon(QObject*, const char *path);
 
     virtual ~GPSCon();
+
+    /**
+     * Starts a new gps client process via fork/exec or checks, if process is
+     * alive. Alive check is triggered by timer routine every 10s. If process
+     * is down, a new one will be started.
+     */
+    bool startClientProcess();
 
     /**
      * This function returns the currently used bautrate for this connection
@@ -106,14 +113,7 @@ class GPSCon : public QObject
      */
     void gpsConnectionLost();
 
-
-  private://methods
-    /**
-     * Starts a new gps client process via fork/exec or checks, if process is
-     * alive. Alive check is triggered by timer routine every 10s. If process
-     * is down, a new one will be started.
-     */
-    bool startClientProcess();
+  private:
 
     /**
      * Stores process identifier of forked client

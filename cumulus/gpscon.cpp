@@ -56,8 +56,8 @@ extern MapView *_globalMapView;
  * passed in the constructor, that the gpsClient binary can be found. It lays
  * in the same directory as cumulus.
  */
-GPSCon::GPSCon(QObject* parent, const char *pathIn)
-    : QObject(parent)
+
+GPSCon::GPSCon(QObject* parent, const char *pathIn) : QObject(parent)
 {
   exe = QString("%1/%2").arg(pathIn).arg("gpsClient");
   pid = -1;
@@ -103,9 +103,6 @@ GPSCon::GPSCon(QObject* parent, const char *pathIn)
 
   listenNotifier->connect( listenNotifier, SIGNAL(activated(int)),
                            this, SLOT(slot_ListenEvent(int)) );
-
-  // start gps client process via fork/exec
-  startClientProcess();
 }
 
 
