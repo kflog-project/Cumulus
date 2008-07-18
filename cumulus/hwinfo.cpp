@@ -82,6 +82,8 @@ HwInfo::HwInfo()
               cerr << "HwInfo: found " << line.simplified().toLatin1().data() << endl;
             }
         }
+
+      fclose(in);
     }
   else
     {
