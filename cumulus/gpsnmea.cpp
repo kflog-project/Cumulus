@@ -84,8 +84,10 @@ GPSNMEA::GPSNMEA(QObject* parent) : QObject(parent)
 
   connect (serial, SIGNAL(newSentence(const QString&)),
            this, SLOT(slot_sentence(const QString&)) );
+           
   connect (serial, SIGNAL(newSentence(const QString&)),
            this, SIGNAL(newSentence(const QString&)) );
+           
   connect (serial, SIGNAL(gpsConnectionLost()),
            this, SLOT(_slotTimeout()) );
 }
@@ -94,10 +96,22 @@ GPSNMEA::GPSNMEA(QObject* parent) : QObject(parent)
 GPSNMEA::~GPSNMEA()
 {
   // stop GPS client process
-  delete serial;
+  if( serial ) delete serial;
+    
   writeConfig();
 }
 
+/**
+ * @Starts the GPS receiver client process and activates the receiver.
+ */
+void GPSNMEA::startGpsReceiver()
+{
+  if( serial )
+    {
+      serial->startClientProcess();
+      serial->startGpsReceiving();
+    }
+}
 
 /**
  * This slot is called by the GPSCon object when a new sentence has
@@ -706,11 +720,14 @@ void GPSNMEA::slot_reset()
   bool hard = conf->getGpsHardStart();
   bool soft = conf->getGpsSoftStart();
 
-  if( serial->currentBautrate() != conf->getGpsSpeed() ||
-      serial->currentDevice()   != conf->getGpsDevice() )
+  if( serial )
     {
-      serial->stopGpsReceiving();
-      serial->startGpsReceiving();
+      if( serial->currentBautrate() != conf->getGpsSpeed() ||
+          serial->currentDevice()   != conf->getGpsDevice() )
+        {
+          serial->stopGpsReceiving();
+          serial->startGpsReceiving();
+        }
     }
 
   sendLastFix (hard, soft);
@@ -720,7 +737,7 @@ void GPSNMEA::slot_reset()
 /** This slot is called to reset the gps device to factory settings */
 void GPSNMEA::sendFactoryReset()
 {
-  serial->sendSentence ("$PSRF104,0.0,0.0,0,0,0,0,12,8");
+  if( serial ) serial->sendSentence ("$PSRF104,0.0,0.0,0,0,0,0,12,8");
 }
 
 
@@ -729,7 +746,7 @@ void GPSNMEA::switchDebugging (bool on)
 {
   QString cmd;
   cmd.sprintf ("$PSRF105,%d", on);
-  serial->sendSentence (cmd);
+  if( serial ) serial->sendSentence (cmd);
 }
 
 
@@ -792,16 +809,19 @@ void GPSNMEA::sendLastFix (bool hard, bool soft)
                  lat,lon,alt,_lastClockOffset,gps_seconds,gps_week,SATS,SOFT_RESET);
 
   if (!cmd.isEmpty())
-    serial->sendSentence (cmd);
+    if( serial ) serial->sendSentence (cmd);
 }
 
 
 /** force a reset of the serial connection after a resume */
-void GPSNMEA::forceReset ()
+void GPSNMEA::forceReset()
 {
-  serial->stopGpsReceiving();
-  serial->startGpsReceiving();
-  slot_reset();
+  if( serial )
+    {
+      serial->stopGpsReceiving();
+      serial->startGpsReceiving();
+      slot_reset();
+    }
 }
 
 

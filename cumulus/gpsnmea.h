@@ -87,13 +87,9 @@ class GPSNMEA : public QObject
     virtual ~GPSNMEA();
 
     /**
-     * @Returns the current GPS connection device object.
-     * Can be NULL if no defined.
+     * @Starts the GPS receiver client process and activates the receiver.
      */
-     GPSCon *getSerial()
-     {
-        return serial;
-     };
+     void startGpsReceiver();
 
     /**
      * @Returns the current GPS connection status. True if connected, false if not.

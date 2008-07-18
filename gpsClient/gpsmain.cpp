@@ -141,7 +141,7 @@ int main( int argc, char* argv[] )
     memset(&ctx, 0, sizeof(gpsbt_t));
     errno = 0;
 
-    if ( gpsbt_start(NULL, 0, 0, 0, NULL, 0, 0, &ctx) < 0 )
+    if ( gpsbt_start(NULL, 0, 0, 2947, NULL, 0, 0, &ctx) < 0 )
       {
         cerr << "Error opening GPS device: (" << errno << ") " << strerror(errno);
       }

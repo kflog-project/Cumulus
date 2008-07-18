@@ -619,8 +619,7 @@ void CumulusApp::slotCreateApplicationWidgets()
 
   // Startup GPS client process now for data receiving
   gps->blockSignals( false );
-  gps->getSerial()->startClientProcess();
-  gps->getSerial()->startGpsReceiving();
+  gps->startGpsReceiver();
 
   qDebug( "End startup cumulusapp" );
 }
