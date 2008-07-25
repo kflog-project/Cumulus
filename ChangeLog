@@ -18,6 +18,9 @@ Cumulus changelog
 Cumulus 2.0.x (Development based on X11/Qt-4.4.0)
 -------------------------------------------------
 
+[+] 2008-07-25 AP: Under Maemo the internal GPS daemon is now used to get the GPS data
+                   from the BT or the internal GPS receiver. Cumulus does not more fork
+                   an own GPS client process under Maemo.
 [o] 2008-07-17 AP: Startup of the GPS client process moved to the end of
                    the cumulus initialization to get visible Maemo GPS connection
                    dialog.

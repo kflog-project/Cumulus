@@ -28,6 +28,10 @@
 #include <QPoint>
 #include <QTimer>
 
+#ifdef MAEMO
+#include "gpsmaemo.h"
+#endif
+
 #include "speed.h"
 #include "altitude.h"
 #include "gpscon.h"
@@ -315,6 +319,8 @@ class GPSNMEA : public QObject
     void sendLastFix (bool hard, bool soft);
     /** Set system date/time. Input is utc related. */
     void setSystemClock( const QDateTime& utcDt );
+    /** create a gps connection */
+    void createGpsConnection();
 
   private: // Private attributes
 
@@ -346,8 +352,6 @@ class GPSNMEA : public QObject
     QTimer * timeOutFix;
     /** Indicates the current connection status */
     connectedStatus _status;
-    /** reference to the serial conenction */
-    GPSCon * serial;
     /** Indicates the altitude delivered by the GPS unit */
     DeliveredAltitude _deliveredAltitude;
     /** The correction for the altitude when the altitude type is USER */
@@ -360,6 +364,15 @@ class GPSNMEA : public QObject
     QList<SIVInfo> sivInfo;
     /** Internal SIV list */
     QList<SIVInfo> sivInfoInternal;
+    /** selected GPS device */
+    QString gpsDevice;
+    /** reference to the normal serial connection */
+    GPSCon * serial;
+    
+#ifdef MAEMO
+    /** reference to the Maemo gpsd connection */
+    GpsMaemo * gpsdConnection;
+#endif  
 
   private slots: // Private slots
 
@@ -369,6 +382,6 @@ class GPSNMEA : public QObject
     void _slotTimeoutFix();
   };
 
-extern GPSNMEA * gps;
+extern GPSNMEA *gps;
 
 #endif

@@ -48,6 +48,8 @@ GPSNMEA* gps = 0;
 
 GPSNMEA::GPSNMEA(QObject* parent) : QObject(parent)
 {
+  // qDebug("GPSNMEA::GPSNMEA()");
+  
   _status=notConnected;
   timeOutFix=new QTimer(this);
   connect (timeOutFix,SIGNAL(timeout()),this,SLOT(_slotTimeoutFix()));
@@ -77,19 +79,62 @@ GPSNMEA::GPSNMEA(QObject* parent) : QObject(parent)
 
   _ignoreConnectionLost = false;
 
+  gpsDevice = "";
+  serial = 0;
+  gpsdConnection = 0;
+
+  createGpsConnection();
+}
+   
+void GPSNMEA::createGpsConnection()
+{
+  // qDebug("GPSNMEA::createGpsConnection()");
+  
+  QObject *gpsObject;
+ 
+#ifndef MAEMO
+ 
   // We create only a GPSCon instance. The client process will be started later
   const char *callPath = ( GeneralConfig::instance()->getInstallRoot() + "/bin" ).toAscii().data();
 
   serial = new GPSCon(this, callPath);
+  
+  gpsObject = serial;
+  
+#else
 
-  connect (serial, SIGNAL(newSentence(const QString&)),
-           this, SLOT(slot_sentence(const QString&)) );
-           
-  connect (serial, SIGNAL(newSentence(const QString&)),
-           this, SIGNAL(newSentence(const QString&)) );
-           
-  connect (serial, SIGNAL(gpsConnectionLost()),
-           this, SLOT(_slotTimeout()) );
+  // Under Maemo we have to contact the Maemo gpsd process on its listen port.
+  // If a device name starts not with /dev/ then it is assumed, that the nmea simulator
+  // shall be used. In such a case the cumulus serial client is started.
+  gpsDevice = GeneralConfig::instance()->getGpsDevice();
+
+  // qDebug("GpsDevive=%s", gpsDevice.toLatin1().data() );
+  
+  if( gpsDevice.startsWith( "/tmp/nmeasim" ) )
+    {
+      // We assume, that the nmea simulator shall be used and will start the gps client process
+      const char *callPath = ( GeneralConfig::instance()->getInstallRoot() + "/bin" ).toAscii().data();
+
+      serial = new GPSCon(this, callPath);
+      gpsObject = serial;
+    }
+  else
+    {
+      // The Maemo GPS deamon shall be used.
+      gpsdConnection = new GpsMaemo( this );
+      gpsObject = gpsdConnection;
+    }
+  
+#endif 
+
+  connect (gpsObject, SIGNAL(newSentence(const QString&)),
+            this, SLOT(slot_sentence(const QString&)) );
+            
+  connect (gpsObject, SIGNAL(newSentence(const QString&)),
+            this, SIGNAL(newSentence(const QString&)) );
+            
+  connect (gpsObject, SIGNAL(gpsConnectionLost()),
+            this, SLOT(_slotTimeout()) );
 }
 
 
@@ -97,6 +142,8 @@ GPSNMEA::~GPSNMEA()
 {
   // stop GPS client process
   if( serial ) delete serial;
+  
+  if( gpsdConnection ) delete gpsdConnection;
     
   writeConfig();
 }
@@ -106,10 +153,17 @@ GPSNMEA::~GPSNMEA()
  */
 void GPSNMEA::startGpsReceiver()
 {
+  // qDebug("GPSNMEA::startGpsReceiver()");
+  
   if( serial )
     {
       serial->startClientProcess();
       serial->startGpsReceiving();
+    }
+    
+  if( gpsdConnection )
+    {
+      gpsdConnection->startGpsReceiving();
     }
 }
 
@@ -715,22 +769,59 @@ void GPSNMEA::fixOK()
 
 void GPSNMEA::slot_reset()
 {
+  // qDebug("GPSNMEA::slot_reset()");
+
   GeneralConfig *conf = GeneralConfig::instance();
 
-  bool hard = conf->getGpsHardStart();
-  bool soft = conf->getGpsSoftStart();
+  QString oldDevice = gpsDevice;
+  
+  if( gpsDevice != conf->getGpsDevice() )
+  {
+    // GPS device has been changed by the user
+    gpsDevice = conf->getGpsDevice();
+    
+    if( serial )
+    {
+      serial->stopGpsReceiving();
+      delete serial;
+      serial = 0;
+    }
+    
+    if( gpsdConnection )
+    {
+      if( oldDevice.startsWith("/dev/") && gpsDevice.startsWith("/dev/") )
+      {
+        // Ignore device modifications. Only switch between /tmp/nmeasim and /dev/ is
+        // of interest for Maemo.
+        return;
+      }
 
+      gpsdConnection->stopGpsReceiving();
+      delete gpsdConnection;
+      gpsdConnection = 0;
+    }
+    
+    // create a new connection
+    createGpsConnection();
+    // start the new connection
+    startGpsReceiver();
+    return;
+  }  
+  
+  // no device modification, check serials baud rate
   if( serial )
     {
-      if( serial->currentBautrate() != conf->getGpsSpeed() ||
-          serial->currentDevice()   != conf->getGpsDevice() )
+      if( serial->currentBautrate() != conf->getGpsSpeed() )
         {
           serial->stopGpsReceiving();
           serial->startGpsReceiving();
         }
-    }
 
-  sendLastFix (hard, soft);
+      bool hard = conf->getGpsHardStart();
+      bool soft = conf->getGpsSoftStart();
+
+      sendLastFix (hard, soft);
+    }
 }
 
 
@@ -816,6 +907,8 @@ void GPSNMEA::sendLastFix (bool hard, bool soft)
 /** force a reset of the serial connection after a resume */
 void GPSNMEA::forceReset()
 {
+  // qDebug("GPSNMEA::forceReset()");
+  
   if( serial )
     {
       serial->stopGpsReceiving();

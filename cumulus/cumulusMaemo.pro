@@ -28,6 +28,7 @@ HEADERS     = \
     gliderlist.h \
     glidersite.h \
     gpscon.h \
+    gpsmaemo.h \
     gpsnmea.h \
     gpsstatusdialog.h \
     coordedit.h \
@@ -127,6 +128,7 @@ SOURCES     = \
     gliderlist.cpp \
     glidersite.cpp \
     gpscon.cpp \
+    gpsmaemo.cpp \
     gpsnmea.cpp \
     gpsstatusdialog.cpp \
     coordedit.cpp \
@@ -202,7 +204,7 @@ TARGET      = cumulus
 DESTDIR     = .
 INCLUDEPATH += ../ /usr/lib/glib-2.0/include /usr/include/glib-2.0 /usr/include/dbus-1.0 /usr/lib/dbus-1.0/include
 DEFINES += MAEMO
-LIBS += -lstdc++ -losso
+LIBS += -lstdc++ -losso -lgpsbt -lgps -lgpsmgr
 
 TRANSLATIONS    = \
     cumulus_de.ts \

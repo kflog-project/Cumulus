@@ -46,14 +46,11 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     // Bluetooth default devices
     GpsDev->addItem("/dev/rfcomm0");
     GpsDev->addItem("/dev/rfcomm1");
+    GpsDev->addItem(NMEASIM_DEVICE);
 #else
-    GpsDev->addItem("/dev/rfcomm0");
-    GpsDev->addItem("/dev/rfcomm1");
-    GpsDev->addItem("/dev/pts/0");
-    GpsDev->addItem("/dev/pts/1");
+    GpsDev->addItem("/dev/maemo");
 #endif
 
-    GpsDev->addItem(NMEASIM_DEVICE);
 
     topLayout->addWidget(new QLabel(tr("Transfer rate (bps):"), this),row,0);
     GpsSpeed = new QComboBox(this);
