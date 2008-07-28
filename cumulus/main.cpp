@@ -31,6 +31,11 @@
 #include <QMessageBox>
 #include <QTranslator>
 
+#ifdef MAEMO
+#include <QInputContext>
+#include <QInputContextFactory>
+#endif
+
 #include "cumulusapp.h"
 #include "generalconfig.h"
 #include "messagehandler.h"
@@ -40,24 +45,18 @@ int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
 
-  // @AP: Note, that Opie will install a default message handler in
-  // QPEApplication constructor. This handler will suppress all debug
-  // and warning messages in release mode. Therefore we will install
-  // our own handler now.
-
+  // @AP: we installing our own message handler
   qInstallMsgHandler(messageHandler);
 
   // @AP: to make trace output available, if process is started via
-  // QPE, we can redirect all output into a file, if config option
+  // QT/X11, we can redirect all output into a file, if config option
   // Log2File is set to true.
-
   GeneralConfig *conf = GeneralConfig::instance();
 
   // @AP: make install root of cumulus available for other modules via
   // general config. The assumption is that cumulus is installed at
   // <root>/bin/cumulus. The <root> path will be passed to general
   // config.
-
   char *callPath = dirname(argv[0]);
   char *startDir = getcwd(0,0);
   chdir( callPath );
@@ -145,7 +144,7 @@ int main(int argc, char *argv[])
                                   "program as your primary source\n"
                                   "of navigation. You as user are\n"
                                   "responsible for using official\n"
-                                  "aeronautical charts and proper\n"
+                                              "ae#include <QInputContextFactory>ronautical charts and proper\n"
                                   "methods for safe navigation.\n"
                                   "The information presented in this\n"
                                   "software program may be outdated\n"
@@ -164,6 +163,35 @@ int main(int argc, char *argv[])
         }
     }
 
+#ifdef MAEMO
+
+  // activate Hildon Input Method for Maemo
+  QInputContext *hildonInputContext = 0;
+  
+  QStringList inputMethods = QInputContextFactory::keys();
+  
+  foreach( QString inputMethod, inputMethods )
+  {
+    qDebug() << inputMethod;
+    
+    if ( inputMethod == "hildon-input-method" )
+    {
+      hildonInputContext = QInputContextFactory::create( "hildon-input-method", 0 );
+      break;
+    }
+  }
+  
+  if ( !hildonInputContext )
+  {
+    QMessageBox::warning (0, "QHildonInputMethod", "QHildonInputMethod plugin not loadable.");
+  }
+  else
+  {
+    app.setInputContext(hildonInputContext);
+  }
+
+#endif
+  
   // create the cumulus application
   CumulusApp *cumulus = new CumulusApp(0, Qt::WindowContextHelpButtonHint);
 
