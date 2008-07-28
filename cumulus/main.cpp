@@ -34,6 +34,7 @@
 #ifdef MAEMO
 #include <QInputContext>
 #include <QInputContextFactory>
+#include <QtDebug>
 #endif
 
 #include "cumulusapp.h"
