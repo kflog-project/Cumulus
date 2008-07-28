@@ -18,6 +18,8 @@ Cumulus changelog
 Cumulus 2.0.x (Development based on X11/Qt-4.4.0)
 -------------------------------------------------
 
+[-] 2008-07-27 HH: Bugfix Openair parser: Only foot based altitudes are
+                   assigned to type MSL.
 [+] 2008-07-25 AP: Under Maemo the internal GPS daemon is now used to get the GPS data
                    from the BT or the internal GPS receiver. Cumulus does not more fork
                    an own GPS client process under Maemo.
