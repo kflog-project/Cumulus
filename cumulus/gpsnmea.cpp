@@ -1,5 +1,6 @@
 /***************************************************************************
-    gpsnmea.cpp  -  Cumulus NMEA interpreter
+    gpsnmea.cpp  -  Cumulus NMEA interpreter managing connection to the GPS
+                    receiver resp. daemon process.
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002 by André Somers, 2008 by Axel Pauli
@@ -81,8 +82,11 @@ GPSNMEA::GPSNMEA(QObject* parent) : QObject(parent)
 
   gpsDevice = "";
   serial = 0;
-  gpsdConnection = 0;
 
+#ifdef MAEMO
+  gpsdConnection = 0;
+#endif
+  
   createGpsConnection();
 }
    
@@ -141,11 +145,18 @@ void GPSNMEA::createGpsConnection()
 GPSNMEA::~GPSNMEA()
 {
   // stop GPS client process
-  if( serial ) delete serial;
-  
-  if( gpsdConnection ) delete gpsdConnection;
-    
-  writeConfig();
+  if( serial )
+  {
+    delete serial;
+    writeConfig();
+  }
+
+#ifdef MAEMO
+  if( gpsdConnection )
+  {
+    delete gpsdConnection;
+  }
+#endif
 }
 
 /**
@@ -160,11 +171,13 @@ void GPSNMEA::startGpsReceiver()
       serial->startClientProcess();
       serial->startGpsReceiving();
     }
-    
+  
+#ifdef MAEMO
   if( gpsdConnection )
     {
       gpsdConnection->startGpsReceiving();
     }
+#endif
 }
 
 /**
@@ -786,7 +799,8 @@ void GPSNMEA::slot_reset()
       delete serial;
       serial = 0;
     }
-    
+
+#ifdef MAEMO
     if( gpsdConnection )
     {
       if( oldDevice.startsWith("/dev/") && gpsDevice.startsWith("/dev/") )
@@ -800,6 +814,7 @@ void GPSNMEA::slot_reset()
       delete gpsdConnection;
       gpsdConnection = 0;
     }
+#endif
     
     // create a new connection
     createGpsConnection();
