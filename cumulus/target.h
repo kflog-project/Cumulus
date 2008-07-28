@@ -1,5 +1,8 @@
 /***************************************************************************
-        target.h  -  defines Cumulus version for the build target
+        target.h  -  Defines Cumulus release version for the build target.
+	             This file is also used during debian package build
+		     as release information.
+	             
                              -------------------
     begin                : Mon Jul 22 2002
     copyright            : (C) 2002 by Andre Somers
@@ -22,4 +25,4 @@
 
 #define t_cumulus
 
-#define CU_VERSION "2.0.8"
+#define CU_VERSION "2.0.9"
