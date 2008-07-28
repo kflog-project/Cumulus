@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
   
   foreach( QString inputMethod, inputMethods )
   {
-    qDebug() << inputMethod;
+    qDebug() << "InputMethod: " << inputMethod;
     
     if ( inputMethod == "hildon-input-method" )
     {
@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
   
   if ( !hildonInputContext )
   {
-    QMessageBox::warning (0, "QHildonInputMethod", "QHildonInputMethod plugin not loadable.");
+    qWarning( "QHildonInputMethod plugin not loadable!" );
   }
   else
   {
