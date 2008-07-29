@@ -27,6 +27,7 @@
 #include <QPixmap>
 #include <QString>
 #include <QList>
+#include <QLabel>
 #include <QEvent>
 #include <QResizeEvent>
 
@@ -49,10 +50,10 @@ class Map : public QWidget
 
   public: //types
     /**
-     * List of different modes for the maporientation
+     * List of different modes for the map orientation
      * -headUp: the current heading is up, the glider symbol always points upwards.
      * -northUp: default. North is up.
-     * -trackUp: the map is oriented so towards the selected waypoint.
+     * -trackUp: the map is oriented towards the selected waypoint.
      * Currently, only northUp is supported.
      */
     enum mapMode {headUp=0, northUp=1, trackUp=2};
@@ -92,19 +93,19 @@ class Map : public QWidget
 
   public:
     /**
-     * The constructor creates a new Map-object and
+     * The constructor creates a new Map object and
      * creates the icon used as a cursor in the map.
      * It is private because map is a singleton class.
      */
     Map(QWidget *parent);
 
     /**
-     * Destroys the Map-object.
+     * Destroys the Map object.
      */
     virtual ~Map();
 
     /**
-      * Lists the possible map-orientations.
+      * Lists the possible map orientations.
       */
     void setDrawing(bool isEnable);
 
@@ -130,12 +131,12 @@ class Map : public QWidget
     virtual const int& getBearing();
 
     /**
-     * Write property of mapMode mode.
+     * Write property of map mode.
      */
     virtual void setMode( const mapMode& _newVal);
 
     /**
-     * Read property of mapMode mode.
+     * Read property of map mode.
      */
     virtual mapMode getMode() const;
 
@@ -145,27 +146,27 @@ class Map : public QWidget
     virtual void setShowGlider( const bool& _newVal);
 
     /**
-     * This function scedules a redraw of the map. It sets two timers:
-     * The first timer is set for a small interval, and reset every time sceduleRedraw
+     * This function schedules a redraw of the map. It sets two timers:
+     * The first timer is set for a small interval, and reset every time scheduleRedraw
      * is called. This allows for several modifications to the map being used for the
      * redraw at once.
      * The second timer is set for a larger interval, and is not reset. It makes sure
-     * the redraw occurs once in awhile, even if events modifying the map keep comming
+     * the redraw occurs once in a while, even if events modifying the map keep coming
      * in and would otherwise prevent the map from being redrawn.
      *
-     * If either of the two timers times out, the status of redrawSceduled is reset
-     * and the map is redrawn to reflect the current position and zoomfactor.
+     * If either of the two timers times out, the status of redrawScheduled is reset
+     * and the map is redrawn to reflect the current position and zoom factor.
      *
-     * The argument @arg fromLayer indicates the level from which to redraw. The default
-     * value is the baseLayer, in effect redrawing the entire map from the ground up.
-     * If a redraw has allready been sceduled, the map will be redrawn from the lowest
+     * The argument @arg fromLayer indicates the level from which to start redrawing. The
+     * default value is baseLayer, in effect redrawing the entire map from ground up.
+     * If a redraw has already been scheduled, the map will be redrawn from the lowest
      * level indicated.
      */
-    void sceduleRedraw(mapLayer fromLayer = baseLayer);
+    void scheduleRedraw(mapLayer fromLayer = baseLayer);
 
     /**
       * This function is used to check if there are airspaces in the proximity of the
-      * current position. It shows a warning if there are.
+      * current position. It shows a warning in that case.
       */
     void checkAirspace(const QPoint&);
 
@@ -187,7 +188,7 @@ class Map : public QWidget
     void slotNewWind();
 
     /**
-     *  unsceduled immediate redraw
+     *  unscheduled immediate redraw
      */
     void slotDraw();
 
@@ -207,29 +208,29 @@ class Map : public QWidget
     void slotCenterToWaypoint(const unsigned int id);
 
     /**
-     * Slot signalled when user selects another waypointcatalog.
+     * Slot signalled when user selects another waypoint catalog.
      */
     void slotWaypointCatalogChanged(WaypointCatalog* c);
 
     /**
      * This slot is called to set a new position. The map object
-     * determines if it is necessary to recenter the map, or if
+     * determines if it is necessary to recenter the map or if
      * the glider can just be drawn on a different position.
      */
     void slotPosition(const QPoint& newPos, const int source);
 
     /**
-     * Used to zoom the map out. Will scedule a redraw.
+     * Used to zoom the map out. Will schedule a redraw.
      */
     void slotZoomOut();
 
     /**
-     * Used to zoom in on the map. Will scedule a redraw.
+     * Used to zoom in on the map. Will schedule a redraw.
      */
     void slotZoomIn();
 
     /**
-     * sets a new scale. Will scedule a redraw.
+     * sets a new scale. Will schedule a redraw.
      */
     void slotSetScale(const double& newScale);
 
@@ -241,7 +242,7 @@ class Map : public QWidget
     void changed(const QSize&);
 
     /**
-     * is emited when left button click on the map
+     * is emitted when left button click on the map
      */
     void waypointSelected(wayPoint *);
 
@@ -257,22 +258,22 @@ class Map : public QWidget
 
   protected:
     /**
-     * Redefinition of the paintEvent.
+     * Redefinition of paintEvent.
      */
     virtual void paintEvent(QPaintEvent* event);
 
     /**
-     * Redefinition of the resizeEvent.
+     * Redefinition of resizeEvent.
      */
     virtual void resizeEvent(QResizeEvent* event);
 
     /**
-     * Redefinition of the mousePressEvent.
+     * Redefinition of mousePressEvent.
      */
     virtual void mousePressEvent(QMouseEvent* event);
 
     /**
-     * Redefinition of the mouseReleaseEvent.
+     * Redefinition of mouseReleaseEvent.
      */
     virtual void mouseReleaseEvent(QMouseEvent* event);
 
@@ -290,7 +291,7 @@ class Map : public QWidget
     /**
      * (Re)draws the map, starting at the indicated layer.
      * The actual drawing may start on a lower layer if needed. If a
-     * redraw is allready in progress, a new redraw is sceduled so the
+     * redraw is already in progress, a new redraw is scheduled so the
      * redraw can take place on a later time.
      */
     void __redrawMap(mapLayer fromLayer);
@@ -325,7 +326,7 @@ class Map : public QWidget
 
     /**
      * Draws the information layer of the map.
-     * The information layer consists of the flight task, windarrow, the
+     * The information layer consists of the flight task, wind arrow, the
      * trail, the position indicator and the scale.
      * It is drawn on top of the navigation layer.
      */
@@ -333,7 +334,7 @@ class Map : public QWidget
 
 
     /**
-     * Draws the Task which is currently planned
+     * Draws the task which is currently planned
      */
     void __drawPlannedTask(QPainter *taskP);
 
@@ -358,7 +359,7 @@ class Map : public QWidget
     void __drawWaypoints(QPainter *wpPainter);
 
     /**
-     * Draws a trail indicating the flightpath taken, if that feature
+     * Draws a trail indicating the flight path taken, if that feature
      * is turned on. (CURRENTLY TURNED OFF)
      */
     void __drawTrail();
@@ -369,24 +370,24 @@ class Map : public QWidget
     void __displayMapInfo(const QPoint& current);
 
     /**
-     * Display detailed Info about one MapItem
+     * Display detailed info about a MapItem
      */
     void __displayDetailedMapInfo(const QPoint& current);
 
     /**
-     * This function sets the maprotation and redraws the map
-     * if the maprotation differs too much from the current maprotation.
+     * This function sets the map rotation and redraws the map
+     * if the new map rotation differs too much from the current one.
      */
     void setMapRot(int newRotation);
 
     /**
-     * calculates the rotation of the glidersymbol based on the mapmode,
+     * calculates the rotation of the glider symbol based on the map mode,
      * the heading and the bearing. In degrees counterclockwise.
      */
     int calcGliderRotation();
 
     /**
-     * calculates the maprotation based on the mapmode, the heading and
+     * calculates the map rotation based on the map mode, the heading and
      * the bearing. In degrees counterclockwise.
      */
     int calcMapRotation();
@@ -400,7 +401,7 @@ class Map : public QWidget
                            QList<wayPoint*> &taskPointList);
 
     /**
-     * Draws the glidersymbol on the pixmap
+     * Draws the glider symbol on the pixmap
      */
     void __drawGlider();
 
@@ -414,9 +415,9 @@ class Map : public QWidget
      */
     void __drawX();
     /**
-     * This function draws a "directionline" on the map if a waypoint
+     * This function draws a "direction line" on the map if a waypoint
      * has been selected. The QPoint is the projected & mapped
-     * coordinate of the positionsymbol on the map, so we don't
+     * coordinate of the position symbol on the map, so we don't
      * have to calculate that all over again.
      */
     void __drawDirectionLine(const QPoint& from);
@@ -450,7 +451,7 @@ class Map : public QWidget
     QSize resizeEventSize;
 
     /**
-     * These pixmaps are used to store different layers the currently
+     * These pixmaps are used to store different layers of the currently
      * displayed map. These pixmaps have the same size as the
      * map-widget, but are only used for internal buffering the
      * map. Whenever the widget is about to be drawn, these buffers
@@ -474,7 +475,7 @@ class Map : public QWidget
     // new data are are requested by the window system.
     QPixmap m_pixPaintBuffer;
 
-    //contains a strip with windarrows in different directions
+    //contains a strip with wind arrows in different directions
     QPixmap windArrow;
 
     int mapRot;
@@ -484,45 +485,47 @@ class Map : public QWidget
 
     /**
      * Contains the regions of all visible airspaces. The list is needed to
-     * find the airspace-data when the users selects a airspace in the map.
+     * find the airspace data when the user selects an airspace in the map.
      */
     QList<AirRegion*> airspaceRegList;
 
     //contains the layer the next redraw should start from
-    mapLayer m_sceduledFromLayer;
+    mapLayer m_scheduledFromLayer;
 
-    /** Contains the currently proposed zoomfactor. The actual factor
-        used is stored in the MapMatrix. */
+    /** Contains the currently proposed zoom factor. The actual factor
+        used is stored in the map matrix */
     double zoomFactor;
 
-    /** reference to the short interval redrawtimer */
+    /** reference to the short interval redraw timer */
     QTimer * redrawTimerShort;
-    /** reference to the long interval redrawtimer */
+    /** reference to the long interval redraw timer */
     QTimer * redrawTimerLong;
-    /** Determines wether to draw the glidersymbol or not. */
+    /** Determines wether to draw the glider symbol. */
     bool ShowGlider;
     unsigned int zoomProgressive;
     float zoomProgressiveVal[8];
+    /** Waypoint text label; instantiated only if needed. */
+    QLabel *rtext;
 
   protected: // Protected attributes
     /**
      * Contains the current heading. Used for rotating the map in
-     * headUp mapmode or rotating the glidersymbol in northUp and
+     * headUp map mode or rotating the glider symbol in northUp and
      * trackUp modes. In degrees clockwise.
      */
     int heading;
 
     /**
      * Contains the current bearing. Used for rotating the map and
-     * glider-symbol in trackUp mode. In degrees clockwise
+     * glider symbol in trackUp mode. In degrees clockwise
      * (0=due north, 90 east, etc.)
      */
     int bearing;
 
     /**
-     * Contains the mapmode.
+     * Contains the map mode.
      * northUp: the top of the map is north
-     * headUp: the top of the map is the current flightdirection
+     * headUp: the top of the map is the current flight direction
      * trackUp: the top of the map is the current bearing to the selected waypoint
      */
     mapMode mode;

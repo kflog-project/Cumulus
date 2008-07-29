@@ -25,7 +25,7 @@
 #include <QPen>
 #include <QWhatsThis>
 #include <QDesktopWidget>
-#include <Q3SimpleRichText>
+#include <QLabel>
 #include <QPolygon>
 
 #include "airport.h"
@@ -79,9 +79,10 @@ Map::Map(QWidget* parent) : QWidget(parent)
   heading = 0;
   bearing = 0;
   mode = northUp;
-  m_sceduledFromLayer = topLayer;
+  m_scheduledFromLayer = topLayer;
   ShowGlider = false;
   setMutex(false);
+  rtext = 0;
 
   //setup progressive zooming values
   zoomProgressive = 0;
@@ -105,7 +106,10 @@ Map::Map(QWidget* parent) : QWidget(parent)
   m_pixInformationMap.fill(Qt::white);
   m_pixPaintBuffer.fill(Qt::white);
 
-  setBackgroundColor(Qt::white);
+  QPalette palette;
+  palette.setColor(backgroundRole(), Qt::white);
+  setPalette(palette);
+//  setBackgroundColor(Qt::white);
 
   redrawTimerShort = new QTimer(this);
   redrawTimerShort->setSingleShot(true);
@@ -176,7 +180,7 @@ void Map::__displayMapInfo(const QPoint& current)
                 // qDebug ("lower limit type: %d", pSpace->getLowerT());
                 // qDebug ("upper limit type: %d", pSpace->getUpperT());
           //work around the phenemenon that airspaces tend to appear in the list twice -> this should be dealt with properly!
-          if (text.find(pSpace->getInfoString())==-1)
+          if ( text.indexOf(pSpace->getInfoString()) == -1 )
             {     //only add if the string has not been added before
               text += "<tr><td align=left>" + pSpace->getInfoString() + "</td></tr>";
               itemcount++;
@@ -759,7 +763,7 @@ void Map::setDrawing(bool isEnable)
   if (_isEnable != isEnable)
     {
       if (isEnable)
-        sceduleRedraw(baseLayer);
+        scheduleRedraw(baseLayer);
       _isEnable = isEnable;
     }
 }
@@ -812,7 +816,7 @@ void Map::__redrawMap(mapLayer fromLayer)
       _isRedrawEvent = true;
       // qDebug("Map::__redrawMap(): mutex is locked, returning");
       return;
-      //TODO make a bit smarter. We only need to scedule a redraw if
+      //TODO make a bit smarter. We only need to schedule a redraw if
       //the layer is beneath the one we are currently redrawing, and
       //then only to the level requested.
     }
@@ -855,7 +859,7 @@ void Map::__redrawMap(mapLayer fromLayer)
       _globalMapMatrix->createMatrix(this->size());
       
       // initialize the base pixmap
-      m_pixBaseMap.resize(size());
+      m_pixBaseMap = QPixmap( size() );
 
       //actually start doing our drawing
       __drawBaseLayer();
@@ -890,7 +894,7 @@ void Map::__redrawMap(mapLayer fromLayer)
     {
       qDebug("============== Map::__redrawMap(): queued redraw event found, schedule Redraw =======");
       _isRedrawEvent = false;
-      sceduleRedraw();
+      scheduleRedraw();
     }
 
   // @AP: check, if a pending resize event exists. In this case the
@@ -898,7 +902,7 @@ void Map::__redrawMap(mapLayer fromLayer)
   if( _isResizeEvent )
     {
       qDebug("Map::__redrawMap(): queued resize event found, schedule Redraw");
-      sceduleRedraw();
+      scheduleRedraw();
     }
 
   return;
@@ -915,14 +919,16 @@ void Map::__drawBaseLayer()
   if( !_isEnable ) return;
 
   // erase the base layer (fill with light blue color)
-  m_pixBaseMap.fill(QColor(96,128,248));
+//  m_pixBaseMap.fill(QColor(96,128,248));
+  m_pixBaseMap.fill(QColor(255,255,255));
 
   // make sure we have all the map files we need loaded
   _globalMapContents->proofeSection();
 
 
-  qDebug("Map::__drawBaseLayer(): zoomFactor=%f, QAppLoopLevel=%d",
-         zoomFactor, qApp->loopLevel() );
+//  qDebug("Map::__drawBaseLayer(): zoomFactor=%f, QAppLoopLevel=%d",
+//         zoomFactor, qApp->loopLevel() );
+  qDebug("Map::__drawBaseLayer(): zoomFactor=%f", zoomFactor );
 
   double cs = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
@@ -1046,11 +1052,11 @@ void Map::__drawInformationLayer()
 }
 
 
-//Performs an unsceduled, immediate redraw of the entire map.
+//Performs an unscheduled, immediate redraw of the entire map.
 //Any allready pending redraws are cancelled.
 void Map::slotDraw()
 {
-  m_sceduledFromLayer = baseLayer;
+  m_scheduledFromLayer = baseLayer;
   slotRedrawMap();
 }
 
@@ -1078,8 +1084,8 @@ void Map::slotRedrawMap()
   redrawTimerShort->stop();
   redrawTimerLong->stop();
 
-  __redrawMap(m_sceduledFromLayer);
-  m_sceduledFromLayer = topLayer;
+  __redrawMap(m_scheduledFromLayer);
+  m_scheduledFromLayer = topLayer;
 }
 
 
@@ -1366,7 +1372,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                   //draw green circle
                   wpPainter->drawPixmap(P.x() - 9, P.y() -9, _globalMapConfig->getPixmap("green_circle.xpm"));
                 }
-              else if (reachable == belowSavety)
+              else if (reachable == belowSafety)
                 {
                   //draw magenta circle
                   wpPainter->drawPixmap(P.x() - 9, P.y() -9, _globalMapConfig->getPixmap("magenta_circle.xpm"));
@@ -1391,11 +1397,11 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                         {
                           if (reachable==yes)
                             { //reachable? then the label will become bold
-                              labelText = "<qt><b>" + labelText + "</b><br>";
+                              labelText = "<b>" + labelText + "</b><br>";
                             }
                           else
                             {
-                              labelText = "<qt>" + labelText + "<br>";
+                              labelText = labelText + "<br>";
                             }
 
                           dist = ReachableList::getDistance( wp->origP );
@@ -1408,12 +1414,11 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                                 {
                                   labelText += "<font color=\"#FF0000\">"
                                                + alt.getText( false, 0 )
-                                               + "</font></qt>";
+                                               + "</font>";
                                 } else
                                 {
                                   labelText += "&nbsp;"
-                                               + alt.getText( false, 0 )
-                                               + "</qt>";
+                                               + alt.getText( false, 0 );
                                 }
                             }
                         }
@@ -1424,15 +1429,24 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                         {
                           if (reachable==yes)
                             {
-                              labelText = "<qt><b>" + labelText + "</b></qt>";
+                              labelText = "<b>" + labelText + "</b>";
                             }
                         }
                     }
+                  if ( rtext == 0) {
+                    rtext = new QLabel(this);
+                    rtext->setAutoFillBackground(true);
+                    QFont f = rtext->font();
+                    f.setPixelSize(12);
+                    rtext->setFont(f);
+                    rtext->setAlignment(Qt::AlignHCenter);
+                  }
+                  rtext->setText( labelText );
+                  rtext->adjustSize();
+                  rtext->resize( rtext->width()+4, rtext->height() );
 
-                  Q3SimpleRichText rtext ( labelText, this->font() );
-                  rtext.adjustSize();
-
-                  QRect textbox( 0, 0, rtext.widthUsed(), rtext.height() );
+//                  QRect textbox( 0, 0, rtext->width(), rtext->height() );
+                  QRect textbox( rtext->rect() );
                   if (wp->origP.lon()<_globalMapMatrix->getMapCenter(false).y())
                     {
                       //the wp is on the left side of the map, so draw the textlabel on the right side
@@ -1456,11 +1470,14 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                         }
                     }
 
-                  QColorGroup cg;
+//                  QColorGroup cg;
+                  QPalette rpal = rtext->palette();
 
                   if (!isSelected)
                     {
-                      wpPainter->fillRect(P.x() + xOffset - 1,
+                      rpal.setColor(QPalette::Normal,QPalette::Window,Qt::white);
+                      rpal.setColor(QPalette::Normal,QPalette::WindowText,Qt::black);
+/*                      wpPainter->fillRect(P.x() + xOffset - 1,
                                           P.y() + yOffset + 1,
                                           textbox.width() + 2,
                                           -textbox.height() + 1,
@@ -1468,11 +1485,13 @@ void Map::__drawWaypoints(QPainter* wpPainter)
 
                       cg.setColor( QColorGroup::Background, Qt::white );
                       cg.setColor( QColorGroup::Foreground, Qt::black );
-                      cg.setColor( QColorGroup::Text, Qt::black );
+                      cg.setColor( QColorGroup::Text, Qt::black );*/
                     }
                   else
                     {
-                      wpPainter->fillRect(P.x() + xOffset - 1,
+                      rpal.setColor(QPalette::Normal,QPalette::Window,Qt::black);
+                      rpal.setColor(QPalette::Normal,QPalette::WindowText,Qt::white);
+/*                      wpPainter->fillRect(P.x() + xOffset - 1,
                                           P.y() + yOffset + 1,
                                           textbox.width() + 2,
                                           -textbox.height() + 1,
@@ -1480,14 +1499,16 @@ void Map::__drawWaypoints(QPainter* wpPainter)
 
                       cg.setColor( QColorGroup::Background, Qt::black );
                       cg.setColor( QColorGroup::Foreground, Qt::white );
-                      cg.setColor( QColorGroup::Text, Qt::white );
+                      cg.setColor( QColorGroup::Text, Qt::white );*/
                     }
-
-                  rtext.draw(wpPainter,
+                  rtext->setPalette(rpal);
+                  rtext->move( P.x() + xOffset + 1, P.y() + yOffset - textbox.height() + 2 );
+                  rtext->show();
+/*                  rtext.draw(wpPainter,
                              P.x() + xOffset + 1,
                              P.y() + yOffset - textbox.height() + 2,
                              QRect( 0, 0, width() + 2, height() + 2 ), //textbox,
-                             cg);
+                             cg);*/
                 }//draw labels?
             } //in visible area?
         } //important enough?
@@ -1500,7 +1521,7 @@ void Map::slotWaypointCatalogChanged(WaypointCatalog* /*c*/)
 {
   // qDebug("Map::slotWaypointCatalogChanged");
   emit changed(this->size());
-  sceduleRedraw(waypoints);
+  scheduleRedraw(waypoints);
 }
 
 
@@ -1513,7 +1534,7 @@ void Map::setMapRot(int newRotation)
 
   if (abs(mapRot-curMapRot) >= 2)
     {
-      sceduleRedraw(baseLayer);
+      scheduleRedraw(baseLayer);
     }
 }
 
@@ -1606,7 +1627,7 @@ void Map::setShowGlider( const bool& _newVal)
   if (ShowGlider!=_newVal)
     {
       ShowGlider = _newVal;
-      sceduleRedraw(informationLayer);
+      scheduleRedraw(informationLayer);
     }
 }
 
@@ -1621,6 +1642,9 @@ void Map::__drawScale(QPainter& scaleP)
   pen.setWidth(3);
   pen.setCapStyle(Qt::RoundCap);
   scaleP.setPen(pen);
+  QFont f = scaleP.font();
+  f.setPixelSize(12);
+  scaleP.setFont(f);
 
   double scale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
   Distance barLen;
@@ -1753,9 +1777,9 @@ void Map::slotPosition(const QPoint& newPos, const int source)
 
               if( !_globalMapMatrix->isInCenterArea(newPos) )
                 {
-                  // qDebug("Map::slot_position:sceduleRedraw()");
+                  // qDebug("Map::slot_position:scheduleRedraw()");
                   // this is the slow redraw
-                  sceduleRedraw();
+                  scheduleRedraw();
                 }
               else
                 {
@@ -1778,8 +1802,8 @@ void Map::slotPosition(const QPoint& newPos, const int source)
 
           if( !_globalMapMatrix->isInCenterArea(newPos) || mutex() )
             {
-              // qDebug("Map::slot_position:sceduleRedraw()");
-              sceduleRedraw();
+              // qDebug("Map::slot_position:scheduleRedraw()");
+              scheduleRedraw();
             }
           else
             {
@@ -1802,12 +1826,12 @@ void Map::slotSwitchManualInFlight()
       // and in this the the cross is still visible. So the user may think
       // the switch off was not successfully; To hide the cross immediately,
       // call redraw of scale layer
-      sceduleRedraw(scale);
+      scheduleRedraw(scale);
       calculator->setPosition(curGPSPos);
     }
   else
     {
-      sceduleRedraw(scale);
+      scheduleRedraw(scale);
     }
 }
 
@@ -1895,9 +1919,9 @@ void Map::slotZoomIn()
 
   zoomFactor/=zoomProgressiveVal[zoomProgressive];
 
-  sceduleRedraw();
+  scheduleRedraw();
   QString msg;
-  msg.sprintf(tr("Map zoom in, scale: %.1f"),zoomFactor/L_LIMIT );
+  msg = QString(tr("Map zoom in, scale: %.1f")).arg(zoomFactor/L_LIMIT);
   _globalMapView->message( msg );
 }
 
@@ -1906,11 +1930,11 @@ void Map::slotZoomIn()
 void Map::slotRedraw()
 {
   // qDebug("Map::slotRedraw");
-  sceduleRedraw();
+  scheduleRedraw();
 }
 
 
-/** Used to zoom the map out. Will scedule a redraw. */
+/** Used to zoom the map out. Will schedule a redraw. */
 void Map::slotZoomOut()
 {
 
@@ -1936,17 +1960,17 @@ void Map::slotZoomOut()
 
   zoomFactor*=zoomProgressiveVal[zoomProgressive];
 
-  sceduleRedraw();
+  scheduleRedraw();
   QString msg;
-  msg.sprintf(tr("Map zoom out, scale: %.1f"),zoomFactor/L_LIMIT );
+  msg = QString(tr("Map zoom out, scale: %.1f")).arg(zoomFactor/L_LIMIT);
 
   _globalMapView->message( msg );
 }
 
 
 /**
- * This function scedules a redraw of the map. It sets two timers:
- * The first timer is set for a small interval, and reset every time sceduleRedraw
+ * This function schedules a redraw of the map. It sets two timers:
+ * The first timer is set for a small interval, and reset every time scheduleRedraw
  * is called. This allows for several modifications to the map being used for the
  * redraw at once.
  * The second timer is set for a larger interval, and is not reset. It makes sure
@@ -1956,9 +1980,9 @@ void Map::slotZoomOut()
  * If either of the two timers expires, the status of redrawScheduled is reset
  * and the map is redrawn to reflect the current position and zoom factor.
  */
-void Map::sceduleRedraw(mapLayer fromLayer)
+void Map::scheduleRedraw(mapLayer fromLayer)
 {
-  // qDebug("Map::sceduleRedraw(): mapLayer=%d, loopLevel=%d", fromLayer, qApp->loopLevel() );
+  // qDebug("Map::scheduleRedraw(): mapLayer=%d, loopLevel=%d", fromLayer, qApp->loopLevel() );
 
   if( !_isEnable )
     {
@@ -1966,8 +1990,8 @@ void Map::sceduleRedraw(mapLayer fromLayer)
       return;
     }
 
-  // scedule requested layer
-  m_sceduledFromLayer = qMin(m_sceduledFromLayer, fromLayer);
+  // schedule requested layer
+  m_scheduledFromLayer = qMin(m_scheduledFromLayer, fromLayer);
 
   if( mutex() )
     {
@@ -1998,7 +2022,7 @@ void Map::slotSetScale(const double& newScale)
   if (newScale!=zoomFactor)
     {
       zoomFactor=newScale;
-      sceduleRedraw();
+      scheduleRedraw();
     }
 }
 
@@ -2166,7 +2190,7 @@ void Map::checkAirspace(const QPoint& pos)
 
   //redraw the airspaces if needed
   if (needAirspaceRedraw && fillingEnabled)
-    sceduleRedraw(aeroLayer);
+    scheduleRedraw(aeroLayer);
 
 
   if (!warningEnabled)

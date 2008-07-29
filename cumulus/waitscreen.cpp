@@ -26,7 +26,7 @@
 extern MapView *_globalMapView;
 
 WaitScreen::WaitScreen(QWidget *parent ) :
-    QDialog(parent, Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::WStyle_Title)
+    QDialog(parent, Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::WindowTitleHint )
 {
   setObjectName("WaitScreen");
   setModal(true);
@@ -67,8 +67,8 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   lastRot=0;
 
   _gliders = GeneralConfig::instance()->loadPixmap("gliders.png");
-  _glider.resize (40,40);
-  _glider.fill(Glider->backgroundColor());
+  _glider = QPixmap(40,40);
+  _glider.fill( Glider->palette().color(QPalette::Window) );
 
   QPainter p(&_glider);
   p.drawPixmap( 0, 0, _gliders, 0, 0, 40, 40);
@@ -113,7 +113,7 @@ void WaitScreen::slot_SetText2(const QString& text)
     {
       shortText="..." + text.right(32);
 
-      int pos = shortText.findRev( QChar('/'), -1 );
+      int pos = shortText.lastIndexOf( QChar('/') );
 
       if( pos != -1 )
         {
@@ -158,7 +158,7 @@ void WaitScreen::slot_Progress(int stepsize)
 
       if (lastRot!=rot)
         {
-          _glider.fill(Glider->backgroundColor());
+          _glider.fill( Glider->palette().color(QPalette::Window) );
 
           QPainter p(&_glider);
           p.drawPixmap( 0, 0, _gliders, rot*40, 0, 40, 40);

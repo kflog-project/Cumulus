@@ -18,6 +18,27 @@ Cumulus changelog
 Cumulus 2.0.x (Development based on X11/Qt-4.4.0)
 -------------------------------------------------
 
+
+[o] 2008-07-29 JD: Constant updating the progess splash at startup during isoline
+                   drawing slowed it down around 600 percent ... Changed to one
+                   update only. Sorry, not much of the spinning glider left ...
+[+] 2008-07-29 JD: Added mapping functions in MapMatrix to replace Qt standard methods.
+                   Using fixed pont math gives a boost of up to one second in map drawing
+                   with isolines.
+[o] 2008-07-29 JD: Modified airfield/waypoint filter to improve initialization time.
+                   Long lists are now be shown in "pages". Will be a settings entry later.
+                   Filter function is way better to shorten the list anyway.
+[o] 2008-07-29 JD: Changed task editor dialog to use new unified waypoint list widget
+                   (same object as in airfield/waypoint view).
+[+] 2008-07-29 JD: New class WPListWidgetClass, subclassed by AirfieldListWidget and
+                   WaypointListWidget (separated from airfield/waypoint list view).
+[o] 2008-07-29 JD: Adapted most dialogs to new size, occasional text and icon
+                   changes (some old icons too filigrane for the high resolution).
+[o] 2008-07-29 JD: Changed main dialogs to widgets (settings and pre-flight).
+                   Adapted tabs for new size (scrolled views where applicable).
+[o] 2008-07-29 JD: Changed global font size. Set Nokia font for Maemo to get improved
+                   readability.
+[o] 2008-07-29 JD: Removed all Qt3 dependencies (phew!). Many files affected
 [-] 2008-07-27 HH: Bugfix Openair parser: Only foot based altitudes are
                    assigned to type MSL.
 [+] 2008-07-25 AP: Under Maemo the internal GPS daemon is now used to get the GPS data

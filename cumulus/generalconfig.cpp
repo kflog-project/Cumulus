@@ -134,7 +134,7 @@ void GeneralConfig::load()
   _birthday          = value("Birthday", "").toString();
   _language          = value("Language", "en").toString();
   _framecol          = value("FrameColor", "#687ec6").toString();
-  _userDataDirectory = value("UserDataDir", QDir::homeDirPath() + "/cumulus").toString();
+  _userDataDirectory = value("UserDataDir", QDir::homePath() + "/cumulus").toString();
   endGroup();
 
   // Preflight settings
@@ -1175,7 +1175,7 @@ void GeneralConfig::setAirspaceFillingLateral(Airspace::ConflictType nearness, i
 }
 
 /* Load a pixmap from the cache. If not contained there, insert it. */
-QPixmap GeneralConfig::loadPixmap( const char* pixmapName )
+QPixmap GeneralConfig::loadPixmap( const QString& pixmapName )
 {
   // determine absolute path to pixmap directory
   QString path( _installRoot + "/icons/" + pixmapName );
@@ -1216,7 +1216,7 @@ QPixmap GeneralConfig::loadPixmap( const char* pixmapName )
 QStringList GeneralConfig::getMapDirectories()
 {
   QStringList mapDirs;
-  QString     mapHome    = QDir::homeDirPath() + "/maps";
+  QString     mapHome    = QDir::homePath() + "/maps";
   QString     mapInstall = _installRoot  + "/maps";
 
   // First check, if user has defined an own map directory

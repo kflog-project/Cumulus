@@ -40,7 +40,7 @@
 #include "map.h"
 #include "generalconfig.h"
 #include "interfaceelements.h"
-#include "multilayout.h"
+//#include "multilayout.h"
 #include "filetools.h"
 #include "altimetermodedialog.h"
 #include "gliderflightdialog.h"
@@ -73,11 +73,13 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   topLayout->setSpacing(0);
 
   //@JD: the new "sidebar" layout
-  QBoxLayout *centerLayout = new QHBoxLayout( topLayout );
+  QBoxLayout *centerLayout = new QHBoxLayout;
+  topLayout->addLayout(centerLayout);
   topLayout->setStretchFactor( centerLayout, 1 );
   centerLayout->setSpacing(0);
 
-  QBoxLayout *sideLayout = new QVBoxLayout( centerLayout );
+  QBoxLayout *sideLayout = new QVBoxLayout;
+  centerLayout->addLayout(sideLayout);
   sideLayout->setSpacing(0);
 
   // three 'grouping' widgets with slightly differing
@@ -106,11 +108,12 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
 
   //layout for Glide Path and Relative Bearing
-  QBoxLayout *GRLayout = new QHBoxLayout(wayLayout);
+  QBoxLayout *GRLayout = new QHBoxLayout;
+  wayLayout->addLayout(GRLayout);
   GRLayout->setSpacing(4);
 
   //add Glide Path widget
-  _glidepath = new MapInfoBox( this, conf->getFrameCol(), 40 );
+  _glidepath = new MapInfoBox( this, conf->getFrameCol(), 42 );
   _glidepath->setValue("-");
   _glidepath->setPreText("Arr");
   GRLayout->addWidget( _glidepath );
@@ -119,13 +122,14 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
           (CumulusApp*)parent, SLOT(slotSwitchToReachListView()));
 
   // add Relative Bearing widget
-  _rel_bearing = new QLabel(this,"");
+  _rel_bearing = new QLabel(this);
   QPixmap arrow = _arrows.copy( 24*60, 0, 60, 60 );
   _rel_bearing->setPixmap (arrow);
   GRLayout->addWidget(_rel_bearing);
 
   //layout for Distance/ETA and Bearing
-  QBoxLayout *DEBLayout = new QHBoxLayout(wayLayout);
+  QBoxLayout *DEBLayout = new QHBoxLayout;
+  wayLayout->addLayout(DEBLayout);
   DEBLayout->setSpacing(2);
 
   //add Distance widget
@@ -150,7 +154,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   connect (_bearingTimer, SIGNAL(timeout()),
            this, SLOT(slot_resetInversBearing()));
   _bearing = new MapInfoBox( this, conf->getFrameCol() );
-  _bearingBGColor = wayBar->backgroundColor();
+  _bearingBGColor = wayBar->palette().color(QPalette::Window);
   _bearing->setValue("-");
   _bearing->setPreText("Brg");
   DEBLayout->addWidget( _bearing);
@@ -168,7 +172,8 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   commonLayout->setSpacing(4);
 
   //layout for Speed and Heading
-  QBoxLayout *SHLayout = new QHBoxLayout(commonLayout);
+  QBoxLayout *SHLayout = new QHBoxLayout;
+  commonLayout->addLayout(SHLayout);
   SHLayout->setSpacing(2);
 
   //add Speed widget
@@ -185,7 +190,8 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
 
   //layout for Wind/LD
-  QBoxLayout *WLLayout = new QHBoxLayout(commonLayout);
+  QBoxLayout *WLLayout = new QHBoxLayout;
+  commonLayout->addLayout(WLLayout);
 
   //add Wind widget; this is head/tailwind, no direction given !
   _wind = new MapInfoBox( this, conf->getFrameCol() );
@@ -204,11 +210,12 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
 
   //layout for Vario and Altitude
-  QBoxLayout *VALayout = new QHBoxLayout(commonLayout);
+  QBoxLayout *VALayout = new QHBoxLayout;
+  commonLayout->addLayout(VALayout);
   VALayout->setSpacing(2);
 
   //add Vario widget
-  _vario = new MapInfoBox( this, conf->getFrameCol(), 34, true );
+  _vario = new MapInfoBox( this, conf->getFrameCol(), 38, true );
   _vario->setPreText("Var");
   _vario->setValue("-");
   VALayout->addWidget(_vario, 2 );
@@ -277,7 +284,8 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //--------------------------------------------------------------------
   //layout for the map
-  QBoxLayout *MapLayout = new QHBoxLayout(centerLayout);
+  QBoxLayout *MapLayout = new QHBoxLayout;
+  centerLayout->addLayout(MapLayout);
   _theMap = new Map(this);
   centerLayout->setStretchFactor( MapLayout, 1 );
   MapLayout->addWidget(_theMap, 10);
@@ -285,15 +293,17 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //--------------------------------------------------------------------
   // Status bar
-  _statusbar = new QStatusBar(this, "status");
+  _statusbar = new QStatusBar(this);
+  _statusbar->setObjectName("status");
   _statusbar->setSizeGripEnabled(false);
   _statusbar->setFixedHeight(19);
   QFont font = _statusbar->font();
   font.setBold(true);
+  font.setPixelSize(12);
   _statusbar->setFont(font);
 
   _menuToggle = new CuLabel( tr("Menu"),_statusbar);
-  _menuToggle->setFrameStyle(QFrame::Box|QFrame::Plain);
+//  _menuToggle->setFrameStyle(QFrame::Box|QFrame::Plain);
   _menuToggle->setLineWidth(0);
   _menuToggle->setAlignment(Qt::AlignCenter);
   _menuToggle->setMargin(0);
@@ -301,7 +311,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   connect(_menuToggle, SIGNAL(mousePress()), (CumulusApp*)parent, SLOT(slotToggleMenu()));
 
   _statusGps = new CuLabel(tr("Man"),_statusbar);
-  _statusGps->setFrameStyle(QFrame::Box|QFrame::Plain);
+//  _statusGps->setFrameStyle(QFrame::Box|QFrame::Plain);
   _statusGps->setLineWidth(0);
   _statusGps->setAlignment(Qt::AlignCenter);
   _statusGps->setMargin(0);
@@ -310,38 +320,40 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusbar->addWidget(_statusGps);
   connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
 
-  _statusFlightstatus = new QLabel("<html>" + tr("?","Unknown") + "</html>",_statusbar);
-  _statusFlightstatus->setFrameStyle(QFrame::Box|QFrame::Plain);
+//  _statusFlightstatus = new QLabel("<html>" + tr("?","Unknown") + "</html>",_statusbar);
+  _statusFlightstatus = new QLabel(tr("?","Unknown"),_statusbar);
+//  _statusFlightstatus->setFrameStyle(QFrame::Box|QFrame::Plain);
   _statusFlightstatus->setLineWidth(0);
   _statusFlightstatus->setAlignment(Qt::AlignCenter);
   _statusFlightstatus->setMargin(0);
   _statusFlightstatus->setMinimumSize(_statusFlightstatus->fontMetrics().boundingRect(" L ? ").width(), 5);
-  _statusFlightstatus->setTextFormat(Qt::RichText);
+//  _statusFlightstatus->setTextFormat(Qt::RichText);
   _statusbar->addWidget(_statusFlightstatus);
 
   _statusPosition = new QLabel(_statusbar);
-  _statusPosition->setFrameStyle(QFrame::Box|QFrame::Plain);
+//  _statusPosition->setFrameStyle(QFrame::Box|QFrame::Plain);
   _statusPosition->setLineWidth(0);
   _statusPosition->setAlignment(Qt::AlignCenter);
   _statusPosition->setMargin(0);
   _statusbar->addWidget(_statusPosition);
 
   _statusGlider = new QLabel(_statusbar);
-  _statusGlider->setFrameStyle(QFrame::Box|QFrame::Plain);
+//  _statusGlider->setFrameStyle(QFrame::Box|QFrame::Plain);
   _statusGlider->setLineWidth(0);
   _statusGlider->setAlignment(Qt::AlignCenter);
   _statusGlider->setMargin(0);
   _statusbar->addWidget(_statusGlider);
 
   _statusWarning = new QLabel(_statusbar);
-  _statusWarning->setFrameStyle(QFrame::Box|QFrame::Plain);
-  _statusWarning->setLineWidth(0);
+//  _statusWarning->setFrameStyle(QFrame::Box|QFrame::Plain);
+//  _statusWarning->setLineWidth(0);
   _statusWarning->setAlignment(Qt::AlignCenter);
   _statusWarning->setMargin(0);
   _statusbar->addWidget(_statusWarning, 1);
 
   QFrame* filler = new QFrame(_statusbar);
-  filler->setFrameStyle(QFrame::NoFrame);
+//  filler->setFrameStyle(QFrame::NoFrame);
+  filler->setLineWidth(0);
   _statusbar->addWidget(filler);
 
   loggingTimer = new QTimer(this);
@@ -417,7 +429,7 @@ void MapView::slot_Waypoint(const wayPoint *wp)
       qDebug("Rel. bearing icon reset" );
     }
 
-  _theMap->sceduleRedraw(Map::informationLayer);  // this is not really helpful -> it is: the bearingline won't change otherwise!
+  _theMap->scheduleRedraw(Map::informationLayer);  // this is not really helpful -> it is: the bearingline won't change otherwise!
 }
 
 
@@ -457,7 +469,8 @@ void MapView::slot_toggleBearing()
   _bearingMode = 0;
   slot_Bearing( _lastBearing );
 
-  _bearingTimer->start( 5000, true );
+  _bearingTimer->setSingleShot(true);
+  _bearingTimer->start(5000);
 }
 
 /**
@@ -577,7 +590,7 @@ void MapView::slot_GPSStatus(GPSNMEA::connectedStatus status)
     }
   else
     {
-      if(!cuApp->actionToggleManualInFlight->isOn())
+      if(!cuApp->actionToggleManualInFlight->isChecked())
         {
           cuApp->actionToggleManualInFlight->setEnabled(false);
         }
@@ -588,7 +601,8 @@ void MapView::slot_GPSStatus(GPSNMEA::connectedStatus status)
 /** This slot is called if a log entry has been made. */
 void MapView::slot_LogEntry()
 {
-  loggingTimer->start(750, true);
+  loggingTimer->setSingleShot(true);
+  loggingTimer->start(750);
   slot_setFlightStatus();
 }
 
@@ -649,8 +663,9 @@ void MapView::slot_vario (const Speed& vario)
 void MapView::slot_wind (Vector& wind)
 {
   QString w;
-  w.sprintf("%d°/%s",wind.getAngleDeg(),
-            wind.getSpeed().getHorizontalText(false,0).latin1() );
+  w = QString("%1/" + wind.getSpeed().getHorizontalText(false,0) ).arg( wind.getAngleDeg() );
+//  w.sprintf("%d°/%s",wind.getAngleDeg(),
+//            wind.getSpeed().getHorizontalText(false,0).toLatin1().data() );
   _wind->setValue (w);
   _theMap->slotNewWind();
 }
@@ -749,21 +764,23 @@ void MapView::slot_SatConstellation()
     current logging and flightmode status */
 void MapView::slot_setFlightStatus()
 {
-  QString status="<html>";
+//  QString status="<html>";
+  QString status="";
   //logging status
 
   IgcLogger* logger = IgcLogger::instance();
 
   if (logger->getisLogging())
     {                    //are we logging right now?
-      if (loggingTimer->isActive())
+/*      if (loggingTimer->isActive())
         {                //  we are. Is the internal loggingTimer active (wich means there was an entry recently)?
-          status+="<b>" + tr("L","Logging") + " </b>"; //    yes, so insert a bold faced L.
+          status+=tr("L","Logging"); //    yes, so insert a L.
+//          status+="<b>" + tr("L","Logging") + " </b>"; //    yes, so insert a bold faced L.
         }
       else
-        {
+        {*/
           status+=tr("L","Logging") + " ";             //    no, so just insert an L
-        }
+//        }
     }
   else
     {
@@ -801,7 +818,7 @@ void MapView::slot_setFlightStatus()
     }
 
   //finalize
-  status+="</html>";
+//  status+="</html>";
   _statusFlightstatus->setText(status);
 
 }

@@ -1787,6 +1787,7 @@ void MapContents::slotReloadWelt2000Data()
   welt2000.load( airportList, gliderSiteList );
 
   _globalMapView->message( tr("Reloading Welt2000 finished") );
+#warning FIXME: AirfieldListView needs to be re-initialized too if it was called before
 
   emit mapDataReloaded();
 
@@ -1873,7 +1874,7 @@ void MapContents::drawList(QPainter* targetPainter,
   case GliderSiteList:
     //list="GliderList";
     //len=gliderSiteList.count();
-    showProgress2WaitScreen( tr("Drawing gilder sites") );
+    showProgress2WaitScreen( tr("Drawing glider sites") );
     for (int i = 0; i < gliderSiteList.size(); i++)
       gliderSiteList.at(i)->drawMapElement(targetPainter);
     break;
@@ -2028,10 +2029,10 @@ void MapContents::drawIsoList(QPainter* targetP)
     }
 
   targetP->save();
+  showProgress2WaitScreen( tr("Drawing isolines") );
 
   for (int i = 0; i < isoList.size(); i++)
   {
-    showProgress2WaitScreen( tr("Drawing isolines") );
     QList<Isohypse*>* iso = isoList.at(i);
 
     if(iso->size() == 0)

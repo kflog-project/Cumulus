@@ -115,7 +115,7 @@ reachable ReachablePoint::getReachable()
   if( _arrivalAlt.getMeters() > 0)
     return yes;
   else if( _arrivalAlt.getMeters() > -ReachableList::getSafetyAltititude()  )
-    return belowSavety;
+    return belowSafety;
   else
     return no;
 }
@@ -303,7 +303,7 @@ reachable ReachableList::getReachable( QPoint position )
     if( arrivalAltMap[ coordinateString ( position ) ] > safetyAlt )
       return yes;
     else if( arrivalAltMap[ coordinateString ( position ) ] > 0 )
-      return belowSavety;
+      return belowSafety;
     else
       return no;
   }
@@ -431,7 +431,7 @@ void ReachableList::show()
 {
   for (int i = 0; i < count(); i++) {
     ReachablePoint *p = at(i);
-    qDebug("%s(%d) %f %d� %d", (const char *)p->getName(), p->getElevation(),  p->getDistance().getKilometers(), p->getBearing(), (int)p->getArrivalAlt().getMeters() );
+    qDebug("%s(%d) %f %d� %d", p->getName().toLatin1().data(), p->getElevation(),  p->getDistance().getKilometers(), p->getBearing(), (int)p->getArrivalAlt().getMeters() );
 
   }
 }

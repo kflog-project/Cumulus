@@ -15,147 +15,34 @@
 **
 ***********************************************************************/
 
-#include <QPushButton>
-#include <QMessageBox>
 #include <QSettings>
-#include <QPixmap>
+#include <QHeaderView>
 
 #include "generalconfig.h"
 #include "gliderlist.h"
-#include "settingspagepolar.h"
 
-
-SettingsPageGliderList::SettingsPageGliderList(QWidget *parent) : QWidget(parent)
-{
-  setObjectName("SettingsPageGliderList");
-
-  resize(parent->size());
-  QBoxLayout *topLayout = new QVBoxLayout(this);
-  topLayout->setSpacing(5);
-  QBoxLayout *editrow=new QHBoxLayout(topLayout);
-  editrow->setSpacing(0);
-  editrow->addStretch(10);
-
-  QPushButton * cmdNew = new QPushButton(this);
-  cmdNew->setPixmap(GeneralConfig::instance()->loadPixmap( "new.png" ));
-  cmdNew->setFlat(true);
-  editrow->addWidget(cmdNew);
-
-  QPushButton * cmdEdit = new QPushButton(this);
-  cmdEdit->setPixmap(GeneralConfig::instance()->loadPixmap( "edit.png" ));
-  cmdEdit->setFlat(true);
-  editrow->addWidget(cmdEdit);
-
-  QPushButton * cmdDel = new QPushButton(this);
-  cmdDel->setPixmap(GeneralConfig::instance()->loadPixmap( "trash.png" ));
-  cmdDel->setFlat(true);
-  editrow->addWidget(cmdDel);
-
-  list = new GliderList(this);
-
-  topLayout->addWidget(list,10);
-
-  connect(cmdNew,  SIGNAL(clicked()), this, SLOT(slot_new()));
-  connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
-  connect(cmdDel,  SIGNAL(clicked()), this, SLOT(slot_delete()));
-}
-
-
-SettingsPageGliderList::~SettingsPageGliderList()
-{
-  // qDebug("SettingsPageGliderList::~SettingsPageGliderList() is called");
-}
-
-
-void SettingsPageGliderList::showEvent(QShowEvent *)
-{
-  list->setFocus();
-}
-
-
-/** Called when a new glider needs to be made. */
-void SettingsPageGliderList::slot_new()
-{
-  SettingsPagePolar *dlg = new SettingsPagePolar(this, 0);
-  connect(dlg, SIGNAL(newGlider(Glider*)), list, SLOT(slot_Added(Glider *)));
-
-  dlg->show();
-}
-
-
-/** Called when the selected glider needs must be opened in the editor */
-void SettingsPageGliderList::slot_edit()
-{
-  Glider *selectedGlider = list->getSelectedGlider();
-
-  if( selectedGlider == 0 )
-    {
-      // @AP: no glider is selected, ignore the request
-      return;
-    }
-
-  SettingsPagePolar *dlg = new SettingsPagePolar(this, selectedGlider );
-  connect(dlg, SIGNAL(editedGlider(Glider *)), list, SLOT(slot_Edited(Glider *)));
-
-  dlg->show();
-}
-
-
-/** Called when the selected glider should be deleted from the catalog */
-void SettingsPageGliderList::slot_delete()
-{
-  Glider * _tmpGlider=list->getSelectedGlider();
-  if (!_tmpGlider)
-    return;
-
-  int answer= QMessageBox::warning(this,tr("Delete?"),tr("Delete highlighted\nglider?"),
-                                   QMessageBox::Ok,
-                                   QMessageBox::Cancel | QMessageBox::Escape | QMessageBox::Default);
-
-  if( answer == QMessageBox::Ok ) {
-    list->slot_Deleted(_tmpGlider);
-  }
-}
-
-
-void SettingsPageGliderList::slot_load()
-{
-  list->fillList();
-}
-
-
-void SettingsPageGliderList::slot_save()
-{
-  list->save();
-}
-
-
-/* Called to ask is confirmation on the close is needed. */
-void SettingsPageGliderList::slot_query_close(bool& warn, QStringList& warnings)
-{
-  /*set warn to 'true' if the data has changed. Note that we can NOT just set warn equal to
-    _changed, because that way we might erase a warning flag set by another page! */
-  if (list->has_changed()) {
-    warn = true;
-    warnings.append(tr("the glider list"));
-  }
-}
-
-/****************************************************************************
-       GliderList
-****************************************************************************/
-
-GliderList::GliderList(QWidget *parent) : Q3ListView(parent)
+GliderList::GliderList(QWidget *parent) : QTreeWidget(parent)
 {
   setObjectName("GliderList");
-  addColumn(tr("Type"));
-  addColumn(tr("Registration"));
-  addColumn(tr("Callsign"));
-  
-  setAllColumnsShowFocus(true);
+
+  setRootIsDecorated(false);
+  setItemsExpandable(false);
+  setUniformRowHeights(true);
+  setSortingEnabled(true);
+  setSelectionBehavior(QAbstractItemView::SelectRows);
+  setSelectionMode(QAbstractItemView::SingleSelection);
+  setColumnCount(4);
+  hideColumn(3);
+
+  QStringList sl;
+  sl << "Type" << "Registration" << "Callsign";
+  setHeaderLabels(sl);
+
+  setColumnWidth( 0, 140 );
+  setColumnWidth( 1, 200 );
+
   _added=0;
   _changed=false;
-  //connect (this, SIGNAL(selectionChanged(QListviewItem*)), this, SLOT(slotSelectionChanged(QListviewItem*)));
 }
 
 
@@ -170,7 +57,7 @@ GliderList::~GliderList()
 /** Retreives the gliders from the config file, and fills the list. */
 void GliderList::fillList()
 {
-  clear();
+//  clear();
   Gliders.clear();
 
   QSettings config( QSettings::UserScope, "Cumulus" );
@@ -183,18 +70,21 @@ void GliderList::fillList()
     Glider * glider=new Glider();
     if (glider->load(&config ,i)) {
       Gliders.append(glider);
-      new Q3ListViewItem(this, glider->type(), glider->registration(), glider->callsign(), QString::number(glider->lastSafeID()));
-      //li->setPixmap(0, _globalMapConfig->getPixmap(wp->type,false,true));  //we will add a pixmap later, so don't delete li!
+      
+      QStringList rowList;
+      rowList << glider->type() << glider->registration() << glider->callsign() << QString::number(glider->lastSafeID());
+      addTopLevelItem( new QTreeWidgetItem(rowList, 0) );
     } else {
       delete glider; //loading failed!
     }
     i++;
   }
 
-  if (i>1) {
+
+/*  if (i>1) {
     this->setCurrentItem(this->firstChild());
   }
-
+*/
   config.endGroup();
   // qDebug("GliderList::fillList(): gliders=%d", Gliders.count());
   _changed = false;
@@ -245,17 +135,17 @@ void GliderList::save()
 Glider *GliderList::getSelectedGlider(bool take)
 {
   int i,n;
-
   n =  Gliders.count();
 
-  Q3ListViewItem* li = this->selectedItem();
+  if ( selectedItems().size() > 0 ) {
 
-  // @ee may be null
-  if (li) {
+    QTreeWidgetItem* selectedItem = selectedItems().at(0);
     Glider * glider;
+
     for (i=0; i < n; i++) {
       glider=Gliders.at(i);
-      if (glider->lastSafeID()==li->text(3).toInt()) {
+
+      if ( glider->lastSafeID() == selectedItem->text(3).toInt() ) {
         if (take) {
           return Gliders.takeAt(i);
         } else {
@@ -273,17 +163,19 @@ Glider *GliderList::getSelectedGlider(bool take)
 void GliderList::slot_Edited(Glider * glider)
 {
   if (glider) {
-    Q3ListViewItem * li;
-    li=this->selectedItem();
-    li->setText(0, glider->type());
-    li->setText(1, glider->registration());
-    li->setText(2, glider->callsign());
-    li->setText(3, QString::number(glider->lastSafeID()));
+    if ( selectedItems().size() > 0 ) {
+      QTreeWidgetItem* selectedItem = selectedItems().at(0);
+
+      selectedItem->setText(0, glider->type());
+      selectedItem->setText(1, glider->registration());
+      selectedItem->setText(2, glider->callsign());
+      selectedItem->setText(3, QString::number(glider->lastSafeID()));
     //li->setPixmap(0, _globalMapConfig->getPixmap(wp->type,false,true));
-    this->sort();
+//    sortItems( sortColumn(), Qt::AscendingOrder );
     //save();
 
-    _changed = true;
+      _changed = true;
+    }
   }
 }
 
@@ -293,41 +185,44 @@ void GliderList::slot_Added(Glider * glider)
 {
   if (glider) {
     _added++;
-    Q3ListViewItem * li;
-    li=new Q3ListViewItem(this);
-    li->setText(0, glider->type());
-    li->setText(1, glider->registration());
-    li->setText(2, glider->callsign());
-    li->setText(3, QString::number(-_added)); //assign temporary ID
-    setSelected(li,true);
-    this->sort();
+    QStringList rowList;
+    rowList << glider->type() << glider->registration() << glider->callsign() << QString::number(-_added);
+    addTopLevelItem( new QTreeWidgetItem(this, rowList, 0) );
+    setCurrentItem( itemAt(0,topLevelItemCount()-1) );
+    sortItems( 0, Qt::AscendingOrder );
     glider->setID(-_added); //store temp ID
     Gliders.append(glider);
     //save();
     _changed = true;
   }
-
 }
 
 
 void GliderList::slot_Deleted(Glider * glider)
 {
-  //remove from listView
-  if ( glider ) {
-    Q3ListViewItemIterator it(this);
+  if ( glider && currentItem() ) {
 
-    for(;it.current();++it) {
-      if (glider->lastSafeID()==it.current()->text(3).toInt()) {
-        delete it.current();
-        break;
-      }
-    }
+    //remove from listView
+//    delete takeTopLevelItem( indexOfTopLevelItem(currentItem()) );
+    delete takeTopLevelItem( currentIndex().row() );
+
+    sortItems( 0, Qt::AscendingOrder );
+    setCurrentItem( 0 );
+
+/*    QList<QTreeWidgetItem*> result = findItems( QString::number(glider->lastSafeID()), Qt::MatchExactly, 3 );
+    if ( result.size() > 0 ) {
+      QTreeWidgetItem* deleteItem = result.at(0);
+      deleteItem = takeTopLevelItem( indexOfTopLevelItem(deleteItem) );
+      if (deleteItem)
+        delete deleteItem;
+    }*/
 
     //remove from catalog
     int index = Gliders.indexOf (glider);
     Gliders.removeAt(index);
     //save();
     _changed = true;
+
   }
 }
 
@@ -388,4 +283,12 @@ void GliderList::setStoredSelection(Glider* glider)
     }
 
   config.endGroup();
+}
+
+void GliderList::selectItemFromReg( const QString& registration )
+{
+  QList<QTreeWidgetItem*> result = findItems( registration, Qt::MatchExactly, 1 );
+  if ( result.size() > 0 ) {
+    setCurrentItem( result.at(0) );
+  }
 }

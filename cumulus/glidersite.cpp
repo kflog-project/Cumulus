@@ -21,7 +21,7 @@
 
 
 GliderSite::GliderSite(const QString& n, const QString& icao, const QString& gps,
-                       const WGSPoint& wgsPos, const QPoint& pos, unsigned int elev, const char* f, bool w, runway *rw)
+                       const WGSPoint& wgsPos, const QPoint& pos, unsigned int elev, const QString& f, bool w, runway *rw)
   : RadioPoint(n, icao, gps, BaseMapElement::Glidersite, wgsPos, pos, f, elev),
     winch(w)
 {

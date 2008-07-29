@@ -18,8 +18,7 @@
 **
 ***********************************************************************/
 
-#include <Q3ListView>
-#include <Q3ListViewItem>
+#include <QTreeWidget>
 #include <QColor>
 #include <QPainter>
 
@@ -30,16 +29,10 @@
  * Reimplements paintCell to allow colored style for
  * non reachable items.
  */
-class ColorListViewItem : public Q3ListViewItem
+class ColorListViewItem : public QTreeWidgetItem
 {
 public:
-    ColorListViewItem( Q3ListView * parent,
-                       QString,
-                       QString = QString::null,
-                       QString = QString::null,
-                       QString = QString::null,
-                       QString = QString::null,
-                       QString = QString::null );
+    ColorListViewItem( QTreeWidget* parent, const QStringList& strings, int type = 0 );
 
     virtual ~ColorListViewItem();
 
@@ -56,13 +49,13 @@ public:
     /**
      * Generate a sorting key that works for each numerical entry
      */
-    virtual QString key(int column, bool ascending) const;
+//    virtual QString key(int column, bool ascending) const;
     
     /**
-     * reimplemented from Q3ListViewItem
+     * reimplemented from QTreeWidgetItem
      */
-    virtual void paintCell(QPainter * p, const QColorGroup & cg,
-                           int column, int width, int align);
+//    virtual void paintCell(QPainter * p, const QColorGroup & cg,
+//                           int column, int width, int align);
 
 private:
     //the color used to paint the item if _colorSet is true

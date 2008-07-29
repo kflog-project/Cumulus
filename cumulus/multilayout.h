@@ -92,7 +92,7 @@ public:
     /**
      * Reimplemented from QLayout
      */
-    QLayoutIterator iterator();
+//    QLayoutIterator iterator();
 
     /**
      * Reimplemented from QLayout

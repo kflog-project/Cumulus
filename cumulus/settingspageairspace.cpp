@@ -143,8 +143,9 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   lvLoadOptions->setItem( row++, 0, drawSuSector );
 
   lvLoadOptions->sortItems( 0 );
-  lvLoadOptions->adjustSize();
-  lvLoadOptions->setColumnWidth( 0, lvLoadOptions->maximumViewportSize().width()-20 );
+//  lvLoadOptions->adjustSize();
+//  lvLoadOptions->setColumnWidth( 0, lvLoadOptions->maximumViewportSize().width()-20 );
+  lvLoadOptions->setColumnWidth(0,360);
 
 }
 
@@ -267,35 +268,41 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
 
   QGridLayout * mVGroupLayout = new QGridLayout(m_separations);
   int row=0;
-  mVGroupLayout->addRowSpacing(0,8);
+  mVGroupLayout->addItem(new QSpacerItem(0, 8), 0, 0);
   row++;
 
   //header
   QLabel* lbl;
   lbl = new QLabel(tr("Vertical Dist."), m_separations);
-  mVGroupLayout->addMultiCellWidget(lbl, row, row, 1, 2);
+  mVGroupLayout->addWidget(lbl,row,1,1,2);
+//  mVGroupLayout->addMultiCellWidget(lbl, row, row, 1, 2);
   lbl = new QLabel(tr("Lateral Dist."), m_separations);
-  mVGroupLayout->addMultiCellWidget(lbl, row, row, 3, 4);
+  mVGroupLayout->addWidget(lbl,row,3,1,2);
+//  mVGroupLayout->addMultiCellWidget(lbl, row, row, 3, 4);
   row++;
 
   lbl = new QLabel(tr("Distance"),m_separations);
   mVGroupLayout->addWidget(lbl, row, 0);
   lbl = new QLabel(tr("Filling"), m_separations);
-  mVGroupLayout->addMultiCellWidget(lbl, row, row, 1, 2);
+  mVGroupLayout->addWidget(lbl,row,1,1,2);
+//  mVGroupLayout->addMultiCellWidget(lbl, row, row, 1, 2);
   lbl = new QLabel(tr("Filling"), m_separations);
-  mVGroupLayout->addMultiCellWidget(lbl, row, row, 3, 4);
+  mVGroupLayout->addWidget(lbl,row,3,1,2);
+//  mVGroupLayout->addMultiCellWidget(lbl, row, row, 3, 4);
   row++;
 
   //row 1
   lbl = new QLabel(tr("Not near"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 0);
-  m_verticalNotNear = new QSpinBox(0, 100, 1, m_separations);
+  m_verticalNotNear = new QSpinBox(m_separations);
+  m_verticalNotNear->setMaximum(100);
   m_verticalNotNear->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(m_verticalNotNear, row, 1);
   //m_verticalNotNear->setEnabled(false);
   lbl = new QLabel(tr("%"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 2);
-  m_lateralNotNear = new QSpinBox(0, 100, 1, m_separations);
+  m_lateralNotNear = new QSpinBox(m_separations);
+  m_lateralNotNear->setMaximum(100);
   m_lateralNotNear->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(m_lateralNotNear, row, 3);
   lbl = new QLabel(tr("%"), m_separations);
@@ -305,12 +312,14 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   //row 2
   lbl = new QLabel(tr("Near"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 0);
-  m_verticalNear = new QSpinBox(0, 100, 1, m_separations);
+  m_verticalNear = new QSpinBox(m_separations);
+  m_verticalNear->setMaximum(100);
   m_verticalNear->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(m_verticalNear, row, 1);
   lbl = new QLabel(tr("%"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 2);
-  m_lateralNear = new QSpinBox(0, 100, 1, m_separations);
+  m_lateralNear = new QSpinBox(m_separations);
+  m_lateralNear->setMaximum(100);
   m_lateralNear->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(m_lateralNear, row, 3);
   lbl = new QLabel(tr("%"), m_separations);
@@ -320,12 +329,14 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   //row 3
   lbl = new QLabel(tr("Very near"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 0);
-  m_verticalVeryNear = new QSpinBox(0, 100, 1, m_separations);
+  m_verticalVeryNear = new QSpinBox(m_separations);
+  m_verticalVeryNear->setMaximum(100);
   m_verticalVeryNear->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(m_verticalVeryNear, row, 1);
   lbl = new QLabel(tr("%"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 2);
-  m_lateralVeryNear = new QSpinBox(0, 100, 1, m_separations);
+  m_lateralVeryNear = new QSpinBox(m_separations);
+  m_lateralVeryNear->setMaximum(100);
   m_lateralVeryNear->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(m_lateralVeryNear, row, 3);
   lbl = new QLabel(tr("%"), m_separations);
@@ -335,12 +346,14 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   //row 4
   lbl = new QLabel(tr("Inside"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 0);
-  m_verticalInside = new QSpinBox(0, 100, 1, m_separations);
+  m_verticalInside = new QSpinBox(m_separations);
+  m_verticalInside->setMaximum(100);
   m_verticalInside->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(m_verticalInside, row, 1);
   lbl = new QLabel(tr("%"), m_separations);
   mVGroupLayout->addWidget(lbl, row, 2);
-  m_lateralInside = new QSpinBox(0, 100, 1, m_separations);
+  m_lateralInside = new QSpinBox(m_separations);
+  m_lateralInside->setMaximum(100);
   m_lateralInside->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(m_lateralInside, row, 3);
   lbl = new QLabel(tr("%"), m_separations);
@@ -506,7 +519,7 @@ void SettingsPageAirspaceFilling::enabledToggled(bool enabled)
 /******************************************************************************/
 
 SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
-  QDialog(parent, Qt::WStyle_StaysOnTop)
+  QDialog(parent, Qt::WindowStaysOnTopHint)
 {
   setObjectName("SettingsPageAirspaceWarnings");
   setModal(true);
@@ -520,7 +533,8 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
 
   QVBoxLayout *topLayout = new QVBoxLayout(this);
 
-  enableWarning = new QCheckBox(tr("Enable Airspace Warning"), this, "EnableWarnings");
+  enableWarning = new QCheckBox(tr("Enable Airspace Warning"), this);
+  enableWarning->setObjectName("EnableWarnings");
   enableWarning->setChecked(true);
 
   connect( enableWarning, SIGNAL(toggled(bool)), SLOT(enabledToggled(bool)));
@@ -531,7 +545,7 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
 
   QGridLayout* mVGroupLayout = new QGridLayout(separations);
   int row=0;
-  mVGroupLayout->addRowSpacing(0,8);
+  mVGroupLayout->addItem(new QSpacerItem(0, 8), 0, 0);
   row++;
 
   //header
@@ -540,21 +554,25 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   lbl = new QLabel(tr("Distance"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
   lbl = new QLabel(tr("Near"), separations);
-  mVGroupLayout->addMultiCellWidget(lbl, row, row, 1, 2);
+  mVGroupLayout->addWidget(lbl,row,1,1,2);
+//  mVGroupLayout->addMultiCellWidget(lbl, row, row, 1, 2);
   lbl = new QLabel(tr("Very Near"), separations);
-  mVGroupLayout->addMultiCellWidget(lbl, row, row, 3, 4);
+  mVGroupLayout->addWidget(lbl,row,3,1,2);
+//  mVGroupLayout->addMultiCellWidget(lbl, row, row, 3, 4);
   row++;
 
   //row 1
   lbl = new QLabel(tr("Lateral"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
-  horiWarnDist = new QSpinBox(0, 99999, 1, separations);
+  horiWarnDist = new QSpinBox(separations);
+  horiWarnDist->setMaximum(99999);
   horiWarnDist->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(horiWarnDist, row, 1);
   lbl = new QLabel(unit, separations);
   mVGroupLayout->addWidget(lbl, row, 2);
 
-  horiWarnDistVN = new QSpinBox(0, 99999,1, separations);
+  horiWarnDistVN = new QSpinBox(separations);
+  horiWarnDistVN->setMaximum(99999);
   horiWarnDistVN->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(horiWarnDistVN, row, 3);
   lbl = new QLabel(unit, separations);
@@ -564,13 +582,15 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   //row 2
   lbl = new QLabel(tr("Above"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
-  aboveWarnDist = new QSpinBox(0, 99999,1, separations);
+  aboveWarnDist = new QSpinBox(separations);
+  aboveWarnDist->setMaximum(99999);
   aboveWarnDist->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(aboveWarnDist, row, 1);
   lbl = new QLabel(unit, separations);
   mVGroupLayout->addWidget(lbl, row, 2);
 
-  aboveWarnDistVN = new QSpinBox(0, 99999,1, separations);
+  aboveWarnDistVN = new QSpinBox(separations);
+  aboveWarnDistVN->setMaximum(99999);
   aboveWarnDistVN->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(aboveWarnDistVN, row, 3);
   lbl = new QLabel(unit, separations);
@@ -580,13 +600,15 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   //row 3
   lbl = new QLabel(tr("Below"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
-  belowWarnDist = new QSpinBox(0, 99999,1, separations);
+  belowWarnDist = new QSpinBox(separations);
+  belowWarnDist->setMaximum(99999);
   belowWarnDist->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(belowWarnDist, row, 1);
   lbl = new QLabel(unit, separations);
   mVGroupLayout->addWidget(lbl, row, 2);
 
-  belowWarnDistVN = new QSpinBox(0, 99999,1, separations);
+  belowWarnDistVN = new QSpinBox(separations);
+  belowWarnDistVN->setMaximum(99999);
   belowWarnDistVN->setButtonSymbols(QSpinBox::PlusMinus);
   mVGroupLayout->addWidget(belowWarnDistVN, row, 3);
   lbl = new QLabel(unit, separations);
@@ -652,7 +674,7 @@ void SettingsPageAirspaceWarnings::slot_save()
   GeneralConfig * conf = GeneralConfig::instance();
   AirspaceWarningDistance awd;
 
-  conf->setAirspaceWarningEnabled(enableWarning->isOn());
+  conf->setAirspaceWarningEnabled(enableWarning->isChecked());
 
   // @AP: Store warning distances always as meters
   if( altUnit == Altitude::meters )

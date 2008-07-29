@@ -24,6 +24,10 @@
 #include <QPolygon>
 #include <QString>
 
+#include <stdint.h>
+typedef int32_t fp24p8_t;
+typedef int32_t fp8p24_t;
+
 #include "projectionlambert.h"
 #include "projectioncylindric.h"
 
@@ -102,11 +106,12 @@ class MapMatrix : public QObject
    * @return the mapped polygon
    */
     
-  QPolygon map(const QPolygon& pPolygon) const
+  QPolygon map(const QPolygon &a) const;
+/*  QPolygon map(const QPolygon& pPolygon) const
   {
     return worldMatrix.map(pPolygon);
   };
-
+*/
   /**
    * Maps the given projected point into the current map-matrix.
    *
@@ -115,11 +120,12 @@ class MapMatrix : public QObject
    * @return the mapped point
    */
     
-  QPoint map(const QPoint& point) const
+  QPoint map(const QPoint &p) const;
+/*  QPoint map(const QPoint& point) const
   {
     return worldMatrix.map(point);
   };
-
+*/
 
   /**
    * Maps the given projected rect into the current map-matrix.
@@ -129,6 +135,7 @@ class MapMatrix : public QObject
    * @return the mapped rect
    */
 
+/*  QRect map(const QRect& rect) const;*/
   QRect map(const QRect& rect) const
   {
     return worldMatrix.mapRect(rect);
@@ -417,7 +424,9 @@ class MapMatrix : public QObject
     
   /** optimisation to prevent recurring recalculation of this value */
   int _MaxScaleToCScaleRatio;
-    
+
+  fp24p8_t m11, m12, m21, m22, dx, dy, fx, fy;
+
   /** Root path to the map directories */
   QString mapRootDir;
 

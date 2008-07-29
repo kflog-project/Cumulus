@@ -15,18 +15,15 @@
 **
 ***********************************************************************/
 
-#ifndef AIRFIELDISTVIEW_H
-#define AIRFIELDISTVIEW_H
+#ifndef AIRFIELDLISTVIEW_H
+#define AIRFIELDLISTVIEW_H
 
-#include <QWidget>
-#include <Q3ListView>
-#include <Q3ListViewItem>
 #include <QPushButton>
 #include <QBoxLayout>
 #include <QMainWindow>
 
+#include "airfieldlistwidget.h"
 #include "waypoint.h"
-#include "listviewfilter.h"
 #include "mapcontents.h"
 
 /**
@@ -46,23 +43,22 @@ public:
     /**
      * @returns a pointer to the currently highlighted waypoint.
      */
-    wayPoint *getSelectedAirfield(Q3ListView *list = 0);
+    wayPoint *getSelectedAirfield(QTreeWidget *list = 0);
 
-    enum MapContents::MapContentsListID itemList[3];
-
-    /**
-     * Called when the selected waypoint should be deleted from the catalog
-     */
-    void fillWpList(Q3ListView *list = 0, ListViewFilter *filter = 0);
+    AirfieldListWidget* listWidget() {
+      return listw;
+    };
+    
+    wayPoint* getSelectedWaypoint() {
+      return listw->getSelectedWaypoint();
+    };
 
 private:
 
-    Q3ListView* list;
+    AirfieldListWidget* listw;
     QMainWindow *par;
     QBoxLayout *buttonrow;
-    ListViewFilter *filter;
     wayPoint *wp;
-    bool listFilled;
     QPushButton *cmdSelect;
 
 protected:
@@ -112,16 +108,6 @@ signals: // Signals
      * Emitted if a new home position is selected
      */
     void newHomePosition(const QPoint*);
-
-private:
-
-class _AirfieldItem : public Q3ListViewItem
-    {
-    public:
-        _AirfieldItem(Q3ListView*, Airport*);
-        Airport* airport;
-
-    };
 
 };
 

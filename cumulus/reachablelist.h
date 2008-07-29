@@ -25,7 +25,7 @@
 #include <QPoint>
 #include <QList>
 #include <QMap>
-#include <Q3PtrCollection>
+//#include <Q3PtrCollection>
 
 #include "generalconfig.h"
 #include "mapmatrix.h"
@@ -37,7 +37,7 @@
 #include "speed.h"
 #include "waypoint.h"
 
-enum reachable{no, belowSavety, yes};
+enum reachable{no, belowSafety, yes};
 
 // class for one entry in ReachableList
 class ReachablePoint

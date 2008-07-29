@@ -70,6 +70,6 @@ void MapElementList::createSet()
 void MapElementList::destroySet()
 {
   m_set.clear();
-  qDebug( "Deleted set for list %s, probably no longer needed.", name() );
+  qDebug( "Deleted set for list %s, probably no longer needed.", objectName().toLatin1().data() );
 }
 

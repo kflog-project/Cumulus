@@ -151,21 +151,21 @@ int WGSPoint::degreeToNum(QString inDegree)
     QRegExp degreeDMM("^[0-1]?[0-9][0-9]\260[ ]*[0-5][0-9].[0-9][0-9][0-9]'");
     QRegExp number("^-?[0-9]+$");
 
-    if(number.search(inDegree) != -1) {
+    if(number.indexIn(inDegree) != -1) {
         return inDegree.toInt();
-    } else if(degreeDMS.search(inDegree) != -1) {
+    } else if(degreeDMS.indexIn(inDegree) != -1) {
         int deg = 0, min = 0, sec = 0, result = 0;
 
         QRegExp deg1("\260");
-        deg = inDegree.mid(0, deg1.search(inDegree)).toInt();
-        inDegree = inDegree.mid(deg1.search(inDegree) + 1, inDegree.length());
+        deg = inDegree.mid(0, deg1.indexIn(inDegree)).toInt();
+        inDegree = inDegree.mid(deg1.indexIn(inDegree) + 1, inDegree.length());
 
         QRegExp deg2("'");
-        min = inDegree.mid(0, deg2.search(inDegree)).toInt();
-        inDegree = inDegree.mid(deg2.search(inDegree) + 1, inDegree.length());
+        min = inDegree.mid(0, deg2.indexIn(inDegree)).toInt();
+        inDegree = inDegree.mid(deg2.indexIn(inDegree) + 1, inDegree.length());
 
         QRegExp deg3("\"");
-        sec = inDegree.mid(0, deg3.search(inDegree)).toInt();
+        sec = inDegree.mid(0, deg3.indexIn(inDegree)).toInt();
 
         result = (int)rint((600000.0 * deg) + (10000.0 * (min + (sec / 60.0))));
 
@@ -174,24 +174,24 @@ int WGSPoint::degreeToNum(QString inDegree)
         // result += 1;
 
         QRegExp dir("[swSW]$");
-        if(dir.search(inDegree) >= 0) {
+        if(dir.indexIn(inDegree) >= 0) {
             // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), -result);
             return -result;
         }
 
         // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), result);
         return result;
-    } else if( degreeDMM.search(inDegree) != -1) {
+    } else if( degreeDMM.indexIn(inDegree) != -1) {
         int deg = 0, result = 0;
         double min = 0;
 
         QRegExp deg1("\260");
-        deg = inDegree.mid(0, deg1.search(inDegree)).toInt();
-        inDegree = inDegree.mid(deg1.search(inDegree) + 1, inDegree.length());
+        deg = inDegree.mid(0, deg1.indexIn(inDegree)).toInt();
+        inDegree = inDegree.mid(deg1.indexIn(inDegree) + 1, inDegree.length());
 
         QRegExp deg2("'");
-        min = inDegree.mid(0, deg2.search(inDegree)).toDouble();
-        inDegree = inDegree.mid(deg2.search(inDegree) + 1, inDegree.length());
+        min = inDegree.mid(0, deg2.indexIn(inDegree)).toDouble();
+        inDegree = inDegree.mid(deg2.indexIn(inDegree) + 1, inDegree.length());
 
         result = (int)rint((600000.0 * deg) + (10000.0 * (min)));
 
@@ -201,7 +201,7 @@ int WGSPoint::degreeToNum(QString inDegree)
 
         QRegExp dir("[swSW]$");
 
-        if(dir.search(inDegree) >= 0) {
+        if(dir.indexIn(inDegree) >= 0) {
             // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), -result);
             return -result;
         }
@@ -212,7 +212,7 @@ int WGSPoint::degreeToNum(QString inDegree)
 
     // @AP: inform the user that something has going wrong
     qWarning("%s(%d) degreeToNum(): Wrong input format %s",
-             __FILE__, __LINE__, inDegree.latin1() );
+             __FILE__, __LINE__, inDegree.toLatin1().data() );
 
     return 0; // that is the pitfall, all is set to zero on error
 }

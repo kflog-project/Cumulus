@@ -30,13 +30,15 @@
 extern MapConfig *_globalMapConfig;
 
 VarioModeDialog::VarioModeDialog(QWidget *parent) :
-    QDialog( parent, Qt::WStyle_StaysOnTop )
+    QDialog( parent, Qt::WindowStaysOnTopHint )
 {
   setObjectName("VarioModeDialog");
   setModal(true);
   setWindowTitle (tr("Vario"));
 
-  setFont(QFont ( "Helvetica", 16, QFont::Bold ));
+  QFont b = font();
+  b.setBold(true);
+  setFont(b);
 
   QGridLayout* gridLayout = new QGridLayout(this);
   gridLayout->setMargin(5);
@@ -287,8 +289,8 @@ void VarioModeDialog::change( int newStep )
       break;
     }
 
-  spinTime->setLineStep(step);
-  spinTime->setMinValue(min);
+  spinTime->setSingleStep(step);
+  spinTime->setMinimum(min);
   setTimer();
 }
 

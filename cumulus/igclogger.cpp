@@ -71,7 +71,8 @@ void IgcLogger::Start()
 {
   // load logger record time interval, time im ms
   int interval = GeneralConfig::instance()->getLoggerInterval() * 1000;
-  timer->start( interval, FALSE);
+  timer->setSingleShot(false);
+  timer->start( interval);
 }
 
 
@@ -95,7 +96,7 @@ void IgcLogger::slotMakeFixEntry()
 
   if( fasterLoggingTime.elapsed() > 30000 ) {
     // reset logging to normal mode after 30 seconds
-     timer->changeInterval( GeneralConfig::instance()->getLoggerInterval() * 1000 );
+     timer->setInterval( GeneralConfig::instance()->getLoggerInterval() * 1000 );
   }
 
   if( calculator->samplelist.count() == 0 ) {
@@ -140,7 +141,7 @@ void IgcLogger::slotTaskSectorTouched()
 
   // activate a shorter logger interval
   fasterLoggingTime.start();
-  timer->changeInterval( 1000 ); // log every second up to now
+  timer->setInterval( 1000 ); // log every second up to now
 }
 
 void IgcLogger::Standby()
@@ -173,8 +174,8 @@ void IgcLogger::CreateLogfile()
 
   qDebug("Created Logfile %s", fname.toLatin1().data());
 
-  _logfile.setName(fname);
-  _logfile.open(IO_WriteOnly | IO_Translate);
+  _logfile.setFileName(fname);
+  _logfile.open(QIODevice::ReadOnly | QIODevice::Text );
   _stream.setDevice(&_logfile);
   writeHeaders();
   _logMode=on;
@@ -429,13 +430,13 @@ QString IgcLogger::createFileName(const QString& path)
 
   int i=1;
   QString result=name + QString::number(i,36);
-  while (QFile(path + "/" + result.upper() + ".IGC").exists()) {
+  while (QFile(path + "/" + result.toUpper() + ".IGC").exists()) {
     i++;
     result=name + QString::number(i,36);
   }
   flightnumber=i; //store the resulting number so we can use it in the logfile itself
 
-  return path + "/" + result.upper() + ".IGC";
+  return path + "/" + result.toUpper() + ".IGC";
 }
 
 

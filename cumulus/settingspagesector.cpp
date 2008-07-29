@@ -47,6 +47,8 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
 
   GeneralConfig *conf = GeneralConfig::instance();
 
+  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
   QGridLayout *topLayout = new QGridLayout( this );
   topLayout->setMargin(3);
   topLayout->setSpacing(3);
@@ -86,19 +88,19 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
 
   ntScheme = new QButtonGroup;
 
-  QRadioButton* nearst   = new QRadioButton( tr("Nearst"), this );
+  QRadioButton* nearest   = new QRadioButton( tr("Nearest"), this );
   QRadioButton* touched  = new QRadioButton( tr("Touched"), this );
  
-  ntScheme->addButton( nearst, 0 );
+  ntScheme->addButton( nearest, 0 );
   ntScheme->addButton( touched, 1 );
 
   vbox = new QVBoxLayout;
-  vbox->addWidget( nearst );
+  vbox->addWidget( nearest );
   vbox->addWidget( touched );
   vbox->addStretch(1);
   ssBox->setLayout(vbox);
 
-  nearst->setEnabled(true);
+  nearest->setEnabled(true);
   touched->setEnabled(true);
   touched->setChecked(true);
 

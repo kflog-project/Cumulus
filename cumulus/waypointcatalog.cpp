@@ -88,7 +88,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
   qint8 fileType;
   quint16 fileFormat;
 
-  // qDebug("Read waypoint catalog from %s", fName.latin1() );
+  // qDebug("Read waypoint catalog from %s", fName.toLatin1().data() );
 
   // default file location: $HOME/cumulus/cumulus.kwp
 
@@ -96,7 +96,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
 
   if (f.exists())
     {
-      if (f.open(IO_ReadOnly))
+      if (f.open(QIODevice::ReadOnly))
         {
 
           QDataStream in(&f);
@@ -168,7 +168,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
               w->surface = wpSurface;
               w->comment = wpComment;
               w->importance = ( enum wayPoint::Importance ) wpImportance;
-              // qDebug("Waypoint read: %s (%s - %s)",w->name.latin1(),w->description.latin1(),w->icao.latin1());
+              // qDebug("Waypoint read: %s (%s - %s)",w->name.toLatin1().data(),w->description.latin1(),w->icao.latin1());
 
               wpList->append(w);
 
@@ -176,7 +176,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
 
               if (conf->getHomeWp()->origP == w->origP)
                 {
-                  qDebug("Found homesite: %s",wpName.latin1());
+                  qDebug("Found homesite: %s", wpName.toLatin1().data() );
                   conf->setHomeWp(w);
                 }
             }
@@ -191,7 +191,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
     }
 
   qDebug("WaypointCatalog::read(): %d items read from %s",
-         wpList->count(), fName.latin1() );
+         wpList->count(), fName.toLatin1().data() );
 
   return ok;
 }
@@ -237,11 +237,11 @@ bool WaypointCatalog::write( QString *catalog, QList<wayPoint*> *wpList )
 
   QFile f;
 
-  f.setName(fName);
+  f.setFileName(fName);
 
-  if (f.open(IO_WriteOnly))
+  if (f.open(QIODevice::WriteOnly))
     {
-      // qDebug("WaypointCatalog::write(): fileName=%s", fName.latin1() );
+      // qDebug("WaypointCatalog::write(): fileName=%s", fName.toLatin1().data() );
       QDataStream out(& f);
       // write fileheader
       out << quint32(KFLOG_FILE_MAGIC);
@@ -291,7 +291,7 @@ bool WaypointCatalog::write( QString *catalog, QList<wayPoint*> *wpList )
     }
 
   qDebug("WaypointCatalog::write(): %d items written to %s",
-         wpList->count(), fName.latin1());
+         wpList->count(), fName.toLatin1().data() );
 
   return ok;
 }

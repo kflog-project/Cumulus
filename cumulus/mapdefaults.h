@@ -453,10 +453,14 @@
 #define AIRC_BRUSH_COLOR_3 QColor(0,120,0)
 #define AIRC_BRUSH_COLOR_4 QColor(0,120,0)
 
-#define AIRC_BRUSH_STYLE_1 Qt::Dense5Pattern
-#define AIRC_BRUSH_STYLE_2 Qt::Dense5Pattern
-#define AIRC_BRUSH_STYLE_3 Qt::Dense5Pattern
-#define AIRC_BRUSH_STYLE_4 Qt::Dense5Pattern
+#define AIRC_BRUSH_STYLE_1 Qt::NoBrush
+#define AIRC_BRUSH_STYLE_2 Qt::NoBrush
+#define AIRC_BRUSH_STYLE_3 Qt::NoBrush
+#define AIRC_BRUSH_STYLE_4 Qt::NoBrush
+//#define AIRC_BRUSH_STYLE_1 Qt::Dense5Pattern
+//#define AIRC_BRUSH_STYLE_2 Qt::Dense5Pattern
+//#define AIRC_BRUSH_STYLE_3 Qt::Dense5Pattern
+//#define AIRC_BRUSH_STYLE_4 Qt::Dense5Pattern
 
 
 // [Airspace D]
@@ -668,10 +672,14 @@
 #define DNG_BRUSH_COLOR_3 QColor(0,0,128)
 #define DNG_BRUSH_COLOR_4 QColor(0,0,128)
 
-#define DNG_BRUSH_STYLE_1 Qt::HorPattern
-#define DNG_BRUSH_STYLE_2 Qt::HorPattern
-#define DNG_BRUSH_STYLE_3 Qt::HorPattern
-#define DNG_BRUSH_STYLE_4 Qt::HorPattern
+//#define DNG_BRUSH_STYLE_1 Qt::HorPattern
+//#define DNG_BRUSH_STYLE_2 Qt::HorPattern
+//#define DNG_BRUSH_STYLE_3 Qt::HorPattern
+//#define DNG_BRUSH_STYLE_4 Qt::HorPattern
+#define DNG_BRUSH_STYLE_1 Qt::NoBrush
+#define DNG_BRUSH_STYLE_2 Qt::NoBrush
+#define DNG_BRUSH_STYLE_3 Qt::NoBrush
+#define DNG_BRUSH_STYLE_4 Qt::NoBrush
 
 
 // [Restricted]

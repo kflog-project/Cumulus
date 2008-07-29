@@ -24,7 +24,7 @@
 #include "airport.h"
 
 WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent) :
-  QWidget(parent, Qt::WStyle_StaysOnTop)
+  QWidget(parent, Qt::WindowStaysOnTopHint)
 {
   setObjectName("WPEditDialogPageAero");
 
@@ -44,7 +44,13 @@ WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent) :
   edtFrequency->setMaxLength(7); // limit name to 7 characters
   topLayout->addWidget(edtFrequency,row++,1);
 
-  topLayout->addRowSpacing(row++,10);
+/*
+  topLayout->addItem(new QSpacerItem(0, 8), 0, 0);
+  mVGroupLayout->addWidget(lbl,row,1,1,2);
+  mVGroupLayout->addWidget(lbl,row,3,1,2);
+*/
+  topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
+//  topLayout->addRowSpacing(row++,10);
 
   QLabel * lblRun = new QLabel(tr("Runway heading:"), this);
   topLayout->addWidget(lblRun,row,0);
@@ -61,7 +67,8 @@ WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent) :
   QLabel * lblLenUnit = new QLabel(Distance::getText(-1,true), this);
   elevLayout->addWidget(lblLenUnit);
 
-  topLayout->addRowSpacing(row++,10);
+  topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
+//  topLayout->addRowSpacing(row++,10);
 
   chkLandable = new QCheckBox(tr("Landable"), this);
   topLayout->addWidget(chkLandable, row++ , 1);
@@ -81,7 +88,7 @@ WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent) :
       cmbSurface->addItem( tlist.at(i) );
     }
 
-  cmbSurface->setCurrentItem(cmbSurface->count()-1);
+  cmbSurface->setCurrentIndex(cmbSurface->count()-1);
   topLayout->setRowStretch(row++,10);
 }
 
@@ -123,7 +130,7 @@ void WPEditDialogPageAero::slot_save(wayPoint * wp)
 /** return internal type of surface */
 int WPEditDialogPageAero::getSurface()
 {
-  int s = cmbSurface->currentItem();
+  int s = cmbSurface->currentIndex();
 
   if (s != -1)
     {
@@ -153,5 +160,5 @@ void WPEditDialogPageAero::setSurface(int s)
       s = Airport::getSortedTranslationList().indexOf(Airport::item2Text(0));
     }
 
-  cmbSurface->setCurrentItem(s);
+  cmbSurface->setCurrentIndex(s);
 }

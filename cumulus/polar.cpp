@@ -118,7 +118,7 @@ void Polar::setWater (int water, int bugs)
     _a = _aa / A;      // negative
     _b = _bb / B;      // positive
     _c = _cc * A * B;  // negative
-    // we just increase the sinking rate; this is not quite correct but gives reasonable results
+    // we just increase the #sinking rate; this is not quite correct but gives reasonable results
 }
 
 
@@ -350,36 +350,38 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
     int y = (int)(sink*Y)+5;
     QString msg;
     if (Speed::getVerticalUnit() != Speed::metersPerSecond) {
-        msg.sprintf(" = %1.1f m/s", sink.getMps());
+        msg = QString(" = %1 m/s").arg( sink.getMps(), 0, 'f', 1 );
+//        msg.sprintf(" = %1.1f m/s", sink.getMps());
         p.drawText(0, y+=font.pixelSize()+2, sink.getVerticalText() + msg);
     }
     if (fabs (wind.getMps()) > 0.01 && fabs (lift.getMps()) > 0.01 ) {
-        p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Wind: ") + wind.getHorizontalText() +
-                    ", " + QObject::tr("Lift: ")+lift.getVerticalText());
+        p.drawText (0, y+=font.pixelSize()+2, tr("Wind: ") + wind.getHorizontalText() +
+                    ", " + tr("Lift: ")+lift.getVerticalText());
     } else if (fabs (wind.getMps()) > 0.01 ) {
-        p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Wind: ") + wind.getHorizontalText());
+        p.drawText (0, y+=font.pixelSize()+2, tr("Wind: ") + wind.getHorizontalText());
     } else if (fabs (lift.getMps()) > 0.01) {
-        p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Lift: ")+lift.getVerticalText());
+        p.drawText (0, y+=font.pixelSize()+2, tr("Lift: ")+lift.getVerticalText());
     }
 
     if ( _emptyWeight < _grossWeight )
-        p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Added load: %1 Kg").arg((int)(_grossWeight-_emptyWeight)));
+        p.drawText (0, y+=font.pixelSize()+2, tr("Added load: %1 Kg").arg((int)(_grossWeight-_emptyWeight)));
 
     if (_water != 0)
-        p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Water ballast: %1 l").arg(_water));
+        p.drawText (0, y+=font.pixelSize()+2, tr("Water ballast: %1 l").arg(_water));
     if (_bugs != 0)
-        p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Bug factor: %1 %").arg(_bugs));
+        p.drawText (0, y+=font.pixelSize()+2, tr("Bug factor: %1 %").arg(_bugs));
 
-    // p.drawText(0, y+=font.pixelSize()+2, QObject::tr("McCready: ")+mc.getTextVertical());
-    p.drawText(0, y+=font.pixelSize()+2, QObject::tr("Best speed: ") + bestspeed.getHorizontalText());
-    p.drawText(0, y+=font.pixelSize()+2, QObject::tr("Sinking: ") + getSink(bestspeed).getVerticalText(true, 2));
+    // p.drawText(0, y+=font.pixelSize()+2, tr("McCready: ")+mc.getTextVertical());
+    p.drawText(0, y+=font.pixelSize()+2, tr("Best speed: ") + bestspeed.getHorizontalText());
+    p.drawText(0, y+=font.pixelSize()+2, tr("Sinking: ") + getSink(bestspeed).getVerticalText(true, 2));
 
-    msg.sprintf (QObject::tr("Best l/d:")+" %1.1f", bestld);
+    msg = QString(tr("Best l/d: %1")).arg( bestld, 0, 'f', 1 );
+//    msg.sprintf (tr("Best l/d:")+" %1.1f", bestld);
     p.drawText(0, y+=font.pixelSize()+2, msg);
 
     p.setPen (Qt::black);
-    msg.sprintf (QObject::tr("Use cursor keys to simulate"));
+    msg = tr("Use cursor keys to simulate");
     p.drawText(0, y+=font.pixelSize()+5, msg);
-    msg.sprintf (QObject::tr("wind and lift"));
+    msg = tr("wind and lift");
     p.drawText(0, y+=font.pixelSize()+2, msg);
 }

@@ -135,8 +135,9 @@ void SettingsPageMap::fillLoadOptionList()
   lvLoadOptions->setItem( row++, 0, liTargetLine );
 
   lvLoadOptions->sortItems( 0 );
-  lvLoadOptions->adjustSize();
-  lvLoadOptions->setColumnWidth( 0, lvLoadOptions->maximumViewportSize().width()-20 );
+//  lvLoadOptions->adjustSize();
+//  lvLoadOptions->setColumnWidth( 0, lvLoadOptions->maximumViewportSize().width()-20 );
+  lvLoadOptions->setColumnWidth(0,360);
 }
 
 /* Called to ask is confirmation on the close is needed. Not yet

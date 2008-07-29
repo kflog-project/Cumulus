@@ -137,7 +137,7 @@ uint OpenAirParser::load( QList<Airspace*>& list )
       if( parse( txtName, list ) )
         loadCounter++;
 
-      preselect.remove( preselect.begin() );
+      preselect.removeAt( 0 );
       continue;
     }
 
@@ -147,12 +147,12 @@ uint OpenAirParser::load( QList<Airspace*>& list )
     // Now we have to check if there's to find a source file with
     // extension txt after the binary file
     txcName = preselect.first();
-    preselect.remove( preselect.begin() );
+    preselect.removeAt( 0 );
     txtName = txcName;
     txtName.replace( txtName.length()-1, 1, QString("t") );
 
     if ( ! preselect.isEmpty() && txtName == preselect.first() ) {
-      preselect.remove( preselect.begin() );
+      preselect.removeAt( 0 );
       // We found the related source file and will do some checks to
       // decide which type of file will be read in.
 
@@ -166,7 +166,7 @@ uint OpenAirParser::load( QList<Airspace*>& list )
         if( parse( txtName, list ) )
           loadCounter++;
 
-        preselect.remove( preselect.begin() );
+        preselect.removeAt( 0 );
         continue;
       }
 
@@ -189,7 +189,7 @@ uint OpenAirParser::load( QList<Airspace*>& list )
       }
 
       // Check date-time against the config file
-      QString confName = fi.dirPath(TRUE) + "/" + fi.baseName() + "_mappings.conf";
+      QString confName = fi.path() + "/" + fi.baseName() + "_mappings.conf";
       QFileInfo fiConf( confName );
 
       if( fiConf.exists() && fi.isReadable() &&
@@ -241,7 +241,7 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
   t.start();
   QFile source(path);
 
-  if (!source.open(IO_ReadOnly)) {
+  if (!source.open(QIODevice::ReadOnly)) {
     qWarning("OpenAirParser: Cannot open airspace file %s!", path.toLatin1().data());
     return false;
   }
@@ -261,7 +261,7 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
 #endif
 
     _buffer->setBuffer( _bufData );
-    _buffer->open(IO_ReadWrite);
+    _buffer->open(QIODevice::ReadWrite);
     _outbuf->setDevice( _buffer );
   }
 
@@ -280,8 +280,8 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
       //empty line, ignore
     } else {
       // delete comments at the end of the line before parsing it
-      line = QStringList::split('*', line)[0];
-      line = QStringList::split('#', line)[0];
+      line = line.split('*')[0];
+      line = line.split('#')[0];
       parseLine(line);
     }
     line=in.readLine();
@@ -314,12 +314,12 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
 
       // build the compiled file name with the extension .txc from
       // the source file name
-      QString cfn = fi.dirPath( true ) + "/" + fi.baseName() + ".txc";
+      QString cfn = fi.path() + "/" + fi.baseName() + ".txc";
 
-      compFile.setName( cfn );
+      compFile.setFileName( cfn );
       out.setDevice( &compFile );
 
-      if( !compFile.open(IO_WriteOnly) ) {
+      if( !compFile.open(QIODevice::WriteOnly) ) {
         // Can't open output file, reset compile flag
         qWarning("OpenAirParser: Cannot open file %s!", cfn.toLatin1().data());
         _doCompile = false;
@@ -590,11 +590,11 @@ void OpenAirParser::initializeStringMapping(const QString& mapFilePath)
   //construct file name for mapping file
   QFileInfo fi(mapFilePath);
 
-  QString path = fi.dirPath() + "/" + fi.baseName() + "_mappings.conf";
+  QString path = fi.path() + "/" + fi.baseName() + "_mappings.conf";
   fi.setFile(path);
   if (fi.exists() && fi.isFile() && fi.isReadable()) {
     QFile f(path);
-    if (!f.open(IO_ReadOnly)) {
+    if (!f.open(QIODevice::ReadOnly)) {
       qWarning("OpenAirParser: Cannot open airspace mapping file %s!", path.toLatin1().data());
       return;
     }
@@ -612,12 +612,13 @@ void OpenAirParser::initializeStringMapping(const QString& mapFilePath)
       } else if (line.isEmpty()) {
         //empty line, ignore
       } else {
-        int pos = line.find("=");
+        int pos = line.indexOf("=");
         if (pos>0 && pos < int(line.length())) {
           QString key = line.left(pos).simplified();
           QString value = line.mid(pos+1).simplified();
           qDebug("  added '%s' => '%s' to mappings", key.toLatin1().data(), value.toLatin1().data());
-          m_stringTypeMap.replace(key, value);
+          m_stringTypeMap.remove(key);
+          m_stringTypeMap.insert(key, value);
         }
       }
       line=in.readLine();
@@ -850,19 +851,19 @@ bool OpenAirParser::parseCoordinatePart(QString& line, int& lat, int& lon)
 
   // qDebug("%s value=%d", line.ascii(), value);
 
-  if (line.find('N')>0) {
+  if (line.indexOf('N')>0) {
     lat=value;
     return true;
   }
-  if (line.find('S')>0) {
+  if (line.indexOf('S')>0) {
     lat=-value;
     return true;
   }
-  if (line.find('E')>0) {
+  if (line.indexOf('E')>0) {
     lon=value;
     return true;
   }
-  if (line.find('W')>0) {
+  if (line.indexOf('W')>0) {
     lon=-value;
     return true;
   }
@@ -882,7 +883,7 @@ bool OpenAirParser::parseCoordinate(QString& line, QPoint& coord)
 
 bool OpenAirParser::parseVariable(QString line)
 {
-  QStringList arguments=QStringList::split('=', line);
+  QStringList arguments=line.split('=');
   if (arguments.count()<2)
     return false;
 
@@ -934,23 +935,23 @@ bool OpenAirParser::makeAngleArc(QString line)
   bool ok;
   double radius, angle1, angle2;
 
-  QStringList arguments = QStringList::split(',', line);
+  QStringList arguments = line.split(',');
   if (arguments.count()<3)
     return false;
 
-  radius=arguments[0].stripWhiteSpace().toDouble(&ok);
+  radius=arguments[0].trimmed().toDouble(&ok);
 
   if ( !ok ) {
     return false;
   }
 
-  angle1=arguments[1].stripWhiteSpace().toDouble(&ok);
+  angle1=arguments[1].trimmed().toDouble(&ok);
 
   if (!ok) {
     return false;
   }
 
-  angle2=arguments[2].stripWhiteSpace().toDouble(&ok);
+  angle2=arguments[2].trimmed().toDouble(&ok);
 
   if (!ok) {
     return false;
@@ -1027,7 +1028,7 @@ bool OpenAirParser::makeCoordinateArc(QString line)
   double radius, angle1, angle2;
 
   //split of the coordinates, and check the number of arguments
-  QStringList arguments = QStringList::split(',', line);
+  QStringList arguments = line.split(',');
   if (arguments.count()<2)
     return false;
 
@@ -1155,7 +1156,7 @@ bool OpenAirParser::readCompiledFile( QString &path, QList<Airspace*>& list )
 
   QFile inFile(path);
 
-  if( !inFile.open(IO_ReadOnly) ) {
+  if( !inFile.open(QIODevice::ReadOnly) ) {
     qWarning("OpenAirParser: Cannot open airspace file %s!", path.toLatin1().data());
     return false;
   }
@@ -1284,7 +1285,7 @@ bool OpenAirParser::setHeaderData( QString &path )
   }
 
   QFile inFile(path);
-  if( !inFile.open(IO_ReadOnly) ) {
+  if( !inFile.open( QIODevice::ReadOnly) ) {
     qWarning("OpenAirParser: Cannot open airspace file %s!", path.toLatin1().data());
     return false;
   }

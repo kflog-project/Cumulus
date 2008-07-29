@@ -19,7 +19,7 @@
 #define REACHPOINTLISTVIEW_H
 
 #include <QWidget>
-#include <Q3ListView>
+#include <QTreeWidget>
 #include <QPixmap>
 #include <QBoxLayout>
 #include <QPushButton>
@@ -101,7 +101,7 @@ signals: // Signals
 
 
 private:
-    Q3ListView* list;
+    QTreeWidget* list;
     CumulusApp * par;
     QBoxLayout * buttonrow;
     wayPoint    selectedWp;

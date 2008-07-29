@@ -61,9 +61,9 @@ void CoordEdit::keyPressEvent (QKeyEvent *e)
   bool isNumber;
 
   if (e->text() != "") {
-    s = e->text().upper();
+    s = e->text().toUpper();
     col = cursorPosition();
-    if (hasMarkedText()) {
+    if (hasSelectedText()) {
       deselect();
     }
 

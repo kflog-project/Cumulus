@@ -46,12 +46,12 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
 
   QVBoxLayout *topLayout = new QVBoxLayout( this );
 
-  if( ! showButtons )
-    {
-      topLayout->setMargin(0);
-    }
+  if( ! showButtons ) {
+    topLayout->setMargin(0);
+  }
 
-  QHBoxLayout *total = new QHBoxLayout( topLayout );
+  QHBoxLayout *total = new QHBoxLayout;
+  topLayout->addLayout( total );
 
   distTotal  = new QLabel("", this );
   speedTotal = new QLabel("", this );
@@ -61,7 +61,30 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
   total->addWidget( speedTotal );
   total->addWidget( timeTotal );
 
-  list= new Q3ListView(this, "taskpointList");
+  list = new QTreeWidget( this );
+  list->setObjectName("TaskListView");
+
+  list->setRootIsDecorated(false);
+  list->setItemsExpandable(false);
+  list->setUniformRowHeights(true);
+  list->setSortingEnabled(false);
+  list->setSelectionMode(QAbstractItemView::NoSelection);
+  list->setColumnCount(7);
+  list->hideColumn(6);
+  list->setFocusPolicy(Qt::NoFocus);
+//  list->setEnabled(false);
+
+  QStringList sl;
+  sl << tr("Type") << tr("Name") << tr("Dist.") << tr("Time") << tr("Description") << tr("SS");
+  list->setHeaderLabels(sl);
+
+  list->setColumnWidth( 0, 102 );
+  list->setColumnWidth( 1, 136 );
+  list->setColumnWidth( 2, 74 );
+  list->setColumnWidth( 3, 72 );
+  list->setColumnWidth( 4, 196 );
+
+/*  list= new Q3ListView(this, "taskpointList");
   list->addColumn(tr("Type"));
   list->addColumn(tr("Name"));
   list->addColumn(tr("Dist"));
@@ -73,38 +96,40 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
   list->setColumnAlignment( 3, Qt::AlignRight ); 
 
   list->setSorting(-1,false);
-  list->setAllColumnsShowFocus(false);
   list->setSelectionMode( Q3ListView::NoSelection );
+*/
   topLayout->addWidget(list, 10);
 
-  if( showButtons )
-    {
-      total->setSpacing(5);
-      list->setAllColumnsShowFocus(true);
-      list->setSelectionMode( Q3ListView::Single );
+  if( showButtons ) {
+    total->setSpacing(5);
+    list->setAllColumnsShowFocus(true);
+    list->setSelectionMode(QAbstractItemView::SingleSelection);
+    list->setSelectionBehavior(QAbstractItemView::SelectRows);
+    list->setFocusPolicy( Qt::StrongFocus );
 
-      // Don't show any buttons, if required
-      QBoxLayout *buttonrow=new QHBoxLayout(topLayout);
+    // Don't show any buttons, if required
+    QBoxLayout *buttonrow=new QHBoxLayout;
+    topLayout->addLayout( buttonrow );
       
-      /** @ee add a close button */
-      QPushButton *cmdClose = new QPushButton(tr("Close"), this);
-      buttonrow->addWidget(cmdClose);
+    /** @ee add a close button */
+    QPushButton *cmdClose = new QPushButton(tr("Close"), this);
+    buttonrow->addWidget(cmdClose);
       
-      QPushButton *cmdInfo = new QPushButton(tr("Info"), this);
-      buttonrow->addWidget(cmdInfo);
+    QPushButton *cmdInfo = new QPushButton(tr("Info"), this);
+    buttonrow->addWidget(cmdInfo);
       
-      cmdSelect = new QPushButton(_selectText, this);
-      buttonrow->addWidget(cmdSelect);
+    cmdSelect = new QPushButton(_selectText, this);
+    buttonrow->addWidget(cmdSelect);
       
-      connect(cmdSelect, SIGNAL(clicked()),
-              this, SLOT(slot_Select()));
-      connect(cmdInfo, SIGNAL(clicked()),
-              this, SLOT(slot_Info()));
-      connect(cmdClose, SIGNAL(clicked()),
-              this, SLOT(slot_Close()));
-      connect(list, SIGNAL(selectionChanged(Q3ListViewItem*)),
-              this, SLOT(slot_Selected(Q3ListViewItem*)));
-    }
+    connect( cmdSelect, SIGNAL(clicked()),
+            this, SLOT(slot_Select()) );
+    connect( cmdInfo, SIGNAL(clicked() ),
+            this, SLOT(slot_Info()));
+    connect( cmdClose, SIGNAL(clicked() ),
+            this, SLOT(slot_Close()) );
+    connect( list, SIGNAL(itemSelectionChanged()),
+            this, SLOT(slot_Selected()) );
+  }
 }
 
 TaskListView::~TaskListView()
@@ -116,10 +141,13 @@ TaskListView::~TaskListView()
 }
 
 
-void TaskListView::slot_Selected(Q3ListViewItem * itm)
+void TaskListView::slot_Selected()
 {
-  _newSelectedTp = itm;
-  _selectedWp = ((_TaskPoint*)itm)->wp;
+  _newSelectedTp = list->currentItem();
+  if( _newSelectedTp == 0 )
+    return;
+
+  _selectedWp = ((_TaskPoint*)_newSelectedTp)->wp;
 
   if( _selectedWp->taskPointIndex == 0 )
     {
@@ -152,13 +180,9 @@ void TaskListView::showEvent(QShowEvent *)
 
   const wayPoint *calcWp = calculator->getselectedWp();
   bool foundWp = false;
-  Q3ListViewItemIterator it( list );
+  for ( int i = 0; i < list->topLevelItemCount(); i++) {
 
-  // Set the list item to be selected, which is equal to the selected
-  // calculator waypoint.
-  for ( ; it.current(); ++it ) {
-
-    _TaskPoint* tp = (_TaskPoint*) it.current();
+    _TaskPoint* tp = (_TaskPoint*) list->topLevelItem(i);
     wayPoint*   wp = tp->wp;
 
     // Waypoints can be selected from different windows. We will
@@ -166,7 +190,7 @@ void TaskListView::showEvent(QShowEvent *)
     // flighttask. In this case the taskPointIndex should be unequal to -1.
     if( calcWp && calcWp->origP == wp->origP &&
         calcWp->taskPointIndex == wp->taskPointIndex ) {
-      list->setSelected( tp, true );
+      list->setCurrentItem( list->topLevelItem(i), 0 );
       _currSelectedTp = tp;
       _newSelectedTp = tp;
       _selectedWp = wp;
@@ -254,7 +278,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   // create a deep task copy
   _task = new FlightTask(*tsk);
 
-  // Check, if a waypoint is selected in calculator. In this case set
+  // Check if a waypoint is selected in calculator. In this case set
   // it in tasklist as selected too.
   const wayPoint *calcWp = calculator->getselectedWp();
 
@@ -264,14 +288,17 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
     // qDebug("Getting item %d",loop-1);
     wayPoint* wp = tmpList.at( loop-1 );
     _TaskPoint* tp = new _TaskPoint( list, wp );
+//    QString s;
+//    s = QString("%1").arg(loop,1,10,QLatin1Char('0') );
+    tp->setText( 6, QString("%1").arg(loop,1,10,QLatin1Char('0')) );
 
     if( calcWp && calcWp->origP == wp->origP ) {
-      list->setSelected( tp, true );
+      list->setCurrentItem( tp, 0 );
       _currSelectedTp = tp;
       _selectedWp = wp;
     }
   }
-
+  list->sortByColumn(6,Qt::AscendingOrder);
   // set the total values in the header of this view
   distTotal->setText(  "S=" +_task->getTotalDistanceString() );
   speedTotal->setText( "V=" + _task->getSpeedString() );
@@ -305,7 +332,7 @@ void TaskListView::clear()
   timeTotal->setText("");
 }
 
-TaskListView::_TaskPoint::_TaskPoint(Q3ListView *lv, wayPoint *point):Q3ListViewItem(lv)
+TaskListView::_TaskPoint::_TaskPoint (QTreeWidget *wpList, wayPoint *point ) : QTreeWidgetItem(wpList)
 {
   wp = point;
   QString typeName = wp->getTaskPointTypeString();
@@ -318,12 +345,11 @@ TaskListView::_TaskPoint::_TaskPoint(Q3ListView *lv, wayPoint *point):Q3ListView
   setText(0, typeName);
   setText(1, wp->name);
   setText(2, " " + Distance::getText(wp->distance*1000,false,1));
+  setTextAlignment( 2, Qt::AlignRight );
   setText(3, " " + FlightTask::getDistanceTimeString(wp->distTime));
+  setTextAlignment( 3, Qt::AlignRight );
   setText(4, " " + wp->description);
   setText(5, " " + ss);
   
-  if( QApplication::desktop()->screenGeometry().width() > 240 )
-    {
-      setPixmap(1, _globalMapConfig->getPixmap(wp->type,false,true));
-    }
+  setIcon(1, QIcon(_globalMapConfig->getPixmap(wp->type,false,true)) );
 }

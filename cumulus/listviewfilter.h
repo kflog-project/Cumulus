@@ -20,8 +20,7 @@
 
 #include <QWidget>
 #include <QList>
-#include <Q3ListView>
-#include <Q3ListViewItem>
+#include <QTreeWidget>
 #include <QPushButton>
 
 class QPushButton;
@@ -29,7 +28,7 @@ class QPushButton;
 class ListViewFilterItem;
 
 typedef QList<ListViewFilterItem*> filterSet;
-typedef QList<Q3ListViewItem*> itemList;
+typedef QList<QTreeWidgetItem*> itemList;
 
 class ListViewFilterItem
 {
@@ -42,13 +41,13 @@ public:
      * filter to the indicated ListView.
      * @arg lv The QListView to add the items to.
      */
-    void addToList(Q3ListView * lv, bool isRecursive=false);
+    void addToList(QTreeWidget* tw, bool isRecursive=false);
     /**
-     * Tries to devide the list belonging to this filter into smaller
+     * Tries to divide the list belonging to this filter into smaller
      * lists, and creates the appropriate ListViewFilterItem instances.
      * these instances are initialized and added to @ref subfilters for
      * future reference. @ref _split is set. */
-    void devide(int);
+    void divide(int);
 
     //holds the first letter(s) for the filter
     QString from;
@@ -81,7 +80,7 @@ public:
      * Constructor.
      * @arg lv Reference to the listview this filter works on.
      */
-    ListViewFilter(Q3ListView *lv, QWidget *parent=0, const char *name=0);
+    ListViewFilter(QTreeWidget *tw, QWidget *parent=0);
     ~ListViewFilter();
 
     /**
@@ -100,16 +99,22 @@ public:
      * Moves all the listview items back into the listview
      */
     void restoreListViewItems();
+    void showPage(bool up);
 
 private:
     //reference to listview
-    Q3ListView * _lv;
+    QTreeWidget* _tw; // _lv
+    QTreeWidgetItem* prev;
+    QTreeWidgetItem* next;
     //list of buttons
     QList<QPushButton*> _buttonList;
     //active filter
-    ListViewFilterItem * _activeFilter;
+    ListViewFilterItem* _activeFilter;
     //root of the filter tree
-    ListViewFilterItem * _rootFilter;
+    ListViewFilterItem* _rootFilter;
+    
+    int showIndex;
+    int recursionLevel;
 
     /**
      * Activates the inidicated filter. The list this filter holds is subdivided if needed

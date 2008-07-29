@@ -1187,7 +1187,7 @@ int FlightTask::calculateFinalGlidePath( const int taskPointIndex,
 
   if( arrivalAlt.getMeters() > 0.0 )
     {
-      return belowSavety;
+      return belowSafety;
     }
 
   return no;

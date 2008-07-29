@@ -63,31 +63,44 @@ TaskList::TaskList( QWidget* parent ) :
   editrow->addStretch(10);
 
   QPushButton * cmdNew = new QPushButton(this);
-  cmdNew->setPixmap(GeneralConfig::instance()->loadPixmap("new.png"));
-  cmdNew->setFlat(true);
-  editrow->addWidget(cmdNew);
+  cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
+  cmdNew->setIconSize(QSize(26,26));
+  editrow->addWidget(cmdNew,1);
 
+  editrow->addSpacing(10);
   QPushButton * cmdEdit = new QPushButton(this);
-  cmdEdit->setPixmap(GeneralConfig::instance()->loadPixmap("edit.png"));
-  cmdEdit->setFlat(true);
-  editrow->addWidget(cmdEdit);
+  cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
+  cmdEdit->setIconSize(QSize(26,26));
+  editrow->addWidget(cmdEdit,1);
 
+  editrow->addSpacing(10);
   QPushButton * cmdDel = new QPushButton(this);
-  cmdDel->setPixmap(GeneralConfig::instance()->loadPixmap("trash.png"));
-  cmdDel->setFlat(true);
-  editrow->addWidget(cmdDel);
+  cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png")) );
+  cmdDel->setIconSize(QSize(26,26));
+  editrow->addWidget(cmdDel,1);
 
   splitter = new QSplitter( Qt::Vertical, this );
   splitter->setOpaqueResize( true );
   
-  taskListView = new Q3ListView( splitter );
+  taskListWidget = new QTreeWidget( splitter );
 
-  taskListView->addColumn( tr("No") );
-  taskListView->addColumn( tr("Name") );
-  taskListView->addColumn( tr("Type") );
-  taskListView->setColumnAlignment(taskListView->addColumn( tr("Distance") ), Qt::AlignRight);
-  taskListView->setAllColumnsShowFocus( true );
-  taskListView->setFocus();
+  taskListWidget->setRootIsDecorated(false);
+  taskListWidget->setItemsExpandable(false);
+  taskListWidget->setUniformRowHeights(true);
+  taskListWidget->setSortingEnabled(true);
+  taskListWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+  taskListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+  taskListWidget->setColumnCount(4);
+
+  QStringList sl;
+  sl << "No." << "Name" << "Type" << "Distance";
+  taskListWidget->setHeaderLabels(sl);
+
+  taskListWidget->setColumnWidth( 0, 70 );
+  taskListWidget->setColumnWidth( 1, 222 );
+  taskListWidget->setColumnWidth( 2, 200 );
+
+  taskListWidget->setFocus();
 
   taskContent = new TaskListView( splitter, false );
 
@@ -98,13 +111,12 @@ TaskList::TaskList( QWidget* parent ) :
   connect(cmdDel, SIGNAL(clicked()), this, SLOT(slotDeleteTask()));
   connect(cruisingSpeed, SIGNAL(valueChanged(int)), this, SLOT(slotCruisingSpeedChanged(int)));
 
-  connect( taskListView, SIGNAL( selectionChanged() ),
+  connect( taskListWidget, SIGNAL( itemSelectionChanged() ),
            this, SLOT( slotTaskDetails() ) );
 
-  if( ! slotLoadTask() )
-    {
-      return;
-    }
+  if( ! slotLoadTask() ) {
+    return;
+  }
 }
 
 
@@ -154,25 +166,24 @@ void TaskList::slotCruisingSpeedChanged( int /* value */ )
 
 void TaskList::slotTaskDetails()
 {
-  if( taskListView->selectedItem() == 0 )
-    {
-      return;
+  QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
+  if( selectList.size() == 0 )
+    return;
+
+  QTreeWidgetItem * selected = taskListWidget->selectedItems().at(0);
+
+  if ( selected->text( 0 ) == " " ) {
+    if ( selected->text( 1 ) == tr("(No tasks defined)") ) {
+      QMessageBox::information( this, 
+                        tr("Create New Tasks"),
+                        tr("Push \"Plus\" button to add a task") );
     }
 
-  if ((QString)taskListView->selectedItem()->text( 0 )==" ")
-    {
-      if (taskListView->selectedItem()->text( 1 )==tr("(No tasks defined)"))
-        {
-          QMessageBox::information( this, 
-                                    tr("Define a Task"),
-                                    tr("Tip on editor icon, to define a task.") );
-        };
+    taskContent->clear();
+    return;
+  }
 
-      taskContent->clear();
-      return;
-    }
-
-  int id( ((QString)taskListView->selectedItem()->text( 0 ) ).toInt() - 1 );
+  int id = selected->text( 0 ).toInt() - 1;
 
   FlightTask *task = taskList.at( id );
 
@@ -194,18 +205,18 @@ FlightTask* TaskList::takeSelectedTask()
   // save last used cruising speed
   GeneralConfig::instance()->setCruisingSpeed( cruisingSpeed->value() );
 
-  if( taskListView->selectedItem() == 0 )
+  QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
+  if( selectList.size() == 0 )
     return (FlightTask *) 0;
 
-  QString id( taskListView->selectedItem()->text(0) );
+  QString id( taskListWidget->selectedItems().at(0)->text(0) );
 
   // Special handling for entries with no number, they are system
   // specific.
-  if (id==" ")
-    {
-      lastSelection = 0;
-      return 0;
-    }
+  if (id==" ") {
+    lastSelection = 0;
+    return 0;
+  }
 
   // qDebug("selected Item=%s",id.toLatin1().data());
   lastSelection = id.toUInt();
@@ -221,6 +232,7 @@ FlightTask* TaskList::takeSelectedTask()
 bool TaskList::slotLoadTask()
 {
   extern MapMatrix * _globalMapMatrix;
+  QStringList rowList;
 
   while( !taskList.isEmpty() ) delete taskList.takeFirst();
   taskNames.clear();
@@ -230,13 +242,16 @@ bool TaskList::slotLoadTask()
   // currently hardcoded ...
   QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/tasks.tsk" );
 
-  if( !f.open( IO_ReadOnly ) )
-    {
-      // could not read file ...
-      taskListView->insertItem(new Q3ListViewItem( taskListView, " ",
-                               tr("(No tasks defined)")));
-      return false;
-    }
+  if( !f.open( QIODevice::ReadOnly ) ) {
+    // could not read file ...
+    rowList << " " << tr("(No tasks defined)");
+    taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
+    taskListWidget->setCurrentItem( taskListWidget->itemAt(0,taskListWidget->topLevelItemCount()-1) );
+    taskListWidget->sortItems( 0, Qt::AscendingOrder );
+//      taskListWidget->insertItem(new Q3ListViewItem( taskListWidget, " ",
+//                               tr("(No tasks defined)")));
+    return false;
+  }
 
   QTextStream stream( &f );
   QString line;
@@ -245,57 +260,50 @@ bool TaskList::slotLoadTask()
   QStringList tmpList;
   QList<wayPoint*> *wpList = 0;
 
-  while( !stream.atEnd() )
-    {
-      line = stream.readLine();
+  while( !stream.atEnd() ) {
+    line = stream.readLine();
 
-      if( line.mid( 0, 1 ) == "#" )
-        continue;
+    if( line.mid( 0, 1 ) == "#" )
+      continue;
 
-      if( line.mid( 0, 2 ) == "TS" )
-        {
-          // new task ...
-          isTask = true;
+    if( line.mid( 0, 2 ) == "TS" ) {
+      // new task ...
+      isTask = true;
 
-          if( wpList != 0 )
-            {
-              // remove all elements from previous uncomplete step
-              wpList->clear();
-            }
-          else
-            {
-              wpList = new QList<wayPoint*>;
-              //wpList->setAutoDelete(true);
-            }
+      if( wpList != 0 ) {
+        // remove all elements from previous uncomplete step
+        wpList->clear();
+      } else {
+        wpList = new QList<wayPoint*>;
+        //wpList->setAutoDelete(true);
+      }
 
-          tmpList = line.split( ",", QString::KeepEmptyParts );
-          taskName = tmpList.at(1);
-        }
-      else if( line.mid( 0, 2 ) == "TW" && isTask )
-        {
-          // new wp ...
-          wayPoint* wp = new wayPoint ();
-          wpList->append( wp );
+      tmpList = line.split( ",", QString::KeepEmptyParts );
+      taskName = tmpList.at(1);
+    } else {
+      if( line.mid( 0, 2 ) == "TW" && isTask ) {
+        // new wp ...
+        wayPoint* wp = new wayPoint ();
+        wpList->append( wp );
 
-          tmpList = line.split( ",", QString::KeepEmptyParts );
+        tmpList = line.split( ",", QString::KeepEmptyParts );
 
-          wp->origP.setLat( tmpList.at( 1 ).toInt() );
-          wp->origP.setLon( tmpList.at( 2 ) .toInt() );
-          wp->projP = _globalMapMatrix->wgsToMap( wp->origP );
-          wp->elevation = tmpList.at( 3 ).toInt();
-          wp->name = tmpList.at( 4 );
-          wp->icao = tmpList.at( 5 );
-          wp->description = tmpList.at( 6 );
-          wp->frequency = tmpList.at( 7 ).toDouble();
-          wp->comment = tmpList.at( 8 );
-          wp->isLandable = tmpList.at( 9 ).toInt();
-          wp->runway = tmpList.at( 10 ).toInt();
-          wp->length = tmpList.at( 11 ).toInt();
-          wp->surface = tmpList.at( 12 ).toInt();
-          wp->type = tmpList.at( 13 ).toInt();
-        }
-      else if( line.mid( 0, 2 ) == "TE" && isTask )
-        {
+        wp->origP.setLat( tmpList.at( 1 ).toInt() );
+        wp->origP.setLon( tmpList.at( 2 ) .toInt() );
+        wp->projP = _globalMapMatrix->wgsToMap( wp->origP );
+        wp->elevation = tmpList.at( 3 ).toInt();
+        wp->name = tmpList.at( 4 );
+        wp->icao = tmpList.at( 5 );
+        wp->description = tmpList.at( 6 );
+        wp->frequency = tmpList.at( 7 ).toDouble();
+        wp->comment = tmpList.at( 8 );
+        wp->isLandable = tmpList.at( 9 ).toInt();
+        wp->runway = tmpList.at( 10 ).toInt();
+        wp->length = tmpList.at( 11 ).toInt();
+        wp->surface = tmpList.at( 12 ).toInt();
+        wp->type = tmpList.at( 13 ).toInt();
+      } else {
+        if( line.mid( 0, 2 ) == "TE" && isTask ) {
           // task complete
           isTask = false;
           FlightTask* task = new FlightTask( wpList, true,
@@ -305,40 +313,40 @@ bool TaskList::slotLoadTask()
           wpList = 0; // ownership was overtaken by FlighTask
           numTask.sprintf( "%02d", taskList.count() );
 
-          Q3ListViewItem *newItem = new Q3ListViewItem( taskListView, numTask,
-                                    taskName, task->getTaskTypeString(),
-                                    task->getTaskDistanceString() );
+          rowList << numTask << taskName << task->getTaskTypeString() << task->getTaskDistanceString();
+          taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
+          rowList.clear();
 
-          taskListView->insertItem(newItem);
           // save task name
           taskNames << taskName;
 
-          if( taskList.count() == (int) lastSelection )
+/*          if( taskList.count() == (int) lastSelection )
             {
               // restore last selection
-              taskListView->setSelected( newItem, true );
-            }
-        }
+              taskListWidget->setSelected( newItem, true );
+            }*/
+        }  
+      }
     }
+  }
 
   f.close();
 
-  if( wpList != 0 )
-    {
-      // remove all elements from previous uncomplete step
-      qDeleteAll (*wpList);
-      wpList->clear();
-      delete wpList;
-    }
+  if( wpList != 0 ) {
+    // remove all elements from previous uncomplete step
+    qDeleteAll (*wpList);
+    wpList->clear();
+    delete wpList;
+  }
 
-  if (taskList.count()==0)
-    {
-      taskListView->insertItem(new Q3ListViewItem( taskListView, " ", tr("(No tasks defined)")));
-    }
-  else
-    {
-      taskListView->insertItem(new Q3ListViewItem( taskListView, " ", tr("(Reset selection)"), tr("none")));
-    }
+  if ( taskList.count() == 0 ) {
+    rowList << " " << tr("(No tasks defined)");
+  } else {
+    rowList << " " << tr("(Reset selection)") << tr("none");
+    taskListWidget->setCurrentItem( taskListWidget->itemAt(0,0) );
+  }
+  taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
+  taskListWidget->sortByColumn(0, Qt::AscendingOrder);
 
   return true;
 }
@@ -351,24 +359,19 @@ void TaskList::slotNewTask()
   connect( te, SIGNAL(newTask( FlightTask * )), this,
            SLOT(slotUpdateTaskList( FlightTask * )));
 
-#ifdef MAEMO
-  te->showMaximized();
-#else
   te->show();
-#endif
-
 }
 
 
 /**
- * overtake a new flight task from editor
+ * taking over a new flight task from editor
  */
 void TaskList::slotUpdateTaskList( FlightTask *newTask)
 {
   taskList.append( newTask );
   saveTaskList();
   taskContent->clear();
-  taskListView->clear();
+  taskListWidget->clear();
   slotLoadTask();
 }
 
@@ -379,17 +382,15 @@ void TaskList::slotUpdateTaskList( FlightTask *newTask)
 void TaskList::slotEditTask()
 {
   // fetch selected task item
-  if( taskListView->selectedItem() == 0 )
-    {
-      return;
-    }
+  QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
+  if( selectList.size() == 0 )
+    return;
 
-  QString id( taskListView->selectedItem()->text(0) );
+  QString id( taskListWidget->selectedItems().at(0)->text(0) );
 
-  if( id == " ")
-    {
-      return;
-    }
+  if( id == " ") {
+    return;
+  }
 
   lastSelection = id.toUInt();
   editTask = taskList.at(id.toInt() - 1);
@@ -414,7 +415,7 @@ void TaskList::slotEditTask()
 
 
 /**
- * overtake an edited flight task from editor
+ * taking over an edited flight task from editor
  */
 void TaskList::slotEditTaskList( FlightTask *editedTask)
 {
@@ -438,7 +439,7 @@ void TaskList::slotEditTaskList( FlightTask *editedTask)
 
   saveTaskList();
   taskContent->clear();
-  taskListView->clear();
+  taskListWidget->clear();
   slotLoadTask();
 }
 
@@ -448,31 +449,29 @@ void TaskList::slotEditTaskList( FlightTask *editedTask)
  */
 void TaskList::slotDeleteTask()
 {
-  if( taskListView->selectedItem() == 0 )
-    {
-      return;
-    }
+  QTreeWidgetItem* selected = taskListWidget->currentItem();
+  if( selected == 0 )
+    return;
 
-  QString id( taskListView->selectedItem()->text(0) );
+  QString id( selected->text(0) );
 
-  if( id == " " )
-    {
-      // Entries with no number are system specific and not deleteable
-      return;
-    }
+  if( id == " " ) {
+    // Entries with no number are system specific and not deleteable
+    return;
+  }
 
-  int answer=
-    QMessageBox::warning(this,tr("Delete task?"),
-                         tr("<html><b>"
-                            "Do you want to delete the selected task?"
-                            "</b></html>"),
-                         QMessageBox::Ok | QMessageBox::Default,
-                         QMessageBox::Cancel | QMessageBox::Escape );
+  int answer= QMessageBox::warning(this,tr("Delete Task"),
+                         tr("Delete the selected task?"),
+                         QMessageBox::Ok | QMessageBox::Cancel );
 
-  if( answer != QMessageBox::Ok )
-    {
-      return;
-    }
+  if( answer != QMessageBox::Ok ) {
+    return;
+  }
+
+  delete taskListWidget->takeTopLevelItem( taskListWidget->currentIndex().row() );
+
+  taskListWidget->sortItems( 0, Qt::AscendingOrder );
+  taskListWidget->setCurrentItem( 0 );
 
   lastSelection = 0;
 
@@ -484,7 +483,7 @@ void TaskList::slotDeleteTask()
   delete taskList.takeAt( no );
   saveTaskList();
   taskContent->clear();
-  taskListView->clear();
+  taskListWidget->clear();
   slotLoadTask();
 }
 
@@ -494,9 +493,9 @@ bool TaskList::saveTaskList()
   // currently hardcoded ...
   QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/tasks.tsk" );
 
-  if( !f.open( IO_WriteOnly ) )
+  if( !f.open( QIODevice::WriteOnly ) )
     {
-      qWarning( "Could not write to task-file %s", f.name().toLatin1().data() );
+      qWarning( "Could not write to task-file %s", f.fileName().toLatin1().data() );
       return false;
     }
 

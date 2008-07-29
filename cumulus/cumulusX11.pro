@@ -1,13 +1,14 @@
 # Cumulus Qt4/X11 project file for qmake
 # $Id$
 
-QT          += qt3support
+#QT          += qt3support
 TEMPLATE    = app
 #CONFIG      = qt warn_on release
 CONFIG      = debug qt warn_on
 
 HEADERS     = \
     airfieldlistview.h \
+    airfieldlistwidget.h \
     airport.h \
     airregion.h \
     airspace.h \
@@ -25,7 +26,7 @@ HEADERS     = \
     generalconfig.h \
     gliderflightdialog.h \
     glider.h \
-    gliderlist.h \
+    gliderlistwidget.h \
     glidersite.h \
     gpscon.h \
     gpsnmea.h \
@@ -70,6 +71,7 @@ HEADERS     = \
     settingspageairfields.h \
     settingspageairspace.h \
     settingspagegps.h \
+    settingspageglider.h \
     settingspageinformation.h \
     settingspagemapadv.h \
     settingspagemap.h \
@@ -93,6 +95,7 @@ HEADERS     = \
     waitscreen.h \
     waypointcatalog.h \
     waypointlistview.h \
+    waypointlistwidget.h \
     welt2000.h \
     wgspoint.h \
     whatsthat.h \
@@ -103,10 +106,13 @@ HEADERS     = \
     wpeditdialogpageaero.h \
     wpeditdialogpagegeneral.h \
     waypoint.h \
-    wpinfowidget.h
+    wpinfowidget.h \
+    wplistwidgetclass.h
+#    gpsmaemo.h \
 
 SOURCES     = \
     airfieldlistview.cpp \
+    airfieldlistwidget.cpp \
     airport.cpp \
     airregion.cpp \
     airspace.cpp \
@@ -124,7 +130,7 @@ SOURCES     = \
     generalconfig.cpp \
     glider.cpp \
     gliderflightdialog.cpp \
-    gliderlist.cpp \
+    gliderlistwidget.cpp \
     glidersite.cpp \
     gpscon.cpp \
     gpsnmea.cpp \
@@ -163,6 +169,7 @@ SOURCES     = \
     settingspageairfields.cpp \
     settingspageairspace.cpp \
     settingspagegps.cpp \
+    settingspageglider.cpp \
     settingspageinformation.cpp \
     settingspagemapadv.cpp \
     settingspagemap.cpp \
@@ -185,6 +192,7 @@ SOURCES     = \
     waitscreen.cpp \
     waypointcatalog.cpp \
     waypointlistview.cpp \
+    waypointlistwidget.cpp \
     welt2000.cpp \
     wgspoint.cpp \
     whatsthat.cpp \
@@ -195,7 +203,9 @@ SOURCES     = \
     wpeditdialog.cpp \
     wpeditdialogpageaero.cpp \
     wpeditdialogpagegeneral.cpp \
-    wpinfowidget.cpp
+    wpinfowidget.cpp \
+    wplistwidgetclass.cpp
+#    gpsmaemo.cpp
 
 INTERFACES  =
 TARGET      = cumulus

@@ -24,6 +24,7 @@
 #include <QToolTip>
 #include <QFileInfo>
 #include <QFont>
+#include <QKeyEvent>
 
 #include "helpbrowser.h"
 #include "generalconfig.h"
@@ -37,27 +38,27 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
                                               firstCall(true)
 {
   setWindowTitle(tr("Cumulus Help"));
-  setIcon( GeneralConfig::instance()->loadPixmap( "cumulus.png" ) );
+  setWindowIcon( GeneralConfig::instance()->loadPixmap( "cumulus.png" ) );
   
   browser = new QTextBrowser(this);
 
   QPushButton *home = new QPushButton();
-  home->setPixmap( GeneralConfig::instance()->loadPixmap( "home.png") );
+  home->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home.png") ) );
   home->setFlat(true);
   home->setToolTip( tr("Goto home") );
 
   QPushButton *back = new QPushButton();
-  back->setPixmap( GeneralConfig::instance()->loadPixmap( "back.png") );
+  back->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "back.png") ) );
   back->setFlat(true);
   back->setToolTip( tr("Go back") );
 
   QPushButton *forward = new QPushButton();
-  forward->setPixmap( GeneralConfig::instance()->loadPixmap( "forward.png") );
+  forward->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "forward.png") ) );
   forward->setFlat(true);
   forward->setToolTip( tr("Go forward") );
 
   QPushButton *close = new QPushButton();
-  close->setPixmap( GeneralConfig::instance()->loadPixmap( "standardbutton-close-16.png") );
+  close->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "standardbutton-close-16.png") ) );
   close->setFlat(true);
   close->setToolTip( tr("Close") );
 

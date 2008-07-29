@@ -159,7 +159,7 @@ bool Welt2000::load( MapElementList& airportList, MapElementList& gliderList )
 
       // Check against the config file
       QFileInfo fi(w2PathTxt);
-      QString path = fi.dirPath(true) + "/welt2000.conf";
+      QString path = fi.path() + "/welt2000.conf";
       QFileInfo fiConf(path);
 
       if( fiConf.exists() && fi.isReadable() &&
@@ -473,7 +473,7 @@ bool Welt2000::readConfigEntries( QString &path )
             }
 
           // remove first entry, it is the filter-country key
-          list.remove( list.begin() );
+          list.removeAt( 0 );
 
           for( int i = 0; i < list.count(); i++ )
             {
@@ -499,7 +499,7 @@ bool Welt2000::readConfigEntries( QString &path )
               continue;
             }
 
-          if( list[0].contains("MAP_ICAO", false) )
+          if( list[0].contains("MAP_ICAO",Qt::CaseInsensitive) )
             {
               list[0].remove( 0, 8 );
               list[0] = list[0].trimmed().toUpper(); // icao name of airfield
@@ -507,7 +507,7 @@ bool Welt2000::readConfigEntries( QString &path )
               c_icaoMap.insert( list[0], list[1] );
               // qDebug("W2000: c_icaoMap.insert(%s, %s)", list[0].toLatin1().data(), list[1].toLatin1().data());
             }
-          else if( list[0].contains("MAP_SHORT_NAME", false) )
+          else if( list[0].contains("MAP_SHORT_NAME",Qt::CaseInsensitive) )
             {
               list[0].remove( 0, 14 );
               list[0] = list[0].trimmed(); // short name of airfield
@@ -564,7 +564,7 @@ bool Welt2000::parse( QString& path,
 
   // look, if a config file is accessable. If yes read out its data.
   QFileInfo fi( path );
-  QString confFile = fi.dirPath(TRUE) + "/welt2000.conf";
+  QString confFile = fi.path() + "/welt2000.conf";
 
   // It is expected that the filter file is located in the same
   // directory as the welt2000.txt file and carries the name
@@ -636,8 +636,8 @@ bool Welt2000::parse( QString& path,
 
   if( doCompile )
     {
-      compileFile = fi.dirPath(TRUE) + "/welt2000.txc";
-      compFile.setName( compileFile );
+      compileFile = fi.path() + "/welt2000.txc";
+      compFile.setFileName( compileFile );
       out.setDevice( &compFile );
 
       if( !compFile.open(QIODevice::WriteOnly) )
@@ -780,7 +780,7 @@ bool Welt2000::parse( QString& path,
       afName.replace( QRegExp("[!?]+"), "" );
 
       // remove resp. replace white spaces against one space
-      afName = afName.simplifyWhiteSpace();
+      afName = afName.simplified();
 
       if( afName.length() == 0 )
         {

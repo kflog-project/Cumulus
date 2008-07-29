@@ -29,7 +29,9 @@ PolarDialog::PolarDialog(const Polar* polar, QWidget* parent) :
     
   _polar = const_cast<Polar*>(polar);
 
-  setBackgroundColor (Qt::white);
+  QPalette palette;
+  palette.setColor(backgroundRole(), Qt::white);
+  setPalette(palette);
   setWindowTitle (polar->name());
   setFont(QFont ( "Helvetica", 12, QFont::Bold ));
 

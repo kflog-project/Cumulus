@@ -19,7 +19,7 @@
 #define TASKLIST_H
 
 #include <QList>
-#include <Q3ListView>
+#include <QTreeWidget>
 #include <QWidget>
 #include <QStringList>
 #include <QSpinBox>
@@ -88,7 +88,8 @@ private:
     /** spin box for crusing speed entry */
     QSpinBox* cruisingSpeed;
     /** */
-    Q3ListView* taskListView;
+    QTreeWidget* taskListWidget;
+//    Q3ListView* taskListView;
     /** */
     TaskListView* taskContent;
     /** */

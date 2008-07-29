@@ -23,8 +23,7 @@
 #define TASKLISTVIEW_H
 
 #include <QWidget>
-#include <Q3ListView>
-#include <Q3ListViewItem>
+#include <QTreeWidget>
 #include <QPixmap>
 #include <QPushButton>
 #include <QLabel>
@@ -102,7 +101,7 @@ protected:
 
 
 private:
-    Q3ListView*  list;
+    QTreeWidget*  list;
     CumulusApp  *par;
     QBoxLayout  *buttonrow;
     bool        _outlandShow;
@@ -115,26 +114,28 @@ private:
     QPixmap     _arrows;
     FlightTask* _task;
     wayPoint *  _selectedWp;
-    Q3ListViewItem * _currSelectedTp;
-    Q3ListViewItem * _newSelectedTp;
+    QTreeWidgetItem * _currSelectedTp;
+    QTreeWidgetItem * _newSelectedTp;
     QString _selectText, _unselectText;
 
-    // flag for showing buttons when true otherwise no
+    // flag for showing buttons (or not)
     bool _showButtons;
 
 private slots:
     /**
-     * This slot is called if the user selects a certain waypoint in the task
+     * This slot is called if the user selects a waypoint in the task
      */
-    void slot_Selected(Q3ListViewItem *);
+    void slot_Selected();
 
 
 private:
 
-    class _TaskPoint:public Q3ListViewItem
+    class _TaskPoint : public QTreeWidgetItem
     {
     public:
-        _TaskPoint(Q3ListView*, wayPoint *);
+//        _TaskPoint(QTreeWidget* parent, const QStringList& strings, int type=0, waypoint* wp ):
+//                  QTreeWidgetItem( parent, strings, type );
+        _TaskPoint(QTreeWidget* wpList, wayPoint* point);
         wayPoint *wp;
     };
 };

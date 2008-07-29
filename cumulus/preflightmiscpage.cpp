@@ -44,26 +44,29 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) : QWidget(parent)
 
   // Input accept only feet and meters all other make no sense. Therefore all
   // other (FL) is treated as feet.
-  if( altUnit == Altitude::meters )
-    {
-      edtMinimalArrival = new QSpinBox(0, 1000, 10, this, "MinArr");
-      unit = "m";
-    }
-  else
-    {
-      edtMinimalArrival = new QSpinBox(0, 3000, 10, this, "MinArr");
-      unit = "ft";
-    }
+  edtMinimalArrival = new QSpinBox(this);
+  edtMinimalArrival->setObjectName("MinArr");
+  edtMinimalArrival->setSingleStep(10);
+
+  if( altUnit == Altitude::meters ) {
+    edtMinimalArrival->setMaximum(1000);
+    unit = "m";
+  } else {
+    edtMinimalArrival->setMaximum(3000);
+    unit = "ft";
+  }
 
   edtMinimalArrival->setButtonSymbols(QSpinBox::PlusMinus);
   topLayout->addWidget(edtMinimalArrival, row, 1);
   topLayout->addWidget(new QLabel(unit, this), row, 2);
-  topLayout->setColStretch(2,2);
+  topLayout->setColumnStretch(2,2);
   row++;
 
   lbl = new QLabel(tr("QNH:"), this);
   topLayout->addWidget(lbl, row, 0);
-  edtQNH = new QSpinBox(0, 1999, 1, this, "QNH");
+  edtQNH = new QSpinBox(this);
+  edtQNH->setObjectName("QNH");
+  edtQNH->setMaximum(1999);
   edtQNH->setButtonSymbols(QSpinBox::PlusMinus);
 
   topLayout->addWidget(edtQNH, row, 1);
@@ -72,7 +75,10 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) : QWidget(parent)
   
   lbl = new QLabel(tr("Logger Interval:"), this);
   topLayout->addWidget(lbl, row, 0);
-  loggerInterval = new QSpinBox(1, 60, 1, this, "LoggerInterval");
+  loggerInterval = new QSpinBox(this);
+  loggerInterval->setMinimum(1);
+  loggerInterval->setMaximum(60);
+  loggerInterval->setObjectName("LoggerInterval");
   loggerInterval->setButtonSymbols(QSpinBox::PlusMinus);
 
   topLayout->addWidget(loggerInterval, row, 1);
@@ -82,7 +88,8 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) : QWidget(parent)
   topLayout->setRowMinimumHeight( row, 25);
   row++;
 
-  chkLogAutoStart = new QCheckBox(tr("Autostart logging"),this,"log_autostart");
+  chkLogAutoStart = new QCheckBox(tr("Autostart logging"),this);
+  chkLogAutoStart->setObjectName("log_autostart");
   topLayout->addWidget( chkLogAutoStart, row, 0, 1, 3 );
   chkLogAutoStart->setChecked(IgcLogger::instance()->getisStandby());
   row++;
@@ -131,9 +138,8 @@ void PreFlightMiscPage::save()
       if (log->getisLogging())
         {
           int answer= QMessageBox::warning(this,tr("Restart Logging?"),
-                                           tr("Cumulus is currently\nlogging.\nDo you want\nto close this logfile\nand start a new log?"),
-                                           QMessageBox::Yes,
-                                           QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
+                                           tr("Logger is running.\nClose logfile\nand start new log?"),
+                                           QMessageBox::Yes | QMessageBox::No );
 
           if( answer==QMessageBox::Yes )
             {

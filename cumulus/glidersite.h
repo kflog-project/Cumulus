@@ -42,7 +42,7 @@ class GliderSite : public RadioPoint
    * @param  winsh  "true", if only winsh-launch is available
    */
   GliderSite(const QString& name, const QString& icao, const QString& abbr, const WGSPoint& wgsPos,
-             const QPoint& pos, unsigned int elevation, const char* frequency, bool winch, runway *rw);
+             const QPoint& pos, unsigned int elevation, const QString& frequency, bool winch, runway *rw);
 
   /**
    * Destructor.

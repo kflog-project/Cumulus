@@ -18,8 +18,8 @@
 #ifndef CONFIGDIALOG_H
 #define CONFIGDIALOG_H
 
-#include <QDialog>
 #include <QStringList>
+#include <QLabel>
 
 #include "settingspagepersonal.h"
 #include "settingspagegps.h"
@@ -30,7 +30,7 @@
 #include "settingspageairspace.h"
 #include "settingspageinformation.h"
 #include "settingspagesector.h"
-#include "gliderlist.h"
+#include "settingspageglider.h"
 
 /**
   * @short Configuration dialog
@@ -39,7 +39,7 @@
   * @author André Somers
   * @version $Id$
   */
-class ConfigDialog : public QDialog
+class ConfigDialog : public QWidget
   {
     Q_OBJECT
   public:
@@ -53,6 +53,7 @@ class ConfigDialog : public QDialog
      */
     ~ConfigDialog();
 
+  public slots:
     /**
      * Called if OK button is pressed
      */
@@ -99,6 +100,11 @@ class ConfigDialog : public QDialog
     void reload();
 
     /**
+     * This signal is emitted when the "dialog" should close. CumulusApp will subsequently
+     * delete it
+     */
+    void closeConfig();
+    /**
      * This signal is emitted to the settings pages to ask them if they want to display a 
      * warning when closing without saving. If so, the boolean flag warn must be set by in the 
      * slot. In response, the configuration dialog object will display a dialog box to confirm
@@ -106,10 +112,14 @@ class ConfigDialog : public QDialog
      */
     void query_close(bool& warn, QStringList& warnings);
 
+  protected:
+
+    virtual void resizeEvent(QResizeEvent*);
+
   private:
 
     SettingsPagePersonal* spp;
-    SettingsPageGliderList* spgl;
+    SettingsPageGlider* spgl;
     SettingsPageSector* sps;
     SettingsPageGPS* spg;
     SettingsPageMapAdv* spma;
@@ -118,6 +128,8 @@ class ConfigDialog : public QDialog
     SettingsPageAirspace* spa;
     SettingsPageUnits* spu;
     SettingsPageInformation* spi;
+
+    QLabel* title;
 
     bool loadConfig; // control loading of config data
   };

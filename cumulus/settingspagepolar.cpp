@@ -54,8 +54,11 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
   topLayout->addWidget(new QLabel(tr("Glider type:"), this), row, 0);
   comboType = new QComboBox(this);
   comboType->setEditable(true);
-  topLayout->addMultiCellWidget(comboType,row,row,1,4);
-  topLayout->addRowSpacing(row++,10);
+
+  topLayout->addWidget(comboType,row,1,1,4);
+//  topLayout->addMultiCellWidget(comboType,row,row,1,4);
+//  topLayout->addRowSpacing(row++,10);
+  topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
 
   bgSeats=new QGroupBox(tr("Seats"),this);
   seatsOne=new QRadioButton(tr("Single"),bgSeats);
@@ -65,19 +68,22 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
 
   topLayout->addWidget(new QLabel(tr("Seats:"), this),row,0);
   QBoxLayout* seats_l=new QHBoxLayout();
-  topLayout->addMultiCellLayout(seats_l,row,row,1,4);
+  topLayout->addLayout(seats_l,row,1,1,4);
+//  topLayout->addMultiCellLayout(seats_l,row,row,1,4);
   row++;
   seats_l->addWidget(seatsOne);
   seats_l->addWidget(seatsTwo);
 
   topLayout->addWidget(new QLabel(tr("Registration:"), this),row,0);
   edtGReg = new QLineEdit(this);
-  topLayout->addMultiCellWidget(edtGReg, row, row, 1, 2);
+  topLayout->addWidget(edtGReg,row,1,1,2);
+//  topLayout->addMultiCellWidget(edtGReg, row, row, 1, 2);
   row++;
 
   topLayout->addWidget(new QLabel(tr("Callsign:"), this),row,0);
   edtGCall = new QLineEdit(this);
-  topLayout->addMultiCellWidget(edtGCall, row, row, 1, 2);
+  topLayout->addWidget(edtGCall,row,1,1,2);
+//  topLayout->addMultiCellWidget(edtGCall, row, row, 1, 2);
   row++;
 
   topLayout->addWidget(new QLabel(tr("v1 / w1:"), this),row,0);
@@ -125,24 +131,34 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
   topLayout->addWidget(new QLabel(tr("m/s"), this),row++,4);
 
   topLayout->addWidget(new QLabel (tr("Empty weight:"), this), row, 0);
-  emptyWeight = new QSpinBox (0, 1000, 5, this, "emptyWeight");
+  emptyWeight = new QSpinBox (this);
+  emptyWeight->setObjectName("emptyWeight");
+  emptyWeight->setMaximum(1000);
+  emptyWeight->setSingleStep(5);
   emptyWeight->setButtonSymbols(QSpinBox::PlusMinus);
   topLayout->addWidget(emptyWeight,row,1);
   topLayout->addWidget(new QLabel(tr("kg"), this),row++,2);
 
   topLayout->addWidget(new QLabel (tr("Added load:"), this), row, 0);
-  addedLoad = new QSpinBox (0, 1000, 5, this, "addedLoad");
+  addedLoad = new QSpinBox (this);
+  addedLoad->setObjectName("addedLoad");
+  addedLoad->setMaximum(1000);
+  addedLoad->setSingleStep(5);
   addedLoad->setButtonSymbols(QSpinBox::PlusMinus);
   topLayout->addWidget(addedLoad,row,1);
   topLayout->addWidget(new QLabel(tr("kg"), this),row++,2);
 
   topLayout->addWidget(new QLabel (tr("Max. water:"), this), row, 0);
-  spinWater = new QSpinBox (0, 300, 5, this, "spinwater");
+  spinWater = new QSpinBox (this);
+  spinWater->setObjectName("spinWater");
+  spinWater->setMaximum(300);
+  spinWater->setSingleStep(5);
   spinWater->setButtonSymbols(QSpinBox::PlusMinus);
   topLayout->addWidget (spinWater, row, 1);
   topLayout->addWidget(new QLabel(tr("l"),this),row,2);
   buttonShow = new QPushButton (tr("Show Polar"), this);
-  topLayout->addMultiCellWidget(buttonShow, row, row, 3, 4);
+  topLayout->addWidget(buttonShow,row,1,3,2);
+//  topLayout->addMultiCellWidget(buttonShow, row, row, 3, 4);
   row++;
 
   // Add ok and cancel buttons
@@ -154,9 +170,9 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-  topLayout->setColStretch (0, 10);
-  topLayout->setColStretch (1, 20);
-  topLayout->setColStretch (2, 10);
+  topLayout->setColumnStretch (0, 10);
+  topLayout->setColumnStretch (1, 20);
+  topLayout->setColumnStretch (2, 10);
 
   connect (comboType, SIGNAL(activated(const QString&)),
            this, SLOT(slotActivated(const QString&)));
@@ -198,8 +214,8 @@ Polar* SettingsPagePolar::getPolar()
 void setCurrentText (QComboBox* combo, const QString& text)
 {
   for (int i = 0; i < combo->count(); i++) {
-    if (combo->text (i) == text) {
-      combo->setCurrentItem (i);
+    if (combo->itemText(i) == text) {
+      combo->setCurrentIndex(i);
       return;
     }
   }
@@ -244,9 +260,9 @@ void SettingsPagePolar::slot_save()
     _glider=new Glider;
   }
 
-  _glider->setType(comboType->currentText().stripWhiteSpace());
-  _glider->setRegistration(edtGReg->text().stripWhiteSpace());
-  _glider->setCallsign(edtGCall->text().stripWhiteSpace());
+  _glider->setType(comboType->currentText().trimmed());
+  _glider->setRegistration(edtGReg->text().trimmed());
+  _glider->setCallsign(edtGCall->text().trimmed());
   _glider->setMaxWater(spinWater->value());
 
   if (seatsTwo->isChecked())
@@ -298,17 +314,17 @@ void SettingsPagePolar::readPolarData ()
 
   if( ! file.exists() ) {
     // try path2
-    file.setName( path2 );
+    file.setFileName( path2 );
     if( ! file.exists() ) {
       // try path3
-      file.setName( path3 );
+      file.setFileName( path3 );
     }
   }
 
   QTextStream stream(&file);
   Polar* pol;
 
-  if (file.open(IO_ReadOnly)) {
+  if (file.open(QIODevice::ReadOnly)) {
     while (!stream.atEnd()) {
       QString line = stream.readLine();
       // ignore comments
@@ -349,7 +365,7 @@ void SettingsPagePolar::readPolarData ()
     slotActivated (firstGlider);
   } else {
     _globalMapView->message( tr("Missing polar file") );
-    qWarning ("Could not open polar file: %s", file.name().toLatin1().data());
+    qWarning ("Could not open polar file: %s", file.fileName().toLatin1().data());
   }
 
 #if 0
@@ -465,12 +481,12 @@ void SettingsPagePolar::slotButtonShow()
 
 void SettingsPagePolar::accept()
 {
-  edtGReg->setText(edtGReg->text().stripWhiteSpace()); //remove spaces
+  edtGReg->setText(edtGReg->text().trimmed()); //remove spaces
 
   if( edtGReg->text().isEmpty() ) {
     QMessageBox::warning(this,tr("Missing registration!"),
                          tr("<br>Please enter a valid registration.</qt>"));
-  } else if( comboType->currentText().stripWhiteSpace().isEmpty() ) {
+  } else if( comboType->currentText().trimmed().isEmpty() ) {
     QMessageBox::warning(this,tr("Missing glider type!"),
                          tr("<br>Please enter a valid glider type.</qt>"));
   } else {

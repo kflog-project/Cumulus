@@ -20,6 +20,7 @@
 
 #include <QDialog>
 #include <QTabWidget>
+#include <QLabel>
 
 #include "tasklist.h"
 
@@ -33,7 +34,7 @@ class PreFlightMiscPage;
  * This dialog provides an interface to set all the pre-flight settings like
  * glidertype, co-pilot, task, amount of water taken on, etc.
  */
-class PreFlightDialog : public QDialog
+class PreFlightDialog : public QWidget
 {
     Q_OBJECT
 public:
@@ -59,22 +60,33 @@ signals:
      * This signal is emitted if a new waypoint is selected.
      */
     void newWaypoint(wayPoint *, bool);
+    /**
+     * This signal is emitted when the "dialog" should close. CumulusApp will subsequently
+     * delete it
+     */
+    void closeConfig();
 
 
 protected slots:
     /**
      * Called if dialog is accepted (OK button is clicked)
      */
-    virtual void accept();
+//    virtual void accept();
+    void accept();
 
     /**
      * Called if dialog is rejected (X button is clicked)
      */
-    virtual void reject();
+//    virtual void reject();
+    void reject();
 
 private slots:
     void keyLeft();
     void keyRight();
+
+protected:
+
+    virtual void resizeEvent(QResizeEvent*);
 
 private:
 
@@ -82,6 +94,7 @@ private:
     PreFlightGliderPage *gliderpage;
     PreFlightMiscPage *miscpage;
     QTabWidget* tabWidget;
+    QLabel* title;
 };
 
 #endif

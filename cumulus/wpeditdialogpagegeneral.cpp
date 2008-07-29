@@ -46,7 +46,8 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent) :
   edtDescription->setMaxLength(25); // limit name to 25 characters
   topLayout->addWidget(edtDescription,row++,1);
 
-  topLayout->addRowSpacing(row++,10);
+  topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
+//  topLayout->addRowSpacing(row++,10);
 
   QLabel * lblLat = new QLabel(tr("Latitude:"), this);
   topLayout->addWidget(lblLat,row,0);
@@ -66,7 +67,9 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent) :
   elevLayout->addWidget(edtElev);
   QLabel * lblElevUnit = new QLabel(Altitude::getText(-1,true), this);
   elevLayout->addWidget(lblElevUnit);
-  topLayout->addRowSpacing(row++,10);
+
+  topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
+//  topLayout->addRowSpacing(row++,10);
 
   QLabel * lblGReg = new QLabel(tr("Type:"), this);
   topLayout->addWidget(lblGReg,row,0);
@@ -112,7 +115,7 @@ void WPEditDialogPageGeneral::slot_load(wayPoint * wp)
       edtLong->setKFLogDegree(wp->origP.lon());
       edtElev->setText(Altitude::getText((wp->elevation),false,-1));
       setWaypointType(wp->type);
-      cmbImportance->setCurrentItem(wp->importance);
+      cmbImportance->setCurrentIndex(wp->importance);
     }
 }
 
@@ -131,7 +134,7 @@ void WPEditDialogPageGeneral::slot_save(wayPoint * wp)
         wp->origP.setLon(edtLong->KFLogDegree());
       wp->elevation=int(Altitude::convertToMeters(edtElev->text().toDouble()));
       wp->type=getWaypointType();
-      wp->importance=( enum wayPoint::Importance ) cmbImportance->currentItem();
+      wp->importance=( enum wayPoint::Importance ) cmbImportance->currentIndex();
     }
 }
 
@@ -139,7 +142,7 @@ void WPEditDialogPageGeneral::slot_save(wayPoint * wp)
 /** return internal type of waypoint */
 int WPEditDialogPageGeneral::getWaypointType()
 {
-  int type = cmbType->currentItem();
+  int type = cmbType->currentIndex();
 
   if (type != -1)
     {
@@ -164,6 +167,6 @@ void WPEditDialogPageGeneral::setWaypointType(int type)
       type = BaseMapElement::getSortedTranslationList().indexOf(BaseMapElement::item2Text(0));
     }
 
-  cmbType->setCurrentItem(type);
+  cmbType->setCurrentIndex(type);
 }
 

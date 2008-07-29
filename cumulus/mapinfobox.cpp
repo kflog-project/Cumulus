@@ -49,16 +49,16 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, int fontDots
 	"margin: 0px;"
 	"alignment: top;"
 	"padding: 0px;"
-	"font-family: helvetica;"
 	"border-style: solid;"
 	"border-width: 3px;"
 	"border-color: %1;"
   ).arg( borderColor ) );
+//	"font-family: helvetica;"
 
   _preMinus = minusInPretext;
   _maxFontDotsize = fontDotsize;
 
-  _ptext = new QLabel(this, "" );
+  _ptext = new QLabel(this);
   _ptext->setStyleSheet(
 	"margin-right: 0px;"
 	"border-style: none;"
@@ -66,15 +66,15 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, int fontDots
 	"alignment: right;"
 	"text-align: right;"
 	"padding: 0px;"
-	"font-family: helvetica;"
 	"font-size: 16px;"
 	"min-width: 25px;"
 	"max-width: 25px;"
   );
+//	"font-family: helvetica;"
   _ptext->setAlignment( Qt::AlignRight );
   _ptext->setIndent(2);
 
-  _text = new QLabel(this, "" );
+  _text = new QLabel(this);
   _text->setIndent(0);
 
   layout->addWidget(_ptext,0);
@@ -130,10 +130,10 @@ void MapInfoBox::setValue( const QString _newVal)
 		"padding-left: 1px;"
 		"padding-right: 1px;"
 		"margin: 0px;"
-		"font-family: Vera,vera,helvetica;"
 		"font-size: %1px;"
 		"text-align: left;"
   ).arg(fontDotsize) );
+//		"font-family: Vera,vera,helvetica;"
 
 //  qDebug("\n       field: %s",_PreText.toLatin1().data());
 //  qDebug("        width: %d",width());
@@ -165,10 +165,10 @@ void MapInfoBox::setValue( const QString _newVal)
 		"padding-left: 1px;"
 		"padding-right: 1px;"
 		"margin: 0px;"
-		"font-family: Vera,vera,helvetica;"
 		"font-size: %1px;"
 		"text-align: left;"
     ).arg(fontDotsize) );
+//		"font-family: Vera,vera,helvetica;"
 //    qDebug("  fontDotSize: %d",fontDotsize);
 //    qDebug(" minWidthHint: %d\n",minimumSizeHint().width());
     diff = minimumSizeHint().width() - width();

@@ -30,7 +30,7 @@
 extern MapConfig * _globalMapConfig;
 
 GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
-  QDialog(parent, Qt::WStyle_StaysOnTop)
+  QDialog(parent, Qt::WindowStaysOnTopHint)
 {
   setObjectName("GliderFlightDialog");
   setModal(true);
@@ -129,7 +129,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
 
   //---------------------------------------------------------------------
 
-  topLayout->addRowSpacing(row++, 10);
+  topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
 
   // Align ok and cancel button at the left and right side of the
   // widget to have enough space between them. That shall avoid wrong
@@ -211,7 +211,7 @@ void GliderFlightDialog::load()
 
       buttonDump->setEnabled(true);
 
-      spinWater->setMaxValue(glider->maxWater());
+      spinWater->setMaximum(glider->maxWater());
 
       if (glider->maxWater()==0)
         {

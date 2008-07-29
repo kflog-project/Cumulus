@@ -19,10 +19,10 @@
 
 DegreeSpinBox::DegreeSpinBox(QWidget *parent) : QSpinBox(parent)
 {
-  this->setMinValue(-1);
-  this->setMaxValue(36);
+  this->setMinimum(-1);
+  this->setMaximum(36);
   this->setWrapping(true);
-  this->setLineStep(1);
+  this->setSingleStep(1);
   this->setValue(-1); //default=Unknown
 }
 

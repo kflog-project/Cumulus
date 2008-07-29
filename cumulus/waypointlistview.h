@@ -19,15 +19,14 @@
 #define WAYPOINTLISTVIEW_H
 
 #include <QWidget>
-#include <Q3ListView>
-#include <QBoxLayout>
+#include <QMainWindow>
 #include <QPushButton>
+#include <QBoxLayout>
 
+#include "waypointlistwidget.h"
 #include "waypoint.h"
-#include "listviewfilter.h"
 
 class WaypointCatalog;
-class CumulusApp;
 
 /**
  * This widget provides a list of waypoints and a means to select one.
@@ -37,20 +36,23 @@ class WaypointListView : public QWidget
 {
     Q_OBJECT
 public:
-    WaypointListView(CumulusApp *parent=0);
+    WaypointListView(QMainWindow *parent=0);
 
     ~WaypointListView();
-
-    /**
-     * @returns a pointer to the currently highlighted waypoint.
-     */
-    wayPoint *getSelectedWaypoint(Q3ListView * list = 0);
 
     /**
      * Retreives the waypoints from the mapcontents, and fills
      * the list.
      */
-    void fillWpList(QList<wayPoint*> *, Q3ListView *list = 0, ListViewFilter *filter = 0);
+    void fillWpList(QList<wayPoint*> *, QTreeWidget *list = 0, ListViewFilter *filter = 0);
+
+    WaypointListWidget* listWidget() {
+      return listw;
+    };
+
+    wayPoint* getSelectedWaypoint() {
+      return listw->getSelectedWaypoint();
+    };
 
 public slots: // Public slots
     /**
@@ -129,27 +131,16 @@ signals: // Signals
     void newHomePosition(const QPoint*);
 
 private:
-    Q3ListView* list;
-    CumulusApp * par;
-    QBoxLayout * buttonrow;
-    ListViewFilter * filter;
-    QPushButton *cmdSelect;
+    WaypointListWidget* listw;
+    QMainWindow* par;
+    QBoxLayout* buttonrow;
+    QPushButton* cmdSelect;
 
 private slots:
     void slot_Selected();
 
 protected:
     void showEvent(QShowEvent *);
-
-private: // Private methods
-
-class _WaypointItem : public Q3ListViewItem
-    {
-    public:
-        _WaypointItem(Q3ListView*, wayPoint *);
-        wayPoint * wp;
-
-    };
 
 };
 

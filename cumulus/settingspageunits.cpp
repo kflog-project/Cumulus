@@ -142,12 +142,12 @@ void SettingsPageUnits::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  UnitAlt->setCurrentItem(searchItem(altitudes, conf->getUnitAlt(), UnitAlt->count()));
-  UnitDistance->setCurrentItem(searchItem(distances, conf->getUnitDist(), UnitDistance->count()));
-  UnitSpeed->setCurrentItem(searchItem(speeds, conf->getUnitSpeed(), UnitSpeed->count()));
-  UnitVario->setCurrentItem(searchItem(varios, conf->getUnitVario(), UnitVario->count()));
-  UnitWind->setCurrentItem(searchItem(winds, conf->getUnitWind(), UnitWind->count()));
-  UnitPosition->setCurrentItem(searchItem(positions, conf->getUnitPos(), UnitPosition->count()));
+  UnitAlt->setCurrentIndex(searchItem(altitudes, conf->getUnitAlt(), UnitAlt->count()));
+  UnitDistance->setCurrentIndex(searchItem(distances, conf->getUnitDist(), UnitDistance->count()));
+  UnitSpeed->setCurrentIndex(searchItem(speeds, conf->getUnitSpeed(), UnitSpeed->count()));
+  UnitVario->setCurrentIndex(searchItem(varios, conf->getUnitVario(), UnitVario->count()));
+  UnitWind->setCurrentIndex(searchItem(winds, conf->getUnitWind(), UnitWind->count()));
+  UnitPosition->setCurrentIndex(searchItem(positions, conf->getUnitPos(), UnitPosition->count()));
 
   //set the static units for distances, speeds and altitudes. A signal that these (may) have
   //changed is emitted by the container, ConfigDialog

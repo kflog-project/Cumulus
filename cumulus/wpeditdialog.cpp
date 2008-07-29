@@ -35,7 +35,12 @@ WPEditDialog::WPEditDialog(QWidget *parent, wayPoint *wp ):
 {
   setObjectName("WPEditDialog");
   setModal(true);
+
+#ifdef MAEMO
+  resize(600,480);
+#else
   setSizeGripEnabled(true);
+#endif
   
   if (wp==0) {
     setWindowTitle(tr("New Waypoint"));
@@ -114,7 +119,7 @@ void WPEditDialog::accept()
     _wp->projP = _globalMapMatrix->wgsToMap(_wp->origP);
   }
 
-  _wp->comment=comment->text();
+  _wp->comment=comment->toPlainText();
   emit wpListChanged(_wp);
   QDialog::accept();
 }

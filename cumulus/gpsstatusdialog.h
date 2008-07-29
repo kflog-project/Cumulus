@@ -26,6 +26,7 @@
 #include <QPixmap>
 #include <QBitmap>
 #include <QPainter>
+#include <QKeyEvent>
 
 #include "gpsnmea.h"
 

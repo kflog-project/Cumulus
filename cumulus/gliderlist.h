@@ -20,10 +20,12 @@
 
 #include <QWidget>
 #include <QBoxLayout>
-#include <Q3ListView>
+#include <QTreeWidget>
+#include <QStandardItemModel>
 #include <QStringList>
 
 #include "glider.h"
+
 
 /**
  * This widget provides a list of gliders and a means to select one.
@@ -31,7 +33,7 @@
  */
 
 
-class GliderList : public Q3ListView
+class GliderList : public QTreeWidget
 {
     Q_OBJECT
 
@@ -60,7 +62,7 @@ public:
     };
 
     /**
-     * Retreives the glider object for the glider that was last stored
+     * Retrieves the glider object for the glider that was last stored
      * as the selected glider.
      * 
      * @returns a @ref Glider object representing the stored glider,
@@ -74,6 +76,11 @@ public:
      * after a restart of Cumulus.
      */
     static void setStoredSelection(Glider*);
+
+    /**
+     * Sets the selection to the item with this registration string.
+     */
+    void selectItemFromReg(const QString& registration);
 
 public slots:
     /**
@@ -96,68 +103,10 @@ public slots:
      */
 
 private:
+    QStandardItemModel *data;
     int _added;
     bool _changed;
 };
 
-
-/**
- * This widget provides an interface to add, edit and delete gliders
- * from the gliderlist.
- *
- * @author André Somers
- */
-
-class SettingsPageGliderList : public QWidget
-{
-  Q_OBJECT
-
-public:
-
-    SettingsPageGliderList(QWidget *parent=0);
-    ~SettingsPageGliderList();
-
-public slots: // Public slots
-    /**
-     * called to initiate saving to the configurationfile
-     */
-    void slot_save();
-
-    /**
-     * Called to initiate loading of the configurationfile.
-     */
-    void slot_load();
-
-    /**
-     * Called to ask is confirmation on the close is needed.
-     */
-    void slot_query_close(bool& warn, QStringList& warnings);
-
-protected:
-
-    void showEvent(QShowEvent *);
-
-private slots: // Private slots
-    /**
-     * Called when the selected glider should be deleted from the list
-     */
-    void slot_delete();
-
-    /**
-     * Called when the selected glider needs must be opened in the editor
-     */
-    void slot_edit();
-
-    /**
-     * Called when a new glider needs to be made.
-     */
-    void slot_new();
-
-private:
-    GliderList* list;
-    QBoxLayout *buttonrow;
-    int _added;
-
-};
 
 #endif

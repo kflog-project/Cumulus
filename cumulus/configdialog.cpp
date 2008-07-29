@@ -24,30 +24,38 @@
 
 #include <QMessageBox>
 #include <QDialogButtonBox>
+#include <QScrollArea>
 
 #include "configdialog.h"
+#include "generalconfig.h"
 
 ConfigDialog::ConfigDialog(QWidget *parent) :
-  QDialog(parent), loadConfig(true)
+  QWidget(parent), loadConfig(true)
 {
   // qDebug("height=%d, width=%d", parent->height(), parent->width());
 
-  setObjectName("ConfigDialog");
-  setModal(true);
-  setSizeGripEnabled(true);
+  QVBoxLayout *topLayout = new QVBoxLayout;
+  setLayout(topLayout);
+ 
+  title = new QLabel("<b>Cumulus Settings</b>", this);
+  topLayout->addWidget(title);
+  title->hide();
 
-  setWindowTitle(tr("Cumulus settings"));
-
-  QTabWidget* tabWidget = new QTabWidget (this);
+  QTabWidget* tabWidget = new QTabWidget(this);
 
   spp=new SettingsPagePersonal(this);
   tabWidget->addTab(spp, tr("Personal"));
 
-  spgl=new SettingsPageGliderList(this);
+  spgl=new SettingsPageGlider(this);
   tabWidget->addTab(spgl, tr("Gliders"));
 
   sps=new SettingsPageSector(this);
-  tabWidget->addTab(sps, tr("Sector"));
+  QScrollArea* sectorArea = new QScrollArea();
+  sectorArea->setWidget(sps);
+  sps->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  sectorArea->setWidgetResizable(true);
+  sectorArea->setFrameStyle(QFrame::NoFrame);
+  tabWidget->addTab(sectorArea, tr("Sector"));
 
   spg=new SettingsPageGPS(this);
   tabWidget->addTab(spg, tr("GPS"));
@@ -68,10 +76,31 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   tabWidget->addTab(spu, tr("Units"));
 
   spi=new SettingsPageInformation(this);
-  tabWidget->addTab(spi, tr("Information"));
+  QScrollArea* infoArea = new QScrollArea();
+  infoArea->setWidget(spi);
+  infoArea->setWidgetResizable(true);
+  infoArea->setFrameStyle(QFrame::NoFrame);
+  tabWidget->addTab(infoArea, tr("Information"));
 
-  QDialogButtonBox* buttonBox =
-    new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "cancel.png")) );
+  cancel->setIconSize(QSize(26,26));
+  cancel->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "ok.png")) );
+  ok->setIconSize(QSize(26,26));
+  ok->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::QSizePolicy::Preferred);
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addWidget( cancel, 2 );
+  buttonBox->addSpacing(20);
+  buttonBox->addWidget( ok, 2 );
+  buttonBox->addStretch(2);
+
+  connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
 
   connect(this, SIGNAL(load()), spp, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spgl, SLOT(slot_load()));
@@ -112,16 +141,21 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
           spa, SLOT(slot_query_close(bool&, QStringList&)));
 
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  QHBoxLayout *contentLayout = new QHBoxLayout;
+  contentLayout->addWidget(tabWidget);
+  contentLayout->addLayout(buttonBox);
 
-  QVBoxLayout *mainLayout = new QVBoxLayout;
-  mainLayout->addWidget(tabWidget);
-  mainLayout->addWidget(buttonBox);
-  setLayout(mainLayout);
+  topLayout->addLayout(contentLayout);
 
   slot_LoadCurrent();
-  tabWidget->showPage(spp);
+  tabWidget->setCurrentWidget(spp);
+
+  if ( parent->windowState() == Qt::WindowFullScreen )
+    title->show();
+  else
+    title->hide();
+//  show();
+
 }
 
 
@@ -174,7 +208,7 @@ void ConfigDialog::accept()
       emit welt2000ConfigChanged();
     }
     
-  QDialog::accept();
+	emit closeConfig();
 }
 
 /** Called if the Cancel button is pressed */
@@ -202,10 +236,10 @@ void ConfigDialog::reject()
         }
         
       int answer=QMessageBox::warning(this,
-                                      tr("Close w/o saving?"),
-                                      tr("<html><b>You have made changes to:<ul>%1</ul> If you continue, these changes will <b>not</b> be saved,<br> and your changes will be lost.<p>Do you wish to close without saving anyway?</b></html>").arg(pagelist),
-                                      tr("Close w/o saving"),
-                                      tr("Save all changes"),
+                                      tr("Close without saving"),
+                                      tr("<html>You have changed:<ul>%1</ul>Discard changes?</html>").arg(pagelist),
+                                      tr("Discard"),
+                                      tr("Save Changes"),
                                       QString::null,
                                       0);
       if( answer == QMessageBox::Ok )
@@ -216,5 +250,17 @@ void ConfigDialog::reject()
     }
 
   emit reload();
-  QDialog::reject();
+  hide();
+  emit closeConfig();
 }
+
+void ConfigDialog::resizeEvent(QResizeEvent*)
+{
+//  QWidget *p = ((QWidget*)parent());
+  if ( ( (QWidget*)parent() )->windowState() == Qt::WindowFullScreen )
+    title->show();
+  else
+    title->hide();
+//  resize( p->size() );
+}
+

@@ -391,7 +391,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
             display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><font color=\"#FF0000\"><b>" +
               arrivalAlt.getText(true,0) + "</font></b></td></tr>";
             break;
-          case belowSavety:
+          case belowSafety:
             display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b><font color=\"#FF00FF\">" +
               arrivalAlt.getText(true,0) + "</font></b></td></tr>";
           }
@@ -665,7 +665,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
             display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><font color=\"#FF0000\"><b>" +
               arrivalAlt.getText(true,0) + "</font></b></td><tr>";
             break;
-          case belowSavety:
+          case belowSafety:
             display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b><font color=\"#FF00FF\">" +
               arrivalAlt.getText(true,0) + "</font></b></td><tr>";
           }

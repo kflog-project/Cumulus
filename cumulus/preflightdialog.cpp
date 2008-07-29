@@ -29,18 +29,26 @@
 
 extern MapContents* _globalMapContents;
 
-/** Dialog for prefilght settings. To reserve the full vertical space for the
+/** Dialog for pre-flight settings. To reserve the full vertical space for the
  *  the content of the tabulators, tabulators are arranged at the
  *  left side and the ok and cancel buttons are arranged on the right side.
  */
 
 PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
-  QDialog(parent)
+  QWidget(parent)
 {
+  qDebug("PreFlightDialog::PreFlightDialog()");
   setObjectName("PreFlightDialog");
-  setModal(true);
-  setWindowTitle(tr("Preflight settings"));
-  setSizeGripEnabled(true);
+//  setModal(true);
+//  setWindowTitle(tr("Preflight settings"));
+//  setSizeGripEnabled(true);
+
+  QVBoxLayout *topLayout = new QVBoxLayout(this);
+  setLayout(topLayout);
+ 
+  title = new QLabel("<b>Pre-Flight Settings</b>", this);
+  topLayout->addWidget(title);
+  title->hide();
 
   tabWidget = new QTabWidget(this);
   tabWidget->setTabPosition( QTabWidget::West );
@@ -65,52 +73,55 @@ PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
   connect(scRight, SIGNAL(activated()),this, SLOT(keyRight()));
   connect(scSpace, SIGNAL(activated()),this, SLOT(accept()));
 
-  QPushButton *ok = new QPushButton(this);
-  ok->setPixmap( GeneralConfig::instance()->loadPixmap( "standardbutton-apply-16.png") );
-  ok->setFlat(true);
-  ok->setToolTip( tr("Apply modifications") );
-
   QPushButton *cancel = new QPushButton(this);
-  cancel->setPixmap( GeneralConfig::instance()->loadPixmap( "standardbutton-cancel-16.png") );
-  cancel->setFlat(true);
-  cancel->setToolTip( tr("Cancel modifications") );
+  cancel->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "cancel.png") ) );
+  cancel->setIconSize(QSize(26,26));
+  cancel->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "ok.png") ) );
+  ok->setIconSize(QSize(26,26));
+  ok->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::QSizePolicy::Preferred);
 
   connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
   connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
-  buttonBox->addWidget( ok );
+  buttonBox->addWidget( cancel, 2 );
   buttonBox->addSpacing(20);
-  buttonBox->addWidget( cancel );
-  buttonBox->addStretch(1);
+  buttonBox->addWidget( ok, 2 );
+  buttonBox->addStretch(2);
 
-  QHBoxLayout *mainLayout = new QHBoxLayout(this);
-  mainLayout->addWidget(tabWidget);
-  mainLayout->addLayout(buttonBox);
+  QHBoxLayout *contentLayout = new QHBoxLayout;
+  contentLayout->addWidget(tabWidget);
+  contentLayout->addLayout(buttonBox);
+
+  topLayout->addLayout(contentLayout);
 
   miscpage->load();
 
   //check to see which tab to bring forward
   if (QString (name) == "taskselection")
   {
-    tabWidget->showPage(taskpage);
+    tabWidget->setCurrentIndex( tabWidget->indexOf(taskpage) );
   }
   else
   {
-    tabWidget->showPage(gliderpage);
+    tabWidget->setCurrentIndex( tabWidget->indexOf(gliderpage) );
   }
 
-#ifdef MAEMO
-  resize( 480, 480 );
-#endif
+//#ifdef MAEMO
+//  resize( 640, 480 );
+//#endif
 
   show();
+  setWindowState(windowState() ^ Qt::WindowFullScreen);
 }
 
 PreFlightDialog::~PreFlightDialog()
 {
-  // qDebug("PreFlightDialog::~PreFlightDialog()");
+  qDebug("PreFlightDialog::~PreFlightDialog()");
 }
 
 void PreFlightDialog::accept()
@@ -175,47 +186,59 @@ void PreFlightDialog::accept()
   gliderpage->save();
   miscpage->save();
 
+  hide();
   emit settingsChanged();
-  QDialog::accept();
+  emit closeConfig();
+//  QDialog::accept();
 }
 
 
 void PreFlightDialog::reject()
 {
   // qDebug("PreFlightDialog::reject()");
-  QDialog::reject();
+//  QDialog::reject();
+  hide();
+  emit closeConfig();
 }
 
 
 void PreFlightDialog::keyRight()
 {
-  if( tabWidget->currentPage() == gliderpage )
+  if( tabWidget->currentWidget() == gliderpage )
     {
-      tabWidget->showPage(taskpage);
+      tabWidget->setCurrentIndex( tabWidget->indexOf(taskpage) );
     }
-  else if( tabWidget->currentPage() == taskpage )
+  else if( tabWidget->currentWidget() == taskpage )
     {
-      tabWidget->showPage(miscpage);
+      tabWidget->setCurrentIndex( tabWidget->indexOf(miscpage) );
     }
-  else if( tabWidget->currentPage() == miscpage )
+  else if( tabWidget->currentWidget() == miscpage )
     {
-      tabWidget->showPage(gliderpage);
+      tabWidget->setCurrentIndex( tabWidget->indexOf(gliderpage) );
     }
 }
 
 
 void PreFlightDialog::keyLeft()
 {
-  if(  tabWidget->currentPage() == miscpage )
+  if(  tabWidget->currentWidget() == miscpage )
     {
-      tabWidget->showPage(taskpage);
+      tabWidget->setCurrentIndex( tabWidget->indexOf(taskpage) );
     }
-  else if(  tabWidget->currentPage() == taskpage )
+  else if(  tabWidget->currentWidget() == taskpage )
     {
-      tabWidget->showPage(gliderpage);
+      tabWidget->setCurrentIndex( tabWidget->indexOf(gliderpage) );
     }
-  else if(  tabWidget->currentPage() == gliderpage )
+  else if(  tabWidget->currentWidget() == gliderpage )
     {
-      tabWidget->showPage(miscpage);
+      tabWidget->setCurrentIndex( tabWidget->indexOf(miscpage) );
     }
+}
+
+void PreFlightDialog::resizeEvent(QResizeEvent*)
+{
+  if ( ( (QWidget*)parent() )->windowState() == Qt::WindowFullScreen )
+    title->show();
+  else
+    title->hide();
 }

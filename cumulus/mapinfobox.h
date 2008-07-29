@@ -60,7 +60,7 @@ class MapInfoBox : public QFrame
     Q_OBJECT
 
 public:
-    MapInfoBox(QWidget * parent, const QString borderColor, int fontDotsize = 36, bool minusInPretext = false );
+    MapInfoBox(QWidget * parent, const QString borderColor, int fontDotsize = 38, bool minusInPretext = false );
     virtual ~MapInfoBox();
 
     /**

@@ -48,7 +48,8 @@ void Vario::newAltitude()
 {
     // Start or restart the timer to supervise the calling of this
     // method. If timer expired the vario will be set to zero.
-    _timeOut.start( _intTime+2500, TRUE );
+    _timeOut.setSingleShot(true);
+    _timeOut.start( _intTime+2500 );
 
     if( calculator->samplelist.count() < 20 ) {
         // to less samples in the list

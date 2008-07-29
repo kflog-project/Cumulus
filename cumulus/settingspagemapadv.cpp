@@ -111,7 +111,7 @@ void SettingsPageMapAdv::slot_load()
   // to get the right value.
 
   int projIndex = currentProjType - 1;
-  cmbProjection->setCurrentItem(projIndex);
+  cmbProjection->setCurrentIndex(projIndex);
   slotSelectProjection(projIndex);
 }
 
@@ -125,7 +125,7 @@ void SettingsPageMapAdv::slot_save()
   // the position formats will be changed between DMS <-> DDM vise
   // versa.
 
-  switch(cmbProjection->currentItem())
+  switch(cmbProjection->currentIndex())
     {
     case 0:
       if( edtLat1->isInputChanged() )
@@ -229,7 +229,7 @@ bool SettingsPageMapAdv::checkIsProjectionChanged()
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
 
-  switch(cmbProjection->currentItem()) {
+  switch(cmbProjection->currentIndex()) {
   case 0:
     changed = changed || ( edtLat1->isInputChanged() );
     changed = changed || ( edtLat2->isInputChanged() );

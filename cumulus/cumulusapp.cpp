@@ -52,7 +52,7 @@
 #include "preflightdialog.h"
 #include "wgspoint.h"
 #include "waypoint.h"
-#include "gliderlist.h"
+//#include "gliderlist.h"
 #include "target.h"
 #include "helpbrowser.h"
 #include "sound.h"
@@ -120,6 +120,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   _globalCumulusApp = this;
   menuBarVisible = false;
   listViewTabs = 0;
+  configView = 0;
 
   // Eggert: make sure the app uses utf8 encoding for translated widgets
   QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
@@ -128,14 +129,28 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   // Check the font size and set it bigger if it was to small
   QFont appFt = QApplication::font();
 
-  qDebug("QAppFont pointSize=%d pixelSize=%d",
-         appFt.pointSize(), appFt.pixelSize() );
+//  qDebug("QAppFont family %s, pointSize=%d pixelSize=%d",
+//         appFt.family().toLatin1().data(), appFt.pointSize(), appFt.pixelSize() );
 
-  if( appFt.pointSize() < 10 )
-    {
-      appFt.setPointSize(10);
-      QApplication::setFont(appFt);
-    }
+
+#ifdef MAEMO
+
+  // For MAEMO it's really better to pre-set style and font
+  QApplication::setStyle("plastique");
+  appFt.setFamily("Nokia Sans");
+
+  // N8x0 display has bad contrast for light shades, so make the (dialog)
+  // background darker
+  QPalette appPal = QApplication::palette();
+  appPal.setColor(QPalette::Normal,QPalette::Window,QColor(230,230,230));
+  setPalette(appPal);
+
+#endif
+
+  if( appFt.pointSize() < 18 ) {
+    appFt.setPointSize(18);
+    QApplication::setFont(appFt);
+  }
   
   // get last saved window geometrie from generalconfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
@@ -171,16 +186,16 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   qDebug( "LANG=%s", lang ? lang : "NULL" );
   qDebug( "LD_LIBRARY_PATH=%s", ldpath ? ldpath : "NULL" );
   qDebug( "QTDIR=%s", qtdir ? qtdir : "NULL" );
-  qDebug( "QDir::homeDirPath()=%s", QDir::homeDirPath().toLatin1().data() );
+  qDebug( "QDir::homePath()=%s", QDir::homePath().toLatin1().data() );
   qDebug( "DISPLAY=%s", qwsdisplay ? qwsdisplay : "NULL" );
 
   // Check, if in users home a cumulus application directory exists,
   // otherwise create it.
-  QDir cuApps( QDir::homeDirPath() + "/cumulus" );
+  QDir cuApps( QDir::homePath() + "/cumulus" );
 
   if ( ! cuApps.exists() )
     {
-      cuApps.mkdir( QDir::homeDirPath() + "/cumulus" );
+      cuApps.mkdir( QDir::homePath() + "/cumulus" );
     }
 
   setFocusPolicy( Qt::StrongFocus );
@@ -190,7 +205,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
 
   this->installEventFilter( this );
 
-  setIcon( GeneralConfig::instance()->loadPixmap( "cumulus.png" ) );
+  setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus.png")) );
   setWindowTitle( "Cumulus" );
 
 #ifdef MAEMO
@@ -274,7 +289,9 @@ void CumulusApp::slotCreateApplicationWidgets()
 
   setCentralWidget( viewMap );
 
-  QFont fnt( "Helvetica", 14, QFont::Bold );
+//  QFont fnt( "Helvetica", 18, QFont::Bold );
+  QFont fnt = font();
+  fnt.setBold(true);
 
   listViewTabs = new QTabWidget( this );
   listViewTabs->resize( this->size() );
@@ -289,6 +306,8 @@ void CumulusApp::slotCreateApplicationWidgets()
   viewRP->setFont( fnt );
   viewTP->setFont( fnt );
 
+  viewCF = new QWidget( this );
+
   _taskListVisible = false;
   _reachpointListVisible = false;
   listViewTabs->addTab( viewWP, tr( "Waypoints" ) );
@@ -298,7 +317,8 @@ void CumulusApp::slotCreateApplicationWidgets()
   // waypoint info widget
   viewInfo = new WPInfoWidget( this );
 
-  viewWP->fillWpList( _globalMapContents->getWaypointList() );
+//  viewAF->listWidget()->fillWpList(); 
+  viewWP->listWidget()->fillWpList();
 
   //create global objects
   gps = new GPSNMEA( this );
@@ -461,105 +481,13 @@ void CumulusApp::slotCreateApplicationWidgets()
   connect( logger, SIGNAL( madeEntry() ),
            viewMap, SLOT( slot_LogEntry() ) );
 
-  ws->slot_SetText1( tr( "Setting up accelerators..." ) );
-
-  //create the keyboard accelerators
-  accAfView    = new Q3Accel( this );
-  accInfoView  = new Q3Accel( this );
-  accManualNav = new Q3Accel( this );
-  accGpsNav    = new Q3Accel( this );
-  accRpView    = new Q3Accel( this );
-  accTpView    = new Q3Accel( this );
-  accWpView    = new Q3Accel( this );
-  accMenuBar   = new Q3Accel( this );
-
-  // most accelerators are now QActions these could also go as
-  // QAction, even when not in a menu
-
-  // WaypointListView accelerators Key_F30=0x104d
-  accAfView->connectItem( accAfView->insertItem( Qt::Key_Space ),
-                          viewAF, SLOT( slot_Select() ) );
-
-  accRpView->connectItem( accRpView->insertItem( Qt::Key_Space ),
-                          viewRP, SLOT( slot_Select() ) );
-
-  accTpView->connectItem( accTpView->insertItem( Qt::Key_Space ),
-                          viewTP, SLOT( slot_Select() ) );
-
-  accWpView->connectItem( accWpView->insertItem( Qt::Key_Space ),
-                          viewWP, SLOT( slot_Select() ) );
-
-  // InfoView accelerators
-  accInfoView->connectItem( accInfoView->insertItem( Qt::Key_Space ),
-                            viewInfo, SLOT( slot_selectWaypoint() ) );
-
-  accInfoView->connectItem( accInfoView->insertItem( Qt::Key_K ),
-                            viewInfo, SLOT( slot_KeepOpen() ) );
-
-  // Manual navigation accelerators. These are only available if there is no GPS connection
-  accManualNav->connectItem( accManualNav->insertItem( Qt::Key_Up ),
-                             calculator, SLOT( slot_changePositionN() ) );
-
-  accManualNav->connectItem( accManualNav->insertItem( Qt::Key_Right ),
-                             calculator, SLOT( slot_changePositionE() ) );
-
-  accManualNav->connectItem( accManualNav->insertItem( Qt::Key_Down ),
-                             calculator, SLOT( slot_changePositionS() ) );
-
-  accManualNav->connectItem( accManualNav->insertItem( Qt::Key_Left ),
-                             calculator, SLOT( slot_changePositionW() ) );
-
-  accManualNav->connectItem( accManualNav->insertItem( Qt::Key_H ),
-                             calculator, SLOT( slot_changePositionHome() ) );
-
-  accManualNav->connectItem( accManualNav->insertItem( Qt::Key_C ),
-                             calculator, SLOT( slot_changePositionWp() ) );
-
-  accManualNav->connectItem( accManualNav->insertItem( Qt::Key_F9 ),
-                             this, SLOT( slotSwitchToWPListView() ) );
-  // Consider qwertz keyboards y <-> z are interchanged
-  accManualNav->connectItem( accManualNav->insertItem( Qt::Key_Y ),
-                             viewMap->_theMap , SLOT( slotZoomIn() ) );
-
-  // GPS navigation accelerators. These are only available if there is a GPS connection
-  accGpsNav->connectItem( accGpsNav->insertItem( Qt::Key_Up ),
-                          calculator, SLOT( slot_McUp() ) );
-
-  accGpsNav->connectItem( accGpsNav->insertItem( Qt::Key_Down ),
-                          calculator, SLOT( slot_McDown() ) );
-
-  accGpsNav->connectItem( accGpsNav->insertItem( Qt::Key_H ),
-                          this, SLOT( slotNavigateHome() ) );
-
-  accGpsNav->connectItem( accGpsNav->insertItem( Qt::Key_F9 ),
-                          this, SLOT( slotSwitchToWPListView() ) );
-  // Zoom in map
-  accGpsNav->connectItem( accGpsNav->insertItem( Qt::Key_Right ),
-                          viewMap->_theMap , SLOT( slotZoomIn() ) );
-  // Consider qwertz keyboards y <-> z are interchanged
-  accGpsNav->connectItem( accGpsNav->insertItem( Qt::Key_Y ),
-                          viewMap->_theMap , SLOT( slotZoomIn() ) );
-  // Zoom out map
-  accGpsNav->connectItem( accGpsNav->insertItem( Qt::Key_Left ),
-                          viewMap->_theMap , SLOT( slotZoomOut() ) );
-
-  // setting of menu bar accelerators.
-  accMenuBar->connectItem( accMenuBar->insertItem( Qt::Key_Space ),
-                           this, SLOT( slotToggleMenu() ) ); // IPAQ rocker button
-
-  accMenuBar->connectItem( accMenuBar->insertItem( Qt::Key_M ),
-                           this, SLOT( slotToggleMenu() ) );
-
-  accMenuBar->connectItem( accMenuBar->insertItem( Qt::Key_F12 ),
-                           this, SLOT( slotToggleMenu() ) ); // F12 menu button Opie
-
   calculator->setPosition( _globalMapMatrix->getMapCenter( false ) );
 
   slotReadconfig();
   setView( mapView );
 
   // set the default glider to be the last one selected.
-  calculator->setGlider( GliderList::getStoredSelection() );
+  calculator->setGlider( GliderListWidget::getStoredSelection() );
   QString gt = calculator->gliderType();
 
   if ( !gt.isEmpty() ) setWindowTitle ( "Cumulus - " + gt );
@@ -580,11 +508,10 @@ void CumulusApp::slotCreateApplicationWidgets()
 
   if( ! GeneralConfig::instance()->getAirspaceWarningEnabled() )
     {
-      int answer= QMessageBox::warning( this,tr("Airspace Warnings?"),
+      int answer= QMessageBox::warning( this,tr("Airspace Warnings"),
                                        tr("<html><b>Airspace warnings are disabled!<br>"
-                                           "Do you want enable them?</b></html>"),
-                                       QMessageBox::Yes,
-                                       QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
+                                           "Enable now?</b></html>"),
+                                       QMessageBox::Yes | QMessageBox::No );
 
       if (answer==QMessageBox::Yes)
         {
@@ -715,11 +642,12 @@ void CumulusApp::initMenuBar()
 {
   QFont cf = this->font();
 
-#ifndef MAEMO
-  QFont font( "Helvetica", 12 );
-#else
-  QFont font( "Helvetica", 14 );
-#endif
+//#ifdef MAEMO
+  QFont font = QApplication::font();
+//  font.setPixelSize(16);
+//#else
+//  QFont font( "Helvetica", 14 );
+//#endif
 
   this->setFont( font );
   menuBar()->setFont( font );
@@ -776,8 +704,160 @@ void CumulusApp::initMenuBar()
 /** initializes all QActions of the application */
 void CumulusApp::initActions()
 {
+  ws->slot_SetText1( tr( "Setting up key shortcuts ..." ) );
+
+
+  // most shortcuts are now QActions these could also go as
+  // QAction, even when not in a menu
+  // @JD done. Uff!
+
+  // Shortcuts for all waypoint lists ( Key_F30 = 0x104d )
+
+  actionAfViewSelect = new QAction( tr( "Select" ), this );
+  actionAfViewSelect->setShortcut( QKeySequence("Space") );
+  addAction( actionAfViewSelect );
+  connect( actionAfViewSelect, SIGNAL( triggered() ),
+           viewAF, SLOT( slot_Select() ) );
+
+  actionRpViewSelect = new QAction( tr( "Select" ), this );
+  actionRpViewSelect->setShortcut( QKeySequence("Space") );
+  addAction( actionRpViewSelect );
+  connect( actionRpViewSelect, SIGNAL( triggered() ),
+           viewRP, SLOT( slot_Select() ) );
+
+  actionTpViewSelect = new QAction( tr( "Select" ), this );
+  actionTpViewSelect->setShortcut( QKeySequence("Space") );
+  addAction( actionTpViewSelect );
+  connect( actionTpViewSelect, SIGNAL( triggered() ),
+           viewTP, SLOT( slot_Select() ) );
+
+  actionWpViewSelect = new QAction( tr( "Select" ), this );
+  actionWpViewSelect->setShortcut( QKeySequence("Space") );
+  addAction( actionWpViewSelect );
+  connect( actionWpViewSelect, SIGNAL( triggered() ),
+           viewWP, SLOT( slot_Select() ) );
+
+  // InfoView shortcuts
+
+  actionInfoViewSelect = new QAction( tr( "Select" ), this );
+  actionInfoViewSelect->setShortcut( QKeySequence("Space") );
+  addAction( actionInfoViewSelect );
+  connect( actionInfoViewSelect, SIGNAL( triggered() ),
+           viewInfo, SLOT( slot_selectWaypoint() ) );
+
+  actionInfoViewKeep = new QAction( tr( "Keep info open" ), this ); 
+  actionInfoViewKeep->setShortcut( QKeySequence("K") );
+  addAction( actionInfoViewKeep );
+  connect( actionInfoViewKeep, SIGNAL( triggered() ),
+           viewInfo, SLOT( slot_KeepOpen() ) );
+
+  // Manual navigation shortcuts. Only available if no GPS connection
+
+  actionManualNavUp = new QAction( tr( "Move up" ), this );
+  actionManualNavUp->setShortcut ( QKeySequence("Up") );
+  addAction( actionManualNavUp );
+  connect( actionManualNavUp, SIGNAL( triggered() ),
+           calculator, SLOT( slot_changePositionN() ) );
+
+  actionManualNavRight = new QAction( tr( "Move right" ), this );
+  actionManualNavRight->setShortcut( QKeySequence("Right") );
+  addAction( actionManualNavRight );
+  connect( actionManualNavRight, SIGNAL( triggered() ),
+           calculator, SLOT( slot_changePositionE() ) );
+
+  actionManualNavDown = new QAction( tr( "Move down" ), this );
+  actionManualNavDown->setShortcut( QKeySequence("Down") );
+  addAction( actionManualNavDown );
+  connect( actionManualNavDown, SIGNAL( triggered() ),
+           calculator, SLOT( slot_changePositionS() ) );
+
+  actionManualNavLeft = new QAction( tr( "Move left" ), this );
+  actionManualNavLeft->setShortcut( QKeySequence("Left") );
+  addAction( actionManualNavLeft );
+  connect( actionManualNavLeft, SIGNAL( triggered() ),
+           calculator, SLOT( slot_changePositionW() ) );
+
+  actionManualNavHome = new QAction( tr( "Move to home site" ), this ); 
+  actionManualNavHome->setShortcut( QKeySequence("H") );
+  addAction( actionManualNavHome );
+  connect( actionManualNavHome, SIGNAL( triggered() ),
+           calculator, SLOT( slot_changePositionHome() ) );
+
+  actionManualNavWP = new QAction( tr( "Move to waypoint" ), this ); 
+  actionManualNavWP->setShortcut( QKeySequence("C") );
+  addAction( actionManualNavWP );
+  connect( actionManualNavWP, SIGNAL( triggered() ),
+           calculator, SLOT( slot_changePositionWp() ) );
+
+  actionManualNavWPList = new QAction( tr( "Open waypoint list" ), this ); 
+  actionManualNavWPList->setShortcut( QKeySequence("F9") );
+  addAction( actionManualNavWPList );
+  connect( actionManualNavWPList, SIGNAL( triggered() ),
+           this, SLOT( slotSwitchToWPListView() ) );
+
+  // Consider qwertz keyboards y <-> z are interchanged
+
+  actionManualNavZoomIn = new QAction( tr( "&Exit" ), this ); 
+  actionManualNavZoomIn->setShortcut( QKeySequence("Y") );
+  addAction( actionManualNavZoomIn );
+  connect( actionManualNavZoomIn, SIGNAL( triggered() ),
+           viewMap->_theMap , SLOT( slotZoomIn() ) );
+
+  // GPS navigation shortcuts. Only available with GPS connected
+
+  actionGpsNavUp = new QAction( tr( "McCready up" ), this );
+  actionGpsNavUp->setShortcut( QKeySequence("Up") );
+  addAction( actionGpsNavUp );
+  connect( actionGpsNavUp, SIGNAL( triggered() ),
+           calculator, SLOT( slot_McUp() ) );
+
+  actionGpsNavDown = new QAction( tr( "McCready down" ), this );
+  actionGpsNavDown->setShortcut( QKeySequence("Down") );
+  addAction( actionGpsNavDown );
+  connect( actionGpsNavDown, SIGNAL( triggered() ),
+           calculator, SLOT( slot_McDown() ) );
+
+  actionGpsNavHome = new QAction( tr( "Set home site waypoint" ), this );
+  actionGpsNavHome->setShortcut( QKeySequence("H") );
+  addAction( actionGpsNavHome );
+  connect( actionGpsNavHome, SIGNAL( triggered() ),
+           this, SLOT( slotNavigateHome() ) );
+
+
+  actionGpsNavWPList = new QAction( tr( "Open waypoint list" ), this );
+  actionGpsNavWPList->setShortcut( QKeySequence("F9") );
+  addAction( actionGpsNavWPList );
+  connect( actionGpsNavWPList, SIGNAL( triggered() ),
+           this, SLOT( slotSwitchToWPListView() ) );
+
+
+  // Zoom in map (and consider qwertz keyboards, y <-> z are interchanged)
+
+  actionGpsNavZoomIn = new QAction( tr( "Zoom in" ), this );
+  actionGpsNavZoomIn->setShortcut( QKeySequence("Right,Y") );
+
+  addAction( actionGpsNavZoomIn );
+  connect( actionGpsNavZoomIn, SIGNAL( triggered() ),
+           viewMap->_theMap, SLOT( slotZoomIn() ) );
+
+  // Zoom out map
+  actionGpsNavZoomOut = new QAction( tr( "Zoom out" ), this );
+  actionGpsNavZoomOut->setShortcut( QKeySequence("Left") );
+  addAction( actionGpsNavZoomOut );
+  connect( actionGpsNavZoomOut, SIGNAL( triggered() ),
+           viewMap->_theMap, SLOT( slotZoomOut() ) );
+
+  // (Historical) menu bar shortcut (IPAQ rocker button / F12 menu button Opie)
+
+  actionMenuBarToggle = new QAction( tr( "Toggle menu" ), this );
+  actionMenuBarToggle->setShortcut( QKeySequence("Space,M,F12") );
+  addAction( actionMenuBarToggle );
+  connect( actionMenuBarToggle, SIGNAL( triggered() ),
+                           this, SLOT( slotToggleMenu() ) );
+
+
   actionFileQuit = new QAction( tr( "&Exit" ), this );
-  actionFileQuit->setShortcut(Qt::Key_E + Qt::SHIFT);
+  actionFileQuit->setShortcut( QKeySequence("Shift+E") );
   addAction( actionFileQuit );
   connect( actionFileQuit, SIGNAL( triggered() ),
            this, SLOT( slotFileQuit() ) );
@@ -814,7 +894,7 @@ void CumulusApp::initActions()
 
   actionToggleStatusbar = new QAction( tr( "&Statusbar" ), this );
   actionToggleStatusbar->setCheckable(true);
-  actionToggleStatusbar->setOn( true );
+  actionToggleStatusbar->setChecked(true);
   addAction( actionToggleStatusbar );
   connect( actionToggleStatusbar, SIGNAL( toggled( bool ) ),
            this, SLOT( slotViewStatusBar( bool ) ) );
@@ -849,7 +929,7 @@ void CumulusApp::initActions()
   actionToggleWpLabels = new QAction ( tr( "Waypoint labels" ), this);
   actionToggleWpLabels->setShortcut(Qt::Key_A);
   actionToggleWpLabels->setCheckable(true);
-  actionToggleWpLabels->setOn( _globalMapConfig->getShowWpLabels() );
+  actionToggleWpLabels->setChecked( _globalMapConfig->getShowWpLabels() );
   addAction( actionToggleWpLabels );
   connect( actionToggleWpLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleWpLabels( bool ) ) );
@@ -857,7 +937,7 @@ void CumulusApp::initActions()
   actionToggleWpLabelsEI = new QAction (  tr( "Waypoint extra info" ), this);
   actionToggleWpLabelsEI->setShortcut(Qt::Key_S);
   actionToggleWpLabelsEI->setCheckable(true);
-  actionToggleWpLabelsEI->setOn( _globalMapConfig->getShowWpLabelsExtraInfo() );
+  actionToggleWpLabelsEI->setChecked( _globalMapConfig->getShowWpLabelsExtraInfo() );
   addAction( actionToggleWpLabelsEI );
   connect( actionToggleWpLabelsEI, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleWpLabelsExtraInfo( bool ) ) );
@@ -889,7 +969,7 @@ void CumulusApp::initActions()
   connect( actionToggleManualInFlight, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleManualInFlight( bool ) ) );
 
-  actionPreFlight = new QAction( tr( "Pre Flight" ), this );
+  actionPreFlight = new QAction( tr( "Pre-flight setup" ), this );
   actionPreFlight->setShortcut(Qt::Key_P);
   addAction( actionPreFlight );
   connect ( actionPreFlight, SIGNAL( triggered() ),
@@ -901,13 +981,13 @@ void CumulusApp::initActions()
   connect( actionRememberWaypoint, SIGNAL( triggered() ),
            this, SLOT( slotRememberWaypoint() ) );
 
-  actionSetupConfig = new QAction( tr ( "General Setup" ), this );
+  actionSetupConfig = new QAction( tr ( "General setup" ), this );
   actionSetupConfig->setShortcut(Qt::Key_S + Qt::SHIFT);
   addAction( actionSetupConfig );
   connect ( actionSetupConfig, SIGNAL( triggered() ),
             this, SLOT( slotConfig() ) );
 
-  actionSetupInFlight = new QAction( tr ( "In Flight" ), this );
+  actionSetupInFlight = new QAction( tr ( "In flight" ), this );
   actionSetupInFlight->setShortcut(Qt::Key_F);
   addAction( actionSetupInFlight );
   connect ( actionSetupInFlight, SIGNAL( triggered() ),
@@ -934,10 +1014,10 @@ void CumulusApp::initActions()
 }
 
 /**
- * Toggle on/off all actions, which have key accelerators defined.
+ * Toggle on/off all actions which have key shortcuts defined.
  */
 
-void  CumulusApp::toggelActions( const bool toggle )
+void  CumulusApp::toggleActions( const bool toggle )
 {
   actionViewWaypoints->setEnabled( toggle );
   actionViewAirfields->setEnabled( toggle );
@@ -972,6 +1052,30 @@ void  CumulusApp::toggelActions( const bool toggle )
   // do not toggle actionToggleManualInFlight, status may not be changed
 }
 
+/**
+ * Toggle actions depending on GPS connection.
+ */
+void CumulusApp::toggleManualNavActions( const bool toggle )
+{
+  actionManualNavUp->setEnabled( toggle );
+  actionManualNavRight->setEnabled( toggle );
+  actionManualNavDown->setEnabled( toggle );
+  actionManualNavLeft->setEnabled( toggle );
+  actionManualNavHome->setEnabled( toggle );
+  actionManualNavWP->setEnabled( toggle );
+  actionManualNavWPList->setEnabled( toggle );
+  actionManualNavZoomIn->setEnabled( toggle ); 
+}
+void CumulusApp::toggleGpsNavActions( const bool toggle )
+{
+  actionGpsNavUp->setEnabled( toggle );
+  actionGpsNavDown->setEnabled( toggle );
+  actionGpsNavHome->setEnabled( toggle );
+  actionGpsNavWPList->setEnabled( toggle );
+  actionGpsNavZoomIn->setEnabled( toggle );
+  actionGpsNavZoomOut->setEnabled( toggle );
+}
+
 
 void CumulusApp::slotFileQuit ()
 {
@@ -995,15 +1099,14 @@ void CumulusApp::closeEvent ( QCloseEvent* evt )
 
   playSound("notify");
 
-  QMessageBox mb( tr( "Are you sure?" ),
-                  tr( "<b>Cumulus will be terminated.<br>Are you sure?</b>" ),
-                  QMessageBox::Warning,
-                  QMessageBox::Yes | QMessageBox::Default,
-                  QMessageBox::No,
-                  QMessageBox::NoButton );
+  QMessageBox mb( QMessageBox::Warning,
+                  tr( "Are You Sure?" ),
+                  tr( "Terminating Cumulus<br><b>Are you sure?</b>" ),
+                  QMessageBox::Yes | QMessageBox::No,
+                  this,
+                  Qt::Dialog );
 
-  QFont fnt( "Helvetica", 12, QFont::Bold );
-  mb.setFont( fnt );
+  mb.setDefaultButton( QMessageBox::Yes );
 
   switch ( mb.exec() )
     {
@@ -1041,14 +1144,14 @@ void CumulusApp::slotToggleMenu()
 void CumulusApp::slotToggleWpLabels( bool toggle )
 {
   _globalMapConfig->setShowWpLabels( toggle );
-  viewMap->_theMap->sceduleRedraw(Map::waypoints);
+  viewMap->_theMap->scheduleRedraw(Map::waypoints);
 }
 
 
 void CumulusApp::slotToggleWpLabelsExtraInfo( bool toggle )
 {
   _globalMapConfig->setShowWpLabelsExtraInfo( toggle );
-  viewMap->_theMap->sceduleRedraw(Map::waypoints);
+  viewMap->_theMap->scheduleRedraw(Map::waypoints);
 }
 
 
@@ -1064,9 +1167,9 @@ void CumulusApp::slotViewStatusBar( bool toggle )
 /** Called if the logging is actually toggled */
 void CumulusApp::slot_Logging ( bool logging )
 {
-  actionToggleLogging->blockSignals ( true );
-  actionToggleLogging->setOn ( logging );
-  actionToggleLogging->blockSignals ( false );
+  actionToggleLogging->blockSignals( true );
+  actionToggleLogging->setChecked( logging );
+  actionToggleLogging->blockSignals( false );
 }
 
 
@@ -1137,38 +1240,38 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       viewInfo->hide();
       viewMap->show();
 
-      accAfView->setEnabled( false );
-      accRpView->setEnabled( false );
-      accTpView->setEnabled( false );
-      accWpView->setEnabled( false );
-      accInfoView->setEnabled( false );
-      accManualNav->setEnabled( !gps->getConnected() || calculator->isManualInFlight());
-      accGpsNav->setEnabled( gps->getConnected() && !calculator->isManualInFlight() );
-      accMenuBar->setEnabled( true );
+      actionAfViewSelect->setEnabled( false );
+      actionRpViewSelect->setEnabled( false );
+      actionTpViewSelect->setEnabled( false );
+      actionWpViewSelect->setEnabled( false );
+      actionInfoViewSelect->setEnabled( false );
+      toggleManualNavActions( !gps->getConnected() || calculator->isManualInFlight());
+      toggleGpsNavActions( gps->getConnected() && !calculator->isManualInFlight() );
+      actionMenuBarToggle->setEnabled( true );
 
-      // Switch on all action accelerators in this view
-      toggelActions( true );
-      viewMap->statusBar()->clear(); // remove temporary statusbar messages
+      // Switch on all action shortcuts in this view
+      toggleActions( true );
+      viewMap->statusBar()->clearMessage(); // remove temporary statusbar messages
 
       break;
 
     case wpView:
-      qDebug("wpView");
+
       menuBar()->hide();
       viewMap->hide();
       viewInfo->hide();
-      listViewTabs->showPage( viewWP );
+      listViewTabs->setCurrentWidget( viewWP );
       listViewTabs->show();
 
-      accAfView->setEnabled( false );
-      accWpView->setEnabled( true );
-      accRpView->setEnabled( false );
-      accTpView->setEnabled( false );
-      accInfoView->setEnabled( false );
-      accManualNav->setEnabled( false );
-      accGpsNav->setEnabled( false );
-      accMenuBar->setEnabled( false );
-      toggelActions( false );
+      actionAfViewSelect->setEnabled( false );
+      actionWpViewSelect->setEnabled( true );
+      actionRpViewSelect->setEnabled( false );
+      actionTpViewSelect->setEnabled( false );
+      actionInfoViewSelect->setEnabled( false );
+      toggleManualNavActions( false );
+      toggleGpsNavActions( false );
+      actionMenuBarToggle->setEnabled( false );
+      toggleActions( false );
 
       break;
 
@@ -1177,18 +1280,18 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       menuBar()->hide();
       viewMap->hide();
       viewInfo->hide();
-      listViewTabs->showPage( viewRP );
+      listViewTabs->setCurrentWidget( viewRP );
       listViewTabs->show();
 
-      accAfView->setEnabled( false );
-      accRpView->setEnabled( true );
-      accWpView->setEnabled( false );
-      accTpView->setEnabled( false );
-      accInfoView->setEnabled( false );
-      accManualNav->setEnabled( false );
-      accGpsNav->setEnabled( false );
-      accMenuBar->setEnabled( false );
-      toggelActions( false );
+      actionAfViewSelect->setEnabled( false );
+      actionRpViewSelect->setEnabled( true );
+      actionWpViewSelect->setEnabled( false );
+      actionTpViewSelect->setEnabled( false );
+      actionInfoViewSelect->setEnabled( false );
+      toggleManualNavActions( false );
+      toggleGpsNavActions( false );
+      actionMenuBarToggle->setEnabled( false );
+      toggleActions( false );
 
       break;
 
@@ -1197,19 +1300,19 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       menuBar()->hide();
       viewMap->hide();
       viewInfo->hide();
-      viewAF->fillWpList();
-      listViewTabs->showPage( viewAF );
+      viewAF->listWidget()->fillWpList(); 
+      listViewTabs->setCurrentWidget( viewAF );
       listViewTabs->show();
 
-      accAfView->setEnabled( true );
-      accRpView->setEnabled( false );
-      accWpView->setEnabled( false );
-      accTpView->setEnabled( false );
-      accInfoView->setEnabled( false );
-      accManualNav->setEnabled( false );
-      accGpsNav->setEnabled( false );
-      accMenuBar->setEnabled( false );
-      toggelActions( false );
+      actionAfViewSelect->setEnabled( true );
+      actionRpViewSelect->setEnabled( false );
+      actionWpViewSelect->setEnabled( false );
+      actionTpViewSelect->setEnabled( false );
+      actionInfoViewSelect->setEnabled( false );
+      toggleManualNavActions( false );
+      toggleGpsNavActions( false );
+      actionMenuBarToggle->setEnabled( false );
+      toggleActions( false );
 
       break;
 
@@ -1224,18 +1327,18 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       menuBar()->hide();
       viewMap->hide();
       viewInfo->hide();
-      listViewTabs->showPage( viewTP );
+      listViewTabs->setCurrentWidget( viewTP );
       listViewTabs->show();
 
-      accAfView->setEnabled( false );
-      accRpView->setEnabled( false );
-      accWpView->setEnabled( false );
-      accTpView->setEnabled( true );
-      accInfoView->setEnabled( false );
-      accManualNav->setEnabled( false );
-      accGpsNav->setEnabled( false );
-      accMenuBar->setEnabled( false );
-      toggelActions( false );
+      actionAfViewSelect->setEnabled( false );
+      actionRpViewSelect->setEnabled( false );
+      actionWpViewSelect->setEnabled( false );
+      actionTpViewSelect->setEnabled( true );
+      actionInfoViewSelect->setEnabled( false );
+      toggleManualNavActions( false );
+      toggleGpsNavActions( false );
+      actionMenuBarToggle->setEnabled( false );
+      toggleActions( false );
 
       break;
 
@@ -1251,15 +1354,15 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       listViewTabs->hide();
       viewInfo->showWP( view, wp );
 
-      accAfView->setEnabled( false );
-      accRpView->setEnabled( false );
-      accTpView->setEnabled( false );
-      accWpView->setEnabled( false );
-      accInfoView->setEnabled( true );
-      accManualNav->setEnabled( false );
-      accGpsNav->setEnabled( false );
-      accMenuBar->setEnabled( false );
-      toggelActions( false );
+      actionAfViewSelect->setEnabled( false );
+      actionRpViewSelect->setEnabled( false );
+      actionTpViewSelect->setEnabled( false );
+      actionWpViewSelect->setEnabled( false );
+      actionInfoViewSelect->setEnabled( true );
+      toggleManualNavActions( false );
+      toggleGpsNavActions( false );
+      actionMenuBarToggle->setEnabled( false );
+      toggleActions( false );
 
       break;
 
@@ -1269,16 +1372,34 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       viewMap->hide();
       listViewTabs->hide();
 
-      accAfView->setEnabled( false );
-      accRpView->setEnabled( false );
-      accTpView->setEnabled( false );
-      accWpView->setEnabled( false );
-      accInfoView->setEnabled( false );
-      accManualNav->setEnabled( false );
-      accGpsNav->setEnabled( false );
-      accMenuBar->setEnabled( false );
-      toggelActions( false );
+      actionAfViewSelect->setEnabled( false );
+      actionRpViewSelect->setEnabled( false );
+      actionTpViewSelect->setEnabled( false );
+      actionWpViewSelect->setEnabled( false );
+      actionInfoViewSelect->setEnabled( false );
+      toggleManualNavActions( false );
+      toggleGpsNavActions( false );
+      actionMenuBarToggle->setEnabled( false );
+      toggleActions( false );
 
+      break;
+
+    case cfView:
+      menuBar()->hide();
+      viewMap->hide();
+      viewAF->hide();
+      viewInfo->hide();
+      listViewTabs->hide();
+
+      actionAfViewSelect->setEnabled( false );
+      actionWpViewSelect->setEnabled( false );
+      actionRpViewSelect->setEnabled( false );
+      actionTpViewSelect->setEnabled( false );
+      actionInfoViewSelect->setEnabled( false );
+      toggleManualNavActions( false );
+      toggleGpsNavActions( false );
+      actionMenuBarToggle->setEnabled( false );
+      toggleActions( false );
       break;
 
     default:
@@ -1347,7 +1468,7 @@ void CumulusApp::slotSwitchToTaskListView()
 /** This slot is called to switch to the info view. */
 void CumulusApp::slotSwitchToInfoView()
 {
-  qDebug("CumulusApp::slotSwitchToInfoView()");
+//  qDebug("CumulusApp::slotSwitchToInfoView()");
   if ( view == wpView )
     {
       setView( infoView, viewWP->getSelectedWaypoint() );
@@ -1358,7 +1479,7 @@ void CumulusApp::slotSwitchToInfoView()
     }
   if ( view == afView )
     {
-      setView( infoView, viewAF->getSelectedAirfield() );
+      setView( infoView, viewAF->getSelectedWaypoint() );
     }
   if ( view == tpView )
     {
@@ -1380,19 +1501,38 @@ void CumulusApp::slotSwitchToInfoView( wayPoint* wp )
     }
 }
 
-/** Opens the configdialog. */
+
+/** Opens the config "dialog" */
 void CumulusApp::slotConfig()
 {
+  setWindowTitle( "Cumulus Settings" );
   ConfigDialog *cDlg = new ConfigDialog( this );
-  // delete widget during close event
-  cDlg->setAttribute(Qt::WA_DeleteOnClose);
+  cDlg->resize( size() );
+
+  setView( cfView );
 
   connect( cDlg, SIGNAL( settingsChanged() ),
            this, SLOT( slotReadconfig() ) );
+  connect( cDlg, SIGNAL( closeConfig() ),
+           this, SLOT( slotCloseConfig() ) );
   connect( cDlg,  SIGNAL( welt2000ConfigChanged() ),
            _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
-
+  configView = (QWidget*) cDlg;
   cDlg->show();
+}
+
+
+/** Closes the config or pre-flight "dialog" */
+void CumulusApp::slotCloseConfig()
+{
+  setView( mapView );
+//  qDebug("* closing configView:  %s", calculator->gliderType().toLatin1().data() );
+  if ( !calculator->gliderType().isEmpty() )
+    setWindowTitle ( "Cumulus - " + calculator->gliderType() );
+  else
+    setWindowTitle( "Cumulus" );
+  delete configView;
+  configView = 0;
 }
 
 /** Shows version and copyright information */
@@ -1456,12 +1596,12 @@ void CumulusApp::slotWaypointChanged( const wayPoint *newWp )
   if( newWp != 0  )
     {
       actionViewInfo->setEnabled( true );
-      actionViewInfo->setAccel( Qt::Key_I ); // re-enable acceleraror key
+      actionViewInfo->setShortcut( Qt::Key_I ); // re-enable shortcut
     }
   else
     {
       actionViewInfo->setEnabled( false );
-      actionViewInfo->setAccel( 0 ); // disenable acceleraror key
+      actionViewInfo->setShortcut( 0 ); // disable shortcut
     }
 }
 
@@ -1496,8 +1636,8 @@ void CumulusApp::slotRememberWaypoint()
   wp->origP = calculator->getlastPosition();
   wp->projP = _globalMapMatrix->wgsToMap( wp->origP );
   wp->description = tr( "user created" );
-  wp->comment = tr( "created by remember action at " +
-                QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") );
+  wp->comment = tr("created by remember action at ") +
+                QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
   wp->importance = wayPoint::High; // high to make sure it is visible
   wp->frequency = 0.0;
   wp->runway = 0;
@@ -1556,7 +1696,7 @@ void CumulusApp::slotReadconfig()
         {
           if(!_reachpointListVisible)
             {
-              listViewTabs->insertTab( viewRP, tr( "Reachable" ), _taskListVisible ? 2 : 1 );
+              listViewTabs->insertTab( _taskListVisible ? 2 : 1, viewRP, tr( "Reachable" ) );
               calculator->newSites();
               _reachpointListVisible = true;
             }
@@ -1567,17 +1707,17 @@ void CumulusApp::slotReadconfig()
             {
               // changes in listViewTabs trigger slot_tabChanged (if viewRP was last active),
               // this slot calls setView and tries to set the view to viewRP
-              // but since this doesn't exist (removePage), sets the view to the next one
+              // but since this doesn't exist (removeWidget), sets the view to the next one
               // which is viewAF; that's the reason we have to a) call setView(mapView);
-              // or b) disconnect before removePage and connect again behind
+              // or b) disconnect before removeWidget and connect again behind
               disconnect( listViewTabs, SIGNAL( currentChanged( QWidget* ) ),
                           this, SLOT( slot_tabChanged( QWidget* ) ) );
-              listViewTabs->removePage( viewRP );
+              listViewTabs->removeTab( listViewTabs->indexOf(viewRP) );
               connect( listViewTabs, SIGNAL( currentChanged( QWidget* ) ),
                        this, SLOT( slot_tabChanged( QWidget* ) ) );
               calculator->clearReachable();
               viewRP->fillRpList();   // this clears the listView
-              viewMap->_theMap->sceduleRedraw(Map::waypoints);
+              viewMap->_theMap->scheduleRedraw(Map::waypoints);
               _reachpointListVisible = false;
             }
         }
@@ -1604,13 +1744,13 @@ void CumulusApp::slotGpsStatus( GPSNMEA::connectedStatus status )
 
   if ( ( status < GPSNMEA::validFix || calculator->isManualInFlight()) && ( view == mapView ) )
     {  // no GPS data
-      accManualNav->setEnabled( true );
-      accGpsNav->setEnabled( false );
+      toggleManualNavActions( true );
+      toggleGpsNavActions( false );
     }
   else
     {  // GPS data valid
-      accManualNav->setEnabled( false );
-      accGpsNav->setEnabled( true );
+      toggleManualNavActions( false );
+      toggleGpsNavActions( true );
     }
 }
 
@@ -1623,7 +1763,7 @@ void CumulusApp::slotCenterToWaypoint()
   if ( calculator->getselectedWp() )
     {
       _globalMapMatrix->centerToLatLon( calculator->getselectedWp() ->origP );
-      viewMap->_theMap->sceduleRedraw();
+      viewMap->_theMap->scheduleRedraw();
 
     }
 }
@@ -1663,36 +1803,39 @@ void CumulusApp::slotPreFlightTask()
 }
 
 
-/** Opens the preflight dialog and brings the selected tabulator in foreground */
+/** Opens the pre-flight "dialog" and brings the selected tabulator to the front */
 void CumulusApp::slotPreFlight(const char *tabName)
 {
-  _preFlightDialog = new PreFlightDialog( this, tabName );
-  // delete widget during close event
-  _preFlightDialog->setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( "Pre-Flight Settings" );
+  PreFlightDialog* cDlg = new PreFlightDialog( this, tabName );
+  cDlg->resize( size() );
+  setView( cfView );
 
-  connect( _preFlightDialog, SIGNAL( settingsChanged() ),
+  connect( cDlg, SIGNAL( settingsChanged() ),
            this, SLOT( slotPreFlightDataChanged() ) );
 
-  connect( _preFlightDialog, SIGNAL( newWaypoint( wayPoint*, bool ) ),
+  connect( cDlg, SIGNAL( newWaypoint( wayPoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
 
-  _preFlightDialog->show();
+  connect( cDlg, SIGNAL( closeConfig() ),
+           this, SLOT( slotCloseConfig() ) );
+
+  cDlg->show();
+  configView = (QWidget*) cDlg;
 }
 
 
 void CumulusApp::slotPreFlightDataChanged()
 {
-  // qDebug("CumulusApp::slotPreFlightDataChanged()");
-  setWindowTitle( "Cumulus - " + calculator->gliderType() );
 
   if ( _globalMapContents->getCurrentTask() == 0 )
     {
       if ( _taskListVisible )
         {
-          // see comment for removePage( viewRP )
+          // see comment for removeTab( viewRP )
           disconnect( listViewTabs, SIGNAL( currentChanged( QWidget* ) ),
                       this, SLOT( slot_tabChanged( QWidget* ) ) );
-          listViewTabs->removePage( viewTP );
+          listViewTabs->removeTab( listViewTabs->indexOf(viewTP) );
           connect( listViewTabs, SIGNAL( currentChanged( QWidget* ) ),
                    this, SLOT( slot_tabChanged( QWidget* ) ) );
           actionViewTaskpoints->setEnabled( false );
@@ -1703,7 +1846,7 @@ void CumulusApp::slotPreFlightDataChanged()
     {
       if ( !_taskListVisible )
         {
-          listViewTabs->insertTab( viewTP, tr( "Task" ), 0 );
+          listViewTabs->insertTab( 0, viewTP, tr( "Task" ) );
           _taskListVisible = true;
           actionViewTaskpoints->setEnabled( true );
         }
@@ -1711,14 +1854,14 @@ void CumulusApp::slotPreFlightDataChanged()
 
   // set the task list view at the current task
   viewTP->slot_setTask( _globalMapContents->getCurrentTask() );
-  viewMap->_theMap->sceduleRedraw(Map::task);
+  viewMap->_theMap->scheduleRedraw(Map::task);
 }
 
 /** dynamicly updates view for reachable list */
 void CumulusApp::slot_newReachList()
 {
   viewRP->slot_newList(); //let the view know we have a new list
-  viewMap->_theMap->sceduleRedraw(Map::waypoints);
+  viewMap->_theMap->scheduleRedraw(Map::waypoints);
 }
 
 
@@ -1760,8 +1903,8 @@ void CumulusApp::slotToggleManualInFlight(bool on)
   // if we have lost the GPS fix, actionToggleManualInFlight is disabled from calculator
   // so we only can switch off if GPS fix available
   calculator->setManualInFlight(on);
-  accManualNav->setEnabled( on );
-  accGpsNav->setEnabled( !on );
+  toggleManualNavActions( on );
+  toggleGpsNavActions( !on );
 }
 
 /** Used to allow or disable user keys processing during map drawing. */
@@ -1769,24 +1912,24 @@ void CumulusApp::slotMapDrawEvent( bool drawEvent )
 {
    if( drawEvent )
      {
-      // Disable menu accelerator during drawing to avoid
+      // Disable menu shortcut during drawing to avoid
       // event avalanche, if the user holds the key down longer.
-      accMenuBar->setEnabled( false );
+      actionMenuBarToggle->setEnabled( false );
 
       if( view == mapView )
        {
-         accManualNav->setEnabled( false );
-         accGpsNav->setEnabled( false );
+         toggleManualNavActions( false );
+         toggleGpsNavActions( false );
        }
      }
    else
      {
-       accMenuBar->setEnabled( true );
+       actionMenuBarToggle->setEnabled( true );
 
        if( view == mapView )
          {
-           accManualNav->setEnabled( !gps->getConnected() || calculator->isManualInFlight());
-           accGpsNav->setEnabled( gps->getConnected() && !calculator->isManualInFlight() );
+           toggleManualNavActions( !gps->getConnected() || calculator->isManualInFlight());
+           toggleGpsNavActions( gps->getConnected() && !calculator->isManualInFlight() );
          }
      }
 }
@@ -1800,6 +1943,10 @@ void CumulusApp::resizeEvent(QResizeEvent* event)
   if( listViewTabs )
     {
       listViewTabs->resize( event->size() );
+    }
+  if( configView )
+    {
+      configView->resize( event->size() );
     }
 }
 

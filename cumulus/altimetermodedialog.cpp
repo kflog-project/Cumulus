@@ -33,7 +33,7 @@
 extern MapConfig *_globalMapConfig;
 
 AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
-  : QDialog(parent, Qt::WStyle_StaysOnTop),
+  : QDialog(parent, Qt::WindowStaysOnTopHint),
     _mode(0)
 {
   setObjectName("AltimeterModeDialog");

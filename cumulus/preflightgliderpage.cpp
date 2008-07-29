@@ -33,7 +33,7 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) : QWidget(parent)
   QGridLayout* topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
 
-  list = new GliderList(this);
+  list = new GliderListWidget(this);
   topLayout->addWidget(list, 0, 0, 1, 2);
 
   QPushButton* deselect = new QPushButton( tr("Deselect"), this );
@@ -42,26 +42,29 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) : QWidget(parent)
 
   QLabel* lblCoPilot = new QLabel(tr("Co-pilot:"),this);
   topLayout->addWidget(lblCoPilot,2, 0);
-  edtCoPilot=new QLineEdit(this,"edtLineEdit");
+  edtCoPilot=new QLineEdit(this);
+  edtCoPilot->setObjectName("edtLineEdit");
   topLayout->addWidget(edtCoPilot,2, 1);
 
   QLabel* lblLoad = new QLabel(tr("Added load:"),this);
   topLayout->addWidget(lblLoad,3, 0);
-  spinLoad=new QSpinBox(this,"spinLoad");
+  spinLoad=new QSpinBox(this);
+  spinLoad->setObjectName("spinLoad");
   topLayout->addWidget(spinLoad,3, 1);
   spinLoad->setButtonSymbols(QSpinBox::PlusMinus);
-  spinLoad->setMinValue(0);
-  spinLoad->setMaxValue(1000);
-  spinLoad->setLineStep(5);
+  spinLoad->setMinimum(0);
+  spinLoad->setMaximum(1000);
+  spinLoad->setSingleStep(5);
 
   QLabel* lblWater = new QLabel(tr("Water balast:"),this);
   topLayout->addWidget(lblWater,4, 0);
-  spinWater=new QSpinBox(this,"spinWater");
+  spinWater=new QSpinBox(this);
+  spinWater->setObjectName("spinWater");
   topLayout->addWidget(spinWater,4, 1);
   spinWater->setButtonSymbols(QSpinBox::PlusMinus);
-  spinWater->setMinValue(0);
-  spinWater->setMaxValue(300);
-  spinWater->setLineStep(5);
+  spinWater->setMinimum(0);
+  spinWater->setMaximum(300);
+  spinWater->setSingleStep(5);
 
   list->fillList();
   list->clearSelection();
@@ -70,7 +73,7 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) : QWidget(parent)
   connect(deselect, SIGNAL(clicked()),
           this, SLOT(slot_gliderDeselected()) );           
                         
-  connect(list, SIGNAL(selectionChanged()),
+  connect(list, SIGNAL(itemSelectionChanged()),
           this, SLOT(slot_gliderChanged()));           
 }
 
@@ -103,7 +106,7 @@ void PreFlightGliderPage::slot_gliderChanged()
 
       spinLoad->setValue( (int) (glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
 
-      spinWater->setMaxValue(glider->maxWater());
+      spinWater->setMaximum(glider->maxWater());
       spinWater->setEnabled(glider->maxWater()!=0);
     }
 }
@@ -118,27 +121,22 @@ void PreFlightGliderPage::slot_gliderDeselected()
 
 void PreFlightGliderPage::getCurrent()
 {
+  extern CuCalc* calculator;
   Glider* glider = calculator->glider();
 
   if( glider == 0 )
     {
       return;
     }
-
-  Q3ListViewItemIterator it(list);
-
-  for (;it.current();++it)
-    {
-      // select if the registration matches
-      list->setSelected(it.current(), it.current()->text(1)==glider->registration());
-    }
+//  qDebug("## c2 ## reg %s", glider->registration().toLatin1().data() );
+  list->selectItemFromReg( glider->registration() );
 
   edtCoPilot->setEnabled(glider->seats() == Glider::doubleSeater);
   edtCoPilot->setText(glider->coPilot());
 
   spinLoad->setValue( (int) (glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
 
-  spinWater->setMaxValue(glider->maxWater());
+  spinWater->setMaximum(glider->maxWater());
   spinWater->setEnabled(glider->maxWater()!=0);
   spinWater->setValue(glider->polar()->water());
   lastGlider = list->getSelectedGlider();
@@ -146,6 +144,9 @@ void PreFlightGliderPage::getCurrent()
 
 void PreFlightGliderPage::save()
 {
+  extern CuCalc* calculator;
+//  qDebug("## s00 ## calculator:  %s", calculator->gliderType().toLatin1().data() );
+  
   Glider* glider = list->getSelectedGlider(false);
 
   if(glider)

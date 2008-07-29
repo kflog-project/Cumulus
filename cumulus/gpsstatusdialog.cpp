@@ -29,8 +29,17 @@
 GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
 {
   setWindowTitle(tr("GPS Status"));
-  setModal(true);
+//  setModal(true);
+resize(800,480);
+
+#ifdef MAEMO
+//  if (parent)
+//    resize( parent->size() );
+resize(500,480);
+  setSizeGripEnabled(false);
+#else
   setSizeGripEnabled(true);
+#endif
 
   elevAziDisplay = new GPSElevationAzimuthDisplay(this);
   elevAziDisplay->setFrameStyle(QFrame::Panel | QFrame::Sunken);
@@ -38,10 +47,15 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
   snrDisplay = new GPSSnrDisplay(this);
   snrDisplay->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
-  nmeaBox = new QTextEdit(this, "nmeabox");
+  nmeaBox = new QTextEdit(this);
+  nmeaBox->setObjectName("nmeabox");
   nmeaBox->setReadOnly(true);
   nmeaBox->document()->setMaximumBlockCount(100);
   nmeaBox->setLineWrapMode(QTextEdit::NoWrap);
+
+  QFont f = font();
+  f.setPixelSize(12);
+  nmeaBox->setFont(f);
 
   /* #warning: FIXME
      Something is seriously rotten here. I can add either the 
@@ -54,7 +68,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
      
      A.S. */
 
-  QVBoxLayout* topLayout=new QVBoxLayout(this, 5, 5);
+  QVBoxLayout* topLayout=new QVBoxLayout(this);
   topLayout->addWidget(elevAziDisplay, 10);
   topLayout->addWidget(snrDisplay, 5);
   topLayout->addWidget(nmeaBox, 5);
@@ -64,16 +78,16 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
   connect(gps, SIGNAL(newSatInViewInfo()),
           this, SLOT(slot_SIV()));
 
-  if( QApplication::desktop()->screenGeometry().width() > 240 &&
+/*  if( QApplication::desktop()->screenGeometry().width() > 240 &&
       QApplication::desktop()->screenGeometry().height() > 320 )
     { 
-      resize( 240, 320 );
+//      resize( 600, 400 );
       show();
     }
   else
     {
-      showMaximized();
-    }
+//      showMaximized();
+    }*/
 }
 
 
@@ -131,8 +145,9 @@ void GpsStatusDialog::reject()
 #define MARGIN 10
 
 GPSElevationAzimuthDisplay::GPSElevationAzimuthDisplay(QWidget *parent):
-    QFrame(parent, "ElevationAzimuthDisplay")
+    QFrame(parent)
 {
+  setObjectName("ElevationAzimuthDisplay");
   background = new QPixmap();
 }
 
@@ -156,8 +171,10 @@ void GPSElevationAzimuthDisplay::resizeEvent(QResizeEvent *)
   width -= ( MARGIN * 2 ); //keep a 10 pixel margin
   center = QPoint(contentsRect().width()/2, contentsRect().height()/2);
 
-  background->resize(contentsRect().width(), contentsRect().height());
-  background->fill(this->backgroundColor());
+  delete background;
+  background = new QPixmap( contentsRect().width(), contentsRect().height() );
+
+  background->fill( palette().color(QPalette::Window) );
 
   QPainter p(background);
   p.setPen( QPen( Qt::black, 1, Qt::SolidLine ) );
@@ -173,8 +190,12 @@ void GPSElevationAzimuthDisplay::resizeEvent(QResizeEvent *)
 
 void GPSElevationAzimuthDisplay::paintEvent(QPaintEvent *)
 {
-  //copy background to widget
   QPainter p(this);
+  QFont f = font();
+  f.setPixelSize(12);
+  p.setFont(f);
+
+  //copy background to widget
   p.drawPixmap ( contentsRect().left(), contentsRect().top(), *background,
                  0, 0, background->width(), background->height() );
 
@@ -188,7 +209,7 @@ void GPSElevationAzimuthDisplay::paintEvent(QPaintEvent *)
     }
   else
     {
-      p.fillRect(center.x()-23, center.y()-7, 46, 14, this->backgroundColor());
+      p.fillRect( center.x()-23, center.y()-7, 46, 14, palette().color(QPalette::Window) );
       p.drawText(center.x()-23, center.y()-7, 46, 14, Qt::AlignCenter, tr("No Data"));
     }
 
@@ -226,6 +247,10 @@ void GPSElevationAzimuthDisplay::drawSat(QPainter * p, const SIVInfo& sivi)
       G=255;
     }
 
+  QFont f = font();
+  f.setPixelSize(12);
+  p->setFont(f);
+
   p->setBrush(QColor(R,G,0));
   p->fillRect(x - 8, y - 6, 16 , 12 , p->brush());
   p->drawRect(x - 8, y - 6, 16 , 12 );
@@ -236,8 +261,9 @@ void GPSElevationAzimuthDisplay::drawSat(QPainter * p, const SIVInfo& sivi)
 /*************************************************************************************/
 
 GPSSnrDisplay::GPSSnrDisplay(QWidget *parent):
-    QFrame(parent, "GPSSnrDisplay")
+    QFrame(parent)
 {
+  setObjectName("GPSSnrDisplay");
   background = new QPixmap();
   canvas = new QPixmap();
   mask = new QBitmap();
@@ -256,11 +282,14 @@ void GPSSnrDisplay::resizeEvent(QResizeEvent *)
   height = contentsRect().height();
   center = QPoint(contentsRect().width()/2, contentsRect().height()/2);
 
-  background->resize(width, height);
+  delete background;
+  background = new QPixmap( width, height );
   background->fill();
-  canvas->resize(width, height);
+  delete canvas;
+  canvas = new QPixmap( width, height );
 
-  mask->resize(width, height);
+  delete mask;
+  mask = new QBitmap( width, height );
   mask->fill();
 
   QPainter p(background);
@@ -291,11 +320,12 @@ void GPSSnrDisplay::resizeEvent(QResizeEvent *)
 void GPSSnrDisplay::paintEvent(QPaintEvent *)
 {
   QPainter p;
+
   p.begin(canvas);
   p.drawPixmap( 0, 0, *background, 0, 0, background->width(), background->height() );
 
-  //p.fillRect(0, 0, width, height, this->backgroundColor());
-  //draw satelites
+  p.fillRect(0, 0, width, height, palette().color(QPalette::Window) );
+  //draw satellites
   if (sats.count())
     {
       QPainter pm(mask);
@@ -317,7 +347,10 @@ void GPSSnrDisplay::paintEvent(QPaintEvent *)
   else
     {
       QPainter pd(this);
-      pd.fillRect(center.x()-23, center.y()-7, 46, 14, this->backgroundColor());
+      QFont f = font();
+      f.setPixelSize(12);
+      pd.setFont(f);
+      pd.fillRect( center.x()-23, center.y()-7, 46, 14, palette().color(QPalette::Window) );
       pd.drawText(center.x()-23, center.y()-7, 46, 14, Qt::AlignCenter, tr("No Data"));
     }
 }
@@ -344,6 +377,9 @@ void GPSSnrDisplay::drawSat(QPainter * p, QPainter * pm, int i, int cnt, const S
       p->fillRect(left, height, bwidth - 2, -bheight, Qt::white);
     }
 
+  QFont f = font();
+  f.setPixelSize(12);
+  p->setFont(f);
   p->setPen(Qt::black);
   p->drawRect(left, height, bwidth - 2, -bheight);
   p->drawText(left+1, height-13, bwidth-4, 12, Qt::AlignCenter, QString::number(sivi.id));

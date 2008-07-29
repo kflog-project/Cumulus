@@ -156,7 +156,7 @@ class GeneralConfig : protected QSettings
    * @returns requested pixmap
    */
 
-  QPixmap loadPixmap( const char* pixmapName );
+  QPixmap loadPixmap( const QString& pixmapName );
 
   /**
    * @returns Struct with warning distances for airspace warnings

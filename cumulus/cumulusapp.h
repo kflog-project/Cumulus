@@ -31,10 +31,10 @@
 #include <QMenuBar>
 #include <QMenu>
 #include <QEvent>
-#include <Q3Accel>
 #include <QTabWidget>
 #include <QResizeEvent>
 
+#include "configdialog.h"
 #include "mapview.h"
 #include "waypointlistview.h"
 #include "airfieldlistview.h"
@@ -63,7 +63,8 @@ class CumulusApp : public QMainWindow
                    rpView=3,
                    afView=4,
                    tpView=5,
-                   tpSwitchView=6 };
+                   tpSwitchView=6,
+                   cfView=7 };
 
   public: //methods
     /**
@@ -102,10 +103,14 @@ class CumulusApp : public QMainWindow
     TaskListView *viewTP;
     WPInfoWidget *viewInfo;
     QTabWidget *listViewTabs;
+    QAction* actionInfoViewSelect;
+
+    /** empty view for config "dialog" */
+    QWidget *viewCF;
     /** use manual navigation even if GPS signal received */
     QAction* actionToggleManualInFlight;
 
-    Q3Accel *accAfView;
+/*    Q3Accel *accAfView;
     Q3Accel *accInfoView;
     Q3Accel *accManualNav;
     Q3Accel *accGpsNav;
@@ -113,7 +118,7 @@ class CumulusApp : public QMainWindow
     Q3Accel *accTpView;
     Q3Accel *accWpView;
     Q3Accel *accMenuBar; // toggle for bing up/down menu bar
-
+*/
   public slots: // Public slots
     /** Switches to the WaypointList View */
     void slotSwitchToWPListView();
@@ -157,8 +162,10 @@ class CumulusApp : public QMainWindow
     void slotSwitchToInfoView();
     /** @ee This slot is called to switch to the info view with selected waypoint. */
     void slotSwitchToInfoView(wayPoint*);
-    /** Opens the configdialog. */
+    /** Opens the config "dialog". */
     void slotConfig();
+    /** Opens the pre-flight "dialog". */
+    void slotPreFlight(const char *tabName);
     /** This slot is called if the configuration has changed and at the start of the program to read the initial configuration. */
     void slotReadconfig();
     /** Called if the status of the GPS changes, and controls the availability of manual navigation. */
@@ -176,6 +183,8 @@ class CumulusApp : public QMainWindow
     void slotToggleManualInFlight(bool);
     /** used to allow or disable user keys processing during map drawing */
     void slotMapDrawEvent(bool);
+    /** closes the config or pre-flight "dialog" */
+    void slotCloseConfig();
 
   protected: //methods
     /**
@@ -194,9 +203,15 @@ class CumulusApp : public QMainWindow
     void initActions();
 
     /**
-     * Toggle on/off all actions, which have a key accelerator defined.
+     * Toggle on/off all actions which have a key accelerator defined.
      */
-    void toggelActions( const bool toggle );
+    void toggleActions( const bool toggle );
+
+    /**
+     * Toggle on/off all GPS dependent actions.
+     */
+    void toggleManualNavActions( const bool toggle );
+    void toggleGpsNavActions( const bool toggle );
 
     /**
      * No descriptions
@@ -275,8 +290,26 @@ class CumulusApp : public QMainWindow
 
   private:
 
-    void slotPreFlight(const char *tabName);
-
+    QAction* actionAfViewSelect;
+    QAction* actionRpViewSelect;
+    QAction* actionTpViewSelect;
+    QAction* actionWpViewSelect;
+    QAction* actionInfoViewKeep; 
+    QAction* actionManualNavUp;
+    QAction* actionManualNavRight;
+    QAction* actionManualNavDown;
+    QAction* actionManualNavLeft;
+    QAction* actionManualNavHome; 
+    QAction* actionManualNavWP; 
+    QAction* actionManualNavWPList; 
+    QAction* actionManualNavZoomIn; 
+    QAction* actionGpsNavUp;
+    QAction* actionGpsNavDown;
+    QAction* actionGpsNavHome;
+    QAction* actionGpsNavWPList;
+    QAction* actionGpsNavZoomIn;
+    QAction* actionGpsNavZoomOut;
+    QAction* actionMenuBarToggle;
     QAction* actionToggleMenu;
     QAction* actionFileQuit;
     QAction* actionViewInfo;
@@ -313,6 +346,8 @@ class CumulusApp : public QMainWindow
     QMenu *helpMenu;
     // Wait screen
     WaitScreen *ws;
+    // Holds the config/pre-flight "dialogs"
+	QWidget *configView;
     // visibility of menu bar
     bool menuBarVisible;
 

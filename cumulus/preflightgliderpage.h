@@ -22,7 +22,7 @@
 #include <QLineEdit>
 #include <QSpinBox>
 
-#include "gliderlist.h"
+#include "gliderlistwidget.h"
 
 /**
  * This widget represents the glider-selection page for the PreFlight dialog.
@@ -45,7 +45,7 @@ class PreFlightGliderPage : public QWidget
 
   private:
 
-    GliderList * list;
+    GliderListWidget * list;
     QLineEdit * edtCoPilot;
     QSpinBox * spinLoad;
     QSpinBox * spinWater;

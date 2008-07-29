@@ -23,7 +23,7 @@
 
 #include <QList>
 #include <QString>
-#include <Q3ListView>
+#include <QTreeWidget>
 #include <QLineEdit>
 #include <QDialog>
 #include <QStringList>
@@ -32,6 +32,7 @@
 #include "flighttask.h"
 #include "waypoint.h"
 #include "listviewfilter.h"
+#include "wplistwidgetclass.h"
 
 class TaskEditor : public QDialog
 {
@@ -56,6 +57,9 @@ signals:
 
     /** */
     void editedTask( FlightTask* );
+
+    /** */
+    void done();
 
 private slots:
     /** */
@@ -94,7 +98,7 @@ private:
     QList<wayPoint*> *copyWpList();
 
     /** list containing defined tasks */
-    Q3ListView* taskList;
+    QTreeWidget* taskList;
     
     /** list with all defined task names */
     QStringList& taskNamesInUse;
@@ -103,7 +107,7 @@ private:
 #define NUM_LISTS 2
 
     /** selection lists with waypoints */
-    Q3ListView* waypointList[NUM_LISTS];
+    WPListWidgetClass* waypointList[NUM_LISTS];
     
     /** name of current task */
     QLineEdit* taskName;

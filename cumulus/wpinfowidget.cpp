@@ -52,7 +52,9 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
 
   resize(parent->size());
 
-  QFont bfont( "Helvetica", 14, QFont::Bold  );
+  QFont bfont = font();
+  bfont.setBold(true);
+// "Helvetica", 14, QFont::Bold  );
 
   QBoxLayout *topLayout = new QVBoxLayout(this);
   text = new QTextEdit(this);
@@ -60,6 +62,7 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
   text->setLineWrapMode(QTextEdit::WidgetWidth);
   topLayout->addWidget(text,10);
 
+/*  QFontnfont
   int fontSize = this->font().pointSize();
 
   // qDebug("fontSize=%d", fontSize);
@@ -69,7 +72,7 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
       // Set bigger font in text view for a better readability
       text->setFont(QFont( "Helvetica", 14 ));
     }
-
+*/
   buttonrow2 = new QHBoxLayout;
   topLayout->addLayout(buttonrow2);
 
@@ -254,7 +257,7 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint *wp)
 void WPInfoWidget::showEvent(QShowEvent *)
 {
   // qDebug("WPInfoWidget::showEvent(): name=%s", name());
-  // resize to size of parent, could be changed in the meantime as the widget was hided
+  // resize to size of parent, could be changed in the meantime as the widget was hidden
   resize(cuApp->size());
   // set focus to text widget
   text->setFocus();
@@ -278,7 +281,7 @@ void WPInfoWidget::writeText()
       bool start = false;
       QString table = "<p><table cellpadding=5 width=100%>";
 
-      itxt+= "<html><big><center><b>" + _wp->description + " (" + _wp->name;
+      itxt+= "<html><!--big--><center><b>" + _wp->description + " (" + _wp->name;
 
       if (!_wp->icao.isEmpty())
         {
@@ -309,7 +312,10 @@ void WPInfoWidget::writeText()
               // @AP: show runway in both directions, start with the lowest one
               int rw1 =_wp->runway;
               int rw2 = rw1 <= 180 ? rw1+180 : rw1-180;
-              tmp2.sprintf("<b>%02d/%02d</b>", rw1 < rw2 ? rw1/10 : rw2/10, rw1 < rw2 ? rw2/10 : rw1/10);
+              int h1 = rw1 < rw2 ? rw1/10 : rw2/10;
+              int h2 = rw1 < rw2 ? rw2/10 : rw1/10;
+              tmp2 = QString("<b>%1/%2</b>").arg(h1, 2, 10, QLatin1Char('0')).arg(h2, 2, 10, QLatin1Char('0'));
+//              tmp2.sprintf("<b>%02d/%02d</b>", rw1 < rw2 ? rw1/10 : rw2/10, rw1 < rw2 ? rw2/10 : rw1/10);
             }
 
           itxt += table + "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (" +
@@ -322,7 +328,9 @@ void WPInfoWidget::writeText()
             }
           else
             {
-              itxt+=tmp.sprintf( "%d m</b></td></tr>", _wp->length );
+          tmp = QString("%1 m</b></td></tr>").arg(_wp->length);
+          itxt += tmp;
+//              itxt+=tmp.sprintf( "%d m</b></td></tr>", _wp->length );
             }
         }
       else
@@ -334,7 +342,9 @@ void WPInfoWidget::writeText()
 
       if (_wp->frequency >= 108.0 && _wp->frequency <= 137.0 )
         {
-          itxt+=tmp.sprintf("<tr><td>" + tr("Frequency:") + "</td><td><b>%1.3f MHz</b></td>", _wp->frequency);
+          tmp = QString("<tr><td>" + tr("Frequency:") + "</td><td><b>%1 MHz</b></td>").arg(_wp->frequency,0,'f',3);
+          itxt += tmp;
+//          itxt+=tmp.sprintf("<tr><td>" + tr("Frequency:") + "</td><td><b>%1.3f MHz</b></td>", _wp->frequency);
         }
       else
         {
@@ -376,15 +386,11 @@ void WPInfoWidget::writeText()
         {
           // In some areas no results available. In this case we skip
           // this output.
-          itxt += tmp.sprintf( "<tr><td>" + tr("Sunrise:") +
-                               "</td><td><b>" +
-                               "%s UTC</b></td>",
-                               sr.toLatin1().data() );
+          itxt += QString( "<tr><td>" + tr("Sunrise:") + "</td><td><b>" + sr +
+                               " UTC</b></td>" );
 
-          itxt += tmp.sprintf( "<td>" + tr("Sunset:") +
-                               "</td><td><b>" +
-                               "%s UTC</b></td></tr>",
-                               ss.toLatin1().data() );
+          itxt += QString( "<td>" + tr("Sunset:") + "</td><td><b>" + ss +
+                               " UTC</b></td></tr>" );
         }
 
       itxt += "<tr><td>" + tr("Latitude:") + "</td><td><b>" +
@@ -400,7 +406,7 @@ void WPInfoWidget::writeText()
             "</th></tr><tr><td>" + _wp->comment + "</td></tr></table>";
         }
 
-      itxt+="</big></html>";
+      itxt+="<!--/big--></html>";
 
       text->setText(itxt);
     }
@@ -547,7 +553,7 @@ void WPInfoWidget::slot_arrival()
   scClose->setEnabled(false);
 
   // switch off all accelerator keys
-  cuApp->accInfoView->setEnabled( false );
+  cuApp->actionInfoViewSelect->setEnabled( false );
 
   // create arrival info widget
   arrivalInfo = new TPInfoWidget( this );
@@ -565,7 +571,7 @@ void WPInfoWidget::slot_arrivalClose()
   arrivalInfo = 0;
 
   // switch on all accelerator keys
-  cuApp->accInfoView->setEnabled( true );
+  cuApp->actionInfoViewSelect->setEnabled( true );
   scClose->setEnabled(true);
 
   // get focus back

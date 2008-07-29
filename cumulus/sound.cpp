@@ -91,7 +91,7 @@ void Sound::run()
       cmd = player + " " + _sound;
     }
 
-  qDebug( cmd );
+  qDebug( cmd.toLatin1().data() );
 
   // Execute the player command, to play the passed sound.
   // QProcess::execute( cmd ) did not work at this place. Maybe it

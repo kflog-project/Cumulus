@@ -17,61 +17,55 @@
 
 #include "waypointlistview.h"
 
-#include <QPushButton>
 #include <QMessageBox>
 
 #include "generalconfig.h"
-#include "mapcontents.h"
-#include "mapconfig.h"
 #include "wpeditdialog.h"
+#include "cucalc.h"
 #include "cumulusapp.h"
 
-extern MapContents * _globalMapContents;
-extern MapConfig * _globalMapConfig;
-
-WaypointListView::WaypointListView(CumulusApp *parent) : QWidget(parent)
+WaypointListView::WaypointListView(QMainWindow *parent) : QWidget(parent)
 {
   setObjectName("WaypointListView");
   par=parent;
   
   QBoxLayout *topLayout = new QVBoxLayout( this );
-  QBoxLayout *editrow=new QHBoxLayout(topLayout);
+  QBoxLayout *editrow=new QHBoxLayout;
+  topLayout->addLayout(editrow);
 
   editrow->addStretch(10);
 
   QPushButton * cmdNew = new QPushButton(this);
-  cmdNew->setPixmap(GeneralConfig::instance()->loadPixmap("new.png"));
-  cmdNew->setFlat(true);
+  cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
+  cmdNew->setIconSize(QSize(26,26));
   editrow->addWidget(cmdNew);
 
   QPushButton * cmdEdit = new QPushButton(this);
-  cmdEdit->setPixmap(GeneralConfig::instance()->loadPixmap("edit.png"));
-  cmdEdit->setFlat(true);
+  cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
+  cmdEdit->setIconSize(QSize(26,26));
   editrow->addWidget(cmdEdit);
 
   QPushButton * cmdDel = new QPushButton(this);
-  cmdDel->setPixmap(GeneralConfig::instance()->loadPixmap("trash.png"));
-  cmdDel->setFlat(true);
+  cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png")) );
+  cmdDel->setIconSize(QSize(26,26));
   editrow->addWidget(cmdDel);
 
   editrow->addSpacing(6);
   QPushButton * cmdHome = new QPushButton(this);
-  cmdHome->setPixmap(GeneralConfig::instance()->loadPixmap("home.png"));
-  cmdHome->setFlat(true);
+  cmdHome->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("home_new.png")) );
+  cmdHome->setIconSize(QSize(26,26));
   editrow->addWidget(cmdHome);
 
-  list= new Q3ListView(this, "waypointlist");
+/*  list= new QTreeWidget(this, "waypointlist");
   list->addColumn(tr("Name"));
   list->addColumn(tr("Description"));
   list->addColumn(tr("ICAO"));
+*/
+  listw = new WaypointListWidget( this );
+  topLayout->addWidget(listw,10);
 
-  list->setAllColumnsShowFocus(true);
-
-  filter=new ListViewFilter(list, this, "listfilter");
-  topLayout->addWidget(filter);
-
-  topLayout->addWidget(list,10);
-  QBoxLayout *buttonrow=new QHBoxLayout(topLayout);
+  QBoxLayout *buttonrow=new QHBoxLayout;
+  topLayout->addLayout( buttonrow );
 
   QPushButton *cmdClose = new QPushButton(tr("Close"), this);
   buttonrow->addWidget(cmdClose);
@@ -89,7 +83,10 @@ WaypointListView::WaypointListView(CumulusApp *parent) : QWidget(parent)
   connect(cmdSelect, SIGNAL(clicked()), this, SLOT(slot_Select()));
   connect(cmdInfo, SIGNAL(clicked()), this, SLOT(slot_Info()));
   connect(cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()));
-  connect(list, SIGNAL(selectionChanged(Q3ListViewItem*)), this, SLOT(slot_Selected()));
+  connect(listw, SIGNAL(wpSelectionChanged()), this, SLOT(slot_Selected()));
+  connect(this, SIGNAL(done()), listw, SLOT(slot_Done()));
+  connect(cmdSelect, SIGNAL(clicked()),
+          listw, SLOT(slot_Select()));
 }
 
 
@@ -99,99 +96,44 @@ WaypointListView::~WaypointListView()
 }
 
 
-/** Retreives the waypoints from the mapcontents, and fills the list. */
-void WaypointListView::fillWpList(QList<wayPoint*> *wpList, Q3ListView *list, ListViewFilter *filter)
-{
-  if( list == 0 ) {
-    list = WaypointListView::list;
-  }
-
-  if( filter == 0 ) {
-    filter = WaypointListView::filter;
-  }
-
-  list->clear();
-
-  int n = 0;
-
-  if( wpList ) {
-    n = wpList->count();
-    //qDebug("WaypointListView::fillWpList() %d", n);
-    
-    for (int i=0; i < n; i++) {
-      wayPoint * wp=(wayPoint*)wpList->at(i);
-      new _WaypointItem(list, wp);
-    }
-  }
-
-  if ( n>0 ) {
-    list->setCurrentItem(list->firstChild());
-  }
-
-
-  if(filter == WaypointListView::filter) {
-    filter->reset();
-  } else {
-    filter->reset(true);
-  }
-}
-
-
 void WaypointListView::showEvent(QShowEvent *)
 {
-  list->setFocus();
+  listw->setFocus();
 }
 
 
 /** This signal is called to indicate that a selection has been made. */
 void WaypointListView::slot_Select()
 {
-  emit newWaypoint(getSelectedWaypoint(), true);
-  emit done();
-
-  filter->off();
+  wayPoint *w = listw->getSelectedWaypoint();
+  if ( w ) {
+    emit newWaypoint( w, true );
+    emit done();
+  }
 }
 
 
 /** This slot is called if the info button has been clicked */
 void WaypointListView::slot_Info()
 {
-  if (getSelectedWaypoint()) {
-    emit info(getSelectedWaypoint());
-  }
+  wayPoint *w = listw->getSelectedWaypoint();
+  if (w)
+    emit info(w);
 }
 
 
 /** @ee This slot is called if the listview is closed without selecting */
 void WaypointListView::slot_Close ()
 {
-  filter->off();
   emit done();
 }
 
 void WaypointListView::slot_Selected() {
-  if(WaypointListView::getSelectedWaypoint()->equals(calculator->getselectedWp())) {
-    cmdSelect->setEnabled(false);
-  } else {
-    cmdSelect->setEnabled(true);
-  }
-}
-
-/** Returns a pointer to the currently highlighted waypoint. */
-wayPoint * WaypointListView::getSelectedWaypoint(Q3ListView *list)
-{
-  if( list == 0 ) {
-    list = WaypointListView::list;
-  }
-
-  Q3ListViewItem* li = list->selectedItem();
-  _WaypointItem* wpi = static_cast<_WaypointItem*>(li);
-
-  if (!wpi) {
-    return 0;
-  }
-
-  return wpi->wp;
+  cmdSelect->setEnabled(true);
+  wayPoint *w = listw->getSelectedWaypoint();
+  if (w)
+    if(w->equals(calculator->getselectedWp()))
+      cmdSelect->setEnabled(false);
 }
 
 
@@ -212,50 +154,44 @@ void WaypointListView::slot_newWP()
 void WaypointListView::slot_editWP()
 {
   wayPoint *wp=getSelectedWaypoint();
-  if (wp)
-    {
-      WPEditDialog *dlg=new WPEditDialog(this, getSelectedWaypoint());
-      dlg->setAttribute(Qt::WA_DeleteOnClose);
+  if (wp) {
+    WPEditDialog *dlg=new WPEditDialog(this, wp);
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
 
-      connect(dlg, SIGNAL(wpListChanged(wayPoint *)),
-              this, SLOT(slot_wpEdited(wayPoint *)));
+    connect(dlg, SIGNAL(wpListChanged(wayPoint *)),
+            this, SLOT(slot_wpEdited(wayPoint *)));
 
-      dlg->show();
-    }
+    dlg->show();
+  }
 }
 
 
 /** Called when the selected waypoint should be deleted from the catalog */
 void WaypointListView::slot_deleteWP()
 {
-  if ( getSelectedWaypoint() == 0 ) {
+  wayPoint* wp = listw->getSelectedWaypoint();
+  if ( wp == 0 )
     return;
-  }
 
-  int answer= QMessageBox::warning(this,tr("Delete?"),
-                                   tr("Delete highlighted\nwaypoint?"),
-                                   QMessageBox::Ok,
-                                   QMessageBox::Cancel | QMessageBox::Escape | QMessageBox::Default);
+  int answer= QMessageBox::warning(this,tr("Delete Waypoint"),
+                                   tr("Delete selected\nwaypoint?"),
+                                   QMessageBox::Ok | QMessageBox::Cancel);
 
   if( answer == QMessageBox::Ok ) {
-    //first, make sure our waypointlist filter is won't interfere
-    filter->restoreListViewItems();
 
-    // next, obtain a reference to the waypoint
-    wayPoint *wp=getSelectedWaypoint();
-
+    listw->deleteSelectedWaypoint();
     emit deleteWaypoint(wp); // cancel the selected waypoint
 
-    // remove from waypointlist in MapContents
-    _globalMapContents->getWaypointList()->remove( wp );
+/*    // remove from waypoint list in MapContents
+    _globalMapContents->getWaypointList()->removeAll( wp );
     // save the modified catalog
     _globalMapContents->saveWaypointList();
 
     // remove from listView
-    delete list->selectedItem();
+//    delete list->takeTopLevelItem( list->indexOfTopLevelItem(list->currentItem()) );
+    delete list->takeTopLevelItem( list->currentIndex().row() );*/
     if (par)    
-      par->viewMap->_theMap->sceduleRedraw(Map::waypoints);
-    filter->reset(true);
+      ((CumulusApp*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
   }
 }
 
@@ -263,60 +199,44 @@ void WaypointListView::slot_deleteWP()
 /** Called if a waypoint has been edited. */
 void WaypointListView::slot_wpEdited(wayPoint * wp)
 {
-  if ( wp ) {
-    Q3ListViewItem * li;
-    li=list->selectedItem();
-    if( li ) {
-      li->setText(0, wp->name);
-      li->setText(1, wp->description);
-      li->setText(2, wp->icao);
-      li->setPixmap(0, _globalMapConfig->getPixmap(wp->type,false,true));
-      list->sort();
-      filter->reset();
+//  qDebug("WaypointListView::slot_wpEdited");
+  listw->updateSelectedWaypoint( wp );
 
-      // save modified catalog
-      _globalMapContents->saveWaypointList();
+  // save modified catalog
+//  _globalMapContents->saveWaypointList();
 
-      if (par) par->viewMap->_theMap->sceduleRedraw(Map::waypoints);
-    } else
-      qDebug("WaypointListView::slot_wpEdited() has empty list");
-  }
+  if (par)
+    ((CumulusApp*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
 }
 
 
 /** Called if a waypoint has been added. */
 void WaypointListView::slot_wpAdded(wayPoint * wp)
 {
-  qDebug("WaypointListView::slot_wpAdded");
-  if ( wp ) {
-    wayPoint *newWp = new wayPoint(*wp);
-    new _WaypointItem(list, newWp);
-    list->sort();
-    filter->reset();
+//  qDebug("WaypointListView::slot_wpAdded");
+  listw->addWaypoint(wp);
 
-    // qDebug("WaypointListView::slot_wpAdded(): name=%s",wp->name.latin1());
+  // qDebug("WaypointListView::slot_wpAdded(): name=%s",wp->name.toLatin1().data());
 
-    _globalMapContents->getWaypointList()->append(newWp);
-    // save the modified catalog
-    _globalMapContents->saveWaypointList();
+//  _globalMapContents->getWaypointList()->append(newWp);
+  // save the modified catalog
+//  _globalMapContents->saveWaypointList();
 
-    if (par) par->viewMap->_theMap->sceduleRedraw(Map::waypoints);
-  }
+    if (par)
+      ((CumulusApp*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
 }
 
 
 void WaypointListView::slot_setHome()
 {
-  wayPoint *_wp = getSelectedWaypoint();
+  wayPoint *_wp = listw->getSelectedWaypoint();
 
-  if ( _wp==0 ) {
+  if ( _wp == 0 )
     return;
-  }
 
-  int answer= QMessageBox::warning(this,tr("Set homesite?"),
-                                   tr("Do you want to use waypoint\n%1\nas your homesite?").arg(_wp->name),
-                                   QMessageBox::Ok | QMessageBox::Default,
-                                   QMessageBox::Cancel | QMessageBox::Escape );
+  int answer= QMessageBox::warning(this,tr("Set Homesite"),
+                                   tr("Use waypoint\n%1\nas your homesite?").arg(_wp->name),
+                                   QMessageBox::Ok | QMessageBox::Cancel );
   if( answer == 1 ) { //ok was chosen
 
     // Save new data as home position
@@ -329,25 +249,3 @@ void WaypointListView::slot_setHome()
     emit newHomePosition( &newPos );
   }
 }
-
-
-WaypointListView::_WaypointItem::_WaypointItem(Q3ListView* lv, wayPoint* waypoint):
-  Q3ListViewItem(lv),
-  wp(waypoint)
-{
-  if (!wp) {
-    return;
-  }
-
-  QString name = wp->name;
-  QRegExp blank("[ ]");
-  //name.replace(blank, QString::null);
-  name = name.left(10);
-
-  setText(0, name);
-  setText(1, wp->description);
-  setText(2, wp->icao);
-  setPixmap(0, _globalMapConfig->getPixmap(wp->type,false,true));
-}
-
-

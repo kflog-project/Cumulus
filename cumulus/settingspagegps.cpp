@@ -29,7 +29,8 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 {
     setObjectName("SettingsPageGPS");
     
-    QGridLayout * topLayout = new QGridLayout(this, 5, 3, 5);
+    QGridLayout * topLayout = new QGridLayout(this);
+//, 5, 3, 5);
     int row=0;
 
     topLayout->addWidget(new QLabel(tr("Serial Device:"), this),row,0);
@@ -46,11 +47,14 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     // Bluetooth default devices
     GpsDev->addItem("/dev/rfcomm0");
     GpsDev->addItem("/dev/rfcomm1");
-    GpsDev->addItem(NMEASIM_DEVICE);
 #else
-    GpsDev->addItem("/dev/maemo");
+    GpsDev->addItem("/dev/rfcomm0");
+    GpsDev->addItem("/dev/rfcomm1");
+    GpsDev->addItem("/dev/pts/0");
+    GpsDev->addItem("/dev/pts/1");
 #endif
 
+    GpsDev->addItem(NMEASIM_DEVICE);
 
     topLayout->addWidget(new QLabel(tr("Transfer rate (bps):"), this),row,0);
     GpsSpeed = new QComboBox(this);
@@ -83,39 +87,47 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     //AS: Some GPS units (like the Pretec) don't include any form of HAE correction.
     //For these, the user can manually enter the correction.
     topLayout->addWidget(new QLabel(tr("Altitude Correction:"), this),row,0);
-    spinUserCorrection = new QSpinBox(-1000, 1000, 1, this, "GPSAltitudeCorrection");
+    spinUserCorrection = new QSpinBox(this);
+    spinUserCorrection->setObjectName("GPSAltitudeCorrection");
+    spinUserCorrection->setMinimum(-1000);
+    spinUserCorrection->setMaximum(1000);
     spinUserCorrection->setButtonSymbols(QSpinBox::PlusMinus);
     topLayout->addWidget(spinUserCorrection,row++,2);
 
-    topLayout->addRowSpacing(row++,10);
+//    topLayout->addRowSpacing(row++,10);
+    topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
 
     checkSoftStart = new QCheckBox (tr("Soft start"), this);
-    topLayout->addMultiCellWidget(checkSoftStart, row, row, 0, 2);
+    topLayout->addWidget(checkSoftStart,row,0,1,3);
+//    topLayout->addMultiCellWidget(checkSoftStart, row, row, 0, 2);
     row++;
 
     checkHardStart = new QCheckBox (tr("Hard start"), this);
-    topLayout->addMultiCellWidget(checkHardStart, row, row, 0, 2);
+    topLayout->addWidget(checkHardStart,row,0,1,3);
+//    topLayout->addMultiCellWidget(checkHardStart, row, row, 0, 2);
     row++;
 
     checkSyncSystemClock = new QCheckBox (tr("Update system clock"), this);
-    topLayout->addMultiCellWidget(checkSyncSystemClock, row, row, 0, 2);
+    topLayout->addWidget(checkSyncSystemClock,row,0,1,3);
+//    topLayout->addMultiCellWidget(checkSyncSystemClock, row, row, 0, 2);
     row++;
 
     topLayout->setRowStretch(row++,10);
     
     buttonReset = new QPushButton (tr("Reset to factory settings"), this);
-    topLayout->addMultiCellWidget (buttonReset, row, row, 0, 2, Qt::AlignRight);
+    topLayout->addWidget(buttonReset,row,0,1,3,Qt::AlignRight);
+//    topLayout->addMultiCellWidget (buttonReset, row, row, 0, 2, Qt::AlignRight);
     row++;
 
-    topLayout->setColStretch(1,100);
+    topLayout->setColumnStretch(1,100);
 
     GeneralConfig *conf = GeneralConfig::instance();
     QString devText = conf->getGpsDevice();
 
     // select last saved device, if possible
     for(int i=0; i < GpsDev->count(); i++) {
-        if(GpsDev->text(i) == devText) {
-            GpsDev->setCurrentItem(i);
+        if(GpsDev->itemText(i) == devText) {
+            GpsDev->setCurrentIndex(i);
             break;
         }
     }
@@ -140,13 +152,13 @@ void SettingsPageGPS::slot_load()
 
     QString rate = QString::number( conf->getGpsSpeed() );
     for (int i=0;i<GpsSpeed->count();i++) {
-        if (GpsSpeed->text(i)==rate) {
-            GpsSpeed->setCurrentItem(i);
+        if (GpsSpeed->itemText(i)==rate) {
+            GpsSpeed->setCurrentIndex(i);
             break;
         }
     }
 
-    GpsAltitude->setCurrentItem( conf->getGpsAltitude() );
+    GpsAltitude->setCurrentIndex( conf->getGpsAltitude() );
     spinUserCorrection->setValue( (int) conf->getGpsUserAltitudeCorrection().getMeters() );
     slot_altitude_mode( conf->getGpsAltitude() );
     checkSoftStart->setChecked( conf->getGpsSoftStart() );

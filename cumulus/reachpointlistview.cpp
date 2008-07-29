@@ -17,7 +17,7 @@
 
 #include <QPushButton>
 #include <QFont>
-#include <Q3ListViewItem>
+#include <QTreeWidgetItem>
 
 #include "reachpointlistview.h"
 #include "cumulusapp.h"
@@ -45,7 +45,31 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
   QBoxLayout *topLayout = new QVBoxLayout( this );
 
 
-  list= new Q3ListView(this, "reachpointlist");
+  list = new QTreeWidget( this );
+  list->setObjectName("reachpointview");
+
+  list->setRootIsDecorated(false);
+  list->setItemsExpandable(false);
+  list->setUniformRowHeights(true);
+  list->setSortingEnabled(false);
+  list->setSelectionMode(QAbstractItemView::SingleSelection);
+  list->setColumnCount(7);
+  list->hideColumn(6);
+  list->setFocusPolicy(Qt::StrongFocus);
+//  list->setEnabled(false);
+
+  QStringList sl;
+  sl << tr(" Name") << tr("Dist.") << tr("Brg.") << tr("R") << tr("Arrv.") << tr(" SS");
+  list->setHeaderLabels(sl);
+
+  list->setColumnWidth( 0, 160 );
+  list->setColumnWidth( 1, 74 );
+  list->setColumnWidth( 2, 74 );
+  list->setColumnWidth( 3, 24 ); // the bearing icon
+  list->setColumnWidth( 4, 80 );
+  list->setColumnWidth( 5, 80 );
+
+/*  list= new QTreeWidget(this, "reachpointlist");
   list->addColumn(tr("Name"));
   list->addColumn(tr("Dist"));
   list->addColumn(tr("Brg"));
@@ -60,12 +84,13 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
   list->setColumnAlignment( 5, Qt::AlignRight );
     
   list->setAllColumnsShowFocus(true);
-  list->setSelectionMode( Q3ListView::Single );
-  list->setSorting(4,false);
+  list->setSelectionMode( QTreeWidget::Single );
+  list->setSorting(4,false);*/
   fillRpList();
 
   topLayout->addWidget(list,10);
-  QBoxLayout *buttonrow=new QHBoxLayout(topLayout);
+  QBoxLayout *buttonrow=new QHBoxLayout;
+  topLayout->addLayout(buttonrow);
 
   /** @ee add a close button */
   QPushButton *cmdClose = new QPushButton(tr("Close"), this);
@@ -90,7 +115,7 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
   connect(cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()));
   connect(cmdHideOl, SIGNAL(clicked()), this, SLOT(slot_HideOl()));
   connect(cmdShowOl, SIGNAL(clicked()), this, SLOT(slot_ShowOl()));
-  connect(list, SIGNAL(selectionChanged(Q3ListViewItem*)), this, SLOT(slot_Selected()));
+  connect(list, SIGNAL(itemSelectionChanged()), this, SLOT(slot_Selected()));
   cmdShowOl->hide();
   cmdHideOl->show();
 }
@@ -111,13 +136,13 @@ void ReachpointListView::fillRpList()
 
   // int n= calculator->getReachList()->getNumberSites();
   extern MapConfig * _globalMapConfig;
-  Q3ListViewItem* si = list->selectedItem();
+  QTreeWidgetItem* si = list->currentItem();
   QString sname;
   QPixmap icon;
   QPixmap iconImage;
   QBitmap iconMask;
   QPainter pnt;
-  icon.resize(18,18);
+  icon = QPixmap(18,18);
 
   bool selected = false;
   if( si ) {
@@ -129,6 +154,7 @@ void ReachpointListView::fillRpList()
   // Create a pointer to the list of nearest sites
   QList<ReachablePoint*> *pl = calculator->getReachList()->getList();
   int num = 0;
+  QString key;
 
   // Do a loop over all entries in the table of nearest sites
   for (int i = 0;
@@ -142,6 +168,7 @@ void ReachpointListView::fillRpList()
 
     // Setup string for bearing
     QString bearing=QString("%1°").arg(rp->getBearing());
+
     // Calculate relative bearing too, very cool feature
     int relbearing = rp->getBearing() - calculator->getlastHeading();
 
@@ -156,56 +183,54 @@ void ReachpointListView::fillRpList()
   
     Sonne::sonneAufUnter( sr, ss, date, rp->getWgsPos(), 0 );
 
-    ColorListViewItem * li=new ColorListViewItem(list, rp->getName(),
-                                                 rp->getDistance().getText(false,1),
-                                                 bearing,
-                                                 RB,
-                                                 rp->getArrivalAlt().getText(false,0),
-                                                 " " + ss );
+    // hidden column for default sorting
+    key = QString("%1").arg(num, 3, 10, QLatin1Char('0') );
 
-    // icons now supported
-    //icon.fill();
+    QStringList sl;
+    sl << rp->getName() << rp->getDistance().getText(false,1) << bearing << RB << rp->getArrivalAlt().getText(false,0) <<  " " + ss << key;
+    ColorListViewItem* li = new ColorListViewItem( list, sl );
+
+    // create landing site type icon
     pnt.begin(&icon);
-    if (rp->getReachable()==yes) {
-      //draw green circle
-      //pnt.drawPixmap(0,0, _globalMapConfig->getPixmap("green_circle.xpm"));
-      icon.fill(QColor(0,255,0));
-    } else if (rp->getReachable() == belowSavety) {
-      //draw magenta circle
-      //pnt.drawPixmap(0,0, _globalMapConfig->getPixmap("magenta_circle.xpm"));
-      icon.fill(QColor(255,0,255));
+    if ( rp->getReachable() == yes ) {
+      icon.fill( QColor(0,255,0) );
+    } else if ( rp->getReachable() == belowSafety ) {
+      icon.fill( QColor(255,0,255) );
     } else {
-      //pnt.drawPixmap(0,0, _globalMapConfig->getPixmap("red_circle.xpm"));
-      //icon.fill(QColor(255,0,0));
-      icon.fill(QColor(255,255,255));
+      icon.fill( QColor(255,255,255) );
     }
 
     pnt.drawPixmap(1, 1, _globalMapConfig->getPixmap(rp->getType(),false,true) );
     pnt.end();
-    li->setPixmap(0, icon);
+    li->setIcon( 0, QIcon(icon) );
 
     // set Pixmap for rel. Bearing
     int rot=((relbearing+7)/15) % 24;
-    QPixmap arrow (16,16);
-    bitBlt(&arrow, 0, 0, &_arrows, rot*16, 0, 16, 16);
-    li->setPixmap(3, arrow );
+    QPixmap arrow( 16, 16 );
+    arrow = _arrows.copy( rot*16, 0, 16, 16);
+    li->setIcon( 3, QIcon(arrow) );
+
     // store name of last selected to avoid jump to first element on each fill
     if( rp->getName() == sname ) {
       selected = true;
-      list->setSelected( li, true );
+      list->setCurrentItem( li );
     }
-    // print non reachable sites too but in read color
+
+    // list safely reachable sites in green
     if( rp->getArrivalAlt().getMeters() > 0 )
-      li->setColor(Qt::darkGreen); //li->setRed(false);
+      li->setColor(Qt::darkGreen);
+    // list narrowly reachable sites in magenta
     else if  (rp->getArrivalAlt().getMeters() > -safetyAlt)
       li->setColor(Qt::darkMagenta);
+    // list other near sites in black
     else
-      li->setColor(Qt::black); //li->setRed(true);
+      li->setColor(Qt::black);
   }
+  list->resizeColumnToContents(0);
   // sort list
-  list->sort();
+  list->sortItems( 6, Qt::DescendingOrder );
   if (!selected) {
-    list->setCurrentItem(list->firstChild());
+    list->setCurrentItem( list->topLevelItem(0) );
   }
 
 }
@@ -281,7 +306,7 @@ wayPoint * ReachpointListView::getSelectedWaypoint()
   ReachablePoint * rp;
   int i,n;
   n =  calculator->getReachList()->getNumberSites();
-  Q3ListViewItem* li = list->selectedItem();
+  QTreeWidgetItem* li = list->currentItem();
   // @ee may be null
   if (li) {
     for (i=0; i < n; i++) {
@@ -315,4 +340,3 @@ void ReachpointListView::slot_newList()
     _newList=true;
   }
 }
-
