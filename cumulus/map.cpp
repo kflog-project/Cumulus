@@ -1921,7 +1921,7 @@ void Map::slotZoomIn()
 
   scheduleRedraw();
   QString msg;
-  msg = QString(tr("Map zoom in, scale: %.1f")).arg(zoomFactor/L_LIMIT);
+  msg = QString(tr("Map zoom in, scale: %1")).arg(zoomFactor/L_LIMIT, 0, 'f', 1);
   _globalMapView->message( msg );
 }
 
@@ -1962,7 +1962,7 @@ void Map::slotZoomOut()
 
   scheduleRedraw();
   QString msg;
-  msg = QString(tr("Map zoom out, scale: %.1f")).arg(zoomFactor/L_LIMIT);
+  msg = QString(tr("Map zoom out, scale: %1")).arg(zoomFactor/L_LIMIT, 0, 'f', 1);
 
   _globalMapView->message( msg );
 }
