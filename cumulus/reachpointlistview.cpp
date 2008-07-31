@@ -51,12 +51,12 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
   list->setRootIsDecorated(false);
   list->setItemsExpandable(false);
   list->setUniformRowHeights(true);
+  list->setAlternatingRowColors(true);
   list->setSortingEnabled(false);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
   list->setColumnCount(7);
   list->hideColumn(6);
   list->setFocusPolicy(Qt::StrongFocus);
-//  list->setEnabled(false);
 
   QStringList sl;
   sl << tr(" Name") << tr("Dist.") << tr("Brg.") << tr("R") << tr("Arrv.") << tr(" SS");
@@ -69,23 +69,6 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
   list->setColumnWidth( 4, 80 );
   list->setColumnWidth( 5, 80 );
 
-/*  list= new QTreeWidget(this, "reachpointlist");
-  list->addColumn(tr("Name"));
-  list->addColumn(tr("Dist"));
-  list->addColumn(tr("Brg"));
-  list->addColumn(tr("R"), 22); // limit width that only the arrow icon is to see
-  list->addColumn(tr("Arv"));
-  list->addColumn(tr("SS"));
-
-  list->setColumnAlignment( 1, Qt::AlignRight );
-  list->setColumnAlignment( 2, Qt::AlignRight );
-  //list->setColumnAlignment( 3, Qt::AlignRight );
-  list->setColumnAlignment( 4, Qt::AlignRight );
-  list->setColumnAlignment( 5, Qt::AlignRight );
-    
-  list->setAllColumnsShowFocus(true);
-  list->setSelectionMode( QTreeWidget::Single );
-  list->setSorting(4,false);*/
   fillRpList();
 
   topLayout->addWidget(list,10);
@@ -149,6 +132,7 @@ void ReachpointListView::fillRpList()
     sname = si->text(0);
   }
 
+  list->setUpdatesEnabled(false);
   list->clear();
 
   // Create a pointer to the list of nearest sites
@@ -225,6 +209,10 @@ void ReachpointListView::fillRpList()
     // list other near sites in black
     else
       li->setColor(Qt::black);
+
+    // TODO: make the entries higher to ease finger selection;
+    // the following doesn't work
+    //li->setSizeHint(0, QSize(li->sizeHint(0).width(),30) );
   }
   list->resizeColumnToContents(0);
   // sort list
@@ -232,7 +220,7 @@ void ReachpointListView::fillRpList()
   if (!selected) {
     list->setCurrentItem( list->topLevelItem(0) );
   }
-
+  list->setUpdatesEnabled(true);
 }
 
 

@@ -52,7 +52,6 @@
 #include "preflightdialog.h"
 #include "wgspoint.h"
 #include "waypoint.h"
-//#include "gliderlist.h"
 #include "target.h"
 #include "helpbrowser.h"
 #include "sound.h"
@@ -136,21 +135,36 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
 #ifdef MAEMO
 
   // For MAEMO it's really better to pre-set style and font
-  QApplication::setStyle("plastique");
+  // CleanLooks is best for tabs and edit fields but bad for
+  // spin buttons. I've found no ideal solution. Try out.
+  QApplication::setStyle("cleanlooks");
+
+  // The Nokia font has excellent readability and less width than others
   appFt.setFamily("Nokia Sans");
+
+  // To resize tiny spin and tab buttons
+  QApplication::setGlobalStrut( QSize(24,16) );
 
   // N8x0 display has bad contrast for light shades, so make the (dialog)
   // background darker
   QPalette appPal = QApplication::palette();
-  appPal.setColor(QPalette::Normal,QPalette::Window,QColor(230,230,230));
-  setPalette(appPal);
+  appPal.setColor(QPalette::Normal,QPalette::Window,QColor(240,240,240));
+  appPal.setColor(QPalette::Normal,QPalette::Button,QColor(230,230,230));
+  appPal.setColor(QPalette::Normal,QPalette::Base,Qt::white);
+  appPal.setColor(QPalette::Normal,QPalette::AlternateBase,QColor(246,246,246));
+  appPal.setColor(QPalette::Normal,QPalette::Highlight,Qt::darkBlue);
+  QApplication::setPalette(appPal);
+  
+  // Unfortunately, tree widget highlight bars don't follow the rules for
+  // QApplication. Got to set them right every time ...
 
 #endif
 
+  // The size for modern devices with small screen / high resolution
   if( appFt.pointSize() < 18 ) {
     appFt.setPointSize(18);
-    QApplication::setFont(appFt);
   }
+  QApplication::setFont(appFt);
   
   // get last saved window geometrie from generalconfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );

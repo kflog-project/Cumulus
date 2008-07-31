@@ -98,7 +98,7 @@ WaypointListView::~WaypointListView()
 
 void WaypointListView::showEvent(QShowEvent *)
 {
-  listw->setFocus();
+  listw->listWidget()->setFocus();
 }
 
 

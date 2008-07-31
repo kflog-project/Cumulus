@@ -252,9 +252,9 @@ void GPSElevationAzimuthDisplay::drawSat(QPainter * p, const SIVInfo& sivi)
   p->setFont(f);
 
   p->setBrush(QColor(R,G,0));
-  p->fillRect(x - 8, y - 6, 16 , 12 , p->brush());
-  p->drawRect(x - 8, y - 6, 16 , 12 );
-  p->drawText(x - 8, y - 7, 16 , 12 , Qt::AlignCenter, QString::number(sivi.id) );
+  p->fillRect(x - 9, y - 7, 18 , 14 , p->brush());
+  p->drawRect(x - 9, y - 7, 18 , 14 );
+  p->drawText(x - 9, y - 5, 18 , 14 , Qt::AlignCenter, QString::number(sivi.id) );
 }
 
 
@@ -324,7 +324,7 @@ void GPSSnrDisplay::paintEvent(QPaintEvent *)
   p.begin(canvas);
   p.drawPixmap( 0, 0, *background, 0, 0, background->width(), background->height() );
 
-  p.fillRect(0, 0, width, height, palette().color(QPalette::Window) );
+//  p.fillRect(0, 0, width, height, palette().color(QPalette::Window) );
   //draw satellites
   if (sats.count())
     {

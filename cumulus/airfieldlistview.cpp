@@ -71,7 +71,7 @@ AirfieldListView::~AirfieldListView()
 
 void AirfieldListView::showEvent(QShowEvent *)
 {
-  listw->setFocus();
+  listw->listWidget()->setFocus();
 }
 
 

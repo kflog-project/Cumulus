@@ -19,6 +19,7 @@ Cumulus 2.0.x (Development based on X11/Qt-4.4.0)
 -------------------------------------------------
 
 
+[o] 2008-07-31 JD: several GUI changes (some Maemo-specific), bug fixes (GPS dialog)
 [o] 2008-07-29 JD: Constant updating the progess splash at startup during isoline
                    drawing slowed it down around 600 percent ... Changed to one
                    update only. Sorry, not much of the spinning glider left ...

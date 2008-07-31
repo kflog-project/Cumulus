@@ -989,7 +989,7 @@ void Map::__drawAeroLayer(bool reset)
 /**
  * Draws the navigation layer of the map.
  * The navigation layer consists of the airfields, outlanding sites,
- * waypoints, flight task and the map scale.
+ * waypoints.
  * It is drawn on top of the aero layer.
  */
 void Map::__drawNavigationLayer()
@@ -1445,7 +1445,6 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                   rtext->adjustSize();
                   rtext->resize( rtext->width()+4, rtext->height() );
 
-//                  QRect textbox( 0, 0, rtext->width(), rtext->height() );
                   QRect textbox( rtext->rect() );
                   if (wp->origP.lon()<_globalMapMatrix->getMapCenter(false).y())
                     {
@@ -1470,45 +1469,21 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                         }
                     }
 
-//                  QColorGroup cg;
                   QPalette rpal = rtext->palette();
 
                   if (!isSelected)
                     {
                       rpal.setColor(QPalette::Normal,QPalette::Window,Qt::white);
                       rpal.setColor(QPalette::Normal,QPalette::WindowText,Qt::black);
-/*                      wpPainter->fillRect(P.x() + xOffset - 1,
-                                          P.y() + yOffset + 1,
-                                          textbox.width() + 2,
-                                          -textbox.height() + 1,
-                                          Qt::white);
-
-                      cg.setColor( QColorGroup::Background, Qt::white );
-                      cg.setColor( QColorGroup::Foreground, Qt::black );
-                      cg.setColor( QColorGroup::Text, Qt::black );*/
                     }
                   else
                     {
                       rpal.setColor(QPalette::Normal,QPalette::Window,Qt::black);
                       rpal.setColor(QPalette::Normal,QPalette::WindowText,Qt::white);
-/*                      wpPainter->fillRect(P.x() + xOffset - 1,
-                                          P.y() + yOffset + 1,
-                                          textbox.width() + 2,
-                                          -textbox.height() + 1,
-                                          Qt::black);
-
-                      cg.setColor( QColorGroup::Background, Qt::black );
-                      cg.setColor( QColorGroup::Foreground, Qt::white );
-                      cg.setColor( QColorGroup::Text, Qt::white );*/
                     }
                   rtext->setPalette(rpal);
                   rtext->move( P.x() + xOffset + 1, P.y() + yOffset - textbox.height() + 2 );
                   rtext->show();
-/*                  rtext.draw(wpPainter,
-                             P.x() + xOffset + 1,
-                             P.y() + yOffset - textbox.height() + 2,
-                             QRect( 0, 0, width() + 2, height() + 2 ), //textbox,
-                             cg);*/
                 }//draw labels?
             } //in visible area?
         } //important enough?
