@@ -29,13 +29,10 @@
 GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
 {
   setWindowTitle(tr("GPS Status"));
-//  setModal(true);
-resize(800,480);
+  setModal(true);
 
 #ifdef MAEMO
-//  if (parent)
-//    resize( parent->size() );
-resize(500,480);
+  resize(500,480);
   setSizeGripEnabled(false);
 #else
   setSizeGripEnabled(true);

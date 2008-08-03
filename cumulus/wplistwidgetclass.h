@@ -20,15 +20,17 @@
 
 #include <QWidget>
 #include <QTreeWidget>
+#include <QItemDelegate>
 
 #include "waypoint.h"
 #include "listviewfilter.h"
+#include "rowdelegate.h"
 
 //class WaypointCatalog;
 
 /**
  * This widget provides a list of waypoints and a means to select one.
- * @author Andr� Somers
+ * @author Andr� Somers, Josua Dietze
  */
 class WPListWidgetClass : public QWidget
 {
@@ -39,12 +41,17 @@ public:
     ~WPListWidgetClass();
 
     /**
+     * sets the list row height from configuration
+     */
+    void configRowHeight();
+
+    /**
      * @returns a pointer to the currently highlighted waypoint.
      */
     virtual wayPoint* getSelectedWaypoint() {return 0;};
 
     /**
-     * Retrieves the waypoints or airfields from the map contents, and fills
+     * retrieves the waypoints or airfields from the map contents and fills
      * the list.
      */
     virtual void fillWpList() { return; };
@@ -79,6 +86,9 @@ protected:
     QTreeWidget* list;
     ListViewFilter * filter;
     bool listFilled;
+
+private:
+    RowDelegate* rowDelegate;
 
 private slots:
 

@@ -82,7 +82,41 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   weltLayout->addWidget( homeRadius, grow, 1 );
   weltLayout->addWidget( new QLabel( unit, weltGroup), grow, 2 );
 
-  topLayout->addStretch( 10 );
+
+  // JD: adding group box for diverse list display settings
+
+  grow = 0;
+  QGroupBox* listGroup = new QGroupBox( tr("List Display"), this );
+  topLayout->addWidget( listGroup );
+
+  QGridLayout* listLayout = new QGridLayout( listGroup );
+
+  lbl = new QLabel( tr("Entries per Page in Airfield/Waypoint Lists (0 to disable):"), (listGroup ) );
+  listLayout->addWidget( lbl, grow, 0 );
+  pageSize = new QSpinBox( listGroup );
+  pageSize->setRange( 0, 100 );
+  pageSize->setSingleStep( 5 );
+  pageSize->setButtonSymbols(QSpinBox::PlusMinus);
+  listLayout->addWidget( pageSize, grow, 1 );
+
+  grow++;
+  lbl = new QLabel( tr("Entry Height Increase (Pixels) in Airfield/Waypoint Lists:"), (listGroup ) );
+  listLayout->addWidget( lbl, grow, 0 );
+  afMargin = new QSpinBox( listGroup );
+  afMargin->setRange( 0, 60 );
+  afMargin->setSingleStep( 2 );
+  afMargin->setButtonSymbols(QSpinBox::PlusMinus);
+  listLayout->addWidget( afMargin, grow, 1 );
+
+  grow++;
+  lbl = new QLabel( tr("Entry Height Increase (Pixels) in Emergency List:"), (listGroup ) );
+  listLayout->addWidget( lbl, grow, 0 );
+  rpMargin = new QSpinBox( listGroup );
+  rpMargin->setRange( 0, 60 );
+  rpMargin->setSingleStep( 2 );
+  rpMargin->setButtonSymbols(QSpinBox::PlusMinus);
+  listLayout->addWidget( rpMargin, grow, 1 );
+
 
   connect( countryFilter, SIGNAL(textChanged(const QString&)),
            this, SLOT(slot_filterChanged(const QString&)) );
@@ -102,6 +136,10 @@ void SettingsPageAirfields::slot_load()
   countryFilter->setText( conf->getWelt2000CountryFilter() );
   // @AP: radius value is stored without considering unit.
   homeRadius->setValue( conf->getWelt2000HomeRadius() );
+
+  pageSize->setValue( conf->getListDisplayPageSize() );
+  afMargin->setValue( conf->getListDisplayAFMargin() );
+  rpMargin->setValue( conf->getListDisplayRPMargin() );
 
   // sets home radius enabled/disabled in dependency to filter string
   slot_filterChanged( countryFilter->text() );
@@ -142,6 +180,10 @@ void SettingsPageAirfields::slot_save()
     {
       conf->setWelt2000HomeRadius( 0 );
     }
+
+  conf->setListDisplayPageSize( pageSize->value() );
+  conf->setListDisplayAFMargin( afMargin->value() );
+  conf->setListDisplayRPMargin( rpMargin->value() );
 }
 
 /**
@@ -171,6 +213,7 @@ void SettingsPageAirfields::slot_query_close(bool& warn, QStringList& warnings)
   bool changed=false;
 
   changed = changed || checkIsWelt2000Changed();
+  changed = changed || checkIsListDisplayChanged();
 
   if (changed) {
     warn=true;
@@ -194,3 +237,18 @@ bool SettingsPageAirfields::checkIsWelt2000Changed()
 }
 
 
+/**
+ * Checks if the configuration of list display has been changed
+ */
+bool SettingsPageAirfields::checkIsListDisplayChanged()
+{
+  bool changed = false;
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  changed = changed || ( conf->getListDisplayPageSize() != pageSize->value() );
+  changed = changed || ( conf->getListDisplayAFMargin() != afMargin->value() ) ;
+  changed = changed || ( conf->getListDisplayRPMargin() != rpMargin->value() ) ;
+
+  // qDebug( "SettingsPageAirfields::checkIsListDisplayChanged(): %d", changed );
+  return changed;
+}

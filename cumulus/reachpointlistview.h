@@ -23,8 +23,10 @@
 #include <QPixmap>
 #include <QBoxLayout>
 #include <QPushButton>
+#include <QItemDelegate>
 
 #include "waypoint.h"
+#include "rowdelegate.h"
 
 class CumulusApp;
 
@@ -103,6 +105,7 @@ signals: // Signals
 private:
     QTreeWidget* list;
     CumulusApp * par;
+    RowDelegate* rowDelegate;
     QBoxLayout * buttonrow;
     wayPoint    selectedWp;
     bool       _outlandShow;

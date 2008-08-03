@@ -50,9 +50,14 @@ class SettingsPageAirfields : public QWidget
   ~SettingsPageAirfields();
 
   /**
-   * Checks, if the configuration of the welt 2000 has been changed
+   * Checks if the configuration of the welt 2000 has been changed
    */
   bool checkIsWelt2000Changed();
+
+  /**
+   * Checks if the configuration of list display has been changed
+   */
+  bool checkIsListDisplayChanged();
 
   public slots: // Public slots
   /**
@@ -85,7 +90,20 @@ class SettingsPageAirfields : public QWidget
   /** Radius around home position for welt 2000 data file */
   QSpinBox* homeRadius;
 
-  /** saves distance unit set during construction of object */
+  /** Number of page entries in airfield/waypoint lists. 0 disables */
+  QSpinBox* pageSize;
+
+  /** Pixels to add to the row height in airfield/waypoint lists
+   *  (for easy finger selection)
+   */
+  QSpinBox* afMargin;
+
+  /** Pixels to add to the row height in emergency (reachable points) list 
+   *  (for easy finger selection)
+   */
+  QSpinBox* rpMargin;
+
+  /** stores distance unit set during construction of object */
   Distance::distanceUnit distUnit;
 
 };

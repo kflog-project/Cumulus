@@ -197,6 +197,12 @@ void GeneralConfig::load()
   _welt2000HomeRadius    = value("Welt2000HomeRadius", 0).toInt();
   endGroup();
 
+  beginGroup("List Display");
+  _listDisplayPageSize = value("List Page Entries", 30).toInt();
+  _listDisplayAFMargin = value("Airfield List Row Increase", 0).toInt();
+  _listDisplayRPMargin = value("Emergency List Row Increase", 20).toInt();
+  endGroup();
+
   beginGroup("Scale");
   _mapLowerLimit  = value("Lower Limit", VAL_BORDER_L).toInt();
   _mapUpperLimit  = value("Upper Limit", VAL_BORDER_U).toInt();
@@ -422,6 +428,12 @@ void GeneralConfig::save()
   setValue("Projection Type", _mapProjectionType);
   setValue("Welt2000CountryFilter", _welt2000CountryFilter);
   setValue("Welt2000HomeRadius", _welt2000HomeRadius);
+  endGroup();
+
+  beginGroup("List Display");
+  setValue("List Page Entries", _listDisplayPageSize);
+  setValue("Airfield List Row Increase", _listDisplayAFMargin);
+  setValue("Emergency List Row Increase", _listDisplayRPMargin);
   endGroup();
 
   beginGroup("Scale");

@@ -48,12 +48,8 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
   setObjectName("TaskEditor");
   setModal(true);
 
-  if (parent)
-    resize( parent->size() );
-  else
-    resize( 640, 480 );
-
 #ifdef MAEMO
+  resize(800,480);
   setSizeGripEnabled(false);
 #else
   setSizeGripEnabled(true);
@@ -232,11 +228,6 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
   connect( listSelectCB, SIGNAL(activated(int)),
            this, SLOT(slotToggleList(int)));
 
-#ifdef MAEMO
-  resize(800,480);
-#else
-  setSizeGripEnabled(true);
-#endif
 }
 
 TaskEditor::~TaskEditor()

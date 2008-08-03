@@ -49,12 +49,12 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   spgl=new SettingsPageGlider(this);
   tabWidget->addTab(spgl, tr("Gliders"));
 
-  sps=new SettingsPageSector(this);
-  QScrollArea* sectorArea = new QScrollArea();
-  sectorArea->setWidget(sps);
-  sps->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  QScrollArea* sectorArea = new QScrollArea(tabWidget);
   sectorArea->setWidgetResizable(true);
   sectorArea->setFrameStyle(QFrame::NoFrame);
+
+  sps=new SettingsPageSector();
+  sectorArea->setWidget(sps);
   tabWidget->addTab(sectorArea, tr("Sector"));
 
   spg=new SettingsPageGPS(this);
@@ -66,8 +66,13 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   spm=new SettingsPageMap(this);
   tabWidget->addTab(spm, tr("Map Objects"));
 
-  spaf=new SettingsPageAirfields(this);
-  tabWidget->addTab(spaf, tr("Airfields"));
+  QScrollArea* afArea = new QScrollArea(tabWidget);
+  afArea->setWidgetResizable(true);
+  afArea->setFrameStyle(QFrame::NoFrame);
+
+  spaf=new SettingsPageAirfields();
+  afArea->setWidget(spaf);
+  tabWidget->addTab(afArea, tr("Airfields"));
 
   spa=new SettingsPageAirspace(this);
   tabWidget->addTab(spa, tr("Airspaces"));
@@ -75,11 +80,12 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   spu=new SettingsPageUnits(this);
   tabWidget->addTab(spu, tr("Units"));
 
-  spi=new SettingsPageInformation(this);
-  QScrollArea* infoArea = new QScrollArea();
-  infoArea->setWidget(spi);
+  QScrollArea* infoArea = new QScrollArea(tabWidget);
   infoArea->setWidgetResizable(true);
   infoArea->setFrameStyle(QFrame::NoFrame);
+
+  spi=new SettingsPageInformation();
+  infoArea->setWidget(spi);
   tabWidget->addTab(infoArea, tr("Information"));
 
   QPushButton *cancel = new QPushButton(this);

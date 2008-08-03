@@ -654,6 +654,39 @@ class GeneralConfig : protected QSettings
     _welt2000HomeRadius = newValue;
   };
 
+  /** gets the af/wp list page size */
+  int getListDisplayPageSize() const
+  {
+    return _listDisplayPageSize;
+  };
+  /** sets the af/wp list page size */
+  void setListDisplayPageSize( const int newValue )
+  {
+    _listDisplayPageSize = newValue;
+  };
+
+  /** gets the additional af list row margin */
+  int getListDisplayAFMargin() const
+  {
+    return _listDisplayAFMargin;
+  };
+  /** sets the additional af list row margin */
+  void setListDisplayAFMargin( const int newValue )
+  {
+    _listDisplayAFMargin = newValue;
+  };
+
+  /** gets the additional rp list row margin */
+  int getListDisplayRPMargin() const
+  {
+    return _listDisplayRPMargin;
+  };
+  /** sets the additional rp list row margin */
+  void setListDisplayRPMargin( const int newValue )
+  {
+    _listDisplayRPMargin = newValue;
+  };
+
   /** gets map Projection Type */
   int getMapProjectionType()  const
   {
@@ -1193,6 +1226,13 @@ class GeneralConfig : protected QSettings
   QString _welt2000CountryFilter;
   // Welt 2000 home radius
   int _welt2000HomeRadius;
+
+  // Airfield/WP lists page size (entries)
+  int _listDisplayPageSize;
+  // Airfield/WP lists row height increase (px)
+  int _listDisplayAFMargin;
+  // Reachable points list row height increase (px)
+  int _listDisplayRPMargin;
 
   // Map BearLine
   bool _mapBearLine;

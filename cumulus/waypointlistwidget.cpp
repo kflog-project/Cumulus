@@ -47,7 +47,9 @@ void WaypointListWidget::fillWpList()
 {
   QList<wayPoint*> *wpList = _globalMapContents->getWaypointList();
 
+  list->setUpdatesEnabled(false);
   list->clear();
+  configRowHeight();
 
   int n = 0;
 
@@ -80,6 +82,7 @@ void WaypointListWidget::fillWpList()
   } else {
     filter->reset(true);
   }
+  list->setUpdatesEnabled(true);
 }
 
 

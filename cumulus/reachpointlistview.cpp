@@ -44,7 +44,6 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
   _outlandShow = true;  // Show outlandigs by default;
   QBoxLayout *topLayout = new QVBoxLayout( this );
 
-
   list = new QTreeWidget( this );
   list->setObjectName("reachpointview");
 
@@ -69,6 +68,7 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
   list->setColumnWidth( 4, 80 );
   list->setColumnWidth( 5, 80 );
 
+  rowDelegate = 0;
   fillRpList();
 
   topLayout->addWidget(list,10);
@@ -132,6 +132,17 @@ void ReachpointListView::fillRpList()
     sname = si->text(0);
   }
 
+  // set row height at each list fill - has probably changed.
+  // Note: rpMargin is a manyfold of 2 to ensure symmetry
+  int rpMargin = GeneralConfig::instance()->getListDisplayRPMargin();
+
+  if ( rowDelegate )
+    rowDelegate->setVerticalMargin(rpMargin);
+  else {
+    rowDelegate = new RowDelegate( list, rpMargin );
+    list->setItemDelegate( rowDelegate );
+  }
+
   list->setUpdatesEnabled(false);
   list->clear();
 
@@ -172,7 +183,9 @@ void ReachpointListView::fillRpList()
 
     QStringList sl;
     sl << rp->getName() << rp->getDistance().getText(false,1) << bearing << RB << rp->getArrivalAlt().getText(false,0) <<  " " + ss << key;
-    ColorListViewItem* li = new ColorListViewItem( list, sl );
+
+    QTreeWidgetItem* li = new QTreeWidgetItem( sl );
+    list->addTopLevelItem( li );
 
     // create landing site type icon
     pnt.begin(&icon);
@@ -200,24 +213,27 @@ void ReachpointListView::fillRpList()
       list->setCurrentItem( li );
     }
 
+    QColor c;
     // list safely reachable sites in green
     if( rp->getArrivalAlt().getMeters() > 0 )
-      li->setColor(Qt::darkGreen);
+      c = QColor(Qt::darkGreen);
     // list narrowly reachable sites in magenta
     else if  (rp->getArrivalAlt().getMeters() > -safetyAlt)
-      li->setColor(Qt::darkMagenta);
+      c = QColor(Qt::darkMagenta);
     // list other near sites in black
     else
-      li->setColor(Qt::black);
+      c = QColor(Qt::black);
 
-    // TODO: make the entries higher to ease finger selection;
-    // the following doesn't work
-    //li->setSizeHint(0, QSize(li->sizeHint(0).width(),30) );
+    for (int i=0; i < li->columnCount(); i++)
+      li->setForeground(i, QBrush(c));
   }
-  list->resizeColumnToContents(0);
+
   // sort list
   list->sortItems( 6, Qt::DescendingOrder );
+  list->resizeColumnToContents(0);
+
   if (!selected) {
+    list->scrollToTop();
     list->setCurrentItem( list->topLevelItem(0) );
   }
   list->setUpdatesEnabled(true);

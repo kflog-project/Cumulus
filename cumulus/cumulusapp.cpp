@@ -131,32 +131,35 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
 //  qDebug("QAppFont family %s, pointSize=%d pixelSize=%d",
 //         appFt.family().toLatin1().data(), appFt.pointSize(), appFt.pixelSize() );
 
-
 #ifdef MAEMO
 
   // For MAEMO it's really better to pre-set style and font
   // CleanLooks is best for tabs and edit fields but bad for
   // spin buttons. I've found no ideal solution. Try out.
-  QApplication::setStyle("cleanlooks");
+
+//  QApplication::setStyle("cleanlooks");
+
+  // Well, CleanLooks has bugs. So much about that. Back to Plastique
+  QApplication::setStyle("plastique");
 
   // The Nokia font has excellent readability and less width than others
   appFt.setFamily("Nokia Sans");
 
-  // To resize tiny spin and tab buttons
+  // To resize tiny buttons (does not work everywhere though)
   QApplication::setGlobalStrut( QSize(24,16) );
 
   // N8x0 display has bad contrast for light shades, so make the (dialog)
   // background darker
   QPalette appPal = QApplication::palette();
-  appPal.setColor(QPalette::Normal,QPalette::Window,QColor(240,240,240));
-  appPal.setColor(QPalette::Normal,QPalette::Button,QColor(230,230,230));
+  appPal.setColor(QPalette::Normal,QPalette::Window,QColor(236,236,236));
+  appPal.setColor(QPalette::Normal,QPalette::Button,QColor(216,216,216));
   appPal.setColor(QPalette::Normal,QPalette::Base,Qt::white);
   appPal.setColor(QPalette::Normal,QPalette::AlternateBase,QColor(246,246,246));
   appPal.setColor(QPalette::Normal,QPalette::Highlight,Qt::darkBlue);
   QApplication::setPalette(appPal);
-  
-  // Unfortunately, tree widget highlight bars don't follow the rules for
-  // QApplication. Got to set them right every time ...
+
+  // The Nokia font has excellent readability and less width than others
+  appFt.setFamily("Nokia Sans");
 
 #endif
 
@@ -1686,6 +1689,11 @@ void CumulusApp::slotReadconfig()
   viewMap->slot_settingschange();
   calculator->slot_settingschanged();
   viewTP->slot_updateTask();
+  viewRP->fillRpList();
+  viewAF->listWidget()->configRowHeight();
+  viewAF->listWidget()->slot_Done();
+  viewWP->listWidget()->configRowHeight();
+  viewWP->listWidget()->slot_Done();
 
   // configure reconnect of GPS receiver in case of process stop
   QString device = conf->getGpsDevice();

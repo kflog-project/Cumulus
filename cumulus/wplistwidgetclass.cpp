@@ -20,6 +20,7 @@
 
 #include <QVBoxLayout>
 
+#include "generalconfig.h"
 
 // A new widget to remove double code in airfield list view, waypoint list view and
 // task editor.
@@ -59,6 +60,7 @@ WPListWidgetClass::WPListWidgetClass(QWidget *parent) : QWidget(parent)
   connect( list, SIGNAL( itemSelectionChanged() ),
     this, SLOT( slot_SelectionChanged() ) );
 
+  rowDelegate = 0;
   listFilled = false;
 }
 
@@ -69,10 +71,22 @@ WPListWidgetClass::~WPListWidgetClass()
 }
 
 
-
 void WPListWidgetClass::showEvent(QShowEvent *)
 {
   list->setFocus();
+}
+
+void WPListWidgetClass::configRowHeight()
+{
+  // set new row height from configuration
+  int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
+
+  if ( rowDelegate )
+    rowDelegate->setVerticalMargin(afMargin);
+  else {
+    rowDelegate = new RowDelegate( list, afMargin );
+    list->setItemDelegate( rowDelegate );
+  }
 }
 
 

@@ -15,7 +15,6 @@ HEADERS     = \
     altimetermodedialog.h \
     altitude.h \
     basemapelement.h \
-    colorlistviewitem.h \
     configdialog.h \
     cucalc.h \
     cumulusapp.h \
@@ -68,6 +67,7 @@ HEADERS     = \
     reachablelist.h \
     reachpointlistview.h \
     resource.h \
+    rowdelegate.h \
     runway.h \
     settingspageairfields.h \
     settingspageairspace.h \
@@ -119,7 +119,6 @@ SOURCES     = \
     altimetermodedialog.cpp \
     altitude.cpp \
     basemapelement.cpp \
-    colorlistviewitem.cpp \
     configdialog.cpp \
     cucalc.cpp \
     cumulusapp.cpp \
@@ -167,6 +166,7 @@ SOURCES     = \
     radiopoint.cpp \
     reachablelist.cpp \
     reachpointlistview.cpp \
+    rowdelegate.cpp \
     settingspageairfields.cpp \
     settingspageairspace.cpp \
     settingspagegps.cpp \

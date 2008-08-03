@@ -37,7 +37,8 @@ WPEditDialog::WPEditDialog(QWidget *parent, wayPoint *wp ):
   setModal(true);
 
 #ifdef MAEMO
-  resize(600,480);
+  resize(800,480);
+  setSizeGripEnabled(false);
 #else
   setSizeGripEnabled(true);
 #endif

@@ -53,6 +53,7 @@ void AirfieldListWidget::fillWpList()
   int Nr = 0;
   list->setUpdatesEnabled(false);
   list->clear();
+  configRowHeight();
 
   for( int item = 0; item<3; item++) {
     int nr = _globalMapContents->getListLength(itemList[item]);
