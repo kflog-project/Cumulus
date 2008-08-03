@@ -19,6 +19,12 @@ Cumulus 2.0.x (Development based on X11/Qt-4.4.0)
 -------------------------------------------------
 
 
+[+] 2008-08-04 JD: added adjustable entry height for emergency (reachable AF)
+                   list and airfield/waypoint lists to ease finger operation;
+                   two new options in setup dialog (tab "Airfields")
+[+] 2008-08-04 JD: added setup options for page size (airfield/waypoint lists) on tab
+                   "Airfields"
+[o] 2008-08-04 JD: GUI changes for Maemo, some cleaning and fixes
 [o] 2008-07-31 JD: several GUI changes (some Maemo-specific), bug fixes (GPS dialog)
 [o] 2008-07-29 JD: Constant updating the progess splash at startup during isoline
                    drawing slowed it down around 600 percent ... Changed to one
