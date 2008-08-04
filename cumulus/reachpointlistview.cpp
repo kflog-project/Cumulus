@@ -28,7 +28,6 @@
 #include "wpeditdialog.h"
 #include "waypointcatalog.h"
 #include "reachablelist.h"
-#include "colorlistviewitem.h"
 #include "sonne.h"
 
 extern CuCalc* calculator;
