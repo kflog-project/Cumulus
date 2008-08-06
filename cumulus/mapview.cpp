@@ -54,9 +54,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   resize(parent->size());
   setContentsMargins(-9,-9,-9,-9);
 
-  qDebug( "MapView window size is %dx%d, width=%d, height=%d",
-          parent->size().width(),
-          parent->size().height(),
+  qDebug( "MapView window size is width=%d x height=%d",
           parent->size().width(),
           parent->size().height() );
 
@@ -88,7 +86,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   //widget to group waypoint functions
   QWidget *wayBar = new QWidget( this );
   wayBar->setFixedWidth(216);
-  wayBar->setContentsMargins(-9,-8,-9,-3);
+  wayBar->setContentsMargins(-9,-9,-9,-3);
 
   wayBar->setAutoFillBackground(true);
   wayBar->setBackgroundRole(QPalette::Window);
@@ -110,22 +108,27 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   //layout for Glide Path and Relative Bearing
   QBoxLayout *GRLayout = new QHBoxLayout;
   wayLayout->addLayout(GRLayout);
-  GRLayout->setSpacing(4);
+  GRLayout->setSpacing(2);
 
   //add Glide Path widget
   _glidepath = new MapInfoBox( this, conf->getFrameCol(), 42 );
   _glidepath->setValue("-");
   _glidepath->setPreText("Arr");
+  _glidepath->setFixedHeight(60);
   GRLayout->addWidget( _glidepath );
 
   connect(_glidepath, SIGNAL(mousePress()),
           (CumulusApp*)parent, SLOT(slotSwitchToReachListView()));
 
   // add Relative Bearing widget
-  _rel_bearing = new QLabel(this);
-  QPixmap arrow = _arrows.copy( 24*60, 0, 60, 60 );
-  _rel_bearing->setPixmap (arrow);
+  QPixmap arrow = _arrows.copy( 24*60+3, 3, 54, 54 );
+  _rel_bearing = new MapInfoBox( this, conf->getFrameCol(), arrow);
+  _rel_bearing->setFixedSize(60,60);
   GRLayout->addWidget(_rel_bearing);
+//  _rel_bearing->setPixmap( arrow );
+
+  connect(_rel_bearing, SIGNAL(mousePress()),
+          (CumulusApp*)parent, SLOT(slotRememberWaypoint()) );
 
   //layout for Distance/ETA and Bearing
   QBoxLayout *DEBLayout = new QHBoxLayout;
@@ -165,7 +168,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   //widget to group common displays
   QWidget *commonBar = new QWidget( this );
   commonBar->setFixedWidth(216);
-  commonBar->setContentsMargins( -9, -4, -9, -4);
+  commonBar->setContentsMargins( -9, -3, -9, -3);
 
   // vertical layout for common display widgets
   QBoxLayout *commonLayout = new QVBoxLayout( commonBar );
@@ -177,13 +180,13 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   SHLayout->setSpacing(2);
 
   //add Speed widget
-  _speed = new MapInfoBox( this, "#efefef" );
+  _speed = new MapInfoBox( this, "#cfcfcf" );
   _speed->setPreText("Gs");
   _speed->setValue("-");
   SHLayout->addWidget( _speed);
 
   //add Heading widget
-  _heading = new MapInfoBox( this, "#efefef" );
+  _heading = new MapInfoBox( this, "#cfcfcf" );
   _heading->setPreText("Trk");
   _heading->setValue("-");
   SHLayout->addWidget( _heading);
@@ -252,7 +255,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   connect(_mc, SIGNAL(mousePress()), this, SLOT(slot_gliderFlightDialog()));
 
   //add Best Speed widget
-  _speed2fly = new MapInfoBox( this, "#c6c3c6" );
+  _speed2fly = new MapInfoBox( this, "#a6a6a6" );
   _speed2fly->setPreText("S2f");
   _speed2fly->setValue("-");
   MSLayout->addWidget( _speed2fly );
@@ -424,7 +427,7 @@ void MapView::slot_Waypoint(const wayPoint *wp)
       _glidepath->setValue("-");
       // @JD: reset distance too
       _distance->setValue("-");
-      QPixmap arrow = _arrows.copy( 24*60, 0, 60, 60 );
+      QPixmap arrow = _arrows.copy( 24*60+3, 3, 54, 54 );
       _rel_bearing->setPixmap (arrow);
       qDebug("Rel. bearing icon reset" );
     }
@@ -494,7 +497,7 @@ void MapView::slot_RelBearing(int relbearing)
     {
       // we need an icon when no relative bearing is available ?!
       // @JD: here it is
-      QPixmap arrow = _arrows.copy( 24*60, 0, 60, 60 );
+      QPixmap arrow = _arrows.copy( 24*60+3, 3, 54, 54 );
       _rel_bearing->setPixmap (arrow);
       return;
     }
@@ -502,7 +505,7 @@ void MapView::slot_RelBearing(int relbearing)
   while (relbearing < 0)
     relbearing += 360;
   int rot=((relbearing+7)/15) % 24;  //we only want to rotate in steps of 15 degrees. Finer is not useful.
-  QPixmap arrow = _arrows.copy( rot*60, 0, 60, 60 );
+  QPixmap arrow = _arrows.copy( rot*60+3, 3, 54, 54 );
 
   _rel_bearing->setPixmap (arrow);
 }

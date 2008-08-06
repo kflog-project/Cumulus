@@ -506,6 +506,8 @@ class Map : public QWidget
     float zoomProgressiveVal[8];
     /** Waypoint text label; instantiated only if needed. */
     QLabel *rtext;
+    /** Waypoint text label list */
+    QList<QLabel*> wpLabels;
 
   protected: // Protected attributes
     /**

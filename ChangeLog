@@ -19,6 +19,10 @@ Cumulus 2.0.x (Development based on X11/Qt-4.4.0)
 -------------------------------------------------
 
 
+[o] 2008-08-06 JD: Waypoint labels changed to display a lot bigger. Bugs fixed in Map
+                   and proper cleanup of waypoint labels added
+[+] 2008-08-06 JD: Relative bearing icon is now "active"; press to "remember waypoint".
+                   To enable this, MapInfoBox extended and cleaned up
 [+] 2008-08-04 JD: added adjustable entry height for emergency (reachable AF)
                    list and airfield/waypoint lists to ease finger operation;
                    two new options in setup dialog (tab "Airfields")

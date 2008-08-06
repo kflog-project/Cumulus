@@ -311,6 +311,7 @@ void ListViewFilter::showPage(bool up)
   } else
     _tw->setCurrentItem( _tw->topLevelItem(1) );
 
+  _tw->setFocus();
   _tw->setUpdatesEnabled(true);
 
 //qDebug("airfield list pageview: after function showIndex %d, items in list %d", showIndex, _tw->topLevelItemCount() );

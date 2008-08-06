@@ -51,37 +51,46 @@ private:
 
 
 /**
- * This is a specialized widget that can display a label with a
- * pre-text, used on the MapView.
- * @author Andre Somers
+ * This is a specialized widget that can display either a label with a
+ * pre-text or a pixmap; optionally it can be clicked and connected to
+ * a slot. Used on the MapView.
+ * @author Andre Somers, Josua Dietze
  */
 class MapInfoBox : public QFrame
 {
     Q_OBJECT
 
 public:
-    MapInfoBox(QWidget * parent, const QString borderColor, int fontDotsize = 38, bool minusInPretext = false );
-    virtual ~MapInfoBox();
+    MapInfoBox( QWidget * parent, const QString borderColor,
+                int fontDotsize = 38, bool minusInPretext = false );
+
+    MapInfoBox( QWidget * parent, const QString borderColor, const QPixmap& pixmap );
+
+    ~MapInfoBox();
+
+    void basics( const QString borderColor );
 
     /**
      * Write property of QString _PreText.
      */
-    virtual void setPreText( const QString _newVal);
+    void setPreText( const QString _newVal);
 
     /**
      * Read property of QString _PreText.
      */
-    virtual const QString& getPreText();
+    const QString& getPreText();
 
     /**
      * Write property of QString _value.
      */
-    virtual void setValue( const QString _newVal);
+    void setValue( const QString _newVal);
 
     /**
      * Read property of QString _value.
      */
-    virtual const QString& getValue();
+    const QString& getValue();
+
+    void setPixmap( const QPixmap& newPixmap );
 
 signals:
     /**
@@ -109,6 +118,8 @@ private:
     QLabel  *_text;
     /** Pointer to the internal pre-text label */
     QLabel  *_ptext;
+    /** Pointer to the pre-text minus sign */
+    QLabel  *_minus;
     /** The maximum font size */
     int _maxFontDotsize;
     /** If the minus sign is shown in pre-text or text label */ 

@@ -1291,6 +1291,9 @@ void Map::__drawWaypoints(QPainter* wpPainter)
   wayPoint * wp;
   bool isSelected;
 
+  while ( ! wpLabels.isEmpty() )
+    delete wpLabels.takeFirst();
+
   int w = this->size().width();
   int h = this->size().height();
 
@@ -1433,14 +1436,14 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                             }
                         }
                     }
-                  if ( rtext == 0) {
-                    rtext = new QLabel(this);
-                    rtext->setAutoFillBackground(true);
-                    QFont f = rtext->font();
-                    f.setPixelSize(12);
-                    rtext->setFont(f);
-                    rtext->setAlignment(Qt::AlignHCenter);
-                  }
+                  rtext = new QLabel(this);
+                  wpLabels.append( rtext );
+                  rtext->setAutoFillBackground(true);
+                  QFont f = rtext->font();
+                  f.setPixelSize(24);
+                  rtext->setFont(f);
+                  rtext->setFrameStyle( QFrame::Box | QFrame::Plain );
+                  rtext->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
                   rtext->setText( labelText );
                   rtext->adjustSize();
                   rtext->resize( rtext->width()+4, rtext->height() );

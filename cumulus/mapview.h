@@ -248,7 +248,7 @@ class MapView : public QWidget
     /** reference to the bearing label */
     MapInfoBox* _bearing;
     /** reference to the relative bearing label */
-    QLabel* _rel_bearing;
+    MapInfoBox* _rel_bearing;
     /** reference to the distance label */
     MapInfoBox* _distance;
     /** reference to the speed label */
