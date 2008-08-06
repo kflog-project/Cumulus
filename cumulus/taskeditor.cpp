@@ -289,6 +289,7 @@ void TaskEditor::__showTask()
 void TaskEditor::slotAddWaypoint()
 {
   wayPoint *wp = waypointList[listSelectCB->currentIndex()]->getSelectedWaypoint();
+  waypointList[listSelectCB->currentIndex()]->slot_Select();
   if( wp == 0 )
     return;
 

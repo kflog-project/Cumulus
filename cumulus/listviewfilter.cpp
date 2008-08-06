@@ -51,11 +51,11 @@ ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(paren
     this->hide();
 
   QStringList sl;
-  sl << " " << "Previous Page" << "(Select or <)";
+  sl << " " << "Previous Page" << "(< or Select)";
   prev = new QTreeWidgetItem(sl);
 
   QStringList nl;
-  nl << " " << "Next Page" << "(Select or <)";
+  nl << " " << "Next Page" << "(< or Select)";
   next = new QTreeWidgetItem( nl );
 }
 
