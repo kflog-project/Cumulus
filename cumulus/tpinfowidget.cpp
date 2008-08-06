@@ -49,6 +49,8 @@ extern CuCalc       *calculator;
 TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   QWidget( parent )
 {
+  qDebug("TPInfoWidget::TPInfoWidget");
+  
   setObjectName("TPInfoWidget");
   setAttribute( Qt::WA_DeleteOnClose );
   this->parent = parent;
@@ -89,11 +91,9 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()));
 
-  // activate keyboard shotcuts ok for close of widget
+  // activate keyboard shotcut ok for close of widget
   QShortcut* scClose = new QShortcut( this );
-
   scClose->setKey( Qt::Key_Return );
-
   connect( scClose, SIGNAL(activated()), this, SLOT( slot_Close() ));
 }
 
@@ -156,7 +156,7 @@ void TPInfoWidget::showTP( bool automaticClose )
       cmdKeep->hide();
     }
 
-  text->setFocus();
+  // text->setFocus();
   QWidget::show();
 }
 
@@ -167,7 +167,7 @@ void TPInfoWidget::showEvent(QShowEvent *)
 {
   // qDebug("TPInfoWidget::showEvent(): name=%s", name());
   // set focus to text widget
-  text->setFocus();
+  // text->setFocus();
 }
 
 /**
@@ -720,5 +720,5 @@ void TPInfoWidget::slot_KeepOpen()
   timer->stop();
   cmdClose->setText(tr("Close"));
   cmdKeep->hide();
-  text->setFocus();
+  // text->setFocus();
 }

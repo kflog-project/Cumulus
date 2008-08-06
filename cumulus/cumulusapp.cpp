@@ -2,8 +2,8 @@
  cumulusapp.cpp  -  main application class
                           -------------------
  begin                : Sun Jul 21 2002
- copyright            : (C) 2002 by André Somers
- ported to Qt4.3/X11  : (C) 2008 by Axel pauli
+ copyright            : (C) 2002 by Andrï¿½ Somers
+ ported to Qt4.x/X11  : (C) 2008 by Axel pauli
  email                : axel@kflog.org
 
   This file is distributed under the terms of the General Public
@@ -137,13 +137,8 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   // CleanLooks is best for tabs and edit fields but bad for
   // spin buttons. I've found no ideal solution. Try out.
 
-//  QApplication::setStyle("cleanlooks");
-
   // Well, CleanLooks has bugs. So much about that. Back to Plastique
   QApplication::setStyle("plastique");
-
-  // The Nokia font has excellent readability and less width than others
-  appFt.setFamily("Nokia Sans");
 
   // To resize tiny buttons (does not work everywhere though)
   QApplication::setGlobalStrut( QSize(24,16) );
@@ -161,12 +156,22 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   // The Nokia font has excellent readability and less width than others
   appFt.setFamily("Nokia Sans");
 
+  // The size for modern devices with small screen / high resolution
+  if( appFt.pointSize() < 18 )
+    {
+      appFt.setPointSize(18);
+    }
+    
+#else
+
+  // X11: increase font size, if too small for desktop screens
+  if( appFt.pointSize() < 10 )
+    {
+      appFt.setPointSize(10);
+    }
+
 #endif
 
-  // The size for modern devices with small screen / high resolution
-  if( appFt.pointSize() < 18 ) {
-    appFt.setPointSize(18);
-  }
   QApplication::setFont(appFt);
   
   // get last saved window geometrie from generalconfig and set it again
@@ -229,7 +234,6 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   setWindowState(Qt::WindowFullScreen);
 #endif
 
-  // showMaximized(); // only for PDA
   show();
   
   ws = new WaitScreen(this);
@@ -306,8 +310,12 @@ void CumulusApp::slotCreateApplicationWidgets()
 
   setCentralWidget( viewMap );
 
-//  QFont fnt( "Helvetica", 18, QFont::Bold );
+#ifndef MAEMO
+  QFont fnt( "Helvetica", 14, QFont::Bold );
+#else
   QFont fnt = font();
+#endif
+
   fnt.setBold(true);
 
   listViewTabs = new QTabWidget( this );
@@ -334,14 +342,13 @@ void CumulusApp::slotCreateApplicationWidgets()
   // waypoint info widget
   viewInfo = new WPInfoWidget( this );
 
-//  viewAF->listWidget()->fillWpList(); 
   viewWP->listWidget()->fillWpList();
 
   //create global objects
   gps = new GPSNMEA( this );
   gps->blockSignals( true );
   logger = IgcLogger::instance();
-  _preFlightDialog = NULL;
+  _preFlightDialog = 0;
 
   initActions();
   initMenuBar();
@@ -507,7 +514,10 @@ void CumulusApp::slotCreateApplicationWidgets()
   calculator->setGlider( GliderListWidget::getStoredSelection() );
   QString gt = calculator->gliderType();
 
-  if ( !gt.isEmpty() ) setWindowTitle ( "Cumulus - " + gt );
+  if ( !gt.isEmpty() )
+    {
+      setWindowTitle ( "Cumulus - " + gt );
+    }
 
   viewMap->_theMap->setDrawing( true );
 
@@ -657,14 +667,14 @@ void CumulusApp::slotAlarm( const QString& msg, const bool sound )
 
 void CumulusApp::initMenuBar()
 {
+  // save current font
   QFont cf = this->font();
 
-//#ifdef MAEMO
+#ifdef MAEMO
   QFont font = QApplication::font();
-//  font.setPixelSize(16);
-//#else
-//  QFont font( "Helvetica", 14 );
-//#endif
+#else
+  QFont font( "Helvetica", 14 );
+#endif
 
   this->setFont( font );
   menuBar()->setFont( font );
@@ -723,53 +733,11 @@ void CumulusApp::initActions()
 {
   ws->slot_SetText1( tr( "Setting up key shortcuts ..." ) );
 
-
   // most shortcuts are now QActions these could also go as
   // QAction, even when not in a menu
   // @JD done. Uff!
 
-  // Shortcuts for all waypoint lists ( Key_F30 = 0x104d )
-
-  actionAfViewSelect = new QAction( tr( "Select" ), this );
-  actionAfViewSelect->setShortcut( QKeySequence("Space") );
-  addAction( actionAfViewSelect );
-  connect( actionAfViewSelect, SIGNAL( triggered() ),
-           viewAF, SLOT( slot_Select() ) );
-
-  actionRpViewSelect = new QAction( tr( "Select" ), this );
-  actionRpViewSelect->setShortcut( QKeySequence("Space") );
-  addAction( actionRpViewSelect );
-  connect( actionRpViewSelect, SIGNAL( triggered() ),
-           viewRP, SLOT( slot_Select() ) );
-
-  actionTpViewSelect = new QAction( tr( "Select" ), this );
-  actionTpViewSelect->setShortcut( QKeySequence("Space") );
-  addAction( actionTpViewSelect );
-  connect( actionTpViewSelect, SIGNAL( triggered() ),
-           viewTP, SLOT( slot_Select() ) );
-
-  actionWpViewSelect = new QAction( tr( "Select" ), this );
-  actionWpViewSelect->setShortcut( QKeySequence("Space") );
-  addAction( actionWpViewSelect );
-  connect( actionWpViewSelect, SIGNAL( triggered() ),
-           viewWP, SLOT( slot_Select() ) );
-
-  // InfoView shortcuts
-
-  actionInfoViewSelect = new QAction( tr( "Select" ), this );
-  actionInfoViewSelect->setShortcut( QKeySequence("Space") );
-  addAction( actionInfoViewSelect );
-  connect( actionInfoViewSelect, SIGNAL( triggered() ),
-           viewInfo, SLOT( slot_selectWaypoint() ) );
-
-  actionInfoViewKeep = new QAction( tr( "Keep info open" ), this ); 
-  actionInfoViewKeep->setShortcut( QKeySequence("K") );
-  addAction( actionInfoViewKeep );
-  connect( actionInfoViewKeep, SIGNAL( triggered() ),
-           viewInfo, SLOT( slot_KeepOpen() ) );
-
   // Manual navigation shortcuts. Only available if no GPS connection
-
   actionManualNavUp = new QAction( tr( "Move up" ), this );
   actionManualNavUp->setShortcut ( QKeySequence("Up") );
   addAction( actionManualNavUp );
@@ -847,7 +815,6 @@ void CumulusApp::initActions()
   connect( actionGpsNavWPList, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToWPListView() ) );
 
-
   // Zoom in map (and consider qwertz keyboards, y <-> z are interchanged)
 
   actionGpsNavZoomIn = new QAction( tr( "Zoom in" ), this );
@@ -864,14 +831,12 @@ void CumulusApp::initActions()
   connect( actionGpsNavZoomOut, SIGNAL( triggered() ),
            viewMap->_theMap, SLOT( slotZoomOut() ) );
 
-  // (Historical) menu bar shortcut (IPAQ rocker button / F12 menu button Opie)
-
+  // Toggle menu bar
   actionMenuBarToggle = new QAction( tr( "Toggle menu" ), this );
-  actionMenuBarToggle->setShortcut( QKeySequence("Space,M,F12") );
+  actionMenuBarToggle->setShortcut( QKeySequence("Space,M,F4") );
   addAction( actionMenuBarToggle );
   connect( actionMenuBarToggle, SIGNAL( triggered() ),
                            this, SLOT( slotToggleMenu() ) );
-
 
   actionFileQuit = new QAction( tr( "&Exit" ), this );
   actionFileQuit->setShortcut( QKeySequence("Shift+E") );
@@ -1094,7 +1059,7 @@ void CumulusApp::toggleGpsNavActions( const bool toggle )
 }
 
 
-void CumulusApp::slotFileQuit ()
+void CumulusApp::slotFileQuit()
 {
   close();
 }
@@ -1103,7 +1068,7 @@ void CumulusApp::slotFileQuit ()
 /**
  * Make sure the user really wants to quit
  */
-void CumulusApp::closeEvent ( QCloseEvent* evt )
+void CumulusApp::closeEvent( QCloseEvent* evt )
 {
   // @AP: All close events will be ignored, if we are not in the map
   // view to avoid any possibility of confusion with the two close
@@ -1257,11 +1222,6 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       viewInfo->hide();
       viewMap->show();
 
-      actionAfViewSelect->setEnabled( false );
-      actionRpViewSelect->setEnabled( false );
-      actionTpViewSelect->setEnabled( false );
-      actionWpViewSelect->setEnabled( false );
-      actionInfoViewSelect->setEnabled( false );
       toggleManualNavActions( !gps->getConnected() || calculator->isManualInFlight());
       toggleGpsNavActions( gps->getConnected() && !calculator->isManualInFlight() );
       actionMenuBarToggle->setEnabled( true );
@@ -1280,11 +1240,6 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       listViewTabs->setCurrentWidget( viewWP );
       listViewTabs->show();
 
-      actionAfViewSelect->setEnabled( false );
-      actionWpViewSelect->setEnabled( true );
-      actionRpViewSelect->setEnabled( false );
-      actionTpViewSelect->setEnabled( false );
-      actionInfoViewSelect->setEnabled( false );
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -1300,11 +1255,6 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       listViewTabs->setCurrentWidget( viewRP );
       listViewTabs->show();
 
-      actionAfViewSelect->setEnabled( false );
-      actionRpViewSelect->setEnabled( true );
-      actionWpViewSelect->setEnabled( false );
-      actionTpViewSelect->setEnabled( false );
-      actionInfoViewSelect->setEnabled( false );
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -1321,11 +1271,6 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       listViewTabs->setCurrentWidget( viewAF );
       listViewTabs->show();
 
-      actionAfViewSelect->setEnabled( true );
-      actionRpViewSelect->setEnabled( false );
-      actionWpViewSelect->setEnabled( false );
-      actionTpViewSelect->setEnabled( false );
-      actionInfoViewSelect->setEnabled( false );
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -1347,11 +1292,6 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       listViewTabs->setCurrentWidget( viewTP );
       listViewTabs->show();
 
-      actionAfViewSelect->setEnabled( false );
-      actionRpViewSelect->setEnabled( false );
-      actionWpViewSelect->setEnabled( false );
-      actionTpViewSelect->setEnabled( true );
-      actionInfoViewSelect->setEnabled( false );
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -1371,11 +1311,6 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       listViewTabs->hide();
       viewInfo->showWP( view, wp );
 
-      actionAfViewSelect->setEnabled( false );
-      actionRpViewSelect->setEnabled( false );
-      actionTpViewSelect->setEnabled( false );
-      actionWpViewSelect->setEnabled( false );
-      actionInfoViewSelect->setEnabled( true );
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -1389,11 +1324,6 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       viewMap->hide();
       listViewTabs->hide();
 
-      actionAfViewSelect->setEnabled( false );
-      actionRpViewSelect->setEnabled( false );
-      actionTpViewSelect->setEnabled( false );
-      actionWpViewSelect->setEnabled( false );
-      actionInfoViewSelect->setEnabled( false );
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -1408,11 +1338,6 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       viewInfo->hide();
       listViewTabs->hide();
 
-      actionAfViewSelect->setEnabled( false );
-      actionWpViewSelect->setEnabled( false );
-      actionRpViewSelect->setEnabled( false );
-      actionTpViewSelect->setEnabled( false );
-      actionInfoViewSelect->setEnabled( false );
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -1894,6 +1819,8 @@ bool CumulusApp::eventFilter( QObject *o , QEvent *e )
   if ( e->type() == QEvent::KeyPress )
     {
       QKeyEvent *k = ( QKeyEvent* ) e;
+      
+      qDebug( "Keycode of pressed key: %d, %X", k->key(), k->key() );
 
       if( k->key() == Qt::Key_Space || k->key() == Qt::Key_F4 )
         {
@@ -1907,8 +1834,6 @@ bool CumulusApp::eventFilter( QObject *o , QEvent *e )
           setWindowState(windowState() ^ Qt::WindowFullScreen);
           return true;
         }
-
-      qDebug( "Keycode of pressed key: %d, %%%X", k->key(), k->key() );
     }
 
   return QWidget::eventFilter( o, e ); // standard event processing;

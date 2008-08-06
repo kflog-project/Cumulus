@@ -20,6 +20,7 @@
 ***********************************************************************/
 
 #include <QDesktopWidget>
+#include <QShortcut>
 
 #include "cumulusapp.h"
 #include "tasklistview.h"
@@ -129,6 +130,11 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
             this, SLOT(slot_Close()) );
     connect( list, SIGNAL(itemSelectionChanged()),
             this, SLOT(slot_Selected()) );
+            
+    // activate keyboard shotcut SPACE as select
+    QShortcut* scSelect = new QShortcut( this );
+    scSelect->setKey( Qt::Key_Space );
+    connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));         
   }
 }
 
@@ -208,7 +214,7 @@ void TaskListView::showEvent(QShowEvent *)
     _newSelectedTp = 0;
   }
 
-  list->setFocus();
+  // list->setFocus();
 }
 
 

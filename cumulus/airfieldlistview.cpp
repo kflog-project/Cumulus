@@ -18,6 +18,7 @@
 #include "airfieldlistview.h"
 
 #include <QMessageBox>
+#include <QShortcut>
 
 #include "generalconfig.h"
 #include "cucalc.h"
@@ -59,7 +60,12 @@ AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)
           listw, SLOT(slot_Done()));
   connect(cmdSelect, SIGNAL(clicked()),
           listw, SLOT(slot_Select()));
-
+          
+  // activate keyboard shotcut SPACE as select
+  QShortcut* scSelect = new QShortcut( this );
+  scSelect->setKey( Qt::Key_Space );
+  connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
+  
   wp = new wayPoint();
 }
 
@@ -71,7 +77,7 @@ AirfieldListView::~AirfieldListView()
 
 void AirfieldListView::showEvent(QShowEvent *)
 {
-  listw->listWidget()->setFocus();
+  // listw->listWidget()->setFocus();
 }
 
 
@@ -95,7 +101,9 @@ void AirfieldListView::slot_Info()
   wayPoint *w = listw->getSelectedWaypoint();
 
   if ( w )
-    emit info( w );
+    {
+      emit info( w );
+    }
 }
 
 

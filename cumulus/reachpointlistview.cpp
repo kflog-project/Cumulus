@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Eckhard V�llm, 2008 Axel pauli
+**   Copyright (c):  2004 by Eckhard Voellm, 2008 Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -18,6 +18,7 @@
 #include <QPushButton>
 #include <QFont>
 #include <QTreeWidgetItem>
+#include <QShortcut>
 
 #include "reachpointlistview.h"
 #include "cumulusapp.h"
@@ -100,6 +101,11 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
   connect(list, SIGNAL(itemSelectionChanged()), this, SLOT(slot_Selected()));
   cmdShowOl->hide();
   cmdHideOl->show();
+  
+  // activate keyboard shotcut SPACE as select
+  QShortcut* scSelect = new QShortcut( this );
+  scSelect->setKey( Qt::Key_Space );
+  connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
 }
 
 
@@ -245,7 +251,8 @@ void ReachpointListView::showEvent(QShowEvent *)
     fillRpList();
     _newList=false;
   }
-  list->setFocus();
+  
+  // list->setFocus();
 }
 
 

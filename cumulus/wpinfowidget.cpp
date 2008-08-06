@@ -128,6 +128,12 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
   connect(cmdSelectWaypoint, SIGNAL(clicked()),
           this, SLOT(slot_selectWaypoint()));
 
+  // Activate keyboard shortcut space to to toggle select/unselect button
+  scSelect = new QShortcut( this );
+  scSelect->setKey( Qt::Key_Space );
+  connect( scSelect, SIGNAL(activated()),
+           this, SLOT( slot_selectWaypoint() ));
+
   timer=new QTimer(this);
   connect(timer, SIGNAL(timeout()),
           this, SLOT(slot_timeout()));
@@ -260,7 +266,7 @@ void WPInfoWidget::showEvent(QShowEvent *)
   // resize to size of parent, could be changed in the meantime as the widget was hidden
   resize(cuApp->size());
   // set focus to text widget
-  text->setFocus();
+  // text->setFocus();
 }
 
 /** This method actually fills the widget with the info. */
@@ -544,16 +550,18 @@ void WPInfoWidget::slot_setAsHome()
  */
 void WPInfoWidget::slot_arrival()
 {
+  qDebug("WPInfoWidget::slot_arrival()");
+  
   if( ! _wp )
     {
       return;
     }
 
   slot_KeepOpen(); // Stop timer
-  scClose->setEnabled(false);
 
   // switch off all accelerator keys
-  cuApp->actionInfoViewSelect->setEnabled( false );
+  scClose->setEnabled(false);
+  scSelect->setEnabled(false);
 
   // create arrival info widget
   arrivalInfo = new TPInfoWidget( this );
@@ -571,11 +579,11 @@ void WPInfoWidget::slot_arrivalClose()
   arrivalInfo = 0;
 
   // switch on all accelerator keys
-  cuApp->actionInfoViewSelect->setEnabled( true );
   scClose->setEnabled(true);
-
+  scSelect->setEnabled(true);
+  
   // get focus back
-  text->setFocus();
+  // text->setFocus();
   show();
 }
 

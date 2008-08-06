@@ -18,6 +18,7 @@
 #include "waypointlistview.h"
 
 #include <QMessageBox>
+#include <QShortcut>
 
 #include "generalconfig.h"
 #include "wpeditdialog.h"
@@ -56,13 +57,8 @@ WaypointListView::WaypointListView(QMainWindow *parent) : QWidget(parent)
   cmdHome->setIconSize(QSize(26,26));
   editrow->addWidget(cmdHome);
 
-/*  list= new QTreeWidget(this, "waypointlist");
-  list->addColumn(tr("Name"));
-  list->addColumn(tr("Description"));
-  list->addColumn(tr("ICAO"));
-*/
   listw = new WaypointListWidget( this );
-  topLayout->addWidget(listw,10);
+  topLayout->addWidget(listw, 10);
 
   QBoxLayout *buttonrow=new QHBoxLayout;
   topLayout->addLayout( buttonrow );
@@ -85,8 +81,12 @@ WaypointListView::WaypointListView(QMainWindow *parent) : QWidget(parent)
   connect(cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()));
   connect(listw, SIGNAL(wpSelectionChanged()), this, SLOT(slot_Selected()));
   connect(this, SIGNAL(done()), listw, SLOT(slot_Done()));
-  connect(cmdSelect, SIGNAL(clicked()),
-          listw, SLOT(slot_Select()));
+  connect(cmdSelect, SIGNAL(clicked()), listw, SLOT(slot_Select()));
+  
+  // activate keyboard shotcut SPACE as select
+  QShortcut* scSelect = new QShortcut( this );
+  scSelect->setKey( Qt::Key_Space );
+  connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));  
 }
 
 
@@ -98,7 +98,7 @@ WaypointListView::~WaypointListView()
 
 void WaypointListView::showEvent(QShowEvent *)
 {
-  listw->listWidget()->setFocus();
+  // listw->listWidget()->setFocus();
 }
 
 

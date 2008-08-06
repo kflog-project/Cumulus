@@ -28,16 +28,15 @@
 SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 {
     setObjectName("SettingsPageGPS");
-    
     QGridLayout * topLayout = new QGridLayout(this);
-//, 5, 3, 5);
+
     int row=0;
 
     topLayout->addWidget(new QLabel(tr("Serial Device:"), this),row,0);
     GpsDev = new QComboBox(this);
     GpsDev->setObjectName ("GPSDevice");
     GpsDev->setEditable (true);
-    topLayout->addWidget(GpsDev,row++,2);
+    topLayout->addWidget(GpsDev, row++, 2);
 
 #ifndef MAEMO
     GpsDev->addItem("/dev/ttyS0");
@@ -48,12 +47,12 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     GpsDev->addItem("/dev/rfcomm0");
     GpsDev->addItem("/dev/rfcomm1");
 #else
-    GpsDev->addItem("/dev/rfcomm0");
-    GpsDev->addItem("/dev/rfcomm1");
-    GpsDev->addItem("/dev/pts/0");
-    GpsDev->addItem("/dev/pts/1");
+    // Under Maemo this setting is not evaluted but we can select the device
+    // NMEASIM_DEVICE by hand for NMEA simulator usage.
+    GpsDev->addItem("/dev/maemo");
 #endif
 
+    // add entry for NMEA simulator choise
     GpsDev->addItem(NMEASIM_DEVICE);
 
     topLayout->addWidget(new QLabel(tr("Transfer rate (bps):"), this),row,0);
@@ -74,7 +73,6 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     // @AP: Some GPS CF Cards (e.g. BC-307) deliver only height above the WGS 84
     // ellipsoid in GGA record. This is not deriveable from the received
     // record. Therefore we need an additional configuration entry :(
-
     topLayout->addWidget(new QLabel(tr("Altitude:"), this),row,0);
     GpsAltitude = new QComboBox(this);
     GpsAltitude->setObjectName("GPSAltitude");
@@ -94,29 +92,24 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     spinUserCorrection->setButtonSymbols(QSpinBox::PlusMinus);
     topLayout->addWidget(spinUserCorrection,row++,2);
 
-//    topLayout->addRowSpacing(row++,10);
-    topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
+    topLayout->setRowMinimumHeight( row++, 10);
 
     checkSoftStart = new QCheckBox (tr("Soft start"), this);
-    topLayout->addWidget(checkSoftStart,row,0,1,3);
-//    topLayout->addMultiCellWidget(checkSoftStart, row, row, 0, 2);
+    topLayout->addWidget(checkSoftStart, row, 0, 1, 3);
     row++;
 
     checkHardStart = new QCheckBox (tr("Hard start"), this);
-    topLayout->addWidget(checkHardStart,row,0,1,3);
-//    topLayout->addMultiCellWidget(checkHardStart, row, row, 0, 2);
+    topLayout->addWidget(checkHardStart, row, 0, 1, 3);
     row++;
 
     checkSyncSystemClock = new QCheckBox (tr("Update system clock"), this);
-    topLayout->addWidget(checkSyncSystemClock,row,0,1,3);
-//    topLayout->addMultiCellWidget(checkSyncSystemClock, row, row, 0, 2);
+    topLayout->addWidget(checkSyncSystemClock, row, 0, 1, 3);
     row++;
 
     topLayout->setRowStretch(row++,10);
     
     buttonReset = new QPushButton (tr("Reset to factory settings"), this);
-    topLayout->addWidget(buttonReset,row,0,1,3,Qt::AlignRight);
-//    topLayout->addMultiCellWidget (buttonReset, row, row, 0, 2, Qt::AlignRight);
+    topLayout->addWidget(buttonReset, row, 0, 1, 3, Qt::AlignRight);
     row++;
 
     topLayout->setColumnStretch(1,100);

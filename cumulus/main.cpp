@@ -139,18 +139,20 @@ int main(int argc, char *argv[])
 
       if (QMessageBox::warning (NULL, QObject::tr("Cumulus Disclaimer"),
                                 QObject::tr(  //upon changing the text, you should also increase the value of DISCLAIMERVERSION with 1
-                                  "This program comes with\n"
-                                  "ABSOLUTELY NO WARRANTY!\n"
-                                  "Do not rely on this software\n"
-                                  "program as your primary source\n"
-                                  "of navigation. You as user are\n"
-                                  "responsible for using official\n"
-                                              "ae#include <QInputContextFactory>ronautical charts and proper\n"
-                                  "methods for safe navigation.\n"
-                                  "The information presented in this\n"
-                                  "software program may be outdated\n"
-                                  "or incorrect.\n\n"
+                                  "<html><b>"
+                                  "This program comes with<br>"
+                                  "ABSOLUTELY NO WARRANTY!<br>"
+                                  "Do not rely on this software<br>"
+                                  "program as your primary source<br>"
+                                  "of navigation. You as user are<br>"
+                                  "responsible for using official<br>"
+                                  "aeronautical charts and proper<br>"
+                                  "methods for safe navigation.<br>"
+                                  "The information presented in this<br>"
+                                  "software program may be outdated<br>"
+                                  "or incorrect.<p>"
                                   "Do you accept these terms?"
+                                  "</html></b>"
                                 ),
                                 QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
         {

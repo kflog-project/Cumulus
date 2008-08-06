@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -30,7 +30,7 @@
 
 /**
  * This widget provides a view to the details of a waypoint.
- * @author André Somers
+ * @author AndrÃ¨ Somers
  */
 
 class CumulusApp;
@@ -166,7 +166,8 @@ class WPInfoWidget : public QWidget
     QPushButton * cmdArrival;
 
     QShortcut* scClose;
-
+    QShortcut* scSelect;
+    
     /** arrival info widget */
     TPInfoWidget * arrivalInfo;
 

@@ -2,7 +2,7 @@
                           cumulusapp.h  -  main application object
                              -------------------
     begin                : Sun Jul 21 2002
-    copyright            : (C) 2002 by André Somers, 2008 Axel Pauli
+    copyright            : (C) 2002 by AndrÃ¨ Somers, 2008 Axel Pauli
     email                : andre@kflog.org, axel@kflog.org
 
     This file is distributed under the terms of the General Public
@@ -103,22 +103,12 @@ class CumulusApp : public QMainWindow
     TaskListView *viewTP;
     WPInfoWidget *viewInfo;
     QTabWidget *listViewTabs;
-    QAction* actionInfoViewSelect;
 
     /** empty view for config "dialog" */
     QWidget *viewCF;
     /** use manual navigation even if GPS signal received */
     QAction* actionToggleManualInFlight;
 
-/*    Q3Accel *accAfView;
-    Q3Accel *accInfoView;
-    Q3Accel *accManualNav;
-    Q3Accel *accGpsNav;
-    Q3Accel *accRpView;
-    Q3Accel *accTpView;
-    Q3Accel *accWpView;
-    Q3Accel *accMenuBar; // toggle for bing up/down menu bar
-*/
   public slots: // Public slots
     /** Switches to the WaypointList View */
     void slotSwitchToWPListView();
@@ -290,11 +280,6 @@ class CumulusApp : public QMainWindow
 
   private:
 
-    QAction* actionAfViewSelect;
-    QAction* actionRpViewSelect;
-    QAction* actionTpViewSelect;
-    QAction* actionWpViewSelect;
-    QAction* actionInfoViewKeep; 
     QAction* actionManualNavUp;
     QAction* actionManualNavRight;
     QAction* actionManualNavDown;
@@ -334,6 +319,7 @@ class CumulusApp : public QMainWindow
     QAction* actionHelpAboutApp;
     QAction* actionHelpAboutQt;
     QAction* actionWhatsThis;
+    
     /** file_menu contains all items of the menubar entry "File" */
     QMenu *fileMenu;
     /** view_menu contains all items of the menubar entry "View" */
