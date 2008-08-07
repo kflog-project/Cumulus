@@ -1,7 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt4.x for Linux/Unix
 
-Last update: 2008-08-05 by Axel Pauli
+Last update: 2008-08-07 by Axel Pauli
 
 SVN info: $Id$
 ===============================================================================
@@ -17,7 +17,7 @@ If it is already available you can continue with step 2)
 Otherwise download a X11/Qt release from ftp.trolltech.com/qt/source.
 I recommend the release:
 
-ftp://ftp.trolltech.com/qt/source/qt-all-opensource-src-4.4.0.tar.bz2
+ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-4.4.1.tar.bz2
 
 I did the portage with this release. To install it follow the instructions of
 Trolltech. For cumulus you need the standard Qt4 libraries. If you want to debug
