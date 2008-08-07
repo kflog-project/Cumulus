@@ -919,15 +919,11 @@ void Map::__drawBaseLayer()
   if( !_isEnable ) return;
 
   // erase the base layer (fill with light blue color)
-//  m_pixBaseMap.fill(QColor(96,128,248));
-  m_pixBaseMap.fill(QColor(255,255,255));
+  m_pixBaseMap.fill(QColor(230,255,255));
 
   // make sure we have all the map files we need loaded
   _globalMapContents->proofeSection();
 
-
-//  qDebug("Map::__drawBaseLayer(): zoomFactor=%f, QAppLoopLevel=%d",
-//         zoomFactor, qApp->loopLevel() );
   qDebug("Map::__drawBaseLayer(): zoomFactor=%f", zoomFactor );
 
   double cs = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
