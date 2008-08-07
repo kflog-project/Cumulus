@@ -166,7 +166,6 @@ class WPInfoWidget : public QWidget
     QPushButton * cmdArrival;
 
     QShortcut* scClose;
-    QShortcut* scSelect;
     
     /** arrival info widget */
     TPInfoWidget * arrivalInfo;

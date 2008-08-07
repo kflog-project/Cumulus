@@ -37,7 +37,7 @@
 #include "waypointcatalog.h"
 #include "sonne.h"
 
-extern MapConfig *_globalMapConfig;
+extern MapConfig    *_globalMapConfig;
 extern MapContents  *_globalMapContents;
 extern CuCalc       *calculator;
 
@@ -54,25 +54,13 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
 
   QFont bfont = font();
   bfont.setBold(true);
-// "Helvetica", 14, QFont::Bold  );
 
   QBoxLayout *topLayout = new QVBoxLayout(this);
   text = new QTextEdit(this);
   text->setReadOnly(true);
   text->setLineWrapMode(QTextEdit::WidgetWidth);
-  topLayout->addWidget(text,10);
+  topLayout->addWidget(text, 10);
 
-/*  QFontnfont
-  int fontSize = this->font().pointSize();
-
-  // qDebug("fontSize=%d", fontSize);
-
-  if( fontSize < 14 )
-    {
-      // Set bigger font in text view for a better readability
-      text->setFont(QFont( "Helvetica", 14 ));
-    }
-*/
   buttonrow2 = new QHBoxLayout;
   topLayout->addLayout(buttonrow2);
 
@@ -104,9 +92,9 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
   connect(cmdClose, SIGNAL(clicked()),
           this, SLOT(slot_SwitchBack()));
 
-  // Activate keyboard shortcut return to close the window too
+  // Activate keyboard shortcut cancel to close the window too
   scClose = new QShortcut( this );
-  scClose->setKey( Qt::Key_Return );
+  scClose->setKey( Qt::Key_Escape );
   connect( scClose, SIGNAL(activated()),
            this, SLOT( slot_SwitchBack() ));
 
@@ -127,12 +115,6 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
   buttonrow1->addWidget(cmdSelectWaypoint);
   connect(cmdSelectWaypoint, SIGNAL(clicked()),
           this, SLOT(slot_selectWaypoint()));
-
-  // Activate keyboard shortcut space to to toggle select/unselect button
-  scSelect = new QShortcut( this );
-  scSelect->setKey( Qt::Key_Space );
-  connect( scSelect, SIGNAL(activated()),
-           this, SLOT( slot_selectWaypoint() ));
 
   timer=new QTimer(this);
   connect(timer, SIGNAL(timeout()),
@@ -173,6 +155,9 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint *wp)
     {
       return false;
     }
+
+  // save return view
+  _lastView = lastView;
 
   // Check if new point is in waypoint list, so make sure we can add it.
   if (_globalMapContents->getIsInWaypointList(wp))
@@ -231,13 +216,11 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint *wp)
     }
 
   _wp = new wayPoint(*wp);
-  _lastView = lastView;
 
   writeText();
 
   // @AP: load the time from user configuration
-  GeneralConfig *conf = GeneralConfig::instance();
-  _timerCount = conf->getInfoDisplayTime();
+  _timerCount = GeneralConfig::instance()->getInfoDisplayTime();
 
   if( _timerCount > 0 )
     {
@@ -266,7 +249,7 @@ void WPInfoWidget::showEvent(QShowEvent *)
   // resize to size of parent, could be changed in the meantime as the widget was hidden
   resize(cuApp->size());
   // set focus to text widget
-  // text->setFocus();
+  text->setFocus();
 }
 
 /** This method actually fills the widget with the info. */
@@ -321,7 +304,6 @@ void WPInfoWidget::writeText()
               int h1 = rw1 < rw2 ? rw1/10 : rw2/10;
               int h2 = rw1 < rw2 ? rw2/10 : rw1/10;
               tmp2 = QString("<b>%1/%2</b>").arg(h1, 2, 10, QLatin1Char('0')).arg(h2, 2, 10, QLatin1Char('0'));
-//              tmp2.sprintf("<b>%02d/%02d</b>", rw1 < rw2 ? rw1/10 : rw2/10, rw1 < rw2 ? rw2/10 : rw1/10);
             }
 
           itxt += table + "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (" +
@@ -334,9 +316,8 @@ void WPInfoWidget::writeText()
             }
           else
             {
-          tmp = QString("%1 m</b></td></tr>").arg(_wp->length);
-          itxt += tmp;
-//              itxt+=tmp.sprintf( "%d m</b></td></tr>", _wp->length );
+              tmp = QString("%1 m</b></td></tr>").arg(_wp->length);
+              itxt += tmp;
             }
         }
       else
@@ -418,14 +399,12 @@ void WPInfoWidget::writeText()
     }
 }
 
-
 /** Hide widget and return to the calling view in cumulusApp */
 void WPInfoWidget::slot_SwitchBack()
 {
   if( arrivalInfo )
     {
-      // destroy the arrival widget, user has pressed space button, that
-      // means return from this widget.
+      // destroy the arrival widget, if exists
       disconnect( arrivalInfo, SIGNAL(close() ));
       arrivalInfo->slot_Close();
       arrivalInfo = 0;
@@ -459,23 +438,14 @@ void WPInfoWidget::slot_unselectWaypoint()
 {
   emit waypointSelected(0, true);
 
-  if( inFlight() )
-    {
-      return slot_SwitchBack();
-    }
-
-  cmdUnselectWaypoint->hide();
-  cmdSelectWaypoint->show();
-  slot_KeepOpen();
+  return slot_SwitchBack();
 }
 
 
-/** This slot is called if the Select Waypoint button is clicked or an
-    accelerator has been pressed. */
+/** This slot is called if the Select Waypoint button is clicked */
 void WPInfoWidget::slot_selectWaypoint()
 {
-  // This slot can be called via an accelerator, e.g. Key_Space. If
-  // the select button is not visible we will call the unselect
+  // If the select button is not visible we will call the unselect
   // routine. Result is toggling between the two modes.
   if( cmdUnselectWaypoint->isVisible() )
     {
@@ -484,27 +454,15 @@ void WPInfoWidget::slot_selectWaypoint()
 
   emit waypointSelected(_wp, true);
 
-  if( inFlight() )
-    {
-      return slot_SwitchBack();
-    }
-
-  cmdUnselectWaypoint->show();
-  cmdSelectWaypoint->hide();
-  slot_KeepOpen();
+  return slot_SwitchBack();
 }
 
 
-/** This slot is called if the Add as Waypoint button is clicked. */
+/** This slot is called if the Add Waypoint button is clicked. */
 void WPInfoWidget::slot_addAsWaypoint()
 {
   _wp->importance=wayPoint::High; //importance is high
   emit waypointAdded(_wp);
-
-  if( inFlight() )
-    {
-      return slot_SwitchBack();
-    }
 
   cmdAddWaypoint->hide();
   slot_KeepOpen();
@@ -536,11 +494,6 @@ void WPInfoWidget::slot_setAsHome()
       emit newHomePosition( &_wp->origP );
     }
 
-  if( inFlight() )
-    {
-      return slot_SwitchBack();
-    }
-
   slot_KeepOpen();
   cmdSetHome->hide();
 }
@@ -550,7 +503,7 @@ void WPInfoWidget::slot_setAsHome()
  */
 void WPInfoWidget::slot_arrival()
 {
-  qDebug("WPInfoWidget::slot_arrival()");
+  // qDebug("WPInfoWidget::slot_arrival()");
   
   if( ! _wp )
     {
@@ -561,7 +514,6 @@ void WPInfoWidget::slot_arrival()
 
   // switch off all accelerator keys
   scClose->setEnabled(false);
-  scSelect->setEnabled(false);
 
   // create arrival info widget
   arrivalInfo = new TPInfoWidget( this );
@@ -576,14 +528,14 @@ void WPInfoWidget::slot_arrival()
 // sets focus back to wp text view after closing arrival widget
 void WPInfoWidget::slot_arrivalClose()
 {
+  disconnect( arrivalInfo, SIGNAL(close() ));
   arrivalInfo = 0;
 
-  // switch on all accelerator keys
+  // switch on close shortcut keys
   scClose->setEnabled(true);
-  scSelect->setEnabled(true);
   
   // get focus back
-  // text->setFocus();
+  text->setFocus();
   show();
 }
 
