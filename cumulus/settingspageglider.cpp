@@ -39,16 +39,19 @@ SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
 
   QPushButton * cmdNew = new QPushButton(this);
   cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
+  cmdNew->setIconSize( QSize(26,26) );
   editrow->addWidget(cmdNew,1);
 
   editrow->addSpacing(10);
   QPushButton * cmdEdit = new QPushButton(this);
   cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
+  cmdEdit->setIconSize( QSize(26,26) );
   editrow->addWidget(cmdEdit,1);
 
   editrow->addSpacing(10);
   QPushButton * cmdDel = new QPushButton(this);
   cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "delete.png" )) );
+  cmdDel->setIconSize( QSize(26,26) );
   editrow->addWidget(cmdDel,1);
 
   list = new GliderListWidget(this);

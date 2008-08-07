@@ -118,6 +118,7 @@ void MapInfoBox::basics( const QString borderColor )
 
   _PreText = QString("");
   _value =  QString("");
+  _ptext = 0;
 }
 
 

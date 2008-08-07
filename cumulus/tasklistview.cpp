@@ -20,7 +20,6 @@
 ***********************************************************************/
 
 #include <QDesktopWidget>
-#include <QShortcut>
 
 #include "cumulusapp.h"
 #include "tasklistview.h"
@@ -85,20 +84,6 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
   list->setColumnWidth( 3, 72 );
   list->setColumnWidth( 4, 196 );
 
-/*  list= new Q3ListView(this, "taskpointList");
-  list->addColumn(tr("Type"));
-  list->addColumn(tr("Name"));
-  list->addColumn(tr("Dist"));
-  list->addColumn(tr("Time"));
-  list->addColumn(tr("Description"));
-  list->addColumn(tr("SS"));
-
-  list->setColumnAlignment( 2, Qt::AlignRight ); 
-  list->setColumnAlignment( 3, Qt::AlignRight ); 
-
-  list->setSorting(-1,false);
-  list->setSelectionMode( Q3ListView::NoSelection );
-*/
   topLayout->addWidget(list, 10);
 
   if( showButtons ) {
@@ -130,11 +115,6 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
             this, SLOT(slot_Close()) );
     connect( list, SIGNAL(itemSelectionChanged()),
             this, SLOT(slot_Selected()) );
-            
-    // activate keyboard shotcut SPACE as select
-    QShortcut* scSelect = new QShortcut( this );
-    scSelect->setKey( Qt::Key_Space );
-    connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));         
   }
 }
 
@@ -214,7 +194,7 @@ void TaskListView::showEvent(QShowEvent *)
     _newSelectedTp = 0;
   }
 
-  // list->setFocus();
+  list->setFocus();
 }
 
 
@@ -291,11 +271,9 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   QList<wayPoint*> tmpList = _task->getWPList();
 
   for( uint loop = tmpList.count(); loop > 0; loop-- ) {
-    // qDebug("Getting item %d",loop-1);
     wayPoint* wp = tmpList.at( loop-1 );
     _TaskPoint* tp = new _TaskPoint( list, wp );
-//    QString s;
-//    s = QString("%1").arg(loop,1,10,QLatin1Char('0') );
+
     tp->setText( 6, QString("%1").arg(loop,1,10,QLatin1Char('0')) );
 
     if( calcWp && calcWp->origP == wp->origP ) {

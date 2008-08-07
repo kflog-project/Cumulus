@@ -125,6 +125,7 @@ void ReachpointListView::fillRpList()
   // int n= calculator->getReachList()->getNumberSites();
   extern MapConfig * _globalMapConfig;
   QTreeWidgetItem* si = list->currentItem();
+  QTreeWidgetItem* selectedItem = 0;
   QString sname;
   QPixmap icon;
   QPixmap iconImage;
@@ -132,7 +133,6 @@ void ReachpointListView::fillRpList()
   QPainter pnt;
   icon = QPixmap(18,18);
 
-  bool selected = false;
   if( si ) {
     sname = si->text(0);
   }
@@ -199,23 +199,27 @@ void ReachpointListView::fillRpList()
     } else if ( rp->getReachable() == belowSafety ) {
       icon.fill( QColor(255,0,255) );
     } else {
-      icon.fill( QColor(255,255,255) );
+      icon.fill( Qt::white );
     }
 
     pnt.drawPixmap(1, 1, _globalMapConfig->getPixmap(rp->getType(),false,true) );
     pnt.end();
-    li->setIcon( 0, QIcon(icon) );
+    QIcon qi;
+    qi.addPixmap( icon );
+    qi.addPixmap( icon, QIcon::Selected );
+    li->setIcon( 0, qi );
 
     // set Pixmap for rel. Bearing
     int rot=((relbearing+7)/15) % 24;
-    QPixmap arrow( 16, 16 );
+    QPixmap arrow;
     arrow = _arrows.copy( rot*16, 0, 16, 16);
-    li->setIcon( 3, QIcon(arrow) );
+    qi.addPixmap( arrow );
+    qi.addPixmap( arrow, QIcon::Selected );
+    li->setIcon( 3, qi );
 
     // store name of last selected to avoid jump to first element on each fill
     if( rp->getName() == sname ) {
-      selected = true;
-      list->setCurrentItem( li );
+      selectedItem = li;
     }
 
     QColor c;
@@ -237,10 +241,14 @@ void ReachpointListView::fillRpList()
   list->sortItems( 6, Qt::DescendingOrder );
   list->resizeColumnToContents(0);
 
-  if (!selected) {
+  if ( selectedItem == 0 ) {
     list->scrollToTop();
     list->setCurrentItem( list->topLevelItem(0) );
+  } else {
+    list->scrollToItem( selectedItem ); 
+    list->setCurrentItem( selectedItem );
   }
+  list->setFocus();
   list->setUpdatesEnabled(true);
 }
 

@@ -182,6 +182,9 @@ WaypointListWidget::_WaypointItem::_WaypointItem(QTreeWidget* tw, wayPoint* wayp
   if (!wp)
     return;
 
+  QPainter pnt;
+  QPixmap selectIcon;
+
   QString name = wp->name;
   QRegExp blank("[ ]");
   //name.replace(blank, QString::null);
@@ -190,5 +193,15 @@ WaypointListWidget::_WaypointItem::_WaypointItem(QTreeWidget* tw, wayPoint* wayp
   setText(0, name);
   setText(1, wp->description);
   setText(2, wp->icao);
-  setIcon(0, QIcon(_globalMapConfig->getPixmap(wp->type,false,true)));
+
+  selectIcon = QPixmap(18,18);
+  pnt.begin(&selectIcon);
+  selectIcon.fill( Qt::white );
+  pnt.drawPixmap(1, 1, _globalMapConfig->getPixmap(wp->type,false,true) );
+  pnt.end();
+  QIcon icon;
+  icon.addPixmap( _globalMapConfig->getPixmap(wp->type,false,true) );
+  icon.addPixmap( selectIcon, QIcon::Selected );
+  setIcon( 0, icon );
+//  setIcon(0, QIcon(_globalMapConfig->getPixmap(wp->type,false,true)));
 }

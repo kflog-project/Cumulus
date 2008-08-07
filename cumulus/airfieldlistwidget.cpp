@@ -125,6 +125,8 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
 AirfieldListWidget::_AirfieldItem::_AirfieldItem(QTreeWidget* tw, Airport* site, int type):
   QTreeWidgetItem(tw, type), airport(site)
 {
+  QPainter pnt;
+  QPixmap selectIcon;
   QString name = site->getWPName();
   QRegExp blank("[ ]");
   name.replace(blank, QString::null);
@@ -132,5 +134,15 @@ AirfieldListWidget::_AirfieldItem::_AirfieldItem(QTreeWidget* tw, Airport* site,
   setText(0, name);
   setText(1, site->getName());
   setText(2, site->getICAO());
-  setIcon( 0, QIcon(_globalMapConfig->getPixmap(site->getTypeID(),false,true)) );
+  // create landing site type icon
+  selectIcon = QPixmap(18,18);
+  pnt.begin(&selectIcon);
+  selectIcon.fill( Qt::white );
+  pnt.drawPixmap(1, 1, _globalMapConfig->getPixmap(site->getTypeID(),false,true) );
+  pnt.end();
+  QIcon icon;
+  icon.addPixmap( _globalMapConfig->getPixmap(site->getTypeID(),false,true) );
+  icon.addPixmap( selectIcon, QIcon::Selected );
+  setIcon( 0, icon );
+//  setIcon( 0, QIcon(_globalMapConfig->getPixmap(site->getTypeID(),false,true)) );
 }
