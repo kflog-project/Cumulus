@@ -102,9 +102,9 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
   cmdShowOl->hide();
   cmdHideOl->show();
   
-  // activate keyboard shotcut SPACE as select
+  // activate keyboard shortcut Return as select
   QShortcut* scSelect = new QShortcut( this );
-  scSelect->setKey( Qt::Key_Space );
+  scSelect->setKey( Qt::Key_Return );
   connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
 }
 
@@ -167,7 +167,7 @@ void ReachpointListView::fillRpList()
       continue;
 
     // Setup string for bearing
-    QString bearing=QString("%1°").arg(rp->getBearing());
+    QString bearing=QString("%1Â°").arg(rp->getBearing());
 
     // Calculate relative bearing too, very cool feature
     int relbearing = rp->getBearing() - calculator->getlastHeading();
