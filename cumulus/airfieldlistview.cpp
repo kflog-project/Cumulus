@@ -60,10 +60,10 @@ AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)
           listw, SLOT(slot_Done()));
   connect(cmdSelect, SIGNAL(clicked()),
           listw, SLOT(slot_Select()));
-          
-  // activate keyboard shotcut SPACE as select
+
+  // activate keyboard shortcut Return as select
   QShortcut* scSelect = new QShortcut( this );
-  scSelect->setKey( Qt::Key_Space );
+  scSelect->setKey( Qt::Key_Return );
   connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
   
   wp = new wayPoint();
