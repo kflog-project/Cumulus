@@ -33,6 +33,7 @@
 #include <QEvent>
 #include <QTabWidget>
 #include <QResizeEvent>
+#include <QShortcut>
 
 #include "configdialog.h"
 #include "mapview.h"
@@ -287,7 +288,6 @@ class CumulusApp : public QMainWindow
     QAction* actionManualNavHome; 
     QAction* actionManualNavWP; 
     QAction* actionManualNavWPList; 
-    QAction* actionManualNavZoomIn; 
     QAction* actionGpsNavUp;
     QAction* actionGpsNavDown;
     QAction* actionGpsNavHome;
@@ -319,6 +319,9 @@ class CumulusApp : public QMainWindow
     QAction* actionHelpAboutApp;
     QAction* actionHelpAboutQt;
     QAction* actionWhatsThis;
+
+    /* shortcut for exit application */
+    QShortcut* scExit;
     
     /** file_menu contains all items of the menubar entry "File" */
     QMenu *fileMenu;

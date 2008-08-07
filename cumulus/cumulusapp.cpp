@@ -2,7 +2,7 @@
  cumulusapp.cpp  -  main application class
                           -------------------
  begin                : Sun Jul 21 2002
- copyright            : (C) 2002 by Andr� Somers
+ copyright            : (C) 2002 by Andre Somers
  ported to Qt4.x/X11  : (C) 2008 by Axel pauli
  email                : axel@kflog.org
 
@@ -37,7 +37,12 @@
 #include <QDir>
 #include <QList>
 #include <QMessageBox>
-#include <QShortcut>
+
+#ifdef MAEMO
+#include <QInputContext>
+#include <QInputContextFactory>
+#include <QtDebug>
+#endif
 
 #include "generalconfig.h"
 #include "cumulusapp.h"
@@ -133,6 +138,31 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
 
 #ifdef MAEMO
 
+  // activate Hildon Input Method for Maemo
+  QInputContext *hildonInputContext = 0;
+  
+  QStringList inputMethods = QInputContextFactory::keys();
+  
+  foreach( QString inputMethod, inputMethods )
+  {
+    qDebug() << "InputMethod: " << inputMethod;
+    
+    if ( inputMethod == "hildon-input-method" )
+    {
+      hildonInputContext = QInputContextFactory::create( "hildon-input-method", 0 );
+      break;
+    }
+  }
+  
+  if ( !hildonInputContext )
+    {
+      qWarning( "QHildonInputMethod plugin not loadable!" );
+    }
+  else
+    {
+      // app.setInputContext(hildonInputContext);
+    }
+
   // For MAEMO it's really better to pre-set style and font
   // CleanLooks is best for tabs and edit fields but bad for
   // spin buttons. I've found no ideal solution. Try out.
@@ -165,9 +195,9 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
 #else
 
   // X11: increase font size, if too small for desktop screens
-  if( appFt.pointSize() < 10 )
+  if( appFt.pointSize() < 12 )
     {
-      appFt.setPointSize(10);
+      appFt.setPointSize(12);
     }
 
 #endif
@@ -546,12 +576,6 @@ void CumulusApp::slotCreateApplicationWidgets()
         }
     }
 
-  // Cumulus can be closed by using Escape key. This key is also as
-  // hardware key available under Maemo.
-  QShortcut* scExit = new QShortcut( this );
-  scExit->setKey( Qt::Key_Escape );
-  connect( scExit, SIGNAL(activated()), this, SLOT( close() ));
-
 #ifdef MAEMO
 
   if( ossoContext )
@@ -780,14 +804,6 @@ void CumulusApp::initActions()
   connect( actionManualNavWPList, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToWPListView() ) );
 
-  // Consider qwertz keyboards y <-> z are interchanged
-
-  actionManualNavZoomIn = new QAction( tr( "&Exit" ), this ); 
-  actionManualNavZoomIn->setShortcut( QKeySequence("Y") );
-  addAction( actionManualNavZoomIn );
-  connect( actionManualNavZoomIn, SIGNAL( triggered() ),
-           viewMap->_theMap , SLOT( slotZoomIn() ) );
-
   // GPS navigation shortcuts. Only available with GPS connected
 
   actionGpsNavUp = new QAction( tr( "McCready up" ), this );
@@ -808,17 +824,15 @@ void CumulusApp::initActions()
   connect( actionGpsNavHome, SIGNAL( triggered() ),
            this, SLOT( slotNavigateHome() ) );
 
-
   actionGpsNavWPList = new QAction( tr( "Open waypoint list" ), this );
   actionGpsNavWPList->setShortcut( QKeySequence("F9") );
   addAction( actionGpsNavWPList );
   connect( actionGpsNavWPList, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToWPListView() ) );
 
-  // Zoom in map (and consider qwertz keyboards, y <-> z are interchanged)
-
+  // Zoom in map
   actionGpsNavZoomIn = new QAction( tr( "Zoom in" ), this );
-  actionGpsNavZoomIn->setShortcut( QKeySequence("Right,Y") );
+  actionGpsNavZoomIn->setShortcut( QKeySequence("Right") );
 
   addAction( actionGpsNavZoomIn );
   connect( actionGpsNavZoomIn, SIGNAL( triggered() ),
@@ -833,7 +847,9 @@ void CumulusApp::initActions()
 
   // Toggle menu bar
   actionMenuBarToggle = new QAction( tr( "Toggle menu" ), this );
-  actionMenuBarToggle->setShortcut( QKeySequence("Space,M,F4") );
+  QList<QKeySequence> mBTSCList;
+  mBTSCList << Qt::Key_F4 << Qt::Key_M << Qt::Key_Space;
+  actionMenuBarToggle->setShortcuts( mBTSCList );
   addAction( actionMenuBarToggle );
   connect( actionMenuBarToggle, SIGNAL( triggered() ),
                            this, SLOT( slotToggleMenu() ) );
@@ -887,23 +903,23 @@ void CumulusApp::initActions()
   connect( actionViewGPSStatus, SIGNAL( triggered() ),
            viewMap, SLOT( slot_gpsStatusDialog() ) );
 
+  // Consider qwertz keyboards y <-> z are interchanged
+  // F7 is a Maemo hardware key for Zoom in
   actionZoomInZ = new QAction ( tr( "Zoom in" ), this );
-  actionZoomInZ->setShortcut(Qt::Key_Z);
-
-#ifdef MAEMO
-  actionZoomInZ->setShortcut(Qt::Key_F7);
-#endif
+  QList<QKeySequence> zInSCList;
+  zInSCList << Qt::Key_Z << Qt::Key_Y << Qt::Key_F7;
+  actionZoomInZ->setShortcuts( zInSCList );
 
   addAction( actionZoomInZ );
   connect ( actionZoomInZ, SIGNAL( triggered() ),
             viewMap->_theMap , SLOT( slotZoomIn() ) );
 
+  // F8 is a Maemo hardware key for Zoom out
   actionZoomOutZ = new QAction ( tr( "Zoom out" ), this );
-  actionZoomOutZ->setShortcut(Qt::Key_X);
-
-#ifdef MAEMO
-  actionZoomOutZ->setShortcut(Qt::Key_F8);
-#endif
+  QList<QKeySequence> zOutSCList;
+  zOutSCList << Qt::Key_X << Qt::Key_F8;
+  actionZoomOutZ->setShortcuts( zOutSCList );
+  
   addAction( actionZoomOutZ );
   connect ( actionZoomOutZ, SIGNAL( triggered() ),
             viewMap->_theMap , SLOT( slotZoomOut() ) );
@@ -993,6 +1009,12 @@ void CumulusApp::initActions()
   actionHelpAboutQt->setShortcut(Qt::Key_Q + Qt::SHIFT);
   addAction( actionHelpAboutQt );
   connect( actionHelpAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()) );
+
+  // Cumulus can be closed by using Escape key. This key is also as
+  // hardware key available under Maemo.
+  scExit = new QShortcut( this );
+  scExit->setKey( Qt::Key_Escape );
+  connect( scExit, SIGNAL(activated()), this, SLOT( close() ));
 }
 
 /**
@@ -1031,6 +1053,7 @@ void  CumulusApp::toggleActions( const bool toggle )
   actionHelpAboutApp->setEnabled( toggle );
   actionHelpAboutQt->setEnabled( toggle );
   actionToggleLogging->setEnabled( toggle );
+  scExit->setEnabled( toggle );
   // do not toggle actionToggleManualInFlight, status may not be changed
 }
 
@@ -1046,8 +1069,8 @@ void CumulusApp::toggleManualNavActions( const bool toggle )
   actionManualNavHome->setEnabled( toggle );
   actionManualNavWP->setEnabled( toggle );
   actionManualNavWPList->setEnabled( toggle );
-  actionManualNavZoomIn->setEnabled( toggle ); 
 }
+
 void CumulusApp::toggleGpsNavActions( const bool toggle )
 {
   actionGpsNavUp->setEnabled( toggle );
@@ -1822,13 +1845,7 @@ bool CumulusApp::eventFilter( QObject *o , QEvent *e )
       
       qDebug( "Keycode of pressed key: %d, %X", k->key(), k->key() );
 
-      if( k->key() == Qt::Key_Space || k->key() == Qt::Key_F4 )
-        {
-          // hardware Key F4 for open menu under Maemo
-          slotToggleMenu();
-          return true;
-        }
-      else if( k->key() == Qt::Key_F6 )
+      if( k->key() == Qt::Key_F6 )
         {
           // hardware Key F6 for maximize/normalize screen under Maemo
           setWindowState(windowState() ^ Qt::WindowFullScreen);
