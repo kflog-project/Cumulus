@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers
+**   Copyright (c):  2008 by Josua Dietze
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -30,7 +30,8 @@
 
 /**
  * This widget provides a list of waypoints and a means to select one.
- * @author Andr� Somers, Josua Dietze
+ *
+ * @author Josua Dietze
  */
 class WPListWidgetClass : public QWidget
 {

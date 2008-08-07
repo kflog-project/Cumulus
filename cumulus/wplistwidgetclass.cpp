@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andre Somers, 2008 Axel Pauli
+**   Copyright (c):  2008 Josua Dietze
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -14,7 +14,6 @@
 **   $Id$
 **
 ***********************************************************************/
-
 
 #include "wplistwidgetclass.h"
 
