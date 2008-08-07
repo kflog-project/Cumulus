@@ -31,12 +31,6 @@
 #include <QMessageBox>
 #include <QTranslator>
 
-#ifdef MAEMO
-#include <QInputContext>
-#include <QInputContextFactory>
-#include <QtDebug>
-#endif
-
 #include "cumulusapp.h"
 #include "generalconfig.h"
 #include "messagehandler.h"
@@ -165,35 +159,6 @@ int main(int argc, char *argv[])
           return 0;
         }
     }
-
-#ifdef MAEMO
-
-  // activate Hildon Input Method for Maemo
-  QInputContext *hildonInputContext = 0;
-  
-  QStringList inputMethods = QInputContextFactory::keys();
-  
-  foreach( QString inputMethod, inputMethods )
-  {
-    qDebug() << "InputMethod: " << inputMethod;
-    
-    if ( inputMethod == "hildon-input-method" )
-    {
-      hildonInputContext = QInputContextFactory::create( "hildon-input-method", 0 );
-      break;
-    }
-  }
-  
-  if ( !hildonInputContext )
-  {
-    qWarning( "QHildonInputMethod plugin not loadable!" );
-  }
-  else
-  {
-    app.setInputContext(hildonInputContext);
-  }
-
-#endif
   
   // create the cumulus application
   CumulusApp *cumulus = new CumulusApp(0, Qt::WindowContextHelpButtonHint);
