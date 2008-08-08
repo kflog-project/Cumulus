@@ -17,7 +17,7 @@ VERSION = `cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2`
 QT_VERSION=4.4.1
 
 # installation directory of Qt libraries
-QT_LIBDIR=/opt/$(QT_VERSION)/lib
+QT_LIBDIR=/opt/qt$(QT_VERSION)/lib
 
 DATE=`date +'%a, %d %b %Y %H:%M:%S %z'`
 
