@@ -18,6 +18,7 @@ Cumulus changelog
 Cumulus 2.0.x (Development based on X11/Qt-4.4.1)
 -------------------------------------------------
 
+[o] 2008-08-08 AP: GPS settings for Maemo reduced to the relevant items.
 [o] 2008-08-07 AP: Bugfix: Different shortcuts did not work after Qt4 portage.
 [o] 2008-08-07 JD: Bugfix in MapInfoBox (no update of rel. bearing icon); display changes
                    in listviews to make airfield symbols visible when highlighted
