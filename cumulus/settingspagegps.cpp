@@ -27,12 +27,13 @@
 
 SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 {
+  qDebug("SettingsPageGPS::SettingsPageGPS Enter");
     setObjectName("SettingsPageGPS");
     QGridLayout * topLayout = new QGridLayout(this);
 
     int row=0;
 
-    topLayout->addWidget(new QLabel(tr("GPS Device:"), this),row,0);
+    topLayout->addWidget(new QLabel(tr("GPS Device:"), this), row, 0);
     GpsDev = new QComboBox(this);
     GpsDev->setObjectName ("GPSDevice");
     topLayout->addWidget(GpsDev, row++, 2);
@@ -52,7 +53,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     // Under Maemo these settings are fixed.
     GpsDev->setEditable(false);
     GpsDev->addItem("GPS Daemon");
-    GpsDev->addItem("NMEASIM_DEVICE");
+    GpsDev->addItem(NMEASIM_DEVICE);
 #endif
 
 #ifndef MAEMO
@@ -113,7 +114,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     row++;
 
     topLayout->setRowStretch(row++,10);
-    
+
     buttonReset = new QPushButton (tr("Reset to factory settings"), this);
     topLayout->addWidget(buttonReset, row, 0, 1, 3, Qt::AlignRight);
     row++;
@@ -122,21 +123,12 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
              gps, SLOT(sendFactoryReset()));
 
     topLayout->setColumnStretch(1,100);
+#else
+    topLayout->setRowStretch(row++,10);
 #endif
 
-    GeneralConfig *conf = GeneralConfig::instance();
-    QString devText = conf->getGpsDevice();
-
-    // select first device in list as default
-    GpsDev->setCurrentIndex(0);
-
-    // select last saved device, if possible
-    for(int i=0; i < GpsDev->count(); i++) {
-        if(GpsDev->itemText(i) == devText) {
-            GpsDev->setCurrentIndex(i);
-            break;
-        }
-    }
+  // select first device in list as default
+  GpsDev->setCurrentIndex(0);
 }
 
 SettingsPageGPS::~SettingsPageGPS()
@@ -148,27 +140,37 @@ SettingsPageGPS::~SettingsPageGPS()
 /** Called to initiate loading of the configurationfile */
 void SettingsPageGPS::slot_load()
 {
-    GeneralConfig *conf = GeneralConfig::instance();
-
-    GpsDev->lineEdit()->setText( conf->getGpsDevice() );
-    GpsAltitude->setCurrentIndex( conf->getGpsAltitude() );
-    spinUserCorrection->setValue( (int) conf->getGpsUserAltitudeCorrection().getMeters() );
-    slot_altitude_mode( conf->getGpsAltitude() );
-    
-#ifndef MAEMO    
-    QString rate = QString::number( conf->getGpsSpeed() );
-    
-    for (int i=0;i<GpsSpeed->count();i++) {
-        if (GpsSpeed->itemText(i)==rate) {
-            GpsSpeed->setCurrentIndex(i);
-            break;
-        }
+  GeneralConfig *conf = GeneralConfig::instance();
+  QString devText = conf->getGpsDevice();
+  
+  // select last saved device, if possible
+  for(int i=0; i < GpsDev->count(); i++) {
+    if(GpsDev->itemText(i) == devText) {
+      GpsDev->setCurrentIndex(i);
+      break;
     }
+  }
 
-    checkSoftStart->setChecked( conf->getGpsSoftStart() );
-    checkHardStart->setChecked( conf->getGpsHardStart() );
-    checkSyncSystemClock->setChecked( conf->getGpsSyncSystemClock() );
-#endif    
+  GpsAltitude->setCurrentIndex( conf->getGpsAltitude() );
+
+  spinUserCorrection->setValue( (int) conf->getGpsUserAltitudeCorrection().getMeters() );
+
+  slot_altitude_mode( conf->getGpsAltitude() );
+
+#ifndef MAEMO
+  QString rate = QString::number( conf->getGpsSpeed() );
+  
+  for (int i=0;i<GpsSpeed->count();i++) {
+      if (GpsSpeed->itemText(i)==rate) {
+          GpsSpeed->setCurrentIndex(i);
+          break;
+      }
+  }
+
+  checkSoftStart->setChecked( conf->getGpsSoftStart() );
+  checkHardStart->setChecked( conf->getGpsHardStart() );
+  checkSyncSystemClock->setChecked( conf->getGpsSyncSystemClock() );
+#endif
 }
 
 

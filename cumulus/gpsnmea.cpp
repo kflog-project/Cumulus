@@ -113,7 +113,7 @@ void GPSNMEA::createGpsConnection()
 
   // qDebug("GpsDevive=%s", gpsDevice.toLatin1().data() );
   
-  if( gpsDevice.startsWith( "NMEASIM_DEVICE" ) )
+  if( gpsDevice == NMEASIM_DEVICE )
     {
       // We assume, that the nmea simulator shall be used and will start the gps client process
       const char *callPath = ( GeneralConfig::instance()->getInstallRoot() + "/bin" ).toAscii().data();
