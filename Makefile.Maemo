@@ -14,7 +14,10 @@
 VERSION = `cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2`
 
 # current Qt version
-QT_VERSION=4.4.0
+QT_VERSION=4.4.1
+
+# installation directory of Qt libraries
+QT_LIBDIR=/opt/$(QT_VERSION)/lib
 
 DATE=`date +'%a, %d %b %Y %H:%M:%S %z'`
 
@@ -148,8 +151,8 @@ dpkg_install:
 	install --mode=644 help/en/*.html icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
-	install --mode=755 /usr/lib/libQtCore.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
-	install --mode=755 /usr/lib/libQtGui.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
+	install --mode=755 $(QT_LIBDIR)/libQtCore.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
+	install --mode=755 $(QT_LIBDIR)/libQtGui.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
 
 .PHONY : install_lang
 install_lang:
