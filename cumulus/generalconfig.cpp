@@ -1306,12 +1306,12 @@ QString GeneralConfig::getGpsDefaultDevice()
 {
   if( HwInfo::instance()->getSubType() == HwInfo::n800 )
     {
-      return "/dev/rfcomm0";
+      return "GPS Daemon";
     }
 
   if( HwInfo::instance()->getSubType() == HwInfo::n810 )
     {
-      return "/dev/pts/0";
+      return "GPS Daemon";
     }
 
   // Default in unknown case is the serial device  
