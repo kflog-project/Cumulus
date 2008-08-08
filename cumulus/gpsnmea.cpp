@@ -108,13 +108,12 @@ void GPSNMEA::createGpsConnection()
 #else
 
   // Under Maemo we have to contact the Maemo gpsd process on its listen port.
-  // If a device name starts not with /dev/ then it is assumed, that the nmea simulator
-  // shall be used. In such a case the cumulus serial client is started.
+  // If the device name is the nmea simulator the cumulus serial client is started.
   gpsDevice = GeneralConfig::instance()->getGpsDevice();
 
   // qDebug("GpsDevive=%s", gpsDevice.toLatin1().data() );
   
-  if( gpsDevice.startsWith( "/tmp/nmeasim" ) )
+  if( gpsDevice.startsWith( "NMEASIM_DEVICE" ) )
     {
       // We assume, that the nmea simulator shall be used and will start the gps client process
       const char *callPath = ( GeneralConfig::instance()->getInstallRoot() + "/bin" ).toAscii().data();
@@ -803,9 +802,9 @@ void GPSNMEA::slot_reset()
 #ifdef MAEMO
     if( gpsdConnection )
     {
-      if( oldDevice.startsWith("/dev/") && gpsDevice.startsWith("/dev/") )
+      if( oldDevice == gpsDevice )
       {
-        // Ignore device modifications. Only switch between /tmp/nmeasim and /dev/ is
+        // Ignore device modifications. Only switch between GPSD and Simulator is
         // of interest for Maemo.
         return;
       }

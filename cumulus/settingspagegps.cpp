@@ -32,13 +32,13 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 
     int row=0;
 
-    topLayout->addWidget(new QLabel(tr("Serial Device:"), this),row,0);
+    topLayout->addWidget(new QLabel(tr("GPS Device:"), this),row,0);
     GpsDev = new QComboBox(this);
     GpsDev->setObjectName ("GPSDevice");
-    GpsDev->setEditable (true);
     topLayout->addWidget(GpsDev, row++, 2);
 
 #ifndef MAEMO
+    GpsDev->setEditable(true);
     GpsDev->addItem("/dev/ttyS0");
     GpsDev->addItem("/dev/ttyS1");
     GpsDev->addItem("/dev/ttyS2");
@@ -46,15 +46,16 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     // Bluetooth default devices
     GpsDev->addItem("/dev/rfcomm0");
     GpsDev->addItem("/dev/rfcomm1");
-#else
-    // Under Maemo this setting is not evaluted but we can select the device
-    // NMEASIM_DEVICE by hand for NMEA simulator usage.
-    GpsDev->addItem("/dev/maemo");
-#endif
-
     // add entry for NMEA simulator choise
     GpsDev->addItem(NMEASIM_DEVICE);
+#else
+    // Under Maemo these settings are fixed.
+    GpsDev->setEditable(false);
+    GpsDev->addItem("GPS Daemon");
+    GpsDev->addItem("NMEASIM_DEVICE");
+#endif
 
+#ifndef MAEMO
     topLayout->addWidget(new QLabel(tr("Transfer rate (bps):"), this),row,0);
     GpsSpeed = new QComboBox(this);
     GpsSpeed->setObjectName("GPSSpeed");
@@ -69,6 +70,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     GpsSpeed->addItem("2400");
     GpsSpeed->addItem("1200");
     GpsSpeed->addItem("600");
+#endif
 
     // @AP: Some GPS CF Cards (e.g. BC-307) deliver only height above the WGS 84
     // ellipsoid in GGA record. This is not deriveable from the received
@@ -82,6 +84,9 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     GpsAltitude->addItem(tr("HAE"));
     GpsAltitude->addItem(tr("User"));
 
+    connect (GpsAltitude, SIGNAL(activated(int )),
+             this, SLOT(slot_altitude_mode(int )));
+
     //AS: Some GPS units (like the Pretec) don't include any form of HAE correction.
     //For these, the user can manually enter the correction.
     topLayout->addWidget(new QLabel(tr("Altitude Correction:"), this),row,0);
@@ -92,6 +97,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     spinUserCorrection->setButtonSymbols(QSpinBox::PlusMinus);
     topLayout->addWidget(spinUserCorrection,row++,2);
 
+#ifndef MAEMO
     topLayout->setRowMinimumHeight( row++, 10);
 
     checkSoftStart = new QCheckBox (tr("Soft start"), this);
@@ -112,10 +118,17 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     topLayout->addWidget(buttonReset, row, 0, 1, 3, Qt::AlignRight);
     row++;
 
+    connect (buttonReset, SIGNAL(clicked()),
+             gps, SLOT(sendFactoryReset()));
+
     topLayout->setColumnStretch(1,100);
+#endif
 
     GeneralConfig *conf = GeneralConfig::instance();
     QString devText = conf->getGpsDevice();
+
+    // select first device in list as default
+    GpsDev->setCurrentIndex(0);
 
     // select last saved device, if possible
     for(int i=0; i < GpsDev->count(); i++) {
@@ -124,16 +137,12 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
             break;
         }
     }
-
-    connect (buttonReset, SIGNAL(clicked()),
-             gps, SLOT(sendFactoryReset()));
-    connect (GpsAltitude, SIGNAL(activated(int )),
-             this, SLOT(slot_altitude_mode(int )));
 }
 
-
 SettingsPageGPS::~SettingsPageGPS()
-{}
+{
+  return;
+}
 
 
 /** Called to initiate loading of the configurationfile */
@@ -142,8 +151,13 @@ void SettingsPageGPS::slot_load()
     GeneralConfig *conf = GeneralConfig::instance();
 
     GpsDev->lineEdit()->setText( conf->getGpsDevice() );
-
+    GpsAltitude->setCurrentIndex( conf->getGpsAltitude() );
+    spinUserCorrection->setValue( (int) conf->getGpsUserAltitudeCorrection().getMeters() );
+    slot_altitude_mode( conf->getGpsAltitude() );
+    
+#ifndef MAEMO    
     QString rate = QString::number( conf->getGpsSpeed() );
+    
     for (int i=0;i<GpsSpeed->count();i++) {
         if (GpsSpeed->itemText(i)==rate) {
             GpsSpeed->setCurrentIndex(i);
@@ -151,12 +165,10 @@ void SettingsPageGPS::slot_load()
         }
     }
 
-    GpsAltitude->setCurrentIndex( conf->getGpsAltitude() );
-    spinUserCorrection->setValue( (int) conf->getGpsUserAltitudeCorrection().getMeters() );
-    slot_altitude_mode( conf->getGpsAltitude() );
     checkSoftStart->setChecked( conf->getGpsSoftStart() );
     checkHardStart->setChecked( conf->getGpsHardStart() );
     checkSyncSystemClock->setChecked( conf->getGpsSyncSystemClock() );
+#endif    
 }
 
 
@@ -166,7 +178,6 @@ void SettingsPageGPS::slot_save()
     GeneralConfig *conf = GeneralConfig::instance();
 
     conf->setGpsDevice( GpsDev->currentText() );
-    conf->setGpsSpeed( GpsSpeed->currentText().toInt() );
     conf->setGpsAltitude( GPSNMEA::DeliveredAltitude(GpsAltitude->currentIndex()) );
 
     if( GpsAltitude->currentIndex() == GPSNMEA::USER ) {
@@ -175,9 +186,12 @@ void SettingsPageGPS::slot_save()
         conf->setGpsUserAltitudeCorrection( 0 );
     }
 
+#ifndef MAEMO    
+    conf->setGpsSpeed( GpsSpeed->currentText().toInt() );
     conf->setGpsHardStart( checkHardStart->isChecked() );
     conf->setGpsSoftStart( checkSoftStart->isChecked() );
     conf->setGpsSyncSystemClock( checkSyncSystemClock->isChecked() );
+#endif    
 
     conf->save();
 }
