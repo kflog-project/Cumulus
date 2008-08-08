@@ -1,7 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt4.x for Linux/Unix
 
-Last update: 2008-08-07 by Axel Pauli
+Last update: 2008-08-08 by Axel Pauli
 
 SVN info: $Id$
 ===============================================================================
@@ -46,7 +46,7 @@ Step 3)
 Go into the trunk directory of your checkout copy. To build the cumulus
 application issue the following command:
 
-	make -f Makefile.x11
+	make -f Makefile.X11
 	
 	The following make targets are available:
 	
@@ -59,7 +59,7 @@ Step 4)
 
 To install cumulus issue the following command:
 
-	make -f Makefile.x11 install
+	make -f Makefile.X11 install
 
 The installation structure of Cumulus is oriented on the Filesystem Hierarchy
 Standard of Unix (www.pathname.com/fhs). The default installation directory of
@@ -68,7 +68,7 @@ to do the installation there. If you would prefer another installation place,
 you can change the installation directory during call of 'make install' in the
 following way:
 
-	make -f Makefile.x11 INSTALL_ROOT=<my-install-path> install
+	make -f Makefile.X11 INSTALL_ROOT=<my-install-path> install
 
 Step 5)
 
