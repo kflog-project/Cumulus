@@ -1,7 +1,7 @@
 # Maemo Cumulus-GpsClient project file for qmake
 # (c) 2008 Axel Pauli
 #
-# This template generate a makefile for the gpsClient binary.
+# This template generates a makefile for the gpsClient binary.
 #
 # $Id$
 
@@ -24,6 +24,5 @@ SOURCES = \
 DESTDIR = .
 TARGET = gpsClient
 INCLUDEPATH += ../cumulus
-DEFINES += MAEMO
 
-LIBS += -lstdc++ -lgpsbt -lgps -lgpsmgr
+LIBS += -lstdc++

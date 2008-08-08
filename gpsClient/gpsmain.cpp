@@ -32,10 +32,6 @@ using namespace std;
 
 #include <qstring.h>
 
-#ifdef MAEMO
-#include <gpsbt.h>
-#endif
-
 #include "signalhandler.h"
 #include "gpsclient.h"
 #include "gpscon.h"
@@ -135,19 +131,6 @@ int main( int argc, char* argv[] )
     // install signal handler for catching termination requests
     initSignalHandler();
 
-#ifdef MAEMO
-
-    gpsbt_t ctx;
-    memset(&ctx, 0, sizeof(gpsbt_t));
-    errno = 0;
-
-    if ( gpsbt_start(NULL, 0, 0, 2947, NULL, 0, 0, &ctx) < 0 )
-      {
-        cerr << "Error opening GPS device: (" << errno << ") " << strerror(errno);
-      }
-
-#endif
-
     // GPS client module, manages the connection to the GPS and to cumulus
     GpsClient *client = new GpsClient( ipcPort );
 
@@ -232,12 +215,6 @@ int main( int argc, char* argv[] )
     }
 
     delete client; // shutdown clients activities
-
-#ifdef MAEMO
-
-    gpsbt_stop(&ctx); // Stop maemo gps receiver
-
-#endif
 
     exit(0);
 
