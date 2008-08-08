@@ -31,8 +31,7 @@
 
 #include "ipc.h"
 
-// default serial device
-
+// Device name for NMEA simulator. This name is also taken for the named pipe.
 #define NMEASIM_DEVICE "/tmp/nmeasim"
 
 /**
