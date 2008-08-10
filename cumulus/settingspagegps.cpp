@@ -27,7 +27,6 @@
 
 SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 {
-  qDebug("SettingsPageGPS::SettingsPageGPS Enter");
     setObjectName("SettingsPageGPS");
     QGridLayout * topLayout = new QGridLayout(this);
 
@@ -127,8 +126,31 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     topLayout->setRowStretch(row++,10);
 #endif
 
-  // select first device in list as default
+  // search for GPS device to be selected
+  bool found = false;
+  
+  QString devText = GeneralConfig::instance()->getGpsDevice();
+  
+  // select last saved device, if possible
+  for(int i=0; i < GpsDev->count(); i++) {
+    if(GpsDev->itemText(i) == devText) {
+      GpsDev->setCurrentIndex(i);
+      found = true;
+      break;
+    }
+  }
+
+  // Stored device not found, we assume, it was added by hand.
+  // Therefore we do add it to the list too.
+  if( found == false )
+  {
+#ifndef MAEMO
+    GpsDev->addItem( devText );
+#else
+    // On Maemo we select the first entry, the GPS daemon
   GpsDev->setCurrentIndex(0);
+#endif
+  }
 }
 
 SettingsPageGPS::~SettingsPageGPS()
@@ -141,15 +163,6 @@ SettingsPageGPS::~SettingsPageGPS()
 void SettingsPageGPS::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
-  QString devText = conf->getGpsDevice();
-  
-  // select last saved device, if possible
-  for(int i=0; i < GpsDev->count(); i++) {
-    if(GpsDev->itemText(i) == devText) {
-      GpsDev->setCurrentIndex(i);
-      break;
-    }
-  }
 
   GpsAltitude->setCurrentIndex( conf->getGpsAltitude() );
 
