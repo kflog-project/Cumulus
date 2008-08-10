@@ -471,8 +471,8 @@ void CumulusApp::slotCreateApplicationWidgets()
   connect( viewInfo, SIGNAL( newHomePosition( const QPoint* ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint* ) ) );
 
-  connect( listViewTabs, SIGNAL( currentChanged( QWidget* ) ),
-           this, SLOT( slot_tabChanged( QWidget* ) ) );
+  connect( listViewTabs, SIGNAL( currentChanged( int index ) ),
+           this, SLOT( slot_tabChanged( int index ) ) );
 
   connect( calculator, SIGNAL( newWaypoint( const wayPoint* ) ),
            this, SLOT( slotWaypointChanged( const wayPoint* ) ) );
@@ -1187,8 +1187,13 @@ const CumulusApp::appView CumulusApp::getView()
 
 
 /** Called if the user clicks a tab with a list-type view */
-void CumulusApp::slot_tabChanged( QWidget * w )
+void CumulusApp::slot_tabChanged( int index )
 {
+  // fetch the current widget
+  QWidget *w = listViewTabs->widget( index );
+
+  qDebug("Index=%d, View=%X", index, w );
+  
   //switch to the correct view
   if ( w == viewWP )
     {
@@ -1290,7 +1295,7 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       menuBar()->hide();
       viewMap->hide();
       viewInfo->hide();
-      viewAF->listWidget()->fillWpList(); 
+      viewAF->listWidget()->fillWpList();
       listViewTabs->setCurrentWidget( viewAF );
       listViewTabs->show();
 
@@ -1675,16 +1680,17 @@ void CumulusApp::slotReadconfig()
         {
           if(_reachpointListVisible)
             {
-              // changes in listViewTabs trigger slot_tabChanged (if viewRP was last active),
+              // changes in listViewTabs trigger  (if viewRP was last active),
               // this slot calls setView and tries to set the view to viewRP
               // but since this doesn't exist (removeWidget), sets the view to the next one
               // which is viewAF; that's the reason we have to a) call setView(mapView);
               // or b) disconnect before removeWidget and connect again behind
-              disconnect( listViewTabs, SIGNAL( currentChanged( QWidget* ) ),
-                          this, SLOT( slot_tabChanged( QWidget* ) ) );
+              disconnect( listViewTabs, SIGNAL( currentChanged( int index ) ),
+                          this, SLOT( slot_tabChanged( int index ) ) );
               listViewTabs->removeTab( listViewTabs->indexOf(viewRP) );
-              connect( listViewTabs, SIGNAL( currentChanged( QWidget* ) ),
-                       this, SLOT( slot_tabChanged( QWidget* ) ) );
+
+              connect( listViewTabs, SIGNAL( currentChanged( int index ) ),
+                       this, SLOT( slot_tabChanged( int index ) ) );
               calculator->clearReachable();
               viewRP->fillRpList();   // this clears the listView
               viewMap->_theMap->scheduleRedraw(Map::waypoints);
@@ -1803,11 +1809,12 @@ void CumulusApp::slotPreFlightDataChanged()
       if ( _taskListVisible )
         {
           // see comment for removeTab( viewRP )
-          disconnect( listViewTabs, SIGNAL( currentChanged( QWidget* ) ),
-                      this, SLOT( slot_tabChanged( QWidget* ) ) );
+          disconnect( listViewTabs, SIGNAL( currentChanged( int index ) ),
+                      this, SLOT( slot_tabChanged( int index ) ) );
           listViewTabs->removeTab( listViewTabs->indexOf(viewTP) );
-          connect( listViewTabs, SIGNAL( currentChanged( QWidget* ) ),
-                   this, SLOT( slot_tabChanged( QWidget* ) ) );
+          
+          connect( listViewTabs, SIGNAL( currentChanged( int index ) ),
+                   this, SLOT( slot_tabChanged( int index ) ) );
           actionViewTaskpoints->setEnabled( false );
           _taskListVisible = false;
         }

@@ -266,7 +266,7 @@ class CumulusApp : public QMainWindow
      * Called if the user clicks on a tab to select a different
      * list-type view
      */
-    void slot_tabChanged(QWidget *);
+    void slot_tabChanged( int index );
 
     /** shows version and copyright. */
     void slotVersion();
