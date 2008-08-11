@@ -1500,7 +1500,7 @@ void CumulusApp::slotVersion()
                                  "Cumulus X11 version %1<br>"
                                  "<font size=-1>(compiled at %2 with QT %3)</font><br>"
                                  "&copy; 2002-2008 by<br>"
-                                 "Andr&eacute; Somers, Eggert Ehmke</br>"
+                                 "Andr&eacute; Somers, Eggert Ehmke<br>"
                                  "Axel Pauli, Eckhard V&ouml;llm<br>"
                                  "Josua Dietze, Michael Enke<br>"
                                  "Hendrik M&uuml;ller, Florian Ehinger<br>"
