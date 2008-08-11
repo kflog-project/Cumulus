@@ -46,7 +46,7 @@ public:
     enum MapContents::MapContentsListID itemList[3];
 
     /**
-     * Called when the selected waypoint should be deleted from the catalog
+     * Called to fill the display list
      */
     void fillWpList();
 

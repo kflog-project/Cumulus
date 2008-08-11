@@ -47,8 +47,9 @@ AirfieldListWidget::~AirfieldListWidget()
 /** Retrieves the airfields from the mapcontents, and fills the list. */
 void AirfieldListWidget::fillWpList()
 {
-  if( listFilled )
+  if( listFilled ) {
     return;
+  }
 
   int Nr = 0;
   list->setUpdatesEnabled(false);
@@ -72,7 +73,6 @@ void AirfieldListWidget::fillWpList()
   list->setSortingEnabled(false);
 
   if (Nr>0) {
-//    list->setCurrentItem(list->topLevelItem(0));
     // @AP: set only to true if something was read
     listFilled = true;
   }
