@@ -285,15 +285,50 @@ class GeneralConfig : protected QSettings
     _language = newValue;
   };
 
-  /** Gets the sidebar frame color */
+  /** Gets the map sidebar frame color */
   QString &getFrameCol()
     {
       return _framecol;
     };
-  /** Sets the sidebar frame color */
+  /** Sets the map sidebar frame color */
   void setFrameCol( const QString newValue )
   {
     _framecol = newValue;
+  };
+
+  /** Gets the GUI style */
+  QString &getGuiStyle()
+    {
+      return _guiStyle;
+    };
+    
+  /** Sets the GUI style */
+  void setGuiStyle( const QString newValue )
+  {
+    _guiStyle = newValue;
+  };
+  
+  /** gets GUI font size */
+  int getGuiFontSize() const
+  {
+    return _guiFontSize;
+  };
+  /** sets GUI font size  */
+  void setGuiFontSize( const int newValue )
+  {
+    _guiFontSize = newValue;
+  };
+  
+  /** gets virtual keyboard usage */
+  bool getVirtualKeyboard() const
+  {
+    return _virtualKeyboard;
+  };
+  
+  /** sets virtual keyboard usage */
+  void setVirtualKeyboard(const bool newValue)
+  {
+    _virtualKeyboard = newValue;
   };
 
   /** gets qnh */
@@ -1195,6 +1230,12 @@ class GeneralConfig : protected QSettings
   QString _language;
   // frame color
   QString _framecol;
+  // GUI style
+  QString _guiStyle;
+  // GUI font size
+  int _guiFontSize;
+  // Virtual keyboard usage
+  bool _virtualKeyboard;
   // qnh
   int _qnh;
   // logger interval

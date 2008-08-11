@@ -74,6 +74,14 @@ void GeneralConfig::load()
   // Main window properties
   beginGroup("MainWindow");
   _windowSize = value("Geometrie", QSize(800, 480)).toSize();
+  _framecol   = value("FrameColor", "#687ec6").toString();
+  _guiStyle   = value("Style", "plastique").toString();
+#ifndef MAEMO
+  _guiFontSize = value("FontSize", "14").toInt();
+#else
+  _guiFontSize = value("FontSize", "18").toInt();
+#endif
+  _virtualKeyboard = value("VirtualKeyboard", false).toBool();
   endGroup();
 
   // Airspace warning distances
@@ -106,7 +114,7 @@ void GeneralConfig::load()
 
   _airspaceWarningGeneral = value("enableAirspaceWarning", true).toBool();
 
-  //airspace filling
+  // Airspace filling
   m_airspaceFillingEnabled = value("enableAirspaceFilling", true).toBool();
   _verticalAirspaceFillings[Airspace::none] =
     qMax(0, qMin(100, value("fillingNoneVertical", AS_FILL_NOT_NEAR).toInt()));
@@ -133,7 +141,6 @@ void GeneralConfig::load()
   _surname           = value("SurName", "").toString();
   _birthday          = value("Birthday", "").toString();
   _language          = value("Language", "en").toString();
-  _framecol          = value("FrameColor", "#687ec6").toString();
   _userDataDirectory = value("UserDataDir", QDir::homePath() + "/cumulus").toString();
   endGroup();
 
@@ -318,6 +325,10 @@ void GeneralConfig::save()
   // Main window properties
   beginGroup("MainWindow");
   setValue("Geometrie", _windowSize );
+  setValue("FrameColor", _framecol);
+  setValue("Style", _guiStyle);
+  setValue("FontSize", _guiFontSize);
+  setValue("VirtualKeyboard", _virtualKeyboard);
   endGroup();
 
   // Airspace warning distances
@@ -370,7 +381,6 @@ void GeneralConfig::save()
   setValue("SurName", _surname);
   setValue("Birthday", _birthday);
   setValue("Language", _language);
-  setValue("FrameColor", _framecol);
   setValue( "UserDataDir", _userDataDirectory);
   endGroup();
 
