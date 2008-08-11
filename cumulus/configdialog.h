@@ -37,11 +37,12 @@
   *
   * This is the configuration dialog for Cumulus
   * @author André Somers
-  * @version $Id$
+  *
   */
 class ConfigDialog : public QWidget
   {
     Q_OBJECT
+      
   public:
     /**
      * Constructor

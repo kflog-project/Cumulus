@@ -164,12 +164,6 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
     }
 
   // For MAEMO it's really better to pre-set style and font
-  // CleanLooks is best for tabs and edit fields but bad for
-  // spin buttons. I've found no ideal solution. Try out.
-
-  // Well, CleanLooks has bugs. So much about that. Back to Plastique
-  QApplication::setStyle("plastique");
-
   // To resize tiny buttons (does not work everywhere though)
   QApplication::setGlobalStrut( QSize(24,16) );
 
@@ -186,24 +180,16 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   // The Nokia font has excellent readability and less width than others
   appFt.setFamily("Nokia Sans");
 
-  // The size for modern devices with small screen / high resolution
-  if( appFt.pointSize() < 18 )
-    {
-      appFt.setPointSize(18);
-    }
-    
-#else
-
-  // X11: increase font size, if too small for desktop screens
-  if( appFt.pointSize() < 12 )
-    {
-      appFt.setPointSize(12);
-    }
-
 #endif
 
+  // CleanLooks is best for tabs and edit fields but bad for
+  // spin buttons. I've found no ideal solution. Try out.
+  // Well, CleanLooks has bugs. So much about that. Back to Plastique
+  QApplication::setStyle( GeneralConfig::instance()->getGuiStyle() );
+
+  appFt.setPointSize( GeneralConfig::instance()->getGuiFontSize() );
   QApplication::setFont(appFt);
-  
+
   // get last saved window geometrie from generalconfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
 
@@ -349,6 +335,7 @@ void CumulusApp::slotCreateApplicationWidgets()
   fnt.setBold(true);
 
   listViewTabs = new QTabWidget( this );
+  listViewTabs->setObjectName("listViewTabs");
   listViewTabs->resize( this->size() );
   listViewTabs->setFont( fnt );
 
@@ -378,7 +365,6 @@ void CumulusApp::slotCreateApplicationWidgets()
   gps = new GPSNMEA( this );
   gps->blockSignals( true );
   logger = IgcLogger::instance();
-  _preFlightDialog = 0;
 
   initActions();
   initMenuBar();
@@ -471,8 +457,8 @@ void CumulusApp::slotCreateApplicationWidgets()
   connect( viewInfo, SIGNAL( newHomePosition( const QPoint* ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint* ) ) );
 
-  connect( listViewTabs, SIGNAL( currentChanged( int index ) ),
-           this, SLOT( slot_tabChanged( int index ) ) );
+  connect( listViewTabs, SIGNAL( currentChanged( int ) ),
+           this, SLOT( slot_tabChanged( int ) ) );
 
   connect( calculator, SIGNAL( newWaypoint( const wayPoint* ) ),
            this, SLOT( slotWaypointChanged( const wayPoint* ) ) );
@@ -661,7 +647,7 @@ void CumulusApp::playSound( const char *name )
   // The sound is played in an extra thread
   Sound *player = new Sound( sound );
 
-  player->start( QThread::HighestPriority );
+  player->start( QThread::TimeCriticalPriority );
 }
 
 void CumulusApp::slotNotification( const QString& msg, const bool sound )
@@ -1186,30 +1172,31 @@ const CumulusApp::appView CumulusApp::getView()
 }
 
 
-/** Called if the user clicks a tab with a list-type view */
+/** Called if the user clicks on a tab with of a list view */
 void CumulusApp::slot_tabChanged( int index )
 {
-  // fetch the current widget
-  QWidget *w = listViewTabs->widget( index );
-
-  qDebug("Index=%d, View=%X", index, w );
+  // qDebug("CumulusApp::slot_tabChanged(): NewIndex=%d", index );
   
   //switch to the correct view
-  if ( w == viewWP )
+  if ( index == listViewTabs->indexOf(viewWP) )
     {
       setView( wpView );
     }
-  else if ( w == viewTP )
+  else if ( index == listViewTabs->indexOf(viewTP) )
     {
       setView( tpView );
     }
-  else if ( w == viewRP )
+  else if ( index == listViewTabs->indexOf(viewRP) )
     {
       setView( rpView );
     }
-  else if ( w == viewAF )
+  else if ( index == listViewTabs->indexOf(viewAF) )
     {
       setView( afView );
+    }
+  else
+    {
+      qWarning("CumulusApp::slot_tabChanged(): Cannot switch to index %d", index );
     }
 }
 
@@ -1362,8 +1349,6 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
     case cfView:
       menuBar()->hide();
       viewMap->hide();
-      viewAF->hide();
-      viewInfo->hide();
       listViewTabs->hide();
 
       toggleManualNavActions( false );
@@ -1501,7 +1486,7 @@ void CumulusApp::slotCloseConfig()
     setWindowTitle ( "Cumulus - " + calculator->gliderType() );
   else
     setWindowTitle( "Cumulus" );
-  delete configView;
+
   configView = 0;
 }
 
@@ -1784,7 +1769,9 @@ void CumulusApp::slotPreFlight(const char *tabName)
 {
   setWindowTitle( "Pre-Flight Settings" );
   PreFlightDialog* cDlg = new PreFlightDialog( this, tabName );
+  cDlg->setObjectName("PreFlightDialog");
   cDlg->resize( size() );
+
   setView( cfView );
 
   connect( cDlg, SIGNAL( settingsChanged() ),
@@ -1915,6 +1902,7 @@ void CumulusApp::resizeEvent(QResizeEvent* event)
     {
       listViewTabs->resize( event->size() );
     }
+
   if( configView )
     {
       configView->resize( event->size() );

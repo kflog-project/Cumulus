@@ -28,10 +28,10 @@ class PreFlightGliderPage;
 class PreFlightMiscPage;
 
 /**
- * @short dialog for pre-flight settings
+ * @short widget for pre-flight settings
  * @author André Somers
  *
- * This dialog provides an interface to set all the pre-flight settings like
+ * This widget provides an interface to set all the pre-flight settings like
  * glidertype, co-pilot, task, amount of water taken on, etc.
  */
 class PreFlightDialog : public QWidget
@@ -71,13 +71,11 @@ protected slots:
     /**
      * Called if dialog is accepted (OK button is clicked)
      */
-//    virtual void accept();
     void accept();
 
     /**
      * Called if dialog is rejected (X button is clicked)
      */
-//    virtual void reject();
     void reject();
 
 private slots:

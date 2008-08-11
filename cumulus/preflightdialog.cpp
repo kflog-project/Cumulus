@@ -29,7 +29,7 @@
 
 extern MapContents* _globalMapContents;
 
-/** Dialog for pre-flight settings. To reserve the full vertical space for the
+/** Widget for pre-flight settings. To reserve the full vertical space for the
  *  the content of the tabulators, tabulators are arranged at the
  *  left side and the ok and cancel buttons are arranged on the right side.
  */
@@ -37,11 +37,11 @@ extern MapContents* _globalMapContents;
 PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
   QWidget(parent)
 {
-  qDebug("PreFlightDialog::PreFlightDialog()");
+  // qDebug("PreFlightDialog::PreFlightDialog()");
   setObjectName("PreFlightDialog");
-//  setModal(true);
+  setAttribute( Qt::WA_DeleteOnClose );
+
 //  setWindowTitle(tr("Preflight settings"));
-//  setSizeGripEnabled(true);
 
   QVBoxLayout *topLayout = new QVBoxLayout(this);
   setLayout(topLayout);
@@ -111,17 +111,13 @@ PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
     tabWidget->setCurrentIndex( tabWidget->indexOf(gliderpage) );
   }
 
-//#ifdef MAEMO
-//  resize( 640, 480 );
-//#endif
-
   show();
   setWindowState(windowState() ^ Qt::WindowFullScreen);
 }
 
 PreFlightDialog::~PreFlightDialog()
 {
-  qDebug("PreFlightDialog::~PreFlightDialog()");
+  // qDebug("PreFlightDialog::~PreFlightDialog()");
 }
 
 void PreFlightDialog::accept()
@@ -189,16 +185,16 @@ void PreFlightDialog::accept()
   hide();
   emit settingsChanged();
   emit closeConfig();
-//  QDialog::accept();
+  QWidget::close();
 }
 
 
 void PreFlightDialog::reject()
 {
   // qDebug("PreFlightDialog::reject()");
-//  QDialog::reject();
   hide();
   emit closeConfig();
+  QWidget::close();
 }
 
 

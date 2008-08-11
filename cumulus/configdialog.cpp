@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002 by AndrÃ¨ Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -33,10 +33,11 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   QWidget(parent), loadConfig(true)
 {
   // qDebug("height=%d, width=%d", parent->height(), parent->width());
+  setAttribute( Qt::WA_DeleteOnClose );
 
   QVBoxLayout *topLayout = new QVBoxLayout;
   setLayout(topLayout);
- 
+
   title = new QLabel("<b>Cumulus Settings</b>", this);
   topLayout->addWidget(title);
   title->hide();
@@ -160,8 +161,6 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
     title->show();
   else
     title->hide();
-//  show();
-
 }
 
 
@@ -213,8 +212,9 @@ void ConfigDialog::accept()
       // a reload of welt 2000 data.
       emit welt2000ConfigChanged();
     }
-    
+
 	emit closeConfig();
+  QWidget::close();
 }
 
 /** Called if the Cancel button is pressed */
@@ -255,18 +255,17 @@ void ConfigDialog::reject()
         }
     }
 
-  emit reload();
   hide();
+  emit reload();
   emit closeConfig();
+  QWidget::close();
 }
 
 void ConfigDialog::resizeEvent(QResizeEvent*)
 {
-//  QWidget *p = ((QWidget*)parent());
   if ( ( (QWidget*)parent() )->windowState() == Qt::WindowFullScreen )
     title->show();
   else
     title->hide();
-//  resize( p->size() );
 }
 

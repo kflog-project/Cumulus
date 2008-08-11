@@ -220,8 +220,6 @@ class CumulusApp : public QMainWindow
     /** contains the currently selected viewmode */
     appView view;
 
-    PreFlightDialog* _preFlightDialog;
-
     bool _taskListVisible, _reachpointListVisible;
 
   private slots: // Private slots
@@ -336,7 +334,7 @@ class CumulusApp : public QMainWindow
     // Wait screen
     WaitScreen *ws;
     // Holds the config/pre-flight "dialogs"
-	QWidget *configView;
+	  QWidget *configView;
     // visibility of menu bar
     bool menuBarVisible;
 
