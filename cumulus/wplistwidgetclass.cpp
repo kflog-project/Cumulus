@@ -15,10 +15,9 @@
 **
 ***********************************************************************/
 
-#include "wplistwidgetclass.h"
-
 #include <QVBoxLayout>
 
+#include "wplistwidgetclass.h"
 #include "generalconfig.h"
 
 // A new widget to remove double code in airfield list view, waypoint list view and

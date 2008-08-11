@@ -26,8 +26,6 @@
 #include "listviewfilter.h"
 #include "rowdelegate.h"
 
-//class WaypointCatalog;
-
 /**
  * This widget provides a list of waypoints and a means to select one.
  *
