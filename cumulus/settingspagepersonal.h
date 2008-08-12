@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -51,13 +51,12 @@ class SettingsPagePersonal : public QWidget
 
   private:
     bool loadConfig; // control loading of config data
-    
+
     QLineEdit *edtName;
     QLineEdit *edtBirth;
     QComboBox *langBox;
     LatEdit   *edtHomeLat;
     LongEdit  *edtHomeLong;
-    QLineEdit *edtFrameCol;
     QLineEdit *userDataDir;
 
   };

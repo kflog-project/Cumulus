@@ -169,7 +169,6 @@ void SettingsPageInformation::slot_save()
   conf->setAlarmSoundOn( checkAlarmSound->isChecked() );
   conf->setNearestSiteCalculatorSwitch( calculateNearestSites->isChecked() );
   conf->setAltimeterToggleMode( checkAltimeterToggle->isChecked() );
-  conf->save();
 }
 
 

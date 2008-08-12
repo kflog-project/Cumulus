@@ -208,7 +208,6 @@ void SettingsPageGPS::slot_save()
     conf->setGpsSyncSystemClock( checkSyncSystemClock->isChecked() );
 #endif    
 
-    conf->save();
 }
 
 

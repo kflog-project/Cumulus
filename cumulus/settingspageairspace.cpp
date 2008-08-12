@@ -228,8 +228,6 @@ void SettingsPageAirspace::slot_save()
 
   m_fillingDlg->slot_save();
   m_warningsDlg->slot_save();
-
-  conf->save();
 }
 
 

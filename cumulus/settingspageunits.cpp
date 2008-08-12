@@ -170,7 +170,6 @@ void SettingsPageUnits::slot_save()
   conf->setUnitVario( varios[UnitVario->currentIndex()] );
   conf->setUnitWind( winds[UnitWind->currentIndex()] );
   conf->setUnitPos( positions[UnitPosition->currentIndex()] );
-  conf->save();
 
   //set the static units for distances, speeds and altitudes. A signal that these (may) have
   //changed is emitted by the container, ConfigDialog

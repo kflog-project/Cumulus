@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -70,12 +70,6 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   topLayout->addWidget(edtHomeLong, row, 1, 1, 2);
   row++;
 
-  lbl = new QLabel(tr("Sidebar frame col.:"), this);
-  topLayout->addWidget(lbl, row, 0);
-  edtFrameCol = new QLineEdit(this);
-  topLayout->addWidget(edtFrameCol, row, 1, 1, 2);
-  row++;
-
   QPushButton* userDirSelection = new QPushButton( tr("Data Directory"), this );
   userDirSelection->setToolTip(tr("Select your personal data directory"));
   topLayout->addWidget(userDirSelection, row, 0);
@@ -86,7 +80,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   topLayout->addWidget(userDataDir, row, 1, 1, 2);
   row++;
 
-  topLayout->setRowStretch(row,10);
+  topLayout->setRowStretch(row, 10);
 }
 
 SettingsPagePersonal::~SettingsPagePersonal()
@@ -102,8 +96,6 @@ void SettingsPagePersonal::slot_load()
 
   edtHomeLat->setKFLogDegree(conf->getHomeLat());
   edtHomeLong->setKFLogDegree(conf->getHomeLon());
-  
-  edtFrameCol->setText( conf->getFrameCol() );
 
   userDataDir->setText( conf->getUserDataDirectory() );
 
@@ -124,7 +116,6 @@ void SettingsPagePersonal::slot_save()
   conf->setSurname( edtName->text() );
   conf->setBirthday( edtBirth->text() );
   conf->setLanguage( langBox->currentText() );
-  conf->setFrameCol( edtFrameCol->text() );
   conf->setUserDataDirectory( userDataDir->text() );
 
   // Check, if string input values have been changed. If not, no
@@ -140,8 +131,6 @@ void SettingsPagePersonal::slot_save()
     {
       conf->setHomeLon( edtHomeLong->KFLogDegree() );
     }
-
-  conf->save();
 }
 
 /** called to open the directory selection dialog */
