@@ -75,7 +75,7 @@ void GeneralConfig::load()
   beginGroup("MainWindow");
   _windowSize = value("Geometrie", QSize(800, 480)).toSize();
   _framecol   = value("FrameColor", "#687ec6").toString();
-  _guiStyle   = value("Style", "plastique").toString();
+  _guiStyle   = value("Style", "Plastique").toString();
 #ifndef MAEMO
   _guiFontSize = value("FontSize", "14").toInt();
 #else
