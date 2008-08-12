@@ -74,6 +74,7 @@ HEADERS     = \
     settingspagegps.h \
     settingspageglider.h \
     settingspageinformation.h \
+    settingspagelooknfeel.h \
     settingspagemapadv.h \
     settingspagemap.h \
     settingspagepersonal.h \
@@ -172,6 +173,7 @@ SOURCES     = \
     settingspagegps.cpp \
     settingspageglider.cpp \
     settingspageinformation.cpp \
+    settingspagelooknfeel.cpp \
     settingspagemapadv.cpp \
     settingspagemap.cpp \
     settingspagepersonal.cpp \
