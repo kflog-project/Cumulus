@@ -72,7 +72,6 @@ static osso_context_t *ossoContext = static_cast<osso_context_t *> (0);
 
 #endif
 
-
 /**
  * Global available instance of this class
  */
