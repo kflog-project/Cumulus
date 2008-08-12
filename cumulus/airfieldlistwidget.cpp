@@ -94,7 +94,6 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
   if (test == "Next Page" || test == "Previous Page")
     return 0;
 
-
   // Now we're left with the real waypoints/airports
   _AirfieldItem* apli = static_cast<_AirfieldItem*>(li);
 
@@ -120,7 +119,6 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
   wp->isLandable = true;
   return wp;
 }
-
 
 AirfieldListWidget::_AirfieldItem::_AirfieldItem(QTreeWidget* tw, Airport* site, int type):
   QTreeWidgetItem(tw, type), airport(site)
