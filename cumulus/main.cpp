@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 
 #define DISCLAIMERVERSION 1
 
-  if( conf->getDisclaimerVersion() < DISCLAIMERVERSION )
+  if( conf->getDisclaimerVersion() != DISCLAIMERVERSION )
     {
       QApplication::beep();
 
