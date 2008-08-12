@@ -117,6 +117,7 @@ SettingsPageUnits::SettingsPageUnits(QWidget *parent) : QWidget(parent)
   positions[1]=WGSPoint::DDM;
 
   topLayout->setRowStretch(row++,10);
+  topLayout->setColumnStretch( 2, 10 );
 
   connect (UnitAlt,SIGNAL(activated(int)),
            this,SLOT(slotUnitChanged()));
