@@ -16,7 +16,6 @@
  ***********************************************************************/
 
 /**
- *
  * This is the configuration dialog of cumulus. Different settings are
  * to do here. There are in general not related to the flight
  * preparation. For that it exists a separate dialog.
@@ -32,7 +31,7 @@
 ConfigDialog::ConfigDialog(QWidget *parent) :
   QWidget(parent), loadConfig(true)
 {
-  // qDebug("height=%d, width=%d", parent->height(), parent->width());
+  // qDebug("ConfigDialog: height=%d, width=%d", parent->height(), parent->width());
   setAttribute( Qt::WA_DeleteOnClose );
 
   QVBoxLayout *topLayout = new QVBoxLayout;
@@ -89,6 +88,9 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   infoArea->setWidget(spi);
   tabWidget->addTab(infoArea, tr("Information"));
 
+  splnf=new SettingsPageLookNFeel();
+  tabWidget->addTab(splnf, tr("Look&&Feel"));
+
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "cancel.png")) );
   cancel->setIconSize(QSize(26,26));
@@ -119,6 +121,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   connect(this, SIGNAL(load()), spa, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spu, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spi, SLOT(slot_load()));
+  connect(this, SIGNAL(load()), splnf, SLOT(slot_load()));
 
   connect(this, SIGNAL(reload()), spu, SLOT(slot_load()));
 
@@ -132,6 +135,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   connect(this, SIGNAL(save()), spa, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spi, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spu, SLOT(slot_save()));
+  connect(this, SIGNAL(save()), splnf, SLOT(slot_save()));
 
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
           spgl, SLOT(slot_query_close(bool&, QStringList&)));
@@ -163,12 +167,10 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
     title->hide();
 }
 
-
 ConfigDialog::~ConfigDialog()
 {
   // qDebug("~ConfigDialog() is called");
 }
-
 
 /** This slot is called if the window will be shown or resized */
 void ConfigDialog::slot_LoadCurrent()
@@ -191,7 +193,6 @@ void ConfigDialog::slot_LoadCurrent()
   emit load();
 }
 
-
 /** Called if OK button is pressed */
 void ConfigDialog::accept()
 {
@@ -202,6 +203,10 @@ void ConfigDialog::accept()
   bool welt2000Change   = spaf->checkIsWelt2000Changed();
 
   emit save();
+  
+  // save modifications into file
+  GeneralConfig::instance()->save();
+  
   emit settingsChanged();
 
   if( projectionChange == false && welt2000Change == true )

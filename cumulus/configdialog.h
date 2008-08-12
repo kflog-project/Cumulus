@@ -31,7 +31,7 @@
 #include "settingspageinformation.h"
 #include "settingspagesector.h"
 #include "settingspageglider.h"
-
+#include "settingspagelooknfeel.h"
 /**
   * @short Configuration dialog
   *
@@ -129,6 +129,7 @@ class ConfigDialog : public QWidget
     SettingsPageAirspace* spa;
     SettingsPageUnits* spu;
     SettingsPageInformation* spi;
+    SettingsPageLookNFeel* splnf;
 
     QLabel* title;
 
