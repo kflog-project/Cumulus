@@ -59,7 +59,7 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   QRadioButton* cylinder = new QRadioButton( tr("Cylinder"), this );
   QRadioButton* sector   = new QRadioButton( tr("Sector"), this );
   
-  csScheme = new QButtonGroup;
+  csScheme = new QButtonGroup(this);
   csScheme->addButton( cylinder, 0 );
   csScheme->addButton( sector, 1 );
 
@@ -86,7 +86,7 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   QGroupBox *ssBox = new QGroupBox( tr("Switch Scheme"), this );
   topLayout->addWidget( ssBox, 0, 1 );
 
-  ntScheme = new QButtonGroup;
+  ntScheme = new QButtonGroup(this);
 
   QRadioButton* nearest   = new QRadioButton( tr("Nearest"), this );
   QRadioButton* touched  = new QRadioButton( tr("Touched"), this );

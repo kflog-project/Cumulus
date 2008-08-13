@@ -53,7 +53,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   sectorArea->setWidgetResizable(true);
   sectorArea->setFrameStyle(QFrame::NoFrame);
 
-  sps=new SettingsPageSector();
+  sps=new SettingsPageSector(this);
   sectorArea->setWidget(sps);
   tabWidget->addTab(sectorArea, tr("Sector"));
 
@@ -70,7 +70,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   afArea->setWidgetResizable(true);
   afArea->setFrameStyle(QFrame::NoFrame);
 
-  spaf=new SettingsPageAirfields();
+  spaf=new SettingsPageAirfields(this);
   afArea->setWidget(spaf);
   tabWidget->addTab(afArea, tr("Airfields"));
 
@@ -84,11 +84,11 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   infoArea->setWidgetResizable(true);
   infoArea->setFrameStyle(QFrame::NoFrame);
 
-  spi=new SettingsPageInformation();
+  spi=new SettingsPageInformation(this);
   infoArea->setWidget(spi);
   tabWidget->addTab(infoArea, tr("Information"));
 
-  splnf=new SettingsPageLookNFeel();
+  splnf=new SettingsPageLookNFeel(this);
   tabWidget->addTab(splnf, tr("Look&&Feel"));
 
   QPushButton *cancel = new QPushButton(this);
