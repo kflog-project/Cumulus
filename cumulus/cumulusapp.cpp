@@ -676,24 +676,10 @@ void CumulusApp::slotAlarm( const QString& msg, const bool sound )
 
 void CumulusApp::initMenuBar()
 {
-  // save current font
-  QFont cf = this->font();
-
-#ifdef MAEMO
-  QFont font = QApplication::font();
-#else
-  QFont font( "Helvetica", 14 );
-#endif
-
-  this->setFont( font );
-  menuBar()->setFont( font );
-
   fileMenu = menuBar()->addMenu(tr("&File"));
-  fileMenu->setFont( font );
   fileMenu->addAction( actionFileQuit );
 
   viewMenu = menuBar()->addMenu(tr("&View"));
-  viewMenu->setFont( font );
   viewMenu->addAction( actionViewTaskpoints );
   actionViewTaskpoints->setEnabled( false );
   viewMenu->addAction( actionViewWaypoints );
@@ -709,7 +695,6 @@ void CumulusApp::initMenuBar()
   viewMenu->addAction( actionViewGPSStatus );
 
   mapMenu = menuBar()->addMenu(tr("&Map"));
-  mapMenu->setFont( font );
   mapMenu->addAction( actionToggleLogging );
   mapMenu->addAction( actionRememberWaypoint );
   mapMenu->addAction( actionSelectTask );
@@ -720,20 +705,29 @@ void CumulusApp::initMenuBar()
   mapMenu->addAction( actionZoomOutZ );
 
   setupMenu = menuBar()->addMenu(tr("&Setup"));
-  setupMenu->setFont( font );
   setupMenu->addAction( actionSetupConfig );
   setupMenu->addAction( actionPreFlight );
   setupMenu->addAction( actionSetupInFlight );
 
   helpMenu = menuBar()->addMenu(tr("&Help"));
-  helpMenu->setFont( font );
   helpMenu->addAction( actionHelpCumulus );
   helpMenu->addAction( actionHelpAboutApp );
   helpMenu->addAction( actionHelpAboutQt );
 
   menuBar()->hide();
 
-  this->setFont( cf );
+  if( font().pointSize() < 15 )
+    {
+      QFont cf = font();
+      cf.setPointSize( 15 );
+
+      menuBar()->setFont( cf );
+      fileMenu->setFont( cf );
+      viewMenu->setFont( cf );
+      mapMenu->setFont( cf );
+      setupMenu->setFont( cf );
+      helpMenu->setFont( cf );
+    }
 }
 
 
