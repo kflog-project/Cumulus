@@ -47,8 +47,6 @@ void BaseMapElement::initMapElement(MapMatrix* matrix, MapConfig* config)
 {
   glMapMatrix = matrix;
   glConfig = config;
-
-  qDebug("BaseMapElement::initMapElement ()");
 }
 
 /**
