@@ -128,7 +128,6 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   // Eggert: make sure the app uses utf8 encoding for translated widgets
   QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
 
-#warning FIXME should we have a menu entry for the application font size?
   // Check the font size and set it bigger if it was to small
   QFont appFt = QApplication::font();
 
@@ -646,7 +645,7 @@ void CumulusApp::playSound( const char *name )
   // The sound is played in an extra thread
   Sound *player = new Sound( sound );
 
-  player->start( QThread::TimeCriticalPriority );
+  player->start( QThread::HighestPriority );
 }
 
 void CumulusApp::slotNotification( const QString& msg, const bool sound )
