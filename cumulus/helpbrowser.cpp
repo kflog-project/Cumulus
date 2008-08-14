@@ -43,23 +43,27 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
   browser = new QTextBrowser(this);
 
   QPushButton *home = new QPushButton();
-  home->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home.png") ) );
-  home->setFlat(true);
+  home->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home_new.png") ) );
+  home->setIconSize(QSize(26,26));
+  // home->setFlat(true);
   home->setToolTip( tr("Goto home") );
 
   QPushButton *back = new QPushButton();
-  back->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "back.png") ) );
-  back->setFlat(true);
+  back->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "left.png") ) );
+  back->setIconSize(QSize(26,26));
+  //back->setFlat(true);
   back->setToolTip( tr("Go back") );
 
   QPushButton *forward = new QPushButton();
-  forward->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "forward.png") ) );
-  forward->setFlat(true);
+  forward->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "right.png") ) );
+  forward->setIconSize(QSize(26,26));
+  // forward->setFlat(true);
   forward->setToolTip( tr("Go forward") );
 
   QPushButton *close = new QPushButton();
-  close->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "standardbutton-close-16.png") ) );
-  close->setFlat(true);
+  close->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "cancel.png") ) );
+  close->setIconSize(QSize(26,26));
+  // close->setFlat(true);
   close->setToolTip( tr("Close") );
 
   QHBoxLayout *butLayout = new QHBoxLayout;
