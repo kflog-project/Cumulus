@@ -18,6 +18,8 @@ Cumulus changelog
 Cumulus 2.0.x (Development based on X11/Qt-4.4.1)
 -------------------------------------------------
 
+[-] 2008-08-14 AP: Bugfix: Layout of configuration tabulator Sector modified and 
+                   wrong checkbox selection after start fixed.
 [+] 2008-08-12 AP: New Configuration tabulator added for GUI Look and Feel
 [-] 2008-08-11 AP: Bugfix: Change between list view tabs was buggy.
                    Connected signal has changed signature to Qt4.
