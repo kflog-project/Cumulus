@@ -63,7 +63,7 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   topLayout->addWidget( spinFontSize, row, 1 );
   row++;
 
-  lbl = new QLabel(tr("Sidebar frame col.:"), this);
+  lbl = new QLabel(tr("Sidebar frame color:"), this);
   topLayout->addWidget(lbl, row, 0);
   edtFrameCol = new QLineEdit(this);
   topLayout->addWidget( edtFrameCol, row, 1 );
