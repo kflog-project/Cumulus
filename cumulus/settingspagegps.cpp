@@ -38,7 +38,8 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     topLayout->addWidget(GpsDev, row++, 1);
 
 #ifndef MAEMO
-    GpsDev->setEditable(true);
+  GpsDev->setEditable(true);   topLayout->setColumnStretch(2,10);
+  
     GpsDev->addItem("/dev/ttyS0");
     GpsDev->addItem("/dev/ttyS1");
     GpsDev->addItem("/dev/ttyS2");
@@ -50,7 +51,8 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     GpsDev->addItem(NMEASIM_DEVICE);
 #else
     // Under Maemo these settings are fixed.
-    GpsDev->setEditable(false);
+  GpsDev->setEditable(false);   topLayout->setColumnStretch(2,10);
+  
     GpsDev->addItem("GPS Daemon");
     GpsDev->addItem(NMEASIM_DEVICE);
 #endif
@@ -86,7 +88,8 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 
     connect (GpsAltitude, SIGNAL(activated(int )),
              this, SLOT(slot_altitude_mode(int )));
-
+  topLayout->setColumnStretch(2,10);
+  
     //AS: Some GPS units (like the Pretec) don't include any form of HAE correction.
     //For these, the user can manually enter the correction.
     topLayout->addWidget(new QLabel(tr("Altitude Correction:"), this),row,0);
@@ -121,10 +124,11 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     connect (buttonReset, SIGNAL(clicked()),
              gps, SLOT(sendFactoryReset()));
 
-   topLayout->setColumnStretch(2,10);
 #else
     topLayout->setRowStretch(row++,10);
 #endif
+
+  topLayout->setColumnStretch(2,10);
 
   // search for GPS device to be selected
   bool found = false;
