@@ -37,7 +37,7 @@ class WPListWidgetClass : public QWidget
 public:
     WPListWidgetClass(QWidget *parent=0);
 
-    ~WPListWidgetClass();
+    virtual ~WPListWidgetClass();
 
     /**
      * sets the list row height from configuration
