@@ -49,12 +49,14 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
 
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
+  int row = 0;
+  
   QGridLayout *topLayout = new QGridLayout( this );
   topLayout->setMargin(3);
   topLayout->setSpacing(3);
   
   QGroupBox *tsBox = new QGroupBox( tr("TP Scheme"), this );
-  topLayout->addWidget( tsBox, 0, 0 );
+  topLayout->addWidget( tsBox, row, 0 );
 
   QRadioButton* cylinder = new QRadioButton( tr("Cylinder"), this );
   QRadioButton* sector   = new QRadioButton( tr("Sector"), this );
@@ -70,21 +72,22 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   tsBox->setLayout(vbox);
 
   cylinder->setEnabled(true);
+  cylinder->setChecked(false);
   sector->setEnabled(true);
-  sector->setChecked(true);
+  sector->setChecked(false);
 
   // set active button as selected
   selectedCSScheme = (int) conf->getActiveCSTaskScheme();
 
   if( csScheme->button(selectedCSScheme) )
     {
-      csScheme->button(selectedCSScheme)->setEnabled(true);
+      csScheme->button(selectedCSScheme)->setChecked(true);
     }
-
+  
   //---------------------------------------------------------------
 
   QGroupBox *ssBox = new QGroupBox( tr("Switch Scheme"), this );
-  topLayout->addWidget( ssBox, 0, 1 );
+  topLayout->addWidget( ssBox, row, 1 );
 
   ntScheme = new QButtonGroup(this);
 
@@ -113,9 +116,29 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
     }
 
   //--------------------------------------------------------------
-    // as next cylinder group is added
+  // as next shape group is added
+  shapeGroup = new QGroupBox( tr("Shape"), this );
+  topLayout->addWidget( shapeGroup, row, 2 );
+
+  vbox = new QVBoxLayout;
+  drawShape = new QCheckBox( tr("Draw Shape"), this );
+  fillShape = new QCheckBox( tr("Fill Shape"), this );
+
+  vbox->addWidget( drawShape );
+  vbox->addWidget( fillShape );
+  vbox->addStretch(1);
+
+  shapeGroup->setLayout(vbox);
+
+  drawShape->setChecked( conf->getTaskDrawShape() );
+  fillShape->setChecked( conf->getTaskFillShape() );
+
+  row++;
+  
+  //--------------------------------------------------------------
+  // as next cylinder group is added
   cylinderGroup = new QGroupBox( tr("Cylinder"), this );
-  topLayout->addWidget( cylinderGroup, 1, 0, 1, 2 ); 
+  topLayout->addWidget( cylinderGroup, row++, 0, 1, 3 );
   
   QHBoxLayout *hbox = new QHBoxLayout;
 
@@ -155,64 +178,48 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   //--------------------------------------------------------------
   // as next sector group is added
   sectorGroup = new QGroupBox( tr("Sector"), this );
-  topLayout->addWidget( sectorGroup, 2, 0, 1, 2 ); 
+  topLayout->addWidget( sectorGroup, row++, 0, 1, 3 );
   
   QGridLayout *sectorLayout = new QGridLayout( sectorGroup );
   sectorLayout->setMargin(10);
   sectorLayout->setSpacing(3);
 
-  int row = 0;
+  int row1 = 0;
 
   lbl = new QLabel( tr("Inner Radius:"), sectorGroup );
-  sectorLayout->addWidget( lbl, row, 0 );
+  sectorLayout->addWidget( lbl, row1, 0 );
 
   innerSectorRadius = new QDoubleSpinBox( sectorGroup );
   innerSectorRadius->setRange(0.0, 10.0);
   innerSectorRadius->setSingleStep(0.1);
   innerSectorRadius->setButtonSymbols(QSpinBox::PlusMinus);
 
-  sectorLayout->addWidget( innerSectorRadius, row, 1 );
-  sectorLayout->addWidget( new QLabel( unit, sectorGroup), row, 2 );
+  sectorLayout->addWidget( innerSectorRadius, row1, 1 );
+  sectorLayout->addWidget( new QLabel( unit, sectorGroup), row1, 2 );
 
-  row++;
+  row1++;
   lbl = new QLabel( tr("Outer Radius:"), sectorGroup );
-  sectorLayout->addWidget( lbl, row, 0 );
+  sectorLayout->addWidget( lbl, row1, 0 );
   outerSectorRadius = new QDoubleSpinBox( sectorGroup );
   outerSectorRadius->setRange(0.1, 10.0);
   outerSectorRadius->setSingleStep(0.1);
   outerSectorRadius->setButtonSymbols(QSpinBox::PlusMinus);
-  sectorLayout->addWidget( outerSectorRadius, row, 1 );
-  sectorLayout->addWidget( new QLabel( unit, sectorGroup), row, 2 );
+  sectorLayout->addWidget( outerSectorRadius, row1, 1 );
+  sectorLayout->addWidget( new QLabel( unit, sectorGroup), row1, 2 );
 
-  row++;
+  row1++;
   lbl = new QLabel( tr("Angle:"), sectorGroup );
-  sectorLayout->addWidget( lbl, row, 0 );
+  sectorLayout->addWidget( lbl, row1, 0 );
   sectorAngle = new QSpinBox( sectorGroup );
   sectorAngle->setRange( 90, 180 );
   sectorAngle->setSingleStep( 5 );
   sectorAngle->setButtonSymbols(QSpinBox::PlusMinus);
   sectorAngle->setWrapping( true );
-  sectorLayout->addWidget( sectorAngle, row, 1 );
-  sectorLayout->addWidget( new QLabel( tr("degree"), sectorGroup), row, 2 );
+  sectorLayout->addWidget( sectorAngle, row1, 1 );
+  sectorLayout->addWidget( new QLabel( tr("degree"), sectorGroup), row1, 2 );
   sectorAngle->setValue( conf->getTaskSectorAngle() );
 
-  //--------------------------------------------------------------
-  // as next shape group is added
-  shapeGroup = new QGroupBox( tr("Shape"), this );
-  topLayout->addWidget( shapeGroup, 3, 0, 1, 2 );
-
-  hbox = new QHBoxLayout;
-  drawShape = new QCheckBox( tr("Draw Shape"), this );
-  fillShape = new QCheckBox( tr("Fill Shape"), this );
-
-  hbox->addWidget( drawShape );
-  hbox->addWidget( fillShape );
-  hbox->addStretch(1);
-
-  shapeGroup->setLayout(hbox);
-
-  drawShape->setChecked( conf->getTaskDrawShape() );
-  fillShape->setChecked( conf->getTaskFillShape() );
+  topLayout->setRowStretch( row, 10 );
 
   connect( csScheme, SIGNAL(buttonClicked(int)), this, SLOT(slot_buttonPressedCS(int)) );
   connect( ntScheme, SIGNAL(buttonClicked(int)), this, SLOT(slot_buttonPressedNT(int)) );
