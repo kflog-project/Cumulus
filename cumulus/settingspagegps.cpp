@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andr� Somers, 2008 Axel pauli
+**   Copyright (c):  2002 by Andrè Somers, 2008 Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -35,7 +35,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     topLayout->addWidget(new QLabel(tr("GPS Device:"), this), row, 0);
     GpsDev = new QComboBox(this);
     GpsDev->setObjectName ("GPSDevice");
-    topLayout->addWidget(GpsDev, row++, 2);
+    topLayout->addWidget(GpsDev, row++, 1);
 
 #ifndef MAEMO
     GpsDev->setEditable(true);
@@ -60,7 +60,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     GpsSpeed = new QComboBox(this);
     GpsSpeed->setObjectName("GPSSpeed");
     GpsSpeed->setEditable(false);
-    topLayout->addWidget(GpsSpeed,row++,2);
+    topLayout->addWidget(GpsSpeed,row++,1);
     GpsSpeed->addItem("115200");
     GpsSpeed->addItem("57600");
     GpsSpeed->addItem("38400");
@@ -79,7 +79,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     GpsAltitude = new QComboBox(this);
     GpsAltitude->setObjectName("GPSAltitude");
     GpsAltitude->setEditable(false);
-    topLayout->addWidget(GpsAltitude,row++,2);
+    topLayout->addWidget(GpsAltitude,row++,1);
     GpsAltitude->addItem(tr("MSL"));
     GpsAltitude->addItem(tr("HAE"));
     GpsAltitude->addItem(tr("User"));
@@ -95,33 +95,33 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     spinUserCorrection->setMinimum(-1000);
     spinUserCorrection->setMaximum(1000);
     spinUserCorrection->setButtonSymbols(QSpinBox::PlusMinus);
-    topLayout->addWidget(spinUserCorrection,row++,2);
+    topLayout->addWidget(spinUserCorrection,row++,1);
 
 #ifndef MAEMO
     topLayout->setRowMinimumHeight( row++, 10);
 
     checkSoftStart = new QCheckBox (tr("Soft start"), this);
-    topLayout->addWidget(checkSoftStart, row, 0, 1, 3);
+    topLayout->addWidget(checkSoftStart, row, 0 );
     row++;
 
     checkHardStart = new QCheckBox (tr("Hard start"), this);
-    topLayout->addWidget(checkHardStart, row, 0, 1, 3);
+    topLayout->addWidget(checkHardStart, row, 0 );
     row++;
 
     checkSyncSystemClock = new QCheckBox (tr("Update system clock"), this);
-    topLayout->addWidget(checkSyncSystemClock, row, 0, 1, 3);
+    topLayout->addWidget(checkSyncSystemClock, row, 0 );
     row++;
 
-    topLayout->setRowStretch(row++,10);
+    topLayout->setRowStretch(row++, 10);
 
     buttonReset = new QPushButton (tr("Reset to factory settings"), this);
-    topLayout->addWidget(buttonReset, row, 0, 1, 3, Qt::AlignRight);
+    topLayout->addWidget(buttonReset, row, 2, Qt::AlignRight);
     row++;
 
     connect (buttonReset, SIGNAL(clicked()),
              gps, SLOT(sendFactoryReset()));
 
-    topLayout->setColumnStretch(1,100);
+   topLayout->setColumnStretch(2,10);
 #else
     topLayout->setRowStretch(row++,10);
 #endif
