@@ -40,6 +40,14 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   b.setBold(true);
   setFont(b);
 
+  // set font size to a reasonable and useable value 
+  if( font().pointSize() < 16 )
+    {
+      QFont cf = font();
+      cf.setPointSize( 16 );
+      this->setFont(cf);
+    }
+
   QGridLayout* gridLayout = new QGridLayout(this);
   gridLayout->setMargin(5);
 

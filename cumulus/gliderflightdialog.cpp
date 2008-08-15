@@ -39,8 +39,17 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   QGridLayout* topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
 
-  QFont fnt( "Helvetica", 16, QFont::Bold  );
-  this->setFont(fnt);
+  QFont b = font();
+  b.setBold(true);
+  setFont(b);
+
+  // set font size to a reasonable and useable value 
+  if( font().pointSize() < 16 )
+    {
+      QFont cf = font();
+      cf.setPointSize( 16 );
+      this->setFont(cf);
+    }
 
   int row = 0;
   QLabel* lbl = new QLabel(tr("McCready:"), this);
