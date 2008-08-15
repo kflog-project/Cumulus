@@ -52,7 +52,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinAirfield->setObjectName("spinAirfield");
   spinAirfield->setMaximum(60);
   spinAirfield->setButtonSymbols(QSpinBox::PlusMinus);
-  spinAirfield->setSuffix( "s" );
+  spinAirfield->setSuffix( " s" );
   topLayout->addWidget( spinAirfield, row, 1 );
   row++;
 
@@ -61,7 +61,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinAirspace->setObjectName("spinAirspace");
   spinAirspace->setMaximum(60);
   spinAirspace->setButtonSymbols(QSpinBox::PlusMinus);
-  spinAirspace->setSuffix( "s" );
+  spinAirspace->setSuffix( " s" );
   topLayout->addWidget( spinAirspace, row, 1 );
   row++;
 
@@ -70,7 +70,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinInfo->setObjectName("spinInfo");
   spinInfo->setMaximum(60);
   spinInfo->setButtonSymbols(QSpinBox::PlusMinus);
-  spinInfo->setSuffix( "s" );
+  spinInfo->setSuffix( " s" );
   topLayout->addWidget( spinInfo, row, 1 );
   row++;
 
@@ -79,7 +79,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinWaypoint->setObjectName("spinWaypoint");
   spinWaypoint->setMaximum(60);
   spinWaypoint->setButtonSymbols(QSpinBox::PlusMinus);
-  spinWaypoint->setSuffix( "s" );
+  spinWaypoint->setSuffix( " s" );
   topLayout->addWidget( spinWaypoint, row, 1 );
   row++;
 
@@ -88,7 +88,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinWarning->setObjectName("spinWarning");
   spinWarning->setMaximum(60);
   spinWarning->setButtonSymbols(QSpinBox::PlusMinus);
-  spinWarning->setSuffix( "s" );
+  spinWarning->setSuffix( " s" );
   topLayout->addWidget( spinWarning, row, 1 );
   row++;
 
@@ -97,8 +97,11 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinSuppress->setObjectName("spinSuppress");
   spinSuppress->setMaximum(600);
   spinSuppress->setButtonSymbols(QSpinBox::PlusMinus);
-  spinSuppress->setSuffix( "min" );
+  spinSuppress->setSuffix( " min" );
   topLayout->addWidget( spinSuppress, row, 1 );
+  
+  buttonReset = new QPushButton (tr("Defaults"), this);
+  topLayout->addWidget( buttonReset, row, 2, Qt::AlignRight );
   row++;
 
   checkAlarmSound = new QCheckBox(tr("Alarm Sound"), this);
@@ -121,10 +124,6 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
 
   topLayout->setRowStretch ( row, 10 );
   topLayout->setColumnStretch( 2, 10 );
-
-  buttonReset = new QPushButton (tr("Defaults"), this);
-  topLayout->addWidget( buttonReset, row, 2, Qt::AlignRight );
-  row++;
 
   connect( buttonReset, SIGNAL(clicked()),
            this, SLOT(slot_setFactoryDefault()));
