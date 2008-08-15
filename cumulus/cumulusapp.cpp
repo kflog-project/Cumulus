@@ -124,7 +124,12 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   menuBarVisible = false;
   listViewTabs = 0;
   configView = 0;
-
+  fileMenu = 0;
+  viewMenu = 0;
+  mapMenu = 0;
+  setupMenu = 0;
+  helpMenu = 0;
+  
   // Eggert: make sure the app uses utf8 encoding for translated widgets
   QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
 
@@ -510,7 +515,7 @@ void CumulusApp::slotCreateApplicationWidgets()
            this, SLOT( slotNotification( const QString&, const bool ) ) );
 
   connect( ( QObject* ) calculator->getReachList(), SIGNAL( newReachList() ),
-           this, SLOT( slot_newReachList() ) );
+           this, SLOT( slotNewReachList() ) );
 
   connect( logger, SIGNAL( logging( bool ) ),
            viewMap, SLOT( slot_setFlightStatus() ) );
@@ -571,7 +576,7 @@ void CumulusApp::slotCreateApplicationWidgets()
       ossoDisplayTrigger->setSingleShot(true);
 
       connect( ossoDisplayTrigger, SIGNAL(timeout()),
-               this, SLOT(slot_ossoDisplayTrigger()) );
+               this, SLOT(slotOssoDisplayTrigger()) );
 
       // start timer with 10s
       ossoDisplayTrigger->start( 10000 );
@@ -715,20 +720,27 @@ void CumulusApp::initMenuBar()
 
   menuBar()->hide();
 
+  slotSetMenuBarFontSize();
+}
+
+/** set menubar font size to a reasonable and useable value */
+void CumulusApp::slotSetMenuBarFontSize()
+{
   if( font().pointSize() < 15 )
     {
       QFont cf = font();
       cf.setPointSize( 15 );
 
       menuBar()->setFont( cf );
-      fileMenu->setFont( cf );
-      viewMenu->setFont( cf );
-      mapMenu->setFont( cf );
-      setupMenu->setFont( cf );
-      helpMenu->setFont( cf );
+      
+      // maybe NULL, if not initialized
+      if( fileMenu ) fileMenu->setFont( cf );
+      if( viewMenu ) viewMenu->setFont( cf );
+      if( mapMenu ) mapMenu->setFont( cf );
+      if( setupMenu ) setupMenu->setFont( cf );
+      if( helpMenu ) helpMenu->setFont( cf );
     }
 }
-
 
 /** initializes all QActions of the application */
 void CumulusApp::initActions()
@@ -1573,7 +1585,6 @@ void CumulusApp::slotRememberWaypoint()
   viewWP->slot_wpAdded( wp );
 }
 
-
 /** This slot is called if the configuration has changed and at the
     start of the program to read the initial configuration. */
 void CumulusApp::slotReadconfig()
@@ -1615,6 +1626,9 @@ void CumulusApp::slotReadconfig()
   gps->setDeliveredUserAltitude( conf->getGpsUserAltitudeCorrection() );
   gps->slot_reset();
 
+  // update menubar font size
+  slotSetMenuBarFontSize();
+  
   if(1)
     {
       // 1 will be replaced in future with a construct like
@@ -1790,7 +1804,7 @@ void CumulusApp::slotPreFlightDataChanged()
 }
 
 /** dynamicly updates view for reachable list */
-void CumulusApp::slot_newReachList()
+void CumulusApp::slotNewReachList()
 {
   viewRP->slot_newList(); //let the view know we have a new list
   viewMap->_theMap->scheduleRedraw(Map::waypoints);
@@ -1880,7 +1894,7 @@ void CumulusApp::resizeEvent(QResizeEvent* event)
 #ifdef MAEMO
 
 /** Called to prevent the switch off of the screen display */
-void CumulusApp::slot_ossoDisplayTrigger()
+void CumulusApp::slotOssoDisplayTrigger()
 {
   // If the speed is greater or equal 10 km/h and we have a connected
   // gps we switch off the screen saver. Otherwise we let all as it

@@ -107,8 +107,6 @@ class CumulusApp : public QMainWindow
 
     /** empty view for config "dialog" */
     QWidget *viewCF;
-    /** use manual navigation even if GPS signal received */
-    QAction* actionToggleManualInFlight;
 
   public slots: // Public slots
     /** Switches to the WaypointList View */
@@ -169,13 +167,15 @@ class CumulusApp : public QMainWindow
     /** shows resp. signals an alarm */
     void slotAlarm (const QString&, const bool sound=true);
     /** updates the list of reachable points  */
-    void slot_newReachList();
+    void slotNewReachList();
     /** use manual navigation even if GPS signal received */
     void slotToggleManualInFlight(bool);
     /** used to allow or disable user keys processing during map drawing */
     void slotMapDrawEvent(bool);
     /** closes the config or pre-flight "dialog" */
     void slotCloseConfig();
+    /** set menubar font size to a reasonable and useable value */
+    void slotSetMenuBarFontSize();
 
   protected: //methods
     /**
@@ -277,6 +277,11 @@ class CumulusApp : public QMainWindow
      */
     void slotCreateApplicationWidgets();
 
+  public:
+
+    /** use manual navigation even if GPS signal received */
+    QAction* actionToggleManualInFlight;
+
   private:
 
     QAction* actionManualNavUp;
@@ -317,7 +322,7 @@ class CumulusApp : public QMainWindow
     QAction* actionHelpAboutApp;
     QAction* actionHelpAboutQt;
     QAction* actionWhatsThis;
-
+    
     /* shortcut for exit application */
     QShortcut* scExit;
     
@@ -347,7 +352,7 @@ class CumulusApp : public QMainWindow
   private slots:
 
     /** Called to prevent the switch off of the display */
-    void slot_ossoDisplayTrigger();
+    void slotOssoDisplayTrigger();
 
 #endif
 
