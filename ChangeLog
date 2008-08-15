@@ -18,6 +18,9 @@ Cumulus changelog
 Cumulus 2.0.x (Development based on X11/Qt-4.4.1)
 -------------------------------------------------
 
+[o] 2008-08-15 JD: Setup and pre-flight widget title removed. Icon added
+[o] 2008-08-15 JD: Page flipping mechanism in wp list views changed (just select
+                   page entries for flipping)
 [-] 2008-08-15 AP: Bugfix: Font size set to a reasonable and useable value
                    in vario and flight dialog. In different setting tabulators
                    layout optimized for Maemo.
