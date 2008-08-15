@@ -21,6 +21,7 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QHeaderView>
+#include <QToolTip>
 
 #include "airspace.h"
 #include "basemapelement.h"
@@ -251,12 +252,15 @@ void SettingsPageAirspace::enabledToggled(bool enabled)
 SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   QDialog(parent)
 {
-  setWindowTitle(tr("Airspace filling settings"));
+  setObjectName("SettingsPageAirspaceWarnings");
+  setModal(true);
   setSizeGripEnabled(true);
+  setWindowTitle(tr("Airspace filling settings"));
 
   QVBoxLayout * topLayout = new QVBoxLayout(this);
 
   m_enableFilling = new QCheckBox(tr("Enable airspace filling"), this);
+  m_enableFilling->setToolTip(tr("Switch on/off Airspace filling"));
 
   connect(m_enableFilling, SIGNAL(toggled(bool)), SLOT(enabledToggled(bool)));
   topLayout->addWidget(m_enableFilling);
@@ -521,19 +525,21 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
 {
   setObjectName("SettingsPageAirspaceWarnings");
   setModal(true);
+  setSizeGripEnabled(true);
   setWindowTitle(tr("Airspace warning settings"));
 
   // save current altitude unit. This unit must be considered during
   // storage. The internal storage is always in meters.
 
   altUnit = Altitude::getUnit();
-  QString unit = (altUnit == Altitude::meters) ? "m" : "ft";
+  QString unit = (altUnit == Altitude::meters) ? " m" : " ft";
 
   QVBoxLayout *topLayout = new QVBoxLayout(this);
 
   enableWarning = new QCheckBox(tr("Enable Airspace Warning"), this);
   enableWarning->setObjectName("EnableWarnings");
   enableWarning->setChecked(true);
+  enableWarning->setToolTip(tr("Switch on/off Airspace Warnings"));
 
   connect( enableWarning, SIGNAL(toggled(bool)), SLOT(enabledToggled(bool)));
   topLayout->addWidget( enableWarning );
@@ -543,77 +549,70 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
 
   QGridLayout* mVGroupLayout = new QGridLayout(separations);
   int row=0;
-  mVGroupLayout->addItem(new QSpacerItem(0, 8), 0, 0);
+  mVGroupLayout->setRowMinimumHeight ( row, 8 );
   row++;
 
   //header
   QLabel* lbl;
 
+  // row 0
   lbl = new QLabel(tr("Distance"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
-  lbl = new QLabel(tr("Near"), separations);
-  mVGroupLayout->addWidget(lbl,row,1,1,2);
-//  mVGroupLayout->addMultiCellWidget(lbl, row, row, 1, 2);
-  lbl = new QLabel(tr("Very Near"), separations);
-  mVGroupLayout->addWidget(lbl,row,3,1,2);
-//  mVGroupLayout->addMultiCellWidget(lbl, row, row, 3, 4);
+  lbl = new QLabel(tr("Lateral"), separations);
+  mVGroupLayout->addWidget(lbl, row, 1 );
+  lbl = new QLabel(tr("Above"), separations);
+  mVGroupLayout->addWidget(lbl, row, 2 );
+  lbl = new QLabel(tr("Below"), separations);
+  mVGroupLayout->addWidget(lbl, row, 3 );
   row++;
 
   //row 1
-  lbl = new QLabel(tr("Lateral"), separations);
+  lbl = new QLabel(tr("Near"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
+  
   horiWarnDist = new QSpinBox(separations);
   horiWarnDist->setMaximum(99999);
   horiWarnDist->setButtonSymbols(QSpinBox::PlusMinus);
+  horiWarnDist->setSuffix( unit );
   mVGroupLayout->addWidget(horiWarnDist, row, 1);
-  lbl = new QLabel(unit, separations);
-  mVGroupLayout->addWidget(lbl, row, 2);
+
+  aboveWarnDist = new QSpinBox(separations);
+  aboveWarnDist->setMaximum(99999);
+  aboveWarnDist->setButtonSymbols(QSpinBox::PlusMinus);
+  aboveWarnDist->setSuffix( unit );
+  mVGroupLayout->addWidget(aboveWarnDist, row, 2);
+
+  belowWarnDist = new QSpinBox(separations);
+  belowWarnDist->setMaximum(99999);
+  belowWarnDist->setButtonSymbols(QSpinBox::PlusMinus);
+  belowWarnDist->setSuffix( unit );
+  mVGroupLayout->addWidget(belowWarnDist, row, 3);
+  row++;
+  
+  // row 2
+  lbl = new QLabel(tr("Very Near"), separations);
+  mVGroupLayout->addWidget(lbl, row, 0);
 
   horiWarnDistVN = new QSpinBox(separations);
   horiWarnDistVN->setMaximum(99999);
   horiWarnDistVN->setButtonSymbols(QSpinBox::PlusMinus);
-  mVGroupLayout->addWidget(horiWarnDistVN, row, 3);
-  lbl = new QLabel(unit, separations);
-  mVGroupLayout->addWidget(lbl, row, 4);
-  row++;
-
-  //row 2
-  lbl = new QLabel(tr("Above"), separations);
-  mVGroupLayout->addWidget(lbl, row, 0);
-  aboveWarnDist = new QSpinBox(separations);
-  aboveWarnDist->setMaximum(99999);
-  aboveWarnDist->setButtonSymbols(QSpinBox::PlusMinus);
-  mVGroupLayout->addWidget(aboveWarnDist, row, 1);
-  lbl = new QLabel(unit, separations);
-  mVGroupLayout->addWidget(lbl, row, 2);
+  horiWarnDistVN->setSuffix( unit );
+  mVGroupLayout->addWidget(horiWarnDistVN, row, 1);
 
   aboveWarnDistVN = new QSpinBox(separations);
   aboveWarnDistVN->setMaximum(99999);
   aboveWarnDistVN->setButtonSymbols(QSpinBox::PlusMinus);
-  mVGroupLayout->addWidget(aboveWarnDistVN, row, 3);
-  lbl = new QLabel(unit, separations);
-  mVGroupLayout->addWidget(lbl, row, 4);
-  row++;
-
-  //row 3
-  lbl = new QLabel(tr("Below"), separations);
-  mVGroupLayout->addWidget(lbl, row, 0);
-  belowWarnDist = new QSpinBox(separations);
-  belowWarnDist->setMaximum(99999);
-  belowWarnDist->setButtonSymbols(QSpinBox::PlusMinus);
-  mVGroupLayout->addWidget(belowWarnDist, row, 1);
-  lbl = new QLabel(unit, separations);
-  mVGroupLayout->addWidget(lbl, row, 2);
+  aboveWarnDistVN->setSuffix( unit );
+  mVGroupLayout->addWidget(aboveWarnDistVN, row, 2);
 
   belowWarnDistVN = new QSpinBox(separations);
   belowWarnDistVN->setMaximum(99999);
   belowWarnDistVN->setButtonSymbols(QSpinBox::PlusMinus);
+  belowWarnDistVN->setSuffix( unit );
   mVGroupLayout->addWidget(belowWarnDistVN, row, 3);
-  lbl = new QLabel(unit, separations);
-  mVGroupLayout->addWidget(lbl, row, 4);
   row++;
 
-  topLayout->addStretch(5);
+  topLayout->addStretch(10);
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                  | QDialogButtonBox::Cancel);

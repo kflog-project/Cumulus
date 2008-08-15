@@ -62,15 +62,15 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   // Input accepts different units 
   if( distUnit == Distance::kilometers )
     {
-      unit = "km";
+      unit = " km";
     }
   else if( distUnit == Distance::miles )
     {
-      unit = "ml";
+      unit = " ml";
     }
   else // if( distUnit == Distance::nautmiles )
     {
-      unit = "nm";
+      unit = " nm";
     }
 
   lbl = new QLabel( tr("Home Radius:"), (weltGroup ) );
@@ -79,9 +79,10 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   homeRadius->setRange( 0, 10000 );
   homeRadius->setSingleStep( 10 );
   homeRadius->setButtonSymbols(QSpinBox::PlusMinus);
+  homeRadius->setSuffix( unit );
   weltLayout->addWidget( homeRadius, grow, 1 );
-  weltLayout->addWidget( new QLabel( unit, weltGroup), grow, 2 );
 
+  weltLayout->setColumnStretch( 2, 10 );
 
   // JD: adding group box for diverse list display settings
 
@@ -117,6 +118,9 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   rpMargin->setButtonSymbols(QSpinBox::PlusMinus);
   listLayout->addWidget( rpMargin, grow, 1 );
 
+  grow++;
+  listLayout->setRowStretch ( grow, 10 );
+  listLayout->setColumnStretch( 2, 10 );
 
   connect( countryFilter, SIGNAL(textChanged(const QString&)),
            this, SLOT(slot_filterChanged(const QString&)) );

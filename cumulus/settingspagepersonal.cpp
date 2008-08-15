@@ -81,6 +81,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   row++;
 
   topLayout->setRowStretch(row, 10);
+  topLayout->setColumnStretch( 2, 10 );
 }
 
 SettingsPagePersonal::~SettingsPagePersonal()

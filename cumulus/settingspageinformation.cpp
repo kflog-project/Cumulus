@@ -28,7 +28,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   QWidget(parent), loadConfig(true)
 {
   setObjectName("SettingsPageInformation");
-    
+
   int row=0;
   QGridLayout *topLayout = new QGridLayout( this );
 
@@ -45,15 +45,15 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
 
   topLayout->addLayout( hBox, row++, 0, 1, 3 );
 
-  topLayout->addWidget(new QLabel(tr("0...60 s"), this), row, 2, Qt::AlignBottom );
-  row++;
+  topLayout->setRowMinimumHeight ( row++, 10 );
 
-  topLayout->addWidget(new QLabel(tr("Airfield display time (sec):"), this),row,0);
+  topLayout->addWidget(new QLabel(tr("Airfield display time:"), this),row,0);
   spinAirfield = new QSpinBox(this);
   spinAirfield->setObjectName("spinAirfield");
   spinAirfield->setMaximum(60);
   spinAirfield->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget( spinAirfield, row, 2 );
+  spinAirfield->setSuffix( "s" );
+  topLayout->addWidget( spinAirfield, row, 1 );
   row++;
 
   topLayout->addWidget(new QLabel(tr("Airspace display time:"), this),row,0);
@@ -61,7 +61,8 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinAirspace->setObjectName("spinAirspace");
   spinAirspace->setMaximum(60);
   spinAirspace->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget( spinAirspace, row, 2 );
+  spinAirspace->setSuffix( "s" );
+  topLayout->addWidget( spinAirspace, row, 1 );
   row++;
 
   topLayout->addWidget(new QLabel(tr("Info display time:"), this),row,0);
@@ -69,7 +70,8 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinInfo->setObjectName("spinInfo");
   spinInfo->setMaximum(60);
   spinInfo->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget( spinInfo, row, 2 );
+  spinInfo->setSuffix( "s" );
+  topLayout->addWidget( spinInfo, row, 1 );
   row++;
 
   topLayout->addWidget(new QLabel(tr("Waypoint display time:"), this),row,0);
@@ -77,7 +79,8 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinWaypoint->setObjectName("spinWaypoint");
   spinWaypoint->setMaximum(60);
   spinWaypoint->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget( spinWaypoint, row, 2 );
+  spinWaypoint->setSuffix( "s" );
+  topLayout->addWidget( spinWaypoint, row, 1 );
   row++;
 
   topLayout->addWidget(new QLabel(tr("Warning display time:"), this),row,0);
@@ -85,33 +88,39 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinWarning->setObjectName("spinWarning");
   spinWarning->setMaximum(60);
   spinWarning->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget( spinWarning, row, 2 );
+  spinWarning->setSuffix( "s" );
+  topLayout->addWidget( spinWarning, row, 1 );
   row++;
 
-  topLayout->addWidget(new QLabel(tr("Warning suppress time (min):"), this),row,0);
+  topLayout->addWidget(new QLabel(tr("Warning suppress time:"), this),row,0);
   spinSuppress = new QSpinBox(this);
   spinSuppress->setObjectName("spinSuppress");
   spinSuppress->setMaximum(600);
   spinSuppress->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget( spinSuppress, row, 2 );
+  spinSuppress->setSuffix( "min" );
+  topLayout->addWidget( spinSuppress, row, 1 );
   row++;
 
   checkAlarmSound = new QCheckBox(tr("Alarm Sound"), this);
   checkAlarmSound->setObjectName("checkAlarmSound");
   checkAlarmSound->setChecked(true);
-  topLayout->addWidget( checkAlarmSound, row, 0, 1, 3 );
+  topLayout->addWidget( checkAlarmSound, row, 0 );
   row++;
 
   calculateNearestSites = new QCheckBox(tr("Nearest Site Calculator"),this);
   calculateNearestSites->setObjectName("calcNearest");
   calculateNearestSites->setChecked(true);
-  topLayout->addWidget( calculateNearestSites, row, 0, 1, 3 );
+  topLayout->addWidget( calculateNearestSites, row, 0 );
   row++;
 
-  checkAltimeterToggle = new QCheckBox(tr("Toggle altimeter on tip"), this);
+  checkAltimeterToggle = new QCheckBox(tr("Toggle Altimeter on tip"), this);
   checkAltimeterToggle->setObjectName("altimeterToggle");
   checkAltimeterToggle->setChecked(false);
-  topLayout->addWidget( checkAltimeterToggle, row, 0, 1, 2 );
+  topLayout->addWidget( checkAltimeterToggle, row, 0 );
+  row++,
+
+  topLayout->setRowStretch ( row, 10 );
+  topLayout->setColumnStretch( 2, 10 );
 
   buttonReset = new QPushButton (tr("Defaults"), this);
   topLayout->addWidget( buttonReset, row, 2, Qt::AlignRight );
