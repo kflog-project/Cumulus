@@ -180,4 +180,5 @@ void PreFlightGliderPage::save()
 void PreFlightGliderPage::showEvent(QShowEvent *)
 {
   slot_gliderChanged();
+  list->setFocus();
 }

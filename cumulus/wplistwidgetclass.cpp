@@ -31,7 +31,7 @@ WPListWidgetClass::WPListWidgetClass(QWidget *parent) : QWidget(parent)
 
   list = new QTreeWidget( this );
 
-  list->setObjectName("waypointlist");
+  list->setObjectName("WaypointListWidgetClass");
   list->setRootIsDecorated(false);
   list->setItemsExpandable(false);
   list->setUniformRowHeights(true);
@@ -55,8 +55,8 @@ WPListWidgetClass::WPListWidgetClass(QWidget *parent) : QWidget(parent)
 
   topLayout->addWidget(list,10);
 
-  connect( list, SIGNAL( itemSelectionChanged() ),
-    this, SLOT( slot_SelectionChanged() ) );
+  connect( list, SIGNAL( itemClicked(QTreeWidgetItem*,int) ),
+    this, SLOT( slot_listItemClicked(QTreeWidgetItem*,int) ) );
 
   rowDelegate = 0;
   listFilled = false;
@@ -94,11 +94,10 @@ void WPListWidgetClass::slot_Done ()
   filter->off();
 }
 
-
-/** This slot is called from parent when "Select" button was pressed */
-void WPListWidgetClass::slot_Select ()
+/** This slot sends a signal to indicate that a selection has been made. */
+void WPListWidgetClass::slot_listItemClicked(QTreeWidgetItem* li, int)
 {
-  QTreeWidgetItem* li = list->currentItem();
+//  qDebug("WPListWidgetClass::slot_listItemClicked");
   if ( li == 0)
     return;
   
@@ -106,16 +105,10 @@ void WPListWidgetClass::slot_Select ()
   QString test = li->text(1);
 
   if (test == "Next Page")
-    filter->showPage(true); // "true" is up
+    filter->showPage(true); // "true" is forward
   else
     if (test == "Previous Page")
-      filter->showPage(false); // "false" is down
-}
-
-
-/** This slot sends a signal to indicate that a selection has been made. */
-void WPListWidgetClass::slot_SelectionChanged()
-{
-  // qDebug("WPListWidgetClass::slot_SelectionChanged");
-  emit wpSelectionChanged();
+      filter->showPage(false); // "false" is backward
+    else
+      emit wpSelectionChanged();
 }

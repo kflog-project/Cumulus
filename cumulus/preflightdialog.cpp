@@ -43,13 +43,13 @@ PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
 
 //  setWindowTitle(tr("Preflight settings"));
 
-  QVBoxLayout *topLayout = new QVBoxLayout(this);
+/*  QVBoxLayout *topLayout = new QVBoxLayout(this);
   setLayout(topLayout);
  
   title = new QLabel("<b>Pre-Flight Settings</b>", this);
   topLayout->addWidget(title);
   title->hide();
-
+*/
   tabWidget = new QTabWidget(this);
   tabWidget->setTabPosition( QTabWidget::West );
 
@@ -74,14 +74,17 @@ PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
   connect(scSpace, SIGNAL(activated()),this, SLOT(accept()));
 
   QPushButton *cancel = new QPushButton(this);
-  cancel->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "cancel.png") ) );
+  cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
   cancel->setIconSize(QSize(26,26));
   cancel->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::QSizePolicy::Preferred);
 
   QPushButton *ok = new QPushButton(this);
-  ok->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "ok.png") ) );
+  ok->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("ok.png")) );
   ok->setIconSize(QSize(26,26));
   ok->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap( GeneralConfig::instance()->loadPixmap("preflight.png") );
 
   connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
   connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -92,12 +95,13 @@ PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
   buttonBox->addSpacing(20);
   buttonBox->addWidget( ok, 2 );
   buttonBox->addStretch(2);
+  buttonBox->addWidget( titlePix, 1 );
 
   QHBoxLayout *contentLayout = new QHBoxLayout;
   contentLayout->addWidget(tabWidget);
   contentLayout->addLayout(buttonBox);
 
-  topLayout->addLayout(contentLayout);
+  setLayout(contentLayout);
 
   miscpage->load();
 
@@ -233,8 +237,8 @@ void PreFlightDialog::keyLeft()
 
 void PreFlightDialog::resizeEvent(QResizeEvent*)
 {
-  if ( ( (QWidget*)parent() )->windowState() == Qt::WindowFullScreen )
+/*  if ( ( (QWidget*)parent() )->windowState() == Qt::WindowFullScreen )
     title->show();
   else
-    title->hide();
+    title->hide();*/
 }

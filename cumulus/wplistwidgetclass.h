@@ -67,12 +67,6 @@ public slots: // Public slots
      */
     void slot_Done();
 
-    /**
-     * Called from parent when "Select" button was pressed
-     */
-    void slot_Select();
-
-
 signals: // Signals
 
     /**
@@ -92,9 +86,9 @@ private:
 private slots:
 
     /**
-     * Called from tree widget when selection changed.
+     * Called from tree widget when an entry is tapped on.
      */
-    void slot_SelectionChanged();
+    void slot_listItemClicked(QTreeWidgetItem*,int);
 
 };
 

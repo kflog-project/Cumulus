@@ -32,15 +32,16 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   QWidget(parent), loadConfig(true)
 {
   // qDebug("ConfigDialog: height=%d, width=%d", parent->height(), parent->width());
+  setObjectName("SetupDialog");
   setAttribute( Qt::WA_DeleteOnClose );
 
-  QVBoxLayout *topLayout = new QVBoxLayout;
+/*  QVBoxLayout *topLayout = new QVBoxLayout;
   setLayout(topLayout);
 
   title = new QLabel("<b>Cumulus Settings</b>", this);
   topLayout->addWidget(title);
   title->hide();
-
+*/
   QTabWidget* tabWidget = new QTabWidget(this);
 
   spp=new SettingsPagePersonal(this);
@@ -92,14 +93,17 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   tabWidget->addTab(splnf, tr("Look&&Feel"));
 
   QPushButton *cancel = new QPushButton(this);
-  cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "cancel.png")) );
+  cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
   cancel->setIconSize(QSize(26,26));
   cancel->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::QSizePolicy::Preferred);
 
   QPushButton *ok = new QPushButton(this);
-  ok->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "ok.png")) );
+  ok->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("ok.png")) );
   ok->setIconSize(QSize(26,26));
   ok->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png") );
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
@@ -107,6 +111,8 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   buttonBox->addSpacing(20);
   buttonBox->addWidget( ok, 2 );
   buttonBox->addStretch(2);
+  buttonBox->addWidget( titlePix, 1 );
+
 
   connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
   connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -156,15 +162,15 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   contentLayout->addWidget(tabWidget);
   contentLayout->addLayout(buttonBox);
 
-  topLayout->addLayout(contentLayout);
+  setLayout(contentLayout);
 
   slot_LoadCurrent();
   tabWidget->setCurrentWidget(spp);
 
-  if ( parent->windowState() == Qt::WindowFullScreen )
+/*  if ( parent->windowState() == Qt::WindowFullScreen )
     title->show();
   else
-    title->hide();
+    title->hide();*/
 }
 
 ConfigDialog::~ConfigDialog()
@@ -268,9 +274,9 @@ void ConfigDialog::reject()
 
 void ConfigDialog::resizeEvent(QResizeEvent*)
 {
-  if ( ( (QWidget*)parent() )->windowState() == Qt::WindowFullScreen )
+/*  if ( ( (QWidget*)parent() )->windowState() == Qt::WindowFullScreen )
     title->show();
   else
-    title->hide();
+    title->hide();*/
 }
 

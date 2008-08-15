@@ -58,8 +58,6 @@ AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)
           this, SLOT(slot_Selected()));
   connect(this, SIGNAL(done()),
           listw, SLOT(slot_Done()));
-  connect(cmdSelect, SIGNAL(clicked()),
-          listw, SLOT(slot_Select()));
 
   // activate keyboard shortcut Return as select
   QShortcut* scSelect = new QShortcut( this );
