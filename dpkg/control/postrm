@@ -19,6 +19,8 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
+echo $0 $*
+
 case "$1" in
     remove|purge)
         # remove remaining parts of cumulus
