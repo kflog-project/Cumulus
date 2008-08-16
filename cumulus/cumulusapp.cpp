@@ -149,13 +149,9 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   foreach( QString inputMethod, inputMethods )
   {
     qDebug() << "InputMethod: " << inputMethod;
-    
-    if ( inputMethod == "hildon-input-method" )
-    {
-      hildonInputContext = QInputContextFactory::create( "hildon-input-method", 0 );
-      break;
-    }
   }
+  
+  hildonInputContext = QInputContextFactory::create( "hildon", 0 );
   
   if ( !hildonInputContext )
     {
