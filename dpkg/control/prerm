@@ -19,9 +19,12 @@ echo $0 $*
 
 case "$1" in
     upgrade)
-    #remove|upgrade|deconfigure)
     #remove installed libraries when upgrade is called
     test -d /opt/cumulus/lib && rm -rf /opt/cumulus/lib
+    exit 0
+    ;;
+
+    remove|deconfigure)
     exit 0
     ;;
 
