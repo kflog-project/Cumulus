@@ -106,6 +106,7 @@ dpkg_make:
 	cp dpkg/control/control dpkg/cumulus-$(VERSION)/debian/
 	cp dpkg/control/rules dpkg/cumulus-$(VERSION)/debian/
 	cp dpkg/control/postinst dpkg/cumulus-$(VERSION)/debian/
+	cp dpkg/control/prerm dpkg/cumulus-$(VERSION)/debian/
 	cp dpkg/control/postrm dpkg/cumulus-$(VERSION)/debian/
 	sed -e "s/__DATE__/$(DATE)/g" dpkg/control/README > dpkg/cumulus-$(VERSION)/debian/README
 	cp dpkg/cumulus-$(VERSION)/debian/README dpkg/cumulus-$(VERSION)/debian/README.Debian
