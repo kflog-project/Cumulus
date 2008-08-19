@@ -63,6 +63,8 @@ ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(paren
 ListViewFilter::~ListViewFilter()
 {
   delete _rootFilter;
+  delete next;
+  delete prev;
 }
 
 
