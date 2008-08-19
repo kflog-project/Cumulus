@@ -52,7 +52,7 @@ ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(paren
 
   QStringList sl;
   sl << " " << "Previous Page" << "(click)";
-  prev = new QTreeWidgetItem(sl);
+  prev = new QTreeWidgetItem( sl );
 
   QStringList nl;
   nl << " " << "Next Page" << "(click)";
@@ -62,7 +62,13 @@ ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(paren
 
 ListViewFilter::~ListViewFilter()
 {
-  delete _rootFilter;
+  // JD: Never forget to take ALL items out of the WP list before
+  // deleting the filter item list ! Multiple pointers to items !
+  if ( _rootFilter != 0 ) {
+    while ( ! _rootFilter->items.isEmpty() )
+      delete _rootFilter->items.takeLast();
+    delete _rootFilter;
+  }
   delete next;
   delete prev;
 }
@@ -247,7 +253,7 @@ void ListViewFilter::activateFilter(ListViewFilterItem * filter, int shrink)
 
 void ListViewFilter::showPage(bool up)
 {
-  int pageSize = 40;
+  int pageSize = GeneralConfig::instance()->getListDisplayPageSize();
   int maxIndex = _activeFilter->items.count() - 1;
   int maxPageIndex = 0;
 
@@ -295,11 +301,6 @@ void ListViewFilter::showPage(bool up)
   // add the waypoint/airfield items
   for ( int i = showIndex; i <= showIndex+maxPageIndex; i++ )
     addList << _activeFilter->items.at(i);
-
-  // to be sure add "Next" item to the list (ignored later
-  // if the item is already contained in the tree widget)
-  if ( showIndex+pageSize < maxIndex )
-    addList << next;
 
   // insert whole list _before_ "Next" item
   _tw->insertTopLevelItems( 0, addList );

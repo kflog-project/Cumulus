@@ -31,6 +31,8 @@ extern MapConfig   *_globalMapConfig;
 AirfieldListWidget::AirfieldListWidget(QWidget *parent ) : WPListWidgetClass(parent)
 {
   setObjectName("AirfieldListWidget");
+  list->setObjectName("AFTreeWidget");
+
   wp = new wayPoint();
 
   itemList[0] = MapContents::AirportList;
@@ -41,6 +43,11 @@ AirfieldListWidget::AirfieldListWidget(QWidget *parent ) : WPListWidgetClass(par
 
 AirfieldListWidget::~AirfieldListWidget()
 {
+  // JD: Never forget to take ALL items out of the WP list !
+  // Items are deleted in filter destructor
+  while ( list->topLevelItemCount() > 0 )
+    list->takeTopLevelItem(0);
+
   delete wp;
 }
 
@@ -53,7 +60,7 @@ void AirfieldListWidget::fillWpList()
 
   int Nr = 0;
   list->setUpdatesEnabled(false);
-  list->clear();
+//  list->clear();
   configRowHeight();
 
   for( int item = 0; item<3; item++) {

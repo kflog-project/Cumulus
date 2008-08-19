@@ -33,12 +33,16 @@ extern MapConfig* _globalMapConfig;
 WaypointListWidget::WaypointListWidget(QWidget *parent) : WPListWidgetClass(parent)
 {
   setObjectName("WaypointListWidget");
+  list->setObjectName("WPTreeWidget");
 }
 
 
 WaypointListWidget::~WaypointListWidget()
 {
-  // qDebug("WaypointListWidget::~WaypointListWidget()");
+  // JD: Never forget to take ALL items out of the list !
+  // Items are deleted in filter destructor
+  while ( list->topLevelItemCount() > 0 )
+    list->takeTopLevelItem(0);
 }
 
 
@@ -48,7 +52,7 @@ void WaypointListWidget::fillWpList()
   QList<wayPoint*> *wpList = _globalMapContents->getWaypointList();
 
   list->setUpdatesEnabled(false);
-  list->clear();
+//  list->clear();
   configRowHeight();
 
   int n = 0;
