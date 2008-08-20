@@ -522,7 +522,7 @@ void ReachableList::removeDoubles()
 
   for (int i=removeList.count()-1; i>=0; i--) {
     //qDebug("Removing point %d (%s)", removeList.at(i),at(removeList.at(i))->getWaypoint()->name.latin1());
-    removeAt( removeList.at(i) );
+    delete takeAt( removeList.at(i) );
   }
 }
 
