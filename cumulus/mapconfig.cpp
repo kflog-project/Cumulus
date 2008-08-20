@@ -83,6 +83,29 @@ MapConfig::MapConfig(QObject* parent)
   glacierBorder = new bool[4];
   packiceBorder = new bool[4];
 
+  // pre-create QIcons with background for copying later when needed
+  // in airfield list; speeds up list display
+
+  unsigned int airfieldType[12] = { BaseMapElement::IntAirport, BaseMapElement::Airport, BaseMapElement::MilAirport,
+    BaseMapElement::CivMilAirport, BaseMapElement::Airfield, BaseMapElement::ClosedAirfield, BaseMapElement::CivHeliport,
+    BaseMapElement::MilHeliport, BaseMapElement::AmbHeliport, BaseMapElement::Glidersite, BaseMapElement::UltraLight,
+    BaseMapElement::HangGlider };
+
+  QPixmap selectPixmap;
+  QIcon afIcon;
+  QPainter pnt;
+
+  for ( int i=0; i<12; i++ ) {
+    selectPixmap = QPixmap(18,18);
+    pnt.begin(&selectPixmap);
+    selectPixmap.fill( Qt::white );
+    pnt.drawPixmap(1, 1, getPixmap(airfieldType[i],false,true) );
+    pnt.end();
+    afIcon = QIcon();
+    afIcon.addPixmap( getPixmap(airfieldType[i],false,true) );
+    afIcon.addPixmap( selectPixmap, QIcon::Selected );
+    airfieldIcon.insert(airfieldType[i],afIcon);
+  }
   // qDebug("MapConfig initialized...");
 }
 
@@ -844,6 +867,11 @@ QPixmap MapConfig::getPixmap(QString iconName)
     return GeneralConfig::instance()->loadPixmap(iconName);
   else
     return GeneralConfig::instance()->loadPixmap("small/" + iconName);
+}
+
+QIcon MapConfig::getListIcon(unsigned int typeID)
+{
+  return QIcon( airfieldIcon[typeID] );
 }
 
 

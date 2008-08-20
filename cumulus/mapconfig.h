@@ -26,6 +26,8 @@
 #include <QBrush>
 #include <QPixmap>
 #include <QString>
+#include <QMap>
+#include <QIcon>
 
 /**
  * This class takes care of the configuration-data for displaying
@@ -117,6 +119,13 @@ public:
      * @returns the icon-pixmap of the element.
      */
     QPixmap getPixmap(unsigned int typeID, bool isWinch, bool smallIcon);
+
+    /**
+     * @param  type  The typeID of the element.
+     *
+     * @returns an icon for use in airfield list.
+     */
+    QIcon getListIcon(unsigned int typeID);
 
     /**
      * @param  type  The typeID of the element.
@@ -282,6 +291,12 @@ private:
     QList<QBrush*> forestBrushList;
     QList<QBrush*> glacierBrushList;
     QList<QBrush*> packiceBrushList;
+
+    /**
+     * holds a collection of ready made airfield icons
+     */
+    QMap<unsigned int, QIcon> airfieldIcon;
+
     /**
      */
     bool* airABorder;

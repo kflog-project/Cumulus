@@ -18,6 +18,10 @@ Cumulus changelog
 Cumulus 2.0.x (Development based on X11/Qt-4.4.1)
 -------------------------------------------------
 
+[o] 2008-08-20 JD: QIcons for airfield list prepared in MapConfig. Speeds up list
+                   initialization (around 40%)
+[o] 2008-08-29 JD: Bugfix: memory leaks in ListViewFilter removed; list page length
+                   connected to setup entry
 [o] 2008-08-15 JD: Setup and pre-flight widget title removed. Icon added
 [o] 2008-08-15 JD: Page flipping mechanism in wp list views changed (just select
                    page entries for flipping)
