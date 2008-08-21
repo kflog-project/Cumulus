@@ -86,12 +86,12 @@ void GeneralConfig::load()
 
   // Airspace warning distances
   beginGroup("Airspace");
-  _awd.horClose          = value("HorizontalWarningDistance", 1500.0).toDouble();
-  _awd.horVeryClose      = value("HorizontalWarningDistanceVC", 200.0).toDouble();
+  _awd.horClose          = value("HorizontalWarningDistance", 2000.0).toDouble();
+  _awd.horVeryClose      = value("HorizontalWarningDistanceVC", 1000.0).toDouble();
   _awd.verAboveClose     = value("VerticalWarningDistanceAbove", 200.0).toDouble();
-  _awd.verAboveVeryClose = value("VerticalWarningDistanceAboveVC", 50.0).toDouble();
-  _awd.verBelowClose     = value("VerticalWarningDistanceBelow", 100.0).toDouble() ;
-  _awd.verBelowVeryClose = value("VerticalWarningDistanceBelowVC", 25.0).toDouble();
+  _awd.verAboveVeryClose = value("VerticalWarningDistanceAboveVC", 100.0).toDouble();
+  _awd.verBelowClose     = value("VerticalWarningDistanceBelow", 200.0).toDouble() ;
+  _awd.verBelowVeryClose = value("VerticalWarningDistanceBelowVC", 100.0).toDouble();
 
   _forceDrawing         = value("forceLowAirspaceDrawing", true ).toBool();
   _forceDrawingDistance = value("forceLowAirspaceDrawingDistance", 150.0).toDouble();
