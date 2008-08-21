@@ -24,6 +24,7 @@
 #include <QMessageBox>
 #include <QDialogButtonBox>
 #include <QScrollArea>
+#include <QLabel>
 
 #include "configdialog.h"
 #include "generalconfig.h"
@@ -32,16 +33,10 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   QWidget(parent), loadConfig(true)
 {
   // qDebug("ConfigDialog: height=%d, width=%d", parent->height(), parent->width());
-  setObjectName("SetupDialog");
+  setObjectName("ConfigDialog");
   setAttribute( Qt::WA_DeleteOnClose );
+  setWindowTitle("General Settings");
 
-/*  QVBoxLayout *topLayout = new QVBoxLayout;
-  setLayout(topLayout);
-
-  title = new QLabel("<b>Cumulus Settings</b>", this);
-  topLayout->addWidget(title);
-  title->hide();
-*/
   QTabWidget* tabWidget = new QTabWidget(this);
 
   spp=new SettingsPagePersonal(this);
@@ -113,7 +108,6 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   buttonBox->addStretch(2);
   buttonBox->addWidget( titlePix, 1 );
 
-
   connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
   connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
 
@@ -158,6 +152,9 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
           spa, SLOT(slot_query_close(bool&, QStringList&)));
 
+  connect(this, SIGNAL(query_close(bool&, QStringList& )),
+          splnf, SLOT(slot_query_close(bool&, QStringList&)));
+
   QHBoxLayout *contentLayout = new QHBoxLayout;
   contentLayout->addWidget(tabWidget);
   contentLayout->addLayout(buttonBox);
@@ -166,11 +163,6 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
 
   slot_LoadCurrent();
   tabWidget->setCurrentWidget(spp);
-
-/*  if ( parent->windowState() == Qt::WindowFullScreen )
-    title->show();
-  else
-    title->hide();*/
 }
 
 ConfigDialog::~ConfigDialog()
@@ -182,8 +174,7 @@ ConfigDialog::~ConfigDialog()
 void ConfigDialog::slot_LoadCurrent()
 {
   // Block multiple loads to avoid reset of changed values in the
-  // config tabs. This can appear, if the screen keypad is pop up and
-  // pop down. In this case the signal aboutToShow() is fired.
+  // config tabs.
 
   // qDebug("slot_LoadCurrent() in configdialog.cpp is called");
 
@@ -251,15 +242,14 @@ void ConfigDialog::reject()
             }
           pagelist+=QString("<li>%1%2</li>").arg(changed_pages[i]).arg(separator);
         }
-        
+
       int answer=QMessageBox::warning(this,
                                       tr("Close without saving"),
                                       tr("<html>You have changed:<ul>%1</ul>Discard changes?</html>").arg(pagelist),
-                                      tr("Discard"),
-                                      tr("Save Changes"),
-                                      QString::null,
-                                      0);
-      if( answer == QMessageBox::Ok )
+                                      QMessageBox::Discard,
+                                      QMessageBox::Save);
+
+      if( answer == QMessageBox::Save )
         { // the user pressed cancel
           accept();
           return;
@@ -271,12 +261,3 @@ void ConfigDialog::reject()
   emit closeConfig();
   QWidget::close();
 }
-
-void ConfigDialog::resizeEvent(QResizeEvent*)
-{
-/*  if ( ( (QWidget*)parent() )->windowState() == Qt::WindowFullScreen )
-    title->show();
-  else
-    title->hide();*/
-}
-
