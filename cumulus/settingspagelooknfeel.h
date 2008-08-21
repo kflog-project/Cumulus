@@ -43,6 +43,11 @@ class SettingsPageLookNFeel : public QWidget
     /** Called to initiate loading of the configurationfile. */
     void slot_load();
 
+    /**
+     * Called to ask is confirmation on the close is needed.
+     */
+    void slot_query_close(bool& warn, QStringList& warnings);
+
   private:
     bool loadConfig; // control loading of config data
     
