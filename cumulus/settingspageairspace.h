@@ -27,6 +27,7 @@
 #include <QSpinBox>
 #include <QWidget>
 #include <QGridLayout>
+#include <QRadioButton>
 
 #include "altitude.h"
 
@@ -65,7 +66,7 @@ class SettingsPageAirspace : public QWidget
      * Invoked if enableForceWarning changes value
      * @param enabled true if warning is enabled
      */
-    void enabledToggled(bool enabled);
+    void slot_enabledToggled(bool enabled);
 
   protected:
     /**
@@ -111,7 +112,7 @@ class SettingsPageAirspaceFilling: public QDialog
 
     //SettingsPageAirspace takes care of our loading and saving,
     //so it needs access to our internals
-    friend class SettingsPageAirspace;
+    // friend class SettingsPageAirspace;
 
   public slots: // Public slots
     /**
@@ -139,6 +140,19 @@ class SettingsPageAirspaceFilling: public QDialog
      */
     void slot_query_close(bool& warn, QStringList& warnings);
 
+  private slots:
+
+    /**
+     * Invoked if enableFilling changes value
+     * @param enabled true if filling is enabled
+     */
+    void slot_enabledToggled(bool enabled);
+
+    /**
+     * Called to change the step width of the spin boxes
+     */
+    void slot_change(int newStep);
+
   protected:
     /**
      * Reimplemented from QDialog
@@ -147,28 +161,23 @@ class SettingsPageAirspaceFilling: public QDialog
      */
     void reject();
 
-    QCheckBox* m_enableFilling;
-    QWidget*  m_separations;
+    QCheckBox* enableFilling;
+    
+    QRadioButton* s1;
+    QRadioButton* s2;
+    QRadioButton* s3;
+    QRadioButton* s4;
 
-    QSpinBox* m_basicFilling;
+    QWidget*   separations;
 
-    QSpinBox* m_verticalNotNear;
-    QSpinBox* m_verticalNear;
-    QSpinBox* m_verticalVeryNear;
-    QSpinBox* m_verticalInside;
-    QSpinBox* m_lateralNotNear;
-    QSpinBox* m_lateralNear;
-    QSpinBox* m_lateralVeryNear;
-    QSpinBox* m_lateralInside;
-
-
-  private slots:
-    /**
-     * Invoked if m_enableFilling changes value
-     * @param enabled true if filling is enabled
-     */
-    void enabledToggled(bool enabled);
-
+    QSpinBox*  verticalNotNear;
+    QSpinBox*  verticalNear;
+    QSpinBox*  verticalVeryNear;
+    QSpinBox*  verticalInside;
+    QSpinBox*  lateralNotNear;
+    QSpinBox*  lateralNear;
+    QSpinBox*  lateralVeryNear;
+    QSpinBox*  lateralInside;
   };
 
 //-------------------------------------------------------------------------
@@ -183,7 +192,7 @@ class SettingsPageAirspaceWarnings : public QDialog
 
     // SettingsPageWarnings takes care of our loading and saving, so
     // it needs access to our internals
-    friend class SettingsPageAirspace;
+    // friend class SettingsPageAirspace;
 
   public slots: // Public slots
     /**
@@ -197,9 +206,26 @@ class SettingsPageAirspaceWarnings : public QDialog
     void slot_load();
 
     /**
+     * Called to set all spinboxes to the default value
+     */
+    void slot_defaults();
+
+    /**
      * Called to ask is confirmation on the close is needed.
      */
     void slot_query_close(bool& warn, QStringList& warnings);
+
+  private slots:
+    /**
+     * Invoked if enableWarning changes value
+     * @param enabled true if warning is enabled
+     */
+    void slot_enabledToggled(bool enabled);
+    
+    /**
+     * Called to change the step width of the spin boxes
+     */
+    void slot_change(int newStep);
 
   protected:
     /**
@@ -215,31 +241,29 @@ class SettingsPageAirspaceWarnings : public QDialog
     Altitude::altitude altUnit;
 
     QCheckBox* enableWarning;
+    
+    QRadioButton* s1;
+    QRadioButton* s2;
+    QRadioButton* s3;
+    QRadioButton* s4;
+        
     QWidget*   separations;
 
-    QSpinBox* horiWarnDist;
-    QSpinBox* horiWarnDistVN;
-    QSpinBox* aboveWarnDist;
-    QSpinBox* aboveWarnDistVN;
-    QSpinBox* belowWarnDist;
-    QSpinBox* belowWarnDistVN;
+    QSpinBox*  horiWarnDist;
+    QSpinBox*  horiWarnDistVN;
+    QSpinBox*  aboveWarnDist;
+    QSpinBox*  aboveWarnDistVN;
+    QSpinBox*  belowWarnDist;
+    QSpinBox*  belowWarnDistVN;
 
     // here are the fetched config items stored to have control about
-    // changed done by the user
+    // changes done by the user
     int horiWarnDistValue;
     int horiWarnDistVNValue;
     int aboveWarnDistValue;
     int aboveWarnDistVNValue;
     int belowWarnDistValue;
     int belowWarnDistVNValue;
-
-  private slots:
-    /**
-     * Invoked if m_enableWarning changes value
-     * @param enabled true if warning is enabled
-     */
-    void enabledToggled(bool enabled);
-
   };
 
 #endif
