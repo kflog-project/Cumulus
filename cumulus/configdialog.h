@@ -19,7 +19,6 @@
 #define CONFIGDIALOG_H
 
 #include <QStringList>
-#include <QLabel>
 
 #include "settingspagepersonal.h"
 #include "settingspagegps.h"
@@ -35,7 +34,8 @@
 /**
   * @short Configuration dialog
   *
-  * This is the configuration dialog for Cumulus
+  * This is the general configuration dialog for Cumulus.
+  *   
   * @author André Somers
   *
   */
@@ -113,10 +113,6 @@ class ConfigDialog : public QWidget
      */
     void query_close(bool& warn, QStringList& warnings);
 
-  protected:
-
-    virtual void resizeEvent(QResizeEvent*);
-
   private:
 
     SettingsPagePersonal* spp;
@@ -130,8 +126,6 @@ class ConfigDialog : public QWidget
     SettingsPageUnits* spu;
     SettingsPageInformation* spi;
     SettingsPageLookNFeel* splnf;
-
-    QLabel* title;
 
     bool loadConfig; // control loading of config data
   };
