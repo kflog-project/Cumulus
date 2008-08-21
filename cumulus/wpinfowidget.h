@@ -20,7 +20,7 @@
 
 #include <QWidget>
 #include <QTimer>
-#include <QTextEdit>
+#include <QLabel>
 #include <QPushButton>
 #include <QMainWindow>
 #include <QShortcut>
@@ -149,10 +149,10 @@ class WPInfoWidget : public QWidget
   private: // Private attributes
 
     /**
-     * These are the widget object that actually contains the info we
+     * This is the widget that actually contains the info we
      * want to represent.
      */
-    QTextEdit * text;
+    QLabel* text;
 
     QHBoxLayout * buttonrow1;
     QHBoxLayout * buttonrow2;

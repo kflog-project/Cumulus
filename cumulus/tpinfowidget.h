@@ -28,7 +28,7 @@
 
 #include <QWidget>
 #include <QTimer>
-#include <QTextEdit>
+#include <QLabel>
 #include <QPushButton>
 #include <QHBoxLayout>
 
@@ -109,10 +109,10 @@ protected:
 private: // Private objects
 
   /**
-   * This is the object that actually contains the info we
+   * This is the widget that actually contains the info we
    * want to display.
    */
-  QTextEdit *text;
+  QLabel *text;
 
   /**  */
   QPushButton *cmdClose;

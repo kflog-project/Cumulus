@@ -56,16 +56,20 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   this->parent = parent;
   resize( parent->size() );
 
-  // QFont bfont( "Helvetica", 14, QFont::Bold  );
-  // QFont font( "Helvetica", 14 );
-
   QFont bfont = font();
   bfont.setBold(true);
 
   QBoxLayout *topLayout = new QVBoxLayout( this );
-  text = new QTextEdit(this);
-  text->setReadOnly(true);
-  text->setLineWrapMode(QTextEdit::WidgetWidth);
+
+  text = new QLabel(this);
+
+  QPalette p = palette();
+  p.setColor(QPalette::Window, Qt::white);
+  text->setPalette(p);
+  text->setAutoFillBackground(true);
+  text->setFrameStyle( QFrame::Panel | QFrame::Sunken );
+  text->setLineWidth(2);
+
   topLayout->addWidget(text, 5 );
   
   buttonrow = new QHBoxLayout;
@@ -156,8 +160,9 @@ void TPInfoWidget::showTP( bool automaticClose )
 void TPInfoWidget::showEvent(QShowEvent *)
 {
   // qDebug("TPInfoWidget::showEvent(): name=%s", name());
+
   // set focus to text widget
-  text->setFocus();
+//  text->setFocus();
 }
 
 /**
@@ -201,11 +206,11 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   no1.sprintf( "%02d", currentTP->taskPointIndex );
   no2.sprintf( "%02d", nextTP->taskPointIndex );
 
-  display += "<html><big><center><b>" +
+  display += "<html><center><big><b>" +
     tr("Taskpoint switch") + " " + no1 + "->" + no2 +
-    "</b></center><p>";
+    "</b></center>";
 
-  display += "<table cellpadding=5 align=center border=1><tr><th colspan=2 align=left>" +
+  display += "<table width=100% cellpadding=2 cellspacing=0 border=1><tr><th colspan=2 align=left>" +
     tr("Reached target") + " " + no1 + "</th>" +
     "<th colspan=2 align=left>" + currentTP->name + "&nbsp;(" + currentTpDes + ")" +
     "</th></tr>";

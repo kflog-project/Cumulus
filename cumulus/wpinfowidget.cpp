@@ -56,9 +56,16 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
   bfont.setBold(true);
 
   QBoxLayout *topLayout = new QVBoxLayout(this);
-  text = new QTextEdit(this);
-  text->setReadOnly(true);
-  text->setLineWrapMode(QTextEdit::WidgetWidth);
+
+  text = new QLabel(this);
+
+  QPalette p = palette();
+  p.setColor(QPalette::Window, Qt::white);
+  text->setPalette(p);
+  text->setAutoFillBackground(true);
+  text->setFrameStyle( QFrame::Panel | QFrame::Sunken );
+  text->setLineWidth(2);
+
   topLayout->addWidget(text, 10);
 
   buttonrow2 = new QHBoxLayout;
@@ -246,10 +253,12 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint *wp)
 void WPInfoWidget::showEvent(QShowEvent *)
 {
   // qDebug("WPInfoWidget::showEvent(): name=%s", name());
+
   // resize to size of parent, could be changed in the meantime as the widget was hidden
   resize(cuApp->size());
+
   // set focus to text widget
-  text->setFocus();
+//  text->setFocus();
 }
 
 /** This method actually fills the widget with the info. */
