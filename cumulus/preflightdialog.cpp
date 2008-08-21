@@ -20,6 +20,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QToolTip>
+#include <QLabel>
 
 #include "preflightdialog.h"
 #include "mapcontents.h"
@@ -40,16 +41,8 @@ PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
   // qDebug("PreFlightDialog::PreFlightDialog()");
   setObjectName("PreFlightDialog");
   setAttribute( Qt::WA_DeleteOnClose );
+  setWindowTitle(tr("Preflight settings"));
 
-//  setWindowTitle(tr("Preflight settings"));
-
-/*  QVBoxLayout *topLayout = new QVBoxLayout(this);
-  setLayout(topLayout);
- 
-  title = new QLabel("<b>Pre-Flight Settings</b>", this);
-  topLayout->addWidget(title);
-  title->hide();
-*/
   tabWidget = new QTabWidget(this);
   tabWidget->setTabPosition( QTabWidget::West );
 
@@ -67,11 +60,11 @@ PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
 
   QShortcut* scLeft  = new QShortcut(Qt::Key_Left, this);
   QShortcut* scRight = new QShortcut(Qt::Key_Right, this);
-  QShortcut* scSpace = new QShortcut(Qt::Key_Space, this);
+  QShortcut* scReturn = new QShortcut(Qt::Key_Return, this);
 
-  connect(scLeft,  SIGNAL(activated()),this, SLOT(keyLeft()));
-  connect(scRight, SIGNAL(activated()),this, SLOT(keyRight()));
-  connect(scSpace, SIGNAL(activated()),this, SLOT(accept()));
+  connect(scLeft,  SIGNAL(activated()),this, SLOT(slot_keyLeft()));
+  connect(scRight, SIGNAL(activated()),this, SLOT(slot_keyRight()));
+  connect(scReturn, SIGNAL(activated()),this, SLOT(slot_accept()));
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
@@ -86,8 +79,8 @@ PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
   QLabel *titlePix = new QLabel(this);
   titlePix->setPixmap( GeneralConfig::instance()->loadPixmap("preflight.png") );
 
-  connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
-  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(ok, SIGNAL(clicked()), this, SLOT(slot_accept()));
+  connect(cancel, SIGNAL(clicked()), this, SLOT(slot_reject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
@@ -124,7 +117,7 @@ PreFlightDialog::~PreFlightDialog()
   // qDebug("PreFlightDialog::~PreFlightDialog()");
 }
 
-void PreFlightDialog::accept()
+void PreFlightDialog::slot_accept()
 {
   FlightTask *curTask = _globalMapContents->getCurrentTask();
 
@@ -155,7 +148,7 @@ void PreFlightDialog::accept()
         {
           // do nothing change
           delete newTask;
-          reject();
+          slot_reject();
           return;
         }
     }
@@ -192,17 +185,15 @@ void PreFlightDialog::accept()
   QWidget::close();
 }
 
-
-void PreFlightDialog::reject()
+void PreFlightDialog::slot_reject()
 {
-  // qDebug("PreFlightDialog::reject()");
+  // qDebug("PreFlightDialog::slot_reject()");
   hide();
   emit closeConfig();
   QWidget::close();
 }
 
-
-void PreFlightDialog::keyRight()
+void PreFlightDialog::slot_keyRight()
 {
   if( tabWidget->currentWidget() == gliderpage )
     {
@@ -219,7 +210,7 @@ void PreFlightDialog::keyRight()
 }
 
 
-void PreFlightDialog::keyLeft()
+void PreFlightDialog::slot_keyLeft()
 {
   if(  tabWidget->currentWidget() == miscpage )
     {
@@ -235,10 +226,3 @@ void PreFlightDialog::keyLeft()
     }
 }
 
-void PreFlightDialog::resizeEvent(QResizeEvent*)
-{
-/*  if ( ( (QWidget*)parent() )->windowState() == Qt::WindowFullScreen )
-    title->show();
-  else
-    title->hide();*/
-}

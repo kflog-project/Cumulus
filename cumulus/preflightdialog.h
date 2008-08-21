@@ -18,9 +18,7 @@
 #ifndef PREFLIGHTDIALOG_H
 #define PREFLIGHTDIALOG_H
 
-#include <QDialog>
 #include <QTabWidget>
-#include <QLabel>
 
 #include "tasklist.h"
 
@@ -71,20 +69,18 @@ protected slots:
     /**
      * Called if dialog is accepted (OK button is clicked)
      */
-    void accept();
+    void slot_accept();
 
     /**
      * Called if dialog is rejected (X button is clicked)
      */
-    void reject();
+    void slot_reject();
 
 private slots:
-    void keyLeft();
-    void keyRight();
 
-protected:
-
-    virtual void resizeEvent(QResizeEvent*);
+    // shortcuts for switching between tabulators
+    void slot_keyLeft();
+    void slot_keyRight();
 
 private:
 
@@ -92,7 +88,6 @@ private:
     PreFlightGliderPage *gliderpage;
     PreFlightMiscPage *miscpage;
     QTabWidget* tabWidget;
-    QLabel* title;
 };
 
 #endif
