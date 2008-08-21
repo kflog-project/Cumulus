@@ -96,7 +96,7 @@ void HelpBrowser::showEvent( QShowEvent * )
 {  
   if( ! firstCall )
     {
-      // ot the first call, ignore this event
+      // after the first call, ignore this event
       return;
     }
   
@@ -134,6 +134,7 @@ void HelpBrowser::showEvent( QShowEvent * )
   QUrl url = QUrl::fromLocalFile( helpFile );
   
   browser->setSource( url );
+  setWindowState(windowState() ^ Qt::WindowFullScreen);
 }
 
 /** catch certain key events for special handling */
