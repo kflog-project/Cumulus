@@ -134,7 +134,6 @@ void HelpBrowser::showEvent( QShowEvent * )
   QUrl url = QUrl::fromLocalFile( helpFile );
   
   browser->setSource( url );
-  setWindowState(windowState() ^ Qt::WindowFullScreen);
 }
 
 /** catch certain key events for special handling */
