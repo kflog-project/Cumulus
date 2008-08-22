@@ -147,20 +147,24 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   QStringList inputMethods = QInputContextFactory::keys();
   
   foreach( QString inputMethod, inputMethods )
-  {
-    qDebug() << "InputMethod: " << inputMethod;
-  }
-  
-  hildonInputContext = QInputContextFactory::create( "hildon", 0 );
-  
-  if ( !hildonInputContext )
     {
-      qWarning( "QHildonInputMethod plugin not loadable!" );
+      qDebug() << "InputMethod: " << inputMethod;
     }
-  else
+  
+  // Check, if virtual keyboard support is enabled
+  if( GeneralConfig::instance()->getVirtualKeyboard() )
     {
-      // app.setInputContext(hildonInputContext);
+      hildonInputContext = QInputContextFactory::create( "hildon", 0 );
+      
+      if ( !hildonInputContext )
+        {
+          qWarning( "QHildonInputMethod plugin not loadable!" );
+        }
     }
+    
+  // Overwrite input context. That resets also a predefined input context under
+  // Maemo.
+  qApp->setInputContext(hildonInputContext);
 
   // For MAEMO it's really better to pre-set style and font
   // To resize tiny buttons (does not work everywhere though)
