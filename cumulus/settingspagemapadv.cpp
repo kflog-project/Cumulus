@@ -34,6 +34,7 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent) :
   QWidget(parent)
 {
   setObjectName("SettingsPageMapAdv");
+  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
   currentProjType = ProjectionBase::Unknown;
 
