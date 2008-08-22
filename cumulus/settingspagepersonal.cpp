@@ -31,7 +31,8 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
     QWidget(parent), loadConfig(true)
 {
   setObjectName("SettingsPagePersonal");
-  
+  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
   QGridLayout* topLayout = new QGridLayout(this);
   int row=0;
 
