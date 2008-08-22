@@ -82,7 +82,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   topLayout->addWidget(new QLabel(tr("%1 above me.").arg(unit), this), row, 1, 1, 3);
   row++;
 
-  topLayout->setRowMinimumHeight( row++, 30 );
+  topLayout->setRowMinimumHeight( row++, 20 );
   
   cmdWarning = new QPushButton(tr("Airspace Warnings"), this);
   topLayout->addWidget(cmdWarning, row, 0, 1, 2, Qt::AlignLeft);
