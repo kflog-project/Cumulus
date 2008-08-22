@@ -160,11 +160,13 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
         {
           qWarning( "QHildonInputMethod plugin not loadable!" );
         }
-    }
+      else
+      	{
+	         qDebug( "QHildonInputContext created" );
+      	}
     
-  // Overwrite input context. That resets also a predefined input context under
-  // Maemo.
-  qApp->setInputContext(hildonInputContext);
+      qApp->setInputContext(hildonInputContext);
+    }
 
   // For MAEMO it's really better to pre-set style and font
   // To resize tiny buttons (does not work everywhere though)
