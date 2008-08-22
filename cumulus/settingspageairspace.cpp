@@ -24,7 +24,8 @@
 #include <QToolTip>
 #include <QGroupBox>
 #include <QSignalMapper>
-
+#include <QHBoxLayout>
+ 
 #include "airspace.h"
 #include "basemapelement.h"
 #include "distance.h"
@@ -35,12 +36,13 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   QWidget(parent)
 {
   setObjectName("SettingsPageAirspace");
+  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
   // save current altitude unit. This unit must be considered during
   // storage. The internal storage is always in meters.
 
   altUnit = Altitude::getUnit();
-  QString unit = (altUnit == Altitude::meters) ? "m" : "ft";
+  QString unit = (altUnit == Altitude::meters) ? " m" : " ft";
 
   m_warningsDlg = new SettingsPageAirspaceWarnings(this);
 
@@ -51,117 +53,124 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   int row=0;
 
-  lvLoadOptions = new QTableWidget(7, 2, this);
-  // lvLoadOptions->setShowGrid( false );
+  drawOptions = new QTableWidget(7, 2, this);
+  // drawOptions->setShowGrid( false );
+  connect( drawOptions, SIGNAL(cellClicked ( int, int )),
+           SLOT(slot_toggleCheckBox( int, int )));
 
   // hide vertical headers
-  QHeaderView *vHeader = lvLoadOptions->verticalHeader();
+  QHeaderView *vHeader = drawOptions->verticalHeader();
   vHeader->setVisible(false);
 
   QTableWidgetItem *item = new QTableWidgetItem( tr("Enable Drawing") );
-  lvLoadOptions->setHorizontalHeaderItem( 0, item );
+  drawOptions->setHorizontalHeaderItem( 0, item );
 
   item = new QTableWidgetItem( tr("Enable Drawing") );
-  lvLoadOptions->setHorizontalHeaderItem( 1, item );
+  drawOptions->setHorizontalHeaderItem( 1, item );
 
-  topLayout->addWidget(lvLoadOptions, row, 0, 1, 4);
+  topLayout->addWidget(drawOptions, row, 0, 1, 3);
   row++;
 
-  enableForceDrawing = new QCheckBox(tr("Force drawing for airspace less than"), this);
+  QHBoxLayout *hbox = new QHBoxLayout( this );
+
+  enableForceDrawing = new QCheckBox(tr("Force airspace drawing for less than"), this);
   enableForceDrawing->setChecked(true);
-  topLayout->addWidget( enableForceDrawing, row, 0, 1, 4 );
+  hbox->addWidget( enableForceDrawing );
   connect( enableForceDrawing, SIGNAL(toggled(bool)), SLOT(slot_enabledToggled(bool)));
-  row++;
 
   spinForceMargin = new QSpinBox(this);
   spinForceMargin-> setRange( 0, 99999 );
-  spinForceMargin->setSingleStep( 1 );
+  spinForceMargin->setSingleStep( 10 );
   spinForceMargin->setButtonSymbols(QSpinBox::PlusMinus);
+  spinForceMargin->setSuffix( unit );
 
-  topLayout->addWidget( spinForceMargin, row, 0 );
-  topLayout->addWidget(new QLabel(tr("%1 above me.").arg(unit), this), row, 1, 1, 3);
+  hbox->addWidget( spinForceMargin );
+  hbox->addWidget( new QLabel(tr("above me."), this ));
+  hbox->addStretch( 10 );
+  
+  topLayout->addLayout( hbox, row, 0, 1, 3 );
   row++;
 
   topLayout->setRowMinimumHeight( row++, 20 );
   
   cmdWarning = new QPushButton(tr("Airspace Warnings"), this);
-  topLayout->addWidget(cmdWarning, row, 0, 1, 2, Qt::AlignLeft);
+  topLayout->addWidget(cmdWarning, row, 0, 1, 1, Qt::AlignLeft);
   connect (cmdWarning, SIGNAL(clicked()), m_warningsDlg, SLOT(show()));
 
   cmdFilling = new QPushButton(tr("Airspace filling"), this);
-  topLayout->addWidget(cmdFilling, row, 2, 1, 2, Qt::AlignRight);
+  topLayout->addWidget(cmdFilling, row, 2, 1, 1, Qt::AlignRight);
   connect (cmdFilling, SIGNAL(clicked()), m_fillingDlg, SLOT(show()));
 
   row = 0;
   int col = 0;
   
   drawAirspaceA = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirA) );
-  drawAirspaceA->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawAirspaceA );
+  drawAirspaceA->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawAirspaceA );
 
   drawAirspaceB = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirB) );
-  drawAirspaceB->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawAirspaceB );
+  drawAirspaceB->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawAirspaceB );
 
   drawAirspaceC = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirC) );
-  drawAirspaceC->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawAirspaceC );
+  drawAirspaceC->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawAirspaceC );
 
   drawAirspaceD = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirD) );
-  drawAirspaceD->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawAirspaceD );
+  drawAirspaceD->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawAirspaceD );
 
   drawAirspaceElow = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirElow) );
-  drawAirspaceElow->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawAirspaceElow );
+  drawAirspaceElow->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawAirspaceElow );
 
   drawAirspaceEhigh = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirEhigh) );
-  drawAirspaceEhigh->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawAirspaceEhigh );
+  drawAirspaceEhigh->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawAirspaceEhigh );
 
   drawAirspaceF = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirF) );
-  drawAirspaceF->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawAirspaceF );
+  drawAirspaceF->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawAirspaceF );
 
   // next column is one
   row = 0;
   col = 1;
   
   drawControlC = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::ControlC) );
-  drawControlC->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawControlC );
+  drawControlC->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawControlC );
 
   drawControlD = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::ControlD) );
-  drawControlD->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawControlD );
+  drawControlD->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawControlD );
 
   drawRestricted = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::Restricted) );
-  drawRestricted->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawRestricted );
+  drawRestricted->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawRestricted );
 
   drawDanger = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::Danger) );
-  drawDanger->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawDanger );
+  drawDanger->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawDanger );
 
   drawTMZ = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::Tmz) );
-  drawTMZ->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawTMZ );
+  drawTMZ->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawTMZ );
 
   drawLowFlight = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::LowFlight) );
-  drawLowFlight->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawLowFlight );
+  drawLowFlight->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawLowFlight );
 
   drawSuSector = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::SuSector) );
-  drawSuSector->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, col, drawSuSector );
+  drawSuSector->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawSuSector );
 
-  lvLoadOptions->adjustSize();
-  qDebug("ViewportSize().width()=%d", lvLoadOptions->maximumViewportSize().width());
+  drawOptions->adjustSize();
+  qDebug("ViewportSize().width()=%d", drawOptions->maximumViewportSize().width());
 
-  lvLoadOptions->setColumnWidth( 0, lvLoadOptions->maximumViewportSize().width()-20 / 2 );
-  lvLoadOptions->setColumnWidth( 1, lvLoadOptions->maximumViewportSize().width()-20 / 2 );
-  //lvLoadOptions->setColumnWidth(0, 360);
-  //lvLoadOptions->setColumnWidth(1, 360);
+  drawOptions->setColumnWidth( 0, drawOptions->maximumViewportSize().width()-20 / 2 );
+  drawOptions->setColumnWidth( 1, drawOptions->maximumViewportSize().width()-20 / 2 );
+  //drawOptions->setColumnWidth(0, 360);
+  //drawOptions->setColumnWidth(1, 360);
 }
 
 SettingsPageAirspace::~SettingsPageAirspace()
@@ -244,6 +253,14 @@ void SettingsPageAirspace::slot_save()
   m_warningsDlg->slot_save();
 }
 
+/**
+ * Called to toggle the check box of the clicked table cell.
+ */
+void SettingsPageAirspace::slot_toggleCheckBox( int row, int column )
+{
+  QTableWidgetItem *item = drawOptions->item( row, column );
+  item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
+}
 
 /* Called to ask is confirmation on the close is needed. */
 void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)

@@ -67,6 +67,11 @@ class SettingsPageAirspace : public QWidget
      * @param enabled true if warning is enabled
      */
     void slot_enabledToggled(bool enabled);
+    
+    /**
+     * Called to toggle the check box of the clicked table cell.
+     */
+    void slot_toggleCheckBox( int row, int column );
 
   protected:
     /**
@@ -77,7 +82,7 @@ class SettingsPageAirspace : public QWidget
     QPushButton* cmdWarning;
     QPushButton* cmdFilling;
 
-    QTableWidget*     lvLoadOptions;
+    QTableWidget*     drawOptions;
     QTableWidgetItem* drawAirspaceA;
     QTableWidgetItem* drawAirspaceB;
     QTableWidgetItem* drawAirspaceC;
