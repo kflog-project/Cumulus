@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2004 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -24,7 +24,6 @@
 #include "preflightmiscpage.h"
 #include "igclogger.h"
 #include "generalconfig.h"
-
 
 PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) : QWidget(parent)
 {
@@ -46,7 +45,6 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) : QWidget(parent)
   // other (FL) is treated as feet.
   edtMinimalArrival = new QSpinBox(this);
   edtMinimalArrival->setObjectName("MinArr");
-  edtMinimalArrival->setSingleStep(10);
 
   if( altUnit == Altitude::meters ) {
     edtMinimalArrival->setMaximum(1000);
@@ -72,7 +70,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) : QWidget(parent)
   topLayout->addWidget(edtQNH, row, 1);
   topLayout->addWidget(new QLabel( "hPa", this), row, 2);
   row++;
-  
+
   lbl = new QLabel(tr("Logger Interval:"), this);
   topLayout->addWidget(lbl, row, 0);
   loggerInterval = new QSpinBox(this);
@@ -115,10 +113,12 @@ void PreFlightMiscPage::load()
   if( altUnit == Altitude::meters ) // user wants meters
     {
       edtMinimalArrival->setValue((int) rint(minArrival.getMeters()));
+      edtMinimalArrival->setSingleStep(50);
     }
   else // user gets feet
     {
       edtMinimalArrival->setValue((int) rint(minArrival.getFeet()) );
+      edtMinimalArrival->setSingleStep(100);
     }
 
   edtQNH->setValue( conf->getQNH() );
