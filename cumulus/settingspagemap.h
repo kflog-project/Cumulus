@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -19,7 +19,7 @@
  *
  * contains map-related draw settings
  *
- * @author André Somers
+ * @author Andrï¿½ Somers
  *
  */
 
@@ -55,9 +55,16 @@ class SettingsPageMap : public QWidget
    */
   void slot_query_close(bool& warn, QStringList& warnings);
 
- protected:
+private slots:
+    /**
+     * Called to toggle the check box of the clicked table cell.
+     */
+  void slot_toggleCheckBox( int row, int column );
+  
 
-  QTableWidget * lvLoadOptions;
+protected:
+
+  QTableWidget * loadOptions;
 
   //list items in listview
   QTableWidgetItem * liIsolines;

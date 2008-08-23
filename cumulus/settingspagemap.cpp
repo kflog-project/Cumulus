@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -29,17 +29,20 @@ SettingsPageMap::SettingsPageMap(QWidget *parent) : QWidget(parent)
   QGridLayout * topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
 
-  lvLoadOptions = new QTableWidget(11, 1, this);
-  lvLoadOptions->setShowGrid( false );
+  loadOptions = new QTableWidget(11, 1, this);
+  loadOptions->setShowGrid( true );
+
+  connect( loadOptions, SIGNAL(cellClicked ( int, int )),
+           SLOT(slot_toggleCheckBox( int, int )));
 
   // hide vertical headers
-  QHeaderView *vHeader = lvLoadOptions->verticalHeader();
+  QHeaderView *vHeader = loadOptions->verticalHeader();
   vHeader->setVisible(false);
     
   QTableWidgetItem *item = new QTableWidgetItem( tr("Load/Draw map objects") );
-  lvLoadOptions->setHorizontalHeaderItem( 0, item );
+  loadOptions->setHorizontalHeaderItem( 0, item );
 
-  topLayout->addWidget(lvLoadOptions, row++, 0, 1, 2);
+  topLayout->addWidget(loadOptions, row++, 0, 1, 2);
 }
 
 SettingsPageMap::~SettingsPageMap()
@@ -91,53 +94,62 @@ void SettingsPageMap::fillLoadOptionList()
   int row = 0;
 
   liIsolines = new QTableWidgetItem( tr("Isolines") );
-  liIsolines->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, 0, liIsolines );
+  liIsolines->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, 0, liIsolines );
 
   liIsolineBorders = new QTableWidgetItem( tr("Isoline borders") );
-  liIsolineBorders->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, 0, liIsolineBorders );
+  liIsolineBorders->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, 0, liIsolineBorders );
         
   liWpLabels = new QTableWidgetItem( tr("Waypoint labels") );
-  liWpLabels->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, 0, liWpLabels );
+  liWpLabels->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, 0, liWpLabels );
   
   liWpLabelsExtraInfo = new QTableWidgetItem( tr("Waypoint labels - Extra info") );
-  liWpLabelsExtraInfo->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, 0, liWpLabelsExtraInfo );
+  liWpLabelsExtraInfo->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, 0, liWpLabelsExtraInfo );
       
   liRoads = new QTableWidgetItem( tr("Roads") );
-  liRoads->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, 0, liRoads );
+  liRoads->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, 0, liRoads );
 
   liHighways = new QTableWidgetItem( tr("Highways") );
-  liHighways->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, 0, liHighways );
+  liHighways->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, 0, liHighways );
 
   liRailroads = new QTableWidgetItem( tr("Railroads") );
-  liRailroads->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, 0, liRailroads );
+  liRailroads->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, 0, liRailroads );
 
   liCities = new QTableWidgetItem( tr("Cities & Villages") );
-  liCities->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, 0, liCities );
+  liCities->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, 0, liCities );
 
   liWaterways = new QTableWidgetItem( tr("Rivers & Canals") );
-  liWaterways->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, 0, liWaterways );
+  liWaterways->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, 0, liWaterways );
 
   liForests = new QTableWidgetItem( tr("Forests & Ice") );
-  liForests->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, 0, liForests );
+  liForests->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, 0, liForests );
 
   liTargetLine = new QTableWidgetItem( tr("Line to selected target") );
-  liTargetLine->setFlags( Qt::ItemIsEnabled|Qt::ItemIsUserCheckable );
-  lvLoadOptions->setItem( row++, 0, liTargetLine );
+  liTargetLine->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, 0, liTargetLine );
 
-  lvLoadOptions->sortItems( 0 );
-//  lvLoadOptions->adjustSize();
-//  lvLoadOptions->setColumnWidth( 0, lvLoadOptions->maximumViewportSize().width()-20 );
-  lvLoadOptions->setColumnWidth(0,360);
+  loadOptions->sortItems( 0 );
+//  loadOptions->adjustSize();
+//  loadOptions->setColumnWidth( 0, loadOptions->maximumViewportSize().width()-20 );
+  loadOptions->setColumnWidth(0,360);
+}
+
+/**
+ * Called to toggle the check box of the clicked table cell.
+ */
+void SettingsPageMap::slot_toggleCheckBox( int row, int column )
+{
+  QTableWidgetItem *item = loadOptions->item( row, column );
+  item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
 }
 
 /* Called to ask is confirmation on the close is needed. Not yet
