@@ -194,6 +194,9 @@ void SettingsPageAirspace::slot_load()
       spinForceMargin->setValue((int) rint(conf->getForceAirspaceDrawingDistance().getFeet()));
     }
 
+  // save spinbox value for later change check
+  spinForceMarginValue = spinForceMargin->value();
+
   drawAirspaceA->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirA) ? Qt::Checked : Qt::Unchecked );
   drawAirspaceB->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirB) ? Qt::Checked : Qt::Unchecked );
   drawAirspaceC->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirC) ? Qt::Checked : Qt::Unchecked );
@@ -265,6 +268,32 @@ void SettingsPageAirspace::slot_toggleCheckBox( int row, int column )
 /* Called to ask is confirmation on the close is needed. */
 void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
 {
+  GeneralConfig * conf = GeneralConfig::instance();
+  bool changed=false;
+  
+  changed |= spinForceMarginValue != spinForceMargin->value();
+  changed |= conf->getForceAirspaceDrawingEnabled() != enableForceDrawing->isChecked();
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirA) != (drawAirspaceA->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirB) != (drawAirspaceB->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirC) != (drawAirspaceC->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::ControlC) != (drawControlC->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirD) != (drawAirspaceD->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::ControlD) != (drawControlD->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirElow) != (drawAirspaceElow->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirEhigh) != (drawAirspaceEhigh->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirF) != (drawAirspaceF->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::Restricted) != (drawRestricted->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::Danger) != (drawDanger->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::Tmz) != (drawTMZ->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::LowFlight) != (drawLowFlight->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::SuSector) != (drawSuSector->checkState() == Qt::Checked ? true : false);
+
+  if (changed)
+  {
+    warn=true;
+    warnings.append(tr("Airspace drawing settings"));
+  }
+  
   /*forward request to filling page */
   m_fillingDlg->slot_query_close(warn, warnings);
   m_warningsDlg->slot_query_close(warn, warnings);

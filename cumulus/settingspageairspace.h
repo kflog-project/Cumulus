@@ -101,6 +101,9 @@ class SettingsPageAirspace : public QWidget
     QCheckBox*      enableForceDrawing;
     QSpinBox*       spinForceMargin;
 
+    // value of spin box after load
+    int spinForceMarginValue;
+
     SettingsPageAirspaceFilling*  m_fillingDlg;
     SettingsPageAirspaceWarnings* m_warningsDlg;
   };
