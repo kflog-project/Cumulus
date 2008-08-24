@@ -71,7 +71,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   topLayout->addWidget(drawOptions, row, 0, 1, 3);
   row++;
 
-  QHBoxLayout *hbox = new QHBoxLayout( this );
+  QHBoxLayout *hbox = new QHBoxLayout;
 
   enableForceDrawing = new QCheckBox(tr("Force airspace drawing for less than"), this);
   enableForceDrawing->setChecked(true);
