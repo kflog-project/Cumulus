@@ -37,7 +37,7 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent) :
   QLabel * lblName = new QLabel(tr("Name:"), this);
   topLayout->addWidget(lblName,row,0);
   edtName = new QLineEdit(this);
-  edtName->setMaxLength(8); // limit name to 8 characters
+  edtName->setMaxLength(9); // limit name to 9 characters
   topLayout->addWidget(edtName,row++,1);
 
   QLabel * lblDescription = new QLabel(tr("Description:"), this);
