@@ -120,7 +120,7 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
     // activate keyboard shortcut Return as select
     QShortcut* scSelect = new QShortcut( this );
     scSelect->setKey( Qt::Key_Return );
-    connect( cmdSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
+    connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
   }
 }
 
