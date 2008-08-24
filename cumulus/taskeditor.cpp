@@ -91,10 +91,6 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
   sl << "ID" << "Type" << "Waypoint" << "Distance";
   taskList->setHeaderLabels(sl);
 
-  taskList->setColumnWidth( 0, 50 );
-  taskList->setColumnWidth( 1, 70 );
-  taskList->setColumnWidth( 2, 100 );
-
   QPushButton* upButton = new QPushButton( this );
   upButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
   upButton->setToolTip( tr("move selected waypoint up") );
@@ -281,9 +277,14 @@ void TaskEditor::__showTask()
       lastSelectedItem = -1;
     }
   }
+
   taskList->setSortingEnabled(true);
   taskList->sortByColumn(0, Qt::AscendingOrder);
   taskList->setSortingEnabled(false);
+  taskList->resizeColumnToContents(0);
+  taskList->resizeColumnToContents(1);
+  taskList->resizeColumnToContents(2);
+  taskList->resizeColumnToContents(3);
 }
 
 void TaskEditor::slotAddWaypoint()
