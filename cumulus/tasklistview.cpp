@@ -79,12 +79,6 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
   sl << tr("Type") << tr("Name") << tr("Dist.") << tr("Time") << tr("Description") << tr("SS");
   list->setHeaderLabels(sl);
 
-  list->setColumnWidth( 0, 102 );
-  list->setColumnWidth( 1, 136 );
-  list->setColumnWidth( 2, 74 );
-  list->setColumnWidth( 3, 72 );
-  list->setColumnWidth( 4, 196 );
-
   topLayout->addWidget(list, 10);
 
   if( showButtons ) {
@@ -293,6 +287,13 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   distTotal->setText(  "S=" +_task->getTotalDistanceString() );
   speedTotal->setText( "V=" + _task->getSpeedString() );
   timeTotal->setText(  "T=" + _task->getTotalDistanceTimeString() );
+
+  list->resizeColumnToContents(0);
+  list->resizeColumnToContents(1);
+  list->resizeColumnToContents(2);
+  list->resizeColumnToContents(3);
+  list->resizeColumnToContents(4);
+  list->resizeColumnToContents(5);
 }
 
 /**
