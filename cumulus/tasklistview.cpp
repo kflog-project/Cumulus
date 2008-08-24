@@ -20,6 +20,7 @@
 ***********************************************************************/
 
 #include <QDesktopWidget>
+#include <QShortcut>
 
 #include "cumulusapp.h"
 #include "tasklistview.h"
@@ -115,6 +116,11 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
             this, SLOT(slot_Close()) );
     connect( list, SIGNAL(itemSelectionChanged()),
             this, SLOT(slot_Selected()) );
+
+    // activate keyboard shortcut Return as select
+    QShortcut* scSelect = new QShortcut( this );
+    scSelect->setKey( Qt::Key_Return );
+    connect( cmdSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
   }
 }
 
