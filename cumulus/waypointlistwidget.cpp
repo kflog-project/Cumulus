@@ -71,6 +71,10 @@ void WaypointListWidget::fillWpList()
   list->sortByColumn(0,Qt::AscendingOrder);
   list->setSortingEnabled(false);
 
+  list->resizeColumnToContents(0);
+  list->resizeColumnToContents(1);
+  list->resizeColumnToContents(2);
+
   if ( n>0 ) {
     list->setCurrentItem(list->topLevelItem(0));
 //from airfieldlistview:

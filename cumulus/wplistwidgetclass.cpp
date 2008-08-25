@@ -37,8 +37,6 @@ WPListWidgetClass::WPListWidgetClass(QWidget *parent) : QWidget(parent)
   list->setUniformRowHeights(true);
 //  list->setSortingEnabled(true);
   list->setColumnCount(3);
-  list->setColumnWidth( 0, 160 );
-  list->setColumnWidth( 1, 220 );
   list->setAllColumnsShowFocus(true);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -71,6 +69,9 @@ WPListWidgetClass::~WPListWidgetClass()
 
 void WPListWidgetClass::showEvent(QShowEvent *)
 {
+  list->resizeColumnToContents(0);
+  list->resizeColumnToContents(1);
+  list->resizeColumnToContents(2);
   list->setFocus();
 }
 
