@@ -132,10 +132,10 @@ void SettingsPageLookNFeel::slot_save()
  */
 void SettingsPageLookNFeel::slot_query_close( bool& warn, QStringList& warnings )
 {
-  qDebug("SettingsPageLookNFeel::slot_query_close");
   /* set warn to 'true' if the data has changed. Note that we can NOT
      just set warn equal to _changed, because that way we might erase
      a warning flag set by another page! */
+
   GeneralConfig * conf = GeneralConfig::instance();
   bool changed=false;
 
