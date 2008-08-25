@@ -79,6 +79,10 @@ void AirfieldListWidget::fillWpList()
   list->sortByColumn(0,Qt::AscendingOrder);
   list->setSortingEnabled(false);
 
+  list->resizeColumnToContents(0);
+  list->resizeColumnToContents(1);
+  list->resizeColumnToContents(2);
+
   if (Nr>0) {
     // @AP: set only to true if something was read
     listFilled = true;
