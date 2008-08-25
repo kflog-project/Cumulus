@@ -51,14 +51,12 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
   QGridLayout* topLayout = new QGridLayout(this);
   int row=0;
 
-  topLayout->addWidget(new QLabel(tr("Glider type:"), this), row, 0);
+  topLayout->addWidget( new QLabel(tr("Glider type:"), this), row, 0 );
   comboType = new QComboBox(this);
   comboType->setEditable(true);
 
-  topLayout->addWidget(comboType,row,1,1,4);
-//  topLayout->addMultiCellWidget(comboType,row,row,1,4);
-//  topLayout->addRowSpacing(row++,10);
-  topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
+  topLayout->addWidget( comboType, row, 1, 1, 2 );
+  topLayout->setRowMinimumHeight( row++, 10 );
 
   bgSeats=new QGroupBox(tr("Seats"),this);
   seatsOne=new QRadioButton(tr("Single"),bgSeats);
@@ -66,24 +64,21 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
   seatsOne->setChecked(true);
   bgSeats->hide();
 
-  topLayout->addWidget(new QLabel(tr("Seats:"), this),row,0);
-  QBoxLayout* seats_l=new QHBoxLayout();
-  topLayout->addLayout(seats_l,row,1,1,4);
-//  topLayout->addMultiCellLayout(seats_l,row,row,1,4);
+  topLayout->addWidget(new QLabel(tr("Seats:"), this), row, 0 );
+  QBoxLayout* seats_l=new QHBoxLayout;
+  topLayout->addLayout(seats_l, row, 1, 1, 2 );
   row++;
   seats_l->addWidget(seatsOne);
   seats_l->addWidget(seatsTwo);
 
-  topLayout->addWidget(new QLabel(tr("Registration:"), this),row,0);
+  topLayout->addWidget( new QLabel(tr("Registration:"), this), row, 0 );
   edtGReg = new QLineEdit(this);
-  topLayout->addWidget(edtGReg,row,1,1,2);
-//  topLayout->addMultiCellWidget(edtGReg, row, row, 1, 2);
+  topLayout->addWidget(edtGReg, row, 1, 1, 2 );
   row++;
 
-  topLayout->addWidget(new QLabel(tr("Callsign:"), this),row,0);
+  topLayout->addWidget( new QLabel(tr("Callsign:"), this), row, 0 );
   edtGCall = new QLineEdit(this);
-  topLayout->addWidget(edtGCall,row,1,1,2);
-//  topLayout->addMultiCellWidget(edtGCall, row, row, 1, 2);
+  topLayout->addWidget( edtGCall, row, 1, 1, 2 );
   row++;
 
   topLayout->addWidget(new QLabel(tr("v1 / w1:"), this),row,0);
@@ -93,7 +88,7 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
   spinV1->setButtonSymbols(QSpinBox::PlusMinus);
   topLayout->addWidget(spinV1,row,1);
   topLayout->addWidget(new QLabel(tr("km/h"), this),row,2);
-    
+
   spinW1 = new QDoubleSpinBox(this);
   spinW1->setRange(-5.0, 0);
   spinW1->setSingleStep(0.01);
@@ -155,17 +150,18 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
   spinWater->setSingleStep(5);
   spinWater->setButtonSymbols(QSpinBox::PlusMinus);
   topLayout->addWidget (spinWater, row, 1);
-  topLayout->addWidget(new QLabel(tr("l"),this),row,2);
+  topLayout->addWidget(new QLabel(tr("l"),this),row++,2);
+  
   buttonShow = new QPushButton (tr("Show Polar"), this);
-  topLayout->addWidget(buttonShow,row,1,3,2);
-//  topLayout->addMultiCellWidget(buttonShow, row, row, 3, 4);
-  row++;
 
-  // Add ok and cancel buttons
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
-                                 | QDialogButtonBox::Cancel);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox( Qt::Horizontal );
 
-  topLayout->addWidget( buttonBox, row, 0, 1, 6 );
+  // Add show, ok and cancel buttons
+  buttonBox->addButton( buttonShow, QDialogButtonBox::ActionRole );
+  buttonBox->addButton( QDialogButtonBox::Ok );
+  buttonBox->addButton( QDialogButtonBox::Cancel );
+
+  topLayout->addWidget( buttonBox, row, 0, 1, 4, Qt::AlignRight );
 
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
