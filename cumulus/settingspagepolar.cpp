@@ -22,7 +22,8 @@
 #include <QRadioButton>
 #include <QMessageBox>
 #include <QString>
-#include <QDialogButtonBox>
+#include <QScrollArea>
+//#include <QDialogButtonBox>
 
 #include "polardialog.h"
 #include "settingspagepolar.h"
@@ -37,7 +38,15 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
   : QDialog(parent)
 {
   setObjectName("SettingsPagePolar");
+  setAttribute( Qt::WA_DeleteOnClose );
   setModal(false);
+
+#ifdef MAEMO
+  resize(800,480);
+  setSizeGripEnabled(false);
+#else
+  setSizeGripEnabled(true);
+#endif
 
   if (glider==0) {
     setWindowTitle(tr("New Glider"));
@@ -48,15 +57,22 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
   }
   _glider=glider;
 
-  QGridLayout* topLayout = new QGridLayout(this);
+  QHBoxLayout* topLayout = new QHBoxLayout( this );
+
+  QScrollArea* itemArea = new QScrollArea( this );
+
+  QWidget* itemWidget = new QWidget();
+  QGridLayout* itemsLayout = new QGridLayout( itemWidget );
   int row=0;
 
-  topLayout->addWidget( new QLabel(tr("Glider type:"), this), row, 0 );
+  itemsLayout->addWidget(new QLabel(tr("Glider type:"), this), row, 0);
   comboType = new QComboBox(this);
   comboType->setEditable(true);
 
-  topLayout->addWidget( comboType, row, 1, 1, 2 );
-  topLayout->setRowMinimumHeight( row++, 10 );
+  itemsLayout->addWidget(comboType,row,1,1,4);
+//  itemsLayout->addMultiCellWidget(comboType,row,row,1,4);
+//  itemsLayout->addRowSpacing(row++,10);
+  itemsLayout->addItem(new QSpacerItem(0, 10), row++, 0);
 
   bgSeats=new QGroupBox(tr("Seats"),this);
   seatsOne=new QRadioButton(tr("Single"),bgSeats);
@@ -64,116 +80,135 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
   seatsOne->setChecked(true);
   bgSeats->hide();
 
-  topLayout->addWidget(new QLabel(tr("Seats:"), this), row, 0 );
-  QBoxLayout* seats_l=new QHBoxLayout;
-  topLayout->addLayout(seats_l, row, 1, 1, 2 );
+  itemsLayout->addWidget(new QLabel(tr("Seats:"), this),row,0);
+  QBoxLayout* seats_l=new QHBoxLayout();
+  itemsLayout->addLayout(seats_l,row,1,1,4);
+//  itemsLayout->addMultiCellLayout(seats_l,row,row,1,4);
   row++;
   seats_l->addWidget(seatsOne);
   seats_l->addWidget(seatsTwo);
 
-  topLayout->addWidget( new QLabel(tr("Registration:"), this), row, 0 );
+  itemsLayout->addWidget(new QLabel(tr("Registration:"), this),row,0);
   edtGReg = new QLineEdit(this);
-  topLayout->addWidget(edtGReg, row, 1, 1, 2 );
+  itemsLayout->addWidget(edtGReg,row,1,1,2);
+//  itemsLayout->addMultiCellWidget(edtGReg, row, row, 1, 2);
   row++;
 
-  topLayout->addWidget( new QLabel(tr("Callsign:"), this), row, 0 );
+  itemsLayout->addWidget(new QLabel(tr("Callsign:"), this),row,0);
   edtGCall = new QLineEdit(this);
-  topLayout->addWidget( edtGCall, row, 1, 1, 2 );
+  itemsLayout->addWidget(edtGCall,row,1,1,2);
+//  itemsLayout->addMultiCellWidget(edtGCall, row, row, 1, 2);
   row++;
 
-  topLayout->addWidget(new QLabel(tr("v1 / w1:"), this),row,0);
+  itemsLayout->addWidget(new QLabel(tr("v1 / w1:"), this),row,0);
   spinV1 = new QDoubleSpinBox(this);
   spinV1->setRange(0.0, 150.0);
   spinV1->setSingleStep(1.0);
   spinV1->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget(spinV1,row,1);
-  topLayout->addWidget(new QLabel(tr("km/h"), this),row,2);
-
+  itemsLayout->addWidget(spinV1,row,1);
+  itemsLayout->addWidget(new QLabel(tr("km/h"), this),row,2);
+    
   spinW1 = new QDoubleSpinBox(this);
   spinW1->setRange(-5.0, 0);
   spinW1->setSingleStep(0.01);
   spinW1->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget(spinW1,row,3);
-  topLayout->addWidget(new QLabel(tr("m/s"), this),row++,4);
+  itemsLayout->addWidget(spinW1,row,3);
+  itemsLayout->addWidget(new QLabel(tr("m/s"), this),row++,4);
 
-  topLayout->addWidget(new QLabel(tr("v2 / w2:"), this),row,0);
+  itemsLayout->addWidget(new QLabel(tr("v2 / w2:"), this),row,0);
   spinV2 = new QDoubleSpinBox(this);
   spinV2->setRange(0.0, 200.0);
   spinV2->setSingleStep(1.0);
   spinV2->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget(spinV2,row,1);
-  topLayout->addWidget(new QLabel(tr("km/h"), this),row,2);
+  itemsLayout->addWidget(spinV2,row,1);
+  itemsLayout->addWidget(new QLabel(tr("km/h"), this),row,2);
 
   spinW2 = new QDoubleSpinBox(this);
   spinW2->setRange(-5.0, 0);
   spinW2->setSingleStep(0.01);
   spinW2->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget(spinW2,row,3);
-  topLayout->addWidget(new QLabel(tr("m/s"), this),row++,4);
+  itemsLayout->addWidget(spinW2,row,3);
+  itemsLayout->addWidget(new QLabel(tr("m/s"), this),row++,4);
 
-  topLayout->addWidget(new QLabel(tr("v3 / w3:"), this),row,0);
+  itemsLayout->addWidget(new QLabel(tr("v3 / w3:"), this),row,0);
   spinV3 = new QDoubleSpinBox(this);
   spinV3->setRange(0.0, 250.0);
   spinV3->setSingleStep(1.0);
   spinV3->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget(spinV3,row,1);
-  topLayout->addWidget(new QLabel(tr("km/h"), this),row,2);
+  itemsLayout->addWidget(spinV3,row,1);
+  itemsLayout->addWidget(new QLabel(tr("km/h"), this),row,2);
   spinW3 = new QDoubleSpinBox(this);
   spinW3->setRange(-5.0, 0);
   spinW3->setSingleStep(0.01);
   spinW3->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget(spinW3,row,3);
-  topLayout->addWidget(new QLabel(tr("m/s"), this),row++,4);
+  itemsLayout->addWidget(spinW3,row,3);
+  itemsLayout->addWidget(new QLabel(tr("m/s"), this),row++,4);
 
-  topLayout->addWidget(new QLabel (tr("Empty weight:"), this), row, 0);
+  itemsLayout->addWidget(new QLabel (tr("Empty weight:"), this), row, 0);
   emptyWeight = new QSpinBox (this);
   emptyWeight->setObjectName("emptyWeight");
   emptyWeight->setMaximum(1000);
   emptyWeight->setSingleStep(5);
   emptyWeight->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget(emptyWeight,row,1);
-  topLayout->addWidget(new QLabel(tr("kg"), this),row++,2);
+  itemsLayout->addWidget(emptyWeight,row,1);
+  itemsLayout->addWidget(new QLabel(tr("kg"), this),row++,2);
 
-  topLayout->addWidget(new QLabel (tr("Added load:"), this), row, 0);
+  itemsLayout->addWidget(new QLabel (tr("Added load:"), this), row, 0);
   addedLoad = new QSpinBox (this);
   addedLoad->setObjectName("addedLoad");
   addedLoad->setMaximum(1000);
   addedLoad->setSingleStep(5);
   addedLoad->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget(addedLoad,row,1);
-  topLayout->addWidget(new QLabel(tr("kg"), this),row++,2);
+  itemsLayout->addWidget(addedLoad,row,1);
+  itemsLayout->addWidget(new QLabel(tr("kg"), this),row++,2);
 
-  topLayout->addWidget(new QLabel (tr("Max. water:"), this), row, 0);
+  itemsLayout->addWidget(new QLabel (tr("Max. water:"), this), row, 0);
   spinWater = new QSpinBox (this);
   spinWater->setObjectName("spinWater");
   spinWater->setMaximum(300);
   spinWater->setSingleStep(5);
   spinWater->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget (spinWater, row, 1);
-  topLayout->addWidget(new QLabel(tr("l"),this),row++,2);
-  
+  itemsLayout->addWidget (spinWater, row, 1);
+  itemsLayout->addWidget(new QLabel(tr("l"),this),row,2);
+  row++;
+
   buttonShow = new QPushButton (tr("Show Polar"), this);
+  itemsLayout->addWidget(buttonShow,row,1,3,2);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox( Qt::Horizontal );
-
-  // Add show, ok and cancel buttons
-  buttonBox->addButton( buttonShow, QDialogButtonBox::ActionRole );
-  buttonBox->addButton( QDialogButtonBox::Ok );
-  buttonBox->addButton( QDialogButtonBox::Cancel );
-
-  topLayout->addWidget( buttonBox, row, 0, 1, 4, Qt::AlignRight );
-
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-
-  topLayout->setColumnStretch (0, 10);
-  topLayout->setColumnStretch (1, 20);
-  topLayout->setColumnStretch (2, 10);
+  itemsLayout->setColumnStretch (0, 10);
+  itemsLayout->setColumnStretch (1, 20);
+  itemsLayout->setColumnStretch (2, 10);
 
   connect (comboType, SIGNAL(activated(const QString&)),
            this, SLOT(slotActivated(const QString&)));
   connect (buttonShow, SIGNAL(clicked()),
            this, SLOT(slotButtonShow()));
+
+  itemArea->setWidget( itemWidget );
+
+  // Add ok and cancel buttons
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
+  cancel->setIconSize(QSize(26,26));
+  cancel->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("ok.png")) );
+  ok->setIconSize(QSize(26,26));
+  ok->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::QSizePolicy::Preferred);
+
+  connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addWidget( cancel, 2 );
+  buttonBox->addSpacing(20);
+  buttonBox->addWidget( ok, 2 );
+  buttonBox->addStretch(2);
+
+  topLayout->addWidget( itemArea );
+  topLayout->addLayout( buttonBox );
 
   if (isNew)
     {
