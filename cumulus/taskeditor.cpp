@@ -232,11 +232,6 @@ TaskEditor::~TaskEditor()
 
   qDeleteAll(taskWPList);
   taskWPList.clear();
-/*  emit done();
-  for(int i=0; i<NUM_LISTS; i++)
-    {
-      waypointList[i]->clear();
-    }*/
 }
 
 void TaskEditor::__showTask()
@@ -264,7 +259,6 @@ void TaskEditor::__showTask()
     typeName = wp->getTaskPointTypeString();
 
     distance = Distance::getText(wp->distance*1000, true, 1);
-//    idString.sprintf( "%02d", loop );
     idString = QString( "%1").arg( loop, 2, 10, QLatin1Char('0') );
 
     QStringList rowList;
@@ -440,10 +434,8 @@ void TaskEditor::slotToggleList(int index)
   for( int i=0; i<NUM_LISTS; i++ ) {
     if(i != index) {
       waypointList[i]->hide();
-//      filter[i]->hide();
     } else {
       waypointList[i]->show();
-//      filter[i]->show();
     }
   }
 }
