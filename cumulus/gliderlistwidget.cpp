@@ -38,9 +38,6 @@ GliderListWidget::GliderListWidget(QWidget *parent) : QTreeWidget(parent)
   sl << "Type" << "Registration" << "Callsign";
   setHeaderLabels(sl);
 
-  setColumnWidth( 0, 140 );
-  setColumnWidth( 1, 200 );
-
   _added=0;
   _changed=false;
 }
@@ -80,14 +77,13 @@ void GliderListWidget::fillList()
     i++;
   }
 
-
-/*  if (i>1) {
-    this->setCurrentItem(this->firstChild());
-  }
-*/
   config.endGroup();
   // qDebug("GliderListWidget::fillList(): gliders=%d", Gliders.count());
   _changed = false;
+
+ resizeColumnToContents(0);
+ resizeColumnToContents(1);
+ resizeColumnToContents(2);
 }
 
 
