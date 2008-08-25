@@ -253,10 +253,10 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
     Speed speed;
     speed.setHorizontalValue (maxspeed);
     X = double(view->width() - 25) / double(speed.getMps());
-    Y = double(view->height() - 30 - 120) / double(sink.getMps());
+    Y = double(view->height() - 30 - 80) / double(sink.getMps());
 
     QFont font = p.font();
-    font.setPixelSize(12);
+    font.setPixelSize(14);
     p.setFont (font);
     // draw speed values and vertical grid lines
     p.setPen (Qt::black);
@@ -327,7 +327,7 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
 
     Speed bestspeed = bestSpeed (wind, lift, mc);
     double bestld = bestLD (bestspeed, bestspeed+wind, lift);
-    font.setPixelSize(12);
+    font.setPixelSize(16);
     p.setFont(font);
     p.setPen (Qt::blue);
     // headwind counts negative;
@@ -379,9 +379,13 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
 //    msg.sprintf (tr("Best l/d:")+" %1.1f", bestld);
     p.drawText(0, y+=font.pixelSize()+2, msg);
 
+    y = (int)(sink*Y)+5;
+    int x = view->width()/2;
     p.setPen (Qt::black);
-    msg = tr("Use cursor keys to simulate");
-    p.drawText(0, y+=font.pixelSize()+5, msg);
-    msg = tr("wind and lift");
-    p.drawText(0, y+=font.pixelSize()+2, msg);
+    msg = tr("Use cursor right/left to simulate wind");
+    p.drawText(x, y+=font.pixelSize()+2, msg);
+    msg = tr("Use cursor up/down to set lift");
+    p.drawText(x, y+=font.pixelSize()+2, msg);
+    msg = tr("Use <Shift> up/down to adjust sinking");
+    p.drawText(x, y+=font.pixelSize()+2, msg);
 }

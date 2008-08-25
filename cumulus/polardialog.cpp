@@ -26,14 +26,22 @@ PolarDialog::PolarDialog(const Polar* polar, QWidget* parent) :
 {
   setObjectName("PolarDialog");
   setModal(true);
+
+#ifdef MAEMO
+  resize(800,480);
+  setSizeGripEnabled(false);
+#else
+  resize(600,400);
+  setSizeGripEnabled(true);
+#endif
     
   _polar = const_cast<Polar*>(polar);
 
   QPalette palette;
   palette.setColor(backgroundRole(), Qt::white);
   setPalette(palette);
-  setWindowTitle (polar->name());
-  setFont(QFont ( "Helvetica", 12, QFont::Bold ));
+  setWindowTitle ( "Polar for " + polar->name() + " - <Esc> or Tap to Close");
+//  setFont(QFont ( "Helvetica", 12, QFont::Bold ));
 
   QShortcut* rcUp =        new QShortcut(this);
   QShortcut* rcDown =      new QShortcut(this);
@@ -74,14 +82,14 @@ PolarDialog::~PolarDialog()
 
 void PolarDialog::slot_keyup()
 {
-  lift.setMps(lift.getMps()-0.1);
+  lift.setMps(lift.getMps()+0.1);
   repaint ();
 }
 
 
 void PolarDialog::slot_keydown()
 {
-  lift.setMps(lift.getMps()+0.1);
+  lift.setMps(lift.getMps()-0.1);
   repaint ();
 }
 

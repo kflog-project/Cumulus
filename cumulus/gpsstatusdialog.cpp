@@ -28,7 +28,7 @@
 
 GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
 {
-  setWindowTitle(tr("GPS Status"));
+  setWindowTitle(tr("GPS Status - <Esc> to Close"));
   setModal(true);
 
 #ifdef MAEMO
