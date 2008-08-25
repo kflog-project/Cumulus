@@ -6,7 +6,6 @@
 **
 ************************************************************************
 **
-
 **   Copyright (c):  2007, 2008 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
@@ -145,12 +144,6 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   QLabel *lbl = new QLabel( tr("Radius:"), this );
   hbox->addWidget( lbl );
   
-  cylinderRadius = new QDoubleSpinBox( this );
-  cylinderRadius->setRange(0.1, 10.0);
-  cylinderRadius->setSingleStep(0.1);
-  cylinderRadius->setButtonSymbols(QSpinBox::PlusMinus);
-  hbox->addWidget( cylinderRadius );
-  
   // get current distance unit. This unit must be considered during
   // storage. The internal storage is always in meters.
   distUnit = Distance::getUnit();
@@ -160,18 +153,24 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   // Input accepts different units 
   if( distUnit == Distance::kilometers )
     {
-      unit = "km";
+      unit = " km";
     }
   else if( distUnit == Distance::miles )
     {
-      unit = "ml";
+      unit = " ml";
     }
   else // if( distUnit == Distance::nautmiles )
     {
-      unit = "nm";
+      unit = " nm";
     }
-
-  hbox->addWidget(new QLabel( unit, this ));
+    
+  cylinderRadius = new QDoubleSpinBox( this );
+  cylinderRadius->setRange(0.1, 10.0);
+  cylinderRadius->setSingleStep(0.1);
+  cylinderRadius->setButtonSymbols(QSpinBox::PlusMinus);
+  cylinderRadius->setSuffix( unit );
+  hbox->addWidget( cylinderRadius );
+  hbox->addStretch(10);
 
   cylinderGroup->setLayout(hbox);
 
@@ -193,9 +192,8 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   innerSectorRadius->setRange(0.0, 10.0);
   innerSectorRadius->setSingleStep(0.1);
   innerSectorRadius->setButtonSymbols(QSpinBox::PlusMinus);
-
+  innerSectorRadius->setSuffix( unit );
   sectorLayout->addWidget( innerSectorRadius, row1, 1 );
-  sectorLayout->addWidget( new QLabel( unit, sectorGroup), row1, 2 );
 
   row1++;
   lbl = new QLabel( tr("Outer Radius:"), sectorGroup );
@@ -204,8 +202,8 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   outerSectorRadius->setRange(0.1, 10.0);
   outerSectorRadius->setSingleStep(0.1);
   outerSectorRadius->setButtonSymbols(QSpinBox::PlusMinus);
+  outerSectorRadius->setSuffix( unit );
   sectorLayout->addWidget( outerSectorRadius, row1, 1 );
-  sectorLayout->addWidget( new QLabel( unit, sectorGroup), row1, 2 );
 
   row1++;
   lbl = new QLabel( tr("Angle:"), sectorGroup );
@@ -214,11 +212,12 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   sectorAngle->setRange( 90, 180 );
   sectorAngle->setSingleStep( 5 );
   sectorAngle->setButtonSymbols(QSpinBox::PlusMinus);
+  sectorAngle->setSuffix( QString(Qt::Key_degree) );
   sectorAngle->setWrapping( true );
-  sectorLayout->addWidget( sectorAngle, row1, 1 );
-  sectorLayout->addWidget( new QLabel( tr("degree"), sectorGroup), row1, 2 );
   sectorAngle->setValue( conf->getTaskSectorAngle() );
-
+  sectorLayout->addWidget( sectorAngle, row1, 1 );
+  
+  sectorLayout->setColumnStretch(2, 10);
   topLayout->setRowStretch( row, 10 );
 
   connect( csScheme, SIGNAL(buttonClicked(int)), this, SLOT(slot_buttonPressedCS(int)) );
@@ -252,13 +251,23 @@ void SettingsPageSector::slot_buttonPressedCS( int newScheme )
 
   if( newScheme == GeneralConfig::Sector )
     {
+#ifdef MAEMO
+      sectorGroup->setVisible(true);
+      cylinderGroup->setVisible(false);
+#else
       sectorGroup->setEnabled(true);
       cylinderGroup->setEnabled(false);
+#endif
     }
   else
     {
+#ifdef MAEMO
+      sectorGroup->setVisible(false);
+      cylinderGroup->setVisible(true);
+#else
       sectorGroup->setEnabled(false);
       cylinderGroup->setEnabled(true);
+#endif
     }
 }
 
