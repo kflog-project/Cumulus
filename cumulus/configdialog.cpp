@@ -56,11 +56,11 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   spg=new SettingsPageGPS(this);
   tabWidget->addTab(spg, tr("GPS"));
 
-  spma=new SettingsPageMapAdv(this);
-  tabWidget->addTab(spma, tr("Map Settings"));
+  spms=new SettingsPageMapSettings(this);
+  tabWidget->addTab(spms, tr("Map Settings"));
 
-  spm=new SettingsPageMap(this);
-  tabWidget->addTab(spm, tr("Map Objects"));
+  spmo=new SettingsPageMapObjects(this);
+  tabWidget->addTab(spmo, tr("Map Objects"));
 
   QScrollArea* afArea = new QScrollArea(tabWidget);
   afArea->setWidgetResizable(true);
@@ -115,8 +115,8 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   connect(this, SIGNAL(load()), spgl, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spg, SLOT(slot_load()));
   connect(this, SIGNAL(load()), sps, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), spma, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), spm, SLOT(slot_load()));
+  connect(this, SIGNAL(load()), spms, SLOT(slot_load()));
+  connect(this, SIGNAL(load()), spmo, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spaf, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spa, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spu, SLOT(slot_load()));
@@ -129,8 +129,8 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   connect(this, SIGNAL(save()), spgl, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spg, SLOT(slot_save()));
   connect(this, SIGNAL(save()), sps, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), spma, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), spm, SLOT(slot_save()));
+  connect(this, SIGNAL(save()), spms, SLOT(slot_save()));
+  connect(this, SIGNAL(save()), spmo, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spaf, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spa, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spi, SLOT(slot_save()));
@@ -141,10 +141,10 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
           spgl, SLOT(slot_query_close(bool&, QStringList&)));
 
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
-          spma, SLOT(slot_query_close(bool&, QStringList&)));
+          spms, SLOT(slot_query_close(bool&, QStringList&)));
 
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
-          spm, SLOT(slot_query_close(bool&, QStringList&)));
+          spmo, SLOT(slot_query_close(bool&, QStringList&)));
 
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
           spaf, SLOT(slot_query_close(bool&, QStringList&)));
@@ -196,7 +196,7 @@ void ConfigDialog::accept()
   hide();
 
   // save change states before restoring of data
-  bool projectionChange = spma->checkIsProjectionChanged();
+  bool projectionChange = spms->checkIsProjectionChanged();
   bool welt2000Change   = spaf->checkIsWelt2000Changed();
 
   emit save();

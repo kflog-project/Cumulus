@@ -23,8 +23,8 @@
 #include "settingspagepersonal.h"
 #include "settingspagegps.h"
 #include "settingspageunits.h"
-#include "settingspagemap.h"
-#include "settingspagemapadv.h"
+#include "settingspagemapobjects.h"
+#include "settingspagemapsettings.h"
 #include "settingspageairfields.h"
 #include "settingspageairspace.h"
 #include "settingspageinformation.h"
@@ -119,8 +119,8 @@ class ConfigDialog : public QWidget
     SettingsPageGlider* spgl;
     SettingsPageSector* sps;
     SettingsPageGPS* spg;
-    SettingsPageMapAdv* spma;
-    SettingsPageMap* spm;
+    SettingsPageMapSettings* spms;
+    SettingsPageMapObjects* spmo;
     SettingsPageAirfields* spaf;
     SettingsPageAirspace* spa;
     SettingsPageUnits* spu;

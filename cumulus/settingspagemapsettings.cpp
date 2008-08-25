@@ -1,21 +1,26 @@
 /***********************************************************************
- **
- **   settingspagemapadv.cpp
- **
- **   This file is part of Cumulus
- **
- ************************************************************************
- **
- **   Copyright (c):  2002 by Andr� Somers, 2008 Axel Pauli
- **
- **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
- **
- **   $Id$
- **
- ***********************************************************************/
+**
+**   settingspagemapsettings.cpp
+**
+**   This file is part of Cumulus.
+**
+************************************************************************
+**
+**   Copyright (c):  2002 by André Somers, 2008 Axel pauli
+**
+**   This file is distributed under the terms of the General Public
+**   Licence. See the file COPYING for more information.
+**
+**   $Id$
+**
+************************************************************************
+**
+** Contains the map projection related settings
+**
+** @author André Somers
+**
+***********************************************************************/
 
-#include <QLabel>
 #include <QGridLayout>
 #include <QMessageBox>
 #include <QGroupBox>
@@ -23,17 +28,17 @@
 #include <QDir>
 #include <QToolTip>
 
-#include "settingspagemapadv.h"
+#include "settingspagemapsettings.h"
 #include "generalconfig.h"
 
 /***********************************************************/
-/*  map configuration page                                 */
+/*  map setting page                                 */
 /***********************************************************/
 
-SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent) :
+SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   QWidget(parent)
 {
-  setObjectName("SettingsPageMapAdv");
+  setObjectName("SettingsPageMapSettings");
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
   currentProjType = ProjectionBase::Unknown;
@@ -49,27 +54,29 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent) :
   connect(mapSelection, SIGNAL( clicked()), this, SLOT(slot_openFileDialog()) );
 
   mapDirectory = new QLineEdit( this );
-  topLayout->addWidget(mapDirectory, row++, 1 );
+  topLayout->addWidget(mapDirectory, row++, 1, 1, 2 );
 
   topLayout->addWidget(new QLabel(tr("Projection:"), this), row, 0 );
-  cmbProjection=new QComboBox(this);
+  cmbProjection = new QComboBox(this);
   topLayout->addWidget(cmbProjection, row++, 1);
   cmbProjection->addItem(tr("Lambert"));
-  cmbProjection->addItem(tr("Plate Carée"));
+  cmbProjection->addItem(tr("Plate Carée")); // Qt::Key_Eacute
 
   connect(cmbProjection, SIGNAL(activated(int)), this, SLOT(slotSelectProjection(int)));
 
   topLayout->addWidget(new QLabel(tr("1. St. Parallel:"), this), row, 0);
   edtLat1=new LatEdit(this);
-  topLayout->addWidget(edtLat1, row++, 1);
+  topLayout->addWidget(edtLat1, row++, 1, 1, 2);
 
-  topLayout->addWidget(new QLabel(tr("2. St. Parallel:"), this), row, 0);
-  edtLat2=new LatEdit(this);
-  topLayout->addWidget(edtLat2, row++, 1);
+  edtLat2Label = new QLabel(tr("2. St. Parallel:"), this);
+  topLayout->addWidget(edtLat2Label, row, 0);
+  edtLat2 = new LatEdit(this);
+  topLayout->addWidget(edtLat2, row++, 1, 1, 2);
 
-  topLayout->addWidget(new QLabel(tr("Origin Lon.:"), this), row, 0);
-  edtLon=new LongEdit(this);
-  topLayout->addWidget(edtLon, row++, 1);
+  edtLonLabel = new QLabel(tr("Origin Lon.:"), this);
+  topLayout->addWidget(edtLonLabel, row, 0);
+  edtLon = new LongEdit(this);
+  topLayout->addWidget(edtLon, row++, 1, 1, 2);
 
   //------------------------------------------------------------------------------
 
@@ -84,15 +91,16 @@ SettingsPageMapAdv::SettingsPageMapAdv(QWidget *parent) :
   topLayout->addWidget(chkUnloadUnneeded, row, 0, 1, 2);
   row++;
 
+  topLayout->setColumnStretch( 2, 10 );
   topLayout->setRowStretch( row, 10 );
 }
 
 
-SettingsPageMapAdv::~SettingsPageMapAdv()
+SettingsPageMapSettings::~SettingsPageMapSettings()
 {}
 
 
-void SettingsPageMapAdv::slot_load()
+void SettingsPageMapSettings::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -117,7 +125,7 @@ void SettingsPageMapAdv::slot_load()
 }
 
 
-void SettingsPageMapAdv::slot_save()
+void SettingsPageMapSettings::slot_save()
 {
   // @AP: here we must overtake the new user values at first. After that
   // we can store them.
@@ -157,7 +165,7 @@ void SettingsPageMapAdv::slot_save()
 /**
  * Called if the map selection button is pressed
  */
-void SettingsPageMapAdv::slot_openFileDialog()
+void SettingsPageMapSettings::slot_openFileDialog()
 {
   QString mapDir = QFileDialog::getExistingDirectory( this,
                                                       tr("Please select your map directory"),
@@ -175,22 +183,40 @@ void SettingsPageMapAdv::slot_openFileDialog()
 // selection in the combo box has been changed. index is a reference
 // to the current entry. initialize widgets with the internal values
 // normally read from the config file.
-void SettingsPageMapAdv::slotSelectProjection(int index)
+void SettingsPageMapSettings::slotSelectProjection(int index)
 {
 
   switch(index) {
   case 0:    // Lambert
+#ifdef MAEMO
+    edtLat2Label->setVisible(true);
+    edtLat2->setVisible(true);
+    edtLonLabel->setVisible(true);
+    edtLon->setVisible(true);
+#else
+    edtLat2Label->setEnabled(true);
     edtLat2->setEnabled(true);
-    edtLon-> setEnabled(true);
+    edtLonLabel->setEnabled(true);
+    edtLon->setEnabled(true);
+#endif
     edtLat1->setKFLogDegree(lambertV1);
     edtLat2->setKFLogDegree(lambertV2);
     edtLon->setKFLogDegree(lambertOrigin);
     currentProjType = ProjectionBase::Lambert;
     break;
-  case 1:    // Plate Caree
+  case 1:    // Plate Careé
   default:   // take this if index is unknown
+#ifdef MAEMO
+    edtLat2Label->setVisible(false);
+    edtLat2->setVisible(false);
+    edtLonLabel->setVisible(false);
+    edtLon->setVisible(false);
+#else
+    edtLat2Label->setEnabled(false);
     edtLat2->setEnabled(false);
+    edtLonLabel->setEnabled(false);
     edtLon->setEnabled(false);
+#endif
     edtLat1->setKFLogDegree(cylinPar);
     edtLat2->setKFLogDegree(0);
     edtLon->setKFLogDegree(0);
@@ -199,9 +225,8 @@ void SettingsPageMapAdv::slotSelectProjection(int index)
   }
 }
 
-
 /* Called to ask is confirmation on the close is needed. */
-void SettingsPageMapAdv::slot_query_close(bool& warn, QStringList& warnings)
+void SettingsPageMapSettings::slot_query_close(bool& warn, QStringList& warnings)
 {
   /* set warn to 'true' if the data has changed. Note that we can NOT
     just set warn equal to _changed, because that way we might erase a
@@ -213,19 +238,18 @@ void SettingsPageMapAdv::slot_query_close(bool& warn, QStringList& warnings)
   changed = changed || ( mapDirectory->text() != conf->getMapRootDir() );
   changed = changed || ( chkDeleteAfterCompile->isChecked() != conf->getMapDeleteAfterCompile() );
   changed = changed || ( chkUnloadUnneeded->isChecked() != conf->getMapUnload() );
-
   changed = changed || checkIsProjectionChanged();
 
   if (changed) {
     warn=true;
-    warnings.append(tr("the map settings"));
+    warnings.append(tr("Map Settings"));
   }
 }
 
 /**
  * Checks, if the configuration of the projection has been changed
  */
-bool SettingsPageMapAdv::checkIsProjectionChanged()
+bool SettingsPageMapSettings::checkIsProjectionChanged()
 {
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
@@ -243,6 +267,6 @@ bool SettingsPageMapAdv::checkIsProjectionChanged()
 
   changed = changed || ( conf->getMapProjectionType() != currentProjType );
 
-  // qDebug( "SettingsPageMapAdv::()checkIsProjectionChanged: %d", changed );
+  // qDebug( "SettingsPageMapSettings::()checkIsProjectionChanged: %d", changed );
   return changed;
 }

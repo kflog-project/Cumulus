@@ -1,7 +1,6 @@
 # Cumulus Qt4/X11 project file for qmake
 # $Id$
 
-#QT          += qt3support
 TEMPLATE    = app
 #CONFIG      = qt warn_on release
 CONFIG      = debug qt warn_on
@@ -74,8 +73,8 @@ HEADERS     = \
     settingspageglider.h \
     settingspageinformation.h \
     settingspagelooknfeel.h \
-    settingspagemapadv.h \
-    settingspagemap.h \
+    settingspagemapobjects.h \
+    settingspagemapsettings.h \
     settingspagepersonal.h \
     settingspagepolar.h \
     settingspagesector.h \
@@ -172,8 +171,8 @@ SOURCES     = \
     settingspageglider.cpp \
     settingspageinformation.cpp \
     settingspagelooknfeel.cpp \
-    settingspagemapadv.cpp \
-    settingspagemap.cpp \
+    settingspagemapobjects.cpp \
+    settingspagemapsettings.cpp \
     settingspagepersonal.cpp \
     settingspagepolar.cpp \
     settingspagesector.cpp \

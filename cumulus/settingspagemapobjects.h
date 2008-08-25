@@ -1,43 +1,41 @@
 /***********************************************************************
 **
-**   settingspagemap.h
+**   settingspagemapobjects.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andr� Somers, 2008 Axel pauli
+**   Copyright (c):  2002 by André Somers, 2008 Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
 **
 **   $Id$
 **
-***********************************************************************/
+*************************************************************************
+**
+** Contains the map objects related to load/draw settings.
+**
+** @author André Somers
+**
+************************************************************************/
 
-/**
- *
- * contains map-related draw settings
- *
- * @author Andr� Somers
- *
- */
-
-#ifndef SETTINGSPAGEMAP_H
-#define SETTINGSPAGEMAP_H
+#ifndef SettingsPageMapObjects_H
+#define SettingsPageMapObjects_H
 
 #include <QWidget>
 #include <QTableWidget>
 #include <QTableWidgetItem>
 
-class SettingsPageMap : public QWidget
+class SettingsPageMapObjects : public QWidget
 {
   Q_OBJECT
 
     public:
 
-  SettingsPageMap(QWidget *parent=0);
-  ~SettingsPageMap();
+  SettingsPageMapObjects(QWidget *parent=0);
+  ~SettingsPageMapObjects();
 
   public slots: // Public slots
   /**
@@ -66,7 +64,7 @@ protected:
 
   QTableWidget * loadOptions;
 
-  //list items in listview
+  // list items in listview
   QTableWidgetItem * liIsolines;
   QTableWidgetItem * liIsolineBorders;
   QTableWidgetItem * liWpLabels;

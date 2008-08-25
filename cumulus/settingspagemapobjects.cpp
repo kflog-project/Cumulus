@@ -1,29 +1,35 @@
 /***********************************************************************
- **
- **   settingspagemap.cpp
- **
- **   This file is part of Cumulus
- **
- ************************************************************************
- **
- **   Copyright (c):  2002 by Andr� Somers, 2008 Axel Pauli
- **
- **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
- **
- **   $Id$
- **
- ***********************************************************************/
+**
+**   settingspagemapobjects.cpp
+**
+**   This file is part of Cumulus.
+**
+************************************************************************
+**
+**   Copyright (c):  2002 by André Somers, 2008 Axel pauli
+**
+**   This file is distributed under the terms of the General Public
+**   Licence. See the file COPYING for more information.
+**
+**   $Id$
+**
+*************************************************************************
+**
+** Contains the map objects related to load/draw settings.
+**
+** @author André Somers
+**
+************************************************************************/
 
 #include <QGridLayout>
 #include <QHeaderView>
 
-#include "settingspagemap.h"
+#include "settingspagemapobjects.h"
 #include "generalconfig.h"
 
-SettingsPageMap::SettingsPageMap(QWidget *parent) : QWidget(parent)
+SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent)
 {
-  setObjectName("SettingsPageMap");
+  setObjectName("SettingsPageMapObjects");
 
   int row=0;
   QGridLayout * topLayout = new QGridLayout(this);
@@ -45,11 +51,11 @@ SettingsPageMap::SettingsPageMap(QWidget *parent) : QWidget(parent)
   topLayout->addWidget(loadOptions, row++, 0, 1, 2);
 }
 
-SettingsPageMap::~SettingsPageMap()
+SettingsPageMapObjects::~SettingsPageMapObjects()
 {}
 
 /** Called to initiate loading of the configurationfile */
-void SettingsPageMap::slot_load()
+void SettingsPageMapObjects::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -70,7 +76,7 @@ void SettingsPageMap::slot_load()
 
 
 /** Called to initiate saving to the configurationfile. */
-void SettingsPageMap::slot_save()
+void SettingsPageMapObjects::slot_save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -89,7 +95,7 @@ void SettingsPageMap::slot_save()
 
 
 /** Fills the list with loadoptions */
-void SettingsPageMap::fillLoadOptionList()
+void SettingsPageMapObjects::fillLoadOptionList()
 {
   int row = 0;
 
@@ -146,15 +152,36 @@ void SettingsPageMap::fillLoadOptionList()
 /**
  * Called to toggle the check box of the clicked table cell.
  */
-void SettingsPageMap::slot_toggleCheckBox( int row, int column )
+void SettingsPageMapObjects::slot_toggleCheckBox( int row, int column )
 {
   QTableWidgetItem *item = loadOptions->item( row, column );
   item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
 }
 
-/* Called to ask is confirmation on the close is needed. Not yet
-   supported atm */
-void SettingsPageMap::slot_query_close(bool& warn, QStringList& warnings)
+/* Called to ask is confirmation on close is needed. */
+void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
 {
-  return;
+    /* set warn to 'true' if the data has changed. Note that we can NOT
+    just set warn equal to _changed, because that way we might erase a
+    warning flag set by another page! */
+
+  bool changed=false;
+  GeneralConfig *conf = GeneralConfig::instance();
+  
+  changed |= ( conf->getMapLoadIsoLines() ? Qt::Checked : Qt::Unchecked ) != liIsolines->checkState();
+  changed |= ( conf->getMapShowIsoLineBorders() ? Qt::Checked : Qt::Unchecked ) != liIsolineBorders->checkState();
+  changed |= ( conf->getMapShowWaypointLabels() ? Qt::Checked : Qt::Unchecked ) != liWpLabels->checkState();
+  changed |= ( conf->getMapShowWaypointLabelsExtraInfo() ? Qt::Checked : Qt::Unchecked ) != liWpLabelsExtraInfo->checkState();
+  changed |= ( conf->getMapLoadRoads() ? Qt::Checked : Qt::Unchecked ) != liRoads->checkState();
+  changed |= ( conf->getMapLoadHighways() ? Qt::Checked : Qt::Unchecked ) != liHighways->checkState();
+  changed |= ( conf->getMapLoadRailroads() ? Qt::Checked : Qt::Unchecked ) != liRailroads->checkState();
+  changed |= ( conf->getMapLoadCities() ? Qt::Checked : Qt::Unchecked ) != liCities->checkState();
+  changed |= ( conf->getMapLoadWaterways() ? Qt::Checked : Qt::Unchecked ) != liWaterways->checkState();
+  changed |= ( conf->getMapLoadForests() ? Qt::Checked : Qt::Unchecked ) != liForests->checkState();
+  changed |= ( conf->getMapBearLine()? Qt::Checked : Qt::Unchecked ) != liTargetLine->checkState();
+
+  if (changed) {
+    warn=true;
+    warnings.append(tr("Map Objects"));
+  }
 }

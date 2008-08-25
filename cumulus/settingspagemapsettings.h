@@ -1,41 +1,40 @@
 /***********************************************************************
 **
-**   settingspagemapadv.h
+**   settingspagemapsettings.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel pauli
+**   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
 **
 **   $Id$
 **
+************************************************************************
+**
+** Contains the map projection related settings
+**
+** @author AndrÃ© Somers
+**
 ***********************************************************************/
 
-/**
- *
- * contains map-related data settings
- *
- * @author André Somers
- *
- */
-
-#ifndef SETTINGSPAGEMAPADV_H
-#define SETTINGSPAGEMAPADV_H
+#ifndef SettingsPageMapSettings_H
+#define SettingsPageMapSettings_H
 
 #include <QWidget>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QStringList>
 #include <QPushButton>
+#include <QLabel>
 
 #include "coordedit.h"
 #include "projectionbase.h"
 
-class SettingsPageMapAdv : public QWidget
+class SettingsPageMapSettings : public QWidget
 {
   Q_OBJECT
 
@@ -44,12 +43,12 @@ class SettingsPageMapAdv : public QWidget
   /**
    * Constructor
    */
-  SettingsPageMapAdv(QWidget *parent=0);
+  SettingsPageMapSettings(QWidget *parent=0);
 
   /**
    * Destructor
    */
-  ~SettingsPageMapAdv();
+  ~SettingsPageMapSettings();
 
   /**
    * Checks, if the configuration of the projection has been changed
@@ -86,9 +85,11 @@ class SettingsPageMapAdv : public QWidget
   QCheckBox * chkDeleteAfterCompile;
   QCheckBox * chkUnloadUnneeded;
   QComboBox * cmbProjection;
-  LatEdit * edtLat1;
-  LatEdit * edtLat2;
-  LongEdit * edtLon;
+  LatEdit   * edtLat1;
+  QLabel    * edtLat2Label;
+  LatEdit   * edtLat2;
+  QLabel    * edtLonLabel;
+  LongEdit  * edtLon;
 
   int cylinPar;
   int lambertV1;
