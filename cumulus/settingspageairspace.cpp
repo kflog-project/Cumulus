@@ -165,7 +165,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   drawOptions->setItem( row++, col, drawSuSector );
 
   drawOptions->adjustSize();
-  qDebug("ViewportSize().width()=%d", drawOptions->maximumViewportSize().width());
+  //qDebug("ViewportSize().width()=%d", drawOptions->maximumViewportSize().width());
 
   drawOptions->setColumnWidth( 0, drawOptions->maximumViewportSize().width()-20 / 2 );
   drawOptions->setColumnWidth( 1, drawOptions->maximumViewportSize().width()-20 / 2 );
