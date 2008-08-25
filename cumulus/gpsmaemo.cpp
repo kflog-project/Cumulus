@@ -41,8 +41,13 @@
 
 #include "gpsmaemo.h"
 
-// define alive check timeout
+// Defines alive check timeout.
 #define ALIVE_TO 20000
+
+// Defines a retry timeout which is used after a failed pairing with the
+// BT gps manager. The time should not be to short otherwise cumulus is
+// most of the time blocked by the pairing action.
+#define RETRY_TO 60000
 
 GpsMaemo::GpsMaemo(QObject* parent) : QObject(parent)
 {
@@ -68,7 +73,6 @@ GpsMaemo::GpsMaemo(QObject* parent) : QObject(parent)
     }
 }
 
-
 GpsMaemo::~GpsMaemo()
 {
   timer->stop();
@@ -84,7 +88,6 @@ GpsMaemo::~GpsMaemo()
       delete ctx;
     }
 }
-
 
 /**
  * The Maemon BT manager is called to start the pairing to available BT devices.
@@ -134,8 +137,14 @@ bool GpsMaemo::startGpsReceiving()
     {
       qWarning( "Starting GPSD failed: errno=%d, %s", errno, strerror(errno) );
       qWarning( "GPSBT Error: %s", buf);
+      // restart alive check timer with a retry time
+      timer->start( RETRY_TO );
       return false;
     }
+
+  // Restart alive check timer with a retry time which is used in case of error
+  // return.
+  timer->start( RETRY_TO );
 
   // wait that daemon can make its initialization
   sleep(2);
@@ -215,7 +224,7 @@ bool GpsMaemo::startGpsReceiving()
   gpsDaemonNotifier->connect( gpsDaemonNotifier, SIGNAL(activated(int)),
                               this, SLOT(slot_NotificationEvent(int)) );
 
-  // restart alive check timer again
+  // restart alive check timer with alive timeout
   timer->start( ALIVE_TO );
   
   return true;
