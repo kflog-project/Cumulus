@@ -24,9 +24,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
-#include <QRadioButton>
 #include <QList>
-#include <QGroupBox>
 
 #include "coordedit.h"
 #include "polar.h"
@@ -93,9 +91,7 @@ protected:
     QSpinBox* emptyWeight;
     QSpinBox* addedLoad;
     QSpinBox* spinWater;
-    QGroupBox* bgSeats;
-    QRadioButton* seatsOne;
-    QRadioButton* seatsTwo;
+    QComboBox* comboSeats;
 
     virtual void accept();
 

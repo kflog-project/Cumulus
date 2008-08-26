@@ -23,7 +23,6 @@
 #include <QMessageBox>
 #include <QString>
 #include <QScrollArea>
-//#include <QDialogButtonBox>
 
 #include "polardialog.h"
 #include "settingspagepolar.h"
@@ -55,7 +54,8 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
     setWindowTitle(tr("Edit Glider"));
     isNew = false;
   }
-  _glider=glider;
+
+  _glider = glider;
 
   QHBoxLayout* topLayout = new QHBoxLayout( this );
 
@@ -63,121 +63,124 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
 
   QWidget* itemWidget = new QWidget();
   QGridLayout* itemsLayout = new QGridLayout( itemWidget );
+  itemsLayout->setHorizontalSpacing(10);
   int row=0;
 
   itemsLayout->addWidget(new QLabel(tr("Glider type:"), this), row, 0);
   comboType = new QComboBox(this);
   comboType->setEditable(true);
+  // comboType->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+  itemsLayout->addWidget(comboType, row, 1);
 
-  itemsLayout->addWidget(comboType,row,1,1,4);
-//  itemsLayout->addMultiCellWidget(comboType,row,row,1,4);
-//  itemsLayout->addRowSpacing(row++,10);
-  itemsLayout->addItem(new QSpacerItem(0, 10), row++, 0);
-
-  bgSeats=new QGroupBox(tr("Seats"),this);
-  seatsOne=new QRadioButton(tr("Single"),bgSeats);
-  seatsTwo=new QRadioButton(tr("Double"),bgSeats);
-  seatsOne->setChecked(true);
-  bgSeats->hide();
-
-  itemsLayout->addWidget(new QLabel(tr("Seats:"), this),row,0);
-  QBoxLayout* seats_l=new QHBoxLayout();
-  itemsLayout->addLayout(seats_l,row,1,1,4);
-//  itemsLayout->addMultiCellLayout(seats_l,row,row,1,4);
+  itemsLayout->addWidget(new QLabel(tr("Seats:"), this), row, 2);
+  comboSeats = new QComboBox(this);
+  comboSeats->addItem(tr("Single"));
+  comboSeats->addItem(tr("Double"));
+  itemsLayout->addWidget(comboSeats, row, 3);
   row++;
-  seats_l->addWidget(seatsOne);
-  seats_l->addWidget(seatsTwo);
 
-  itemsLayout->addWidget(new QLabel(tr("Registration:"), this),row,0);
+  itemsLayout->setRowMinimumHeight(row++, 10);
+
+  itemsLayout->addWidget(new QLabel(tr("Registration:"), this), row, 0);
   edtGReg = new QLineEdit(this);
-  itemsLayout->addWidget(edtGReg,row,1,1,2);
-//  itemsLayout->addMultiCellWidget(edtGReg, row, row, 1, 2);
-  row++;
+  itemsLayout->addWidget(edtGReg, row, 1);
 
-  itemsLayout->addWidget(new QLabel(tr("Callsign:"), this),row,0);
+  itemsLayout->addWidget(new QLabel(tr("Callsign:"), this), row, 2);
   edtGCall = new QLineEdit(this);
-  itemsLayout->addWidget(edtGCall,row,1,1,2);
-//  itemsLayout->addMultiCellWidget(edtGCall, row, row, 1, 2);
+  itemsLayout->addWidget(edtGCall, row, 3);
   row++;
 
-  itemsLayout->addWidget(new QLabel(tr("v1 / w1:"), this),row,0);
+  itemsLayout->setRowMinimumHeight(row++, 10);
+
+  QGridLayout* spinboxLayout = new QGridLayout;
+  spinboxLayout->setHorizontalSpacing(10);
+  int srow=0;
+  
+  spinboxLayout->addWidget(new QLabel("v1:", this), srow, 0);
   spinV1 = new QDoubleSpinBox(this);
   spinV1->setRange(0.0, 150.0);
   spinV1->setSingleStep(1.0);
   spinV1->setButtonSymbols(QSpinBox::PlusMinus);
-  itemsLayout->addWidget(spinV1,row,1);
-  itemsLayout->addWidget(new QLabel(tr("km/h"), this),row,2);
-    
+  spinV1->setSuffix(" km/h");
+  spinboxLayout->addWidget(spinV1, srow, 1);
+
+  spinboxLayout->addWidget(new QLabel("w1:", this), srow, 2);
   spinW1 = new QDoubleSpinBox(this);
   spinW1->setRange(-5.0, 0);
   spinW1->setSingleStep(0.01);
   spinW1->setButtonSymbols(QSpinBox::PlusMinus);
-  itemsLayout->addWidget(spinW1,row,3);
-  itemsLayout->addWidget(new QLabel(tr("m/s"), this),row++,4);
+  spinW1->setSuffix(" m/s");
+  spinboxLayout->addWidget(spinW1, srow, 3 );
 
-  itemsLayout->addWidget(new QLabel(tr("v2 / w2:"), this),row,0);
-  spinV2 = new QDoubleSpinBox(this);
-  spinV2->setRange(0.0, 200.0);
-  spinV2->setSingleStep(1.0);
-  spinV2->setButtonSymbols(QSpinBox::PlusMinus);
-  itemsLayout->addWidget(spinV2,row,1);
-  itemsLayout->addWidget(new QLabel(tr("km/h"), this),row,2);
-
-  spinW2 = new QDoubleSpinBox(this);
-  spinW2->setRange(-5.0, 0);
-  spinW2->setSingleStep(0.01);
-  spinW2->setButtonSymbols(QSpinBox::PlusMinus);
-  itemsLayout->addWidget(spinW2,row,3);
-  itemsLayout->addWidget(new QLabel(tr("m/s"), this),row++,4);
-
-  itemsLayout->addWidget(new QLabel(tr("v3 / w3:"), this),row,0);
-  spinV3 = new QDoubleSpinBox(this);
-  spinV3->setRange(0.0, 250.0);
-  spinV3->setSingleStep(1.0);
-  spinV3->setButtonSymbols(QSpinBox::PlusMinus);
-  itemsLayout->addWidget(spinV3,row,1);
-  itemsLayout->addWidget(new QLabel(tr("km/h"), this),row,2);
-  spinW3 = new QDoubleSpinBox(this);
-  spinW3->setRange(-5.0, 0);
-  spinW3->setSingleStep(0.01);
-  spinW3->setButtonSymbols(QSpinBox::PlusMinus);
-  itemsLayout->addWidget(spinW3,row,3);
-  itemsLayout->addWidget(new QLabel(tr("m/s"), this),row++,4);
-
-  itemsLayout->addWidget(new QLabel (tr("Empty weight:"), this), row, 0);
+  spinboxLayout->addWidget(new QLabel (tr("Empty weight:"), this), srow, 4);
   emptyWeight = new QSpinBox (this);
   emptyWeight->setObjectName("emptyWeight");
   emptyWeight->setMaximum(1000);
   emptyWeight->setSingleStep(5);
   emptyWeight->setButtonSymbols(QSpinBox::PlusMinus);
-  itemsLayout->addWidget(emptyWeight,row,1);
-  itemsLayout->addWidget(new QLabel(tr("kg"), this),row++,2);
+  emptyWeight->setSuffix(" kg");
+  spinboxLayout->addWidget(emptyWeight, srow, 5);
+  srow++;
 
-  itemsLayout->addWidget(new QLabel (tr("Added load:"), this), row, 0);
+  spinboxLayout->addWidget(new QLabel("v2", this), srow, 0);
+  spinV2 = new QDoubleSpinBox(this);
+  spinV2->setRange(0.0, 200.0);
+  spinV2->setSingleStep(1.0);
+  spinV2->setButtonSymbols(QSpinBox::PlusMinus);
+  spinV2->setSuffix(" km/h");
+  spinboxLayout->addWidget(spinV2, srow, 1);
+
+  spinboxLayout->addWidget(new QLabel("w2:", this), srow, 2);
+  spinW2 = new QDoubleSpinBox(this);
+  spinW2->setRange(-5.0, 0);
+  spinW2->setSingleStep(0.01);
+  spinW2->setButtonSymbols(QSpinBox::PlusMinus);
+  spinW2->setSuffix(" m/s");
+  spinboxLayout->addWidget(spinW2, srow, 3);
+
+  spinboxLayout->addWidget(new QLabel (tr("Added load:"), this), srow, 4);
   addedLoad = new QSpinBox (this);
   addedLoad->setObjectName("addedLoad");
   addedLoad->setMaximum(1000);
   addedLoad->setSingleStep(5);
   addedLoad->setButtonSymbols(QSpinBox::PlusMinus);
-  itemsLayout->addWidget(addedLoad,row,1);
-  itemsLayout->addWidget(new QLabel(tr("kg"), this),row++,2);
+  addedLoad->setSuffix(" kg");
+  spinboxLayout->addWidget(addedLoad, srow, 5);
+  srow++;
 
-  itemsLayout->addWidget(new QLabel (tr("Max. water:"), this), row, 0);
+  spinboxLayout->addWidget(new QLabel("v3:", this), srow, 0);
+  spinV3 = new QDoubleSpinBox(this);
+  spinV3->setRange(0.0, 250.0);
+  spinV3->setSingleStep(1.0);
+  spinV3->setButtonSymbols(QSpinBox::PlusMinus);
+  spinV3->setSuffix(" km/h");
+  spinboxLayout->addWidget(spinV3, srow, 1);
+
+  spinboxLayout->addWidget(new QLabel("w3:", this), srow, 2);
+  spinW3 = new QDoubleSpinBox(this);
+  spinW3->setRange(-5.0, 0);
+  spinW3->setSingleStep(0.01);
+  spinW3->setButtonSymbols(QSpinBox::PlusMinus);
+  spinW3->setSuffix(" m/s");
+  spinboxLayout->addWidget(spinW3, srow, 3);
+
+  spinboxLayout->addWidget(new QLabel (tr("Max. water:"), this), srow, 4);
   spinWater = new QSpinBox (this);
   spinWater->setObjectName("spinWater");
   spinWater->setMaximum(300);
   spinWater->setSingleStep(5);
   spinWater->setButtonSymbols(QSpinBox::PlusMinus);
-  itemsLayout->addWidget (spinWater, row, 1);
-  itemsLayout->addWidget(new QLabel(tr("l"),this),row,2);
+  spinWater->setSuffix(" l");
+  spinboxLayout->addWidget (spinWater, srow, 5);
+  
+  itemsLayout->addLayout( spinboxLayout, row, 0, 1, 4);
   row++;
 
+  itemsLayout->setRowMinimumHeight(row++, 10);
+  itemsLayout->setColumnStretch(1, 10);
+  
   buttonShow = new QPushButton (tr("Show Polar"), this);
-  itemsLayout->addWidget(buttonShow,row,1,3,2);
-
-  itemsLayout->setColumnStretch (0, 10);
-  itemsLayout->setColumnStretch (1, 20);
-  itemsLayout->setColumnStretch (2, 10);
+  itemsLayout->addWidget(buttonShow, row, 3 );
 
   connect (comboType, SIGNAL(activated(const QString&)),
            this, SLOT(slotActivated(const QString&)));
@@ -265,9 +268,9 @@ void SettingsPagePolar::slot_load()
     spinWater->setValue(_glider->maxWater());
 
     if (_glider->seats() == Glider::doubleSeater)
-      seatsTwo->setChecked(true);
+      comboSeats->setCurrentIndex(1);
     else
-      seatsOne->setChecked(true);
+      comboSeats->setCurrentIndex(0);
 
     spinV1->setValue(_glider->polar()->v1().getKph());
     spinV2->setValue(_glider->polar()->v2().getKph());
@@ -296,7 +299,7 @@ void SettingsPagePolar::slot_save()
   _glider->setCallsign(edtGCall->text().trimmed());
   _glider->setMaxWater(spinWater->value());
 
-  if (seatsTwo->isChecked())
+  if ( comboSeats->currentIndex() == 1 )
     _glider->setSeats(Glider::doubleSeater);
   else
     _glider->setSeats(Glider::singleSeater);
@@ -471,10 +474,10 @@ void SettingsPagePolar::slotActivated(const QString& type)
     spinWater->setValue(_polar->maxWater());
 
     if (_polar->seats() == 2) {
-      seatsTwo->setChecked(true);
+      comboSeats->setCurrentIndex(1);
     }
     else {
-      seatsOne->setChecked(true);
+      comboSeats->setCurrentIndex(0);
     }
   }
 
