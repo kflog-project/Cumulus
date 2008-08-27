@@ -33,7 +33,7 @@
 #include "distance.h"
 #include "generalconfig.h"
 #include "cumulusapp.h"
-#include "wplistwidgetclass.h"
+#include "wplistwidgetparent.h"
 #include "airfieldlistwidget.h"
 #include "waypointlistwidget.h"
 
@@ -73,11 +73,10 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
     }
 
   taskName = new QLineEdit( this );
-//  taskName->setBackgroundMode( Qt::PaletteLight );
   taskName->setBackgroundRole( QPalette::Light );
 
   taskList = new QTreeWidget( this );
-  taskList->setObjectName("tasklist");
+  taskList->setObjectName("taskList");
 
   taskList->setRootIsDecorated(false);
   taskList->setItemsExpandable(false);
@@ -275,6 +274,13 @@ void TaskEditor::__showTask()
   taskList->setSortingEnabled(true);
   taskList->sortByColumn(0, Qt::AscendingOrder);
   taskList->setSortingEnabled(false);
+}
+
+/**
+ * catch show events to update list column alignment
+ */         
+void TaskEditor::showEvent(QShowEvent *)
+{
   taskList->resizeColumnToContents(0);
   taskList->resizeColumnToContents(1);
   taskList->resizeColumnToContents(2);

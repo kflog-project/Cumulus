@@ -182,6 +182,6 @@ void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
 
   if (changed) {
     warn=true;
-    warnings.append(tr("Map Objects"));
+    warnings.append(tr("the Map Objects"));
   }
 }

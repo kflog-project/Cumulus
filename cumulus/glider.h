@@ -18,7 +18,7 @@
 #ifndef GLIDER_H
 #define GLIDER_H
 
-#include <QObject>
+#include <QString>
 #include <QSettings>
 
 #include "polar.h"
@@ -31,9 +31,8 @@
  * @author André Somers
  */
 
-class Glider : public QObject
+class Glider
 {
-    Q_OBJECT
 public: //types
     enum seat{singleSeater, doubleSeater};
 
@@ -44,7 +43,7 @@ public:
     /**
      * @returns the type of the Glider, such as for instance 'ASK 21' or 'Duo Discus', etc.
      */
-    inline QString type()const
+    QString type()const
     {
         return _type;
     };
@@ -57,7 +56,7 @@ public:
     /**
      * @returns the registration of the Glider, such as for instance 'PH-1024' or 'D-8482'.
      */
-    inline QString registration()const
+    QString registration()const
     {
         return _registration;
     };
@@ -65,7 +64,7 @@ public:
     /**
      * Sets the registration of the Glider, such as for instance 'PH-1024' or 'D-8482'.
      */
-    inline void setRegistration(QString newValue)
+    void setRegistration(QString newValue)
     {
         _registration=newValue;
     };
@@ -73,7 +72,7 @@ public:
     /**
      * @returns the callsign of the Glider, such as for instance 'UT' or 'DW'.
      */
-    inline QString callsign()const
+    QString callsign()const
     {
         return _callsign;
     };
@@ -81,7 +80,7 @@ public:
     /**
      * Sets the callsign of the Glider, such as for instance 'UT' or 'DW'.
      */
-    inline void setCallsign(QString newValue)
+    void setCallsign(QString newValue)
     {
         _callsign=newValue;
     };
@@ -89,7 +88,7 @@ public:
     /**
      * @returns the number of seats of the glider.
      */
-    inline Glider::seat seats() const
+    Glider::seat seats() const
     {
         return _seats;
     };
@@ -97,7 +96,7 @@ public:
     /**
      * Sets the number of seats of the glider.
      */
-    inline void setSeats(Glider::seat newValue)
+    void setSeats(Glider::seat newValue)
     {
         _seats=newValue;
     };
@@ -105,7 +104,7 @@ public:
     /**
      * @returns the maximum amount of ballast water (in liters) that the glider can hold.
      */
-    inline int maxWater()const
+    int maxWater()const
     {
         return _maxWater;
     };
@@ -113,7 +112,7 @@ public:
     /**
      * Sets the maximum amount of ballast water (in liters) that the glider can hold.
      */
-    inline void setMaxWater(int newValue)
+    void setMaxWater(int newValue)
     {
         _maxWater=newValue;
     };
@@ -121,7 +120,7 @@ public:
     /**
      * @returns a pointer to the polar object belonging to this glider. 
      */
-    inline Polar *polar()
+    Polar *polar()
     {
         return _polar;
     };
@@ -147,7 +146,7 @@ public:
     /**
      * @returns the last ID used to save this object, or a temporary value for as-of-yet unsaved objects.
      */
-    inline int lastSafeID()const
+     int lastSafeID()const
     {
         return _lastSafeID;
     };
@@ -155,7 +154,7 @@ public:
     /**
      * Sets the last ID used to save this object, or a temporary value for as-of-yet unsaved objects.
      */
-    inline void setID(int newID)
+     void setID(int newID)
     {
         _lastSafeID=newID;
     };
@@ -163,7 +162,7 @@ public:
     /**
      * @returns the name of the co-pilot.
      */
-    inline QString coPilot()const
+     QString coPilot()const
     {
         return _coPilot;
     };
@@ -171,7 +170,7 @@ public:
     /**
      * Sets the name of the co-pilot.
      */
-    inline void setCoPilot(QString newValue)
+     void setCoPilot(QString newValue)
     {
         _coPilot=newValue;
     };

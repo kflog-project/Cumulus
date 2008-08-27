@@ -16,15 +16,14 @@
 ***********************************************************************/
 
 #include "glider.h"
+
 #include <QStringList>
 
-
-//#warning FIXME: does the name of the co-pilot really belong to the glider properties?
-//#warning FIXME: the unit for water should not be an integer representing liters, but a separate unit that can also represent gallons.
+#warning FIXME: the unit for water should not be an integer representing liters, but a separate unit that can also represent gallons.
 
 Glider::Glider()
 {
-    _polar=new Polar(this,"",0,0,0,0,0,0,0,0,0,0);
+    _polar=new Polar(0,"",0,0,0,0,0,0,0,0,0,0);
 }
 
 
@@ -92,7 +91,7 @@ bool Glider::load(QSettings *config, int id)
         W2.setMps(data[8].toDouble());
         W3.setMps(data[10].toDouble());
 
-        _polar=new Polar(this, _type,
+        _polar=new Polar(0, _type,
                          V1, W1,    // v/w pair 1
                          V2, W2,    // v/w pair 2
                          V3, W3,    // v/w pair 3

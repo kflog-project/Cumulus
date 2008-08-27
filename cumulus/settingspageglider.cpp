@@ -111,7 +111,7 @@ void SettingsPageGlider::slot_delete()
   if (!_tmpGlider)
     return;
 
-  int answer= QMessageBox::warning(this,tr("Delete?"),tr("Delete highlighted\nglider?"),
+  int answer= QMessageBox::warning(this,tr("Delete?"),tr("Delete high lighted glider?"),
                                    QMessageBox::Ok,
                                    QMessageBox::Cancel | QMessageBox::Escape | QMessageBox::Default);
 

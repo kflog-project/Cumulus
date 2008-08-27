@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   wplistwidgetclass.cpp
+**   wplistwidgetparent.cpp
 **
 **   This file is part of Cumulus.
 **
@@ -13,25 +13,28 @@
 **
 **   $Id$
 **
-***********************************************************************/
+************************************************************************
+** This widget provides a new widget base class to remove double code in
+** airfield list view, waypoint list view and task editor.
+** Contains standard airfield list and attached filters (filter button row on
+** demand).
+**  
+** Subclassed by airfieldlistwidget and waypointlistwidget.
+**  
+** @author Josua Dietze
+************************************************************************/
 
 #include <QVBoxLayout>
 
-#include "wplistwidgetclass.h"
+#include "wplistwidgetparent.h"
 #include "generalconfig.h"
 
-// A new widget to remove double code in airfield list view, waypoint list view and
-// task editor.
-// Contains standard airfield list and attached filter (filter button row on demand)
-// Subclassed by airfieldlistwidget and waypointlistwidget
-
-WPListWidgetClass::WPListWidgetClass(QWidget *parent) : QWidget(parent)
+WpListWidgetParent::WpListWidgetParent(QWidget *parent) : QWidget(parent)
 {
   QVBoxLayout *topLayout = new QVBoxLayout( this );
 
   list = new QTreeWidget( this );
-
-  list->setObjectName("WaypointListWidgetClass");
+  list->setObjectName("WpListWidgetParent");
   list->setRootIsDecorated(false);
   list->setItemsExpandable(false);
   list->setUniformRowHeights(true);
@@ -47,35 +50,36 @@ WPListWidgetClass::WPListWidgetClass(QWidget *parent) : QWidget(parent)
   list->setHeaderLabels(sl);
   list->setFocus();
 
-  filter=new ListViewFilter(list, this);
-  filter->setObjectName("listfilter");
+  filter = new ListViewFilter(list, this);
+  filter->setObjectName("ListViewFilter");
   topLayout->addWidget(filter);
 
   topLayout->addWidget(list,10);
 
   connect( list, SIGNAL( itemClicked(QTreeWidgetItem*,int) ),
-    this, SLOT( slot_listItemClicked(QTreeWidgetItem*,int) ) );
+           this, SLOT( slot_listItemClicked(QTreeWidgetItem*,int) ) );
 
   rowDelegate = 0;
   listFilled = false;
 }
 
 
-WPListWidgetClass::~WPListWidgetClass()
+WpListWidgetParent::~WpListWidgetParent()
 {
-  // qDebug("WPListWidgetClass::~WPListWidgetClass()");
+  // qDebug("WpListWidgetParent::~WpListWidgetParent()");
 }
 
-
-void WPListWidgetClass::showEvent(QShowEvent *)
+void WpListWidgetParent::showEvent(QShowEvent *)
 {
+  qDebug("WpListWidgetParent::showEvent()");
+  // align colums to contents before showing
   list->resizeColumnToContents(0);
   list->resizeColumnToContents(1);
   list->resizeColumnToContents(2);
   list->setFocus();
 }
 
-void WPListWidgetClass::configRowHeight()
+void WpListWidgetParent::configRowHeight()
 {
   // set new row height from configuration
   int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
@@ -90,25 +94,25 @@ void WPListWidgetClass::configRowHeight()
 
 
 /** This slot is called from parent when closing */
-void WPListWidgetClass::slot_Done ()
+void WpListWidgetParent::slot_Done ()
 {
   filter->off();
 }
 
 /** This slot sends a signal to indicate that a selection has been made. */
-void WPListWidgetClass::slot_listItemClicked(QTreeWidgetItem* li, int)
+void WpListWidgetParent::slot_listItemClicked(QTreeWidgetItem* li, int)
 {
-//  qDebug("WPListWidgetClass::slot_listItemClicked");
+//  qDebug("WpListWidgetParent::slot_listItemClicked");
   if ( li == 0)
     return;
   
   // Special rows selected?
   QString test = li->text(1);
 
-  if (test == "Next Page")
+  if (test == ListViewFilter::NextPage)
     filter->showPage(true); // "true" is forward
   else
-    if (test == "Previous Page")
+    if (test == ListViewFilter::PreviousPage)
       filter->showPage(false); // "false" is backward
     else
       emit wpSelectionChanged();

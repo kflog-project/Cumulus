@@ -118,10 +118,6 @@ class SettingsPageAirspaceFilling: public QDialog
     SettingsPageAirspaceFilling( QWidget *parent=0 );
     ~SettingsPageAirspaceFilling();
 
-    //SettingsPageAirspace takes care of our loading and saving,
-    //so it needs access to our internals
-    // friend class SettingsPageAirspace;
-
   public slots: // Public slots
     /**
      * Called to initiate saving to the configuration file.
@@ -197,10 +193,6 @@ class SettingsPageAirspaceWarnings : public QDialog
 
     SettingsPageAirspaceWarnings( QWidget *parent=0 );
     ~SettingsPageAirspaceWarnings();
-
-    // SettingsPageWarnings takes care of our loading and saving, so
-    // it needs access to our internals
-    // friend class SettingsPageAirspace;
 
   public slots: // Public slots
     /**

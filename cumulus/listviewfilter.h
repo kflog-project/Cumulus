@@ -22,6 +22,7 @@
 #include <QList>
 #include <QTreeWidget>
 #include <QPushButton>
+#include <QString>
 
 class QPushButton;
 
@@ -33,6 +34,7 @@ typedef QList<QTreeWidgetItem*> itemList;
 class ListViewFilterItem
 {
 public:
+
     ListViewFilterItem(ListViewFilterItem * parent=0);
     ~ListViewFilterItem();
 
@@ -66,16 +68,25 @@ private:
     int diffLevel(const QString&, const QString&);
 };
 
-
 /**
- * Creates a filterbar for a Q3ListView in order to quickly filter the listview.
+ * Creates a filterbar for a QTreeViewWidget in order to quickly filter the listview.
  * @author André Somers
  */
 class ListViewFilter : public QWidget
 {
     Q_OBJECT
 
+private:
+
+    // defines the number of filter buttons
+    static const uint buttonCount;
+
 public:
+
+    // defines the strings to be used in widget tree for browsing
+    static const QString NextPage;
+    static const QString PreviousPage;
+
     /**
      * Constructor.
      * @arg lv Reference to the listview this filter works on.
@@ -102,7 +113,7 @@ public:
     void showPage(bool up);
 
 private:
-    //reference to listview
+    //pointer to tree view
     QTreeWidget* _tw; // _lv
     QTreeWidgetItem* prev;
     QTreeWidgetItem* next;
@@ -127,7 +138,6 @@ private slots:
      * Called if one of the buttons is clicked. The argument indicates which button.
      */
     void cmdPush(int);
-
 };
 
 #endif

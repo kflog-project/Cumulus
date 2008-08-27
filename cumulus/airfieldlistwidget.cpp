@@ -28,7 +28,7 @@
 extern MapContents *_globalMapContents;
 extern MapConfig   *_globalMapConfig;
 
-AirfieldListWidget::AirfieldListWidget(QWidget *parent ) : WPListWidgetClass(parent)
+AirfieldListWidget::AirfieldListWidget(QWidget *parent ) : WpListWidgetParent(parent)
 {
   setObjectName("AirfieldListWidget");
   list->setObjectName("AFTreeWidget");
@@ -54,6 +54,8 @@ AirfieldListWidget::~AirfieldListWidget()
 /** Retrieves the airfields from the mapcontents, and fills the list. */
 void AirfieldListWidget::fillWpList()
 {
+  // qDebug("AirfieldListWidget::fillWpList()");
+
   if( listFilled ) {
     return;
   }
@@ -79,15 +81,12 @@ void AirfieldListWidget::fillWpList()
   list->sortByColumn(0,Qt::AscendingOrder);
   list->setSortingEnabled(false);
 
-  list->resizeColumnToContents(0);
-  list->resizeColumnToContents(1);
-  list->resizeColumnToContents(2);
-
   if (Nr>0) {
     // @AP: set only to true if something was read
     listFilled = true;
   }
 
+  resizeListColumns();
   filter->reset();
 }
 
@@ -102,7 +101,7 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
   // Special rows selected?
   QString test = li->text(1);
 
-  if (test == "Next Page" || test == "Previous Page")
+  if ( test == ListViewFilter::NextPage || test == ListViewFilter::PreviousPage )
     return 0;
 
   // Now we're left with the real waypoints/airports

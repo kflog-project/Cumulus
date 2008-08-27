@@ -54,7 +54,7 @@ GliderListWidget::~GliderListWidget()
 /** Retreives the gliders from the config file, and fills the list. */
 void GliderListWidget::fillList()
 {
-//  clear();
+  qDeleteAll (Gliders);
   Gliders.clear();
 
   QSettings config( QSettings::UserScope, "Cumulus" );
@@ -80,12 +80,15 @@ void GliderListWidget::fillList()
   config.endGroup();
   // qDebug("GliderListWidget::fillList(): gliders=%d", Gliders.count());
   _changed = false;
-
- resizeColumnToContents(0);
- resizeColumnToContents(1);
- resizeColumnToContents(2);
 }
 
+// align columns content before showing
+void GliderListWidget::showEvent(QShowEvent *)
+{
+  resizeColumnToContents(0);
+  resizeColumnToContents(1);
+  resizeColumnToContents(2);
+}
 
 void GliderListWidget::save()
 {

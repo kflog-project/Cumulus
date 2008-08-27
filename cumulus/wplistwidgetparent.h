@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   wplistwidgetclass.h
+**   wplistwidgetparent.h
 **
 **   This file is part of Cumulus.
 **
@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef WPLISTWIDGETCLASS_H
-#define WPLISTWIDGETCLASS_H
+#ifndef WP_LISTWIDGET_PARENT_H
+#define WP_LISTWIDGET_PARENT_H
 
 #include <QWidget>
 #include <QTreeWidget>
@@ -27,17 +27,24 @@
 #include "rowdelegate.h"
 
 /**
- * This widget provides a list of waypoints and a means to select one.
- *
+ * This widget provides a new widget base class to remove double code in
+ * airfield list view, waypoint list view and task editor.
+ * Contains standard airfield list and attached filters (filter button row on
+ * demand).
+ *  
+ * Subclassed by airfieldlistwidget and waypointlistwidget.
+ *  
  * @author Josua Dietze
  */
-class WPListWidgetClass : public QWidget
+ 
+class WpListWidgetParent : public QWidget
 {
     Q_OBJECT
+    
 public:
-    WPListWidgetClass(QWidget *parent=0);
+    WpListWidgetParent(QWidget *parent=0);
 
-    virtual ~WPListWidgetClass();
+    virtual ~WpListWidgetParent();
 
     /**
      * sets the list row height from configuration
@@ -47,18 +54,33 @@ public:
     /**
      * @returns a pointer to the currently highlighted waypoint.
      */
-    virtual wayPoint* getSelectedWaypoint() {return 0;};
+    virtual wayPoint* getSelectedWaypoint() = 0;
 
     /**
      * retrieves the waypoints or airfields from the map contents and fills
-     * the list.
+     * the list. The user must implement this method.
      */
-    virtual void fillWpList() { return; };
+    virtual void fillWpList() = 0;
 
     /**
      * @returns a pointer to the "list" widget
      */
     QTreeWidget* listWidget() { return list; };
+
+    /**
+     * aligns the columns to their contents
+     */
+  virtual void resizeListColumns()
+    {
+      list->resizeColumnToContents(0);
+      list->resizeColumnToContents(1);
+      list->resizeColumnToContents(2);
+    };
+  
+    /**
+     * @returns a pointer to the "list" widget
+     */
+  
 
 public slots: // Public slots
 
@@ -88,7 +110,7 @@ private slots:
     /**
      * Called from tree widget when an entry is tapped on.
      */
-    void slot_listItemClicked(QTreeWidgetItem*,int);
+    void slot_listItemClicked(QTreeWidgetItem*, int);
 
 };
 

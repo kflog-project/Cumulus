@@ -229,7 +229,9 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
 SettingsPagePolar::~SettingsPagePolar()
 {
    while (!_polars.isEmpty())
-     delete _polars.takeFirst();	
+     delete _polars.takeFirst();
+
+  // if( _glider ) delete _glider;
 }
 
 
@@ -314,7 +316,7 @@ void SettingsPagePolar::slot_save()
   W3.setMps(spinW3->value());
   // qDebug("_polar->emptyWeight() %f  _polar->grossWeight() %f",
   //         (float)_glider->polar()->emptyWeight(),  (float)_glider->polar()->grossWeight() );
-  _glider->setPolar(new Polar( _glider, _glider->type(),
+  _glider->setPolar(new Polar( 0, _glider->type(),
                                V1, W1, V2, W2, V3, W3,
                                0.0, 0.0,
                                emptyWeight->value(),
@@ -455,7 +457,7 @@ void SettingsPagePolar::slotActivated(const QString& type)
   // qDebug ("SettingsPagePolar::slotActivated(%s)", type.toLatin1().data());
 
   if(!_glider) {
-    _glider=new Glider();
+    _glider = new Glider();
   }
 
   _polar = getPolar();

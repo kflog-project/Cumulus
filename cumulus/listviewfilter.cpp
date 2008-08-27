@@ -21,7 +21,10 @@
 #include "listviewfilter.h"
 #include "generalconfig.h"
 
-const uint buttonCount=5;
+// Initialize static members
+const uint ListViewFilter::buttonCount     = 5;
+const QString ListViewFilter::NextPage     = tr("Next Page");
+const QString ListViewFilter::PreviousPage = tr("Previous Page");
 
 ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(parent)
 {
@@ -51,11 +54,11 @@ ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(paren
     this->hide();
 
   QStringList sl;
-  sl << " " << "Previous Page" << "(click)";
+  sl << " " << PreviousPage << tr("(click)");
   prev = new QTreeWidgetItem( sl );
 
   QStringList nl;
-  nl << " " << "Next Page" << "(click)";
+  nl << " " << NextPage << tr("(click)");
   next = new QTreeWidgetItem( nl );
 }
 

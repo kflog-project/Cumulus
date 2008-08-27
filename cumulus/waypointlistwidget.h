@@ -21,15 +21,13 @@
 #include <QWidget>
 
 #include "waypoint.h"
-#include "wplistwidgetclass.h"
-
-//class WaypointCatalog;
+#include "wplistwidgetparent.h"
 
 /**
  * This widget provides a list of waypoints and a means to select one.
- * @author Andr� Somers
+ * @author André Somers
  */
-class WaypointListWidget : public WPListWidgetClass
+class WaypointListWidget : public WpListWidgetParent
 {
     Q_OBJECT
 public:
@@ -72,7 +70,6 @@ class _WaypointItem : public QTreeWidgetItem
         _WaypointItem(QTreeWidget*, wayPoint *);
         wayPoint * wp;
     };
-
 };
 
 #endif

@@ -15,21 +15,21 @@
 **
 ***********************************************************************/
 
-#ifndef AIRFIELDLISTWIDGET_H
-#define AIRFIELDLISTWIDGET_H
+#ifndef AIRFIELD_LISTWIDGET_H
+#define AIRFIELD_LISTWIDGET_H
 
 #include <QWidget>
 
 #include "waypoint.h"
-#include "wplistwidgetclass.h"
+#include "wplistwidgetparent.h"
 #include "mapcontents.h"
 
 /**
- * This widget provides a list of waypoints and a means to select one.
+ * This widget provides a list of airfields and a means to select one.
  * @author André Somers
  */
 
-class AirfieldListWidget : public WPListWidgetClass
+class AirfieldListWidget : public WpListWidgetParent
 {
     Q_OBJECT
 

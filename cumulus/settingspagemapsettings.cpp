@@ -242,7 +242,7 @@ void SettingsPageMapSettings::slot_query_close(bool& warn, QStringList& warnings
 
   if (changed) {
     warn=true;
-    warnings.append(tr("Map Settings"));
+    warnings.append(tr("the Map Settings"));
   }
 }
 

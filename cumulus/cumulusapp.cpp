@@ -704,6 +704,8 @@ void CumulusApp::initMenuBar()
   mapMenu->addAction( actionToggleLogging );
   mapMenu->addAction( actionRememberWaypoint );
   mapMenu->addAction( actionSelectTask );
+  mapMenu->addAction( actionManualNavHome );
+  mapMenu->addAction( actionGpsNavHome );
   mapMenu->addAction( actionToggleManualInFlight );
   mapMenu->addSeparator();
   mapMenu->addAction( actionEnsureVisible );
@@ -778,7 +780,7 @@ void CumulusApp::initActions()
   connect( actionManualNavLeft, SIGNAL( triggered() ),
            calculator, SLOT( slot_changePositionW() ) );
 
-  actionManualNavHome = new QAction( tr( "Move to home site" ), this ); 
+  actionManualNavHome = new QAction( tr( "Goto home site" ), this ); 
   actionManualNavHome->setShortcut( QKeySequence("H") );
   addAction( actionManualNavHome );
   connect( actionManualNavHome, SIGNAL( triggered() ),
@@ -810,8 +812,8 @@ void CumulusApp::initActions()
   connect( actionGpsNavDown, SIGNAL( triggered() ),
            calculator, SLOT( slot_McDown() ) );
 
-  actionGpsNavHome = new QAction( tr( "Set home site waypoint" ), this );
-  actionGpsNavHome->setShortcut( QKeySequence("H") );
+  actionGpsNavHome = new QAction( tr( "Set home site" ), this );
+  actionGpsNavHome->setShortcut( QKeySequence(Qt::SHIFT + Qt::Key_H) );
   addAction( actionGpsNavHome );
   connect( actionGpsNavHome, SIGNAL( triggered() ),
            this, SLOT( slotNavigateHome() ) );
@@ -1072,7 +1074,6 @@ void CumulusApp::toggleGpsNavActions( const bool toggle )
   actionGpsNavZoomIn->setEnabled( toggle );
   actionGpsNavZoomOut->setEnabled( toggle );
 }
-
 
 void CumulusApp::slotFileQuit()
 {

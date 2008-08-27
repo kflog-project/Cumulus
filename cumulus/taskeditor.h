@@ -32,7 +32,7 @@
 #include "flighttask.h"
 #include "waypoint.h"
 #include "listviewfilter.h"
-#include "wplistwidgetclass.h"
+#include "wplistwidgetparent.h"
 
 class TaskEditor : public QDialog
 {
@@ -50,6 +50,10 @@ protected:
     /** */
     virtual void accept();
     virtual void reject();
+    /**
+     * catch show events to update list column alignment
+     */         
+    virtual void showEvent(QShowEvent *);
 
 signals:
     /** */
@@ -107,7 +111,7 @@ private:
 #define NUM_LISTS 2
 
     /** selection lists with waypoints */
-    WPListWidgetClass* waypointList[NUM_LISTS];
+    WpListWidgetParent* waypointList[NUM_LISTS];
     
     /** name of current task */
     QLineEdit* taskName;

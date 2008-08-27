@@ -82,6 +82,10 @@ public:
      */
     void selectItemFromReg(const QString& registration);
 
+protected:
+  
+  void showEvent(QShowEvent *);
+  
 public slots:
     /**
      * Called if a glider has been edited.

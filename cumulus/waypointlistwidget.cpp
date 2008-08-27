@@ -30,7 +30,7 @@ extern MapContents* _globalMapContents;
 extern MapConfig* _globalMapConfig;
 
 
-WaypointListWidget::WaypointListWidget(QWidget *parent) : WPListWidgetClass(parent)
+WaypointListWidget::WaypointListWidget(QWidget *parent) : WpListWidgetParent(parent)
 {
   setObjectName("WaypointListWidget");
   list->setObjectName("WPTreeWidget");
@@ -71,10 +71,6 @@ void WaypointListWidget::fillWpList()
   list->sortByColumn(0,Qt::AscendingOrder);
   list->setSortingEnabled(false);
 
-  list->resizeColumnToContents(0);
-  list->resizeColumnToContents(1);
-  list->resizeColumnToContents(2);
-
   if ( n>0 ) {
     list->setCurrentItem(list->topLevelItem(0));
 //from airfieldlistview:
@@ -90,6 +86,9 @@ void WaypointListWidget::fillWpList()
   } else {
     filter->reset(true);
   }
+
+  resizeListColumns();
+
   list->setUpdatesEnabled(true);
 }
 
@@ -104,7 +103,7 @@ wayPoint* WaypointListWidget::getSelectedWaypoint()
   // Special rows selected?
   QString test = li->text(1);
 
-  if (test == "Next Page" || test == "Previous Page")
+  if (test == ListViewFilter::NextPage || test == ListViewFilter::PreviousPage)
     return 0;
 
   // Now we're left with the real waypoints/airports
@@ -126,8 +125,6 @@ void WaypointListWidget::deleteSelectedWaypoint()
 
   wayPoint* w = getSelectedWaypoint();
   filter->restoreListViewItems();
-
-  // remove from list
 
   // remove from waypointlist in MapContents
   _globalMapContents->getWaypointList()->removeAll( w );
@@ -211,5 +208,4 @@ WaypointListWidget::_WaypointItem::_WaypointItem(QTreeWidget* tw, wayPoint* wayp
   icon.addPixmap( _globalMapConfig->getPixmap(wp->type,false,true) );
   icon.addPixmap( selectIcon, QIcon::Selected );
   setIcon( 0, icon );
-//  setIcon(0, QIcon(_globalMapConfig->getPixmap(wp->type,false,true)));
 }
