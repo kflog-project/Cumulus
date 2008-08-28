@@ -89,7 +89,6 @@ private:
     QSpinBox* cruisingSpeed;
     /** */
     QTreeWidget* taskListWidget;
-//    Q3ListView* taskListView;
     /** */
     TaskListView* taskContent;
     /** */

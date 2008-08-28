@@ -81,6 +81,7 @@ TaskList::TaskList( QWidget* parent ) :
 
   splitter = new QSplitter( Qt::Vertical, this );
   splitter->setOpaqueResize( true );
+  splitter->setHandleWidth(10);
   
   taskListWidget = new QTreeWidget( splitter );
 
@@ -124,7 +125,6 @@ TaskList::~TaskList()
 {
   // qDebug("TaskList::~TaskList()");
   qDeleteAll(taskList);
-  taskList.clear();
 }
 
 void TaskList::showEvent(QShowEvent *)
@@ -145,8 +145,8 @@ void TaskList::showEvent(QShowEvent *)
 
       if( sum >= 200 )
         {
-          sizeList[0] = 100;
-          sizeList[1] = sum-100;
+          sizeList[0] = 150;
+          sizeList[1] = sum-150;
 
           // set the splitter line to a new place
           splitter->setSizes(sizeList);
@@ -175,8 +175,8 @@ void TaskList::slotTaskDetails()
   if ( selected->text( 0 ) == " " ) {
     if ( selected->text( 1 ) == tr("(No tasks defined)") ) {
       QMessageBox::information( this, 
-                        tr("Create New Tasks"),
-                        tr("Push \"Plus\" button to add a task") );
+                        tr("Create New Task"),
+                        tr("Push <b>Plus</b> button to add a task") );
     }
 
     taskContent->clear();
@@ -237,9 +237,9 @@ bool TaskList::slotLoadTask()
   while( !taskList.isEmpty() ) delete taskList.takeFirst();
   taskNames.clear();
 
-# warning task list file 'tasks.tsk' is stored  at User Data Directory
+#warning task list file 'tasks.tsk' is stored at User Data Directory
 
-  // currently hardcoded ...
+  // currently hardcoded file name
   QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/tasks.tsk" );
 
   if( !f.open( QIODevice::ReadOnly ) ) {
@@ -248,8 +248,6 @@ bool TaskList::slotLoadTask()
     taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
     taskListWidget->setCurrentItem( taskListWidget->itemAt(0,taskListWidget->topLevelItemCount()-1) );
     taskListWidget->sortItems( 0, Qt::AscendingOrder );
-//      taskListWidget->insertItem(new Q3ListViewItem( taskListWidget, " ",
-//                               tr("(No tasks defined)")));
     return false;
   }
 
@@ -272,18 +270,18 @@ bool TaskList::slotLoadTask()
 
       if( wpList != 0 ) {
         // remove all elements from previous uncomplete step
+        qDeleteAll(*wpList);
         wpList->clear();
       } else {
         wpList = new QList<wayPoint*>;
-        //wpList->setAutoDelete(true);
       }
 
       tmpList = line.split( ",", QString::KeepEmptyParts );
       taskName = tmpList.at(1);
     } else {
       if( line.mid( 0, 2 ) == "TW" && isTask ) {
-        // new wp ...
-        wayPoint* wp = new wayPoint ();
+        // new waypoint
+        wayPoint* wp = new wayPoint;
         wpList->append( wp );
 
         tmpList = line.split( ",", QString::KeepEmptyParts );
@@ -307,24 +305,22 @@ bool TaskList::slotLoadTask()
           // task complete
           isTask = false;
           FlightTask* task = new FlightTask( wpList, true,
-                                           taskName, cruisingSpeed->value() );
+                                             taskName, cruisingSpeed->value() );
           taskList.append( task );
 
           wpList = 0; // ownership was overtaken by FlighTask
           numTask.sprintf( "%02d", taskList.count() );
 
-          rowList << numTask << taskName << task->getTaskTypeString() << task->getTaskDistanceString();
+          rowList << numTask
+                  << taskName
+                  << task->getTaskTypeString()
+                  << task->getTaskDistanceString();
+                  
           taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
           rowList.clear();
 
           // save task name
           taskNames << taskName;
-
-/*          if( taskList.count() == (int) lastSelection )
-            {
-              // restore last selection
-              taskListWidget->setSelected( newItem, true );
-            }*/
         }  
       }
     }
@@ -334,8 +330,7 @@ bool TaskList::slotLoadTask()
 
   if( wpList != 0 ) {
     // remove all elements from previous uncomplete step
-    qDeleteAll (*wpList);
-    wpList->clear();
+    qDeleteAll(*wpList);
     delete wpList;
   }
 
@@ -517,15 +512,13 @@ bool TaskList::saveTaskList()
 
       for( int j=0; j < wpList.count(); j++ )
         {
-          // saving each waypoint ...
+          // saving each taskpoint ...
           wayPoint* wp = wpList.at(j);
           stream << "TW," << wp->origP.x() << "," << wp->origP.y() << ","
           << wp->elevation << "," << wp->name << "," << wp->icao << ","
           << wp->description << "," << wp->frequency << ","
           << wp->comment << "," << wp->isLandable << "," << wp->runway << ","
-          << wp->length << "," << wp->surface << "," << wp->type << /* ","
-                                << wp->taskPointType << */ endl;
-          //AS: The taskpoint type is implied by the order of the entries, so removed.
+          << wp->length << "," << wp->surface << "," << wp->type << endl;
         }
 
       stream << "TE" << endl;
