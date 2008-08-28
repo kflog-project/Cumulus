@@ -396,7 +396,11 @@ void TaskEditor::accept()
 void TaskEditor::reject()
 {
   // qDebug("TaskEditor::reject()");
-  // emit done();
+  if( editState == TaskEditor::create )
+    {
+      // delete rejected new task
+      delete planTask;
+    }
   // close and destroy dialog
   QDialog::done(QDialog::Rejected);
 }

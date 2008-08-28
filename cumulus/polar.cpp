@@ -27,13 +27,12 @@
 
 #include "polar.h"
 
-Polar::Polar(QObject* parent,
-             const QString& name,const Speed& v1, const Speed& w1,
+Polar::Polar(const QString& name,const Speed& v1, const Speed& w1,
              const Speed& v2, const Speed& w2,
              const Speed& v3, const Speed& w3,
              double /*wingLoad*/, double /*wingArea*/,
              double emptyWeight, double grossWeight)
-        : QObject(parent), _name(name),_v1(v1),_w1(w1),_v2(v2),_w2(w2),_v3(v3),_w3(w3),
+        : _name(name),_v1(v1),_w1(w1),_v2(v2),_w2(w2),_v3(v3),_w3(w3),
         _water(0), _bugs(0), _emptyWeight(emptyWeight), _grossWeight(grossWeight),
         _seats(1), _maxWater(0)
 {
@@ -59,8 +58,7 @@ Polar::Polar(QObject* parent,
 }
 
 
-Polar::Polar (const Polar& polar)
-        : QObject (polar.parent()),
+Polar::Polar (const Polar& polar) :
         _name (polar._name),
         _v1 (polar._v1),
         _w1 (polar._w1),
@@ -80,11 +78,10 @@ Polar::Polar (const Polar& polar)
         _grossWeight (polar._grossWeight)
 {}
 
-        
 Polar::~Polar()
 {}
 
-        
+
 void Polar::setWater (int water, int bugs)
 {
     _water = water;
@@ -355,37 +352,36 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
         p.drawText(0, y+=font.pixelSize()+2, sink.getVerticalText() + msg);
     }
     if (fabs (wind.getMps()) > 0.01 && fabs (lift.getMps()) > 0.01 ) {
-        p.drawText (0, y+=font.pixelSize()+2, tr("Wind: ") + wind.getHorizontalText() +
-                    ", " + tr("Lift: ")+lift.getVerticalText());
+      p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Wind: ") + wind.getHorizontalText() +
+                  ", " + QObject::tr("Lift: ")+lift.getVerticalText());
     } else if (fabs (wind.getMps()) > 0.01 ) {
-        p.drawText (0, y+=font.pixelSize()+2, tr("Wind: ") + wind.getHorizontalText());
+      p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Wind: ") + wind.getHorizontalText());
     } else if (fabs (lift.getMps()) > 0.01) {
-        p.drawText (0, y+=font.pixelSize()+2, tr("Lift: ")+lift.getVerticalText());
+      p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Lift: ")+lift.getVerticalText());
     }
 
     if ( _emptyWeight < _grossWeight )
-        p.drawText (0, y+=font.pixelSize()+2, tr("Added load: %1 Kg").arg((int)(_grossWeight-_emptyWeight)));
+      p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Added load: %1 Kg").arg((int)(_grossWeight-_emptyWeight)));
 
     if (_water != 0)
-        p.drawText (0, y+=font.pixelSize()+2, tr("Water ballast: %1 l").arg(_water));
+      p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Water ballast: %1 l").arg(_water));
     if (_bugs != 0)
-        p.drawText (0, y+=font.pixelSize()+2, tr("Bug factor: %1 %").arg(_bugs));
+      p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Bug factor: %1 %").arg(_bugs));
 
     // p.drawText(0, y+=font.pixelSize()+2, tr("McCready: ")+mc.getTextVertical());
-    p.drawText(0, y+=font.pixelSize()+2, tr("Best speed: ") + bestspeed.getHorizontalText());
-    p.drawText(0, y+=font.pixelSize()+2, tr("Sinking: ") + getSink(bestspeed).getVerticalText(true, 2));
+  p.drawText(0, y+=font.pixelSize()+2, QObject::tr("Best speed: ") + bestspeed.getHorizontalText());
+  p.drawText(0, y+=font.pixelSize()+2, QObject::tr("Sinking: ") + getSink(bestspeed).getVerticalText(true, 2));
 
-    msg = QString(tr("Best l/d: %1")).arg( bestld, 0, 'f', 1 );
-//    msg.sprintf (tr("Best l/d:")+" %1.1f", bestld);
+    msg = QString(QObject::tr("Best l/d: %1")).arg( bestld, 0, 'f', 1 );
     p.drawText(0, y+=font.pixelSize()+2, msg);
 
     y = (int)(sink*Y)+5;
     int x = view->width()/2;
     p.setPen (Qt::black);
-    msg = tr("Use cursor right/left to simulate wind");
+    msg = QObject::tr("Use cursor right/left to simulate wind");
     p.drawText(x, y+=font.pixelSize()+2, msg);
-    msg = tr("Use cursor up/down to set lift");
+    msg = QObject::tr("Use cursor up/down to set lift");
     p.drawText(x, y+=font.pixelSize()+2, msg);
-    msg = tr("Use <Shift> up/down to adjust sinking");
+    msg = QObject::tr("Use <Shift> up/down to adjust sinking");
     p.drawText(x, y+=font.pixelSize()+2, msg);
 }

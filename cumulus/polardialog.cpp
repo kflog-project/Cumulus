@@ -77,7 +77,12 @@ PolarDialog::PolarDialog(const Polar* polar, QWidget* parent) :
 
 
 PolarDialog::~PolarDialog()
-{}
+{
+  if( _polar )
+    {
+      delete _polar;
+    }
+}
 
 
 void PolarDialog::slot_keyup()

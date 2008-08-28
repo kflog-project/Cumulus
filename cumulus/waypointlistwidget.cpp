@@ -157,14 +157,14 @@ void WaypointListWidget::updateSelectedWaypoint(wayPoint* wp)
 
 
 /** Called if a waypoint has been added. */
-void WaypointListWidget::addWaypoint(wayPoint * wp)
+void WaypointListWidget::addWaypoint(wayPoint * newWp)
 {
-  if( wp == 0 ) {
+  if( newWp == 0 ) {
     qDebug("WaypointListWidget::updateSelectedWaypoint: empty waypoint given");
     return;
   }
 
-  wayPoint* newWp = new wayPoint(*wp);
+  // wayPoint* newWp = new wayPoint(*wp);
   new _WaypointItem(list, newWp);
 
   filter->reset();

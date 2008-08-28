@@ -321,7 +321,7 @@ SettingsPagePolar::save()
   // qDebug("_polar->emptyWeight() %f  _polar->grossWeight() %f",
   //         (float)_glider->polar()->emptyWeight(),  (float)_glider->polar()->grossWeight() );
   _glider->setPolar(
-      new Polar(0, _glider->type(), V1, W1, V2, W2, V3, W3, 0.0, 0.0, emptyWeight->value(), emptyWeight->value()
+      new Polar( _glider->type(), V1, W1, V2, W2, V3, W3, 0.0, 0.0, emptyWeight->value(), emptyWeight->value()
           + addedLoad->value()));
 
   // emit glider object to GliderListWidget
@@ -394,7 +394,7 @@ SettingsPagePolar::readPolarData()
           double emptyMass = list[10].toDouble();
 
           pol
-              = new Polar(this, glidertype, v1, w1, v2, w2, v3, w3, wingload, wingarea, emptyMass, emptyMass);
+              = new Polar(glidertype, v1, w1, v2, w2, v3, w3, wingload, wingarea, emptyMass, emptyMass);
           if (list.count() >= 12)
             {
               pol->setMaxWater(list[11].toInt());
@@ -527,9 +527,7 @@ SettingsPagePolar::slotButtonShow()
   W2.setMps(spinW2->value());
   W3.setMps(spinW3->value());
 
-  Polar
-      * polar =
-          new Polar(this, comboType->currentText(), V1, W1, V2, W2, V3, W3, 0.0, 0.0, emptyWeight->value(), emptyWeight->value()
+  Polar * polar = new Polar(comboType->currentText(), V1, W1, V2, W2, V3, W3, 0.0, 0.0, emptyWeight->value(), emptyWeight->value()
               + addedLoad->value());
 
   // polar->setWater(0, 0);

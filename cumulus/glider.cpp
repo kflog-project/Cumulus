@@ -23,7 +23,7 @@
 
 Glider::Glider()
 {
-    _polar=new Polar(0,"",0,0,0,0,0,0,0,0,0,0);
+    _polar=new Polar("",0,0,0,0,0,0,0,0,0,0);
 }
 
 
@@ -91,7 +91,7 @@ bool Glider::load(QSettings *config, int id)
         W2.setMps(data[8].toDouble());
         W3.setMps(data[10].toDouble());
 
-        _polar=new Polar(0, _type,
+        _polar=new Polar( _type,
                          V1, W1,    // v/w pair 1
                          V2, W2,    // v/w pair 2
                          V3, W3,    // v/w pair 3

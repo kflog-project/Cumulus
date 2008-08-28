@@ -21,17 +21,17 @@
 
 #include <QWidget>
 #include <QString>
+
 #include "speed.h"
 
 /**
  * @author Eggert Ehmke
  */
-class Polar: public QObject
+class Polar
 {
-    Q_OBJECT
 public:
-    Polar(QObject*,
-          const QString& name,const Speed& v1, const Speed& w1,
+  
+    Polar(const QString& name,const Speed& v1, const Speed& w1,
           const Speed& v2, const Speed& w2,
           const Speed& v3, const Speed& w3,
           double wingload, double wingarea,
@@ -64,88 +64,88 @@ public:
     void drawPolar (QWidget* view, const Speed& wind,
                     const Speed& lift, const Speed& mc) const;
 
-    inline QString name()const
+    QString name()const
     {
         return _name;
     };
 
-    inline Speed v1()const
+    Speed v1()const
     {
         return _v1;
     };
 
-    inline Speed w1()const
+    Speed w1()const
     {
         return _w1;
     };
 
-    inline Speed v2()const
+    Speed v2()const
     {
         return _v2;
     };
 
-    inline Speed w2()const
+    Speed w2()const
     {
         return _w2;
     };
 
-    inline Speed v3()const
+    Speed v3()const
     {
         return _v3;
     };
 
-    inline Speed w3()const
+    Speed w3()const
     {
         return _w3;
     };
 
-    inline double emptyWeight()const
+    double emptyWeight()const
     {
         return _emptyWeight;
     };
 
-    inline double grossWeight()const
+    double grossWeight()const
     {
         return _grossWeight;
     };
 
-    inline void setGrossWeight(double newValue)
+    void setGrossWeight(double newValue)
     {
         _grossWeight = newValue;
     };
 
-    inline int water()const
+    int water()const
     {
         return _water;
     };
 
-    inline int bugs()const
+    int bugs()const
     {
         return _bugs;
     };
 
-    inline int seats()const
+    int seats()const
     {
         return _seats;
     };
 
-    inline void setSeats(int seats)
+    void setSeats(int seats)
     {
         _seats=qMax(1, qMin(2, seats));
     };
 
-    inline int maxWater()const
+    int maxWater()const
     {
         return _maxWater;
     };
 
-    inline void setMaxWater(int liters)
+    void setMaxWater(int liters)
     {
         _maxWater=qMax(0, liters);
     };
 
-
 private:
+  
     QString _name;
     Speed _v1;
     Speed _w1;
