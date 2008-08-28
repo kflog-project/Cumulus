@@ -33,7 +33,7 @@ extern MapConfig* _globalMapConfig;
 WaypointListWidget::WaypointListWidget(QWidget *parent) : WpListWidgetParent(parent)
 {
   setObjectName("WaypointListWidget");
-  list->setObjectName("WPTreeWidget");
+  list->setObjectName("WpTreeWidget");
 }
 
 
@@ -52,7 +52,6 @@ void WaypointListWidget::fillWpList()
   QList<wayPoint*> *wpList = _globalMapContents->getWaypointList();
 
   list->setUpdatesEnabled(false);
-//  list->clear();
   configRowHeight();
 
   int n = 0;
@@ -73,11 +72,6 @@ void WaypointListWidget::fillWpList()
 
   if ( n>0 ) {
     list->setCurrentItem(list->topLevelItem(0));
-//from airfieldlistview:
-    // @AP: set only to true if something was read
-//    if(list == WaypointListWidget::list) {
-//      listFilled = true;
-//    }
   }
 
 
@@ -133,6 +127,7 @@ void WaypointListWidget::deleteSelectedWaypoint()
   delete list->takeTopLevelItem( list->currentIndex().row() );
 
   filter->reset(true);
+  resizeListColumns();
 }
 
 
@@ -154,6 +149,7 @@ void WaypointListWidget::updateSelectedWaypoint(wayPoint* wp)
   li->setIcon(0, QIcon(_globalMapConfig->getPixmap(wp->type,false,true)));
   list->sortByColumn(0);
   filter->reset();
+  resizeListColumns();
 
   // save modified catalog
   _globalMapContents->saveWaypointList();
@@ -170,9 +166,10 @@ void WaypointListWidget::addWaypoint(wayPoint * wp)
 
   wayPoint* newWp = new wayPoint(*wp);
   new _WaypointItem(list, newWp);
-//  list->sortByColumn(0);
-  filter->reset();
 
+  filter->reset();
+  resizeListColumns();
+  
   // qDebug("WaypointListWidget::addWaypoint: name=%s", wp->name.toLatin1().data() );
 
   _globalMapContents->getWaypointList()->append(newWp);
