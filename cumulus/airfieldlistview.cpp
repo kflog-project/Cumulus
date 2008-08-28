@@ -63,7 +63,7 @@ AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)
   QShortcut* scSelect = new QShortcut( this );
   scSelect->setKey( Qt::Key_Return );
   connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
-  
+
   wp = new wayPoint();
 }
 
@@ -130,8 +130,8 @@ void AirfieldListView::slot_setHome()
   }
 
   int answer= QMessageBox::warning(this,
-                                   tr("Set Homesite"),
-                                   tr("Use airfield\n%1\nas your homesite?").arg(_wp->name),
+                                   tr("Set home site"),
+                                   tr("Use airfield\n%1<br>as your home site?").arg(_wp->name),
                                    QMessageBox::Ok | QMessageBox::Cancel );
   if( answer == QMessageBox::Ok ) {
 
