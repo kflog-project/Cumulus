@@ -71,7 +71,6 @@ WpListWidgetParent::~WpListWidgetParent()
 
 void WpListWidgetParent::showEvent(QShowEvent *)
 {
-  qDebug("WpListWidgetParent::showEvent()");
   // align colums to contents before showing
   list->resizeColumnToContents(0);
   list->resizeColumnToContents(1);

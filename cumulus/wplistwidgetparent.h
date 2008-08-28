@@ -52,13 +52,14 @@ public:
     void configRowHeight();
 
     /**
-     * @returns a pointer to the currently highlighted waypoint.
+     * @returns a pointer to the currently high lighted waypoint.
+     * The user must implement this method in his subclass.
      */
     virtual wayPoint* getSelectedWaypoint() = 0;
 
     /**
-     * retrieves the waypoints or airfields from the map contents and fills
-     * the list. The user must implement this method.
+     * Retrieves the waypoints or airfields from the map contents and fills
+     * the list. The user must implement this method in his subclass.
      */
     virtual void fillWpList() = 0;
 
