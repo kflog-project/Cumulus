@@ -47,9 +47,11 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
 {
   setObjectName("TaskEditor");
   setModal(true);
+  setAttribute( Qt::WA_DeleteOnClose );
 
 #ifdef MAEMO
   resize(800,480);
+  setMinimumSize(800,480); // @AP: hope that prevents the resize to a smaller size
   setSizeGripEnabled(false);
 #else
   setSizeGripEnabled(true);
@@ -175,8 +177,8 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
   for(int i=0; i<NUM_LISTS; i++) {
     listSelectCB->addItem(listSelectText[i], i);
 
-    connect( this, SIGNAL( done() ),
-              waypointList[i], SLOT( slot_Done() ) );
+//    connect( this, SIGNAL( done() ),
+//              waypointList[i], SLOT( slot_Done() ) );
 
     waypointList[i]->fillWpList();
     listLayout->addWidget( waypointList[i], 2, 0, 1, 4 );
@@ -222,7 +224,6 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
 
   connect( listSelectCB, SIGNAL(activated(int)),
            this, SLOT(slotToggleList(int)));
-
 }
 
 TaskEditor::~TaskEditor()
@@ -274,12 +275,14 @@ void TaskEditor::__showTask()
   taskList->setSortingEnabled(true);
   taskList->sortByColumn(0, Qt::AscendingOrder);
   taskList->setSortingEnabled(false);
+
+  resizeTaskListColumns();
 }
 
 /**
- * catch show events to update list column alignment
- */         
-void TaskEditor::showEvent(QShowEvent *)
+ * aligns the task list columns to their contents
+*/
+void TaskEditor::resizeTaskListColumns()
 {
   taskList->resizeColumnToContents(0);
   taskList->resizeColumnToContents(1);
@@ -290,6 +293,7 @@ void TaskEditor::showEvent(QShowEvent *)
 void TaskEditor::slotAddWaypoint()
 {
   wayPoint *wp = waypointList[listSelectCB->currentIndex()]->getSelectedWaypoint();
+
   if( wp == 0 )
     return;
 
@@ -377,7 +381,6 @@ void TaskEditor::accept()
   }
 
   // Take over changed task data and publish it
-  QDialog::accept();
   planTask->setTaskName(txt);
 
   if( editState == TaskEditor::create )
@@ -385,19 +388,17 @@ void TaskEditor::accept()
   else
     emit editedTask( planTask );
 
-  emit done();
-  planTask = 0;
-  delete this;
+  // emit done();
+  // close and destroy dialog
+  QDialog::done(QDialog::Accepted);
 }
 
 void TaskEditor::reject()
 {
   // qDebug("TaskEditor::reject()");
-  QDialog::reject();
-
-  emit done();
-  delete planTask;
-  delete this;
+  // emit done();
+  // close and destroy dialog
+  QDialog::done(QDialog::Rejected);
 }
 
 void TaskEditor::slotMoveWaypointUp()

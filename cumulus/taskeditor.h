@@ -41,19 +41,21 @@ class TaskEditor : public QDialog
 public:
     /** */
     TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
-              FlightTask* task=0 );
+                FlightTask* task=0 );
 
     /** */
     ~TaskEditor();
+    
+private:
+    /**
+     * aligns the task list columns to their contents
+     */
+    void resizeTaskListColumns();
 
 protected:
     /** */
     virtual void accept();
     virtual void reject();
-    /**
-     * catch show events to update list column alignment
-     */         
-    virtual void showEvent(QShowEvent *);
 
 signals:
     /** */
@@ -63,7 +65,7 @@ signals:
     void editedTask( FlightTask* );
 
     /** */
-    void done();
+    // void done();
 
 private slots:
     /** */
