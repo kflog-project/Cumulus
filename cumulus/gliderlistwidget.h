@@ -45,21 +45,29 @@ public:
     /**
      * @returns the id of the currently highlighted glider.
      */
-    Glider * getSelectedGlider(bool take=false);
+    Glider *getSelectedGlider(bool take=false);
 
     /**
-     * Retreives the gliders from the configfile, and fills the list.
+     * Retreives the gliders from the config file, and fills the list.
      */
     void fillList();
 
     void save();
 
-    QList<Glider*> Gliders;
-
     bool has_changed()
     {
         return _changed;
     };
+
+    /**
+     * aligns the columns to their contents
+     */
+    void resizeListColumns()
+      {
+        resizeColumnToContents(0);
+        resizeColumnToContents(1);
+        resizeColumnToContents(2);
+      };
 
     /**
      * Retrieves the glider object for the glider that was last stored
@@ -68,10 +76,10 @@ public:
      * @returns a @ref Glider object representing the stored glider,
      * or 0 if an error occured or there was no stored selection.
      */
-    static Glider * getStoredSelection();
+    static Glider *getStoredSelection();
 
     /**
-     * Stores a reference in the configurationfile that this glider was
+     * Stores a reference in the configuration file that this glider was
      * the last selected glider. This is used to restore the selection
      * after a restart of Cumulus.
      */
@@ -81,33 +89,31 @@ public:
      * Sets the selection to the item with this registration string.
      */
     void selectItemFromReg(const QString& registration);
-
-protected:
-  
-  void showEvent(QShowEvent *);
   
 public slots:
     /**
      * Called if a glider has been edited.
      */
-    void slot_Edited(Glider * glider);
+    void slot_Edited(Glider *glider);
 
     /**
      * Called if a glider has been added.
      */
-    void slot_Added(Glider * glider);
+    void slot_Added(Glider *glider);
 
     /**
      * Called if a glider has been deleted.
      */
-    void slot_Deleted(Glider * glider);
+    void slot_Deleted(Glider *glider);
 
     /**
      * Called when a glider has been selected from the listview
      */
 
 private:
-    QStandardItemModel *data;
+    // Glider list
+    QList<Glider*> Gliders;
+
     int _added;
     bool _changed;
 };

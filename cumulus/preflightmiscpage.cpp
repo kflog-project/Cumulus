@@ -1,19 +1,19 @@
 /***********************************************************************
-**
-**   preflightmiscpage.cpp
-**
-**   This file is part of Cumulus.
-**
-************************************************************************
-**
-**   Copyright (c):  2004 by Andrï¿½ Somers, 2008 Axel Pauli
-**
-**   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
-**
-**   $Id$
-**
-***********************************************************************/
+ **
+ **   preflightmiscpage.cpp
+ **
+ **   This file is part of Cumulus.
+ **
+ ************************************************************************
+ **
+ **   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
+ **
+ **   This file is distributed under the terms of the General Public
+ **   Licence. See the file COPYING for more information.
+ **
+ **   $Id$
+ **
+ ***********************************************************************/
 
 #include <cmath>
 
@@ -25,7 +25,8 @@
 #include "igclogger.h"
 #include "generalconfig.h"
 
-PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) : QWidget(parent)
+PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
+  QWidget(parent)
 {
   setObjectName("PreFlightMiscPage");
 
@@ -46,18 +47,21 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) : QWidget(parent)
   edtMinimalArrival = new QSpinBox(this);
   edtMinimalArrival->setObjectName("MinArr");
 
-  if( altUnit == Altitude::meters ) {
-    edtMinimalArrival->setMaximum(1000);
-    unit = "m";
-  } else {
-    edtMinimalArrival->setMaximum(3000);
-    unit = "ft";
-  }
+  if (altUnit == Altitude::meters)
+    {
+      edtMinimalArrival->setMaximum(1000);
+      unit = "m";
+    }
+  else
+    {
+      edtMinimalArrival->setMaximum(3000);
+      unit = "ft";
+    }
 
   edtMinimalArrival->setButtonSymbols(QSpinBox::PlusMinus);
   topLayout->addWidget(edtMinimalArrival, row, 1);
   topLayout->addWidget(new QLabel(unit, this), row, 2);
-  topLayout->setColumnStretch(2,2);
+  topLayout->setColumnStretch(2, 2);
   row++;
 
   lbl = new QLabel(tr("QNH:"), this);
@@ -68,7 +72,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) : QWidget(parent)
   edtQNH->setButtonSymbols(QSpinBox::PlusMinus);
 
   topLayout->addWidget(edtQNH, row, 1);
-  topLayout->addWidget(new QLabel( "hPa", this), row, 2);
+  topLayout->addWidget(new QLabel("hPa", this), row, 2);
   row++;
 
   lbl = new QLabel(tr("Logger Interval:"), this);
@@ -80,28 +84,28 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) : QWidget(parent)
   loggerInterval->setButtonSymbols(QSpinBox::PlusMinus);
 
   topLayout->addWidget(loggerInterval, row, 1);
-  topLayout->addWidget(new QLabel( "s", this), row, 2);
+  topLayout->addWidget(new QLabel("s", this), row, 2);
   row++;
 
-  topLayout->setRowMinimumHeight( row, 25);
+  topLayout->setRowMinimumHeight(row, 25);
   row++;
 
-  chkLogAutoStart = new QCheckBox(tr("Autostart logging"),this);
+  chkLogAutoStart = new QCheckBox(tr("Autostart logging"), this);
   chkLogAutoStart->setObjectName("log_autostart");
-  topLayout->addWidget( chkLogAutoStart, row, 0, 1, 3 );
+  topLayout->addWidget(chkLogAutoStart, row, 0, 1, 3);
   chkLogAutoStart->setChecked(IgcLogger::instance()->getisStandby());
   row++;
 
-  topLayout->setRowStretch( row, 10 );
+  topLayout->setRowStretch(row, 10);
 }
-
 
 PreFlightMiscPage::~PreFlightMiscPage()
 {
   // qDebug("PreFlightMiscPage::~PreFlightMiscPage()");
 }
 
-void PreFlightMiscPage::load()
+void
+PreFlightMiscPage::load()
 {
   // qDebug("PreFlightMiscPage::load()");
 
@@ -110,24 +114,24 @@ void PreFlightMiscPage::load()
   // @AP: Arrival Altitude is always saved as meter.
   Altitude minArrival = conf->getSafetyAltitude();
 
-  if( altUnit == Altitude::meters ) // user wants meters
+  if (altUnit == Altitude::meters) // user wants meters
     {
       edtMinimalArrival->setValue((int) rint(minArrival.getMeters()));
       edtMinimalArrival->setSingleStep(50);
     }
   else // user gets feet
     {
-      edtMinimalArrival->setValue((int) rint(minArrival.getFeet()) );
+      edtMinimalArrival->setValue((int) rint(minArrival.getFeet()));
       edtMinimalArrival->setSingleStep(100);
     }
 
-  edtQNH->setValue( conf->getQNH() );
+  edtQNH->setValue(conf->getQNH());
 
-  loggerInterval->setValue( conf->getLoggerInterval() );
+  loggerInterval->setValue(conf->getLoggerInterval());
 }
 
-
-void PreFlightMiscPage::save()
+void
+PreFlightMiscPage::save()
 {
   //qDebug("PreFlightMiscPage::save()");
 
@@ -137,11 +141,11 @@ void PreFlightMiscPage::save()
     {
       if (log->getisLogging())
         {
-          int answer= QMessageBox::warning(this,tr("Restart Logging?"),
-                                           tr("Logger is running.\nClose logfile\nand start new log?"),
-                                           QMessageBox::Yes | QMessageBox::No );
+          int answer = QMessageBox::warning(this, tr("Restart Logging?"), tr(
+              "Logger is running.<br>Closing logfile<br>and start new log?"),
+              QMessageBox::Yes | QMessageBox::No);
 
-          if( answer==QMessageBox::Yes )
+          if (answer == QMessageBox::Yes)
             {
               log->Standby();
             }
@@ -162,20 +166,20 @@ void PreFlightMiscPage::save()
   GeneralConfig *conf = GeneralConfig::instance();
 
   // @AP: Store altitude always as meter.
-  if( altUnit == Altitude::meters )
+  if (altUnit == Altitude::meters)
     {
-      conf->setSafetyAltitude( Altitude(edtMinimalArrival->value()) );
+      conf->setSafetyAltitude(Altitude(edtMinimalArrival->value()));
     }
   else
     {
       Altitude currentAlt; // Altitude will be converted to feet
 
-      currentAlt.setFeet( (double) edtMinimalArrival->value() );
-      conf->setSafetyAltitude( currentAlt );
+      currentAlt.setFeet((double) edtMinimalArrival->value());
+      conf->setSafetyAltitude(currentAlt);
     }
 
-  conf->setQNH( edtQNH->value() );
+  conf->setQNH(edtQNH->value());
 
-  conf->setLoggerInterval( loggerInterval->value() );
+  conf->setLoggerInterval(loggerInterval->value());
 }
 

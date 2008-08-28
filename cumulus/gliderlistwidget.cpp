@@ -46,15 +46,14 @@ GliderListWidget::GliderListWidget(QWidget *parent) : QTreeWidget(parent)
 GliderListWidget::~GliderListWidget()
 {
   // qDebug("GliderListWidget::~GliderListWidget() is called");
-  qDeleteAll (Gliders);
-  Gliders.clear();
+  qDeleteAll(Gliders);
 }
 
 
 /** Retreives the gliders from the config file, and fills the list. */
 void GliderListWidget::fillList()
 {
-  qDeleteAll (Gliders);
+  qDeleteAll(Gliders);
   Gliders.clear();
 
   QSettings config( QSettings::UserScope, "Cumulus" );
@@ -64,12 +63,17 @@ void GliderListWidget::fillList()
   int i=1;
 
   while(config.contains(keyname.arg(i))) {
-    Glider * glider=new Glider();
+    Glider *glider = new Glider();
+    
     if (glider->load(&config ,i)) {
       Gliders.append(glider);
       
       QStringList rowList;
-      rowList << glider->type() << glider->registration() << glider->callsign() << QString::number(glider->lastSafeID());
+      rowList << glider->type() 
+              << glider->registration()
+              << glider->callsign()
+              << QString::number(glider->lastSafeID());
+              
       addTopLevelItem( new QTreeWidgetItem(rowList, 0) );
     } else {
       delete glider; //loading failed!
@@ -77,17 +81,13 @@ void GliderListWidget::fillList()
     i++;
   }
 
+  if( i > 1) {
+    resizeListColumns();
+  }
+
   config.endGroup();
   // qDebug("GliderListWidget::fillList(): gliders=%d", Gliders.count());
   _changed = false;
-}
-
-// align columns content before showing
-void GliderListWidget::showEvent(QShowEvent *)
-{
-  resizeColumnToContents(0);
-  resizeColumnToContents(1);
-  resizeColumnToContents(2);
 }
 
 void GliderListWidget::save()
@@ -118,7 +118,7 @@ void GliderListWidget::save()
   // if(u>1)
   //     qDebug("changed %d registrations",u-1);
 
-  //store gliderlist
+  // store glider list in config file
   for(int i=1;i<=Gliders.count();i++) {
     // qDebug("saving glider %d",i);
     Gliders.at(i-1)->safe(&config,i);
@@ -129,7 +129,7 @@ void GliderListWidget::save()
 }
 
 
-/** Returns a pointer to the currently highlighted glider. If take is
+/** Returns a pointer to the currently high lighted glider. If take is
     true, the glider object is taken from the list too. */
 Glider *GliderListWidget::getSelectedGlider(bool take)
 {
@@ -139,10 +139,10 @@ Glider *GliderListWidget::getSelectedGlider(bool take)
   if ( selectedItems().size() > 0 ) {
 
     QTreeWidgetItem* selectedItem = selectedItems().at(0);
-    Glider * glider;
+    Glider* glider;
 
     for (i=0; i < n; i++) {
-      glider=Gliders.at(i);
+      glider = Gliders.at(i);
 
       if ( glider->lastSafeID() == selectedItem->text(3).toInt() ) {
         if (take) {
@@ -159,7 +159,7 @@ Glider *GliderListWidget::getSelectedGlider(bool take)
 
 
 /** Called if a glider has been edited. */
-void GliderListWidget::slot_Edited(Glider * glider)
+void GliderListWidget::slot_Edited(Glider *glider)
 {
   if (glider) {
     if ( selectedItems().size() > 0 ) {
@@ -169,10 +169,7 @@ void GliderListWidget::slot_Edited(Glider * glider)
       selectedItem->setText(1, glider->registration());
       selectedItem->setText(2, glider->callsign());
       selectedItem->setText(3, QString::number(glider->lastSafeID()));
-    //li->setPixmap(0, _globalMapConfig->getPixmap(wp->type,false,true));
-//    sortItems( sortColumn(), Qt::AscendingOrder );
-    //save();
-
+      resizeListColumns();
       _changed = true;
     }
   }
@@ -180,48 +177,46 @@ void GliderListWidget::slot_Edited(Glider * glider)
 
 
 /** Called if a glider has been added. */
-void GliderListWidget::slot_Added(Glider * glider)
+void GliderListWidget::slot_Added(Glider *glider)
 {
   if (glider) {
     _added++;
     QStringList rowList;
-    rowList << glider->type() << glider->registration() << glider->callsign() << QString::number(-_added);
+    rowList << glider->type()
+            << glider->registration()
+            << glider->callsign()
+            << QString::number(-_added);
+
     addTopLevelItem( new QTreeWidgetItem(this, rowList, 0) );
     setCurrentItem( itemAt(0,topLevelItemCount()-1) );
     sortItems( 0, Qt::AscendingOrder );
+    resizeListColumns();
+    
     glider->setID(-_added); //store temp ID
     Gliders.append(glider);
-    //save();
     _changed = true;
   }
 }
 
 
-void GliderListWidget::slot_Deleted(Glider * glider)
+void GliderListWidget::slot_Deleted(Glider *glider)
 {
   if ( glider && currentItem() ) {
 
-    //remove from listView
-//    delete takeTopLevelItem( indexOfTopLevelItem(currentItem()) );
+    // remove from listView
     delete takeTopLevelItem( currentIndex().row() );
 
     sortItems( 0, Qt::AscendingOrder );
     setCurrentItem( 0 );
-
-/*    QList<QTreeWidgetItem*> result = findItems( QString::number(glider->lastSafeID()), Qt::MatchExactly, 3 );
-    if ( result.size() > 0 ) {
-      QTreeWidgetItem* deleteItem = result.at(0);
-      deleteItem = takeTopLevelItem( indexOfTopLevelItem(deleteItem) );
-      if (deleteItem)
-        delete deleteItem;
-    }*/
-
-    //remove from catalog
-    int index = Gliders.indexOf (glider);
+    resizeColumnToContents(0);
+    resizeListColumns();
+    // remove glider from glider list
+    int index = Gliders.indexOf(glider);
+    
+#warning Memory leak ?
+    // delete Gliders.takeAt(index);
     Gliders.removeAt(index);
-    //save();
     _changed = true;
-
   }
 }
 
@@ -232,7 +227,7 @@ Glider* GliderListWidget::getStoredSelection()
   QSettings config( QSettings::UserScope, "Cumulus" );
 
   config.beginGroup("Glider Selection");
-  QString stored = config.value("lastSelected","").toString();
+  QString stored = config.value("lastSelected", "").toString();
   config.endGroup();
 
   config.beginGroup("Glider Data");
@@ -242,10 +237,10 @@ Glider* GliderListWidget::getStoredSelection()
     int i=1;
     
     while(config.contains(keyname.arg(i))) {
-      Glider * glider=new Glider();
+      Glider *glider=new Glider();
 
       if (glider->load(&config ,i)) {
-        if (glider->registration()==stored) {
+        if (glider->registration() == stored) {
           return glider;
         } else {
           delete glider; //this is not the glider we're looking for...

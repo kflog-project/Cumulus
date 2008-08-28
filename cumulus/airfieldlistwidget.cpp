@@ -62,11 +62,11 @@ void AirfieldListWidget::fillWpList()
 
   int Nr = 0;
   list->setUpdatesEnabled(false);
-//  list->clear();
   configRowHeight();
 
-  for( int item = 0; item<3; item++) {
+  for( int item = 0; item < 3; item++) {
     int nr = _globalMapContents->getListLength(itemList[item]);
+    
     if( nr > Nr ) {
       Nr = nr;
     }
@@ -80,13 +80,13 @@ void AirfieldListWidget::fillWpList()
   list->setSortingEnabled(true);
   list->sortByColumn(0,Qt::AscendingOrder);
   list->setSortingEnabled(false);
-
-  if (Nr>0) {
+  
+  if (Nr > 0) {
+    resizeListColumns();
     // @AP: set only to true if something was read
     listFilled = true;
   }
 
-  resizeListColumns();
   filter->reset();
 }
 
