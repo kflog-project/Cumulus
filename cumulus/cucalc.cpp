@@ -265,7 +265,10 @@ void CuCalc::slot_Heading()
   // this is only a small mistake, relBearing points to north
   //@JD: but wrong showing of new rel.-bearing icon, so bail out
   if (lastBearing < 0)
-    return;
+    {
+      return;
+    }
+
   emit newRelBearing (lastBearing - lastHeading);
 }
 
@@ -311,15 +314,15 @@ void CuCalc::slot_WaypointChange(wayPoint *newWp, bool userAction)
     // A user action will overwrite a task point. That will stop the
     // automatic taskpoint switch. We will notice the user about
     // that fact.
-      
+
     int answer=
       QMessageBox::warning( 0, tr("Replace current taskpoint?"),
-                            tr("<qt>"
+                            tr("<html>"
                                "A flight task is activated!<br>"
                                "This selection will stop the automatic taskpoint switch."
                                "To avoid that make a selection from task menu."
                                "<br>Do You really want to replace?"
-                               "</qt>"),
+                               "</html>"),
                             QMessageBox::Ok | QMessageBox::Default,
                             QMessageBox::Cancel | QMessageBox::Escape );
 
@@ -554,7 +557,7 @@ void CuCalc::calcDistance( bool autoWpSwitch )
         // switch back to map view on close of tp info widget
         connect( tpInfo, SIGNAL( close() ),
                  _globalCumulusApp, SLOT( slotSwitchToMapView() ) );
-        
+
         tpInfo->showTP();
       }
     }
@@ -662,7 +665,7 @@ void CuCalc::calcLD()
       // we climbed in the last time, therefore the result will become huge
       newCurrentLD = 999.0;
     } else {
-        
+
       newCurrentLD = distance / altDiff ;
 
       if( newCurrentLD  > 999.0 ) {
