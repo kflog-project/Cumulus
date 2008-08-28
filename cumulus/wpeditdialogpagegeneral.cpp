@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -30,53 +30,53 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent) :
   
   QGridLayout * topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
+  topLayout->setColumnMinimumWidth( 2, 50 );
+
   int row=0;
 
   GeneralConfig *conf = GeneralConfig::instance();
 
-  QLabel * lblName = new QLabel(tr("Name:"), this);
-  topLayout->addWidget(lblName,row,0);
+  QLabel * lblName = new QLabel(tr("Name(9):"), this);
+  topLayout->addWidget(lblName, row, 0);
   edtName = new QLineEdit(this);
   edtName->setMaxLength(9); // limit name to 9 characters
-  topLayout->addWidget(edtName,row++,1);
+  topLayout->addWidget(edtName, row++, 1, 1, 2);
 
-  QLabel * lblDescription = new QLabel(tr("Description:"), this);
-  topLayout->addWidget(lblDescription,row,0);
+  QLabel * lblDescription = new QLabel(tr("Description(25):"), this);
+  topLayout->addWidget(lblDescription, row, 0);
   edtDescription = new QLineEdit(this);
   edtDescription->setMaxLength(25); // limit name to 25 characters
-  topLayout->addWidget(edtDescription,row++,1);
+  topLayout->addWidget(edtDescription, row++, 1, 1, 2);
 
-  topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
-//  topLayout->addRowSpacing(row++,10);
+  topLayout->setRowMinimumHeight(row++, 10);
 
   QLabel * lblLat = new QLabel(tr("Latitude:"), this);
-  topLayout->addWidget(lblLat,row,0);
+  topLayout->addWidget(lblLat, row, 0);
   edtLat = new LatEdit(this, conf->getHomeLat());
-  topLayout->addWidget(edtLat,row++,1);
+  topLayout->addWidget(edtLat, row++, 1);
 
   QLabel * lblLon = new QLabel(tr("Longitude:"), this);
-  topLayout->addWidget(lblLon,row,0);
+  topLayout->addWidget(lblLon, row, 0);
   edtLong = new LongEdit(this, conf->getHomeLon());
-  topLayout->addWidget(edtLong,row++,1);
+  topLayout->addWidget(edtLong, row++, 1);
 
   QLabel * lblElev = new QLabel(tr("Elevation:"), this);
-  topLayout->addWidget(lblElev,row,0);
+  topLayout->addWidget(lblElev, row, 0);
   QBoxLayout * elevLayout = new QHBoxLayout();
-  topLayout->addLayout(elevLayout,row++,1);
+  topLayout->addLayout(elevLayout, row++, 1);
   edtElev = new QLineEdit(this);
   elevLayout->addWidget(edtElev);
   QLabel * lblElevUnit = new QLabel(Altitude::getText(-1,true), this);
   elevLayout->addWidget(lblElevUnit);
 
-  topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
-//  topLayout->addRowSpacing(row++,10);
+  topLayout->setRowMinimumHeight(row++, 10);
 
   QLabel * lblGReg = new QLabel(tr("Type:"), this);
-  topLayout->addWidget(lblGReg,row,0);
+  topLayout->addWidget(lblGReg, row, 0);
   cmbType = new QComboBox(this);
   cmbType->setObjectName("Type");
   cmbType->setEditable(false);
-  topLayout->addWidget(cmbType,row++,1);
+  topLayout->addWidget(cmbType, row++, 1);
 
   // init comboboxes
   QStringList &tlist = BaseMapElement::getSortedTranslationList();
@@ -87,16 +87,17 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent) :
     }
 
   QLabel * lblGCall = new QLabel(tr("Importance:"), this);
-  topLayout->addWidget(lblGCall,row,0);
+  topLayout->addWidget(lblGCall, row, 0);
   cmbImportance = new QComboBox(this);
   cmbImportance->setObjectName("Importance");
   cmbImportance->setEditable(false);
-  topLayout->addWidget(cmbImportance,row++,1);
+  topLayout->addWidget(cmbImportance, row++, 1);
   cmbImportance->addItem(tr("low"));
   cmbImportance->addItem(tr("normal"));
   cmbImportance->addItem(tr("high"));
 
-  topLayout->setRowStretch(row++,10);
+  topLayout->setRowStretch(row++, 10);
+  topLayout->setColumnStretch(2, 10);
 }
 
 

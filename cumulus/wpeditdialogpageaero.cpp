@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -44,18 +44,13 @@ WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent) :
   edtFrequency->setMaxLength(7); // limit name to 7 characters
   topLayout->addWidget(edtFrequency,row++,1);
 
-/*
-  topLayout->addItem(new QSpacerItem(0, 8), 0, 0);
-  mVGroupLayout->addWidget(lbl,row,1,1,2);
-  mVGroupLayout->addWidget(lbl,row,3,1,2);
-*/
-  topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
-//  topLayout->addRowSpacing(row++,10);
+  topLayout->setRowMinimumHeight(row++, 10);
 
   QLabel * lblRun = new QLabel(tr("Runway heading:"), this);
   topLayout->addWidget(lblRun,row,0);
   edtRunway = new DegreeSpinBox(this);
   edtRunway->setButtonSymbols(QAbstractSpinBox::PlusMinus);
+  edtRunway->setSuffix( QString(Qt::Key_degree) );
   topLayout->addWidget(edtRunway,row++,1);
 
   QLabel * lblLen = new QLabel(tr("Length:"), this);
@@ -67,11 +62,7 @@ WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent) :
   QLabel * lblLenUnit = new QLabel(Distance::getText(-1,true), this);
   elevLayout->addWidget(lblLenUnit);
 
-  topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
-//  topLayout->addRowSpacing(row++,10);
-
-  chkLandable = new QCheckBox(tr("Landable"), this);
-  topLayout->addWidget(chkLandable, row++ , 1);
+  //topLayout->setRowMinimumHeight(row++, 10);
 
   QLabel * lblSurface = new QLabel(tr("Surface:"), this);
   topLayout->addWidget(lblSurface,row,0);
@@ -89,7 +80,15 @@ WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent) :
     }
 
   cmbSurface->setCurrentIndex(cmbSurface->count()-1);
+
+  QLabel * lblLand = new QLabel(tr("Landable:"), this);
+  topLayout->addWidget(lblLand,row,0);
+  chkLandable = new QCheckBox(this);
+  topLayout->addWidget(chkLandable, row++ , 1);
+
   topLayout->setRowStretch(row++,10);
+  topLayout->setColumnStretch(2, 10);
+  
 }
 
 
