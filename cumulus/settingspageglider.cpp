@@ -1,12 +1,12 @@
 /***********************************************************************
 **
-**   settingspagegliderlist.cpp
+**   settingspageglider.cpp
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andr� Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -14,6 +14,13 @@
 **   $Id$
 **
 ***********************************************************************/
+
+/**
+ * This widget provides an interface to add, edit and delete gliders
+ * from the gliderlist.
+ *
+ * @author André Somers
+ */
 
 #include <QPushButton>
 #include <QMessageBox>
@@ -23,7 +30,6 @@
 #include "generalconfig.h"
 #include "settingspageglider.h"
 #include "settingspagepolar.h"
-
 
 SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
 {
@@ -55,8 +61,7 @@ SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
   editrow->addWidget(cmdDel,1);
 
   list = new GliderListWidget(this);
-
-  topLayout->addWidget(list,10);
+  topLayout->addWidget(list, 10);
 
   connect(cmdNew,  SIGNAL(clicked()), this, SLOT(slot_new()));
   connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
@@ -107,20 +112,22 @@ void SettingsPageGlider::slot_edit()
 /** Called when the selected glider should be deleted from the catalog */
 void SettingsPageGlider::slot_delete()
 {
-  Glider * _tmpGlider=list->getSelectedGlider();
-  if (!_tmpGlider)
-    return;
+  Glider *glider = list->getSelectedGlider();
 
-  int answer= QMessageBox::warning(this,tr("Delete?"),tr("Delete high lighted glider?"),
+  if (! glider) {
+    return;
+  }
+
+  int answer= QMessageBox::warning(this,tr("Delete?"),tr("Delete selected glider?"),
                                    QMessageBox::Ok,
                                    QMessageBox::Cancel | QMessageBox::Escape | QMessageBox::Default);
 
   if( answer == QMessageBox::Ok ) {
-    list->slot_Deleted(_tmpGlider);
+    list->slot_Deleted(glider);
   }
 }
 
-
+/** Called to fill the tree list */
 void SettingsPageGlider::slot_load()
 {
   list->fillList();
@@ -136,7 +143,7 @@ void SettingsPageGlider::slot_save()
 /* Called to ask is confirmation on the close is needed. */
 void SettingsPageGlider::slot_query_close(bool& warn, QStringList& warnings)
 {
-  /*set warn to 'true' if the data has changed. Note that we can NOT just set warn equal to
+  /* set warn to 'true' if the data has changed. Note that we can NOT just set warn equal to
     _changed, because that way we might erase a warning flag set by another page! */
   if (list->has_changed()) {
     warn = true;

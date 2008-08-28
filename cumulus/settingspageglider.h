@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   settingspagegliderlist.h
+**   settingspageglider.h
 **
 **   This file is part of Cumulus.
 **
@@ -23,9 +23,7 @@
 #include <QListView>
 #include <QStringList>
 
-//#include "glider.h"
 #include "gliderlistwidget.h"
-
 
 /**
  * This widget provides an interface to add, edit and delete gliders
