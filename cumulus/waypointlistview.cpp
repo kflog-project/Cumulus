@@ -29,7 +29,7 @@ WaypointListView::WaypointListView(QMainWindow *parent) : QWidget(parent)
 {
   setObjectName("WaypointListView");
   par=parent;
-  
+
   QBoxLayout *topLayout = new QVBoxLayout( this );
   QBoxLayout *editrow=new QHBoxLayout;
   topLayout->addLayout(editrow);
@@ -81,11 +81,11 @@ WaypointListView::WaypointListView(QMainWindow *parent) : QWidget(parent)
   connect(cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()));
   connect(listw, SIGNAL(wpSelectionChanged()), this, SLOT(slot_Selected()));
   connect(this, SIGNAL(done()), listw, SLOT(slot_Done()));
-  
+
   // activate keyboard shortcut Return as select
   QShortcut* scSelect = new QShortcut( this );
   scSelect->setKey( Qt::Key_Return );
-  connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));  
+  connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
 }
 
 
@@ -173,7 +173,7 @@ void WaypointListView::slot_deleteWP()
     return;
 
   int answer= QMessageBox::warning(this,tr("Delete Waypoint"),
-                                   tr("Delete selected\nwaypoint?"),
+                                   tr("Delete selected waypoint?"),
                                    QMessageBox::Ok | QMessageBox::Cancel);
 
   if( answer == QMessageBox::Ok ) {
@@ -189,7 +189,7 @@ void WaypointListView::slot_deleteWP()
     // remove from listView
 //    delete list->takeTopLevelItem( list->indexOfTopLevelItem(list->currentItem()) );
     delete list->takeTopLevelItem( list->currentIndex().row() );*/
-    if (par)    
+    if (par)
       ((CumulusApp*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
   }
 }
@@ -233,8 +233,8 @@ void WaypointListView::slot_setHome()
   if ( _wp == 0 )
     return;
 
-  int answer= QMessageBox::warning(this,tr("Set Homesite"),
-                                   tr("Use waypoint\n%1\nas your homesite?").arg(_wp->name),
+  int answer= QMessageBox::warning(this,tr("Set home site"),
+                                   tr("Use waypoint\n%1<br>as your home site?").arg(_wp->name),
                                    QMessageBox::Ok | QMessageBox::Cancel );
   if( answer == 1 ) { //ok was chosen
 
