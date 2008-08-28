@@ -129,7 +129,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   mapMenu = 0;
   setupMenu = 0;
   helpMenu = 0;
-  
+
   // Eggert: make sure the app uses utf8 encoding for translated widgets
   QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
 
@@ -143,19 +143,19 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
 
   // activate Hildon Input Method for Maemo
   QInputContext *hildonInputContext = 0;
-  
+
   QStringList inputMethods = QInputContextFactory::keys();
-  
+
   foreach( QString inputMethod, inputMethods )
     {
       qDebug() << "InputMethod: " << inputMethod;
     }
-  
+
   // Check, if virtual keyboard support is enabled
   if( GeneralConfig::instance()->getVirtualKeyboard() )
     {
       hildonInputContext = QInputContextFactory::create( "hildon", 0 );
-      
+
       if ( !hildonInputContext )
         {
           qWarning( "QHildonInputMethod plugin not loadable!" );
@@ -164,7 +164,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
       	{
 	         qDebug( "QHildonInputContext created" );
       	}
-    
+
       qApp->setInputContext(hildonInputContext);
     }
 
@@ -256,7 +256,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
 #endif
 
   show();
-  
+
   ws = new WaitScreen(this);
   ws->show();
 
@@ -264,7 +264,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   // to continue startup in another method. This is done, to get
   // running the window manager event loop. Otherwise the behaviour
   // of some widgets is undefined.
-  
+
   // when the timer expires the cumulus startup is continued
   QTimer::singleShot(100, this, SLOT(slotCreateApplicationWidgets()));
 }
@@ -610,7 +610,7 @@ CumulusApp::~CumulusApp()
   // stop maemo screen saver off triggering
   if( ossoContext )
     {
-      ossoDisplayTrigger->stop(); 
+      ossoDisplayTrigger->stop();
       osso_deinitialize( ossoContext );
     }
 
@@ -633,7 +633,7 @@ void CumulusApp::playSound( const char *name )
        QApplication::beep();
        return;
     }
-  
+
   QString sound;
 
   if( name && QString(name) == "notify" )
@@ -736,7 +736,7 @@ void CumulusApp::slotSetMenuBarFontSize()
       cf.setPointSize( 15 );
 
       menuBar()->setFont( cf );
-      
+
       // maybe NULL, if not initialized
       if( fileMenu ) fileMenu->setFont( cf );
       if( viewMenu ) viewMenu->setFont( cf );
@@ -780,19 +780,19 @@ void CumulusApp::initActions()
   connect( actionManualNavLeft, SIGNAL( triggered() ),
            calculator, SLOT( slot_changePositionW() ) );
 
-  actionManualNavHome = new QAction( tr( "Goto home site" ), this ); 
+  actionManualNavHome = new QAction( tr( "Goto home site" ), this );
   actionManualNavHome->setShortcut( QKeySequence("H") );
   addAction( actionManualNavHome );
   connect( actionManualNavHome, SIGNAL( triggered() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
-  actionManualNavWP = new QAction( tr( "Move to waypoint" ), this ); 
+  actionManualNavWP = new QAction( tr( "Move to waypoint" ), this );
   actionManualNavWP->setShortcut( QKeySequence("C") );
   addAction( actionManualNavWP );
   connect( actionManualNavWP, SIGNAL( triggered() ),
            calculator, SLOT( slot_changePositionWp() ) );
 
-  actionManualNavWPList = new QAction( tr( "Open waypoint list" ), this ); 
+  actionManualNavWPList = new QAction( tr( "Open waypoint list" ), this );
   actionManualNavWPList->setShortcut( QKeySequence("F9") );
   addAction( actionManualNavWPList );
   connect( actionManualNavWPList, SIGNAL( triggered() ),
@@ -913,7 +913,7 @@ void CumulusApp::initActions()
   QList<QKeySequence> zOutSCList;
   zOutSCList << Qt::Key_X << Qt::Key_F8;
   actionZoomOutZ->setShortcuts( zOutSCList );
-  
+
   addAction( actionZoomOutZ );
   connect ( actionZoomOutZ, SIGNAL( triggered() ),
             viewMap->_theMap , SLOT( slotZoomOut() ) );
@@ -1098,7 +1098,7 @@ void CumulusApp::closeEvent( QCloseEvent* evt )
   playSound("notify");
 
   QMessageBox mb( QMessageBox::Warning,
-                  tr( "Are You Sure?" ),
+                  tr( "Terminating Cumulus?" ),
                   tr( "Terminating Cumulus<br><b>Are you sure?</b>" ),
                   QMessageBox::Yes | QMessageBox::No,
                   this,
@@ -1183,7 +1183,7 @@ const CumulusApp::appView CumulusApp::getView()
 void CumulusApp::slot_tabChanged( int index )
 {
   // qDebug("CumulusApp::slot_tabChanged(): NewIndex=%d", index );
-  
+
   //switch to the correct view
   if ( index == listViewTabs->indexOf(viewWP) )
     {
@@ -1631,7 +1631,7 @@ void CumulusApp::slotReadconfig()
 
   // update menubar font size
   slotSetMenuBarFontSize();
-  
+
   if(1)
     {
       // 1 will be replaced in future with a construct like
@@ -1784,7 +1784,7 @@ void CumulusApp::slotPreFlightDataChanged()
           disconnect( listViewTabs, SIGNAL( currentChanged( int index ) ),
                       this, SLOT( slot_tabChanged( int index ) ) );
           listViewTabs->removeTab( listViewTabs->indexOf(viewTP) );
-          
+
           connect( listViewTabs, SIGNAL( currentChanged( int index ) ),
                    this, SLOT( slot_tabChanged( int index ) ) );
           actionViewTaskpoints->setEnabled( false );
@@ -1821,7 +1821,7 @@ bool CumulusApp::eventFilter( QObject *o , QEvent *e )
   if ( e->type() == QEvent::KeyPress )
     {
       QKeyEvent *k = ( QKeyEvent* ) e;
-      
+
       qDebug( "Keycode of pressed key: %d, %X", k->key(), k->key() );
 
       if( k->key() == Qt::Key_F6 )
@@ -1913,7 +1913,7 @@ void CumulusApp::slotOssoDisplayTrigger()
           qWarning( "osso_display_blanking_pause() call failed" );
         }
     }
-  
+
   // Restart the timer because we use a single shot timer to avoid
   // multiple triggering in case of delays. Next trigger is in 10s.
   ossoDisplayTrigger->start( 10000 );
