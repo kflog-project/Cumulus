@@ -37,23 +37,27 @@
 class SettingsPagePolar : public QDialog
 {
     Q_OBJECT
+    
 public:
+
     SettingsPagePolar(QWidget *parent=0, Glider * glider=0);
     ~SettingsPagePolar();
     Polar* getPolar();
 
+private:
+
+    void readPolarData ();
+    /**
+      * called to initiate saving to the configuration file
+      */
+    void save();
+
+    /**
+      * Called to initiate loading of the configuration file.
+      */
+    void load();
 
 public slots: // Public slots
-    /**
-      * called to initiate saving to the configurationfile
-      */
-    void slot_save();
-
-    /**
-      * Called to initiate loading of the configurationfile.
-      */
-    void slot_load();
-
     /**
       * called when a glider type has been selected from the combobox
       */
@@ -75,8 +79,16 @@ signals: // Signals
       */
     void newGlider(Glider*);
 
-
 protected:
+
+    /** overwritten method from QDialog */
+    virtual void accept();
+    
+    /** overwritten method from QDialog */
+    virtual void reject();
+    
+private:
+
     QComboBox* comboType;
     QDoubleSpinBox* spinV1;
     QDoubleSpinBox* spinW1;
@@ -93,15 +105,12 @@ protected:
     QSpinBox* spinWater;
     QComboBox* comboSeats;
 
-    virtual void accept();
-
-
-private:
-    void readPolarData ();
     QList<Polar*> _polars;
     Glider * _glider;
     Polar  * _polar;
     bool isNew;
+    /** Flag to indicate if a glider object was created by this class */
+    bool gliderCreated;
 };
 
 #endif
