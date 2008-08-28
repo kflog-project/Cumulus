@@ -200,10 +200,10 @@ void ConfigDialog::accept()
   bool welt2000Change   = spaf->checkIsWelt2000Changed();
 
   emit save();
-  
+
   // save modifications into file
   GeneralConfig::instance()->save();
-  
+
   emit settingsChanged();
 
   if( projectionChange == false && welt2000Change == true )
@@ -227,7 +227,7 @@ void ConfigDialog::reject()
   emit query_close(need_warning, changed_pages);
   QString pagelist;
   QString separator;
-  
+
   if (need_warning)
     {
       for (int i=0; i<changed_pages.count(); i++)
@@ -245,12 +245,12 @@ void ConfigDialog::reject()
 
       int answer=QMessageBox::warning(this,
                                       tr("Close without saving"),
-                                      tr("<html>You have changed:<ul>%1</ul>Discard changes?</html>").arg(pagelist),
+                                      tr("<html>You have changed:<b>%1</b>Discard changes?</html>").arg(pagelist),
                                       QMessageBox::Discard,
                                       QMessageBox::Save);
 
       if( answer == QMessageBox::Save )
-        { // the user pressed cancel
+        { // the user pressed save
           accept();
           return;
         }
