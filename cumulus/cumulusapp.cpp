@@ -42,6 +42,8 @@
 #include <QInputContext>
 #include <QInputContextFactory>
 #include <QtDebug>
+
+#include "maemostyle.h"
 #endif
 
 #include "generalconfig.h"
@@ -168,9 +170,11 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
       qApp->setInputContext(hildonInputContext);
     }
 
-  // For MAEMO it's really better to pre-set style and font
+  // For Maemo it's really better to pre-set style and font
   // To resize tiny buttons (does not work everywhere though)
   QApplication::setGlobalStrut( QSize(24,16) );
+
+  QApplication::setStyle(new MaemoStyle);
 
   // N8x0 display has bad contrast for light shades, so make the (dialog)
   // background darker
