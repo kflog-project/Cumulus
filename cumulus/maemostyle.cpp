@@ -32,28 +32,28 @@ MaemoStyle::~MaemoStyle()
 int MaemoStyle::pixelMetric( PixelMetric metric, const QStyleOption *option,
                              const QWidget *widget ) const
 {
-  qDebug("MaemoStyle::pixelMetric(): metric=%d", metric);
+  //qDebug("MaemoStyle::pixelMetric(): metric=%d", metric);
 
   if (metric == PM_ScrollBarExtent)
     {
-      qDebug("PM_ScrollBarExtent");
+      //qDebug("PM_ScrollBarExtent");
         // increase hight of scrollbars
         return 25;
     }
   else if( metric == PM_IndicatorWidth)
     {
-      qDebug("PM_IndicatorWidth");
+      //qDebug("PM_IndicatorWidth");
         // increase width of check box
-        return 25;
+        return 20;
     }
   else if( metric == PM_IndicatorHeight)
     {
-      qDebug("PM_IndicatorHeight");
+      //qDebug("PM_IndicatorHeight");
         // increase hight of check box
-        return 25;
+        return 20;
     }
   else
     {
-      return QCommonStyle::pixelMetric(metric, option, widget);
+      return QPlastiqueStyle::pixelMetric(metric, option, widget);
     }
 }

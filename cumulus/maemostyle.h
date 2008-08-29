@@ -22,9 +22,9 @@
 #ifndef MaemoStyle_h
 #define MaemoStyle_h
 
-#include <QCommonStyle>
+#include <QPlastiqueStyle>
 
-class MaemoStyle : public QCommonStyle
+class MaemoStyle : public QPlastiqueStyle
 {
   Q_OBJECT
 
