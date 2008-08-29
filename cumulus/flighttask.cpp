@@ -107,9 +107,8 @@ FlightTask::FlightTask( const FlightTask& inst )
 
 FlightTask::~FlightTask()
 {
-  // qDebug("FlightTask::~FlightTask(): name=%s, %X", _taskName.latin1(), this );
+  // qDebug("FlightTask::~FlightTask(): name=%s, %X", _taskName.toLatin1().data(), this );
   qDeleteAll(*wpList);
-  wpList->clear();
   delete wpList;
 }
 
@@ -1132,7 +1131,7 @@ int FlightTask::calculateFinalGlidePath( const int taskPointIndex,
   bool res = calculator->glidePath( bearing, Distance(distance * 1000.0),
                                     wpList->at( taskPointIndex )->elevation,
                                     arrAlt, speed );
-                                    
+
   if( ! res )
     {
       return no; // glide path calculation failed, no glider selected
@@ -1277,7 +1276,7 @@ QString FlightTask::getSpeedString() const
 
 
 /**
- * Overtakes a waypoint list. All single elements are deep copied.
+ * Overtakes a waypoint list. An old list is deleted.
  */
 void FlightTask::setWaypointList(QList<wayPoint*> *newWpList)
 {
@@ -1285,8 +1284,9 @@ void FlightTask::setWaypointList(QList<wayPoint*> *newWpList)
     {
       return; // ignore null object
     }
-  
+
    // Remove old content of list
+  qDeleteAll(*wpList);
   delete wpList;
 
   // @AP: overtake ownership about the new passed list

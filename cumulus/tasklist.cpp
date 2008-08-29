@@ -376,6 +376,7 @@ void TaskList::slotEditTask()
 {
   // fetch selected task item
   QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
+  
   if( selectList.size() == 0 )
     return;
 
