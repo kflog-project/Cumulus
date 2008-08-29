@@ -15,9 +15,13 @@ Cumulus changelog
 #===============================================================================#
 
 -------------------------------------------------
+Cumulus 2.1.x (Development based on X11/Qt-4.4.1)
+-------------------------------------------------
+[-] 2008-08-29 AP: Bugfix: Memory leak fixed in FlightTask. Left over from Qt4 portage.
+
+-------------------------------------------------
 Cumulus 2.0.x (Development based on X11/Qt-4.4.1)
 -------------------------------------------------
-
 [o] 2008-08-25 JD: Updated glider edit and polar dialog layout (scrollable, fonts etc.)
 [-] 2008-08-25 AP: Bugfix: Glider editor position of show button realigned.
 [o] 2008-08-21 JD: WP/TP InfoWidgets changed to QLabel from QTextEdit. Prevents
