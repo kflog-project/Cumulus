@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by AndrÃ© Somers, 2008 Axel Pauli
+**   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -32,7 +32,7 @@
 
 /**
   * @short Configuration encapsulation class
-  * @author AndrÃ© Somers, Axel Pauli
+  * @author André Somers, Axel Pauli
   *
   * This class is used to store and retrieve all kinds of
   * configuration options. This class is a singleton class. Use the
@@ -79,7 +79,7 @@ class GeneralConfig : protected QSettings
     Cylinder=0,
     Sector=1
   };
-    
+
   // CS Task scheme data
   enum ActiveNTTaskScheme {
     Nearst=0,
@@ -151,6 +151,11 @@ class GeneralConfig : protected QSettings
   {
     _windowSize = size;
   };
+
+  /** Sets the GUI style, selected by the user.
+   * Overwrites some GUI Style elements under Maemo to make them user friendly.
+   */
+  void setOurGuiStyle();
 
   /**
    * @returns requested pixmap
@@ -301,13 +306,13 @@ class GeneralConfig : protected QSettings
     {
       return _guiStyle;
     };
-    
+
   /** Sets the GUI style */
   void setGuiStyle( const QString newValue )
   {
     _guiStyle = newValue;
   };
-  
+
   /** gets GUI font size */
   int getGuiFontSize() const
   {
@@ -318,13 +323,13 @@ class GeneralConfig : protected QSettings
   {
     _guiFontSize = newValue;
   };
-  
+
   /** gets virtual keyboard usage */
   bool getVirtualKeyboard() const
   {
     return _virtualKeyboard;
   };
-  
+
   /** sets virtual keyboard usage */
   void setVirtualKeyboard(const bool newValue)
   {
@@ -1048,7 +1053,7 @@ class GeneralConfig : protected QSettings
    * This is a conveneance funtion that combines the results of
    * getAirspaceFillingVertical and getAirspaceFillingTotal. It returns
    * 0 if airspace fillings are not enabled.
-   * 
+   *
    * @arg vertical nearness in vertical direction only
    * @arg total total nearness in both directions
    */
@@ -1083,7 +1088,7 @@ class GeneralConfig : protected QSettings
   {
     _taskActiveCSScheme = newValue;
   };
-    
+
   /** Gets the active nt task scheme */
   enum ActiveNTTaskScheme getActiveNTTaskScheme() const
   {
@@ -1112,7 +1117,7 @@ class GeneralConfig : protected QSettings
   {
     _taskShapeAlpha = newValue;
   };
-    
+
   /** Gets task cylinder radius in meters */
   Distance &getTaskCylinderRadius()
     {
@@ -1186,7 +1191,7 @@ class GeneralConfig : protected QSettings
 
   /** Get the GPS default device depending on the hardware type */
   QString getGpsDefaultDevice();
-  
+
  private:
 
   static GeneralConfig *_theInstance;

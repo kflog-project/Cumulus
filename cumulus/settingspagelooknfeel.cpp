@@ -34,7 +34,7 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
     QWidget(parent), loadConfig(true)
 {
   setObjectName("SettingsPageLookNFeel");
-  
+
   QGridLayout* topLayout = new QGridLayout(this);
   int row=0;
 
@@ -120,10 +120,10 @@ void SettingsPageLookNFeel::slot_save()
   if( conf->getGuiStyle() != styleBox->currentText() )
   {
     conf->setGuiStyle( styleBox->currentText() );
-    QApplication::setStyle( styleBox->currentText() );
+    conf->setOurGuiStyle();
   }
 
-  // Note! enabling/disabling requires gui restart
+  // Note! enabling/disabling requires GUI restart
   conf->setVirtualKeyboard( virtualKeybord->isChecked() );
 }
 

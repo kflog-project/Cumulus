@@ -21,6 +21,7 @@ using namespace std;
 #include <stdlib.h>
 #include <cmath>
 
+#include <QApplication>
 #include <QDir>
 #include <QPixmapCache>
 
@@ -32,8 +33,12 @@ using namespace std;
 #include "altitude.h"
 #include "distance.h"
 
-// set static values
-GeneralConfig * GeneralConfig::_theInstance=0;
+#ifdef MAEMO
+#include "maemostyle.h"
+#endif
+
+// create static instance
+GeneralConfig * GeneralConfig::_theInstance = 0;
 
 // @AP: We derive here from the QT settings as base class. The config
 // file will be stored in the user home directory as $HOME/.config/Cumulus.conf
@@ -46,14 +51,12 @@ GeneralConfig::GeneralConfig() : QSettings( QSettings::UserScope, "Cumulus" )
   QPixmapCache::setCacheLimit ( 2*1024 );
 }
 
-
 GeneralConfig::~GeneralConfig()
 {
   save();
   _theInstance=0;
   delete _homeWp;
 }
-
 
 GeneralConfig * GeneralConfig::instance()
 {
@@ -95,7 +98,7 @@ void GeneralConfig::load()
 
   _forceDrawing         = value("forceLowAirspaceDrawing", true ).toBool();
   _forceDrawingDistance = value("forceLowAirspaceDrawingDistance", 150.0).toDouble();
-    
+
   // Airspace warning types
   _airspaceWarning[BaseMapElement::AirA]       = value("checkAirspaceA", true).toBool();
   _airspaceWarning[BaseMapElement::AirB]       = value("checkAirspaceB", true).toBool();
@@ -124,7 +127,7 @@ void GeneralConfig::load()
     qMax(0, qMin(100, value("fillingVeryNearVertical", AS_FILL_VERY_NEAR).toInt()));
   _verticalAirspaceFillings[Airspace::inside] =
     qMax(0, qMin(100, value("fillingInsideVertical", AS_FILL_INSIDE).toInt()));
-         
+
   _lateralAirspaceFillings[Airspace::none] =
     qMax(0, qMin(100, value("fillingNoneLateral", AS_FILL_NOT_NEAR).toInt()));
   _lateralAirspaceFillings[Airspace::near] =
@@ -410,7 +413,7 @@ void GeneralConfig::save()
   setValue( "OuterRadius", _taskSectorOuterRadius.getMeters() );
   setValue( "Angle",       _taskSectorAngle );
   endGroup();
-    
+
   beginGroup("Map");
   setValue( "DeleteAfterMapCompile", _mapDelete );
   setValue( "UnloadUnneededMap", _mapUnload );
@@ -1324,6 +1327,37 @@ QString GeneralConfig::getGpsDefaultDevice()
       return "GPS Daemon";
     }
 
-  // Default in unknown case is the serial device  
+  // Default in unknown case is the serial device
   return "/dev/ttyS0";
-} 
+}
+
+/** Sets the GUI style, selected by the user.
+ * Overwrites some GUI Style elements under Maemo to make them user friendly.
+ */
+void GeneralConfig::setOurGuiStyle()
+{
+#ifdef MAEMO
+
+  if( _guiStyle == "Windows" )
+    {
+      QApplication::setStyle( new MaemoWindowsStyle() );
+    }
+  else if( _guiStyle == "Cleanlooks" )
+    {
+      QApplication::setStyle( new MaemoCleanlooksStyle() );
+    }
+  else if( _guiStyle == "Plastique" )
+    {
+      QApplication::setStyle( new MaemoPlastiqueStyle() );
+    }
+  else
+    {
+      QApplication::setStyle( _guiStyle );
+    }
+#else
+
+  QApplication::setStyle( _guiStyle );
+
+#endif
+}
+

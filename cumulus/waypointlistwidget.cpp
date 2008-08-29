@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andre Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -14,7 +14,6 @@
 **   $Id$
 **
 ***********************************************************************/
-
 
 #include "waypointlistwidget.h"
 
@@ -59,7 +58,7 @@ void WaypointListWidget::fillWpList()
   if( wpList ) {
     n = wpList->count();
     //qDebug("WaypointListWidget::fillWpList() %d", n);
-    
+
     for (int i=0; i < n; i++) {
       wayPoint * wp=(wayPoint*)wpList->at(i);
       new _WaypointItem(list, wp);
@@ -93,7 +92,7 @@ wayPoint* WaypointListWidget::getSelectedWaypoint()
   QTreeWidgetItem* li = list->currentItem();
   if ( li == 0)
     return 0;
-  
+
   // Special rows selected?
   QString test = li->text(1);
 
@@ -157,23 +156,23 @@ void WaypointListWidget::updateSelectedWaypoint(wayPoint* wp)
 
 
 /** Called if a waypoint has been added. */
-void WaypointListWidget::addWaypoint(wayPoint * newWp)
+void WaypointListWidget::addWaypoint(wayPoint* newWp)
 {
   if( newWp == 0 ) {
     qDebug("WaypointListWidget::updateSelectedWaypoint: empty waypoint given");
     return;
   }
 
-  // wayPoint* newWp = new wayPoint(*wp);
   new _WaypointItem(list, newWp);
 
   filter->reset();
   resizeListColumns();
-  
+
   // qDebug("WaypointListWidget::addWaypoint: name=%s", wp->name.toLatin1().data() );
 
+  // put new waypoint into the global waypoint list
   _globalMapContents->getWaypointList()->append(newWp);
-  // save the modified catalog
+  // save the modified waypoint catalog
   _globalMapContents->saveWaypointList();
 }
 

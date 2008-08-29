@@ -2,8 +2,8 @@
  cumulusapp.cpp  -  main application class
                           -------------------
  begin                : Sun Jul 21 2002
- copyright            : (C) 2002 by Andre Somers
- ported to Qt4.x/X11  : (C) 2008 by Axel pauli
+ copyright            : (C) 2002 by André Somers
+ ported to Qt4.x/X11  : (C) 2008 by Axel Pauli
  email                : axel@kflog.org
 
   This file is distributed under the terms of the General Public
@@ -164,17 +164,17 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
         }
       else
       	{
-	         qDebug( "QHildonInputContext created" );
+	  qDebug( "QHildonInputContext created" );
       	}
 
       qApp->setInputContext(hildonInputContext);
     }
 
   // For Maemo it's really better to pre-set style and font
-  // To resize tiny buttons (does not work everywhere though)
-  QApplication::setGlobalStrut( QSize(24,16) );
+  // QApplication::setGlobalStrut( QSize(24,16) );
 
-  QApplication::setStyle(new MaemoStyle);
+  // Set our own GUI style
+  GeneralConfig::instance()->setOurGuiStyle() );
 
   // N8x0 display has bad contrast for light shades, so make the (dialog)
   // background darker
@@ -191,15 +191,10 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
 
 #endif
 
-  // CleanLooks is best for tabs and edit fields but bad for
-  // spin buttons. I've found no ideal solution. Try out.
-  // Well, CleanLooks has bugs. So much about that. Back to Plastique
-  QApplication::setStyle( GeneralConfig::instance()->getGuiStyle() );
-
   appFt.setPointSize( GeneralConfig::instance()->getGuiFontSize() );
   QApplication::setFont(appFt);
 
-  // get last saved window geometrie from generalconfig and set it again
+  // get last saved window geometric from generalconfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
 
   qWarning( "Cumulus, Release: %s, Build date:  %s based on Qt/X11 Version %s",
@@ -336,7 +331,7 @@ void CumulusApp::slotCreateApplicationWidgets()
   setCentralWidget( viewMap );
 
 #ifndef MAEMO
-  QFont fnt( "Helvetica", 14, QFont::Bold );
+  QFont fnt( "Helvetica", 14 );
 #else
   QFont fnt = font();
 #endif

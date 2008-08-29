@@ -146,7 +146,7 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
   taskLayout->addWidget( taskName, 0, 1 );
   taskLayout->addWidget( taskList, 1, 0, 1, 2 );
   taskLayout->setRowStretch( 1, 10 );
-  
+
   buttonLayout->addStretch( 10 );
   buttonLayout->addWidget( invertButton );
   buttonLayout->addWidget( upButton );
@@ -159,7 +159,7 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
   // Combo box for toggling between waypoint and airfield lists
   listSelectCB = new QComboBox(this);
   listSelectCB->setEditable(false);
-  
+
   listLayout->addWidget( listSelectCB, 0, 0 );
   listLayout->addWidget( okButton,     0, 2, Qt::AlignCenter  );
   listLayout->addWidget( cancelButton, 0, 3, Qt::AlignCenter  );
@@ -187,7 +187,7 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
   // first selection is WPList if wp's are defined
   // set index in combo box to selected list
   listSelectCB->setCurrentIndex( wpList->count() ? 0 : 1 );
-  
+
   // switch to list to be visible, hide the other one
   slotToggleList( wpList->count() ? 0 : 1 );
 
@@ -396,11 +396,9 @@ void TaskEditor::accept()
 void TaskEditor::reject()
 {
   // qDebug("TaskEditor::reject()");
-  if( editState == TaskEditor::create )
-    {
-      // delete rejected new task
-      delete planTask;
-    }
+
+  // delete rejected task object
+  delete planTask;
   // close and destroy dialog
   QDialog::done(QDialog::Rejected);
 }

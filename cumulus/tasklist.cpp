@@ -55,10 +55,8 @@ TaskList::TaskList( QWidget* parent ) :
   cruisingSpeed->setButtonSymbols(QSpinBox::PlusMinus);
   cruisingSpeed->setRange( 0, 1000);
   cruisingSpeed->setSingleStep( 5 );
+  cruisingSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
   
-  editrow->addWidget(cruisingSpeed);
-  editrow->addWidget(new QLabel( Speed::getHorizontalUnitText(), this));
-  cruisingSpeed->setValue( GeneralConfig::instance()->getCruisingSpeed() );
   editrow->addSpacing(10);
   editrow->addStretch(10);
 

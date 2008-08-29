@@ -429,7 +429,7 @@ void MapView::slot_Waypoint(const wayPoint *wp)
       _distance->setValue("-");
       QPixmap arrow = _arrows.copy( 24*60+3, 3, 54, 54 );
       _rel_bearing->setPixmap (arrow);
-      qDebug("Rel. bearing icon reset" );
+      // qDebug("Rel. bearing icon reset" );
     }
 
   _theMap->scheduleRedraw(Map::informationLayer);  // this is not really helpful -> it is: the bearingline won't change otherwise!
