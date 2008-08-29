@@ -174,7 +174,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   // QApplication::setGlobalStrut( QSize(24,16) );
 
   // Set our own GUI style
-  GeneralConfig::instance()->setOurGuiStyle() );
+  GeneralConfig::instance()->setOurGuiStyle();
 
   // N8x0 display has bad contrast for light shades, so make the (dialog)
   // background darker
