@@ -441,10 +441,10 @@ GpsMaemo::readSentenceFromBuffer()
 
       QString qRecord(record);
 
-      if( qRecord.startsWith( "GPSD,") )
+      if ( qRecord.startsWith( "GPSD,") )
         {
           // Filter out and display GPSD messages
-          qWarning( "GPSD Message: %s, record" );
+          qWarning( "GPSD Message: %s", record );
         }
       else
         {
