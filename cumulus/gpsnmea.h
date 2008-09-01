@@ -2,7 +2,7 @@
                           gpsnmea.h  - NMEA sentence decoding
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by AndrÃ© Somers, 2008 by Axel Pauli
+    copyright            : (C) 2002 by André Somers, 2008 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -38,10 +38,10 @@
 #include "wgspoint.h"
 
 /**
- * This class provided the interprettation of the NMEA sentences, and
- * provides access to the last know data.
+ * This class parses the NMEA sentences and provides access
+ * to the last know data.
  *
- *@author AndrÃ© Somers
+ * @author André Somers
  */
 struct SatInfo
   {
@@ -54,10 +54,10 @@ struct SatInfo
 
 struct SIVInfo
   {
-    int id;        //satelite id
-    int db;        //signal to noice ratio (0-99), or negative for not tracking
-    int azimuth;   //0-359
-    int elevation; //0-90
+    int id;        // Satellite id
+    int db;        // signal to noise ratio (0-99), or negative for not tracking
+    int azimuth;   // 0-359
+    int elevation; // 0-90
   };
 
 struct GPSInfo
@@ -78,16 +78,16 @@ class GPSNMEA : public QObject
   public:
 
     /**
-     * defines for altitude bases delivered by gps unit
+     * defines altitude bases delivered by GPS unit
      */
     enum DeliveredAltitude{MSL=0, HAE=1, USER=2};
-    
+
     enum connectedStatus{notConnected=0, noFix=1, validFix=2};
 
   public:
 
     GPSNMEA(QObject* parent);
-    
+
     virtual ~GPSNMEA();
 
     /**
@@ -141,7 +141,7 @@ class GPSNMEA : public QObject
     Altitude getLastAltitude();
 
     /**
-     * @Returns the last know altitude above the WGS84 ellipsoidl
+     * @Returns the last know altitude above the WGS84 ellipsoid
      */
     Altitude getLastGNSSAltitude();
 
@@ -181,7 +181,7 @@ class GPSNMEA : public QObject
     };
 
     /**
-     * @return selected altitude reference deliverd by the GPS unit
+     * @Returns selected altitude reference delivered by the GPS unit
      */
     const GPSNMEA::DeliveredAltitude getDeliveredAltitude() const
       {
@@ -191,6 +191,14 @@ class GPSNMEA : public QObject
     QList<SIVInfo>& getSivInfo()
     {
       return sivInfo;
+    };
+
+    /**
+     * @Returns the map datum of the GPS receiver.
+     */
+    QString getMapDatum()
+    {
+      return _mapDatum;
     };
 
   public slots: // Public slots
@@ -300,14 +308,14 @@ class GPSNMEA : public QObject
     Altitude __ExtractAltitude(const QString& number, const QString& unit );
     /** Extracts the constellation from the NMEA sentence. */
     QString __ExtractConstellation(const QStringList& sentence);
-    /** Extracts the satcount from the NMEA sentence. */
+    /** Extracts the satellites count from the NMEA sentence. */
     void __ExtractSatcount(const QString& satcount);
-    /** Extract Satelites In View (SIV) info from a NMEA sentence. */
+    /** Extract satellites In View (SIV) info from a NMEA sentence. */
     void __ExtractSatsInView(const QStringList& sentence);
-    /** Extract Satelites In View (SIV) info from a NMEA sentence. */
+    /** Extract satellites In View (SIV) info from a NMEA sentence. */
     void __ExtractSatsInView(const QString&, const QString&, const QString&, const QString&);
 
-    /** This function is called to indicate that good dat has been received. It resets the TimeOut timer and if necesairy changes the connected status. */
+    /** This function is called to indicate that good data has been received. It resets the TimeOut timer and if necesairy changes the connected status. */
     void dataOK();
     /** This function is called to indicate that a good fix has been received. */
     void fixOK();
@@ -317,9 +325,9 @@ class GPSNMEA : public QObject
     static bool checkCheckSum(int pos, const QString& sentence);
     /** This function sends the data of last valid fix to the gps receiver. */
     void sendLastFix (bool hard, bool soft);
-    /** Set system date/time. Input is utc related. */
+    /** Set system date/time. Input is UTC related. */
     void setSystemClock( const QDateTime& utcDt );
-    /** create a gps connection */
+    /** create a GPS connection */
     void createGpsConnection();
 
   private: // Private attributes
@@ -364,15 +372,17 @@ class GPSNMEA : public QObject
     QList<SIVInfo> sivInfo;
     /** Internal SIV list */
     QList<SIVInfo> sivInfoInternal;
+    /** Map datum */
+    QString _mapDatum;
     /** selected GPS device */
     QString gpsDevice;
     /** reference to the normal serial connection */
     GPSCon * serial;
-    
+
 #ifdef MAEMO
     /** reference to the Maemo gpsd connection */
     GpsMaemo * gpsdConnection;
-#endif  
+#endif
 
   private slots: // Private slots
 

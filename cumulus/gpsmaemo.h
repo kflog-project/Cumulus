@@ -128,8 +128,10 @@ class GpsMaemo : public QObject
 
     // data buffers and pointers
     char* datapointer;
-    char  databuffer[1024];
+    char  databuffer[2048];
     int   dbsize;
+    // counter used for read data check
+    int   readCounter;
   };
 
 #endif

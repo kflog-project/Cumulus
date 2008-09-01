@@ -50,7 +50,7 @@ GPSNMEA* gps = 0;
 GPSNMEA::GPSNMEA(QObject* parent) : QObject(parent)
 {
   // qDebug("GPSNMEA::GPSNMEA()");
-  
+
   _status=notConnected;
   timeOutFix=new QTimer(this);
   connect (timeOutFix,SIGNAL(timeout()),this,SLOT(_slotTimeoutFix()));
@@ -86,25 +86,25 @@ GPSNMEA::GPSNMEA(QObject* parent) : QObject(parent)
 #ifdef MAEMO
   gpsdConnection = 0;
 #endif
-  
+
   createGpsConnection();
 }
-   
+
 void GPSNMEA::createGpsConnection()
 {
   // qDebug("GPSNMEA::createGpsConnection()");
-  
+
   QObject *gpsObject;
- 
+
 #ifndef MAEMO
- 
+
   // We create only a GPSCon instance. The client process will be started later
   const char *callPath = ( GeneralConfig::instance()->getInstallRoot() + "/bin" ).toAscii().data();
 
   serial = new GPSCon(this, callPath);
-  
+
   gpsObject = serial;
-  
+
 #else
 
   // Under Maemo we have to contact the Maemo gpsd process on its listen port.
@@ -112,7 +112,7 @@ void GPSNMEA::createGpsConnection()
   gpsDevice = GeneralConfig::instance()->getGpsDevice();
 
   // qDebug("GpsDevive=%s", gpsDevice.toLatin1().data() );
-  
+
   if( gpsDevice == NMEASIM_DEVICE )
     {
       // We assume, that the nmea simulator shall be used and will start the gps client process
@@ -127,15 +127,15 @@ void GPSNMEA::createGpsConnection()
       gpsdConnection = new GpsMaemo( this );
       gpsObject = gpsdConnection;
     }
-  
-#endif 
+
+#endif
 
   connect (gpsObject, SIGNAL(newSentence(const QString&)),
             this, SLOT(slot_sentence(const QString&)) );
-            
+
   connect (gpsObject, SIGNAL(newSentence(const QString&)),
             this, SIGNAL(newSentence(const QString&)) );
-            
+
   connect (gpsObject, SIGNAL(gpsConnectionLost()),
             this, SLOT(_slotTimeout()) );
 }
@@ -164,13 +164,13 @@ GPSNMEA::~GPSNMEA()
 void GPSNMEA::startGpsReceiver()
 {
   // qDebug("GPSNMEA::startGpsReceiver()");
-  
+
   if( serial )
     {
       serial->startClientProcess();
       serial->startGpsReceiving();
     }
-  
+
 #ifdef MAEMO
   if( gpsdConnection )
     {
@@ -187,7 +187,7 @@ void GPSNMEA::startGpsReceiver()
 void GPSNMEA::slot_sentence(const QString& sentenceIn)
 {
   // qDebug("GPSNMEA::slot_sentence: %s", sentenceIn.toLatin1().data());
-  
+
   if( QObject::signalsBlocked() )
     {
       // @AP: If the emitting of signals is blocked, we will ignore
@@ -201,23 +201,27 @@ void GPSNMEA::slot_sentence(const QString& sentenceIn)
 
   if(sentence[0] != '$')
     {
-      qWarning("Invalid sentence! %s",sentence.toLatin1().data());
+      qWarning("Invalid GPS sentence! %s",sentence.toLatin1().data());
       return;
     }
 
-  // qDebug("received sentence '%s'",sentence.toLatin1().data());
+  // qDebug("received sentence '%s'", sentence.toLatin1().data());
 
   sentence = sentence.replace( QRegExp("[\n\r]"), "" );
 
   int i = sentence.lastIndexOf('*');
 
-  if (i != -1)
-    { //we have found a marker for a checksum
-      if (!checkCheckSum(i, sentence))
-        {
-          qWarning("Invalid checksum in sentence! %s",sentence.toLatin1().data());
-          return; //the checksum did not match, disregard the sentence!
-        }
+  if( i == -1)
+    {
+      qWarning("Missing checksum in sentence! %s", sentence.toLatin1().data());
+      return;
+    }
+
+  // We take only sentences with a checksum contained
+  if ( !checkCheckSum(i, sentence) )
+    {
+      qWarning("Invalid checksum in sentence! %s", sentence.toLatin1().data());
+      return; // the checksum did not match, ignore the sentence!
     }
 
   // dump everyting behind the * and split sentence in parts for each
@@ -229,11 +233,44 @@ void GPSNMEA::slot_sentence(const QString& sentenceIn)
 
   dataOK();
 
-  if (slst[0]=="$GPRMC")
+/**
+
+See http://www.nmea.de/nmea0183datensaetze.html
+
+RMC - Recommended Minimum Navigation Information
+
+                                                            12
+        1         2 3       4 5        6 7   8   9    10  11|
+        |         | |       | |        | |   |   |    |   | |
+ $--RMC,hhmmss.ss,A,llll.ll,a,yyyyy.yy,a,x.x,x.x,xxxx,x.x,a*hh<CR><LF>
+
+ Field Number:
+  1) UTC Time
+  2) Status, V = Navigation receiver warning
+  3) Latitude
+  4) N or S
+  5) Longitude
+  6) E or W
+  7) Speed over ground, knots
+  8) Track made good, degrees true
+  9) Date, ddmmyy
+ 10) Magnetic Variation, degrees
+ 11) E or W
+ 12) Checksum
+*/
+
+  if (slst[0] == "$GPRMC")
     { // RMC - Recommended Minimum Specific GNSS Data
+
+      if( slst.size() < 10 )
+        {
+          qWarning("$GPRMC contains too less parameters!");
+          return;
+        }
+
       //qDebug("%s",slst[2].toLatin1().data());
-      if (slst[2]!="V")
-        { /*Data status OK, V is a warning*/
+      if (slst[2]!= "V")
+        { /* Data status A=OK, V=warning */
           fixOK();
           __ExtractTime(slst[1]);
           __ExtractDate(slst[9]);
@@ -253,72 +290,233 @@ void GPSNMEA::slot_sentence(const QString& sentenceIn)
               setSystemClock(utc);
             }
         }
+
+     return;
     }
-  else
-    if (slst[0]=="$GPGLL")
-      { // GGL - Geographic Poistion - Latitude/Longitude
-        if (slst.count()>=7)
-          {
-            if (slst[6]=="A")
-              { /*Data status OK, V is a warning*/
-                fixOK();
-                __ExtractTime(slst[5]);
-                __ExtractCoord(slst[1],slst[2],slst[3],slst[4]);
-                // qDebug("GPGLL interpreted");
-              }
-          }
-      }
-    else
-      if (slst[0]=="$GPGGA")
-        { // GGA - Global Positioning System Fixed Data
-          // qDebug ("sentence: %s", sentence.toLatin1().data());
-          if (slst[6]!="0")
-            { /*a value of 0 means invalid fix, and we don't need that one */
-              fixOK();
-              __ExtractTime(slst[1]);
-              __ExtractCoord(slst[2],slst[3],slst[4],slst[5]);
 
-              if( slst[11] == "" )
-                {
-                  slst[11] = "0";
-                  slst[12] = "M";
-                }
+/**
+GLL - Geographic Position - Latitude/Longitude
 
-              __ExtractAltitude(slst[9],slst[10],slst[11],slst[12]);
-              __ExtractSatcount(slst[7]);
-            }
+       1       2 3        4 5         6 7
+       |       | |        | |         | |
+$--GLL,llll.ll,a,yyyyy.yy,a,hhmmss.ss,A*hh<CR><LF>
+
+ Field Number:
+  1) Latitude
+  2) N or S (North or South)
+  3) Longitude
+  4) E or W (East or West)
+  5) Universal Time Coordinated (UTC)
+  6) Status A - Data Valid, V - Data Invalid
+  7) Checksum
+ */
+
+  if (slst[0]== "$GPGLL")
+    { // GGL - Geographic Poistion - Latitude/Longitude
+      if( slst.size() < 7 )
+        {
+          qWarning("$GPGLL contains too less parameters!");
+          return;
         }
-      else
-        if (slst[0]=="$PGRMZ")
-          {
-            /* Garmin proprietary sentence with altitude information */
-            if (slst[3]=="3")
-              { // 1=Altitude value, 3=GPS altitude, 2=user altitude (pressure?)
-                __ExtractAltitude(slst[1],slst[2]);
-              }
-          }
-        else
-          if (slst[0]=="$GPGSA")
-            { // GSA - GNSS DOP and Acitve Satellites
-              __ExtractConstellation(slst);
+
+      if (slst[6] == "A")
+        {
+          fixOK();
+          __ExtractTime(slst[5]);
+          __ExtractCoord(slst[1],slst[2],slst[3],slst[4]);
+          // qDebug("GPGLL interpreted");
+        }
+
+      return;
+    }
+
+/**
+GGA - Global Positioning System Fix Data, Time, Position and fix related data fora GPS receiver.
+
+        1         2       3 4        5 6 7  8   9  10 11 12 13  14   15
+        |         |       | |        | | |  |   |   | |   | |   |    |
+ $--GGA,hhmmss.ss,llll.ll,a,yyyyy.yy,a,x,xx,x.x,x.x,M,x.x,M,x.x,xxxx*hh<CR><LF>
+
+ Field Number:
+  1) Universal Time Coordinated (UTC)
+  2) Latitude
+  3) N or S (North or South)
+  4) Longitude
+  5) E or W (East or West)
+  6) GPS Quality Indicator,
+     0 - fix not available,
+     1 - GPS fix,
+     2 - Differential GPS fix
+  7) Number of satellites in view, 00 - 12
+  8) Horizontal Dilution of precision
+  9) Antenna Altitude above/below mean-sea-level (geoid)
+ 10) Units of antenna altitude, meters
+ 11) Geoidal separation, the difference between the WGS-84 earth
+     ellipsoid and mean-sea-level (geoid), "-" means mean-sea-level
+     below ellipsoid
+ 12) Units of geoidal separation, meters
+ 13) Age of differential GPS data, time in seconds since last SC104
+     type 1 or 9 update, null field when DGPS is not used
+ 14) Differential reference station ID, 0000-1023
+ 15) Checksum
+ */
+
+  if (slst[0] == "$GPGGA")
+    { // GGA - Global Positioning System Fixed Data
+      // qDebug ("sentence: %s", sentence.toLatin1().data());
+      if( slst.size() < 15 )
+        {
+          qWarning("$GPGGA contains too less parameters!");
+          return;
+        }
+
+      if ( slst[6]!= "0" )
+        { /*a value of 0 means invalid fix, and we don't need that one */
+          fixOK();
+          __ExtractTime(slst[1]);
+          __ExtractCoord(slst[2],slst[3],slst[4],slst[5]);
+
+          if( slst[11] == "" )
+            {
+              slst[11] = "0";
+              slst[12] = "M";
             }
-          else
-            if (slst[0]=="$GPGSV")
-              { // GSV - GNSS Satellites in View
-                // qDebug("%s", sentenceIn.toLatin1().data());
-                __ExtractSatsInView(slst);
-              }
-            else
-              if (slst[0]=="$CLK") // maybe this is specific to Fortuna PocketTrack
-                {
-                  _lastClockOffset = slst[1].toInt();
-                  qDebug ("Clock Offset: %d", _lastClockOffset);
-                } else if (slst[0].startsWith("$Ack"))
-                qDebug ("NMEA command ACK");
-              else
-                {
-                  // qDebug ("Unsupported NMEA sentence: %s", sentence.toLatin1().data());
-                }
+
+          __ExtractAltitude(slst[9],slst[10],slst[11],slst[12]);
+          __ExtractSatcount(slst[7]);
+        }
+
+      return;
+    }
+
+/**
+$PGRMZ,93,f,3*21
+       93,f         Altitude in feet
+       3            Position fix dimensions 2 = user altitude
+                                            3 = GPS altitude
+*/
+
+  if (slst[0]== "$PGRMZ")
+    {
+      if( slst.size() < 4 )
+        {
+          qWarning("$PGRMZ contains too less parameters!");
+          return;
+        }
+
+      /* Garmin proprietary sentence with altitude information */
+      if (slst[3]== "3")
+        { // 1=Altitude value, 3=GPS altitude, 2=user altitude (pressure?)
+          __ExtractAltitude(slst[1], slst[2]);
+        }
+
+      return;
+    }
+
+/**
+GSA - GPS DOP and active satellites
+
+        1 2 3                    14 15  16  17  18
+        | | |                    |  |   |   |   |
+ $--GSA,a,a,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x.x,x.x,x.x*hh<CR><LF>
+
+ Field Number:
+  1) Selection mode
+  2) Mode
+  3) ID of 1st satellite used for fix
+  4) ID of 2nd satellite used for fix
+  ...
+  14) ID of 12th satellite used for fix
+  15) PDOP in meters
+  16) HDOP in meters
+  17) VDOP in meters
+  18) checksum
+ */
+
+  if (slst[0] == "$GPGSA")
+    { // GSA - GNSS DOP and Acitve Satellites
+      if( slst.size() < 18 )
+        {
+          qWarning("$GPGSA contains too less parameters!");
+          return;
+        }
+
+      __ExtractConstellation(slst);
+
+      return;
+    }
+
+/**
+GSV - Satellites in view
+
+        1 2 3 4 5 6 7     n
+        | | | | | | |     |
+ $--GSV,x,x,x,x,x,x,x,...*hh<CR><LF>
+
+ Field Number:
+  1) total number of messages
+  2) message number
+  3) satellites in view
+  4) satellite number
+  5) elevation in degrees
+  6) azimuth in degrees to true
+  7) SNR in dB
+  more satellite infos like 4)-7)
+  n) checksum
+ */
+
+  if (slst[0]=="$GPGSV")
+    { // GSV - GNSS Satellites in View
+      // qDebug("%s", sentenceIn.toLatin1().data());
+      __ExtractSatsInView(slst);
+
+      return;
+    }
+
+/**
+DTM - Datum Reference
+
+       1   2 3       4 5       6 7 8  9
+       |   | |       | |       | | |  |
+$--DTM,xxx,x,xx.xxxx,x,xx.xxxx,x,,xxx*hh<CR><LF>
+
+Field Number:
+1) Local datum code
+    W84 - WGS84
+    W72 - WGS72
+    S85 - SGS85
+    P90 - PE90
+    999 - User defined
+    IHO datum code
+2) Local datum sub code
+3) Latitude offset (minute)
+4) Latitude offset mark (N: +, S: -)
+5) Longitude offset (minute)
+6) Longitude offset mark (E: +, W: -)
+7) Altitude offset (m) Always null
+8) Datum
+    W84 - WGS84
+    W72 - WGS72
+    S85 - SGS85
+    P90 - PE90
+    ...
+9) Checksum
+*/
+
+  if (slst[0] == "$GPDTM")
+    {
+      if( slst.size() < 9 )
+        {
+          qWarning("$GPDTM contains too less parameters!");
+          return;
+        }
+
+      _mapDatum = slst[8];
+
+      return;
+    }
+
+  // qDebug ("Unsupported NMEA sentence: %s", sentence.toLatin1().data());
 }
 
 
@@ -417,16 +615,16 @@ QPoint GPSNMEA::__ExtractCoord(const QString& slat, const QString& slatNS, const
   int lon = 0;
   float fLat = 0.0;
   float fLon = 0.0;
-  
+
   lat  = slat.left(2).toInt();
   fLat = slat.mid(2).toFloat();
-  
+
   // qDebug ("slat: %s", slat.toLatin1().data());
   // qDebug ("lat/fLat: %d/%f", lat, fLat);
-  
+
   lon  = slon.left(3).toInt();
   fLon = slon.mid(3).toFloat();
-  
+
   // qDebug ("slon: %s", slon.toLatin1().data());
   // qDebug ("lon/fLon: %d/%f", lon, fLon);
 
@@ -441,7 +639,7 @@ QPoint GPSNMEA::__ExtractCoord(const QString& slat, const QString& slatNS, const
 
   if(slatNS == "S")
     latTemp = -latTemp;
-  
+
   if(slonEW == "W")
     lonTemp = -lonTemp;
 
@@ -452,7 +650,7 @@ QPoint GPSNMEA::__ExtractCoord(const QString& slat, const QString& slatNS, const
       _lastCoord=res;
       emit newPosition();
     }
-    
+
   return (_lastCoord);
 }
 
@@ -613,7 +811,7 @@ Altitude GPSNMEA::__ExtractAltitude(const QString& number, const QString& unit)
   double num = number.toDouble();
 
   // check for other unit as meters, meters is the default
-  if( unit.toLower() =="f" )
+  if( unit.toLower() == "f" )
     res.setFeet(num);
   else
     res.setMeters(num);
@@ -632,7 +830,7 @@ QString GPSNMEA::__ExtractConstellation(const QStringList& sentence)
 {
   QString result, tmp;
 
-  if (sentence[2]!="1")
+  if (sentence[2]!= "1")
     {
       fixOK();
       _lastSatInfo.fixValidity=sentence[2].toInt();
@@ -786,12 +984,12 @@ void GPSNMEA::slot_reset()
   GeneralConfig *conf = GeneralConfig::instance();
 
   QString oldDevice = gpsDevice;
-  
+
   if( gpsDevice != conf->getGpsDevice() )
   {
     // GPS device has been changed by the user
     gpsDevice = conf->getGpsDevice();
-    
+
     if( serial )
     {
       serial->stopGpsReceiving();
@@ -814,14 +1012,14 @@ void GPSNMEA::slot_reset()
       gpsdConnection = 0;
     }
 #endif
-    
+
     // create a new connection
     createGpsConnection();
     // start the new connection
     startGpsReceiver();
     return;
-  }  
-  
+  }
+
   // no device modification, check serials baud rate
   if( serial )
     {
@@ -922,7 +1120,7 @@ void GPSNMEA::sendLastFix (bool hard, bool soft)
 void GPSNMEA::forceReset()
 {
   // qDebug("GPSNMEA::forceReset()");
-  
+
   if( serial )
     {
       serial->stopGpsReceiving();
