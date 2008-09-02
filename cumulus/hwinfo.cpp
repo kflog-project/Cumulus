@@ -65,10 +65,10 @@ HwInfo::HwInfo()
                   _hwType = nokia;
 
                   if ( line.toLower().contains( "n800" ) )
-		                {
+                    {
                       _hwSubType = n800;
-		                }
-                  else if( line.toLower().contains( "n810" ) )
+                    }
+                  else if ( line.toLower().contains( "n810" ) )
                     {
                       _hwSubType = n810;
                     }
@@ -90,15 +90,15 @@ HwInfo::HwInfo()
       cerr << "HwInfo: Can't open path '" << PATH_PROC_CPUINFO << "'" << endl;
     }
 
-  if( _hwType == unknown )
+  if ( _hwType == unknown )
     {
       cerr << "HwInfo: unknown PDA hardware - using default: desktop" << endl;
       _hwType = desktop;
 
       if (_hwString.isEmpty())
-	     {
-          _hwString="UNKNOWN";
-	     }
+        {
+          _hwString = "UNKNOWN";
+        }
     }
 }
 
@@ -118,22 +118,22 @@ int HwInfo::getFreeMemory()
 
   FILE *in = fopen( PATH_PROC_MEMINFO, "r" );
 
-  if( in )
+  if ( in )
     {
       char buf[256];
 
-      while( fgets( buf, sizeof( buf ) -1, in ) )
+      while ( fgets( buf, sizeof( buf ) -1, in ) )
         {
           QString line(buf);
           // qDebug("LINE=%s", line.toLatin1().data() );
 
           if ( line.startsWith( "MemFree" ) || line.startsWith( "Buffers" ) || line.startsWith( "Cached" ) )
             {
-              posStart=line.indexOf(':');
-              posEnd=line.indexOf(" kB");
+              posStart = line.indexOf(':');
+              posEnd = line.indexOf(" kB");
               a = line.mid(posStart+1,posEnd-posStart).trimmed().toInt();
-              // qDebug( "Usable memory: '%d' (found in string: '%s' taken from line '%s')", a, line.mid(posStart+1,posEnd-posStart).stripWhiteSpace().latin1(), line.latin1());
-              res+=a;
+              // qDebug( "Usable memory: '%d' (found in line '%s')", a, line.toLatin1().data() );
+              res += a;
             }
         }
 
@@ -141,13 +141,13 @@ int HwInfo::getFreeMemory()
     }
   else
     {
-      qWarning( "- can't open '%s' ",PATH_PROC_MEMINFO  );
+      qWarning( "- can't open '%s' ", PATH_PROC_MEMINFO  );
     }
 
-  if( res == 0 )
+  if ( res == 0 )
     {
       qWarning( "No usable memory info found, assuming 1 MB free." );
-      res=1024;
+      res = 1024;
     }
   else
     {
@@ -158,11 +158,17 @@ int HwInfo::getFreeMemory()
   struct mallinfo m = mallinfo();
   //qDebug ("  fordblks: %d (%d KB)\n  uordblks: %d\n  hblkhd: %d\nTotal used: %d; total allocated: %d", m.fordblks, m.fordblks/1024,m.uordblks, m.hblkhd, m.uordblks+m.hblkhd,  m.uordblks+m.hblkhd+m.fordblks);
   //add the free space on the heap to the total free space, minus the fragmentation factor
-  int heapfree=m.fordblks/1024;
-  //qDebug("free heapspace: %d KB", heapfree);
+  int heapfree = m.fordblks/1024;
+  
+  // qDebug("free heap space: %d KB", heapfree);
+  
   if (heapfree > HEAP_FRAGMENTATION_FACTOR)
-    res += heapfree - HEAP_FRAGMENTATION_FACTOR;
+    {
+      res += heapfree - HEAP_FRAGMENTATION_FACTOR;
+    }
 
+  // qDebug("Free memory=%d KB", res);
+  
   return res;
 }
 
@@ -174,7 +180,7 @@ const QString HwInfo::getCfDevice( void )
   QString res("/dev/ttyS3");
   QFile f( PATH_CF_INFO );
 
-  if( ! f.exists() )
+  if ( ! f.exists() )
     {
       f.setFileName( PATH_CF_INFO1);
     }
@@ -182,6 +188,7 @@ const QString HwInfo::getCfDevice( void )
   if ( f.open( QIODevice::ReadOnly ) )
     {
       QTextStream s( &f );
+      
       while ( !s.atEnd() )
         {
           QString line ( s.readLine() );

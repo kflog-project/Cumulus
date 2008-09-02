@@ -1,12 +1,12 @@
 /***********************************************************************
  **
- **   hwinfo.h 
+ **   hwinfo.h
  **
  **   This file is part of Cumulus.
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard Vï¿½llm, 2008 Axel Pauli
+ **   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -20,11 +20,11 @@
 #define PATH_PROC_CPUINFO "/proc/cpuinfo"
 #define PATH_PROC_MEMINFO "/proc/meminfo"
 
-/* This number (0,5 MB in KB) is substracted from the amount of free space
-   on the heap, to allow for memoryfragmentation. It may need to be
+/* This number (0,5 MB in KB) is subtracted from the amount of free space
+   on the heap, to allow for memory fragmentation. It may need to be
    adjusted, but first experiments show that this would be a reasonable
    factor. The free space on the heap can most often not be fully used,
-   because one can't put large memoryblocks in small holes. Continious
+   because one can't put large memory blocks in small holes. Continuous
    creating and deleting of objects leads to memory fragmentation, resulting
    in some free memory on the heap that in effect can't be put to use. */
 #define HEAP_FRAGMENTATION_FACTOR 256
