@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -27,7 +27,7 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent) :
  QWidget(parent)
 {
   setObjectName("WPEditDialogPageGeneral");
-  
+
   QGridLayout * topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
   topLayout->setColumnMinimumWidth( 2, 50 );
