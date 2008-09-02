@@ -17,6 +17,10 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.1.x (Development based on X11/Qt-4.4.1)
 -------------------------------------------------
+[-] 2008-09-02 AP: Bugfix: Memory leaks in MapContents::unloadMapObjects fixed.
+[-] 2008-09-02 AP: Bugfix: Memory leak in class GliderListWidget fixed.
+[-] 2008-09-02 AP: Bugfix: Core dump after map projection change fixed.
+[o] 2008-09-01 AP: Stronger checks added in NMEA parser and NMEA receiver module
 [-] 2008-08-29 AP: Bugfix: Memory leak fixed in FlightTask. Left over from Qt4 portage.
 
 -------------------------------------------------
