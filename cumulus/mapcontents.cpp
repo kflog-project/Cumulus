@@ -109,8 +109,8 @@ extern MapView *_globalMapView;
   } else\
     ShortLoad(in, pN);\
 
-// minimum amount of required free memory to start loading a mapfile
-#define MINIMUM_FREE_MEMORY 1024*4
+// minimum amount of required free memory to start loading of a map file
+#define MINIMUM_FREE_MEMORY 1024*20
 
 // List of altitude-levels (50 in total):
 const int MapContents::isoLines[] =
@@ -263,7 +263,7 @@ bool MapContents::__readTerrainFile(const int fileSecID,
     return true;
   }
 
-  if (memoryFull) {   //if we allready know the memory if full and can't be emptied at this point, just return.
+  if (memoryFull) {   //if we already know the memory if full and can't be emptied at this point, just return.
     _globalMapView->message(tr("Out of memory! Map not loaded."));
     return false;
   }
@@ -273,7 +273,7 @@ bool MapContents::__readTerrainFile(const int fileSecID,
 
   if( memFree < MINIMUM_FREE_MEMORY ) {
     if ( !unloadDone) {
-      unloadMaps();  //try freeing some memory
+      unloadMaps();  // try freeing some memory
       memFree = HwInfo::instance()->getFreeMemory();  //re-asses free memory
       if( memFree < MINIMUM_FREE_MEMORY ) {
         memoryFull=true; //set flag to indicate that we need not try loading any more mapfiles now.
@@ -1251,6 +1251,7 @@ void MapContents::proofeSection()
             step=0;
             //check to see if parts of this tile has already been loaded before
             it=tilePartMap.find(secID);
+            
             if (it==tilePartMap.end()) { //not found
               hasstep=0;
             } else {
@@ -1303,7 +1304,7 @@ void MapContents::unloadMaps(unsigned int distance)
   // qDebug("MapContents::unloadMaps() is called");
 
   if (unloadDone)
-    return;  //we only unload mapdata once (per mapredrawing round)
+    return;  //we only unload map data once (per map redrawing round)
 
   extern MapMatrix * _globalMapMatrix;
   QRect mapBorder;
@@ -1379,35 +1380,34 @@ void MapContents::unloadMaps(unsigned int distance)
   sum += t.elapsed();
 
 #ifdef DEBUG_UNLOAD
-
   qDebug("Unload cityList(%d), elapsed=%d", cityList.count(), t.restart());
 #endif
 
   unloadMapObjects(&hydroList);
   sum += t.elapsed();
-#ifdef DEBUG_UNLOAD
 
+#ifdef DEBUG_UNLOAD
   qDebug("Unload hydroList(%d), elapsed=%d", hydroList.count(), t.restart());
 #endif
 
   unloadMapObjects(&lakeList);
   sum += t.elapsed();
-#ifdef DEBUG_UNLOAD
 
+#ifdef DEBUG_UNLOAD
   qDebug("Unload lakeList(%d), elapsed=%d", lakeList.count(), t.restart());
 #endif
 
   unloadMapObjects(&isoList);
   sum += t.elapsed();
-#ifdef DEBUG_UNLOAD
 
+#ifdef DEBUG_UNLOAD
   qDebug("Unload isoList(%d), elapsed=%d", isoList.count(), t.restart());
 #endif
 
   unloadMapObjects(&landmarkList);
   sum += t.elapsed();
-#ifdef DEBUG_UNLOAD
 
+#ifdef DEBUG_UNLOAD
   qDebug("Unload landmarkList(%d), elapsed=%d", landmarkList.count(), t.restart());
 #endif
 
@@ -1429,42 +1429,41 @@ void MapContents::unloadMaps(unsigned int distance)
   unloadMapObjects(&railList);
   sum += t.elapsed();
 #ifdef DEBUG_UNLOAD
-
   qDebug("Unload railList(%d), elapsed=%d", railList.count(), t.restart());
 #endif
 
   unloadMapObjects(&reportList);
   sum += t.elapsed();
-#ifdef DEBUG_UNLOAD
 
+#ifdef DEBUG_UNLOAD
   qDebug("Unload reportList(%d), elapsed=%d", reportList.count(), t.restart());
 #endif
 
   unloadMapObjects(&highwayList);
   sum += t.elapsed();
-#ifdef DEBUG_UNLOAD
 
+#ifdef DEBUG_UNLOAD
   qDebug("Unload highwayList(%d), elapsed=%d", highwayList.count(), t.restart());
 #endif
 
   unloadMapObjects(&roadList);
   sum += t.elapsed();
-#ifdef DEBUG_UNLOAD
 
+#ifdef DEBUG_UNLOAD
   qDebug("Unload roadList(%d), elapsed=%d", roadList.count(), t.restart());
 #endif
 
   unloadMapObjects(&topoList);
   sum += t.elapsed();
-#ifdef DEBUG_UNLOAD
 
+#ifdef DEBUG_UNLOAD
   qDebug("Unload topoList(%d), elapsed=%d", topoList.count(), t.restart());
 #endif
 
   unloadMapObjects(&villageList);
   sum += t.elapsed();
-#ifdef DEBUG_UNLOAD
 
+#ifdef DEBUG_UNLOAD
   qDebug("Unload villageList(%d), elapsed=%d", villageList.count(), t.restart());
 #endif
 
@@ -1480,87 +1479,97 @@ void MapContents::unloadMaps(unsigned int distance)
 }
 
 
-void MapContents::unloadMapObjects(QList<LineElement*> * list)
+void MapContents::unloadMapObjects(QList<LineElement*> *list)
 {
-  for (int i=list->count()-1; i>=0;i--) {
-    if (!sectionArray[list->at(i)->getMapSegment()]) {
-      list->removeAt(i);
+  for (int i = list->count() - 1; i >= 0; i--)
+    {
+      if (!sectionArray[list->at(i)->getMapSegment()])
+        {
+          delete( list->takeAt(i));
+        }
     }
-  }
 }
 
 
-void MapContents::unloadMapObjects(QList<SinglePoint*> * list)
+void MapContents::unloadMapObjects(QList<SinglePoint*> *list)
 {
-  for (int i=list->count()-1; i>=0;i--) {
-    if (!sectionArray[list->at(i)->getMapSegment()]) {
-      list->removeAt(i);
+  for (int i = list->count() - 1; i >= 0; i--)
+    {
+      if (!sectionArray[list->at(i)->getMapSegment()])
+        {
+          delete(list->takeAt(i));
+        }
     }
-  }
 }
 
 
-void MapContents::unloadMapObjects(QList<RadioPoint*> * list)
+void MapContents::unloadMapObjects(QList<RadioPoint*> *list)
 {
-  for (int i=list->count()-1; i>=0;i--) {
-    if (!sectionArray[list->at(i)->getMapSegment()]) {
-      list->removeAt(i);
+  for (int i = list->count() - 1; i >= 0; i--)
+    {
+      if (!sectionArray[list->at(i)->getMapSegment()])
+        {
+          delete(list->takeAt(i));
+        }
     }
-  }
 }
 
 
-void MapContents::unloadMapObjects(QList< QList<Isohypse*>*>* list)
+void MapContents::unloadMapObjects(QList<QList<Isohypse*>*> *list)
 {
-  for (int i=list->count()-1; i>=0;i--) {
-    for (int j=list->at(i)->count()-1; j>=0;j--) {
-      if (!sectionArray[list->at(i)->at(j)->getMapSegment()]) {
-        list->at(i)->removeAt(j);
-      }
+  for (int i = list->count() - 1; i >= 0; i--)
+    {
+      for (int j = list->at(i)->count() - 1; j >= 0; j--)
+        {
+          if (!sectionArray[list->at(i)->at(j)->getMapSegment()])
+            {
+              delete(list->at(i)->takeAt(j));
+            }
+        }
     }
-  }
 }
 
 
 unsigned int MapContents::getListLength(int listIndex) const
 {
-  switch(listIndex) {
-  case AirportList:
-    return airportList.count();
-  case GliderSiteList:
-    return gliderSiteList.count();
-  case OutList:
-    return outList.count();
-  case NavList:
-    return navList.count();
-  case AirspaceList:
-    return airspaceList.count();
-  case ObstacleList:
-    return obstacleList.count();
-  case ReportList:
-    return reportList.count();
-  case CityList:
-    return cityList.count();
-  case VillageList:
-    return villageList.count();
-  case LandmarkList:
-    return landmarkList.count();
-  case HighwayList:
-    return highwayList.count();
-  case RoadList:
-    return roadList.count();
-  case RailList:
-    return railList.count();
-    //    case StationList:
-    //      return stationList.count();
-  case HydroList:
-    return hydroList.count();
-  case LakeList:
-    return lakeList.count();
-  case TopoList:
-    return topoList.count();
-  default:
-    return 0;
+  switch(listIndex)
+  {
+    case AirportList:
+      return airportList.count();
+    case GliderSiteList:
+      return gliderSiteList.count();
+    case OutList:
+      return outList.count();
+    case NavList:
+      return navList.count();
+    case AirspaceList:
+      return airspaceList.count();
+    case ObstacleList:
+      return obstacleList.count();
+    case ReportList:
+      return reportList.count();
+    case CityList:
+      return cityList.count();
+    case VillageList:
+      return villageList.count();
+    case LandmarkList:
+      return landmarkList.count();
+    case HighwayList:
+      return highwayList.count();
+    case RoadList:
+      return roadList.count();
+    case RailList:
+      return railList.count();
+      // case StationList:
+      //   return stationList.count();
+    case HydroList:
+      return hydroList.count();
+    case LakeList:
+      return lakeList.count();
+    case TopoList:
+      return topoList.count();
+    default:
+      return 0;
   }
 }
 
@@ -1675,6 +1684,9 @@ void MapContents::slotReloadMapData()
 
   // qDebug("MapContents::slotReloadMapData() is called");
 
+  // clear the airspace region list in map too
+  Map::getInstance()->clearAirspaceRegionList();
+
   qDeleteAll(addSitesList); addSitesList.clear();
   qDeleteAll(airportList); airportList.clear();
   qDeleteAll(airspaceList); airspaceList.clear();
@@ -1702,7 +1714,7 @@ void MapContents::slotReloadMapData()
     }
 
   qDeleteAll (isoList); isoList.clear();
-  
+
   // Wir nehmen zunaechst 4 Schachtelungstiefen an ...
   for(int loop = 0; loop < ( ISO_LINE_NUM * 4 ); loop++) {
     QList<Isohypse*> *list = new QList<Isohypse*>;
@@ -1787,6 +1799,7 @@ void MapContents::slotReloadWelt2000Data()
   welt2000.load( airportList, gliderSiteList );
 
   _globalMapView->message( tr("Reloading Welt2000 finished") );
+
 #warning FIXME: AirfieldListView needs to be re-initialized too if it was called before
 
   emit mapDataReloaded();
@@ -2019,7 +2032,7 @@ void MapContents::drawIsoList(QPainter* targetP)
 
   if (_globalMapConfig->getShowIsolineBorders())
     {
-      int scale = (int)rint(_globalMapMatrix->getScale(MapMatrix::CurrentScale)); 
+      int scale = (int)rint(_globalMapMatrix->getScale(MapMatrix::CurrentScale));
 
       if( scale < 160 )
         { // Draw Isolines at higher scales
@@ -2041,7 +2054,7 @@ void MapContents::drawIsoList(QPainter* targetP)
       }
 
     Isohypse* first = iso->first();
-    
+
     for(unsigned int pos = 0; pos < ISO_LINE_NUM; pos++)
       {
         if(isoLines[pos] == first->getElevation())
@@ -2054,7 +2067,7 @@ void MapContents::drawIsoList(QPainter* targetP)
               {
                 height = pos + 2;
               }
-            
+
             break;
           }
       }
@@ -2098,7 +2111,7 @@ void MapContents::drawIsoList(QPainter* targetP)
     {
       isos += QString("%1, ").arg(regIsoLines.at(i)->height);
     }
-  
+
     qDebug( isos.toLatin1().data() ); */
 }
 
@@ -2131,7 +2144,7 @@ bool MapContents::locateFile(const QString& fileName, QString& pathName)
         {
           pathName=test.fileName();
           return true;
-        }      
+        }
     }
 
   // lower case tests
@@ -2145,7 +2158,7 @@ bool MapContents::locateFile(const QString& fileName, QString& pathName)
         {
           pathName=test.fileName();
           return true;
-        }      
+        }
     }
 
   // so, let's try upper case
@@ -2159,7 +2172,7 @@ bool MapContents::locateFile(const QString& fileName, QString& pathName)
         {
           pathName=test.fileName();
           return true;
-        }      
+        }
     }
 
   return false;
@@ -2315,7 +2328,7 @@ int MapContents::findElevation(const QPoint& coordP, Distance * errorDist)
   IsoListEntry* entry = 0;
   int height = 0;
   double error = 0.0;
-    
+
   QPoint coordP1 = _globalMapMatrix->wgsToMap(coordP.x(), coordP.y());
   QPoint coord = _globalMapMatrix->map(coordP1);
 
