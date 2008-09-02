@@ -109,7 +109,6 @@ Map::Map(QWidget* parent) : QWidget(parent)
   QPalette palette;
   palette.setColor(backgroundRole(), Qt::white);
   setPalette(palette);
-//  setBackgroundColor(Qt::white);
 
   redrawTimerShort = new QTimer(this);
   redrawTimerShort->setSingleShot(true);

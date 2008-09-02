@@ -171,17 +171,19 @@ class Map : public QWidget
     void checkAirspace(const QPoint&);
 
     /**
-     * Undocumented
-     */
-    void readConfig();
-
-    /**
      * Returns the instance of the map widget.
      */
     static Map *getInstance()
     {
       return instance;
     };
+
+    /** clear airspace region list */
+    void clearAirspaceRegionList()
+      {
+        qDeleteAll(airspaceRegList);
+        airspaceRegList.clear();
+      };
 
   public slots:
     /** */
