@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   gliderlist.cpp
+**   gliderlistwidget.cpp
 **
 **   This file is part of Cumulus.
 **
@@ -210,12 +210,10 @@ void GliderListWidget::slot_Deleted(Glider *glider)
     setCurrentItem( 0 );
     resizeColumnToContents(0);
     resizeListColumns();
+
     // remove glider from glider list
     int index = Gliders.indexOf(glider);
-    
-#warning Memory leak ?
-    // delete Gliders.takeAt(index);
-    Gliders.removeAt(index);
+    delete Gliders.takeAt(index);
     _changed = true;
   }
 }
