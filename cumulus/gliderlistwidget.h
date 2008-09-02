@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   gliderlist.h
+**   gliderlistwidget.h
 **
 **   This file is part of Cumulus.
 **
