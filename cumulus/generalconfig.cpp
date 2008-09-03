@@ -178,7 +178,7 @@ void GeneralConfig::load()
 
   beginGroup("Map");
   _mapDelete                      = value( "DeleteAfterMapCompile", false ).toBool();
-  _mapUnload                      = value( "UnloadUnneededMap", false ).toBool();
+  _mapUnload                      = value( "UnloadUnneededMap", true ).toBool();
   _mapBearLine                    = value( "BearLine", true ).toBool();
   _mapLoadIsoLines                = value( "LoadIsoLines", true ).toBool();
   _mapShowIsoLineBorders          = value( "ShowIsoLineBorders", false ).toBool();
