@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard V�llm, 2008 Axel Pauli
+ **   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -159,16 +159,16 @@ int HwInfo::getFreeMemory()
   //qDebug ("  fordblks: %d (%d KB)\n  uordblks: %d\n  hblkhd: %d\nTotal used: %d; total allocated: %d", m.fordblks, m.fordblks/1024,m.uordblks, m.hblkhd, m.uordblks+m.hblkhd,  m.uordblks+m.hblkhd+m.fordblks);
   //add the free space on the heap to the total free space, minus the fragmentation factor
   int heapfree = m.fordblks/1024;
-  
+
   // qDebug("free heap space: %d KB", heapfree);
-  
+
   if (heapfree > HEAP_FRAGMENTATION_FACTOR)
     {
       res += heapfree - HEAP_FRAGMENTATION_FACTOR;
     }
 
   // qDebug("Free memory=%d KB", res);
-  
+
   return res;
 }
 
@@ -188,7 +188,7 @@ const QString HwInfo::getCfDevice( void )
   if ( f.open( QIODevice::ReadOnly ) )
     {
       QTextStream s( &f );
-      
+
       while ( !s.atEnd() )
         {
           QString line ( s.readLine() );

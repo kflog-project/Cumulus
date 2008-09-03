@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard V�llm, 2008 Axel Pauli
+ **   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -28,6 +28,7 @@
    creating and deleting of objects leads to memory fragmentation, resulting
    in some free memory on the heap that in effect can't be put to use. */
 #define HEAP_FRAGMENTATION_FACTOR 256
+
 #define PATH_CF_INFO    "/var/lib/pcmcia/stab"
 
 // Path under OpenZaurus
@@ -35,10 +36,11 @@
 
 /**
  * @short Returns information on the underlying hardware
- * @author Eckhard V�llm
+ *
+ * @author Eckhard Völlm
  *
  * This class is used for all hardware depending-functions. It can
- * return things like the type of device, and other usefull hardware
+ * return things like the type of device, and other useful hardware
  * information.
  */
 class HwInfo
@@ -66,7 +68,7 @@ class HwInfo
     /**
      * @returns the instance of the class, and creates an instance if there was none.
      */
-    inline static HwInfo* instance( void )
+    static HwInfo* instance( void )
     {
       if(!theInstance)
         theInstance = new HwInfo;
@@ -76,7 +78,7 @@ class HwInfo
     /**
      * @returns the type of hardware device Cumulus is running on.
      */
-    inline hwType getType( void )
+    hwType getType( void )
     {
       return _hwType;
     };
@@ -137,7 +139,5 @@ class HwInfo
     int _fbRot;
     int _fbDepth;
   };
-
-#define HWINFO HwInfo::instance()
 
 #endif
