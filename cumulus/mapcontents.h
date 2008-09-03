@@ -42,7 +42,6 @@ class RadioPoint;
 class SinglePoint;
 class Distance;
 
-
 /**
  * This class provides functions for accessing the contents of the map.
  * It takes control over loading all needed map-files.
@@ -398,10 +397,6 @@ class MapContents : public QObject
    */
   QList<LineElement*> railList;
   /**
-   * stationList contains all stations.
-   */
-  //    QList<SinglePoint*> stationList;
-  /**
    * hydroList contains all shorelines, rivers, ...
    */
   QList<LineElement*> hydroList;
@@ -423,7 +418,7 @@ class MapContents : public QObject
    */
   QBitArray sectionArray;
   /**
-   * QMap of all partially loaded map tiles. These maptiles are
+   * QMap of all partially loaded map tiles. These map tiles are
    * marked as not loaded in the sectionArray above. Partially
    * loaded tiles (each tile currently consists of a maximum of
    * three files) can occur when Cumulus runs out of free
@@ -434,7 +429,7 @@ class MapContents : public QObject
   TilePartMap tilePartMap;
 
   /**
-   * True if an unload call has allready been made this 'round' of mapdrawing.
+   * True if an unload call has already been made this 'round' of map drawing.
    */
   bool unloadDone;
 
@@ -445,12 +440,12 @@ class MapContents : public QObject
   bool memoryFull;
 
   /**
-   * Array containing the evevations of all possible isohypses.
+   * Array containing the elevations of all possible isohypses.
    */
   static const int isoLines[];
 
   /**
-   * Should be deleted somtime ...
+   * Flag to signal first loading of map data
    */
   bool isFirst;
 
@@ -470,14 +465,12 @@ class MapContents : public QObject
   bool _isoLevelReset;
   IsoListEntry* _lastIsoEntry;
 
-
- protected: // Protected attributes
+ private:
   /**
    * Contains a reference to the currently selected flighttask
    */
   FlightTask *currentTask;
 
- private:
   /*
    * This list is reset every time the current WaypointCatalog is changed.
    */

@@ -110,7 +110,7 @@ extern MapView *_globalMapView;
     ShortLoad(in, pN);\
 
 // minimum amount of required free memory to start loading of a map file
-#define MINIMUM_FREE_MEMORY 1024*20
+#define MINIMUM_FREE_MEMORY 1024*25
 
 // List of altitude-levels (50 in total):
 const int MapContents::isoLines[] =
@@ -159,6 +159,7 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen)
           ws,SLOT(slot_SetText2(const QString&)));
   connect(this,SIGNAL(majorAction(const QString&)),
           ws,SLOT(slot_SetText1(const QString&)));
+
   qDebug("MapContents initialized...");
 }
 
@@ -168,72 +169,49 @@ MapContents::~MapContents()
   delete currentTask;
 
   qDeleteAll (airportList);
-  airportList.clear();
 
   qDeleteAll (obstacleList);
-  obstacleList.clear();
 
   qDeleteAll (airspaceList);
-  airspaceList.clear();
 
   qDeleteAll (cityList);
-  cityList.clear();
 
   qDeleteAll (gliderSiteList);
-  gliderSiteList.clear();
 
   qDeleteAll (hydroList);
-  hydroList.clear();
 
   qDeleteAll (lakeList);
-  lakeList.clear();
 
-  for (int i=isoList.count()-1; i>=0;i--) {
-    qDeleteAll(*isoList.at(i));
-    isoList.at(i)->clear();
-  }
+  for (int i = isoList.count() - 1; i >= 0; i--)
+    {
+      qDeleteAll(*isoList.at(i));
+    }
 
   qDeleteAll (isoList);
-  isoList.clear();
 
   qDeleteAll (landmarkList);
-  landmarkList.clear();
 
   qDeleteAll (navList);
-  navList.clear();
 
   qDeleteAll (obstacleList);
-  obstacleList.clear();
 
   qDeleteAll (outList);
-  outList.clear();
 
   qDeleteAll (railList);
-  railList.clear();
 
   qDeleteAll (regIsoLines);
-  regIsoLines.clear();
 
   qDeleteAll (reportList);
-  reportList.clear();
 
   qDeleteAll (highwayList);
-  highwayList.clear();
 
   qDeleteAll (roadList);
-  roadList.clear();
-
-//  qDeleteAll (stationList);
-//  stationList.clear();
 
   qDeleteAll (topoList);
-  topoList.clear();
 
   qDeleteAll (villageList);
-  villageList.clear();
 
   qDeleteAll (wpList);
-  wpList.clear();
 }
 
   // save the current waypoint list
@@ -1165,7 +1143,7 @@ void MapContents::proofeSection()
 
   if( mutex ) {
     // qDebug("MapContents::proofeSection(): is recursive called, returning");
-    return; // return immediately, if reentry in method is not possible
+    return; // return immediately, if reenter in method is not possible
   }
 
   mutex = true;
@@ -1173,128 +1151,122 @@ void MapContents::proofeSection()
   extern MapMatrix * _globalMapMatrix;
   extern MapConfig * _globalMapConfig;
   QRect mapBorder;
-  // emit majorAction(tr("Loading maps..."));
-  ///////////////////////////////////////////////////////////////////////////
-  //mapDir1 = QDir::homeDirPath()+"/Applications/cumulus/maps"; //subdir of homedir
-  //mapDir2 = "/mnt/cf/maps";    //compact flash card
-  //mapDir3 = "/mnt/card/maps";  //secure digital card
-  //////////////////////////////////////////////////////////////////////////
 
-    mapBorder = _globalMapMatrix->getViewBorder();
+  mapBorder = _globalMapMatrix->getViewBorder();
 
-    int westCorner = ( ( mapBorder.left() / 600000 / 2 ) * 2 + 180 ) / 2;
-    int eastCorner = ( ( mapBorder.right() / 600000 / 2 ) * 2 + 180 ) / 2;
-    int northCorner = ( ( mapBorder.top() / 600000 / 2 ) * 2 - 88 ) / -2;
-    int southCorner = ( ( mapBorder.bottom() / 600000 / 2 ) * 2 - 88 ) / -2;
+  int westCorner = ( ( mapBorder.left() / 600000 / 2 ) * 2 + 180 ) / 2;
+  int eastCorner = ( ( mapBorder.right() / 600000 / 2 ) * 2 + 180 ) / 2;
+  int northCorner = ( ( mapBorder.top() / 600000 / 2 ) * 2 - 88 ) / -2;
+  int southCorner = ( ( mapBorder.bottom() / 600000 / 2 ) * 2 - 88 ) / -2;
 
-    if(mapBorder.left() < 0)
-      westCorner -= 1;
-    if(mapBorder.right() < 0)
-      eastCorner -= 1;
-    if(mapBorder.top() < 0)
-      northCorner += 1;
-    if(mapBorder.bottom() < 0)
-      southCorner += 1;
+  if(mapBorder.left() < 0)
+    westCorner -= 1;
+  if(mapBorder.right() < 0)
+    eastCorner -= 1;
+  if(mapBorder.top() < 0)
+    northCorner += 1;
+  if(mapBorder.bottom() < 0)
+    southCorner += 1;
 
-    if(isFirst) {
-      ws->slot_SetText1(tr("Loading maps..."));
-      ws->slot_SetText2(tr("Reading OpenAir Files"));
+  if(isFirst) {
+    ws->slot_SetText1(tr("Loading maps..."));
+    ws->slot_SetText2(tr("Reading OpenAir Files"));
 
-      OpenAirParser oap;
-      oap.load( airspaceList );
+    OpenAirParser oap;
+    oap.load( airspaceList );
 
-      //finally, sort the airspaces
-      airspaceList.sort();
+    //finally, sort the airspaces
+    airspaceList.sort();
 
-      ws->slot_SetText2(tr("Reading Welt 2000 File"));
-      // @AP: Look for and if available load a welt2000 airfield file
-      Welt2000 welt2000;
-      welt2000.load( airportList, gliderSiteList );
-    }
+    ws->slot_SetText2(tr("Reading Welt 2000 File"));
+    // @AP: Look for and if available load a welt2000 airfield file
+    Welt2000 welt2000;
+    welt2000.load( airportList, gliderSiteList );
+  }
 
-    unloadDone = false;
-    memoryFull = false;
-    char step, hasstep; //used as small integers
-    TilePartMap::Iterator it;
+  unloadDone = false;
+  memoryFull = false;
+  char step, hasstep; //used as small integers
+  TilePartMap::Iterator it;
 
-    for(int row = northCorner; row <= southCorner; row++) {
-      for(int col = westCorner; col <= eastCorner; col++) {
-        int secID=row + ( col + ( row * 179 ) );
+  for(int row = northCorner; row <= southCorner; row++) {
+    for(int col = westCorner; col <= eastCorner; col++) {
+      int secID=row + ( col + ( row * 179 ) );
 
-        if( isFirst ) {
-          // Animate a little bit during first load. later on in flight,
-          // we need the time for gps processing.
-          emit progress(2);
-        }
+      if( isFirst ) {
+        // Animate a little bit during first load. later on in flight,
+        // we need the time for gps processing.
+        emit progress(2);
+      }
 
-        if(0<=secID & secID <=16200) {
-          if( !sectionArray.testBit( secID ) ) {
-            // Tile is missing
-            if( isFirst ) {
-              ws->slot_SetText1(tr("Loading maps..."));
-            } else {
-              // @AP: remove of all unused maps to get place
-              // in heap. That can be disabled here because
-              // the loading routines will also check the
-              // available memory and call the unloadMaps()
-              // method is necessary. But the disadvantage
-              // is in that case that the freeing needs a
-              // lot of time (several seconds).
+      if(0<=secID & secID <=16200) {
+        if( !sectionArray.testBit( secID ) ) {
+          // Tile is missing
+          if( isFirst ) {
+            ws->slot_SetText1(tr("Loading maps..."));
+          } else {
+            // @AP: remove of all unused maps to get place
+            // in heap. That can be disabled here because
+            // the loading routines will also check the
+            // available memory and call the unloadMaps()
+            // method is necessary. But the disadvantage
+            // is in that case that the freeing needs a
+            // lot of time (several seconds).
 
-              if (_globalMapConfig->getUnloadUnneededMap()) {
-                unloadMaps(0);
-              }
+            if (_globalMapConfig->getUnloadUnneededMap()) {
+              unloadMaps(0);
             }
+          }
 
-            // qDebug("Going to load section %d", secID);
+          // qDebug("Going to load section %d", secID);
 
-            step=0;
-            //check to see if parts of this tile has already been loaded before
-            it=tilePartMap.find(secID);
-            
-            if (it==tilePartMap.end()) { //not found
-              hasstep=0;
-            } else {
-              hasstep=it.value();
-            }
+          step=0;
+          //check to see if parts of this tile has already been loaded before
+          it=tilePartMap.find(secID);
 
-            //try loading the currently unloaded files
-            if (!(hasstep & 1)) {
-              if (__readTerrainFile(secID, FILE_TYPE_GROUND))
-                step|=1;
+          if (it==tilePartMap.end()) { //not found
+            hasstep=0;
+          } else {
+            hasstep=it.value();
+          }
 
-            }
+          //try loading the currently unloaded files
+          if (!(hasstep & 1)) {
+            if (__readTerrainFile(secID, FILE_TYPE_GROUND))
+              step|=1;
 
-            if (!(hasstep & 2)) {
-              if (__readTerrainFile(secID, FILE_TYPE_TERRAIN))
-                step|=2;
-            }
+          }
 
-            if (!(hasstep & 4)) {
-              if (__readBinaryFile(secID, FILE_TYPE_MAP))
-                step|=4;
-            }
+          if (!(hasstep & 2)) {
+            if (__readTerrainFile(secID, FILE_TYPE_TERRAIN))
+              step|=2;
+          }
 
-            //set the correct flags for this maptile
-            if (step==7) {
-              sectionArray.setBit( secID, true );
-              tilePartMap.remove(secID); //make sure we don't leave
-            } else {
-              if (step > 0) {
-                tilePartMap.insert(secID, step);
-              }
+          if (!(hasstep & 4)) {
+            if (__readBinaryFile(secID, FILE_TYPE_MAP))
+              step|=4;
+          }
+
+          //set the correct flags for this maptile
+          if (step==7) {
+            sectionArray.setBit( secID, true );
+            tilePartMap.remove(secID); //make sure we don't leave
+          } else {
+            if (step > 0) {
+              tilePartMap.insert(secID, step);
             }
           }
         }
       }
     }
+  }
 
-    if( isFirst ) {
-      ws->slot_SetText1(tr("Loading maps done"));
-    }
+  if( isFirst ) {
+    ws->slot_SetText1(tr("Loading maps done"));
+  }
 
-    isFirst = false;
-    mutex = false; // unlock mutex
+  isFirst = false;
+  mutex = false; // unlock mutex
 }
 
 
@@ -1560,8 +1532,6 @@ unsigned int MapContents::getListLength(int listIndex) const
       return roadList.count();
     case RailList:
       return railList.count();
-      // case StationList:
-      //   return stationList.count();
     case HydroList:
       return hydroList.count();
     case LakeList:
@@ -1621,8 +1591,6 @@ BaseMapElement* MapContents::getElement(int listIndex, unsigned int index)
     return roadList.at(index);
   case RailList:
     return railList.at(index);
-    //    case StationList:
-    //      return stationList.at(index);
   case HydroList:
     return hydroList.at(index);
   case LakeList:
@@ -1656,8 +1624,6 @@ SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
     return villageList.at(index);
   case LandmarkList:
     return landmarkList.at(index);
-    //      case StationList:
-    //        return stationList.at(index);
   default:
     return 0;
   }
@@ -1702,24 +1668,15 @@ void MapContents::slotReloadMapData()
   qDeleteAll(reportList); reportList.clear();
   qDeleteAll(highwayList); highwayList.clear();
   qDeleteAll(roadList); roadList.clear();
-  //  qDeleteAll(stationList); stationList.clear();
   qDeleteAll(topoList); topoList.clear();
   qDeleteAll(villageList); villageList.clear();
 
-  // isoList is a special pointer list
+  // isoList is a special pointer list. Only the content must be cleared!
   for( int i=isoList.count() - 1; i >= 0; i--)
     {
       qDeleteAll(*isoList.at(i));
       isoList.at(i)->clear();
     }
-
-  qDeleteAll (isoList); isoList.clear();
-
-  // Wir nehmen zunaechst 4 Schachtelungstiefen an ...
-  for(int loop = 0; loop < ( ISO_LINE_NUM * 4 ); loop++) {
-    QList<Isohypse*> *list = new QList<Isohypse*>;
-    isoList.append(list);
-  }
 
   sectionArray.fill(false);
   tilePartMap.clear();
