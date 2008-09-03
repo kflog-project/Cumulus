@@ -21,7 +21,7 @@
  * This module manages the start/stop of the Maemo GPS daemon and the connection to
  * it. The Maemo daemon is requested to pass all GPS data in raw and watcher mode.
  *
- * This Class is only used by the Cumulus Maemo part to adapt the cumulus GPS interface
+ * This Class is only used by the Cumulus Maemo part to adapt the Cumulus GPS interface
  * to the Maemo requirements.
  */
 
@@ -108,7 +108,7 @@ GpsMaemo::startGpsReceiving()
   dbsize = 0;
   memset(databuffer, 0, sizeof(databuffer));
 
-  // setup alive check, that garantees a restart after unsuccessfull start
+  // setup alive check, that guarantees a restart after unsuccessful start
   timer->start(ALIVE_TO);
 
   if (client.getSock() != -1)
@@ -314,6 +314,13 @@ GpsMaemo::slot_Timeout()
           qWarning("GPSD is not running - try restart");
 
           emit gpsConnectionLost();
+
+          /* Found in Nokia code example:
+           * Sleep is needed so that we avoid a new restart if
+           * someone (like control panel applet) does multiple
+           * configuration operations (like changing GPS device)
+           */
+          sleep(2);
           startGpsReceiving();
           return;
         }
