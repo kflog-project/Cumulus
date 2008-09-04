@@ -17,6 +17,8 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.1.x (Development based on X11/Qt-4.4.1)
 -------------------------------------------------
+[-] 2008-09-04 AP: Bugfix: Airspace warning display shows wrong info during move
+                   from one airspace into the next.
 [o] 2008-09-02 AP: WPEditDialog ok and cancel button moved to the right side.
 [-] 2008-09-02 AP: Bugfix: Memory leaks in MapContents::unloadMapObjects fixed.
 [-] 2008-09-02 AP: Bugfix: Memory leak in class GliderListWidget fixed.
