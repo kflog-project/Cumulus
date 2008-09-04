@@ -70,7 +70,6 @@ Map::Map(QWidget* parent) : QWidget(parent)
   setObjectName("Map");
 
   instance = this;
-  _lastASInfo = "";
   _isEnable = false;  // Disable map redrawing at startup
   _isResizeEvent = false;
   _isRedrawEvent = false;
@@ -134,8 +133,7 @@ Map::Map(QWidget* parent) : QWidget(parent)
 
 Map::~Map()
 {
-  qDeleteAll(airspaceRegList);
-  airspaceRegList.clear();
+  qDeleteAll(airspaceRegionList);
 }
 
 /**
@@ -168,11 +166,11 @@ void Map::__displayMapInfo(const QPoint& current)
           tr("Airspace&nbsp;Structure") +
           "</th></tr>";
 
-  for( int loop = 0; loop < airspaceRegList.count(); loop++ )
+  for( int loop = 0; loop < airspaceRegionList.count(); loop++ )
     {
-      if(airspaceRegList.at(loop)->region->contains(current))
+      if(airspaceRegionList.at(loop)->region->contains(current))
         {
-          Airspace* pSpace = airspaceRegList.at(loop)->airspace;
+          Airspace* pSpace = airspaceRegionList.at(loop)->airspace;
                 // qDebug ("name: %s", pSpace->getName().toLatin1().data());
                 // qDebug ("lower limit: %d", pSpace->getLowerL());
                 // qDebug ("upper limit: %d", pSpace->getUpperL());
@@ -500,7 +498,7 @@ void Map::__drawAirspaces(bool reset)
 
   if( reset )
     {
-      qDeleteAll(airspaceRegList); airspaceRegList.clear();
+      qDeleteAll(airspaceRegionList); airspaceRegionList.clear();
     }
 
   GeneralConfig* settings     = GeneralConfig::instance();
@@ -546,7 +544,7 @@ void Map::__drawAirspaces(bool reset)
           // we have to create a new region for that airspace and put
           // it in the airspace region list.
           region = new AirRegion( currentAirS->createRegion(), currentAirS ) ;
-          airspaceRegList.append(region);
+          airspaceRegionList.append(region);
         }
       else
         {
@@ -854,9 +852,9 @@ void Map::__redrawMap(mapLayer fromLayer)
         }
 
       zoomFactor = _globalMapMatrix->getScale(); //read back from matrix!
-      
+
       _globalMapMatrix->createMatrix(this->size());
-      
+
       // initialize the base pixmap
       m_pixBaseMap = QPixmap( size() );
 
@@ -1034,7 +1032,7 @@ void Map::__drawInformationLayer()
       QPainter p(&m_pixInformationMap);
       p.drawPixmap( 8, 8, windArrow );
     }
-    
+
   //draw a location symbol on the buffer
   if (ShowGlider)
     {
@@ -2044,34 +2042,43 @@ void Map::checkAirspace(const QPoint& pos)
 
   bool warningEnabled = GeneralConfig::instance()->getAirspaceWarningEnabled();
   bool fillingEnabled = GeneralConfig::instance()->getAirspaceFillingEnabled();
-
   bool needAirspaceRedraw = false;
-  QString inside("");
-  QString veryNear("");
-  QString near("");
+
+  // fetch warning suppress time from configuration and compute it as milli seconds
+  int warSupMS = GeneralConfig::instance()->getWarningSuppressTime() * 60 * 1000;
+
+  // maps to collect all airspaces and the conflicting airspaces
+  QMap<QString, int> newInsideAsMap;
+  QMap<QString, int> allInsideAsMap;
+  QMap<QString, int> newVeryNearAsMap;
+  QMap<QString, int> allVeryNearAsMap;
+  QMap<QString, int> newNearAsMap;
+  QMap<QString, int> allNearAsMap;
 
   AltitudeCollection alt = calculator->getAltitudeCollection();
   AirspaceWarningDistance awd = GeneralConfig::instance()->getAirspaceWarningDistances();
-  Airspace* pSpace = (Airspace *) 0;
+
   Airspace::ConflictType hConflict=Airspace::none, lastHConflict=Airspace::none,
                                    vConflict=Airspace::none, lastVConflict=Airspace::none,
                                    conflict= Airspace::none, lastConflict= Airspace::none;
 
+
   bool warn = false; // warning flag
 
   // check if there are overlaps between the region around our current position and airspaces
-  for( int loop = 0; loop < airspaceRegList.count(); loop++ )
+  for( int loop = 0; loop < airspaceRegionList.count(); loop++ )
     {
-      pSpace = airspaceRegList.at(loop)->airspace;
+      Airspace* pSpace = airspaceRegionList.at(loop)->airspace;
 
       lastVConflict = pSpace->lastVConflict();
-      lastHConflict = airspaceRegList.at(loop)->currentConflict();
+      lastHConflict = airspaceRegionList.at(loop)->currentConflict();
       lastConflict = (lastHConflict < lastVConflict ? lastHConflict : lastVConflict);
 
       // check for vertical conflicts at first
       vConflict = pSpace->conflicts(alt, awd);
 
       needAirspaceRedraw |= (vConflict != lastVConflict);
+
       if ( vConflict == Airspace::none )
         {
           // No altitude conflict with airspace
@@ -2079,8 +2086,7 @@ void Map::checkAirspace(const QPoint& pos)
         }
 
       // check for horizontal conflicts
-      hConflict = airspaceRegList.at(loop)->conflicts(pos, awd);
-
+      hConflict = airspaceRegionList.at(loop)->conflicts(pos, awd);
 
       // the resulting conflict is always the lesser of the two
       conflict = (hConflict < vConflict ? hConflict : vConflict);
@@ -2089,172 +2095,320 @@ void Map::checkAirspace(const QPoint& pos)
       //        conflict, hConflict, vConflict, pSpace->getInfoString().latin1() );
 
       needAirspaceRedraw |= (conflict != lastConflict);
+
       if (conflict == Airspace::none)
         {
           // No conflict with airspace
           continue;
         }
 
-      // fetch warning suppress time from config and compute it as milli seconds
-      int warSupMS = GeneralConfig::instance()->getWarningSuppressTime() * 60 * 1000;
+      if( ! GeneralConfig::instance()->getAirspaceWarningEnabled(pSpace->getTypeID()) )
+        {
+           // warning for airspace type disabled by user
+          continue;
+        }
 
-      // Only the last found match is reported per category
+      // process conflicts
       switch (conflict)
         {
         case Airspace::inside:
-          if ( ! inside.isEmpty() )
-            continue;
-          inside = tr("Inside") + " " + Airspace::getTypeName(pSpace->getTypeID());
 
-          if ( inside != _insideAS && _lastInside.elapsed() >= warSupMS )
+          // collect all conflicting airspaces
+          allInsideAsMap.insert( pSpace->getInfoString(), pSpace->getTypeID() );
+
+          // Check, if airspace is already known as conflict
+          if( ! _insideAsMap.contains( pSpace->getInfoString() ) )
             {
-              //qDebug( "inside AS: %s", pSpace->getInfoString().latin1() );
+              // insert new airspace text and airspace type into the map
+              newInsideAsMap.insert( pSpace->getInfoString(), pSpace->getTypeID() );
               warn = true;
-              _insideAS = inside;
-              _insideASInfo = pSpace->getInfoString();
-              continue;
             }
 
-          break;
+          continue;
 
         case Airspace::veryNear:
 
-          if ( ! veryNear.isEmpty() )
-            continue;
+          // collect all conflicting airspaces
+          allVeryNearAsMap.insert( pSpace->getInfoString(), pSpace->getTypeID() );
 
-          veryNear = tr("Very near") + " " + Airspace::getTypeName(pSpace->getTypeID());
-
-          if ( veryNear != _veryNearAS && _lastVeryNear.elapsed() >= warSupMS )
+          // Check, if airspace is already known as conflict
+          if( ! _veryNearAsMap.contains( pSpace->getInfoString() ) )
             {
-              // qDebug( "very near AS: %s", pSpace->getInfoString().latin1() );
+              // insert new airspace text and airspace type into the hash
+              newVeryNearAsMap.insert( pSpace->getInfoString(), pSpace->getTypeID() );
               warn = true;
-              _veryNearAS = veryNear;
-              _veryNearASInfo = pSpace->getInfoString();
-              continue;
             }
 
-          break;
+          continue;
 
         case Airspace::near:
 
-          if ( ! near.isEmpty() )
-            continue;
+          // collect all conflicting airspaces
+          allNearAsMap.insert( pSpace->getInfoString(), pSpace->getTypeID() );
 
-          near = tr("Near") + " " + Airspace::getTypeName(pSpace->getTypeID());
-
-          if ( near != _nearAS && _lastNear.elapsed() >= warSupMS )
+          // Check, if airspace is already known as conflict
+          if( ! _nearAsMap.contains( pSpace->getInfoString() ) )
             {
-              // qDebug( "near AS: %s", pSpace->getInfoString().latin1() );
+              // insert new airspace text and airspace type into the hash
+              newNearAsMap.insert( pSpace->getInfoString(), pSpace->getTypeID() );
               warn = true;
-              _nearAS = near;
-              _nearASInfo = pSpace->getInfoString();
-              continue;
             }
 
-          break;
+          continue;
 
         case Airspace::none:
         default:
-          break;
+
+          continue;
         }
 
     } // End of For loop
 
+  // save all conflicting airspaces for the next round
+  _insideAsMap   = allInsideAsMap;
+  _veryNearAsMap = allVeryNearAsMap;
+  _nearAsMap     = allNearAsMap;
 
-  //redraw the airspaces if needed
+  // redraw the airspaces if needed
   if (needAirspaceRedraw && fillingEnabled)
-    scheduleRedraw(aeroLayer);
+    {
+      scheduleRedraw(aeroLayer);
+    }
 
+  if ( ! warningEnabled )
+    {
+      return;
+    }
 
-  if (!warningEnabled)
-    return;
-
-  _nearAS     = near;
-  _veryNearAS = veryNear;
-  _insideAS   = inside;
-
+  // warning text, contains only conflict changes
   QString text = "<html><table border=1><tr><th align=left>" +
                  tr("Airspace&nbsp;Warning") +
                  "</th></tr>";
 
-  QString msg;
+  QString msg; // status message containing all conflicting airspaces
 
   // @AP: Only the highest priority will be displayed and updated!
-  if ( !inside.isEmpty() )
+  if ( ! newInsideAsMap.isEmpty() )
     {
-      msg += inside + " ";
+      msg += tr("Inside") + " ";
+      QMapIterator<QString, int> i(allInsideAsMap);
+      bool first = true;
 
-      if ( warn == false )
+      while ( i.hasNext()  )
         {
-          if ( _lastASInfo != msg )
+           i.next();
+
+           if( ! first )
             {
-              // update warning in capture only
-              _lastASInfo = msg;
-              emit airspaceWarning( msg, false );
+              msg += ", ";
             }
-          return;
+          else
+            {
+              first = false;
+            }
+
+          msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
         }
 
-      _lastInside.start(); // set last reporting time
-      text += "<tr><td align=left>";
-      text += inside + "</td></tr><tr><td align=left>" + _insideASInfo + "</td></tr>";
+      if ( _lastAsType != msg )
+      {
+          // update warning in status bar
+        _lastAsType = msg;
+        emit airspaceWarning( msg, true );
+      }
+
+      QMapIterator<QString, int> j(newInsideAsMap);
+
+      while ( j.hasNext()  )
+        {
+           j.next();
+
+           text += "<tr><td align=left>"
+                + tr("Inside") + " "
+                + "</td></tr><tr><td align=left>"
+                + j.key()
+                + "</td></tr>";
+          }
+
+      if( _lastInsideAsInfo == text )
+        {
+          if( _lastInsideTime.elapsed() <= warSupMS )
+            {
+              // suppression time is not expired, reset warning flag
+              warn = false;
+            }
+        }
+      else
+        {
+          _lastInsideTime.start(); // set last reporting time
+          _lastInsideAsInfo = text;  // save last warning info text
+        }
     }
-  else if (!veryNear.isEmpty())
+  else if( ! newVeryNearAsMap.isEmpty() )
     {
-      msg += veryNear + " ";
+      msg += tr("Very Near") + " ";
 
-      if( warn == false )
+      QMapIterator<QString, int> i(allVeryNearAsMap);
+      bool first = true;
+
+      while ( i.hasNext()  )
+      {
+        i.next();
+
+        if( ! first )
+          {
+            msg += ", ";
+          }
+        else
+          {
+            first = false;
+          }
+
+        msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
+      }
+
+      if ( _lastAsType != msg )
         {
-          if( _lastASInfo != msg )
-            {
-              // update warning in capture only
-              _lastASInfo = msg;
-              emit airspaceWarning( msg, false );
-            }
-          return;
+            // update warning in status bar
+          _lastAsType = msg;
+          emit airspaceWarning( msg, true );
         }
 
-      _lastVeryNear.start(); // set last reporting time
-      text += "<tr><td align=left>";
-      text += veryNear + "</td></tr><tr><td align=left>" + _veryNearASInfo + "</td></tr>";
+      QMapIterator<QString, int> j(newVeryNearAsMap);
+
+      while ( j.hasNext()  )
+        {
+           j.next();
+
+           text += "<tr><td align=left>"
+                + tr("Very Near") + " "
+                + "</td></tr><tr><td align=left>"
+                + j.key()
+                + "</td></tr>";
+          }
+
+      if( _lastVeryNearAsInfo == text )
+        {
+          if( _lastVeryNearTime.elapsed() < warSupMS )
+            {
+              // suppression time is not expired, reset warning flag
+              warn = false;
+            }
+        }
+      else
+        {
+          _lastVeryNearTime.start(); // set last reporting time
+          _lastVeryNearAsInfo = text;  // save last warning info text
+        }
+     }
+  else if ( ! newNearAsMap.isEmpty() )
+    {
+      msg += tr("Near") + " ";
+      QMapIterator<QString, int> i(allNearAsMap);
+      bool first = true;
+
+      while ( i.hasNext()  )
+      {
+        i.next();
+
+        if( ! first )
+          {
+            msg += ", ";
+          }
+        else
+          {
+            first = false;
+          }
+
+        msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
+     }
+
+      if ( _lastAsType != msg )
+        {
+          // update warning in status bar
+          _lastAsType = msg;
+          emit airspaceWarning( msg, true );
+        }
+
+      QMapIterator<QString, int> j(newNearAsMap);
+
+      while ( j.hasNext()  )
+        {
+           j.next();
+
+           text += "<tr><td align=left>"
+                + tr("Near") + " "
+                + "</td></tr><tr><td align=left>"
+                + j.key()
+                + "</td></tr>";
+          }
+
+      if( _lastNearAsInfo == text )
+        {
+          if( _lastNearTime.elapsed() < warSupMS )
+            {
+              // suppression time is not expired, reset warning flag
+              warn = false;
+            }
+        }
+      else
+        {
+          _lastNearTime.start(); // set last reporting time
+          _lastNearAsInfo = text;  // save last warning info text
+        }
     }
-  else if (!near.isEmpty())
+  else if ( ! allInsideAsMap.isEmpty() )
     {
-      msg += near + " ";
+      // if no other warning active we show the current airspace inside types
+      msg += tr("Inside") + " ";
+      QMapIterator<QString, int> i(allInsideAsMap);
+      bool first = true;
 
-      if ( warn == false )
+      while ( i.hasNext()  )
         {
-          if ( _lastASInfo != msg )
+          i.next();
+
+          if( ! first )
             {
-              _lastASInfo = msg;
-              // update warning in capture only
-              emit airspaceWarning( msg, false );
+              msg += ", ";
             }
-          return;
+          else
+            {
+              first = false;
+            }
+
+          msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
         }
 
-      _lastNear.start(); // set last reporting time
-      text += "<tr><td align=left>";
-      text += near + "</td></tr><tr><td align=left>" + _nearASInfo + "</td></tr>";
+      if ( _lastAsType != msg )
+        {
+            // update warning in status bar without alarm
+          _lastAsType = msg;
+          emit airspaceWarning( msg, false );
+        }
+
+      return;
     }
   else
     {
-      if( _lastASInfo != msg )
+      // no warning active
+      if( newInsideAsMap.isEmpty() && newVeryNearAsMap.isEmpty() && newNearAsMap.isEmpty() )
         {
-          // reset warning in capture only
-          _lastASInfo = msg;
-          emit airspaceWarning( "", false );
+          if ( _lastAsType != "" )
+          {
+              // reset warning in status bar only without alarm
+            _lastAsType = "";
+            emit airspaceWarning( " ", false );
+          }
         }
 
       return;
     }
 
-  text +="</table></html>";
-
   // Pop up a warning window with all data to touched airspace
-  if ( GeneralConfig::instance()->getAirspaceWarningEnabled(pSpace->getTypeID()) && warn == true )
+  if ( warn == true )
     {
-      emit airspaceWarning(msg);
+      text +="</table></html>";
 
       if( GeneralConfig::instance()->getPopupAirspaceWarnings() )
         {

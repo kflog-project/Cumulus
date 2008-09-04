@@ -20,6 +20,7 @@
 #define MAP_H
 
 #include <QRegion>
+#include <QMap>
 #include <QPoint>
 #include <QWidget>
 #include <QBitmap>
@@ -181,8 +182,8 @@ class Map : public QWidget
     /** clear airspace region list */
     void clearAirspaceRegionList()
       {
-        qDeleteAll(airspaceRegList);
-        airspaceRegList.clear();
+        qDeleteAll(airspaceRegionList);
+        airspaceRegionList.clear();
       };
 
   public slots:
@@ -466,7 +467,7 @@ class Map : public QWidget
     //the map, but now including the aeronautical elements
     QPixmap m_pixAeroMap;
 
-    //the map, but now including the navigational elements
+    //the map, but now including the navigation elements
     QPixmap m_pixNavigationMap;
 
     //the map, but now including the informational elements
@@ -489,7 +490,7 @@ class Map : public QWidget
      * Contains the regions of all visible airspaces. The list is needed to
      * find the airspace data when the user selects an airspace in the map.
      */
-    QList<AirRegion*> airspaceRegList;
+    QList<AirRegion*> airspaceRegionList;
 
     //contains the layer the next redraw should start from
     mapLayer m_scheduledFromLayer;
@@ -502,7 +503,7 @@ class Map : public QWidget
     QTimer * redrawTimerShort;
     /** reference to the long interval redraw timer */
     QTimer * redrawTimerLong;
-    /** Determines wether to draw the glider symbol. */
+    /** Determines weather to draw the glider symbol. */
     bool ShowGlider;
     unsigned int zoomProgressive;
     float zoomProgressiveVal[8];
@@ -536,23 +537,28 @@ class Map : public QWidget
 
     /** Holds the current position. */
     QPoint curGPSPos, curMANPos;
-    /** @ee: these pixmaps are pre-loaded to prevent runtime drawing */
+
+    /** these pixmaps are preloaded to improve runtime drawing */
     QPixmap _cross;
     QPixmap _glider;
 
-    /** Airspace Warning Memos */
-    QString _insideAS;
-    QString _veryNearAS;
-    QString _nearAS;
-    QString _insideASInfo;
-    QString _veryNearASInfo;
-    QString _nearASInfo;
-    QString _lastASInfo;
+    /** Airspace conflicts */
+    QMap<QString, int> _insideAsMap;   // AS Text and AS type
+    QMap<QString, int> _veryNearAsMap; // AS Text and AS type
+    QMap<QString, int> _nearAsMap;     // AS Text and AS type
+
+    /** last emitted airspace warning strings */
+    QString _lastInsideAsInfo;
+    QString _lastVeryNearAsInfo;
+    QString _lastNearAsInfo;
+
+    /** last emitted airspace type string */
+    QString _lastAsType;
 
     /** save time of last touch of airspace */
-    QTime _lastNear;
-    QTime _lastVeryNear;
-    QTime _lastInside;
+    QTime _lastNearTime;
+    QTime _lastVeryNearTime;
+    QTime _lastInsideTime;
 
     static Map *instance;
   };
