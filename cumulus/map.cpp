@@ -2047,6 +2047,9 @@ void Map::checkAirspace(const QPoint& pos)
   // fetch warning suppress time from configuration and compute it as milli seconds
   int warSupMS = GeneralConfig::instance()->getWarningSuppressTime() * 60 * 1000;
 
+  // fetch warning show time and compute it as milli seconds
+  int showTime = GeneralConfig::instance()->getWarningDisplayTime() * 1000;
+  
   // maps to collect all airspaces and the conflicting airspaces
   QMap<QString, int> newInsideAsMap;
   QMap<QString, int> allInsideAsMap;
@@ -2357,9 +2360,13 @@ void Map::checkAirspace(const QPoint& pos)
           _lastNearAsInfo = text;  // save last warning info text
         }
     }
-  else if ( ! allInsideAsMap.isEmpty() )
+  else if ( ! allInsideAsMap.isEmpty() &&
+            _lastNearTime.elapsed() > showTime &&
+            _lastVeryNearTime.elapsed() > showTime &&
+            _lastInsideTime.elapsed() > showTime )
     {
-      // if no other warning active we show the current airspace inside types
+      // if no other warning active we show the current airspace inside types,
+      // if show time of all warnings has expired
       msg += tr("Inside") + " ";
       QMapIterator<QString, int> i(allInsideAsMap);
       bool first = true;
@@ -2394,9 +2401,12 @@ void Map::checkAirspace(const QPoint& pos)
       // no warning active
       if( newInsideAsMap.isEmpty() && newVeryNearAsMap.isEmpty() && newNearAsMap.isEmpty() )
         {
-          if ( _lastAsType != "" )
+          if ( _lastAsType != "" &&
+               _lastNearTime.elapsed() > showTime &&
+               _lastVeryNearTime.elapsed() > showTime &&
+               _lastInsideTime.elapsed() > showTime )
           {
-              // reset warning in status bar only without alarm
+              // Only reset warning in status bar without alarm, if show time has expired.
             _lastAsType = "";
             emit airspaceWarning( " ", false );
           }
@@ -2412,8 +2422,6 @@ void Map::checkAirspace(const QPoint& pos)
 
       if( GeneralConfig::instance()->getPopupAirspaceWarnings() )
         {
-          int showTime = GeneralConfig::instance()->getWarningDisplayTime() * 1000;
-
           // qDebug("airspace warning timer %dms, LoopLevel=%d",
           // showTime, qApp->loopLevel() );
           WhatsThat *box = new WhatsThat(this, text, showTime);
