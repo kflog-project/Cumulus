@@ -17,9 +17,9 @@
 
 /**
  * This widget provides an interface to add, edit and delete gliders
- * from the gliderlist.
+ * from the glider list.
  *
- * @author AndrÃ© Somers
+ * @author André Somers
  */
 
 #include <QPushButton>
@@ -29,7 +29,7 @@
 
 #include "generalconfig.h"
 #include "settingspageglider.h"
-#include "settingspagepolar.h"
+#include "settingspagegliderdata.h"
 
 SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
 {
@@ -84,7 +84,7 @@ void SettingsPageGlider::showEvent(QShowEvent *)
 /** Called when a new glider needs to be made. */
 void SettingsPageGlider::slot_new()
 {
-  SettingsPagePolar *dlg = new SettingsPagePolar(this, 0);
+  SettingsPageGliderData *dlg = new SettingsPageGliderData(this, 0);
   connect(dlg, SIGNAL(newGlider(Glider*)), list, SLOT(slot_Added(Glider *)));
 
   dlg->show();
@@ -102,7 +102,7 @@ void SettingsPageGlider::slot_edit()
       return;
     }
 
-  SettingsPagePolar *dlg = new SettingsPagePolar(this, selectedGlider );
+  SettingsPageGliderData *dlg = new SettingsPageGliderData(this, selectedGlider );
   connect(dlg, SIGNAL(editedGlider(Glider *)), list, SLOT(slot_Edited(Glider *)));
 
   dlg->show();

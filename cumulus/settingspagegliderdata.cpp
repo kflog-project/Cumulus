@@ -1,6 +1,6 @@
 /***********************************************************************
  **
- **   settingspagepolar.cpp
+ **   settingspagegliderdata.cpp
  **
  **   This file is part of Cumulus.
  **
@@ -25,7 +25,7 @@
 #include <QScrollArea>
 
 #include "polardialog.h"
-#include "settingspagepolar.h"
+#include "settingspagegliderdata.h"
 #include "polar.h"
 #include "speed.h"
 #include "mapview.h"
@@ -33,10 +33,10 @@
 
 extern MapView *_globalMapView;
 
-SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
+SettingsPageGliderData::SettingsPageGliderData(QWidget *parent, Glider *glider )
   : QDialog(parent)
 {
-  setObjectName("SettingsPagePolar");
+  setObjectName("SettingsPageGliderData");
   setAttribute(Qt::WA_DeleteOnClose);
   setModal(false);
 
@@ -230,13 +230,13 @@ SettingsPagePolar::SettingsPagePolar(QWidget *parent, Glider *glider )
   show();
 }
 
-SettingsPagePolar::~SettingsPagePolar()
+SettingsPageGliderData::~SettingsPageGliderData()
 {
   qDeleteAll(_polars);
 }
 
 Polar*
-SettingsPagePolar::getPolar()
+SettingsPageGliderData::getPolar()
 {
   int pos = comboType->currentIndex();
 
@@ -260,7 +260,7 @@ setCurrentText(QComboBox* combo, const QString& text)
 
 /** Called to initiate loading of the configuration file. */
 void
-SettingsPagePolar::load()
+SettingsPageGliderData::load()
 {
   if (_glider)
     {
@@ -293,7 +293,7 @@ SettingsPagePolar::load()
 
 /** called to initiate saving to the configuration file */
 void
-SettingsPagePolar::save()
+SettingsPageGliderData::save()
 {
   if (!_glider)
     {
@@ -342,9 +342,9 @@ SettingsPagePolar::save()
 }
 
 void
-SettingsPagePolar::readPolarData()
+SettingsPageGliderData::readPolarData()
 {
-  // qDebug ("SettingsPagePolar::readPolarData ");
+  // qDebug ("SettingsPageGliderData::readPolarData ");
 
 #warning location of glider.pol file is CUMULUS_ROOT/etc
 
@@ -472,9 +472,9 @@ SettingsPagePolar::readPolarData()
 
 /** called when a glider type has been selected */
 void
-SettingsPagePolar::slotActivated(const QString& type)
+SettingsPageGliderData::slotActivated(const QString& type)
 {
-  // qDebug ("SettingsPagePolar::slotActivated(%s)", type.toLatin1().data());
+  // qDebug ("SettingsPageGliderData::slotActivated(%s)", type.toLatin1().data());
 
   if (!_glider)
     {
@@ -515,7 +515,7 @@ SettingsPagePolar::slotActivated(const QString& type)
 }
 
 void
-SettingsPagePolar::slotButtonShow()
+SettingsPageGliderData::slotButtonShow()
 {
   // we create a polar object on the fly to allow test of changed polar values without saving
   Speed V1, V2, V3, W1, W2, W3;
@@ -537,7 +537,7 @@ SettingsPagePolar::slotButtonShow()
 }
 
 void
-SettingsPagePolar::accept()
+SettingsPageGliderData::accept()
 {
   edtGReg->setText(edtGReg->text().trimmed()); //remove spaces
 
@@ -559,7 +559,7 @@ SettingsPagePolar::accept()
 }
 
 void
-SettingsPagePolar::reject()
+SettingsPageGliderData::reject()
 {
   // @AP: delete glider, if it was allocated in this class and not
   // emitted in accept method to avoid a memory leak.

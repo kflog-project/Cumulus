@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   settingspagepolar.h
+**   settingspagegliderdata.h
 **
 **   This file is part of Cumulus.
 **
@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef SETTINGSPAGEPOLAR_H
-#define SETTINGSPAGEPOLAR_H
+#ifndef SETTINGSPAGE_GLIDER_DATA_H
+#define SETTINGSPAGE_GLIDER_DATA_H
 
 #include <QDialog>
 #include <QLineEdit>
@@ -31,17 +31,17 @@
 #include "glider.h"
 
 /**
- * This class represents the polar settings page
+ * This class represents the glider data settings page
  * @author Eggert Ehmke
  */
-class SettingsPagePolar : public QDialog
+class SettingsPageGliderData : public QDialog
 {
     Q_OBJECT
-    
+
 public:
 
-    SettingsPagePolar(QWidget *parent=0, Glider * glider=0);
-    ~SettingsPagePolar();
+    SettingsPageGliderData(QWidget *parent=0, Glider * glider=0);
+    ~SettingsPageGliderData();
     Polar* getPolar();
 
 private:
@@ -83,10 +83,10 @@ protected:
 
     /** overwritten method from QDialog */
     virtual void accept();
-    
+
     /** overwritten method from QDialog */
     virtual void reject();
-    
+
 private:
 
     QComboBox* comboType;
