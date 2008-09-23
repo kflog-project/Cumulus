@@ -68,15 +68,22 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
   list->setRootIsDecorated(false);
   list->setItemsExpandable(false);
   list->setUniformRowHeights(true);
+  list->setAlternatingRowColors(true);
   list->setSortingEnabled(false);
   list->setSelectionMode(QAbstractItemView::NoSelection);
-  list->setColumnCount(7);
-  list->hideColumn(6);
+  list->setColumnCount(8);
+  list->hideColumn(7);
   list->setFocusPolicy(Qt::NoFocus);
 //  list->setEnabled(false);
 
   QStringList sl;
-  sl << tr("Type") << tr("Name") << tr("Dist.") << tr("Time") << tr("Description") << tr("SS");
+  sl << tr("Type")
+     << tr("Name")
+     << tr("Dist.")
+     << tr("Brg.")
+     << tr("Time")
+     << tr("Description")
+     << tr("SS");
   list->setHeaderLabels(sl);
 
   topLayout->addWidget(list, 10);
@@ -91,17 +98,17 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
     // Don't show any buttons, if required
     QBoxLayout *buttonrow=new QHBoxLayout;
     topLayout->addLayout( buttonrow );
-      
+
     /** @ee add a close button */
     QPushButton *cmdClose = new QPushButton(tr("Close"), this);
     buttonrow->addWidget(cmdClose);
-      
+
     QPushButton *cmdInfo = new QPushButton(tr("Info"), this);
     buttonrow->addWidget(cmdInfo);
-      
+
     cmdSelect = new QPushButton(_selectText, this);
     buttonrow->addWidget(cmdSelect);
-      
+
     connect( cmdSelect, SIGNAL(clicked()),
             this, SLOT(slot_Select()) );
     connect( cmdInfo, SIGNAL(clicked() ),
@@ -241,7 +248,7 @@ void TaskListView::slot_Close ()
 
 
 /**
- * Retrieves the waypoints from the task, and fills the list. 
+ * Retrieves the waypoints from the task, and fills the list.
  */
 void TaskListView::slot_setTask(const FlightTask *tsk)
 {
@@ -274,7 +281,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
     wayPoint* wp = tmpList.at( loop-1 );
     _TaskPoint* tp = new _TaskPoint( list, wp );
 
-    tp->setText( 6, QString("%1").arg(loop,1,10,QLatin1Char('0')) );
+    tp->setText( 7, QString("%1").arg(loop,1,10,QLatin1Char('0')) );
 
     if( calcWp && calcWp->origP == wp->origP ) {
       list->setCurrentItem( tp, 0 );
@@ -282,7 +289,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
       _selectedWp = wp;
     }
   }
-  list->sortByColumn(6,Qt::AscendingOrder);
+  list->sortByColumn(7, Qt::AscendingOrder);
   // set the total values in the header of this view
   distTotal->setText(  "S=" +_task->getTotalDistanceString() );
   speedTotal->setText( "V=" + _task->getSpeedString() );
@@ -294,6 +301,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   list->resizeColumnToContents(3);
   list->resizeColumnToContents(4);
   list->resizeColumnToContents(5);
+  list->resizeColumnToContents(6);
 }
 
 /**
@@ -337,10 +345,24 @@ TaskListView::_TaskPoint::_TaskPoint (QTreeWidget *wpList, wayPoint *point ) : Q
   setText(1, wp->name);
   setText(2, " " + Distance::getText(wp->distance*1000,false,1));
   setTextAlignment( 2, Qt::AlignRight );
-  setText(3, " " + FlightTask::getDistanceTimeString(wp->distTime));
+
+  if( wp->bearing == -1.0 )
+    {
+      // bearing is undefined
+      setText(3, " ");
+    }
+  else
+    {
+      int bearing = (int) rint( wp->bearing*180./M_PI );
+      setText(3, " " + QString::number( bearing ));
+    }
+
   setTextAlignment( 3, Qt::AlignRight );
-  setText(4, " " + wp->description);
-  setText(5, " " + ss);
-  
+
+  setText(4, " " + FlightTask::getDistanceTimeString(wp->distTime));
+  setTextAlignment( 4, Qt::AlignRight );
+  setText(5, " " + wp->description);
+  setText(6, " " + ss);
+
   setIcon(1, QIcon(_globalMapConfig->getPixmap(wp->type,false,true)) );
 }
