@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef WPEDITDIALOG_H
-#define WPEDITDIALOG_H
+#ifndef WPEDIT_DIALOG_H
+#define WPEDIT_DIALOG_H
 
 #include <QWidget>
 #include <QDialog>
@@ -24,11 +24,12 @@
 #include "waypoint.h"
 
 /**
- * The WPEditDialog allows the editing of waypoint.
- * @author AndrÃ© Somers
+ * The WpEditDialog allows the creation of a new waypoint or the modification
+ * of an existing waypoint.
+ * @author André Somers
  */
 
-class WPEditDialog : public QDialog
+class WpEditDialog : public QDialog
 {
     Q_OBJECT
 public:
@@ -38,9 +39,9 @@ public:
      * @param name A name for this QObject
      * @param wp A waypoint to show the dialog for
      */
-    WPEditDialog(QWidget *parent=0, wayPoint * wp=0);
+    WpEditDialog(QWidget *parent=0, wayPoint * wp=0);
 
-    virtual ~WPEditDialog();
+    virtual ~WpEditDialog();
 
     /**
      * Called if OK button is pressed
@@ -69,18 +70,19 @@ signals: // Signals
 
     /**
      * this signal is emitted after a save procedure has
-     * occured. It gives connected objects the change to
+     * occurred. It gives connected objects the change to
      * adjust to new settings.
      */
     void settingsChanged();
 
     /**
      * This signal is emitted after a waypoint has been saved.
-     * It is used to re-fill the waypointlist.
+     * It is used to re-fill the waypoint list.
      */
     void wpListChanged(wayPoint *);
 
 private:
+
     wayPoint * _wp;
     QTextEdit * comment;
 };

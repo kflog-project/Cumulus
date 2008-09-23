@@ -1,12 +1,12 @@
 /***********************************************************************
  **
- **   wpeditdialog.cpp
+ **   WpEditDialog.cpp
  **
  **   This file is part of Cumulus
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -14,6 +14,13 @@
  **   $Id$
  **
  ***********************************************************************/
+
+/**
+ * The WpEditDialog allows the creation of a new waypoint or the modification
+ * of an existing waypoint.
+ * @author André Somers
+ */
+
 
 #include <QPushButton>
 #include <QTabWidget>
@@ -30,10 +37,10 @@
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 
-WPEditDialog::WPEditDialog(QWidget *parent, wayPoint *wp ):
+WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ):
   QDialog(parent)
 {
-  setObjectName("WPEditDialog");
+  setObjectName("WpEditDialog");
   setModal(true);
 
 #ifdef MAEMO
@@ -54,8 +61,8 @@ WPEditDialog::WPEditDialog(QWidget *parent, wayPoint *wp ):
 
   _wp = wp;
 
-  WPEditDialogPageGeneral *pageGeneral = new WPEditDialogPageGeneral(this);
-  WPEditDialogPageAero    *pageAero    = new WPEditDialogPageAero(this);
+  WpEditDialogPageGeneral *pageGeneral = new WpEditDialogPageGeneral(this);
+  WpEditDialogPageAero    *pageAero    = new WpEditDialogPageAero(this);
   comment = new QTextEdit(this);
   comment->setWordWrapMode(QTextOption::WordWrap);
 
@@ -109,13 +116,13 @@ WPEditDialog::WPEditDialog(QWidget *parent, wayPoint *wp ):
 }
 
 
-WPEditDialog::~WPEditDialog()
+WpEditDialog::~WpEditDialog()
 {
-  // qDebug("WPEditDialog::~WPEditDialog()");
+  // qDebug("WpEditDialog::~WpEditDialog()");
 }
 
 /** This slot is called if the user presses the OK button. */
-void WPEditDialog::slot_LoadCurrent()
+void WpEditDialog::slot_LoadCurrent()
 {
   emit load(_wp);
 
@@ -126,9 +133,9 @@ void WPEditDialog::slot_LoadCurrent()
 }
 
 /** Called if OK button is pressed? */
-void WPEditDialog::accept()
+void WpEditDialog::accept()
 {
-  // qDebug ("WPEditDialog::accept");
+  // qDebug ("WpEditDialog::accept");
   if (_wp == 0)
     {
       _wp = new wayPoint;
