@@ -211,7 +211,7 @@
 #define RIVER_COLOR_4 QColor(70,70,195)
 
 #define RIVER_PEN_1 2
-#define RIVER_PEN_2 2
+#define RIVER_PEN_2 1
 #define RIVER_PEN_3 1
 #define RIVER_PEN_4 1
 
