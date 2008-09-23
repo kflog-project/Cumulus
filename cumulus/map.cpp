@@ -2030,7 +2030,8 @@ void Map::__drawDirectionLine(const QPoint& from)
 
 
 /**
- * check if the new position is near to an airspace.
+ * Check if the new position is near to or inside of an airspace. A warning message
+ * will be generated and shown as pop up window and in the status bar.
  */
 void Map::checkAirspace(const QPoint& pos)
 {
@@ -2049,7 +2050,7 @@ void Map::checkAirspace(const QPoint& pos)
 
   // fetch warning show time and compute it as milli seconds
   int showTime = GeneralConfig::instance()->getWarningDisplayTime() * 1000;
-  
+
   // maps to collect all airspaces and the conflicting airspaces
   QMap<QString, int> newInsideAsMap;
   QMap<QString, int> allInsideAsMap;
@@ -2361,12 +2362,10 @@ void Map::checkAirspace(const QPoint& pos)
         }
     }
   else if ( ! allInsideAsMap.isEmpty() &&
-            _lastNearTime.elapsed() > showTime &&
-            _lastVeryNearTime.elapsed() > showTime &&
             _lastInsideTime.elapsed() > showTime )
     {
-      // if no other warning active we show the current airspace inside types,
-      // if show time of all warnings has expired
+      // If no other warning is active we show the current warning airspace type
+      // in the status bar, if show time of warning has expired.
       msg += tr("Inside") + " ";
       QMapIterator<QString, int> i(allInsideAsMap);
       bool first = true;
@@ -2396,17 +2395,87 @@ void Map::checkAirspace(const QPoint& pos)
 
       return;
     }
+
+  else if ( ! allVeryNearAsMap.isEmpty() &&
+            _lastVeryNearTime.elapsed() > showTime )
+    {
+      // If no other warning is active we show the current warning airspace type
+      // in the status bar, if show time of warning has expired.
+      msg += tr("Very Near") + " ";
+      QMapIterator<QString, int> i(allVeryNearAsMap);
+      bool first = true;
+
+      while ( i.hasNext()  )
+      {
+        i.next();
+
+        if( ! first )
+        {
+          msg += ", ";
+        }
+        else
+        {
+          first = false;
+        }
+
+        msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
+      }
+
+      if ( _lastAsType != msg )
+      {
+         // update warning in status bar without alarm
+        _lastAsType = msg;
+        emit airspaceWarning( msg, false );
+      }
+
+      return;
+    }
+  else if ( ! allNearAsMap.isEmpty() &&
+            _lastNearTime.elapsed() > showTime )
+    {
+      // If no other warning is active we show the current warning airspace type
+      // in the status bar, if show time of warning has expired.
+      msg += tr("Near") + " ";
+      QMapIterator<QString, int> i(allNearAsMap);
+      bool first = true;
+      
+      while ( i.hasNext()  )
+      {
+        i.next();
+        
+        if( ! first )
+        {
+          msg += ", ";
+        }
+        else
+        {
+          first = false;
+        }
+        
+        msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
+      }
+      
+      if ( _lastAsType != msg )
+      {
+         // update warning in status bar without alarm
+        _lastAsType = msg;
+        emit airspaceWarning( msg, false );
+      }
+      
+      return;
+    }
   else
     {
-      // no warning active
-      if( newInsideAsMap.isEmpty() && newVeryNearAsMap.isEmpty() && newNearAsMap.isEmpty() )
+      // check, if no warning is active and the show time has expired
+      if( newInsideAsMap.isEmpty() && newVeryNearAsMap.isEmpty() && newNearAsMap.isEmpty() &&
+          allInsideAsMap.isEmpty() && allVeryNearAsMap.isEmpty() && allNearAsMap.isEmpty() &&
+          _lastNearTime.elapsed() > showTime &&
+          _lastVeryNearTime.elapsed() > showTime &&
+          _lastInsideTime.elapsed() > showTime )
         {
-          if ( _lastAsType != "" &&
-               _lastNearTime.elapsed() > showTime &&
-               _lastVeryNearTime.elapsed() > showTime &&
-               _lastInsideTime.elapsed() > showTime )
+          if ( _lastAsType != "" )
           {
-              // Only reset warning in status bar without alarm, if show time has expired.
+              // Only reset warning in status bar without alarm, if no warning is active.
             _lastAsType = "";
             emit airspaceWarning( " ", false );
           }
