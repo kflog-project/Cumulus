@@ -10,7 +10,7 @@
  **                   2008 modified by Axel Pauli, Josua Dietze
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -176,9 +176,10 @@ void Map::__displayMapInfo(const QPoint& current)
                 // qDebug ("upper limit: %d", pSpace->getUpperL());
                 // qDebug ("lower limit type: %d", pSpace->getLowerT());
                 // qDebug ("upper limit type: %d", pSpace->getUpperT());
-          //work around the phenemenon that airspaces tend to appear in the list twice -> this should be dealt with properly!
+          //work around the phenomenon that airspaces tend to appear in the list twice -> this should be dealt with properly!
           if ( text.indexOf(pSpace->getInfoString()) == -1 )
-            {     //only add if the string has not been added before
+            {
+              // only add if the string has not been added before
               text += "<tr><td align=left>" + pSpace->getInfoString() + "</td></tr>";
               itemcount++;
             }
@@ -188,7 +189,7 @@ void Map::__displayMapInfo(const QPoint& current)
 
   text += "</table></html>";
 
-  // @AP: replace long labels to small one, otherwise the window is
+  // @AP: replace long labels to small ones, otherwise the window is
   // sometimes to small for display whole line.
   // remove term Restricted, to display all info behind
   text.replace( QRegExp("Restricted "), "AR " );
@@ -200,8 +201,7 @@ void Map::__displayMapInfo(const QPoint& current)
   if( show && WhatsThat::getInstance() == 0 )
     {
       // display text only, if no other display is active
-      GeneralConfig *conf = GeneralConfig::instance()
-                            ;
+      GeneralConfig *conf = GeneralConfig::instance();
       int airspaceTime = conf->getAirspaceDisplayTime();
       int showTime = 0;
 
@@ -245,7 +245,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
   double cs = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
   // snap distance should be 3000m considering scale, otherwise the
-  // range is to high on higher sacles.
+  // range is to high on higher scales.
   delta = (int) rint( 3000. / cs );
 
   // Manhattan-distance to found point.
@@ -257,7 +257,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
   //qDebug( "SnapRect %dx%d, delta=%d, w=%d, h=%d",
   //        current.x()-delta, current.y()-delta, delta, 2*delta, 2*delta );
 
-  // @AP: On map scale higher as 1024 we don't evelute anything
+  // @AP: On map scale higher as 1024 we don't evolute anything
   for (int l = 0; l < 2 && cs < 1024.0; l++)
     {
       for(unsigned int loop = 0;
@@ -320,7 +320,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
     }
 
   // let's show waypoints
-  // @AP: On map scale higher as 1024 we don't evelute anything
+  // @AP: On map scale higher as 1024 we don't evolute anything
   for (int i = 0; i < _globalMapContents->getWaypointList()->count(); i++)
     {
       if (cs > 1024.0)
@@ -397,7 +397,6 @@ void Map::mousePressEvent(QMouseEvent* event)
   // qDebug("Map::mousePressEvent");
   switch (event->button())
     {
-      // On Zaurus we use the press-on-hold feature
     case Qt::RightButton: // press and hold generates mouse RightButton
       // qDebug("RightButton");
       break;
@@ -438,8 +437,8 @@ void Map::mouseReleaseEvent(QMouseEvent* event)
 
 void Map::paintEvent(QPaintEvent* event)
 {
-  QDateTime dt = QDateTime::currentDateTime();
-  QString dtStr = dt.toString(Qt::ISODate);
+//  QDateTime dt = QDateTime::currentDateTime();
+//  QString dtStr = dt.toString(Qt::ISODate);
 
 //   qDebug("%s: Map::paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d",
 //          dtStr.toAscii().data(),
@@ -468,7 +467,7 @@ void Map::slotNewWind()
   if( wind.getSpeed().getMps() != 0 )
     {
       int angle = wind.getAngleDeg();
-      angle = ((angle+5)/10)*10;  // quantisize modulo 10
+      angle = ((angle+5)/10)*10;  // Quantizes modulo 10
 
       while( angle >= 360 )
         {
@@ -519,7 +518,7 @@ void Map::__drawAirspaces(bool reset)
     {
       currentAirS = (Airspace*) _globalMapContents->getElement(MapContents::AirspaceList, loop);
 
-      //airspaces we don't draw, we don't warn for either (and vise versa)
+      //airspaces we don't draw, we don't warn for either (and vice versa)
       if( !settings->getAirspaceWarningEnabled( currentAirS->getTypeID() ) )
         {
           //currentAirS->drawRegion(&cuAeroMapP, false);
@@ -794,7 +793,7 @@ void Map::__redrawMap(mapLayer fromLayer)
   if( ! isVisible() )
     {
       // AP: ignore draw request when the window is hidden or not
-      // visible to get the user all power of the device for interactions
+      // visible to give the user all power of the device for interactions
        return;
     }
 
@@ -878,9 +877,9 @@ void Map::__redrawMap(mapLayer fromLayer)
   // Repaints the widget directly by calling paintEvent() immediately,
   // unless updates are disabled or the widget is hidden.
   // @AP: Qt 4.3 complains about it, when paintEvent is called directly
-  QDateTime dt = QDateTime::currentDateTime();
-  QString dtStr = dt.toString(Qt::ISODate);
 
+  //QDateTime dt = QDateTime::currentDateTime();
+  //QString dtStr = dt.toString(Qt::ISODate);
   // qDebug("%s: Map::__redrawMap: repaint(%dx%d) is called",
   //       dtStr.toAscii().data(), this->rect().width(),this->rect().height() );
   repaint( this->rect() );
@@ -889,7 +888,7 @@ void Map::__redrawMap(mapLayer fromLayer)
   // the scheduler timers will be restarted to handle it.
   if( _isRedrawEvent )
     {
-      qDebug("============== Map::__redrawMap(): queued redraw event found, schedule Redraw =======");
+      qDebug("Map::__redrawMap(): queued redraw event found, schedule Redraw");
       _isRedrawEvent = false;
       scheduleRedraw();
     }
@@ -937,10 +936,16 @@ void Map::__drawBaseLayer()
   _globalMapContents->drawList(&baseMapP, MapContents::TopoList);
   _globalMapContents->drawList(&baseMapP, MapContents::CityList);
 
-  // draw the (rail-) roads
-  if( cs < 819.2 )
+  // draw the hydro and roads
+  if( cs <= 500.0 )
+  {
+    _globalMapContents->drawList(&baseMapP, MapContents::HydroList);
+    _globalMapContents->drawList(&baseMapP, MapContents::RoadList);
+  }
+
+  // draw the railroads
+  if( cs <= 600.0 )
     {
-      _globalMapContents->drawList(&baseMapP, MapContents::RoadList);
       _globalMapContents->drawList(&baseMapP, MapContents::RailList);
     }
 
@@ -950,7 +955,6 @@ void Map::__drawBaseLayer()
       _globalMapContents->drawList(&baseMapP, MapContents::LandmarkList);
       _globalMapContents->drawList(&baseMapP, MapContents::ObstacleList);
       _globalMapContents->drawList(&baseMapP, MapContents::ReportList);
-      _globalMapContents->drawList(&baseMapP, MapContents::HydroList);
     }
 
   // draw the highways and the lakes
@@ -1006,7 +1010,7 @@ void Map::__drawNavigationLayer()
   __drawWaypoints(&navP);
   __drawPlannedTask(&navP);
 
-  // and finaly draw a scale indicator on top of this
+  // and finally draw a scale indicator on top of this
   __drawScale(navP);
 
   navP.end();
@@ -1015,7 +1019,7 @@ void Map::__drawNavigationLayer()
 
 /**
  * Draws the information layer of the map.
- * The information layer consists of the windarrow, the
+ * The information layer consists of the wind arrow, the
  * trail and the position indicator.
  * It is drawn on top of the navigation layer.
  */
@@ -1486,16 +1490,6 @@ void Map::__drawWaypoints(QPainter* wpPainter)
     } //for loop
 }
 
-
-/** Slot signalled when user selects another waypointcatalog.  */
-void Map::slotWaypointCatalogChanged(WaypointCatalog* /*c*/)
-{
-  // qDebug("Map::slotWaypointCatalogChanged");
-  emit changed(this->size());
-  scheduleRedraw(waypoints);
-}
-
-
 /** This function sets the map rotation and redraws the map if the
     map rotation differs too much from the current map rotation. */
 void Map::setMapRot(int newRotation)
@@ -1621,10 +1615,10 @@ void Map::__drawScale(QPainter& scaleP)
   Distance barLen;
 
   /** select appropriate length of bar. This needs to be done for each unit
-   * seperately, because else you'd get weird, broken barlengts.
+   * separately, because else you'd get weird, broken bar length.
    * Note: not all possible units are taken into account (meters, feet),
    * because we are not going to use these for horizontal distances (at least
-   * not externaly.) */
+   * not externally.) */
   int len=1;
 
   switch (barLen.getUnit())
@@ -1807,7 +1801,7 @@ void Map::slotSwitchManualInFlight()
 }
 
 
-/** Draws the glidersymbol on the pixmap */
+/** Draws the glider symbol on the pixmap */
 void Map::__drawGlider()
 {
   //get the projected coordinates of the current position
@@ -1818,7 +1812,7 @@ void Map::__drawGlider()
 
   QRect rect( QPoint(), size() );
 
-  //don't continue if position is outside of window's viewport
+  //don't continue if position is outside of window's view port
   if( ! rect.contains( Rx, Ry, false ) )
     {
       return;
@@ -1836,7 +1830,7 @@ void Map::__drawGlider()
 }
 
 
-/** Draws the Xsymbol on the pixmap */
+/** Draws the X symbol on the pixmap */
 void Map::__drawX()
 {
   //get the projected coordinates of the current position
@@ -1979,7 +1973,7 @@ void Map::scheduleRedraw(mapLayer fromLayer)
   if (!redrawTimerLong->isActive() && ShowGlider)
     {
       // Long timer shall ensure, that a map drawing is executed on expiration
-      // in every case. Will be acticated only in GPS mode and not in manuell
+      // in every case. Will be activated only in GPS mode and not in manually
       // mode.
       redrawTimerLong->start(3000);
     }
@@ -2000,7 +1994,7 @@ void Map::slotSetScale(const double& newScale)
 
 /**
  * This function draws a "direction line" on the map if a waypoint has been
- * selected. The QPoint is the projected & mapped coordinate of the positionsymbol
+ * selected. The QPoint is the projected & mapped coordinate of the position symbol
  * on the map, so we don't have to calculate that all over again.
  */
 void Map::__drawDirectionLine(const QPoint& from)
@@ -2191,9 +2185,14 @@ void Map::checkAirspace(const QPoint& pos)
 
   QString msg; // status message containing all conflicting airspaces
 
-  // @AP: Only the highest priority will be displayed and updated!
+  // Only the airspace with the highest priority will be displayed and updated.
+  // First we do look step by step for new results according to our predefined priority.
+  // If there are no new results to find, the current active warning will be shown
+  // in the status bar. If no warning is active the status bar display is reset.
+
   if ( ! newInsideAsMap.isEmpty() )
     {
+      // new inside has been found
       msg += tr("Inside") + " ";
       QMapIterator<QString, int> i(allInsideAsMap);
       bool first = true;
@@ -2216,7 +2215,7 @@ void Map::checkAirspace(const QPoint& pos)
 
       if ( _lastAsType != msg )
       {
-          // update warning in status bar
+          // show warning in status bar with alarm
         _lastAsType = msg;
         emit airspaceWarning( msg, true );
       }
@@ -2250,6 +2249,7 @@ void Map::checkAirspace(const QPoint& pos)
     }
   else if( ! newVeryNearAsMap.isEmpty() )
     {
+      // new very near has been found
       msg += tr("Very Near") + " ";
 
       QMapIterator<QString, int> i(allVeryNearAsMap);
@@ -2273,7 +2273,7 @@ void Map::checkAirspace(const QPoint& pos)
 
       if ( _lastAsType != msg )
         {
-            // update warning in status bar
+            // show warning in status bar
           _lastAsType = msg;
           emit airspaceWarning( msg, true );
         }
@@ -2307,6 +2307,7 @@ void Map::checkAirspace(const QPoint& pos)
      }
   else if ( ! newNearAsMap.isEmpty() )
     {
+      // new near has been found
       msg += tr("Near") + " ";
       QMapIterator<QString, int> i(allNearAsMap);
       bool first = true;
@@ -2329,7 +2330,7 @@ void Map::checkAirspace(const QPoint& pos)
 
       if ( _lastAsType != msg )
         {
-          // update warning in status bar
+          // show warning in status bar
           _lastAsType = msg;
           emit airspaceWarning( msg, true );
         }
@@ -2362,9 +2363,11 @@ void Map::checkAirspace(const QPoint& pos)
         }
     }
   else if ( ! allInsideAsMap.isEmpty() &&
+            _lastNearTime.elapsed() > showTime &&
+            _lastVeryNearTime.elapsed() > showTime &&
             _lastInsideTime.elapsed() > showTime )
     {
-      // If no other warning is active we show the current warning airspace type
+      // If no new warning is active we show the current inside airspace type
       // in the status bar, if show time of warning has expired.
       msg += tr("Inside") + " ";
       QMapIterator<QString, int> i(allInsideAsMap);
@@ -2388,7 +2391,7 @@ void Map::checkAirspace(const QPoint& pos)
 
       if ( _lastAsType != msg )
         {
-            // update warning in status bar without alarm
+            // show warning in status bar without alarm
           _lastAsType = msg;
           emit airspaceWarning( msg, false );
         }
@@ -2397,9 +2400,11 @@ void Map::checkAirspace(const QPoint& pos)
     }
 
   else if ( ! allVeryNearAsMap.isEmpty() &&
-            _lastVeryNearTime.elapsed() > showTime )
+            _lastNearTime.elapsed() > showTime &&
+            _lastVeryNearTime.elapsed() > showTime &&
+            _lastInsideTime.elapsed() > showTime )
     {
-      // If no other warning is active we show the current warning airspace type
+      // If no new warning is active we show the current very near airspace type
       // in the status bar, if show time of warning has expired.
       msg += tr("Very Near") + " ";
       QMapIterator<QString, int> i(allVeryNearAsMap);
@@ -2423,7 +2428,7 @@ void Map::checkAirspace(const QPoint& pos)
 
       if ( _lastAsType != msg )
       {
-         // update warning in status bar without alarm
+         // show warning in status bar without alarm
         _lastAsType = msg;
         emit airspaceWarning( msg, false );
       }
@@ -2431,18 +2436,20 @@ void Map::checkAirspace(const QPoint& pos)
       return;
     }
   else if ( ! allNearAsMap.isEmpty() &&
-            _lastNearTime.elapsed() > showTime )
+      _lastNearTime.elapsed() > showTime &&
+      _lastVeryNearTime.elapsed() > showTime &&
+      _lastInsideTime.elapsed() > showTime )
     {
-      // If no other warning is active we show the current warning airspace type
+      // If no new warning is active we show the current near airspace type
       // in the status bar, if show time of warning has expired.
       msg += tr("Near") + " ";
       QMapIterator<QString, int> i(allNearAsMap);
       bool first = true;
-      
+
       while ( i.hasNext()  )
       {
         i.next();
-        
+
         if( ! first )
         {
           msg += ", ";
@@ -2451,17 +2458,17 @@ void Map::checkAirspace(const QPoint& pos)
         {
           first = false;
         }
-        
+
         msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
       }
-      
+
       if ( _lastAsType != msg )
       {
-         // update warning in status bar without alarm
+         // show warning in status bar without alarm
         _lastAsType = msg;
         emit airspaceWarning( msg, false );
       }
-      
+
       return;
     }
   else
@@ -2475,7 +2482,7 @@ void Map::checkAirspace(const QPoint& pos)
         {
           if ( _lastAsType != "" )
           {
-              // Only reset warning in status bar without alarm, if no warning is active.
+              // Reset warning in status bar without alarm, if no warning is active.
             _lastAsType = "";
             emit airspaceWarning( " ", false );
           }

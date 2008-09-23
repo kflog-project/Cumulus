@@ -211,11 +211,6 @@ class Map : public QWidget
     void slotCenterToWaypoint(const unsigned int id);
 
     /**
-     * Slot signalled when user selects another waypoint catalog.
-     */
-    void slotWaypointCatalogChanged(WaypointCatalog* c);
-
-    /**
      * This slot is called to set a new position. The map object
      * determines if it is necessary to recenter the map or if
      * the glider can just be drawn on a different position.
