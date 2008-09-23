@@ -46,17 +46,18 @@ TaskList::TaskList( QWidget* parent ) :
   QVBoxLayout* taskLayout = new QVBoxLayout( this );
   taskLayout->setSpacing(5);
   taskLayout->setMargin(5);
-  
+
   QHBoxLayout* editrow = new QHBoxLayout;
   editrow->setSpacing(2);
   taskLayout->addLayout( editrow );
-  
+
   cruisingSpeed = new QSpinBox( this );
   cruisingSpeed->setButtonSymbols(QSpinBox::PlusMinus);
   cruisingSpeed->setRange( 0, 1000);
   cruisingSpeed->setSingleStep( 5 );
+  cruisingSpeed->setValue( GeneralConfig::instance()->getCruisingSpeed() );
   cruisingSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
-  
+
   editrow->addSpacing(10);
   editrow->addStretch(10);
 
@@ -80,7 +81,7 @@ TaskList::TaskList( QWidget* parent ) :
   splitter = new QSplitter( Qt::Vertical, this );
   splitter->setOpaqueResize( true );
   splitter->setHandleWidth(10);
-  
+
   taskListWidget = new QTreeWidget( splitter );
 
   taskListWidget->setRootIsDecorated(false);
@@ -172,7 +173,7 @@ void TaskList::slotTaskDetails()
 
   if ( selected->text( 0 ) == " " ) {
     if ( selected->text( 1 ) == tr("(No tasks defined)") ) {
-      QMessageBox::information( this, 
+      QMessageBox::information( this,
                         tr("Create New Task"),
                         tr("Push <b>Plus</b> button to add a task") );
     }
@@ -313,13 +314,13 @@ bool TaskList::slotLoadTask()
                   << taskName
                   << task->getTaskTypeString()
                   << task->getTaskDistanceString();
-                  
+
           taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
           rowList.clear();
 
           // save task name
           taskNames << taskName;
-        }  
+        }
       }
     }
   }
@@ -376,7 +377,7 @@ void TaskList::slotEditTask()
 {
   // fetch selected task item
   QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
-  
+
   if( selectList.size() == 0 )
     return;
 
@@ -499,7 +500,7 @@ bool TaskList::saveTaskList()
   QDateTime dt = QDateTime::currentDateTime();
   QString dtStr = dt.toString(Qt::ISODate);
 
-  stream << "# KFLog/Cumulus-Task-File created at " 
+  stream << "# KFLog/Cumulus-Task-File created at "
          << dtStr << " by Cumulus " << CU_VERSION << endl;
 
   for( int i=0; i < taskList.count(); i++ )
