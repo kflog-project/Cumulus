@@ -431,8 +431,16 @@ void FlightTask::__setTaskPointTypes()
   for( uint n = 1; n  < cnt; n++ )
     {
       wpList->at(n)->distance = dist(wpList->at(n-1), wpList->at(n));
-      wpList->at(n)->bearing  = getBearing(wpList->at(n-1)->origP,
-                                           wpList->at(n)->origP);
+
+      if( wpList->at(n-1)->origP == wpList->at(n)->origP )
+        {
+          wpList->at(n)->bearing = -1.;
+        }
+      else
+        {
+          wpList->at(n)->bearing  = getBearing( wpList->at(n-1)->origP,
+                                                wpList->at(n)->origP );
+        }
 
       wpList->at(n)->taskPointType = wayPoint::FreeP;
 
