@@ -73,12 +73,12 @@ HEADERS     = \
     settingspageairspace.h \
     settingspagegps.h \
     settingspageglider.h \
+    settingspagegliderdata.h \
     settingspageinformation.h \
     settingspagelooknfeel.h \
     settingspagemapobjects.h \
     settingspagemapsettings.h \
     settingspagepersonal.h \
-    settingspagepolar.h \
     settingspagesector.h \
     settingspageunits.h \
     signalhandler.h \
@@ -173,12 +173,12 @@ SOURCES     = \
     settingspageairspace.cpp \
     settingspagegps.cpp \
     settingspageglider.cpp \
+    settingspagegliderdata.cpp \
     settingspageinformation.cpp \
     settingspagelooknfeel.cpp \
     settingspagemapobjects.cpp \
     settingspagemapsettings.cpp \
     settingspagepersonal.cpp \
-    settingspagepolar.cpp \
     settingspagesector.cpp \
     settingspageunits.cpp \
     signalhandler.cpp \
