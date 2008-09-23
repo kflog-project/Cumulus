@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -14,6 +14,8 @@
 **   $Id$
 **
 ***********************************************************************/
+
+#include <math.h>
 
 #include <QLabel>
 #include <QGridLayout>
@@ -23,10 +25,10 @@
 #include "altitude.h"
 #include "basemapelement.h"
 
-WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent) :
+WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
  QWidget(parent)
 {
-  setObjectName("WPEditDialogPageGeneral");
+  setObjectName("WpEditDialogPageGeneral");
 
   QGridLayout * topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
@@ -42,7 +44,7 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent) :
   edtName->setMaxLength(9); // limit name to 9 characters
   topLayout->addWidget(edtName, row++, 1, 1, 2);
 
-  QLabel * lblDescription = new QLabel(tr("Description(25):"), this);
+  QLabel * lblDescription = new QLabel(tr("Description:"), this);
   topLayout->addWidget(lblDescription, row, 0);
   edtDescription = new QLineEdit(this);
   edtDescription->setMaxLength(25); // limit name to 25 characters
@@ -101,12 +103,12 @@ WPEditDialogPageGeneral::WPEditDialogPageGeneral(QWidget *parent) :
 }
 
 
-WPEditDialogPageGeneral::~WPEditDialogPageGeneral()
+WpEditDialogPageGeneral::~WpEditDialogPageGeneral()
 {}
 
 
 /** called if data needs to be loaded */
-void WPEditDialogPageGeneral::slot_load(wayPoint * wp)
+void WpEditDialogPageGeneral::slot_load(wayPoint * wp)
 {
   if (!wp==0)
     { //we don't need to load if the waypoint is not there
@@ -122,18 +124,18 @@ void WPEditDialogPageGeneral::slot_load(wayPoint * wp)
 
 
 /** called if data needs to be saved */
-void WPEditDialogPageGeneral::slot_save(wayPoint * wp)
+void WpEditDialogPageGeneral::slot_save(wayPoint * wp)
 {
   if ( wp )
     {
       wp->name=edtName->text();
-      // qDebug("WPEditDialogPageGeneral::slot_save %x %s",wp,(const char *)wp->name );
+      // qDebug("WpEditDialogPageGeneral::slot_save %x %s",wp,(const char *)wp->name );
       wp->description=edtDescription->text();
       if( edtLat->isInputChanged() )
         wp->origP.setLat(edtLat->KFLogDegree());
       if( edtLong->isInputChanged() )
         wp->origP.setLon(edtLong->KFLogDegree());
-      wp->elevation=int(Altitude::convertToMeters(edtElev->text().toDouble()));
+      wp->elevation=static_cast<int> (rint(Altitude::convertToMeters(edtElev->text().toDouble())));
       wp->type=getWaypointType();
       wp->importance=( enum wayPoint::Importance ) cmbImportance->currentIndex();
     }
@@ -141,7 +143,7 @@ void WPEditDialogPageGeneral::slot_save(wayPoint * wp)
 
 
 /** return internal type of waypoint */
-int WPEditDialogPageGeneral::getWaypointType()
+int WpEditDialogPageGeneral::getWaypointType()
 {
   int type = cmbType->currentIndex();
 
@@ -157,7 +159,7 @@ int WPEditDialogPageGeneral::getWaypointType()
 
 /** set waypoint type in combo box
 translate internal id to index */
-void WPEditDialogPageGeneral::setWaypointType(int type)
+void WpEditDialogPageGeneral::setWaypointType(int type)
 {
   if (type != -1)
     {

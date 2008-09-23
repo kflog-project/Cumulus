@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef WPEDITDIALOGPAGEGENERAL_H
-#define WPEDITDIALOGPAGEGENERAL_H
+#ifndef WPEDIT_DIALOG_PAGE_GENERAL_H
+#define WPEDIT_DIALOG_PAGE_GENERAL_H
 
 #include <QWidget>
 #include <QLineEdit>
@@ -28,13 +28,13 @@
  * This is the general page for the Waypoint edit dialog
  * @author André Somers
  */
-class WPEditDialogPageGeneral : public QWidget
+class WpEditDialogPageGeneral : public QWidget
   {
     Q_OBJECT
   public:
-    WPEditDialogPageGeneral(QWidget *parent=0 );
+    WpEditDialogPageGeneral(QWidget *parent=0 );
 
-    ~WPEditDialogPageGeneral();
+    virtual ~WpEditDialogPageGeneral();
 
   public slots: // Public slots
     /**
@@ -47,7 +47,7 @@ class WPEditDialogPageGeneral : public QWidget
      */
     void slot_load(wayPoint * wp);
 
-  protected: // Protected attributes
+  private:
     QLineEdit * edtName;
     QLineEdit * edtDescription;
 
@@ -58,7 +58,6 @@ class WPEditDialogPageGeneral : public QWidget
     QComboBox * cmbType;
     QComboBox * cmbImportance;
 
-  private:
     int getWaypointType();
     void setWaypointType(int type);
 

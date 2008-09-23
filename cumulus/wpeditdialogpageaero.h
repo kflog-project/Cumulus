@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef WPEDITDIALOGPAGEAERO_H
-#define WPEDITDIALOGPAGEAERO_H
+#ifndef WPEDIT_DIALOG_PAGE_AERO_H
+#define WPEDIT_DIALOG_PAGE_AERO_H
 
 #include <QWidget>
 #include <QLineEdit>
@@ -27,17 +27,17 @@
 #include "waypoint.h"
 
 /**
- * Provides the WPEditDialog page with aeronautical information
+ * Provides the WpEditDialog page with aeronautical information
  * @author André Somers
  */
-class WPEditDialogPageAero : public QWidget
+class WpEditDialogPageAero : public QWidget
   {
     Q_OBJECT
 
   public:
-    WPEditDialogPageAero(QWidget *parent=0);
+    WpEditDialogPageAero(QWidget *parent=0);
 
-    ~WPEditDialogPageAero();
+    virtual ~WpEditDialogPageAero();
 
   public slots: // Public slots
     /**
@@ -50,7 +50,7 @@ class WPEditDialogPageAero : public QWidget
      */
     void slot_load(wayPoint * wp);
 
-  protected:
+  private:
     QLineEdit * edtICAO;
     QLineEdit * edtFrequency;
     DegreeSpinBox * edtRunway;
@@ -58,7 +58,6 @@ class WPEditDialogPageAero : public QWidget
     QCheckBox * chkLandable;
     QComboBox * cmbSurface;
 
-  private:
     int getSurface();
     void setSurface(int s);
   };

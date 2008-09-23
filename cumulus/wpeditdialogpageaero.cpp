@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -15,18 +15,20 @@
 **
 ***********************************************************************/
 
+#include <math.h>
+
 #include <QLabel>
 #include <QGridLayout>
 #include <QBoxLayout>
 
 #include "wpeditdialogpageaero.h"
-#include "distance.h"
+#include "altitude.h"
 #include "airport.h"
 
-WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent) :
+WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   QWidget(parent, Qt::WindowStaysOnTopHint)
 {
-  setObjectName("WPEditDialogPageAero");
+  setObjectName("WpEditDialogPageAero");
 
   QGridLayout * topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
@@ -59,10 +61,9 @@ WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent) :
   topLayout->addLayout(elevLayout,row++,1);
   edtLength = new QLineEdit(this);
   elevLayout->addWidget(edtLength);
-  QLabel * lblLenUnit = new QLabel(Distance::getText(-1,true), this);
+  // Note! We take as runway length unit the altitude unit (m/ft)
+  QLabel * lblLenUnit = new QLabel(Altitude::getText(-1,true), this);
   elevLayout->addWidget(lblLenUnit);
-
-  //topLayout->setRowMinimumHeight(row++, 10);
 
   QLabel * lblSurface = new QLabel(tr("Surface:"), this);
   topLayout->addWidget(lblSurface,row,0);
@@ -92,19 +93,19 @@ WPEditDialogPageAero::WPEditDialogPageAero(QWidget *parent) :
 }
 
 
-WPEditDialogPageAero::~WPEditDialogPageAero()
+WpEditDialogPageAero::~WpEditDialogPageAero()
 {}
 
 
 /** Called if the page needs to load data from the waypoint */
-void WPEditDialogPageAero::slot_load(wayPoint * wp)
+void WpEditDialogPageAero::slot_load(wayPoint * wp)
 {
   if ( wp )
     {
       edtICAO->setText(wp->icao);
       edtFrequency->setText(QString::number(wp->frequency));
       edtRunway->setValue(wp->runway/10);
-      edtLength->setText(Distance::getText(wp->length,false,-1));
+      edtLength->setText(Altitude::getText((wp->length),false,-1));
       setSurface(wp->surface);
       chkLandable->setChecked(wp->isLandable);
     }
@@ -112,14 +113,14 @@ void WPEditDialogPageAero::slot_load(wayPoint * wp)
 
 
 /** Called if the data needs to be saved. */
-void WPEditDialogPageAero::slot_save(wayPoint * wp)
+void WpEditDialogPageAero::slot_save(wayPoint * wp)
 {
   if ( wp )
     {
       wp->icao=edtICAO->text();
       wp->frequency=edtFrequency->text().toDouble();
       wp->runway=edtRunway->value()*10;
-      wp->length=int(Distance::convertToMeters(edtLength->text().toDouble()));
+      wp->length=static_cast<int> (rint(Altitude::convertToMeters(edtLength->text().toDouble())));
       wp->surface=getSurface();
       wp->isLandable=chkLandable->isChecked();
     }
@@ -127,7 +128,7 @@ void WPEditDialogPageAero::slot_save(wayPoint * wp)
 
 
 /** return internal type of surface */
-int WPEditDialogPageAero::getSurface()
+int WpEditDialogPageAero::getSurface()
 {
   int s = cmbSurface->currentIndex();
 
@@ -148,7 +149,7 @@ int WPEditDialogPageAero::getSurface()
 
 /** set surface type in combo box
 translate internal id to index */
-void WPEditDialogPageAero::setSurface(int s)
+void WpEditDialogPageAero::setSurface(int s)
 {
   if (s != -1)
     {
