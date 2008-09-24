@@ -24,51 +24,29 @@
 QHash<int, QString> Airport::surfaceTranslations;
 QStringList Airport::sortedTranslations;
 
-Airport::Airport(const QString& n, const QString& i,
-                 const QString& abbr, BaseMapElement::objectType t,
+Airport::Airport(const QString& name, const QString& icao,
+                 const QString& shortName, const BaseMapElement::objectType typeId,
                  const WGSPoint& wgsPos, const QPoint& pos,
-                 unsigned int e, const QString& f,
-                 bool v, runway *rw )
-  : RadioPoint(n, i, abbr, t, wgsPos, pos, f, e), vdf(v)
+                 const Runway& rw,
+                 const unsigned int elevation,
+                 const QString& frequency )
+  : SinglePoint(name, shortName, typeId, wgsPos, pos, elevation),
+    icao(icao),
+    frequency(frequency),
+    rwData(rw)
 {
-  rwData = rw;
+  // calculate the default runway shift in 1/10 degrees.
+  rwShift = 90/10; // default direction is 90 degrees
 
-  if(rwData)
-    rwNum = 1;
-
-  int rw2 = 90; // defaut direction is 90 degrees
-
-  if( rwData->direction <= 360 ) {
-    rw2 = rwData->direction >= 180 ? rwData->direction-180 : rwData->direction;
+  // calculate the real runway shift in 1/10 degrees.
+  if( rwData.direction <= 360 ) {
+    rwShift = (rwData.direction >= 180 ? rwData.direction-180 : rwData.direction) / 10;
   }
-
-  shift = ((rw2)/10);
 }
-
 
 Airport::~Airport()
 {
-  delete rwData;
 }
-
-
-QString Airport::getFrequency() const
-{
-  return frequency;
-}
-
-
-runway Airport::getRunway(int /*index*/) const
-{
-  return *rwData;
-}
-
-
-unsigned int Airport::getRunwayNumber() const
-{
-  return rwNum;
-}
-
 
 QString Airport::getInfoString() const
 {
@@ -88,7 +66,6 @@ QString Airport::getInfoString() const
 
   return text;
 }
-
 
 /**
  * Get translation string for surface type.
@@ -135,7 +112,7 @@ void Airport::loadTranslations()
       sortedTranslations.append( it.value() );
     }
 
-  sortedTranslations.sort();  
+  sortedTranslations.sort();
 }
 
 /**
@@ -149,14 +126,14 @@ QStringList& Airport::getSortedTranslationList()
   }
 
   // qDebug("Airport::getSortedTranslationList: size: %d", sortedTranslations.size());
-  
+
   return sortedTranslations;
 }
 
 
 void Airport::drawMapElement(QPainter* targetP)
 {
-  if(!__isVisible()) {
+  if( ! isVisible() ) {
     curPos = QPoint(-5000, -5000);
     return;
   }
@@ -189,7 +166,7 @@ void Airport::drawMapElement(QPainter* targetP)
     if( glConfig->isRotatable( typeID ) ) {
       QPixmap image( glConfig->getPixmapRotatable(typeID, false) );
       targetP->drawPixmap(curPos.x() - iconSize/2, curPos.y() - iconSize/2, image,
-                          shift*iconSize, 0, iconSize, iconSize);
+                          rwShift*iconSize, 0, iconSize, iconSize);
     } else {
       QPixmap image( glConfig->getPixmap(typeID) );
       targetP->drawPixmap(curPos.x() - iconSize/2, curPos.y() - iconSize/2, image  );

@@ -103,7 +103,7 @@ FlightTask::FlightTask( const FlightTask& inst )
   duration_total = inst.duration_total;
   __planningType = inst.__planningType;
   _taskName = inst._taskName;
-} 
+}
 
 FlightTask::~FlightTask()
 {
@@ -554,16 +554,16 @@ void FlightTask::drawMapElement( QPainter* painter )
 
   const double OUTR = conf->getTaskSectorOuterRadius().getMeters();
   const double INR = conf->getTaskSectorInnerRadius().getMeters();
-  
+
   const int ora = (int) rint(OUTR / glMapMatrix->getScale());
   const int ira = (int) rint(INR / glMapMatrix->getScale());
-  
+
   // fetch map measures
   const int w = Map::getInstance()->size().width();
   const int h = Map::getInstance()->size().height();
-  
+
   // qDebug("QDesktop: w=%d, h=%d, ora=%d", w, h, ora );
-  
+
   QRect viewport( -ora, -ora, w+2*ora, h+2*ora);
   painter->setClipRegion( viewport );
   painter->setClipping( true );
@@ -580,7 +580,7 @@ void FlightTask::drawMapElement( QPainter* painter )
 				 glMapMatrix->map(wpList->at(loop)->projP) );
 	    }
 	}
- 
+
       // map projected point to map
       QPoint mPoint(glMapMatrix->map(wpList->at(loop)->projP));
 
@@ -607,9 +607,9 @@ void FlightTask::drawMapElement( QPainter* painter )
 			  biangle,
 			  sectorAngle,
 			  c,
-			  drawShape );	  
+			  drawShape );
 	    }
-	      
+
 	  if( loop )
 	    {
 	      painter->setPen(QPen(QColor(Qt::cyan), 3));
@@ -618,7 +618,7 @@ void FlightTask::drawMapElement( QPainter* painter )
 	    }
 
 	  break;
-		  
+
 	case wayPoint::Begin:
 
 	  if( viewport.contains(mPoint) )
@@ -637,10 +637,10 @@ void FlightTask::drawMapElement( QPainter* painter )
 			  biangle,
 			  sectorAngle,
 			  c,
-			  drawShape );	  
+			  drawShape );
 	    }
 
-	  // Draw line from takeoff to begin, if both not identical
+	  // Draw line from take off to begin, if both not identical
 	  if( loop &&
 	      wpList->at(loop - 1)->origP != wpList->at(loop)->origP )
 	    {
@@ -650,7 +650,7 @@ void FlightTask::drawMapElement( QPainter* painter )
 	    }
 
 	  break;
-		  
+
 	case wayPoint::End:
 
 	  if( viewport.contains(mPoint) )
@@ -669,22 +669,22 @@ void FlightTask::drawMapElement( QPainter* painter )
 			  biangle,
 			  sectorAngle,
 			  c,
-			  drawShape );	  
+			  drawShape );
 	    }
 
 	  painter->setPen(QPen(QColor(Qt::cyan), 3));
 	  painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
 			     glMapMatrix->map(wpList->at(loop)->projP) );
 	  break;
-	      
+
 	default:
 
-	  // Can be takeoff or landing point
+	  // Can be take off or landing point
 	  // Draw line from End to Landing point, if both not identical
 	  if( loop &&
 	      wpList->at(loop - 1)->origP != wpList->at(loop)->origP )
 	    {
-	      painter->setPen(QPen(Qt::cyan, 3));		  
+	      painter->setPen(QPen(Qt::cyan, 3));
 	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
 				 glMapMatrix->map(wpList->at(loop)->projP ) );
 	    }
@@ -718,7 +718,7 @@ void FlightTask::circleSchemeDrawing( QPainter* painter )
   // fetch desktop measures
   const int w = QApplication::desktop()->width();
   const int h = QApplication::desktop()->height();
-  
+
   QRect viewport( -10-r, -10-r, w+2*r, h+2*r );
 
   for( int loop=0; loop < wpList->count(); loop++ )
@@ -757,17 +757,17 @@ void FlightTask::circleSchemeDrawing( QPainter* painter )
           switch(wpList->at(loop)->taskPointType)
             {
             case wayPoint::TakeOff:
-              
+
               if( wpList->count() > loop &&
                   wpList->at(loop)->origP == wpList->at(loop+1)->origP )
                 {
                   // TakeOff and Begin point are identical
                   continue;
                 }
-              
+
               color = QColor(Qt::gray);
               break;
-              
+
             case wayPoint::Begin:
 
               if( wpList->count() > 1 &&
@@ -780,7 +780,7 @@ void FlightTask::circleSchemeDrawing( QPainter* painter )
                   color = QColor(Qt::red);
                 }
               break;
-              
+
             case wayPoint::RouteP:
               color = QColor(Qt::green);
               break;
@@ -795,7 +795,7 @@ void FlightTask::circleSchemeDrawing( QPainter* painter )
 
               color = QColor(Qt::cyan);
               break;
-              
+
             case wayPoint::Landing:
               if( loop > 1 &&
                   wpList->at(loop)->origP == wpList->at(loop-1)->origP )
@@ -804,7 +804,7 @@ void FlightTask::circleSchemeDrawing( QPainter* painter )
                   continue;
                 }
 
-              color = QColor(Qt::gray);	  
+              color = QColor(Qt::gray);
               break;
 
             default:
@@ -858,8 +858,8 @@ void FlightTask::drawCircle( QPainter* painter, QPoint& centerCoordinate,
       painter->setBrush(Qt::NoBrush);
       painter->setPen(QPen(QColor(Qt::black), 2));
       painter->drawEllipse( centerCoordinate.x()-radius, centerCoordinate.y()-radius,
-                            radius*2, radius*2 );      
-    }  
+                            radius*2, radius*2 );
+    }
 }
 
 /**
@@ -960,13 +960,13 @@ void FlightTask::calculateSector( QPainterPath& pp,
     {
       pp.moveTo( (qreal) ocx + (qreal) ora, (qreal) ocy + (qreal) ora );
       // The big arc around the center point.
-      pp.arcTo( (qreal) ocx,(qreal) ocy, (qreal) (2 * ora), (qreal) (2 * ora), (qreal) (w1+sa/2),(qreal) -sa );      
+      pp.arcTo( (qreal) ocx,(qreal) ocy, (qreal) (2 * ora), (qreal) (2 * ora), (qreal) (w1+sa/2),(qreal) -sa );
     }
 
   else if( ira == ora )
     {
       // Inner and outer radius are equal, we have to draw a circle
-      pp.addEllipse( (qreal) ocx, (qreal) ocy, (qreal) (2 * ora), (qreal) (2 * ora) );      
+      pp.addEllipse( (qreal) ocx, (qreal) ocy, (qreal) (2 * ora), (qreal) (2 * ora) );
     }
 
   else if( ira > 0 && ira < ora )
@@ -1011,7 +1011,7 @@ bool FlightTask::checkSector( const Distance& dist2TP,
     {
       // Cylinder scheme is active
       double cylinderRadius = conf->getTaskCylinderRadius().getMeters();
-      
+
       if( dist2TP.getMeters() < cylinderRadius )
         {
           // We are inside cylinder
@@ -1031,7 +1031,7 @@ bool FlightTask::checkSector( const Distance& dist2TP,
       // considered
       return false;
     }
-  
+
   if( ( innerRadius > 0.0 || innerRadius == outerRadius ) &&
       dist2TP.getMeters() < innerRadius )
     {
@@ -1071,20 +1071,20 @@ bool FlightTask::checkSector( const Distance& dist2TP,
           maxAngle*180./M_PI,
           bearing*180./M_PI );
 #endif
-  
+
   if( minAngle > maxAngle &&
       ( bearing > minAngle || bearing < maxAngle ) )
     {
       // we are inside of sector and sector includes north direction
       return true;
     }
-  
+
   if( bearing > minAngle && bearing < maxAngle )
     {
       // we are inside of sector between 0...360
       return true;
     }
-  
+
   return false;
 }
 

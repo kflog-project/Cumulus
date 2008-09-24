@@ -2,7 +2,7 @@
  **
  **   glidersite.cpp
  **
- **   This file is part of Cumulus..
+ **   This file is part of Cumulus.
  **
  ************************************************************************
  **
@@ -19,60 +19,35 @@
 #include "glidersite.h"
 #include "reachablelist.h"
 
-
-GliderSite::GliderSite(const QString& n, const QString& icao, const QString& gps,
-                       const WGSPoint& wgsPos, const QPoint& pos, unsigned int elev, const QString& f, bool w, runway *rw)
-  : RadioPoint(n, icao, gps, BaseMapElement::Glidersite, wgsPos, pos, f, elev),
-    winch(w)
+GliderSite::GliderSite( const QString& name,
+                        const QString& icao,
+                        const QString& shortName,
+                        const WGSPoint& wgsPos,
+                        const QPoint& pos,
+                        const Runway& rw,
+                        const unsigned int elevation,
+                        const QString& frequency,
+                        bool winch,
+                        bool towing )
+  : SinglePoint(name, shortName, BaseMapElement::Glidersite, wgsPos, pos, elevation),
+    icao(icao),
+    frequency(frequency),
+    rwData(rw),
+    winch(winch),
+    towing(towing)
 {
-  rwData = rw;
+  // calculate the default runway shift in 1/10 degrees.
+  rwShift = 90/10; // default direction is 90 degrees
 
-  if(rwData)
-    rwNum = 1;
-
-  if( rwData->length != 0 ) {
-    int rw2 = 90; // defaut direction is 90 degrees
-
-    if( rwData->direction <= 360 ) {
-      rw2 = rwData->direction >= 180 ? rwData->direction-180 : rwData->direction;
-    }
-
-    shift = ((rw2)/10);
-  } else
-    shift = 9; // draw in 90 degress if no data avail
-
+  // calculate the real runway shift in 1/10 degrees.
+  if( rwData.direction <= 360 ) {
+    rwShift = (rwData.direction >= 180 ? rwData.direction-180 : rwData.direction) / 10;
+  }
 }
-
 
 GliderSite::~GliderSite()
 {
-  delete rwData;
 }
-
-
-QString GliderSite::getFrequency() const
-{
-  return frequency;
-}
-
-
-runway GliderSite::getRunway(int /*index*/) const
-{
-  return *rwData;
-}
-
-
-unsigned int GliderSite::getRunwayNumber() const
-{
-  return rwNum;
-}
-
-
-bool GliderSite::isWinch() const
-{
-  return winch;
-}
-
 
 QString GliderSite::getInfoString() const
 {
@@ -93,13 +68,13 @@ QString GliderSite::getInfoString() const
   return text;
 }
 
-
 void GliderSite::drawMapElement(QPainter* targetP)
 {
-  if(!__isVisible()) {
+  if( ! isVisible()) {
     curPos = QPoint(-5000, -5000);
     return;
   }
+
   extern MapMatrix * _globalMapMatrix;
   int scale = _globalMapMatrix->getScaleRatio()/50;
   QColor col = ReachableList::getReachColor( wgsPosition );
@@ -125,7 +100,7 @@ void GliderSite::drawMapElement(QPainter* targetP)
 
     QPixmap image( glConfig->getPixmapRotatable(typeID, winch) );
     targetP->drawPixmap(curPos.x() - iconSize/2, curPos.y() - iconSize/2, image,
-                        shift*iconSize, 0, iconSize, iconSize);
+                        rwShift*iconSize, 0, iconSize, iconSize);
   }
 }
 

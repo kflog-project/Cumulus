@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QBoxLayout>
 
+#include "rowdelegate.h"
 #include "waypoint.h"
 #include "flighttask.h"
 
@@ -99,7 +100,6 @@ signals: // Signals
 protected:
     void showEvent(QShowEvent *);
 
-
 private:
     QTreeWidget*  list;
     CumulusApp  *par;
@@ -120,6 +120,9 @@ private:
 
     // flag for showing buttons (or not)
     bool _showButtons;
+
+    RowDelegate* rowDelegate;
+
 
 private slots:
     /**

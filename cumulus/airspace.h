@@ -113,7 +113,7 @@ public:
     
     bool isDrawable()
     {
-      return ( glConfig->isBorder(typeID) && __isVisible() );
+      return ( glConfig->isBorder(typeID) && isVisible() );
     };
 
     /**

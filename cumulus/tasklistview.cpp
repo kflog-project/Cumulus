@@ -33,7 +33,8 @@ extern MapConfig * _globalMapConfig;
 extern CuCalc* calculator;
 
 TaskListView::TaskListView( QWidget *parent, bool showButtons )
-  : QWidget(parent)
+  : QWidget(parent),
+    rowDelegate(0)
 {
   setObjectName("TaskListView");
 
@@ -163,8 +164,6 @@ void TaskListView::slot_Selected()
 
 void TaskListView::showEvent(QShowEvent *)
 {
-  // qDebug("TaskListView::showEvent(): name=%s", name());
-
   if( _showButtons == false )
     {
       // do nothing as display, there are no buttons visible
@@ -268,6 +267,23 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
     return;
   }
 
+  if( _showButtons == true )
+    {
+    // set row height at each list fill - has probably changed.
+    // Note: rpMargin is a manifold of 2 to ensure symmetry
+      int rpMargin = GeneralConfig::instance()->getListDisplayRPMargin();
+
+      qDebug( "rpMargin=%d", rpMargin );
+
+      if ( rowDelegate ) {
+        rowDelegate->setVerticalMargin( rpMargin );
+      }
+      else {
+        rowDelegate = new RowDelegate( list, rpMargin );
+        list->setItemDelegate( rowDelegate );
+      }
+    }
+
   // create a deep task copy
   _task = new FlightTask(*tsk);
 
@@ -289,6 +305,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
       _selectedWp = wp;
     }
   }
+
   list->sortByColumn(7, Qt::AscendingOrder);
   // set the total values in the header of this view
   distTotal->setText(  "S=" +_task->getTotalDistanceString() );
@@ -344,7 +361,7 @@ TaskListView::_TaskPoint::_TaskPoint (QTreeWidget *wpList, wayPoint *point ) : Q
   setText(0, typeName);
   setText(1, wp->name);
   setText(2, " " + Distance::getText(wp->distance*1000,false,1));
-  setTextAlignment( 2, Qt::AlignRight );
+  setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
 
   if( wp->bearing == -1.0 )
     {
@@ -354,13 +371,13 @@ TaskListView::_TaskPoint::_TaskPoint (QTreeWidget *wpList, wayPoint *point ) : Q
   else
     {
       int bearing = (int) rint( wp->bearing*180./M_PI );
-      setText(3, " " + QString::number( bearing ));
+      setText(3, " " + QString::number( bearing ) + QString(Qt::Key_degree));
     }
 
-  setTextAlignment( 3, Qt::AlignRight );
+  setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
 
   setText(4, " " + FlightTask::getDistanceTimeString(wp->distTime));
-  setTextAlignment( 4, Qt::AlignRight );
+  setTextAlignment( 4, Qt::AlignRight|Qt::AlignVCenter );
   setText(5, " " + wp->description);
   setText(6, " " + ss);
 

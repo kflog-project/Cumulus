@@ -83,8 +83,9 @@ void WpListWidgetParent::configRowHeight()
   // set new row height from configuration
   int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
 
-  if ( rowDelegate )
+  if ( rowDelegate ) {
     rowDelegate->setVerticalMargin(afMargin);
+  }
   else {
     rowDelegate = new RowDelegate( list, afMargin );
     list->setItemDelegate( rowDelegate );

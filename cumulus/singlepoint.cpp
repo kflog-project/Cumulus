@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2007 Axel Pauli
+ **                   2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -18,32 +18,26 @@
 
 #include "singlepoint.h"
 
-
-SinglePoint::SinglePoint(const QString& n, const QString& gps,
-                         BaseMapElement::objectType t,
-                         const WGSPoint& wgsP, const QPoint& pos,
-                         unsigned int elev, unsigned int secID)
+SinglePoint::SinglePoint( const QString& n,
+                          const QString& shortName,
+                          const BaseMapElement::objectType t,
+                          const WGSPoint& wgsP,
+                          const QPoint& pos,
+                          const unsigned int elev,
+                          const unsigned int secID)
   : BaseMapElement(n, t, secID), wgsPosition(wgsP),
-    position(pos), gpsName(gps), curPos(pos),
+    position(pos), shortName(shortName), curPos(pos),
     elevation(elev)
 {
 }
-
 
 SinglePoint::~SinglePoint()
 {
 }
 
-
-bool SinglePoint::__isVisible() const
-{
-  return glMapMatrix->isVisible(position);
-}
-
-
 void SinglePoint::drawMapElement(QPainter* targetP)
 {
-  if(!__isVisible()) {
+  if(! isVisible() ) {
     curPos = QPoint(-5000, -5000);
     return;
   }
@@ -69,40 +63,4 @@ void SinglePoint::drawMapElement(QPainter* targetP)
     targetP->drawEllipse(curPos.x(), curPos.y(), scale, scale );
   else
     targetP->drawPixmap(curPos.x() - iconSize, curPos.y() - iconSize, glConfig->getPixmap(typeID));
-}
-
-
-QString SinglePoint::getWPName() const
-{
-  return gpsName;
-}
-
-
-QPoint SinglePoint::getPosition() const
-{
-  return position;
-}
-
-
-WGSPoint SinglePoint::getWGSPosition() const
-{
-  return wgsPosition;
-}
-
-
-QPoint SinglePoint::getMapPosition() const
-{
-  return curPos;
-}
-
-
-QString SinglePoint::getInfoString() const
-{
-  return QString();
-}
-
-
-unsigned int SinglePoint::getElevation() const
-{
-  return elevation;
 }

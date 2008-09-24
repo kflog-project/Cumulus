@@ -98,7 +98,7 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
   //        typeID, opacity, getInfoString().latin1() );
 
 
-  if(!glConfig->isBorder(typeID) || !__isVisible())
+  if(! glConfig->isBorder(typeID) || ! isVisible())
     {
       return;
     }

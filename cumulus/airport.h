@@ -23,7 +23,7 @@
 #include <QHash>
 #include <QStringList>
 
-#include "radiopoint.h"
+#include "singlepoint.h"
 #include "runway.h"
 
 /**
@@ -36,7 +36,7 @@
  * @see BaseMapElement#objectType
  */
 
-class Airport : public RadioPoint
+class Airport : public SinglePoint
 {
  public:
 
@@ -49,45 +49,59 @@ class Airport : public RadioPoint
    * Creates a new Airport-object.
    * @param  name  The name
    * @param  icao  The icao-name
-   * @param  abbr  The abbreviation, used for the gps-logger
+   * @param  shortName  The abbreviation, used for the gps-logger
    * @param  typeID  The typeid
    * @param  pos  The position
    * @param  elevation  The elevation
    * @param  frequency  The frequency
    * @param  vdf  "true",
    */
-  Airport( const QString& name, const QString& icao, const QString& abbr,
-           BaseMapElement::objectType typeID,
-           const WGSPoint& wgsPos, const QPoint& pos, unsigned int elevation,
-           const QString& frequency, bool vdf, runway* rw);
+  Airport( const QString& name,
+           const QString& icao,
+           const QString& shortName,
+           const BaseMapElement::objectType typeId,
+           const WGSPoint& wgsPos,
+           const QPoint& pos,
+           const Runway& rw,
+           const unsigned int elevation,
+           const QString& frequency );
 
   /**
    * Destructor
    */
-  ~Airport();
+  virtual ~Airport();
 
   /**
    * @return the frequency of the airport.
    */
-  QString getFrequency() const;
+  QString getFrequency() const
+    {
+      return frequency;
+    };
 
   /**
-   * @return a runway-struct, containing the data of the given runway.
+   * @return ICAO name
    */
-  runway getRunway(int index = 0) const;
+  QString getICAO() const
+    {
+      return icao;
+    };
 
   /**
-   * @return the number of runways.
+   * @return a runway object, containing the data of the runway.
    */
-  unsigned int getRunwayNumber() const;
+  const Runway& getRunway()
+    {
+      return rwData;
+    };
 
   /**
-   * Return a short html-info-string about the airport, containg the
+   * Return a short html-info-string about the airport, containing the
    * name, the alias, the elevation and the frequency as well as a small
-   * icon of the airporttype.
+   * icon of the airport type.
    *
    * Reimplemented from SinglePoint (@ref SinglePoint#getInfoString).
-   * @return the infostring
+   * @return the info string
    */
   virtual QString getInfoString() const;
 
@@ -110,21 +124,26 @@ class Airport : public RadioPoint
   virtual void drawMapElement(QPainter* targetP);
 
  private:
-  /**
-   */
-  bool vdf;
+
+   /**
+    * The icao name
+    */
+  QString icao;
+
+   /**
+    * The frequency
+    */
+   QString frequency;
 
   /**
-   * Contains the runway-data.
+   * Contains the runway data.
    */
-  runway* rwData;
+  Runway rwData;
 
   /**
-   * Contains the number of runways.
+   * Contains the shift of the runway during drawing.
    */
-  unsigned int rwNum;
-
-  unsigned int shift;
+  unsigned short rwShift;
 
   /**
    * Static pointer to surface translations

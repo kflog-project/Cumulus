@@ -26,15 +26,14 @@ LineElement::LineElement(QString name, BaseMapElement::objectType t,
     bBox(pP.boundingRect()), valley(isV), closed(false)
 {
   if(typeID == BaseMapElement::Lake || typeID == BaseMapElement::City ||
-     typeID == BaseMapElement::Forest)
+     typeID == BaseMapElement::Forest) {
     closed = true;
+  }
 }
-
 
 LineElement::~LineElement()
 {
 }
-
 
 void LineElement::drawMapElement(QPainter* targetP)
 {
@@ -43,8 +42,9 @@ void LineElement::drawMapElement(QPainter* targetP)
   // element is not visible, return.
   //
 
-  if(!glConfig->isBorder(typeID) || !__isVisible())
+  if( ! glConfig->isBorder(typeID) || ! isVisible()) {
     return;
+  }
 
   QPen drawP(glConfig->getDrawPen(typeID));
 
@@ -83,16 +83,4 @@ void LineElement::drawMapElement(QPainter* targetP)
       targetP->drawPolyline(mP);
     }
   }
-}
-
-
-bool LineElement::__isVisible() const
-{
-  return glMapMatrix->isVisible(bBox, getTypeID());
-}
-
-
-bool LineElement::isValley() const
-{
-  return valley;
 }

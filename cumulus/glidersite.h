@@ -19,14 +19,14 @@
 #ifndef GLIDERSITE_H
 #define GLIDERSITE_H
 
-#include "radiopoint.h"
+#include "singlepoint.h"
 #include "runway.h"
 
 /**
  * This class provides handling the glider-sites.
  */
 
-class GliderSite : public RadioPoint
+class GliderSite : public SinglePoint
 {
  public:
   /**
@@ -34,85 +34,118 @@ class GliderSite : public RadioPoint
    *
    * @param  name  The name
    * @param  icao  The icao-name
-   * @param  abbr  The abbreviation, used for the gps-logger
-   * @param  pos  The projected position
+   * @param  shortName  The short name, used for the gps-logger
    * @param  wgsPos  The original WGS-position
+   * @param  pos  The projected position
+   * @param  rw The runway data
    * @param  elevation  The elevation
    * @param  frequency  The frequency
-   * @param  winsh  "true", if only winsh-launch is available
+   * @param  winch  "true", if winch-launch is available
+   * @param  towing "true", if aero towing is available
    */
-  GliderSite(const QString& name, const QString& icao, const QString& abbr, const WGSPoint& wgsPos,
-             const QPoint& pos, unsigned int elevation, const QString& frequency, bool winch, runway *rw);
+  GliderSite( const QString& name,
+              const QString& icao,
+              const QString& shortName,
+              const WGSPoint& wgsPos,
+              const QPoint& pos,
+              const Runway& rw,
+              const unsigned int elevation,
+              const QString& frequency,
+              bool winch = false,
+              bool towing = false );
 
   /**
    * Destructor.
    */
-  ~GliderSite();
+  virtual ~GliderSite();
 
   /**
-   * @return the frequency of the glidersite.
+   * @return the frequency of the glider site.
    */
-  QString getFrequency() const;
+  QString getFrequency() const
+    {
+      return frequency;
+    };
 
   /**
-   * @return a runway-struct, containing the data of the given runway.
+   * @return the ICAO name, if available
    */
-  runway getRunway(int index = 0) const;
+  QString getICAO() const
+    {
+      return icao;
+    };
 
   /**
-   * @return the number of runways.
+   * @return a runway struct, containing the data of the runway.
    */
-  unsigned int getRunwayNumber() const;
+  const Runway& getRunway()
+    {
+      return rwData;
+    };
 
   /**
-   * @return "true", if only winch launching is available.
+   * @return "true", if winch launching is available.
    */
-  bool isWinch() const;
+  const bool hasWinch() const
+    {
+      return winch;
+    };
 
   /**
-   * Return a short html-info-string about the airport, containg the
+   * @return "true", if aero towing is available.
+   */
+  const bool hasTowing() const
+    {
+      return towing;
+    };
+
+  /**
+   * Return a short html-info-string about the airport, containing the
    * name, the alias, the elevation and the frequency as well as a small
-   * icon of the airporttype.
+   * icon of the airport type.
    *
    * Reimplemented from SinglePoint.
    *
-   * @return the infostring
+   * @return the info string
    */
   virtual QString getInfoString() const;
 
   /**
-   * Prints the element. Reimplemented from BaseMapElement.
-   *
-   * @param  printP  The painter to draw the element into.
-   *
-   * @param  isText  Shows, if the text of some mapelements should
-   *                 be printed.
-   */
-
-  /**
-   * Draws the element into the given painter.
+   * Draws the element into the given painter. Reimplemented from BaseMapElement.
    */
   virtual void drawMapElement(QPainter* targetP);
 
  private:
-  /**
-   * The launching-type. "true" if the site only has a winch, "false",
-   * if aero tow is also available.
-   */
-  bool winch;
 
-  /**
-   * Contains the runway-data.
-   */
-  runway* rwData;
+    /**
+     * The icao name
+     */
+    QString icao;
 
-  /**
-   * Contains the number of runways.
-   */
-  unsigned int rwNum;
+    /**
+     * The frequency
+     */
+    QString frequency;
 
-  unsigned int shift;
+   /**
+    * Contains the runway data.
+    */
+   Runway rwData;
 
+    /**
+     * The launching-type. "true" if the site has a winch.
+     */
+    bool winch;
+  
+    /**
+     * The launching-type. "true" if the site has aero tow.
+     */
+    bool towing;
+  
+   /**
+    * Contains the shift of the runway during drawing.
+    */
+   unsigned short rwShift;
 };
 
 #endif

@@ -26,22 +26,14 @@ MapConfig* BaseMapElement::glConfig = 0;
 QHash<int, QString> BaseMapElement::objectTranslations;
 QStringList         BaseMapElement::sortedTranslations;
 
-BaseMapElement::BaseMapElement(const QString& n, objectType tID, unsigned int secID)
+BaseMapElement::BaseMapElement( const QString& n, objectType tID, const unsigned short secID )
   : name(n), typeID(tID), MapSegment(secID)
 {
 }
 
-
 BaseMapElement::~BaseMapElement()
 {
 }
-
-
-bool BaseMapElement::__isVisible() const
-{
-  return true;
-}
-
 
 void BaseMapElement::initMapElement(MapMatrix* matrix, MapConfig* config)
 {
@@ -134,12 +126,6 @@ void BaseMapElement::printMapElement(QPainter* , bool )
   qWarning("BaseMapElement::printMapElement");
 }
 
-
-void BaseMapElement::drawMapElement(QPainter* )
-{
-  qWarning("BaseMapElement::drawMapElement");
-}
-
 /**
  * Get sorted translations
  */
@@ -152,24 +138,5 @@ QStringList& BaseMapElement::getSortedTranslationList() {
   // qDebug ("BaseMapElement::getSortedTranslationList: size: %d", objectTranslations.size());
 
   return sortedTranslations;
-}
-
-
-/** Read property of int MapSegment. */
-const unsigned int& BaseMapElement::getMapSegment()
-{
-  return MapSegment;
-}
-
-
-/** Write property of int MapSegment. */
-void BaseMapElement::setMapSegment( const unsigned int& _newVal)
-{
-  MapSegment = _newVal;
-}
-
-bool BaseMapElement::operator < (const BaseMapElement& other) const
-{
-  return getName() < other.getName();
 }
 

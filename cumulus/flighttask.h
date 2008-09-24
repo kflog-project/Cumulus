@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Heiner Lamprecht, 2008 Axel Pauli
+**   Copyright (c):  2002 by Heiner Lamprecht
+**                   2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -18,8 +19,8 @@
 **
 ***********************************************************************/
 
-#ifndef FLIGHTTASK_H
-#define FLIGHTTASK_H
+#ifndef FLIGHT_TASK_H
+#define FLIGHT_TASK_H
 
 #include <QObject>
 #include <QString>
@@ -45,7 +46,7 @@ class FlightTask : public BaseMapElement
                  FAI_S = 5, Dreieck_S = 6, Abgebrochen = 7, Unknown = 8,
                  FAI_2 = 9, FAI_S2 = 10, FAI_3 = 11, FAI_S3 = 12,
                  Vieleck = 13, OLC2003 = 14};
-    
+
   /**
    * The planning-types
    */
@@ -64,7 +65,7 @@ class FlightTask : public BaseMapElement
    * @param  speed the planned cruising speed
    *
    */
-  FlightTask( QList<wayPoint*> *wpList=0, bool fai=true, 
+  FlightTask( QList<wayPoint*> *wpList=0, bool fai=true,
               QString taskName=QObject::tr("unknown"), int speed=0 );
 
   /**
@@ -284,14 +285,10 @@ class FlightTask : public BaseMapElement
                                Altitude &arrivalAlt,
                                Speed &bestSpeed );
 
-  /////////////////////////////////////////////////////////////////////////
-
- protected:
-
-  virtual bool __isVisible() const
-  {
-    return true;
-  };
+  virtual bool isVisible() const
+    {
+      return true;
+    };
 
   /////////////////////////////////////////////////////////////////////////
 

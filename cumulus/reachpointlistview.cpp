@@ -101,7 +101,7 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
   connect(list, SIGNAL(itemSelectionChanged()), this, SLOT(slot_Selected()));
   cmdShowOl->hide();
   cmdHideOl->show();
-  
+
   // activate keyboard shortcut Return as select
   QShortcut* scSelect = new QShortcut( this );
   scSelect->setKey( Qt::Key_Return );
@@ -126,7 +126,7 @@ void ReachpointListView::fillRpList()
   extern MapConfig * _globalMapConfig;
   QTreeWidgetItem* si = list->currentItem();
   QTreeWidgetItem* selectedItem = 0;
-  QString sname;
+  QString sname = "";
   QPixmap icon;
   QPixmap iconImage;
   QBitmap iconMask;
@@ -138,7 +138,7 @@ void ReachpointListView::fillRpList()
   }
 
   // set row height at each list fill - has probably changed.
-  // Note: rpMargin is a manyfold of 2 to ensure symmetry
+  // Note: rpMargin is a manifold of 2 to ensure symmetry
   int rpMargin = GeneralConfig::instance()->getListDisplayRPMargin();
 
   if ( rowDelegate )
@@ -167,7 +167,7 @@ void ReachpointListView::fillRpList()
       continue;
 
     // Setup string for bearing
-         QString bearing=QString("%1%2").arg( rp->getBearing() ).arg( QString(Qt::Key_degree) );
+    QString bearing=QString("%1%2").arg( rp->getBearing() ).arg( QString(Qt::Key_degree) );
 
     // Calculate relative bearing too, very cool feature
     int relbearing = rp->getBearing() - calculator->getlastHeading();
@@ -180,7 +180,7 @@ void ReachpointListView::fillRpList()
     // calculate sunset
     QString sr, ss;
     QDate date = QDate::currentDate();
-  
+
     Sonne::sonneAufUnter( sr, ss, date, rp->getWgsPos(), 0 );
 
     // hidden column for default sorting
@@ -245,7 +245,7 @@ void ReachpointListView::fillRpList()
     list->scrollToTop();
     list->setCurrentItem( list->topLevelItem(0) );
   } else {
-    list->scrollToItem( selectedItem ); 
+    list->scrollToItem( selectedItem );
     list->setCurrentItem( selectedItem );
   }
   list->setFocus();
@@ -259,7 +259,7 @@ void ReachpointListView::showEvent(QShowEvent *)
     fillRpList();
     _newList=false;
   }
-  
+
   // list->setFocus();
 }
 

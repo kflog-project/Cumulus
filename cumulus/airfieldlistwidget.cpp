@@ -51,7 +51,7 @@ AirfieldListWidget::~AirfieldListWidget()
   delete wp;
 }
 
-/** Retrieves the airfields from the mapcontents, and fills the list. */
+/** Retrieves the airfields from the map contents, and fills the list. */
 void AirfieldListWidget::fillWpList()
 {
   // qDebug("AirfieldListWidget::fillWpList()");
@@ -66,7 +66,7 @@ void AirfieldListWidget::fillWpList()
 
   for( int item = 0; item < 3; item++) {
     int nr = _globalMapContents->getListLength(itemList[item]);
-    
+
     if( nr > Nr ) {
       Nr = nr;
     }
@@ -80,7 +80,7 @@ void AirfieldListWidget::fillWpList()
   list->setSortingEnabled(true);
   list->sortByColumn(0,Qt::AscendingOrder);
   list->setSortingEnabled(false);
-  
+
   if (Nr > 0) {
     resizeListColumns();
     // @AP: set only to true if something was read
@@ -97,7 +97,7 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
   QTreeWidgetItem* li = list->currentItem();
   if ( li == 0)
     return 0;
-  
+
   // Special rows selected?
   QString test = li->text(1);
 
@@ -122,9 +122,9 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
   wp->elevation = site->getElevation();
   wp->icao = site->getICAO();
   wp->frequency = site->getFrequency().toDouble();
-  wp->runway = site->getRunway(0).direction;
-  wp->length = site->getRunway(0).length;
-  wp->surface = site->getRunway(0).surface;
+  wp->runway = site->getRunway().direction;
+  wp->length = site->getRunway().length;
+  wp->surface = site->getRunway().surface;
   wp->comment = "";
   wp->isLandable = true;
   return wp;

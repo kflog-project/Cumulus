@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
-**                   2007 Axel Pauli
+**                   2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -22,7 +22,7 @@
 #include "basemapelement.h"
 
 /**
- * Class used for all elements, which consist of a pointarray.
+ * Class used for all elements, which consist of a point array.
  *
  * @see BaseMapElement#objectType
  *
@@ -32,15 +32,15 @@ class LineElement : public BaseMapElement
 {
 public:
     /**
-     * Creates a new mapelement.
+     * Creates a new map element.
      *
      * @param  name  The name
-     * @param  pA  The pointarray containing the positions
+     * @param  pA  The point array containing the positions
      * @param  isVal  "true", if the element is a "valley".
      */
     LineElement(QString name, BaseMapElement::objectType t, QPolygon pP,
                 bool isVal = false, unsigned int secID=0);
-    
+
     /**
      * Destructor.
      */
@@ -69,17 +69,23 @@ public:
      *
      * @see #valley
      */
-    virtual bool isValley() const;
+    virtual bool isValley() const
+      {
+        return valley;
+      };
 
-protected:
     /**
-     * Proofes, if the object is in the drawing-area of the map.
+     * Proofs, if the object is in the drawing-area of the map.
      *
      * @return "true", if the bounding-box of the element intersects
      *         with the drawing-area of the map.
      */
-    virtual bool __isVisible() const;
+    virtual bool isVisible() const
+      {
+        return glMapMatrix->isVisible(bBox, getTypeID());
+      };
 
+protected:
     /**
      * Contains the projected positions of the item.
      */

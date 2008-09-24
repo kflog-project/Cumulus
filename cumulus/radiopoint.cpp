@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2007 Axel Pauli
+ **                   2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -27,24 +27,6 @@ RadioPoint::RadioPoint(const QString& n, const QString& i,
 {
 }
 
-
 RadioPoint::~RadioPoint()
 {
-}
-
-
-void RadioPoint::printMapElement(QPainter* /*printPainter*/, bool /*isText*/) const
-{
-}
-
-
-QString RadioPoint::getFrequency() const
-{
-  return frequency;
-}
-
-
-QString RadioPoint::getICAO() const
-{
-  return icao;
 }

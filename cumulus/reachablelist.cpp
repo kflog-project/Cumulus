@@ -38,7 +38,7 @@
 
 extern MapContents *_globalMapContents;
 
-// initialise static members
+// Initialize static members
 int  ReachableList::safetyAlt = 0;
 
 QMap<QString, int> ReachableList::arrivalAltMap;
@@ -150,7 +150,7 @@ void ReachableList::calculate(bool always)
   }
   tick++;
   // qDebug("tick %d %d",tick, always );
-  // in manual Mode calculate more often full list fromdue to big distance changes
+  // in manual Mode calculate more often full list from due to big distance changes
   if( (tick %64) == 0 || (always &&((tick %8) == 0)) )
     calculateFullList();
   else if( ((tick %8) == 0) || always )
@@ -232,10 +232,10 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
                                                distance,
                                                bearing,
                                                Altitude( 0 ),
-                                               site->getRunway(0).direction,
-                                               site->getRunway(0).length,
-                                               site->getRunway(0).surface,
-                                               site->getRunway(0).isOpen );
+                                               site->getRunway().direction,
+                                               site->getRunway().length,
+                                               site->getRunway().surface,
+                                               site->getRunway().isOpen );
       append(rp);
       // qDebug("%s(%d) %f %d� %d", (const char *)rp->getName(), rp->getElevation(),  rp->getDistance().getKilometers(), rp->getBearing(), (int)rp->getArrivalAlt().getMeters() );
 

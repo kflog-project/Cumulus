@@ -17,18 +17,18 @@
 ***********************************************************************/
 
 /**
- * @short Baseclass for all mapelements
+ * @short Base class for all map elements
  *
- * This is the baseclass for all mapelements. The class will be inherited
+ * This is the base class for all map elements. The class will be inherited
  * by all classes implementing the map-elements. The class provides several
- * virtual function for writing and drawing the elements. Additionaly,
- * the cass provides two enums for the element-type and the type of
+ * virtual function for writing and drawing the elements. Additionally,
+ * the class provides two enumerations for the element-type and the type of
  * elevation-values.
  *
  */
 
-#ifndef BASEMAPELEMENT_H
-#define BASEMAPELEMENT_H
+#ifndef BASE_MAP_ELEMENT_H
+#define BASE_MAP_ELEMENT_H
 
 #include "resource.h"
 
@@ -44,7 +44,7 @@ class BaseMapElement
 {
 public:
   /**
-   * List of all accessable element-types:
+   * List of all accessible element-types:
    * @see #typeID
    */
   enum objectType {
@@ -73,11 +73,13 @@ public:
   enum elevationType {NotSet, MSL, GND, FL, STD, UNLTD};
 
   /**
-   * Creates a new (virtual) mapelement.
+   * Creates a new (virtual) map element.
    * @param  name  The name of the element.
-   * @param  typeID  The typeid of the element.
+   * @param  typeID  The type id of the element.
    */
-  BaseMapElement(const QString& name, objectType typeID = NotSelected, unsigned int secID=0);
+  BaseMapElement( const QString& name,
+                  objectType typeID = NotSelected,
+                  const unsigned short secID=0 );
 
   /**
    * Destructor
@@ -90,7 +92,7 @@ public:
    * The function must be implemented in the child-classes.
    * @param  targetP  The painter to draw the element into.
    */
-  virtual void drawMapElement(QPainter* targetP);
+  virtual void drawMapElement(QPainter* targetP) = 0;
 
   /**
    * Virtual function for printing the element.
@@ -98,7 +100,7 @@ public:
    * The function must be implemented in the child-classes.
    * @param  printP  The painter to draw the element into.
    *
-   * @param  isText  Shows, if the text of some mapelements should
+   * @param  isText  Shows, if the text of some map elements should
    *                 be printed.
    */
   virtual void printMapElement(QPainter* printP, bool isText);
@@ -118,6 +120,15 @@ public:
   {
     return typeID;
   };
+
+  /**
+   * Used to return a info string about the element.
+   * Should be reimplemented in subclasses.
+   */
+  virtual QString getInfoString() const
+    {
+      return QString( "" );
+    };
 
   /**
    * Initializes the static members of BaseMapelement.
@@ -142,28 +153,41 @@ public:
   static QStringList& getSortedTranslationList();
 
   /**
-   * Write property of int MapSegment.
+   * Write property of MapSegment.
    */
-  virtual void setMapSegment( const unsigned int& _newVal);
+  virtual void setMapSegment( const unsigned short _newVal )
+    {
+      MapSegment = _newVal;
+    };
 
   /**
-   * Read property of int MapSegment.
+   * Read property of MapSegment.
    */
-  virtual const unsigned int& getMapSegment();
+  virtual const unsigned short getMapSegment() const
+    {
+      return MapSegment;
+    };
 
-  bool operator < (const BaseMapElement& other) const;
-
- protected:
   /**
-   * Proofes, if the object is in the drawing-area of the map.
+   * Compare two map elements by their names
+   */
+  bool operator < (const BaseMapElement& other) const
+    {
+      return getName() < other.getName();
+    };
+
+  /**
+   * Proofs, if the object is in the drawing area of the map.
    *
-   * The function must be implemented in the child-classes.
-   * @return "true"
+   * The function must be implemented in the derived classes.
+   * @return "true/false"
    */
-  virtual bool __isVisible() const = 0;
+  virtual bool isVisible() const = 0;
+
+protected:
 
   /**
-   * The name of the mapelement.
+   * The name of the map element.
    */
   QString name;
 
@@ -198,10 +222,10 @@ public:
   static MapConfig* glConfig;
 
   /**
-   * Holds the id of the mapsegment this mapelement belong to.
+   * Holds the id of the map segment this map element belongs to.
    * Storing this will enable unloading elements that are no longer needed.
    */
-  unsigned int MapSegment;
+  unsigned short MapSegment;
 };
 
 #endif

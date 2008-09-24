@@ -28,33 +28,35 @@
  *
  */
 
-class runway
+class Runway
 {
+
 public:
-    runway( unsigned int len, unsigned int dir, unsigned char surf, unsigned char open )
+
+    Runway( unsigned short len, unsigned short dir, unsigned short surf, bool open )
     {
         length = len;
         direction = dir;
-        surface = (unsigned int)surf;
-        isOpen  = (bool)open;
+        surface = surf;
+        isOpen  = open;
     };
-    
+
     /**
      * The length of the runway, given in meters.
      */
-    unsigned int length;
+    unsigned short length;
 
     /**
      * The direction of the runway, given in steps of 10 degree.
      */
-    unsigned int direction;
+    unsigned short direction;
 
     /**
      * The surface of the runway.
      *
      * @see Airport#SurfaceType
      */
-    unsigned int surface;
+    unsigned short surface;
 
     /**
      * Flag to indicate if the runway is open or closed.

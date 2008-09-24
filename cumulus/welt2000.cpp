@@ -26,6 +26,7 @@
 #include <QTextStream>
 #include <QByteArray>
 #include <QHash>
+#include <QSet>
 
 #include "airport.h"
 #include "basemapelement.h"
@@ -199,7 +200,7 @@ bool Welt2000::load( MapElementList& airportList, MapElementList& gliderList )
           for( int i = 0; i < ulist.count(); i++ )
             {
               QString e = ulist[i].trimmed().toUpper();
-      
+
               if( ! h_countryList.contains(e) )
                 {
                   result = false;
@@ -213,7 +214,7 @@ bool Welt2000::load( MapElementList& airportList, MapElementList& gliderList )
               // The configured country list is not identical to the
               // compiled country list. Therefore we start a reparsing.
               unlink( w2PathTxc.toLatin1().data() );
-              return parse( w2PathTxt, airportList, gliderList, true );             
+              return parse( w2PathTxt, airportList, gliderList, true );
             }
         }
       else
@@ -528,7 +529,7 @@ bool Welt2000::readConfigEntries( QString &path )
 /**
  * Parses the passed file in welt 2000 format and put the approriate
  * entries in the related lists.
- * 
+ *
  * arg1 path: Full name with path of welt2000 file
  * arg2 airportList: All airports have to be stored in this list
  * arg3 glidertList: All gilder fields have to be stored in this list
@@ -587,7 +588,7 @@ bool Welt2000::parse( QString& path,
       for( int i = 0; i < clist.count(); i++ )
         {
           QString e = clist[i].trimmed().toUpper();
-      
+
           if( c_countryList.contains(e) )
             continue;
 
@@ -660,9 +661,8 @@ bool Welt2000::parse( QString& path,
 #endif
 
   uint lineNo = 0;
-  QString lastName = "";
+  QSet<QString> shortNameSet; // contains all short names already in use
   uint counter = 0;
-  uint lastCounter = 0;
 
   // statistics counter
   uint ul, gl, af;
@@ -862,17 +862,29 @@ bool Welt2000::parse( QString& path,
           lastChar = afName[i];
         }
 
-      // gps name, we use 8 characters without spaces
-      QString gpsName = afName.left(8);
+      // gps name, we use 9 characters without spaces
+      QString gpsName = afName;
+      gpsName.remove(QChar(' '));
+      gpsName = gpsName.left(9);
 
-      if( lastName == gpsName )
+      if( ! shortNameSet.contains( gpsName) )
         {
-          gpsName.replace( gpsName.length()-1, 1, QString::number(++lastCounter) );
+          shortNameSet.insert( gpsName );
         }
       else
         {
-          lastName = gpsName;
-          lastCounter = 0;
+          // Try to generate an unique short name. The assumption is that we never have
+          // more than 10 equal names.
+          for( int i=0; i <= 9; i++ )
+            {
+              gpsName.replace( gpsName.length()-1, 1, QString::number(i) );
+
+              if( ! shortNameSet.contains( gpsName) )
+                {
+                  shortNameSet.insert( gpsName );
+                  break;
+                }
+            }
         }
 
       if( ulField  )
@@ -1048,11 +1060,11 @@ bool Welt2000::parse( QString& path,
       buf = line.mid(32,2).trimmed();
 
       ok = false;
-      uint rwDir = 0;
+      ushort rwDir = 0;
 
       if( ! buf.isEmpty() )
         {
-          rwDir = buf.toUInt(&ok);
+          rwDir = buf.toUShort(&ok);
         }
 
       if( ! ok )
@@ -1066,7 +1078,7 @@ bool Welt2000::parse( QString& path,
       buf = line.mid(29,3).trimmed();
 
       ok = false;
-      uint rwLen = 0;
+      ushort rwLen = 0;
 
       if( ! buf.isEmpty() )
         {
@@ -1085,7 +1097,7 @@ bool Welt2000::parse( QString& path,
         }
 
       // runway surface
-      uint rwSurface;
+      ushort rwSurface;
       QChar rwType = line[28];
 
       if( rwType == 'A' )
@@ -1118,29 +1130,29 @@ bool Welt2000::parse( QString& path,
         af++;
 
       // create an runway object
-      runway *rw = new runway( rwLen ,rwDir*10, rwSurface, 1 );
+      Runway rw( rwLen, rwDir*10, rwSurface, true );
 
       if( afType != BaseMapElement::Glidersite )
         {
           // Add a non glider site to the list. That can be an
           // airfield or an ultralight field
-          Airport *ap = new Airport( afName, icao.trimmed(), gpsName.toUpper(), afType,
-                                     wgsPos, position, elevation, frequency, 0, rw );
+          Airport *ap = new Airport( afName, icao.trimmed(), gpsName, afType,
+                                     wgsPos, position, rw, elevation, frequency );
 
           airportList.append( ap );
         }
       else
         {
           // Add a glider site to the list.
-          GliderSite *gl = new GliderSite( afName, icao.trimmed(), gpsName.toUpper(),
-                                           wgsPos, position, elevation, frequency, 0, rw );
+          GliderSite *gl = new GliderSite( afName, icao.trimmed(), gpsName,
+                                           wgsPos, position, rw, elevation, frequency );
 
           gliderList.append( gl );
         }
 
       if( doCompile )
         {
-          // This was the order used by ealier cumulus
+          // This was the order used by earlier cumulus
           // implementations. Because welt2000 does not support these
           // all a subset from the original implementation is only
           // used to spare memory and to get a better performance. All
@@ -1392,21 +1404,21 @@ bool Welt2000::readCompiledFile( QString &path,
       // in >> rwOpen;
 
       // create an runway object
-      runway *rw = new runway( rwLen ,rwDir*10, rwSurface, 1 );
+      Runway rw( rwLen ,rwDir*10, rwSurface, 1 );
 
       if( afType != BaseMapElement::Glidersite )
         {
           // Add a non glider site to the list. That can be an
           // airfield or an ultralight field
           Airport *ap = new Airport( afName, icao, gpsName, (BaseMapElement::objectType) afType,
-                                     wgsPos, position, (uint) elevation, frequency, false, rw );
+                                     wgsPos, position, rw, (uint) elevation, frequency );
           airportList.append( ap );
         }
       else
         {
           // Add a glider site to the list.
           GliderSite *gl = new GliderSite( afName, icao, gpsName,
-                                           wgsPos, position, (uint) elevation, frequency, false, rw );
+                                           wgsPos, position, rw, (uint) elevation, frequency );
 
           gliderList.append( gl );
         }
@@ -1527,6 +1539,6 @@ double Welt2000::getDistanceInKm( const int distance )
       dist.setNautMiles( distance );
       unit = dist.getKilometers();
     }
-  
+
   return unit;
 }

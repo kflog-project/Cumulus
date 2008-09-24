@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef REACHPOINTLISTVIEW_H
-#define REACHPOINTLISTVIEW_H
+#ifndef REACH_POINT_LISTVIEW_H
+#define REACH_POINT_LISTVIEW_H
 
 #include <QWidget>
 #include <QTreeWidget>
@@ -45,7 +45,7 @@ public:
     /** Returns a pointer to the currently highlighted waypoint. */
     wayPoint * getSelectedWaypoint();
 
-    
+
 public slots: // Public slots
     /**
      * This slot is called to indicate that a selection has been made.
@@ -74,12 +74,12 @@ public slots: // Public slots
     void slot_HideOl ();
 
     /**
-     * Signalled if the list of reachable points has changed
+     * Signaled if the list of reachable points has changed
      */
     void slot_newList ();
 
     /**
-     * Retreives the waypoints from the mapcontents, and fills the list.
+     * Retrieves the waypoints from the map contents, and fills the list.
      */
     void fillRpList();
 

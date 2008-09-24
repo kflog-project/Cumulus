@@ -300,10 +300,10 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
               // qDebug("|%s|", hitElement->getFrequency().latin1());
               w->frequency = hitElement->getFrequency().toDouble();
               // qDebug(" hitElement->getRunway(0) %d",hitElement->getRunway(0).direction );
-              w->isLandable = hitElement->getRunway(0).isOpen;
-              w->surface = hitElement->getRunway(0).surface;
-              w->runway = hitElement->getRunway(0).direction;
-              w->length = hitElement->getRunway(0).length;
+              w->isLandable = hitElement->getRunway().isOpen;
+              w->surface = hitElement->getRunway().surface;
+              w->runway = hitElement->getRunway().direction;
+              w->length = hitElement->getRunway().length;
               w->sectorFAI = 0;
               w->sector1 = 0;
               w->sector2 = 0;
