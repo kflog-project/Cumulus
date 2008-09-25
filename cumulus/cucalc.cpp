@@ -65,7 +65,7 @@ CuCalc::CuCalc(QObject* parent) : QObject(parent),
   _calculateVario = true;
   selectedWp=(wayPoint *) 0;
   lastMc = 0.0;
-  _polar = NULL;
+  _polar = 0;
   _vario = new Vario (this);
   _windAnalyser = new WindAnalyser(this);
   _reachablelist = new ReachableList(this);
@@ -764,8 +764,10 @@ void CuCalc::calcGlidePath()
 //  qDebug ("CuCalc::calcGlidePath");
   Speed speed;
   Altitude above;
-  // calculate new glide path
-  if (!selectedWp) {
+
+  // Calculate new glide path, if a waypoint is selected and
+  // a glider is defined.
+  if ( ! selectedWp || ! _glider ) {
     lastRequiredLD = -1;
     return;
   }
@@ -1309,7 +1311,7 @@ Glider *CuCalc::glider() const
 }
 
 
-QString CuCalc::gliderType () const
+QString CuCalc::gliderType() const
 {
   if (_glider)
     return _glider->type();
@@ -1324,7 +1326,10 @@ void CuCalc::setGlider(Glider * _newVal)
   if (_glider)
     {
       delete _glider;
+
+      // reset glider and polar object to avoid senseless calculations
       _glider = 0;
+      _polar  = 0;
     }
 
   if (_newVal)
