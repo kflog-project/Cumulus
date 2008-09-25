@@ -26,7 +26,9 @@ MapConfig* BaseMapElement::glConfig = 0;
 QHash<int, QString> BaseMapElement::objectTranslations;
 QStringList         BaseMapElement::sortedTranslations;
 
-BaseMapElement::BaseMapElement( const QString& n, objectType tID, const unsigned short secID )
+BaseMapElement::BaseMapElement( const QString& n,
+                                const objectType tID,
+                                const unsigned short secID )
   : name(n), typeID(tID), MapSegment(secID)
 {
 }

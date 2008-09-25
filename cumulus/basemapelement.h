@@ -78,7 +78,7 @@ public:
    * @param  typeID  The type id of the element.
    */
   BaseMapElement( const QString& name,
-                  objectType typeID = NotSelected,
+                  const objectType typeID = NotSelected,
                   const unsigned short secID=0 );
 
   /**
