@@ -1902,7 +1902,7 @@ void CumulusApp::slotOssoDisplayTrigger()
   // gps we switch off the screen saver. Otherwise we let all as it
   // is.
 
-  if( calculator->getlastSpeed().getKph() >= 10.0 && gps->getConnected() )
+  if( calculator->getLastSpeed().getKph() >= 10.0 && gps->getConnected() )
     {
       // tell maemo that we are in move to avoid blank screen
       osso_return_t ret = osso_display_blanking_pause( ossoContext );
