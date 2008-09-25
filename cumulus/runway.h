@@ -6,8 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008 Axel Pauli
+**   Copyright (c): 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -19,13 +18,13 @@
 #ifndef RUNWAY_H
 #define RUNWAY_H
 
+#include <QString>
+#include <QHash>
+#include <QStringList>
+
 /**
- * This class is used for defining a runway. It is used for all "small"
- * airports, not for the international airports, they use the struct
- * "intrunway", because they need two points per runway.
- *
- * @author Heiner Lamprecht
- *
+ * This class is used for defining a runway together with its surface and the
+ * translation types.
  */
 
 class Runway
@@ -33,35 +32,65 @@ class Runway
 
 public:
 
-    Runway( unsigned short len, unsigned short dir, unsigned short surf, bool open )
-    {
-        length = len;
-        direction = dir;
-        surface = surf;
-        isOpen  = open;
-    };
+  /**
+   * Used to define the surface of a runway.
+   */
+  enum SurfaceType {Unknown = 0, Grass = 1, Asphalt = 2, Concrete = 3};
 
-    /**
-     * The length of the runway, given in meters.
-     */
-    unsigned short length;
+  Runway( const unsigned short len,
+          const unsigned short dir,
+          const unsigned short surf,
+          const bool open );
 
-    /**
-     * The direction of the runway, given in steps of 10 degree.
-     */
-    unsigned short direction;
+  virtual ~Runway() {};
 
-    /**
-     * The surface of the runway.
-     *
-     * @see Airport#SurfaceType
-     */
-    unsigned short surface;
+  /**
+   * Get translation string for surface type.
+   */
+  static QString item2Text( const int surfaceType, QString defaultValue=QString("") );
 
-    /**
-     * Flag to indicate if the runway is open or closed.
-     */
-    bool isOpen;
+  /**
+   * Get surface type for translation string.
+   */
+  static const int text2Item( const QString& text );
+
+  /**
+   * Get sorted translations
+   */
+  static QStringList& getSortedTranslationList();
+
+
+  /**
+   * The length of the runway, given in meters.
+   */
+  unsigned short length;
+
+  /**
+   * The direction of the runway, given in steps of 10 degree.
+   */
+  unsigned short direction;
+
+  /**
+   * The surface of the runway, one of SurfaceType, see above.
+   */
+  unsigned short surface;
+
+  /**
+   * Flag to indicate if the runway is open or closed.
+   */
+  bool isOpen;
+
+  /**
+   * Static pointer to surface translations
+   */
+  static QHash<int, QString> surfaceTranslations;
+  static QStringList sortedTranslations;
+
+  /**
+   * Static method for loading of object translations
+   */
+  static void loadTranslations();
+
 };
 
 #endif
