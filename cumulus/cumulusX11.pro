@@ -165,6 +165,7 @@ SOURCES     = \
     reachablelist.cpp \
     reachpointlistview.cpp \
     rowdelegate.cpp \
+    runway.cpp \
     settingspageairfields.cpp \
     settingspageairspace.cpp \
     settingspagegps.cpp \
