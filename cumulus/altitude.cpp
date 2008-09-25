@@ -40,8 +40,11 @@ Altitude::Altitude(double meters):Distance(meters)
 
 
 /** copy constructor */
-Altitude::Altitude (const Altitude& alt): Distance (alt._dist)
-{}
+Altitude::Altitude (const Altitude& alt) : Distance()
+{
+  _dist = alt._dist;
+  _isValid = alt._isValid;
+}
 
 
 Altitude::Altitude (const Distance& dst): Distance (dst)
