@@ -718,7 +718,7 @@ void MapView::slot_settingschange()
   // qDebug("MapView::slot_settingschange");
   slot_Altitude(calculator->getlastAltitude());
   slot_Position(calculator->getlastPosition(), lastPositionChangeSource);
-  slot_Speed(calculator->getlastSpeed());
+  slot_Speed(calculator->getLastSpeed());
   slot_Distance(calculator->getlastDistance());
   slot_GlidePath(calculator->getlastGlidePath());
   slot_bestSpeed(calculator->getlastBestSpeed());

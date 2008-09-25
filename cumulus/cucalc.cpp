@@ -177,7 +177,7 @@ Polar *CuCalc::getPolar()
 
 
 /** Read property of Speed lastSpeed. */
-Speed& CuCalc::getlastSpeed()
+Speed& CuCalc::getLastSpeed()
 {
   return lastSpeed;
 }

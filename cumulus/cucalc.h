@@ -106,7 +106,7 @@ public:
  *
  * This is a Singleton class.
  *
- * @author André Somers
+ * @author Andrï¿½ Somers
  */
 
 class CuCalc : public QObject
@@ -165,8 +165,8 @@ public:
      */
     virtual const Altitude& getlastAGLAltitude()
       {
-	lastAGLAltitude = lastAltitude - lastElevation;
-	return lastAGLAltitude;
+	      lastAGLAltitude = lastAltitude - lastElevation;
+	      return lastAGLAltitude;
       };
 
     /**
@@ -188,7 +188,7 @@ public:
     /**
      * Read property of Speed lastSpeed.
      */
-    virtual Speed& getlastSpeed();
+    virtual Speed& getLastSpeed();
 
     /**
      * Read property of Speed lastBestSpeed.

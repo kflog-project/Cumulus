@@ -266,7 +266,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
         tr("unknown") + "</b></td></tr>";
     }
   
-  double gs = calculator->getlastSpeed().getMps(); // get last speed
+  double gs = calculator->getLastSpeed().getMps(); // get last speed
 
   extern GPSNMEA *gps;
 
@@ -530,7 +530,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
         }
     }
 
-  double gs = calculator->getlastSpeed().getMps(); // get last speed
+  double gs = calculator->getLastSpeed().getMps(); // get last speed
 
   extern GPSNMEA *gps;
 
