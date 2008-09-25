@@ -20,8 +20,6 @@
 #define AIRPORT_H
 
 #include <QString>
-#include <QHash>
-#include <QStringList>
 
 #include "singlepoint.h"
 #include "runway.h"
@@ -31,7 +29,7 @@
  *
  * This class is used for handling airports. The object can be one of
  * Airport, MilAirport, CivMilAirport, Airfield, ClosedAirfield,
- * CivHeliport, MilHeliport, AmbHeliport.
+ * CivHeliport, MilHeliport, AmbHeliport, UltraLight
  *
  * @see BaseMapElement#objectType
  */
@@ -39,11 +37,6 @@
 class Airport : public SinglePoint
 {
  public:
-
-  /**
-   * Used to define the surface of a runway.
-   */
-  enum SurfaceType {Unknown = 0, Grass = 1, Asphalt = 2, Concrete = 3};
 
   /**
    * Creates a new Airport-object.
@@ -54,7 +47,6 @@ class Airport : public SinglePoint
    * @param  pos  The position
    * @param  elevation  The elevation
    * @param  frequency  The frequency
-   * @param  vdf  "true",
    */
   Airport( const QString& name,
            const QString& icao,
@@ -105,21 +97,6 @@ class Airport : public SinglePoint
    */
   virtual QString getInfoString() const;
 
-  /**
-   * Get translation string for surface type.
-   */
-  static QString item2Text( const int surfaceType, QString defaultValue=QString("") );
-
-  /**
-   * Get surface type for translation string.
-   */
-  static const int text2Item( const QString& text );
-
-  /**
-   * Get sorted translations
-   */
-  static QStringList& getSortedTranslationList();
-
   // Draws the element into the given painter.
   virtual void drawMapElement(QPainter* targetP);
 
@@ -145,16 +122,6 @@ class Airport : public SinglePoint
    */
   unsigned short rwShift;
 
-  /**
-   * Static pointer to surface translations
-   */
-  static QHash<int, QString> surfaceTranslations;
-  static QStringList sortedTranslations;
-
-  /**
-   * Static method for loading of object translations
-   */
-  static void loadTranslations();
 };
 
 #endif

@@ -16,13 +16,8 @@
  **
  ***********************************************************************/
 
-#include <QObject>
-
 #include "airport.h"
 #include "reachablelist.h"
-
-QHash<int, QString> Airport::surfaceTranslations;
-QStringList Airport::sortedTranslations;
 
 Airport::Airport(const QString& name, const QString& icao,
                  const QString& shortName, const BaseMapElement::objectType typeId,
@@ -67,70 +62,6 @@ QString Airport::getInfoString() const
   return text;
 }
 
-/**
- * Get translation string for surface type.
- */
-
-QString Airport::item2Text( const int surfaceType, QString defaultValue )
-{
-  if( surfaceTranslations.isEmpty() )
-    {
-      loadTranslations();
-    }
-
-  return surfaceTranslations.value( surfaceType, defaultValue );
-}
-
-/**
- * Get surface typee for translation string.
- */
-const int Airport::text2Item( const QString& text )
-{
-  if( surfaceTranslations.isEmpty() )
-    {
-      // Load object - translation data
-      loadTranslations();
-    }
-
-  return surfaceTranslations.key( text );
-}
-
-void Airport::loadTranslations()
-{
-  // Load translation data
-  surfaceTranslations.insert( Airport::NotSet, QObject::tr( "Unknown" ) );
-  surfaceTranslations.insert( Airport::Grass, QObject::tr( "Grass" ) );
-  surfaceTranslations.insert( Airport::Asphalt, QObject::tr( "Asphalt" ) );
-  surfaceTranslations.insert( Airport::Concrete, QObject::tr( "Concrete" ) );
-
-  // load sorted translation strings
-  QHashIterator<int, QString> it(surfaceTranslations);
-
-  while( it.hasNext() )
-    {
-      it.next();
-      sortedTranslations.append( it.value() );
-    }
-
-  sortedTranslations.sort();
-}
-
-/**
- * Get sorted translations
- */
-QStringList& Airport::getSortedTranslationList()
-{
-  if( surfaceTranslations.isEmpty() ) {
-    // Load surface - translation data
-    loadTranslations();
-  }
-
-  // qDebug("Airport::getSortedTranslationList: size: %d", sortedTranslations.size());
-
-  return sortedTranslations;
-}
-
-
 void Airport::drawMapElement(QPainter* targetP)
 {
   if( ! isVisible() ) {
@@ -163,6 +94,7 @@ void Airport::drawMapElement(QPainter* targetP)
       targetP->drawPixmap(curPos.x() - 9, curPos.y() -9,
                           glConfig->getPixmap("magenta_circle.xpm"));
     }
+
     if( glConfig->isRotatable( typeID ) ) {
       QPixmap image( glConfig->getPixmapRotatable(typeID, false) );
       targetP->drawPixmap(curPos.x() - iconSize/2, curPos.y() - iconSize/2, image,
@@ -172,7 +104,4 @@ void Airport::drawMapElement(QPainter* targetP)
       targetP->drawPixmap(curPos.x() - iconSize/2, curPos.y() - iconSize/2, image  );
     }
   }
-
 }
-
-
