@@ -1178,7 +1178,7 @@ const CumulusApp::appView CumulusApp::getView()
 }
 
 
-/** Called if the user clicks on a tab with of a list view */
+/** Called if the user clicks on a tabulator of the list view */
 void CumulusApp::slot_tabChanged( int index )
 {
   // qDebug("CumulusApp::slot_tabChanged(): NewIndex=%d", index );

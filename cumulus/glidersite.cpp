@@ -78,7 +78,6 @@ void GliderSite::drawMapElement(QPainter* targetP)
   extern MapMatrix * _globalMapMatrix;
   int scale = _globalMapMatrix->getScaleRatio()/50;
   QColor col = ReachableList::getReachColor( wgsPosition );
-  // ReachableList::reachable reachable=ReachableList::getReachable(name);
   targetP->setPen(QPen(col, 2));  // draw small dots also colored
 
   curPos = glMapMatrix->map(position);

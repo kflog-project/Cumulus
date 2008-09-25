@@ -16,8 +16,8 @@
 **
 ***********************************************************************/
 
-#ifndef LINEELEMENT_H
-#define LINEELEMENT_H
+#ifndef LINE_ELEMENT_H
+#define LINE_ELEMENT_H
 
 #include "basemapelement.h"
 
@@ -38,8 +38,11 @@ public:
      * @param  pA  The point array containing the positions
      * @param  isVal  "true", if the element is a "valley".
      */
-    LineElement(QString name, BaseMapElement::objectType t, QPolygon pP,
-                bool isVal = false, unsigned int secID=0);
+    LineElement( const QString& name,
+                 const BaseMapElement::objectType t,
+                 const QPolygon& pP,
+                 const bool isVal = false,
+                 const unsigned short secID=0 );
 
     /**
      * Destructor.
@@ -53,16 +56,6 @@ public:
      * @param  targetP  The painter to draw the element into.
      */
     virtual void drawMapElement(QPainter* targetP);
-
-    /**
-     * Prints the element. Reimplemented from BaseMapElement.
-     *
-     * @param  printP  The painter to draw the element into.
-     *
-     * @param  isText  Shows, if the text of some mapelements should
-     *                 be printed.
-     */
-    //virtual void printMapElement(QPainter* printPainter, bool isText) const;
 
     /**
      * @return "true", if the element is a valley.
@@ -103,7 +96,7 @@ protected:
     bool valley;
 
     /**
-     * "true", if the element is a closed polygone (like cities).
+     * "true", if the element is a closed polygon (like cities).
      */
     bool closed;
 };

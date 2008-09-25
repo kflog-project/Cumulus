@@ -1102,19 +1102,19 @@ bool Welt2000::parse( QString& path,
 
       if( rwType == 'A' )
         {
-          rwSurface = Airport::Asphalt;
+          rwSurface = Runway::Asphalt;
         }
       else if( rwType == 'C' )
         {
-          rwSurface = Airport::Concrete;
+          rwSurface = Runway::Concrete;
         }
       else if( rwType == 'G' )
         {
-          rwSurface = Airport::Grass;
+          rwSurface = Runway::Grass;
         }
       else
         {
-          rwSurface = Airport::Unknown;
+          rwSurface = Runway::Unknown;
         }
 
       //---------------------------------------------------------------

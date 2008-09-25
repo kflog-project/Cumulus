@@ -54,7 +54,7 @@ class SinglePoint : public BaseMapElement
               const WGSPoint& wgsPos,
               const QPoint& pos,
               const unsigned int elevation = 0,
-              const unsigned int secID=0 );
+              const unsigned short secID=0 );
 
   /**
    * Destructor

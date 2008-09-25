@@ -24,7 +24,7 @@ SinglePoint::SinglePoint( const QString& n,
                           const WGSPoint& wgsP,
                           const QPoint& pos,
                           const unsigned int elev,
-                          const unsigned int secID)
+                          const unsigned short secID)
   : BaseMapElement(n, t, secID), wgsPosition(wgsP),
     position(pos), shortName(shortName), curPos(pos),
     elevation(elev)

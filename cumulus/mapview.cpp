@@ -40,7 +40,6 @@
 #include "map.h"
 #include "generalconfig.h"
 #include "interfaceelements.h"
-//#include "multilayout.h"
 #include "filetools.h"
 #include "altimetermodedialog.h"
 #include "gliderflightdialog.h"
@@ -211,7 +210,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   WLLayout->addWidget( _ld );
   connect(_ld, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
 
-
   //layout for Vario and Altitude
   QBoxLayout *VALayout = new QHBoxLayout;
   commonLayout->addLayout(VALayout);
@@ -262,29 +260,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   sideLayout->addWidget( mcBar, 1 );
 
-
-  /*
-  //layout for the Heading and Bearing boxes
-  QBoxLayout *FWELayout = new QHBoxLayout(sideLayout);
-  FWELayout->setSpacing(2);
-
-  //add FlightTime widget
-  _flighttime = new MapInfoBox( this );
-  _flighttime->setPreText( "T: " );
-  _flighttime->setValue("02:27");
-  FWELayout->addWidget( _flighttime,10 );
-
-  
-  //add elevation widget
-
-  _elevation = new MapInfoBox( this );
-  _elevation->setValue("-");
-  _elevation->setPreText("Elv");
-  FWELayout->addWidget( _elevation,15 );
-  QWhatsThis::add (_elevation, tr("Elevation"));
-  */
-
-
   //--------------------------------------------------------------------
   //layout for the map
   QBoxLayout *MapLayout = new QHBoxLayout;
@@ -323,14 +298,12 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusbar->addWidget(_statusGps);
   connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
 
-//  _statusFlightstatus = new QLabel("<html>" + tr("?","Unknown") + "</html>",_statusbar);
   _statusFlightstatus = new QLabel(tr("?","Unknown"),_statusbar);
 //  _statusFlightstatus->setFrameStyle(QFrame::Box|QFrame::Plain);
   _statusFlightstatus->setLineWidth(0);
   _statusFlightstatus->setAlignment(Qt::AlignCenter);
   _statusFlightstatus->setMargin(0);
   _statusFlightstatus->setMinimumSize(_statusFlightstatus->fontMetrics().boundingRect(" L ? ").width(), 5);
-//  _statusFlightstatus->setTextFormat(Qt::RichText);
   _statusbar->addWidget(_statusFlightstatus);
 
   _statusPosition = new QLabel(_statusbar);
@@ -667,8 +640,6 @@ void MapView::slot_wind (Vector& wind)
 {
   QString w;
   w = QString("%1/" + wind.getSpeed().getHorizontalText(false,0) ).arg( wind.getAngleDeg() );
-//  w.sprintf("%d°/%s",wind.getAngleDeg(),
-//            wind.getSpeed().getHorizontalText(false,0).toLatin1().data() );
   _wind->setValue (w);
   _theMap->slotNewWind();
 }
@@ -722,6 +693,12 @@ void MapView::slot_LD( const double& rLD, const double& cLD )
 void MapView::slot_glider( const QString& glider )
 {
   _statusGlider->setText( glider );
+
+  if( glider.isNull() )
+    {
+      // reset arrival display because glider has been removed
+      _glidepath->setValue("-");
+    }
 }
 
 /**
@@ -757,7 +734,6 @@ void MapView::slot_SatConstellation()
     {
       SatInfo info = gps->getLastSatInfo();
       QString msg = QString ("G-%1").arg(info.satCount);
-      //    QString msg = QString ("%1").arg(info.satCount);
       _statusGps->setText (msg);
     }
 }
@@ -797,7 +773,7 @@ void MapView::slot_setFlightStatus()
         }
     }
 
-  //flightmode status
+  //flight mode status
   switch (calculator->currentFlightMode())
     {
     case CuCalc::unknown:
@@ -873,7 +849,7 @@ void MapView::slot_AltimeterDialog()
   AltimeterModeDialog *amDlg = new AltimeterModeDialog( this );
   // delete widget during close event
   amDlg->setAttribute(Qt::WA_DeleteOnClose);
-  
+
   connect( amDlg, SIGNAL( newAltimeterMode() ),
            this, SLOT( slot_newAltimeterMode() ) );
   connect( amDlg, SIGNAL( settingsChanged() ),
@@ -924,7 +900,7 @@ void MapView::slot_gliderFlightDialog()
 
   connect( gfDlg, SIGNAL( settingsChanged() ),
            calculator, SLOT( slot_settingschanged() ) );
-           
+
   gfDlg->load();
   gfDlg->show();
 }

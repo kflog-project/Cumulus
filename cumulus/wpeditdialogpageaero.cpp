@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -73,7 +73,7 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   topLayout->addWidget(cmbSurface,row++,1);
 
   // init combobox
-  QStringList &tlist = Airport::getSortedTranslationList();
+  QStringList &tlist = Runway::getSortedTranslationList();
 
   for( int i=0; i < tlist.size(); i++ )
     {
@@ -134,8 +134,8 @@ int WpEditDialogPageAero::getSurface()
 
   if (s != -1)
     {
-      const QString &text = Airport::getSortedTranslationList().at(s);
-      s = Airport::text2Item( text );
+      const QString &text = Runway::getSortedTranslationList().at(s);
+      s = Runway::text2Item( text );
     }
 
   if (s == 0)
@@ -153,11 +153,11 @@ void WpEditDialogPageAero::setSurface(int s)
 {
   if (s != -1)
     {
-      s = Airport::getSortedTranslationList().indexOf(Airport::item2Text(s));
+      s = Runway::getSortedTranslationList().indexOf(Runway::item2Text(s));
     }
   else
     {
-      s = Airport::getSortedTranslationList().indexOf(Airport::item2Text(0));
+      s = Runway::getSortedTranslationList().indexOf(Runway::item2Text(0));
     }
 
   cmbSurface->setCurrentIndex(s);

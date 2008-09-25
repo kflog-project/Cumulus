@@ -20,13 +20,17 @@
 
 #include "lineelement.h"
 
-LineElement::LineElement(QString name, BaseMapElement::objectType t,
-                         QPolygon pP, bool isV, unsigned int secID)
+LineElement::LineElement( const QString& name,
+                          const BaseMapElement::objectType t,
+                          const QPolygon& pP,
+                          const bool isV,
+                          const unsigned short secID )
   : BaseMapElement(name, t, secID), projPolygon(pP),
     bBox(pP.boundingRect()), valley(isV), closed(false)
 {
-  if(typeID == BaseMapElement::Lake || typeID == BaseMapElement::City ||
-     typeID == BaseMapElement::Forest) {
+  if( typeID == BaseMapElement::Lake ||
+      typeID == BaseMapElement::City ||
+      typeID == BaseMapElement::Forest) {
     closed = true;
   }
 }
@@ -37,10 +41,8 @@ LineElement::~LineElement()
 
 void LineElement::drawMapElement(QPainter* targetP)
 {
-  //
   // If the element-type should not be drawn in the actual scale, or if the
   // element is not visible, return.
-  //
 
   if( ! glConfig->isBorder(typeID) || ! isVisible()) {
     return;
