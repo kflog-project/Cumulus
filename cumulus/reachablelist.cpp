@@ -25,6 +25,7 @@
 #include <QList>
 #include <QColor>
 #include <QtAlgorithms>
+#include <QDateTime>
 
 #include "reachablelist.h"
 #include "cucalc.h"
@@ -33,18 +34,15 @@
 #include "mapcalc.h"
 #include "polar.h"
 #include "waypoint.h"
-#include "qdatetime.h"
 #include "airport.h"
 
 extern MapContents *_globalMapContents;
 
 // Initialize static members
 int  ReachableList::safetyAlt = 0;
-
 QMap<QString, int> ReachableList::arrivalAltMap;
 QMap<QString, Distance> ReachableList::distanceMap;
-bool ReachableList::modeAltitude;
-
+bool ReachableList::modeAltitude = false;
 
 // construct from airfield database
 ReachablePoint::ReachablePoint(QString name,
@@ -103,31 +101,40 @@ ReachablePoint::ReachablePoint(wayPoint *wp,
   _bearing = bearing;
 };
 
-
 ReachablePoint::~ReachablePoint()
 {
   delete _wp;
 }
 
-
 reachable ReachablePoint::getReachable()
 {
-  if( _arrivalAlt.getMeters() > 0)
-    return yes;
-  else if( _arrivalAlt.getMeters() > -ReachableList::getSafetyAltititude()  )
-    return belowSafety;
+  if( _arrivalAlt.isValid() && _arrivalAlt.getMeters()> 0 )
+    {
+      return yes;
+    }
+  else if( _arrivalAlt.isValid() && _arrivalAlt.getMeters()> -ReachableList::getSafetyAltititude() )
+    {
+      return belowSafety;
+    }
   else
-    return no;
+    {
+      return no;
+    }
 }
 
 bool ReachablePoint::operator < (const ReachablePoint& other) const
 {
-  if( ReachableList::getModeAltitude() ) {
-    return (getArrivalAlt().getMeters() < other.getArrivalAlt().getMeters());
-  } else {
-    return (getDistance().getKilometers() > other.getDistance().getKilometers());
-  }
+  if( ReachableList::getModeAltitude() )
+    {
+      return (getArrivalAlt().getMeters() < other.getArrivalAlt().getMeters());
+    }
+  else
+    {
+      return (getDistance().getKilometers()> other.getDistance().getKilometers());
+    }
 }
+
+//***********************************************************************************
 
 ReachableList::ReachableList(QObject *parent) : QObject(parent)
 {
@@ -139,8 +146,13 @@ ReachableList::ReachableList(QObject *parent) : QObject(parent)
   tick = 0;
   modeAltitude = false;
   initValuesOK = false;
+  calcMode = ReachableList::altitude;
 }
 
+ReachableList::~ReachableList()
+{
+  while (!isEmpty()) delete takeFirst();
+}
 
 void ReachableList::calculate(bool always)
 {
@@ -166,7 +178,8 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
   int r=0, a=0;
   //qDebug("bounding box: (%d, %d), (%d, %d) (%d x %d km)", bbox.left(),bbox.top(),bbox.right(),bbox.bottom(),0,0);
 
-  if( item == MapContents::WaypointList ) {   // Waypoints have differnet structure treat them here
+  if( item == MapContents::WaypointList ) {
+    // Waypoints have different structure treat them here
     QList<wayPoint*> *pWPL = _globalMapContents->getWaypointList();
     // qDebug("Nr of Waypoints: %d", pWPL->count() );
     for( int i=0; i<pWPL->count(); i++ ) {
@@ -202,7 +215,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
       // get specific site via base class, that contains the needed infos
       Airport* site = (Airport*)_globalMapContents->getElement( item, i );
       WGSPoint pt  = site->getWGSPosition();
-      //           distance.setKilometers(dist(&lastPosition,&pt));
+
       if (!bbox.contains(pt)) {
         //qDebug("Not in bounding box, so ignore! (distance: %d, (%d, %d), %s)", (int)distance.getKilometers(), pt.x(),pt.y(), site->getName().latin1());
         r++;
@@ -329,9 +342,9 @@ void ReachableList::calculateGlidePath()
     Altitude arrivalAlt;
     Speed bestSpeed;
 
-    distance.setKilometers(dist(&lastPosition,&pt));
+    distance.setKilometers( dist(&lastPosition, &pt) );
 
-    if( lastPosition == pt || distance.getMeters() <= 10.0 ) {
+    if( lastPosition == pt || distance.getMeters() <= 100.0 ) {
       // @AP: there is nearly no difference between the two points,
       // therefore we have no distance and no bearing
       distance.setMeters(0.0);
@@ -345,27 +358,34 @@ void ReachableList::calculateGlidePath()
       // recalculate Bearing
       p->setBearing( int(rint(getBearingWgs(lastPosition, pt) * 180/M_PI)) );
 
-      // glide path
+      // Calculate glide path. Returns false, if no glider is known.
+      calculator->glidePath( p->getBearing(), p->getDistance(),
+                             Altitude(p->getElevation()),
+                             arrivalAlt, bestSpeed );
 
-      if( !calculator->glidePath(p->getBearing(), p->getDistance(),
-                                 Altitude(p->getElevation()),
-                                 arrivalAlt, bestSpeed ) )
-        {
-          return;
-        }
-
+      // Save arrival altitude. Is set to invalid, if no glider is defined in calculator.
       p->setArrivalAlt( arrivalAlt );
     }
 
-    //arrivalAltMap[p->getName()] = (int) arrivalAlt.getMeters()+safetyAlt;
-    //distanceMap[p->getName()] = distance;
-    arrivalAltMap[ coordinateString ( pt ) ] = (int) arrivalAlt.getMeters()+safetyAlt;
+    if( arrivalAlt.isValid() ) {
+      // add only valid altitudes to the map
+      arrivalAltMap[ coordinateString ( pt ) ] = (int) arrivalAlt.getMeters() + safetyAlt;
+    }
+
     distanceMap[ coordinateString ( pt ) ] = distance;
+
     if( arrivalAlt.getMeters() > 0 )
       counter++;
   }
 
-  modeAltitude = true;
+  // sorting of items depends on the glider selection
+  if( calculator->glider() ) {
+    modeAltitude = true; // glider is known
+  }
+  else {
+    modeAltitude = false; // glider is unknown
+  }
+
   std::sort(begin(), end(), CompareReachablePoints());
   // qDebug("Number of reachable sites (arriv >0): %d", counter );
   // qDebug("Time for glide path calculation: %d msec", t.restart() );
@@ -375,15 +395,24 @@ void ReachableList::calculateGlidePath()
 
 void ReachableList::calcInitValues()
 {
-  // This info we need from calclulator
+  // This info we do need from the calculator
   lastPosition = calculator->getlastPosition();
   lastAltitude = calculator->getlastAltitude().getMeters();
-  Polar * polar = calculator->getPolar();
-  if(!polar)
-    return;  // if no glider selected exit !
+  _maxReach = 50.0; // default radius is 50km
+  Polar* polar = calculator->getPolar();
+  calcMode = ReachableList::altitude;
+
+  if( ! polar ) {
+    calcMode = ReachableList::distance;
+    // If no glider selected exit!
+    return;
+  }
+
   Speed speed = polar->bestSpeed(0.0, 0.0, Speed(0));
+
   // qDebug("speed for best LD= %f", speed.getKph() );
   double ld = polar->bestLD( speed, speed, 0.0 );  // for coarse estimation (no wind)
+
   _maxReach = MAX( (lastAltitude/1000)*ld, 50.0 ); // look at least within 50km
   // Thats the maximum range we can reach
   // it in hard to get under sea level :-)
@@ -399,9 +428,9 @@ void ReachableList::calculateFullList()
     return;
   }
 
-  QTime t;    // timer for performace measurement
+  QTime t; // timer for performance measurement
   t.start();
-  // This info we need from calclulator
+  // This info we need from calculator
   calcInitValues();
   clearList();  // clear list
   // Now add items of different type to the list
@@ -431,15 +460,13 @@ void ReachableList::show()
 {
   for (int i = 0; i < count(); i++) {
     ReachablePoint *p = at(i);
-    qDebug("%s(%d) %f %d� %d", p->getName().toLatin1().data(), p->getElevation(),  p->getDistance().getKilometers(), p->getBearing(), (int)p->getArrivalAlt().getMeters() );
-
+    qDebug("%s(%d) %f %d° %d",
+           p->getName().toLatin1().data(),
+           p->getElevation(),
+           p->getDistance().getKilometers(),
+           p->getBearing(),
+           (int)p->getArrivalAlt().getMeters() );
   }
-}
-
-
-ReachableList::~ReachableList()
-{
-  while (!isEmpty()) delete takeFirst();
 }
 
 // returns number of sites
@@ -492,7 +519,7 @@ void ReachableList::removeDoubles()
         }
 
         if( p2->getWaypoint()->name.length() == p1->getWaypoint()->name.length() ) {
-          // the lenghts of the names are the same, remove
+          // the lengths of the names are the same, remove
           // the one with the lowest alphabetical value
           // (remember that A<a)
           if (p2->getWaypoint()->name > p1->getWaypoint()->name) {

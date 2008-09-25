@@ -1,12 +1,12 @@
 /***********************************************************************
  **
- **   reachablelist.h 
+ **   reachablelist.h
  **
  **   This file is part of Cumulus.
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard V�llm, 2008 Axel Pauli
+ **   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -18,14 +18,13 @@
 // Calculates the destination, bearing, reachability of sites during
 // flight.
 
-#ifndef REACHABLELIST_H
-#define REACHABLELIST_H
+#ifndef REACHABLE_LIST_H
+#define REACHABLE_LIST_H
 
 #include <QObject>
 #include <QPoint>
 #include <QList>
 #include <QMap>
-//#include <Q3PtrCollection>
 
 #include "generalconfig.h"
 #include "mapmatrix.h"
@@ -43,6 +42,7 @@ enum reachable{no, belowSafety, yes};
 class ReachablePoint
 {
  public:
+
   ReachablePoint(QString name,
                  QString icao,
                  QString description,
@@ -154,17 +154,21 @@ class ReachablePoint
   Altitude     _arrivalAlt;
 };
 
-/**
+/**+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * @short A list of reachable points
- * @author Eckhard V�llm
- * The list of reachables points maintains the distance and arrival
+ * @author Eckhard Völlm
+ * The list of reachable points maintains the distance and arrival
  * altitudes for points in the region of the current position.
+ * It is assumed, that this call is a singleton.
  */
 class ReachableList: public QObject, QList<ReachablePoint*>
 {
   Q_OBJECT
 
   public:
+
+  // calculation mode used for the list
+  enum CalculationMode{ distance, altitude };
 
   ReachableList(QObject *parent);
   ~ReachableList();
@@ -188,7 +192,7 @@ class ReachableList: public QObject, QList<ReachablePoint*>
    * calculates scheduled glide path and full list
    */
   void calculate(bool always);
-    
+
   /**
    * force to calculate full list
    */
@@ -228,16 +232,24 @@ class ReachableList: public QObject, QList<ReachablePoint*>
     return GeneralConfig::instance()->getMaxNearestSiteCalculatorSites();
   };
 
+  /**
+   * Returns the mode, which was used during calculation
+   */
+  enum ReachableList::CalculationMode getCalcMode() const
+  {
+    return calcMode;
+  };
+
   void clearList();
 
   /**
-   * @returns the colour indicating if the point with the given name
+   * @returns the color indicating if the point with the given name
    * is reachable.
    */
   static QColor getReachColor( QPoint position );
 
   /**
-   * @returns an enum value indicating if the point with the given name
+   * @returns an enumeration value indicating if the point with the given name
    * is reachable.
    */
   static reachable getReachable( QPoint position );
@@ -287,7 +299,7 @@ class ReachableList: public QObject, QList<ReachablePoint*>
   /**
    * Removes double entries from the list.  Double entries can occur
    * when a point is a waypoint as well as an airfield. In this case,
-   * the one with the higher serverity or longer name is prefered.
+   * the one with the higher severity or longer name is preferred.
    * This function ASSUMES THE LIST IS SORTED!
    */
   void removeDoubles();
@@ -305,8 +317,12 @@ class ReachableList: public QObject, QList<ReachablePoint*>
   int         tick;
   bool        initValuesOK;
 
+  // Used mode for calculation of list. Can be altitude or distance.
+  enum ReachableList::CalculationMode calcMode;
+
   static bool modeAltitude;
   static int safetyAlt;
+
   static QMap<QString, int> arrivalAltMap;
   static QMap<QString, Distance> distanceMap;
 
