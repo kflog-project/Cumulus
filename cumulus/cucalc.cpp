@@ -42,8 +42,9 @@ extern CumulusApp  *_globalCumulusApp;
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 
-CuCalc::CuCalc(QObject* parent) : QObject(parent),
-                                  samplelist( LimitedList<flightSample>( MAX_SAMPLECOUNT ) )
+CuCalc::CuCalc(QObject* parent) :
+  QObject(parent),
+  samplelist( LimitedList<flightSample>( MAX_SAMPLECOUNT ) )
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -104,7 +105,9 @@ CuCalc::CuCalc(QObject* parent) : QObject(parent),
 
 CuCalc::~CuCalc()
 {
-  delete _glider;
+  if( _glider ) {
+    delete _glider;
+  }
 
   if( selectedWp != 0 ) {
     delete selectedWp;
@@ -1283,12 +1286,6 @@ void CuCalc::slot_GpsStatus(GPSNMEA::connectedStatus newState)
 }
 
 
-CuCalc::flightmode CuCalc::currentFlightMode()
-{
-  return lastFlightMode;
-}
-
-
 /** This slot is used internally to re-emit the flightmode signal with the marker value */
 void CuCalc::slot_flightModeChanged(CuCalc::flightmode fm)
 {
@@ -1303,25 +1300,8 @@ void CuCalc::slot_Wind(Vector& v)
   emit newWind(v);
 }
 
-
-/** Read property of Glider glider. */
-Glider *CuCalc::glider() const
-{
-  return _glider;
-}
-
-
-QString CuCalc::gliderType() const
-{
-  if (_glider)
-    return _glider->type();
-  else
-    return QString::null;
-}
-
-
-/** Store property of new Glider. */
-void CuCalc::setGlider(Glider * _newVal)
+/** Store the property of a new Glider. */
+void CuCalc::setGlider(Glider* _newVal)
 {
   if (_glider)
     {
@@ -1344,14 +1324,11 @@ void CuCalc::setGlider(Glider * _newVal)
     {
       emit newGlider( QString::null );
     }
-}
 
-
-void CuCalc::newSites(void)
-{
+  // Recalculate the nearest reachable sites because
+  // glider has been modified resp. removed.
   _reachablelist->calculateFullList();
 }
-
 
 bool CuCalc::matchesFlightMode(GeneralConfig::UseInMode mode)
 {
@@ -1394,8 +1371,4 @@ void CuCalc::setManualInFlight(bool switchOn) {
   // immediately put glider into center if outside
   // we can only switch off if GPS data coming in
   emit switchManualInFlight();
-}
-
-bool CuCalc::isManualInFlight() {
-  return manualInFlight;
 }

@@ -49,7 +49,7 @@ class WindAnalyser;
  *
  * This class represents a single sample of flight data obtained.
  *
- * @author André Somers
+ * @author Andrè Somers
  */
 
 class flightSample
@@ -82,7 +82,7 @@ public:
     QTime time;
 
     /**
-     * Current airspeed 
+     * Current airspeed
      */
     Speed airspeed;
 
@@ -106,7 +106,7 @@ public:
  *
  * This is a Singleton class.
  *
- * @author Andr� Somers
+ * @author Andrè Somers
  */
 
 class CuCalc : public QObject
@@ -243,17 +243,26 @@ public:
     /**
      * Returns the current flightmode
      */
-    flightmode currentFlightMode();
+    flightmode currentFlightMode()
+      {
+        return lastFlightMode;
+      };
 
     /**
      * Read property of Glider glider.
      */
-    virtual Glider * glider() const;
+    virtual Glider* glider() const
+      {
+        return _glider;
+      };
 
     /**
      * get glider type
      */
-    QString gliderType () const;
+    QString gliderType () const
+    {
+      return ( _glider != 0 ) ? _glider->type() : QString::null;
+    };
 
     /**
      * @returns the arrival Altitude regarding wind and last altitude
@@ -290,7 +299,10 @@ public:
     /**
      * recalculate reachable list as new sites came in
      */
-    void newSites();
+    void newSites()
+      {
+        _reachablelist->calculateFullList();
+      };
 
     /**
      * @returns the windcalculator
@@ -307,11 +319,15 @@ public:
     bool matchesFlightMode(GeneralConfig::UseInMode);
 
     void setManualInFlight(const bool);
-    bool isManualInFlight();
+
+    bool isManualInFlight()
+      {
+        return manualInFlight;
+      };
 
 public slots: // Public slots
     /**
-     * Called if a new waypoint has been selected. 
+     * Called if a new waypoint has been selected.
      */
     void slot_WaypointChange(wayPoint *, bool);
 
@@ -508,7 +524,7 @@ signals: // Signals
     void newWind (Vector&);
 
     /**
-     * Sent the name of the glider type, if a new glider has been set. 
+     * Sent the name of the glider type, if a new glider has been set.
      */
     void newGlider(const QString&);
 
@@ -550,7 +566,7 @@ private: // Private methods
 
     /**
      * Calculates the distance to the currently selected waypoint and
-     * emits newDistance if the distance has changed. 
+     * emits newDistance if the distance has changed.
      */
     void calcDistance(const bool autoWpSwitch=true);
 
