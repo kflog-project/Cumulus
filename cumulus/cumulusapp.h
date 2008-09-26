@@ -271,7 +271,7 @@ class CumulusApp : public QMainWindow
 
     /** opens help documentation in browser. */
     void slotHelp();
-    
+
     /** creates the application widgets after the base initialization
      *  of the core application window.
      */
@@ -288,9 +288,9 @@ class CumulusApp : public QMainWindow
     QAction* actionManualNavRight;
     QAction* actionManualNavDown;
     QAction* actionManualNavLeft;
-    QAction* actionManualNavHome; 
-    QAction* actionManualNavWP; 
-    QAction* actionManualNavWPList; 
+    QAction* actionManualNavHome;
+    QAction* actionManualNavWP;
+    QAction* actionManualNavWPList;
     QAction* actionGpsNavUp;
     QAction* actionGpsNavDown;
     QAction* actionGpsNavHome;
@@ -315,17 +315,16 @@ class CumulusApp : public QMainWindow
     QAction* actionEnsureVisible;
     QAction* actionSelectTask;
     QAction* actionPreFlight;
-    QAction* actionRememberWaypoint;
     QAction* actionSetupConfig;
     QAction* actionSetupInFlight;
     QAction* actionHelpCumulus;
     QAction* actionHelpAboutApp;
     QAction* actionHelpAboutQt;
     QAction* actionWhatsThis;
-    
+
     /* shortcut for exit application */
     QShortcut* scExit;
-    
+
     /** file_menu contains all items of the menubar entry "File" */
     QMenu *fileMenu;
     /** view_menu contains all items of the menubar entry "View" */
