@@ -46,7 +46,7 @@ class ReachablePoint
   ReachablePoint(QString name,
                  QString icao,
                  QString description,
-                 bool orignAfl,QAction* actionRememberWaypoint; 
+                 bool orignAfl,
                  int type,
                  double frequency,
                  WGSPoint pos,
