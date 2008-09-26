@@ -28,7 +28,7 @@
  * The earth's radius used for calculation, given in Meters
  * NOTE: We use the earth as a sphere, not as a spheroid!
  */
-#define RADIUS 6371000 // FAI Radius, this was the prevoius radius ->6370290
+#define RADIUS 6371000 // FAI Radius, this was the previous radius ->6370290
 #define RADIUS_kfl (RADIUS / (360.0 * 600000.0))
 
 // Define nautical mile in meters according to earth radius of KFL
