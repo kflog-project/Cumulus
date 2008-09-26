@@ -61,19 +61,19 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
 
   sl << tr(" Name")
      << tr("Dist.")
-     << tr("Brg.")
+     << tr("Course")
      << tr("R")
-     << tr("Arrv.")
+     << tr("Arrvial")
      << tr(" SS");
-  
+
   list->setHeaderLabels(sl);
 
   list->setColumnWidth( 0, 160 );
   list->setColumnWidth( 1, 74 );
-  list->setColumnWidth( 2, 74 );
+  //list->setColumnWidth( 2, 74 );
   list->setColumnWidth( 3, 24 ); // the bearing icon
-  list->setColumnWidth( 4, 80 );
-  list->setColumnWidth( 5, 80 );
+  //list->setColumnWidth( 4, 80 );
+  //list->setColumnWidth( 5, 80 );
 
   rowDelegate = 0;
   fillRpList();
@@ -202,7 +202,7 @@ void ReachpointListView::fillRpList()
       if ( rp->getArrivalAlt().isValid() )
         {
           // there is a valid altitude defined
-          arrival = rp->getArrivalAlt().getText(false,0);
+          arrival = rp->getArrivalAlt().getText( true, 0);
         }
       else if ( calculator->getLastSpeed().getMps() > 0.5 )
         {
@@ -236,11 +236,15 @@ void ReachpointListView::fillRpList()
          << key;
 
       QTreeWidgetItem* li = new QTreeWidgetItem( sl );
+      li->setTextAlignment( 1, Qt::AlignRight|Qt::AlignVCenter );
+      li->setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
+      li->setTextAlignment( 4, Qt::AlignRight|Qt::AlignVCenter );
+
       list->addTopLevelItem( li );
 
       // create landing site type icon
       pnt.begin(&icon);
-      
+
       if ( rp->getReachable() == yes )
         {
           icon.fill( QColor(0,255,0) );
@@ -301,7 +305,10 @@ void ReachpointListView::fillRpList()
   // sort list
   list->sortItems( 6, Qt::DescendingOrder );
   list->resizeColumnToContents(0);
-
+  list->resizeColumnToContents(1);
+  list->resizeColumnToContents(2);
+  list->resizeColumnToContents(4);
+  
   if ( selectedItem == 0 )
     {
       list->scrollToTop();
@@ -312,7 +319,7 @@ void ReachpointListView::fillRpList()
       list->scrollToItem( selectedItem );
       list->setCurrentItem( selectedItem );
     }
-  
+
   list->setFocus();
   list->setUpdatesEnabled(true);
 }
@@ -401,7 +408,7 @@ wayPoint * ReachpointListView::getSelectedWaypoint()
       for (i=0; i < n; i++)
         {
           rp=calculator->getReachList()->getSite(i);
-          
+
           if (rp->getName()==li->text(0))
             {
               selectedWp = *(rp->getWaypoint());
