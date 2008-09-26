@@ -17,6 +17,9 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.1.x (Development based on X11/Qt-4.4.1)
 -------------------------------------------------
+[+] 2008-09-26 AP: Reachable calculation extended that nearest sites in radius of 75 km
+                   are calculated, if no glider is selected.
+                   glider has been deleted. Reachable list has worked with invalid data
 [-] 2008-09-25 AP: Bugfix: Polar object reset to NULL in calculator, if belonging
                    glider has been deleted. Reachable list has worked with invalid data
                    in this situation.
