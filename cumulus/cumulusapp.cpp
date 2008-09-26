@@ -2,7 +2,7 @@
  cumulusapp.cpp  -  main application class
                           -------------------
  begin                : Sun Jul 21 2002
- copyright            : (C) 2002 by André Somers
+ copyright            : (C) 2002 by Andrï¿½ Somers
  ported to Qt4.x/X11  : (C) 2008 by Axel Pauli
  email                : axel@kflog.org
 
@@ -701,7 +701,6 @@ void CumulusApp::initMenuBar()
 
   mapMenu = menuBar()->addMenu(tr("&Map"));
   mapMenu->addAction( actionToggleLogging );
-  mapMenu->addAction( actionRememberWaypoint );
   mapMenu->addAction( actionSelectTask );
   mapMenu->addAction( actionManualNavHome );
   mapMenu->addAction( actionGpsNavHome );
@@ -866,7 +865,7 @@ void CumulusApp::initActions()
            this, SLOT( slotSwitchToAFListView() ) );
 
   actionViewReachpoints = new QAction ( tr( "&Reachable" ), this );
-  actionViewReachpoints->setShortcut(Qt::Key_E);
+  actionViewReachpoints->setShortcut(Qt::Key_R);
   addAction( actionViewReachpoints );
   connect( actionViewReachpoints, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToReachListView() ) );
@@ -966,12 +965,6 @@ void CumulusApp::initActions()
   connect ( actionPreFlight, SIGNAL( triggered() ),
             this, SLOT( slotPreFlightGlider() ) );
 
-  actionRememberWaypoint = new QAction( tr( "Remember waypoint" ), this );
-  actionRememberWaypoint->setShortcut(Qt::Key_R);
-  addAction( actionRememberWaypoint );
-  connect( actionRememberWaypoint, SIGNAL( triggered() ),
-           this, SLOT( slotRememberWaypoint() ) );
-
   actionSetupConfig = new QAction( tr ( "General setup" ), this );
   actionSetupConfig->setShortcut(Qt::Key_S + Qt::SHIFT);
   addAction( actionSetupConfig );
@@ -1039,7 +1032,6 @@ void  CumulusApp::toggleActions( const bool toggle )
   actionEnsureVisible->setEnabled( toggle );
   actionSelectTask->setEnabled( toggle );
   actionPreFlight->setEnabled( toggle );
-  actionRememberWaypoint->setEnabled( toggle );
   actionSetupConfig->setEnabled( toggle );
   actionSetupInFlight->setEnabled( toggle );
   actionHelpCumulus->setEnabled( toggle );
@@ -1251,6 +1243,14 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       toggleActions( true );
       viewMap->statusBar()->clearMessage(); // remove temporary statusbar messages
 
+      // If we returned to the map view, we should schedule a redraw of the
+      // airspaces. Map is not drawn, when invisible and airspace filling
+      // can be outdated in the meantime.
+      if( gps->getConnected() )
+        {
+          viewMap->_theMap->scheduleRedraw( Map::aeroLayer );
+        }
+
       break;
 
     case wpView:
@@ -1269,18 +1269,32 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       break;
 
     case rpView:
+      {
+        menuBar()->hide();
+        viewMap->hide();
+        viewInfo->hide();
 
-      menuBar()->hide();
-      viewMap->hide();
-      viewInfo->hide();
-      listViewTabs->setCurrentWidget( viewRP );
-      listViewTabs->show();
+        // Set the tabulator header according to calculation result.
+        // If a glider is known, reachables by L/D are shown
+        // otherwise the nearest points in 50km radius are shown.
+        QString header = QString(tr( "Reachable" ));
 
-      toggleManualNavActions( false );
-      toggleGpsNavActions( false );
-      actionMenuBarToggle->setEnabled( false );
-      toggleActions( false );
+        if( calculator->getReachList()->getCalcMode() == ReachableList::distance )
+          {
+            // nearest site are calculated
+            header = QString(tr( "Nearest" ));
+          }
 
+        actionViewReachpoints->setText( QString("&") + header );
+        listViewTabs->setTabText( _taskListVisible ? 2 : 1, header );
+        listViewTabs->setCurrentWidget( viewRP );
+        listViewTabs->show();
+
+        toggleManualNavActions( false );
+        toggleGpsNavActions( false );
+        actionMenuBarToggle->setEnabled( false );
+        toggleActions( false );
+      }
       break;
 
     case afView:
@@ -1636,6 +1650,7 @@ void CumulusApp::slotReadconfig()
       // 1 will be replaced in future with a construct like
       // conf->getNearestSiteCalculatorSwitch() != lastConf->getNearestSiteCalculatorSwitch()
       actionViewReachpoints->setEnabled( conf->getNearestSiteCalculatorSwitch() );
+
       if(conf->getNearestSiteCalculatorSwitch())
         {
           if(!_reachpointListVisible)
