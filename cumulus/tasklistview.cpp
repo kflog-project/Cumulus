@@ -81,7 +81,7 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
   sl << tr("Type")
      << tr("Name")
      << tr("Dist.")
-     << tr("Brg.")
+     << tr("Course")
      << tr("Time")
      << tr("Description")
      << tr("SS");
