@@ -794,7 +794,7 @@ void Map::__redrawMap(mapLayer fromLayer)
     {
       // AP: ignore draw request when the window is hidden or not
       // visible to give the user all power of the device for interactions
-       return;
+      return;
     }
 
   if( ! _isEnable )
