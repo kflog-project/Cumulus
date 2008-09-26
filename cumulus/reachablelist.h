@@ -46,7 +46,7 @@ class ReachablePoint
   ReachablePoint(QString name,
                  QString icao,
                  QString description,
-                 bool orignAfl,
+                 bool orignAfl,QAction* actionRememberWaypoint; 
                  int type,
                  double frequency,
                  WGSPoint pos,
@@ -85,7 +85,7 @@ class ReachablePoint
   QString getDescription() const
   {
     return _wp->description;
-  };
+  };QAction* actionRememberWaypoint; 
 
   void setOrignAfl(bool o)
   {
@@ -147,7 +147,7 @@ class ReachablePoint
   bool operator < (const ReachablePoint& other) const;
 
  private:
-  bool         _orignAfl; // orign is from airfield list
+  bool         _orignAfl; // Origin is taken from airfield list
   wayPoint     *_wp;
   Distance     _distance;
   int          _bearing;
@@ -157,9 +157,13 @@ class ReachablePoint
 /**+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * @short A list of reachable points
  * @author Eckhard Völlm
+ *
  * The list of reachable points maintains the distance and arrival
  * altitudes for points in the region of the current position.
- * It is assumed, that this call is a singleton.
+ * If no glider is defined only the nearest reachables in a radius of
+ * 75 km are computed.
+ *
+ * It is assumed, that this class is a singleton.
  */
 class ReachableList: public QObject, QList<ReachablePoint*>
 {
@@ -325,6 +329,9 @@ class ReachableList: public QObject, QList<ReachablePoint*>
 
   static QMap<QString, int> arrivalAltMap;
   static QMap<QString, Distance> distanceMap;
+
+  // number of created class instances
+  static short instances;
 
 };
 

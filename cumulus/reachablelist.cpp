@@ -44,6 +44,12 @@ QMap<QString, int> ReachableList::arrivalAltMap;
 QMap<QString, Distance> ReachableList::distanceMap;
 bool ReachableList::modeAltitude = false;
 
+// Radius of reachables to be taken into account in kilometers
+#define REACH_RADIUS 75.0;
+
+// number of created class instances
+short ReachableList::instances = 0;
+
 // construct from airfield database
 ReachablePoint::ReachablePoint(QString name,
                                QString icao,
@@ -138,11 +144,19 @@ bool ReachablePoint::operator < (const ReachablePoint& other) const
 
 ReachableList::ReachableList(QObject *parent) : QObject(parent)
 {
+  if ( ++instances > 1 )
+    {
+      // There exists already a class instance as singleton.
+      return;
+    }
+
+  ++instances;
+
   GeneralConfig *conf = GeneralConfig::instance();
   safetyAlt = (int) conf->getSafetyAltitude().getMeters();
 
   lastAltitude = 0.0;
-  _maxReach = 0.0;
+  _maxReach = REACH_RADIUS;
   tick = 0;
   modeAltitude = false;
   initValuesOK = false;
@@ -151,6 +165,12 @@ ReachableList::ReachableList(QObject *parent) : QObject(parent)
 
 ReachableList::~ReachableList()
 {
+  if ( --instances > 0 )
+    {
+      // There exists other instances
+      return;
+    }
+
   while (!isEmpty()) delete takeFirst();
 }
 
@@ -173,8 +193,7 @@ void ReachableList::calculate(bool always)
 void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
 {
   Distance distance;
-  QRect bbox;
-  bbox=areaBox(lastPosition,_maxReach);
+  QRect bbox = areaBox(lastPosition, _maxReach);
   int r=0, a=0;
   //qDebug("bounding box: (%d, %d), (%d, %d) (%d x %d km)", bbox.left(),bbox.top(),bbox.right(),bbox.bottom(),0,0);
 
@@ -184,7 +203,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
     // qDebug("Nr of Waypoints: %d", pWPL->count() );
     for( int i=0; i<pWPL->count(); i++ ) {
       WGSPoint pt = pWPL->at(i)->origP;
-      if (!bbox.contains(pt)) {
+      if (! bbox.contains(pt)) {
         //qDebug("Not in bounding box, so ignore! (distance: %d, (%d, %d), %s)", (int)distance.getKilometers(), pt.x(),pt.y(), pWPL->at(i)->name.latin1());
         r++;
         continue;
@@ -200,6 +219,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
       // calculate bearing
       double result=getBearing(lastPosition, pt);
       int bearing =int(rint(result * 180./M_PI));
+
       ReachablePoint *rp = new ReachablePoint( pWPL->at(i),
                                                false,
                                                distance,
@@ -232,6 +252,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
       // calculate bearing
       double result=getBearing(lastPosition, pt);
       int bearing =int(rint(result * 180./M_PI));
+
       // add all potential reachable points to the list, altitude is calculated later
       ReachablePoint *rp = new ReachablePoint( site->getWPName(),
                                                site->getICAO(),
@@ -398,7 +419,7 @@ void ReachableList::calcInitValues()
   // This info we do need from the calculator
   lastPosition = calculator->getlastPosition();
   lastAltitude = calculator->getlastAltitude().getMeters();
-  _maxReach = 50.0; // default radius is 50km
+  _maxReach = REACH_RADIUS; // default radius
   Polar* polar = calculator->getPolar();
   calcMode = ReachableList::altitude;
 
@@ -413,7 +434,7 @@ void ReachableList::calcInitValues()
   // qDebug("speed for best LD= %f", speed.getKph() );
   double ld = polar->bestLD( speed, speed, 0.0 );  // for coarse estimation (no wind)
 
-  _maxReach = MAX( (lastAltitude/1000)*ld, 50.0 ); // look at least within 50km
+  _maxReach = qMax( (lastAltitude/1000) * ld, _maxReach ); // look at least within 75km
   // Thats the maximum range we can reach
   // it in hard to get under sea level :-)
   // qDebug("maxReach: %f %f", _maxReach, (float)ld );
@@ -428,8 +449,9 @@ void ReachableList::calculateFullList()
     return;
   }
 
-  QTime t; // timer for performance measurement
-  t.start();
+  // QTime t; // timer for performance measurement
+  // t.start();
+
   // This info we need from calculator
   calcInitValues();
   clearList();  // clear list
@@ -440,14 +462,18 @@ void ReachableList::calculateFullList()
   addItemsToList(MapContents::WaypointList);
   // qDebug("Number of potential reachable sites: %d", count() );
   modeAltitude = false;
+
+  // sort list according to distances
   std::sort(begin(), end(), CompareReachablePoints() );
   removeDoubles();
   // qDebug("Number of potential reachable sites (after pruning): %d", count() );
-  int size = count();
-  int nr;
-  // Keep the coarse list maximum of double of size as the precise list
-  for( nr= getMaxNrOfSites()*2; nr<size; nr++ ) {
-    removeLast();  // remove elements > max number of sites
+
+  // Remove all elements over the maximum, That are the far away elements
+  int nr = getMaxNrOfSites();
+
+  while( nr < size() )
+  {
+    delete takeFirst();
   }
   // qDebug("Limited Number of potential reachable sites: %d", count() );
   calculateGlidePath();
@@ -460,7 +486,8 @@ void ReachableList::show()
 {
   for (int i = 0; i < count(); i++) {
     ReachablePoint *p = at(i);
-    qDebug("%s(%d) %f %d° %d",
+    qDebug("[%i] %s(%d) %f %d° %d",
+           i,
            p->getName().toLatin1().data(),
            p->getElevation(),
            p->getDistance().getKilometers(),
