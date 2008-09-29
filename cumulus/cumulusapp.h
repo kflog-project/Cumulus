@@ -277,6 +277,12 @@ class CumulusApp : public QMainWindow
      */
     void slotCreateApplicationWidgets();
 
+  private:
+    /**
+     * set nearest or reachable headers
+     */
+    void setNearestOrReachableHeders();
+
   public:
 
     /** use manual navigation even if GPS signal received */
@@ -338,7 +344,7 @@ class CumulusApp : public QMainWindow
     // Wait screen
     WaitScreen *ws;
     // Holds the config/pre-flight "dialogs"
-	  QWidget *configView;
+    QWidget *configView;
     // visibility of menu bar
     bool menuBarVisible;
 
@@ -355,6 +361,6 @@ class CumulusApp : public QMainWindow
 
 #endif
 
-  };
+};
 
 #endif

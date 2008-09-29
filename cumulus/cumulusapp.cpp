@@ -566,6 +566,8 @@ void CumulusApp::slotCreateApplicationWidgets()
         }
     }
 
+  setNearestOrReachableHeders();
+
 #ifdef MAEMO
 
   if( ossoContext )
@@ -1274,19 +1276,8 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
         viewMap->hide();
         viewInfo->hide();
 
-        // Set the tabulator header according to calculation result.
-        // If a glider is known, reachables by L/D are shown
-        // otherwise the nearest points in 50km radius are shown.
-        QString header = QString(tr( "Reachable" ));
+        setNearestOrReachableHeders();
 
-        if( calculator->getReachList()->getCalcMode() == ReachableList::distance )
-          {
-            // nearest site are calculated
-            header = QString(tr( "Nearest" ));
-          }
-
-        actionViewReachpoints->setText( QString("&") + header );
-        listViewTabs->setTabText( _taskListVisible ? 2 : 1, header );
         listViewTabs->setCurrentWidget( viewRP );
         listViewTabs->show();
 
@@ -1388,6 +1379,28 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
   view = newVal;
 }
 
+/**
+ * Set nearest or reachable headers.
+ */
+void CumulusApp::setNearestOrReachableHeders()
+{
+  // Set the tabulator header according to calculation result.
+  // If a glider is known, reachables by L/D are shown
+  // otherwise the nearest points in 75 km radius are shown.
+  QString header = QString(tr( "Reachable" ));
+
+  if( calculator->getReachList()->getCalcMode() == ReachableList::distance )
+    {
+      // nearest site are calculated
+      header = QString(tr( "Nearest" ));
+    }
+
+  // update menu display
+  actionViewReachpoints->setText( QString("&") + header );
+
+  // update list view tabulator header
+  listViewTabs->setTabText( _taskListVisible ? 2 : 1, header );
+}
 
 /** Switches to mapview. */
 void CumulusApp::slotSwitchToMapView()
@@ -1676,7 +1689,7 @@ void CumulusApp::slotReadconfig()
               connect( listViewTabs, SIGNAL( currentChanged( int index ) ),
                        this, SLOT( slot_tabChanged( int index ) ) );
               calculator->clearReachable();
-              viewRP->fillRpList();   // this clears the listView
+              viewRP->clearList();   // this clears the listView
               viewMap->_theMap->scheduleRedraw(Map::waypoints);
               _reachpointListVisible = false;
             }
@@ -1797,6 +1810,7 @@ void CumulusApp::slotPreFlightDataChanged()
           // see comment for removeTab( viewRP )
           disconnect( listViewTabs, SIGNAL( currentChanged( int index ) ),
                       this, SLOT( slot_tabChanged( int index ) ) );
+
           listViewTabs->removeTab( listViewTabs->indexOf(viewTP) );
 
           connect( listViewTabs, SIGNAL( currentChanged( int index ) ),
@@ -1820,7 +1834,7 @@ void CumulusApp::slotPreFlightDataChanged()
   viewMap->_theMap->scheduleRedraw(Map::task);
 }
 
-/** dynamicly updates view for reachable list */
+/** Dynamically updates view for reachable list */
 void CumulusApp::slotNewReachList()
 {
   viewRP->slot_newList(); //let the view know we have a new list
