@@ -47,24 +47,24 @@ class ReachablePoint
                  QString icao,
                  QString description,
                  bool orignAfl,
-                 int type,
+                 short type,
                  double frequency,
                  WGSPoint pos,
                  QPoint ppos,
-                 int elevation,
+                 unsigned int elevation,
                  Distance distance,
-                 int bearing,
+                 short bearing,
                  Altitude arrivAlt,
-                 int rwDir,
-                 int rwLen,
-                 int rwSurf,
+                 short rwDir,
+                 short rwLen,
+                 short rwSurf,
                  bool rwOpen );
 
 
   ReachablePoint(wayPoint *wp,
                  bool orignAfl,
                  Distance distance,
-                 int bearing,
+                 short bearing,
                  Altitude arrivAlt );
 
   Distance getDistance() const
@@ -72,24 +72,24 @@ class ReachablePoint
     return _distance;
   };
 
-  void setDistance(Distance d)
+  void setDistance(Distance& d)
   {
     _distance=d;
   };
 
   QString getName() const
   {
-    return _wp->name;
+    return _wp.name;
   };
 
   QString getDescription() const
   {
-    return _wp->description;
-  };QAction* actionRememberWaypoint; 
+    return _wp.description;
+  };
 
-  void setOrignAfl(bool o)
+  void setOrignAfl(const bool orign)
   {
-    _orignAfl=o;
+    _orignAfl = orign;
   };
 
   bool isOrignAfl() const
@@ -99,12 +99,12 @@ class ReachablePoint
 
   int getElevation() const
   {
-    return _wp->elevation;
+    return _wp.elevation;
   };
 
-  int getType() const
+  short getType() const
   {
-    return _wp->type;
+    return _wp.type;
   };
 
   Altitude getArrivalAlt() const
@@ -112,27 +112,27 @@ class ReachablePoint
     return _arrivalAlt;
   };
 
-  int getBearing() const
+  short getBearing() const
   {
     return _bearing;
   };
 
-  void setBearing(int b)
+  void setBearing(const short b)
   {
-    _bearing=b;
+    _bearing = b;
   };
 
-  WGSPoint& getWgsPos() const
+  WGSPoint& getWgsPos()
   {
-    return _wp->origP;
+    return _wp.origP;
   };
 
-  wayPoint * getWaypoint() const
+  const wayPoint *getWaypoint() const
   {
-    return _wp;
+    return &_wp;
   };
 
-  void setArrivalAlt( Altitude alt )
+  void setArrivalAlt( const Altitude& alt )
   {
     _arrivalAlt = alt;
   };
@@ -148,9 +148,9 @@ class ReachablePoint
 
  private:
   bool         _orignAfl; // Origin is taken from airfield list
-  wayPoint     *_wp;
+  wayPoint     _wp;
   Distance     _distance;
-  int          _bearing;
+  short        _bearing;
   Altitude     _arrivalAlt;
 };
 

@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard V�llm, 2008 Axel pauli
+ **   Copyright (c):  2004 by Eckhard V�llm, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -55,41 +55,40 @@ ReachablePoint::ReachablePoint(QString name,
                                QString icao,
                                QString description,
                                bool orignAfl,
-                               int type,
+                               short type,
                                double frequency,
                                WGSPoint pos,
                                QPoint   ppos,
-                               int elevation,
+                               unsigned int elevation,
                                Distance distance,
-                               int bearing,
+                               short bearing,
                                Altitude arrivAlt,
-                               int rwDir,
-                               int rwLen,
-                               int rwSurf,
+                               short rwDir,
+                               short rwLen,
+                               short rwSurf,
                                bool rwOpen )
 {
-  _wp = new wayPoint;
-  _wp->name = name;
-  _wp->icao = icao;
-  _wp->description = description;
-  _wp->frequency = frequency;
-  _wp->elevation = elevation;
-  _wp->importance = wayPoint::High; // high to make sure it is visible
-  _wp->isLandable = rwOpen;
-  _wp->surface = rwSurf;
-  _wp->runway = rwDir;
-  _wp->length = rwLen;
-  _wp->sectorFAI = 0;
-  _wp->sector1 = 0;
-  _wp->sector2 = 0;
-  _wp->origP = pos;
-  _wp->projP = ppos;
-  _wp->type = type;
+  _wp.name = name;
+  _wp.icao = icao;
+  _wp.description = description;
+  _wp.frequency = frequency;
+  _wp.elevation = elevation;
+  _wp.importance = wayPoint::High; // high to make sure it is visible
+  _wp.isLandable = rwOpen;
+  _wp.surface = rwSurf;
+  _wp.runway = rwDir;
+  _wp.length = rwLen;
+  _wp.sectorFAI = 0;
+  _wp.sector1 = 0;
+  _wp.sector2 = 0;
+  _wp.origP = pos;
+  _wp.projP = ppos;
+  _wp.type = type;
 
-  _orignAfl = orignAfl;
-  _distance = distance;
-  _arrivalAlt=arrivAlt;
-  _bearing = bearing;
+  _orignAfl   = orignAfl;
+  _distance   = distance;
+  _arrivalAlt = arrivAlt;
+  _bearing    = bearing;
 };
 
 
@@ -97,19 +96,18 @@ ReachablePoint::ReachablePoint(QString name,
 ReachablePoint::ReachablePoint(wayPoint *wp,
                                bool orignAfl,
                                Distance distance,
-                               int bearing,
+                               short bearing,
                                Altitude arrivAlt )
 {
-  _wp = new wayPoint(*wp); // deep copy
-  _orignAfl = orignAfl;
-  _distance = distance;
-  _arrivalAlt=arrivAlt;
-  _bearing = bearing;
+  _wp = *wp; // deep copy
+  _orignAfl   = orignAfl;
+  _distance   = distance;
+  _arrivalAlt = arrivAlt;
+  _bearing    = bearing;
 };
 
 ReachablePoint::~ReachablePoint()
 {
-  delete _wp;
 }
 
 reachable ReachablePoint::getReachable()
@@ -248,10 +246,13 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
       // qDebug("%d  %f %f", i, (float)distance.getKilometers(),_maxReach );
       // check if point is a potential reachable candidate at best LD
       if( distance.getKilometers() > _maxReach )
-        continue;
+        {
+          continue;
+        }
+
       // calculate bearing
       double result=getBearing(lastPosition, pt);
-      int bearing =int(rint(result * 180./M_PI));
+      short bearing = short(rint(result * 180./M_PI));
 
       // add all potential reachable points to the list, altitude is calculated later
       ReachablePoint *rp = new ReachablePoint( site->getWPName(),
@@ -377,7 +378,7 @@ void ReachableList::calculateGlidePath()
       p->setDistance( distance );
 
       // recalculate Bearing
-      p->setBearing( int(rint(getBearingWgs(lastPosition, pt) * 180/M_PI)) );
+      p->setBearing( short (rint(getBearingWgs(lastPosition, pt) * 180/M_PI)) );
 
       // Calculate glide path. Returns false, if no glider is known.
       calculator->glidePath( p->getBearing(), p->getDistance(),
