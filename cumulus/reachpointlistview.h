@@ -83,6 +83,13 @@ public slots: // Public slots
      */
     void fillRpList();
 
+    /**
+     * Clears the widget list.
+     */
+    void clearList()
+    {
+      list->clear();
+    }
 
 signals: // Signals
     /**

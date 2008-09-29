@@ -70,10 +70,7 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
 
   list->setColumnWidth( 0, 160 );
   list->setColumnWidth( 1, 74 );
-  //list->setColumnWidth( 2, 74 );
   list->setColumnWidth( 3, 24 ); // the bearing icon
-  //list->setColumnWidth( 4, 80 );
-  //list->setColumnWidth( 5, 80 );
 
   rowDelegate = 0;
   fillRpList();
@@ -308,7 +305,7 @@ void ReachpointListView::fillRpList()
   list->resizeColumnToContents(1);
   list->resizeColumnToContents(2);
   list->resizeColumnToContents(4);
-  
+
   if ( selectedItem == 0 )
     {
       list->scrollToTop();
