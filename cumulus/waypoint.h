@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
- **                         2002 adjusted by André Somers for Cumulus
+ **                         2002 adjusted by Andrï¿½ Somers for Cumulus
  **                         2007 ported to X11 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
@@ -80,7 +80,7 @@ struct flightPoint
   /**
    * Kreisflug 0 oder Streckenflug 1
    */
-  unsigned int f_state;
+  unsigned short f_state;
 };
 
 /**
@@ -129,11 +129,11 @@ class wayPoint
   /** The maximum angle of the sector in radian */
   double maxAngle;
   /** The type of the waypoint */
-  int type;
+  short type;
   /** The task point type of the waypoint */
   enum  TaskPointType taskPointType;
   /** The waypoint index in the task list */
-  int taskPointIndex;
+  short taskPointIndex;
   /** The bearing from the previous waypoint in radian */
   double bearing;
   /** The distance to the previous waypoint in km */
@@ -149,11 +149,11 @@ class wayPoint
   /** */
   QString comment;
   /** internal surface id */
-  int surface;
+  short surface;
   /** direction of runway. Range 0-36 inclusive */
-  int runway;
+  short runway;
   /** length of runway, in meters */
-  int length;
+  short length;
   /** elevation of runway, in meters */
   int elevation;
   /** frequency of contact for waypoint, in MHz */
