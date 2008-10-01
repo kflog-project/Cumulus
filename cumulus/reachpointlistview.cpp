@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Eckhard Voellm, 2008 Axel pauli
+**   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -60,11 +60,11 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
   QStringList sl;
 
   sl << tr(" Name")
-     << tr("Dist.")
-     << tr("Course")
-     << tr("R")
-     << tr("Arrvial")
-     << tr(" SS");
+  << tr("Dist.")
+  << tr("Course")
+  << tr("R")
+  << tr("Arrvial")
+  << tr(" SS");
 
   list->setHeaderLabels(sl);
 
@@ -161,7 +161,7 @@ void ReachpointListView::fillRpList()
   list->clear();
 
   // Create a pointer to the list of nearest sites
-  QList<ReachablePoint*> *pl = calculator->getReachList()->getList();
+  QList<ReachablePoint> *pl = calculator->getReachList()->getList();
   int num = 0;
   QString key;
 
@@ -171,18 +171,18 @@ void ReachpointListView::fillRpList()
        i++, num++)
     {
 
-      ReachablePoint *rp = pl->at(i);
+      ReachablePoint& rp = (*pl)[i];
 
-      if ( !_outlandShow && (rp->getType() == BaseMapElement::Outlanding) )
+      if ( !_outlandShow && (rp.getType() == BaseMapElement::Outlanding) )
         {
           continue;
         }
 
       // Setup string for bearing
-      QString bearing=QString("%1%2").arg( rp->getBearing() ).arg( QString(Qt::Key_degree) );
+      QString bearing = QString("%1%2").arg( rp.getBearing() ).arg( QString(Qt::Key_degree) );
 
       // Calculate relative bearing too, very cool feature
-      int relbearing = rp->getBearing() - calculator->getlastHeading();
+      int relbearing = rp.getBearing() - calculator->getlastHeading();
 
       while (relbearing < 0)
         {
@@ -196,16 +196,16 @@ void ReachpointListView::fillRpList()
       // the glider selection.
       QString arrival = "---";
 
-      if ( rp->getArrivalAlt().isValid() )
+      if ( rp.getArrivalAlt().isValid() )
         {
           // there is a valid altitude defined
-          arrival = rp->getArrivalAlt().getText( true, 0);
+          arrival = rp.getArrivalAlt().getText( true, 0);
         }
       else if ( calculator->getLastSpeed().getMps() > 0.5 )
         {
           // Check, if we are moving. In this case the ETA to the target is displayed.
           // Moving is required to avoid division by zero!
-          int eta = (int) rint(rp->getDistance().getMeters() / calculator->getLastSpeed().getMps());
+          int eta = (int) rint(rp.getDistance().getMeters() / calculator->getLastSpeed().getMps());
 
           if ( eta < 100*3600 )
             {
@@ -218,19 +218,19 @@ void ReachpointListView::fillRpList()
       QString sr, ss;
       QDate date = QDate::currentDate();
 
-      Sonne::sonneAufUnter( sr, ss, date, rp->getWgsPos(), 0 );
+      Sonne::sonneAufUnter( sr, ss, date, rp.getWgsPos(), 0 );
 
       // hidden column for default sorting
       key = QString("%1").arg(num, 3, 10, QLatin1Char('0') );
 
       QStringList sl;
-      sl << rp->getName()
-         << rp->getDistance().getText(false,1)
-         << bearing
-         << RB
-         << arrival
-         <<  " " + ss
-         << key;
+      sl << rp.getName()
+      << rp.getDistance().getText(false,1)
+      << bearing
+      << RB
+      << arrival
+      <<  " " + ss
+      << key;
 
       QTreeWidgetItem* li = new QTreeWidgetItem( sl );
       li->setTextAlignment( 1, Qt::AlignRight|Qt::AlignVCenter );
@@ -242,11 +242,11 @@ void ReachpointListView::fillRpList()
       // create landing site type icon
       pnt.begin(&icon);
 
-      if ( rp->getReachable() == yes )
+      if ( rp.getReachable() == ReachablePoint::yes )
         {
           icon.fill( QColor(0,255,0) );
         }
-      else if ( rp->getReachable() == belowSafety )
+      else if ( rp.getReachable() == ReachablePoint::belowSafety )
         {
           icon.fill( QColor(255,0,255) );
         }
@@ -255,7 +255,7 @@ void ReachpointListView::fillRpList()
           icon.fill( Qt::white );
         }
 
-      pnt.drawPixmap(1, 1, _globalMapConfig->getPixmap(rp->getType(),false,true) );
+      pnt.drawPixmap(1, 1, _globalMapConfig->getPixmap(rp.getType(),false,true) );
       pnt.end();
       QIcon qi;
       qi.addPixmap( icon );
@@ -271,19 +271,19 @@ void ReachpointListView::fillRpList()
       li->setIcon( 3, qi );
 
       // store name of last selected to avoid jump to first element on each fill
-      if ( rp->getName() == sname )
+      if ( rp.getName() == sname )
         {
           selectedItem = li;
         }
 
       QColor c;
       // list safely reachable sites in green
-      if ( rp->getArrivalAlt().isValid() && rp->getArrivalAlt().getMeters() > 0 )
+      if ( rp.getArrivalAlt().isValid() && rp.getArrivalAlt().getMeters() > 0 )
         {
           c = QColor(Qt::darkGreen);
         }
       // list narrowly reachable sites in magenta
-      else if (rp->getArrivalAlt().isValid() && rp->getArrivalAlt().getMeters() > -safetyAlt)
+      else if (rp.getArrivalAlt().isValid() && rp.getArrivalAlt().getMeters() > -safetyAlt)
         {
           c = QColor(Qt::darkMagenta);
         }
@@ -392,9 +392,8 @@ void ReachpointListView::slot_Selected()
 
 
 /** Returns a pointer to the currently high lighted reachpoint. */
-wayPoint * ReachpointListView::getSelectedWaypoint()
+wayPoint* ReachpointListView::getSelectedWaypoint()
 {
-  ReachablePoint * rp;
   int i,n;
   n =  calculator->getReachList()->getNumberSites();
   QTreeWidgetItem* li = list->currentItem();
@@ -404,11 +403,11 @@ wayPoint * ReachpointListView::getSelectedWaypoint()
     {
       for (i=0; i < n; i++)
         {
-          rp=calculator->getReachList()->getSite(i);
+          ReachablePoint rp = calculator->getReachList()->getSite(i);
 
-          if (rp->getName()==li->text(0))
+          if (rp.getName() == li->text(0))
             {
-              selectedWp = *(rp->getWaypoint());
+              selectedWp = *(rp.getWaypoint());
               selectedWp.importance = wayPoint::Normal;  // set importance to normal
 
               return &selectedWp;
@@ -416,6 +415,7 @@ wayPoint * ReachpointListView::getSelectedWaypoint()
             }
         }
     }
+
   return 0;
 }
 

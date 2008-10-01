@@ -1340,7 +1340,8 @@ void Map::__drawWaypoints(QPainter* wpPainter)
             {
               // draw marker
               // QColor col = ReachableList::getReachColor(wp->name);
-              reachable reachable=ReachableList::getReachable(wp->origP);
+              enum ReachablePoint::reachable reachable = ReachableList::getReachable(wp->origP);
+
               if( isSelected )
                 {
                   wpPainter->setPen(QPen(Qt::white, 3, Qt::SolidLine));
@@ -1367,12 +1368,12 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                   iconSize = 16;
                 }
 
-              if (reachable == yes)
+              if (reachable == ReachablePoint::yes)
                 {
                   //draw green circle
                   wpPainter->drawPixmap(P.x() - 9, P.y() -9, _globalMapConfig->getPixmap("green_circle.xpm"));
                 }
-              else if (reachable == belowSafety)
+              else if (reachable == ReachablePoint::belowSafety)
                 {
                   //draw magenta circle
                   wpPainter->drawPixmap(P.x() - 9, P.y() -9, _globalMapConfig->getPixmap("magenta_circle.xpm"));
@@ -1395,7 +1396,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                     { //just the name, or also additional info?
                       if ( wp->isLandable )
                         {
-                          if (reachable==yes)
+                          if (reachable == ReachablePoint::yes)
                             { //reachable? then the label will become bold
                               labelText = "<b>" + labelText + "</b><br>";
                             }
@@ -1427,7 +1428,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                     {
                       if ( wp->isLandable )
                         {
-                          if (reachable==yes)
+                          if (reachable == ReachablePoint::yes)
                             {
                               labelText = "<b>" + labelText + "</b>";
                             }

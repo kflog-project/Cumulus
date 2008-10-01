@@ -1111,7 +1111,7 @@ int FlightTask::calculateFinalGlidePath( const int taskPointIndex,
   if( (uint) (taskPointIndex + 1) >= wpCount )
     {
       // taskPointIndex points to the end of list
-      return no;
+      return ReachablePoint::no;
     }
 
   // fetch current altitude
@@ -1142,7 +1142,7 @@ int FlightTask::calculateFinalGlidePath( const int taskPointIndex,
 
   if( ! res )
     {
-      return no; // glide path calculation failed, no glider selected
+      return ReachablePoint::no; // glide path calculation failed, no glider selected
     }
 
 #ifdef CUMULUS_DEBUG
@@ -1189,15 +1189,15 @@ int FlightTask::calculateFinalGlidePath( const int taskPointIndex,
 
   if( arrivalAlt >= minAlt )
     {
-      return yes;
+      return ReachablePoint::yes;
     }
 
   if( arrivalAlt.getMeters() > 0.0 )
     {
-      return belowSafety;
+      return ReachablePoint::belowSafety;
     }
 
-  return no;
+  return ReachablePoint::no;
 }
 
 QString FlightTask::getTotalDistanceString() const

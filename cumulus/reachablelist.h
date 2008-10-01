@@ -36,12 +36,12 @@
 #include "speed.h"
 #include "waypoint.h"
 
-enum reachable{no, belowSafety, yes};
-
 // class for one entry in ReachableList
 class ReachablePoint
 {
  public:
+
+   enum reachable{no, belowSafety, yes};
 
   ReachablePoint(QString name,
                  QString icao,
@@ -61,7 +61,7 @@ class ReachablePoint
                  bool rwOpen );
 
 
-  ReachablePoint(wayPoint *wp,
+  ReachablePoint(wayPoint& wp,
                  bool orignAfl,
                  Distance distance,
                  short bearing,
@@ -142,7 +142,7 @@ class ReachablePoint
   reachable getReachable();
 
   /**
-   * compares two entries to sort list either by distance or arrival alt
+   * compares two entries to sort list either by distance or arrival altitude
    */
   bool operator < (const ReachablePoint& other) const;
 
@@ -158,14 +158,14 @@ class ReachablePoint
  * @short A list of reachable points
  * @author Eckhard Völlm
  *
- * The list of reachable points maintains the distance and arrival
- * altitudes for points in the region of the current position.
+ * The value based list of reachable points maintains the distance and
+ * arrival altitudes for points in the region of the current position.
  * If no glider is defined only the nearest reachables in a radius of
  * 75 km are computed.
  *
  * It is assumed, that this class is a singleton.
  */
-class ReachableList: public QObject, QList<ReachablePoint*>
+class ReachableList: public QObject, QList<ReachablePoint>
 {
   Q_OBJECT
 
@@ -215,14 +215,20 @@ class ReachableList: public QObject, QList<ReachablePoint*>
   /**
    * returns number of sites
    */
-  const int getNumberSites() const;
+  const int getNumberSites() const
+  {
+    return size();
+  };
 
   /**
-   * returns site at index (max =  getNumberSites()-1)
+   * returns site at index (max = getNumberSites()-1)
    */
-  ReachablePoint *getSite( const int index );
+  ReachablePoint& getSite( const int index )
+  {
+    return (*this)[index];
+  };
 
-  QList<ReachablePoint*> *getList()
+  QList<ReachablePoint> *getList()
   {
     return this;
   };
@@ -256,7 +262,7 @@ class ReachableList: public QObject, QList<ReachablePoint*>
    * @returns an enumeration value indicating if the point with the given name
    * is reachable.
    */
-  static reachable getReachable( QPoint position );
+  static ReachablePoint::reachable getReachable( QPoint position );
 
   /**
    * @returns an integer with the arrival altitude. If the point is
@@ -301,7 +307,7 @@ class ReachableList: public QObject, QList<ReachablePoint*>
   void calcInitValues();
 
   /**
-   * Removes double entries from the list.  Double entries can occur
+   * Removes double entries from the list. Double entries can occur
    * when a point is a waypoint as well as an airfield. In this case,
    * the one with the higher severity or longer name is preferred.
    * This function ASSUMES THE LIST IS SORTED!
@@ -337,15 +343,15 @@ class ReachableList: public QObject, QList<ReachablePoint*>
 
 struct CompareReachablePoints
 {
-  bool operator()(const ReachablePoint *r1, const ReachablePoint *r2) const
+  bool operator()(const ReachablePoint& rp1, const ReachablePoint& rp2) const
   {
     if( ReachableList::getModeAltitude() )
       {
-        return (r1->getArrivalAlt().getMeters() < r2->getArrivalAlt().getMeters());
+        return (rp1.getArrivalAlt().getMeters() < rp2.getArrivalAlt().getMeters());
       }
     else
       {
-        return (r1->getDistance().getKilometers() > r2->getDistance().getKilometers());
+        return (rp1.getDistance().getKilometers() > rp2.getDistance().getKilometers());
       }
   };
 };

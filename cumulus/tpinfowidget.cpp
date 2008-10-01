@@ -229,7 +229,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 
   Altitude arrivalAlt;
   Speed bestSpeed;
-  reachable reach = no;
+  ReachablePoint::reachable reach = ReachablePoint::no;
 
   // calculate Bearing
   int bearing= int( rint(getBearingWgs( calculator->getlastPosition(),
@@ -350,7 +350,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     finalTpDes.replace(  QRegExp(" "), "&nbsp;" );
 
     display += "<tr><th colspan=\"2\" align=\"left\">" +
-      tr("Landing target") + " " + no1 + "</th>" +
+      tr("Landing target") + " " + no1 + "ReachableList::</th>" +
       "<th colspan=2 align=left>" + finalTP->name + "&nbsp;(" + finalTpDes + ")" +
       "</th></tr>";
 
@@ -372,21 +372,21 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       distance + "</b></td>";
 
     // calculation of the final arrival altitude
-    reach = (reachable) task->calculateFinalGlidePath( currentTpIndex, arrivalAlt, bestSpeed );
+    reach = (ReachablePoint::reachable) task->calculateFinalGlidePath( currentTpIndex, arrivalAlt, bestSpeed );
 
     if( arrivalAlt.isValid() )
       {
         switch (reach)
           {
-          case yes:
+          case ReachablePoint::yes:
             display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>+" +
               arrivalAlt.getText(true,0) + "</b></td></tr>";
             break;
-          case no:
+          case ReachablePoint::no:
             display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><font color=\"#FF0000\"><b>" +
               arrivalAlt.getText(true,0) + "</font></b></td></tr>";
             break;
-          case belowSafety:
+          case ReachablePoint::belowSafety:
             display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b><font color=\"#FF00FF\">" +
               arrivalAlt.getText(true,0) + "</font></b></td></tr>";
           }
@@ -501,7 +501,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
     
   Altitude arrivalAlt;
   Speed bestSpeed;
-  reachable reach = no;
+  ReachablePoint::reachable reach = ReachablePoint::no;
   
   // calculate Bearing
   int bearing= int( rint(getBearingWgs( lastPosition, wp->origP ) * 180/M_PI) );
@@ -646,21 +646,21 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
       distance + "</b></td></tr>";
 
     // calculation of the final arrival altitude
-    reach = (reachable) task->calculateFinalGlidePath( tpIdx, arrivalAlt, bestSpeed );
+  reach = (ReachablePoint::reachable) task->calculateFinalGlidePath( tpIdx, arrivalAlt, bestSpeed );
 
     if( arrivalAlt.isValid() )
       {
         switch (reach)
           {
-          case yes:
+          case ReachablePoint::yes:
             display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>+" +
               arrivalAlt.getText(true,0) + "</b></td><tr>";
             break;
-          case no:
+          case ReachablePoint::no:
             display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><font color=\"#FF0000\"><b>" +
               arrivalAlt.getText(true,0) + "</font></b></td><tr>";
             break;
-          case belowSafety:
+          case ReachablePoint::belowSafety:
             display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b><font color=\"#FF00FF\">" +
               arrivalAlt.getText(true,0) + "</font></b></td><tr>";
           }

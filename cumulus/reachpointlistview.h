@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, Eckhard Völlm, 2008 Axel Pauli
+**   Copyright (c):  2004 by AndrÃ© Somers, Eckhard VÃ¶llm, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -32,13 +32,17 @@ class CumulusApp;
 
 /**
  * This widget provides a list of reachable waypoints and a means to
- * select one.  @author Eckhard Völlm
+ * select one.
+ *
+ * @author Eckhard VÃ¶llm
  */
 
 class ReachpointListView : public QWidget
 {
     Q_OBJECT
+
 public:
+
     ReachpointListView(CumulusApp *parent=0);
     ~ReachpointListView();
 
@@ -47,6 +51,7 @@ public:
 
 
 public slots: // Public slots
+
     /**
      * This slot is called to indicate that a selection has been made.
      */
@@ -92,6 +97,7 @@ public slots: // Public slots
     }
 
 signals: // Signals
+
     /**
      * This signal is emitted if a new waypoint is selected.
      */
@@ -110,6 +116,7 @@ signals: // Signals
 
 
 private:
+
     QTreeWidget* list;
     CumulusApp * par;
     RowDelegate* rowDelegate;
@@ -123,9 +130,11 @@ private:
     QPushButton *cmdSelect;
 
 private slots:
+
     void slot_Selected();
 
 protected:
+
     void showEvent(QShowEvent *);
 
 private: // Private methods
