@@ -21,7 +21,7 @@
 #include <QShortcut>
 
 #include "generalconfig.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "airport.h"
 
 AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)

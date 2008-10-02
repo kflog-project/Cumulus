@@ -22,7 +22,7 @@
 
 #include "generalconfig.h"
 #include "mapconfig.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "airport.h"
 
 extern MapContents *_globalMapContents;

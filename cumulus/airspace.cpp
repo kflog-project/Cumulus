@@ -19,7 +19,7 @@
 #include "airspace.h"
 #include "airregion.h"
 #include "generalconfig.h"
-#include "cucalc.h"
+#include "calculator.h"
 
 Airspace::Airspace(QString n, BaseMapElement::objectType t, QPolygon pG,
                    int u, BaseMapElement::elevationType uType,
@@ -222,7 +222,7 @@ QString Airspace::getInfoString() const
     break;
   case FL:
     tempL.sprintf("FL %d (%s)", (int) rint(lLimit.getFeet()/100.), lLimit.getText(true,0).toLatin1().data());
-    break;  
+    break;
   case STD:
     tempL.sprintf("%s STD", lLimit.getText(true,0).toLatin1().data());
     break;
@@ -277,7 +277,7 @@ Airspace::ConflictType Airspace::conflicts (const AltitudeCollection& alt,
 
   //set which altitude to use from our range of available altitudes,
   //and apply uncertainty margins
-    
+
   //#warning FIXME: we should take our GPS error into account
   switch (lLimitType) {
   case NotSet:

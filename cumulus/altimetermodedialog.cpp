@@ -26,7 +26,7 @@
 
 #include "generalconfig.h"
 #include "altimetermodedialog.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "glider.h"
 #include "mapconfig.h"
 
