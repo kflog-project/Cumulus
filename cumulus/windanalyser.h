@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2007 Axel Pauli
+ **   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -21,12 +21,12 @@
 #include <QObject>
 
 #include "vector.h"
-#include "cucalc.h"
+#include "calculator.h"
 
 /**
- * The windanalyser analyses the list of flightsamples looking
- * for windspeed and direction.
- * @author André Somers
+ * The wind analyzer analyzes the list of flight samples looking
+ * for wind speed and direction.
+ * @author AndrÃ© Somers
  */
 class WindAnalyser : public QObject
 {
@@ -46,17 +46,17 @@ class WindAnalyser : public QObject
 
   public slots: // Public slots
   /**
-   * Called if the flightmode changes
+   * Called if the flight mode changes
    */
-  void slot_newFlightMode(CuCalc::flightmode, int);
+  void slot_newFlightMode(Calculator::flightmode, int);
 
   /**
-   * Called if a new sample is available in the samplelist.
+   * Called if a new sample is available in the sample list.
    */
   void slot_newSample();
 
   /**
-   * Called if a new satelite constellation has been detected.
+   * Called if a new satellite constellation has been detected.
    */
   void slot_newConstellation();
 
@@ -75,7 +75,7 @@ class WindAnalyser : public QObject
   int minSatCnt;
   bool curModeOK;
 
- private: // Private memberfunctions
+ private: // Private member functions
   void _calcWind();
 };
 

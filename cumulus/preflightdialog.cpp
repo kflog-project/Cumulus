@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2003 by AndrÃ© Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -26,7 +26,7 @@
 #include "mapcontents.h"
 #include "preflightgliderpage.h"
 #include "preflightmiscpage.h"
-#include "cucalc.h"
+#include "calculator.h"
 
 extern MapContents* _globalMapContents;
 
@@ -164,7 +164,7 @@ PreFlightDialog::slot_accept()
       // No new task has been passed. Check, if a selected waypoint
       // exists and this waypoint belongs to a task. In this case we
       // will reset the selection.
-      extern CuCalc* calculator;
+      extern Calculator* calculator;
       const wayPoint *calcWp = calculator->getselectedWp();
 
       if (calcWp && calcWp->taskPointIndex != -1)

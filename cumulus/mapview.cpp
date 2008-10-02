@@ -337,7 +337,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
            this, SLOT(slot_setFlightStatus()));
   topLayout->addWidget(_statusbar);
 
-  lastPositionChangeSource = CuCalc::MAN;
+  lastPositionChangeSource = Calculator::MAN;
 }
 
 
@@ -532,7 +532,7 @@ void MapView::slot_Position(const QPoint& position, const int source)
   // if in manual mode: show position in statusbar for the cross, not for the glider
   // this covers a) and b) or c) with source manual
   if(!calculator->isManualInFlight() ||
-      calculator->isManualInFlight() && source == CuCalc::MAN)
+      calculator->isManualInFlight() && source == Calculator::MAN)
     {
       _statusPosition->setText(" " + WGSPoint::printPos(position.x(),true) +
                              " / " + WGSPoint::printPos(position.y(),false) + " ");
@@ -776,22 +776,22 @@ void MapView::slot_setFlightStatus()
   //flight mode status
   switch (calculator->currentFlightMode())
     {
-    case CuCalc::unknown:
+    case Calculator::unknown:
       status+=(tr("?","Unknown"));
       break;
-    case CuCalc::standstill:
+    case Calculator::standstill:
       status+=(tr("S","Standstill"));
       break;
-    case CuCalc::cruising:
+    case Calculator::cruising:
       status+=(tr("C","Cruising"));
       break;
-    case CuCalc::circlingL:
+    case Calculator::circlingL:
       status+=(tr("L","Circling Left"));
       break;
-    case CuCalc::circlingR:
+    case Calculator::circlingR:
       status+=(tr("R","Circling Right"));
       break;
-    case CuCalc::wave:
+    case Calculator::wave:
       status+=(tr("W","Wave"));
       break;
     }

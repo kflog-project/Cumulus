@@ -20,7 +20,7 @@
 **   next, ETA, when a task point has been reached. Widget will be
 **   closed automatically after a configureable time period, if user do
 **   nothing. The user can stop the automatic close.
-**   
+**
 ************************************************************************/
 
 #include <cmath>
@@ -37,20 +37,20 @@
 #include "flighttask.h"
 #include "mapcalc.h"
 #include "mapcontents.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "reachablelist.h"
 #include "gpsnmea.h"
 #include "sonne.h"
 
 extern MapConfig    *_globalMapConfig;
 extern MapContents  *_globalMapContents;
-extern CuCalc       *calculator;
+extern Calculator       *calculator;
 
 TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   QWidget( parent )
 {
   // qDebug("TPInfoWidget::TPInfoWidget");
-  
+
   setObjectName("TPInfoWidget");
   setAttribute( Qt::WA_DeleteOnClose );
   this->parent = parent;
@@ -71,10 +71,10 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   text->setLineWidth(2);
 
   topLayout->addWidget(text, 5 );
-  
+
   buttonrow = new QHBoxLayout;
   topLayout->addLayout(buttonrow);
-  
+
   cmdClose = new QPushButton(tr("Close"), this);
   cmdClose->setFont(bfont);
   buttonrow->addWidget(cmdClose);
@@ -84,7 +84,7 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   cmdKeep->setFont(bfont);
   buttonrow->addWidget(cmdKeep);
   connect(cmdKeep, SIGNAL(clicked()), this, SLOT(slot_KeepOpen()));
-  
+
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()));
 
@@ -136,7 +136,7 @@ void TPInfoWidget::showTP( bool automaticClose )
   // @AP: load the time from user configuration
   GeneralConfig *conf = GeneralConfig::instance();
   _timerCount = conf->getInfoDisplayTime();
-  
+
   if( _timerCount > 0 && automaticClose )
     {
       timer->start(1000);
@@ -214,12 +214,12 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     tr("Reached target") + " " + no1 + "</th>" +
     "<th colspan=2 align=left>" + currentTP->name + "&nbsp;(" + currentTpDes + ")" +
     "</th></tr>";
-  
+
   display += "<tr><th colspan=2 align=\"left\">" +
     tr("Next target") + " " + no2 + "</th>" +
     "<th colspan=2 align=left>" + nextTP->name + "&nbsp;(" + nextTpDes + ")" +
     "</th></tr>";
-  
+
   // to avoid wraping in the table we have to code spaces as forced spaces in html
   QString distance = Distance::getText(dist2Next * 1000., true, 1);
   distance.replace(  QRegExp(" "), "&nbsp;" );
@@ -249,7 +249,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
           display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>+" +
             arrivalAlt.getText(true,0) + "</b></td></tr>";
         }
-      else if( arrivalAlt.getMeters() > 0.0 ) 
+      else if( arrivalAlt.getMeters() > 0.0 )
        {
          display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><font color=\"#FF0000\"><b>" +
            arrivalAlt.getText(true,0) + "</font></b></td></tr>";
@@ -265,7 +265,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>" +
         tr("unknown") + "</b></td></tr>";
     }
-  
+
   double gs = calculator->getLastSpeed().getMps(); // get last speed
 
   extern GPSNMEA *gps;
@@ -289,20 +289,20 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 
       QTime qtime(0,0);
       qtime = qtime.addSecs(time2Next);
-      
+
       display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
         qtime.toString() + "</b></td></tr>";
-      
+
       // ETA as UTC must be done with c-system functions. This QT
       // release does not provide this :((
       time_t seconds = time(0);
       seconds += time2Next;
-      
+
       struct tm *gmt = gmtime( &seconds );
-      
+
       QString eta;
       eta.sprintf( "%02d:%02d:%02d UTC", gmt->tm_hour, gmt->tm_min, gmt->tm_sec );
-      
+
       display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
         eta + "</b></td>";
     }
@@ -318,7 +318,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   // calculate sunset for the destination
   QString sr, ss;
   QDate date = QDate::currentDate();
-  
+
   bool res = Sonne::sonneAufUnter( sr, ss, date, nextTP->origP, 0 );
 
   if( res )
@@ -331,7 +331,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   else
     {
       display += "<td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
-        tr("unknown")+ "</b></td></tr>";      
+        tr("unknown")+ "</b></td></tr>";
     }
 
   //-----------------------------------------------------------------------
@@ -362,7 +362,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
           // qDebug("distance: %f", wpList.at(loop)->distance);
           finalDistance += wpList.at(loop)->distance;
         }
- 
+
     // to avoid wraping in the table we have to code spaces as forced
     // spaces in html
     distance = Distance::getText( finalDistance*1000., true, 1);
@@ -404,23 +404,23 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     if( gs > 0.3 )
       {
 	int time2Final = (int) rint( finalDistance*1000. / gs );
-	
+
 	QTime qtime(0,0);
 	qtime = qtime.addSecs(time2Final);
-	
+
 	display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
 	  qtime.toString() + "</b></td></tr>";
-	
+
 	// ETA as UTC must be done with c-system functions. This QT
 	// release does not provide this :((
 	time_t seconds = time(0);
 	seconds += time2Final;
-	
+
 	struct tm *gmt = gmtime( &seconds );
-	
+
 	QString eta;
 	eta.sprintf( "%02d:%02d:%02d UTC", gmt->tm_hour, gmt->tm_min, gmt->tm_sec );
-      
+
 	display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
 	  eta + "</b></td>";
       }
@@ -428,7 +428,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       {
         display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
           tr("unknown") + "</b></td></tr>";
-        
+
         display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
           tr("unknown") + "</b></td>";
       }
@@ -436,7 +436,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     // calculate sunset for the landing destination
     QString sr, ss;
     QDate date = QDate::currentDate();
-  
+
     bool res = Sonne::sonneAufUnter( sr, ss, date, finalTP->origP, 0 );
 
     if( res )
@@ -449,11 +449,11 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     else
       {
         display += "<td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
-          tr("unknown")+ "</b></td></tr>";      
+          tr("unknown")+ "</b></td></tr>";
       }
   }
 
-  display += "</table></big><html>";  
+  display += "</table></big><html>";
   text->setText( display );
 }
 
@@ -491,21 +491,21 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
     tr("Selected target") + "</th></tr>" +
     "<tr><td colspan=\"2\">&nbsp;&nbsp;" + wp->name + " (" + wp->description + ")" +
     "</td></tr>";
-  
+
   // to avoid wraping in the table we have to code spaces as forced spaces in html
   QString distance = Distance::getText(distance2Target.getMeters(), true, 1);
   distance.replace(  QRegExp(" "), "&nbsp;" );
-    
+
   display += "<tr><td>&nbsp;&nbsp;" + tr("Distance") + "</td><td align=\"left\"><b>" +
     distance + "</b></td></tr>";
-    
+
   Altitude arrivalAlt;
   Speed bestSpeed;
   ReachablePoint::reachable reach = ReachablePoint::no;
-  
+
   // calculate Bearing
   int bearing= int( rint(getBearingWgs( lastPosition, wp->origP ) * 180/M_PI) );
-      
+
   // glide path
   calculator->glidePath( bearing, distance2Target,
                          wp->elevation,
@@ -518,7 +518,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
           display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>+" +
             arrivalAlt.getText(true,0) + "</b></td><tr>";
         }
-      else if( arrivalAlt.getMeters() > 0.0 ) 
+      else if( arrivalAlt.getMeters() > 0.0 )
        {
          display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><font color=\"#FF0000\"><b>" +
            arrivalAlt.getText(true,0) + "</font></b></td><tr>";
@@ -553,20 +553,20 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
 
       QTime qtime(0,0);
       qtime = qtime.addSecs(time2Target);
-      
+
       display += "<tr><td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
         qtime.toString() + "</b></td></tr>";
-      
+
       // ETA as UTC must be done with c-system functions. This QT
       // release does not provide this :((
       time_t seconds = time(0);
       seconds += time2Target;
-      
+
       struct tm *gmt = gmtime( &seconds );
-      
+
       QString eta;
       eta.sprintf( "%02d:%02d:%02d UTC", gmt->tm_hour, gmt->tm_min, gmt->tm_sec );
-      
+
       display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
         eta + "</b></td></tr>";
     }
@@ -574,7 +574,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
   // calculate sunset for the target
   QString sr, ss;
   QDate date = QDate::currentDate();
-  
+
   bool res = Sonne::sonneAufUnter( sr, ss, date, wp->origP, 0 );
 
   if( res )
@@ -595,7 +595,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
   if( tpIdx == -1 || task == 0 )
     {
       // no flight task point resp. flight task active
-      display += "</table>";  
+      display += "</table>";
       text->setText( display );
       return;
     }
@@ -605,7 +605,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
   if( wpList.count() < 4 )
     {
       // to less waypoints in list
-      display += "</table>";  
+      display += "</table>";
       text->setText( display );
       return;
     }
@@ -613,12 +613,12 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
   wayPoint *finalTP = wpList.at( wpList.count() - 1 );
 
   if( ( wp->taskPointType == wayPoint::End &&
-        wp->origP == finalTP->origP ) || 
+        wp->origP == finalTP->origP ) ||
         wp->taskPointType == wayPoint::Landing )
     {
       // Waypoint is identical in position to landing point of flight
       // task. So we do display nothing more.
-      display += "</table>";  
+      display += "</table>";
       text->setText( display );
      return;
     }
@@ -636,7 +636,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
       // qDebug("distance: %f", wpList.at(loop)->distance);
       finalDistance += wpList.at(loop)->distance;
     }
- 
+
     // to avoid wraping in the table we have to code spaces as forced
     // spaces in html
     distance = Distance::getText( finalDistance*1000., true, 1);
@@ -673,23 +673,23 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
     if( gs > 0.3 )
       {
 	int time2Final = (int) rint( finalDistance*1000. / gs );
-	
+
 	QTime qtime(0,0);
 	qtime = qtime.addSecs(time2Final);
-	
+
 	display += "<tr><td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
 	  qtime.toString() + "</b></td></tr>";
-	
+
 	// ETA as UTC must be done with c-system functions. This QT
 	// release does not provide this :((
 	time_t seconds = time(0);
 	seconds += time2Final;
-	
+
 	struct tm *gmt = gmtime( &seconds );
-	
+
 	QString eta;
 	eta.sprintf( "%02d:%02d:%02d UTC", gmt->tm_hour, gmt->tm_min, gmt->tm_sec );
-      
+
 	display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
 	  eta + "</b></td></tr>";
       }

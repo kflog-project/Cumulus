@@ -23,7 +23,7 @@
 
 #include "vario.h"
 #include "variomodedialog.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "mapconfig.h"
 #include "generalconfig.h"
 
@@ -40,7 +40,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   b.setBold(true);
   setFont(b);
 
-  // set font size to a reasonable and useable value 
+  // set font size to a reasonable and useable value
   if( font().pointSize() < 16 )
     {
       QFont cf = font();
@@ -310,7 +310,7 @@ void  VarioModeDialog::slot_timePlus()
 
 void  VarioModeDialog::slot_timeMinus()
 {
-  spinTime->setValue( spinTime->value() - spinTime->singleStep() ); 
+  spinTime->setValue( spinTime->value() - spinTime->singleStep() );
 }
 
 void  VarioModeDialog::slot_tekPlus()
@@ -320,7 +320,7 @@ void  VarioModeDialog::slot_tekPlus()
 
 void  VarioModeDialog::slot_tekMinus()
 {
-  spinTEK->setValue( spinTEK->value() - spinTEK->singleStep() ); 
+  spinTEK->setValue( spinTEK->value() - spinTEK->singleStep() );
 }
 
 void VarioModeDialog::accept()

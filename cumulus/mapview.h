@@ -34,12 +34,12 @@
 #include "speed.h"
 #include "altitude.h"
 #include "gpsnmea.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "map.h"
 
 /**
- * This is the main view for the application, provinding the map and
- * other usefull inflight information.
+ * This is the main view for the application, providing the map and
+ * other useful in flight information.
  *
  * @author Andre Somers
  */
@@ -328,13 +328,13 @@ class MapView : public QWidget
      * Reset invers bearing after a timeout
      */
     void slot_resetInversBearing();
-    
+
     /** Opens the Variometer settings dialog. */
     void slot_VarioDialog();
-    
+
     /** Opens the Altimeter settings dialog. */
     void slot_AltimeterDialog();
-    
+
     /** Called, if altimeter mode has been changed */
     void slot_newAltimeterMode();
   };

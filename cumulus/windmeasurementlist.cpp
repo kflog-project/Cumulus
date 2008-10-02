@@ -22,7 +22,7 @@
 #include "vector.h"
 #include "generalconfig.h"
 
-#define MAX_MEASUREMENTS 200 //maximum number of windmeasurements in the list. No idea what a sensible value would be...
+#define MAX_MEASUREMENTS 200 //maximum number of wind measurements in the list. No idea what a sensible value would be...
 
 WindMeasurementList::WindMeasurementList()
 {
@@ -37,7 +37,7 @@ WindMeasurementList::~WindMeasurementList()
 
 
 /**
- * Returns the weighted mean windvector over the stored values, or 0
+ * Returns the weighted mean wind vector over the stored values, or 0
  * if no valid vector could be calculated (for instance: too little or
  * too low quality data).
  */
@@ -92,7 +92,7 @@ Vector WindMeasurementList::getWind(Altitude alt)
 }
 
 
-/** Adds the windvector vector with quality quality to the list. */
+/** Adds the wind vector vector with quality quality to the list. */
 void WindMeasurementList::addMeasurement(Vector vector, Altitude alt, int quality)
 {
   WindMeasurement wind;

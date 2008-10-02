@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002 by Andre Somers, 2007 Axel Pauli
-    email                : andre@kflog.org, axel@kflog.org
+    email                : axel@kflog.org
 
     This file is part of Cumulus
 
@@ -39,7 +39,7 @@ const double toFpm=196.8504;
  * all popular units. For this class, there are two default units you can
  * set: the horizontal and the vertical unit. The horizontal unit is used
  * for the airspeed, the vertical unit is used for climb, McCready settings,
- * etc. There are convineance functions to access the value using both
+ * etc. There are convenience functions to access the value using both
  * appropriate units.
  *
  * @author Andre Somers

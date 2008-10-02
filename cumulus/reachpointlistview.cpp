@@ -31,7 +31,7 @@
 #include "reachablelist.h"
 #include "sonne.h"
 
-extern CuCalc* calculator;
+extern Calculator* calculator;
 
 ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
 {
@@ -403,7 +403,7 @@ wayPoint* ReachpointListView::getSelectedWaypoint()
     {
       for (i=0; i < n; i++)
         {
-          ReachablePoint rp = calculator->getReachList()->getSite(i);
+          const ReachablePoint rp = calculator->getReachList()->getSite(i);
 
           if (rp.getName() == li->text(0))
             {

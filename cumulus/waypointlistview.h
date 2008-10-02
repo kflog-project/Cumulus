@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef WAYPOINTLISTVIEW_H
-#define WAYPOINTLISTVIEW_H
+#ifndef WAYPOINT_LISTVIEW_H
+#define WAYPOINT_LISTVIEW_H
 
 #include <QWidget>
 #include <QMainWindow>

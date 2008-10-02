@@ -15,7 +15,7 @@ HEADERS     = \
     altitude.h \
     basemapelement.h \
     configdialog.h \
-    cucalc.h \
+    calculator.h \
     cumulusapp.h \
     degreespinbox.h \
     distance.h \
@@ -63,6 +63,7 @@ HEADERS     = \
     protocol.h \
     radiopoint.h \
     reachablelist.h \
+    reachablepoint.h \
     reachpointlistview.h \
     resource.h \
     rowdelegate.h \
@@ -119,7 +120,7 @@ SOURCES     = \
     altitude.cpp \
     basemapelement.cpp \
     configdialog.cpp \
-    cucalc.cpp \
+    calculator.cpp \
     cumulusapp.cpp \
     degreespinbox.cpp \
     distance.cpp \
@@ -163,6 +164,7 @@ SOURCES     = \
     projectionlambert.cpp \
     radiopoint.cpp \
     reachablelist.cpp \
+    reachablepoint.cpp \
     reachpointlistview.cpp \
     rowdelegate.cpp \
     runway.cpp \

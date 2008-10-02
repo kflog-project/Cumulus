@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002 by André Somers, 2008 Axel Pauli
-    email                : andre@kflog.org, axel@kflog.org
+    email                : axel@kflog.org
 
     This file is part of Cumulus
 
@@ -20,24 +20,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef IGCLOGGER_H
-#define IGCLOGGER_H
+#ifndef IGC_LOGGER_H
+#define IGC_LOGGER_H
 
-/* info about flightlogger */
+/* info about flight logger */
 #define FL_CODE X
 #define FL_LCODE XXX
 #define FL_NAME Cumulus
 #define FL_ID ATS
 /*maybe give some info on the Zaurus in the future?*/
 #define FL_HWV UNKNOWN
-/*the versionnumber of Cumulus is used as firmwareversion */
+/* the version number of Cumulus is used as firmware version */
 
 /* info about GPS, may in the future be used from GPS */
 #define GPS_MAN UNKNOWN
 #define GPS_MODEL UNKNOWN
 #define GPS_CHAN UNKNOWN
 #define GPS_MAXALT UNKNOWN
-
 
 #include <QObject>
 #include <QString>
@@ -47,7 +46,7 @@
 #include <QDateTime>
 
 #include "altitude.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "limitedlist.h"
 
 /** @short IGC logger
@@ -146,7 +145,7 @@ public slots: // Public slots
      * This is needed for auto-starting the logger if the logger is in
      * standby mode.
      */
-    void slotFlightMode(CuCalc::flightmode);
+    void slotFlightMode(Calculator::flightmode);
 
 signals: // Signals
     /**
@@ -164,26 +163,26 @@ signals: // Signals
 
 
 private: // Private attributes
-    /** Provides a timer for the periodic recording of logentries */
+    /** Provides a timer for the periodic recording of log entries */
     QTimer *timer;
     /** Store time interval for faster logging */
     QTime fasterLoggingTime;
-    /** The textstream object to write our data to. */
+    /** The text stream object to write our data to. */
     QTextStream _stream;
-    /** This is our logfile. It is being used via the _stream object. */
+    /** This is our log file. It is being used via the _stream object. */
     QFile _logfile;
     /** Indicates if logging is currently active. */
     LogMode _logMode;
     /** Timestamp of last logged fix */
     QTime lastLoggedFix;
-    /** List of last would-be logentries.
+    /** List of last would-be log entries.
       * This list is filled when in standby mode with strings that would be
-      * in the log were logging enabled. When a change in flightmode is detected
+      * in the log were logging enabled. When a change in flight mode is detected
       * and logging is triggered, the list is used to write out some older events
       * to the log. This way, we can be sure that the complete start sequence is
       * available in the log. */
     LimitedList<QString> _backtrack;
-    /** Holds the flightnumber for this day */
+    /** Holds the flight number for this day */
     int flightnumber;
     /** A pointer to the instance */
     static IgcLogger * _theInstance;

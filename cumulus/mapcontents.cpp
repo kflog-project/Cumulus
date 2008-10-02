@@ -52,7 +52,7 @@
 #include "hwinfo.h"
 #include "openairparser.h"
 #include "welt2000.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "flighttask.h"
 #include "gpsnmea.h"
 #include "waypointcatalog.h"
@@ -1688,7 +1688,7 @@ void MapContents::slotReloadMapData()
 
   // Check for a selected waypoint, this one must be also new
   // projected.
-  extern CuCalc      *calculator;
+  extern Calculator      *calculator;
   extern MapContents *_globalMapContents;
   extern MapMatrix   *_globalMapMatrix;
 

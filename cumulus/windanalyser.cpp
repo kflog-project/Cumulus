@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -122,14 +122,14 @@ void WindAnalyser::slot_newSample()
 
 
 /** Called if the flightmode changes */
-void WindAnalyser::slot_newFlightMode(CuCalc::flightmode fm, int marker)
+void WindAnalyser::slot_newFlightMode(Calculator::flightmode fm, int marker)
 {
   active=false;  //we are inactive by default
   circleCount=0; //reset the circlecounter for each flightmode change. The important thing to measure is the number of turns in this thermal only.
   circleDeg = 0;
-  if (fm==CuCalc::circlingL) {
+  if (fm==Calculator::circlingL) {
     circleLeft=true;
-  } else if (fm==CuCalc::circlingR) {
+  } else if (fm==Calculator::circlingR) {
     circleLeft=false;
   } else {
     curModeOK=false;

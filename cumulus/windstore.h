@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2007 Axel Pauli
+ **   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -23,12 +23,11 @@
 #include "vector.h"
 #include "windmeasurementlist.h"
 
-
 /**
- * WindStore receives single windmeasurements and stores these. It uses
+ * WindStore receives single wind measurements and stores these. It uses
  * single measurements to provide a mean value, differentiated for altitude.
  *
- * @author André Somers
+ * @author AndrÃ© Somers
  */
 class WindStore : public QObject
 {
@@ -62,7 +61,7 @@ class WindStore : public QObject
  private:
   Vector _lastWind;
   Altitude _lastAltitude;
-  WindMeasurementList * windlist ;
+  WindMeasurementList windlist ;
 
   /** Recalculates the wind from the stored measurements.
    * May result in a newWind signal.

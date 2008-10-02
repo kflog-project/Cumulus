@@ -26,11 +26,11 @@
 #include "tasklistview.h"
 #include "flighttask.h"
 #include "distance.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "sonne.h"
 
 extern MapConfig * _globalMapConfig;
-extern CuCalc* calculator;
+extern Calculator* calculator;
 
 TaskListView::TaskListView( QWidget *parent, bool showButtons )
   : QWidget(parent),

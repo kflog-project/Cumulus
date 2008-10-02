@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by Andre Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -28,7 +28,7 @@
 #include "airport.h"
 #include "wpinfowidget.h"
 #include "generalconfig.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "mapcontents.h"
 #include "mapcalc.h"
 #include "wgspoint.h"
@@ -39,7 +39,7 @@
 
 extern MapConfig    *_globalMapConfig;
 extern MapContents  *_globalMapContents;
-extern CuCalc       *calculator;
+extern Calculator       *calculator;
 
 WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
     QWidget(parent),
@@ -513,7 +513,7 @@ void WPInfoWidget::slot_setAsHome()
 void WPInfoWidget::slot_arrival()
 {
   // qDebug("WPInfoWidget::slot_arrival()");
-  
+
   if( ! _wp )
     {
       return;
@@ -542,7 +542,7 @@ void WPInfoWidget::slot_arrivalClose()
 
   // switch on close shortcut keys
   scClose->setEnabled(true);
-  
+
   // get focus back
   text->setFocus();
   show();
@@ -551,11 +551,11 @@ void WPInfoWidget::slot_arrivalClose()
 /** get back the current state of cumulus. In flight true, otherwise false */
 bool WPInfoWidget::inFlight()
 {
-  extern CuCalc* calculator;
+  extern Calculator* calculator;
   extern GPSNMEA* gps;
 
-  if( calculator->currentFlightMode() == CuCalc::unknown ||
-      calculator->currentFlightMode() == CuCalc::standstill ||
+  if( calculator->currentFlightMode() == Calculator::unknown ||
+      calculator->currentFlightMode() == Calculator::standstill ||
       ! gps->getConnected() )
     {
       return false;

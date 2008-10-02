@@ -6,10 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -18,7 +18,7 @@
 /**
  * The WpEditDialog allows the creation of a new waypoint or the modification
  * of an existing waypoint.
- * @author André Somers
+ * @author Andrï¿½ Somers
  */
 
 
@@ -139,16 +139,14 @@ void WpEditDialog::accept()
   if (_wp == 0)
     {
       _wp = new wayPoint;
-      emit
-      save(_wp);
+      emit save(_wp);
       _wp->projP = _globalMapMatrix->wgsToMap(_wp->origP);
       //qDebug("new waypoint %s", (const char *)_wp->name);
     }
   else
     {
       //qDebug("change waypoint %s", (const char *)_wp->name);
-      emit
-      save(_wp);
+      emit save(_wp);
       _wp->projP = _globalMapMatrix->wgsToMap(_wp->origP);
     }
 

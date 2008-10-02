@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002 by André Somers, 2007 Axel Pauli
-    email                : andre@kflog.org
+    email                : axel@kflog.org
 
     $Id$
 
@@ -21,7 +21,7 @@
 #include "distance.h"
 #include <cmath>
 
-//initializer for static membervariable
+//initializer for static member variable
 Distance::distanceUnit Distance::_distanceUnit=kilometers;
 
 const double Distance::mFromKm=1000.0;    // 1000.0 meters in 1 km.
@@ -168,7 +168,7 @@ QString Distance::getText(bool withUnit, uint precision, uint chopOrder) const
   }
 
   QString prec;
-  //see if we need to lower the precission
+  //see if we need to lower the precision
   if (chopOrder>0) {
     while (precision>0 && pow(10,chopOrder)<=dist) {
       precision--;
@@ -215,7 +215,7 @@ QString Distance::getText(double meters, bool withUnit, int precision)
     dist=meters/mFromMile;
     defprec=3;
     break;
-  case 4: //nautmiles:
+  case 4: //nautical miles:
     unit="nM.";
     dist=meters/mFromNMile;
     defprec=3;
@@ -334,7 +334,7 @@ double Distance::convertToMeters(double dist)
   case 3: //miles:
     res=dist*mFromMile;
     break;
-  case 4: //nautmiles:
+  case 4: //nautical miles:
     res=dist*mFromNMile;
     break;
   default:

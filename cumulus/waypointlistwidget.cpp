@@ -6,10 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -60,7 +60,7 @@ void WaypointListWidget::fillWpList()
     //qDebug("WaypointListWidget::fillWpList() %d", n);
 
     for (int i=0; i < n; i++) {
-      wayPoint * wp=(wayPoint*)wpList->at(i);
+      wayPoint* wp = wpList->at(i);
       new _WaypointItem(list, wp);
     }
   }
@@ -119,7 +119,7 @@ void WaypointListWidget::deleteSelectedWaypoint()
   wayPoint* w = getSelectedWaypoint();
   filter->restoreListViewItems();
 
-  // remove from waypointlist in MapContents
+  // remove from waypoint list in MapContents
   _globalMapContents->getWaypointList()->removeAll( w );
   // save the modified catalog
   _globalMapContents->saveWaypointList();
@@ -159,7 +159,7 @@ void WaypointListWidget::updateSelectedWaypoint(wayPoint* wp)
 void WaypointListWidget::addWaypoint(wayPoint* newWp)
 {
   if( newWp == 0 ) {
-    qDebug("WaypointListWidget::updateSelectedWaypoint: empty waypoint given");
+    qWarning("WaypointListWidget::updateSelectedWaypoint: empty waypoint given");
     return;
   }
 

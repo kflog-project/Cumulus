@@ -15,9 +15,6 @@
  **
  ***********************************************************************/
 
-// Calculates the destination, bearing, reachability of sites during
-// flight.
-
 #ifndef REACHABLE_LIST_H
 #define REACHABLE_LIST_H
 
@@ -28,150 +25,33 @@
 
 #include "generalconfig.h"
 #include "mapmatrix.h"
-#include "singlepoint.h"
 #include "distance.h"
 #include "mapcontents.h"
 #include "altitude.h"
 #include "vector.h"
 #include "speed.h"
-#include "waypoint.h"
+#include "reachablepoint.h"
 
-// class for one entry in ReachableList
-class ReachablePoint
-{
- public:
-
-   enum reachable{no, belowSafety, yes};
-
-  ReachablePoint(QString name,
-                 QString icao,
-                 QString description,
-                 bool orignAfl,
-                 short type,
-                 double frequency,
-                 WGSPoint pos,
-                 QPoint ppos,
-                 unsigned int elevation,
-                 Distance distance,
-                 short bearing,
-                 Altitude arrivAlt,
-                 short rwDir,
-                 short rwLen,
-                 short rwSurf,
-                 bool rwOpen );
-
-
-  ReachablePoint(wayPoint& wp,
-                 bool orignAfl,
-                 Distance distance,
-                 short bearing,
-                 Altitude arrivAlt );
-
-  Distance getDistance() const
-  {
-    return _distance;
-  };
-
-  void setDistance(Distance& d)
-  {
-    _distance=d;
-  };
-
-  QString getName() const
-  {
-    return _wp.name;
-  };
-
-  QString getDescription() const
-  {
-    return _wp.description;
-  };
-
-  void setOrignAfl(const bool orign)
-  {
-    _orignAfl = orign;
-  };
-
-  bool isOrignAfl() const
-  {
-    return _orignAfl;
-  };
-
-  int getElevation() const
-  {
-    return _wp.elevation;
-  };
-
-  short getType() const
-  {
-    return _wp.type;
-  };
-
-  Altitude getArrivalAlt() const
-  {
-    return _arrivalAlt;
-  };
-
-  short getBearing() const
-  {
-    return _bearing;
-  };
-
-  void setBearing(const short b)
-  {
-    _bearing = b;
-  };
-
-  WGSPoint& getWgsPos()
-  {
-    return _wp.origP;
-  };
-
-  const wayPoint *getWaypoint() const
-  {
-    return &_wp;
-  };
-
-  void setArrivalAlt( const Altitude& alt )
-  {
-    _arrivalAlt = alt;
-  };
-
-  ~ReachablePoint();
-
-  reachable getReachable();
-
-  /**
-   * compares two entries to sort list either by distance or arrival altitude
-   */
-  bool operator < (const ReachablePoint& other) const;
-
- private:
-  bool         _orignAfl; // Origin is taken from airfield list
-  wayPoint     _wp;
-  Distance     _distance;
-  short        _bearing;
-  Altitude     _arrivalAlt;
-};
-
-/**+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/************************************************************************
  * @short A list of reachable points
+ *
  * @author Eckhard Völlm
  *
- * The value based list of reachable points maintains the distance and
- * arrival altitudes for points in the region of the current position.
+ * The value based list of reachable points maintains the distance, bearings
+ * and arrival altitude for points in the range of the current position.
  * If no glider is defined only the nearest reachables in a radius of
  * 75 km are computed.
  *
  * It is assumed, that this class is a singleton.
- */
+ ***********************************************************************/
+
 class ReachableList: public QObject, QList<ReachablePoint>
 {
   Q_OBJECT
 
   public:
 
-  // calculation mode used for the list
+  // calculation mode used for sorting of the list
   enum CalculationMode{ distance, altitude };
 
   ReachableList(QObject *parent);
@@ -196,24 +76,14 @@ class ReachableList: public QObject, QList<ReachablePoint>
    * calculates scheduled glide path and full list
    */
   void calculate(bool always);
-
+  
   /**
-   * force to calculate full list
+   * forces to calculate a new list
    */
-  void calculateFullList();
-
+  void calculateNewList();
+  
   /**
-   * add glider airport or waypoint site (if not out of reach) to the list
-   */
-  void addItemsToList(enum MapContents::MapContentsListID item);
-
-  /**
-   * print list via qDebug interface
-   */
-  void show();
-
-  /**
-   * returns number of sites
+   * returns the number of sites in the list
    */
   const int getNumberSites() const
   {
@@ -223,11 +93,14 @@ class ReachableList: public QObject, QList<ReachablePoint>
   /**
    * returns site at index (max = getNumberSites()-1)
    */
-  ReachablePoint& getSite( const int index )
+  const ReachablePoint& getSite( const int index ) const
   {
-    return (*this)[index];
+    return at(index);
   };
 
+  /**
+   * returns a pointer to the list class instance
+   */
   QList<ReachablePoint> *getList()
   {
     return this;
@@ -250,39 +123,45 @@ class ReachableList: public QObject, QList<ReachablePoint>
     return calcMode;
   };
 
-  void clearList();
+  /**
+   * Removes all data in the different lists.
+   */
+  void clearList()
+  {
+    clear();
+    arrivalAltMap.clear();
+    distanceMap.clear();
+  };
 
   /**
    * @returns the color indicating if the point with the given name
    * is reachable.
    */
-  static QColor getReachColor( QPoint position );
+  static QColor getReachColor( const QPoint& position );
 
   /**
    * @returns an enumeration value indicating if the point with the given name
    * is reachable.
    */
-  static ReachablePoint::reachable getReachable( QPoint position );
+  static ReachablePoint::reachable getReachable( const QPoint& position );
 
   /**
    * @returns an integer with the arrival altitude. If the point is
    * not found, -9999 is returned.
    */
-  static int getArrivalAlt( QPoint position );
+  static int getArrivalAlt( const QPoint& position );
 
   /**
    * @returns an Altitude object with the arrival altitude. If the
    * point is not found, an invalid Altitude is returned
    */
-
-  static Altitude getArrivalAltitude( QPoint position );
+  static Altitude getArrivalAltitude( const QPoint& position );
 
   /**
    * @returns a Distance object representing the point. If the point
    * is not found, an invalid Distance is returned
    */
-
-  static Distance getDistance( QPoint position );
+  static Distance getDistance( const QPoint& position );
 
   /**
    * @returns The safety altitude in meters
@@ -302,9 +181,28 @@ class ReachableList: public QObject, QList<ReachablePoint>
 
  private:
 
-  void calculateGlidePath();
+   /**
+    * Calculate course, distance and reachability from the current position
+    * to the elements contained in the limited list. If a glider is defined
+    * the glide path is taken into account and the arrival altitude is
+    * calculated too.
+    */
+  void calculateDataInList();
 
-  void calcInitValues();
+  /**
+   * Sets the initial values needed for the calculation.
+   */
+  void setInitValues();
+
+  /**
+   * adds glider, airport or waypoint site (if not out of reach) to the list
+   */
+  void addItemsToList(enum MapContents::MapContentsListID item);
+
+  /**
+   * print list via qDebug interface
+   */
+  void show();
 
   /**
    * Removes double entries from the list. Double entries can occur
@@ -314,11 +212,12 @@ class ReachableList: public QObject, QList<ReachablePoint>
    */
   void removeDoubles();
 
-  static const QString coordinateString(QPoint position)
+  static QString coordinateString(const QPoint& position)
   {
     return QString("%1.%2").arg(position.x()).arg(position.y());
   };
 
+  QPoint      lastCalculationPosition; // position at last calculation
   QPoint      lastPosition;
   double      lastAltitude;
   Vector      lastWind;

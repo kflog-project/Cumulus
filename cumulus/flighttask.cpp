@@ -29,14 +29,13 @@
 #include "generalconfig.h"
 #include "map.h"
 #include "mapcalc.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "speed.h"
-#include "reachablelist.h"
 
 #undef CUMULUS_DEBUG
 
-extern CuCalc      *calculator;
-extern MapMatrix   *_globalMapMatrix;
+extern Calculator *calculator;
+extern MapMatrix  *_globalMapMatrix;
 
 FlightTask::FlightTask( QList<wayPoint*> *wpListIn,
                         bool faiRules,
@@ -1099,9 +1098,10 @@ bool FlightTask::checkSector( const Distance& dist2TP,
  *
  */
 
-int FlightTask::calculateFinalGlidePath( const int taskPointIndex,
-                                         Altitude &arrivalAlt,
-                                         Speed &bestSpeed )
+ReachablePoint::reachable
+FlightTask::calculateFinalGlidePath( const int taskPointIndex,
+                                     Altitude &arrivalAlt,
+                                     Speed &bestSpeed )
 {
   uint wpCount = wpList->count();
 
@@ -1146,8 +1146,8 @@ int FlightTask::calculateFinalGlidePath( const int taskPointIndex,
     }
 
 #ifdef CUMULUS_DEBUG
-  qDebug( "WP=%s, Bearing=%.1f�, Dist=%.1fkm, Ele=%dm, ArrAlt=%.1f",
-          wpList->at( taskPointIndex )->name.latin1(),
+  qDebug( "WP=%s, Bearing=%.1f°, Dist=%.1fkm, Ele=%dm, ArrAlt=%.1f",
+          wpList->at( taskPointIndex )->name.toLatin1().data(),
           bearing*180/M_PI,
           distance,
           wpList->at( taskPointIndex )->elevation,
@@ -1169,8 +1169,8 @@ int FlightTask::calculateFinalGlidePath( const int taskPointIndex,
                                    wpList->at( i+1 )->elevation,
                                    arrAlt, speed );
 #ifdef CUMULUS_DEBUG
-      qDebug( "WP=%s, Bearing=%.1f�, Dist=%.1fkm, Ele=%dm, ArrAlt=%.1f",
-              wpList->at( i+1 )->name.latin1(),
+      qDebug( "WP=%s, Bearing=%.1f°, Dist=%.1fkm, Ele=%dm, ArrAlt=%.1f",
+              wpList->at( i+1 )->name.toLatin1().data(),
               wpList->at( i+1 )->bearing*180/M_PI,
               wpList->at( i+1 )->distance,
               wpList->at( i+1 )->elevation,

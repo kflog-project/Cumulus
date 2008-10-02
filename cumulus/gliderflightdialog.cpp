@@ -22,7 +22,7 @@
 
 #include "gliderflightdialog.h"
 
-#include "cucalc.h"
+#include "calculator.h"
 #include "glider.h"
 #include "mapconfig.h"
 #include "generalconfig.h"
@@ -43,7 +43,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   b.setBold(true);
   setFont(b);
 
-  // set font size to a reasonable and useable value 
+  // set font size to a reasonable and useable value
   if( font().pointSize() < 16 )
     {
       QFont cf = font();
@@ -85,7 +85,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   spinWater->setRange(0, 200);
   spinWater->setSingleStep(5);
   spinWater->setButtonSymbols(QSpinBox::NoButtons);
-   
+
   waterPlus  = new QPushButton("+", this);
   waterPlus->setMaximumWidth( waterPlus->size().height() );
   waterPlus->setMinimumWidth( waterPlus->size().height() );
@@ -237,15 +237,15 @@ void GliderFlightDialog::load()
       spinMcCready->setEnabled(false);
       mcPlus->setEnabled(false);
       mcMinus->setEnabled(false);
-      
+
       spinWater->setEnabled(false);
       waterPlus->setEnabled(false);
       waterMinus->setEnabled(false);
-      
+
       spinBugs->setEnabled(false);
       bugsPlus->setEnabled(false);
       bugsMinus->setEnabled(false);
-      
+
       buttonDump->setEnabled(false);
     }
 
@@ -271,7 +271,7 @@ void GliderFlightDialog::slotMcPlus()
 
 void GliderFlightDialog::slotMcMinus()
 {
-  spinMcCready->setValue( spinMcCready->value() - spinMcCready->singleStep() ); 
+  spinMcCready->setValue( spinMcCready->value() - spinMcCready->singleStep() );
 }
 
 void GliderFlightDialog::slotWaterPlus()
@@ -281,7 +281,7 @@ void GliderFlightDialog::slotWaterPlus()
 
 void GliderFlightDialog::slotWaterMinus()
 {
-  spinWater->setValue( spinWater->value() - spinWater->singleStep() ); 
+  spinWater->setValue( spinWater->value() - spinWater->singleStep() );
 }
 
 void GliderFlightDialog::slotBugsPlus()
@@ -291,7 +291,7 @@ void GliderFlightDialog::slotBugsPlus()
 
 void GliderFlightDialog::slotBugsMinus()
 {
-  spinBugs->setValue( spinBugs->value() - spinBugs->singleStep() ); 
+  spinBugs->setValue( spinBugs->value() - spinBugs->singleStep() );
 }
 
 

@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002 by André Somers, 2008 Axel Pauli
-    email                : andre@kflog.org, axel@kflog.org
+    email                : axel@kflog.org
 
     This file is part of Cumulus
 
@@ -111,13 +111,13 @@ void IgcLogger::slotMakeFixEntry()
     //we can add a warning here if there has not been a recent fix for more than a predefined time.
     return;
   }
-  
+
   lastLoggedFix = lastfix.time;
-  
+
   //#warning: FIXME: The 'A' represents a valid 3D fix. This should be taken from the GPS!
   QString entry("B" + formatTime(lastfix.time) + formatPosition(lastfix.position) + "A"
                 + formatAltitude(lastfix.altitude) + formatAltitude(lastfix.GNSSAltitude));
-  
+
   if( _logMode==standby ) {
     _backtrack.add(entry);
   } else {
@@ -440,9 +440,9 @@ QString IgcLogger::createFileName(const QString& path)
 }
 
 
-void IgcLogger::slotFlightMode(CuCalc::flightmode mode)
+void IgcLogger::slotFlightMode(Calculator::flightmode mode)
 {
-  if ((_logMode==standby) && (mode!=CuCalc::standstill)) {
+  if ((_logMode==standby) && (mode!=Calculator::standstill)) {
     _logMode=on;
     CreateLogfile();
     for (int i = _backtrack.count()-1; i>=0; i--) {

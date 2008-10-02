@@ -51,7 +51,7 @@
 #include "mapconfig.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "igclogger.h"
 #include "windanalyser.h"
 #include "configdialog.h"
@@ -301,7 +301,7 @@ void CumulusApp::slotCreateApplicationWidgets()
 
   BaseMapElement::initMapElement( _globalMapMatrix, _globalMapConfig );
 
-  calculator = new CuCalc( this );
+  calculator = new Calculator( this );
 
   connect( _globalMapMatrix, SIGNAL( displayMatrixValues( int, bool ) ),
            _globalMapConfig, SLOT( slotSetMatrixValues( int, bool ) ) );
@@ -506,10 +506,10 @@ void CumulusApp::slotCreateApplicationWidgets()
            viewMap, SLOT( slot_LD( const double&, const double&) ) );
   connect( calculator, SIGNAL( newGlider( const QString&) ),
            viewMap, SLOT( slot_glider( const QString&) ) );
-  connect( calculator, SIGNAL( flightModeChanged( CuCalc::flightmode ) ),
+  connect( calculator, SIGNAL( flightModeChanged( Calculator::flightmode ) ),
            viewMap, SLOT( slot_setFlightStatus() ) );
-  connect( calculator, SIGNAL( flightModeChanged( CuCalc::flightmode ) ),
-           logger, SLOT( slotFlightMode( CuCalc::flightmode ) ) );
+  connect( calculator, SIGNAL( flightModeChanged( Calculator::flightmode ) ),
+           logger, SLOT( slotFlightMode( Calculator::flightmode ) ) );
   connect( calculator, SIGNAL( taskpointSectorTouched() ),
            logger, SLOT( slotTaskSectorTouched() ) );
   connect( calculator, SIGNAL( taskInfo( const QString&, const bool ) ),

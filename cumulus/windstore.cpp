@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2007 Axel Pauli
+**   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -16,22 +16,17 @@
 ***********************************************************************/
 
 #include <stdlib.h>
-#include "windstore.h"
-#include "cucalc.h"
 
+#include "windstore.h"
+#include "calculator.h"
 
 WindStore::WindStore(QObject * parent) : QObject(parent)
 {
-  //create the lists
-  windlist = new WindMeasurementList;
 }
-
 
 WindStore::~WindStore()
 {
-  delete windlist;
 }
-
 
 /**
  * Called with new measurements. The quality is a measure for how
@@ -40,7 +35,7 @@ WindStore::~WindStore()
  */
 void WindStore::slot_measurement(Vector windvector, int quality)
 {
-  windlist->addMeasurement(windvector, calculator->getlastAltitude(), quality);
+  windlist.addMeasurement(windvector, calculator->getlastAltitude(), quality);
 
   //we may have a new wind value, so make sure it's emitted if needed!
   recalculateWind();
@@ -54,8 +49,10 @@ void WindStore::slot_measurement(Vector windvector, int quality)
  */
 void WindStore::slot_Altitude()
 {
-  if (abs((int)(calculator->getlastAltitude()-_lastAltitude).getMeters())>10) //only recalculate if there is a significant change
+  if (abs((int)(calculator->getlastAltitude()-_lastAltitude).getMeters())>10) {
+    //only recalculate if there is a significant change
     recalculateWind();
+  }
 
   _lastAltitude=calculator->getlastAltitude();
 }
@@ -65,7 +62,8 @@ void WindStore::slot_Altitude()
  * May result in a newWind signal. */
 void WindStore::recalculateWind()
 {
-  Vector CurWind=windlist->getWind(calculator->getlastAltitude());
+  Vector CurWind=windlist.getWind(calculator->getlastAltitude());
+
   if (CurWind!=_lastWind) {
     _lastWind=CurWind;
     qDebug("emit newWind: %d/%f",_lastWind.getAngleDeg(),_lastWind.getSpeed().getKph() );

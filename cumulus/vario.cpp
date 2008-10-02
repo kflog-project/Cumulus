@@ -19,7 +19,7 @@
 
 #include "vario.h"
 #include "altitude.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "generalconfig.h"
 
 Vario::Vario(QObject* parent)

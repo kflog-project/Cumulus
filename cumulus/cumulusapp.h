@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002 by Andrè Somers, 2008 Axel Pauli
-    email                : andre@kflog.org, axel@kflog.org
+    email                : axel@kflog.org
 
     This file is distributed under the terms of the General Public
     Licence. See the file COPYING for more information.

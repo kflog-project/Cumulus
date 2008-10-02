@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2003 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -21,7 +21,7 @@
 #include <QToolTip>
 
 #include "glider.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "preflightgliderpage.h"
 
 PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) : QWidget(parent)
@@ -71,10 +71,10 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) : QWidget(parent)
   getCurrent();
 
   connect(deselect, SIGNAL(clicked()),
-          this, SLOT(slot_gliderDeselected()) );           
-                        
+          this, SLOT(slot_gliderDeselected()) );
+
   connect(list, SIGNAL(itemSelectionChanged()),
-          this, SLOT(slot_gliderChanged()));           
+          this, SLOT(slot_gliderChanged()));
 }
 
 PreFlightGliderPage::~PreFlightGliderPage()
@@ -121,7 +121,7 @@ void PreFlightGliderPage::slot_gliderDeselected()
 
 void PreFlightGliderPage::getCurrent()
 {
-  extern CuCalc* calculator;
+  extern Calculator* calculator;
   Glider* glider = calculator->glider();
 
   if( glider == 0 )
@@ -144,9 +144,9 @@ void PreFlightGliderPage::getCurrent()
 
 void PreFlightGliderPage::save()
 {
-  extern CuCalc* calculator;
+  extern Calculator* calculator;
 //  qDebug("## s00 ## calculator:  %s", calculator->gliderType().toLatin1().data() );
-  
+
   Glider* glider = list->getSelectedGlider(false);
 
   if(glider)

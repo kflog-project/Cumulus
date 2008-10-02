@@ -30,7 +30,7 @@
 
 #include "airport.h"
 #include "airspace.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "cumulusapp.h"
 #include "distance.h"
 #include "generalconfig.h"
@@ -1729,7 +1729,7 @@ void Map::slotPosition(const QPoint& newPos, const int source)
       return;
     }
 
-  if(source == CuCalc::GPS)
+  if(source == Calculator::GPS)
     {
       if (curGPSPos!=newPos)
         {

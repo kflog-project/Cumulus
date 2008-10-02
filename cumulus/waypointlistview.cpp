@@ -22,7 +22,7 @@
 
 #include "generalconfig.h"
 #include "wpeditdialog.h"
-#include "cucalc.h"
+#include "calculator.h"
 #include "cumulusapp.h"
 
 WaypointListView::WaypointListView(QMainWindow *parent) : QWidget(parent)
@@ -139,7 +139,8 @@ void WaypointListView::slot_Selected() {
 /** Called when a new waypoint needs to be made. */
 void WaypointListView::slot_newWP()
 {
-  WpEditDialog *dlg=new WpEditDialog(this, 0);
+  WpEditDialog *dlg = new WpEditDialog(this, 0);
+
   dlg->setAttribute(Qt::WA_DeleteOnClose);
 
   connect(dlg, SIGNAL(wpListChanged(wayPoint *)),
@@ -152,9 +153,10 @@ void WaypointListView::slot_newWP()
 /** Called when the selected waypoint needs must be opened in the editor */
 void WaypointListView::slot_editWP()
 {
-  wayPoint *wp=getSelectedWaypoint();
+  wayPoint *wp = getSelectedWaypoint();
+
   if (wp) {
-    WpEditDialog *dlg=new WpEditDialog(this, wp);
+    WpEditDialog *dlg = new WpEditDialog(this, wp);
     dlg->setAttribute(Qt::WA_DeleteOnClose);
 
     connect(dlg, SIGNAL(wpListChanged(wayPoint *)),

@@ -35,6 +35,7 @@
 #include "distance.h"
 #include "altitude.h"
 #include "speed.h"
+#include "reachablepoint.h"
 
 class FlightTask : public BaseMapElement
 {
@@ -281,7 +282,8 @@ class FlightTask : public BaseMapElement
    * reachable:  returns info about reachability
    *
    */
-  int calculateFinalGlidePath( const int taskPointIndex,
+  ReachablePoint::reachable
+      calculateFinalGlidePath( const int taskPointIndex,
                                Altitude &arrivalAlt,
                                Speed &bestSpeed );
 
