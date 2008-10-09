@@ -260,6 +260,10 @@ void ListViewFilter::showPage(bool up)
   int maxIndex = _activeFilter->items.count() - 1;
   int maxPageIndex = 0;
 
+  // breakdown to 'pages' disabled ?
+  if ( pageSize == 0 )
+    pageSize = maxIndex + 1; 
+
   if (up) {
     if ( showIndex+pageSize > maxIndex ) {
       _tw->setUpdatesEnabled(true);
