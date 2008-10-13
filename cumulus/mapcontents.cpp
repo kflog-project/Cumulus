@@ -60,19 +60,20 @@
 
 extern MapView *_globalMapView;
 
-#define MAX_FILE_COUNT 16200
+// NumbeMAX_TILE_NUMBER
+#define MAX_TILE_NUMBER 16200
 #define ISO_LINE_NUM 50
 
 //general KFLOG file token: @KFL
 #define KFLOG_FILE_MAGIC    0x404b464c
 
-//uncompiled mapfiles
+//uncompiled map files
 #define FILE_TYPE_GROUND      0x47
 #define FILE_TYPE_TERRAIN     0x54
 #define FILE_TYPE_MAP         0x4d
 #define FILE_TYPE_AERO        0x41
 
-//compiled mapfiles
+//compiled map files
 #define FILE_TYPE_GROUND_C    0x67
 #define FILE_TYPE_TERRAIN_C   0x74
 #define FILE_TYPE_MAP_C       0x6d
@@ -133,9 +134,6 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen)
 
   ws->slot_SetText1(tr("Loading map contents..."));
 
-  sectionArray.resize(MAX_FILE_COUNT);
-  sectionArray.fill(false);
-
   // Wir nehmen zunaechst 4 Schachtelungstiefen an ...
   for(int loop = 0; loop < ( ISO_LINE_NUM * 4 ); loop++) {
     QList<Isohypse*> *list = new QList<Isohypse*>;
@@ -174,13 +172,7 @@ MapContents::~MapContents()
 
   qDeleteAll (airspaceList);
 
-  qDeleteAll (cityList);
-
   qDeleteAll (gliderSiteList);
-
-  qDeleteAll (hydroList);
-
-  qDeleteAll (lakeList);
 
   for (int i = isoList.count() - 1; i >= 0; i--)
     {
@@ -197,17 +189,9 @@ MapContents::~MapContents()
 
   qDeleteAll (outList);
 
-  qDeleteAll (railList);
-
   qDeleteAll (regIsoLines);
 
   qDeleteAll (reportList);
-
-  qDeleteAll (highwayList);
-
-  qDeleteAll (roadList);
-
-  qDeleteAll (topoList);
 
   qDeleteAll (villageList);
 
@@ -915,9 +899,6 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
 
   unsigned int gesamt_elemente = 0;
-  //  unsigned int river = 0;
-  //  unsigned int rivert = 0;
-
   uint loop = 0;
 
   while( ! in.atEnd() ) {
@@ -939,37 +920,37 @@ bool MapContents::__readBinaryFile(const int fileSecID,
       READ_POINT_LIST
         if (!_globalMapConfig->getLoadHighways())
           break;
-      highwayList.append(new LineElement("", typeIn, pN, false, fileSecID));
+      highwayList.append( LineElement("", typeIn, pN, false, fileSecID) );
       break;
     case BaseMapElement::Road:
       READ_POINT_LIST
         if (!_globalMapConfig->getLoadRoads())
           break;
-      roadList.append(new LineElement("", typeIn, pN, false, fileSecID));
+      roadList.append( LineElement("", typeIn, pN, false, fileSecID) );
       break;
     case BaseMapElement::Trail:
       READ_POINT_LIST
         if (!_globalMapConfig->getLoadRoads())
           break;
-      roadList.append(new LineElement("", typeIn, pN, false, fileSecID));
+      roadList.append( LineElement("", typeIn, pN, false, fileSecID) );
       break;
     case BaseMapElement::Railway:
       READ_POINT_LIST
         if (!_globalMapConfig->getLoadRailroads())
           break;
-      railList.append(new LineElement("", typeIn, pN, false, fileSecID));
+      railList.append( LineElement("", typeIn, pN, false, fileSecID) );
       break;
     case BaseMapElement::Railway_D:
       READ_POINT_LIST
         if (!_globalMapConfig->getLoadRailroads())
           break;
-      railList.append(new LineElement("", typeIn, pN, false, fileSecID));
+      railList.append( LineElement("", typeIn, pN, false, fileSecID) );
       break;
     case BaseMapElement::Aerial_Cable:
       READ_POINT_LIST
         if (!_globalMapConfig->getLoadRailroads())
           break;
-      railList.append(new LineElement("", typeIn, pN, false, fileSecID));
+      railList.append( LineElement("", typeIn, pN, false, fileSecID) );
       break;
     case BaseMapElement::Canal:
     case BaseMapElement::River:
@@ -986,7 +967,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
       READ_POINT_LIST
         if (!_globalMapConfig->getLoadWaterways())
           break;
-      hydroList.append(new LineElement(name, typeIn, pN, false, fileSecID));
+      hydroList.append( LineElement(name, typeIn, pN, false, fileSecID) );
       break;
     case BaseMapElement::City:
       in >> sort;
@@ -1003,7 +984,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
       READ_POINT_LIST
         if (!_globalMapConfig->getLoadCities())
           break;
-      cityList.append(new LineElement(name, typeIn, pN, sort, fileSecID));
+      cityList.append( LineElement(name, typeIn, pN, sort, fileSecID) );
       // qDebug("added city '%s'", name.toLatin1().data());
       break;
     case BaseMapElement::Lake:
@@ -1021,7 +1002,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
         }
       }
       READ_POINT_LIST
-        lakeList.append(new LineElement(name, typeIn, pN, sort, fileSecID));
+        lakeList.append(LineElement(name, typeIn, pN, sort, fileSecID));
       // qDebug("appended lake, name '%s', pointcount %d", name.toLatin1().data(), pN.count());
       break;
     case BaseMapElement::Forest:
@@ -1041,7 +1022,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
       READ_POINT_LIST
         if (!_globalMapConfig->getLoadForests())
           break;
-      topoList.append(new LineElement(name, typeIn, pN, sort, fileSecID));
+      topoList.append( LineElement(name, typeIn, pN, sort, fileSecID) );
       break;
     case BaseMapElement::Village:
       if(formatID >= FILE_FORMAT_ID) {
@@ -1189,86 +1170,107 @@ void MapContents::proofeSection()
   char step, hasstep; //used as small integers
   TilePartMap::Iterator it;
 
-  for(int row = northCorner; row <= southCorner; row++) {
-    for(int col = westCorner; col <= eastCorner; col++) {
-      int secID=row + ( col + ( row * 179 ) );
+  for( int row = northCorner; row <= southCorner; row++ )
+  {
+    for (int col = westCorner; col <= eastCorner; col++)
+      {
+        int secID = row + (col + (row * 179));
 
-      if( isFirst ) {
-        // Animate a little bit during first load. later on in flight,
-        // we need the time for gps processing.
-        emit progress(2);
+        // qDebug( "Needed BoxSecID=%d", secID );
+
+        if (isFirst)
+          {
+            // Animate a little bit during first load. Later on in flight,
+            // we need the time for GPS processing.
+            emit progress(2);
+          }
+
+        if( secID >= 0 & secID <= MAX_TILE_NUMBER )
+          {
+            // a valid tile (2x2 degree area) must be in the range 0 ... 16200
+            if (!tileSectionSet.contains(secID))
+              {
+                // qDebug(" Tile %d is missing", secID );
+                // Tile is missing
+                if (isFirst)
+                  {
+                    ws->slot_SetText1(tr("Loading maps..."));
+                  }
+                else
+                  {
+                    // @AP: remove of all unused maps to get place
+                    // in heap. That can be disabled here because
+                    // the loading routines will also check the
+                    // available memory and call the unloadMaps()
+                    // method is necessary. But the disadvantage
+                    // is in that case that the freeing needs a
+                    // lot of time (several seconds).
+
+                    if (_globalMapConfig->getUnloadUnneededMap())
+                      {
+                        unloadMaps(0);
+                      }
+                  }
+
+                // qDebug("Going to load sectionID %d", secID);
+
+                step = 0;
+                // check to see if parts of this tile has already been loaded before
+                it = tilePartMap.find(secID);
+
+                if (it == tilePartMap.end())
+                  { //not found
+                    hasstep = 0;
+                  }
+                else
+                  {
+                    hasstep = it.value();
+                  }
+
+                //try loading the currently unloaded files
+                if (!(hasstep & 1))
+                  {
+                    if (__readTerrainFile(secID, FILE_TYPE_GROUND))
+                      step |= 1;
+                  }
+
+                if (!(hasstep & 2))
+                  {
+                    if (__readTerrainFile(secID, FILE_TYPE_TERRAIN))
+                      step |= 2;
+                  }
+
+                if (!(hasstep & 4))
+                  {
+                    if (__readBinaryFile(secID, FILE_TYPE_MAP))
+                      step |= 4;
+                  }
+
+                if (step == 7) //set the correct flags for this map tile
+                  {
+                    tileSectionSet.insert(secID);  // add section id to set
+                    tilePartMap.remove(secID); // make sure we don't leave it as partly loaded
+                  }
+                else
+                  {
+                    if (step > 0)
+                      {
+                        tilePartMap.insert(secID, step);
+                      }
+                  }
+              }
+          }
       }
+  }
 
-      if(0<=secID & secID <=16200) {
-        if( !sectionArray.testBit( secID ) ) {
-          // Tile is missing
-          if( isFirst ) {
-            ws->slot_SetText1(tr("Loading maps..."));
-          } else {
-            // @AP: remove of all unused maps to get place
-            // in heap. That can be disabled here because
-            // the loading routines will also check the
-            // available memory and call the unloadMaps()
-            // method is necessary. But the disadvantage
-            // is in that case that the freeing needs a
-            // lot of time (several seconds).
-
-            if (_globalMapConfig->getUnloadUnneededMap()) {
-              unloadMaps(0);
-            }
-          }
-
-          // qDebug("Going to load section %d", secID);
-
-          step=0;
-          //check to see if parts of this tile has already been loaded before
-          it=tilePartMap.find(secID);
-
-          if (it==tilePartMap.end()) { //not found
-            hasstep=0;
-          } else {
-            hasstep=it.value();
-          }
-
-          //try loading the currently unloaded files
-          if (!(hasstep & 1)) {
-            if (__readTerrainFile(secID, FILE_TYPE_GROUND))
-              step|=1;
-
-          }
-
-          if (!(hasstep & 2)) {
-            if (__readTerrainFile(secID, FILE_TYPE_TERRAIN))
-              step|=2;
-          }
-
-          if (!(hasstep & 4)) {
-            if (__readBinaryFile(secID, FILE_TYPE_MAP))
-              step|=4;
-          }
-
-          //set the correct flags for this maptile
-          if (step==7) {
-            sectionArray.setBit( secID, true );
-            tilePartMap.remove(secID); //make sure we don't leave
-          } else {
-            if (step > 0) {
-              tilePartMap.insert(secID, step);
-            }
-          }
-        }
-      }
+  if( isFirst )
+    {
+      ws->slot_SetText1(tr("Loading maps done"));
     }
-  }
-
-  if( isFirst ) {
-    ws->slot_SetText1(tr("Loading maps done"));
-  }
 
   isFirst = false;
   mutex = false; // unlock mutex
 }
-
 
 // Distance unit is expected as meters.
 void MapContents::unloadMaps(unsigned int distance)
@@ -1276,12 +1278,12 @@ void MapContents::unloadMaps(unsigned int distance)
   // qDebug("MapContents::unloadMaps() is called");
 
   if (unloadDone)
-    return;  //we only unload map data once (per map redrawing round)
+    {
+      return;  //we only unload map data once (per map redrawing round)
+    }
 
-  extern MapMatrix * _globalMapMatrix;
-  QRect mapBorder;
-
-  mapBorder = _globalMapMatrix->getViewBorder();
+  extern MapMatrix* _globalMapMatrix;
+  QRect mapBorder = _globalMapMatrix->getViewBorder();
 
   // scale uses unit meter/pixel
   double scale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
@@ -1307,37 +1309,45 @@ void MapContents::unloadMaps(unsigned int distance)
   if(mapBorder.bottom() < 0)
     southCorner += 1;
 
-  QBitArray maskArray(MAX_FILE_COUNT);
-  maskArray.fill(false);
+  QSet<int> currentTileSet; // tiles of the current box
 
-  for(int row = northCorner; row <= southCorner; row++) {
-    for(int col = westCorner; col <= eastCorner; col++) {
-      int secID=row + ( col + ( row * 179 ) );
-      if(0<=secID && secID <=MAX_FILE_COUNT) {
-        // qDebug( "unloadMaps-active-secId=%d",  secID );
-        maskArray.setBit( secID, true );
-      }
+  // Collect all valid tiles of the current box in a set.
+  for( int row = northCorner; row <= southCorner; row++ )
+    {
+      for (int col = westCorner; col <= eastCorner; col++)
+        {
+          int secID = row + (col + (row * 179));
+
+          if (secID >= 0 && secID <= MAX_TILE_NUMBER)
+            {
+              // qDebug( "unloadMaps-active-secId=%d",  secID );
+              currentTileSet.insert(secID);
+            }
+        }
     }
-  }
-
-  // @AP: check, if something is to free, otherwise we can return to spare
-  // processing time
 
   bool something2free = false;
 
-  for( int i=0; i < maskArray.size(); i++ ) {
-    if( sectionArray.testBit(i) != maskArray.testBit(i) ) {
-      tilePartMap.remove(i); // reset map tile parts
-      something2free = true;
-      continue;
+  // Iterate over all loaded tiles (tileSectionSet) and remove all tiles,
+  // which are not contained in the current box.
+  foreach( int secID, tileSectionSet )
+    {
+      if( !currentTileSet.contains( secID ) )
+        {
+          // remove not more needed element from related objects
+          tilePartMap.remove( secID );
+          tileSectionSet.remove( secID );
+          something2free = true;
+          continue;
+        }
     }
-  }
 
-  if( ! something2free ) {
-    return;
-  }
-
-  sectionArray &= maskArray;
+  // @AP: check, if something is to free, otherwise we can return to spare
+  // processing time
+  if( ! something2free )
+    {
+      return;
+    }
 
 #ifdef DEBUG_UNLOAD_SUM
   // save free memory
@@ -1348,21 +1358,21 @@ void MapContents::unloadMaps(unsigned int distance)
   uint sum = 0;
   t.start();
 
-  unloadMapObjects(&cityList);
+  unloadMapObjects( cityList );
   sum += t.elapsed();
 
 #ifdef DEBUG_UNLOAD
   qDebug("Unload cityList(%d), elapsed=%d", cityList.count(), t.restart());
 #endif
 
-  unloadMapObjects(&hydroList);
+  unloadMapObjects( hydroList );
   sum += t.elapsed();
 
 #ifdef DEBUG_UNLOAD
   qDebug("Unload hydroList(%d), elapsed=%d", hydroList.count(), t.restart());
 #endif
 
-  unloadMapObjects(&lakeList);
+  unloadMapObjects( lakeList );
   sum += t.elapsed();
 
 #ifdef DEBUG_UNLOAD
@@ -1398,7 +1408,7 @@ void MapContents::unloadMaps(unsigned int distance)
 #endif
   //  unloadMapObjects(&outList);
 
-  unloadMapObjects(&railList);
+  unloadMapObjects( railList );
   sum += t.elapsed();
 #ifdef DEBUG_UNLOAD
   qDebug("Unload railList(%d), elapsed=%d", railList.count(), t.restart());
@@ -1411,21 +1421,21 @@ void MapContents::unloadMaps(unsigned int distance)
   qDebug("Unload reportList(%d), elapsed=%d", reportList.count(), t.restart());
 #endif
 
-  unloadMapObjects(&highwayList);
+  unloadMapObjects( highwayList );
   sum += t.elapsed();
 
 #ifdef DEBUG_UNLOAD
   qDebug("Unload highwayList(%d), elapsed=%d", highwayList.count(), t.restart());
 #endif
 
-  unloadMapObjects(&roadList);
+  unloadMapObjects( roadList );
   sum += t.elapsed();
 
 #ifdef DEBUG_UNLOAD
   qDebug("Unload roadList(%d), elapsed=%d", roadList.count(), t.restart());
 #endif
 
-  unloadMapObjects(&topoList);
+  unloadMapObjects( topoList );
   sum += t.elapsed();
 
 #ifdef DEBUG_UNLOAD
@@ -1450,42 +1460,49 @@ void MapContents::unloadMaps(unsigned int distance)
 
 }
 
-
 void MapContents::unloadMapObjects(QList<LineElement*> *list)
 {
   for (int i = list->count() - 1; i >= 0; i--)
     {
-      if (!sectionArray[list->at(i)->getMapSegment()])
+      if ( !tileSectionSet.contains(list->at(i)->getMapSegment()) )
         {
           delete( list->takeAt(i));
         }
     }
 }
 
+void MapContents::unloadMapObjects(QList<LineElement>& list)
+{
+  for (int i = list.count() - 1; i >= 0; i--)
+    {
+      if ( !tileSectionSet.contains(list.at(i).getMapSegment()) )
+        {
+          list.removeAt(i);
+        }
+    }
+}
 
 void MapContents::unloadMapObjects(QList<SinglePoint*> *list)
 {
   for (int i = list->count() - 1; i >= 0; i--)
     {
-      if (!sectionArray[list->at(i)->getMapSegment()])
+      if ( !tileSectionSet.contains(list->at(i)->getMapSegment()) )
         {
           delete(list->takeAt(i));
         }
     }
 }
-
 
 void MapContents::unloadMapObjects(QList<RadioPoint*> *list)
 {
   for (int i = list->count() - 1; i >= 0; i--)
     {
-      if (!sectionArray[list->at(i)->getMapSegment()])
+      if ( !tileSectionSet.contains(list->at(i)->getMapSegment()) )
         {
           delete(list->takeAt(i));
         }
     }
 }
-
 
 void MapContents::unloadMapObjects(QList<QList<Isohypse*>*> *list)
 {
@@ -1493,14 +1510,13 @@ void MapContents::unloadMapObjects(QList<QList<Isohypse*>*> *list)
     {
       for (int j = list->at(i)->count() - 1; j >= 0; j--)
         {
-          if (!sectionArray[list->at(i)->at(j)->getMapSegment()])
+          if ( !tileSectionSet.contains(list->at(i)->at(j)->getMapSegment()) )
             {
               delete(list->at(i)->takeAt(j));
             }
         }
     }
 }
-
 
 unsigned int MapContents::getListLength(int listIndex) const
 {
@@ -1532,7 +1548,7 @@ unsigned int MapContents::getListLength(int listIndex) const
       return roadList.count();
     case RailList:
       return railList.count();
-    case HydroList:
+  case HydroList:
       return hydroList.count();
     case LakeList:
       return lakeList.count();
@@ -1546,19 +1562,19 @@ unsigned int MapContents::getListLength(int listIndex) const
 
 Airspace* MapContents::getAirspace(unsigned int index)
 {
-  return (Airspace*)airspaceList.at(index);
+  return static_cast<Airspace *> (airspaceList[index]);
 }
 
 
 Airport* MapContents::getAirport(unsigned int index)
 {
-  return (Airport*)airportList.at(index);
+  return static_cast<Airport *> (airportList[index]);
 }
 
 
 GliderSite* MapContents::getGlidersite(unsigned int index)
 {
-  return (GliderSite*)gliderSiteList.at(index);
+  return static_cast<GliderSite *>(gliderSiteList[index]);
 }
 
 
@@ -1580,23 +1596,23 @@ BaseMapElement* MapContents::getElement(int listIndex, unsigned int index)
   case ReportList:
     return reportList.at(index);
   case CityList:
-    return cityList.at(index);
+    return &cityList[index];
   case VillageList:
     return villageList.at(index);
   case LandmarkList:
     return landmarkList.at(index);
   case HighwayList:
-    return highwayList.at(index);
+    return &highwayList[index];
   case RoadList:
-    return roadList.at(index);
+    return &roadList[index];
   case RailList:
-    return railList.at(index);
+    return &railList[index];
   case HydroList:
-    return hydroList.at(index);
+    return &hydroList[index];
   case LakeList:
-    return lakeList.at(index);
+    return &lakeList[index];
   case TopoList:
-    return topoList.at(index);
+    return &topoList[index];
   default:
     // Should never happen!
     qCritical("Cumulus: trying to access unknown map element list");
@@ -1604,18 +1620,17 @@ BaseMapElement* MapContents::getElement(int listIndex, unsigned int index)
   }
 }
 
-
 SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
 {
   switch(listIndex) {
   case AirportList:
-    return (SinglePoint*)airportList.at(index);
+    return static_cast<SinglePoint*> (airportList.at(index));
   case GliderSiteList:
-    return (SinglePoint*)gliderSiteList.at(index);
+    return static_cast<SinglePoint*> (gliderSiteList.at(index));
   case OutList:
-    return (SinglePoint*)outList.at(index);
+    return static_cast<SinglePoint*> (outList.at(index));
   case NavList:
-    return (SinglePoint*)navList.at(index);
+    return static_cast<SinglePoint*> (navList.at(index));
   case ObstacleList:
     return obstacleList.at(index);
   case ReportList:
@@ -1644,11 +1659,9 @@ void MapContents::slotReloadMapData()
 
   mutex = true;
 
-  // We must block all gps signals during the reload time to avoid
-  // system crash due to outdated data.
+  // We must block all GPS signals during the reload time to avoid
+  // system crash due to out dated dat/home/axel/SVN-Cumulus/cumulus-qt4/trunk/cumulusa.
   gps->blockSignals( true );
-
-  // qDebug("MapContents::slotReloadMapData() is called");
 
   // clear the airspace region list in map too
   Map::getInstance()->clearAirspaceRegionList();
@@ -1656,19 +1669,19 @@ void MapContents::slotReloadMapData()
   qDeleteAll(addSitesList); addSitesList.clear();
   qDeleteAll(airportList); airportList.clear();
   qDeleteAll(airspaceList); airspaceList.clear();
-  qDeleteAll(cityList); cityList.clear();
+  cityList.clear();
   qDeleteAll(gliderSiteList); gliderSiteList.clear();
-  qDeleteAll(hydroList); hydroList.clear();
-  qDeleteAll(lakeList); lakeList.clear();
+  hydroList.clear();
+  lakeList.clear();
   qDeleteAll(landmarkList); landmarkList.clear();
   qDeleteAll(navList); navList.clear();
   qDeleteAll(obstacleList); obstacleList.clear();
   qDeleteAll(outList); outList.clear();
-  qDeleteAll(railList); railList.clear();
+  railList.clear();
   qDeleteAll(reportList); reportList.clear();
-  qDeleteAll(highwayList); highwayList.clear();
-  qDeleteAll(roadList); roadList.clear();
-  qDeleteAll(topoList); topoList.clear();
+  highwayList.clear();
+  roadList.clear();
+  topoList.clear();
   qDeleteAll(villageList); villageList.clear();
 
   // isoList is a special pointer list. Only the content must be cleared!
@@ -1678,7 +1691,7 @@ void MapContents::slotReloadMapData()
       isoList.at(i)->clear();
     }
 
-  sectionArray.fill(false);
+  tileSectionSet.clear();
   tilePartMap.clear();
 
   isFirst = true;
@@ -1765,7 +1778,7 @@ void MapContents::slotReloadWelt2000Data()
   gps->ignoreConnectionLost();
   gps->blockSignals( false );
 
-  mutex = false; // unlock mutex
+  mutex = false; // unlock mutex/home/axel/SVN-Cumulus/cumulus-qt4/trunk/cumulus
 }
 
 
@@ -1774,25 +1787,25 @@ void MapContents::printContents(QPainter* targetPainter, bool isText)
   proofeSection();
 
   for (int i = 0; i < topoList.size(); i++)
-    topoList.at(i)->printMapElement(targetPainter, isText);
+    topoList[i].printMapElement(targetPainter, isText);
 
   for (int i = 0; i < hydroList.size(); i++)
-    hydroList.at(i)->printMapElement(targetPainter, isText);
+    hydroList[i].printMapElement(targetPainter, isText);
 
   for (int i = 0; i < lakeList.size(); i++)
-    lakeList.at(i)->printMapElement(targetPainter, isText);
+    lakeList[i].printMapElement(targetPainter, isText);
 
   for (int i = 0; i < railList.size(); i++)
-    railList.at(i)->printMapElement(targetPainter, isText);
+    railList[i].printMapElement(targetPainter, isText);
 
   for (int i = 0; i < highwayList.size(); i++)
-    highwayList.at(i)->printMapElement(targetPainter, isText);
+    highwayList[i].printMapElement(targetPainter, isText);
 
   for (int i = 0; i < roadList.size(); i++)
-    roadList.at(i)->printMapElement(targetPainter, isText);
+    roadList[i].printMapElement(targetPainter, isText);
 
   for (int i = 0; i < cityList.size(); i++)
-    cityList.at(i)->printMapElement(targetPainter, isText);
+    cityList[i].printMapElement(targetPainter, isText);
 
   //  for (int i = 0; i < villageList.size(); i++)
   //      villageList.at(i)->printMapElement(targetPainter, isText);
@@ -1860,7 +1873,7 @@ void MapContents::drawList(QPainter* targetPainter,
   case NavList:
     //list="NavList";
     //len=navList.count();
-    showProgress2WaitScreen( tr("Drawing navigation elements") );
+    showProgress2WaitScreen( tr("Drawing na/home/axel/SVN-Cumulus/cumulus-qt4/trunk/cumulusvigation elements") );
     for (int i = 0; i < navList.size(); i++)
       navList.at(i)->drawMapElement(targetPainter);
     break;
@@ -1894,7 +1907,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=cityList.count();
     showProgress2WaitScreen( tr("Drawing cities") );
     for (int i = 0; i < cityList.size(); i++)
-      cityList.at(i)->drawMapElement(targetPainter);
+      cityList[i].drawMapElement(targetPainter);
     break;
 
   case VillageList:
@@ -1917,7 +1930,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=highwayList.count();
     showProgress2WaitScreen( tr("Drawing highways") );
     for (int i = 0; i < highwayList.size(); i++)
-      highwayList.at(i)->drawMapElement(targetPainter);
+      highwayList[i].drawMapElement(targetPainter);
     break;
 
   case RoadList:
@@ -1925,7 +1938,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=roadList.count();
     showProgress2WaitScreen( tr("Drawing roads") );
     for (int i = 0; i < roadList.size(); i++)
-      roadList.at(i)->drawMapElement(targetPainter);
+      roadList[i].drawMapElement(targetPainter);
     break;
 
   case RailList:
@@ -1933,7 +1946,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=railList.count();
     showProgress2WaitScreen( tr("Drawing railroads") );
     for (int i = 0; i < railList.size(); i++)
-      railList.at(i)->drawMapElement(targetPainter);
+      railList[i].drawMapElement(targetPainter);
     break;
 
   case HydroList:
@@ -1941,7 +1954,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=hydroList.count();
     showProgress2WaitScreen( tr("Drawing hydro") );
     for (int i = 0; i < hydroList.size(); i++)
-      hydroList.at(i)->drawMapElement(targetPainter);
+      hydroList[i].drawMapElement(targetPainter);
     break;
 
   case LakeList:
@@ -1949,7 +1962,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=lakeList.count();
     showProgress2WaitScreen( tr("Drawing lakes") );
     for (int i = 0; i < lakeList.size(); i++)
-      lakeList.at(i)->drawMapElement(targetPainter);
+      lakeList[i].drawMapElement(targetPainter);
     break;
 
   case TopoList:
@@ -1957,7 +1970,7 @@ void MapContents::drawList(QPainter* targetPainter,
     //len=topoList.count();
     showProgress2WaitScreen( tr("Drawing topography") );
     for (int i = 0; i < topoList.size(); i++)
-      topoList.at(i)->drawMapElement(targetPainter);
+      topoList[i].drawMapElement(targetPainter);
     break;
 
   default:

@@ -19,7 +19,7 @@
 #ifndef MAPCONTENTS_H
 #define MAPCONTENTS_H
 
-#include <QBitArray>
+#include <QSet>
 #include <QFile>
 #include <QList>
 #include <QStringList>
@@ -45,7 +45,7 @@ class Distance;
 /**
  * This class provides functions for accessing the contents of the map.
  * It takes control over loading all needed map-files.
- * The class contains several Q3PtrLists holding the mapelements.
+ * The class contains several Q3PtrLists holding the map elements.
  */
 
 class MapContents : public QObject
@@ -55,7 +55,7 @@ class MapContents : public QObject
   public:
 
   /**
-   * The index of Mapelement-Lists.
+   * The index of map element-Lists.
    */
   enum MapContentsListID {NotSet = 0, AirportList, GliderSiteList,
                           AddSitesList, OutList, NavList, AirspaceList,
@@ -83,13 +83,13 @@ class MapContents : public QObject
   unsigned int getListLength(int listIndex) const;
 
   /**
-   * Proofes, which mapsections are needed to draw the map and loads
+   * Proofs, which map sections are needed to draw the map and loads
    * the missing sections.
    */
   void proofeSection();
 
   /**
-   * @return a pointer to the BaseMapElement of the given mapelement in
+   * @return a pointer to the BaseMapElement of the given map element in
    *         the list.
    *
    * @param  listIndex  the index of the list containing the element
@@ -105,9 +105,9 @@ class MapContents : public QObject
   Airspace* getAirspace(unsigned int index);
 
   /**
-   * @returns a pointer to the given glidersite
+   * @returns a pointer to the given glider site
    *
-   * @param  index  the list-index of the glidersite
+   * @param  index  the list-index of the glider site
    */
   GliderSite* getGlidersite(unsigned int index);
 
@@ -119,7 +119,7 @@ class MapContents : public QObject
   Airport* getAirport(unsigned int index);
 
   /**
-   * @return a pointer to the SinglePoint of the given mapelement
+   * @return a pointer to the SinglePoint of the given map element
    *
    * @param  listIndex  the index of the list containing the element
    * @param  index  the index of the element in the list
@@ -132,8 +132,7 @@ class MapContents : public QObject
    * @param  targetP  The painter to draw the elements into
    * @param  listID  The index of the list to be drawn
    */
-  void drawList(QPainter* targetPainter,
-                unsigned int listID);
+  void drawList(QPainter* targetPainter, unsigned int listID);
 
   /**
    * Draws all isohypses into the given painter
@@ -147,7 +146,7 @@ class MapContents : public QObject
    *
    * @param  targetP  The painter to draw the elements into
    *
-   * @param  isText  Shows, if the text of some mapelements should
+   * @param  isText  Shows, if the text of some map elements should
    *                 be printed.
    */
   void printContents(QPainter* targetP, bool isText);
@@ -183,10 +182,10 @@ class MapContents : public QObject
 
   /**
    * Add a point to a rectangle, so the rectangle will be the bounding box
-   * of all points added to it. If the point allready lies within the borders
+   * of all points added to it. If the point already lies within the borders
    * of the QRect, the QRect is unchanged. If the point is outside the
    * defined QRect, the QRox will be modified so the point lies inside the
-   * new QRect. If the QRect is empty, the QRect will be set to a rect of
+   * new QRect. If the QRect is empty, the QRect will be set to a rectangle of
    * size (1,1) at the location of the point.
    */
   void AddPointToRect(QRect& rect, const QPoint& point);
@@ -198,21 +197,22 @@ class MapContents : public QObject
   };
 
   /** returns ground elevation in meters
-   * If the error argument is given, it will be set to the errormargin for the
+   * If the error argument is given, it will be set to the error margin for the
    * returned value.
    */
   int findElevation(const QPoint& coord, Distance * errorDist=0);
 
   /**
-   * Deletes all currently not-needed mapsections from memory
+   * Deletes all currently not-needed map sections from memory
    */
   void unloadMaps(unsigned int=0);
 
   /**
-   * Deletes all map items that are not in the sectionArray from the given list.
+   * Deletes all map items that are not in the section set from the given list.
    * Used by @ref unloadMaps to do the actual deleting.
    */
   void unloadMapObjects(QList<LineElement*> * list);
+  void unloadMapObjects(QList<LineElement>& list);
 
   void unloadMapObjects(QList<SinglePoint*> * list);
 
@@ -221,8 +221,8 @@ class MapContents : public QObject
   void unloadMapObjects(QList< QList<Isohypse*>* > * list);
 
   /**
-   * This function checks all possible mapdirectories for the
-   * mapfile. If found, it returns true and returns the complete
+   * This function checks all possible map directories for the
+   * map file. If found, it returns true and returns the complete
    * path in pathName.
    */
   static bool locateFile(const QString& fileName, QString & pathName);
@@ -255,7 +255,7 @@ class MapContents : public QObject
  signals:
   /**
    * emitted during map loading to display a message f.e. in the
-   * splash-screen of the mainwindow.
+   * splash-screen of the main window.
    */
   void loadingMessage(const QString& message);
 
@@ -266,7 +266,7 @@ class MapContents : public QObject
   void newTaskAdded(FlightTask *);
 
   /**
-   * Emitted, when no mapfiles are found, or the when the map-directories
+   * Emitted, when no map files are found, or the when the map-directories
    * do not exists.
    */
   void errorOnMapLoading();
@@ -296,10 +296,10 @@ class MapContents : public QObject
   /**
    * Reads a binary map file.
    *
-   * @param  fileSecID  The sectionID of the mapfile
-   * @param  fileTypeID  The typeID of the mapfile ("G" for ground-data,
-   *                     "M" for additional mapdata and "T" for
-   *                     terraindata)
+   * @param  fileSecID  The sectionID of the map file
+   * @param  fileTypeID  The typeID of the map file ("G" for ground-data,
+   *                     "M" for additional map data and "T" for
+   *                     terrain data)
    *
    * @return "true", when the file has successfully been loaded
    */
@@ -308,10 +308,10 @@ class MapContents : public QObject
   /**
    * Reads a binary terrain-map file.
    *
-   * @param  fileSecID  The sectionID of the mapfile
-   * @param  fileTypeID  The typeID of the mapfile ("G" for ground-data,
-   *                     "M" for additional mapdata and "T" for
-   *                     terraindata)
+   * @param  fileSecID  The sectionID of the map file
+   * @param  fileTypeID  The typeID of the map file ("G" for ground-data,
+   *                     "M" for additional map data and "T" for
+   *                     terrain data)
    *
    * @return "true", when the file has successfully been loaded
    */
@@ -333,8 +333,8 @@ class MapContents : public QObject
   MapElementList gliderSiteList;
 
   /**
-   * addSitesList contains all, ultra-light,
-   * hang-glider-sites, free-balloon-sites, parachute-jumping-sites.
+   * addSitesList contains all, ultra light sites,
+   * hang glider sites, free balloon sites, parachute jumping sites.
    */
   QList<SinglePoint*> addSitesList;
 
@@ -349,7 +349,7 @@ class MapContents : public QObject
   QList<RadioPoint*> navList;
 
   /**
-   * airspaceList contails all airspaces. The sort funtion on this
+   * airspaceList contains all airspaces. The sort function on this
    * list will sort the airspaces from top to bottom.
    */
   SortableAirspaceList airspaceList;
@@ -369,9 +369,9 @@ class MapContents : public QObject
   QList<SinglePoint*> reportList;
 
   /**
-   * cityList contails all cities.
+   * cityList contains all cities.
    */
-  QList<LineElement*> cityList;
+  QList<LineElement> cityList;
 
   /**
    * villageList contains all villages.
@@ -384,39 +384,41 @@ class MapContents : public QObject
   QList<SinglePoint*> landmarkList;
 
   /**
-   * highwayList contails all highways.
+   * highwayList contains all highways.
    */
-  QList<LineElement*> highwayList;
+  QList<LineElement> highwayList;
 
   /**
-   * roadList contails all roads.
+   * roadList contains all roads.
    */
-  QList<LineElement*> roadList;
+  QList<LineElement> roadList;
   /**
    * railList contains all railways and aerial railways.
    */
-  QList<LineElement*> railList;
+  QList<LineElement> railList;
   /**
-   * hydroList contains all shorelines, rivers, ...
+   * hydroList contains all shore lines, rivers, ...
    */
-  QList<LineElement*> hydroList;
+  QList<LineElement> hydroList;
   /**
    * hydroList contains all lakes, ...
    */
-  QList<LineElement*> lakeList;
+  QList<LineElement> lakeList;
   /**
    * topoList contains all topographical objects.
    */
-  QList<LineElement*> topoList;
+  QList<LineElement> topoList;
   /**
    * isohypseList contains all isohypses.
    */
   QList< QList<Isohypse*>* > isoList;
+
   /**
-   * List of all map-sections. Contains a "1" for all fully loaded section-files,
-   * otherwise "0".
+   * Set over map tiles. Contains the sectionId for all fully loaded
+   * section files otherwise nothing.
    */
-  QBitArray sectionArray;
+  QSet<int> tileSectionSet;
+
   /**
    * QMap of all partially loaded map tiles. These map tiles are
    * marked as not loaded in the sectionArray above. Partially
@@ -467,7 +469,7 @@ class MapContents : public QObject
 
  private:
   /**
-   * Contains a reference to the currently selected flighttask
+   * Contains a reference to the currently selected flight task
    */
   FlightTask *currentTask;
 
