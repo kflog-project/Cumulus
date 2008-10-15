@@ -25,11 +25,11 @@
 #include "runway.h"
 
 /**
- * @short Class to handle airports.
+ * @short Class to handle different types of airfields.
  *
- * This class is used for handling airports. The object can be one of
+ * This class is used for handling of airfields. The object can be one of
  * Airport, MilAirport, CivMilAirport, Airfield, ClosedAirfield,
- * CivHeliport, MilHeliport, AmbHeliport, UltraLight
+ * CivHeliport, MilHeliport, AmbHeliport, UltraLight, GliderSite
  *
  * @see BaseMapElement#objectType
  */
@@ -47,6 +47,8 @@ class Airport : public SinglePoint
    * @param  pos  The position
    * @param  elevation  The elevation
    * @param  frequency  The frequency
+   * @param  winch  "true", if winch-launch is available
+   * @param  towing "true", if aero towing is available
    */
   Airport( const QString& name,
            const QString& icao,
@@ -56,7 +58,9 @@ class Airport : public SinglePoint
            const QPoint& pos,
            const Runway& rw,
            const unsigned int elevation,
-           const QString& frequency );
+           const QString& frequency,
+           bool winch = false,
+           bool towing = false );
 
   /**
    * Destructor
@@ -88,6 +92,22 @@ class Airport : public SinglePoint
     };
 
   /**
+   * @return "true", if winch launching is available.
+   */
+  const bool hasWinch() const
+    {
+      return winch;
+    };
+
+  /**
+   * @return "true", if aero towing is available.
+   */
+  const bool hasTowing() const
+    {
+      return towing;
+    };
+
+  /**
    * Return a short html-info-string about the airport, containing the
    * name, the alias, the elevation and the frequency as well as a small
    * icon of the airport type.
@@ -103,9 +123,9 @@ class Airport : public SinglePoint
  private:
 
    /**
-    * The icao name
+    * The ICAO name
     */
-  QString icao;
+   QString icao;
 
    /**
     * The frequency
@@ -116,6 +136,16 @@ class Airport : public SinglePoint
    * Contains the runway data.
    */
   Runway rwData;
+
+  /**
+   * The launching-type. "true" if the site has a winch.
+   */
+  bool winch;
+
+  /**
+   * The launching-type. "true" if the site has aero tow.
+   */
+  bool towing;
 
   /**
    * Contains the shift of the runway during drawing.
