@@ -15,8 +15,8 @@
  **
  ***********************************************************************/
 
-#ifndef ISOLIST_H
-#define ISOLIST_H
+#ifndef ISO_LIST_H
+#define ISO_LIST_H
 
 #include <QRegion>
 #include <QList>
@@ -25,8 +25,8 @@
  * @short Entry in the isolist
  *
  * This class contains a @ref QRegion and a height. A list of entries
- * like this is created when the map is drawn, and is used to detect the
- * elevation at a given position, for instance under the mousecursor.
+ * like this is created when the map is drawn and is used to detect the
+ * elevation at a given position, for instance under the mouse cursor.
  *
  */
 
@@ -39,19 +39,22 @@ class IsoListEntry
    * @param region Region in coordinate system of the map-object, not in KFLog system
    * @param height the elevation of the isoline in meters
    */
-  IsoListEntry( QRegion* region=0, int height=0 )
-  {
-    this->region = region;
-    this->height = height;
-  };
+  IsoListEntry( QRegion* region, const int height=0 );
+
+  /**
+   * Copy constructor is needed to make a deep copy of the QRegion pointer.
+   */
+  IsoListEntry( const IsoListEntry& x );
+
+  /**
+   * Assignment operator is needed to make a deep copy of the QRegion pointer.
+   */
+  IsoListEntry& operator=(const IsoListEntry& x);
 
   /**
    * Destructor
    */
-  virtual ~IsoListEntry()
-  {
-    if( region ) delete region;
-  };
+  virtual ~IsoListEntry();
 
   bool operator == (const IsoListEntry& x)
   {
@@ -114,22 +117,19 @@ class IsoListEntry
 struct CompareIso
 {
   // The operator sorts in reverse order
-  bool operator()(const IsoListEntry *iso1, const IsoListEntry *iso2) const
+  bool operator()(const IsoListEntry &iso1, const IsoListEntry &iso2) const
   {
-    return (iso1->height > iso2->height);
+    return (iso1.height > iso2.height);
   };
 };
 
-class IsoList : public QList<IsoListEntry*>
+class IsoList : public QList<IsoListEntry>
 {
  public:
 
   IsoList() {};
 
-  virtual ~IsoList()
-  {
-    clear();
-  };
+  virtual ~IsoList() {};
 
   void sort()
   {
