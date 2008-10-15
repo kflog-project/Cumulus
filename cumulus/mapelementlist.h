@@ -15,21 +15,30 @@
  **
  ***********************************************************************/
 
-#ifndef MAPELEMENTLIST_H
-#define MAPELEMENTLIST_H
+#ifndef MAP_ELEMENT_LIST_H
+#define MAP_ELEMENT_LIST_H
 
 #include <QObject>
 #include <QList>
 #include <QTimer>
 #include <QSet>
 
-#include "basemapelement.h"
+#include "airport.h"
 
 /**
  * @author Eggert Ehmke
+ *
+ * This class is an extension of a BaseMapElement QList. It checks in the
+ * append method, if the item to be appended is already known with its name.
+ * If that is true, no item will be appended. Furthermore a timer is fired.
+ * The timer expires after 10s the last append has been done. The expire method
+ * will clear the check set which was built up during append to avoid multiple
+ * entries. The assumption is that after timeout no items will be more added
+ * to the list.
+ *
  */
 
-class MapElementList : public QObject, public QList<BaseMapElement*>
+class MapElementList : public QObject, public QList<Airport>
 {
   Q_OBJECT
 
@@ -37,7 +46,7 @@ class MapElementList : public QObject, public QList<BaseMapElement*>
   /**
    * Constructor
    */
-  MapElementList( QObject *parent=0 );
+  MapElementList( QObject *parent=0, const char* name="" );
 
   /**
    * Destructor
@@ -45,16 +54,16 @@ class MapElementList : public QObject, public QList<BaseMapElement*>
   virtual ~MapElementList();
 
   /**
-   * Appends an item into the list. If the list does not
-   * allready contain the item, it is added. Otherwise
-   * it is disgarded.
+   * Appends an item at the end of the list. If the list does not
+   * already contain the item, it is added. Otherwise
+   * it is discarded.
    */
-  void append (BaseMapElement* elem);
+  void append (Airport& elem);
 
  private:
 
-  QSet<QString> m_set;
-  QTimer* m_timer;
+  QSet<QString> itemSet;
+  QTimer* timer;
 
   void createSet();
 

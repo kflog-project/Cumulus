@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Eggert Ehmke, 2007 Axel Pauli
+**   Copyright (c):  2002 by Eggert Ehmke, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -15,61 +15,53 @@
 **
 ***********************************************************************/
 
-#include "generalconfig.h"
 #include "mapelementlist.h"
 
+#define TIMEOUT 10000 // timeout in milli seconds
 
-MapElementList::MapElementList( QObject *parent )
+MapElementList::MapElementList( QObject *parent, const char* name )
  : QObject(parent)
 {
-  setObjectName("MapElementList");
-  m_timer = new QTimer();
-  m_timer->setSingleShot( true );
-  connect(m_timer, SIGNAL(timeout()), SLOT(destroySet()));
+  setObjectName( name );
+  timer = new QTimer( this );
+  timer->setSingleShot( true );
+  connect(timer, SIGNAL(timeout()), SLOT(destroySet()));
 }
-
 
 MapElementList::~MapElementList()
 {
-  delete m_timer;
-  m_set.clear();
 }
-
 
 // Filter out double elements
-void MapElementList::append(BaseMapElement* elem)
+void MapElementList::append(Airport& elem)
 {
+  QString item = elem.getName();
 
-  if( !m_set.contains(elem->getName()) )
+  if( !itemSet.contains( item ) )
     {
-      QList<BaseMapElement*>::append(elem);
-      m_set.insert( elem->getName() );
-    }
-  else
-    {
-      delete elem;
+      QList<Airport>::append( elem );
+      itemSet.insert( item );
     }
 
-  m_timer->start(10000);
+  // restart destroy set timer
+  timer->start(TIMEOUT);
 }
-
 
 void MapElementList::createSet()
 {
-  m_set.clear();
+  itemSet.clear();
 
   int cnt = count();
 
   for (int i=0; i<cnt; i++)
     {
-      m_set.insert( at(i)->getName() );
+      itemSet.insert( at(i).getName() );
     }
 }
 
-
 void MapElementList::destroySet()
 {
-  m_set.clear();
-  qDebug( "Deleted set for list %s, probably no longer needed.", objectName().toLatin1().data() );
+  itemSet.clear();
+  qDebug( "Delete double check set for list %s, probably no longer needed.",
+          objectName().toLatin1().data() );
 }
-
