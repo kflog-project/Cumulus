@@ -20,6 +20,7 @@
 #define ISOHYPSE_H
 
 #include <QRect>
+#include <QRegion>
 
 #include "lineelement.h"
 
@@ -34,7 +35,7 @@ class Isohypse : public LineElement
     /**
      * Creates a new isohypse.
      *
-     * @param  pA  The pointarray containing the positions.
+     * @param  pG  The polygon containing the position points.
      * @param  elev  The elevation
      * @param  isValles "true", if the area is a valley
      */
@@ -46,13 +47,12 @@ class Isohypse : public LineElement
     virtual ~Isohypse();
 
     /**
-     * Draws the element into the given painter. Reimplemented from
-     * BaseMapElement.
+     * Draws the iso region into the given painter.
      *
      * @param  targetP  The painter to draw the element into.
      */
-    virtual QRegion *drawRegion(QPainter* targetP, const QRect &viewRect,
-                                bool really_draw, bool isolines=false);
+    QRegion* drawRegion( QPainter* targetP, const QRect &viewRect,
+                         bool really_draw, bool isolines=false );
 
     /**
      * @return the elevation of the line
