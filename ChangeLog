@@ -17,6 +17,10 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.1.x (Development based on X11/Qt-4.4.1)
 -------------------------------------------------
+[o-]2008-10-15 AP: Class GliderSiteList removed, class Airport extended by
+                   missing GliderSiteList itmes. Different conflicts could be
+                   solved by this way.
+[o] 2008-10-15 AP: Different map element lists changed from pointer list to value list.
 [o] 2008-10-13 AP: Mechnism optimized for removing not more necessary map tiles. 
 [o] 2008-10-09 JD: Bugfix: disabling 'page' function in WP/AF lists works now
 [o] 2008-10-02 AP: Class CuCalc remaned to Calculator
