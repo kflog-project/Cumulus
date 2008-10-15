@@ -41,7 +41,6 @@
 #include "airport.h"
 #include "airspace.h"
 #include "basemapelement.h"
-#include "glidersite.h"
 #include "isohypse.h"
 #include "lineelement.h"
 #include "radiopoint.h"
@@ -58,16 +57,18 @@
 #include "waypointcatalog.h"
 #include "generalconfig.h"
 
-extern MapView *_globalMapView;
+extern MapView* _globalMapView;
 
-// NumbeMAX_TILE_NUMBER
+// number of last map tile, possible range goes 0...16200
 #define MAX_TILE_NUMBER 16200
+
+// number of isoline lists
 #define ISO_LINE_NUM 50
 
 //general KFLOG file token: @KFL
 #define KFLOG_FILE_MAGIC    0x404b464c
 
-//uncompiled map files
+// uncompiled map files
 #define FILE_TYPE_GROUND      0x47
 #define FILE_TYPE_TERRAIN     0x54
 #define FILE_TYPE_MAP         0x4d
@@ -77,7 +78,7 @@ extern MapView *_globalMapView;
 #define FILE_TYPE_GROUND_C    0x67
 #define FILE_TYPE_TERRAIN_C   0x74
 #define FILE_TYPE_MAP_C       0x6d
-#define FILE_TYPE_AIRSPACE_C  0x61  //aero files are split up into airspace and airfield files
+#define FILE_TYPE_AIRSPACE_C  0x61  // aero files are split up into airspace and airfield files
 #define FILE_TYPE_AIRFIELD_C  0x62
 
 // versions
@@ -90,7 +91,6 @@ extern MapView *_globalMapView;
 #define FILE_VERSION_MAP      101
 
 // compiled version
-
 #define FILE_VERSION_GROUND_C   102
 
 #define FILE_VERSION_TERRAIN_C  102
@@ -103,42 +103,43 @@ extern MapView *_globalMapView;
     in >> locLength;\
     pN.resize(locLength);\
     for(unsigned int i = 0; i < locLength; i++) { \
-      in >> lat_temp;          in >> lon_temp; \
+      in >> lat_temp; \
+      in >> lon_temp; \
       pN.setPoint(i, _globalMapMatrix->wgsToMap(lat_temp, lon_temp)); \
     }\
     ShortSave(out, pN);\
   } else\
     ShortLoad(in, pN);\
-
-// minimum amount of required free memory to start loading of a map file
+ 
+// Minimum amount of required free memory to start loading of a map file.
+// Do not under run this limit, OS can freeze is such a case.
 #define MINIMUM_FREE_MEMORY 1024*25
 
 // List of altitude-levels (50 in total):
 const int MapContents::isoLines[] =
-  {
-    0, 10, 25, 50, 75, 100, 150, 200, 250,
-    300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1250, 1500, 1750,
-    2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000, 4250, 4500,
-    4750, 5000, 5250, 5500, 5750, 6000, 6250, 6500, 6750, 7000, 7250,
-    7500, 7750, 8000, 8250, 8500, 8750
-  };
+{
+  0, 10, 25, 50, 75, 100, 150, 200, 250,
+  300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1250, 1500, 1750,
+  2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000, 4250, 4500,
+  4750, 5000, 5250, 5500, 5750, 6000, 6250, 6500, 6750, 7000, 7250,
+  7500, 7750, 8000, 8250, 8500, 8750
+};
 
 MapContents::MapContents(QObject* parent, WaitScreen* waitscreen)
-  : QObject(parent),
-    airportList(this),
-    gliderSiteList(this),
-    outList(this),
+    : QObject(parent),
+    airportList(this, "AirportList"),
+    gliderSiteList(this, "GliderSiteList"),
+    outList(this, "OutList"),
     isFirst(true)
 {
   ws=waitscreen;
 
-  ws->slot_SetText1(tr("Loading map contents..."));
-
   // Wir nehmen zunaechst 4 Schachtelungstiefen an ...
-  for(int loop = 0; loop < ( ISO_LINE_NUM * 4 ); loop++) {
-    QList<Isohypse*> *list = new QList<Isohypse*>;
-    isoList.append(list);
-  }
+  for (int loop = 0; loop < ( ISO_LINE_NUM * 4 ); loop++)
+    {
+      QList<Isohypse> list;
+      isoList.append(list);
+    }
 
   _nextIsoLevel=10000;
   _lastIsoLevel=-1;
@@ -153,52 +154,25 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen)
 
   connect(this,SIGNAL(progress(int)),
           ws,SLOT(slot_Progress(int)));
+
   connect(this,SIGNAL(loadingFile(const QString&)),
           ws,SLOT(slot_SetText2(const QString&)));
-  connect(this,SIGNAL(majorAction(const QString&)),
-          ws,SLOT(slot_SetText1(const QString&)));
 
-  qDebug("MapContents initialized...");
+  // qDebug("MapContents initialized");
 }
-
 
 MapContents::~MapContents()
 {
-  delete currentTask;
-
-  qDeleteAll (airportList);
-
-  qDeleteAll (obstacleList);
-
-  qDeleteAll (airspaceList);
-
-  qDeleteAll (gliderSiteList);
-
-  for (int i = isoList.count() - 1; i >= 0; i--)
+  if ( currentTask )
     {
-      qDeleteAll(*isoList.at(i));
+      delete currentTask;
     }
 
-  qDeleteAll (isoList);
-
-  qDeleteAll (landmarkList);
-
-  qDeleteAll (navList);
-
-  qDeleteAll (obstacleList);
-
-  qDeleteAll (outList);
-
-  qDeleteAll (regIsoLines);
-
-  qDeleteAll (reportList);
-
-  qDeleteAll (villageList);
-
+  qDeleteAll (airspaceList);
   qDeleteAll (wpList);
 }
 
-  // save the current waypoint list
+// save the current waypoint list
 void MapContents::saveWaypointList()
 {
   WaypointCatalog wpCat;
@@ -214,42 +188,50 @@ bool MapContents::__readTerrainFile(const int fileSecID,
   bool kflExists, kfcExists;
   bool compiling = false;
 
-  if( fileTypeID != FILE_TYPE_TERRAIN && fileTypeID != FILE_TYPE_GROUND ) {
-    qWarning( "Cumulus: __readTerrainFile do not support requested file type %d!",
-              fileTypeID );
-    return false;
-  }
+  if ( fileTypeID != FILE_TYPE_TERRAIN && fileTypeID != FILE_TYPE_GROUND )
+    {
+      qWarning( "Cumulus: __readTerrainFile do not support requested file type %d!",
+                fileTypeID );
+      return false;
+    }
 
   // first, check if we need to load this file at all...
-  if ((fileTypeID==FILE_TYPE_TERRAIN) && (!_globalMapConfig->getLoadIsolines())) {
-    return true;
-  }
+  if ((fileTypeID==FILE_TYPE_TERRAIN) && (!_globalMapConfig->getLoadIsolines()))
+    {
+      return true;
+    }
 
-  if (memoryFull) {   //if we already know the memory if full and can't be emptied at this point, just return.
-    _globalMapView->message(tr("Out of memory! Map not loaded."));
-    return false;
-  }
+  if (memoryFull)     //if we already know the memory if full and can't be emptied at this point, just return.
+    {
+      _globalMapView->message(tr("Out of memory! Map not loaded."));
+      return false;
+    }
 
   //check free memory
   int memFree = HwInfo::instance()->getFreeMemory();
 
-  if( memFree < MINIMUM_FREE_MEMORY ) {
-    if ( !unloadDone) {
-      unloadMaps();  // try freeing some memory
-      memFree = HwInfo::instance()->getFreeMemory();  //re-asses free memory
-      if( memFree < MINIMUM_FREE_MEMORY ) {
-        memoryFull=true; //set flag to indicate that we need not try loading any more mapfiles now.
-        qWarning("Cumulus couldn't load file, low on memory! Memory needed: %d kB, free: %d kB", MINIMUM_FREE_MEMORY, memFree );
-        _globalMapView->message(tr("Out of memory! Map not loaded."));
-        return false;
-      }
-    } else {
-      memoryFull=true; //set flag to indicate that we need not try loading any more mapfiles now.
-      qWarning("Cumulus couldn't load file, low on memory! Memory needed: %d kB, free: %d kB", MINIMUM_FREE_MEMORY, memFree );
-      _globalMapView->message(tr("Out of memory! Map not loaded."));
-      return false;
+  if ( memFree < MINIMUM_FREE_MEMORY )
+    {
+      if ( !unloadDone)
+        {
+          unloadMaps();  // try freeing some memory
+          memFree = HwInfo::instance()->getFreeMemory();  //re-asses free memory
+          if ( memFree < MINIMUM_FREE_MEMORY )
+            {
+              memoryFull=true; //set flag to indicate that we need not try loading any more mapfiles now.
+              qWarning("Cumulus couldn't load file, low on memory! Memory needed: %d kB, free: %d kB", MINIMUM_FREE_MEMORY, memFree );
+              _globalMapView->message(tr("Out of memory! Map not loaded."));
+              return false;
+            }
+        }
+      else
+        {
+          memoryFull=true; //set flag to indicate that we need not try loading any more mapfiles now.
+          qWarning("Cumulus couldn't load file, low on memory! Memory needed: %d kB, free: %d kB", MINIMUM_FREE_MEMORY, memFree );
+          _globalMapView->message(tr("Out of memory! Map not loaded."));
+          return false;
+        }
     }
-  }
 
   QString kflPathName, kfcPathName, pathName;
   QString kflName, kfcName;
@@ -260,50 +242,61 @@ bool MapContents::__readTerrainFile(const int fileSecID,
   kfcName.sprintf("landscape/%c_%.5d.kfc", fileTypeID, fileSecID);
   kfcExists = locateFile(kfcName, kfcPathName);
 
-  if ( ! (kflExists || kfcExists) ) {
-    qWarning( "Cumulus: no map file (%s/%s) found! Please install %s file", kflName.toLatin1().data(), kfcName.toLatin1().data(), kflName.toLatin1().data() );
-    return false; // file could not be located in any of the possible map directories.
-  }
-
-  if( kflExists ) {
-    if( kfcExists ) {
-      // kfl file newer than kfc ? Then compile it
-      if (getDateFromMapFile( kflPathName ) > getDateFromMapFile( kfcPathName )) {
-        compiling = true;
-        qDebug("Map file %s has a newer date! Recompiling it from source.",
-               kflPathName.toLatin1().data() );
-      }
-    } else {
-      // no kfc file, we compile anyway
-      compiling = true;
+  if ( ! (kflExists || kfcExists) )
+    {
+      qWarning( "Cumulus: no map file (%s/%s) found! Please install %s file", kflName.toLatin1().data(), kfcName.toLatin1().data(), kflName.toLatin1().data() );
+      return false; // file could not be located in any of the possible map directories.
     }
-  }
+
+  if ( kflExists )
+    {
+      if ( kfcExists )
+        {
+          // kfl file newer than kfc ? Then compile it
+          if (getDateFromMapFile( kflPathName ) > getDateFromMapFile( kfcPathName ))
+            {
+              compiling = true;
+              qDebug("Map file %s has a newer date! Recompiling it from source.",
+                     kflPathName.toLatin1().data() );
+            }
+        }
+      else
+        {
+          // no kfc file, we compile anyway
+          compiling = true;
+        }
+    }
 
   // what file do we read after all ?
-  if ( compiling ) {
-    pathName = kflPathName;
-    kfcPathName = kflPathName;
-    kfcPathName.replace( kfcPathName.length()-1, 1, QString("c") );
-  } else {
-    pathName = kfcPathName;
-    kflPathName = kfcPathName;
-    kflPathName.replace( kflPathName.length()-1, 1, QString("l") );
-  }
+  if ( compiling )
+    {
+      pathName = kflPathName;
+      kfcPathName = kflPathName;
+      kfcPathName.replace( kfcPathName.length()-1, 1, QString("c") );
+    }
+  else
+    {
+      pathName = kfcPathName;
+      kflPathName = kfcPathName;
+      kflPathName.replace( kflPathName.length()-1, 1, QString("l") );
+    }
 
   QFile mapfile(pathName);
 
-  if( !mapfile.open(QIODevice::ReadOnly) ) {
-    qWarning("Cumulus: Can't open map file %s for reading", pathName.toLatin1().data() );
+  if ( !mapfile.open(QIODevice::ReadOnly) )
+    {
+      qWarning("Cumulus: Can't open map file %s for reading", pathName.toLatin1().data() );
 
-    if( ! compiling && kflExists ) {
-      qDebug("Try to use file %s", kflPathName.toLatin1().data());
-      // try to remove unopenable file, not sure if this works.
-      unlink( pathName.toLatin1().data() );
-      return __readTerrainFile( fileSecID, fileTypeID );
+      if ( ! compiling && kflExists )
+        {
+          qDebug("Try to use file %s", kflPathName.toLatin1().data());
+          // try to remove unopenable file, not sure if this works.
+          unlink( pathName.toLatin1().data() );
+          return __readTerrainFile( fileSecID, fileTypeID );
+        }
+
+      return false;
     }
-
-    return false;
-  }
 
   emit loadingFile(pathName);
 
@@ -320,26 +313,28 @@ bool MapContents::__readTerrainFile(const int fileSecID,
 
   in >> magic;
 
-  if( magic != KFLOG_FILE_MAGIC ) {
-    if( ! compiling && kflExists ) {
-      qWarning("Cumulus: wrong magic key %x read!\n Retry to compile %s.",
-               magic, kflPathName.toLatin1().data());
-      mapfile.close();
-      unlink( pathName.toLatin1().data() );
-      return __readTerrainFile( fileSecID, fileTypeID );
-    }
+  if ( magic != KFLOG_FILE_MAGIC )
+    {
+      if ( ! compiling && kflExists )
+        {
+          qWarning("Cumulus: wrong magic key %x read!\n Retry to compile %s.",
+                   magic, kflPathName.toLatin1().data());
+          mapfile.close();
+          unlink( pathName.toLatin1().data() );
+          return __readTerrainFile( fileSecID, fileTypeID );
+        }
 
-    qWarning("Cumulus: wrong magic key %x read! Aborting ...", magic);
-    return false;
-  }
+      qWarning("Cumulus: wrong magic key %x read! Aborting ...", magic);
+      return false;
+    }
 
   in >> loadTypeID;
 
-  if(loadTypeID != fileTypeID) // wrong type
+  if (loadTypeID != fileTypeID) // wrong type
     {
       mapfile.close();
 
-      if( ! compiling && kflExists )
+      if ( ! compiling && kflExists )
         {
           qWarning("Cumulus: wrong load type identifier %x read! "
                    "Retry to compile %s",
@@ -362,13 +357,16 @@ bool MapContents::__readTerrainFile(const int fileSecID,
   // Determine, which file format id is expected
   int expFormatID, expComFormatID;
 
-  if( fileTypeID == FILE_TYPE_TERRAIN ) {
-    expFormatID = FILE_VERSION_TERRAIN;
-    expComFormatID = FILE_VERSION_TERRAIN_C;
-  } else {
-    expFormatID = FILE_VERSION_GROUND;
-    expComFormatID = FILE_VERSION_GROUND_C;
-  }
+  if ( fileTypeID == FILE_TYPE_TERRAIN )
+    {
+      expFormatID = FILE_VERSION_TERRAIN;
+      expComFormatID = FILE_VERSION_TERRAIN_C;
+    }
+  else
+    {
+      expFormatID = FILE_VERSION_GROUND;
+      expComFormatID = FILE_VERSION_GROUND_C;
+    }
 
   QFileInfo fi( pathName );
 
@@ -376,219 +374,252 @@ bool MapContents::__readTerrainFile(const int fileSecID,
          fi.fileName().toLatin1().data(), magic, loadTypeID, formatID,
          createDateTime.toString().toLatin1().data() );
 
-  if( compiling ) {
-    // Check map file
-    if( formatID < expFormatID ) {
-      // too old ...
-      qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
-               "Aborting ...", formatID, expFormatID );
-      return false;
-    } else if(formatID > expFormatID ) {
-      // too new ...
-      qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
-               "Aborting ...", formatID,expFormatID );
-      return false;
+  if ( compiling )
+    {
+      // Check map file
+      if ( formatID < expFormatID )
+        {
+          // too old ...
+          qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
+                   "Aborting ...", formatID, expFormatID );
+          return false;
+        }
+      else if (formatID > expFormatID )
+        {
+          // too new ...
+          qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
+                   "Aborting ...", formatID,expFormatID );
+          return false;
+        }
     }
-  } else {
-    // Check compiled file
-    if( formatID < expComFormatID ) {
-      // too old ...
-      if( kflExists ) {
-        qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
-                 "Retry to compile %s",
-                 formatID, expComFormatID, kflPathName.toLatin1().data() );
-        mapfile.close();
-        unlink( pathName.toLatin1().data() );
-        return __readTerrainFile( fileSecID, fileTypeID );
-      }
+  else
+    {
+      // Check compiled file
+      if ( formatID < expComFormatID )
+        {
+          // too old ...
+          if ( kflExists )
+            {
+              qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
+                       "Retry to compile %s",
+                       formatID, expComFormatID, kflPathName.toLatin1().data() );
+              mapfile.close();
+              unlink( pathName.toLatin1().data() );
+              return __readTerrainFile( fileSecID, fileTypeID );
+            }
 
-      qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
-               "Aborting ...", formatID, expFormatID );
-      return false;
-    } else if(formatID > expComFormatID ) {
-      // too new ...
-      if( kflExists ) {
-        qWarning( "Cumulus: File format too new! (version %d, expecting: %d) "
-                  "Retry to compile %s",
-                  formatID, expComFormatID, kflPathName.toLatin1().data() );
-        mapfile.close();
-        unlink( pathName.toLatin1().data() );
-        return __readTerrainFile( fileSecID, fileTypeID );
-      }
+          qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
+                   "Aborting ...", formatID, expFormatID );
+          return false;
+        }
+      else if (formatID > expComFormatID )
+        {
+          // too new ...
+          if ( kflExists )
+            {
+              qWarning( "Cumulus: File format too new! (version %d, expecting: %d) "
+                        "Retry to compile %s",
+                        formatID, expComFormatID, kflPathName.toLatin1().data() );
+              mapfile.close();
+              unlink( pathName.toLatin1().data() );
+              return __readTerrainFile( fileSecID, fileTypeID );
+            }
 
-      qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
-               "Aborting ...", formatID, expFormatID );
-      return false;
+          qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
+                   "Aborting ...", formatID, expFormatID );
+          return false;
+        }
     }
-  }
 
   in >> loadSecID;
 
-  if ( loadSecID != fileSecID ) {
-    if( ! compiling && kflExists ) {
-      qWarning( "Cumulus: %s: wrong section, bogus file name!"
-                "\n Retry to compile %s",
-                pathName.toLatin1().data(), kflPathName.toLatin1().data() );
-      mapfile.close();
-      unlink( pathName.toLatin1().data() );
-      return __readTerrainFile( fileSecID, fileTypeID );
-    }
+  if ( loadSecID != fileSecID )
+    {
+      if ( ! compiling && kflExists )
+        {
+          qWarning( "Cumulus: %s: wrong section, bogus file name!"
+                    "\n Retry to compile %s",
+                    pathName.toLatin1().data(), kflPathName.toLatin1().data() );
+          mapfile.close();
+          unlink( pathName.toLatin1().data() );
+          return __readTerrainFile( fileSecID, fileTypeID );
+        }
 
-    qWarning("Cumulus: %s: wrong section, bogus file name! Arborting ...",
-             pathName.toLatin1().data() );
-    return false;
-  }
+      qWarning("Cumulus: %s: wrong section, bogus file name! Arborting ...",
+               pathName.toLatin1().data() );
+      return false;
+    }
 
   in >> createDateTime;
 
-  if( ! compiling ) {
-    // check projection parameters from file against current used values
-    projectionFromFile = LoadProjection(in);
-    ProjectionBase *currentProjection = _globalMapMatrix->getProjection();
+  if ( ! compiling )
+    {
+      // check projection parameters from file against current used values
+      projectionFromFile = LoadProjection(in);
+      ProjectionBase *currentProjection = _globalMapMatrix->getProjection();
 
-    if( ! compareProjections( projectionFromFile, currentProjection ) ) {
-      delete projectionFromFile;
-      mapfile.close();
+      if ( ! compareProjections( projectionFromFile, currentProjection ) )
+        {
+          delete projectionFromFile;
+          mapfile.close();
 
-      if( kflExists ) {
-        qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
-                  "\n Retry to compile %s",
-                  pathName.toLatin1().data(), kflPathName.toLatin1().data() );
+          if ( kflExists )
+            {
+              qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
+                        "\n Retry to compile %s",
+                        pathName.toLatin1().data(), kflPathName.toLatin1().data() );
 
-        unlink( pathName.toLatin1().data() );
-        return __readTerrainFile( fileSecID, fileTypeID );
-      }
+              unlink( pathName.toLatin1().data() );
+              return __readTerrainFile( fileSecID, fileTypeID );
+            }
 
-      qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
-                " Please install %s file and restart.",
-                pathName.toLatin1().data(), kflPathName.toLatin1().data() );
-      return false;
-    } else {
-      // Must be deleted after use to avoid memory leak
-      delete projectionFromFile;
+          qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
+                    " Please install %s file and restart.",
+                    pathName.toLatin1().data(), kflPathName.toLatin1().data() );
+          return false;
+        }
+      else
+        {
+          // Must be deleted after use to avoid memory leak
+          delete projectionFromFile;
+        }
     }
-  }
 
   // Got to initialize "out" stream properly, even if write file is not needed
   QFile ausgabe(kfcPathName);
   QDataStream out(&ausgabe);
 
-  if( compiling ) {
-    out.setDevice(&ausgabe);
-    out.setVersion(QDataStream::Qt_2_0);
+  if ( compiling )
+    {
+      out.setDevice(&ausgabe);
+      out.setVersion(QDataStream::Qt_2_0);
 
-    if(!ausgabe.open(QIODevice::WriteOnly)) {
-      mapfile.close();
-      qWarning("Cumulus: Can't open compiled map file %s for writing!"
-               " Arborting...",
-               kfcPathName.toLatin1().data() );
-      return false;
+      if (!ausgabe.open(QIODevice::WriteOnly))
+        {
+          mapfile.close();
+          qWarning("Cumulus: Can't open compiled map file %s for writing!"
+                   " Arborting...",
+                   kfcPathName.toLatin1().data() );
+          return false;
+        }
+
+      qDebug("writing file %s", kfcPathName.toLatin1().data());
+
+      out << magic;
+      out << loadTypeID;
+      out << quint16(expComFormatID);
+      out << loadSecID;
+
+      //set time one second later than the time of the original file;
+      out << createDateTime.addSecs(1);
+
+      // save current projection data
+      SaveProjection(out, _globalMapMatrix->getProjection() );
     }
-
-    qDebug("writing file %s", kfcPathName.toLatin1().data());
-
-    out << magic;
-    out << loadTypeID;
-    out << quint16(expComFormatID);
-    out << loadSecID;
-
-    //set time one second later than the time of the original file;
-    out << createDateTime.addSecs(1);
-
-    // save current projection data
-    SaveProjection(out, _globalMapMatrix->getProjection() );
-  }
 
   uint loop = 0;
 
-  while( !in.atEnd() ) {
-    int sort_temp;
+  while ( !in.atEnd() )
+    {
+      int sort_temp;
 
-    quint8 type;
-    qint16 elevation;
-    qint8 valley, sort;
-    qint32 locLength, latList_temp, lonList_temp, lastLat, lastLon;
-    QPolygon pN;
+      quint8 type;
+      qint16 elevation;
+      qint8 valley, sort;
+      qint32 locLength, latList_temp, lonList_temp, lastLat, lastLon;
+      QPolygon pN;
 
-    //we can safely reset lastLat and lastLon to 0, since that is a spot in the Atlantic ocean.
-    lastLat=0;
-    lastLon=0;
+      //we can safely reset lastLat and lastLon to 0, since that is a spot in the Atlantic ocean.
+      lastLat=0;
+      lastLon=0;
 
-    in >> type;
-    in >> elevation;
-    in >> valley;
-    in >> sort;
+      in >> type;
+      in >> elevation;
+      in >> valley;
+      in >> sort;
 
-    if ( compiling ) {
-      out << type;
-      out << elevation;
-      out << valley;
-      out << sort;
-      in >> locLength;
+      if ( compiling )
+        {
+          out << type;
+          out << elevation;
+          out << valley;
+          out << sort;
+          in >> locLength;
 
-      pN.resize( locLength );
-
-      for(int i = 0; i < locLength; i++) {
-        in >> latList_temp;
-        in >> lonList_temp;
-        // Check for double points
-        if (latList_temp == lastLat && lonList_temp == lastLon) {
-          locLength--;
           pN.resize( locLength );
-          i--;
-          qDebug("  Skipping double entry");
-        } else {
-          // This is what causes the long delays !!! Lots of floating point calcs
-          pN.setPoint(i, _globalMapMatrix->wgsToMap(latList_temp, lonList_temp));
-          lastLat=latList_temp;
-          lastLon=lonList_temp;
+
+          for (int i = 0; i < locLength; i++)
+            {
+              in >> latList_temp;
+              in >> lonList_temp;
+              // Check for double points
+              if (latList_temp == lastLat && lonList_temp == lastLon)
+                {
+                  locLength--;
+                  pN.resize( locLength );
+                  i--;
+                  qDebug("  Skipping double entry");
+                }
+              else
+                {
+                  // This is what causes the long delays !!! Lots of floating point calcs
+                  pN.setPoint(i, _globalMapMatrix->wgsToMap(latList_temp, lonList_temp));
+                  lastLat=latList_temp;
+                  lastLon=lonList_temp;
+                }
+            }
+
+          // And that is the whole trick: saving the computed result. Takes the same space!
+          ShortSave( out, pN );
         }
-      }
+      else
+        {
+          // Reading the computed result from kfc file
+          ShortLoad( in, pN );
+        }
 
-      // And that is the whole trick: saving the computed result. Takes the same space!
-      ShortSave( out, pN );
-    } else {
-      // Reading the computed result from kfc file
-      ShortLoad( in, pN );
+      sort_temp = -1;
+
+      // We must ignore it, when sort is more than 3 or less than 0!
+      if (sort >= 0 && sort <= 3)
+        {
+          for (unsigned int pos = 0; pos < ISO_LINE_NUM; pos++)
+            if (isoLines[pos] == elevation)
+              sort_temp = ISO_LINE_NUM * (int)sort + pos + 0;
+
+          // If sort_temp is -1 here, we have an unused elevation and
+          // must ignore it!
+          if (sort_temp != -1)
+            {
+              Isohypse newItem(pN, elevation, valley, fileSecID);
+              isoList[sort_temp].append(newItem);
+              // qDebug("Isohypse added: Size=%d, elevation=%d, valley=%d, fileTypeID=%X",
+              //       pN.size(), elevation, valley ? 1 : 0, fileTypeID );
+            }
+        }
+
+      // AP: Performance brake! emit progress calls waitscreen and
+      // this steps into main loop
+      if ( compiling && (++loop % 100) == 0 )
+        {
+          emit progress(2);
+        }
     }
-
-    sort_temp = -1;
-
-    // We must ignore it, when sort is more than 3 or less than 0!
-    if(sort >= 0 && sort <= 3) {
-      for(unsigned int pos = 0; pos < ISO_LINE_NUM; pos++)
-        if(isoLines[pos] == elevation)
-          sort_temp = ISO_LINE_NUM * (int)sort + pos + 0;
-
-      // If sort_temp is -1 here, we have an unused elevation and
-      // must ignore it!
-      if(sort_temp != -1) {
-        Isohypse* newItem = new Isohypse(pN, elevation, valley, fileSecID);
-        isoList.at(sort_temp)->append(newItem);
-        // qDebug("Isohypse added: Size=%d, elevation=%d, valley=%d, fileTypeID=%X",
-        //       pN.size(), elevation, valley ? 1 : 0, fileTypeID );
-      }
-    }
-
-    // AP: Performance brake! emit progress calls waitscreen and
-    // this steps into main loop
-    if ( compiling && (++loop % 100) == 0 ) {
-      emit progress(2);
-    }
-  }
 
   // qDebug("loop=%d", loop);
   mapfile.close();
 
-  if( compiling ) {
-    ausgabe.close();
+  if ( compiling )
+    {
+      ausgabe.close();
 
-    // kfl file is deleted after 'compilation' to save space, if is enabled
-    // in configuration menu
-    if ( _globalMapConfig->getDeleteMapfileAfterCompile() ) {
-      mapfile.remove();
+      // kfl file is deleted after 'compilation' to save space, if is enabled
+      // in configuration menu
+      if ( _globalMapConfig->getDeleteMapfileAfterCompile() )
+        {
+          mapfile.remove();
+        }
     }
-  }
 
   ws->slot_SetText2(tr("Loading map ready"));
   return true;
@@ -606,31 +637,37 @@ bool MapContents::__readBinaryFile(const int fileSecID,
   if ((fileTypeID==FILE_TYPE_TERRAIN) && (!_globalMapConfig->getLoadIsolines()))
     return true;
 
-  if (memoryFull) { //if we allready know the memory if full and can't be emptied at this point, just return.
-    _globalMapView->message(tr("Out of memory! Map not loaded."));
-    return false;
-  }
+  if (memoryFull)   //if we already know the memory if full and can't be emptied at this point, just return.
+    {
+      _globalMapView->message(tr("Out of memory! Map not loaded."));
+      return false;
+    }
 
   //check free memory
   int memFree = HwInfo::instance()->getFreeMemory();
 
-  if( memFree < MINIMUM_FREE_MEMORY ) {
-    if ( !unloadDone) {
-      unloadMaps();  //try freeing some memory
-      memFree = HwInfo::instance()->getFreeMemory();  //re-asses free memory
-      if( memFree < MINIMUM_FREE_MEMORY ) {
-        memoryFull=true; //set flag to indicate that we need not try loading any more mapfiles now.
-        qWarning("Cumulus couldn't load file, low on memory! Memory needed: %d kB, free: %d kB", MINIMUM_FREE_MEMORY, memFree );
-        _globalMapView->message(tr("Out of memory! Map not loaded."));
-        return false;
-      }
-    } else {
-      memoryFull=true; //set flag to indicate that we need not try loading any more mapfiles now.
-      qWarning("Cumulus couldn't load file, low on memory! Memory needed: %d kB, free: %d kB", MINIMUM_FREE_MEMORY, memFree );
-      _globalMapView->message(tr("Out of memory! Map not loaded."));
-      return false;
+  if ( memFree < MINIMUM_FREE_MEMORY )
+    {
+      if ( !unloadDone)
+        {
+          unloadMaps();  //try freeing some memory
+          memFree = HwInfo::instance()->getFreeMemory();  //re-asses free memory
+          if ( memFree < MINIMUM_FREE_MEMORY )
+            {
+              memoryFull=true; //set flag to indicate that we need not try loading any more mapfiles now.
+              qWarning("Cumulus couldn't load file, low on memory! Memory needed: %d kB, free: %d kB", MINIMUM_FREE_MEMORY, memFree );
+              _globalMapView->message(tr("Out of memory! Map not loaded."));
+              return false;
+            }
+        }
+      else
+        {
+          memoryFull=true; //set flag to indicate that we need not try loading any more mapfiles now.
+          qWarning("Cumulus couldn't load file, low on memory! Memory needed: %d kB, free: %d kB", MINIMUM_FREE_MEMORY, memFree );
+          _globalMapView->message(tr("Out of memory! Map not loaded."));
+          return false;
+        }
     }
-  }
 
   QString kflPathName, kfcPathName, pathName;
   QString kflName, kfcName;
@@ -641,56 +678,64 @@ bool MapContents::__readBinaryFile(const int fileSecID,
   kfcName.sprintf("landscape/%c_%.5d.kfc", fileTypeID, fileSecID);
   kfcExists = locateFile(kfcName, kfcPathName);
 
-  if ( ! (kflExists || kfcExists) ) {
-    qWarning( "Cumulus: no map files (%s/%s) found! Please install %s.",
-              kflName.toLatin1().data(), kfcName.toLatin1().data(), kflName.toLatin1().data() );
-    return false; // file could not be located in any of the possible map directories.
-  }
-
-  if ( kflExists ) {
-    if ( kfcExists )
-      // kfl file newer than kfc ? Then compile it
-      {
-        if ( getDateFromMapFile( kflPathName ) > getDateFromMapFile( kfcPathName ) )
-          {
-            compiling = true;
-            qDebug("Map file %s has a newer date! Recompiling it from source.",
-                   kflPathName.toLatin1().data() );
-          }
-      }
-    else {
-      // no kfc file, we compile anyway
-      compiling = true;
+  if ( ! (kflExists || kfcExists) )
+    {
+      qWarning( "Cumulus: no map files (%s/%s) found! Please install %s.",
+                kflName.toLatin1().data(), kfcName.toLatin1().data(), kflName.toLatin1().data() );
+      return false; // file could not be located in any of the possible map directories.
     }
-  }
+
+  if ( kflExists )
+    {
+      if ( kfcExists )
+        // kfl file newer than kfc ? Then compile it
+        {
+          if ( getDateFromMapFile( kflPathName ) > getDateFromMapFile( kfcPathName ) )
+            {
+              compiling = true;
+              qDebug("Map file %s has a newer date! Recompiling it from source.",
+                     kflPathName.toLatin1().data() );
+            }
+        }
+      else
+        {
+          // no kfc file, we compile anyway
+          compiling = true;
+        }
+    }
 
   // what file do we read after all ?
-  if ( compiling ) {
-    pathName = kflPathName;
-    kfcPathName = kflPathName;
-    kfcPathName.replace( kfcPathName.length()-1, 1, QString("c") );
-  } else {
-    pathName = kfcPathName;
-    kflPathName = kfcPathName;
-    kflPathName.replace( kflPathName.length()-1, 1, QString("l") );
-  }
+  if ( compiling )
+    {
+      pathName = kflPathName;
+      kfcPathName = kflPathName;
+      kfcPathName.replace( kfcPathName.length()-1, 1, QString("c") );
+    }
+  else
+    {
+      pathName = kfcPathName;
+      kflPathName = kfcPathName;
+      kflPathName.replace( kflPathName.length()-1, 1, QString("l") );
+    }
 
   QFile mapfile(pathName);
 
-  if(!mapfile.open(QIODevice::ReadOnly)) {
-    if( ! compiling && kflExists ) {
-      qDebug("Cumulus: Can't open map file %s for reading!"
-             " Try to use file %s",
-             pathName.toLatin1().data(), kflPathName.toLatin1().data());
-      // try to remove unopenable file, not sure if this works.
-      unlink( pathName.toLatin1().data() );
-      return __readBinaryFile( fileSecID, fileTypeID );
-    }
+  if (!mapfile.open(QIODevice::ReadOnly))
+    {
+      if ( ! compiling && kflExists )
+        {
+          qDebug("Cumulus: Can't open map file %s for reading!"
+                 " Try to use file %s",
+                 pathName.toLatin1().data(), kflPathName.toLatin1().data());
+          // try to remove unopenable file, not sure if this works.
+          unlink( pathName.toLatin1().data() );
+          return __readBinaryFile( fileSecID, fileTypeID );
+        }
 
-    qWarning("Cumulus: Can't open map file %s for reading! Arborting ...",
-             pathName.toLatin1().data() );
-    return false;
-  }
+      qWarning("Cumulus: Can't open map file %s for reading! Aborting ...",
+               pathName.toLatin1().data() );
+      return false;
+    }
 
   emit loadingFile(pathName);
 
@@ -707,53 +752,59 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
   in >> magic;
 
-  if( magic != KFLOG_FILE_MAGIC ) {
-    if( ! compiling && kflExists ) {
-      qWarning("Cumulus: wrong magic key %x read!\n Retry to compile %s.",
-               magic, kflPathName.toLatin1().data());
-      mapfile.close();
-      unlink( pathName.toLatin1().data() );
-      return __readBinaryFile( fileSecID, fileTypeID );
-    }
+  if ( magic != KFLOG_FILE_MAGIC )
+    {
+      if ( ! compiling && kflExists )
+        {
+          qWarning("Cumulus: wrong magic key %x read!\n Retry to compile %s.",
+                   magic, kflPathName.toLatin1().data());
+          mapfile.close();
+          unlink( pathName.toLatin1().data() );
+          return __readBinaryFile( fileSecID, fileTypeID );
+        }
 
-    qWarning("Cumulus: wrong magic key %x read! Aborting ...", magic);
-    mapfile.close();
-    return false;
-  }
-
-  in >> loadTypeID;
-
-  /** Originally, the binary files were mend to come in different flavours.
-   * Now, they are all of type 'm'. Use that fact to do check for the
-   * compiled or the uncompiled version. */
-  if (compiling) {
-    // uncompiled maps have a different format identifier than compiled
-    // maps
-    if(loadTypeID != FILE_TYPE_MAP) {
-      qWarning("Cumulus: wrong load type identifier %x read! Aborting ...",
-               loadTypeID );
+      qWarning("Cumulus: wrong magic key %x read! Aborting ...", magic);
       mapfile.close();
       return false;
     }
-  } else {
-    if( loadTypeID != FILE_TYPE_MAP_C) // wrong type
-      {
-        mapfile.close();
 
-        if( kflExists )
-          {
-            qWarning("Cumulus: wrong load type identifier %x read! "
-                     "Retry to compile %s",
-                     loadTypeID, kflPathName.toLatin1().data() );
-            unlink( pathName.toLatin1().data() );
-            return __readBinaryFile( fileSecID, fileTypeID );
-          }
+  in >> loadTypeID;
 
-        qWarning("Cumulus: wrong load type identifier %x read! Aborting ...",
-                 loadTypeID );
-        return false;
-      }
-  }
+  /** Originally, the binary files were mend to come in different flavors.
+   * Now, they are all of type 'm'. Use that fact to do check for the
+   * compiled or the uncompiled version. */
+  if (compiling)
+    {
+      // uncompiled maps have a different format identifier than compiled
+      // maps
+      if (loadTypeID != FILE_TYPE_MAP)
+        {
+          qWarning("Cumulus: wrong load type identifier %x read! Aborting ...",
+                   loadTypeID );
+          mapfile.close();
+          return false;
+        }
+    }
+  else
+    {
+      if ( loadTypeID != FILE_TYPE_MAP_C) // wrong type
+        {
+          mapfile.close();
+
+          if ( kflExists )
+            {
+              qWarning("Cumulus: wrong load type identifier %x read! "
+                       "Retry to compile %s",
+                       loadTypeID, kflPathName.toLatin1().data() );
+              unlink( pathName.toLatin1().data() );
+              return __readBinaryFile( fileSecID, fileTypeID );
+            }
+
+          qWarning("Cumulus: wrong load type identifier %x read! Aborting ...",
+                   loadTypeID );
+          return false;
+        }
+    }
 
   // check the version of the subtype. This can be different for the
   // compiled and the uncompiled version
@@ -766,130 +817,150 @@ bool MapContents::__readBinaryFile(const int fileSecID,
          fi.fileName().toLatin1().data(), magic, loadTypeID, formatID,
          createDateTime.toString().toLatin1().data() );
 
-  if (compiling) {
-    if( formatID < FILE_VERSION_MAP) {
-      // to old ...
-      qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
-               "Aborting ...", formatID, FILE_VERSION_MAP );
-      mapfile.close();
-      return false;
-    } else if(formatID > FILE_VERSION_MAP) {
-      // to new ...
-      qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
-               "Aborting ...", formatID, FILE_VERSION_MAP );
-      mapfile.close();
-      return false;
+  if (compiling)
+    {
+      if ( formatID < FILE_VERSION_MAP)
+        {
+          // to old ...
+          qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
+                   "Aborting ...", formatID, FILE_VERSION_MAP );
+          mapfile.close();
+          return false;
+        }
+      else if (formatID > FILE_VERSION_MAP)
+        {
+          // to new ...
+          qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
+                   "Aborting ...", formatID, FILE_VERSION_MAP );
+          mapfile.close();
+          return false;
+        }
     }
-  } else {
-    if( formatID < FILE_VERSION_MAP_C) {
-      // to old ...
-      mapfile.close();
+  else
+    {
+      if ( formatID < FILE_VERSION_MAP_C)
+        {
+          // to old ...
+          mapfile.close();
 
-      if( kflExists ) {
-        qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
-                 "Retry to compile %s",
-                 formatID, FILE_VERSION_MAP_C, kflPathName.toLatin1().data() );
-        unlink( pathName.toLatin1().data() );
-        return __readBinaryFile( fileSecID, fileTypeID );
-      }
+          if ( kflExists )
+            {
+              qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
+                       "Retry to compile %s",
+                       formatID, FILE_VERSION_MAP_C, kflPathName.toLatin1().data() );
+              unlink( pathName.toLatin1().data() );
+              return __readBinaryFile( fileSecID, fileTypeID );
+            }
 
-      qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
-               "Aborting ...", formatID, FILE_VERSION_MAP_C );
-      return false;
-    } else if(formatID > FILE_VERSION_MAP_C) {
-      // to new ...
-      mapfile.close();
+          qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
+                   "Aborting ...", formatID, FILE_VERSION_MAP_C );
+          return false;
+        }
+      else if (formatID > FILE_VERSION_MAP_C)
+        {
+          // to new ...
+          mapfile.close();
 
-      if( kflExists ) {
-        qWarning( "Cumulus: File format too new! (version %d, expecting: %d) "
-                  "Retry to compile %s",
-                  formatID, FILE_VERSION_MAP_C, kflPathName.toLatin1().data() );
-        unlink( pathName.toLatin1().data() );
-        return __readBinaryFile( fileSecID, fileTypeID );
-      }
+          if ( kflExists )
+            {
+              qWarning( "Cumulus: File format too new! (version %d, expecting: %d) "
+                        "Retry to compile %s",
+                        formatID, FILE_VERSION_MAP_C, kflPathName.toLatin1().data() );
+              unlink( pathName.toLatin1().data() );
+              return __readBinaryFile( fileSecID, fileTypeID );
+            }
 
-      qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
-               "Aborting ...", formatID, FILE_VERSION_MAP_C );
+          qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
+                   "Aborting ...", formatID, FILE_VERSION_MAP_C );
 
-      return false;
+          return false;
+        }
     }
-  }
 
   // check if this section really covers the area we want to deal with
 
   in >> loadSecID;
 
-  if ( loadSecID != fileSecID ) {
-    mapfile.close();
+  if ( loadSecID != fileSecID )
+    {
+      mapfile.close();
 
-    if( ! compiling && kflExists ) {
-      qWarning( "Cumulus: %s: wrong section, bogus file name!"
-                "\n Retry to compile %s",
-                pathName.toLatin1().data(), kflPathName.toLatin1().data() );
-      unlink( pathName.toLatin1().data() );
-      return __readBinaryFile( fileSecID, fileTypeID );
+      if ( ! compiling && kflExists )
+        {
+          qWarning( "Cumulus: %s: wrong section, bogus file name!"
+                    "\n Retry to compile %s",
+                    pathName.toLatin1().data(), kflPathName.toLatin1().data() );
+          unlink( pathName.toLatin1().data() );
+          return __readBinaryFile( fileSecID, fileTypeID );
+        }
+
+      qWarning("Cumulus: %s: wrong section, bogus file name! Aborting ...",
+               pathName.toLatin1().data() );
+      return false;
     }
-
-    qWarning("Cumulus: %s: wrong section, bogus file name! Aborting ...",
-             pathName.toLatin1().data() );
-    return false;
-  }
 
   in >> createDateTime;
 
-  if( ! compiling ) {
-    // check projection parameters from file against current used values
-    projectionFromFile = LoadProjection(in);
-    ProjectionBase *currentProjection = _globalMapMatrix->getProjection();
+  if ( ! compiling )
+    {
+      // check projection parameters from file against current used values
+      projectionFromFile = LoadProjection(in);
+      ProjectionBase *currentProjection = _globalMapMatrix->getProjection();
 
-    if( ! compareProjections( projectionFromFile, currentProjection ) ) {
-      delete projectionFromFile;
-      mapfile.close();
+      if ( ! compareProjections( projectionFromFile, currentProjection ) )
+        {
+          delete projectionFromFile;
+          mapfile.close();
 
-      if( kflExists ) {
-        qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
-                  "\n Retry to compile %s",
-                  pathName.toLatin1().data(), kflPathName.toLatin1().data() );
+          if ( kflExists )
+            {
+              qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
+                        "\n Retry to compile %s",
+                        pathName.toLatin1().data(), kflPathName.toLatin1().data() );
 
-        unlink( pathName.toLatin1().data() );
-        return __readBinaryFile( fileSecID, fileTypeID );
-      }
+              unlink( pathName.toLatin1().data() );
+              return __readBinaryFile( fileSecID, fileTypeID );
+            }
 
-      qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
-                " Please install %s file and restart.",
-                pathName.toLatin1().data(), kflPathName.toLatin1().data() );
-      return false;
-    } else {
-      // Must be deleted after use to avoid memory leak
-      delete projectionFromFile;
+          qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
+                    " Please install %s file and restart.",
+                    pathName.toLatin1().data(), kflPathName.toLatin1().data() );
+          return false;
+        }
+      else
+        {
+          // Must be deleted after use to avoid memory leak
+          delete projectionFromFile;
+        }
     }
-  }
 
   QFile ausgabe(kfcPathName);
   QDataStream out(&ausgabe);
 
-  if ( compiling ) {
-    out.setDevice(&ausgabe);
-    out.setVersion(QDataStream::Qt_2_0);
-    if(!ausgabe.open(QIODevice::WriteOnly)) {
-      qWarning("Cumulus: Can't open compiled map file %s for writing!"
-               " Arborting ...",
-               kfcPathName.toLatin1().data() );
-      mapfile.close();
-      return false;
+  if ( compiling )
+    {
+      out.setDevice(&ausgabe);
+      out.setVersion(QDataStream::Qt_2_0);
+      if (!ausgabe.open(QIODevice::WriteOnly))
+        {
+          qWarning("Cumulus: Can't open compiled map file %s for writing!"
+                   " Aborting ...",
+                   kfcPathName.toLatin1().data() );
+          mapfile.close();
+          return false;
+        }
+
+      qDebug("writing file %s", kfcPathName.toLatin1().data());
+
+      out << magic;
+      loadTypeID=FILE_TYPE_MAP_C;
+      formatID=  FILE_VERSION_MAP_C;
+      out << loadTypeID;
+      out << formatID;
+      out << loadSecID;
+      out << createDateTime.addSecs(1);   //set time one second later than the time of the original file;
+      SaveProjection(out, _globalMapMatrix->getProjection());
     }
-
-    qDebug("writing file %s", kfcPathName.toLatin1().data());
-
-    out << magic;
-    loadTypeID=FILE_TYPE_MAP_C;
-    formatID=  FILE_VERSION_MAP_C;
-    out << loadTypeID;
-    out << formatID;
-    out << loadSecID;
-    out << createDateTime.addSecs(1);   //set time one second later than the time of the original file;
-    SaveProjection(out, _globalMapMatrix->getProjection());
-  }
 
   quint8 lm_typ;
   qint8 sort, elev;
@@ -901,213 +972,248 @@ bool MapContents::__readBinaryFile(const int fileSecID,
   unsigned int gesamt_elemente = 0;
   uint loop = 0;
 
-  while( ! in.atEnd() ) {
-    BaseMapElement::objectType typeIn = BaseMapElement::NotSelected;
-    in >> (quint8&)typeIn;
-    if ( compiling )
-      out << (quint8&)typeIn;
-
-    locLength = 0;
-    name = "";
-
-    QPolygon pN;
-    QPoint single;
-
-    gesamt_elemente++;
-
-    switch (typeIn) {
-    case BaseMapElement::Highway:
-      READ_POINT_LIST
-        if (!_globalMapConfig->getLoadHighways())
-          break;
-      highwayList.append( LineElement("", typeIn, pN, false, fileSecID) );
-      break;
-    case BaseMapElement::Road:
-      READ_POINT_LIST
-        if (!_globalMapConfig->getLoadRoads())
-          break;
-      roadList.append( LineElement("", typeIn, pN, false, fileSecID) );
-      break;
-    case BaseMapElement::Trail:
-      READ_POINT_LIST
-        if (!_globalMapConfig->getLoadRoads())
-          break;
-      roadList.append( LineElement("", typeIn, pN, false, fileSecID) );
-      break;
-    case BaseMapElement::Railway:
-      READ_POINT_LIST
-        if (!_globalMapConfig->getLoadRailroads())
-          break;
-      railList.append( LineElement("", typeIn, pN, false, fileSecID) );
-      break;
-    case BaseMapElement::Railway_D:
-      READ_POINT_LIST
-        if (!_globalMapConfig->getLoadRailroads())
-          break;
-      railList.append( LineElement("", typeIn, pN, false, fileSecID) );
-      break;
-    case BaseMapElement::Aerial_Cable:
-      READ_POINT_LIST
-        if (!_globalMapConfig->getLoadRailroads())
-          break;
-      railList.append( LineElement("", typeIn, pN, false, fileSecID) );
-      break;
-    case BaseMapElement::Canal:
-    case BaseMapElement::River:
-    case BaseMapElement::River_T:
-      typeIn=BaseMapElement::River; //don't use the River_T type internally
-      if(formatID >= FILE_FORMAT_ID) {
-        if ( compiling ) {
-          in >> name;
-          ShortSave(out, name);
-        } else {
-          ShortLoad(in, name);
-        }
-      }
-      READ_POINT_LIST
-        if (!_globalMapConfig->getLoadWaterways())
-          break;
-      hydroList.append( LineElement(name, typeIn, pN, false, fileSecID) );
-      break;
-    case BaseMapElement::City:
-      in >> sort;
+  while ( ! in.atEnd() )
+    {
+      BaseMapElement::objectType typeIn = BaseMapElement::NotSelected;
+      in >> (quint8&)typeIn;
       if ( compiling )
-        out << sort;
-      if(formatID >= FILE_FORMAT_ID) {
-        if ( compiling ) {
-          in >> name;
-          ShortSave(out, name);
-        } else {
-          ShortLoad(in, name);
-        }
-      }
-      READ_POINT_LIST
-        if (!_globalMapConfig->getLoadCities())
+        out << (quint8&)typeIn;
+
+      locLength = 0;
+      name = "";
+
+      QPolygon pN;
+      QPoint single;
+
+      gesamt_elemente++;
+
+      switch (typeIn)
+        {
+        case BaseMapElement::Highway:
+          READ_POINT_LIST
+          if (!_globalMapConfig->getLoadHighways())
+            break;
+          highwayList.append( LineElement("", typeIn, pN, false, fileSecID) );
           break;
-      cityList.append( LineElement(name, typeIn, pN, sort, fileSecID) );
-      // qDebug("added city '%s'", name.toLatin1().data());
-      break;
-    case BaseMapElement::Lake:
-    case BaseMapElement::Lake_T:
-      typeIn=BaseMapElement::Lake; //don't use the Lake_T type internally
-      in >> sort;
-      if ( compiling )
-        out << sort;
-      if(formatID >= FILE_FORMAT_ID) {
-        if ( compiling ) {
-          in >> name;
-          ShortSave(out, name);
-        } else {
-          ShortLoad(in, name);
-        }
-      }
-      READ_POINT_LIST
-        lakeList.append(LineElement(name, typeIn, pN, sort, fileSecID));
-      // qDebug("appended lake, name '%s', pointcount %d", name.toLatin1().data(), pN.count());
-      break;
-    case BaseMapElement::Forest:
-    case BaseMapElement::Glacier:
-    case BaseMapElement::PackIce:
-      in >> sort;
-      if ( compiling )
-        out << sort;
-      if(formatID >= FILE_FORMAT_ID) {
-        if ( compiling ) {
-          in >> name;
-          ShortSave(out, name);
-        } else {
-          ShortLoad(in, name);
-        }
-      }
-      READ_POINT_LIST
-        if (!_globalMapConfig->getLoadForests())
+        case BaseMapElement::Road:
+          READ_POINT_LIST
+          if (!_globalMapConfig->getLoadRoads())
+            break;
+          roadList.append( LineElement("", typeIn, pN, false, fileSecID) );
           break;
-      topoList.append( LineElement(name, typeIn, pN, sort, fileSecID) );
-      break;
-    case BaseMapElement::Village:
-      if(formatID >= FILE_FORMAT_ID) {
-        if ( compiling ) {
-          in >> name;
-          ShortSave(out, name);
-        } else {
-          ShortLoad(in, name);
-        }
-      }
-      in >> lat_temp;
-      in >> lon_temp;
-      if (!_globalMapConfig->getLoadCities())
-        break;
-      if ( compiling ) {
-        single = _globalMapMatrix->wgsToMap(lat_temp, lon_temp);
-        out << single;
-      } else
-        in >> single;
-      villageList.append(new SinglePoint(name, "", typeIn,
-                                         WGSPoint(lat_temp, lon_temp), single, 0, fileSecID));
-      // qDebug("added village '%s'", name.toLatin1().data());
-      break;
-    case BaseMapElement::Spot:
-      if(formatID >= FILE_FORMAT_ID) {
-        in >> elev;
-        if ( compiling )
-          out << elev;
-      }
-      in >> lat_temp;
-      in >> lon_temp;
-      if (!_globalMapConfig->getLoadCities())
-        break;
-      if ( compiling ) {
-        single = _globalMapMatrix->wgsToMap(lat_temp, lon_temp);
-        out << single;
-      } else
-        in >> single;
-      obstacleList.append(new SinglePoint("Spot", "", typeIn,
+        case BaseMapElement::Trail:
+          READ_POINT_LIST
+          if (!_globalMapConfig->getLoadRoads())
+            break;
+          roadList.append( LineElement("", typeIn, pN, false, fileSecID) );
+          break;
+        case BaseMapElement::Railway:
+          READ_POINT_LIST
+          if (!_globalMapConfig->getLoadRailroads())
+            break;
+          railList.append( LineElement("", typeIn, pN, false, fileSecID) );
+          break;
+        case BaseMapElement::Railway_D:
+          READ_POINT_LIST
+          if (!_globalMapConfig->getLoadRailroads())
+            break;
+          railList.append( LineElement("", typeIn, pN, false, fileSecID) );
+          break;
+        case BaseMapElement::Aerial_Cable:
+          READ_POINT_LIST
+          if (!_globalMapConfig->getLoadRailroads())
+            break;
+          railList.append( LineElement("", typeIn, pN, false, fileSecID) );
+          break;
+        case BaseMapElement::Canal:
+        case BaseMapElement::River:
+        case BaseMapElement::River_T:
+          typeIn=BaseMapElement::River; //don't use the River_T type internally
+          if (formatID >= FILE_FORMAT_ID)
+            {
+              if ( compiling )
+                {
+                  in >> name;
+                  ShortSave(out, name);
+                }
+              else
+                {
+                  ShortLoad(in, name);
+                }
+            }
+          READ_POINT_LIST
+          if (!_globalMapConfig->getLoadWaterways())
+            break;
+          hydroList.append( LineElement(name, typeIn, pN, false, fileSecID) );
+          break;
+        case BaseMapElement::City:
+          in >> sort;
+          if ( compiling )
+            out << sort;
+          if (formatID >= FILE_FORMAT_ID)
+            {
+              if ( compiling )
+                {
+                  in >> name;
+                  ShortSave(out, name);
+                }
+              else
+                {
+                  ShortLoad(in, name);
+                }
+            }
+          READ_POINT_LIST
+          if (!_globalMapConfig->getLoadCities())
+            break;
+          cityList.append( LineElement(name, typeIn, pN, sort, fileSecID) );
+          // qDebug("added city '%s'", name.toLatin1().data());
+          break;
+        case BaseMapElement::Lake:
+        case BaseMapElement::Lake_T:
+          typeIn=BaseMapElement::Lake; //don't use the Lake_T type internally
+          in >> sort;
+          if ( compiling )
+            out << sort;
+          if (formatID >= FILE_FORMAT_ID)
+            {
+              if ( compiling )
+                {
+                  in >> name;
+                  ShortSave(out, name);
+                }
+              else
+                {
+                  ShortLoad(in, name);
+                }
+            }
+          READ_POINT_LIST
+          lakeList.append(LineElement(name, typeIn, pN, sort, fileSecID));
+          // qDebug("appended lake, name='%s', pointCount=%d", name.toLatin1().data(), pN.count());
+          break;
+        case BaseMapElement::Forest:
+        case BaseMapElement::Glacier:
+        case BaseMapElement::PackIce:
+          in >> sort;
+          if ( compiling )
+            out << sort;
+          if (formatID >= FILE_FORMAT_ID)
+            {
+              if ( compiling )
+                {
+                  in >> name;
+                  ShortSave(out, name);
+                }
+              else
+                {
+                  ShortLoad(in, name);
+                }
+            }
+          READ_POINT_LIST
+          if (!_globalMapConfig->getLoadForests())
+            break;
+          topoList.append( LineElement(name, typeIn, pN, sort, fileSecID) );
+          break;
+        case BaseMapElement::Village:
+          if (formatID >= FILE_FORMAT_ID)
+            {
+              if ( compiling )
+                {
+                  in >> name;
+                  ShortSave(out, name);
+                }
+              else
+                {
+                  ShortLoad(in, name);
+                }
+            }
+          in >> lat_temp;
+          in >> lon_temp;
+          if (!_globalMapConfig->getLoadCities())
+            break;
+          if ( compiling )
+            {
+              single = _globalMapMatrix->wgsToMap(lat_temp, lon_temp);
+              out << single;
+            }
+          else
+            in >> single;
+          villageList.append( SinglePoint(name, "", typeIn,
                                           WGSPoint(lat_temp, lon_temp), single, 0, fileSecID));
-      break;
-    case BaseMapElement::Landmark:
-      if(formatID >= FILE_FORMAT_ID) {
-        in >> lm_typ;
-        if ( compiling ) {
-          in >> name;
-          out << lm_typ;
-          ShortSave(out, name);
-        } else {
-          ShortLoad(in, name);
+          // qDebug("added village '%s'", name.toLatin1().data());
+          break;
+        case BaseMapElement::Spot:
+          if (formatID >= FILE_FORMAT_ID)
+            {
+              in >> elev;
+              if ( compiling )
+                out << elev;
+            }
+          in >> lat_temp;
+          in >> lon_temp;
+          if (!_globalMapConfig->getLoadCities())
+            break;
+          if ( compiling )
+            {
+              single = _globalMapMatrix->wgsToMap(lat_temp, lon_temp);
+              out << single;
+            }
+          else
+            in >> single;
+          obstacleList.append( SinglePoint("Spot", "", typeIn,
+                                           WGSPoint(lat_temp, lon_temp), single, 0, fileSecID));
+          break;
+        case BaseMapElement::Landmark:
+          if (formatID >= FILE_FORMAT_ID)
+            {
+              in >> lm_typ;
+              if ( compiling )
+                {
+                  in >> name;
+                  out << lm_typ;
+                  ShortSave(out, name);
+                }
+              else
+                {
+                  ShortLoad(in, name);
+                }
+            }
+          in >> lat_temp;
+          in >> lon_temp;
+          if (!_globalMapConfig->getLoadCities())
+            break;
+          if ( compiling )
+            {
+              single = _globalMapMatrix->wgsToMap(lat_temp, lon_temp);
+              out << single;
+            }
+          else
+            in >> single;
+          landmarkList.append( SinglePoint(name, "", typeIn,
+                                           WGSPoint(lat_temp, lon_temp), single, 0, fileSecID));
+          // qDebug("added landmark '%s'", name.toLatin1().data());
+          break;
+        default:
+          qWarning ("MapContents::__readBinaryFile; type not handled in switch: %d", typeIn);
         }
-      }
-      in >> lat_temp;
-      in >> lon_temp;
-      if (!_globalMapConfig->getLoadCities())
-        break;
-      if ( compiling ) {
-        single = _globalMapMatrix->wgsToMap(lat_temp, lon_temp);
-        out << single;
-      } else
-        in >> single;
-      landmarkList.append(new SinglePoint(name, "", typeIn,
-                                          WGSPoint(lat_temp, lon_temp), single, 0, fileSecID));
-      // qDebug("added landmark '%s'", name.toLatin1().data());
-      break;
-    default:
-      qWarning ("MapContents::__readBinaryFile; type not handled in switch: %d", typeIn);
-    }
 
-    // @AP: Performance brake! emit progress calls waitscreen and
-    // this steps into main loop
-    if ( compiling && (++loop % 100) == 0 ) {
-      emit progress(2);
+      // @AP: Performance brake! emit progress calls waitscreen and
+      // this steps into main loop
+      if ( compiling && (++loop % 100) == 0 )
+        {
+          emit progress(2);
+        }
     }
-  }
 
   // qDebug("loop=%d", loop);
   mapfile.close();
 
-  if ( compiling ) {
-    ausgabe.close();
-    // kfl file is deleted after 'compilation' to save space. Please handle this "al gusto" ...
-    if ( _globalMapConfig->getDeleteMapfileAfterCompile() )
-      mapfile.remove();
-  }
+  if ( compiling )
+    {
+      ausgabe.close();
+      // kfl file is deleted after 'compilation' to save space. Please handle this "al gusto" ...
+      if ( _globalMapConfig->getDeleteMapfileAfterCompile() )
+        mapfile.remove();
+    }
 
   ws->slot_SetText2(tr("Loading map ready"));
   return true;
@@ -1122,10 +1228,11 @@ void MapContents::proofeSection()
 
   static bool mutex = false;
 
-  if( mutex ) {
-    // qDebug("MapContents::proofeSection(): is recursive called, returning");
-    return; // return immediately, if reenter in method is not possible
-  }
+  if ( mutex )
+    {
+      // qDebug("MapContents::proofeSection(): is recursive called, returning");
+      return; // return immediately, if reenter in method is not possible
+    }
 
   mutex = true;
 
@@ -1140,130 +1247,132 @@ void MapContents::proofeSection()
   int northCorner = ( ( mapBorder.top() / 600000 / 2 ) * 2 - 88 ) / -2;
   int southCorner = ( ( mapBorder.bottom() / 600000 / 2 ) * 2 - 88 ) / -2;
 
-  if(mapBorder.left() < 0)
+  if (mapBorder.left() < 0)
     westCorner -= 1;
-  if(mapBorder.right() < 0)
+  if (mapBorder.right() < 0)
     eastCorner -= 1;
-  if(mapBorder.top() < 0)
+  if (mapBorder.top() < 0)
     northCorner += 1;
-  if(mapBorder.bottom() < 0)
+  if (mapBorder.bottom() < 0)
     southCorner += 1;
 
-  if(isFirst) {
-    ws->slot_SetText1(tr("Loading maps..."));
-    ws->slot_SetText2(tr("Reading OpenAir Files"));
+  if (isFirst)
+    {
+      ws->slot_SetText1(tr("Loading maps..."));
+      ws->slot_SetText2(tr("Reading OpenAir Files"));
 
-    OpenAirParser oap;
-    oap.load( airspaceList );
+      OpenAirParser oap;
+      oap.load( airspaceList );
 
-    //finally, sort the airspaces
-    airspaceList.sort();
+      //finally, sort the airspaces
+      airspaceList.sort();
 
-    ws->slot_SetText2(tr("Reading Welt 2000 File"));
-    // @AP: Look for and if available load a welt2000 airfield file
-    Welt2000 welt2000;
-    welt2000.load( airportList, gliderSiteList );
-  }
+      ws->slot_SetText2(tr("Reading Welt 2000 File"));
+      // @AP: Look for and if available load a welt2000 airfield file
+      Welt2000 welt2000;
+      welt2000.load( airportList, gliderSiteList );
+    }
 
   unloadDone = false;
   memoryFull = false;
   char step, hasstep; //used as small integers
   TilePartMap::Iterator it;
 
-  for( int row = northCorner; row <= southCorner; row++ )
-  {
-    for (int col = westCorner; col <= eastCorner; col++)
-      {
-        int secID = row + (col + (row * 179));
+  for ( int row = northCorner; row <= southCorner; row++ )
+    {
+      for (int col = westCorner; col <= eastCorner; col++)
+        {
+          int secID = row + (col + (row * 179));
 
-        // qDebug( "Needed BoxSecID=%d", secID );
+          // qDebug( "Needed BoxSecID=%d", secID );
 
-        if (isFirst)
-          {
-            // Animate a little bit during first load. Later on in flight,
-            // we need the time for GPS processing.
-            emit progress(2);
-          }
+          if (isFirst)
+            {
+              // Animate a little bit during first load. Later on in flight,
+              // we need the time for GPS processing.
+              emit progress(2);
+            }
 
-        if( secID >= 0 & secID <= MAX_TILE_NUMBER )
-          {
-            // a valid tile (2x2 degree area) must be in the range 0 ... 16200
-            if (!tileSectionSet.contains(secID))
-              {
-                // qDebug(" Tile %d is missing", secID );
-                // Tile is missing
-                if (isFirst)
-                  {
-                    ws->slot_SetText1(tr("Loading maps..."));
-                  }
-                else
-                  {
-                    // @AP: remove of all unused maps to get place
-                    // in heap. That can be disabled here because
-                    // the loading routines will also check the
-                    // available memory and call the unloadMaps()
-                    // method is necessary. But the disadvantage
-                    // is in that case that the freeing needs a
-                    // lot of time (several seconds).
+          if ( secID >= 0 & secID <= MAX_TILE_NUMBER )
+            {
+              // a valid tile (2x2 degree area) must be in the range 0 ... 16200
+              if (!tileSectionSet.contains(secID))
+                {
+                  // qDebug(" Tile %d is missing", secID );
+                  // Tile is missing
+                  if (isFirst)
+                    {
+                      ws->slot_SetText1(tr("Loading maps..."));
+                    }
+                  else
+                    {
+                      // @AP: remove of all unused maps to get place
+                      // in heap. That can be disabled here because
+                      // the loading routines will also check the
+                      // available memory and call the unloadMaps()
+                      // method is necessary. But the disadvantage
+                      // is in that case that the freeing needs a
+                      // lot of time (several seconds).
 
-                    if (_globalMapConfig->getUnloadUnneededMap())
-                      {
-                        unloadMaps(0);
-                      }
-                  }
+                      if (_globalMapConfig->getUnloadUnneededMap())
+                        {
+                          unloadMaps(0);
+                        }
+                    }
 
-                // qDebug("Going to load sectionID %d", secID);
+                  // qDebug("Going to load sectionID %d", secID);
 
-                step = 0;
-                // check to see if parts of this tile has already been loaded before
-                it = tilePartMap.find(secID);
+                  step = 0;
+                  // check to see if parts of this tile has already been loaded before
+                  it = tilePartMap.find(secID);
 
-                if (it == tilePartMap.end())
-                  { //not found
-                    hasstep = 0;
-                  }
-                else
-                  {
-                    hasstep = it.value();
-                  }
+                  if (it == tilePartMap.end())
+                    {
+                      //not found
+                      hasstep = 0;
+                    }
+                  else
+                    {
+                      hasstep = it.value();
+                    }
 
-                //try loading the currently unloaded files
-                if (!(hasstep & 1))
-                  {
-                    if (__readTerrainFile(secID, FILE_TYPE_GROUND))
-                      step |= 1;
-                  }
+                  //try loading the currently unloaded files
+                  if (!(hasstep & 1))
+                    {
+                      if (__readTerrainFile(secID, FILE_TYPE_GROUND))
+                        step |= 1;
+                    }
 
-                if (!(hasstep & 2))
-                  {
-                    if (__readTerrainFile(secID, FILE_TYPE_TERRAIN))
-                      step |= 2;
-                  }
+                  if (!(hasstep & 2))
+                    {
+                      if (__readTerrainFile(secID, FILE_TYPE_TERRAIN))
+                        step |= 2;
+                    }
 
-                if (!(hasstep & 4))
-                  {
-                    if (__readBinaryFile(secID, FILE_TYPE_MAP))
-                      step |= 4;
-                  }
+                  if (!(hasstep & 4))
+                    {
+                      if (__readBinaryFile(secID, FILE_TYPE_MAP))
+                        step |= 4;
+                    }
 
-                if (step == 7) //set the correct flags for this map tile
-                  {
-                    tileSectionSet.insert(secID);  // add section id to set
-                    tilePartMap.remove(secID); // make sure we don't leave it as partly loaded
-                  }
-                else
-                  {
-                    if (step > 0)
-                      {
-                        tilePartMap.insert(secID, step);
-                      }
-                  }
-              }
-          }
-      }
-  }
+                  if (step == 7) //set the correct flags for this map tile
+                    {
+                      tileSectionSet.insert(secID);  // add section id to set
+                      tilePartMap.remove(secID); // make sure we don't leave it as partly loaded
+                    }
+                  else
+                    {
+                      if (step > 0)
+                        {
+                          tilePartMap.insert(secID, step);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-  if( isFirst )
+  if ( isFirst )
     {
       ws->slot_SetText1(tr("Loading maps done"));
     }
@@ -1300,19 +1409,19 @@ void MapContents::unloadMaps(unsigned int distance)
   int northCorner = ( ( ( mapBorder.top() - height ) / 600000 / 2 ) * 2 - 88 ) / -2;
   int southCorner = ( ( ( mapBorder.bottom() + height ) / 600000 / 2 ) * 2 - 88 ) / -2;
 
-  if(mapBorder.left() < 0)
+  if (mapBorder.left() < 0)
     westCorner -= 1;
-  if(mapBorder.right() < 0)
+  if (mapBorder.right() < 0)
     eastCorner -= 1;
-  if(mapBorder.top() < 0)
+  if (mapBorder.top() < 0)
     northCorner += 1;
-  if(mapBorder.bottom() < 0)
+  if (mapBorder.bottom() < 0)
     southCorner += 1;
 
   QSet<int> currentTileSet; // tiles of the current box
 
   // Collect all valid tiles of the current box in a set.
-  for( int row = northCorner; row <= southCorner; row++ )
+  for ( int row = northCorner; row <= southCorner; row++ )
     {
       for (int col = westCorner; col <= eastCorner; col++)
         {
@@ -1331,20 +1440,20 @@ void MapContents::unloadMaps(unsigned int distance)
   // Iterate over all loaded tiles (tileSectionSet) and remove all tiles,
   // which are not contained in the current box.
   foreach( int secID, tileSectionSet )
-    {
-      if( !currentTileSet.contains( secID ) )
-        {
-          // remove not more needed element from related objects
-          tilePartMap.remove( secID );
-          tileSectionSet.remove( secID );
-          something2free = true;
-          continue;
-        }
-    }
+  {
+    if ( !currentTileSet.contains( secID ) )
+      {
+        // remove not more needed element from related objects
+        tilePartMap.remove( secID );
+        tileSectionSet.remove( secID );
+        something2free = true;
+        continue;
+      }
+  }
 
   // @AP: check, if something is to free, otherwise we can return to spare
   // processing time
-  if( ! something2free )
+  if ( ! something2free )
     {
       return;
     }
@@ -1355,97 +1464,96 @@ void MapContents::unloadMaps(unsigned int distance)
 #endif
 
   QTime t;
-  uint sum = 0;
   t.start();
 
   unloadMapObjects( cityList );
-  sum += t.elapsed();
 
 #ifdef DEBUG_UNLOAD
+  uint sum = t.elapsed();
   qDebug("Unload cityList(%d), elapsed=%d", cityList.count(), t.restart());
 #endif
 
   unloadMapObjects( hydroList );
-  sum += t.elapsed();
 
 #ifdef DEBUG_UNLOAD
+  sum += t.elapsed();
   qDebug("Unload hydroList(%d), elapsed=%d", hydroList.count(), t.restart());
 #endif
 
   unloadMapObjects( lakeList );
-  sum += t.elapsed();
 
 #ifdef DEBUG_UNLOAD
+  sum += t.elapsed();
   qDebug("Unload lakeList(%d), elapsed=%d", lakeList.count(), t.restart());
 #endif
 
-  unloadMapObjects(&isoList);
-  sum += t.elapsed();
+  unloadMapObjects( isoList );
 
 #ifdef DEBUG_UNLOAD
+  sum += t.elapsed();
   qDebug("Unload isoList(%d), elapsed=%d", isoList.count(), t.restart());
 #endif
 
-  unloadMapObjects(&landmarkList);
-  sum += t.elapsed();
+  unloadMapObjects( landmarkList );
 
 #ifdef DEBUG_UNLOAD
+  sum += t.elapsed();
   qDebug("Unload landmarkList(%d), elapsed=%d", landmarkList.count(), t.restart());
 #endif
 
-  unloadMapObjects(&navList);
-  sum += t.elapsed();
-#ifdef DEBUG_UNLOAD
+  unloadMapObjects( radioList );
 
-  qDebug("Unload navList(%d), elapsed=%d", navList.count(), t.restart());
+#ifdef DEBUG_UNLOAD
+  sum += t.elapsed();
+  qDebug("Unload radioList(%d), elapsed=%d", radioList.count(), t.restart());
 #endif
 
-  unloadMapObjects(&obstacleList);
-  sum += t.elapsed();
-#ifdef DEBUG_UNLOAD
+  unloadMapObjects( obstacleList );
 
+#ifdef DEBUG_UNLOAD
+  sum += t.elapsed();
   qDebug("Unload obstacleList(%d), elapsed=%d", obstacleList.count(), t.restart());
 #endif
-  //  unloadMapObjects(&outList);
 
   unloadMapObjects( railList );
-  sum += t.elapsed();
+
 #ifdef DEBUG_UNLOAD
+  sum += t.elapsed();
   qDebug("Unload railList(%d), elapsed=%d", railList.count(), t.restart());
 #endif
 
-  unloadMapObjects(&reportList);
-  sum += t.elapsed();
+  unloadMapObjects( reportList );
 
 #ifdef DEBUG_UNLOAD
+  sum += t.elapsed();
   qDebug("Unload reportList(%d), elapsed=%d", reportList.count(), t.restart());
 #endif
 
   unloadMapObjects( highwayList );
-  sum += t.elapsed();
 
 #ifdef DEBUG_UNLOAD
+  sum += t.elapsed();
   qDebug("Unload highwayList(%d), elapsed=%d", highwayList.count(), t.restart());
 #endif
 
   unloadMapObjects( roadList );
-  sum += t.elapsed();
 
 #ifdef DEBUG_UNLOAD
+  sum += t.elapsed();
   qDebug("Unload roadList(%d), elapsed=%d", roadList.count(), t.restart());
 #endif
 
   unloadMapObjects( topoList );
-  sum += t.elapsed();
 
 #ifdef DEBUG_UNLOAD
+  sum += t.elapsed();
   qDebug("Unload topoList(%d), elapsed=%d", topoList.count(), t.restart());
 #endif
 
-  unloadMapObjects(&villageList);
-  sum += t.elapsed();
+  unloadMapObjects( villageList );
 
 #ifdef DEBUG_UNLOAD
+  sum += t.elapsed();
   qDebug("Unload villageList(%d), elapsed=%d", villageList.count(), t.restart());
 #endif
 
@@ -1460,17 +1568,6 @@ void MapContents::unloadMaps(unsigned int distance)
 
 }
 
-void MapContents::unloadMapObjects(QList<LineElement*> *list)
-{
-  for (int i = list->count() - 1; i >= 0; i--)
-    {
-      if ( !tileSectionSet.contains(list->at(i)->getMapSegment()) )
-        {
-          delete( list->takeAt(i));
-        }
-    }
-}
-
 void MapContents::unloadMapObjects(QList<LineElement>& list)
 {
   for (int i = list.count() - 1; i >= 0; i--)
@@ -1482,166 +1579,166 @@ void MapContents::unloadMapObjects(QList<LineElement>& list)
     }
 }
 
-void MapContents::unloadMapObjects(QList<SinglePoint*> *list)
+void MapContents::unloadMapObjects(QList<SinglePoint>& list)
 {
-  for (int i = list->count() - 1; i >= 0; i--)
+  for (int i = list.count() - 1; i >= 0; i--)
     {
-      if ( !tileSectionSet.contains(list->at(i)->getMapSegment()) )
+      if ( !tileSectionSet.contains(list.at(i).getMapSegment()) )
         {
-          delete(list->takeAt(i));
+          list.removeAt(i);
         }
     }
 }
 
-void MapContents::unloadMapObjects(QList<RadioPoint*> *list)
+void MapContents::unloadMapObjects(QList<RadioPoint>& list)
 {
-  for (int i = list->count() - 1; i >= 0; i--)
+  for (int i = list.count() - 1; i >= 0; i--)
     {
-      if ( !tileSectionSet.contains(list->at(i)->getMapSegment()) )
+      if ( !tileSectionSet.contains(list.at(i).getMapSegment()) )
         {
-          delete(list->takeAt(i));
+          list.removeAt(i);
         }
     }
 }
 
-void MapContents::unloadMapObjects(QList<QList<Isohypse*>*> *list)
+void MapContents::unloadMapObjects(QList< QList<Isohypse> >& list)
 {
-  for (int i = list->count() - 1; i >= 0; i--)
+  for (int i = list.count() - 1; i >= 0; i--)
     {
-      for (int j = list->at(i)->count() - 1; j >= 0; j--)
+      for (int j = list.at(i).count() - 1; j >= 0; j--)
         {
-          if ( !tileSectionSet.contains(list->at(i)->at(j)->getMapSegment()) )
+          if ( !tileSectionSet.contains(list.at(i).at(j).getMapSegment()) )
             {
-              delete(list->at(i)->takeAt(j));
+              list[i].removeAt(j);
             }
         }
     }
 }
 
 unsigned int MapContents::getListLength(int listIndex) const
-{
-  switch(listIndex)
   {
-    case AirportList:
-      return airportList.count();
-    case GliderSiteList:
-      return gliderSiteList.count();
-    case OutList:
-      return outList.count();
-    case NavList:
-      return navList.count();
-    case AirspaceList:
-      return airspaceList.count();
-    case ObstacleList:
-      return obstacleList.count();
-    case ReportList:
-      return reportList.count();
-    case CityList:
-      return cityList.count();
-    case VillageList:
-      return villageList.count();
-    case LandmarkList:
-      return landmarkList.count();
-    case HighwayList:
-      return highwayList.count();
-    case RoadList:
-      return roadList.count();
-    case RailList:
-      return railList.count();
-  case HydroList:
-      return hydroList.count();
-    case LakeList:
-      return lakeList.count();
-    case TopoList:
-      return topoList.count();
-    default:
-      return 0;
+    switch (listIndex)
+      {
+      case AirportList:
+        return airportList.count();
+      case GliderSiteList:
+        return gliderSiteList.count();
+      case OutList:
+        return outList.count();
+      case RadioList:
+        return radioList.count();
+      case AirspaceList:
+        return airspaceList.count();
+      case ObstacleList:
+        return obstacleList.count();
+      case ReportList:
+        return reportList.count();
+      case CityList:
+        return cityList.count();
+      case VillageList:
+        return villageList.count();
+      case LandmarkList:
+        return landmarkList.count();
+      case HighwayList:
+        return highwayList.count();
+      case RoadList:
+        return roadList.count();
+      case RailList:
+        return railList.count();
+      case HydroList:
+        return hydroList.count();
+      case LakeList:
+        return lakeList.count();
+      case TopoList:
+        return topoList.count();
+      default:
+        return 0;
+      }
   }
-}
-
 
 Airspace* MapContents::getAirspace(unsigned int index)
 {
   return static_cast<Airspace *> (airspaceList[index]);
 }
 
-
 Airport* MapContents::getAirport(unsigned int index)
 {
-  return static_cast<Airport *> (airportList[index]);
+  return &airportList[index];
 }
 
-
-GliderSite* MapContents::getGlidersite(unsigned int index)
+Airport* MapContents::getGlidersite(unsigned int index)
 {
-  return static_cast<GliderSite *>(gliderSiteList[index]);
+  return &gliderSiteList[index];
 }
 
-
-BaseMapElement* MapContents::getElement(int listIndex, unsigned int index)
+BaseMapElement* MapContents::getElement(int listType, unsigned int index)
 {
-  switch(listIndex) {
-  case AirportList:
-    return airportList.at(index);
-  case GliderSiteList:
-    return gliderSiteList.at(index);
-  case OutList:
-    return outList.at(index);
-  case NavList:
-    return navList.at(index);
-  case AirspaceList:
-    return airspaceList.at(index);
-  case ObstacleList:
-    return obstacleList.at(index);
-  case ReportList:
-    return reportList.at(index);
-  case CityList:
-    return &cityList[index];
-  case VillageList:
-    return villageList.at(index);
-  case LandmarkList:
-    return landmarkList.at(index);
-  case HighwayList:
-    return &highwayList[index];
-  case RoadList:
-    return &roadList[index];
-  case RailList:
-    return &railList[index];
-  case HydroList:
-    return &hydroList[index];
-  case LakeList:
-    return &lakeList[index];
-  case TopoList:
-    return &topoList[index];
-  default:
-    // Should never happen!
-    qCritical("Cumulus: trying to access unknown map element list");
-    return 0;
-  }
+  switch (listType)
+    {
+    case AirportList:
+      return &airportList[index];
+    case GliderSiteList:
+      return &gliderSiteList[index];
+    case OutList:
+      return &outList[index];
+    case RadioList:
+      return &radioList[index];
+    case AirspaceList:
+      return airspaceList.at(index);
+    case ObstacleList:
+      return &obstacleList[index];
+    case ReportList:
+      return &reportList[index];
+    case CityList:
+      return &cityList[index];
+    case VillageList:
+      return &villageList[index];
+    case LandmarkList:
+      return &landmarkList[index];
+    case HighwayList:
+      return &highwayList[index];
+    case RoadList:
+      return &roadList[index];
+    case RailList:
+      return &railList[index];
+    case HydroList:
+      return &hydroList[index];
+    case LakeList:
+      return &lakeList[index];
+    case TopoList:
+      return &topoList[index];
+    default:
+      // Should never happen!
+      qCritical("Cumulus: trying to access unknown map element list");
+      return static_cast<BaseMapElement *> (0);
+    }
 }
 
 SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
 {
-  switch(listIndex) {
-  case AirportList:
-    return static_cast<SinglePoint*> (airportList.at(index));
-  case GliderSiteList:
-    return static_cast<SinglePoint*> (gliderSiteList.at(index));
-  case OutList:
-    return static_cast<SinglePoint*> (outList.at(index));
-  case NavList:
-    return static_cast<SinglePoint*> (navList.at(index));
-  case ObstacleList:
-    return obstacleList.at(index);
-  case ReportList:
-    return reportList.at(index);
-  case VillageList:
-    return villageList.at(index);
-  case LandmarkList:
-    return landmarkList.at(index);
-  default:
-    return 0;
-  }
+  switch (listIndex)
+    {
+    case AirportList:
+      return static_cast<SinglePoint *> (&airportList[index]);
+    case GliderSiteList:
+      return static_cast<SinglePoint *> (&gliderSiteList[index]);
+    case OutList:
+      return static_cast<SinglePoint *> (&outList[index]);
+    case RadioList:
+      return static_cast<SinglePoint *> (&radioList[index]);
+    case ObstacleList:
+      return &obstacleList[index];
+    case ReportList:
+      return &reportList[index];
+    case VillageList:
+      return &villageList[index];
+    case LandmarkList:
+      return &landmarkList[index];
+    default:
+      // Should never happen!
+      qCritical("Cumulus: trying to access unknown map element list");
+      return static_cast<SinglePoint *> (0);
+    }
 }
 
 
@@ -1652,10 +1749,11 @@ void MapContents::slotReloadMapData()
 
   static bool mutex = false;
 
-  if( mutex ) {
-    // qDebug("MapContents::slotReloadMapData(): mutex is locked, returning");
-    return; // return immediately, if reentry in method is not possible
-  }
+  if ( mutex )
+    {
+      // qDebug("MapContents::slotReloadMapData(): mutex is locked, returning");
+      return; // return immediately, if reentry in method is not possible
+    }
 
   mutex = true;
 
@@ -1666,29 +1764,28 @@ void MapContents::slotReloadMapData()
   // clear the airspace region list in map too
   Map::getInstance()->clearAirspaceRegionList();
 
-  qDeleteAll(addSitesList); addSitesList.clear();
-  qDeleteAll(airportList); airportList.clear();
-  qDeleteAll(airspaceList); airspaceList.clear();
+  airportList.clear();
+  qDeleteAll(airspaceList);
+  airspaceList.clear();
   cityList.clear();
-  qDeleteAll(gliderSiteList); gliderSiteList.clear();
+  gliderSiteList.clear();
   hydroList.clear();
   lakeList.clear();
-  qDeleteAll(landmarkList); landmarkList.clear();
-  qDeleteAll(navList); navList.clear();
-  qDeleteAll(obstacleList); obstacleList.clear();
-  qDeleteAll(outList); outList.clear();
+  landmarkList.clear();
+  radioList.clear();
+  obstacleList.clear();
+  outList.clear();
   railList.clear();
-  qDeleteAll(reportList); reportList.clear();
+  reportList.clear();
   highwayList.clear();
   roadList.clear();
   topoList.clear();
-  qDeleteAll(villageList); villageList.clear();
+  villageList.clear();
 
-  // isoList is a special pointer list. Only the content must be cleared!
-  for( int i=isoList.count() - 1; i >= 0; i--)
+  // isoList contains lists of isolines. Their content must be cleared!
+  for ( int i=isoList.count() - 1; i >= 0; i--)
     {
-      qDeleteAll(*isoList.at(i));
-      isoList.at(i)->clear();
+      isoList[i].clear();
     }
 
   tileSectionSet.clear();
@@ -1707,13 +1804,13 @@ void MapContents::slotReloadMapData()
 
   wayPoint *wp = (wayPoint *) calculator->getselectedWp();
 
-  if( wp )
+  if ( wp )
     {
       wp->projP = _globalMapMatrix->wgsToMap(wp->origP);
     }
 
   // Update the waypoint list
-  for( int loop = 0; loop < wpList.count(); loop++ )
+  for ( int loop = 0; loop < wpList.count(); loop++ )
     {
       // recalculate projection data
       wpList.at(loop)->projP = _globalMapMatrix->wgsToMap(wpList.at(loop)->origP);
@@ -1722,7 +1819,7 @@ void MapContents::slotReloadMapData()
   // Check for a flight task, the waypoint list must be updated too
   FlightTask *task = _globalMapContents->getCurrentTask();
 
-  if( task != 0 )
+  if ( task != 0 )
     {
       task->updateProjection();
     }
@@ -1745,10 +1842,11 @@ void MapContents::slotReloadWelt2000Data()
 
   static bool mutex = false;
 
-  if( mutex ) {
-    qDebug("MapContents::slotReloadWelt2000Data(): mutex is locked, returning");
-    return; // return immediately, if reentry in method is not possible
-  }
+  if ( mutex )
+    {
+      qDebug("MapContents::slotReloadWelt2000Data(): mutex is locked, returning");
+      return; // return immediately, if reentry in method is not possible
+    }
 
   mutex = true;
 
@@ -1760,8 +1858,8 @@ void MapContents::slotReloadWelt2000Data()
   qDebug("========= MapContents::slotReloadWelt2000Data() calls processEvents =========");
   QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
 
-  qDeleteAll(airportList); airportList.clear();
-  qDeleteAll(gliderSiteList);  gliderSiteList.clear();
+  airportList.clear();
+  gliderSiteList.clear();
 
   _globalMapView->message( tr("Reloading Welt2000 started") );
 
@@ -1807,37 +1905,35 @@ void MapContents::printContents(QPainter* targetPainter, bool isText)
   for (int i = 0; i < cityList.size(); i++)
     cityList[i].printMapElement(targetPainter, isText);
 
-  //  for (int i = 0; i < villageList.size(); i++)
-  //      villageList.at(i)->printMapElement(targetPainter, isText);
+  for (int i = 0; i < villageList.size(); i++)
+    villageList[i].printMapElement(targetPainter, isText);
 
-  for (int i = 0; i < navList.size(); i++)
-    navList.at(i)->printMapElement(targetPainter, isText);
+  for (int i = 0; i < radioList.size(); i++)
+    radioList[i].printMapElement(targetPainter, isText);
 
   for (int i = 0; i < airspaceList.size(); i++)
     airspaceList.at(i)->printMapElement(targetPainter, isText);
 
   for (int i = 0; i < obstacleList.size(); i++)
-    obstacleList.at(i)->printMapElement(targetPainter, isText);
+    obstacleList[i].printMapElement(targetPainter, isText);
 
   for (int i = 0; i < reportList.size(); i++)
-    reportList.at(i)->printMapElement(targetPainter, isText);
+    reportList[i].printMapElement(targetPainter, isText);
 
   for (int i = 0; i < landmarkList.size(); i++)
-    landmarkList.at(i)->printMapElement(targetPainter, isText);
+    landmarkList[i].printMapElement(targetPainter, isText);
 
   for (int i = 0; i < airportList.size(); i++)
-    airportList.at(i)->printMapElement(targetPainter, isText);
+    airportList[i].printMapElement(targetPainter, isText);
 
   for (int i = 0; i < gliderSiteList.size(); i++)
-    gliderSiteList.at(i)->printMapElement(targetPainter, isText);
+    gliderSiteList[i].printMapElement(targetPainter, isText);
 
   for (int i = 0; i < outList.size(); i++)
-    outList.at(i)->printMapElement(targetPainter, isText);
+    outList[i].printMapElement(targetPainter, isText);
 }
 
-
-void MapContents::drawList(QPainter* targetPainter,
-                           unsigned int listID)
+void MapContents::drawList(QPainter* targetP, unsigned int listID)
 {
   //const char *list="";
   //uint len = 0;
@@ -1845,138 +1941,140 @@ void MapContents::drawList(QPainter* targetPainter,
   //QTime t;
   //t.start();
 
-  switch(listID) {
-  case AirportList:
-    //list="AirportList";
-    //len=airportList.count();
-    showProgress2WaitScreen( tr("Drawing airports") );
-    for (int i = 0; i < airportList.size(); i++)
-      airportList.at(i)->drawMapElement(targetPainter);
-    break;
+  switch (listID)
+    {
+    case AirportList:
+      //list="AirportList";
+      //len=airportList.count();
+      showProgress2WaitScreen( tr("Drawing airports") );
+      for (int i = 0; i < airportList.size(); i++)
+        airportList[i].drawMapElement(targetP);
+      break;
 
-  case GliderSiteList:
-    //list="GliderList";
-    //len=gliderSiteList.count();
-    showProgress2WaitScreen( tr("Drawing glider sites") );
-    for (int i = 0; i < gliderSiteList.size(); i++)
-      gliderSiteList.at(i)->drawMapElement(targetPainter);
-    break;
+    case GliderSiteList:
+      //list="GliderList";
+      //len=gliderSiteList.count();
+      showProgress2WaitScreen( tr("Drawing glider sites") );
+      for (int i = 0; i < gliderSiteList.size(); i++)
+        gliderSiteList[i].drawMapElement(targetP);
+      break;
 
-  case OutList:
-    //list="OutList";
-    //len=outList.count();
-    showProgress2WaitScreen( tr("Drawing outlanding sites") );
-    for (int i = 0; i < outList.size(); i++)
-      outList.at(i)->drawMapElement(targetPainter);
-    break;
+    case OutList:
+      //list="OutList";
+      //len=outList.count();
+      showProgress2WaitScreen( tr("Drawing outlanding sites") );
+      for (int i = 0; i < outList.size(); i++)
+        outList[i].drawMapElement(targetP);
+      break;
 
-  case NavList:
-    //list="NavList";
-    //len=navList.count();
-    showProgress2WaitScreen( tr("Drawing na/home/axel/SVN-Cumulus/cumulus-qt4/trunk/cumulusvigation elements") );
-    for (int i = 0; i < navList.size(); i++)
-      navList.at(i)->drawMapElement(targetPainter);
-    break;
+    case RadioList:
+      //list="RadioList";
+      //len=radioList.count();
+      showProgress2WaitScreen( tr("Drawing radio points") );
+      for (int i = 0; i < radioList.size(); i++)
+        radioList[i].drawMapElement(targetP);
+      break;
 
-  case AirspaceList:
-    //list="AirspaceList";
-    //len=airspaceList.count();
-    showProgress2WaitScreen( tr("Drawing airspaces") );
-    for (int i = 0; i < airspaceList.size(); i++)
-      airspaceList.at(i)->drawMapElement(targetPainter);
-    break;
+    case AirspaceList:
+      //list="AirspaceList";
+      //len=airspaceList.count();
+      showProgress2WaitScreen( tr("Drawing airspaces") );
+      for (int i = 0; i < airspaceList.size(); i++)
+        airspaceList.at(i)->drawMapElement(targetP);
+      break;
 
-  case ObstacleList:
-    //list="ObstacleList";
-    //len=obstacleList.count();
-    showProgress2WaitScreen( tr("Drawing obstacles") );
-    for (int i = 0; i < obstacleList.size(); i++)
-      obstacleList.at(i)->drawMapElement(targetPainter);
-    break;
+    case ObstacleList:
+      //list="ObstacleList";
+      //len=obstacleList.count();
+      showProgress2WaitScreen( tr("Drawing obstacles") );
+      for (int i = 0; i < obstacleList.size(); i++)
+        obstacleList[i].drawMapElement(targetP);
+      break;
 
-  case ReportList:
-    //list="ReportList";
-    //len=reportList.count();
-    showProgress2WaitScreen( tr("Drawing reporting points") );
-    for (int i = 0; i < reportList.size(); i++)
-      reportList.at(i)->drawMapElement(targetPainter);
-    break;
+    case ReportList:
+      //list="ReportList";
+      //len=reportList.count();
+      showProgress2WaitScreen( tr("Drawing reporting points") );
+      for (int i = 0; i < reportList.size(); i++)
+        reportList[i].drawMapElement(targetP);
+      break;
 
-  case CityList:
-    //list="CityList";
-    //len=cityList.count();
-    showProgress2WaitScreen( tr("Drawing cities") );
-    for (int i = 0; i < cityList.size(); i++)
-      cityList[i].drawMapElement(targetPainter);
-    break;
+    case CityList:
+      //list="CityList";
+      //len=cityList.count();
+      showProgress2WaitScreen( tr("Drawing cities") );
+      for (int i = 0; i < cityList.size(); i++)
+        cityList[i].drawMapElement(targetP);
+      break;
 
-  case VillageList:
-    //list="VillageList";
-    showProgress2WaitScreen( tr("Drawing villages") );
-    for (int i = 0; i < villageList.size(); i++)
-      villageList.at(i)->drawMapElement(targetPainter);
-    break;
+    case VillageList:
+      //list="VillageList";
+      //len=villageList.count();
+      showProgress2WaitScreen( tr("Drawing villages") );
+      for (int i = 0; i < villageList.size(); i++)
+        villageList[i].drawMapElement(targetP);
+      break;
 
-  case LandmarkList:
-    //list="LandmarkList";
-    //len=landmarkList.count();
-    showProgress2WaitScreen( tr("Drawing landmarks") );
-    for (int i = 0; i < landmarkList.size(); i++)
-      landmarkList.at(i)->drawMapElement(targetPainter);
-    break;
+    case LandmarkList:
+      //list="LandmarkList";
+      //len=landmarkList.count();
+      showProgress2WaitScreen( tr("Drawing landmarks") );
+      for (int i = 0; i < landmarkList.size(); i++)
+        landmarkList[i].drawMapElement(targetP);
+      break;
 
-  case HighwayList:
-    //list="HighwayList";
-    //len=highwayList.count();
-    showProgress2WaitScreen( tr("Drawing highways") );
-    for (int i = 0; i < highwayList.size(); i++)
-      highwayList[i].drawMapElement(targetPainter);
-    break;
+    case HighwayList:
+      //list="HighwayList";
+      //len=highwayList.count();
+      showProgress2WaitScreen( tr("Drawing highways") );
+      for (int i = 0; i < highwayList.size(); i++)
+        highwayList[i].drawMapElement(targetP);
+      break;
 
-  case RoadList:
-    //list="RoadList";
-    //len=roadList.count();
-    showProgress2WaitScreen( tr("Drawing roads") );
-    for (int i = 0; i < roadList.size(); i++)
-      roadList[i].drawMapElement(targetPainter);
-    break;
+    case RoadList:
+      //list="RoadList";
+      //len=roadList.count();
+      showProgress2WaitScreen( tr("Drawing roads") );
+      for (int i = 0; i < roadList.size(); i++)
+        roadList[i].drawMapElement(targetP);
+      break;
 
-  case RailList:
-    //list="RailList";
-    //len=railList.count();
-    showProgress2WaitScreen( tr("Drawing railroads") );
-    for (int i = 0; i < railList.size(); i++)
-      railList[i].drawMapElement(targetPainter);
-    break;
+    case RailList:
+      //list="RailList";
+      //len=railList.count();
+      showProgress2WaitScreen( tr("Drawing railroads") );
+      for (int i = 0; i < railList.size(); i++)
+        railList[i].drawMapElement(targetP);
+      break;
 
-  case HydroList:
-    //list="HydroList";
-    //len=hydroList.count();
-    showProgress2WaitScreen( tr("Drawing hydro") );
-    for (int i = 0; i < hydroList.size(); i++)
-      hydroList[i].drawMapElement(targetPainter);
-    break;
+    case HydroList:
+      //list="HydroList";
+      //len=hydroList.count();
+      showProgress2WaitScreen( tr("Drawing hydro") );
+      for (int i = 0; i < hydroList.size(); i++)
+        hydroList[i].drawMapElement(targetP);
+      break;
 
-  case LakeList:
-    //list="LakeList";
-    //len=lakeList.count();
-    showProgress2WaitScreen( tr("Drawing lakes") );
-    for (int i = 0; i < lakeList.size(); i++)
-      lakeList[i].drawMapElement(targetPainter);
-    break;
+    case LakeList:
+      //list="LakeList";
+      //len=lakeList.count();
+      showProgress2WaitScreen( tr("Drawing lakes") );
+      for (int i = 0; i < lakeList.size(); i++)
+        lakeList[i].drawMapElement(targetP);
+      break;
 
-  case TopoList:
-    //list="TopoList";
-    //len=topoList.count();
-    showProgress2WaitScreen( tr("Drawing topography") );
-    for (int i = 0; i < topoList.size(); i++)
-      topoList[i].drawMapElement(targetPainter);
-    break;
+    case TopoList:
+      //list="TopoList";
+      //len=topoList.count();
+      showProgress2WaitScreen( tr("Drawing topography") );
+      for (int i = 0; i < topoList.size(); i++)
+        topoList[i].drawMapElement(targetP);
+      break;
 
-  default:
-    qWarning("MapContents::drawList(): unknown listID %d", listID);
-    return;
-  }
+    default:
+      qWarning("MapContents::drawList(): unknown listID %d", listID);
+      return;
+    }
 
   // qDebug( "List=%s, Length=%d, drawTime=%dms", list, len, t.elapsed() );
 }
@@ -1994,7 +2092,7 @@ void MapContents::drawIsoList(QPainter* targetP)
   int height = 0;
   _lastIsoEntry=0;
   _isoLevelReset=true;
-  qDeleteAll(regIsoLines); regIsoLines.clear();
+  regIsoLines.clear();
 
   bool isolines = false;
 
@@ -2004,74 +2102,75 @@ void MapContents::drawIsoList(QPainter* targetP)
     {
       int scale = (int)rint(_globalMapMatrix->getScale(MapMatrix::CurrentScale));
 
-      if( scale < 160 )
-        { // Draw Isolines at higher scales
+      if ( scale < 160 )
+        {
+          // Draw Isolines only at lower scales
           targetP->setPen(QPen(Qt::black, 1, Qt::DotLine));
           isolines = true;
         }
     }
 
   targetP->save();
-  showProgress2WaitScreen( tr("Drawing isolines") );
+  showProgress2WaitScreen( tr("Drawing surface contours") );
 
   for (int i = 0; i < isoList.size(); i++)
-  {
-    QList<Isohypse*>* iso = isoList.at(i);
+    {
+      QList<Isohypse> iso = isoList.at(i);
 
-    if(iso->size() == 0)
-      {
-        continue;
-      }
+      if ( iso.size() == 0 )
+        {
+          continue;
+        }
 
-    Isohypse* first = iso->first();
+      Isohypse first = iso.first();
 
-    for(unsigned int pos = 0; pos < ISO_LINE_NUM; pos++)
-      {
-        if(isoLines[pos] == first->getElevation())
-          {
-            if(first->isValley())
-              {
-                height = pos + 1;
-              }
-            else
-              {
-                height = pos + 2;
-              }
+      for (unsigned int pos = 0; pos < ISO_LINE_NUM; pos++)
+        {
+          if ( isoLines[pos] == first.getElevation() )
+            {
+              if ( first.isValley() )
+                {
+                  height = pos + 1;
+                }
+              else
+                {
+                  height = pos + 2;
+                }
 
-            break;
-          }
-      }
+              break;
+            }
+        }
 
-    if( _globalMapConfig->getdrawIsoLines() )
-      {
-        // choose iso color
-        targetP->setBrush(QBrush(_globalMapConfig->getIsoColor(height), Qt::SolidPattern));
-      }
-    else
-      {
-        // Choose a brighter color, when isoline drawing is switched
-        // off by the user to get a better readability.
-        targetP->setBrush(QBrush(_globalMapConfig->getIsoColor(6), Qt::SolidPattern));
-      }
+      if ( _globalMapConfig->getdrawIsoLines() )
+        {
+          // choose contour color
+          targetP->setBrush(QBrush(_globalMapConfig->getIsoColor(height), Qt::SolidPattern));
+        }
+      else
+        {
+          // Choose a brighter color, when isoline drawing is switched
+          // off by the user to get a better readability.
+          targetP->setBrush(QBrush(_globalMapConfig->getIsoColor(6), Qt::SolidPattern));
+        }
 
-      for (int j = 0; j < iso->size(); j++)
-      {
-        Isohypse* iso2 = iso->at(j);
-        QRegion * reg = iso2->drawRegion(targetP, _globalMapView->rect(),
-                                         true, isolines);
-        if (reg)
-          {
-            // store drawn region in extra list for elevation finding
-            IsoListEntry* entry = new IsoListEntry(reg, iso2->getElevation());
-            regIsoLines.append(entry);
-            //qDebug("  added Iso: %04x, %d", (int)reg, iso2->getElevation() );
-          }
-      }
-  }
+      for (int j = 0; j < iso.size(); j++)
+        {
+          Isohypse iso2 = iso.at(j);
+          QRegion* reg  = iso2.drawRegion(targetP, _globalMapView->rect(),
+                                          true, isolines);
+          if ( reg )
+            {
+              // store drawn region in extra list for elevation finding
+              IsoListEntry entry( reg, iso2.getElevation() );
+              regIsoLines.append( entry );
+              //qDebug("  added Iso: %04x, %d", (int)reg, iso2.getElevation() );
+            }
+        }
+    }
 
   targetP->restore();
   regIsoLines.sort();
-  _isoLevelReset=false;
+  _isoLevelReset = false;
 
   qDebug( "IsoList, drawTime=%dms", t.elapsed() );
 
@@ -2079,7 +2178,7 @@ void MapContents::drawIsoList(QPainter* targetP)
 
   for( int i = 0; i < regIsoLines.count(); i++ )
     {
-      isos += QString("%1, ").arg(regIsoLines.at(i)->height);
+      isos += QString("%1, ").arg(regIsoLines.at(i).height);
     }
 
     qDebug( isos.toLatin1().data() ); */
@@ -2090,7 +2189,7 @@ void MapContents::drawIsoList(QPainter* targetP)
  */
 void MapContents::showProgress2WaitScreen( QString message )
 {
-  if( ws && ws->isVisible() )
+  if ( ws && ws->isVisible() )
     {
       ws->slot_SetText1( message );
       ws->slot_Progress(1);
@@ -2104,13 +2203,13 @@ bool MapContents::locateFile(const QString& fileName, QString& pathName)
 {
   QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
 
-  for( int i = 0; i < mapDirs.size(); ++i )
+  for ( int i = 0; i < mapDirs.size(); ++i )
     {
       QFile test;
 
       test.setFileName( mapDirs.at(i) + "/" + fileName );
 
-      if( test.exists() )
+      if ( test.exists() )
         {
           pathName=test.fileName();
           return true;
@@ -2118,13 +2217,13 @@ bool MapContents::locateFile(const QString& fileName, QString& pathName)
     }
 
   // lower case tests
-  for( int i = 0; i < mapDirs.size(); ++i )
+  for ( int i = 0; i < mapDirs.size(); ++i )
     {
       QFile test;
 
       test.setFileName( mapDirs.at(i) + "/" + fileName.toLower() );
 
-      if( test.exists() )
+      if ( test.exists() )
         {
           pathName=test.fileName();
           return true;
@@ -2132,13 +2231,13 @@ bool MapContents::locateFile(const QString& fileName, QString& pathName)
     }
 
   // so, let's try upper case
-  for( int i = 0; i < mapDirs.size(); ++i )
+  for ( int i = 0; i < mapDirs.size(); ++i )
     {
       QFile test;
 
       test.setFileName( mapDirs.at(i) + "/" + fileName.toUpper() );
 
-      if( test.exists() )
+      if ( test.exists() )
         {
           pathName=test.fileName();
           return true;
@@ -2160,17 +2259,19 @@ void MapContents::addDir (QStringList& list, const QString& _path, const QString
 
   QStringList entries (path.entryList());
 
-  for (QStringList::Iterator it = entries.begin(); it != entries.end(); ++it ) {
-    bool found = false;
-    // look for other entries with same filename
-    for (QStringList::Iterator it2 =  list.begin(); it2 != list.end(); ++it2) {
-      QFileInfo path2 (*it2);
-      if (path2.fileName() == *it)
-        found = true;
+  for (QStringList::Iterator it = entries.begin(); it != entries.end(); ++it )
+    {
+      bool found = false;
+      // look for other entries with same filename
+      for (QStringList::Iterator it2 =  list.begin(); it2 != list.end(); ++it2)
+        {
+          QFileInfo path2 (*it2);
+          if (path2.fileName() == *it)
+            found = true;
+        }
+      if (!found)
+        list += path.absoluteFilePath (*it);
     }
-    if (!found)
-      list += path.absoluteFilePath (*it);
-  }
   //  qDebug ("entries: %s", list.join(";").toLatin1().data());
 }
 
@@ -2186,9 +2287,10 @@ FlightTask* MapContents::getCurrentTask()
 void MapContents::setCurrentTask( FlightTask * _newVal)
 {
   // an old task instance must be deleted
-  if( currentTask != 0 ) {
-    delete currentTask;
-  }
+  if ( currentTask != 0 )
+    {
+      delete currentTask;
+    }
 
   currentTask = _newVal;
 }
@@ -2201,11 +2303,15 @@ bool MapContents::getIsInWaypointList(const wayPoint * wp)
   n =  wpList.count();
   wayPoint * wpi;
 
-  for (i=0; i < n; i++) {
-    wpi=(wayPoint*)wpList.at(i);
-    if (wp->origP==wpi->origP)
-      return true;
-  }
+  for (i=0; i < n; i++)
+    {
+      wpi=(wayPoint*)wpList.at(i);
+      
+      if (wp->origP==wpi->origP)
+        {
+          return true;
+        }
+    }
 
   return false;
 }
@@ -2215,11 +2321,12 @@ QDateTime MapContents::getDateFromMapFile( const QString& path )
 {
   QDateTime createDateTime;
   QFile mapFile( path );
-  if(!mapFile.open(QIODevice::ReadOnly)) {
-    qWarning("Cumulus: can't open map file %s for reading date", path.toLatin1().data() );
-    createDateTime.setDate( QDate(1900,1,1) );
-    return createDateTime;
-  }
+  if (!mapFile.open(QIODevice::ReadOnly))
+    {
+      qWarning("Cumulus: can't open map file %s for reading date", path.toLatin1().data() );
+      createDateTime.setDate( QDate(1900,1,1) );
+      return createDateTime;
+    }
 
   QDataStream in(&mapFile);
   in.setVersion(QDataStream::Qt_2_0);
@@ -2233,22 +2340,25 @@ QDateTime MapContents::getDateFromMapFile( const QString& path )
 
 
 /** Add a point to a rectangle, so the rectangle will be the bounding box
- * of all points added to it. If the point allready lies within the borders
+ * of all points added to it. If the point already lies within the borders
  * of the QRect, the QRect is unchanged. If the point is outside the
  * defined QRect, the QRox will be modified so the point lies inside the
- * new QRect. If the QRect is empty, the QRect will be set to a rect of
+ * new QRect. If the QRect is empty, the QRect will be set to a rectangle of
  * size (1,1) at the location of the point. */
 void MapContents::AddPointToRect(QRect& rect, const QPoint& point)
 {
-  if (rect.isValid()) {
-    rect.setCoords(
-                   MIN(rect.left(), point.x()),
-                   MIN(rect.top(), point.y()),
-                   MAX(rect.right(), point.x()),
-                   MAX(rect.bottom(), point.y()));
-  } else {
-    rect.setCoords(point.x(),point.y(),point.x(),point.y());
-  }
+  if (rect.isValid())
+    {
+      rect.setCoords(
+        MIN(rect.left(), point.x()),
+        MIN(rect.top(), point.y()),
+        MAX(rect.right(), point.x()),
+        MAX(rect.bottom(), point.y()));
+    }
+  else
+    {
+      rect.setCoords(point.x(),point.y(),point.x(),point.y());
+    }
 }
 
 
@@ -2258,44 +2368,49 @@ void MapContents::AddPointToRect(QRect& rect, const QPoint& point)
  */
 bool MapContents::compareProjections(ProjectionBase* p1, ProjectionBase* p2)
 {
-  if( p1->projectionType() != p2->projectionType() ) {
-    return false;
-  }
-
-  if( p1->projectionType() == ProjectionBase::Lambert ) {
-    ProjectionLambert* l1 = (ProjectionLambert *) p1;
-    ProjectionLambert* l2 = (ProjectionLambert *) p2;
-
-    if( l1->getStandardParallel1() != l2->getStandardParallel1() ||
-        l1->getStandardParallel2() != l2->getStandardParallel2() ||
-        l1->getOrigin() != l2->getOrigin() ) {
+  if ( p1->projectionType() != p2->projectionType() )
+    {
       return false;
     }
 
-    return true;
-  }
+  if ( p1->projectionType() == ProjectionBase::Lambert )
+    {
+      ProjectionLambert* l1 = (ProjectionLambert *) p1;
+      ProjectionLambert* l2 = (ProjectionLambert *) p2;
 
-  if( p1->projectionType() == ProjectionBase::Cylindric ) {
-    ProjectionCylindric* c1 = (ProjectionCylindric*) p1;
-    ProjectionCylindric* c2 = (ProjectionCylindric*) p2;
+      if ( l1->getStandardParallel1() != l2->getStandardParallel1() ||
+           l1->getStandardParallel2() != l2->getStandardParallel2() ||
+           l1->getOrigin() != l2->getOrigin() )
+        {
+          return false;
+        }
 
-    if( c1->getStandardParallel() != c2->getStandardParallel() ) {
-      return false;
+      return true;
     }
 
-    return true;
-  }
+  if ( p1->projectionType() == ProjectionBase::Cylindric )
+    {
+      ProjectionCylindric* c1 = (ProjectionCylindric*) p1;
+      ProjectionCylindric* c2 = (ProjectionCylindric*) p2;
+
+      if ( c1->getStandardParallel() != c2->getStandardParallel() )
+        {
+          return false;
+        }
+
+      return true;
+    }
 
   // What's that? Det kennen wir noch nicht :( Rejection!
 
   return false;
 }
 
-int MapContents::findElevation(const QPoint& coordP, Distance * errorDist)
+int MapContents::findElevation(const QPoint& coordP, Distance* errorDist)
 {
-  extern MapMatrix * _globalMapMatrix;
+  extern MapMatrix* _globalMapMatrix;
 
-  IsoListEntry* entry = 0;
+  const IsoListEntry* entry = 0;
   int height = 0;
   double error = 0.0;
 
@@ -2315,9 +2430,9 @@ int MapContents::findElevation(const QPoint& coordP, Distance * errorDist)
 
   int cnt = list->count();
 
-  for( int i=0; i<cnt;i++ )
+  for ( int i=0; i<cnt; i++ )
     {
-      entry = list->at(i);
+      entry = &(list->at(i));
       // qDebug("i: %d entry->height %d contains %d",i,entry->height, entry->region->contains(coord) );
       // qDebug("Point x:%d y:%d", coord.x(), coord.y() );
       // qDebug("boundingRect l:%d r:%d t:%d b:%d", entry->region->boundingRect().left(),
@@ -2325,58 +2440,65 @@ int MapContents::findElevation(const QPoint& coordP, Distance * errorDist)
       //                                 entry->region->boundingRect().top(),
       //                                 entry->region->boundingRect().bottom() );
 
-      if (entry->height>height && /*there is no reason to search a lower level if we allready have a hit on a higher one*/
-        entry->height <= _nextIsoLevel) /* since the odds of skipping a level between two fixes are not too high, we can ignore higher levels, making searching more efficient.*/
-      {
-        if (entry->height==_lastIsoLevel && _lastIsoEntry)
-          {
-            //qDebug("Trying previous entry...");
-            if (_lastIsoEntry->region->contains(coord))
-              {
-                height=MAX(height,entry->height);
-                //qDebug("Found on height %d",entry->height);
-                break;
-              }
-          }
+      if (entry->height > height && /*there is no reason to search a lower level if we already have a hit on a higher one*/
+          entry->height <= _nextIsoLevel) /* since the odds of skipping a level between two fixes are not too high, we can ignore higher levels, making searching more efficient.*/
+        {
+          if (entry->height == _lastIsoLevel && _lastIsoEntry)
+            {
+              //qDebug("Trying previous entry...");
+              if (_lastIsoEntry->region->contains(coord))
+                {
+                  height=qMax(height, entry->height);
+                  //qDebug("Found on height %d",entry->height);
+                  break;
+                }
+            }
 
-        if (entry == _lastIsoEntry)
-          {
-            continue; //we already tried this one, and it wasn't it.
-          }
+          if (entry == _lastIsoEntry)
+            {
+              continue; //we already tried this one, and it wasn't it.
+            }
 
-        //qDebug("Probing on height %d...", entry->height);
+          //qDebug("Probing on height %d...", entry->height);
 
-        if (entry->region->contains(coord))
-          {
-            height=MAX(height,entry->height);
-            //qDebug("Found on height %d",entry->height);
-            _lastIsoEntry=entry;
-            break;
-          }
-      }
+          if (entry->region->contains(coord))
+            {
+              height = qMax(height,entry->height);
+              //qDebug("Found on height %d",entry->height);
+              _lastIsoEntry = entry;
+              break;
+            }
+        }
     }
 
-  _lastIsoLevel=height;
+  _lastIsoLevel = height;
 
   // The real altitude is between the current and the next
   // isolevel, therefore reduce error by taking the middle
-  if( height <100 ) {
-    _nextIsoLevel=height+25;
-    height += 12;
-    error=12.5;
-  } else if( (height >=100) && (height < 500) ) {
-    _nextIsoLevel=height+50;
-    height += 25;
-    error=25.0;
-  } else if( (height >=500) && (height < 1000) ) {
-    _nextIsoLevel=height+100;
-    height += 50;
-    error=50.0;
-  } else {
-    _nextIsoLevel=height+250;
-    height += 125;
-    error=125.0;
-  }
+  if ( height <100 )
+    {
+      _nextIsoLevel = height+25;
+      height += 12;
+      error=12.5;
+    }
+  else if ( (height >=100) && (height < 500) )
+    {
+      _nextIsoLevel = height+50;
+      height += 25;
+      error=25.0;
+    }
+  else if ( (height >=500) && (height < 1000) )
+    {
+      _nextIsoLevel = height+100;
+      height += 50;
+      error=50.0;
+    }
+  else
+    {
+      _nextIsoLevel = height+250;
+      height += 125;
+      error = 125.0;
+    }
 
   // if errorDist is set, set the correct error margin
   if (errorDist)

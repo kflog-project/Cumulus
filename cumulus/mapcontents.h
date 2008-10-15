@@ -44,8 +44,7 @@ class Distance;
 
 /**
  * This class provides functions for accessing the contents of the map.
- * It takes control over loading all needed map-files.
- * The class contains several Q3PtrLists holding the map elements.
+ * It takes control over loading all needed map-files as value lists.
  */
 
 class MapContents : public QObject
@@ -55,15 +54,15 @@ class MapContents : public QObject
   public:
 
   /**
-   * The index of map element-Lists.
+   * The identifiers for the map element types.
    */
   enum MapContentsListID {NotSet = 0, AirportList, GliderSiteList,
-                          AddSitesList, OutList, NavList, AirspaceList,
+                          AddSitesList, OutList, RadioList, AirspaceList,
                           ObstacleList, ReportList, CityList, VillageList,
-                          LandmarkList, HighwayList, HighwayEntryList,
-                          RoadList, RailList, StationList, HydroList,
+                          LandmarkList, HighwayList,
+                          RoadList, RailList, HydroList,
                           LakeList, TopoList, IsohypseList,
-                          WaypointList, DigitList, FlightList};
+                          WaypointList, FlightList};
 
   /**
    * Creates a new MapContents-object.
@@ -90,12 +89,12 @@ class MapContents : public QObject
 
   /**
    * @return a pointer to the BaseMapElement of the given map element in
-   *         the list.
+   * the list.
    *
-   * @param  listIndex  the index of the list containing the element
+   * @param  listType the type of the list containing the element
    * @param  index  the index of the element in the list
    */
-  BaseMapElement* getElement(int listIndex, unsigned int index);
+  BaseMapElement* getElement(int listType, unsigned int index);
 
   /**
    * @return a pointer to the given airspace
@@ -109,7 +108,7 @@ class MapContents : public QObject
    *
    * @param  index  the list-index of the glider site
    */
-  GliderSite* getGlidersite(unsigned int index);
+  Airport* getGlidersite(unsigned int index);
 
   /**
    * @return a pointer to the given airport
@@ -132,7 +131,7 @@ class MapContents : public QObject
    * @param  targetP  The painter to draw the elements into
    * @param  listID  The index of the list to be drawn
    */
-  void drawList(QPainter* targetPainter, unsigned int listID);
+  void drawList(QPainter* targetP, unsigned int listID);
 
   /**
    * Draws all isohypses into the given painter
@@ -170,7 +169,7 @@ class MapContents : public QObject
   void setCurrentTask( FlightTask * _newVal);
 
   /**
-   * Read property of FlightTask *currentTask.
+   * Return the current flight task.
    */
   FlightTask *getCurrentTask();
 
@@ -208,17 +207,17 @@ class MapContents : public QObject
   void unloadMaps(unsigned int=0);
 
   /**
-   * Deletes all map items that are not in the section set from the given list.
+   * Deletes all map items that are not contained in the tile section set
+   * of the passed list.
    * Used by @ref unloadMaps to do the actual deleting.
    */
-  void unloadMapObjects(QList<LineElement*> * list);
   void unloadMapObjects(QList<LineElement>& list);
 
-  void unloadMapObjects(QList<SinglePoint*> * list);
+  void unloadMapObjects(QList<SinglePoint>& list);
 
-  void unloadMapObjects(QList<RadioPoint*> * list);
+  void unloadMapObjects(QList<RadioPoint>& list);
 
-  void unloadMapObjects(QList< QList<Isohypse*>* > * list);
+  void unloadMapObjects(QList< QList<Isohypse> >& list);
 
   /**
    * This function checks all possible map directories for the
@@ -231,7 +230,8 @@ class MapContents : public QObject
    * this function serves as a substitute for the not existing
    * QDir::entryInfoList with complete path information
    */
-  static void addDir(QStringList& list, const QString& path, const QString& filter);
+  static void addDir( QStringList& list, const QString& path,
+                      const QString& filter);
 
   /**
    * JD This function extracts the QDateTime entry from a
@@ -249,27 +249,11 @@ class MapContents : public QObject
   public slots:
   /** */
   void slotReloadMapData();
-  /** reload welt 2000 data file */
+
+  /** Reload welt 2000 data file */
   void slotReloadWelt2000Data();
 
  signals:
-  /**
-   * emitted during map loading to display a message f.e. in the
-   * splash-screen of the main window.
-   */
-  void loadingMessage(const QString& message);
-
-  /**
-   * signal that a new task has been created
-   * FIXME: remove planning mode
-   */
-  void newTaskAdded(FlightTask *);
-
-  /**
-   * Emitted, when no map files are found, or the when the map-directories
-   * do not exists.
-   */
-  void errorOnMapLoading();
 
   /**
    * Emitted if a new file is being loaded.
@@ -280,11 +264,6 @@ class MapContents : public QObject
    * Emitted if an object has been loaded.
    */
   void progress(int);
-
-  /**
-   * Emitted before loading maps
-   */
-  void majorAction(const QString&);
 
   /**
    * Emitted after reload of map data
@@ -323,30 +302,32 @@ class MapContents : public QObject
   void showProgress2WaitScreen( QString message );
 
   /**
-   * airportList contains all airports.
+   * airportList contains airports, airfields, ultralight sites
    */
   MapElementList airportList;
 
   /**
-   * gliderSiteList contains all glider-sites.
+   * gliderSiteList contains all glider sites.
    */
   MapElementList gliderSiteList;
 
   /**
-   * addSitesList contains all, ultra light sites,
+   * addSitesList contains all, ultralight sites,
    * hang glider sites, free balloon sites, parachute jumping sites.
+   *
+   * NOT used atm
    */
-  QList<SinglePoint*> addSitesList;
+  // QList<SinglePoint> addSitesList;
 
   /**
-   * outList contains all outlanding-fields.
+   * outList contains all outlanding fields.
    */
   MapElementList outList;
 
   /**
-   * navList contains all radio navigation facilities.
+   * radioList contains all radio navigation facilities.
    */
-  QList<RadioPoint*> navList;
+  QList<RadioPoint> radioList;
 
   /**
    * airspaceList contains all airspaces. The sort function on this
@@ -355,18 +336,17 @@ class MapContents : public QObject
   SortableAirspaceList airspaceList;
   //  there are different airspaces with same name ! Don't use MapElementList,
   //  it would sort them out.
-  //  MapElementList airspaceList;
 
   /**
-   * obstacleList contains all obstacles and -groups, as well
+   * obstacleList contains all obstacles and groups, as well
    * as the spots and passes.
    */
-  QList<SinglePoint*> obstacleList;
+  QList<SinglePoint> obstacleList;
 
   /**
    * reportList contains all reporting points.
    */
-  QList<SinglePoint*> reportList;
+  QList<SinglePoint> reportList;
 
   /**
    * cityList contains all cities.
@@ -376,12 +356,12 @@ class MapContents : public QObject
   /**
    * villageList contains all villages.
    */
-  QList<SinglePoint*> villageList;
+  QList<SinglePoint> villageList;
 
   /**
    * landmarkList contains all landmarks.
    */
-  QList<SinglePoint*> landmarkList;
+  QList<SinglePoint> landmarkList;
 
   /**
    * highwayList contains all highways.
@@ -411,7 +391,7 @@ class MapContents : public QObject
   /**
    * isohypseList contains all isohypses.
    */
-  QList< QList<Isohypse*>* > isoList;
+  QList< QList<Isohypse> > isoList;
 
   /**
    * Set over map tiles. Contains the sectionId for all fully loaded
@@ -465,7 +445,7 @@ class MapContents : public QObject
   int _nextIsoLevel;
   int _lastIsoLevel;
   bool _isoLevelReset;
-  IsoListEntry* _lastIsoEntry;
+  const IsoListEntry* _lastIsoEntry;
 
  private:
   /**
