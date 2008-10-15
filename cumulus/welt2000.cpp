@@ -31,7 +31,6 @@
 #include "airport.h"
 #include "basemapelement.h"
 #include "filetools.h"
-#include "glidersite.h"
 #include "mapcalc.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"
@@ -1136,18 +1135,18 @@ bool Welt2000::parse( QString& path,
         {
           // Add a non glider site to the list. That can be an
           // airfield or an ultralight field
-          Airport *ap = new Airport( afName, icao.trimmed(), gpsName, afType,
-                                     wgsPos, position, rw, elevation, frequency );
+          Airport ap( afName, icao.trimmed(), gpsName, afType,
+                      wgsPos, position, rw, elevation, frequency );
 
           airportList.append( ap );
         }
       else
         {
-          // Add a glider site to the list.
-          GliderSite *gl = new GliderSite( afName, icao.trimmed(), gpsName,
-                                           wgsPos, position, rw, elevation, frequency );
+          // Add a glider site to the related list.
+          Airport gs( afName, icao.trimmed(), gpsName, afType,
+                      wgsPos, position, rw, elevation, frequency );
 
-          gliderList.append( gl );
+          gliderList.append( gs );
         }
 
       if( doCompile )
@@ -1410,17 +1409,17 @@ bool Welt2000::readCompiledFile( QString &path,
         {
           // Add a non glider site to the list. That can be an
           // airfield or an ultralight field
-          Airport *ap = new Airport( afName, icao, gpsName, (BaseMapElement::objectType) afType,
-                                     wgsPos, position, rw, (uint) elevation, frequency );
+          Airport ap( afName, icao, gpsName, (BaseMapElement::objectType) afType,
+                      wgsPos, position, rw, (uint) elevation, frequency );
           airportList.append( ap );
         }
       else
         {
           // Add a glider site to the list.
-          GliderSite *gl = new GliderSite( afName, icao, gpsName,
-                                           wgsPos, position, rw, (uint) elevation, frequency );
+          Airport gs( afName, icao, gpsName, (BaseMapElement::objectType) afType,
+                      wgsPos, position, rw, (uint) elevation, frequency );
 
-          gliderList.append( gl );
+          gliderList.append( gs );
         }
     }
 
