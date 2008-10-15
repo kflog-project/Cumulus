@@ -40,7 +40,6 @@
 #include "reachablelist.h"
 #include "calculator.h"
 #include "mapcontents.h"
-#include "glidersite.h"
 #include "mapcalc.h"
 #include "polar.h"
 #include "waypoint.h"
@@ -136,7 +135,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
   int r=0, a=0;
   //qDebug("bounding box: (%d, %d), (%d, %d) (%d x %d km)", bbox.left(),bbox.top(),bbox.right(),bbox.bottom(),0,0);
 
-  if ( item == MapContents::WaypointList )
+  if( item == MapContents::WaypointList )
     {
       // Waypoints have different structure treat them here
       QList<wayPoint*> *pWPL = _globalMapContents->getWaypointList();
@@ -184,14 +183,41 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
       // get number of elements in the list
       int nr = _globalMapContents->getListLength(item);
 
-      // qDebug("Nr of sites: %d type %d", nr, item );
+      // qDebug("No of sites: %d type %d", nr, item );
       for (int i=0; i<nr; i++ )
         {
-          // get specific site via base class, that contains the needed infos
-          Airport* site = (Airport*)_globalMapContents->getElement( item, i );
-          WGSPoint pt  = site->getWGSPosition();
+          // Get specific site data from current list. We have to
+          // distinguish between AirportList and GilderSiteList.
+          Airport* site;
 
-          if (!bbox.contains(pt))
+          if( item == MapContents::AirportList )
+            {
+              // Fetch data from airport list
+              site = _globalMapContents->getAirport(i);
+            }
+          else if( item == MapContents::GliderSiteList )
+            {
+              // fetch data from glider site list
+              site = _globalMapContents->getGlidersite(i);
+            }
+          else
+            {
+              qWarning( "ReachableList::addItemsToList: ListType %d is unknown",
+                        item );
+              break;
+            }
+
+          QString siteName = site->getWPName();
+          QString siteIcao = site->getICAO();
+          QString siteDescription = site->getName();
+          short siteType = site->getTypeID();
+          double siteFrequency = site->getFrequency().toDouble();
+          WGSPoint siteWgsPosition = site->getWGSPosition();
+          QPoint sitePosition = site->getPosition();
+          uint siteElevation = site->getElevation();
+          Runway siteRunway = site->getRunway();
+
+          if (! bbox.contains(siteWgsPosition) )
             {
               //qDebug("Not in bounding box, so ignore! (distance: %d, (%d, %d), %s)", (int)distance.getKilometers(), pt.x(),pt.y(), site->getName().latin1());
               r++;
@@ -202,7 +228,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
               a++;
               //qDebug("In bounding box, so accept! (distance: %d, %s)", (int)distance.getKilometers(), site->getName().latin1());
             }
-          distance.setKilometers(dist(&lastPosition,&pt));
+          distance.setKilometers(dist(&lastPosition,&siteWgsPosition));
           // qDebug("%d  %f %f", i, (float)distance.getKilometers(),_maxReach );
           // check if point is a potential reachable candidate at best LD
           if ( distance.getKilometers() > _maxReach )
@@ -211,26 +237,26 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
             }
 
           // calculate bearing
-          double result = getBearing(lastPosition, pt);
+          double result = getBearing(lastPosition, siteWgsPosition);
           short bearing = short(rint(result * 180./M_PI));
 
           // add all potential reachable points to the list, altitude is calculated later
-          ReachablePoint rp( site->getWPName(),
-                             site->getICAO(),
-                             site->getName(),
+          ReachablePoint rp( siteName,
+                             siteIcao,
+                             siteDescription,
                              true,
-                             site->getTypeID(),
-                             site->getFrequency().toDouble(),
-                             site->getWGSPosition(),
-                             site->getPosition(),
-                             site->getElevation(),
+                             siteType,
+                             siteFrequency,
+                             siteWgsPosition,
+                             sitePosition,
+                             siteElevation,
                              distance,
                              bearing,
                              Altitude( 0 ),
-                             site->getRunway().direction,
-                             site->getRunway().length,
-                             site->getRunway().surface,
-                             site->getRunway().isOpen );
+                             siteRunway.direction,
+                             siteRunway.length,
+                             siteRunway.surface,
+                             siteRunway.isOpen );
           append(rp);
           // qDebug("%s(%d) %f %d° %d", rp.getName().toLatin1().data(), rp.getElevation(),  rp.getDistance().getKilometers(), rp.getBearing(), (int)rp->getArrivalAlt().getMeters() );
 
@@ -440,7 +466,6 @@ void ReachableList::calculateNewList()
   // Now add items of different type to the list
   addItemsToList(MapContents::AirportList);
   addItemsToList(MapContents::GliderSiteList);
-  addItemsToList(MapContents::AddSitesList);
   addItemsToList(MapContents::WaypointList);
   // qDebug("Number of potential reachable sites: %d", count() );
   modeAltitude = false;
