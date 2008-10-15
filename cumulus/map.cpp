@@ -142,17 +142,9 @@ Map::~Map()
 
 void Map::__displayMapInfo(const QPoint& current)
 {
-  /*
-   * Gliding sites, if available, will be the first entry
-   */
-  if( mutex() )
+  if( mutex() || !isVisible() )
     {
       //qDebug("Map::__displayMapInfo: Map drawing in progress: return");
-      return;
-    }
-
-  if (!isVisible())
-    {
       return;
     }
 
@@ -219,9 +211,8 @@ void Map::__displayMapInfo(const QPoint& current)
     }
 }
 
-
 /**
- * Display detailed Info about one MapItem
+ * Display detailed Info about an airfield, a glider site or a waypoint.
 */
 
 void Map::__displayDetailedMapInfo(const QPoint& current)
@@ -239,7 +230,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
 
   // add WPList !!!
   int searchList[] = {MapContents::GliderSiteList, MapContents::AirportList};
-  wayPoint *w = (wayPoint *) 0;
+  wayPoint *w = static_cast<wayPoint *> (0);
 
   // scale uses unit meter/pixel
   double cs = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
@@ -263,22 +254,59 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
       for(unsigned int loop = 0;
           loop < _globalMapContents->getListLength(searchList[l]); loop++)
         {
-          Airport* hitElement = (Airport*)_globalMapContents->getElement(
-                                  searchList[l], loop);
+          // Get specific site data from current list. We have to
+          // distinguish between AirportList and GilderSiteList.
+          Airport* site;
 
-          QPoint sitePos( hitElement->getMapPosition() );
+          QString siteName;
+          QString siteIcao;
+          QString siteDescription;
+          short siteType;
+          double siteFrequency;
+          WGSPoint siteWgsPosition;
+          QPoint sitePosition;
+          uint siteElevation;
+          QPoint curPos;
 
-          if( ! snapRect.contains(sitePos) )
+          if( searchList[l] == MapContents::AirportList )
+            {
+              // Fetch data from airport list
+              site = _globalMapContents->getAirport(loop);
+            }
+          else if( searchList[l] == MapContents::GliderSiteList )
+            {
+              // fetch data from glider site list
+              site = _globalMapContents->getGlidersite(loop);
+            }
+          else
+            {
+              qWarning( "Map::__displayDetailedMapInfo: ListType %d is unknown",
+                        searchList[l] );
+              break;
+            }
+
+          siteName = site->getWPName();
+          siteIcao = site->getICAO();
+          siteDescription = site->getName();
+          siteType = site->getTypeID();
+          siteFrequency = site->getFrequency().toDouble();
+          siteWgsPosition = site->getWGSPosition();
+          sitePosition = site->getPosition();
+          siteElevation = site->getElevation();
+          Runway siteRunway = site->getRunway();
+          curPos = site->getMapPosition();
+
+          if( ! snapRect.contains(curPos) )
             {
               // @AP: Point lays outside of snap rectangle, we ignore it
               continue;
             }
 
-          dX = abs(sitePos.x() - current.x());
-          dY = abs(sitePos.y() - current.y());
+          dX = abs(curPos.x() - current.x());
+          dY = abs(curPos.y() - current.y());
 
           // qDebug( "pX=%d, pY=%d, cX=%d, cY=%d, delta=%d, dX=%d, dY=%d, lastDist=%d",
-          //         sitePos.x(), sitePos.y(), current.x(), current.y(), delta, dX, dY, lastDist );
+          //         curPos.x(), curPos.y(), current.x(), current.y(), delta, dX, dY, lastDist );
 
           // Abstand entspricht der Icon-Groesse
           if (dX < delta && dY < delta)
@@ -290,20 +318,28 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
 
               // qDebug ("Airport: %s", hitElement->getName().toLatin1().data() );
 
+              siteName = site->getWPName();
+              siteIcao = site->getICAO();
+              siteDescription = site->getName();
+              siteType = site->getTypeID();
+              siteFrequency = site->getFrequency().toDouble();
+              siteWgsPosition = site->getWGSPosition();
+              sitePosition = site->getPosition();
+              siteElevation = site->getElevation();
+              siteRunway = site->getRunway();
+
               w = &wp;
-              w->name = hitElement->getWPName();
-              w->description = hitElement->getName();
-              w->type = hitElement->getTypeID();
-              w->origP = hitElement->getWGSPosition();
-              w->elevation = hitElement->getElevation();
-              w->icao = hitElement->getICAO();
-              // qDebug("|%s|", hitElement->getFrequency().latin1());
-              w->frequency = hitElement->getFrequency().toDouble();
-              // qDebug(" hitElement->getRunway(0) %d",hitElement->getRunway(0).direction );
-              w->isLandable = hitElement->getRunway().isOpen;
-              w->surface = hitElement->getRunway().surface;
-              w->runway = hitElement->getRunway().direction;
-              w->length = hitElement->getRunway().length;
+              w->name = siteName;
+              w->description = siteDescription;
+              w->type = siteType;
+              w->origP = siteWgsPosition;
+              w->elevation = siteElevation;
+              w->icao = siteIcao;
+              w->frequency = siteFrequency;
+              w->isLandable = siteRunway.isOpen;
+              w->surface = siteRunway.surface;
+              w->runway = siteRunway.direction;
+              w->length = siteRunway.length;
               w->sectorFAI = 0;
               w->sector1 = 0;
               w->sector2 = 0;
@@ -380,7 +416,9 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
 
   // @ee maybe we can show airspace info
   if (!found)
-    __displayMapInfo(current);
+    {
+      __displayMapInfo(current);
+    }
 }
 
 
@@ -960,7 +998,7 @@ void Map::__drawBaseLayer()
   // draw the highways and the lakes
   _globalMapContents->drawList(&baseMapP, MapContents::HighwayList);
   _globalMapContents->drawList(&baseMapP, MapContents::LakeList);
-  _globalMapContents->drawList(&baseMapP, MapContents::NavList);
+  _globalMapContents->drawList(&baseMapP, MapContents::RadioList);
 
   // end the painter
   baseMapP.end();
