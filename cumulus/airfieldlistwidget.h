@@ -43,7 +43,7 @@ public:
      */
     wayPoint *getSelectedWaypoint();
 
-    enum MapContents::MapContentsListID itemList[3];
+    enum MapContents::MapContentsListID itemList[2];
 
     /**
      * Called to fill the display list

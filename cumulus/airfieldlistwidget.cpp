@@ -37,7 +37,6 @@ AirfieldListWidget::AirfieldListWidget(QWidget *parent ) : WpListWidgetParent(pa
 
   itemList[0] = MapContents::AirportList;
   itemList[1] = MapContents::GliderSiteList;
-  itemList[2] = MapContents::AddSitesList;
 }
 
 
@@ -72,7 +71,7 @@ void AirfieldListWidget::fillWpList()
     }
 //    qDebug("fillWpList N: %d, items %d", item, nr );
     for(int i=0; i<nr; i++ ) {
-      Airport* site = (Airport*)_globalMapContents->getElement( itemList[item], i );
+      Airport* site = static_cast<Airport *> (_globalMapContents->getElement( itemList[item], i ));
       new _AirfieldItem(list, site);
     }
   }
