@@ -92,7 +92,7 @@ public:
    * The function must be implemented in the child-classes.
    * @param  targetP  The painter to draw the element into.
    */
-  virtual void drawMapElement(QPainter* targetP) = 0;
+  virtual void drawMapElement(QPainter* ) {};
 
   /**
    * Virtual function for printing the element.
@@ -182,7 +182,7 @@ public:
    * The function must be implemented in the derived classes.
    * @return "true/false"
    */
-  virtual bool isVisible() const = 0;
+  virtual bool isVisible() { return true; };
 
 protected:
 
