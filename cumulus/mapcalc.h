@@ -7,6 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
+**                   2008 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -15,11 +16,12 @@
 **
 ***********************************************************************/
 
-#ifndef MAPCALC_H
-#define MAPCALC_H
+#ifndef MAP_CALC_H
+#define MAP_CALC_H
 
 #include <QRect>
 
+#include "flightpoint.h"
 #include "waypoint.h"
 
 #define PI2 M_PI*2
@@ -54,12 +56,12 @@ double dist(wayPoint* wp1, wayPoint* wp2);
 /**
  * Calculates the distance between two given points (in km).
  */
-double dist(wayPoint* wp, flightPoint* fp);
+double dist(wayPoint* wp, FlightPoint* fp);
 
 /**
  * Calculates the distance between two given points (in km).
  */
-double dist( flightPoint* fp1, flightPoint* fp2);
+double dist( FlightPoint* fp1, FlightPoint* fp2);
 
 /**
  * Converts the given time (in sec.) into a readable string.
@@ -70,17 +72,17 @@ QString printTime(int time, bool isZero = false, bool isSecond = true);
 /**
  * Calculates the vario of a given point
  */
-float getVario(flightPoint p);
+float getVario(FlightPoint p);
 
 /**
  * Calculates the speed of a given point
  */
-float getSpeed(flightPoint p);
+float getSpeed(FlightPoint p);
 
 /**
  * Calculates the bearing to the previous point
  */
-float getBearing(flightPoint p1, flightPoint p2);
+float getBearing(FlightPoint p1, FlightPoint p2);
 
 /**
  * Calculates the bearing to the next point

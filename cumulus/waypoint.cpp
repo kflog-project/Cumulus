@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 Axel Pauli axel@kflog.org
+**   Copyright (c):  2004 Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -14,6 +14,8 @@
 **   $Id$
 **
 ***********************************************************************/
+
+#include <QObject>
 
 #include "waypoint.h"
 

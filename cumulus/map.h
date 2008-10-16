@@ -38,9 +38,6 @@
 #include "flighttask.h"
 #include "waypointcatalog.h"
 
-class Flight;
-class WaypointCatalog;
-
 /**
  * This class provides basic functions for displaying the map.
  */

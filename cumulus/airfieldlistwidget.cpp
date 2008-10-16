@@ -23,7 +23,7 @@
 #include "generalconfig.h"
 #include "mapconfig.h"
 #include "calculator.h"
-#include "airport.h"
+#include "airfield.h"
 
 extern MapContents *_globalMapContents;
 extern MapConfig   *_globalMapConfig;
@@ -35,7 +35,7 @@ AirfieldListWidget::AirfieldListWidget(QWidget *parent ) : WpListWidgetParent(pa
 
   wp = new wayPoint();
 
-  itemList[0] = MapContents::AirportList;
+  itemList[0] = MapContents::AirfieldList;
   itemList[1] = MapContents::GliderSiteList;
 }
 
@@ -71,7 +71,7 @@ void AirfieldListWidget::fillWpList()
     }
 //    qDebug("fillWpList N: %d, items %d", item, nr );
     for(int i=0; i<nr; i++ ) {
-      Airport* site = static_cast<Airport *> (_globalMapContents->getElement( itemList[item], i ));
+      Airfield* site = static_cast<Airfield *> (_globalMapContents->getElement( itemList[item], i ));
       new _AirfieldItem(list, site);
     }
   }
@@ -110,7 +110,7 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
   if (apli == 0)
     return 0;
 
-  Airport* site = apli->airport;
+  Airfield* site = apli->airport;
 
   wp->name = site->getWPName();
   wp->origP = site->getWGSPosition();
@@ -129,7 +129,7 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
   return wp;
 }
 
-AirfieldListWidget::_AirfieldItem::_AirfieldItem(QTreeWidget* tw, Airport* site, int type):
+AirfieldListWidget::_AirfieldItem::_AirfieldItem(QTreeWidget* tw, Airfield* site, int type):
   QTreeWidgetItem(tw, type), airport(site)
 {
   QString name = site->getWPName();

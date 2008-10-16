@@ -69,7 +69,7 @@
  **   a) In the configuration area of cumulus the user can define a
  **      country filter and a radius around his home poistion. These
  **      items do overwrite the items in the configuration file.
- **  
+ **
  **   b) A configuration file contains a country filter rule. Only the
  **      listed countries will be considered during parsing.
  **
@@ -109,9 +109,9 @@
  **   b) An ICAO identifier can be remapped according to the following rule:
  **
  **      MAP_ICAO <icao-sign>=<new-map-element-of-cumulus>
- **   
+ **
  **   The supported cumulus map elements are:
- **   
+ **
  **   [IntAirport|Airport|MilAirport|CivMilAirport|Airfield|ClosedAirfield|
  **    CivHeliport|MilHeliport|AmbHeliport|Glidersite|UltraLight|HangGlider]
  **
@@ -123,7 +123,7 @@
  **   existing kfc files, which are derived from kfl, the extension
  **   .txc was choosen to show that this file is derived from a .txt
  **   file.
- **   
+ **
  ***********************************************************************/
 
 #ifndef _welt2000_h
@@ -165,27 +165,27 @@ public:
      * can be the original ascii file or a compiled version of it. The
      * results are put in the passed lists.
      *
-     * @param airportList All airports have to be stored in this list
+     * @param airfieldList All airports have to be stored in this list
      * @param glidertList All gilder fields have to be stored in this list
      * @returns true (success) or false (error occured)
      */
-    bool load( MapElementList& airportList, MapElementList& gliderList );
+    bool load( MapElementList& airfieldList, MapElementList& gliderList );
 
 private:
 
     /**
      * Parses the passed file in welt 2000 format and put the approriate
      * entries in the related lists.
-     * 
+     *
      * @param path Full name with path of welt2000 file
-     * @param airportList All airports have to be stored in this list
+     * @param airfieldList All airports have to be stored in this list
      * @param glidertList All gilder fields have to be stored in this list
      * @param doCompile create a binary file of the parser results,
      *                  if flag is set to true. Default is false
      * @returns true (success) or false (error occured)
      */
     bool parse( QString& path,
-                MapElementList& airportList,
+                MapElementList& airfieldList,
                 MapElementList& gliderList,
                 bool doCompile=false );
 
@@ -194,7 +194,7 @@ private:
      * not relevant entries, like turn points, will be filtered
      * out. The content of the old file is overwritten with the
      * filtered results to save disk space.
-     * 
+     *
      * @param path Full name with path of welt2000 file
      * @returns true (success) or false (error occured)
      */
@@ -202,7 +202,7 @@ private:
 
     /**
      * Read all entries from the configuration file related to welt2000.
-     * 
+     *
      * @param path Full name with path of welt2000 configuration file
      * @returns true (success) or false (error occured)
      */
@@ -213,12 +213,12 @@ private:
      * lists.
      *
      * @param path Full name with path of welt2000 binary file
-     * @param airportList All airports have to be stored in this list
+     * @param airfieldList All airports have to be stored in this list
      * @param glidertList All gilder fields have to be stored in this list
      * @returns true (success) or false (error occured)
      */
     bool readCompiledFile( QString &path,
-                           MapElementList& airportList,
+                           MapElementList& airfieldList,
                            MapElementList& gliderList );
 
     /**

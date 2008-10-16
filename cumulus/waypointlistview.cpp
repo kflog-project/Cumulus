@@ -105,10 +105,12 @@ void WaypointListView::showEvent(QShowEvent *)
 void WaypointListView::slot_Select()
 {
   wayPoint *w = listw->getSelectedWaypoint();
-  if ( w ) {
-    emit newWaypoint( w, true );
-    emit done();
-  }
+
+  if ( w )
+    {
+      emit newWaypoint( w, true );
+      emit done();
+    }
 }
 
 
@@ -116,8 +118,11 @@ void WaypointListView::slot_Select()
 void WaypointListView::slot_Info()
 {
   wayPoint *w = listw->getSelectedWaypoint();
+
   if (w)
-    emit info(w);
+    {
+      emit info(w);
+    }
 }
 
 
@@ -127,12 +132,18 @@ void WaypointListView::slot_Close ()
   emit done();
 }
 
-void WaypointListView::slot_Selected() {
+void WaypointListView::slot_Selected()
+{
   cmdSelect->setEnabled(true);
   wayPoint *w = listw->getSelectedWaypoint();
+
   if (w)
-    if(w->equals(calculator->getselectedWp()))
-      cmdSelect->setEnabled(false);
+    {
+      if(w->equals(calculator->getselectedWp()))
+        {
+          cmdSelect->setEnabled(false);
+        }
+    }
 }
 
 
@@ -183,16 +194,10 @@ void WaypointListView::slot_deleteWP()
     listw->deleteSelectedWaypoint();
     emit deleteWaypoint(wp); // cancel the selected waypoint
 
-/*    // remove from waypoint list in MapContents
-    _globalMapContents->getWaypointList()->removeAll( wp );
-    // save the modified catalog
-    _globalMapContents->saveWaypointList();
-
-    // remove from listView
-//    delete list->takeTopLevelItem( list->indexOfTopLevelItem(list->currentItem()) );
-    delete list->takeTopLevelItem( list->currentIndex().row() );*/
     if (par)
-      ((CumulusApp*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
+      {
+        ((CumulusApp*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
+      }
   }
 }
 
@@ -203,28 +208,24 @@ void WaypointListView::slot_wpEdited(wayPoint * wp)
 //  qDebug("WaypointListView::slot_wpEdited");
   listw->updateSelectedWaypoint( wp );
 
-  // save modified catalog
-//  _globalMapContents->saveWaypointList();
-
   if (par)
-    ((CumulusApp*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
+    {
+      ((CumulusApp*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
+    }
 }
 
 
 /** Called if a waypoint has been added. */
 void WaypointListView::slot_wpAdded(wayPoint * wp)
 {
-//  qDebug("WaypointListView::slot_wpAdded");
+  // qDebug("WaypointListView::slot_wpAdded(): name=%s", wp->name.toLatin1().data());
+
   listw->addWaypoint(wp);
 
-  // qDebug("WaypointListView::slot_wpAdded(): name=%s",wp->name.toLatin1().data());
-
-//  _globalMapContents->getWaypointList()->append(newWp);
-  // save the modified catalog
-//  _globalMapContents->saveWaypointList();
-
-    if (par)
+  if (par)
+    {
       ((CumulusApp*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
+    }
 }
 
 
@@ -233,20 +234,20 @@ void WaypointListView::slot_setHome()
   wayPoint *_wp = listw->getSelectedWaypoint();
 
   if ( _wp == 0 )
-    return;
+    {
+      return;
+    }
 
   int answer= QMessageBox::warning(this,tr("Set home site"),
-                                   tr("Use waypoint\n%1<br>as your home site?").arg(_wp->name),
+                                   tr("Use waypoint<br>%1<br>as your home site?").arg(_wp->name),
                                    QMessageBox::Ok | QMessageBox::Cancel );
   if( answer == 1 ) { //ok was chosen
 
     // Save new data as home position
     GeneralConfig *conf = GeneralConfig::instance();
-    wayPoint *w = new wayPoint(*_wp);
-    conf->setHomeWp(w);
+    conf->setHomeWp(_wp);
     conf->save();
 
-    QPoint newPos( _wp->origP.lat(), _wp->origP.lon() );
-    emit newHomePosition( &newPos );
+    emit newHomePosition( &_wp->origP );
   }
 }

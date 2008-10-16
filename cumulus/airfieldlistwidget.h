@@ -59,8 +59,8 @@ private:
 class _AirfieldItem : public QTreeWidgetItem
     {
     public:
-        _AirfieldItem(QTreeWidget*, Airport*, int type = 1000);
-        Airport* airport;
+        _AirfieldItem(QTreeWidget*, Airfield*, int type = 1000);
+        Airfield* airport;
     };
 };
 

@@ -33,9 +33,7 @@
 #include "waitscreen.h"
 #include "isolist.h"
 
-class Airport;
-class Flight;
-class GliderSite;
+class Airfield;
 class Isohypse;
 class LineElement;
 class RadioPoint;
@@ -56,7 +54,7 @@ class MapContents : public QObject
   /**
    * The identifiers for the map element types.
    */
-  enum MapContentsListID {NotSet = 0, AirportList, GliderSiteList,
+  enum MapContentsListID {NotSet = 0, AirfieldList, GliderSiteList,
                           AddSitesList, OutList, RadioList, AirspaceList,
                           ObstacleList, ReportList, CityList, VillageList,
                           LandmarkList, HighwayList,
@@ -108,14 +106,14 @@ class MapContents : public QObject
    *
    * @param  index  the list-index of the glider site
    */
-  Airport* getGlidersite(unsigned int index);
+  Airfield* getGlidersite(unsigned int index);
 
   /**
    * @return a pointer to the given airport
    *
    * @param  index  the list-index of the airport
    */
-  Airport* getAirport(unsigned int index);
+  Airfield* getAirport(unsigned int index);
 
   /**
    * @return a pointer to the SinglePoint of the given map element
@@ -302,9 +300,9 @@ class MapContents : public QObject
   void showProgress2WaitScreen( QString message );
 
   /**
-   * airportList contains airports, airfields, ultralight sites
+   * airfieldList contains airports, airfields, ultralight sites
    */
-  MapElementList airportList;
+  MapElementList airfieldList;
 
   /**
    * gliderSiteList contains all glider sites.

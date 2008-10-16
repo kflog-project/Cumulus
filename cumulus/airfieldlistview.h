@@ -41,14 +41,14 @@ public:
     ~AirfieldListView();
 
     /**
-     * @returns a pointer to the currently highlighted waypoint.
+     * @returns a pointer to the currently high lighted waypoint.
      */
-    wayPoint *getSelectedAirfield(QTreeWidget *list = 0);
+    wayPoint *getSelectedAirfield(QTreeWidget *list=0);
 
     AirfieldListWidget* listWidget() {
       return listw;
     };
-    
+
     wayPoint* getSelectedWaypoint() {
       return listw->getSelectedWaypoint();
     };
@@ -58,7 +58,6 @@ private:
     AirfieldListWidget* listw;
     QMainWindow *par;
     QBoxLayout *buttonrow;
-    wayPoint *wp;
     QPushButton *cmdSelect;
 
 protected:

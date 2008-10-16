@@ -33,13 +33,13 @@ MapElementList::~MapElementList()
 }
 
 // Filter out double elements
-void MapElementList::append(Airport& elem)
+void MapElementList::append(Airfield& elem)
 {
   QString item = elem.getName();
 
   if( !itemSet.contains( item ) )
     {
-      QList<Airport>::append( elem );
+      QList<Airfield>::append( elem );
       itemSet.insert( item );
     }
 

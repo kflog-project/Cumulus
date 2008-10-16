@@ -43,7 +43,7 @@
 #include "mapcalc.h"
 #include "polar.h"
 #include "waypoint.h"
-#include "airport.h"
+#include "airfield.h"
 
 extern MapContents *_globalMapContents;
 
@@ -187,10 +187,10 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
       for (int i=0; i<nr; i++ )
         {
           // Get specific site data from current list. We have to
-          // distinguish between AirportList and GilderSiteList.
-          Airport* site;
+          // distinguish between AirfieldList and GilderSiteList.
+          Airfield* site;
 
-          if( item == MapContents::AirportList )
+          if( item == MapContents::AirfieldList )
             {
               // Fetch data from airport list
               site = _globalMapContents->getAirport(i);
@@ -464,7 +464,7 @@ void ReachableList::calculateNewList()
   clearList();  // clear all lists
 
   // Now add items of different type to the list
-  addItemsToList(MapContents::AirportList);
+  addItemsToList(MapContents::AirfieldList);
   addItemsToList(MapContents::GliderSiteList);
   addItemsToList(MapContents::WaypointList);
   // qDebug("Number of potential reachable sites: %d", count() );

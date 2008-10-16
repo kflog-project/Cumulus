@@ -7,8 +7,8 @@
  ************************************************************************
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
- **                         2002 adjusted by Andr� Somers for Cumulus
- **                         2007 ported to X11 by Axel Pauli
+ **                         2002 adjusted by André Somers for Cumulus
+ **                         2008 ported to X11 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -23,65 +23,7 @@
 #include <QPoint>
 #include <QString>
 
-#include "mapmatrix.h"
 #include "wgspoint.h"
-
-/**
- * This struct contains one flightpoint.
- */
-struct flightPoint
-{
-  /**
-   * The original position of the point. Given in
-   * the internal format.
-   */
-  WGSPoint origP;
-
-  /**
-   * The projected position of the point.
-   */
-  QPoint projP;
-
-  /**
-   * The barometrical height, registered by the logger.
-   */
-  int height;
-
-  /**
-   * The gps-height, registered by the logger.
-   */
-  int gpsHeight;
-
-  /**
-   * The time, the point was registered by the logger.
-   */
-  unsigned int time;
-
-  /**
-   * The elevation difference to the previous Point
-   */
-  int dH;
-
-  /**
-   * The time difference to the previous Point
-   */
-  int dT;
-
-  /**
-   * The distance between the Points
-   */
-  int dS;
-
-  /**
-   * The Bearing to the previous Point
-   */
-  double bearing;
-
-  /**
-   * Kreisflug 0 oder Streckenflug 1
-   */
-  unsigned short f_state;
-};
 
 /**
  * This class contains the data of one waypoint.
@@ -160,7 +102,7 @@ class wayPoint
   double frequency;
   /** flag for landable*/
   bool isLandable;
-  /** contains an importance indidation for the waypoint
+  /** contains an importance indication for the waypoint
    * 0=low
    * 1=normal
    * 2=high  */

@@ -26,7 +26,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-#include "airport.h"
+#include "airfield.h"
 #include "taskeditor.h"
 #include "mapcontents.h"
 #include "flighttask.h"

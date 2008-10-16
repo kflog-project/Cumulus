@@ -38,7 +38,7 @@
 #include "mapmatrix.h"
 #include "mapview.h"
 #include "mapcalc.h"
-#include "airport.h"
+#include "airfield.h"
 #include "airspace.h"
 #include "basemapelement.h"
 #include "isohypse.h"
@@ -110,7 +110,7 @@ extern MapView* _globalMapView;
     ShortSave(out, pN);\
   } else\
     ShortLoad(in, pN);\
- 
+
 // Minimum amount of required free memory to start loading of a map file.
 // Do not under run this limit, OS can freeze is such a case.
 #define MINIMUM_FREE_MEMORY 1024*25
@@ -127,7 +127,7 @@ const int MapContents::isoLines[] =
 
 MapContents::MapContents(QObject* parent, WaitScreen* waitscreen)
     : QObject(parent),
-    airportList(this, "AirportList"),
+    airfieldList(this, "AirfieldList"),
     gliderSiteList(this, "GliderSiteList"),
     outList(this, "OutList"),
     isFirst(true)
@@ -1270,7 +1270,7 @@ void MapContents::proofeSection()
       ws->slot_SetText2(tr("Reading Welt 2000 File"));
       // @AP: Look for and if available load a welt2000 airfield file
       Welt2000 welt2000;
-      welt2000.load( airportList, gliderSiteList );
+      welt2000.load( airfieldList, gliderSiteList );
     }
 
   unloadDone = false;
@@ -1619,8 +1619,8 @@ unsigned int MapContents::getListLength(int listIndex) const
   {
     switch (listIndex)
       {
-      case AirportList:
-        return airportList.count();
+      case AirfieldList:
+        return airfieldList.count();
       case GliderSiteList:
         return gliderSiteList.count();
       case OutList:
@@ -1661,12 +1661,12 @@ Airspace* MapContents::getAirspace(unsigned int index)
   return static_cast<Airspace *> (airspaceList[index]);
 }
 
-Airport* MapContents::getAirport(unsigned int index)
+Airfield* MapContents::getAirport(unsigned int index)
 {
-  return &airportList[index];
+  return &airfieldList[index];
 }
 
-Airport* MapContents::getGlidersite(unsigned int index)
+Airfield* MapContents::getGlidersite(unsigned int index)
 {
   return &gliderSiteList[index];
 }
@@ -1675,8 +1675,8 @@ BaseMapElement* MapContents::getElement(int listType, unsigned int index)
 {
   switch (listType)
     {
-    case AirportList:
-      return &airportList[index];
+    case AirfieldList:
+      return &airfieldList[index];
     case GliderSiteList:
       return &gliderSiteList[index];
     case OutList:
@@ -1718,8 +1718,8 @@ SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
 {
   switch (listIndex)
     {
-    case AirportList:
-      return static_cast<SinglePoint *> (&airportList[index]);
+    case AirfieldList:
+      return static_cast<SinglePoint *> (&airfieldList[index]);
     case GliderSiteList:
       return static_cast<SinglePoint *> (&gliderSiteList[index]);
     case OutList:
@@ -1764,7 +1764,7 @@ void MapContents::slotReloadMapData()
   // clear the airspace region list in map too
   Map::getInstance()->clearAirspaceRegionList();
 
-  airportList.clear();
+  airfieldList.clear();
   qDeleteAll(airspaceList);
   airspaceList.clear();
   cityList.clear();
@@ -1858,13 +1858,13 @@ void MapContents::slotReloadWelt2000Data()
   qDebug("========= MapContents::slotReloadWelt2000Data() calls processEvents =========");
   QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
 
-  airportList.clear();
+  airfieldList.clear();
   gliderSiteList.clear();
 
   _globalMapView->message( tr("Reloading Welt2000 started") );
 
   Welt2000 welt2000;
-  welt2000.load( airportList, gliderSiteList );
+  welt2000.load( airfieldList, gliderSiteList );
 
   _globalMapView->message( tr("Reloading Welt2000 finished") );
 
@@ -1923,8 +1923,8 @@ void MapContents::printContents(QPainter* targetPainter, bool isText)
   for (int i = 0; i < landmarkList.size(); i++)
     landmarkList[i].printMapElement(targetPainter, isText);
 
-  for (int i = 0; i < airportList.size(); i++)
-    airportList[i].printMapElement(targetPainter, isText);
+  for (int i = 0; i < airfieldList.size(); i++)
+    airfieldList[i].printMapElement(targetPainter, isText);
 
   for (int i = 0; i < gliderSiteList.size(); i++)
     gliderSiteList[i].printMapElement(targetPainter, isText);
@@ -1943,12 +1943,12 @@ void MapContents::drawList(QPainter* targetP, unsigned int listID)
 
   switch (listID)
     {
-    case AirportList:
-      //list="AirportList";
-      //len=airportList.count();
+    case AirfieldList:
+      //list="AirfieldList";
+      //len=airfieldList.count();
       showProgress2WaitScreen( tr("Drawing airports") );
-      for (int i = 0; i < airportList.size(); i++)
-        airportList[i].drawMapElement(targetP);
+      for (int i = 0; i < airfieldList.size(); i++)
+        airfieldList[i].drawMapElement(targetP);
       break;
 
     case GliderSiteList:
@@ -2306,7 +2306,7 @@ bool MapContents::getIsInWaypointList(const wayPoint * wp)
   for (i=0; i < n; i++)
     {
       wpi=(wayPoint*)wpList.at(i);
-      
+
       if (wp->origP==wpi->origP)
         {
           return true;

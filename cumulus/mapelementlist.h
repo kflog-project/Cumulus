@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by Eggert Ehmke, 2007 Axel Pauli
+ **   Copyright (c):  2002 by Eggert Ehmke, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -23,12 +23,12 @@
 #include <QTimer>
 #include <QSet>
 
-#include "airport.h"
+#include "airfield.h"
 
 /**
  * @author Eggert Ehmke
  *
- * This class is an extension of a BaseMapElement QList. It checks in the
+ * This class is an extension of an Airfield QList. It checks in the
  * append method, if the item to be appended is already known with its name.
  * If that is true, no item will be appended. Furthermore a timer is fired.
  * The timer expires after 10s the last append has been done. The expire method
@@ -38,7 +38,7 @@
  *
  */
 
-class MapElementList : public QObject, public QList<Airport>
+class MapElementList : public QObject, public QList<Airfield>
 {
   Q_OBJECT
 
@@ -58,7 +58,7 @@ class MapElementList : public QObject, public QList<Airport>
    * already contain the item, it is added. Otherwise
    * it is discarded.
    */
-  void append (Airport& elem);
+  void append (Airfield& elem);
 
  private:
 

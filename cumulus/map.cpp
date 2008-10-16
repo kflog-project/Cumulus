@@ -28,7 +28,7 @@
 #include <QLabel>
 #include <QPolygon>
 
-#include "airport.h"
+#include "airfield.h"
 #include "airspace.h"
 #include "calculator.h"
 #include "cumulusapp.h"
@@ -229,7 +229,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
   int delta=0, dX=0, dY=0;
 
   // add WPList !!!
-  int searchList[] = {MapContents::GliderSiteList, MapContents::AirportList};
+  int searchList[] = {MapContents::GliderSiteList, MapContents::AirfieldList};
   wayPoint *w = static_cast<wayPoint *> (0);
 
   // scale uses unit meter/pixel
@@ -255,8 +255,8 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
           loop < _globalMapContents->getListLength(searchList[l]); loop++)
         {
           // Get specific site data from current list. We have to
-          // distinguish between AirportList and GilderSiteList.
-          Airport* site;
+          // distinguish between AirfieldList and GilderSiteList.
+          Airfield* site;
 
           QString siteName;
           QString siteIcao;
@@ -268,7 +268,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
           uint siteElevation;
           QPoint curPos;
 
-          if( searchList[l] == MapContents::AirportList )
+          if( searchList[l] == MapContents::AirfieldList )
             {
               // Fetch data from airport list
               site = _globalMapContents->getAirport(loop);
@@ -316,7 +316,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
                   continue; //the point we found earlier was closer
                 }
 
-              // qDebug ("Airport: %s", hitElement->getName().toLatin1().data() );
+              // qDebug ("Airfield: %s", hitElement->getName().toLatin1().data() );
 
               siteName = site->getWPName();
               siteIcao = site->getICAO();
@@ -1042,7 +1042,7 @@ void Map::__drawNavigationLayer()
 
   navP.begin(&m_pixNavigationMap);
 
-  _globalMapContents->drawList(&navP, MapContents::AirportList);
+  _globalMapContents->drawList(&navP, MapContents::AirfieldList);
   _globalMapContents->drawList(&navP, MapContents::OutList);
   _globalMapContents->drawList(&navP, MapContents::GliderSiteList);
   __drawWaypoints(&navP);
@@ -1279,7 +1279,7 @@ bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, QList<wayPoint*
       QList<int> contentArray;
 
       contentArray.append( MapContents::GliderSiteList );
-      contentArray.append( MapContents::AirportList );
+      contentArray.append( MapContents::AirfieldList );
 
       for( int n = 0; n < contentArray.count(); n++)
         {

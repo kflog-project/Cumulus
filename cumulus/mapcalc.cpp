@@ -7,6 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
+**                   2008 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -79,19 +80,18 @@ double dist(wayPoint* wp1, wayPoint* wp2)
 }
 
 
-double dist(wayPoint* wp, flightPoint* fp)
+double dist(wayPoint* wp, FlightPoint* fp)
 {
     return ( dist( wp->origP.lat(), wp->origP.lon(),
                    fp->origP.lat(), fp->origP.lon() ) );
 }
 
 
-double dist(flightPoint* fp1,  flightPoint* fp2)
+double dist(FlightPoint* fp1,  FlightPoint* fp2)
 {
     return ( dist( fp1->origP.lat(), fp1->origP.lon(),
                    fp2->origP.lat(), fp2->origP.lon() ) );
 }
-
 
 
 QString printTime(int time, bool isZero, bool isSecond)
@@ -118,19 +118,19 @@ QString printTime(int time, bool isZero, bool isSecond)
 }
 
 
-float getSpeed(flightPoint p)
+float getSpeed(FlightPoint p)
 {
     return (float)p.dS / (float)p.dT * 3.6;
 }
 
 
-float getVario(flightPoint p)
+float getVario(FlightPoint p)
 {
     return (float)p.dH / (float)p.dT;
 }
 
 
-float getBearing(flightPoint p1, flightPoint p2)
+float getBearing(FlightPoint p1, FlightPoint p2)
 {
     return (float)polar( ( p2.projP.x() - p1.projP.x() ),
                          ( p2.projP.y() - p1.projP.y() ) );

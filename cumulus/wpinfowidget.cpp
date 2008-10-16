@@ -25,7 +25,7 @@
 
 #include "cumulusapp.h"
 #include "basemapelement.h"
-#include "airport.h"
+#include "airfield.h"
 #include "wpinfowidget.h"
 #include "generalconfig.h"
 #include "calculator.h"
@@ -39,7 +39,7 @@
 
 extern MapConfig    *_globalMapConfig;
 extern MapContents  *_globalMapContents;
-extern Calculator       *calculator;
+extern Calculator   *calculator;
 
 WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
     QWidget(parent),
@@ -72,7 +72,6 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
   topLayout->addLayout(buttonrow2);
 
   cmdAddWaypoint = new QPushButton(tr("Add Waypoint"), this);
-  QFont buttonFont = cmdAddWaypoint->font();
   cmdAddWaypoint->setFont(bfont);
   buttonrow2->addWidget(cmdAddWaypoint);
   connect(cmdAddWaypoint, SIGNAL(clicked()),
@@ -299,6 +298,7 @@ void WPInfoWidget::writeText()
           // qDebug("_wp->surface %d", _wp->surface );
           if (iTmp<0)
             iTmp=0;
+
           QString tmp2;
 
           if( _wp->runway < 0 || _wp->runway > 360 )
@@ -316,7 +316,7 @@ void WPInfoWidget::writeText()
             }
 
           itxt += table + "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (" +
-            Airport::item2Text(iTmp) + ")</td>" +
+            Runway::item2Text(iTmp) + ")</td>" +
             "<td>" + tr("Length: ") + "</td><td><b>";
 
           if( _wp->length <= 0 )
@@ -497,7 +497,6 @@ void WPInfoWidget::slot_setAsHome()
     {
       // Save new data as home position
       GeneralConfig *conf = GeneralConfig::instance();
-
       conf->setHomeWp(_wp);
       conf->save();
       emit newHomePosition( &_wp->origP );
@@ -526,7 +525,6 @@ void WPInfoWidget::slot_arrival()
 
   // create arrival info widget
   arrivalInfo = new TPInfoWidget( this );
-  // arrivalInfo->setWindowModality(Qt::WindowModal);
   arrivalInfo->prepareArrivalInfoText( _wp );
   arrivalInfo->showTP( false );
 

@@ -28,7 +28,7 @@
  * or Landmark. Consists only of a name and a position.
  *
  * @see BaseMapElement#objectType
- * @see Airport
+ * @see Airfield
  * @see GliderSite
  * @see RadioPoint
  *

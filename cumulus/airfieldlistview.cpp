@@ -22,7 +22,7 @@
 
 #include "generalconfig.h"
 #include "calculator.h"
-#include "airport.h"
+#include "airfield.h"
 
 AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)
 {
@@ -63,14 +63,11 @@ AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)
   QShortcut* scSelect = new QShortcut( this );
   scSelect->setKey( Qt::Key_Return );
   connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
-
-  wp = new wayPoint();
 }
 
 
 AirfieldListView::~AirfieldListView()
 {
-  delete wp;
 }
 
 void AirfieldListView::showEvent(QShowEvent *)
@@ -78,14 +75,13 @@ void AirfieldListView::showEvent(QShowEvent *)
   // listw->listWidget()->setFocus();
 }
 
-
-
 /** This signal is called to indicate that a selection has been made. */
 void AirfieldListView::slot_Select()
 {
-  wayPoint *w = listw->getSelectedWaypoint();
-  if ( w ) {
-    emit newWaypoint( w, true );
+  wayPoint *_wp = listw->getSelectedWaypoint();
+
+  if ( _wp ) {
+    emit newWaypoint( _wp, true );
     emit done();
   }
 }
@@ -96,14 +92,13 @@ void AirfieldListView::slot_Info()
 {
   // qDebug("AirfieldListView::slot_Info");
 
-  wayPoint *w = listw->getSelectedWaypoint();
+  wayPoint *_wp = listw->getSelectedWaypoint();
 
-  if ( w )
+  if ( _wp )
     {
-      emit info( w );
+      emit info( _wp );
     }
 }
-
 
 /** @ee This slot is called if the listview is closed without selecting */
 void AirfieldListView::slot_Close ()
@@ -112,37 +107,41 @@ void AirfieldListView::slot_Close ()
   emit done();
 }
 
-void AirfieldListView::slot_Selected() {
+void AirfieldListView::slot_Selected()
+{
   cmdSelect->setEnabled(true);
-  wayPoint *w = listw->getSelectedWaypoint();
-  if (w)
-    if(w->equals(calculator->getselectedWp()))
-      cmdSelect->setEnabled(false);
-}
+  wayPoint* _wp = listw->getSelectedWaypoint();
 
+  if (_wp)
+    {
+      if(_wp->equals(calculator->getselectedWp()))
+        {
+          cmdSelect->setEnabled(false);
+        }
+    }
+}
 
 void AirfieldListView::slot_setHome()
 {
   wayPoint* _wp = listw->getSelectedWaypoint();
 
-  if ( _wp == 0 ) {
-    return;
-  }
+  if ( _wp == 0 )
+    {
+      return;
+    }
 
   int answer= QMessageBox::warning(this,
                                    tr("Set home site"),
-                                   tr("Use airfield\n%1<br>as your home site?").arg(_wp->name),
+                                   tr("Use airfield<br>%1<br>as your home site?").arg(_wp->name),
                                    QMessageBox::Ok | QMessageBox::Cancel );
-  if( answer == QMessageBox::Ok ) {
+  if( answer == QMessageBox::Ok )
+    {
+      // Save new data as home position
+      GeneralConfig *conf = GeneralConfig::instance();
+      conf->setHomeLat(_wp->origP.lat());
+      conf->setHomeLon(_wp->origP.lon());
+      conf->save();
 
-    // Save new data as home position
-    GeneralConfig *conf = GeneralConfig::instance();
-
-    conf->setHomeLat(_wp->origP.lat());
-    conf->setHomeLon(_wp->origP.lon());
-    conf->save();
-
-    QPoint newPos( _wp->origP.lat(), _wp->origP.lon() );
-    emit newHomePosition( &newPos );
-  }
+      emit newHomePosition( &_wp->origP );
+    }
 }

@@ -28,7 +28,7 @@
 #include <QHash>
 #include <QSet>
 
-#include "airport.h"
+#include "airfield.h"
 #include "basemapelement.h"
 #include "filetools.h"
 #include "mapcalc.h"
@@ -94,7 +94,7 @@ Welt2000::~Welt2000()
  * be the original ascii file or a compiled version of it. The results
  * are put in the passed lists
  */
-bool Welt2000::load( MapElementList& airportList, MapElementList& gliderList )
+bool Welt2000::load( MapElementList& airfieldList, MapElementList& gliderList )
 {
   // Rename WELT2000.TXT -> welt2000.txt.
   QString wl = "welt2000.txt";
@@ -134,7 +134,7 @@ bool Welt2000::load( MapElementList& airportList, MapElementList& gliderList )
           // Compiled file format is not the expected one, remove
           // wrong file and start a reparsing of source file.
           unlink( w2PathTxc.toLatin1().data() );
-          return parse( w2PathTxt, airportList, gliderList, true );
+          return parse( w2PathTxt, airfieldList, gliderList, true );
         }
 
       // Do a date-time check, if a compiled file was localized and a
@@ -153,7 +153,7 @@ bool Welt2000::load( MapElementList& airportList, MapElementList& gliderList )
               // compiled file. Therefore we do start a reparsing of source
               // file.
               unlink( w2PathTxc.toLatin1().data() );
-              return parse( w2PathTxt, airportList, gliderList, true );
+              return parse( w2PathTxt, airfieldList, gliderList, true );
             }
         }
 
@@ -171,7 +171,7 @@ bool Welt2000::load( MapElementList& airportList, MapElementList& gliderList )
           // in the assumption that a config file will not be changed
           // every minute.
           unlink( w2PathTxc.toLatin1().data() );
-          return parse( w2PathTxt, airportList, gliderList, true );
+          return parse( w2PathTxt, airfieldList, gliderList, true );
         }
 
       // We do check, if the user has countries defined. If yes, we
@@ -186,7 +186,7 @@ bool Welt2000::load( MapElementList& airportList, MapElementList& gliderList )
           // There is a difference in the country lists. Therefore we
           // start a reparsing of the source file.
           unlink( w2PathTxc.toLatin1().data() );
-          return parse( w2PathTxt, airportList, gliderList, true );
+          return parse( w2PathTxt, airfieldList, gliderList, true );
         }
 
       if( h_countryList.count() > 0 )
@@ -213,7 +213,7 @@ bool Welt2000::load( MapElementList& airportList, MapElementList& gliderList )
               // The configured country list is not identical to the
               // compiled country list. Therefore we start a reparsing.
               unlink( w2PathTxc.toLatin1().data() );
-              return parse( w2PathTxt, airportList, gliderList, true );
+              return parse( w2PathTxt, airfieldList, gliderList, true );
             }
         }
       else
@@ -230,7 +230,7 @@ bool Welt2000::load( MapElementList& airportList, MapElementList& gliderList )
               // Home coordinates have been changed, make a reparsing of
               // source file
               unlink( w2PathTxc.toLatin1().data() );
-              return parse( w2PathTxt, airportList, gliderList, true );
+              return parse( w2PathTxt, airfieldList, gliderList, true );
             }
 
           // Furthermore we do check, if the home radius has been
@@ -259,7 +259,7 @@ bool Welt2000::load( MapElementList& airportList, MapElementList& gliderList )
               // Home radius has been changed, make a reparsing of
               // source file
               unlink( w2PathTxc.toLatin1().data() );
-              return parse( w2PathTxt, airportList, gliderList, true );
+              return parse( w2PathTxt, airfieldList, gliderList, true );
             }
         }
 
@@ -277,22 +277,22 @@ bool Welt2000::load( MapElementList& airportList, MapElementList& gliderList )
             }
 
           unlink( w2PathTxc.toLatin1().data() );
-          return parse( w2PathTxt, airportList, gliderList, true );
+          return parse( w2PathTxt, airfieldList, gliderList, true );
         }
 
       // Nothing has been changed, read in compiled file
-      if( ! readCompiledFile( w2PathTxc, airportList, gliderList ) )
+      if( ! readCompiledFile( w2PathTxc, airfieldList, gliderList ) )
         {
           // reading of compiled file failed, let's parse the source
           unlink( w2PathTxc.toLatin1().data() );
-          return parse( w2PathTxt, airportList, gliderList, true );
+          return parse( w2PathTxt, airfieldList, gliderList, true );
         }
 
       return true;
     } // End of if( resTxc )
 
   // parse source file
-  return parse( w2PathTxt, airportList, gliderList, true );
+  return parse( w2PathTxt, airfieldList, gliderList, true );
 }
 
 
@@ -530,14 +530,14 @@ bool Welt2000::readConfigEntries( QString &path )
  * entries in the related lists.
  *
  * arg1 path: Full name with path of welt2000 file
- * arg2 airportList: All airports have to be stored in this list
+ * arg2 airfieldList: All airports have to be stored in this list
  * arg3 glidertList: All gilder fields have to be stored in this list
  * arg4 doCompile: create a binary file of the parser results,
  *                 if flag is set to true. Default is false.
  * returns true (success) or false (error occured)
  */
 bool Welt2000::parse( QString& path,
-                      MapElementList& airportList,
+                      MapElementList& airfieldList,
                       MapElementList& gliderList,
                       bool doCompile )
 {
@@ -1135,15 +1135,15 @@ bool Welt2000::parse( QString& path,
         {
           // Add a non glider site to the list. That can be an
           // airfield or an ultralight field
-          Airport ap( afName, icao.trimmed(), gpsName, afType,
+          Airfield ap( afName, icao.trimmed(), gpsName, afType,
                       wgsPos, position, rw, elevation, frequency );
 
-          airportList.append( ap );
+          airfieldList.append( ap );
         }
       else
         {
           // Add a glider site to the related list.
-          Airport gs( afName, icao.trimmed(), gpsName, afType,
+          Airfield gs( afName, icao.trimmed(), gpsName, afType,
                       wgsPos, position, rw, elevation, frequency );
 
           gliderList.append( gs );
@@ -1259,7 +1259,7 @@ bool Welt2000::parse( QString& path,
  * lists.
  */
 bool Welt2000::readCompiledFile( QString &path,
-                                 MapElementList& airportList,
+                                 MapElementList& airfieldList,
                                  MapElementList& gliderList )
 {
   QTime t;
@@ -1409,14 +1409,14 @@ bool Welt2000::readCompiledFile( QString &path,
         {
           // Add a non glider site to the list. That can be an
           // airfield or an ultralight field
-          Airport ap( afName, icao, gpsName, (BaseMapElement::objectType) afType,
+          Airfield ap( afName, icao, gpsName, (BaseMapElement::objectType) afType,
                       wgsPos, position, rw, (uint) elevation, frequency );
-          airportList.append( ap );
+          airfieldList.append( ap );
         }
       else
         {
           // Add a glider site to the list.
-          Airport gs( afName, icao, gpsName, (BaseMapElement::objectType) afType,
+          Airfield gs( afName, icao, gpsName, (BaseMapElement::objectType) afType,
                       wgsPos, position, rw, (uint) elevation, frequency );
 
           gliderList.append( gs );
