@@ -8,7 +8,7 @@ CONFIG      = debug qt warn_on
 HEADERS     = \
     airfieldlistview.h \
     airfieldlistwidget.h \
-    airport.h \
+    airfield.h \
     airregion.h \
     airspace.h \
     altimetermodedialog.h \
@@ -20,6 +20,7 @@ HEADERS     = \
     degreespinbox.h \
     distance.h \
     filetools.h \
+    flightpoint.h \
     flighttask.h \
     generalconfig.h \
     gliderflightdialog.h \
@@ -112,7 +113,7 @@ HEADERS     = \
 SOURCES     = \
     airfieldlistview.cpp \
     airfieldlistwidget.cpp \
-    airport.cpp \
+    airfield.cpp \
     airregion.cpp \
     airspace.cpp \
     altimetermodedialog.cpp \
