@@ -17,10 +17,17 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.1.x (Development based on X11/Qt-4.4.1)
 -------------------------------------------------
+[o] 2008-10-16 AP: Class Airport renamed to Airfield, FlightPoint class 
+                   outsourced from wayPoint and put in a separate file.
+[-] 2008-10-16 AP: Bugfix: Crash fixed during adding of waypoints.
+[-] 2008-10-16 AP: Bugfix: Runway surface was wrong displayed in info widget.
 [o-]2008-10-15 AP: Class GliderSiteList removed, class Airport extended by
-                   missing GliderSiteList itmes. Different conflicts could be
+                   missing GliderSiteList items. Different conflicts could be
                    solved by this way.
 [o] 2008-10-15 AP: Different map element lists changed from pointer list to value list.
+[-] 2008-10-15 AP: Bugfix: Missing copy constructor and assignment operator added
+                   to class IsoListEntry. That fixed crash problems caused by
+                   double freeing of allocated memory.
 [o] 2008-10-13 AP: Mechnism optimized for removing not more necessary map tiles. 
 [o] 2008-10-09 JD: Bugfix: disabling 'page' function in WP/AF lists works now
 [o] 2008-10-02 AP: Class CuCalc remaned to Calculator
@@ -32,8 +39,8 @@ Cumulus 2.1.x (Development based on X11/Qt-4.4.1)
                    of 75 km are calculated, if no glider is selected. If glider
                    was deleted reachable list has worked with invalid data.
 [-] 2008-09-25 AP: Bugfix: Polar object reset to NULL in calculator, if belonging
-                   glider has been deleted. Reachable list has worked with invalid data
-                   in this situation.
+                   glider has been deleted. Reachable list has worked with invalid
+                   data in this situation.
 [+] 2008-09-23 AP: Course display added to task list view.
 [o] 2008-09-23 AP: Drawing of railroads, roads and hydro according to scale size
                    modified.
