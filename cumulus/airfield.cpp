@@ -1,6 +1,6 @@
 /***********************************************************************
  **
- **   airport.cpp
+ **   airfield.cpp
  **
  **   This file is part of Cumulus.
  **
@@ -16,17 +16,20 @@
  **
  ***********************************************************************/
 
-#include "airport.h"
+#include "airfield.h"
 #include "reachablelist.h"
 
-Airport::Airport(const QString& name, const QString& icao,
-                 const QString& shortName, const BaseMapElement::objectType typeId,
-                 const WGSPoint& wgsPos, const QPoint& pos,
-                 const Runway& rw,
-                 const unsigned int elevation,
-                 const QString& frequency,
-                 bool winch,
-                 bool towing )
+Airfield::Airfield( const QString& name,
+                    const QString& icao,
+                    const QString& shortName,
+                    const BaseMapElement::objectType typeId,
+                    const WGSPoint& wgsPos,
+                    const QPoint& pos,
+                    const Runway& rw,
+                    const unsigned int elevation,
+                    const QString& frequency,
+                    bool winch,
+                    bool towing )
     : SinglePoint(name, shortName, typeId, wgsPos, pos, elevation),
     icao(icao),
     frequency(frequency),
@@ -44,11 +47,11 @@ Airport::Airport(const QString& name, const QString& icao,
     }
 }
 
-Airport::~Airport()
+Airfield::~Airfield()
 {
 }
 
-QString Airport::getInfoString() const
+QString Airfield::getInfoString() const
   {
     QString text, elev;
     QString path = "cumulus/";
@@ -60,18 +63,18 @@ QString Airport::getInfoString() const
            "<TD>" + name;
     if (!icao.isEmpty())
       text += " (" + icao + ")";
-    
+
     text += "<FONT SIZE=-1><BR><BR>" + elev;
-    
+
     if (!frequency.isEmpty())
       text += "&nbsp;/&nbsp;" + frequency + "&nbsp;Mhz.";
-    
+
     text += "&nbsp;&nbsp;</FONT></TD></TR></TABLE></HTML>";
 
     return text;
   }
 
-void Airport::drawMapElement(QPainter* targetP)
+void Airfield::drawMapElement(QPainter* targetP)
 {
   if ( ! isVisible() )
     {

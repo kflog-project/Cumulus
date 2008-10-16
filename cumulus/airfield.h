@@ -1,6 +1,6 @@
 /***********************************************************************
  **
- **   airport.h
+ **   airfield.h
  **
  **   This file is part of Cumulus.
  **
@@ -16,8 +16,8 @@
  **
  ***********************************************************************/
 
-#ifndef AIRPORT_H
-#define AIRPORT_H
+#ifndef AIRFIELD_H
+#define AIRFIELD_H
 
 #include <QString>
 
@@ -34,12 +34,12 @@
  * @see BaseMapElement#objectType
  */
 
-class Airport : public SinglePoint
+class Airfield : public SinglePoint
 {
  public:
 
   /**
-   * Creates a new Airport-object.
+   * Creates a new Airfield-object.
    * @param  name  The name
    * @param  icao  The icao-name
    * @param  shortName  The abbreviation, used for the gps-logger
@@ -50,22 +50,22 @@ class Airport : public SinglePoint
    * @param  winch  "true", if winch-launch is available
    * @param  towing "true", if aero towing is available
    */
-  Airport( const QString& name,
-           const QString& icao,
-           const QString& shortName,
-           const BaseMapElement::objectType typeId,
-           const WGSPoint& wgsPos,
-           const QPoint& pos,
-           const Runway& rw,
-           const unsigned int elevation,
-           const QString& frequency,
-           bool winch = false,
-           bool towing = false );
+  Airfield( const QString& name,
+            const QString& icao,
+            const QString& shortName,
+            const BaseMapElement::objectType typeId,
+            const WGSPoint& wgsPos,
+            const QPoint& pos,
+            const Runway& rw,
+            const unsigned int elevation,
+            const QString& frequency,
+            bool winch = false,
+            bool towing = false );
 
   /**
    * Destructor
    */
-  virtual ~Airport();
+  virtual ~Airfield();
 
   /**
    * @return the frequency of the airport.
