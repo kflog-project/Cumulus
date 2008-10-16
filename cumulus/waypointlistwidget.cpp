@@ -158,12 +158,17 @@ void WaypointListWidget::updateSelectedWaypoint(wayPoint* wp)
 /** Called if a waypoint has been added. */
 void WaypointListWidget::addWaypoint(wayPoint* newWp)
 {
-  if( newWp == 0 ) {
-    qWarning("WaypointListWidget::updateSelectedWaypoint: empty waypoint given");
-    return;
-  }
+  if( newWp == 0 )
+    {
+      qWarning("WaypointListWidget::updateSelectedWaypoint: empty waypoint given");
+      return;
+    }
 
-  new _WaypointItem(list, newWp);
+  // @AP: Make a deep copy of the passed waypoint because
+  // the passed object can be freed by the caller!
+  wayPoint* wp = new wayPoint( *newWp );
+
+  new _WaypointItem(list, wp);
 
   filter->reset();
   resizeListColumns();
@@ -171,7 +176,7 @@ void WaypointListWidget::addWaypoint(wayPoint* newWp)
   // qDebug("WaypointListWidget::addWaypoint: name=%s", wp->name.toLatin1().data() );
 
   // put new waypoint into the global waypoint list
-  _globalMapContents->getWaypointList()->append(newWp);
+  _globalMapContents->getWaypointList()->append(wp);
   // save the modified waypoint catalog
   _globalMapContents->saveWaypointList();
 }
@@ -181,7 +186,9 @@ WaypointListWidget::_WaypointItem::_WaypointItem(QTreeWidget* tw, wayPoint* wayp
   QTreeWidgetItem(tw),  wp(waypoint)
 {
   if (!wp)
-    return;
+    {
+      return;
+    }
 
   QPainter pnt;
   QPixmap selectIcon;
