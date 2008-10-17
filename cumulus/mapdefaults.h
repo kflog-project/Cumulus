@@ -19,14 +19,6 @@
 #define HOME_DEFAULT_LAT 31509700
 #define HOME_DEFAULT_LON 8026500
 
-// Scale-values
-#define L_LIMIT 10
-#define U_LIMIT 1500
-#define SWITCH_S 290
-#define BORDER_1 100
-#define BORDER_2 500
-#define BORDER_3 2000
-
 // the scale-borders
 #define VAL_BORDER_L                      10
 #define VAL_BORDER_U                    1200
@@ -36,7 +28,7 @@
 #define VAL_BORDER_S                     250
 
 /*
- * Definierte Farbwerte bei (dazwischen wurde früher linear geändert):
+ * Definierte Farbwerte bei (dazwischen wurde frueher linear geaendert):
  *
  *   <0 m :    96 / 128 / 248
  *    0 m :   174 / 208 / 129 *
