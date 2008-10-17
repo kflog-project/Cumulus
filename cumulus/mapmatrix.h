@@ -44,7 +44,7 @@ class MapMatrix : public QObject
 
     public:
   /**
-   * Creates a new mapmatrix-object.
+   * Creates a new MapMatrix object.
    */
   MapMatrix(QObject*);
 
@@ -105,7 +105,7 @@ class MapMatrix : public QObject
    *
    * @return the mapped polygon
    */
-    
+
   QPolygon map(const QPolygon &a) const;
 /*  QPolygon map(const QPolygon& pPolygon) const
   {
@@ -119,7 +119,7 @@ class MapMatrix : public QObject
    *
    * @return the mapped point
    */
-    
+
   QPoint map(const QPoint &p) const;
 /*  QPoint map(const QPoint& point) const
   {
@@ -149,7 +149,7 @@ class MapMatrix : public QObject
    *
    * @return the mapped bearing
    */
-    
+
   double map(double bearing) const
   {
     return (bearing + rotationArc);
@@ -215,7 +215,7 @@ class MapMatrix : public QObject
   enum MoveDirection {NotSet = 0, North = 1, West = 2, East = 4,
                       South = 8, Home = 16, Waypoint = 32};
   /**
-   * CurrentScale muss immer die größte Zahl sein!
+   * CurrentScale muss immer die groesste Zahl sein!
    */
   enum ScaleType {LowerLimit = 0, Border1 = 1, Border2 = 2, Border3 = 3,
                   UpperLimit = 4, SwitchScale = 5, CurrentScale = 6};
@@ -401,11 +401,11 @@ class MapMatrix : public QObject
   QRect viewBorder;
   // QRect printBorder;
   QRect mapBorder;
-    
+
   /** The mapCenterArea is the rectangle in which the glidersymbol
    *    can move around before the map is redrawn */
   QRect mapCenterArea;
-    
+
   QRect mapCenterAreaProj;
   /** */
   QSize mapViewSize;
@@ -421,7 +421,7 @@ class MapMatrix : public QObject
 
   /** current selected type of map projection */
   ProjectionBase* currentProjection;
-    
+
   /** optimisation to prevent recurring recalculation of this value */
   int _MaxScaleToCScaleRatio;
 
