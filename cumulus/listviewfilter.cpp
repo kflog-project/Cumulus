@@ -434,8 +434,10 @@ void ListViewFilterItem::divide(int partcount)
     for(int i=1;i<=partcount;i++)     //now, create the actual filters with the found split points.
     {
         itm = new ListViewFilterItem(this);
-        itm->from=items.at(pos[i-1]+1)->text(0).left(diff[i-1]).toUpper();
-        itm->to=items.at(pos[i])->text(0).left(diff[i]).toUpper();
+        //itm->from=items.at(pos[i-1]+1)->text(0).left(diff[i-1]).toUpper();
+        //itm->to=items.at(pos[i])->text(0).left(diff[i]).toUpper();
+        itm->from=items.at(pos[i-1]+1)->text(0).left(diff[i-1]);
+        itm->to=items.at(pos[i])->text(0).left(diff[i]);
         subfilters.append(itm);
         for (int j=pos[i-1]+1;j<=pos[i];j++)
         {
