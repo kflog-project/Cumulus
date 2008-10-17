@@ -21,20 +21,18 @@
 #include <QtGlobal>
 #include <QMessageBox>
 
-//#include <fixedpointmath.h>
-
 #include "mapcalc.h"
 #include "mapdefaults.h"
 #include "mapmatrix.h"
 #include "generalconfig.h"
 
-// Projektions-Maßstab
-// 10 Meter Höhe pro Pixel ist die stärkste Vergrößerung.
-// Bei dieser Vergrößerung erfolgt die eigentliche Projektion
+// Projektions-Massstab
+// 10 Meter Hoehe pro Pixel ist die staerkste Vergroesserung.
+// Bei dieser Vergroesserung erfolgt die eigentliche Projektion
 #define MAX_SCALE 50.0   // 40.0
 #define MIN_SCALE 2000.0 // 800.0
 
-// Mit welchem Radius müssen wir rechnen ???
+// Mit welchem Radius muessen wir rechnen ???
 // #define RADIUS 6370290 //6370289.509
 // #define NUM_TO_RAD(num) ( ( M_PI * (double)(num) ) / 108000000.0 )
 // this is faster !
@@ -42,7 +40,7 @@
 #define RAD_TO_NUM(rad) ( ( (rad) * (108000000.0 / M_PI) ) )
 
 // Macros borrowed from FPM ()
-// 
+//
 // Fixed point math improves polygon and point mapping;
 // isoline drawing gains up to one second
 
@@ -96,10 +94,10 @@ MapMatrix::MapMatrix(QObject* parent)
   // call.
 
   GeneralConfig *conf = GeneralConfig::instance();
-  
+
   // save current map root directory to detect user changes during run-time
   mapRootDir = conf->getMapRootDir();
-  
+
   int projectionType = conf->getMapProjectionType();
 
   if( projectionType == ProjectionBase::Lambert ) {
@@ -159,7 +157,7 @@ void MapMatrix::wgsToMap(int latIn, int lonIn, double& latOut, double& lonOut)
   double rLon = NUM_TO_RAD(lonIn);
 
   latOut = currentProjection->projectX(rLat, rLon) * (RADIUS / MAX_SCALE),
-    lonOut = currentProjection->projectY(rLat, rLon) * (RADIUS / MAX_SCALE);
+  lonOut = currentProjection->projectY(rLat, rLon) * (RADIUS / MAX_SCALE);
 }
 
 
@@ -190,7 +188,7 @@ QPoint MapMatrix::__mapToWgs(int x, int y) const
 bool MapMatrix::isVisible( const QRect& itemBorder, int typeID) const
 {
   // Grenze: Nahe 15Bit
-  // Vereinfachung kann zu Fehlern führen ...
+  // Vereinfachung kann zu Fehlern fï¿½hren ...
   // qDebug("MapMatrix::isVisible(): w=%d h=%d", itemBorder.width(), itemBorder.height() );
   // ! check for < 10000 is a workaround for a bug otherwhere
   //   that came out after fixing the scale criteria that was always true
@@ -311,8 +309,7 @@ double MapMatrix::centerToRect(const QRect& center, const QSize& pS)
     yScaleDelta = height / pS.height();
   }
 
-  double tempScale = MAX(cScale * MAX(xScaleDelta, yScaleDelta),
-                         MAX_SCALE);
+  double tempScale = MAX(cScale * MAX(xScaleDelta, yScaleDelta), MAX_SCALE);
 
   // Only change if difference is too large:
   if((tempScale / cScale) > 1.05 || (tempScale / cScale) < 0.95)
@@ -412,8 +409,8 @@ void MapMatrix::createMatrix(const QSize& newSize)
 
   //
   // Die Berechnung der Kartengrenze funktioniert so nur auf der
-  // Nordhalbkugel. Auf der Südhalbkugel stimmen die Werte nur
-  // näherungsweise.
+  // Nordhalbkugel. Auf der Sï¿½dhalbkugel stimmen die Werte nur
+  // nï¿½herungsweise.
   //
   QPoint tCenter  = __mapToWgs(invertMatrix.map(QPoint(newSize.width() / 2, 0)));
   QPoint tlCorner = __mapToWgs(invertMatrix.map(QPoint(0, 0)));
@@ -432,7 +429,7 @@ void MapMatrix::createMatrix(const QSize& newSize)
   //create the map center area definition
   int vqDist=-viewBorder.height()/5;
   int hqDist=viewBorder.width()/5;
-  
+
   mapCenterArea=QRect(mapCenterLat - vqDist, mapCenterLon - hqDist, 2* vqDist, 2* hqDist);
 
   vqDist=mapBorder.height()/5;
@@ -537,7 +534,7 @@ void MapMatrix::slotInitMatrix()
   else if (currentProjection->projectionType() == ProjectionBase::Cylindric) {
     initChanged = ((ProjectionCylindric*)currentProjection)->initProjection( conf->getCylinderParallel() );
   }
-  
+
   if( mapRootDir != conf->getMapRootDir() ) {
     // The user has defined a new map root directory at run-time. We should take
     // that as new source for map files and trigger a reload of all map files.
@@ -578,8 +575,8 @@ double MapMatrix::ensureVisible(const QPoint& point)
 
   //we obviously need the bigger of the two scales
   double newScale = qMax(xScale, yScale);
-  
-  if (newScale < MIN_SCALE) {  //we only zoom if we can fit it on the map with the minimum scale or more
+
+  if (newScale <= MIN_SCALE) {  //we only zoom if we can fit it on the map with the minimum scale or more
     newScale=qMax(newScale, MAX_SCALE); //maximum zoom is the minimum scale
     cScale=newScale;
 
@@ -612,7 +609,7 @@ void MapMatrix::slotSetNewHome(const QPoint* newHome)
   emit homePositionChanged();
 }
 
-/* 
+/*
 // The old function using Qt (floating point)
 QPolygon MapMatrix::map(const QPolygon &a) const
 {

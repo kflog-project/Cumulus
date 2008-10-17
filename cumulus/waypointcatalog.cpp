@@ -41,7 +41,7 @@ WaypointCatalog::~WaypointCatalog()
 {}
 
 /** read a catalog from file */
-bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
+bool WaypointCatalog::read( QString *catalog, QList<wayPoint>& wpList )
 {
   QString fName;
 
@@ -56,16 +56,10 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
       fName = *catalog;
     }
 
-  if( ! wpList )
-    {
-      qWarning("WaypointCatalog::read: Waypoint file is Null!");
-      return false;
-    }
-
   if( _globalMapMatrix == 0 )
     {
       qWarning("WaypointCatalog::read: Global pointer '_globalMapMatrix' is Null!");
-      return false;      
+      return false;
     }
 
   bool ok = false;
@@ -104,6 +98,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
 
           //check if the file has the correct format
           in >> fileMagic;
+
           if (fileMagic != KFLOG_FILE_MAGIC)
             {
               qWarning("Waypoint file not recognized as KFLog file type.");
@@ -111,6 +106,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
             }
 
           in >> fileType;
+
           if (fileType != FILE_TYPE_WAYPOINTS)
             {
               qWarning("Waypoint file is a KFLog file, but not for waypoints.");
@@ -118,6 +114,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
             }
 
           in >> fileFormat;
+
           if (fileFormat != WP_FILE_FORMAT_ID && fileFormat != WP_FILE_FORMAT_ID_2)
             {
               qWarning("Waypoint file does not have the correct format. It returned %d, where %d was expected.", fileFormat, WP_FILE_FORMAT_ID);
@@ -141,6 +138,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
               in >> wpLength;
               in >> wpSurface;
               in >> wpComment;
+
               if (fileFormat>=WP_FILE_FORMAT_ID_2)
                 {
                   in >> wpImportance;
@@ -150,34 +148,34 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
                   wpImportance=1; //normal importance
                 };
 
-              //create new waypoint object and set the correct properties
-              wayPoint *w = new wayPoint;
+              // create waypoint object and set the correct properties
+              wayPoint wp;
 
-              w->name = wpName;
-              w->description = wpDescription;
-              w->icao = wpICAO;
-              w->type = wpType;
-              w->origP.setLat(wpLatitude);
-              w->origP.setLon(wpLongitude);
-              w->projP = _globalMapMatrix->wgsToMap(w->origP);
-              w->elevation = wpElevation;
-              w->frequency = wpFrequency;
-              w->isLandable = wpLandable;
-              w->runway =wpRunway;
-              w->length = wpLength;
-              w->surface = wpSurface;
-              w->comment = wpComment;
-              w->importance = ( enum wayPoint::Importance ) wpImportance;
-              // qDebug("Waypoint read: %s (%s - %s)",w->name.toLatin1().data(),w->description.latin1(),w->icao.latin1());
+              wp.name = wpName;
+              wp.description = wpDescription;
+              wp.icao = wpICAO;
+              wp.type = wpType;
+              wp.origP.setLat(wpLatitude);
+              wp.origP.setLon(wpLongitude);
+              wp.projP = _globalMapMatrix->wgsToMap(wp.origP);
+              wp.elevation = wpElevation;
+              wp.frequency = wpFrequency;
+              wp.isLandable = wpLandable;
+              wp.runway =wpRunway;
+              wp.length = wpLength;
+              wp.surface = wpSurface;
+              wp.comment = wpComment;
+              wp.importance = ( enum wayPoint::Importance ) wpImportance;
+              // qDebug("Waypoint read: %s (%s - %s)",wp.name.toLatin1().data(),wp.description.latin1(),wp.icao.latin1());
 
-              wpList->append(w);
+              wpList.append(wp);
 
               GeneralConfig *conf = GeneralConfig::instance();
 
-              if (conf->getHomeWp()->origP == w->origP)
+              if (conf->getHomeWp()->origP == wp.origP)
                 {
                   qDebug("Found homesite: %s", wpName.toLatin1().data() );
-                  conf->setHomeWp(w);
+                  conf->setHomeWp(&wp);
                 }
             }
 
@@ -191,14 +189,13 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint*> *wpList )
     }
 
   qDebug("WaypointCatalog::read(): %d items read from %s",
-         wpList->count(), fName.toLatin1().data() );
+         wpList.count(), fName.toLatin1().data() );
 
   return ok;
 }
 
-
 /** write a catalog to file */
-bool WaypointCatalog::write( QString *catalog, QList<wayPoint*> *wpList )
+bool WaypointCatalog::write( QString *catalog, QList<wayPoint>& wpList )
 {
   QString fName;
 
@@ -211,12 +208,6 @@ bool WaypointCatalog::write( QString *catalog, QList<wayPoint*> *wpList )
   else
     {
       fName = *catalog;
-    }
-
-  if( ! wpList )
-    {
-      qWarning("WaypointCatalog::write: Waypoint file is Null!");
-      return false;
     }
 
   bool ok = true;
@@ -243,28 +234,29 @@ bool WaypointCatalog::write( QString *catalog, QList<wayPoint*> *wpList )
     {
       // qDebug("WaypointCatalog::write(): fileName=%s", fName.toLatin1().data() );
       QDataStream out(& f);
-      // write fileheader
+
+      // write file header
       out << quint32(KFLOG_FILE_MAGIC);
       out << qint8(FILE_TYPE_WAYPOINTS);
       out << quint16(WP_FILE_FORMAT_ID_2); //use the new format with importance field.
 
-      for (int i = 0; i < wpList->count(); i++)
+      for (int i = 0; i < wpList.count(); i++)
         {
-          wayPoint* w = wpList->at(i);
-          wpName=w->name;
-          wpDescription=w->description;
-          wpICAO=w->icao;
-          wpType=w->type;
-          wpLatitude=w->origP.lat();
-          wpLongitude=w->origP.lon();
-          wpElevation=w->elevation;
-          wpFrequency=w->frequency;
-          wpLandable=w->isLandable;
-          wpRunway=w->runway;
-          wpLength=w->length;
-          wpSurface=w->surface;
-          wpComment=w->comment;
-          wpImportance=w->importance;
+          wayPoint &wp = wpList[i];
+          wpName=wp.name;
+          wpDescription=wp.description;
+          wpICAO=wp.icao;
+          wpType=wp.type;
+          wpLatitude=wp.origP.lat();
+          wpLongitude=wp.origP.lon();
+          wpElevation=wp.elevation;
+          wpFrequency=wp.frequency;
+          wpLandable=wp.isLandable;
+          wpRunway=wp.runway;
+          wpLength=wp.length;
+          wpSurface=wp.surface;
+          wpComment=wp.comment;
+          wpImportance=wp.importance;
 
           out << wpName;
           out << wpDescription;
@@ -291,10 +283,7 @@ bool WaypointCatalog::write( QString *catalog, QList<wayPoint*> *wpList )
     }
 
   qDebug("WaypointCatalog::write(): %d items written to %s",
-         wpList->count(), fName.toLatin1().data() );
+         wpList.count(), fName.toLatin1().data() );
 
   return ok;
 }
-
-
-

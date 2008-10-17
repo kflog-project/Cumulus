@@ -67,8 +67,8 @@ private: // Private methods
 class _WaypointItem : public QTreeWidgetItem
     {
     public:
-        _WaypointItem(QTreeWidget*, wayPoint *);
-        wayPoint * wp;
+        _WaypointItem(QTreeWidget*, wayPoint&);
+        wayPoint &wp;
     };
 };
 

@@ -138,11 +138,11 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
   if( item == MapContents::WaypointList )
     {
       // Waypoints have different structure treat them here
-      QList<wayPoint*> *pWPL = _globalMapContents->getWaypointList();
+      QList<wayPoint> *pWPL = _globalMapContents->getWaypointList();
       // qDebug("Nr of Waypoints: %d", pWPL->count() );
-      for ( int i=0; i<pWPL->count(); i++ )
+      for ( int i=0; i < pWPL->count(); i++ )
         {
-          WGSPoint pt = pWPL->at(i)->origP;
+          WGSPoint pt = pWPL->at(i).origP;
 
           if (! bbox.contains(pt))
             {
@@ -156,12 +156,12 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
               //qDebug("In bounding box, so accept! (distance: %d, %s)", (int)distance.getKilometers(), pWPL->at(i)->name.latin1());
             }
 
-          distance.setKilometers(dist(&lastPosition,&pt));
+          distance.setKilometers(dist(&lastPosition, &pt));
 
           // check if point is a potential reachable candidate at best LD
           if ( (distance.getKilometers() > _maxReach ) ||
-               ! (pWPL->at(i)->isLandable ||
-                 (pWPL->at(i)->type == BaseMapElement::Outlanding) )  )
+               ! (pWPL->at(i).isLandable ||
+                 (pWPL->at(i).type == BaseMapElement::Outlanding) )  )
             {
               continue;
             }
@@ -170,7 +170,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
           double result = getBearing(lastPosition, pt);
           int bearing = int(rint(result * 180./M_PI));
 
-          ReachablePoint rp( *pWPL->at(i),
+          ReachablePoint rp( (*pWPL)[i],
                              false,
                              distance,
                              bearing,

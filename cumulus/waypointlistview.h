@@ -30,7 +30,7 @@ class WaypointCatalog;
 
 /**
  * This widget provides a list of waypoints and a means to select one.
- * @author Andr� Somers
+ * @author André Somers
  */
 class WaypointListView : public QWidget
 {
@@ -39,12 +39,6 @@ public:
     WaypointListView(QMainWindow *parent=0);
 
     ~WaypointListView();
-
-    /**
-     * Retreives the waypoints from the mapcontents, and fills
-     * the list.
-     */
-    void fillWpList(QList<wayPoint*> *, QTreeWidget *list = 0, ListViewFilter *filter = 0);
 
     WaypointListWidget* listWidget() {
       return listw;

@@ -1577,18 +1577,18 @@ void CumulusApp::slotRememberWaypoint()
 
   name = tr( "WP%1-%2" ).arg( count ).arg( QTime::currentTime().toString().left( 5 ) );
 
-  // @AP: let us check, if user waypoint is already known from its
+  // @AP: let us check, if the user waypoint is already known from its
   // position. In this case we will reject the insertion to avoid senseless
   // duplicates.
 
   QPoint pos = calculator->getlastPosition();
-  QList<wayPoint*>* wpList = _globalMapContents->getWaypointList();
+  QList<wayPoint>* wpList = _globalMapContents->getWaypointList();
 
   for ( int i = 0; i < wpList->count(); i++ )
     {
-      wayPoint *wpElem = wpList->at( i );
+      const wayPoint &wpItem = wpList->at(i);
 
-      if ( wpElem->origP == pos )
+      if ( wpItem.origP == pos )
         {
           return ; // we have it already
         }
@@ -1601,7 +1601,7 @@ void CumulusApp::slotRememberWaypoint()
   wp->projP = _globalMapMatrix->wgsToMap( wp->origP );
   wp->description = tr( "user created" );
   wp->comment = tr("created by remember action at ") +
-                QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+  QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
   wp->importance = wayPoint::High; // high to make sure it is visible
   wp->frequency = 0.0;
   wp->runway = 0;

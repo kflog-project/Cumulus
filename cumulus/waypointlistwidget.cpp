@@ -45,10 +45,10 @@ WaypointListWidget::~WaypointListWidget()
 }
 
 
-/** Retrieves waypoints or airfields from the mapcontents, and fills the list. */
+/** Retrieves waypoints from the mapcontents and fills the list. */
 void WaypointListWidget::fillWpList()
 {
-  QList<wayPoint*> *wpList = _globalMapContents->getWaypointList();
+  QList<wayPoint> *wpList = _globalMapContents->getWaypointList();
 
   list->setUpdatesEnabled(false);
   configRowHeight();
@@ -60,7 +60,7 @@ void WaypointListWidget::fillWpList()
     //qDebug("WaypointListWidget::fillWpList() %d", n);
 
     for (int i=0; i < n; i++) {
-      wayPoint* wp = wpList->at(i);
+      wayPoint& wp = (*wpList)[i];
       new _WaypointItem(list, wp);
     }
   }
@@ -86,7 +86,7 @@ void WaypointListWidget::fillWpList()
 }
 
 
-/** Returns a pointer to the currently highlighted waypoint. */
+/** Returns a pointer to the currently high lighted waypoint. */
 wayPoint* WaypointListWidget::getSelectedWaypoint()
 {
   QTreeWidgetItem* li = list->currentItem();
@@ -99,13 +99,13 @@ wayPoint* WaypointListWidget::getSelectedWaypoint()
   if (test == ListViewFilter::NextPage || test == ListViewFilter::PreviousPage)
     return 0;
 
-  // Now we're left with the real waypoints/airports
+  // Now we're left with the real waypoints
   _WaypointItem* wpi = static_cast<_WaypointItem*>(li);
 
   if (!wpi)
     return 0;
 
-  return wpi->wp;
+  return &wpi->wp;
 }
 
 
@@ -113,18 +113,19 @@ wayPoint* WaypointListWidget::getSelectedWaypoint()
 void WaypointListWidget::deleteSelectedWaypoint()
 {
   QTreeWidgetItem * li = list->currentItem();
+
   if ( li== 0)
     return;
 
-  wayPoint* w = getSelectedWaypoint();
+  wayPoint wp = *getSelectedWaypoint();
   filter->restoreListViewItems();
 
-  // remove from waypoint list in MapContents
-  _globalMapContents->getWaypointList()->removeAll( w );
+  // remove waypoint from waypoint list in MapContents
+  _globalMapContents->getWaypointList()->removeAll( wp );
   // save the modified catalog
   _globalMapContents->saveWaypointList();
-  delete list->takeTopLevelItem( list->currentIndex().row() );
 
+  delete list->takeTopLevelItem( list->currentIndex().row() );
   filter->reset(true);
   resizeListColumns();
 }
@@ -164,51 +165,45 @@ void WaypointListWidget::addWaypoint(wayPoint* newWp)
       return;
     }
 
-  // @AP: Make a deep copy of the passed waypoint because
-  // the passed object can be freed by the caller!
-  wayPoint* wp = new wayPoint( *newWp );
+  // put new waypoint into the global waypoint list
+  _globalMapContents->getWaypointList()->append( *newWp );
+  // save the modified waypoint catalog
+  _globalMapContents->saveWaypointList();
+
+  // retrieve the reference of the appended waypoint from the global list
+  wayPoint& wp = _globalMapContents->getWaypointList()->last();
 
   new _WaypointItem(list, wp);
 
   filter->reset();
   resizeListColumns();
 
-  // qDebug("WaypointListWidget::addWaypoint: name=%s", wp->name.toLatin1().data() );
-
-  // put new waypoint into the global waypoint list
-  _globalMapContents->getWaypointList()->append(wp);
-  // save the modified waypoint catalog
-  _globalMapContents->saveWaypointList();
+  // qDebug("WaypointListWidget::addWaypoint: name=%s", wp.name.toLatin1().data() );
 }
 
 
-WaypointListWidget::_WaypointItem::_WaypointItem(QTreeWidget* tw, wayPoint* waypoint):
+WaypointListWidget::_WaypointItem::_WaypointItem(QTreeWidget* tw, wayPoint& waypoint):
   QTreeWidgetItem(tw),  wp(waypoint)
 {
-  if (!wp)
-    {
-      return;
-    }
-
   QPainter pnt;
   QPixmap selectIcon;
 
-  QString name = wp->name;
+  QString name = wp.name;
   QRegExp blank("[ ]");
   //name.replace(blank, QString::null);
   name = name.left(10);
 
   setText(0, name);
-  setText(1, wp->description);
-  setText(2, wp->icao);
+  setText(1, wp.description);
+  setText(2, wp.icao);
 
   selectIcon = QPixmap(18,18);
   pnt.begin(&selectIcon);
   selectIcon.fill( Qt::white );
-  pnt.drawPixmap(1, 1, _globalMapConfig->getPixmap(wp->type,false,true) );
+  pnt.drawPixmap(1, 1, _globalMapConfig->getPixmap(wp.type,false,true) );
   pnt.end();
   QIcon icon;
-  icon.addPixmap( _globalMapConfig->getPixmap(wp->type,false,true) );
+  icon.addPixmap( _globalMapConfig->getPixmap(wp.type,false,true) );
   icon.addPixmap( selectIcon, QIcon::Selected );
   setIcon( 0, icon );
 }

@@ -17,8 +17,8 @@
 **
 ***********************************************************************/
 
-#ifndef WAYPOINTCATALOG_H
-#define WAYPOINTCATALOG_H
+#ifndef WAYPOINT_CATALOG_H
+#define WAYPOINT_CATALOG_H
 
 #include <QString>
 #include <QList>
@@ -31,14 +31,14 @@ class WaypointCatalog
   public:
 
   WaypointCatalog();
-  
+
   ~WaypointCatalog();
 
   /** read in catalog from file name */
-  bool read( QString *catalog, QList<wayPoint*> *wpList );
-  
+  bool read( QString *catalog, QList<wayPoint>& wpList );
+
   /** write out catalog to file name */
-  bool write( QString *catalog, QList<wayPoint*> *wpList );
+  bool write( QString *catalog, QList<wayPoint>& wpList );
 };
 
 #endif

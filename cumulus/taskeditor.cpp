@@ -177,9 +177,6 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
   for(int i=0; i<NUM_LISTS; i++) {
     listSelectCB->addItem(listSelectText[i], i);
 
-//    connect( this, SIGNAL( done() ),
-//              waypointList[i], SLOT( slot_Done() ) );
-
     waypointList[i]->fillWpList();
     listLayout->addWidget( waypointList[i], 2, 0, 1, 4 );
   }

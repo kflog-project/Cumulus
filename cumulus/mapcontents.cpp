@@ -148,7 +148,7 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen)
 
   // read in waypoint list
   WaypointCatalog wpCat;
-  wpCat.read( 0, &wpList );
+  wpCat.read( 0, wpList );
 
   currentTask=0;
 
@@ -169,14 +169,13 @@ MapContents::~MapContents()
     }
 
   qDeleteAll (airspaceList);
-  qDeleteAll (wpList);
 }
 
 // save the current waypoint list
 void MapContents::saveWaypointList()
 {
   WaypointCatalog wpCat;
-  wpCat.write( 0, &wpList );
+  wpCat.write( 0, wpList );
 }
 
 // JD: Here is the new code for managing plain and precomputed map files */
@@ -621,7 +620,6 @@ bool MapContents::__readTerrainFile(const int fileSecID,
         }
     }
 
-  ws->slot_SetText2(tr("Loading map ready"));
   return true;
 }
 
@@ -1212,10 +1210,11 @@ bool MapContents::__readBinaryFile(const int fileSecID,
       ausgabe.close();
       // kfl file is deleted after 'compilation' to save space. Please handle this "al gusto" ...
       if ( _globalMapConfig->getDeleteMapfileAfterCompile() )
-        mapfile.remove();
+        {
+          mapfile.remove();
+        }
     }
 
-  ws->slot_SetText2(tr("Loading map ready"));
   return true;
 }
 
@@ -1813,7 +1812,7 @@ void MapContents::slotReloadMapData()
   for ( int loop = 0; loop < wpList.count(); loop++ )
     {
       // recalculate projection data
-      wpList.at(loop)->projP = _globalMapMatrix->wgsToMap(wpList.at(loop)->origP);
+      wpList[loop].projP = _globalMapMatrix->wgsToMap(wpList[loop].origP);
     }
 
   // Check for a flight task, the waypoint list must be updated too
@@ -2296,18 +2295,15 @@ void MapContents::setCurrentTask( FlightTask * _newVal)
 }
 
 
-/** Returns true if the coordinates of the waypoint in the argument matches one of the waypoints in the list. */
-bool MapContents::getIsInWaypointList(const wayPoint * wp)
+/** Returns true if the coordinates of the waypoint in the argument
+ * matches one of the waypoints in the list. */
+bool MapContents::getIsInWaypointList(const wayPoint *wp)
 {
-  int i,n;
-  n =  wpList.count();
-  wayPoint * wpi;
-
-  for (i=0; i < n; i++)
+  for (int i=0; i < wpList.count(); i++)
     {
-      wpi=(wayPoint*)wpList.at(i);
+      const wayPoint& wpItem = wpList.at(i);
 
-      if (wp->origP==wpi->origP)
+      if( wp->origP == wpItem.origP )
         {
           return true;
         }

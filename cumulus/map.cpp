@@ -228,16 +228,15 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
   // Radius for Mouse Snapping
   int delta=0, dX=0, dY=0;
 
-  // add WPList !!!
+  // define lists to be used for searching
   int searchList[] = {MapContents::GliderSiteList, MapContents::AirfieldList};
   wayPoint *w = static_cast<wayPoint *> (0);
 
   // scale uses unit meter/pixel
   double cs = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
-  // snap distance should be 3000m considering scale, otherwise the
-  // range is to high on higher scales.
-  delta = (int) rint( 3000. / cs );
+  // snap distance are 15 pixel
+  delta = 15;
 
   // Manhattan-distance to found point.
   int lastDist=2*delta+1;
@@ -364,15 +363,15 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
           break;
         }
 
-      wayPoint* wp = _globalMapContents->getWaypointList()->at(i);
+      wayPoint& wp = (*_globalMapContents->getWaypointList())[i];
 
       // consider only points, which are visible on the map
-      if( (uint) wp->importance < _globalMapMatrix->currentDrawScale() )
+      if( (uint) wp.importance < _globalMapMatrix->currentDrawScale() )
         {
           continue;
         }
 
-      QPoint sitePos (_globalMapMatrix->map(wp->projP));
+      QPoint sitePos (_globalMapMatrix->map(wp.projP));
 
       if( ! snapRect.contains(sitePos) )
         {
@@ -394,7 +393,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
             }
 
           found = true;
-          w=wp;
+          w = &wp;
 
           // qDebug ("Waypoint: %s", w->name.toLatin1().data() );
 
@@ -1321,9 +1320,9 @@ bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, QList<wayPoint*
 /** Draws the waypoints of the active waypoint catalog on the map */
 void Map::__drawWaypoints(QPainter* wpPainter)
 {
-  int i, n;
-  QList<wayPoint*> *wpList;
-  wayPoint * wp;
+  int i;
+  QList<wayPoint> *wpList;
+  wayPoint* wp;
   bool isSelected;
 
   while ( ! wpLabels.isEmpty() )
@@ -1338,15 +1337,14 @@ void Map::__drawWaypoints(QPainter* wpPainter)
   Distance dist;
 
   wpList = _globalMapContents->getWaypointList();
-  extern MapConfig * _globalMapConfig;
+  extern MapConfig* _globalMapConfig;
 
   wpPainter->setBrush(Qt::NoBrush);
 
   // now do complete list
-  n =  wpList->count();
-  for (i=0; i < n; i++)
+  for (i=0; i < wpList->count(); i++)
     {
-      wp = (wayPoint*)wpList->at(i);
+      wp = &((*wpList)[i]);
 
       //show now only is used for the currently selected wp, but
       //could also be used for waypoints in the task or other
@@ -1915,17 +1913,22 @@ void Map::slotZoomIn()
     }
 
   if( zoomProgressive < 7 && redrawTimerShort->isActive() )
-    zoomProgressive++;
+    {
+      zoomProgressive++;
+    }
   else if( zoomProgressive == 7 && redrawTimerShort->isActive() )
-    return;
+    {
+      return;
+    }
   else
-    zoomProgressive=0;
+    {
+      zoomProgressive=0;
+    }
 
-  zoomFactor/=zoomProgressiveVal[zoomProgressive];
+  zoomFactor /= zoomProgressiveVal[zoomProgressive];
 
   scheduleRedraw();
-  QString msg;
-  msg = QString(tr("Map zoom in, scale: %1")).arg(zoomFactor/L_LIMIT, 0, 'f', 1);
+  QString msg = QString(tr("Map zoom in by factor %1")).arg(zoomFactor, 0, 'f', 1);
   _globalMapView->message( msg );
 }
 
@@ -1956,18 +1959,22 @@ void Map::slotZoomOut()
     }
 
   if( zoomProgressive < 7 && redrawTimerShort->isActive() )
-    zoomProgressive++;
+    {
+      zoomProgressive++;
+    }
   else if( zoomProgressive == 7 && redrawTimerShort->isActive() )
-    return;
+    {
+      return;
+    }
   else
-    zoomProgressive=0;
+    {
+      zoomProgressive=0;
+    }
 
-  zoomFactor*=zoomProgressiveVal[zoomProgressive];
+  zoomFactor *= zoomProgressiveVal[zoomProgressive];
 
   scheduleRedraw();
-  QString msg;
-  msg = QString(tr("Map zoom out, scale: %1")).arg(zoomFactor/L_LIMIT, 0, 'f', 1);
-
+  QString msg = QString(tr("Map zoom out by factor %1")).arg(zoomFactor, 0, 'f', 1);
   _globalMapView->message( msg );
 }
 
@@ -2023,9 +2030,9 @@ void Map::scheduleRedraw(mapLayer fromLayer)
 void Map::slotSetScale(const double& newScale)
 {
   // qDebug("Map::slotSetScale");
-  if (newScale!=zoomFactor)
+  if (newScale != zoomFactor)
     {
-      zoomFactor=newScale;
+      zoomFactor = newScale;
       scheduleRedraw();
     }
 }

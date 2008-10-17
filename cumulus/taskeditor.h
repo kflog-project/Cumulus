@@ -45,7 +45,7 @@ public:
 
     /** */
     ~TaskEditor();
-    
+
 private:
     /**
      * aligns the task list columns to their contents
@@ -105,43 +105,43 @@ private:
 
     /** list containing defined tasks */
     QTreeWidget* taskList;
-    
+
     /** list with all defined task names */
     QStringList& taskNamesInUse;
-    
+
     /** number lists, at the moment waypointlist and airfield list*/
 #define NUM_LISTS 2
 
     /** selection lists with waypoints */
     WpListWidgetParent* waypointList[NUM_LISTS];
-    
+
     /** name of current task */
     QLineEdit* taskName;
-    
+
     /** name of current edited task */
     QString editedTaskName;
-    
+
     /** */
     ListViewFilter* filter[NUM_LISTS];
-    
+
     /** */
-    QList<wayPoint*> *wpList;
-    
+    QList<wayPoint> *wpList;
+
     /** */
     QList<wayPoint*> taskWPList;
-    
+
     /** */
     FlightTask* planTask;
-    
+
     /** Flag for indication of edit state */
     enum  EditState editState;
-    
+
     /** Flag for indication of last selected item */
     int lastSelectedItem;
-    
+
     /** which list to show */
     QComboBox* listSelectCB;
-    
+
     /** the text for the combo box */
     QString listSelectText[NUM_LISTS];
 };
