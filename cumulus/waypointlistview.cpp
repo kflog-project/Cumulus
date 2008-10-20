@@ -203,7 +203,7 @@ void WaypointListView::slot_deleteWP()
 
 
 /** Called if a waypoint has been edited. */
-void WaypointListView::slot_wpEdited(wayPoint * wp)
+void WaypointListView::slot_wpEdited(wayPoint& wp)
 {
 //  qDebug("WaypointListView::slot_wpEdited");
   listw->updateSelectedWaypoint( wp );
@@ -216,7 +216,7 @@ void WaypointListView::slot_wpEdited(wayPoint * wp)
 
 
 /** Called if a waypoint has been added. */
-void WaypointListView::slot_wpAdded(wayPoint * wp)
+void WaypointListView::slot_wpAdded(wayPoint& wp)
 {
   // qDebug("WaypointListView::slot_wpAdded(): name=%s", wp->name.toLatin1().data());
 

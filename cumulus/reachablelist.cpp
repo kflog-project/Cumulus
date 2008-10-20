@@ -138,30 +138,31 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
   if( item == MapContents::WaypointList )
     {
       // Waypoints have different structure treat them here
-      QList<wayPoint> *pWPL = _globalMapContents->getWaypointList();
-      // qDebug("Nr of Waypoints: %d", pWPL->count() );
-      for ( int i=0; i < pWPL->count(); i++ )
+      QList<wayPoint> &wpList = _globalMapContents->getWaypointList();
+      // qDebug("Nr of Waypoints: %d", wpList.count() );
+
+      for ( int i=0; i < wpList.count(); i++ )
         {
-          WGSPoint pt = pWPL->at(i).origP;
+          WGSPoint pt = wpList.at(i).origP;
 
           if (! bbox.contains(pt))
             {
-              //qDebug("Not in bounding box, so ignore! (distance: %d, (%d, %d), %s)", (int)distance.getKilometers(), pt.x(),pt.y(), pWPL->at(i)->name.latin1());
+              //qDebug("Not in bounding box, so ignore! (distance: %d, (%d, %d), %s)", (int)distance.getKilometers(), pt.x(),pt.y(), wpList.at(i)->name.latin1());
               r++;
               continue;
             }
           else
             {
               a++;
-              //qDebug("In bounding box, so accept! (distance: %d, %s)", (int)distance.getKilometers(), pWPL->at(i)->name.latin1());
+              //qDebug("In bounding box, so accept! (distance: %d, %s)", (int)distance.getKilometers(), wpList.at(i)->name.latin1());
             }
 
           distance.setKilometers(dist(&lastPosition, &pt));
 
           // check if point is a potential reachable candidate at best LD
           if ( (distance.getKilometers() > _maxReach ) ||
-               ! (pWPL->at(i).isLandable ||
-                 (pWPL->at(i).type == BaseMapElement::Outlanding) )  )
+               ! (wpList.at(i).isLandable ||
+                 (wpList.at(i).type == BaseMapElement::Outlanding) )  )
             {
               continue;
             }
@@ -170,7 +171,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
           double result = getBearing(lastPosition, pt);
           int bearing = int(rint(result * 180./M_PI));
 
-          ReachablePoint rp( (*pWPL)[i],
+          ReachablePoint rp( wpList[i],
                              false,
                              distance,
                              bearing,

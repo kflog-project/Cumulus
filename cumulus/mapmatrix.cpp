@@ -626,12 +626,12 @@ QPolygon MapMatrix::map(const QPolygon &a) const
     const QPoint *da = a.constData();
     QPoint *dp = p.data();
     for(i = 0; i < size; i++) {
-		fp24p8_t fx = itofp24p8( da[i].x() );
-		fp24p8_t fy = itofp24p8( da[i].y() );
+        fp24p8_t fx = itofp24p8( da[i].x() );
+        fp24p8_t fy = itofp24p8( da[i].y() );
         // some cheating involved; multiplication with the "wrong" macro
-        // after "leftshifting" the "m" value in createMatrix
-		dp[i].setX( fp24p8toi( mulfp8p24(m11,fx) + mulfp8p24(m21,fy) + dx) );
-		dp[i].setY( fp24p8toi( mulfp8p24(m22,fy) + mulfp8p24(m12,fx) + dy) );
+        // after "left shifting" the "m" value in createMatrix
+        dp[i].setX( fp24p8toi( mulfp8p24(m11,fx) + mulfp8p24(m21,fy) + dx) );
+        dp[i].setY( fp24p8toi( mulfp8p24(m22,fy) + mulfp8p24(m12,fx) + dy) );
     }
     return p;
 }
@@ -642,7 +642,7 @@ QPoint MapMatrix::map(const QPoint& p) const
 	fp24p8_t fx = itofp24p8( p.x() );
 	fp24p8_t fy = itofp24p8( p.y() );
     // some cheating involved; multiplication with the "wrong" macro
-    // after "leftshifting" the "m" value in createMatrix
+    // after "left shifting" the "m" value in createMatrix
 	return QPoint( fp24p8toi( mulfp8p24(m11,fx) + mulfp8p24(m21,fy) + dx),
-				fp24p8toi( mulfp8p24(m22,fy) + mulfp8p24(m12,fx) + dy) );
+                       fp24p8toi( mulfp8p24(m22,fy) + mulfp8p24(m12,fx) + dy) );
 }

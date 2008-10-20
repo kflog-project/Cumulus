@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef WAYPOINTLISTWIDGET_H
-#define WAYPOINTLISTWIDGET_H
+#ifndef WAYPOINT_LISTWIDGET_H
+#define WAYPOINT_LISTWIDGET_H
 
 #include <QWidget>
 
@@ -30,6 +30,7 @@
 class WaypointListWidget : public WpListWidgetParent
 {
     Q_OBJECT
+
 public:
     WaypointListWidget(QWidget *parent=0);
 
@@ -43,7 +44,7 @@ public:
     /**
      * @updates the currently highlighted waypoint after editing.
      */
-    void updateSelectedWaypoint(wayPoint *);
+    void updateSelectedWaypoint(wayPoint &);
 
     /**
      * @removes the currently highlighted waypoint.
@@ -53,7 +54,7 @@ public:
     /**
      * @adds a waypoint.
      */
-    void addWaypoint(wayPoint *);
+    void addWaypoint(wayPoint &);
 
     /**
      * Retrieves the waypoints from the map contents and fills

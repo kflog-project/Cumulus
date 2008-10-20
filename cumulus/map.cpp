@@ -356,14 +356,17 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
 
   // let's show waypoints
   // @AP: On map scale higher as 1024 we don't evolute anything
-  for (int i = 0; i < _globalMapContents->getWaypointList()->count(); i++)
+
+  QList<wayPoint>& wpList = _globalMapContents->getWaypointList();
+
+  for (int i = 0; i < wpList.count(); i++)
     {
       if (cs > 1024.0)
         {
           break;
         }
 
-      wayPoint& wp = (*_globalMapContents->getWaypointList())[i];
+      wayPoint& wp = wpList[i];
 
       // consider only points, which are visible on the map
       if( (uint) wp.importance < _globalMapMatrix->currentDrawScale() )
@@ -1320,13 +1323,14 @@ bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, QList<wayPoint*
 /** Draws the waypoints of the active waypoint catalog on the map */
 void Map::__drawWaypoints(QPainter* wpPainter)
 {
-  int i;
-  QList<wayPoint> *wpList;
-  wayPoint* wp;
   bool isSelected;
 
+#warning QList wpLabels is not reused! Check for removing
+  
   while ( ! wpLabels.isEmpty() )
-    delete wpLabels.takeFirst();
+    {
+      delete wpLabels.takeFirst();
+    }
 
   int w = this->size().width();
   int h = this->size().height();
@@ -1336,25 +1340,26 @@ void Map::__drawWaypoints(QPainter* wpPainter)
   Altitude alt;
   Distance dist;
 
-  wpList = _globalMapContents->getWaypointList();
+  QList<wayPoint>& wpList = _globalMapContents->getWaypointList();
+
   extern MapConfig* _globalMapConfig;
 
   wpPainter->setBrush(Qt::NoBrush);
 
   // now do complete list
-  for (i=0; i < wpList->count(); i++)
+  for ( int i=0; i < wpList.count(); i++)
     {
-      wp = &((*wpList)[i]);
+      wayPoint& wp = wpList[i];
 
       //show now only is used for the currently selected wp, but
       //could also be used for waypoints in the task or other
       //super-important waypoints later on.
       isSelected=false;
 
-      if (calculator && calculator->getselectedWp() && wp )
+      if (calculator && calculator->getselectedWp() )
         {
-          if (calculator->getselectedWp()->name == wp->name &&
-              calculator->getselectedWp()->origP == wp->origP)
+          if (calculator->getselectedWp()->name == wp.name &&
+              calculator->getselectedWp()->origP == wp.origP)
             {
               isSelected = true;
             }
@@ -1366,17 +1371,17 @@ void Map::__drawWaypoints(QPainter* wpPainter)
           continue;
         }
 
-      if (((uint) wp->importance >= _globalMapMatrix->currentDrawScale()) || isSelected)
+      if (((uint) wp.importance >= _globalMapMatrix->currentDrawScale()) || isSelected)
         { //if the waypoint is important enough for the current mapscale
           // make sure projection is ok, and map to screen
 
-          QPoint P = _globalMapMatrix->map(wp->projP);
+          QPoint P = _globalMapMatrix->map(wp.projP);
 
           if (testRect.contains(P))
             {
               // draw marker
-              // QColor col = ReachableList::getReachColor(wp->name);
-              enum ReachablePoint::reachable reachable = ReachableList::getReachable(wp->origP);
+              // QColor col = ReachableList::getReachColor(wp.name);
+              enum ReachablePoint::reachable reachable = ReachableList::getReachable(wp.origP);
 
               if( isSelected )
                 {
@@ -1389,10 +1394,10 @@ void Map::__drawWaypoints(QPainter* wpPainter)
 
               QPixmap pm;
 
-              if( _globalMapConfig->isRotatable(wp->type) )
-                pm = _globalMapConfig->getPixmapRotatable( wp->type,false );
+              if( _globalMapConfig->isRotatable(wp.type) )
+                pm = _globalMapConfig->getPixmapRotatable( wp.type,false );
               else
-                pm= _globalMapConfig->getPixmap(wp->type,false); //,col);
+                pm= _globalMapConfig->getPixmap(wp.type,false); //,col);
 
               int xOffset=16;
               int yOffset=16;
@@ -1415,9 +1420,9 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                   wpPainter->drawPixmap(P.x() - 9, P.y() -9, _globalMapConfig->getPixmap("magenta_circle.xpm"));
                 }
 
-              int rw2 = wp->runway >= 180 ? wp->runway-180 : wp->runway;
+              int rw2 = wp.runway >= 180 ? wp.runway-180 : wp.runway;
               int shift = ((rw2)/10);
-              if( _globalMapConfig->isRotatable(wp->type) )
+              if( _globalMapConfig->isRotatable(wp.type) )
                 wpPainter->drawPixmap(P.x() - iconSize/2, P.y() - iconSize/2, pm,
                                       shift*iconSize, 0, iconSize, iconSize);
               else
@@ -1427,10 +1432,11 @@ void Map::__drawWaypoints(QPainter* wpPainter)
               if (_globalMapConfig->getShowWpLabels())
                 {
                   // do we need to show the labels at all?
-                  labelText=wp->name;
+                  labelText=wp.name;
+                  
                   if ( _globalMapConfig->getShowWpLabelsExtraInfo() )
                     { //just the name, or also additional info?
-                      if ( wp->isLandable )
+                      if ( wp.isLandable )
                         {
                           if (reachable == ReachablePoint::yes)
                             { //reachable? then the label will become bold
@@ -1441,12 +1447,13 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                               labelText = labelText + "<br>";
                             }
 
-                          dist = ReachableList::getDistance( wp->origP );
+                          dist = ReachableList::getDistance( wp.origP );
+                          
                           if ( dist.isValid() )
                             { //check if the distance is valid...
                               labelText += dist.getText( false, uint(0), uint(0) )
                                            +  "/";
-                              alt = ReachableList::getArrivalAltitude( wp->origP );
+                              alt = ReachableList::getArrivalAltitude( wp.origP );
                               if ( alt.getMeters()<0 ) //the color is dependent on the arrival altitude
                                 {
                                   labelText += "<font color=\"#FF0000\">"
@@ -1462,7 +1469,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                     }
                   else
                     {
-                      if ( wp->isLandable )
+                      if ( wp.isLandable )
                         {
                           if (reachable == ReachablePoint::yes)
                             {
@@ -1470,6 +1477,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                             }
                         }
                     }
+                  
                   rtext = new QLabel(this);
                   wpLabels.append( rtext );
                   rtext->setAutoFillBackground(true);
@@ -1483,7 +1491,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                   rtext->resize( rtext->width()+4, rtext->height() );
 
                   QRect textbox( rtext->rect() );
-                  if (wp->origP.lon()<_globalMapMatrix->getMapCenter(false).y())
+                  if (wp.origP.lon()<_globalMapMatrix->getMapCenter(false).y())
                     {
                       //the wp is on the left side of the map, so draw the textlabel on the right side
                       xOffset=10;
@@ -1518,6 +1526,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                       rpal.setColor(QPalette::Normal,QPalette::Window,Qt::black);
                       rpal.setColor(QPalette::Normal,QPalette::WindowText,Qt::white);
                     }
+                  
                   rtext->setPalette(rpal);
                   rtext->move( P.x() + xOffset + 1, P.y() + yOffset - textbox.height() + 2 );
                   rtext->show();

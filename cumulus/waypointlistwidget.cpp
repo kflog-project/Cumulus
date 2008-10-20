@@ -48,28 +48,20 @@ WaypointListWidget::~WaypointListWidget()
 /** Retrieves waypoints from the mapcontents and fills the list. */
 void WaypointListWidget::fillWpList()
 {
-  QList<wayPoint> *wpList = _globalMapContents->getWaypointList();
-
   list->setUpdatesEnabled(false);
   configRowHeight();
+  QList<wayPoint> &wpList = _globalMapContents->getWaypointList();
 
-  int n = 0;
-
-  if( wpList ) {
-    n = wpList->count();
-    //qDebug("WaypointListWidget::fillWpList() %d", n);
-
-    for (int i=0; i < n; i++) {
-      wayPoint& wp = (*wpList)[i];
-      new _WaypointItem(list, wp);
-    }
+  for (int i=0; i < wpList.count(); i++) {
+    wayPoint& wp = wpList[i];
+    new _WaypointItem(list, wp);
   }
 
   list->setSortingEnabled(true);
   list->sortByColumn(0,Qt::AscendingOrder);
   list->setSortingEnabled(false);
 
-  if ( n>0 ) {
+  if ( wpList.count() > 0 ) {
     list->setCurrentItem(list->topLevelItem(0));
   }
 
@@ -117,11 +109,15 @@ void WaypointListWidget::deleteSelectedWaypoint()
   if ( li== 0)
     return;
 
-  wayPoint wp = *getSelectedWaypoint();
+  wayPoint *wp = getSelectedWaypoint();
+
+  if( !wp )
+    return;
+  
   filter->restoreListViewItems();
 
   // remove waypoint from waypoint list in MapContents
-  _globalMapContents->getWaypointList()->removeAll( wp );
+  _globalMapContents->getWaypointList().removeAll( *wp );
   // save the modified catalog
   _globalMapContents->saveWaypointList();
 
@@ -132,21 +128,22 @@ void WaypointListWidget::deleteSelectedWaypoint()
 
 
 /** Called if a waypoint has been edited. */
-void WaypointListWidget::updateSelectedWaypoint(wayPoint* wp)
+void WaypointListWidget::updateSelectedWaypoint(wayPoint& wp)
 {
   QTreeWidgetItem * li = list->currentItem();
+
   if ( li== 0 )
     return;
 
-  if( wp == 0 ) {
-    qDebug("WaypointListWidget::updateSelectedWaypoint: empty waypoint given");
-    return;
-  }
+//   if( wp == 0 ) {
+//     qDebug("WaypointListWidget::updateSelectedWaypoint: empty waypoint given");
+//     return;
+//   }
 
-  li->setText(0, wp->name);
-  li->setText(1, wp->description);
-  li->setText(2, wp->icao);
-  li->setIcon(0, QIcon(_globalMapConfig->getPixmap(wp->type,false,true)));
+  li->setText(0, wp.name);
+  li->setText(1, wp.description);
+  li->setText(2, wp.icao);
+  li->setIcon(0, QIcon(_globalMapConfig->getPixmap(wp.type,false,true)));
   list->sortByColumn(0);
   filter->reset();
   resizeListColumns();
@@ -157,21 +154,16 @@ void WaypointListWidget::updateSelectedWaypoint(wayPoint* wp)
 
 
 /** Called if a waypoint has been added. */
-void WaypointListWidget::addWaypoint(wayPoint* newWp)
+void WaypointListWidget::addWaypoint(wayPoint& newWp)
 {
-  if( newWp == 0 )
-    {
-      qWarning("WaypointListWidget::updateSelectedWaypoint: empty waypoint given");
-      return;
-    }
-
   // put new waypoint into the global waypoint list
-  _globalMapContents->getWaypointList()->append( *newWp );
+  QList<wayPoint> &wpList = _globalMapContents->getWaypointList();
+  wpList.append( newWp );
   // save the modified waypoint catalog
   _globalMapContents->saveWaypointList();
 
   // retrieve the reference of the appended waypoint from the global list
-  wayPoint& wp = _globalMapContents->getWaypointList()->last();
+  wayPoint& wp = wpList.last();
 
   new _WaypointItem(list, wp);
 

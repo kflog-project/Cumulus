@@ -85,12 +85,12 @@ public slots: // Public slots
     /**
      * Called if a waypoint has been edited.
      */
-    void slot_wpEdited(wayPoint * wp);
+    void slot_wpEdited(wayPoint& wp);
 
     /**
      * Called if a waypoint has been added.
      */
-    void slot_wpAdded(wayPoint * wp);
+    void slot_wpAdded(wayPoint& wp);
 
     /**
      * Called to set a waypoint as homesite

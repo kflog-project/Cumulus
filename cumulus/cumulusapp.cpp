@@ -1582,34 +1582,37 @@ void CumulusApp::slotRememberWaypoint()
   // duplicates.
 
   QPoint pos = calculator->getlastPosition();
-  QList<wayPoint>* wpList = _globalMapContents->getWaypointList();
 
-  for ( int i = 0; i < wpList->count(); i++ )
+  QList<wayPoint>& wpList = _globalMapContents->getWaypointList();
+
+  for ( int i = 0; i < wpList.count(); i++ )
     {
-      const wayPoint &wpItem = wpList->at(i);
+      const wayPoint &wpItem = wpList.at(i);
 
       if ( wpItem.origP == pos )
         {
-          return ; // we have it already
+          return ; // we have such position already
         }
     }
 
   count++;
-  wayPoint* wp = new wayPoint;
-  wp->name = name;
-  wp->origP = calculator->getlastPosition();
-  wp->projP = _globalMapMatrix->wgsToMap( wp->origP );
-  wp->description = tr( "user created" );
-  wp->comment = tr("created by remember action at ") +
+
+  wayPoint wp;
+
+  wp.name = name;
+  wp.origP = calculator->getlastPosition();
+  wp.projP = _globalMapMatrix->wgsToMap( wp.origP );
+  wp.description = tr( "user created" );
+  wp.comment = tr("created by remember action at ") +
   QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-  wp->importance = wayPoint::High; // high to make sure it is visible
-  wp->frequency = 0.0;
-  wp->runway = 0;
-  wp->length = 0;
+  wp.importance = wayPoint::High; // high to make sure it is visible
+  wp.frequency = 0.0;
+  wp.runway = 0;
+  wp.length = 0;
   AltitudeCollection alt = calculator->getAltitudeCollection();
-  wp->elevation = int ( ( alt.gpsAltitude - alt.gndAltitude ).getMeters() );
-  wp->type = BaseMapElement::Turnpoint;
-  wp->isLandable = false;
+  wp.elevation = int ( ( alt.gpsAltitude - alt.gndAltitude ).getMeters() );
+  wp.type = BaseMapElement::Turnpoint;
+  wp.isLandable = false;
 
   viewWP->slot_wpAdded( wp );
 }

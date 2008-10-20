@@ -151,9 +151,9 @@ class MapContents : public QObject
   /**
    * @returns the waypoint list
    */
-  QList<wayPoint>* getWaypointList()
+  QList<wayPoint>& getWaypointList()
   {
-    return &wpList;
+    return wpList;
   };
 
   /**

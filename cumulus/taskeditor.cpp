@@ -57,10 +57,9 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
   setSizeGripEnabled(true);
 #endif
 
-  wpList = _globalMapContents->getWaypointList();
   lastSelectedItem = -1;
 
-  if( task )
+  if ( task )
     {
       planTask = task;
       editState = TaskEditor::edit;
@@ -174,28 +173,30 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
   waypointList[0] = new WaypointListWidget(this);
   waypointList[1] = new AirfieldListWidget(this);
 
-  for(int i=0; i<NUM_LISTS; i++) {
-    listSelectCB->addItem(listSelectText[i], i);
-
-    waypointList[i]->fillWpList();
-    listLayout->addWidget( waypointList[i], 2, 0, 1, 4 );
-  }
+  for (int i=0; i<NUM_LISTS; i++)
+    {
+      listSelectCB->addItem(listSelectText[i], i);
+      waypointList[i]->fillWpList();
+      listLayout->addWidget( waypointList[i], 2, 0, 1, 4 );
+    }
 
   // first selection is WPList if wp's are defined
   // set index in combo box to selected list
-  listSelectCB->setCurrentIndex( wpList->count() ? 0 : 1 );
+  QList<wayPoint>& wpList = _globalMapContents->getWaypointList();
+
+  listSelectCB->setCurrentIndex( wpList.count() ? 0 : 1 );
 
   // switch to list to be visible, hide the other one
-  slotToggleList( wpList->count() ? 0 : 1 );
+  slotToggleList( wpList.count() ? 0 : 1 );
 
-  if( editState == TaskEditor::edit )
+  if ( editState == TaskEditor::edit )
     {
       taskName->setText( planTask->getTaskName() );
 
       QList<wayPoint*> tmpList = planTask->getWPList();
 
       // @AP: Make a deep copy from all elements of the list
-      for( int i=0; i < tmpList.count(); i++ )
+      for ( int i=0; i < tmpList.count(); i++ )
         {
           taskWPList.append( new wayPoint(*tmpList.at(i)) );
         }
@@ -233,10 +234,11 @@ TaskEditor::~TaskEditor()
 
 void TaskEditor::__showTask()
 {
-  if( taskWPList.count() == 0 ) {
-    this->setWindowTitle(tr("New Task"));
-    return;
-  }
+  if ( taskWPList.count() == 0 )
+    {
+      this->setWindowTitle(tr("New Task"));
+      return;
+    }
 
   planTask->setWaypointList( FlightTask::copyWpList( &taskWPList ) );
 
@@ -251,23 +253,25 @@ void TaskEditor::__showTask()
 
   QString typeName, distance, idString;
 
-  for( int loop = 0; loop < tmpList.count(); loop++ ) {
-    wayPoint* wp = tmpList.at( loop );
-    typeName = wp->getTaskPointTypeString();
+  for ( int loop = 0; loop < tmpList.count(); loop++ )
+    {
+      wayPoint* wp = tmpList.at( loop );
+      typeName = wp->getTaskPointTypeString();
 
-    distance = Distance::getText(wp->distance*1000, true, 1);
-    idString = QString( "%1").arg( loop, 2, 10, QLatin1Char('0') );
+      distance = Distance::getText(wp->distance*1000, true, 1);
+      idString = QString( "%1").arg( loop, 2, 10, QLatin1Char('0') );
 
-    QStringList rowList;
-    rowList << idString << typeName << wp->name << distance;
-    taskList->addTopLevelItem( new QTreeWidgetItem(rowList, 0) );
+      QStringList rowList;
+      rowList << idString << typeName << wp->name << distance;
+      taskList->addTopLevelItem( new QTreeWidgetItem(rowList, 0) );
 
-    // reselect last selected item
-    if( lastSelectedItem == (int) loop ) {
-      taskList->setCurrentItem( taskList->topLevelItem(loop) );
-      lastSelectedItem = -1;
+      // reselect last selected item
+      if ( lastSelectedItem == (int) loop )
+        {
+          taskList->setCurrentItem( taskList->topLevelItem(loop) );
+          lastSelectedItem = -1;
+        }
     }
-  }
 
   taskList->setSortingEnabled(true);
   taskList->sortByColumn(0, Qt::AscendingOrder);
@@ -291,7 +295,7 @@ void TaskEditor::slotAddWaypoint()
 {
   wayPoint *wp = waypointList[listSelectCB->currentIndex()]->getSelectedWaypoint();
 
-  if( wp == 0 )
+  if ( wp == 0 )
     return;
 
   taskWPList.append( new wayPoint(*wp) );
@@ -315,14 +319,14 @@ void TaskEditor::slotRemoveWaypoint()
 
 void TaskEditor::slotInvertWaypoints()
 {
-  if( taskWPList.count() < 2 )
+  if ( taskWPList.count() < 2 )
     {
       // not possible to invert order, if elements are less 2
       return;
     }
 
   // invert list order
-  for( int i= (int) taskWPList.count()-2; i >= 0; i-- )
+  for ( int i= (int) taskWPList.count()-2; i >= 0; i-- )
     {
       wayPoint* wp = taskWPList.at(i);
       taskWPList.removeAt(i);
@@ -338,49 +342,56 @@ void TaskEditor::accept()
 
   // Check, if a sensible task has been defined. Tasks with less than
   // four waypoints are incomplete
-  if( taskWPList.count() < 4 ) {
-    QMessageBox::warning(this,tr("Task Incomplete"),
-                       tr("Task needs at least four waypoints"),
-                       QMessageBox::Ok );
-    return;
-  }
+  if ( taskWPList.count() < 4 )
+    {
+      QMessageBox::warning(this,tr("Task Incomplete"),
+                           tr("Task needs at least four waypoints"),
+                           QMessageBox::Ok );
+      return;
+    }
 
   QString txt = taskName->text();
 
   // Check if the user has entered a task name
-  if( txt.length() == 0 ) {
-    QMessageBox::warning(this,tr("Name Missing"),
-                         tr("Enter a name for the task to save it"),
-                         QMessageBox::Ok );
-    return;
-  }
-
-  if( editState == TaskEditor::create ) {
-    // Check if the task name does not conflict with existing onces.
-    // The name must be unique in the task name space
-
-    if( taskNamesInUse.contains( txt ) > 0 ) {
-      QMessageBox::warning(this,tr("Name in Use"),
-                           tr("Please enter a different name"),
+  if ( txt.length() == 0 )
+    {
+      QMessageBox::warning(this,tr("Name Missing"),
+                           tr("Enter a name for the task to save it"),
                            QMessageBox::Ok );
       return;
     }
-  } else {
-    // Check if the name of the edited task has been changed. In
-    // that case we have to check if the new name is unique
 
-    if( txt != editedTaskName && taskNamesInUse.contains( txt ) > 0 ) {
-      QMessageBox::warning(this,tr("Name in Use"),
-                           tr("Please enter a different name"),
+  if ( editState == TaskEditor::create )
+    {
+      // Check if the task name does not conflict with existing onces.
+      // The name must be unique in the task name space
+
+      if ( taskNamesInUse.contains( txt ) > 0 )
+        {
+          QMessageBox::warning(this,tr("Name in Use"),
+                               tr("Please enter a different name"),
                                QMessageBox::Ok );
-      return;
+          return;
+        }
     }
-  }
+  else
+    {
+      // Check if the name of the edited task has been changed. In
+      // that case we have to check if the new name is unique
+
+      if ( txt != editedTaskName && taskNamesInUse.contains( txt ) > 0 )
+        {
+          QMessageBox::warning(this,tr("Name in Use"),
+                               tr("Please enter a different name"),
+                               QMessageBox::Ok );
+          return;
+        }
+    }
 
   // Take over changed task data and publish it
   planTask->setTaskName(txt);
 
-  if( editState == TaskEditor::create )
+  if ( editState == TaskEditor::create )
     emit newTask( planTask );
   else
     emit editedTask( planTask );
@@ -402,12 +413,12 @@ void TaskEditor::reject()
 
 void TaskEditor::slotMoveWaypointUp()
 {
-  if( taskList->selectedItems().size() == 0 || taskList->topLevelItemCount() <= 2 )
+  if ( taskList->selectedItems().size() == 0 || taskList->topLevelItemCount() <= 2 )
     return;
 
   int id = taskList->currentItem()->text(0).toInt();
   // we can't move the first item up
-  if( id == 0 )
+  if ( id == 0 )
     return;
 
   lastSelectedItem = id - 1;
@@ -419,12 +430,12 @@ void TaskEditor::slotMoveWaypointUp()
 
 void TaskEditor::slotMoveWaypointDown()
 {
-  if( taskList->selectedItems().size() == 0 || taskList->topLevelItemCount() <= 2 )
+  if ( taskList->selectedItems().size() == 0 || taskList->topLevelItemCount() <= 2 )
     return;
 
   int id = taskList->currentItem()->text(0).toInt();
   // we can't move the last item down
-  if( id == taskList->topLevelItemCount() - 1 )
+  if ( id == taskList->topLevelItemCount() - 1 )
     return;
 
   lastSelectedItem = id + 1;
@@ -437,11 +448,15 @@ void TaskEditor::slotMoveWaypointDown()
 /** Toggle between WP/AF/... list on user request */
 void TaskEditor::slotToggleList(int index)
 {
-  for( int i=0; i<NUM_LISTS; i++ ) {
-    if(i != index) {
-      waypointList[i]->hide();
-    } else {
-      waypointList[i]->show();
+  for ( int i=0; i<NUM_LISTS; i++ )
+    {
+      if (i != index)
+        {
+          waypointList[i]->hide();
+        }
+      else
+        {
+          waypointList[i]->show();
+        }
     }
-  }
 }

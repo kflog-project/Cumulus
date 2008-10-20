@@ -125,9 +125,6 @@ private:
     ListViewFilter* filter[NUM_LISTS];
 
     /** */
-    QList<wayPoint> *wpList;
-
-    /** */
     QList<wayPoint*> taskWPList;
 
     /** */

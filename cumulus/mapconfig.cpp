@@ -34,7 +34,7 @@
 #define READ_PEN(G, A, B, C1, C2, C3, C4, P1, P2, P3, P4,       \
                  S1, S2, S3, S4)                                \
   READ_BORDER(B)                                                \
-    A.append(new QPen(C1, P1, (Qt::PenStyle)S1));               \
+  A.append(new QPen(C1, P1, (Qt::PenStyle)S1));               \
   A.append(new QPen(C2, P2, (Qt::PenStyle)S2));                 \
   A.append(new QPen(C3, P3, (Qt::PenStyle)S3));                 \
   A.append(new QPen(C4, P4, (Qt::PenStyle)S4));
@@ -44,7 +44,7 @@
                        S1, S2, S3, S4, C7, C8, C9, C10, S7, S8, S9, S10) \
   READ_PEN(G, a, B, C1, C2, C3, C4, P1, P2, P3, P4,                     \
            S1, S2, S3, S4)                                              \
-    A.append(new QBrush(C7,  (Qt::BrushStyle)S7));                      \
+  A.append(new QBrush(C7,  (Qt::BrushStyle)S7));                      \
   A.append(new QBrush(C8,  (Qt::BrushStyle)S8));                        \
   A.append(new QBrush(C9,  (Qt::BrushStyle)S9));                        \
   A.append(new QBrush(C10, (Qt::BrushStyle)S10));
@@ -602,7 +602,7 @@ void MapConfig::slotReadConfig()
                    SU_SECTOR_BRUSH_STYLE_1, SU_SECTOR_BRUSH_STYLE_2,
                    SU_SECTOR_BRUSH_STYLE_3, SU_SECTOR_BRUSH_STYLE_4)
 
-            
+
     GeneralConfig *conf = GeneralConfig::instance();
 
   drawBearing            = conf->getMapBearLine();
