@@ -2297,13 +2297,13 @@ void MapContents::setCurrentTask( FlightTask * _newVal)
 
 /** Returns true if the coordinates of the waypoint in the argument
  * matches one of the waypoints in the list. */
-bool MapContents::getIsInWaypointList(const wayPoint *wp)
+bool MapContents::isInWaypointList(const QPoint& wgsCoord)
 {
   for (int i=0; i < wpList.count(); i++)
     {
       const wayPoint& wpItem = wpList.at(i);
 
-      if( wp->origP == wpItem.origP )
+      if( wgsCoord == wpItem.origP )
         {
           return true;
         }
@@ -2312,6 +2312,24 @@ bool MapContents::getIsInWaypointList(const wayPoint *wp)
   return false;
 }
 
+/**
+ * @Returns true if the name of the waypoint in the argument
+ * matches one of the waypoints in the list.
+ */
+bool MapContents::isInWaypointList(const QString& name )
+{
+  for (int i=0; i < wpList.count(); i++)
+    {
+      const wayPoint& wpItem = wpList.at(i);
+
+      if( name == wpItem.name )
+        {
+          return true;
+        }
+    }
+
+  return false;
+}
 
 QDateTime MapContents::getDateFromMapFile( const QString& path )
 {

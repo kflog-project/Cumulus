@@ -133,8 +133,8 @@ void AirfieldListView::slot_setHome()
   int answer= QMessageBox::warning(this,
                                    tr("Set home site"),
                                    tr("Use airfield<br>%1<br>as your home site?").arg(_wp->name),
-                                   QMessageBox::Ok | QMessageBox::Cancel );
-  if( answer == QMessageBox::Ok )
+                                   QMessageBox::Yes | QMessageBox::No );
+  if( answer == QMessageBox::Yes )
     {
       // Save new data as home position
       GeneralConfig *conf = GeneralConfig::instance();
@@ -142,6 +142,6 @@ void AirfieldListView::slot_setHome()
       conf->setHomeLon(_wp->origP.lon());
       conf->save();
 
-      emit newHomePosition( &_wp->origP );
+      emit newHomePosition( _wp->origP );
     }
 }

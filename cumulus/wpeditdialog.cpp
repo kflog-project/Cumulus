@@ -18,10 +18,11 @@
 /**
  * The WpEditDialog allows the creation of a new waypoint or the modification
  * of an existing waypoint.
- * @author Andr� Somers
+ *
+ * @author André Somers
  */
 
-
+#include <QMessageBox>
 #include <QPushButton>
 #include <QTabWidget>
 #include <QHBoxLayout>
@@ -111,46 +112,110 @@ WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ):
 
   tabWidget->setCurrentWidget(pageGeneral);
 
-  // load data into subwidgets
-  slot_LoadCurrent();
+  // load waypoint data into tabulator widgets
+  loadWaypointData();
 }
-
 
 WpEditDialog::~WpEditDialog()
 {
   // qDebug("WpEditDialog::~WpEditDialog()");
 }
 
-/** This slot is called if the user presses the OK button. */
-void WpEditDialog::slot_LoadCurrent()
+/** This method is called to load the waypoint data in the tab widgets.
+ *  The load will be done only for existing wayppoint objects. */
+void WpEditDialog::loadWaypointData()
 {
-  emit load(_wp);
-
-  if (_wp)
+  if( _wp )
     {
+      emit load(_wp);
       comment->setText(_wp->comment);
     }
 }
 
-/** Called if OK button is pressed? */
+/** Called if OK button is pressed */
 void WpEditDialog::accept()
 {
   // qDebug ("WpEditDialog::accept");
-  if (_wp == 0)
+  if( _wp == 0 )
     {
-      _wp = new wayPoint;
-      emit save(_wp);
-      _wp->projP = _globalMapMatrix->wgsToMap(_wp->origP);
-      //qDebug("new waypoint %s", (const char *)_wp->name);
+      // create a new waypoint from edited data
+      wayPoint newWp;
+      emit save( &newWp );
+      newWp.projP = _globalMapMatrix->wgsToMap( newWp.origP );
+      newWp.comment = comment->toPlainText();
+
+      if( checkWaypointData( newWp ) == false )
+        {
+          // reject saving due to missing data items
+          return;
+        }
+
+      if( _globalMapContents->isInWaypointList( newWp.name ) )
+        {
+          // The waypoint name is already in use, reject accept.
+          QMessageBox::critical( this,tr("Name already in use"),
+                                 tr("Please use another name for your new waypoint"),
+                                 QMessageBox::Close );
+          return;
+        }
+
+      emit wpListChanged( newWp );
     }
   else
     {
-      //qDebug("change waypoint %s", (const char *)_wp->name);
-      emit save(_wp);
+      // update existing waypoint with edited data
+      emit save( _wp );
       _wp->projP = _globalMapMatrix->wgsToMap(_wp->origP);
+      _wp->comment=comment->toPlainText();
+
+      if( checkWaypointData( *_wp ) == false )
+        {
+          // reject saving due to missing data items
+          return;
+        }
+
+      emit wpListChanged( *_wp );
     }
 
-  _wp->comment=comment->toPlainText();
-  emit wpListChanged(_wp);
   QDialog::accept();
+}
+
+/**
+ * This method checks, if all mandatory waypoint data have been defined.
+ * Returns true on ok otherwise false.
+ */
+bool WpEditDialog::checkWaypointData( wayPoint& wp )
+{
+  if( wp.name.isEmpty() )
+    {
+      QMessageBox::critical( this,tr("missing name"),
+                             tr("Please add a waypoint name"),
+                             QMessageBox::Close );
+      return false;
+    }
+
+  if( wp.description.isEmpty() )
+    {
+      QMessageBox::critical( this,tr("missing description"),
+                             tr("Please add a waypoint description"),
+                             QMessageBox::Close );
+      return false;
+    }
+
+  if( wp.origP == QPoint(0,0) )
+      {
+        int answer = QMessageBox::warning(this,tr("missing coordinates"),
+                                          tr("Waypoint coordinates not set, continue?"),
+                                          QMessageBox::No, QMessageBox::Yes );
+        if( answer == QMessageBox::Yes )
+          { // yes was chosen, ignore warning
+            return true;
+          }
+        else
+          {
+            return false;
+          }
+      }
+
+  return true;
 }

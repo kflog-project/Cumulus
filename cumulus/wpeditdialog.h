@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -26,12 +26,13 @@
 /**
  * The WpEditDialog allows the creation of a new waypoint or the modification
  * of an existing waypoint.
- * @author André Somers
+ * @author Andrï¿½ Somers
  */
 
 class WpEditDialog : public QDialog
 {
     Q_OBJECT
+
 public:
     /**
      * Constructor
@@ -43,17 +44,24 @@ public:
 
     virtual ~WpEditDialog();
 
+private:
+    /**
+     * This method is called just before showing the dialog,
+     * and loads the current waypoint data.
+     */
+    void loadWaypointData();
+
+    /**
+     * This method checks, if all mandatory waypoint data have been defined.
+     * Returns true on ok otherwise false.
+     */
+    bool checkWaypointData( wayPoint& wp );
+
+private slots: // Private slots
     /**
      * Called if OK button is pressed
      */
     void accept();
-
-private slots: // Private slots
-    /**
-     * This slot is called just before showing the dialog,
-     * and loads the current settings.
-     */
-    void slot_LoadCurrent();
 
 signals: // Signals
     /**
@@ -69,17 +77,10 @@ signals: // Signals
     void load(wayPoint *);
 
     /**
-     * this signal is emitted after a save procedure has
-     * occurred. It gives connected objects the change to
-     * adjust to new settings.
-     */
-    void settingsChanged();
-
-    /**
-     * This signal is emitted after a waypoint has been saved.
+     * This signal is emitted after a edited waypoint has been saved.
      * It is used to re-fill the waypoint list.
      */
-    void wpListChanged(wayPoint *);
+    void wpListChanged(wayPoint &);
 
 private:
 

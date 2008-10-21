@@ -419,10 +419,8 @@ void CumulusApp::slotCreateApplicationWidgets()
            this, SLOT( slotSwitchToMapView() ) );
   connect( viewWP, SIGNAL( info( wayPoint* ) ),
            this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
-  connect( viewWP, SIGNAL( newHomePosition( const QPoint* ) ),
-           _globalMapMatrix, SLOT( slotSetNewHome( const QPoint* ) ) );
-  connect( viewWP, SIGNAL( newHomePosition( const QPoint* ) ),
-           _globalMapMatrix, SLOT( slotSetNewHome( const QPoint* ) ) );
+  connect( viewWP, SIGNAL( newHomePosition( const QPoint& ) ),
+           _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
 
   connect( viewAF, SIGNAL( newWaypoint( wayPoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
@@ -430,8 +428,8 @@ void CumulusApp::slotCreateApplicationWidgets()
            this, SLOT( slotSwitchToMapView() ) );
   connect( viewAF, SIGNAL( info( wayPoint* ) ),
            this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
-  connect( viewAF, SIGNAL( newHomePosition( const QPoint* ) ),
-           _globalMapMatrix, SLOT( slotSetNewHome( const QPoint* ) ) );
+  connect( viewAF, SIGNAL( newHomePosition( const QPoint& ) ),
+           _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
 
   connect( viewRP, SIGNAL( newWaypoint( wayPoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
@@ -454,12 +452,12 @@ void CumulusApp::slotCreateApplicationWidgets()
   connect( viewMap, SIGNAL( toggleLDCalculation( const bool ) ),
            calculator, SLOT( slot_toggleLDCalculation(const bool) ) );
 
-  connect( viewInfo, SIGNAL( waypointAdded( wayPoint* ) ),
-           viewWP, SLOT( slot_wpAdded( wayPoint* ) ) );
+  connect( viewInfo, SIGNAL( waypointAdded( wayPoint& ) ),
+           viewWP, SLOT( slot_wpAdded( wayPoint& ) ) );
   connect( viewInfo, SIGNAL( waypointSelected( wayPoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
-  connect( viewInfo, SIGNAL( newHomePosition( const QPoint* ) ),
-           _globalMapMatrix, SLOT( slotSetNewHome( const QPoint* ) ) );
+  connect( viewInfo, SIGNAL( newHomePosition( const QPoint& ) ),
+           _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
 
   connect( listViewTabs, SIGNAL( currentChanged( int ) ),
            this, SLOT( slot_tabChanged( int ) ) );
@@ -560,7 +558,7 @@ void CumulusApp::slotCreateApplicationWidgets()
                                            "Enable now?</b></html>"),
                                        QMessageBox::Yes | QMessageBox::No );
 
-      if (answer==QMessageBox::Yes)
+      if( answer == QMessageBox::Yes )
         {
           GeneralConfig::instance()->setAirspaceWarningEnabled(true);
         }
@@ -1090,7 +1088,7 @@ void CumulusApp::closeEvent( QCloseEvent* evt )
 
   playSound("notify");
 
-  QMessageBox mb( QMessageBox::Warning,
+  QMessageBox mb( QMessageBox::Question,
                   tr( "Terminating Cumulus?" ),
                   tr( "Terminating Cumulus<br><b>Are you sure?</b>" ),
                   QMessageBox::Yes | QMessageBox::No,
@@ -1335,7 +1333,7 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       menuBar()->hide();
       viewMap->hide();
       listViewTabs->hide();
-      viewInfo->showWP( view, wp );
+      viewInfo->showWP( view, *wp );
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );

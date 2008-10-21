@@ -175,7 +175,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint>& wpList )
               if (conf->getHomeWp()->origP == wp.origP)
                 {
                   qDebug("Found homesite: %s", wpName.toLatin1().data() );
-                  conf->setHomeWp(&wp);
+                  conf->setHomeWp(wp);
                 }
             }
 

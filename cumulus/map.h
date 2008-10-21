@@ -388,14 +388,6 @@ class Map : public QWidget
     int calcMapRotation();
 
     /**
-     *   search for a waypoint
-     *   First look in task itself
-     *   Second look in map contents
-     */
-    bool __getTaskWaypoint(QPoint current, struct wayPoint *wp,
-                           QList<wayPoint*> &taskPointList);
-
-    /**
      * Draws the glider symbol on the pixmap
      */
     void __drawGlider();

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andr� Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
 #include "wpeditdialog.h"
 
 extern MapContents* _globalMapContents;
-extern MapConfig* _globalMapConfig;
+extern MapConfig*   _globalMapConfig;
 
 
 WaypointListWidget::WaypointListWidget(QWidget *parent) : WpListWidgetParent(parent)
@@ -113,7 +113,7 @@ void WaypointListWidget::deleteSelectedWaypoint()
 
   if( !wp )
     return;
-  
+
   filter->restoreListViewItems();
 
   // remove waypoint from waypoint list in MapContents
@@ -132,7 +132,7 @@ void WaypointListWidget::updateSelectedWaypoint(wayPoint& wp)
 {
   QTreeWidgetItem * li = list->currentItem();
 
-  if ( li== 0 )
+  if ( li == 0 )
     return;
 
 //   if( wp == 0 ) {
@@ -180,12 +180,12 @@ WaypointListWidget::_WaypointItem::_WaypointItem(QTreeWidget* tw, wayPoint& wayp
   QPainter pnt;
   QPixmap selectIcon;
 
-  QString name = wp.name;
-  QRegExp blank("[ ]");
+  //QString name = wp.name;
+  //QRegExp blank("[ ]");
   //name.replace(blank, QString::null);
-  name = name.left(10);
+  //name = name.left(10);
 
-  setText(0, name);
+  setText(0, wp.name);
   setText(1, wp.description);
   setText(2, wp.icao);
 

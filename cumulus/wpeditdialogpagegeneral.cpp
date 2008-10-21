@@ -110,7 +110,7 @@ WpEditDialogPageGeneral::~WpEditDialogPageGeneral()
 /** called if data needs to be loaded */
 void WpEditDialogPageGeneral::slot_load(wayPoint * wp)
 {
-  if (!wp==0)
+  if ( wp )
     { //we don't need to load if the waypoint is not there
       edtName->setText(wp->name);
       edtDescription->setText(wp->description);
@@ -128,13 +128,16 @@ void WpEditDialogPageGeneral::slot_save(wayPoint * wp)
 {
   if ( wp )
     {
-      wp->name=edtName->text();
+      wp->name = edtName->text().trimmed();
       // qDebug("WpEditDialogPageGeneral::slot_save %x %s",wp,(const char *)wp->name );
-      wp->description=edtDescription->text();
+      wp->description = edtDescription->text().trimmed();
+
       if( edtLat->isInputChanged() )
         wp->origP.setLat(edtLat->KFLogDegree());
+
       if( edtLong->isInputChanged() )
         wp->origP.setLon(edtLong->KFLogDegree());
+
       wp->elevation=static_cast<int> (rint(Altitude::convertToMeters(edtElev->text().toDouble())));
       wp->type=getWaypointType();
       wp->importance=( enum wayPoint::Importance ) cmbImportance->currentIndex();

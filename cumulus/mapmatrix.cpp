@@ -602,10 +602,10 @@ unsigned int MapMatrix::currentDrawScale() const
 }
 
 /** set new home position */
-void MapMatrix::slotSetNewHome(const QPoint* newHome)
+void MapMatrix::slotSetNewHome(const QPoint& newHome)
 {
-  homeLat = newHome->x();
-  homeLon = newHome->y();
+  homeLat = newHome.x();
+  homeLon = newHome.y();
   emit homePositionChanged();
 }
 

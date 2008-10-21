@@ -139,10 +139,10 @@ PreFlightDialog::slot_accept()
           "<html><b>"
             "Do you want to replace the previous task?<br>"
             "Waypoint selection is reset at start position."
-            "</b></html>"), QMessageBox::Ok | QMessageBox::Default,
-          QMessageBox::Cancel | QMessageBox::Escape);
+            "</b></html>"), QMessageBox::Yes,
+          QMessageBox::No | QMessageBox::Escape);
 
-      if (answer != QMessageBox::Ok)
+      if (answer != QMessageBox::Yes)
         {
           // do nothing change
           delete newTask;

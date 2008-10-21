@@ -154,8 +154,8 @@ void WaypointListView::slot_newWP()
 
   dlg->setAttribute(Qt::WA_DeleteOnClose);
 
-  connect(dlg, SIGNAL(wpListChanged(wayPoint *)),
-          this, SLOT(slot_wpAdded(wayPoint *)));
+  connect(dlg, SIGNAL(wpListChanged(wayPoint &)),
+          this, SLOT(slot_wpAdded(wayPoint &)));
 
   dlg->show();
 }
@@ -170,8 +170,8 @@ void WaypointListView::slot_editWP()
     WpEditDialog *dlg = new WpEditDialog(this, wp);
     dlg->setAttribute(Qt::WA_DeleteOnClose);
 
-    connect(dlg, SIGNAL(wpListChanged(wayPoint *)),
-            this, SLOT(slot_wpEdited(wayPoint *)));
+    connect(dlg, SIGNAL(wpListChanged(wayPoint &)),
+            this, SLOT(slot_wpEdited(wayPoint &)));
 
     dlg->show();
   }
@@ -182,14 +182,15 @@ void WaypointListView::slot_editWP()
 void WaypointListView::slot_deleteWP()
 {
   wayPoint* wp = listw->getSelectedWaypoint();
+
   if ( wp == 0 )
     return;
 
-  int answer= QMessageBox::warning(this,tr("Delete Waypoint"),
+  int answer= QMessageBox::question(this, tr("Delete Waypoint"),
                                    tr("Delete selected waypoint?"),
-                                   QMessageBox::Ok | QMessageBox::Cancel);
+                                   QMessageBox::No, QMessageBox::Yes);
 
-  if( answer == QMessageBox::Ok ) {
+  if( answer == QMessageBox::Yes ) {
 
     listw->deleteSelectedWaypoint();
     emit deleteWaypoint(wp); // cancel the selected waypoint
@@ -238,16 +239,16 @@ void WaypointListView::slot_setHome()
       return;
     }
 
-  int answer= QMessageBox::warning(this,tr("Set home site"),
-                                   tr("Use waypoint<br>%1<br>as your home site?").arg(_wp->name),
-                                   QMessageBox::Ok | QMessageBox::Cancel );
-  if( answer == 1 ) { //ok was chosen
-
+  int answer = QMessageBox::question( this,tr("Set home site"),
+                                     tr("Use waypoint<br>%1<br>as your home site?").arg(_wp->name),
+                                     QMessageBox::No, QMessageBox::Yes );
+  if( answer == QMessageBox::Yes )
+    {
     // Save new data as home position
     GeneralConfig *conf = GeneralConfig::instance();
-    conf->setHomeWp(_wp);
+    conf->setHomeWp(*_wp);
     conf->save();
 
-    emit newHomePosition( &_wp->origP );
+    emit newHomePosition( _wp->origP );
   }
 }

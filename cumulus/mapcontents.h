@@ -26,6 +26,7 @@
 #include <QPointer>
 #include <QDateTime>
 #include <QMap>
+#include <QString>
 
 #include "airspace.h"
 #include "flighttask.h"
@@ -175,7 +176,13 @@ class MapContents : public QObject
    * @Returns true if the coordinates of the waypoint in the argument
    * matches one of the waypoints in the list.
    */
-  bool getIsInWaypointList(const wayPoint * wp);
+  bool isInWaypointList( const QPoint& wgsCoord );
+
+  /**
+   * @Returns true if the name of the waypoint in the argument
+   * matches one of the waypoints in the list.
+   */
+  bool isInWaypointList( const QString& name );
 
   /**
    * Add a point to a rectangle, so the rectangle will be the bounding box

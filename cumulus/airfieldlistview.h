@@ -106,7 +106,7 @@ signals: // Signals
     /**
      * Emitted if a new home position is selected
      */
-    void newHomePosition(const QPoint*);
+    void newHomePosition(const QPoint&);
 
 };
 

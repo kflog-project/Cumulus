@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -19,7 +19,7 @@
  * This widget provides an interface to add, edit and delete gliders
  * from the glider list.
  *
- * @author André Somers
+ * @author Andrï¿½ Somers
  */
 
 #include <QPushButton>
@@ -119,10 +119,10 @@ void SettingsPageGlider::slot_delete()
   }
 
   int answer= QMessageBox::warning(this,tr("Delete?"),tr("Delete selected glider?"),
-                                   QMessageBox::Ok,
-                                   QMessageBox::Cancel | QMessageBox::Escape | QMessageBox::Default);
+                                   QMessageBox::Yes,
+                                   QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
 
-  if( answer == QMessageBox::Ok ) {
+  if( answer == QMessageBox::Yes ) {
     list->slot_Deleted(glider);
   }
 }

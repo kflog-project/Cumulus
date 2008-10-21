@@ -251,17 +251,17 @@ void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
     // that fact.
 
     int answer=
-      QMessageBox::warning( 0, tr("Replace current taskpoint?"),
+      QMessageBox::question( 0, tr("Replace current taskpoint?"),
                             tr("<html>"
                                "A flight task is activated!<br>"
                                "This selection will stop the automatic taskpoint switch."
                                "To avoid that make a selection from task menu."
                                "<br>Do You really want to replace?"
                                "</html>"),
-                            QMessageBox::Ok | QMessageBox::Default,
-                            QMessageBox::Cancel | QMessageBox::Escape );
+                            QMessageBox::Yes,
+                            QMessageBox::No | QMessageBox::Escape );
 
-    if( answer != QMessageBox::Ok )
+    if( answer != QMessageBox::Yes )
       {
         // do nothing change
         return;

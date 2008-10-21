@@ -42,12 +42,12 @@ extern MapContents  *_globalMapContents;
 extern Calculator   *calculator;
 
 WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
-    QWidget(parent),
-    _wp(0)
+    QWidget(parent)
 {
   setObjectName("WPInfoWidget");
   cuApp = parent;
   _lastView = CumulusApp::mapView;
+  _wp.name = "";
   arrivalInfo = 0;
 
   resize(parent->size());
@@ -129,10 +129,6 @@ WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
 
 WPInfoWidget::~WPInfoWidget()
 {
-  if( _wp )
-    {
-      delete _wp;
-    }
 }
 
 /** This slot get called on the timer timeout. */
@@ -152,21 +148,19 @@ void WPInfoWidget::slot_timeout()
 
 /** This method is called by CumulusApp to set the view to
  * which there must be returned and the waypoint to view. */
-bool WPInfoWidget::showWP(int lastView, const wayPoint *wp)
+bool WPInfoWidget::showWP(int lastView, const wayPoint& wp)
 {
   extern MapContents* _globalMapContents;
   extern MapMatrix*   _globalMapMatrix;
 
-  if( wp == 0 )
-    {
-      return false;
-    }
-
   // save return view
   _lastView = lastView;
 
+  // save passed waypoint
+  _wp = wp;
+
   // Check if new point is in waypoint list, so make sure we can add it.
-  if (_globalMapContents->getIsInWaypointList(wp))
+  if (_globalMapContents->isInWaypointList(wp.origP))
     cmdAddWaypoint->hide();
   else
     cmdAddWaypoint->show();
@@ -174,7 +168,7 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint *wp)
   // check, if current home position is different from waypoint
   QPoint home = _globalMapMatrix->getHomeCoord();
 
-  if( home == wp->origP || inFlight() )
+  if( home == wp.origP || inFlight() )
     {
       cmdSetHome->hide();
     }
@@ -190,7 +184,7 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint *wp)
 
   if( calcWp )
     {
-      if( wp->origP == calcWp->origP )
+      if( wp.origP == calcWp->origP )
         {
           cmdUnselectWaypoint->show();
           cmdSelectWaypoint->hide();
@@ -207,21 +201,12 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint *wp)
       cmdUnselectWaypoint->hide();
     }
 
-  if( wp->taskPointIndex == 0 )
+  if( wp.taskPointIndex == 0 )
     {
       // take-off task points are not select or unselectable
       cmdSelectWaypoint->hide();
       cmdUnselectWaypoint->hide();
     }
-
-  // save new values. We make a deep copy to prevent problems with
-  // constant methods elsewhere.
-  if( _wp)
-    {
-      delete _wp;
-    }
-
-  _wp = new wayPoint(*wp);
 
   writeText();
 
@@ -263,10 +248,10 @@ void WPInfoWidget::showEvent(QShowEvent *)
 /** This method actually fills the widget with the info. */
 void WPInfoWidget::writeText()
 {
-  if( _wp == 0 )
+  if( _wp.name.isEmpty() )
     {
       text->setText("<html><big><center><b>" +
-                    tr("No waypoint selected") +
+                    tr("No waypoint data available") +
                     "</b></center></big></html>");
     }
   else
@@ -278,37 +263,37 @@ void WPInfoWidget::writeText()
       bool start = false;
       QString table = "<p><table cellpadding=5 width=100%>";
 
-      itxt+= "<html><!--big--><center><b>" + _wp->description + " (" + _wp->name;
+      itxt+= "<html><!--big--><center><b>" + _wp.description + " (" + _wp.name;
 
-      if (!_wp->icao.isEmpty())
+      if (!_wp.icao.isEmpty())
         {
-          itxt+=",&nbsp;"+ _wp->icao;
+          itxt+=",&nbsp;"+ _wp.icao;
         }
 
-      itxt+= ")<p>" + BaseMapElement::item2Text(_wp->type, tr("(unknown)"));
+      itxt+= ")<p>" + BaseMapElement::item2Text(_wp.type, tr("(unknown)"));
 
-      if (_wp->isLandable)
+      if (_wp.isLandable)
         {
           itxt+= "</b></center>";
 
-          iTmp=_wp->surface;
+          iTmp=_wp.surface;
 
           if( iTmp > 3 )
             iTmp = 0;
-          // qDebug("_wp->surface %d", _wp->surface );
+          // qDebug("_wp.surface %d", _wp.surface );
           if (iTmp<0)
             iTmp=0;
 
           QString tmp2;
 
-          if( _wp->runway < 0 || _wp->runway > 360 )
+          if( _wp.runway < 0 || _wp.runway > 360 )
             {
               tmp2 = tr("Unknown");
             }
           else
             {
               // @AP: show runway in both directions, start with the lowest one
-              int rw1 =_wp->runway;
+              int rw1 =_wp.runway;
               int rw2 = rw1 <= 180 ? rw1+180 : rw1-180;
               int h1 = rw1 < rw2 ? rw1/10 : rw2/10;
               int h2 = rw1 < rw2 ? rw2/10 : rw1/10;
@@ -319,13 +304,13 @@ void WPInfoWidget::writeText()
             Runway::item2Text(iTmp) + ")</td>" +
             "<td>" + tr("Length: ") + "</td><td><b>";
 
-          if( _wp->length <= 0 )
+          if( _wp.length <= 0 )
             {
               itxt += tr("Unknown") + "</b></td></tr>";
             }
           else
             {
-              tmp = QString("%1 m</b></td></tr>").arg(_wp->length);
+              tmp = QString("%1 m</b></td></tr>").arg(_wp.length);
               itxt += tmp;
             }
         }
@@ -336,11 +321,11 @@ void WPInfoWidget::writeText()
           start = true;
         }
 
-      if (_wp->frequency >= 108.0 && _wp->frequency <= 137.0 )
+      if (_wp.frequency >= 108.0 && _wp.frequency <= 137.0 )
         {
-          tmp = QString("<tr><td>" + tr("Frequency:") + "</td><td><b>%1 MHz</b></td>").arg(_wp->frequency,0,'f',3);
+          tmp = QString("<tr><td>" + tr("Frequency:") + "</td><td><b>%1 MHz</b></td>").arg(_wp.frequency,0,'f',3);
           itxt += tmp;
-//          itxt+=tmp.sprintf("<tr><td>" + tr("Frequency:") + "</td><td><b>%1.3f MHz</b></td>", _wp->frequency);
+//          itxt+=tmp.sprintf("<tr><td>" + tr("Frequency:") + "</td><td><b>%1.3f MHz</b></td>", _wp.frequency);
         }
       else
         {
@@ -351,10 +336,10 @@ void WPInfoWidget::writeText()
       Altitude::altitude currentUnit = Altitude::getUnit();
 
       Altitude::setUnit(Altitude::meters);
-      QString meters = Altitude::getText(_wp->elevation, true, 0);
+      QString meters = Altitude::getText(_wp.elevation, true, 0);
 
       Altitude::setUnit(Altitude::feet);
-      QString feet = Altitude::getText(_wp->elevation, true, 0);
+      QString feet = Altitude::getText(_wp.elevation, true, 0);
 
       // restore save unit
        Altitude::setUnit(currentUnit);
@@ -376,7 +361,7 @@ void WPInfoWidget::writeText()
       QDate date = QDate::currentDate();
 
       // calculate Sunrise and Sunset
-      bool res = Sonne::sonneAufUnter( sr, ss, date, _wp->origP , 0 );
+      bool res = Sonne::sonneAufUnter( sr, ss, date, _wp.origP , 0 );
 
       if( res )
         {
@@ -390,16 +375,16 @@ void WPInfoWidget::writeText()
         }
 
       itxt += "<tr><td>" + tr("Latitude:") + "</td><td><b>" +
-        WGSPoint::printPos(_wp->origP.x(),true) + "</b></td>" +
+        WGSPoint::printPos(_wp.origP.x(),true) + "</b></td>" +
         "<td>" + tr("Longitude:") + "</td><td><b>" +
-        WGSPoint::printPos(_wp->origP.y(),false) +
+        WGSPoint::printPos(_wp.origP.y(),false) +
         "</b></td></tr>" +
         "</table>";
 
-      if ((_wp->comment!=QString::null) && (_wp->comment!=""))
+      if ((_wp.comment!=QString::null) && (_wp.comment!=""))
         {
           itxt += "<table cellpadding=5><tr><th align=left>" + tr("Comments") +
-            "</th></tr><tr><td>" + _wp->comment + "</td></tr></table>";
+            "</th></tr><tr><td>" + _wp.comment + "</td></tr></table>";
         }
 
       itxt+="<!--/big--></html>";
@@ -461,7 +446,7 @@ void WPInfoWidget::slot_selectWaypoint()
       return slot_unselectWaypoint();
     }
 
-  emit waypointSelected(_wp, true);
+  emit waypointSelected(&_wp, true);
 
   return slot_SwitchBack();
 }
@@ -470,7 +455,7 @@ void WPInfoWidget::slot_selectWaypoint()
 /** This slot is called if the Add Waypoint button is clicked. */
 void WPInfoWidget::slot_addAsWaypoint()
 {
-  _wp->importance=wayPoint::High; //importance is high
+  _wp.importance=wayPoint::High; //importance is high
   emit waypointAdded(_wp);
 
   cmdAddWaypoint->hide();
@@ -481,25 +466,20 @@ void WPInfoWidget::slot_addAsWaypoint()
 /** This slot is called if the Home button is clicked. */
 void WPInfoWidget::slot_setAsHome()
 {
-  if( ! _wp )
-    {
-      return;
-    }
-
   slot_KeepOpen(); // Stop timer
 
-  int answer= QMessageBox::warning(this,tr("Set home site?"),
-                                   tr("<html><b>Do you want to use site<br>%1<br>as your new home site?</b></html>").arg(_wp->name),
-                                   QMessageBox::Ok | QMessageBox::Default,
-                                   QMessageBox::Cancel | QMessageBox::Escape );
+  int answer= QMessageBox::question(this,tr("Set home site?"),
+                                   tr("<html><b>Do you want to use site<br>%1<br>as your new home site?</b></html>").arg(_wp.name),
+                                   QMessageBox::No,
+                                   QMessageBox::Yes );
 
-  if( answer == QMessageBox::Ok )
+  if( answer == QMessageBox::Yes )
     {
       // Save new data as home position
       GeneralConfig *conf = GeneralConfig::instance();
       conf->setHomeWp(_wp);
       conf->save();
-      emit newHomePosition( &_wp->origP );
+      emit newHomePosition( _wp.origP );
     }
 
   slot_KeepOpen();
@@ -512,12 +492,6 @@ void WPInfoWidget::slot_setAsHome()
 void WPInfoWidget::slot_arrival()
 {
   // qDebug("WPInfoWidget::slot_arrival()");
-
-  if( ! _wp )
-    {
-      return;
-    }
-
   slot_KeepOpen(); // Stop timer
 
   // switch off all accelerator keys
@@ -525,7 +499,7 @@ void WPInfoWidget::slot_arrival()
 
   // create arrival info widget
   arrivalInfo = new TPInfoWidget( this );
-  arrivalInfo->prepareArrivalInfoText( _wp );
+  arrivalInfo->prepareArrivalInfoText( &_wp );
   arrivalInfo->showTP( false );
 
   connect( arrivalInfo, SIGNAL(close()),

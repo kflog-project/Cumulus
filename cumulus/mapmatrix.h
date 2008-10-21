@@ -338,7 +338,7 @@ class MapMatrix : public QObject
   /**
    * set new home position
    */
-  void slotSetNewHome(const QPoint *newHome);
+  void slotSetNewHome(const QPoint& newHome);
 
 
  signals:

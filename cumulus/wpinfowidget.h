@@ -49,7 +49,7 @@ class WPInfoWidget : public QWidget
      * This method is called by CumulusApp to set the view to which
      * there must be returned and the waypoint to view.
      */
-    bool showWP(int lastView, const wayPoint * wp=0);
+    bool showWP(int lastView, const wayPoint& wp);
 
   public slots: // Public slots
 
@@ -71,7 +71,7 @@ class WPInfoWidget : public QWidget
     /**
      * Emitted if a waypoint has been added to the list.
      */
-    void waypointAdded(wayPoint * wp);
+    void waypointAdded(wayPoint& wp);
 
     /**
      * Emitted if a waypoint has been selected.
@@ -81,7 +81,7 @@ class WPInfoWidget : public QWidget
     /**
      * Emitted if a new home position is selected
      */
-    void newHomePosition(const QPoint*);
+    void newHomePosition(const QPoint&);
 
   protected:
 
@@ -166,9 +166,9 @@ class WPInfoWidget : public QWidget
     QPushButton * cmdArrival;
 
     QShortcut* scClose;
-    
+
     /** arrival info widget */
-    TPInfoWidget * arrivalInfo;
+    TPInfoWidget* arrivalInfo;
 
     /**
      * Reference to a timer. When this timer fires, the view
@@ -177,16 +177,16 @@ class WPInfoWidget : public QWidget
      * field?) after wich the view is automatically returned to
      * the last one.
      */
-    QTimer * timer;
+    QTimer* timer;
 
     /** TimerCount */
     int _timerCount;
 
     /** Reference to the waypoint who's details to be displayed. */
-    wayPoint * _wp;
+    wayPoint _wp;
 
     /** last selected waypoint  */
-    wayPoint    myWp;
+    wayPoint myWp;
 
     /** contains the ID of the last view (the view that called this one) */
     int _lastView;

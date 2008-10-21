@@ -1239,86 +1239,6 @@ void Map::slotCenterToTask()
   */
 }
 
-/**
- * search for a waypoint
- * First look in task itself
- * Second look in map contents
- */
-bool Map::__getTaskWaypoint(QPoint current, struct wayPoint *wp, QList<wayPoint*> &taskPointList)
-{
-  // Radius for Mouse Snapping
-  double delta(12.0);
-
-  if(_globalMapMatrix->isSwitchScale())
-    {
-      delta = 6.0;
-    }
-
-  bool found = false;
-
-
-  for(int i = 0; i < taskPointList.count(); i++)
-    {
-      wayPoint *tmpPoint = taskPointList.at(i);
-      QPoint sitePos ( _globalMapMatrix->map(_globalMapMatrix->wgsToMap(tmpPoint->origP)));
-      double dX = abs(sitePos.x() - current.x());
-      double dY = abs(sitePos.y() - current.y());
-
-      // Abstand entspricht der Icon-Groesse
-      if (dX < delta && dY < delta)
-        {
-          *wp = *tmpPoint;
-          found = true;
-          break;
-        }
-    }
-
-  if(!found)
-    {
-      /*
-       *  Should be done for all Point-data
-       */
-      QList<int> contentArray;
-
-      contentArray.append( MapContents::GliderSiteList );
-      contentArray.append( MapContents::AirfieldList );
-
-      for( int n = 0; n < contentArray.count(); n++)
-        {
-          for(unsigned int loop = 0; loop < _globalMapContents->getListLength(contentArray.at(n)); loop++)
-            {
-              RadioPoint *hitElement = (RadioPoint*)_globalMapContents->getElement(contentArray.at(n), loop);
-              QPoint sitePos (hitElement->getMapPosition());
-              double dX = abs(sitePos.x() - current.x());
-              double dY = abs(sitePos.y() - current.y());
-
-              if (dX < delta && dY < delta)
-                {
-                  wp->name = hitElement->getWPName();
-                  wp->origP = hitElement->getWGSPosition();
-                  wp->elevation = hitElement->getElevation();
-                  wp->projP = hitElement->getPosition();
-                  wp->description = hitElement->getName();
-                  wp->type = hitElement->getTypeID();
-                  wp->elevation = hitElement->getElevation();
-                  wp->icao = hitElement->getICAO();
-                  wp->frequency = hitElement->getFrequency().toDouble();
-                  wp->runway = 0;
-                  wp->length = 0;
-                  wp->surface = 0;
-                  wp->comment = "";
-                  wp->isLandable = true;
-
-                  found = true;
-                  break;
-                }
-            }
-        }
-    }
-
-  return found;
-}
-
 
 /** Draws the waypoints of the active waypoint catalog on the map */
 void Map::__drawWaypoints(QPainter* wpPainter)
@@ -1326,7 +1246,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
   bool isSelected;
 
 #warning QList wpLabels is not reused! Check for removing
-  
+
   while ( ! wpLabels.isEmpty() )
     {
       delete wpLabels.takeFirst();
@@ -1433,7 +1353,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                 {
                   // do we need to show the labels at all?
                   labelText=wp.name;
-                  
+
                   if ( _globalMapConfig->getShowWpLabelsExtraInfo() )
                     { //just the name, or also additional info?
                       if ( wp.isLandable )
@@ -1448,7 +1368,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                             }
 
                           dist = ReachableList::getDistance( wp.origP );
-                          
+
                           if ( dist.isValid() )
                             { //check if the distance is valid...
                               labelText += dist.getText( false, uint(0), uint(0) )
@@ -1477,7 +1397,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                             }
                         }
                     }
-                  
+
                   rtext = new QLabel(this);
                   wpLabels.append( rtext );
                   rtext->setAutoFillBackground(true);
@@ -1526,7 +1446,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                       rpal.setColor(QPalette::Normal,QPalette::Window,Qt::black);
                       rpal.setColor(QPalette::Normal,QPalette::WindowText,Qt::white);
                     }
-                  
+
                   rtext->setPalette(rpal);
                   rtext->move( P.x() + xOffset + 1, P.y() + yOffset - textbox.height() + 2 );
                   rtext->show();

@@ -400,16 +400,14 @@ class GeneralConfig : protected QSettings
     };
 
   /** sets Homesite  waypoint */
-  void setHomeWp( wayPoint *newValue )
+  void setHomeWp( const wayPoint& newValue )
   {
-    if( ! newValue ) return;
-
     if(_homeWp)
       {
         delete _homeWp;
       }
 
-    _homeWp = new wayPoint( *newValue );
+    _homeWp = new wayPoint( newValue );
 
   };
 
