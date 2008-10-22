@@ -336,7 +336,8 @@ class MapContents : public QObject
 
   /**
    * airspaceList contains all airspaces. The sort function on this
-   * list will sort the airspaces from top to bottom.
+   * list will sort the airspaces from top to bottom. This list must be stay
+   * a pointer list because the cross reference to the airspace region.
    */
   SortableAirspaceList airspaceList;
   //  there are different airspaces with same name ! Don't use MapElementList,
