@@ -188,9 +188,9 @@ QPoint MapMatrix::__mapToWgs(int x, int y) const
 bool MapMatrix::isVisible( const QRect& itemBorder, int typeID) const
 {
   // Grenze: Nahe 15Bit
-  // Vereinfachung kann zu Fehlern f�hren ...
+  // Vereinfachung kann zu Fehlern fuehren ...
   // qDebug("MapMatrix::isVisible(): w=%d h=%d", itemBorder.width(), itemBorder.height() );
-  // ! check for < 10000 is a workaround for a bug otherwhere
+  // ! check for < 10000 is a workaround for a bug other where
   //   that came out after fixing the scale criteria that was always true
   //   before
 #warning "FIXME: There is a bug, leading to very large with() and height() values treated by a workaround here"
@@ -588,7 +588,12 @@ double MapMatrix::ensureVisible(const QPoint& point)
 }
 
 
-/** This function returns an integer between 0 and 2. 0 is returned if the map is zoomed in far enough to display all waypoints, 1 is an intermediate zoomfactor and 2 is such a big scale that only important waypoints should be drawn. */
+/** This function returns an integer between 0 and 2.
+ * 0 is returned if the map is zoomed in far enough to
+ * display all waypoints, 1 is an intermediate zoom factor
+ * and 2 is such a big scale that only important waypoints
+ * should be drawn.
+ */
 unsigned int MapMatrix::currentDrawScale() const
 {
   //these numbers need to be made configurable at some point.
@@ -641,8 +646,8 @@ QPoint MapMatrix::map(const QPoint& p) const
 {
 	fp24p8_t fx = itofp24p8( p.x() );
 	fp24p8_t fy = itofp24p8( p.y() );
-    // some cheating involved; multiplication with the "wrong" macro
-    // after "left shifting" the "m" value in createMatrix
+        // some cheating involved; multiplication with the "wrong" macro
+        // after "left shifting" the "m" value in createMatrix
 	return QPoint( fp24p8toi( mulfp8p24(m11,fx) + mulfp8p24(m21,fy) + dx),
                        fp24p8toi( mulfp8p24(m22,fy) + mulfp8p24(m12,fx) + dy) );
 }
