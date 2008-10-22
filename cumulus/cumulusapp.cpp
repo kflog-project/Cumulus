@@ -463,8 +463,6 @@ void CumulusApp::slotCreateApplicationWidgets()
            this, SLOT( slot_tabChanged( int ) ) );
 
   connect( calculator, SIGNAL( newWaypoint( const wayPoint* ) ),
-           this, SLOT( slotWaypointChanged( const wayPoint* ) ) );
-  connect( calculator, SIGNAL( newWaypoint( const wayPoint* ) ),
            viewMap, SLOT( slot_Waypoint( const wayPoint* ) ) );
   connect( calculator, SIGNAL( newBearing( int ) ),
            viewMap, SLOT( slot_Bearing( int ) ) );
@@ -876,7 +874,8 @@ void CumulusApp::initActions()
   connect( actionViewTaskpoints, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToTaskListView() ) );
 
-  actionViewInfo = new QAction( tr( "&Info" ), this );
+  // Show info about selected target
+  actionViewInfo = new QAction( tr( "&Info Target" ), this );
   actionViewInfo->setShortcut(Qt::Key_I);
   addAction( actionViewInfo );
   connect( actionViewInfo, SIGNAL( triggered() ),
@@ -1011,19 +1010,6 @@ void  CumulusApp::toggleActions( const bool toggle )
 {
   actionViewWaypoints->setEnabled( toggle );
   actionViewAirfields->setEnabled( toggle );
-
-  if( toggle )
-    {
-      GeneralConfig * conf = GeneralConfig::instance();
-      actionViewReachpoints->setEnabled( conf->getNearestSiteCalculatorSwitch() );
-    }
-  else
-    {
-      actionViewReachpoints->setEnabled( toggle );
-    }
-
-  actionViewTaskpoints->setEnabled( toggle );
-  actionViewInfo->setEnabled( toggle );
   actionViewGPSStatus->setEnabled( toggle );
   actionZoomInZ->setEnabled( toggle );
   actionZoomOutZ->setEnabled( toggle );
@@ -1040,6 +1026,30 @@ void  CumulusApp::toggleActions( const bool toggle )
   actionToggleLogging->setEnabled( toggle );
   scExit->setEnabled( toggle );
   // do not toggle actionToggleManualInFlight, status may not be changed
+
+  if( toggle )
+    {
+      GeneralConfig * conf = GeneralConfig::instance();
+      actionViewReachpoints->setEnabled( conf->getNearestSiteCalculatorSwitch() );
+
+      if( calculator->getselectedWp() )
+        {
+          // allow action only if a waypoint is selected
+          actionViewInfo->setEnabled( toggle );
+        }
+
+      if ( _globalMapContents->getCurrentTask() )
+        {
+          // allow action only if a task is defined
+          actionViewTaskpoints->setEnabled( toggle );
+        }
+    }
+  else
+    {
+      actionViewReachpoints->setEnabled( toggle );
+      actionViewInfo->setEnabled( toggle );
+      actionViewTaskpoints->setEnabled( toggle );
+    }
 }
 
 /**
@@ -1551,23 +1561,6 @@ void CumulusApp::slotHelp()
   hb->show();
 }
 
-void CumulusApp::slotWaypointChanged( const wayPoint *newWp )
-{
-  // qDebug("CumulusApp::slotWaypointChanged() is called" );
-
-  if( newWp != 0  )
-    {
-      actionViewInfo->setEnabled( true );
-      actionViewInfo->setShortcut( Qt::Key_I ); // re-enable shortcut
-    }
-  else
-    {
-      actionViewInfo->setEnabled( false );
-      actionViewInfo->setShortcut( 0 ); // disable shortcut
-    }
-}
-
-
 void CumulusApp::slotRememberWaypoint()
 {
   static uint count = 1;
@@ -1803,7 +1796,6 @@ void CumulusApp::slotPreFlight(const char *tabName)
 
 void CumulusApp::slotPreFlightDataChanged()
 {
-
   if ( _globalMapContents->getCurrentTask() == 0 )
     {
       if ( _taskListVisible )
@@ -1816,7 +1808,6 @@ void CumulusApp::slotPreFlightDataChanged()
 
           connect( listViewTabs, SIGNAL( currentChanged( int index ) ),
                    this, SLOT( slot_tabChanged( int index ) ) );
-          actionViewTaskpoints->setEnabled( false );
           _taskListVisible = false;
         }
     }
@@ -1826,7 +1817,6 @@ void CumulusApp::slotPreFlightDataChanged()
         {
           listViewTabs->insertTab( 0, viewTP, tr( "Task" ) );
           _taskListVisible = true;
-          actionViewTaskpoints->setEnabled( true );
         }
     }
 

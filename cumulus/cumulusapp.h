@@ -133,11 +133,6 @@ class CumulusApp : public QMainWindow
      */
     void slotRememberWaypoint ();
     /**
-     * Informs about a waypoint selection change, used for
-     * activation/deactivation of info menu action
-     */
-    void slotWaypointChanged(const wayPoint* newWp);
-    /**
      * Navigates to the home site (only in manual mode)
      */
     void slotNavigateHome();
