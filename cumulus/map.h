@@ -362,12 +362,12 @@ class Map : public QWidget
     /**
      * Display Info about Airspace items
      */
-    void __displayMapInfo(const QPoint& current);
+    void __displayAirspaceInfo(const QPoint& current);
 
     /**
      * Display detailed info about a MapItem
      */
-    void __displayDetailedMapInfo(const QPoint& current);
+    void __displayDetailedItemInfo(const QPoint& current);
 
     /**
      * This function sets the map rotation and redraws the map

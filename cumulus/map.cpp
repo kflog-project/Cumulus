@@ -140,11 +140,11 @@ Map::~Map()
  * Display Info about Airspace items
 */
 
-void Map::__displayMapInfo(const QPoint& current)
+void Map::__displayAirspaceInfo(const QPoint& current)
 {
   if( mutex() || !isVisible() )
     {
-      //qDebug("Map::__displayMapInfo: Map drawing in progress: return");
+      //qDebug("Map::__displayAirspaceInfo: Map drawing in progress: return");
       return;
     }
 
@@ -215,11 +215,11 @@ void Map::__displayMapInfo(const QPoint& current)
  * Display detailed Info about an airfield, a glider site or a waypoint.
 */
 
-void Map::__displayDetailedMapInfo(const QPoint& current)
+void Map::__displayDetailedItemInfo(const QPoint& current)
 {
   if( mutex() )
     {
-      //qDebug("Map::__displayDetailedMapInfo: Map drawing in progress: return");
+      //qDebug("Map::__displayDetailedItemInfo: Map drawing in progress: return");
       return;
     }
 
@@ -279,7 +279,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
             }
           else
             {
-              qWarning( "Map::__displayDetailedMapInfo: ListType %d is unknown",
+              qWarning( "Map::__displayDetailedItemInfo: ListType %d is unknown",
                         searchList[l] );
               break;
             }
@@ -419,7 +419,7 @@ void Map::__displayDetailedMapInfo(const QPoint& current)
   // @ee maybe we can show airspace info
   if (!found)
     {
-      __displayMapInfo(current);
+      __displayAirspaceInfo(current);
     }
 }
 
@@ -442,7 +442,7 @@ void Map::mousePressEvent(QMouseEvent* event)
       break;
     case Qt::LeftButton: // press generates mouse LeftButton immediately
       // qDebug("LeftButton");
-      __displayDetailedMapInfo(event->pos());
+      __displayDetailedItemInfo(event->pos());
       break;
     case Qt::MidButton:
       // qDebug("MidButton");
@@ -467,7 +467,7 @@ void Map::mouseReleaseEvent(QMouseEvent* event)
   switch (event->button())
     {
     case Qt::LeftButton:
-      // __displayMapInfo(event->pos());
+      // __displayAirspaceInfo(event->pos());
       break;
     default:
       break;
