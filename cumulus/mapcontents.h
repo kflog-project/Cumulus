@@ -16,8 +16,8 @@
  **
  ***********************************************************************/
 
-#ifndef MAPCONTENTS_H
-#define MAPCONTENTS_H
+#ifndef MAP_CONTENTS_H
+#define MAP_CONTENTS_H
 
 #include <QSet>
 #include <QFile>
@@ -29,6 +29,7 @@
 #include <QString>
 
 #include "airspace.h"
+#include "distance.h"
 #include "flighttask.h"
 #include "mapelementlist.h"
 #include "waitscreen.h"
@@ -39,7 +40,6 @@ class Isohypse;
 class LineElement;
 class RadioPoint;
 class SinglePoint;
-class Distance;
 
 /**
  * This class provides functions for accessing the contents of the map.
@@ -204,7 +204,7 @@ class MapContents : public QObject
    * If the error argument is given, it will be set to the error margin for the
    * returned value.
    */
-  int findElevation(const QPoint& coord, Distance * errorDist=0);
+  int findElevation(const QPoint& coord, Distance* errorDist=0);
 
   /**
    * Deletes all currently not-needed map sections from memory
@@ -229,7 +229,7 @@ class MapContents : public QObject
    * map file. If found, it returns true and returns the complete
    * path in pathName.
    */
-  static bool locateFile(const QString& fileName, QString & pathName);
+  static bool locateFile(const QString& fileName, QString& pathName);
 
   /**
    * this function serves as a substitute for the not existing
