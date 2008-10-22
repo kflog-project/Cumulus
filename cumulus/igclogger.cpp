@@ -299,7 +299,7 @@ void IgcLogger::slotToggleLogging()
 
   if (_logMode==on) {
     // Trying to ask a question causes segfault?!
-    int answer= QMessageBox::warning(0,tr("Stop Logging?"),
+    int answer= QMessageBox::question(0,tr("Stop Logging?"),
                                      tr("Are you sure you want\nto close the logfile\nand stop logging?"),
                                      QMessageBox::Yes,
                                      QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
@@ -310,7 +310,7 @@ void IgcLogger::slotToggleLogging()
       CloseFile();
     }
   } else if (_logMode==standby) {
-    int answer= QMessageBox::warning(0,tr("Stop Logging?"),
+    int answer= QMessageBox::question(0,tr("Stop Logging?"),
                                      tr("Are you sure you want\nto stop listening\nfor events to autostart\nlogging?"),
                                      QMessageBox::Yes,
                                      QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);

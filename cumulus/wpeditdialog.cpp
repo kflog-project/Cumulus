@@ -155,7 +155,7 @@ void WpEditDialog::accept()
           // The waypoint name is already in use, reject accept.
           QMessageBox::critical( this,tr("Name already in use"),
                                  tr("Please use another name for your new waypoint"),
-                                 QMessageBox::Close );
+                                 QMessageBox::Ok );
           return;
         }
 
@@ -190,7 +190,7 @@ bool WpEditDialog::checkWaypointData( wayPoint& wp )
     {
       QMessageBox::critical( this,tr("missing name"),
                              tr("Please add a waypoint name"),
-                             QMessageBox::Close );
+                             QMessageBox::Ok );
       return false;
     }
 
@@ -198,7 +198,7 @@ bool WpEditDialog::checkWaypointData( wayPoint& wp )
     {
       QMessageBox::critical( this,tr("missing description"),
                              tr("Please add a waypoint description"),
-                             QMessageBox::Close );
+                             QMessageBox::Ok );
       return false;
     }
 

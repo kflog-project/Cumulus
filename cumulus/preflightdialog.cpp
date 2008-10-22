@@ -135,7 +135,7 @@ PreFlightDialog::slot_accept()
 
   if (curTask && newTask && newTaskPassed)
     {
-      int answer = QMessageBox::warning(this, tr("Replace previous task?"), tr(
+      int answer = QMessageBox::question(this, tr("Replace previous task?"), tr(
           "<html><b>"
             "Do you want to replace the previous task?<br>"
             "Waypoint selection is reset at start position."

@@ -455,11 +455,11 @@ void TaskList::slotDeleteTask()
     return;
   }
 
-  int answer= QMessageBox::warning(this,tr("Delete Task"),
+  int answer= QMessageBox::question(this,tr("Delete Task"),
                          tr("Delete the selected task?"),
-                         QMessageBox::Ok | QMessageBox::Cancel );
+                         QMessageBox::No, QMessageBox::Yes );
 
-  if( answer != QMessageBox::Ok ) {
+  if( answer != QMessageBox::Yes ) {
     return;
   }
 

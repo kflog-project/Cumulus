@@ -543,12 +543,12 @@ SettingsPageGliderData::accept()
 
   if (edtGReg->text().isEmpty())
     {
-      QMessageBox::warning(this, tr("Missing registration!"),
+      QMessageBox::critical(this, tr("Missing registration!"),
           tr("Please enter a valid registration."));
     }
   else if (comboType->currentText().trimmed().isEmpty())
     {
-      QMessageBox::warning(this, tr("Missing glider type!"),
+      QMessageBox::critical(this, tr("Missing glider type!"),
           tr("Please enter a valid glider type."));
     }
   else

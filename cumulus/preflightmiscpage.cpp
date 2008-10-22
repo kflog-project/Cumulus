@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2004 by Andrï¿½ Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -141,7 +141,7 @@ PreFlightMiscPage::save()
     {
       if (log->getisLogging())
         {
-          int answer = QMessageBox::warning(this, tr("Restart Logging?"), tr(
+          int answer = QMessageBox::question(this, tr("Restart Logging?"), tr(
               "Logger is running.<br>Closing logfile<br>and start new log?"),
               QMessageBox::Yes | QMessageBox::No);
 

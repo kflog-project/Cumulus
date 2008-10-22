@@ -344,7 +344,7 @@ void TaskEditor::accept()
   // four waypoints are incomplete
   if ( taskWPList.count() < 4 )
     {
-      QMessageBox::warning(this,tr("Task Incomplete"),
+      QMessageBox::critical(this,tr("Task Incomplete"),
                            tr("Task needs at least four waypoints"),
                            QMessageBox::Ok );
       return;
@@ -355,7 +355,7 @@ void TaskEditor::accept()
   // Check if the user has entered a task name
   if ( txt.length() == 0 )
     {
-      QMessageBox::warning(this,tr("Name Missing"),
+      QMessageBox::critical(this,tr("Name Missing"),
                            tr("Enter a name for the task to save it"),
                            QMessageBox::Ok );
       return;
@@ -368,7 +368,7 @@ void TaskEditor::accept()
 
       if ( taskNamesInUse.contains( txt ) > 0 )
         {
-          QMessageBox::warning(this,tr("Name in Use"),
+          QMessageBox::critical(this,tr("Name in Use"),
                                tr("Please enter a different name"),
                                QMessageBox::Ok );
           return;
@@ -381,7 +381,7 @@ void TaskEditor::accept()
 
       if ( txt != editedTaskName && taskNamesInUse.contains( txt ) > 0 )
         {
-          QMessageBox::warning(this,tr("Name in Use"),
+          QMessageBox::critical(this,tr("Name in Use"),
                                tr("Please enter a different name"),
                                QMessageBox::Ok );
           return;

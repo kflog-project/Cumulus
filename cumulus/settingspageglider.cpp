@@ -118,9 +118,9 @@ void SettingsPageGlider::slot_delete()
     return;
   }
 
-  int answer= QMessageBox::warning(this,tr("Delete?"),tr("Delete selected glider?"),
+  int answer= QMessageBox::question(this,tr("Delete?"),tr("Delete selected glider?"),
                                    QMessageBox::Yes,
-                                   QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
+                                   QMessageBox::No | QMessageBox::Escape);
 
   if( answer == QMessageBox::Yes ) {
     list->slot_Deleted(glider);
