@@ -24,8 +24,6 @@
 #include <QPushButton>
 #include <QString>
 
-class QPushButton;
-
 class ListViewFilterItem;
 
 typedef QList<ListViewFilterItem*> filterSet;
@@ -110,6 +108,7 @@ public:
      * Moves all the listview items back into the listview
      */
     void restoreListViewItems();
+
     void showPage(bool up);
 
 private:
@@ -123,7 +122,7 @@ private:
     ListViewFilterItem* _activeFilter;
     //root of the filter tree
     ListViewFilterItem* _rootFilter;
-    
+
     int showIndex;
     int recursionLevel;
 

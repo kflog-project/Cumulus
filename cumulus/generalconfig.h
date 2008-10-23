@@ -88,11 +88,17 @@ class GeneralConfig : protected QSettings
 
  private:
   /**
-   * is private, this is a singleton class
-   * Constructor. The relevant settings are loaded on construction.
+   * Constructor is private because this is a singleton class.
+   * The relevant settings are loaded on construction.
    * @see load
    */
   GeneralConfig();
+
+  /**
+   * Because this is a singleton, don't allow copies and assignments.
+   */
+  GeneralConfig(const GeneralConfig& );
+  GeneralConfig& operator=(const GeneralConfig&);
 
  public:
   /**

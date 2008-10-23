@@ -85,7 +85,7 @@ void ListViewFilter::reset(bool forget)
   if(!forget)
     restoreListViewItems();
 
-  //renew our filtertree
+  //renew our filter tree
   delete _rootFilter;
   _activeFilter=NULL;
   _rootFilter=new ListViewFilterItem();
@@ -98,7 +98,7 @@ void ListViewFilter::reset(bool forget)
     this->hide();
   else
     this->show();
-   
+
   activateFilter(_rootFilter);
 }
 
@@ -181,7 +181,7 @@ void ListViewFilter::activateFilter(ListViewFilterItem * filter, int shrink)
             }
             teststr+=_buttonList.at(i)->text();
         }
-        
+
         if (_buttonList.at(0)->fontMetrics().width(teststr)>200 && spacefactor<2) {
             shrink++;
             recursionLevel++;
@@ -197,7 +197,7 @@ void ListViewFilter::activateFilter(ListViewFilterItem * filter, int shrink)
                 _buttonList.at(i)->hide();
                 continue;
             }
-            
+
             if (filter->subfilters.at(i)->from ==  filter->subfilters.at(i)->to) {
                 if (shrink>=2) {
                     _buttonList.at(i)->setText((filter->subfilters.at(i)->from).toLower());
@@ -223,7 +223,7 @@ void ListViewFilter::activateFilter(ListViewFilterItem * filter, int shrink)
         }
 
     }
-    
+
     //@JD: Prevent repeating list filling and clearing. Do it once after recursion.
     if (recursionLevel > 0) {
       recursionLevel--;
@@ -251,7 +251,7 @@ void ListViewFilter::activateFilter(ListViewFilterItem * filter, int shrink)
     showIndex = 0;
     showPage(false);
 
-    // showPage will enable the updating again    
+    // showPage will enable the updating again
 }
 
 void ListViewFilter::showPage(bool up)
@@ -262,7 +262,7 @@ void ListViewFilter::showPage(bool up)
 
   // breakdown to 'pages' disabled ?
   if ( pageSize == 0 )
-    pageSize = maxIndex + 1; 
+    pageSize = maxIndex + 1;
 
   if (up) {
     if ( showIndex+pageSize > maxIndex ) {
@@ -371,7 +371,7 @@ return;
 void ListViewFilterItem::divide(int partcount)
 {
     if (_split) {
-        return;  //no need to split an allready splitted filter item.
+        return;  //no need to split an already split filter item.
     }
 
     int totalLen=items.count();
@@ -434,11 +434,11 @@ void ListViewFilterItem::divide(int partcount)
     for(int i=1;i<=partcount;i++)     //now, create the actual filters with the found split points.
     {
         itm = new ListViewFilterItem(this);
-        //itm->from=items.at(pos[i-1]+1)->text(0).left(diff[i-1]).toUpper();
-        //itm->to=items.at(pos[i])->text(0).left(diff[i]).toUpper();
+
         itm->from=items.at(pos[i-1]+1)->text(0).left(diff[i-1]);
         itm->to=items.at(pos[i])->text(0).left(diff[i]);
         subfilters.append(itm);
+
         for (int j=pos[i-1]+1;j<=pos[i];j++)
         {
             itm->items.append(items.at(j));

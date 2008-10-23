@@ -28,12 +28,29 @@
  * @short Container for @ref Airspace objects with a QRegion
  * @author André Somers
  *
- * Contains the regions of all visible airspaces. The map maintains a list to
- * find the airspace-data when the users selects a airspace in the map.
- * Takes ownership of the region, but not of the airspace!
+ * Contains the projected region of an airspace onto the map.
+ * The Map class maintains a list to find the airspace data when
+ * the users selects an airspace in the map or to check the nearness
+ * to an airspace during the drawing and after a position change.
+ *
+ * This class overtakes the ownership of the region, but not of
+ * the airspace!
+ *
+ * Due to the cross pointer reference to the airspace this class do not
+ * allow copies and assignments of an existing instance.
+ *
  */
+
 class AirRegion
 {
+private:
+
+  /**
+   * Don't allow copies and assignments.
+   */
+  AirRegion(const AirRegion& ){};
+  AirRegion& operator=(const AirRegion& ){};
+
 public:
 
     QRegion* region;
@@ -58,9 +75,9 @@ public:
     /**
      * @returns the last known horizontal conflict for this airspace
      */
-    Airspace::ConflictType currentConflict()
+    Airspace::ConflictType currentConflict() const
     {
-        return m_lastResult;
+      return m_lastResult;
     }
 
 private:
@@ -90,8 +107,8 @@ private:
      */
     mutable QPoint m_lastProjPos;
 
-private: //static values
-    //given values
+private:
+    // given values
     /** contains the last known position */
     static QPoint ms_lastPos;
     /** contains the last known scale */
@@ -99,12 +116,12 @@ private: //static values
     /** contains the last known set of warning distances */
     static AirspaceWarningDistance ms_lastAwd;
 
-    //calculated values based on the values above
+    // calculated values based on the values above
     /** contains a large circular region around ms_lastProjPos */
     static QRegion ms_regNear;
     /** contains a small circular region around ms_lastProjPos */
     static QRegion ms_regVeryNear;
-    /** contains the last position, projected */
+    /** contains the last position projected */
     static QPoint ms_lastProjPos;
     /** true if the last position change was a small change */
     static bool ms_smallPositionChange;

@@ -25,7 +25,7 @@ Airspace::Airspace(QString n, BaseMapElement::objectType t, QPolygon pG,
                    int u, BaseMapElement::elevationType uType,
                    int l, BaseMapElement::elevationType lType)
   : LineElement(n, t, pG), lLimitType(lType), uLimitType(uType),
-    m_airRegion(0)
+    _airRegion(0)
 {
   type = t;
 
@@ -86,8 +86,8 @@ Airspace::~Airspace()
   // pointer in the other object. Check is necessary to avoid usage of
   // null pointer.
 
-  if( m_airRegion ) {
-    m_airRegion->airspace = 0;
+  if( _airRegion ) {
+    _airRegion->airspace = 0;
   }
 }
 

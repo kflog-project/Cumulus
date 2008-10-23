@@ -17,8 +17,8 @@
 **
 ***********************************************************************/
 
-#ifndef MAPCONFIG_H
-#define MAPCONFIG_H
+#ifndef MAP_CONFIG_H
+#define MAP_CONFIG_H
 
 #include <QList>
 #include <QObject>
@@ -30,19 +30,29 @@
 #include <QIcon>
 
 /**
- * This class takes care of the configuration-data for displaying
- * and printing map-elements. To avoid problems, there should be only
+ * This class takes care of the configuration data for displaying
+ * and printing map elements. To avoid problems, there should be only
  * one element per application.
  *
- * All printing-related code has been removed for Cumulus, because printing
+ * All printing related code has been removed for Cumulus, because printing
  * will not be supported on the PDA. (André Somers)
  *
  * @author Heiner Lamprecht, Florian Ehinger
  * @version $Id$
+ *
  */
+
 class MapConfig : public QObject
 {
     Q_OBJECT
+
+private:
+
+  /**
+   * Don't allow copies and assignments.
+   */
+  MapConfig(const MapConfig& );
+  MapConfig& operator=(const MapConfig& x);
 
 public:
     /**
@@ -82,7 +92,10 @@ public:
      *
      * @return the color for a isohypse.
      */
-    QColor getIsoColor(unsigned int heightIndex);
+    const QColor& getIsoColor(int heightIndex)
+      {
+        return topographyColorList.at(heightIndex);
+      };
 
     /**
      * @param  iconName  The name of the icon to load
@@ -222,7 +235,7 @@ signals:
     void configChanged();
 
 private:
-    /**
+  /**
      * Determines the brush to be used to draw or print a given element-type.
      *
      * @param  typeID  The typeID of the element.
@@ -242,7 +255,7 @@ private:
      */
     QPen __getPen(unsigned int typeID, int sIndex);
 
-    QList<QColor*> topographyColorList;
+    QList<QColor> topographyColorList;
 
     QList<QPen*> airAPenList;
     QList<QBrush*> airABrushList;
@@ -299,39 +312,39 @@ private:
 
     /**
      */
-    bool* airABorder;
-    bool* airBBorder;
-    bool* airCBorder;
-    bool* airDBorder;
-    bool* airElBorder;
-    bool* airEhBorder;
-    bool* airFBorder;
-    bool* ctrCBorder;
-    bool* ctrDBorder;
-    bool* dangerBorder;
-    bool* lowFBorder;
-    bool* restrBorder;
-    bool* tmzBorder;
-    bool* suSectorBorder;
+    bool airABorder[4];
+    bool airBBorder[4];
+    bool airCBorder[4];
+    bool airDBorder[4];
+    bool airElBorder[4];
+    bool airEhBorder[4];
+    bool airFBorder[4];
+    bool ctrCBorder[4];
+    bool ctrDBorder[4];
+    bool dangerBorder[4];
+    bool lowFBorder[4];
+    bool restrBorder[4];
+    bool tmzBorder[4];
+    bool suSectorBorder[4];
 
-    bool* trailBorder;
-    bool* roadBorder;
-    bool* highwayBorder;
-    bool* railBorder;
-    bool* rail_dBorder;
-    bool* aerialcableBorder;
-    bool* riverBorder;
-    bool* river_tBorder;
-    bool* canalBorder;
-    bool* cityBorder;
+    bool trailBorder[4];
+    bool roadBorder[4];
+    bool highwayBorder[4];
+    bool railBorder[4];
+    bool rail_dBorder[4];
+    bool aerialcableBorder[4];
+    bool riverBorder[4];
+    bool river_tBorder[4];
+    bool canalBorder[4];
+    bool cityBorder[4];
 
-    bool* forestBorder;
-    bool* glacierBorder;
-    bool* packiceBorder;
+    bool forestBorder[4];
+    bool glacierBorder[4];
+    bool packiceBorder[4];
 
     /**
-     * The current scaleindex for displaying the map. The index is set
-     * from the mapmatrix-object each time, the map is zoomed.
+     * The current scale index for displaying the map. The index is set
+     * from the MapMatrix object each time, the map is zoomed.
      *
      * @see #slotSetMatrixValues
      * @see MapMatrix#displayMatrixValues

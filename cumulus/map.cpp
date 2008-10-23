@@ -531,8 +531,7 @@ void Map::__drawAirspaces(bool reset)
   QTime t;
   t.start();
 
-  Airspace* currentAirS;
-  QRegion * reg = 0;
+  Airspace* currentAirS = 0;
   AirRegion* region = 0;
 
   if( reset )
@@ -589,11 +588,6 @@ void Map::__drawAirspaces(bool reset)
         {
           // try to reuse an existing region
           region = currentAirS->getAirRegion();
-
-          if( region )
-            {
-              reg = region->region;
-            }
         }
 
       if( region && fillAirspace )

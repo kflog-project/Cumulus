@@ -45,7 +45,7 @@ WaypointListWidget::~WaypointListWidget()
 }
 
 
-/** Retrieves waypoints from the mapcontents and fills the list. */
+/** Retrieves waypoints from the map contents and fills the list. */
 void WaypointListWidget::fillWpList()
 {
   list->setUpdatesEnabled(false);
@@ -64,7 +64,6 @@ void WaypointListWidget::fillWpList()
   if ( wpList.count() > 0 ) {
     list->setCurrentItem(list->topLevelItem(0));
   }
-
 
   if(filter == WaypointListWidget::filter) {
     filter->reset();
@@ -167,6 +166,7 @@ void WaypointListWidget::addWaypoint(wayPoint& newWp)
 
   new _WaypointItem(list, wp);
 
+  list->sortByColumn(0);
   filter->reset();
   resizeListColumns();
 

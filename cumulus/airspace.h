@@ -70,14 +70,24 @@ class AirRegion;
  *
  * This class is used for the several airspaces. The object can be
  * one of: AirC, AirCtemp, AirD, AirDtemp, ControlD, AirElow, AirEhigh,
- * AirF, Restricted, Danger, LowFlight
- * @author Heiner Lamprecht, Florian Ehinger
- * @version $Id$
- * @see BaseMapElement#objectType
+ * AirF, Restricted, Danger, LowFlight.
+ *
+ * Due to the cross pointer reference to the air region this class do not
+ * allow copies and assignments of an existing instance.
+ *
  */
 class Airspace : public LineElement
 {
+private:
+
+  /**
+   * Don't allow copies and assignments.
+   */
+  Airspace(const Airspace& );
+  Airspace& operator=(const Airspace& x);
+
 public:
+
     enum ConflictType {none=0, near=1, veryNear=2, inside=3};
 
     /**
@@ -91,7 +101,7 @@ public:
              int lower, BaseMapElement::elevationType lowerType);
 
     /**
-     * Destructor, does nothing special.
+     * Destructor
      */
     ~Airspace();
 
@@ -102,16 +112,16 @@ public:
      * @param targetP The painter to draw the element into.
      *
      * @param opacity Sets the opacity of the painter to opacity. The
-     * value should be in the range 0.0 to 1.0, where 0.0 is fully
-     * transparent and 1.0 is fully opaque.
+     * value should be in the range 0.0 to 100.0, where 0.0 is fully
+     * transparent and 100.0 is fully opaque.
      */
     void drawRegion( QPainter* targetP, const QRect &viewRect, qreal opacity = 0.0 );
 
     /**
      * Tells the caller, if the airspace is drawable or not
      */
-    
-    bool isDrawable()
+
+    bool isDrawable() const
     {
       return ( glConfig->isBorder(typeID) && isVisible() );
     };
@@ -179,7 +189,7 @@ public:
     /**
      * Returns the last vertical conflict type
      */
-    ConflictType lastVConflict()
+    ConflictType lastVConflict() const
     {
         return _lastVConflict;
     };
@@ -219,9 +229,9 @@ public:
     /**
      * @returns the associated AirRegion object
      */
-    AirRegion* getAirRegion()
+    AirRegion* getAirRegion() const
     {
-        return m_airRegion;
+        return _airRegion;
     }
 
     /**
@@ -229,7 +239,7 @@ public:
      */
     void setAirRegion(AirRegion* region)
     {
-        m_airRegion = region;
+        _airRegion = region;
     }
 
     /**
@@ -282,7 +292,7 @@ private:
     QTime _lastInside;
 
     // pointer to associated airRegion object
-    AirRegion* m_airRegion;
+    AirRegion* _airRegion;
 };
 
 struct CompareAirspaces

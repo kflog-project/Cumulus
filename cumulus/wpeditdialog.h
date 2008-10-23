@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andr� Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -26,7 +26,7 @@
 /**
  * The WpEditDialog allows the creation of a new waypoint or the modification
  * of an existing waypoint.
- * @author Andr� Somers
+ * @author André Somers
  */
 
 class WpEditDialog : public QDialog
@@ -56,6 +56,15 @@ private:
      * Returns true on ok otherwise false.
      */
     bool checkWaypointData( wayPoint& wp );
+
+    /**
+     * This method checks, if the passed waypoint name is already to find
+     * in the global waypoint list. If yes the user is informed with a
+     * message box about this fact.
+     * Returns true if yes otherwise false.
+     */
+    bool isWaypointNameInList( QString& wpName );
+
 
 private slots: // Private slots
     /**

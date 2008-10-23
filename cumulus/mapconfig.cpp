@@ -23,7 +23,7 @@
 #include "reachablelist.h"
 
 #define READ_TOPO(a,b)                          \
-  topographyColorList.append(new QColor(b));
+  topographyColorList.append(b);
 
 #define READ_BORDER(a)                          \
   a[0] = true;                                  \
@@ -34,55 +34,25 @@
 #define READ_PEN(G, A, B, C1, C2, C3, C4, P1, P2, P3, P4,       \
                  S1, S2, S3, S4)                                \
   READ_BORDER(B)                                                \
-  A.append(new QPen(C1, P1, (Qt::PenStyle)S1));               \
+  A.append(new QPen(C1, P1, (Qt::PenStyle)S1));                 \
   A.append(new QPen(C2, P2, (Qt::PenStyle)S2));                 \
   A.append(new QPen(C3, P3, (Qt::PenStyle)S3));                 \
   A.append(new QPen(C4, P4, (Qt::PenStyle)S4));
 
 
-#define READ_PEN_BRUSH(G, a, B, A, C1, C2, C3, C4, P1, P2, P3, P4,      \
+#define READ_PEN_BRUSH(G, a, B, A, C1, C2, C3, C4, P1, P2, P3, P4,       \
                        S1, S2, S3, S4, C7, C8, C9, C10, S7, S8, S9, S10) \
-  READ_PEN(G, a, B, C1, C2, C3, C4, P1, P2, P3, P4,                     \
-           S1, S2, S3, S4)                                              \
-  A.append(new QBrush(C7,  (Qt::BrushStyle)S7));                      \
-  A.append(new QBrush(C8,  (Qt::BrushStyle)S8));                        \
-  A.append(new QBrush(C9,  (Qt::BrushStyle)S9));                        \
+  READ_PEN(G, a, B, C1, C2, C3, C4, P1, P2, P3, P4,                      \
+           S1, S2, S3, S4)                                               \
+  A.append(new QBrush(C7,  (Qt::BrushStyle)S7));                         \
+  A.append(new QBrush(C8,  (Qt::BrushStyle)S8));                         \
+  A.append(new QBrush(C9,  (Qt::BrushStyle)S9));                         \
   A.append(new QBrush(C10, (Qt::BrushStyle)S10));
 
 
 MapConfig::MapConfig(QObject* parent)
   : QObject(parent), scaleIndex(0), isSwitch(false)
 {
-  airABorder = new bool[4];
-  airBBorder = new bool[4];
-  airCBorder = new bool[4];
-  airDBorder = new bool[4];
-  airElBorder = new bool[4];
-  airEhBorder = new bool[4];
-  airFBorder = new bool[4];
-  ctrCBorder = new bool[4];
-  ctrDBorder = new bool[4];
-  dangerBorder = new bool[4];
-  lowFBorder = new bool[4];
-  restrBorder = new bool[4];
-  tmzBorder = new bool[4];
-  suSectorBorder = new bool[4];
-
-  trailBorder = new bool[4];
-  roadBorder = new bool[4];
-  highwayBorder = new bool[4];
-  railBorder = new bool[4];
-  rail_dBorder = new bool[4];
-  aerialcableBorder = new bool[4];
-  riverBorder = new bool[4];
-  river_tBorder = new bool[4];
-  canalBorder = new bool[4];
-  cityBorder = new bool[4];
-
-  forestBorder = new bool[4];
-  glacierBorder = new bool[4];
-  packiceBorder = new bool[4];
-
   // pre-create QIcons with background for copying later when needed
   // in airfield list; speeds up list display
 
@@ -112,37 +82,7 @@ MapConfig::MapConfig(QObject* parent)
 
 MapConfig::~MapConfig()
 {
-  // @AP: make it easier for valgind, otherwise as memory leaks declarated.
-  delete [] airABorder;
-  delete [] airBBorder;
-  delete [] airCBorder;
-  delete [] airDBorder;
-  delete [] airElBorder;
-  delete [] airEhBorder;
-  delete [] airFBorder;
-  delete [] ctrCBorder;
-  delete [] ctrDBorder;
-  delete [] dangerBorder;
-  delete [] lowFBorder;
-  delete [] restrBorder;
-  delete [] tmzBorder;
-  delete [] suSectorBorder;
-  delete [] trailBorder;
-  delete [] roadBorder;
-  delete [] highwayBorder;
-  delete [] railBorder;
-  delete [] rail_dBorder;
-  delete [] aerialcableBorder;
-  delete [] riverBorder;
-  delete [] river_tBorder;
-  delete [] canalBorder;
-  delete [] cityBorder;
-  delete [] forestBorder;
-  delete [] glacierBorder;
-  delete [] packiceBorder;
-
   // @AP: lists should be automatic deallocate its members during remove
-  qDeleteAll(topographyColorList);
   topographyColorList.clear();
   qDeleteAll(airAPenList);
   airAPenList.clear();
@@ -241,7 +181,6 @@ MapConfig::~MapConfig()
 
 void MapConfig::slotReadConfig()
 {
-  qDeleteAll(topographyColorList);
   topographyColorList.clear();
   qDeleteAll(airAPenList);
   airAPenList.clear();
@@ -336,57 +275,57 @@ void MapConfig::slotReadConfig()
   qDeleteAll(packiceBrushList);
   packiceBrushList.clear();
 
-  READ_TOPO("SubTerrain", LEVEL_SUB)
-    READ_TOPO("0M", LEVEL_0)
-    READ_TOPO("10M", LEVEL_10)
-    READ_TOPO("25M", LEVEL_25)
-    READ_TOPO("50M", LEVEL_50)
-    READ_TOPO("75M", LEVEL_75)
-    READ_TOPO("100M", LEVEL_100)
-    READ_TOPO("150M", LEVEL_150)
-    READ_TOPO("200M", LEVEL_200)
-    READ_TOPO("250M", LEVEL_250)
-    READ_TOPO("300M", LEVEL_300)
-    READ_TOPO("350M", LEVEL_350)
-    READ_TOPO("400M", LEVEL_400)
-    READ_TOPO("450M", LEVEL_450)
-    READ_TOPO("500M", LEVEL_500)
-    READ_TOPO("600M", LEVEL_600)
-    READ_TOPO("700M", LEVEL_700)
-    READ_TOPO("800M", LEVEL_800)
-    READ_TOPO("900M", LEVEL_900)
-    READ_TOPO("1000M", LEVEL_1000)
-    READ_TOPO("1250M", LEVEL_1250)
-    READ_TOPO("1500M", LEVEL_1500)
-    READ_TOPO("1750M", LEVEL_1750)
-    READ_TOPO("2000M", LEVEL_2000)
-    READ_TOPO("2250M", LEVEL_2250)
-    READ_TOPO("2500M", LEVEL_2500)
-    READ_TOPO("2750M", LEVEL_2750)
-    READ_TOPO("3000M", LEVEL_3000)
-    READ_TOPO("3250M", LEVEL_3250)
-    READ_TOPO("3500M", LEVEL_3500)
-    READ_TOPO("3750M", LEVEL_3750)
-    READ_TOPO("4000M", LEVEL_4000)
-    READ_TOPO("4250M", LEVEL_4250)
-    READ_TOPO("4500M", LEVEL_4500)
-    READ_TOPO("4750M", LEVEL_4750)
-    READ_TOPO("5000M", LEVEL_5000)
-    READ_TOPO("5250M", LEVEL_5250)
-    READ_TOPO("5500M", LEVEL_5500)
-    READ_TOPO("5750M", LEVEL_5750)
-    READ_TOPO("6000M", LEVEL_6000)
-    READ_TOPO("6250M", LEVEL_6250)
-    READ_TOPO("6500M", LEVEL_6500)
-    READ_TOPO("6750M", LEVEL_6750)
-    READ_TOPO("7000M", LEVEL_7000)
-    READ_TOPO("7250M", LEVEL_7250)
-    READ_TOPO("7500M", LEVEL_7500)
-    READ_TOPO("7750M", LEVEL_7750)
-    READ_TOPO("8000M", LEVEL_8000)
-    READ_TOPO("8250M", LEVEL_8250)
-    READ_TOPO("8500M", LEVEL_8500)
-    READ_TOPO("8750M", LEVEL_8750)
+  READ_TOPO("SubTerrain", COLOR_LEVEL_SUB)
+  READ_TOPO("0M", COLOR_LEVEL_0)
+  READ_TOPO("10M", COLOR_LEVEL_10)
+  READ_TOPO("25M", COLOR_LEVEL_25)
+  READ_TOPO("50M", COLOR_LEVEL_50)
+  READ_TOPO("75M", COLOR_LEVEL_75)
+  READ_TOPO("100M", COLOR_LEVEL_100)
+  READ_TOPO("150M", COLOR_LEVEL_150)
+  READ_TOPO("200M", COLOR_LEVEL_200)
+  READ_TOPO("250M", COLOR_LEVEL_250)
+  READ_TOPO("300M", COLOR_LEVEL_300)
+  READ_TOPO("350M", COLOR_LEVEL_350)
+  READ_TOPO("400M", COLOR_LEVEL_400)
+  READ_TOPO("450M", COLOR_LEVEL_450)
+  READ_TOPO("500M", COLOR_LEVEL_500)
+  READ_TOPO("600M", COLOR_LEVEL_600)
+  READ_TOPO("700M", COLOR_LEVEL_700)
+  READ_TOPO("800M", COLOR_LEVEL_800)
+  READ_TOPO("900M", COLOR_LEVEL_900)
+  READ_TOPO("1000M", COLOR_LEVEL_1000)
+  READ_TOPO("1250M", COLOR_LEVEL_1250)
+  READ_TOPO("1500M", COLOR_LEVEL_1500)
+  READ_TOPO("1750M", COLOR_LEVEL_1750)
+  READ_TOPO("2000M", COLOR_LEVEL_2000)
+  READ_TOPO("2250M", COLOR_LEVEL_2250)
+  READ_TOPO("2500M", COLOR_LEVEL_2500)
+  READ_TOPO("2750M", COLOR_LEVEL_2750)
+  READ_TOPO("3000M", COLOR_LEVEL_3000)
+  READ_TOPO("3250M", COLOR_LEVEL_3250)
+  READ_TOPO("3500M", COLOR_LEVEL_3500)
+  READ_TOPO("3750M", COLOR_LEVEL_3750)
+  READ_TOPO("4000M", COLOR_LEVEL_4000)
+  READ_TOPO("4250M", COLOR_LEVEL_4250)
+  READ_TOPO("4500M", COLOR_LEVEL_4500)
+  READ_TOPO("4750M", COLOR_LEVEL_4750)
+  READ_TOPO("5000M", COLOR_LEVEL_5000)
+  READ_TOPO("5250M", COLOR_LEVEL_5250)
+  READ_TOPO("5500M", COLOR_LEVEL_5500)
+  READ_TOPO("5750M", COLOR_LEVEL_5750)
+  READ_TOPO("6000M", COLOR_LEVEL_6000)
+  READ_TOPO("6250M", COLOR_LEVEL_6250)
+  READ_TOPO("6500M", COLOR_LEVEL_6500)
+  READ_TOPO("6750M", COLOR_LEVEL_6750)
+  READ_TOPO("7000M", COLOR_LEVEL_7000)
+  READ_TOPO("7250M", COLOR_LEVEL_7250)
+  READ_TOPO("7500M", COLOR_LEVEL_7500)
+  READ_TOPO("7750M", COLOR_LEVEL_7750)
+  READ_TOPO("8000M", COLOR_LEVEL_8000)
+  READ_TOPO("8250M", COLOR_LEVEL_8250)
+  READ_TOPO("8500M", COLOR_LEVEL_8500)
+  READ_TOPO("8750M", COLOR_LEVEL_8750)
 
     READ_PEN("Road", roadPenList, roadBorder,
              ROAD_COLOR_1, ROAD_COLOR_2, ROAD_COLOR_3, ROAD_COLOR_4,
@@ -603,7 +542,7 @@ void MapConfig::slotReadConfig()
                    SU_SECTOR_BRUSH_STYLE_3, SU_SECTOR_BRUSH_STYLE_4)
 
 
-    GeneralConfig *conf = GeneralConfig::instance();
+  GeneralConfig *conf = GeneralConfig::instance();
 
   drawBearing            = conf->getMapBearLine();
   drawIsoLines           = conf->getMapLoadIsoLines();
@@ -767,18 +706,10 @@ bool MapConfig::isBorder(unsigned int typeID)
   return true;
 }
 
-
-QColor MapConfig::getIsoColor(unsigned int heightIndex)
-{
-  return *topographyColorList.at(heightIndex);
-}
-
-
 QBrush MapConfig::getDrawBrush(unsigned int typeID)
 {
   return __getBrush(typeID, scaleIndex);
 }
-
 
 QBrush MapConfig::__getBrush(unsigned int typeID, int sIndex)
 {

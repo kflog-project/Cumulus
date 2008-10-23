@@ -138,7 +138,7 @@ void WpEditDialog::accept()
   // qDebug ("WpEditDialog::accept");
   if( _wp == 0 )
     {
-      // create a new waypoint from edited data
+      // create a new waypoint from inserted data in the tab widgets
       wayPoint newWp;
       emit save( &newWp );
       newWp.projP = _globalMapMatrix->wgsToMap( newWp.origP );
@@ -150,12 +150,11 @@ void WpEditDialog::accept()
           return;
         }
 
-      if( _globalMapContents->isInWaypointList( newWp.name ) )
+      if( isWaypointNameInList( newWp.name ) )
         {
-          // The waypoint name is already in use, reject accept.
-          QMessageBox::critical( this,tr("Name already in use"),
-                                 tr("Please use another name for your new waypoint"),
-                                 QMessageBox::Ok );
+          // Waypoint name is already to find in the global list.
+          // To avoid multiple entries with the same name, the
+          // accept is rejected.
           return;
         }
 
@@ -163,10 +162,23 @@ void WpEditDialog::accept()
     }
   else
     {
+      // save old name
+      QString oldName = _wp->name;
+
       // update existing waypoint with edited data
       emit save( _wp );
       _wp->projP = _globalMapMatrix->wgsToMap(_wp->origP);
-      _wp->comment=comment->toPlainText();
+      _wp->comment = comment->toPlainText();
+
+      if( oldName != _wp->name && isWaypointNameInList( _wp->name ) )
+        {
+          // The waypoint name has been modified and
+          // is already to find in the global list.
+          // To avoid multiple entries with the same name, the
+          // accept is rejected.
+          return;
+        }
+
 
       if( checkWaypointData( *_wp ) == false )
         {
@@ -188,23 +200,23 @@ bool WpEditDialog::checkWaypointData( wayPoint& wp )
 {
   if( wp.name.isEmpty() )
     {
-      QMessageBox::critical( this,tr("missing name"),
-                             tr("Please add a waypoint name"),
-                             QMessageBox::Ok );
+      QMessageBox::critical( this,tr("Name?"),
+                             tr("Please add\na waypoint\nname"),
+                             QMessageBox::Close );
       return false;
     }
 
   if( wp.description.isEmpty() )
     {
-      QMessageBox::critical( this,tr("missing description"),
-                             tr("Please add a waypoint description"),
-                             QMessageBox::Ok );
+      QMessageBox::critical( this,tr("Description?"),
+                             tr("Please add\na waypoint\ndescription"),
+                             QMessageBox::Close );
       return false;
     }
 
   if( wp.origP == QPoint(0,0) )
       {
-        int answer = QMessageBox::warning(this,tr("missing coordinates"),
+        int answer = QMessageBox::warning(this,tr("Coordinates?"),
                                           tr("Waypoint coordinates not set, continue?"),
                                           QMessageBox::No, QMessageBox::Yes );
         if( answer == QMessageBox::Yes )
@@ -218,4 +230,24 @@ bool WpEditDialog::checkWaypointData( wayPoint& wp )
       }
 
   return true;
+}
+
+/**
+ * This method checks, if the passed waypoint name is already to find
+ * in the global waypoint list. If yes the user is informed with a
+ * message box about this fact.
+ * Returns true if yes otherwise false.
+ */
+bool WpEditDialog::isWaypointNameInList( QString& wpName )
+{
+  if( _globalMapContents->isInWaypointList( wpName ) )
+    {
+      // The waypoint name is already in use
+      QMessageBox::critical( this,tr("Name Conflict"),
+                             tr("Please use another name\nfor your new waypoint"),
+                             QMessageBox::Close );
+      return true;
+    }
+
+  return false;
 }

@@ -186,7 +186,7 @@ void WaypointListView::slot_deleteWP()
   if ( wp == 0 )
     return;
 
-  int answer= QMessageBox::question(this, tr("Delete Waypoint"),
+  int answer= QMessageBox::question(this, tr("Delete"),
                                    tr("Delete selected waypoint?"),
                                    QMessageBox::No, QMessageBox::Yes);
 

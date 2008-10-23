@@ -1099,7 +1099,7 @@ void CumulusApp::closeEvent( QCloseEvent* evt )
   playSound("notify");
 
   QMessageBox mb( QMessageBox::Question,
-                  tr( "Terminating Cumulus?" ),
+                  tr( "Terminating?" ),
                   tr( "Terminating Cumulus<br><b>Are you sure?</b>" ),
                   QMessageBox::Yes | QMessageBox::No,
                   this,
