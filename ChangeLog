@@ -17,6 +17,13 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.1.x (Development based on X11/Qt-4.4.1)
 -------------------------------------------------
+[o] 2008-10-23 AP: Additional checks added in waypoint editor. Mandatory items
+                   name and description have to be entered before accept. Already
+                   existing names in the global list can not be reused now.
+                   The user is informed via message box about every found problem.
+[-] 2008-10-21 AP: Bugfix: Radius for mouse snapping was set to 3km and scaled
+                   with zoom level. On low zoom level this was to large. Radius
+                   modified to a fixed value and not more scaled.
 [o] 2008-10-16 AP: Class Airport renamed to Airfield, FlightPoint class 
                    outsourced from wayPoint and put in a separate file.
 [-] 2008-10-16 AP: Bugfix: Crash fixed during adding of waypoints.
