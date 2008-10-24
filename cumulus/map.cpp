@@ -969,6 +969,7 @@ void Map::__drawBaseLayer()
   // next, draw the topographical elements and the cities
   _globalMapContents->drawList(&baseMapP, MapContents::TopoList);
   _globalMapContents->drawList(&baseMapP, MapContents::CityList);
+  _globalMapContents->drawList(&baseMapP, MapContents::LakeList);
 
   // draw the hydro and roads
   if( cs <= 500.0 )
@@ -983,7 +984,7 @@ void Map::__drawBaseLayer()
       _globalMapContents->drawList(&baseMapP, MapContents::RailList);
     }
 
-  // draw the landmarks, the obstacles and the waterways
+  // draw the landmarks and the obstacles
   if( cs < 1024.0 )
     {
       _globalMapContents->drawList(&baseMapP, MapContents::LandmarkList);
@@ -991,9 +992,8 @@ void Map::__drawBaseLayer()
       _globalMapContents->drawList(&baseMapP, MapContents::ReportList);
     }
 
-  // draw the highways and the lakes
+  // draw the highways
   _globalMapContents->drawList(&baseMapP, MapContents::HighwayList);
-  _globalMapContents->drawList(&baseMapP, MapContents::LakeList);
   _globalMapContents->drawList(&baseMapP, MapContents::RadioList);
 
   // end the painter

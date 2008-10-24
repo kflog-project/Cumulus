@@ -38,13 +38,12 @@
  * will not be supported on the PDA. (André Somers)
  *
  * @author Heiner Lamprecht, Florian Ehinger
- * @version $Id$
  *
  */
 
 class MapConfig : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 
 private:
 
@@ -78,14 +77,20 @@ public:
      *
      * @return the pen for drawing a mapelement.
      */
-    QPen getDrawPen(unsigned int typeID);
+    const QPen& getDrawPen(unsigned int typeID)
+    {
+      return __getPen(typeID, scaleIndex);
+    };
 
     /**
      * @param  type  The typeID of the element.
      *
      * @return the brush for drawing an areaelement.
      */
-    QBrush getDrawBrush(unsigned int typeID);
+    const QBrush& getDrawBrush(unsigned int typeID)
+    {
+      return __getBrush(typeID, scaleIndex);
+    };
 
     /**
      * @param  heighIndex  The index of the height of the isohypse.
@@ -136,9 +141,12 @@ public:
     /**
      * @param  type  The typeID of the element.
      *
-     * @returns an icon for use in airfield list.
+     * @returns an icon for use in an airfield list.
      */
-    QIcon getListIcon(unsigned int typeID);
+    const QIcon& getListIcon(unsigned int typeID)
+      {
+        return airfieldIcon[typeID];
+      };
 
     /**
      * @param  type  The typeID of the element.
@@ -154,17 +162,26 @@ public:
     /**
      * @Returns true if small icons are used, else returns false.
      */
-    bool useSmallIcons() const;
+    bool useSmallIcons() const
+    {
+      return !isSwitch;
+    };
 
     /**
      * Read property of bool drawBearing.
      */
-    bool getdrawBearing() const;
+    bool getdrawBearing() const
+    {
+      return drawBearing;
+    };
 
     /**
      * Read property of bool drawIsoLines.
      */
-    bool getdrawIsoLines() const;
+    bool getdrawIsoLines() const
+    {
+      return drawIsoLines;
+    };
 
     /**
      * Read property of bool determing if the original mapfile
@@ -188,27 +205,67 @@ public:
     /**
      * Returns whether or not the object should be loaded/drawn.
      */
-    bool getLoadIsolines() const;
-    bool getShowIsolineBorders() const;
-    bool getShowWpLabels() const;
-    void setShowWpLabels(bool);
-    bool getShowWpLabelsExtraInfo() const;
-    void setShowWpLabelsExtraInfo(bool);
-    bool getLoadRoads() const;
-    bool getLoadHighways() const;
-    bool getLoadRailroads() const;
-    bool getLoadCities() const;
-    bool getLoadWaterways() const;
-    bool getLoadForests() const;
+    bool getLoadIsolines() const
+    {
+      return bLoadRailroads;
+    };
+
+    bool getShowIsolineBorders() const
+    {
+      return bLoadRailroads;
+    };
+
+    bool getShowWpLabels() const
+    {
+      return bShowWpLabels;
+    };
+
+    void setShowWpLabels(bool show);
+
+    bool getShowWpLabelsExtraInfo() const
+    {
+        return bShowWpLabelsExtraInfo;
+    };
+
+    void setShowWpLabelsExtraInfo(bool show);
+
+    bool getLoadRoads() const
+    {
+      return bLoadRailroads;
+    };
+
+    bool getLoadHighways() const
+    {
+      return bLoadRailroads;
+    };
+
+    bool getLoadRailroads() const
+    {
+      return bLoadRailroads;
+    };
+
+    bool getLoadCities() const
+    {
+      return bLoadCities;
+    };
+
+    bool getLoadWaterways() const
+    {
+      return bLoadWaterways;
+    };
+
+    bool getLoadForests() const
+    {
+      return bLoadForests;
+    };
 
     /**
-     * The possible datatypes, that could be drawn.
+     * The possible data types, that could be drawn.
      *
      * @see #slotSetFlightDataType
      */
-    //enum DrawFlightPoint {Vario, Speed, Altitude, Cycling, Solid};
 
-    bool isRotatable( unsigned int typeID );
+    bool isRotatable( unsigned int typeID ) const;
 
 public slots:
     /**
@@ -217,12 +274,12 @@ public slots:
     void slotReadConfig();
 
     /**
-     * Sets the scaleindex an the flag for small icons. Called from
+     * Sets the scale index an the flag for small icons. Called from
      * MapMatrix.
      *
      * @see MapMatrix#scaleAdd
      *
-     * @param  index  The scaleindex
+     * @param  index  The scale index
      * @param  isSwitch  "true" if the current scale is smaller than the
      *                   switch-scale
      */
@@ -239,71 +296,72 @@ private:
      * Determines the brush to be used to draw or print a given element-type.
      *
      * @param  typeID  The typeID of the element.
-     * @param  scaleIndex  The scaleindex to be used.
+     * @param  scaleIndex  The scale index to be used.
      *
      * @return the brush
      */
-    QBrush __getBrush(unsigned int typeID, int scaleIndex);
+    const QBrush& __getBrush(unsigned int typeID, int scaleIndex);
 
     /**
      * Determines the pen to be used to draw or print a given element-type.
      *
      * @param  typeID  The typeID of the element.
-     * @param  scaleIndex  The scaleindex to be used.
+     * @param  scaleIndex  The scale index to be used.
      *
      * @return the pen
      */
-    QPen __getPen(unsigned int typeID, int sIndex);
+    const QPen& __getPen(unsigned int typeID, int sIndex);
 
     QList<QColor> topographyColorList;
 
-    QList<QPen*> airAPenList;
-    QList<QBrush*> airABrushList;
-    QList<QPen*> airBPenList;
-    QList<QBrush*> airBBrushList;
-    QList<QPen*> airCPenList;
-    QList<QBrush*> airCBrushList;
-    QList<QPen*> airDPenList;
-    QList<QBrush*> airDBrushList;
-    QList<QPen*> airElPenList;
-    QList<QBrush*> airElBrushList;
-    QList<QPen*> airEhPenList;
-    QList<QBrush*> airEhBrushList;
-    QList<QPen*> airFPenList;
-    QList<QBrush*> airFBrushList;
-    QList<QPen*> ctrCPenList;
-    QList<QBrush*> ctrCBrushList;
-    QList<QPen*> ctrDPenList;
-    QList<QBrush*> ctrDBrushList;
-    QList<QPen*> lowFPenList;
-    QList<QBrush*> lowFBrushList;
-    QList<QPen*> dangerPenList;
-    QList<QBrush*> dangerBrushList;
-    QList<QPen*> restrPenList;
-    QList<QBrush*> restrBrushList;
-    QList<QPen*> tmzPenList;
-    QList<QBrush*> tmzBrushList;
-    QList<QPen*> suSectorPenList;
-    QList<QBrush*> suSectorBrushList;
-
-    QList<QPen*> highwayPenList;
-    QList<QPen*> roadPenList;
-    QList<QPen*> trailPenList;
-    QList<QPen*> railPenList;
-    QList<QPen*> rail_dPenList;
-    QList<QPen*> aerialcablePenList;
-    QList<QPen*> riverPenList;
-    QList<QPen*> river_tPenList;
-    QList<QBrush*> river_tBrushList;
-    QList<QPen*> canalPenList;
-    QList<QPen*> cityPenList;
-    QList<QBrush*> cityBrushList;
-    QList<QPen*> forestPenList;
-    QList<QPen*> glacierPenList;
-    QList<QPen*> packicePenList;
-    QList<QBrush*> forestBrushList;
-    QList<QBrush*> glacierBrushList;
-    QList<QBrush*> packiceBrushList;
+    QList<QPen> airAPenList;
+    QList<QBrush> airABrushList;
+    QList<QPen> airBPenList;
+    QList<QBrush> airBBrushList;
+    QList<QPen> airCPenList;
+    QList<QBrush> airCBrushList;
+    QList<QPen> airDPenList;
+    QList<QBrush> airDBrushList;
+    QList<QPen> airElPenList;
+    QList<QBrush> airElBrushList;
+    QList<QPen> airEhPenList;
+    QList<QBrush> airEhBrushList;
+    QList<QPen> airFPenList;
+    QList<QBrush> airFBrushList;
+    QList<QPen> ctrCPenList;
+    QList<QBrush> ctrCBrushList;
+    QList<QPen> ctrDPenList;
+    QList<QBrush> ctrDBrushList;
+    QList<QPen> lowFPenList;
+    QList<QBrush> lowFBrushList;
+    QList<QPen> dangerPenList;
+    QList<QBrush> dangerBrushList;
+    QList<QPen> restrPenList;
+    QList<QBrush> restrBrushList;
+    QList<QPen> tmzPenList;
+    QList<QBrush> tmzBrushList;
+    QList<QPen> suSectorPenList;
+    QList<QBrush> suSectorBrushList;
+    QList<QPen> highwayPenList;
+    QList<QPen> roadPenList;
+    QList<QPen> trailPenList;
+    QList<QPen> railPenList;
+    QList<QPen> rail_dPenList;
+    QList<QPen> aerialcablePenList;
+    QList<QPen> lakePenList;
+    QList<QBrush> lakeBrushList;
+    QList<QPen> riverPenList;
+    QList<QPen> river_tPenList;
+    QList<QBrush> river_tBrushList;
+    QList<QPen> canalPenList;
+    QList<QPen> cityPenList;
+    QList<QBrush> cityBrushList;
+    QList<QPen> forestPenList;
+    QList<QPen> glacierPenList;
+    QList<QPen> packicePenList;
+    QList<QBrush> forestBrushList;
+    QList<QBrush> glacierBrushList;
+    QList<QBrush> packiceBrushList;
 
     /**
      * holds a collection of ready made airfield icons
@@ -326,18 +384,17 @@ private:
     bool restrBorder[4];
     bool tmzBorder[4];
     bool suSectorBorder[4];
-
     bool trailBorder[4];
     bool roadBorder[4];
     bool highwayBorder[4];
     bool railBorder[4];
     bool rail_dBorder[4];
     bool aerialcableBorder[4];
+    bool lakeBorder[4];
     bool riverBorder[4];
     bool river_tBorder[4];
     bool canalBorder[4];
     bool cityBorder[4];
-
     bool forestBorder[4];
     bool glacierBorder[4];
     bool packiceBorder[4];
@@ -352,7 +409,7 @@ private:
     int scaleIndex;
 
     /**
-     * true, if small icons should be drawn. Set from the mapmatrix-object
+     * true, if small icons should be drawn. Set from the map matrix-object
      * each time, the map is zoomed.
      */
     bool isSwitch;
@@ -364,7 +421,7 @@ protected: // Protected attributes
     bool drawIsoLines;
     /** determines if we should draw the dotted borders isolines on the map or not. */
     bool bShowIsolineBorders;
-    /** flags holding if we should load certain mapobjects or not */
+    /** flags holding if we should load certain map objects or not */
     bool bLoadIsolines;
     bool bShowWpLabels;
     bool bShowWpLabelsExtraInfo;
@@ -375,7 +432,7 @@ protected: // Protected attributes
     bool bLoadWaterways;
     bool bLoadForests;
 
-    /** flag determines if the sourcefile is deleted after compiling a mapfile */
+    /** flag determines if the source file is deleted after compiling a map file */
     bool bDeleteAfterMapCompile;
     /** flag determines if maps should be unloaded at the first change or not */
     bool bUnloadUnneededMap;

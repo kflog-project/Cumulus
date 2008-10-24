@@ -103,11 +103,11 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
       return;
     }
 
-  //@JD: replaced clipping and filling with polygon drawing, regions not needed anymore
-
+  // @JD: replaced clipping and filling with polygon drawing,
+  //      regions not needed anymore
   QPolygon tP = glMapMatrix->map(projPolygon);
 
-  QBrush drawB = glConfig->getDrawBrush(typeID);
+  QBrush drawB( glConfig->getDrawBrush(typeID) );
 
   if( opacity < 100.0 )
     {

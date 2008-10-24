@@ -97,8 +97,8 @@ class GeneralConfig : protected QSettings
   /**
    * Because this is a singleton, don't allow copies and assignments.
    */
-  GeneralConfig(const GeneralConfig& );
-  GeneralConfig& operator=(const GeneralConfig&);
+  GeneralConfig(const GeneralConfig& right);
+  GeneralConfig& operator=(const GeneralConfig& right);
 
  public:
   /**
