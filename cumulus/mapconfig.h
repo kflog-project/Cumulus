@@ -8,7 +8,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2001 by Heiner Lamprecht, 2007 Axel Pauli
+**   Copyright (c):  2001 by Heiner Lamprecht, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -30,14 +30,18 @@
 #include <QIcon>
 
 /**
+ * @author Heiner Lamprecht, Florian Ehinger
+ *
  * This class takes care of the configuration data for displaying
- * and printing map elements. To avoid problems, there should be only
+ * map elements. To avoid problems, there should be only
  * one element per application.
  *
  * All printing related code has been removed for Cumulus, because printing
  * will not be supported on the PDA. (André Somers)
  *
- * @author Heiner Lamprecht, Florian Ehinger
+ * @AP: Different load options have been removed from this class to reduce
+ * calling overhead. Furthermore all pointer classes have been replaced
+ * by value classes.
  *
  */
 
@@ -168,98 +172,6 @@ public:
     };
 
     /**
-     * Read property of bool drawBearing.
-     */
-    bool getdrawBearing() const
-    {
-      return drawBearing;
-    };
-
-    /**
-     * Read property of bool drawIsoLines.
-     */
-    bool getdrawIsoLines() const
-    {
-      return drawIsoLines;
-    };
-
-    /**
-     * Read property of bool determing if the original mapfile
-     * should be deleted after compiling it
-     */
-    inline bool getDeleteMapfileAfterCompile() const
-    {
-        return bDeleteAfterMapCompile;
-    };
-
-    /**
-     * Read property of bool determing if a mapfile should be
-     * unloaded immediatly if not needed anymore. Otherwise,
-     * the maps are only unloaded if free memory runs out.
-     */
-    inline bool getUnloadUnneededMap() const
-    {
-        return bUnloadUnneededMap;
-    };
-
-    /**
-     * Returns whether or not the object should be loaded/drawn.
-     */
-    bool getLoadIsolines() const
-    {
-      return bLoadRailroads;
-    };
-
-    bool getShowIsolineBorders() const
-    {
-      return bLoadRailroads;
-    };
-
-    bool getShowWpLabels() const
-    {
-      return bShowWpLabels;
-    };
-
-    void setShowWpLabels(bool show);
-
-    bool getShowWpLabelsExtraInfo() const
-    {
-        return bShowWpLabelsExtraInfo;
-    };
-
-    void setShowWpLabelsExtraInfo(bool show);
-
-    bool getLoadRoads() const
-    {
-      return bLoadRailroads;
-    };
-
-    bool getLoadHighways() const
-    {
-      return bLoadRailroads;
-    };
-
-    bool getLoadRailroads() const
-    {
-      return bLoadRailroads;
-    };
-
-    bool getLoadCities() const
-    {
-      return bLoadCities;
-    };
-
-    bool getLoadWaterways() const
-    {
-      return bLoadWaterways;
-    };
-
-    bool getLoadForests() const
-    {
-      return bLoadForests;
-    };
-
-    /**
      * The possible data types, that could be drawn.
      *
      * @see #slotSetFlightDataType
@@ -269,7 +181,7 @@ public:
 
 public slots:
     /**
-     * Forces MapConfig to read the configdata.
+     * Forces MapConfig to read its configuration data.
      */
     void slotReadConfig();
 
@@ -284,12 +196,6 @@ public slots:
      *                   switch-scale
      */
     void slotSetMatrixValues(int index, bool isSwitch);
-
-signals:
-    /**
-     * Emitted each time, the config has changed.
-     */
-    void configChanged();
 
 private:
   /**
@@ -312,8 +218,10 @@ private:
      */
     const QPen& __getPen(unsigned int typeID, int sIndex);
 
+    // Color list for contour areas
     QList<QColor> topographyColorList;
 
+    // Pen and brush lists of different map items
     QList<QPen> airAPenList;
     QList<QBrush> airABrushList;
     QList<QPen> airBPenList;
@@ -414,28 +322,8 @@ private:
      */
     bool isSwitch;
 
-protected: // Protected attributes
-    /** determines if we should draw the bearing on the map or not. */
-    bool drawBearing;
-    /** determines if we should draw isolines on the map or not. */
-    bool drawIsoLines;
-    /** determines if we should draw the dotted borders isolines on the map or not. */
-    bool bShowIsolineBorders;
-    /** flags holding if we should load certain map objects or not */
-    bool bLoadIsolines;
-    bool bShowWpLabels;
-    bool bShowWpLabelsExtraInfo;
-    bool bLoadRoads;
-    bool bLoadHighways;
-    bool bLoadRailroads;
-    bool bLoadCities;
-    bool bLoadWaterways;
-    bool bLoadForests;
-
-    /** flag determines if the source file is deleted after compiling a map file */
-    bool bDeleteAfterMapCompile;
-    /** flag determines if maps should be unloaded at the first change or not */
-    bool bUnloadUnneededMap;
+    // number of created class instances
+    static short instances;
 };
 
 #endif

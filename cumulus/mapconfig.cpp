@@ -20,15 +20,16 @@
 #include "mapdefaults.h"
 #include "generalconfig.h"
 
-#define READ_BORDER(a)                          \
-  a[0] = true;                                  \
-  a[1] = true;                                  \
-  a[2] = true;                                  \
+// Different macros used by read method for configuration data
+#define READ_BORDER(a) \
+  a[0] = true;         \
+  a[1] = true;         \
+  a[2] = true;         \
   a[3] = true;
 
-#define READ_PEN(G, A, B, C1, C2, C3, C4, P1, P2, P3, P4,       \
-                 S1, S2, S3, S4)                                \
-  READ_BORDER(B)                                                \
+#define READ_PEN(G, A, B, C1, C2, C3, C4, P1, P2, P3, P4,   \
+                 S1, S2, S3, S4)                            \
+  READ_BORDER(B)                                            \
   A.append(QPen(C1, P1, (Qt::PenStyle)S1));                 \
   A.append(QPen(C2, P2, (Qt::PenStyle)S2));                 \
   A.append(QPen(C3, P3, (Qt::PenStyle)S3));                 \
@@ -45,9 +46,20 @@
   A.append(QBrush(C10, (Qt::BrushStyle)S10));
 
 
+// number of created class instances
+short MapConfig::instances = 0;
+
 MapConfig::MapConfig(QObject* parent)
   : QObject(parent), scaleIndex(0), isSwitch(false)
 {
+  if ( ++instances > 1 )
+    {
+      // There exists already a class instance as singleton.
+      return;
+    }
+
+  ++instances;
+
   // create QIcons with background for copying later when needed
   // in airfield list; speeds up list display
 
@@ -71,12 +83,18 @@ MapConfig::MapConfig(QObject* parent)
     afIcon.addPixmap( selectPixmap, QIcon::Selected );
     airfieldIcon.insert(airfieldType[i], afIcon);
   }
+
+  slotReadConfig();
   // qDebug("MapConfig initialized...");
 }
 
 MapConfig::~MapConfig()
 {
-  // @AP: all lists should be automatically deallocate its members during destruction
+  // decrement instance counter
+  --instances;
+
+  // @AP: all lists should be automatically deallocate its members
+  // during destruction
 }
 
 void MapConfig::slotReadConfig()
@@ -404,27 +422,6 @@ void MapConfig::slotReadConfig()
                    SU_SECTOR_BRUSH_COLOR_3, SU_SECTOR_BRUSH_COLOR_4,
                    SU_SECTOR_BRUSH_STYLE_1, SU_SECTOR_BRUSH_STYLE_2,
                    SU_SECTOR_BRUSH_STYLE_3, SU_SECTOR_BRUSH_STYLE_4)
-
-
- // load drawing option
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  drawBearing            = conf->getMapBearLine();
-  drawIsoLines           = conf->getMapLoadIsoLines();
-  bShowWpLabels          = conf->getMapShowWaypointLabels();
-  bShowWpLabelsExtraInfo = conf->getMapShowWaypointLabelsExtraInfo();
-  bLoadIsolines          = conf->getMapLoadIsoLines();
-  bShowIsolineBorders    = conf->getMapShowIsoLineBorders();
-  bLoadRoads             = conf->getMapLoadRoads();
-  bLoadHighways          = conf->getMapLoadHighways();
-  bLoadRailroads         = conf->getMapLoadRailroads();
-  bLoadCities            = conf->getMapLoadCities();
-  bLoadWaterways         = conf->getMapLoadWaterways();
-  bLoadForests           = conf->getMapLoadForests();
-  bDeleteAfterMapCompile = conf->getMapDeleteAfterCompile();
-  bUnloadUnneededMap     = conf->getMapUnload();
-
-  emit configChanged();
 }
 
 void MapConfig::slotSetMatrixValues(int index, bool sw)
@@ -783,16 +780,3 @@ QString MapConfig::getPixmapName(unsigned int typeID, bool isWinch, bool rotatab
     iconName += ".xpm";
   return iconName;
 }
-
-void MapConfig::setShowWpLabels(bool show)
-{
-  bShowWpLabels = show;
-  GeneralConfig::instance()->setMapShowWaypointLabels( show );
-}
-
-void MapConfig::setShowWpLabelsExtraInfo(bool show)
-{
-  bShowWpLabelsExtraInfo = show;
-  GeneralConfig::instance()->setMapShowWaypointLabelsExtraInfo( show );
-}
-
