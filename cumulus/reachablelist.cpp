@@ -175,8 +175,11 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
                              false,
                              distance,
                              bearing,
-                             Altitude( 0 )  );
+                             Altitude( 0 ) );
+
           append(rp);
+
+          qDebug("Append WP=%s", last().getName().toLatin1().data() );
         }
     }
   else
@@ -259,6 +262,9 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
                              siteRunway.surface,
                              siteRunway.isOpen );
           append(rp);
+
+          qDebug("Append AF/GS=%s", last().getName().toLatin1().data() );
+          
           // qDebug("%s(%d) %f %d° %d", rp.getName().toLatin1().data(), rp.getElevation(),  rp.getDistance().getKilometers(), rp.getBearing(), (int)rp->getArrivalAlt().getMeters() );
 
         }
@@ -577,11 +583,13 @@ void ReachableList::removeDoubles()
         } // End of for j
     } // End of for i
 
-  // qSort( removeList.begin(), removeList.end(), qLess<int>() );
+  // sort remove list
+  qSort( removeList.begin(), removeList.end(), qLess<int>() );
 
+  // Start remove at the end of the list so that access index is always valid.
   for (int i = removeList.count()-1; i >= 0; i--)
     {
-      //qDebug("Removing point %d (%s)", removeList.at(i), at(removeList.at(i))->getWaypoint()->name.toLatin1().data());
+      qDebug("Removing point %d (%s)", removeList.at(i), at(removeList.at(i)).getWaypoint()->name.toLatin1().data());
       // remove doubles from global list
       removeAt( removeList.at(i) );
     }
