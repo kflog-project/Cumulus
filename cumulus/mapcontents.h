@@ -185,6 +185,12 @@ class MapContents : public QObject
   bool isInWaypointList( const QString& name );
 
   /**
+   * @Returns how often the name of the waypoint in the argument
+   * matches one of the waypoints in the list.
+   */
+  unsigned short countNameInWaypointList( const QString& name );
+  
+/**
    * Add a point to a rectangle, so the rectangle will be the bounding box
    * of all points added to it. If the point already lies within the borders
    * of the QRect, the QRect is unchanged. If the point is outside the

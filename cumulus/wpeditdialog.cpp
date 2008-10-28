@@ -51,13 +51,15 @@ WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ):
   setSizeGripEnabled(true);
 #endif
 
-  if (wp == 0)
+  if( wp == 0 )
     {
       setWindowTitle(tr("New Waypoint"));
+      oldName = "";
     }
   else
     {
       setWindowTitle(tr("Edit Waypoint"));
+      oldName = wp->name;
     }
 
   _wp = wp;
@@ -162,15 +164,14 @@ void WpEditDialog::accept()
     }
   else
     {
-      // save old name
-      QString oldName = _wp->name;
-
-      // update existing waypoint with edited data
+      // Update existing waypoint item with edited data. Note that the object in the
+      // global waypoint list is updated because we work with a reference to it!
       emit save( _wp );
       _wp->projP = _globalMapMatrix->wgsToMap(_wp->origP);
       _wp->comment = comment->toPlainText();
 
-      if( oldName != _wp->name && isWaypointNameInList( _wp->name ) )
+
+      if( oldName != _wp->name && countWaypointNameInList( _wp->name ) )
         {
           // The waypoint name has been modified and
           // is already to find in the global list.
@@ -250,4 +251,25 @@ bool WpEditDialog::isWaypointNameInList( QString& wpName )
     }
 
   return false;
+}
+
+/**
+  * This method checks, if the passed waypoint name is multiple to find
+  * in the global waypoint list. If yes the user is informed with a
+  * message box about this fact.
+  * Returns true if yes otherwise false.
+  */
+bool WpEditDialog::countWaypointNameInList( QString& wpName )
+{
+  if( _globalMapContents->countNameInWaypointList( wpName ) > 1 )
+    {
+        // The waypoint name is more than one to find in the list
+      QMessageBox::critical( this,tr("Name Conflict"),
+                            tr("Please use another name\nfor your new waypoint"),
+                            QMessageBox::Close );
+      return true;
+    }
+
+  return false;
+  
 }

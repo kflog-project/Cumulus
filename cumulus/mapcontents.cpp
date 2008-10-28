@@ -2329,6 +2329,29 @@ bool MapContents::isInWaypointList(const QString& name )
   return false;
 }
 
+  /**
+   * @Returns how often the name of the waypoint in the argument
+   * matches one of the waypoints in the list.
+   */
+unsigned short MapContents::countNameInWaypointList( const QString& name )
+{
+  ushort number = 0;
+
+  for (int i=0; i < wpList.count(); i++)
+    {
+      const wayPoint& wpItem = wpList.at(i);
+
+      if( name == wpItem.name )
+        {
+          number++;;
+        }
+    }
+
+  return number;
+
+}
+
+
 QDateTime MapContents::getDateFromMapFile( const QString& path )
 {
   QDateTime createDateTime;
