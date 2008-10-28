@@ -85,7 +85,7 @@ void ListViewFilter::reset(bool forget)
   if(!forget)
     restoreListViewItems();
 
-  //renew our filter tree
+  // renew our filter tree
   delete _rootFilter;
   _activeFilter=NULL;
   _rootFilter=new ListViewFilterItem();
