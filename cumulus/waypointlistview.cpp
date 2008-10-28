@@ -192,8 +192,11 @@ void WaypointListView::slot_deleteWP()
 
   if( answer == QMessageBox::Yes ) {
 
+    // @AP: Important! First announce deletion of waypoint for cancel to have a valid instance.
+    emit deleteWaypoint(wp);
+
+    // Second delete selected waypoint
     listw->deleteSelectedWaypoint();
-    emit deleteWaypoint(wp); // cancel the selected waypoint
 
     if (par)
       {
