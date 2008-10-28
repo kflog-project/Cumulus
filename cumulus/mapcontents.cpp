@@ -183,7 +183,6 @@ bool MapContents::__readTerrainFile(const int fileSecID,
                                     const int fileTypeID)
 {
   extern const MapMatrix * _globalMapMatrix;
-  extern MapConfig * _globalMapConfig;
   bool kflExists, kfcExists;
   bool compiling = false;
 
@@ -195,7 +194,8 @@ bool MapContents::__readTerrainFile(const int fileSecID,
     }
 
   // first, check if we need to load this file at all...
-  if ((fileTypeID==FILE_TYPE_TERRAIN) && (!_globalMapConfig->getLoadIsolines()))
+  if ( fileTypeID == FILE_TYPE_TERRAIN &&
+      ( !GeneralConfig::instance()->getMapLoadIsoLines() ))
     {
       return true;
     }
@@ -614,7 +614,7 @@ bool MapContents::__readTerrainFile(const int fileSecID,
 
       // kfl file is deleted after 'compilation' to save space, if is enabled
       // in configuration menu
-      if ( _globalMapConfig->getDeleteMapfileAfterCompile() )
+      if ( GeneralConfig::instance()->getMapDeleteAfterCompile() )
         {
           mapfile.remove();
         }
@@ -627,13 +627,15 @@ bool MapContents::__readBinaryFile(const int fileSecID,
                                    const char fileTypeID)
 {
   extern const MapMatrix * _globalMapMatrix;
-  extern MapConfig * _globalMapConfig;
   bool kflExists, kfcExists;
   bool compiling = false;
 
   //first, check if we need to load this file at all...
-  if ((fileTypeID==FILE_TYPE_TERRAIN) && (!_globalMapConfig->getLoadIsolines()))
-    return true;
+  if ( fileTypeID == FILE_TYPE_TERRAIN &&
+      ( !GeneralConfig::instance()->getMapLoadIsoLines() ))
+    {
+      return true;
+    }
 
   if (memoryFull)   //if we already know the memory if full and can't be emptied at this point, just return.
     {
@@ -989,37 +991,37 @@ bool MapContents::__readBinaryFile(const int fileSecID,
         {
         case BaseMapElement::Highway:
           READ_POINT_LIST
-          if (!_globalMapConfig->getLoadHighways())
+          if ( !GeneralConfig::instance()->getMapLoadHighways() )
             break;
           highwayList.append( LineElement("", typeIn, pN, false, fileSecID) );
           break;
         case BaseMapElement::Road:
           READ_POINT_LIST
-          if (!_globalMapConfig->getLoadRoads())
+          if ( !GeneralConfig::instance()->getMapLoadRoads() )
             break;
           roadList.append( LineElement("", typeIn, pN, false, fileSecID) );
           break;
         case BaseMapElement::Trail:
           READ_POINT_LIST
-          if (!_globalMapConfig->getLoadRoads())
+          if ( !GeneralConfig::instance()->getMapLoadRoads() )
             break;
           roadList.append( LineElement("", typeIn, pN, false, fileSecID) );
           break;
         case BaseMapElement::Railway:
           READ_POINT_LIST
-          if (!_globalMapConfig->getLoadRailroads())
+          if ( !GeneralConfig::instance()->getMapLoadRailroads() )
             break;
           railList.append( LineElement("", typeIn, pN, false, fileSecID) );
           break;
         case BaseMapElement::Railway_D:
           READ_POINT_LIST
-          if (!_globalMapConfig->getLoadRailroads())
+          if ( !GeneralConfig::instance()->getMapLoadRailroads() )
             break;
           railList.append( LineElement("", typeIn, pN, false, fileSecID) );
           break;
         case BaseMapElement::Aerial_Cable:
           READ_POINT_LIST
-          if (!_globalMapConfig->getLoadRailroads())
+          if ( !GeneralConfig::instance()->getMapLoadRailroads() )
             break;
           railList.append( LineElement("", typeIn, pN, false, fileSecID) );
           break;
@@ -1040,7 +1042,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
                 }
             }
           READ_POINT_LIST
-          if (!_globalMapConfig->getLoadWaterways())
+          if ( !GeneralConfig::instance()->getMapLoadWaterways() )
             break;
           hydroList.append( LineElement(name, typeIn, pN, false, fileSecID) );
           break;
@@ -1061,7 +1063,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
                 }
             }
           READ_POINT_LIST
-          if (!_globalMapConfig->getLoadCities())
+          if ( !GeneralConfig::instance()->getMapLoadCities() )
             break;
           cityList.append( LineElement(name, typeIn, pN, sort, fileSecID) );
           // qDebug("added city '%s'", name.toLatin1().data());
@@ -1107,7 +1109,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
                 }
             }
           READ_POINT_LIST
-          if (!_globalMapConfig->getLoadForests())
+          if ( !GeneralConfig::instance()->getMapLoadForests() )
             break;
           topoList.append( LineElement(name, typeIn, pN, sort, fileSecID) );
           break;
@@ -1126,7 +1128,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
             }
           in >> lat_temp;
           in >> lon_temp;
-          if (!_globalMapConfig->getLoadCities())
+          if ( !GeneralConfig::instance()->getMapLoadCities() )
             break;
           if ( compiling )
             {
@@ -1148,7 +1150,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
             }
           in >> lat_temp;
           in >> lon_temp;
-          if (!_globalMapConfig->getLoadCities())
+          if ( !GeneralConfig::instance()->getMapLoadCities() )
             break;
           if ( compiling )
             {
@@ -1177,7 +1179,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
             }
           in >> lat_temp;
           in >> lon_temp;
-          if (!_globalMapConfig->getLoadCities())
+          if ( !GeneralConfig::instance()->getMapLoadCities() )
             break;
           if ( compiling )
             {
@@ -1209,7 +1211,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
     {
       ausgabe.close();
       // kfl file is deleted after 'compilation' to save space. Please handle this "al gusto" ...
-      if ( _globalMapConfig->getDeleteMapfileAfterCompile() )
+      if ( GeneralConfig::instance()->getMapDeleteAfterCompile() )
         {
           mapfile.remove();
         }
@@ -1236,7 +1238,6 @@ void MapContents::proofeSection()
   mutex = true;
 
   extern MapMatrix * _globalMapMatrix;
-  extern MapConfig * _globalMapConfig;
   QRect mapBorder;
 
   mapBorder = _globalMapMatrix->getViewBorder();
@@ -1312,8 +1313,7 @@ void MapContents::proofeSection()
                       // method is necessary. But the disadvantage
                       // is in that case that the freeing needs a
                       // lot of time (several seconds).
-
-                      if (_globalMapConfig->getUnloadUnneededMap())
+                      if ( GeneralConfig::instance()->getMapUnload() )
                         {
                           unloadMaps(0);
                         }
@@ -1867,8 +1867,6 @@ void MapContents::slotReloadWelt2000Data()
 
   _globalMapView->message( tr("Reloading Welt2000 finished") );
 
-#warning FIXME: AirfieldListView needs to be re-initialized too if it was called before
-
   emit mapDataReloaded();
 
   // enable gps data receiving
@@ -2097,7 +2095,7 @@ void MapContents::drawIsoList(QPainter* targetP)
 
   targetP->setPen(QPen(Qt::black, 1, Qt::NoPen));
 
-  if (_globalMapConfig->getShowIsolineBorders())
+  if ( GeneralConfig::instance()->getMapShowIsoLineBorders() )
     {
       int scale = (int)rint(_globalMapMatrix->getScale(MapMatrix::CurrentScale));
 
@@ -2140,7 +2138,7 @@ void MapContents::drawIsoList(QPainter* targetP)
             }
         }
 
-      if ( _globalMapConfig->getdrawIsoLines() )
+      if ( GeneralConfig::instance()->getMapLoadIsoLines() )
         {
           // choose contour color
           targetP->setBrush(QBrush(_globalMapConfig->getIsoColor(height), Qt::SolidPattern));
