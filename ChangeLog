@@ -17,6 +17,12 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.1.x (Development based on X11/Qt-4.4.1)
 -------------------------------------------------
+[o] 2008-10-28 AP: All drawing check options removed in class MapContent. All other
+                   classes calling directly now GeneralConfig.
+                   Pinter pen, brush and iso color lists changed to value based lists.
+[-] 2008-10-28 AP: Bugfix: Additional checks added in calculator for proofing of
+                   manual move. Now it is not more possible to leave the earth
+                   coordinate system over 90 or 180 degrees.
 [o] 2008-10-23 AP: Additional checks added in waypoint editor. Mandatory items
                    name and description have to be entered before accept. Already
                    existing names in the global list can not be reused now.
