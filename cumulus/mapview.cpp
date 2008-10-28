@@ -274,10 +274,10 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusbar = new QStatusBar(this);
   _statusbar->setObjectName("status");
   _statusbar->setSizeGripEnabled(false);
-  _statusbar->setFixedHeight(19);
+  _statusbar->setFixedHeight(20);
   QFont font = _statusbar->font();
   font.setBold(true);
-  font.setPixelSize(12);
+  font.setPixelSize(13);
   _statusbar->setFont(font);
 
   _menuToggle = new CuLabel( tr("Menu"),_statusbar);
@@ -514,7 +514,7 @@ void MapView::slot_ETA(const QTime& eta)
 }
 
 
-/** This slot is called if a new positionfix has been established. */
+/** This slot is called if a new position fix has been established. */
 void MapView::slot_Position(const QPoint& position, const int source)
 {
   // this slot is called:
@@ -529,7 +529,7 @@ void MapView::slot_Position(const QPoint& position, const int source)
       _theMap->checkAirspace (position);
     }
 
-  // if in manual mode: show position in statusbar for the cross, not for the glider
+  // if in manual mode: show position in status bar for the cross, not for the glider
   // this covers a) and b) or c) with source manual
   if(!calculator->isManualInFlight() ||
       calculator->isManualInFlight() && source == Calculator::MAN)
