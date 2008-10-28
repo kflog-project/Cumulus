@@ -44,7 +44,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   // hide vertical headers
   QHeaderView *vHeader = loadOptions->verticalHeader();
   vHeader->setVisible(false);
-    
+
   QTableWidgetItem *item = new QTableWidgetItem( tr("Load/Draw map objects") );
   loadOptions->setHorizontalHeaderItem( 0, item );
 
@@ -60,7 +60,6 @@ void SettingsPageMapObjects::slot_load()
   GeneralConfig *conf = GeneralConfig::instance();
 
   fillLoadOptionList();
-  liIsolines->setCheckState( conf->getMapLoadIsoLines() ? Qt::Checked : Qt::Unchecked );
   liIsolines->setCheckState( conf->getMapLoadIsoLines() ? Qt::Checked : Qt::Unchecked );
   liIsolineBorders->setCheckState( conf->getMapShowIsoLineBorders() ? Qt::Checked : Qt::Unchecked );
   liWpLabels->setCheckState( conf->getMapShowWaypointLabels() ? Qt::Checked : Qt::Unchecked );
@@ -106,15 +105,15 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liIsolineBorders = new QTableWidgetItem( tr("Isoline borders") );
   liIsolineBorders->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, 0, liIsolineBorders );
-        
+
   liWpLabels = new QTableWidgetItem( tr("Waypoint labels") );
   liWpLabels->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, 0, liWpLabels );
-  
+
   liWpLabelsExtraInfo = new QTableWidgetItem( tr("Waypoint labels - Extra info") );
   liWpLabelsExtraInfo->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, 0, liWpLabelsExtraInfo );
-      
+
   liRoads = new QTableWidgetItem( tr("Roads") );
   liRoads->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, 0, liRoads );
@@ -167,7 +166,7 @@ void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
 
   bool changed=false;
   GeneralConfig *conf = GeneralConfig::instance();
-  
+
   changed |= ( conf->getMapLoadIsoLines() ? Qt::Checked : Qt::Unchecked ) != liIsolines->checkState();
   changed |= ( conf->getMapShowIsoLineBorders() ? Qt::Checked : Qt::Unchecked ) != liIsolineBorders->checkState();
   changed |= ( conf->getMapShowWaypointLabels() ? Qt::Checked : Qt::Unchecked ) != liWpLabels->checkState();
