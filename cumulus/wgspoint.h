@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2008 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -16,7 +16,7 @@
 ***********************************************************************/
 
 /**
-  * @short Abstract position
+  * @short WGS position
   *
   * This class is used to handle WGS-coordinates. It inherits QPoint. The only
   * difference is, that the methods to access the coordinates are called "lat"
@@ -99,23 +99,6 @@ public:
      *
      */
     WGSPoint &operator=( const QPoint &p );
-
-    /**
-     *
-     */
-    friend bool operator==( const WGSPoint &pA, const WGSPoint &pB )
-    {
-        return ( (QPoint)pA == (QPoint)pB );
-    };
-
-    /**
-     *
-     */
-    friend bool operator!=( const WGSPoint &pA, const WGSPoint &pB )
-    {
-        return ( (QPoint)pA != (QPoint)pB );
-    }
-    ;
 
     /**
      * Returns the current used format.
