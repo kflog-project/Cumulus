@@ -99,9 +99,9 @@ void GPSNMEA::createGpsConnection()
 #ifndef MAEMO
 
   // We create only a GPSCon instance. The client process will be started later
-  const char *callPath = ( GeneralConfig::instance()->getInstallRoot() + "/bin" ).toAscii().data();
+  QString callPath = GeneralConfig::instance()->getInstallRoot() + "/bin";
 
-  serial = new GPSCon(this, callPath);
+  serial = new GPSCon(this, callPath.toAscii().data());
 
   gpsObject = serial;
 
@@ -116,9 +116,9 @@ void GPSNMEA::createGpsConnection()
   if( gpsDevice == NMEASIM_DEVICE )
     {
       // We assume, that the nmea simulator shall be used and will start the gps client process
-      const char *callPath = ( GeneralConfig::instance()->getInstallRoot() + "/bin" ).toAscii().data();
+      QString callPath = GeneralConfig::instance()->getInstallRoot() + "/bin";
 
-      serial = new GPSCon(this, callPath);
+      serial = new GPSCon(this, callPath.toAscii().data());
       gpsObject = serial;
     }
   else
