@@ -62,7 +62,6 @@
 // We do derive from the QT settings class as base class
 class GeneralConfig : protected QSettings
 {
-
  public:
 
   enum UseInMode {
@@ -108,9 +107,14 @@ class GeneralConfig : protected QSettings
   ~GeneralConfig();
 
   /**
-   * @returns The instance of GeneralConfig. Creates an instance if nessecairy.
+   * @returns The instance of GeneralConfig. Creates an instance if necessary.
    */
-  static GeneralConfig *instance();
+  static GeneralConfig *instance()
+  {
+    if ( ! _theInstance ) _theInstance = new GeneralConfig;
+
+    return _theInstance;
+  }
 
   /**
    * Saves the configuration settings.

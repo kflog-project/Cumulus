@@ -37,8 +37,8 @@ using namespace std;
 #include "maemostyle.h"
 #endif
 
-// create static instance
-GeneralConfig * GeneralConfig::_theInstance = 0;
+// define NULL static instance
+GeneralConfig* GeneralConfig::_theInstance = 0;
 
 // @AP: We derive here from the QT settings as base class. The config
 // file will be stored in the user home directory as $HOME/.config/Cumulus.conf
@@ -54,18 +54,9 @@ GeneralConfig::GeneralConfig() : QSettings( QSettings::UserScope, "Cumulus" )
 GeneralConfig::~GeneralConfig()
 {
   save();
-  _theInstance=0;
+  _theInstance = 0;
   delete _homeWp;
 }
-
-GeneralConfig * GeneralConfig::instance()
-{
-  if (_theInstance==0)
-    _theInstance=new GeneralConfig;
-
-  return _theInstance;
-}
-
 
 void GeneralConfig::load()
 {
