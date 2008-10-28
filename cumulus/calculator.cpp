@@ -767,7 +767,7 @@ void Calculator::slot_changePosition(int direction)
     lastPosition=QPoint(lastPosition.x(), (int) rint(lastPosition.y()+(distance/kmPerDeg) * 600));
     break;
   case MapMatrix::South:
-    kmPerDeg=dist(lastPosition.x(),lastPosition.y(), lastPosition.x()+600000,lastPosition.y());
+    kmPerDeg=dist(lastPosition.x(),lastPosition.y(), lastPosition.x()+600000, lastPosition.y());
     lastPosition=QPoint((int) rint(lastPosition.x()-(distance/kmPerDeg) * 600), lastPosition.y());
     break;
   case MapMatrix::Home:
@@ -778,6 +778,24 @@ void Calculator::slot_changePosition(int direction)
       lastPosition=selectedWp->origP;
     break;
   }
+
+  // Check new position that it lays inside the earth coordinates +-90, +-180 degrees
+  if( lastPosition.x() > 90*600000 )
+    {
+      lastPosition.setX(90*600000);
+    }
+  else if( lastPosition.x() < -90*600000 )
+    {
+      lastPosition.setX(-90*600000);
+    }
+  else if( lastPosition.y() > 180*600000 )
+    {
+      lastPosition.setY(180*600000);
+    }
+  else if( lastPosition.y() < -180*600000 )
+    {
+      lastPosition.setY(-180*600000);
+    }
 
   lastElevation = Altitude( _globalMapContents->findElevation(lastPosition, &lastElevationError) );
   emit newPosition(lastPosition, Calculator::MAN);
