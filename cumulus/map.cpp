@@ -1343,12 +1343,12 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                 wpPainter->drawPixmap(P.x()-xOffset,P.y()-yOffset, pm);
 
               // draw name of wp
-              if (_globalMapConfig->getShowWpLabels())
+              if ( GeneralConfig::instance()->getMapShowWaypointLabels() )
                 {
                   // do we need to show the labels at all?
                   labelText=wp.name;
 
-                  if ( _globalMapConfig->getShowWpLabelsExtraInfo() )
+                  if ( GeneralConfig::instance()->getMapShowWaypointLabelsExtraInfo() )
                     { //just the name, or also additional info?
                       if ( wp.isLandable )
                         {
@@ -1968,7 +1968,10 @@ void Map::slotSetScale(const double& newScale)
  */
 void Map::__drawDirectionLine(const QPoint& from)
 {
-  if (!_globalMapConfig->getdrawBearing()) return;
+  if ( !GeneralConfig::instance()->getMapBearLine() )
+    {
+      return;
+    }
 
   if (calculator && calculator->getselectedWp())
     {
