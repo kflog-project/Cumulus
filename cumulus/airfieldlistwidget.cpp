@@ -50,11 +50,26 @@ AirfieldListWidget::~AirfieldListWidget()
   delete wp;
 }
 
+/** Clears and refills the airfield item list, if the list is not empty. */
+void AirfieldListWidget::refillWpList()
+{
+  if( ! listFilled ) {
+    // list is empty, ignore request
+    return;
+  }
+
+  // Remove all content from list
+  list->clear();
+
+  // reload list
+  listFilled = false;
+  fillWpList();
+}
+
 /** Retrieves the airfields from the map contents, and fills the list. */
 void AirfieldListWidget::fillWpList()
 {
   // qDebug("AirfieldListWidget::fillWpList()");
-
   if( listFilled ) {
     return;
   }
@@ -76,17 +91,16 @@ void AirfieldListWidget::fillWpList()
     }
   }
 
-  list->setSortingEnabled(true);
-  list->sortByColumn(0,Qt::AscendingOrder);
-  list->setSortingEnabled(false);
-
   if (Nr > 0) {
-    resizeListColumns();
+    list->setSortingEnabled(true);
+    list->sortByColumn(0,Qt::AscendingOrder);
+    list->setSortingEnabled(false);
     // @AP: set only to true if something was read
     listFilled = true;
   }
 
-  filter->reset();
+  resizeListColumns();
+  filter->reset(true);
 }
 
 

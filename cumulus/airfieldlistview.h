@@ -87,6 +87,14 @@ public slots: // Public slots
 
     void slot_Selected();
 
+    /**
+     * Called to reload the airfield item list
+     */
+    void slot_reloadList()
+    {
+      listw->refillWpList();
+    };
+
 signals: // Signals
     /**
      * This signal is emitted if a new waypoint is selected.

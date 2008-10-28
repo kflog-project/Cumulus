@@ -46,6 +46,11 @@ public:
     enum MapContents::MapContentsListID itemList[2];
 
     /**
+     * Clears and refills the airfield item list, if the list is not empty.
+     */
+    void refillWpList();
+
+    /**
      * Called to fill the display list
      */
     void fillWpList();

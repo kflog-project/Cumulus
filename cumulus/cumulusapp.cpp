@@ -309,10 +309,7 @@ void CumulusApp::slotCreateApplicationWidgets()
   connect( _globalMapMatrix, SIGNAL( homePositionChanged() ),
            _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
 
-  connect( _globalMapConfig, SIGNAL( configChanged() ),
-           _globalMapMatrix, SLOT( slotInitMatrix() ) );
-
-  _globalMapConfig->slotReadConfig();
+  _globalMapMatrix->slotInitMatrix();
 
   ws->slot_SetText1( tr( "Creating views..." ) );
 
@@ -381,6 +378,8 @@ void CumulusApp::slotCreateApplicationWidgets()
 
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewMap->_theMap, SLOT( slotDraw() ) );
+  connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
+           viewAF, SLOT( slot_reloadList() ) );
 
   connect( viewMap->_theMap, SIGNAL( isRedrawing( bool ) ),
            this, SLOT( slotMapDrawEvent( bool ) ) );
@@ -918,7 +917,7 @@ void CumulusApp::initActions()
   actionToggleWpLabels = new QAction ( tr( "Waypoint labels" ), this);
   actionToggleWpLabels->setShortcut(Qt::Key_A);
   actionToggleWpLabels->setCheckable(true);
-  actionToggleWpLabels->setChecked( _globalMapConfig->getShowWpLabels() );
+  actionToggleWpLabels->setChecked( GeneralConfig::instance()->getMapShowWaypointLabels() );
   addAction( actionToggleWpLabels );
   connect( actionToggleWpLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleWpLabels( bool ) ) );
@@ -926,7 +925,7 @@ void CumulusApp::initActions()
   actionToggleWpLabelsEI = new QAction (  tr( "Waypoint extra info" ), this);
   actionToggleWpLabelsEI->setShortcut(Qt::Key_S);
   actionToggleWpLabelsEI->setCheckable(true);
-  actionToggleWpLabelsEI->setChecked( _globalMapConfig->getShowWpLabelsExtraInfo() );
+  actionToggleWpLabelsEI->setChecked( GeneralConfig::instance()->getMapShowWaypointLabelsExtraInfo() );
   addAction( actionToggleWpLabelsEI );
   connect( actionToggleWpLabelsEI, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleWpLabelsExtraInfo( bool ) ) );
@@ -1142,14 +1141,18 @@ void CumulusApp::slotToggleMenu()
 
 void CumulusApp::slotToggleWpLabels( bool toggle )
 {
-  _globalMapConfig->setShowWpLabels( toggle );
+  // save configuration change
+  GeneralConfig::instance()->setMapShowWaypointLabels( toggle );
+  GeneralConfig::instance()->save();
   viewMap->_theMap->scheduleRedraw(Map::waypoints);
 }
 
 
 void CumulusApp::slotToggleWpLabelsExtraInfo( bool toggle )
 {
-  _globalMapConfig->setShowWpLabelsExtraInfo( toggle );
+  // save configuration change
+  GeneralConfig::instance()->setMapShowWaypointLabelsExtraInfo( toggle );
+  GeneralConfig::instance()->save();
   viewMap->_theMap->scheduleRedraw(Map::waypoints);
 }
 
@@ -1608,13 +1611,10 @@ void CumulusApp::slotRememberWaypoint()
   viewWP->slot_wpAdded( wp );
 }
 
-/** This slot is called if the configuration has changed and at the
+/** This slot is called if the configuration has been changed and at the
     start of the program to read the initial configuration. */
 void CumulusApp::slotReadconfig()
 {
-  // @AP: WARNING POPUP crash test statement, please let it commented out here
-  // viewMap->theMap->checkAirspace(calculator->getlastPosition());
-
   GeneralConfig *conf = GeneralConfig::instance();
 
   // configure units
@@ -1624,8 +1624,8 @@ void CumulusApp::slotReadconfig()
   Altitude::setUnit( Altitude::altitude( conf->getUnitAlt() ) );
   WGSPoint::setFormat( WGSPoint::Format( conf->getUnitPos() ) );
 
-  // other config changes
-  _globalMapConfig->slotReadConfig();
+  // other configuration changes
+  _globalMapMatrix->slotInitMatrix();
   viewMap->slot_settingschange();
   calculator->slot_settingschanged();
   viewTP->slot_updateTask();

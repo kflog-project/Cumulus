@@ -130,10 +130,10 @@ void AirfieldListView::slot_setHome()
       return;
     }
 
-  int answer= QMessageBox::warning(this,
+  int answer= QMessageBox::question(this,
                                    tr("Set home site"),
                                    tr("Use airfield<br>%1<br>as your home site?").arg(_wp->name),
-                                   QMessageBox::Yes | QMessageBox::No );
+                                   QMessageBox::No, QMessageBox::Yes );
   if( answer == QMessageBox::Yes )
     {
       // Save new data as home position
