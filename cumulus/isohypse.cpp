@@ -23,6 +23,7 @@
 #include <QSize>
 
 #include "isohypse.h"
+#include "generalconfig.h"
 #include "mapmatrix.h"
 
 extern MapMatrix* _globalMapMatrix;
@@ -93,7 +94,7 @@ QRegion* Isohypse::drawRegion( QPainter* targetP, const QRect &viewRect,
           skipW = skipH = 4;
         }
 
-      if( _globalMapConfig->getdrawIsoLines() == false )
+      if( GeneralConfig::instance()->getMapLoadIsoLines() == false )
         {
           // draw all ground data in this case, otherwise on
           // higher map scales are blue areas to see.
