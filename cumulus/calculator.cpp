@@ -330,7 +330,7 @@ void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
 /**
  * Called if a waypoint has to be deleted.
  */
-void Calculator::slot_WaypointDelete(wayPoint * newWp)
+void Calculator::slot_WaypointDelete(wayPoint* newWp)
 {
   // @AP: check, if waypoint to be deleted is selected. In this case a
   // deselection must be done
