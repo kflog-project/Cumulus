@@ -214,7 +214,7 @@ class Distance
   /**
    * Sets the distance to be invalid
    */
-  inline void setInvalid()
+  void setInvalid()
   {
     _isValid=false;
     _dist=0;
@@ -223,7 +223,7 @@ class Distance
   /**
    * Gets if the distance is valid
    */
-  inline bool isValid()
+  bool isValid() const
   {
     return _isValid;
   };
