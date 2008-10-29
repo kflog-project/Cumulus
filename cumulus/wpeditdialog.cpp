@@ -138,20 +138,22 @@ void WpEditDialog::loadWaypointData()
 void WpEditDialog::accept()
 {
   // qDebug ("WpEditDialog::accept");
+
+  // get waypoint data from the tab widgets and save them in a new object
+  wayPoint newWp;
+  emit save( &newWp );
+  newWp.projP = _globalMapMatrix->wgsToMap( newWp.origP );
+  newWp.comment = comment->toPlainText();
+
+  // Make some mandatory consistency checks
+  if( checkWaypointData( newWp ) == false )
+    {
+      // reject saving due to missing data items
+      return;
+    }
+
   if( _wp == 0 )
     {
-      // create a new waypoint from inserted data in the tab widgets
-      wayPoint newWp;
-      emit save( &newWp );
-      newWp.projP = _globalMapMatrix->wgsToMap( newWp.origP );
-      newWp.comment = comment->toPlainText();
-
-      if( checkWaypointData( newWp ) == false )
-        {
-          // reject saving due to missing data items
-          return;
-        }
-
       if( isWaypointNameInList( newWp.name ) )
         {
           // Waypoint name is already to find in the global list.
@@ -160,33 +162,26 @@ void WpEditDialog::accept()
           return;
         }
 
+      // The new waypoint is posted to the subscribers
       emit wpListChanged( newWp );
     }
   else
     {
       // Update existing waypoint item with edited data. Note that the object in the
       // global waypoint list is updated because we work with a reference to it!
-      emit save( _wp );
-      _wp->projP = _globalMapMatrix->wgsToMap(_wp->origP);
-      _wp->comment = comment->toPlainText();
-
-
-      if( oldName != _wp->name && countWaypointNameInList( _wp->name ) )
+      // Therefore we use a temporary object for saving and checking.
+      if( oldName != newWp.name && isWaypointNameInList( newWp.name ) )
         {
-          // The waypoint name has been modified and
-          // is already to find in the global list.
-          // To avoid multiple entries with the same name, the
-          // accept is rejected.
+          // The waypoint name of the saved object was modified and the new name
+          // is already in use in the global list. To avoid multiple entries with
+          //the same name, the accept is rejected.
           return;
         }
 
+      // Update old waypoint object
+      *_wp = newWp;
 
-      if( checkWaypointData( *_wp ) == false )
-        {
-          // reject saving due to missing data items
-          return;
-        }
-
+      // The modified waypoint is posted to the subscribers
       emit wpListChanged( *_wp );
     }
 
@@ -271,5 +266,4 @@ bool WpEditDialog::countWaypointNameInList( QString& wpName )
     }
 
   return false;
-  
 }
