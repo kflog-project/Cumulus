@@ -40,18 +40,15 @@ WGSPoint::Format WGSPoint::_format = WGSPoint::DMS;
 WGSPoint::WGSPoint() : QPoint()
 {}
 
-
 WGSPoint::WGSPoint(int lat, int lon)
         : QPoint(lat, lon)
 {}
-
 
 WGSPoint &WGSPoint::operator=( const QPoint &p )
 {
     setPos(p.x(), p.y());
     return *this;
 }
-
 
 /**
   * Converts the given coordinate into separate values.
@@ -64,14 +61,12 @@ void WGSPoint::calcPos (int coord, int& degree, int& min, int &sec)
     sec = (int) rint((sec * 60) / 10000.0);
 }
 
-
 void WGSPoint::calcPos (int coord, int& degree, double& min)
 {
     degree = coord / 600000;
     min = (coord % 600000) / 10000.0;
     // qDebug("Coord=%d, degree=%d, decMin=%f", coord, degree, min);
 }
-
 
 /**
  * The function seems to have problems, if the position is near 0° W/E.
@@ -90,13 +85,9 @@ QString WGSPoint::printPos(int coord, bool isLat)
         //     coord, degree, min, sec );
 
         min = abs(min);
-        //if(min < 10)  posMin.sprintf(" 0%d'", min);
-        //else
         posMin.sprintf("%02d'", min);
 
         sec = abs(sec);
-        //if(sec < 10)  posSec.sprintf(" 0%d\"", sec);
-        //else
         posSec.sprintf(" %02d\"", sec);
     } else {
         // degrees and decimal minutes
