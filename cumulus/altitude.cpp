@@ -31,11 +31,11 @@ Altitude::Altitude()
 }
 
 
-Altitude::Altitude(int meters):Distance(meters)
+Altitude::Altitude(int meters) : Distance(meters)
 {}
 
 
-Altitude::Altitude(double meters):Distance(meters)
+Altitude::Altitude(double meters) : Distance(meters)
 {}
 
 
