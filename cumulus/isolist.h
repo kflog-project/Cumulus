@@ -102,24 +102,7 @@ class IsoListEntry
   */
   bool operator < (const IsoListEntry& other) const
   {
-    return height < other.height;
-  };
-
-  /** @AP: This method is only useable in qSort, if the members to be
-   *  sorted are values and not pointers.
-   */
-  static bool lessThan(const IsoListEntry &i1, const IsoListEntry &i2)
-    {
-      return i1.height < i2.height;
-    };
-};
-
-struct CompareIso
-{
-  // The operator sorts in reverse order
-  bool operator()(const IsoListEntry &iso1, const IsoListEntry &iso2) const
-  {
-    return (iso1.height > iso2.height);
+    return height > other.height;
   };
 };
 
@@ -133,10 +116,7 @@ class IsoList : public QList<IsoListEntry>
 
   void sort()
   {
-    // @AP: using std::sort because qSort can not handle pointer
-    // elements
-    std::sort( begin(), end(), CompareIso() );
-    // qSort(begin(), end(), IsoListEntry::lessThan);
+    qSort( begin(), end() );
   };
 
 };
