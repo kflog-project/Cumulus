@@ -62,11 +62,11 @@ ReachablePoint::ReachablePoint(QString name,
 // Construction from another WP
 ReachablePoint::ReachablePoint(wayPoint& wp,
                                bool orignAfl,
-                               Distance distance,
+                               Distance& distance,
                                short bearing,
-                               Altitude arrivAlt )
+                               Altitude& arrivAlt )
 {
-  _wp = wp; // deep copy
+  _wp = wp;
   _orignAfl   = orignAfl;
   _distance   = distance;
   _arrivalAlt = arrivAlt;
@@ -79,11 +79,11 @@ ReachablePoint::~ReachablePoint()
 
 ReachablePoint::reachable ReachablePoint::getReachable()
 {
-  if ( _arrivalAlt.isValid() && _arrivalAlt.getMeters()> 0 )
+  if ( _arrivalAlt.isValid() && _arrivalAlt.getMeters() > 0 )
     {
       return ReachablePoint::yes;
     }
-  else if ( _arrivalAlt.isValid() && _arrivalAlt.getMeters()> -ReachableList::getSafetyAltititude() )
+  else if ( _arrivalAlt.isValid() && _arrivalAlt.getMeters() > -ReachableList::getSafetyAltititude() )
     {
       return ReachablePoint::belowSafety;
     }
@@ -97,11 +97,11 @@ bool ReachablePoint::operator < (const ReachablePoint& other) const
 {
   if ( ReachableList::getModeAltitude() )
     {
-      return (getArrivalAlt().getMeters() < other.getArrivalAlt().getMeters());
+      return (_arrivalAlt.getMeters() < other._arrivalAlt.getMeters());
     }
   else
     {
-      return (getDistance().getKilometers()> other.getDistance().getKilometers());
+      return (_distance.getKilometers() > other._distance.getKilometers());
     }
 }
 
