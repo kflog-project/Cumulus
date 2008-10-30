@@ -2171,14 +2171,16 @@ void MapContents::drawIsoList(QPainter* targetP)
 
   qDebug( "IsoList, drawTime=%dms", t.elapsed() );
 
-  /* QString isos;
+#if 0
+  QString isos;
 
   for( int i = 0; i < regIsoLines.count(); i++ )
     {
       isos += QString("%1, ").arg(regIsoLines.at(i).height);
     }
 
-    qDebug( isos.toLatin1().data() ); */
+    qDebug( isos.toLatin1().data() );
+#endif
 }
 
 /**
