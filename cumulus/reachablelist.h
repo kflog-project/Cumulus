@@ -76,12 +76,12 @@ class ReachableList: public QObject, QList<ReachablePoint>
    * calculates scheduled glide path and full list
    */
   void calculate(bool always);
-  
+
   /**
    * forces to calculate a new list
    */
   void calculateNewList();
-  
+
   /**
    * returns the number of sites in the list
    */
@@ -126,7 +126,7 @@ class ReachableList: public QObject, QList<ReachablePoint>
   /**
    * Removes all data in the different lists.
    */
-  void clearList()
+  void clearLists()
   {
     clear();
     arrivalAltMap.clear();
@@ -238,21 +238,6 @@ class ReachableList: public QObject, QList<ReachablePoint>
   // number of created class instances
   static short instances;
 
-};
-
-struct CompareReachablePoints
-{
-  bool operator()(const ReachablePoint& rp1, const ReachablePoint& rp2) const
-  {
-    if( ReachableList::getModeAltitude() )
-      {
-        return (rp1.getArrivalAlt().getMeters() < rp2.getArrivalAlt().getMeters());
-      }
-    else
-      {
-        return (rp1.getDistance().getKilometers() > rp2.getDistance().getKilometers());
-      }
-  };
 };
 
 #endif
