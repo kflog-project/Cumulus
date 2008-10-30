@@ -318,7 +318,7 @@ public:
 
     void clearReachable()
     {
-        _reachablelist->clearList();
+        _reachablelist->clearLists();
     };
 
     /**
