@@ -361,5 +361,3 @@ bool Airspace::operator < (const Airspace& other) const
     return (a1F < a2F);
   }
 }
-
-

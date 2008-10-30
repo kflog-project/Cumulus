@@ -257,7 +257,6 @@ public:
      */
     bool operator < (const Airspace& other) const;
 
-
 private:
     /**
      * Contains the lower limit.
@@ -327,14 +326,11 @@ struct CompareAirspaces
 class SortableAirspaceList : public QList<Airspace*>
 {
 public:
+
   void sort ()
   {
-    // @AP: using std::sort because qSort can not handle pointer
-    // elements
-    std::sort( begin(), end(), CompareAirspaces() );
+    qSort( begin(), end(), CompareAirspaces() );
   };
 };
-
-
 
 #endif
