@@ -56,18 +56,18 @@ class ReachablePoint
 
   ReachablePoint(wayPoint& wp,
                  bool orignAfl,
-                 Distance distance,
+                 Distance& distance,
                  short bearing,
-                 Altitude arrivAlt );
+                 Altitude& arrivAlt );
 
   Distance getDistance() const
   {
     return _distance;
   };
 
-  void setDistance(Distance& d)
+  void setDistance( const Distance& dist )
   {
-    _distance=d;
+    _distance = dist;
   };
 
   QString getName() const
