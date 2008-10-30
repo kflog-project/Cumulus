@@ -170,16 +170,15 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
           // calculate bearing
           double result = getBearing(lastPosition, pt);
           int bearing = int(rint(result * 180./M_PI));
+          Altitude altitude(0);
 
           ReachablePoint rp( wpList[i],
                              false,
                              distance,
                              bearing,
-                             Altitude( 0 ) );
+                             altitude );
 
           append(rp);
-
-          qDebug("Append WP=%s", last().getName().toLatin1().data() );
         }
     }
   else
@@ -243,6 +242,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
           // calculate bearing
           double result = getBearing(lastPosition, siteWgsPosition);
           short bearing = short(rint(result * 180./M_PI));
+          Altitude altitude(0);
 
           // add all potential reachable points to the list, altitude is calculated later
           ReachablePoint rp( siteName,
@@ -256,15 +256,13 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
                              siteElevation,
                              distance,
                              bearing,
-                             Altitude( 0 ),
+                             altitude,
                              siteRunway.direction,
                              siteRunway.length,
                              siteRunway.surface,
                              siteRunway.isOpen );
           append(rp);
 
-          qDebug("Append AF/GS=%s", last().getName().toLatin1().data() );
-          
           // qDebug("%s(%d) %f %d° %d", rp.getName().toLatin1().data(), rp.getElevation(),  rp.getDistance().getKilometers(), rp.getBearing(), (int)rp->getArrivalAlt().getMeters() );
 
         }
@@ -359,7 +357,6 @@ void ReachableList::calculateDataInList()
   // t.start();
   int counter = 0;
   setInitValues();
-  Distance distance;
   arrivalAltMap.clear();
   distanceMap.clear();
 
@@ -369,6 +366,7 @@ void ReachableList::calculateDataInList()
       ReachablePoint& p = (*this)[i];
       WGSPoint pt = p.getWaypoint()->origP;
       Altitude arrivalAlt;
+      Distance distance;
       Speed bestSpeed;
 
       distance.setKilometers( dist(&lastPosition, &pt) );
@@ -422,7 +420,7 @@ void ReachableList::calculateDataInList()
       modeAltitude = false; // glider is unknown, sort by distances
     }
 
-  std::sort(begin(), end(), CompareReachablePoints());
+  qSort( begin(), end() );
   // qDebug("Number of reachable sites (arriv >0): %d", counter );
   // qDebug("Time for glide path calculation: %d msec", t.restart() );
   emit newReachList();
@@ -468,17 +466,17 @@ void ReachableList::calculateNewList()
   // t.start();
 
   setInitValues();
-  clearList();  // clear all lists
+  clearLists();  // clear all lists
 
   // Now add items of different type to the list
   addItemsToList(MapContents::AirfieldList);
   addItemsToList(MapContents::GliderSiteList);
   addItemsToList(MapContents::WaypointList);
-  // qDebug("Number of potential reachable sites: %d", count() );
   modeAltitude = false;
+  //qDebug("Number of potential reachable sites: %d", count() );
 
   // sort list according to distances
-  std::sort(begin(), end(), CompareReachablePoints() );
+  qSort(begin(), end() );
   removeDoubles();
   // qDebug("Number of potential reachable sites (after pruning): %d", count() );
 
@@ -494,7 +492,6 @@ void ReachableList::calculateNewList()
   calculateDataInList();
   // qDebug("Time for full calculation: %d msec", t.restart() );
 }
-
 
 // prints list to qDebug interface
 void ReachableList::show()
@@ -551,10 +548,31 @@ void ReachableList::removeDoubles()
                   continue;
                 }
 
+              if ( p2.getWaypoint()->name == p1.getWaypoint()->name )
+                {
+                  // both name are identical. remove the one which has not set
+                  // the airfield origin flag.
+                  if( ! p1.isOrignAfl() )
+                     {
+                       removeList.append(i);
+                       continue;
+                     }
+
+                  if( ! p2.isOrignAfl() )
+                     {
+                       removeList.append(j);
+                       continue;
+                     }
+
+                  // both origin flags are set, remove one of the objects
+                  removeList.append(j);
+                  continue;
+                }
+
               if ( p2.getWaypoint()->name.length() == p1.getWaypoint()->name.length() )
                 {
-                  // the lengths of the names are the same, remove
-                  // the one with the lowest alphabetical value
+                  // the lengths of the names are the same
+                  // remove the one with the lowest alphabetical value
                   // (remember that A<a)
                   if (p2.getWaypoint()->name > p1.getWaypoint()->name)
                     {
@@ -589,7 +607,7 @@ void ReachableList::removeDoubles()
   // Start remove at the end of the list so that access index is always valid.
   for (int i = removeList.count()-1; i >= 0; i--)
     {
-      qDebug("Removing point %d (%s)", removeList.at(i), at(removeList.at(i)).getWaypoint()->name.toLatin1().data());
+      // qDebug("Removing point %d (%s)", removeList.at(i), at(removeList.at(i)).getWaypoint()->name.toLatin1().data());
       // remove doubles from global list
       removeAt( removeList.at(i) );
     }
