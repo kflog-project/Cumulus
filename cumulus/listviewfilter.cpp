@@ -21,6 +21,13 @@
 #include "listviewfilter.h"
 #include "generalconfig.h"
 
+// Helper function to qSort filter items according to WP name
+bool itemBefore(const QTreeWidgetItem* it1, const QTreeWidgetItem* it2)
+{
+	return it1->text(0).toLower() < it2->text(0).toLower();
+}
+
+
 // Initialize static members
 const uint ListViewFilter::buttonCount     = 5;
 const QString ListViewFilter::NextPage     = tr("Next Page");
@@ -77,22 +84,41 @@ ListViewFilter::~ListViewFilter()
 }
 
 
-void ListViewFilter::reset(bool forget)
+void ListViewFilter::addListItem( QTreeWidgetItem* it )
+{
+ 	if (it==NULL)
+    	return;
+
+	if (_rootFilter==0)
+	    _rootFilter=new ListViewFilterItem();
+	_rootFilter->items.append(it);
+}
+
+void ListViewFilter::removeListItem( QTreeWidgetItem* it )
+{
+ 	if (it==NULL)
+    	return;
+
+	if (_rootFilter==0)
+		return;
+	_rootFilter->items.removeAll( it );
+	
+}
+
+
+void ListViewFilter::reset()
 {
   if (_tw==NULL)
     return;
 
-  if(!forget)
-    restoreListViewItems();
+  qDeleteAll(_rootFilter->subfilters);
+  _rootFilter->subfilters.clear();
+  _rootFilter->_split=false;
 
-  // renew our filter tree
-  delete _rootFilter;
-  _activeFilter=NULL;
-  _rootFilter=new ListViewFilterItem();
+  showIndex=0;
+  recursionLevel=0;
 
-  //copy pointers to all list items into the root filter's itemlist
-  for ( int i = 0; i < _tw->topLevelItemCount(); i++)
-      _rootFilter->items.append( _tw->topLevelItem(i) );
+  qSort(_rootFilter->items.begin(), _rootFilter->items.end(), itemBefore );
 
   if (_rootFilter->items.count()<6)
     this->hide();
@@ -100,6 +126,13 @@ void ListViewFilter::reset(bool forget)
     this->show();
 
   activateFilter(_rootFilter);
+}
+
+
+void ListViewFilter::clear()
+{
+	delete _rootFilter;
+	_rootFilter=0;
 }
 
 
@@ -120,14 +153,6 @@ void ListViewFilter::cmdPush(int id)
 }
 
 
-void ListViewFilter::restoreListViewItems()
-{
-    if (_rootFilter) {
-        _rootFilter->addToList(_tw);
-    }
-}
-
-
 void ListViewFilter::activateFilter(ListViewFilterItem * filter, int shrink)
 {
     //make sure we have subdivided our list
@@ -138,7 +163,6 @@ void ListViewFilter::activateFilter(ListViewFilterItem * filter, int shrink)
     teststr="";
     int spacefactor=0;
 
-    // qDebug("shrink: %d",shrink);
     if(shrink > 4) {
       spacefactor=2;
     }
@@ -238,8 +262,6 @@ void ListViewFilter::activateFilter(ListViewFilterItem * filter, int shrink)
     // There is a bug somewhere; crash if taking out the last airfield item from _tw.
     // Workaround: always keep one item in ...
 
-    _tw->setUpdatesEnabled(false);
-
     //  A "dummy" item to prevent the list from running empty
     _tw->insertTopLevelItem( 0, next );
 
@@ -254,6 +276,7 @@ void ListViewFilter::activateFilter(ListViewFilterItem * filter, int shrink)
     // showPage will enable the updating again
 }
 
+
 void ListViewFilter::showPage(bool up)
 {
   int pageSize = GeneralConfig::instance()->getListDisplayPageSize();
@@ -265,10 +288,8 @@ void ListViewFilter::showPage(bool up)
     pageSize = maxIndex + 1;
 
   if (up) {
-    if ( showIndex+pageSize > maxIndex ) {
-      _tw->setUpdatesEnabled(true);
+    if ( showIndex+pageSize > maxIndex )
       return;
-    }
     showIndex += pageSize;
   } else {  // down
     showIndex -= pageSize;
@@ -282,8 +303,6 @@ void ListViewFilter::showPage(bool up)
     maxPageIndex = maxIndex-showIndex;
 
 //qDebug("airfield list pageview: showIndex %d, maxIndex %d, maxPageIndex %d", showIndex, maxIndex, maxPageIndex );
-
-  _tw->setUpdatesEnabled(false);
 
   // @JD: Annother strange bug: removing all counted items (except one) with a
   // "for" loop leaves the list with lots of items left. "while" loop works
@@ -322,7 +341,6 @@ void ListViewFilter::showPage(bool up)
     _tw->setCurrentItem( _tw->topLevelItem(1) );
 
   _tw->setFocus();
-  _tw->setUpdatesEnabled(true);
 
 //qDebug("airfield list pageview: after function showIndex %d, items in list %d", showIndex, _tw->topLevelItemCount() );
 }
@@ -348,25 +366,6 @@ ListViewFilterItem::~ListViewFilterItem()
   qDeleteAll(subfilters);
   subfilters.clear();
 }
-
-
-void ListViewFilterItem::addToList(QTreeWidget* tw, bool isRecursive)
-{
-return;
-  tw->setUpdatesEnabled(false);
-//  for (int i=0; i<items.count(); i++) {
-//    tw->addTopLevelItem( items.at(i) );
-//  }
-  /*
-  for (uint i=0; i<subfilters.count();i++)
-  {
-    subfilters.at(i)->addToList( tw, true );
-  }  */
-
-  if (!isRecursive)
-    tw->setUpdatesEnabled( true );
-}
-
 
 void ListViewFilterItem::divide(int partcount)
 {

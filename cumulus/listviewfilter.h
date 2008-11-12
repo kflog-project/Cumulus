@@ -27,21 +27,17 @@
 class ListViewFilterItem;
 
 typedef QList<ListViewFilterItem*> filterSet;
-typedef QList<QTreeWidgetItem*> itemList;
+//typedef QList<QTreeWidgetItem*> itemList;
 
-class ListViewFilterItem
+class ListViewFilterItem : QObject
 {
+	Q_OBJECT
+
 public:
 
     ListViewFilterItem(ListViewFilterItem * parent=0);
     ~ListViewFilterItem();
 
-    /**
-     * Add the list of ListViewItem objects belonging to this
-     * filter to the indicated ListView.
-     * @arg lv The QListView to add the items to.
-     */
-    void addToList(QTreeWidget* tw, bool isRecursive=false);
     /**
      * Tries to divide the list belonging to this filter into smaller
      * lists, and creates the appropriate ListViewFilterItem instances.
@@ -56,8 +52,8 @@ public:
     //set of filters that further subdivides the result of this filter
     filterSet subfilters;
     //list that holds the items that belong to this filter
-    itemList items;
-    //flag that indicates this filter has subfilters and the split has allready been done
+    QList<QTreeWidgetItem*> items;
+    //flag that indicates this filter has subfilters and the split has already been done
     bool _split;
     //reference to ListViewFilterItem one lever higher than this instance
     ListViewFilterItem * parent;
@@ -92,12 +88,15 @@ public:
     ListViewFilter(QTreeWidget *tw, QWidget *parent=0);
     ~ListViewFilter();
 
+	void addListItem(QTreeWidgetItem* it);
+	void removeListItem(QTreeWidgetItem* it);
+
     /**
      * Re-creates the index for the filter
      * @arg forget Don't try to re-insert any removed items, just forget them.
      *          This is needed when items are deleted from the list.
      */
-    void reset(bool forget=false);
+    void reset();
 
     /**
      * Re-selects the root of the filter tree
@@ -105,10 +104,13 @@ public:
     void off();
 
     /**
-     * Moves all the listview items back into the listview
+     * Clears the filter tree and deletes all items (for refilling)
      */
-    void restoreListViewItems();
+    void clear();
 
+    /**
+     * Shows items of active filter in list, optionally divided in pages
+     */
     void showPage(bool up);
 
 private:

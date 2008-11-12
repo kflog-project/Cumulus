@@ -109,11 +109,15 @@ void WpListWidgetParent::slot_listItemClicked(QTreeWidgetItem* li, int)
   // Special rows selected?
   QString test = li->text(1);
 
-  if (test == ListViewFilter::NextPage)
+  if (test == ListViewFilter::NextPage) {
+    list->setUpdatesEnabled(false);
     filter->showPage(true); // "true" is forward
-  else
-    if (test == ListViewFilter::PreviousPage)
+    list->setUpdatesEnabled(true);
+  } else
+    if (test == ListViewFilter::PreviousPage) {
+      list->setUpdatesEnabled(false);
       filter->showPage(false); // "false" is backward
-    else
+      list->setUpdatesEnabled(true);
+    } else
       emit wpSelectionChanged();
 }

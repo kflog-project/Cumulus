@@ -48,6 +48,7 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
   setObjectName("TaskEditor");
   setModal(true);
   setAttribute( Qt::WA_DeleteOnClose );
+  setContentsMargins(-3,-3,-3,-3);
 
 #ifdef MAEMO
   resize(800,480);
@@ -177,6 +178,7 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
     {
       listSelectCB->addItem(listSelectText[i], i);
       waypointList[i]->fillWpList();
+      waypointList[i]->setContentsMargins(-9,-9,-9,-9);
       listLayout->addWidget( waypointList[i], 2, 0, 1, 4 );
     }
 

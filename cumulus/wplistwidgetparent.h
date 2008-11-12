@@ -71,18 +71,13 @@ public:
     /**
      * aligns the columns to their contents
      */
-  virtual void resizeListColumns()
+    virtual void resizeListColumns()
     {
       list->resizeColumnToContents(0);
       list->resizeColumnToContents(1);
       list->resizeColumnToContents(2);
     };
   
-    /**
-     * @returns a pointer to the "list" widget
-     */
-  
-
 public slots: // Public slots
 
     /**

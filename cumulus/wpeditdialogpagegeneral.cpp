@@ -132,10 +132,13 @@ void WpEditDialogPageGeneral::slot_save(wayPoint * wp)
       // qDebug("WpEditDialogPageGeneral::slot_save %x %s",wp,(const char *)wp->name );
       wp->description = edtDescription->text().trimmed();
 
-      if( edtLat->isInputChanged() )
+// JD: bugfix: if existing WP is edited and changed, but lat/lon not touched,
+// values are reset to init (0). Always save edit field content!
+
+//      if( edtLat->isInputChanged() )
         wp->origP.setLat(edtLat->KFLogDegree());
 
-      if( edtLong->isInputChanged() )
+//      if( edtLong->isInputChanged() )
         wp->origP.setLon(edtLong->KFLogDegree());
 
       wp->elevation=static_cast<int> (rint(Altitude::convertToMeters(edtElev->text().toDouble())));

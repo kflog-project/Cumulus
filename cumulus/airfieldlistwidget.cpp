@@ -51,25 +51,32 @@ AirfieldListWidget::~AirfieldListWidget()
 }
 
 /** Clears and refills the airfield item list, if the list is not empty. */
+
 void AirfieldListWidget::refillWpList()
 {
+//  qDebug("AirfieldListWidget::refillWpList()");
   if( ! listFilled ) {
     // list is empty, ignore request
     return;
   }
 
-  // Remove all content from list
-  list->clear();
+  // Remove all content from list widget; deleting is done in filter
+  while ( list->topLevelItemCount() > 0)
+    list->takeTopLevelItem(0);
+
+  filter->clear();
+
+  listFilled = false;
 
   // reload list
-  listFilled = false;
   fillWpList();
 }
+
 
 /** Retrieves the airfields from the map contents, and fills the list. */
 void AirfieldListWidget::fillWpList()
 {
-  // qDebug("AirfieldListWidget::fillWpList()");
+//  qDebug("AirfieldListWidget::fillWpList()");
   if( listFilled ) {
     return;
   }
@@ -81,32 +88,26 @@ void AirfieldListWidget::fillWpList()
   for( int item = 0; item < 3; item++) {
     int nr = _globalMapContents->getListLength(itemList[item]);
 
-    if( nr > Nr ) {
-      Nr = nr;
-    }
 //    qDebug("fillWpList N: %d, items %d", item, nr );
     for(int i=0; i<nr; i++ ) {
       Airfield* site = static_cast<Airfield *> (_globalMapContents->getElement( itemList[item], i ));
-      new _AirfieldItem(list, site);
+      filter->addListItem( new _AirfieldItem(site) );
     }
   }
+  // sorting is done in filter->reset()
 
-  if (Nr > 0) {
-    list->setSortingEnabled(true);
-    list->sortByColumn(0,Qt::AscendingOrder);
-    list->setSortingEnabled(false);
-    // @AP: set only to true if something was read
-    listFilled = true;
-  }
-
+  filter->reset();
   resizeListColumns();
-  filter->reset(true);
+  list->setUpdatesEnabled(true);
+
+  listFilled = true;
 }
 
 
 /** Returns a pointer to the currently highlighted airfield. */
 wayPoint* AirfieldListWidget::getSelectedWaypoint()
 {
+//  qDebug("AirfieldListWidget::getSelectedWaypoint()");
   QTreeWidgetItem* li = list->currentItem();
   if ( li == 0)
     return 0;
@@ -143,8 +144,8 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
   return wp;
 }
 
-AirfieldListWidget::_AirfieldItem::_AirfieldItem(QTreeWidget* tw, Airfield* site, int type):
-  QTreeWidgetItem(tw, type), airport(site)
+AirfieldListWidget::_AirfieldItem::_AirfieldItem(Airfield* site):
+  QTreeWidgetItem(), airport(site)
 {
   QString name = site->getWPName();
   QRegExp blank("[ ]");
