@@ -49,7 +49,7 @@ private:
    * Don't allow copies and assignments.
    */
   AirRegion(const AirRegion& ){};
-  AirRegion& operator=(const AirRegion& ){};
+  AirRegion& operator=(const AirRegion& ){return *this;};
 
 public:
 

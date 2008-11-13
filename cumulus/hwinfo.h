@@ -136,7 +136,7 @@ class HwInfo
      * Because this is a singleton, don't allow copies and assignments.
      */
     HwInfo(const HwInfo& ){};
-    HwInfo& operator=(const HwInfo& ){};
+    HwInfo& operator=(const HwInfo& ){return *this;};
 
     static HwInfo *theInstance;
     enum hwType _hwType;
