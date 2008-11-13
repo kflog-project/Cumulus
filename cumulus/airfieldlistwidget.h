@@ -46,12 +46,12 @@ public:
     enum MapContents::MapContentsListID itemList[2];
 
     /**
-     * Clears and refills the airfield item list, if the list is not empty.
+     * Clears and refills the airfield item list
      */
     void refillWpList();
 
     /**
-     * Called to fill the display list
+     * Generates the complete list of airfield items; display is done by the filter
      */
     void fillWpList();
 
@@ -64,7 +64,7 @@ private:
 class _AirfieldItem : public QTreeWidgetItem
     {
     public:
-        _AirfieldItem(QTreeWidget*, Airfield*, int type = 1000);
+        _AirfieldItem(Airfield*);
         Airfield* airport;
     };
 };
