@@ -81,7 +81,6 @@ void AirfieldListWidget::fillWpList()
     return;
   }
 
-  int Nr = 0;
   list->setUpdatesEnabled(false);
   configRowHeight();
 
