@@ -102,14 +102,15 @@ void ListViewFilter::removeListItem( QTreeWidgetItem* it )
 	if (_rootFilter==0)
 		return;
 	_rootFilter->items.removeAll( it );
-	
-}
 
+}
 
 void ListViewFilter::reset()
 {
-  if (_tw==NULL)
-    return;
+  if ( _tw == 0 || _rootFilter == 0 )
+    {
+      return;
+    }
 
   qDeleteAll(_rootFilter->subfilters);
   _rootFilter->subfilters.clear();
