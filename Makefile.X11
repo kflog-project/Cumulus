@@ -10,7 +10,8 @@
 #
 ################################################################################
 
-VERSION = 2.0.0-r1
+# Version is determined from the header file target.h
+VERSION = `cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2`
 
 # adapt install path to your needs if necessary
 INSTALL_ROOT = /opt/cumulus
@@ -50,7 +51,7 @@ check_dir:
 
 .PHONY : install
 install: check_dir deinstall install_lang
-	@echo '===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====='
+	@echo ===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) =====
 	install -d $(INSTALL_ROOT)/bin
 	install -d $(INSTALL_ROOT)/etc
 	install -d $(INSTALL_ROOT)/help/de
