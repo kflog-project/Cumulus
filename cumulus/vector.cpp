@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2007 Axel Pauli
+**   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -426,13 +426,6 @@ Vector operator / (Vector& left, int right)
 
     return Vector(left.getAngleRad(), Speed(left.getSpeed().getMps()/right));
 }
-
-
-/** / operator for vector. */
-/*Vector operator / (Vector& left, Q_INT32 right) {
- 
-  return Vector(left.getAngleRad(), Speed(left.getSpeed().getMps()/right));
-}        */
 
 
 /** Poor man's solution for not getting the + operator to work properly. */
