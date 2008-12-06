@@ -17,8 +17,12 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.1.x (Development based on X11/Qt-4.4.1)
 -------------------------------------------------
+[-] 2008-12-06 AP: Bugfix: Division operator prototypes in nmeaSimulator directory
+                   corrected. Caused sometimes a compiler abort.
+[-] 2008-12-05 AP: Bugfix: Access to Null pointer fixed in AirfieldListWidget.
+                   Caused a core dump, when no waypoints or airfields were loaded.
 [o] 2008-11-13 JD: Task edit dialog: geometry of WP list slightly improved
-[-] 2008-11-13 JD: Bugfix: WP edit dialog sometimes forgot lat/lon values
+[-] 2008-11-13 JD: Bugfix: WP edit dialog sometimes forgot lat/lon values.
 [o] 2008-11-13 JD: WP list filter handling changed; sorting now done in QList instead
                    of list widget. Speed gain (large AF list), stable WP list editing
 [o] 2008-10-28 AP: All drawing check options removed in class MapContent. All other
