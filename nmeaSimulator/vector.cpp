@@ -6,9 +6,9 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers
+**   Copyright (c):  2002 by AndrÃ© Somers
 **
-**   polished for nmea application by Eckhard Völlm 
+**   polished for nmea application by Eckhard VÃ¶llm
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -91,7 +91,7 @@ Vector::~Vector(){
 /** Read property of int angle. */
 float Vector::getAngleDeg() {
     if (dirtyDR) recalcDR();
-    // qDebug("getAngleDeg:  %f", _angle*180/PI); 
+    // qDebug("getAngleDeg:  %f", _angle*180/PI);
     // qDebug("_x %f", _x );
     // qDebug("_y %f", _y );
 
@@ -139,7 +139,7 @@ void Vector::recalcDR() {
     // qDebug("_y %f", _y );
 
     _angle=normalize(polar(_x,_y));
-    // qDebug("_angle:  %f", _angle*180/PI); 
+    // qDebug("_angle:  %f", _angle*180/PI);
     _speed=(sqrt((_y * _y) + (_x * _x)));
     dirtyDR=false;
 }
@@ -238,7 +238,7 @@ double Vector::operator * (const Vector& x)  {
 
 
 /** - prefix operator for Vector */
-Vector Vector::operator - () 
+Vector Vector::operator - ()
 {
  if (!dirtyDR) {
     return Vector (_angle+PI, Speed(_speed));

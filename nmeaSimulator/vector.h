@@ -6,9 +6,9 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers
+**   Copyright (c):  2002 by AndrÃ© Somers, 2008 Axel Pauli
 **
-**   polished for nmea application by Eckhard Völlm
+**   polished for nmea application by Eckhard VÃ¶llm
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -33,10 +33,10 @@
   * It is a subclass from the @ref Speed class, meaning you can use it as a
   * normal Speed object. The values returned or set in that way are the
   * values in the given direction. You can read or set that direction using
-  * the @ref getAngle and @ref setAngle memberfunction (or their variants). You can
+  * the @ref getAngle and @ref setAngle member function (or their variants). You can
   * also access the components of the speed in the X and Y directions.
   *
-  * @author André Somers
+  * @author AndrÃ© Somers
   */
 
 class Vector : public Speed  {
@@ -176,7 +176,7 @@ private:
 /** operators for vector. */
 Vector operator * (double left, Vector& right);
 Vector operator * (Vector& left, double right);
-Vector operator / (Vector& right, double right);
-Vector operator / (Vector& right, int right);
+Vector operator / (Vector& left, double right);
+Vector operator / (Vector& left, int right);
 
 #endif
