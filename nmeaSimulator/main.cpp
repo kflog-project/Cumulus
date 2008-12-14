@@ -1,8 +1,8 @@
 /***************************************************************************
                           main.cpp  -  description
                              -------------------
-    begin                : 23.12.2003 
-    copyright            : (C) 2003 by Eckhard Völlm
+    begin                : 23.12.2003
+    copyright            : (C) 2003 by Eckhard Vï¿½llm
                                2008 Axel Pauli portage to Qt 4.3
     email                : eckhard@kflog.org
 
@@ -93,7 +93,7 @@ int init_io( void )
   fd = open(device.toLatin1(), O_WRONLY);
 
   if( fd < 0 ) perror("open pipe");
-  
+
   return ( fd );
 }
 
@@ -258,8 +258,10 @@ int main(int argc, char **argv)
 
   if( argc < 2 )
     {
-      cout << "NMEA GPS Simulator for Cumulus, 2003-2007 E.Voellm  (GPL) 1.3.1" << endl << endl
-           << "Usage:    nmea str|cir|pos|gpos [params]" << endl << endl
+      char *prog = basename(argv[0]);
+
+      cout << "NMEA GPS Simulator for Cumulus, 2003-2008 E.Voellm  (GPL) 1.3.2" << endl << endl
+           << "Usage: " << prog << " str|cir|pos|gpos [params]" << endl << endl
            << "Parameters: str:  Straight Flight "<< endl
            << "            cir:  Circling "<< endl
            << "            pos:  Fixed Position e.g. standstill in a wave (climb works)"<< endl
@@ -276,7 +278,7 @@ int main(int argc, char **argv)
            << "              time=[s]: duration of operation" << endl
            << "              device=[path to named pipe]: write into this pipe, default is /tmp/nmeasim" << endl
            << "            Note: all values can also be specified as float, like 110.5 " << endl << endl
-           << "Example: nmea str lat=48:31:48N lon=009:24:00E speed=125 winddir=270" << endl << endl
+           << "Example: " << prog << " str lat=48:31:48N lon=009:24:00E speed=125 winddir=270" << endl << endl
            << "NMEA output is written into named pipe '" << device.toLatin1().data() << "'." << endl
            << "Cumulus should use the same device name to get these data." << endl;
 
