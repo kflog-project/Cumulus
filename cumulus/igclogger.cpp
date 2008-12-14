@@ -172,10 +172,18 @@ void IgcLogger::CreateLogfile()
       dir.mkpath(path);
     }
 
-  qDebug("Created Logfile %s", fname.toLatin1().data());
-
   _logfile.setFileName(fname);
-  _logfile.open(QIODevice::ReadOnly | QIODevice::Text );
+
+  if( ! _logfile.open(QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+      qWarning( "IGC-Logger: Cannot open file %s",
+                fname.toLatin1().data() );
+    }
+  else
+    {
+      qDebug( "IGC-Logger: Created Logfile %s", fname.toLatin1().data() );
+    }
+
   _stream.setDevice(&_logfile);
   writeHeaders();
   _logMode=on;
