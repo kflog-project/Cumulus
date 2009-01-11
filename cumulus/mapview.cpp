@@ -25,6 +25,7 @@
 #include <QPalette>
 #include <QWhatsThis>
 #include <QBoxLayout>
+#include <QToolTip>
 
 #include "mapview.h"
 #include "gpsnmea.h"
@@ -123,6 +124,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   QPixmap arrow = _arrows.copy( 24*60+3, 3, 54, 54 );
   _rel_bearing = new MapInfoBox( this, conf->getFrameCol(), arrow);
   _rel_bearing->setFixedSize(60,60);
+  _rel_bearing->setToolTip( tr("Click here to save current position as waypoint") );
   GRLayout->addWidget(_rel_bearing);
 //  _rel_bearing->setPixmap( arrow );
 
