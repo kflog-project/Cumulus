@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by Eggert Ehmke, 2008 Axel Pauli
+ **   Copyright (c):  2002 by Eggert Ehmke, 2009 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -25,7 +25,7 @@
 #include <QGroupBox>
 #include <QSignalMapper>
 #include <QHBoxLayout>
- 
+
 #include "airspace.h"
 #include "basemapelement.h"
 #include "distance.h"
@@ -87,12 +87,12 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   hbox->addWidget( spinForceMargin );
   hbox->addWidget( new QLabel(tr("above me."), this ));
   hbox->addStretch( 10 );
-  
+
   topLayout->addLayout( hbox, row, 0, 1, 3 );
   row++;
 
   topLayout->setRowMinimumHeight( row++, 20 );
-  
+
   cmdWarning = new QPushButton(tr("Airspace Warnings"), this);
   topLayout->addWidget(cmdWarning, row, 0, 1, 1, Qt::AlignLeft);
   connect (cmdWarning, SIGNAL(clicked()), m_warningsDlg, SLOT(show()));
@@ -103,7 +103,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   row = 0;
   int col = 0;
-  
+
   drawAirspaceA = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirA) );
   drawAirspaceA->setFlags( Qt::ItemIsEnabled );
   drawOptions->setItem( row++, col, drawAirspaceA );
@@ -120,22 +120,22 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   drawAirspaceD->setFlags( Qt::ItemIsEnabled );
   drawOptions->setItem( row++, col, drawAirspaceD );
 
-  drawAirspaceElow = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirElow) );
-  drawAirspaceElow->setFlags( Qt::ItemIsEnabled );
-  drawOptions->setItem( row++, col, drawAirspaceElow );
-
-  drawAirspaceEhigh = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirEhigh) );
-  drawAirspaceEhigh->setFlags( Qt::ItemIsEnabled );
-  drawOptions->setItem( row++, col, drawAirspaceEhigh );
+  drawAirspaceE = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirE) );
+  drawAirspaceE->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawAirspaceE );
 
   drawAirspaceF = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::AirF) );
   drawAirspaceF->setFlags( Qt::ItemIsEnabled );
   drawOptions->setItem( row++, col, drawAirspaceF );
 
+  drawWaveWindow = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::WaveWindow) );
+  drawWaveWindow->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawWaveWindow );
+
   // next column is one
   row = 0;
   col = 1;
-  
+
   drawControlC = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::ControlC) );
   drawControlC->setFlags( Qt::ItemIsEnabled );
   drawOptions->setItem( row++, col, drawControlC );
@@ -160,9 +160,9 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   drawLowFlight->setFlags( Qt::ItemIsEnabled );
   drawOptions->setItem( row++, col, drawLowFlight );
 
-  drawSuSector = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::SuSector) );
-  drawSuSector->setFlags( Qt::ItemIsEnabled );
-  drawOptions->setItem( row++, col, drawSuSector );
+  drawGliderSector = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::GliderSector) );
+  drawGliderSector->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawGliderSector );
 
   drawOptions->adjustSize();
   //qDebug("ViewportSize().width()=%d", drawOptions->maximumViewportSize().width());
@@ -203,14 +203,14 @@ void SettingsPageAirspace::slot_load()
   drawControlC->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::ControlC) ? Qt::Checked : Qt::Unchecked );
   drawAirspaceD->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirD) ? Qt::Checked : Qt::Unchecked );
   drawControlD->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::ControlD) ? Qt::Checked : Qt::Unchecked );
-  drawAirspaceElow->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirElow) ? Qt::Checked : Qt::Unchecked );
-  drawAirspaceEhigh->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirEhigh) ? Qt::Checked : Qt::Unchecked );
+  drawAirspaceE->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirE) ? Qt::Checked : Qt::Unchecked );
   drawAirspaceF->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirF) ? Qt::Checked : Qt::Unchecked );
   drawRestricted->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::Restricted) ? Qt::Checked : Qt::Unchecked );
   drawDanger->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::Danger) ? Qt::Checked : Qt::Unchecked );
   drawTMZ->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::Tmz) ? Qt::Checked : Qt::Unchecked );
   drawLowFlight->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::LowFlight) ? Qt::Checked : Qt::Unchecked );
-  drawSuSector->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::SuSector) ? Qt::Checked : Qt::Unchecked );
+  drawWaveWindow->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::WaveWindow) ? Qt::Checked : Qt::Unchecked );
+  drawGliderSector->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::GliderSector) ? Qt::Checked : Qt::Unchecked );
 
   m_fillingDlg->slot_load();
   m_warningsDlg->slot_load();
@@ -243,14 +243,14 @@ void SettingsPageAirspace::slot_save()
   conf->setAirspaceWarningEnabled(BaseMapElement::ControlC,drawControlC->checkState() == Qt::Checked ? true : false);
   conf->setAirspaceWarningEnabled(BaseMapElement::AirD,drawAirspaceD->checkState() == Qt::Checked ? true : false);
   conf->setAirspaceWarningEnabled(BaseMapElement::ControlD,drawControlD->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirElow,drawAirspaceElow->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirEhigh,drawAirspaceEhigh->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::AirE,drawAirspaceE->checkState() == Qt::Checked ? true : false);
   conf->setAirspaceWarningEnabled(BaseMapElement::AirF,drawAirspaceF->checkState() == Qt::Checked ? true : false);
   conf->setAirspaceWarningEnabled(BaseMapElement::Restricted,drawRestricted->checkState() == Qt::Checked ? true : false);
   conf->setAirspaceWarningEnabled(BaseMapElement::Danger,drawDanger->checkState() == Qt::Checked ? true : false);
   conf->setAirspaceWarningEnabled(BaseMapElement::Tmz,drawTMZ->checkState() == Qt::Checked ? true : false);
   conf->setAirspaceWarningEnabled(BaseMapElement::LowFlight,drawLowFlight->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::SuSector,drawSuSector->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::WaveWindow,drawWaveWindow->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceWarningEnabled(BaseMapElement::GliderSector,drawGliderSector->checkState() == Qt::Checked ? true : false);
 
   m_fillingDlg->slot_save();
   m_warningsDlg->slot_save();
@@ -270,7 +270,7 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
 {
   GeneralConfig * conf = GeneralConfig::instance();
   bool changed=false;
-  
+
   changed |= spinForceMarginValue != spinForceMargin->value();
   changed |= conf->getForceAirspaceDrawingEnabled() != enableForceDrawing->isChecked();
   changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirA) != (drawAirspaceA->checkState() == Qt::Checked ? true : false);
@@ -279,21 +279,21 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   changed |= conf->getAirspaceWarningEnabled(BaseMapElement::ControlC) != (drawControlC->checkState() == Qt::Checked ? true : false);
   changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirD) != (drawAirspaceD->checkState() == Qt::Checked ? true : false);
   changed |= conf->getAirspaceWarningEnabled(BaseMapElement::ControlD) != (drawControlD->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirElow) != (drawAirspaceElow->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirEhigh) != (drawAirspaceEhigh->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirE) != (drawAirspaceE->checkState() == Qt::Checked ? true : false);
   changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirF) != (drawAirspaceF->checkState() == Qt::Checked ? true : false);
   changed |= conf->getAirspaceWarningEnabled(BaseMapElement::Restricted) != (drawRestricted->checkState() == Qt::Checked ? true : false);
   changed |= conf->getAirspaceWarningEnabled(BaseMapElement::Danger) != (drawDanger->checkState() == Qt::Checked ? true : false);
   changed |= conf->getAirspaceWarningEnabled(BaseMapElement::Tmz) != (drawTMZ->checkState() == Qt::Checked ? true : false);
   changed |= conf->getAirspaceWarningEnabled(BaseMapElement::LowFlight) != (drawLowFlight->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::SuSector) != (drawSuSector->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::WaveWindow) != (drawWaveWindow->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::GliderSector) != (drawGliderSector->checkState() == Qt::Checked ? true : false);
 
   if (changed)
   {
     warn=true;
     warnings.append(tr("the Airspace drawing settings"));
   }
-  
+
   /*forward request to filling page */
   m_fillingDlg->slot_query_close(warn, warnings);
   m_warningsDlg->slot_query_close(warn, warnings);
@@ -354,7 +354,7 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
 
   //header
   QLabel* lbl;
-  
+
   // row 0
   lbl = new QLabel(tr("Distance"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
@@ -371,7 +371,7 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   // row 1
   lbl = new QLabel(tr("Vertical"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
-  
+
   verticalNotNear = new QSpinBox(separations);
   verticalNotNear->setRange( 0, 100 );
   verticalNotNear->setButtonSymbols(QSpinBox::PlusMinus);
@@ -385,14 +385,14 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   verticalNear->setSuffix( spinboxSuffix );
   verticalNear->setWrapping(true);
   mVGroupLayout->addWidget(verticalNear, row, 2);
-  
+
   verticalVeryNear = new QSpinBox(separations);
   verticalVeryNear->setRange( 0, 100 );
   verticalVeryNear->setButtonSymbols(QSpinBox::PlusMinus);
   verticalVeryNear->setSuffix( spinboxSuffix );
   verticalVeryNear->setWrapping(true);
   mVGroupLayout->addWidget(verticalVeryNear, row, 3);
-  
+
   verticalInside = new QSpinBox(separations);
   verticalInside->setRange( 0, 100 );
   verticalInside->setButtonSymbols(QSpinBox::PlusMinus);
@@ -404,7 +404,7 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   // row 2
   lbl = new QLabel(tr("Lateral"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
-  
+
   lateralNotNear = new QSpinBox(separations);
   lateralNotNear->setRange( 0, 100 );
   lateralNotNear->setButtonSymbols(QSpinBox::PlusMinus);
@@ -452,9 +452,9 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
 
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  
+
   QSignalMapper* signalMapper = new QSignalMapper(this);
-  
+
   connect(s1, SIGNAL(clicked()), signalMapper, SLOT(map()));
   signalMapper->setMapping(s1, 1);
   connect(s2, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -463,7 +463,7 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   signalMapper->setMapping(s3, 10);
   connect(s4, SIGNAL(clicked()), signalMapper, SLOT(map()));
   signalMapper->setMapping(s4, 20);
-  
+
   connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(slot_change(int)));
 }
 
@@ -475,7 +475,7 @@ SettingsPageAirspaceFilling::~SettingsPageAirspaceFilling()
  * Called to change the step width of the spin boxes.
  */
 void SettingsPageAirspaceFilling::slot_change(int newStep)
-{  
+{
   verticalNotNear->setSingleStep(newStep);
   verticalNear->setSingleStep(newStep);
   verticalVeryNear->setSingleStep(newStep);
@@ -605,7 +605,7 @@ void SettingsPageAirspaceFilling::slot_query_close(bool& warn, QStringList& warn
 void SettingsPageAirspaceFilling::reject()
 {
   slot_load();
-  QDialog::reject(); 
+  QDialog::reject();
 }
 
 
@@ -642,7 +642,7 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
 
   connect( enableWarning, SIGNAL(toggled(bool)), SLOT(slot_enabledToggled(bool)));
   topLayout->addWidget( enableWarning );
-  
+
   // make the step width of the spin boxes configurable in different steps
   QGroupBox* stepGroup = new QGroupBox(tr("Spin step width"), this);
   s1 = new QRadioButton(tr("1"), stepGroup);
@@ -659,7 +659,7 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   radioLayout->addWidget(s4);
 
   topLayout->addWidget(stepGroup);
-  
+
   separations = new QWidget(this);
   topLayout->addWidget(separations);
 
@@ -685,7 +685,7 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   //row 1
   lbl = new QLabel(tr("Near"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
-  
+
   horiWarnDist = new QSpinBox(separations);
   horiWarnDist->setRange(0, 99999);
   horiWarnDist->setButtonSymbols(QSpinBox::PlusMinus);
@@ -708,7 +708,7 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   belowWarnDist->setWrapping(true);
   mVGroupLayout->addWidget(belowWarnDist, row, 3);
   row++;
-  
+
   // row 2
   lbl = new QLabel(tr("Very Near"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
@@ -746,12 +746,12 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   topLayout->addWidget( buttonBox );
 
   connect(defaults, SIGNAL(clicked()), this, SLOT(slot_defaults()));
-  
+
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
   QSignalMapper* signalMapper = new QSignalMapper(this);
-  
+
   connect(s1, SIGNAL(clicked()), signalMapper, SLOT(map()));
   signalMapper->setMapping(s1, 1);
   connect(s2, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -760,7 +760,7 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   signalMapper->setMapping(s3, 100);
   connect(s4, SIGNAL(clicked()), signalMapper, SLOT(map()));
   signalMapper->setMapping(s4, 1000);
-  
+
   connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(slot_change(int)));
 }
 
@@ -796,10 +796,10 @@ void SettingsPageAirspaceWarnings::slot_load()
     { // user wants meters
       horiWarnDist->setValue((int) rint(awd.horClose.getMeters()));
       horiWarnDistVN->setValue((int) rint(awd.horVeryClose.getMeters()));
-      
+
       aboveWarnDist->setValue((int) rint(awd.verAboveClose.getMeters()));
       aboveWarnDistVN->setValue((int) rint(awd.verAboveVeryClose.getMeters()));
-      
+
       belowWarnDist->setValue((int) rint(awd.verBelowClose.getMeters()));
       belowWarnDistVN->setValue((int) rint(awd.verBelowVeryClose.getMeters()));
     }
@@ -807,7 +807,7 @@ void SettingsPageAirspaceWarnings::slot_load()
     { // user gets feet
       horiWarnDist->setValue((int) rint(awd.horClose.getFeet()));
       horiWarnDistVN->setValue((int) rint(awd.horVeryClose.getFeet()));
-      
+
       aboveWarnDist->setValue((int) rint(awd.verAboveClose.getFeet()));
       aboveWarnDistVN->setValue((int) rint(awd.verAboveVeryClose.getFeet()));
 
@@ -818,10 +818,10 @@ void SettingsPageAirspaceWarnings::slot_load()
   // save loaded values for chamge control
   horiWarnDistValue = horiWarnDist->value();
   horiWarnDistVNValue = horiWarnDistVN->value();
-  
+
   aboveWarnDistValue = aboveWarnDist->value();
   aboveWarnDistVNValue = aboveWarnDistVN->value();
-  
+
   belowWarnDistValue = belowWarnDist->value();
   belowWarnDistVNValue = belowWarnDistVN->value();
 }
@@ -915,7 +915,7 @@ void SettingsPageAirspaceWarnings::slot_query_close( bool& warn, QStringList& wa
 void SettingsPageAirspaceWarnings::reject()
 {
   slot_load();
-  QDialog::reject(); 
+  QDialog::reject();
 }
 
 void SettingsPageAirspaceWarnings::slot_enabledToggled( bool enabled )

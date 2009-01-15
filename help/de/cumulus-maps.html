@@ -87,13 +87,13 @@
     Weitere Optionen</a> k&ouml;nnen Sie die Projektionsart und das
     L&ouml;schen der Originalkarten nach dem Kompilieren einstellen.
 
-    <p><b>OpenAir SUA Luftraumdateien</b></p>
+    <p><b>OpenAir Luftraumdateien</b></p>
 
-    Cumulus kann nur Luftraumdateien im OpenAir SUA Format lesen.
+    Cumulus kann nur Luftraumdateien im OpenAir Format lesen.
     Installieren sie diese Dateien im Unterverzeichnis <i>airspaces</i> 
     und versehen sie
     diese mit der <b>klein</b> geschrieben Endung <i>.txt</i>.
-    Cumulus benutzt bei den SUA Dateien standardm&auml;&szlig;ig
+    Cumulus benutzt bei den Luftraumdateien standardm&auml;&szlig;ig
     die selbe interne Zuordnung der Luftraumelemente wie bei den KFLog
     Dateien. Da sich aber bestimmte OpenAir Elemente nicht eindeutig
     zuordnen lassen, bietet Cumulus einen zus&auml;tzlichen Mapping
@@ -113,8 +113,7 @@
       <li>AirB
       <li>AirC
       <li>AirD
-      <li>AirElow
-      <li>AirEhigh
+      <li>AirE
       <li>AirF
       <li>ControlC
       <li>ControlD
@@ -122,7 +121,8 @@
       <li>Restricted
       <li>LowFlight
       <li>Tmz
-      <li>SuSector
+      <li>GliderSector
+      <li>WaveWindow
       </ul>
 
     Die Syntax f&uuml;r eine Mapping Datei sieht folgenderma&szlig;en
@@ -133,22 +133,22 @@
     <i>Wert</i> die entsprechende Luftraumzuweisung f&uuml;r
     Cumulus. Die Standardzuordnung ist folgenderma&szlig;en:
 
-      <ul>
-      <li>A = AirA
-      <li>B = AirB
-      <li>C = AirC
-      <li>D = AirD
-      <li>E = AirElow
-      <li>F = AirF
-      <li>GP = Restricted
-      <li>R = Restricted
-      <li>TRA = Restricted
-      <li>Q = Danger
-      <li>CTR = ControlC
-      <li>TMZ = Tmz
-      <li>W = AirEhigh
-      <li>GSEC = SuSector
-      </ul>
+    <ul>
+	  <li>A = AirA
+	  <li>B = AirB
+	  <li>C = AirC
+	  <li>D = AirD
+	  <li>E = AirE
+	  <li>F = AirF
+	  <li>GP = Restricted
+	  <li>R = Restricted
+	  <li>TRA = Restricted
+	  <li>Q = Danger
+	  <li>CTR = ControlC
+	  <li>TMZ = Tmz
+	  <li>GSEC = GliderSector
+	  <li>W = WaveWindow
+    </ul>
 
     <p>Zum &auml;ndern m&uuml;ssen nur die Elemente neu definiert
     werden, die eine andere Zuordnung erhalten sollen. Diese

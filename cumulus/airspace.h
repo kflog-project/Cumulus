@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008 Axel Pauli
+**                   2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -69,7 +69,7 @@ class AirRegion;
  * @short Class to handle airspaces.
  *
  * This class is used for the several airspaces. The object can be
- * one of: AirC, AirCtemp, AirD, AirDtemp, ControlD, AirElow, AirEhigh,
+ * one of: AirC, AirCtemp, AirD, AirDtemp, ControlD, AirElow, WaveWindow,
  * AirF, Restricted, Danger, LowFlight.
  *
  * Due to the cross pointer reference to the air region this class do not

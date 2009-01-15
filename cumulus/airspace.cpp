@@ -8,6 +8,7 @@
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
  **   Modified:       2008 by Axel Pauli, Josua Dietze
+ **                   2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -176,10 +177,10 @@ QString Airspace::getTypeName (objectType type)
     return QObject::tr("AS-C");
   case BaseMapElement::AirD:
     return QObject::tr("AS-D");
-  case BaseMapElement::AirElow:
-    return QObject::tr("AS-E low");
-  case BaseMapElement::AirEhigh:
-    return QObject::tr("AS-E high");
+  case BaseMapElement::AirE:
+    return QObject::tr("AS-E");
+  case BaseMapElement::WaveWindow:
+    return QObject::tr("Wave Window");
   case BaseMapElement::AirF:
     return QObject::tr("AS-F");
   case BaseMapElement::Restricted:
@@ -196,8 +197,8 @@ QString Airspace::getTypeName (objectType type)
     return QObject::tr("Low Flight");
   case BaseMapElement::Tmz:
     return QObject::tr("TMZ");
-  case BaseMapElement::SuSector:
-    return QObject::tr("Sector");
+  case BaseMapElement::GliderSector:
+    return QObject::tr("Glider Sector");
   default:
     return "<B><EM>" + QObject::tr("unknown") + "</EM></B>";
   }

@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2004 by André Somers, 2009 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -97,14 +97,14 @@ void GeneralConfig::load()
   _airspaceWarning[BaseMapElement::ControlC]   = value("checkControlC", true).toBool();
   _airspaceWarning[BaseMapElement::AirD]       = value("checkAirspaceD", true).toBool();
   _airspaceWarning[BaseMapElement::ControlD]   = value("checkControlD", true).toBool();
-  _airspaceWarning[BaseMapElement::AirElow]    = value("checkAirspaceElow", false).toBool();
-  _airspaceWarning[BaseMapElement::AirEhigh]   = value("checkAirspaceEhigh", false).toBool();
+  _airspaceWarning[BaseMapElement::AirE]       = value("checkAirspaceE", false).toBool();
+  _airspaceWarning[BaseMapElement::WaveWindow] = value("checkWaveWindow", false).toBool();
   _airspaceWarning[BaseMapElement::AirF]       = value("checkAirspaceF", true).toBool();
   _airspaceWarning[BaseMapElement::Restricted] = value("checkRestricted", true).toBool();
   _airspaceWarning[BaseMapElement::Danger]     = value("checkDanger", true).toBool();
   _airspaceWarning[BaseMapElement::Tmz]        = value("checkTMZ", true).toBool();
   _airspaceWarning[BaseMapElement::LowFlight]  = value("checkLowFlight", true).toBool();
-  _airspaceWarning[BaseMapElement::SuSector]   = value("checkSuSector", true).toBool();
+  _airspaceWarning[BaseMapElement::GliderSector]   = value("checkGliderSector", true).toBool();
 
   _airspaceWarningGeneral = value("enableAirspaceWarning", true).toBool();
 
@@ -344,14 +344,14 @@ void GeneralConfig::save()
   setValue("checkControlC", _airspaceWarning[BaseMapElement::ControlC]);
   setValue("checkAirspaceD", _airspaceWarning[BaseMapElement::AirD]);
   setValue("checkControlD", _airspaceWarning[BaseMapElement::ControlD]);
-  setValue("checkAirspaceElow", _airspaceWarning[BaseMapElement::AirElow]);
-  setValue("checkAirspaceEhigh", _airspaceWarning[BaseMapElement::AirEhigh]);
+  setValue("checkAirspaceE", _airspaceWarning[BaseMapElement::AirE]);
+  setValue("checkWaveWindow", _airspaceWarning[BaseMapElement::WaveWindow]);
   setValue("checkAirspaceF", _airspaceWarning[BaseMapElement::AirF]);
   setValue("checkRestricted", _airspaceWarning[BaseMapElement::Restricted]);
   setValue("checkDanger", _airspaceWarning[BaseMapElement::Danger]);
   setValue("checkTMZ", _airspaceWarning[BaseMapElement::Tmz]);
   setValue("checkLowFlight", _airspaceWarning[BaseMapElement::LowFlight]);
-  setValue("checkSuSector", _airspaceWarning[BaseMapElement::SuSector]);
+  setValue("checkGliderSector", _airspaceWarning[BaseMapElement::GliderSector]);
 
   setValue("enableAirspaceWarning", _airspaceWarningGeneral);
 

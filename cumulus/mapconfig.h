@@ -4,11 +4,11 @@
 **
 **   This file is part of Cumulus.
 **   It is modified for Cumulus by André Somers in 2002 and
-**   by Axel pauli in 2008
+**   by Axel Pauli in 2009
 **
 ************************************************************************
 **
-**   Copyright (c):  2001 by Heiner Lamprecht, 2008 Axel Pauli
+**   Copyright (c):  2001 by Heiner Lamprecht, 2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -230,10 +230,10 @@ private:
     QList<QBrush> airCBrushList;
     QList<QPen> airDPenList;
     QList<QBrush> airDBrushList;
-    QList<QPen> airElPenList;
-    QList<QBrush> airElBrushList;
-    QList<QPen> airEhPenList;
-    QList<QBrush> airEhBrushList;
+    QList<QPen> airEPenList;
+    QList<QBrush> airEBrushList;
+    QList<QPen> waveWindowPenList;
+    QList<QBrush> waveWindowBrushList;
     QList<QPen> airFPenList;
     QList<QBrush> airFBrushList;
     QList<QPen> ctrCPenList;
@@ -248,8 +248,8 @@ private:
     QList<QBrush> restrBrushList;
     QList<QPen> tmzPenList;
     QList<QBrush> tmzBrushList;
-    QList<QPen> suSectorPenList;
-    QList<QBrush> suSectorBrushList;
+    QList<QPen> gliderSectorPenList;
+    QList<QBrush> gliderSectorBrushList;
     QList<QPen> highwayPenList;
     QList<QPen> roadPenList;
     QList<QPen> trailPenList;
@@ -282,8 +282,8 @@ private:
     bool airBBorder[4];
     bool airCBorder[4];
     bool airDBorder[4];
-    bool airElBorder[4];
-    bool airEhBorder[4];
+    bool airEBorder[4];
+    bool waveWindowBorder[4];
     bool airFBorder[4];
     bool ctrCBorder[4];
     bool ctrDBorder[4];
@@ -291,7 +291,7 @@ private:
     bool lowFBorder[4];
     bool restrBorder[4];
     bool tmzBorder[4];
-    bool suSectorBorder[4];
+    bool gliderSectorBorder[4];
     bool trailBorder[4];
     bool roadBorder[4];
     bool highwayBorder[4];

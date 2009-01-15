@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by Eggert Ehmke, 2008 Axel Pauli
+ **   Copyright (c):  2002 by Eggert Ehmke, 2009 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -346,12 +346,12 @@ SettingsPageGliderData::readPolarData()
 {
   // qDebug ("SettingsPageGliderData::readPolarData ");
 
-#warning location of glider.pol file is CUMULUS_ROOT/etc
+#warning "location of glider.pol file is CUMULUS_ROOT/etc"
 
   QStringList dirs;
 
   dirs << GeneralConfig::instance()->getInstallRoot() + "/etc/glider.pol"
-      << GeneralConfig::instance()->getUserDataDirectory() + "/glider.pol";
+       << GeneralConfig::instance()->getUserDataDirectory() + "/glider.pol";
 
   QFile file;
 

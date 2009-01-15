@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2001 by Heiner Lamprecht, 2008 Axel Pauli
+**   Copyright (c):  2001 by Heiner Lamprecht, 2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -95,7 +95,7 @@
 #define COLOR_LEVEL_8750 QColor(97, 44, 16)
 
 // Default-Values for map-element:
-//
+
 // [Trail]
 #define TRAIL_COLOR_1  QColor(255,100,100)
 #define TRAIL_COLOR_2  QColor(255,100,100)
@@ -484,57 +484,57 @@
 #define AIRD_BRUSH_STYLE_3 Qt::NoBrush
 #define AIRD_BRUSH_STYLE_4 Qt::NoBrush
 
-// [Airspace E low]
-#define AIREL_PEN_WIDTH_1 4
-#define AIREL_PEN_WIDTH_2 3
-#define AIREL_PEN_WIDTH_3 3
-#define AIREL_PEN_WIDTH_4 2
+// [Airspace E]
+#define AIRE_PEN_WIDTH_1 4
+#define AIRE_PEN_WIDTH_2 3
+#define AIRE_PEN_WIDTH_3 3
+#define AIRE_PEN_WIDTH_4 2
 
-#define AIREL_PEN_STYLE_1 Qt::SolidLine
-#define AIREL_PEN_STYLE_2 Qt::SolidLine
-#define AIREL_PEN_STYLE_3 Qt::SolidLine
-#define AIREL_PEN_STYLE_4 Qt::SolidLine
+#define AIRE_PEN_STYLE_1 Qt::SolidLine
+#define AIRE_PEN_STYLE_2 Qt::SolidLine
+#define AIRE_PEN_STYLE_3 Qt::SolidLine
+#define AIRE_PEN_STYLE_4 Qt::SolidLine
 
-#define AIREL_COLOR_1 QColor(129,158,220)
-#define AIREL_COLOR_2 QColor(138,169,235)
-#define AIREL_COLOR_3 QColor(138,169,235)
-#define AIREL_COLOR_4 QColor(138,169,235)
+#define AIRE_COLOR_1 QColor(129,158,220)
+#define AIRE_COLOR_2 QColor(138,169,235)
+#define AIRE_COLOR_3 QColor(138,169,235)
+#define AIRE_COLOR_4 QColor(138,169,235)
 
-#define AIREL_BRUSH_COLOR_1 QColor(0,120,0)
-#define AIREL_BRUSH_COLOR_2 QColor(0,120,0)
-#define AIREL_BRUSH_COLOR_3 QColor(0,120,0)
-#define AIREL_BRUSH_COLOR_4 QColor(0,120,0)
+#define AIRE_BRUSH_COLOR_1 QColor(0,120,0)
+#define AIRE_BRUSH_COLOR_2 QColor(0,120,0)
+#define AIRE_BRUSH_COLOR_3 QColor(0,120,0)
+#define AIRE_BRUSH_COLOR_4 QColor(0,120,0)
 
-#define AIREL_BRUSH_STYLE_1 Qt::NoBrush
-#define AIREL_BRUSH_STYLE_2 Qt::NoBrush
-#define AIREL_BRUSH_STYLE_3 Qt::NoBrush
-#define AIREL_BRUSH_STYLE_4 Qt::NoBrush
+#define AIRE_BRUSH_STYLE_1 Qt::NoBrush
+#define AIRE_BRUSH_STYLE_2 Qt::NoBrush
+#define AIRE_BRUSH_STYLE_3 Qt::NoBrush
+#define AIRE_BRUSH_STYLE_4 Qt::NoBrush
 
-// [Airspace E high]
-#define AIREH_PEN_WIDTH_1 4
-#define AIREH_PEN_WIDTH_2 3
-#define AIREH_PEN_WIDTH_3 3
-#define AIREH_PEN_WIDTH_4 2
+// [Wave Window]
+#define WAVE_WINDOW_PEN_WIDTH_1 4
+#define WAVE_WINDOW_PEN_WIDTH_2 3
+#define WAVE_WINDOW_PEN_WIDTH_3 3
+#define WAVE_WINDOW_PEN_WIDTH_4 2
 
-#define AIREH_PEN_STYLE_1 Qt::SolidLine
-#define AIREH_PEN_STYLE_2 Qt::SolidLine
-#define AIREH_PEN_STYLE_3 Qt::SolidLine
-#define AIREH_PEN_STYLE_4 Qt::SolidLine
+#define WAVE_WINDOW_PEN_STYLE_1 Qt::SolidLine
+#define WAVE_WINDOW_PEN_STYLE_2 Qt::SolidLine
+#define WAVE_WINDOW_PEN_STYLE_3 Qt::SolidLine
+#define WAVE_WINDOW_PEN_STYLE_4 Qt::SolidLine
 
-#define AIREH_COLOR_1 QColor(244,63,66)
-#define AIREH_COLOR_2 QColor(244,63,66)
-#define AIREH_COLOR_3 QColor(244,63,66)
-#define AIREH_COLOR_4 QColor(244,63,66)
+#define WAVE_WINDOW_COLOR_1 QColor(0,0,255)
+#define WAVE_WINDOW_COLOR_2 QColor(0,0,255)
+#define WAVE_WINDOW_COLOR_3 QColor(0,0,255)
+#define WAVE_WINDOW_COLOR_4 QColor(0,0,255)
 
-#define AIREH_BRUSH_COLOR_1 QColor(0,120,0)
-#define AIREH_BRUSH_COLOR_2 QColor(0,120,0)
-#define AIREH_BRUSH_COLOR_3 QColor(0,120,0)
-#define AIREH_BRUSH_COLOR_4 QColor(0,120,0)
+#define WAVE_WINDOW_BRUSH_COLOR_1 QColor(0,0,255)
+#define WAVE_WINDOW_BRUSH_COLOR_2 QColor(0,0,255)
+#define WAVE_WINDOW_BRUSH_COLOR_3 QColor(0,0,255)
+#define WAVE_WINDOW_BRUSH_COLOR_4 QColor(0,0,255)
 
-#define AIREH_BRUSH_STYLE_1 Qt::NoBrush
-#define AIREH_BRUSH_STYLE_2 Qt::NoBrush
-#define AIREH_BRUSH_STYLE_3 Qt::NoBrush
-#define AIREH_BRUSH_STYLE_4 Qt::NoBrush
+#define WAVE_WINDOW_BRUSH_STYLE_1 Qt::NoBrush
+#define WAVE_WINDOW_BRUSH_STYLE_2 Qt::NoBrush
+#define WAVE_WINDOW_BRUSH_STYLE_3 Qt::NoBrush
+#define WAVE_WINDOW_BRUSH_STYLE_4 Qt::NoBrush
 
 // [Airspace F]
 #define AIRF_PEN_WIDTH_1 4
@@ -718,28 +718,28 @@
 #define TMZ_BRUSH_STYLE_3 Qt::NoBrush
 #define TMZ_BRUSH_STYLE_4 Qt::NoBrush
 
-// [Special Use Sector]
-#define SU_SECTOR_PEN_WIDTH_1 4
-#define SU_SECTOR_PEN_WIDTH_2 3
-#define SU_SECTOR_PEN_WIDTH_3 3
-#define SU_SECTOR_PEN_WIDTH_4 2
+// [Glider Sector]
+#define GLIDER_SECTOR_PEN_WIDTH_1 4
+#define GLIDER_SECTOR_PEN_WIDTH_2 3
+#define GLIDER_SECTOR_PEN_WIDTH_3 3
+#define GLIDER_SECTOR_PEN_WIDTH_4 2
 
-#define SU_SECTOR_PEN_STYLE_1 Qt::SolidLine
-#define SU_SECTOR_PEN_STYLE_2 Qt::SolidLine
-#define SU_SECTOR_PEN_STYLE_3 Qt::SolidLine
-#define SU_SECTOR_PEN_STYLE_4 Qt::SolidLine
+#define GLIDER_SECTOR_PEN_STYLE_1 Qt::SolidLine
+#define GLIDER_SECTOR_PEN_STYLE_2 Qt::SolidLine
+#define GLIDER_SECTOR_PEN_STYLE_3 Qt::SolidLine
+#define GLIDER_SECTOR_PEN_STYLE_4 Qt::SolidLine
 
-#define SU_SECTOR_COLOR_1 QColor(0,0,128)
-#define SU_SECTOR_COLOR_2 QColor(0,0,128)
-#define SU_SECTOR_COLOR_3 QColor(0,0,128)
-#define SU_SECTOR_COLOR_4 QColor(0,0,128)
+#define GLIDER_SECTOR_COLOR_1 QColor(255,0,255)
+#define GLIDER_SECTOR_COLOR_2 QColor(255,0,255)
+#define GLIDER_SECTOR_COLOR_3 QColor(255,0,255)
+#define GLIDER_SECTOR_COLOR_4 QColor(255,0,255)
 
-#define SU_SECTOR_BRUSH_COLOR_1 QColor(0,0,128)
-#define SU_SECTOR_BRUSH_COLOR_2 QColor(0,0,128)
-#define SU_SECTOR_BRUSH_COLOR_3 QColor(0,0,128)
-#define SU_SECTOR_BRUSH_COLOR_4 QColor(0,0,128)
+#define GLIDER_SECTOR_BRUSH_COLOR_1 QColor(255,0,255)
+#define GLIDER_SECTOR_BRUSH_COLOR_2 QColor(255,0,255)
+#define GLIDER_SECTOR_BRUSH_COLOR_3 QColor(255,0,255)
+#define GLIDER_SECTOR_BRUSH_COLOR_4 QColor(255,0,255)
 
-#define SU_SECTOR_BRUSH_STYLE_1 Qt::NoBrush
-#define SU_SECTOR_BRUSH_STYLE_2 Qt::NoBrush
-#define SU_SECTOR_BRUSH_STYLE_3 Qt::NoBrush
-#define SU_SECTOR_BRUSH_STYLE_4 Qt::NoBrush
+#define GLIDER_SECTOR_BRUSH_STYLE_1 Qt::NoBrush
+#define GLIDER_SECTOR_BRUSH_STYLE_2 Qt::NoBrush
+#define GLIDER_SECTOR_BRUSH_STYLE_3 Qt::NoBrush
+#define GLIDER_SECTOR_BRUSH_STYLE_4 Qt::NoBrush

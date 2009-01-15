@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2005 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2005 by André Somers, 2009 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -15,7 +15,7 @@
  **
  ***********************************************************************/
 
-//standard libs includes
+// standard library includes
 #include <math.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -384,7 +384,7 @@ void OpenAirParser::parseLine(QString& line)
     return;
   }
 
-  //the rest of the records don't make sence if we're not parsing an object
+  //the rest of the records don't make sense if we're not parsing an object
   int lat, lon;
   double radius;
   bool ok;
@@ -492,7 +492,7 @@ void OpenAirParser::newAirspace()
   asLower = BaseMapElement::NotSet;
   asLowerType = BaseMapElement::NotSet;
   _isCurrentAirspace = true;
-  _direction = 1; //must be reset according to specs
+  _direction = 1; //must be reset according to specifications
 }
 
 
@@ -545,15 +545,15 @@ void OpenAirParser::finishAirspace()
 void OpenAirParser::initializeBaseMapping()
 {
   // create a mapping from a string representation of the supported
-  // aispace types in Cumulus to their integer codes
+  // airspace types in Cumulus to their integer codes
   m_baseTypeMap.clear();
 
   m_baseTypeMap.insert("AirA", BaseMapElement::AirA);
   m_baseTypeMap.insert("AirB", BaseMapElement::AirB);
   m_baseTypeMap.insert("AirC", BaseMapElement::AirC);
   m_baseTypeMap.insert("AirD", BaseMapElement::AirD);
-  m_baseTypeMap.insert("AirElow", BaseMapElement::AirElow);
-  m_baseTypeMap.insert("AirEhigh", BaseMapElement::AirEhigh);
+  m_baseTypeMap.insert("AirE", BaseMapElement::AirE);
+  m_baseTypeMap.insert("WaveWindow", BaseMapElement::WaveWindow);
   m_baseTypeMap.insert("AirF", BaseMapElement::AirF);
   m_baseTypeMap.insert("ControlC", BaseMapElement::ControlC);
   m_baseTypeMap.insert("ControlD", BaseMapElement::ControlD);
@@ -562,7 +562,7 @@ void OpenAirParser::initializeBaseMapping()
   m_baseTypeMap.insert("Prohibited", BaseMapElement::Prohibited);
   m_baseTypeMap.insert("LowFlight", BaseMapElement::LowFlight);
   m_baseTypeMap.insert("Tmz", BaseMapElement::Tmz);
-  m_baseTypeMap.insert("SuSector", BaseMapElement::SuSector);
+  m_baseTypeMap.insert("GliderSector", BaseMapElement::GliderSector);
 }
 
 void OpenAirParser::initializeStringMapping(const QString& mapFilePath)
@@ -574,7 +574,7 @@ void OpenAirParser::initializeStringMapping(const QString& mapFilePath)
   m_stringTypeMap.insert("B", "AirB");
   m_stringTypeMap.insert("C", "AirC");
   m_stringTypeMap.insert("D", "AirD");
-  m_stringTypeMap.insert("E", "AirElow");
+  m_stringTypeMap.insert("E", "AirE");
   m_stringTypeMap.insert("F", "AirF");
   m_stringTypeMap.insert("GP", "Restricted");
   m_stringTypeMap.insert("R", "Restricted");
@@ -583,8 +583,8 @@ void OpenAirParser::initializeStringMapping(const QString& mapFilePath)
   m_stringTypeMap.insert("Q", "Danger");
   m_stringTypeMap.insert("CTR", "ControlD");
   m_stringTypeMap.insert("TMZ", "Tmz");
-  m_stringTypeMap.insert("W", "AirEhigh");
-  m_stringTypeMap.insert("GSEC", "SuSector");
+  m_stringTypeMap.insert("W", "WaveWindow");
+  m_stringTypeMap.insert("GSEC", "GliderSector");
 
   //then, check to see if we need to update this mapping
   //construct file name for mapping file
@@ -721,7 +721,7 @@ void OpenAirParser::parseAltitude(QString& line, BaseMapElement::elevationType& 
     else if (part=="STD") {
       newType=BaseMapElement::STD;
     }
-        
+
     if( type == BaseMapElement::NotSet && newType != BaseMapElement::NotSet ) {
       type = newType;
       continue;

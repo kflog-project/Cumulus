@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Eggert Ehmke, 2008 Axel Pauli
+**   Copyright (c):  2002 by Eggert Ehmke, 2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -48,12 +48,12 @@ class SettingsPageAirspace : public QWidget
 
   public slots: // Public slots
     /**
-     * Called to initiate saving to the configurationfile.
+     * Called to initiate saving to the configuration file.
      */
     void slot_save();
 
     /**
-     * Called to initiate loading of the configurationfile
+     * Called to initiate loading of the configuration file
      */
     void slot_load();
     /**
@@ -67,7 +67,7 @@ class SettingsPageAirspace : public QWidget
      * @param enabled true if warning is enabled
      */
     void slot_enabledToggled(bool enabled);
-    
+
     /**
      * Called to toggle the check box of the clicked table cell.
      */
@@ -89,14 +89,14 @@ class SettingsPageAirspace : public QWidget
     QTableWidgetItem* drawControlC;
     QTableWidgetItem* drawAirspaceD;
     QTableWidgetItem* drawControlD;
-    QTableWidgetItem* drawAirspaceElow;
-    QTableWidgetItem* drawAirspaceEhigh;
+    QTableWidgetItem* drawAirspaceE;
     QTableWidgetItem* drawAirspaceF;
     QTableWidgetItem* drawRestricted;
     QTableWidgetItem* drawDanger;
     QTableWidgetItem* drawLowFlight;
     QTableWidgetItem* drawTMZ;
-    QTableWidgetItem* drawSuSector;
+    QTableWidgetItem* drawWaveWindow;
+    QTableWidgetItem* drawGliderSector;
 
     QCheckBox*      enableForceDrawing;
     QSpinBox*       spinForceMargin;
@@ -166,7 +166,7 @@ class SettingsPageAirspaceFilling: public QDialog
     void reject();
 
     QCheckBox* enableFilling;
-    
+
     QRadioButton* s1;
     QRadioButton* s2;
     QRadioButton* s3;
@@ -221,7 +221,7 @@ class SettingsPageAirspaceWarnings : public QDialog
      * @param enabled true if warning is enabled
      */
     void slot_enabledToggled(bool enabled);
-    
+
     /**
      * Called to change the step width of the spin boxes
      */
@@ -241,12 +241,12 @@ class SettingsPageAirspaceWarnings : public QDialog
     Altitude::altitude altUnit;
 
     QCheckBox* enableWarning;
-    
+
     QRadioButton* s1;
     QRadioButton* s2;
     QRadioButton* s3;
     QRadioButton* s4;
-        
+
     QWidget*   separations;
 
     QSpinBox*  horiWarnDist;
@@ -256,7 +256,7 @@ class SettingsPageAirspaceWarnings : public QDialog
     QSpinBox*  belowWarnDist;
     QSpinBox*  belowWarnDistVN;
 
-    // here are the fetched config items stored to have control about
+    // here are the fetched configuration items stored to have control about
     // changes done by the user
     int horiWarnDistValue;
     int horiWarnDistVNValue;
