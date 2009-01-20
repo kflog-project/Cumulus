@@ -482,6 +482,8 @@ const QPen& MapConfig::__getPen(unsigned int typeID, int sIndex)
     return tmzPenList.at(sIndex);
   case BaseMapElement::Forest:
     return forestPenList.at(sIndex);
+  case BaseMapElement::GliderSector:
+    return gliderSectorPenList.at(sIndex);
   case BaseMapElement::Glacier:
     return glacierPenList.at(sIndex);
   case BaseMapElement::PackIce:
@@ -544,6 +546,8 @@ bool MapConfig::isBorder(unsigned int typeID)
     return tmzBorder[scaleIndex];
   case BaseMapElement::Forest:
     return forestBorder[scaleIndex];
+  case BaseMapElement::GliderSector:
+    return gliderSectorBorder[scaleIndex];
   case BaseMapElement::Glacier:
     return glacierBorder[scaleIndex];
   case BaseMapElement::PackIce:

@@ -112,11 +112,11 @@
 #define TRAIL_PEN_STYLE_3 Qt::SolidLine
 #define TRAIL_PEN_STYLE_4 Qt::SolidLine
 
-// [Road]
-#define ROAD_COLOR_1  QColor(255,100,100)
-#define ROAD_COLOR_2  QColor(255,100,100)
-#define ROAD_COLOR_3  QColor(255,100,100)
-#define ROAD_COLOR_4  QColor(255,100,100)
+// [Road] color red
+#define ROAD_COLOR_1  QColor(255,000,000)
+#define ROAD_COLOR_2  QColor(255,000,000)
+#define ROAD_COLOR_3  QColor(255,000,000)
+#define ROAD_COLOR_4  QColor(255,000,000)
 
 #define ROAD_PEN_WIDTH_1 3
 #define ROAD_PEN_WIDTH_2 3
@@ -128,11 +128,11 @@
 #define ROAD_PEN_STYLE_3 Qt::SolidLine
 #define ROAD_PEN_STYLE_4 Qt::SolidLine
 
-// [Highway]
-#define HIGH_COLOR_1  QColor(255,100,100)
-#define HIGH_COLOR_2  QColor(255,100,100)
-#define HIGH_COLOR_3  QColor(255,100,100)
-#define HIGH_COLOR_4  QColor(255,100,100)
+// [Highway] color red
+#define HIGH_COLOR_1  QColor(255,000,000)
+#define HIGH_COLOR_2  QColor(255,000,000)
+#define HIGH_COLOR_3  QColor(255,000,000)
+#define HIGH_COLOR_4  QColor(255,000,000)
 
 #define HIGH_PEN_WIDTH_1 6
 #define HIGH_PEN_WIDTH_2 5
@@ -144,11 +144,11 @@
 #define HIGH_PEN_STYLE_3 Qt::SolidLine
 #define HIGH_PEN_STYLE_4 Qt::SolidLine
 
-// [Railway]
-#define RAIL_COLOR_1  QColor(80,80,80)
-#define RAIL_COLOR_2  QColor(80,80,80)
-#define RAIL_COLOR_3  QColor(80,80,80)
-#define RAIL_COLOR_4  QColor(80,80,80)
+// [Railway] color black
+#define RAIL_COLOR_1  QColor(000,000,000)
+#define RAIL_COLOR_2  QColor(000,000,000)
+#define RAIL_COLOR_3  QColor(000,000,000)
+#define RAIL_COLOR_4  QColor(000,000,000)
 
 #define RAIL_PEN_WIDTH_1 3
 #define RAIL_PEN_WIDTH_2 3
@@ -161,10 +161,10 @@
 #define RAIL_PEN_STYLE_4 Qt::DashLine
 
 // [Railway_d]
-#define RAIL_D_COLOR_1  QColor(80,80,80)
-#define RAIL_D_COLOR_2  QColor(80,80,80)
-#define RAIL_D_COLOR_3  QColor(80,80,80)
-#define RAIL_D_COLOR_4  QColor(80,80,80)
+#define RAIL_D_COLOR_1  QColor(000,000,000)
+#define RAIL_D_COLOR_2  QColor(000,000,000)
+#define RAIL_D_COLOR_3  QColor(000,000,000)
+#define RAIL_D_COLOR_4  QColor(000,000,000)
 
 #define RAIL_D_PEN_WIDTH_1 3
 #define RAIL_D_PEN_WIDTH_2 3
@@ -177,10 +177,10 @@
 #define RAIL_D_PEN_STYLE_4 Qt::DashLine
 
 // [Aerial Cable]
-#define AERIAL_CABLE_COLOR_1  QColor(80,80,80)
-#define AERIAL_CABLE_COLOR_2  QColor(80,80,80)
-#define AERIAL_CABLE_COLOR_3  QColor(80,80,80)
-#define AERIAL_CABLE_COLOR_4  QColor(80,80,80)
+#define AERIAL_CABLE_COLOR_1  QColor(000,000,000)
+#define AERIAL_CABLE_COLOR_2  QColor(000,000,000)
+#define AERIAL_CABLE_COLOR_3  QColor(000,000,000)
+#define AERIAL_CABLE_COLOR_4  QColor(000,000,000)
 
 #define AERIAL_CABLE_PEN_WIDTH_1 3
 #define AERIAL_CABLE_PEN_WIDTH_2 3
@@ -209,10 +209,10 @@
 #define RIVER_PEN_STYLE_4 Qt::SolidLine
 
 // [Lake]
-#define LAKE_COLOR_1 QColor(70,70,195)
-#define LAKE_COLOR_2 QColor(70,70,195)
-#define LAKE_COLOR_3 QColor(70,70,195)
-#define LAKE_COLOR_4 QColor(70,70,195)
+#define LAKE_COLOR_1 QColor(70,195,195)
+#define LAKE_COLOR_2 QColor(70,195,195)
+#define LAKE_COLOR_3 QColor(70,195,195)
+#define LAKE_COLOR_4 QColor(70,195,195)
 
 #define LAKE_PEN_WIDTH_1 0
 #define LAKE_PEN_WIDTH_2 0
@@ -229,16 +229,16 @@
 #define LAKE_BRUSH_STYLE_3 Qt::SolidPattern
 #define LAKE_BRUSH_STYLE_4 Qt::SolidPattern
 
-#define LAKE_BRUSH_COLOR_1 QColor(70,70,195)
-#define LAKE_BRUSH_COLOR_2 QColor(70,70,195)
-#define LAKE_BRUSH_COLOR_3 QColor(70,70,195)
-#define LAKE_BRUSH_COLOR_4 QColor(70,70,195)
+#define LAKE_BRUSH_COLOR_1 QColor(70,195,195)
+#define LAKE_BRUSH_COLOR_2 QColor(70,195,195)
+#define LAKE_BRUSH_COLOR_3 QColor(70,195,195)
+#define LAKE_BRUSH_COLOR_4 QColor(70,195,195)
 
 // [Canal]
-#define CANAL_COLOR_1 QColor(70,195,70)
-#define CANAL_COLOR_2 QColor(70,195,70)
-#define CANAL_COLOR_3 QColor(70,195,70)
-#define CANAL_COLOR_4 QColor(70,195,70)
+#define CANAL_COLOR_1 QColor(70,70,195)
+#define CANAL_COLOR_2 QColor(70,70,195)
+#define CANAL_COLOR_3 QColor(70,70,195)
+#define CANAL_COLOR_4 QColor(70,70,195)
 
 #define CANAL_PEN_WIDTH_1 2
 #define CANAL_PEN_WIDTH_2 2
@@ -266,7 +266,7 @@
 #define CITY_PEN_STYLE_3 Qt::SolidLine
 #define CITY_PEN_STYLE_4 Qt::SolidLine
 
-#define CITY_BRUSH_COLOR_1 QColor(255,250,100)
+#define CITY_BRUSH_COLOR_1 QColor(255,250,100) // light yellow
 #define CITY_BRUSH_COLOR_2 QColor(255,250,100)
 #define CITY_BRUSH_COLOR_3 QColor(255,250,100)
 #define CITY_BRUSH_COLOR_4 QColor(255,250,100)
@@ -277,10 +277,10 @@
 #define CITY_BRUSH_STYLE_4 Qt::SolidPattern
 
 // [Forest]
-#define FRST_COLOR_1 QColor(30,155,30)
-#define FRST_COLOR_2 QColor(30,155,30)
-#define FRST_COLOR_3 QColor(30,155,30)
-#define FRST_COLOR_4 QColor(30,155,30)
+#define FRST_COLOR_1 QColor(155,255,127) // light green
+#define FRST_COLOR_2 QColor(155,255,127)
+#define FRST_COLOR_3 QColor(155,255,127)
+#define FRST_COLOR_4 QColor(155,255,127)
 
 #define FRST_PEN_WIDTH_1 3
 #define FRST_PEN_WIDTH_2 2
@@ -292,15 +292,15 @@
 #define FRST_PEN_STYLE_3 Qt::SolidLine
 #define FRST_PEN_STYLE_4 Qt::SolidLine
 
-#define FRST_BRUSH_COLOR_1 QColor(30,155,30)
-#define FRST_BRUSH_COLOR_2 QColor(30,155,30)
-#define FRST_BRUSH_COLOR_3 QColor(30,155,30)
-#define FRST_BRUSH_COLOR_4 QColor(30,155,30)
+#define FRST_BRUSH_COLOR_1 QColor(155,255,127)
+#define FRST_BRUSH_COLOR_2 QColor(155,255,127)
+#define FRST_BRUSH_COLOR_3 QColor(155,255,127)
+#define FRST_BRUSH_COLOR_4 QColor(155,255,127)
 
-#define FRST_BRUSH_STYLE_1 Qt::NoBrush
-#define FRST_BRUSH_STYLE_2 Qt::NoBrush
-#define FRST_BRUSH_STYLE_3 Qt::NoBrush
-#define FRST_BRUSH_STYLE_4 Qt::NoBrush
+#define FRST_BRUSH_STYLE_1 Qt::SolidPattern
+#define FRST_BRUSH_STYLE_2 Qt::SolidPattern
+#define FRST_BRUSH_STYLE_3 Qt::SolidPattern
+#define FRST_BRUSH_STYLE_4 Qt::SolidPattern
 
 // [Glacier]
 #define GLACIER_COLOR_1 QColor(255,255,255)
@@ -391,20 +391,20 @@
 #define AIRA_PEN_STYLE_3 Qt::SolidLine
 #define AIRA_PEN_STYLE_4 Qt::SolidLine
 
-#define AIRA_COLOR_1 QColor(0,123,0)
-#define AIRA_COLOR_2 QColor(0,120,0)
-#define AIRA_COLOR_3 QColor(0,120,0)
-#define AIRA_COLOR_4 QColor(0,120,0)
+#define AIRA_COLOR_1 QColor(0,180,0)
+#define AIRA_COLOR_2 QColor(0,180,0)
+#define AIRA_COLOR_3 QColor(0,180,0)
+#define AIRA_COLOR_4 QColor(0,180,0)
 
-#define AIRA_BRUSH_COLOR_1 QColor(0,120,0)
-#define AIRA_BRUSH_COLOR_2 QColor(0,120,0)
-#define AIRA_BRUSH_COLOR_3 QColor(0,120,0)
-#define AIRA_BRUSH_COLOR_4 QColor(0,120,0)
+#define AIRA_BRUSH_COLOR_1 QColor(0,180,0)
+#define AIRA_BRUSH_COLOR_2 QColor(0,180,0)
+#define AIRA_BRUSH_COLOR_3 QColor(0,180,0)
+#define AIRA_BRUSH_COLOR_4 QColor(0,180,0)
 
-#define AIRA_BRUSH_STYLE_1 Qt::Dense5Pattern
-#define AIRA_BRUSH_STYLE_2 Qt::Dense5Pattern
-#define AIRA_BRUSH_STYLE_3 Qt::Dense5Pattern
-#define AIRA_BRUSH_STYLE_4 Qt::Dense5Pattern
+#define AIRA_BRUSH_STYLE_1 Qt::NoBrush
+#define AIRA_BRUSH_STYLE_2 Qt::NoBrush
+#define AIRA_BRUSH_STYLE_3 Qt::NoBrush
+#define AIRA_BRUSH_STYLE_4 Qt::NoBrush
 
 // [Airspace B]
 #define AIRB_PEN_WIDTH_1 4
@@ -417,20 +417,20 @@
 #define AIRB_PEN_STYLE_3 Qt::SolidLine
 #define AIRB_PEN_STYLE_4 Qt::SolidLine
 
-#define AIRB_COLOR_1 QColor(0,123,0)
-#define AIRB_COLOR_2 QColor(0,120,0)
-#define AIRB_COLOR_3 QColor(0,120,0)
-#define AIRB_COLOR_4 QColor(0,120,0)
+#define AIRB_COLOR_1 QColor(0,180,0)
+#define AIRB_COLOR_2 QColor(0,180,0)
+#define AIRB_COLOR_3 QColor(0,180,0)
+#define AIRB_COLOR_4 QColor(0,180,0)
 
-#define AIRB_BRUSH_COLOR_1 QColor(0,120,0)
-#define AIRB_BRUSH_COLOR_2 QColor(0,120,0)
-#define AIRB_BRUSH_COLOR_3 QColor(0,120,0)
-#define AIRB_BRUSH_COLOR_4 QColor(0,120,0)
+#define AIRB_BRUSH_COLOR_1 QColor(0,180,0)
+#define AIRB_BRUSH_COLOR_2 QColor(0,180,0)
+#define AIRB_BRUSH_COLOR_3 QColor(0,180,0)
+#define AIRB_BRUSH_COLOR_4 QColor(0,180,0)
 
-#define AIRB_BRUSH_STYLE_1 Qt::Dense5Pattern
-#define AIRB_BRUSH_STYLE_2 Qt::Dense5Pattern
-#define AIRB_BRUSH_STYLE_3 Qt::Dense5Pattern
-#define AIRB_BRUSH_STYLE_4 Qt::Dense5Pattern
+#define AIRB_BRUSH_STYLE_1 Qt::NoBrush
+#define AIRB_BRUSH_STYLE_2 Qt::NoBrush
+#define AIRB_BRUSH_STYLE_3 Qt::NoBrush
+#define AIRB_BRUSH_STYLE_4 Qt::NoBrush
 
 // [Airspace C]
 #define AIRC_PEN_WIDTH_1 4
@@ -443,15 +443,15 @@
 #define AIRC_PEN_STYLE_3 Qt::SolidLine
 #define AIRC_PEN_STYLE_4 Qt::SolidLine
 
-#define AIRC_COLOR_1 QColor(0,123,0)
-#define AIRC_COLOR_2 QColor(0,120,0)
-#define AIRC_COLOR_3 QColor(0,120,0)
-#define AIRC_COLOR_4 QColor(0,120,0)
+#define AIRC_COLOR_1 QColor(0,180,0)
+#define AIRC_COLOR_2 QColor(0,180,0)
+#define AIRC_COLOR_3 QColor(0,180,0)
+#define AIRC_COLOR_4 QColor(0,180,0)
 
-#define AIRC_BRUSH_COLOR_1 QColor(0,120,0)
-#define AIRC_BRUSH_COLOR_2 QColor(0,120,0)
-#define AIRC_BRUSH_COLOR_3 QColor(0,120,0)
-#define AIRC_BRUSH_COLOR_4 QColor(0,120,0)
+#define AIRC_BRUSH_COLOR_1 QColor(0,180,0)
+#define AIRC_BRUSH_COLOR_2 QColor(0,180,0)
+#define AIRC_BRUSH_COLOR_3 QColor(0,180,0)
+#define AIRC_BRUSH_COLOR_4 QColor(0,180,0)
 
 #define AIRC_BRUSH_STYLE_1 Qt::NoBrush
 #define AIRC_BRUSH_STYLE_2 Qt::NoBrush
@@ -469,15 +469,15 @@
 #define AIRD_PEN_STYLE_3 Qt::SolidLine
 #define AIRD_PEN_STYLE_4 Qt::SolidLine
 
-#define AIRD_COLOR_1 QColor(0,120,0)
-#define AIRD_COLOR_2 QColor(0,120,0)
-#define AIRD_COLOR_3 QColor(0,120,0)
-#define AIRD_COLOR_4 QColor(0,120,0)
+#define AIRD_COLOR_1 QColor(0,180,0)
+#define AIRD_COLOR_2 QColor(0,180,0)
+#define AIRD_COLOR_3 QColor(0,180,0)
+#define AIRD_COLOR_4 QColor(0,180,0)
 
-#define AIRD_BRUSH_COLOR_1 QColor(0,120,0)
-#define AIRD_BRUSH_COLOR_2 QColor(0,120,0)
-#define AIRD_BRUSH_COLOR_3 QColor(0,120,0)
-#define AIRD_BRUSH_COLOR_4 QColor(0,120,0)
+#define AIRD_BRUSH_COLOR_1 QColor(0,180,0)
+#define AIRD_BRUSH_COLOR_2 QColor(0,180,0)
+#define AIRD_BRUSH_COLOR_3 QColor(0,180,0)
+#define AIRD_BRUSH_COLOR_4 QColor(0,180,0)
 
 #define AIRD_BRUSH_STYLE_1 Qt::NoBrush
 #define AIRD_BRUSH_STYLE_2 Qt::NoBrush
@@ -495,46 +495,20 @@
 #define AIRE_PEN_STYLE_3 Qt::SolidLine
 #define AIRE_PEN_STYLE_4 Qt::SolidLine
 
-#define AIRE_COLOR_1 QColor(129,158,220)
+#define AIRE_COLOR_1 QColor(138,169,235)
 #define AIRE_COLOR_2 QColor(138,169,235)
 #define AIRE_COLOR_3 QColor(138,169,235)
 #define AIRE_COLOR_4 QColor(138,169,235)
 
-#define AIRE_BRUSH_COLOR_1 QColor(0,120,0)
-#define AIRE_BRUSH_COLOR_2 QColor(0,120,0)
-#define AIRE_BRUSH_COLOR_3 QColor(0,120,0)
-#define AIRE_BRUSH_COLOR_4 QColor(0,120,0)
+#define AIRE_BRUSH_COLOR_1 QColor(138,169,235)
+#define AIRE_BRUSH_COLOR_2 QColor(138,169,235)
+#define AIRE_BRUSH_COLOR_3 QColor(138,169,235)
+#define AIRE_BRUSH_COLOR_4 QColor(138,169,235)
 
 #define AIRE_BRUSH_STYLE_1 Qt::NoBrush
 #define AIRE_BRUSH_STYLE_2 Qt::NoBrush
 #define AIRE_BRUSH_STYLE_3 Qt::NoBrush
 #define AIRE_BRUSH_STYLE_4 Qt::NoBrush
-
-// [Wave Window]
-#define WAVE_WINDOW_PEN_WIDTH_1 4
-#define WAVE_WINDOW_PEN_WIDTH_2 3
-#define WAVE_WINDOW_PEN_WIDTH_3 3
-#define WAVE_WINDOW_PEN_WIDTH_4 2
-
-#define WAVE_WINDOW_PEN_STYLE_1 Qt::SolidLine
-#define WAVE_WINDOW_PEN_STYLE_2 Qt::SolidLine
-#define WAVE_WINDOW_PEN_STYLE_3 Qt::SolidLine
-#define WAVE_WINDOW_PEN_STYLE_4 Qt::SolidLine
-
-#define WAVE_WINDOW_COLOR_1 QColor(0,0,255)
-#define WAVE_WINDOW_COLOR_2 QColor(0,0,255)
-#define WAVE_WINDOW_COLOR_3 QColor(0,0,255)
-#define WAVE_WINDOW_COLOR_4 QColor(0,0,255)
-
-#define WAVE_WINDOW_BRUSH_COLOR_1 QColor(0,0,255)
-#define WAVE_WINDOW_BRUSH_COLOR_2 QColor(0,0,255)
-#define WAVE_WINDOW_BRUSH_COLOR_3 QColor(0,0,255)
-#define WAVE_WINDOW_BRUSH_COLOR_4 QColor(0,0,255)
-
-#define WAVE_WINDOW_BRUSH_STYLE_1 Qt::NoBrush
-#define WAVE_WINDOW_BRUSH_STYLE_2 Qt::NoBrush
-#define WAVE_WINDOW_BRUSH_STYLE_3 Qt::NoBrush
-#define WAVE_WINDOW_BRUSH_STYLE_4 Qt::NoBrush
 
 // [Airspace F]
 #define AIRF_PEN_WIDTH_1 4
@@ -547,15 +521,15 @@
 #define AIRF_PEN_STYLE_3 Qt::SolidLine
 #define AIRF_PEN_STYLE_4 Qt::SolidLine
 
-#define AIRF_COLOR_1 QColor(0,0,128)
-#define AIRF_COLOR_2 QColor(0,0,128)
-#define AIRF_COLOR_3 QColor(0,0,128)
-#define AIRF_COLOR_4 QColor(0,0,128)
+#define AIRF_COLOR_1 QColor(138,169,235)
+#define AIRF_COLOR_2 QColor(138,169,235)
+#define AIRF_COLOR_3 QColor(138,169,235)
+#define AIRF_COLOR_4 QColor(138,169,235)
 
-#define AIRF_BRUSH_COLOR_1 QColor(0,0,128)
-#define AIRF_BRUSH_COLOR_2 QColor(0,0,128)
-#define AIRF_BRUSH_COLOR_3 QColor(0,0,128)
-#define AIRF_BRUSH_COLOR_4 QColor(0,0,128)
+#define AIRF_BRUSH_COLOR_1 QColor(138,169,235)
+#define AIRF_BRUSH_COLOR_2 QColor(138,169,235)
+#define AIRF_BRUSH_COLOR_3 QColor(138,169,235)
+#define AIRF_BRUSH_COLOR_4 QColor(138,169,235)
 
 #define AIRF_BRUSH_STYLE_1 Qt::Dense6Pattern
 #define AIRF_BRUSH_STYLE_2 Qt::Dense6Pattern
@@ -568,25 +542,25 @@
 #define CTRC_PEN_WIDTH_3 3
 #define CTRC_PEN_WIDTH_4 2
 
-#define CTRC_PEN_STYLE_1 Qt::SolidLine
-#define CTRC_PEN_STYLE_2 Qt::SolidLine
-#define CTRC_PEN_STYLE_3 Qt::SolidLine
-#define CTRC_PEN_STYLE_4 Qt::SolidLine
+#define CTRC_PEN_STYLE_1 Qt::DashLine
+#define CTRC_PEN_STYLE_2 Qt::DashLine
+#define CTRC_PEN_STYLE_3 Qt::DashLine
+#define CTRC_PEN_STYLE_4 Qt::DashLine
 
-#define CTRC_COLOR_1 QColor(180,18,20)
-#define CTRC_COLOR_2 QColor(180,18,20)
-#define CTRC_COLOR_3 QColor(180,18,20)
-#define CTRC_COLOR_4 QColor(180,18,20)
+#define CTRC_COLOR_1 QColor(0,0,100)
+#define CTRC_COLOR_2 QColor(0,0,100)
+#define CTRC_COLOR_3 QColor(0,0,100)
+#define CTRC_COLOR_4 QColor(0,0,100)
 
-#define CTRC_BRUSH_COLOR_1 QColor(180,18,20)
-#define CTRC_BRUSH_COLOR_2 QColor(180,18,20)
-#define CTRC_BRUSH_COLOR_3 QColor(180,18,20)
-#define CTRC_BRUSH_COLOR_4 QColor(180,18,20)
+#define CTRC_BRUSH_COLOR_1 QColor(255,160,162)
+#define CTRC_BRUSH_COLOR_2 QColor(255,160,162)
+#define CTRC_BRUSH_COLOR_3 QColor(255,160,162)
+#define CTRC_BRUSH_COLOR_4 QColor(255,160,162)
 
-#define CTRC_BRUSH_STYLE_1 Qt::HorPattern
-#define CTRC_BRUSH_STYLE_2 Qt::HorPattern
-#define CTRC_BRUSH_STYLE_3 Qt::HorPattern
-#define CTRC_BRUSH_STYLE_4 Qt::HorPattern
+#define CTRC_BRUSH_STYLE_1 Qt::Dense4Pattern
+#define CTRC_BRUSH_STYLE_2 Qt::Dense4Pattern
+#define CTRC_BRUSH_STYLE_3 Qt::Dense4Pattern
+#define CTRC_BRUSH_STYLE_4 Qt::Dense4Pattern
 
 // [Control D]
 #define CTRD_PEN_WIDTH_1 4
@@ -594,25 +568,51 @@
 #define CTRD_PEN_WIDTH_3 2
 #define CTRD_PEN_WIDTH_4 1
 
-#define CTRD_PEN_STYLE_1 Qt::SolidLine
-#define CTRD_PEN_STYLE_2 Qt::SolidLine
-#define CTRD_PEN_STYLE_3 Qt::SolidLine
-#define CTRD_PEN_STYLE_4 Qt::SolidLine
+#define CTRD_PEN_STYLE_1 Qt::DashLine
+#define CTRD_PEN_STYLE_2 Qt::DashLine
+#define CTRD_PEN_STYLE_3 Qt::DashLine
+#define CTRD_PEN_STYLE_4 Qt::DashLine
 
-#define CTRD_COLOR_1 QColor(180,18,20)
-#define CTRD_COLOR_2 QColor(180,18,20)
-#define CTRD_COLOR_3 QColor(180,18,20)
-#define CTRD_COLOR_4 QColor(180,18,20)
+#define CTRD_COLOR_1 QColor(0,0,100)
+#define CTRD_COLOR_2 QColor(0,0,100)
+#define CTRD_COLOR_3 QColor(0,0,100)
+#define CTRD_COLOR_4 QColor(0,0,100)
 
-#define CTRD_BRUSH_COLOR_1 QColor(180,18,20)
-#define CTRD_BRUSH_COLOR_2 QColor(180,18,20)
-#define CTRD_BRUSH_COLOR_3 QColor(180,18,20)
-#define CTRD_BRUSH_COLOR_4 QColor(180,18,20)
+#define CTRD_BRUSH_COLOR_1 QColor(255,160,162)
+#define CTRD_BRUSH_COLOR_2 QColor(255,160,162)
+#define CTRD_BRUSH_COLOR_3 QColor(255,160,162)
+#define CTRD_BRUSH_COLOR_4 QColor(255,160,162)
 
-#define CTRD_BRUSH_STYLE_1 Qt::Dense5Pattern
-#define CTRD_BRUSH_STYLE_2 Qt::Dense5Pattern
-#define CTRD_BRUSH_STYLE_3 Qt::Dense5Pattern
-#define CTRD_BRUSH_STYLE_4 Qt::Dense5Pattern
+#define CTRD_BRUSH_STYLE_1 Qt::Dense4Pattern
+#define CTRD_BRUSH_STYLE_2 Qt::Dense4Pattern
+#define CTRD_BRUSH_STYLE_3 Qt::Dense4Pattern
+#define CTRD_BRUSH_STYLE_4 Qt::Dense4Pattern
+
+// [Wave Window]
+#define WAVE_WINDOW_PEN_WIDTH_1 4
+#define WAVE_WINDOW_PEN_WIDTH_2 3
+#define WAVE_WINDOW_PEN_WIDTH_3 3
+#define WAVE_WINDOW_PEN_WIDTH_4 2
+
+#define WAVE_WINDOW_PEN_STYLE_1 Qt::DashDotDotLine
+#define WAVE_WINDOW_PEN_STYLE_2 Qt::DashDotDotLine
+#define WAVE_WINDOW_PEN_STYLE_3 Qt::DashDotDotLine
+#define WAVE_WINDOW_PEN_STYLE_4 Qt::DashDotDotLine
+
+#define WAVE_WINDOW_COLOR_1 QColor(0,0,200)
+#define WAVE_WINDOW_COLOR_2 QColor(0,0,200)
+#define WAVE_WINDOW_COLOR_3 QColor(0,0,200)
+#define WAVE_WINDOW_COLOR_4 QColor(0,0,200)
+
+#define WAVE_WINDOW_BRUSH_COLOR_1 QColor(0,0,200)
+#define WAVE_WINDOW_BRUSH_COLOR_2 QColor(0,0,200)
+#define WAVE_WINDOW_BRUSH_COLOR_3 QColor(0,0,200)
+#define WAVE_WINDOW_BRUSH_COLOR_4 QColor(0,0,200)
+
+#define WAVE_WINDOW_BRUSH_STYLE_1 Qt::Dense7Pattern
+#define WAVE_WINDOW_BRUSH_STYLE_2 Qt::Dense7Pattern
+#define WAVE_WINDOW_BRUSH_STYLE_3 Qt::Dense7Pattern
+#define WAVE_WINDOW_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Lowflight area]
 #define LOWF_PEN_WIDTH_1 4
@@ -620,25 +620,25 @@
 #define LOWF_PEN_WIDTH_3 3
 #define LOWF_PEN_WIDTH_4 2
 
-#define LOWF_PEN_STYLE_1 Qt::SolidLine
-#define LOWF_PEN_STYLE_2 Qt::SolidLine
-#define LOWF_PEN_STYLE_3 Qt::SolidLine
-#define LOWF_PEN_STYLE_4 Qt::SolidLine
+#define LOWF_PEN_STYLE_1 Qt::DotLine
+#define LOWF_PEN_STYLE_2 Qt::DotLine
+#define LOWF_PEN_STYLE_3 Qt::DotLine
+#define LOWF_PEN_STYLE_4 Qt::DotLine
 
-#define LOWF_COLOR_1 QColor(0,120,0)
-#define LOWF_COLOR_2 QColor(0,120,0)
-#define LOWF_COLOR_3 QColor(0,120,0)
-#define LOWF_COLOR_4 QColor(0,120,0)
+#define LOWF_COLOR_1 QColor(180,0,0)
+#define LOWF_COLOR_2 QColor(180,0,0)
+#define LOWF_COLOR_3 QColor(180,0,0)
+#define LOWF_COLOR_4 QColor(180,0,0)
 
-#define LOWF_BRUSH_COLOR_1 QColor(0,120,0)
-#define LOWF_BRUSH_COLOR_2 QColor(0,120,0)
-#define LOWF_BRUSH_COLOR_3 QColor(0,120,0)
-#define LOWF_BRUSH_COLOR_4 QColor(0,120,0)
+#define LOWF_BRUSH_COLOR_1 QColor(180,0,0)
+#define LOWF_BRUSH_COLOR_2 QColor(180,0,0)
+#define LOWF_BRUSH_COLOR_3 QColor(180,0,0)
+#define LOWF_BRUSH_COLOR_4 QColor(180,0,0)
 
-#define LOWF_BRUSH_STYLE_1 Qt::NoBrush
-#define LOWF_BRUSH_STYLE_2 Qt::NoBrush
-#define LOWF_BRUSH_STYLE_3 Qt::NoBrush
-#define LOWF_BRUSH_STYLE_4 Qt::NoBrush
+#define LOWF_BRUSH_STYLE_1 Qt::Dense7Pattern
+#define LOWF_BRUSH_STYLE_2 Qt::Dense7Pattern
+#define LOWF_BRUSH_STYLE_3 Qt::Dense7Pattern
+#define LOWF_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Danger]
 #define DNG_PEN_WIDTH_1 4
@@ -661,10 +661,10 @@
 #define DNG_BRUSH_COLOR_3 QColor(0,0,128)
 #define DNG_BRUSH_COLOR_4 QColor(0,0,128)
 
-#define DNG_BRUSH_STYLE_1 Qt::NoBrush
-#define DNG_BRUSH_STYLE_2 Qt::NoBrush
-#define DNG_BRUSH_STYLE_3 Qt::NoBrush
-#define DNG_BRUSH_STYLE_4 Qt::NoBrush
+#define DNG_BRUSH_STYLE_1 Qt::BDiagPattern
+#define DNG_BRUSH_STYLE_2 Qt::BDiagPattern
+#define DNG_BRUSH_STYLE_3 Qt::BDiagPattern
+#define DNG_BRUSH_STYLE_4 Qt::BDiagPattern
 
 // [Restricted]
 #define RES_PEN_WIDTH_1 4
@@ -687,10 +687,10 @@
 #define RES_BRUSH_COLOR_3 QColor(0,0,128)
 #define RES_BRUSH_COLOR_4 QColor(0,0,128)
 
-#define RES_BRUSH_STYLE_1 Qt::VerPattern
-#define RES_BRUSH_STYLE_2 Qt::VerPattern
-#define RES_BRUSH_STYLE_3 Qt::VerPattern
-#define RES_BRUSH_STYLE_4 Qt::VerPattern
+#define RES_BRUSH_STYLE_1 Qt::BDiagPattern
+#define RES_BRUSH_STYLE_2 Qt::BDiagPattern
+#define RES_BRUSH_STYLE_3 Qt::BDiagPattern
+#define RES_BRUSH_STYLE_4 Qt::BDiagPattern
 
 // [Transponder Mandatory Zone]
 #define TMZ_PEN_WIDTH_1 4
@@ -698,10 +698,10 @@
 #define TMZ_PEN_WIDTH_3 3
 #define TMZ_PEN_WIDTH_4 2
 
-#define TMZ_PEN_STYLE_1 Qt::SolidLine
-#define TMZ_PEN_STYLE_2 Qt::SolidLine
-#define TMZ_PEN_STYLE_3 Qt::SolidLine
-#define TMZ_PEN_STYLE_4 Qt::SolidLine
+#define TMZ_PEN_STYLE_1 Qt::DashDotLine
+#define TMZ_PEN_STYLE_2 Qt::DashDotLine
+#define TMZ_PEN_STYLE_3 Qt::DashDotLine
+#define TMZ_PEN_STYLE_4 Qt::DashDotLine
 
 #define TMZ_COLOR_1 QColor(0,0,128)
 #define TMZ_COLOR_2 QColor(0,0,128)
@@ -724,22 +724,22 @@
 #define GLIDER_SECTOR_PEN_WIDTH_3 3
 #define GLIDER_SECTOR_PEN_WIDTH_4 2
 
-#define GLIDER_SECTOR_PEN_STYLE_1 Qt::SolidLine
-#define GLIDER_SECTOR_PEN_STYLE_2 Qt::SolidLine
-#define GLIDER_SECTOR_PEN_STYLE_3 Qt::SolidLine
-#define GLIDER_SECTOR_PEN_STYLE_4 Qt::SolidLine
+#define GLIDER_SECTOR_PEN_STYLE_1 Qt::DashDotLine
+#define GLIDER_SECTOR_PEN_STYLE_2 Qt::DashDotLine
+#define GLIDER_SECTOR_PEN_STYLE_3 Qt::DashDotLine
+#define GLIDER_SECTOR_PEN_STYLE_4 Qt::DashDotLine
 
-#define GLIDER_SECTOR_COLOR_1 QColor(255,0,255)
-#define GLIDER_SECTOR_COLOR_2 QColor(255,0,255)
-#define GLIDER_SECTOR_COLOR_3 QColor(255,0,255)
-#define GLIDER_SECTOR_COLOR_4 QColor(255,0,255)
+#define GLIDER_SECTOR_COLOR_1 QColor(255,100,0)
+#define GLIDER_SECTOR_COLOR_2 QColor(255,100,0)
+#define GLIDER_SECTOR_COLOR_3 QColor(255,100,0)
+#define GLIDER_SECTOR_COLOR_4 QColor(255,100,0)
 
-#define GLIDER_SECTOR_BRUSH_COLOR_1 QColor(255,0,255)
-#define GLIDER_SECTOR_BRUSH_COLOR_2 QColor(255,0,255)
-#define GLIDER_SECTOR_BRUSH_COLOR_3 QColor(255,0,255)
-#define GLIDER_SECTOR_BRUSH_COLOR_4 QColor(255,0,255)
+#define GLIDER_SECTOR_BRUSH_COLOR_1 QColor(255,100,0)
+#define GLIDER_SECTOR_BRUSH_COLOR_2 QColor(255,100,0)
+#define GLIDER_SECTOR_BRUSH_COLOR_3 QColor(255,100,0)
+#define GLIDER_SECTOR_BRUSH_COLOR_4 QColor(255,100,0)
 
-#define GLIDER_SECTOR_BRUSH_STYLE_1 Qt::NoBrush
-#define GLIDER_SECTOR_BRUSH_STYLE_2 Qt::NoBrush
-#define GLIDER_SECTOR_BRUSH_STYLE_3 Qt::NoBrush
-#define GLIDER_SECTOR_BRUSH_STYLE_4 Qt::NoBrush
+#define GLIDER_SECTOR_BRUSH_STYLE_1 Qt::Dense4Pattern
+#define GLIDER_SECTOR_BRUSH_STYLE_2 Qt::Dense4Pattern
+#define GLIDER_SECTOR_BRUSH_STYLE_3 Qt::Dense4Pattern
+#define GLIDER_SECTOR_BRUSH_STYLE_4 Qt::Dense4Pattern
