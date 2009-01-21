@@ -1,16 +1,19 @@
 # Cumulus Maemo project file for qmake
 # $Id$
+TEMPLATE = app
 
-TEMPLATE    = app
-CONFIG      = qt warn_on release
-#CONFIG      = debug qt warn_on
+CONFIG = qt \
+    warn_on \
+    release
 
-HEADERS     = \
-    airfieldlistview.h \
+# CONFIG = debug qt warn_on
+
+HEADERS = airfieldlistview.h \
     airfieldlistwidget.h \
     airfield.h \
     airregion.h \
     airspace.h \
+    airspacewarningdistance.h \
     altimetermodedialog.h \
     altitude.h \
     basemapelement.h \
@@ -112,8 +115,7 @@ HEADERS     = \
     wpinfowidget.h \
     wplistwidgetparent.h
 
-SOURCES     = \
-    airfieldlistview.cpp \
+SOURCES = airfieldlistview.cpp \
     airfieldlistwidget.cpp \
     airfield.cpp \
     airregion.cpp \
@@ -212,18 +214,28 @@ SOURCES     = \
     wpeditdialogpagegeneral.cpp \
     wpinfowidget.cpp \
     wplistwidgetparent.cpp
+    
+INTERFACES = 
+TARGET = cumulus
 
-INTERFACES  =
-TARGET      = cumulus
-DESTDIR     = .
-INCLUDEPATH += ../ /usr/lib/glib-2.0/include /usr/include/glib-2.0 /usr/include/dbus-1.0 /usr/lib/dbus-1.0/include
+DESTDIR = .
+
+INCLUDEPATH += ../ \
+    /usr/lib/glib-2.0/include \
+    /usr/include/glib-2.0 \
+    /usr/include/dbus-1.0 \
+    /usr/lib/dbus-1.0/include
+    
 DEFINES += MAEMO
-LIBS += -lstdc++ -losso -lgpsbt -lgps -lgpsmgr
 
-TRANSLATIONS    = \
-    cumulus_de.ts \
+LIBS += -lstdc++ \
+    -losso \
+    -lgpsbt \
+    -lgps \
+    -lgpsmgr
+    
+TRANSLATIONS = cumulus_de.ts \
     cumulus_nl.ts \
     cumulus_it.ts \
     cumulus_sp.ts \
     cumulus_fr.ts
-

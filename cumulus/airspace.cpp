@@ -92,14 +92,24 @@ Airspace::~Airspace()
   }
 }
 
+/**
+ * Tells the caller, if the airspace is drawable or not
+ */
+bool Airspace::isDrawable() const
+{
+  return ( GeneralConfig::instance()->getAirspaceDrawingEnabled(typeID) &&
+           glConfig->isBorder(typeID) &&
+           isVisible() );
+};
+
 void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
                            qreal opacity )
 {
   // qDebug("Airspace::drawRegion(): TypeId=%d, opacity=%f, Name=%s",
   //        typeID, opacity, getInfoString().latin1() );
 
-
-  if(! glConfig->isBorder(typeID) || ! isVisible())
+  if( !GeneralConfig::instance()->getAirspaceDrawingEnabled(typeID) ||
+      ! glConfig->isBorder(typeID) || ! isVisible())
     {
       return;
     }

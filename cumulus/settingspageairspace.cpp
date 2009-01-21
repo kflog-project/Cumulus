@@ -197,20 +197,20 @@ void SettingsPageAirspace::slot_load()
   // save spinbox value for later change check
   spinForceMarginValue = spinForceMargin->value();
 
-  drawAirspaceA->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirA) ? Qt::Checked : Qt::Unchecked );
-  drawAirspaceB->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirB) ? Qt::Checked : Qt::Unchecked );
-  drawAirspaceC->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirC) ? Qt::Checked : Qt::Unchecked );
-  drawControlC->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::ControlC) ? Qt::Checked : Qt::Unchecked );
-  drawAirspaceD->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirD) ? Qt::Checked : Qt::Unchecked );
-  drawControlD->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::ControlD) ? Qt::Checked : Qt::Unchecked );
-  drawAirspaceE->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirE) ? Qt::Checked : Qt::Unchecked );
-  drawAirspaceF->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::AirF) ? Qt::Checked : Qt::Unchecked );
-  drawRestricted->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::Restricted) ? Qt::Checked : Qt::Unchecked );
-  drawDanger->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::Danger) ? Qt::Checked : Qt::Unchecked );
-  drawTMZ->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::Tmz) ? Qt::Checked : Qt::Unchecked );
-  drawLowFlight->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::LowFlight) ? Qt::Checked : Qt::Unchecked );
-  drawWaveWindow->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::WaveWindow) ? Qt::Checked : Qt::Unchecked );
-  drawGliderSector->setCheckState (conf->getAirspaceWarningEnabled(BaseMapElement::GliderSector) ? Qt::Checked : Qt::Unchecked );
+  drawAirspaceA->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::AirA) ? Qt::Checked : Qt::Unchecked );
+  drawAirspaceB->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::AirB) ? Qt::Checked : Qt::Unchecked );
+  drawAirspaceC->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::AirC) ? Qt::Checked : Qt::Unchecked );
+  drawControlC->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::ControlC) ? Qt::Checked : Qt::Unchecked );
+  drawAirspaceD->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::AirD) ? Qt::Checked : Qt::Unchecked );
+  drawControlD->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::ControlD) ? Qt::Checked : Qt::Unchecked );
+  drawAirspaceE->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::AirE) ? Qt::Checked : Qt::Unchecked );
+  drawAirspaceF->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::AirF) ? Qt::Checked : Qt::Unchecked );
+  drawRestricted->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::Restricted) ? Qt::Checked : Qt::Unchecked );
+  drawDanger->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::Danger) ? Qt::Checked : Qt::Unchecked );
+  drawTMZ->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::Tmz) ? Qt::Checked : Qt::Unchecked );
+  drawLowFlight->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::LowFlight) ? Qt::Checked : Qt::Unchecked );
+  drawWaveWindow->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::WaveWindow) ? Qt::Checked : Qt::Unchecked );
+  drawGliderSector->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::GliderSector) ? Qt::Checked : Qt::Unchecked );
 
   m_fillingDlg->slot_load();
   m_warningsDlg->slot_load();
@@ -237,20 +237,20 @@ void SettingsPageAirspace::slot_save()
   conf->setForceAirspaceDrawingDistance(forceDist);
   conf->setForceAirspaceDrawingEnabled(enableForceDrawing->checkState() == Qt::Checked ? true : false);
 
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirA,drawAirspaceA->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirB,drawAirspaceB->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirC,drawAirspaceC->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::ControlC,drawControlC->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirD,drawAirspaceD->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::ControlD,drawControlD->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirE,drawAirspaceE->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::AirF,drawAirspaceF->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::Restricted,drawRestricted->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::Danger,drawDanger->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::Tmz,drawTMZ->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::LowFlight,drawLowFlight->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::WaveWindow,drawWaveWindow->checkState() == Qt::Checked ? true : false);
-  conf->setAirspaceWarningEnabled(BaseMapElement::GliderSector,drawGliderSector->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::AirA,drawAirspaceA->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::AirB,drawAirspaceB->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::AirC,drawAirspaceC->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::ControlC,drawControlC->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::AirD,drawAirspaceD->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::ControlD,drawControlD->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::AirE,drawAirspaceE->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::AirF,drawAirspaceF->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::Restricted,drawRestricted->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::Danger,drawDanger->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::Tmz,drawTMZ->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::LowFlight,drawLowFlight->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::WaveWindow,drawWaveWindow->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingEnabled(BaseMapElement::GliderSector,drawGliderSector->checkState() == Qt::Checked ? true : false);
 
   m_fillingDlg->slot_save();
   m_warningsDlg->slot_save();
@@ -273,20 +273,20 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
 
   changed |= spinForceMarginValue != spinForceMargin->value();
   changed |= conf->getForceAirspaceDrawingEnabled() != enableForceDrawing->isChecked();
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirA) != (drawAirspaceA->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirB) != (drawAirspaceB->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirC) != (drawAirspaceC->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::ControlC) != (drawControlC->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirD) != (drawAirspaceD->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::ControlD) != (drawControlD->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirE) != (drawAirspaceE->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::AirF) != (drawAirspaceF->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::Restricted) != (drawRestricted->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::Danger) != (drawDanger->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::Tmz) != (drawTMZ->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::LowFlight) != (drawLowFlight->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::WaveWindow) != (drawWaveWindow->checkState() == Qt::Checked ? true : false);
-  changed |= conf->getAirspaceWarningEnabled(BaseMapElement::GliderSector) != (drawGliderSector->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::AirA) != (drawAirspaceA->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::AirB) != (drawAirspaceB->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::AirC) != (drawAirspaceC->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::ControlC) != (drawControlC->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::AirD) != (drawAirspaceD->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::ControlD) != (drawControlD->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::AirE) != (drawAirspaceE->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::AirF) != (drawAirspaceF->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::Restricted) != (drawRestricted->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::Danger) != (drawDanger->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::Tmz) != (drawTMZ->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::LowFlight) != (drawLowFlight->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::WaveWindow) != (drawWaveWindow->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::GliderSector) != (drawGliderSector->checkState() == Qt::Checked ? true : false);
 
   if (changed)
   {

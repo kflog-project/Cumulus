@@ -489,6 +489,7 @@ const QPen& MapConfig::__getPen(unsigned int typeID, int sIndex)
   case BaseMapElement::PackIce:
     return packicePenList.at(sIndex);
   default:
+    qWarning( "No Pen found for BaseMapElement=%d and Index=%d", typeID, sIndex );
     return roadPenList.at(sIndex);
   }
 }
@@ -554,6 +555,8 @@ bool MapConfig::isBorder(unsigned int typeID)
     return packiceBorder[scaleIndex];
   }
 
+  qWarning( "No Border found for BaseMapElement=%d", typeID );
+
   /* Should never happen ... */
   return true;
 }
@@ -605,7 +608,7 @@ const QBrush& MapConfig::__getBrush(unsigned int typeID, int sIndex)
     return packiceBrushList.at(sIndex);
   }
 
-  qWarning( "No brush found for BaseMapElement=%d", typeID );
+  qWarning( "No Brush found for BaseMapElement=%d", typeID );
   return defaultBrush;
 }
 

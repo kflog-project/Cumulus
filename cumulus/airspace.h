@@ -28,40 +28,7 @@
 
 #include "altitude.h"
 #include "lineelement.h"
-
-/**
-  * @short Collection of distances to airspaces
-  *
-  * This class holds a set of six distances to airspaces, used to warn the user if he's getting
-  * (too) close to an airspace.
-  *
-  * @author André Somers
-  */
-struct AirspaceWarningDistance
-{
-    Distance horClose;
-    Distance horVeryClose;
-    Distance verAboveClose;
-    Distance verAboveVeryClose;
-    Distance verBelowClose;
-    Distance verBelowVeryClose;
-
-    bool operator==(const AirspaceWarningDistance& x) const {
-        return (
-                horClose == x.horClose &&
-                horVeryClose == x.horVeryClose &&
-                verAboveClose == x.verAboveClose &&
-                verAboveVeryClose == x.verAboveVeryClose &&
-                verBelowClose == x.verBelowClose &&
-                verBelowVeryClose == x.verBelowVeryClose
-               );
-    }
-
-    bool operator!=(const AirspaceWarningDistance& x) const {
-        return !operator==(x);
-    }
-};
-
+#include "airspacewarningdistance.h"
 
 class AirRegion;
 
@@ -120,11 +87,7 @@ public:
     /**
      * Tells the caller, if the airspace is drawable or not
      */
-
-    bool isDrawable() const
-    {
-      return ( glConfig->isBorder(typeID) && isVisible() );
-    };
+    bool isDrawable() const;
 
     /**
      * Return a pointer to the mapped airspace region data. The caller takes

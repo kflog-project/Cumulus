@@ -1,16 +1,18 @@
 # Cumulus Qt4/X11 project file for qmake
 # $Id$
+TEMPLATE = app
 
-TEMPLATE    = app
-#CONFIG      = qt warn_on release
-CONFIG      = debug qt warn_on
-
-HEADERS     = \
-    airfieldlistview.h \
+# CONFIG = qt warn_on release
+CONFIG = debug \
+    qt \
+    warn_on
+    
+HEADERS = airfieldlistview.h \
     airfieldlistwidget.h \
     airfield.h \
     airregion.h \
     airspace.h \
+    airspacewarningdistance.h \
     altimetermodedialog.h \
     altitude.h \
     basemapelement.h \
@@ -109,9 +111,8 @@ HEADERS     = \
     waypoint.h \
     wpinfowidget.h \
     wplistwidgetparent.h
-
-SOURCES     = \
-    airfieldlistview.cpp \
+    
+SOURCES = airfieldlistview.cpp \
     airfieldlistwidget.cpp \
     airfield.cpp \
     airregion.cpp \
@@ -207,18 +208,22 @@ SOURCES     = \
     wpeditdialogpagegeneral.cpp \
     wpinfowidget.cpp \
     wplistwidgetparent.cpp
+    
+INTERFACES = 
 
-INTERFACES  =
-TARGET      = cumulus
-DESTDIR     = .
-INCLUDEPATH += ../ 
-QMAKE_CXXFLAGS  += -fno-default-inline -fno-inline
+TARGET = cumulus
+
+DESTDIR = .
+
+INCLUDEPATH += ../
+
+QMAKE_CXXFLAGS += -fno-default-inline \
+    -fno-inline
+    
 LIBS += -lstdc++
 
-TRANSLATIONS    = \
-    cumulus_de.ts \
+TRANSLATIONS = cumulus_de.ts \
     cumulus_nl.ts \
     cumulus_it.ts \
     cumulus_sp.ts \
     cumulus_fr.ts
-

@@ -174,25 +174,29 @@ class GeneralConfig : protected QSettings
   QPixmap loadPixmap( const QString& pixmapName );
 
   /**
-   * @returns Struct with warning distances for airspace warnings
+   * @returns Structure with warning distances for airspace warnings
    */
   AirspaceWarningDistance getAirspaceWarningDistances();
+
   /**
-   * Sets the warningdistances for airspaces
+   * Sets the warning distances for airspaces
    */
   void setAirspaceWarningDistances(const AirspaceWarningDistance& awd);
+
   /**
-   * @return True if warnings are enabled for the given type.
+   * @return True if drawing is enabled for the given base map type.
    * @param objectType The type of object (defined in @ref BaseMapElement) to query
    */
-  bool getAirspaceWarningEnabled (BaseMapElement::objectType type) const;
+  bool getAirspaceDrawingEnabled (BaseMapElement::objectType type) const;
+
   /**
-   * Enables or disables the airspacewarnings for this type of airspace
+   * Enables or disables the airspace drawing for this type of airspace
    */
-  void setAirspaceWarningEnabled (BaseMapElement::objectType type, bool enable=true)
+  void setAirspaceDrawingEnabled (BaseMapElement::objectType type, bool enable=true)
   {
-    _airspaceWarning [type]=enable;
+    _airspaceDrawingEnabled[type] = enable;
   };
+
   /**
    * @return True if warnings are enabled in general
    */
@@ -200,8 +204,9 @@ class GeneralConfig : protected QSettings
   {
     return _airspaceWarningGeneral;
   };
+
   /**
-   * Enables or disables the airspacewarnings in general
+   * Enables or disables the airspace warnings in general
    */
   void setAirspaceWarningEnabled (bool enable=true)
   {
@@ -209,15 +214,16 @@ class GeneralConfig : protected QSettings
   };
 
   /**
-   * @return True if forcing of airspace drawing for closeby
+   * @return True if forcing of airspace drawing for closed by
    * structures is enabled
    */
   bool getForceAirspaceDrawingEnabled () const
   {
     return _forceDrawing;
   };
+
   /**
-   * Enables or disables the forcing of airspace drawing for closeby
+   * Enables or disables the forcing of airspace drawing for closed by
    * structures
    */
   void setForceAirspaceDrawingEnabled (bool enable=true)
@@ -226,32 +232,35 @@ class GeneralConfig : protected QSettings
   };
 
   /**
-   * Gets the distance for the forcing of airspace drawing for closeby
+   * Gets the distance for the forcing of airspace drawing for closed by
    * structures
    */
   Distance getForceAirspaceDrawingDistance() const
   {
     return _forceDrawingDistance;
-  }
+  };
+
   /**
-   * Sets the distance for the forcing of airspace drawing for closeby
+   * Sets the distance for the forcing of airspace drawing for closed by
    * structures
    */
   void setForceAirspaceDrawingDistance(const Distance dist)
   {
     _forceDrawingDistance = dist;
-  }
+  };
 
   /** gets disclaimer version */
   int getDisclaimerVersion() const
   {
     return _disclaimerVersion;
   };
+
   /** sets disclaimer version */
   void setDisclaimerVersion( const int newValue )
   {
     _disclaimerVersion = newValue;
   };
+
   /**
    * return the set safety altitude
    */
@@ -259,6 +268,7 @@ class GeneralConfig : protected QSettings
     {
       return _safetyAltitude;
     };
+
   /**
    * Sets the safety altitude
    */
@@ -1216,8 +1226,8 @@ class GeneralConfig : protected QSettings
   //properties
   //used to store the distances for airspace warnings
   AirspaceWarningDistance _awd;
-  //display a warning for this type?
-  bool _airspaceWarning [BaseMapElement::objectTypeSize];
+  //draw airspace type and display a warning for this type
+  bool _airspaceDrawingEnabled[BaseMapElement::objectTypeSize];
   //display airspace warnings at all?
   bool _airspaceWarningGeneral;
   // vertical fillings for airspaces

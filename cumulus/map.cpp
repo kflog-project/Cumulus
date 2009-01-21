@@ -558,7 +558,7 @@ void Map::__drawAirspaces(bool reset)
       currentAirS = (Airspace*) _globalMapContents->getElement(MapContents::AirspaceList, loop);
 
       //airspaces we don't draw, we don't warn for either (and vice versa)
-      if( !settings->getAirspaceWarningEnabled( currentAirS->getTypeID() ) )
+      if( !settings->getAirspaceDrawingEnabled( currentAirS->getTypeID() ) )
         {
           //currentAirS->drawRegion(&cuAeroMapP, false);
           if (forcedDrawing && currentAirS->getLowerL() <= forcedMinimumCeil)
@@ -2072,7 +2072,7 @@ void Map::checkAirspace(const QPoint& pos)
           continue;
         }
 
-      if( ! GeneralConfig::instance()->getAirspaceWarningEnabled(pSpace->getTypeID()) )
+      if( ! GeneralConfig::instance()->getAirspaceDrawingEnabled(pSpace->getTypeID()) )
         {
            // warning for airspace type disabled by user
           continue;

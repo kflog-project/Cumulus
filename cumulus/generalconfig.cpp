@@ -91,20 +91,20 @@ void GeneralConfig::load()
   _forceDrawingDistance = value("forceLowAirspaceDrawingDistance", 150.0).toDouble();
 
   // Airspace warning types
-  _airspaceWarning[BaseMapElement::AirA]       = value("checkAirspaceA", true).toBool();
-  _airspaceWarning[BaseMapElement::AirB]       = value("checkAirspaceB", true).toBool();
-  _airspaceWarning[BaseMapElement::AirC]       = value("checkAirspaceC", true).toBool();
-  _airspaceWarning[BaseMapElement::ControlC]   = value("checkControlC", true).toBool();
-  _airspaceWarning[BaseMapElement::AirD]       = value("checkAirspaceD", true).toBool();
-  _airspaceWarning[BaseMapElement::ControlD]   = value("checkControlD", true).toBool();
-  _airspaceWarning[BaseMapElement::AirE]       = value("checkAirspaceE", false).toBool();
-  _airspaceWarning[BaseMapElement::WaveWindow] = value("checkWaveWindow", false).toBool();
-  _airspaceWarning[BaseMapElement::AirF]       = value("checkAirspaceF", true).toBool();
-  _airspaceWarning[BaseMapElement::Restricted] = value("checkRestricted", true).toBool();
-  _airspaceWarning[BaseMapElement::Danger]     = value("checkDanger", true).toBool();
-  _airspaceWarning[BaseMapElement::Tmz]        = value("checkTMZ", true).toBool();
-  _airspaceWarning[BaseMapElement::LowFlight]  = value("checkLowFlight", true).toBool();
-  _airspaceWarning[BaseMapElement::GliderSector]   = value("checkGliderSector", true).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::AirA]         = value("checkAirspaceA", true).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::AirB]         = value("checkAirspaceB", true).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::AirC]         = value("checkAirspaceC", true).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::ControlC]     = value("checkControlC", true).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::AirD]         = value("checkAirspaceD", true).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::ControlD]     = value("checkControlD", true).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::AirE]         = value("checkAirspaceE", false).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::WaveWindow]   = value("checkWaveWindow", false).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::AirF]         = value("checkAirspaceF", true).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::Restricted]   = value("checkRestricted", true).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::Danger]       = value("checkDanger", true).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::Tmz]          = value("checkTMZ", true).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::LowFlight]    = value("checkLowFlight", true).toBool();
+  _airspaceDrawingEnabled[BaseMapElement::GliderSector] = value("checkGliderSector", true).toBool();
 
   _airspaceWarningGeneral = value("enableAirspaceWarning", true).toBool();
 
@@ -338,20 +338,20 @@ void GeneralConfig::save()
   setValue("forceLowAirspaceDrawingDistance", _forceDrawingDistance.getMeters());
 
   // Airspace warning types
-  setValue("checkAirspaceA", _airspaceWarning[BaseMapElement::AirA]);
-  setValue("checkAirspaceB", _airspaceWarning[BaseMapElement::AirB]);
-  setValue("checkAirspaceC", _airspaceWarning[BaseMapElement::AirC]);
-  setValue("checkControlC", _airspaceWarning[BaseMapElement::ControlC]);
-  setValue("checkAirspaceD", _airspaceWarning[BaseMapElement::AirD]);
-  setValue("checkControlD", _airspaceWarning[BaseMapElement::ControlD]);
-  setValue("checkAirspaceE", _airspaceWarning[BaseMapElement::AirE]);
-  setValue("checkWaveWindow", _airspaceWarning[BaseMapElement::WaveWindow]);
-  setValue("checkAirspaceF", _airspaceWarning[BaseMapElement::AirF]);
-  setValue("checkRestricted", _airspaceWarning[BaseMapElement::Restricted]);
-  setValue("checkDanger", _airspaceWarning[BaseMapElement::Danger]);
-  setValue("checkTMZ", _airspaceWarning[BaseMapElement::Tmz]);
-  setValue("checkLowFlight", _airspaceWarning[BaseMapElement::LowFlight]);
-  setValue("checkGliderSector", _airspaceWarning[BaseMapElement::GliderSector]);
+  setValue("checkAirspaceA", _airspaceDrawingEnabled[BaseMapElement::AirA]);
+  setValue("checkAirspaceB", _airspaceDrawingEnabled[BaseMapElement::AirB]);
+  setValue("checkAirspaceC", _airspaceDrawingEnabled[BaseMapElement::AirC]);
+  setValue("checkControlC", _airspaceDrawingEnabled[BaseMapElement::ControlC]);
+  setValue("checkAirspaceD", _airspaceDrawingEnabled[BaseMapElement::AirD]);
+  setValue("checkControlD", _airspaceDrawingEnabled[BaseMapElement::ControlD]);
+  setValue("checkAirspaceE", _airspaceDrawingEnabled[BaseMapElement::AirE]);
+  setValue("checkWaveWindow", _airspaceDrawingEnabled[BaseMapElement::WaveWindow]);
+  setValue("checkAirspaceF", _airspaceDrawingEnabled[BaseMapElement::AirF]);
+  setValue("checkRestricted", _airspaceDrawingEnabled[BaseMapElement::Restricted]);
+  setValue("checkDanger", _airspaceDrawingEnabled[BaseMapElement::Danger]);
+  setValue("checkTMZ", _airspaceDrawingEnabled[BaseMapElement::Tmz]);
+  setValue("checkLowFlight", _airspaceDrawingEnabled[BaseMapElement::LowFlight]);
+  setValue("checkGliderSector", _airspaceDrawingEnabled[BaseMapElement::GliderSector]);
 
   setValue("enableAirspaceWarning", _airspaceWarningGeneral);
 
@@ -1158,11 +1158,11 @@ void GeneralConfig::setUnitPos(const int newValue)
 }
 
 
-bool GeneralConfig::getAirspaceWarningEnabled (BaseMapElement::objectType type) const
+bool GeneralConfig::getAirspaceDrawingEnabled (BaseMapElement::objectType type) const
 {
   if( type >0 && type < BaseMapElement::objectTypeSize ) {
-    // cout << "return=" << _airspaceWarning [type] << endl;
-    return _airspaceWarning [type];
+    // cout << "return=" << _airspaceDrawingEnabled [type] << endl;
+    return _airspaceDrawingEnabled [type];
   } else {
     // cout << "objectTypeSize out of bounds type=" << type <<endl;
     return false;

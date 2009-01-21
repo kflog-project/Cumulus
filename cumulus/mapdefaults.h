@@ -251,7 +251,7 @@
 #define CANAL_PEN_STYLE_4 Qt::SolidLine
 
 // [City]
-#define CITY_COLOR_1 QColor(0,0,0) //Black
+#define CITY_COLOR_1 QColor(0,0,0) // black
 #define CITY_COLOR_2 QColor(0,0,0)
 #define CITY_COLOR_3 QColor(0,0,0)
 #define CITY_COLOR_4 QColor(0,0,0)
@@ -542,15 +542,15 @@
 #define CTRC_PEN_WIDTH_3 3
 #define CTRC_PEN_WIDTH_4 2
 
-#define CTRC_PEN_STYLE_1 Qt::DashLine
-#define CTRC_PEN_STYLE_2 Qt::DashLine
-#define CTRC_PEN_STYLE_3 Qt::DashLine
-#define CTRC_PEN_STYLE_4 Qt::DashLine
+#define CTRC_PEN_STYLE_1 Qt::DotLine
+#define CTRC_PEN_STYLE_2 Qt::DotLine
+#define CTRC_PEN_STYLE_3 Qt::DotLine
+#define CTRC_PEN_STYLE_4 Qt::DotLine
 
-#define CTRC_COLOR_1 QColor(0,0,100)
-#define CTRC_COLOR_2 QColor(0,0,100)
-#define CTRC_COLOR_3 QColor(0,0,100)
-#define CTRC_COLOR_4 QColor(0,0,100)
+#define CTRC_COLOR_1 QColor(0,0,128)
+#define CTRC_COLOR_2 QColor(0,0,128)
+#define CTRC_COLOR_3 QColor(0,0,128)
+#define CTRC_COLOR_4 QColor(0,0,128)
 
 #define CTRC_BRUSH_COLOR_1 QColor(255,160,162)
 #define CTRC_BRUSH_COLOR_2 QColor(255,160,162)
@@ -568,15 +568,15 @@
 #define CTRD_PEN_WIDTH_3 2
 #define CTRD_PEN_WIDTH_4 1
 
-#define CTRD_PEN_STYLE_1 Qt::DashLine
-#define CTRD_PEN_STYLE_2 Qt::DashLine
-#define CTRD_PEN_STYLE_3 Qt::DashLine
-#define CTRD_PEN_STYLE_4 Qt::DashLine
+#define CTRD_PEN_STYLE_1 Qt::DotLine
+#define CTRD_PEN_STYLE_2 Qt::DotLine
+#define CTRD_PEN_STYLE_3 Qt::DotLine
+#define CTRD_PEN_STYLE_4 Qt::DotLine
 
-#define CTRD_COLOR_1 QColor(0,0,100)
-#define CTRD_COLOR_2 QColor(0,0,100)
-#define CTRD_COLOR_3 QColor(0,0,100)
-#define CTRD_COLOR_4 QColor(0,0,100)
+#define CTRD_COLOR_1 QColor(0,0,128)
+#define CTRD_COLOR_2 QColor(0,0,128)
+#define CTRD_COLOR_3 QColor(0,0,128)
+#define CTRD_COLOR_4 QColor(0,0,128)
 
 #define CTRD_BRUSH_COLOR_1 QColor(255,160,162)
 #define CTRD_BRUSH_COLOR_2 QColor(255,160,162)
@@ -594,10 +594,10 @@
 #define WAVE_WINDOW_PEN_WIDTH_3 3
 #define WAVE_WINDOW_PEN_WIDTH_4 2
 
-#define WAVE_WINDOW_PEN_STYLE_1 Qt::DashDotDotLine
-#define WAVE_WINDOW_PEN_STYLE_2 Qt::DashDotDotLine
-#define WAVE_WINDOW_PEN_STYLE_3 Qt::DashDotDotLine
-#define WAVE_WINDOW_PEN_STYLE_4 Qt::DashDotDotLine
+#define WAVE_WINDOW_PEN_STYLE_1 Qt::DotLine
+#define WAVE_WINDOW_PEN_STYLE_2 Qt::DotLine
+#define WAVE_WINDOW_PEN_STYLE_3 Qt::DotLine
+#define WAVE_WINDOW_PEN_STYLE_4 Qt::DotLine
 
 #define WAVE_WINDOW_COLOR_1 QColor(0,0,200)
 #define WAVE_WINDOW_COLOR_2 QColor(0,0,200)
@@ -614,7 +614,7 @@
 #define WAVE_WINDOW_BRUSH_STYLE_3 Qt::Dense7Pattern
 #define WAVE_WINDOW_BRUSH_STYLE_4 Qt::Dense7Pattern
 
-// [Lowflight area]
+// [Low flight area]
 #define LOWF_PEN_WIDTH_1 4
 #define LOWF_PEN_WIDTH_2 3
 #define LOWF_PEN_WIDTH_3 3
@@ -729,10 +729,10 @@
 #define GLIDER_SECTOR_PEN_STYLE_3 Qt::DashDotLine
 #define GLIDER_SECTOR_PEN_STYLE_4 Qt::DashDotLine
 
-#define GLIDER_SECTOR_COLOR_1 QColor(255,100,0)
-#define GLIDER_SECTOR_COLOR_2 QColor(255,100,0)
-#define GLIDER_SECTOR_COLOR_3 QColor(255,100,0)
-#define GLIDER_SECTOR_COLOR_4 QColor(255,100,0)
+#define GLIDER_SECTOR_COLOR_1 QColor(255,139,64)
+#define GLIDER_SECTOR_COLOR_2 QColor(255,139,64)
+#define GLIDER_SECTOR_COLOR_3 QColor(255,139,64)
+#define GLIDER_SECTOR_COLOR_4 QColor(255,139,64)
 
 #define GLIDER_SECTOR_BRUSH_COLOR_1 QColor(255,100,0)
 #define GLIDER_SECTOR_BRUSH_COLOR_2 QColor(255,100,0)
