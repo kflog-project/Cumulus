@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2008 Axel pauli
+**   Copyright (c):  2004 by André Somers, 2009 Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -33,7 +33,7 @@ extern MapConfig * _globalMapConfig;
 extern Calculator* calculator;
 
 TaskListView::TaskListView( QWidget *parent, bool showButtons )
-  : QWidget(parent),
+    : QWidget(parent),
     rowDelegate(0)
 {
   setObjectName("TaskListView");
@@ -48,9 +48,10 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
 
   QVBoxLayout *topLayout = new QVBoxLayout( this );
 
-  if( ! showButtons ) {
-    topLayout->setMargin(0);
-  }
+  if ( ! showButtons )
+    {
+      topLayout->setMargin(0);
+    }
 
   QHBoxLayout *total = new QHBoxLayout;
   topLayout->addLayout( total );
@@ -79,71 +80,72 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons )
 
   QStringList sl;
   sl << tr("Type")
-     << tr("Name")
-     << tr("Dist.")
-     << tr("Course")
-     << tr("Time")
-     << tr("Description")
-     << tr("SS");
+  << tr("Name")
+  << tr("Dist.")
+  << tr("Course")
+  << tr("Time")
+  << tr("Description")
+  << tr("SS");
   list->setHeaderLabels(sl);
 
   topLayout->addWidget(list, 10);
 
-  if( showButtons ) {
-    total->setSpacing(5);
-    list->setAllColumnsShowFocus(true);
-    list->setSelectionMode(QAbstractItemView::SingleSelection);
-    list->setSelectionBehavior(QAbstractItemView::SelectRows);
-    list->setFocusPolicy( Qt::StrongFocus );
+  if ( showButtons )
+    {
+      total->setSpacing(5);
+      list->setAllColumnsShowFocus(true);
+      list->setSelectionMode(QAbstractItemView::SingleSelection);
+      list->setSelectionBehavior(QAbstractItemView::SelectRows);
+      list->setFocusPolicy( Qt::StrongFocus );
 
-    // Don't show any buttons, if required
-    QBoxLayout *buttonrow=new QHBoxLayout;
-    topLayout->addLayout( buttonrow );
+      // Don't show any buttons, if required
+      QBoxLayout *buttonrow=new QHBoxLayout;
+      topLayout->addLayout( buttonrow );
 
-    /** @ee add a close button */
-    QPushButton *cmdClose = new QPushButton(tr("Close"), this);
-    buttonrow->addWidget(cmdClose);
+      QPushButton *cmdClose = new QPushButton(tr("Close"), this);
+      buttonrow->addWidget(cmdClose);
 
-    QPushButton *cmdInfo = new QPushButton(tr("Info"), this);
-    buttonrow->addWidget(cmdInfo);
+      QPushButton *cmdInfo = new QPushButton(tr("Info"), this);
+      buttonrow->addWidget(cmdInfo);
 
-    cmdSelect = new QPushButton(_selectText, this);
-    buttonrow->addWidget(cmdSelect);
+      cmdSelect = new QPushButton(_selectText, this);
+      buttonrow->addWidget(cmdSelect);
 
-    connect( cmdSelect, SIGNAL(clicked()),
-            this, SLOT(slot_Select()) );
-    connect( cmdInfo, SIGNAL(clicked() ),
-            this, SLOT(slot_Info()));
-    connect( cmdClose, SIGNAL(clicked() ),
-            this, SLOT(slot_Close()) );
-    connect( list, SIGNAL(itemSelectionChanged()),
-            this, SLOT(slot_Selected()) );
+      connect( cmdSelect, SIGNAL(clicked()),
+               this, SLOT(slot_Select()) );
+      connect( cmdInfo, SIGNAL(clicked() ),
+               this, SLOT(slot_Info()));
+      connect( cmdClose, SIGNAL(clicked() ),
+               this, SLOT(slot_Close()) );
+      connect( list, SIGNAL(itemSelectionChanged()),
+               this, SLOT(slot_Selected()) );
 
-    // activate keyboard shortcut Return as select
-    QShortcut* scSelect = new QShortcut( this );
-    scSelect->setKey( Qt::Key_Return );
-    connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
-  }
+      // activate keyboard shortcut Return as select
+      QShortcut* scSelect = new QShortcut( this );
+      scSelect->setKey( Qt::Key_Return );
+      connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
+    }
 }
 
 TaskListView::~TaskListView()
 {
   // qDebug("TaskListView::~TaskListView()");
-  if( _task ) {
-    delete _task;
-  }
+  if ( _task )
+    {
+      delete _task;
+    }
 }
 
 
 void TaskListView::slot_Selected()
 {
   _newSelectedTp = list->currentItem();
-  if( _newSelectedTp == 0 )
+  if ( _newSelectedTp == 0 )
     return;
 
   _selectedWp = ((_TaskPoint*)_newSelectedTp)->wp;
 
-  if( _selectedWp->taskPointIndex == 0 )
+  if ( _selectedWp->taskPointIndex == 0 )
     {
       // Take-off point should not be selectable in taskview
       cmdSelect->setEnabled(false);
@@ -152,11 +154,14 @@ void TaskListView::slot_Selected()
 
   cmdSelect->setEnabled(true);
 
-  if(_newSelectedTp == _currSelectedTp) {
-    cmdSelect->setText(_unselectText);
-  } else {
-    cmdSelect->setText(_selectText);
-  }
+  if (_newSelectedTp == _currSelectedTp)
+    {
+      cmdSelect->setText(_unselectText);
+    }
+  else
+    {
+      cmdSelect->setText(_selectText);
+    }
   //qDebug("New Selected Waypoint name: %s, Index=%d",
   //       _selectedWp->name.latin1(), _selectedWp->taskPointIndex );
 }
@@ -164,7 +169,7 @@ void TaskListView::slot_Selected()
 
 void TaskListView::showEvent(QShowEvent *)
 {
-  if( _showButtons == false )
+  if ( _showButtons == false )
     {
       // do nothing as display, there are no buttons visible
       return;
@@ -172,33 +177,36 @@ void TaskListView::showEvent(QShowEvent *)
 
   const wayPoint *calcWp = calculator->getselectedWp();
   bool foundWp = false;
-  for ( int i = 0; i < list->topLevelItemCount(); i++) {
+  for ( int i = 0; i < list->topLevelItemCount(); i++)
+    {
 
-    _TaskPoint* tp = (_TaskPoint*) list->topLevelItem(i);
-    wayPoint*   wp = tp->wp;
+      _TaskPoint* tp = (_TaskPoint*) list->topLevelItem(i);
+      wayPoint*   wp = tp->wp;
 
-    // Waypoints can be selected from different windows. We will
-    // consider only waypoints for a selection, which are member of a
-    // flighttask. In this case the taskPointIndex should be unequal to -1.
-    if( calcWp && calcWp->origP == wp->origP &&
-        calcWp->taskPointIndex == wp->taskPointIndex ) {
-      list->setCurrentItem( list->topLevelItem(i), 0 );
-      _currSelectedTp = tp;
-      _newSelectedTp = tp;
-      _selectedWp = wp;
-      cmdSelect->setText(_unselectText);
-      foundWp = true;
-      break;
+      // Waypoints can be selected from different windows. We will
+      // consider only waypoints for a selection, which are member of a
+      // flighttask. In this case the taskPointIndex should be unequal to -1.
+      if ( calcWp && calcWp->origP == wp->origP &&
+           calcWp->taskPointIndex == wp->taskPointIndex )
+        {
+          list->setCurrentItem( list->topLevelItem(i), 0 );
+          _currSelectedTp = tp;
+          _newSelectedTp = tp;
+          _selectedWp = wp;
+          cmdSelect->setText(_unselectText);
+          foundWp = true;
+          break;
+        }
     }
-  }
 
-  if( foundWp == false ) {
-    // if no calculator waypoint selected, clear selection on listview
-    list->clearSelection();
-    _selectedWp = 0;
-    _currSelectedTp = 0;
-    _newSelectedTp = 0;
-  }
+  if ( foundWp == false )
+    {
+      // if no calculator waypoint selected, clear selection on listview
+      list->clearSelection();
+      _selectedWp = 0;
+      _currSelectedTp = 0;
+      _newSelectedTp = 0;
+    }
 
   list->setFocus();
 }
@@ -210,20 +218,23 @@ void TaskListView::slot_Select()
   // qDebug("TaskListView::slot_Select(): Selected WP= %s, Index=%d",
   //       _selectedWp->name.latin1(), _selectedWp->taskPointIndex );
 
-  if(_newSelectedTp == _currSelectedTp) {
-    // this was an unselect
-    //calculator->slot_WaypointChange(0, true);
-    emit newWaypoint(0, true);
-    list->clearSelection();
-    cmdSelect->setText(_selectText);
-    _selectedWp = 0;
-    _currSelectedTp = 0;
-    _newSelectedTp = 0;
-  } else {
-    _currSelectedTp = _newSelectedTp; // save last selection
-    emit newWaypoint(getSelectedWaypoint(), true);
-    emit done();
-  }
+  if (_newSelectedTp == _currSelectedTp)
+    {
+      // this was an unselect
+      //calculator->slot_WaypointChange(0, true);
+      emit newWaypoint(0, true);
+      list->clearSelection();
+      cmdSelect->setText(_selectText);
+      _selectedWp = 0;
+      _currSelectedTp = 0;
+      _newSelectedTp = 0;
+    }
+  else
+    {
+      _currSelectedTp = _newSelectedTp; // save last selection
+      emit newWaypoint(getSelectedWaypoint(), true);
+      emit done();
+    }
 }
 
 
@@ -238,9 +249,10 @@ void TaskListView::slot_Info()
 /** @ee This slot is called if the listview is closed without selecting */
 void TaskListView::slot_Close ()
 {
-  if( _newSelectedTp != _currSelectedTp ) {
-    _newSelectedTp = _currSelectedTp; // selection change was not committed
-  }
+  if ( _newSelectedTp != _currSelectedTp )
+    {
+      _newSelectedTp = _currSelectedTp; // selection change was not committed
+    }
 
   emit done();
 }
@@ -254,34 +266,38 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   // qDebug("TaskListView::slot_setTask()");
 
   // delete old task
-  if( _task ) {
-    delete _task;
-    _task = 0;
-  }
+  if ( _task )
+    {
+      delete _task;
+      _task = 0;
+    }
 
   list->clear();
 
-  if (tsk == 0 ) {
-    // No new task passed
-    _task = 0;
-    return;
-  }
-
-  if( _showButtons == true )
+  if (tsk == 0 )
     {
-    // set row height at each list fill - has probably changed.
-    // Note: rpMargin is a manifold of 2 to ensure symmetry
+      // No new task passed
+      _task = 0;
+      return;
+    }
+
+  if ( _showButtons == true )
+    {
+      // set row height at each list fill - has probably changed.
+      // Note: rpMargin is a manifold of 2 to ensure symmetry
       int rpMargin = GeneralConfig::instance()->getListDisplayRPMargin();
 
       qDebug( "rpMargin=%d", rpMargin );
 
-      if ( rowDelegate ) {
-        rowDelegate->setVerticalMargin( rpMargin );
-      }
-      else {
-        rowDelegate = new RowDelegate( list, rpMargin );
-        list->setItemDelegate( rowDelegate );
-      }
+      if ( rowDelegate )
+        {
+          rowDelegate->setVerticalMargin( rpMargin );
+        }
+      else
+        {
+          rowDelegate = new RowDelegate( list, rpMargin );
+          list->setItemDelegate( rowDelegate );
+        }
     }
 
   // create a deep task copy
@@ -291,20 +307,22 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   // it in tasklist as selected too.
   const wayPoint *calcWp = calculator->getselectedWp();
 
-  QList<wayPoint*> tmpList = _task->getWPList();
+  QList<wayPoint *> tmpList = _task->getWPList();
 
-  for( uint loop = tmpList.count(); loop > 0; loop-- ) {
-    wayPoint* wp = tmpList.at( loop-1 );
-    _TaskPoint* tp = new _TaskPoint( list, wp );
+  for ( int loop = 0; loop < tmpList.count(); loop++ )
+    {
+      wayPoint* wp = tmpList.at( loop );
+      _TaskPoint* tp = new _TaskPoint( list, wp );
 
-    tp->setText( 7, QString("%1").arg(loop,1,10,QLatin1Char('0')) );
+      tp->setText( 7, QString("%1").arg(loop,1,10,QLatin1Char('0')) );
 
-    if( calcWp && calcWp->origP == wp->origP ) {
-      list->setCurrentItem( tp, 0 );
-      _currSelectedTp = tp;
-      _selectedWp = wp;
+      if ( calcWp && calcWp->origP == wp->origP )
+        {
+          list->setCurrentItem( tp, 0 );
+          _currSelectedTp = tp;
+          _selectedWp = wp;
+        }
     }
-  }
 
   list->sortByColumn(7, Qt::AscendingOrder);
   // set the total values in the header of this view
@@ -327,9 +345,10 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
  */
 void TaskListView::slot_updateTask()
 {
-  if( _task ) {
-    _task->updateTask();
-  }
+  if ( _task )
+    {
+      _task->updateTask();
+    }
 }
 
 
@@ -363,7 +382,7 @@ TaskListView::_TaskPoint::_TaskPoint (QTreeWidget *wpList, wayPoint *point ) : Q
   setText(2, " " + Distance::getText(wp->distance*1000,false,1));
   setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
 
-  if( wp->bearing == -1.0 )
+  if ( wp->bearing == -1.0 )
     {
       // bearing is undefined
       setText(3, " ");
