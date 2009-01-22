@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Heiner Lamprecht, 2008 Axel Pauli
+**   Copyright (c):  2002 by Heiner Lamprecht, 2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -64,18 +64,21 @@ TaskList::TaskList( QWidget* parent ) :
   QPushButton * cmdNew = new QPushButton(this);
   cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
   cmdNew->setIconSize(QSize(26,26));
+  cmdNew->setToolTip(tr("Define a new task"));
   editrow->addWidget(cmdNew,1);
 
   editrow->addSpacing(10);
   QPushButton * cmdEdit = new QPushButton(this);
   cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
   cmdEdit->setIconSize(QSize(26,26));
+  cmdEdit->setToolTip(tr("Edit selected task"));
   editrow->addWidget(cmdEdit,1);
 
   editrow->addSpacing(10);
   QPushButton * cmdDel = new QPushButton(this);
   cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png")) );
   cmdDel->setIconSize(QSize(26,26));
+  cmdDel->setToolTip(tr("Remove selected task"));
   editrow->addWidget(cmdDel,1);
 
   splitter = new QSplitter( Qt::Vertical, this );
@@ -151,6 +154,17 @@ void TaskList::showEvent(QShowEvent *)
           splitter->setSizes(sizeList);
         }
     }
+
+  // Notice user how to add a new task
+  QTreeWidgetItem* selected = taskListWidget->selectedItems().at(0);
+
+  if( selected->text( 0 ) == " " &&
+      selected->text( 1 ) == tr("(No tasks defined)") )
+    {
+      QMessageBox::information( this,
+          tr("Create New Task"),
+          tr("Push <b>Plus</b> button to add a task") );
+    }
 }
 
 
@@ -166,21 +180,19 @@ void TaskList::slotCruisingSpeedChanged( int /* value */ )
 void TaskList::slotTaskDetails()
 {
   QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
+
   if( selectList.size() == 0 )
-    return;
-
-  QTreeWidgetItem * selected = taskListWidget->selectedItems().at(0);
-
-  if ( selected->text( 0 ) == " " ) {
-    if ( selected->text( 1 ) == tr("(No tasks defined)") ) {
-      QMessageBox::information( this,
-                        tr("Create New Task"),
-                        tr("Push <b>Plus</b> button to add a task") );
+    {
+      return;
     }
 
-    taskContent->clear();
-    return;
-  }
+  QTreeWidgetItem* selected = taskListWidget->selectedItems().at(0);
+
+  if ( selected->text( 0 ) == " " )
+    {
+      taskContent->clear();
+      return;
+    }
 
   int id = selected->text( 0 ).toInt() - 1;
 
@@ -238,7 +250,7 @@ bool TaskList::slotLoadTask()
 
 #warning task list file 'tasks.tsk' is stored at User Data Directory
 
-  // currently hardcoded file name
+  // currently hard coded file name
   QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/tasks.tsk" );
 
   if( !f.open( QIODevice::ReadOnly ) ) {
