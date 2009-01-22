@@ -39,7 +39,7 @@ class QString;
  *
  * This class implements a parser for OpenAir SUA files, containing
  * descriptions of airspace structures. The read structures are added
- * to the allready present list of structures.
+ * to the already present list of structures.
  *
  * Since the build in airspace types do not exactly match the list of
  * airspaces found in "the wild", it is possible to use a special
@@ -65,7 +65,7 @@ public:
     virtual ~OpenAirParser();
 
     /**
-     * Searchs on default places for openair files. That can be source
+     * Searches on default places for openair files. That can be source
      * files or compiled versions of them.
      *
      * @returns number of successfully loaded files
@@ -75,7 +75,7 @@ public:
 
     uint load( QList<Airspace*>& list );
 
-private:  //memberfunctions
+private:  //member functions
 
     /**
      * Parses the file indicated and adds them to the indicated
@@ -116,7 +116,7 @@ private:  //memberfunctions
      *
      * @param path Full name with path of OpenAir binary file
      * @param list All airspace objects have to be stored in this list
-     * @returns true (success) or false (error occured)
+     * @returns true (success) or false (error occurred)
      */
     bool readCompiledFile( QString &path, QList<Airspace*>& list );
 
@@ -125,7 +125,7 @@ private:  //memberfunctions
      * variables.
      *
      * @param path Full name with path of OpenAir binary file
-     * @returns true (success) or false (error occured)
+     * @returns true (success) or false (error occurred)
      */
     bool setHeaderData( QString &path );
 
@@ -145,7 +145,7 @@ private: //members
 
     QPoint _center;
     double _awy_width;
-    int _direction; //1 for clockwise, -1 for anticlockwise
+    int _direction; //1 for clockwise, -1 for anti clockwise
 
     QMap<QString, BaseMapElement::objectType> m_baseTypeMap;
     QMap<QString, QString> m_stringTypeMap;

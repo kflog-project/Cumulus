@@ -506,15 +506,25 @@ void OpenAirParser::finishAirspace()
 {
   extern MapMatrix * _globalMapMatrix;
 
-  uint cnt=asPA.count();
-  for (uint i=0; i<cnt; i++)
-    asPA.setPoint(i, _globalMapMatrix->wgsToMap(asPA.point(i)));
+  // @AP: Airspaces are stored as polygones and should not contain the start point
+  // twice as done in OpenAir description.
+  if( asPA.count() > 2 && asPA.first() == asPA.last() )
+    {
+      // remove the last point because it is identical to the first point
+      asPA.remove(asPA.count()-1);
+    }
 
-  Airspace * a= new Airspace(asName,
-                             asType,
-                             asPA,
-                             asUpper, asUpperType,
-                             asLower, asLowerType);
+  // Translate all WGS84 points to current map projection
+  for (int i=0; i < asPA.count(); i++)
+    {
+      asPA.setPoint(i, _globalMapMatrix->wgsToMap(asPA.point(i)));
+    }
+
+  Airspace* a= new Airspace(asName,
+                            asType,
+                            asPA,
+                            asUpper, asUpperType,
+                            asLower, asLowerType);
   _airlist.append(a);
   _objCounter++;
   _isCurrentAirspace = false;
