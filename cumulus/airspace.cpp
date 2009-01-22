@@ -106,7 +106,7 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
                            qreal opacity )
 {
   // qDebug("Airspace::drawRegion(): TypeId=%d, opacity=%f, Name=%s",
-  //        typeID, opacity, getInfoString().latin1() );
+  //         typeID, opacity, getInfoString().toLatin1().data() );
 
   if( !GeneralConfig::instance()->getAirspaceDrawingEnabled(typeID) ||
       ! glConfig->isBorder(typeID) || ! isVisible())
