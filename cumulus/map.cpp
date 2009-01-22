@@ -963,7 +963,7 @@ void Map::__drawBaseLayer()
 
   baseMapP.begin(&m_pixBaseMap);
 
-  //first, draw the iso lines
+  // first, draw the iso lines
   _globalMapContents->drawIsoList(&baseMapP);
 
   // next, draw the topographical elements and the cities
@@ -971,18 +971,18 @@ void Map::__drawBaseLayer()
   _globalMapContents->drawList(&baseMapP, MapContents::CityList);
   _globalMapContents->drawList(&baseMapP, MapContents::LakeList);
 
-  // draw the hydro and roads
+  // draw the roads and the railroads
+  if( cs <= 200.0 )
+    {
+      _globalMapContents->drawList(&baseMapP, MapContents::RoadList);
+      _globalMapContents->drawList(&baseMapP, MapContents::RailList);
+    }
+
+  // draw the hydro
   if( cs <= 500.0 )
   {
     _globalMapContents->drawList(&baseMapP, MapContents::HydroList);
-    _globalMapContents->drawList(&baseMapP, MapContents::RoadList);
-  }
-
-  // draw the railroads
-  if( cs <= 600.0 )
-    {
-      _globalMapContents->drawList(&baseMapP, MapContents::RailList);
-    }
+ }
 
   // draw the landmarks and the obstacles
   if( cs < 1024.0 )
