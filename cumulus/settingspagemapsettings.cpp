@@ -60,7 +60,7 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   cmbProjection = new QComboBox(this);
   topLayout->addWidget(cmbProjection, row++, 1);
   cmbProjection->addItem(tr("Lambert"));
-  cmbProjection->addItem(tr("Plate Carée")); // Qt::Key_Eacute
+  cmbProjection->addItem(tr("Plate Carrée")); // Qt::Key_Eacute
 
   connect(cmbProjection, SIGNAL(activated(int)), this, SLOT(slotSelectProjection(int)));
 
@@ -204,7 +204,7 @@ void SettingsPageMapSettings::slotSelectProjection(int index)
     edtLon->setKFLogDegree(lambertOrigin);
     currentProjType = ProjectionBase::Lambert;
     break;
-  case 1:    // Plate Careé
+  case 1:    // Plate Carreé
   default:   // take this if index is unknown
 #ifdef MAEMO
     edtLat2Label->setVisible(false);
