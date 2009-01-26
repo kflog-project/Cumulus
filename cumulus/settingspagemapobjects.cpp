@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel pauli
+**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -54,7 +54,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
 SettingsPageMapObjects::~SettingsPageMapObjects()
 {}
 
-/** Called to initiate loading of the configurationfile */
+/** Called to initiate loading of the configuration file */
 void SettingsPageMapObjects::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
@@ -73,8 +73,7 @@ void SettingsPageMapObjects::slot_load()
   liTargetLine->setCheckState( conf->getMapBearLine()? Qt::Checked : Qt::Unchecked );
 }
 
-
-/** Called to initiate saving to the configurationfile. */
+/** Called to initiate saving to the configuration file. */
 void SettingsPageMapObjects::slot_save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
@@ -92,8 +91,7 @@ void SettingsPageMapObjects::slot_save()
   conf->setMapBearLine(liTargetLine->checkState() == Qt::Checked ? true : false);
 }
 
-
-/** Fills the list with loadoptions */
+/** Fills the list with load options */
 void SettingsPageMapObjects::fillLoadOptionList()
 {
   int row = 0;
