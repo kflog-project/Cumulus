@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2004 by André Somers, 2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -170,8 +170,175 @@ class GeneralConfig : protected QSettings
   /**
    * @returns requested pixmap
    */
-
   QPixmap loadPixmap( const QString& pixmapName );
+
+  /** Gets the airspace color */
+  QColor &getBorderColorAirspaceA()
+    {
+      return _borderColorAirspaceA;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorAirspaceA( const QColor& newValue )
+  {
+    _borderColorAirspaceA = newValue;
+  };
+
+  /** Gets the airspace color */
+  QColor &getBorderColorAirspaceB()
+    {
+      return _borderColorAirspaceB;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorAirspaceB( const QColor& newValue )
+  {
+    _borderColorAirspaceB = newValue;
+  };
+
+  /** Gets the airspace color */
+  QColor &getBorderColorAirspaceC()
+    {
+      return _borderColorAirspaceC;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorAirspaceC( const QColor& newValue )
+  {
+    _borderColorAirspaceC = newValue;
+  };
+
+  /** Gets the airspace color */
+  QColor &getBorderColorAirspaceD()
+    {
+      return _borderColorAirspaceD;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorAirspaceD( const QColor& newValue )
+  {
+    _borderColorAirspaceD = newValue;
+  };
+
+  /** Gets the airspace color */
+  QColor &getBorderColorAirspaceE()
+    {
+      return _borderColorAirspaceE;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorAirspaceE( const QColor& newValue )
+  {
+    _borderColorAirspaceE = newValue;
+  };
+
+  /** Gets the airspace color */
+  QColor &getBorderColorAirspaceF()
+    {
+      return _borderColorAirspaceF;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorAirspaceF( const QColor& newValue )
+  {
+    _borderColorAirspaceF = newValue;
+  };
+
+  /** Gets the airspace color */
+  QColor &getBorderColorWaveWindow()
+    {
+      return _borderColorWaveWindow;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorWaveWindow( const QColor& newValue )
+  {
+    _borderColorWaveWindow = newValue;
+  };
+
+  /** Gets the airspace color */
+  QColor &getBorderColorControlC()
+    {
+      return _borderColorControlC;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorControlC( const QColor& newValue )
+  {
+    _borderColorControlC = newValue;
+  };
+
+  /** Gets the airspace color */
+  QColor &getBorderColorControlD()
+    {
+      return _borderColorControlD;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorControlD( const QColor& newValue )
+  {
+    _borderColorControlD = newValue;
+  };
+
+  /** Gets the airspace color */
+  QColor &getBorderColorRestricted()
+    {
+      return _borderColorRestricted;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorRestricted( const QColor& newValue )
+  {
+    _borderColorRestricted = newValue;
+  };
+
+  /** Gets the airspace color */
+  QColor &getBorderColorDanger()
+    {
+      return _borderColorDanger;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorDanger( const QColor& newValue )
+  {
+    _borderColorDanger = newValue;
+  };
+
+  /** Gets the airspace color */
+  QColor &getBorderColorTMZ()
+    {
+      return _borderColorTMZ;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorTMZ( const QColor& newValue )
+  {
+    _borderColorTMZ = newValue;
+  };
+
+  /** Gets the airspace color */
+  QColor &getBorderColorLowFlight()
+    {
+      return _borderColorLowFlight;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorLowFlight( const QColor& newValue )
+  {
+    _borderColorLowFlight = newValue;
+  };
+
+  /** Gets the airspace color */
+  QColor &getBorderColorGliderSector()
+    {
+      return _borderColorGliderSector;
+    };
+
+  /** Sets the airspace color */
+  void setBorderColorGliderSector( const QColor& newValue )
+  {
+    _borderColorGliderSector = newValue;
+  };
 
   /**
    * @returns Structure with warning distances for airspace warnings
@@ -1228,6 +1395,23 @@ class GeneralConfig : protected QSettings
   AirspaceWarningDistance _awd;
   //draw airspace type and display a warning for this type
   bool _airspaceDrawingEnabled[BaseMapElement::objectTypeSize];
+
+  // border colors of airspaces
+  QColor _borderColorAirspaceA;
+  QColor _borderColorAirspaceB;
+  QColor _borderColorAirspaceC;
+  QColor _borderColorAirspaceD;
+  QColor _borderColorAirspaceE;
+  QColor _borderColorAirspaceF;
+  QColor _borderColorWaveWindow;
+  QColor _borderColorControlC;
+  QColor _borderColorControlD;
+  QColor _borderColorRestricted;
+  QColor _borderColorDanger;
+  QColor _borderColorTMZ;
+  QColor _borderColorLowFlight;
+  QColor _borderColorGliderSector;
+
   //display airspace warnings at all?
   bool _airspaceWarningGeneral;
   // vertical fillings for airspaces

@@ -73,6 +73,11 @@ class SettingsPageAirspace : public QWidget
      */
     void slot_toggleCheckBox( int row, int column );
 
+    /**
+     * Called to set all colors to their default value.
+     */
+    void slot_setColorDefaults();
+
   protected:
     /**
      * saves current altitude unit during construction of object
@@ -81,8 +86,11 @@ class SettingsPageAirspace : public QWidget
 
     QPushButton* cmdWarning;
     QPushButton* cmdFilling;
+    QPushButton* cmdColorDefaults;
 
-    QTableWidget*     drawOptions;
+    QTableWidget* drawOptions;
+
+    // enable/disable drawing of airspaces
     QTableWidgetItem* drawAirspaceA;
     QTableWidgetItem* drawAirspaceB;
     QTableWidgetItem* drawAirspaceC;
@@ -97,6 +105,22 @@ class SettingsPageAirspace : public QWidget
     QTableWidgetItem* drawTMZ;
     QTableWidgetItem* drawWaveWindow;
     QTableWidgetItem* drawGliderSector;
+
+    // border colors of airspaces
+    QWidget* borderColorAirspaceA;
+    QWidget* borderColorAirspaceB;
+    QWidget* borderColorAirspaceC;
+    QWidget* borderColorControlC;
+    QWidget* borderColorAirspaceD;
+    QWidget* borderColorControlD;
+    QWidget* borderColorAirspaceE;
+    QWidget* borderColorAirspaceF;
+    QWidget* borderColorRestricted;
+    QWidget* borderColorDanger;
+    QWidget* borderColorLowFlight;
+    QWidget* borderColorTMZ;
+    QWidget* borderColorWaveWindow;
+    QWidget* borderColorGliderSector;
 
     QCheckBox*      enableForceDrawing;
     QSpinBox*       spinForceMargin;

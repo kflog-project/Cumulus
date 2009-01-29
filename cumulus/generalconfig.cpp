@@ -106,6 +106,22 @@ void GeneralConfig::load()
   _airspaceDrawingEnabled[BaseMapElement::LowFlight]    = value("checkLowFlight", true).toBool();
   _airspaceDrawingEnabled[BaseMapElement::GliderSector] = value("checkGliderSector", true).toBool();
 
+  // Airspace border draw color
+  _borderColorAirspaceA    = QColor( value("borderColorAirspaceA", AIRA_COLOR).toString() );
+  _borderColorAirspaceB    = QColor( value("borderColorAirspaceB", AIRB_COLOR).toString() );
+  _borderColorAirspaceC    = QColor( value("borderColorAirspaceC", AIRC_COLOR).toString() );
+  _borderColorAirspaceD    = QColor( value("borderColorAirspaceD", AIRD_COLOR).toString() );
+  _borderColorAirspaceE    = QColor( value("borderColorAirspaceE", AIRE_COLOR).toString() );
+  _borderColorAirspaceF    = QColor( value("borderColorAirspaceF", AIRF_COLOR).toString() );
+  _borderColorWaveWindow   = QColor( value("borderColorWaveWindow", WAVE_WINDOW_COLOR).toString() );
+  _borderColorControlC     = QColor( value("borderColorControlC", CTRC_COLOR).toString() );
+  _borderColorControlD     = QColor( value("borderColorControlD", CTRD_COLOR).toString() );
+  _borderColorRestricted   = QColor( value("borderColorRestricted", RESTRICTED_COLOR).toString() );
+  _borderColorDanger       = QColor( value("borderColorDanger", DANGER_COLOR).toString() );
+  _borderColorTMZ          = QColor( value("borderColorTMZ", TMZ_COLOR).toString() );
+  _borderColorLowFlight    = QColor( value("borderColorLowFlight", LOWF_COLOR).toString() );
+  _borderColorGliderSector = QColor( value("borderColorGliderSector", GLIDER_SECTOR_COLOR).toString() );
+
   _airspaceWarningGeneral = value("enableAirspaceWarning", true).toBool();
 
   // Airspace filling
@@ -352,6 +368,22 @@ void GeneralConfig::save()
   setValue("checkTMZ", _airspaceDrawingEnabled[BaseMapElement::Tmz]);
   setValue("checkLowFlight", _airspaceDrawingEnabled[BaseMapElement::LowFlight]);
   setValue("checkGliderSector", _airspaceDrawingEnabled[BaseMapElement::GliderSector]);
+
+  // Airspace border draw color
+  setValue("borderColorAirspaceA", _borderColorAirspaceA.name());
+  setValue("borderColorAirspaceB", _borderColorAirspaceB.name());
+  setValue("borderColorAirspaceC", _borderColorAirspaceC.name());
+  setValue("borderColorAirspaceD", _borderColorAirspaceD.name());
+  setValue("borderColorAirspaceE", _borderColorAirspaceE.name());
+  setValue("borderColorAirspaceF", _borderColorAirspaceF.name());
+  setValue("borderColorWaveWindow", _borderColorWaveWindow.name());
+  setValue("borderColorControlC", _borderColorControlC.name());
+  setValue("borderColorControlD", _borderColorControlD.name());
+  setValue("borderColorRestricted", _borderColorRestricted.name());
+  setValue("borderColorDanger", _borderColorDanger.name());
+  setValue("borderColorTMZ", _borderColorDanger.name());
+  setValue("borderColorLowFlight", _borderColorLowFlight.name());
+  setValue("borderColorGliderSector", _borderColorGliderSector.name());
 
   setValue("enableAirspaceWarning", _airspaceWarningGeneral);
 
