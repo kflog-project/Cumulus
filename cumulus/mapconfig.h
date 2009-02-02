@@ -20,7 +20,6 @@
 #ifndef MAP_CONFIG_H
 #define MAP_CONFIG_H
 
-#include <QList>
 #include <QObject>
 #include <QPen>
 #include <QBrush>
@@ -103,7 +102,7 @@ public:
      */
     const QColor& getIsoColor(int heightIndex)
       {
-        return topographyColorList.at(heightIndex);
+        return topographyColorList[heightIndex];
       };
 
     /**
@@ -181,9 +180,16 @@ public:
 
 public slots:
     /**
-     * Forces MapConfig to read its configuration data.
+     * Forces MapConfig to reload its configuration data.
      */
     void slotReadConfig();
+
+    /**
+     * Airspace colors can be modified by the user in the airspace settings
+     * configuration widget. In such a case all color data in the lists must
+     * be cleared and reloaded.
+     */
+    void slotReloadAirspaceColors();
 
     /**
      * Sets the scale index an the flag for small icons. Called from
@@ -219,57 +225,57 @@ private:
     const QPen& __getPen(unsigned int typeID, int sIndex);
 
     // Color list for contour areas
-    QList<QColor> topographyColorList;
+    QColor topographyColorList[51];
 
-    // Pen and brush lists of different map items
-    QList<QPen> airAPenList;
-    QList<QBrush> airABrushList;
-    QList<QPen> airBPenList;
-    QList<QBrush> airBBrushList;
-    QList<QPen> airCPenList;
-    QList<QBrush> airCBrushList;
-    QList<QPen> airDPenList;
-    QList<QBrush> airDBrushList;
-    QList<QPen> airEPenList;
-    QList<QBrush> airEBrushList;
-    QList<QPen> waveWindowPenList;
-    QList<QBrush> waveWindowBrushList;
-    QList<QPen> airFPenList;
-    QList<QBrush> airFBrushList;
-    QList<QPen> ctrCPenList;
-    QList<QBrush> ctrCBrushList;
-    QList<QPen> ctrDPenList;
-    QList<QBrush> ctrDBrushList;
-    QList<QPen> lowFPenList;
-    QList<QBrush> lowFBrushList;
-    QList<QPen> dangerPenList;
-    QList<QBrush> dangerBrushList;
-    QList<QPen> restrPenList;
-    QList<QBrush> restrBrushList;
-    QList<QPen> tmzPenList;
-    QList<QBrush> tmzBrushList;
-    QList<QPen> gliderSectorPenList;
-    QList<QBrush> gliderSectorBrushList;
-    QList<QPen> highwayPenList;
-    QList<QPen> roadPenList;
-    QList<QPen> trailPenList;
-    QList<QPen> railPenList;
-    QList<QPen> rail_dPenList;
-    QList<QPen> aerialcablePenList;
-    QList<QPen> lakePenList;
-    QList<QBrush> lakeBrushList;
-    QList<QPen> riverPenList;
-    QList<QPen> river_tPenList;
-    QList<QBrush> river_tBrushList;
-    QList<QPen> canalPenList;
-    QList<QPen> cityPenList;
-    QList<QBrush> cityBrushList;
-    QList<QPen> forestPenList;
-    QList<QPen> glacierPenList;
-    QList<QPen> packicePenList;
-    QList<QBrush> forestBrushList;
-    QList<QBrush> glacierBrushList;
-    QList<QBrush> packiceBrushList;
+    // Pen and brush lists of different map items stored in arrays
+    QPen airAPenList[4];
+    QBrush airABrushList[4];
+    QPen airBPenList[4];
+    QBrush airBBrushList[4];
+    QPen airCPenList[4];
+    QBrush airCBrushList[4];
+    QPen airDPenList[4];
+    QBrush airDBrushList[4];
+    QPen airEPenList[4];
+    QBrush airEBrushList[4];
+    QPen waveWindowPenList[4];
+    QBrush waveWindowBrushList[4];
+    QPen airFPenList[4];
+    QBrush airFBrushList[4];
+    QPen ctrCPenList[4];
+    QBrush ctrCBrushList[4];
+    QPen ctrDPenList[4];
+    QBrush ctrDBrushList[4];
+    QPen lowFPenList[4];
+    QBrush lowFBrushList[4];
+    QPen dangerPenList[4];
+    QBrush dangerBrushList[4];
+    QPen restrPenList[4];
+    QBrush restrBrushList[4];
+    QPen tmzPenList[4];
+    QBrush tmzBrushList[4];
+    QPen gliderSectorPenList[4];
+    QBrush gliderSectorBrushList[4];
+    QPen highwayPenList[4];
+    QPen roadPenList[4];
+    QPen trailPenList[4];
+    QPen railPenList[4];
+    QPen rail_dPenList[4];
+    QPen aerialcablePenList[4];
+    QPen lakePenList[4];
+    QBrush lakeBrushList[4];
+    QPen riverPenList[4];
+    QPen river_tPenList[4];
+    QBrush river_tBrushList[4];
+    QPen canalPenList[4];
+    QPen cityPenList[4];
+    QBrush cityBrushList[4];
+    QPen forestPenList[4];
+    QPen glacierPenList[4];
+    QPen packicePenList[4];
+    QBrush forestBrushList[4];
+    QBrush glacierBrushList[4];
+    QBrush packiceBrushList[4];
 
     /**
      * holds a collection of ready made airfield icons
