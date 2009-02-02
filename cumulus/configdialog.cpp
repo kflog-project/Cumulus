@@ -28,6 +28,7 @@
 
 #include "configdialog.h"
 #include "generalconfig.h"
+#include "mapconfig.h"
 
 ConfigDialog::ConfigDialog(QWidget *parent) :
   QWidget(parent), loadConfig(true)
@@ -155,6 +156,11 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
           splnf, SLOT(slot_query_close(bool&, QStringList&)));
 
+  extern MapConfig *_globalMapConfig;
+
+  connect(spa, SIGNAL(airspaceColorsUpdated()),
+          _globalMapConfig, SLOT(slotReloadAirspaceColors()));
+
   QHBoxLayout *contentLayout = new QHBoxLayout;
   contentLayout->addWidget(tabWidget);
   contentLayout->addLayout(buttonBox);
@@ -215,7 +221,7 @@ void ConfigDialog::accept()
       emit welt2000ConfigChanged();
     }
 
-	emit closeConfig();
+  emit closeConfig();
   QWidget::close();
 }
 
