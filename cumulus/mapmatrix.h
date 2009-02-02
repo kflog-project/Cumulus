@@ -417,7 +417,7 @@ class MapMatrix : public QObject
   /** */
   double rotationArc;
   /** */
-  int scaleBorders[6];
+  int scaleBorders[7];
 
   /** current selected type of map projection */
   ProjectionBase* currentProjection;

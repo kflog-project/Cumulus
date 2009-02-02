@@ -1516,6 +1516,7 @@ void CumulusApp::slotConfig()
            this, SLOT( slotCloseConfig() ) );
   connect( cDlg,  SIGNAL( welt2000ConfigChanged() ),
            _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
+
   configView = (QWidget*) cDlg;
   cDlg->show();
 }
