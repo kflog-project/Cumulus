@@ -33,6 +33,7 @@
 #include "generalconfig.h"
 #include "settingspageairspace.h"
 #include "mapdefaults.h"
+#include "mapview.h"
 
 SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   QWidget(parent)
@@ -368,6 +369,13 @@ void SettingsPageAirspace::slot_save()
   conf->setBorderColorTMZ(borderColorTMZ->palette().color(QPalette::Window));
   conf->setBorderColorLowFlight(borderColorLowFlight->palette().color(QPalette::Window));
   conf->setBorderColorGliderSector(borderColorGliderSector->palette().color(QPalette::Window));
+
+  emit airspaceColorsUpdated();
+
+  // @AP: initiate a redraw of airspaces on the map due to color modifications.
+  //      Not the best solution but it is working ;-)
+  extern MapView *_globalMapView;
+  _globalMapView->_theMap->scheduleRedraw(Map::airspaces);
 
   m_fillingDlg->slot_save();
   m_warningsDlg->slot_save();

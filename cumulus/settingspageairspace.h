@@ -78,6 +78,13 @@ class SettingsPageAirspace : public QWidget
      */
     void slot_setColorDefaults();
 
+  signals: // Signals
+
+  /**
+   * Emitted if the airspace colors have been updated
+   */
+  void airspaceColorsUpdated();
+
   protected:
     /**
      * saves current altitude unit during construction of object
