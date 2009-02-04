@@ -129,6 +129,22 @@ class SettingsPageAirspace : public QWidget
     QWidget* borderColorWaveWindow;
     QWidget* borderColorGliderSector;
 
+    // fill (brush) colors of airspaces
+    QWidget* fillColorAirspaceA;
+    QWidget* fillColorAirspaceB;
+    QWidget* fillColorAirspaceC;
+    QWidget* fillColorControlC;
+    QWidget* fillColorAirspaceD;
+    QWidget* fillColorControlD;
+    QWidget* fillColorAirspaceE;
+    QWidget* fillColorAirspaceF;
+    QWidget* fillColorRestricted;
+    QWidget* fillColorDanger;
+    QWidget* fillColorLowFlight;
+    QWidget* fillColorTMZ;
+    QWidget* fillColorWaveWindow;
+    QWidget* fillColorGliderSector;
+
     QCheckBox*      enableForceDrawing;
     QSpinBox*       spinForceMargin;
 

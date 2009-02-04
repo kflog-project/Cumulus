@@ -394,7 +394,7 @@
 #define AIRA_PEN_STYLE_3 Qt::SolidLine
 #define AIRA_PEN_STYLE_4 Qt::SolidLine
 
-#define AIRA_COLOR QColor(0,180,0).name()
+#define AIRA_COLOR QColor(0,128,0).name()
 #define AIRA_COLOR_1 QColor(0,180,0)
 #define AIRA_COLOR_2 QColor(0,180,0)
 #define AIRA_COLOR_3 QColor(0,180,0)
@@ -422,7 +422,7 @@
 #define AIRB_PEN_STYLE_3 Qt::SolidLine
 #define AIRB_PEN_STYLE_4 Qt::SolidLine
 
-#define AIRB_COLOR QColor(0,180,0).name()
+#define AIRB_COLOR QColor(0,128,0).name()
 #define AIRB_COLOR_1 QColor(0,180,0)
 #define AIRB_COLOR_2 QColor(0,180,0)
 #define AIRB_COLOR_3 QColor(0,180,0)
@@ -450,7 +450,7 @@
 #define AIRC_PEN_STYLE_3 Qt::SolidLine
 #define AIRC_PEN_STYLE_4 Qt::SolidLine
 
-#define AIRC_COLOR QColor(0,180,0).name()
+#define AIRC_COLOR QColor(0,128,0).name()
 #define AIRC_COLOR_1 QColor(0,180,0)
 #define AIRC_COLOR_2 QColor(0,180,0)
 #define AIRC_COLOR_3 QColor(0,180,0)
@@ -478,7 +478,7 @@
 #define AIRD_PEN_STYLE_3 Qt::SolidLine
 #define AIRD_PEN_STYLE_4 Qt::SolidLine
 
-#define AIRD_COLOR QColor(0,180,0).name()
+#define AIRD_COLOR QColor(0,128,0).name()
 #define AIRD_COLOR_1 QColor(0,180,0)
 #define AIRD_COLOR_2 QColor(0,180,0)
 #define AIRD_COLOR_3 QColor(0,180,0)
@@ -506,7 +506,7 @@
 #define AIRE_PEN_STYLE_3 Qt::SolidLine
 #define AIRE_PEN_STYLE_4 Qt::SolidLine
 
-#define AIRE_COLOR QColor(138,169,235).name()
+#define AIRE_COLOR QColor(0,0,128).name()
 #define AIRE_COLOR_1 QColor(138,169,235)
 #define AIRE_COLOR_2 QColor(138,169,235)
 #define AIRE_COLOR_3 QColor(138,169,235)
@@ -534,7 +534,7 @@
 #define AIRF_PEN_STYLE_3 Qt::SolidLine
 #define AIRF_PEN_STYLE_4 Qt::SolidLine
 
-#define AIRF_COLOR QColor(138,169,235).name()
+#define AIRF_COLOR QColor(0,0,128).name()
 #define AIRF_COLOR_1 QColor(138,169,235)
 #define AIRF_COLOR_2 QColor(138,169,235)
 #define AIRF_COLOR_3 QColor(138,169,235)
@@ -680,7 +680,7 @@
 #define DNG_COLOR_3 QColor(0,0,128)
 #define DNG_COLOR_4 QColor(0,0,128)
 
-#define DANGER_BRUSH_COLOR QColor(0,0,128).name()
+#define DANGER_BRUSH_COLOR QColor(138,169,235).name()
 #define DNG_BRUSH_COLOR_1 QColor(0,0,128)
 #define DNG_BRUSH_COLOR_2 QColor(0,0,128)
 #define DNG_BRUSH_COLOR_3 QColor(0,0,128)
@@ -708,7 +708,7 @@
 #define RES_COLOR_3 QColor(0,0,128)
 #define RES_COLOR_4 QColor(0,0,128)
 
-#define RESTRICTED_BRUSH_COLOR QColor(0,0,128).name()
+#define RESTRICTED_BRUSH_COLOR QColor(138,169,235).name()
 #define RES_BRUSH_COLOR_1 QColor(0,0,128)
 #define RES_BRUSH_COLOR_2 QColor(0,0,128)
 #define RES_BRUSH_COLOR_3 QColor(0,0,128)
@@ -736,7 +736,7 @@
 #define TMZ_COLOR_3 QColor(0,0,128)
 #define TMZ_COLOR_4 QColor(0,0,128)
 
-#define TMZ_BRUSH_COLOR QColor(0,0,128).name()
+#define TMZ_BRUSH_COLOR QColor(138,169,235).name()
 #define TMZ_BRUSH_COLOR_1 QColor(0,0,128)
 #define TMZ_BRUSH_COLOR_2 QColor(0,0,128)
 #define TMZ_BRUSH_COLOR_3 QColor(0,0,128)

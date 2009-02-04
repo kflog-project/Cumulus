@@ -122,6 +122,22 @@ void GeneralConfig::load()
   _borderColorLowFlight    = QColor( value("borderColorLowFlight", LOWF_COLOR).toString() );
   _borderColorGliderSector = QColor( value("borderColorGliderSector", GLIDER_SECTOR_COLOR).toString() );
 
+  // Airspace fill (brush) draw color
+  _fillColorAirspaceA    = QColor( value("fillColorAirspaceA", AIRA_BRUSH_COLOR).toString() );
+  _fillColorAirspaceB    = QColor( value("fillColorAirspaceB", AIRB_BRUSH_COLOR).toString() );
+  _fillColorAirspaceC    = QColor( value("fillColorAirspaceC", AIRC_BRUSH_COLOR).toString() );
+  _fillColorAirspaceD    = QColor( value("fillColorAirspaceD", AIRD_BRUSH_COLOR).toString() );
+  _fillColorAirspaceE    = QColor( value("fillColorAirspaceE", AIRE_BRUSH_COLOR).toString() );
+  _fillColorAirspaceF    = QColor( value("fillColorAirspaceF", AIRF_BRUSH_COLOR).toString() );
+  _fillColorWaveWindow   = QColor( value("fillColorWaveWindow", WAVE_WINDOW_BRUSH_COLOR).toString() );
+  _fillColorControlC     = QColor( value("fillColorControlC", CTRC_BRUSH_COLOR).toString() );
+  _fillColorControlD     = QColor( value("fillColorControlD", CTRD_BRUSH_COLOR).toString() );
+  _fillColorRestricted   = QColor( value("fillColorRestricted", RESTRICTED_BRUSH_COLOR).toString() );
+  _fillColorDanger       = QColor( value("fillColorDanger", DANGER_BRUSH_COLOR).toString() );
+  _fillColorTMZ          = QColor( value("fillColorTMZ", TMZ_BRUSH_COLOR).toString() );
+  _fillColorLowFlight    = QColor( value("fillColorLowFlight", LOWF_BRUSH_COLOR).toString() );
+  _fillColorGliderSector = QColor( value("fillColorGliderSector", GLIDER_SECTOR_BRUSH_COLOR).toString() );
+
   _airspaceWarningGeneral = value("enableAirspaceWarning", true).toBool();
 
   // Airspace filling
@@ -384,6 +400,22 @@ void GeneralConfig::save()
   setValue("borderColorTMZ", _borderColorDanger.name());
   setValue("borderColorLowFlight", _borderColorLowFlight.name());
   setValue("borderColorGliderSector", _borderColorGliderSector.name());
+
+  // Airspace fill (brush) draw color
+  setValue("fillColorAirspaceA", _fillColorAirspaceA.name());
+  setValue("fillColorAirspaceB", _fillColorAirspaceB.name());
+  setValue("fillColorAirspaceC", _fillColorAirspaceC.name());
+  setValue("fillColorAirspaceD", _fillColorAirspaceD.name());
+  setValue("fillColorAirspaceE", _fillColorAirspaceE.name());
+  setValue("fillColorAirspaceF", _fillColorAirspaceF.name());
+  setValue("fillColorWaveWindow", _fillColorWaveWindow.name());
+  setValue("fillColorControlC", _fillColorControlC.name());
+  setValue("fillColorControlD", _fillColorControlD.name());
+  setValue("fillColorRestricted", _fillColorRestricted.name());
+  setValue("fillColorDanger", _fillColorDanger.name());
+  setValue("fillColorTMZ", _fillColorDanger.name());
+  setValue("fillColorLowFlight", _fillColorLowFlight.name());
+  setValue("fillColorGliderSector", _fillColorGliderSector.name());
 
   setValue("enableAirspaceWarning", _airspaceWarningGeneral);
 
