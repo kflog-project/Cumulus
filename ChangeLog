@@ -15,8 +15,10 @@ Cumulus changelog
 #===============================================================================#
 
 -------------------------------------------------
-Cumulus 2.1.x (Development based on X11/Qt-4.4.1)
+Cumulus 2.1.x (Development based on X11/Qt-4.5)
 -------------------------------------------------
+[+] 2009-02-04 AP: Airspace fill colors can be defined resp. modified by user
+                   in airspace settings configuration tabulator.
 [o] 2009-02-02 AP: All QLists in MapConfig replaced by plain arrays to reduce
                    access and management effort.
 [+] 2009-01-29 AP: Airspace border colors can be defined resp. modified by user
