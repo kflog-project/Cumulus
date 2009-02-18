@@ -18,6 +18,7 @@
 #ifndef SETTINGSPAGEAIRSPACE_H
 #define SETTINGSPAGEAIRSPACE_H
 
+#include <QWidget>
 #include <QCheckBox>
 #include <QDialog>
 #include <QGroupBox>
@@ -25,8 +26,6 @@
 #include <QTableWidgetItem>
 #include <QPushButton>
 #include <QSpinBox>
-#include <QWidget>
-#include <QGridLayout>
 #include <QRadioButton>
 
 #include "altitude.h"
