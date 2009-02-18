@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008 Axel Pauli
+**   Copyright (c):  2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -26,12 +26,13 @@
 #include <QStyleFactory>
 #include <QStringList>
 #include <QApplication>
+#include <QFontDialog>
 
 #include "generalconfig.h"
 #include "settingspagelooknfeel.h"
 
 SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
-    QWidget(parent), loadConfig(true)
+  QWidget(parent), loadConfig(true), currentFont("")
 {
   setObjectName("SettingsPageLookNFeel");
 
@@ -53,14 +54,13 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
     styleBox->addItem(style);
   }
 
-  lbl = new QLabel(tr("GUI Font Size:"), this);
+  lbl = new QLabel(tr("GUI Fonts:"), this);
   topLayout->addWidget(lbl, row, 0);
-  spinFontSize = new QSpinBox(this);
-  spinFontSize->setObjectName("spinFontSize");
-  spinFontSize->setMinimum(10);
-  spinFontSize->setMaximum(20);
-  spinFontSize->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget( spinFontSize, row, 1 );
+  fontDialog = new QPushButton(tr("Show Fonts"));
+  fontDialog->setObjectName("fontDialog");
+  topLayout->addWidget( fontDialog, row, 1 );
+
+  connect(fontDialog, SIGNAL(clicked()), this, SLOT(slot_openFontDialog()));
   row++;
 
   lbl = new QLabel(tr("Sidebar frame color:"), this);
@@ -87,7 +87,7 @@ void SettingsPageLookNFeel::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  spinFontSize->setValue( conf->getGuiFontSize() );
+  currentFont = conf->getGuiFont();
 
   edtFrameCol->setText( conf->getFrameCol() );
 
@@ -107,21 +107,18 @@ void SettingsPageLookNFeel::slot_save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  if( conf->getGuiFontSize() != spinFontSize->value() )
-  {
-    conf->setGuiFontSize( spinFontSize->value() );
-    QFont appFt = QApplication::font();
-    appFt.setPointSize( spinFontSize->value() );
-    QApplication::setFont( appFt );
-  }
+  if( conf->getGuiFont() != currentFont )
+    {
+      conf->setGuiFont( currentFont );
+    }
 
   conf->setFrameCol( edtFrameCol->text() );
 
   if( conf->getGuiStyle() != styleBox->currentText() )
-  {
-    conf->setGuiStyle( styleBox->currentText() );
-    conf->setOurGuiStyle();
-  }
+    {
+      conf->setGuiStyle( styleBox->currentText() );
+      conf->setOurGuiStyle();
+    }
 
   // Note! enabling/disabling requires GUI restart
   conf->setVirtualKeyboard( virtualKeybord->isChecked() );
@@ -139,7 +136,7 @@ void SettingsPageLookNFeel::slot_query_close( bool& warn, QStringList& warnings 
   GeneralConfig * conf = GeneralConfig::instance();
   bool changed=false;
 
-  changed |= conf->getGuiFontSize() != spinFontSize->value();
+  changed |= conf->getGuiFont() != currentFont;
   changed |= conf->getGuiStyle() != styleBox->currentText();
   changed |= conf->getVirtualKeyboard() != virtualKeybord->isChecked();
 
@@ -150,3 +147,26 @@ void SettingsPageLookNFeel::slot_query_close( bool& warn, QStringList& warnings 
     }
 }
 
+/** Called to open the font dialog */
+void SettingsPageLookNFeel::slot_openFontDialog()
+{
+  bool ok;
+
+  QFont font = QFontDialog::getFont( &ok, this);
+
+  if (ok)
+    {
+     // the user clicked OK and font is set to the font the user selected
+      currentFont = font.toString();
+
+     // Set the new GUI font for all widgets. Note this new font
+     // is only set temporary. The user must save it for permanent
+     // usage.
+     QApplication::setFont( font );
+    }
+  else
+    {
+      // the user clicked cancel, reset currentFont variable
+      currentFont = GeneralConfig::instance()->getGuiFont();
+    }
+}

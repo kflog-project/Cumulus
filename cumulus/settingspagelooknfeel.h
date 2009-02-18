@@ -22,7 +22,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QCheckBox>
-#include <QSpinBox>
+#include <QPushButton>
 
 /**
  * This class represents the personal style settings.
@@ -31,7 +31,9 @@
 class SettingsPageLookNFeel : public QWidget
   {
     Q_OBJECT
+
   public:
+
     SettingsPageLookNFeel(QWidget *parent=0);
     ~SettingsPageLookNFeel();
 
@@ -44,17 +46,24 @@ class SettingsPageLookNFeel : public QWidget
     void slot_load();
 
     /**
-     * Called to ask is confirmation on the close is needed.
+     * Called to ask is confirmation on close is needed.
      */
     void slot_query_close(bool& warn, QStringList& warnings);
 
+  private slots:
+
+    /** Called to open the font dialog */
+    void slot_openFontDialog();
+
   private:
+
     bool loadConfig; // control loading of config data
-    
-    QComboBox *styleBox;
-    QSpinBox  *spinFontSize;
-    QLineEdit *edtFrameCol;
-    QCheckBox *virtualKeybord;
+    QString currentFont; // current selected font is saved here
+
+    QComboBox   *styleBox;
+    QPushButton *fontDialog;
+    QLineEdit   *edtFrameCol;
+    QCheckBox   *virtualKeybord;
   };
 
 #endif
