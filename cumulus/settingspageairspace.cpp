@@ -26,6 +26,7 @@
 #include <QSignalMapper>
 #include <QHBoxLayout>
 #include <QColorDialog>
+#include <QGridLayout>
 
 #include "airspace.h"
 #include "basemapelement.h"
@@ -500,8 +501,6 @@ void SettingsPageAirspace::slot_save()
   */
 void SettingsPageAirspace::slot_setColorDefaults()
 {
-  qDebug("Reset Colors");
-
   borderColorAirspaceA->setPalette( QPalette(QColor(AIRA_COLOR)) );
   borderColorAirspaceB->setPalette( QPalette(QColor(AIRB_COLOR)) );
   borderColorAirspaceC->setPalette( QPalette(QColor(AIRC_COLOR)) );
