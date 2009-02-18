@@ -20,7 +20,6 @@
 
 #include <QWidget>
 #include <QBoxLayout>
-#include <QListView>
 #include <QStringList>
 
 #include "gliderlistwidget.h"
