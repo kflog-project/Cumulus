@@ -22,6 +22,7 @@ HEADERS = airfieldlistview.h \
     cumulusapp.h \
     degreespinbox.h \
     distance.h \
+    elevationimage.h \
     filetools.h \
     flightpoint.h \
     flighttask.h \
@@ -84,6 +85,7 @@ HEADERS = airfieldlistview.h \
     settingspagemapsettings.h \
     settingspagepersonal.h \
     settingspagesector.h \
+    settingspageterraincolors.h \
     settingspageunits.h \
     signalhandler.h \
     singlepoint.h \
@@ -128,6 +130,7 @@ SOURCES = airfieldlistview.cpp \
     cumulusapp.cpp \
     degreespinbox.cpp \
     distance.cpp \
+    elevationimage.cpp \
     filetools.cpp \
     flighttask.cpp \
     generalconfig.cpp \
@@ -184,6 +187,7 @@ SOURCES = airfieldlistview.cpp \
     settingspagemapsettings.cpp \
     settingspagepersonal.cpp \
     settingspagesector.cpp \
+    settingspageterraincolors.cpp \
     settingspageunits.cpp \
     signalhandler.cpp \
     singlepoint.cpp \
