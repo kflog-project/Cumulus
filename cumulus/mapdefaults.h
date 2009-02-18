@@ -44,8 +44,11 @@
  * 9000 m :    96 /  43 /  16 *
  */
 
-// Default-Values for topography:
-#define COLOR_LEVEL_SUB QColor(96, 128, 248)
+// number of different terrain colors
+#define SIZEOF_TERRAIN_COLORS 51
+
+// Default values used for terrain colors
+#define COLOR_LEVEL_SUB QColor(96, 128, 248) // 230,255,255
 #define COLOR_LEVEL_0 QColor(165, 214, 126)
 #define COLOR_LEVEL_10 QColor(185, 220, 131)
 #define COLOR_LEVEL_25 QColor(193, 225, 138)

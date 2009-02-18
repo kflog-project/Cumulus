@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by Andrè Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002 by Andrè Somers, 2009 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -62,6 +62,9 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
 
   spmo=new SettingsPageMapObjects(this);
   tabWidget->addTab(spmo, tr("Map Objects"));
+
+  sptc=new SettingsPageTerrainColors(this);
+  tabWidget->addTab(sptc, tr("Terrain Colors"));
 
   QScrollArea* afArea = new QScrollArea(tabWidget);
   afArea->setWidgetResizable(true);
@@ -123,6 +126,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   connect(this, SIGNAL(load()), spu, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spi, SLOT(slot_load()));
   connect(this, SIGNAL(load()), splnf, SLOT(slot_load()));
+  connect(this, SIGNAL(load()), sptc, SLOT(slot_load()));
 
   connect(this, SIGNAL(reload()), spu, SLOT(slot_load()));
 
@@ -137,6 +141,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   connect(this, SIGNAL(save()), spi, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spu, SLOT(slot_save()));
   connect(this, SIGNAL(save()), splnf, SLOT(slot_save()));
+  connect(this, SIGNAL(save()), sptc, SLOT(slot_save()));
 
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
           spgl, SLOT(slot_query_close(bool&, QStringList&)));
@@ -155,6 +160,9 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
 
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
           splnf, SLOT(slot_query_close(bool&, QStringList&)));
+
+  connect(this, SIGNAL(query_close(bool&, QStringList& )),
+          sptc, SLOT(slot_query_close(bool&, QStringList&)));
 
   extern MapConfig *_globalMapConfig;
 

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -31,18 +31,20 @@
 #include "settingspagesector.h"
 #include "settingspageglider.h"
 #include "settingspagelooknfeel.h"
+#include "settingspageterraincolors.h"
+
 /**
   * @short Configuration dialog
   *
   * This is the general configuration dialog for Cumulus.
-  *   
+  *
   * @author André Somers
   *
   */
 class ConfigDialog : public QWidget
   {
     Q_OBJECT
-      
+
   public:
     /**
      * Constructor
@@ -106,8 +108,8 @@ class ConfigDialog : public QWidget
      */
     void closeConfig();
     /**
-     * This signal is emitted to the settings pages to ask them if they want to display a 
-     * warning when closing without saving. If so, the boolean flag warn must be set by in the 
+     * This signal is emitted to the settings pages to ask them if they want to display a
+     * warning when closing without saving. If so, the boolean flag warn must be set by in the
      * slot. In response, the configuration dialog object will display a dialog box to confirm
      * the closing and offering to save the changes instead.
      */
@@ -120,6 +122,7 @@ class ConfigDialog : public QWidget
     SettingsPageSector* sps;
     SettingsPageGPS* spg;
     SettingsPageMapSettings* spms;
+    SettingsPageTerrainColors* sptc;
     SettingsPageMapObjects* spmo;
     SettingsPageAirfields* spaf;
     SettingsPageAirspace* spa;

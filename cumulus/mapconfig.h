@@ -27,6 +27,9 @@
 #include <QString>
 #include <QMap>
 #include <QIcon>
+#include <QColor>
+
+#include "mapconfig.h"
 
 /**
  * @author Heiner Lamprecht, Florian Ehinger
@@ -94,16 +97,6 @@ public:
     {
       return __getBrush(typeID, scaleIndex);
     };
-
-    /**
-     * @param  heighIndex  The index of the height of the isohypse.
-     *
-     * @return the color for a isohypse.
-     */
-    const QColor& getIsoColor(int heightIndex)
-      {
-        return topographyColorList[heightIndex];
-      };
 
     /**
      * @param  iconName  The name of the icon to load
@@ -223,9 +216,6 @@ private:
      * @return the pen
      */
     const QPen& __getPen(unsigned int typeID, int sIndex);
-
-    // Color list for contour areas
-    QColor topographyColorList[51];
 
     // Pen and brush lists of different map items stored in arrays
     QPen airAPenList[4];

@@ -2,7 +2,7 @@
  **
  **   mapconfig.cpp
  **
- **   This file is part of cumulus.
+ **   This file is part of Cumulus.
  **
  ************************************************************************
  **
@@ -15,7 +15,6 @@
  **
  ***********************************************************************/
 
-#include "mapconfig.h"
 #include "basemapelement.h"
 #include "mapdefaults.h"
 #include "generalconfig.h"
@@ -107,59 +106,6 @@ MapConfig::~MapConfig()
 
 void MapConfig::slotReadConfig()
 {
-  // Load colors for topography
-  topographyColorList[0] = COLOR_LEVEL_SUB;
-  topographyColorList[1] = COLOR_LEVEL_0;
-  topographyColorList[2] = COLOR_LEVEL_10;
-  topographyColorList[3] = COLOR_LEVEL_25;
-  topographyColorList[4] = COLOR_LEVEL_50;
-  topographyColorList[5] = COLOR_LEVEL_75;
-  topographyColorList[6] = COLOR_LEVEL_100;
-  topographyColorList[7] = COLOR_LEVEL_150;
-  topographyColorList[8] = COLOR_LEVEL_200;
-  topographyColorList[9] = COLOR_LEVEL_250;
-  topographyColorList[10] = COLOR_LEVEL_300;
-  topographyColorList[11] = COLOR_LEVEL_350;
-  topographyColorList[12] = COLOR_LEVEL_400;
-  topographyColorList[13] = COLOR_LEVEL_450;
-  topographyColorList[14] = COLOR_LEVEL_500;
-  topographyColorList[15] = COLOR_LEVEL_600;
-  topographyColorList[16] = COLOR_LEVEL_700;
-  topographyColorList[17] = COLOR_LEVEL_800;
-  topographyColorList[18] = COLOR_LEVEL_900;
-  topographyColorList[19] = COLOR_LEVEL_1000;
-  topographyColorList[20] = COLOR_LEVEL_1250;
-  topographyColorList[21] = COLOR_LEVEL_1500;
-  topographyColorList[22] = COLOR_LEVEL_1750;
-  topographyColorList[23] = COLOR_LEVEL_2000;
-  topographyColorList[24] = COLOR_LEVEL_2250;
-  topographyColorList[25] = COLOR_LEVEL_2500;
-  topographyColorList[26] = COLOR_LEVEL_2750;
-  topographyColorList[27] = COLOR_LEVEL_3000;
-  topographyColorList[28] = COLOR_LEVEL_3250;
-  topographyColorList[29] = COLOR_LEVEL_3500;
-  topographyColorList[30] = COLOR_LEVEL_3750;
-  topographyColorList[31] = COLOR_LEVEL_4000;
-  topographyColorList[32] = COLOR_LEVEL_4250;
-  topographyColorList[33] = COLOR_LEVEL_4500;
-  topographyColorList[34] = COLOR_LEVEL_4750;
-  topographyColorList[35] = COLOR_LEVEL_5000;
-  topographyColorList[36] = COLOR_LEVEL_5250;
-  topographyColorList[37] = COLOR_LEVEL_5500;
-  topographyColorList[38] = COLOR_LEVEL_5750;
-  topographyColorList[39] = COLOR_LEVEL_6000;
-  topographyColorList[40] = COLOR_LEVEL_6250;
-  topographyColorList[41] = COLOR_LEVEL_6500;
-  topographyColorList[42] = COLOR_LEVEL_6750;
-  topographyColorList[43] = COLOR_LEVEL_7000;
-  topographyColorList[44] = COLOR_LEVEL_7250;
-  topographyColorList[45] = COLOR_LEVEL_7500;
-  topographyColorList[46] = COLOR_LEVEL_7750;
-  topographyColorList[47] = COLOR_LEVEL_8000;
-  topographyColorList[48] = COLOR_LEVEL_8250;
-  topographyColorList[49] = COLOR_LEVEL_8500;
-  topographyColorList[50] = COLOR_LEVEL_8750;
-
   GeneralConfig *conf = GeneralConfig::instance();
 
   READ_PEN("Road", roadPenList, roadBorder,

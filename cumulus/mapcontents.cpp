@@ -2084,7 +2084,6 @@ void MapContents::drawIsoList(QPainter* targetP)
   QTime t;
   t.start();
 
-  extern MapConfig * _globalMapConfig;
   extern MapMatrix * _globalMapMatrix;
   int height = 0;
   _lastIsoEntry=0;
@@ -2138,16 +2137,19 @@ void MapContents::drawIsoList(QPainter* targetP)
             }
         }
 
-      if ( GeneralConfig::instance()->getMapLoadIsoLines() )
+      GeneralConfig *conf = GeneralConfig::instance();
+
+      if ( conf->getMapLoadIsoLines() )
         {
           // choose contour color
-          targetP->setBrush(QBrush(_globalMapConfig->getIsoColor(height), Qt::SolidPattern));
+          targetP->setBrush(QBrush(conf->getTerrainColor(height), Qt::SolidPattern));
         }
       else
         {
           // Choose a brighter color, when isoline drawing is switched
           // off by the user to get a better readability.
-          targetP->setBrush(QBrush(_globalMapConfig->getIsoColor(6), Qt::SolidPattern));
+          targetP->setBrush(QBrush(conf->getTerrainColor(6), Qt::SolidPattern));
+          qWarning("drawIsoList: Check, why this part is used");
         }
 
       for (int j = 0; j < iso.size(); j++)
