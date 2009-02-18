@@ -29,6 +29,7 @@
 #include "basemapelement.h"
 #include "altitude.h"
 #include "waypoint.h"
+#include "mapdefaults.h"
 
 /**
   * @short Configuration encapsulation class
@@ -668,15 +669,15 @@ class GeneralConfig : protected QSettings
     _guiStyle = newValue;
   };
 
-  /** gets GUI font size */
-  int getGuiFontSize() const
+  /** gets GUI font */
+  QString &getGuiFont()
   {
-    return _guiFontSize;
+    return _guiFont;
   };
-  /** sets GUI font size  */
-  void setGuiFontSize( const int newValue )
+  /** sets GUI font  */
+  void setGuiFont( const QString newValue )
   {
-    _guiFontSize = newValue;
+    _guiFont = newValue;
   };
 
   /** gets virtual keyboard usage */
@@ -1545,9 +1546,18 @@ class GeneralConfig : protected QSettings
   /** Get the GPS default device depending on the hardware type */
   QString getGpsDefaultDevice();
 
+  /** Sets the terrain color at position index */
+  void setTerrainColor( const QColor newValue, const ushort index );
+
+  /** Gets the terrain color at position index */
+  QColor& getTerrainColor( const ushort index );
+
  private:
 
-  static GeneralConfig *_theInstance;
+   /** loads the terrain default colors */
+   void loadTerrainDefaultColors();
+
+   static GeneralConfig *_theInstance;
 
   // Root path of cumulus installation
   QString _installRoot;
@@ -1557,6 +1567,12 @@ class GeneralConfig : protected QSettings
 
   // user data directory
   QString _userDataDirectory;
+
+  // terrain colors
+  QColor _terrainColors[SIZEOF_TERRAIN_COLORS];
+
+  // terrain default colors
+  QString _terrainDefaultColors[SIZEOF_TERRAIN_COLORS];
 
   //properties
   //used to store the distances for airspace warnings
@@ -1579,7 +1595,7 @@ class GeneralConfig : protected QSettings
   QColor _borderColorTMZ;
   QColor _borderColorLowFlight;
   QColor _borderColorGliderSector;
-  
+
   // fill (brush) colors of airspaces
   QColor _fillColorAirspaceA;
   QColor _fillColorAirspaceB;
@@ -1623,11 +1639,11 @@ class GeneralConfig : protected QSettings
   QString _framecol;
   // GUI style
   QString _guiStyle;
-  // GUI font size
-  int _guiFontSize;
+  // GUI font
+  QString _guiFont;
   // Virtual keyboard usage
   bool _virtualKeyboard;
-  // qnh
+  // QNH
   int _qnh;
   // logger interval
   int _loggerInterval;

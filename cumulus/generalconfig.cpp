@@ -27,7 +27,6 @@ using namespace std;
 
 #include "generalconfig.h"
 #include "hwinfo.h"
-#include "mapdefaults.h"
 #include "gpsnmea.h"
 #include "speed.h"
 #include "altitude.h"
@@ -45,6 +44,7 @@ GeneralConfig* GeneralConfig::_theInstance = 0;
 GeneralConfig::GeneralConfig() : QSettings( QSettings::UserScope, "Cumulus" )
 {
   _homeWp = new wayPoint();
+  loadTerrainDefaultColors();
   load();
 
   // increase global pixmap cache to 2MB
@@ -67,14 +67,10 @@ void GeneralConfig::load()
 
   // Main window properties
   beginGroup("MainWindow");
-  _windowSize = value("Geometrie", QSize(800, 480)).toSize();
-  _framecol   = value("FrameColor", "#687ec6").toString();
-  _guiStyle   = value("Style", "Plastique").toString();
-#ifndef MAEMO
-  _guiFontSize = value("FontSize", "14").toInt();
-#else
-  _guiFontSize = value("FontSize", "18").toInt();
-#endif
+  _windowSize      = value("Geometrie", QSize(800, 480)).toSize();
+  _framecol        = value("FrameColor", "#687ec6").toString();
+  _guiStyle        = value("Style", "Plastique").toString();
+  _guiFont         = value("Font", "").toString();
   _virtualKeyboard = value("VirtualKeyboard", false).toBool();
   endGroup();
 
@@ -178,7 +174,7 @@ void GeneralConfig::load()
   _cruisingSpeed   = value( "CruisingSpeed", 100 ).toInt();
   endGroup();
 
-  // Task scheme settings for cylinder-sector and nearst-touched
+  // Task scheme settings for cylinder-sector and nearest-touched
   beginGroup("Task Scheme");
   _taskActiveCSScheme = (enum ActiveCSTaskScheme) value( "ActiveCSScheme",
                                                          GeneralConfig::Sector ).toInt();
@@ -228,6 +224,13 @@ void GeneralConfig::load()
 
   _welt2000CountryFilter = value("Welt2000CountryFilter", "").toString();
   _welt2000HomeRadius    = value("Welt2000HomeRadius", 0).toInt();
+
+  for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
+    {
+      QString color = "TerrainColor_" + QString::number(i);
+      _terrainColors[i] = QColor( value(color, _terrainDefaultColors[i]).toString() );
+    }
+
   endGroup();
 
   beginGroup("List Display");
@@ -353,7 +356,7 @@ void GeneralConfig::save()
   setValue("Geometrie", _windowSize );
   setValue("FrameColor", _framecol);
   setValue("Style", _guiStyle);
-  setValue("FontSize", _guiFontSize);
+  setValue("Font", _guiFont);
   setValue("VirtualKeyboard", _virtualKeyboard);
   endGroup();
 
@@ -487,6 +490,7 @@ void GeneralConfig::save()
   endGroup();
 
   beginGroup("Map Data");
+
   setValue("Homesite Latitude", _homeWp->origP.lat());
   setValue("Homesite Longitude", _homeWp->origP.lon());
   setValue("Map Root", _mapUserDir);
@@ -496,6 +500,13 @@ void GeneralConfig::save()
   setValue("Projection Type", _mapProjectionType);
   setValue("Welt2000CountryFilter", _welt2000CountryFilter);
   setValue("Welt2000HomeRadius", _welt2000HomeRadius);
+
+  for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
+    {
+      QString color = "TerrainColor_" + QString::number(i);
+      setValue(color, _terrainColors[i].name());
+    }
+
   endGroup();
 
   beginGroup("List Display");
@@ -1416,3 +1427,85 @@ void GeneralConfig::setOurGuiStyle()
 #endif
 }
 
+/** Sets the terrain color at position index */
+void GeneralConfig::setTerrainColor( const QColor newValue, const ushort index )
+{
+  if( index < SIZEOF_TERRAIN_COLORS )
+    {
+      _terrainColors[index] = newValue;
+    }
+  else
+    {
+      qWarning( "GeneralConfig::getTerrainColor(): Index %d out of range", index );
+    }
+}
+
+/** Gets the terrain color at position index */
+QColor& GeneralConfig::getTerrainColor( const ushort index )
+{
+  static QColor defaultColor;
+
+  if( index < SIZEOF_TERRAIN_COLORS )
+    {
+      return _terrainColors[index];
+    }
+
+  qWarning( "GeneralConfig::getTerrainColor(): Index %d out of range", index );
+  return defaultColor;
+}
+
+/** loads the terrain default colors */
+void GeneralConfig::loadTerrainDefaultColors()
+{
+  _terrainDefaultColors[0] = COLOR_LEVEL_SUB.name();
+  _terrainDefaultColors[1] = COLOR_LEVEL_0.name();
+  _terrainDefaultColors[2] = COLOR_LEVEL_10.name();
+  _terrainDefaultColors[3] = COLOR_LEVEL_25.name();
+  _terrainDefaultColors[4] = COLOR_LEVEL_50.name();
+  _terrainDefaultColors[5] = COLOR_LEVEL_75.name();
+  _terrainDefaultColors[6] = COLOR_LEVEL_100.name();
+  _terrainDefaultColors[7] = COLOR_LEVEL_150.name();
+  _terrainDefaultColors[8] = COLOR_LEVEL_200.name();
+  _terrainDefaultColors[9] = COLOR_LEVEL_250.name();
+  _terrainDefaultColors[10] = COLOR_LEVEL_300.name();
+  _terrainDefaultColors[11] = COLOR_LEVEL_350.name();
+  _terrainDefaultColors[12] = COLOR_LEVEL_400.name();
+  _terrainDefaultColors[13] = COLOR_LEVEL_450.name();
+  _terrainDefaultColors[14] = COLOR_LEVEL_500.name();
+  _terrainDefaultColors[15] = COLOR_LEVEL_600.name();
+  _terrainDefaultColors[16] = COLOR_LEVEL_700.name();
+  _terrainDefaultColors[17] = COLOR_LEVEL_800.name();
+  _terrainDefaultColors[18] = COLOR_LEVEL_900.name();
+  _terrainDefaultColors[19] = COLOR_LEVEL_1000.name();
+  _terrainDefaultColors[20] = COLOR_LEVEL_1250.name();
+  _terrainDefaultColors[21] = COLOR_LEVEL_1500.name();
+  _terrainDefaultColors[22] = COLOR_LEVEL_1750.name();
+  _terrainDefaultColors[23] = COLOR_LEVEL_2000.name();
+  _terrainDefaultColors[24] = COLOR_LEVEL_2250.name();
+  _terrainDefaultColors[25] = COLOR_LEVEL_2500.name();
+  _terrainDefaultColors[26] = COLOR_LEVEL_2750.name();
+  _terrainDefaultColors[27] = COLOR_LEVEL_3000.name();
+  _terrainDefaultColors[28] = COLOR_LEVEL_3250.name();
+  _terrainDefaultColors[29] = COLOR_LEVEL_3500.name();
+  _terrainDefaultColors[30] = COLOR_LEVEL_3750.name();
+  _terrainDefaultColors[31] = COLOR_LEVEL_4000.name();
+  _terrainDefaultColors[32] = COLOR_LEVEL_4250.name();
+  _terrainDefaultColors[33] = COLOR_LEVEL_4500.name();
+  _terrainDefaultColors[34] = COLOR_LEVEL_4750.name();
+  _terrainDefaultColors[35] = COLOR_LEVEL_5000.name();
+  _terrainDefaultColors[36] = COLOR_LEVEL_5250.name();
+  _terrainDefaultColors[37] = COLOR_LEVEL_5500.name();
+  _terrainDefaultColors[38] = COLOR_LEVEL_5750.name();
+  _terrainDefaultColors[39] = COLOR_LEVEL_6000.name();
+  _terrainDefaultColors[40] = COLOR_LEVEL_6250.name();
+  _terrainDefaultColors[41] = COLOR_LEVEL_6500.name();
+  _terrainDefaultColors[42] = COLOR_LEVEL_6750.name();
+  _terrainDefaultColors[43] = COLOR_LEVEL_7000.name();
+  _terrainDefaultColors[44] = COLOR_LEVEL_7250.name();
+  _terrainDefaultColors[45] = COLOR_LEVEL_7500.name();
+  _terrainDefaultColors[46] = COLOR_LEVEL_7750.name();
+  _terrainDefaultColors[47] = COLOR_LEVEL_8000.name();
+  _terrainDefaultColors[48] = COLOR_LEVEL_8250.name();
+  _terrainDefaultColors[49] = COLOR_LEVEL_8500.name();
+  _terrainDefaultColors[50] = COLOR_LEVEL_8750.name();
+}
