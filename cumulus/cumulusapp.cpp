@@ -186,13 +186,24 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   appPal.setColor(QPalette::Normal,QPalette::Highlight,Qt::darkBlue);
   QApplication::setPalette(appPal);
 
-  // The Nokia font has excellent readability and less width than others
-  appFt.setFamily("Nokia Sans");
-
 #endif
 
-  appFt.setPointSize( GeneralConfig::instance()->getGuiFontSize() );
-  QApplication::setFont(appFt);
+  // sets the user's selected font, if defined
+  QString fontString = GeneralConfig::instance()->getGuiFont();
+  QFont userFont;
+  
+  if( fontString != "" && userFont.fromString( fontString ) )
+    {
+      // take the user font
+      QApplication::setFont( userFont );
+    }
+  else
+    {
+#ifdef MAEMO
+      // The Nokia font has excellent readability and less width than others
+      appFt.setFamily("Nokia Sans");
+#endif
+    }
 
   // get last saved window geometric from generalconfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
@@ -243,8 +254,6 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   setFocusPolicy( Qt::StrongFocus );
   setFocus();
 
-  //grabKeyboard(); // @AP: make problems on Qt4.3/X11
-
   this->installEventFilter( this );
 
   setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus.png")) );
@@ -259,7 +268,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   ws = new WaitScreen(this);
   ws->show();
 
-  // Here we finished the base initialization and start a timer
+  // Here we do finish the base initialization and start a timer
   // to continue startup in another method. This is done, to get
   // running the window manager event loop. Otherwise the behaviour
   // of some widgets is undefined.
