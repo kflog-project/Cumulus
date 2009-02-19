@@ -227,9 +227,11 @@ void GeneralConfig::load()
 
   for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {
-      QString color = "TerrainColor_" + QString::number(i);
-      _terrainColors[i] = QColor( value(color, _terrainDefaultColors[i]).toString() );
+      QString name = "TerrainColor_" + QString::number(i);
+      _terrainColors[i] = QColor( value(name, _terrainDefaultColors[i]).toString() );
     }
+
+  _groundColor = QColor( value("GroundColor", COLOR_LEVEL_GROUND.name()).toString() );
 
   endGroup();
 
@@ -503,9 +505,11 @@ void GeneralConfig::save()
 
   for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {
-      QString color = "TerrainColor_" + QString::number(i);
-      setValue(color, _terrainColors[i].name());
+      QString name = "TerrainColor_" + QString::number(i);
+      setValue(name, _terrainColors[i].name());
     }
+
+  setValue("GroundColor", _groundColor.name());
 
   endGroup();
 
@@ -1428,7 +1432,7 @@ void GeneralConfig::setOurGuiStyle()
 }
 
 /** Sets the terrain color at position index */
-void GeneralConfig::setTerrainColor( const QColor newValue, const ushort index )
+void GeneralConfig::setTerrainColor( const QColor& newValue, const ushort index )
 {
   if( index < SIZEOF_TERRAIN_COLORS )
     {

@@ -1543,14 +1543,26 @@ class GeneralConfig : protected QSettings
     _taskSectorAngle = newValue;
   };
 
-  /** Get the GPS default device depending on the hardware type */
+  /** Gets the GPS default device depending on the hardware type */
   QString getGpsDefaultDevice();
 
   /** Sets the terrain color at position index */
-  void setTerrainColor( const QColor newValue, const ushort index );
+  void setTerrainColor( const QColor& newValue, const ushort index );
 
   /** Gets the terrain color at position index */
   QColor& getTerrainColor( const ushort index );
+
+  /** Sets the common ground color */
+  void setGroundColor( const QColor& newValue )
+  {
+    _groundColor = newValue;
+  };
+
+  /** Gets the common ground color */
+  QColor& getGroundColor()
+  {
+    return _groundColor;
+  };
 
  private:
 
@@ -1573,6 +1585,9 @@ class GeneralConfig : protected QSettings
 
   // terrain default colors
   QString _terrainDefaultColors[SIZEOF_TERRAIN_COLORS];
+
+  // terrain ground color, used when the iso line drawing is disabled
+  QColor _groundColor;
 
   //properties
   //used to store the distances for airspace warnings
