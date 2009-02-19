@@ -942,14 +942,15 @@ void Map::__redrawMap(mapLayer fromLayer)
  * Draws the base layer of the map.
  * The base layer consists of the basic map, containing everything up
  * to the features of the landscape.
- * It is drawn on an empty canvas.
+ * It is drawn on an empty pixmap.
  */
 void Map::__drawBaseLayer()
 {
   if( !_isEnable ) return;
 
-  // erase the base layer (fill with light blue color)
-  m_pixBaseMap.fill(QColor(230,255,255));
+  // Erase the base layer and fill it with the subterrain color. If there
+  // are no terrain map data available, this is the default map ground color.
+  m_pixBaseMap.fill( GeneralConfig::instance()->getTerrainColor(0) );
 
   // make sure we have all the map files we need loaded
   _globalMapContents->proofeSection();
@@ -958,7 +959,7 @@ void Map::__drawBaseLayer()
 
   double cs = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
-  // create a painter on the pixmap
+  // create a pixmap painter
   QPainter baseMapP;
 
   baseMapP.begin(&m_pixBaseMap);
