@@ -2,7 +2,7 @@
  cumulusapp.cpp  -  main application class
                           -------------------
  begin                : Sun Jul 21 2002
- copyright            : (C) 2002 by Andr� Somers
+ copyright            : (C) 2002 by Andrè Somers
  ported to Qt4.x/X11  : (C) 2008 by Axel Pauli
  email                : axel@kflog.org
 
@@ -191,7 +191,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   // sets the user's selected font, if defined
   QString fontString = GeneralConfig::instance()->getGuiFont();
   QFont userFont;
-  
+
   if( fontString != "" && userFont.fromString( fontString ) )
     {
       // take the user font
@@ -200,8 +200,17 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   else
     {
 #ifdef MAEMO
+      // If there is not defined a user font, we try to set some useful defaults for MAEMO
       // The Nokia font has excellent readability and less width than others
       appFt.setFamily("Nokia Sans");
+
+      if( appFt.pointSize() < 14 )
+        {
+          // the system font size is too small, we are setting a bigger default
+          appFt.setPointSize( 14 );
+        }
+
+      QApplication::setFont( appFt );
 #endif
     }
 
