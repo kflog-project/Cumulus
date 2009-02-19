@@ -17,6 +17,14 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.1.x (Development based on X11/Qt-4.5)
 -------------------------------------------------
+
+[+] 2009-02-18 AP: New setting tabulator Terrain Colors added, where the colors
+                   of the different elevations can be defined resp. redefined.
+                   Subterrain color (no map ground data loaded) and ground color
+                   (isoline drawing is disabled) can be also configured now.
+                   font dialog. That opens more possibilities for the configuration.
+[o] 2009-02-17 AP: Look&Feel setting tabulator modified. Font size box replaced by
+                   font dialog. That opens more possibilities for the configuration.
 [+] 2009-02-04 AP: Airspace fill colors can be defined resp. modified by user
                    in airspace settings configuration tabulator.
 [o] 2009-02-02 AP: All QLists in MapConfig replaced by plain arrays to reduce
