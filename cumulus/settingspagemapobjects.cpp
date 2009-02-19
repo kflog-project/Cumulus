@@ -132,7 +132,7 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liWaterways->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, 0, liWaterways );
 
-  liForests = new QTableWidgetItem( tr("Forests & Ice") );
+  liForests = new QTableWidgetItem( tr("Forests") );
   liForests->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, 0, liForests );
 
@@ -179,6 +179,6 @@ void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
 
   if (changed) {
     warn=true;
-    warnings.append(tr("the Map Objects"));
+    warnings.append(tr("The Map Objects"));
   }
 }

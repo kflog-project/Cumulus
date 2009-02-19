@@ -20,6 +20,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QIcon>
+#include <QPixmap>
 
 #include "altitude.h"
 #include "generalconfig.h"
@@ -30,8 +32,8 @@
  * @author Axel Pauli
  *
  * This configuration widget shows the terrain colors used for drawing of contour areas.
- * The user can modify via a color chooser dialog the assigned color, if he wants that.
- * The display shows the altitudes in the user selected unit (meter/feed).
+ * The user can modify the assigned color via a color chooser dialog, if he wants that.
+ * The widget shows the altitudes in the user selected unit (meter/feed).
  */
 
 SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
@@ -42,7 +44,7 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   colorsChanged = false;
 
   /**
-   * Altitude levels to be displayed in color combo box
+   * Altitude levels in meters to be displayed in color combo box.
    */
   char *altitudes[51] = {
                  "< 0",
@@ -98,39 +100,51 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
                  "8750"
   };
 
+  // determine pixmap size to be used for icons in dependency of the used font
+  int size = font().pointSize() - 2;
+  pixmapSize = QSize( size, size );
+  QPixmap pixmap(pixmapSize);
+
   // load stored terrain colors into working list
   for( short i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {
       QColor color = GeneralConfig::instance()->getTerrainColor(i);
-      terrainColor[i] = color; // load color into working list
+      terrainColor[i] = color;
     }
 
+  // load ground color
+  groundColor = GeneralConfig::instance()->getGroundColor();
+
+  // put all widgets in a HBox layout
   QHBoxLayout *topLayout = new QHBoxLayout(this);
 
+  // create elevation color bar as image
   elevationImage = new ElevationImage( &terrainColor[0], this );
   topLayout->addWidget( elevationImage );
 
-  QVBoxLayout *editAll = new QVBoxLayout;
-
+  // all editor widgets will be put into a group box to get a better view
   QGroupBox *editBox = new QGroupBox( tr("Color Editor"), this );
 
+  // put group box in an extra VBox layout to center it vertically
+  QVBoxLayout *editAll = new QVBoxLayout;
   editAll->addStretch( 10 );
   editAll->addWidget( editBox );
   editAll->addStretch( 10 );
 
   topLayout->addLayout( editAll );
 
+  // put all edit widgets (combo box and buttons) in a separate VBox layout
   QVBoxLayout *editLayout = new QVBoxLayout;
 
-  QLabel *label = new QLabel( "Elevation level" );
+  QLabel *label = new QLabel( "Terrain Level" );
   editLayout->addWidget( label );
 
   //--------------------------------------------------------------------------
   // The users altitude unit (meters/feed) must be considered during
-  // altitude display in the combo box.
+  // elevation display in the combo box.
   QString unit;
 
-  altitudeBox = new QComboBox( this );
+  elevationBox = new QComboBox( this );
 
   if( Altitude::getUnit() == Altitude::meters )
     {
@@ -139,7 +153,8 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
 
        for( int i = SIZEOF_TERRAIN_COLORS-1; i > 1; i-- )
         {
-          altitudeBox->addItem( QString(altitudes[i]) + unit );
+          pixmap.fill( terrainColor[i] );
+          elevationBox->addItem( QIcon( pixmap ), QString(altitudes[i]) + unit );
         }
     }
   else
@@ -150,26 +165,44 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
       for( int i = SIZEOF_TERRAIN_COLORS-1; i > 1; i-- )
         {
           int altFeed = static_cast<int>(QString(altitudes[i]).toDouble() * 3.28095);
-          altitudeBox->addItem( QString::number(altFeed) + unit );
+          pixmap.fill( terrainColor[i] );
+          elevationBox->addItem( QIcon( pixmap ), QString::number(altFeed) + unit );
         }
     }
 
-  altitudeBox->addItem( QString(altitudes[1]) );
-  altitudeBox->addItem( QString(altitudes[0]) );
+  pixmap.fill( terrainColor[1] );
+  elevationBox->addItem( QIcon( pixmap ), QString(altitudes[1]) );
+
+  pixmap.fill( terrainColor[0] );
+  elevationBox->addItem( QIcon( pixmap ), QString(altitudes[0]) );
 
   // set index to level 0
-  altitudeBox->setCurrentIndex( SIZEOF_TERRAIN_COLORS-2 );
+  elevationBox->setCurrentIndex( SIZEOF_TERRAIN_COLORS-2 );
 
-  editLayout->addWidget( altitudeBox );
+  editLayout->addWidget( elevationBox );
 
   //--------------------------------------------------------------------------
-  // add push button for color chooser dialog
-  editColorButton = new QPushButton( tr("Edit Color") );
+  // add push button for elevation color chooser dialog
+  editColorButton = new QPushButton( tr("Terrain Color") );
 
   // on click the color chooser dialog will be opened
   connect( editColorButton, SIGNAL(clicked()), this, SLOT(slot_editColor()) );
 
   editLayout->addWidget( editColorButton );
+
+  //--------------------------------------------------------------------------
+  // add push button for ground color chooser dialog
+  groundColorButton = new QPushButton( tr("Ground Color") );
+
+  pixmap.fill( groundColor );
+  groundColorButton->setIcon( QIcon(pixmap) );
+
+  // on click the color chooser dialog will be opened
+  connect( groundColorButton, SIGNAL(clicked()), this, SLOT(slot_editGroundColor()) );
+
+  editLayout->addSpacing( 10 );
+  editLayout->addWidget( groundColorButton );
+  editLayout->addSpacing( 20 );
 
   //--------------------------------------------------------------------------
   // add button for assigning of default colors
@@ -180,7 +213,7 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
 
   editLayout->addWidget( defaultColorButton );
 
-  // add stretch items to posit buttons in the center of the widget
+  // add stretch items to posit editor widgets in the center of the VBox layout
   editLayout->insertStretch(0, 10 );
   editLayout->addStretch( 10 );
 
@@ -199,10 +232,10 @@ SettingsPageTerrainColors::~SettingsPageTerrainColors()
  */
 void SettingsPageTerrainColors::slot_editColor()
 {
-  int index = SIZEOF_TERRAIN_COLORS - 1 - altitudeBox->currentIndex();
+  int index = SIZEOF_TERRAIN_COLORS - 1 - elevationBox->currentIndex();
 
   // save current selected color
-  QColor color = terrainColor[index];
+  QColor& color = terrainColor[index];
 
   // Open color chooser dialog to edit selected color
   QColor newColor = QColorDialog::getColor( color, this );
@@ -212,8 +245,32 @@ void SettingsPageTerrainColors::slot_editColor()
       colorsChanged = true;
       // save color into working list
       terrainColor[index] = newColor;
+      // update icon in elevation box
+      QPixmap pixmap( pixmapSize );
+      pixmap.fill( newColor );
+      elevationBox->setItemIcon( elevationBox->currentIndex(), QIcon(pixmap) );
       // update color in elevation image
       elevationImage->update();
+    }
+}
+
+/**
+ * Called to edit the ground color
+ */
+void SettingsPageTerrainColors::slot_editGroundColor()
+{
+  // Open color chooser dialog to edit ground color
+  QColor newColor = QColorDialog::getColor( groundColor, this );
+
+  if( newColor.isValid() && groundColor != newColor )
+    {
+      colorsChanged = true;
+      // save color
+      groundColor = newColor;
+      // update icon of ground color button
+      QPixmap pixmap( pixmapSize );
+      pixmap.fill( newColor );
+      groundColorButton->setIcon( QIcon(pixmap) );
     }
 }
 
@@ -223,6 +280,12 @@ void SettingsPageTerrainColors::slot_editColor()
 void SettingsPageTerrainColors::slot_setColorDefaults()
 {
   colorsChanged = true;
+
+  // reset ground color
+  groundColor = COLOR_LEVEL_GROUND;
+  QPixmap pixmap( pixmapSize );
+  pixmap.fill( groundColor );
+  groundColorButton->setIcon( QIcon(pixmap) );
 
   // reset colors in working list
   terrainColor[0] = COLOR_LEVEL_SUB;
@@ -277,6 +340,13 @@ void SettingsPageTerrainColors::slot_setColorDefaults()
   terrainColor[49] = COLOR_LEVEL_8500;
   terrainColor[50] = COLOR_LEVEL_8750;
 
+  // update icons in elevation box
+  for( int i = SIZEOF_TERRAIN_COLORS-1; i > -1; i-- )
+   {
+     pixmap.fill( terrainColor[i] );
+     elevationBox->setItemIcon( i, QIcon(pixmap) );
+   }
+
   // update colors in elevation image
   elevationImage->update();
 }
@@ -294,9 +364,12 @@ void SettingsPageTerrainColors::slot_save()
 
   for( ushort i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {
-      // save new colors permanently
+      // save new terrain colors permanently
       GeneralConfig::instance()->setTerrainColor( terrainColor[i], i );
     }
+
+  // save ground color
+  GeneralConfig::instance()->setGroundColor( groundColor );
 }
 
 /**

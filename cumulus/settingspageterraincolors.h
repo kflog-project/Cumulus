@@ -22,12 +22,18 @@
 #include <QComboBox>
 #include <QPushButton>
 #include <QColor>
+#include <QSize>
 
 #include "elevationimage.h"
 
 /**
  * @author Axel Pauli
+ *
+ * This configuration widget shows the terrain colors used for drawing of contour areas.
+ * The user can modify the assigned color via a color chooser dialog, if he wants that.
+ * The widget shows the altitudes in the user selected unit (meter/feed).
  */
+
 class SettingsPageTerrainColors : public QWidget
   {
     Q_OBJECT
@@ -54,10 +60,15 @@ class SettingsPageTerrainColors : public QWidget
 
   private slots:
 
-    /**
-     * Called to edit the color of the combo box selection
-     */
-    void slot_editColor();
+  /**
+   * Called to edit the color of the combo box selection
+   */
+  void slot_editColor();
+
+  /**
+   * Called to edit the ground color
+   */
+  void slot_editGroundColor();
 
     /**
      * Called to set all colors to their default value.
@@ -66,23 +77,33 @@ class SettingsPageTerrainColors : public QWidget
 
   private:
 
+    // size of the color pixmaps used in icons
+    QSize pixmapSize;
+
     // modification color flag
     bool colorsChanged;
 
     // widget which shows the elevation color bar
     ElevationImage *elevationImage;
 
-    // internal color working list
+    // Internal temporary color working list. Will be saved as new colors,
+    // when the method slot_save() is called.
     QColor terrainColor[51];
+
+    // temporary storage of ground color
+    QColor groundColor;
 
     // brings up the color chooser dialog
     QPushButton* editColorButton;
 
+    // brings up the color chooser dialog for the grund color
+    QPushButton* groundColorButton;
+
     // set all colors back to the defaults.
     QPushButton* defaultColorButton;
 
-    // Selects the altitude level to be modified
-    QComboBox* altitudeBox;
+    // Selects the elevation level to be modified
+    QComboBox* elevationBox;
 };
 
 #endif

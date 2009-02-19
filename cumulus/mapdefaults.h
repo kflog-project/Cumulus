@@ -48,7 +48,11 @@
 #define SIZEOF_TERRAIN_COLORS 51
 
 // Default values used for terrain colors
-#define COLOR_LEVEL_SUB QColor(96, 128, 248) // 230,255,255
+
+// color used as ground color, when isoline drawing is disabled
+#define COLOR_LEVEL_GROUND QColor(237, 248, 175)
+
+#define COLOR_LEVEL_SUB QColor(230,255,255)
 #define COLOR_LEVEL_0 QColor(165, 214, 126)
 #define COLOR_LEVEL_10 QColor(185, 220, 131)
 #define COLOR_LEVEL_25 QColor(193, 225, 138)
