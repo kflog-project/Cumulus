@@ -106,7 +106,7 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   QPixmap pixmap(pixmapSize);
 
   // load stored terrain colors into working list
-  for( short i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
+  for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {
       QColor color = GeneralConfig::instance()->getTerrainColor(i);
       terrainColor[i] = color;
@@ -341,10 +341,10 @@ void SettingsPageTerrainColors::slot_setColorDefaults()
   terrainColor[50] = COLOR_LEVEL_8750;
 
   // update icons in elevation box
-  for( int i = SIZEOF_TERRAIN_COLORS-1; i > -1; i-- )
+  for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
    {
      pixmap.fill( terrainColor[i] );
-     elevationBox->setItemIcon( i, QIcon(pixmap) );
+     elevationBox->setItemIcon( SIZEOF_TERRAIN_COLORS-1-i, QIcon(pixmap) );
    }
 
   // update colors in elevation image
