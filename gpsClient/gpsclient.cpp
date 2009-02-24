@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2009 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -41,7 +41,6 @@ using namespace std;
 #undef DEBUG
 #endif
 
-
 // Size of internal message queue.
 #define QUEUE_SIZE 500
 
@@ -52,7 +51,6 @@ using namespace std;
 // useable for interprocess communication. As related host is always localhost
 // used. It will be opened two sockets to the server, one for data transfer,
 // the other only as notification channel.
-
 GpsClient::GpsClient( const ushort portIn )
 {
   device           = "";
@@ -67,7 +65,6 @@ GpsClient::GpsClient( const ushort portIn )
   lastGpsErrorTime = 0;
 
   // establish a connection to the server
-
   if( ipcPort )
     {
       if( clientData.connect2Server( IPC_IP, ipcPort ) == -1 )
@@ -233,7 +230,7 @@ int GpsClient::writeGpsData( const char *sentence )
   QString cmd (sentence + check);
 
   // write sentence to gps device
-  int result = write (fd, cmd.toLatin1(), cmd.length());
+  int result = write (fd, cmd.toLatin1().data(), cmd.length());
 
   if (result != (int) cmd.length())
     {
@@ -268,8 +265,14 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
     {
       int ret = mkfifo(device, S_IRUSR | S_IWUSR);
 
-      if(ret && errno != EEXIST) perror("mkfifo"); 
-      else fifo = true;
+      if(ret && errno != EEXIST)
+        {
+          perror("mkfifo");
+        }
+      else
+        {
+          fifo = true;
+        }
     }
 
   if( fd != -1 )
@@ -299,56 +302,55 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 
   lastGpsErrorTime = 0;
 
-  if(!fifo) {
-    // fifo needs no serial initialization.
-    if( ! isatty(fd) )
-      {
-        // Not a tty file descriptor.
-        cerr << "openGps: Serial device '" << device.data()
-             << "' is not connected to a TTY!" << endl;
-        return false;
-      }
-    else
-      {
-        tcgetattr(fd, &oldtio); // get current options from port
-        
-        fcntl(fd, F_SETFL, FNDELAY); // NON blocking io is requested
-        
-        // copy current values into new structure for changes
-        memcpy( &newtio, &oldtio, sizeof(newtio) );
-        
-        // prepare new port settings for:
-        // - canonical input (line oriented input)
-        // - 8 data bits
-        // - no parity
-        // - no cr
-        // - blocking mode
-        
-        newtio.c_cflag = (CSIZE & CS8) | CLOCAL | CREAD;
-        
-        newtio.c_iflag = IGNPAR | IGNCR; // no parity and no cr
-        
-        newtio.c_oflag = ONLCR; // map nl to cr-nl
-        
-        newtio.c_lflag = ~(ICANON | ECHO | ECHOE | ISIG );
-        
-        newtio.c_cc[VMIN] = 1;
-        
-        newtio.c_cc[VTIME] = 0;
-        
-        // AP: Note, the setting of the speed must be done at last
-        // because the manipulation of the c_iflag and c_oflag can
-        // destroy the already assigned values! Needed me several hours
-        // to find out that. Setting the baud rate under c_cflag seems
-        // also to work.
-        
-        cfsetispeed( &newtio, ioSpeed ); // set baud rate for input
-        cfsetospeed( &newtio, ioSpeed ); // set baud rate for output
-        
-        tcflush(fd, TCIOFLUSH);
-        tcsetattr(fd, TCSANOW, &newtio);
-      }
-  }
+  if( ! isatty(fd) )
+    {
+      // Fifo and Usb need no serial initialization.
+      // Write a notice for the user about that fact
+      cout << "GpsClient::openGps: Device '" << device.data()
+           << "' is not connected to a TTY!" << endl;
+
+    }
+  else
+    {
+      tcgetattr(fd, &oldtio); // get current options from port
+      
+      fcntl(fd, F_SETFL, FNDELAY); // NON blocking io is requested
+      
+      // copy current values into new structure for changes
+      memcpy( &newtio, &oldtio, sizeof(newtio) );
+      
+      // prepare new port settings for:
+      // - canonical input (line oriented input)
+      // - 8 data bits
+      // - no parity
+      // - no cr
+      // - blocking mode
+      
+      newtio.c_cflag = (CSIZE & CS8) | CLOCAL | CREAD;
+      
+      newtio.c_iflag = IGNPAR | IGNCR; // no parity and no cr
+      
+      newtio.c_oflag = ONLCR; // map nl to cr-nl
+      
+      newtio.c_lflag = ~(ICANON | ECHO | ECHOE | ISIG );
+      
+      newtio.c_cc[VMIN] = 1;
+      
+      newtio.c_cc[VTIME] = 0;
+      
+      // AP: Note, the setting of the speed must be done at last
+      // because the manipulation of the c_iflag and c_oflag can
+      // destroy the already assigned values! Needed me several hours
+      // to find out that. Setting the baud rate under c_cflag seems
+      // also to work.
+      
+      cfsetispeed( &newtio, ioSpeed ); // set baud rate for input
+      cfsetospeed( &newtio, ioSpeed ); // set baud rate for output
+      
+      tcflush(fd, TCIOFLUSH);
+      tcsetattr(fd, TCSANOW, &newtio);
+    }
+    
   last.start(); // store time point for supervision control
   return true;
 }
@@ -395,7 +397,6 @@ void GpsClient::readSentenceFromBuffer()
       queueMsg( record );
 
 #ifdef DEBUG
-
       cout << "GpsClient(): Extracted NMEA Record: " << record;
 #endif
 
