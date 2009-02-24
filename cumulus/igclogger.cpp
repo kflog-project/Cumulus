@@ -84,9 +84,9 @@ void IgcLogger::Stop()
 }
 
 
-/** This slot is used internaly by the timer to make a log entry on an
+/** This slot is used internally by the timer to make a log entry on an
     interval, but can also be used from outside the class to make sure
-    a specific point is being logged (ie., to respond to a usercommand
+    a specific point is being logged (i.e., to respond to a user command
     to log). */
 void IgcLogger::slotMakeFixEntry()
 {
@@ -189,9 +189,6 @@ void IgcLogger::CreateLogfile()
   _logMode=on;
   makeSatConstEntry();
   slotMakeFixEntry();
-  // DocLnk lnk(fname);
-  // lnk.setType("application/x-igc");
-  // lnk.writeLink();
 
   Start();
 }
@@ -350,13 +347,13 @@ void IgcLogger::slotConstellation()
 }
 
 
-/** Makes a fix entry in the logfile. */
+/** Makes a fix entry in the log file. */
 void IgcLogger::makeSatConstEntry()
 {
 
   if (_logMode>off) {
-    QString entry = "F" + formatTime(gps->getLastSatInfo().constellationTime) +
-      gps->getLastSatInfo().constellation;
+    QString entry = "F" + formatTime(GpsNmea::gps->getLastSatInfo().constellationTime) +
+                     GpsNmea::gps->getLastSatInfo().constellation;
 
     if (_logMode==standby) {
       _backtrack.add(entry);

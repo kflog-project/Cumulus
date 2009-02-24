@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008 Axel Pauli
+ **                   2008-2009 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -25,6 +25,7 @@
 #include <QStringList>
 #include <QPointer>
 #include <QDateTime>
+#include <QHash>
 #include <QMap>
 #include <QString>
 
@@ -40,6 +41,9 @@ class Isohypse;
 class LineElement;
 class RadioPoint;
 class SinglePoint;
+
+// number of isoline lists
+#define ISO_LINE_NUM 50
 
 /**
  * This class provides functions for accessing the contents of the map.
@@ -189,7 +193,7 @@ class MapContents : public QObject
    * matches one of the waypoints in the list.
    */
   unsigned short countNameInWaypointList( const QString& name );
-  
+
 /**
    * Add a point to a rectangle, so the rectangle will be the bounding box
    * of all points added to it. If the point already lies within the borders
@@ -228,7 +232,7 @@ class MapContents : public QObject
 
   void unloadMapObjects(QList<RadioPoint>& list);
 
-  void unloadMapObjects(QList< QList<Isohypse> >& list);
+  void unloadMapObjects(QList<Isohypse> list[]);
 
   /**
    * This function checks all possible map directories for the
@@ -305,7 +309,9 @@ class MapContents : public QObject
    *
    * @return "true", when the file has successfully been loaded
    */
-  bool __readTerrainFile(const int fileSecID, const int fileTypeID);
+  bool __readTerrainFile( const int fileSecID,
+                          const int fileTypeID,
+                          const QHash<int, int>& isoHash );
 
   /**
    * shows a progress message at the wait screen
@@ -403,7 +409,7 @@ class MapContents : public QObject
   /**
    * isohypseList contains all isohypses.
    */
-  QList< QList<Isohypse> > isoList;
+  QList<Isohypse> isoList[ISO_LINE_NUM];
 
   /**
    * Set over map tiles. Contains the sectionId for all fully loaded
@@ -436,7 +442,7 @@ class MapContents : public QObject
   /**
    * Array containing the elevations of all possible isohypses.
    */
-  static const int isoLines[];
+  static const int isoLines[ISO_LINE_NUM];
 
   /**
    * Flag to signal first loading of map data

@@ -234,7 +234,7 @@ void SettingsPageTerrainColors::slot_editColor()
 {
   int index = SIZEOF_TERRAIN_COLORS - 1 - elevationBox->currentIndex();
 
-  // save current selected color
+  // get current selected color
   QColor& color = terrainColor[index];
 
   // Open color chooser dialog to edit selected color

@@ -647,14 +647,14 @@ class GeneralConfig : protected QSettings
   };
 
   /** Gets the map sidebar frame color */
-  QString &getFrameCol()
+  QColor &getMapFrameColor()
     {
-      return _framecol;
+      return _mapSideFrameColor;
     };
   /** Sets the map sidebar frame color */
-  void setFrameCol( const QString newValue )
+  void setMapFrameColor( const QColor& newValue )
   {
-    _framecol = newValue;
+    _mapSideFrameColor = newValue;
   };
 
   /** Gets the GUI style */
@@ -1650,8 +1650,8 @@ class GeneralConfig : protected QSettings
   QString _birthday;
   // user language
   QString _language;
-  // frame color
-  QString _framecol;
+  // map side frame color
+  QColor _mapSideFrameColor;
   // GUI style
   QString _guiStyle;
   // GUI font

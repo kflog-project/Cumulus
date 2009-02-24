@@ -1,15 +1,12 @@
 /***************************************************************************
  cumulusapp.cpp  -  main application class
-                          -------------------
+ -----------------------------------------
  begin                : Sun Jul 21 2002
  copyright            : (C) 2002 by Andrè Somers
- ported to Qt4.x/X11  : (C) 2008 by Axel Pauli
+ ported to Qt4.x/X11  : (C) 2007-2009 by Axel Pauli
  email                : axel@kflog.org
 
-  This file is distributed under the terms of the General Public
-  Licence. See the file COPYING for more information.
-
-  $Id$
+ $Id$
 
 ****************************************************************************/
 
@@ -21,6 +18,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+/** This class is called by main to create all the widgets needed by this GUI
+ *  an to initiate the load of the map and other data.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -90,7 +91,7 @@ IgcLogger *logger = (IgcLogger *) 0;
 MapMatrix *_globalMapMatrix = (MapMatrix *) 0;
 
 /**
- * Contains all mapelements and takes control over drawing or printing
+ * Contains all map elements and takes control over drawing or printing
  * the elements.
  */
 MapContents *_globalMapContents = (MapContents *) 0;
@@ -113,7 +114,7 @@ static void resumeGpsConnection( int sig )
 {
   if ( sig == SIGCONT )
     {
-      gps->forceReset();
+      GpsNmea::gps->forceReset();
       // @ee reinstall signal handler
       signal ( SIGCONT, resumeGpsConnection );
     }
@@ -277,14 +278,16 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   ws = new WaitScreen(this);
   ws->show();
 
+  qApp->processEvents();
+
   // Here we do finish the base initialization and start a timer
   // to continue startup in another method. This is done, to get
   // running the window manager event loop. Otherwise the behaviour
   // of some widgets is undefined.
 
   // when the timer expires the cumulus startup is continued
-  QTimer::singleShot(100, this, SLOT(slotCreateApplicationWidgets()));
-}
+  QTimer::singleShot(250, this, SLOT(slotCreateApplicationWidgets()));
+ }
 
 /** creates the application widgets after the base initialization
  *  of the core application window.
@@ -380,9 +383,9 @@ void CumulusApp::slotCreateApplicationWidgets()
 
   viewWP->listWidget()->fillWpList();
 
-  //create global objects
-  gps = new GPSNMEA( this );
-  gps->blockSignals( true );
+  // create GPS object
+  GpsNmea::gps = new GpsNmea( this );
+  GpsNmea::gps->blockSignals( true );
   logger = IgcLogger::instance();
 
   initActions();
@@ -405,28 +408,28 @@ void CumulusApp::slotCreateApplicationWidgets()
   connect( calculator, SIGNAL( newAirspeed( const Speed& ) ),
            calculator->getVario(), SLOT( slotNewAirspeed( const Speed& ) ) );
 
-  connect( gps, SIGNAL( statusChange( GPSNMEA::connectedStatus ) ),
-           viewMap, SLOT( slot_GPSStatus( GPSNMEA::connectedStatus ) ) );
-  connect( gps, SIGNAL( newSatConstellation() ),
+  connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::connectedStatus ) ),
+           viewMap, SLOT( slot_GPSStatus( GpsNmea::connectedStatus ) ) );
+  connect( GpsNmea::gps, SIGNAL( newSatConstellation() ),
            viewMap, SLOT( slot_SatConstellation() ) );
-  connect( gps, SIGNAL( statusChange( GPSNMEA::connectedStatus ) ),
-           this, SLOT( slotGpsStatus( GPSNMEA::connectedStatus ) ) );
-  connect( gps, SIGNAL( newSatConstellation() ),
+  connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::connectedStatus ) ),
+           this, SLOT( slotGpsStatus( GpsNmea::connectedStatus ) ) );
+  connect( GpsNmea::gps, SIGNAL( newSatConstellation() ),
            logger, SLOT( slotConstellation() ) );
-  connect( gps, SIGNAL( newSatConstellation() ),
+  connect( GpsNmea::gps, SIGNAL( newSatConstellation() ),
            calculator->getWindAnalyser(), SLOT( slot_newConstellation() ) );
-  connect( gps, SIGNAL( newSpeed() ),
+  connect( GpsNmea::gps, SIGNAL( newSpeed() ),
            calculator, SLOT( slot_Speed() ) );
-  connect( gps, SIGNAL( newPosition() ),
+  connect( GpsNmea::gps, SIGNAL( newPosition() ),
            calculator, SLOT( slot_Position() ) );
-  connect( gps, SIGNAL( newAltitude() ),
+  connect( GpsNmea::gps, SIGNAL( newAltitude() ),
            calculator, SLOT( slot_Altitude() ) );
-  connect( gps, SIGNAL( newHeading() ),
+  connect( GpsNmea::gps, SIGNAL( newHeading() ),
            calculator, SLOT( slot_Heading() ) );
-  connect( gps, SIGNAL( newFix() ),
+  connect( GpsNmea::gps, SIGNAL( newFix() ),
            calculator, SLOT( slot_newFix() ) );
-  connect( gps, SIGNAL( statusChange( GPSNMEA::connectedStatus ) ),
-           calculator, SLOT( slot_GpsStatus( GPSNMEA::connectedStatus ) ) );
+  connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::connectedStatus ) ),
+           calculator, SLOT( slot_GpsStatus( GpsNmea::connectedStatus ) ) );
 
   connect( viewWP, SIGNAL( newWaypoint( wayPoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
@@ -601,8 +604,8 @@ void CumulusApp::slotCreateApplicationWidgets()
 #endif
 
   // Startup GPS client process now for data receiving
-  gps->blockSignals( false );
-  gps->startGpsReceiver();
+  GpsNmea::gps->blockSignals( false );
+  GpsNmea::gps->startGpsReceiver();
 
   qDebug( "End startup cumulusapp" );
 }
@@ -1266,8 +1269,8 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       viewInfo->hide();
       viewMap->show();
 
-      toggleManualNavActions( !gps->getConnected() || calculator->isManualInFlight());
-      toggleGpsNavActions( gps->getConnected() && !calculator->isManualInFlight() );
+      toggleManualNavActions( !GpsNmea::gps->getConnected() || calculator->isManualInFlight());
+      toggleGpsNavActions( GpsNmea::gps->getConnected() && !calculator->isManualInFlight() );
       actionMenuBarToggle->setEnabled( true );
 
       // Switch on all action shortcuts in this view
@@ -1277,7 +1280,7 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       // If we returned to the map view, we should schedule a redraw of the
       // airspaces. Map is not drawn, when invisible and airspace filling
       // can be outdated in the meantime.
-      if( gps->getConnected() )
+      if( GpsNmea::gps->getConnected() )
         {
           viewMap->_theMap->scheduleRedraw( Map::aeroLayer );
         }
@@ -1663,10 +1666,10 @@ void CumulusApp::slotReadconfig()
       signal ( SIGCONT, resumeGpsConnection );
     }
 
-  GPSNMEA::DeliveredAltitude altRef = ( GPSNMEA::DeliveredAltitude ) conf->getGpsAltitude();
-  gps->setDeliveredAltitude( altRef );
-  gps->setDeliveredUserAltitude( conf->getGpsUserAltitudeCorrection() );
-  gps->slot_reset();
+  GpsNmea::DeliveredAltitude altRef = ( GpsNmea::DeliveredAltitude ) conf->getGpsAltitude();
+  GpsNmea::gps->setDeliveredAltitude( altRef );
+  GpsNmea::gps->setDeliveredUserAltitude( conf->getGpsUserAltitudeCorrection() );
+  GpsNmea::gps->slot_reset();
 
   // update menubar font size
   slotSetMenuBarFontSize();
@@ -1712,14 +1715,14 @@ void CumulusApp::slotReadconfig()
 
 
 /** Called if the status of the GPS changes, and controls the availability of manual navigation. */
-void CumulusApp::slotGpsStatus( GPSNMEA::connectedStatus status )
+void CumulusApp::slotGpsStatus( GpsNmea::connectedStatus status )
 {
   switch ( status )
     {
-    case GPSNMEA::validFix:
+    case GpsNmea::validFix:
       viewMap->message( tr( "GPS fix established" ) );
       break;
-    case GPSNMEA::noFix:
+    case GpsNmea::noFix:
       viewMap->message(tr( "GPS connection - no fix" ) );
       break;
     default:
@@ -1728,7 +1731,7 @@ void CumulusApp::slotGpsStatus( GPSNMEA::connectedStatus status )
 
   playSound("notify");
 
-  if ( ( status < GPSNMEA::validFix || calculator->isManualInFlight()) && ( view == mapView ) )
+  if ( ( status < GpsNmea::validFix || calculator->isManualInFlight()) && ( view == mapView ) )
     {  // no GPS data
       toggleManualNavActions( true );
       toggleGpsNavActions( false );
@@ -1909,8 +1912,8 @@ void CumulusApp::slotMapDrawEvent( bool drawEvent )
 
        if( view == mapView )
          {
-           toggleManualNavActions( !gps->getConnected() || calculator->isManualInFlight());
-           toggleGpsNavActions( gps->getConnected() && !calculator->isManualInFlight() );
+           toggleManualNavActions( !GpsNmea::gps->getConnected() || calculator->isManualInFlight());
+           toggleGpsNavActions( GpsNmea::gps->getConnected() && !calculator->isManualInFlight() );
          }
      }
 }
@@ -1941,7 +1944,7 @@ void CumulusApp::slotOssoDisplayTrigger()
   // gps we switch off the screen saver. Otherwise we let all as it
   // is.
 
-  if( calculator->getLastSpeed().getKph() >= 10.0 && gps->getConnected() )
+  if( calculator->getLastSpeed().getKph() >= 10.0 && GpsNmea::gps->getConnected() )
     {
       // tell maemo that we are in move to avoid blank screen
       osso_return_t ret = osso_display_blanking_pause( ossoContext );

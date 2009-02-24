@@ -3,7 +3,8 @@
                     receiver resp. daemon process.
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by André Somers, 2008 by Axel Pauli
+    copyright            : (C) 2002 by André Somers,
+                               2008-2009 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -44,15 +45,26 @@
 extern MapView   *_globalMapView;
 extern MapMatrix *_globalMapMatrix;
 
-// global gps pointer
-GPSNMEA* gps = 0;
+// global GPS object pointer
+GpsNmea *GpsNmea::gps = 0;
 
-GPSNMEA::GPSNMEA(QObject* parent) : QObject(parent)
+// number of created class instances
+short GpsNmea::instances = 0;
+
+GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
 {
-  // qDebug("GPSNMEA::GPSNMEA()");
+  // qDebug("GpsNmea::GpsNmea()");
+  if ( ++instances > 1 )
+    {
+      // There exists already a class instance as singleton.
+      return;
+    }
+
+  ++instances;
 
   _status=notConnected;
-  timeOutFix=new QTimer(this);
+
+  timeOutFix = new QTimer(this);
   connect (timeOutFix,SIGNAL(timeout()),this,SLOT(_slotTimeoutFix()));
   timeOutFix->start(FIX_TO); // fire every two-and-a-halfe seconds
 
@@ -75,7 +87,7 @@ GPSNMEA::GPSNMEA(QObject* parent) : QObject(parent)
   _lastClockOffset = 0;
 
   // altitude reference delivered by GPS unit
-  _deliveredAltitude = GPSNMEA::MSL;
+  _deliveredAltitude = GpsNmea::MSL;
   _userAltitudeCorrection.setMeters(0);
 
   _ignoreConnectionLost = false;
@@ -90,15 +102,15 @@ GPSNMEA::GPSNMEA(QObject* parent) : QObject(parent)
   createGpsConnection();
 }
 
-void GPSNMEA::createGpsConnection()
+void GpsNmea::createGpsConnection()
 {
-  // qDebug("GPSNMEA::createGpsConnection()");
+  // qDebug("GpsNmea::createGpsConnection()");
 
-  QObject *gpsObject;
+  QObject *gpsObject = 0;
 
 #ifndef MAEMO
 
-  // We create only a GPSCon instance. The client process will be started later
+  // We create only a GPSCon instance. The GPS daemon process will be started later
   QString callPath = GeneralConfig::instance()->getInstallRoot() + "/bin";
 
   serial = new GPSCon(this, callPath.toAscii().data());
@@ -108,14 +120,17 @@ void GPSNMEA::createGpsConnection()
 #else
 
   // Under Maemo we have to contact the Maemo gpsd process on its listen port.
-  // If the device name is the nmea simulator the cumulus serial client is started.
+  // If the device name is the nmea simulator or contains the substring USB/usb
+  // the cumulus GPS daemon is started.
   gpsDevice = GeneralConfig::instance()->getGpsDevice();
 
   // qDebug("GpsDevive=%s", gpsDevice.toLatin1().data() );
 
-  if( gpsDevice == NMEASIM_DEVICE )
+  if( gpsDevice == NMEASIM_DEVICE ||
+      gpsDevice.indexOf( QRegExp("USB|usb") != -1 )
     {
-      // We assume, that the nmea simulator shall be used and will start the gps client process
+      // We assume, that the nmea simulator or a usb device shall be used
+      // and will start the cumulus gps client process
       QString callPath = GeneralConfig::instance()->getInstallRoot() + "/bin";
 
       serial = new GPSCon(this, callPath.toAscii().data());
@@ -140,9 +155,14 @@ void GPSNMEA::createGpsConnection()
             this, SLOT(_slotTimeout()) );
 }
 
-
-GPSNMEA::~GPSNMEA()
+GpsNmea::~GpsNmea()
 {
+  // decrement instance counter
+  if( --instances )
+    {
+      return;
+    }
+
   // stop GPS client process
   if( serial )
   {
@@ -161,9 +181,9 @@ GPSNMEA::~GPSNMEA()
 /**
  * @Starts the GPS receiver client process and activates the receiver.
  */
-void GPSNMEA::startGpsReceiver()
+void GpsNmea::startGpsReceiver()
 {
-  // qDebug("GPSNMEA::startGpsReceiver()");
+  // qDebug("GpsNmea::startGpsReceiver()");
 
   if( serial )
     {
@@ -184,9 +204,9 @@ void GPSNMEA::startGpsReceiver()
  * arrived on the serial port. The argument contains the sentence to
  * analyze.
  */
-void GPSNMEA::slot_sentence(const QString& sentenceIn)
+void GpsNmea::slot_sentence(const QString& sentenceIn)
 {
-  // qDebug("GPSNMEA::slot_sentence: %s", sentenceIn.toLatin1().data());
+  // qDebug("GpsNmea::slot_sentence: %s", sentenceIn.toLatin1().data());
 
   if( QObject::signalsBlocked() )
     {
@@ -523,7 +543,7 @@ Field Number:
 /**
  * This function returns a QTime from the time encoded in a MNEA sentence.
  */
-QTime GPSNMEA::__ExtractTime(const QString& timestring)
+QTime GpsNmea::__ExtractTime(const QString& timestring)
 {
   QString hh (timestring.left(2));
   QString mm (timestring.mid(2,2));
@@ -538,7 +558,7 @@ QTime GPSNMEA::__ExtractTime(const QString& timestring)
   // @AP: don't overtake invalid times. They will cause invalid fixes!
   if( ! res.isValid() )
     {
-      qWarning("GPSNMEA::__ExtractTime(): Invalid time %s! Ignoring it (%s, %d)",
+      qWarning("GpsNmea::__ExtractTime(): Invalid time %s! Ignoring it (%s, %d)",
                timestring.toLatin1().data(), __FILE__, __LINE__ );
       return res;
     }
@@ -561,7 +581,7 @@ QTime GPSNMEA::__ExtractTime(const QString& timestring)
 
 /** This function returns a QDate from the date string encoded in a
     NWEA sentence as "ddmmyy". */
-QDate GPSNMEA::__ExtractDate(const QString& datestring)
+QDate GpsNmea::__ExtractDate(const QString& datestring)
 {
   QString dd (datestring.left(2));
   QString mm (datestring.mid(2,2));
@@ -579,7 +599,7 @@ QDate GPSNMEA::__ExtractDate(const QString& datestring)
     }
   else
     {
-      qWarning("GPSNMEA::__ExtractDate(): Invalid date %s! Ignoring it (%s, %d)",
+      qWarning("GpsNmea::__ExtractDate(): Invalid date %s! Ignoring it (%s, %d)",
                datestring.toLatin1().data(), __FILE__, __LINE__ );
     }
 
@@ -588,7 +608,7 @@ QDate GPSNMEA::__ExtractDate(const QString& datestring)
 
 
 /** This function returns a Speed from the speed encoded in knots */
-Speed GPSNMEA::__ExtractKnotSpeed(const QString& speedstring)
+Speed GpsNmea::__ExtractKnotSpeed(const QString& speedstring)
 {
   Speed res;
   res.setKnot(speedstring.toDouble());
@@ -603,7 +623,7 @@ Speed GPSNMEA::__ExtractKnotSpeed(const QString& speedstring)
 
 
 /** This function converts the coordinate data from the NMEA sentence to the internal QPoint format. */
-QPoint GPSNMEA::__ExtractCoord(const QString& slat, const QString& slatNS, const QString& slon, const QString& slonEW)
+QPoint GpsNmea::__ExtractCoord(const QString& slat, const QString& slatNS, const QString& slon, const QString& slonEW)
 {
   /* The internal KFLog format for coordinates represents coordinates in 10.000'st of a minute.
      So, one minute corresponds to 10.000, one degree to 600.000 and one second to 167.
@@ -656,70 +676,70 @@ QPoint GPSNMEA::__ExtractCoord(const QString& slat, const QString& slatNS, const
 
 
 /** Returns the time of the last fix. */
-QTime GPSNMEA::getLastTime()
+QTime GpsNmea::getLastTime()
 {
   return _lastTime;
 }
 
 
 /** Returns the date of the last fix. */
-QDate GPSNMEA::getLastDate()
+QDate GpsNmea::getLastDate()
 {
   return _lastDate;
 }
 
 
 /** Returns the last known speed. */
-Speed GPSNMEA::getLastSpeed()
+Speed GpsNmea::getLastSpeed()
 {
   return _lastSpeed;
 }
 
 
 /** Returns the last known coordinate in KFLog format (x=lat, y=lon). */
-QPoint GPSNMEA::getLastCoord()
+QPoint GpsNmea::getLastCoord()
 {
   return _lastCoord;
 }
 
 
 /** Returns the last know heading. */
-double GPSNMEA::getLastHeading()
+double GpsNmea::getLastHeading()
 {
   return _lastHeading;
 }
 
 
 /** Returns the last know standard pressure altitude */
-Altitude GPSNMEA::getLastStdAltitude()
+Altitude GpsNmea::getLastStdAltitude()
 {
   return _lastStdAltitude;
 }
 
 
 /** Returns the last know pressure altitude above Sea level */
-Altitude GPSNMEA::getLastPressureAltitude()
+Altitude GpsNmea::getLastPressureAltitude()
 {
   return _lastPressureAltitude;
 }
 
 
 /** Returns the last know altitude above Sea level */
-Altitude GPSNMEA::getLastAltitude()
+Altitude GpsNmea::getLastAltitude()
 {
   return _lastMslAltitude;
 }
 
 
 /** Returns the last know altitude above WGS84 ellipsoid*/
-Altitude GPSNMEA::getLastGNSSAltitude()
+Altitude GpsNmea::getLastGNSSAltitude()
 {
   return _lastGNSSAltitude;
 }
 
 
 /** Extract the heading from the NMEA sentence. */
-double GPSNMEA::__ExtractHeading(const QString& headingstring)
+double GpsNmea::__ExtractHeading(const QString& headingstring)
 {
   double res = headingstring.toDouble();
   if (res!=_lastHeading)
@@ -733,7 +753,7 @@ double GPSNMEA::__ExtractHeading(const QString& headingstring)
 
 
 /** Extracts the altitude from a NMEA GGA sentence */
-Altitude GPSNMEA::__ExtractAltitude(const QString& altitude, const QString& unitAlt,
+Altitude GpsNmea::__ExtractAltitude(const QString& altitude, const QString& unitAlt,
                                     const QString& heightOfGeoid, const QString& unitHeight)
 {
   // qDebug("alt=%s, unit=%s, hae=%s, unit=%s",
@@ -757,7 +777,7 @@ Altitude GPSNMEA::__ExtractAltitude(const QString& altitude, const QString& unit
   else
     sep.setMeters(hae);
 
-  if( _deliveredAltitude == GPSNMEA::HAE )
+  if( _deliveredAltitude == GpsNmea::HAE )
     {
       // @AP: GPS unit delivers Height above the WGS 84 ellipsoid. We must
       // adapt this to our internal variables.
@@ -766,7 +786,7 @@ Altitude GPSNMEA::__ExtractAltitude(const QString& altitude, const QString& unit
       // calculate MSL
       res.setMeters( res.getMeters() - sep.getMeters() );
     }
-  else if( _deliveredAltitude == GPSNMEA::USER )
+  else if( _deliveredAltitude == GpsNmea::USER )
     {
       // @AP: GPS unit delivers Height above the WGS 84 ellipsoid. We must
       // adapt this to our internal variables.
@@ -805,7 +825,7 @@ Altitude GPSNMEA::__ExtractAltitude(const QString& altitude, const QString& unit
 
 
 /** Extracts the altitude from a Garmin proprietary PGRMZ sentence */
-Altitude GPSNMEA::__ExtractAltitude(const QString& number, const QString& unit)
+Altitude GpsNmea::__ExtractAltitude(const QString& number, const QString& unit)
 {
   Altitude res(0);
   double num = number.toDouble();
@@ -826,7 +846,7 @@ Altitude GPSNMEA::__ExtractAltitude(const QString& number, const QString& unit)
 }
 
 /** Extracts the constellation from the NMEA sentence. */
-QString GPSNMEA::__ExtractConstellation(const QStringList& sentence)
+QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
 {
   QString result, tmp;
 
@@ -858,7 +878,7 @@ QString GPSNMEA::__ExtractConstellation(const QStringList& sentence)
 
 
 /** Extracts the satcount from the NMEA sentence. */
-void GPSNMEA::__ExtractSatcount(const QString& satcount)
+void GpsNmea::__ExtractSatcount(const QString& satcount)
 {
   int count = satcount.toInt();
   if (count !=_lastSatInfo.satCount)
@@ -870,14 +890,14 @@ void GPSNMEA::__ExtractSatcount(const QString& satcount)
 
 
 /** Returns the last know satellite constellation string. */
-SatInfo GPSNMEA::getLastSatInfo()
+SatInfo GpsNmea::getLastSatInfo()
 {
   return _lastSatInfo;
 }
 
 
 /** This slot is called by the internal timer to signal a timeout. If this timeout occurs, the connection is set to false, i.e., the connection has been lost. */
-void GPSNMEA::_slotTimeout()
+void GpsNmea::_slotTimeout()
 {
   if( _ignoreConnectionLost )
     {
@@ -913,7 +933,7 @@ void GPSNMEA::_slotTimeout()
 
 
 /** This slot is called by the internal timer to signal a timeout. If this timeout occurs, the connection is set to false, i.e., the connection has been lost. */
-void GPSNMEA::_slotTimeoutFix()
+void GpsNmea::_slotTimeoutFix()
 {
   if (_status == validFix)
     {
@@ -944,7 +964,7 @@ void GPSNMEA::_slotTimeoutFix()
 
 
 /** This function is called to indicate that good data has been received. It resets the TimeOut timer and if necessary changes the connected status. */
-void GPSNMEA::dataOK()
+void GpsNmea::dataOK()
 {
 
   if (_status==notConnected)
@@ -957,7 +977,7 @@ void GPSNMEA::dataOK()
 }
 
 
-void GPSNMEA::fixOK()
+void GpsNmea::fixOK()
 {
 
   // restart timer
@@ -977,9 +997,9 @@ void GPSNMEA::fixOK()
  * serial connection and to opens a new one, to adjust to the new settings.
  */
 
-void GPSNMEA::slot_reset()
+void GpsNmea::slot_reset()
 {
-  // qDebug("GPSNMEA::slot_reset()");
+  // qDebug("GpsNmea::slot_reset()");
 
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -1038,14 +1058,14 @@ void GPSNMEA::slot_reset()
 
 
 /** This slot is called to reset the gps device to factory settings */
-void GPSNMEA::sendFactoryReset()
+void GpsNmea::sendFactoryReset()
 {
   if( serial ) serial->sendSentence ("$PSRF104,0.0,0.0,0,0,0,0,12,8");
 }
 
 
 /** This slot is called to switch debugging mode on/off */
-void GPSNMEA::switchDebugging (bool on)
+void GpsNmea::switchDebugging (bool on)
 {
   QString cmd;
   cmd.sprintf ("$PSRF105,%d", on);
@@ -1059,7 +1079,7 @@ void GPSNMEA::switchDebugging (bool on)
  * called only at initialization; we don't optimize to show the algorithm
  * clear.
  */
-void GPSNMEA::sendLastFix (bool hard, bool soft)
+void GpsNmea::sendLastFix (bool hard, bool soft)
 {
   switchDebugging (true);
 
@@ -1117,9 +1137,9 @@ void GPSNMEA::sendLastFix (bool hard, bool soft)
 
 
 /** force a reset of the serial connection after a resume */
-void GPSNMEA::forceReset()
+void GpsNmea::forceReset()
 {
-  // qDebug("GPSNMEA::forceReset()");
+  // qDebug("GpsNmea::forceReset()");
 
   if( serial )
     {
@@ -1137,7 +1157,7 @@ The optional checksum field consists of a "*" and two hex digits
 representing the exclusive OR of all characters between, but not
 including, the "$" and "*".  A checksum is required on some sentences.
 */
-uint GPSNMEA::calcCheckSum (int pos, const QString& sentence)
+uint GpsNmea::calcCheckSum (int pos, const QString& sentence)
 {
   uchar sum = 0;
 
@@ -1159,7 +1179,7 @@ uint GPSNMEA::calcCheckSum (int pos, const QString& sentence)
 
 
 /** This function checks if the checksum in the sentence matches the sentence. It retuns true if it matches, and false otherwise. */
-bool GPSNMEA::checkCheckSum(int pos, const QString& sentence)
+bool GpsNmea::checkCheckSum(int pos, const QString& sentence)
 {
   uchar check = (uchar) sentence.right(2).toUShort(0, 16);
   return (check == calcCheckSum (pos, sentence));
@@ -1167,14 +1187,14 @@ bool GPSNMEA::checkCheckSum(int pos, const QString& sentence)
 
 
 /** Returns the current GPS connection status. True if connected, false if not. */
-bool GPSNMEA::getConnected()
+bool GpsNmea::getConnected()
 {
   return (_status != notConnected);
 }
 
 
 /** write config data to allow restore of last fix */
-void GPSNMEA::writeConfig()
+void GpsNmea::writeConfig()
 {
   if (_status == validFix)
     {
@@ -1189,7 +1209,7 @@ void GPSNMEA::writeConfig()
 
 
 /** Set system date/time. Input is utc related. */
-void GPSNMEA::setSystemClock( const QDateTime& utcDt )
+void GpsNmea::setSystemClock( const QDateTime& utcDt )
 {
   if( ! utcDt.isValid() )
     {
@@ -1265,7 +1285,7 @@ void GPSNMEA::setSystemClock( const QDateTime& utcDt )
 
 
 /** Extract Satelites In View (SIV) info from a NMEA sentence. */
-void GPSNMEA::__ExtractSatsInView(const QStringList& sentence)
+void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
 {
   //the GPGSV sentence can be split between multiple sentences.
   //qDebug("expecting: %d, found: %s",cntSIVSentence,sentence[2].toLatin1().data());
@@ -1297,7 +1317,7 @@ void GPSNMEA::__ExtractSatsInView(const QStringList& sentence)
 
 
 /** Extract Satelites In View (SIV) info from a NMEA sentence. */
-void GPSNMEA::__ExtractSatsInView(const QString& id, const QString& elev, const QString& azimuth, const QString& snr)
+void GpsNmea::__ExtractSatsInView(const QString& id, const QString& elev, const QString& azimuth, const QString& snr)
 {
   if (id.isEmpty())
     return;

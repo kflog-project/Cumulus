@@ -6,8 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinge
- **                   2007 Axel Pauli
+ **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
+ **                   2007-2009 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -36,10 +36,13 @@ class Isohypse : public LineElement
      * Creates a new isohypse.
      *
      * @param  pG  The polygon containing the position points.
-     * @param  elev  The elevation
+     * @param  elevation  The elevation
      * @param  isValles "true", if the area is a valley
+     * @param  secID The tile section identifier
+     * @param  typeID The type of isohypse, ground or terrain
      */
-    Isohypse(QPolygon pG, unsigned int elev, bool isValley, unsigned int secID);
+    Isohypse(QPolygon pG, uint elevation, bool isValley,
+             uint secID, const ushort typeID );
 
     /**
      * Destructor
@@ -59,22 +62,27 @@ class Isohypse : public LineElement
      */
     int getElevation() const
       {
-        return elevation;
+        return _elevation;
       };
 
+    /**
+     * @return the type of isohypse, ground or terrain
+     */
+    ushort getTypeId() const
+      {
+        return _typeID;
+      };
 
   private:
     /**
      * The elevation
      */
-    int elevation;
+    uint _elevation;
 
     /**
-     * "true", if element is a valley, that is lower than the
-     * surrounding, underlying terrain.
+     * The type of isohypse, ground or terrain.
      */
-    bool valley;
-
+     ushort _typeID;
   };
 
 #endif

@@ -55,14 +55,18 @@ class SettingsPageLookNFeel : public QWidget
     /** Called to open the font dialog */
     void slot_openFontDialog();
 
+    /** Called to open the color dialog */
+    void slot_openColorDialog();
+
   private:
 
     bool loadConfig; // control loading of config data
     QString currentFont; // current selected font is saved here
+    QColor  currentMapFrameColor; // current color of map frame
 
     QComboBox   *styleBox;
     QPushButton *fontDialog;
-    QLineEdit   *edtFrameCol;
+    QPushButton *editMapFrameColor;
     QCheckBox   *virtualKeybord;
   };
 

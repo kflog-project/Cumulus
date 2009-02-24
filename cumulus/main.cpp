@@ -30,6 +30,8 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QTranslator>
+//#include <QSplashScreen>
+//#include <QPixmap>
 
 #include "cumulusapp.h"
 #include "generalconfig.h"
@@ -82,16 +84,16 @@ int main(int argc, char *argv[])
   /*
     @AP: check, if environment variable LD_BIND_NOW is set. In this case reset
     it to avoid a gps client crash during fork under Opie.
-     
+
     If the process environment [see exec(base operating system)] contains a
     variable named LD_BIND_NOW with a non-null value, the dynamic linker processes
     all relocations before transferring control to the program. For example, all
     the following environment entries would specify this behavior.
-     
+
     * LD_BIND_NOW=1
     * LD_BIND_NOW=on
-    * LD_BIND_NOW=off 
-     
+    * LD_BIND_NOW=off
+
     Otherwise, LD_BIND_NOW either does not occur in the environment or has a null
     value. The dynamic linker is permitted to evaluate procedure linkage table
     entries lazily, thus avoiding symbol resolution and relocation overhead for
@@ -125,6 +127,12 @@ int main(int argc, char *argv[])
       qDebug( "No language translation file found in %s", langDir.toLatin1().data() );
     }
 
+  // try to load the splash screen image
+  //QPixmap pixmap( GeneralConfig::instance()->loadPixmap("splash.jpg") );
+  //QSplashScreen splash( pixmap, Qt::WindowStaysOnTopHint );
+  //splash.show();
+  //app.processEvents();
+
 #define DISCLAIMERVERSION 1
 
   if( conf->getDisclaimerVersion() != DISCLAIMERVERSION )
@@ -134,17 +142,13 @@ int main(int argc, char *argv[])
       if (QMessageBox::warning (NULL, QObject::tr("Cumulus Disclaimer"),
                                 QObject::tr(  //upon changing the text, you should also increase the value of DISCLAIMERVERSION with 1
                                   "<html><b>"
-                                  "This program comes with<br>"
-                                  "ABSOLUTELY NO WARRANTY!<br>"
-                                  "Do not rely on this software<br>"
-                                  "program as your primary source<br>"
-                                  "of navigation. You as user are<br>"
-                                  "responsible for using official<br>"
-                                  "aeronautical charts and proper<br>"
-                                  "methods for safe navigation.<br>"
-                                  "The information presented in this<br>"
-                                  "software program may be outdated<br>"
-                                  "or incorrect.<p>"
+                                  "This program comes with ABSOLUTELY NO WARRANTY!<p>"
+                                  "Do not rely on this software program as your<br>"
+                                  "primary source of navigation. You as user are<br>"
+                                  "responsible for using official aeronautical<br>"
+                                  "charts and proper methods for safe navigation.<br>"
+                                  "The information presented in this software<br>"
+                                  "program may be outdated or incorrect.<p>"
                                   "Do you accept these terms?"
                                   "</html></b>"
                                 ),
@@ -159,9 +163,12 @@ int main(int argc, char *argv[])
           return 0;
         }
     }
-  
+
   // create the cumulus application
   CumulusApp *cumulus = new CumulusApp(0, Qt::WindowContextHelpButtonHint);
+
+  //cumulus->show();
+  //splash.finish( cumulus );
 
   // start window manager event processing
   int result = QApplication::exec();

@@ -45,7 +45,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
   snrDisplay->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
   nmeaBox = new QTextEdit(this);
-  nmeaBox->setObjectName("nmeabox");
+  nmeaBox->setObjectName("NmeaBox");
   nmeaBox->setReadOnly(true);
   nmeaBox->document()->setMaximumBlockCount(100);
   nmeaBox->setLineWrapMode(QTextEdit::NoWrap);
@@ -55,14 +55,14 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
   nmeaBox->setFont(f);
 
   /* #warning: FIXME
-     Something is seriously rotten here. I can add either the 
+     Something is seriously rotten here. I can add either the
      snrDisplay _or_ the nmeaBox. Adding both will result in a
      crash. I really, really have no idea what's causing that,
      and I don't want to spend any more frustrating hours finding
      the cause just now. So, I ditched the NMEA box for now.
-     The crash most often happens with showMaximized, but on 
+     The crash most often happens with showMaximized, but on
      destruction is also a rather popular moment.
-     
+
      A.S. */
 
   QVBoxLayout* topLayout=new QVBoxLayout(this);
@@ -70,14 +70,14 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
   topLayout->addWidget(snrDisplay, 5);
   topLayout->addWidget(nmeaBox, 5);
 
-  connect(gps, SIGNAL(newSentence(const QString&)),
+  connect(GpsNmea::gps, SIGNAL(newSentence(const QString&)),
           this, SLOT(slot_Sentence(const QString&)));
-  connect(gps, SIGNAL(newSatInViewInfo()),
+  connect(GpsNmea::gps, SIGNAL(newSatInViewInfo()),
           this, SLOT(slot_SIV()));
 
 /*  if( QApplication::desktop()->screenGeometry().width() > 240 &&
       QApplication::desktop()->screenGeometry().height() > 320 )
-    { 
+    {
 //      resize( 600, 400 );
       show();
     }
@@ -91,9 +91,9 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
 GpsStatusDialog::~GpsStatusDialog()
 {
   // qDebug("GpsStatusDialog::~GpsStatusDialog()");
-  disconnect(gps, SIGNAL(newSentence(const QString&)),
+  disconnect(GpsNmea::gps, SIGNAL(newSentence(const QString&)),
              this, SLOT(slot_Sentence(const QString&)));
-  disconnect(gps, SIGNAL(newSatInViewInfo()),
+  disconnect(GpsNmea::gps, SIGNAL(newSatInViewInfo()),
              this, SLOT(slot_SIV()));
 }
 
@@ -101,8 +101,8 @@ GpsStatusDialog::~GpsStatusDialog()
 void GpsStatusDialog::slot_SIV()
 {
   //qDebug("received new sivi info signal");
-  elevAziDisplay->setSatInfo(gps->getSivInfo());
-  snrDisplay->setSatInfo(gps->getSivInfo());
+  elevAziDisplay->setSatInfo(GpsNmea::gps->getSivInfo());
+  snrDisplay->setSatInfo(GpsNmea::gps->getSivInfo());
 }
 
 

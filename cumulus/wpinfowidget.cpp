@@ -524,11 +524,10 @@ void WPInfoWidget::slot_arrivalClose()
 bool WPInfoWidget::inFlight()
 {
   extern Calculator* calculator;
-  extern GPSNMEA* gps;
 
   if( calculator->currentFlightMode() == Calculator::unknown ||
       calculator->currentFlightMode() == Calculator::standstill ||
-      ! gps->getConnected() )
+      ! GpsNmea::gps->getConnected() )
     {
       return false;
     }

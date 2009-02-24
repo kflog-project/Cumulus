@@ -29,9 +29,11 @@
 extern MapMatrix* _globalMapMatrix;
 extern MapConfig* _globalMapConfig;
 
-Isohypse::Isohypse(QPolygon pG, unsigned int elev, bool isV, unsigned int secID)
-    : LineElement("", BaseMapElement::Isohypse, pG, isV, secID),
-    elevation(elev)
+Isohypse::Isohypse( QPolygon pG, uint elevation, bool isValley,
+                    uint secID, const ushort typeID )
+    : LineElement( "", BaseMapElement::Isohypse, pG, isValley, secID ),
+    _elevation(elevation),
+    _typeID(typeID)
 {}
 
 

@@ -27,6 +27,7 @@
 #include <QStringList>
 #include <QApplication>
 #include <QFontDialog>
+#include <QColorDialog>
 
 #include "generalconfig.h"
 #include "settingspagelooknfeel.h"
@@ -63,10 +64,11 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   connect(fontDialog, SIGNAL(clicked()), this, SLOT(slot_openFontDialog()));
   row++;
 
-  lbl = new QLabel(tr("Sidebar frame color:"), this);
+  lbl = new QLabel(tr("Map sidebar color:"), this);
   topLayout->addWidget(lbl, row, 0);
-  edtFrameCol = new QLineEdit(this);
-  topLayout->addWidget( edtFrameCol, row, 1 );
+  editMapFrameColor = new QPushButton(tr("Edit Color"));
+  topLayout->addWidget( editMapFrameColor, row, 1 );
+  connect(editMapFrameColor, SIGNAL(clicked()), this, SLOT(slot_openColorDialog()));
   row++;
 
   virtualKeybord = new QCheckBox(tr("Virtual Keyboard"), this);
@@ -89,8 +91,6 @@ void SettingsPageLookNFeel::slot_load()
 
   currentFont = conf->getGuiFont();
 
-  edtFrameCol->setText( conf->getFrameCol() );
-
   // search item to be selected
   int idx = styleBox->findText( conf->getGuiStyle() );
 
@@ -98,6 +98,8 @@ void SettingsPageLookNFeel::slot_load()
     {
       styleBox->setCurrentIndex(idx);
     }
+
+  currentMapFrameColor = conf->getMapFrameColor();
 
   virtualKeybord->setChecked( conf->getVirtualKeyboard() );
 }
@@ -112,12 +114,15 @@ void SettingsPageLookNFeel::slot_save()
       conf->setGuiFont( currentFont );
     }
 
-  conf->setFrameCol( edtFrameCol->text() );
-
   if( conf->getGuiStyle() != styleBox->currentText() )
     {
       conf->setGuiStyle( styleBox->currentText() );
       conf->setOurGuiStyle();
+    }
+
+  if( conf->getMapFrameColor() != currentMapFrameColor )
+    {
+      conf->setMapFrameColor( currentMapFrameColor );
     }
 
   // Note! enabling/disabling requires GUI restart
@@ -139,6 +144,7 @@ void SettingsPageLookNFeel::slot_query_close( bool& warn, QStringList& warnings 
   changed |= conf->getGuiFont() != currentFont;
   changed |= conf->getGuiStyle() != styleBox->currentText();
   changed |= conf->getVirtualKeyboard() != virtualKeybord->isChecked();
+  changed |= conf->getMapFrameColor() != currentMapFrameColor;
 
   if (changed)
     {
@@ -170,3 +176,20 @@ void SettingsPageLookNFeel::slot_openFontDialog()
       currentFont = GeneralConfig::instance()->getGuiFont();
     }
 }
+
+/** Called to open the color dialog */
+void SettingsPageLookNFeel::slot_openColorDialog()
+{
+  // get current color
+  QColor& color = GeneralConfig::instance()->getMapFrameColor();
+
+  // Open color chooser dialog to edit selected color
+  QColor newColor = QColorDialog::getColor( color, this );
+
+  if( newColor.isValid() && color != newColor )
+    {
+      // save color into temporary buffer
+      currentMapFrameColor = newColor;
+    }
+}
+

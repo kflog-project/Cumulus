@@ -268,9 +268,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 
   double gs = calculator->getLastSpeed().getMps(); // get last speed
 
-  extern GPSNMEA *gps;
-
-  if( gs == 0.0 && ! gps->getConnected() )
+  if( gs == 0.0 && ! GpsNmea::gps->getConnected() )
     {
       // set a pseudo speed of 100km/h in manual mode for testing
       gs = 100000.0/3600.0; // m/s
@@ -532,9 +530,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
 
   double gs = calculator->getLastSpeed().getMps(); // get last speed
 
-  extern GPSNMEA *gps;
-
-  if( gs == 0.0 && ! gps->getConnected() )
+  if( gs == 0.0 && ! GpsNmea::gps->getConnected() )
     {
       // set a pseudo speed of 100km/h in manual mode for testing
       gs = 100000. / 3600.;

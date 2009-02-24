@@ -198,7 +198,8 @@ void WindAnalyser::_calcWind()
 
 void WindAnalyser::slot_newConstellation()
 {
-  satCnt=gps->getLastSatInfo().satCount;
+  satCnt = GpsNmea::gps->getLastSatInfo().satCount;
+
   if (active && (satCnt<minSatCnt))  //we are active, but the sat count drops below minimum
     {
       active=false;

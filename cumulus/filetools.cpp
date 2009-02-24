@@ -38,7 +38,7 @@ void ShortSave (QDataStream &s, const QByteArray &str )
 /** Save a QString to a stream with only one leading byte instead of 4. */
 void ShortSave (QDataStream &s, const QString  &str )
 {
-  //this is basicly a wrapper around the above function, provided for conveneance.
+  //this is basically a wrapper around the above function, provided for convenience.
   ShortSave(s, str.toUtf8());   //just use the QCString version
   return;
 }

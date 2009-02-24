@@ -1,8 +1,9 @@
 /***************************************************************************
-                          gpsnmea.h  - NMEA sentence decoding
+                          gpsnmea.h  - NMEA sentence parser and decoder
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by André Somers, 2008 by Axel Pauli
+    copyright            : (C) 2002 by AndrÃ© Somers,
+                               2008-2009 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -40,9 +41,8 @@
 /**
  * This class parses the NMEA sentences and provides access
  * to the last know data.
- *
- * @author André Somers
  */
+
 struct SatInfo
   {
     int fixValidity;
@@ -71,7 +71,7 @@ struct GPSInfo
     bool AirSpeed;
   };
 
-class GPSNMEA : public QObject
+class GpsNmea : public QObject
   {
     Q_OBJECT
 
@@ -86,9 +86,9 @@ class GPSNMEA : public QObject
 
   public:
 
-    GPSNMEA(QObject* parent);
+    GpsNmea(QObject* parent);
 
-    virtual ~GPSNMEA();
+    virtual ~GpsNmea();
 
     /**
      * @Starts the GPS receiver client process and activates the receiver.
@@ -158,7 +158,7 @@ class GPSNMEA : public QObject
     /**
      * set altitude reference delivered by the GPS unit
      */
-    void setDeliveredAltitude( const GPSNMEA::DeliveredAltitude newAltRef )
+    void setDeliveredAltitude( const GpsNmea::DeliveredAltitude newAltRef )
     {
       _deliveredAltitude = newAltRef;
     };
@@ -183,7 +183,7 @@ class GPSNMEA : public QObject
     /**
      * @Returns selected altitude reference delivered by the GPS unit
      */
-    const GPSNMEA::DeliveredAltitude getDeliveredAltitude() const
+    const GpsNmea::DeliveredAltitude getDeliveredAltitude() const
       {
         return _deliveredAltitude;
       };
@@ -227,6 +227,14 @@ class GPSNMEA : public QObject
      */
     void switchDebugging (bool on);
 
+  private slots: // Private slots
+
+    /** This slot is called by the internal timer to signal a timeout. If this timeout occurs, the connection is set to false, i.e., the connection has been lost. */
+    void _slotTimeout();
+
+    /** This slot is called by the internal timer to signal a timeout. If this timeout occurs, the fix is set to false. */
+    void _slotTimeoutFix();
+
   signals: // Signals
     /**
      * This signal signifies a new position fix.
@@ -268,7 +276,7 @@ class GPSNMEA : public QObject
      * This signal is send to indicate a change in status.
      * It supersedes the old connecedChange(bool) signal.
      */
-    void statusChange(GPSNMEA::connectedStatus);
+    void statusChange(GpsNmea::connectedStatus);
 
     /**
      * This signal is send to indicate that there is a new fix.
@@ -355,9 +363,9 @@ class GPSNMEA : public QObject
     /** Contains the last known clock offset of the gps receiver */
     int _lastClockOffset;
     /** This timer fires if a timeout on the datareception occurs. The connection is then probably (temporary?) lost. */
-    QTimer * timeOut;
+    QTimer* timeOut;
     /** This timer fires if a timeout on the fix occurs. The satelite reception is then probably (temporary?) lost. */
-    QTimer * timeOutFix;
+    QTimer* timeOutFix;
     /** Indicates the current connection status */
     connectedStatus _status;
     /** Indicates the altitude delivered by the GPS unit */
@@ -377,21 +385,20 @@ class GPSNMEA : public QObject
     /** selected GPS device */
     QString gpsDevice;
     /** reference to the normal serial connection */
-    GPSCon * serial;
+    GPSCon* serial;
 
 #ifdef MAEMO
-    /** reference to the Maemo gpsd connection */
-    GpsMaemo * gpsdConnection;
+    /** reference to the Maemo GPS daemon connection */
+    GpsMaemo* gpsdConnection;
 #endif
 
-  private slots: // Private slots
+    // number of created class instances
+    static short instances;
 
-    /** This slot is called by the internal timer to signal a timeout. If this timeout occurs, the connection is set to false, i.e., the connection has been lost. */
-    void _slotTimeout();
-    /** This slot is called by the internal timer to signal a timeout. If this timeout occurs, the fix is set to false. */
-    void _slotTimeoutFix();
-  };
+  public:
 
-extern GPSNMEA *gps;
+    // make class object for all available
+    static GpsNmea *gps;
+};
 
 #endif

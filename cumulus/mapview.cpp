@@ -97,13 +97,12 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   wayLayout->setSpacing(4);
 
   //add Waypoint widget (whole line)
-  _waypoint = new MapInfoBox( this, conf->getFrameCol() );
+  _waypoint = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _waypoint->setPreText("To");
   _waypoint->setValue("-");
   wayLayout->addWidget( _waypoint );
   connect(_waypoint, SIGNAL(mousePress()),
           (CumulusApp*)parent, SLOT(slotSwitchToWPListViewExt()));
-
 
   //layout for Glide Path and Relative Bearing
   QBoxLayout *GRLayout = new QHBoxLayout;
@@ -111,7 +110,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   GRLayout->setSpacing(2);
 
   //add Glide Path widget
-  _glidepath = new MapInfoBox( this, conf->getFrameCol(), 42 );
+  _glidepath = new MapInfoBox( this, conf->getMapFrameColor().name(), 42 );
   _glidepath->setValue("-");
   _glidepath->setPreText("Arr");
   _glidepath->setFixedHeight(60);
@@ -122,7 +121,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   // add Relative Bearing widget
   QPixmap arrow = _arrows.copy( 24*60+3, 3, 54, 54 );
-  _rel_bearing = new MapInfoBox( this, conf->getFrameCol(), arrow);
+  _rel_bearing = new MapInfoBox( this, conf->getMapFrameColor().name(), arrow);
   _rel_bearing->setFixedSize(60,60);
   _rel_bearing->setToolTip( tr("Click here to save current position as waypoint") );
   GRLayout->addWidget(_rel_bearing);
@@ -137,14 +136,14 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   DEBLayout->setSpacing(2);
 
   //add Distance widget
-  _distance = new MapInfoBox( this, conf->getFrameCol() );
+  _distance = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _distance->setPreText("Dis");
   _distance->setValue("-");
   DEBLayout->addWidget( _distance);
   connect(_distance, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
 
   //add ETA widget
-  _eta = new MapInfoBox( this, conf->getFrameCol() );
+  _eta = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _eta->hide();
   _eta->setPreText( "Eta" );
   _eta->setValue("-");
@@ -157,7 +156,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _bearingTimer = new QTimer(this);
   connect (_bearingTimer, SIGNAL(timeout()),
            this, SLOT(slot_resetInversBearing()));
-  _bearing = new MapInfoBox( this, conf->getFrameCol() );
+  _bearing = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _bearingBGColor = wayBar->palette().color(QPalette::Window);
   _bearing->setValue("-");
   _bearing->setPreText("Brg");
@@ -198,14 +197,14 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   commonLayout->addLayout(WLLayout);
 
   //add Wind widget; this is head/tailwind, no direction given !
-  _wind = new MapInfoBox( this, conf->getFrameCol() );
+  _wind = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _wind->setPreText("Wd");
   _wind->setValue("-");
   WLLayout->addWidget(_wind );
   connect(_wind, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
 
   //add LD widget
-  _ld = new MapInfoBox( this, conf->getFrameCol() );
+  _ld = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _ld->hide();
   _ld->setPreText( "LD" );
   _ld->setValue("-/-");
@@ -218,14 +217,14 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   VALayout->setSpacing(2);
 
   //add Vario widget
-  _vario = new MapInfoBox( this, conf->getFrameCol(), 38, true );
+  _vario = new MapInfoBox( this, conf->getMapFrameColor().name(), 38, true );
   _vario->setPreText("Var");
   _vario->setValue("-");
   VALayout->addWidget(_vario, 2 );
   connect(_vario, SIGNAL(mousePress()),
           this, SLOT(slot_VarioDialog()));
 
-  _altitude = new MapInfoBox( this, conf->getFrameCol() );
+  _altitude = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _altitude->setPreText(AltimeterModeDialog::mode2String()); // get current mode
   _altitude->setValue("-");
   VALayout->addWidget( _altitude, 3 );
@@ -248,7 +247,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   MSLayout->setSpacing(2);
 
   //add McCready widget
-  _mc = new MapInfoBox( this, conf->getFrameCol() );
+  _mc = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _mc->setPreText("Mc");
   _mc->setValue("0.0");
   MSLayout->addWidget( _mc );
@@ -546,9 +545,9 @@ void MapView::slot_Position(const QPoint& position, const int source)
 
 
 /** This slot is called if the status of the GPS changes. */
-void MapView::slot_GPSStatus(GPSNMEA::connectedStatus status)
+void MapView::slot_GPSStatus(GpsNmea::connectedStatus status)
 {
-  if(status>GPSNMEA::notConnected)
+  if(status>GpsNmea::notConnected)
     {
       _statusGps->setText(tr("GPS"));
     }
@@ -560,9 +559,9 @@ void MapView::slot_GPSStatus(GPSNMEA::connectedStatus status)
       _altitude->setValue("-");
     }
 
-  _theMap->setShowGlider(status==GPSNMEA::validFix); //only show glider symbol if the GPS is connected.
+  _theMap->setShowGlider(status == GpsNmea::validFix); //only show glider symbol if the GPS is connected.
 
-  if(status==GPSNMEA::validFix)
+  if(status == GpsNmea::validFix)
     {
       cuApp->actionToggleManualInFlight->setEnabled(true);
     }
@@ -732,17 +731,17 @@ void MapView::slot_settingschange()
 /** This slot is called if the number of satellites changes. */
 void MapView::slot_SatConstellation()
 {
-  if (gps)
+  if( GpsNmea::gps )
     {
-      SatInfo info = gps->getLastSatInfo();
+      SatInfo info = GpsNmea::gps->getLastSatInfo();
       QString msg = QString ("G-%1").arg(info.satCount);
       _statusGps->setText (msg);
     }
 }
 
 
-/** This slot updates the FlightStatus statusbar-widget with the
-    current logging and flightmode status */
+/** This slot updates the FlightStatus status bar-widget with the
+    current logging and flight mode status */
 void MapView::slot_setFlightStatus()
 {
 //  QString status="<html>";

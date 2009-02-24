@@ -149,14 +149,14 @@ class MapView : public QWidget
     void slot_Position(const QPoint& position, const int source);
 
     /**
-     * This slot is called if a logentry has been made.
+     * This slot is called if a log entry has been made.
      */
     void slot_LogEntry();
 
     /**
      * This slot is called if the status of the GPS changes.
      */
-    void slot_GPSStatus(GPSNMEA::connectedStatus status);
+    void slot_GPSStatus(GpsNmea::connectedStatus status);
 
     /**
      * This slot is called if the number of satelites changes.

@@ -435,20 +435,20 @@ public slots: // Public slots
      */
     void slot_settingschanged();
     /**
-     * This slot is called by the NMEA interpretter if a new fix has been received.
+     * This slot is called by the NMEA interpreter if a new fix has been received.
      */
     void slot_newFix();
     /**
      * Called if the status of the GPS changes.
      */
-    void slot_GpsStatus(GPSNMEA::connectedStatus);
+    void slot_GpsStatus(GpsNmea::connectedStatus);
     /**
      * Write property of Glider glider.
      */
     void setGlider( Glider * _newVal);
 
     /**
-     * Connected to the signal flightModeChanged, and used to re-emit with markervalue
+     * Connected to the signal flightModeChanged and used to re-emit with marker value
      */
     void slot_flightModeChanged(Calculator::flightmode);
     /**
@@ -525,7 +525,7 @@ signals: // Signals
     void newHeading(int);
 
     /**
-     * Sent if a new position has been selected, either manually or by gps
+     * Sent if a new position has been selected, either manually or by GPS
      */
     void newPosition(const QPoint&, const int);
 
@@ -535,7 +535,7 @@ signals: // Signals
     void bestSpeed (const Speed& speed);
 
     /**
-     * Sent if a new glidepath value has been calculated
+     * Sent if a new glide path value has been calculated
      */
     void glidePath (const Altitude& above);
 
@@ -582,7 +582,7 @@ signals: // Signals
     void taskInfo( const QString&, const bool );
 
     /**
-     * Sent if a task point sector is touched. Will be used by the igc
+     * Sent if a task point sector is touched. Will be used by the IGC
      * logger to increase logger sequence for a certain time.
      */
     void taskpointSectorTouched();
@@ -627,7 +627,7 @@ private: // Private methods
 
     /**
      * Determines the status of the flight:
-     * unkown, standstill, cruising, circlingL, circlingR or wave
+     * unknown, standstill, cruising, circlingL, circlingR or wave
      */
     void determineFlightStatus();
 
@@ -661,7 +661,7 @@ private: // Private attributes
     Altitude lastAGLAltitude;
     /** Contains the last known STD altitude */
     Altitude lastSTDAltitude;
-    /** Contains the last known Errormargin for the AGL altitude */
+    /** Contains the last known Error margin for the AGL altitude */
     Distance lastAGLAltitudeError;
     /** Contains the last known altitude */
     Altitude lastGNSSAltitude;
@@ -669,13 +669,13 @@ private: // Private attributes
     Altitude lastGNDAltitude;
     /** Contains the altitude used for manual navigation mode */
     Altitude manualAltitude;
-    /** Contains the errormargin for the lastGNDAltitude */
+    /** Contains the error margin for the lastGNDAltitude */
     Distance lastElevationError;
     /** Contains the last known elevation */
     Altitude lastElevation;
     /** Contains the last returned altitude collection */
     AltitudeCollection lastAltCollection;
-    /** Contains the last known position, either obtained from the gps or modified by manual input. */
+    /** Contains the last known position, either obtained from the GPS or modified by manual input. */
     QPoint lastPosition, lastGPSPosition;
     /** contains the last known heading */
     int lastHeading;
@@ -693,19 +693,19 @@ private: // Private attributes
     Vario* _vario;
     /** contains the current state of vario calculation */
     bool _calculateVario;
-    /** Contains the last known flightmode */
+    /** Contains the last known flight mode */
     flightmode lastFlightMode;
-    /** Last markervalue used */
+    /** Last marker value used */
     int _marker;
-    /** contains funtions to analyze the wind */
+    /** contains functions to analyze the wind */
     WindAnalyser * _windAnalyser;
-    /** contains funtions to analyze the wind */
+    /** contains functions to analyze the wind */
     ReachableList * _reachablelist;
-    /** maintains windmeasurements and returns new windvalues */
+    /** maintains wind measurements and returns new wind values */
     WindStore * _windStore;
     /** Info on the selected glider. */
     Glider * _glider;
-    /** Did we allready receive a complete sentence? */
+    /** Did we already receive a complete sentence? */
     bool _pastFirstFix;
     /** Direction of cruise if we are in cruising mode */
     int _cruiseDirection;

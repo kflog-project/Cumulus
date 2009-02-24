@@ -67,11 +67,11 @@ void GeneralConfig::load()
 
   // Main window properties
   beginGroup("MainWindow");
-  _windowSize      = value("Geometrie", QSize(800, 480)).toSize();
-  _framecol        = value("FrameColor", "#687ec6").toString();
-  _guiStyle        = value("Style", "Plastique").toString();
-  _guiFont         = value("Font", "").toString();
-  _virtualKeyboard = value("VirtualKeyboard", false).toBool();
+  _windowSize        = value("Geometrie", QSize(800, 480)).toSize();
+  _mapSideFrameColor = QColor( value("MapSideFrameColor", "#687ec6").toString() );
+  _guiStyle          = value("Style", "Plastique").toString();
+  _guiFont           = value("Font", "").toString();
+  _virtualKeyboard   = value("VirtualKeyboard", false).toBool();
   endGroup();
 
   // Airspace warning distances
@@ -312,7 +312,7 @@ void GeneralConfig::load()
   beginGroup("GPS");
   _gpsDevice          = value( "Device", getGpsDefaultDevice() ).toString();
   _gpsSpeed           = value( "Speed", 4800 ).toInt();
-  _gpsAltitude        = value( "Altitude", (int) GPSNMEA::MSL ).toInt();
+  _gpsAltitude        = value( "Altitude", (int) GpsNmea::MSL ).toInt();
   _gpsAltitudeUserCorrection.setMeters(value( "AltitudeCorrection", 0 ).toInt());
   _gpsSoftStart       = value( "SoftStart", false ).toBool();
   _gpsHardStart       = value( "HardStart", false ).toBool();
@@ -356,7 +356,7 @@ void GeneralConfig::save()
   // Main window properties
   beginGroup("MainWindow");
   setValue("Geometrie", _windowSize );
-  setValue("FrameColor", _framecol);
+  setValue("MapSideFrameColor", _mapSideFrameColor);
   setValue("Style", _guiStyle);
   setValue("Font", _guiFont);
   setValue("VirtualKeyboard", _virtualKeyboard);
@@ -1513,3 +1513,50 @@ void GeneralConfig::loadTerrainDefaultColors()
   _terrainDefaultColors[49] = COLOR_LEVEL_8500.name();
   _terrainDefaultColors[50] = COLOR_LEVEL_8750.name();
 }
+
+#if 0
+/** helper method to create the color definitions */
+void GeneralConfig::printIsoColorDefinitions()
+{
+  int isoLines[] =
+  {
+    0, 10, 25, 50, 75, 100, 150, 200, 250,
+    300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1250, 1500, 1750,
+    2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000, 4250, 4500,
+    4750, 5000, 5250, 5500, 5750, 6000, 6250, 6500, 6750, 7000, 7250,
+    7500, 7750, 8000, 8250, 8500, 8750
+  };
+
+  bool ok;
+  QString cn;
+  QString rot;
+  QString gruen;
+  QString blau;
+
+  cn = _terrainColors[0].name(); // color name as '#RRGGBB'
+
+  rot = cn.mid(1, 2);
+  gruen = cn.mid(3, 2);
+  blau = cn.mid(5, 2);
+
+  printf("\n#define COLOR_LEVEL_SUB QColor(%d, %d, %d)\n",
+          rot.toInt(&ok, 16),
+          gruen.toInt(&ok, 16),
+          blau.toInt(&ok, 16) );
+
+  for( int i=0; i < 50; i++ )
+    {
+      cn = _terrainColors[i+1].name(); // color name as '#RRGGBB'
+
+      rot = cn.mid(1, 2);
+      gruen = cn.mid(3, 2);
+      blau = cn.mid(5, 2);
+
+      printf("#define COLOR_LEVEL_%d QColor(%d, %d, %d)\n",
+              isoLines[i],
+              rot.toInt(&ok, 16),
+              gruen.toInt(&ok, 16),
+              blau.toInt(&ok, 16) );
+    }
+}
+#endif

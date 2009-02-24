@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+ **   Copyright (c): 2002 by André Somers
+ **                  2008-2009 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -174,9 +175,9 @@ const AltitudeCollection& Calculator::getAltitudeCollection()
 /** called on altitude change */
 void Calculator::slot_Altitude()
 {
-  lastAltitude=gps->getLastAltitude();
-  lastSTDAltitude=gps->getLastStdAltitude();
-  lastGNSSAltitude=gps->getLastGNSSAltitude();
+  lastAltitude=GpsNmea::gps->getLastAltitude();
+  lastSTDAltitude=GpsNmea::gps->getLastStdAltitude();
+  lastGNSSAltitude=GpsNmea::gps->getLastGNSSAltitude();
   lastAGLAltitude = lastAltitude - Altitude( _globalMapContents->findElevation(lastPosition, &lastAGLAltitudeError) );
   emit newAltitude(lastAltitude);
   calcGlidePath();
@@ -194,7 +195,7 @@ void Calculator::slot_Heading()
     return;
   }
 
-  lastHeading = (int)rint(gps->getLastHeading());
+  lastHeading = (int)rint(GpsNmea::gps->getLastHeading());
   emit newHeading(lastHeading);
   // if we have no bearing, lastBearing is -1;
   // this is only a small mistake, relBearing points to north
@@ -211,7 +212,7 @@ void Calculator::slot_Heading()
 /** called if a new speed fix has been received */
 void Calculator::slot_Speed()
 {
-  lastSpeed=gps->getLastSpeed();
+  lastSpeed=GpsNmea::gps->getLastSpeed();
   emit newSpeed(lastSpeed);
 }
 
@@ -219,7 +220,7 @@ void Calculator::slot_Speed()
 /** called if a new position-fix has been established. */
 void Calculator::slot_Position()
 {
-  lastGPSPosition=gps->getLastCoord();
+  lastGPSPosition=GpsNmea::gps->getLastCoord();
   if(!manualInFlight) lastPosition = lastGPSPosition;
   lastElevation = Altitude( _globalMapContents->findElevation(lastPosition, &lastElevationError) );
   emit newPosition(lastGPSPosition, Calculator::GPS);
@@ -395,7 +396,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
   // considered in manual mode to make testing possible.
   bool inside = false;
 
-  if( lastSpeed.getKph() > 35 || ! gps->getConnected() ) {
+  if( lastSpeed.getKph() > 35 || ! GpsNmea::gps->getConnected() ) {
     inside = task->checkSector( curDistance, lastPosition, selectedWp->taskPointIndex );
   }
 
@@ -514,7 +515,7 @@ void Calculator::calcETA()
   // qDebug("lastSpeed=%f m/s", lastSpeed.getMps());
 
   if( ! _calculateETA || ! selectedWp ||
-      lastSpeed.getMps() <= 0.3 || ! gps->getConnected() ) {
+      lastSpeed.getMps() <= 0.3 || ! GpsNmea::gps->getConnected() ) {
     if( ! lastETA.isNull() ) {
       emit newETA(etaNew);
       lastETA = etaNew;
@@ -952,7 +953,7 @@ void Calculator::slot_newFix()
   flightSample sample;
 
   // fill it with the relevant data
-  sample.time=gps->getLastTime();
+  sample.time=GpsNmea::gps->getLastTime();
   sample.altitude.setMeters(lastAltitude.getMeters());
   sample.GNSSAltitude.setMeters(lastGNSSAltitude.getMeters());
   sample.position=lastPosition;
@@ -1158,7 +1159,7 @@ void Calculator::determineFlightStatus()
 
     //try standstill. We are using a value > 0 because of possible GPS errors.
     /*
-      The detection of standstills may be extended further by checking if the altitude matches the terrain altitude. If not
+      The detection of stand stills may be extended further by checking if the altitude matches the terrain altitude. If not
       (or no where near), we can not assume a standstill. This is probably wave flying.
     */
     if (maxSpeed<10) { // if we get under 10 kph for maximum speed, we may be standing still
@@ -1178,7 +1179,7 @@ void Calculator::determineFlightStatus()
       //see if we might be cruising...
       if (mayBeL && mayBeR) { //basicly, we have been going (almost) strait it seems...
         if (totalDirChange < 2 * timediff) {
-          //qDebug("analysis: distance=%f m, timedifference=%d s",dist(&samplelist->at(ls-1)->position,&samplelist[0].position)*1000,timediff);
+          //qDebug("analysis: distance=%f m, time difference=%d s",dist(&samplelist->at(ls-1)->position,&samplelist[0].position)*1000,timediff);
           if (dist(&samplelist[ls-1].position, &samplelist[0].position)*1000 > 5*timediff) //our average speed should be at least 5 m/s to qualify for cruising
             newFlightMode=cruising;
           _cruiseDirection=samplelist[0].vector.getAngleDeg();
@@ -1211,7 +1212,7 @@ void Calculator::determineFlightStatus()
 
 
 /** Called if the status of the GPS changes. */
-void Calculator::slot_GpsStatus(GPSNMEA::connectedStatus newState)
+void Calculator::slot_GpsStatus(GpsNmea::connectedStatus newState)
 {
   // qDebug("connection status changed...");
   flightmode newFlightMode=unknown;
@@ -1224,7 +1225,7 @@ void Calculator::slot_GpsStatus(GPSNMEA::connectedStatus newState)
     emit flightModeChanged(newFlightMode);
   }
 
-  if( newState == GPSNMEA::noFix ) {
+  if( newState == GpsNmea::noFix ) {
     // Reset LD display
     emit newLD( -1.0, -1.0 );
     // reset first fix passed
