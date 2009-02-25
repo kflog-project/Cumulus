@@ -62,9 +62,8 @@ void Vario::newAltitude()
 
     bool resultAvailable = false;
 
-    // Step through the list. Note, the list is invers ordered, last sample at
+    // Step through the list. Note, the list is inverse ordered, last sample at
     // first position.
-
     QTime startTime = calculator->samplelist.at(0).time;
 
     while( i < max ) {
