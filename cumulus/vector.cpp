@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -31,7 +31,7 @@ Vector::Vector()
 }
 
 
-Vector::Vector(double x, double y)
+Vector::Vector(const double& x, const double& y)
 {
     _angle=0.0;
     _speed=0.0;
@@ -45,7 +45,7 @@ Vector::Vector(double x, double y)
 }
 
 
-Vector::Vector(Speed x, Speed y)
+Vector::Vector(const Speed& x, const Speed& y)
 {
     _angle=0.0;
     _speed=0.0;
@@ -59,7 +59,7 @@ Vector::Vector(Speed x, Speed y)
 }
 
 
-Vector::Vector(double angle, Speed R)
+Vector::Vector(const double& angle, const Speed& R)
 {
     _x=0.0;
     _y=0.0;
@@ -73,7 +73,7 @@ Vector::Vector(double angle, Speed R)
 }
 
 
-Vector::Vector(int angle, Speed R)
+Vector::Vector(const int angle, const Speed& R)
 {
     _x=0.0;
     _y=0.0;
@@ -110,7 +110,7 @@ double Vector::getAngleRad()
 
 
 /** Set property of int angle in degrees*/
-void Vector::setAngle(int angle)
+void Vector::setAngle(const int angle)
 {
     if (dirtyDR)
         recalcDR();
@@ -136,7 +136,7 @@ void Vector::setAngleAndSpeed(const int angle, const Speed & spd)
 
 
 /** Set property of int angle in rad*/
-void Vector::setAngleRad(double angle)
+void Vector::setAngleRad(const double& angle)
 {
     if (dirtyDR)
         recalcDR();
@@ -225,7 +225,7 @@ double Vector::getYMps()
 
 
 /** Sets the X (latitudinal) speed in meters per second. */
-void Vector::setX(double x)
+void Vector::setX(const double& x)
 {
     if (dirtyXY)
         recalcXY();
@@ -235,7 +235,7 @@ void Vector::setX(double x)
 
 
 /** Sets the Y (longitudinal) speed in meters per second. */
-void Vector::setY(double y)
+void Vector::setY(const double& y)
 {
     if (dirtyXY)
         recalcXY();
@@ -245,7 +245,7 @@ void Vector::setY(double y)
 
 
 /** Sets the X (latitudinal) speed in meters per second. */
-void Vector::setX(Speed x)
+void Vector::setX(const Speed& x)
 {
     if (dirtyXY)
         recalcXY();
@@ -256,7 +256,7 @@ void Vector::setX(Speed x)
 
 
 /** Sets the Y (longitudinal) speed in meters per second. */
-void Vector::setY(Speed y)
+void Vector::setY(const Speed& y)
 {
     if (dirtyXY)
         recalcXY();
@@ -429,8 +429,7 @@ Vector operator / (Vector& left, int right)
 
 
 /** Poor man's solution for not getting the + operator to work properly. */
-void Vector::add
-    (Vector arg)
+void Vector::add(Vector arg)
 {
     if (dirtyXY) {
         recalcXY();

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -37,10 +37,10 @@ class Vector
 {
 public:
     Vector();
-    Vector(double x, double y);
-    Vector(Speed x, Speed y);
-    Vector(double angle, Speed R);
-    Vector(int angle, Speed R);
+    Vector(const double& x, const double& y);
+    Vector(const Speed& x, const Speed& y);
+    Vector(const double& angle, const Speed& R);
+    Vector(const int angle, const Speed& R);
 
     ~Vector();
 
@@ -57,7 +57,7 @@ public:
     /**
      * set the angle in degrees
      */
-    void setAngle(int angle);
+    void setAngle(const int angle);
 
     /**
      * set the angle in degrees  and the speed
@@ -67,7 +67,7 @@ public:
     /**
      * set the angle in rad
      */
-    void setAngleRad(double angle);
+    void setAngleRad(const double& angle);
 
     /**
      * @return The speed
@@ -106,24 +106,24 @@ public:
     /**
      * Sets the X (latitudinal) speed in meters per second.
      */
-    void setX(double x);
+    void setX(const double& x);
 
     /**
      * Sets the Y (longitudinal) speed in meters per second.
      */
-    void setY(double y);
+    void setY(const double& y);
 
     /**
      * Sets the X (latitudinal) speed in meters per second.
      */
-    void setX(Speed x);
+    void setX(const Speed& x);
 
     /**
      * Sets the Y (longitudinal) speed in meters per second.
      */
-    void setY(Speed y);
+    void setY(const Speed& y);
 
-    /*Operators */
+    /* Operators */
     /**
      * = operator for Vector.
      */
@@ -175,7 +175,7 @@ public:
      * Poor man's solution for not getting the +
      * operator to work properly.
      */
-    void add (Vector arg);
+    void add(Vector arg);
 
     /**
      * Returns a copy of the object
@@ -185,7 +185,7 @@ public:
     /**
      * Sets the distance to be invalid
      */
-    inline void setInvalid()
+    void setInvalid()
     {
         _isValid=false;
         dirtyXY=true;
@@ -199,9 +199,9 @@ public:
     /**
      * Gets if the distance is valid
      */
-    inline bool isValid()
+    bool isValid() const
     {
-        return _isValid;
+      return _isValid;
     };
 
 protected: // Protected attributes
