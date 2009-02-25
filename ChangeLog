@@ -18,6 +18,14 @@ Cumulus changelog
 Cumulus 2.1.x (Development based on X11/Qt-4.5)
 -------------------------------------------------
 
+[+] 2009-02-25 AP: GPS parser/decoder extended to read additional proprietary records
+                   from a Cambridge logger device. Wind, variometer, QNH, pressure
+                   altitude are processed now.
+[+] 2009-02-25 AP: USB device added in GPS settings tabulator. Data can be read in now
+                   via a RS232-USB adapter into the N800/N810.
+                   Furthermore Altitude selection box is extended by a Pressure field.
+                   If Pressure is selected, only pressure GPS altitude records will be
+                   used and processed.
 [o] 2009-02-24 AP: Map side bar color can be modified via color chooser dialog
                    in Look&Feel setting tabulator now.
 [o] 2009-02-24 AP: Terrain colors list reduced from 200 elements to 50. Mapping of
