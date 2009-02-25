@@ -1792,7 +1792,7 @@ class GeneralConfig : protected QSettings
   // Gps speed
   int _gpsSpeed;
   // Gps delivered altitude
-  int _gpsAltitude;
+  int _gpsAltitudeType;
   // Gps deliverd altitude user correction
   Altitude _gpsAltitudeUserCorrection;
   // Gps soft start

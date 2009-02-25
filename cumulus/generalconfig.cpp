@@ -312,7 +312,7 @@ void GeneralConfig::load()
   beginGroup("GPS");
   _gpsDevice          = value( "Device", getGpsDefaultDevice() ).toString();
   _gpsSpeed           = value( "Speed", 4800 ).toInt();
-  _gpsAltitude        = value( "Altitude", (int) GpsNmea::MSL ).toInt();
+  _gpsAltitudeType    = value( "AltitudeType", (int) GpsNmea::MSL ).toInt();
   _gpsAltitudeUserCorrection.setMeters(value( "AltitudeCorrection", 0 ).toInt());
   _gpsSoftStart       = value( "SoftStart", false ).toBool();
   _gpsHardStart       = value( "HardStart", false ).toBool();
@@ -579,7 +579,7 @@ void GeneralConfig::save()
   beginGroup("GPS");
   setValue( "Device", _gpsDevice );
   setValue( "Speed", _gpsSpeed );
-  setValue( "Altitude", _gpsAltitude );
+  setValue( "AltitudeType", _gpsAltitudeType );
   setValue( "AltitudeCorrection", _gpsAltitudeUserCorrection.getMeters() );
   setValue( "HardStart", _gpsHardStart );
   setValue( "SoftStart", _gpsSoftStart );
@@ -911,17 +911,17 @@ void GeneralConfig::setGpsSpeed( const int newValue )
 }
 
 
-/** gets Gps altitude */
+/** gets Gps altitude type */
 int GeneralConfig::getGpsAltitude() const
 {
-  return _gpsAltitude;
+  return _gpsAltitudeType;
 }
 
 
-/** sets Gps altitude */
+/** sets Gps altitude type */
 void GeneralConfig::setGpsAltitude(const int newValue)
 {
-  _gpsAltitude = newValue;
+  _gpsAltitudeType = newValue;
 }
 
 
