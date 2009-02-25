@@ -65,6 +65,7 @@ Calculator::Calculator(QObject* parent) :
   _calculateLD = false;
   _calculateETA = false;
   _calculateVario = true;
+  _calculateWind = true;
   selectedWp=(wayPoint *) 0;
   lastMc = 0.0;
   _polar = 0;
@@ -83,19 +84,23 @@ Calculator::Calculator(QObject* parent) :
   taskEndReached = false;
   manualInFlight = false;
 
-  // hook up the backend components
+  // hook up the internal backend components
   connect (_vario, SIGNAL(newVario(const Speed&)),
-           this,SLOT(slot_Variometer(const Speed&)));
-  connect (this, SIGNAL(newSample()),
-           _windAnalyser, SLOT(slot_newSample()));
-  connect (this, SIGNAL(flightModeChanged(Calculator::flightmode, int)),
-           _windAnalyser, SLOT(slot_newFlightMode(Calculator::flightmode, int)));
+           this, SLOT(slot_Variometer(const Speed&)));
+
+  // The former calls to slot_newSample and slot_newFlightMode of the wind
+  // analyzer are replaced by direct calls, when a new sample or flight
+  // mode is available and the wind calculation is enabled. Wind calculation
+  // can be disabled when the Logger device delivers already wind data.
+
   connect (_windAnalyser, SIGNAL(newMeasurement(Vector, int)),
            _windStore, SLOT(slot_measurement(Vector, int)));
+
   connect (_windStore, SIGNAL(newWind(Vector&)),
            this, SLOT(slot_Wind(Vector&)));
+
   connect (this, SIGNAL(newAltitude(const Altitude&)),
-           _windStore, SLOT(slot_Altitude()));
+           _windStore, SLOT(slot_Altitude(const Altitude&)));
 
   // make internal connection so the flightModeChanged signal is
   // re-emitted with the marker value
@@ -900,13 +905,34 @@ void Calculator::slot_McDown()
   }
 }
 
-
-void Calculator::slot_Variometer (const Speed& lift)
+/**
+ * Variometer lift receiver and distributor to map display.
+ */
+void Calculator::slot_Variometer(const Speed& lift)
 {
-  if (lastVario != lift) {
-    lastVario = lift;
-    emit newVario (lift);
-  }
+  if (lastVario != lift)
+    {
+      lastVario = lift;
+      emit newVario (lift);
+    }
+}
+
+/**
+ * GPS variometer lift receiver. The internal variometer
+ * calculation can be switched off, if we got values vis this slot.
+ */
+void Calculator::slot_GpsVariometer(const Speed& lift)
+{
+  // Hey we got a variometer value directly from the GPS.
+  // Therefore internal calculation is not needed and can be
+  // switched off.
+  _calculateVario = false;
+
+  if (lastVario != lift)
+    {
+      lastVario = lift;
+      emit newVario (lift);
+    }
 }
 
 
@@ -923,8 +949,8 @@ void Calculator::setPosition(const QPoint& newPos)
 }
 
 
-/** Sets the glider type to allow calculation of polar data */
-void Calculator::slot_settingschanged ()
+/** Resets some internal item to the initial state */
+void Calculator::slot_settingsChanged ()
 {
   _altimeter_mode = AltimeterModeDialog::mode();
   emit newAltitude(lastAltitude);  // show initial altitude for manual mode
@@ -936,6 +962,11 @@ void Calculator::slot_settingschanged ()
     {
       emit( newWind(lastWind) );
     }
+
+  // Switch on the internal variometer lift and wind calculation.
+  // User could be changed the GPS device.
+  _calculateVario = true;
+  _calculateVario = true;
 }
 
 
@@ -949,7 +980,7 @@ void Calculator::slot_newFix()
     return;
   }
 
-  // create a new sample struct
+  // create a new sample structure
   flightSample sample;
 
   // fill it with the relevant data
@@ -975,10 +1006,19 @@ void Calculator::slot_newFix()
   samplelist.add(sample);
   lastSample = sample;
 
-  // call vario calculation, if required
-  if( _calculateVario == true) {
-    _vario->newAltitude();
-  }
+  // Call variometer calculation, if required. Can be switched off,
+  // when GPS delivers variometer information.
+  if( _calculateVario == true )
+    {
+      _vario->newAltitude();
+    }
+
+  // Call wind analyzer calculation if required. Can be switched off,
+  // when GPS delivers wind information.
+  if( _calculateWind == true )
+    {
+      _windAnalyser->slot_newSample();
+    }
 
   // Calculate LD
   calcLD();
@@ -1237,15 +1277,37 @@ void Calculator::slot_GpsStatus(GpsNmea::connectedStatus newState)
 /** This slot is used internally to re-emit the flight mode signal with the marker value */
 void Calculator::slot_flightModeChanged(Calculator::flightmode fm)
 {
+  if( _calculateWind )
+    {
+      // Wind calculation can be disabled when the Logger device
+      // delivers already wind data.
+      _windAnalyser->slot_newFlightMode( fm, _marker );
+    }
+
   emit flightModeChanged(fm, _marker);
 }
 
+/** Called if a new wind measurement is delivered by the GPS/Logger device */
+void Calculator::slot_GpsWind( const Speed& speed, const short direction )
+{
+  // Hey we got a wind value directly from the GPS.
+  // Therefore internal calculation is not needed and can be
+  // switched off.
+  _calculateWind = false;
+
+  Vector v;
+  v.setAngle( direction );
+  v.setSpeed( speed );
+
+  lastWind = v;
+  emit newWind(v); // forwards wind info to map
+}
 
 /** Called if the wind measurement changes */
 void Calculator::slot_Wind(Vector& v)
 {
   lastWind = v;
-  emit newWind(v);
+  emit newWind(v); // forwards wind info to map
 }
 
 /** Store the property of a new Glider. */

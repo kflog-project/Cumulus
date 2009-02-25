@@ -427,13 +427,18 @@ public slots: // Public slots
      */
     void slot_McDown();
     /**
-     * No descriptions
+     * Variometer lift receiver and distributor to map display.
      */
     void slot_Variometer(const Speed&);
     /**
-     * settings have changed
+     * GPS variometer lift receiver. The internal variometer
+     * calculation can be switched off, if we got values vis this slot.
      */
-    void slot_settingschanged();
+    void slot_GpsVariometer(const Speed&);
+    /**
+     * settings have been changed
+     */
+    void slot_settingsChanged();
     /**
      * This slot is called by the NMEA interpreter if a new fix has been received.
      */
@@ -445,7 +450,7 @@ public slots: // Public slots
     /**
      * Write property of Glider glider.
      */
-    void setGlider( Glider * _newVal);
+    void setGlider( Glider* _newVal);
 
     /**
      * Connected to the signal flightModeChanged and used to re-emit with marker value
@@ -472,8 +477,12 @@ public slots: // Public slots
     {
       _calculateETA = newVal;
     };
+
+    /** Called if a new wind measurement is available
+     * by the GPS/Logger device */
+    void slot_GpsWind(const Speed& speed, const short direction);
     /**
-     * Called if the wind measurement changes
+     * Called if the cumulus wind analyzer has a new measurement.
      */
     void slot_Wind(Vector&);
 
@@ -554,6 +563,9 @@ signals: // Signals
      */
     void newVario (const Speed&);
 
+    /**
+     * Sent if a new wind has been obtained
+     */
     void newWind (Vector&);
 
     /**
@@ -697,6 +709,8 @@ private: // Private attributes
     flightmode lastFlightMode;
     /** Last marker value used */
     int _marker;
+    /** contains the current state of wind calculation */
+    bool _calculateWind;
     /** contains functions to analyze the wind */
     WindAnalyser * _windAnalyser;
     /** contains functions to analyze the wind */

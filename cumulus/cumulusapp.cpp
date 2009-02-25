@@ -136,7 +136,7 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   // Eggert: make sure the app uses utf8 encoding for translated widgets
   QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
 
-  // Check the font size and set it bigger if it was to small
+  // Get application font for user manipulations
   QFont appFt = QApplication::font();
 
 //  qDebug("QAppFont family %s, pointSize=%d pixelSize=%d",
@@ -402,12 +402,10 @@ void CumulusApp::slotCreateApplicationWidgets()
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewAF, SLOT( slot_reloadList() ) );
 
-  connect( viewMap->_theMap, SIGNAL( isRedrawing( bool ) ),
-           this, SLOT( slotMapDrawEvent( bool ) ) );
-
-  connect( calculator, SIGNAL( newAirspeed( const Speed& ) ),
-           calculator->getVario(), SLOT( slotNewAirspeed( const Speed& ) ) );
-
+  connect( GpsNmea::gps, SIGNAL( newVario(const Speed&) ),
+           calculator, SLOT( slot_GpsVariometer(const Speed&) ) );
+  connect( GpsNmea::gps, SIGNAL( newWind(const Speed&, const short) ),
+           calculator, SLOT( slot_GpsWind(const Speed&, const short) ) );
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::connectedStatus ) ),
            viewMap, SLOT( slot_GPSStatus( GpsNmea::connectedStatus ) ) );
   connect( GpsNmea::gps, SIGNAL( newSatConstellation() ),
@@ -465,6 +463,8 @@ void CumulusApp::slotCreateApplicationWidgets()
   connect( viewTP, SIGNAL( info( wayPoint* ) ),
            this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
 
+  connect( viewMap->_theMap, SIGNAL( isRedrawing( bool ) ),
+           this, SLOT( slotMapDrawEvent( bool ) ) );
   connect( viewMap->_theMap, SIGNAL( waypointSelected( wayPoint* ) ),
            this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
   connect( viewMap->_theMap, SIGNAL( airspaceWarning( const QString&, const bool ) ),
@@ -513,11 +513,11 @@ void CumulusApp::slotCreateApplicationWidgets()
   connect( calculator, SIGNAL( newMc( const Speed& ) ),
            viewMap, SLOT( slot_Mc( const Speed& ) ) );
   connect( calculator, SIGNAL( newVario( const Speed& ) ),
-           viewMap, SLOT( slot_vario( const Speed& ) ) );
+           viewMap, SLOT( slot_Vario( const Speed& ) ) );
   connect( viewMap, SIGNAL( toggleVarioCalculation( const bool ) ),
            calculator, SLOT( slot_toggleVarioCalculation(const bool) ) );
   connect( calculator, SIGNAL( newWind( Vector& ) ),
-           viewMap, SLOT( slot_wind( Vector& ) ) );
+           viewMap, SLOT( slot_Wind( Vector& ) ) );
   connect( calculator, SIGNAL( newLD( const double&, const double&) ),
            viewMap, SLOT( slot_LD( const double&, const double&) ) );
   connect( calculator, SIGNAL( newGlider( const QString&) ),
@@ -1649,7 +1649,7 @@ void CumulusApp::slotReadconfig()
   // other configuration changes
   _globalMapMatrix->slotInitMatrix();
   viewMap->slot_settingschange();
-  calculator->slot_settingschanged();
+  calculator->slot_settingsChanged();
   viewTP->slot_updateTask();
   viewRP->fillRpList();
   viewAF->listWidget()->configRowHeight();
@@ -1663,12 +1663,9 @@ void CumulusApp::slotReadconfig()
   if( device.startsWith("/dev/" ) )
     {
       // @ee install signal handler
-      signal ( SIGCONT, resumeGpsConnection );
+      signal( SIGCONT, resumeGpsConnection );
     }
 
-  GpsNmea::DeliveredAltitude altRef = ( GpsNmea::DeliveredAltitude ) conf->getGpsAltitude();
-  GpsNmea::gps->setDeliveredAltitude( altRef );
-  GpsNmea::gps->setDeliveredUserAltitude( conf->getGpsUserAltitudeCorrection() );
   GpsNmea::gps->slot_reset();
 
   // update menubar font size

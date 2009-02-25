@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -47,9 +47,9 @@ void WindStore::slot_measurement(Vector windvector, int quality)
  * Determines where measurements are stored and may result in a
  * newWind signal.
  */
-void WindStore::slot_Altitude()
+void WindStore::slot_Altitude( const Altitude& altitude )
 {
-  if (abs((int)(calculator->getlastAltitude()-_lastAltitude).getMeters())>10) {
+  if (abs((int)(altitude - _lastAltitude).getMeters() ) > 10 ) {
     //only recalculate if there is a significant change
     recalculateWind();
   }

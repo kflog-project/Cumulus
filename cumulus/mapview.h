@@ -187,12 +187,12 @@ class MapView : public QWidget
     /**
      * This slot is called if a new variometer value has been set
      */
-    void slot_vario (const Speed& vario);
+    void slot_Vario (const Speed& vario);
 
     /**
      * This slot is called if a new wind value has been set
      */
-    void slot_wind (Vector& wind);
+    void slot_Wind (Vector& wind);
 
     /**
      * This slot is called if the current LD value has been modified

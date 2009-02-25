@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002 by André Somers, 2009 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -33,8 +33,8 @@ class WindStore : public QObject
 {
   Q_OBJECT
 
-    public:
-  WindStore(QObject * parent);
+  public:
+  WindStore(QObject* parent);
   ~WindStore();
 
   public slots: // Public slots
@@ -49,7 +49,7 @@ class WindStore : public QObject
    * Called if the altitude changes.
    * Determines where measurements are stored and may result in a newWind
    * signal. */
-  void slot_Altitude();
+  void slot_Altitude(const Altitude& altitude);
 
  signals: // Signals
   /**

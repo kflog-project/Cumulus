@@ -616,7 +616,7 @@ void MapView::slot_Mc (const Speed& mc)
 
 
 /** This slot is called if a new variometer value has been set */
-void MapView::slot_vario (const Speed& vario)
+void MapView::slot_Vario (const Speed& vario)
 {
   QString varValue;
 
@@ -637,7 +637,7 @@ void MapView::slot_vario (const Speed& vario)
 
 
 /** This slot is called if a new wind value has been set */
-void MapView::slot_wind (Vector& wind)
+void MapView::slot_Wind(Vector& wind)
 {
   QString w;
   w = QString("%1/" + wind.getSpeed().getHorizontalText(false,0) ).arg( wind.getAngleDeg() );
@@ -854,7 +854,7 @@ void MapView::slot_AltimeterDialog()
   connect( amDlg, SIGNAL( newAltimeterMode() ),
            this, SLOT( slot_newAltimeterMode() ) );
   connect( amDlg, SIGNAL( settingsChanged() ),
-           calculator, SLOT( slot_settingschanged() ) );
+           calculator, SLOT( slot_settingsChanged() ) );
 
   amDlg->work();
   amDlg->show();
@@ -900,7 +900,7 @@ void MapView::slot_gliderFlightDialog()
   gfDlg->setAttribute(Qt::WA_DeleteOnClose);
 
   connect( gfDlg, SIGNAL( settingsChanged() ),
-           calculator, SLOT( slot_settingschanged() ) );
+           calculator, SLOT( slot_settingsChanged() ) );
 
   gfDlg->load();
   gfDlg->show();

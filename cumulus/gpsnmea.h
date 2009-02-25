@@ -1,6 +1,6 @@
 /***************************************************************************
-                          gpsnmea.h  - NMEA sentence parser and decoder
-                             -------------------
+    gpsnmea.h - Cumulus NMEA parser and decoder
+                            -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002 by André Somers,
                                2008-2009 by Axel Pauli
@@ -8,9 +8,7 @@
 
     $Id$
 
-***************************************************************************/
-
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -39,8 +37,9 @@
 #include "wgspoint.h"
 
 /**
- * This class parses the NMEA sentences and provides access
- * to the last know data.
+ * This class parses and decodes the NMEA sentences and provides access
+ * to the last know data. Furthermore it is managing the connection to a GPS
+ * receiver connected by RS232, USB or to a GPS daemon process.
  */
 
 struct SatInfo
@@ -80,9 +79,9 @@ class GpsNmea : public QObject
     /**
      * defines altitude bases delivered by GPS unit
      */
-    enum DeliveredAltitude{MSL=0, HAE=1, USER=2};
+    enum DeliveredAltitude {MSL=0, HAE=1, USER=2, PRESSURE=3};
 
-    enum connectedStatus{notConnected=0, noFix=1, validFix=2};
+    enum connectedStatus {notConnected=0, noFix=1, validFix=2};
 
   public:
 
@@ -93,62 +92,125 @@ class GpsNmea : public QObject
     /**
      * @Starts the GPS receiver client process and activates the receiver.
      */
-     void startGpsReceiver();
+    void startGpsReceiver();
 
     /**
      * @Returns the current GPS connection status. True if connected, false if not.
      */
-    bool getConnected();
+    const bool getConnected() const
+      {
+        return( _status != notConnected );
+      }
 
     /**
      * @Returns the last known speed.
      */
-    Speed getLastSpeed();
+    Speed getLastSpeed() const
+      {
+        return _lastSpeed;
+      };
 
     /**
      * @Returns the date of the last fix.
      */
-    QDate getLastDate();
+    QDate getLastDate() const
+      {
+        return _lastDate;
+      };
 
     /**
      * @Returns the time of the last fix.
      */
-    QTime getLastTime();
+    QTime getLastTime() const
+      {
+        return _lastTime;
+      };
 
     /**
      * @Returns the last known coordinate in KFLog format (x=lat, y=lon).
      */
-    QPoint getLastCoord();
+    QPoint getLastCoord() const
+      {
+        return _lastCoord;
+      };
 
     /**
      * @Returns the last know heading.
      */
-    double getLastHeading();
+    const double getLastHeading() const
+      {
+        return _lastHeading;
+      };
 
     /**
      * @Returns the last know standard pressure altitude
      */
-    Altitude getLastStdAltitude();
+    Altitude getLastStdAltitude() const
+      {
+        return _lastStdAltitude;
+      };
 
     /**
      * @Returns the last know pressure altitude above sea level
      */
-    Altitude getLastPressureAltitude();
+    Altitude getLastPressureAltitude() const
+      {
+        return _lastPressureAltitude;
+      };
 
     /**
-     * @Returns the last know gps altitude above sea level
+     * @Returns the last know gps altitude depending on user
+     * selection MSL or Pressure
      */
-    Altitude getLastAltitude();
+    Altitude getLastAltitude() const;
 
     /**
      * @Returns the last know altitude above the WGS84 ellipsoid
      */
-    Altitude getLastGNSSAltitude();
+    Altitude getLastGNSSAltitude() const
+      {
+        return _lastGNSSAltitude;
+      };
+
+    /**
+     * @Returns the last known wind speed.
+     */
+    Speed getLastWindSpeed() const
+      {
+        return _lastWindSpeed;
+      };
+
+    /**
+     * @Returns the last known wind direction.
+     */
+    const short getLastWindDirection() const
+      {
+        return _lastWindDirection;
+      };
+
+    /**
+     * @Returns the last known wind age in seconds.
+     */
+    const int getLastWindAge() const
+      {
+        return _lastWindAge;
+      };
+
+    /**
+     * @Returns the last known variometer speed.
+     */
+    Speed getLastVariometer() const
+      {
+        return _lastVariometer;
+      };
 
     /**
      * @Returns the last know satellite constellation string.
      */
-    SatInfo getLastSatInfo();
+    SatInfo getLastSatInfo() const
+      {
+        return _lastSatInfo;
+      };
 
     /**
      * force a reset of the serial connection after a resume
@@ -196,10 +258,10 @@ class GpsNmea : public QObject
     /**
      * @Returns the map datum of the GPS receiver.
      */
-    QString getMapDatum()
-    {
-      return _mapDatum;
-    };
+    QString getMapDatum() const
+      {
+        return _mapDatum;
+      };
 
   public slots: // Public slots
     /**
@@ -229,10 +291,15 @@ class GpsNmea : public QObject
 
   private slots: // Private slots
 
-    /** This slot is called by the internal timer to signal a timeout. If this timeout occurs, the connection is set to false, i.e., the connection has been lost. */
-    void _slotTimeout();
+    /** This slot is called by the external GPS receiver process to signal
+     *  a connection lost to the GPS receiver or daemon. */
+    void _slotGpsConnectionLost();
 
-    /** This slot is called by the internal timer to signal a timeout. If this timeout occurs, the fix is set to false. */
+    /** This slot is called by the internal timer to signal a timeout.
+     *  This timeout occurs if no valid position fix has been received since
+     *  the last fix for the given time. The cause can be bad receiver conditions
+     *  view to the sky is not clear a.s.o.
+     */
     void _slotTimeoutFix();
 
   signals: // Signals
@@ -242,7 +309,7 @@ class GpsNmea : public QObject
     void newPosition();
 
     /**
-     * This signal is emitted if the altitude has changed.
+     * This signal is emitted if the altitude has been changed.
      */
     void newAltitude();
 
@@ -253,28 +320,39 @@ class GpsNmea : public QObject
     void newSpeed();
 
     /**
-     * This signal is emitted if a new heading has been
-     * estabished.
+     * This signal is emitted if a new heading has been established.
      */
     void newHeading();
 
     /**
-     * This signal is send if a new sataliteconstellation
-     * has been detected (that is, the satalites used to
+     * This signal is emitted if a new wind (speed, direction)
+     * has been established.
+     */
+    void newWind( const Speed&, const short );
+
+    /**
+     * This signal is emitted if a new variometer value
+     * has been established.
+     */
+    void newVario( const Speed& );
+
+    /**
+     * This signal is send if a new satellite constellation
+     * has been detected (that is, the satellites used to
      * make a fix have changed).
      */
     void newSatConstellation();
 
     /**
      * This signal is send to indicate a change in the
-     * connected status. The new status is send as bool
+     * connected status. The new status is send as boolean
      * (connected=true).
      */
     void connectedChange(bool);
 
     /**
      * This signal is send to indicate a change in status.
-     * It supersedes the old connecedChange(bool) signal.
+     * It supersedes the old connecedChange(boolean) signal.
      */
     void statusChange(GpsNmea::connectedStatus);
 
@@ -285,7 +363,7 @@ class GpsNmea : public QObject
     void newFix();
 
     /**
-     * This signal is send to indicate that new satelite-in-view
+     * This signal is send to indicate that new satellite in view
      * info is available.
      */
     void newSatInViewInfo();
@@ -297,7 +375,11 @@ class GpsNmea : public QObject
 
   private: // Private methods
 
-    /** write config data to allow restore of last fix */
+    /** Resets all data objects to their initial values. This is called
+     *  at startup, at restart and if the GPS fix has been lost. */
+    void resetDataObjects();
+
+    /** write configuration data to allow restore of last fix */
     void writeConfig();
     /** This function returns a QTime from the time encoded in a MNEA sentence. */
     QTime __ExtractTime(const QString& timestring);
@@ -318,19 +400,28 @@ class GpsNmea : public QObject
     QString __ExtractConstellation(const QStringList& sentence);
     /** Extracts the satellites count from the NMEA sentence. */
     void __ExtractSatcount(const QString& satcount);
-    /** Extract satellites In View (SIV) info from a NMEA sentence. */
+    /** Extracts satellites In View (SIV) info from a NMEA sentence. */
     void __ExtractSatsInView(const QStringList& sentence);
-    /** Extract satellites In View (SIV) info from a NMEA sentence. */
+    /** Extracts satellites In View (SIV) info from a NMEA sentence. */
     void __ExtractSatsInView(const QString&, const QString&, const QString&, const QString&);
+    /** Extracts wind, QNH and vario data from Cambridge's !w sentence. */
+    void __ExtractCambridgeW(const QStringList& stringList);
 
-    /** This function is called to indicate that good data has been received. It resets the TimeOut timer and if necesairy changes the connected status. */
+    /** This function is called to indicate that good data has been received.
+     *  It resets the TimeOut timer and if necessary changes the connected status. */
     void dataOK();
     /** This function is called to indicate that a good fix has been received. */
     void fixOK();
+
     /** This function calculates the checksum in the sentence. */
     static uint calcCheckSum (int pos, const QString& sentence);
-    /** This function checks if the checksum in the sentence matches the sentence. It retuns true if it matches, and false otherwise. */
+    /** This function checks if the checksum in the sentence matches the sentence.
+     *  It returns true if it matches, and false otherwise. */
     static bool checkCheckSum(int pos, const QString& sentence);
+
+    /** This function calculates the STD altitude from the passed altitude. */
+    void calcStdAltitude(const Altitude& altitude);
+
     /** This function sends the data of last valid fix to the gps receiver. */
     void sendLastFix (bool hard, bool soft);
     /** Set system date/time. Input is UTC related. */
@@ -362,9 +453,25 @@ class GpsNmea : public QObject
     SatInfo _lastSatInfo;
     /** Contains the last known clock offset of the gps receiver */
     int _lastClockOffset;
-    /** This timer fires if a timeout on the datareception occurs. The connection is then probably (temporary?) lost. */
+
+    /* --- some special items received from a logger e.g. cambridge device ----*/
+
+    /** Contains the last received wind direction in degrees. */
+    short _lastWindDirection;
+    /** Contains the last received wind speed. */
+    Speed _lastWindSpeed;
+    /** Contains the last wind age in seconds */
+    int _lastWindAge;
+    /** Contains the last QNH value */
+    ushort _lastQnh;
+    /** Contains the last variometer speed */
+    Speed _lastVariometer;
+
+    /** This timer fires if a timeout on the data reception occurs.
+     * The connection is then probably (temporary?) lost. */
     QTimer* timeOut;
-    /** This timer fires if a timeout on the fix occurs. The satelite reception is then probably (temporary?) lost. */
+    /** This timer fires if a timeout on the fix occurs.
+     * The satellite reception is then probably (temporary?) lost. */
     QTimer* timeOutFix;
     /** Indicates the current connection status */
     connectedStatus _status;
@@ -399,6 +506,6 @@ class GpsNmea : public QObject
 
     // make class object for all available
     static GpsNmea *gps;
-};
+  };
 
 #endif

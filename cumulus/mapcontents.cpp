@@ -105,7 +105,7 @@ extern MapView* _globalMapView;
     ShortSave(out, all);\
   } else\
     ShortLoad(in, all);\
-
+ 
 // Minimum amount of required free memory to start loading of a map file.
 // Do not under run this limit, OS can freeze is such a case.
 #define MINIMUM_FREE_MEMORY 1024*25
@@ -121,11 +121,11 @@ const int MapContents::isoLines[] =
 };
 
 MapContents::MapContents(QObject* parent, WaitScreen* waitscreen)
-  : QObject(parent),
-  airfieldList(this, "AirfieldList"),
-  gliderSiteList(this, "GliderSiteList"),
-  outList(this, "OutList"),
-  isFirst(true)
+    : QObject(parent),
+    airfieldList(this, "AirfieldList"),
+    gliderSiteList(this, "GliderSiteList"),
+    outList(this, "OutList"),
+    isFirst(true)
 {
   ws = waitscreen;
 
@@ -200,7 +200,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
 
   // First check if we need to load terrain files.
   if ( fileTypeID == FILE_TYPE_TERRAIN &&
-      ( !GeneralConfig::instance()->getMapLoadIsoLines() ))
+       ( !GeneralConfig::instance()->getMapLoadIsoLines() ))
     {
       // loading of terrain files is switched off by the user
       return true;
@@ -590,7 +590,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
       //                 isoLine levels were reduced to one by me.
 
       // translate elevation to an isoLine array index
-      if( isoHash.contains( elevation) )
+      if ( isoHash.contains( elevation) )
         {
           sort_temp = isoHash.value( elevation );
         }
@@ -608,7 +608,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
         {
           // we do skip all wrong entries with a warning
           qWarning("Elevation=%d in FileTypeId=%X does not map expected raster",
-                    elevation, fileTypeID);
+                   elevation, fileTypeID);
         }
 
       // AP: Performance brake! emit progress calls wait screen and
@@ -646,7 +646,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
   //first, check if we need to load this file at all...
   if ( fileTypeID == FILE_TYPE_TERRAIN &&
-      ( !GeneralConfig::instance()->getMapLoadIsoLines() ))
+       ( !GeneralConfig::instance()->getMapLoadIsoLines() ))
     {
       return true;
     }
@@ -1325,7 +1325,7 @@ void MapContents::proofeSection()
 
   // Setup a hash used as reverse mapping from isoLine value to array index
   // to speed up loading of ground and terrain files.
-  for( int i = 0; i < ISO_LINE_NUM; i++ )
+  for ( int i = 0; i < ISO_LINE_NUM; i++ )
     {
       isoHash.insert( isoLines[i], i );
     }
@@ -1655,9 +1655,9 @@ void MapContents::unloadMapObjects(QList<RadioPoint>& list)
 
 void MapContents::unloadMapObjects(QList<Isohypse> list[])
 {
-  for( int i = 0; i < ISO_LINE_NUM; i++ )
+  for ( int i = 0; i < ISO_LINE_NUM; i++ )
     {
-      for( int j = list[i].count() - 1; j >= 0; j--)
+      for ( int j = list[i].count() - 1; j >= 0; j--)
         {
           if ( !tileSectionSet.contains(list[i].at(j).getMapSegment()) )
             {
@@ -2230,12 +2230,12 @@ void MapContents::drawIsoList(QPainter* targetP)
 #if 0
   QString isos;
 
-  for( int i = 0; i < regIsoLines.count(); i++ )
+  for ( int i = 0; i < regIsoLines.count(); i++ )
     {
       isos += QString("%1, ").arg(regIsoLines.at(i).height);
     }
 
-    qDebug( isos.toLatin1().data() );
+  qDebug( isos.toLatin1().data() );
 #endif
 }
 
@@ -2359,7 +2359,7 @@ bool MapContents::isInWaypointList(const QPoint& wgsCoord)
     {
       const wayPoint& wpItem = wpList.at(i);
 
-      if( wgsCoord == wpItem.origP )
+      if ( wgsCoord == wpItem.origP )
         {
           return true;
         }
@@ -2378,7 +2378,7 @@ bool MapContents::isInWaypointList(const QString& name )
     {
       const wayPoint& wpItem = wpList.at(i);
 
-      if( name == wpItem.name )
+      if ( name == wpItem.name )
         {
           return true;
         }
@@ -2387,10 +2387,10 @@ bool MapContents::isInWaypointList(const QString& name )
   return false;
 }
 
-  /**
-   * @Returns how often the name of the waypoint in the argument
-   * matches one of the waypoints in the list.
-   */
+/**
+ * @Returns how often the name of the waypoint in the argument
+ * matches one of the waypoints in the list.
+ */
 unsigned short MapContents::countNameInWaypointList( const QString& name )
 {
   ushort number = 0;
@@ -2399,7 +2399,7 @@ unsigned short MapContents::countNameInWaypointList( const QString& name )
     {
       const wayPoint& wpItem = wpList.at(i);
 
-      if( name == wpItem.name )
+      if ( name == wpItem.name )
         {
           number++;;
         }
