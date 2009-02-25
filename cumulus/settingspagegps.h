@@ -29,9 +29,9 @@
  * @author André Somers
  */
 class SettingsPageGPS : public QWidget
-{
+  {
     Q_OBJECT
-public:
+  public:
     SettingsPageGPS(QWidget *parent=0);
     ~SettingsPageGPS();
 
@@ -44,7 +44,7 @@ public:
     QPushButton* buttonReset;
     QSpinBox* spinUserCorrection;
 
-public slots: // Public slots
+  public slots: // Public slots
     /**
      * Called to initiate saving to the configurationfile.
      */
@@ -55,11 +55,11 @@ public slots: // Public slots
      */
     void slot_load();
 
-private slots:
+  private slots:
     /**
      * called when the GPS altitude mode is changed:
      */
     void slot_altitude_mode(int);
-};
+  };
 
 #endif

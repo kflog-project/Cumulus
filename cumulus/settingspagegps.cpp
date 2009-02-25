@@ -85,7 +85,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 #endif
 
   // @AP: Some GPS CF Cards (e.g. BC-307) deliver only height above the WGS 84
-  // ellipsoid in GGA record. This is not deriveable from the received
+  // ellipsoid in GGA record. This is not derivable from the received
   // record. Therefore we need an additional configuration entry :(
   topLayout->addWidget(new QLabel(tr("Altitude:"), this),row,0);
   GpsAltitude = new QComboBox(this);
@@ -95,6 +95,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsAltitude->addItem(tr("MSL"));
   GpsAltitude->addItem(tr("HAE"));
   GpsAltitude->addItem(tr("User"));
+  GpsAltitude->addItem(tr("Pressure"));
 
   connect (GpsAltitude, SIGNAL(activated(int )),
            this, SLOT(slot_altitude_mode(int )));
@@ -146,27 +147,27 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   QString devText = GeneralConfig::instance()->getGpsDevice();
 
   // select last saved device, if possible
-  for(int i=0; i < GpsDev->count(); i++)
+  for (int i=0; i < GpsDev->count(); i++)
     {
-      if(GpsDev->itemText(i) == devText)
-       {
+      if (GpsDev->itemText(i) == devText)
+        {
           GpsDev->setCurrentIndex(i);
           found = true;
           break;
-       }
+        }
     }
 
   // Stored device not found, we assume, it was added by hand.
   // Therefore we do add it to the list too.
-  if( found == false )
-  {
+  if ( found == false )
+    {
 #ifndef MAEMO
-    GpsDev->addItem( devText );
+      GpsDev->addItem( devText );
 #else
-    // On Maemo we select the first entry, the Maemo GPS daemon as default
-  GpsDev->setCurrentIndex(0);
+      // On Maemo we select the first entry, the Maemo GPS daemon as default
+      GpsDev->setCurrentIndex(0);
 #endif
-  }
+    }
 }
 
 SettingsPageGPS::~SettingsPageGPS()
@@ -189,12 +190,14 @@ void SettingsPageGPS::slot_load()
 #ifndef MAEMO
   QString rate = QString::number( conf->getGpsSpeed() );
 
-  for (int i=0;i<GpsSpeed->count();i++) {
-      if (GpsSpeed->itemText(i)==rate) {
+  for (int i=0;i<GpsSpeed->count();i++)
+    {
+      if (GpsSpeed->itemText(i)==rate)
+        {
           GpsSpeed->setCurrentIndex(i);
           break;
-      }
-  }
+        }
+    }
 
   checkSoftStart->setChecked( conf->getGpsSoftStart() );
   checkHardStart->setChecked( conf->getGpsHardStart() );
@@ -206,22 +209,25 @@ void SettingsPageGPS::slot_load()
 /** Called to initiate saving to the configurationfile. */
 void SettingsPageGPS::slot_save()
 {
-    GeneralConfig *conf = GeneralConfig::instance();
+  GeneralConfig *conf = GeneralConfig::instance();
 
-    conf->setGpsDevice( GpsDev->currentText() );
-    conf->setGpsAltitude( GpsNmea::DeliveredAltitude(GpsAltitude->currentIndex()) );
+  conf->setGpsDevice( GpsDev->currentText() );
+  conf->setGpsAltitude( GpsNmea::DeliveredAltitude(GpsAltitude->currentIndex()) );
 
-    if( GpsAltitude->currentIndex() == GpsNmea::USER ) {
-        conf->setGpsUserAltitudeCorrection( Altitude(spinUserCorrection->value()) );
-    } else {
-        conf->setGpsUserAltitudeCorrection( 0 );
+  if ( GpsAltitude->currentIndex() == GpsNmea::USER )
+    {
+      conf->setGpsUserAltitudeCorrection( Altitude(spinUserCorrection->value()) );
+    }
+  else
+    {
+      conf->setGpsUserAltitudeCorrection( 0 );
     }
 
 #ifndef MAEMO
-    conf->setGpsSpeed( GpsSpeed->currentText().toInt() );
-    conf->setGpsHardStart( checkHardStart->isChecked() );
-    conf->setGpsSoftStart( checkSoftStart->isChecked() );
-    conf->setGpsSyncSystemClock( checkSyncSystemClock->isChecked() );
+  conf->setGpsSpeed( GpsSpeed->currentText().toInt() );
+  conf->setGpsHardStart( checkHardStart->isChecked() );
+  conf->setGpsSoftStart( checkSoftStart->isChecked() );
+  conf->setGpsSyncSystemClock( checkSyncSystemClock->isChecked() );
 #endif
 
 }
@@ -229,5 +235,5 @@ void SettingsPageGPS::slot_save()
 
 void SettingsPageGPS::slot_altitude_mode(int mode)
 {
-    spinUserCorrection->setEnabled(mode == GpsNmea::USER);
+  spinUserCorrection->setEnabled(mode == GpsNmea::USER);
 }
