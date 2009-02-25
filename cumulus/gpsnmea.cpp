@@ -142,7 +142,7 @@ void GpsNmea::createGpsConnection()
   // qDebug("GpsDevive=%s", gpsDevice.toLatin1().data() );
 
   if ( gpsDevice == NMEASIM_DEVICE ||
-       gpsDevice.indexOf( QRegExp("USB|usb") != -1 )
+       gpsDevice.indexOf( QRegExp("USB|usb") != -1 ) )
   {
     // We assume, that the nmea simulator or a usb device shall be used
     // and will start the cumulus gps client process
