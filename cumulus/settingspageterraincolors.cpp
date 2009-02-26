@@ -26,7 +26,7 @@
 #include "altitude.h"
 #include "generalconfig.h"
 #include "settingspageterraincolors.h"
-#include "elevationimage.h"
+#include "elevationcolorimage.h"
 
 /**
  * @author Axel Pauli
@@ -119,7 +119,7 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   QHBoxLayout *topLayout = new QHBoxLayout(this);
 
   // create elevation color bar as image
-  elevationImage = new ElevationImage( &terrainColor[0], this );
+  elevationImage = new ElevationColorImage( &terrainColor[0], this );
   topLayout->addWidget( elevationImage );
 
   // all editor widgets will be put into a group box to get a better view

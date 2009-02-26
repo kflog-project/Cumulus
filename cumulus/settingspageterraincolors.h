@@ -24,7 +24,7 @@
 #include <QColor>
 #include <QSize>
 
-#include "elevationimage.h"
+#include "elevationcolorimage.h"
 
 /**
  * @author Axel Pauli
@@ -84,7 +84,7 @@ class SettingsPageTerrainColors : public QWidget
     bool colorsChanged;
 
     // widget which shows the elevation color bar
-    ElevationImage *elevationImage;
+    ElevationColorImage *elevationImage;
 
     // Internal temporary color working list. Will be saved as new colors,
     // when the method slot_save() is called.
