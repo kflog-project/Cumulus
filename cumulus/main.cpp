@@ -10,7 +10,7 @@
  **
  **   Copyright (c):  2008 by Axel Pauli
  **
- **   Email of maintainer  : axel@kflog.org
+ **   Email of maintainer: axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -30,8 +30,6 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QTranslator>
-//#include <QSplashScreen>
-//#include <QPixmap>
 
 #include "cumulusapp.h"
 #include "generalconfig.h"
@@ -127,12 +125,6 @@ int main(int argc, char *argv[])
       qDebug( "No language translation file found in %s", langDir.toLatin1().data() );
     }
 
-  // try to load the splash screen image
-  //QPixmap pixmap( GeneralConfig::instance()->loadPixmap("splash.jpg") );
-  //QSplashScreen splash( pixmap, Qt::WindowStaysOnTopHint );
-  //splash.show();
-  //app.processEvents();
-
 #define DISCLAIMERVERSION 1
 
   if( conf->getDisclaimerVersion() != DISCLAIMERVERSION )
@@ -164,13 +156,10 @@ int main(int argc, char *argv[])
         }
     }
 
-  // create the cumulus application
-  CumulusApp *cumulus = new CumulusApp(0, Qt::WindowContextHelpButtonHint);
+  // creates the cumulus application
+  CumulusApp *cumulus = new CumulusApp( Qt::WindowContextHelpButtonHint );
 
-  //cumulus->show();
-  //splash.finish( cumulus );
-
-  // start window manager event processing
+  // start window manager event processing loop
   int result = QApplication::exec();
 
   // remove first CumulusApp because class objects inside can call GeneralConfig

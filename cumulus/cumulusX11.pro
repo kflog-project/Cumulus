@@ -21,7 +21,7 @@ HEADERS = airfieldlistview.h \
     cumulusapp.h \
     degreespinbox.h \
     distance.h \
-    elevationimage.h \
+    elevationcolorimage.h \
     filetools.h \
     flightpoint.h \
     flighttask.h \
@@ -89,6 +89,7 @@ HEADERS = airfieldlistview.h \
     sonne.h \
     sound.h \
     speed.h \
+    splash.h \
     target.h \
     taskeditor.h \
     tasklist.h \
@@ -127,7 +128,7 @@ SOURCES = airfieldlistview.cpp \
     cumulusapp.cpp \
     degreespinbox.cpp \
     distance.cpp \
-    elevationimage.cpp \
+    elevationcolorimage.cpp \
     filetools.cpp \
     flighttask.cpp \
     generalconfig.cpp \
@@ -189,6 +190,7 @@ SOURCES = airfieldlistview.cpp \
     sonne.cpp \
     sound.cpp \
     speed.cpp \
+    splash.cpp \
     taskeditor.cpp \
     tasklist.cpp \
     tasklistview.cpp \

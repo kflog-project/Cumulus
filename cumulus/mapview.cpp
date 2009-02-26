@@ -539,7 +539,7 @@ void MapView::slot_Position(const QPoint& position, const int source)
                              " / " + WGSPoint::printPos(position.y(),false) + " ");
     }
 
-  // remember for slot_settingschange
+  // remember for slot_settingsChange
   lastPositionChangeSource = source;
 }
 
@@ -712,11 +712,11 @@ void MapView::slot_warning( const QString& warning )
 
 
 /** This slot is called if the settings have been changed.
- * It refreshes all displayed data because units might have beeen changed.
+ * It refreshes all displayed data because units might have been changed.
  */
-void MapView::slot_settingschange()
+void MapView::slot_settingsChange()
 {
-  // qDebug("MapView::slot_settingschange");
+  // qDebug("MapView::slot_settingsChange");
   slot_Altitude(calculator->getlastAltitude());
   slot_Position(calculator->getlastPosition(), lastPositionChangeSource);
   slot_Speed(calculator->getLastSpeed());

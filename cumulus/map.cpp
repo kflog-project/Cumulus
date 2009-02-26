@@ -61,11 +61,11 @@ Map *Map::instance=0;
 
 Map::Map(QWidget* parent) : QWidget(parent)
 {
-  qDebug( "Map window size is %dx%d, width=%d, height=%d",
-          parent->size().width(),
-          parent->size().height(),
-          parent->size().width(),
-          parent->size().height() );
+//  qDebug( "Map creation window size is %dx%d, width=%d, height=%d",
+//          size().width(),
+//          size().height(),
+//          size().width(),
+//          size().height() );
 
   setObjectName("Map");
 
@@ -477,9 +477,9 @@ void Map::mouseReleaseEvent(QMouseEvent* event)
 
 void Map::paintEvent(QPaintEvent* event)
 {
-//  QDateTime dt = QDateTime::currentDateTime();
-//  QString dtStr = dt.toString(Qt::ISODate);
-
+//QDateTime dt = QDateTime::currentDateTime();
+//QString dtStr = dt.toString(Qt::ISODate);
+//
 //   qDebug("%s: Map::paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d",
 //          dtStr.toAscii().data(),
 //          event->rect().width(), event->rect().height(),
@@ -498,7 +498,6 @@ void Map::paintEvent(QPaintEvent* event)
 
   // qDebug("Map.paintEvent(): return");
 }
-
 
 void Map::slotNewWind()
 {
@@ -819,11 +818,11 @@ void Map::resizeEvent(QResizeEvent* event)
   slotDraw();
 }
 
-
 void Map::__redrawMap(mapLayer fromLayer)
 {
   // qDebug("Map::__redrawMap from layer=%d", fromLayer);
 
+  // First call after creation of object can pass
   if( ! isVisible() )
     {
       // AP: ignore draw request when the window is hidden or not
@@ -885,6 +884,8 @@ void Map::__redrawMap(mapLayer fromLayer)
         }
 
       zoomFactor = _globalMapMatrix->getScale(); //read back from matrix!
+
+      qDebug("MapMatrixSize: w=%d, h=%d", size().width(), size().height());
 
       _globalMapMatrix->createMatrix(this->size());
 
@@ -1084,8 +1085,8 @@ void Map::__drawInformationLayer()
 }
 
 
-//Performs an unscheduled, immediate redraw of the entire map.
-//Any allready pending redraws are cancelled.
+// Performs an unscheduled, immediate redraw of the entire map.
+// Any already pending redraws are canceled.
 void Map::slotDraw()
 {
   m_scheduledFromLayer = baseLayer;

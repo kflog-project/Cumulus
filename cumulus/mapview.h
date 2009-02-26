@@ -214,7 +214,7 @@ class MapView : public QWidget
      * It refreshes all displayed data because units might have
      * been changed.
      */
-    void slot_settingschange();
+    void slot_settingsChange();
 
     /**
      * Format and set the FlightStatus string

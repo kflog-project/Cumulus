@@ -2,7 +2,8 @@
                           cumulusapp.h  -  main application object
                              -------------------
     begin                : Sun Jul 21 2002
-    copyright            : (C) 2002 by Andrè Somers, 2008 Axel Pauli
+    copyright            : (C) 2002 by André Somers
+                               2009 Axel Pauli
     email                : axel@kflog.org
 
     This file is distributed under the terms of the General Public
@@ -34,6 +35,7 @@
 #include <QTabWidget>
 #include <QResizeEvent>
 #include <QShortcut>
+#include <QPointer>
 
 #include "configdialog.h"
 #include "mapview.h"
@@ -46,6 +48,7 @@
 #include "preflightdialog.h"
 #include "mapinfobox.h"
 #include "waitscreen.h"
+#include "splash.h"
 
 /**
  * @short This class provides the main application for Cumulus.
@@ -58,20 +61,20 @@ class CumulusApp : public QMainWindow
 
   public: // application view types
 
-    enum appView { mapView=0,
-                   wpView=1,
-                   infoView=2,
-                   rpView=3,
-                   afView=4,
-                   tpView=5,
-                   tpSwitchView=6,
-                   cfView=7 };
+    enum appView { mapView=0,       // map
+                   wpView=1,        // waypoint
+                   infoView=2,      // info
+                   rpView=3,        // reachable
+                   afView=4,        // airfield
+                   tpView=5,        // taskpoint
+                   tpSwitchView=6,  // taskpoint switch
+                   cfView=7 };      // configuration
 
   public: //methods
     /**
      * Constructor
      */
-    CumulusApp( QMainWindow *parent = 0, Qt::WindowFlags flags = 0 );
+    CumulusApp( Qt::WindowFlags flags = 0 );
 
     /**
      * Destructor
@@ -337,11 +340,13 @@ class CumulusApp : public QMainWindow
     /** view_menu contains all items of the menubar entry "Help" */
     QMenu *helpMenu;
     // Wait screen
-    WaitScreen *ws;
-    // Holds the config/pre-flight "dialogs"
-    QWidget *configView;
+    QPointer<WaitScreen> ws;
+    // Holds temporary the config or pre-flight widgets
+    QPointer<QWidget> configView;
     // visibility of menu bar
     bool menuBarVisible;
+    // Splash screen
+    QPointer<Splash> splash;
 
 #ifdef MAEMO
 

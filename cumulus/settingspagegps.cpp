@@ -87,7 +87,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   // @AP: Some GPS CF Cards (e.g. BC-307) deliver only height above the WGS 84
   // ellipsoid in GGA record. This is not derivable from the received
   // record. Therefore we need an additional configuration entry :(
-  topLayout->addWidget(new QLabel(tr("Altitude:"), this),row,0);
+  topLayout->addWidget(new QLabel(tr("Altitude Reference:"), this),row,0);
   GpsAltitude = new QComboBox(this);
   GpsAltitude->setObjectName("GPSAltitude");
   GpsAltitude->setEditable(false);

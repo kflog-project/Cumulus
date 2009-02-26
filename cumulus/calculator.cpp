@@ -489,9 +489,6 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
 	emit taskInfo( tr("Automatic taskpoint switch"), true );
 
-        // switch off all set accelerators
-        _globalCumulusApp->setView( CumulusApp::tpSwitchView );
-
         TPInfoWidget *tpInfo = new TPInfoWidget( _globalCumulusApp );
         tpInfo->prepareSwitchText( lastWp->taskPointIndex, dist2Next.getKilometers() );
 
@@ -499,6 +496,8 @@ void Calculator::calcDistance( bool autoWpSwitch )
         connect( tpInfo, SIGNAL( close() ),
                  _globalCumulusApp, SLOT( slotSwitchToMapView() ) );
 
+        // switch off all set accelerators
+        _globalCumulusApp->setView( CumulusApp::tpSwitchView );
         tpInfo->showTP();
       }
     }

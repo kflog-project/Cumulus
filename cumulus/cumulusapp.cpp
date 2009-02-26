@@ -2,9 +2,9 @@
  cumulusapp.cpp  -  main application class
  -----------------------------------------
  begin                : Sun Jul 21 2002
- copyright            : (C) 2002 by Andrè Somers
+ copyright            : (C) 2002 by André Somers
  ported to Qt4.x/X11  : (C) 2007-2009 by Axel Pauli
- email                : axel@kflog.org
+ maintainer           : axel@kflog.org
 
  $Id$
 
@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 /** This class is called by main to create all the widgets needed by this GUI
- *  an to initiate the load of the map and other data.
+ *  and to initiate the load of the map and all other data.
  */
 
 #include <stdio.h>
@@ -30,9 +30,9 @@
 #include <signal.h>
 #include <sys/ioctl.h>
 
+#include <QDesktopWidget>
 #include <QTextCodec>
 #include <QtGlobal>
-#include <QDesktopWidget>
 #include <QFile>
 #include <QDateTime>
 #include <QDir>
@@ -78,33 +78,33 @@ static osso_context_t *ossoContext = static_cast<osso_context_t *> (0);
 /**
  * Global available instance of this class
  */
-CumulusApp *_globalCumulusApp = (CumulusApp *) 0;
+CumulusApp *_globalCumulusApp = static_cast<CumulusApp *> (0);
 
 /**
  * Global available instance of logger class
  */
-IgcLogger *logger = (IgcLogger *) 0;
+IgcLogger *logger = static_cast<IgcLogger *> (0);
 
 /**
  * Used for transforming the map items.
  */
-MapMatrix *_globalMapMatrix = (MapMatrix *) 0;
+MapMatrix *_globalMapMatrix = static_cast<MapMatrix *> (0);
 
 /**
  * Contains all map elements and takes control over drawing or printing
  * the elements.
  */
-MapContents *_globalMapContents = (MapContents *) 0;
+MapContents *_globalMapContents = static_cast<MapContents *> (0);
 
 /**
  * Contains all configuration-info for drawing and printing the elements.
  */
-MapConfig *_globalMapConfig = (MapConfig *) 0;
+MapConfig *_globalMapConfig = static_cast<MapConfig *> (0);
 
 /**
  * Contains all map view infos
  */
-MapView *_globalMapView = (MapView *) 0;
+MapView *_globalMapView = static_cast<MapView *> (0);
 
 
 // A signal SIGCONT has been catched. It is send out
@@ -120,8 +120,8 @@ static void resumeGpsConnection( int sig )
     }
 }
 
-CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
-  QMainWindow( parent, flags )
+CumulusApp::CumulusApp( Qt::WindowFlags flags ) :
+  QMainWindow( 0, flags )
 {
   _globalCumulusApp = this;
   menuBarVisible = false;
@@ -273,6 +273,10 @@ CumulusApp::CumulusApp( QMainWindow *parent, Qt::WindowFlags flags ) :
   setWindowState(Qt::WindowFullScreen);
 #endif
 
+  splash = new Splash( this );
+
+  setCentralWidget( splash );
+  splash->show();
   show();
 
   ws = new WaitScreen(this);
@@ -346,6 +350,7 @@ void CumulusApp::slotCreateApplicationWidgets()
   viewMap = new MapView( this );
   _globalMapView = viewMap;
 
+  // set it as central widget
   setCentralWidget( viewMap );
 
 #ifndef MAEMO
@@ -544,7 +549,6 @@ void CumulusApp::slotCreateApplicationWidgets()
   calculator->setPosition( _globalMapMatrix->getMapCenter( false ) );
 
   slotReadconfig();
-  setView( mapView );
 
   // set the default glider to be the last one selected.
   calculator->setGlider( GliderListWidget::getStoredSelection() );
@@ -556,6 +560,12 @@ void CumulusApp::slotCreateApplicationWidgets()
     }
 
   viewMap->_theMap->setDrawing( true );
+
+  // @AP: That's a trick here! We call show to get the
+  // Map widget of the MapView widget resized. The Splash
+  // will not disappear because the Qt/X11 EventLoop is
+  // inactive until return of this method.
+  viewMap->show();
 
   // This actions initiates the map loading procedures
   viewMap->_theMap->slotDraw();
@@ -602,6 +612,12 @@ void CumulusApp::slotCreateApplicationWidgets()
     }
 
 #endif
+
+  // closes and removes the splash screen
+  splash->close();
+
+  // show map view as the central widget
+  setView( mapView );
 
   // Startup GPS client process now for data receiving
   GpsNmea::gps->blockSignals( false );
@@ -1101,7 +1117,6 @@ void CumulusApp::slotFileQuit()
   close();
 }
 
-
 /**
  * Make sure the user really wants to quit
  */
@@ -1275,7 +1290,7 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
 
       // Switch on all action shortcuts in this view
       toggleActions( true );
-      viewMap->statusBar()->clearMessage(); // remove temporary statusbar messages
+      viewMap->statusBar()->clearMessage(); // remove temporary status bar messages
 
       // If we returned to the map view, we should schedule a redraw of the
       // airspaces. Map is not drawn, when invisible and airspace filling
@@ -1318,6 +1333,7 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
         actionMenuBarToggle->setEnabled( false );
         toggleActions( false );
       }
+
       break;
 
     case afView:
@@ -1390,6 +1406,7 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       break;
 
     case cfView:
+      // called if configuration or preflight widget was created
       menuBar()->hide();
       viewMap->hide();
       listViewTabs->hide();
@@ -1522,12 +1539,13 @@ void CumulusApp::slotSwitchToInfoView( wayPoint* wp )
 }
 
 
-/** Opens the config "dialog" */
+/** Opens the configuration widget */
 void CumulusApp::slotConfig()
 {
   setWindowTitle( "Cumulus Settings" );
   ConfigDialog *cDlg = new ConfigDialog( this );
   cDlg->resize( size() );
+  configView = static_cast<QWidget *> (cDlg);
 
   setView( cfView );
 
@@ -1538,12 +1556,11 @@ void CumulusApp::slotConfig()
   connect( cDlg,  SIGNAL( welt2000ConfigChanged() ),
            _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
 
-  configView = (QWidget*) cDlg;
   cDlg->show();
 }
 
 
-/** Closes the config or pre-flight "dialog" */
+/** Closes the configuration or pre-flight widget */
 void CumulusApp::slotCloseConfig()
 {
   setView( mapView );
@@ -1552,8 +1569,6 @@ void CumulusApp::slotCloseConfig()
     setWindowTitle ( "Cumulus - " + calculator->gliderType() );
   else
     setWindowTitle( "Cumulus" );
-
-  configView = 0;
 }
 
 /** Shows version and copyright information */
@@ -1648,7 +1663,7 @@ void CumulusApp::slotReadconfig()
 
   // other configuration changes
   _globalMapMatrix->slotInitMatrix();
-  viewMap->slot_settingschange();
+  viewMap->slot_settingsChange();
   calculator->slot_settingsChanged();
   viewTP->slot_updateTask();
   viewRP->fillRpList();
@@ -1789,13 +1804,14 @@ void CumulusApp::slotPreFlightTask()
 }
 
 
-/** Opens the pre-flight "dialog" and brings the selected tabulator to the front */
+/** Opens the pre-flight widget and brings the selected tabulator to the front */
 void CumulusApp::slotPreFlight(const char *tabName)
 {
   setWindowTitle( "Pre-Flight Settings" );
   PreFlightDialog* cDlg = new PreFlightDialog( this, tabName );
   cDlg->setObjectName("PreFlightDialog");
   cDlg->resize( size() );
+  configView = static_cast<QWidget *> (cDlg);
 
   setView( cfView );
 
@@ -1809,7 +1825,6 @@ void CumulusApp::slotPreFlight(const char *tabName)
            this, SLOT( slotCloseConfig() ) );
 
   cDlg->show();
-  configView = (QWidget*) cDlg;
 }
 
 

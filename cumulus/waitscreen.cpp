@@ -36,7 +36,7 @@ WaitScreen::WaitScreen(QWidget *parent ) :
 
   QGridLayout * backLayout = new QGridLayout(this);
   QGridLayout * topLayout  = new QGridLayout();
-  topLayout->setMargin(5);
+  topLayout->setMargin(0);
 
   backLayout->addLayout(topLayout, 1, 1);
 
