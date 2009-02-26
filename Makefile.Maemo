@@ -14,7 +14,7 @@
 VERSION = `cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2`
 
 # current Qt version
-QT_VERSION=4.4.1
+QT_VERSION=4.5.0
 
 # installation directory of Qt libraries
 QT_LIBDIR=/opt/qt$(QT_VERSION)/lib
@@ -146,6 +146,7 @@ dpkg_install:
 	install --mode=644 etc/glider.pol $(DESTDIR)/$(INSTALL_ROOT)/etc
 	install --mode=644 icons/*.xpm $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 icons/*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
+	install --mode=644 icons/*.jpg $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 icons/small/* $(DESTDIR)/$(INSTALL_ROOT)/icons/small
 	install --mode=644 icons/windarrows/* $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
 	install --mode=644 icons/cumulus-desktop.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps/cumulus.png
