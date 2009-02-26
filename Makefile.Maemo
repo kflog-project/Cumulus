@@ -81,6 +81,7 @@ install: check_dir deinstall install_lang
 	install --mode=644 etc/glider.pol $(INSTALL_ROOT)/etc
 	install --mode=644 icons/*.xpm $(INSTALL_ROOT)/icons
 	install --mode=644 icons/*.png $(INSTALL_ROOT)/icons
+	install --mode=644 icons/*.jpg $(INSTALL_ROOT)/icons
 	install --mode=644 icons/small/* $(INSTALL_ROOT)/icons/small
 	install --mode=644 icons/windarrows/* $(INSTALL_ROOT)/icons/windarrows
 	install --mode=644 help/de/*.html icons/cumulus.png $(INSTALL_ROOT)/help/de
