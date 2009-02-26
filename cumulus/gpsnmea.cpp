@@ -142,7 +142,7 @@ void GpsNmea::createGpsConnection()
   // qDebug("GpsDevive=%s", gpsDevice.toLatin1().data() );
 
   if ( gpsDevice == NMEASIM_DEVICE ||
-       gpsDevice.indexOf( QRegExp("USB|usb") ) != -1 )
+       gpsDevice.indexOf( QRegExp("USB|usb") != -1 ) )
   {
     // We assume, that the nmea simulator or a usb device shall be used
     // and will start the cumulus gps client process
@@ -562,7 +562,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   $PCAID,N,-00084,000,128*0B
 
   <1>     Logged 'L' Last point Logged 'N' Last Point not logged
-  <2>     Barometer Altitude in meters (Leading zeros will be transmitted)
+  <2>     Barometer Altitude in meters (Leading zeros will be transmitted), Hendrik said: STD
   <3>     Engine Noise Level
   <4>     Log Flags
   *hh     Checksum, XOR of all bytes of the sentence after the `$' and before the '!'
@@ -580,18 +580,12 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       double num = slst[2].toDouble();
       res.setMeters( num );
 
-      if ( _lastPressureAltitude != res )
+      if ( _lastStdAltitude != res )
         {
-          _lastPressureAltitude = res; // store the new pressure altitude
-
-          if ( _deliveredAltitude == GpsNmea::PRESSURE )
-            {
-              // set these altitudes too, when pressure is selected
-              _lastMslAltitude = res;
-              calcStdAltitude( res );
-            }
-
-          emit newAltitude(); // notify change
+          _lastStdAltitude = res; // store the new STD pressure altitude
+          // This altitude must not be notified as new value because
+          // the Cambridge device delivers also MSL
+          // emit newAltitude();     // notify change
         }
 
       return;
@@ -608,7 +602,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   <3>    Vector wind age in seconds
   <4>    Component wind in 10ths of Meters per second + 500 (500 = 0, 495 = 0.5 m/s
          tailwind)
-  <5>    True altitude in Meters + 1000
+  <5>    True altitude in Meters + 1000 (pressure altitude related to MSL)
   <6>    Instrument QNH setting
   <7>    True airspeed in 100ths of Meters per second
   <8>    Variometer reading in 10ths of knots + 200
@@ -674,6 +668,27 @@ void GpsNmea::__ExtractCambridgeW(const QStringList& stringList)
       emit newWind( _lastWindSpeed, _lastWindDirection ); // notify change
     }
 
+  // extract true altitude in Meters + 1000 (Hendrik said: pressure altitude related to MSL)
+  Altitude res(0);
+  num = stringList[5].toDouble() -1000.0;
+  res.setMeters( num );
+
+  if ( _lastPressureAltitude != res )
+    {
+      _lastPressureAltitude = res; // store the new pressure altitude
+
+      if ( _deliveredAltitude == GpsNmea::PRESSURE )
+        {
+          // set these altitudes too, when pressure is selected
+          _lastMslAltitude = res;
+          // STD altitude is delivered by Cambrigde via $PCAID record
+          // calcStdAltitude( res );
+        }
+
+      emit newAltitude(); // notify change
+    }
+
+
   // extract QNH
   ushort qnh = stringList[6].toUShort( &ok );
 
@@ -693,7 +708,6 @@ void GpsNmea::__ExtractCambridgeW(const QStringList& stringList)
       emit newVario( _lastVariometer ); // notify change
     }
 }
-
 
 /**
  * This function returns a QTime from the time encoded in a MNEA sentence.
