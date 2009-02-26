@@ -150,8 +150,8 @@ dpkg_install:
 	install --mode=644 icons/small/* $(DESTDIR)/$(INSTALL_ROOT)/icons/small
 	install --mode=644 icons/windarrows/* $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
 	install --mode=644 icons/cumulus-desktop.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps/cumulus.png
-	install --mode=644 help/de/*.html icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
-	install --mode=644 help/en/*.html icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
+	install --mode=644 help/de/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
+	install --mode=644 help/en/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
 	install --mode=755 $(QT_LIBDIR)/libQtCore.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
