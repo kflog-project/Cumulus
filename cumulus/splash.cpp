@@ -38,7 +38,7 @@ Splash::Splash( QWidget *parent) : QWidget( parent )
     }
 
   // load background picture
-  pixmap = GeneralConfig::instance()->loadPixmap("splash.jpg");
+  pixmap = GeneralConfig::instance()->loadPixmap("splash.png");
 }
 
 Splash::~Splash()
