@@ -174,8 +174,20 @@ bool GpsClient::readGpsData()
       return false;
     }
 
-  // all available gps data lines are read successive
+  // First check, if enough space is available in the receiver buffer.
+  // If we read only trash for a while we can run in a dead lock.
+  int freeSpace = sizeof(databuffer) - dbsize;
+  
+  if( freeSpace < 100 )
+    {
+      // Reset buffer pointer because the minimal free buffer space is
+      // reached. That will discard all already read data but we never
+      // read a end of line. That is our emergency break.
+      datapointer = databuffer;
+      dbsize = 0;
+    }
 
+  // all available gps data lines are read successive
   int bytes = 0;
 
   bytes = read(fd, datapointer, sizeof(databuffer) - dbsize -1);
@@ -370,7 +382,8 @@ void GpsClient::readSentenceFromBuffer()
 
   while(strlen(start))
     {
-      // Search for a newline in the receiver buffer
+      // Search for a newline in the receiver buffer.
+      // That is the normal end of a GPS sentence.
       if( ! (end = strchr( start, '\n' )) )
         {
           // No newline in the receiver buffer, wait for more
