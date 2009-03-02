@@ -366,14 +366,14 @@ GpsMaemo::readGpsData()
   // Check for end of buffer. If this happens we will discard all
   // data to avoid a dead lock. Should normally not happen, if valid
   // data records are passed containing a terminating new line.
-  if ( (sizeof(databuffer) - dbsize - 1) <= 0 )
+  if ( (sizeof(databuffer) - dbsize - 1) < 100 )
     {
       qWarning( "GpsMaemo::readGpsData reached end of buffer, discarding all received data!" );
 
       // reset buffer pointer
       datapointer = databuffer;
       dbsize = 0;
-      memset(databuffer, 0, sizeof(databuffer));
+      databuffer[0] = '\0';
 
       return false;
     }

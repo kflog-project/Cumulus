@@ -218,8 +218,14 @@ void GpsNmea::startGpsReceiver()
 
 /**
  * This slot is called by the GPSCon object when a new sentence has
- * arrived on the serial port. The argument contains the sentence to
+ * arrived from the GPS receiver. The argument contains the sentence to
  * analyze.
+ *
+ * @AP 2009-03-02: There was added support for a Cambrigde device. This device
+ * emits proprietary sentences $PCAID and !w. It can also deliver altitudes
+ * (MSL and STD) derived from a pressure sonde. If these valuse should be
+ * used as base altitude instead of the normal GPS altitude, the user option
+ * altitude must be set to PRESSURE.
  */
 void GpsNmea::slot_sentence(const QString& sentenceIn)
 {
@@ -580,11 +586,13 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       double num = slst[2].toDouble();
       res.setMeters( num );
 
-      if ( _lastStdAltitude != res )
+      if ( _lastStdAltitude != res && _deliveredAltitude == GpsNmea::PRESSURE )
         {
-          _lastStdAltitude = res; // store the new STD pressure altitude
+          // Store this altitude as STD, if the user has pressure selected.
+          // In the other case the STD is derived from the GPS altitude.
+          _lastStdAltitude = res;
           // This altitude must not be notified as new value because
-          // the Cambridge device delivers also MSL
+          // the Cambridge device delivers also MSL in its !w sentence.
           // emit newAltitude();     // notify change
         }
 
@@ -592,7 +600,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
     }
 
   /**
-  Used by Cambridge devices. The !w sentence proprietary  sentence format is:
+  Used by Cambridge devices. The !w proprietary  sentence format is:
 
   !w,<1>,<2>,<3>,<4>,<5>,<6>,<7>,<8>,<9>,<10>,<11>,<12>,<13>*hh<CR><LF>
   !w,000,000,0000,500,01032,01027,00053,200,200,200,000,000,100*51
