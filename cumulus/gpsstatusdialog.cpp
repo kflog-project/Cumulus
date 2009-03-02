@@ -51,7 +51,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
   nmeaBox->setLineWrapMode(QTextEdit::NoWrap);
 
   QFont f = font();
-  f.setPixelSize(12);
+  f.setPixelSize(14);
   nmeaBox->setFont(f);
 
   /* #warning: FIXME
@@ -74,17 +74,6 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
           this, SLOT(slot_Sentence(const QString&)));
   connect(GpsNmea::gps, SIGNAL(newSatInViewInfo()),
           this, SLOT(slot_SIV()));
-
-/*  if( QApplication::desktop()->screenGeometry().width() > 240 &&
-      QApplication::desktop()->screenGeometry().height() > 320 )
-    {
-//      resize( 600, 400 );
-      show();
-    }
-  else
-    {
-//      showMaximized();
-    }*/
 }
 
 
