@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andre Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by Andre Somers, 2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -36,6 +36,7 @@ WaitScreen::WaitScreen(QWidget *parent ) :
 
   QGridLayout * backLayout = new QGridLayout(this);
   QGridLayout * topLayout  = new QGridLayout();
+  backLayout->setMargin(0);
   topLayout->setMargin(0);
 
   backLayout->addLayout(topLayout, 1, 1);
@@ -48,13 +49,13 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   topLayout->setColumnMinimumWidth(0, 45);
 
   QFrame * frm = new QFrame(this);
-  frm->setFrameStyle(QFrame::WinPanel | QFrame::Raised);
+  frm->setFrameStyle(QFrame::WinPanel | QFrame::Plain);
   backLayout->addWidget(frm, 0, 0, 3, 3);
 
   Glider = new QLabel(this);
   topLayout->addWidget(Glider, 0, 0, 3, 0);
 
-  QLabel * txt = new QLabel(tr("Cumulus is working. Please wait..."), this);
+  QLabel * txt = new QLabel(tr("Cumulus is working. Please wait ... "), this);
   topLayout->addWidget(txt, 0, 1);
 
   Text1 = new QLabel(this);
@@ -90,7 +91,7 @@ void WaitScreen::slot_SetText1(const QString& text)
   if( WhatsThat::getInstance() )
     {
       // @AP: Return, if popup is active to avoid a blocking of wm
-      return;
+      // return;
     }
 
   if( screenUsage() )
@@ -104,7 +105,7 @@ void WaitScreen::slot_SetText1(const QString& text)
 }
 
 
-/** This slot is used to set the secondairy text, such as the name of the airspacefile that is being loaded. It is also reset to an empty string if SetText1 is called. */
+/** This slot is used to set the secondary text, such as the name of the airspace file that is being loaded. It is also reset to an empty string if SetText1 is called. */
 void WaitScreen::slot_SetText2(const QString& text)
 {
   QString shortText = text;
@@ -117,7 +118,7 @@ void WaitScreen::slot_SetText2(const QString& text)
 
       if( pos != -1 )
         {
-          // cut directory pathes
+          // cut directory paths
           shortText = shortText.right(shortText.length() - pos - 1 );
         }
     }
@@ -127,7 +128,7 @@ void WaitScreen::slot_SetText2(const QString& text)
   if( WhatsThat::getInstance() )
     {
       // @AP: Return, if popup is active to avoid a blocking of wm
-      return;
+      // return;
     }
 
   if( screenUsage() )
@@ -147,7 +148,7 @@ void WaitScreen::slot_Progress(int stepsize)
   if( WhatsThat::getInstance() )
     {
       // @AP: Return, if popup is active to avoid a blocking of wm
-      return;
+      // return;
     }
 
   if( screenUsage() )

@@ -576,9 +576,6 @@ void CumulusApp::slotCreateApplicationWidgets()
   // I do not connect since it is never emitted, only called once here
   calculator->slot_changePosition(MapMatrix::NotSet);
 
-  ws->setScreenUsage( false );
-  ws->hide();
-
   if( ! GeneralConfig::instance()->getAirspaceWarningEnabled() )
     {
       int answer= QMessageBox::warning( this,tr("Airspace Warnings"),
@@ -613,15 +610,19 @@ void CumulusApp::slotCreateApplicationWidgets()
 
 #endif
 
+  // Startup GPS client process now for data receiving
+  ws->slot_SetText1( tr( "Opening GPS connection" ) );
+  GpsNmea::gps->blockSignals( false );
+  GpsNmea::gps->startGpsReceiver();
+
+  // close wait screen
+  ws->setScreenUsage( false );
+  ws->hide();
   // closes and removes the splash screen
   splash->close();
 
   // show map view as the central widget
   setView( mapView );
-
-  // Startup GPS client process now for data receiving
-  GpsNmea::gps->blockSignals( false );
-  GpsNmea::gps->startGpsReceiver();
 
   qDebug( "End startup cumulusapp" );
 }
