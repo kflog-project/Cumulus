@@ -21,11 +21,11 @@
 #include "splash.h"
 
 /** This widget loads a pixmap as background picture and
- *  is used as splash screen during startup of cumulus.
+ *  is used as splash screen during startup of Cumulus.
  */
 Splash::Splash( QWidget *parent) : QWidget( parent )
 {
-  setObjectName("Slash");
+  setObjectName( "Slash" );
   setAttribute( Qt::WA_DeleteOnClose );
 
   if( parent )
@@ -34,15 +34,17 @@ Splash::Splash( QWidget *parent) : QWidget( parent )
     }
   else
     {
-      resize( 480, 800 );
+      resize( 800, 480 );
     }
 
   // load background picture
-  pixmap = GeneralConfig::instance()->loadPixmap("splash.png");
+  pixmap = GeneralConfig::instance()->loadPixmap( "splash.png" );
 }
 
 Splash::~Splash()
 {
+  // remove splash pixmap from global cache
+  GeneralConfig::instance()->removePixmap( "splash.png" );
 }
 
 /** Handles the paint events of the widget */

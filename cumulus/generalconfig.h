@@ -173,6 +173,11 @@ class GeneralConfig : protected QSettings
    */
   QPixmap loadPixmap( const QString& pixmapName );
 
+  /**
+   * @removes a pixmap from the global cache
+   */
+  void removePixmap( const QString& pixmapName );
+
   /** Gets the airspace border color */
   QColor &getBorderColorAirspaceA()
     {

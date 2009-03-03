@@ -1303,6 +1303,15 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName )
   return pm;
 }
 
+/**
+ * @removes a pixmap from the global cache
+ */
+void GeneralConfig::removePixmap( const QString& pixmapName )
+{
+  // determine absolute path to pixmap directory and remove pixmap
+  QPixmapCache::remove( _installRoot + "/icons/" + pixmapName );
+}
+
 /** Returns the expected places of map directories
     There are: 1. Map directory defined by user
                2. $HOME/maps
