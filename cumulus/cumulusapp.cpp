@@ -562,7 +562,7 @@ void CumulusApp::slotCreateApplicationWidgets()
   viewMap->_theMap->setDrawing( true );
 
   // @AP: That's a trick here! We call show to get the
-  // Map widget of the MapView widget resized. The Splash
+  // Map widget inside the MapView widget resized. The Splash
   // will not disappear because the Qt/X11 EventLoop is
   // inactive until return of this method.
   viewMap->show();
@@ -610,8 +610,24 @@ void CumulusApp::slotCreateApplicationWidgets()
 
 #endif
 
+  // The calling of the Bluetooth GPS initialization under Maemo can take a while.
+  // In this time the cumulus application is blocked.
+  // Therefore the wait screen shall show that but under Maemo this
+  // message was never to see. Now I try to process all events
+  // before calling GPS initialization in the hope that this do work.
+
+  // map view was loaded, we hide it again, to prevent showing during event
+  // processing. That should show the splash as background and the wait screen
+  // in foreground.
+  viewMap->hide();
+  splash->show();
+  ws->slot_SetText1( tr( "Initializing GPS" ) );
+  ws->show();
+
+  QCoreApplication::processEvents();
+  QCoreApplication::sendPostedEvents();
+
   // Startup GPS client process now for data receiving
-  ws->slot_SetText1( tr( "Opening GPS connection" ) );
   GpsNmea::gps->blockSignals( false );
   GpsNmea::gps->startGpsReceiver();
 
@@ -624,7 +640,7 @@ void CumulusApp::slotCreateApplicationWidgets()
   // show map view as the central widget
   setView( mapView );
 
-  qDebug( "End startup cumulusapp" );
+  qDebug( "End startup CmulusApp" );
 }
 
 CumulusApp::~CumulusApp()

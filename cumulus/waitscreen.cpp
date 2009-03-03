@@ -49,7 +49,8 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   topLayout->setColumnMinimumWidth(0, 45);
 
   QFrame * frm = new QFrame(this);
-  frm->setFrameStyle(QFrame::WinPanel | QFrame::Plain);
+  frm->setFrameStyle(QFrame::Box | QFrame::Plain);
+  frm->setLineWidth(3);
   backLayout->addWidget(frm, 0, 0, 3, 3);
 
   Glider = new QLabel(this);
