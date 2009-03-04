@@ -57,12 +57,15 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   topLayout->addWidget(Glider, 0, 0, 3, 0);
 
   QLabel * txt = new QLabel(tr("Cumulus is working. Please wait ... "), this);
+  txt->setMinimumHeight(20);
   topLayout->addWidget(txt, 0, 1);
 
   Text1 = new QLabel(this);
+  Text1->setMinimumHeight(20);
   topLayout->addWidget(Text1, 1, 1);
 
   Text2 = new QLabel(this);
+  Text2->setMinimumHeight(20);
   topLayout->addWidget(Text2, 2, 1);
 
   progress=0;
