@@ -17,6 +17,9 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.1.x (Development based on X11/Qt-4.5)
 -------------------------------------------------
+[+] 2009-03-04 AP: Splash picture added during startup of cumulus.
+[o] 2009-03-04 AP: Green and magenta circle pixmaps replaced by two new methods in class
+                   MapConfig. These pixmaps are used to mark the reachable locations.
 [o] 2009-03-02 AP: English online help partly reworked.
 [-] 2009-03-27 AP: Bugfix: Wrong decoding of pressure altitudes of Cambridge
                    device fixed.
