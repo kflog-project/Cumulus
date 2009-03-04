@@ -168,8 +168,21 @@ public:
      *
      * @see #slotSetFlightDataType
      */
-
     bool isRotatable( unsigned int typeID ) const;
+
+    /**
+     * Returns a pixmap containing a circle in the wanted size
+     * and filled with green color. The circle has no border and
+     * is transparent.
+     */
+    QPixmap& getGreenCircle( int diameter );
+
+    /**
+      * Returns a pixmap containing a circle in the wanted size
+      * and filled with magenta color. The circle has no border and
+      * is transparent.
+      */
+    QPixmap& getMagentaCircle( int diameter );
 
 public slots:
     /**
@@ -197,6 +210,14 @@ public slots:
     void slotSetMatrixValues(int index, bool isSwitch);
 
 private:
+
+  /**
+    * Returns a pixmap containing a circle in the wanted size
+    * and filled with wanted color. The circle has no border and
+    * is transparent.
+    */
+  void __createCircle( QPixmap& pixmap, int diameter, QColor color);
+
   /**
      * Determines the brush to be used to draw or print a given element-type.
      *
@@ -317,6 +338,10 @@ private:
      * each time, the map is zoomed.
      */
     bool isSwitch;
+
+    // Pixmaps for reach abilities
+    QPixmap greenCircle;
+    QPixmap magentaCircle;
 
     // number of created class instances
     static short instances;

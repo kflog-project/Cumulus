@@ -82,38 +82,40 @@ void Airfield::drawMapElement(QPainter* targetP)
       return;
     }
 
-  extern MapMatrix * _globalMapMatrix;
+  extern MapConfig* _globalMapConfig;
+  extern MapMatrix* _globalMapMatrix;
+
   int scale = _globalMapMatrix->getScaleRatio()/50;
 
-  // qDebug("scale: %d %d",scale,_globalMapMatrix->getScaleRatio()  );
+  //qDebug("Airfield::drawMapElement(): scale: %d %d",scale, _globalMapMatrix->getScaleRatio()  );
   QColor col = ReachableList::getReachColor( wgsPosition );
 
-  // draw also the small dot's in reachability color
+  // draw also the small dot's in reach ability color
   targetP->setPen(QPen(col, 2));
-  int iconSize = 16;
+  int iconSize = 32;
 
   curPos = glMapMatrix->map(position);
 
-  if (glMapMatrix->isSwitchScale())
+  if ( _globalMapConfig->useSmallIcons() )
     {
-      iconSize = 32;
+      iconSize = 16;
     }
 
   if ( !glMapMatrix->isSwitchScale2() )
     {
-      targetP->drawEllipse(curPos.x(), curPos.y(), scale,scale );
+      targetP->drawEllipse(curPos.x(), curPos.y(), scale, scale );
     }
   else
     {
       if (col == Qt::green)
         {
-          targetP->drawPixmap(curPos.x() - 9, curPos.y() -9,
-                              glConfig->getPixmap("green_circle.xpm"));
+          targetP->drawPixmap(curPos.x() - iconSize/2, curPos.y() - iconSize/2,
+                              glConfig->getGreenCircle(iconSize));
         }
       else if (col == Qt::magenta)
         {
-          targetP->drawPixmap(curPos.x() - 9, curPos.y() -9,
-                              glConfig->getPixmap("magenta_circle.xpm"));
+          targetP->drawPixmap(curPos.x() - iconSize/2, curPos.y() - iconSize/2,
+                              glConfig->getMagentaCircle(iconSize));
         }
 
       if ( glConfig->isRotatable( typeID ) )

@@ -1296,7 +1296,6 @@ void Map::__drawWaypoints(QPainter* wpPainter)
           if (testRect.contains(P))
             {
               // draw marker
-              // QColor col = ReachableList::getReachColor(wp.name);
               enum ReachablePoint::reachable reachable = ReachableList::getReachable(wp.origP);
 
               if( isSelected )
@@ -1311,14 +1310,19 @@ void Map::__drawWaypoints(QPainter* wpPainter)
               QPixmap pm;
 
               if( _globalMapConfig->isRotatable(wp.type) )
-                pm = _globalMapConfig->getPixmapRotatable( wp.type,false );
+                {
+                  pm = _globalMapConfig->getPixmapRotatable( wp.type,false );
+                }
               else
-                pm= _globalMapConfig->getPixmap(wp.type,false); //,col);
+                {
+                  pm= _globalMapConfig->getPixmap(wp.type,false);
+                }
 
               int xOffset=16;
               int yOffset=16;
               int iconSize = 32;
-              if (_globalMapConfig->useSmallIcons())
+
+              if( _globalMapConfig->useSmallIcons() )
                 {
                   xOffset=8;
                   yOffset=8;
@@ -1327,22 +1331,29 @@ void Map::__drawWaypoints(QPainter* wpPainter)
 
               if (reachable == ReachablePoint::yes)
                 {
-                  //draw green circle
-                  wpPainter->drawPixmap(P.x() - 9, P.y() -9, _globalMapConfig->getPixmap("green_circle.xpm"));
+                  // draw green circle
+                  wpPainter->drawPixmap( P.x() - iconSize/2, P.y() - iconSize/2,
+                                         _globalMapConfig->getGreenCircle(iconSize) );
                 }
               else if (reachable == ReachablePoint::belowSafety)
                 {
-                  //draw magenta circle
-                  wpPainter->drawPixmap(P.x() - 9, P.y() -9, _globalMapConfig->getPixmap("magenta_circle.xpm"));
+                  // draw magenta circle
+                  wpPainter->drawPixmap( P.x() - iconSize/2, P.y() - iconSize/2,
+                                         _globalMapConfig->getMagentaCircle(iconSize));
                 }
 
               int rw2 = wp.runway >= 180 ? wp.runway-180 : wp.runway;
               int shift = ((rw2)/10);
+
               if( _globalMapConfig->isRotatable(wp.type) )
-                wpPainter->drawPixmap(P.x() - iconSize/2, P.y() - iconSize/2, pm,
-                                      shift*iconSize, 0, iconSize, iconSize);
+                {
+                  wpPainter->drawPixmap(P.x() - iconSize/2, P.y() - iconSize/2, pm,
+                                        shift*iconSize, 0, iconSize, iconSize);
+                }
               else
-                wpPainter->drawPixmap(P.x()-xOffset,P.y()-yOffset, pm);
+                {
+                  wpPainter->drawPixmap(P.x()-xOffset,P.y()-yOffset, pm);
+                }
 
               // draw name of wp
               if ( GeneralConfig::instance()->getMapShowWaypointLabels() )
@@ -1370,12 +1381,14 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                               labelText += dist.getText( false, uint(0), uint(0) )
                                            +  "/";
                               alt = ReachableList::getArrivalAltitude( wp.origP );
+
                               if ( alt.getMeters()<0 ) //the color is dependent on the arrival altitude
                                 {
                                   labelText += "<font color=\"#FF0000\">"
                                                + alt.getText( false, 0 )
                                                + "</font>";
-                                } else
+                                }
+                              else
                                 {
                                   labelText += "&nbsp;"
                                                + alt.getText( false, 0 );
@@ -1407,11 +1420,13 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                   rtext->resize( rtext->width()+4, rtext->height() );
 
                   QRect textbox( rtext->rect() );
+
                   if (wp.origP.lon()<_globalMapMatrix->getMapCenter(false).y())
                     {
                       //the wp is on the left side of the map, so draw the textlabel on the right side
                       xOffset=10;
                       yOffset=(textbox.height()/4)*3;
+
                       if (_globalMapConfig->useSmallIcons())
                         {
                           xOffset=6;
@@ -1423,6 +1438,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                       //the wp is on the right side of the map, so draw the textlabel on the left side
                       xOffset=-textbox.width()-14;
                       yOffset=(textbox.height()/4)*3;
+
                       if (_globalMapConfig->useSmallIcons())
                         {
                           xOffset=-textbox.width()-6;

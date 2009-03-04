@@ -854,3 +854,63 @@ QString MapConfig::getPixmapName(unsigned int typeID, bool isWinch, bool rotatab
 
   return iconName;
 }
+
+/**
+ * Returns a pixmap containing a circle in the wanted size
+ * and filled with green color. The circle has no border and
+ * is transparent.
+ */
+QPixmap& MapConfig::getGreenCircle( int diameter )
+{
+  if( greenCircle.width() == diameter && greenCircle.height() == diameter )
+    {
+      // take the last one
+      return greenCircle;
+    }
+
+  __createCircle( greenCircle, diameter, QColor( Qt::green ) );
+
+  return greenCircle;
+}
+
+/**
+  * Returns a pixmap containing a circle in the wanted size
+  * and filled with magenta color. The circle has no border and
+  * is transparent.
+  */
+QPixmap& MapConfig::getMagentaCircle( int diameter )
+{
+  if( magentaCircle.width() == diameter && magentaCircle.height() == diameter )
+    {
+      // take the last one
+       return magentaCircle;
+    }
+
+  __createCircle( magentaCircle, diameter, QColor(Qt::magenta) );
+
+  return magentaCircle;
+}
+
+/**
+  * Returns a pixmap containing a circle in the wanted size
+  * and filled with wanted color. The circle has no border and
+  * is transparent.
+  */
+void MapConfig::__createCircle( QPixmap& pixmap, int diameter, QColor color)
+{
+  if( diameter % 2 )
+    {
+      // increase size, if unsymmetrically
+      diameter++;
+    }
+
+  pixmap = QPixmap( diameter, diameter );
+  pixmap.fill(Qt::transparent);
+
+  QPainter painter(&pixmap);
+  painter.setPen( Qt::NoPen );
+  painter.setBrush( QBrush( color, Qt::SolidPattern ) );
+  painter.setOpacity ( 0.50 ); // 50% opacity
+  painter.drawEllipse( 2, 2, diameter-4, diameter-4 );
+}
+
