@@ -105,7 +105,7 @@ extern MapView* _globalMapView;
     ShortSave(out, all);\
   } else\
     ShortLoad(in, all);\
- 
+
 // Minimum amount of required free memory to start loading of a map file.
 // Do not under run this limit, OS can freeze is such a case.
 #define MINIMUM_FREE_MEMORY 1024*25

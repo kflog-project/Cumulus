@@ -41,11 +41,11 @@ ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
   _newList=true; //make sure we fill our list the first time it is shown
 
   par=parent;
-  _outlandShow = true;  // Show outlandigs by default;
+  _outlandShow = true;  // Show out landings by default;
   QBoxLayout *topLayout = new QVBoxLayout( this );
 
   list = new QTreeWidget( this );
-  list->setObjectName("reachpointview");
+  list->setObjectName("ReachpointView");
 
   list->setRootIsDecorated(false);
   list->setItemsExpandable(false);
