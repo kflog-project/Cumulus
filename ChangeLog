@@ -17,6 +17,10 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.1.x (Development based on X11/Qt-4.5)
 -------------------------------------------------
+[o] 2009-03-05 AP: Waypoint and thermal icons redesigned and placed so at the map,
+                   that the lower stick end of the flag points to the map point.
+                   The old position was in the center of the icon and caused
+                   misinterpretations about the right position.
 [+] 2009-03-04 AP: Splash picture added during startup of cumulus.
 [o] 2009-03-04 AP: Green and magenta circle pixmaps replaced by two new methods in class
                    MapConfig. These pixmaps are used to mark the reachable locations.
