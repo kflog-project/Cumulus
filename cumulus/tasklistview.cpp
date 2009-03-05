@@ -287,7 +287,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
       // Note: rpMargin is a manifold of 2 to ensure symmetry
       int rpMargin = GeneralConfig::instance()->getListDisplayRPMargin();
 
-      qDebug( "rpMargin=%d", rpMargin );
+      // qDebug( "rpMargin=%d", rpMargin );
 
       if ( rowDelegate )
         {
