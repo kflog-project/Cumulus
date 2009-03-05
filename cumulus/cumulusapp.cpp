@@ -1852,13 +1852,13 @@ void CumulusApp::slotPreFlightDataChanged()
       if ( _taskListVisible )
         {
           // see comment for removeTab( viewRP )
-          disconnect( listViewTabs, SIGNAL( currentChanged( int index ) ),
-                      this, SLOT( slot_tabChanged( int index ) ) );
+          disconnect( listViewTabs, SIGNAL( currentChanged(int) ),
+                      this, SLOT( slot_tabChanged(int) ) );
 
           listViewTabs->removeTab( listViewTabs->indexOf(viewTP) );
 
-          connect( listViewTabs, SIGNAL( currentChanged( int index ) ),
-                   this, SLOT( slot_tabChanged( int index ) ) );
+          connect( listViewTabs, SIGNAL( currentChanged(int) ),
+                   this, SLOT( slot_tabChanged(int) ) );
           _taskListVisible = false;
         }
     }
