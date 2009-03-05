@@ -1236,7 +1236,7 @@ void Map::slotCenterToTask()
 }
 
 
-/** Draws the waypoints of the active waypoint catalog on the map */
+/** Draws the waypoints of the waypoint catalog on the map */
 void Map::__drawWaypoints(QPainter* wpPainter)
 {
   bool isSelected;
@@ -1311,34 +1311,48 @@ void Map::__drawWaypoints(QPainter* wpPainter)
 
               if( _globalMapConfig->isRotatable(wp.type) )
                 {
-                  pm = _globalMapConfig->getPixmapRotatable( wp.type,false );
+                  pm = _globalMapConfig->getPixmapRotatable( wp.type, false );
                 }
               else
                 {
-                  pm= _globalMapConfig->getPixmap(wp.type,false);
+                  pm = _globalMapConfig->getPixmap( wp.type, false);
                 }
 
-              int xOffset=16;
-              int yOffset=16;
               int iconSize = 32;
+              int xOffset = 16;
+              int yOffset = 16;
+
+              if( wp.type == BaseMapElement::Turnpoint || wp.type == BaseMapElement::Thermal)
+                {
+                  // The lower stick end of the flag shall point to the point at the map
+                  xOffset = 16;
+                  yOffset = 32;
+                }
 
               if( _globalMapConfig->useSmallIcons() )
                 {
-                  xOffset=8;
-                  yOffset=8;
                   iconSize = 16;
+                  xOffset = 8;
+                  yOffset = 8;
+
+                  if( wp.type == BaseMapElement::Turnpoint || wp.type == BaseMapElement::Thermal)
+                    {
+                      // The lower stick end of the flag shall point to the point at the map
+                      xOffset = 8;
+                      yOffset = 16;
+                    }
                 }
 
               if (reachable == ReachablePoint::yes)
                 {
                   // draw green circle
-                  wpPainter->drawPixmap( P.x() - iconSize/2, P.y() - iconSize/2,
+                  wpPainter->drawPixmap( P.x() - xOffset, P.y() - yOffset,
                                          _globalMapConfig->getGreenCircle(iconSize) );
                 }
               else if (reachable == ReachablePoint::belowSafety)
                 {
                   // draw magenta circle
-                  wpPainter->drawPixmap( P.x() - iconSize/2, P.y() - iconSize/2,
+                  wpPainter->drawPixmap( P.x() - xOffset, P.y() - yOffset,
                                          _globalMapConfig->getMagentaCircle(iconSize));
                 }
 
@@ -1347,19 +1361,20 @@ void Map::__drawWaypoints(QPainter* wpPainter)
 
               if( _globalMapConfig->isRotatable(wp.type) )
                 {
-                  wpPainter->drawPixmap(P.x() - iconSize/2, P.y() - iconSize/2, pm,
+                  wpPainter->drawPixmap(P.x() - xOffset, P.y() - yOffset, pm,
                                         shift*iconSize, 0, iconSize, iconSize);
                 }
               else
                 {
-                  wpPainter->drawPixmap(P.x()-xOffset,P.y()-yOffset, pm);
+                  wpPainter->drawPixmap(P.x() - xOffset, P.y() - yOffset, pm);
                 }
 
-              // draw name of wp
-              if ( GeneralConfig::instance()->getMapShowWaypointLabels() )
+              // draw name of waypoint
+              if ( _globalMapMatrix->getScale(MapMatrix::CurrentScale) < 100 &&
+                  GeneralConfig::instance()->getMapShowWaypointLabels() )
                 {
                   // do we need to show the labels at all?
-                  labelText=wp.name;
+                  labelText = wp.name;
 
                   if ( GeneralConfig::instance()->getMapShowWaypointLabelsExtraInfo() )
                     { //just the name, or also additional info?
@@ -1423,7 +1438,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
 
                   if (wp.origP.lon()<_globalMapMatrix->getMapCenter(false).y())
                     {
-                      //the wp is on the left side of the map, so draw the textlabel on the right side
+                      //the wp is on the left side of the map, so draw the text label on the right side
                       xOffset=10;
                       yOffset=(textbox.height()/4)*3;
 
@@ -1435,7 +1450,7 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                     }
                   else
                     {
-                      //the wp is on the right side of the map, so draw the textlabel on the left side
+                      //the wp is on the right side of the map, so draw the text label on the left side
                       xOffset=-textbox.width()-14;
                       yOffset=(textbox.height()/4)*3;
 
