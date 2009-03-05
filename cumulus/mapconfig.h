@@ -3,12 +3,12 @@
 **   mapconfig.h
 **
 **   This file is part of Cumulus.
-**   It is modified for Cumulus by André Somers in 2002 and
-**   by Axel Pauli in 2009
 **
 ************************************************************************
 **
-**   Copyright (c):  2001 by Heiner Lamprecht, 2009 Axel Pauli
+**   Copyright (c):  2001 by Heiner Lamprecht,
+**                   2002 by André Somers
+**                   2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -32,7 +32,7 @@
 #include "mapconfig.h"
 
 /**
- * @author Heiner Lamprecht, Florian Ehinger
+ * @author Heiner Lamprecht, Florian Ehinger, Axel Pauli
  *
  * This class takes care of the configuration data for displaying
  * map elements. To avoid problems, there should be only
@@ -81,7 +81,7 @@ public:
     /**
      * @param  type  The typeID of the element.
      *
-     * @return the pen for drawing a mapelement.
+     * @return the pen for drawing a map element.
      */
     const QPen& getDrawPen(unsigned int typeID)
     {
@@ -91,7 +91,7 @@ public:
     /**
      * @param  type  The typeID of the element.
      *
-     * @return the brush for drawing an areaelement.
+     * @return the brush for drawing an area element.
      */
     const QBrush& getDrawBrush(unsigned int typeID)
     {
@@ -106,8 +106,8 @@ public:
 
     /**
      * @param  type  The typeID of the element.
-     * @param  isWinch  Used only for glidersites to determine, if the
-     *                  icon should indicate that only winch-launch is
+     * @param  isWinch  Used only for glider sites to determine, if the
+     *                  icon should indicate that only winch launch is
      *                  available.
      *
      * @returns the icon-pixmap of the element.
@@ -124,8 +124,8 @@ public:
 
     /**
      * @param  type  The typeID of the element.
-     * @param  isWinch  Used only for glidersites to determine, if the
-     *                  icon should indicate that only winch-launch is
+     * @param  isWinch  Used only for glider sites to determine, if the
+     *                  icon should indicate that only winch launch is
      *                  available.
      * @param  smallIcon  Used to select the size of the returned pixmap.
      *                  if true, a small pixmap is returned, otherwise the larger
@@ -146,8 +146,8 @@ public:
 
     /**
      * @param  type  The typeID of the element.
-     * @param  isWinch  Used only for glidersites to determine, if the
-     *                  icon should indicate that only winch-launch is
+     * @param  isWinch  Used only for glider sites to determine, if the
+     *                  icon should indicate that only winch launch is
      *                  available.
      *
      * @return the name of the pixmap of the element.
