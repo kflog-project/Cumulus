@@ -477,13 +477,13 @@ void Map::mouseReleaseEvent(QMouseEvent* event)
 
 void Map::paintEvent(QPaintEvent* event)
 {
-QDateTime dt = QDateTime::currentDateTime();
-QString dtStr = dt.toString(Qt::ISODate);
+//QDateTime dt = QDateTime::currentDateTime();
+//QString dtStr = dt.toString(Qt::ISODate);
 //
-   qDebug("%s: Map::paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d",
-          dtStr.toAscii().data(),
-          event->rect().width(), event->rect().height(),
-          event->rect().left(), event->rect().top() );
+//   qDebug("%s: Map::paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d",
+//          dtStr.toAscii().data(),
+//          event->rect().width(), event->rect().height(),
+//          event->rect().left(), event->rect().top() );
 
   if( mutex() )
     {
