@@ -1,5 +1,5 @@
 /* XPM */
-static char * outlanding_xpm[] = {
+static char * outlanding_small_xpm[] = {
 "16 16 7 1",
 " 	c None",
 ".	c #000000",
@@ -8,6 +8,9 @@ static char * outlanding_xpm[] = {
 "#	c #FFFFFF",
 "$	c #FF0000",
 "%	c #00B700",
+"                ",
+"                ",
+"                ",
 "       .        ",
 "       ..+.+.+@ ",
 "       .#$#$#$#$",
@@ -16,11 +19,8 @@ static char * outlanding_xpm[] = {
 "       .        ",
 "       .        ",
 "       .        ",
-"       .%       ",
-"     % %% %     ",
+"       .        ",
+"      %%%       ",
+"     %%%%%      ",
 "    %%%%%%%     ",
-"   %%%%%%%%%    ",
-"                ",
-"                ",
-"                ",
-"                "};
+"   %%%%%%%%%    "};
