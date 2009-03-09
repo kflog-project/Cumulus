@@ -477,13 +477,13 @@ void Map::mouseReleaseEvent(QMouseEvent* event)
 
 void Map::paintEvent(QPaintEvent* event)
 {
-//QDateTime dt = QDateTime::currentDateTime();
-//QString dtStr = dt.toString(Qt::ISODate);
+QDateTime dt = QDateTime::currentDateTime();
+QString dtStr = dt.toString(Qt::ISODate);
 //
-//   qDebug("%s: Map::paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d",
-//          dtStr.toAscii().data(),
-//          event->rect().width(), event->rect().height(),
-//          event->rect().left(), event->rect().top() );
+   qDebug("%s: Map::paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d",
+          dtStr.toAscii().data(),
+          event->rect().width(), event->rect().height(),
+          event->rect().left(), event->rect().top() );
 
   if( mutex() )
     {
@@ -820,10 +820,12 @@ void Map::resizeEvent(QResizeEvent* event)
 
 void Map::__redrawMap(mapLayer fromLayer)
 {
+  static bool first = true; // mark first calling of method
+
   // qDebug("Map::__redrawMap from layer=%d", fromLayer);
 
   // First call after creation of object can pass
-  if( ! isVisible() )
+  if( ! isVisible() && ! first )
     {
       // AP: ignore draw request when the window is hidden or not
       // visible to give the user all power of the device for interactions
@@ -917,7 +919,16 @@ void Map::__redrawMap(mapLayer fromLayer)
   //QString dtStr = dt.toString(Qt::ISODate);
   // qDebug("%s: Map::__redrawMap: repaint(%dx%d) is called",
   //       dtStr.toAscii().data(), this->rect().width(),this->rect().height() );
-  repaint( this->rect() );
+
+  if( ! first )
+    {
+      // suppress the first call otherwise splash screen will disappear
+      repaint( this->rect() );
+    }
+  else
+    {
+      first = false;
+    }
 
   // @AP: check, if a pending redraw request is active. In this case
   // the scheduler timers will be restarted to handle it.
@@ -1321,12 +1332,18 @@ void Map::__drawWaypoints(QPainter* wpPainter)
               int iconSize = 32;
               int xOffset = 16;
               int yOffset = 16;
+              int cxOffset = 16;
+              int cyOffset = 16;
 
-              if( wp.type == BaseMapElement::Turnpoint || wp.type == BaseMapElement::Thermal)
-                {
+              if( wp.type == BaseMapElement::Turnpoint ||
+                  wp.type == BaseMapElement::Thermal ||
+                  wp.type == BaseMapElement::Outlanding )
+                 {
                   // The lower stick end of the flag shall point to the point at the map
                   xOffset = 16;
                   yOffset = 32;
+                  cxOffset = 16;
+                  cyOffset = 16;
                 }
 
               if( _globalMapConfig->useSmallIcons() )
@@ -1334,25 +1351,32 @@ void Map::__drawWaypoints(QPainter* wpPainter)
                   iconSize = 16;
                   xOffset = 8;
                   yOffset = 8;
+                  cxOffset = 8;
+                  cyOffset = 8;
 
-                  if( wp.type == BaseMapElement::Turnpoint || wp.type == BaseMapElement::Thermal)
+                  if( wp.type == BaseMapElement::Turnpoint ||
+                      wp.type == BaseMapElement::Thermal  ||
+                      wp.type == BaseMapElement::Outlanding )
                     {
                       // The lower stick end of the flag shall point to the point at the map
                       xOffset = 8;
                       yOffset = 16;
+                      cxOffset = 8;
+                      cyOffset = 8;
                     }
                 }
 
               if (reachable == ReachablePoint::yes)
                 {
                   // draw green circle
-                  wpPainter->drawPixmap( P.x() - xOffset, P.y() - yOffset,
+                  wpPainter->drawPixmap( P.x() - cxOffset, P.y() - cyOffset,
                                          _globalMapConfig->getGreenCircle(iconSize) );
+
                 }
               else if (reachable == ReachablePoint::belowSafety)
                 {
                   // draw magenta circle
-                  wpPainter->drawPixmap( P.x() - xOffset, P.y() - yOffset,
+                  wpPainter->drawPixmap( P.x() - cxOffset, P.y() - cyOffset,
                                          _globalMapConfig->getMagentaCircle(iconSize));
                 }
 

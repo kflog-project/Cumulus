@@ -566,6 +566,9 @@ void CumulusApp::slotCreateApplicationWidgets()
   // will not disappear because the Qt/X11 EventLoop is
   // inactive until return of this method.
   viewMap->show();
+  viewMap->hide();
+  splash->show();
+  ws->show();
 
   // This actions initiates the map loading procedures
   viewMap->_theMap->slotDraw();
@@ -619,8 +622,6 @@ void CumulusApp::slotCreateApplicationWidgets()
   // map view was loaded, we hide it again, to prevent showing during event
   // processing. That should show the splash as background and the wait screen
   // in foreground.
-  viewMap->hide();
-  splash->show();
   ws->slot_SetText1( tr( "Initializing GPS" ) );
   ws->show();
 

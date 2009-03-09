@@ -42,7 +42,7 @@
 #include "gpsmaemo.h"
 
 // Defines alive check timeout.
-#define ALIVE_TO 20000
+#define ALIVE_TO 30000
 
 // Defines a retry timeout which is used after a failed pairing with the
 // BT gps manager. The time should not be to short otherwise cumulus is
