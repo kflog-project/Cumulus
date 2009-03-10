@@ -26,7 +26,7 @@
 extern MapView *_globalMapView;
 
 WaitScreen::WaitScreen(QWidget *parent ) :
-    QDialog(parent, Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::WindowTitleHint )
+    QDialog(parent,  Qt::FramelessWindowHint | Qt::WindowTitleHint )
 {
   setObjectName("WaitScreen");
   setModal(true);
