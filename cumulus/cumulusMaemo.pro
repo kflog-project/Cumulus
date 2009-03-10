@@ -17,7 +17,7 @@ HEADERS = airfieldlistview.h \
     altimetermodedialog.h \
     altitude.h \
     basemapelement.h \
-    configdialog.h \
+    configwidget.h \
     calculator.h \
     degreespinbox.h \
     distance.h \
