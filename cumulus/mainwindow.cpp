@@ -557,13 +557,9 @@ void MainWindow::slotCreateApplicationWidgets()
       setWindowTitle ( "Cumulus - " + gt );
     }
 
+  // @AP: That's a trick here! We call resize and make the drawing
   viewMap->_theMap->setDrawing( true );
   viewMap->_theMap->resize( 584, 460 );
-
-  // @AP: That's a trick here! We call show to get the
-  // Map widget inside the MapView widget resized. The Splash
-  // will not disappear because the Qt/X11 EventLoop is
-  // inactive until return of this method.
 
   // This actions initiates the map loading procedures
   viewMap->_theMap->slotDraw();
@@ -615,14 +611,11 @@ void MainWindow::slotCreateApplicationWidgets()
   // message was never to see. Now I try to process all events
   // before calling GPS initialization in the hope that this do work.
 
-  // map view was loaded, we hide it again, to prevent showing during event
-  // processing. That should show the splash as background and the wait screen
-  // in foreground.
   splash->show();
   ws->slot_SetText1( tr( "Initializing GPS" ) );
   ws->show();
 
-  // QCoreApplication::processEvents();
+  QCoreApplication::processEvents();
 
   // Startup GPS client process now for data receiving
   GpsNmea::gps->blockSignals( false );
