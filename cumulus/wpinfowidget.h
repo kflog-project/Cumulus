@@ -33,7 +33,7 @@
  * @author Andrè Somers
  */
 
-class CumulusApp;
+class MainWindow;
 
 class WPInfoWidget : public QWidget
   {
@@ -41,12 +41,12 @@ class WPInfoWidget : public QWidget
 
   public:
 
-    WPInfoWidget( CumulusApp *parent=0 );
+    WPInfoWidget( MainWindow *parent=0 );
 
     virtual ~WPInfoWidget();
 
     /**
-     * This method is called by CumulusApp to set the view to which
+     * This method is called by MainWindow to set the view to which
      * there must be returned and the waypoint to view.
      */
     bool showWP(int lastView, const wayPoint& wp);
@@ -192,7 +192,7 @@ class WPInfoWidget : public QWidget
     int _lastView;
 
     /** contains a ref to the parent, the application */
-    CumulusApp *cuApp;
+    MainWindow *cuApp;
   };
 
 #endif

@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   preflightdialog.h
+**   preflightwidget.h
 **
 **   This file is part of Cumulus.
 **
@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef PREFLIGHTDIALOG_H
-#define PREFLIGHTDIALOG_H
+#ifndef _PreFlightWidget_h
+#define _PreFlightWidget_h
 
 #include <QTabWidget>
 
@@ -30,28 +30,28 @@ class PreFlightMiscPage;
  * @author André Somers
  *
  * This widget provides an interface to set all the pre-flight settings like
- * glidertype, co-pilot, task, amount of water taken on, etc.
+ * glider type, copilot, task, amount of water taken on, etc.
  */
-class PreFlightDialog : public QWidget
+class PreFlightWidget : public QWidget
 {
     Q_OBJECT
 public:
     /**
      * Constructor
-     * @argument parent Pointer to parentwidget
+     * @argument parent Pointer to parent widget
      * @argument name Name of the page to be displayed. Current options: "taskselection".
      *                Any other string will select glider page.
      */
-    PreFlightDialog(QWidget *parent, const char* name);
+    PreFlightWidget(QWidget *parent, const char* name);
 
     /**
      * Destructor
      */
-    ~PreFlightDialog();
+    ~PreFlightWidget();
 
 signals:
     /**
-     * Not documented
+     * This signal is emitted if the settings are changed
      */
     void settingsChanged();
     /**
@@ -59,8 +59,8 @@ signals:
      */
     void newWaypoint(wayPoint *, bool);
     /**
-     * This signal is emitted when the "dialog" should close. CumulusApp will subsequently
-     * delete it
+     * This signal is emitted before the widget is closed.
+     * MainWindow will use it to update the current view setting.
      */
     void closeConfig();
 

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2004 by Andrï¿½ Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -33,11 +33,11 @@
 #include "waypoint.h"
 #include "flighttask.h"
 
-class CumulusApp;
+class MainWindow;
 
 /**
  * Presents a view that holds a list of the waypoints in the currently selected task.
- * @author André Somers
+ * @author Andrï¿½ Somers
  */
 class TaskListView : public QWidget
 {
@@ -102,7 +102,7 @@ protected:
 
 private:
     QTreeWidget*  list;
-    CumulusApp  *par;
+    MainWindow  *par;
     QBoxLayout  *buttonrow;
     bool        _outlandShow;
     QPushButton *cmdShowOl;

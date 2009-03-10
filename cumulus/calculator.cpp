@@ -32,14 +32,14 @@
 #include "reachablelist.h"
 #include "altimetermodedialog.h"
 #include "tpinfowidget.h"
-#include "cumulusapp.h"
+#include "mainwindow.h"
 #include "whatsthat.h"
 
 #define MAX_MCCREADY 10.0
 #define MAX_SAMPLECOUNT 600
 
 Calculator *calculator = (Calculator *) 0;
-extern CumulusApp  *_globalCumulusApp;
+extern MainWindow  *_globalMainWindow;
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 
@@ -433,7 +433,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
       // fetch info show time from config and compute it as milli seconds
       int showTime = GeneralConfig::instance()->getInfoDisplayTime() * 1000;
 
-      WhatsThat *box = new WhatsThat( _globalCumulusApp, text,  showTime );
+      WhatsThat *box = new WhatsThat( _globalMainWindow, text,  showTime );
       box->show();
     }
     else if( taskEndReached == false ) {
@@ -489,15 +489,15 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
 	emit taskInfo( tr("Automatic taskpoint switch"), true );
 
-        TPInfoWidget *tpInfo = new TPInfoWidget( _globalCumulusApp );
+        TPInfoWidget *tpInfo = new TPInfoWidget( _globalMainWindow );
         tpInfo->prepareSwitchText( lastWp->taskPointIndex, dist2Next.getKilometers() );
 
         // switch back to map view on close of tp info widget
         connect( tpInfo, SIGNAL( close() ),
-                 _globalCumulusApp, SLOT( slotSwitchToMapView() ) );
+                 _globalMainWindow, SLOT( slotSwitchToMapView() ) );
 
         // switch off all set accelerators
-        _globalCumulusApp->setView( CumulusApp::tpSwitchView );
+        _globalMainWindow->setView( MainWindow::tpSwitchView );
         tpInfo->showTP();
       }
     }
@@ -1251,7 +1251,7 @@ void Calculator::determineFlightStatus()
 
 
 /** Called if the status of the GPS changes. */
-void Calculator::slot_GpsStatus(GpsNmea::connectedStatus newState)
+void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
 {
   // qDebug("connection status changed...");
   flightmode newFlightMode=unknown;

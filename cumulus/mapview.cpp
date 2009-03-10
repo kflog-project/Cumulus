@@ -29,7 +29,7 @@
 
 #include "mapview.h"
 #include "gpsnmea.h"
-#include "cumulusapp.h"
+#include "mainwindow.h"
 #include "waypointcatalog.h"
 #include "mapmatrix.h"
 #include "wgspoint.h"
@@ -58,7 +58,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
           parent->size().width(),
           parent->size().height() );
 
-  cuApp = (CumulusApp *)parent;
+  cuApp = (MainWindow *)parent;
 
   // Later on the Pretext can change depending on Mode
   GeneralConfig *conf = GeneralConfig::instance();
@@ -102,7 +102,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _waypoint->setValue("-");
   wayLayout->addWidget( _waypoint );
   connect(_waypoint, SIGNAL(mousePress()),
-          (CumulusApp*)parent, SLOT(slotSwitchToWPListViewExt()));
+          (MainWindow*)parent, SLOT(slotSwitchToWPListViewExt()));
 
   //layout for Glide Path and Relative Bearing
   QBoxLayout *GRLayout = new QHBoxLayout;
@@ -117,7 +117,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   GRLayout->addWidget( _glidepath );
 
   connect(_glidepath, SIGNAL(mousePress()),
-          (CumulusApp*)parent, SLOT(slotSwitchToReachListView()));
+          (MainWindow*)parent, SLOT(slotSwitchToReachListView()));
 
   // add Relative Bearing widget
   QPixmap arrow = _arrows.copy( 24*60+3, 3, 54, 54 );
@@ -128,7 +128,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 //  _rel_bearing->setPixmap( arrow );
 
   connect(_rel_bearing, SIGNAL(mousePress()),
-          (CumulusApp*)parent, SLOT(slotRememberWaypoint()) );
+          (MainWindow*)parent, SLOT(slotRememberWaypoint()) );
 
   //layout for Distance/ETA and Bearing
   QBoxLayout *DEBLayout = new QHBoxLayout;
@@ -287,7 +287,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _menuToggle->setAlignment(Qt::AlignCenter);
   _menuToggle->setMargin(0);
   _statusbar->addWidget(_menuToggle);
-  connect(_menuToggle, SIGNAL(mousePress()), (CumulusApp*)parent, SLOT(slotToggleMenu()));
+  connect(_menuToggle, SIGNAL(mousePress()), (MainWindow*)parent, SLOT(slotToggleMenu()));
 
   _statusGps = new CuLabel(tr("Man"),_statusbar);
 //  _statusGps->setFrameStyle(QFrame::Box|QFrame::Plain);
@@ -545,7 +545,7 @@ void MapView::slot_Position(const QPoint& position, const int source)
 
 
 /** This slot is called if the status of the GPS changes. */
-void MapView::slot_GPSStatus(GpsNmea::connectedStatus status)
+void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
 {
   if(status>GpsNmea::notConnected)
     {

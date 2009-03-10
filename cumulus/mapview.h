@@ -47,7 +47,7 @@
 class MapInfoBox;
 class CuLabel;
 class Map;
-class CumulusApp;
+class MainWindow;
 
 class MapView : public QWidget
   {
@@ -100,7 +100,7 @@ class MapView : public QWidget
      * pointer to the map widget
      */
     Map * _theMap;
-    CumulusApp * cuApp;
+    MainWindow * cuApp;
 
   public slots: // Public slots
     /**
@@ -156,7 +156,7 @@ class MapView : public QWidget
     /**
      * This slot is called if the status of the GPS changes.
      */
-    void slot_GPSStatus(GpsNmea::connectedStatus status);
+    void slot_GPSStatus(GpsNmea::GpsStatus status);
 
     /**
      * This slot is called if the number of satelites changes.

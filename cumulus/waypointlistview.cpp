@@ -23,7 +23,7 @@
 #include "generalconfig.h"
 #include "wpeditdialog.h"
 #include "calculator.h"
-#include "cumulusapp.h"
+#include "mainwindow.h"
 
 WaypointListView::WaypointListView(QMainWindow *parent) : QWidget(parent)
 {
@@ -200,7 +200,7 @@ void WaypointListView::slot_deleteWP()
 
     if (par)
       {
-        ((CumulusApp*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
+        ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
       }
   }
 }
@@ -214,7 +214,7 @@ void WaypointListView::slot_wpEdited(wayPoint& wp)
 
   if (par)
     {
-      ((CumulusApp*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
+      ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
     }
 }
 
@@ -228,7 +228,7 @@ void WaypointListView::slot_wpAdded(wayPoint& wp)
 
   if (par)
     {
-      ((CumulusApp*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
+      ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
     }
 }
 

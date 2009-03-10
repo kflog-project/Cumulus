@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   configdialog.h
+**   configwidget.h
 **
 **   This file is part of Cumulus.
 **
@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef CONFIGDIALOG_H
-#define CONFIGDIALOG_H
+#ifndef _ConfigWidget_h
+#define _ConfigWidget_h
 
 #include <QStringList>
 
@@ -34,14 +34,14 @@
 #include "settingspageterraincolors.h"
 
 /**
-  * @short Configuration dialog
+  * @short Configuration widget of cumulus
   *
-  * This is the general configuration dialog for Cumulus.
+  * This is the general configuration widget for Cumulus.
   *
   * @author André Somers
   *
   */
-class ConfigDialog : public QWidget
+class ConfigWidget : public QWidget
   {
     Q_OBJECT
 
@@ -49,12 +49,12 @@ class ConfigDialog : public QWidget
     /**
      * Constructor
      */
-    ConfigDialog(QWidget *parent=0);
+    ConfigWidget(QWidget *parent=0);
 
     /**
      * Destructor
      */
-    ~ConfigDialog();
+    ~ConfigWidget();
 
   public slots:
     /**
@@ -103,7 +103,7 @@ class ConfigDialog : public QWidget
     void reload();
 
     /**
-     * This signal is emitted when the "dialog" should close. CumulusApp will subsequently
+     * This signal is emitted when the "dialog" should close. MainWindow will subsequently
      * delete it
      */
     void closeConfig();
@@ -130,7 +130,7 @@ class ConfigDialog : public QWidget
     SettingsPageInformation* spi;
     SettingsPageLookNFeel* splnf;
 
-    bool loadConfig; // control loading of config data
+    bool loadConfig; // control loading of configuration data
   };
 
 #endif

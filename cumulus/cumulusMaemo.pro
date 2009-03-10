@@ -19,7 +19,6 @@ HEADERS = airfieldlistview.h \
     basemapelement.h \
     configdialog.h \
     calculator.h \
-    cumulusapp.h \
     degreespinbox.h \
     distance.h \
     elevationcolorimage.h \
@@ -46,6 +45,7 @@ HEADERS = airfieldlistview.h \
     lineelement.h \
     listviewfilter.h \
     maemostyle.h \
+    mainwindow.h \
     mapcalc.h \
     mapconfig.h \
     mapcontents.h \
@@ -60,7 +60,7 @@ HEADERS = airfieldlistview.h \
     openairparser.h \
     polardialog.h \
     polar.h \
-    preflightdialog.h \
+    preflightwidget.h \
     preflightgliderpage.h \
     preflightmiscpage.h \
     projectionbase.h \
@@ -126,9 +126,8 @@ SOURCES = airfieldlistview.cpp \
     altimetermodedialog.cpp \
     altitude.cpp \
     basemapelement.cpp \
-    configdialog.cpp \
+    configwidget.cpp \
     calculator.cpp \
-    cumulusapp.cpp \
     degreespinbox.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
@@ -152,6 +151,7 @@ SOURCES = airfieldlistview.cpp \
     lineelement.cpp \
     listviewfilter.cpp \
     main.cpp \
+    mainwindow.cpp \
     maemostyle.cpp \
     mapcalc.cpp \
     mapconfig.cpp \
@@ -165,7 +165,7 @@ SOURCES = airfieldlistview.cpp \
     openairparser.cpp \
     polar.cpp \
     polardialog.cpp \
-    preflightdialog.cpp \
+    preflightwidget.cpp \
     preflightgliderpage.cpp \
     preflightmiscpage.cpp \
     projectionbase.cpp \

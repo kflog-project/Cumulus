@@ -1,12 +1,12 @@
 /***********************************************************************
  **
- **   configdialog.cpp
+ **   configwidget.cpp
  **
  **   This file is part of Cumulus.
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by Andrè Somers, 2009 Axel Pauli
+ **   Copyright (c):  2002 by André Somers, 2009 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -16,9 +16,9 @@
  ***********************************************************************/
 
 /**
- * This is the configuration dialog of cumulus. Different settings are
+ * This is the configuration widget of cumulus. Different settings are
  * to do here. There are in general not related to the flight
- * preparation. For that it exists a separate dialog.
+ * preparation. For that it exists a separate widget.
  */
 
 #include <QMessageBox>
@@ -26,15 +26,15 @@
 #include <QScrollArea>
 #include <QLabel>
 
-#include "configdialog.h"
+#include "configwidget.h"
 #include "generalconfig.h"
 #include "mapconfig.h"
 
-ConfigDialog::ConfigDialog(QWidget *parent) :
+ConfigWidget::ConfigWidget(QWidget *parent) :
   QWidget(parent), loadConfig(true)
 {
-  // qDebug("ConfigDialog: height=%d, width=%d", parent->height(), parent->width());
-  setObjectName("ConfigDialog");
+  // qDebug("ConfigWidget: height=%d, width=%d", parent->height(), parent->width());
+  setObjectName("ConfigWidget");
   setAttribute( Qt::WA_DeleteOnClose );
   setWindowTitle("General Settings");
 
@@ -179,13 +179,13 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
   tabWidget->setCurrentWidget(spp);
 }
 
-ConfigDialog::~ConfigDialog()
+ConfigWidget::~ConfigWidget()
 {
-  // qDebug("~ConfigDialog() is called");
+  // qDebug("~ConfigWidget() is called");
 }
 
 /** This slot is called if the window will be shown or resized */
-void ConfigDialog::slot_LoadCurrent()
+void ConfigWidget::slot_LoadCurrent()
 {
   // Block multiple loads to avoid reset of changed values in the
   // config tabs.
@@ -205,7 +205,7 @@ void ConfigDialog::slot_LoadCurrent()
 }
 
 /** Called if OK button is pressed */
-void ConfigDialog::accept()
+void ConfigWidget::accept()
 {
   hide();
 
@@ -234,7 +234,7 @@ void ConfigDialog::accept()
 }
 
 /** Called if the Cancel button is pressed */
-void ConfigDialog::reject()
+void ConfigWidget::reject()
 {
   bool need_warning=false;
   QStringList changed_pages;

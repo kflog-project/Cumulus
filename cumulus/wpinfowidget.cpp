@@ -23,7 +23,7 @@
 #include <QRegExp>
 #include <QShortcut>
 
-#include "cumulusapp.h"
+#include "mainwindow.h"
 #include "basemapelement.h"
 #include "airfield.h"
 #include "wpinfowidget.h"
@@ -41,12 +41,12 @@ extern MapConfig    *_globalMapConfig;
 extern MapContents  *_globalMapContents;
 extern Calculator   *calculator;
 
-WPInfoWidget::WPInfoWidget( CumulusApp *parent ) :
+WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
     QWidget(parent)
 {
   setObjectName("WPInfoWidget");
   cuApp = parent;
-  _lastView = CumulusApp::mapView;
+  _lastView = MainWindow::mapView;
   _wp.name = "";
   arrivalInfo = 0;
 
@@ -146,7 +146,7 @@ void WPInfoWidget::slot_timeout()
     }
 }
 
-/** This method is called by CumulusApp to set the view to
+/** This method is called by MainWindow to set the view to
  * which there must be returned and the waypoint to view. */
 bool WPInfoWidget::showWP(int lastView, const wayPoint& wp)
 {
@@ -393,7 +393,7 @@ void WPInfoWidget::writeText()
     }
 }
 
-/** Hide widget and return to the calling view in cumulusApp */
+/** Hide widget and return to the calling view in MainWindow */
 void WPInfoWidget::slot_SwitchBack()
 {
   if( arrivalInfo )
@@ -408,13 +408,13 @@ void WPInfoWidget::slot_SwitchBack()
   text->clearFocus();
   hide();
 
-  if( _lastView == CumulusApp::infoView )
+  if( _lastView == MainWindow::infoView )
     {
       // make sure last view isn't this view
-      _lastView = CumulusApp::mapView;
+      _lastView = MainWindow::mapView;
     }
 
-  cuApp->setView((CumulusApp::appView)_lastView);
+  cuApp->setView((MainWindow::appView)_lastView);
 }
 
 

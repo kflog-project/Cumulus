@@ -205,7 +205,7 @@ void TaskList::slotTaskDetails()
 }
 
 
-// This method is called from PreFlightDialog::accept(), to take out
+// This method is called from PreFlightWidget::accept(), to take out
 // the selected task from the task list. The ownership of the taken
 // FlightTask object goes over the the caller. He has to delete the
 // object!!!

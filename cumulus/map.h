@@ -196,9 +196,6 @@ class Map : public QWidget
     void slotRedraw();
 
     /** */
-    void slotRedrawMap();
-
-    /** */
     void slotCenterToFlight();
 
     /** */
@@ -231,6 +228,10 @@ class Map : public QWidget
 
     /** called to redraw on switch of manual mode */
     void slotSwitchManualInFlight();
+
+  private slots:
+    /** Called by timer expiration. */
+    void slotRedrawMap();
 
   signals:
     /** */

@@ -1,6 +1,6 @@
 /***********************************************************************
  **
- **   preflightdialog.cpp
+ **   preflightwidget.cpp
  **
  **   This file is part of Cumulus.
  **
@@ -22,7 +22,7 @@
 #include <QToolTip>
 #include <QLabel>
 
-#include "preflightdialog.h"
+#include "preflightwidget.h"
 #include "mapcontents.h"
 #include "preflightgliderpage.h"
 #include "preflightmiscpage.h"
@@ -35,11 +35,11 @@ extern MapContents* _globalMapContents;
  *  left side and the ok and cancel buttons are arranged on the right side.
  */
 
-PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
+PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   QWidget(parent)
 {
-  // qDebug("PreFlightDialog::PreFlightDialog()");
-  setObjectName("PreFlightDialog");
+  // qDebug("PreFlightWidget::PreFlightWidget()");
+  setObjectName("PreFlightWidget");
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle(tr("Preflight settings"));
 
@@ -112,13 +112,13 @@ PreFlightDialog::PreFlightDialog(QWidget* parent, const char* name) :
   setWindowState(windowState() ^ Qt::WindowFullScreen);
 }
 
-PreFlightDialog::~PreFlightDialog()
+PreFlightWidget::~PreFlightWidget()
 {
-  // qDebug("PreFlightDialog::~PreFlightDialog()");
+  // qDebug("PreFlightWidget::~PreFlightWidget()");
 }
 
 void
-PreFlightDialog::slot_accept()
+PreFlightWidget::slot_accept()
 {
   FlightTask *curTask = _globalMapContents->getCurrentTask();
 
@@ -186,9 +186,9 @@ PreFlightDialog::slot_accept()
 }
 
 void
-PreFlightDialog::slot_reject()
+PreFlightWidget::slot_reject()
 {
-  // qDebug("PreFlightDialog::slot_reject()");
+  // qDebug("PreFlightWidget::slot_reject()");
   hide();
   emit
   closeConfig();
@@ -196,7 +196,7 @@ PreFlightDialog::slot_reject()
 }
 
 void
-PreFlightDialog::slot_keyRight()
+PreFlightWidget::slot_keyRight()
 {
   if (tabWidget->currentWidget() == gliderpage)
     {
@@ -213,7 +213,7 @@ PreFlightDialog::slot_keyRight()
 }
 
 void
-PreFlightDialog::slot_keyLeft()
+PreFlightWidget::slot_keyLeft()
 {
   if (tabWidget->currentWidget() == miscpage)
     {

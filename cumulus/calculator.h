@@ -446,7 +446,7 @@ public slots: // Public slots
     /**
      * Called if the status of the GPS changes.
      */
-    void slot_GpsStatus(GpsNmea::connectedStatus);
+    void slot_GpsStatus(GpsNmea::GpsStatus);
     /**
      * Write property of Glider glider.
      */

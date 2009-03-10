@@ -28,7 +28,7 @@
 #include "waypoint.h"
 #include "rowdelegate.h"
 
-class CumulusApp;
+class MainWindow;
 
 /**
  * This widget provides a list of reachable waypoints and a means to
@@ -43,7 +43,7 @@ class ReachpointListView : public QWidget
 
 public:
 
-    ReachpointListView(CumulusApp *parent=0);
+    ReachpointListView(MainWindow *parent=0);
     ~ReachpointListView();
 
     /** Returns a pointer to the currently highlighted waypoint. */
@@ -118,7 +118,7 @@ signals: // Signals
 private:
 
     QTreeWidget* list;
-    CumulusApp * par;
+    MainWindow * par;
     RowDelegate* rowDelegate;
     QBoxLayout * buttonrow;
     wayPoint    selectedWp;

@@ -31,7 +31,7 @@
 #include <QMessageBox>
 #include <QTranslator>
 
-#include "cumulusapp.h"
+#include "mainwindow.h"
 #include "generalconfig.h"
 #include "messagehandler.h"
 
@@ -157,12 +157,12 @@ int main(int argc, char *argv[])
     }
 
   // creates the cumulus application
-  CumulusApp *cumulus = new CumulusApp( Qt::WindowContextHelpButtonHint );
+  MainWindow *cumulus = new MainWindow( Qt::WindowContextHelpButtonHint );
 
   // start window manager event processing loop
   int result = QApplication::exec();
 
-  // remove first CumulusApp because class objects inside can call GeneralConfig
+  // remove first MainWindow because class objects inside can call GeneralConfig
   delete cumulus;
 
   // remove GeneralConfig, it is created during first call to it

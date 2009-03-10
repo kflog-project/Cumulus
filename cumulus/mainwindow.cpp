@@ -1,5 +1,5 @@
 /***************************************************************************
- cumulusapp.cpp  -  main application class
+ mainwindow.cpp  -  main application class
  -----------------------------------------
  begin                : Sun Jul 21 2002
  copyright            : (C) 2002 by André Somers
@@ -48,16 +48,16 @@
 #endif
 
 #include "generalconfig.h"
-#include "cumulusapp.h"
+#include "mainwindow.h"
 #include "mapconfig.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"
 #include "calculator.h"
 #include "igclogger.h"
 #include "windanalyser.h"
-#include "configdialog.h"
+#include "configwidget.h"
 #include "wpeditdialog.h"
-#include "preflightdialog.h"
+#include "preflightwidget.h"
 #include "wgspoint.h"
 #include "waypoint.h"
 #include "target.h"
@@ -78,7 +78,7 @@ static osso_context_t *ossoContext = static_cast<osso_context_t *> (0);
 /**
  * Global available instance of this class
  */
-CumulusApp *_globalCumulusApp = static_cast<CumulusApp *> (0);
+MainWindow *_globalMainWindow = static_cast<MainWindow *> (0);
 
 /**
  * Global available instance of logger class
@@ -120,10 +120,10 @@ static void resumeGpsConnection( int sig )
     }
 }
 
-CumulusApp::CumulusApp( Qt::WindowFlags flags ) :
+MainWindow::MainWindow( Qt::WindowFlags flags ) :
   QMainWindow( 0, flags )
 {
-  _globalCumulusApp = this;
+  _globalMainWindow = this;
   menuBarVisible = false;
   listViewTabs = 0;
   configView = 0;
@@ -290,15 +290,15 @@ CumulusApp::CumulusApp( Qt::WindowFlags flags ) :
   // of some widgets is undefined.
 
   // when the timer expires the cumulus startup is continued
-  QTimer::singleShot(250, this, SLOT(slotCreateApplicationWidgets()));
+  QTimer::singleShot(300, this, SLOT(slotCreateApplicationWidgets()));
  }
 
 /** creates the application widgets after the base initialization
  *  of the core application window.
 */
-void CumulusApp::slotCreateApplicationWidgets()
+void MainWindow::slotCreateApplicationWidgets()
 {
-  // qDebug( "CumulusApp::slotCreateApplicationWidgets()" );
+  // qDebug( "MainWindow::slotCreateApplicationWidgets()" );
 
 #ifdef MAEMO
 
@@ -338,8 +338,6 @@ void CumulusApp::slotCreateApplicationWidgets()
 
   ws->slot_SetText1( tr( "Creating views..." ) );
 
-  view = mapView;
-
   qDebug( "Main window size is %dx%d, width=%d, height=%d",
           size().width(),
           size().height(),
@@ -348,10 +346,10 @@ void CumulusApp::slotCreateApplicationWidgets()
 
   // This is the main widget of cumulus
   viewMap = new MapView( this );
-  _globalMapView = viewMap;
+  viewMap->hide();
 
-  // set it as central widget
-  setCentralWidget( viewMap );
+  _globalMapView = viewMap;
+  view = mapView;
 
 #ifndef MAEMO
   QFont fnt( "Helvetica", 14 );
@@ -411,12 +409,12 @@ void CumulusApp::slotCreateApplicationWidgets()
            calculator, SLOT( slot_GpsVariometer(const Speed&) ) );
   connect( GpsNmea::gps, SIGNAL( newWind(const Speed&, const short) ),
            calculator, SLOT( slot_GpsWind(const Speed&, const short) ) );
-  connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::connectedStatus ) ),
-           viewMap, SLOT( slot_GPSStatus( GpsNmea::connectedStatus ) ) );
+  connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
+           viewMap, SLOT( slot_GPSStatus( GpsNmea::GpsStatus ) ) );
   connect( GpsNmea::gps, SIGNAL( newSatConstellation() ),
            viewMap, SLOT( slot_SatConstellation() ) );
-  connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::connectedStatus ) ),
-           this, SLOT( slotGpsStatus( GpsNmea::connectedStatus ) ) );
+  connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
+           this, SLOT( slotGpsStatus( GpsNmea::GpsStatus ) ) );
   connect( GpsNmea::gps, SIGNAL( newSatConstellation() ),
            logger, SLOT( slotConstellation() ) );
   connect( GpsNmea::gps, SIGNAL( newSatConstellation() ),
@@ -431,8 +429,8 @@ void CumulusApp::slotCreateApplicationWidgets()
            calculator, SLOT( slot_Heading() ) );
   connect( GpsNmea::gps, SIGNAL( newFix() ),
            calculator, SLOT( slot_newFix() ) );
-  connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::connectedStatus ) ),
-           calculator, SLOT( slot_GpsStatus( GpsNmea::connectedStatus ) ) );
+  connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
+           calculator, SLOT( slot_GpsStatus( GpsNmea::GpsStatus ) ) );
 
   connect( viewWP, SIGNAL( newWaypoint( wayPoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
@@ -560,18 +558,16 @@ void CumulusApp::slotCreateApplicationWidgets()
     }
 
   viewMap->_theMap->setDrawing( true );
+  viewMap->_theMap->resize( 584, 460 );
 
   // @AP: That's a trick here! We call show to get the
   // Map widget inside the MapView widget resized. The Splash
   // will not disappear because the Qt/X11 EventLoop is
   // inactive until return of this method.
-  viewMap->show();
-  viewMap->hide();
-  splash->show();
-  ws->show();
 
   // This actions initiates the map loading procedures
   viewMap->_theMap->slotDraw();
+  viewMap->_theMap->setDrawing( false );
 
   calculator->newSites();  // New sites have been loaded in map draw
   // this call is responsible for setting correct AGL/STD for manual mode,
@@ -622,11 +618,11 @@ void CumulusApp::slotCreateApplicationWidgets()
   // map view was loaded, we hide it again, to prevent showing during event
   // processing. That should show the splash as background and the wait screen
   // in foreground.
+  splash->show();
   ws->slot_SetText1( tr( "Initializing GPS" ) );
   ws->show();
 
-  QCoreApplication::processEvents();
-  QCoreApplication::sendPostedEvents();
+  // QCoreApplication::processEvents();
 
   // Startup GPS client process now for data receiving
   GpsNmea::gps->blockSignals( false );
@@ -638,15 +634,20 @@ void CumulusApp::slotCreateApplicationWidgets()
   // closes and removes the splash screen
   splash->close();
 
+  viewMap->_theMap->setDrawing( true );
+
+  // set viewMap as central widget
+  setCentralWidget( viewMap );
+
   // show map view as the central widget
   setView( mapView );
 
   qDebug( "End startup CmulusApp" );
 }
 
-CumulusApp::~CumulusApp()
+MainWindow::~MainWindow()
 {
-  // qDebug ("CumulusApp::~CumulusApp()");
+  // qDebug ("MainWindow::~MainWindow()");
 
 #warning Question: Should we save the main window size on exit?
   // @AP: we do that later
@@ -672,7 +673,7 @@ CumulusApp::~CumulusApp()
 /** As the name tells ...
   *
   */
-void CumulusApp::playSound( const char *name )
+void MainWindow::playSound( const char *name )
 {
   if ( ! GeneralConfig::instance()->getAlarmSoundOn() )
     {
@@ -706,7 +707,7 @@ void CumulusApp::playSound( const char *name )
   player->start( QThread::HighestPriority );
 }
 
-void CumulusApp::slotNotification( const QString& msg, const bool sound )
+void MainWindow::slotNotification( const QString& msg, const bool sound )
 {
   if ( sound )
     {
@@ -716,7 +717,7 @@ void CumulusApp::slotNotification( const QString& msg, const bool sound )
   viewMap->slot_warning( msg );
 }
 
-void CumulusApp::slotAlarm( const QString& msg, const bool sound )
+void MainWindow::slotAlarm( const QString& msg, const bool sound )
 {
   if ( msg.isEmpty() )
     {
@@ -731,7 +732,7 @@ void CumulusApp::slotAlarm( const QString& msg, const bool sound )
   viewMap->slot_warning( msg );
 }
 
-void CumulusApp::initMenuBar()
+void MainWindow::initMenuBar()
 {
   fileMenu = menuBar()->addMenu(tr("&File"));
   fileMenu->addAction( actionFileQuit );
@@ -778,7 +779,7 @@ void CumulusApp::initMenuBar()
 }
 
 /** set menubar font size to a reasonable and useable value */
-void CumulusApp::slotSetMenuBarFontSize()
+void MainWindow::slotSetMenuBarFontSize()
 {
   if( font().pointSize() < 15 )
     {
@@ -797,7 +798,7 @@ void CumulusApp::slotSetMenuBarFontSize()
 }
 
 /** initializes all QActions of the application */
-void CumulusApp::initActions()
+void MainWindow::initActions()
 {
   ws->slot_SetText1( tr( "Setting up key shortcuts ..." ) );
 
@@ -1060,7 +1061,7 @@ void CumulusApp::initActions()
  * Toggle on/off all actions which have key shortcuts defined.
  */
 
-void  CumulusApp::toggleActions( const bool toggle )
+void  MainWindow::toggleActions( const bool toggle )
 {
   actionViewWaypoints->setEnabled( toggle );
   actionViewAirfields->setEnabled( toggle );
@@ -1109,7 +1110,7 @@ void  CumulusApp::toggleActions( const bool toggle )
 /**
  * Toggle actions depending on GPS connection.
  */
-void CumulusApp::toggleManualNavActions( const bool toggle )
+void MainWindow::toggleManualNavActions( const bool toggle )
 {
   actionManualNavUp->setEnabled( toggle );
   actionManualNavRight->setEnabled( toggle );
@@ -1120,7 +1121,7 @@ void CumulusApp::toggleManualNavActions( const bool toggle )
   actionManualNavWPList->setEnabled( toggle );
 }
 
-void CumulusApp::toggleGpsNavActions( const bool toggle )
+void MainWindow::toggleGpsNavActions( const bool toggle )
 {
   actionGpsNavUp->setEnabled( toggle );
   actionGpsNavDown->setEnabled( toggle );
@@ -1130,7 +1131,7 @@ void CumulusApp::toggleGpsNavActions( const bool toggle )
   actionGpsNavZoomOut->setEnabled( toggle );
 }
 
-void CumulusApp::slotFileQuit()
+void MainWindow::slotFileQuit()
 {
   close();
 }
@@ -1138,7 +1139,7 @@ void CumulusApp::slotFileQuit()
 /**
  * Make sure the user really wants to quit
  */
-void CumulusApp::closeEvent( QCloseEvent* evt )
+void MainWindow::closeEvent( QCloseEvent* evt )
 {
   // @AP: All close events will be ignored, if we are not in the map
   // view to avoid any possibility of confusion with the two close
@@ -1178,7 +1179,7 @@ void CumulusApp::closeEvent( QCloseEvent* evt )
 }
 
 
-void CumulusApp::slotToggleMenu()
+void MainWindow::slotToggleMenu()
 {
   if ( !menuBar()->isVisible() )
     {
@@ -1193,7 +1194,7 @@ void CumulusApp::slotToggleMenu()
 }
 
 
-void CumulusApp::slotToggleWpLabels( bool toggle )
+void MainWindow::slotToggleWpLabels( bool toggle )
 {
   // save configuration change
   GeneralConfig::instance()->setMapShowWaypointLabels( toggle );
@@ -1202,7 +1203,7 @@ void CumulusApp::slotToggleWpLabels( bool toggle )
 }
 
 
-void CumulusApp::slotToggleWpLabelsExtraInfo( bool toggle )
+void MainWindow::slotToggleWpLabelsExtraInfo( bool toggle )
 {
   // save configuration change
   GeneralConfig::instance()->setMapShowWaypointLabelsExtraInfo( toggle );
@@ -1211,7 +1212,7 @@ void CumulusApp::slotToggleWpLabelsExtraInfo( bool toggle )
 }
 
 
-void CumulusApp::slotViewStatusBar( bool toggle )
+void MainWindow::slotViewStatusBar( bool toggle )
 {
   if ( toggle )
     viewMap->statusBar()->show();
@@ -1221,7 +1222,7 @@ void CumulusApp::slotViewStatusBar( bool toggle )
 
 
 /** Called if the logging is actually toggled */
-void CumulusApp::slot_Logging ( bool logging )
+void MainWindow::slot_Logging ( bool logging )
 {
   actionToggleLogging->blockSignals( true );
   actionToggleLogging->setChecked( logging );
@@ -1231,16 +1232,16 @@ void CumulusApp::slot_Logging ( bool logging )
 
 
 /** Read property of enum view. */
-const CumulusApp::appView CumulusApp::getView()
+const MainWindow::appView MainWindow::getView()
 {
   return view;
 }
 
 
 /** Called if the user clicks on a tabulator of the list view */
-void CumulusApp::slot_tabChanged( int index )
+void MainWindow::slot_tabChanged( int index )
 {
-  // qDebug("CumulusApp::slot_tabChanged(): NewIndex=%d", index );
+  // qDebug("MainWindow::slot_tabChanged(): NewIndex=%d", index );
 
   //switch to the correct view
   if ( index == listViewTabs->indexOf(viewWP) )
@@ -1261,22 +1262,22 @@ void CumulusApp::slot_tabChanged( int index )
     }
   else
     {
-      qWarning("CumulusApp::slot_tabChanged(): Cannot switch to index %d", index );
+      qWarning("MainWindow::slot_tabChanged(): Cannot switch to index %d", index );
     }
 }
 
 
 /** Write property of internal view. */
-void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
+void MainWindow::setView( const appView& newVal, const wayPoint* wp )
 {
-  // qDebug("CumulusApp::setView called with argument %d", newVal);
+  // qDebug("MainWindow::setView called with argument %d", newVal);
 
   switch ( newVal )
     {
 
     case mapView:
 
-      // @AP: set focus to cumulus widget, otherwise F-Key events will
+      // @AP: set focus to MainWindow widget, otherwise F-Key events will
       // not routed to it
       setFocus();
 
@@ -1302,8 +1303,12 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       viewInfo->hide();
       viewMap->show();
 
-      toggleManualNavActions( !GpsNmea::gps->getConnected() || calculator->isManualInFlight());
-      toggleGpsNavActions( GpsNmea::gps->getConnected() && !calculator->isManualInFlight() );
+      toggleManualNavActions( GpsNmea::gps->getGpsStatus() != GpsNmea::validFix ||
+                              calculator->isManualInFlight() );
+
+      toggleGpsNavActions( GpsNmea::gps->getGpsStatus() == GpsNmea::validFix &&
+                           !calculator->isManualInFlight() );
+
       actionMenuBarToggle->setEnabled( true );
 
       // Switch on all action shortcuts in this view
@@ -1311,12 +1316,10 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
       viewMap->statusBar()->clearMessage(); // remove temporary status bar messages
 
       // If we returned to the map view, we should schedule a redraw of the
-      // airspaces. Map is not drawn, when invisible and airspace filling
-      // can be outdated in the meantime.
-      if( GpsNmea::gps->getConnected() )
-        {
-          viewMap->_theMap->scheduleRedraw( Map::aeroLayer );
-        }
+      // air spaces and the navigation layer. Map is not drawn, when invisible
+      // and airspace filling, edited waypoints or tasks can be outdated in the
+      // meantime.
+      viewMap->_theMap->scheduleRedraw( Map::aeroLayer );
 
       break;
 
@@ -1438,7 +1441,7 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
     default:
       // @AP: Should normally not happen but Vorsicht ist die Mutter
       // der Porzellankiste ;-)
-      qWarning( "CumulusApp::setView(): unknown view %d to be set", newVal );
+      qWarning( "MainWindow::setView(): unknown view %d to be set", newVal );
       return;
     }
 
@@ -1449,7 +1452,7 @@ void CumulusApp::setView( const appView& newVal, const wayPoint* wp )
 /**
  * Set nearest or reachable headers.
  */
-void CumulusApp::setNearestOrReachableHeders()
+void MainWindow::setNearestOrReachableHeders()
 {
   // Set the tabulator header according to calculation result.
   // If a glider is known, reachables by L/D are shown
@@ -1470,14 +1473,14 @@ void CumulusApp::setNearestOrReachableHeders()
 }
 
 /** Switches to mapview. */
-void CumulusApp::slotSwitchToMapView()
+void MainWindow::slotSwitchToMapView()
 {
   setView( mapView );
 }
 
 
 /** Switches to the WaypointList View */
-void CumulusApp::slotSwitchToWPListView()
+void MainWindow::slotSwitchToWPListView()
 {
   setView( wpView );
 }
@@ -1486,7 +1489,7 @@ void CumulusApp::slotSwitchToWPListView()
 /** Switches to the WaypointList View if there is
  * no task, and to the task list if there is .
  */
-void CumulusApp::slotSwitchToWPListViewExt()
+void MainWindow::slotSwitchToWPListViewExt()
 {
   if ( _globalMapContents->getCurrentTask() )
     {
@@ -1500,30 +1503,30 @@ void CumulusApp::slotSwitchToWPListViewExt()
 
 
 /** Switches to the AirfieldList View */
-void CumulusApp::slotSwitchToAFListView()
+void MainWindow::slotSwitchToAFListView()
 {
   setView( afView );
 }
 
 
 /** Switches to the ReachablePointList View */
-void CumulusApp::slotSwitchToReachListView()
+void MainWindow::slotSwitchToReachListView()
 {
   setView( rpView );
 }
 
 
 /** Switches to the WaypointList View */
-void CumulusApp::slotSwitchToTaskListView()
+void MainWindow::slotSwitchToTaskListView()
 {
   setView( tpView );
 }
 
 
 /** This slot is called to switch to the info view. */
-void CumulusApp::slotSwitchToInfoView()
+void MainWindow::slotSwitchToInfoView()
 {
-//  qDebug("CumulusApp::slotSwitchToInfoView()");
+//  qDebug("MainWindow::slotSwitchToInfoView()");
   if ( view == wpView )
     {
       setView( infoView, viewWP->getSelectedWaypoint() );
@@ -1548,7 +1551,7 @@ void CumulusApp::slotSwitchToInfoView()
 
 
 /** @ee This slot is called to switch to the info view with selected waypoint. */
-void CumulusApp::slotSwitchToInfoView( wayPoint* wp )
+void MainWindow::slotSwitchToInfoView( wayPoint* wp )
 {
   if( wp )
     {
@@ -1558,10 +1561,10 @@ void CumulusApp::slotSwitchToInfoView( wayPoint* wp )
 
 
 /** Opens the configuration widget */
-void CumulusApp::slotConfig()
+void MainWindow::slotConfig()
 {
   setWindowTitle( "Cumulus Settings" );
-  ConfigDialog *cDlg = new ConfigDialog( this );
+  ConfigWidget *cDlg = new ConfigWidget( this );
   cDlg->resize( size() );
   configView = static_cast<QWidget *> (cDlg);
 
@@ -1579,7 +1582,7 @@ void CumulusApp::slotConfig()
 
 
 /** Closes the configuration or pre-flight widget */
-void CumulusApp::slotCloseConfig()
+void MainWindow::slotCloseConfig()
 {
   setView( mapView );
 //  qDebug("* closing configView:  %s", calculator->gliderType().toLatin1().data() );
@@ -1590,7 +1593,7 @@ void CumulusApp::slotCloseConfig()
 }
 
 /** Shows version and copyright information */
-void CumulusApp::slotVersion()
+void MainWindow::slotVersion()
 {
   QMessageBox::about ( this,
                        "Cumulus",
@@ -1611,7 +1614,7 @@ void CumulusApp::slotVersion()
 
 
 /** opens help documentation in browser. */
-void CumulusApp::slotHelp()
+void MainWindow::slotHelp()
 {
   HelpBrowser *hb = new HelpBrowser(this);
   hb->setAttribute(Qt::WA_DeleteOnClose);
@@ -1619,7 +1622,7 @@ void CumulusApp::slotHelp()
   hb->show();
 }
 
-void CumulusApp::slotRememberWaypoint()
+void MainWindow::slotRememberWaypoint()
 {
   static uint count = 1;
   QString name;
@@ -1668,7 +1671,7 @@ void CumulusApp::slotRememberWaypoint()
 
 /** This slot is called if the configuration has been changed and at the
     start of the program to read the initial configuration. */
-void CumulusApp::slotReadconfig()
+void MainWindow::slotReadconfig()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -1745,7 +1748,7 @@ void CumulusApp::slotReadconfig()
 
 
 /** Called if the status of the GPS changes, and controls the availability of manual navigation. */
-void CumulusApp::slotGpsStatus( GpsNmea::connectedStatus status )
+void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )
 {
   switch ( status )
     {
@@ -1776,7 +1779,7 @@ void CumulusApp::slotGpsStatus( GpsNmea::connectedStatus status )
 
 /** This slot is called if the user presses C in manual navigation mode. It centers
   * the map on the current waypoint. */
-void CumulusApp::slotCenterToWaypoint()
+void MainWindow::slotCenterToWaypoint()
 {
 
   if ( calculator->getselectedWp() )
@@ -1791,7 +1794,7 @@ void CumulusApp::slotCenterToWaypoint()
 /** Called if the user pressed V in mapview.
   * Adjusts the zoomfactor so that the currently selected waypoint
   * is displayed as good as possible. */
-void CumulusApp::slotEnsureVisible()
+void MainWindow::slotEnsureVisible()
 {
   if ( calculator->getselectedWp() )
     {
@@ -1809,24 +1812,24 @@ void CumulusApp::slotEnsureVisible()
 
 
 /** Opens the preflight dialog and brings the selected tabulator in foreground */
-void CumulusApp::slotPreFlightGlider()
+void MainWindow::slotPreFlightGlider()
 {
   slotPreFlight("gliderselection");
 }
 
 
 /** Opens the preflight dialog and brings the selected tabulator in foreground */
-void CumulusApp::slotPreFlightTask()
+void MainWindow::slotPreFlightTask()
 {
   slotPreFlight("taskselection");
 }
 
 
 /** Opens the pre-flight widget and brings the selected tabulator to the front */
-void CumulusApp::slotPreFlight(const char *tabName)
+void MainWindow::slotPreFlight(const char *tabName)
 {
   setWindowTitle( "Pre-Flight Settings" );
-  PreFlightDialog* cDlg = new PreFlightDialog( this, tabName );
+  PreFlightWidget* cDlg = new PreFlightWidget( this, tabName );
   cDlg->setObjectName("PreFlightDialog");
   cDlg->resize( size() );
   configView = static_cast<QWidget *> (cDlg);
@@ -1846,7 +1849,7 @@ void CumulusApp::slotPreFlight(const char *tabName)
 }
 
 
-void CumulusApp::slotPreFlightDataChanged()
+void MainWindow::slotPreFlightDataChanged()
 {
   if ( _globalMapContents->getCurrentTask() == 0 )
     {
@@ -1878,16 +1881,16 @@ void CumulusApp::slotPreFlightDataChanged()
 }
 
 /** Dynamically updates view for reachable list */
-void CumulusApp::slotNewReachList()
+void MainWindow::slotNewReachList()
 {
   viewRP->slot_newList(); //let the view know we have a new list
   viewMap->_theMap->scheduleRedraw(Map::waypoints);
 }
 
 
-bool CumulusApp::eventFilter( QObject *o , QEvent *e )
+bool MainWindow::eventFilter( QObject *o , QEvent *e )
 {
-  // qDebug("CumulusApp::eventFilter() is called with event type %d", e->type());
+  // qDebug("MainWindow::eventFilter() is called with event type %d", e->type());
 
   if ( e->type() == QEvent::KeyPress )
     {
@@ -1907,12 +1910,12 @@ bool CumulusApp::eventFilter( QObject *o , QEvent *e )
 }
 
 
-void CumulusApp::slotNavigateHome()
+void MainWindow::slotNavigateHome()
 {
   calculator->slot_WaypointChange( GeneralConfig::instance()->getHomeWp(), true );
 }
 
-void CumulusApp::slotToggleManualInFlight(bool on)
+void MainWindow::slotToggleManualInFlight(bool on)
 {
   // if we have lost the GPS fix, actionToggleManualInFlight is disabled from calculator
   // so we only can switch off if GPS fix available
@@ -1922,7 +1925,7 @@ void CumulusApp::slotToggleManualInFlight(bool on)
 }
 
 /** Used to allow or disable user keys processing during map drawing. */
-void CumulusApp::slotMapDrawEvent( bool drawEvent )
+void MainWindow::slotMapDrawEvent( bool drawEvent )
 {
    if( drawEvent )
      {
@@ -1949,9 +1952,9 @@ void CumulusApp::slotMapDrawEvent( bool drawEvent )
 }
 
 // resize the list view tabs, if requested
-void CumulusApp::resizeEvent(QResizeEvent* event)
+void MainWindow::resizeEvent(QResizeEvent* event)
 {
-  qDebug("CumulusApp::resizeEvent(): w=%d, h=%d", event->size().width(), event->size().height() );
+  qDebug("MainWindow::resizeEvent(): w=%d, h=%d", event->size().width(), event->size().height() );
   // resize list view tabs, if current widget was modified
 
   if( listViewTabs )
@@ -1968,7 +1971,7 @@ void CumulusApp::resizeEvent(QResizeEvent* event)
 #ifdef MAEMO
 
 /** Called to prevent the switch off of the screen display */
-void CumulusApp::slotOssoDisplayTrigger()
+void MainWindow::slotOssoDisplayTrigger()
 {
   // If the speed is greater or equal 10 km/h and we have a connected
   // gps we switch off the screen saver. Otherwise we let all as it

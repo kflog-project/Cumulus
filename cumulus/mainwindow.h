@@ -1,5 +1,5 @@
 /***************************************************************************
-                          cumulusapp.h  -  main application object
+                          mainwindow.h  -  main application object
                              -------------------
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002 by André Somers
@@ -22,8 +22,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef CUMULUSAPP_H
-#define CUMULUSAPP_H
+#ifndef _MainWindow_h
+#define _MainWindow_h
 
 #include <QApplication>
 #include <QMainWindow>
@@ -37,7 +37,6 @@
 #include <QShortcut>
 #include <QPointer>
 
-#include "configdialog.h"
 #include "mapview.h"
 #include "waypointlistview.h"
 #include "airfieldlistview.h"
@@ -45,17 +44,16 @@
 #include "tasklistview.h"
 #include "wpinfowidget.h"
 #include "gpsnmea.h"
-#include "preflightdialog.h"
 #include "mapinfobox.h"
 #include "waitscreen.h"
 #include "splash.h"
 
 /**
- * @short This class provides the main application for Cumulus.
+ * @short This class provides the main window of Cumulus.
  * @author André Somers
  */
 
-class CumulusApp : public QMainWindow
+class MainWindow : public QMainWindow
   {
     Q_OBJECT
 
@@ -74,12 +72,12 @@ class CumulusApp : public QMainWindow
     /**
      * Constructor
      */
-    CumulusApp( Qt::WindowFlags flags = 0 );
+    MainWindow( Qt::WindowFlags flags = 0 );
 
     /**
      * Destructor
      */
-    virtual ~CumulusApp();
+    virtual ~MainWindow();
 
     /**
      * Sets the view type
@@ -156,7 +154,7 @@ class CumulusApp : public QMainWindow
     /** This slot is called if the configuration has changed and at the start of the program to read the initial configuration. */
     void slotReadconfig();
     /** Called if the status of the GPS changes, and controls the availability of manual navigation. */
-    void slotGpsStatus(GpsNmea::connectedStatus status);
+    void slotGpsStatus(GpsNmea::GpsStatus status);
     /** Opens the pre flight dialog */
     void slotPreFlightGlider();
     void slotPreFlightTask();

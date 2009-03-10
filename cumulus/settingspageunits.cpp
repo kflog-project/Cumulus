@@ -151,7 +151,7 @@ void SettingsPageUnits::slot_load()
   UnitPosition->setCurrentIndex(searchItem(positions, conf->getUnitPos(), UnitPosition->count()));
 
   //set the static units for distances, speeds and altitudes. A signal that these (may) have
-  //changed is emitted by the container, ConfigDialog
+  //changed is emitted by the container, ConfigWidget
   Distance::setUnit(Distance::distanceUnit(distances[UnitDistance->currentIndex()]));
   Speed::setHorizontalUnit(Speed::speedUnit(speeds[UnitSpeed->currentIndex()]));
   Speed::setVerticalUnit(Speed::speedUnit(varios[UnitVario->currentIndex()]));
@@ -173,7 +173,7 @@ void SettingsPageUnits::slot_save()
   conf->setUnitPos( positions[UnitPosition->currentIndex()] );
 
   //set the static units for distances, speeds and altitudes. A signal that these (may) have
-  //changed is emitted by the container, ConfigDialog
+  //changed is emitted by the container, ConfigWidget
   Distance::setUnit(Distance::distanceUnit(distances[UnitDistance->currentIndex()]));
   Speed::setHorizontalUnit(Speed::speedUnit(speeds[UnitSpeed->currentIndex()]));
   Speed::setVerticalUnit(Speed::speedUnit(varios[UnitVario->currentIndex()]));

@@ -335,7 +335,7 @@ void IgcLogger::slotToggleLogging()
                                QMessageBox::Ok);
     }
   }
-  // emit the logging state in all cases to allow update of actions in cumulusapp
+  // emit the logging state in all cases to allow update of actions in MainWindow
   emit logging(getisLogging());
 }
 

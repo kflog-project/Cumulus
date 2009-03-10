@@ -8,6 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 modified by Axel Pauli, Josua Dietze
+ **                   2009 modified by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -20,18 +21,18 @@
 #include <stdlib.h>
 #include <cmath>
 
+#include <QCoreApplication>
 #include <QDesktopWidget>
 #include <QPainter>
 #include <QPen>
 #include <QWhatsThis>
-#include <QDesktopWidget>
 #include <QLabel>
 #include <QPolygon>
 
 #include "airfield.h"
 #include "airspace.h"
 #include "calculator.h"
-#include "cumulusapp.h"
+#include "mainwindow.h"
 #include "distance.h"
 #include "generalconfig.h"
 #include "hwinfo.h"
@@ -51,7 +52,7 @@
 #include "waypoint.h"
 #include "wpeditdialog.h"
 
-extern CumulusApp      *_globalCumulusApp;
+extern MainWindow      *_globalMainWindow;
 extern MapContents     *_globalMapContents;
 extern MapMatrix       *_globalMapMatrix;
 extern MapConfig       *_globalMapConfig;
@@ -834,7 +835,6 @@ void Map::__redrawMap(mapLayer fromLayer)
 
   if( ! _isEnable )
     {
-      qDebug("Map::__redrawMap() disabled");
       // @AP: we reset also the redraw request flag.
       _isRedrawEvent = false;
       return;
@@ -845,11 +845,12 @@ void Map::__redrawMap(mapLayer fromLayer)
       // @AP: we queue only the redraw request, timer will be started
       // again by __redrawMap() method.
       _isRedrawEvent = true;
+
+      // schedule requested layer
+      m_scheduledFromLayer = qMin(m_scheduledFromLayer, fromLayer);
+
       // qDebug("Map::__redrawMap(): mutex is locked, returning");
       return;
-      //TODO make a bit smarter. We only need to schedule a redraw if
-      //the layer is beneath the one we are currently redrawing, and
-      //then only to the level requested.
     }
 
   // set mutex to block recursive entries and unwanted data
@@ -899,11 +900,20 @@ void Map::__redrawMap(mapLayer fromLayer)
     }
 
   if (fromLayer < navigationLayer)
-    __drawAeroLayer(fromLayer < aeroLayer);
+    {
+      __drawAeroLayer(fromLayer < aeroLayer);
+      QCoreApplication::processEvents( QEventLoop::AllEvents, 500 );
+    }
+
   if (fromLayer < informationLayer)
-    __drawNavigationLayer();
+    {
+      __drawNavigationLayer();
+    }
+
   if (fromLayer < topLayer)
-    __drawInformationLayer();
+    {
+      __drawInformationLayer();
+    }
 
   // copy the new map content into the paint buffer
   m_pixPaintBuffer = m_pixInformationMap;
@@ -936,7 +946,7 @@ void Map::__redrawMap(mapLayer fromLayer)
     {
       qDebug("Map::__redrawMap(): queued redraw event found, schedule Redraw");
       _isRedrawEvent = false;
-      scheduleRedraw();
+      scheduleRedraw( m_scheduledFromLayer );
     }
 
   // @AP: check, if a pending resize event exists. In this case the
@@ -967,7 +977,9 @@ void Map::__drawBaseLayer()
   // make sure we have all the map files we need loaded
   _globalMapContents->proofeSection();
 
-  qDebug("Map::__drawBaseLayer(): zoomFactor=%f", zoomFactor );
+  QCoreApplication::processEvents( QEventLoop::AllEvents, 1000 );
+
+  // qDebug("Map::__drawBaseLayer(): zoomFactor=%f", zoomFactor );
 
   double cs = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
@@ -978,6 +990,8 @@ void Map::__drawBaseLayer()
 
   // first, draw the iso lines
   _globalMapContents->drawIsoList(&baseMapP);
+
+  QCoreApplication::processEvents( QEventLoop::AllEvents, 1000 );
 
   // next, draw the topographical elements and the cities
   _globalMapContents->drawList(&baseMapP, MapContents::TopoList);
@@ -1117,9 +1131,7 @@ void Map::slotRedrawMap()
 
   if( mutex() )
     {
-      // @AP: we queue only the redraw request, timer will be
-      // started again by __redrawMap() method.
-      _isRedrawEvent = true;
+      // @AP: we ignore such events to get no infinite loops
       qDebug("Map::slotRedrawMap(): is locked by mutex, returning");
       return;
     }
@@ -1128,8 +1140,14 @@ void Map::slotRedrawMap()
   redrawTimerShort->stop();
   redrawTimerLong->stop();
 
-  __redrawMap(m_scheduledFromLayer);
+  // save requested layer
+  mapLayer drawLayer = m_scheduledFromLayer;
+
+  // reset m_scheduledFromLayer for new requests
   m_scheduledFromLayer = topLayer;
+
+  // do drawing
+  __redrawMap(drawLayer);
 }
 
 
@@ -1886,7 +1904,7 @@ void Map::slotZoomIn()
       return;
     }
 
-  if( _globalMapMatrix->getScale() == _globalMapMatrix->getScale(MapMatrix::LowerLimit) )
+  if( _globalMapMatrix->getScale() <= _globalMapMatrix->getScale(MapMatrix::LowerLimit) )
     {
       // @AP: lower limit reached, ignore event
       return;
@@ -1932,7 +1950,7 @@ void Map::slotZoomOut()
       return;
     }
 
-  if( _globalMapMatrix->getScale() == _globalMapMatrix->getScale(MapMatrix::UpperLimit) )
+  if( _globalMapMatrix->getScale() >= _globalMapMatrix->getScale(MapMatrix::UpperLimit) )
     {
       // @AP: upper limit reached, ignore event
       return;

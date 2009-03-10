@@ -32,13 +32,13 @@
 #include "flighttask.h"
 #include "distance.h"
 #include "generalconfig.h"
-#include "cumulusapp.h"
+#include "mainwindow.h"
 #include "wplistwidgetparent.h"
 #include "airfieldlistwidget.h"
 #include "waypointlistwidget.h"
 
 extern MapContents *_globalMapContents;
-extern CumulusApp  *_globalCumulusApp;
+extern MainWindow  *_globalMainWindow;
 
 TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
                         FlightTask* task ) :

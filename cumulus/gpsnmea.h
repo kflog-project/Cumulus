@@ -81,7 +81,7 @@ class GpsNmea : public QObject
      */
     enum DeliveredAltitude {MSL=0, HAE=1, USER=2, PRESSURE=3};
 
-    enum connectedStatus {notConnected=0, noFix=1, validFix=2};
+    enum GpsStatus {notConnected=0, noFix=1, validFix=2};
 
   public:
 
@@ -93,6 +93,14 @@ class GpsNmea : public QObject
      * @Starts the GPS receiver client process and activates the receiver.
      */
     void startGpsReceiver();
+
+    /**
+     * @Returns the current GPS connection status.
+     */
+    const GpsNmea::GpsStatus getGpsStatus() const
+      {
+        return( _status );
+      }
 
     /**
      * @Returns the current GPS connection status. True if connected, false if not.
@@ -354,7 +362,7 @@ class GpsNmea : public QObject
      * This signal is send to indicate a change in status.
      * It supersedes the old connecedChange(boolean) signal.
      */
-    void statusChange(GpsNmea::connectedStatus);
+    void statusChange(GpsNmea::GpsStatus);
 
     /**
      * This signal is send to indicate that there is a new fix.
@@ -473,8 +481,8 @@ class GpsNmea : public QObject
     /** This timer fires if a timeout on the fix occurs.
      * The satellite reception is then probably (temporary?) lost. */
     QTimer* timeOutFix;
-    /** Indicates the current connection status */
-    connectedStatus _status;
+    /** Indicates the current GPS connection status */
+    GpsStatus _status;
     /** Indicates the altitude delivered by the GPS unit */
     DeliveredAltitude _deliveredAltitude;
     /** The correction for the altitude when the altitude type is USER */

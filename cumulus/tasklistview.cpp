@@ -22,7 +22,7 @@
 #include <QDesktopWidget>
 #include <QShortcut>
 
-#include "cumulusapp.h"
+#include "mainwindow.h"
 #include "tasklistview.h"
 #include "flighttask.h"
 #include "distance.h"

@@ -21,7 +21,7 @@
 #include <QShortcut>
 
 #include "reachpointlistview.h"
-#include "cumulusapp.h"
+#include "mainwindow.h"
 #include "waypointlistview.h"
 #include "generalconfig.h"
 #include "mapcontents.h"
@@ -33,7 +33,7 @@
 
 extern Calculator* calculator;
 
-ReachpointListView::ReachpointListView(CumulusApp *parent ) : QWidget(parent)
+ReachpointListView::ReachpointListView(MainWindow *parent ) : QWidget(parent)
 {
   setObjectName("ReachpointListView");
   // load pixmap of arrows for relative bearing
