@@ -582,6 +582,9 @@ void MainWindow::slotCreateApplicationWidgets()
         {
           GeneralConfig::instance()->setAirspaceWarningEnabled(true);
         }
+
+      QCoreApplication::processEvents();
+      sleep(1);
     }
 
   setNearestOrReachableHeders();
@@ -1939,8 +1942,11 @@ void MainWindow::slotMapDrawEvent( bool drawEvent )
 
        if( view == mapView )
          {
-           toggleManualNavActions( !GpsNmea::gps->getConnected() || calculator->isManualInFlight());
-           toggleGpsNavActions( GpsNmea::gps->getConnected() && !calculator->isManualInFlight() );
+           toggleManualNavActions( GpsNmea::gps->getGpsStatus() != GpsNmea::validFix ||
+                                   calculator->isManualInFlight() );
+
+           toggleGpsNavActions( GpsNmea::gps->getGpsStatus() == GpsNmea::validFix &&
+                                !calculator->isManualInFlight() );
          }
      }
 }
