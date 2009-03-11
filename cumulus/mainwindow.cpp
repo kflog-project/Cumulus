@@ -616,6 +616,7 @@ void MainWindow::slotCreateApplicationWidgets()
   ws->show();
 
   QCoreApplication::processEvents();
+  QCoreApplication::sendPostedEvents();
 
   // Startup GPS client process now for data receiving
   GpsNmea::gps->blockSignals( false );
