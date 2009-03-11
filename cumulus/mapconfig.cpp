@@ -912,7 +912,10 @@ void MapConfig::__createCircle( QPixmap& pixmap, int diameter, QColor color)
   QPainter painter(&pixmap);
   painter.setPen( Qt::NoPen );
   painter.setBrush( QBrush( color, Qt::SolidPattern ) );
+#ifndef MAEMO
+  // @AP: that did not work under Maemo. No idea why?
   painter.setOpacity ( 0.50 ); // 50% opacity
+#endif
   painter.drawEllipse( 2, 2, diameter-4, diameter-4 );
 }
 
