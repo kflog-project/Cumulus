@@ -15,12 +15,25 @@ Cumulus changelog
 #===============================================================================#
 
 -------------------------------------------------
-Cumulus 2.2.x (Development based on X11/Qt-4.5)
+Cumulus 2.2.x (Development based on X11/Qt-4.5.x)
 -------------------------------------------------
-
+[+] 2009-03-11 AP: Cumulus build with official released Qt 4.5.0.
+ 
 -------------------------------------------------
-Cumulus 2.1.x (Development based on X11/Qt-4.4)
+Cumulus 2.1.x (Development based on X11/Qt-4.4.x)
 -------------------------------------------------
+[-] 2009-03-11 AP: Bugfix: Popup dialogs during startup phase on Maemo were placed
+                   under the wait screen dialog. Removed stay on top flag in
+                   WaitScreen class. That was not a problem under Gentoo/X11.
+[-] 2009-03-11 AP: Bugfix: Green and magenta circle pixmaps did not work on Maemo
+                   if transparency is used. Don't find out why, maybe a bug?
+[o] 2009-03-10 AP: Some classes and data types renamed to get more clarity about them.
+[-] 2009-03-10 AP: Bugfix: Switch between manual mode and GPS mode was to early.
+                   Now it is done, when the GPS has recognized a valid fix and
+                   not already after a successful established connection.
+[o] 2009-03-10 AP: Village and outlanding icons redesigned. The outlanding icon 
+                   is placed so at the map, that the base of the beacon points
+                   to the map point.
 [o] 2009-03-05 AP: Waypoint and thermal icons redesigned and placed so at the map,
                    that the lower stick end of the flag points to the map point.
                    The old position was in the center of the icon and caused
