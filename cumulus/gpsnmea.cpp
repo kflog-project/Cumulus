@@ -663,6 +663,9 @@ void GpsNmea::__ExtractCambridgeW(const QStringList& stringList)
   // extract wind direction in degrees
   int windDir = stringList[1].toInt( &ok );
 
+  // calculate inverse angle
+  windDir = windDir < 180 ? windDir+180 : windDir-180;
+
   // wind speed in 10ths of meters per second
   num = stringList[2].toDouble( &ok1 );
   speed.setMps( num/10. );
@@ -671,7 +674,7 @@ void GpsNmea::__ExtractCambridgeW(const QStringList& stringList)
   if ( ok && ok1 && _status == validFix &&
        (_lastWindDirection != windDir || _lastWindSpeed != speed ))
     {
-      _lastWindDirection = windDir < 180 ? windDir+180 : windDir-180;
+      _lastWindDirection = windDir;
       _lastWindSpeed = speed;
       emit newWind( _lastWindSpeed, _lastWindDirection ); // notify change
     }
