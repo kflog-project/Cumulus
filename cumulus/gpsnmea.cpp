@@ -671,7 +671,7 @@ void GpsNmea::__ExtractCambridgeW(const QStringList& stringList)
   if ( ok && ok1 && _status == validFix &&
        (_lastWindDirection != windDir || _lastWindSpeed != speed ))
     {
-      _lastWindDirection = windDir;
+      _lastWindDirection = windDir < 180 ? windDir+180 : windDir-180;
       _lastWindSpeed = speed;
       emit newWind( _lastWindSpeed, _lastWindDirection ); // notify change
     }
