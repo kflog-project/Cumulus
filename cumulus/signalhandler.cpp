@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2009 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -36,72 +36,103 @@ void signalHandler( int signal );
  */
 void initSignalHandler()
 {
-    sigset_t sigset;
+  sigset_t sigset;
 
-    sigemptyset( &sigset );  // set all signals in sigset
+  sigemptyset( &sigset );  // set all signals in sigset
 
-    sigaddset( &sigset, SIGHUP );
-    sigaddset( &sigset, SIGINT );
-    sigaddset( &sigset, SIGTERM );
-    sigaddset( &sigset, SIGCHLD );
-    sigaddset( &sigset, SIGPIPE );
+  sigaddset( &sigset, SIGHUP );
+  sigaddset( &sigset, SIGINT );
+  sigaddset( &sigset, SIGTERM );
+  sigaddset( &sigset, SIGCHLD );
+  sigaddset( &sigset, SIGPIPE );
 
-    // activate desired signals
+  // activate desired signals
 
-    sigprocmask( SIG_UNBLOCK, &sigset, 0 );
+  sigprocmask( SIG_UNBLOCK, &sigset, 0 );
 
-    // set up signal handler for activated signals
+  // set up signal handler for activated signals
 
-    struct sigaction act;
+  struct sigaction act;
 
-    act.sa_handler = signalHandler; // assign signal handler routine
+  act.sa_handler = signalHandler; // assign signal handler routine
 
-    // We don't want to block any other signals
-    sigemptyset(&act.sa_mask);
+  // We don't want to block any other signals
+  sigemptyset(&act.sa_mask);
 
-    // We're only interested in children that have terminated, not ones
-    // which have been stopped (eg user pressing control-Z at terminal)
+  // We're only interested in children that have terminated, not ones
+  // which have been stopped (eg user pressing control-Z at terminal)
 
-    act.sa_flags = SA_NOCLDSTOP | SA_RESTART;
+  act.sa_flags = SA_NOCLDSTOP | SA_RESTART;
 
-    if( sigaction(SIGHUP, &act, 0) < 0 ) {
-        fprintf( stderr, "sigaction for signal SIGHUP failed\n" );
+  if ( sigaction(SIGHUP, &act, 0) < 0 )
+    {
+      fprintf( stderr, "sigaction for signal SIGHUP failed\n" );
     }
 
-    if( sigaction(SIGINT, &act, 0) < 0 ) {
-        fprintf( stderr, "sigaction for signal SIGINT failed\n" );
+  if ( sigaction(SIGINT, &act, 0) < 0 )
+    {
+      fprintf( stderr, "sigaction for signal SIGINT failed\n" );
     }
 
-    if( sigaction(SIGTERM, &act, 0) < 0 ) {
-        fprintf( stderr, "sigaction for signal SIGTERM failed\n" );
+  if ( sigaction(SIGTERM, &act, 0) < 0 )
+    {
+      fprintf( stderr, "sigaction for signal SIGTERM failed\n" );
     }
 
-    if( sigaction(SIGCHLD, &act, 0) < 0 ) {
-        fprintf( stderr, "sigaction for signal SIGCHLD failed\n" );
+  if ( sigaction(SIGCHLD, &act, 0) < 0 )
+    {
+      fprintf( stderr, "sigaction for signal SIGCHLD failed\n" );
     }
 
-    if( sigaction(SIGPIPE, &act, 0) < 0 ) {
-        fprintf( stderr, "sigaction for signal SIGPIPE failed\n" );
+  if ( sigaction(SIGPIPE, &act, 0) < 0 )
+    {
+      fprintf( stderr, "sigaction for signal SIGPIPE failed\n" );
     }
 
-    return;
+  return;
 }
 
 
 /** Signal handler */
 void signalHandler( int sig )
 {
-    if( sig == SIGCHLD ) {
-        // change in status of child
-        childDeadState = true;
-    } else if( sig == SIGHUP ||sig == SIGTERM || sig == SIGINT ) {
-        // shutdown requested
-        shutdownState = true;
-    } else if( sig == SIGPIPE ) {
-        brockenPipe = true;
-    }
+  const char* signal = "";
 
-    // ignore all other
+  switch( sig )
+  {
+    case SIGCHLD:
+      signal = "SIGCHLD";
+      // change in status of child
+      childDeadState = true;
+      break;
 
-    return;
+    case SIGHUP:
+      signal = "SIGHUP";
+      // shutdown requested
+      shutdownState = true;
+      break;
+
+    case SIGTERM:
+      signal = "SIGTERM";
+      // shutdown requested
+      shutdownState = true;
+      break;
+
+    case SIGINT:
+      signal = "SIGINT";
+      // shutdown requested
+      shutdownState = true;
+      break;
+
+    case SIGPIPE:
+      signal = "SIGPIPE";
+      // shutdown requested
+      brockenPipe = true;
+      break;
+
+    default:
+      signal = "Unknown";
+  }
+
+  fprintf( stderr, "Signal %d, %s caught\n", sig, signal );
 }
