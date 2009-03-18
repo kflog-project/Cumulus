@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2008 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2008-2009 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -88,6 +88,11 @@ GpsMaemo::~GpsMaemo()
       gpsbt_stop(ctx);
       delete ctx;
     }
+
+  if (gpsDaemonNotifier)
+    {
+      delete gpsDaemonNotifier;
+    }
 }
 
 /**
@@ -97,8 +102,7 @@ GpsMaemo::~GpsMaemo()
  * The daemon is requested to hand over GPS data in raw and watcher mode. A socket
  * notifier is setup in the QT main loop for data receiving.
  */
-bool
-GpsMaemo::startGpsReceiving()
+bool GpsMaemo::startGpsReceiving()
 {
   // qDebug("GpsMaemo::startGpsReceiving()");
   readCounter = 0;
@@ -143,6 +147,12 @@ GpsMaemo::startGpsReceiving()
       // restart alive check timer with a retry time
       timer->start(RETRY_TO);
       return false;
+    }
+
+  // print out returned GPS devices
+  for( int i = 0; ctx->rfcomms[i] != static_cast<char *> (0); i++ )
+    {
+      qDebug( "Found GPS Device %s", ctx->rfcomms[i] );
     }
 
   // Restart alive check timer with a retry time which is used in case of error
@@ -236,8 +246,7 @@ GpsMaemo::startGpsReceiving()
 /**
  * Closes the connection to the GPS Daemon and stops the daemon too.
  */
-bool
-GpsMaemo::stopGpsReceiving()
+bool GpsMaemo::stopGpsReceiving()
 {
   timer->stop();
 
@@ -287,10 +296,10 @@ GpsMaemo::stopGpsReceiving()
 
 /**
  * This timeout method is used, to check, if the GPSD is alive.
- * If not, a new startup is executed.
+ * If not, a new startup is executed. The alive check expects,
+ * that some data have been read in the last timer period.
  */
-void
-GpsMaemo::slot_Timeout()
+void GpsMaemo::slot_Timeout()
 {
   extern bool shutdownState;
 
@@ -308,29 +317,31 @@ GpsMaemo::slot_Timeout()
       // check GPSD state, because no data have been read in the meantime
       int res = gpsmgr_is_gpsd_running(0, 0, GPSMGR_MODE_JUST_CHECK);
 
-      if (res != GPSMGR_RUNNING)
+      if (res == GPSMGR_RUNNING )
         {
-          // GPSD is not running, try restart it
-          qWarning("GPSD is not running - try restart");
-
-          emit gpsConnectionLost();
-
-          /* Found in Nokia code example:
-           * Sleep is needed so that we avoid a new restart if
-           * someone (like control panel applet) does multiple
-           * configuration operations (like changing GPS device)
-           */
-          sleep(2);
-          startGpsReceiving();
-          return;
+          qWarning("WD-TO: GPSD is running but not sending data - stopping it");
+          // GPSD is alive but will not provide any data. Maybe his BT connection
+          // is broken. Therefore we stop it for a restart.
+          stopGpsReceiving();
+          // make a break before a new restart to give the OS time for
+          // internal clearing
+          sleep( 2 );
         }
+
+        // GPSD is not running now, try to restart it
+        qWarning("WD-TO: GPSD is not running - trying restart");
+
+        emit gpsConnectionLost();
+
+        startGpsReceiving();
+        return;
     }
 
   // check socket connection
   if (client.getSock() == -1)
     {
       // no connection to GPSD, start reconnecting
-      qWarning("GPSD connection is broken - try restart");
+      qWarning("WD-TO: GPSD connection is broken - trying restart");
 
       emit gpsConnectionLost();
       startGpsReceiving();
@@ -346,22 +357,33 @@ GpsMaemo::slot_Timeout()
  * the provided data from the GPS daemon.
  */
 void
-GpsMaemo::slot_NotificationEvent(int socket)
+GpsMaemo::slot_NotificationEvent(int /* socket */)
 {
   readGpsData();
 }
 
 /**
- * This method reads the data provided by the GPS daemon.
+ * This method reads the data provided by the GPS daemon. It is checked, if
+ * the function is called only once.
  * @return true=success / false=unsuccess
  */
 bool
 GpsMaemo::readGpsData()
 {
+  static short caller = 0;
+
   if (client.getSock() == -1) // no connection is active
     {
       return false;
     }
+
+  if( caller )
+    {
+      qWarning("GpsMaemo::readGpsData() is called recursive");
+      return false;
+    }
+
+  caller++;
 
   // Check for end of buffer. If this happens we will discard all
   // data to avoid a dead lock. Should normally not happen, if valid
@@ -375,23 +397,28 @@ GpsMaemo::readGpsData()
       dbsize = 0;
       databuffer[0] = '\0';
 
+      caller--;
       return false;
     }
 
-  // all available gps data lines are read successive
+  // all available GPS data lines are read successive
   int bytes = 0;
+
+  // qDebug("-> datapointer=%x, databuffer=%x, dbsize=%d", datapointer, databuffer, dbsize );
 
   bytes = read(client.getSock(), datapointer, sizeof(databuffer) - dbsize - 1);
 
   if (bytes == 0) // Nothing read, should normally not happen
     {
       qWarning("GpsMaemo: Read has read 0 bytes!");
+      caller--;
       return false;
     }
 
   if (bytes == -1)
     {
       qWarning("GpsMaemo: Read error, errno=%d, %s", errno, strerror(errno));
+      caller--;
       return false;
     }
 
@@ -402,17 +429,20 @@ GpsMaemo::readGpsData()
       datapointer += bytes;
       databuffer[dbsize] = '\0'; // terminate buffer with a null
 
+      // qDebug("<- bytes=%d, datapointer=%x, databuffer=%x, dbsize=%d", bytes, datapointer, databuffer, dbsize );
+
       // extract NMEA sentences from buffer and forward it via signal
       readSentenceFromBuffer();
     }
 
+  caller--;
   return true;
 }
 
 /**
  * This method tries to read all lines contained in the receive buffer. A line
  * is always terminated by a newline. If it finds any, it sends them as
- * QStrings via the newsentence signal to whoever is listening (that will be
+ * QStrings via the newSentence signal to whoever is listening (that will be
  * GPSNMEA) and removes the sentences from the buffer.
  */
 
@@ -422,6 +452,10 @@ GpsMaemo::readSentenceFromBuffer()
   char *start = databuffer;
   char *end = 0;
 
+  // Deactivate socket notifier, during receive buffer processing to avoid
+  // a recalling when signal newSentence is emitted.
+  if (gpsDaemonNotifier) gpsDaemonNotifier->setEnabled(false);
+
   while (strlen(start))
     {
       // Search for a newline in the receiver buffer
@@ -429,6 +463,7 @@ GpsMaemo::readSentenceFromBuffer()
         {
           // No newline in the receiver buffer, wait for more
           // characters
+          if (gpsDaemonNotifier) gpsDaemonNotifier->setEnabled(true);
           return;
         }
 
@@ -473,6 +508,10 @@ GpsMaemo::readSentenceFromBuffer()
       start = databuffer;
 
       end = 0;
+
+      // qDebug("After Read: datapointer=%x, dbsize=%d", datapointer, dbsize );
     }
+
+  if (gpsDaemonNotifier) gpsDaemonNotifier->setEnabled(true);
 }
 
