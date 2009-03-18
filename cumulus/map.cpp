@@ -2015,7 +2015,7 @@ void Map::scheduleRedraw(mapLayer fromLayer)
 #ifndef MAEMO
   redrawTimerShort->start(500);
 #else
-  redrawTimerShort->start(1000);
+  redrawTimerShort->start(750);
 #endif
 
   if (!redrawTimerLong->isActive() && ShowGlider)
