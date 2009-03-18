@@ -76,11 +76,11 @@ int main(int argc, char *argv[])
       QDir path1("/media/mmc1");
       QDir path2("/media/mmc2");
 
-      if( path1.exists )
+      if( path1.exists() )
         {
           logDir = path1.absolutePath();
         }
-      else if( path2.exists )
+      else if( path2.exists() )
         {
           logDir = path2.absolutePath();
         }
