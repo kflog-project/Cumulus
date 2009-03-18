@@ -2012,14 +2012,18 @@ void Map::scheduleRedraw(mapLayer fromLayer)
     }
 
   // start resp. restart short timer to combine several draw requests to one
+#ifndef MAEMO
   redrawTimerShort->start(500);
+#else
+  redrawTimerShort->start(1000);
+#endif
 
   if (!redrawTimerLong->isActive() && ShowGlider)
     {
       // Long timer shall ensure, that a map drawing is executed on expiration
       // in every case. Will be activated only in GPS mode and not in manually
       // mode.
-      redrawTimerLong->start(3000);
+      redrawTimerLong->start(2000);
     }
 }
 
