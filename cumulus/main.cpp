@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QTranslator>
+#include <QDir>
 
 #include "mainwindow.h"
 #include "generalconfig.h"
@@ -65,9 +66,29 @@ int main(int argc, char *argv[])
 
   bool isLog2File = conf->getLog2FileMode();
 
+  QString logDir = "/tmp";
+
   if( isLog2File )
     {
-      int i = open( "/tmp/cumulus.log", O_RDWR|O_CREAT|O_TRUNC,
+
+#ifdef MAEMO
+      // check for alternate pathes under Maemo on MMC
+      QDir path1("/media/mmc1");
+      QDir path2("/media/mmc2");
+
+      if( path1.exists )
+        {
+          logDir = path1.absolutePath();
+        }
+      else if( path2.exists )
+        {
+          logDir = path2.absolutePath();
+        }
+#endif
+
+      logDir += "/cumulus.log";
+
+      int i = open( logDir.toLatin1().data(), O_RDWR|O_CREAT|O_TRUNC,
                     S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH );
 
       // Duplicate file descriptors 1, 2 that the output goes into a logfile
