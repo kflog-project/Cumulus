@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andr� Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2008-2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -47,7 +47,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   edtBirth = new QLineEdit(this);
   topLayout->addWidget(edtBirth, row, 1, 1, 2);
   row++;
-  
+
   lbl = new QLabel(tr("Language:"), this);
   topLayout->addWidget(lbl, row, 0);
   langBox = new QComboBox(this);
@@ -88,7 +88,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 SettingsPagePersonal::~SettingsPagePersonal()
 {}
 
-/** Called to initiate loading of the configurationfile. */
+/** Called to initiate loading of the configuration file. */
 void SettingsPagePersonal::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
@@ -103,14 +103,14 @@ void SettingsPagePersonal::slot_load()
 
   // search item to be selected
   int idx = langBox->findText(conf->getLanguage());
-  
+
   if( idx != -1 )
     {
       langBox->setCurrentIndex(idx);
     }
 }
 
-/** called to initiate saving to the configurationfile */
+/** called to initiate saving to the configuration file */
 void SettingsPagePersonal::slot_save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
@@ -121,8 +121,8 @@ void SettingsPagePersonal::slot_save()
   conf->setUserDataDirectory( userDataDir->text() );
 
   // Check, if string input values have been changed. If not, no
-  // storage is done to avoid roundings errors. They can appear if the
-  // position formats will be changed between DMS <-> DDM vise versa.
+  // storage is done to avoid rounding errors. They can appear if the
+  // position formats will be changed between DMS <-> DDM vice versa.
 
   if( edtHomeLat->isInputChanged() )
     {
@@ -147,5 +147,5 @@ void SettingsPagePersonal::slot_openDirectoryDialog()
       return; // nothing was selected by the user
     }
 
-  userDataDir->setText( dataDir.remove(  dataDir.size()-1, 1 ) );
+  userDataDir->setText( dataDir );
 }
