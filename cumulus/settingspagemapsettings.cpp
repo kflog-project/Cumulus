@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel pauli
+**   Copyright (c):  2002 by André Somers, 2008-2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -177,7 +177,7 @@ void SettingsPageMapSettings::slot_openFileDialog()
       return; // nothing was selected by the user
     }
 
-  mapDirectory->setText( mapDir.remove(  mapDir.size()-1, 1 ) );
+  mapDirectory->setText( mapDir );
 }
 
 // selection in the combo box has been changed. index is a reference
