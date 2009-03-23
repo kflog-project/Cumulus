@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007, 2008 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2007-2009 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -348,7 +348,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     finalTpDes.replace(  QRegExp(" "), "&nbsp;" );
 
     display += "<tr><th colspan=\"2\" align=\"left\">" +
-      tr("Landing target") + " " + no1 + "ReachableList::</th>" +
+      tr("Landing target") + " " + no1 + "</th>" +
       "<th colspan=2 align=left>" + finalTP->name + "&nbsp;(" + finalTpDes + ")" +
       "</th></tr>";
 
