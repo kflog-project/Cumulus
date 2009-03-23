@@ -44,8 +44,8 @@ extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 
 Calculator::Calculator(QObject* parent) :
-  QObject(parent),
-  samplelist( LimitedList<flightSample>( MAX_SAMPLECOUNT ) )
+    QObject(parent),
+    samplelist( LimitedList<flightSample>( MAX_SAMPLECOUNT ) )
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -111,13 +111,15 @@ Calculator::Calculator(QObject* parent) :
 
 Calculator::~Calculator()
 {
-  if( _glider ) {
-    delete _glider;
-  }
+  if ( _glider )
+    {
+      delete _glider;
+    }
 
-  if( selectedWp != 0 ) {
-    delete selectedWp;
-  }
+  if ( selectedWp != 0 )
+    {
+      delete selectedWp;
+    }
 
   // save last position as new center position of the map
   GeneralConfig::instance()->setCenterLat(lastPosition.x());
@@ -128,13 +130,16 @@ Calculator::~Calculator()
 /** Read property of Altitude lastAltitude. */
 const Altitude& Calculator::getlastGNDAltitude()
 {
-  if ( selectedWp ) {
-    lastGNDAltitude = lastAltitude - selectedWp->elevation;
-    return lastGNDAltitude;
-  } else {
-    lastGNDAltitude = lastAltitude;
-    return lastGNDAltitude;
-  }
+  if ( selectedWp )
+    {
+      lastGNDAltitude = lastAltitude - selectedWp->elevation;
+      return lastGNDAltitude;
+    }
+  else
+    {
+      lastGNDAltitude = lastAltitude;
+      return lastGNDAltitude;
+    }
 }
 
 
@@ -142,18 +147,19 @@ const Altitude& Calculator::getlastGNDAltitude()
 const Altitude& Calculator::getAltimeterAltitude()
 {
   // qDebug("Calculator::getAltimeterAltitude(): %d",  _altimeter_mode );
-  switch( _altimeter_mode ) {
-  case 0:
-    return lastAltitude; // MSL
-    break;
-  case 1:
-    return lastAGLAltitude; // GND
-    break;
-  case 2:
-  default:
-    return lastSTDAltitude; // STD
-    break;
-  }
+  switch ( _altimeter_mode )
+    {
+    case 0:
+      return lastAltitude; // MSL
+      break;
+    case 1:
+      return lastAGLAltitude; // GND
+      break;
+    case 2:
+    default:
+      return lastSTDAltitude; // STD
+      break;
+    }
 }
 
 const QString Calculator::getAltimeterAltitudeText()
@@ -193,12 +199,13 @@ void Calculator::slot_Altitude()
 void Calculator::slot_Heading()
 {
   // qDebug("lastSpeed=%f m/s", lastSpeed.getMps());
-  if( lastSpeed.getMps() <= 0.3 ) {
-    // @AP: don't forward values, when the speed is nearly
-    // zero. Arrow will stay in last position. Same does make
-    // Garmin-Pilot III
-    return;
-  }
+  if ( lastSpeed.getMps() <= 0.3 )
+    {
+      // @AP: don't forward values, when the speed is nearly
+      // zero. Arrow will stay in last position. Same does make
+      // Garmin-Pilot III
+      return;
+    }
 
   lastHeading = (int)rint(GpsNmea::gps->getLastHeading());
   emit newHeading(lastHeading);
@@ -226,7 +233,7 @@ void Calculator::slot_Speed()
 void Calculator::slot_Position()
 {
   lastGPSPosition=GpsNmea::gps->getLastCoord();
-  if(!manualInFlight) lastPosition = lastGPSPosition;
+  if (!manualInFlight) lastPosition = lastGPSPosition;
   lastElevation = Altitude( _globalMapContents->findElevation(lastPosition, &lastElevationError) );
   emit newPosition(lastGPSPosition, Calculator::GPS);
   calcDistance();
@@ -244,41 +251,43 @@ void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
 {
   // qDebug( "Calculator::slot_WaypointChange(): NewWp=%x", newWp );
 
-  if( false ) // newWp
+  if ( false ) // newWp
     {
       qDebug( "Calculator::slot_WaypointChange(): NewWpName=%s(%d)",
               newWp->name.toLatin1().data(), newWp->taskPointIndex );
     }
 
-  if( selectedWp && newWp &&
-      selectedWp->taskPointIndex != -1 && newWp->taskPointIndex == -1 ) {
-    // A user action will overwrite a task point. That will stop the
-    // automatic taskpoint switch. We will notice the user about
-    // that fact.
+  if ( selectedWp && newWp &&
+       selectedWp->taskPointIndex != -1 && newWp->taskPointIndex == -1 )
+    {
+      // A user action will overwrite a task point. That will stop the
+      // automatic taskpoint switch. We will notice the user about
+      // that fact.
 
-    int answer=
-      QMessageBox::question( 0, tr("Replace current taskpoint?"),
-                            tr("<html>"
-                               "A flight task is activated!<br>"
-                               "This selection will stop the automatic taskpoint switch."
-                               "To avoid that make a selection from task menu."
-                               "<br>Do You really want to replace?"
-                               "</html>"),
-                            QMessageBox::Yes,
-                            QMessageBox::No | QMessageBox::Escape );
+      int answer=
+        QMessageBox::question( 0, tr("Replace current taskpoint?"),
+                               tr("<html>"
+                                  "A flight task is activated!<br>"
+                                  "This selection will stop the automatic taskpoint switch."
+                                  "To avoid that make a selection from task menu."
+                                  "<br>Do You really want to replace?"
+                                  "</html>"),
+                               QMessageBox::Yes,
+                               QMessageBox::No | QMessageBox::Escape );
 
-    if( answer != QMessageBox::Yes )
-      {
-        // do nothing change
-        return;
-      }
-  }
+      if ( answer != QMessageBox::Yes )
+        {
+          // do nothing change
+          return;
+        }
+    }
 
   // Map new waypoint instance to current projection to be sure, that
   // all is correct before distribution.
-  if( newWp ) {
-    newWp->projP = _globalMapMatrix->wgsToMap( newWp->origP );
-  }
+  if ( newWp )
+    {
+      newWp->projP = _globalMapMatrix->wgsToMap( newWp->origP );
+    }
 
   // save new selected waypoint
   setSelectedWp( newWp );
@@ -286,44 +295,49 @@ void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
   // inform mapView about the change
   emit newWaypoint(newWp);
 
-  if ( newWp == 0 ) {
-    // reset LD display
-    emit newLD( lastRequiredLD=-1, lastCurrentLD=-1 );
-    selectedWpInList = -1;
-    wpTouched = false;
-    wpTouchCounter = 0;
-    taskEndReached = false;
-    //@JD: reset bearing, and no more calculations
-    lastBearing = -1;
-	return;
-  }
-
-  if( selectedWp && userAction && selectedWp->taskPointIndex != -1 ) {
-    // this was not an automatic switch, it was made manually by the
-    // user in the tasklistview or initiated by pressing accept in the
-    // preflight dialog.
-
-    wpTouched = false;
-    wpTouchCounter = 0;
-    taskEndReached = false;
-    selectedWpInList = -1;
-
-    FlightTask *task = _globalMapContents->getCurrentTask();
-
-    if( task != 0 ) {
-      QList<wayPoint*> wpList = task->getWPList();
-
-      // Tasks with less 4 entries are incomplete! The selection
-      // of the start point is also senseless. Therefore we start with one.
-      for( int i=1; i < wpList.count() && wpList.count() > 3; i++ ) {
-        if( selectedWp->origP == wpList.at(i)->origP &&
-            selectedWp->taskPointIndex == wpList.at(i)->taskPointIndex ) {
-          selectedWpInList = i;
-          break;
-        }
-      }
+  if ( newWp == 0 )
+    {
+      // reset LD display
+      emit newLD( lastRequiredLD=-1, lastCurrentLD=-1 );
+      selectedWpInList = -1;
+      wpTouched = false;
+      wpTouchCounter = 0;
+      taskEndReached = false;
+      //@JD: reset bearing, and no more calculations
+      lastBearing = -1;
+      return;
     }
-  }
+
+  if ( selectedWp && userAction && selectedWp->taskPointIndex != -1 )
+    {
+      // this was not an automatic switch, it was made manually by the
+      // user in the tasklistview or initiated by pressing accept in the
+      // preflight dialog.
+
+      wpTouched = false;
+      wpTouchCounter = 0;
+      taskEndReached = false;
+      selectedWpInList = -1;
+
+      FlightTask *task = _globalMapContents->getCurrentTask();
+
+      if ( task != 0 )
+        {
+          QList<wayPoint*> wpList = task->getWPList();
+
+          // Tasks with less 4 entries are incomplete! The selection
+          // of the start point is also senseless. Therefore we start with one.
+          for ( int i=1; i < wpList.count() && wpList.count() > 3; i++ )
+            {
+              if ( selectedWp->origP == wpList.at(i)->origP &&
+                   selectedWp->taskPointIndex == wpList.at(i)->taskPointIndex )
+                {
+                  selectedWpInList = i;
+                  break;
+                }
+            }
+        }
+    }
 
   calcDistance( !userAction );
   calcBearing();
@@ -340,17 +354,18 @@ void Calculator::slot_WaypointDelete(wayPoint* newWp)
 {
   // @AP: check, if waypoint to be deleted is selected. In this case a
   // deselection must be done
-  if( selectedWp && selectedWp->origP == newWp->origP ) {
-    wpTouched = false;
-    wpTouchCounter = 0;
-    taskEndReached = false;
-    setSelectedWp(0);
-    calcDistance();
-    calcBearing();
-    calcETA();
-    calcGlidePath();
-    emit newLD( lastRequiredLD=-1, lastCurrentLD=-1 );
-  }
+  if ( selectedWp && selectedWp->origP == newWp->origP )
+    {
+      wpTouched = false;
+      wpTouchCounter = 0;
+      taskEndReached = false;
+      setSelectedWp(0);
+      calcDistance();
+      calcBearing();
+      calcETA();
+      calcGlidePath();
+      emit newLD( lastRequiredLD=-1, lastCurrentLD=-1 );
+    }
 }
 
 
@@ -361,32 +376,35 @@ void Calculator::slot_WaypointDelete(wayPoint* newWp)
 */
 void Calculator::calcDistance( bool autoWpSwitch )
 {
-  if( ! selectedWp ) {
-    return;
-  }
+  if ( ! selectedWp )
+    {
+      return;
+    }
 
   Distance curDistance;
 
   curDistance.setKilometers(dist(double(lastPosition.x()), double(lastPosition.y()),
                                  selectedWp->origP.lat(), selectedWp->origP.lon()));
 
-  if( curDistance == lastDistance ) {
-    // no changes in the meantime
-    return;
-  }
+  if ( curDistance == lastDistance )
+    {
+      // no changes in the meantime
+      return;
+    }
 
   // get active task
   FlightTask *task = _globalMapContents->getCurrentTask();
 
-  if( ! task || selectedWp->taskPointIndex == -1 || ! autoWpSwitch ) {
-    // no task active,
-    // no selected waypoint from a task
-    // no automatic waypoint switch required
-    // emit new distance only
-    lastDistance = curDistance;
-    emit newDistance(lastDistance);
-    return;
-  }
+  if ( ! task || selectedWp->taskPointIndex == -1 || ! autoWpSwitch )
+    {
+      // no task active,
+      // no selected waypoint from a task
+      // no automatic waypoint switch required
+      // emit new distance only
+      lastDistance = curDistance;
+      emit newDistance(lastDistance);
+      return;
+    }
 
   // load waypoint list from task
   QList<wayPoint*> wpList = task->getWPList();
@@ -401,110 +419,120 @@ void Calculator::calcDistance( bool autoWpSwitch )
   // considered in manual mode to make testing possible.
   bool inside = false;
 
-  if( lastSpeed.getKph() > 35 || ! GpsNmea::gps->getConnected() ) {
-    inside = task->checkSector( curDistance, lastPosition, selectedWp->taskPointIndex );
-  }
+  if ( lastSpeed.getKph() > 35 || ! GpsNmea::gps->getConnected() )
+    {
+      inside = task->checkSector( curDistance, lastPosition, selectedWp->taskPointIndex );
+    }
 
   // We set us a flag to remember, that we did arrive the radius of a
   // task point. Must be done because we can have only one touch.
-  if( inside && wpTouched == false && autoWpSwitch ) {
-    wpTouched = true;
+  if ( inside && wpTouched == false && autoWpSwitch )
+    {
+      wpTouched = true;
 
-    // send a signal to the igc logger to increase logging interval
-    emit taskpointSectorTouched();
+      // send a signal to the igc logger to increase logging interval
+      emit taskpointSectorTouched();
 
-    // Display an task end message under following conditions:
-    // a) we touched the target radius
-    // b) the last task point is selected
-    if( selectedWp->taskPointType == wayPoint::Landing && taskEndReached == false ) {
-      taskEndReached = true;
-      emit taskInfo( tr("Task target reached"), true );
+      // Display a task end message under following conditions:
+      // a) we touched the target radius
+      // b) the last task point is selected
+      if ( selectedWp->taskPointType == wayPoint::Landing && taskEndReached == false )
+        {
+          taskEndReached = true;
+          emit taskInfo( tr("Task target reached"), true );
 
-      QString text = "<html><hr><b><nobr>" +
-        tr("Task Target reached") +
-        "</nobr></b><hr>" +
-        "<p><center><b>" +
-        tr("Congratulations!") +
-        "</b></center></p><br><br><b>" +
-        tr("You have reached the <br>task target sector:") +
-        "</b><p align=\"left\"><b>" +
-        selectedWp->name + " (" + selectedWp->description + ")</b></p><br></html>";
+          QString text = "<html><hr><b><nobr>" +
+                         tr("Task Target reached") +
+                         "</nobr></b><hr>" +
+                         "<p><center><b>" +
+                         tr("Congratulations!") +
+                         "</b></center></p><br><br><b>" +
+                         tr("You have reached the <br>task target sector:") +
+                         "</b><p align=\"left\"><b>" +
+                         selectedWp->name + " (" + selectedWp->description + ")</b></p><br></html>";
 
-      // fetch info show time from config and compute it as milli seconds
-      int showTime = GeneralConfig::instance()->getInfoDisplayTime() * 1000;
+          // fetch info show time from config and compute it as milli seconds
+          int showTime = GeneralConfig::instance()->getInfoDisplayTime() * 1000;
 
-      WhatsThat *box = new WhatsThat( _globalMainWindow, text,  showTime );
-      box->show();
+          WhatsThat *box = new WhatsThat( _globalMainWindow, text,  showTime );
+          box->show();
+        }
+      else if ( taskEndReached == false )
+        {
+          if ( ntScheme == GeneralConfig::Nearst )
+            {
+              // Announce task point touch only, if nearest switch scheme is
+              // chosen by the user to avoid to much info for him.
+              emit taskInfo( tr("Taskpoint sector reached"), true );
+            }
+          else
+            {
+              // Set touch counter in case of touch switch scheme is used,
+              // to ensure that we were really inside of the task point
+              // sector/cylinder
+              wpTouchCounter = 5; // set touch counter to 5 events, ca. 5s
+            }
+        }
+
+      lastDistance = curDistance;
+      emit newDistance(lastDistance);
+      return;
     }
-    else if( taskEndReached == false ) {
-      if( ntScheme == GeneralConfig::Nearst ) {
-      // Announce task point touch only, if nearest switch scheme is
-      // chosen by the user to avoid to much info for him.
-      emit taskInfo( tr("Taskpoint sector reached"), true );
-      }
-      else {
-	// Set touch counter in case of touch switch scheme is used,
-	// to ensure that we were really inside of the task point
-	// sector/cylinder
-	wpTouchCounter = 5; // set touch counter to 5 events, ca. 5s
-      }
-    }
-
-    lastDistance = curDistance;
-    emit newDistance(lastDistance);
-    return;
-  }
 
   // We arrived the taskpoint switch radius and after that event the
   // wpTouchedCounter reaches zero or the nearest position to the TP is
   // arrived. In this case we have to execute and announce the task
   // point switch.
-  if( ( curDistance.getMeters() > lastDistance.getMeters() ||
-      ( wpTouchCounter > 0 && --wpTouchCounter == 0 ) ) &&
-      wpTouched == true ) {
+  if ( ( curDistance.getMeters() > lastDistance.getMeters() ||
+         ( wpTouchCounter > 0 && --wpTouchCounter == 0 ) ) &&
+       wpTouched == true )
+    {
 
-    wpTouched      = false;
-    wpTouchCounter = 0;
+      wpTouched      = false;
+      wpTouchCounter = 0;
 
-    if( wpList.count() > selectedWpInList + 1 ) {
-      // this loop excludes the last WP
-      wayPoint *lastWp = wpList.at(selectedWpInList);
-      selectedWpInList++;
-      wayPoint *nextWp = wpList.at(selectedWpInList);
+      if ( wpList.count() > selectedWpInList + 1 )
+        {
+          // this loop excludes the last WP
+          wayPoint *lastWp = wpList.at(selectedWpInList);
+          selectedWpInList++;
+          wayPoint *nextWp = wpList.at(selectedWpInList);
 
-      // calculate distance to new waypoint
-      Distance dist2Next( dist(double(lastPosition.x()), double(lastPosition.y()),
-                               nextWp->origP.lat(), nextWp->origP.lon()) * 1000);
-      lastDistance = dist2Next;
+          // calculate distance to new waypoint
+          Distance dist2Next( dist(double(lastPosition.x()), double(lastPosition.y()),
+                                   nextWp->origP.lat(), nextWp->origP.lon()) * 1000);
+          lastDistance = dist2Next;
 
-      // announce taskpoint change as none auto switch
-      slot_WaypointChange( nextWp, false );
+          // announce taskpoint change as none auto switch
+          slot_WaypointChange( nextWp, false );
 
-      // Here we send a notice to the user about the taskpoint
-      // switch. If end point reached and landing point is identical
-      // to end point, we will suppress the info message
-      if( ! ( lastWp->taskPointType == wayPoint::End &&
-              nextWp->taskPointType == wayPoint::Landing &&
-              lastWp->origP == nextWp->origP ) ) {
+          // Here we send a notice to the user about the taskpoint
+          // switch. If end point reached and landing point is identical
+          // to end point, we will suppress the info message
+          if ( ! ( lastWp->taskPointType == wayPoint::End &&
+                   nextWp->taskPointType == wayPoint::Landing &&
+                   lastWp->origP == nextWp->origP ) )
+            {
 
-	emit taskInfo( tr("Automatic taskpoint switch"), true );
+              emit taskInfo( tr("Automatic taskpoint switch"), true );
 
-        TPInfoWidget *tpInfo = new TPInfoWidget( _globalMainWindow );
-        tpInfo->prepareSwitchText( lastWp->taskPointIndex, dist2Next.getKilometers() );
+              TPInfoWidget *tpInfo = new TPInfoWidget( _globalMainWindow );
+              tpInfo->prepareSwitchText( lastWp->taskPointIndex, dist2Next.getKilometers() );
 
-        // switch back to map view on close of tp info widget
-        connect( tpInfo, SIGNAL( close() ),
-                 _globalMainWindow, SLOT( slotSwitchToMapView() ) );
+              // switch back to map view on close of tp info widget
+              connect( tpInfo, SIGNAL( close() ),
+                       _globalMainWindow, SLOT( slotSwitchToMapView() ) );
 
-        // switch off all set accelerators
-        _globalMainWindow->setView( MainWindow::tpSwitchView );
-        tpInfo->showTP();
-      }
+              // switch off all set accelerators
+              _globalMainWindow->setView( MainWindow::tpSwitchView );
+              tpInfo->showTP();
+            }
+        }
     }
-  }
-  else {
-    lastDistance = curDistance;
-  }
+  else
+    {
+      lastDistance = curDistance;
+    }
 
   emit newDistance(lastDistance);
 }
@@ -518,40 +546,46 @@ void Calculator::calcETA()
 
   // qDebug("lastSpeed=%f m/s", lastSpeed.getMps());
 
-  if( ! _calculateETA || ! selectedWp ||
-      lastSpeed.getMps() <= 0.3 || ! GpsNmea::gps->getConnected() ) {
-    if( ! lastETA.isNull() ) {
-      emit newETA(etaNew);
-      lastETA = etaNew;
-    }
+  if ( ! _calculateETA || ! selectedWp ||
+       lastSpeed.getMps() <= 0.3 || ! GpsNmea::gps->getConnected() )
+    {
+      if ( ! lastETA.isNull() )
+        {
+          emit newETA(etaNew);
+          lastETA = etaNew;
+        }
 
-    return;
-  }
+      return;
+    }
 
   int eta = (int) rint(lastDistance.getMeters() / lastSpeed.getMps());
 
   etaNew = etaNew.addSecs(eta);
 
-  if( lastETA.hour() == etaNew.hour() &&
-      lastETA.minute() == etaNew.minute() ) {
-    // changes in seconds only will be ignored
-    return;
-  }
-
-  if( etaNew != lastETA ) {
-    lastETA = etaNew;
-
-    if( eta > 99*3600 ) {
-      // Don't emit times greater as 99 hours. ETA will be set to
-      // undefined in such a case to avoid a problem in the map
-      // display with to large values.
-      QTime zero(0, 0);
-      emit newETA(zero);
+  if ( lastETA.hour() == etaNew.hour() &&
+       lastETA.minute() == etaNew.minute() )
+    {
+      // changes in seconds only will be ignored
+      return;
     }
-    else {
-      emit newETA(lastETA);
+
+  if ( etaNew != lastETA )
+    {
+      lastETA = etaNew;
+
+      if ( eta > 99*3600 )
+        {
+          // Don't emit times greater as 99 hours. ETA will be set to
+          // undefined in such a case to avoid a problem in the map
+          // display with to large values.
+          QTime zero(0, 0);
+          emit newETA(zero);
+        }
+      else
+        {
+          emit newETA(lastETA);
+        }
     }
-  }
 
   // qDebug("New ETA=%s", etaNew.toString().toLatin1().data());
 }
@@ -561,9 +595,10 @@ void Calculator::calcETA()
     if required */
 void Calculator::calcLD()
 {
-  if( ! selectedWp || _calculateLD == false || samplelist.count() < 2 ) {
-    return;
-  }
+  if ( ! selectedWp || _calculateLD == false || samplelist.count() < 2 )
+    {
+      return;
+    }
 
   const flightSample *start = 0;
   const flightSample *end = &samplelist.at(0);
@@ -574,42 +609,51 @@ void Calculator::calcLD()
   bool notify = false;
 
   // first calculate current LD
-  for( int i = 1; i < samplelist.count(); i++ ) {
+  for ( int i = 1; i < samplelist.count(); i++ )
+    {
 
-    timeDiff = (samplelist.at(i).time).msecsTo(end->time);
+      timeDiff = (samplelist.at(i).time).msecsTo(end->time);
 
-    if( timeDiff >= 60*1000 ) {
-      break;
+      if ( timeDiff >= 60*1000 )
+        {
+          break;
+        }
+
+      // summarize single distances from speed
+      distance += samplelist[i].vector.getSpeed().getMps();
+
+      // qDebug( "i=%d, dist=%f", i, distance );
+      // store start record
+      start = &samplelist[i];
     }
 
-    // summarize single distances from speed
-    distance += samplelist[i].vector.getSpeed().getMps();
-
-    // qDebug( "i=%d, dist=%f", i, distance );
-    // store start record
-    start = &samplelist[i];
-  }
-
-  if( ! start ) {
-    // time distance too short
-    lastCurrentLD = -1.0;
-  } else {
-
-    // calculate altitude difference
-    double altDiff = start->altitude.getMeters() - end->altitude.getMeters();
-
-    if( altDiff <= 0.2 ) {
-      // we climbed in the last time, therefore the result will become huge
-      newCurrentLD = 999.0;
-    } else {
-
-      newCurrentLD = distance / altDiff ;
-
-      if( newCurrentLD  > 999.0 ) {
-        newCurrentLD = 999.0;
-      }
+  if ( ! start )
+    {
+      // time distance too short
+      lastCurrentLD = -1.0;
     }
-  }
+  else
+    {
+
+      // calculate altitude difference
+      double altDiff = start->altitude.getMeters() - end->altitude.getMeters();
+
+      if ( altDiff <= 0.2 )
+        {
+          // we climbed in the last time, therefore the result will become huge
+          newCurrentLD = 999.0;
+        }
+      else
+        {
+
+          newCurrentLD = distance / altDiff ;
+
+          if ( newCurrentLD  > 999.0 )
+            {
+              newCurrentLD = 999.0;
+            }
+        }
+    }
 
   // calculate required LD, we consider elevation and security
   // altitude
@@ -617,42 +661,49 @@ void Calculator::calcLD()
   GeneralConfig *conf = GeneralConfig::instance();
 
   double altDiff = lastAltitude.getMeters() - selectedWp->elevation -
-    conf->getSafetyAltitude().getMeters();
+                   conf->getSafetyAltitude().getMeters();
 
-  if( altDiff <= 10.0 ) {
-    newRequiredLD = -1.0;
-  } else {
-    newRequiredLD = lastDistance / altDiff;
-  }
+  if ( altDiff <= 10.0 )
+    {
+      newRequiredLD = -1.0;
+    }
+  else
+    {
+      newRequiredLD = lastDistance / altDiff;
+    }
 
-  if( newRequiredLD != lastRequiredLD ) {
-    lastRequiredLD = newRequiredLD;
-    notify = true;
-  }
+  if ( newRequiredLD != lastRequiredLD )
+    {
+      lastRequiredLD = newRequiredLD;
+      notify = true;
+    }
 
-  if( newCurrentLD != lastCurrentLD ) {
-    lastCurrentLD = newCurrentLD;
-    notify = true;
-  }
+  if ( newCurrentLD != lastCurrentLD )
+    {
+      lastCurrentLD = newCurrentLD;
+      notify = true;
+    }
 
-  if( notify ) {
-    emit newLD( lastRequiredLD, lastCurrentLD );
-    // qDebug("SIGNAL: rLD=%f, cLD=%f", lastRequiredLD, lastCurrentLD);
-  }
+  if ( notify )
+    {
+      emit newLD( lastRequiredLD, lastCurrentLD );
+      // qDebug("SIGNAL: rLD=%f, cLD=%f", lastRequiredLD, lastCurrentLD);
+    }
 }
 
 
 /** Calculates the glide path to the current waypoint and the needed height */
 bool Calculator::glidePath(int aLastBearing, Distance aDistance,
-                       Altitude aElevation, Altitude &arrivalAlt,
-                       Speed &bestSpeed )
+                           Altitude aElevation, Altitude &arrivalAlt,
+                           Speed &bestSpeed )
 {
 
-  if (!_polar) {
-    arrivalAlt.setInvalid();
-    bestSpeed.setInvalid();
-    return false;
-  }
+  if (!_polar)
+    {
+      arrivalAlt.setInvalid();
+      bestSpeed.setInvalid();
+      return false;
+    }
 
 //  qDebug("Glider=%s", _glider->type().toLatin1().data());
 
@@ -704,21 +755,24 @@ void Calculator::calcGlidePath()
 
   // Calculate new glide path, if a waypoint is selected and
   // a glider is defined.
-  if ( ! selectedWp || ! _glider ) {
-    lastRequiredLD = -1;
-    return;
-  }
+  if ( ! selectedWp || ! _glider )
+    {
+      lastRequiredLD = -1;
+      return;
+    }
 
   glidePath(lastBearing, lastDistance, selectedWp->elevation, above, speed );
 
-  if (speed != lastBestSpeed) {
-    lastBestSpeed = speed;
-    emit bestSpeed (speed);
-  }
-  if (above != lastGlidePath) {
-    lastGlidePath = above;
-    emit glidePath (above);
-  }
+  if (speed != lastBestSpeed)
+    {
+      lastBestSpeed = speed;
+      emit bestSpeed (speed);
+    }
+  if (above != lastGlidePath)
+    {
+      lastGlidePath = above;
+      emit glidePath (above);
+    }
 }
 
 
@@ -730,23 +784,28 @@ void Calculator::calcBearing()
   if (lH == -1)
     lH=0;
 
-  if (selectedWp==0) {
-    iresult=-1;
-    if (iresult!=lastBearing) {
-      lastBearing=iresult;
-      emit newBearing(-1000);
-      // if we have no waypoint, let the rel bearing arrow point to north
-      emit newRelBearing (-lH);
+  if (selectedWp==0)
+    {
+      iresult=-1;
+      if (iresult!=lastBearing)
+        {
+          lastBearing=iresult;
+          emit newBearing(-1000);
+          // if we have no waypoint, let the rel bearing arrow point to north
+          emit newRelBearing (-lH);
+        }
     }
-  } else {
-    double result = getBearing(lastPosition, selectedWp->origP);
-    iresult = int (rint(result * 180./M_PI) );
-    if (iresult!=lastBearing) {
-      lastBearing=iresult;
-      emit newBearing(lastBearing);
-      emit newRelBearing (lastBearing - lH);
+  else
+    {
+      double result = getBearing(lastPosition, selectedWp->origP);
+      iresult = int (rint(result * 180./M_PI) );
+      if (iresult!=lastBearing)
+        {
+          lastBearing=iresult;
+          emit newBearing(lastBearing);
+          emit newRelBearing (lastBearing - lH);
+        }
     }
-  }
 }
 
 
@@ -758,46 +817,47 @@ void Calculator::slot_changePosition(int direction)
   double distance=_globalMapMatrix->getScale(MapMatrix::CurrentScale)*10;
   double kmPerDeg;
 
-  switch(direction) {
-  case MapMatrix::North:
-    kmPerDeg=dist(lastPosition.x(), lastPosition.y(), lastPosition.x()+600000, lastPosition.y());
-    lastPosition=QPoint((int) rint(lastPosition.x()+(distance/kmPerDeg) * 600), lastPosition.y());
-    break;
-  case MapMatrix::West:
-    kmPerDeg=dist(lastPosition.x(), lastPosition.y(), lastPosition.x(), lastPosition.y()+600000);
-    lastPosition=QPoint(lastPosition.x(), (int) rint(lastPosition.y()-(distance/kmPerDeg) * 600));
-    break;
-  case MapMatrix::East:
-    kmPerDeg=dist(lastPosition.x(), lastPosition.y(), lastPosition.x(), lastPosition.y()+600000);
-    lastPosition=QPoint(lastPosition.x(), (int) rint(lastPosition.y()+(distance/kmPerDeg) * 600));
-    break;
-  case MapMatrix::South:
-    kmPerDeg=dist(lastPosition.x(),lastPosition.y(), lastPosition.x()+600000, lastPosition.y());
-    lastPosition=QPoint((int) rint(lastPosition.x()-(distance/kmPerDeg) * 600), lastPosition.y());
-    break;
-  case MapMatrix::Home:
-    lastPosition=QPoint(_globalMapMatrix->getHomeCoord());
-    break;
-  case MapMatrix::Waypoint:
-    if (selectedWp)
-      lastPosition=selectedWp->origP;
-    break;
-  }
+  switch (direction)
+    {
+    case MapMatrix::North:
+      kmPerDeg=dist(lastPosition.x(), lastPosition.y(), lastPosition.x()+600000, lastPosition.y());
+      lastPosition=QPoint((int) rint(lastPosition.x()+(distance/kmPerDeg) * 600), lastPosition.y());
+      break;
+    case MapMatrix::West:
+      kmPerDeg=dist(lastPosition.x(), lastPosition.y(), lastPosition.x(), lastPosition.y()+600000);
+      lastPosition=QPoint(lastPosition.x(), (int) rint(lastPosition.y()-(distance/kmPerDeg) * 600));
+      break;
+    case MapMatrix::East:
+      kmPerDeg=dist(lastPosition.x(), lastPosition.y(), lastPosition.x(), lastPosition.y()+600000);
+      lastPosition=QPoint(lastPosition.x(), (int) rint(lastPosition.y()+(distance/kmPerDeg) * 600));
+      break;
+    case MapMatrix::South:
+      kmPerDeg=dist(lastPosition.x(),lastPosition.y(), lastPosition.x()+600000, lastPosition.y());
+      lastPosition=QPoint((int) rint(lastPosition.x()-(distance/kmPerDeg) * 600), lastPosition.y());
+      break;
+    case MapMatrix::Home:
+      lastPosition=QPoint(_globalMapMatrix->getHomeCoord());
+      break;
+    case MapMatrix::Waypoint:
+      if (selectedWp)
+        lastPosition=selectedWp->origP;
+      break;
+    }
 
   // Check new position that it lays inside the earth coordinates +-90, +-180 degrees
-  if( lastPosition.x() > 90*600000 )
+  if ( lastPosition.x() > 90*600000 )
     {
       lastPosition.setX(90*600000);
     }
-  else if( lastPosition.x() < -90*600000 )
+  else if ( lastPosition.x() < -90*600000 )
     {
       lastPosition.setX(-90*600000);
     }
-  else if( lastPosition.y() > 180*600000 )
+  else if ( lastPosition.y() > 180*600000 )
     {
       lastPosition.setY(180*600000);
     }
-  else if( lastPosition.y() < -180*600000 )
+  else if ( lastPosition.y() < -180*600000 )
     {
       lastPosition.setY(-180*600000);
     }
@@ -812,14 +872,15 @@ void Calculator::slot_changePosition(int direction)
   GeneralConfig *conf = GeneralConfig::instance();
   int qnhDiff = 1013 - conf->getQNH();
 
-  if( qnhDiff != 0 ) {
-    // calculate altitude correction in meters from pressure difference
-    int delta = (int) rint( qnhDiff * 8.6 );
+  if ( qnhDiff != 0 )
+    {
+      // calculate altitude correction in meters from pressure difference
+      int delta = (int) rint( qnhDiff * 8.6 );
 
-    // qDebug("Calculator::slot_changePosition(): QHN=%d, Delta=%d", conf->getQNH(), delta);
+      // qDebug("Calculator::slot_changePosition(): QHN=%d, Delta=%d", conf->getQNH(), delta);
 
-    lastSTDAltitude.setMeters(manualAltitude.getMeters() + delta );
-  }
+      lastSTDAltitude.setMeters(manualAltitude.getMeters() + delta );
+    }
 
   emit newAltitude(lastAltitude);
 
@@ -877,11 +938,12 @@ void Calculator::slot_changePositionWp()
 /** increment McCready value */
 void Calculator::slot_McUp()
 {
-  if (lastMc.getMps() <= MAX_MCCREADY - 0.5) {
-    lastMc.setMps(lastMc.getMps()+0.5);
-    calcGlidePath();
-    emit newMc (lastMc);
-  }
+  if (lastMc.getMps() <= MAX_MCCREADY - 0.5)
+    {
+      lastMc.setMps(lastMc.getMps()+0.5);
+      calcGlidePath();
+      emit newMc (lastMc);
+    }
 }
 
 
@@ -897,11 +959,12 @@ void Calculator::slot_Mc(const Speed& spd)
 /** decrement McCready value; don't get negative */
 void Calculator::slot_McDown()
 {
-  if (lastMc.getMps() >= 0.5) {
-    lastMc.setMps(lastMc.getMps()-0.5);
-    calcGlidePath();
-    emit newMc (lastMc);
-  }
+  if (lastMc.getMps() >= 0.5)
+    {
+      lastMc.setMps(lastMc.getMps()-0.5);
+      calcGlidePath();
+      emit newMc (lastMc);
+    }
 }
 
 /**
@@ -957,7 +1020,7 @@ void Calculator::slot_settingsChanged ()
 
   // Send last known wind to mapview for update of speed. User maybe
   // changed the speed unit.
-  if( lastWind.getSpeed().getMps() != 0 )
+  if ( lastWind.getSpeed().getMps() != 0 )
     {
       emit( newWind(lastWind) );
     }
@@ -974,10 +1037,11 @@ void Calculator::slot_newFix()
 {
   // before we start making samples, let's be sure we have all the
   // data we need for that. So, we wait for the second Fix.
-  if (!_pastFirstFix) {
-    _pastFirstFix=true;
-    return;
-  }
+  if (!_pastFirstFix)
+    {
+      _pastFirstFix=true;
+      return;
+    }
 
   // create a new sample structure
   flightSample sample;
@@ -996,7 +1060,7 @@ void Calculator::slot_newFix()
   // qDebug ("wind: %d/%f", lastWind.getAngleDeg(), lastWind.getSpeed().getKph());
   Vector airspeed = groundspeed + lastWind;
   // qDebug ("airspeed: %d/%f", airspeed.getAngleDeg(), airspeed.getSpeed().getKph());
-  if( lastWind.getSpeed().getKph() != 0 )
+  if ( lastWind.getSpeed().getKph() != 0 )
     {
       sample.airspeed = airspeed.getSpeed();
     }
@@ -1007,14 +1071,14 @@ void Calculator::slot_newFix()
 
   // Call variometer calculation, if required. Can be switched off,
   // when GPS delivers variometer information.
-  if( _calculateVario == true )
+  if ( _calculateVario == true )
     {
       _vario->newAltitude();
     }
 
   // Call wind analyzer calculation if required. Can be switched off,
   // when GPS delivers wind information.
-  if( _calculateWind == true )
+  if ( _calculateWind == true )
     {
       _windAnalyser->slot_newSample();
     }
@@ -1106,147 +1170,175 @@ void Calculator::determineFlightStatus()
   //lastFlightMode=unknown; //force complete evaluation for now.
   //qDebug("Anglediff: %d",angleDiff(lastHead, prevHead));
 
-  switch (lastFlightMode) {
-  case standstill: //we are not moving at all!
-    if (samplelist[0].position == samplelist[1].position) {  //may be too ridged, GPS errors could cause problems here
-      return; //no change in flight mode
-    } else {
-      newFlightMode=unknown;
-    }
-    break;
-
-  case wave: //we are not moving at all, except vertically!  Needs lots of tweaking and testing...
-    if (samplelist[0].position == samplelist[1].position) {  //may be too ridged, GPS errors could cause problems here
-      return; //no change in flight mode
-    } else {
-      newFlightMode=unknown;
-    }
-    break;
-
-  case cruising: //we are flying from point A to point B
-    if (abs(angleDiff(lastHead, _cruiseDirection)) <  MAXCRUISEANGDIFF &&
-        samplelist[0].vector.getSpeed().getMps()>5) {
-      return; //no change in flight mode
-    } else {
-      newFlightMode=unknown;
-      break;
-    }
-
-  case circlingL:
-    //turning left means: the heading is decreasing
-    if (angleDiff(prevHead, lastHead) > (-MINTURNANGDIFF * timediff)) {
-      newFlightMode=unknown;
-      break;
-    } else {
-      return; //no change in flight mode
-    }
-
-
-  case circlingR:
-    //turning right means: the heading is increasing
-    if (angleDiff(prevHead, lastHead) < (MINTURNANGDIFF * timediff)) {
-      newFlightMode=unknown;
-      break;
-    } else {
-      return; //no change in flight mode
-    }
-
-  default:
-    newFlightMode=unknown;
-  }
-
-  if (newFlightMode==unknown) {
-    //we need some real analysis
-    QTime tmp= samplelist[0].time.addSecs(-TIMEFRAME); //reference time
-    int ls=1;
-
-    while((samplelist[ls].time > tmp) && ( ls < samplelist.count()-1) )
-      ls++;
-    //ls now contains the index of the oldest sample we will use for this analysis.
-    //Newer samples have lower indices!
-
-    //initialize some values we will be needing...
-    bool mayBeL=true;     //this may be a left turn (that is, no big dir change to the right)
-    bool mayBeR=true;     //this may be a right turn (that is, no big dir change to the left)
-    int totalDirChange=0;  //total heading change. If cruising, this will be low, if turning, it will be high
-    int maxSpeed=0;        //maximum speed obtained in this set of samples
-    int aDiff=0;                 //difference in heading between two samples
-    int totalAltChange=0;  //total change in altitude (absolute)
-    int maxAltChange=0;  //maximum change of altitude between samples.
-    int altChange=0;
-    bool break_analysis=false; //flag to indicate we can stop further analysis.
-
-
-    //loop through the samples to get some basic data we can use to distinguish flight modes
-    for (int i=ls-1;i>=0;i--) {
-      aDiff = angleDiff( samplelist[i+1].vector.getAngleDeg(), samplelist[i].vector.getAngleDeg() );
-      //qDebug("analysis: angle1=%d, angle2=%d, diff=%d",int(samplelist->at(i+1)->vector.getAngleDeg()),int(samplelist->at(i)->vector.getAngleDeg()), aDiff);
-      //qDebug("analysis: position=(%d, %d)", samplelist->at(i)->position.x(),samplelist->at(i)->position.y() );
-      totalDirChange += abs(aDiff);
-      maxSpeed = qMax( maxSpeed, (int) rint(samplelist[i].vector.getSpeed().getKph()));
-      altChange = int(samplelist[i].altitude.getMeters() - samplelist[i+1].altitude.getMeters());
-      totalAltChange += altChange;
-      maxAltChange = int(qMax(abs(altChange), maxAltChange));
-
-      if (aDiff >  MINTURNANGDIFF)
-        mayBeL=false;
-      if (aDiff < -MINTURNANGDIFF)
-        mayBeR=false;
-      //qDebug("  analysis: sample: %d, speed: %f",i,samplelist->at(i)->vector.getKph());
-    }
-    //qDebug ("analysis: aDiff=%d, totalDirChange=%d, maxSpeed=%d, totalAltChange=%d, maxAltChange=%d, maybeLeft=%d, maybeRight=%d",aDiff, totalDirChange, maxSpeed, totalAltChange, maxAltChange, int(mayBeL), int(mayBeR));
-
-    //try standstill. We are using a value > 0 because of possible GPS errors.
-    /*
-      The detection of stand stills may be extended further by checking if the altitude matches the terrain altitude. If not
-      (or no where near), we can not assume a standstill. This is probably wave flying.
-    */
-    if (maxSpeed<10) { // if we get under 10 kph for maximum speed, we may be standing still
-      if (abs(totalAltChange) * 2 <= MAXALTDRIFT && maxAltChange <= MAXALTDRIFT) {  //check if we had any significant altitude changes
-        newFlightMode=standstill;
-        break_analysis=true;
-      } else {
-        newFlightMode=wave;
-        break_analysis=true;
-      }
-    }
-
-    if (!break_analysis) {
-      //get the time difference between the first and the last sample. This might not be the 20 secs we were planning to use at all!
-      timediff= samplelist[ls-1].time.secsTo(samplelist[0].time);
-
-      //see if we might be cruising...
-      if (mayBeL && mayBeR) { //basicly, we have been going (almost) strait it seems...
-        if (totalDirChange < 2 * timediff) {
-          //qDebug("analysis: distance=%f m, time difference=%d s",dist(&samplelist->at(ls-1)->position,&samplelist[0].position)*1000,timediff);
-          if (dist(&samplelist[ls-1].position, &samplelist[0].position)*1000 > 5*timediff) //our average speed should be at least 5 m/s to qualify for cruising
-            newFlightMode=cruising;
-          _cruiseDirection=samplelist[0].vector.getAngleDeg();
-          // qDebug("Cruise direction: %d.",_cruiseDirection);
+  switch (lastFlightMode)
+    {
+    case standstill: //we are not moving at all!
+      if (samplelist[0].position == samplelist[1].position)    //may be too ridged, GPS errors could cause problems here
+        {
+          return; //no change in flight mode
         }
-        break_analysis=true;
-      }
+      else
+        {
+          newFlightMode=unknown;
+        }
+      break;
+
+    case wave: //we are not moving at all, except vertically!  Needs lots of tweaking and testing...
+      if (samplelist[0].position == samplelist[1].position)    //may be too ridged, GPS errors could cause problems here
+        {
+          return; //no change in flight mode
+        }
+      else
+        {
+          newFlightMode=unknown;
+        }
+      break;
+
+    case cruising: //we are flying from point A to point B
+      if (abs(angleDiff(lastHead, _cruiseDirection)) <  MAXCRUISEANGDIFF &&
+          samplelist[0].vector.getSpeed().getMps()>5)
+        {
+          return; //no change in flight mode
+        }
+      else
+        {
+          newFlightMode=unknown;
+          break;
+        }
+
+    case circlingL:
+      //turning left means: the heading is decreasing
+      if (angleDiff(prevHead, lastHead) > (-MINTURNANGDIFF * timediff))
+        {
+          newFlightMode=unknown;
+          break;
+        }
+      else
+        {
+          return; //no change in flight mode
+        }
+
+
+    case circlingR:
+      //turning right means: the heading is increasing
+      if (angleDiff(prevHead, lastHead) < (MINTURNANGDIFF * timediff))
+        {
+          newFlightMode=unknown;
+          break;
+        }
+      else
+        {
+          return; //no change in flight mode
+        }
+
+    default:
+      newFlightMode=unknown;
     }
 
-    if (!break_analysis) {
-      //So, we are not standing still, nor are we cruising. Circling then maybe?
-      if ((MINTURNANGDIFF * timediff ) < totalDirChange) { //if circling, we should have a minimum average turnrate of MINTURNANGDIFF degrees per second
-        if (mayBeL && !mayBeR)
-          newFlightMode=circlingL;
-        if (mayBeR && !mayBeL)
-          newFlightMode=circlingR;
-        //we have a new mode: we are circling! If neither of the above are true, we are doing something
-        //funny, and the flight mode 'unknown' still applies, so we may also quit analyzing...
-      }
-    }
-  }
+  if (newFlightMode==unknown)
+    {
+      //we need some real analysis
+      QTime tmp= samplelist[0].time.addSecs(-TIMEFRAME); //reference time
+      int ls=1;
 
-  if (newFlightMode!=lastFlightMode) {
-    lastFlightMode=newFlightMode;
-    samplelist[0].marker=++_marker;
-    // qDebug("new flightmode: %d",lastFlightMode);
-    emit flightModeChanged(newFlightMode);
-  }
+      while ((samplelist[ls].time > tmp) && ( ls < samplelist.count()-1) )
+        ls++;
+      //ls now contains the index of the oldest sample we will use for this analysis.
+      //Newer samples have lower indices!
+
+      //initialize some values we will be needing...
+      bool mayBeL=true;     //this may be a left turn (that is, no big dir change to the right)
+      bool mayBeR=true;     //this may be a right turn (that is, no big dir change to the left)
+      int totalDirChange=0;  //total heading change. If cruising, this will be low, if turning, it will be high
+      int maxSpeed=0;        //maximum speed obtained in this set of samples
+      int aDiff=0;                 //difference in heading between two samples
+      int totalAltChange=0;  //total change in altitude (absolute)
+      int maxAltChange=0;  //maximum change of altitude between samples.
+      int altChange=0;
+      bool break_analysis=false; //flag to indicate we can stop further analysis.
+
+
+      //loop through the samples to get some basic data we can use to distinguish flight modes
+      for (int i=ls-1;i>=0;i--)
+        {
+          aDiff = angleDiff( samplelist[i+1].vector.getAngleDeg(), samplelist[i].vector.getAngleDeg() );
+          //qDebug("analysis: angle1=%d, angle2=%d, diff=%d",int(samplelist->at(i+1)->vector.getAngleDeg()),int(samplelist->at(i)->vector.getAngleDeg()), aDiff);
+          //qDebug("analysis: position=(%d, %d)", samplelist->at(i)->position.x(),samplelist->at(i)->position.y() );
+          totalDirChange += abs(aDiff);
+          maxSpeed = qMax( maxSpeed, (int) rint(samplelist[i].vector.getSpeed().getKph()));
+          altChange = int(samplelist[i].altitude.getMeters() - samplelist[i+1].altitude.getMeters());
+          totalAltChange += altChange;
+          maxAltChange = int(qMax(abs(altChange), maxAltChange));
+
+          if (aDiff >  MINTURNANGDIFF)
+            mayBeL=false;
+          if (aDiff < -MINTURNANGDIFF)
+            mayBeR=false;
+          //qDebug("  analysis: sample: %d, speed: %f",i,samplelist->at(i)->vector.getKph());
+        }
+      //qDebug ("analysis: aDiff=%d, totalDirChange=%d, maxSpeed=%d, totalAltChange=%d, maxAltChange=%d, maybeLeft=%d, maybeRight=%d",aDiff, totalDirChange, maxSpeed, totalAltChange, maxAltChange, int(mayBeL), int(mayBeR));
+
+      //try standstill. We are using a value > 0 because of possible GPS errors.
+      /*
+        The detection of stand stills may be extended further by checking if the altitude matches the terrain altitude. If not
+        (or no where near), we can not assume a standstill. This is probably wave flying.
+      */
+      if (maxSpeed<10)   // if we get under 10 kph for maximum speed, we may be standing still
+        {
+          if (abs(totalAltChange) * 2 <= MAXALTDRIFT && maxAltChange <= MAXALTDRIFT)    //check if we had any significant altitude changes
+            {
+              newFlightMode=standstill;
+              break_analysis=true;
+            }
+          else
+            {
+              newFlightMode=wave;
+              break_analysis=true;
+            }
+        }
+
+      if (!break_analysis)
+        {
+          //get the time difference between the first and the last sample. This might not be the 20 secs we were planning to use at all!
+          timediff= samplelist[ls-1].time.secsTo(samplelist[0].time);
+
+          //see if we might be cruising...
+          if (mayBeL && mayBeR)   //basicly, we have been going (almost) strait it seems...
+            {
+              if (totalDirChange < 2 * timediff)
+                {
+                  //qDebug("analysis: distance=%f m, time difference=%d s",dist(&samplelist->at(ls-1)->position,&samplelist[0].position)*1000,timediff);
+                  if (dist(&samplelist[ls-1].position, &samplelist[0].position)*1000 > 5*timediff) //our average speed should be at least 5 m/s to qualify for cruising
+                    newFlightMode=cruising;
+                  _cruiseDirection=samplelist[0].vector.getAngleDeg();
+                  // qDebug("Cruise direction: %d.",_cruiseDirection);
+                }
+              break_analysis=true;
+            }
+        }
+
+      if (!break_analysis)
+        {
+          //So, we are not standing still, nor are we cruising. Circling then maybe?
+          if ((MINTURNANGDIFF * timediff ) < totalDirChange)   //if circling, we should have a minimum average turnrate of MINTURNANGDIFF degrees per second
+            {
+              if (mayBeL && !mayBeR)
+                newFlightMode=circlingL;
+              if (mayBeR && !mayBeL)
+                newFlightMode=circlingR;
+              //we have a new mode: we are circling! If neither of the above are true, we are doing something
+              //funny, and the flight mode 'unknown' still applies, so we may also quit analyzing...
+            }
+        }
+    }
+
+  if (newFlightMode!=lastFlightMode)
+    {
+      lastFlightMode=newFlightMode;
+      samplelist[0].marker=++_marker;
+      // qDebug("new flightmode: %d",lastFlightMode);
+      emit flightModeChanged(newFlightMode);
+    }
 }
 
 
@@ -1257,26 +1349,28 @@ void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
   flightmode newFlightMode=unknown;
   // qDebug("new flightmode=%d, last flightmode=%d",newFlightMode, lastFlightMode);
 
-  if (newFlightMode!=lastFlightMode) {
-    lastFlightMode=newFlightMode;
-    samplelist[0].marker=++_marker;
-    // qDebug("new flightmode: %d",lastFlightMode);
-    emit flightModeChanged(newFlightMode);
-  }
+  if (newFlightMode!=lastFlightMode)
+    {
+      lastFlightMode=newFlightMode;
+      samplelist[0].marker=++_marker;
+      // qDebug("new flightmode: %d",lastFlightMode);
+      emit flightModeChanged(newFlightMode);
+    }
 
-  if( newState == GpsNmea::noFix ) {
-    // Reset LD display
-    emit newLD( -1.0, -1.0 );
-    // reset first fix passed
-    _pastFirstFix = false;
-  }
+  if ( newState == GpsNmea::noFix )
+    {
+      // Reset LD display
+      emit newLD( -1.0, -1.0 );
+      // reset first fix passed
+      _pastFirstFix = false;
+    }
 }
 
 
 /** This slot is used internally to re-emit the flight mode signal with the marker value */
 void Calculator::slot_flightModeChanged(Calculator::flightmode fm)
 {
-  if( _calculateWind )
+  if ( _calculateWind )
     {
       // Wind calculation can be disabled when the Logger device
       // delivers already wind data.
@@ -1364,18 +1458,21 @@ bool Calculator::matchesFlightMode(GeneralConfig::UseInMode mode)
 void Calculator::setSelectedWp( const wayPoint* newWp )
 {
   // delete old waypoint selection
-  if( selectedWp != 0 ) {
-    delete selectedWp;
-    selectedWp = 0;
-  }
+  if ( selectedWp != 0 )
+    {
+      delete selectedWp;
+      selectedWp = 0;
+    }
 
   // make a deep copy of new waypoint to be set
-  if( newWp != 0 ) {
-    selectedWp = new wayPoint( *newWp );
-  }
+  if ( newWp != 0 )
+    {
+      selectedWp = new wayPoint( *newWp );
+    }
 }
 
-void Calculator::setManualInFlight(bool switchOn) {
+void Calculator::setManualInFlight(bool switchOn)
+{
   manualInFlight = switchOn;
   // immediately put glider into center if outside
   // we can only switch off if GPS data coming in
