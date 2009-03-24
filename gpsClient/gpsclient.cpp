@@ -54,7 +54,8 @@ using namespace std;
 GpsClient::GpsClient( const ushort portIn )
 {
   device           = "";
-  ioSpeed          = B0;
+  ioSpeedTerminal  = B0;
+  ioSpeedDevice    = 0;
   ipcPort          = portIn;
   fd               = -1;
   notify           = false;
@@ -62,7 +63,6 @@ GpsClient::GpsClient( const ushort portIn )
   shutdown         = false;
   datapointer      = databuffer;
   dbsize           = 0;
-  lastGpsErrorTime = 0;
 
   // establish a connection to the server
   if( ipcPort )
@@ -70,7 +70,7 @@ GpsClient::GpsClient( const ushort portIn )
       if( clientData.connect2Server( IPC_IP, ipcPort ) == -1 )
         {
           cerr << "Command channel Connection to Cumulus Server failed!"
-          << " Fatal error, terminate process!" << endl;
+               << " Fatal error, terminate process!" << endl;
 
           setShutdownFlag(true);
           return;
@@ -79,7 +79,7 @@ GpsClient::GpsClient( const ushort portIn )
       if( clientNotif.connect2Server( IPC_IP, ipcPort ) == -1 )
         {
           cerr << "Notification channel Connection to Cumulus Server failed!"
-          << " Fatal error, terminate process!" << endl;
+               << " Fatal error, terminate process!" << endl;
 
           setShutdownFlag(true);
           return;
@@ -123,34 +123,19 @@ fd_set *GpsClient::getReadFdMask()
 
 // Processes incoming read events. They can come from the server or
 // from the Gps device.
-
 void GpsClient::processEvent( fd_set *fdMask )
 {
   if( fd != -1 && FD_ISSET( fd, fdMask ) )
     {
       if( readGpsData() == false )
         {
-          // problem occured, likely buffer overrun. we restart the gps
+          // problem occurred, likely buffer overrun. we do restart the gps
           // receiving.
           closeGps();
-          openGps( device, ioSpeed );
+          sleep(2);
+          // reopen connection
+          openGps( device, ioSpeedDevice );
         }
-    }
-
-  // This function is called every 20 seconds from cumulus main. If
-  // the bluetooth host is down (GPS device off) but the bluetooth
-  // dongle is connected, the open takes 20 seconds and cumulus is
-  // blocking that time. (This 20 seconds come from bluetooth
-  // setup and are not related to the 20 seconds from cumulus,
-  // checking if gpsclient is alive.)  But immediately if the
-  // bluetooth dongle is removed (or not present), the open returns.
-
-#define GPS_RETRY_TIME 10
-
-  if( fd == -1 && time(NULL) - lastGpsErrorTime > GPS_RETRY_TIME &&
-      device.contains("rfcomm") )
-    {
-      openGps( device, ioSpeed );
     }
 
   if( ipcPort )
@@ -164,7 +149,6 @@ void GpsClient::processEvent( fd_set *fdMask )
     }
 }
 
-
 // returns true=success / false=unsuccess
 
 bool GpsClient::readGpsData()
@@ -177,8 +161,8 @@ bool GpsClient::readGpsData()
   // First check, if enough space is available in the receiver buffer.
   // If we read only trash for a while we can run in a dead lock.
   int freeSpace = sizeof(databuffer) - dbsize;
-  
-  if( freeSpace < 100 )
+
+  if( freeSpace < 10 )
     {
       // Reset buffer pointer because the minimal free buffer space is
       // reached. That will discard all already read data but we never
@@ -260,9 +244,10 @@ int GpsClient::writeGpsData( const char *sentence )
 
 bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 {
-  device  = deviceIn;
-  ioSpeed = getBaudrate(ioSpeedIn);
-  bool fifo = false;
+  device          = deviceIn;
+  ioSpeedDevice   = ioSpeedIn;
+  ioSpeedTerminal = getBaudrate(ioSpeedIn);
+  bool fifo       = false;
 
   // remove all old queued messages
   queue.clear();
@@ -291,6 +276,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
     {
       // closes an existing connection before opening a new one
       closeGps();
+      sleep(2);
     }
 
   fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK);
@@ -300,19 +286,13 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       perror( "Open GPS device:" );
 
       // Could not open the serial device.
-      if( lastGpsErrorTime == 0 )
-        {
-          // print this message only the first time
-          cerr << "openGps: Unable to open serial device "
-               << device.data() << " at transfer rate "
-          << ioSpeedIn << endl;
-        }
+      // print this message only the first time
+      cerr << "openGps: Unable to open GPS device "
+           << device.data() << " at transfer rate "
+           << ioSpeedIn << endl;
 
-      lastGpsErrorTime = time(NULL);
       return false;
     }
-
-  lastGpsErrorTime = 0;
 
   if( ! isatty(fd) )
     {
@@ -325,44 +305,44 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
   else
     {
       tcgetattr(fd, &oldtio); // get current options from port
-      
+
       fcntl(fd, F_SETFL, FNDELAY); // NON blocking io is requested
-      
+
       // copy current values into new structure for changes
       memcpy( &newtio, &oldtio, sizeof(newtio) );
-      
+
       // prepare new port settings for:
       // - canonical input (line oriented input)
       // - 8 data bits
       // - no parity
       // - no cr
       // - blocking mode
-      
+
       newtio.c_cflag = (CSIZE & CS8) | CLOCAL | CREAD;
-      
+
       newtio.c_iflag = IGNPAR | IGNCR; // no parity and no cr
-      
+
       newtio.c_oflag = ONLCR; // map nl to cr-nl
-      
+
       newtio.c_lflag = ~(ICANON | ECHO | ECHOE | ISIG );
-      
+
       newtio.c_cc[VMIN] = 1;
-      
+
       newtio.c_cc[VTIME] = 0;
-      
+
       // AP: Note, the setting of the speed must be done at last
       // because the manipulation of the c_iflag and c_oflag can
       // destroy the already assigned values! Needed me several hours
       // to find out that. Setting the baud rate under c_cflag seems
       // also to work.
-      
-      cfsetispeed( &newtio, ioSpeed ); // set baud rate for input
-      cfsetospeed( &newtio, ioSpeed ); // set baud rate for output
-      
+
+      cfsetispeed( &newtio, ioSpeedTerminal ); // set baud rate for input
+      cfsetospeed( &newtio, ioSpeedTerminal ); // set baud rate for output
+
       tcflush(fd, TCIOFLUSH);
       tcsetattr(fd, TCSANOW, &newtio);
     }
-    
+
   last.start(); // store time point for supervision control
   return true;
 }
@@ -455,7 +435,7 @@ void GpsClient::closeGps()
 
           tcsetattr( fd, TCSANOW, &oldtio );
         }
-      
+
       fcntl( fd, F_SETFL, 0 ); // reset channel to blocking mode
       close(fd);
       fd = -1;
@@ -489,18 +469,42 @@ uchar GpsClient::calcCheckSum( const char *sentence )
   return sum;
 }
 
-
-// timeout controler
+// timeout controller
 void GpsClient::toController()
 {
-  if( last.elapsed() > TO_CONLOST && connectionLost == false )
+  if( last.elapsed() > TO_CONLOST )
     {
-      // connection is lost, send only one message to the server
-      connectionLost = true;
-      queueMsg( MSG_CONLOST );
+      if( connectionLost == false )
+        {
+          // connection is lost, send only one message to the server
+          connectionLost = true;
+          queueMsg( MSG_CONLOST );
+        }
+
+      /* cerr << "GpsClient::toController(): "
+           << "Connection to GPS seems to be dead, trying restart"
+           << endl; */
+
+      // A timeout occurs from GPS side, when the receiver is
+      // switched off or the adapter cable is disconnected.
+      // In such a case we close the device, that the OS can
+      // release the temporary allocated resource. Otherwise
+      // we will block the resource and a reconnect is never
+      // possible.
+      if( fd != -1 )
+        {
+          // closes an existing connection before opening a new one
+          closeGps();
+          sleep(2); // wait before a restart is tried
+        }
+
+      // try to reconnect to the GPS receiver
+      if( openGps( device, ioSpeedDevice ) == false )
+        {
+          last.start(); // set next retry time point
+        }
     }
 }
-
 
 // Reads a server message from the socket. The protocol consists of
 // two parts. First the message length is read as unsigned
@@ -522,8 +526,8 @@ void GpsClient::readServerMsg()
     {
       // such messages length are not defined. we will ignore that.
       cerr << "GpsClient::readServerMsg(): "
-      << "message " << msgLen << " too large, ignoring it!"
-      << endl;
+           << "message " << msgLen << " too large, ignoring it!"
+           << endl;
       return;
     }
 
@@ -537,7 +541,7 @@ void GpsClient::readServerMsg()
     {
       clientData.closeSock();
       delete [] buf;
-      buf=NULL;
+      buf = 0;
       return; // Error occurred
     }
 
@@ -551,7 +555,7 @@ void GpsClient::readServerMsg()
   QString qbuf( buf );
   QStringList args = qbuf.split(" ");
   delete [] buf;
-  buf=NULL;
+  buf = 0;
 
   // look, what server is requesting
 
@@ -578,8 +582,8 @@ void GpsClient::readServerMsg()
       if( MSG_PROTOCOL != args[1] )
         {
           cerr << "GpsClient::readServerMsg(): "
-          << "Message protocol versions are incompatible, "
-          << "closes connection and shutdown client" << endl;
+               << "Message protocol versions are incompatible, "
+               << "closes connection and shutdown client" << endl;
 
           writeServerMsg( MSG_NEG );
           setShutdownFlag(true);
@@ -641,7 +645,7 @@ void GpsClient::readServerMsg()
   else
     {
       cerr << "GpsClient::readServerMsg(): "
-      << "Unknown message received: " << buf << endl;
+           << "Unknown message received: " << buf << endl;
       writeServerMsg( MSG_NEG );
     }
 
@@ -744,7 +748,7 @@ void GpsClient::queueMsg( const char* msg )
       queue.dequeue ();
 
       cerr << "queueMsg: Max.queue size of " << QUEUE_SIZE
-      << " reached, remove oldest element!" << endl;
+           << " reached, remove oldest element!" << endl;
     }
 
   if( notify )

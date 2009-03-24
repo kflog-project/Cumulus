@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2009 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -132,7 +132,7 @@ private:
     QByteArray device;
 
     // RX/TX rate of serial device
-    uint ioSpeed;
+    uint ioSpeedTerminal, ioSpeedDevice;
 
     // data buffers and pointers
     char* datapointer;
@@ -176,9 +176,6 @@ private:
     // Shutdown flag for main loop. Will be set in case of fatal error
     // or if a shutdown message has been received from the server.
     bool shutdown;
-
-    // store timestamp and do not retry for xxx seconds
-    long lastGpsErrorTime;
 };
 
 #endif  // #ifndef _GpsClient_hh_
