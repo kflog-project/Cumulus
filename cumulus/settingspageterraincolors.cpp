@@ -136,7 +136,7 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   // put all edit widgets (combo box and buttons) in a separate VBox layout
   QVBoxLayout *editLayout = new QVBoxLayout;
 
-  QLabel *label = new QLabel( "Terrain Level" );
+  QLabel *label = new QLabel( tr("Terrain Level") );
   editLayout->addWidget( label );
 
   //--------------------------------------------------------------------------
@@ -238,7 +238,8 @@ void SettingsPageTerrainColors::slot_editColor()
   QColor& color = terrainColor[index];
 
   // Open color chooser dialog to edit selected color
-  QColor newColor = QColorDialog::getColor( color, this );
+  QString title = tr("Terrain Level") + " " + elevationBox->currentText();
+  QColor newColor = QColorDialog::getColor( color, this, title );
 
   if( newColor.isValid() && color != newColor )
     {
@@ -260,7 +261,8 @@ void SettingsPageTerrainColors::slot_editColor()
 void SettingsPageTerrainColors::slot_editGroundColor()
 {
   // Open color chooser dialog to edit ground color
-  QColor newColor = QColorDialog::getColor( groundColor, this );
+  QString title = tr("Ground Color");
+  QColor newColor = QColorDialog::getColor( groundColor, this, title );
 
   if( newColor.isValid() && groundColor != newColor )
     {

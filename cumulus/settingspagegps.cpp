@@ -6,8 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andrè Somers,
-**                   2007-2009 Axel pauli
+**   Copyright(c): 2002      by Andrè Somers,
+**                 2007-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -16,12 +16,12 @@
 **
 ***********************************************************************/
 
-/** This widget is used for defining of the GPS interface parameters.
+/** This widget is used to define the GPS interface parameters.
  *  The user can select different source devices and some special
  *  GPS parameters.
  *
  *  There is a difference in the provided options between normal Desktop
- *  and Maemo. Under Maemo no RS232 devices are supported.
+ *  and Maemo. Under Maemo RS232 devices are supported only via USB.
  */
 
 #include <QLabel>
@@ -46,10 +46,9 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsDev->setObjectName ("GPSDevice");
   topLayout->addWidget(GpsDev, row++, 1);
   GpsDev->setEditable(true);
-  topLayout->setColumnStretch(2,10);
+  topLayout->setColumnStretch(2, 10);
 
 #ifndef MAEMO
-
   GpsDev->addItem("/dev/ttyS0");
   GpsDev->addItem("/dev/ttyS1");
   GpsDev->addItem("/dev/ttyS2");
@@ -57,7 +56,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   // Bluetooth default devices
   GpsDev->addItem("/dev/rfcomm0");
   GpsDev->addItem("/dev/rfcomm1");
-  // add entry for NMEA simulator choise
+  // add entry for NMEA simulator choice
   GpsDev->addItem(NMEASIM_DEVICE);
 #else
   GpsDev->setEditable(false);  // forbid edit for the user
@@ -67,12 +66,14 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsDev->addItem(NMEASIM_DEVICE); // Cumulus NMEA simulator
 #endif
 
-#ifndef MAEMO
-  topLayout->addWidget(new QLabel(tr("Transfer rate (bps):"), this),row,0);
+  connect( GpsDev, SIGNAL(editTextChanged(const QString &)),
+           this, SLOT(slot_gpsDeviceChanged(const QString&)) );
+
+  topLayout->addWidget(new QLabel(tr("Transfer rate (bps):"), this), row, 0);
   GpsSpeed = new QComboBox(this);
   GpsSpeed->setObjectName("GPSSpeed");
   GpsSpeed->setEditable(false);
-  topLayout->addWidget(GpsSpeed,row++,1);
+  topLayout->addWidget(GpsSpeed, row++, 1);
   GpsSpeed->addItem("115200");
   GpsSpeed->addItem("57600");
   GpsSpeed->addItem("38400");
@@ -82,7 +83,6 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsSpeed->addItem("2400");
   GpsSpeed->addItem("1200");
   GpsSpeed->addItem("600");
-#endif
 
   // @AP: Some GPS CF Cards (e.g. BC-307) deliver only height above the WGS 84
   // ellipsoid in GGA record. This is not derivable from the received
@@ -97,8 +97,8 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsAltitude->addItem(tr("User"));
   GpsAltitude->addItem(tr("Pressure"));
 
-  connect (GpsAltitude, SIGNAL(activated(int )),
-           this, SLOT(slot_altitude_mode(int )));
+  connect( GpsAltitude, SIGNAL(activated(int )),
+           this, SLOT(slot_altitude_mode(int )) );
   topLayout->setColumnStretch(2,10);
 
   //AS: Some GPS units (like the Pretec) don't include any form of HAE correction.
@@ -175,8 +175,7 @@ SettingsPageGPS::~SettingsPageGPS()
   return;
 }
 
-
-/** Called to initiate loading of the configurationfile */
+/** Called to initiate loading of the configuration file */
 void SettingsPageGPS::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
@@ -187,26 +186,39 @@ void SettingsPageGPS::slot_load()
 
   slot_altitude_mode( conf->getGpsAltitude() );
 
-#ifndef MAEMO
   QString rate = QString::number( conf->getGpsSpeed() );
 
-  for (int i=0;i<GpsSpeed->count();i++)
+  for (int i=0; i < GpsSpeed->count(); i++)
     {
-      if (GpsSpeed->itemText(i)==rate)
+      if (GpsSpeed->itemText(i) == rate)
         {
           GpsSpeed->setCurrentIndex(i);
           break;
         }
     }
 
+#ifdef MAEMO
+  if( GpsDev->currentText() != "/dev/ttyUSB0" )
+    {
+      // switch off access to speed box, when USB is not selected
+      GpsSpeed->setEnabled( false );
+    }
+#endif
+
+  if( GpsDev->currentText() == NMEASIM_DEVICE )
+    {
+      // switch off access to speed box, when NMEA Simulator is selected
+      GpsSpeed->setEnabled( false );
+    }
+
+#ifndef MAEMO
   checkSoftStart->setChecked( conf->getGpsSoftStart() );
   checkHardStart->setChecked( conf->getGpsHardStart() );
   checkSyncSystemClock->setChecked( conf->getGpsSyncSystemClock() );
 #endif
 }
 
-
-/** Called to initiate saving to the configurationfile. */
+/** Called to initiate saving to the configuration file. */
 void SettingsPageGPS::slot_save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
@@ -232,8 +244,31 @@ void SettingsPageGPS::slot_save()
 
 }
 
-
 void SettingsPageGPS::slot_altitude_mode(int mode)
 {
-  spinUserCorrection->setEnabled(mode == GpsNmea::USER);
+  spinUserCorrection->setEnabled( mode == GpsNmea::USER );
+}
+
+/**
+ * Called when the GPS device is changed.
+ */
+void SettingsPageGPS::slot_gpsDeviceChanged( const QString& text )
+{
+  if( text == NMEASIM_DEVICE )
+    {
+      // switch off access to speed box, when NMEA Simulator is selected
+      GpsSpeed->setEnabled( false );
+      return;
+    }
+
+#ifdef MAEMO
+  if( GpsDev->currentText() != "/dev/ttyUSB0" )
+    {
+      // switch off access to speed box, when USB is not selected
+      GpsSpeed->setEnabled( false );
+      return;
+    }
+#endif
+
+  GpsSpeed->setEnabled( true );
 }

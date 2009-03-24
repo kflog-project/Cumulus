@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004, 2008 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c):  2004-2009 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -211,9 +211,8 @@ bool GPSCon::stopGpsReceiving()
   return true;
 }
 
-
 /**
- * Starts a new gps client process via fork/exec or checks, if process is
+ * Starts a new GPS client process via fork/exec or checks, if process is
  * alive. Alive check is triggered by timer routine every 10s. If process is
  * down, a new one will be started.
  */
@@ -230,18 +229,16 @@ bool GPSCon::startClientProcess()
       return false;
     }
 
-  timer->start( ALIVE_TO ); // setup alive check every 10s
+  timer->start( ALIVE_TO ); // setup alive check every 15s
 
   // check, if client startup is desired. Can be disabled via config
   // option for debugging purposes.
-
   if( ! startClient )
     {
       return false;
     }
 
   // At first check, if the child process is running
-
   if( getPid() != -1 )
     {
       // Ask the system for state of child process. If process has crashed,
@@ -319,7 +316,7 @@ bool GPSCon::startClientProcess()
 
   bool found = false;
 
-  // look, if gpsClient is to find via pathes of PATH variable and the
+  // look, if gpsClient is to find via paths of PATH variable and the
   // added ones
   for( int i=0; i < pathes.count(); i++ )
     {
@@ -333,10 +330,10 @@ bool GPSCon::startClientProcess()
         }
     }
 
-  // Check, if passed gps client binary is accessable
+  // Check, if passed GPS client binary is accessible
   if( found == false && access(exe.toLatin1().data(), X_OK) != 0 )
     {
-      qWarning("%s Gps client binary gpsClient is not accessable! "
+      qWarning("%s Gps client binary gpsClient is not accessible! "
                "Cannot start Gps client.",
                method.toLatin1().data() );
 
@@ -478,12 +475,11 @@ void GPSCon::slot_Timeout()
 
   if( device.length() != 0 && ioSpeed != 0 && lastQuery.elapsed () > ALIVE_TO )
     {
-      // more as 10s no new data notification came in. We send a query to the
+      // more as 15s no new data notification came in. We send a query to the
       // client to be sure, that the notification has not gone lost.
       queryClient();
     }
 }
-
 
 /**
  * This slot is triggered by the QT main loop and is used to handle the listen
