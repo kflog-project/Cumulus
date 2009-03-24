@@ -254,6 +254,8 @@ void SettingsPageGPS::slot_altitude_mode(int mode)
  */
 void SettingsPageGPS::slot_gpsDeviceChanged( const QString& text )
 {
+  // qDebug("text=%s", text.toLatin1().data());
+
   if( text == NMEASIM_DEVICE )
     {
       // switch off access to speed box, when NMEA Simulator is selected
@@ -262,7 +264,7 @@ void SettingsPageGPS::slot_gpsDeviceChanged( const QString& text )
     }
 
 #ifdef MAEMO
-  if( GpsDev->currentText() != "/dev/ttyUSB0" )
+  if( text != "/dev/ttyUSB0" )
     {
       // switch off access to speed box, when USB is not selected
       GpsSpeed->setEnabled( false );
