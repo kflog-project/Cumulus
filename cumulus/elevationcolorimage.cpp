@@ -17,7 +17,6 @@
 
 #include <QString>
 #include <QFont>
-#include <QFontMetrics>
 #include <QPen>
 #include <QPainter>
 #include <QPoint>
@@ -88,8 +87,6 @@ void ElevationColorImage::paintEvent( QPaintEvent * /* event */ )
   QFont newFont = painter.font();
   newFont.setPixelSize( 11 );
   painter.setFont( newFont) ;
-
-  QFontMetrics fontMetrics( newFont );
 
   QPen pen;
   pen.setWidth(3);
