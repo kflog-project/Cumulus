@@ -17,9 +17,17 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.2.x (Development based on X11/Qt-4.5.x)
 -------------------------------------------------
+[o] 2009-03-24 AP: GPS setting tabulator modified for Maemo, that a speed can be
+                   selected too, if the USB device was chosen. The USB-RS232
+                   driver can need that to get initialized with the right baud rate.
+[o] 2009-03-24 AP: GpsClient process modified, that the connection to the GPS
+                   receiver is closed and reopened again after a read timeout.
+                   That shall help to release temporary mounted devices like
+                   USB or Bluetooth after a connection break. 
+[-] 2009-03-23 AP: Wrong string part removed in task switch widget display.
 [-] 2009-03-18 AP: Bugfix: Bug in QFileDialog for directory selection has been
-                   corrected by Trolltech in release 4.5.0. Workaround in cumulus
-                   removed.
+                   corrected by Qt Software in release 4.5.0. Workaround in
+                   cumulus removed.
 [-] 2009-03-18 AP: Bugfix: Broken BT-GPS connection, caused by switch off of GPS
                    mouse, should be reconnected now after switch on.
 [-] 2009-03-18 AP: Bugfix: Core dump fixed caused some times by recursive calling
