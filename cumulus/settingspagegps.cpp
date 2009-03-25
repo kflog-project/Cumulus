@@ -60,13 +60,15 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsDev->addItem(NMEASIM_DEVICE);
 #else
   GpsDev->setEditable(false);  // forbid edit for the user
+
   // Under Maemo there are only three predefined sources.
   GpsDev->addItem("GPS Daemon");   // Maemo GPS Daemon
   GpsDev->addItem("/dev/ttyUSB0"); // external USB device
   GpsDev->addItem(NMEASIM_DEVICE); // Cumulus NMEA simulator
 #endif
 
-  connect( GpsDev, SIGNAL(editTextChanged(const QString &)),
+  // catch selection changes of the GPS device combo box
+  connect( GpsDev, SIGNAL(activated(const QString &)),
            this, SLOT(slot_gpsDeviceChanged(const QString&)) );
 
   topLayout->addWidget(new QLabel(tr("Transfer rate (bps):"), this), row, 0);
@@ -250,7 +252,8 @@ void SettingsPageGPS::slot_altitude_mode(int mode)
 }
 
 /**
- * Called when the GPS device is changed.
+ * Called when the GPS device selection is changed to toggle the access
+ * to the GPS speed box in dependency of the necessity.
  */
 void SettingsPageGPS::slot_gpsDeviceChanged( const QString& text )
 {
@@ -258,7 +261,7 @@ void SettingsPageGPS::slot_gpsDeviceChanged( const QString& text )
 
   if( text == NMEASIM_DEVICE )
     {
-      // switch off access to speed box, when NMEA Simulator is selected
+      // Switch off access to speed box, when NMEA Simulator is selected.
       GpsSpeed->setEnabled( false );
       return;
     }
@@ -266,7 +269,9 @@ void SettingsPageGPS::slot_gpsDeviceChanged( const QString& text )
 #ifdef MAEMO
   if( text != "/dev/ttyUSB0" )
     {
-      // switch off access to speed box, when USB is not selected
+      // Switch off access to speed box, when USB is not selected.
+      // That is done only for Maemo because in those cases a speed
+      // entry is not necessary.
       GpsSpeed->setEnabled( false );
       return;
     }
