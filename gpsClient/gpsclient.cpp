@@ -41,6 +41,14 @@ using namespace std;
 #undef DEBUG
 #endif
 
+// Switch this on for permanent error logging. That will display
+// all open and reconnect failures. Because open and reconnect
+// is done periodically you will get a lot of such message in error
+// case.
+#ifdef ERROR_LOG
+#undef ERROR_LOG
+#endif
+
 // Size of internal message queue.
 #define QUEUE_SIZE 500
 
@@ -96,7 +104,6 @@ GpsClient::~GpsClient()
  * Return all currently used read file descriptors as mask, useable by the
  * select call
  */
-
 fd_set *GpsClient::getReadFdMask()
 {
   // Reset file descriptor mask bits
@@ -150,7 +157,6 @@ void GpsClient::processEvent( fd_set *fdMask )
 }
 
 // returns true=success / false=unsuccess
-
 bool GpsClient::readGpsData()
 {
   if( fd == -1 ) // no connection is active
@@ -238,7 +244,6 @@ int GpsClient::writeGpsData( const char *sentence )
   return result;
 }
 
-
 // Opens the connection to the Gps. All old messages in the queue will
 // be removed.
 
@@ -286,20 +291,23 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       perror( "Open GPS device:" );
 
       // Could not open the serial device.
-      // print this message only the first time
+#ifdef ERROR_LOG
       cerr << "openGps: Unable to open GPS device "
            << device.data() << " at transfer rate "
            << ioSpeedIn << endl;
+#endif
 
       return false;
     }
 
   if( ! isatty(fd) )
     {
-      // Fifo and Usb need no serial initialization.
+      // Fifo needs no serial initialization.
       // Write a notice for the user about that fact
-      cout << "GpsClient::openGps: Device '" << device.data()
+#ifdef ERROR_LOG
+      cerr << "GpsClient::openGps: Device '" << device.data()
            << "' is not connected to a TTY!" << endl;
+#endif
 
     }
   else
@@ -481,9 +489,11 @@ void GpsClient::toController()
           queueMsg( MSG_CONLOST );
         }
 
-      /* cerr << "GpsClient::toController(): "
-           << "Connection to GPS seems to be dead, trying restart"
-           << endl; */
+#ifdef ERROR_LOG
+      cerr << "GpsClient::toController(): "
+           << "Connection to GPS seems to be dead, trying restart."
+           << endl;
+#endif
 
       // A timeout occurs from GPS side, when the receiver is
       // switched off or the adapter cable is disconnected.
