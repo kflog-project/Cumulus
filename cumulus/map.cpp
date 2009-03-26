@@ -7,8 +7,8 @@
  ************************************************************************
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008 modified by Axel Pauli, Josua Dietze
- **                   2009 modified by Axel Pauli
+ **                   2008 modified by Josua Dietze
+ **                   2008-2009 modified by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -23,11 +23,14 @@
 
 #include <QCoreApplication>
 #include <QDesktopWidget>
+#include <QFontMetrics>
 #include <QPainter>
 #include <QPen>
 #include <QWhatsThis>
 #include <QLabel>
 #include <QPolygon>
+#include <QFont>
+#include <QFontMetrics>
 
 #include "airfield.h"
 #include "airspace.h"
@@ -82,7 +85,6 @@ Map::Map(QWidget* parent) : QWidget(parent)
   m_scheduledFromLayer = topLayer;
   ShowGlider = false;
   setMutex(false);
-  rtext = 0;
 
   //setup progressive zooming values
   zoomProgressive = 0;
@@ -333,6 +335,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
               w->description = siteDescription;
               w->type = siteType;
               w->origP = siteWgsPosition;
+              w->projP = sitePosition;
               w->elevation = siteElevation;
               w->icao = siteIcao;
               w->frequency = siteFrequency;
@@ -1264,21 +1267,14 @@ void Map::slotCenterToTask()
   */
 }
 
-
 /** Draws the waypoints of the waypoint catalog on the map */
-void Map::__drawWaypoints(QPainter* wpPainter)
+void Map::__drawWaypoints(QPainter* painter)
 {
-  bool isSelected;
+  bool isSelected = false;
 
-#warning QList wpLabels is not reused! Check for removing
-
-  while ( ! wpLabels.isEmpty() )
-    {
-      delete wpLabels.takeFirst();
-    }
-
-  int w = this->size().width();
-  int h = this->size().height();
+  // get map screen size
+  int w = size().width();
+  int h = size().height();
 
   QRect testRect(-10, -10, w + 20, h + 20);
   QString labelText;
@@ -1289,17 +1285,31 @@ void Map::__drawWaypoints(QPainter* wpPainter)
 
   extern MapConfig* _globalMapConfig;
 
-  wpPainter->setBrush(Qt::NoBrush);
+  // save the current painter, must be restored before return!!!
+  painter->save();
 
-  // now do complete list
-  for ( int i=0; i < wpList.count(); i++)
+  // set font size used for text painting
+  QFont newFont = painter->font();
+
+#ifdef MAEMO
+  newFont.setPixelSize( 24 );
+#else
+  newFont.setPixelSize( 20 );
+#endif
+
+  painter->setFont( newFont) ;
+
+  // now step trough the waypoint list
+  for( int i=0; i < wpList.count(); i++ )
     {
       wayPoint& wp = wpList[i];
 
-      //show now only is used for the currently selected wp, but
-      //could also be used for waypoints in the task or other
-      //super-important waypoints later on.
-      isSelected=false;
+      // qDebug("wp=%s", wp.name.toLatin1().data());
+
+      // isSelected is used for the currently selected wp, but
+      // could also be used for waypoints in the task or other
+      // super-important waypoints later on.
+      isSelected = false;
 
       if (calculator && calculator->getselectedWp() )
         {
@@ -1312,217 +1322,227 @@ void Map::__drawWaypoints(QPainter* wpPainter)
 
       if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) > 1024.0 && ! isSelected )
         {
-          // Don't draw waypoints at this high scale
+          // Don't draw any waypoints at this high scale
           continue;
         }
 
-      if (((uint) wp.importance >= _globalMapMatrix->currentDrawScale()) || isSelected)
-        { //if the waypoint is important enough for the current mapscale
-          // make sure projection is ok, and map to screen
+      // Check if the waypoint is important enough for the current map scale.
+      if( static_cast<uint> (wp.importance) < _globalMapMatrix->currentDrawScale() &&
+          isSelected == false )
+        {
+          // qDebug("Not important wp=%s", wp.name.toLatin1().data());
+          continue;
+        }
 
-          QPoint P = _globalMapMatrix->map(wp.projP);
+        // Project point onto map.
+        QPoint P = _globalMapMatrix->map(wp.projP);
 
-          if (testRect.contains(P))
-            {
-              // draw marker
-              enum ReachablePoint::reachable reachable = ReachableList::getReachable(wp.origP);
+        // Check, if point lays in the visible screen area
+        if( ! testRect.contains(P) )
+          {
+            // qDebug("Not in Rec wp=%s", wp.name.toLatin1().data());
+            continue;
+          }
 
-              if( isSelected )
-                {
-                  wpPainter->setPen(QPen(Qt::white, 3, Qt::SolidLine));
-                }
-              else
-                {
-                  wpPainter->setPen(QPen(Qt::black, 2, Qt::SolidLine));
-                }
+        // load and draw the actual icons
+        QPixmap pm;
 
-              QPixmap pm;
+        if( _globalMapConfig->isRotatable(wp.type) )
+          {
+            pm = _globalMapConfig->getPixmapRotatable( wp.type, false );
+          }
+        else
+          {
+            pm = _globalMapConfig->getPixmap( wp.type, false);
+          }
 
-              if( _globalMapConfig->isRotatable(wp.type) )
-                {
-                  pm = _globalMapConfig->getPixmapRotatable( wp.type, false );
-                }
-              else
-                {
-                  pm = _globalMapConfig->getPixmap( wp.type, false);
-                }
+        int iconSize = 32;
+        int xOffset  = 16;
+        int yOffset  = 16;
+        int cxOffset = 16;
+        int cyOffset = 16;
 
-              int iconSize = 32;
-              int xOffset = 16;
-              int yOffset = 16;
-              int cxOffset = 16;
-              int cyOffset = 16;
+        if( wp.type == BaseMapElement::Turnpoint ||
+            wp.type == BaseMapElement::Thermal ||
+            wp.type == BaseMapElement::Outlanding )
+           {
+            // The lower end of the flag/beacon shall directly point to the
+            // point at the map.
+            xOffset  = 16;
+            yOffset  = 32;
+            cxOffset = 16;
+            cyOffset = 16;
+          }
 
-              if( wp.type == BaseMapElement::Turnpoint ||
-                  wp.type == BaseMapElement::Thermal ||
-                  wp.type == BaseMapElement::Outlanding )
-                 {
-                  // The lower stick end of the flag shall point to the point at the map
-                  xOffset = 16;
-                  yOffset = 32;
-                  cxOffset = 16;
-                  cyOffset = 16;
-                }
+        if( _globalMapConfig->useSmallIcons() )
+          {
+            iconSize = 16;
+            xOffset  = 8;
+            yOffset  = 8;
+            cxOffset = 8;
+            cyOffset = 8;
 
-              if( _globalMapConfig->useSmallIcons() )
-                {
-                  iconSize = 16;
-                  xOffset = 8;
-                  yOffset = 8;
-                  cxOffset = 8;
-                  cyOffset = 8;
+            if( wp.type == BaseMapElement::Turnpoint ||
+                wp.type == BaseMapElement::Thermal  ||
+                wp.type == BaseMapElement::Outlanding )
+              {
+                // The lower end of the flag/beacon shall directly point to the
+                // point at the map.
+                xOffset  = 8;
+                yOffset  = 16;
+                cxOffset = 8;
+                cyOffset = 8;
+              }
+          }
 
-                  if( wp.type == BaseMapElement::Turnpoint ||
-                      wp.type == BaseMapElement::Thermal  ||
-                      wp.type == BaseMapElement::Outlanding )
-                    {
-                      // The lower stick end of the flag shall point to the point at the map
-                      xOffset = 8;
-                      yOffset = 16;
-                      cxOffset = 8;
-                      cyOffset = 8;
-                    }
-                }
+        // Consider reachability during drawing. The circles must be drawn at first.
+        enum ReachablePoint::reachable reachable = ReachableList::getReachable(wp.origP);
 
-              if (reachable == ReachablePoint::yes)
-                {
-                  // draw green circle
-                  wpPainter->drawPixmap( P.x() - cxOffset, P.y() - cyOffset,
-                                         _globalMapConfig->getGreenCircle(iconSize) );
+        if (reachable == ReachablePoint::yes)
+          {
+            // draw green circle, when safety
+            painter->drawPixmap( P.x() - cxOffset, P.y() - cyOffset,
+                                 _globalMapConfig->getGreenCircle(iconSize) );
 
-                }
-              else if (reachable == ReachablePoint::belowSafety)
-                {
-                  // draw magenta circle
-                  wpPainter->drawPixmap( P.x() - cxOffset, P.y() - cyOffset,
-                                         _globalMapConfig->getMagentaCircle(iconSize));
-                }
+          }
+        else if (reachable == ReachablePoint::belowSafety)
+          {
+            // draw magenta circle
+            painter->drawPixmap( P.x() - cxOffset, P.y() - cyOffset,
+                                 _globalMapConfig->getMagentaCircle(iconSize));
+          }
 
-              int rw2 = wp.runway >= 180 ? wp.runway-180 : wp.runway;
-              int shift = ((rw2)/10);
+        int rw2 = wp.runway >= 180 ? wp.runway-180 : wp.runway;
+        int shift = ((rw2)/10);
 
-              if( _globalMapConfig->isRotatable(wp.type) )
-                {
-                  wpPainter->drawPixmap(P.x() - xOffset, P.y() - yOffset, pm,
-                                        shift*iconSize, 0, iconSize, iconSize);
-                }
-              else
-                {
-                  wpPainter->drawPixmap(P.x() - xOffset, P.y() - yOffset, pm);
-                }
+        if( _globalMapConfig->isRotatable(wp.type) )
+          {
+            painter->drawPixmap(P.x() - xOffset, P.y() - yOffset, pm,
+                                shift*iconSize, 0, iconSize, iconSize);
+          }
+        else
+          {
+            painter->drawPixmap(P.x() - xOffset, P.y() - yOffset, pm);
+          }
 
-              // draw name of waypoint
-              if ( _globalMapMatrix->getScale(MapMatrix::CurrentScale) < 100 &&
-                  GeneralConfig::instance()->getMapShowWaypointLabels() )
-                {
-                  // do we need to show the labels at all?
-                  labelText = wp.name;
+        // qDebug("Icon drawn wp=%s", wp.name.toLatin1().data());
 
-                  if ( GeneralConfig::instance()->getMapShowWaypointLabelsExtraInfo() )
-                    { //just the name, or also additional info?
-                      if ( wp.isLandable )
-                        {
-                          if (reachable == ReachablePoint::yes)
-                            { //reachable? then the label will become bold
-                              labelText = "<b>" + labelText + "</b><br>";
-                            }
-                          else
-                            {
-                              labelText = labelText + "<br>";
-                            }
 
-                          dist = ReachableList::getDistance( wp.origP );
+        // Draw the waypoint name, if required by the user. That is only done,
+        // when the current scale is small enough to prevent a flood of labels
+        // on the map.
+        if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) < 250 &&
+            GeneralConfig::instance()->getMapShowWaypointLabels() )
+          {
+            labelText = wp.name;
 
-                          if ( dist.isValid() )
-                            { //check if the distance is valid...
-                              labelText += dist.getText( false, uint(0), uint(0) )
-                                           +  "/";
-                              alt = ReachableList::getArrivalAltitude( wp.origP );
+            // qDebug("LabelInfo wp=%s", wp.name.toLatin1().data());
 
-                              if ( alt.getMeters()<0 ) //the color is dependent on the arrival altitude
-                                {
-                                  labelText += "<font color=\"#FF0000\">"
-                                               + alt.getText( false, 0 )
-                                               + "</font>";
-                                }
-                              else
-                                {
-                                  labelText += "&nbsp;"
-                                               + alt.getText( false, 0 );
-                                }
-                            }
-                        }
-                    }
-                  else
-                    {
-                      if ( wp.isLandable )
-                        {
-                          if (reachable == ReachablePoint::yes)
-                            {
-                              labelText = "<b>" + labelText + "</b>";
-                            }
-                        }
-                    }
+            if( GeneralConfig::instance()->getMapShowWaypointLabelsExtraInfo() )
+              {
+                // draw the name together with the additional information
+                if( wp.isLandable )
+                  {
+                    dist = ReachableList::getDistance( wp.origP );
 
-                  rtext = new QLabel(this);
-                  wpLabels.append( rtext );
-                  rtext->setAutoFillBackground(true);
-                  QFont f = rtext->font();
-                  f.setPixelSize(24);
-                  rtext->setFont(f);
-                  rtext->setFrameStyle( QFrame::Box | QFrame::Plain );
-                  rtext->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-                  rtext->setText( labelText );
-                  rtext->adjustSize();
-                  rtext->resize( rtext->width()+4, rtext->height() );
+                    if( dist.isValid() )
+                      { // check if the distance is valid...
+                        labelText += "\n" +
+                        dist.getText( false, uint(0), uint(0) ) +
+                        " / " +
+                        alt.getText( false, 0 );
+                      }
+                  }
+              }
 
-                  QRect textbox( rtext->rect() );
+            QFont cf = painter->font();
 
-                  if (wp.origP.lon()<_globalMapMatrix->getMapCenter(false).y())
-                    {
-                      //the wp is on the left side of the map, so draw the text label on the right side
-                      xOffset=10;
-                      yOffset=(textbox.height()/4)*3;
+            if( wp.isLandable && reachable == ReachablePoint::yes)
+              { // land and reachable? then the label will become bold
+                cf.setBold(true);
+              }
+            else
+              {
+                cf.setBold(false);
+              }
 
-                      if (_globalMapConfig->useSmallIcons())
-                        {
-                          xOffset=6;
-                          yOffset=-0;
-                        }
-                    }
-                  else
-                    {
-                      //the wp is on the right side of the map, so draw the text label on the left side
-                      xOffset=-textbox.width()-14;
-                      yOffset=(textbox.height()/4)*3;
+            painter->setFont( cf );
 
-                      if (_globalMapConfig->useSmallIcons())
-                        {
-                          xOffset=-textbox.width()-6;
-                          yOffset=0;
-                        }
-                    }
+            if( ! isSelected )
+              {
+                painter->setPen(QPen(Qt::black, 4, Qt::SolidLine));
+                painter->setBrush( Qt::white );
+              }
+            else
+              {
+                // draw selected waypoint label invers
+                painter->setPen(QPen(Qt::white, 4, Qt::SolidLine));
+                painter->setBrush( Qt::black );
+              }
 
-                  QPalette rpal = rtext->palette();
+            // calculate text bounding box
+            QRect dRec( 0, 0, 400, 400 );
+            QRect textBox;
 
-                  if (!isSelected)
-                    {
-                      rpal.setColor(QPalette::Normal,QPalette::Window,Qt::white);
-                      rpal.setColor(QPalette::Normal,QPalette::WindowText,Qt::black);
-                    }
-                  else
-                    {
-                      rpal.setColor(QPalette::Normal,QPalette::Window,Qt::black);
-                      rpal.setColor(QPalette::Normal,QPalette::WindowText,Qt::white);
-                    }
+            textBox = painter->fontMetrics().boundingRect( dRec, Qt::AlignCenter, labelText );
 
-                  rtext->setPalette(rpal);
-                  rtext->move( P.x() + xOffset + 1, P.y() + yOffset - textbox.height() + 2 );
-                  rtext->show();
-                }//draw labels?
-            } //in visible area?
-        } //important enough?
+            // test, if rectangle is right calculated, when newline is in string
+            /* qDebug( "FontText=%s, w=%d, h=%d",
+                    labelText.toLatin1().data(),
+                    textBox.width(),
+                    textBox.height() ); */
+
+            // add a little bit more space in the width
+            textBox.setRect( 0, 0, textBox.width() + 8, textBox.height() );
+
+            if( wp.origP.lon() < _globalMapMatrix->getMapCenter(false).y() )
+              {
+                // the wp is on the left side of the map, so draw the text label on the right side
+                xOffset = 15;
+                yOffset = -textBox.height() / 2;
+
+                if (_globalMapConfig->useSmallIcons())
+                  {
+                    xOffset = 7;
+                  }
+              }
+            else
+              {
+                // the wp is on the right side of the map, so draw the text label on the left side
+                xOffset = -textBox.width() - 15;
+                yOffset = -textBox.height() / 2;
+
+                if (_globalMapConfig->useSmallIcons())
+                  {
+                    xOffset = -textBox.width() - 7;
+                  }
+              }
+
+            textBox.setRect( P.x() + xOffset,
+                             P.y() + yOffset,
+                             textBox.width(), textBox.height() );
+
+            alt = ReachableList::getArrivalAltitude( wp.origP );
+
+            if( alt.getMeters() < 0 )
+              {
+                // the rectangle border color is depending on the arrival
+                // altitude. Under zero the color red is used
+                QPen cPen = painter->pen();
+                painter->setPen(QPen(Qt::red, 3, Qt::SolidLine));
+                painter->drawRect( textBox );
+                painter->setPen( cPen );
+             }
+            else
+              {
+                painter->drawRect( textBox );
+              }
+
+            painter->drawText( textBox, Qt::AlignCenter, labelText );
+          }//draw labels?
     } //for loop
+
+  painter->restore();
 }
 
 /** This function sets the map rotation and redraws the map if the
