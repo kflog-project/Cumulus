@@ -208,8 +208,8 @@
 #define RIVER_COLOR_3 QColor(70,70,195)
 #define RIVER_COLOR_4 QColor(70,70,195)
 
-#define RIVER_PEN_WIDTH_1 2
-#define RIVER_PEN_WIDTH_2 1
+#define RIVER_PEN_WIDTH_1 3
+#define RIVER_PEN_WIDTH_2 2
 #define RIVER_PEN_WIDTH_3 1
 #define RIVER_PEN_WIDTH_4 1
 
@@ -250,7 +250,7 @@
 #define CANAL_COLOR_3 QColor(70,70,195)
 #define CANAL_COLOR_4 QColor(70,70,195)
 
-#define CANAL_PEN_WIDTH_1 2
+#define CANAL_PEN_WIDTH_1 3
 #define CANAL_PEN_WIDTH_2 2
 #define CANAL_PEN_WIDTH_3 1
 #define CANAL_PEN_WIDTH_4 1
@@ -266,7 +266,7 @@
 #define CITY_COLOR_3 QColor(0,0,0)
 #define CITY_COLOR_4 QColor(0,0,0)
 
-#define CITY_PEN_WIDTH_1 1
+#define CITY_PEN_WIDTH_1 2
 #define CITY_PEN_WIDTH_2 1
 #define CITY_PEN_WIDTH_3 1
 #define CITY_PEN_WIDTH_4 1
@@ -370,7 +370,7 @@
 #define RIVER_T_COLOR_3 QColor(255,250,100)
 #define RIVER_T_COLOR_4 QColor(255,250,100)
 
-#define RIVER_T_PEN_WIDTH_1 2
+#define RIVER_T_PEN_WIDTH_1 3
 #define RIVER_T_PEN_WIDTH_2 2
 #define RIVER_T_PEN_WIDTH_3 2
 #define RIVER_T_PEN_WIDTH_4 2
