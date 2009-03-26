@@ -17,6 +17,13 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.2.x (Development based on X11/Qt-4.5.x)
 -------------------------------------------------
+[o] 2009-03-26 AP: Waypoint labels and extra information text boxes redesigned.
+                   All is drawn directly at the pixmap again. That ensures,
+                   that the glider or cross symbol are not hidden by the text boxes
+                   as before.
+[-] 2009-03-26 AP: BUGFIX: A added airfield or glider site to the waypoint list,
+                   was only displayed after a cumulus restart. Projected coordinates
+                   were forgotten to copy.
 [o] 2009-03-24 AP: GPS setting tabulator modified for Maemo, that a speed can be
                    selected too, if the USB device was chosen. The USB-RS232
                    driver can need that to get initialized with the right baud rate.
