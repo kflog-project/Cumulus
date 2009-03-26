@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008 by Axel Pauli
+**                   2008-2009  by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -485,17 +485,14 @@ class Map : public QWidget
     double zoomFactor;
 
     /** reference to the short interval redraw timer */
-    QTimer * redrawTimerShort;
+    QTimer *redrawTimerShort;
     /** reference to the long interval redraw timer */
-    QTimer * redrawTimerLong;
+    QTimer *redrawTimerLong;
     /** Determines weather to draw the glider symbol. */
     bool ShowGlider;
+
     unsigned int zoomProgressive;
     float zoomProgressiveVal[8];
-    /** Waypoint text label; instantiated only if needed. */
-    QLabel *rtext;
-    /** Waypoint text label list */
-    QList<QLabel*> wpLabels;
 
   protected: // Protected attributes
     /**
