@@ -138,6 +138,7 @@ dpkg_install:
 	install -d $(DESTDIR)/usr/share/applications/hildon
 	install -d $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
 	install --mode=755 dpkg/maemo/start_cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install --mode=755 dpkg/maemo/start_simu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 cumulus/cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(DESTDIR)/$(INSTALL_ROOT)/bin
