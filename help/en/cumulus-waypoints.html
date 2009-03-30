@@ -8,101 +8,141 @@
 <body>
 
 <table width="100%">
-
-    <tbody>
+  <tbody>
     <tr>
-
-    <td align="left"><a href="cumulus-manual.html">back</a></td>
-
-    <td align="center"><a href="cumulus.html">start</a></td>
-
-    <td align="right"><a href="cumulus-tasks.html">next</a></td>
-
+	    <td align="left"><a href="cumulus-manual.html">back</a></td>
+	    <td align="center"><a href="cumulus.html">start</a></td>
+	    <td align="right"><a href="cumulus-tasks.html">next</a></td>
     </tr>
   </tbody>
 </table>
 
-
 <h3 align="center">Waypoints</h3>
 
+<p>Waypoints are used in Cumulus to support the navigation. When used in
+tasks they also serve as turnpoints. Waypoints can be created or edited
+inside cumulus or by using KFLog on the Linux desktop, where you can more
+easily maintain the waypoint list.
 
-<p>Waypoints are used in Cumulus to aid navigation. When used in
-tasks, they also serve as turnpoints. The waypoints can be edited too
-with KFLog on the Linux desktop, where you can more easily maintain the list.
-ATM cumulus supports only one waypoint file. This file is installed under your selected Data Directory.
-As waypoint file name must be used <i>cumulus.kwp</i>. This is a hardcoded name. Please make only waypoint file transfer when cumulus is not running.&nbsp;
+<dl>
+  <dt><b>Waypoint file remarks</b></dt>
 
-</p>
-<p>To select a waypoint, press <i><b>W</b></i> to open the waypoint
-screen. Highlight the waypoint using the arrows and/or the letter keys
-and press <i><b>Space or Center Button</b></i> to select the
-highlighted waypoint.</p>
+  <dd>
+		At the moment Cumulus supports only one waypoint file. This file is installed
+		under your selected Data Directory. As waypoint file name must be used
+		<i>cumulus.kwp</i>. This is a hardcoded name.
+  </dd>
 
+  <dt><b>Waypoint file transfer</b></dt>
 
-<p>You can narrow down the list of waypoints using the buttons above the
-list. These act as a filter. In only a few steps, you can reduce a list
-of thousands of items to only a few, making it much easier to find the
-waypoint you are looking for.</p>
+  <dd>
+		You can transfer the waypoint file between your desktop PC and your PDA but
+		notice,	that Cumulus is <b>not running</b> during the file transfer.
+		That can cause a corrupted file.
+  </dd>
 
+  <dt><b>Waypoint list display</b></dt>
 
-<p>Use the <b><i>Info</i></b> button to get more info about the
-highlighted waypoint. The info screen for a waypoint will close
-automatically after 7 seconds. Press <b><i>I</i></b> to hold up the
-screen for 7 more seconds, and press <b><i>K</i></b>
-to keep the screen open; press <b><i>Space or Center Button</i></b> to
-close it.
+  <dd>
+		To open the waypoint list press <i><b>W</b></i> or tipp at the waypoint
+		display, located at the left upper corner on the map screen. Now you can
+		see all your known waypoints sorted in alphabetically order. With different
+	  buttons in the window you can modify the waypoint list or do other things.
+		
+		<p><ul>
+		  <li>Press one of the filter buttons above the list to navigate to
+		      a certain waypoint.</li>
+		  <li>Press the plus button to create a new waypoint.</li>
+		  <li>Press the pencil button to edit the selected waypoint.</li>
+		  <li>Press the trash button to remove the selected waypoint.</li>
+		  <li>Press the house button to set the selected waypoint as your
+		      new home position.</li>
+		  <li>Press the <b><i>Info</i></b> button to get displayed the details
+		      of the selected waypoint. The info screen for a waypoint will close
+          automatically after some seconds. Press the <i>Keep</i> button to
+          prevent this. The <b><i>New Home</i></b> button sets this waypoint
+          as your new home position.</li>
+		  <li>Press the Select button to make the selected waypoint to your
+		      new target. The hardware keys Return or Select do the same.
+		      You may want to use <b><i>V</i></b> after selecting a
+          waypoint to ensure it is visible on the map.</li>
+		</p></ul>
+  </dd>
 
-</p>
-<p>The currently selected waypoint is highlighted on the map using a
-reversed label. You may want to use <b><i>V</i></b> after selecting a
-waypoint to ensure it is visible on the map.</p>
+  <dt><b>Waypoint list filters</b></dt>
 
+  <dd>
+		You can narrow down the list of waypoints using the buttons above the
+		list. These act as a filter. In only a few steps, you can reduce a list
+		of thousands of items to only a few, making it much easier to find the
+		waypoint you are looking for.
+  </dd>
 
+  <dt><b>Creating a waypoint from the current position</b></dt>
+
+  <dd>
+    At any time you can press <i><b>R</b></i> or tipp on the baering icon
+    on the map to remember the current position. A waypoint with the name
+    <i>WPx-HH:MM</i> will be generated that contains the current coordinates
+    and altitude, where <i>HH:MM</i> is derived from the current UTC time.
+    The new waypoint is shown in the map display and can be edited in
+    the waypoint screen as any other waypoint.
+  </dd>
+
+  <dt><b>Waypoint management</b></dt>
+  
+  <dd>
+    If you want to add, modify or delete waypoints use the icons above the
+    waypoint list. 
     
-<p>If you want to add, modify or delete waypoints use the icons above the waypoint list. 
-    <b>It is not recommended that you do this in flight!</b>
-    </p>
-<p> If you choose
-    new or edit, you will be presented a dialog with entry fields for the waypoint's properties. The
-    <i>importance</i> property deserves some explanation. To prevent overcrowding the map with waypoints
-    if you zoom out far, not all waypoints are drawn in at all zoom factors. You can control which waypoints
-    to draw by selecting the importance. If you select <i>high</i>, the waypoint will always be drawn. This would
-    be appropriate for your home site and other important sites. If you select <i>normal</i> the waypoint will be
-    drawn in normal zoom modes but not if you zoom out too much, and the <i>low</i> importance waypoints are
-    only drawn if you zoom in far enough. The currently selected waypoint is always visible.</p>
+    <p><b>It is not recommended that you do this in flight!</b></p>
 
+    If you choose new or edit it is open a editor with entry fields for the
+    waypoint's properties. The <i>importance</i> property deserves some
+    explanation. To prevent overcrowding the map with waypoints
+    if you zoom out far, not all waypoints are drawn in at all zoom factors.
+    You can control which waypoints to draw by selecting the importance.
+    If you select <i>high</i> the waypoint will always be drawn. This would
+    be appropriate for your home site and other important sites.
+    If you select <i>normal</i> the waypoint will be drawn in normal zoom
+    modes but not if you zoom out too much and the <i>low</i> importance
+    waypoints are only drawn if you zoom in far enough. The currently
+    selected waypoint is always visible.
+  </dd>
+  
+  <dt><b>Waypoint names and extra information</b></dt>
+  
+  <dd>
+    Via the menu bar entries <i>View->Waypoint lables and extra info</i>
+    you can switch on the display of the waypoint names and their
+    reachability (distance and arrival altitude) besides their icons,
+    if a glider is selected.
+    The text labels are drawn at a white background with black letters.
+    The currently selected waypoint is drawn revers. If a waypoint
+    is land- and reachable the text is drawn bold. <b>The extra information
+    distance and arrival altitude are only displayed, if the landable attribute
+    of the waypoint is set.</b> If the waypoint is below your safety altitude,
+    the text box frame is drawn in red color.
+  </dd>
+  
+  <dt><b>Final glide calculations</b></dt>
 
-    
-<p>At any time you can press <i><b>R</b></i> to remember the
-    current position.  A waypoint with the name <i>WPX HH:MM</i> will
-    be generated that contains the current coordinates and altitude,
-    where <i>HH:MM</i> is derived from the current UTC time.  The new
-    waypoint will show up in the map display and can be manipulated in
-    the waypoint screen as any other waypoint.</p>
-
-
-    
-<p>Waypoints are also used for final glide calculations. If you
+  <dd>
+    Waypoints are also used for final glide calculations. If you
     plan to use this feature of cumulus, please make sure that you
-    correctly enter the position and the elevation of the
-    waypoint!</p>
+    <b>correctly enter the position and the elevation</b> of the
+    waypoints! Otherwise you will get unpredictable results.
+  </dd>
 
+</dl>
 
-    
 <table width="100%">
-
-    <tbody>
+  <tbody>
     <tr>
-
-    <td align="left"><a href="cumulus-manual.html">back</a></td>
-
-    <td align="center"><a href="cumulus.html">start</a></td>
-
-    <td align="right"><a href="cumulus-tasks.html">next</a></td>
-
+        <td align="left"><a href="cumulus-manual.html">back</a></td>
+        <td align="center"><a href="cumulus.html">start</a></td>
+        <td align="right"><a href="cumulus-tasks.html">next</a></td>
     </tr>
-
-    
   </tbody>
 </table>
 
