@@ -1320,7 +1320,7 @@ void Map::__drawWaypoints(QPainter* painter)
             }
         }
 
-      if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) > 1024.0 && ! isSelected )
+      if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) > 1000.0 && ! isSelected )
         {
           // Don't draw any waypoints at this high scale
           continue;

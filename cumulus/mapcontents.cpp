@@ -62,9 +62,6 @@ extern MapView* _globalMapView;
 // number of last map tile, possible range goes 0...16200
 #define MAX_TILE_NUMBER 16200
 
-// number of different isoline levels
-#define ISO_LINE_NUM 50
-
 // general KFLOG file token: @KFL
 #define KFLOG_FILE_MAGIC    0x404b464c
 
@@ -526,7 +523,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
 
   while ( !in.atEnd() )
     {
-      int sort_temp;
+      int elevationIdx;
 
       quint8 type;
       qint16 elevation;
@@ -583,24 +580,27 @@ bool MapContents::__readTerrainFile( const int fileSecID,
           ShortLoad( in, all );
         }
 
-      sort_temp = -1;
+      elevationIdx = -1;
 
       // We must ignore data record, when sort is more than 3 or less than 0!
-      // @AP 24.02.2009: sort plays no more a role, the former 4 different
-      //                 isoLine levels were reduced to one by me.
-
+      if( sort < 0 || sort > 3 )
+        {
+          qWarning("Iso sort index=%d in FileTypeId=%X is out of range",
+                    sort, fileTypeID);
+          continue;
+        }
       // translate elevation to an isoLine array index
       if ( isoHash.contains( elevation) )
         {
-          sort_temp = isoHash.value( elevation );
+          elevationIdx = isoHash.value( elevation );
         }
 
       // If sort_temp is -1 here, we have an unused elevation and
       // must ignore it!
-      if (sort_temp != -1)
+      if (elevationIdx != -1)
         {
           Isohypse newItem(all, elevation, valley, fileSecID, fileTypeID);
-          isoList[sort_temp].append(newItem);
+          isoList[elevationIdx][sort].append(newItem);
           //qDebug("Isohypse added: Size=%d, elevation=%d, valley=%d, fileTypeID=%X",
           //       all.size(), elevation, valley ? 1 : 0, fileTypeID );
         }
@@ -1653,15 +1653,15 @@ void MapContents::unloadMapObjects(QList<RadioPoint>& list)
     }
 }
 
-void MapContents::unloadMapObjects(QList<Isohypse> list[])
+void MapContents::unloadMapObjects(QList<Isohypse> list[ISO_LINE_NUM][ISO_LINE_LEVELS])
 {
-  for ( int i = 0; i < ISO_LINE_NUM; i++ )
+  for ( int i = 0; i < ISO_LINE_NUM * ISO_LINE_LEVELS; i++ )
     {
-      for ( int j = list[i].count() - 1; j >= 0; j--)
+      for ( int j = list[i][0].count() - 1; j >= 0; j--)
         {
-          if ( !tileSectionSet.contains(list[i].at(j).getMapSegment()) )
+          if ( !tileSectionSet.contains(list[i][0].at(j).getMapSegment()) )
             {
-              list[i].removeAt(j);
+              list[i][0].removeAt(j);
             }
         }
     }
@@ -1834,9 +1834,9 @@ void MapContents::slotReloadMapData()
   villageList.clear();
 
   // the content of all iso lists in the isoList array must be cleared
-  for ( int i = 0; i < ISO_LINE_NUM; i++)
+  for ( int i = 0; i < ISO_LINE_NUM * ISO_LINE_LEVELS; i++)
     {
-      isoList[i].clear();
+      isoList[i][0].clear();
     }
 
   tileSectionSet.clear();
@@ -2179,44 +2179,48 @@ void MapContents::drawIsoList(QPainter* targetP)
       maxElevationIdx = ISO_LINE_NUM - 1;
     }
 
-  for (int i = 0; i <= maxElevationIdx; i++)
+  // We step here over the different isoLine level lists, starting at the
+  // lowest level 0m
+  for (int j = 0; j < ISO_LINE_LEVELS; j++)
     {
-      // We step here over the different isoLine level lists, starting at the
-      // lowest level 0m
-      QList<Isohypse> isoLevelList = isoList[i];
+      for (int i = 0; i <= maxElevationIdx; i++)
+        {
+          // step over one whole isoLine level list
+          QList<Isohypse> isoLevelList = isoList[i][j];
 
-      if ( isoLevelList.size() == 0 )
-        {
-          // iso list is empty, ignore it
-          continue;
-        }
-
-      if ( drawTerrain )
-        {
-          // Choose contour color.
-          // The index of the isoList has a fixed relation to the iso color list
-          // normally with an offset of one.
-          targetP->setBrush(QBrush(conf->getTerrainColor(i+1), Qt::SolidPattern));
-        }
-      else
-        {
-          // Only ground level will be drawn. We take the ground color
-          // when isoline drawing is switched off by the user.
-          targetP->setBrush(QBrush(conf->getGroundColor(), Qt::SolidPattern));
-        }
-
-      for (int j = 0; j < isoLevelList.size(); j++)
-        {
-          // draws the single region of this elevation
-          Isohypse isoArea = isoLevelList.at(j);
-          QRegion* reg  = isoArea.drawRegion( targetP, _globalMapView->rect(),
-                                              true, isolines );
-          if ( reg )
+          if ( isoLevelList.size() == 0 )
             {
-              // store drawn region in extra list for elevation finding
-              IsoListEntry entry( reg, isoArea.getElevation() );
-              regIsoLines.append( entry );
-              //qDebug("  added Iso: %04x, %d", (int)reg, iso2.getElevation() );
+              // iso list is empty, ignore it
+              continue;
+            }
+
+          if ( drawTerrain )
+            {
+              // Choose contour color.
+              // The index of the isoList has a fixed relation to the iso color list
+              // normally with an offset of one.
+              targetP->setBrush(QBrush(conf->getTerrainColor(i+1), Qt::SolidPattern));
+            }
+          else
+            {
+              // Only ground level will be drawn. We take the ground color
+              // when isoline drawing is switched off by the user.
+              targetP->setBrush(QBrush(conf->getGroundColor(), Qt::SolidPattern));
+            }
+
+          for (int k = 0; k < isoLevelList.size(); k++)
+            {
+              // draws the single region of this elevation
+              Isohypse isoArea = isoLevelList.at(k);
+              QRegion* reg  = isoArea.drawRegion( targetP, _globalMapView->rect(),
+                                                  true, isolines );
+              if ( reg )
+                {
+                  // store drawn region in extra list for elevation finding
+                  IsoListEntry entry( reg, isoArea.getElevation() );
+                  regIsoLines.append( entry );
+                  //qDebug("  added Iso: %04x, %d", (int)reg, iso2.getElevation() );
+                }
             }
         }
     }
@@ -2230,9 +2234,9 @@ void MapContents::drawIsoList(QPainter* targetP)
 #if 0
   QString isos;
 
-  for ( int i = 0; i < regIsoLines.count(); i++ )
+  for ( int l = 0; l < regIsoLines.count(); l++ )
     {
-      isos += QString("%1, ").arg(regIsoLines.at(i).height);
+      isos += QString("%1, ").arg(regIsoLines.at(l).height);
     }
 
   qDebug( isos.toLatin1().data() );

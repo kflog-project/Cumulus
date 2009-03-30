@@ -598,9 +598,9 @@ unsigned int MapMatrix::currentDrawScale() const
 {
   //these numbers need to be made configurable at some point.
 
-  if (cScale<=250)
+  if (cScale <= 125)
     return 0;
-  else if (cScale<=500)
+  else if (cScale <= 200 )
     return 1;
   else
     return 2;

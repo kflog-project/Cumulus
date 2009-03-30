@@ -44,6 +44,8 @@ class SinglePoint;
 
 // number of isoline lists
 #define ISO_LINE_NUM 50
+// number of isoline levels
+#define ISO_LINE_LEVELS 4
 
 /**
  * This class provides functions for accessing the contents of the map.
@@ -233,7 +235,7 @@ class MapContents : public QObject
 
     void unloadMapObjects(QList<RadioPoint>& list);
 
-    void unloadMapObjects(QList<Isohypse> list[]);
+    void unloadMapObjects(QList<Isohypse> list[ISO_LINE_NUM][ISO_LINE_LEVELS]);
 
     /**
      * This function checks all possible map directories for the
@@ -410,7 +412,7 @@ class MapContents : public QObject
     /**
      * isohypseList contains all isohypses.
      */
-    QList<Isohypse> isoList[ISO_LINE_NUM];
+    QList<Isohypse> isoList[ISO_LINE_NUM][ISO_LINE_LEVELS];
 
     /**
      * Set over map tiles. Contains the sectionId for all fully loaded
