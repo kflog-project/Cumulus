@@ -697,12 +697,24 @@ class GeneralConfig : protected QSettings
     _virtualKeyboard = newValue;
   };
 
-  /** gets qnh */
+  /** gets screen saver off speed in Km/h */
+  int getScreenSaverOffSpeed() const
+  {
+    return _screenSaverOffSpeed;
+  };
+
+  /** sets screen saver off speed in Km/h */
+  void setScreenSaverOffSpeed( const int newValue )
+  {
+    _screenSaverOffSpeed = newValue;
+  };
+
+  /** gets QNH */
   int getQNH() const
   {
     return _qnh;
   };
-  /** sets qnhe */
+  /** sets QNH */
   void setQNH( const int newValue )
   {
     _qnh = newValue;
@@ -1663,6 +1675,8 @@ class GeneralConfig : protected QSettings
   QString _guiFont;
   // Virtual keyboard usage
   bool _virtualKeyboard;
+  // Screen saver off speed
+  int _screenSaverOffSpeed;
   // QNH
   int _qnh;
   // logger interval

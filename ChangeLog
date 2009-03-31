@@ -17,6 +17,8 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.2.x (Development based on X11/Qt-4.5.x)
 -------------------------------------------------
+[+] 2009-03-31 AP: Look&Feel tabulator extended by a speed spin box. If selected
+                   speed is fallen below the screen saver is switched on.
 [o] 2009-03-26 AP: Waypoint labels and extra information text boxes redesigned.
                    All is drawn directly at the pixmap again. That ensures,
                    that the glider or cross symbol are not hidden by the text boxes

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008 Axel Pauli
+**   Copyright (c):  2008-2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -15,14 +15,17 @@
 **
 ***********************************************************************/
 
-#ifndef SETTINGSPAGELOOKNFEEL_H
-#define SETTINGSPAGELOOKNFEEL_H
+#ifndef SETTINGS_PAGE_LOOKNFEEL_H
+#define SETTINGS_PAGE_LOOKNFEEL_H
 
 #include <QWidget>
 #include <QLineEdit>
 #include <QComboBox>
 #include <QCheckBox>
 #include <QPushButton>
+#include <QDoubleSpinBox>
+
+#include "speed.h"
 
 /**
  * This class represents the personal style settings.
@@ -64,10 +67,16 @@ class SettingsPageLookNFeel : public QWidget
     QString currentFont; // current selected font is saved here
     QColor  currentMapFrameColor; // current color of map frame
 
-    QComboBox   *styleBox;
-    QPushButton *fontDialog;
-    QPushButton *editMapFrameColor;
-    QCheckBox   *virtualKeybord;
+    QComboBox      *styleBox;
+    QPushButton    *fontDialog;
+    QPushButton    *editMapFrameColor;
+    QDoubleSpinBox *screenSaverOffSpeed;
+    QCheckBox      *virtualKeybord;
+
+    /** saves horizontal speed unit during construction of object */
+    Speed::speedUnit unit;
+    /** loaded speed for change control */
+    double loadedSpeed;
   };
 
 #endif

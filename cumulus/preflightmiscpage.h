@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2004 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef PREFLIGHTMISCPAGE_H
-#define PREFLIGHTMISCPAGE_H
+#ifndef PREFLIGHT_MISCPAGE_H
+#define PREFLIGHT_MISCPAGE_H
 
 #include <QWidget>
 #include <QCheckBox>
@@ -26,7 +26,7 @@
 
 /**
  * @short Miscelanious pre-flight settings
- * @author André Somers, Axel Pauli
+ * @author AndrÃ© Somers, Axel Pauli
  */
 class PreFlightMiscPage : public QWidget
 {

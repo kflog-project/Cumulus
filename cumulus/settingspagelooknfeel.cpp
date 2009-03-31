@@ -37,6 +37,10 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
 {
   setObjectName("SettingsPageLookNFeel");
 
+  // get current used horizontal speed unit. This unit must be considered
+  // during storage.
+  unit = Speed::getHorizontalUnit();
+
   QGridLayout* topLayout = new QGridLayout(this);
   int row=0;
 
@@ -71,6 +75,18 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   connect(editMapFrameColor, SIGNAL(clicked()), this, SLOT(slot_openColorDialog()));
   row++;
 
+  lbl = new QLabel(tr("ScreenSaver on:"), this);
+  topLayout->addWidget(lbl, row, 0);
+  screenSaverOffSpeed = new QDoubleSpinBox( this );
+  screenSaverOffSpeed->setButtonSymbols(QSpinBox::PlusMinus);
+  screenSaverOffSpeed->setRange( 1.0, 99.0);
+  screenSaverOffSpeed->setSingleStep( 5 );
+  screenSaverOffSpeed->setPrefix( "< " );
+  screenSaverOffSpeed->setDecimals( 1 );
+  screenSaverOffSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
+  topLayout->addWidget( screenSaverOffSpeed, row, 1 );
+  row++;
+
   virtualKeybord = new QCheckBox(tr("Virtual Keyboard"), this);
   virtualKeybord->setObjectName("VirtualKeyboard");
   virtualKeybord->setChecked(false);
@@ -88,7 +104,6 @@ SettingsPageLookNFeel::~SettingsPageLookNFeel()
 void SettingsPageLookNFeel::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
-
   currentFont = conf->getGuiFont();
 
   // search item to be selected
@@ -100,6 +115,13 @@ void SettingsPageLookNFeel::slot_load()
     }
 
   currentMapFrameColor = conf->getMapFrameColor();
+
+  Speed speed;
+  // speed is stored in Km/h
+  speed.setKph( GeneralConfig::instance()->getScreenSaverOffSpeed() );
+  screenSaverOffSpeed->setValue( speed.getValueInUnit( unit ) );
+  // save set value for change control
+  loadedSpeed = screenSaverOffSpeed->value();
 
   virtualKeybord->setChecked( conf->getVirtualKeyboard() );
 }
@@ -125,6 +147,16 @@ void SettingsPageLookNFeel::slot_save()
       conf->setMapFrameColor( currentMapFrameColor );
     }
 
+  if( loadedSpeed != screenSaverOffSpeed->value() )
+    {
+      Speed speed;
+      speed.setValueInUnit( screenSaverOffSpeed->value(), unit );
+
+      // store speed in Km/h
+      int speedi = static_cast<int>( rint( speed.getKph() ) );
+      GeneralConfig::instance()->setScreenSaverOffSpeed( speedi );
+    }
+
   // Note! enabling/disabling requires GUI restart
   conf->setVirtualKeyboard( virtualKeybord->isChecked() );
 }
@@ -145,6 +177,7 @@ void SettingsPageLookNFeel::slot_query_close( bool& warn, QStringList& warnings 
   changed |= conf->getGuiStyle() != styleBox->currentText();
   changed |= conf->getVirtualKeyboard() != virtualKeybord->isChecked();
   changed |= conf->getMapFrameColor() != currentMapFrameColor;
+  changed |= loadedSpeed != screenSaverOffSpeed->value() ;
 
   if (changed)
     {

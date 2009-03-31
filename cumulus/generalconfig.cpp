@@ -67,11 +67,12 @@ void GeneralConfig::load()
 
   // Main window properties
   beginGroup("MainWindow");
-  _windowSize        = value("Geometrie", QSize(800, 480)).toSize();
-  _mapSideFrameColor = QColor( value("MapSideFrameColor", "#687ec6").toString() );
-  _guiStyle          = value("Style", "Plastique").toString();
-  _guiFont           = value("Font", "").toString();
-  _virtualKeyboard   = value("VirtualKeyboard", false).toBool();
+  _windowSize          = value("Geometrie", QSize(800, 480)).toSize();
+  _mapSideFrameColor   = QColor( value("MapSideFrameColor", "#687ec6").toString() );
+  _guiStyle            = value("Style", "Plastique").toString();
+  _guiFont             = value("Font", "").toString();
+  _virtualKeyboard     = value("VirtualKeyboard", false).toBool();
+  _screenSaverOffSpeed = value("ScreenSaverOffSpeed", 10).toInt();
   endGroup();
 
   // Airspace warning distances
@@ -360,6 +361,7 @@ void GeneralConfig::save()
   setValue("Style", _guiStyle);
   setValue("Font", _guiFont);
   setValue("VirtualKeyboard", _virtualKeyboard);
+  setValue("ScreenSaverOffSpeed", _screenSaverOffSpeed);
   endGroup();
 
   // Airspace warning distances
