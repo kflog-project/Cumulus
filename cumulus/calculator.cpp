@@ -6,8 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2002 by André Somers
- **                  2008-2009 Axel Pauli
+ **   Copyright (c): 2002      by André Somers
+ **                  2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -165,7 +165,7 @@ const Altitude& Calculator::getAltimeterAltitude()
 const QString Calculator::getAltimeterAltitudeText()
 {
   Altitude alti = getAltimeterAltitude();
-  // to be implemented: if heigh>transition heigh switch to FL
+  // to be implemented: if height > transition height switch to FL
   //double d = alti.getFL();
   return alti.getText (false,0);
 }
@@ -211,7 +211,7 @@ void Calculator::slot_Heading()
   emit newHeading(lastHeading);
   // if we have no bearing, lastBearing is -1;
   // this is only a small mistake, relBearing points to north
-  //@JD: but wrong showing of new rel.-bearing icon, so bail out
+  //@JD: but wrong showing of new relative bearing icon, so bail out
   if (lastBearing < 0)
     {
       return;
@@ -291,9 +291,6 @@ void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
 
   // save new selected waypoint
   setSelectedWp( newWp );
-
-  // inform mapView about the change
-  emit newWaypoint(newWp);
 
   if ( newWp == 0 )
     {
@@ -1469,6 +1466,9 @@ void Calculator::setSelectedWp( const wayPoint* newWp )
     {
       selectedWp = new wayPoint( *newWp );
     }
+
+  // inform mapView about the change
+  emit newWaypoint(newWp);
 }
 
 void Calculator::setManualInFlight(bool switchOn)
