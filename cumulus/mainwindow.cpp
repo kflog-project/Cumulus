@@ -1976,11 +1976,12 @@ void MainWindow::slotOssoDisplayTrigger()
   // If the speed is greater or equal 10 km/h and we have a connected
   // gps we switch off the screen saver. Otherwise we let all as it
   // is.
-  double offSpeed = GeneralConfig::instance()->getScreenSaverOffSpeed();
+  double speedLimit = GeneralConfig::instance()->getScreenSaverSpeedLimit();
 
-  if( calculator->getLastSpeed().getKph() >= offSpeed && GpsNmea::gps->getConnected() )
+  if( calculator->getLastSpeed().getKph() >= speedLimit &&
+      GpsNmea::gps->getConnected() )
     {
-      // tell maemo that we are in move to avoid blank screen
+      // tells Maemo that we are in move enough to switch off or avoid blank screen
       osso_return_t ret = osso_display_blanking_pause( ossoContext );
 
       if( ret != OSSO_OK )
