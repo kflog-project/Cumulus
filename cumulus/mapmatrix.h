@@ -6,8 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2001 by Heiner Lamprecht, Florian Ehinger
- **                   2008 by 2008 Axel Pauli
+ **   Copyright (c): 2001      by Heiner Lamprecht, Florian Ehinger
+ **                  2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -16,8 +16,8 @@
  **
  ***********************************************************************/
 
-#ifndef MAPMATRIX_H
-#define MAPMATRIX_H
+#ifndef MAP_MATRIX_H
+#define MAP_MATRIX_H
 
 #include <QObject>
 #include <QMatrix>
@@ -342,6 +342,7 @@ class MapMatrix : public QObject
 
 
  signals:
+
   /** */
   void displayMatrixValues(int, bool);
 
@@ -402,8 +403,8 @@ class MapMatrix : public QObject
   // QRect printBorder;
   QRect mapBorder;
 
-  /** The mapCenterArea is the rectangle in which the glidersymbol
-   *    can move around before the map is redrawn */
+  /** The mapCenterArea is the rectangle in which the glider symbol
+   *  can move around before the map is redrawn */
   QRect mapCenterArea;
 
   QRect mapCenterAreaProj;
@@ -422,7 +423,7 @@ class MapMatrix : public QObject
   /** current selected type of map projection */
   ProjectionBase* currentProjection;
 
-  /** optimisation to prevent recurring recalculation of this value */
+  /** Optimization to prevent recurring recalculation of this value */
   int _MaxScaleToCScaleRatio;
 
   fp24p8_t m11, m12, m21, m22, dx, dy, fx, fy;
