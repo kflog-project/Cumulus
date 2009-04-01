@@ -26,7 +26,7 @@
 #include "wgspoint.h"
 
 /**
- * This class contains the data of one waypoint.
+ * This class contains the data of a waypoint.
  */
 
 class wayPoint
@@ -39,8 +39,9 @@ class wayPoint
   enum TaskPointType {NotSet = 0, TakeOff = 1, Begin = 2, RouteP = 4,
                       End = 8, FreeP = 16, Landing = 32};
 
-  /** contains an importance indidation for the waypoint */
-
+  /**
+   * contains an importance indication for a waypoint
+   */
   enum Importance { Low=0, Normal=1, High=2 };
 
   wayPoint();
@@ -54,9 +55,9 @@ class wayPoint
 
   /** The name of the waypoint. */
   QString name;
-  /** The original lat/lon-position of the waypoint. */
+  /** The original lat/lon position (WGS84) of the waypoint. */
   WGSPoint origP;
-  /** The projected position of the waypoint. */
+  /** The projected map position of the waypoint. */
   QPoint projP;
   /** The time, sector 1 has been reached. */
   unsigned int sector1;
