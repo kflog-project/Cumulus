@@ -46,9 +46,6 @@ GeneralConfig::GeneralConfig() : QSettings( QSettings::UserScope, "Cumulus" )
   _homeWp = new wayPoint();
   loadTerrainDefaultColors();
   load();
-
-  // increase global pixmap cache to 2MB
-  QPixmapCache::setCacheLimit ( 2*1024 );
 }
 
 GeneralConfig::~GeneralConfig()
@@ -67,12 +64,12 @@ void GeneralConfig::load()
 
   // Main window properties
   beginGroup("MainWindow");
-  _windowSize          = value("Geometrie", QSize(800, 480)).toSize();
-  _mapSideFrameColor   = QColor( value("MapSideFrameColor", "#687ec6").toString() );
-  _guiStyle            = value("Style", "Plastique").toString();
-  _guiFont             = value("Font", "").toString();
-  _virtualKeyboard     = value("VirtualKeyboard", false).toBool();
-  _screenSaverOffSpeed = value("ScreenSaverOffSpeed", 10).toInt();
+  _windowSize            = value("Geometrie", QSize(800, 480)).toSize();
+  _mapSideFrameColor     = QColor( value("MapSideFrameColor", "#687ec6").toString() );
+  _guiStyle              = value("Style", "Plastique").toString();
+  _guiFont               = value("Font", "").toString();
+  _virtualKeyboard       = value("VirtualKeyboard", false).toBool();
+  _screenSaverSpeedLimit = value("ScreenSaverSpeedLimit", 10).toDouble();
   endGroup();
 
   // Airspace warning distances
@@ -211,6 +208,10 @@ void GeneralConfig::load()
   _mapLoadWaterways               = value( "LoadWaterways", true ).toBool();
   _mapLoadForests                 = value( "LoadForests", true ).toBool();
   _drawTrail                      = (UseInMode)value( "DrawTrail", 0 ).toInt();
+
+  _wayPointScaleBorders[wayPoint::Low]    = value( "WpScaleBorderLow", 125 ).toUInt();
+  _wayPointScaleBorders[wayPoint::Normal] = value( "WpScaleBorderNormal", 200 ).toUInt();
+  _wayPointScaleBorders[wayPoint::High]   = value( "WpScaleBorderHigh", 400 ).toUInt();
   endGroup();
 
   beginGroup("Map Data");
@@ -361,7 +362,7 @@ void GeneralConfig::save()
   setValue("Style", _guiStyle);
   setValue("Font", _guiFont);
   setValue("VirtualKeyboard", _virtualKeyboard);
-  setValue("ScreenSaverOffSpeed", _screenSaverOffSpeed);
+  setValue("ScreenSaverSpeedLimit", _screenSaverSpeedLimit);
   endGroup();
 
   // Airspace warning distances
@@ -491,6 +492,10 @@ void GeneralConfig::save()
   setValue( "LoadWaterways", _mapLoadWaterways  );
   setValue( "LoadForests", _mapLoadForests );
   setValue( "DrawTrail", (int)_drawTrail );
+
+  setValue( "WpScaleBorderLow",    _wayPointScaleBorders[wayPoint::Low] );
+  setValue( "WpScaleBorderNormal", _wayPointScaleBorders[wayPoint::Normal] );
+  setValue( "WpScaleBorderHigh",   _wayPointScaleBorders[wayPoint::High] );
   endGroup();
 
   beginGroup("Map Data");
@@ -1571,3 +1576,38 @@ void GeneralConfig::printIsoColorDefinitions()
     }
 }
 #endif
+
+/** Gets waypoint scale border. */
+ushort GeneralConfig::getWaypointScaleBorder( const wayPoint::Importance importance) const
+{
+  switch( importance )
+  {
+    case wayPoint::Low:
+    case wayPoint::Normal:
+    case wayPoint::High:
+      return _wayPointScaleBorders[importance];
+      break;
+
+    default:
+      qWarning("getWaypointScaleBorder(): Undefined Importance=%d passed!", importance );
+      return 0;
+  }
+}
+
+/** Sets waypoint scale border. */
+void GeneralConfig::setWaypointScaleBorder( const wayPoint::Importance importance,
+                                            const uint newScale )
+{
+  switch( importance )
+  {
+    case wayPoint::Low:
+    case wayPoint::Normal:
+    case wayPoint::High:
+      _wayPointScaleBorders[importance] = newScale;
+      break;
+
+    default:
+      qWarning("setWaypointScaleBorder(): Undefined Importance=%d passed!", importance );
+      break;
+  }
+}

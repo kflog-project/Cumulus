@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef GENERALCONFIG_H
-#define GENERALCONFIG_H
+#ifndef GENERAL_CONFIG_H
+#define GENERAL_CONFIG_H
 
 #include <QtGlobal>
 #include <QSettings>
@@ -697,16 +697,16 @@ class GeneralConfig : protected QSettings
     _virtualKeyboard = newValue;
   };
 
-  /** gets screen saver off speed in Km/h */
-  int getScreenSaverOffSpeed() const
+  /** gets screen saver speed limit in Km/h */
+  double getScreenSaverSpeedLimit() const
   {
-    return _screenSaverOffSpeed;
+    return _screenSaverSpeedLimit;
   };
 
-  /** sets screen saver off speed in Km/h */
-  void setScreenSaverOffSpeed( const int newValue )
+  /** sets screen saver speed limit in Km/h */
+  void setScreenSaverSpeedLimit( const double newValue )
   {
-    _screenSaverOffSpeed = newValue;
+    _screenSaverSpeedLimit = newValue;
   };
 
   /** gets QNH */
@@ -1581,6 +1581,13 @@ class GeneralConfig : protected QSettings
     return _groundColor;
   };
 
+  /** Gets waypoint scale border. */
+  ushort getWaypointScaleBorder( const wayPoint::Importance importance) const;
+
+  /** Sets waypoint scale border. */
+  void setWaypointScaleBorder( const wayPoint::Importance importance,
+                               const uint newScale );
+
  private:
 
    /** loads the terrain default colors */
@@ -1675,8 +1682,8 @@ class GeneralConfig : protected QSettings
   QString _guiFont;
   // Virtual keyboard usage
   bool _virtualKeyboard;
-  // Screen saver off speed
-  int _screenSaverOffSpeed;
+  // Screen saver speed limit
+  double _screenSaverSpeedLimit;
   // QNH
   int _qnh;
   // logger interval
@@ -1876,6 +1883,12 @@ class GeneralConfig : protected QSettings
   // Cylinder/Sector draw options
   bool _taskDrawShape;
   bool _taskFillShape;
+
+  /** Waypoint drawing scale borders. Addressed by waypoint importance
+   *  (Low=0, Normal=1, High=2). It contains the sacle borders defined
+   *  user.
+   */
+  uint _wayPointScaleBorders[3];
 };
 
 #endif

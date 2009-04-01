@@ -43,8 +43,8 @@
  */
 
 class Map : public QWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
   public: //types
     /**
@@ -89,7 +89,6 @@ class Map : public QWidget
                    topLayer
                   };
 
-  public:
     /**
      * The constructor creates a new Map object and
      * creates the icon used as a cursor in the map.
@@ -106,7 +105,6 @@ class Map : public QWidget
       * Lists the possible map orientations.
       */
     void setDrawing(bool isEnable);
-
 
     /**
      * Write property of int heading.
@@ -184,25 +182,16 @@ class Map : public QWidget
       };
 
   public slots:
-    /** */
+    /** This slot is called, if a new wind value is available. */
     void slotNewWind();
 
     /**
-     *  unscheduled immediate redraw
+     *  Unscheduled immediate redraw of the map.
      */
     void slotDraw();
 
-    /** */
+    /** Scheduled redraw of the map. */
     void slotRedraw();
-
-    /** */
-    void slotCenterToFlight();
-
-    /** */
-    void slotCenterToTask();
-
-    /** */
-    void slotCenterToWaypoint(const unsigned int id);
 
     /**
      * This slot is called to set a new position. The map object
@@ -230,12 +219,11 @@ class Map : public QWidget
     void slotSwitchManualInFlight();
 
   private slots:
+
     /** Called by timer expiration. */
     void slotRedrawMap();
 
   signals:
-    /** */
-    void changed(const QSize&);
 
     /**
      * is emitted when left button click on the map
@@ -243,7 +231,7 @@ class Map : public QWidget
     void waypointSelected(wayPoint *);
 
     /**
-     * is emited when an airspace is entered or left behind
+     * is emitted when an airspace is entered or left behind
      */
     void airspaceWarning(const QString&, const bool sound=true);
 
@@ -353,6 +341,18 @@ class Map : public QWidget
      * @arg wpPainter Painter for the waypoints themselves
      */
     void __drawWaypoints(QPainter *wpPainter);
+
+    /**
+     * Draws a label with additional information on demand beside a map icon.
+     */
+    void __drawLabel( QPainter* painter,          // painter to be used
+                      const int xShift,           // x offset from the center point
+                      const QString& name,        // name of point
+                      const QPoint& dispP,        // projected point at the display
+                      const WGSPoint& origP,      // WGS84 point
+                      const QPoint& projP,        // projected point at the map
+                      const bool isLandable,      // is landable?
+                      const bool showExtraInfo ); // extra info?
 
     /**
      * Draws a trail indicating the flight path taken, if that feature
@@ -543,6 +543,6 @@ class Map : public QWidget
     QTime _lastInsideTime;
 
     static Map *instance;
-  };
+};
 
 #endif

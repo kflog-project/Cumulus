@@ -70,7 +70,7 @@ class SettingsPageLookNFeel : public QWidget
     QComboBox      *styleBox;
     QPushButton    *fontDialog;
     QPushButton    *editMapFrameColor;
-    QDoubleSpinBox *screenSaverOffSpeed;
+    QDoubleSpinBox *screenSaverSpeedLimit;
     QCheckBox      *virtualKeybord;
 
     /** saves horizontal speed unit during construction of object */

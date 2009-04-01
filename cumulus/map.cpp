@@ -1112,7 +1112,6 @@ void Map::__drawInformationLayer()
     }
 }
 
-
 // Performs an unscheduled, immediate redraw of the entire map.
 // Any already pending redraws are canceled.
 void Map::slotDraw()
@@ -1120,7 +1119,6 @@ void Map::slotDraw()
   m_scheduledFromLayer = baseLayer;
   slotRedrawMap();
 }
-
 
 // This slot is called, if one of the timers redrawTimerShort or
 // redrawTimerLong is expired. It starts the redrawing of the map, if
@@ -1153,124 +1151,10 @@ void Map::slotRedrawMap()
   __redrawMap(drawLayer);
 }
 
-
-void Map::slotCenterToWaypoint(const unsigned int) // id)
-{
-  // qDebug("Map::slotCenterToWaypoint");
-  /*
-    if(id >= _globalMapContents->getFlight()->getWPList().count())
-    {
-    warning("KFLog: Map::slotCenterToWaypoint: wrong Waypoint-ID");
-    return;
-    }
-
-    _globalMapMatrix->centerToPoint(_globalMapMatrix->map(
-    _globalMapContents->getFlight()->getWPList().at(id)->projP));
-    _globalMapMatrix->slotSetScale(_globalMapMatrix->getScale(MapMatrix::LowerLimit));
-
-    emit changed(this->size());
-  */
-}
-
-
-void Map::slotCenterToFlight()
-{
-  // qDebug("Map::slotCenterToFlight");
-  /*
-    unsigned int i;
-
-    Flight *f = (Flight *)_globalMapContents->getFlight();
-    if (f) {
-    QRect r;
-    QRect r2;
-    Q3PtrList<Flight> fl;
-
-    switch (f->getTypeID()) {
-    case BaseMapElement::Flight:
-    r = f->getFlightRect();
-    break;
-    case BaseMapElement::FlightGroup:
-    fl = ((FlightGroup *)f)->getFlightList();
-    r = fl.at(0)->getFlightRect();
-    for (i = 1; i < fl.count(); i++) {
-    r2 = fl.at(i)->getFlightRect();
-    r.setLeft(qMin(r.left(), r2.left()));
-    r.setTop(qMin(r.top(), r2.top()));
-    r.setRight(qMax(r.right(), r2.right()));
-    r.setBottom(qMax(r.bottom(), r2.bottom()));
-    }
-    break;
-    default:
-    return;
-    }
-
-    // check if the Rectangle is zero
-    // is it necessary here?
-    if (!r.isNull()) {
-    _globalMapMatrix->centerToRect(r);
-    _globalMapMatrix->createMatrix(this->size());
-    __redrawMap();
-    }
-
-    emit changed(this->size());
-    }
-  */
-}
-
-
-void Map::slotCenterToTask()
-{
-  // qDebug("Map::slotCenterToTask");
-  /*
-    unsigned int i;
-    BaseFlightElement *f = _globalMapContents->getFlight();
-
-    if(f)
-    {
-    QRect r;
-    QRect r2;
-    Q3PtrList<Flight> fl;
-
-    switch (f->getTypeID())
-    {
-    case BaseMapElement::Flight:
-    r = ((Flight *)f)->getTaskRect();
-    break;
-    case BaseMapElement::Task:
-    r = ((FlightTask *)f)->getRect();
-    break;
-    case BaseMapElement::FlightGroup:
-    fl = ((FlightGroup *)f)->getFlightList();
-    r = fl.at(0)->getTaskRect();
-    for (i = 1; i < fl.count(); i++) {
-    r2 = fl.at(i)->getTaskRect();
-    r.setLeft(qMin(r.left(), r2.left()));
-    r.setTop(qMin(r.top(), r2.top()));
-    r.setRight(qMax(r.right(), r2.right()));
-    r.setBottom(qMax(r.bottom(), r2.bottom()));
-    }
-    break;
-    default:
-    return;
-    }
-
-    // check if the Rectangle is zero
-    if(!r.isNull())
-    {
-    _globalMapMatrix->centerToRect(r);
-    _globalMapMatrix->createMatrix(this->size());
-    __redrawMap();
-
-    emit changed(this->size());
-    }
-    }
-  */
-}
-
 /** Draws the waypoints of the waypoint catalog on the map */
 void Map::__drawWaypoints(QPainter* painter)
 {
-  bool isSelected = false;
+  extern MapConfig* _globalMapConfig;
 
   // get map screen size
   int w = size().width();
@@ -1283,21 +1167,12 @@ void Map::__drawWaypoints(QPainter* painter)
 
   QList<wayPoint>& wpList = _globalMapContents->getWaypointList();
 
-  extern MapConfig* _globalMapConfig;
-
-  // save the current painter, must be restored before return!!!
-  painter->save();
-
-  // set font size used for text painting
-  QFont newFont = painter->font();
-
-#ifdef MAEMO
-  newFont.setPixelSize( 24 );
-#else
-  newFont.setPixelSize( 20 );
-#endif
-
-  painter->setFont( newFont) ;
+  // load all configuration items once
+  const bool showLabels       = GeneralConfig::instance()->getMapShowWaypointLabels();
+  const bool showExtraInfo    = GeneralConfig::instance()->getMapShowWaypointLabelsExtraInfo();
+  const bool useSmallIcons    = _globalMapConfig->useSmallIcons();
+  const double currentScale   = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
+  const uint currentDrawScale = _globalMapMatrix->currentDrawScale();
 
   // now step trough the waypoint list
   for( int i=0; i < wpList.count(); i++ )
@@ -1306,10 +1181,8 @@ void Map::__drawWaypoints(QPainter* painter)
 
       // qDebug("wp=%s", wp.name.toLatin1().data());
 
-      // isSelected is used for the currently selected wp, but
-      // could also be used for waypoints in the task or other
-      // super-important waypoints later on.
-      isSelected = false;
+      // isSelected is used for the currently selected target point
+      bool isSelected = false;
 
       if (calculator && calculator->getselectedWp() )
         {
@@ -1320,25 +1193,24 @@ void Map::__drawWaypoints(QPainter* painter)
             }
         }
 
-      if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) > 1000.0 && ! isSelected )
+      if( currentScale > 1000.0 && ! isSelected )
         {
           // Don't draw any waypoints at this high scale
           continue;
         }
 
       // Check if the waypoint is important enough for the current map scale.
-      if( static_cast<uint> (wp.importance) < _globalMapMatrix->currentDrawScale() &&
-          isSelected == false )
+      if( static_cast<uint> (wp.importance) < currentDrawScale && isSelected == false )
         {
           // qDebug("Not important wp=%s", wp.name.toLatin1().data());
           continue;
         }
 
-        // Project point onto map.
-        QPoint P = _globalMapMatrix->map(wp.projP);
+        // Project map point onto screen display.
+        QPoint dispP = _globalMapMatrix->map(wp.projP);
 
         // Check, if point lays in the visible screen area
-        if( ! testRect.contains(P) )
+        if( ! testRect.contains(dispP) )
           {
             // qDebug("Not in Rec wp=%s", wp.name.toLatin1().data());
             continue;
@@ -1374,7 +1246,7 @@ void Map::__drawWaypoints(QPainter* painter)
             cyOffset = 16;
           }
 
-        if( _globalMapConfig->useSmallIcons() )
+        if( useSmallIcons )
           {
             iconSize = 16;
             xOffset  = 8;
@@ -1401,14 +1273,14 @@ void Map::__drawWaypoints(QPainter* painter)
         if (reachable == ReachablePoint::yes)
           {
             // draw green circle, when safety
-            painter->drawPixmap( P.x() - cxOffset, P.y() - cyOffset,
+            painter->drawPixmap( dispP.x() - cxOffset, dispP.y() - cyOffset,
                                  _globalMapConfig->getGreenCircle(iconSize) );
 
           }
         else if (reachable == ReachablePoint::belowSafety)
           {
             // draw magenta circle
-            painter->drawPixmap( P.x() - cxOffset, P.y() - cyOffset,
+            painter->drawPixmap( dispP.x() - cxOffset, dispP.y() - cyOffset,
                                  _globalMapConfig->getMagentaCircle(iconSize));
           }
 
@@ -1417,12 +1289,12 @@ void Map::__drawWaypoints(QPainter* painter)
 
         if( _globalMapConfig->isRotatable(wp.type) )
           {
-            painter->drawPixmap(P.x() - xOffset, P.y() - yOffset, pm,
-                                shift*iconSize, 0, iconSize, iconSize);
+            painter->drawPixmap( dispP.x() - xOffset, dispP.y() - yOffset, pm,
+                                 shift*iconSize, 0, iconSize, iconSize );
           }
         else
           {
-            painter->drawPixmap(P.x() - xOffset, P.y() - yOffset, pm);
+            painter->drawPixmap( dispP.x() - xOffset, dispP.y() - yOffset, pm );
           }
 
         // qDebug("Icon drawn wp=%s", wp.name.toLatin1().data());
@@ -1432,116 +1304,159 @@ void Map::__drawWaypoints(QPainter* painter)
         // when the current scale is small enough to prevent a flood of labels
         // on the map.
         if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) < 250 &&
-            GeneralConfig::instance()->getMapShowWaypointLabels() )
+            showLabels )
           {
-            labelText = wp.name;
+            __drawLabel( painter,
+                         pm.width() / 2 + 3,
+                         wp.name,
+                         dispP,
+                         wp.origP,
+                         wp.projP,
+                         wp.isLandable,
+                         showExtraInfo );
+          }
+    } // END of for loop
+}
 
-            // qDebug("LabelInfo wp=%s", wp.name.toLatin1().data());
+/** Draws a label beside the map icon. It is assumed, that the icon is to see
+ *  at the screen.
+ */
+void Map::__drawLabel( QPainter* painter,
+                       const int xShift,      // x offset from the center point
+                       const QString& name,   // name of point
+                       const QPoint& dispP,   // projected point at the display
+                       const WGSPoint& origP,   // WGS84 point
+                       const QPoint& projP,   // projected point at the map
+                       const bool isLandable, // is landable?
+                       const bool showExtraInfo )
+{
+  // qDebug("LabelName=%s", name.toLatin1().data());
 
-            if( GeneralConfig::instance()->getMapShowWaypointLabelsExtraInfo() )
-              {
-                // draw the name together with the additional information
-                if( wp.isLandable )
-                  {
-                    dist = ReachableList::getDistance( wp.origP );
+  // save the current painter, must be restored before return!!!
+  painter->save();
 
-                    if( dist.isValid() )
-                      { // check if the distance is valid...
-                        labelText += "\n" +
-                        dist.getText( false, uint(0), uint(0) ) +
-                        " / " +
-                        alt.getText( false, 0 );
-                      }
-                  }
-              }
+  // Set font size used for text painting a little bit bigger, that
+  // the labels are good to see at the map.
+  QFont font = painter->font();
 
-            QFont cf = painter->font();
+#ifdef MAEMO
+  font.setPixelSize( 24 );
+#else
+  font.setPixelSize( 20 );
+#endif
 
-            if( wp.isLandable && reachable == ReachablePoint::yes)
-              { // land and reachable? then the label will become bold
-                cf.setBold(true);
-              }
-            else
-              {
-                cf.setBold(false);
-              }
+  QString labelText = name;
+  Altitude alt;
 
-            painter->setFont( cf );
+  if( showExtraInfo )
+    {
+      // draw the name together with the additional information
+      if( isLandable )
+        {
+          Distance dist = ReachableList::getDistance( origP );
 
-            if( ! isSelected )
-              {
-                painter->setPen(QPen(Qt::black, 4, Qt::SolidLine));
-                painter->setBrush( Qt::white );
-              }
-            else
-              {
-                // draw selected waypoint label invers
-                painter->setPen(QPen(Qt::white, 4, Qt::SolidLine));
-                painter->setBrush( Qt::black );
-              }
+          if( dist.isValid() )
+            { // check if the distance is valid...
+              labelText += "\n" +
+              dist.getText( false, uint(0), uint(0) ) +
+              " / " +
+              alt.getText( false, 0 );
+            }
+        }
+    }
 
-            // calculate text bounding box
-            QRect dRec( 0, 0, 400, 400 );
-            QRect textBox;
+  // Consider reachability during drawing.
+  enum ReachablePoint::reachable reachable = ReachableList::getReachable( origP );
 
-            textBox = painter->fontMetrics().boundingRect( dRec, Qt::AlignCenter, labelText );
+  if( isLandable && reachable == ReachablePoint::yes)
+    { // land and reachable? then the label will become bold
+      font.setBold(true);
+    }
+  else
+    {
+      font.setBold(false);
+    }
 
-            // test, if rectangle is right calculated, when newline is in string
-            /* qDebug( "FontText=%s, w=%d, h=%d",
-                    labelText.toLatin1().data(),
-                    textBox.width(),
-                    textBox.height() ); */
+  painter->setFont( font );
 
-            // add a little bit more space in the width
-            textBox.setRect( 0, 0, textBox.width() + 8, textBox.height() );
+  // Check, if our point has a selection. In this case inverse drawing is used.
+  bool isSelected = false;
 
-            if( wp.origP.lon() < _globalMapMatrix->getMapCenter(false).y() )
-              {
-                // the wp is on the left side of the map, so draw the text label on the right side
-                xOffset = 15;
-                yOffset = -textBox.height() / 2;
+  if( calculator && calculator->getselectedWp() )
+    {
+      if( calculator->getselectedWp()->name == name &&
+          calculator->getselectedWp()->origP == origP )
+        {
+          isSelected = true;
+        }
+    }
 
-                if (_globalMapConfig->useSmallIcons())
-                  {
-                    xOffset = 7;
-                  }
-              }
-            else
-              {
-                // the wp is on the right side of the map, so draw the text label on the left side
-                xOffset = -textBox.width() - 15;
-                yOffset = -textBox.height() / 2;
+  if( ! isSelected )
+    {
+      painter->setPen(QPen(Qt::black, 4, Qt::SolidLine));
+      painter->setBrush( Qt::white );
+    }
+  else
+    {
+      // draw selected waypoint label invers
+      painter->setPen(QPen(Qt::white, 4, Qt::SolidLine));
+      painter->setBrush( Qt::black );
+    }
 
-                if (_globalMapConfig->useSmallIcons())
-                  {
-                    xOffset = -textBox.width() - 7;
-                  }
-              }
+  // calculate text bounding box
+  QRect dRec( 0, 0, 400, 400 );
+  QRect textBox;
 
-            textBox.setRect( P.x() + xOffset,
-                             P.y() + yOffset,
-                             textBox.width(), textBox.height() );
+  textBox = painter->fontMetrics().boundingRect( dRec, Qt::AlignCenter, labelText );
 
-            alt = ReachableList::getArrivalAltitude( wp.origP );
+  // test, if rectangle is right calculated, when newline is in string
+  /* qDebug( "FontText=%s, w=%d, h=%d",
+          labelText.toLatin1().data(),
+          textBox.width(),
+          textBox.height() ); */
 
-            if( alt.getMeters() < 0 )
-              {
-                // the rectangle border color is depending on the arrival
-                // altitude. Under zero the color red is used
-                QPen cPen = painter->pen();
-                painter->setPen(QPen(Qt::red, 3, Qt::SolidLine));
-                painter->drawRect( textBox );
-                painter->setPen( cPen );
-             }
-            else
-              {
-                painter->drawRect( textBox );
-              }
+  // add a little bit more space in the width
+  textBox.setRect( 0, 0, textBox.width() + 8, textBox.height() );
 
-            painter->drawText( textBox, Qt::AlignCenter, labelText );
-          }//draw labels?
-    } //for loop
+  int xOffset = xShift;
+  int yOffset = 0;
 
+  if( origP.lon() < _globalMapMatrix->getMapCenter(false).y() )
+    {
+      // The point is on the left side of the map,
+      // so draw the text label on the right side.
+      yOffset = -textBox.height() / 2;
+    }
+  else
+    {
+      // The point is on the right side of the map,
+      // so draw the text label on the left side.
+      xOffset = -textBox.width() - xShift;
+      yOffset = -textBox.height() / 2;
+    }
+
+  // move the textbox at the right position on the display
+  textBox.setRect( dispP.x() + xOffset,
+                   dispP.y() + yOffset,
+                   textBox.width(), textBox.height() );
+
+  alt = ReachableList::getArrivalAltitude( origP );
+
+  if( alt.getMeters() < 0 )
+    {
+      // the rectangle border color is depending on the arrival
+      // altitude. Under zero the color red is used
+      QPen cPen = painter->pen();
+      painter->setPen(QPen(Qt::red, 3, Qt::SolidLine));
+      painter->drawRect( textBox );
+      painter->setPen( cPen );
+    }
+  else
+    {
+      painter->drawRect( textBox );
+    }
+
+  painter->drawText( textBox, Qt::AlignCenter, labelText );
   painter->restore();
 }
 
