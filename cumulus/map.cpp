@@ -1307,7 +1307,7 @@ void Map::__drawWaypoints(QPainter* painter)
             showLabels )
           {
             __drawLabel( painter,
-                         pm.width() / 2 + 3,
+                         iconSize / 2 + 3,
                          wp.name,
                          dispP,
                          wp.origP,
@@ -1325,12 +1325,12 @@ void Map::__drawLabel( QPainter* painter,
                        const int xShift,      // x offset from the center point
                        const QString& name,   // name of point
                        const QPoint& dispP,   // projected point at the display
-                       const WGSPoint& origP,   // WGS84 point
+                       const WGSPoint& origP, // WGS84 point
                        const QPoint& projP,   // projected point at the map
                        const bool isLandable, // is landable?
                        const bool showExtraInfo )
 {
-  // qDebug("LabelName=%s", name.toLatin1().data());
+  // qDebug("LabelName=%s, xShift=%d", name.toLatin1().data(), xShift );
 
   // save the current painter, must be restored before return!!!
   painter->save();
