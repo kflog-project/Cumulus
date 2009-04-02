@@ -944,15 +944,48 @@ class GeneralConfig : protected QSettings
     _mapShowWaypointLabels = newValue;
   };
 
+  /** gets Map ShowAirfieldLabels */
+  bool getMapShowAirfieldLabels() const
+  {
+    return _mapShowAirfieldLabels;
+  };
+  /** sets Map ShowAirfieldLabels */
+  void setMapShowAirfieldLabels(const bool newValue)
+  {
+    _mapShowAirfieldLabels = newValue;
+  };
+
+  /** gets Map ShowTaskPointLabels */
+  bool getMapShowTaskPointLabels() const
+  {
+    return _mapShowTaskPointLabels;
+  };
+  /** sets Map ShowTaskPointLabels */
+  void setMapShowTaskPointLabels(const bool newValue)
+  {
+    _mapShowTaskPointLabels = newValue;
+  };
+
+  /** gets Map ShowOutLandingLabels */
+  bool getMapShowOutLandingLabels() const
+  {
+    return _mapShowOutLandingLabels;
+  };
+  /** sets Map ShowOutLandingLabels */
+  void setMapShowOutLandingLabels(const bool newValue)
+  {
+    _mapShowOutLandingLabels = newValue;
+  };
+
   /** gets Map ShowWaypointLabelsExtraInfo */
   bool getMapShowWaypointLabelsExtraInfo() const
   {
-    return _mapShowWaypointLabelsExtraInfo;
+    return _mapShowLabelsExtraInfo;
   };
   /** sets Map ShowWaypointLabelsExtraInfo */
   void setMapShowWaypointLabelsExtraInfo(const bool newValue)
   {
-    _mapShowWaypointLabelsExtraInfo = newValue;
+    _mapShowLabelsExtraInfo = newValue;
   };
 
   /** gets Map LoadRoads */
@@ -1582,11 +1615,11 @@ class GeneralConfig : protected QSettings
   };
 
   /** Gets waypoint scale border. */
-  ushort getWaypointScaleBorder( const wayPoint::Importance importance) const;
+  int getWaypointScaleBorder( const wayPoint::Importance importance) const;
 
   /** Sets waypoint scale border. */
   void setWaypointScaleBorder( const wayPoint::Importance importance,
-                               const uint newScale );
+                               const int newScale );
 
  private:
 
@@ -1732,7 +1765,13 @@ class GeneralConfig : protected QSettings
   // Map ShowWaypointLabels
   bool _mapShowWaypointLabels;
   // Map ShowWaypointLabelsExtraInfo
-  bool _mapShowWaypointLabelsExtraInfo;
+  bool _mapShowLabelsExtraInfo;
+  // Map ShowAirfieldLabels
+  bool _mapShowAirfieldLabels;
+  // Map ShowTaskPointLabels
+  bool _mapShowTaskPointLabels;
+  // Map ShowOutLandingLabels
+  bool _mapShowOutLandingLabels;
   // Map LoadRoads
   bool _mapLoadRoads;
   // Map LoadHighways
@@ -1888,7 +1927,7 @@ class GeneralConfig : protected QSettings
    *  (Low=0, Normal=1, High=2). It contains the sacle borders defined
    *  user.
    */
-  uint _wayPointScaleBorders[3];
+  int _wayPointScaleBorders[3];
 };
 
 #endif

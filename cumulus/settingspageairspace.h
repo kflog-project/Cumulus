@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Eggert Ehmke, 2009 Axel Pauli
+**   Copyright (c):  2002 by Eggert Ehmke
+**                   2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -15,8 +16,17 @@
 **
 ***********************************************************************/
 
-#ifndef SETTINGSPAGEAIRSPACE_H
-#define SETTINGSPAGEAIRSPACE_H
+/**
+ * The three widgets SettingsPageAirspace, SettingsPageAirspaceFilling and
+ * SettingsPageAirspaceWarnings in this file provide all options for airspace
+ * configuration.
+ *
+ * @author Eggert Ehmke
+ *
+ */
+
+#ifndef SettingsPageAirSpace_H
+#define SettingsPageAirSpace_H
 
 #include <QWidget>
 #include <QCheckBox>
@@ -33,9 +43,6 @@
 class SettingsPageAirspaceWarnings;
 class SettingsPageAirspaceFilling;
 
-/**
- * @author Eggert Ehmke
- */
 class SettingsPageAirspace : public QWidget
   {
     Q_OBJECT
@@ -43,7 +50,11 @@ class SettingsPageAirspace : public QWidget
   public:
 
     SettingsPageAirspace(QWidget *parent=0);
-    ~SettingsPageAirspace();
+    virtual ~SettingsPageAirspace();
+
+  protected:
+
+    void showEvent(QShowEvent *);
 
   public slots: // Public slots
     /**

@@ -30,6 +30,7 @@ typedef int32_t fp8p24_t;
 
 #include "projectionlambert.h"
 #include "projectioncylindric.h"
+#include "waypoint.h"
 
 /**
  * This class provides functions for converting coordinates between
@@ -226,7 +227,7 @@ class MapMatrix : public QObject
 
   /**
    * Centers the map to the given rectangle and scales the map, so that
-   * the rectangle will be seen completly.
+   * the rectangle will be seen completely.
    */
   double centerToRect(const QRect&, const QSize& = QSize(0,0));
 
@@ -249,7 +250,7 @@ class MapMatrix : public QObject
   bool isSwitchScale2() const;
 
   /**
-   * @return the lat/lon-position of the map-center.
+   * @return the lat/lon-position of the map center.
    */
   QPoint getMapCenter(bool isPrint = false) const;
 
@@ -264,7 +265,7 @@ class MapMatrix : public QObject
 
   /** This function tries to make the given point visible on the
    * map, using only scaling.  This may fail if the point is too
-   * far away, so that the requiered scale is bigger than the
+   * far away, so that the required scale is bigger than the
    * limit. If the function fails, the current projection is not
    * changed and false is returned. If the function succeeds, the
    * scale is changed so that the greatest level of detail can be
@@ -278,7 +279,13 @@ class MapMatrix : public QObject
   unsigned int currentDrawScale() const;
 
   /**
-   * @returns the coordinates of the homesite
+   * @returns an indication, if a waypoint can be drawn according to the current
+   * scale setting.
+   */
+  bool isWaypoint2Draw( wayPoint::Importance importance ) const;
+
+  /**
+   * @returns the coordinates of the home site
    */
   QPoint getHomeCoord() const
   {

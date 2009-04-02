@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by Eggert Ehmke, 2009 Axel Pauli
+ **   Copyright (c):  2002 by Eggert Ehmke
+ **                   2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -346,6 +347,12 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 SettingsPageAirspace::~SettingsPageAirspace()
 {}
 
+void SettingsPageAirspace::showEvent(QShowEvent *)
+{
+  // align all columns to contents before showing
+  drawOptions->resizeColumnsToContents();
+  drawOptions->setFocus();
+}
 
 void SettingsPageAirspace::slot_load()
 {

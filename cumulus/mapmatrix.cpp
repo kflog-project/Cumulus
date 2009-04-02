@@ -606,6 +606,23 @@ unsigned int MapMatrix::currentDrawScale() const
     return 2;
 }
 
+/**
+ * @returns an indication, if a waypoint can be drawn on the map according to the current
+ * scale setting.
+ */
+bool MapMatrix::isWaypoint2Draw( wayPoint::Importance importance ) const
+{
+  int wpScaleLimit = GeneralConfig::instance()->getWaypointScaleBorder( importance );
+
+  if( wpScaleLimit < cScale )
+    {
+      return true;
+    }
+
+  return false;
+}
+
+
 /** set new home position */
 void MapMatrix::slotSetNewHome(const QPoint& newHome)
 {

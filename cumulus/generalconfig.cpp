@@ -200,7 +200,7 @@ void GeneralConfig::load()
   _mapLoadIsoLines                = value( "LoadIsoLines", true ).toBool();
   _mapShowIsoLineBorders          = value( "ShowIsoLineBorders", false ).toBool();
   _mapShowWaypointLabels          = value( "ShowWaypointLabels", false ).toBool();
-  _mapShowWaypointLabelsExtraInfo = value( "ShowWaypointLabelsExtraInfo", false ).toBool();
+  _mapShowLabelsExtraInfo         = value( "ShowWaypointLabelsExtraInfo", false ).toBool();
   _mapLoadRoads                   = value( "LoadRoads", true ).toBool();
   _mapLoadHighways                = value( "LoadHighways", true ).toBool();
   _mapLoadRailroads               = value( "LoadRailroads", true ).toBool();
@@ -208,10 +208,13 @@ void GeneralConfig::load()
   _mapLoadWaterways               = value( "LoadWaterways", true ).toBool();
   _mapLoadForests                 = value( "LoadForests", true ).toBool();
   _drawTrail                      = (UseInMode)value( "DrawTrail", 0 ).toInt();
+  _mapShowAirfieldLabels          = value( "ShowAirfieldLabels", false ).toBool();
+  _mapShowTaskPointLabels         = value( "ShowTaskPointLabels", false ).toBool();
+  _mapShowOutLandingLabels        = value( "ShowOutLandingLabels", false ).toBool();
 
-  _wayPointScaleBorders[wayPoint::Low]    = value( "WpScaleBorderLow", 125 ).toUInt();
-  _wayPointScaleBorders[wayPoint::Normal] = value( "WpScaleBorderNormal", 200 ).toUInt();
-  _wayPointScaleBorders[wayPoint::High]   = value( "WpScaleBorderHigh", 400 ).toUInt();
+  _wayPointScaleBorders[wayPoint::Low]    = value( "WpScaleBorderLow", 125 ).toInt();
+  _wayPointScaleBorders[wayPoint::Normal] = value( "WpScaleBorderNormal", 250 ).toInt();
+  _wayPointScaleBorders[wayPoint::High]   = value( "WpScaleBorderHigh", 500 ).toInt();
   endGroup();
 
   beginGroup("Map Data");
@@ -484,15 +487,17 @@ void GeneralConfig::save()
   setValue( "LoadIsoLines", _mapLoadIsoLines );
   setValue( "ShowIsoLineBorders", _mapShowIsoLineBorders );
   setValue( "ShowWaypointLabels", _mapShowWaypointLabels );
-  setValue( "ShowWaypointLabelsExtraInfo", _mapShowWaypointLabelsExtraInfo );
+  setValue( "ShowWaypointLabelsExtraInfo", _mapShowLabelsExtraInfo );
   setValue( "LoadRoads", _mapLoadRoads );
   setValue( "LoadHighways", _mapLoadHighways );
   setValue( "LoadRailroads", _mapLoadRailroads );
   setValue( "LoadCities", _mapLoadCities   );
-  setValue( "LoadWaterways", _mapLoadWaterways  );
+  setValue( "LoadWaterways", _mapLoadWaterways );
   setValue( "LoadForests", _mapLoadForests );
   setValue( "DrawTrail", (int)_drawTrail );
-
+  setValue( "ShowAirfieldLabels", _mapShowAirfieldLabels );
+  setValue( "ShowTaskPointLabels", _mapShowTaskPointLabels );
+  setValue( "ShowOutLandingLabels", _mapShowOutLandingLabels );
   setValue( "WpScaleBorderLow",    _wayPointScaleBorders[wayPoint::Low] );
   setValue( "WpScaleBorderNormal", _wayPointScaleBorders[wayPoint::Normal] );
   setValue( "WpScaleBorderHigh",   _wayPointScaleBorders[wayPoint::High] );
@@ -1578,13 +1583,16 @@ void GeneralConfig::printIsoColorDefinitions()
 #endif
 
 /** Gets waypoint scale border. */
-ushort GeneralConfig::getWaypointScaleBorder( const wayPoint::Importance importance) const
+int GeneralConfig::getWaypointScaleBorder( const wayPoint::Importance importance) const
 {
   switch( importance )
   {
     case wayPoint::Low:
     case wayPoint::Normal:
     case wayPoint::High:
+
+      qDebug("Importance=%d, value=%d", importance, _wayPointScaleBorders[importance] );
+
       return _wayPointScaleBorders[importance];
       break;
 
@@ -1596,7 +1604,7 @@ ushort GeneralConfig::getWaypointScaleBorder( const wayPoint::Importance importa
 
 /** Sets waypoint scale border. */
 void GeneralConfig::setWaypointScaleBorder( const wayPoint::Importance importance,
-                                            const uint newScale )
+                                            const int newScale )
 {
   switch( importance )
   {

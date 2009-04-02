@@ -372,8 +372,8 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
 
       wayPoint& wp = wpList[i];
 
-      // consider only points, which are visible on the map
-      if( (uint) wp.importance < _globalMapMatrix->currentDrawScale() )
+      // consider only points, which are to drawn on the map
+      if( _globalMapMatrix->isWaypoint2Draw( wp.importance  ) )
         {
           continue;
         }
@@ -1172,7 +1172,6 @@ void Map::__drawWaypoints(QPainter* painter)
   const bool showExtraInfo    = GeneralConfig::instance()->getMapShowWaypointLabelsExtraInfo();
   const bool useSmallIcons    = _globalMapConfig->useSmallIcons();
   const double currentScale   = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
-  const uint currentDrawScale = _globalMapMatrix->currentDrawScale();
 
   // now step trough the waypoint list
   for( int i=0; i < wpList.count(); i++ )
@@ -1200,7 +1199,7 @@ void Map::__drawWaypoints(QPainter* painter)
         }
 
       // Check if the waypoint is important enough for the current map scale.
-      if( static_cast<uint> (wp.importance) < currentDrawScale && isSelected == false )
+      if( _globalMapMatrix->isWaypoint2Draw( wp.importance ) && isSelected == false )
         {
           // qDebug("Not important wp=%s", wp.name.toLatin1().data());
           continue;
@@ -1300,11 +1299,8 @@ void Map::__drawWaypoints(QPainter* painter)
         // qDebug("Icon drawn wp=%s", wp.name.toLatin1().data());
 
 
-        // Draw the waypoint name, if required by the user. That is only done,
-        // when the current scale is small enough to prevent a flood of labels
-        // on the map.
-        if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) < 250 &&
-            showLabels )
+        // Draw the waypoint name, if required by the user.
+        if( showLabels )
           {
             __drawLabel( painter,
                          iconSize / 2 + 3,
