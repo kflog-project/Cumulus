@@ -33,13 +33,17 @@ can get there. </p>
 Maps</a> with streets, highways, cities, rivers, lakes, and
 terrain data with elevation information. </li>
 
-  <li>KFLog Airspaces, <b>Not more supported! Please use other sources in
-     OpenAir format</b>, e.g.
-    <a href="http://soaringweb.org/SUA/">soaringweb.org/SUA</a> Please note, at
-    the moment Cumulus does only support the OpenAir format.
+  <li>KFLog Airspaces, <b>Not more supported by Cumulus!</b>
+      Cumulus does only support the OpenAir file format. Please search in the
+      Internet for files of the region where you do fly.
+      Adresses where you can find information are:
+      <ul>
+        <li><a href="http://soaringweb.org/SUA/">soaringweb.org/SUA</a>
+        <li><a href="http://www.daec.de/aul/luftr_d.php">Airspace Data Germany</a> published by the DAeC
+      </ul>
   </li>
 
-  <li>KFLog Airfields, <b>Not more supported! Please use
+  <li>KFLog Airfields, <b>Not more supported by Cumulus! Please use
       <a href="#Welt2000">Welt2000</a> as source.</b></li>
 
 </ul>
@@ -47,7 +51,7 @@ terrain data with elevation information. </li>
 Only install the airfields and airspaces maps for the area you need,
 this will make Cumulus faster. The other maps are not concerned of
 that.
-<p> The maps can be installed in any of three places: </p>
+<p> The maps can be installed on three different places: </p>
 
 <ul>
 
@@ -55,22 +59,24 @@ that.
 
   <li>In the installlation area, normally under /opt/cumulus/maps.</li>
 
-  <li>Anywhere, e.g. on a MMC. Under Maemo (Nokia Internet
-Tablet) it is recommened to use this location because the internal
-memory is limited)</li>
+  <li>Anywhere, e.g. on a SD card. Under Maemo (Nokia Internet
+      Tablet) it is recommened to use this location because the internal
+      memory is limited.</li>
 
 </ul>
 
-<p>If the maps are installed on the MMC the user must setup
+<p>
+If the maps are installed on the SD card you must setup
 the path to the map root directory in the Map Settings configuration
-page (Setup-&gt;General Setup-&gt;Map Setting). Use the Maps
+page (Setup-&gt;General Setup-&gt;Map Setting). Use the <i>Maps</i>
 button to navigate to the appropriate root directory under which the
 maps are to find. If there is no path setup the maps are searched only
 under $HOME/maps and /opt/cumulus/maps. But these directories are
-unsuitably for the PDA. </p>
+unsuitably for the Internet Tablet.
+</p>
 
-<p>The map data have to stored in different subdirectories under
-the selected map root.
+<p><b>Please Note! The map data have to stored in different subdirectories
+under the selected map root.</b>
 </p>
 
 <ul>
@@ -181,10 +187,11 @@ to <i>ControlD</i>.
 case sensitive!</b></p>
 
 <a name="Welt2000"></a>
-<p><b>Usage of Welt 2000 airfield data</b></p>
+<p><b>Usage of Welt2000 airfield data</b></p>
 
-<p>Cumulus uses for airfields the welt 2000 data base. These data
-are provided by Michael Meier as one big file <a href="http://www.segelflug.de/segelflieger/michael.meier/download/WELT2000.TXT">here.</a>
+<p>Cumulus uses for airfields the Welt2000 data base. These data
+were created by Michael Meier as one big file
+<a href="http://www.segelflug.de/vereine/welt2000/download/WELT2000.TXT">here.</a>
 </p>
 
 <p>Just install this file in the subdirectory <i>airfields</i>
@@ -208,11 +215,11 @@ configuration file. </li>
 
 </ul>
 
-<p>One disadvantage of welt 2000 is that it knows only three
+<p>One disadvantage of Welt2000 is that it knows only three
 types of airfield elements (Airfield, Glider Field, Ultra Light Field)
 but cumulus a lot more. This lack can be overcome by an additional
 provided mapping. You can map short names or ICAO identifiers of the
-welt 2000 file entries into other cumulus map elements by using a
+Welt2000 file entries into other cumulus map elements by using a
 simple syntax to be defined in a configuration file. The configuration
 file has to carry the name <i>welt2000.conf</i> and must
 be located in the same directory where the source file <i>welt2000.txt</i>
@@ -231,7 +238,7 @@ This line defines a country filter rule. Several countries can be
 entered after the equal sign in one line as list separated by commas.
 The country identifiers have to be coded according to ISO-3166. If such
 rule is defined, only the listed countries will be extracted from the
-welt 2000 source file. That should be the common way to get the desired
+Welt2000 source file. That should be the common way to get the desired
 subset of airfield data from the whole source. It is possible to define
 more than one filter rule. </li>
 
@@ -239,14 +246,14 @@ more than one filter rule. </li>
     <br>
 
 This line defines a rule for mapping of a short name (first six left
-standing characters) of a welt 2000 entry at a special cumulus map
+standing characters) of a Welt2000 entry at a special cumulus map
 element. </li>
 
   <li><b>MAP_ICAO</b> <i>icao-sign</i>=<i>map-element-of-cumulus</i>
     <br>
 
-This line defines a rule for mapping of an ICAO identifier of a welt
-2000 entry at a special cumulus map element. </li>
+This line defines a rule for mapping of an ICAO identifier of a Welt2000
+entry at a special cumulus map element. </li>
 
 </ul>
 
@@ -324,29 +331,25 @@ and will be reused, so long the original source, the configuration
 file, the map projection or the home position are not changed. This
 behaviour minimize the read in time after a restart. </p>
 
-<p>If you make necessary corrections on the data of the welt 2000
-file, please report all this changes to Michael Meier, who provides and
-maintains the source. His email address is to find in the header part
-of the welt 2000 file. </p>
+<p>If you make necessary corrections on the data of the Welt2000
+file, please report all your changes to the guys, who do
+maintain the source. Their email address is to find in the header part
+of the Welt2000 file or
+<a href="http://www.segelflug.de/vereine/welt2000/">at this page.</a>
+We all should help to keep up to date the Welt2000 source and thanks the guys
+who do this work.
+</p>
 
 <p>
 <table width="100%">
-
   <tbody>
-
     <tr>
-
       <td align="left"><a href="cumulus-gettingstarted.html">back</a></td>
-
       <td align="center"><a href="cumulus.html">start</a></td>
-
       <td align="right"><a href="cumulus-settings.html">next</a></td>
-
     </tr>
-
   </tbody>
 </table>
-
 </p>
 
 </body>
