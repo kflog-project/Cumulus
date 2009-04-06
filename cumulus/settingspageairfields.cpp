@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2008 Axel Pauli
+ **   Copyright (c):  2008-2009 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -158,7 +158,7 @@ SettingsPageAirfields::slot_save()
 {
 GeneralConfig *conf = GeneralConfig::instance();
 
-// We will check, if the country entries of welt 2000 are
+// We will check, if the country entries of Welt2000 are
 // correct. If not a warning message is displayed and the
 // modifications are discarded.
 QStringList clist = countryFilter->text().split(QRegExp("[, ]"),
@@ -173,7 +173,7 @@ for (QStringList::Iterator it = clist.begin(); it != clist.end(); ++it)
         QMessageBox::warning(
             this,
             tr("Please check entries"),
-            tr("Every Welt 2000 county sign must consist of two letters!<br>Allowed separators are space and comma.<br>Your modification will not be saved!"),
+            tr("Every Welt2000 county sign must consist of two letters!<br>Allowed separators are space and comma.<br>Your modification will not be saved!"),
             QMessageBox::Ok, QMessageBox::NoButton);
         return;
       }
@@ -184,10 +184,6 @@ conf->setWelt2000CountryFilter(countryFilter->text());
 if (homeRadius->isEnabled())
   {
     conf->setWelt2000HomeRadius(homeRadius->value());
-  }
-else
-  {
-    conf->setWelt2000HomeRadius(0);
   }
 
 conf->setListDisplayPageSize(pageSize->value());
@@ -242,8 +238,7 @@ SettingsPageAirfields::checkIsWelt2000Changed()
 bool changed = false;
 GeneralConfig *conf = GeneralConfig::instance();
 
-changed = changed
-    || (conf->getWelt2000CountryFilter() != countryFilter->text());
+changed = changed || (conf->getWelt2000CountryFilter() != countryFilter->text());
 changed = changed || (conf->getWelt2000HomeRadius() != homeRadius->value());
 
 // qDebug( "SettingsPageAirfields::checkIsWelt2000Changed(): %d", changed );
