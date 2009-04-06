@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2006-2008 by Axel Pauli, axel@kflog.org
+ **   Copyright (c):  2006-2009 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -243,8 +243,8 @@ bool Welt2000::load( MapElementList& airfieldList, MapElementList& gliderList )
 
           if( iRadius == 0 )
             {
-              // default is 1000 kilometers around home position
-              dRadius = 1000.0;
+              // default is 500 kilometers around the home position
+              dRadius = 500.0;
             }
           else
             {
