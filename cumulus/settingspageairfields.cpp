@@ -180,11 +180,7 @@ for (QStringList::Iterator it = clist.begin(); it != clist.end(); ++it)
   }
 
 conf->setWelt2000CountryFilter(countryFilter->text());
-
-if (homeRadius->isEnabled())
-  {
-    conf->setWelt2000HomeRadius(homeRadius->value());
-  }
+conf->setWelt2000HomeRadius(homeRadius->value());
 
 conf->setListDisplayPageSize(pageSize->value());
 conf->setListDisplayAFMargin(afMargin->value());
@@ -199,12 +195,12 @@ SettingsPageAirfields::slot_filterChanged(const QString& text)
 {
 if (text.isEmpty())
   {
-    // make widget home radius accessable, if filter string is empty
+    // make widget home radius accessible, if filter string is empty
     homeRadius->setEnabled(true);
   }
 else
   {
-    // make widget home radius not accessable, if filter string is defined
+    // make widget home radius not accessible, if filter string is defined
     homeRadius->setEnabled(false);
   }
 }
@@ -230,7 +226,7 @@ if (changed)
 }
 
 /**
- * Checks, if the configuration of the welt 2000 has been changed
+ * Checks, if the configuration of the Welt2000 has been changed
  */
 bool
 SettingsPageAirfields::checkIsWelt2000Changed()

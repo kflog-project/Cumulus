@@ -731,6 +731,17 @@ class GeneralConfig : protected QSettings
     _loggerInterval = newValue;
   };
 
+  /** gets logger autostart mode */
+  bool getLoggerAutostartMode() const
+  {
+    return _loggerAutostartMode;
+  };
+  /** sets logger autostart mode */
+  void setLoggerAutostartMode( const bool newValue )
+  {
+    _loggerAutostartMode = newValue;
+  };
+
   /** gets cruising speed */
   int getCruisingSpeed() const
   {
@@ -1721,6 +1732,8 @@ class GeneralConfig : protected QSettings
   int _qnh;
   // logger interval
   int _loggerInterval;
+  // logger autostart mode flag
+  bool _loggerAutostartMode;
   // cruising speed
   int _cruisingSpeed;
 

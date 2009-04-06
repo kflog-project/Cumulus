@@ -1,8 +1,10 @@
 /***************************************************************************
-                          igclogger.cpp  -  description
+                          igclogger.cpp - creates an IGC logfile
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by André Somers, 2008 Axel Pauli
+    copyright            : (C) 2002 by André Somers
+                               2008-2009 by Axel Pauli
+
     email                : axel@kflog.org
 
     This file is part of Cumulus
@@ -38,14 +40,23 @@
 
 IgcLogger * IgcLogger::_theInstance = 0;
 
-
-IgcLogger::IgcLogger(QObject* parent)
-  : QObject(parent),
-    _backtrack(LimitedList<QString> (15))
+IgcLogger::IgcLogger(QObject* parent) :
+  QObject(parent),
+  _backtrack(LimitedList<QString> (15))
 {
   timer=new QTimer(this);
   connect( timer, SIGNAL(timeout()), this, SLOT(slotMakeFixEntry()) );
-  _logMode=off;
+
+  if( GeneralConfig::instance()->getLoggerAutostartMode() )
+    {
+      // auto logging mode is switched on by the user
+      _logMode = standby;
+    }
+  else
+    {
+      // auto logging mode is switched off by the user
+      _logMode = off;
+    }
 }
 
 

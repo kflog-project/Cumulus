@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Andr� Somers, 2008 Axel Pauli
+ **   Copyright (c):  2004 by      André Somers
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -91,9 +92,8 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   row++;
 
   chkLogAutoStart = new QCheckBox(tr("Autostart logging"), this);
-  chkLogAutoStart->setObjectName("log_autostart");
+  chkLogAutoStart->setObjectName("autoStartLogger");
   topLayout->addWidget(chkLogAutoStart, row, 0, 1, 3);
-  chkLogAutoStart->setChecked(IgcLogger::instance()->getisStandby());
   row++;
 
   topLayout->setRowStretch(row, 10);
@@ -104,8 +104,7 @@ PreFlightMiscPage::~PreFlightMiscPage()
   // qDebug("PreFlightMiscPage::~PreFlightMiscPage()");
 }
 
-void
-PreFlightMiscPage::load()
+void PreFlightMiscPage::load()
 {
   // qDebug("PreFlightMiscPage::load()");
 
@@ -125,19 +124,19 @@ PreFlightMiscPage::load()
       edtMinimalArrival->setSingleStep(100);
     }
 
-  edtQNH->setValue(conf->getQNH());
-
-  loggerInterval->setValue(conf->getLoggerInterval());
+  edtQNH->setValue( conf->getQNH() );
+  loggerInterval->setValue( conf->getLoggerInterval() );
+  chkLogAutoStart->setChecked( conf->getLoggerAutostartMode() );
 }
 
-void
-PreFlightMiscPage::save()
+void PreFlightMiscPage::save()
 {
   //qDebug("PreFlightMiscPage::save()");
 
-  IgcLogger *log = IgcLogger::instance();
+  GeneralConfig *conf = GeneralConfig::instance();
+  IgcLogger     *log  = IgcLogger::instance();
 
-  if (chkLogAutoStart->isChecked())
+  if( chkLogAutoStart->isChecked() )
     {
       if (log->getisLogging())
         {
@@ -163,7 +162,7 @@ PreFlightMiscPage::save()
         }
     }
 
-  GeneralConfig *conf = GeneralConfig::instance();
+  conf->setLoggerAutostartMode( chkLogAutoStart->isChecked() );
 
   // @AP: Store altitude always as meter.
   if (altUnit == Altitude::meters)

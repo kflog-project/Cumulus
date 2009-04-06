@@ -167,9 +167,10 @@ void GeneralConfig::load()
   // Preflight settings
   beginGroup("Preflight Data");
   _safetyAltitude.setMeters(  value( "Arrival Altitude", 200.0 ).toDouble() );
-  _qnh             = value( "QNH", 1013 ).toInt();
-  _loggerInterval  = value( "LoggerInterval", 10 ).toInt();
-  _cruisingSpeed   = value( "CruisingSpeed", 100 ).toInt();
+  _qnh                 = value( "QNH", 1013 ).toInt();
+  _loggerInterval      = value( "LoggerInterval", 10 ).toInt();
+  _loggerAutostartMode = value( "LoggerAutostartMode", false ).toBool();
+  _cruisingSpeed       = value( "CruisingSpeed", 100 ).toInt();
   endGroup();
 
   // Task scheme settings for cylinder-sector and nearest-touched
@@ -228,7 +229,7 @@ void GeneralConfig::load()
   _mapProjectionType = value("Projection Type", ProjectionBase::Cylindric ).toInt();
 
   _welt2000CountryFilter = value("Welt2000CountryFilter", "").toString();
-  _welt2000HomeRadius    = value("Welt2000HomeRadius", 0).toInt();
+  _welt2000HomeRadius    = value("Welt2000HomeRadius", 500).toInt(); // km is assumed
 
   for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {
@@ -458,6 +459,7 @@ void GeneralConfig::save()
   setValue( "Arrival Altitude", _safetyAltitude.getMeters() );
   setValue( "QNH", _qnh );
   setValue( "LoggerInterval", _loggerInterval );
+  setValue( "LoggerAutostartMode", _loggerAutostartMode );
   setValue( "CruisingSpeed", _cruisingSpeed );
   endGroup();
 
@@ -1591,7 +1593,7 @@ int GeneralConfig::getWaypointScaleBorder( const wayPoint::Importance importance
     case wayPoint::Normal:
     case wayPoint::High:
 
-      qDebug("Importance=%d, value=%d", importance, _wayPointScaleBorders[importance] );
+      // qDebug("Importance=%d, value=%d", importance, _wayPointScaleBorders[importance] );
 
       return _wayPointScaleBorders[importance];
       break;

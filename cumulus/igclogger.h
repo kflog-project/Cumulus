@@ -1,8 +1,10 @@
 /***************************************************************************
-                          igclogger.h  -  creates an igc logfile
+                          igclogger.h  -  creates an IGC logfile
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by André Somers, 2008 Axel Pauli
+    copyright            : (C) 2002      by André Somers
+                               2008-2009 by Axel Pauli
+
     email                : axel@kflog.org
 
     This file is part of Cumulus
