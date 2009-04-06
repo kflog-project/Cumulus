@@ -1655,13 +1655,16 @@ void MapContents::unloadMapObjects(QList<RadioPoint>& list)
 
 void MapContents::unloadMapObjects(QList<Isohypse> list[ISO_LINE_NUM][ISO_LINE_LEVELS])
 {
-  for ( int i = 0; i < ISO_LINE_NUM * ISO_LINE_LEVELS; i++ )
+  for ( int i = 0; i < ISO_LINE_LEVELS; i++ )
     {
-      for ( int j = list[i][0].count() - 1; j >= 0; j--)
+      for ( int j = 0; j < ISO_LINE_NUM; j++ )
         {
-          if ( !tileSectionSet.contains(list[i][0].at(j).getMapSegment()) )
+          for ( int k = list[j][i].count() - 1; k >= 0; k--)
             {
-              list[i][0].removeAt(j);
+              if ( !tileSectionSet.contains(list[j][i].at(k).getMapSegment()) )
+                {
+                  list[j][i].removeAt(k);
+                }
             }
         }
     }
@@ -1793,7 +1796,6 @@ SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
     }
 }
 
-
 void MapContents::slotReloadMapData()
 {
   // @AP: defined a static mutex variable, to prevent the recursive
@@ -1834,9 +1836,12 @@ void MapContents::slotReloadMapData()
   villageList.clear();
 
   // the content of all iso lists in the isoList array must be cleared
-  for ( int i = 0; i < ISO_LINE_NUM * ISO_LINE_LEVELS; i++)
+  for( int j = 0; j < ISO_LINE_LEVELS; j++ )
     {
-      isoList[i][0].clear();
+      for( int i = 0; i < ISO_LINE_NUM; i++ )
+      {
+        isoList[i][j].clear();
+      }
     }
 
   tileSectionSet.clear();
@@ -2181,9 +2186,9 @@ void MapContents::drawIsoList(QPainter* targetP)
 
   // We step here over the different isoLine level lists, starting at the
   // lowest level 0m
-  for (int j = 0; j < ISO_LINE_LEVELS; j++)
+  for( int j = 0; j < ISO_LINE_LEVELS; j++ )
     {
-      for (int i = 0; i <= maxElevationIdx; i++)
+      for( int i = 0; i <= maxElevationIdx; i++ )
         {
           // step over one whole isoLine level list
           QList<Isohypse> isoLevelList = isoList[i][j];
