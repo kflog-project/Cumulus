@@ -1279,8 +1279,10 @@ void GpsNmea::calcStdAltitude(const Altitude& altitude)
 
   if ( qnhDiff != 0 )
     {
-      // calculate altitude correction in meters from pressure difference
-      int delta = (int) rint( qnhDiff * 8.6 );
+      // Calculate altitude correction in meters from pressure difference.
+      // The common approach is to expect a pressure difference of 1 hPa per
+      // 30ft until 18.000ft. 30ft are 9.1437m
+      int delta = (int) rint( qnhDiff * 9.1437 );
       _lastStdAltitude.setMeters( altitude.getMeters() + delta );
     }
   else
