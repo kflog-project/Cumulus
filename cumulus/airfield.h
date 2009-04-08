@@ -6,8 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008 Axel Pauli
+ **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -49,6 +49,7 @@ class Airfield : public SinglePoint
    * @param  frequency  The frequency
    * @param  winch  "true", if winch-launch is available
    * @param  towing "true", if aero towing is available
+   * @param  landable "true", if airfield is landable
    */
   Airfield( const QString& name,
             const QString& icao,
@@ -60,7 +61,8 @@ class Airfield : public SinglePoint
             const unsigned int elevation,
             const QString& frequency,
             bool winch = false,
-            bool towing = false );
+            bool towing = false,
+            bool landable = true );
 
   /**
    * Destructor
@@ -94,7 +96,7 @@ class Airfield : public SinglePoint
   /**
    * @return "true", if winch launching is available.
    */
-  const bool hasWinch() const
+  bool hasWinch() const
     {
       return winch;
     };
@@ -102,9 +104,17 @@ class Airfield : public SinglePoint
   /**
    * @return "true", if aero towing is available.
    */
-  const bool hasTowing() const
+  bool hasTowing() const
     {
       return towing;
+    };
+
+  /**
+   * @return "true", if it is landable
+   */
+  bool isLandable() const
+    {
+      return landable;
     };
 
   /**
@@ -117,8 +127,10 @@ class Airfield : public SinglePoint
    */
   virtual QString getInfoString() const;
 
-  // Draws the element into the given painter.
-  virtual void drawMapElement(QPainter* targetP);
+  // Draws the element into the given painter with the requested info.
+  virtual void drawMapElement( QPainter* targetP,
+                               const bool drawLabel = false,
+                               const bool drawLabelInfo = false );
 
  private:
 
@@ -151,6 +163,11 @@ class Airfield : public SinglePoint
    * Contains the shift of the runway during drawing.
    */
   unsigned short rwShift;
+
+  /**
+   * Flag to indicate the landability of the airfield.
+   */
+  bool landable;
 
 };
 

@@ -6,8 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008 Axel Pauli
+ **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -18,6 +18,7 @@
 
 #include "airfield.h"
 #include "reachablelist.h"
+#include "map.h"
 
 Airfield::Airfield( const QString& name,
                     const QString& icao,
@@ -29,13 +30,15 @@ Airfield::Airfield( const QString& name,
                     const unsigned int elevation,
                     const QString& frequency,
                     bool winch,
-                    bool towing )
+                    bool towing,
+                    bool landable )
     : SinglePoint(name, shortName, typeId, wgsPos, pos, elevation),
     icao(icao),
     frequency(frequency),
     rwData(rw),
     winch(winch),
-    towing(towing)
+    towing(towing),
+    landable(landable)
 {
   // calculate the default runway shift in 1/10 degrees.
   rwShift = 90/10; // default direction is 90 degrees
@@ -74,7 +77,9 @@ QString Airfield::getInfoString() const
     return text;
   }
 
-void Airfield::drawMapElement(QPainter* targetP)
+void Airfield::drawMapElement( QPainter* targetP,
+                               const bool drawLabel,
+                               const bool drawLabelInfo )
 {
   if ( ! isVisible() )
     {
@@ -130,4 +135,16 @@ void Airfield::drawMapElement(QPainter* targetP)
           targetP->drawPixmap(curPos.x() - iconSize/2, curPos.y() - iconSize/2, image  );
         }
     }
+
+  // Draw airfield labels on demand
+  if( drawLabel == true )
+    {
+      Map::getInstance()->drawLabel( targetP,
+                                     iconSize / 2 + 3,
+                                     shortName,
+                                     curPos,
+                                     wgsPosition,
+                                     landable,
+                                     drawLabelInfo );
+     }
 }
