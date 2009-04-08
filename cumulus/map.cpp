@@ -1068,11 +1068,11 @@ void Map::__drawNavigationLayer()
 
   navP.begin(&m_pixNavigationMap);
 
-  _globalMapContents->drawList(&navP, MapContents::AirfieldList);
   _globalMapContents->drawList(&navP, MapContents::OutList);
   _globalMapContents->drawList(&navP, MapContents::GliderSiteList);
-  __drawWaypoints(&navP);
+  _globalMapContents->drawList(&navP, MapContents::AirfieldList);
   __drawPlannedTask(&navP);
+  __drawWaypoints(&navP);
 
   // and finally draw a scale indicator on top of this
   __drawScale(navP);
@@ -1169,7 +1169,7 @@ void Map::__drawWaypoints(QPainter* painter)
 
   // load all configuration items once
   const bool showLabels       = GeneralConfig::instance()->getMapShowWaypointLabels();
-  const bool showExtraInfo    = GeneralConfig::instance()->getMapShowWaypointLabelsExtraInfo();
+  const bool showExtraInfo    = GeneralConfig::instance()->getMapShowLabelsExtraInfo();
   const bool useSmallIcons    = _globalMapConfig->useSmallIcons();
   const double currentScale   = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
@@ -1302,14 +1302,13 @@ void Map::__drawWaypoints(QPainter* painter)
         // Draw the waypoint name, if required by the user.
         if( showLabels )
           {
-            __drawLabel( painter,
-                         iconSize / 2 + 3,
-                         wp.name,
-                         dispP,
-                         wp.origP,
-                         wp.projP,
-                         wp.isLandable,
-                         showExtraInfo );
+            drawLabel( painter,
+                       iconSize / 2 + 3,
+                       wp.name,
+                       dispP,
+                       wp.origP,
+                       wp.isLandable,
+                       showExtraInfo );
           }
     } // END of for loop
 }
@@ -1317,14 +1316,13 @@ void Map::__drawWaypoints(QPainter* painter)
 /** Draws a label beside the map icon. It is assumed, that the icon is to see
  *  at the screen.
  */
-void Map::__drawLabel( QPainter* painter,
-                       const int xShift,      // x offset from the center point
-                       const QString& name,   // name of point
-                       const QPoint& dispP,   // projected point at the display
-                       const WGSPoint& origP, // WGS84 point
-                       const QPoint& projP,   // projected point at the map
-                       const bool isLandable, // is landable?
-                       const bool showExtraInfo )
+void Map::drawLabel( QPainter* painter,
+                     const int xShift,      // x offset from the center point
+                     const QString& name,   // name of point
+                     const QPoint& dispP,   // projected point at the display
+                     const WGSPoint& origP, // WGS84 point
+                     const bool isLandable, // is landable?
+                     const bool drawLabelInfo )
 {
   // qDebug("LabelName=%s, xShift=%d", name.toLatin1().data(), xShift );
 
@@ -1344,7 +1342,7 @@ void Map::__drawLabel( QPainter* painter,
   QString labelText = name;
   Altitude alt;
 
-  if( showExtraInfo )
+  if( drawLabelInfo )
     {
       // draw the name together with the additional information
       if( isLandable )
@@ -1574,7 +1572,7 @@ void Map::__drawScale(QPainter& scaleP)
   pen.setCapStyle(Qt::RoundCap);
   scaleP.setPen(pen);
   QFont f = scaleP.font();
-  f.setPixelSize(12);
+  f.setPixelSize(14);
   scaleP.setFont(f);
 
   double scale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
@@ -1658,13 +1656,16 @@ void Map::__drawScale(QPainter& scaleP)
 
   //determine how long the bar should be in pixels
   int drawLength = (int)rint(barLen.getMeters()/scale);
-  //...and where to start drawing.
+  //...and where to start drawing. Now at the left lower side ...
+  scaleP.translate( QPoint( -this->width()+drawLength+10, 0) );
+
   int leftXPos=this->width()-drawLength-5;
+
   //Now, draw the bar
-  scaleP.drawLine(leftXPos,this->height()-5,this->width()-5,this->height()-5);       //main bar
+  scaleP.drawLine(leftXPos, this->height()-5,this->width()-5,this->height()-5);       //main bar
   pen.setWidth(2);
   scaleP.setPen(pen);
-  scaleP.drawLine(leftXPos,this->height()-9,leftXPos,this->height()-1);              //left endbar
+  scaleP.drawLine(leftXPos, this->height()-9,leftXPos,this->height()-1);              //left endbar
   scaleP.drawLine(this->width()-5,this->height()-9,this->width()-5,this->height()-1);//right endbar
 
   //get the string to draw

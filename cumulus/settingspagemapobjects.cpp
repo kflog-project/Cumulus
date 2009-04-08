@@ -114,8 +114,6 @@ SettingsPageMapObjects::~SettingsPageMapObjects()
  */
 void SettingsPageMapObjects::slot_wpLowScaleLimitChanged( int newValue )
 {
-  qDebug("slot_wpLowScaleLimitChanged(): new=%d", newValue);
-
   if( newValue > wpNormalScaleLimitSpinBox->value() )
     {
       // Check new value to ensure that current value of normal importance
@@ -131,8 +129,6 @@ void SettingsPageMapObjects::slot_wpLowScaleLimitChanged( int newValue )
  */
 void SettingsPageMapObjects::slot_wpNormalScaleLimitChanged( int newValue )
 {
-  qDebug("slot_wpNormalScaleLimitChanged(): new=%d", newValue);
-
   if( newValue > wpHighScaleLimitSpinBox->value() )
     {
       // Check new value to ensure that current value of high importance
@@ -157,8 +153,6 @@ void SettingsPageMapObjects::slot_wpNormalScaleLimitChanged( int newValue )
  */
 void SettingsPageMapObjects::slot_wpHighScaleLimitChanged( int newValue )
 {
-  qDebug("slot_wpHighScaleLimitChanged(): new=%d", newValue);
-
   if( newValue < wpNormalScaleLimitSpinBox->value() )
     {
       // Check new value to ensure that current value of normal importance
@@ -188,7 +182,7 @@ void SettingsPageMapObjects::slot_load()
   liIsolines->setCheckState( conf->getMapLoadIsoLines() ? Qt::Checked : Qt::Unchecked );
   liIsolineBorders->setCheckState( conf->getMapShowIsoLineBorders() ? Qt::Checked : Qt::Unchecked );
   liWpLabels->setCheckState( conf->getMapShowWaypointLabels() ? Qt::Checked : Qt::Unchecked );
-  liLabelsInfo->setCheckState( conf->getMapShowWaypointLabelsExtraInfo() ? Qt::Checked : Qt::Unchecked );
+  liLabelsInfo->setCheckState( conf->getMapShowLabelsExtraInfo() ? Qt::Checked : Qt::Unchecked );
   liRoads->setCheckState( conf->getMapLoadRoads() ? Qt::Checked : Qt::Unchecked );
   liHighways->setCheckState( conf->getMapLoadHighways() ? Qt::Checked : Qt::Unchecked );
   liRailroads->setCheckState( conf->getMapLoadRailroads() ? Qt::Checked : Qt::Unchecked );
@@ -218,8 +212,6 @@ void SettingsPageMapObjects::slot_save()
 
   conf->setMapLoadIsoLines( liIsolines->checkState() == Qt::Checked ? true : false );
   conf->setMapShowIsoLineBorders(liIsolineBorders->checkState() == Qt::Checked ? true : false);
-  conf->setMapShowWaypointLabels(liWpLabels->checkState() == Qt::Checked ? true : false);
-  conf->setMapShowWaypointLabelsExtraInfo(liLabelsInfo->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadRoads(liRoads->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadHighways(liHighways->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadRailroads(liRailroads->checkState() == Qt::Checked ? true : false);
@@ -231,6 +223,8 @@ void SettingsPageMapObjects::slot_save()
   conf->setMapShowTaskPointLabels(liTpLabels->checkState() == Qt::Checked ? true : false);
   conf->setMapShowOutLandingLabels(liOlLabels->checkState() == Qt::Checked ? true : false);
 
+  conf->setMapShowWaypointLabels(liWpLabels->checkState() == Qt::Checked ? true : false);
+  conf->setMapShowLabelsExtraInfo(liLabelsInfo->checkState() == Qt::Checked ? true : false);
   conf->setWaypointScaleBorder( wayPoint::Low, wpLowScaleLimitSpinBox->value() );
   conf->setWaypointScaleBorder( wayPoint::Normal, wpNormalScaleLimitSpinBox->value() );
   conf->setWaypointScaleBorder( wayPoint::High, wpHighScaleLimitSpinBox->value() );
@@ -332,7 +326,7 @@ void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
   changed |= ( conf->getMapLoadIsoLines() ? Qt::Checked : Qt::Unchecked ) != liIsolines->checkState();
   changed |= ( conf->getMapShowIsoLineBorders() ? Qt::Checked : Qt::Unchecked ) != liIsolineBorders->checkState();
   changed |= ( conf->getMapShowWaypointLabels() ? Qt::Checked : Qt::Unchecked ) != liWpLabels->checkState();
-  changed |= ( conf->getMapShowWaypointLabelsExtraInfo() ? Qt::Checked : Qt::Unchecked ) != liLabelsInfo->checkState();
+  changed |= ( conf->getMapShowLabelsExtraInfo() ? Qt::Checked : Qt::Unchecked ) != liLabelsInfo->checkState();
   changed |= ( conf->getMapLoadRoads() ? Qt::Checked : Qt::Unchecked ) != liRoads->checkState();
   changed |= ( conf->getMapLoadHighways() ? Qt::Checked : Qt::Unchecked ) != liHighways->checkState();
   changed |= ( conf->getMapLoadRailroads() ? Qt::Checked : Qt::Unchecked ) != liRailroads->checkState();

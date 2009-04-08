@@ -1994,30 +1994,47 @@ void MapContents::drawList(QPainter* targetP, unsigned int listID)
   //QTime t;
   //t.start();
 
+  // load all configuration items once
+  const bool showAfLabels  = GeneralConfig::instance()->getMapShowAirfieldLabels();
+  const bool showOlLabels  = GeneralConfig::instance()->getMapShowOutLandingLabels();
+  const bool showExtraInfo = GeneralConfig::instance()->getMapShowLabelsExtraInfo();
+
   switch (listID)
     {
     case AirfieldList:
       //list="AirfieldList";
       //len=airfieldList.count();
       showProgress2WaitScreen( tr("Drawing airports") );
+
       for (int i = 0; i < airfieldList.size(); i++)
-        airfieldList[i].drawMapElement(targetP);
+        {
+          airfieldList[i].drawMapElement(targetP, showAfLabels, showExtraInfo);
+        }
+
       break;
 
     case GliderSiteList:
       //list="GliderList";
       //len=gliderSiteList.count();
       showProgress2WaitScreen( tr("Drawing glider sites") );
+
       for (int i = 0; i < gliderSiteList.size(); i++)
-        gliderSiteList[i].drawMapElement(targetP);
+        {
+          gliderSiteList[i].drawMapElement(targetP, showAfLabels, showExtraInfo);
+        }
+
       break;
 
     case OutList:
       //list="OutList";
       //len=outList.count();
       showProgress2WaitScreen( tr("Drawing outlanding sites") );
+
       for (int i = 0; i < outList.size(); i++)
-        outList[i].drawMapElement(targetP);
+        {
+          outList[i].drawMapElement(targetP);
+        }
+
       break;
 
     case RadioList:

@@ -743,9 +743,16 @@ void MainWindow::initMenuBar()
   viewMenu->addAction( actionViewInfo );
   actionViewInfo->setEnabled( false );
   viewMenu->addSeparator();
+  // add a submenu for Label management
+  labelMenu = viewMenu->addMenu( tr("Labels"));
+  labelMenu->addAction( actionToggleAfLabels );
+  labelMenu->addAction( actionToggleOlLabels );
+  labelMenu->addAction( actionToggleTpLabels );
+  labelMenu->addAction( actionToggleWpLabels );
+  viewMenu->addSeparator();
+  labelMenu->addAction( actionToggleLabelsInfo );
+
   viewMenu->addAction( actionToggleStatusbar );
-  viewMenu->addAction( actionToggleWpLabels );
-  viewMenu->addAction( actionToggleWpLabelsEI );
   viewMenu->addSeparator();
   viewMenu->addAction( actionViewGPSStatus );
 
@@ -778,10 +785,16 @@ void MainWindow::initMenuBar()
 /** set menubar font size to a reasonable and useable value */
 void MainWindow::slotSetMenuBarFontSize()
 {
-  if( font().pointSize() < 15 )
+#ifndef MAEMO
+  int minFontSize = 14;
+#else
+  int minFontSize = 20;
+#endif
+
+  if( font().pointSize() < minFontSize )
     {
       QFont cf = font();
-      cf.setPointSize( 15 );
+      cf.setPointSize( minFontSize );
 
       menuBar()->setFont( cf );
 
@@ -903,13 +916,13 @@ void MainWindow::initActions()
            this, SLOT( slotFileQuit() ) );
 
   actionViewWaypoints = new QAction ( tr( "&Waypoints" ), this );
-  actionViewWaypoints->setShortcut(Qt::Key_W);
+  // actionViewWaypoints->setShortcut(Qt::Key_W);
   addAction( actionViewWaypoints );
   connect( actionViewWaypoints, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToWPListView() ) );
 
   actionViewAirfields = new QAction ( tr( "&Airfields" ), this );
-  actionViewAirfields->setShortcut(Qt::Key_O);
+  //actionViewAirfields->setShortcut(Qt::Key_O);
   addAction( actionViewAirfields );
   connect( actionViewAirfields, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToAFListView() ) );
@@ -921,7 +934,7 @@ void MainWindow::initActions()
            this, SLOT( slotSwitchToReachListView() ) );
 
   actionViewTaskpoints = new QAction ( tr( "&Task" ), this );
-  actionViewTaskpoints->setShortcut(Qt::Key_T);
+  // actionViewTaskpoints->setShortcut(Qt::Key_T);
   addAction( actionViewTaskpoints );
   connect( actionViewTaskpoints, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToTaskListView() ) );
@@ -967,21 +980,45 @@ void MainWindow::initActions()
   connect ( actionZoomOutZ, SIGNAL( triggered() ),
             viewMap->_theMap , SLOT( slotZoomOut() ) );
 
+  actionToggleAfLabels = new QAction ( tr( "Airfield labels" ), this);
+  actionToggleAfLabels->setShortcut(Qt::Key_A);
+  actionToggleAfLabels->setCheckable(true);
+  actionToggleAfLabels->setChecked( GeneralConfig::instance()->getMapShowAirfieldLabels() );
+  addAction( actionToggleAfLabels );
+  connect( actionToggleAfLabels, SIGNAL( toggled( bool ) ),
+           this, SLOT( slotToggleAfLabels( bool ) ) );
+
+  actionToggleOlLabels = new QAction ( tr( "Outlanding labels" ), this);
+  actionToggleOlLabels->setShortcut(Qt::Key_O);
+  actionToggleOlLabels->setCheckable(true);
+  actionToggleOlLabels->setChecked( GeneralConfig::instance()->getMapShowOutLandingLabels() );
+  addAction( actionToggleOlLabels );
+  connect( actionToggleOlLabels, SIGNAL( toggled( bool ) ),
+           this, SLOT( slotToggleOlLabels( bool ) ) );
+
+  actionToggleTpLabels = new QAction ( tr( "Taskpoint labels" ), this);
+  actionToggleTpLabels->setShortcut(Qt::Key_T);
+  actionToggleTpLabels->setCheckable(true);
+  actionToggleTpLabels->setChecked( GeneralConfig::instance()->getMapShowTaskPointLabels() );
+  addAction( actionToggleTpLabels );
+  connect( actionToggleTpLabels, SIGNAL( toggled( bool ) ),
+           this, SLOT( slotToggleTpLabels( bool ) ) );
+
   actionToggleWpLabels = new QAction ( tr( "Waypoint labels" ), this);
-  actionToggleWpLabels->setShortcut(Qt::Key_A);
+  actionToggleWpLabels->setShortcut(Qt::Key_W);
   actionToggleWpLabels->setCheckable(true);
   actionToggleWpLabels->setChecked( GeneralConfig::instance()->getMapShowWaypointLabels() );
   addAction( actionToggleWpLabels );
   connect( actionToggleWpLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleWpLabels( bool ) ) );
 
-  actionToggleWpLabelsEI = new QAction (  tr( "Waypoint extra info" ), this);
-  actionToggleWpLabelsEI->setShortcut(Qt::Key_S);
-  actionToggleWpLabelsEI->setCheckable(true);
-  actionToggleWpLabelsEI->setChecked( GeneralConfig::instance()->getMapShowWaypointLabelsExtraInfo() );
-  addAction( actionToggleWpLabelsEI );
-  connect( actionToggleWpLabelsEI, SIGNAL( toggled( bool ) ),
-           this, SLOT( slotToggleWpLabelsExtraInfo( bool ) ) );
+  actionToggleLabelsInfo = new QAction (  tr( "Labels extra info" ), this);
+  actionToggleLabelsInfo->setShortcut(Qt::Key_E);
+  actionToggleLabelsInfo->setCheckable(true);
+  actionToggleLabelsInfo->setChecked( GeneralConfig::instance()->getMapShowLabelsExtraInfo() );
+  addAction( actionToggleLabelsInfo );
+  connect( actionToggleLabelsInfo, SIGNAL( toggled( bool ) ),
+           this, SLOT( slotToggleLabelsInfo( bool ) ) );
 
   actionToggleLogging = new QAction( tr( "Logging" ), this );
   actionToggleLogging->setShortcut(Qt::Key_L);
@@ -1065,8 +1102,11 @@ void  MainWindow::toggleActions( const bool toggle )
   actionViewGPSStatus->setEnabled( toggle );
   actionZoomInZ->setEnabled( toggle );
   actionZoomOutZ->setEnabled( toggle );
+  actionToggleAfLabels->setEnabled( toggle );
+  actionToggleOlLabels->setEnabled( toggle );
+  actionToggleTpLabels->setEnabled( toggle );
   actionToggleWpLabels->setEnabled( toggle );
-  actionToggleWpLabelsEI->setEnabled( toggle );
+  actionToggleLabelsInfo->setEnabled( toggle );
   actionEnsureVisible->setEnabled( toggle );
   actionSelectTask->setEnabled( toggle );
   actionPreFlight->setEnabled( toggle );
@@ -1190,6 +1230,29 @@ void MainWindow::slotToggleMenu()
     }
 }
 
+void MainWindow::slotToggleAfLabels( bool toggle )
+{
+  // save configuration change
+  GeneralConfig::instance()->setMapShowAirfieldLabels( toggle );
+  GeneralConfig::instance()->save();
+  viewMap->_theMap->scheduleRedraw(Map::airports);
+}
+
+void MainWindow::slotToggleOlLabels( bool toggle )
+{
+  // save configuration change
+  GeneralConfig::instance()->setMapShowOutLandingLabels( toggle );
+  GeneralConfig::instance()->save();
+  viewMap->_theMap->scheduleRedraw(Map::outlandingSites);
+}
+
+void MainWindow::slotToggleTpLabels( bool toggle )
+{
+  // save configuration change
+  GeneralConfig::instance()->setMapShowTaskPointLabels( toggle );
+  GeneralConfig::instance()->save();
+  viewMap->_theMap->scheduleRedraw(Map::task);
+}
 
 void MainWindow::slotToggleWpLabels( bool toggle )
 {
@@ -1199,15 +1262,13 @@ void MainWindow::slotToggleWpLabels( bool toggle )
   viewMap->_theMap->scheduleRedraw(Map::waypoints);
 }
 
-
-void MainWindow::slotToggleWpLabelsExtraInfo( bool toggle )
+void MainWindow::slotToggleLabelsInfo( bool toggle )
 {
   // save configuration change
-  GeneralConfig::instance()->setMapShowWaypointLabelsExtraInfo( toggle );
+  GeneralConfig::instance()->setMapShowLabelsExtraInfo( toggle );
   GeneralConfig::instance()->save();
-  viewMap->_theMap->scheduleRedraw(Map::waypoints);
+  viewMap->_theMap->scheduleRedraw(Map::airports);
 }
-
 
 void MainWindow::slotViewStatusBar( bool toggle )
 {
@@ -1217,7 +1278,6 @@ void MainWindow::slotViewStatusBar( bool toggle )
     viewMap->statusBar()->hide();
 }
 
-
 /** Called if the logging is actually toggled */
 void MainWindow::slot_Logging ( bool logging )
 {
@@ -1226,14 +1286,11 @@ void MainWindow::slot_Logging ( bool logging )
   actionToggleLogging->blockSignals( false );
 }
 
-
-
 /** Read property of enum view. */
 const MainWindow::appView MainWindow::getView()
 {
   return view;
 }
-
 
 /** Called if the user clicks on a tabulator of the list view */
 void MainWindow::slot_tabChanged( int index )
@@ -1670,6 +1727,8 @@ void MainWindow::slotRememberWaypoint()
     start of the program to read the initial configuration. */
 void MainWindow::slotReadconfig()
 {
+  qDebug("MainWindow::slotReadconfig()");
+
   GeneralConfig *conf = GeneralConfig::instance();
 
   // configure units
@@ -1689,6 +1748,13 @@ void MainWindow::slotReadconfig()
   viewAF->listWidget()->slot_Done();
   viewWP->listWidget()->configRowHeight();
   viewWP->listWidget()->slot_Done();
+
+  // Update action settings
+  actionToggleAfLabels->setChecked( GeneralConfig::instance()->getMapShowAirfieldLabels() );
+  actionToggleOlLabels->setChecked( GeneralConfig::instance()->getMapShowOutLandingLabels() );
+  actionToggleTpLabels->setChecked( GeneralConfig::instance()->getMapShowTaskPointLabels() );
+  actionToggleWpLabels->setChecked( GeneralConfig::instance()->getMapShowWaypointLabels() );
+  actionToggleLabelsInfo->setChecked( GeneralConfig::instance()->getMapShowLabelsExtraInfo() );
 
   // configure reconnect of GPS receiver in case of process stop
   QString device = conf->getGpsDevice();
@@ -1741,6 +1807,8 @@ void MainWindow::slotReadconfig()
             }
         }
     }
+
+  viewMap->_theMap->scheduleRedraw();
 }
 
 

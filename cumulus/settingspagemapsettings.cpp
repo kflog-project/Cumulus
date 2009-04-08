@@ -27,6 +27,7 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QToolTip>
+#include <QStringList>
 
 #include "settingspagemapsettings.h"
 #include "generalconfig.h"
@@ -118,7 +119,6 @@ void SettingsPageMapSettings::slot_load()
   // @AP: Note, that the index of the list starts with 0 but the
   // ProjectionType uses zero for unknown. So we must subtract 1
   // to get the right value.
-
   int projIndex = currentProjType - 1;
   cmbProjection->setCurrentIndex(projIndex);
   slotSelectProjection(projIndex);
@@ -130,8 +130,8 @@ void SettingsPageMapSettings::slot_save()
   // @AP: here we must overtake the new user values at first. After that
   // we can store them.
   // Check, if input string values have been changed. If not, no
-  // overtake of values to avoid roundings errors. They can appear if
-  // the position formats will be changed between DMS <-> DDM vise
+  // overtake of values to avoid rounding errors. They can appear if
+  // the position formats will be changed between DMS <-> DDM vice
   // versa.
 
   switch(cmbProjection->currentIndex())
@@ -167,17 +167,61 @@ void SettingsPageMapSettings::slot_save()
  */
 void SettingsPageMapSettings::slot_openFileDialog()
 {
-  QString mapDir = QFileDialog::getExistingDirectory( this,
-                                                      tr("Please select your map directory"),
-                                                      QDir::homePath(),
-                                                      QFileDialog::ShowDirsOnly );
+  QString mapDirCurrent = GeneralConfig::instance()->getMapRootDir();
+  QDir mapDir;
 
-  if( mapDir.isEmpty() )
+  if( ! mapDir.exists( mapDirCurrent ) )
+      {
+        // Fall back to default if not existing
+        mapDirCurrent = QDir::homePath();
+      }
+
+  QString mapDirNew = QFileDialog::getExistingDirectory( this,
+                                                         tr("Please select your map directory"),
+                                                         mapDirCurrent,
+                                                         QFileDialog::ShowDirsOnly );
+  if( mapDirNew.isEmpty() )
     {
-      return; // nothing was selected by the user
+      return; // cancel was selected by the user
     }
 
-  mapDirectory->setText( mapDir );
+  mapDirectory->setText( mapDirNew );
+
+  // Now check, if all needed map subdirectories are exist under the new map root
+  QStringList missingDirs;
+
+  if( ! mapDir.exists( mapDirNew + "/airfields" ))
+    {
+      missingDirs << "airfields";
+    }
+
+  if( ! mapDir.exists( mapDirNew + "/airspaces" ))
+    {
+      missingDirs << "airspaces";
+    }
+
+  if( ! mapDir.exists( mapDirNew + "/landscape" ))
+    {
+      missingDirs << "landscape";
+    }
+
+  if( missingDirs.size() != 0 )
+    {
+      // map subdirectories are missing, ask user for creation
+        int answer = QMessageBox::question( this, tr("Map Subdirectories?"),
+            tr("Missing Map subdirectories:") + QString("<p>") +
+            missingDirs.join(", ") +
+            QString("<p>") + tr("Shall they be created now?"),
+            QMessageBox::Yes | QMessageBox::No );
+
+      if( answer == QMessageBox::Yes )
+        {
+          for( int i = 0; i < missingDirs.size(); i++ )
+            {
+              mapDir.mkpath( mapDirNew + "/" + missingDirs.at(i) );
+            }
+        }
+    }
 }
 
 // selection in the combo box has been changed. index is a reference

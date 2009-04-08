@@ -988,13 +988,13 @@ class GeneralConfig : protected QSettings
     _mapShowOutLandingLabels = newValue;
   };
 
-  /** gets Map ShowWaypointLabelsExtraInfo */
-  bool getMapShowWaypointLabelsExtraInfo() const
+  /** gets Map ShowLabelsExtraInfo */
+  bool getMapShowLabelsExtraInfo() const
   {
     return _mapShowLabelsExtraInfo;
   };
-  /** sets Map ShowWaypointLabelsExtraInfo */
-  void setMapShowWaypointLabelsExtraInfo(const bool newValue)
+  /** sets Map ShowLabelsExtraInfo */
+  void setMapShowLabelsExtraInfo(const bool newValue)
   {
     _mapShowLabelsExtraInfo = newValue;
   };
@@ -1777,7 +1777,7 @@ class GeneralConfig : protected QSettings
   bool _mapShowIsoLineBorders;
   // Map ShowWaypointLabels
   bool _mapShowWaypointLabels;
-  // Map ShowWaypointLabelsExtraInfo
+  // Map ShowLabelsExtraInfo
   bool _mapShowLabelsExtraInfo;
   // Map ShowAirfieldLabels
   bool _mapShowAirfieldLabels;

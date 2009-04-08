@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel Pauli
+ **   Copyright (c):  2004 by      Eckhard Völlm
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -43,7 +44,6 @@ HwInfo::HwInfo()
 
   // @AP: Due to a bug in Qt4 it is not possible to read from special
   // file devices without problems. Old good C solution will work fine :-))
-
   FILE *in = fopen( PATH_PROC_CPUINFO, "r" );
 
   if ( in )
@@ -54,21 +54,22 @@ HwInfo::HwInfo()
         {
           QString line(buf);
 
-          if ( line.startsWith( "Hardware" ) )
+          if ( line.toLower().startsWith( "hardware" ) ||
+               line.toLower().startsWith( "model name" ) )
             {
-              _hwString = line.mid(line.indexOf(":")).trimmed();
+              _hwString = line.mid(line.indexOf(":") + 1).trimmed();
 
-              cerr << "HwInfo: found HW: '" << line.toLatin1().data() << "'" << endl;
+              cerr << "HW-String: '" << _hwString.toLatin1().data() << "'" << endl;
 
               if ( line.toLower().contains( "nokia" ) )
                 {
                   _hwType = nokia;
 
-                  if ( line.toLower().contains( "n800" ) )
+                  if ( line.toUpper().contains( "RX-34" ) )
                     {
                       _hwSubType = n800;
                     }
-                  else if ( line.toLower().contains( "n810" ) )
+                  else if ( line.toUpper().contains( "RX-44" ) )
                     {
                       _hwSubType = n810;
                     }
@@ -77,9 +78,9 @@ HwInfo::HwInfo()
               break;
             }
 
-          if ( line.startsWith( "model name" ) )
+          if ( line.toLower().startsWith( "processor" ) )
             {
-              cerr << "HwInfo: found " << line.simplified().toLatin1().data() << endl;
+              cerr << "HwInfo: " << line.simplified().toLatin1().data() << endl;
             }
         }
 

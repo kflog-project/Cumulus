@@ -36,6 +36,15 @@ using namespace std;
 #include "maemostyle.h"
 #endif
 
+// We use different places for the default user data directory.
+// Only files are visible with the normal Maemo file manager, if they are
+// located in the subdirectory MyDocs.
+#ifdef MAEMO
+#define USER_DATA_DIR QDir::homePath() + "/MyDocs/Cumulus"
+#else
+#define USER_DATA_DIR QDir::homePath() + "/cumulus"
+#endif
+
 // define NULL static instance
 GeneralConfig* GeneralConfig::_theInstance = 0;
 
@@ -161,7 +170,7 @@ void GeneralConfig::load()
   _surname           = value("SurName", "").toString();
   _birthday          = value("Birthday", "").toString();
   _language          = value("Language", "en").toString();
-  _userDataDirectory = value("UserDataDir", QDir::homePath() + "/cumulus").toString();
+  _userDataDirectory = value("UserDataDir", USER_DATA_DIR).toString();
   endGroup();
 
   // Preflight settings
@@ -200,8 +209,6 @@ void GeneralConfig::load()
   _mapBearLine                    = value( "BearLine", true ).toBool();
   _mapLoadIsoLines                = value( "LoadIsoLines", true ).toBool();
   _mapShowIsoLineBorders          = value( "ShowIsoLineBorders", false ).toBool();
-  _mapShowWaypointLabels          = value( "ShowWaypointLabels", false ).toBool();
-  _mapShowLabelsExtraInfo         = value( "ShowWaypointLabelsExtraInfo", false ).toBool();
   _mapLoadRoads                   = value( "LoadRoads", true ).toBool();
   _mapLoadHighways                = value( "LoadHighways", true ).toBool();
   _mapLoadRailroads               = value( "LoadRailroads", true ).toBool();
@@ -212,6 +219,8 @@ void GeneralConfig::load()
   _mapShowAirfieldLabels          = value( "ShowAirfieldLabels", false ).toBool();
   _mapShowTaskPointLabels         = value( "ShowTaskPointLabels", false ).toBool();
   _mapShowOutLandingLabels        = value( "ShowOutLandingLabels", false ).toBool();
+  _mapShowWaypointLabels          = value( "ShowWaypointLabels", false ).toBool();
+  _mapShowLabelsExtraInfo         = value( "ShowLabelsExtraInfo", false ).toBool();
 
   _wayPointScaleBorders[wayPoint::Low]    = value( "WpScaleBorderLow", 125 ).toInt();
   _wayPointScaleBorders[wayPoint::Normal] = value( "WpScaleBorderNormal", 250 ).toInt();
@@ -351,7 +360,6 @@ void GeneralConfig::load()
   endGroup();
 }
 
-
 void GeneralConfig::save()
 {
   // cumulus main data
@@ -489,7 +497,7 @@ void GeneralConfig::save()
   setValue( "LoadIsoLines", _mapLoadIsoLines );
   setValue( "ShowIsoLineBorders", _mapShowIsoLineBorders );
   setValue( "ShowWaypointLabels", _mapShowWaypointLabels );
-  setValue( "ShowWaypointLabelsExtraInfo", _mapShowLabelsExtraInfo );
+  setValue( "ShowLabelsExtraInfo", _mapShowLabelsExtraInfo );
   setValue( "LoadRoads", _mapLoadRoads );
   setValue( "LoadHighways", _mapLoadHighways );
   setValue( "LoadRailroads", _mapLoadRailroads );
@@ -500,9 +508,9 @@ void GeneralConfig::save()
   setValue( "ShowAirfieldLabels", _mapShowAirfieldLabels );
   setValue( "ShowTaskPointLabels", _mapShowTaskPointLabels );
   setValue( "ShowOutLandingLabels", _mapShowOutLandingLabels );
-  setValue( "WpScaleBorderLow",    _wayPointScaleBorders[wayPoint::Low] );
+  setValue( "WpScaleBorderLow", _wayPointScaleBorders[wayPoint::Low] );
   setValue( "WpScaleBorderNormal", _wayPointScaleBorders[wayPoint::Normal] );
-  setValue( "WpScaleBorderHigh",   _wayPointScaleBorders[wayPoint::High] );
+  setValue( "WpScaleBorderHigh", _wayPointScaleBorders[wayPoint::High] );
   endGroup();
 
   beginGroup("Map Data");
@@ -1328,13 +1336,13 @@ void GeneralConfig::removePixmap( const QString& pixmapName )
 
 /** Returns the expected places of map directories
     There are: 1. Map directory defined by user
-               2. $HOME/maps
+               2. $HOME/maps (desktop) or $HOME/MyDocs/Cumulus/maps (Maemo)
                3. $INSTALL_DIR/maps
 */
 QStringList GeneralConfig::getMapDirectories()
 {
   QStringList mapDirs;
-  QString     mapHome    = QDir::homePath() + "/maps";
+  QString     mapHome    = USER_DATA_DIR + "/maps";
   QString     mapInstall = _installRoot  + "/maps";
 
   // First check, if user has defined an own map directory
@@ -1374,9 +1382,10 @@ QString GeneralConfig::getUserDataDirectory()
       // try to create it
       if( ! userDir.mkpath( _userDataDirectory ) )
         {
-          // user data directory not createable, fallback is set to
-          // $HOME/cumulus
-          _userDataDirectory = QDir::homePath() + "/cumulus";
+          // user data directory not createable, fall back is set to
+          // default one
+          _userDataDirectory = USER_DATA_DIR;
+          userDir.mkpath( _userDataDirectory );
           qWarning( "Cannot create user data directory %s",
                     _userDataDirectory.toLatin1().data() );
         }
@@ -1399,10 +1408,11 @@ void GeneralConfig::setUserDataDirectory( QString newDir )
       // try to create it
       if( ! userDir.mkpath( newDir ) )
         {
-          // user data directory not createable, fallback is set to
-          // $HOME/cumulus
-          _userDataDirectory = QDir::homePath() + "/cumulus";
           qWarning( "Cannot create user data directory %s", newDir.toLatin1().data() );
+          // user data directory not createable, fallback is set to
+          // default one
+          _userDataDirectory = USER_DATA_DIR;
+          userDir.mkpath( _userDataDirectory );
         }
     }
 }

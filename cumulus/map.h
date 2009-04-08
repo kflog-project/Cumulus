@@ -261,6 +261,19 @@ class Map : public QWidget
      */
     virtual void mouseReleaseEvent(QMouseEvent* event);
 
+  public:
+
+    /**
+     * Draws a label with additional information on demand beside a map icon.
+     */
+    void drawLabel( QPainter* painter,          // painter to be used
+                    const int xShift,           // x offset from the center point
+                    const QString& name,        // name of point
+                    const QPoint& dispP,        // projected point at the display
+                    const WGSPoint& origP,      // WGS84 point
+                    const bool isLandable,      // is landable?
+                    const bool drawLabelInfo ); // label extra info?
+
   private: //methods
     /**
      * set mutex to avoid reentrance
@@ -316,7 +329,6 @@ class Map : public QWidget
      */
     void __drawInformationLayer();
 
-
     /**
      * Draws the task which is currently planned
      */
@@ -341,18 +353,6 @@ class Map : public QWidget
      * @arg wpPainter Painter for the waypoints themselves
      */
     void __drawWaypoints(QPainter *wpPainter);
-
-    /**
-     * Draws a label with additional information on demand beside a map icon.
-     */
-    void __drawLabel( QPainter* painter,          // painter to be used
-                      const int xShift,           // x offset from the center point
-                      const QString& name,        // name of point
-                      const QPoint& dispP,        // projected point at the display
-                      const WGSPoint& origP,      // WGS84 point
-                      const QPoint& projP,        // projected point at the map
-                      const bool isLandable,      // is landable?
-                      const bool showExtraInfo ); // extra info?
 
     /**
      * Draws a trail indicating the flight path taken, if that feature

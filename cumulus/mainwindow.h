@@ -244,12 +244,27 @@ class MainWindow : public QMainWindow
     /**
      * Called if the label displaying is actually toggled
      */
+    void slotToggleAfLabels (bool toggle);
+
+    /**
+     * Called if the label displaying is actually toggled
+     */
+    void slotToggleOlLabels (bool toggle);
+
+    /**
+     * Called if the label displaying is actually toggled
+     */
+    void slotToggleTpLabels (bool toggle);
+
+    /**
+     * Called if the label displaying is actually toggled
+     */
     void slotToggleWpLabels (bool toggle);
 
     /**
      * Called if the extra label info displaying is actually toggled
      */
-    void slotToggleWpLabelsExtraInfo (bool toggle);
+    void slotToggleLabelsInfo (bool toggle);
 
     /**
      * Called if new prefight data were set
@@ -311,8 +326,13 @@ class MainWindow : public QMainWindow
     QAction* actionToggleStatusbar;
     QAction* actionZoomInZ;
     QAction* actionZoomOutZ;
+
+    QAction* actionToggleAfLabels;
+    QAction* actionToggleOlLabels;
+    QAction* actionToggleTpLabels;
     QAction* actionToggleWpLabels;
-    QAction* actionToggleWpLabelsEI;
+    QAction* actionToggleLabelsInfo;
+
     QAction* actionToggleLogging;
     QAction* actionEnsureVisible;
     QAction* actionSelectTask;
@@ -327,12 +347,14 @@ class MainWindow : public QMainWindow
     /* shortcut for exit application */
     QShortcut* scExit;
 
-    /** file_menu contains all items of the menubar entry "File" */
+    /** fileMenu contains all items of the menubar entry "File" */
     QMenu *fileMenu;
-    /** view_menu contains all items of the menubar entry "View" */
+    /** viewMenu contains all items of the menubar entry "View" */
     QMenu *viewMenu;
-    /** view_menu contains all items of the menubar entry "Map" */
+    /** mapMenu contains all items of the menubar entry "Map" */
     QMenu *mapMenu;
+    /** labelMenu contains all items of the menubar subentry "Label" */
+    QMenu *labelMenu;
     /** setupMenu contains all items of the menubar entry "Setup" */
     QMenu *setupMenu;
     /** view_menu contains all items of the menubar entry "Help" */
