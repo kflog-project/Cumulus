@@ -41,13 +41,13 @@
 IgcLogger * IgcLogger::_theInstance = 0;
 
 IgcLogger::IgcLogger(QObject* parent) :
-  QObject(parent),
-  _backtrack(LimitedList<QString> (15))
+    QObject(parent),
+    _backtrack(LimitedList<QString> (15))
 {
   timer=new QTimer(this);
   connect( timer, SIGNAL(timeout()), this, SLOT(slotMakeFixEntry()) );
 
-  if( GeneralConfig::instance()->getLoggerAutostartMode() )
+  if ( GeneralConfig::instance()->getLoggerAutostartMode() )
     {
       // auto logging mode is switched on by the user
       _logMode = standby;
@@ -60,10 +60,10 @@ IgcLogger::IgcLogger(QObject* parent) :
 }
 
 
-IgcLogger * IgcLogger::instance()
+IgcLogger *IgcLogger::instance()
 {
   // First user will create it
-  if( _theInstance == 0 )
+  if ( _theInstance == 0 )
     _theInstance = new IgcLogger(0);
   return( _theInstance );
 };
@@ -101,27 +101,31 @@ void IgcLogger::Stop()
     to log). */
 void IgcLogger::slotMakeFixEntry()
 {
-  if ( _logMode == off ) {
-    return;
-  }
+  if ( _logMode == off )
+    {
+      return;
+    }
 
-  if( fasterLoggingTime.elapsed() > 30000 ) {
-    // reset logging to normal mode after 30 seconds
-     timer->setInterval( GeneralConfig::instance()->getLoggerInterval() * 1000 );
-  }
+  if ( fasterLoggingTime.elapsed() > 30000 )
+    {
+      // reset logging to normal mode after 30 seconds
+      timer->setInterval( GeneralConfig::instance()->getLoggerInterval() * 1000 );
+    }
 
-  if( calculator->samplelist.count() == 0 ) {
-    return; // make sure there is an entry in the list!
-  }
+  if ( calculator->samplelist.count() == 0 )
+    {
+      return; // make sure there is an entry in the list!
+    }
 
   const flightSample &lastfix = calculator->samplelist.at(0);
 
   //check if we have a new fix to log
-  if (lastfix.time == lastLoggedFix) {
-    qWarning("No log entry made: no recent fix.");
-    //we can add a warning here if there has not been a recent fix for more than a predefined time.
-    return;
-  }
+  if (lastfix.time == lastLoggedFix)
+    {
+      qWarning("No log entry made: no recent fix.");
+      //we can add a warning here if there has not been a recent fix for more than a predefined time.
+      return;
+    }
 
   lastLoggedFix = lastfix.time;
 
@@ -129,13 +133,16 @@ void IgcLogger::slotMakeFixEntry()
   QString entry("B" + formatTime(lastfix.time) + formatPosition(lastfix.position) + "A"
                 + formatAltitude(lastfix.altitude) + formatAltitude(lastfix.GNSSAltitude));
 
-  if( _logMode==standby ) {
-    _backtrack.add(entry);
-  } else {
-    _stream << entry << "\n";
-    emit madeEntry();
-    _logfile.flush(); //make sure the file is flushed, so we will not lose data if something goes wrong
-  }
+  if ( _logMode==standby )
+    {
+      _backtrack.add(entry);
+    }
+  else
+    {
+      _stream << entry << "\n";
+      emit madeEntry();
+      _logfile.flush(); //make sure the file is flushed, so we will not lose data if something goes wrong
+    }
 }
 
 /** Call this slot, if a task sector has been touched to increase
@@ -144,9 +151,10 @@ void IgcLogger::slotMakeFixEntry()
 
 void IgcLogger::slotTaskSectorTouched()
 {
-  if ( _logMode == off ) {
-    return;
-  }
+  if ( _logMode == off )
+    {
+      return;
+    }
 
   slotMakeFixEntry(); // save current position of touch
 
@@ -157,9 +165,10 @@ void IgcLogger::slotTaskSectorTouched()
 
 void IgcLogger::Standby()
 {
-  if (_logMode==on) {
-    CloseFile();
-  }
+  if (_logMode==on)
+    {
+      CloseFile();
+    }
   _logMode=standby;
   _backtrack.clear();
   Start();
@@ -178,14 +187,14 @@ void IgcLogger::CreateLogfile()
 
   QDir dir(path);
 
-  if( ! dir.exists() )
+  if ( ! dir.exists() )
     {
       dir.mkpath(path);
     }
 
   _logfile.setFileName(fname);
 
-  if( ! _logfile.open(QIODevice::WriteOnly | QIODevice::Text ) )
+  if ( ! _logfile.open(QIODevice::WriteOnly | QIODevice::Text ) )
     {
       qWarning( "IGC-Logger: Cannot open file %s",
                 fname.toLatin1().data() );
@@ -234,10 +243,10 @@ void IgcLogger::writeHeaders()
   _stream << "HFFTYFRTYPE: Cumulus Version: " << CU_VERSION << ", Qt/X11 Version: " << qVersion() << "\n";
   _stream << "HSCIDCOMPETITIONID: " << calculator->glider()->callsign() << "\n";
 
-  //GSP info lines ommitted for now
-  //additional data (competion ID and classname) ommitted for now
+  // GSP info lines ommitted for now
+  // additional data (competition ID and class name) committed for now
 
-  _stream << "I013640FXA\n"; //only the default fix extention for now
+  _stream << "I013640FXA\n"; //only the default fix extension for now
   _logfile.flush();
 
   // no J record for now
@@ -247,15 +256,17 @@ void IgcLogger::writeHeaders()
   extern MapContents * _globalMapContents;
   FlightTask* task = (FlightTask *) _globalMapContents->getCurrentTask();
 
-  if( ! task ) {
-    return; // no task active
-  }
+  if ( ! task )
+    {
+      return; // no task active
+    }
 
   QList<wayPoint*> wpList = task->getWPList();
 
-  if( wpList.count() < 4 ) {
-    return; // too less waypoints
-  }
+  if ( wpList.count() < 4 )
+    {
+      return; // too less waypoints
+    }
 
   QString fnr;
   fnr.sprintf( "%04d", flightnumber );
@@ -265,27 +276,28 @@ void IgcLogger::writeHeaders()
 
   // date/time normally UTC is expected
   _stream << "C"
-          << date.toLatin1().data()
-          << time.toLatin1().data()
-          << date.toLatin1().data()
-          << fnr.toLatin1().data()
-          << tpnr.toLatin1().data()
-          << taskId.toLatin1().data()
-          << "\n";
+  << date.toLatin1().data()
+  << time.toLatin1().data()
+  << date.toLatin1().data()
+  << fnr.toLatin1().data()
+  << tpnr.toLatin1().data()
+  << taskId.toLatin1().data()
+  << "\n";
 
-  for( int i=0; i < wpList.count(); i++ ) {
-    wayPoint *wp = wpList.at(i);
+  for ( int i=0; i < wpList.count(); i++ )
+    {
+      wayPoint *wp = wpList.at(i);
 
-    _stream << "C"
-            << formatPosition( wp->origP ).toLatin1().data()
-            << wp->name.toLatin1().data() << "\n";
-  }
+      _stream << "C"
+      << formatPosition( wp->origP ).toLatin1().data()
+      << wp->name.toLatin1().data() << "\n";
+    }
 
   _logfile.flush();
 }
 
 
-/** This function formats a date in the correct igc format DDMMYY */
+/** This function formats a date in the correct IGC format DDMMYY */
 QString IgcLogger::formatDate(const QDate& date)
 {
   QString result;
@@ -313,39 +325,49 @@ void IgcLogger::slotToggleLogging()
 {
   qDebug("toggle logging!");
 
-  if (_logMode==on) {
-    // Trying to ask a question causes segfault?!
-    int answer= QMessageBox::question(0,tr("Stop Logging?"),
-                                     tr("Are you sure you want\nto close the logfile\nand stop logging?"),
-                                     QMessageBox::Yes,
-                                     QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
+  if (_logMode==on)
+    {
+      // Trying to ask a question causes segfault?!
+      int answer= QMessageBox::question(0,tr("Stop Logging?"),
+                                        tr("Are you sure you want\nto close the logfile\nand stop logging?"),
+                                        QMessageBox::Yes,
+                                        QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
 
-    if (answer==QMessageBox::Yes) {
-      qDebug("Stopping logging...");
-      _logMode=off;
-      CloseFile();
+      if (answer==QMessageBox::Yes)
+        {
+          qDebug("Stopping logging...");
+          _logMode=off;
+          CloseFile();
+        }
     }
-  } else if (_logMode==standby) {
-    int answer= QMessageBox::question(0,tr("Stop Logging?"),
-                                     tr("Are you sure you want\nto stop listening\nfor events to autostart\nlogging?"),
-                                     QMessageBox::Yes,
-                                     QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
+  else if (_logMode==standby)
+    {
+      int answer= QMessageBox::question(0,tr("Stop Logging?"),
+                                        tr("Are you sure you want\nto stop listening\nfor events to autostart\nlogging?"),
+                                        QMessageBox::Yes,
+                                        QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
 
-    if (answer==QMessageBox::Yes) {
-      qDebug("Logger standby mode turned off.");
-      _logMode=off;
+      if (answer==QMessageBox::Yes)
+        {
+          qDebug("Logger standby mode turned off.");
+          _logMode=off;
+        }
     }
-  } else {
-    if (calculator->glider()) {
-      CreateLogfile();
-      _logMode=on;
-      //    emit logging(isLogging);
-    } else {
-      QMessageBox::information(0,tr("Can't start log"),
-                               tr("You need to select a glider\nbefore starting logging."),
-                               QMessageBox::Ok);
+  else
+    {
+      if (calculator->glider())
+        {
+          CreateLogfile();
+          _logMode=on;
+          //    emit logging(isLogging);
+        }
+      else
+        {
+          QMessageBox::information(0,tr("Can't start log"),
+                                   tr("You need to select a glider\nbefore starting logging."),
+                                   QMessageBox::Ok);
+        }
     }
-  }
   // emit the logging state in all cases to allow update of actions in MainWindow
   emit logging(getisLogging());
 }
@@ -362,22 +384,26 @@ void IgcLogger::slotConstellation()
 void IgcLogger::makeSatConstEntry()
 {
 
-  if (_logMode>off) {
-    QString entry = "F" + formatTime(GpsNmea::gps->getLastSatInfo().constellationTime) +
-                     GpsNmea::gps->getLastSatInfo().constellation;
+  if (_logMode>off)
+    {
+      QString entry = "F" + formatTime(GpsNmea::gps->getLastSatInfo().constellationTime) +
+                      GpsNmea::gps->getLastSatInfo().constellation;
 
-    if (_logMode==standby) {
-      _backtrack.add(entry);
-    } else {
-      _stream << entry << "\n";
-      emit madeEntry();
-      _logfile.flush(); //make sure the file is flushed, so we will not lose data if something goes wrong
+      if (_logMode==standby)
+        {
+          _backtrack.add(entry);
+        }
+      else
+        {
+          _stream << entry << "\n";
+          emit madeEntry();
+          _logfile.flush(); //make sure the file is flushed, so we will not lose data if something goes wrong
+        }
     }
-  }
 }
 
 
-/** This function formats a QTime to the correct format for igc files (HHMMSS) */
+/** This function formats a QTime to the correct format for IGC files (HHMMSS) */
 QString IgcLogger::formatTime(const QTime& time)
 {
   QString result;
@@ -409,10 +435,12 @@ QString IgcLogger::formatPosition(const QPoint& position)
   QString result, latmark, lonmark;
 
   calc = position.x(); //lattitude
-  if (calc<0) {
-    calc=-calc; //use positive values for now;
-    latmark="S";
-  } else
+  if (calc<0)
+    {
+      calc=-calc; //use positive values for now;
+      latmark="S";
+    }
+  else
     latmark="N";
   latdeg=calc/600000;  //calculate degrees
   calc-=latdeg*600000;  //substract the whole degrees part
@@ -420,10 +448,12 @@ QString IgcLogger::formatPosition(const QPoint& position)
 
 
   calc = position.y(); //longitude
-  if (calc<0) {
-    calc=-calc; //use positive values for now;
-    lonmark="W";
-  } else
+  if (calc<0)
+    {
+      calc=-calc; //use positive values for now;
+      lonmark="W";
+    }
+  else
     lonmark="E";
   londeg=calc/600000;  //calculate degrees
   calc-=londeg*600000;  //substract the whole degrees part
@@ -442,14 +472,15 @@ QString IgcLogger::createFileName(const QString& path)
   int month=QDate::currentDate().month();
   int day=QDate::currentDate().day();
   QString name=QString::number(year,10) + QString::number(month,13) + QString::number(day,32);
-  name+="X000"; // @AP: one x have to be added for unknown manufacture
+  name+="X000"; // @AP: one x has to be added for unknown manufacture
 
   int i=1;
   QString result=name + QString::number(i,36);
-  while (QFile(path + "/" + result.toUpper() + ".IGC").exists()) {
-    i++;
-    result=name + QString::number(i,36);
-  }
+  while (QFile(path + "/" + result.toUpper() + ".IGC").exists())
+    {
+      i++;
+      result=name + QString::number(i,36);
+    }
   flightnumber=i; //store the resulting number so we can use it in the logfile itself
 
   return path + "/" + result.toUpper() + ".IGC";
@@ -458,14 +489,16 @@ QString IgcLogger::createFileName(const QString& path)
 
 void IgcLogger::slotFlightMode(Calculator::flightmode mode)
 {
-  if ((_logMode==standby) && (mode!=Calculator::standstill)) {
-    _logMode=on;
-    CreateLogfile();
-    for (int i = _backtrack.count()-1; i>=0; i--) {
-      qDebug("backtrack %d: %s",i,_backtrack.at(i).toLatin1().data());
-      _stream << _backtrack.at(i).toLatin1().data()<<"\n";
+  if ((_logMode==standby) && (mode!=Calculator::standstill))
+    {
+      _logMode=on;
+      CreateLogfile();
+      for (int i = _backtrack.count()-1; i>=0; i--)
+        {
+          qDebug("backtrack %d: %s",i,_backtrack.at(i).toLatin1().data());
+          _stream << _backtrack.at(i).toLatin1().data()<<"\n";
+        }
+      _backtrack.clear(); //make sure we aren't leaving old data behind.
     }
-    _backtrack.clear(); //make sure we aren't leaving old data behind.
-  }
 }
 
