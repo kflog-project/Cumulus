@@ -17,6 +17,23 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.2.x (Development based on X11/Qt-4.5.x)
 -------------------------------------------------
+[+] 2009-04-08 AP: User default data directory under Maemo changed from $HOME/cumulus
+                   to $HOME/MyDocs/Cumulus to be Maemo conform. This location is also
+                   shown by the tablet file manager.
+[+] 2009-04-08 AP: Airfield labels are drawn now on request. New menu and
+                   configuration option are added for that.
+[o] 2009-04-08 AP: In HwInfo class hardware filter modified for better recognizing
+                   of internet tablets N800/N810.
+[+] 2009-04-07 AP: Check added after done map directory selection, if expected
+                   map subdirectories are exist. If not, the user is ask for
+                   their creation.
+[-] 2009-04-07 AP: BUGFIX: A earlier done map directory selection was never
+                   reloaded again in the directory selection dialog. Load starts
+                   always with home directory.
+[o] 2009-04-06 AP: English online help partly updated.
+[o] 2009-04-06 AP: Default home radius of Welt2000 airfield focus narrowed from
+                   1000Km to 500Km to save memory.
+[o] 2009-04-06 AP: Start auto logging option stored permanently.
 [+] 2009-04-02 AP: The waypoint priority (low, normal, high) and the related
                    draw scale limit can be defined now in settings map objects.
                    So the user can adapt the limits more to this needs.
