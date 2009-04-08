@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Eggert Ehmke, 2008 Axel Pauli
+**   Copyright (c):  2002      by Eggert Ehmke
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -39,15 +40,21 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   QGridLayout* topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
 
+#ifndef MAEMO
+  int minFontSize = 14;
+#else
+  int minFontSize = 20;
+#endif
+
   QFont b = font();
   b.setBold(true);
   setFont(b);
 
   // set font size to a reasonable and useable value
-  if( font().pointSize() < 16 )
+  if( font().pointSize() < minFontSize )
     {
       QFont cf = font();
-      cf.setPointSize( 16 );
+      cf.setPointSize( minFontSize );
       this->setFont(cf);
     }
 
@@ -143,7 +150,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   // Align ok and cancel button at the left and right side of the
   // widget to have enough space between them. That shall avoid wrong
   // button pressing in turbulent air.
-  QPushButton *ok = new QPushButton(tr("OK"), this);
+  QPushButton *ok = new QPushButton( tr("  OK  "), this);
   QPushButton *cancel = new QPushButton (tr("Cancel"), this);
 
   QHBoxLayout *butLayout = new QHBoxLayout;

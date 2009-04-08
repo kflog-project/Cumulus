@@ -40,7 +40,23 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   setModal(true);
   setWindowTitle(tr("Altimeter"));
 
-  setFont(QFont ( "Helvetica", 16, QFont::Bold ));
+#ifndef MAEMO
+  int minFontSize = 14;
+#else
+  int minFontSize = 20;
+#endif
+
+  QFont b = font();
+  b.setBold(true);
+  setFont(b);
+
+  // set font size to a reasonable and useable value
+  if( font().pointSize() < minFontSize )
+    {
+      QFont cf = font();
+      cf.setPointSize( minFontSize );
+      this->setFont(cf);
+    }
 
   QGroupBox* altMode = new QGroupBox(tr("Altimeter Mode"));
   _msl=new QRadioButton(tr("MSL"),altMode);

@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2004, 2008 by Axel Pauli (axel@kflog.org
+ **   Copyright (c): 2004-2009 by Axel Pauli (axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -36,15 +36,21 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   setModal(true);
   setWindowTitle (tr("Vario"));
 
+#ifndef MAEMO
+  int minFontSize = 14;
+#else
+  int minFontSize = 20;
+#endif
+
   QFont b = font();
   b.setBold(true);
   setFont(b);
 
   // set font size to a reasonable and useable value
-  if( font().pointSize() < 16 )
+  if( font().pointSize() < minFontSize )
     {
       QFont cf = font();
-      cf.setPointSize( 16 );
+      cf.setPointSize( minFontSize );
       this->setFont(cf);
     }
 
