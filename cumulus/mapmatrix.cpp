@@ -546,7 +546,7 @@ void MapMatrix::slotInitMatrix()
     // qDebug ("Map init has detected a change");
   }
 
-  if(projChanged || initChanged) {
+  if( projChanged || initChanged ) {
     // emit projectionChanged();
     // @AP: Notice the user, that compiled maps must be removed and
     // original maps be reinstalled if necessary
@@ -554,8 +554,8 @@ void MapMatrix::slotInitMatrix()
     QMessageBox::warning( 0, "Cumulus",
                           tr( "<html>"
                               "<b>Map projection settings have been changed.</b><p>"
-                              "Please make sure that original *.kfl"
-                              "map files are available for reprojecting!"
+                              "Please make sure that original *.kfl "
+                              "map files are available for recompiling!"
                               "</html>" ) );
 
     emit projectionChanged();
