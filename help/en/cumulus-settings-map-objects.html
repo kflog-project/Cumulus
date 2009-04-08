@@ -27,31 +27,46 @@
 <p><b>Map Objects</b></p>
 
 <p>
-    Here you can choose the items for the display of the map</p>
+Here you can choose the items to be loaded and displayed on the map</p>
 
 <p>
-    If you experience problems with memory consumption or if you just wish to decrease the amount of
-    information displayed on the map, you can choose to turn off some items on the map. These
-    items will then not be loaded anymore. You should restart Cumulus after changing these options,
-    because the options are only effective for newly loaded maps.
-    </p>
+If you experience problems with memory consumption or if you just wish to decrease the amount of
+information displayed on the map, you can choose to turn off some items on the map. These
+items will then not be loaded anymore. You should restart Cumulus after changing these options,
+because the options are only effective for newly loaded maps.
+</p>
 
-<p>Disabling objects for loading will increase map drawing speed and lower the memory consumption.</p>
-   
-<p>Disabling the loading of isolines will also increase loading
-speed. If you enable this option the background of the map will be
-colored according to elevation. This coloring will be more detailed if
-you zoom in and less detailed if you zoom out. Note that the isolines
-are needed if you want to use features that use ground elevation!</p>
+<p>Disabling objects in general will increase map load and drawing speed and
+lower the memory consumption.
 
-    
-<p>Disabling the drawing of waypoint labels will turn of waypoint labels on the map by
-      default, but you can toggle the display by pressing <b><i>A</i></b> at any time in
-      the mapview.</p>
-  
+Especially the isolines are concern of that. If you enable isoline drawing,
+the background of the map will be colored according to elevation. This coloring
+will be more detailed if you zoom in and less detailed if you zoom out.
+<b>Note that the isolines are needed if you want to use the ground elevation
+feature!</b></p>
+
 <p>The bearing line is a line from your current position to your
 selected target. It is drawn in different color, if a glider
 has been selected according to the reachability of the selected target.</p>
+
+<p>Disabling the drawing of waypoint labels will turn of waypoint labels on the map by
+  default but you can toggle the display also via the menu bar.
+  Waypoints do carry an importance attribute. The following attributes are
+known:</p>
+
+<ul>
+  <li> low
+  <li> normal
+  <li> high
+</ul>
+
+<p>
+Under the group box <i>Draw Waypoints until this scale</i> you can define until
+to which scale an importance attribute is displayed. If the current map scale
+exceeds these limits, the related waypoint will disappear from the map. With the
+help of the importance feature you can better control the waypoint display. Do
+not set too high limits otherwise the labels will hide other important details.
+</p>
 
 <table width="100%">
   <tbody>

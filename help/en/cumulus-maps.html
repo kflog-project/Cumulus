@@ -25,9 +25,9 @@
 
   <li><b>Ground and Terrain Maps</b> with streets, highways, cities, rivers, lakes, ... and
       terrain data with elevation information. They cover the entire world and you should
-      download only the part which you need for your flying. Goto in the 
+      download only the part which you need for your flying. Goto the
       <a href="http://www.kflog.org/maproom/ground-and-terrain-data">Map Room</a>,
-      make a selection and install the retrieved maps.
+      make a selection and install the downloaded map files in the expected directory.
   </li>
 
   <li><b>Airspaces:</b> Cumulus does only support the OpenAir file format for airspace structures.
@@ -45,15 +45,12 @@
 
 </ul>
 
-Do only load the airfields and install the airspace maps for the area you need.
-This will make Cumulus faster and saves runtime memory. The Ground and Terrain Maps
-maps are not concerned of that.
-
-<p>The maps can be installed on three different places:</p>
+<p>The maps can be installed at three different places:</p>
 
 <ul>
 
-  <li>In <b>$HOME/maps</b>. This is the preferred location.</li>
+  <li>In <b>$HOME/maps</b> (Desktop) or in <b>$HOME/MyDocs/Cumulus/maps</b>
+      (Maemo). This is the preferred location.</li>
 
   <li>In the installation area, normally under <b>/opt/cumulus/maps</b>.</li>
 
@@ -63,17 +60,7 @@ maps are not concerned of that.
 
 </ul>
 
-<p>
-If the maps are installed on the SD card you must setup
-the path to the map root directory in the Map Settings configuration
-page (Setup-&gt;General Setup-&gt;Map Setting). Use the <i>Maps</i>
-button to navigate to the appropriate root directory under which the
-maps are to find. If there is setup no path the maps are searched only
-under <b>$HOME/maps</b> and <b>/opt/cumulus/maps</b>. But these directories are
-unsuitably for the Internet Tablet.
-</p>
-
-<p><b>Please Note! The map files have to stored in different subdirectories
+<p><b>Please Note! The map files have to be stored in different subdirectories
 under the root map path.</b>
 </p>
 
@@ -92,7 +79,22 @@ under the root map path.</b>
 
 <p>You must create these subdirectories alone under the map root.</p>
 
-<p>If you experience memory problems running Cumulus, you can
+<p>
+If the maps are installed outside of the known locations, e.g. on a SD card
+at your Internet Tablet, you must setup the path to the map root directory
+in the Map Settings configuration page
+(Setup-&gt;General Setup-&gt;Map Setting). Use the <i>Maps</i>
+button to navigate to the appropriate root directory under which the expected
+maps subdirectories are to find. Is nothing setup the maps are searched
+only under <b>$HOME/maps</b> and <b>/opt/cumulus/maps</b>. But these directories
+are unsuitably for the Internet Tablet.
+</p>
+
+<p>
+Do only load the airfields and do install the airspace maps for the area you need.
+This will make Cumulus faster and saves runtime memory. The Ground and Terrain Maps
+maps are not concerned of that.
+If you experience memory problems running Cumulus, you can
 choose not to install certain map sets. You could for instance skip the
 terrain maps. This will disable the display of terrain features (the
 isolines) but it will also save memory and reduce map loading and
