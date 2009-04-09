@@ -804,6 +804,7 @@ void MainWindow::slotSetMenuBarFontSize()
       if( mapMenu ) mapMenu->setFont( cf );
       if( setupMenu ) setupMenu->setFont( cf );
       if( helpMenu ) helpMenu->setFont( cf );
+      if( labelMenu ) labelMenu->setFont( cf );
     }
 }
 
