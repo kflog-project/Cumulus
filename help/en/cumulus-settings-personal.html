@@ -26,44 +26,78 @@
 
 <p><b>Personal</b></p>
 
-<p>Here you can enter your personal data. This data is mostly
-used for the igc logfiles. The homesite coordinates are used for
-<a href="cumulus-manual.html">manual navigation</a>. The homesite
-coordinates can also be set in the airfield and waypoint pages. In
-this case the data are overtaken from these pages and a manuell entry
-is superfluous.</p>
+<p>Here you can enter and define your personal data.</p>
 
-<p>
-You can select one of the additional provided languages for cumulus.
-The default language is english.
-</p>
+<dl>
 
-<p>With the Button Data Directory and the text entry field beside it
-you can define a new storage location for your waypoint, task and IGC
-logger files. The default storage area of Cumulus is <b>$HOME/cumulus</b>
-on the desktop or <b>$HOME/MyDocs/Cumulus</b> under Maemo. On
-Maemo (Nokia Internet Tablet) it is recommend to define a new location,
-which lays on one of the SD cards (/media/mmc1, external card or /media/mmc2,
-internal card). The SD cards are accessable with the Maemo file manager
-and also via USB. So you can transfer your data files between your PC
-and the Internet Tablet very conveniently.</p>
-<br>
-When you press the Data Directory button, a directory
-dialog is opened and you can navigate to a new storage directory
-area. The directory dialog shows only existing directories. If you want
-to create a new subdirectory you have to add the missing pathes in the
-text field by hand. Cumulus tries to create the new subdirectories,
-if you leave the settings dialog with the Ok button.
+  <dt><b>Pilot name</b></dt>
 
-<p>E.g.</p>
+  <dd>
+     This data is mostly used for the IGC logfile.
+  </dd>
 
-<p>/media/mmc1/Cumulus or /media/mmc2/Cumulus</p>
+  <dt><b>Date of birth</b></dt>
 
-<p>should be good locations.</p>
+  <dd>
+     This data is mostly used for the IGC logfile.
+  </dd>
 
-<p>Note, if you change the data directory no files will be transfered
-automatically by Cumulus to the new area. Such moves must be done alone
-by the user, if Cumulus is not running! </p>
+  <dt><b>Language</b></dt>
+
+  <dd>
+     Select the language which you do prefer. English is always the default
+     also in case if your selection do fail.
+  </dd>
+
+  <dt><b>Home site</b></dt>
+
+  <dd>
+     The home site coordinates are used for
+     <a href="cumulus-manual.html">manual navigation</a> and as center point
+     for the <a href="cumulus-settings-airfields.html">Welt2000</a> airfield
+     file when the radius option is in use. The home site coordinates can also
+     be set in the airfield and waypoint pages. In this case the data are
+     overtaken from these pages and a manuelly entry is superfluous.
+     <br>The default home position is set at the Brandenburger Tor,
+     in the center of Berlin (Germany).
+  </dd>
+
+  <dt><b>Data Directory</b></dt>
+
+  <dd>
+      With the Button <b>Data Directory</b> and the text entry field beside
+      you can define a new storage place for your waypoint, task and IGC
+      logger files. The default storage place of Cumulus is:
+
+      <p><ul>
+        <li><b>$HOME/cumulus</b> on the desktop PC
+        <li><b>$HOME/MyDocs/Cumulus</b> under Maemo (Nokia Internet Tablet)
+      </ul></p>
+      
+      On Maemo it is recommend to define a new location,
+      which lays on one of the SD cards (/media/mmc1 called external card or
+      /media/mmc2 called internal card). The SD cards are accessable with the
+      Maemo file manager and also via USB. So you can transfer your data files
+      between your PC and the Internet Tablet very conveniently.
+      <p>
+      When you press the Data Directory button, a directory
+      dialog is opened and you can navigate to another directory storage
+      place. Use short double tips on Maemo for moving between the directories.
+      The directory dialog shows only existing directories. If you want
+      to create a new subdirectory you have to add the missing pathes in the
+      text field by hand. Cumulus tries to create the new subdirectories,
+      if you leave the settings dialog with the Ok button.</p>
+
+      <p>E.g.</p>
+
+      <p><b>/media/mmc1/Cumulus</b> or <b>/media/mmc2/Cumulus</b></p>
+
+      <p>should be good places for use.
+      Note, if you change the data directory no files will be transfered
+      automatically by Cumulus to the new area. Such moves must be done alone
+      by the user itself, if Cumulus is <b>not running!</b></p>
+      
+<dl>
 
 <table width="100%">
   <tbody>
