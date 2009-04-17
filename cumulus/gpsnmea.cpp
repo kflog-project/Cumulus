@@ -1321,8 +1321,10 @@ void GpsNmea::setSystemClock( const QDateTime& utcDt )
       return;
     }
 
-  static char *noTZ = "TZ=";
-  static char *utcTZ = "TZ=UTC";
+  static char *noTZ;
+  static char *utcTZ;
+  noTZ  = strdup("TZ=");
+  utcTZ = strdup("TZ=UTC");
 
   // save current TZ
   char *curTZ = getenv("TZ");
@@ -1380,6 +1382,9 @@ void GpsNmea::setSystemClock( const QDateTime& utcDt )
   _ignoreConnectionLost = true;
 
   _globalMapView->message( tr("System clock synchronized") );
+
+  free( noTZ );
+  free( utcTZ );
 }
 
 

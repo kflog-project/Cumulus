@@ -533,7 +533,7 @@ void MapView::slot_Position(const QPoint& position, const int source)
   // if in manual mode: show position in status bar for the cross, not for the glider
   // this covers a) and b) or c) with source manual
   if(!calculator->isManualInFlight() ||
-      calculator->isManualInFlight() && source == Calculator::MAN)
+      (calculator->isManualInFlight() && (source == Calculator::MAN)))
     {
       _statusPosition->setText(" " + WGSPoint::printPos(position.x(),true) +
                              " / " + WGSPoint::printPos(position.y(),false) + " ");

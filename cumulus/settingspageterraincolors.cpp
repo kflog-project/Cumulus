@@ -46,7 +46,7 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   /**
    * Altitude levels in meters to be displayed in color combo box.
    */
-  char *altitudes[51] = {
+  const char *altitudes[51] = {
                  "< 0",
                  "0",
                  "10",
