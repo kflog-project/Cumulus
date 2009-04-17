@@ -128,7 +128,7 @@ class FlightTask : public BaseMapElement
    * Returns the type of the task.
    * @see #TaskType
    */
-  const int getTaskType() const
+  int getTaskType() const
     {
       return flightType;
     };
@@ -191,7 +191,7 @@ class FlightTask : public BaseMapElement
   void setPlanningType( const int type );
 
   /** */
-  const int getPlanningType() const
+  int getPlanningType() const
   {
     return __planningType;
   };
@@ -214,7 +214,7 @@ class FlightTask : public BaseMapElement
   };
 
   /* returns FAI rule flag */
-  const bool getFaiRules() const
+  bool getFaiRules() const
   {
     return faiRules;
   };
