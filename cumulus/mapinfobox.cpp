@@ -179,13 +179,14 @@ void MapInfoBox::setValue( const QString newVal)
 		"font-size: %1px;"
 		"text-align: left;"
   ).arg(fontDotsize) );
-  if ( _preMinus )
+  if ( _preMinus ) {
     if ( _value.startsWith('-') && _value.size() > 1) {
 	  _value = _value.remove( 0, 1 );
       _minus->show();
-    } else
+    } else {
       _minus->hide();
-    
+    }
+  }
   _text->setText(_value);
 
   //@JD: set font size dynamically depending on size hint after

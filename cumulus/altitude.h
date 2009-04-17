@@ -80,7 +80,7 @@ public:
     /**
      * returns the current set unit
      */
-    static const altitude getUnit()
+    static altitude getUnit()
     {
         return _altitudeUnit;
     };

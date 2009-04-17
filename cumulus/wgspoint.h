@@ -103,7 +103,7 @@ public:
     /**
      * Returns the current used format.
      */
-    static const int getFormat()
+    static int getFormat()
     {
         return _format;
     };

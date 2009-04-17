@@ -211,7 +211,7 @@ public:
     /**
      * Get required LD to target.
      */
-    const double getLastRequiredLD()
+    double getLastRequiredLD()
     {
       if ( selectedWp )
         {
@@ -226,7 +226,7 @@ public:
     /**
      * Get last current LD.
      */
-    const double getLastCurrentLD()
+    double getLastCurrentLD()
     {
       return lastCurrentLD;
     };

@@ -87,7 +87,7 @@ class MainWindow : public QMainWindow
     /**
      * @returns the view type
      */
-    virtual const appView getView();
+    virtual appView getView();
 
     /**
      * play some sound

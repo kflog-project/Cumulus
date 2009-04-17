@@ -97,7 +97,7 @@ class GpsNmea : public QObject
     /**
      * @Returns the current GPS connection status.
      */
-    const GpsNmea::GpsStatus getGpsStatus() const
+    GpsNmea::GpsStatus getGpsStatus() const
       {
         return( _status );
       }
@@ -105,7 +105,7 @@ class GpsNmea : public QObject
     /**
      * @Returns the current GPS connection status. True if connected, false if not.
      */
-    const bool getConnected() const
+    bool getConnected() const
       {
         return( _status != notConnected );
       }
@@ -145,7 +145,7 @@ class GpsNmea : public QObject
     /**
      * @Returns the last know heading.
      */
-    const double getLastHeading() const
+    double getLastHeading() const
       {
         return _lastHeading;
       };
@@ -191,7 +191,7 @@ class GpsNmea : public QObject
     /**
      * @Returns the last known wind direction.
      */
-    const short getLastWindDirection() const
+    short getLastWindDirection() const
       {
         return _lastWindDirection;
       };
@@ -199,7 +199,7 @@ class GpsNmea : public QObject
     /**
      * @Returns the last known wind age in seconds.
      */
-    const int getLastWindAge() const
+    int getLastWindAge() const
       {
         return _lastWindAge;
       };
@@ -253,7 +253,7 @@ class GpsNmea : public QObject
     /**
      * @Returns selected altitude reference delivered by the GPS unit
      */
-    const GpsNmea::DeliveredAltitude getDeliveredAltitude() const
+    GpsNmea::DeliveredAltitude getDeliveredAltitude() const
       {
         return _deliveredAltitude;
       };

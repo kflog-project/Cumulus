@@ -113,7 +113,7 @@ class HwInfo
      * 2    180 degrees rotation
      * 3    270 degrees rotation
      */
-    const int getFBRotation()
+    int getFBRotation()
     {
       return _fbRot;
     };
@@ -121,7 +121,7 @@ class HwInfo
     /**
      * @returns the depth of the framebuffer in bits
      */
-    const int getFBDepth()
+    int getFBDepth()
     {
       return _fbDepth;
     };

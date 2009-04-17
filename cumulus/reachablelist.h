@@ -67,7 +67,7 @@ class ReachableList: public QObject, QList<ReachablePoint>
    * Returns the current calculator switch state. Calculator can be
    * switched on/off by the user
    */
-  const bool isOn() const
+  bool isOn() const
   {
     return GeneralConfig::instance()->getNearestSiteCalculatorSwitch();
   };
@@ -85,7 +85,7 @@ class ReachableList: public QObject, QList<ReachablePoint>
   /**
    * returns the number of sites in the list
    */
-  const int getNumberSites() const
+  int getNumberSites() const
   {
     return size();
   };
@@ -110,7 +110,7 @@ class ReachableList: public QObject, QList<ReachablePoint>
    * Returns configured maximum number of sites in list. Can be
    * modified by the user at run-time
    */
-  const int getMaxNrOfSites() const
+  int getMaxNrOfSites() const
   {
     return GeneralConfig::instance()->getMaxNearestSiteCalculatorSites();
   };
@@ -166,7 +166,7 @@ class ReachableList: public QObject, QList<ReachablePoint>
   /**
    * @returns The safety altitude in meters
    */
-  static const int getSafetyAltititude()
+  static int getSafetyAltititude()
   {
     return safetyAlt;
   };
@@ -174,7 +174,7 @@ class ReachableList: public QObject, QList<ReachablePoint>
   /**
    * @returns The modeAltitude
    */
-  static const bool getModeAltitude()
+  static bool getModeAltitude()
   {
     return modeAltitude;
   };

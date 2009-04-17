@@ -91,45 +91,45 @@ public:
          *                   will assign a free number.
          * @returns:         true on success otherwise false
          */
-        const bool init( const char *ipAddress=0,
+        bool init( const char *ipAddress=0,
                          const unsigned short port=0 );
 
         /**
          * @returns the socket descriptor of the next available client connection
          * or -1 in error case.
          */
-        const int connect2Client(uint index);
+        int connect2Client(uint index);
 
         /**
          * Closes the client connection.
          * @returns -1 in error case otherwise 0
          */
-        const int closeClientSock(uint index);
+        int closeClientSock(uint index);
 
         /**
          * Closes the listen socket.
          * @returns -1 in error case otherwise 0
          */
-        const int closeListenSock();
+        int closeListenSock();
 
         /**
          * Reads once data from the connected client socket and returns.
          * @returns -1 in error case or number of read bytes
          */
-        const int readMsg( uint index, void *data, int length );
+        int readMsg( uint index, void *data, int length );
 
         /**
          * Writes the passed data to the connected client socket
          * @returns -1 in error case or number of written bytes
          */
-        const int writeMsg( uint index, void *data, int length );
+        int writeMsg( uint index, void *data, int length );
 
-        const int getListenSock() const
+        int getListenSock() const
         {
             return listenSock;
         };
 
-        const int getClientSock(uint index) const
+        int getClientSock(uint index) const
         {
             if( index == 0 )
                 return clientSocks[0];
@@ -137,7 +137,7 @@ public:
                 return clientSocks[1];
         };
 
-        const unsigned short getListenPort() const
+        unsigned short getListenPort() const
         {
             return listenPort;
         };
@@ -185,33 +185,33 @@ public:
          *
          * @returns         -1 in error case otherwise 0
          */
-        const int connect2Server( const char *ipAddressIn,
+        int connect2Server( const char *ipAddressIn,
                                   const unsigned short portIn );
 
         /**
          * Reads one time data from the connected client socket and returns.
          * @returns -1 in error case or number of read bytes
          */
-        const int readMsg( void *data, int length );
+        int readMsg( void *data, int length );
 
         /**
          * Writes the passed data to the connected client socket
          * @returns -1 in error case or number of written bytes
          */
-        const int writeMsg( void *data, int length );
+        int writeMsg( void *data, int length );
 
         /**
          * Closes the socket of the server connection
          * @returns -1 in error case otherwise 0
          */
-        const int closeSock();
+        int closeSock();
 
-        const int getSock() const
+        int getSock() const
         {
             return sock;
         };
 
-        const unsigned short getPort() const
+        unsigned short getPort() const
         {
             return port;
         };

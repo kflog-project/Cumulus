@@ -1288,7 +1288,7 @@ void MainWindow::slot_Logging ( bool logging )
 }
 
 /** Read property of enum view. */
-const MainWindow::appView MainWindow::getView()
+MainWindow::appView MainWindow::getView()
 {
   return view;
 }

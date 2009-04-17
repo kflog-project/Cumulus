@@ -61,7 +61,7 @@ QString BaseMapElement::item2Text( const int objectType, QString defaultValue )
 /**
  * Get BaseMapelement objectType for translation string.
  */
-const int BaseMapElement::text2Item( const QString& text )
+int BaseMapElement::text2Item( const QString& text )
 {
   if( objectTranslations.isEmpty() )
     {

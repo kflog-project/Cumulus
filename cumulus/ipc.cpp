@@ -107,7 +107,7 @@ Ipc::Server::~Server()
  *                   will assign a free number.
  * @returns:         true on success otherwise false
  */
-const bool Ipc::Server::init( const char *ipAddress,
+bool Ipc::Server::init( const char *ipAddress,
                               const unsigned short port )
 {
   static const char* method = ( "Ipc::Server::init(): " );
@@ -256,7 +256,7 @@ const bool Ipc::Server::init( const char *ipAddress,
  * @returns the socket descriptor of the next available client connection
  * or -1 in error case.
  */
-const int Ipc::Server::connect2Client(uint index)
+int Ipc::Server::connect2Client(uint index)
 {
   QString method = QString( "Ipc::Server::connect2Client(%1): ").arg(index);
 
@@ -304,7 +304,7 @@ const int Ipc::Server::connect2Client(uint index)
  * Reads once data from the connected client socket and returns.
  * @returns -1 in error case or number of read bytes
  */
-const int Ipc::Server::readMsg(  uint index, void *data, int length )
+int Ipc::Server::readMsg(  uint index, void *data, int length )
 {
   QString method = QString( "Ipc::Server::readMsg(%1): ").arg(index );
 
@@ -350,7 +350,7 @@ const int Ipc::Server::readMsg(  uint index, void *data, int length )
  * Writes the passed data to the connected client socket
  * @returns -1 in error case or number of written bytes
  */
-const int Ipc::Server::writeMsg( uint index, void *data, int length )
+int Ipc::Server::writeMsg( uint index, void *data, int length )
 {
   QString method = QString( "Ipc::Server::writeMsg(%1): ").arg(index);
 
@@ -405,7 +405,7 @@ const int Ipc::Server::writeMsg( uint index, void *data, int length )
  * Closes the client connection.
  * @returns -1 in error case otherwise 0
  */
-const int Ipc::Server::closeClientSock(uint index)
+int Ipc::Server::closeClientSock(uint index)
 {
   QString method = QString( "Ipc::Server::closeClientSock(%1): ").arg(index);
 
@@ -434,7 +434,7 @@ const int Ipc::Server::closeClientSock(uint index)
  * Closes the listen socket.
  * @returns -1 in error case otherwise 0
  */
-const int Ipc::Server::closeListenSock()
+int Ipc::Server::closeListenSock()
 {
   static const char* method = ( "Ipc::Server::closeListenSock(): " );
 
@@ -496,7 +496,7 @@ Ipc::Client::~Client()
  *
  * @returns         -1 in error case otherwise 0
  */
-const int Ipc::Client::connect2Server( const char *ipAddressIn,
+int Ipc::Client::connect2Server( const char *ipAddressIn,
                                        const unsigned short portIn )
 {
   static const char* method = ( "Ipc::Client::connect2Server(): " );
@@ -605,7 +605,7 @@ const int Ipc::Client::connect2Server( const char *ipAddressIn,
  * Reads one time data from the connected client socket and returns.
  * @returns -1 in error case or number of read bytes
  */
-const int Ipc::Client::readMsg( void *data, int length )
+int Ipc::Client::readMsg( void *data, int length )
 {
   static const char* method = ( "Ipc::Client::readMsg(): " );
 
@@ -650,7 +650,7 @@ const int Ipc::Client::readMsg( void *data, int length )
  * Writes the passed data to the connected client socket
  * @returns -1 in error case or number of written bytes
  */
-const int Ipc::Client::writeMsg( void *data, int length )
+int Ipc::Client::writeMsg( void *data, int length )
 {
   static const char* method = ( "Ipc::Client::writeMsg(): " );
 
@@ -706,7 +706,7 @@ const int Ipc::Client::writeMsg( void *data, int length )
  * Closes the socket of the server connection
  * @returns -1 in error case otherwise 0
  */
-const int Ipc::Client::closeSock()
+int Ipc::Client::closeSock()
 {
   static const char* method = ( "Ipc::Client::closeSock(): " );
 

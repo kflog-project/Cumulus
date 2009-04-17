@@ -145,7 +145,7 @@ public:
   /**
    * Get BaseMapelement objectType for translation string.
    */
-  static const int text2Item( const QString& text );
+  static int text2Item( const QString& text );
 
   /**
    * Get sorted translations
@@ -163,7 +163,7 @@ public:
   /**
    * Read property of MapSegment.
    */
-  virtual const unsigned short getMapSegment() const
+  virtual unsigned short getMapSegment() const
     {
       return MapSegment;
     };

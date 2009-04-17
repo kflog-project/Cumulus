@@ -44,7 +44,7 @@ public:
         _screenUsage = newValue;
     };
 
-    const bool screenUsage() const
+    bool screenUsage() const
     {
         return _screenUsage;
     };

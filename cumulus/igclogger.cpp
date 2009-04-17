@@ -307,14 +307,14 @@ QString IgcLogger::formatDate(const QDate& date)
 
 
 /** Read property of bool isLogging. */
-const bool IgcLogger::getisLogging()
+bool IgcLogger::getisLogging()
 {
   return (_logMode==on);
 }
 
 
 /** Return true if we are in standby mode. */
-const bool IgcLogger::getisStandby()
+bool IgcLogger::getisStandby()
 {
   return (_logMode==standby);
 }

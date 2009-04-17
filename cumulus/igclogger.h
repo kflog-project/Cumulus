@@ -104,12 +104,12 @@ public: //methods
     /**
      * @returns true if we are currently logging
      */
-    virtual const bool getisLogging();
+    virtual bool getisLogging();
 
     /**
      * @returns true if we are currently standby
      */
-    virtual const bool getisStandby();
+    virtual bool getisStandby();
 
     /**
      * @returns the instance of the IgcLogger, and creates an instance

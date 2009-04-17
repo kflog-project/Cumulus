@@ -52,7 +52,7 @@ public:
   /**
    * Get surface type for translation string.
    */
-  static const int text2Item( const QString& text );
+  static int text2Item( const QString& text );
 
   /**
    * Get sorted translations

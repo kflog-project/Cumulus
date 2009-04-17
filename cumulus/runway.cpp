@@ -50,7 +50,7 @@ QString Runway::item2Text( const int surfaceType, QString defaultValue )
 /**
  * Get surface type for translation string.
  */
-const int Runway::text2Item( const QString& text )
+int Runway::text2Item( const QString& text )
 {
   if( surfaceTranslations.isEmpty() )
     {
