@@ -136,10 +136,12 @@ int WGSPoint::degreeToNum(QString inDegree)
      *  dddddddddd
      */
 
+     // to prevent trouble with the degree coding
+    QString degSign( QChar(Qt::Key_degree) );
     QString input = inDegree;
 
-    QRegExp degreeDMS("^[0-1]?[0-9][0-9]\260[ ]*[0-5][0-9]'[ ]*[0-5][0-9]\"");
-    QRegExp degreeDMM("^[0-1]?[0-9][0-9]\260[ ]*[0-5][0-9].[0-9][0-9][0-9]'");
+    QRegExp degreeDMS("^[0-1]?[0-9][0-9]" + degSign + "[ ]*[0-5][0-9]'[ ]*[0-5][0-9]\"");
+    QRegExp degreeDMM("^[0-1]?[0-9][0-9]" + degSign + "[ ]*[0-5][0-9].[0-9][0-9][0-9]'");
     QRegExp number("^-?[0-9]+$");
 
     if(number.indexIn(inDegree) != -1) {
@@ -147,7 +149,7 @@ int WGSPoint::degreeToNum(QString inDegree)
     } else if(degreeDMS.indexIn(inDegree) != -1) {
         int deg = 0, min = 0, sec = 0, result = 0;
 
-        QRegExp deg1("\260");
+        QRegExp deg1(degSign);
         deg = inDegree.mid(0, deg1.indexIn(inDegree)).toInt();
         inDegree = inDegree.mid(deg1.indexIn(inDegree) + 1, inDegree.length());
 
@@ -176,7 +178,7 @@ int WGSPoint::degreeToNum(QString inDegree)
         int deg = 0, result = 0;
         double min = 0;
 
-        QRegExp deg1("\260");
+        QRegExp deg1("degSign");
         deg = inDegree.mid(0, deg1.indexIn(inDegree)).toInt();
         inDegree = inDegree.mid(deg1.indexIn(inDegree) + 1, inDegree.length());
 
