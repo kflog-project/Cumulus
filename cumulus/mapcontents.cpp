@@ -1345,7 +1345,7 @@ void MapContents::proofeSection()
               emit progress(2);
             }
 
-          if ( (secID >= 0) & (secID <= MAX_TILE_NUMBER) )
+          if ( (secID >= 0) && (secID <= MAX_TILE_NUMBER) )
             {
               // a valid tile (2x2 degree area) must be in the range 0 ... 16200
               if (!tileSectionSet.contains(secID))
@@ -2627,7 +2627,3 @@ int MapContents::findElevation(const QPoint& coordP, Distance* errorDist)
 
   return height;
 }
-
-
-
-
