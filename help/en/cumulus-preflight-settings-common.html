@@ -1,4 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- $Id$ -->
 <html>
 <head>
   <title>Cumulus Preflight Settings</title>
@@ -8,29 +9,17 @@
 
 <body>
   <table width="100%">
-
     <tbody>
     <tr>
-
     <td></td>
-
     <td align="center"><a href="cumulus.html">start</a></td>
-
     <td></td>
-
     </tr>
-
     <tr>
-
     <td align="left"><a href="cumulus-preflight-settings-task.html">back</a></td>
-
     <td align="center"><a href="cumulus-settings.html">overview</a></td>
-
     <td align="right"><a href="cumulus-display.html">next</a></td>
-
     </tr>
-
-    
   </tbody>
 </table>
 
@@ -41,80 +30,51 @@
     
 <p><b>Common</b></p>
 <p>
-    Here you can enter different common preflight data.</p>
-
-
+    Here you can enter different common preflight data.</p> 
     
 <dl>
+  <dt><b>Arrival Altitude</b></dt>
+  <dd>
+  The arrival altitude is your preferred altitude above terrain
+  when on final glide. It is used for the calculation of the glide
+  path value. The value entered here is added to the elevation of
+  the selected target. The arrival altitude is given in meters, if
+  altitude unit meters is selected. Otherwise foot is used. For
+  most situations, the default 200 meters would be sensible.
+  </dd>
 
-      <dt><b>Arrival Altitude</b></dt>
+  <dt><b>QNH</b></dt>
+  <dd>
+  The QHN must be entered in hPa (Hecto Pascal). It is only
+  considered in the warning distance calculation to standard
+  pressure airspaces. The default value is 1013hPa.
+  </dd>
 
+  <dt><b>Logger Interval</b></dt>
 
-      <dd>
-      The arrival altitude is your preferred altitude above terrain
-      when on final glide. It is used for the calculation of the glide
-      path value. The value entered here is added to the elevation of
-      the selected target. The arrival altitude is given in meters, if
-      altitude unit meters is selected. Otherwise foot is used. For
-      most situations, the default 200 meters would be sensible.
-      </dd>
+  <dd>Interval for logging of IGC data records. Default time is
+  10 seconds. Note, that lower times&nbsp; will increase the log file size.
+  </dd>
 
+  <dt><b>Autostart logging</b></dt>
 
-      <dt><b>QNH</b></dt>
-
-
-      <dd>
-      The QHN must be entered in hPa (Hecto Pascal). It is only
-      considered in the warning distance calculation to standard
-      pressure airspaces. The default value is 1013hPa.
-     </dd>
-
-
-      <dt><span style="font-weight: bold;">Logger Interval</span></dt>
-
-
-      <dd>Interval for logging of IGC data records. Default time is
-10 seconds. Note, that lower times&nbsp; will increase the log file
-size.</dd>
-
-
-      <dt><b>Autostart logging</b></dt>
-
-
-      <dd> If you activate this check box, cumulus starts
-      automatically the IGC logging, when you start with moving.
-      </dd>
-
-
-    
+  <dd> If you activate this check box, cumulus starts
+  automatically the IGC logging, when you start with moving.
+  </dd>
 </dl>
 
-
-    
 <table width="100%">
-
     <tbody>
     <tr>
-
     <td></td>
-
     <td align="center"><a href="cumulus.html">start</a></td>
-
     <td></td>
-
     </tr>
-
     <tr>
-
     <td align="left"><a href="cumulus-preflight-settings-task.html">back</a></td>
-
     <td align="center"><a href="cumulus-settings.html">overview</a></td>
-
     <td align="right"><a href="cumulus-display.html">next</a></td>
-
     </tr>
-
-    
   </tbody>
 </table>
 
