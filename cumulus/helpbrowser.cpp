@@ -39,8 +39,10 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
 {
   setWindowTitle(tr("Cumulus Help"));
   setWindowIcon( GeneralConfig::instance()->loadPixmap( "cumulus.png" ) );
-  
+
   browser = new QTextBrowser(this);
+  browser->setOpenLinks( true );
+  browser->setOpenExternalLinks( true );
 
   QPushButton *home = new QPushButton();
   home->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home_new.png") ) );
@@ -93,21 +95,21 @@ HelpBrowser::~HelpBrowser()
  *  the help file into the browser.
  */
 void HelpBrowser::showEvent( QShowEvent * )
-{  
+{
   if( ! firstCall )
     {
       // after the first call, ignore this event
       return;
     }
-  
+
   // first call, we try to load the cumulus html help file
   firstCall = false;
-  
+
   QString lang = GeneralConfig::instance()->getLanguage();
 
   QString helpFile = GeneralConfig::instance()->getInstallRoot() +
     "/help/" + lang + "/cumulus.html";
-  
+
   // We do check, if the help file does exists
   QFileInfo info(helpFile);
 
@@ -119,20 +121,20 @@ void HelpBrowser::showEvent( QShowEvent * )
         "/help/" + lang + "/cumulus.html";
       info.setFile(helpFile);
     }
-  
+
   if( ! info.exists() || ! info.isReadable() )
     {
       hide();
-      
+
       QMessageBox::warning( this, "Missing help file",
                             tr("<html><b>The help file was not found.<br>"
                                "Maybe it is not installed?</b></html>"));
       QWidget::close();
       return;
     }
-  
+
   QUrl url = QUrl::fromLocalFile( helpFile );
-  
+
   browser->setSource( url );
 }
 
@@ -146,10 +148,10 @@ void HelpBrowser::keyPressEvent( QKeyEvent *event )
       setWindowState(windowState() ^ Qt::WindowFullScreen);
       return;
     }
-    
+
   // Zoom in with key F7. That is a predefined Maemo hardware key for zooming.
   QFont curFt = font();
-  
+
   if( event->key() == Qt::Key_F7 )
     {
       if( curFt.pointSize() < 18 )
@@ -158,7 +160,7 @@ void HelpBrowser::keyPressEvent( QKeyEvent *event )
           setFont( curFt );
           update();
         }
-        
+
       return;
     }
 
