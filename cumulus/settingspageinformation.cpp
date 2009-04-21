@@ -99,7 +99,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinSuppress->setButtonSymbols(QSpinBox::PlusMinus);
   spinSuppress->setSuffix( " min" );
   topLayout->addWidget( spinSuppress, row, 1 );
-  
+
   buttonReset = new QPushButton (tr("Defaults"), this);
   topLayout->addWidget( buttonReset, row, 2, Qt::AlignRight );
   row++;
@@ -196,10 +196,16 @@ void SettingsPageInformation::slot_setFactoryDefault()
 
 void SettingsPageInformation::slot_openToolDialog()
 {
+  QString player = GeneralConfig::instance()->getSoundPlayer();
+
+  if( player.isEmpty() )
+    {
+      player = QDir::homePath();
+    }
+
   QString file = QFileDialog::getOpenFileName( this,
                                                tr("Please select a sound player"),
-                                               QDir::homePath() );
-
+                                               player );
   if( file.isEmpty() )
     {
       return; // nothing was selected by the user
