@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2009 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -14,6 +15,12 @@
 **   $Id$
 **
 ***********************************************************************/
+
+/**
+ * This is the general page for the waypoint editor dialog
+ *
+ * @author André Somers
+ */
 
 #include <math.h>
 
@@ -24,11 +31,14 @@
 #include "generalconfig.h"
 #include "altitude.h"
 #include "basemapelement.h"
+#include "wgspoint.h"
 
 WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
  QWidget(parent)
 {
   setObjectName("WpEditDialogPageGeneral");
+  loadedLat = 0;
+  loadedLon = 0;
 
   QGridLayout * topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
@@ -80,7 +90,7 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   cmbType->setEditable(false);
   topLayout->addWidget(cmbType, row++, 1);
 
-  // init comboboxes
+  // init combo boxes
   QStringList &tlist = BaseMapElement::getSortedTranslationList();
 
   for( int i=0; i < tlist.size(); i++ )
@@ -108,7 +118,7 @@ WpEditDialogPageGeneral::~WpEditDialogPageGeneral()
 
 
 /** called if data needs to be loaded */
-void WpEditDialogPageGeneral::slot_load(wayPoint * wp)
+void WpEditDialogPageGeneral::slot_load(wayPoint *wp)
 {
   if ( wp )
     { //we don't need to load if the waypoint is not there
@@ -119,12 +129,16 @@ void WpEditDialogPageGeneral::slot_load(wayPoint * wp)
       edtElev->setText(Altitude::getText((wp->elevation),false,-1));
       setWaypointType(wp->type);
       cmbImportance->setCurrentIndex(wp->importance);
+
+      // save loaded values
+      loadedLat = wp->origP.lat();
+      loadedLon = wp->origP.lon();
     }
 }
 
 
 /** called if data needs to be saved */
-void WpEditDialogPageGeneral::slot_save(wayPoint * wp)
+void WpEditDialogPageGeneral::slot_save(wayPoint *wp)
 {
   if ( wp )
     {
@@ -132,14 +146,23 @@ void WpEditDialogPageGeneral::slot_save(wayPoint * wp)
       // qDebug("WpEditDialogPageGeneral::slot_save %x %s",wp,(const char *)wp->name );
       wp->description = edtDescription->text().trimmed();
 
-// JD: bugfix: if existing WP is edited and changed, but lat/lon not touched,
-// values are reset to init (0). Always save edit field content!
+      if( edtLat->isInputChanged() )
+        {
+          wp->origP.setLat( edtLat->KFLogDegree() );
+        }
+      else
+        {
+          wp->origP.setLat( loadedLat );
+        }
 
-//      if( edtLat->isInputChanged() )
-        wp->origP.setLat(edtLat->KFLogDegree());
-
-//      if( edtLong->isInputChanged() )
-        wp->origP.setLon(edtLong->KFLogDegree());
+      if( edtLong->isInputChanged() )
+        {
+          wp->origP.setLon( edtLong->KFLogDegree() );
+        }
+      else
+        {
+          wp->origP.setLon( loadedLon );
+        }
 
       wp->elevation=static_cast<int> (rint(Altitude::convertToMeters(edtElev->text().toDouble())));
       wp->type=getWaypointType();
@@ -163,8 +186,7 @@ int WpEditDialogPageGeneral::getWaypointType()
 }
 
 
-/** set waypoint type in combo box
-translate internal id to index */
+/** set waypoint type in combo box translate internal id to index */
 void WpEditDialogPageGeneral::setWaypointType(int type)
 {
   if (type != -1)
