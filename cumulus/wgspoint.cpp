@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2008-2009 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -40,14 +40,13 @@ WGSPoint::Format WGSPoint::_format = WGSPoint::DMS;
 WGSPoint::WGSPoint() : QPoint()
 {}
 
-WGSPoint::WGSPoint(int lat, int lon)
-        : QPoint(lat, lon)
+WGSPoint::WGSPoint(int lat, int lon) : QPoint(lat, lon)
 {}
 
 WGSPoint &WGSPoint::operator=( const QPoint &p )
 {
-    setPos(p.x(), p.y());
-    return *this;
+  setPos(p.x(), p.y());
+  return *this;
 }
 
 /**
@@ -55,17 +54,28 @@ WGSPoint &WGSPoint::operator=( const QPoint &p )
   */
 void WGSPoint::calcPos (int coord, int& degree, int& min, int &sec)
 {
-    degree = coord / 600000;
-    min = (coord % 600000) / 10000;
-    sec = (coord % 600000) % 10000;
-    sec = (int) rint((sec * 60) / 10000.0);
+  degree = coord / 600000;
+  min = (coord % 600000) / 10000;
+  sec = (coord % 600000) % 10000;
+  sec = (int) rint((sec * 60) / 10000.0);
+
+  // @AP: Rounding of seconds can lead to unwanted results. Therefore this is
+  // checked and corrected here.
+  if( sec > 59 )
+    {
+      sec--;
+    }
+  else if( sec < -59 )
+    {
+      sec++;
+    }
 }
 
 void WGSPoint::calcPos (int coord, int& degree, double& min)
 {
-    degree = coord / 600000;
-    min = (coord % 600000) / 10000.0;
-    // qDebug("Coord=%d, degree=%d, decMin=%f", coord, degree, min);
+  degree = coord / 600000;
+  min = (coord % 600000) / 10000.0;
+  // qDebug("Coord=%d, degree=%d, decMin=%f", coord, degree, min);
 }
 
 /**
@@ -73,139 +83,161 @@ void WGSPoint::calcPos (int coord, int& degree, double& min)
  */
 QString WGSPoint::printPos(int coord, bool isLat)
 {
-    QString pos, posDeg, posMin, posSec;
-    int degree, min, sec;
-    double decMin;
+  QString pos, posDeg, posMin, posSec;
+  int degree, min, sec;
+  double decMin;
 
-    if( getFormat() != WGSPoint::DDM ) {
-        // default is always degrees, minutes, seconds
-        calcPos (coord, degree, min, sec);
+  if ( getFormat() != WGSPoint::DDM )
+    {
+      // default is always degrees, minutes, seconds
+      calcPos (coord, degree, min, sec);
 
-        // qDebug("coord=%d, degree=%d, min=%d, sec=%d",
-        //     coord, degree, min, sec );
+      // qDebug("coord=%d, degree=%d, min=%d, sec=%d",
+      //         coord, degree, min, sec );
 
-        min = abs(min);
-        posMin.sprintf("%02d'", min);
+      min = abs(min);
+      posMin.sprintf("%02d'", min);
 
-        sec = abs(sec);
-        posSec.sprintf(" %02d\"", sec);
-    } else {
-        // degrees and decimal minutes
-        calcPos (coord, degree, decMin);
+      sec = abs(sec);
+      posSec.sprintf(" %02d\"", sec);
+    }
+  else
+    {
+      // degrees and decimal minutes
+      calcPos (coord, degree, decMin);
 
-        decMin = fabs(decMin);
+      decMin = fabs(decMin);
 
-        posMin.sprintf("%.3f'", decMin);
+      posMin.sprintf("%.3f'", decMin);
 
-        // Unfortunately sprintf does not support leading zero in float
-        // formating. So we must do it alone.
-        if( decMin < 10.0 ) {
-            posMin.insert(0, "0");
+      // Unfortunately sprintf does not support leading zero in float
+      // formating. So we must do it alone.
+      if ( decMin < 10.0 )
+        {
+          posMin.insert(0, "0");
         }
     }
 
-    if(isLat) {
-        if(coord < 0) {
-            posDeg.sprintf("%02d\260 ", -degree);
-            pos = posDeg + posMin + posSec + " S";
-        } else {
-            posDeg.sprintf("%02d\260 ", degree);
-            pos = posDeg + posMin + posSec + " N";
+  if (isLat)
+    {
+      if (coord < 0)
+        {
+          posDeg.sprintf("%02d\260 ", -degree);
+          pos = posDeg + posMin + posSec + " S";
         }
-    } else {
-        if(coord < 0) {
-            posDeg.sprintf("%03d\260 ", -degree);
-            pos = posDeg + posMin + posSec + " W";
-        } else {
-            posDeg.sprintf("%03d\260 ", degree);
-            pos = posDeg + posMin + posSec + " E";
+      else
+        {
+          posDeg.sprintf("%02d\260 ", degree);
+          pos = posDeg + posMin + posSec + " N";
+        }
+    }
+  else
+    {
+      if (coord < 0)
+        {
+          posDeg.sprintf("%03d\260 ", -degree);
+          pos = posDeg + posMin + posSec + " W";
+        }
+      else
+        {
+          posDeg.sprintf("%03d\260 ", degree);
+          pos = posDeg + posMin + posSec + " E";
         }
     }
 
-    return pos;
+  // qDebug( "Pos=%s", pos.toLatin1().data() );
+
+  return pos;
 }
 
 
 int WGSPoint::degreeToNum(QString inDegree)
 {
-    /*
-     * needed formats:
-     *
-     *  [g]gg° mm' ss"
-     *  [g]gg° mm.mmmm'
-     *  dddddddddd
-     */
+  /*
+   * needed formats:
+   *
+   *  [g]gg° mm' ss"
+   *  [g]gg° mm.mmmm'
+   *  dddddddddd
+   */
 
-     // to prevent trouble with the degree coding
-    QString degSign( QChar(Qt::Key_degree) );
-    QString input = inDegree;
+  // to prevent trouble with the degree coding
+  QString degSign( QChar(Qt::Key_degree) );
+  QString input = inDegree;
 
-    QRegExp degreeDMS("^[0-1]?[0-9][0-9]" + degSign + "[ ]*[0-5][0-9]'[ ]*[0-5][0-9]\"");
-    QRegExp degreeDMM("^[0-1]?[0-9][0-9]" + degSign + "[ ]*[0-5][0-9].[0-9][0-9][0-9]'");
-    QRegExp number("^-?[0-9]+$");
+  QRegExp degreeDMS("^[0-1]?[0-9][0-9]" + degSign + "[ ]*[0-5][0-9]'[ ]*[0-5][0-9]\"");
+  QRegExp degreeDMM("^[0-1]?[0-9][0-9]" + degSign + "[ ]*[0-5][0-9].[0-9][0-9][0-9]'");
+  QRegExp number("^-?[0-9]+$");
 
-    if(number.indexIn(inDegree) != -1) {
-        return inDegree.toInt();
-    } else if(degreeDMS.indexIn(inDegree) != -1) {
-        int deg = 0, min = 0, sec = 0, result = 0;
+  if (number.indexIn(inDegree) != -1)
+    {
+      return inDegree.toInt();
+    }
+  else if (degreeDMS.indexIn(inDegree) != -1)
+    {
+      int deg = 0, min = 0, sec = 0, result = 0;
 
-        QRegExp deg1(degSign);
-        deg = inDegree.mid(0, deg1.indexIn(inDegree)).toInt();
-        inDegree = inDegree.mid(deg1.indexIn(inDegree) + 1, inDegree.length());
+      QRegExp deg1(degSign);
+      deg = inDegree.mid(0, deg1.indexIn(inDegree)).toInt();
+      inDegree = inDegree.mid(deg1.indexIn(inDegree) + 1, inDegree.length());
 
-        QRegExp deg2("'");
-        min = inDegree.mid(0, deg2.indexIn(inDegree)).toInt();
-        inDegree = inDegree.mid(deg2.indexIn(inDegree) + 1, inDegree.length());
+      QRegExp deg2("'");
+      min = inDegree.mid(0, deg2.indexIn(inDegree)).toInt();
+      inDegree = inDegree.mid(deg2.indexIn(inDegree) + 1, inDegree.length());
 
-        QRegExp deg3("\"");
-        sec = inDegree.mid(0, deg3.indexIn(inDegree)).toInt();
+      QRegExp deg3("\"");
+      sec = inDegree.mid(0, deg3.indexIn(inDegree)).toInt();
 
-        result = (int)rint((600000.0 * deg) + (10000.0 * (min + (sec / 60.0))));
+      result = (int)rint((600000.0 * deg) + (10000.0 * (min + (sec / 60.0))));
 
-        // We add 1 to avoid rounding-errors and to make it possible to use the
-        // zero value with a minus sign!
-        // result += 1;
+      // We add 1 to avoid rounding-errors and to make it possible to use the
+      // zero value with a minus sign!
+      // result += 1;
 
-        QRegExp dir("[swSW]$");
-        if(dir.indexIn(inDegree) >= 0) {
-            // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), -result);
-            return -result;
+      QRegExp dir("[swSW]$");
+      if (dir.indexIn(inDegree) >= 0)
+        {
+          // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), -result);
+          return -result;
         }
 
-        // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), result);
-        return result;
-    } else if( degreeDMM.indexIn(inDegree) != -1) {
-        int deg = 0, result = 0;
-        double min = 0;
+      // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), result);
+      return result;
+    }
+  else if ( degreeDMM.indexIn(inDegree) != -1)
+    {
+      int deg = 0, result = 0;
+      double min = 0;
 
-        QRegExp deg1("degSign");
-        deg = inDegree.mid(0, deg1.indexIn(inDegree)).toInt();
-        inDegree = inDegree.mid(deg1.indexIn(inDegree) + 1, inDegree.length());
+      QRegExp deg1("degSign");
+      deg = inDegree.mid(0, deg1.indexIn(inDegree)).toInt();
+      inDegree = inDegree.mid(deg1.indexIn(inDegree) + 1, inDegree.length());
 
-        QRegExp deg2("'");
-        min = inDegree.mid(0, deg2.indexIn(inDegree)).toDouble();
-        inDegree = inDegree.mid(deg2.indexIn(inDegree) + 1, inDegree.length());
+      QRegExp deg2("'");
+      min = inDegree.mid(0, deg2.indexIn(inDegree)).toDouble();
+      inDegree = inDegree.mid(deg2.indexIn(inDegree) + 1, inDegree.length());
 
-        result = (int)rint((600000.0 * deg) + (10000.0 * (min)));
+      result = (int)rint((600000.0 * deg) + (10000.0 * (min)));
 
-        // We add 1 to avoid rounding-errors and to make it possible to use the
-        // zero value with a minus sign!
-        // result += 1;
+      // We add 1 to avoid rounding-errors and to make it possible to use the
+      // zero value with a minus sign!
+      // result += 1;
 
-        QRegExp dir("[swSW]$");
+      QRegExp dir("[swSW]$");
 
-        if(dir.indexIn(inDegree) >= 0) {
-            // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), -result);
-            return -result;
+      if (dir.indexIn(inDegree) >= 0)
+        {
+          // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), -result);
+          return -result;
         }
 
-        // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), result);
-        return result;
+      // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), result);
+      return result;
     }
 
-    // @AP: inform the user that something has going wrong
-    qWarning("%s(%d) degreeToNum(): Wrong input format %s",
-             __FILE__, __LINE__, inDegree.toLatin1().data() );
+  // @AP: inform the user that something has going wrong
+  qWarning("%s(%d) degreeToNum(): Wrong input format %s",
+           __FILE__, __LINE__, inDegree.toLatin1().data() );
 
-    return 0; // that is the pitfall, all is set to zero on error
+  return 0; // that is the pitfall, all is set to zero on error
 }

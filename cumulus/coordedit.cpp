@@ -1,10 +1,11 @@
 /***************************************************************************
-                          coordedit.cpp  -  description
+    coordedit.cpp  -  This file is part of Cumulus
                              -------------------
     begin                : Mon Dec 3 2001
-    copyright            : (C) 2001 by Harald Maier, 2008 Axel Pauli
+    copyright            : (C) 2001      by Harald Maier
+                               2008-2009 by Axel Pauli
 
-    email                : harry@kflog.org
+    email                : axel@kflog.org
  ***************************************************************************/
 
 /***************************************************************************
@@ -60,136 +61,158 @@ void CoordEdit::keyPressEvent (QKeyEvent *e)
   int col;
   bool isNumber;
 
-  if (e->text() != "") {
-    s = e->text().toUpper();
-    col = cursorPosition();
-    if (hasSelectedText()) {
-      deselect();
-    }
-
-    switch (e->key()) {
-
-    case Qt::Key_Backspace:
-      col -= 1;
-      // fall through
-
-    case Qt::Key_Delete:
-      setText(text().replace(col, 1, mask.mid(col, 1)));
-      setCursorPosition(col);
-      break;
-
-    default:
-      if (col == int(text().length() - 1)) {
-        if (validDirection.contains(s)) {
-          setText(text().replace(text().length() - 1, 1, s));
-          setCursorPosition(text().length());
+  if (e->text() != "")
+    {
+      s = e->text().toUpper();
+      col = cursorPosition();
+      if (hasSelectedText())
+        {
+          deselect();
         }
-      } else {
-        s.toInt(&isNumber);
 
-        if (isNumber && mask[col] == '0') {
-          // @AP: here we should check, if the input makes
-          // sense. Otherwise we accept wrong entries, which will be set
-          // to zero by KFLogDegree() conversion method.
+      switch (e->key())
+        {
 
-          // qDebug("pos=%d, mask=%s, buffer=%s, input=%s",
-          //     col, mask.latin1(), b.latin1(), s.latin1() );
+        case Qt::Key_Backspace:
+          col -= 1;
+          // fall through
 
-          if( validDirection == "NS" ) // latitude input
+        case Qt::Key_Delete:
+          setText(text().replace(col, 1, mask.mid(col, 1)));
+          setCursorPosition(col);
+          break;
+
+        default:
+          if (col == int(text().length() - 1))
             {
-              if( col == 0 && s[0] == '9' )
+              if (validDirection.contains(s))
                 {
-                  // set the maximum
-                  if( WGSPoint::getFormat() == WGSPoint::DMS )
-                    setText(text().replace(0, 10, "90\260 00' 00"));
-                  else
-                    setText(text().replace(0, 10, "90\260 00.000"));
-                  setCursorPosition(col+1);
-                  break;
-                } else if( col > 0 && b[0] == '9' && s[0] != '0' )
-                {
-                  // set the maximum
-                  if( WGSPoint::getFormat() == WGSPoint::DMS )
-                    setText(text().replace(0, 10, "90\260 00' 00"));
-                  else
-                    setText(text().replace(0, 10, "90\260 00.000"));
-
-                  setCursorPosition(col);
-                  break;
-                } else if( (WGSPoint::getFormat() == WGSPoint::DMS &&
-                            (col == 4 || col == 8 ) && s[0] > '5' ) ||
-                           (WGSPoint::getFormat() == WGSPoint::DDM &&
-                            col == 4  && s[0] > '5' ) )
-                {
-                  // reset b[col] to 5
-                  setText(text().replace(col, 1, "5"));
-                  setCursorPosition(col);
-                  break;
+                  setText(text().replace(text().length() - 1, 1, s));
+                  setCursorPosition(text().length());
                 }
             }
-          else // longitude input
+          else
             {
-              if( (col == 0 && (s[0] > '1' || (s[0] == '1' && b[1] >= '8') )) ) {
-                // set the maximum
-                if( WGSPoint::getFormat() == WGSPoint::DMS )
-                  setText(text().replace(0, 11, "180\260 00' 00"));
-                else
-                  setText(text().replace(0, 11, "180\260 00.000"));
-                setCursorPosition( s[0] == '1' ? col+1 : col );
-                break;
-              } else if( col == 1 && b[0] == '1' && s[0] >= '8' ) {
-                // set the maximum
-                if( WGSPoint::getFormat() == WGSPoint::DMS )
-                  setText(text().replace(0, 11, "180\260 00' 00"));
-                else
-                  setText(text().replace(0, 11, "180\260 00.000"));
+              s.toInt(&isNumber);
 
-                setCursorPosition( s[0] == '8' ? col+1 : col );
-                break;
-              } else if( col > 1 && b[0] == '1' && b[1] == '8' && s[0] != '0' ) {
-                // set the maximum
-                if( WGSPoint::getFormat() == WGSPoint::DMS )
-                  setText(text().replace(0, 11, "180\260 00' 00"));
-                else
-                  setText(text().replace(0, 11, "180\260 00.000"));
-                setCursorPosition(col);
-                break;
-              } else if( (WGSPoint::getFormat() == WGSPoint::DMS &&
-                          (col == 5 || col == 9 ) && s[0] > '5' ) ||
-                         (WGSPoint::getFormat() == WGSPoint::DDM &&
-                          col == 5  && s[0] > '5' ) ) {
-                // reset b[col] to 5
-                setText(text().replace(col, 1, "5"));
-                setCursorPosition(col);
-                break;
-              }
+              if (isNumber && mask[col] == '0')
+                {
+                  // @AP: here we should check, if the input makes
+                  // sense. Otherwise we accept wrong entries, which will be set
+                  // to zero by KFLogDegree() conversion method.
+
+                  // qDebug("pos=%d, mask=%s, buffer=%s, input=%s",
+                  //     col, mask.latin1(), b.latin1(), s.latin1() );
+
+                  if ( validDirection == "NS" ) // latitude input
+                    {
+                      if ( col == 0 && s[0] == '9' )
+                        {
+                          // set the maximum
+                          if ( WGSPoint::getFormat() == WGSPoint::DMS )
+                            setText(text().replace(0, 10, "90\260 00' 00"));
+                          else
+                            setText(text().replace(0, 10, "90\260 00.000"));
+                          setCursorPosition(col+1);
+                          break;
+                        }
+                      else if ( col > 0 && b[0] == '9' && s[0] != '0' )
+                        {
+                          // set the maximum
+                          if ( WGSPoint::getFormat() == WGSPoint::DMS )
+                            setText(text().replace(0, 10, "90\260 00' 00"));
+                          else
+                            setText(text().replace(0, 10, "90\260 00.000"));
+
+                          setCursorPosition(col);
+                          break;
+                        }
+                      else if ( (WGSPoint::getFormat() == WGSPoint::DMS &&
+                                 (col == 4 || col == 8 ) && s[0] > '5' ) ||
+                                (WGSPoint::getFormat() == WGSPoint::DDM &&
+                                 col == 4  && s[0] > '5' ) )
+                        {
+                          // reset b[col] to 5
+                          setText(text().replace(col, 1, "5"));
+                          setCursorPosition(col);
+                          break;
+                        }
+                    }
+                  else // longitude input
+                    {
+                      if ( (col == 0 && (s[0] > '1' || (s[0] == '1' && b[1] >= '8') )) )
+                        {
+                          // set the maximum
+                          if ( WGSPoint::getFormat() == WGSPoint::DMS )
+                            setText(text().replace(0, 11, "180\260 00' 00"));
+                          else
+                            setText(text().replace(0, 11, "180\260 00.000"));
+                          setCursorPosition( s[0] == '1' ? col+1 : col );
+                          break;
+                        }
+                      else if ( col == 1 && b[0] == '1' && s[0] >= '8' )
+                        {
+                          // set the maximum
+                          if ( WGSPoint::getFormat() == WGSPoint::DMS )
+                            setText(text().replace(0, 11, "180\260 00' 00"));
+                          else
+                            setText(text().replace(0, 11, "180\260 00.000"));
+
+                          setCursorPosition( s[0] == '8' ? col+1 : col );
+                          break;
+                        }
+                      else if ( col > 1 && b[0] == '1' && b[1] == '8' && s[0] != '0' )
+                        {
+                          // set the maximum
+                          if ( WGSPoint::getFormat() == WGSPoint::DMS )
+                            setText(text().replace(0, 11, "180\260 00' 00"));
+                          else
+                            setText(text().replace(0, 11, "180\260 00.000"));
+                          setCursorPosition(col);
+                          break;
+                        }
+                      else if ( (WGSPoint::getFormat() == WGSPoint::DMS &&
+                                 (col == 5 || col == 9 ) && s[0] > '5' ) ||
+                                (WGSPoint::getFormat() == WGSPoint::DDM &&
+                                 col == 5  && s[0] > '5' ) )
+                        {
+                          // reset b[col] to 5
+                          setText(text().replace(col, 1, "5"));
+                          setCursorPosition(col);
+                          break;
+                        }
+                    }
+
+                  // General default handling for all other input
+                  setText(text().replace(col, 1, s));
+                  setCursorPosition(++col);
+                  // jump to next number field
+                  setCursor2NextNo(col);
+                  //qDebug("ENDE: pos=%d, mask=%s, buffer=%s, input=%s",
+                  // col, mask.latin1(), QLineEdit::text().latin1(), s.latin1() );
+                }
             }
-
-          // General default handling for all other input
-          setText(text().replace(col, 1, s));
-          setCursorPosition(++col);
-          // jump to next number field
-          setCursor2NextNo(col);
-          //qDebug("ENDE: pos=%d, mask=%s, buffer=%s, input=%s",
-          // col, mask.latin1(), QLineEdit::text().latin1(), s.latin1() );
-        }
-      }
-    } // switch
-  } else {
-    // route all other to default handler
-    QLineEdit::keyPressEvent(e);
-  }
+        } // switch
+    }
+  else
+    {
+      // route all other to default handler
+      QLineEdit::keyPressEvent(e);
+    }
 }
 
 
 /** Set cursor in dependency of position and input mask to next number field */
 void CoordEdit::setCursor2NextNo( int pos )
 {
-  if (pos < int(text().length()) && mask[pos] == '.') {
-    setCursorPosition(pos + 1);
-  } else if (pos < int(text().length()) && mask[pos] != '0') {
-    setCursorPosition(pos + 2);
-  }
+  if (pos < int(text().length()) && mask[pos] == '.')
+    {
+      setCursorPosition(pos + 1);
+    }
+  else if (pos < int(text().length()) && mask[pos] != '0')
+    {
+      setCursorPosition(pos + 2);
+    }
 }
 
 
@@ -198,9 +221,10 @@ void CoordEdit::setCursor2NextNo( int pos )
     method. In this case the mask is always set */
 void CoordEdit::showEvent(QShowEvent *)
 {
-  if (text().isEmpty()) {
-    setText(mask);
-  }
+  if (text().isEmpty())
+    {
+      setText(mask);
+    }
 }
 
 
@@ -208,15 +232,18 @@ LatEdit::LatEdit(QWidget *parent, const int base) : CoordEdit(parent)
 {
   setObjectName("LatdEdit");
 
-  if( WGSPoint::getFormat() != WGSPoint::DDM ) {
-    mask = "00\260 00' 00\" S";
-    if (base>0)
-      mask = "00\260 00' 00\" N";
-  } else {
-    mask = "00\260 00.000' S";
-    if (base>0)
-      mask = "00\260 00.000' N";
-  }
+  if ( WGSPoint::getFormat() != WGSPoint::DDM )
+    {
+      mask = "00\260 00' 00\" S";
+      if (base>0)
+        mask = "00\260 00' 00\" N";
+    }
+  else
+    {
+      mask = "00\260 00.000' S";
+      if (base>0)
+        mask = "00\260 00.000' N";
+    }
 
   validDirection = "NS";
 }
@@ -226,15 +253,18 @@ LongEdit::LongEdit(QWidget *parent, const int base) : CoordEdit(parent)
 {
   setObjectName("LongdEdit");
 
-  if( WGSPoint::getFormat() != WGSPoint::DDM ) {
-    mask = "000\260 00' 00\" W";
-    if (base>0)
-      mask = "000\260 00' 00\" E";
-  } else {
-    mask = "000\260 00.000' W";
-    if (base>0)
-      mask = "000\260 00.000' E";
-  }
+  if ( WGSPoint::getFormat() != WGSPoint::DDM )
+    {
+      mask = "000\260 00' 00\" W";
+      if (base>0)
+        mask = "000\260 00' 00\" E";
+    }
+  else
+    {
+      mask = "000\260 00.000' W";
+      if (base>0)
+        mask = "000\260 00.000' E";
+    }
 
   validDirection = "WE";
 }
@@ -259,10 +289,11 @@ void CoordEdit::setKFLogDegree(int value, bool isLat)
 {
   setText(WGSPoint::printPos(value, isLat));
 
-  if( firstSet ) {
-    firstSet = false;
-    initText = QLineEdit::text(); // save init text
-  }
+  if ( firstSet )
+    {
+      firstSet = false;
+      initText = QLineEdit::text(); // save init text
+    }
 }
 
 

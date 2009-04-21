@@ -807,7 +807,6 @@ QPoint GpsNmea::__ExtractCoord(const QString& slat, const QString& slatNS, const
 {
   /* The internal KFLog format for coordinates represents coordinates in 10.000'st of a minute.
      So, one minute corresponds to 10.000, one degree to 600.000 and one second to 167.
-
      KFLogCoord = degrees * 600000 + minutes * 10000
   */
 
@@ -828,20 +827,24 @@ QPoint GpsNmea::__ExtractCoord(const QString& slat, const QString& slatNS, const
   // qDebug ("slon: %s", slon.toLatin1().data());
   // qDebug ("lon/fLon: %d/%f", lon, fLon);
 
-  int latmin = (int) rint(fLat * 1000);
-  int lonmin = (int) rint(fLon * 1000);
+  int latMin = (int) rint(fLat * 10000);
+  int lonMin = (int) rint(fLon * 10000);
 
   // convert to internal KFLog format
-  int latTemp = lat * 600000 + latmin * 10;
-  int lonTemp = lon * 600000 + lonmin * 10;
+  int latTemp = lat * 600000 + latMin;
+  int lonTemp = lon * 600000 + lonMin;
 
   // qDebug("latTemp=%d, lonTemp=%d", latTemp, lonTemp);
 
   if (slatNS == "S")
-    latTemp = -latTemp;
+    {
+      latTemp = -latTemp;
+    }
 
   if (slonEW == "W")
-    lonTemp = -lonTemp;
+    {
+      lonTemp = -lonTemp;
+    }
 
   QPoint res (latTemp, lonTemp);
 
@@ -851,7 +854,7 @@ QPoint GpsNmea::__ExtractCoord(const QString& slat, const QString& slatNS, const
       emit newPosition();
     }
 
-  return (_lastCoord);
+  return _lastCoord;
 }
 
 /** Extract the heading from the NMEA sentence. */

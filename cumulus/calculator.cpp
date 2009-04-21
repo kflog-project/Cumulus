@@ -232,8 +232,13 @@ void Calculator::slot_Speed()
 /** called if a new position-fix has been established. */
 void Calculator::slot_Position()
 {
-  lastGPSPosition=GpsNmea::gps->getLastCoord();
-  if (!manualInFlight) lastPosition = lastGPSPosition;
+  lastGPSPosition = GpsNmea::gps->getLastCoord();
+
+  if( !manualInFlight )
+    {
+      lastPosition = lastGPSPosition;
+    }
+
   lastElevation = Altitude( _globalMapContents->findElevation(lastPosition, &lastElevationError) );
   emit newPosition(lastGPSPosition, Calculator::GPS);
   calcDistance();
@@ -817,27 +822,29 @@ void Calculator::slot_changePosition(int direction)
   switch (direction)
     {
     case MapMatrix::North:
-      kmPerDeg=dist(lastPosition.x(), lastPosition.y(), lastPosition.x()+600000, lastPosition.y());
-      lastPosition=QPoint((int) rint(lastPosition.x()+(distance/kmPerDeg) * 600), lastPosition.y());
+      kmPerDeg = dist(lastPosition.x(), lastPosition.y(), lastPosition.x()+600000, lastPosition.y());
+      lastPosition = QPoint((int) (lastPosition.x()+(distance/kmPerDeg) * 600), lastPosition.y());
       break;
     case MapMatrix::West:
-      kmPerDeg=dist(lastPosition.x(), lastPosition.y(), lastPosition.x(), lastPosition.y()+600000);
-      lastPosition=QPoint(lastPosition.x(), (int) rint(lastPosition.y()-(distance/kmPerDeg) * 600));
+      kmPerDeg = dist(lastPosition.x(), lastPosition.y(), lastPosition.x(), lastPosition.y()+600000);
+      lastPosition = QPoint(lastPosition.x(), (int) (lastPosition.y()-(distance/kmPerDeg) * 600));
       break;
     case MapMatrix::East:
-      kmPerDeg=dist(lastPosition.x(), lastPosition.y(), lastPosition.x(), lastPosition.y()+600000);
-      lastPosition=QPoint(lastPosition.x(), (int) rint(lastPosition.y()+(distance/kmPerDeg) * 600));
+      kmPerDeg = dist(lastPosition.x(), lastPosition.y(), lastPosition.x(), lastPosition.y()+600000);
+      lastPosition = QPoint(lastPosition.x(), (int) (lastPosition.y()+(distance/kmPerDeg) * 600));
       break;
     case MapMatrix::South:
-      kmPerDeg=dist(lastPosition.x(),lastPosition.y(), lastPosition.x()+600000, lastPosition.y());
-      lastPosition=QPoint((int) rint(lastPosition.x()-(distance/kmPerDeg) * 600), lastPosition.y());
+      kmPerDeg = dist(lastPosition.x(), lastPosition.y(), lastPosition.x()+600000, lastPosition.y());
+      lastPosition = QPoint((int) (lastPosition.x()-(distance/kmPerDeg) * 600), lastPosition.y());
       break;
     case MapMatrix::Home:
-      lastPosition=QPoint(_globalMapMatrix->getHomeCoord());
+      lastPosition = QPoint(_globalMapMatrix->getHomeCoord());
       break;
     case MapMatrix::Waypoint:
       if (selectedWp)
-        lastPosition=selectedWp->origP;
+        {
+          lastPosition = selectedWp->origP;
+        }
       break;
     }
 
@@ -850,7 +857,8 @@ void Calculator::slot_changePosition(int direction)
     {
       lastPosition.setX(-90*600000);
     }
-  else if ( lastPosition.y() > 180*600000 )
+
+  if ( lastPosition.y() > 180*600000 )
     {
       lastPosition.setY(180*600000);
     }
@@ -871,8 +879,10 @@ void Calculator::slot_changePosition(int direction)
 
   if ( qnhDiff != 0 )
     {
-      // calculate altitude correction in meters from pressure difference
-      int delta = (int) rint( qnhDiff * 8.6 );
+      // Calculate altitude correction in meters from pressure difference.
+      // The common approach is to expect a pressure difference of 1 hPa per
+      // 30ft until 18.000ft. 30ft are 9.1437m
+      int delta = (int) rint( qnhDiff * 9.1437 );
 
       // qDebug("Calculator::slot_changePosition(): QHN=%d, Delta=%d", conf->getQNH(), delta);
 

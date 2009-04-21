@@ -1,12 +1,12 @@
 /***********************************************************************
 **
-**   WGSPoint.h - general position representations
+**   wgspoint.h - general position representations
 **
 **   This file is part of Cumulus and has been extracted from mapmatrix.h
 **
 ************************************************************************
 **
-**   Copyright (c):  2008 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2008-2009 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -137,6 +137,14 @@ public:
      */
     static int degreeToNum(QString degree);
 
+    /**
+     * Returns a string representation of a position to be used as key
+     * for checks a.s.o.
+     */
+    static QString coordinateString(const QPoint& position)
+    {
+      return QString("%1.%2").arg(position.x()).arg(position.y());
+    };
 
 protected:
 

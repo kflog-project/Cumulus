@@ -1722,6 +1722,8 @@ void MainWindow::slotRememberWaypoint()
   wp.isLandable = false;
 
   viewWP->slot_wpAdded( wp );
+
+  // qDebug("WP lat=%d, lon=%d", wp.origP.lat(), wp.origP.lon() );
 }
 
 /** This slot is called if the configuration has been changed and at the
