@@ -6,6 +6,10 @@
 LD_LIBRARY_PATH=/opt/cumulus/lib
 export LD_LIBRARY_PATH
 
+# workaround to start browser from QTextView
+BROWSER="browser --url"
+export BROWSER
+
 # launch cumulus
 exec /opt/cumulus/bin/cumulus
 
