@@ -371,6 +371,12 @@ class Map : public QWidget
     void __displayDetailedItemInfo(const QPoint& current);
 
     /**
+     * Check, if a zoom button was pressed.
+     * Return true in this case otherwise false.
+     */
+    bool __zoomButtonPress(const QPoint& current);
+
+    /**
      * This function sets the map rotation and redraws the map
      * if the new map rotation differs too much from the current one.
      */

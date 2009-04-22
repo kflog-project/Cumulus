@@ -184,6 +184,18 @@ public:
       */
     QPixmap& getMagentaCircle( int diameter );
 
+    /**
+      * Returns a pixmap containing a plus button. The button has rounded
+      * corners and is transparent.
+      */
+    QPixmap& getPlusButton();
+
+    /**
+      * Returns a pixmap containing a minus button. The button has rounded
+      * corners and is transparent.
+      */
+    QPixmap& getMinusButton();
+
 public slots:
     /**
      * Forces MapConfig to reload its configuration data.
@@ -342,6 +354,10 @@ private:
     // Pixmaps for reach abilities
     QPixmap greenCircle;
     QPixmap magentaCircle;
+
+    // Pixmaps for zoom buttons +/-
+    QPixmap plusButton;
+    QPixmap minusButton;
 
     // number of created class instances
     static short instances;

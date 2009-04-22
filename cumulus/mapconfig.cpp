@@ -919,3 +919,57 @@ void MapConfig::__createCircle( QPixmap& pixmap, int diameter, QColor color)
   painter.drawEllipse( 2, 2, diameter-4, diameter-4 );
 }
 
+/**
+  * Returns a pixmap containing a plus button. The button has rounded
+  * corners and is transparent.
+  */
+QPixmap& MapConfig::getPlusButton()
+{
+  static bool first = true;
+
+  if( first )
+    {
+      first = false;
+
+      plusButton = QPixmap( 52, 52 );
+      plusButton.fill(Qt::transparent);
+      QPainter painter(&plusButton);
+      QPen pen(Qt::gray);
+      pen.setWidth(4);
+      painter.setPen( pen );
+      painter.setBrush(Qt::NoBrush);
+      painter.translate( 1 , 1 );
+      painter.drawRoundedRect( 0, 0, 50, 50, 10, 10 );
+      painter.drawLine( 10, 25, 40, 25 );
+      painter.drawLine( 25, 10, 25, 40 );
+    }
+
+  return plusButton;
+}
+
+/**
+  * Returns a pixmap containing a minus button. The button has rounded
+  * corners and is transparent.
+  */
+QPixmap& MapConfig::getMinusButton()
+{
+  static bool first = true;
+
+  if( first )
+    {
+      first = false;
+
+      minusButton = QPixmap( 52, 52 );
+      minusButton.fill(Qt::transparent);
+      QPainter painter(&minusButton);
+      QPen pen(Qt::gray);
+      pen.setWidth(4);
+      painter.setPen( pen );
+      painter.setBrush(Qt::NoBrush);
+      painter.translate( 1 , 1 );
+      painter.drawRoundedRect( 0, 0, 50, 50, 10, 10 );
+      painter.drawLine( 10, 25, 40, 25 );
+    }
+
+  return minusButton;
+}

@@ -215,6 +215,29 @@ void Map::__displayAirspaceInfo(const QPoint& current)
 }
 
 /**
+ * Check, if a zoom button was pressed.
+ * Return true in this case otherwise false.
+ */
+bool Map::__zoomButtonPress(const QPoint& point)
+{
+  QRegion plus( width()-55, 0, 55, 55 );
+  QRegion minus( width()-55, height()-55, 55, 55 );
+
+  if( plus.contains( point ) )
+    {
+      slotZoomIn();
+      return true;
+    }
+  else if( minus.contains( point ) )
+    {
+      slotZoomOut();
+      return true;
+    }
+
+  return false;
+}
+
+/**
  * Display detailed Info about an airfield, a glider site or a waypoint.
 */
 
@@ -446,7 +469,12 @@ void Map::mousePressEvent(QMouseEvent* event)
       break;
     case Qt::LeftButton: // press generates mouse LeftButton immediately
       // qDebug("LeftButton");
-      __displayDetailedItemInfo(event->pos());
+      if( __zoomButtonPress( event->pos() ) )
+          {
+            break;
+          }
+
+      __displayDetailedItemInfo( event->pos() );
       break;
     case Qt::MidButton:
       // qDebug("MidButton");
@@ -1106,10 +1134,20 @@ void Map::__drawInformationLayer()
     {
       __drawGlider();
     }
+
   if(!ShowGlider || calculator->isManualInFlight())
     {
       __drawX();
     }
+
+  // draw zoom buttons
+  QPainter p(&m_pixInformationMap);
+
+  p.drawPixmap( width()-55, +5,
+                _globalMapConfig->getPlusButton() );
+
+  p.drawPixmap( width()-55, height()-55,
+                _globalMapConfig->getMinusButton() );
 }
 
 // Performs an unscheduled, immediate redraw of the entire map.
