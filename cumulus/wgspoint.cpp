@@ -63,11 +63,11 @@ void WGSPoint::calcPos (int coord, int& degree, int& min, int &sec)
   // checked and corrected here.
   if( sec > 59 )
     {
-      sec--;
+      sec = 59;
     }
   else if( sec < -59 )
     {
-      sec++;
+      sec = -59;
     }
 }
 
