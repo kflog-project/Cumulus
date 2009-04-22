@@ -544,16 +544,46 @@ void SettingsPageAirspace::slot_setColorDefaults()
  */
 void SettingsPageAirspace::slot_toggleCheckBox( int row, int column )
 {
-  qDebug("row=%d, column=%d", row, column);
+  // qDebug("row=%d, column=%d", row, column);
 
   if( column % 3 ) // only every third columns are QTableWidgetItems
     {
+      QString title = "none";
+      QTableWidgetItem *asItem;
+      QTableWidgetItem *hItem;
+
+      // compose a title for the color dialog
+      if( column == 1 )
+        {
+          asItem = drawOptions->item( row, 0 );
+          hItem  = drawOptions->horizontalHeaderItem( 1 );
+          title = hItem->text() + " " + asItem->text();
+        }
+      else if( column == 2 )
+        {
+          asItem = drawOptions->item( row, 0 );
+          hItem  = drawOptions->horizontalHeaderItem( 2 );
+          title = hItem->text() + " " + asItem->text();
+        }
+      else if( column == 4 )
+        {
+          asItem = drawOptions->item( row, 3 );
+          hItem  = drawOptions->horizontalHeaderItem( 4 );
+          title = hItem->text() + " " + asItem->text();
+        }
+      else if( column == 5 )
+        {
+          asItem = drawOptions->item( row, 3 );
+          hItem  = drawOptions->horizontalHeaderItem( 5 );
+          title = hItem->text() + " " + asItem->text();
+        }
+
       QWidget *cw = drawOptions->cellWidget( row, column );
       QPalette palette = cw->palette();
       QColor color = palette.color(QPalette::Window);
 
       // Open color chooser dialog
-      QColor newColor = QColorDialog::getColor( color, this );
+      QColor newColor = QColorDialog::getColor( color, this, title );
 
       if( newColor.isValid() && color != newColor )
         {
