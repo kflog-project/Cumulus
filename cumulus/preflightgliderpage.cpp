@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2003      by André Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -23,48 +24,53 @@
 #include "glider.h"
 #include "calculator.h"
 #include "preflightgliderpage.h"
+#include "generalconfig.h"
 
 PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) : QWidget(parent)
 {
   setObjectName("PreFlightGliderPage");
-
   lastGlider = 0;
 
   QGridLayout* topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
 
   list = new GliderListWidget(this);
-  topLayout->addWidget(list, 0, 0, 1, 2);
+  topLayout->addWidget(list, 0, 0, 1, 4);
 
   QPushButton* deselect = new QPushButton( tr("Deselect"), this );
-  deselect->setToolTip( tr("Reset glider selection") );
+  deselect->setToolTip( tr("Clear glider selection") );
   topLayout->addWidget( deselect, 1, 0 );
 
-  QLabel* lblCoPilot = new QLabel(tr("Co-pilot:"),this);
-  topLayout->addWidget(lblCoPilot,2, 0);
-  edtCoPilot=new QLineEdit(this);
-  edtCoPilot->setObjectName("edtLineEdit");
-  topLayout->addWidget(edtCoPilot,2, 1);
+  QLabel* lblPilot = new QLabel(tr("Pilot:"), this);
+  topLayout->addWidget(lblPilot, 2, 0);
+  lblPilot = new QLabel(this);
+  lblPilot->setText( GeneralConfig::instance()->getSurname() );
+  topLayout->addWidget(lblPilot, 2, 1);
 
-  QLabel* lblLoad = new QLabel(tr("Added load:"),this);
-  topLayout->addWidget(lblLoad,3, 0);
+  QLabel* lblCoPilot = new QLabel(tr("Copilot:"), this);
+  topLayout->addWidget(lblCoPilot, 3, 0);
+  edtCoPilot=new QLineEdit(this);
+  topLayout->addWidget(edtCoPilot, 3, 1);
+
+  QLabel* lblLoad = new QLabel(tr("Added load:"), this);
+  topLayout->addWidget(lblLoad, 2, 2);
   spinLoad=new QSpinBox(this);
-  spinLoad->setObjectName("spinLoad");
-  topLayout->addWidget(spinLoad,3, 1);
+  topLayout->addWidget(spinLoad, 2, 3);
   spinLoad->setButtonSymbols(QSpinBox::PlusMinus);
   spinLoad->setMinimum(0);
   spinLoad->setMaximum(1000);
   spinLoad->setSingleStep(5);
+  spinLoad->setSuffix(" kg");
 
-  QLabel* lblWater = new QLabel(tr("Water balast:"),this);
-  topLayout->addWidget(lblWater,4, 0);
+  QLabel* lblWater = new QLabel(tr("Water ballast:"), this);
+  topLayout->addWidget(lblWater, 3, 2);
   spinWater=new QSpinBox(this);
-  spinWater->setObjectName("spinWater");
-  topLayout->addWidget(spinWater,4, 1);
+  topLayout->addWidget(spinWater, 3, 3);
   spinWater->setButtonSymbols(QSpinBox::PlusMinus);
   spinWater->setMinimum(0);
   spinWater->setMaximum(300);
   spinWater->setSingleStep(5);
+  spinWater->setSuffix(" l");
 
   list->fillList();
   list->clearSelection();
@@ -82,7 +88,7 @@ PreFlightGliderPage::~PreFlightGliderPage()
 
 void PreFlightGliderPage::slot_gliderChanged()
 {
-  // save co pilot before new selection
+  // save copilot before new selection
   if(lastGlider)
     {
       if (lastGlider->seats() == Glider::doubleSeater)
@@ -104,7 +110,7 @@ void PreFlightGliderPage::slot_gliderChanged()
       edtCoPilot->setEnabled(glider->seats()==Glider::doubleSeater);
       edtCoPilot->setText(glider->coPilot());
 
-      spinLoad->setValue( (int) (glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
+      spinLoad->setValue( (int) rint(glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
 
       spinWater->setMaximum(glider->maxWater());
       spinWater->setEnabled(glider->maxWater()!=0);
@@ -114,7 +120,7 @@ void PreFlightGliderPage::slot_gliderChanged()
 void PreFlightGliderPage::slot_gliderDeselected()
 {
   // clear last stored glider
-  lastGlider = 0;
+  lastGlider = static_cast<Glider *> (0);
   // clear list selection
   list->clearSelection();
 }
@@ -124,7 +130,7 @@ void PreFlightGliderPage::getCurrent()
   extern Calculator* calculator;
   Glider* glider = calculator->glider();
 
-  if( glider == 0 )
+  if( glider == static_cast<Glider *> (0) )
     {
       return;
     }

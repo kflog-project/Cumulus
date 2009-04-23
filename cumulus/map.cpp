@@ -215,8 +215,8 @@ void Map::__displayAirspaceInfo(const QPoint& current)
 }
 
 /**
- * Check, if a zoom button was pressed.
- * Return true in this case otherwise false.
+ * Check, if a zoom button on the map was pressed. Handle zoom request and
+ * return true in this case otherwise false.
  */
 bool Map::__zoomButtonPress(const QPoint& point)
 {
@@ -228,7 +228,8 @@ bool Map::__zoomButtonPress(const QPoint& point)
       slotZoomIn();
       return true;
     }
-  else if( minus.contains( point ) )
+    
+  if( minus.contains( point ) )
     {
       slotZoomOut();
       return true;

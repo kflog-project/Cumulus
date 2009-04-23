@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2003 by AndrÃ© Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef PREFLIGHTGLIDERPAGE_H
-#define PREFLIGHTGLIDERPAGE_H
+#ifndef PREFLIGHT_GLIDER_PAGE_H
+#define PREFLIGHT_GLIDER_PAGE_H
 
 #include <QWidget>
 #include <QLineEdit>
@@ -26,8 +26,8 @@
 
 /**
  * This widget represents the glider-selection page for the PreFlight dialog.
- * 
- * @author André Somers
+ *
+ * @author AndrÃ© Somers
  */
 class PreFlightGliderPage : public QWidget
   {
@@ -45,11 +45,11 @@ class PreFlightGliderPage : public QWidget
 
   private:
 
-    GliderListWidget * list;
-    QLineEdit * edtCoPilot;
-    QSpinBox * spinLoad;
-    QSpinBox * spinWater;
-    Glider * lastGlider;
+    GliderListWidget *list;
+    QLineEdit        *edtCoPilot;
+    QSpinBox         *spinLoad;
+    QSpinBox         *spinWater;
+    Glider           *lastGlider;
 
     void getCurrent();
 
