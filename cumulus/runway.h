@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008 Axel Pauli
+**   Copyright (c): 2008-2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -35,7 +35,7 @@ public:
   /**
    * Used to define the surface of a runway.
    */
-  enum SurfaceType {Unknown = 0, Grass = 1, Asphalt = 2, Concrete = 3};
+  enum SurfaceType {Unknown = 0, Grass = 1, Asphalt = 2, Concrete = 3, Sand = 4};
 
   Runway( const unsigned short len,
           const unsigned short dir,
