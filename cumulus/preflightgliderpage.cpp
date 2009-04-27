@@ -30,47 +30,54 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) : QWidget(parent)
 {
   setObjectName("PreFlightGliderPage");
   lastGlider = 0;
+  int row = 0;
 
   QGridLayout* topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
 
-  list = new GliderListWidget(this);
-  topLayout->addWidget(list, 0, 0, 1, 4);
-
-  QPushButton* deselect = new QPushButton( tr("Deselect"), this );
-  deselect->setToolTip( tr("Clear glider selection") );
-  topLayout->addWidget( deselect, 1, 0 );
-
   QLabel* lblPilot = new QLabel(tr("Pilot:"), this);
-  topLayout->addWidget(lblPilot, 2, 0);
+  topLayout->addWidget(lblPilot, row, 0);
   lblPilot = new QLabel(this);
   lblPilot->setText( GeneralConfig::instance()->getSurname() );
-  topLayout->addWidget(lblPilot, 2, 1);
-
-  QLabel* lblCoPilot = new QLabel(tr("Copilot:"), this);
-  topLayout->addWidget(lblCoPilot, 3, 0);
-  edtCoPilot=new QLineEdit(this);
-  topLayout->addWidget(edtCoPilot, 3, 1);
+  topLayout->addWidget(lblPilot, row, 1);
 
   QLabel* lblLoad = new QLabel(tr("Added load:"), this);
-  topLayout->addWidget(lblLoad, 2, 2);
+  topLayout->addWidget(lblLoad, row, 2);
   spinLoad=new QSpinBox(this);
-  topLayout->addWidget(spinLoad, 2, 3);
+  topLayout->addWidget(spinLoad, row, 3);
   spinLoad->setButtonSymbols(QSpinBox::PlusMinus);
   spinLoad->setMinimum(0);
   spinLoad->setMaximum(1000);
   spinLoad->setSingleStep(5);
   spinLoad->setSuffix(" kg");
+  row++;
+
+  QLabel* lblCoPilot = new QLabel(tr("Copilot:"), this);
+  topLayout->addWidget(lblCoPilot, row, 0);
+  edtCoPilot=new QLineEdit(this);
+  topLayout->addWidget(edtCoPilot, row, 1);
 
   QLabel* lblWater = new QLabel(tr("Water ballast:"), this);
-  topLayout->addWidget(lblWater, 3, 2);
+  topLayout->addWidget(lblWater, row, 2);
   spinWater=new QSpinBox(this);
-  topLayout->addWidget(spinWater, 3, 3);
+  topLayout->addWidget(spinWater, row, 3);
   spinWater->setButtonSymbols(QSpinBox::PlusMinus);
   spinWater->setMinimum(0);
   spinWater->setMaximum(300);
   spinWater->setSingleStep(5);
   spinWater->setSuffix(" l");
+  row++;
+
+  topLayout->setRowMinimumHeight ( row, 10 );
+  row++;
+
+  list = new GliderListWidget(this);
+  topLayout->addWidget(list, row, 0, 1, 4);
+  row++;
+
+  QPushButton* deselect = new QPushButton( tr("Deselect"), this );
+  deselect->setToolTip( tr("Clear glider selection") );
+  topLayout->addWidget( deselect, row, 0 );
 
   list->fillList();
   list->clearSelection();
