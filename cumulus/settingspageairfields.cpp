@@ -50,7 +50,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   weltLayout->addWidget(lbl, grow, 0);
 
   countryFilter = new QLineEdit(weltGroup);
-  weltLayout->addWidget(countryFilter, grow, 1, 1, 2);
+  weltLayout->addWidget(countryFilter, grow, 1, 1, 3);
   grow++;
 
   // get current distance unit. This unit must be considered during
@@ -80,7 +80,10 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   homeRadius->setSingleStep(10);
   homeRadius->setButtonSymbols(QSpinBox::PlusMinus);
   homeRadius->setSuffix(unit);
-  weltLayout->addWidget(homeRadius, grow, 1);
+  weltLayout->addWidget(homeRadius, grow, 1 );
+
+  loadOutlandings = new QCheckBox( tr("Load Outlandings"), weltGroup );
+  weltLayout->addWidget(loadOutlandings, grow, 2, Qt::AlignRight );
 
   weltLayout->setColumnStretch(2, 10);
 
@@ -123,7 +126,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   listLayout->setColumnStretch(2, 10);
 
   connect( countryFilter, SIGNAL(textChanged(const QString&)),
-      this, SLOT(slot_filterChanged(const QString&)) );
+           this, SLOT(slot_filterChanged(const QString&)) );
 }
 
 SettingsPageAirfields::~SettingsPageAirfields()
@@ -133,65 +136,82 @@ SettingsPageAirfields::~SettingsPageAirfields()
 /**
  * Called to initiate loading of the configuration file
  */
-void
-SettingsPageAirfields::slot_load()
+void SettingsPageAirfields::slot_load()
 {
-GeneralConfig *conf = GeneralConfig::instance();
+  GeneralConfig *conf = GeneralConfig::instance();
 
-countryFilter->setText(conf->getWelt2000CountryFilter());
-// @AP: radius value is stored without considering unit.
-homeRadius->setValue(conf->getWelt2000HomeRadius());
+  countryFilter->setText(conf->getWelt2000CountryFilter());
+  // @AP: radius value is stored without considering unit.
+  homeRadius->setValue(conf->getWelt2000HomeRadius());
 
-pageSize->setValue(conf->getListDisplayPageSize());
-afMargin->setValue(conf->getListDisplayAFMargin());
-rpMargin->setValue(conf->getListDisplayRPMargin());
+  if( conf->getWelt2000LoadOutlandings() )
+    {
+      loadOutlandings->setCheckState( Qt::Checked );
+    }
+  else
+    {
+      loadOutlandings->setCheckState( Qt::Unchecked );
+    }
 
-// sets home radius enabled/disabled in dependency to filter string
-slot_filterChanged(countryFilter->text());
+  pageSize->setValue(conf->getListDisplayPageSize());
+  afMargin->setValue(conf->getListDisplayAFMargin());
+  rpMargin->setValue(conf->getListDisplayRPMargin());
+
+  // sets home radius enabled/disabled in dependency to filter string
+  slot_filterChanged(countryFilter->text());
 }
 
 /**
  * Called to initiate saving to the configuration file.
  */
-void
-SettingsPageAirfields::slot_save()
+void SettingsPageAirfields::slot_save()
 {
-GeneralConfig *conf = GeneralConfig::instance();
+  GeneralConfig *conf = GeneralConfig::instance();
 
-// We will check, if the country entries of Welt2000 are
-// correct. If not a warning message is displayed and the
-// modifications are discarded.
-QStringList clist = countryFilter->text().split(QRegExp("[, ]"),
-    QString::SkipEmptyParts);
+  // We will check, if the country entries of Welt2000 are
+  // correct. If not a warning message is displayed and the
+  // modifications are discarded.
+  QStringList clist = countryFilter->text().split(QRegExp("[, ]"),
+                      QString::SkipEmptyParts);
 
-for (QStringList::Iterator it = clist.begin(); it != clist.end(); ++it)
+  for (QStringList::Iterator it = clist.begin(); it != clist.end(); ++it)
+    {
+      QString s = *it;
+
+      if (s.length() != 2 || s.contains(QRegExp("[A-Za-z]")) != 2)
+        {
+          QMessageBox::warning(
+              this,
+              tr("Please check entries"),
+              tr("Every Welt2000 county sign must consist of two letters!<br>Allowed separators are space and comma.<br>Your modification will not be saved!"),
+              QMessageBox::Ok, QMessageBox::NoButton);
+          return;
+        }
+    }
+
+  conf->setWelt2000CountryFilter(countryFilter->text());
+  conf->setWelt2000HomeRadius(homeRadius->value());
+
+if( loadOutlandings->checkState() == Qt::Checked )
   {
-    QString s = *it;
-
-    if (s.length() != 2 || s.contains(QRegExp("[A-Za-z]")) != 2)
-      {
-        QMessageBox::warning(
-            this,
-            tr("Please check entries"),
-            tr("Every Welt2000 county sign must consist of two letters!<br>Allowed separators are space and comma.<br>Your modification will not be saved!"),
-            QMessageBox::Ok, QMessageBox::NoButton);
-        return;
-      }
+    conf->setWelt2000LoadOutlandings( true );
+    olInitState = true;
+  }
+else
+  {
+    conf->setWelt2000LoadOutlandings( false );
+    olInitState = false;
   }
 
-conf->setWelt2000CountryFilter(countryFilter->text());
-conf->setWelt2000HomeRadius(homeRadius->value());
-
-conf->setListDisplayPageSize(pageSize->value());
-conf->setListDisplayAFMargin(afMargin->value());
-conf->setListDisplayRPMargin(rpMargin->value());
+  conf->setListDisplayPageSize(pageSize->value());
+  conf->setListDisplayAFMargin(afMargin->value());
+  conf->setListDisplayRPMargin(rpMargin->value());
 }
 
 /**
  * Called if the text of the filter has been changed
  */
-void
-SettingsPageAirfields::slot_filterChanged(const QString& text)
+void SettingsPageAirfields::slot_filterChanged(const QString& text)
 {
 if (text.isEmpty())
   {
@@ -206,8 +226,7 @@ else
 }
 
 /* Called to ask is confirmation on the close is needed. */
-void
-SettingsPageAirfields::slot_query_close(bool& warn, QStringList& warnings)
+void SettingsPageAirfields::slot_query_close(bool& warn, QStringList& warnings)
 {
 /* set warn to 'true' if the data has changed. Note that we can NOT
  just set warn equal to _changed, because that way we might erase a
@@ -228,14 +247,14 @@ if (changed)
 /**
  * Checks, if the configuration of the Welt2000 has been changed
  */
-bool
-SettingsPageAirfields::checkIsWelt2000Changed()
+bool SettingsPageAirfields::checkIsWelt2000Changed()
 {
 bool changed = false;
 GeneralConfig *conf = GeneralConfig::instance();
 
-changed = changed || (conf->getWelt2000CountryFilter() != countryFilter->text());
-changed = changed || (conf->getWelt2000HomeRadius() != homeRadius->value());
+changed |= (conf->getWelt2000CountryFilter() != countryFilter->text());
+changed |= (conf->getWelt2000HomeRadius() != homeRadius->value());
+changed |= (conf->getWelt2000LoadOutlandings() != olInitState);
 
 // qDebug( "SettingsPageAirfields::checkIsWelt2000Changed(): %d", changed );
 return changed;
@@ -244,8 +263,7 @@ return changed;
 /**
  * Checks if the configuration of list display has been changed
  */
-bool
-SettingsPageAirfields::checkIsListDisplayChanged()
+bool SettingsPageAirfields::checkIsListDisplayChanged()
 {
 bool changed = false;
 GeneralConfig *conf = GeneralConfig::instance();

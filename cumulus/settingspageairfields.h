@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008 Axel Pauli
+**   Copyright (c):  2008-2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -23,13 +23,14 @@
  *
  */
 
-#ifndef SETTINGSPAGEAIRFIELDS_H
-#define SETTINGSPAGEAIRFIELDS_H
+#ifndef SETTINGS_PAGE_AIRFIELDS_H
+#define SETTINGS_PAGE_AIRFIELDS_H
 
 #include <QWidget>
 #include <QSpinBox>
 #include <QLineEdit>
 #include <QStringList>
+#include <QCheckBox>
 
 #include "distance.h"
 
@@ -50,7 +51,7 @@ class SettingsPageAirfields : public QWidget
   ~SettingsPageAirfields();
 
   /**
-   * Checks if the configuration of the welt 2000 has been changed
+   * Checks if the configuration of the Welt2000 has been changed
    */
   bool checkIsWelt2000Changed();
 
@@ -84,11 +85,17 @@ class SettingsPageAirfields : public QWidget
 
  private:
 
-  /** Country filter for welt 2000 data file */
+  /** Country filter for Welt2000 data file */
   QLineEdit* countryFilter;
 
-  /** Radius around home position for welt 2000 data file */
+  /** Radius around home position for Welt2000 data file */
   QSpinBox* homeRadius;
+
+  /** Check box to load outlandings or not. */
+  QCheckBox* loadOutlandings;
+
+  /** Initial state of the loadOutlandings checkbox for change control */
+  bool olInitState;
 
   /** Number of page entries in airfield/waypoint lists. 0 disables */
   QSpinBox* pageSize;
@@ -98,7 +105,7 @@ class SettingsPageAirfields : public QWidget
    */
   QSpinBox* afMargin;
 
-  /** Pixels to add to the row height in emergency (reachable points) list 
+  /** Pixels to add to the row height in emergency (reachable points) list
    *  (for easy finger selection)
    */
   QSpinBox* rpMargin;
