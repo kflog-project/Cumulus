@@ -1397,11 +1397,15 @@ void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
   //the GPGSV sentence can be split between multiple sentences.
   //qDebug("expecting: %d, found: %s",cntSIVSentence,sentence[2].toLatin1().data());
   //check if we were expecting this part of the info
-  if (cntSIVSentence != (uint)sentence[2].toInt())
-    return;
+  if (cntSIVSentence != sentence[2].toUInt())
+    {
+      return;
+    }
 
   if (cntSIVSentence == 1) //this is the first sentence of our series
-    sivInfoInternal.clear();
+    {
+      sivInfoInternal.clear();
+    }
 
   //extract info on the induvidual sats
   __ExtractSatsInView( sentence[4], sentence[5], sentence[6], sentence[7]);
@@ -1413,7 +1417,8 @@ void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
     __ExtractSatsInView( sentence[16], sentence[17], sentence[18], sentence[19]);
 
   cntSIVSentence++;
-  if (cntSIVSentence > (uint)sentence[1].toInt()) //this was the last sentence in our series
+
+  if (cntSIVSentence > sentence[1].toUInt()) //this was the last sentence in our series
     {
       cntSIVSentence = 1;
       sivInfo = sivInfoInternal;
@@ -1424,10 +1429,12 @@ void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
 
 
 /** Extract Satelites In View (SIV) info from a NMEA sentence. */
-void GpsNmea::__ExtractSatsInView(const QString& id, const QString& elev, const QString& azimuth, const QString& snr)
+void GpsNmea::__ExtractSatsInView(const QString& id, const QString& elev,
+                                  const QString& azimuth, const QString& snr)
 {
-  if (id.isEmpty())
+  if (id.isEmpty() || elev.isEmpty() || azimuth.isEmpty() || snr.isEmpty() )
     {
+      // ignore empty data
       return;
     }
 
@@ -1435,6 +1442,7 @@ void GpsNmea::__ExtractSatsInView(const QString& id, const QString& elev, const 
   sivi.id = id.toInt();
   sivi.elevation = elev.toInt();
   sivi.azimuth = azimuth.toInt();
+
   if ( snr.isEmpty() )
     {
       sivi.db = -1;
