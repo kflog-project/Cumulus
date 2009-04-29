@@ -94,9 +94,6 @@ class SettingsPageAirfields : public QWidget
   /** Check box to load outlandings or not. */
   QCheckBox* loadOutlandings;
 
-  /** Initial state of the loadOutlandings checkbox for change control */
-  bool olInitState;
-
   /** Number of page entries in airfield/waypoint lists. 0 disables */
   QSpinBox* pageSize;
 

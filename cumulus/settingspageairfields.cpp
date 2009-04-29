@@ -195,12 +195,10 @@ void SettingsPageAirfields::slot_save()
 if( loadOutlandings->checkState() == Qt::Checked )
   {
     conf->setWelt2000LoadOutlandings( true );
-    olInitState = true;
   }
 else
   {
     conf->setWelt2000LoadOutlandings( false );
-    olInitState = false;
   }
 
   conf->setListDisplayPageSize(pageSize->value());
@@ -250,11 +248,20 @@ if (changed)
 bool SettingsPageAirfields::checkIsWelt2000Changed()
 {
 bool changed = false;
+
 GeneralConfig *conf = GeneralConfig::instance();
 
-changed |= (conf->getWelt2000CountryFilter() != countryFilter->text());
-changed |= (conf->getWelt2000HomeRadius() != homeRadius->value());
-changed |= (conf->getWelt2000LoadOutlandings() != olInitState);
+changed = changed || (conf->getWelt2000CountryFilter() != countryFilter->text());
+changed = changed || (conf->getWelt2000HomeRadius() != homeRadius->value());
+
+bool currentState = false;
+
+if( loadOutlandings->checkState() == Qt::Checked )
+  {
+    currentState = true;
+  }
+
+changed = changed || (conf->getWelt2000LoadOutlandings() != currentState);
 
 // qDebug( "SettingsPageAirfields::checkIsWelt2000Changed(): %d", changed );
 return changed;
