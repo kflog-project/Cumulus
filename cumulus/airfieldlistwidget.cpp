@@ -138,7 +138,7 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
   wp->runway = site->getRunway().direction;
   wp->length = site->getRunway().length;
   wp->surface = site->getRunway().surface;
-  wp->comment = "";
+  wp->comment = site->getComment();
   wp->isLandable = true;
   return wp;
 }

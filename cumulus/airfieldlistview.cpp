@@ -45,6 +45,9 @@ AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)
   QPushButton *cmdInfo = new QPushButton(tr("Info"), this);
   buttonrow->addWidget(cmdInfo);
 
+  cmdHome = new QPushButton(tr("Home"), this);
+  buttonrow->addWidget(cmdHome);
+
   cmdSelect = new QPushButton(tr("Select"), this);
   buttonrow->addWidget(cmdSelect);
 
@@ -54,6 +57,8 @@ AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)
           this, SLOT(slot_Info()));
   connect(cmdClose, SIGNAL(clicked()),
           this, SLOT(slot_Close()));
+  connect(cmdHome, SIGNAL(clicked()),
+          this, SLOT(slot_Home()));
   connect(listw, SIGNAL(wpSelectionChanged()),
           this, SLOT(slot_Selected()));
   connect(this, SIGNAL(done()),
@@ -64,7 +69,6 @@ AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)
   scSelect->setKey( Qt::Key_Return );
   connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
 }
-
 
 AirfieldListView::~AirfieldListView()
 {
@@ -80,12 +84,12 @@ void AirfieldListView::slot_Select()
 {
   wayPoint *_wp = listw->getSelectedWaypoint();
 
-  if ( _wp ) {
-    emit newWaypoint( _wp, true );
-    emit done();
-  }
+  if ( _wp )
+    {
+      emit newWaypoint( _wp, true );
+      emit done();
+    }
 }
-
 
 /** This slot is called if the info button has been clicked */
 void AirfieldListView::slot_Info()
@@ -121,7 +125,7 @@ void AirfieldListView::slot_Selected()
     }
 }
 
-void AirfieldListView::slot_setHome()
+void AirfieldListView::slot_Home()
 {
   wayPoint* _wp = listw->getSelectedWaypoint();
 
@@ -130,14 +134,22 @@ void AirfieldListView::slot_setHome()
       return;
     }
 
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  if( conf->getHomeLat() == _wp->origP.lat() &&
+      conf->getHomeLon() == _wp->origP.lon() )
+    {
+      // no new coordinates, ignore request
+      return;
+    }
+
   int answer= QMessageBox::question(this,
                                    tr("Set home site"),
-                                   tr("Use airfield<br>%1<br>as your home site?").arg(_wp->name),
+                                   tr("Use point<br>%1<br>as your home site?").arg(_wp->name),
                                    QMessageBox::No, QMessageBox::Yes );
   if( answer == QMessageBox::Yes )
     {
       // Save new data as home position
-      GeneralConfig *conf = GeneralConfig::instance();
       conf->setHomeLat(_wp->origP.lat());
       conf->setHomeLon(_wp->origP.lon());
       conf->save();

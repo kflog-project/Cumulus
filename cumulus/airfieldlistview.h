@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef AIRFIELDLISTVIEW_H
-#define AIRFIELDLISTVIEW_H
+#ifndef AIRFIELD_LIST_VIEW_H
+#define AIRFIELD_LIST_VIEW_H
 
 #include <QPushButton>
 #include <QBoxLayout>
@@ -59,6 +59,7 @@ private:
     QMainWindow *par;
     QBoxLayout *buttonrow;
     QPushButton *cmdSelect;
+    QPushButton *cmdHome;
 
 protected:
 
@@ -81,9 +82,9 @@ public slots: // Public slots
     void slot_Close ();
 
     /**
-     * Called to set a waypoint as homesite
+     * Called to set a point as home site
      */
-    void slot_setHome();
+    void slot_Home();
 
     void slot_Selected();
 
