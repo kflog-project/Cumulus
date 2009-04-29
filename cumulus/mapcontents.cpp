@@ -121,7 +121,7 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen)
     : QObject(parent),
     airfieldList(this, "AirfieldList"),
     gliderSiteList(this, "GliderSiteList"),
-    outList(this, "OutList"),
+    outLandingList(this, "OutLandingList"),
     isFirst(true)
 {
   ws = waitscreen;
@@ -1313,7 +1313,7 @@ void MapContents::proofeSection()
       ws->slot_SetText2(tr("Reading Welt 2000 File"));
       // @AP: Look for and if available load a welt2000 airfield file
       Welt2000 welt2000;
-      welt2000.load( airfieldList, gliderSiteList );
+      welt2000.load( airfieldList, gliderSiteList, outLandingList );
     }
 
   unloadDone = false;
@@ -1622,23 +1622,46 @@ void MapContents::unloadMaps(unsigned int distance)
 
 void MapContents::unloadMapObjects(QList<LineElement>& list)
 {
+  bool renew = false;
+
   for (int i = list.count() - 1; i >= 0; i--)
     {
-      if ( !tileSectionSet.contains(list.at(i).getMapSegment()) )
+       if ( !tileSectionSet.contains(list.at(i).getMapSegment()) )
         {
           list.removeAt(i);
+          renew = true;
         }
     }
+
+  if( renew )
+    {
+      // Setup a new QList to get freed the internal allocated memory.
+      // That is a trick and maybe we should use a QLinkedList as alternative.
+      QList<LineElement> renew = list;
+      list = renew;
+    }
+
 }
 
 void MapContents::unloadMapObjects(QList<SinglePoint>& list)
 {
+  bool renew = false;
+
   for (int i = list.count() - 1; i >= 0; i--)
     {
       if ( !tileSectionSet.contains(list.at(i).getMapSegment()) )
         {
           list.removeAt(i);
+          renew = true;
         }
+    }
+
+  if( renew )
+    {
+      // Setup a new QList to get freed the internal allocated memory.
+      // That is a trick and maybe we should use a QLinkedList as alternative.
+      QList<SinglePoint> renew = list;
+      list = renew;
     }
 }
 
@@ -1659,12 +1682,23 @@ void MapContents::unloadMapObjects(QList<Isohypse> list[ISO_LINE_NUM][ISO_LINE_L
     {
       for ( int j = 0; j < ISO_LINE_NUM; j++ )
         {
+          bool renew = false;
+
           for ( int k = list[j][i].count() - 1; k >= 0; k--)
             {
               if ( !tileSectionSet.contains(list[j][i].at(k).getMapSegment()) )
                 {
                   list[j][i].removeAt(k);
+                  renew = true;
                 }
+            }
+
+          if( renew )
+            {
+              // Setup a new QList to get freed the internal allocated memory.
+              // That is a trick and maybe we should use a QLinkedList as alternative.
+              QList<Isohypse> renew = list[j][i];
+              list[j][i] = renew;
             }
         }
     }
@@ -1678,8 +1712,8 @@ unsigned int MapContents::getListLength(int listIndex) const
         return airfieldList.count();
       case GliderSiteList:
         return gliderSiteList.count();
-      case OutList:
-        return outList.count();
+      case OutLandingList:
+        return outLandingList.count();
       case RadioList:
         return radioList.count();
       case AirspaceList:
@@ -1726,6 +1760,11 @@ Airfield* MapContents::getGlidersite(unsigned int index)
   return &gliderSiteList[index];
 }
 
+Airfield* MapContents::getOutlanding(unsigned int index)
+{
+  return &outLandingList[index];
+}
+
 BaseMapElement* MapContents::getElement(int listType, unsigned int index)
 {
   switch (listType)
@@ -1734,8 +1773,8 @@ BaseMapElement* MapContents::getElement(int listType, unsigned int index)
       return &airfieldList[index];
     case GliderSiteList:
       return &gliderSiteList[index];
-    case OutList:
-      return &outList[index];
+    case OutLandingList:
+      return &outLandingList[index];
     case RadioList:
       return &radioList[index];
     case AirspaceList:
@@ -1777,8 +1816,8 @@ SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
       return static_cast<SinglePoint *> (&airfieldList[index]);
     case GliderSiteList:
       return static_cast<SinglePoint *> (&gliderSiteList[index]);
-    case OutList:
-      return static_cast<SinglePoint *> (&outList[index]);
+    case OutLandingList:
+      return static_cast<SinglePoint *> (&outLandingList[index]);
     case RadioList:
       return static_cast<SinglePoint *> (&radioList[index]);
     case ObstacleList:
@@ -1827,7 +1866,7 @@ void MapContents::slotReloadMapData()
   landmarkList.clear();
   radioList.clear();
   obstacleList.clear();
-  outList.clear();
+  outLandingList.clear();
   railList.clear();
   reportList.clear();
   highwayList.clear();
@@ -1919,7 +1958,7 @@ void MapContents::slotReloadWelt2000Data()
   _globalMapView->message( tr("Reloading Welt2000 started") );
 
   Welt2000 welt2000;
-  welt2000.load( airfieldList, gliderSiteList );
+  welt2000.load( airfieldList, gliderSiteList, outLandingList );
 
   _globalMapView->message( tr("Reloading Welt2000 finished") );
 
@@ -1932,61 +1971,12 @@ void MapContents::slotReloadWelt2000Data()
   mutex = false; // unlock mutex
 }
 
-
-void MapContents::printContents(QPainter* targetPainter, bool isText)
-{
-  proofeSection();
-
-  for (int i = 0; i < topoList.size(); i++)
-    topoList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < hydroList.size(); i++)
-    hydroList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < lakeList.size(); i++)
-    lakeList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < railList.size(); i++)
-    railList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < highwayList.size(); i++)
-    highwayList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < roadList.size(); i++)
-    roadList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < cityList.size(); i++)
-    cityList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < villageList.size(); i++)
-    villageList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < radioList.size(); i++)
-    radioList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < airspaceList.size(); i++)
-    airspaceList.at(i)->printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < obstacleList.size(); i++)
-    obstacleList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < reportList.size(); i++)
-    reportList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < landmarkList.size(); i++)
-    landmarkList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < airfieldList.size(); i++)
-    airfieldList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < gliderSiteList.size(); i++)
-    gliderSiteList[i].printMapElement(targetPainter, isText);
-
-  for (int i = 0; i < outList.size(); i++)
-    outList[i].printMapElement(targetPainter, isText);
-}
-
-void MapContents::drawList(QPainter* targetP, unsigned int listID)
+/** Special method to add the drawn objects to the return list,
+ * if the required option is set.
+ */
+void MapContents::drawList( QPainter* targetP,
+                            unsigned int listID,
+                            QList<Airfield*> &drawnAfList )
 {
   //const char *list="";
   //uint len = 0;
@@ -1996,8 +1986,7 @@ void MapContents::drawList(QPainter* targetP, unsigned int listID)
 
   // load all configuration items once
   const bool showAfLabels  = GeneralConfig::instance()->getMapShowAirfieldLabels();
-  //const bool showOlLabels  = GeneralConfig::instance()->getMapShowOutLandingLabels();
-  const bool showExtraInfo = GeneralConfig::instance()->getMapShowLabelsExtraInfo();
+  const bool showOlLabels  = GeneralConfig::instance()->getMapShowOutLandingLabels();
 
   switch (listID)
     {
@@ -2008,7 +1997,11 @@ void MapContents::drawList(QPainter* targetP, unsigned int listID)
 
       for (int i = 0; i < airfieldList.size(); i++)
         {
-          airfieldList[i].drawMapElement(targetP, showAfLabels, showExtraInfo);
+          if(  airfieldList[i].drawMapElement(targetP) && showAfLabels )
+            {
+              // required and draw object is appended to the list
+              drawnAfList.append( &airfieldList[i] );
+            }
         }
 
       break;
@@ -2020,19 +2013,81 @@ void MapContents::drawList(QPainter* targetP, unsigned int listID)
 
       for (int i = 0; i < gliderSiteList.size(); i++)
         {
-          gliderSiteList[i].drawMapElement(targetP, showAfLabels, showExtraInfo);
+          if( gliderSiteList[i].drawMapElement(targetP) && showAfLabels )
+            {
+              // required and draw object is appended to the list
+              drawnAfList.append( &gliderSiteList[i] );
+            }
         }
 
       break;
 
-    case OutList:
-      //list="OutList";
-      //len=outList.count();
+    case OutLandingList:
+      //list="outLandingList";
+      //len=outLandingList.count();
       showProgress2WaitScreen( tr("Drawing outlanding sites") );
 
-      for (int i = 0; i < outList.size(); i++)
+      for (int i = 0; i < outLandingList.size(); i++)
         {
-          outList[i].drawMapElement(targetP);
+          if( outLandingList[i].drawMapElement(targetP) && showOlLabels )
+            {
+              // required and draw object is appended to the list
+              drawnAfList.append( &outLandingList[i] );
+            }
+        }
+
+      break;
+
+    default:
+      qWarning("MapContents::drawList(): unknown listID %d", listID);
+      return;
+    }
+
+  // qDebug( "List=%s, Length=%d, drawTime=%dms", list, len, t.elapsed() );
+}
+
+void MapContents::drawList(QPainter* targetP, unsigned int listID)
+  {
+  //const char *list="";
+  //uint len = 0;
+
+  //QTime t;
+  //t.start();
+
+  switch (listID)
+    {
+    case AirfieldList:
+      //list="AirfieldList";
+      //len=airfieldList.count();
+      showProgress2WaitScreen( tr("Drawing airports") );
+
+      for (int i = 0; i < airfieldList.size(); i++)
+        {
+          airfieldList[i].drawMapElement(targetP);
+        }
+
+      break;
+
+    case GliderSiteList:
+      //list="GliderList";
+      //len=gliderSiteList.count();
+      showProgress2WaitScreen( tr("Drawing glider sites") );
+
+      for (int i = 0; i < gliderSiteList.size(); i++)
+        {
+          gliderSiteList[i].drawMapElement(targetP);
+        }
+
+      break;
+
+    case OutLandingList:
+      //list="outLandingList";
+      //len=outLandingList.count();
+      showProgress2WaitScreen( tr("Drawing outlanding sites") );
+
+      for (int i = 0; i < outLandingList.size(); i++)
+        {
+          outLandingList[i].drawMapElement(targetP);
         }
 
       break;

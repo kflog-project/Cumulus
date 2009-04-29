@@ -89,7 +89,7 @@ class wayPoint
   QString description;
   /** ICAO name */
   QString icao;
-  /** */
+  /** comment concerning point*/
   QString comment;
   /** internal surface id */
   short surface;

@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel Pauli
+ **   Copyright (c):  2004      by Eckhard Völlm,
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -189,8 +190,8 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
       // qDebug("No of sites: %d type %d", nr, item );
       for (int i=0; i<nr; i++ )
         {
-          // Get specific site data from current list. We have to
-          // distinguish between AirfieldList and GilderSiteList.
+          // Get specific site data from current list. We have to distinguish
+          // between AirfieldList, GilderSiteList and OutlandingList.
           Airfield* site;
 
           if( item == MapContents::AirfieldList )
@@ -202,6 +203,11 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
             {
               // fetch data from glider site list
               site = _globalMapContents->getGlidersite(i);
+            }
+          else if( item == MapContents::OutLandingList )
+            {
+              // fetch data from glider site list
+              site = _globalMapContents->getOutlanding(i);
             }
           else
             {
@@ -218,6 +224,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
           WGSPoint siteWgsPosition = site->getWGSPosition();
           QPoint sitePosition = site->getPosition();
           uint siteElevation = site->getElevation();
+          QString siteComment = site->getComment();
           Runway siteRunway = site->getRunway();
 
           if (! bbox.contains(siteWgsPosition) )
@@ -254,6 +261,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
                              siteWgsPosition,
                              sitePosition,
                              siteElevation,
+                             siteComment,
                              distance,
                              bearing,
                              altitude,
@@ -455,7 +463,7 @@ void ReachableList::setInitValues()
 
 void ReachableList::calculateNewList()
 {
-  // calculateNewList is also called from cucalc, so on check has to be
+  // calculateNewList is also called from calculator, so on check has to be
   // executed
   if ( !isOn() )
     {
@@ -471,6 +479,7 @@ void ReachableList::calculateNewList()
   // Now add items of different type to the list
   addItemsToList(MapContents::AirfieldList);
   addItemsToList(MapContents::GliderSiteList);
+  addItemsToList(MapContents::OutLandingList);
   addItemsToList(MapContents::WaypointList);
   modeAltitude = false;
   //qDebug("Number of potential reachable sites: %d", count() );

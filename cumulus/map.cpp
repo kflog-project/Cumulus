@@ -220,15 +220,18 @@ void Map::__displayAirspaceInfo(const QPoint& current)
  */
 bool Map::__zoomButtonPress(const QPoint& point)
 {
-  QRegion plus( width()-55, 0, 55, 55 );
-  QRegion minus( width()-55, height()-55, 55, 55 );
+  int plusWidth  = _globalMapConfig->getPlusButton().width();
+  int minusWidth = _globalMapConfig->getMinusButton().width();
+
+  QRegion plus( width()-plusWidth, 0, plusWidth, plusWidth );
+  QRegion minus( width()-minusWidth, height()-minusWidth, minusWidth, minusWidth );
 
   if( plus.contains( point ) )
     {
       slotZoomIn();
       return true;
     }
-    
+
   if( minus.contains( point ) )
     {
       slotZoomOut();
@@ -256,7 +259,13 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
   int delta=0, dX=0, dY=0;
 
   // define lists to be used for searching
-  int searchList[] = {MapContents::GliderSiteList, MapContents::AirfieldList};
+  int searchList[] =
+    {
+      MapContents::AirfieldList,
+      MapContents::GliderSiteList,
+      MapContents::OutLandingList
+    };
+
   wayPoint *w = static_cast<wayPoint *> (0);
 
   // scale uses unit meter/pixel
@@ -275,13 +284,14 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
   //        current.x()-delta, current.y()-delta, delta, 2*delta, 2*delta );
 
   // @AP: On map scale higher as 1024 we don't evolute anything
-  for (int l = 0; l < 2 && cs < 1024.0; l++)
+  for (int l = 0; l < 3 && cs < 1024.0; l++)
     {
       for(unsigned int loop = 0;
           loop < _globalMapContents->getListLength(searchList[l]); loop++)
         {
           // Get specific site data from current list. We have to
-          // distinguish between AirfieldList and GilderSiteList.
+          // distinguish between AirfieldList, GilderSiteList and
+          // OutlandingList
           Airfield* site;
 
           QString siteName;
@@ -293,6 +303,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
           QPoint sitePosition;
           uint siteElevation;
           QPoint curPos;
+          QString siteComment;
 
           if( searchList[l] == MapContents::AirfieldList )
             {
@@ -304,6 +315,11 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
               // fetch data from glider site list
               site = _globalMapContents->getGlidersite(loop);
             }
+          else if( searchList[l] == MapContents::OutLandingList )
+            {
+              // fetch data from outlanding site list
+              site = _globalMapContents->getOutlanding(loop);
+            }
           else
             {
               qWarning( "Map::__displayDetailedItemInfo: ListType %d is unknown",
@@ -311,15 +327,6 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
               break;
             }
 
-          siteName = site->getWPName();
-          siteIcao = site->getICAO();
-          siteDescription = site->getName();
-          siteType = site->getTypeID();
-          siteFrequency = site->getFrequency().toDouble();
-          siteWgsPosition = site->getWGSPosition();
-          sitePosition = site->getPosition();
-          siteElevation = site->getElevation();
-          Runway siteRunway = site->getRunway();
           curPos = site->getMapPosition();
 
           if( ! snapRect.contains(curPos) )
@@ -352,7 +359,8 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
               siteWgsPosition = site->getWGSPosition();
               sitePosition = site->getPosition();
               siteElevation = site->getElevation();
-              siteRunway = site->getRunway();
+              const Runway &siteRunway = site->getRunway();
+              siteComment = site->getComment();
 
               w = &wp;
               w->name = siteName;
@@ -367,6 +375,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
               w->surface = siteRunway.surface;
               w->runway = siteRunway.direction;
               w->length = siteRunway.length;
+              w->comment = siteComment;
               w->sectorFAI = 0;
               w->sector1 = 0;
               w->sector2 = 0;
@@ -764,21 +773,18 @@ void Map::__drawGrid()
   gridP.end();
 }
 
-
-void Map::__drawPlannedTask(QPainter *taskP)
+void Map::__drawPlannedTask( QPainter *taskP, QList<wayPoint*> &drawnWp )
 {
   FlightTask* task = (FlightTask*) _globalMapContents->getCurrentTask();
 
-  if( task == 0 )
+  if( task == static_cast<FlightTask *> (0) )
     {
+      // no active task available
       return;
     }
 
-  if(task && task->getTypeID() == BaseMapElement::Task)
-    {
-      // Draw task including sectors
-      task->drawMapElement(taskP);
-    }
+  // Draw active task
+  task->drawTask( taskP, drawnWp );
 }
 
 
@@ -1059,7 +1065,6 @@ void Map::__drawBaseLayer()
   baseMapP.end();
 }
 
-
 /**
  * Draws the aero layer of the map.
  * The aero layer consists of the airspace structures and the navigation
@@ -1075,11 +1080,10 @@ void Map::__drawAeroLayer(bool reset)
   __drawGrid();
 }
 
-
 /**
  * Draws the navigation layer of the map.
- * The navigation layer consists of the airfields, outlanding sites,
- * waypoints.
+ * The navigation layer consists of the airfields, glidersites,
+ * outlanding sites and waypoints.
  * It is drawn on top of the aero layer.
  */
 void Map::__drawNavigationLayer()
@@ -1093,22 +1097,87 @@ void Map::__drawNavigationLayer()
       return;
     }
 
+  // Collect all drawn airfield and waypoint objects as reference
+  // for later label drawing:
+  QList<Airfield*> drawnAf;
+  QList<wayPoint*> drawnWp;
+
   QPainter navP;
 
   navP.begin(&m_pixNavigationMap);
 
-  _globalMapContents->drawList(&navP, MapContents::OutList);
-  _globalMapContents->drawList(&navP, MapContents::GliderSiteList);
-  _globalMapContents->drawList(&navP, MapContents::AirfieldList);
-  __drawPlannedTask(&navP);
-  __drawWaypoints(&navP);
+  _globalMapContents->drawList(&navP, MapContents::OutLandingList, drawnAf);
+  _globalMapContents->drawList(&navP, MapContents::GliderSiteList, drawnAf);
+  _globalMapContents->drawList(&navP, MapContents::AirfieldList, drawnAf);
+  __drawWaypoints(&navP, drawnWp);
+  __drawPlannedTask(&navP, drawnWp);
+
+  // Now the labels of the drawn objects will be drawn, if activated via options.
+  // Put all drawn labels into a set to avoid multiple drawing of them.
+  QSet<QString> labelSet;
+
+  // determine icon size
+  const bool useSmallIcons = _globalMapConfig->useSmallIcons();
+  int iconSize = 32;
+
+  if( useSmallIcons )
+    {
+      iconSize = 16;
+    }
+
+  // qDebug("Af=%d, WP=%d", drawnAf.size(), drawnWp.size() );
+
+  // First draw all airfield, ... collected labels
+  for( int i = 0; i < drawnAf.size(); i++ )
+    {
+      QString corrString = WGSPoint::coordinateString( drawnAf[i]->getWGSPosition() );
+
+      if( labelSet.contains( corrString ) )
+        {
+          // A label with the same coordinates was already drawn.
+          // We do ignore the repeated drawing.
+          continue;
+        }
+
+      // store label to be drawn
+      labelSet.insert( corrString );
+
+      __drawLabel( &navP,
+                   iconSize / 2 + 3,
+                   drawnAf[i]->getWPName(),
+                   drawnAf[i]->getMapPosition(),
+                   drawnAf[i]->getWGSPosition(),
+                   true );
+    }
+
+  // Second draw all collected waypoint and task point lables
+  for( int i = 0; i < drawnWp.size(); i++ )
+    {
+      QString corrString = WGSPoint::coordinateString( drawnWp[i]->origP );
+
+      if( labelSet.contains( corrString ) )
+        {
+          // A label with the same coordinates was already drawn
+          // We do ignore the repeated drawing.
+          continue;
+        }
+
+      // store label to be drawn
+      labelSet.insert( corrString );
+
+      __drawLabel( &navP,
+                   iconSize / 2 + 3,
+                   drawnWp[i]->name,
+                   _globalMapMatrix->map( drawnWp[i]->projP ),
+                   drawnWp[i]->origP,
+                   drawnWp[i]->isLandable );
+    }
 
   // and finally draw a scale indicator on top of this
   __drawScale(navP);
 
   navP.end();
 }
-
 
 /**
  * Draws the information layer of the map.
@@ -1144,11 +1213,11 @@ void Map::__drawInformationLayer()
   // draw zoom buttons
   QPainter p(&m_pixInformationMap);
 
-  p.drawPixmap( width()-55, +5,
-                _globalMapConfig->getPlusButton() );
+  QPixmap plus  = _globalMapConfig->getPlusButton();
+  QPixmap minus = _globalMapConfig->getMinusButton();
 
-  p.drawPixmap( width()-55, height()-55,
-                _globalMapConfig->getMinusButton() );
+  p.drawPixmap( width()-plus.width()-5, 5, plus );
+  p.drawPixmap( width()-minus.width()-5, height()-minus.width()-5, minus);
 }
 
 // Performs an unscheduled, immediate redraw of the entire map.
@@ -1191,7 +1260,7 @@ void Map::slotRedrawMap()
 }
 
 /** Draws the waypoints of the waypoint catalog on the map */
-void Map::__drawWaypoints(QPainter* painter)
+void Map::__drawWaypoints(QPainter* painter, QList<wayPoint*> &drawnWp)
 {
   extern MapConfig* _globalMapConfig;
 
@@ -1207,10 +1276,9 @@ void Map::__drawWaypoints(QPainter* painter)
   QList<wayPoint>& wpList = _globalMapContents->getWaypointList();
 
   // load all configuration items once
-  const bool showLabels       = GeneralConfig::instance()->getMapShowWaypointLabels();
-  const bool showExtraInfo    = GeneralConfig::instance()->getMapShowLabelsExtraInfo();
-  const bool useSmallIcons    = _globalMapConfig->useSmallIcons();
-  const double currentScale   = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
+  const bool showWpLabels   = GeneralConfig::instance()->getMapShowWaypointLabels();
+  const bool useSmallIcons  = _globalMapConfig->useSmallIcons();
+  const double currentScale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
   // now step trough the waypoint list
   for( int i=0; i < wpList.count(); i++ )
@@ -1337,17 +1405,10 @@ void Map::__drawWaypoints(QPainter* painter)
 
         // qDebug("Icon drawn wp=%s", wp.name.toLatin1().data());
 
-
-        // Draw the waypoint name, if required by the user.
-        if( showLabels )
+        // Add the draw waypoint name to the list, if required by the user.
+        if( showWpLabels )
           {
-            drawLabel( painter,
-                       iconSize / 2 + 3,
-                       wp.name,
-                       dispP,
-                       wp.origP,
-                       wp.isLandable,
-                       showExtraInfo );
+            drawnWp.append( &wpList[i] );
           }
     } // END of for loop
 }
@@ -1355,13 +1416,12 @@ void Map::__drawWaypoints(QPainter* painter)
 /** Draws a label beside the map icon. It is assumed, that the icon is to see
  *  at the screen.
  */
-void Map::drawLabel( QPainter* painter,
-                     const int xShift,      // x offset from the center point
-                     const QString& name,   // name of point
-                     const QPoint& dispP,   // projected point at the display
-                     const WGSPoint& origP, // WGS84 point
-                     const bool isLandable, // is landable?
-                     const bool drawLabelInfo )
+void Map::__drawLabel( QPainter* painter,
+                       const int xShift,       // x offset from the center point
+                       const QString& name,    // name of point
+                       const QPoint& dispP,    // projected point at the display
+                       const WGSPoint& origP,  // WGS84 point
+                       const bool isLandable ) // is landable?
 {
   // qDebug("LabelName=%s, xShift=%d", name.toLatin1().data(), xShift );
 
@@ -1380,6 +1440,8 @@ void Map::drawLabel( QPainter* painter,
 
   QString labelText = name;
   Altitude alt;
+
+  const bool drawLabelInfo = GeneralConfig::instance()->getMapShowLabelsExtraInfo();
 
   if( drawLabelInfo )
     {

@@ -6,8 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Heiner Lamprecht
-**                   2008 Axel Pauli
+**   Copyright (c):  2002      by Heiner Lamprecht
+**                   2007-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -154,11 +154,27 @@ class FlightTask : public BaseMapElement
   static QString getDistanceTimeString(const int timeInSec);
 
   /**
-   * Draws the flight and the task into the given painter. Reimplemented
-   * from BaseMapElement.
-   * @param  targetP  The painter to draw the element into.
+   * Draws the flight and the task into the given painter.
+   * @param targetP  The painter to draw the element into.
+   * @param drawnWp List of drawn waypoints, if taskpoint label drawing
+   *       option is set.
    */
-  void drawMapElement(QPainter* painter);
+  void drawTask(QPainter* painter, QList<wayPoint*> &drawnTp );
+
+  /**
+   * function for drawing the element into the given painter.
+   *
+   * Not implemented in this class.
+   *
+   * The function must be implemented in the child-classes.
+   * @param  targetP  The painter to draw the element into.
+   * @return true, if element was drawn otherwise false.
+   */
+  bool drawMapElement(QPainter* )
+    {
+      return false;
+    };
+
 
   /** */
   QString getTotalDistanceString() const;
@@ -300,9 +316,10 @@ class FlightTask : public BaseMapElement
    * Does all map drawing actions for task points using cylinder scheme
    *
    */
-  void circleSchemeDrawing( QPainter* painter );
+  void circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawnTp );
 
-  /**
+  /**Reimplemented
+   * from BaseMapElement.
    * Draws a circle around the given position.
    *
    * Paiter as Cumulus special painter device

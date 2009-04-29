@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel Pauli
+ **   Copyright (c):  2004      by Eckhard Völlm
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -28,6 +29,7 @@ ReachablePoint::ReachablePoint(QString name,
                                WGSPoint pos,
                                QPoint   ppos,
                                unsigned int elevation,
+                               QString comment,
                                Distance distance,
                                short bearing,
                                Altitude arrivAlt,
@@ -41,6 +43,7 @@ ReachablePoint::ReachablePoint(QString name,
   _wp.description = description;
   _wp.frequency = frequency;
   _wp.elevation = elevation;
+  _wp.comment = comment;
   _wp.importance = wayPoint::High; // high to make sure it is visible
   _wp.isLandable = rwOpen;
   _wp.surface = rwSurf;

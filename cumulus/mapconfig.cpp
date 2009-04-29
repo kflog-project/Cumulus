@@ -931,17 +931,23 @@ QPixmap& MapConfig::getPlusButton()
     {
       first = false;
 
-      plusButton = QPixmap( 52, 52 );
+#ifndef MAEMO
+      int size = 50;
+#else
+      int size = 60;
+#endif
+
+      plusButton = QPixmap( size+6, size+6 );
       plusButton.fill(Qt::transparent);
       QPainter painter(&plusButton);
       QPen pen(Qt::gray);
       pen.setWidth(4);
       painter.setPen( pen );
       painter.setBrush(Qt::NoBrush);
-      painter.translate( 1 , 1 );
-      painter.drawRoundedRect( 0, 0, 50, 50, 10, 10 );
-      painter.drawLine( 10, 25, 40, 25 );
-      painter.drawLine( 25, 10, 25, 40 );
+      painter.translate( 3 , 3 );
+      painter.drawRoundedRect( 0, 0, size, size, 10, 10 );
+      painter.drawLine( 10, size/2, size-10, size/2 );
+      painter.drawLine( size/2, 10, size/2, size-10 );
     }
 
   return plusButton;
@@ -959,16 +965,21 @@ QPixmap& MapConfig::getMinusButton()
     {
       first = false;
 
-      minusButton = QPixmap( 52, 52 );
+#ifndef MAEMO
+      int size = 50;
+#else
+      int size = 60;
+#endif
+      minusButton = QPixmap( size+6, size+6 );
       minusButton.fill(Qt::transparent);
       QPainter painter(&minusButton);
       QPen pen(Qt::gray);
       pen.setWidth(4);
       painter.setPen( pen );
       painter.setBrush(Qt::NoBrush);
-      painter.translate( 1 , 1 );
-      painter.drawRoundedRect( 0, 0, 50, 50, 10, 10 );
-      painter.drawLine( 10, 25, 40, 25 );
+      painter.translate( 3 , 3 );
+      painter.drawRoundedRect( 0, 0, size, size, 10, 10 );
+      painter.drawLine( 10, size/2, size-10, size/2 );
     }
 
   return minusButton;

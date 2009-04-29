@@ -6,8 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008 Axel Pauli
+ **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -35,12 +35,13 @@ SinglePoint::~SinglePoint()
 {
 }
 
-void SinglePoint::drawMapElement(QPainter* targetP)
+bool SinglePoint::drawMapElement(QPainter* targetP)
 {
-  if(! isVisible() ) {
-    curPos = QPoint(-5000, -5000);
-    return;
-  }
+  if(! isVisible() )
+    {
+      curPos = QPoint(-5000, -5000);
+      return false;
+    }
 
   extern MapMatrix * _globalMapMatrix;
   int scale = _globalMapMatrix->getScaleRatio()/50;
@@ -48,19 +49,28 @@ void SinglePoint::drawMapElement(QPainter* targetP)
   targetP->setPen(QPen(Qt::black, 2));
   int iconSize = 8;
 
-  if(typeID == BaseMapElement::Village) {
-    targetP->setBrush(Qt::NoBrush);
-    targetP->drawEllipse(curPos.x() - 5, curPos.y() - 5, 10, 10);
-    return;
-  }
+  if(typeID == BaseMapElement::Village)
+    {
+      targetP->setBrush(Qt::NoBrush);
+      targetP->drawEllipse(curPos.x() - 5, curPos.y() - 5, 10, 10);
+      return true;
+    }
 
   curPos = glMapMatrix->map(position);
 
   if(glMapMatrix->isSwitchScale())
-    iconSize = 16;
+    {
+      iconSize = 16;
+    }
 
   if( !glMapMatrix->isSwitchScale2() )
-    targetP->drawEllipse(curPos.x(), curPos.y(), scale, scale );
+    {
+      targetP->drawEllipse(curPos.x(), curPos.y(), scale, scale );
+    }
   else
-    targetP->drawPixmap(curPos.x() - iconSize, curPos.y() - iconSize, glConfig->getPixmap(typeID));
+    {
+      targetP->drawPixmap(curPos.x() - iconSize, curPos.y() - iconSize, glConfig->getPixmap(typeID));
+    }
+
+  return true;
 }

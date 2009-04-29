@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **   Copyright (c):  2006-2008 by Axel Pauli, axel@kflog.org
+ **   Copyright (c):  2006-2009 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -12,17 +12,17 @@
  **   welt2000.h
  **
  **   This class is part of Cumulus. It provides an interface to be
- **   able to read data from a welt2000.txt ascii file, provided by
- **   Michael Meier at:
+ **   able to read data from a welt2000.txt ascii file, craeted by
+ **   Michael Meier and maintained by Howard Mills and Mike Köster
  **
- **   http://www.segelflug.de/segelflieger/michael.meier/download/WELT2000.TXT
+ **   http:http://www.segelflug.de/vereine/welt2000/download/WELT2000.TXT
  **
  **   The file source contains data about airports, airfields,
  **   outlandings and turn points in a proprietary ascii format. Only
  **   the information about airfields, gliding fields and ultralight
- **   fields are extracted by this class from the source and put into
- **   the related lists (airport list and gliding list) of
- **   cumulus. Furthermore an compiled binary version of the extracted
+ **   fields and outlanding are extracted by this class from the source
+ *    and put into the related lists (airport, gliding or outlanding list)
+ **   of cumulus. Furthermore an compiled binary version of the extracted
  **   data is created during parsing, useable at a next run of cumulus
  **   for a faster startup. Because welt2000 supports only three kind
  **   of airfields (airfield, glider field, ul field) but cumulus some
@@ -74,7 +74,7 @@
  **      listed countries will be considered during parsing.
  **
  **   c) If no country filter rule is defined, then all data are used
- **      inside 1000Km radius of the home position. I hope that is an
+ **      inside 500Km radius of the home position. I hope that is an
  *       useful compromise and protects cumulus for memory overflows.
  **
  **   Now some remarks about the configuration file and its
@@ -167,9 +167,12 @@ public:
      *
      * @param airfieldList All airports have to be stored in this list
      * @param glidertList All gilder fields have to be stored in this list
+     * @param outlandingList All outlanding fields have to be stored in this list
      * @returns true (success) or false (error occured)
      */
-    bool load( MapElementList& airfieldList, MapElementList& gliderList );
+    bool load( MapElementList& airfieldList,
+               MapElementList& gliderList,
+               MapElementList& outlandingList );
 
 private:
 
@@ -180,6 +183,7 @@ private:
      * @param path Full name with path of welt2000 file
      * @param airfieldList All airports have to be stored in this list
      * @param glidertList All gilder fields have to be stored in this list
+     * @param outlandingList All outlanding fields have to be stored in this list
      * @param doCompile create a binary file of the parser results,
      *                  if flag is set to true. Default is false
      * @returns true (success) or false (error occured)
@@ -187,6 +191,7 @@ private:
     bool parse( QString& path,
                 MapElementList& airfieldList,
                 MapElementList& gliderList,
+                MapElementList& outlandingList,
                 bool doCompile=false );
 
     /**
@@ -215,11 +220,13 @@ private:
      * @param path Full name with path of welt2000 binary file
      * @param airfieldList All airports have to be stored in this list
      * @param glidertList All gilder fields have to be stored in this list
+     * @param outlandingList All outlanding fields have to be stored in this list
      * @returns true (success) or false (error occured)
      */
     bool readCompiledFile( QString &path,
                            MapElementList& airfieldList,
-                           MapElementList& gliderList );
+                           MapElementList& gliderList,
+                           MapElementList& outlandingList );
 
     /**
      * Get the header data of a compiled file and put it in the class
@@ -261,6 +268,7 @@ private:
     double h_homeRadius;
     QPoint h_homeCoord;
     QRect h_boundingBox;
+    bool h_outlandings; // Flag to indicate outlandings contained or not
     ProjectionBase *h_projection;
     bool h_headerIsValid;
 };

@@ -383,7 +383,7 @@ void WPInfoWidget::writeText()
 
       if ((_wp.comment!=QString::null) && (_wp.comment!=""))
         {
-          itxt += "<table cellpadding=5><tr><th align=left>" + tr("Comments") +
+          itxt += "<table cellpadding=5><tr><th align=left>" + tr("Comment") +
             "</th></tr><tr><td>" + _wp.comment + "</td></tr></table>";
         }
 

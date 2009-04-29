@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel Pauli
+ **   Copyright (c):  2004      by Eckhard Völlm,
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -45,6 +46,7 @@ class ReachablePoint
                  WGSPoint pos,
                  QPoint ppos,
                  unsigned int elevation,
+                 QString comment,
                  Distance distance,
                  short bearing,
                  Altitude arrivAlt,
@@ -59,6 +61,8 @@ class ReachablePoint
                  Distance& distance,
                  short bearing,
                  Altitude& arrivAlt );
+
+  ~ReachablePoint();
 
   Distance getDistance() const
   {
@@ -78,6 +82,11 @@ class ReachablePoint
   QString getDescription() const
   {
     return _wp.description;
+  };
+
+  QString getComment() const
+  {
+    return _wp.comment;
   };
 
   void setOrignAfl(const bool orign)
@@ -129,8 +138,6 @@ class ReachablePoint
   {
     _arrivalAlt = alt;
   };
-
-  ~ReachablePoint();
 
   reachable getReachable();
 

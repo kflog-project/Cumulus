@@ -6,8 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008 by Axel Pauli
+**   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.

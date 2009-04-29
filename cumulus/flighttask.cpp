@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Heiner Lamprecht, 2008 Axel Pauli
+**   Copyright (c):  2002      by Heiner Lamprecht
+**                   2007-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -531,10 +532,9 @@ bool FlightTask::isFAI(double d_wp, double d1, double d2, double d3)
  * Draws course lines and turn point sectors/circles according to the
  * user configuration.
  */
-
-void FlightTask::drawMapElement( QPainter* painter )
+void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
 {
-  // qDebug ("FlightTask::drawMapElement");
+  // qDebug ("FlightTask::drawTask");
 
   // get user defined scheme items
   GeneralConfig *conf = GeneralConfig::instance();
@@ -542,8 +542,11 @@ void FlightTask::drawMapElement( QPainter* painter )
   if( conf->getActiveCSTaskScheme() == GeneralConfig::Cylinder )
     {
       // Cylinder scheme is active, handle this in extra method
-      return circleSchemeDrawing( painter );
+      return circleSchemeDrawing( painter, drawnTp );
     }
+
+  // load task point label option
+  const bool drawTpLabels = conf->getMapShowTaskPointLabels();
 
   // Draw task point sectors according to FAI Rules
   const bool fillShape = conf->getTaskFillShape();
@@ -569,16 +572,22 @@ void FlightTask::drawMapElement( QPainter* painter )
 
   for( int loop=0; loop < wpList->count(); loop++ )
     {
+      // Append all waypoints to the label list on user request
+      if( drawTpLabels )
+        {
+          drawnTp.append( wpList->at(loop) );
+        }
+
       if( flightType == Unknown )
-	{
-	  if( loop )
-	    {
-	      painter->setPen(QPen(QColor(Qt::cyan), 3));
-	      // Draws the course line
-	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-				 glMapMatrix->map(wpList->at(loop)->projP) );
-	    }
-	}
+      	{
+      	  if( loop )
+      	    {
+      	      painter->setPen(QPen(QColor(Qt::cyan), 3));
+      	      // Draws the course line
+      	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
+      				glMapMatrix->map(wpList->at(loop)->projP) );
+      	    }
+      	}
 
       // map projected point to map
       QPoint mPoint(glMapMatrix->map(wpList->at(loop)->projP));
@@ -595,9 +604,9 @@ void FlightTask::drawMapElement( QPainter* painter )
 	      QColor c;
 
 	      if( fillShape )
-		{
-		  c = QColor(Qt::green);
-		}
+      		{
+      		  c = QColor(Qt::green);
+      		}
 
 	      drawSector( painter,
 			  mPoint,
@@ -613,7 +622,7 @@ void FlightTask::drawMapElement( QPainter* painter )
 	    {
 	      painter->setPen(QPen(QColor(Qt::cyan), 3));
 	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-				 glMapMatrix->map(wpList->at(loop)->projP) );
+				                   glMapMatrix->map(wpList->at(loop)->projP) );
 	    }
 
 	  break;
@@ -625,9 +634,9 @@ void FlightTask::drawMapElement( QPainter* painter )
 	      QColor c;
 
 	      if( fillShape )
-		{
-		  c = QColor(Qt::green);
-		}
+      		{
+      		  c = QColor(Qt::green);
+      		}
 
 	      drawSector( painter,
 			  mPoint,
@@ -645,7 +654,7 @@ void FlightTask::drawMapElement( QPainter* painter )
 	    {
 	      painter->setPen(QPen(Qt::cyan, 3));
 	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-				 glMapMatrix->map(wpList->at(loop)->projP) );
+				                   glMapMatrix->map(wpList->at(loop)->projP) );
 	    }
 
 	  break;
@@ -657,9 +666,9 @@ void FlightTask::drawMapElement( QPainter* painter )
 	      QColor c;
 
 	      if( fillShape )
-		{
-		  c = QColor(Qt::cyan);
-		}
+      		{
+      		  c = QColor(Qt::cyan);
+      		}
 
 	      drawSector( painter,
 			  mPoint,
@@ -673,7 +682,7 @@ void FlightTask::drawMapElement( QPainter* painter )
 
 	  painter->setPen(QPen(QColor(Qt::cyan), 3));
 	  painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-			     glMapMatrix->map(wpList->at(loop)->projP) );
+			                 glMapMatrix->map(wpList->at(loop)->projP) );
 	  break;
 
 	default:
@@ -685,7 +694,7 @@ void FlightTask::drawMapElement( QPainter* painter )
 	    {
 	      painter->setPen(QPen(Qt::cyan, 3));
 	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-				 glMapMatrix->map(wpList->at(loop)->projP ) );
+				                   glMapMatrix->map(wpList->at(loop)->projP ) );
 	    }
 
 	  break;
@@ -698,13 +707,24 @@ void FlightTask::drawMapElement( QPainter* painter )
  * FAI rules does not play a role for drawing.
  *
  */
-void FlightTask::circleSchemeDrawing( QPainter* painter )
+void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawnTp )
 {
+  extern MapConfig* _globalMapConfig;
+
+  // determine icon size to be used
+  int iconSize = 32;
+
+  if ( _globalMapConfig->useSmallIcons() )
+    {
+      iconSize = 16;
+    }
+
   // get user defined scheme items
   GeneralConfig *conf = GeneralConfig::instance();
 
-  const bool fillShape = conf->getTaskFillShape();
-  const bool drawShape = conf->getTaskDrawShape();
+  const bool fillShape     = conf->getTaskFillShape();
+  const bool drawShape     = conf->getTaskDrawShape();
+  const bool drawTpLabels  = conf->getMapShowTaskPointLabels();
 
   // fetch current scale, scale uses unit meter/pixel
   const double cs = glMapMatrix->getScale(MapMatrix::CurrentScale);
@@ -714,22 +734,28 @@ void FlightTask::circleSchemeDrawing( QPainter* painter )
   // scale radius to map
   const int r = (int) rint(radius / glMapMatrix->getScale());
 
-  // fetch desktop measures
-  const int w = QApplication::desktop()->width();
-  const int h = QApplication::desktop()->height();
+  // fetch map measures
+  const int w = Map::getInstance()->size().width();
+  const int h = Map::getInstance()->size().height();
 
   QRect viewport( -10-r, -10-r, w+2*r, h+2*r );
 
   for( int loop=0; loop < wpList->count(); loop++ )
     {
-      if( loop )
-	{
-	  // Draws the course line
-	  painter->setPen(QPen(QColor( Qt::cyan ), 3));
+      // Append all waypoints to the label list on user request
+      if( drawTpLabels )
+        {
+          drawnTp.append( wpList->at(loop) );
+        }
 
-	  painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
+      if( loop )
+      	{
+      	  // Draws the course line
+      	  painter->setPen(QPen(QColor( Qt::cyan ), 3));
+
+      	  painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
                              glMapMatrix->map(wpList->at(loop)->projP) );
-	}
+      	}
 
       if( cs > 350.0 || ( drawShape == false && fillShape == false ) )
         {
@@ -743,10 +769,10 @@ void FlightTask::circleSchemeDrawing( QPainter* painter )
       // qDebug("MappedPoint: x=%d, y=%d", mPoint.x(), mPoint.y() );
 
       if( ! viewport.contains(mPoint) )
-	{
-	  // ignore not visible points
-	  continue;
-	}
+      	{
+      	  // ignore not visible points
+      	  continue;
+      	}
 
       QColor color;
 
@@ -815,7 +841,6 @@ void FlightTask::circleSchemeDrawing( QPainter* painter )
 
       // Draw circle around given position
       drawCircle( painter, mPoint, r, color, drawShape );
-
     } // End of For
 }
 

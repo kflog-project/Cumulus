@@ -1087,26 +1087,37 @@ class GeneralConfig : protected QSettings
     _mapUnload = newValue;
   };
 
-  /** Gets the welt 2000 country filter */
+  /** Gets the welt2000 country filter */
   QString &getWelt2000CountryFilter()
     {
       return _welt2000CountryFilter;
     };
-  /** Sets the welt 2000 country filter */
+  /** Sets the welt2000 country filter */
   void setWelt2000CountryFilter( const QString newValue )
   {
     _welt2000CountryFilter = newValue;
   };
 
-  /** gets the welt 2000 home radius */
+  /** gets the welt2000 home radius */
   int getWelt2000HomeRadius() const
   {
     return _welt2000HomeRadius;
   };
-  /** sets the welt 2000 home radius */
+  /** sets the welt2000 home radius */
   void setWelt2000HomeRadius( const int newValue )
   {
     _welt2000HomeRadius = newValue;
+  };
+
+  /** gets the welt2000 outlanding load flag */
+  bool getWelt2000LoadOutlandings() const
+  {
+    return _welt2000LoadOutlandings;
+  };
+  /** sets the welt2000 outlanding load flag */
+  void setWelt2000LoadOutlandings(const bool newValue)
+  {
+    _welt2000LoadOutlandings = newValue;
   };
 
   /** gets the af/wp list page size */
@@ -1757,11 +1768,13 @@ class GeneralConfig : protected QSettings
   // Map unload unneeded
   bool _mapUnload;
 
-  // Welt 2000 country filter
+  // Welt2000 country filter
   QString _welt2000CountryFilter;
-  // Welt 2000 home radius
+  // Welt2000 home radius
   int _welt2000HomeRadius;
-
+  // Welt2000 outlanding load flag
+  bool _welt2000LoadOutlandings;
+  
   // Airfield/WP lists page size (entries)
   int _listDisplayPageSize;
   // Airfield/WP lists row height increase (px)

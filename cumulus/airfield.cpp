@@ -29,12 +29,14 @@ Airfield::Airfield( const QString& name,
                     const Runway& rw,
                     const unsigned int elevation,
                     const QString& frequency,
+                    const QString comment,
                     bool winch,
                     bool towing,
                     bool landable )
     : SinglePoint(name, shortName, typeId, wgsPos, pos, elevation),
     icao(icao),
     frequency(frequency),
+    comment(comment),
     rwData(rw),
     winch(winch),
     towing(towing),
@@ -77,14 +79,12 @@ QString Airfield::getInfoString() const
     return text;
   }
 
-void Airfield::drawMapElement( QPainter* targetP,
-                               const bool drawLabel,
-                               const bool drawLabelInfo )
+bool Airfield::drawMapElement( QPainter* targetP )
 {
   if ( ! isVisible() )
     {
       curPos = QPoint(-5000, -5000);
-      return;
+      return false;
     }
 
   extern MapConfig* _globalMapConfig;
@@ -136,15 +136,5 @@ void Airfield::drawMapElement( QPainter* targetP,
         }
     }
 
-  // Draw airfield labels on demand
-  if( drawLabel == true )
-    {
-      Map::getInstance()->drawLabel( targetP,
-                                     iconSize / 2 + 3,
-                                     shortName,
-                                     curPos,
-                                     wgsPosition,
-                                     landable,
-                                     drawLabelInfo );
-     }
+  return true;
 }

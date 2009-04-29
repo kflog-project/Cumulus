@@ -17,6 +17,9 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.2.x (Development based on X11/Qt-4.5.x)
 -------------------------------------------------
+[+] 2009-04-29 AP: Outlandings read from Welt2000 file and displayed at the map and
+                   in the lists. New configuration option added to Welt2000 tabulator
+                   to activate or deactivate the loading of outlandings.
 [o] 2009-04-22 AP: Activating of external links in online help. Clicking on it will
                    start default browser of OS.
 [o] 2009-04-22 AP: Widget PreFlightGliderPage pilots name and units in spin boxes

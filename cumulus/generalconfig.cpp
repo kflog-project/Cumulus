@@ -237,8 +237,9 @@ void GeneralConfig::load()
   _mapScale   = value("Map Scale", 200).toDouble();
   _mapProjectionType = value("Projection Type", ProjectionBase::Cylindric ).toInt();
 
-  _welt2000CountryFilter = value("Welt2000CountryFilter", "").toString();
-  _welt2000HomeRadius    = value("Welt2000HomeRadius", 500).toInt(); // km is assumed
+  _welt2000CountryFilter    = value("Welt2000CountryFilter", "").toString();
+  _welt2000HomeRadius       = value("Welt2000HomeRadius", 500).toInt(); // km is assumed
+  _welt2000LoadOutlandings  = value("Welt2000LoadOutlandings", false ).toBool();
 
   for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {
@@ -524,6 +525,7 @@ void GeneralConfig::save()
   setValue("Projection Type", _mapProjectionType);
   setValue("Welt2000CountryFilter", _welt2000CountryFilter);
   setValue("Welt2000HomeRadius", _welt2000HomeRadius);
+  setValue("Welt2000LoadOutlandings", _welt2000LoadOutlandings);
 
   for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {

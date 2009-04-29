@@ -261,19 +261,6 @@ class Map : public QWidget
      */
     virtual void mouseReleaseEvent(QMouseEvent* event);
 
-  public:
-
-    /**
-     * Draws a label with additional information on demand beside a map icon.
-     */
-    void drawLabel( QPainter* painter,          // painter to be used
-                    const int xShift,           // x offset from the center point
-                    const QString& name,        // name of point
-                    const QPoint& dispP,        // projected point at the display
-                    const WGSPoint& origP,      // WGS84 point
-                    const bool isLandable,      // is landable?
-                    const bool drawLabelInfo ); // label extra info?
-
   private: //methods
     /**
      * set mutex to avoid reentrance
@@ -331,8 +318,10 @@ class Map : public QWidget
 
     /**
      * Draws the task which is currently planned
+     * @arg drawnWp List of drawn waypoints, if taskpoint label drawing
+     *      option is set.
      */
-    void __drawPlannedTask(QPainter *taskP);
+    void __drawPlannedTask(QPainter *taskP, QList<wayPoint*> &drawnWp);
 
     /**
      * Draws the grid on the map.
@@ -349,16 +338,28 @@ class Map : public QWidget
     void __drawAirspaces(bool reset);
 
     /**
-     * Puts the waypoints of the active waypoint catalog to the map
-     * @arg wpPainter Painter for the waypoints themselves
+     * Draws the waypoints of the active waypoint catalog to the map.
+     * @arg wpPainter Painter for the waypoints
+     * @arg drawnWp List of drawn waypoints, if waypoint label drawing
+     *      option is set.
      */
-    void __drawWaypoints(QPainter *wpPainter);
+    void __drawWaypoints(QPainter *wpPainter, QList<wayPoint*> &drawnWp);
 
     /**
      * Draws a trail indicating the flight path taken, if that feature
      * is turned on. (CURRENTLY TURNED OFF)
      */
     void __drawTrail();
+
+    /**
+     * Draws a label with additional information on demand beside a map icon.
+     */
+    void __drawLabel( QPainter* painter,          // painter to be used
+                      const int xShift,           // x offset from the center point
+                      const QString& name,        // name of point
+                      const QPoint& dispP,        // projected point at the display
+                      const WGSPoint& origP,      // WGS84 point
+                      const bool isLandable );    // is landable?
 
     /**
      * Display Info about Airspace items

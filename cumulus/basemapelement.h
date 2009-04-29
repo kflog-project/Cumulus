@@ -6,8 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
-**                   2009 by Axel Pauli
+**   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -91,8 +91,9 @@ public:
    *
    * The function must be implemented in the child-classes.
    * @param  targetP  The painter to draw the element into.
+   * @return true, if element was drawn otherwise false.
    */
-  virtual void drawMapElement(QPainter* ) {};
+  virtual bool drawMapElement(QPainter* ) = 0;
 
   /**
    * Virtual function for printing the element.

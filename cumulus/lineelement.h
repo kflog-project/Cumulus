@@ -6,8 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008 Axel Pauli
+**   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -54,8 +54,9 @@ public:
      * BaseMapElement.
      *
      * @param  targetP  The painter to draw the element into.
+     * @return true, if element was drawn otherwise false.
      */
-    virtual void drawMapElement(QPainter* targetP);
+    virtual bool drawMapElement(QPainter* targetP);
 
     /**
      * @return "true", if the element is a valley.

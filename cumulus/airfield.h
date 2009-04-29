@@ -50,6 +50,7 @@ class Airfield : public SinglePoint
    * @param  winch  "true", if winch-launch is available
    * @param  towing "true", if aero towing is available
    * @param  landable "true", if airfield is landable
+   * @param  comment An additional comment related to the airfield
    */
   Airfield( const QString& name,
             const QString& icao,
@@ -60,6 +61,7 @@ class Airfield : public SinglePoint
             const Runway& rw,
             const unsigned int elevation,
             const QString& frequency,
+            const QString comment = "",
             bool winch = false,
             bool towing = false,
             bool landable = true );
@@ -118,6 +120,14 @@ class Airfield : public SinglePoint
     };
 
   /**
+   * @return the comment text of the airfield
+   */
+  QString getComment() const
+    {
+      return comment;
+    };
+
+  /**
    * Return a short html-info-string about the airport, containing the
    * name, the alias, the elevation and the frequency as well as a small
    * icon of the airport type.
@@ -127,10 +137,8 @@ class Airfield : public SinglePoint
    */
   virtual QString getInfoString() const;
 
-  // Draws the element into the given painter with the requested info.
-  virtual void drawMapElement( QPainter* targetP,
-                               const bool drawLabel = false,
-                               const bool drawLabelInfo = false );
+  // Draws the element into the given painter.
+  virtual bool drawMapElement( QPainter* targetP );
 
  private:
 
@@ -143,6 +151,11 @@ class Airfield : public SinglePoint
     * The frequency
     */
    QString frequency;
+
+   /**
+    * Comment related to the airfield.
+    */
+   QString comment;
 
   /**
    * Contains the runway data.
@@ -168,7 +181,6 @@ class Airfield : public SinglePoint
    * Flag to indicate the landability of the airfield.
    */
   bool landable;
-
 };
 
 #endif

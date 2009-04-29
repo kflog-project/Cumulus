@@ -62,7 +62,7 @@ class MapContents : public QObject
      * The identifiers for the map element types.
      */
     enum MapContentsListID {NotSet = 0, AirfieldList, GliderSiteList,
-                            AddSitesList, OutList, RadioList, AirspaceList,
+                            AddSitesList, OutLandingList, RadioList, AirspaceList,
                             ObstacleList, ReportList, CityList, VillageList,
                             LandmarkList, HighwayList,
                             RoadList, RailList, HydroList,
@@ -124,6 +124,13 @@ class MapContents : public QObject
     Airfield* getAirport(unsigned int index);
 
     /**
+     * @return a pointer to the given outlanding
+     *
+     * @param  index  the list-index of the outlanding
+     */
+    Airfield* getOutlanding(unsigned int index);
+
+    /**
      * @return a pointer to the SinglePoint of the given map element
      *
      * @param  listIndex  the index of the list containing the element
@@ -131,6 +138,16 @@ class MapContents : public QObject
      */
     SinglePoint* getSinglePoint(int listIndex, unsigned int index);
 
+    /**
+     * Draws all elements of a list into the painter.
+     *
+     * @param  targetP  The painter to draw the elements into
+     * @param  listID   The index of the list to be drawn
+     * @param  drawnAf  Add all drawn objects to this list
+     */
+    void drawList( QPainter* targetP,
+                   unsigned int listID,
+                   QList<Airfield*> &drawnAfList );
     /**
      * Draws all elements of a list into the painter.
      *
@@ -145,16 +162,6 @@ class MapContents : public QObject
      * @param  targetP  The painter to draw the elements into
      */
     void drawIsoList(QPainter* targetP);
-
-    /**
-     * Prints the whole content of the map into the given painter.
-     *
-     * @param  targetP  The painter to draw the elements into
-     *
-     * @param  isText  Shows, if the text of some map elements should
-     *                 be printed.
-     */
-    void printContents(QPainter* targetP, bool isText);
 
     /**
      * @returns the waypoint list
@@ -340,9 +347,9 @@ class MapContents : public QObject
     // QList<SinglePoint> addSitesList;
 
     /**
-     * outList contains all outlanding fields.
+     * outLandingList contains all outlanding fields.
      */
-    MapElementList outList;
+    MapElementList outLandingList;
 
     /**
      * radioList contains all radio navigation facilities.
