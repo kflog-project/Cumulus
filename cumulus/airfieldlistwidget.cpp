@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by       André Somers
+**                   2008-2009 by  Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -149,7 +150,8 @@ AirfieldListWidget::_AirfieldItem::_AirfieldItem(Airfield* site):
   QString name = site->getWPName();
   QRegExp blank("[ ]");
   name.replace(blank, QString::null);
-  name = name.left(8);
+  // Limitation is set in Welt2000 to 9 characters
+  // name = name.left(8);
   setText(0, name);
   setText(1, site->getName());
   setText(2, site->getICAO());
