@@ -358,6 +358,19 @@ public:
         return manualInFlight;
       };
 
+    /**
+     * @returns true if we are faster in move as 5km/h.
+     */
+    bool moving()
+    {
+      if( lastSpeed.getKph() > 5 )
+        {
+          return true;
+        }
+        
+      return false;
+    };
+
 public slots: // Public slots
     /**
      * Called if a new waypoint has been selected.
