@@ -6,9 +6,9 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2001 by Heiner Lamprecht,
- **                   2002 by André Somers
- **                   2009 by Axel Pauli
+ **   Copyright (c):  2001      by Heiner Lamprecht,
+ **                   2002      by André Somers
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -62,7 +62,7 @@ MapConfig::MapConfig(QObject* parent)
   // create QIcons with background for copying later when needed
   // in airfield list; speeds up list display
 
-  unsigned int airfieldType[12] = { BaseMapElement::IntAirport,
+  unsigned int airfieldType[13] = { BaseMapElement::IntAirport,
                                     BaseMapElement::Airport,
                                     BaseMapElement::MilAirport,
                                     BaseMapElement::CivMilAirport,
@@ -73,14 +73,15 @@ MapConfig::MapConfig(QObject* parent)
                                     BaseMapElement::AmbHeliport,
                                     BaseMapElement::Glidersite,
                                     BaseMapElement::UltraLight,
-                                    BaseMapElement::HangGlider
+                                    BaseMapElement::HangGlider,
+                                    BaseMapElement::Outlanding
                                   };
 
   QPixmap selectPixmap;
   QIcon afIcon;
   QPainter pnt;
 
-  for ( int i=0; i<12; i++ )
+  for ( int i=0; i<13; i++ )
     {
       selectPixmap = QPixmap(18,18);
       pnt.begin(&selectPixmap);
