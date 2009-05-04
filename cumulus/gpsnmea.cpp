@@ -986,7 +986,8 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
 void GpsNmea::__ExtractSatcount(const QString& satcount)
 {
   int count = satcount.toInt();
-  if (count !=_lastSatInfo.satCount)
+  
+  if( count != _lastSatInfo.satCount )
     {
       _lastSatInfo.satCount = count;
       emit newSatConstellation();
