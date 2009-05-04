@@ -95,15 +95,43 @@ bool Airfield::drawMapElement( QPainter* targetP )
   //qDebug("Airfield::drawMapElement(): scale: %d %d",scale, _globalMapMatrix->getScaleRatio()  );
   QColor col = ReachableList::getReachColor( wgsPosition );
 
-  // draw also the small dot's in reach ability color
-  targetP->setPen(QPen(col, 2));
-  int iconSize = 32;
-
   curPos = glMapMatrix->map(position);
+
+  // draw also the small dot's in reachability color
+  targetP->setPen(QPen(col, 2));
+
+  int iconSize = 32;
+  int xOffset  = 16;
+  int yOffset  = 16;
+  int cxOffset = 16;
+  int cyOffset = 16;
+
+  if( typeID == BaseMapElement::Outlanding )
+   {
+    // The lower end of the beacon shall directly point to the point at the map.
+    xOffset  = 16;
+    yOffset  = 32;
+    cxOffset = 16;
+    cyOffset = 16;
+  }
 
   if ( _globalMapConfig->useSmallIcons() )
     {
       iconSize = 16;
+      xOffset  = 8;
+      yOffset  = 8;
+      cxOffset = 8;
+      cyOffset = 8;
+
+      if( typeID == BaseMapElement::Outlanding )
+        {
+          // The lower end of the beacon shall directly point to the
+          // point at the map.
+          xOffset  = 8;
+          yOffset  = 16;
+          cxOffset = 8;
+          cyOffset = 8;
+        }
     }
 
   if ( !glMapMatrix->isSwitchScale2() )
@@ -114,25 +142,25 @@ bool Airfield::drawMapElement( QPainter* targetP )
     {
       if (col == Qt::green)
         {
-          targetP->drawPixmap(curPos.x() - iconSize/2, curPos.y() - iconSize/2,
+          targetP->drawPixmap(curPos.x() - cxOffset, curPos.y() - cyOffset,
                               glConfig->getGreenCircle(iconSize));
         }
       else if (col == Qt::magenta)
         {
-          targetP->drawPixmap(curPos.x() - iconSize/2, curPos.y() - iconSize/2,
+          targetP->drawPixmap(curPos.x() - cxOffset, curPos.y() - cyOffset,
                               glConfig->getMagentaCircle(iconSize));
         }
 
       if ( glConfig->isRotatable( typeID ) )
         {
           QPixmap image( glConfig->getPixmapRotatable(typeID, winch) );
-          targetP->drawPixmap(curPos.x() - iconSize/2, curPos.y() - iconSize/2, image,
+          targetP->drawPixmap(curPos.x() - xOffset, curPos.y() - yOffset, image,
                               rwShift*iconSize, 0, iconSize, iconSize);
         }
       else
         {
           QPixmap image( glConfig->getPixmap(typeID) );
-          targetP->drawPixmap(curPos.x() - iconSize/2, curPos.y() - iconSize/2, image  );
+          targetP->drawPixmap(curPos.x() - xOffset, curPos.y() - yOffset, image  );
         }
     }
 
