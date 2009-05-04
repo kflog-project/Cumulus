@@ -25,16 +25,17 @@
 #include "calculator.h"
 #include "airfield.h"
 
-AirfieldListView::AirfieldListView(QMainWindow *parent ) : QWidget(parent)
+AirfieldListView::AirfieldListView( QVector<enum MapContents::MapContentsListID> &itemList,
+                                    QMainWindow *parent ) : QWidget(parent)
 {
   setObjectName("AirfieldListView");
 
   par=parent;
   QBoxLayout *topLayout = new QVBoxLayout( this );
 
-  listw = new AirfieldListWidget( this );
+  listw = new AirfieldListWidget( itemList, this );
 
-  topLayout->addWidget(listw,10);
+  topLayout->addWidget(listw, 10);
 
   QBoxLayout *buttonrow=new QHBoxLayout;
   topLayout->addLayout(buttonrow);
@@ -80,7 +81,7 @@ void AirfieldListView::showEvent(QShowEvent *)
   // Show the home button only if we are not to fast in move to avoid
   // wrong usage. The redefinition of the home position can trigger
   // a reload of the airfield list.
-  if( calculator->getLastSpeed().getKph() > 5 )
+  if( calculator->moving() )
     {
       cmdHome->setVisible(false);
     }

@@ -19,6 +19,7 @@
 #define AIRFIELD_LISTWIDGET_H
 
 #include <QWidget>
+#include <QVector>
 
 #include "waypoint.h"
 #include "wplistwidgetparent.h"
@@ -35,15 +36,15 @@ class AirfieldListWidget : public WpListWidgetParent
 
 public:
 
-    AirfieldListWidget(QWidget *parent=0);
+    AirfieldListWidget( QVector<enum MapContents::MapContentsListID> &itemList,
+                        QWidget *parent=0);
+                        
     ~AirfieldListWidget();
 
     /**
      * @returns a pointer to the currently highlighted waypoint.
      */
     wayPoint *getSelectedWaypoint();
-
-    enum MapContents::MapContentsListID itemList[2];
 
     /**
      * Clears and refills the airfield item list
@@ -58,8 +59,7 @@ public:
 private:
 
     wayPoint *wp;
-
-private:
+    QVector<enum MapContents::MapContentsListID> itemList;
 
 class _AirfieldItem : public QTreeWidgetItem
     {

@@ -6,8 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by       André Somers
-**                   2008-2009 by  Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -29,24 +29,25 @@
 extern MapContents *_globalMapContents;
 extern MapConfig   *_globalMapConfig;
 
-AirfieldListWidget::AirfieldListWidget(QWidget *parent ) : WpListWidgetParent(parent)
+AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsListID> &itemList,
+                                        QWidget *parent ) : WpListWidgetParent(parent)
 {
   setObjectName("AirfieldListWidget");
   list->setObjectName("AFTreeWidget");
 
   wp = new wayPoint();
 
-  itemList[0] = MapContents::AirfieldList;
-  itemList[1] = MapContents::GliderSiteList;
+  this->itemList = itemList;
 }
-
 
 AirfieldListWidget::~AirfieldListWidget()
 {
   // JD: Never forget to take ALL items out of the WP list !
   // Items are deleted in filter destructor
   while ( list->topLevelItemCount() > 0 )
-    list->takeTopLevelItem(0);
+    {
+      list->takeTopLevelItem(0);
+    }
 
   delete wp;
 }
@@ -55,15 +56,19 @@ AirfieldListWidget::~AirfieldListWidget()
 
 void AirfieldListWidget::refillWpList()
 {
-//  qDebug("AirfieldListWidget::refillWpList()");
-  if( ! listFilled ) {
-    // list is empty, ignore request
-    return;
-  }
+  // qDebug("AirfieldListWidget::refillWpList()");
+
+  if ( ! listFilled )
+    {
+      // list is empty, ignore request
+      return;
+    }
 
   // Remove all content from list widget; deleting is done in filter
-  while ( list->topLevelItemCount() > 0)
-    list->takeTopLevelItem(0);
+  while ( list->topLevelItemCount() > 0 )
+    {
+      list->takeTopLevelItem(0);
+    }
 
   filter->clear();
 
@@ -77,23 +82,28 @@ void AirfieldListWidget::refillWpList()
 /** Retrieves the airfields from the map contents, and fills the list. */
 void AirfieldListWidget::fillWpList()
 {
-//  qDebug("AirfieldListWidget::fillWpList()");
-  if( listFilled ) {
-    return;
-  }
+  // qDebug("AirfieldListWidget::fillWpList()");
+
+  if ( listFilled )
+    {
+      return;
+    }
 
   list->setUpdatesEnabled(false);
   configRowHeight();
 
-  for( int item = 0; item < 3; item++) {
-    int nr = _globalMapContents->getListLength(itemList[item]);
+  for ( int item = 0; item < itemList.size(); item++ )
+    {
+      int nr = _globalMapContents->getListLength(itemList.at(item));
 
-//    qDebug("fillWpList N: %d, items %d", item, nr );
-    for(int i=0; i<nr; i++ ) {
-      Airfield* site = static_cast<Airfield *> (_globalMapContents->getElement( itemList[item], i ));
-      filter->addListItem( new _AirfieldItem(site) );
+      // qDebug("fillWpList N: %d, items %d", item, nr );
+
+      for (int i=0; i<nr; i++ )
+        {
+          Airfield* site = static_cast<Airfield *> (_globalMapContents->getElement( itemList.at(item), i ));
+          filter->addListItem( new _AirfieldItem(site) );
+        }
     }
-  }
   // sorting is done in filter->reset()
 
   filter->reset();
@@ -109,21 +119,28 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
 {
 //  qDebug("AirfieldListWidget::getSelectedWaypoint()");
   QTreeWidgetItem* li = list->currentItem();
+
   if ( li == 0)
-    return 0;
+    {
+      return 0;
+    }
 
   // Special rows selected?
   QString test = li->text(1);
 
   if ( test == ListViewFilter::NextPage || test == ListViewFilter::PreviousPage )
-    return 0;
+    {
+      return 0;
+    }
 
   // Now we're left with the real waypoints/airports
   _AirfieldItem* apli = static_cast<_AirfieldItem*>(li);
 
   // @ee may be null if the cast failed.
   if (apli == 0)
-    return 0;
+    {
+      return 0;
+    }
 
   Airfield* site = apli->airport;
 
@@ -145,11 +162,11 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
 }
 
 AirfieldListWidget::_AirfieldItem::_AirfieldItem(Airfield* site):
-  QTreeWidgetItem(), airport(site)
+    QTreeWidgetItem(), airport(site)
 {
   QString name = site->getWPName();
-  QRegExp blank("[ ]");
-  name.replace(blank, QString::null);
+  // QRegExp blank("[ ]");
+  // name.replace(blank, QString::null);
   // Limitation is set in Welt2000 to 9 characters
   // name = name.left(8);
   setText(0, name);
