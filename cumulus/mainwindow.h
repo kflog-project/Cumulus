@@ -2,8 +2,8 @@
                           mainwindow.h  -  main application object
                              -------------------
     begin                : Sun Jul 21 2002
-    copyright            : (C) 2002 by André Somers
-                               2009 Axel Pauli
+    copyright            : (C) 2002      by André Somers
+    ported to Qt4.x/X11  : (C) 2007-2009 by Axel Pauli
     email                : axel@kflog.org
 
     This file is distributed under the terms of the General Public
@@ -64,9 +64,10 @@ class MainWindow : public QMainWindow
                    infoView=2,      // info
                    rpView=3,        // reachable
                    afView=4,        // airfield
-                   tpView=5,        // taskpoint
-                   tpSwitchView=6,  // taskpoint switch
-                   cfView=7 };      // configuration
+                   olView=5,        // outlanding
+                   tpView=6,        // taskpoint
+                   tpSwitchView=7,  // taskpoint switch
+                   cfView=8 };      // configuration
 
   public: //methods
     /**
@@ -94,16 +95,17 @@ class MainWindow : public QMainWindow
      */
     void playSound(const char *name=0);
 
-  public: // Public attributes
+  public:
     /**
-     * Reference to the Map page
+     * Reference to the Map pages
      */
     MapView *viewMap;
-    WaypointListView *viewWP;
-    AirfieldListView *viewAF;
-    ReachpointListView *viewRP;
-    TaskListView *viewTP;
-    WPInfoWidget *viewInfo;
+    WaypointListView *viewWP;   // waypoints
+    AirfieldListView *viewAF;   // airfields
+    AirfieldListView *viewOL;   // outlandings
+    ReachpointListView *viewRP; // reachable points
+    TaskListView *viewTP;       // task points
+    WPInfoWidget *viewInfo;     // waypoint info
     QTabWidget *listViewTabs;
 
     /** empty view for config "dialog" */
@@ -118,9 +120,13 @@ class MainWindow : public QMainWindow
      */
     void slotSwitchToWPListViewExt();
     /**
-     * Switches to the list with all loaded fields
+     * Switches to the list with all loaded airfields
      */
     void slotSwitchToAFListView();
+    /**
+     * Switches to the list with all loaded outlandings
+     */
+    void slotSwitchToOLListView();
     /**
      * Switches to the list with all the reachable fields
      */
@@ -215,8 +221,6 @@ class MainWindow : public QMainWindow
   protected: //members
     /** contains the currently selected viewmode */
     appView view;
-
-    bool _taskListVisible, _reachpointListVisible;
 
   private slots: // Private slots
     /**
@@ -367,6 +371,10 @@ class MainWindow : public QMainWindow
     bool menuBarVisible;
     // Splash screen
     QPointer<Splash> splash;
+    // Store here, if the lists are visible or not.
+    bool _taskListVisible;
+    bool _reachpointListVisible;
+    bool _outlandingListVisible;
 
 #ifdef MAEMO
 

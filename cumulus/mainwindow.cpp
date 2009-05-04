@@ -2,7 +2,7 @@
  mainwindow.cpp  -  main application class
  -----------------------------------------
  begin                : Sun Jul 21 2002
- copyright            : (C) 2002 by André Somers
+ copyright            : (C) 2002      by André Somers
  ported to Qt4.x/X11  : (C) 2007-2009 by Axel Pauli
  maintainer           : axel@kflog.org
 
@@ -19,7 +19,8 @@
  *                                                                         *
  ***************************************************************************/
 
-/** This class is called by main to create all the widgets needed by this GUI
+/**
+ *  This class is called by main to create all the widgets needed by this GUI
  *  and to initiate the load of the map and all other data.
  */
 
@@ -37,6 +38,7 @@
 #include <QDateTime>
 #include <QDir>
 #include <QList>
+#include <QVector>
 #include <QMessageBox>
 
 #ifdef MAEMO
@@ -120,8 +122,7 @@ static void resumeGpsConnection( int sig )
     }
 }
 
-MainWindow::MainWindow( Qt::WindowFlags flags ) :
-  QMainWindow( 0, flags )
+MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 {
   _globalMainWindow = this;
   menuBarVisible = false;
@@ -365,21 +366,35 @@ void MainWindow::slotCreateApplicationWidgets()
   listViewTabs->setFont( fnt );
 
   viewWP = new WaypointListView( this );
-  viewAF = new AirfieldListView( this );
+
+  QVector<enum MapContents::MapContentsListID> itemList;
+  itemList << MapContents::AirfieldList << MapContents::GliderSiteList;
+  viewAF = new AirfieldListView( itemList, this ); // airfields
+
+  itemList.clear();
+  itemList << MapContents::OutLandingList;
+  viewOL = new AirfieldListView( itemList, this ); // outlandings
+
   viewRP = new ReachpointListView( this );
   viewTP = new TaskListView( this );
+
   viewWP->setFont( fnt );
   viewAF->setFont( fnt );
+  viewOL->setFont( fnt );
   viewRP->setFont( fnt );
   viewTP->setFont( fnt );
 
   viewCF = new QWidget( this );
 
-  _taskListVisible = false;
+  // set visibility of lists to false
+  _taskListVisible       = false;
   _reachpointListVisible = false;
+  _outlandingListVisible = false;
+
   listViewTabs->addTab( viewWP, tr( "Waypoints" ) );
-  //listViewTabs->addTab( viewRP, tr( "Reachable" ) ); --> added in slotReadconfig
   listViewTabs->addTab( viewAF, tr( "Airfields" ) );
+  // listViewTabs->addTab( viewRP, tr( "Reachable" ) ); --> added in slotReadconfig
+  // listViewTabs->addTab( viewOL, tr( "Outlandings" ) ); --> added in slotReadconfig
 
   // waypoint info widget
   viewInfo = new WPInfoWidget( this );
@@ -404,6 +419,8 @@ void MainWindow::slotCreateApplicationWidgets()
            viewMap->_theMap, SLOT( slotDraw() ) );
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewAF, SLOT( slot_reloadList() ) );
+  connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
+           viewOL, SLOT( slot_reloadList() ) );
 
   connect( GpsNmea::gps, SIGNAL( newVario(const Speed&) ),
            calculator, SLOT( slot_GpsVariometer(const Speed&) ) );
@@ -450,6 +467,15 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( viewAF, SIGNAL( info( wayPoint* ) ),
            this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
   connect( viewAF, SIGNAL( newHomePosition( const QPoint& ) ),
+           _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
+
+  connect( viewOL, SIGNAL( newWaypoint( wayPoint*, bool ) ),
+           calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
+  connect( viewOL, SIGNAL( done() ),
+           this, SLOT( slotSwitchToMapView() ) );
+  connect( viewOL, SIGNAL( info( wayPoint* ) ),
+           this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
+  connect( viewOL, SIGNAL( newHomePosition( const QPoint& ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
 
   connect( viewRP, SIGNAL( newWaypoint( wayPoint*, bool ) ),
@@ -1315,6 +1341,10 @@ void MainWindow::slot_tabChanged( int index )
     {
       setView( afView );
     }
+  else if ( index == listViewTabs->indexOf(viewOL) )
+    {
+      setView( olView );
+    }
   else
     {
       qWarning("MainWindow::slot_tabChanged(): Cannot switch to index %d", index );
@@ -1419,6 +1449,22 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
       viewInfo->hide();
       viewAF->listWidget()->fillWpList();
       listViewTabs->setCurrentWidget( viewAF );
+      listViewTabs->show();
+
+      toggleManualNavActions( false );
+      toggleGpsNavActions( false );
+      actionMenuBarToggle->setEnabled( false );
+      toggleActions( false );
+
+      break;
+
+    case olView:
+
+      menuBar()->hide();
+      viewMap->hide();
+      viewInfo->hide();
+      viewOL->listWidget()->fillWpList();
+      listViewTabs->setCurrentWidget( viewOL );
       listViewTabs->show();
 
       toggleManualNavActions( false );
@@ -1563,6 +1609,11 @@ void MainWindow::slotSwitchToAFListView()
   setView( afView );
 }
 
+/** Switches to the OutlandingList View */
+void MainWindow::slotSwitchToOLListView()
+{
+  setView( olView );
+}
 
 /** Switches to the ReachablePointList View */
 void MainWindow::slotSwitchToReachListView()
@@ -1593,6 +1644,10 @@ void MainWindow::slotSwitchToInfoView()
   if ( view == afView )
     {
       setView( infoView, viewAF->getSelectedWaypoint() );
+    }
+  if ( view == olView )
+    {
+      setView( infoView, viewOL->getSelectedWaypoint() );
     }
   if ( view == tpView )
     {
@@ -1749,6 +1804,8 @@ void MainWindow::slotReadconfig()
   viewRP->fillRpList();
   viewAF->listWidget()->configRowHeight();
   viewAF->listWidget()->slot_Done();
+  viewOL->listWidget()->configRowHeight();
+  viewOL->listWidget()->slot_Done();
   viewWP->listWidget()->configRowHeight();
   viewWP->listWidget()->slot_Done();
 
@@ -1773,41 +1830,59 @@ void MainWindow::slotReadconfig()
   // update menubar font size
   slotSetMenuBarFontSize();
 
-  if(1)
+  actionViewReachpoints->setEnabled( conf->getNearestSiteCalculatorSwitch() );
+
+ // Check, if reachable list is to show or not
+  if( conf->getNearestSiteCalculatorSwitch() )
     {
-      // 1 will be replaced in future with a construct like
-      // conf->getNearestSiteCalculatorSwitch() != lastConf->getNearestSiteCalculatorSwitch()
-      actionViewReachpoints->setEnabled( conf->getNearestSiteCalculatorSwitch() );
-
-      if(conf->getNearestSiteCalculatorSwitch())
+      if( ! _reachpointListVisible )
         {
-          if(!_reachpointListVisible)
-            {
-              listViewTabs->insertTab( _taskListVisible ? 2 : 1, viewRP, tr( "Reachable" ) );
-              calculator->newSites();
-              _reachpointListVisible = true;
-            }
+          // list was not visible before
+          listViewTabs->insertTab( _taskListVisible ? 2 : 1, viewRP, tr( "Reachable" ) );
+          calculator->newSites();
+          _reachpointListVisible = true;
         }
-      else
+    }
+  else
+    {
+      if( _reachpointListVisible )
         {
-          if(_reachpointListVisible)
-            {
-              // changes in listViewTabs trigger  (if viewRP was last active),
-              // this slot calls setView and tries to set the view to viewRP
-              // but since this doesn't exist (removeWidget), sets the view to the next one
-              // which is viewAF; that's the reason we have to a) call setView(mapView);
-              // or b) disconnect before removeWidget and connect again behind
-              disconnect( listViewTabs, SIGNAL( currentChanged( int index ) ),
-                          this, SLOT( slot_tabChanged( int index ) ) );
-              listViewTabs->removeTab( listViewTabs->indexOf(viewRP) );
+          // changes in listViewTabs trigger  (if viewRP was last active),
+          // this slot calls setView and tries to set the view to viewRP
+          // but since this doesn't exist (removeWidget), sets the view to the next one
+          // which is viewAF; that's the reason we have to a) call setView(mapView);
+          // or b) disconnect before removeWidget and connect again behind
+          listViewTabs->blockSignals( true );
+          listViewTabs->removeTab( listViewTabs->indexOf(viewRP) );
+          listViewTabs->blockSignals( false );
 
-              connect( listViewTabs, SIGNAL( currentChanged( int index ) ),
-                       this, SLOT( slot_tabChanged( int index ) ) );
-              calculator->clearReachable();
-              viewRP->clearList();   // this clears the listView
-              viewMap->_theMap->scheduleRedraw(Map::waypoints);
-              _reachpointListVisible = false;
-            }
+          calculator->clearReachable();
+          viewRP->clearList(); // this clears the reachable list in the view
+          viewMap->_theMap->scheduleRedraw(Map::waypoints);
+          _reachpointListVisible = false;
+        }
+    }
+
+  // Check, if outlanding list is to show or not
+  if( conf->getWelt2000LoadOutlandings() )
+    {
+      if( ! _outlandingListVisible )
+        {
+          // list was not visible before, add it to the end of the tabs
+          listViewTabs->addTab( viewOL, tr( "Outlandings" ) );
+          _outlandingListVisible = true;
+        }
+    }
+  else
+    {
+      if( _outlandingListVisible )
+        {
+          listViewTabs->blockSignals( true );
+          listViewTabs->removeTab( listViewTabs->indexOf(viewOL) );
+          listViewTabs->blockSignals( false );
+          viewRP->clearList();  // this clears the outlanding list in the view
+          viewMap->_theMap->scheduleRedraw(Map::outlandingSites);
+          _outlandingListVisible = false;
         }
     }
 
@@ -1832,7 +1907,7 @@ void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )
 
   playSound("notify");
 
-  if ( ( status < GpsNmea::validFix || calculator->isManualInFlight()) && ( view == mapView ) )
+  if ( ( status != GpsNmea::validFix || calculator->isManualInFlight()) && ( view == mapView ) )
     {  // no GPS data
       toggleManualNavActions( true );
       toggleGpsNavActions( false );
@@ -1924,13 +1999,9 @@ void MainWindow::slotPreFlightDataChanged()
       if ( _taskListVisible )
         {
           // see comment for removeTab( viewRP )
-          disconnect( listViewTabs, SIGNAL( currentChanged(int) ),
-                      this, SLOT( slot_tabChanged(int) ) );
-
+          listViewTabs->blockSignals( true );
           listViewTabs->removeTab( listViewTabs->indexOf(viewTP) );
-
-          connect( listViewTabs, SIGNAL( currentChanged(int) ),
-                   this, SLOT( slot_tabChanged(int) ) );
+          listViewTabs->blockSignals( false );
           _taskListVisible = false;
         }
     }
