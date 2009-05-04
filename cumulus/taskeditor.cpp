@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Heiner Lamprecht, 2008 Axel Pauli
+**   Copyright (c):  2002      by Heiner Lamprecht
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -25,6 +26,7 @@
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QVector>
 
 #include "airfield.h"
 #include "taskeditor.h"
@@ -169,12 +171,22 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
   // descriptions of combo box selection elements
   listSelectText[0] = tr("Waypoints");
   listSelectText[1] = tr("Airfields");
+  listSelectText[2] = tr("Outlandings");
 
   // create the actual lists
   waypointList[0] = new WaypointListWidget(this);
-  waypointList[1] = new AirfieldListWidget(this);
 
-  for (int i=0; i<NUM_LISTS; i++)
+  // Airfield list
+  QVector<enum MapContents::MapContentsListID> itemList;
+  itemList << MapContents::AirfieldList << MapContents::GliderSiteList;
+  waypointList[1] = new AirfieldListWidget( itemList, this );
+
+  // outlanding list
+  itemList.clear();
+  itemList << MapContents::OutLandingList;
+  waypointList[2] = new AirfieldListWidget( itemList, this );
+
+  for( int i=0; i<NUM_LISTS; i++ )
     {
       listSelectCB->addItem(listSelectText[i], i);
       waypointList[i]->fillWpList();

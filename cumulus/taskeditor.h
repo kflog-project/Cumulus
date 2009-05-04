@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Heiner Lamprecht, 2008 Axel Pauli
+**   Copyright (c):  2002      by Heiner Lamprecht
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -109,8 +110,8 @@ private:
     /** list with all defined task names */
     QStringList& taskNamesInUse;
 
-    /** number lists, at the moment waypointlist and airfield list*/
-#define NUM_LISTS 2
+    /** number lists, at the moment waypointlist, airfield, outlanding list */
+#define NUM_LISTS 3
 
     /** selection lists with waypoints */
     WpListWidgetParent* waypointList[NUM_LISTS];
