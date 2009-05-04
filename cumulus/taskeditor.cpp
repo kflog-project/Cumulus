@@ -53,10 +53,11 @@ TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
   setContentsMargins(-3,-3,-3,-3);
 
 #ifdef MAEMO
-  resize(800,480);
-  setMinimumSize(800,480); // @AP: hope that prevents the resize to a smaller size
+  resize(800, 480);
+  setMinimumSize(800, 480); // @AP: hope that prevents the resize to a smaller size
   setSizeGripEnabled(false);
 #else
+  resize(800, 480);
   setSizeGripEnabled(true);
 #endif
 
