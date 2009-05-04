@@ -99,8 +99,7 @@ class MapView : public QWidget
     /**
      * pointer to the map widget
      */
-    Map * _theMap;
-    MainWindow * cuApp;
+    Map        *_theMap;
 
   public slots: // Public slots
     /**
@@ -301,11 +300,12 @@ class MapView : public QWidget
     QTimer* _bearingTimer;
     /** default bg color */
     QColor _bearingBGColor;
-
+    /** Pixmap containing arrows to be drawn*/
     QPixmap _arrows;
-
     /** can be CuCalc::GPS or CuCalc::MAN */
     int lastPositionChangeSource;
+    /** pointer to main window */
+    MainWindow *_mainWindow;
 
   private slots:
 

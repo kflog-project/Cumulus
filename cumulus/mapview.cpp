@@ -58,7 +58,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
           parent->size().width(),
           parent->size().height() );
 
-  cuApp = (MainWindow *)parent;
+  _mainWindow = (MainWindow *)parent;
 
   // Later on the Pretext can change depending on Mode
   GeneralConfig *conf = GeneralConfig::instance();
@@ -563,13 +563,13 @@ void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
 
   if(status == GpsNmea::validFix)
     {
-      cuApp->actionToggleManualInFlight->setEnabled(true);
+      _mainWindow->actionToggleManualInFlight->setEnabled(true);
     }
   else
     {
-      if(!cuApp->actionToggleManualInFlight->isChecked())
+      if(!_mainWindow->actionToggleManualInFlight->isChecked())
         {
-          cuApp->actionToggleManualInFlight->setEnabled(false);
+          _mainWindow->actionToggleManualInFlight->setEnabled(false);
         }
     }
 }
