@@ -7,31 +7,18 @@
 </head>
 
 <body>
+
 <table width="100%">
-
-  <tbody>
-
     <tr>
-
       <td></td>
-
       <td align="center"><a href="cumulus.html">start</a></td>
-
       <td></td>
-
     </tr>
-
     <tr>
-
       <td align="left"><a href="cumulus-settings-gps.html">back</a></td>
-
       <td align="center"><a href="cumulus-settings.html">overview</a></td>
-
       <td align="right"><a href="cumulus-settings-map-objects.html">next</a></td>
-
     </tr>
-
-  </tbody>
 </table>
 
 <h3 align="center">Settings</h3>
@@ -43,41 +30,36 @@ basic data.</p>
 
 <dl>
 
-  <dt><b>Maps</b></dt>
+<dt><b>Maps</b></dt>
 
-  <dd> As loaction for the map data for Maemo (Nokia Internet
-Tablet) you
-should define a directory on one of the MMCs. With the help of
-the button <i>Maps</i> you can open a directory selection
-dialog and
-navigate to the MMC locations (/media/mmc...) In the text field beside
-the button you can
-see your done selection. You can modify the text field also by hand and
-set so your preferred location. </dd>
+<dd>
+As loaction for the map data for Maemo (Nokia Internet Tablet)
+you should define a directory on one of the SD cards. With the help of
+the button <i>Maps</i> you can open a directory selection dialog and
+navigate to the SD card locations to find under <i>/media/mmc[1|2]</i>.
+In the text field beside the button you can see your done selection.
+You can modify the text field also by hand and set so your preferred location.
+</dd>
 
-  <dt><b>Projection</b></dt>
+<dt><b>Projection</b></dt>
 
-  <dd>The raw maps Cumulus uses are not projected. Therefore,
+<dd>The raw maps Cumulus uses are not projected. Therefore,
 they are projected on first loading. There are many types of map
 projections available. You need a projection because the earth is a
 sphere (or close to it, anyway) and your map is flat.
-    <p>Cumulus supports two projections: </p>
 
-    <ul>
+<p>Cumulus supports two projections: </p>
 
-      <li><i>Plate Carr&eacute;e</i> - Equidistant
-Cylindrical Projection </li>
+<ul>
+  <li><i>Plate Carr&eacute;e</i> - Equidistant Cylindrical Projection</li>
+  <li><i>Lambert</i> - Conical Orthomorphic Projection</li>
+</ul>
 
-      <li><i>Lambert</i> - Conical Orthomorphic
-Projection </li>
-
-    </ul>
-
-    <p>The former is computationally simpler and thus preferred in most
+<p>The former is computationally simpler and thus preferred in most
 situations. The latter is more complex, so your maps will take much
 longer to load. It is however more realistic.
-    </p>
-    <p>Each map projection needs a basis from where to work. For
+</p>
+<p>Each map projection needs a basis from where to work. For
 the <i>Plate Carr&eacute;e</i> projection, choose a
 parallel close to your home base. For <i>Lambert</i>
 projection you should select should select the parallels so that they
@@ -86,7 +68,6 @@ parallels from your official flying map. Then you will have an equal
 look like these maps. You should select the longitude from the middle
 of the area you are flying. It is needed because of some technical
 reasons, not for the projection itself.</p>
-
 After changing the projection kind or the standard
 parallel values, Cumulus will need to recompile your map files. <b>Please
 note that:</b> If you don't set the projection options correctly,
@@ -95,16 +76,16 @@ is especially so if you are far away from the coordinates used in the
 projection. If you are on a different hemisphere, you will need to
 change your projection! </dd>
 
-  <dt><b>Map Deletion</b></dt>
+<dt><b>Map Deletion</b></dt>
 
-  <dd>Cumulus can save space by deleting the original maps once
+<dd>Cumulus can save space by deleting the original maps once
 they are projected. It is a good idea to do so if you don't need to
 adjust your projection after you initially set it. Otherwise you have
 to reinstall the original map files.</dd>
 
-  <dt><b>Map Management</b></dt>
+<dt><b>Map Management</b></dt>
 
-  <dd>Cumulus supports two strategies for keeping maps in memory.
+<dd>Cumulus supports two strategies for keeping maps in memory.
 Maps are only loaded if needed, but they can either stay there until
 they really need to be moved out of memory, or they can be removed
 sooner. The former stategy is more suited for users who want to zoom in
@@ -116,30 +97,16 @@ to use the second strategy. </dd>
 </dl>
 
 <table width="100%">
-
-  <tbody>
-
     <tr>
-
       <td></td>
-
       <td align="center"><a href="cumulus.html">start</a></td>
-
       <td></td>
-
     </tr>
-
     <tr>
-
       <td align="left"><a href="cumulus-settings-gps.html">back</a></td>
-
       <td align="center"><a href="cumulus-settings.html">overview</a></td>
-
       <td align="right"><a href="cumulus-settings-map-objects.html">next</a></td>
-
     </tr>
-
-  </tbody>
 </table>
 
 </body>

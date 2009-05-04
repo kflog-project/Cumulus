@@ -27,39 +27,54 @@
 
 <p><b>Airfields</b></p>
 
-<p>On this page you can set some special options on your airfield
-data source</p>
+<p>In the Welt2000 area you can set different options for airfield
+data loading.</p>
 
 <dl>
 
   <a name="Welt2000Filter"></a>
   <dt><b>Welt2000 Country Filter</b></dt>
 
-  <dd>Here you can define the countries to be read from the Welt2000
+  <dd>
+  Here you can define the countries to be read from the Welt2000
   file. Several countries can be entered as list separated by
-commas or spaces. The country identifiers have to be coded according to
-ISO-3166. If you define countries here, you should not do the same in
-the configuration file of welt2000.conf. The definitions from the GUI
-surface will overwrite the FLITER rule in the configuration file.</dd>
-
-  <dt></dt>
+	commas or spaces. The country identifiers have to be coded according to
+	ISO-3166. If you define countries here, you should not do the same in
+	the configuration file of welt2000.conf. The definitions from the GUI
+	surface will overwrite the FLITER rule in the configuration file.
+	</dd>
 
   <dt><b>Welt2000 Radius Filter</b></dt>
 
-  <dd>As alternative to the country filter you can define a
-radius around your home position. All airfields laying inside this
-radius will be read from Welt2000 data file. This option is only
-available, when no country filter has been setup. If the radius is
-zero, then internally a radius of 500 Kilometers is assumed.</dd>
+  <dd>
+  As alternative to the country filter you can define a
+	radius around your home position. All airfields laying inside this
+	radius will be read from the Welt2000 data file. This option is only
+	available, when no country filter has been setup. If the radius is
+	zero, then internally a radius of 500 Kilometers is assumed.
+	<br>
+	<b>Please Note!</b> If the home position is too far away from the area
+	where you do fly, no airfield data are to see on the map.
+	</dd>
 
-  <dt></dt>
+  <dt><b>Welt2000 Load Outlandings</b></dt>
+  
+  <dd>
+  If the check box <i>Load Outlandings</i> is activated all outlandings
+  contained in the selected region will be loaded too.
+  </dd>
 
   <dt><b>Welt2000 Data Reload</b></dt>
 
-  <dd>If the home position or the configuration are modified,
-cumulus will trigger an automatic reload of Welt2000 data. </dd>
+  <dd>
+  If the home position or the configuration are modified,
+  cumulus will trigger an automatic reload of Welt2000 data.
+  </dd>  
 
 </dl>
+
+In the list display area you can define some general properties of the
+airfield, waypoint, emergency lists.
 
 <table width="100%">
   <tbody>
