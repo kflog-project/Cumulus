@@ -98,12 +98,6 @@ class WPInfoWidget : public QWidget
     void setButtonsVisibility();
 
     /**
-     * get back the current state of cumlus. In flight
-     * true, otherwise false
-     */
-    bool inFlight();
-
-    /**
      * This method actually fills the widget with the info.
      */
     void writeText();
@@ -192,7 +186,7 @@ class WPInfoWidget : public QWidget
     int _lastView;
 
     /** contains a ref to the parent, the application */
-    MainWindow *cuApp;
+    MainWindow *mainWindow;
   };
 
 #endif

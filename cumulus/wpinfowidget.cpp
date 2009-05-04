@@ -42,10 +42,10 @@ extern MapContents  *_globalMapContents;
 extern Calculator   *calculator;
 
 WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
-    QWidget(parent)
+  QWidget(parent)
 {
   setObjectName("WPInfoWidget");
-  cuApp = parent;
+  mainWindow = parent;
   _lastView = MainWindow::mapView;
   _wp.name = "";
   arrivalInfo = 0;
@@ -77,7 +77,7 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
   connect(cmdAddWaypoint, SIGNAL(clicked()),
           this, SLOT(slot_addAsWaypoint()));
 
-  cmdSetHome = new QPushButton(tr("New Home"), this);
+  cmdSetHome = new QPushButton(tr("Home"), this);
   cmdSetHome->setFont(bfont);
   buttonrow2->addWidget(cmdSetHome);
   connect(cmdSetHome, SIGNAL(clicked()),
@@ -159,16 +159,23 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint& wp)
   // save passed waypoint
   _wp = wp;
 
-  // Check if new point is in waypoint list, so make sure we can add it.
+  // Check if new point is in the waypoint list, so make sure we can add it.
   if (_globalMapContents->isInWaypointList(wp.origP))
-    cmdAddWaypoint->hide();
+    {
+      cmdAddWaypoint->hide();
+    }
   else
-    cmdAddWaypoint->show();
+    {
+      cmdAddWaypoint->show();
+    }
 
   // check, if current home position is different from waypoint
   QPoint home = _globalMapMatrix->getHomeCoord();
 
-  if( home == wp.origP || inFlight() )
+  // Show the home button only if we are not to fast in move to avoid
+  // wrong usage. The redefinition of the home position can trigger
+  // a reload of the airfield list.
+  if( home == wp.origP || calculator->moving() )
     {
       cmdSetHome->hide();
     }
@@ -177,9 +184,7 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint& wp)
       cmdSetHome->show();
     }
 
-  // Check if Waypoint is not selected, so make sure we can select
-  // it.
-
+  // Check if Waypoint is not selected, so make sure we can select it.
   const wayPoint *calcWp = calculator->getselectedWp();
 
   if( calcWp )
@@ -239,10 +244,7 @@ void WPInfoWidget::showEvent(QShowEvent *)
   // qDebug("WPInfoWidget::showEvent(): name=%s", name());
 
   // resize to size of parent, could be changed in the meantime as the widget was hidden
-  resize(cuApp->size());
-
-  // set focus to text widget
-//  text->setFocus();
+  resize(mainWindow->size());
 }
 
 /** This method actually fills the widget with the info. */
@@ -259,7 +261,6 @@ void WPInfoWidget::writeText()
       // display info from waypoint
       QString itxt;
       QString tmp;
-      int iTmp;
       bool start = false;
       QString table = "<p><table cellpadding=5 width=100%>";
 
@@ -267,22 +268,14 @@ void WPInfoWidget::writeText()
 
       if (!_wp.icao.isEmpty())
         {
-          itxt+=",&nbsp;"+ _wp.icao;
+          itxt += ",&nbsp;"+ _wp.icao;
         }
 
       itxt+= ")<p>" + BaseMapElement::item2Text(_wp.type, tr("(unknown)"));
 
       if (_wp.isLandable)
         {
-          itxt+= "</b></center>";
-
-          iTmp=_wp.surface;
-
-          if( iTmp > 3 )
-            iTmp = 0;
-          // qDebug("_wp.surface %d", _wp.surface );
-          if (iTmp<0)
-            iTmp=0;
+          itxt += "</b></center>";
 
           QString tmp2;
 
@@ -301,7 +294,7 @@ void WPInfoWidget::writeText()
             }
 
           itxt += table + "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (" +
-            Runway::item2Text(iTmp) + ")</td>" +
+            Runway::item2Text(_wp.surface, tr("Unknown")) + ")</td>" +
             "<td>" + tr("Length: ") + "</td><td><b>";
 
           if( _wp.length <= 0 )
@@ -325,7 +318,6 @@ void WPInfoWidget::writeText()
         {
           tmp = QString("<tr><td>" + tr("Frequency:") + "</td><td><b>%1 MHz</b></td>").arg(_wp.frequency,0,'f',3);
           itxt += tmp;
-//          itxt+=tmp.sprintf("<tr><td>" + tr("Frequency:") + "</td><td><b>%1.3f MHz</b></td>", _wp.frequency);
         }
       else
         {
@@ -414,7 +406,7 @@ void WPInfoWidget::slot_SwitchBack()
       _lastView = MainWindow::mapView;
     }
 
-  cuApp->setView((MainWindow::appView)_lastView);
+  mainWindow->setView((MainWindow::appView)_lastView);
 }
 
 
@@ -482,7 +474,6 @@ void WPInfoWidget::slot_setAsHome()
       emit newHomePosition( _wp.origP );
     }
 
-  slot_KeepOpen();
   cmdSetHome->hide();
 }
 
@@ -519,19 +510,3 @@ void WPInfoWidget::slot_arrivalClose()
   text->setFocus();
   show();
 }
-
-/** get back the current state of cumulus. In flight true, otherwise false */
-bool WPInfoWidget::inFlight()
-{
-  extern Calculator* calculator;
-
-  if( calculator->currentFlightMode() == Calculator::unknown ||
-      calculator->currentFlightMode() == Calculator::standstill ||
-      ! GpsNmea::gps->getConnected() )
-    {
-      return false;
-    }
-
-  return true;
-}
-
