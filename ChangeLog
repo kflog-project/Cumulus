@@ -17,7 +17,8 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.2.x (Development based on X11/Qt-4.5.x)
 -------------------------------------------------
-[o] 2009-04-29 AP: Home button to AirFieldListView added.
+[o] 2009-05-04 AP: Outlandings added to task editor.
+[o] 2009-04-29 AP: Home button to AirfieldListView added.
 [o] 2009-04-29 AP: Zoom buttons on the map enlarged by 10 pixels more under
                    Maemo for better finger touch.
 [+] 2009-04-29 AP: Outlandings read from Welt2000 file and displayed at the map and
