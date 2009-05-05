@@ -6,8 +6,9 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2001 by Harald Maier, 2002 André Somers,
- **                   2008 Axel Pauli
+ **   Copyright (c):  2001      by Harald Maier
+ **                   2002      by André Somers,
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -30,8 +31,10 @@ extern MapMatrix *_globalMapMatrix;
 
 #define KFLOG_FILE_MAGIC 0x404b464c
 #define FILE_TYPE_WAYPOINTS 0x50
+
 #define WP_FILE_FORMAT_ID 100
-#define WP_FILE_FORMAT_ID_2 101
+#define WP_FILE_FORMAT_ID_1 101
+#define WP_FILE_FORMAT_ID_2 102 // runway direction handling modified
 
 WaypointCatalog::WaypointCatalog()
 {
@@ -115,14 +118,16 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint>& wpList )
 
           in >> fileFormat;
 
-          if (fileFormat != WP_FILE_FORMAT_ID && fileFormat != WP_FILE_FORMAT_ID_2)
+          if ( fileFormat != WP_FILE_FORMAT_ID &&
+               fileFormat != WP_FILE_FORMAT_ID_1 &&
+               fileFormat != WP_FILE_FORMAT_ID_2 )
             {
               qWarning("Waypoint file does not have the correct format. It returned %d, where %d was expected.", fileFormat, WP_FILE_FORMAT_ID);
               return false;
             }
-          //from here on, we assume that the file has the correct format.
 
-          while(!in.atEnd())
+          // from here on, we assume that the file has the correct format.
+          while( !in.atEnd() )
             {
               // read values from file
               in >> wpName;
@@ -139,14 +144,25 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint>& wpList )
               in >> wpSurface;
               in >> wpComment;
 
-              if (fileFormat>=WP_FILE_FORMAT_ID_2)
+              if( fileFormat>=WP_FILE_FORMAT_ID_1 )
                 {
                   in >> wpImportance;
                 }
               else
                 {
-                  wpImportance=1; //normal importance
-                };
+                  wpImportance = wayPoint::Normal;
+                }
+
+              if( fileFormat < WP_FILE_FORMAT_ID_2 )
+                {
+                  // Runway has only one direction entry 0...360.
+                  // We split it into two parts.
+                  int rwh1 = wpRunway <= 180 ? wpRunway+180 : wpRunway-180;
+                  int rwh2 = rwh1 <= 180 ? rwh1+180 : rwh1-180;
+
+                  // put both directions into one variable, each in a byte
+                  wpRunway = (rwh1/10) * 256 + (rwh2/10);
+                }
 
               // create waypoint object and set the correct properties
               wayPoint wp;
@@ -161,7 +177,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint>& wpList )
               wp.elevation = wpElevation;
               wp.frequency = wpFrequency;
               wp.isLandable = wpLandable;
-              wp.runway =wpRunway;
+              wp.runway = wpRunway;
               wp.length = wpLength;
               wp.surface = wpSurface;
               wp.comment = wpComment;
@@ -238,7 +254,9 @@ bool WaypointCatalog::write( QString *catalog, QList<wayPoint>& wpList )
       // write file header
       out << quint32(KFLOG_FILE_MAGIC);
       out << qint8(FILE_TYPE_WAYPOINTS);
-      out << quint16(WP_FILE_FORMAT_ID_2); //use the new format with importance field.
+
+      // Use the new format with importance field and two runway directions.
+      out << quint16(WP_FILE_FORMAT_ID_2);
 
       for (int i = 0; i < wpList.count(); i++)
         {

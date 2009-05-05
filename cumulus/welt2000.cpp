@@ -689,7 +689,7 @@ bool Welt2000::parse( QString& path,
 
   while( ! in.atEnd() )
     {
-      bool ok;
+      bool ok, ok1;
       QString line, buf;
       line= in.readLine(128);
       lineNo++;
@@ -1086,23 +1086,47 @@ bool Welt2000::parse( QString& path,
           frequency += "0";
         }
 
-      // runway direction as two digits, we consider only the first entry
+      /* Runway description from Welt2000.txt file
+       *
+       * A: 08/26 MEANS THAT THERE IS ONLY ONE RUNWAYS 08 AND (26=08 + 18)
+       * B: 17/07 MEANS THAT THERE ARE TWO RUNWAYS,
+       *          BUT 17 IS THE MAIN RWY SURFACE LENGTH
+       * C: IF BOTH DIRECTIONS ARE IDENTICAL (04/04),
+       *    THIS DIRECTION IS STRONGLY RECOMMENDED
+       */
+
+      // runway direction have two digits, we consider both directions
       buf = line.mid(32,2).trimmed();
 
       ok = false;
+      ok1 = false;
+
       ushort rwDir = 0;
+      ushort rwDir1 = 0;
 
       if( ! buf.isEmpty() )
         {
           rwDir = buf.toUShort(&ok);
         }
 
-      if( ! ok )
+      // extract second direction
+      buf = line.mid(34,2).trimmed();
+
+      if( ! buf.isEmpty() )
+        {
+          rwDir1 = buf.toUShort(&ok1);
+        }
+
+      if( ! ok || ! ok1 || rwDir < 1 || rwDir > 36 || rwDir1 < 1 || rwDir1 > 36 )
         {
           qWarning( "W2000, Line %d: %s (%s) missing or wrong runway direction, set value to 0!",
                     lineNo, afName.toLatin1().data(), country.toLatin1().data() );
-          rwDir = 0;
+          rwDir = rwDir1 = 0;
         }
+
+      // Put both directions together in one variable, first direction in the
+      // upper part.
+      rwDir = rwDir*256 + rwDir1;
 
       // runway length in meters, must be multiplied by 10
       buf = line.mid(29,3).trimmed();
@@ -1469,7 +1493,7 @@ bool Welt2000::readCompiledFile( QString &path,
       // in >> rwOpen;
 
       // create an runway object
-      Runway rw( rwLen ,rwDir*10, rwSurface, 1 );
+      Runway rw( rwLen ,rwDir, rwSurface, 1 );
 
       // read comment
       ShortLoad(in, utf8_temp);

@@ -46,9 +46,9 @@ Airfield::Airfield( const QString& name,
   rwShift = 90/10; // default direction is 90 degrees
 
   // calculate the real runway shift in 1/10 degrees.
-  if ( rwData.direction <= 360 )
+  if ( rwData.direction/256 <= 36 )
     {
-      rwShift = (rwData.direction >= 180 ? rwData.direction-180 : rwData.direction) / 10;
+      rwShift = (rwData.direction/256 >= 18 ? (rwData.direction/256)-18 : rwData.direction/256);
     }
 }
 

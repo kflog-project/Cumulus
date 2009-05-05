@@ -277,25 +277,42 @@ void WPInfoWidget::writeText()
         {
           itxt += "</b></center>";
 
-          QString tmp2;
+          QString tmp2 = tr("Unknown");
 
-          if( _wp.runway < 0 || _wp.runway > 360 )
+          // @AP: show runway in both directions
+          uint rwh1 = _wp.runway / 256;
+          uint rwh2 = _wp.runway % 256;
+
+          qDebug("wp.rw=%d rwh1=%d rwh2=%d", _wp.runway, rwh1, rwh2);
+
+          if( rwh1 > 0 && rwh1 <= 36 && rwh2 > 0 && rwh2 <= 36 )
             {
-              tmp2 = tr("Unknown");
-            }
-          else
-            {
-              // @AP: show runway in both directions, start with the lowest one
-              int rw1 =_wp.runway;
-              int rw2 = rw1 <= 180 ? rw1+180 : rw1-180;
-              int h1 = rw1 < rw2 ? rw1/10 : rw2/10;
-              int h2 = rw1 < rw2 ? rw2/10 : rw1/10;
-              tmp2 = QString("<b>%1/%2</b>").arg(h1, 2, 10, QLatin1Char('0')).arg(h2, 2, 10, QLatin1Char('0'));
+              // heading lays in the expected range
+             if( rwh1 == rwh2 || abs( rwh1-rwh2) == 18 )
+                {
+                  // a) If both directions are equal, there is only one landing direction.
+                  // b) If the difference is 18, there are two landing directions,
+                  //    where the first direction is the preferred one.
+                  tmp2 = QString("<b>%1/%2</b>").arg(rwh1, 2, 10, QLatin1Char('0')).
+                                 arg(rwh2, 2, 10, QLatin1Char('0'));
+                }
+              else
+              {
+                int rwh1inv = rwh1 <= 18 ? rwh1+18 : rwh1-18;
+                int rwh2inv = rwh2 <= 18 ? rwh2+18 : rwh2-18;
+
+                // There are two different runways available
+                tmp2 = QString( "<b>%1/%2, %3/%4</b>").
+                                arg(rwh1, 2, 10, QLatin1Char('0')).
+                                arg(rwh1inv, 2, 10, QLatin1Char('0')).
+                                arg(rwh2, 2, 10, QLatin1Char('0')).
+                                arg(rwh2inv, 2, 10, QLatin1Char('0'));
+              }
             }
 
           itxt += table + "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (" +
-            Runway::item2Text(_wp.surface, tr("Unknown")) + ")</td>" +
-            "<td>" + tr("Length: ") + "</td><td><b>";
+                  Runway::item2Text(_wp.surface, tr("Unknown")) + ")</td>" +
+                  "<td>" + tr("Length: ") + "</td><td><b>";
 
           if( _wp.length <= 0 )
             {

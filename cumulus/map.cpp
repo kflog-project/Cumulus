@@ -1390,8 +1390,7 @@ void Map::__drawWaypoints(QPainter* painter, QList<wayPoint*> &drawnWp)
                                  _globalMapConfig->getMagentaCircle(iconSize));
           }
 
-        int rw2 = wp.runway >= 180 ? wp.runway-180 : wp.runway;
-        int shift = ((rw2)/10);
+        int shift = wp.runway/256 >= 18 ? (wp.runway/256)-18 : wp.runway/256;
 
         if( _globalMapConfig->isRotatable(wp.type) )
           {

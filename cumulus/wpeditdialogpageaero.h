@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by AndrÃ© Somers,
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -23,12 +24,11 @@
 #include <QComboBox>
 #include <QCheckBox>
 
-#include "degreespinbox.h"
 #include "waypoint.h"
 
 /**
  * Provides the WpEditDialog page with aeronautical information
- * @author André Somers
+ * @author AndrÃ© Somers
  */
 class WpEditDialogPageAero : public QWidget
   {
@@ -51,12 +51,13 @@ class WpEditDialogPageAero : public QWidget
     void slot_load(wayPoint * wp);
 
   private:
-    QLineEdit * edtICAO;
-    QLineEdit * edtFrequency;
-    DegreeSpinBox * edtRunway;
-    QLineEdit * edtLength;
-    QCheckBox * chkLandable;
-    QComboBox * cmbSurface;
+    QLineEdit *edtICAO;
+    QLineEdit *edtFrequency;
+    QComboBox *edtRunway1;
+    QComboBox *edtRunway2;
+    QLineEdit *edtLength;
+    QCheckBox *chkLandable;
+    QComboBox *cmbSurface;
 
     int getSurface();
     void setSurface(int s);
