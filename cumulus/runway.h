@@ -66,7 +66,8 @@ public:
   unsigned short length;
 
   /**
-   * The direction of the runway, given in steps of 10 degree.
+   * The direction of the runway, given in steps of 1/10 degree (0-36).
+   * Two directions are stored in every byte. (dir1*256+dir2).
    */
   unsigned short direction;
 
