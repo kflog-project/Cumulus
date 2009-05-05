@@ -283,7 +283,7 @@ void WPInfoWidget::writeText()
           uint rwh1 = _wp.runway / 256;
           uint rwh2 = _wp.runway % 256;
 
-          qDebug("wp.rw=%d rwh1=%d rwh2=%d", _wp.runway, rwh1, rwh2);
+          // qDebug("wp.rw=%d rwh1=%d rwh2=%d", _wp.runway, rwh1, rwh2);
 
           if( rwh1 > 0 && rwh1 <= 36 && rwh2 > 0 && rwh2 <= 36 )
             {
