@@ -18,7 +18,6 @@ HEADERS = airfieldlistview.h \
     basemapelement.h \
     configwidget.h \
     calculator.h \
-    degreespinbox.h \
     distance.h \
     elevationcolorimage.h \
     filetools.h \
@@ -125,7 +124,6 @@ SOURCES = airfieldlistview.cpp \
     basemapelement.cpp \
     configwidget.cpp \
     calculator.cpp \
-    degreespinbox.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \
