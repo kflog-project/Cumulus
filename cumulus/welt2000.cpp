@@ -1198,7 +1198,7 @@ bool Welt2000::parse( QString& path,
         }
 
       // create an runway object
-      Runway rw( rwLen, rwDir*10, rwSurface, true );
+      Runway rw( rwLen, rwDir, rwSurface, true );
 
       Airfield af( afName, icao.trimmed(), gpsName, afType,
                    wgsPos, position, rw, elevation, frequency, commentLong );
