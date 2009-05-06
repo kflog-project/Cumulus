@@ -314,7 +314,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
         }
 
       //qDebug("%s",slst[2].toLatin1().data());
-      if (slst[2]!= "V")
+      if (slst[2] != "V")
         { /* Data status A=OK, V=warning */
           fixOK();
           __ExtractTime(slst[1]);
@@ -334,6 +334,10 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
               QDateTime utc( _lastDate, _lastTime );
               setSystemClock(utc);
             }
+        }
+      else
+        {
+          fixNOK();
         }
 
       return;
@@ -357,7 +361,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
    */
 
   if (slst[0]== "$GPGLL")
-    { // GGL - Geographic Poistion - Latitude/Longitude
+    { // GGL - Geographic Position - Latitude/Longitude
       if ( slst.size() < 7 )
         {
           qWarning("$GPGLL contains too less parameters!");
@@ -370,6 +374,10 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
           __ExtractTime(slst[5]);
           __ExtractCoord(slst[1],slst[2],slst[3],slst[4]);
           // qDebug("GPGLL interpreted");
+        }
+      else
+        {
+          fixNOK();
         }
 
       return;
@@ -416,7 +424,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
           return;
         }
 
-      if ( slst[6]!= "0" )
+      if ( slst[6] != "0" && ! slst[6].isEmpty() )
         { /*a value of 0 means invalid fix and we don't need that one */
           fixOK();
           __ExtractTime(slst[1]);
@@ -430,6 +438,10 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
           __ExtractAltitude(slst[9],slst[10],slst[11],slst[12]);
           __ExtractSatcount(slst[7]);
+        }
+      else if( slst[6] == "0" )
+        {
+          fixNOK();
         }
 
       return;
@@ -725,6 +737,11 @@ void GpsNmea::__ExtractCambridgeW(const QStringList& stringList)
  */
 QTime GpsNmea::__ExtractTime(const QString& timestring)
 {
+  if( timestring.isEmpty() )
+    {
+      return QTime();
+    }
+
   QString hh (timestring.left(2));
   QString mm (timestring.mid(2,2));
   QString ss (timestring.mid(4,2));
@@ -743,12 +760,12 @@ QTime GpsNmea::__ExtractTime(const QString& timestring)
       return res;
     }
 
-  if (_lastTime!=res)
+  if (_lastTime != res)
     {
       /**
-       * The fixtime has been changed, now we are starting a new fix.
+       * The fix time has been changed, now we are starting a new fix.
        * This means that all info from the previous fix has been send,
-       * and can be analysed.
+       * and can be analyzed.
        */
 
       emit newFix();
@@ -763,6 +780,11 @@ QTime GpsNmea::__ExtractTime(const QString& timestring)
     NWEA sentence as "ddmmyy". */
 QDate GpsNmea::__ExtractDate(const QString& datestring)
 {
+  if( datestring.isEmpty() )
+    {
+      return QDate();
+    }
+
   QString dd (datestring.left(2));
   QString mm (datestring.mid(2,2));
   QString yy (datestring.right(2));
@@ -791,6 +813,12 @@ QDate GpsNmea::__ExtractDate(const QString& datestring)
 Speed GpsNmea::__ExtractKnotSpeed(const QString& speedstring)
 {
   Speed res;
+
+  if( speedstring.isEmpty() )
+    {
+      return res;
+    }
+
   res.setKnot(speedstring.toDouble());
 
   if (res!=_lastSpeed)
@@ -798,6 +826,7 @@ Speed GpsNmea::__ExtractKnotSpeed(const QString& speedstring)
       _lastSpeed=res;
       emit newSpeed();
     }
+
   return (res);
 }
 
@@ -860,7 +889,13 @@ QPoint GpsNmea::__ExtractCoord(const QString& slat, const QString& slatNS, const
 /** Extract the heading from the NMEA sentence. */
 double GpsNmea::__ExtractHeading(const QString& headingstring)
 {
+  if( headingstring.isEmpty() )
+    {
+      return 0.0;
+    }
+
   double res = headingstring.toDouble();
+
   if (res!=_lastHeading)
     {
       _lastHeading=res;
@@ -986,7 +1021,7 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
 void GpsNmea::__ExtractSatcount(const QString& satcount)
 {
   int count = satcount.toInt();
-  
+
   if( count != _lastSatInfo.satCount )
     {
       _lastSatInfo.satCount = count;
@@ -1066,6 +1101,20 @@ void GpsNmea::fixOK()
       _status = validFix;
       emit statusChange(_status);
       qDebug("GPS FIX OBTAINED!");
+    }
+}
+
+
+/** This function is called to indicate that a valid fix has been lost.
+ *  It necessary updates the connection status.
+ */
+void GpsNmea::fixNOK()
+{
+  if ( _status == validFix )
+    {
+      _status = noFix;
+      emit statusChange(_status);
+      qDebug("GPS FIX Lost!");
     }
 }
 

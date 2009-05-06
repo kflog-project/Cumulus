@@ -420,6 +420,8 @@ class GpsNmea : public QObject
     void dataOK();
     /** This function is called to indicate that a good fix has been received. */
     void fixOK();
+    /** This function is called to indicate that a negative fix has been received. */
+    void fixNOK();
 
     /** This function calculates the checksum in the sentence. */
     static uint calcCheckSum (int pos, const QString& sentence);
