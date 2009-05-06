@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel pauli
+**   Copyright (c):  2002      by André Somers,
+**                   2008-2009 by Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -38,7 +39,7 @@ public:
 
     AirfieldListWidget( QVector<enum MapContents::MapContentsListID> &itemList,
                         QWidget *parent=0);
-                        
+
     ~AirfieldListWidget();
 
     /**

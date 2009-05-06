@@ -38,6 +38,13 @@ AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsLis
   wp = new wayPoint();
 
   this->itemList = itemList;
+
+  // For outlandings we do display the comment instead of ICAO in the list view
+  if( itemList.at(0) == MapContents::OutLandingList )
+    {
+      QTreeWidgetItem *headerItem = list->headerItem();
+      headerItem->setText( 2, tr("Comment") );
+    }
 }
 
 AirfieldListWidget::~AirfieldListWidget()
@@ -171,7 +178,16 @@ AirfieldListWidget::_AirfieldItem::_AirfieldItem(Airfield* site):
   // name = name.left(8);
   setText(0, name);
   setText(1, site->getName());
-  setText(2, site->getICAO());
+
+  if( site->getTypeID() != BaseMapElement::Outlanding )
+    {
+      setText(2, site->getICAO());
+    }
+  else
+    {
+      setText(2, site->getComment());
+    }
+
   // create landing site type icon
   setIcon( 0, _globalMapConfig->getListIcon(site->getTypeID()) );
 }

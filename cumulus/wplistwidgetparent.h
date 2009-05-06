@@ -7,6 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2008 by Josua Dietze
+**                   2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -31,16 +32,16 @@
  * airfield list view, waypoint list view and task editor.
  * Contains standard airfield list and attached filters (filter button row on
  * demand).
- *  
+ *
  * Subclassed by airfieldlistwidget and waypointlistwidget.
- *  
+ *
  * @author Josua Dietze
  */
- 
+
 class WpListWidgetParent : public QWidget
 {
     Q_OBJECT
-    
+
 public:
     WpListWidgetParent(QWidget *parent=0);
 
@@ -77,7 +78,7 @@ public:
       list->resizeColumnToContents(1);
       list->resizeColumnToContents(2);
     };
-  
+
 public slots: // Public slots
 
     /**
