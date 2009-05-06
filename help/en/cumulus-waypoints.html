@@ -94,21 +94,48 @@ easily maintain the waypoint list.
   
   <dd>
     If you want to add, modify or delete waypoints use the icons above the
-    waypoint list. 
-    
-    <p><b>It is not recommended that you do this in flight!</b></p>
+    waypoint list. <b>For security reason it is not recommended to do that
+    in flight!</b> If you press new or edit an editor is is opened with entry
+    fields for the waypoint properties.
+  </dd>
 
-    If you choose new or edit it is open an editor with entry fields for the
-    waypoint's properties. The <i>importance</i> property deserves some
-    explanation. To prevent overcrowding the map with waypoints
-    if you zoom out far, not all waypoints are drawn in at all zoom factors.
-    You can control which waypoints to draw by selecting the importance.
+  <dt><b>Waypoint importance</b></dt>
+
+  <dd>
+    The <i>importance</i> property deserves some explanation. To prevent
+    overcrowding the map with waypoints if you zoom out far, not all waypoints
+    are drawn at all zoom factors. You can control which waypoints is to draw by
+    selecting the importance.
     If you select <i>high</i> the waypoint will always be drawn. This would
     be appropriate for your home site and other important sites.
     If you select <i>normal</i> the waypoint will be drawn in normal zoom
     modes but not if you zoom out too much and the <i>low</i> importance
     waypoints are only drawn if you zoom in far enough. The currently
-    selected waypoint is always visible.
+    selected waypoint is always visible. In the configuration setup of Map
+    Objects you can the define the scale borders for every <i>importance</i>
+    property.
+    See <a href="cumulus-settings-map-objects.html#WaypointImportance">here</a>
+    for more information.
+  </dd>
+  
+  <dt><b>Waypoint runway directions</b></dt>
+
+  <dd>
+    In the wayoint editor you have two combo boxes for runway directions. The
+    handling of runway directions is a little bit tricky and derived from the
+    Welt2000 handling. The following possibilities do exist:
+    
+    <p><ul>
+		  <li><b>09/27</b> means there is one runway with two useable directions.
+                <b>Note! The difference between the two directions must be
+                always 18.</b>
+		  <li><b>09/09</b> means there is one runway with only one useable direction.
+		  <li><b>09/18</b> means there are two runways 09/27 and 18/36 with two
+                       useable directions.
+                       <b>Note! The difference between the two
+                       directions must not be equal 18.</b>
+    </p></ul>
+    
   </dd>
   
   <dt><b>Waypoint names and extra information</b></dt>
