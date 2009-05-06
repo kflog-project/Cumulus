@@ -89,7 +89,6 @@ Welt2000::~Welt2000()
     }
 }
 
-
 /**
  * search on default places a welt2000 file and load it. A source can
  * be the original ascii file or a compiled version of it. The results
@@ -1064,18 +1063,23 @@ bool Welt2000::parse( QString& path,
         }
 
       // frequency
-      QString frequency = line.mid(36,3) + "." +
-        line.mid(39,2).trimmed();
+      QString frequency = line.mid(36,3) + "." + line.mid(39,2).trimmed();
 
       double f = frequency.toDouble(&ok);
 
-      if( ( !ok || f < 117.97 || f > 137.0 ) && olField == false )
+      if( ( !ok || f < 117.97 || f > 137.0 ) )
         {
+          if( olField == false )
+        {
+              // Don't display warnings for outlandings
           qWarning( "W2000, Line %d: %s (%s) missing or wrong frequency, set value to 0!",
                     lineNo, afName.toLatin1().data(), country.toLatin1().data() );
-          frequency = "000.000";
         }
 
+          frequency = "000.000"; // reset frequency to unknown
+        }
+      else
+        {
       // check, what has to be appended as last digit
       if( line[40] == '2' || line[40] == '7' )
         {
@@ -1084,6 +1088,7 @@ bool Welt2000::parse( QString& path,
       else
         {
           frequency += "0";
+        }
         }
 
       /* Runway description from Welt2000.txt file
@@ -1233,10 +1238,6 @@ bool Welt2000::parse( QString& path,
           outbuf << quint8( afType );
           // airfield name with country
           ShortSave(outbuf, afName.toUtf8());
-
-          // airfield id
-          // ShortSave(outbuf, QString::number(++counter).toUtf8());
-
           // icao
           ShortSave(outbuf, icao.trimmed().toUtf8());
           // GPS name
@@ -1247,35 +1248,14 @@ bool Welt2000::parse( QString& path,
           outbuf << position;
           // elevation in meters
           outbuf << qint16( elevation);
-
-          // winch available is always set to no
-          // if( afType == BaseMapElement::Glidersite ) out << qint8(0);
-
-          // number of contact data, always set to one
-          // outbuf << qint8(1);
-
           // frequency written as e.g. 126.500, must be put into 16 bits
           outbuf << quint16(frequency.left(3).toInt()*1000+frequency.right(3).toInt()-100000);
-
-          // contact type
-          // outbuf << qint8(0);
-
-          // call sign
-          // ShortSave(outbuf, QString("").toUtf8());
-
-          // number of runways always set to one
-          // outbuf << qint8(1);
-
-          // runway direction
+          // two runway directions packed in a word
           outbuf << quint16(rwDir);
           // runway length in meters
           outbuf << quint16(rwLen);
           // runway surface
           outbuf << quint8(rwSurface);
-
-          // runway open, always true assumed
-          // outbuf << qint8(1);
-
           // comment
           ShortSave(outbuf, commentShort.toUtf8());
         }
@@ -1376,23 +1356,15 @@ bool Welt2000::readCompiledFile( QString &path,
 
   quint8 afType;
   QString afName;
-  // QString afNumber;
   QString icao;
   QString gpsName;
   WGSPoint wgsPos;
   QPoint position;
   qint16 elevation;
-  // qint8 winch;
-  // quint8 contactCount;
   quint16 inFrequency;
-  // qint8 contactType;
-  // QString callSign;
-  // quint8 rwCount;
-  quint16 rwDir; // 0 -> 360
+  quint16 rwDir; // 0...36, one value in every byte
   quint16 rwLen;
   quint8 rwSurface;
-  // qint8 rwOpen;
-
   QByteArray utf8_temp;
   QString frequency;
   QString comment;
@@ -1464,9 +1436,6 @@ bool Welt2000::readCompiledFile( QString &path,
       ShortLoad(in, utf8_temp);
       afName=QString::fromUtf8(utf8_temp);
 
-      // ShortLoad(in, utf8_temp);
-      // afNumber=QString::fromUtf8(utf8_temp);
-
       ShortLoad(in, utf8_temp);
       icao=QString::fromUtf8(utf8_temp);
       ShortLoad(in, utf8_temp);
@@ -1474,24 +1443,11 @@ bool Welt2000::readCompiledFile( QString &path,
       in >> wgsPos;
       in >> position;
       in >> elevation;
-
-      // if( afType == BaseMapElement::Glidersite ) in >> winch;
-      // in >> contactCount;
-
       in >> inFrequency;
       frequency.sprintf("%3d.%03d",(inFrequency+100000)/1000,(inFrequency)%1000);
-
-      // in >> contactType;
-      // ShortLoad (in, utf8_temp);
-      // callSign.fromUtf8(utf8_temp);
-      // in >> rwCount;
-
       in >> rwDir;
       in >> rwLen;
       in >> rwSurface;
-
-      // in >> rwOpen;
-
       // create an runway object
       Runway rw( rwLen ,rwDir, rwSurface, 1 );
 
