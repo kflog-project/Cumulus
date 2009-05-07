@@ -17,7 +17,13 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.2.x (Development based on X11/Qt-4.5.x)
 -------------------------------------------------
-[o] 2009-05-04 AP: Outlandings added to task editor.
+[o] 2009-05-06 AP: All runway directions are handled now according to the Welt2000
+                   definitions. That is a little bit tricky but consistent. Waypoint editor
+                   adapted to that new handling. Two runway directions can be defined via
+                   combo boxes. A valid runway directions comprises the range 01...36.
+                   The value 0 is used for unknown. Storage in waypoint file modified, old
+                   formats will be converted automatically to the new one.
+[o] 2009-05-04 AP: Outlanding fields added to task editor.
 [o] 2009-04-29 AP: Home button to AirfieldListView added.
 [o] 2009-04-29 AP: Zoom buttons on the map enlarged by 10 pixels more under
                    Maemo for better finger touch.
@@ -25,7 +31,7 @@ Cumulus 2.2.x (Development based on X11/Qt-4.5.x)
                    in the lists. New configuration option added to Welt2000 tabulator
                    to activate or deactivate the loading of outlandings. Labels
                    of outlandings can be switched on/off too now. Outlandings
-                   are too included in the reachable list.
+                   are included in the reachable list.
 [o] 2009-04-22 AP: Activating of external links in online help. Clicking on it will
                    start default browser of OS.
 [o] 2009-04-22 AP: Widget PreFlightGliderPage pilots name and units in spin boxes
