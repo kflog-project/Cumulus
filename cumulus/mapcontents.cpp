@@ -1954,6 +1954,7 @@ void MapContents::slotReloadWelt2000Data()
 
   airfieldList.clear();
   gliderSiteList.clear();
+  outLandingList.clear();
 
   _globalMapView->message( tr("Reloading Welt2000 started") );
 
