@@ -1785,7 +1785,7 @@ void MainWindow::slotRememberWaypoint()
     start of the program to read the initial configuration. */
 void MainWindow::slotReadconfig()
 {
-  qDebug("MainWindow::slotReadconfig()");
+  // qDebug("MainWindow::slotReadconfig()");
 
   GeneralConfig *conf = GeneralConfig::instance();
 
