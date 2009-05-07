@@ -95,10 +95,10 @@ void GpsNmea::resetDataObjects()
   _lastDate = QDate::currentDate(); // set date to a valid value
   cntSIVSentence = 1;
 
-  // init satellite info
+  // initialize satellite info
   _lastSatInfo.fixValidity = 1; //invalid
   _lastSatInfo.fixAccuracy = 999; //not very accurate
-  _lastSatInfo.satCount = 0; //no satelites in view;
+  _lastSatInfo.satCount = 0; //no satellites in view;
   _lastSatInfo.constellation = "";
   _lastSatInfo.constellationTime = QTime::currentTime();
   _lastClockOffset = 0;
@@ -246,7 +246,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   // Cambridge proprietary sentence starts with a ! sign
   if (sentence[0] != '$' && sentence[0] != '!')
     {
-      qWarning("Invalid GPS sentence! %s",sentence.toLatin1().data());
+      qWarning("Invalid GPS sentence! %s", sentence.toLatin1().data());
       return;
     }
 
@@ -338,6 +338,8 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       else
         {
           fixNOK();
+          __ExtractTime(slst[1]);
+          __ExtractDate(slst[9]);
         }
 
       return;
@@ -735,16 +737,17 @@ void GpsNmea::__ExtractCambridgeW(const QStringList& stringList)
 /**
  * This function returns a QTime from the time encoded in a MNEA sentence.
  */
-QTime GpsNmea::__ExtractTime(const QString& timestring)
+QTime GpsNmea::__ExtractTime(const QString& timeString)
 {
-  if( timestring.isEmpty() )
+  if( timeString.isEmpty() && timeString.size() < 6 )
     {
+      // qWarning("Invalid GPS time %s", timeString.toLatin1().data());
       return QTime();
     }
 
-  QString hh (timestring.left(2));
-  QString mm (timestring.mid(2,2));
-  QString ss (timestring.mid(4,2));
+  QString hh (timeString.left(2));
+  QString mm (timeString.mid(2,2));
+  QString ss (timeString.mid(4,2));
 
   // @AP: newer CF Cards can also provide milli seconds. In this case the time
   // format is defined as hhmmss.sss. But we will not use it to avoid problems
@@ -756,7 +759,7 @@ QTime GpsNmea::__ExtractTime(const QString& timestring)
   if ( ! res.isValid() )
     {
       qWarning("GpsNmea::__ExtractTime(): Invalid time %s! Ignoring it (%s, %d)",
-               timestring.toLatin1().data(), __FILE__, __LINE__ );
+               timeString.toLatin1().data(), __FILE__, __LINE__ );
       return res;
     }
 
@@ -778,31 +781,34 @@ QTime GpsNmea::__ExtractTime(const QString& timestring)
 
 /** This function returns a QDate from the date string encoded in a
     NWEA sentence as "ddmmyy". */
-QDate GpsNmea::__ExtractDate(const QString& datestring)
+QDate GpsNmea::__ExtractDate(const QString& dateString)
 {
-  if( datestring.isEmpty() )
+  if( dateString.isEmpty() && dateString.size() != 6 )
     {
+      // qWarning("Invalid GPS date %s", dateString.toLatin1().data());
       return QDate();
     }
 
-  QString dd (datestring.left(2));
-  QString mm (datestring.mid(2,2));
-  QString yy (datestring.right(2));
+  QString dd (dateString.left(2));
+  QString mm (dateString.mid(2,2));
+  QString yy (dateString.right(2));
 
   /*we assume that we only use this after the year 2000, which is
     reasonable since this is made 2002 ...*/
 
-  QDate res (yy.toInt() + 2000,mm.toInt(),dd.toInt());
+  bool ok1, ok2, ok3;
+
+  QDate res (yy.toInt(&ok1) + 2000, mm.toInt(&ok2), dd.toInt(&ok3) );
 
   // @AP: don't overtake invalid dates
-  if ( res.isValid() )
+  if ( ok1 && ok2 && ok3 && res.isValid() )
     {
-      _lastDate=res;
+      _lastDate = res;
     }
   else
     {
       qWarning("GpsNmea::__ExtractDate(): Invalid date %s! Ignoring it (%s, %d)",
-               datestring.toLatin1().data(), __FILE__, __LINE__ );
+               dateString.toLatin1().data(), __FILE__, __LINE__ );
     }
 
   return res;
@@ -810,48 +816,71 @@ QDate GpsNmea::__ExtractDate(const QString& datestring)
 
 
 /** This function returns a Speed from the speed encoded in knots */
-Speed GpsNmea::__ExtractKnotSpeed(const QString& speedstring)
+Speed GpsNmea::__ExtractKnotSpeed(const QString& speedString)
 {
   Speed res;
 
-  if( speedstring.isEmpty() )
+  if( speedString.isEmpty() )
     {
       return res;
     }
 
-  res.setKnot(speedstring.toDouble());
+  bool ok;
+  double speed = speedString.toDouble(&ok);
 
-  if (res!=_lastSpeed)
+  if( ok == false )
+    {
+      return res;
+    }
+
+  res.setKnot( speed );
+
+
+  if( res!=_lastSpeed )
     {
       _lastSpeed=res;
       emit newSpeed();
     }
 
-  return (res);
+  return res;
 }
 
 
 /** This function converts the coordinate data from the NMEA sentence to the internal QPoint format. */
-QPoint GpsNmea::__ExtractCoord(const QString& slat, const QString& slatNS, const QString& slon, const QString& slonEW)
+QPoint GpsNmea::__ExtractCoord(const QString& slat, const QString& slatNS,
+                               const QString& slon, const QString& slonEW)
 {
   /* The internal KFLog format for coordinates represents coordinates in 10.000'st of a minute.
      So, one minute corresponds to 10.000, one degree to 600.000 and one second to 167.
      KFLogCoord = degrees * 600000 + minutes * 10000
   */
 
+  if( slat.isEmpty() || slatNS.isEmpty() ||
+      slon.isEmpty() || slonEW.isEmpty() )
+      {
+        return QPoint();
+      }
+
   int lat = 0;
   int lon = 0;
   float fLat = 0.0;
   float fLon = 0.0;
 
-  lat  = slat.left(2).toInt();
-  fLat = slat.mid(2).toFloat();
+  bool ok1, ok2, ok3, ok4;
+
+  lat  = slat.left(2).toInt(&ok1);
+  fLat = slat.mid(2).toFloat(&ok2);
 
   // qDebug ("slat: %s", slat.toLatin1().data());
   // qDebug ("lat/fLat: %d/%f", lat, fLat);
 
-  lon  = slon.left(3).toInt();
-  fLon = slon.mid(3).toFloat();
+  lon  = slon.left(3).toInt(&ok3);
+  fLon = slon.mid(3).toFloat(&ok4);
+
+  if( !ok1 || !ok2 || !ok3 || !ok4 )
+    {
+      return QPoint();
+    }
 
   // qDebug ("slon: %s", slon.toLatin1().data());
   // qDebug ("lon/fLon: %d/%f", lon, fLon);
@@ -894,15 +923,22 @@ double GpsNmea::__ExtractHeading(const QString& headingstring)
       return 0.0;
     }
 
-  double res = headingstring.toDouble();
+  bool ok;
 
-  if (res!=_lastHeading)
+  double heading = headingstring.toDouble(&ok);
+
+  if( ok == false )
     {
-      _lastHeading=res;
+      return 0.0;
+    }
+
+  if ( heading !=_lastHeading )
+    {
+      _lastHeading = heading;
       emit newHeading();
     }
 
-  return res;
+  return heading;
 }
 
 /** Extracts the altitude from a NMEA GGA sentence */
