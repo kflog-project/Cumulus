@@ -51,7 +51,6 @@
 #undef BOUNDING_BOX
 // #define BOUNDING_BOX 1
 
-
 // type definition for compiled airfield files
 #define FILE_TYPE_AIRFIELD_C 0x62
 
@@ -79,7 +78,6 @@ Welt2000::Welt2000()
   c_baseTypeMap.insert( "UltraLight", BaseMapElement::UltraLight );
   c_baseTypeMap.insert( "HangGlider", BaseMapElement::HangGlider );
 }
-
 
 Welt2000::~Welt2000()
 {
@@ -675,9 +673,13 @@ bool Welt2000::parse( QString& path,
   // ARGEN2 ARGENBUEHL EISE?*ULM G 40082612342 686N474128E0095744DEN
   // BASAL2 BAD SALZUNGEN UL*ULM G 65092712342 233N504900E0101305DEN
   // FUERS1 FUERSTENWALDE   #EDALG 80112912650  55N522323E0140539DEO3
+  // German international airport, ICAO starts with EDD
   // BERLT1 BERLIN  TEGEL   #EDDTA303082611870  37N523335E0131716DEO
   // BERSC1 BERLIN SCHOENFEL#EDDBC300072512002  49N522243E0133114DEO
-  // BERTE1 BERLIN TEMPELHOF#EDDIC208092711810  52N522825E0132406DEO
+  // German military airport, ICAO starts with ET
+  // HOLZD1 HOLZDORF MIL    #ETSHA242092712210  82N514605E0131003DEQ0
+  // UL Fields new coding variant
+  // SIEWI1 SIEWISCH UL    !# ULMG 51082612342  89N514115E0141231DEO0
   // OUTLANDING EXAMPLES
   // ESPIN2 ESPINASSES     !*FL10S 3509271     648N442738E0061305FRQ0
   // BAERE2 BAERENTAL       *FELDS 2505231     906N475242E0080643DEO3
@@ -735,9 +737,8 @@ bool Welt2000::parse( QString& path,
         }
 
       // look, what kind of line was read.
-      // COL5 = 1 Airfield
+      // COL5 = 1 Airfield or also UL site
       // COL5 = 2 Outlanding, contains also UL places
-
       QString kind = line.mid( 5, 1 );
 
       if( kind != "1" && kind != "2" )
@@ -785,6 +786,11 @@ bool Welt2000::parse( QString& path,
         {
           // Glider field
           glField = true;
+        }
+      else if( line.mid( 23, 5 ) == "# ULM" )
+        {
+          // newer coding for UL field
+          ulField = true;
         }
       else
         {
@@ -853,7 +859,7 @@ bool Welt2000::parse( QString& path,
             }
         }
 
-      // make the user's wanted mapping for short name
+      // make the user's desired mapping for short name
       if( c_shortMap.contains(shortName) )
         {
           QString val = c_shortMap[shortName];
