@@ -209,7 +209,7 @@ int WGSPoint::degreeToNum(QString inDegree)
       int deg = 0, result = 0;
       double min = 0;
 
-      QRegExp deg1("degSign");
+      QRegExp deg1(degSign);
       deg = inDegree.mid(0, deg1.indexIn(inDegree)).toInt();
       inDegree = inDegree.mid(deg1.indexIn(inDegree) + 1, inDegree.length());
 
