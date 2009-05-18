@@ -17,6 +17,9 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.3.x (Development based on X11/Qt-4.5.x)
 -------------------------------------------------
+[-] 2009-05-18 AP: BUGFIX: Waypoint coordinate format DMM did not worked.
+[o] 2009-05-18 AP: Layout of map objects setting tabulator modified. Spin boxes
+                   for waypoint drawing ranges moved to the top.
 [o] 2009-05-07 AP: Additional checks in GPS parser added to avoid working with wrong data.
 [o] 2009-05-06 AP: All runway directions are handled now according to the Welt2000
                    definitions. That is a little bit tricky but consistent. Waypoint editor
