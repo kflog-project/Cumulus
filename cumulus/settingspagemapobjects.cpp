@@ -39,26 +39,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   QGridLayout * topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
 
-  // table with 7 rows and 2 columns
-  loadOptions = new QTableWidget(7, 2, this);
-  loadOptions->setShowGrid( true );
-
-  connect( loadOptions, SIGNAL(cellClicked ( int, int )),
-           SLOT(slot_toggleCheckBox( int, int )));
-
-  // hide vertical headers
-  QHeaderView *vHeader = loadOptions->verticalHeader();
-  vHeader->setVisible(false);
-
-  QString header = tr("Load/Draw map objects");
-  QTableWidgetItem *item = new QTableWidgetItem( header );
-  loadOptions->setHorizontalHeaderItem( 0, item );
-
-  item = new QTableWidgetItem( header );
-  loadOptions->setHorizontalHeaderItem( 1, item );
-
-  topLayout->addWidget( loadOptions, row++, 0 );
-
+  //---------------------------------------------------------------------------
   // The three waypoint scale limits are put in a group box
   QGroupBox *wpGroup = new QGroupBox( tr("Draw Waypoints until this scale"), this );
   topLayout->addWidget( wpGroup, row++, 0 );
@@ -104,6 +85,27 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
            this, SLOT(slot_wpHighScaleLimitChanged(int)) );
 
   hBox->addStretch( 10 );
+
+  //---------------------------------------------------------------------------
+  // table with 7 rows and 2 columns
+  loadOptions = new QTableWidget(7, 2, this);
+  loadOptions->setShowGrid( true );
+
+  connect( loadOptions, SIGNAL(cellClicked ( int, int )),
+           SLOT(slot_toggleCheckBox( int, int )));
+
+  // hide vertical headers
+  QHeaderView *vHeader = loadOptions->verticalHeader();
+  vHeader->setVisible(false);
+
+  QString header = tr("Load/Draw map objects");
+  QTableWidgetItem *item = new QTableWidgetItem( header );
+  loadOptions->setHorizontalHeaderItem( 0, item );
+
+  item = new QTableWidgetItem( header );
+  loadOptions->setHorizontalHeaderItem( 1, item );
+
+  topLayout->addWidget( loadOptions, row++, 0 );
 }
 
 SettingsPageMapObjects::~SettingsPageMapObjects()
