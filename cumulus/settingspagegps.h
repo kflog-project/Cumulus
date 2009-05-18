@@ -50,6 +50,7 @@ class SettingsPageGPS : public QWidget
     QSpinBox* spinUserCorrection;
 
   public slots: // Public slots
+
     /**
      * Called to initiate saving to the configuration file.
      */
@@ -61,6 +62,7 @@ class SettingsPageGPS : public QWidget
     void slot_load();
 
   private slots:
+
   /**
    * Called when the GPS altitude mode is changed.
    */
@@ -70,6 +72,12 @@ class SettingsPageGPS : public QWidget
    * Called when the GPS device is changed.
    */
   void slot_gpsDeviceChanged( const QString& text );
+
+  /**
+   * Called when the user correction value is changed.
+   */
+  void slot_spinUserCorrectionChanged( int newValue );
+
   };
 
 #endif

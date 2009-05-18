@@ -113,6 +113,9 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   spinUserCorrection->setButtonSymbols(QSpinBox::PlusMinus);
   topLayout->addWidget(spinUserCorrection,row++,1);
 
+  connect( spinUserCorrection, SIGNAL(valueChanged(int)),
+           this, SLOT(slot_spinUserCorrectionChanged(int)) );
+
 #ifndef MAEMO
   topLayout->setRowMinimumHeight( row++, 10);
 
@@ -279,3 +282,19 @@ void SettingsPageGPS::slot_gpsDeviceChanged( const QString& text )
 
   GpsSpeed->setEnabled( true );
 }
+
+/**
+ * Called when the user correction value is changed.
+ */
+void SettingsPageGPS::slot_spinUserCorrectionChanged( int newValue )
+{
+  if( newValue <= 0 )
+    {
+      spinUserCorrection->setPrefix("");
+    }
+  else
+    {
+      spinUserCorrection->setPrefix("+");
+    }
+}
+
