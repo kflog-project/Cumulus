@@ -17,6 +17,10 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.3.x (Development based on X11/Qt-4.5.x)
 -------------------------------------------------
+[o] 2009-05-19 AP: Layout of WaypointListView modified. Editor command buttons
+                   were moved from the top to the right side of the widget
+                   to get more space for the waypoint list display. Thanks
+                   to Robin King for the proposal ;-)
 [-] 2009-05-18 AP: BUGFIX: Waypoint coordinate format DMM did not worked.
 [o] 2009-05-18 AP: Layout of map objects setting tabulator modified. Spin boxes
                    for waypoint drawing ranges moved to the top.
