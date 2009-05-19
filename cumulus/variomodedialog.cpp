@@ -56,8 +56,9 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
 
   QGridLayout* gridLayout = new QGridLayout(this);
   gridLayout->setMargin(5);
+  gridLayout->setHorizontalSpacing(10);
 
-  stepGroup = new QGroupBox(tr("Time step width"), this);
+  stepGroup = new QGroupBox(tr("Time spin step width"), this);
   one = new QRadioButton(tr("1"), stepGroup);
   five = new QRadioButton(tr("5"), stepGroup);
   ten = new QRadioButton(tr("10"), stepGroup);
