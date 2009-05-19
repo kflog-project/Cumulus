@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers
+**   Copyright (c): 2002 by André Somers
+**                  2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -21,7 +22,6 @@
 #include <QWidget>
 #include <QMainWindow>
 #include <QPushButton>
-#include <QBoxLayout>
 
 #include "waypointlistwidget.h"
 #include "waypoint.h"
@@ -35,6 +35,7 @@ class WaypointCatalog;
 class WaypointListView : public QWidget
 {
     Q_OBJECT
+
 public:
     WaypointListView(QMainWindow *parent=0);
 
@@ -127,15 +128,15 @@ signals: // Signals
 private:
     WaypointListWidget* listw;
     QMainWindow* par;
-    QBoxLayout* buttonrow;
     QPushButton* cmdSelect;
 
 private slots:
+
     void slot_Selected();
 
 protected:
-    void showEvent(QShowEvent *);
 
+    void showEvent(QShowEvent *);
 };
 
 #endif

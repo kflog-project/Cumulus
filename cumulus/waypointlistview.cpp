@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andre Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by Andre Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -15,11 +16,13 @@
 **
 ***********************************************************************/
 
-#include "waypointlistview.h"
-
 #include <QMessageBox>
 #include <QShortcut>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
+#include "waypointlistview.h"
 #include "generalconfig.h"
 #include "wpeditdialog.h"
 #include "calculator.h"
@@ -28,49 +31,55 @@
 WaypointListView::WaypointListView(QMainWindow *parent) : QWidget(parent)
 {
   setObjectName("WaypointListView");
-  par=parent;
+  par = parent;
 
-  QBoxLayout *topLayout = new QVBoxLayout( this );
-  QBoxLayout *editrow=new QHBoxLayout;
-  topLayout->addLayout(editrow);
+  QGridLayout *topLayout = new QGridLayout( this );
 
-  editrow->addStretch(10);
+  // set the list widget on top
+  listw = new WaypointListWidget( this );
+  topLayout->addWidget(listw, 0, 0);
 
-  QPushButton * cmdNew = new QPushButton(this);
+  // create a vertical command button row and put it at the right widget side
+  QVBoxLayout  *editRow = new QVBoxLayout;
+  editRow->addStretch( 10 );
+
+  QPushButton *cmdNew = new QPushButton(this);
   cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
   cmdNew->setIconSize(QSize(26,26));
-  editrow->addWidget(cmdNew);
+  editRow->addWidget(cmdNew);
 
-  QPushButton * cmdEdit = new QPushButton(this);
+  QPushButton *cmdEdit = new QPushButton(this);
   cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
   cmdEdit->setIconSize(QSize(26,26));
-  editrow->addWidget(cmdEdit);
+  editRow->addWidget(cmdEdit);
 
-  QPushButton * cmdDel = new QPushButton(this);
+  QPushButton *cmdDel = new QPushButton(this);
   cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png")) );
   cmdDel->setIconSize(QSize(26,26));
-  editrow->addWidget(cmdDel);
+  editRow->addWidget(cmdDel);
 
-  editrow->addSpacing(6);
-  QPushButton * cmdHome = new QPushButton(this);
+  editRow->addSpacing(10);
+
+  QPushButton *cmdHome = new QPushButton(this);
   cmdHome->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("home_new.png")) );
   cmdHome->setIconSize(QSize(26,26));
-  editrow->addWidget(cmdHome);
+  editRow->addWidget(cmdHome);
 
-  listw = new WaypointListWidget( this );
-  topLayout->addWidget(listw, 10);
+  editRow->addStretch( 10 );
+  topLayout->addLayout(editRow, 0, 1);
 
-  QBoxLayout *buttonrow=new QHBoxLayout;
-  topLayout->addLayout( buttonrow );
-
+  // create a horizontal command button row and put it at the bottom of the widget
+  QHBoxLayout *buttonRow = new QHBoxLayout;
   QPushButton *cmdClose = new QPushButton(tr("Close"), this);
-  buttonrow->addWidget(cmdClose);
+  buttonRow->addWidget(cmdClose);
 
   QPushButton *cmdInfo = new QPushButton(tr("Info"), this);
-  buttonrow->addWidget(cmdInfo);
+  buttonRow->addWidget(cmdInfo);
 
   cmdSelect = new QPushButton(tr("Select"), this);
-  buttonrow->addWidget(cmdSelect);
+  buttonRow->addWidget(cmdSelect);
+
+  topLayout->addLayout( buttonRow, 1, 0, 1, 2 );
 
   connect(cmdNew, SIGNAL(clicked()), this, SLOT(slot_newWP()));
   connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slot_editWP()));
@@ -135,6 +144,7 @@ void WaypointListView::slot_Close ()
 void WaypointListView::slot_Selected()
 {
   cmdSelect->setEnabled(true);
+
   wayPoint *w = listw->getSelectedWaypoint();
 
   if (w)
