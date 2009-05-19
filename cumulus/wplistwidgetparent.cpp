@@ -33,6 +33,7 @@
 WpListWidgetParent::WpListWidgetParent(QWidget *parent) : QWidget(parent)
 {
   QVBoxLayout *topLayout = new QVBoxLayout( this );
+  topLayout->setContentsMargins( 0, 0, 0, 0  );
 
   list = new QTreeWidget( this );
   list->setObjectName("WpListWidgetParent");
@@ -53,9 +54,9 @@ WpListWidgetParent::WpListWidgetParent(QWidget *parent) : QWidget(parent)
 
   filter = new ListViewFilter(list, this);
   filter->setObjectName("ListViewFilter");
-  topLayout->addWidget(filter);
 
-  topLayout->addWidget(list,10);
+  topLayout->addWidget(filter);
+  topLayout->addWidget(list, 10);
 
   connect( list, SIGNAL( itemClicked(QTreeWidgetItem*,int) ),
            this, SLOT( slot_listItemClicked(QTreeWidgetItem*,int) ) );
