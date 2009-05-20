@@ -41,6 +41,14 @@ with:
 
 Variant b) is free from any svn overhead like .svn directories.
 
+You can also use a snapshot tar ball from here:
+
+  http://www.kflog.org/fileadmin/user_upload/cumulus_snapshots/CumulusQt4-snapshot.tbz
+  
+  Copy the tar ball in a local directory of your Linux desktop and extract it with:
+  
+  tar jxvf CumulusQt4-snapshot.tbz
+
 Step 3)
 
 Go into the trunk directory of your checkout copy. To build the cumulus
