@@ -95,7 +95,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   QGridLayout* listLayout = new QGridLayout(listGroup);
 
-  lbl = new QLabel(tr( "Entries per Page in Airfield/Waypoint Lists (0 to disable):"), listGroup);
+  lbl = new QLabel(tr( "Entries per Page in AF/WP/OL Lists (0 to disable):"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
   pageSize = new QSpinBox(listGroup);
   pageSize->setRange(0, 100);
@@ -104,7 +104,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   listLayout->addWidget(pageSize, grow, 1);
 
   grow++;
-  lbl = new QLabel(tr( "Entry Height Increase (Pixels) in Airfield/Waypoint Lists:"), listGroup);
+  lbl = new QLabel(tr( "Entry Height Increase (Pixels) in AF/WP/OL Lists:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
   afMargin = new QSpinBox(listGroup);
   afMargin->setRange(0, 60);
