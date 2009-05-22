@@ -977,12 +977,12 @@ Altitude GpsNmea::__ExtractAltitude(const QString& altitude, const QString& unit
     }
   else if ( _deliveredAltitude == GpsNmea::USER )
     {
-      // @AP: GPS unit delivers Height above the WGS 84 ellipsoid. We must
+      // @AP: GPS unit delivers an unknown reference altitude. We must
       // adapt this to our internal variables.
       _lastGNSSAltitude.setMeters( res.getMeters() );
 
-      // calculate MSL
-      res.setMeters( res.getMeters() - _userAltitudeCorrection.getMeters() );
+      // calculate MSL by considering user correction factor
+      res.setMeters( res.getMeters() + _userAltitudeCorrection.getMeters() );
     }
   else // MSL comes in
     {
