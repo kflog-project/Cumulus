@@ -42,15 +42,16 @@
 extern MapContents *_globalMapContents;
 extern MainWindow  *_globalMainWindow;
 
-TaskEditor::TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
+TaskEditor::TaskEditor( QWidget* parent,
+                        QStringList &taskNamesInUse,
                         FlightTask* task ) :
-    QDialog( parent ),
-    taskNamesInUse( taskNamesInUse )
+  QDialog( parent ),
+  taskNamesInUse( taskNamesInUse )
 {
   setObjectName("TaskEditor");
   setModal(true);
   setAttribute( Qt::WA_DeleteOnClose );
-  setContentsMargins(-3,-3,-3,-3);
+  setContentsMargins(0, 0, 0, 0);
 
 #ifdef MAEMO
   resize(800, 480);
