@@ -1438,7 +1438,7 @@ void Map::__drawLabel( QPainter* painter,
 #endif
 
   QString labelText = name;
-  Altitude alt;
+  Altitude alt = ReachableList::getArrivalAltitude( origP );
 
   const bool drawLabelInfo = GeneralConfig::instance()->getMapShowLabelsExtraInfo();
 
@@ -1533,8 +1533,6 @@ void Map::__drawLabel( QPainter* painter,
   textBox.setRect( dispP.x() + xOffset,
                    dispP.y() + yOffset,
                    textBox.width(), textBox.height() );
-
-  alt = ReachableList::getArrivalAltitude( origP );
 
   if( alt.getMeters() < 0 )
     {
@@ -2104,7 +2102,6 @@ void Map::__drawDirectionLine(const QPoint& from)
       lineP.end();
     }
 }
-
 
 /**
  * Check if the new position is near to or inside of an airspace. A warning message
