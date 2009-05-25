@@ -51,7 +51,6 @@ TaskEditor::TaskEditor( QWidget* parent,
   setObjectName("TaskEditor");
   setModal(true);
   setAttribute( Qt::WA_DeleteOnClose );
-  setContentsMargins(0, 0, 0, 0);
 
 #ifdef MAEMO
   resize(800, 480);
@@ -126,30 +125,17 @@ TaskEditor::TaskEditor( QWidget* parent,
   cancelButton->setIconSize(QSize(26,26));
   cancelButton->setToolTip( tr("cancel task") );
 
-  // all single layouts are put in this horizontal box
-  QHBoxLayout* totalLayout = new QHBoxLayout( this );
+  // all single widgets and layouts in this grid
+  QGridLayout* totalLayout = new QGridLayout( this );
   totalLayout->setMargin(5);
-
-  // contains the task part
-  QGridLayout* taskLayout = new QGridLayout;
-  taskLayout->setMargin(0);
 
   // contains the task editor buttons
   QVBoxLayout* buttonLayout = new QVBoxLayout;
   buttonLayout->setMargin(0);
 
-  // contains the selection list part
-  QGridLayout* listLayout = new QGridLayout;
-  listLayout->setMargin(0);
-
-  totalLayout->addLayout( taskLayout );
-  totalLayout->addLayout( buttonLayout );
-  totalLayout->addLayout( listLayout );
-
-  taskLayout->addWidget( new QLabel( tr("Name:"), this ), 0, 0 );
-  taskLayout->addWidget( taskName, 0, 1 );
-  taskLayout->addWidget( taskList, 1, 0, 1, 2 );
-  taskLayout->setRowStretch( 1, 10 );
+  totalLayout->addWidget( new QLabel( tr("Name:"), this ), 0, 0 );
+  totalLayout->addWidget( taskName, 0, 1 );
+  totalLayout->addWidget( taskList, 1, 0, 1, 2 );
 
   buttonLayout->addStretch( 10 );
   buttonLayout->addWidget( invertButton );
@@ -159,16 +145,15 @@ TaskEditor::TaskEditor( QWidget* parent,
   buttonLayout->addWidget( addButton  );
   buttonLayout->addWidget( delButton );
   buttonLayout->addStretch( 10 );
+  totalLayout->addLayout( buttonLayout, 0, 2, 2, 1 );
 
-  // Combo box for toggling between waypoint and airfield lists
+  // Combo box for toggling between waypoint, airfield, outlanding lists
   listSelectCB = new QComboBox(this);
   listSelectCB->setEditable(false);
 
-  listLayout->addWidget( listSelectCB, 0, 0 );
-  listLayout->addWidget( okButton,     0, 2, Qt::AlignCenter  );
-  listLayout->addWidget( cancelButton, 0, 3, Qt::AlignCenter  );
-
-  listLayout->setColumnStretch( 1, 10 );
+  totalLayout->addWidget( listSelectCB, 0, 3 );
+  totalLayout->addWidget( okButton,     0, 5, Qt::AlignCenter  );
+  totalLayout->addWidget( cancelButton, 0, 6, Qt::AlignCenter  );
 
   // descriptions of combo box selection elements
   listSelectText[0] = tr("Waypoints");
@@ -192,9 +177,11 @@ TaskEditor::TaskEditor( QWidget* parent,
     {
       listSelectCB->addItem(listSelectText[i], i);
       waypointList[i]->fillWpList();
-      waypointList[i]->setContentsMargins(-9,-9,-9,-9);
-      listLayout->addWidget( waypointList[i], 2, 0, 1, 4 );
+      totalLayout->addWidget( waypointList[i], 1, 3, 1, 4 );
     }
+
+  totalLayout->setColumnStretch( 1, 4 );
+  totalLayout->setColumnStretch( 4, 2 );
 
   // first selection is WPList if wp's are defined
   // set index in combo box to selected list
