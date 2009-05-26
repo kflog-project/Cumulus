@@ -160,7 +160,7 @@ bool GpsMaemo::startGpsReceiving()
   timer->start(RETRY_TO);
 
   // wait that daemon can make its initialization
-  sleep(2);
+  sleep(3);
 
   // try to connect the gpsd on its listen port
   if (client.connect2Server("", daemonPort) == 0)
@@ -199,6 +199,32 @@ bool GpsMaemo::startGpsReceiving()
   buf[res] = '\0';
 
   qDebug("GPSD-l (ProtocolVersion-GPSDVersion-RequestLetters): %s", buf);
+
+  // ask for GPS identification string
+  strcpy(buf, "i\n");
+
+  // Write message to gpsd to get the GPS id string
+  int res = client.writeMsg(buf, strlen(buf));
+
+  if (res == -1)
+    {
+      qWarning("Write to GPSD failed");
+      client.closeSock();
+      return false;
+    }
+
+  res = client.readMsg(buf, sizeof(buf) - 1);
+
+  if (res == -1)
+    {
+      qWarning("Read from GPSD failed");
+      client.closeSock();
+      return false;
+    }
+
+  buf[res] = '\0';
+
+  qDebug("GPSD-i (GPS-ID): %s", buf);
 
   // request raw and watcher mode
   strcpy(buf, "r+\nw+\n");
