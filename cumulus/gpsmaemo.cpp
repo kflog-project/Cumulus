@@ -204,7 +204,7 @@ bool GpsMaemo::startGpsReceiving()
   strcpy(buf, "i\n");
 
   // Write message to gpsd to get the GPS id string
-  int res = client.writeMsg(buf, strlen(buf));
+  res = client.writeMsg(buf, strlen(buf));
 
   if (res == -1)
     {
