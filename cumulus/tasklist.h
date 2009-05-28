@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef TASKLIST_H
-#define TASKLIST_H
+#ifndef TASK_LIST_H
+#define TASK_LIST_H
 
 #include <QList>
 #include <QTreeWidget>
@@ -47,58 +47,53 @@ public:
     void showEvent(QShowEvent *);
 
 private:
-    /** */
+    /** Save task list */
     bool saveTaskList();
 
+    /** Select the last stored task */
+    void selectLastTask();
+
 private slots:
-    /** */
+    /** show the details of a task */
     void slotTaskDetails();
 
-    /**
-     * load tasks from file
-     */
+    /** load tasks from the file */
     bool slotLoadTask();
 
-    /** */
+    /** create a new task */
     void slotNewTask();
 
-    /** */
+    /** edit an existing task */
     void slotEditTask();
 
-    /** */
+    /** remove a task */
     void slotDeleteTask();
 
-    /**
-     * overtake a new task item from the editor
-     */
+    /** overtake a new task item from the editor */
     void slotUpdateTaskList( FlightTask* );
 
-    /**
-     * overtake a edited task item from the editor
-     */
+    /** overtake a edited task item from the editor */
     void slotEditTaskList( FlightTask* );
 
-    /** new value in cruising spin box set */
+    /** set new value in cruising spin box */
     void slotCruisingSpeedChanged( int value );
 
 private:
 
     /** splitter widget */
     QSplitter* splitter;
-    /** spin box for crusing speed entry */
+    /** spin box for cruising speed entry */
     QSpinBox* cruisingSpeed;
-    /** */
+    /** task list overview */
     QTreeWidget* taskListWidget;
-    /** */
+    /** widget with task content in detail */
     TaskListView* taskContent;
-    /** */
+    /** list with all defined flight tasks */
     QList<FlightTask*> taskList;
-    /** */
-    static uint lastSelection;
     /** flight task being edited */
     FlightTask* editTask;
     /** names of flight tasks */
     QStringList taskNames;
 };
 
-#endif // TASKLIST_H
+#endif // TASK_LIST_H

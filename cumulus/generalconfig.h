@@ -753,6 +753,18 @@ class GeneralConfig : protected QSettings
     _cruisingSpeed = newValue;
   };
 
+  /** gets current task */
+  QString &getCurrentTask()
+  {
+    return _currentTask;
+  };
+
+  /** sets current task  */
+  void setCurrentTask( const QString newValue )
+  {
+    _currentTask = newValue;
+  };
+
   /** gets Homesite Latitude */
   int getHomeLat() const
   {
@@ -1747,6 +1759,8 @@ class GeneralConfig : protected QSettings
   bool _loggerAutostartMode;
   // cruising speed
   int _cruisingSpeed;
+  // current selected task
+  QString _currentTask;
 
   // Homesite
   wayPoint * _homeWp;
@@ -1774,7 +1788,7 @@ class GeneralConfig : protected QSettings
   int _welt2000HomeRadius;
   // Welt2000 outlanding load flag
   bool _welt2000LoadOutlandings;
-  
+
   // Airfield/WP lists page size (entries)
   int _listDisplayPageSize;
   // Airfield/WP lists row height increase (px)

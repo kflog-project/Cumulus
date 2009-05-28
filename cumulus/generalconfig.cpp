@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by André Somers, 2009 Axel Pauli
+ **   Copyright (c):  2004 by André Somers
+ **                   2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -180,6 +181,7 @@ void GeneralConfig::load()
   _loggerInterval      = value( "LoggerInterval", 10 ).toInt();
   _loggerAutostartMode = value( "LoggerAutostartMode", false ).toBool();
   _cruisingSpeed       = value( "CruisingSpeed", 100 ).toInt();
+  _currentTask         = value( "CurrentTask", "").toString();
   endGroup();
 
   // Task scheme settings for cylinder-sector and nearest-touched
@@ -470,9 +472,10 @@ void GeneralConfig::save()
   setValue( "LoggerInterval", _loggerInterval );
   setValue( "LoggerAutostartMode", _loggerAutostartMode );
   setValue( "CruisingSpeed", _cruisingSpeed );
+  setValue( "CurrentTask", _currentTask);
   endGroup();
 
-  // Task scheme settings for cylinder-sector and nearst-touched
+  // Task scheme settings for cylinder-sector and nearest touched
   beginGroup("Task Scheme");
   setValue( "ActiveCSScheme", _taskActiveCSScheme );
   setValue( "ActiveNTScheme", _taskActiveNTScheme );

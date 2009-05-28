@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Heiner Lamprecht, 2009 Axel Pauli
+**   Copyright (c):  2002 by Heiner Lamprecht
+**                   2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -34,9 +35,6 @@
 #include "taskeditor.h"
 #include "distance.h"
 #include "speed.h"
-
-// Initialize static member
-uint TaskList::lastSelection = 0;
 
 TaskList::TaskList( QWidget* parent ) :
   QWidget( parent ),
@@ -117,9 +115,10 @@ TaskList::TaskList( QWidget* parent ) :
   connect( taskListWidget, SIGNAL( itemSelectionChanged() ),
            this, SLOT( slotTaskDetails() ) );
 
-  if( ! slotLoadTask() ) {
-    return;
-  }
+  if ( ! slotLoadTask() )
+    {
+      return;
+    }
 }
 
 
@@ -135,8 +134,7 @@ void TaskList::showEvent(QShowEvent *)
 
   // @AP: With the first show event we set the splitter line to our
   // desired place. Found no other way to do it better.
-
-  if( first )
+  if ( first )
     {
       first = false;
 
@@ -145,7 +143,7 @@ void TaskList::showEvent(QShowEvent *)
 
       int sum = sizeList[0] + sizeList[1];
 
-      if( sum >= 200 )
+      if ( sum >= 200 )
         {
           sizeList[0] = 150;
           sizeList[1] = sum-150;
@@ -155,18 +153,21 @@ void TaskList::showEvent(QShowEvent *)
         }
     }
 
+  taskListWidget->resizeColumnToContents(0);
+  taskListWidget->resizeColumnToContents(1);
+  taskListWidget->resizeColumnToContents(2);
+
   // Notice user how to add a new task
   QTreeWidgetItem* selected = taskListWidget->selectedItems().at(0);
 
-  if( selected->text( 0 ) == " " &&
-      selected->text( 1 ) == tr("(No tasks defined)") )
+  if ( selected->text( 0 ) == " " &&
+       selected->text( 1 ) == tr("(No tasks defined)") )
     {
       QMessageBox::information( this,
-          tr("Create New Task"),
-          tr("Push <b>Plus</b> button to add a task") );
+                                tr("Create New Task"),
+                                tr("Push <b>Plus</b> button to add a task") );
     }
 }
-
 
 /** new value in spin box set */
 void TaskList::slotCruisingSpeedChanged( int /* value */ )
@@ -181,7 +182,7 @@ void TaskList::slotTaskDetails()
 {
   QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
 
-  if( selectList.size() == 0 )
+  if ( selectList.size() == 0 )
     {
       return;
     }
@@ -204,7 +205,6 @@ void TaskList::slotTaskDetails()
   taskContent->slot_setTask( task );
 }
 
-
 // This method is called from PreFlightWidget::accept(), to take out
 // the selected task from the task list. The ownership of the taken
 // FlightTask object goes over the the caller. He has to delete the
@@ -217,35 +217,42 @@ FlightTask* TaskList::takeSelectedTask()
   GeneralConfig::instance()->setCruisingSpeed( cruisingSpeed->value() );
 
   QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
-  if( selectList.size() == 0 )
-    return (FlightTask *) 0;
+
+  if ( selectList.size() == 0 )
+    {
+      return static_cast<FlightTask *> (0);
+    }
 
   QString id( taskListWidget->selectedItems().at(0)->text(0) );
 
-  // Special handling for entries with no number, they are system
-  // specific.
-  if (id==" ") {
-    lastSelection = 0;
-    return 0;
-  }
+  // Special handling for entries with no number, they are system specific.
+  if( id == " " )
+    {
+      GeneralConfig::instance()->setCurrentTask( "" );
+      return static_cast<FlightTask *> (0);
+    }
 
   // qDebug("selected Item=%s",id.toLatin1().data());
-  lastSelection = id.toUInt();
+  GeneralConfig::instance()->setCurrentTask( taskListWidget->selectedItems().at(0)->text(1) );
 
   // Nice trick, take selected element from list to prevent deletion of it, if
   // destruction of list is called.
   int index = id.toInt() - 1;
+
   return taskList.takeAt( index );
 }
-
 
 /** load tasks from file*/
 bool TaskList::slotLoadTask()
 {
-  extern MapMatrix * _globalMapMatrix;
+  extern MapMatrix *_globalMapMatrix;
   QStringList rowList;
 
-  while( !taskList.isEmpty() ) delete taskList.takeFirst();
+  while ( !taskList.isEmpty() )
+    {
+      delete taskList.takeFirst();
+    }
+
   taskNames.clear();
 
 #warning task list file 'tasks.tsk' is stored at User Data Directory
@@ -253,14 +260,19 @@ bool TaskList::slotLoadTask()
   // currently hard coded file name
   QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/tasks.tsk" );
 
-  if( !f.open( QIODevice::ReadOnly ) ) {
-    // could not read file ...
-    rowList << " " << tr("(No tasks defined)");
-    taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
-    taskListWidget->setCurrentItem( taskListWidget->itemAt(0,taskListWidget->topLevelItemCount()-1) );
-    taskListWidget->sortItems( 0, Qt::AscendingOrder );
-    return false;
-  }
+  if ( ! f.open( QIODevice::ReadOnly ) )
+    {
+      // could not read file ...
+      rowList << " " << tr("(No tasks defined)");
+      taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
+      taskListWidget->setCurrentItem( taskListWidget->itemAt(0,taskListWidget->topLevelItemCount()-1) );
+      taskListWidget->sortItems( 0, Qt::AscendingOrder );
+
+      // reset current task
+      GeneralConfig::instance()->setCurrentTask( "" );
+
+      return false;
+    }
 
   QTextStream stream( &f );
   QString line;
@@ -269,94 +281,115 @@ bool TaskList::slotLoadTask()
   QStringList tmpList;
   QList<wayPoint*> *wpList = 0;
 
-  while( !stream.atEnd() ) {
-    line = stream.readLine();
+  while ( !stream.atEnd() )
+    {
+      line = stream.readLine();
 
-    if( line.mid( 0, 1 ) == "#" )
-      continue;
+      if ( line.mid( 0, 1 ) == "#" )
+        {
+          continue;
+        }
 
-    if( line.mid( 0, 2 ) == "TS" ) {
-      // new task ...
-      isTask = true;
+      if ( line.mid( 0, 2 ) == "TS" )
+        {
+          // new task ...
+          isTask = true;
 
-      if( wpList != 0 ) {
-        // remove all elements from previous uncomplete step
-        qDeleteAll(*wpList);
-        wpList->clear();
-      } else {
-        wpList = new QList<wayPoint*>;
-      }
+          if ( wpList != 0 )
+            {
+              // remove all elements from previous incomplete step
+              qDeleteAll(*wpList);
+              wpList->clear();
+            }
+          else
+            {
+              wpList = new QList<wayPoint*>;
+            }
 
-      tmpList = line.split( ",", QString::KeepEmptyParts );
-      taskName = tmpList.at(1);
-    } else {
-      if( line.mid( 0, 2 ) == "TW" && isTask ) {
-        // new waypoint
-        wayPoint* wp = new wayPoint;
-        wpList->append( wp );
+          tmpList = line.split( ",", QString::KeepEmptyParts );
+          taskName = tmpList.at(1);
+        }
+      else
+        {
+          if ( line.mid( 0, 2 ) == "TW" && isTask )
+            {
+              // new waypoint
+              wayPoint* wp = new wayPoint;
+              wpList->append( wp );
 
-        tmpList = line.split( ",", QString::KeepEmptyParts );
+              tmpList = line.split( ",", QString::KeepEmptyParts );
 
-        wp->origP.setLat( tmpList.at( 1 ).toInt() );
-        wp->origP.setLon( tmpList.at( 2 ) .toInt() );
-        wp->projP = _globalMapMatrix->wgsToMap( wp->origP );
-        wp->elevation = tmpList.at( 3 ).toInt();
-        wp->name = tmpList.at( 4 );
-        wp->icao = tmpList.at( 5 );
-        wp->description = tmpList.at( 6 );
-        wp->frequency = tmpList.at( 7 ).toDouble();
-        wp->comment = tmpList.at( 8 );
-        wp->isLandable = tmpList.at( 9 ).toInt();
-        wp->runway = tmpList.at( 10 ).toInt();
-        wp->length = tmpList.at( 11 ).toInt();
-        wp->surface = tmpList.at( 12 ).toInt();
-        wp->type = tmpList.at( 13 ).toInt();
-      } else {
-        if( line.mid( 0, 2 ) == "TE" && isTask ) {
-          // task complete
-          isTask = false;
-          FlightTask* task = new FlightTask( wpList, true,
-                                             taskName, cruisingSpeed->value() );
-          taskList.append( task );
+              wp->origP.setLat( tmpList.at( 1 ).toInt() );
+              wp->origP.setLon( tmpList.at( 2 ) .toInt() );
+              wp->projP = _globalMapMatrix->wgsToMap( wp->origP );
+              wp->elevation = tmpList.at( 3 ).toInt();
+              wp->name = tmpList.at( 4 );
+              wp->icao = tmpList.at( 5 );
+              wp->description = tmpList.at( 6 );
+              wp->frequency = tmpList.at( 7 ).toDouble();
+              wp->comment = tmpList.at( 8 );
+              wp->isLandable = tmpList.at( 9 ).toInt();
+              wp->runway = tmpList.at( 10 ).toInt();
+              wp->length = tmpList.at( 11 ).toInt();
+              wp->surface = tmpList.at( 12 ).toInt();
+              wp->type = tmpList.at( 13 ).toInt();
+            }
+          else
+            {
+              if ( line.mid( 0, 2 ) == "TE" && isTask )
+                {
+                  // task complete
+                  isTask = false;
+                  FlightTask* task = new FlightTask( wpList, true,
+                                                     taskName, cruisingSpeed->value() );
+                  taskList.append( task );
 
-          wpList = 0; // ownership was overtaken by FlighTask
-          numTask.sprintf( "%02d", taskList.count() );
+                  wpList = 0; // ownership was overtaken by FlighTask
+                  numTask.sprintf( "%02d", taskList.count() );
 
-          rowList << numTask
+                  rowList << numTask
                   << taskName
                   << task->getTaskTypeString()
                   << task->getTaskDistanceString();
 
-          taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
-          rowList.clear();
+                  taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
+                  rowList.clear();
 
-          // save task name
-          taskNames << taskName;
+                  // save task name
+                  taskNames << taskName;
+                }
+            }
         }
-      }
     }
-  }
 
   f.close();
 
-  if( wpList != 0 ) {
-    // remove all elements from previous uncomplete step
-    qDeleteAll(*wpList);
-    delete wpList;
-  }
+  if ( wpList != 0 )
+    {
+      // remove all elements from previous incomplete step
+      qDeleteAll(*wpList);
+      delete wpList;
+    }
 
-  if ( taskList.count() == 0 ) {
-    rowList << " " << tr("(No tasks defined)");
-  } else {
-    rowList << " " << tr("(Reset selection)") << tr("none");
-    taskListWidget->setCurrentItem( taskListWidget->itemAt(0,0) );
-  }
+  if ( taskList.count() == 0 )
+    {
+      rowList << " " << tr("(No tasks defined)");
+
+      // reset current task
+      GeneralConfig::instance()->setCurrentTask( "" );
+    }
+  else
+    {
+      rowList << " " << tr("(Reset selection)") << tr("none");
+    }
+
   taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
   taskListWidget->sortByColumn(0, Qt::AscendingOrder);
 
+  selectLastTask();
+
   return true;
 }
-
 
 void TaskList::slotNewTask()
 {
@@ -367,7 +400,6 @@ void TaskList::slotNewTask()
 
   te->show();
 }
-
 
 /**
  * taking over a new flight task from editor
@@ -381,7 +413,6 @@ void TaskList::slotUpdateTaskList( FlightTask *newTask)
   slotLoadTask();
 }
 
-
 /**
  * pass the selected task to the editor
  */
@@ -390,16 +421,18 @@ void TaskList::slotEditTask()
   // fetch selected task item
   QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
 
-  if( selectList.size() == 0 )
-    return;
+  if ( selectList.size() == 0 )
+    {
+      return;
+    }
 
   QString id( taskListWidget->selectedItems().at(0)->text(0) );
 
-  if( id == " ") {
-    return;
-  }
+  if ( id == " ")
+    {
+      return;
+    }
 
-  lastSelection = id.toUInt();
   editTask = taskList.at(id.toInt() - 1);
 
   // make a deep copy of fetched task item
@@ -420,7 +453,6 @@ void TaskList::slotEditTask()
 
 }
 
-
 /**
  * taking over an edited flight task from editor
  */
@@ -431,7 +463,7 @@ void TaskList::slotEditTaskList( FlightTask *editedTask)
   // search task item being edited
   int index = taskList.indexOf( editTask );
 
-  if( index != -1 )
+  if ( index != -1 )
     {
       // remove old item
       delete taskList.takeAt( index );
@@ -450,37 +482,42 @@ void TaskList::slotEditTaskList( FlightTask *editedTask)
   slotLoadTask();
 }
 
-
 /**
  * remove the selected task from the list
  */
 void TaskList::slotDeleteTask()
 {
   QTreeWidgetItem* selected = taskListWidget->currentItem();
-  if( selected == 0 )
-    return;
+
+  if ( selected == 0 )
+    {
+      return;
+    }
 
   QString id( selected->text(0) );
 
-  if( id == " " ) {
-    // Entries with no number are system specific and not deleteable
-    return;
-  }
+  if ( id == " " )
+    {
+      // Entries with no number are system specific and not deleteable
+      return;
+    }
 
   int answer= QMessageBox::question(this,tr("Delete Task"),
-                         tr("Delete the selected task?"),
-                         QMessageBox::No, QMessageBox::Yes );
+                                    tr("Delete the selected task?"),
+                                    QMessageBox::No, QMessageBox::Yes );
 
-  if( answer != QMessageBox::Yes ) {
-    return;
-  }
+  if ( answer != QMessageBox::Yes )
+    {
+      return;
+    }
 
   delete taskListWidget->takeTopLevelItem( taskListWidget->currentIndex().row() );
 
   taskListWidget->sortItems( 0, Qt::AscendingOrder );
-  taskListWidget->setCurrentItem( 0 );
+  taskListWidget->setCurrentItem( taskListWidget->topLevelItem(0) );
 
-  lastSelection = 0;
+  // reset last stored selected task
+  GeneralConfig::instance()->setCurrentTask( "" );
 
   // reset task
   extern MapContents* _globalMapContents;
@@ -494,13 +531,12 @@ void TaskList::slotDeleteTask()
   slotLoadTask();
 }
 
-
 bool TaskList::saveTaskList()
 {
-  // currently hardcoded ...
+  // currently hard coded ...
   QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/tasks.tsk" );
 
-  if( !f.open( QIODevice::WriteOnly ) )
+  if ( !f.open( QIODevice::WriteOnly ) )
     {
       qWarning( "Could not write to task-file %s", f.fileName().toLatin1().data() );
       return false;
@@ -513,16 +549,16 @@ bool TaskList::saveTaskList()
   QString dtStr = dt.toString(Qt::ISODate);
 
   stream << "# KFLog/Cumulus-Task-File created at "
-         << dtStr << " by Cumulus " << CU_VERSION << endl;
+  << dtStr << " by Cumulus " << CU_VERSION << endl;
 
-  for( int i=0; i < taskList.count(); i++ )
+  for ( int i=0; i < taskList.count(); i++ )
     {
       FlightTask *task = taskList.at(i);
       QList<wayPoint*> wpList = task->getWPList();
 
       stream << "TS," << task->getTaskName() << "," << wpList.count() << endl;
 
-      for( int j=0; j < wpList.count(); j++ )
+      for ( int j=0; j < wpList.count(); j++ )
         {
           // saving each taskpoint ...
           wayPoint* wp = wpList.at(j);
@@ -539,4 +575,28 @@ bool TaskList::saveTaskList()
   f.close();
 
   return true;
+}
+
+/** Select the last stored task */
+void TaskList::selectLastTask()
+{
+  QString lastTask = GeneralConfig::instance()->getCurrentTask();
+
+  int rows = taskListWidget->topLevelItemCount();
+
+  for( int i = 0; i < rows; i++ )
+    {
+      QString taskName = taskListWidget->topLevelItem(i)->text(1);
+      // qDebug( "taskName(%d)=%s", i, taskName.toLatin1().data() );
+
+      if( taskName == lastTask )
+        {
+          // last selected task found
+          taskListWidget->setCurrentItem( taskListWidget->topLevelItem(i) );
+          return;
+        }
+    }
+
+  // select first entry in the list, if last selection could not be found
+  taskListWidget->setCurrentItem( taskListWidget->topLevelItem(0) );
 }

@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2003      by André Somers
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -30,7 +31,7 @@
 
 extern MapContents* _globalMapContents;
 
-/** Widget for pre-flight settings. To reserve the full vertical space for the
+/** Widget for preflight settings. To reserve the full vertical space for the
  *  the content of the tabulators, tabulators are arranged at the
  *  left side and the ok and cancel buttons are arranged on the right side.
  */
@@ -98,7 +99,7 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
 
   miscpage->load();
 
-  //check to see which tab to bring forward
+  // check to see which tabulator to bring forward
   if (QString(name) == "taskselection")
     {
       tabWidget->setCurrentIndex(tabWidget->indexOf(taskpage));
@@ -117,8 +118,7 @@ PreFlightWidget::~PreFlightWidget()
   // qDebug("PreFlightWidget::~PreFlightWidget()");
 }
 
-void
-PreFlightWidget::slot_accept()
+void PreFlightWidget::slot_accept()
 {
   FlightTask *curTask = _globalMapContents->getCurrentTask();
 
@@ -159,7 +159,7 @@ PreFlightWidget::slot_accept()
   // @AP: Open problem with waypoint selection, if user has modified
   // task content. We ignore that atm.
 
-  if (newTask == (FlightTask *) 0)
+  if ( newTask == static_cast<FlightTask *> (0) )
     {
       // No new task has been passed. Check, if a selected waypoint
       // exists and this waypoint belongs to a task. In this case we
@@ -170,7 +170,7 @@ PreFlightWidget::slot_accept()
       if (calcWp && calcWp->taskPointIndex != -1)
         {
           // reset taskpoint selection
-          emit newWaypoint((wayPoint *) 0, true);
+          emit newWaypoint(static_cast<wayPoint *> (0), true);
         }
     }
 
@@ -185,8 +185,7 @@ PreFlightWidget::slot_accept()
   QWidget::close();
 }
 
-void
-PreFlightWidget::slot_reject()
+void PreFlightWidget::slot_reject()
 {
   // qDebug("PreFlightWidget::slot_reject()");
   hide();
@@ -195,8 +194,7 @@ PreFlightWidget::slot_reject()
   QWidget::close();
 }
 
-void
-PreFlightWidget::slot_keyRight()
+void PreFlightWidget::slot_keyRight()
 {
   if (tabWidget->currentWidget() == gliderpage)
     {
@@ -212,8 +210,7 @@ PreFlightWidget::slot_keyRight()
     }
 }
 
-void
-PreFlightWidget::slot_keyLeft()
+void PreFlightWidget::slot_keyLeft()
 {
   if (tabWidget->currentWidget() == miscpage)
     {
@@ -228,4 +225,3 @@ PreFlightWidget::slot_keyLeft()
       tabWidget->setCurrentIndex(tabWidget->indexOf(miscpage));
     }
 }
-
