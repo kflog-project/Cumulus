@@ -17,7 +17,8 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.3.x (Development based on X11/Qt-4.5.x)
 -------------------------------------------------
-[o] 2009-05-25 AP: TaskEditor layout modified to get an uniform look.
+[o] 2009-05-28 AP: Last selected flight task stored permanently now.
+[o] 2009-05-25 AP: Layout of TaskEditor modified to get an uniform look.
 [-] 2009-05-24 AP: BUGFIX: Arrival altitude was not displayed in extra label info.
 [-] 2009-05-22 AP: BUGFIX: GPS user altitude correction factor has to be added
                    to and not subtracted to the received altitude. Otherwise the
