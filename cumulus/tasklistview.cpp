@@ -32,14 +32,14 @@
 extern MapConfig * _globalMapConfig;
 extern Calculator* calculator;
 
-TaskListView::TaskListView( QWidget *parent, bool showButtons )
-    : QWidget(parent),
-    rowDelegate(0)
+TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
+  QWidget(parent),
+  rowDelegate(0)
 {
   setObjectName("TaskListView");
 
   _showButtons = showButtons;
-  _task=0;
+  _task = 0;
   _selectedWp = 0;
   _currSelectedTp = 0;
   _newSelectedTp = 0;
@@ -136,12 +136,14 @@ TaskListView::~TaskListView()
     }
 }
 
-
 void TaskListView::slot_Selected()
 {
   _newSelectedTp = list->currentItem();
+  
   if ( _newSelectedTp == 0 )
-    return;
+    {
+      return;
+    }
 
   _selectedWp = ((_TaskPoint*)_newSelectedTp)->wp;
 
@@ -166,7 +168,6 @@ void TaskListView::slot_Selected()
   //       _selectedWp->name.latin1(), _selectedWp->taskPointIndex );
 }
 
-
 void TaskListView::showEvent(QShowEvent *)
 {
   if ( _showButtons == false )
@@ -177,6 +178,7 @@ void TaskListView::showEvent(QShowEvent *)
 
   const wayPoint *calcWp = calculator->getselectedWp();
   bool foundWp = false;
+  
   for ( int i = 0; i < list->topLevelItemCount(); i++)
     {
 
@@ -237,14 +239,12 @@ void TaskListView::slot_Select()
     }
 }
 
-
 /** This slot is called if the info button has been clicked */
 void TaskListView::slot_Info()
 {
   if (getSelectedWaypoint())
     emit info(getSelectedWaypoint());
 }
-
 
 /** @ee This slot is called if the listview is closed without selecting */
 void TaskListView::slot_Close ()
@@ -256,7 +256,6 @@ void TaskListView::slot_Close ()
 
   emit done();
 }
-
 
 /**
  * Retrieves the waypoints from the task, and fills the list.
@@ -351,13 +350,11 @@ void TaskListView::slot_updateTask()
     }
 }
 
-
 /** Returns a pointer to the currently highlighted taskpoint. */
 wayPoint * TaskListView::getSelectedWaypoint()
 {
   return _selectedWp;
 }
-
 
 void TaskListView::clear()
 {
