@@ -887,7 +887,6 @@ void MainWindow::initActions()
            this, SLOT( slotSwitchToWPListView() ) );
 
   // GPS navigation shortcuts. Only available with GPS connected
-
   actionGpsNavUp = new QAction( tr( "McCready up" ), this );
   actionGpsNavUp->setShortcut( QKeySequence("Up") );
   addAction( actionGpsNavUp );
@@ -943,13 +942,11 @@ void MainWindow::initActions()
            this, SLOT( slotFileQuit() ) );
 
   actionViewWaypoints = new QAction ( tr( "&Waypoints" ), this );
-  // actionViewWaypoints->setShortcut(Qt::Key_W);
   addAction( actionViewWaypoints );
   connect( actionViewWaypoints, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToWPListView() ) );
 
   actionViewAirfields = new QAction ( tr( "&Airfields" ), this );
-  //actionViewAirfields->setShortcut(Qt::Key_O);
   addAction( actionViewAirfields );
   connect( actionViewAirfields, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToAFListView() ) );
@@ -961,7 +958,6 @@ void MainWindow::initActions()
            this, SLOT( slotSwitchToReachListView() ) );
 
   actionViewTaskpoints = new QAction ( tr( "&Task" ), this );
-  // actionViewTaskpoints->setShortcut(Qt::Key_T);
   addAction( actionViewTaskpoints );
   connect( actionViewTaskpoints, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToTaskListView() ) );
@@ -1066,6 +1062,12 @@ void MainWindow::initActions()
   connect ( actionSelectTask, SIGNAL( triggered() ),
             this, SLOT( slotPreFlightTask() ) );
 
+  actionStartFlightTask = new QAction( tr( "Start flight task" ), this );
+  actionStartFlightTask->setShortcut(Qt::Key_B);
+  addAction( actionStartFlightTask );
+  connect ( actionStartFlightTask, SIGNAL( triggered() ),
+            calculator, SLOT( slot_startTask() ) );
+
   actionToggleManualInFlight = new QAction( tr( "Manual" ), this );
   actionToggleManualInFlight->setShortcut(Qt::Key_M + Qt::SHIFT);
   actionToggleManualInFlight->setEnabled(false);
@@ -1096,9 +1098,6 @@ void MainWindow::initActions()
   actionHelpCumulus->setShortcut(Qt::Key_Question);
   addAction( actionHelpCumulus );
   connect( actionHelpCumulus, SIGNAL(triggered()), this, SLOT(slotHelp()) );
-
-  // actionWhatsThis = new QAction( tr( "What's this ?" ), this );
-  // connect ( actionWhatsThis, SIGNAL( triggered() ), this, SLOT( whatsThis() ) );
 
   actionHelpAboutApp = new QAction( tr( "About Cumulus" ), this );
   actionHelpAboutApp->setShortcut(Qt::Key_V + Qt::SHIFT);
@@ -1136,6 +1135,7 @@ void  MainWindow::toggleActions( const bool toggle )
   actionToggleLabelsInfo->setEnabled( toggle );
   actionEnsureVisible->setEnabled( toggle );
   actionSelectTask->setEnabled( toggle );
+  actionStartFlightTask->setEnabled( toggle );
   actionPreFlight->setEnabled( toggle );
   actionSetupConfig->setEnabled( toggle );
   actionSetupInFlight->setEnabled( toggle );
@@ -1144,8 +1144,8 @@ void  MainWindow::toggleActions( const bool toggle )
   actionHelpAboutQt->setEnabled( toggle );
   actionToggleLogging->setEnabled( toggle );
   scExit->setEnabled( toggle );
+  
   // do not toggle actionToggleManualInFlight, status may not be changed
-
   if( toggle )
     {
       GeneralConfig * conf = GeneralConfig::instance();

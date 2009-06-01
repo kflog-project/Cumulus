@@ -323,9 +323,9 @@ void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
 
       FlightTask *task = _globalMapContents->getCurrentTask();
 
-      if ( task != 0 )
+      if ( task != static_cast<FlightTask *> (0) )
         {
-          QList<wayPoint*> wpList = task->getWPList();
+          QList<wayPoint *> wpList = task->getWPList();
 
           // Tasks with less 4 entries are incomplete! The selection
           // of the start point is also senseless. Therefore we start with one.
@@ -1487,4 +1487,54 @@ void Calculator::setManualInFlight(bool switchOn)
   // immediately put glider into center if outside
   // we can only switch off if GPS data coming in
   emit switchManualInFlight();
+}
+
+/**
+ * Called to select the start point of a loaded task.
+ * That will also activate the automaitc task point switch.
+ */
+void Calculator::slot_startTask()
+{
+  FlightTask *task = _globalMapContents->getCurrentTask();
+  
+  if ( task == static_cast<FlightTask *> (0) )
+    {
+      // no task defined, ignore request
+      return;
+    }
+
+    QList<wayPoint *> wpList = task->getWPList();
+
+    // Tasks with less 4 entries are incomplete! The selection
+    // of the start point is also senseless, request is ignored.
+    if( wpList.count() < 4 )
+      {
+        return;
+      }
+
+    wayPoint *tp2Taken;
+
+    // The start point of a task depends of the type. If first and
+    // second point are identical, we take always the second one
+    // otherwise the first.
+    if( wpList.at(0)->origP != wpList.at(1)->origP )
+      {
+        // take first task waypoint
+        tp2Taken = wpList.at(0)->origP;
+      }
+    else
+      {
+        // take second task waypoint
+        tp2Taken = wpList.at(1)->origP;
+      }
+      
+    // Check, if the task point is already selected. In this case this
+    // request is ignored.
+    if( selectedWp &&
+        selectedWp->taskPointIndex == tp2Taken->taskPointIndex )
+      {
+        return;
+      }
+      
+    slot_WaypointChange( tp2Taken, true );
 }

@@ -498,6 +498,12 @@ public slots: // Public slots
      * Called if the cumulus wind analyzer has a new measurement.
      */
     void slot_Wind(Vector&);
+    
+    /**
+     * Called to select the start point of a loaded task.
+     * That will also activate the automaitc task point switch.
+     */
+    void slot_startTask();
 
 signals: // Signals
 

@@ -346,7 +346,7 @@ class MainWindow : public QMainWindow
     QAction* actionHelpCumulus;
     QAction* actionHelpAboutApp;
     QAction* actionHelpAboutQt;
-    QAction* actionWhatsThis;
+    QAction* actionStartFlightTask;
 
     /* shortcut for exit application */
     QShortcut* scExit;
