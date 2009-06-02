@@ -270,10 +270,10 @@ void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
       // that fact.
 
       int answer=
-        QMessageBox::question( 0, tr("Replace current taskpoint?"),
+        QMessageBox::question( 0, tr("Replace current task point?"),
                                tr("<html>"
                                   "A flight task is activated!<br>"
-                                  "This selection will stop the automatic taskpoint switch."
+                                  "This selection will stop the automatic task point switch."
                                   "To avoid that make a selection from task menu."
                                   "<br>Do You really want to replace?"
                                   "</html>"),
@@ -1496,7 +1496,7 @@ void Calculator::setManualInFlight(bool switchOn)
 void Calculator::slot_startTask()
 {
   FlightTask *task = _globalMapContents->getCurrentTask();
-  
+
   if ( task == static_cast<FlightTask *> (0) )
     {
       // no task defined, ignore request
@@ -1520,21 +1520,46 @@ void Calculator::slot_startTask()
     if( wpList.at(0)->origP != wpList.at(1)->origP )
       {
         // take first task waypoint
-        tp2Taken = wpList.at(0)->origP;
+        tp2Taken = wpList.at(0);
       }
     else
       {
         // take second task waypoint
-        tp2Taken = wpList.at(1)->origP;
+        tp2Taken = wpList.at(1);
       }
-      
-    // Check, if the task point is already selected. In this case this
-    // request is ignored.
-    if( selectedWp &&
-        selectedWp->taskPointIndex == tp2Taken->taskPointIndex )
+
+    if( selectedWp )
       {
-        return;
+        // Check, if the task point is already selected. In this case this
+        // request is ignored.
+        if( selectedWp->taskPointIndex == tp2Taken->taskPointIndex )
+          {
+            return;
+          }
+
+        // Check, if another task point is already selected. In this case ask the
+        // user if the first point shall be really selected.
+        if( selectedWp->taskPointIndex != -1 &&
+            selectedWp->taskPointIndex != tp2Taken->taskPointIndex )
+          {
+            int answer =
+              QMessageBox::question( 0, tr("Restart current task?"),
+                                     tr("<html>"
+                                        "A flight task is running!<br>"
+                                        "This command will start the<br>"
+                                        "task again at the beginning."
+                                        "<br>Do You really want to restart?"
+                                        "</html>"),
+                                     QMessageBox::Yes,
+                                     QMessageBox::No | QMessageBox::Escape );
+
+            if ( answer != QMessageBox::Yes )
+              {
+                // do ignore the request
+                return;
+              }
+          }
       }
-      
+
     slot_WaypointChange( tp2Taken, true );
 }
