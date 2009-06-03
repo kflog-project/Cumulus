@@ -17,7 +17,7 @@ If it is already available you can continue with step 2)
 Otherwise download a X11/Qt release from ftp.trolltech.com/qt/source.
 I recommend the release:
 
-ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-4.5.0.tar.bz2
+ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-4.5.1.tar.bz2
 
 I did the development with this release. To install it follow the instructions
 of Trolltech. For Cumulus you need the standard Qt4 libraries. If you want to
@@ -32,6 +32,15 @@ e.g. BASH example
 	export $PATH=<QT_INSTALLDIR>/bin:$PATH
 
 Step 2)
+
+Check, if you can call 'qmake --version' from a shell command line. You should see some
+output like this:
+
+   QMake version 2.01a
+   Using Qt version 4.5.1 in ...
+   
+In this case Qt is right installed. If the call fails, check the PATH variable for
+containing Qt bin directory.
 
 Checkout a cumulus snapshot file tree in a local directory of your Linux desktop
 with:
