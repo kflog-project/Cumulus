@@ -33,24 +33,27 @@ e.g. BASH example
 
 Step 2)
 
-Check, if you can call 'qmake --version' from a shell command line. You should see some
-output like this:
+Check, if you can call 'qmake --version' from a shell command line. You should see some output like this:
 
    QMake version 2.01a
    Using Qt version 4.5.1 in ...
    
-In this case Qt is right installed. If the call fails, check the PATH variable for
-containing Qt bin directory.
+In this case Qt is right installed. If the call fails, check the PATH variable for containing Qt bin directory.
+
+To checkout the source tree from the subversion archive you need an installed
+subversion client on your Linux desktop. If the command svn ... fails you do not
+have installed subversion. Alternatively you can download a snapshot tar ball.
+See below how to do this.
 
 Checkout a cumulus snapshot file tree in a local directory of your Linux desktop
-with:
+from the subversion archive with:
 
 	a) svn co https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
 	b) svn export https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
 
 Variant b) is free from any svn overhead like .svn directories.
 
-You can also use a snapshot tar ball from here:
+You can also download a snapshot tar ball by using this link:
 
   http://www.kflog.org/fileadmin/user_upload/cumulus_snapshots/CumulusQt4-snapshot.tbz
   
