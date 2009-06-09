@@ -33,33 +33,38 @@ Qt4 libraries libQtCore and libQtGui. If you want to debug cumulus together
 with Qt it is recommend to activate the debug option during run of the configure
 script.
 
-Call ./configure in the root directory of your Qt source tree with the following
-options:
+  Copy the Qt tar ball in a local directory of your Linux desktop and extract it
+  with:
+  
+  tar jxvf qt-x11-opensource-src-4.5.1.tar.bz2
 
-./configure -prefix /opt/qt4.5.1 -opensource -no-qt3support -no-xmlpatterns
-            -no-phonon -no-phonon-backend -no-webkit -no-scripttools -no-openssl
-            -nomake examples -nomake demos -nomake docs -nomake translations
-            -no-nis -no-cups
-            
+Call the configure script in the root directory of your Qt source tree with the
+following options:
+
+  ./configure -prefix /opt/qt4.5.1 -opensource -no-qt3support -no-xmlpatterns
+              -no-phonon -no-phonon-backend -no-webkit -no-scripttools -no-openssl
+              -nomake examples -nomake demos -nomake docs -nomake translations
+              -no-nis -no-cups
+              
 Note, that the options must be passed on one line. If you want to set another
 prefix option please do it now. The installation under /opt/... needs later on
 root rights. To build Qt with debugging on add the option -debug to the others.       
             
 If configure has finished, call as next:
 
-make
+  make
 
 That can take a while. If make has finished call:
 
-su -c make install
+  su -c make install
 
-For executing this command you need root rights to make the Qt installation
+For executing this command you need root rights to install the Qt installation
 under /opt/...
 
 Now you should have installed a Qt installation under the directory of your
 -prefix option.
 
-To use your own built Qt version, you have add the
+To use your own built Qt version, you have to add the
 <QT_INSTALLDIR>/bin component at the first position of your PATH variable.
 
 e.g. BASH example
@@ -86,17 +91,16 @@ the PATH variable for containing the Qt bin directory.
 
 Step 3)
 
-Download the Cumulus sources from the subversion archive or as snapshot tar
-ball.
+Download the Cumulus sources from the subversion archive or as snapshot tar ball.
 
 a) Get it from subversion:
 
 To checkout the source tree from the subversion archive you need an installed
-subversion client on your Linux desktop. If the command svn ... fails you have
-not installed subversion. Alternatively you can download a snapshot tar ball.
+subversion client on your Linux desktop. If the command 'svn --version' fails you
+have not installed subversion. Alternatively you can download a snapshot tar ball.
 See below how to do this.
 
-Checkout a cumulus snapshot file tree in a local directory of your Linux desktop
+Checkout a Cumulus snapshot file tree in a local directory of your Linux desktop
 from the subversion archive with:
 
 	1) svn co https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
@@ -176,7 +180,7 @@ http://www.kflog.org/maproom/ground-and-terrain-data
 
 Step 7)
 
-To start cumulus issue the command:
+To start Cumulus issue the command:
 
 	$INSTALL_PATH/bin/cumulus
 
