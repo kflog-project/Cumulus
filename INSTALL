@@ -11,47 +11,100 @@ Linux/Unix.
 
 Step 1)
 
-You will need to set up a build environment for Qt4.x under X11.
-If it is already available you can continue with step 2)
+You will need to set up a build environment for Qt4.5.x under X11. The following
+components are mandatory:
 
-Otherwise download a X11/Qt release from ftp.trolltech.com/qt/source.
-I recommend the release:
+  a) The Qt tools qmake, moc and lrelease
+  b) The Qt libraries libQtCore and libQtGui
+  c) The Qt header files
+
+The different Linux distributions do provide normally installable packages but
+you can build too Qt from the sources.
+
+If all Qt stuff is already available you can continue with step 2)
+
+To build your own Qt from scratch download a X11/Qt release from
+ftp.trolltech.com/qt/source. I recommend the release:
 
 ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-4.5.1.tar.bz2
 
-I did the development with this release. To install it follow the instructions
-of Trolltech. For Cumulus you need the standard Qt4 libraries. If you want to
-debug cumulus together with Qt it is recommend to activate the debug option
-during run of the configure script.
+I did the development with this release. For Cumulus you need the standard
+Qt4 libraries libQtCore and libQtGui. If you want to debug cumulus together
+with Qt it is recommend to activate the debug option during run of the configure
+script.
 
-If you want to use your own built Qt version, you should add the
+Call ./configure in the root directory of your Qt source tree with the following
+options:
+
+./configure -prefix /opt/qt4.5.1 -opensource -no-qt3support -no-xmlpatterns
+            -no-phonon -no-phonon-backend -no-webkit -no-scripttools -no-openssl
+            -nomake examples -nomake demos -nomake docs -nomake translations
+            -no-nis -no-cups
+            
+Note, that the options must be passed on one line. If you want to set another
+prefix option please do it now. The installation under /opt/... needs later on
+root rights. To build Qt with debugging on add the option -debug to the others.       
+            
+If configure has finished, call as next:
+
+make
+
+That can take a while. If make has finished call:
+
+su -c make install
+
+For executing this command you need root rights to make the Qt installation
+under /opt/...
+
+Now you should have installed a Qt installation under the directory of your
+-prefix option.
+
+To use your own built Qt version, you have add the
 <QT_INSTALLDIR>/bin component at the first position of your PATH variable.
 
 e.g. BASH example
 
-	export $PATH=<QT_INSTALLDIR>/bin:$PATH
+	export $PATH=/opt/qt4.5.1/bin:$PATH
+	
+	in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.5.1'
 
 Step 2)
 
-Check, if you can call 'qmake --version' from a shell command line. You should see some output like this:
+Check, if you can call 'qmake -v' from a shell command line. You should
+see some output like this:
 
    QMake version 2.01a
    Using Qt version 4.5.1 in ...
    
-In this case Qt is right installed. If the call fails, check the PATH variable for containing Qt bin directory.
+Check, if you can call 'moc -v' from a shell command line. You should
+see some output like this:
+
+   Qt Meta Object Compiler version 61 (Qt 4.5.1)
+   
+If both checks are successfully Qt is right installed. If a call fails, check
+the PATH variable for containing the Qt bin directory.
+
+Step 3)
+
+Download the Cumulus sources from the subversion archive or as snapshot tar
+ball.
+
+a) Get it from subversion:
 
 To checkout the source tree from the subversion archive you need an installed
-subversion client on your Linux desktop. If the command svn ... fails you do not
-have installed subversion. Alternatively you can download a snapshot tar ball.
+subversion client on your Linux desktop. If the command svn ... fails you have
+not installed subversion. Alternatively you can download a snapshot tar ball.
 See below how to do this.
 
 Checkout a cumulus snapshot file tree in a local directory of your Linux desktop
 from the subversion archive with:
 
-	a) svn co https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
-	b) svn export https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
+	1) svn co https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
+	2) svn export https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
 
-Variant b) is free from any svn overhead like .svn directories.
+Variant 2) is free from any svn overhead like .svn directories.
+
+b) Get it as snapshot tar ball:
 
 You can also download a snapshot tar ball by using this link:
 
@@ -61,10 +114,11 @@ You can also download a snapshot tar ball by using this link:
   
   tar jxvf CumulusQt4-snapshot.tbz
 
-Step 3)
+Step 4)
 
-Go into the trunk directory of your checkout copy. To build the cumulus
-application issue the following command:
+Go into the trunk directory of your subversion copy or in the root directory of
+the extracted tar ball. To build the Cumulus application issue the following
+command:
 
 	make -f Makefile.X11
 	
@@ -73,13 +127,16 @@ application issue the following command:
 	all      Builds all parts of cumulus
 	clean    Cleans the build area and removes all generated objects.
 	         Use it after done modifications of qmake project files.
-	install  Install cumulus under $(INSTALL_ROOT), normally /opt/cumulus
+	install  Install Cumulus under $(INSTALL_ROOT), normally /opt/cumulus
 
-Step 4)
+Step 5)
 
-To install cumulus issue the following command:
+To install Cumulus issue the following command:
 
-	make -f Makefile.X11 install
+	su -c make -f Makefile.X11 install
+
+'su -c' is necessary for the installation under /opt/cumulus. You need root
+rights do do that.
 
 The installation structure of Cumulus is oriented on the Filesystem Hierarchy
 Standard of Unix (www.pathname.com/fhs). The default installation directory of
@@ -90,7 +147,7 @@ following way:
 
 	make -f Makefile.X11 INSTALL_ROOT=<my-install-path> install
 
-Step 5)
+Step 6)
 
 The needed map data (airfields, airspaces and landscape) have to be installed
 under:
@@ -101,15 +158,15 @@ That are the places, where Cumulus will seek for.
 
 The directory structure looks like
 
-         +-/airfields/ (Only Welt 2000 data file is supported)
+         +-/airfields/ (Only Welt2000 data file is supported)
 .../maps/+-/airspaces/ (Only OpenAir file format is supported)
          +-/landscape/ (Use map data from KFLog's map room)
 
 Note, that cumulus does support airspace files only in openair
-format and as airfield file the welt2000 data file. The former support of
+format and as airfield file the Welt2000 data file. The former support of
 KFLog airspace and airfield files has been removed.
 
-For airfields the welt 2000 data base has to be used. See cumulus help under
+For airfields the Welt2000 data base has to be used. See cumulus help under
 trunk/help/en/index.html for more information how to get it.
 
 The landscape files can be downloaded from the KFLog Map room. Follow the link
@@ -117,7 +174,7 @@ below to get them.
 
 http://www.kflog.org/maproom/ground-and-terrain-data
 
-Step 6)
+Step 7)
 
 To start cumulus issue the command:
 
@@ -128,7 +185,7 @@ Personal stuff is stored under $HOME/cumulus. There you can find the task file
 
 The cumulus configuration file is stored under $HOME/.config/Cumulus.conf.
 
-Step 7)
+Step 8)
 
 Usage of NMEA Simulator
 
