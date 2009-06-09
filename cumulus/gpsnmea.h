@@ -429,8 +429,10 @@ class GpsNmea : public QObject
      *  It returns true if it matches, and false otherwise. */
     static bool checkCheckSum(int pos, const QString& sentence);
 
-    /** This function calculates the STD altitude from the passed altitude. */
+    /** This function calculates the STD altitude from the passed MSL altitude. */
     void calcStdAltitude(const Altitude& altitude);
+    /** This function calculates the MSL altitude from the passed STD altitude. */
+    void calcMslAltitude(const Altitude& altitude);
 
     /** This function sends the data of last valid fix to the gps receiver. */
     void sendLastFix (bool hard, bool soft);

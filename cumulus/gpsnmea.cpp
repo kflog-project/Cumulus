@@ -642,6 +642,59 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       return __ExtractCambridgeW( slst );
     }
 
+  /**
+  Used by Garrecht Volkslogger devices. The PGCS1 sentence format is:
+
+  $PGCS,<1>,<2>,<3>,<4>,<5>*CS
+  $PGCS,1,0EBC,0003,06A6,03*1F
+  
+  Volkslogger pressure and pressurealtitude information
+  
+  0 - PGCS - Sentence ID
+  1 - 1 - gcs-sentence no. 1
+  2 - 0EBC - (pressure * 4096) / 1100: value of pressure-sensor (hex coded)
+  3 - 0003 - pressure altitude [m] (hex coded)
+  4 - 06A6 - reserved for further use?
+  5 - 03 - reserved for further use?
+  CS - 1F - checksum of total sentence
+  */
+
+  if ( slst[0] == "$PGCS" )
+    {
+      if ( slst.size() < 6 )
+        {
+          qWarning("$PGCS contains too less parameters!");
+          return;
+        }
+
+      Altitude res(0);
+      bool ok;
+      int num = slst[3].toInt(&ok, 16);
+      if (!ok)
+        {
+          qWarning("$PGCS contains corrupt pressure altitude!");
+          return;
+        }
+      if (num > 32768) num -= 65536;  // FFFF = -1, FFFE = -2, etc.
+      res.setMeters( num );
+
+      if ( _lastStdAltitude != res && _deliveredAltitude == GpsNmea::PRESSURE )
+        {
+          // Store this altitude as STD, if the user has pressure selected.
+          // In the other case the STD is derived from the GPS altitude.
+          _lastStdAltitude = res;
+          // We only get a STD altitude from the Volkslogger, so we calculate
+          // the MSL altitude using the QNH provided by the user
+          calcMslAltitude( res );
+          // Since in GpsNmea::PRESSURE mode _lastPressureAltitude is returned,
+          // we set it, too.
+          _lastPressureAltitude = _lastMslAltitude;
+          emit newAltitude();     // notify change
+        }
+
+      return;
+    }
+
   // qDebug ("Unsupported NMEA sentence: %s", sentence.toLatin1().data());
 }
 
@@ -1359,7 +1412,7 @@ bool GpsNmea::checkCheckSum(int pos, const QString& sentence)
   return (check == calcCheckSum (pos, sentence));
 }
 
-/** This function calculates the STD altitude from the passed altitude. */
+/** This function calculates the STD altitude from the passed MSL altitude. */
 void GpsNmea::calcStdAltitude(const Altitude& altitude)
 {
   GeneralConfig *conf = GeneralConfig::instance();
@@ -1377,6 +1430,27 @@ void GpsNmea::calcStdAltitude(const Altitude& altitude)
   else
     {
       _lastStdAltitude = altitude;
+    }
+}
+
+/** This function calculates the MSL altitude from the passed STD altitude. */
+void GpsNmea::calcMslAltitude(const Altitude& altitude)
+{
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  int qnhDiff = 1013 - conf->getQNH();
+
+  if ( qnhDiff != 0 )
+    {
+      // Calculate altitude correction in meters from pressure difference.
+      // The common approach is to expect a pressure difference of 1 hPa per
+      // 30ft until 18.000ft. 30ft are 9.1437m
+      int delta = (int) rint( qnhDiff * 9.1437 );
+      _lastMslAltitude.setMeters( altitude.getMeters() - delta );
+    }
+  else
+    {
+      _lastMslAltitude = altitude;
     }
 }
 
