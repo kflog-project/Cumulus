@@ -53,6 +53,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsDev->addItem("/dev/ttyS1");
   GpsDev->addItem("/dev/ttyS2");
   GpsDev->addItem("/dev/ttyS3");
+  GpsDev->addItem("/dev/ttyUSB0"); // external USB device
   // Bluetooth default devices
   GpsDev->addItem("/dev/rfcomm0");
   GpsDev->addItem("/dev/rfcomm1");
