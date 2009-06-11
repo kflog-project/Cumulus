@@ -15,9 +15,10 @@ Step 1)
 You will need to set up a build environment for Qt4.5.x under X11. The
 following components are mandatory:
 
-  a) The Qt tools qmake, moc and lrelease
-  b) The Qt libraries libQtCore and libQtGui
-  c) The Qt header files
+  a) The g++ tool, GNUs C++ compiler
+  b) The Qt tools qmake, moc and lrelease
+  c) The Qt libraries libQtCore and libQtGui
+  d) The Qt header files
 
 The different Linux distributions do provide normally installable packages but
 you can build too Qt from the sources.
