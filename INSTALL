@@ -1,18 +1,19 @@
 ===============================================================================
-Building and installing Cumulus under X11 and Qt4.x for Linux/Unix
+Building and installing Cumulus under X11 and Qt4.5.x for Linux/Unix
 
-Last update: 2009-03-10 by Axel Pauli
+Last update: 2009-06-11 by Axel Pauli
 
 SVN info: $Id$
 ===============================================================================
 
 These are the instructions to build and install Cumulus from source under
-Linux/Unix.
+Linux/Unix. The basic assumption is, that you will do it as normal user and
+not as root!
 
 Step 1)
 
-You will need to set up a build environment for Qt4.5.x under X11. The following
-components are mandatory:
+You will need to set up a build environment for Qt4.5.x under X11. The
+following components are mandatory:
 
   a) The Qt tools qmake, moc and lrelease
   b) The Qt libraries libQtCore and libQtGui
@@ -30,64 +31,67 @@ ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-4.5.1.tar.bz2
 
 I did the development with this release. For Cumulus you need the standard
 Qt4 libraries libQtCore and libQtGui. If you want to debug cumulus together
-with Qt it is recommend to activate the debug option during run of the configure
-script.
+with Qt it is recommend to activate the debug option during run of the
+configure script.
 
-  Copy the Qt tar ball in a local directory of your Linux desktop and extract it
-  with:
+Copy the Qt tar ball in a local directory of your Linux desktop and extract it
+with:
   
-  tar jxvf qt-x11-opensource-src-4.5.1.tar.bz2
+  tar jxf qt-x11-opensource-src-4.5.1.tar.bz2
 
 Call the configure script in the root directory of your Qt source tree with the
 following options:
 
   ./configure -prefix /opt/qt4.5.1 -opensource -no-qt3support -no-xmlpatterns
-              -no-phonon -no-phonon-backend -no-webkit -no-scripttools -no-openssl
-              -nomake examples -nomake demos -nomake docs -nomake translations
-              -no-nis -no-cups
+              -no-phonon -no-phonon-backend -no-webkit -no-scripttools
+              -no-openssl -nomake examples -nomake demos -nomake docs
+              -nomake translations -no-nis -no-cups
               
-Note, that the options must be passed on one line. If you want to set another
-prefix option please do it now. The installation under /opt/... needs later on
-root rights. To build Qt with debugging on add the option -debug to the others.       
+Note, that all options must be passed on one line. If you want to set another
+prefix option please do it now. The installation is done under this path and under /opt/... you need later on root rights. To build Qt with debugging on add the option -debug to the others.
             
-If configure has finished, call as next:
+If configure has finished successfully, call as next:
 
   make
 
-That can take a while. If make has finished call:
+That can take a while (houres). If make has finished successfully call:
 
-  su -c make install
+  su -c 'make install'
 
 For executing this command you need root rights to install the Qt installation
-under /opt/...
+under /opt/... Please enter the root password when you ask for it.
 
 Now you should have installed a Qt installation under the directory of your
 -prefix option.
 
-To use your own built Qt version, you have to add the
+To use your own Qt version, you have to add the
 <QT_INSTALLDIR>/bin component at the first position of your PATH variable.
 
 e.g. BASH example
 
-	export $PATH=/opt/qt4.5.1/bin:$PATH
+	PATH=/opt/qt4.5.1/bin:$PATH
+	export PATH
 	
-	in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.5.1'
+	in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.5.1'.
+
+The PATH variable can be displayed by calling 'echo $PATH' on a shell
+command line.
 
 Step 2)
 
-Check, if you can call 'qmake -v' from a shell command line. You should
+Check if you can call 'qmake -v' from a shell command line. You should
 see some output like this:
 
-   QMake version 2.01a
-   Using Qt version 4.5.1 in ...
+  QMake version 2.01a
+  Using Qt version 4.5.1 in ...
    
-Check, if you can call 'moc -v' from a shell command line. You should
+Check if you can call 'moc -v' from a shell command line. You should
 see some output like this:
 
-   Qt Meta Object Compiler version 61 (Qt 4.5.1)
+  Qt Meta Object Compiler version 61 (Qt 4.5.1)
    
-If both checks are successfully Qt is right installed. If a call fails, check
-the PATH variable for containing the Qt bin directory.
+If both checks are successfully Qt is right installed. If a call fails or you
+see a version less than 4.5 check the PATH variable for containing the right Qt bin directory at the first position (see above).
 
 Step 3)
 
@@ -114,9 +118,9 @@ You can also download a snapshot tar ball by using this link:
 
   http://www.kflog.org/fileadmin/user_upload/cumulus_snapshots/CumulusQt4-snapshot.tbz
   
-  Copy the tar ball in a local directory of your Linux desktop and extract it with:
+Copy the tar ball in a local directory of your Linux desktop and extract it with:
   
-  tar jxvf CumulusQt4-snapshot.tbz
+  tar jxf CumulusQt4-snapshot.tbz
 
 Step 4)
 
@@ -128,26 +132,25 @@ command:
 	
 	The following make targets are available:
 	
-	all      Builds all parts of cumulus
+	all      Builds all parts of Cumulus
 	clean    Cleans the build area and removes all generated objects.
 	         Use it after done modifications of qmake project files.
-	install  Install Cumulus under $(INSTALL_ROOT), normally /opt/cumulus
+	install  Installs Cumulus under $(INSTALL_ROOT), normally /opt/cumulus
 
 Step 5)
 
-To install Cumulus issue the following command:
-
-	su -c make -f Makefile.X11 install
-
-'su -c' is necessary for the installation under /opt/cumulus. You need root
-rights do do that.
-
 The installation structure of Cumulus is oriented on the Filesystem Hierarchy
 Standard of Unix (www.pathname.com/fhs). The default installation directory of
-the Cumulus application is therefore /opt/cumulus. Normally you need root access
-to do the installation there. If you would prefer another installation place,
-you can change the installation directory during call of 'make install' in the
-following way:
+the Cumulus application is therefore /opt/cumulus further called INSTALL_ROOT.
+
+To install Cumulus issue the following command:
+
+	su -c 'make -f Makefile.X11 install'
+
+'su -c' is necessary for the installation under /opt/cumulus. You need root
+rights do do that. Please enter the root password when you ask for it.
+If you would prefer another installation place, you can change the installation
+directory during call of 'make install' in the following way:
 
 	make -f Makefile.X11 INSTALL_ROOT=<my-install-path> install
 
@@ -156,7 +159,7 @@ Step 6)
 The needed map data (airfields, airspaces and landscape) have to be installed
 under:
 
-$HOME/maps or $INSTALL_ROOT/maps
+$HOME/maps or INSTALL_ROOT/maps
 
 That are the places, where Cumulus will seek for.
 
@@ -166,12 +169,16 @@ The directory structure looks like
 .../maps/+-/airspaces/ (Only OpenAir file format is supported)
          +-/landscape/ (Use map data from KFLog's map room)
 
-Note, that cumulus does support airspace files only in openair
+Note, that Cumulus does support airspace files only in openair
 format and as airfield file the Welt2000 data file. The former support of
 KFLog airspace and airfield files has been removed.
 
-For airfields the Welt2000 data base has to be used. See cumulus help under
-trunk/help/en/index.html for more information how to get it.
+For airfields the Welt2000 data base has to be used. See in Cumulus online help
+or under
+
+http://www.kflog.org/fileadmin/user_upload/cumulus_help/en/cumulus-maps.html
+
+for more information how to get it.
 
 The landscape files can be downloaded from the KFLog Map room. Follow the link
 below to get them.
@@ -182,28 +189,33 @@ Step 7)
 
 To start Cumulus issue the command:
 
-	$INSTALL_PATH/bin/cumulus
+	INSTALL_PATH/bin/cumulus
 
 Personal stuff is stored under $HOME/cumulus. There you can find the task file
-'tasks.tsk' and the waypoint file 'cumulus.kwp'
+'tasks.tsk', the waypoint file 'cumulus.kwp' and the IGC log files.
 
-The cumulus configuration file is stored under $HOME/.config/Cumulus.conf.
+The Cumulus configuration file is stored under $HOME/.config/Cumulus.conf.
+
+To get more information about the Cumulus usage look in the online help of your
+running Cumulus or under this link:
+
+http://www.kflog.org/fileadmin/user_upload/cumulus_help/en/cumulus.html
 
 Step 8)
 
 Usage of NMEA Simulator
 
-Under $INSTALL_ROOT/bin you can find a NMEA simulator with name 'nmeaSimu'. You
+Under INSTALL_ROOT/bin you can find a NMEA simulator with name 'nmeaSimu'. You
 can use it for generation of NMEA data. Call it without any arguments and you
 will get a help usage displayed. The output of the simulator is written in a
-named pipe. Select in Cumulus as GPS device /tmp/nmeasim and cumulus will read
+named pipe. Select in Cumulus as GPS device /tmp/nmeasim and Cumulus will read
 the data from the simulator.
 
 Hints, improvements or help are always welcome. Please contact the maintainer of
 Cumulus, Axel Pauli, via email axel@kflog.org or use the mailing lists of KFLog
 to find under www.kflog.org/mailman/listinfo.
 
-Have fun with cumulus ...
+Have fun with Cumulus ...
 
 ===============================================================================
 Licence of Cumulus
