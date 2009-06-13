@@ -1,7 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt4.5.x for Linux/Unix
 
-Last update: 2009-06-11 by Axel Pauli
+Last update: 2009-06-13 by Axel Pauli
 
 SVN info: $Id$
 ===============================================================================
@@ -112,6 +112,21 @@ from the subversion archive with:
 	2) svn export https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
 
 Variant 2) is free from any svn overhead like .svn directories.
+
+To checkout a certain release you have to use a url which starts with:
+
+  https://svn.kflog.org/svn/repos/cumulus/qt4/tags/
+  
+followed by a release tag e.g. Release_2.3.3. You can browse through the
+Cumulus subversion archive with your internet browser to see the release tags.
+Type in the following url:
+
+  https://svn.kflog.org/svn/repos/cumulus
+  
+Maybe your browser will aks you to enable an exception rule for the KFLog
+certificate, it is not officially signed. You have to commit the question to
+get access to the archive. Under the path qt4/trunk you can see the latest
+checked in sources. Releases are to find under the path qt4/tag.
 
 b) Get it as snapshot tar ball:
 
