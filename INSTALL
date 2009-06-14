@@ -1,7 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt4.5.x for Linux/Unix
 
-Last update: 2009-06-13 by Axel Pauli
+Last update: 2009-06-14 by Axel Pauli
 
 SVN info: $Id$
 ===============================================================================
@@ -70,10 +70,10 @@ To use your own Qt version, you have to add the
 
 e.g. BASH example
 
-	PATH=/opt/qt4.5.1/bin:$PATH
-	export PATH
+  PATH=/opt/qt4.5.1/bin:$PATH
+  export PATH
 	
-	in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.5.1'.
+  in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.5.1'.
 
 The PATH variable can be displayed by calling 'echo $PATH' on a shell
 command line.
@@ -92,7 +92,8 @@ see some output like this:
   Qt Meta Object Compiler version 61 (Qt 4.5.1)
    
 If both checks are successfully Qt is right installed. If a call fails or you
-see a version less than 4.5 check the PATH variable for containing the right Qt bin directory at the first position (see above).
+see a version less than 4.5 check the PATH variable for containing the right
+Qt bin directory at the first position (see above).
 
 Step 3)
 
@@ -108,8 +109,8 @@ See below how to do this.
 Checkout a Cumulus snapshot file tree in a local directory of your Linux desktop
 from the subversion archive with:
 
-	1) svn co https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
-	2) svn export https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
+  1) svn co https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
+  2) svn export https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
 
 Variant 2) is free from any svn overhead like .svn directories.
 
@@ -144,14 +145,14 @@ Go into the trunk directory of your subversion copy or in the root directory of
 the extracted tar ball. To build the Cumulus application issue the following
 command:
 
-	make -f Makefile.X11
+  make -f Makefile.X11
 	
-	The following make targets are available:
+  The following make targets are available:
 	
-	all      Builds all parts of Cumulus
-	clean    Cleans the build area and removes all generated objects.
-	         Use it after done modifications of qmake project files.
-	install  Installs Cumulus under $(INSTALL_ROOT), normally /opt/cumulus
+  all      Builds all parts of Cumulus
+  clean    Cleans the build area and removes all generated objects.
+           Use it after done modifications of qmake project files.
+  install  Installs Cumulus under $(INSTALL_ROOT), normally /opt/cumulus
 
 Step 5)
 
@@ -161,21 +162,21 @@ the Cumulus application is therefore /opt/cumulus further called INSTALL_ROOT.
 
 To install Cumulus issue the following command:
 
-	su -c 'make -f Makefile.X11 install'
+  su -c 'make -f Makefile.X11 install'
 
 'su -c' is necessary for the installation under /opt/cumulus. You need root
 rights do do that. Please enter the root password when you ask for it.
 If you would prefer another installation place, you can change the installation
 directory during call of 'make install' in the following way:
 
-	make -f Makefile.X11 INSTALL_ROOT=<my-install-path> install
+  make -f Makefile.X11 INSTALL_ROOT=<my-install-path> install
 
 Step 6)
 
 The needed map data (airfields, airspaces and landscape) have to be installed
 under:
 
-$HOME/maps or INSTALL_ROOT/maps
+$HOME/cumulus/maps or INSTALL_ROOT/maps
 
 That are the places, where Cumulus will seek for.
 
@@ -205,7 +206,7 @@ Step 7)
 
 To start Cumulus issue the command:
 
-	INSTALL_PATH/bin/cumulus
+  INSTALL_PATH/bin/cumulus
 
 Personal stuff is stored under $HOME/cumulus. There you can find the task file
 'tasks.tsk', the waypoint file 'cumulus.kwp' and the IGC log files.
