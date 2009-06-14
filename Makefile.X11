@@ -43,7 +43,7 @@ clean:
 
 .PHONY : check_dir
 check_dir:
-	@if [ ! -w  $(INSTALL_ROOT) ]; \
+	@if [ -e $(INSTALL_ROOT) -a ! -w  $(INSTALL_ROOT) ]; \
 	then \
 		echo "Install Directory '$(INSTALL_ROOT)' not writeable - Are you root?"; \
 		exit 99; \
