@@ -246,7 +246,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
 
   if ( ! (kflExists || kfcExists) )
     {
-      qWarning( "Cumulus: no map file (%s/%s) found! Please install %s file", kflName.toLatin1().data(), kfcName.toLatin1().data(), kflName.toLatin1().data() );
+      qWarning( "Cumulus: no map file (%s or %s) found! Please install %s file", kflName.toLatin1().data(), kfcName.toLatin1().data(), kflName.toLatin1().data() );
       return false; // file could not be located in any of the possible map directories.
     }
 
@@ -694,7 +694,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
   if ( ! (kflExists || kfcExists) )
     {
-      qWarning( "Cumulus: no map files (%s/%s) found! Please install %s.",
+      qWarning( "Cumulus: no map files (%s or %s) found! Please install %s.",
                 kflName.toLatin1().data(), kfcName.toLatin1().data(), kflName.toLatin1().data() );
       return false; // file could not be located in any of the possible map directories.
     }
