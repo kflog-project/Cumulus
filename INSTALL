@@ -80,6 +80,11 @@ command line.
 
 Step 2)
 
+Check if you can call 'g++ --version' from a shell command line. You should
+see some output like this:
+
+  g++ (Gentoo 4.3.2-r3 p1.6, pie-10.1.5) 4.3.2
+  
 Check if you can call 'qmake -v' from a shell command line. You should
 see some output like this:
 
@@ -174,17 +179,11 @@ directory during call of 'make install' in the following way:
 Step 6)
 
 The needed map data (airfields, airspaces and landscape) have to be installed
-under:
+under the following directory structure:
 
-$HOME/cumulus/maps or INSTALL_ROOT/maps
-
-That are the places, where Cumulus will seek for.
-
-The directory structure looks like
-
-         +-/airfields/ (Only Welt2000 data file is supported)
-.../maps/+-/airspaces/ (Only OpenAir file format is supported)
-         +-/landscape/ (Use map data from KFLog's map room)
+                   +-/airfields/ (Only Welt2000 data file is supported)
+$HOME/cumulus/maps/+-/airspaces/ (Only OpenAir file format is supported)
+                   +-/landscape/ (Use map data from KFLog's map room)
 
 Note, that Cumulus does support airspace files only in openair
 format and as airfield file the Welt2000 data file. The former support of
