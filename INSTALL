@@ -1,7 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt4.5.x for Linux/Unix
 
-Last update: 2009-06-14 by Axel Pauli
+Last update: 2009-06-17 by Axel Pauli
 
 SVN info: $Id$
 ===============================================================================
@@ -12,16 +12,22 @@ not as root!
 
 Step 1)
 
-You will need to set up a build environment for Qt4.5.x under X11. The
+You will need to set up a build environment for Cumulus under X11. The
 following components are mandatory:
 
   a) The g++ tool, GNUs C++ compiler
   b) The Qt tools qmake, moc and lrelease
   c) The Qt libraries libQtCore and libQtGui
   d) The Qt header files
+  
+A Qt Release 4.5.0 or higher has to be used.
 
-The different Linux distributions do provide normally installable packages but
-you can build too Qt from the sources.
+The different Linux distributions do provide normally installable packages for
+that. For Xubuntu 9.04 you have to execute the following command to get it:
+
+  sudo apt-get install g++ subversion qt4-qmake libqtgui4 libqtcore4 libqt4-dev
+
+But you can build too Qt from the sources.
 
 If all Qt stuff is already available you can continue with step 2)
 
@@ -31,7 +37,7 @@ ftp.trolltech.com/qt/source. I recommend the release:
 ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-4.5.1.tar.bz2
 
 I did the development with this release. For Cumulus you need the standard
-Qt4 libraries libQtCore and libQtGui. If you want to debug cumulus together
+Qt4 libraries libQtCore and libQtGui. If you want to debug Cumulus together
 with Qt it is recommend to activate the debug option during run of the
 configure script.
 
@@ -55,7 +61,7 @@ If configure has finished successfully, call as next:
 
   make
 
-That can take a while (houres). If make has finished successfully call:
+That can take a while (1-3 hours). If make has finished successfully call:
 
   su -c 'make install'
 
@@ -83,7 +89,7 @@ Step 2)
 Check if you can call 'g++ --version' from a shell command line. You should
 see some output like this:
 
-  g++ (Gentoo 4.3.2-r3 p1.6, pie-10.1.5) 4.3.2
+  g++ (Ubuntu 4.3.3-5ubuntu4) 4.3.3
   
 Check if you can call 'qmake -v' from a shell command line. You should
 see some output like this:
