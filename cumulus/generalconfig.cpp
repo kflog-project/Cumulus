@@ -309,7 +309,7 @@ void GeneralConfig::load()
 #ifdef MAEMO
   _soundPlayer           = value( "SoundPlayer", "/opt/cumulus/bin/aplay" ).toString();
 #else
-  _soundPlayer           = value( "SoundPlayer", "" ).toString();
+  _soundPlayer           = value( "SoundPlayer", "/usr/bin/aplay" ).toString();
 #endif
   _airfieldDisplayTime   = value( "AirfieldDisplayTime",
                                   AIRFIELD_DISPLAY_TIME_DEFAULT ).toInt();
