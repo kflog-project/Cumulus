@@ -253,13 +253,16 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   qDebug( "QDir::homePath()=%s", QDir::homePath().toLatin1().data() );
   qDebug( "DISPLAY=%s", qwsdisplay ? qwsdisplay : "NULL" );
 
-  // Check, if in users home a cumulus application directory exists,
-  // otherwise create it.
+  // Check, if in users home a Cumulus application directory exists,
+  // otherwise create it with all subdirectories.
   QDir cuApps( QDir::homePath() + "/cumulus" );
 
   if ( ! cuApps.exists() )
     {
-      cuApps.mkdir( QDir::homePath() + "/cumulus" );
+      cuApps.mkpath( QDir::homePath() + "/cumulus/maps" );
+      cuApps.mkpath( QDir::homePath() + "/cumulus/maps/airfields" );
+      cuApps.mkpath( QDir::homePath() + "/cumulus/maps/airspaces" );
+      cuApps.mkpath( QDir::homePath() + "/cumulus/maps/landscape" );
     }
 
   setFocusPolicy( Qt::StrongFocus );
@@ -1144,7 +1147,7 @@ void  MainWindow::toggleActions( const bool toggle )
   actionHelpAboutQt->setEnabled( toggle );
   actionToggleLogging->setEnabled( toggle );
   scExit->setEnabled( toggle );
-  
+
   // do not toggle actionToggleManualInFlight, status may not be changed
   if( toggle )
     {
