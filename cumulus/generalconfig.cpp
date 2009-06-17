@@ -1341,7 +1341,7 @@ void GeneralConfig::removePixmap( const QString& pixmapName )
 
 /** Returns the expected places of map directories
     There are: 1. Map directory defined by user
-               2. $HOME/maps (desktop) or $HOME/MyDocs/Cumulus/maps (Maemo)
+               2. $HOME/cumulus/maps (desktop) or $HOME/MyDocs/Cumulus/maps (Maemo)
                3. $INSTALL_DIR/maps
 */
 QStringList GeneralConfig::getMapDirectories()
@@ -1357,7 +1357,7 @@ QStringList GeneralConfig::getMapDirectories()
       mapDirs << _mapUserDir;
     }
 
-  // Next follow $HOME/maps and at last the installation area with
+  // Next follow $HOME/cumulus/maps and at last the installation area with
   // $INSTALL_ROOT/maps.
 
   if( _mapUserDir != mapHome )
