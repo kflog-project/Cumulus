@@ -40,7 +40,8 @@
 
 <p> Note that Cumulus will only accept GPS data sentences with a valid checksum.
     It is also able to process the proprietary sentences emitted by a
-    Cambridge device and to work this these data. Wind, variometer and QNH setting
+    Cambridge or Volkslogger device and to work this these data.
+    Wind, variometer and QNH data from a Cambridge device
     will be overtaken automatically, if they are available. MSL and STD altitude,
     derived from the pressure sonde, are only taken on demand.
 
@@ -59,16 +60,16 @@
       <li> NMEA Simulator
     </ul>
     <br><br>
-    Serial and Bluetooth devices needs also a speed rate for their
+    Serial and Bluetooth devices need also a speed rate for their
     operation. The default serial NMEA connection speed is 4800 bps for
-    >>Bluetooth we recommend to use 115200 bps.
+    Bluetooth we recommend to use 115200 bps.
     <br>
     If you use a Nokia Internet Tablet N800/N810 the entry
     <i>GPS Daemon</i> should be your first selection. Unless you want
     to connect via your USB interface adapter to the GPS. In such a
     case select the device <i>/dev/ttyUSB0</i>.
     <br>
-    If your device not contained in the selection list, you can change
+    If your device is not contained in the selection list, you can change
     one of the predefined entries to your need. This is unsupported on the
     Nokia Internet Tablet.
   </dd>
@@ -83,10 +84,16 @@
     If that will not help, you can select the Altitude
     <i>User</i> mode and add an own altitude correction in the spin
     box below.
-    <br>If you use a Cambrigde device as GPS source, which delivers also
-    altitude values (MSL and STD) derived from a pressure sonde and
-    Cumulus shall work on this base, select the <i>Pressure</i> item
+    <br>If you use a Cambrigde device as GPS source, it delivers also
+    altitude values (MSL and STD) derived from a pressure sonde. Shall
+    Cumulus work on this base, select the <i>Pressure</i> item
     in the combo box.
+    <br>If you use a Volkslogger device as GPS source, it can deliver 
+    altitude derived from a pressure sonde. These values are related to STD.
+    To get the right MSL altitude, you have to setup the QNH value in the Preflight
+    Settings. Shall Cumulus work on this base, select the <i>Pressure</i> item
+    in the combo box and enable the sending of the PGCS record in the
+    Volkslogger setup menu.
   </dd>
 
   <dt><b>Special Options</b></dt>
@@ -125,6 +132,7 @@ Cumulus processes the following NMEA and proprietary sentences:
   <tr><td>$PCAID</td> <td>Cambridge proprietary sentence with STD altitude</td></tr>
   <tr><td>!w</td> <td>Cambridge proprietary sentence with MSL altitude, QHN setting,
                       wind direction, wind speed and variometer </td></tr>
+  <tr><td>$PGCS</td> <td>Volkslogger proprietary sentence with STD altitude</td></tr>
 </table>
 </p>
 
