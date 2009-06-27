@@ -177,7 +177,9 @@ class MapMatrix : public QObject
   };
 
   /**
-   * @return the lat/lon-border of the current map.
+   * Note, the returned map uses the x-axis for longitude and the y-axis
+   * for latitude. That is revers to getMapBorder.
+   * @return the lon/lat-border of the current map in KFLog coordinates.
    * @see getMapBorder()
    */
   QRect getViewBorder() const
@@ -186,7 +188,7 @@ class MapMatrix : public QObject
   };
 
   /**
-   * @return the lat/lon-border of the current map (in projected coordinates).
+   * @return the lat/lon-border of the current map in projected coordinates.
    * @see getViewBorder()
    */
   QRect getMapBorder() const
