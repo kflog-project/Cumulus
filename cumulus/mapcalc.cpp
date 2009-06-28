@@ -351,3 +351,35 @@ QRect areaBox(QPoint center, double r)
                  2*delta_lat, 2*delta_lon);
 }
 
+/**
+ * Calculates the bounding box of the given tile number in KFLog coordinates.
+ * The returned rectangle used the x-axis as longitude and the y-axis as latitude.
+ */
+QRect getTileBox(const ushort tileNo)
+{
+  if( tileNo > (180*90) )
+    {
+      qWarning("Tile %d is out of range", tileNo);
+      return QRect();
+    }
+
+  // Positive result means N, negative result means S
+  int lat = 90 - ((tileNo / 180) * 2);
+
+  // Positive result means E, negative result means W
+  int lon = ((tileNo % 180) * 2) - 180;
+
+  // Tile bounding rectangle starting at upper left corner with:
+  // X: longitude until longitude + 2 degrees
+  // Y: latitude  until latitude - 2 degrees
+  QRect rect( lon*600000, lat*600000, 2*600000, -2*600000 );
+
+/*
+  qDebug("Tile=%d, Lat=%d, Lon=%d, X=%d, Y=%d, W=%d, H=%d",
+          tileNo, lat, lon, rect.x(), rect.y(),
+          (rect.x()+rect.width())/600000,
+          (rect.y()+rect.height())/600000 );
+*/
+
+ return rect;
+}

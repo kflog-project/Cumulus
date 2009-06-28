@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008 by Axel Pauli
+**                   2008-2009  by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -133,5 +133,11 @@ double angleDiff(double ang1, double ang2);
  * around point @arg center. @arg r is given in kilometers.
  */
 QRect areaBox(QPoint center, double r);
+
+/**
+ * Calculates the bounding box of the given tile number in KFLog coordinates.
+ * The returned rectangle used the x-axis as longitude and the y-axis as latitude.
+ */
+QRect getTileBox(const ushort tileNo);
 
 #endif
