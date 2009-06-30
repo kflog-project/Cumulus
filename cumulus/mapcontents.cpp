@@ -314,6 +314,10 @@ bool MapContents::__readTerrainFile( const int fileSecID,
   ProjectionBase *projectionFromFile = 0;
 
   in >> magic;
+  in >> loadTypeID;
+  in >> formatID;
+  in >> loadSecID;
+  in >> createDateTime;
 
   if ( magic != KFLOG_FILE_MAGIC )
     {
@@ -329,8 +333,6 @@ bool MapContents::__readTerrainFile( const int fileSecID,
       qWarning("Cumulus: wrong magic key %x read! Aborting ...", magic);
       return false;
     }
-
-  in >> loadTypeID;
 
   if (loadTypeID != fileTypeID) // wrong type
     {
@@ -349,8 +351,6 @@ bool MapContents::__readTerrainFile( const int fileSecID,
                loadTypeID );
       return false;
     }
-
-  in >> formatID;
 
   /*qDebug ("File=%s, magic=%x, fileTypeID=%x, loadTypeID=%x, formatID=%d",
     pathName.toLatin1().data(), magic, fileTypeID, loadTypeID, formatID );*/
@@ -372,9 +372,9 @@ bool MapContents::__readTerrainFile( const int fileSecID,
 
   QFileInfo fi( pathName );
 
-  qDebug("Reading File=%s, Magic=%xh, TypeId=%xh, formatId=%d, Date=%s",
+  qDebug("Reading File=%s, Magic=%%%X, TypeId=%c, formatId=%d, Date=%s",
          fi.fileName().toLatin1().data(), magic, loadTypeID, formatID,
-         createDateTime.toString().toLatin1().data() );
+         createDateTime.toString(Qt::ISODate).toLatin1().data() );
 
   if ( compiling )
     {
@@ -433,8 +433,6 @@ bool MapContents::__readTerrainFile( const int fileSecID,
         }
     }
 
-  in >> loadSecID;
-
   if ( loadSecID != fileSecID )
     {
       if ( ! compiling && kflExists )
@@ -451,8 +449,6 @@ bool MapContents::__readTerrainFile( const int fileSecID,
                pathName.toLatin1().data() );
       return false;
     }
-
-  in >> createDateTime;
 
   if ( ! compiling )
     {
@@ -560,7 +556,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
                   locLength--;
                   all.resize( locLength );
                   i--;
-                  qDebug("  Skipping double entry");
+                  qDebug("Skipping double entry");
                 }
               else
                 {
@@ -765,6 +761,10 @@ bool MapContents::__readBinaryFile(const int fileSecID,
   ProjectionBase *projectionFromFile = 0;
 
   in >> magic;
+  in >> loadTypeID;
+  in >> formatID;
+  in >> loadSecID;
+  in >> createDateTime;
 
   if ( magic != KFLOG_FILE_MAGIC )
     {
@@ -781,8 +781,6 @@ bool MapContents::__readBinaryFile(const int fileSecID,
       mapfile.close();
       return false;
     }
-
-  in >> loadTypeID;
 
   /** Originally, the binary files were mend to come in different flavors.
    * Now, they are all of type 'm'. Use that fact to do check for the
@@ -822,14 +820,11 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
   // check the version of the subtype. This can be different for the
   // compiled and the uncompiled version
-
-  in >> formatID;
-
   QFileInfo fi( pathName );
 
-  qDebug("Reading File=%s, Magic=%xh, TypeId=%xh, formatId=%d, Date=%s",
+  qDebug("Reading File=%s, Magic=%%%X, TypeId=%c, formatId=%d, Date=%s",
          fi.fileName().toLatin1().data(), magic, loadTypeID, formatID,
-         createDateTime.toString().toLatin1().data() );
+         createDateTime.toString(Qt::ISODate).toLatin1().data() );
 
   if (compiling)
     {
@@ -892,9 +887,6 @@ bool MapContents::__readBinaryFile(const int fileSecID,
     }
 
   // check if this section really covers the area we want to deal with
-
-  in >> loadSecID;
-
   if ( loadSecID != fileSecID )
     {
       mapfile.close();
@@ -912,8 +904,6 @@ bool MapContents::__readBinaryFile(const int fileSecID,
                pathName.toLatin1().data() );
       return false;
     }
-
-  in >> createDateTime;
 
   if ( ! compiling )
     {
