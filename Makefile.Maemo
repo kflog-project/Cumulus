@@ -14,7 +14,7 @@
 VERSION = `cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2`
 
 # current Qt version
-QT_VERSION=4.5.1
+QT_VERSION=4.5.2
 
 # installation directory of Qt libraries
 QT_LIBDIR=/opt/qt$(QT_VERSION)/lib
