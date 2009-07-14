@@ -17,6 +17,9 @@ Cumulus changelog
 -------------------------------------------------
 Cumulus 2.3.x (Development based on X11/Qt-4.5.1)
 -------------------------------------------------
+[-] 2009-07-14 AP: Option 'remove original map files after compilation' in
+                   Map Settings removed. There is enough space on the Internet
+                   tablets.
 [o] 2009-07-06 AP: Build done with new release Qt4.5.2
 [o] 2009-06-17 AP: Default sound player at desktop is set to /usr/bin/aplay now.
 [o] 2009-06-17 AP: Default map directories on desktop under $HOME/cumulus/maps/...
