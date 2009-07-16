@@ -85,8 +85,8 @@ extern MapView* _globalMapView;
 #define FILE_VERSION_MAP      101
 
 // compiled version
-#define FILE_VERSION_GROUND_C   102
-#define FILE_VERSION_TERRAIN_C  102
+#define FILE_VERSION_GROUND_C   103
+#define FILE_VERSION_TERRAIN_C  103
 #define FILE_VERSION_MAP_C      102
 
 
