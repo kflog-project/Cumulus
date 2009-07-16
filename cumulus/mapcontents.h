@@ -42,10 +42,8 @@ class LineElement;
 class RadioPoint;
 class SinglePoint;
 
-// number of isoline lists
-#define ISO_LINE_NUM 50
 // number of isoline levels
-#define ISO_LINE_LEVELS 4
+#define ISO_LINE_LEVELS 51
 
 /**
  * This class provides functions for accessing the contents of the map.
@@ -220,6 +218,10 @@ class MapContents : public QObject
       return &regIsoLines;
     };
 
+    /** Returns the elevation index for an elevation step in meters
+     */
+    uchar getElevationIndex(const ushort elevation ) const;
+
     /** returns ground elevation in meters
      * If the error argument is given, it will be set to the error margin for the
      * returned value.
@@ -242,7 +244,7 @@ class MapContents : public QObject
 
     void unloadMapObjects(QList<RadioPoint>& list);
 
-    void unloadMapObjects(QList<Isohypse> list[ISO_LINE_NUM][ISO_LINE_LEVELS]);
+    void unloadMapObjects(QMap<int, QList<Isohypse> > isoMap);
 
     /**
      * This function checks all possible map directories for the
@@ -301,27 +303,24 @@ class MapContents : public QObject
      * Reads a binary map file.
      *
      * @param  fileSecID  The sectionID of the map file
-     * @param  fileTypeID  The typeID of the map file ("G" for ground-data,
-     *                     "M" for additional map data and "T" for
-     *                     terrain data)
+     * @param  fileTypeID  The typeID of the map file ("M" for additional
+     *                     map data)
      *
      * @return "true", when the file has successfully been loaded
      */
     bool __readBinaryFile(const int fileSecID, const char fileTypeID);
 
     /**
-     * Reads a binary terrain-map file.
+     * Reads a binary ground/terrain file.
      *
      * @param  fileSecID  The sectionID of the map file
      * @param  fileTypeID  The typeID of the map file ("G" for ground-data,
-     *                     "M" for additional map data and "T" for
-     *                     terrain data)
+     *                     and "T" for terrain data)
      *
      * @return "true", when the file has successfully been loaded
      */
     bool __readTerrainFile( const int fileSecID,
-                            const int fileTypeID,
-                            const QHash<int, int>& isoHash );
+                            const int fileTypeID );
 
     /**
      * shows a progress message at the wait screen
@@ -417,9 +416,13 @@ class MapContents : public QObject
      */
     QList<LineElement> topoList;
     /**
-     * isohypseList contains all isohypses.
+     * Isohypse map contains all isohypses above the ground of a tile in a list.
      */
-    QList<Isohypse> isoList[ISO_LINE_NUM][ISO_LINE_LEVELS];
+    QMap<int, QList<Isohypse> > terrainMap;
+    /**
+     * Isohypse map contains all ground isohypses of a tile in a list.
+     */
+    QMap<int, QList<Isohypse> > groundMap;
 
     /**
      * Set over map tiles. Contains the sectionId for all fully loaded
@@ -450,11 +453,6 @@ class MapContents : public QObject
     bool memoryFull;
 
     /**
-     * Array containing the elevations of all possible isohypses.
-     */
-    static const int isoLines[ISO_LINE_NUM];
-
-    /**
      * Flag to signal first loading of map data
      */
     bool isFirst;
@@ -475,7 +473,17 @@ class MapContents : public QObject
     bool _isoLevelReset;
     const IsoListEntry* _lastIsoEntry;
 
-  private:
+    /**
+     * Array containing the used elevation levels in meters. Is used as help
+     * for reverse mapping elevation to array index.
+     */
+    static const short isoLevels[ISO_LINE_LEVELS];
+
+    /** Hash table with elevation in meters as key and related elevation
+     * index as value
+     */
+    QHash<short, uchar> isoHash;
+
     /**
      * Contains a reference to the currently selected flight task
      */

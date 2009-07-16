@@ -32,18 +32,20 @@
 class Isohypse : public LineElement
   {
   public:
-    /**
+        /**
      * Creates a new isohypse.
      *
-     * @param  pG  The polygon containing the position points.
-     * @param  elevation  The elevation
-     * @param  isValles "true", if the area is a valley
+     * @param  elevationCoordinates  The polygon containing the projected points of the isoline.
+     * @param  elevation  The elevation in meters
+     * @param  elevationIndex The elevation as index
      * @param  secID The tile section identifier
      * @param  typeID The type of isohypse, ground or terrain
      */
-    Isohypse(QPolygon pG, uint elevation, bool isValley,
-             uint secID, const ushort typeID );
-
+    Isohypse( QPolygon elevationCoordinates,
+              const short elevation,
+              const uchar  elevationIndex,
+              const ushort secID,
+              const char typeID );
     /**
      * Destructor
      */
@@ -60,13 +62,21 @@ class Isohypse : public LineElement
     /**
      * @return the elevation of the line
      */
-    int getElevation() const
+    short getElevation() const
       {
         return _elevation;
       };
 
     /**
-     * @return the type of isohypse, ground or terrain
+     * @return the elevation index of the line
+     */
+    ushort getElevationIndex() const
+      {
+        return _elevationIndex;
+      };
+
+    /**
+     * @return the type of isohypse, ground 'G' or terrain 'T'
      */
     ushort getTypeId() const
       {
@@ -74,15 +84,21 @@ class Isohypse : public LineElement
       };
 
   private:
+
     /**
-     * The elevation
+     * The elevation in meters
      */
-    uint _elevation;
+    short _elevation;
+
+    /**
+     * The elevation index
+     */
+    uchar _elevationIndex;
 
     /**
      * The type of isohypse, ground or terrain.
      */
-     ushort _typeID;
+     char _typeID;
   };
 
 #endif

@@ -7,7 +7,8 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008 Axel Pauli, Josua Dietze
+ **                   2008 by Axel Pauli, Josua Dietze
+ **                   2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -15,8 +16,6 @@
  **   $Id$
  **
  ***********************************************************************/
-
-#include <math.h>
 
 #include <QRegion>
 #include <QString>
@@ -29,10 +28,14 @@
 extern MapMatrix* _globalMapMatrix;
 extern MapConfig* _globalMapConfig;
 
-Isohypse::Isohypse( QPolygon pG, uint elevation, bool isValley,
-                    uint secID, const ushort typeID )
-    : LineElement( "", BaseMapElement::Isohypse, pG, isValley, secID ),
+Isohypse::Isohypse( QPolygon elevationCoordinates,
+                    const short elevation,
+                    const uchar  elevationIndex,
+                    const ushort secID,
+                    const char typeID ) :
+    LineElement( "Isoline", BaseMapElement::Isohypse, elevationCoordinates, false, secID ),
     _elevation(elevation),
+    _elevationIndex(elevationIndex),
     _typeID(typeID)
 {}
 
