@@ -83,11 +83,6 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   topLayout->setRowMinimumHeight(row++,10);
 
-  chkDeleteAfterCompile = new QCheckBox(tr("Delete original maps after compiling"),
-                                        this );
-  topLayout->addWidget(chkDeleteAfterCompile, row, 0, 1, 2);
-  row++;
-
   chkUnloadUnneeded = new QCheckBox(tr("Immediately unload unneeded maps"), this );
   topLayout->addWidget(chkUnloadUnneeded, row, 0, 1, 2);
   row++;
@@ -107,7 +102,6 @@ void SettingsPageMapSettings::slot_load()
 
   mapDirectory->setText( conf->getMapRootDir() );
 
-  chkDeleteAfterCompile->setChecked( conf->getMapDeleteAfterCompile() );
   chkUnloadUnneeded->setChecked( conf->getMapUnload() );
 
   currentProjType = conf->getMapProjectionType();
@@ -153,7 +147,6 @@ void SettingsPageMapSettings::slot_save()
   GeneralConfig *conf = GeneralConfig::instance();
 
   conf->setMapRootDir( mapDirectory->text() );
-  conf->setMapDeleteAfterCompile( chkDeleteAfterCompile->isChecked() );
   conf->setMapUnload( chkUnloadUnneeded->isChecked() );
   conf->setMapProjectionType( currentProjType );
   conf->setLambertParallel1( lambertV1 );
@@ -280,7 +273,6 @@ void SettingsPageMapSettings::slot_query_close(bool& warn, QStringList& warnings
   GeneralConfig *conf = GeneralConfig::instance();
 
   changed = changed || ( mapDirectory->text() != conf->getMapRootDir() );
-  changed = changed || ( chkDeleteAfterCompile->isChecked() != conf->getMapDeleteAfterCompile() );
   changed = changed || ( chkUnloadUnneeded->isChecked() != conf->getMapUnload() );
   changed = changed || checkIsProjectionChanged();
 

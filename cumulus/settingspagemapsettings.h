@@ -82,7 +82,6 @@ class SettingsPageMapSettings : public QWidget
 
   QPushButton * mapSelection;
   QLineEdit * mapDirectory;
-  QCheckBox * chkDeleteAfterCompile;
   QCheckBox * chkUnloadUnneeded;
   QComboBox * cmbProjection;
   LatEdit   * edtLat1;
