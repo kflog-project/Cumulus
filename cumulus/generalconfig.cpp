@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004 by André Somers
- **                   2009 by Axel Pauli
+ **                   2007-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -32,6 +32,7 @@ using namespace std;
 #include "speed.h"
 #include "altitude.h"
 #include "distance.h"
+#include "time_cu.h"
 
 #ifdef MAEMO
 #include "maemostyle.h"
@@ -359,7 +360,8 @@ void GeneralConfig::load()
   _unitSpeed = value( "Speed",    Speed::kilometersPerHour ).toInt();
   _unitVario = value( "Vario",    Speed::metersPerSecond ).toInt();
   _unitWind  = value( "Wind",     Speed::metersPerSecond ).toInt();
-  _unitPos   = value( "Position", WGSPoint::DMS  ).toInt();
+  _unitPos   = value( "Position", WGSPoint::DMS ).toInt();
+  _unitTime  = value( "Time",     Time::utc ).toInt();
   endGroup();
 }
 
@@ -636,6 +638,7 @@ void GeneralConfig::save()
   setValue( "Vario", _unitVario );
   setValue( "Wind", _unitWind );
   setValue( "Position", _unitPos );
+  setValue( "Time", _unitTime );
   endGroup();
 }
 

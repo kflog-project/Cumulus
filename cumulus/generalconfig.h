@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2009 Axel Pauli
+**   Copyright (c):  2004 by André Somers
+**                   2007-2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -1447,6 +1448,17 @@ class GeneralConfig : protected QSettings
   /** Sets the unit for position */
   void setUnitPos(const int newValue);
 
+  /** Gets the unit for time */
+  int getUnitTime() const
+  {
+    return _unitTime;
+  };
+  /** Sets the unit for time */
+  void setUnitTime(const int newValue)
+  {
+    _unitTime = newValue;
+  };
+
   /**
    * Get whether airspace filling is enabled at all
    */
@@ -1931,6 +1943,9 @@ class GeneralConfig : protected QSettings
   // Waypoint data file name
   QString _waypointFile;
 
+  // In the unit items is stored the label index of the related combo box.
+  // The indexes are used in the unit setting tabulator.
+
   // unit altitude
   int _unitAlt;
   // unit distance
@@ -1943,6 +1958,8 @@ class GeneralConfig : protected QSettings
   int _unitWind;
   // unit position
   int _unitPos;
+  // unit time
+  int _unitTime;
 
   // aktive cs task scheme
   enum ActiveCSTaskScheme _taskActiveCSScheme;

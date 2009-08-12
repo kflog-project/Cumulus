@@ -65,6 +65,7 @@
 #include "target.h"
 #include "helpbrowser.h"
 #include "sound.h"
+#include "time_cu.h"
 
 #ifdef MAEMO
 
@@ -1798,6 +1799,7 @@ void MainWindow::slotReadconfig()
   Speed::setVerticalUnit( Speed::speedUnit( conf->getUnitVario() ) );
   Altitude::setUnit( Altitude::altitude( conf->getUnitAlt() ) );
   WGSPoint::setFormat( WGSPoint::Format( conf->getUnitPos() ) );
+  Time::setUnit( Time::timeUnit( conf->getUnitTime() ) );
 
   // other configuration changes
   _globalMapMatrix->slotInitMatrix();

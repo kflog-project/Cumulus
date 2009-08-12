@@ -1,5 +1,6 @@
 # Cumulus Qt4/X11 project file for qmake
 # $Id$
+
 TEMPLATE = app
 
 # CONFIG = qt warn_on release
@@ -93,6 +94,7 @@ HEADERS = airfieldlistview.h \
     taskeditor.h \
     tasklist.h \
     tasklistview.h \
+    time_cu.h \
     tpinfowidget.h \
     vario.h \
     variomodedialog.h \
@@ -192,6 +194,7 @@ SOURCES = airfieldlistview.cpp \
     taskeditor.cpp \
     tasklist.cpp \
     tasklistview.cpp \
+    time_cu.cpp \
     tpinfowidget.cpp \
     vario.cpp \
     variomodedialog.cpp \

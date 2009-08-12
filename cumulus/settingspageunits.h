@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by AndrÃ© Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -15,20 +16,22 @@
 **
 ***********************************************************************/
 
-#ifndef SETTINGSPAGEUNITS_H
-#define SETTINGSPAGEUNITS_H
+#ifndef SETTINGS_PAGEUNITS_H
+#define SETTINGS_PAGEUNITS_H
 
 #include <QWidget>
 #include <QComboBox>
 
 /**
  * This class represents the Units settings page
- * @author André Somers
+ * @author AndrÃ© Somers
  */
 class SettingsPageUnits : public QWidget
 {
     Q_OBJECT
+
 public:
+
     SettingsPageUnits(QWidget *parent=0);
     ~SettingsPageUnits();
 
@@ -49,24 +52,27 @@ private:
      */
     int searchItem(int * p, int value, int max);
 
-    QComboBox * UnitAlt;
-    QComboBox * UnitSpeed;
-    QComboBox * UnitDistance;
-    QComboBox * UnitVario;
-    QComboBox * UnitWind;
-    QComboBox * UnitPosition;
+    QComboBox *UnitAlt;
+    QComboBox *UnitSpeed;
+    QComboBox *UnitDistance;
+    QComboBox *UnitVario;
+    QComboBox *UnitWind;
+    QComboBox *UnitPosition;
+    QComboBox *UnitTime;
 
-    //we use five arrays to store mappings of itemlocations in the comboboxes to the enum values of the units they represent
+    // we use six arrays to store mappings of item locations in the combo boxes
+    // to the enumeration values of the units they represent
     int altitudes[2];
     int speeds[4];
     int distances[3];
     int varios[3];
     int winds[5];
     int positions[2];
+    int times[2];
 
 private slots:
-    void  slotUnitChanged();
 
+    void  slotUnitChanged();
 };
 
 #endif
