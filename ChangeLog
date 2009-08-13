@@ -14,6 +14,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2009-08-13 AP: New unit option time added to settings menu. You can now choose
+                   between Utc or local time for the display.
+[-] 2009-08-13 AP: BUGFIX: Wrong UTC time display in sunset fixed. Hours greater
+                   than 23 were displayed. Saw it during by Boston/USA trip.
+
 -------------------------------------------------
 Cumulus 2.4.x (Development based on X11/Qt-4.5.2)
 -------------------------------------------------
