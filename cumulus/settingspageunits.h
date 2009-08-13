@@ -60,8 +60,8 @@ private:
     QComboBox *UnitPosition;
     QComboBox *UnitTime;
 
-    // we use six arrays to store mappings of item locations in the combo boxes
-    // to the enumeration values of the units they represent
+    // we use seven arrays to store mappings of item locations in the combo boxes
+    // to the enumeration values of the units they do represent
     int altitudes[2];
     int speeds[4];
     int distances[3];

@@ -215,7 +215,7 @@ int SettingsPageUnits::searchItem(int * p, int value, int max)
   return 0;
 }
 
-/** this slot is called when a unit has been changed, to make sure this unit
+/** this slot is called when an unit has been changed, to make sure this unit
  *  is in effect immediately.
  */
 void SettingsPageUnits::slotUnitChanged()
