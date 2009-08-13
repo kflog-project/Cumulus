@@ -1,9 +1,9 @@
 /************************************************************************
  **
- **   Copyright (c): 2007 by Axel Pauli, axel@kflog.org
+ **   Copyright (c): 2007-2009 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -12,7 +12,7 @@
  **   sonne.cpp
  **
  **   This class is part of Cumulus. It provides calculation of sun
- **   rise and sun set times. Algorithmus was taken from a Swiss
+ **   rise and sun set times. Algorithms was taken from a Swiss
  **   german webpage. Thanks to the author Roland Brodbeck for his
  **   publication. Explanations are all in german.
  **
@@ -21,22 +21,22 @@
 // Sonnenaufgangs- und untergangsberechnung nach
 // http://lexikon.astronomie.info/zeitgleichung/neu.html
 // Version Januar 2005
-// von Dr. sc. nat. Roland Brodbeck, Diplom Physiker ETH Zürich
+// von Dr. sc. nat. Roland Brodbeck, Diplom Physiker ETH ZÃ¼rich
 //
-// Ergebnisse wurden hier geprüft: http://www.generalaviation.de/sunrise/index.shtml
+// Ergebnisse wurden hier geprÃ¼ft: http://www.generalaviation.de/sunrise/index.shtml
 //
 // Achtung! Der Algorithmus weisst nur eine bedingte Genauigkeit im
-// Minutenbereich auf. Besonders am Polarkreis kann es zu größeren
-// Differenzen gegenüber einer besseren Berechnungsmethode
+// Minutenbereich auf. Besonders am Polarkreis kann es zu grÃ¶ÃŸeren
+// Differenzen gegenÃ¼ber einer besseren Berechnungsmethode
 // kommen. Diese Zeiten sind nur Anhaltswerte und keine amtlich
-// anerkannten! Für die Richtigkeit wird keinerlei Haftung übernommen.
+// anerkannten! FÃ¼r die Richtigkeit wird keinerlei Haftung Ã¼bernommen.
 //
 //***********************************************************************
 
 #include <cmath>
 #include "sonne.h"
 
-// einige benötigte Konstanten
+// einige benÃ¶tigte Konstanten
 static const double pi2=6.283185307179586476925286766559;
 static const double pi=3.1415926535897932384626433832795;
 static const double RAD = 0.017453292519943295769236907684886;
@@ -111,12 +111,12 @@ double Sonne::BerechneZeitgleichung( double &DK,double T )
 // Jahr:	4 stellig, z.B. 2007
 // Monat:	1-12
 // Tag:	        1-31
-// Position:    x=Breite, y=Länge WGS84 Koordinaten im KFlog Format
+// Position:    x=Breite, y=LÃ¤nge WGS84 Koordinaten im KFlog Format
 // Zeitzone:	0=Weltzeit (UTC)
 //              1=Winterzeit (MEZ)
 //              2=Sommerzeit (MESZ)
 //
-//  Rückgabe true=OK, false=Fehler, im Fehlerfall sind Auf und Unter
+//  RÃ¼ckgabe true=OK, false=Fehler, im Fehlerfall sind Auf und Unter
 //  Variablen nicht gesetzt
 bool Sonne::sonneAufUnter( QString& Auf, QString& Unter,
                            QDate& Datum,
@@ -170,10 +170,10 @@ bool Sonne::sonneAufUnter( QString& Auf, QString& Unter,
   if( Aufgang % 60 > 30 ) Aufgang += 30;
   if( Untergang % 60 > 30 ) Untergang += 30;
 
-  int hAuf = Aufgang / 3600;
+  int hAuf = (Aufgang / 3600) % 24;
   int mAuf = (Aufgang % 3600) / 60;
   
-  int hUnter = Untergang / 3600;
+  int hUnter = (Untergang / 3600) % 24;
   int mUnter = (Untergang % 3600) / 60;
 
   Auf.sprintf("%02d:%02d", hAuf, mAuf);
