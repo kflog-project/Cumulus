@@ -22,7 +22,11 @@
  *                                                                         *
  ***************************************************************************/
 
+/**
+ * This class handles the time unit to be used for display.
+ */
+
 #include "time_cu.h"
 
-// initializer for static member variable
+// Initializer for static member variable, UTC is the default time unit.
 Time::timeUnit Time::_timeUnit = utc;

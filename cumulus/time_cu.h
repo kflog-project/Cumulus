@@ -9,7 +9,7 @@
 **   Copyright (c):  2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -21,6 +21,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+/**
+ * This class handles the time unit to be used for display.
+ */
 
 #ifndef TIME_H
 #define TIME_H
@@ -68,7 +72,7 @@ class Time
 
   private:
 
-  // static element containing the current time unit
+  /** static element containing the current time unit */
   static timeUnit _timeUnit;
 };
 
