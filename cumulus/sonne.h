@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **   Copyright (c): 2007 by Axel Pauli, axel@kflog.org
+ **   Copyright (c): 2007-2009 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -21,15 +21,15 @@
 // Sonnenaufgangs- und untergangsberechnung nach
 // http://lexikon.astronomie.info/zeitgleichung/neu.html
 // Version Januar 2005
-// von Dr. sc. nat. Roland Brodbeck, Diplom Physiker ETH Zürich
+// von Dr. sc. nat. Roland Brodbeck, Diplom Physiker ETH ZÃ¼rich
 //
-// Ergebnisse wurden hier geprüft: http://www.generalaviation.de/sunrise/index.shtml
+// Ergebnisse wurden hier geprÃ¼ft: http://www.generalaviation.de/sunrise/index.shtml
 //
 // Achtung! Der Algorithmus weisst nur eine bedingte Genauigkeit im
-// Minutenbereich auf. Besonders am Polarkreis kann es zu größeren
-// Differenzen gegenüber einer besseren Berechnungsmethode
+// Minutenbereich auf. Besonders am Polarkreis kann es zu grÃ¶ÃŸeren
+// Differenzen gegenÃ¼ber einer besseren Berechnungsmethode
 // kommen. Diese Zeiten sind nur Anhaltswerte und keine amtlich
-// anerkannten! Für die Richtigkeit wird keinerlei Haftung übernommen.
+// anerkannten! FÃ¼r die Richtigkeit wird keinerlei Haftung Ã¼bernommen.
 //
 //***********************************************************************
 
@@ -58,17 +58,15 @@ class Sonne
   // Auf:	Aufgangszeit in hh:mm
   // Unter:	Untergangszeit in hh:mm
   // Datum:     Tagesdatum
-  // Position:  x=Breite, y=Länge WGS84 Koordinaten im KFlog Format
-  // Zeitzone:	0=Weltzeit (UTC)
-  //            1=Winterzeit (MEZ)
-  //            2=Sommerzeit (MESZ)
+  // Position:  x=Breite, y=LÃ¤nge WGS84 Koordinaten im KFlog Format
+  // Zeitzone:	Zeitzone als Text, wenn nicht die lokale Zeit benutzt wird
   //
-  //  Rückgabe true=OK, false=Fehler, im Fehlerfall sind Auf und Unter
+  //  RÃ¼ckgabe true=OK, false=Fehler, im Fehlerfall sind Auf und Unter
   //  Variablen nicht gesetzt
   static bool sonneAufUnter( QString& Auf, QString& Unter,
                              QDate& Datum,
                              QPoint& Position,
-                             double Zeitzone=0 );
+                             QString& Zeitzone );
 
 };
 

@@ -37,8 +37,8 @@ class Time
    * The time unit enumeration list contains the units that apply to time.
    */
   enum timeUnit {
-      utc   =0,   /** UTC */
-      local =1, /** Local */
+      utc   = 0,   /** UTC */
+      local = 1, /** Local */
   };
 
   Time() {};
@@ -65,7 +65,7 @@ class Time
   /**
    * Gets the time unit.
    */
-  timeUnit getTimeUnit() const
+  static timeUnit getTimeUnit()
   {
     return _timeUnit;
   };

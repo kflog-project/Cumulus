@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2009 Axel pauli
+**   Copyright (c):  2004 by André Somers
+**                   2009 by Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -370,9 +371,9 @@ TaskListView::_TaskPoint::_TaskPoint (QTreeWidget *wpList, wayPoint *point ) : Q
   QString typeName = wp->getTaskPointTypeString();
 
   // calculate sunset for the taskpoints
-  QString sr, ss;
+  QString sr, ss, tz;
   QDate date = QDate::currentDate();
-  Sonne::sonneAufUnter( sr, ss, date, wp->origP, 0 );
+  Sonne::sonneAufUnter( sr, ss, date, wp->origP, tz );
 
   setText(0, typeName);
   setText(1, wp->name);
@@ -395,7 +396,7 @@ TaskListView::_TaskPoint::_TaskPoint (QTreeWidget *wpList, wayPoint *point ) : Q
   setText(4, " " + FlightTask::getDistanceTimeString(wp->distTime));
   setTextAlignment( 4, Qt::AlignRight|Qt::AlignVCenter );
   setText(5, " " + wp->description);
-  setText(6, " " + ss);
+  setText(6, " " + ss + " " + tz);
 
-  setIcon(1, QIcon(_globalMapConfig->getPixmap(wp->type,false,true)) );
+  setIcon(1, QIcon(_globalMapConfig->getPixmap(wp->type, false, true)) );
 }

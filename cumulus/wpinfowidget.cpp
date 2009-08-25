@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002      by André Somers
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -22,6 +23,7 @@
 #include <QFont>
 #include <QRegExp>
 #include <QShortcut>
+#include <QDateTime>
 
 #include "mainwindow.h"
 #include "basemapelement.h"
@@ -366,21 +368,21 @@ void WPInfoWidget::writeText()
              "</b></td></tr>";
          }
 
-      QString sr, ss;
+      QString sr, ss, tz;
       QDate date = QDate::currentDate();
 
       // calculate Sunrise and Sunset
-      bool res = Sonne::sonneAufUnter( sr, ss, date, _wp.origP , 0 );
+      bool res = Sonne::sonneAufUnter( sr, ss, date, _wp.origP , tz );
 
       if( res )
         {
-          // In some areas no results available. In this case we skip
-          // this output.
+        // In some areas are no results available. In this case we skip
+        // the times output.
           itxt += QString( "<tr><td>" + tr("Sunrise:") + "</td><td><b>" + sr +
-                               " UTC</b></td>" );
+                           " " + tz + "</b></td>" );
 
           itxt += QString( "<td>" + tr("Sunset:") + "</td><td><b>" + ss +
-                               " UTC</b></td></tr>" );
+                           " " + tz + "</b></td></tr>" );
         }
 
       itxt += "<tr><td>" + tr("Latitude:") + "</td><td><b>" +

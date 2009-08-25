@@ -41,6 +41,7 @@
 #include "reachablelist.h"
 #include "gpsnmea.h"
 #include "sonne.h"
+#include "time_cu.h"
 
 extern MapConfig    *_globalMapConfig;
 extern MapContents  *_globalMapContents;
@@ -291,18 +292,23 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
         qtime.toString() + "</b></td></tr>";
 
-      // ETA as UTC must be done with c-system functions. This QT
-      // release does not provide this :((
-      time_t seconds = time(0);
-      seconds += time2Next;
+      QDateTime eta( QDateTime::currentDateTime() );
 
-      struct tm *gmt = gmtime( &seconds );
+      eta = eta.addSecs( time2Next );
 
-      QString eta;
-      eta.sprintf( "%02d:%02d:%02d UTC", gmt->tm_hour, gmt->tm_min, gmt->tm_sec );
+      QString etaString;
+
+        if( Time::getTimeUnit() == Time::local )
+          {
+            etaString = eta.toLocalTime().toString("hh:mm:ss");
+          }
+        else
+          {
+            etaString = eta.toTimeSpec(Qt::UTC).toString("hh:mm:ss") + " UTC";
+          }
 
       display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
-        eta + "</b></td>";
+        etaString + "</b></td>";
     }
   else
     {
@@ -314,17 +320,17 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     }
 
   // calculate sunset for the destination
-  QString sr, ss;
+  QString sr, ss, tz;
   QDate date = QDate::currentDate();
 
-  bool res = Sonne::sonneAufUnter( sr, ss, date, nextTP->origP, 0 );
+  bool res = Sonne::sonneAufUnter( sr, ss, date, nextTP->origP, tz );
 
   if( res )
     {
       // In some areas no results available. In this case we skip
       // this output.
       display += "<td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
-        ss + " UTC </b></td></tr>";
+        ss + " " + tz +  "</b></td></tr>";
     }
   else
     {
@@ -409,18 +415,23 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 	display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
 	  qtime.toString() + "</b></td></tr>";
 
-	// ETA as UTC must be done with c-system functions. This QT
-	// release does not provide this :((
-	time_t seconds = time(0);
-	seconds += time2Final;
+        QDateTime eta( QDateTime::currentDateTime() );
 
-	struct tm *gmt = gmtime( &seconds );
+        eta = eta.addSecs( time2Final );
 
-	QString eta;
-	eta.sprintf( "%02d:%02d:%02d UTC", gmt->tm_hour, gmt->tm_min, gmt->tm_sec );
+        QString etaString;
 
-	display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
-	  eta + "</b></td>";
+          if( Time::getTimeUnit() == Time::local )
+            {
+              etaString = eta.toLocalTime().toString("hh:mm:ss");
+            }
+          else
+            {
+              etaString = eta.toTimeSpec(Qt::UTC).toString("hh:mm:ss") + " UTC";
+            }
+
+          display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
+	  etaString + "</b></td>";
       }
     else
       {
@@ -432,17 +443,17 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       }
 
     // calculate sunset for the landing destination
-    QString sr, ss;
+    QString sr, ss, tz;
     QDate date = QDate::currentDate();
 
-    bool res = Sonne::sonneAufUnter( sr, ss, date, finalTP->origP, 0 );
+    bool res = Sonne::sonneAufUnter( sr, ss, date, finalTP->origP, tz );
 
     if( res )
       {
 	// In some areas no results available. In this case we skip
 	// this output.
 	display += "<td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
-	  ss + " UTC </b></td></tr>";
+	  ss + " " + tz + "</b></td></tr>";
       }
     else
       {
@@ -547,38 +558,45 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
     {
       int time2Target = (int) rint(distance2Target.getMeters() / gs);
 
+      qDebug("time2Target=%d", time2Target);
+
       QTime qtime(0,0);
       qtime = qtime.addSecs(time2Target);
 
       display += "<tr><td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
         qtime.toString() + "</b></td></tr>";
 
-      // ETA as UTC must be done with c-system functions. This QT
-      // release does not provide this :((
-      time_t seconds = time(0);
-      seconds += time2Target;
+      QDateTime eta( QDateTime::currentDateTime() );
 
-      struct tm *gmt = gmtime( &seconds );
+      eta = eta.addSecs( time2Target );
 
-      QString eta;
-      eta.sprintf( "%02d:%02d:%02d UTC", gmt->tm_hour, gmt->tm_min, gmt->tm_sec );
+      QString etaString;
 
-      display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
-        eta + "</b></td></tr>";
+        if( Time::getTimeUnit() == Time::local )
+          {
+            etaString = eta.toLocalTime().toString("hh:mm:ss");
+          }
+        else
+          {
+            etaString = eta.toTimeSpec(Qt::UTC).toString("hh:mm:ss") + " UTC";
+          }
+
+        display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
+        etaString + "</b></td></tr>";
     }
 
   // calculate sunset for the target
-  QString sr, ss;
+  QString sr, ss, tz;
   QDate date = QDate::currentDate();
 
-  bool res = Sonne::sonneAufUnter( sr, ss, date, wp->origP, 0 );
+  bool res = Sonne::sonneAufUnter( sr, ss, date, wp->origP, tz );
 
   if( res )
     {
       // In some areas no results available. In this case we skip
       // this output.
       display += "<tr><td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
-        ss + " UTC </b></td></tr>";
+        ss + " " + "</b></td></tr>";
     }
 
   //----------------------------------------------------------------------------
@@ -676,29 +694,34 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
 	display += "<tr><td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
 	  qtime.toString() + "</b></td></tr>";
 
-	// ETA as UTC must be done with c-system functions. This QT
-	// release does not provide this :((
-	time_t seconds = time(0);
-	seconds += time2Final;
+	QDateTime eta( QDateTime::currentDateTime() );
 
-	struct tm *gmt = gmtime( &seconds );
+	QString etaString;
 
-	QString eta;
-	eta.sprintf( "%02d:%02d:%02d UTC", gmt->tm_hour, gmt->tm_min, gmt->tm_sec );
+	eta = eta.addSecs( time2Final );
+
+	  if( Time::getTimeUnit() == Time::local )
+	    {
+              etaString = eta.toLocalTime().toString("hh:mm:ss");
+	    }
+	  else
+	    {
+              etaString = eta.toTimeSpec(Qt::UTC).toString("hh:mm:ss") + " UTC";
+	    }
 
 	display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
-	  eta + "</b></td></tr>";
+	  etaString + "</b></td></tr>";
       }
 
     // calculate sunset for the landing destination
-    res = Sonne::sonneAufUnter( sr, ss, date, finalTP->origP, 0 );
+    res = Sonne::sonneAufUnter( sr, ss, date, finalTP->origP, tz );
 
     if( res )
       {
 	// In some areas no results available. In this case we skip
 	// this output.
 	display += "<tr><td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
-	  ss + " UTC </b></td></tr>";
+	  ss + " " + "</b></td></tr>";
       }
 
     display += "</table></big></html>";

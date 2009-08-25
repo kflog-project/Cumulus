@@ -215,10 +215,10 @@ void ReachpointListView::fillRpList()
         }
 
       // calculate sunset
-      QString sr, ss;
+      QString sr, ss, tz;
       QDate date = QDate::currentDate();
 
-      Sonne::sonneAufUnter( sr, ss, date, rp.getWgsPos(), 0 );
+      Sonne::sonneAufUnter( sr, ss, date, rp.getWgsPos(), tz );
 
       // hidden column for default sorting
       key = QString("%1").arg(num, 3, 10, QLatin1Char('0') );
@@ -229,7 +229,7 @@ void ReachpointListView::fillRpList()
       << bearing
       << RB
       << arrival
-      <<  " " + ss
+      <<  " " + ss + " " + tz
       << key;
 
       QTreeWidgetItem* li = new QTreeWidgetItem( sl );

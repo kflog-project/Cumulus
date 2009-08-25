@@ -34,13 +34,14 @@
 //***********************************************************************
 
 #include <cmath>
+
 #include "sonne.h"
+#include "time_cu.h"
 
 // einige benötigte Konstanten
 static const double pi2=6.283185307179586476925286766559;
 static const double pi=3.1415926535897932384626433832795;
 static const double RAD = 0.017453292519943295769236907684886;
-
 
 // Gregorianischer Kalender
 double Sonne::JulianischesDatum ( int Jahr, int Monat, int Tag, 
@@ -121,7 +122,7 @@ double Sonne::BerechneZeitgleichung( double &DK,double T )
 bool Sonne::sonneAufUnter( QString& Auf, QString& Unter,
                            QDate& Datum,
                            QPoint& Position,
-                           double Zeitzone )
+                           QString& Zeitzone )
 {
   static const double JD2000 = 2451545;
 
@@ -164,8 +165,8 @@ bool Sonne::sonneAufUnter( QString& Auf, QString& Unter,
     }
 
   // Berechne Auf- und Untergang in Sekunden
-  int Aufgang = (int) rint((AufgangWeltzeit + Zeitzone) * 3600);
-  int Untergang = (int) rint((UntergangWeltzeit + Zeitzone) * 3600);
+  int Aufgang = (int) rint(AufgangWeltzeit * 3600);
+  int Untergang = (int) rint(UntergangWeltzeit * 3600);
 
   if( Aufgang % 60 > 30 ) Aufgang += 30;
   if( Untergang % 60 > 30 ) Untergang += 30;
@@ -179,5 +180,27 @@ bool Sonne::sonneAufUnter( QString& Auf, QString& Unter,
   Auf.sprintf("%02d:%02d", hAuf, mAuf);
   Unter.sprintf("%02d:%02d", hUnter, mUnter);
   
+  // Die Auf- und Untergangszeiten sind auf UTC bezogen
+  if( Time::getTimeUnit() == Time::local )
+    {
+      // convert UTC times to local times
+      QDateTime localSR( Datum, QTime::fromString( Auf, "hh:mm"), Qt::UTC );
+      QDateTime localSS( Datum, QTime::fromString( Unter, "hh:mm"), Qt::UTC );
+
+      // convert UTC to local time
+      localSR = localSR.toLocalTime ();
+      localSS = localSS.toLocalTime ();
+
+      // convert time to string
+      Auf = localSR.time().toString("hh:mm");
+      Unter = localSS.time().toString("hh:mm");
+
+      Zeitzone = ""; // die lokale Zeitzone ist ein Leertext
+    }
+  else
+    {
+      Zeitzone = "UTC";
+    }
+
   return true;
 }
