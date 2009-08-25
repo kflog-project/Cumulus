@@ -1806,6 +1806,13 @@ void MainWindow::slotReadconfig()
   viewMap->slot_settingsChange();
   calculator->slot_settingsChanged();
   viewTP->slot_updateTask();
+
+  if ( _globalMapContents->getCurrentTask() != static_cast<FlightTask *> (0) )
+    {
+      // set the current task again, time zone could be changed
+      viewTP->slot_setTask( _globalMapContents->getCurrentTask() );
+    }
+
   viewRP->fillRpList();
   viewAF->listWidget()->configRowHeight();
   viewAF->listWidget()->slot_Done();
@@ -1940,7 +1947,7 @@ void MainWindow::slotCenterToWaypoint()
 
 
 /** Called if the user pressed V in mapview.
-  * Adjusts the zoomfactor so that the currently selected waypoint
+  * Adjusts the zoom factor so that the currently selected waypoint
   * is displayed as good as possible. */
 void MainWindow::slotEnsureVisible()
 {
@@ -1999,7 +2006,7 @@ void MainWindow::slotPreFlight(const char *tabName)
 
 void MainWindow::slotPreFlightDataChanged()
 {
-  if ( _globalMapContents->getCurrentTask() == 0 )
+  if ( _globalMapContents->getCurrentTask() == static_cast<FlightTask *> (0) )
     {
       if ( _taskListVisible )
         {
