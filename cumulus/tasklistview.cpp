@@ -348,6 +348,7 @@ void TaskListView::slot_updateTask()
   if ( _task )
     {
       _task->updateTask();
+      _task->updateProjection();
     }
 }
 
