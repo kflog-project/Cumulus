@@ -744,63 +744,60 @@ void MapView::slot_SatConstellation()
     current logging and flight mode status */
 void MapView::slot_setFlightStatus()
 {
-//  QString status="<html>";
   QString status="";
-  //logging status
 
+  // logging status
   IgcLogger* logger = IgcLogger::instance();
 
-  if (logger->getisLogging())
-    {                    //are we logging right now?
-/*      if (loggingTimer->isActive())
-        {                //  we are. Is the internal loggingTimer active (wich means there was an entry recently)?
-          status+=tr("L","Logging"); //    yes, so insert a L.
-//          status+="<b>" + tr("L","Logging") + " </b>"; //    yes, so insert a bold faced L.
-        }
-      else
-        {*/
-          status+=tr("L","Logging") + " ";             //    no, so just insert an L
-//        }
+  if( logger->getisLogging() )
+    {
+      // are we logging right now?
+      _statusFlightstatus->setAutoFillBackground(true);
+      _statusFlightstatus->setBackgroundRole(QPalette::Window);
+      _statusFlightstatus->setPalette( QPalette(QColor(Qt::green)) );
+
+      status += tr("L","Logging") + " "; // so just insert an L
     }
   else
     {
+      _statusFlightstatus->setAutoFillBackground(true);
+      _statusFlightstatus->setBackgroundRole(QPalette::Window);
+      _statusFlightstatus->setPalette( QPalette( _bearingBGColor ));
+
       if (logger->getisStandby())
         {
-          status+=tr("Ls","LoggingStandby") + " ";
+          status += tr("Ls", "LoggingStandby") + " ";
         }
       else
         {
-          status+="";                                    //  we are not logging
+          status += ""; //  we are not logging
         }
     }
 
-  //flight mode status
+  // flight mode status
   switch (calculator->currentFlightMode())
     {
     case Calculator::unknown:
-      status+=(tr("?","Unknown"));
+      status += (tr("?","Unknown"));
       break;
     case Calculator::standstill:
-      status+=(tr("S","Standstill"));
+      status += (tr("S","Standstill"));
       break;
     case Calculator::cruising:
-      status+=(tr("C","Cruising"));
+      status += (tr("C","Cruising"));
       break;
     case Calculator::circlingL:
-      status+=(tr("L","Circling Left"));
+      status += (tr("L","Circling Left"));
       break;
     case Calculator::circlingR:
-      status+=(tr("R","Circling Right"));
+      status += (tr("R","Circling Right"));
       break;
     case Calculator::wave:
-      status+=(tr("W","Wave"));
+      status += (tr("W","Wave"));
       break;
     }
 
-  //finalize
-//  status+="</html>";
   _statusFlightstatus->setText(status);
-
 }
 
 /** toggle between distance and eta widget on mouse signal */
@@ -821,7 +818,6 @@ void MapView::slot_toggleDistanceEta()
       emit toggleETACalculation( false );
     }
 }
-
 
 /** toggle between wind, vario and LD widget on mouse signal */
 void MapView::slot_toggleWindAndLD()
