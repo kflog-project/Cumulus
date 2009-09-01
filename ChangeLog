@@ -15,9 +15,10 @@ Cumulus changelog
 #===============================================================================#
 
 [+] 2009-08-31 AP: Flight status background color is set to green, if logger
-                   is running. Old solution with setting of letter L to bold
-                   was not ported to Qt4.5. Hope that new solution is better
-                   visible as before.
+                   is running. If logger is in standby flight status background
+                   color is set to yellow. Old solution with setting of letter L
+                   to bold was not ported to Qt4.5. Hope that new solution is
+                   better visible as before.
 [+] 2009-08-13 AP: New unit option time added to settings menu. You can now choose
                    between Utc or local time for the display.
 [-] 2009-08-13 AP: BUGFIX: Wrong UTC time display in sunset fixed. Hours greater
