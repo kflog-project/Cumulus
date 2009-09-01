@@ -138,7 +138,7 @@ void PreFlightMiscPage::save()
 
   if( chkLogAutoStart->isChecked() )
     {
-      if (log->getisLogging())
+      if (log->getIsLogging())
         {
           int answer = QMessageBox::question(this, tr("Restart Logging?"), tr(
               "Logger is running.<br>Closing logfile<br>and start new log?"),
@@ -156,7 +156,7 @@ void PreFlightMiscPage::save()
     }
   else
     {
-      if (log->getisStandby())
+      if (log->getIsStandby())
         {
           log->Stop();
         }

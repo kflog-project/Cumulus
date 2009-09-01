@@ -749,7 +749,7 @@ void MapView::slot_setFlightStatus()
   // logging status
   IgcLogger* logger = IgcLogger::instance();
 
-  if( logger->getisLogging() )
+  if( logger->getIsLogging() )
     {
       // are we logging right now?
       _statusFlightstatus->setAutoFillBackground(true);
@@ -760,16 +760,20 @@ void MapView::slot_setFlightStatus()
     }
   else
     {
-      _statusFlightstatus->setAutoFillBackground(true);
-      _statusFlightstatus->setBackgroundRole(QPalette::Window);
-      _statusFlightstatus->setPalette( QPalette( _bearingBGColor ));
-
-      if (logger->getisStandby())
+      if (logger->getIsStandby())
         {
+          _statusFlightstatus->setAutoFillBackground(true);
+          _statusFlightstatus->setBackgroundRole(QPalette::Window);
+          _statusFlightstatus->setPalette( QPalette( QColor(Qt::yellow) ));
+
           status += tr("Ls", "LoggingStandby") + " ";
         }
       else
         {
+          _statusFlightstatus->setAutoFillBackground(true);
+          _statusFlightstatus->setBackgroundRole(QPalette::Window);
+          _statusFlightstatus->setPalette( QPalette( _bearingBGColor ));
+
           status += ""; //  we are not logging
         }
     }

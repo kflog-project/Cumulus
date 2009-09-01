@@ -2,7 +2,7 @@
                           igclogger.cpp - creates an IGC logfile
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by André Somers
+    copyright            : (C) 2002      by André Somers
                                2008-2009 by Axel Pauli
 
     email                : axel@kflog.org
@@ -38,13 +38,14 @@
 #include "flighttask.h"
 #include "waypoint.h"
 
-IgcLogger * IgcLogger::_theInstance = 0;
+IgcLogger* IgcLogger::_theInstance = static_cast<IgcLogger *>(0);
 
 IgcLogger::IgcLogger(QObject* parent) :
-    QObject(parent),
-    _backtrack(LimitedList<QString> (15))
+  QObject(parent),
+  _backtrack( LimitedList<QString> (15) )
 {
-  timer=new QTimer(this);
+  timer = new QTimer(this);
+
   connect( timer, SIGNAL(timeout()), this, SLOT(slotMakeFixEntry()) );
 
   if ( GeneralConfig::instance()->getLoggerAutostartMode() )
@@ -59,21 +60,26 @@ IgcLogger::IgcLogger(QObject* parent) :
     }
 }
 
-
 IgcLogger *IgcLogger::instance()
 {
   // First user will create it
-  if ( _theInstance == 0 )
-    _theInstance = new IgcLogger(0);
+  if( _theInstance == static_cast<IgcLogger *>(0) )
+    {
+      _theInstance = new IgcLogger(0);
+    }
+
   return( _theInstance );
-};
+}
 
 
 IgcLogger::~IgcLogger()
 {
-  if (_logMode==on)
-    CloseFile();
-  _theInstance=0;
+  if( _logMode == on )
+    {
+      CloseFile();
+    }
+
+  _theInstance = static_cast<IgcLogger *>(0);
 }
 
 
@@ -91,7 +97,7 @@ void IgcLogger::Start()
 void IgcLogger::Stop()
 {
   timer->stop();
-  _logMode=off;
+  _logMode = off;
 }
 
 
@@ -165,14 +171,15 @@ void IgcLogger::slotTaskSectorTouched()
 
 void IgcLogger::Standby()
 {
-  if (_logMode==on)
+  if (_logMode == on )
     {
       CloseFile();
     }
-  _logMode=standby;
+
+  _logMode = standby;
   _backtrack.clear();
   Start();
-  emit logging(getisLogging());
+  emit logging(getIsLogging());
 }
 
 
@@ -192,7 +199,7 @@ void IgcLogger::CreateLogfile()
       dir.mkpath(path);
     }
 
-  _logfile.setFileName(fname);
+  _logfile.setFileName( fname );
 
   if ( ! _logfile.open(QIODevice::WriteOnly | QIODevice::Text ) )
     {
@@ -231,7 +238,7 @@ void IgcLogger::writeHeaders()
   QString date = formatDate(QDate::currentDate());
   QString time = formatTime(QTime::currentTime());
 
-  _stream << "AXXXCUZ Cumulus Soaring Flightcomputer, flightnumber " << flightnumber << "\n" ;
+  _stream << "AXXXCUZ Cumulus soaring flight computer, flightnumber " << flightnumber << "\n" ;
   _stream << "HFDTE" << date << "\n";
   _stream << "HFFXA500" << "\n";
   _stream << "HFPLTPILOT: " << (surName.isEmpty() ? "Unknown" : surName.toLatin1().data()) << "\n";
@@ -243,25 +250,24 @@ void IgcLogger::writeHeaders()
   _stream << "HFFTYFRTYPE: Cumulus Version: " << CU_VERSION << ", Qt/X11 Version: " << qVersion() << "\n";
   _stream << "HSCIDCOMPETITIONID: " << calculator->glider()->callsign() << "\n";
 
-  // GSP info lines ommitted for now
+  // GSP info lines committed for now
   // additional data (competition ID and class name) committed for now
-
   _stream << "I013640FXA\n"; //only the default fix extension for now
   _logfile.flush();
 
   // no J record for now
 
   // task support: C records
+  extern MapContents* _globalMapContents;
 
-  extern MapContents * _globalMapContents;
-  FlightTask* task = (FlightTask *) _globalMapContents->getCurrentTask();
+  FlightTask* task = _globalMapContents->getCurrentTask();
 
   if ( ! task )
     {
       return; // no task active
     }
 
-  QList<wayPoint*> wpList = task->getWPList();
+  QList<wayPoint *> wpList = task->getWPList();
 
   if ( wpList.count() < 4 )
     {
@@ -307,14 +313,14 @@ QString IgcLogger::formatDate(const QDate& date)
 
 
 /** Read property of bool isLogging. */
-bool IgcLogger::getisLogging()
+bool IgcLogger::getIsLogging()
 {
   return (_logMode==on);
 }
 
 
 /** Return true if we are in standby mode. */
-bool IgcLogger::getisStandby()
+bool IgcLogger::getIsStandby()
 {
   return (_logMode==standby);
 }
@@ -325,7 +331,7 @@ void IgcLogger::slotToggleLogging()
 {
   qDebug("toggle logging!");
 
-  if (_logMode==on)
+  if ( _logMode == on )
     {
       // Trying to ask a question causes segfault?!
       int answer= QMessageBox::question(0,tr("Stop Logging?"),
@@ -333,14 +339,14 @@ void IgcLogger::slotToggleLogging()
                                         QMessageBox::Yes,
                                         QMessageBox::No | QMessageBox::Escape | QMessageBox::Default);
 
-      if (answer==QMessageBox::Yes)
+      if (answer == QMessageBox::Yes)
         {
           qDebug("Stopping logging...");
-          _logMode=off;
+          _logMode = off;
           CloseFile();
         }
     }
-  else if (_logMode==standby)
+  else if ( _logMode == standby )
     {
       int answer= QMessageBox::question(0,tr("Stop Logging?"),
                                         tr("Are you sure you want\nto stop listening\nfor events to autostart\nlogging?"),
@@ -350,7 +356,7 @@ void IgcLogger::slotToggleLogging()
       if (answer==QMessageBox::Yes)
         {
           qDebug("Logger standby mode turned off.");
-          _logMode=off;
+          _logMode = off;
         }
     }
   else
@@ -358,8 +364,7 @@ void IgcLogger::slotToggleLogging()
       if (calculator->glider())
         {
           CreateLogfile();
-          _logMode=on;
-          //    emit logging(isLogging);
+          _logMode = on;
         }
       else
         {
@@ -369,7 +374,7 @@ void IgcLogger::slotToggleLogging()
         }
     }
   // emit the logging state in all cases to allow update of actions in MainWindow
-  emit logging(getisLogging());
+  emit logging(getIsLogging());
 }
 
 
@@ -384,12 +389,12 @@ void IgcLogger::slotConstellation()
 void IgcLogger::makeSatConstEntry()
 {
 
-  if (_logMode>off)
+  if (_logMode > off)
     {
       QString entry = "F" + formatTime(GpsNmea::gps->getLastSatInfo().constellationTime) +
                       GpsNmea::gps->getLastSatInfo().constellation;
 
-      if (_logMode==standby)
+      if (_logMode == standby)
         {
           _backtrack.add(entry);
         }
@@ -434,27 +439,34 @@ QString IgcLogger::formatPosition(const QPoint& position)
   int latdeg, londeg, calc, latmin, lonmin;
   QString result, latmark, lonmark;
 
-  calc = position.x(); //lattitude
+  calc = position.x(); // Latitude
   if (calc<0)
     {
-      calc=-calc; //use positive values for now;
-      latmark="S";
+      calc=-calc; // use positive values for now;
+      latmark = "S";
     }
   else
-    latmark="N";
-  latdeg=calc/600000;  //calculate degrees
-  calc-=latdeg*600000;  //substract the whole degrees part
-  latmin=calc/10; //we need the minutes in 1000'st of a minute, not in 10.000'st.
+    {
+      latmark = "N";
+    }
+
+  latdeg=calc/600000;  // calculate degrees
+  calc-=latdeg*600000; // subtract the whole degrees part
+  latmin=calc/10; // we need the minutes in 1000'st of a minute, not in 10.000'st.
 
 
   calc = position.y(); //longitude
+
   if (calc<0)
     {
       calc=-calc; //use positive values for now;
       lonmark="W";
     }
   else
-    lonmark="E";
+    {
+      lonmark="E";
+    }
+
   londeg=calc/600000;  //calculate degrees
   calc-=londeg*600000;  //substract the whole degrees part
   lonmin=calc/10; //we need the minutes in 1000'st of a minute, not in 10.000'st.
@@ -476,11 +488,13 @@ QString IgcLogger::createFileName(const QString& path)
 
   int i=1;
   QString result=name + QString::number(i,36);
+
   while (QFile(path + "/" + result.toUpper() + ".IGC").exists())
     {
       i++;
       result=name + QString::number(i,36);
     }
+
   flightnumber=i; //store the resulting number so we can use it in the logfile itself
 
   return path + "/" + result.toUpper() + ".IGC";
@@ -489,16 +503,18 @@ QString IgcLogger::createFileName(const QString& path)
 
 void IgcLogger::slotFlightMode(Calculator::flightmode mode)
 {
-  if ((_logMode==standby) && (mode!=Calculator::standstill))
+  if (_logMode == standby && mode != Calculator::standstill )
     {
       _logMode=on;
       CreateLogfile();
+
       for (int i = _backtrack.count()-1; i>=0; i--)
         {
           qDebug("backtrack %d: %s",i,_backtrack.at(i).toLatin1().data());
           _stream << _backtrack.at(i).toLatin1().data()<<"\n";
         }
-      _backtrack.clear(); //make sure we aren't leaving old data behind.
+
+      _backtrack.clear(); // make sure we aren't leaving old data behind.
     }
 }
 

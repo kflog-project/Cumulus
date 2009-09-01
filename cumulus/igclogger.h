@@ -30,9 +30,8 @@
 #define FL_LCODE XXX
 #define FL_NAME Cumulus
 #define FL_ID ATS
-/*maybe give some info on the Zaurus in the future?*/
-#define FL_HWV UNKNOWN
-/* the version number of Cumulus is used as firmware version */
+
+#define FL_HWV UNKNOWN /* the version number of Cumulus is used as firmware version */
 
 /* info about GPS, may in the future be used from GPS */
 #define GPS_MAN UNKNOWN
@@ -52,24 +51,27 @@
 #include "limitedlist.h"
 
 /** @short IGC logger
- * This object provides the igc logging facilities, using the
+ * This object provides the IGC logging facilities, using the
  * parsed data from the GPSNMEA object.
  * @author André Somers
  */
+
 class IgcLogger : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 
-public: //types
+public:
+
     /**
       * Used to describe the current logging mode:
       * -off: no logging going on
       * -on: logging enabled
-      * -standby: logging will be turned on when the flightstatus changes
+      * -standby: logging will be turned on when the flight status changes
       */
-    enum LogMode{off=0, standby=1, on=2};
+    enum LogMode{ off=0, standby=1, on=2 };
 
-public: //methods
+public:
+
     /**
      * Destructor
      */
@@ -104,25 +106,25 @@ public: //methods
     /**
      * @returns true if we are currently logging
      */
-    virtual bool getisLogging();
+    virtual bool getIsLogging();
 
     /**
      * @returns true if we are currently standby
      */
-    virtual bool getisStandby();
+    virtual bool getIsStandby();
 
     /**
      * @returns the instance of the IgcLogger, and creates an instance
      * if there was none
      */
-    static IgcLogger * instance();
+    static IgcLogger* instance();
 
 public slots: // Public slots
     /**
-     * This slot is used internaly by the timer to make a log entry on
+     * This slot is used internally by the timer to make a log entry on
      * an interval, but can also be used from outside the class to
-     * make sure a specific point is being logged (ie., to respond to
-     * a usercommand to log).
+     * make sure a specific point is being logged (i.e., to respond to
+     * a user command to log).
      */
     void slotMakeFixEntry();
 
@@ -143,7 +145,7 @@ public slots: // Public slots
     void slotToggleLogging();
 
     /**
-     * This slot is used to signal that a new flightmode has been detected.
+     * This slot is used to signal that a new flight mode has been detected.
      * This is needed for auto-starting the logger if the logger is in
      * standby mode.
      */
@@ -167,16 +169,22 @@ signals: // Signals
 private: // Private attributes
     /** Provides a timer for the periodic recording of log entries */
     QTimer *timer;
+
     /** Store time interval for faster logging */
     QTime fasterLoggingTime;
+
     /** The text stream object to write our data to. */
     QTextStream _stream;
+
     /** This is our log file. It is being used via the _stream object. */
     QFile _logfile;
+
     /** Indicates if logging is currently active. */
     LogMode _logMode;
-    /** Timestamp of last logged fix */
+
+    /** Time stamp of last logged fix */
     QTime lastLoggedFix;
+
     /** List of last would-be log entries.
       * This list is filled when in standby mode with strings that would be
       * in the log were logging enabled. When a change in flight mode is detected
@@ -184,10 +192,12 @@ private: // Private attributes
       * to the log. This way, we can be sure that the complete start sequence is
       * available in the log. */
     LimitedList<QString> _backtrack;
+
     /** Holds the flight number for this day */
     int flightnumber;
+
     /** A pointer to the instance */
-    static IgcLogger * _theInstance;
+    static IgcLogger* _theInstance;
 
 
 private: // Private methods
@@ -195,7 +205,7 @@ private: // Private methods
      * Constructor
      * Private, because this is a singleton class
      */
-    IgcLogger(QObject*);
+    IgcLogger(QObject* parent = static_cast<QObject *>(0) );
 
     /**
      * This function formats a date in the correct igc format DDMMYY
