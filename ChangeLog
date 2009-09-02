@@ -14,6 +14,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2009-09-02 AP: Coordinate filter to Welt2000 parser added, which filters
+                   out objects with the same coordinates. Only the first
+                   object will pass the filter.
 [+] 2009-08-31 AP: Flight status background color is set to green, if logger
                    is running. If logger is in standby flight status background
                    color is set to yellow. Old solution with setting of letter L
