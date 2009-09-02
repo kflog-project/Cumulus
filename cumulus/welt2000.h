@@ -18,18 +18,18 @@
  **   http:http://www.segelflug.de/vereine/welt2000/download/WELT2000.TXT
  **
  **   The file source contains data about airports, airfields,
- **   outlandings and turn points in a proprietary ascii format. Only
+ **   outlandings and turn points in a proprietary ASCII format. Only
  **   the information about airfields, gliding fields and ultralight
- **   fields and outlanding are extracted by this class from the source
+ **   fields and outlandings are extracted by this class from the source
  *    and put into the related lists (airport, gliding or outlanding list)
  **   of cumulus. Furthermore an compiled binary version of the extracted
- **   data is created during parsing, useable at a next run of cumulus
- **   for a faster startup. Because welt2000 supports only three kind
+ **   data is created during parsing, usable at a next run of cumulus
+ **   for a faster startup. Because welt2000 supports only three kinds
  **   of airfields (airfield, glider field, ul field) but cumulus some
  **   more, a configuration file has been introduced, which allows an
  **   additional mapping to other map elements of cumulus. Furthermore
  **   it provides an country filter mechanism. See later on for more
- **   information about the config file possibilities.
+ **   information about the configuration file possibilities.
  **
  **   To start the load of welt2000 data, the method load has to be
  **   called. It will put all extracted data into the passed lists. The
@@ -37,9 +37,9 @@
  **   resp. a compiled file with the name welt2000.txc in the default
  **   map directories of cumulus. The first found file is always
  **   taken. If a compiled file exists, different checks will be
- **   executed, if it is useable for reloading:
+ **   executed, if it is usable for reloading:
  **
- **   a) Internal header data magic, version, type, ... are controled.
+ **   a) Internal header data magic, version, type, ... are controlled.
  **      Problems will cause a reparsing of the source file.
  **
  **   b) Creation time is checked against source and config file's
@@ -63,18 +63,18 @@
  **   calls so long no new source is installed. Because all data for
  **   the whole world is contained in one file, we need a mechanism to
  **   extract only a subset from it and to protect cumulus for
- **   overloads (e.g. memory overflow). The are foreseen two
+ **   overloads (e.g. memory overflow). There are foreseen different
  **   possibilities for filtering:
  **
- **   a) In the configuration area of cumulus the user can define a
- **      country filter and a radius around his home poistion. These
+ **   a) In the configuration area of cumulus the user can define either
+ **      a country filter or a radius around his home position. These
  **      items do overwrite the items in the configuration file.
  **
  **   b) A configuration file contains a country filter rule. Only the
  **      listed countries will be considered during parsing.
  **
  **   c) If no country filter rule is defined, then all data are used
- **      inside 500Km radius of the home position. I hope that is an
+ **      inside 500Km radius around the home position. I hope that is an
  *       useful compromise and protects cumulus for memory overflows.
  **
  **   Now some remarks about the configuration file and its
@@ -91,11 +91,11 @@
  **
  **   Different countries can be defined within one rule but they have
  **   to be separated by commas. The definition of several filter
- **   lines is also possible. Country abbrevations are coded according
+ **   lines is also possible. Country abbreviations are coded according
  **   to ISO-3166. See in the header of welt2000.txt file which
  **   countries are inside to find and how is their spelling.
  **
- **   Furthermore the config file supports the remapping of single
+ **   Furthermore the configuration file supports the remapping of single
  **   airfield entries to other map elements of cumulus. The
  **   welt2000.txt file knows only three different types (airfield,
  **   glider field, ul field). Cumulus supports more. There are two
@@ -162,13 +162,13 @@ public:
 
     /**
      * search on default places a welt2000 file and load it. A source
-     * can be the original ascii file or a compiled version of it. The
+     * can be the original ASCII file or a compiled version of it. The
      * results are put in the passed lists.
      *
      * @param airfieldList All airports have to be stored in this list
      * @param glidertList All gilder fields have to be stored in this list
      * @param outlandingList All outlanding fields have to be stored in this list
-     * @returns true (success) or false (error occured)
+     * @returns true (success) or false (error occurred)
      */
     bool load( MapElementList& airfieldList,
                MapElementList& gliderList,
@@ -177,7 +177,7 @@ public:
 private:
 
     /**
-     * Parses the passed file in welt 2000 format and put the approriate
+     * Parses the passed file in welt2000 format and put the appropriate
      * entries in the related lists.
      *
      * @param path Full name with path of welt2000 file
@@ -186,7 +186,7 @@ private:
      * @param outlandingList All outlanding fields have to be stored in this list
      * @param doCompile create a binary file of the parser results,
      *                  if flag is set to true. Default is false
-     * @returns true (success) or false (error occured)
+     * @returns true (success) or false (error occurred)
      */
     bool parse( QString& path,
                 MapElementList& airfieldList,
@@ -201,7 +201,7 @@ private:
      * filtered results to save disk space.
      *
      * @param path Full name with path of welt2000 file
-     * @returns true (success) or false (error occured)
+     * @returns true (success) or false (error occurred)
      */
     bool filter( QString &path );
 
@@ -209,7 +209,7 @@ private:
      * Read all entries from the configuration file related to welt2000.
      *
      * @param path Full name with path of welt2000 configuration file
-     * @returns true (success) or false (error occured)
+     * @returns true (success) or false (error occurred)
      */
     bool readConfigEntries( QString &path );
 
@@ -221,7 +221,7 @@ private:
      * @param airfieldList All airports have to be stored in this list
      * @param glidertList All gilder fields have to be stored in this list
      * @param outlandingList All outlanding fields have to be stored in this list
-     * @returns true (success) or false (error occured)
+     * @returns true (success) or false (error occurred)
      */
     bool readCompiledFile( QString &path,
                            MapElementList& airfieldList,
@@ -233,7 +233,7 @@ private:
      * variables.
      *
      * @param path Full name with path of welt2000 binary file
-     * @returns true (success) or false (error occured)
+     * @returns true (success) or false (error occurred)
      */
     bool setHeaderData( QString &path );
 
@@ -250,11 +250,11 @@ private:
     QMap<QString, BaseMapElement::objectType> c_baseTypeMap;
 
     // Maps used for remapping of airfield types, will be populated
-    // with content from config file
+    // with content from configuration file
     QMap<QString, QString> c_icaoMap;  // remapping by icao identifiers
     QMap<QString, QString> c_shortMap; // remapping by short names
 
-    // country filter list from config file
+    // country filter list from configuration file
     QStringList c_countryList;
     // radius around home position
     double c_homeRadius;

@@ -64,7 +64,7 @@ Welt2000::Welt2000()
 {
   h_projection = (ProjectionBase *) 0;
 
-  // prepare base mappings of cumulus
+  // prepare base mappings of Cumulus
   c_baseTypeMap.insert( "IntAirport", BaseMapElement::IntAirport );
   c_baseTypeMap.insert( "Airport", BaseMapElement::Airport );
   c_baseTypeMap.insert( "MilAirport", BaseMapElement::MilAirport );
@@ -113,7 +113,7 @@ bool Welt2000::load( MapElementList& airfieldList,
   QString w2PathTxt;
   QString w2PathTxc;
 
-  // Search for welt2000 source resp. compiled files.
+  // Search for Welt2000 source resp. compiled files.
   bool resTxt = MapContents::locateFile( "airfields/welt2000.txt", w2PathTxt );
   bool resTxc = MapContents::locateFile( "airfields/welt2000.txc", w2PathTxc );
 
@@ -168,7 +168,7 @@ bool Welt2000::load( MapElementList& airfieldList,
           qDebug( "W2000: welt2000.conf has been changed --> reparse welt2000.txt" );
           // Conf file was modified, make a new compilation. It is not
           // deeper checked, what was modified due to the effort and
-          // in the assumption that a config file will not be changed
+          // in the assumption that a configuration file will not be changed
           // every minute.
           unlink( w2PathTxc.toLatin1().data() );
           return parse( w2PathTxt, airfieldList, gliderList, outlandingList, true );
@@ -237,7 +237,7 @@ bool Welt2000::load( MapElementList& airfieldList,
           // changed in the mean time. In this case a new parsing of
           // the source must be started.
 
-          // get home radius from config data
+          // get home radius from configuration data
           int iRadius = GeneralConfig::instance()->getWelt2000HomeRadius();
           double dRadius;
 
@@ -404,7 +404,6 @@ bool Welt2000::filter( QString& path )
   return true;
 }
 
-
 /**
  * The passed file can contain country information, to be used during
  * parsing of welt2000.txt file. The entries country and home radius
@@ -516,9 +515,8 @@ bool Welt2000::readConfigEntries( QString &path )
   return true;
 }
 
-
 /**
- * Parses the passed file in welt 2000 format and put the approriate
+ * Parses the passed file in Welt2000 format and put the appropriate
  * entries in the related lists.
  *
  * arg1 path: Full name with path of welt2000 file
@@ -528,7 +526,7 @@ bool Welt2000::readConfigEntries( QString &path )
  *                   the outlanding option is set in the user configuration
  * arg5 doCompile: create a binary file of the parser results,
  *                 if flag is set to true. Default is false.
- * returns true (success) or false (error occured)
+ * returns true (success) or false (error occurred)
  */
 bool Welt2000::parse( QString& path,
                       MapElementList& airfieldList,
@@ -539,11 +537,11 @@ bool Welt2000::parse( QString& path,
   QTime t;
   t.start();
 
-  // Filter out the needed extract for us from the welt 2000
+  // Filter out the needed extract for us from the Welt2000
   // file. That will reduce the file size over the half.
   if( filter( path ) == false )
     {
-      // It seems, that no welt 2000 file has been passed
+      // It seems, that no Welt2000 file has been passed
       return false;
     }
 
@@ -557,7 +555,7 @@ bool Welt2000::parse( QString& path,
 
   QTextStream ins(&in);
 
-  // look, if a config file is accessable. If yes read out its data.
+  // look, if a configuration file is accessible. If yes read out its data.
   QFileInfo fi( path );
   QString confFile = fi.path() + "/welt2000.conf";
 
@@ -567,7 +565,7 @@ bool Welt2000::parse( QString& path,
   readConfigEntries( confFile );
 
   // Check, if in GeneralConfig other definitions exist. These will
-  // overwrite the definitions in the config file.
+  // overwrite the definitions in the configuration file.
   GeneralConfig *conf  = GeneralConfig::instance();
   QString cFilter      = conf->getWelt2000CountryFilter();
 
@@ -583,7 +581,9 @@ bool Welt2000::parse( QString& path,
           QString e = clist[i].trimmed().toUpper();
 
           if( c_countryList.contains(e) )
-            continue;
+            {
+              continue;
+            }
 
           c_countryList += e;
         }
@@ -591,10 +591,10 @@ bool Welt2000::parse( QString& path,
       c_countryList.sort();
     }
 
-  // get outlanding load flag from config data
+  // get outlanding load flag from configuration data
   bool outlandings = conf->getWelt2000LoadOutlandings();
 
-  // get home radius from config data
+  // get home radius from configuration data
   int radius = conf->getWelt2000HomeRadius();
 
   if( radius == 0 )
@@ -657,6 +657,10 @@ bool Welt2000::parse( QString& path,
 
   uint lineNo = 0;
   QSet<QString> shortNameSet; // contains all short names already in use
+
+  // Contains the coordinates of the objects put in the lists. Used as filter
+  // to avoid multiple entries at the same point.
+  QSet<QString> pointFilter;
   uint counter = 0;
 
   // statistics counter
@@ -692,7 +696,7 @@ bool Welt2000::parse( QString& path,
     {
       bool ok, ok1;
       QString line, buf;
-      line= in.readLine(128);
+      line = in.readLine(128);
       lineNo++;
 
       if( line.isEmpty() )
@@ -1048,6 +1052,23 @@ bool Welt2000::parse( QString& path,
 #endif
 
       WGSPoint wgsPos(lat, lon);
+
+      // We do check here, if the coordinates of the object are already known to
+      // filter out multiple entries. Only the first entry do pass the filter.
+      QString corrString = WGSPoint::coordinateString( wgsPos );
+
+      if( pointFilter.contains( corrString ) )
+        {
+          // An object with the same coordinates do already exist.
+          // We do ignore this one.
+          qWarning( "W2000, Line %d: %s (%s) skipping entry, coordinates already in use!",
+                    lineNo, afName.toLatin1().data(), country.toLatin1().data() );
+          continue;
+        }
+
+      // store coordinates in filter
+      pointFilter.insert( corrString );
+
       QPoint position = _globalMapMatrix->wgsToMap(wgsPos);
 
       // elevation
@@ -1086,15 +1107,15 @@ bool Welt2000::parse( QString& path,
         }
       else
         {
-      // check, what has to be appended as last digit
-      if( line[40] == '2' || line[40] == '7' )
-        {
-          frequency += "5";
-        }
-      else
-        {
-          frequency += "0";
-        }
+          // check, what has to be appended as last digit
+          if( line[40] == '2' || line[40] == '7' )
+            {
+              frequency += "5";
+            }
+          else
+            {
+              frequency += "0";
+            }
         }
 
       /* Runway description from Welt2000.txt file
@@ -1230,7 +1251,6 @@ bool Welt2000::parse( QString& path,
           airfieldList.append( af );
         }
 
-
       if( doCompile )
         {
           // This was the order used by earlier cumulus
@@ -1327,7 +1347,7 @@ bool Welt2000::readCompiledFile( QString &path,
   QTime t;
   t.start();
 
-  // get outlanding load flag from config data
+  // get outlanding load flag from configuration data
   bool loadOls = GeneralConfig::instance()->getWelt2000LoadOutlandings();
 
   QFile inFile(path);
@@ -1340,7 +1360,7 @@ bool Welt2000::readCompiledFile( QString &path,
 
   QDataStream in(&inFile);
 
-  // This was the order used by ealier cumulus
+  // This was the order used by earlier cumulus
   // implementations. Because welt2000 does not support these all a
   // subset from the original implementation is only used to spare
   // memory and to get a better performance.
@@ -1503,7 +1523,6 @@ bool Welt2000::readCompiledFile( QString &path,
   return true;
 }
 
-
 /**
  * Get the header data of a compiled file and put it in our class
  * variables.
@@ -1582,7 +1601,6 @@ bool Welt2000::setHeaderData( QString &path )
   return true;
 }
 
-
 /**
  * Get the distance back in kilometers according to the set unit by
  * the user.
@@ -1592,7 +1610,7 @@ bool Welt2000::setHeaderData( QString &path )
  */
 double Welt2000::getDistanceInKm( const int distance )
 {
-  // we must look, what unit the user has choosen.
+  // we must look, what unit the user has chosen.
   Distance::distanceUnit distUnit = Distance::getUnit();
   Distance dist;
   double unit = 0.0;
