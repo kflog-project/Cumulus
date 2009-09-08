@@ -79,6 +79,14 @@ class SinglePoint : public BaseMapElement
     };
 
   /**
+   * Set the projected position of the element.
+   */
+  virtual void setPosition( const QPoint& newPos )
+    {
+      position = newPos;
+    };
+
+  /**
    * @return the WGSposition of the element. (normales Lat/Lon System)
    */
   virtual WGSPoint getWGSPosition() const
