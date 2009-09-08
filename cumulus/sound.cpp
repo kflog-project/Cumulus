@@ -91,12 +91,11 @@ void Sound::run()
       cmd = player + " " + _sound;
     }
 
-  qDebug( cmd.toLatin1().data() );
+  // qDebug( "%s", cmd.toLatin1().data() );
 
   // Execute the player command, to play the passed sound.
   // QProcess::execute( cmd ) did not work at this place. Maybe it
   // uses also threads. The good old c-function system() works solid.
-
   system( cmd.toLatin1().data() );
 
   mutex.unlock();
