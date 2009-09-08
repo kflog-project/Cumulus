@@ -185,14 +185,6 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint>& wpList )
               // qDebug("Waypoint read: %s (%s - %s)",wp.name.toLatin1().data(),wp.description.latin1(),wp.icao.latin1());
 
               wpList.append(wp);
-
-              GeneralConfig *conf = GeneralConfig::instance();
-
-              if (conf->getHomeWp()->origP == wp.origP)
-                {
-                  qDebug("Found homesite: %s", wpName.toLatin1().data() );
-                  conf->setHomeWp(wp);
-                }
             }
 
           ok = true;
