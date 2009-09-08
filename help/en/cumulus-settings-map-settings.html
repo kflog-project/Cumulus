@@ -37,16 +37,17 @@ As loaction for the map data for Maemo (Nokia Internet Tablet)
 you should define a directory on one of the SD cards. With the help of
 the button <i>Maps</i> you can open a directory selection dialog and
 navigate to the SD card locations to find under <i>/media/mmc[1|2]</i>.
-In the text field beside the button you can see your done selection.
+In the text field beside the button you can see the current selection.
 You can modify the text field also by hand and set so your preferred location.
 </dd>
 
 <dt><b>Projection</b></dt>
 
-<dd>The raw maps Cumulus uses are not projected. Therefore,
-they are projected on first loading. There are many types of map
-projections available. You need a projection because the earth is a
-sphere (or close to it, anyway) and your map is flat.
+<dd>The coordinate points of the raw maps Cumulus uses are not projected.
+They are coded according to WGS84 datum. Therefore all these points are
+projected on first loading. There are many types of map projections available.
+You need a projection because the earth is a sphere (or close to it) and your
+map is flat.
 
 <br><br>Cumulus supports two projections:
 
@@ -57,27 +58,34 @@ sphere (or close to it, anyway) and your map is flat.
 </ul>
 
 <br>
-The former is computationally simpler and thus preferred in most
-situations. The latter is more complex, so your maps will take much
-longer to load. It is however more realistic.
+The first is computationally simpler and thus the preferred one in Cumulus.
+The latter is more complex, so your maps will take much longer on first load
+but it is more realistic.
 <br>
-Each map projection needs a basis from where to work. For
-the <i>Plate Carr&eacute;e</i> projection, choose a
-parallel close to your home base. For <i>Lambert</i>
-projection you should select should select the parallels so that they
-are covering the area you are flying. For example, you could choose the
+Each map projection needs a basis from where to work. For the <i>Plate
+Carr&eacute;e</i> projection choose a parallel close to your home base.
+If the option <i>Projection follows Home Position</i> is activated, the
+parallel is automatically set to the latitude of your Home Position in the
+assumption that the Home Position is your preferred flight space. That ensures
+an unskewed map display and you are not forced to set this parallel by hand.
+That is the default setting.
+
+<br>For <i>Lambert</i>
+projection you should select the parallels so that they are covering the area
+you are flying. For example, you could choose the
 parallels from your official flying map. Then you will have an equal
 look like these maps. You should select the longitude from the middle
 of the area you are flying. It is needed because of some technical
-reasons, not for the projection itself.
+reasons not for the projection itself. No automatic update of projection data
+is done here. You must do that always by hand. Therefore use this kind of
+projection only, if you are familiar with the Lambert projection.
 <br>
 After changing the projection kind or the standard
-parallel values, Cumulus will need to recompile your map files. <b>Please
+parallel values Cumulus is forced to recompile your map files. <b>Please
 note that:</b> If you don't set the projection options correctly,
-you will likely end up with a blue screen or oddly deformed map. This
+you will likely end up with a blue screen or a skewed map. This
 is especially so if you are far away from the coordinates used in the
-projection. If you are on a different hemisphere, you will need to
-change your projection!
+projection!
 </dd>
 
 <dt><b>Map Management</b></dt>
@@ -85,11 +93,11 @@ change your projection!
 <dd>Cumulus supports two strategies for keeping maps in memory.
 Maps are only loaded if needed, but they can either stay there until
 they really need to be moved out of memory, or they can be removed
-sooner. The former stategy is more suited for users who want to zoom in
+sooner. The first strategy is more suited for users who want to zoom in
 and out a lot and have plenty of memory in their device, the latter
-stategy is to be recommended for people with lower memory devices.
-Check <i>Immediately unload unneeded maps</i> if you want
-to use the second strategy. </dd>
+strategy is the default one and to be recommended for people with
+lower memory devices.
+</dd>
 
 </dl>
 
