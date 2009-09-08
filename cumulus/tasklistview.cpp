@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004 by André Somers
-**                   2009 by Axel pauli
+**                   2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
