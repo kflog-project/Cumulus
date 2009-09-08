@@ -61,7 +61,7 @@ extern MapMatrix       *_globalMapMatrix;
 extern MapConfig       *_globalMapConfig;
 extern MapView         *_globalMapView;
 
-Map *Map::instance=0;
+Map *Map::instance = static_cast<Map *>(0);
 
 Map::Map(QWidget* parent) : QWidget(parent)
 {
@@ -1869,15 +1869,15 @@ void Map::slotSwitchManualInFlight()
 /** Draws the glider symbol on the pixmap */
 void Map::__drawGlider()
 {
-  //get the projected coordinates of the current position
+  // get the projected coordinates of the current position
   QPoint projPos=_globalMapMatrix->wgsToMap(curGPSPos);
-  //map them to a coordinate on the pixmap
+  // map them to a coordinate on the pixmap
   int Rx = _globalMapMatrix->map(projPos).x();
   int Ry = _globalMapMatrix->map(projPos).y();
 
-  QRect rect( QPoint(), size() );
+  QRect rect( QPoint(0, 0), this->size() );
 
-  //don't continue if position is outside of window's view port
+  // don't continue if position is outside of window's view port
   if( ! rect.contains( Rx, Ry, false ) )
     {
       return;
@@ -1886,7 +1886,7 @@ void Map::__drawGlider()
   int rot=calcGliderRotation();
   rot=((rot+7)/15) % 24;  //we only want to rotate in steps of 15 degrees. Finer is not usefull.
 
-  //now, draw the line from the glider symbol to the waypoint
+  // now, draw the line from the glider symbol to the waypoint
   __drawDirectionLine(QPoint(Rx,Ry));
 
   // @ee the glider pixmap contains all rotated glider symbols.
@@ -1898,15 +1898,15 @@ void Map::__drawGlider()
 /** Draws the X symbol on the pixmap */
 void Map::__drawX()
 {
-  //get the projected coordinates of the current position
+  // get the projected coordinates of the current position
   QPoint projPos=_globalMapMatrix->wgsToMap(curMANPos);
-  //map them to a coordinate on the pixmap
+  // map them to a coordinate on the pixmap
   int Rx = _globalMapMatrix->map(projPos).x();
   int Ry = _globalMapMatrix->map(projPos).y();
 
-  QRect rect( QPoint(), size() );
+  QRect rect( QPoint(0, 0), this->size() );
 
-  //don't continue if position is outside of window's viewport
+  // don't continue if position is outside of window's viewport
   if( ! rect.contains( Rx, Ry, false ) )
     {
       return;
@@ -1914,7 +1914,7 @@ void Map::__drawX()
 
   if(!ShowGlider)
     {
-      //now, draw the line from the X symbol to the waypoint
+      // now, draw the line from the X symbol to the waypoint
       __drawDirectionLine(QPoint(Rx,Ry));
     }
 
