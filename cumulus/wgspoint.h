@@ -25,8 +25,8 @@
   *
   */
 
-#ifndef WGSPoint_H
-#define WGSPoint_H
+#ifndef WGS_Point_H
+#define WGS_Point_H
 
 #include <QPoint>
 #include <QString>
@@ -50,9 +50,14 @@ public:
     WGSPoint();
 
     /**
-     * Creates a new WGSPoint with the given position-data.
+     * Creates a new WGSPoint with the given coordinates.
      */
     WGSPoint(int lat, int lon);
+
+    /**
+     * Creates a new WGSPoint with the given position.
+     */
+    WGSPoint(const QPoint& pos);
 
     /**
      * Returns the latitude in the internal format.
@@ -93,6 +98,15 @@ public:
     {
         setX(lat);
         setY(lon);
+    };
+
+    /**
+     * Sets the position.
+     */
+    void setPos( const QPoint& pos )
+    {
+        setX(pos.x());
+        setY(pos.y());
     };
 
     /**
