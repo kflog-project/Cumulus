@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andre Somers, 2009 Axel Pauli
+**   Copyright (c):  2002 by Andre Somers
+**                   2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -26,7 +27,7 @@
 extern MapView *_globalMapView;
 
 WaitScreen::WaitScreen(QWidget *parent ) :
-    QDialog(parent,  Qt::FramelessWindowHint | Qt::WindowTitleHint )
+  QDialog( parent, Qt::FramelessWindowHint | Qt::WindowTitleHint )
 {
   setObjectName("WaitScreen");
   setModal(true);
@@ -104,7 +105,7 @@ void WaitScreen::slot_SetText1(const QString& text)
     }
   else
     {
-      _globalMapView->message(text);
+      // _globalMapView->message(text);
     }
 }
 
@@ -141,7 +142,7 @@ void WaitScreen::slot_SetText2(const QString& text)
     }
   else
     {
-      _globalMapView->message(shortText);
+      // _globalMapView->message(shortText);
     }
 }
 
