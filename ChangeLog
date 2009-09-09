@@ -13,7 +13,27 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
-
+[-] 2009-09-10 AP: BUGFIX: Core dump fixed caused by ReachableListView due to
+                   Null pointer usage.
+[o] 2009-09-04 AP: Shortcut key H action changed. This shortcut now navigates
+                   to the home site. Pressing it sets the course line from the
+                   current position to the home position.
+                   Shortcut key SHIFT+H action changed. Pressing it moves
+                   the current position to the home site but only in manual mode.
+[o] 2009-09-04 AP: New option Projection follows home added to map settings page.
+                   This option is only available for Plate Carree projection.
+                   If this option is active and the user sets a new home site,
+                   the projection latitude is also updated. That all triggers
+                   a recomputing of map data projections. The result should be
+                   a better display of the map in the assumption that the user
+                   is flying around his home site. Furthermore the projection
+                   parallel must not be set by hand as before.
+[-] 2009-09-03 AP: BUGFIX: Map setting page should now display always the used
+                   map directory always the default one.                             
+[o] 2009-09-02 AP: Personal data item birthday removed. Was not used by cumulus.
+[o] 2009-09-02 AP: Class MapElementList used by airfields, glider sites, outlandings
+                   replaced by simple QLists. Welt2000 parser now filters out
+                   multiple entries.
 [+] 2009-09-02 AP: Coordinate filter to Welt2000 parser added, which filters
                    out objects with the same coordinates. Only the first
                    object will pass the filter.
