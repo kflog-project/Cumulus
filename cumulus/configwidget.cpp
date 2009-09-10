@@ -6,19 +6,20 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2009 Axel Pauli
+ **   Copyright (c):  2002      by André Somers
+ **                   2007-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
  ***********************************************************************/
 
 /**
- * This is the configuration widget of cumulus. Different settings are
- * to do here. There are in general not related to the flight
- * preparation. For that it exists a separate widget.
+ * This is the configuration widget of cumulus. General settings are
+ * handled here. These are in general not related to the preflight
+ * preparation. For that exists a separate configuration widget.
  */
 
 #include <QMessageBox>
@@ -29,6 +30,7 @@
 #include "configwidget.h"
 #include "generalconfig.h"
 #include "mapconfig.h"
+#include "gpsnmea.h"
 
 ConfigWidget::ConfigWidget(QWidget *parent) :
   QWidget(parent), loadConfig(true)
@@ -43,19 +45,11 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spp=new SettingsPagePersonal(this);
   tabWidget->addTab(spp, tr("Personal"));
 
-  spgl=new SettingsPageGlider(this);
-  tabWidget->addTab(spgl, tr("Gliders"));
-
-  QScrollArea* sectorArea = new QScrollArea(tabWidget);
-  sectorArea->setWidgetResizable(true);
-  sectorArea->setFrameStyle(QFrame::NoFrame);
-
-  sps=new SettingsPageSector(this);
-  sectorArea->setWidget(sps);
-  tabWidget->addTab(sectorArea, tr("Sector"));
-
   spg=new SettingsPageGPS(this);
   tabWidget->addTab(spg, tr("GPS"));
+
+  spgl=new SettingsPageGlider(this);
+  tabWidget->addTab(spgl, tr("Gliders"));
 
   spms=new SettingsPageMapSettings(this);
   tabWidget->addTab(spms, tr("Map Settings"));
@@ -65,6 +59,14 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
 
   sptc=new SettingsPageTerrainColors(this);
   tabWidget->addTab(sptc, tr("Terrain Colors"));
+
+  QScrollArea* sectorArea = new QScrollArea(tabWidget);
+  sectorArea->setWidgetResizable(true);
+  sectorArea->setFrameStyle(QFrame::NoFrame);
+
+  sps=new SettingsPageSector(this);
+  sectorArea->setWidget(sps);
+  tabWidget->addTab(sectorArea, tr("Sector"));
 
   QScrollArea* afArea = new QScrollArea(tabWidget);
   afArea->setWidgetResizable(true);
@@ -187,20 +189,14 @@ ConfigWidget::~ConfigWidget()
 /** This slot is called if the window will be shown or resized */
 void ConfigWidget::slot_LoadCurrent()
 {
-  // Block multiple loads to avoid reset of changed values in the
-  // config tabs.
-
-  // qDebug("slot_LoadCurrent() in configdialog.cpp is called");
-
-  if( loadConfig )
-    {
-      loadConfig = false;
-    }
-  else
+  // Block multiple loads to avoid reset of changed values in the configuration
+  // tabulators.
+  if( loadConfig == false )
     {
       return;
     }
 
+  loadConfig = false;
   emit load();
 }
 
@@ -209,24 +205,64 @@ void ConfigWidget::accept()
 {
   hide();
 
-  // save change states before restoring of data
-  bool projectionChange = spms->checkIsProjectionChanged();
-  bool welt2000Change   = spaf->checkIsWelt2000Changed();
+  // save some change states before restoring of data
+  bool homeLatitudeChange = spp->checkIsHomeLatitudeChanged();
+  bool homePositionChange = spp->checkIsHomePositionChanged();
+  bool projectionChange   = spms->checkIsProjectionChanged();
+  bool welt2000Change     = spaf->checkIsWelt2000Changed();
 
+  // All setting pages will save their configuration data
   emit save();
 
-  // save modifications into file
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  if( conf->getMapProjectionType() == ProjectionBase::Cylindric &&
+      conf->getMapProjectionFollowsHome() == true &&
+      homeLatitudeChange == true )
+    {
+      // @AP: In case of cylinder projection and an active projection follows home
+      // option and a latitude change of the home position, the projection
+      // parallel is set to the new home latitude. That shall ensure
+      // optimized results during map drawing. Note, that is only
+      // supported for the cylinder projection!
+      projectionChange = true;
+      conf->setCylinderParallel( conf->getHomeLat() );
+    }
+
+  // save all configuration items permanently into the configuration file
   GeneralConfig::instance()->save();
+
+  if( projectionChange == true || welt2000Change == true )
+    {
+      QMessageBox::warning( this, "Cumulus",
+                            tr( "<html>"
+                                "<b>Configuration settings have been changed.</b><p>"
+                                "Update of system can take a few seconds!"
+                                "</html>" ) );
+    }
 
   emit settingsChanged();
 
-  if( projectionChange == false && welt2000Change == true )
+  if( projectionChange == false &&
+      ( welt2000Change == true ||
+      ( conf->getWelt2000CountryFilter() == "" &&
+        homePositionChange == true )))
     {
-      // AP: There was a change in the welt 2000 config data. We must
-      // trigger a reload of these data. This is only done, if the
-      // projection has not been changed. A projection change includes
-      // a reload of welt 2000 data.
+      // @AP: There was a change in the Welt2000 configuration data. We must
+      // trigger a reload of these data. This is only done, if
+      // a) The projection has not been changed. A projection change includes
+      //    a reload of Welt2000 data.
+      // b) The Welt2000 country filter is not set and
+      //    the home position has been changed.
+      // c) Welt2000 configuration items have been changed
       emit welt2000ConfigChanged();
+    }
+
+  if( homePositionChange == true && GpsNmea::gps->getConnected() == false )
+    {
+      // That moves the map to the new home position. We do that only,
+      // if we have no GPS connection.
+      emit gotoHomePosition();
     }
 
   emit closeConfig();

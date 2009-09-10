@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2009 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2007-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -34,7 +35,7 @@
 #include "settingspageterraincolors.h"
 
 /**
-  * @short Configuration widget of cumulus
+  * @short Configuration widget of Cumulus
   *
   * This is the general configuration widget for Cumulus.
   *
@@ -54,7 +55,7 @@ class ConfigWidget : public QWidget
     /**
      * Destructor
      */
-    ~ConfigWidget();
+    virtual ~ConfigWidget();
 
   public slots:
     /**
@@ -75,29 +76,29 @@ class ConfigWidget : public QWidget
 
   signals: // Signals
     /**
-     * Signal emitted to indicate the settings should be saved to the configurationfile
+     * Signal emitted to indicate the settings should be saved to the configuration file
      */
     void save();
 
     /**
-     * Emitted to indicate that the settings should be (re-) loaded from the configurationfile.
+     * Emitted to indicate that the settings should be (re-) loaded from the configuration file.
      */
     void load();
 
     /**
-     * This signal is emitted after a save procedure has occured.
+     * This signal is emitted after a save procedure has occurred.
      * It gives connected objects the chance to adjust to new settings.
      */
     void settingsChanged();
 
     /**
-     * This signal is emitted after a save procedure has occured and
-     * the configuration of welt 2000 has been changed.
+     * This signal is emitted after a save procedure has occurred and
+     * the configuration of Welt2000 has been changed.
      */
     void welt2000ConfigChanged();
 
     /**
-     * This signal is emitted when the dialog is cancelled. It gives connected objects
+     * This signal is emitted when the dialog is canceled. It gives connected objects
      * the chance to restore to old settings.
      */
     void reload();
@@ -115,22 +116,28 @@ class ConfigWidget : public QWidget
      */
     void query_close(bool& warn, QStringList& warnings);
 
+    /**
+     * Requests a move to the home position.
+     */
+    void gotoHomePosition();
+
   private:
 
-    SettingsPagePersonal* spp;
-    SettingsPageGlider* spgl;
-    SettingsPageSector* sps;
-    SettingsPageGPS* spg;
-    SettingsPageMapSettings* spms;
+    // Single configuration widgets
+    SettingsPagePersonal*      spp;
+    SettingsPageGlider*        spgl;
+    SettingsPageSector*        sps;
+    SettingsPageGPS*           spg;
+    SettingsPageMapSettings*   spms;
     SettingsPageTerrainColors* sptc;
-    SettingsPageMapObjects* spmo;
-    SettingsPageAirfields* spaf;
-    SettingsPageAirspace* spa;
-    SettingsPageUnits* spu;
-    SettingsPageInformation* spi;
-    SettingsPageLookNFeel* splnf;
+    SettingsPageMapObjects*    spmo;
+    SettingsPageAirfields*     spaf;
+    SettingsPageAirspace*      spa;
+    SettingsPageUnits*         spu;
+    SettingsPageInformation*   spi;
+    SettingsPageLookNFeel*     splnf;
 
-    bool loadConfig; // control loading of configuration data
+    bool loadConfig; // controls loading of configuration data
   };
 
 #endif
