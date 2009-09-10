@@ -6,8 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers
-**                   2007-2009 Axel Pauli
+**   Copyright (c):  2004      by André Somers
+**                   2007-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -630,17 +630,6 @@ class GeneralConfig : protected QSettings
     _surname = newValue;
   };
 
-  /** Gets the birthday */
-  QString &getBirthday()
-    {
-      return _birthday;
-    };
-  /** Sets the birthday */
-  void setBirthday( const QString newValue )
-  {
-    _birthday = newValue;
-  };
-
   /** Gets the language */
   QString &getLanguage()
     {
@@ -766,49 +755,39 @@ class GeneralConfig : protected QSettings
     _currentTask = newValue;
   };
 
-  /** gets Homesite Latitude */
+  /** gets homesite Latitude */
   int getHomeLat() const
   {
-    return _homeWp->origP.lat();
+    return _home.x();
   };
-  /** sets Homesite Latitude */
+  /** sets homesite Latitude */
   void setHomeLat( const int newValue )
   {
-    _homeWp->origP.setLat( newValue );
-    resetHomeWp();
+    _home.setX( newValue );
   };
 
   /** gets Homesite  Longitude */
-  int getHomeLon()  const
+  int getHomeLon() const
   {
-    return _homeWp->origP.lon();
+    return _home.y();
   };
   /** sets Homesite  Longitude */
   void setHomeLon( const int newValue )
   {
-    _homeWp->origP.setLon( newValue );
-    resetHomeWp();
+    _home.setY( newValue );
   };
 
-  /** gets Homesite waypoint */
-  wayPoint *getHomeWp()  const
+  /** gets homesite coordinates */
+  QPoint getHomeCoord() const
     {
-      return _homeWp;
+      return _home;
     };
 
-  /** sets Homesite  waypoint */
-  void setHomeWp( const wayPoint& newValue )
+  /** sets homesite coordinates */
+  void setHomeCoord( const QPoint& newValue )
   {
-    if(_homeWp)
-      {
-        delete _homeWp;
-      }
-
-    _homeWp = new wayPoint( newValue );
-
+    _home = newValue;
   };
-
-  void resetHomeWp();
 
   /** gets Center Latitude */
   int getCenterLat()  const
@@ -1078,15 +1057,15 @@ class GeneralConfig : protected QSettings
     _mapLoadForests = newValue;
   };
 
-  /** gets Map delete after compile */
-  bool getMapDeleteAfterCompile() const
+  /** gets Map projection settings follows home position */
+  bool getMapProjectionFollowsHome() const
   {
-    return _mapDelete;
+    return _mapProjFollowsHome;
   };
-  /** sets Map delete after compile*/
-  void setMapDeleteAfterCompile(const bool newValue)
+  /** sets Map projection settings follows home position */
+  void setMapProjectionFollowsHome(const bool newValue)
   {
-    _mapDelete = newValue;
+    _mapProjFollowsHome = newValue;
   };
 
   /** gets Map unload unneeded */
@@ -1749,8 +1728,6 @@ class GeneralConfig : protected QSettings
   Altitude _safetyAltitude;
   // surname
   QString _surname;
-  // birthday
-  QString _birthday;
   // user language
   QString _language;
   // map side frame color
@@ -1775,7 +1752,7 @@ class GeneralConfig : protected QSettings
   QString _currentTask;
 
   // Homesite
-  wayPoint * _homeWp;
+  QPoint _home;
   // Center Latitude
   int _centerLat;
   // Center Longitude
@@ -1788,9 +1765,8 @@ class GeneralConfig : protected QSettings
   double _mapScale;
   // Map Data Projection Type
   int _mapProjectionType;
-
-  // Map delete after comlile
-  bool _mapDelete;
+  // Map projection settings follows home position
+  bool _mapProjFollowsHome;
   // Map unload unneeded
   bool _mapUnload;
 

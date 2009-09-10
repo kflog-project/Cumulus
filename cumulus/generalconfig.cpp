@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by André Somers
+ **   Copyright (c):  2004      by André Somers
  **                   2007-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
@@ -54,7 +54,6 @@ GeneralConfig* GeneralConfig::_theInstance = 0;
 // file will be stored in the user home directory as $HOME/.config/Cumulus.conf
 GeneralConfig::GeneralConfig() : QSettings( QSettings::UserScope, "Cumulus" )
 {
-  _homeWp = new wayPoint();
   loadTerrainDefaultColors();
   load();
 }
@@ -63,7 +62,6 @@ GeneralConfig::~GeneralConfig()
 {
   save();
   _theInstance = 0;
-  delete _homeWp;
 }
 
 void GeneralConfig::load()
@@ -170,7 +168,6 @@ void GeneralConfig::load()
   beginGroup("Personal Data");
   _disclaimerVersion = value( "Disclaimer", 0).toInt();
   _surname           = value("SurName", "").toString();
-  _birthday          = value("Birthday", "").toString();
   _language          = value("Language", "en").toString();
   _userDataDirectory = value("UserDataDir", USER_DATA_DIR).toString();
   endGroup();
@@ -207,7 +204,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Map");
-  _mapDelete                      = value( "DeleteAfterMapCompile", false ).toBool();
+  _mapProjFollowsHome             = value( "ProjectionFollowsHome", true ).toBool();
   _mapUnload                      = value( "UnloadUnneededMap", true ).toBool();
   _mapBearLine                    = value( "BearLine", true ).toBool();
   _mapLoadIsoLines                = value( "LoadIsoLines", true ).toBool();
@@ -231,9 +228,8 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Map Data");
-  resetHomeWp();
-  _homeWp->origP.setLat( value( "Homesite Latitude", HOME_DEFAULT_LAT).toInt() );
-  _homeWp->origP.setLon( value( "Homesite Longitude", HOME_DEFAULT_LON).toInt() );
+  _home.setX( value( "Homesite Latitude", HOME_DEFAULT_LAT).toInt() );
+  _home.setY( value( "Homesite Longitude", HOME_DEFAULT_LON).toInt() );
   _mapUserDir  = value("Map Root", "").toString();
   _centerLat  = value("Center Latitude", HOME_DEFAULT_LAT).toInt();
   _centerLon  = value("Center Longitude", HOME_DEFAULT_LON).toInt();
@@ -462,7 +458,6 @@ void GeneralConfig::save()
   beginGroup("Personal Data");
   setValue("Disclaimer", _disclaimerVersion);
   setValue("SurName", _surname);
-  setValue("Birthday", _birthday);
   setValue("Language", _language);
   setValue( "UserDataDir", _userDataDirectory);
   endGroup();
@@ -497,7 +492,7 @@ void GeneralConfig::save()
   endGroup();
 
   beginGroup("Map");
-  setValue( "DeleteAfterMapCompile", _mapDelete );
+  setValue( "ProjectionFollowsHome", _mapProjFollowsHome );
   setValue( "UnloadUnneededMap", _mapUnload );
   setValue( "BearLine", _mapBearLine );
   setValue( "LoadIsoLines", _mapLoadIsoLines );
@@ -521,8 +516,8 @@ void GeneralConfig::save()
 
   beginGroup("Map Data");
 
-  setValue("Homesite Latitude", _homeWp->origP.lat());
-  setValue("Homesite Longitude", _homeWp->origP.lon());
+  setValue("Homesite Latitude", _home.x());
+  setValue("Homesite Longitude", _home.y());
   setValue("Map Root", _mapUserDir);
   setValue("Center Latitude", _centerLat);
   setValue("Center Longitude", _centerLon);
@@ -1155,17 +1150,6 @@ int GeneralConfig::getManualNavModeAltitude() const
 void GeneralConfig::setManualNavModeAltitude(const int newValue)
 {
   _manualNavModeAltitude = newValue;
-}
-
-
-void GeneralConfig::resetHomeWp()
-{
-  // qDebug("resetting Home Wp %d", int(_homeWp));
-  _homeWp->name = "Home";
-  _homeWp->description = "Home airfield";
-  _homeWp->icao = "";
-  _homeWp->elevation = 0;
-  _homeWp->comment = "The information on this field is incomplete. Trust only the coordinates!";
 }
 
 
