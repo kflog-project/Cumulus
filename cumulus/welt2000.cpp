@@ -92,9 +92,9 @@ Welt2000::~Welt2000()
  * be the original ascii file or a compiled version of it. The results
  * are put in the passed lists
  */
-bool Welt2000::load( MapElementList& airfieldList,
-                     MapElementList& gliderList,
-                     MapElementList& outlandingList )
+bool Welt2000::load( QList<Airfield>& airfieldList,
+                     QList<Airfield>& gliderList,
+                     QList<Airfield>& outlandingList )
 {
   // Rename WELT2000.TXT -> welt2000.txt.
   QString wl = "welt2000.txt";
@@ -529,9 +529,9 @@ bool Welt2000::readConfigEntries( QString &path )
  * returns true (success) or false (error occurred)
  */
 bool Welt2000::parse( QString& path,
-                      MapElementList& airfieldList,
-                      MapElementList& gliderList,
-                      MapElementList& outlandingList,
+                      QList<Airfield>& airfieldList,
+                      QList<Airfield>& gliderList,
+                      QList<Airfield>& outlandingList,
                       bool doCompile )
 {
   QTime t;
@@ -1340,9 +1340,9 @@ bool Welt2000::parse( QString& path,
  * lists.
  */
 bool Welt2000::readCompiledFile( QString &path,
-                                 MapElementList& airfieldList,
-                                 MapElementList& gliderList,
-                                 MapElementList& outlandingList )
+                                 QList<Airfield>& airfieldList,
+                                 QList<Airfield>& gliderList,
+                                 QList<Airfield>& outlandingList )
 {
   QTime t;
   t.start();

@@ -49,7 +49,6 @@ HEADERS = airfieldlistview.h \
     mapconfig.h \
     mapcontents.h \
     mapdefaults.h \
-    mapelementlist.h \
     map.h \
     mapinfobox.h \
     mapmatrix.h \
@@ -156,7 +155,6 @@ SOURCES = airfieldlistview.cpp \
     mapconfig.cpp \
     mapcontents.cpp \
     map.cpp \
-    mapelementlist.cpp \
     mapinfobox.cpp \
     mapmatrix.cpp \
     mapview.cpp \

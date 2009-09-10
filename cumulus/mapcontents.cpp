@@ -119,9 +119,6 @@ const short MapContents::isoLevels[] =
 
 MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
     QObject(parent),
-    airfieldList(this, "AirfieldList"),
-    gliderSiteList(this, "GliderSiteList"),
-    outLandingList(this, "OutLandingList"),
     isFirst(true)
 {
   ws = waitscreen;
@@ -144,11 +141,11 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
 
   currentTask=0;
 
-  connect(this,SIGNAL(progress(int)),
-          ws,SLOT(slot_Progress(int)));
+  connect( this, SIGNAL(progress(int)),
+          ws, SLOT(slot_Progress(int)) );
 
-  connect(this,SIGNAL(loadingFile(const QString&)),
-          ws,SLOT(slot_SetText2(const QString&)));
+  connect( this, SIGNAL(loadingFile(const QString&)),
+          ws, SLOT(slot_SetText2(const QString&)) );
 
   // qDebug("MapContents initialized");
 }
@@ -619,13 +616,6 @@ bool MapContents::__readTerrainFile( const int fileSecID,
   if ( compiling )
     {
       ausgabe.close();
-
-      // kfl file is deleted after 'compilation' to save space, if is enabled
-      // in configuration menu
-      if ( GeneralConfig::instance()->getMapDeleteAfterCompile() )
-        {
-          mapfile.remove();
-        }
     }
 
   return true;
@@ -822,7 +812,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
   QFileInfo fi( pathName );
 
-  qDebug("Reading File=%s, Magic=%xh, TypeId=%c, FormatId=%d, Date=%s",
+  qDebug("Reading File=%s, Magic=0x%x, TypeId=%c, FormatId=%d, Date=%s",
          fi.fileName().toLatin1().data(), magic, loadTypeID, formatID,
          createDateTime.toString(Qt::ISODate).toLatin1().data() );
 
@@ -1244,11 +1234,6 @@ bool MapContents::__readBinaryFile(const int fileSecID,
   if ( compiling )
     {
       ausgabe.close();
-      // kfl file is deleted after 'compilation' to save space. Please handle this "al gusto" ...
-      if ( GeneralConfig::instance()->getMapDeleteAfterCompile() )
-        {
-          mapfile.remove();
-        }
     }
 
   return true;
@@ -1272,7 +1257,7 @@ void MapContents::proofeSection()
 
   extern MapMatrix* _globalMapMatrix;
 
-  // Get map borders in KFLog coordinates. X=Lon, Y=Lat.
+  // Get map borders in KFLog coordinates. X=Longitude, Y=Latitude.
   QRect mapBorder = _globalMapMatrix->getViewBorder();
 
   int westCorner = ( ( mapBorder.left() / 600000 / 2 ) * 2 + 180 ) / 2;
@@ -1300,7 +1285,7 @@ void MapContents::proofeSection()
       OpenAirParser oap;
       oap.load( airspaceList );
 
-      //finally, sort the airspaces
+      // finally, sort the airspaces
       airspaceList.sort();
 
       ws->slot_SetText2(tr("Reading Welt 2000 File"));
@@ -1604,7 +1589,19 @@ void MapContents::unloadMaps(unsigned int distance)
 
 }
 
-void MapContents::unloadMapObjects(QList<LineElement>& list)
+/** Updates the projected coordinates of this map object type */
+void MapContents::updateProjectedCoordinates( QList<SinglePoint>& list )
+{
+  extern MapMatrix* _globalMapMatrix;
+
+  for( int i = 0; i < list.count(); i++ )
+    {
+       QPoint newPos = _globalMapMatrix->wgsToMap( list.at(i).getWGSPosition() );
+       list[i].setPosition( newPos );
+    }
+}
+
+void MapContents::unloadMapObjects( QList<LineElement>& list )
 {
   bool renew = false;
 
@@ -1624,7 +1621,6 @@ void MapContents::unloadMapObjects(QList<LineElement>& list)
       QList<LineElement> renew = list;
       list = renew;
     }
-
 }
 
 void MapContents::unloadMapObjects(QList<SinglePoint>& list)
@@ -1675,46 +1671,110 @@ void MapContents::unloadMapObjects(QMap<int, QList<Isohypse> > isoMap)
      }
 }
 
-unsigned int MapContents::getListLength(int listIndex) const
-  {
-    switch (listIndex)
-      {
-      case AirfieldList:
-        return airfieldList.count();
-      case GliderSiteList:
-        return gliderSiteList.count();
-      case OutLandingList:
-        return outLandingList.count();
-      case RadioList:
-        return radioList.count();
-      case AirspaceList:
-        return airspaceList.count();
-      case ObstacleList:
-        return obstacleList.count();
-      case ReportList:
-        return reportList.count();
-      case CityList:
-        return cityList.count();
-      case VillageList:
-        return villageList.count();
-      case LandmarkList:
-        return landmarkList.count();
-      case HighwayList:
-        return highwayList.count();
-      case RoadList:
-        return roadList.count();
-      case RailList:
-        return railList.count();
-      case HydroList:
-        return hydroList.count();
-      case LakeList:
-        return lakeList.count();
-      case TopoList:
-        return topoList.count();
-      default:
-        return 0;
-      }
-  }
+/**
+ * clears the content of the given list.
+ *
+ * @param  listIndex  the index of the list.
+ */
+void MapContents::clearList(const int listIndex)
+{
+  switch (listIndex)
+    {
+    case AirfieldList:
+      airfieldList.clear();
+      break;
+    case GliderSiteList:
+      gliderSiteList.clear();
+      break;
+    case OutLandingList:
+      outLandingList.clear();
+      break;
+    case RadioList:
+      radioList.clear();
+      break;
+    case AirspaceList:
+      airspaceList.clear();
+      break;
+    case ObstacleList:
+      obstacleList.clear();
+      break;
+    case ReportList:
+      reportList.clear();
+      break;
+    case CityList:
+      cityList.clear();
+      break;
+    case VillageList:
+      villageList.clear();
+      break;
+    case LandmarkList:
+      landmarkList.clear();
+      break;
+    case HighwayList:
+      highwayList.clear();
+      break;
+    case RoadList:
+      roadList.clear();
+      break;
+    case RailList:
+      railList.clear();
+      break;
+    case HydroList:
+      hydroList.clear();
+      break;
+    case LakeList:
+      lakeList.clear();
+      break;
+    case TopoList:
+      topoList.clear();
+      break;
+    default:
+      qWarning( "MapContents::clearList(): unknown list type %d!", listIndex );
+      break;
+    }
+}
+
+
+unsigned int MapContents::getListLength( const int listIndex ) const
+{
+  switch (listIndex)
+    {
+    case AirfieldList:
+      return airfieldList.count();
+    case GliderSiteList:
+      return gliderSiteList.count();
+    case OutLandingList:
+      return outLandingList.count();
+    case RadioList:
+      return radioList.count();
+    case AirspaceList:
+      return airspaceList.count();
+    case ObstacleList:
+      return obstacleList.count();
+    case ReportList:
+      return reportList.count();
+    case CityList:
+      return cityList.count();
+    case VillageList:
+      return villageList.count();
+    case LandmarkList:
+      return landmarkList.count();
+    case HighwayList:
+      return highwayList.count();
+    case RoadList:
+      return roadList.count();
+    case RailList:
+      return railList.count();
+    case HydroList:
+      return hydroList.count();
+    case LakeList:
+      return lakeList.count();
+    case TopoList:
+      return topoList.count();
+    default:
+      return 0;
+    }
+}
 
 Airspace* MapContents::getAirspace(unsigned int index)
 {
@@ -1806,6 +1866,9 @@ SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
     }
 }
 
+
+/** This slot is called to do a first load of all map data or to do a
+ *  reload of certain map data after a position move or projection change. */
 void MapContents::slotReloadMapData()
 {
   // @AP: defined a static mutex variable, to prevent the recursive
@@ -1827,23 +1890,29 @@ void MapContents::slotReloadMapData()
   // clear the airspace region list in map too
   Map::getInstance()->clearAirspaceRegionList();
 
-  airfieldList.clear();
   qDeleteAll(airspaceList);
   airspaceList.clear();
   cityList.clear();
-  gliderSiteList.clear();
   hydroList.clear();
   lakeList.clear();
   landmarkList.clear();
   radioList.clear();
   obstacleList.clear();
-  outLandingList.clear();
   railList.clear();
   reportList.clear();
   highwayList.clear();
   roadList.clear();
   topoList.clear();
   villageList.clear();
+
+  airfieldList.clear();
+  gliderSiteList.clear();
+  outLandingList.clear();
+
+  // free internal allocated memory in QList
+  airfieldList   = QList<Airfield>();
+  gliderSiteList = QList<Airfield>();
+  outLandingList = QList<Airfield>();
 
   // all isolines are cleared
   groundMap.clear();
@@ -1855,7 +1924,7 @@ void MapContents::slotReloadMapData()
 
   isFirst = true;
 
-  // @AP: Reload all data, that must be always done after a projection value change
+  // @AP: Reload all data, that must be always done after a projection data change
   proofeSection();
 
   // Check for a selected waypoint, this one must be also new projected.
@@ -1863,6 +1932,7 @@ void MapContents::slotReloadMapData()
   extern MapContents *_globalMapContents;
   extern MapMatrix   *_globalMapMatrix;
 
+  // Update the global selected waypoint
   wayPoint *wp = (wayPoint *) calculator->getselectedWp();
 
   if ( wp )
@@ -1870,12 +1940,16 @@ void MapContents::slotReloadMapData()
       wp->projP = _globalMapMatrix->wgsToMap(wp->origP);
     }
 
-  // Update the waypoint list
+  // Update the global waypoint list
   for ( int loop = 0; loop < wpList.count(); loop++ )
     {
       // recalculate projection data
       wpList[loop].projP = _globalMapMatrix->wgsToMap(wpList[loop].origP);
     }
+
+  // Make a recalculation of the reachable sites. The projection of
+  // all collected sites have been changed.
+  calculator->newSites();
 
   // Check for a flight task, the waypoint list must be updated too
   FlightTask *task = _globalMapContents->getCurrentTask();
@@ -1885,6 +1959,7 @@ void MapContents::slotReloadMapData()
       task->updateProjection();
     }
 
+  // that signal will update all list views of the main window
   emit mapDataReloaded();
 
   // enable gps data receiving

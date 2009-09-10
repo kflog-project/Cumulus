@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andr� Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -15,15 +16,14 @@
 **
 ***********************************************************************/
 
-#ifndef SETTINGSPAGEPERSONAL_H
-#define SETTINGSPAGEPERSONAL_H
+#ifndef SETTINGS_PAGE_PERSONAL_H
+#define SETTINGS_PAGE_PERSONAL_H
 
 #include <QWidget>
 #include <QLineEdit>
 #include <QComboBox>
 
 #include "coordedit.h"
-#include "altitude.h"
 
 /**
  * This class represents the personal settings page
@@ -32,16 +32,27 @@
 class SettingsPagePersonal : public QWidget
   {
     Q_OBJECT
+
   public:
+
     SettingsPagePersonal(QWidget *parent=0);
     ~SettingsPagePersonal();
 
+    /** Checks if the home position has been changed */
+    bool checkIsHomePositionChanged();
+
+    /** Checks if the home latitude has been changed */
+    bool checkIsHomeLatitudeChanged();
+
+    /** Checks if the home longitude has been changed */
+    bool checkIsHomeLongitudeChanged();
+
   public slots: // Public slots
 
-    /** called to initiate saving to the configurationfile */
+    /** called to initiate saving to the configuration file */
     void slot_save();
 
-    /** Called to initiate loading of the configurationfile. */
+    /** Called to initiate loading of the configuration file. */
     void slot_load();
 
     private slots:
@@ -50,10 +61,10 @@ class SettingsPagePersonal : public QWidget
     void slot_openDirectoryDialog();
 
   private:
-    bool loadConfig; // control loading of config data
+
+    bool loadConfig; // control loading of configuration data
 
     QLineEdit *edtName;
-    QLineEdit *edtBirth;
     QComboBox *langBox;
     LatEdit   *edtHomeLat;
     LongEdit  *edtHomeLong;

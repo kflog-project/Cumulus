@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008-2009 Axel Pauli
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -29,14 +29,13 @@
 #include <QMap>
 #include <QString>
 
+#include "airfield.h"
 #include "airspace.h"
 #include "distance.h"
 #include "flighttask.h"
-#include "mapelementlist.h"
 #include "waitscreen.h"
 #include "isolist.h"
 
-class Airfield;
 class Isohypse;
 class LineElement;
 class RadioPoint;
@@ -83,7 +82,14 @@ class MapContents : public QObject
      *
      * @param  listIndex  the index of the list.
      */
-    unsigned int getListLength(int listIndex) const;
+    unsigned int getListLength( const int listIndex ) const;
+
+    /**
+     * clears the content of the given list.
+     *
+     * @param  listIndex  the index of the list.
+     */
+    void clearList( const int listIndex );
 
     /**
      * Proofs, which map sections are needed to draw the map and loads
@@ -228,6 +234,8 @@ class MapContents : public QObject
      */
     int findElevation(const QPoint& coord, Distance* errorDist=0);
 
+    /** Updates the projected coordinates of this map object type */
+    void updateProjectedCoordinates( QList<SinglePoint>& list );
     /**
      * Deletes all currently not-needed map sections from memory
      */
@@ -274,7 +282,11 @@ class MapContents : public QObject
     static bool compareProjections(ProjectionBase* p1, ProjectionBase* p2);
 
   public slots:
-    /** */
+
+    /**
+     * This slot is called to do a first load of all map data or to do a
+     * reload of certain map data after a position move or projection change.
+     */
     void slotReloadMapData();
 
     /** Reload welt 2000 data file */
@@ -330,12 +342,12 @@ class MapContents : public QObject
     /**
      * airfieldList contains airports, airfields, ultralight sites
      */
-    MapElementList airfieldList;
+    QList<Airfield> airfieldList;
 
     /**
      * gliderSiteList contains all glider sites.
      */
-    MapElementList gliderSiteList;
+    QList<Airfield> gliderSiteList;
 
     /**
      * addSitesList contains all, ultralight sites,
@@ -348,7 +360,7 @@ class MapContents : public QObject
     /**
      * outLandingList contains all outlanding fields.
      */
-    MapElementList outLandingList;
+    QList<Airfield> outLandingList;
 
     /**
      * radioList contains all radio navigation facilities.

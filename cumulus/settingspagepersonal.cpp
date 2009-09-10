@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008-2009 Axel Pauli
+**   Copyright (c):  2002 by André Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -28,7 +29,7 @@
 #include "settingspagepersonal.h"
 
 SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
-    QWidget(parent), loadConfig(true)
+  QWidget(parent), loadConfig(true)
 {
   setObjectName("SettingsPagePersonal");
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -42,12 +43,6 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   topLayout->addWidget(edtName, row, 1, 1, 2);
   row++;
 
-  lbl = new QLabel(tr("Date of birth:"), this);
-  topLayout->addWidget(lbl, row, 0);
-  edtBirth = new QLineEdit(this);
-  topLayout->addWidget(edtBirth, row, 1, 1, 2);
-  row++;
-
   lbl = new QLabel(tr("Language:"), this);
   topLayout->addWidget(lbl, row, 0);
   langBox = new QComboBox(this);
@@ -59,13 +54,13 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 
   topLayout->setRowMinimumHeight(row++, 10);
 
-  lbl = new QLabel(tr("Home site lat.:"), this);
+  lbl = new QLabel(tr("Home site latitude:"), this);
   topLayout->addWidget(lbl, row, 0);
   edtHomeLat = new LatEdit(this);
   topLayout->addWidget(edtHomeLat, row, 1, 1, 2);
   row++;
 
-  lbl = new QLabel(tr("Home site lon.:"), this);
+  lbl = new QLabel(tr("Home site longitude:"), this);
   topLayout->addWidget(lbl, row, 0);
   edtHomeLong = new LongEdit(this);
   topLayout->addWidget(edtHomeLong, row, 1, 1, 2);
@@ -94,7 +89,6 @@ void SettingsPagePersonal::slot_load()
   GeneralConfig *conf = GeneralConfig::instance();
 
   edtName->setText( conf->getSurname() );
-  edtBirth->setText( conf->getBirthday() );
 
   edtHomeLat->setKFLogDegree(conf->getHomeLat());
   edtHomeLong->setKFLogDegree(conf->getHomeLon());
@@ -116,14 +110,12 @@ void SettingsPagePersonal::slot_save()
   GeneralConfig *conf = GeneralConfig::instance();
 
   conf->setSurname( edtName->text() );
-  conf->setBirthday( edtBirth->text() );
   conf->setLanguage( langBox->currentText() );
   conf->setUserDataDirectory( userDataDir->text() );
 
   // Check, if string input values have been changed. If not, no
   // storage is done to avoid rounding errors. They can appear if the
   // position formats will be changed between DMS <-> DDM vice versa.
-
   if( edtHomeLat->isInputChanged() )
     {
       conf->setHomeLat( edtHomeLat->KFLogDegree() );
@@ -135,7 +127,51 @@ void SettingsPagePersonal::slot_save()
     }
 }
 
-/** called to open the directory selection dialog */
+/**
+ * Checks if the home position has been changed.
+ */
+bool SettingsPagePersonal::checkIsHomePositionChanged()
+{
+  bool changed = false;
+
+  if( edtHomeLat->isInputChanged() || edtHomeLong->isInputChanged() )
+    {
+      changed = true;
+    }
+
+  // qDebug( "SettingsPagePersonal::checkIsHomePositionChanged(): %d", changed );
+  return changed;
+}
+
+/** Checks if the home latitude has been changed */
+bool SettingsPagePersonal::checkIsHomeLatitudeChanged()
+{
+  bool changed = false;
+
+  if( edtHomeLat->isInputChanged() )
+    {
+      changed = true;
+    }
+
+  // qDebug( "SettingsPagePersonal::checkIsHomeLatitudeChanged(): %d", changed );
+  return changed;
+}
+
+/** Checks if the home longitude has been changed */
+bool SettingsPagePersonal::checkIsHomeLongitudeChanged()
+{
+  bool changed = false;
+
+  if( edtHomeLong->isInputChanged() )
+    {
+      changed = true;
+    }
+
+  // qDebug( "SettingsPagePersonal::checkIsHomeLongitudeChanged(): %d", changed );
+  return changed;
+}
+
+/** Called to open the directory selection dialog */
 void SettingsPagePersonal::slot_openDirectoryDialog()
 {
   QString dataDir = QFileDialog::getExistingDirectory( this,

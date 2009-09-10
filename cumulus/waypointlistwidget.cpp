@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,11 +16,10 @@
 **
 ***********************************************************************/
 
-#include "waypointlistwidget.h"
-
 #include <QPushButton>
 #include <QMessageBox>
 
+#include "waypointlistwidget.h"
 #include "generalconfig.h"
 #include "mapcontents.h"
 #include "mapconfig.h"
@@ -28,88 +28,118 @@
 extern MapContents* _globalMapContents;
 extern MapConfig*   _globalMapConfig;
 
-
-WaypointListWidget::WaypointListWidget(QWidget *parent) : WpListWidgetParent(parent)
+WaypointListWidget::WaypointListWidget(QWidget *parent) :
+  WpListWidgetParent(parent)
 {
   setObjectName("WaypointListWidget");
   list->setObjectName("WpTreeWidget");
 }
-
 
 WaypointListWidget::~WaypointListWidget()
 {
   // JD: Never forget to take ALL items out of the list !
   // Items are deleted in filter destructor
   while ( list->topLevelItemCount() > 0 )
-    list->takeTopLevelItem(0);
+    {
+      list->takeTopLevelItem(0);
+    }
 }
 
+/** Clears and refills the waypoint item list. */
+void WaypointListWidget::refillWpList()
+{
+  // qDebug("WaypointListWidget::refillWpList()");
+
+  // Remove all content from list widget; deleting is done in filter
+  while ( list->topLevelItemCount() > 0 )
+    {
+      list->takeTopLevelItem(0);
+    }
+
+  filter->clear();
+
+  // reload list
+  fillWpList();
+}
 
 // JD: initial sorting of WP items and filling the list widget is now
 // entirely up to the filter ( reset() does it )
-
 
 /** Retrieves waypoints from the map contents and fills the list. */
 void WaypointListWidget::fillWpList()
 {
   list->setUpdatesEnabled(false);
+
   configRowHeight();
 
   QList<wayPoint> &wpList = _globalMapContents->getWaypointList();
-  for (int i=0; i < wpList.count(); i++) {
-    wayPoint& wp = wpList[i];
-    filter->addListItem( new _WaypointItem(wp) );
-  }
+
+  for (int i=0; i < wpList.count(); i++)
+    {
+      wayPoint& wp = wpList[i];
+      filter->addListItem( new _WaypointItem(wp) );
+    }
 
   filter->reset();
 
   resizeListColumns();
-  if ( wpList.count() > 0 ) {
-    list->setCurrentItem(list->topLevelItem(0));
-  }
+
+  if ( wpList.count() > 0 )
+    {
+      list->setCurrentItem(list->topLevelItem(0));
+    }
+
   list->setUpdatesEnabled(true);
 }
-
 
 /** Returns a pointer to the currently high lighted waypoint. */
 wayPoint* WaypointListWidget::getSelectedWaypoint()
 {
   QTreeWidgetItem* li = list->currentItem();
-  if ( li == 0)
-    return 0;
+
+  if ( li == static_cast<QTreeWidgetItem *>(0) )
+    {
+      return static_cast<wayPoint *>(0);
+    }
 
   // Special rows selected?
   QString test = li->text(1);
 
   if (test == ListViewFilter::NextPage || test == ListViewFilter::PreviousPage)
-    return 0;
+    {
+      return static_cast<wayPoint *>(0);
+    }
 
   // Now we're left with the real waypoints
-  _WaypointItem* wpi = static_cast<_WaypointItem*>(li);
+  _WaypointItem* wpi = static_cast<_WaypointItem *>(li);
 
-  if (!wpi)
-    return 0;
+  if ( !wpi )
+    {
+      return static_cast<wayPoint *>(0);
+    }
 
   return &wpi->wp;
 }
 
-
-// JD: after adding, deleting or name-changing a waypoint the filter 
+// JD: after adding, deleting or name-changing a waypoint the filter
 // and the view must always be reset to regain consistency
-
 
 /** Called when the selected waypoint should be deleted from the catalog */
 void WaypointListWidget::deleteSelectedWaypoint()
 {
   QTreeWidgetItem* li = list->currentItem();
 
-  if ( li== 0)
-    return;
+  if ( li== 0 )
+    {
+      return;
+    }
 
   wayPoint *wp = getSelectedWaypoint();
 
   if( !wp )
-    return;
+    {
+      return;
+    }
 
   // remove waypoint from waypoint list in MapContents
   _globalMapContents->getWaypointList().removeAll( *wp );
@@ -127,14 +157,15 @@ void WaypointListWidget::deleteSelectedWaypoint()
   list->setUpdatesEnabled(true);
 }
 
-
 /** Called if a waypoint has been edited. */
 void WaypointListWidget::updateSelectedWaypoint(wayPoint& wp)
 {
   QTreeWidgetItem* li = list->currentItem();
 
   if ( li == 0 )
-    return;
+    {
+      return;
+    }
 
   list->setUpdatesEnabled(false);
 
@@ -145,19 +176,22 @@ void WaypointListWidget::updateSelectedWaypoint(wayPoint& wp)
   // JD: if the WP name was not changed we just update the item; otherwise
   // we need to resort and therefore reset the filter and view
 
-  if ( li->text(0) == wp.name ) {
-    li->setText(0, wp.name); 
-  } else {
-    li->setText(0, wp.name);
-    filter->reset();
-    resizeListColumns();
-  }
+  if (li->text(0) == wp.name)
+    {
+      li->setText(0, wp.name);
+    }
+  else
+    {
+      li->setText(0, wp.name);
+      filter->reset();
+      resizeListColumns();
+    }
+
   list->setUpdatesEnabled(true);
 
   // save modified catalog
   _globalMapContents->saveWaypointList();
 }
-
 
 /** Called if a waypoint has been added. */
 void WaypointListWidget::addWaypoint(wayPoint& newWp)
@@ -183,7 +217,6 @@ void WaypointListWidget::addWaypoint(wayPoint& newWp)
   list->setUpdatesEnabled(true);
   // qDebug("WaypointListWidget::addWaypoint: name=%s", wp.name.toLatin1().data() );
 }
-
 
 WaypointListWidget::_WaypointItem::_WaypointItem(wayPoint& waypoint):
   QTreeWidgetItem(),  wp(waypoint)

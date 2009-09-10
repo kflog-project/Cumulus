@@ -365,6 +365,11 @@ class MapMatrix : public QObject
    */
   void homePositionChanged();
 
+  /**
+   * Emitted if a move to the home position is requested.
+   */
+  void gotoHomePosition();
+
  private:
   /**
    * Moves the map into the given direction.

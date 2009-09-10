@@ -3,8 +3,9 @@
                              -------------------
     begin                : Sun Jul 21 2002
 
-    copyright            : (C) 2002 by Andre Somers
-                               2008 Axel Pauli, Josua Dietze
+    copyright            : (C) 2002      by Andre Somers
+                               2008      by Josua Dietze
+                               2008-2009 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -376,22 +377,34 @@ void MapView::slot_Waypoint(const wayPoint *wp)
   // qDebug("MapView::slot_Waypoint");
   QString dest = "";
 
-  if( wp )
+  if (wp)
     {
-      if( wp->taskPointIndex != -1 )
+      if (wp->taskPointIndex != -1)
         {
           QString idx;
-          idx.sprintf( "%d ", wp->taskPointIndex );
+          idx.sprintf("%d ", wp->taskPointIndex);
           dest += tr("TP") + idx;
         }
+
       // @JD: suggestion: removal of spaces in wp display -> bigger font
-      for ( int i=0 ; i < wp->name.size() ; i++ ) {
-        if ( wp->name[i] != QChar(' ') )
-          dest += wp->name[i];
-        if ( dest.size() == 8 )
-          break;
-      }
-      dest += QString("(%1)").arg( Altitude::getText(wp->elevation, false, 0));
+      for (int i = 0; i < wp->name.size(); i++)
+        {
+          if (wp->name[i] != QChar(' '))
+            {
+              dest += wp->name[i];
+            }
+
+          if (dest.size() == 8)
+            {
+              break;
+            }
+        }
+
+      if( wp->name != tr("Home") )
+        {
+          dest += QString("(%1)").arg(Altitude::getText(wp->elevation, false, 0));
+        }
+
       _waypoint->setValue(dest);
     }
   else
@@ -401,12 +414,12 @@ void MapView::slot_Waypoint(const wayPoint *wp)
       _glidepath->setValue("-");
       // @JD: reset distance too
       _distance->setValue("-");
-      QPixmap arrow = _arrows.copy( 24*60+3, 3, 54, 54 );
-      _rel_bearing->setPixmap (arrow);
+      QPixmap arrow = _arrows.copy(24 * 60 + 3, 3, 54, 54);
+      _rel_bearing->setPixmap(arrow);
       // qDebug("Rel. bearing icon reset" );
     }
 
-  _theMap->scheduleRedraw(Map::informationLayer);  // this is not really helpful -> it is: the bearingline won't change otherwise!
+  _theMap->scheduleRedraw(Map::informationLayer); // this is not really helpful -> it is: the bearingline won't change otherwise!
 }
 
 
@@ -426,7 +439,7 @@ void MapView::slot_Bearing(int bearing)
 
       if( _bearingMode == 0 )
         {
-          // display the revers value
+          // display the reverse value
           ival > 180 ? ival -=180 : ival +=180;
         }
 
@@ -439,7 +452,7 @@ void MapView::slot_Bearing(int bearing)
 /** This slot is called if the user presses the bearing display */
 void MapView::slot_toggleBearing()
 {
-  // display invers bearing
+  // display inverse bearing
   _bearing->setAutoFillBackground(true);
   _bearing->setBackgroundRole(QPalette::Window);
   _bearing->setPalette( QPalette(QColor(Qt::red)) );
@@ -451,7 +464,7 @@ void MapView::slot_toggleBearing()
 }
 
 /**
- * Reset revers bearing after the timeout
+ * Reset reverse bearing after the timeout
  */
 void MapView::slot_resetInversBearing()
 {

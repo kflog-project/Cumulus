@@ -309,6 +309,7 @@ int ReachableList::getArrivalAlt( const QPoint& position )
     {
       return( arrivalAltMap[ coordinateString ( position ) ] - safetyAlt );
     }
+
   return( -9999 );
 }
 
@@ -463,6 +464,8 @@ void ReachableList::setInitValues()
 
 void ReachableList::calculateNewList()
 {
+  // qDebug( "ReachableList::calculateNewList() is called" );
+
   // calculateNewList is also called from calculator, so on check has to be
   // executed
   if ( !isOn() )
@@ -499,7 +502,7 @@ void ReachableList::calculateNewList()
 
   // qDebug("Limited Number of potential reachable sites: %d", count() );
   calculateDataInList();
-  // qDebug("Time for full calculation: %d msec", t.restart() );
+  //qDebug("Time for full calculation: %d msec", t.restart() );
 }
 
 // prints list to qDebug interface

@@ -7,6 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
+**                   2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -55,6 +56,11 @@ public:
      * @adds a waypoint.
      */
     void addWaypoint(wayPoint &);
+
+    /**
+     * Clears and refills the waypoint item list
+     */
+    void refillWpList();
 
     /**
      * Retrieves the waypoints from the map contents and fills

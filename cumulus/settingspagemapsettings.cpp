@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008-2009 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -33,7 +34,7 @@
 #include "generalconfig.h"
 
 /***********************************************************/
-/*  map setting page                                 */
+/*  map setting page                                       */
 /***********************************************************/
 
 SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
@@ -83,6 +84,10 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   topLayout->setRowMinimumHeight(row++,10);
 
+  chkProjectionFollowHome = new QCheckBox(tr("Projection follows Home Position"), this );
+  topLayout->addWidget(chkProjectionFollowHome, row, 0, 1, 2);
+  row++;
+
   chkUnloadUnneeded = new QCheckBox(tr("Immediately unload unneeded maps"), this );
   topLayout->addWidget(chkUnloadUnneeded, row, 0, 1, 2);
   row++;
@@ -91,18 +96,18 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   topLayout->setRowStretch( row, 10 );
 }
 
-
 SettingsPageMapSettings::~SettingsPageMapSettings()
 {}
-
 
 void SettingsPageMapSettings::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  mapDirectory->setText( conf->getMapRootDir() );
+  // Take the first directory from the search order
+  mapDirectory->setText( conf->getMapDirectories()[0] );
 
   chkUnloadUnneeded->setChecked( conf->getMapUnload() );
+  chkProjectionFollowHome->setChecked( conf->getMapProjectionFollowsHome() );
 
   currentProjType = conf->getMapProjectionType();
   lambertV1 =       conf->getLambertParallel1();
@@ -130,17 +135,33 @@ void SettingsPageMapSettings::slot_save()
 
   switch(cmbProjection->currentIndex())
     {
+
     case 0:
+
       if( edtLat1->isInputChanged() )
-        lambertV1 = edtLat1->KFLogDegree();
+        {
+          lambertV1 = edtLat1->KFLogDegree();
+        }
+
       if( edtLat2->isInputChanged() )
-        lambertV2 = edtLat2->KFLogDegree();
+        {
+          lambertV2 = edtLat2->KFLogDegree();
+        }
+
       if( edtLon->isInputChanged() )
-        lambertOrigin = edtLon->KFLogDegree();
+        {
+          lambertOrigin = edtLon->KFLogDegree();
+        }
+
       break;
+
     case 1:
+
       if( edtLat1->isInputChanged() )
-        cylinPar = edtLat1->KFLogDegree();
+        {
+          cylinPar = edtLat1->KFLogDegree();
+        }
+
       break;
     }
 
@@ -148,6 +169,7 @@ void SettingsPageMapSettings::slot_save()
 
   conf->setMapRootDir( mapDirectory->text() );
   conf->setMapUnload( chkUnloadUnneeded->isChecked() );
+  conf->setMapProjectionFollowsHome( chkProjectionFollowHome->isChecked() );
   conf->setMapProjectionType( currentProjType );
   conf->setLambertParallel1( lambertV1 );
   conf->setLambertParallel2( lambertV2 );
@@ -160,7 +182,7 @@ void SettingsPageMapSettings::slot_save()
  */
 void SettingsPageMapSettings::slot_openFileDialog()
 {
-  QString mapDirCurrent = GeneralConfig::instance()->getMapRootDir();
+  QString mapDirCurrent = GeneralConfig::instance()->getMapDirectories()[0];
   QDir mapDir;
 
   if( ! mapDir.exists( mapDirCurrent ) )
@@ -219,47 +241,39 @@ void SettingsPageMapSettings::slot_openFileDialog()
 
 // selection in the combo box has been changed. index is a reference
 // to the current entry. initialize widgets with the internal values
-// normally read from the config file.
+// normally read from the configuration file.
 void SettingsPageMapSettings::slotSelectProjection(int index)
 {
 
-  switch(index) {
-  case 0:    // Lambert
-#ifdef MAEMO
-    edtLat2Label->setVisible(true);
-    edtLat2->setVisible(true);
-    edtLonLabel->setVisible(true);
-    edtLon->setVisible(true);
-#else
-    edtLat2Label->setEnabled(true);
-    edtLat2->setEnabled(true);
-    edtLonLabel->setEnabled(true);
-    edtLon->setEnabled(true);
-#endif
-    edtLat1->setKFLogDegree(lambertV1);
-    edtLat2->setKFLogDegree(lambertV2);
-    edtLon->setKFLogDegree(lambertOrigin);
-    currentProjType = ProjectionBase::Lambert;
-    break;
-  case 1:    // Plate Carreé
-  default:   // take this if index is unknown
-#ifdef MAEMO
-    edtLat2Label->setVisible(false);
-    edtLat2->setVisible(false);
-    edtLonLabel->setVisible(false);
-    edtLon->setVisible(false);
-#else
-    edtLat2Label->setEnabled(false);
-    edtLat2->setEnabled(false);
-    edtLonLabel->setEnabled(false);
-    edtLon->setEnabled(false);
-#endif
-    edtLat1->setKFLogDegree(cylinPar);
-    edtLat2->setKFLogDegree(0);
-    edtLon->setKFLogDegree(0);
-    currentProjType = ProjectionBase::Cylindric;
-    break;
-  }
+  switch (index)
+    {
+      case 0: // Lambert
+
+        edtLat2Label->setVisible(true);
+        edtLat2->setVisible(true);
+        edtLonLabel->setVisible(true);
+        edtLon->setVisible(true);
+        chkProjectionFollowHome->setVisible(false);
+        edtLat1->setKFLogDegree(lambertV1);
+        edtLat2->setKFLogDegree(lambertV2);
+        edtLon->setKFLogDegree(lambertOrigin);
+        currentProjType = ProjectionBase::Lambert;
+        break;
+
+      case 1: // Plate Carreé
+      default: // take this if index is unknown
+
+        edtLat2Label->setVisible(false);
+        edtLat2->setVisible(false);
+        edtLonLabel->setVisible(false);
+        edtLon->setVisible(false);
+        chkProjectionFollowHome->setVisible(true);
+        edtLat1->setKFLogDegree(cylinPar);
+        edtLat2->setKFLogDegree(0);
+        edtLon->setKFLogDegree(0);
+        currentProjType = ProjectionBase::Cylindric;
+        break;
+    }
 }
 
 /* Called to ask is confirmation on the close is needed. */
@@ -269,17 +283,19 @@ void SettingsPageMapSettings::slot_query_close(bool& warn, QStringList& warnings
     just set warn equal to _changed, because that way we might erase a
     warning flag set by another page! */
 
-  bool changed=false;
+  bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
 
   changed = changed || ( mapDirectory->text() != conf->getMapRootDir() );
   changed = changed || ( chkUnloadUnneeded->isChecked() != conf->getMapUnload() );
+  changed = changed || ( chkProjectionFollowHome->isChecked() != conf->getMapProjectionFollowsHome() );
   changed = changed || checkIsProjectionChanged();
 
-  if (changed) {
-    warn=true;
-    warnings.append(tr("The Map Settings"));
-  }
+  if (changed)
+    {
+      warn = true;
+      warnings.append(tr("The Map Settings"));
+    }
 }
 
 /**
@@ -290,16 +306,18 @@ bool SettingsPageMapSettings::checkIsProjectionChanged()
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
 
-  switch(cmbProjection->currentIndex()) {
-  case 0:
-    changed = changed || ( edtLat1->isInputChanged() );
-    changed = changed || ( edtLat2->isInputChanged() );
-    changed = changed || ( edtLon->isInputChanged() );
-    break;
-  case 1:
-    changed = changed || ( edtLat1->isInputChanged() );
-    break;
-  }
+  switch( cmbProjection->currentIndex() )
+    {
+      case 0:
+        changed = changed || ( edtLat1->isInputChanged() );
+        changed = changed || ( edtLat2->isInputChanged() );
+        changed = changed || ( edtLon->isInputChanged() );
+        break;
+
+      case 1:
+        changed = changed || ( edtLat1->isInputChanged() );
+        break;
+    }
 
   changed = changed || ( conf->getMapProjectionType() != currentProjType );
 

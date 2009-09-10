@@ -130,13 +130,14 @@
 #define _welt2000_h
 
 #include <QMap>
+#include <QList>
 #include <QString>
 #include <QStringList>
 #include <QRect>
 #include <QPoint>
 
+#include "airfield.h"
 #include "basemapelement.h"
-#include "mapelementlist.h"
 
 /**
  * @short Class to read welt2000 files
@@ -170,9 +171,9 @@ public:
      * @param outlandingList All outlanding fields have to be stored in this list
      * @returns true (success) or false (error occurred)
      */
-    bool load( MapElementList& airfieldList,
-               MapElementList& gliderList,
-               MapElementList& outlandingList );
+    bool load( QList<Airfield>& airfieldList,
+               QList<Airfield>& gliderList,
+               QList<Airfield>& outlandingList );
 
 private:
 
@@ -189,9 +190,9 @@ private:
      * @returns true (success) or false (error occurred)
      */
     bool parse( QString& path,
-                MapElementList& airfieldList,
-                MapElementList& gliderList,
-                MapElementList& outlandingList,
+                QList<Airfield>& airfieldList,
+                QList<Airfield>& gliderList,
+                QList<Airfield>& outlandingList,
                 bool doCompile=false );
 
     /**
@@ -224,9 +225,9 @@ private:
      * @returns true (success) or false (error occurred)
      */
     bool readCompiledFile( QString &path,
-                           MapElementList& airfieldList,
-                           MapElementList& gliderList,
-                           MapElementList& outlandingList );
+                           QList<Airfield>& airfieldList,
+                           QList<Airfield>& gliderList,
+                           QList<Airfield>& outlandingList );
 
     /**
      * Get the header data of a compiled file and put it in the class

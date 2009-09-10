@@ -6,11 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2002 by André Somers
-**                  2009 by Axel Pauli
+**   Copyright (c): 2002      by André Somers
+**                  2007-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -37,15 +37,18 @@ class WaypointListView : public QWidget
     Q_OBJECT
 
 public:
+
     WaypointListView(QMainWindow *parent=0);
 
-    ~WaypointListView();
+    virtual ~WaypointListView();
 
-    WaypointListWidget* listWidget() {
+    WaypointListWidget* listWidget()
+    {
       return listw;
     };
 
-    wayPoint* getSelectedWaypoint() {
+    wayPoint* getSelectedWaypoint()
+    {
       return listw->getSelectedWaypoint();
     };
 
@@ -98,6 +101,14 @@ public slots: // Public slots
      */
     void slot_setHome();
 
+    /**
+     * Called to reload the waypoint item list
+     */
+    void slot_reloadList()
+    {
+      listw->refillWpList();
+    };
+
 signals: // Signals
     /**
      * This signal is emitted if a new waypoint is selected.
@@ -125,10 +136,20 @@ signals: // Signals
      */
     void newHomePosition(const QPoint&);
 
+    /**
+     * Emitted to move the map to the new home position
+     */
+    void gotoHomePosition();
+
 private:
+
     WaypointListWidget* listw;
-    QMainWindow* par;
-    QPushButton* cmdSelect;
+    QMainWindow*        par;
+    QPushButton*        cmdSelect;
+    QPushButton*        cmdHome;
+
+    /** that shall store a home position change */
+    bool homeChanged;
 
 private slots:
 

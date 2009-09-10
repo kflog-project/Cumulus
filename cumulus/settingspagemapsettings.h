@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2009 by Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -81,21 +82,22 @@ class SettingsPageMapSettings : public QWidget
  protected:
 
   QPushButton * mapSelection;
-  QLineEdit * mapDirectory;
-  QCheckBox * chkUnloadUnneeded;
-  QComboBox * cmbProjection;
-  LatEdit   * edtLat1;
-  QLabel    * edtLat2Label;
-  LatEdit   * edtLat2;
-  QLabel    * edtLonLabel;
-  LongEdit  * edtLon;
+  QLineEdit   * mapDirectory;
+  QCheckBox   * chkUnloadUnneeded;
+  QCheckBox   * chkProjectionFollowHome;
+  QComboBox   * cmbProjection;
+  LatEdit     * edtLat1;
+  QLabel      * edtLat2Label;
+  LatEdit     * edtLat2;
+  QLabel      * edtLonLabel;
+  LongEdit    * edtLon;
 
   int cylinPar;
   int lambertV1;
   int lambertV2;
   int lambertOrigin;
 
-  // variable currentProjType is an enum ProjectionBase::ProjectionType
+  // variable currentProjType is an enumeration ProjectionBase::ProjectionType
   int currentProjType;
 
   protected slots:

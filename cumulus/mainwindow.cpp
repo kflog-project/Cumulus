@@ -339,6 +339,15 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( _globalMapMatrix, SIGNAL( homePositionChanged() ),
            _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
 
+  connect( _globalMapMatrix, SIGNAL( homePositionChanged() ),
+           calculator, SLOT( slot_CheckHomeSiteSelection() ) );
+
+  connect( _globalMapMatrix, SIGNAL( projectionChanged() ),
+           calculator, SLOT( slot_CheckHomeSiteSelection() ) );
+
+  connect( _globalMapMatrix, SIGNAL( gotoHomePosition() ),
+           calculator, SLOT( slot_changePositionHome() ) );
+
   _globalMapMatrix->slotInitMatrix();
 
   ws->slot_SetText1( tr( "Creating views..." ) );
@@ -420,11 +429,15 @@ void MainWindow::slotCreateApplicationWidgets()
            _globalMapContents, SLOT( slotReloadMapData() ) );
 
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
-           viewMap->_theMap, SLOT( slotDraw() ) );
+           viewMap->_theMap, SLOT( slotRedraw() ) );
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewAF, SLOT( slot_reloadList() ) );
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewOL, SLOT( slot_reloadList() ) );
+  connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
+           viewWP, SLOT( slot_reloadList() ) );
+  connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
+           viewTP, SLOT( slot_updateTask() ) );
 
   connect( GpsNmea::gps, SIGNAL( newVario(const Speed&) ),
            calculator, SLOT( slot_GpsVariometer(const Speed&) ) );
@@ -463,6 +476,8 @@ void MainWindow::slotCreateApplicationWidgets()
            this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
   connect( viewWP, SIGNAL( newHomePosition( const QPoint& ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
+  connect( viewWP, SIGNAL( gotoHomePosition() ),
+           calculator, SLOT( slot_changePositionHome() ) );
 
   connect( viewAF, SIGNAL( newWaypoint( wayPoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
@@ -472,6 +487,8 @@ void MainWindow::slotCreateApplicationWidgets()
            this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
   connect( viewAF, SIGNAL( newHomePosition( const QPoint& ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
+  connect( viewAF, SIGNAL( gotoHomePosition() ),
+           calculator, SLOT( slot_changePositionHome() ) );
 
   connect( viewOL, SIGNAL( newWaypoint( wayPoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
@@ -481,6 +498,8 @@ void MainWindow::slotCreateApplicationWidgets()
            this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
   connect( viewOL, SIGNAL( newHomePosition( const QPoint& ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
+  connect( viewOL, SIGNAL( gotoHomePosition() ),
+           calculator, SLOT( slot_changePositionHome() ) );
 
   connect( viewRP, SIGNAL( newWaypoint( wayPoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
@@ -511,6 +530,8 @@ void MainWindow::slotCreateApplicationWidgets()
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
   connect( viewInfo, SIGNAL( newHomePosition( const QPoint& ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
+  connect( viewInfo, SIGNAL( gotoHomePosition() ),
+           calculator, SLOT( slot_changePositionHome() ) );
 
   connect( listViewTabs, SIGNAL( currentChanged( int ) ),
            this, SLOT( slot_tabChanged( int ) ) );
@@ -536,9 +557,9 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( calculator, SIGNAL( newPosition( const QPoint&, const int ) ),
            viewMap, SLOT( slot_Position( const QPoint&, const int ) ) );
   connect( calculator, SIGNAL( newPosition( const QPoint&, const int ) ),
-           viewMap->_theMap, SLOT( slotPosition( const QPoint&, const int ) ) );
+           Map::getInstance(), SLOT( slotPosition( const QPoint&, const int ) ) );
   connect( calculator, SIGNAL( switchManualInFlight() ),
-           viewMap->_theMap, SLOT( slotSwitchManualInFlight() ) );
+           Map::getInstance(), SLOT( slotSwitchManualInFlight() ) );
   connect( calculator, SIGNAL( glidePath( const Altitude& ) ),
            viewMap, SLOT( slot_GlidePath( const Altitude& ) ) );
   connect( calculator, SIGNAL( bestSpeed( const Speed& ) ),
@@ -790,7 +811,7 @@ void MainWindow::initMenuBar()
   mapMenu->addAction( actionToggleLogging );
   mapMenu->addAction( actionSelectTask );
   mapMenu->addAction( actionManualNavHome );
-  mapMenu->addAction( actionGpsNavHome );
+  mapMenu->addAction( actionNav2Home );
   mapMenu->addAction( actionToggleManualInFlight );
   mapMenu->addSeparator();
   mapMenu->addAction( actionEnsureVisible );
@@ -873,7 +894,10 @@ void MainWindow::initActions()
            calculator, SLOT( slot_changePositionW() ) );
 
   actionManualNavHome = new QAction( tr( "Goto home site" ), this );
-  actionManualNavHome->setShortcut( QKeySequence("H") );
+  QList<QKeySequence> acGoHomeKeys;
+  acGoHomeKeys << QKeySequence(Qt::SHIFT + Qt::Key_H) << QKeySequence::MoveToStartOfLine;
+  actionManualNavHome->setShortcuts( acGoHomeKeys );
+
   addAction( actionManualNavHome );
   connect( actionManualNavHome, SIGNAL( triggered() ),
            calculator, SLOT( slot_changePositionHome() ) );
@@ -903,17 +927,18 @@ void MainWindow::initActions()
   connect( actionGpsNavDown, SIGNAL( triggered() ),
            calculator, SLOT( slot_McDown() ) );
 
-  actionGpsNavHome = new QAction( tr( "Set home site" ), this );
-  actionGpsNavHome->setShortcut( QKeySequence(Qt::SHIFT + Qt::Key_H) );
-  addAction( actionGpsNavHome );
-  connect( actionGpsNavHome, SIGNAL( triggered() ),
-           this, SLOT( slotNavigateHome() ) );
-
   actionGpsNavWPList = new QAction( tr( "Open waypoint list" ), this );
   actionGpsNavWPList->setShortcut( QKeySequence("F9") );
   addAction( actionGpsNavWPList );
   connect( actionGpsNavWPList, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToWPListView() ) );
+
+  // Select home site as target
+  actionNav2Home = new QAction( tr( "Select home site" ), this );
+  actionNav2Home->setShortcut( QKeySequence(Qt::Key_H) );
+  addAction( actionNav2Home );
+  connect( actionNav2Home, SIGNAL( triggered() ),
+           this, SLOT( slotNavigate2Home() ) );
 
   // Zoom in map
   actionGpsNavZoomIn = new QAction( tr( "Zoom in" ), this );
@@ -937,7 +962,7 @@ void MainWindow::initActions()
   actionMenuBarToggle->setShortcuts( mBTSCList );
   addAction( actionMenuBarToggle );
   connect( actionMenuBarToggle, SIGNAL( triggered() ),
-                           this, SLOT( slotToggleMenu() ) );
+           this, SLOT( slotToggleMenu() ) );
 
   actionFileQuit = new QAction( tr( "&Exit" ), this );
   actionFileQuit->setShortcut( QKeySequence("Shift+E") );
@@ -1147,6 +1172,7 @@ void  MainWindow::toggleActions( const bool toggle )
   actionHelpAboutApp->setEnabled( toggle );
   actionHelpAboutQt->setEnabled( toggle );
   actionToggleLogging->setEnabled( toggle );
+  actionNav2Home->setEnabled( toggle );
   scExit->setEnabled( toggle );
 
   // do not toggle actionToggleManualInFlight, status may not be changed
@@ -1193,7 +1219,6 @@ void MainWindow::toggleGpsNavActions( const bool toggle )
 {
   actionGpsNavUp->setEnabled( toggle );
   actionGpsNavDown->setEnabled( toggle );
-  actionGpsNavHome->setEnabled( toggle );
   actionGpsNavWPList->setEnabled( toggle );
   actionGpsNavZoomIn->setEnabled( toggle );
   actionGpsNavZoomOut->setEnabled( toggle );
@@ -1690,6 +1715,8 @@ void MainWindow::slotConfig()
            this, SLOT( slotCloseConfig() ) );
   connect( cDlg,  SIGNAL( welt2000ConfigChanged() ),
            _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
+  connect( cDlg, SIGNAL( gotoHomePosition() ),
+           calculator, SLOT( slot_changePositionHome() ) );
 
   cDlg->show();
 }
@@ -1939,7 +1966,7 @@ void MainWindow::slotCenterToWaypoint()
 
   if ( calculator->getselectedWp() )
     {
-      _globalMapMatrix->centerToLatLon( calculator->getselectedWp() ->origP );
+      _globalMapMatrix->centerToLatLon( calculator->getselectedWp()->origP );
       viewMap->_theMap->scheduleRedraw();
 
     }
@@ -2034,6 +2061,8 @@ void MainWindow::slotPreFlightDataChanged()
 /** Dynamically updates view for reachable list */
 void MainWindow::slotNewReachList()
 {
+  // qDebug( "MainWindow::slotNewReachList() is called" );
+
   viewRP->slot_newList(); //let the view know we have a new list
   viewMap->_theMap->scheduleRedraw(Map::waypoints);
 }
@@ -2060,10 +2089,16 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
   return QWidget::eventFilter( o, e ); // standard event processing;
 }
 
-
-void MainWindow::slotNavigateHome()
+/** Called to select the home site position */
+void MainWindow::slotNavigate2Home()
 {
-  calculator->slot_WaypointChange( GeneralConfig::instance()->getHomeWp(), true );
+  wayPoint wp;
+
+  wp.name = tr("Home");
+  wp.description = tr("Home Site");
+  wp.origP.setPos( GeneralConfig::instance()->getHomeCoord() );
+
+  calculator->slot_WaypointChange( &wp, true );
 }
 
 void MainWindow::slotToggleManualInFlight(bool on)

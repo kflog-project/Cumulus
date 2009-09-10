@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel pauli
+**   Copyright (c):  2004      by Eckhard Völlm
+**                   2008-2009 by Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -120,15 +121,17 @@ ReachpointListView::~ReachpointListView()
 /** Retrieves the reachable points from the map contents, and fills the list. */
 void ReachpointListView::fillRpList()
 {
+  // qDebug( "ReachpointListView::fillRpList() is called" );
+
   int safetyAlt = (int)GeneralConfig::instance()->getSafetyAltitude().getMeters();
 
-  if ( calculator == 0 )
+  if ( calculator == static_cast<Calculator *>(0) )
     {
       return;
     }
 
   // int n = calculator->getReachList()->getNumberSites();
-  extern MapConfig * _globalMapConfig;
+  extern MapConfig* _globalMapConfig;
   QTreeWidgetItem* si = list->currentItem();
   QTreeWidgetItem* selectedItem = 0;
   QString sname = "";
@@ -321,16 +324,14 @@ void ReachpointListView::fillRpList()
   list->setUpdatesEnabled(true);
 }
 
-
 void ReachpointListView::showEvent(QShowEvent *)
 {
   if (_newList)
     {
       fillRpList();
-      _newList=false;
+      _newList = false;
     }
 }
-
 
 /** This signal is called to indicate that a selection has been made. */
 void ReachpointListView::slot_ShowOl()
@@ -341,7 +342,6 @@ void ReachpointListView::slot_ShowOl()
   fillRpList();
 }
 
-
 /** This signal is called to indicate that a selection has been made. */
 void ReachpointListView::slot_HideOl()
 {
@@ -351,26 +351,28 @@ void ReachpointListView::slot_HideOl()
   fillRpList();
 }
 
-
 /** This signal is called to indicate that a selection has been made. */
 void ReachpointListView::slot_Select()
 {
-  emit newWaypoint(getSelectedWaypoint(), true);
-  emit done();
-}
+  wayPoint* wp = getSelectedWaypoint();
 
+  if( wp )
+    {
+      emit newWaypoint(getSelectedWaypoint(), true);
+      emit done();
+    }
+}
 
 /** This slot is called if the info button has been clicked */
 void ReachpointListView::slot_Info()
 {
-  wayPoint *airfieldInfo = getSelectedWaypoint();
+  wayPoint* airfieldInfo = getSelectedWaypoint();
 
   if ( airfieldInfo )
     {
       emit info(airfieldInfo);
     }
 }
-
 
 /** @ee This slot is called if the listview is closed without selecting */
 void ReachpointListView::slot_Close ()
@@ -380,7 +382,14 @@ void ReachpointListView::slot_Close ()
 
 void ReachpointListView::slot_Selected()
 {
-  if (ReachpointListView::getSelectedWaypoint()->equals(calculator->getselectedWp()))
+  // @AP: this slot is also called, if the list is cleared and a selection
+  // does exist. In such a case the returned waypoint is a Null pointer!
+  if( getSelectedWaypoint() == static_cast<wayPoint *>(0) )
+    {
+      return;
+    }
+
+  if( ReachpointListView::getSelectedWaypoint()->equals(calculator->getselectedWp()) )
     {
       cmdSelect->setEnabled(false);
     }
@@ -390,18 +399,15 @@ void ReachpointListView::slot_Selected()
     }
 }
 
-
 /** Returns a pointer to the currently high lighted reachpoint. */
 wayPoint* ReachpointListView::getSelectedWaypoint()
 {
-  int i,n;
-  n =  calculator->getReachList()->getNumberSites();
+  int n =  calculator->getReachList()->getNumberSites();
   QTreeWidgetItem* li = list->currentItem();
 
-  // @ee may be null
   if (li)
     {
-      for (i=0; i < n; i++)
+      for( int i=0; i < n; i++ )
         {
           const ReachablePoint rp = calculator->getReachList()->getSite(i);
 
@@ -409,26 +415,25 @@ wayPoint* ReachpointListView::getSelectedWaypoint()
             {
               selectedWp = *(rp.getWaypoint());
               selectedWp.importance = wayPoint::Normal;  // set importance to normal
-
               return &selectedWp;
-              break;
             }
         }
     }
 
-  return 0;
+  return static_cast<wayPoint *>(0);
 }
-
 
 void ReachpointListView::slot_newList()
 {
-  if ( this->isVisible())
+  // qDebug( "ReachpointListView::slot_newList() is called" );
+
+  if ( this->isVisible() )
     {
       fillRpList();
-      _newList=false;
+      _newList = false;
     }
   else
     {
-      _newList=true;
+      _newList = true;
     }
 }

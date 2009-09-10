@@ -211,35 +211,35 @@ else
  */
 void SettingsPageAirfields::slot_filterChanged(const QString& text)
 {
-if (text.isEmpty())
-  {
-    // make widget home radius accessible, if filter string is empty
-    homeRadius->setEnabled(true);
-  }
-else
-  {
-    // make widget home radius not accessible, if filter string is defined
-    homeRadius->setEnabled(false);
-  }
+  if (text.isEmpty())
+    {
+      // make widget home radius accessible, if filter string is empty
+      homeRadius->setEnabled(true);
+    }
+  else
+    {
+      // make widget home radius not accessible, if filter string is defined
+      homeRadius->setEnabled(false);
+    }
 }
 
 /* Called to ask is confirmation on the close is needed. */
 void SettingsPageAirfields::slot_query_close(bool& warn, QStringList& warnings)
 {
-/* set warn to 'true' if the data has changed. Note that we can NOT
- just set warn equal to _changed, because that way we might erase a
- warning flag set by another page! */
+  /* set warn to 'true' if the data has changed. Note that we can NOT
+   just set warn equal to _changed, because that way we might erase a
+   warning flag set by another page! */
 
-bool changed = false;
+  bool changed = false;
 
-changed = changed || checkIsWelt2000Changed();
-changed = changed || checkIsListDisplayChanged();
+  changed = changed || checkIsWelt2000Changed();
+  changed = changed || checkIsListDisplayChanged();
 
-if (changed)
-  {
-    warn = true;
-    warnings.append(tr("the airfield settings"));
-  }
+  if (changed)
+    {
+      warn = true;
+      warnings.append(tr("the airfield settings"));
+    }
 }
 
 /**
@@ -247,24 +247,24 @@ if (changed)
  */
 bool SettingsPageAirfields::checkIsWelt2000Changed()
 {
-bool changed = false;
+  bool changed = false;
 
-GeneralConfig *conf = GeneralConfig::instance();
+  GeneralConfig *conf = GeneralConfig::instance();
 
-changed = changed || (conf->getWelt2000CountryFilter() != countryFilter->text());
-changed = changed || (conf->getWelt2000HomeRadius() != homeRadius->value());
+  changed = changed || (conf->getWelt2000CountryFilter() != countryFilter->text());
+  changed = changed || (conf->getWelt2000HomeRadius() != homeRadius->value());
 
-bool currentState = false;
+  bool currentState = false;
 
-if( loadOutlandings->checkState() == Qt::Checked )
-  {
-    currentState = true;
-  }
+  if( loadOutlandings->checkState() == Qt::Checked )
+    {
+      currentState = true;
+    }
 
-changed = changed || (conf->getWelt2000LoadOutlandings() != currentState);
+  changed = changed || (conf->getWelt2000LoadOutlandings() != currentState);
 
-// qDebug( "SettingsPageAirfields::checkIsWelt2000Changed(): %d", changed );
-return changed;
+  // qDebug( "SettingsPageAirfields::checkIsWelt2000Changed(): %d", changed );
+  return changed;
 }
 
 /**
@@ -272,13 +272,13 @@ return changed;
  */
 bool SettingsPageAirfields::checkIsListDisplayChanged()
 {
-bool changed = false;
-GeneralConfig *conf = GeneralConfig::instance();
+  bool changed = false;
+  GeneralConfig *conf = GeneralConfig::instance();
 
-changed = changed || (conf->getListDisplayPageSize() != pageSize->value());
-changed = changed || (conf->getListDisplayAFMargin() != afMargin->value());
-changed = changed || (conf->getListDisplayRPMargin() != rpMargin->value());
+  changed = changed || (conf->getListDisplayPageSize() != pageSize->value());
+  changed = changed || (conf->getListDisplayAFMargin() != afMargin->value());
+  changed = changed || (conf->getListDisplayRPMargin() != rpMargin->value());
 
-// qDebug( "SettingsPageAirfields::checkIsListDisplayChanged(): %d", changed );
-return changed;
+  // qDebug( "SettingsPageAirfields::checkIsListDisplayChanged(): %d", changed );
+  return changed;
 }

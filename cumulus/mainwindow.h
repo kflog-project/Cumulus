@@ -140,9 +140,9 @@ class MainWindow : public QMainWindow
      */
     void slotRememberWaypoint ();
     /**
-     * Navigates to the home site (only in manual mode)
+     * Navigates to the home site.
      */
-    void slotNavigateHome();
+    void slotNavigate2Home();
     /**
      * Exits Cumulus
      */
@@ -314,7 +314,7 @@ class MainWindow : public QMainWindow
     QAction* actionManualNavWPList;
     QAction* actionGpsNavUp;
     QAction* actionGpsNavDown;
-    QAction* actionGpsNavHome;
+    QAction* actionNav2Home;
     QAction* actionGpsNavWPList;
     QAction* actionGpsNavZoomIn;
     QAction* actionGpsNavZoomOut;

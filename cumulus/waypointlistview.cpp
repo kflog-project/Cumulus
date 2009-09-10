@@ -7,10 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Andre Somers
-**                   2008-2009 by Axel Pauli
+**                   2007-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -28,7 +28,9 @@
 #include "calculator.h"
 #include "mainwindow.h"
 
-WaypointListView::WaypointListView(QMainWindow *parent) : QWidget(parent)
+WaypointListView::WaypointListView( QMainWindow *parent ) :
+  QWidget(parent),
+  homeChanged( false )
 {
   setObjectName("WaypointListView");
   par = parent;
@@ -60,7 +62,7 @@ WaypointListView::WaypointListView(QMainWindow *parent) : QWidget(parent)
 
   editRow->addSpacing(10);
 
-  QPushButton *cmdHome = new QPushButton(this);
+  cmdHome = new QPushButton(this);
   cmdHome->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("home_new.png")) );
   cmdHome->setIconSize(QSize(26,26));
   editRow->addWidget(cmdHome);
@@ -106,7 +108,20 @@ WaypointListView::~WaypointListView()
 
 void WaypointListView::showEvent(QShowEvent *)
 {
-  // listw->listWidget()->setFocus();
+  // Show the home button only if we are not to fast in move to avoid
+  // wrong usage. The redefinition of the home position can trigger
+  // a reload of the airfield list.
+  if( calculator->moving() )
+    {
+      cmdHome->setVisible(false);
+    }
+  else
+    {
+      cmdHome->setVisible(true);
+    }
+
+  // Reset home changed
+  homeChanged = false;
 }
 
 
@@ -118,7 +133,7 @@ void WaypointListView::slot_Select()
   if ( w )
     {
       emit newWaypoint( w, true );
-      emit done();
+      slot_Close();
     }
 }
 
@@ -136,8 +151,18 @@ void WaypointListView::slot_Info()
 
 
 /** @ee This slot is called if the listview is closed without selecting */
-void WaypointListView::slot_Close ()
+void WaypointListView::slot_Close()
 {
+  qDebug("WaypointListView::slot_Close");
+
+  // Check, if we are in manual mode. In this case we do move the map to the
+  // new home position.
+  if( homeChanged == true && GpsNmea::gps->getConnected() == false)
+    {
+      emit gotoHomePosition();
+      homeChanged = false;
+    }
+
   emit done();
 }
 
@@ -156,7 +181,6 @@ void WaypointListView::slot_Selected()
     }
 }
 
-
 /** Called when a new waypoint needs to be made. */
 void WaypointListView::slot_newWP()
 {
@@ -170,31 +194,32 @@ void WaypointListView::slot_newWP()
   dlg->show();
 }
 
-
 /** Called when the selected waypoint needs must be opened in the editor */
 void WaypointListView::slot_editWP()
 {
   wayPoint *wp = getSelectedWaypoint();
 
-  if (wp) {
-    WpEditDialog *dlg = new WpEditDialog(this, wp);
-    dlg->setAttribute(Qt::WA_DeleteOnClose);
+  if (wp)
+    {
+      WpEditDialog *dlg = new WpEditDialog(this, wp);
+      dlg->setAttribute(Qt::WA_DeleteOnClose);
 
-    connect(dlg, SIGNAL(wpListChanged(wayPoint &)),
-            this, SLOT(slot_wpEdited(wayPoint &)));
+      connect(dlg, SIGNAL(wpListChanged(wayPoint &)), this,
+          SLOT(slot_wpEdited(wayPoint &)));
 
-    dlg->show();
-  }
+      dlg->show();
+    }
 }
-
 
 /** Called when the selected waypoint should be deleted from the catalog */
 void WaypointListView::slot_deleteWP()
 {
   wayPoint* wp = listw->getSelectedWaypoint();
 
-  if ( wp == 0 )
-    return;
+  if ( wp == static_cast<wayPoint *>(0) )
+    {
+      return;
+    }
 
   int answer= QMessageBox::question(this, tr("Delete"),
                                    tr("Delete selected waypoint?"),
@@ -215,7 +240,6 @@ void WaypointListView::slot_deleteWP()
   }
 }
 
-
 /** Called if a waypoint has been edited. */
 void WaypointListView::slot_wpEdited(wayPoint& wp)
 {
@@ -227,7 +251,6 @@ void WaypointListView::slot_wpEdited(wayPoint& wp)
       ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
     }
 }
-
 
 /** Called if a waypoint has been added. */
 void WaypointListView::slot_wpAdded(wayPoint& wp)
@@ -242,26 +265,32 @@ void WaypointListView::slot_wpAdded(wayPoint& wp)
     }
 }
 
-
+/** Called to set a new home position */
 void WaypointListView::slot_setHome()
 {
   wayPoint *_wp = listw->getSelectedWaypoint();
 
-  if ( _wp == 0 )
+  if ( _wp == static_cast<wayPoint *>(0) )
     {
       return;
     }
 
-  int answer = QMessageBox::question( this,tr("Set home site"),
-                                     tr("Use waypoint<br>%1<br>as your home site?").arg(_wp->name),
-                                     QMessageBox::No, QMessageBox::Yes );
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  if( conf->getHomeLat() == _wp->origP.lat() &&
+      conf->getHomeLon() == _wp->origP.lon() )
+    {
+      // no new coordinates, ignore request
+      return;
+    }
+
+  int answer= QMessageBox::question(this,
+                                   tr("Set home site"),
+                                   tr("Use point<br>%1<br>as your home site?").arg(_wp->name),
+                                   QMessageBox::No, QMessageBox::Yes );
   if( answer == QMessageBox::Yes )
     {
-    // Save new data as home position
-    GeneralConfig *conf = GeneralConfig::instance();
-    conf->setHomeWp(*_wp);
-    conf->save();
-
-    emit newHomePosition( _wp->origP );
-  }
+      emit newHomePosition( _wp->origP );
+      homeChanged = true;
+    }
 }

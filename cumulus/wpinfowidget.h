@@ -6,17 +6,18 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andr� Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-#ifndef WPINFOWIDGET_H
-#define WPINFOWIDGET_H
+#ifndef WP_INFO_WIDGET_H
+#define WP_INFO_WIDGET_H
 
 #include <QWidget>
 #include <QTimer>
@@ -29,8 +30,8 @@
 #include "tpinfowidget.h"
 
 /**
- * This widget provides a view to the details of a waypoint.
- * @author Andrè Somers
+ * This widget shows the details of a waypoint.
+ * @author André Somers
  */
 
 class MainWindow;
@@ -65,7 +66,6 @@ class WPInfoWidget : public QWidget
      */
     void slot_KeepOpen();
 
-
   signals: // Signals
 
     /**
@@ -82,6 +82,11 @@ class WPInfoWidget : public QWidget
      * Emitted if a new home position is selected
      */
     void newHomePosition(const QPoint&);
+
+    /**
+     * Emitted to move the map to the new home position
+     */
+    void gotoHomePosition();
 
   protected:
 
@@ -118,7 +123,7 @@ class WPInfoWidget : public QWidget
     /**
      * This slot is called if the Home button is clicked.
      */
-    void slot_setAsHome();
+    void slot_setNewHome();
 
     /**
      * This slot is called if the Select Waypoint button is clicked.
@@ -148,16 +153,16 @@ class WPInfoWidget : public QWidget
      */
     QLabel* text;
 
-    QHBoxLayout * buttonrow1;
-    QHBoxLayout * buttonrow2;
+    QHBoxLayout* buttonrow1;
+    QHBoxLayout* buttonrow2;
 
-    QPushButton * cmdClose;
-    QPushButton * cmdKeep;
-    QPushButton * cmdAddWaypoint;
-    QPushButton * cmdSetHome;
-    QPushButton * cmdSelectWaypoint;
-    QPushButton * cmdUnselectWaypoint;
-    QPushButton * cmdArrival;
+    QPushButton* cmdClose;
+    QPushButton* cmdKeep;
+    QPushButton* cmdAddWaypoint;
+    QPushButton* cmdHome;
+    QPushButton* cmdSelectWaypoint;
+    QPushButton* cmdUnselectWaypoint;
+    QPushButton* cmdArrival;
 
     QShortcut* scClose;
 
@@ -168,7 +173,7 @@ class WPInfoWidget : public QWidget
      * Reference to a timer. When this timer fires, the view
      * is returned to the previous one. This allow for a brief
      * display of data (i.e.: what is the frequency of my target
-     * field?) after wich the view is automatically returned to
+     * field?) after which the view is automatically returned to
      * the last one.
      */
     QTimer* timer;
@@ -185,8 +190,11 @@ class WPInfoWidget : public QWidget
     /** contains the ID of the last view (the view that called this one) */
     int _lastView;
 
-    /** contains a ref to the parent, the application */
+    /** contains a reference to the parent, the application */
     MainWindow *mainWindow;
+
+    /** that shall store a home position change */
+    bool homeChanged;
   };
 
 #endif

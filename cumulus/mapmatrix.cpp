@@ -6,11 +6,11 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2001 by Heiner Lamprecht
- **                   2008 by Axel Pauli
+ **   Copyright (c):  2001      by Heiner Lamprecht
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -19,8 +19,8 @@
 #include <cmath>
 
 #include <QtGlobal>
-#include <QMessageBox>
 
+#include "calculator.h"
 #include "mapcalc.h"
 #include "mapdefaults.h"
 #include "mapmatrix.h"
@@ -95,21 +95,26 @@ MapMatrix::MapMatrix(QObject* parent)
 
   GeneralConfig *conf = GeneralConfig::instance();
 
-  // save current map root directory to detect user changes during run-time
+  // get current map root directory to detect user changes during run-time
   mapRootDir = conf->getMapRootDir();
 
   int projectionType = conf->getMapProjectionType();
 
-  if( projectionType == ProjectionBase::Lambert ) {
-    // qDebug("MapMatrixConst: Lambert");
-    currentProjection = new ProjectionLambert(conf->getLambertParallel1(),
-                                              conf->getLambertParallel2(),
-                                              conf->getLambertOrign());
-  } else {
-    // qDebug("MapMatrixConst: Cylindric");
-    currentProjection = new ProjectionCylindric(conf->getCylinderParallel());
-  }
+  if (projectionType == ProjectionBase::Lambert)
+    {
+      // qDebug("MapMatrixConst: Lambert");
+      currentProjection = new ProjectionLambert( conf->getLambertParallel1(),
+                                                 conf->getLambertParallel2(),
+                                                 conf->getLambertOrign() );
+    }
+  else
+    {
+      // qDebug("MapMatrixConst: Cylindric");
+      currentProjection = new ProjectionCylindric( conf->getCylinderParallel() );
+    }
 
+  homeLat = conf->getHomeLat();
+  homeLon = conf->getHomeLon();
   __moveMap(Home);
 
 //  qDebug("Map matrix initialized ...");
@@ -211,7 +216,6 @@ bool MapMatrix::isVisible( const QRect& itemBorder, int typeID) const
             ( itemBorder.height()*8 > ( cScale  ) )) );
 }
 
-
 int MapMatrix::getScaleRange()  const
 {
   if(cScale <= scaleBorders[Border1])
@@ -224,24 +228,20 @@ int MapMatrix::getScaleRange()  const
     return Border3;
 }
 
-
 bool MapMatrix::isSwitchScale() const
 {
   return cScale <= scaleBorders[SwitchScale];
 }
-
 
 bool MapMatrix::isSwitchScale2() const
 {
   return cScale <= scaleBorders[SwitchScale]*4;
 }
 
-
 QPoint MapMatrix::getMapCenter(bool) const
 {
   return QPoint(mapCenterLat, mapCenterLon);
 }
-
 
 double MapMatrix::getScale(unsigned int type)
 {
@@ -255,11 +255,11 @@ double MapMatrix::getScale(unsigned int type)
   return 0.0;
 }
 
-
 void MapMatrix::centerToPoint(const QPoint& center)
 {
   bool result = true;
   QMatrix invertMatrix = worldMatrix.inverted(&result);
+
   if(!result)
     // Houston, we've got a problem !!!
     qFatal("Cumulus: Cannot invert worldMatrix! File=%s, Line=%d", __FILE__, __LINE__);
@@ -269,25 +269,21 @@ void MapMatrix::centerToPoint(const QPoint& center)
   mapCenterLon = projCenter.x();
 }
 
-
 void MapMatrix::centerToLatLon(const QPoint& center)
 {
   centerToLatLon(center.x(), center.y());
 }
-
 
 void MapMatrix::slotCenterTo(int latitude, int longitude)
 {
   centerToLatLon(latitude, longitude);
 }
 
-
 void MapMatrix::centerToLatLon(int latitude, int longitude)
 {
   mapCenterLat = latitude;
   mapCenterLon = longitude;
 }
-
 
 double MapMatrix::centerToRect(const QRect& center, const QSize& pS)
 {
@@ -320,18 +316,17 @@ double MapMatrix::centerToRect(const QRect& center, const QSize& pS)
   return cScale;
 }
 
-
 QPoint MapMatrix::mapToWgs(const QPoint& pos) const
 {
   bool result = true;
   QMatrix invertMatrix = worldMatrix.inverted(&result);
+
   if(!result)
     // Houston, we've got a problem !!!
     qFatal("Cumulus: Cannot invert worldMatrix! File=%s, Line=%d", __FILE__, __LINE__);
 
   return __mapToWgs(invertMatrix.map(pos));
 }
-
 
 void MapMatrix::__moveMap(int dir)
 {
@@ -370,7 +365,6 @@ void MapMatrix::__moveMap(int dir)
   }
 }
 
-
 void MapMatrix::createMatrix(const QSize& newSize)
 {
   const QPoint tempPoint(wgsToMap(mapCenterLat, mapCenterLon));
@@ -403,14 +397,15 @@ void MapMatrix::createMatrix(const QSize& newSize)
   // Setting the viewBorder
   bool result = true;
   QMatrix invertMatrix (worldMatrix.inverted(&result));
+
   if(!result)
     // Houston, wir haben ein Problem !!!
     qFatal("Cumulus: Cannot invert worldMatrix! File=%s, Line=%d", __FILE__, __LINE__);
 
   //
   // Die Berechnung der Kartengrenze funktioniert so nur auf der
-  // Nordhalbkugel. Auf der S�dhalbkugel stimmen die Werte nur
-  // n�herungsweise.
+  // Nordhalbkugel. Auf der Südhalbkugel stimmen die Werte nur
+  // näherungsweise.
   //
   QPoint tCenter  = __mapToWgs(invertMatrix.map(QPoint(newSize.width() / 2, 0)));
   QPoint tlCorner = __mapToWgs(invertMatrix.map(QPoint(0, 0)));
@@ -450,7 +445,6 @@ void MapMatrix::createMatrix(const QSize& newSize)
   emit displayMatrixValues(getScaleRange(), isSwitchScale());
 }
 
-
 void MapMatrix::slotSetScale(const double& nScale)
 {
   if (nScale <= 0)
@@ -463,31 +457,31 @@ void MapMatrix::slotSetScale(const double& nScale)
   qDebug("MapMatrix::slotSetScale(): Set new scale to %f ratio: %d ",cScale,_MaxScaleToCScaleRatio );
 }
 
-
 void MapMatrix::slotInitMatrix()
 {
   // qDebug("MapMatrix::slotInitMatrix() is called");
-
   GeneralConfig *conf = GeneralConfig::instance();
 
   // The scale is set to 0 in the constructor. Here we read the scale and
   // the map center only the first time. Otherwise the values would change
   // after configuring Cumulus.
 
-  if(cScale <= 0) {
-    // @ee we want to center to the last position !
-    mapCenterLat = conf->getCenterLat();
-    mapCenterLon = conf->getCenterLon();
+  if (cScale <= 0)
+    {
+      // @ee we want to center to the last position !
+      mapCenterLat = conf->getCenterLat();
+      mapCenterLon = conf->getCenterLon();
 
-    if ((mapCenterLat == 0) && (mapCenterLon == 0)) {
-      // ok, that point is not valid
-      qWarning("Center Latitude not valid");
-      mapCenterLat = conf->getHomeLat();
-      mapCenterLon = conf->getHomeLon();
+      if ((mapCenterLat == 0) && (mapCenterLon == 0))
+        {
+          // ok, that point is not valid
+          qWarning("Center Latitude not valid");
+          mapCenterLat = conf->getHomeLat();
+          mapCenterLon = conf->getHomeLon();
+        }
+
+      cScale = conf->getMapScale();
     }
-
-    cScale = conf->getMapScale();
-  }
 
   homeLat = conf->getHomeLat();
   homeLon = conf->getHomeLon();
@@ -496,22 +490,25 @@ void MapMatrix::slotInitMatrix()
 
   bool projChanged = newProjectionType != currentProjection->projectionType();
 
-  if (projChanged) {
-    delete currentProjection;
-    switch(newProjectionType) {
-    case ProjectionBase::Lambert:
-      currentProjection = new ProjectionLambert(conf->getLambertParallel1(),
-                                                conf->getLambertParallel2(),
-                                                conf->getLambertOrign());
-      qDebug ("Map projection changed to Lambert");
-      break;
-      //case ProjectionBase::Cylindric:
-    default:
-      // fallback is cylindrical
-      currentProjection = new ProjectionCylindric(conf->getCylinderParallel());
-      qDebug ("Map projection changed to Cylinder");
-      break;
-    }
+  if (projChanged)
+    {
+      delete currentProjection;
+      switch(newProjectionType)
+      {
+        case ProjectionBase::Lambert:
+          currentProjection = new ProjectionLambert(conf->getLambertParallel1(),
+                                                    conf->getLambertParallel2(),
+                                                    conf->getLambertOrign());
+          qDebug ("Map projection changed to Lambert");
+          break;
+
+        case ProjectionBase::Cylindric:
+        default:
+          // fallback is cylindrical
+          currentProjection = new ProjectionCylindric(conf->getCylinderParallel());
+          qDebug ("Map projection changed to Cylinder");
+          break;
+      }
   }
 
   scaleBorders[UpperLimit]  = conf->getMapUpperLimit();
@@ -526,42 +523,35 @@ void MapMatrix::slotInitMatrix()
 
   bool initChanged = false;
 
-  if (currentProjection->projectionType() == ProjectionBase::Lambert) {
-    initChanged = ((ProjectionLambert*)currentProjection)->initProjection( conf->getLambertParallel1(),
-                                                                           conf->getLambertParallel2(),
-                                                                           conf->getLambertOrign() );
-  }
-  else if (currentProjection->projectionType() == ProjectionBase::Cylindric) {
-    initChanged = ((ProjectionCylindric*)currentProjection)->initProjection( conf->getCylinderParallel() );
-  }
+  if (currentProjection->projectionType() == ProjectionBase::Lambert)
+    {
+      initChanged = ((ProjectionLambert*)currentProjection)->initProjection( conf->getLambertParallel1(),
+                                                                             conf->getLambertParallel2(),
+                                                                             conf->getLambertOrign() );
+    }
+  else if (currentProjection->projectionType() == ProjectionBase::Cylindric)
+    {
+      initChanged = ((ProjectionCylindric*)currentProjection)->initProjection( conf->getCylinderParallel() );
+    }
 
-  if( mapRootDir != conf->getMapRootDir() ) {
-    // The user has defined a new map root directory at run-time. We should take
-    // that as new source for map files and trigger a reload of all map files.
-    mapRootDir = conf->getMapRootDir();
-    initChanged = true;
-  }
+  if( mapRootDir != conf->getMapRootDir() )
+    {
+      // The user has defined a new map root directory at run-time. We should take
+      // that as new source for map files and trigger a reload of all map files.
+      mapRootDir = conf->getMapRootDir();
+      initChanged = true;
+    }
 
-  if( initChanged ) {
-    // qDebug ("Map init has detected a change");
-  }
+  if( initChanged )
+    {
+      // qDebug ("MapMatrix::slotInitMatrix has detected a change");
+    }
 
-  if( projChanged || initChanged ) {
-    // emit projectionChanged();
-    // @AP: Notice the user, that compiled maps must be removed and
-    // original maps be reinstalled if necessary
-
-    QMessageBox::warning( 0, "Cumulus",
-                          tr( "<html>"
-                              "<b>Map projection settings have been changed.</b><p>"
-                              "Please make sure that original *.kfl "
-                              "map files are available for recompiling!"
-                              "</html>" ) );
-
-    emit projectionChanged();
-  }
+  if( projChanged || initChanged )
+    {
+      emit projectionChanged();
+    }
 }
-
 
 double MapMatrix::ensureVisible(const QPoint& point)
 {
@@ -576,17 +566,18 @@ double MapMatrix::ensureVisible(const QPoint& point)
   //we obviously need the bigger of the two scales
   double newScale = qMax(xScale, yScale);
 
-  if (newScale <= MIN_SCALE) {  //we only zoom if we can fit it on the map with the minimum scale or more
-    newScale=qMax(newScale, MAX_SCALE); //maximum zoom is the minimum scale
-    cScale=newScale;
-
-    return cScale;
-  } else {
-    return 0;
-  }
-
+  if (newScale <= MIN_SCALE)
+    {
+      //we only zoom if we can fit it on the map with the minimum scale or more
+      newScale = qMax(newScale, MAX_SCALE); //maximum zoom is the minimum scale
+      cScale = newScale;
+      return cScale;
+    }
+  else
+    {
+      return 0;
+    }
 }
-
 
 /** This function returns an integer between 0 and 2.
  * 0 is returned if the map is zoomed in far enough to
@@ -599,11 +590,17 @@ unsigned int MapMatrix::currentDrawScale() const
   //these numbers need to be made configurable at some point.
 
   if (cScale <= 125)
-    return 0;
+    {
+      return 0;
+    }
   else if (cScale <= 200 )
-    return 1;
+    {
+      return 1;
+    }
   else
-    return 2;
+    {
+      return 2;
+    }
 }
 
 /**
@@ -622,13 +619,47 @@ bool MapMatrix::isWaypoint2Draw( wayPoint::Importance importance ) const
   return false;
 }
 
-
-/** set new home position */
+/**
+ * Sets a new home position and is called after a configuration change done
+ * by the user.
+ */
 void MapMatrix::slotSetNewHome(const QPoint& newHome)
 {
+  // qDebug( "MapMatrix::slotSetNewHome() is called" );
+
+  if( homeLat == newHome.x() && homeLon == newHome.y() )
+    {
+      return;
+    }
+
+  int oldHomeLat = homeLat;
+  int oldHomeLon = homeLon;
+
   homeLat = newHome.x();
   homeLon = newHome.y();
-  emit homePositionChanged();
+
+  // save new home position
+  GeneralConfig *conf = GeneralConfig::instance();
+  conf->setHomeCoord( newHome );
+
+  if( currentProjection->projectionType() == ProjectionBase::Cylindric &&
+      oldHomeLat != homeLat &&
+      conf->getMapProjectionFollowsHome() == true )
+    {
+      // Update parallel of cylinder projection
+      conf->setCylinderParallel( homeLat );
+
+      // update projection
+      slotInitMatrix();
+    }
+  else if( conf->getWelt2000CountryFilter() ==  "" )
+    {
+      // Welt2000 uses radius option around home position.
+      // Emit an update trigger.
+      emit homePositionChanged();
+    }
+
+  conf->save();
 }
 
 /*
@@ -657,7 +688,6 @@ QPolygon MapMatrix::map(const QPolygon &a) const
     }
     return p;
 }
-
 
 QPoint MapMatrix::map(const QPoint& p) const
 {

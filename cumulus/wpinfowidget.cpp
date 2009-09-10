@@ -16,6 +16,10 @@
  **
  ***********************************************************************/
 
+/**
+ * This widget shows the details of a waypoint.
+ */
+
 #include <cmath>
 #include <time.h>
 
@@ -27,7 +31,6 @@
 
 #include "mainwindow.h"
 #include "basemapelement.h"
-#include "airfield.h"
 #include "wpinfowidget.h"
 #include "generalconfig.h"
 #include "calculator.h"
@@ -35,9 +38,8 @@
 #include "mapcalc.h"
 #include "wgspoint.h"
 #include "altitude.h"
-#include "mapcontents.h"
-#include "waypointcatalog.h"
 #include "sonne.h"
+#include "gpsnmea.h"
 
 extern MapConfig    *_globalMapConfig;
 extern MapContents  *_globalMapContents;
@@ -51,6 +53,7 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
   _lastView = MainWindow::mapView;
   _wp.name = "";
   arrivalInfo = 0;
+  homeChanged = false;
 
   resize(parent->size());
 
@@ -79,11 +82,11 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
   connect(cmdAddWaypoint, SIGNAL(clicked()),
           this, SLOT(slot_addAsWaypoint()));
 
-  cmdSetHome = new QPushButton(tr("Home"), this);
-  cmdSetHome->setFont(bfont);
-  buttonrow2->addWidget(cmdSetHome);
-  connect(cmdSetHome, SIGNAL(clicked()),
-          this, SLOT(slot_setAsHome()));
+  cmdHome = new QPushButton(tr("Home"), this);
+  cmdHome->setFont(bfont);
+  buttonrow2->addWidget(cmdHome);
+  connect(cmdHome, SIGNAL(clicked()),
+          this, SLOT(slot_setNewHome()));
 
   cmdArrival = new QPushButton(tr("Arrival"), this);
   cmdArrival->setFont(bfont);
@@ -153,7 +156,6 @@ void WPInfoWidget::slot_timeout()
 bool WPInfoWidget::showWP(int lastView, const wayPoint& wp)
 {
   extern MapContents* _globalMapContents;
-  extern MapMatrix*   _globalMapMatrix;
 
   // save return view
   _lastView = lastView;
@@ -171,19 +173,23 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint& wp)
       cmdAddWaypoint->show();
     }
 
+  // Reset home changed
+  homeChanged = false;
+
   // check, if current home position is different from waypoint
-  QPoint home = _globalMapMatrix->getHomeCoord();
+  GeneralConfig *conf = GeneralConfig::instance();
+  QPoint home = conf->getHomeCoord();
 
   // Show the home button only if we are not to fast in move to avoid
   // wrong usage. The redefinition of the home position can trigger
   // a reload of the airfield list.
   if( home == wp.origP || calculator->moving() )
     {
-      cmdSetHome->hide();
+      cmdHome->hide();
     }
   else
     {
-      cmdSetHome->show();
+      cmdHome->show();
     }
 
   // Check if Waypoint is not selected, so make sure we can select it.
@@ -249,7 +255,7 @@ void WPInfoWidget::showEvent(QShowEvent *)
   resize(mainWindow->size());
 }
 
-/** This method actually fills the widget with the info. */
+/** This method actually fills the widget with the info to be displayed. */
 void WPInfoWidget::writeText()
 {
   if( _wp.name.isEmpty() )
@@ -425,7 +431,15 @@ void WPInfoWidget::slot_SwitchBack()
       _lastView = MainWindow::mapView;
     }
 
-  mainWindow->setView((MainWindow::appView)_lastView);
+  mainWindow->setView((MainWindow::appView) _lastView);
+
+  // Check, if we are in manual mode. In this case we do move the map to the
+  // new home position.
+  if( homeChanged == true && GpsNmea::gps->getConnected() == false )
+    {
+      emit gotoHomePosition();
+      homeChanged = false;
+    }
 }
 
 
@@ -466,7 +480,7 @@ void WPInfoWidget::slot_selectWaypoint()
 /** This slot is called if the Add Waypoint button is clicked. */
 void WPInfoWidget::slot_addAsWaypoint()
 {
-  _wp.importance=wayPoint::High; //importance is high
+  _wp.importance = wayPoint::High; //importance is high
   emit waypointAdded(_wp);
 
   cmdAddWaypoint->hide();
@@ -474,26 +488,25 @@ void WPInfoWidget::slot_addAsWaypoint()
 }
 
 
-/** This slot is called if the Home button is clicked. */
-void WPInfoWidget::slot_setAsHome()
+/**
+ *  This slot is called if the Home button is clicked. The change of the home
+ *  position can trigger a reload of many map data, if Welt2000 has radius
+ *  option set or option projection follows home is active.
+ */
+void WPInfoWidget::slot_setNewHome()
 {
   slot_KeepOpen(); // Stop timer
 
-  int answer= QMessageBox::question(this,tr("Set home site?"),
-                                   tr("<html><b>Do you want to use site<br>%1<br>as your new home site?</b></html>").arg(_wp.name),
-                                   QMessageBox::No,
-                                   QMessageBox::Yes );
-
+  int answer= QMessageBox::question(this,
+                                   tr("Set home site"),
+                                   tr("Use point<br>%1<br>as your home site?").arg(_wp.name),
+                                   QMessageBox::No, QMessageBox::Yes );
   if( answer == QMessageBox::Yes )
     {
-      // Save new data as home position
-      GeneralConfig *conf = GeneralConfig::instance();
-      conf->setHomeWp(_wp);
-      conf->save();
       emit newHomePosition( _wp.origP );
+      homeChanged = true;
+      cmdHome->hide();
     }
-
-  cmdSetHome->hide();
 }
 
 /**
