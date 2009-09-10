@@ -6,8 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002      by André Somers,
-**                   2008-2009 by Axel pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.

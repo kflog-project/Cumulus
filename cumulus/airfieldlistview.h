@@ -42,20 +42,22 @@ public:
     AirfieldListView( QVector<enum MapContents::MapContentsListID> &itemList,
                       QMainWindow *parent=0);
                       
-    ~AirfieldListView();
+    virtual ~AirfieldListView();
 
     /**
      * @returns a pointer to the currently high lighted waypoint.
      */
     wayPoint *getSelectedAirfield(QTreeWidget *list=0);
 
-    AirfieldListWidget* listWidget() {
-      return listw;
-    };
+    AirfieldListWidget* listWidget()
+      {
+        return listw;
+      };
 
-    wayPoint* getSelectedWaypoint() {
-      return listw->getSelectedWaypoint();
-    };
+    wayPoint* getSelectedWaypoint()
+      {
+        return listw->getSelectedWaypoint();
+      };
 
 private:
 
@@ -68,8 +70,6 @@ private:
 protected:
 
     void showEvent(QShowEvent *);
-
-private: // Private methods
 
 public slots: // Public slots
     /**
@@ -121,6 +121,15 @@ signals: // Signals
      */
     void newHomePosition(const QPoint&);
 
+    /**
+     * Emitted to move the map to the new home position
+     */
+    void gotoHomePosition();
+
+private:
+
+    /** that shall store a home position change */
+    bool homeChanged;
 };
 
 #endif

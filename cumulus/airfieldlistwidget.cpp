@@ -124,7 +124,7 @@ void AirfieldListWidget::fillWpList()
 /** Returns a pointer to the currently highlighted airfield. */
 wayPoint* AirfieldListWidget::getSelectedWaypoint()
 {
-//  qDebug("AirfieldListWidget::getSelectedWaypoint()");
+  // qDebug("AirfieldListWidget::getSelectedWaypoint()");
   QTreeWidgetItem* li = list->currentItem();
 
   if ( li == 0)

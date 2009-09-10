@@ -10,7 +10,7 @@
 **                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -24,9 +24,12 @@
 #include "generalconfig.h"
 #include "calculator.h"
 #include "airfield.h"
+#include "gpsnmea.h"
 
 AirfieldListView::AirfieldListView( QVector<enum MapContents::MapContentsListID> &itemList,
-                                    QMainWindow *parent ) : QWidget(parent)
+                                    QMainWindow *parent ) :
+                                    QWidget(parent),
+                                    homeChanged( false )
 {
   setObjectName("AirfieldListView");
 
@@ -79,7 +82,7 @@ AirfieldListView::~AirfieldListView()
 void AirfieldListView::showEvent(QShowEvent *)
 {
   // Show the home button only if we are not to fast in move to avoid
-  // wrong usage. The redefinition of the home position can trigger
+  // usage during flight. The redefinition of the home position will trigger
   // a reload of the airfield list.
   if( calculator->moving() )
     {
@@ -89,6 +92,9 @@ void AirfieldListView::showEvent(QShowEvent *)
     {
       cmdHome->setVisible(true);
     }
+
+  // Reset home changed
+  homeChanged = false;
 }
 
 /** This signal is called to indicate that a selection has been made. */
@@ -99,7 +105,7 @@ void AirfieldListView::slot_Select()
   if ( _wp )
     {
       emit newWaypoint( _wp, true );
-      emit done();
+      slot_Close();
     }
 }
 
@@ -119,7 +125,16 @@ void AirfieldListView::slot_Info()
 /** @ee This slot is called if the listview is closed without selecting */
 void AirfieldListView::slot_Close ()
 {
-  // qDebug("AirfieldListView::slot_Close");
+  qDebug("AirfieldListView::slot_Close");
+
+  // Check, if we are in manual mode. In this case we do move the map to the
+  // new home position.
+  if( homeChanged == true && GpsNmea::gps->getConnected() == false )
+    {
+      emit gotoHomePosition();
+      homeChanged = false;
+    }
+
   emit done();
 }
 
@@ -137,19 +152,22 @@ void AirfieldListView::slot_Selected()
     }
 }
 
+/** Called to set a new home position. The change of the home position can trigger
+ *  a reload of many map data, if Welt2000 has radius option set or option projection
+ *  follows home is active.
+ */
 void AirfieldListView::slot_Home()
 {
   wayPoint* _wp = listw->getSelectedWaypoint();
 
-  if ( _wp == 0 )
+  if ( _wp == static_cast<wayPoint *>(0) )
     {
       return;
     }
 
   GeneralConfig *conf = GeneralConfig::instance();
 
-  if( conf->getHomeLat() == _wp->origP.lat() &&
-      conf->getHomeLon() == _wp->origP.lon() )
+  if( conf->getHomeCoord() == _wp->origP )
     {
       // no new coordinates, ignore request
       return;
@@ -159,13 +177,10 @@ void AirfieldListView::slot_Home()
                                    tr("Set home site"),
                                    tr("Use point<br>%1<br>as your home site?").arg(_wp->name),
                                    QMessageBox::No, QMessageBox::Yes );
+
   if( answer == QMessageBox::Yes )
     {
-      // Save new data as home position
-      conf->setHomeLat(_wp->origP.lat());
-      conf->setHomeLon(_wp->origP.lon());
-      conf->save();
-
       emit newHomePosition( _wp->origP );
+      homeChanged = true;
     }
 }
