@@ -1035,9 +1035,10 @@ void Calculator::slot_settingsChanged ()
   // Switch on the internal variometer lift and wind calculation.
   // User could be changed the GPS device.
   _calculateVario = true;
-  _calculateVario = true;
-}
+  _calculateWind  = true;
 
+  slot_CheckHomeSiteSelection();
+}
 
 /** This slot is called by the NMEA interpreter if a new fix has been received.  */
 void Calculator::slot_newFix()
@@ -1046,7 +1047,7 @@ void Calculator::slot_newFix()
   // data we need for that. So, we wait for the second Fix.
   if (!_pastFirstFix)
     {
-      _pastFirstFix=true;
+      _pastFirstFix = true;
       return;
     }
 
@@ -1487,6 +1488,31 @@ void Calculator::setManualInFlight(bool switchOn)
   // immediately put glider into center if outside
   // we can only switch off if GPS data coming in
   emit switchManualInFlight();
+}
+
+/**
+ * Checks, if the a selected waypoint to the home site exists
+ * and if the home site has been changed. In this case the
+ * selection is renewed to the new position.
+ */
+void Calculator::slot_CheckHomeSiteSelection()
+{
+  // Check, if home position has been changed and the selected waypoint is
+  // the home position. In this case the home position selection must be
+  // renewed.
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  if( selectedWp && selectedWp->name == tr("Home") &&
+      selectedWp->origP != conf->getHomeCoord() )
+    {
+      wayPoint wp;
+
+      wp.name = tr("Home");
+      wp.description = tr("Home Site");
+      wp.origP.setPos( conf->getHomeCoord() );
+
+      slot_WaypointChange( &wp, true );
+    }
 }
 
 /**

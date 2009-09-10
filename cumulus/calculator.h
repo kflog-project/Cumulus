@@ -371,7 +371,15 @@ public:
       return false;
     };
 
-public slots: // Public slots
+public slots:
+
+    /**
+     * Checks, if the a selected waypoint to the home site exists
+     * and if the home site has been changed. In this case the
+     * selection is renewed to the new position.
+     */
+    void slot_CheckHomeSiteSelection();
+
     /**
      * Called if a new waypoint has been selected.
      */
