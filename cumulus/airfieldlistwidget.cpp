@@ -35,8 +35,6 @@ AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsLis
   setObjectName("AirfieldListWidget");
   list->setObjectName("AFTreeWidget");
 
-  wp = new wayPoint();
-
   this->itemList = itemList;
 
   // For outlandings we do display the comment instead of ICAO in the list view
@@ -55,8 +53,6 @@ AirfieldListWidget::~AirfieldListWidget()
     {
       list->takeTopLevelItem(0);
     }
-
-  delete wp;
 }
 
 /** Clears and refills the airfield item list, if the list is not empty. */
@@ -151,21 +147,21 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
 
   Airfield* site = apli->airport;
 
-  wp->name = site->getWPName();
-  wp->origP = site->getWGSPosition();
-  wp->elevation = site->getElevation();
-  wp->projP = site->getPosition();
-  wp->description = site->getName();
-  wp->type = site->getTypeID();
-  wp->elevation = site->getElevation();
-  wp->icao = site->getICAO();
-  wp->frequency = site->getFrequency().toDouble();
-  wp->runway = site->getRunway().direction;
-  wp->length = site->getRunway().length;
-  wp->surface = site->getRunway().surface;
-  wp->comment = site->getComment();
-  wp->isLandable = true;
-  return wp;
+  wp.name = site->getWPName();
+  wp.origP = site->getWGSPosition();
+  wp.elevation = site->getElevation();
+  wp.projP = site->getPosition();
+  wp.description = site->getName();
+  wp.type = site->getTypeID();
+  wp.elevation = site->getElevation();
+  wp.icao = site->getICAO();
+  wp.frequency = site->getFrequency().toDouble();
+  wp.runway = site->getRunway().direction;
+  wp.length = site->getRunway().length;
+  wp.surface = site->getRunway().surface;
+  wp.comment = site->getComment();
+  wp.isLandable = true;
+  return &wp;
 }
 
 AirfieldListWidget::_AirfieldItem::_AirfieldItem(Airfield* site):

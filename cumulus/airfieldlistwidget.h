@@ -16,8 +16,8 @@
 **
 ***********************************************************************/
 
-#ifndef AIRFIELD_LISTWIDGET_H
-#define AIRFIELD_LISTWIDGET_H
+#ifndef AIRFIELD_LIST_WIDGET_H
+#define AIRFIELD_LIST_WIDGET_H
 
 #include <QWidget>
 #include <QVector>
@@ -59,7 +59,7 @@ public:
 
 private:
 
-    wayPoint *wp;
+    wayPoint wp;
     QVector<enum MapContents::MapContentsListID> itemList;
 
 class _AirfieldItem : public QTreeWidgetItem
