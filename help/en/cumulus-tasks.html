@@ -20,29 +20,44 @@
 
 <h3 align="center">Tasks</h3>
 
-<p> Tasks are routes between waypoints which are handled as
-turnpoints here. They can be created and modified in the Pre-Flight
+<p>
+Tasks are routes between waypoints which are handled as turnpoints here.
+They can be created and modified in the Pre-Flight
 setting dialog under the <a href="cumulus-preflight-settings-task.html">tabulator task</a>.
 The task is drawn on the
 map using a turquoise line with clearly marked turnpoint sectors.
 The turnpoint sectors can be configured under
 <a href="cumulus-settings-sector.html">Cumulus Settings Sector</a>.
 Currently only <i>classic</i>
-tasks are supported. Support
-for newer task types, start lines, etc. will be added in a future
-version.</p>
+tasks are supported. Support for newer task types, start lines, etc. will
+be added in a future version.
+</p>
 
-<p>Tasks can be edited too
-with KFLog on the Linux desktop, where you can more easily maintain the
-list.
-ATM cumulus supports only one task file. This file is installed under
-your selected <span style="font-style: italic;">Data Directory.</span>
-As task file name must be used <i>tasks.tsk</i>. This is a
-hardcoded name. Please make only task file transfer when cumulus is not
-running.&nbsp; </p>
+<p>
+A task comprises at least four waypoints. That is also the minimum if you will
+fly a direct route. The used points have the following names in the display:
 
-<p>Press <i><b>T</b></i> to open the
-task list from the mapview.</p>
+<ul>
+  <li>Takeoff - take off place</li>
+  <li>Begin - here starts the task</li>
+  <li>Route - one or more route points, can be omitted for a direct route</li>
+  <li>End - here ends the task</li>
+  <li>Landing - landing place</li>
+</ul>
+
+<b>Note:</b> Takeoff and Begin also End and Landing can be the same points.
+If you will fly a direct route no route points have to be defined.
+</p>
+
+<p>Tasks can be edited too with KFLog on the Linux desktop, where you can more
+easily maintain the list.
+ATM Cumulus supports only one task file. This file is installed under
+your selected <i>Data Directory.</i>
+As task file name must be used <i>tasks.tsk</i>. This is a hard coded name.
+Please make only task file transfer between your desktop and
+your PDA when Cumulus is not running. Otherwise the results are undefined.</p>
+
+<p>Press <i><b>T</b></i> to open the task list from the mapview.</p>
 
 <table width="100%">
   <tbody>
