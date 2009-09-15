@@ -167,7 +167,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
         }
       else
       	{
-	  qDebug( "QHildonInputContext created" );
+          qDebug( "QHildonInputContext created" );
       	}
 
       qApp->setInputContext(hildonInputContext);
@@ -221,7 +221,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   resize( GeneralConfig::instance()->getWindowSize() );
 
   qWarning( "Cumulus, Release: %s, Build date:  %s based on Qt/X11 Version %s",
-            CU_VERSION,  __DATE__, QT_VERSION_STR );
+            CU_VERSION, __DATE__, QT_VERSION_STR );
 
   qDebug( "Desktop size is %dx%d, width=%d, height=%d",
           QApplication::desktop()->screenGeometry().width(),
@@ -242,7 +242,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   char *home = getenv( "HOME" );
   char *lang = getenv( "LANG" );
   char *ldpath = getenv( "LD_LIBRARY_PATH" );
-  char *qtdir = getenv( "QTDIR" );
   char *qwsdisplay = getenv( "DISPLAY" );
 
   qDebug( "PWD=%s", pwd ? pwd : "NULL" );
@@ -250,7 +249,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   qDebug( "HOME=%s", home ? home : "NULL" );
   qDebug( "LANG=%s", lang ? lang : "NULL" );
   qDebug( "LD_LIBRARY_PATH=%s", ldpath ? ldpath : "NULL" );
-  qDebug( "QTDIR=%s", qtdir ? qtdir : "NULL" );
   qDebug( "QDir::homePath()=%s", QDir::homePath().toLatin1().data() );
   qDebug( "DISPLAY=%s", qwsdisplay ? qwsdisplay : "NULL" );
 
@@ -291,11 +289,11 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
   // Here we do finish the base initialization and start a timer
   // to continue startup in another method. This is done, to get
-  // running the window manager event loop. Otherwise the behaviour
+  // running the window manager event loop. Otherwise the behavior
   // of some widgets is undefined.
 
   // when the timer expires the cumulus startup is continued
-  QTimer::singleShot(300, this, SLOT(slotCreateApplicationWidgets()));
+  QTimer::singleShot(400, this, SLOT(slotCreateApplicationWidgets()));
  }
 
 /** creates the application widgets after the base initialization
@@ -307,7 +305,7 @@ void MainWindow::slotCreateApplicationWidgets()
 
 #ifdef MAEMO
 
-  ossoContext = osso_initialize( "cumulus", CU_VERSION, false, 0 );
+  ossoContext = osso_initialize( "Cumulus", CU_VERSION, false, 0 );
 
   if( ! ossoContext )
     {
@@ -625,9 +623,9 @@ void MainWindow::slotCreateApplicationWidgets()
   if( ! GeneralConfig::instance()->getAirspaceWarningEnabled() )
     {
       int answer= QMessageBox::warning( this,tr("Airspace Warnings"),
-                                       tr("<html><b>Airspace warnings are disabled!<br>"
+                                        tr("<html><b>Airspace warnings are disabled!<br>"
                                            "Enable now?</b></html>"),
-                                       QMessageBox::Yes | QMessageBox::No );
+                                        QMessageBox::Yes | QMessageBox::No );
 
       if( answer == QMessageBox::Yes )
         {
