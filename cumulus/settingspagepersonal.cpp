@@ -25,7 +25,6 @@
 #include <QFileDialog>
 
 #include "generalconfig.h"
-#include "altitude.h"
 #include "settingspagepersonal.h"
 
 SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
@@ -148,7 +147,7 @@ bool SettingsPagePersonal::checkIsHomeLatitudeChanged()
 {
   bool changed = false;
 
-  if( edtHomeLat->isInputChanged() )
+  if (edtHomeLat->isInputChanged())
     {
       changed = true;
     }
@@ -169,6 +168,25 @@ bool SettingsPagePersonal::checkIsHomeLongitudeChanged()
 
   // qDebug( "SettingsPagePersonal::checkIsHomeLongitudeChanged(): %d", changed );
   return changed;
+}
+
+/** Called to ask is confirmation on the close is needed. */
+void SettingsPagePersonal::slot_query_close( bool& warn, QStringList& warnings )
+{
+  bool changed = false;
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  changed  = (edtName->text() != conf->getSurname());
+  changed |= (langBox->currentText() != conf->getLanguage());
+  changed |= checkIsHomePositionChanged();
+  changed |= (userDataDir->text() != conf->getUserDataDirectory());
+
+  if (changed)
+    {
+    // set warn to 'true' if the data has been changed.
+      warn = true;
+      warnings.append(tr("The Personal settings"));
+    }
 }
 
 /** Called to open the directory selection dialog */

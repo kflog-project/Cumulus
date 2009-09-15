@@ -22,6 +22,7 @@
 #include <QWidget>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QStringList>
 
 #include "coordedit.h"
 
@@ -30,8 +31,8 @@
  */
 
 class SettingsPagePersonal : public QWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
   public:
 
@@ -47,7 +48,7 @@ class SettingsPagePersonal : public QWidget
     /** Checks if the home longitude has been changed */
     bool checkIsHomeLongitudeChanged();
 
-  public slots: // Public slots
+  public slots:
 
     /** called to initiate saving to the configuration file */
     void slot_save();
@@ -55,7 +56,10 @@ class SettingsPagePersonal : public QWidget
     /** Called to initiate loading of the configuration file. */
     void slot_load();
 
-    private slots:
+    /** Called to ask is confirmation on the close is needed. */
+    void slot_query_close(bool& warn, QStringList& warnings);
+
+  private slots:
 
     /** called to open the directory selection dialog */
     void slot_openDirectoryDialog();
@@ -69,7 +73,6 @@ class SettingsPagePersonal : public QWidget
     LatEdit   *edtHomeLat;
     LongEdit  *edtHomeLong;
     QLineEdit *userDataDir;
-
-  };
+};
 
 #endif
