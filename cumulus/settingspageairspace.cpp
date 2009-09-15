@@ -654,7 +654,7 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   if (changed)
   {
     warn=true;
-    warnings.append(tr("the Airspace drawing settings"));
+    warnings.append(tr("The Airspace drawing settings"));
   }
 
   /*forward request to filling page */
@@ -960,7 +960,7 @@ void SettingsPageAirspaceFilling::slot_query_close(bool& warn, QStringList& warn
   if (changed)
     {
       warn=true;
-      warnings.append(tr("the Airspace filling settings"));
+      warnings.append(tr("The Airspace filling settings"));
     }
 }
 
@@ -1271,7 +1271,7 @@ void SettingsPageAirspaceWarnings::slot_query_close( bool& warn, QStringList& wa
   if (changed)
     {
       warn=true;
-      warnings.append(tr("the Airspace warning settings"));
+      warnings.append(tr("The Airspace warning settings"));
     }
 }
 

@@ -416,7 +416,7 @@ void WPInfoWidget::slot_SwitchBack()
   if( arrivalInfo )
     {
       // destroy the arrival widget, if exists
-      disconnect( arrivalInfo, SIGNAL(close() ));
+      disconnect( arrivalInfo, SIGNAL(close() ) );
       arrivalInfo->slot_Close();
       arrivalInfo = 0;
     }
@@ -431,7 +431,7 @@ void WPInfoWidget::slot_SwitchBack()
       _lastView = MainWindow::mapView;
     }
 
-  mainWindow->setView((MainWindow::appView) _lastView);
+  mainWindow->setView( (MainWindow::appView) _lastView );
 
   // Check, if we are in manual mode. In this case we do move the map to the
   // new home position.
@@ -447,7 +447,7 @@ void WPInfoWidget::slot_SwitchBack()
 void WPInfoWidget::slot_KeepOpen()
 {
   timer->stop();
-  cmdClose->setText(tr("Close"));
+  cmdClose->setText( tr( "Close" ) );
   cmdKeep->hide();
 }
 
@@ -499,7 +499,8 @@ void WPInfoWidget::slot_setNewHome()
 
   int answer= QMessageBox::question(this,
                                    tr("Set home site"),
-                                   tr("Use point<br>%1<br>as your home site?").arg(_wp.name),
+                                   tr("Use point<br><b>%1</b><br>as your home site?").arg(_wp.name) +
+                                   tr("<br>Change can take<br>a few seconds."),
                                    QMessageBox::No, QMessageBox::Yes );
   if( answer == QMessageBox::Yes )
     {

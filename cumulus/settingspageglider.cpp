@@ -147,7 +147,7 @@ void SettingsPageGlider::slot_query_close(bool& warn, QStringList& warnings)
     _changed, because that way we might erase a warning flag set by another page! */
   if (list->has_changed()) {
     warn = true;
-    warnings.append(tr("the glider list"));
+    warnings.append(tr("The Glider list"));
   }
 }
 

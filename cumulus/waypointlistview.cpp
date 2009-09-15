@@ -21,6 +21,7 @@
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QToolTip>
 
 #include "waypointlistview.h"
 #include "generalconfig.h"
@@ -39,64 +40,68 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
 
   // set the list widget on top
   listw = new WaypointListWidget( this );
-  topLayout->addWidget(listw, 0, 0);
+  topLayout->addWidget( listw, 0, 0 );
 
   // create a vertical command button row and put it at the right widget side
-  QVBoxLayout  *editRow = new QVBoxLayout;
+  QVBoxLayout *editRow = new QVBoxLayout;
   editRow->addStretch( 10 );
 
-  QPushButton *cmdNew = new QPushButton(this);
-  cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
-  cmdNew->setIconSize(QSize(26,26));
-  editRow->addWidget(cmdNew);
+  QPushButton *cmdNew = new QPushButton( this );
+  cmdNew->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "add.png" ) ) );
+  cmdNew->setIconSize( QSize( 26, 26 ) );
+  cmdNew->setToolTip( tr( "Add a new waypoint" ) );
+  editRow->addWidget( cmdNew );
 
-  QPushButton *cmdEdit = new QPushButton(this);
-  cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
-  cmdEdit->setIconSize(QSize(26,26));
-  editRow->addWidget(cmdEdit);
+  QPushButton *cmdEdit = new QPushButton( this );
+  cmdEdit->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "edit_new.png" ) ) );
+  cmdEdit->setIconSize( QSize( 26, 26 ) );
+  cmdEdit->setToolTip( tr( "Edit selected waypoint" ) );
+  editRow->addWidget( cmdEdit );
 
-  QPushButton *cmdDel = new QPushButton(this);
-  cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png")) );
-  cmdDel->setIconSize(QSize(26,26));
-  editRow->addWidget(cmdDel);
+  QPushButton *cmdDel = new QPushButton( this );
+  cmdDel->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "delete.png" ) ) );
+  cmdDel->setIconSize( QSize( 26, 26 ) );
+  cmdDel->setToolTip( tr( "Delete selected waypoint" ) );
+  editRow->addWidget( cmdDel );
 
-  editRow->addSpacing(10);
+  editRow->addSpacing( 10 );
 
-  cmdHome = new QPushButton(this);
-  cmdHome->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("home_new.png")) );
-  cmdHome->setIconSize(QSize(26,26));
-  editRow->addWidget(cmdHome);
+  cmdHome = new QPushButton( this );
+  cmdHome->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home_new.png" ) ) );
+  cmdHome->setIconSize( QSize( 26, 26 ) );
+  cmdHome->setToolTip( tr( "Set home site to selected waypoint" ) );
+  editRow->addWidget( cmdHome );
 
   editRow->addStretch( 10 );
-  topLayout->addLayout(editRow, 0, 1);
+  topLayout->addLayout( editRow, 0, 1 );
 
   // create a horizontal command button row and put it at the bottom of the widget
   QHBoxLayout *buttonRow = new QHBoxLayout;
-  QPushButton *cmdClose = new QPushButton(tr("Close"), this);
-  buttonRow->addWidget(cmdClose);
+  QPushButton *cmdClose = new QPushButton( tr( "Close" ), this );
+  buttonRow->addWidget( cmdClose );
 
-  QPushButton *cmdInfo = new QPushButton(tr("Info"), this);
-  buttonRow->addWidget(cmdInfo);
+  QPushButton *cmdInfo = new QPushButton( tr( "Info" ), this );
+  buttonRow->addWidget( cmdInfo );
 
-  cmdSelect = new QPushButton(tr("Select"), this);
-  buttonRow->addWidget(cmdSelect);
+  cmdSelect = new QPushButton( tr( "Select" ), this );
+  buttonRow->addWidget( cmdSelect );
 
   topLayout->addLayout( buttonRow, 1, 0, 1, 2 );
 
-  connect(cmdNew, SIGNAL(clicked()), this, SLOT(slot_newWP()));
-  connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slot_editWP()));
-  connect(cmdDel, SIGNAL(clicked()), this, SLOT(slot_deleteWP()));
-  connect(cmdHome, SIGNAL(clicked()), this, SLOT(slot_setHome()));
-  connect(cmdSelect, SIGNAL(clicked()), this, SLOT(slot_Select()));
-  connect(cmdInfo, SIGNAL(clicked()), this, SLOT(slot_Info()));
-  connect(cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()));
-  connect(listw, SIGNAL(wpSelectionChanged()), this, SLOT(slot_Selected()));
-  connect(this, SIGNAL(done()), listw, SLOT(slot_Done()));
+  connect( cmdNew, SIGNAL(clicked()), this, SLOT(slot_newWP()) );
+  connect( cmdEdit, SIGNAL(clicked()), this, SLOT(slot_editWP()) );
+  connect( cmdDel, SIGNAL(clicked()), this, SLOT(slot_deleteWP()) );
+  connect( cmdHome, SIGNAL(clicked()), this, SLOT(slot_setHome()) );
+  connect( cmdSelect, SIGNAL(clicked()), this, SLOT(slot_Select()) );
+  connect( cmdInfo, SIGNAL(clicked()), this, SLOT(slot_Info()) );
+  connect( cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()) );
+  connect( listw, SIGNAL(wpSelectionChanged()), this, SLOT(slot_Selected()) );
+  connect( this, SIGNAL(done()), listw, SLOT(slot_Done()) );
 
   // activate keyboard shortcut Return as select
   QShortcut* scSelect = new QShortcut( this );
   scSelect->setKey( Qt::Key_Return );
-  connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
+  connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ) );
 }
 
 
@@ -143,40 +148,39 @@ void WaypointListView::slot_Info()
 {
   wayPoint *w = listw->getSelectedWaypoint();
 
-  if (w)
+  if( w )
     {
-      emit info(w);
+      emit info( w );
     }
 }
-
 
 /** @ee This slot is called if the listview is closed without selecting */
 void WaypointListView::slot_Close()
 {
-  qDebug("WaypointListView::slot_Close");
+  // That will switch back to the map view. This must be done first to ensure
+  // that the home position change does work.
+  emit done();
 
   // Check, if we are in manual mode. In this case we do move the map to the
   // new home position.
-  if( homeChanged == true && GpsNmea::gps->getConnected() == false)
+  if( homeChanged == true && GpsNmea::gps->getConnected() == false )
     {
       emit gotoHomePosition();
       homeChanged = false;
     }
-
-  emit done();
 }
 
 void WaypointListView::slot_Selected()
 {
-  cmdSelect->setEnabled(true);
+  cmdSelect->setEnabled( true );
 
   wayPoint *w = listw->getSelectedWaypoint();
 
-  if (w)
+  if( w )
     {
-      if(w->equals(calculator->getselectedWp()))
+      if( w->equals( calculator->getselectedWp() ) )
         {
-          cmdSelect->setEnabled(false);
+          cmdSelect->setEnabled( false );
         }
     }
 }
@@ -184,12 +188,12 @@ void WaypointListView::slot_Selected()
 /** Called when a new waypoint needs to be made. */
 void WaypointListView::slot_newWP()
 {
-  WpEditDialog *dlg = new WpEditDialog(this, 0);
+  WpEditDialog *dlg = new WpEditDialog( this, 0 );
 
-  dlg->setAttribute(Qt::WA_DeleteOnClose);
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
 
-  connect(dlg, SIGNAL(wpListChanged(wayPoint &)),
-          this, SLOT(slot_wpAdded(wayPoint &)));
+  connect( dlg, SIGNAL(wpListChanged(wayPoint &)), this,
+           SLOT(slot_wpAdded(wayPoint &)) );
 
   dlg->show();
 }
@@ -199,13 +203,13 @@ void WaypointListView::slot_editWP()
 {
   wayPoint *wp = getSelectedWaypoint();
 
-  if (wp)
+  if( wp )
     {
-      WpEditDialog *dlg = new WpEditDialog(this, wp);
-      dlg->setAttribute(Qt::WA_DeleteOnClose);
+      WpEditDialog *dlg = new WpEditDialog( this, wp );
+      dlg->setAttribute( Qt::WA_DeleteOnClose );
 
-      connect(dlg, SIGNAL(wpListChanged(wayPoint &)), this,
-          SLOT(slot_wpEdited(wayPoint &)));
+      connect( dlg, SIGNAL(wpListChanged(wayPoint &)), this,
+               SLOT(slot_wpEdited(wayPoint &)) );
 
       dlg->show();
     }
@@ -225,30 +229,31 @@ void WaypointListView::slot_deleteWP()
                                    tr("Delete selected waypoint?"),
                                    QMessageBox::No, QMessageBox::Yes);
 
-  if( answer == QMessageBox::Yes ) {
+  if( answer == QMessageBox::Yes )
+    {
+      // @AP: Important! First announce deletion of waypoint for cancel
+      //      to have a valid instance.
+      emit deleteWaypoint( wp );
 
-    // @AP: Important! First announce deletion of waypoint for cancel to have a valid instance.
-    emit deleteWaypoint(wp);
+      // Second delete selected waypoint
+      listw->deleteSelectedWaypoint();
 
-    // Second delete selected waypoint
-    listw->deleteSelectedWaypoint();
-
-    if (par)
-      {
-        ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
-      }
-  }
+      if( par )
+        {
+          ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw( Map::waypoints );
+        }
+    }
 }
 
 /** Called if a waypoint has been edited. */
 void WaypointListView::slot_wpEdited(wayPoint& wp)
 {
-//  qDebug("WaypointListView::slot_wpEdited");
+  //  qDebug("WaypointListView::slot_wpEdited");
   listw->updateSelectedWaypoint( wp );
 
-  if (par)
+  if( par )
     {
-      ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
+      ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw( Map::waypoints );
     }
 }
 
@@ -256,12 +261,11 @@ void WaypointListView::slot_wpEdited(wayPoint& wp)
 void WaypointListView::slot_wpAdded(wayPoint& wp)
 {
   // qDebug("WaypointListView::slot_wpAdded(): name=%s", wp->name.toLatin1().data());
+  listw->addWaypoint( wp );
 
-  listw->addWaypoint(wp);
-
-  if (par)
+  if( par )
     {
-      ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw(Map::waypoints);
+      ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw( Map::waypoints );
     }
 }
 
@@ -270,15 +274,15 @@ void WaypointListView::slot_setHome()
 {
   wayPoint *_wp = listw->getSelectedWaypoint();
 
-  if ( _wp == static_cast<wayPoint *>(0) )
+  if( _wp == static_cast<wayPoint *> ( 0 ) )
     {
       return;
     }
 
   GeneralConfig *conf = GeneralConfig::instance();
 
-  if( conf->getHomeLat() == _wp->origP.lat() &&
-      conf->getHomeLon() == _wp->origP.lon() )
+  if( conf->getHomeLat() == _wp->origP.lat() && conf->getHomeLon()
+      == _wp->origP.lon() )
     {
       // no new coordinates, ignore request
       return;
@@ -286,8 +290,10 @@ void WaypointListView::slot_setHome()
 
   int answer= QMessageBox::question(this,
                                    tr("Set home site"),
-                                   tr("Use point<br>%1<br>as your home site?").arg(_wp->name),
+                                   tr("Use point<br><b>%1</b><br>as your home site?").arg(_wp->name) +
+                                   tr("<br>Change can take<br>a few seconds."),
                                    QMessageBox::No, QMessageBox::Yes );
+
   if( answer == QMessageBox::Yes )
     {
       emit newHomePosition( _wp->origP );

@@ -238,7 +238,7 @@ void SettingsPageAirfields::slot_query_close(bool& warn, QStringList& warnings)
   if (changed)
     {
       warn = true;
-      warnings.append(tr("the airfield settings"));
+      warnings.append(tr("The Airfield settings"));
     }
 }
 

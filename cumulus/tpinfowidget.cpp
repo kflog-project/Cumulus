@@ -558,7 +558,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
     {
       int time2Target = (int) rint(distance2Target.getMeters() / gs);
 
-      qDebug("time2Target=%d", time2Target);
+      //qDebug("time2Target=%d", time2Target);
 
       QTime qtime(0,0);
       qtime = qtime.addSecs(time2Target);

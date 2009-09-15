@@ -13,6 +13,10 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[+] 2009-09-15 AP: Warning message added in Personal settings page, if configuration
+                   has been changed and was not saved.
+[-] 2009-09-15 AP: BUGFIX: Memory leak in class ListViewFilter fixed. The items
+                   of the widget tree were never freed in class destructor.
 [-] 2009-09-10 AP: BUGFIX: Core dump fixed caused by ReachableListView due to
                    Null pointer usage.
 [o] 2009-09-04 AP: Shortcut key H action changed. This shortcut now navigates

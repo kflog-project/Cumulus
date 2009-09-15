@@ -381,6 +381,7 @@ void SettingsPageTerrainColors::slot_load()
 {
   // nothing to do atm
 }
+
 /**
  * Called to ask is confirmation on the close is needed.
  */

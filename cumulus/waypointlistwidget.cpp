@@ -43,6 +43,8 @@ WaypointListWidget::~WaypointListWidget()
     {
       list->takeTopLevelItem(0);
     }
+
+  filter->clear();
 }
 
 /** Clears and refills the waypoint item list. */

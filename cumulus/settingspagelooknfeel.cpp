@@ -181,7 +181,7 @@ void SettingsPageLookNFeel::slot_query_close( bool& warn, QStringList& warnings 
   if (changed)
     {
       warn=true;
-      warnings.append(tr("Look&Feel settings"));
+      warnings.append(tr("The Look&Feel settings"));
     }
 }
 

@@ -16,8 +16,8 @@
 **
 ***********************************************************************/
 
-#ifndef WAYPOINT_LISTWIDGET_H
-#define WAYPOINT_LISTWIDGET_H
+#ifndef WAYPOINT_LIST_WIDGET_H
+#define WAYPOINT_LIST_WIDGET_H
 
 #include <QWidget>
 
@@ -33,9 +33,10 @@ class WaypointListWidget : public WpListWidgetParent
     Q_OBJECT
 
 public:
+
     WaypointListWidget(QWidget *parent=0);
 
-    ~WaypointListWidget();
+    virtual ~WaypointListWidget();
 
     /**
      * @returns a pointer to the currently highlighted waypoint.
@@ -72,11 +73,11 @@ public:
 private: // Private methods
 
 class _WaypointItem : public QTreeWidgetItem
-    {
+  {
     public:
         _WaypointItem(wayPoint&);
         wayPoint &wp;
-    };
+  };
 };
 
 #endif

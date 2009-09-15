@@ -40,10 +40,11 @@
 
 class WpListWidgetParent : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
-public:
-    WpListWidgetParent(QWidget *parent=0);
+  public:
+
+    WpListWidgetParent(QWidget *parent = 0);
 
     virtual ~WpListWidgetParent();
 
@@ -67,7 +68,10 @@ public:
     /**
      * @returns a pointer to the "list" widget
      */
-    QTreeWidget* listWidget() { return list; };
+    QTreeWidget* listWidget()
+    {
+      return list;
+    };
 
     /**
      * aligns the columns to their contents
@@ -79,36 +83,39 @@ public:
       list->resizeColumnToContents(2);
     };
 
-public slots: // Public slots
+  public slots:
+    // Public slots
 
     /**
      * Called from parent when closing
      */
     void slot_Done();
 
-signals: // Signals
+  signals: // Signals
 
     /**
      * This signal is emitted if the list selection has changed.
      */
     void wpSelectionChanged();
 
-protected:
-    void showEvent(QShowEvent *);
+  protected:
+
+    void
+    showEvent(QShowEvent *);
     QTreeWidget* list;
-    ListViewFilter * filter;
+    ListViewFilter* filter;
     bool listFilled;
 
-private:
+  private:
+
     RowDelegate* rowDelegate;
 
-private slots:
+  private slots:
 
     /**
      * Called from tree widget when an entry is tapped on.
      */
     void slot_listItemClicked(QTreeWidgetItem*, int);
-
 };
 
 #endif

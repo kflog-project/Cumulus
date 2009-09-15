@@ -65,10 +65,10 @@ WpListWidgetParent::WpListWidgetParent(QWidget *parent) : QWidget(parent)
   listFilled = false;
 }
 
-
 WpListWidgetParent::~WpListWidgetParent()
 {
   // qDebug("WpListWidgetParent::~WpListWidgetParent()");
+  delete filter;
 }
 
 void WpListWidgetParent::showEvent(QShowEvent *)
@@ -95,7 +95,6 @@ void WpListWidgetParent::configRowHeight()
       list->setItemDelegate( rowDelegate );
     }
 }
-
 
 /** This slot is called from parent when closing */
 void WpListWidgetParent::slot_Done ()
