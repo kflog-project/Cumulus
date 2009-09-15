@@ -36,62 +36,62 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   QWidget(parent), loadConfig(true)
 {
   // qDebug("ConfigWidget: height=%d, width=%d", parent->height(), parent->width());
-  setObjectName("ConfigWidget");
+  setObjectName( "ConfigWidget" );
   setAttribute( Qt::WA_DeleteOnClose );
-  setWindowTitle("General Settings");
+  setWindowTitle( "General Settings" );
 
-  QTabWidget* tabWidget = new QTabWidget(this);
+  QTabWidget* tabWidget = new QTabWidget( this );
 
-  spp=new SettingsPagePersonal(this);
-  tabWidget->addTab(spp, tr("Personal"));
+  spp = new SettingsPagePersonal( this );
+  tabWidget->addTab( spp, tr( "Personal" ) );
 
-  spg=new SettingsPageGPS(this);
-  tabWidget->addTab(spg, tr("GPS"));
+  spg = new SettingsPageGPS( this );
+  tabWidget->addTab( spg, tr( "GPS" ) );
 
-  spgl=new SettingsPageGlider(this);
-  tabWidget->addTab(spgl, tr("Gliders"));
+  spgl = new SettingsPageGlider( this );
+  tabWidget->addTab( spgl, tr( "Gliders" ) );
 
-  spms=new SettingsPageMapSettings(this);
-  tabWidget->addTab(spms, tr("Map Settings"));
+  spms = new SettingsPageMapSettings( this );
+  tabWidget->addTab( spms, tr( "Map Settings" ) );
 
-  spmo=new SettingsPageMapObjects(this);
-  tabWidget->addTab(spmo, tr("Map Objects"));
+  spmo = new SettingsPageMapObjects( this );
+  tabWidget->addTab( spmo, tr( "Map Objects" ) );
 
-  sptc=new SettingsPageTerrainColors(this);
-  tabWidget->addTab(sptc, tr("Terrain Colors"));
+  sptc = new SettingsPageTerrainColors( this );
+  tabWidget->addTab( sptc, tr( "Terrain Colors" ) );
 
-  QScrollArea* sectorArea = new QScrollArea(tabWidget);
-  sectorArea->setWidgetResizable(true);
-  sectorArea->setFrameStyle(QFrame::NoFrame);
+  QScrollArea* sectorArea = new QScrollArea( tabWidget );
+  sectorArea->setWidgetResizable( true );
+  sectorArea->setFrameStyle( QFrame::NoFrame );
 
-  sps=new SettingsPageSector(this);
-  sectorArea->setWidget(sps);
-  tabWidget->addTab(sectorArea, tr("Sector"));
+  sps = new SettingsPageSector( this );
+  sectorArea->setWidget( sps );
+  tabWidget->addTab( sectorArea, tr( "Sector" ) );
 
-  QScrollArea* afArea = new QScrollArea(tabWidget);
-  afArea->setWidgetResizable(true);
-  afArea->setFrameStyle(QFrame::NoFrame);
+  QScrollArea* afArea = new QScrollArea( tabWidget );
+  afArea->setWidgetResizable( true );
+  afArea->setFrameStyle( QFrame::NoFrame );
 
-  spaf=new SettingsPageAirfields(this);
-  afArea->setWidget(spaf);
-  tabWidget->addTab(afArea, tr("Airfields"));
+  spaf = new SettingsPageAirfields( this );
+  afArea->setWidget( spaf );
+  tabWidget->addTab( afArea, tr( "Airfields" ) );
 
-  spa=new SettingsPageAirspace(this);
-  tabWidget->addTab(spa, tr("Airspaces"));
+  spa = new SettingsPageAirspace( this );
+  tabWidget->addTab( spa, tr( "Airspaces" ) );
 
-  spu=new SettingsPageUnits(this);
-  tabWidget->addTab(spu, tr("Units"));
+  spu = new SettingsPageUnits( this );
+  tabWidget->addTab( spu, tr( "Units" ) );
 
-  QScrollArea* infoArea = new QScrollArea(tabWidget);
-  infoArea->setWidgetResizable(true);
-  infoArea->setFrameStyle(QFrame::NoFrame);
+  QScrollArea* infoArea = new QScrollArea( tabWidget );
+  infoArea->setWidgetResizable( true );
+  infoArea->setFrameStyle( QFrame::NoFrame );
 
-  spi=new SettingsPageInformation(this);
-  infoArea->setWidget(spi);
-  tabWidget->addTab(infoArea, tr("Information"));
+  spi = new SettingsPageInformation( this );
+  infoArea->setWidget( spi );
+  tabWidget->addTab( infoArea, tr( "Information" ) );
 
-  splnf=new SettingsPageLookNFeel(this);
-  tabWidget->addTab(splnf, tr("Look&&Feel"));
+  splnf = new SettingsPageLookNFeel( this );
+  tabWidget->addTab( splnf, tr( "Look&&Feel" ) );
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
@@ -146,6 +146,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   connect(this, SIGNAL(save()), sptc, SLOT(slot_save()));
 
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
+          spp, SLOT(slot_query_close(bool&, QStringList&)));
+
+  connect(this, SIGNAL(query_close(bool&, QStringList& )),
           spgl, SLOT(slot_query_close(bool&, QStringList&)));
 
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
@@ -172,13 +175,13 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
           _globalMapConfig, SLOT(slotReloadAirspaceColors()));
 
   QHBoxLayout *contentLayout = new QHBoxLayout;
-  contentLayout->addWidget(tabWidget);
-  contentLayout->addLayout(buttonBox);
+  contentLayout->addWidget( tabWidget );
+  contentLayout->addLayout( buttonBox );
 
-  setLayout(contentLayout);
+  setLayout( contentLayout );
 
   slot_LoadCurrent();
-  tabWidget->setCurrentWidget(spp);
+  tabWidget->setCurrentWidget( spp );
 }
 
 ConfigWidget::~ConfigWidget()
@@ -236,7 +239,7 @@ void ConfigWidget::accept()
     {
       QMessageBox::warning( this, "Cumulus",
                             tr( "<html>"
-                                "<b>Configuration settings have been changed.</b><p>"
+                                "<b>Configuration settings have been changed!</b><p>"
                                 "Update of system can take a few seconds!"
                                 "</html>" ) );
     }
@@ -278,24 +281,16 @@ void ConfigWidget::reject()
   QString pagelist;
   QString separator;
 
-  if (need_warning)
+  if( need_warning )
     {
-      for (int i=0; i<changed_pages.count(); i++)
+      for( int i = 0; i < changed_pages.count(); i++ )
         {
-          if (i==changed_pages.count()-1)
-            {
-              separator=".";
-            }
-          else
-            {
-              separator=",";
-            }
-          pagelist+=QString("<li>%1%2</li>").arg(changed_pages[i]).arg(separator);
+          pagelist += QString("<li>%1</li>").arg(changed_pages[i]);
         }
 
       int answer=QMessageBox::warning(this,
-                                      tr("Close without saving"),
-                                      tr("<html>You have changed:<b>%1</b>Discard changes?</html>").arg(pagelist),
+                                      tr("Close without saving!"),
+                                      tr("<html>You have changed:<b><ul>%1</ul></b>Discard changes?</html>").arg(pagelist),
                                       QMessageBox::Discard,
                                       QMessageBox::Save);
 
