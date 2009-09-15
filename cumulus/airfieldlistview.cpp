@@ -116,7 +116,7 @@ void AirfieldListView::slot_Info()
 
   wayPoint *_wp = listw->getSelectedWaypoint();
 
-  if ( _wp )
+  if( _wp )
     {
       emit info( _wp );
     }
@@ -125,7 +125,10 @@ void AirfieldListView::slot_Info()
 /** @ee This slot is called if the listview is closed without selecting */
 void AirfieldListView::slot_Close ()
 {
-  qDebug("AirfieldListView::slot_Close");
+  // That will switch back to the map view. This must be done first to ensure
+  // that the home position change does work.
+  emit
+  done();
 
   // Check, if we are in manual mode. In this case we do move the map to the
   // new home position.
@@ -134,8 +137,6 @@ void AirfieldListView::slot_Close ()
       emit gotoHomePosition();
       homeChanged = false;
     }
-
-  emit done();
 }
 
 void AirfieldListView::slot_Selected()
@@ -160,7 +161,7 @@ void AirfieldListView::slot_Home()
 {
   wayPoint* _wp = listw->getSelectedWaypoint();
 
-  if ( _wp == static_cast<wayPoint *>(0) )
+  if( _wp == static_cast<wayPoint *> ( 0 ) )
     {
       return;
     }
@@ -175,7 +176,8 @@ void AirfieldListView::slot_Home()
 
   int answer= QMessageBox::question(this,
                                    tr("Set home site"),
-                                   tr("Use point<br>%1<br>as your home site?").arg(_wp->name),
+                                   tr("Use point<br><b>%1</b><br>as your home site?").arg(_wp->name) +
+                                   tr("<br>Change can take<br>a few seconds."),
                                    QMessageBox::No, QMessageBox::Yes );
 
   if( answer == QMessageBox::Yes )
