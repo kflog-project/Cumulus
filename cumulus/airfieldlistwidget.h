@@ -40,7 +40,7 @@ public:
     AirfieldListWidget( QVector<enum MapContents::MapContentsListID> &itemList,
                         QWidget *parent=0);
 
-    ~AirfieldListWidget();
+    virtual ~AirfieldListWidget();
 
     /**
      * @returns a pointer to the currently highlighted waypoint.
@@ -63,11 +63,11 @@ private:
     QVector<enum MapContents::MapContentsListID> itemList;
 
 class _AirfieldItem : public QTreeWidgetItem
-    {
+  {
     public:
-        _AirfieldItem(Airfield*);
-        Airfield* airport;
-    };
+      _AirfieldItem(Airfield*);
+      Airfield* airport;
+  };
 };
 
 #endif
