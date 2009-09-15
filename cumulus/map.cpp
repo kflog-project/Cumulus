@@ -495,27 +495,26 @@ void Map::mousePressEvent(QMouseEvent* event)
     }
 }
 
-
-void Map::mouseReleaseEvent(QMouseEvent* event)
+void
+Map::mouseReleaseEvent( QMouseEvent* event )
 {
   // qDebug("Map::mouseReleaseEvent():");
-
   if( mutex() )
     {
       // qDebug("Map::mouseReleaseEvent(): mutex is locked, returning");
       return;
     }
 
-  switch (event->button())
+  switch( event->button() )
     {
     case Qt::LeftButton:
       // __displayAirspaceInfo(event->pos());
       break;
+
     default:
       break;
     }
 }
-
 
 void Map::paintEvent(QPaintEvent* event)
 {
@@ -563,7 +562,7 @@ void Map::slotNewWind()
 }
 
 
-void Map::__drawAirspaces(bool reset)
+void Map::__drawAirspaces( bool reset )
 {
   QPainter cuAeroMapP;
 
@@ -587,7 +586,23 @@ void Map::__drawAirspaces(bool reset)
   AltitudeCollection alt      = calculator->getAltitudeCollection();
   QPoint pos                  = calculator->getlastPosition();
 
-  qreal airspaceOpacity = 100.0; // no transparency
+  qreal airspaceOpacity;
+
+  if( fillAirspace == true )
+    {
+      airspaceOpacity = 0.0; // full transparency in fill mode
+
+      if( airspaceRegionList.size() == 0 )
+        {
+          // The airspace region list can be cleared by the reloading procedure,
+          // if the projection has been changed. So setup a new list in such a case.
+          reset = true;
+        }
+    }
+  else
+    {
+      airspaceOpacity = 100.0; // no transparency
+    }
 
   uint forcedMinimumCeil = (uint) rint(settings->getForceAirspaceDrawingDistance().getMeters() +
                                    calculator->getlastAltitude().getMeters());
@@ -602,7 +617,7 @@ void Map::__drawAirspaces(bool reset)
       if( !settings->getAirspaceDrawingEnabled( currentAirS->getTypeID() ) )
         {
           //currentAirS->drawRegion(&cuAeroMapP, false);
-          if (forcedDrawing && currentAirS->getLowerL() <= forcedMinimumCeil)
+          if( forcedDrawing && currentAirS->getLowerL() <= forcedMinimumCeil )
             {
               //draw anyway, because it's getting close...
             }
@@ -618,12 +633,12 @@ void Map::__drawAirspaces(bool reset)
           continue;
         }
 
-      if( reset )
+      if( reset == true )
         {
-          // we have to create a new region for that airspace and put
+          // We have to create a new region for that airspace and put
           // it in the airspace region list.
-          region = new AirRegion( currentAirS->createRegion(), currentAirS ) ;
-          airspaceRegionList.append(region);
+          region = new AirRegion( currentAirS->createRegion(), currentAirS );
+          airspaceRegionList.append( region );
         }
       else
         {
@@ -631,7 +646,7 @@ void Map::__drawAirspaces(bool reset)
           region = currentAirS->getAirRegion();
         }
 
-      if( region && fillAirspace )
+      if( region )
         {
           // determine lateral conflict
           Airspace::ConflictType lConflict = region->conflicts( pos, awd );
@@ -643,17 +658,17 @@ void Map::__drawAirspaces(bool reset)
             {
               // We are inside from the lateral position out,
               // vertical conflict has priority.
-              airspaceOpacity = (qreal) settings->getAirspaceFillingVertical(vConflict);
+              airspaceOpacity = (qreal) settings->getAirspaceFillingVertical( vConflict );
             }
           else
             {
               // We are not inside from the lateral position out,
               // lateral conflict has priority.
-              airspaceOpacity = (qreal) settings->getAirspaceFillingLateral(lConflict);
+              airspaceOpacity = (qreal) settings->getAirspaceFillingLateral( lConflict );
             }
         }
 
-      currentAirS->drawRegion(&cuAeroMapP, this->rect(), airspaceOpacity );
+      currentAirS->drawRegion( &cuAeroMapP, this->rect(), airspaceOpacity );
     }
 
   cuAeroMapP.end();
@@ -825,7 +840,6 @@ void Map::__drawTrail()
   p.end();
 }
 
-
 void Map::setDrawing(bool isEnable)
 {
   if (_isEnable != isEnable)
@@ -835,7 +849,6 @@ void Map::setDrawing(bool isEnable)
       _isEnable = isEnable;
     }
 }
-
 
 void Map::resizeEvent(QResizeEvent* event)
 {
@@ -866,6 +879,9 @@ void Map::__redrawMap(mapLayer fromLayer)
   // First call after creation of object can pass
   if( ! isVisible() && ! first )
     {
+      // schedule requested layer
+      m_scheduledFromLayer = qMin(m_scheduledFromLayer, fromLayer);
+
       // AP: ignore draw request when the window is hidden or not
       // visible to give the user all power of the device for interactions
       return;
@@ -1793,19 +1809,19 @@ void Map::slotPosition(const QPoint& newPos, const int source)
       return;
     }
 
-  if(source == Calculator::GPS)
+  if( source == Calculator::GPS )
     {
-      if (curGPSPos!=newPos)
+      if( curGPSPos != newPos )
         {
-          curGPSPos=newPos;
+          curGPSPos = newPos;
 
-          if(!calculator->isManualInFlight())
+          if( !calculator->isManualInFlight() )
             {
               // let cross be at the GPS position so that if we switch to manual mode
               // show up at the same location
               curMANPos = curGPSPos;
 
-              if( !_globalMapMatrix->isInCenterArea(newPos) )
+              if( !_globalMapMatrix->isInCenterArea( newPos ) )
                 {
                   // qDebug("Map::slot_position:scheduleRedraw()");
                   // this is the slow redraw
@@ -1814,30 +1830,30 @@ void Map::slotPosition(const QPoint& newPos, const int source)
               else
                 {
                   // this is the faster redraw
-                  __redrawMap(informationLayer);
+                  __redrawMap( informationLayer );
                 }
             }
           else
             {
               // if we are in manual mode, the real center is the cross, not the glider
-              __redrawMap(informationLayer);
+              __redrawMap( informationLayer );
             }
         }
     }
   else
     { // source is CuCalc::MAN
-      if (curMANPos!=newPos)
+      if( curMANPos != newPos )
         {
-          curMANPos=newPos;
+          curMANPos = newPos;
 
-          if( !_globalMapMatrix->isInCenterArea(newPos) || mutex() )
+          if( !_globalMapMatrix->isInCenterArea( newPos ) || mutex() )
             {
               // qDebug("Map::slot_position:scheduleRedraw()");
               scheduleRedraw();
             }
           else
             {
-              __redrawMap(informationLayer);
+              __redrawMap( informationLayer );
             }
         }
     }
