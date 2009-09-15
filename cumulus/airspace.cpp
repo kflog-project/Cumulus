@@ -155,10 +155,6 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
   // Draw the outline of the airspace with the selected brush
   targetP->drawPolygon(tP);
 
-  /*#warning: FIXME: we should change to use the plain pointarray
-    (projPointArray), so our precision isn't depending on the current
-    scale */
-
   return;
 }
 
