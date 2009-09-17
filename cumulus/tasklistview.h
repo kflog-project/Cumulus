@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Andr� Somers, 2008 Axel Pauli
+**   Copyright (c):  2004      by André Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -19,8 +20,8 @@
 **
 ***********************************************************************/
 
-#ifndef TASKLISTVIEW_H
-#define TASKLISTVIEW_H
+#ifndef TASK_LIST_VIEW_H
+#define TASK_LIST_VIEW_H
 
 #include <QWidget>
 #include <QTreeWidget>
@@ -37,7 +38,7 @@ class MainWindow;
 
 /**
  * Presents a view that holds a list of the waypoints in the currently selected task.
- * @author Andr� Somers
+ * @author André Somers
  */
 class TaskListView : public QWidget
 {
