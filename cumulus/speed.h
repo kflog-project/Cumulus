@@ -2,7 +2,8 @@
                           speed.h  -  description
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by Andre Somers, 2007 Axel Pauli
+    copyright            : 2002      by Andre Somers
+                         : 2007-2009 by Axel Pauli
     email                : axel@kflog.org
 
     This file is part of Cumulus
@@ -49,13 +50,14 @@ class Speed
 
 public:
     /**
-     * The speedUnit enum lists the units that apply to speed.
+     * The speed unit enumeration lists the units that apply to speed.
      */
-    enum speedUnit{
+    enum speedUnit
+    {
         metersPerSecond=0,   /**< meters per second */
         kilometersPerHour=1, /**< kilometers per hour */
         knots=2,             /**< knots (nautical miles per hour) */
-        milesPerHour=3,      /**< imperial miles per hour */
+        milesPerHour=3,      /**< statute miles per hour */
         feetPerMinute=4        /**< feet per minute */
     };
 
@@ -67,7 +69,7 @@ public:
     /**
      * Constructor
      *
-     * Sets the speed to Mps meters per second.
+     * Sets the speed to meters per second.
      */
     Speed(double Mps);
 
@@ -92,17 +94,17 @@ public:
     double getMps() const;
 
     /**
-     * Get speed in Nautical Miles per hour
+     * Get speed in statute miles per hour
      */
     double getMph() const;
 
     /**
-     * Get speed in Nautical Miles per hour
+     * Get speed in Feed per minute
      */
     double getFpm() const;
 
     /**
-     * Set speed in Nautical miles per hour
+     * Set speed in statute miles per hour
      */
     void setMph(double speed);
 
@@ -129,32 +131,74 @@ public:
     /**
      * Set speed in selected horizontal unit.
      */
-    void setHorizontalValue(double speed);
+    void setHorizontalValue(double speed)
+    {
+      setValueInUnit(speed, _horizontalUnit);
+    };
 
     /**
      * Set speed in selected vertical unit.
      */
-    void setVerticalValue(double speed);
+    void setVerticalValue(double speed)
+    {
+      setValueInUnit(speed, _verticalUnit);
+    };
+
+    /**
+     * Set speed in selected wind unit.
+     */
+    void setWindValue(double speed)
+    {
+      setValueInUnit(speed, _windUnit);
+    };
 
     /**
      * set the horizontal unit
      */
-    static void setHorizontalUnit(speedUnit unit);
+    static void setHorizontalUnit(speedUnit unit)
+    {
+      _horizontalUnit=unit;
+    };
 
     /**
      * set the vertical unit
      */
-    static void setVerticalUnit(speedUnit unit);
+    static void setVerticalUnit(speedUnit unit)
+    {
+      _verticalUnit=unit;
+    };
+
+    /**
+     * set the wind unit
+     */
+    static void setWindUnit(speedUnit unit)
+    {
+      _windUnit=unit;
+    };
 
     /**
      * get the horizontal unit
      */
-    static speedUnit getHorizontalUnit();
+    static speedUnit getHorizontalUnit()
+    {
+      return _horizontalUnit;;
+    };
 
     /**
      * get the vertical unit
      */
-    static speedUnit getVerticalUnit();
+    static speedUnit getVerticalUnit()
+    {
+      return _verticalUnit;
+    };
+
+    /**
+     * get the wind unit
+     */
+    static speedUnit getWindUnit()
+    {
+      return _windUnit;
+    }
 
     /**
      * Returns a formatted string for the default vertical speed units.
@@ -164,7 +208,7 @@ public:
      * @param prec set to the number of digits after the decimal point you
      *    want in the string
      */
-    QString getVerticalText(bool withUnit=true, uint prec=1)const;
+    QString getVerticalText(bool withUnit=true, uint prec=1) const;
 
     /**
      * Returns a formatted string for the default horizontal speed units.
@@ -174,7 +218,17 @@ public:
      * @param prec set to the number of digits after the decimal point you
      *    want in the string
      */
-    QString getHorizontalText(bool withUnit=true, uint prec=1)const;
+    QString getHorizontalText(bool withUnit=true, uint prec=1) const;
+
+    /**
+     * Returns a formatted string for the default wind speed units.
+     * The string includes the value and optionally the unit.
+     * @param withUnit set to true (default) to have the returned string
+     *    include the unit, false otherwise
+     * @param prec set to the number of digits after the decimal point you
+     *    want in the string
+     */
+    QString getWindText(bool withUnit=true, uint prec=1) const;
 
     /**
      * @returns a string for the unit requested. This string only represents
@@ -188,25 +242,46 @@ public:
      *    the unit, not the value.
      * @param unit the type of unit you want the string for.
      */
-    static QString getHorizontalUnitText();
-    static QString getVerticalUnitText();
+    static QString getHorizontalUnitText()
+    {
+      return getUnitText( _horizontalUnit );
+    };
+
+    static QString getVerticalUnitText()
+    {
+      return getUnitText( _verticalUnit );
+    };
+
+    static QString getWindUnitText()
+    {
+      return getUnitText( _windUnit );
+    };
 
     /**
      * Get the value for the vertical speed in the currently active unit.
      * @returns the current speed value
      */
-    inline double getVerticalValue() const
+    double getVerticalValue() const
     {
-        return getValueInUnit(_verticalUnit);
+       return getValueInUnit(_verticalUnit);
     };
 
     /**
      * Get the value for the horizontal speed in the currently active unit.
      * @returns the current speed value
      */
-    inline double getHorizontalValue() const
+    double getHorizontalValue() const
     {
-        return getValueInUnit(_horizontalUnit);
+      return getValueInUnit(_horizontalUnit);
+    };
+
+    /**
+     * Get the value for the wind speed in the currently active unit.
+     * @returns the current speed value
+     */
+    double getWindValue() const
+    {
+      return getValueInUnit(_windUnit);
     };
 
     /**
@@ -296,6 +371,11 @@ protected:
      * Contains the unit used for vertical speeds
      */
     static speedUnit _verticalUnit;
+
+    /**
+     * Contains the unit used for wind speeds
+     */
+    static speedUnit _windUnit;
 
     /**
      * called if the value has been changed. Can be overridden in derived classes
