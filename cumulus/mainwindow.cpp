@@ -1822,6 +1822,7 @@ void MainWindow::slotReadconfig()
   Distance::setUnit( Distance::distanceUnit( conf->getUnitDist() ) );
   Speed::setHorizontalUnit( Speed::speedUnit( conf->getUnitSpeed() ) );
   Speed::setVerticalUnit( Speed::speedUnit( conf->getUnitVario() ) );
+  Speed::setWindUnit( Speed::speedUnit( conf->getUnitWind() ) );
   Altitude::setUnit( Altitude::altitude( conf->getUnitAlt() ) );
   WGSPoint::setFormat( WGSPoint::Format( conf->getUnitPos() ) );
   Time::setUnit( Time::timeUnit( conf->getUnitTime() ) );

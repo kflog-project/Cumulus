@@ -653,7 +653,8 @@ void MapView::slot_Vario (const Speed& vario)
 void MapView::slot_Wind(Vector& wind)
 {
   QString w;
-  w = QString("%1/" + wind.getSpeed().getHorizontalText(false,0) ).arg( wind.getAngleDeg() );
+
+  w = QString("%1/" + wind.getSpeed().getWindText(false, 0) ).arg( wind.getAngleDeg() );
   _wind->setValue (w);
   _theMap->slotNewWind();
 }
