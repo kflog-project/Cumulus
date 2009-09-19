@@ -16,11 +16,12 @@
 **
 ***********************************************************************/
 
-#ifndef SETTINGS_PAGEUNITS_H
-#define SETTINGS_PAGEUNITS_H
+#ifndef SETTINGS_PAGE_UNITS_H
+#define SETTINGS_PAGE_UNITS_H
 
 #include <QWidget>
 #include <QComboBox>
+#include <QStringList>
 
 /**
  * This class represents the Units settings page
@@ -32,47 +33,46 @@ class SettingsPageUnits : public QWidget
 
 public:
 
-    SettingsPageUnits(QWidget *parent=0);
-    ~SettingsPageUnits();
+  SettingsPageUnits(QWidget *parent=0);
+  ~SettingsPageUnits();
 
 public slots: // Public slots
-    /**
-     * Called to initiate loading of the configurationfile
-     */
-    void slot_load();
+  /**
+   * Called to initiate loading of the configuration file
+   */
+  void slot_load();
 
-    /**
-     * called to initiate saving to the configurationfile.
-     */
-    void slot_save();
+  /**
+   * called to initiate saving to the configuration file.
+   */
+  void slot_save();
+
+  /** Called to ask is confirmation on the close is needed. */
+  void slot_query_close(bool& warn, QStringList& warnings);
 
 private:
-    /**
-     * This function returns the location of the value in the array.
-     */
-    int searchItem(int * p, int value, int max);
+  /**
+   * This function returns the location of the value in the array.
+   */
+  int searchItem(int* p, int value, int max);
 
-    QComboBox *UnitAlt;
-    QComboBox *UnitSpeed;
-    QComboBox *UnitDistance;
-    QComboBox *UnitVario;
-    QComboBox *UnitWind;
-    QComboBox *UnitPosition;
-    QComboBox *UnitTime;
+  QComboBox *UnitAlt;
+  QComboBox *UnitSpeed;
+  QComboBox *UnitDistance;
+  QComboBox *UnitVario;
+  QComboBox *UnitWind;
+  QComboBox *UnitPosition;
+  QComboBox *UnitTime;
 
-    // we use seven arrays to store mappings of item locations in the combo boxes
-    // to the enumeration values of the units they do represent
-    int altitudes[2];
-    int speeds[4];
-    int distances[3];
-    int varios[3];
-    int winds[5];
-    int positions[2];
-    int times[2];
-
-private slots:
-
-    void  slotUnitChanged();
+  // we use seven arrays to store mappings of item locations in the combo boxes
+  // to the enumeration values of the units they do represent
+  int altitudes[2];
+  int speeds[4];
+  int distances[3];
+  int varios[3];
+  int winds[5];
+  int positions[2];
+  int times[2];
 };
 
 #endif

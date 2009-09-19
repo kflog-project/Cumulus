@@ -359,6 +359,15 @@ void GeneralConfig::load()
   _unitPos   = value( "Position", WGSPoint::DMS ).toInt();
   _unitTime  = value( "Time",     Time::utc ).toInt();
   endGroup();
+
+  // configure static units
+  Altitude::setUnit( Altitude::altitude( getUnitAlt() ) );
+  Distance::setUnit( Distance::distanceUnit( getUnitDist() ) );
+  Speed::setHorizontalUnit( Speed::speedUnit( getUnitSpeed() ) );
+  Speed::setVerticalUnit( Speed::speedUnit( getUnitVario() ) );
+  Speed::setWindUnit( Speed::speedUnit( getUnitWind() ) );
+  Time::setUnit( Time::timeUnit( getUnitTime() ) );
+  WGSPoint::setFormat( WGSPoint::Format( getUnitPos() ) );
 }
 
 void GeneralConfig::save()

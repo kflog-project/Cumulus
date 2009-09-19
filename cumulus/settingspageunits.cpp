@@ -124,23 +124,8 @@ SettingsPageUnits::SettingsPageUnits(QWidget *parent) : QWidget(parent)
   times[0] = Time::utc;
   times[1] = Time::local;
 
-  topLayout->setRowStretch(row++,10);
-  topLayout->setColumnStretch( 2, 10 );
-
-  connect (UnitAlt, SIGNAL(activated(int)),
-           this, SLOT(slotUnitChanged()));
-  connect (UnitDistance, SIGNAL(activated(int)),
-           this, SLOT(slotUnitChanged()));
-  connect (UnitSpeed, SIGNAL(activated(int)),
-           this, SLOT(slotUnitChanged()));
-  connect (UnitVario, SIGNAL(activated(int)),
-           this, SLOT(slotUnitChanged()));
-  connect (UnitWind, SIGNAL(activated(int)),
-           this, SLOT(slotUnitChanged()));
-  connect (UnitPosition, SIGNAL(activated(int)),
-           this, SLOT(slotUnitChanged()));
-  connect (UnitTime, SIGNAL(activated(int)),
-           this, SLOT(slotUnitChanged()));
+  topLayout->setRowStretch(row++, 10);
+  topLayout->setColumnStretch(2, 10);
 }
 
 SettingsPageUnits::~SettingsPageUnits()
@@ -158,24 +143,13 @@ void SettingsPageUnits::slot_load()
   UnitWind->setCurrentIndex(searchItem(winds, conf->getUnitWind(), UnitWind->count()));
   UnitPosition->setCurrentIndex(searchItem(positions, conf->getUnitPos(), UnitPosition->count()));
   UnitTime->setCurrentIndex(searchItem(times, conf->getUnitTime(), UnitTime->count()));
-
-  // set the static units for distances, speeds, altitudes... A signal that these (may) have
-  //changed is emitted by the container, ConfigWidget
-  Distance::setUnit(Distance::distanceUnit(distances[UnitDistance->currentIndex()]));
-  Speed::setHorizontalUnit(Speed::speedUnit(speeds[UnitSpeed->currentIndex()]));
-  Speed::setVerticalUnit(Speed::speedUnit(varios[UnitVario->currentIndex()]));
-  Speed::setWindUnit(Speed::speedUnit(winds[UnitWind->currentIndex()]));
-  Altitude::setUnit(Altitude::altitude(altitudes[UnitAlt->currentIndex()]));
-  WGSPoint::setFormat(WGSPoint::Format(positions[UnitPosition->currentIndex()]));
-  Time::setUnit(Time::timeUnit(times[UnitTime->currentIndex()]));
 }
-
 
 /** called to initiate saving to the configuration file. */
 void SettingsPageUnits::slot_save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
-  // set the entries
+  // save the entries
   conf->setUnitAlt( altitudes[UnitAlt->currentIndex()] );
   conf->setUnitSpeed( speeds[UnitSpeed->currentIndex()] );
   conf->setUnitDist( distances[UnitDistance->currentIndex()] );
@@ -184,8 +158,8 @@ void SettingsPageUnits::slot_save()
   conf->setUnitPos( positions[UnitPosition->currentIndex()] );
   conf->setUnitTime( times[UnitTime->currentIndex()] );
 
-  //set the static units for distances, speeds and altitudes. A signal that these (may) have
-  //changed is emitted by the container, ConfigWidget
+  // Set the static units. A signal that these (may) have changed is emitted
+  // by the container, ConfigWidget
   Distance::setUnit(Distance::distanceUnit(distances[UnitDistance->currentIndex()]));
   Speed::setHorizontalUnit(Speed::speedUnit(speeds[UnitSpeed->currentIndex()]));
   Speed::setVerticalUnit(Speed::speedUnit(varios[UnitVario->currentIndex()]));
@@ -212,16 +186,24 @@ int SettingsPageUnits::searchItem(int * p, int value, int max)
   return 0;
 }
 
-/** this slot is called when an unit has been changed, to make sure this unit
- *  is in effect immediately.
- */
-void SettingsPageUnits::slotUnitChanged()
+/** Called to ask is confirmation on the close is needed. */
+void SettingsPageUnits::slot_query_close(bool& warn, QStringList& warnings)
 {
-  Distance::setUnit(Distance::distanceUnit(distances[UnitDistance->currentIndex()]));
-  Speed::setHorizontalUnit(Speed::speedUnit(speeds[UnitSpeed->currentIndex()]));
-  Speed::setVerticalUnit(Speed::speedUnit(varios[UnitVario->currentIndex()]));
-  Speed::setWindUnit(Speed::speedUnit(winds[UnitWind->currentIndex()]));
-  Altitude::setUnit(Altitude::altitude(altitudes[UnitAlt->currentIndex()]));
-  WGSPoint::setFormat(WGSPoint::Format(positions[UnitPosition->currentIndex()]));
-  Time::setUnit(Time::timeUnit(times[UnitTime->currentIndex()]));
+  bool changed = false;
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  changed  = conf->getUnitAlt()   != UnitAlt->currentIndex();
+  changed |= conf->getUnitSpeed() != UnitSpeed->currentIndex();
+  changed |= conf->getUnitDist()  != UnitDistance->currentIndex();
+  changed |= conf->getUnitVario() != UnitVario->currentIndex();
+  changed |= conf->getUnitWind()  != UnitWind->currentIndex();
+  changed |= conf->getUnitPos()   != UnitPosition->currentIndex();
+  changed |= conf->getUnitTime()  != UnitTime->currentIndex();
+
+  if (changed)
+    {
+    // set warn to 'true' if the data has been changed.
+      warn = true;
+      warnings.append(tr("The Unit settings"));
+    }
 }

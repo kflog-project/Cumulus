@@ -1816,17 +1816,6 @@ void MainWindow::slotReadconfig()
 {
   // qDebug("MainWindow::slotReadconfig()");
 
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  // configure units
-  Distance::setUnit( Distance::distanceUnit( conf->getUnitDist() ) );
-  Speed::setHorizontalUnit( Speed::speedUnit( conf->getUnitSpeed() ) );
-  Speed::setVerticalUnit( Speed::speedUnit( conf->getUnitVario() ) );
-  Speed::setWindUnit( Speed::speedUnit( conf->getUnitWind() ) );
-  Altitude::setUnit( Altitude::altitude( conf->getUnitAlt() ) );
-  WGSPoint::setFormat( WGSPoint::Format( conf->getUnitPos() ) );
-  Time::setUnit( Time::timeUnit( conf->getUnitTime() ) );
-
   // other configuration changes
   _globalMapMatrix->slotInitMatrix();
   viewMap->slot_settingsChange();
@@ -1847,12 +1836,14 @@ void MainWindow::slotReadconfig()
   viewWP->listWidget()->configRowHeight();
   viewWP->listWidget()->slot_Done();
 
+  GeneralConfig *conf = GeneralConfig::instance();
+
   // Update action settings
-  actionToggleAfLabels->setChecked( GeneralConfig::instance()->getMapShowAirfieldLabels() );
-  actionToggleOlLabels->setChecked( GeneralConfig::instance()->getMapShowOutLandingLabels() );
-  actionToggleTpLabels->setChecked( GeneralConfig::instance()->getMapShowTaskPointLabels() );
-  actionToggleWpLabels->setChecked( GeneralConfig::instance()->getMapShowWaypointLabels() );
-  actionToggleLabelsInfo->setChecked( GeneralConfig::instance()->getMapShowLabelsExtraInfo() );
+  actionToggleAfLabels->setChecked( conf->getMapShowAirfieldLabels() );
+  actionToggleOlLabels->setChecked( conf->getMapShowOutLandingLabels() );
+  actionToggleTpLabels->setChecked( conf->getMapShowTaskPointLabels() );
+  actionToggleWpLabels->setChecked( conf->getMapShowWaypointLabels() );
+  actionToggleLabelsInfo->setChecked( conf->getMapShowLabelsExtraInfo() );
 
   // configure reconnect of GPS receiver in case of process stop
   QString device = conf->getGpsDevice();
