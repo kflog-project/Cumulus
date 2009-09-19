@@ -13,6 +13,8 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[+] 2009-09-19 AP: Warning message added in Unit settings page, if configuration
+                   has been changed and was not saved.
 [+] 2009-09-18 AP: Wind speed can now be configured as extra item under settings
                    units.
 [+] 2009-09-15 AP: Warning message added in Personal settings page, if configuration
