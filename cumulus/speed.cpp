@@ -306,7 +306,7 @@ Speed::getUnitText(speedUnit unit)
   switch (unit)
     {
   case knots:
-    return "Knt";
+    return "Kn";
     break;
   case milesPerHour:
     return "Mph";
