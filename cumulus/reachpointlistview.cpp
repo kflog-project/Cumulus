@@ -7,10 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2009 by Axel pauli
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -18,6 +18,7 @@
 
 #include <QPushButton>
 #include <QFont>
+#include <QMessageBox>
 #include <QTreeWidgetItem>
 #include <QShortcut>
 
@@ -34,7 +35,9 @@
 
 extern Calculator* calculator;
 
-ReachpointListView::ReachpointListView(MainWindow *parent ) : QWidget(parent)
+ReachpointListView::ReachpointListView( MainWindow* parent ) :
+  QWidget(parent),
+  homeChanged( false )
 {
   setObjectName("ReachpointListView");
   // load pixmap of arrows for relative bearing
@@ -93,17 +96,20 @@ ReachpointListView::ReachpointListView(MainWindow *parent ) : QWidget(parent)
   cmdShowOl = new QPushButton(tr("Show Outland"), this);
   buttonrow->addWidget(cmdShowOl);
 
+  cmdHome = new QPushButton(tr("Home"), this);
+  buttonrow->addWidget(cmdHome);
+
   cmdSelect = new QPushButton(tr("Select"), this);
   buttonrow->addWidget(cmdSelect);
 
   connect(cmdSelect, SIGNAL(clicked()), this, SLOT(slot_Select()));
   connect(cmdInfo, SIGNAL(clicked()), this, SLOT(slot_Info()));
-  // @ee add a close button
-  connect(cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()));
   connect(cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()));
   connect(cmdHideOl, SIGNAL(clicked()), this, SLOT(slot_HideOl()));
   connect(cmdShowOl, SIGNAL(clicked()), this, SLOT(slot_ShowOl()));
+  connect(cmdHome, SIGNAL(clicked()), this, SLOT(slot_Home()));
   connect(list, SIGNAL(itemSelectionChanged()), this, SLOT(slot_Selected()));
+
   cmdShowOl->hide();
   cmdHideOl->show();
 
@@ -113,10 +119,8 @@ ReachpointListView::ReachpointListView(MainWindow *parent ) : QWidget(parent)
   connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
 }
 
-
 ReachpointListView::~ReachpointListView()
 {}
-
 
 /** Retrieves the reachable points from the map contents, and fills the list. */
 void ReachpointListView::fillRpList()
@@ -331,9 +335,24 @@ void ReachpointListView::showEvent(QShowEvent *)
       fillRpList();
       _newList = false;
     }
+
+  // Show the home button only if we are not to fast in move to avoid
+  // usage during flight. The redefinition of the home position will trigger
+  // a reload of the airfield list.
+  if( calculator->moving() )
+    {
+      cmdHome->setVisible(false);
+    }
+  else
+    {
+      cmdHome->setVisible(true);
+    }
+
+  // Reset home changed
+  homeChanged = false;
 }
 
-/** This signal is called to indicate that a selection has been made. */
+/** This slot is called to indicate that a selection has been made. */
 void ReachpointListView::slot_ShowOl()
 {
   _outlandShow = true;
@@ -342,7 +361,7 @@ void ReachpointListView::slot_ShowOl()
   fillRpList();
 }
 
-/** This signal is called to indicate that a selection has been made. */
+/** This slot is called to indicate that a selection has been made. */
 void ReachpointListView::slot_HideOl()
 {
   _outlandShow = false;
@@ -351,7 +370,7 @@ void ReachpointListView::slot_HideOl()
   fillRpList();
 }
 
-/** This signal is called to indicate that a selection has been made. */
+/** This slot is called to indicate that a selection has been made. */
 void ReachpointListView::slot_Select()
 {
   wayPoint* wp = getSelectedWaypoint();
@@ -374,10 +393,18 @@ void ReachpointListView::slot_Info()
     }
 }
 
-/** @ee This slot is called if the listview is closed without selecting */
+/** This slot is called when the listview should be closed without selection. */
 void ReachpointListView::slot_Close ()
 {
   emit done();
+
+  // Check, if we are in manual mode. In this case we do move the map to the
+  // new home position.
+  if( homeChanged == true && GpsNmea::gps->getConnected() == false )
+    {
+      emit gotoHomePosition();
+      homeChanged = false;
+    }
 }
 
 void ReachpointListView::slot_Selected()
@@ -435,5 +462,39 @@ void ReachpointListView::slot_newList()
   else
     {
       _newList = true;
+    }
+}
+
+/** Called to set a new home position. The change of the home position can trigger
+ *  a reload of many map data, if Welt2000 has radius option set or option projection
+ *  follows home is active.
+ */
+void ReachpointListView::slot_Home()
+{
+  wayPoint* _wp = getSelectedWaypoint();
+
+  if( _wp == static_cast<wayPoint *> ( 0 ) )
+    {
+      return;
+    }
+
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  if( conf->getHomeCoord() == _wp->origP )
+    {
+      // no new coordinates, ignore request
+      return;
+    }
+
+  int answer= QMessageBox::question(this,
+                                   tr("Set home site"),
+                                   tr("Use point<br><b>%1</b><br>as your home site?").arg(_wp->name) +
+                                   tr("<br>Change can take<br>a few seconds."),
+                                   QMessageBox::No, QMessageBox::Yes );
+
+  if( answer == QMessageBox::Yes )
+    {
+      emit newHomePosition( _wp->origP );
+      homeChanged = true;
     }
 }

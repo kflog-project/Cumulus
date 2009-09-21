@@ -505,6 +505,10 @@ void MainWindow::slotCreateApplicationWidgets()
            this, SLOT( slotSwitchToMapView() ) );
   connect( viewRP, SIGNAL( info( wayPoint* ) ),
            this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
+  connect( viewRP, SIGNAL( newHomePosition( const QPoint& ) ),
+           _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
+  connect( viewRP, SIGNAL( gotoHomePosition() ),
+           calculator, SLOT( slot_changePositionHome() ) );
 
   connect( viewTP, SIGNAL( newWaypoint( wayPoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
