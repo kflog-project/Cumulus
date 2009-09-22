@@ -28,7 +28,7 @@
 #include "mapconfig.h"
 #include "generalconfig.h"
 
-extern MapConfig * _globalMapConfig;
+extern MapConfig* _globalMapConfig;
 
 GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   QDialog(parent, Qt::WindowStaysOnTopHint)
@@ -176,40 +176,39 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   connect (spinBugs, SIGNAL(valueChanged(int)), this, SLOT(setTimer()));
 }
 
-
 GliderFlightDialog::~GliderFlightDialog()
 {}
-
 
 void GliderFlightDialog::showEvent(QShowEvent *)
 {
   double mc_max, mc_step;
-  switch (Speed::getVerticalUnit()) {
-  case Speed::knots:
-    mc_max=40.0;
-    mc_step=0.5;
-    break;
-  case Speed::feetPerMinute:
-    mc_max=4000.0;
-    mc_step=50.0;
-    break;
-  case Speed::metersPerSecond:
-    mc_max=20.0;
-    mc_step=0.5;
-    break;
-  default:
-    mc_max=20.0;
-    mc_step=0.5;
-  }
+
+  switch (Speed::getVerticalUnit())
+    {
+    case Speed::knots:
+      mc_max = 40.0;
+      mc_step = 0.5;
+      break;
+    case Speed::feetPerMinute:
+      mc_max = 4000.0;
+      mc_step = 50.0;
+      break;
+    case Speed::metersPerSecond:
+      mc_max = 20.0;
+      mc_step = 0.5;
+      break;
+    default:
+      mc_max = 20.0;
+      mc_step = 0.5;
+    }
 
   spinMcCready->setMaximum(mc_max);
   spinMcCready->setSingleStep(mc_step);
 }
 
-
 void GliderFlightDialog::load()
 {
-  Glider * glider=calculator->glider();
+  Glider * glider = calculator->glider();
 
   if (glider)
     {
@@ -229,7 +228,7 @@ void GliderFlightDialog::load()
 
       spinWater->setMaximum(glider->maxWater());
 
-      if (glider->maxWater()==0)
+      if (glider->maxWater() == 0)
         {
           spinWater->setEnabled(false);
           buttonDump->setEnabled(false);
@@ -262,13 +261,15 @@ void GliderFlightDialog::load()
 
 void GliderFlightDialog::save()
 {
-  Glider * glider=calculator->glider();
-  if (glider) {
-    glider->polar()->setWater(int(spinWater->value()), int(spinBugs->value()));
-    Speed new_mc;
-    new_mc.setVerticalValue(spinMcCready->value());
-    calculator->slot_Mc(new_mc.getMps());
-  }
+  Glider* glider = calculator->glider();
+
+  if (glider)
+    {
+      glider->polar()->setWater(int(spinWater->value()), int(spinBugs->value()));
+      Speed new_mc;
+      new_mc.setVerticalValue(spinMcCready->value());
+      calculator->slot_Mc(new_mc.getMps());
+    }
 }
 
 void GliderFlightDialog::slotMcPlus()
