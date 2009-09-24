@@ -13,6 +13,8 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[+] 2009-09-22 AP: GPS parser/decoder extended to read MacCready value from
+                   proprietary record of Cambridge logger device.
 [+] 2009-09-21 AP: Home button added to ReachableListView.
 [+] 2009-09-19 AP: Warning message added in Unit settings page, if configuration
                    has been changed and was not saved.
