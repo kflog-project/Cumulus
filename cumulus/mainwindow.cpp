@@ -439,6 +439,8 @@ void MainWindow::slotCreateApplicationWidgets()
 
   connect( GpsNmea::gps, SIGNAL( newVario(const Speed&) ),
            calculator, SLOT( slot_GpsVariometer(const Speed&) ) );
+  connect( GpsNmea::gps, SIGNAL( newMc(const Speed&) ),
+           calculator, SLOT( slot_Mc(const Speed&) ) );
   connect( GpsNmea::gps, SIGNAL( newWind(const Speed&, const short) ),
            calculator, SLOT( slot_GpsWind(const Speed&, const short) ) );
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),

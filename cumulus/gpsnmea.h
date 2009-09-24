@@ -2,7 +2,7 @@
     gpsnmea.h - Cumulus NMEA parser and decoder
                             -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by André Somers,
+    copyright            : (C) 2002      by André Somers,
                                2008-2009 by Axel Pauli
     email                : axel@kflog.org
 
@@ -17,8 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef GPSNMEA_H
-#define GPSNMEA_H
+#ifndef GPS_NMEA_H
+#define GPS_NMEA_H
 
 #include <QObject>
 #include <QString>
@@ -132,6 +132,14 @@ class GpsNmea : public QObject
     QTime getLastTime() const
       {
         return _lastTime;
+      };
+
+    /**
+     * @Returns the date time as UTC of the last fix.
+     */
+    QDateTime getLastUtc() const
+      {
+        return _lastUtc;
       };
 
     /**
@@ -312,7 +320,7 @@ class GpsNmea : public QObject
 
   signals: // Signals
     /**
-     * This signal signifies a new position fix.
+     * This signal is emitted if the position has been changed.
      */
     void newPosition();
 
@@ -322,8 +330,7 @@ class GpsNmea : public QObject
     void newAltitude();
 
     /**
-     * This signal is emitted if a new speed fix has been
-     * established.
+     * This signal is emitted if a new speed fix has been established.
      */
     void newSpeed();
 
@@ -339,10 +346,14 @@ class GpsNmea : public QObject
     void newWind( const Speed&, const short );
 
     /**
-     * This signal is emitted if a new variometer value
-     * has been established.
+     * This signal is emitted if a new variometer value has been established.
      */
     void newVario( const Speed& );
+
+    /**
+     * This signal is emitted if a new MacCready value has been established.
+     */
+    void newMc( const Speed& );
 
     /**
      * This signal is send if a new satellite constellation
@@ -447,6 +458,8 @@ class GpsNmea : public QObject
     QTime _lastTime;
     /** contains the date of the last fix. */
     QDate _lastDate;
+    /** contains the last utc date/time of the last fix */
+    QDateTime _lastUtc;
     /** Contains the last known speed. */
     Speed _lastSpeed;
     /** Contains the last known coordinate in KFLog format */
@@ -478,6 +491,8 @@ class GpsNmea : public QObject
     ushort _lastQnh;
     /** Contains the last variometer speed */
     Speed _lastVariometer;
+    /** Contains the last MacCready setting */
+    Speed _lastMc;
 
     /** This timer fires if a timeout on the data reception occurs.
      * The connection is then probably (temporary?) lost. */

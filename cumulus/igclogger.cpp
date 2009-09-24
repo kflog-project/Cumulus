@@ -65,7 +65,7 @@ IgcLogger *IgcLogger::instance()
   // First user will create it
   if( _theInstance == static_cast<IgcLogger *>(0) )
     {
-      _theInstance = new IgcLogger(0);
+      _theInstance = new IgcLogger();
     }
 
   return( _theInstance );
@@ -302,7 +302,6 @@ void IgcLogger::writeHeaders()
   _logfile.flush();
 }
 
-
 /** This function formats a date in the correct IGC format DDMMYY */
 QString IgcLogger::formatDate(const QDate& date)
 {
@@ -311,20 +310,17 @@ QString IgcLogger::formatDate(const QDate& date)
   return result;
 }
 
-
 /** Read property of bool isLogging. */
 bool IgcLogger::getIsLogging()
 {
-  return (_logMode==on);
+  return (_logMode == on);
 }
-
 
 /** Return true if we are in standby mode. */
 bool IgcLogger::getIsStandby()
 {
-  return (_logMode==standby);
+  return (_logMode == standby);
 }
-
 
 /** This slot is called to start or end a log. */
 void IgcLogger::slotToggleLogging()
@@ -384,6 +380,14 @@ void IgcLogger::slotConstellation()
   makeSatConstEntry();
 }
 
+/**
+ * This slot is called to indicate that a new Utc is available.
+ */
+void IgcLogger::slotUtc( QDateTime& newUtc )
+{
+
+}
+
 
 /** Makes a fix entry in the log file. */
 void IgcLogger::makeSatConstEntry()
@@ -440,9 +444,10 @@ QString IgcLogger::formatPosition(const QPoint& position)
   QString result, latmark, lonmark;
 
   calc = position.x(); // Latitude
-  if (calc<0)
+
+  if( calc < 0 )
     {
-      calc=-calc; // use positive values for now;
+      calc = -calc; // use positive values for now;
       latmark = "S";
     }
   else
@@ -450,26 +455,26 @@ QString IgcLogger::formatPosition(const QPoint& position)
       latmark = "N";
     }
 
-  latdeg=calc/600000;  // calculate degrees
-  calc-=latdeg*600000; // subtract the whole degrees part
-  latmin=calc/10; // we need the minutes in 1000'st of a minute, not in 10.000'st.
+  latdeg = calc / 600000; // calculate degrees
+  calc  -= latdeg * 600000; // subtract the whole degrees part
+  latmin = calc / 10; // we need the minutes in 1000'st of a minute, not in 10.000'st.
 
 
   calc = position.y(); //longitude
 
-  if (calc<0)
+  if( calc < 0 )
     {
-      calc=-calc; //use positive values for now;
-      lonmark="W";
+      calc = -calc; //use positive values for now;
+      lonmark = "W";
     }
   else
     {
-      lonmark="E";
+      lonmark = "E";
     }
 
-  londeg=calc/600000;  //calculate degrees
-  calc-=londeg*600000;  //substract the whole degrees part
-  lonmin=calc/10; //we need the minutes in 1000'st of a minute, not in 10.000'st.
+  londeg = calc / 600000; //calculate degrees
+  calc -= londeg * 600000; //subtract the whole degrees part
+  lonmin = calc / 10; //we need the minutes in 1000'st of a minute, not in 10.000'st.
 
   result.sprintf("%02d%05d%1s%03d%05d%1s",latdeg,latmin,latmark.toLatin1().data(),londeg,lonmin,lonmark.toLatin1().data());
   return result;

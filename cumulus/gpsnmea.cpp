@@ -2,7 +2,7 @@
     gpsnmea.cpp  -  Cumulus NMEA parser and decoder
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by André Somers,
+    copyright            : (C) 2002      by André Somers,
                                2008-2009 by Axel Pauli
     email                : axel@kflog.org
 
@@ -40,7 +40,7 @@
 
 #include "generalconfig.h"
 
-// @AP: define timeout constants for gps fix supervision in milli seconds.
+// @AP: define timeout constants for GPS fix supervision in milli seconds.
 //      After this time an alarm is generated.
 #define FIX_TO 25000
 
@@ -113,6 +113,8 @@ void GpsNmea::resetDataObjects()
   _lastWindAge = 0;
   _lastQnh = 0;
   _lastVariometer = Speed(0);
+  _lastMc = Speed(0);
+  _lastUtc = QDateTime();
 
   _ignoreConnectionLost = false;
 }
@@ -223,7 +225,7 @@ void GpsNmea::startGpsReceiver()
  *
  * @AP 2009-03-02: There was added support for a Cambrigde device. This device
  * emits proprietary sentences $PCAID and !w. It can also deliver altitudes
- * (MSL and STD) derived from a pressure sonde. If these valuse should be
+ * (MSL and STD) derived from a pressure sonde. If these values should be
  * used as base altitude instead of the normal GPS altitude, the user option
  * altitude must be set to PRESSURE.
  */
@@ -236,7 +238,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       // @AP: If the emitting of signals is blocked, we will ignore
       // this call. Otherwise this module can do internal state
       // changes, which will never distributed, e.g. Man->Gps mode
-      // change. To ignore this causes fatal problems in cumulus.
+      // change. To ignore this causes fatal problems in Cumulus.
       return;
     }
 
@@ -304,42 +306,74 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
    12) Checksum
   */
 
-  if (slst[0] == "$GPRMC")
-    { // RMC - Recommended Minimum Specific GNSS Data
-
-      if ( slst.size() < 10 )
+  if( slst[0] == "$GPRMC" )
+    {
+      if( slst.size() < 10 )
         {
-          qWarning("$GPRMC contains too less parameters!");
+          qWarning( "$GPRMC contains too less parameters!" );
           return;
         }
 
       //qDebug("%s",slst[2].toLatin1().data());
-      if (slst[2] != "V")
+      if( slst[2] == "A" )
         { /* Data status A=OK, V=warning */
           fixOK();
+
+          QTime lastTime = _lastTime; // save previous time
+
           __ExtractTime(slst[1]);
           __ExtractDate(slst[9]);
           __ExtractKnotSpeed(slst[7]);
           __ExtractCoord(slst[3],slst[4],slst[5],slst[6]);
           __ExtractHeading(slst[8]);
 
-          static bool updateClock = true;
-
-          GeneralConfig *conf = GeneralConfig::instance();
-
-          if ( updateClock && conf->getGpsSyncSystemClock() )
+          if( _lastTime.isValid() && _lastDate.isValid() )
             {
-              // @AP: we make only one update to avoid confusing of running timers
-              updateClock = false;
-              QDateTime utc( _lastDate, _lastTime );
-              setSystemClock(utc);
+              QDateTime utc( _lastDate, _lastTime, Qt::UTC );
+
+              if( utc != _lastUtc )
+                {
+                  _lastUtc = utc;
+                }
+
+              static bool updateClock = true;
+
+              GeneralConfig *conf = GeneralConfig::instance();
+
+              if( updateClock && conf->getGpsSyncSystemClock() )
+                {
+                  // @AP: we make only one update to avoid confusing of running timers
+                  updateClock = false;
+                  setSystemClock( utc );
+                }
+            }
+
+          if( _lastTime != lastTime )
+            {
+              /**
+               * The fix time has been changed and that is reported now.
+               * We do check the fix time only here in the $GPRMC sentence.
+               */
+              emit newFix();
             }
         }
       else
         {
           fixNOK();
-          __ExtractTime(slst[1]);
-          __ExtractDate(slst[9]);
+
+          QTime time = __ExtractTime( slst[1] );
+          QDate date = __ExtractDate( slst[9] );
+
+          if( time.isValid() && date.isValid() )
+            {
+              QDateTime utc( _lastDate, _lastTime, Qt::UTC );
+
+              if( utc != _lastUtc )
+                {
+                  // save date and time as UTC
+                  _lastUtc = utc;
+                }
+            }
         }
 
       return;
@@ -386,7 +420,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
     }
 
   /**
-  GGA - Global Positioning System Fix Data, Time, Position and fix related data fora GPS receiver.
+  GGA - Global Positioning System Fix Data, Time, Position and fix related data for a GPS receiver.
 
           1         2       3 4        5 6 7  8   9  10 11 12 13  14   15
           |         |       | |        | | |  |   |   | |   | |   |    |
@@ -495,7 +529,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
    */
 
   if (slst[0] == "$GPGSA")
-    { // GSA - GNSS DOP and Acitve Satellites
+    { // GSA - GNSS DOP and Active Satellites
       if ( slst.size() < 18 )
         {
           qWarning("$GPGSA contains too less parameters!");
@@ -647,9 +681,9 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   $PGCS,<1>,<2>,<3>,<4>,<5>*CS
   $PGCS,1,0EBC,0003,06A6,03*1F
-  
+
   Volkslogger pressure and pressurealtitude information
-  
+
   0 - PGCS - Sentence ID
   1 - 1 - gcs-sentence no. 1
   2 - 0EBC - (pressure * 4096) / 1100: value of pressure-sensor (hex coded)
@@ -675,7 +709,12 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
           qWarning("$PGCS contains corrupt pressure altitude!");
           return;
         }
-      if (num > 32768) num -= 65536;  // FFFF = -1, FFFE = -2, etc.
+
+      if (num > 32768)
+        {
+          num -= 65536;  // FFFF = -1, FFFE = -2, etc.
+        }
+
       res.setMeters( num );
 
       if ( _lastStdAltitude != res && _deliveredAltitude == GpsNmea::PRESSURE )
@@ -785,6 +824,16 @@ void GpsNmea::__ExtractCambridgeW(const QStringList& stringList)
       _lastVariometer = speed;
       emit newVario( _lastVariometer ); // notify change
     }
+
+  // extract MacCready, reading in 10ths of knots
+  num = stringList[11].toDouble( &ok );
+  speed.setKnot( num );
+
+  if ( ok && _lastMc != speed )
+    {
+      _lastMc = speed;
+      emit newMc( _lastMc ); // notify change
+    }
 }
 
 /**
@@ -802,10 +851,9 @@ QTime GpsNmea::__ExtractTime(const QString& timeString)
   QString mm (timeString.mid(2,2));
   QString ss (timeString.mid(4,2));
 
-  // @AP: newer CF Cards can also provide milli seconds. In this case the time
+  // @AP: newer CF Cards can also provide milliseconds. In this case the time
   // format is defined as hhmmss.sss. But we will not use it to avoid problems
   // with our fixes.
-
   QTime res = QTime( hh.toInt(), mm.toInt(), ss.toInt() );
 
   // @AP: don't overtake invalid times. They will cause invalid fixes!
@@ -813,24 +861,16 @@ QTime GpsNmea::__ExtractTime(const QString& timeString)
     {
       qWarning("GpsNmea::__ExtractTime(): Invalid time %s! Ignoring it (%s, %d)",
                timeString.toLatin1().data(), __FILE__, __LINE__ );
-      return res;
+      return QTime();
     }
 
-  if (_lastTime != res)
+  if( _lastTime != res )
     {
-      /**
-       * The fix time has been changed, now we are starting a new fix.
-       * This means that all info from the previous fix has been send,
-       * and can be analyzed.
-       */
-
-      emit newFix();
-      _lastTime=res;
+      _lastTime = res;
     }
 
   return res;
 }
-
 
 /** This function returns a QDate from the date string encoded in a
     NWEA sentence as "ddmmyy". */
@@ -853,7 +893,7 @@ QDate GpsNmea::__ExtractDate(const QString& dateString)
 
   QDate res (yy.toInt(&ok1) + 2000, mm.toInt(&ok2), dd.toInt(&ok3) );
 
-  // @AP: don't overtake invalid dates
+  // @AP: don't take over invalid dates
   if ( ok1 && ok2 && ok3 && res.isValid() )
     {
       _lastDate = res;
@@ -867,7 +907,6 @@ QDate GpsNmea::__ExtractDate(const QString& dateString)
   return res;
 }
 
-
 /** This function returns a Speed from the speed encoded in knots */
 Speed GpsNmea::__ExtractKnotSpeed(const QString& speedString)
 {
@@ -879,7 +918,7 @@ Speed GpsNmea::__ExtractKnotSpeed(const QString& speedString)
     }
 
   bool ok;
-  double speed = speedString.toDouble(&ok);
+  double speed = speedString.toDouble( &ok );
 
   if( ok == false )
     {
@@ -888,10 +927,9 @@ Speed GpsNmea::__ExtractKnotSpeed(const QString& speedString)
 
   res.setKnot( speed );
 
-
-  if( res!=_lastSpeed )
+  if( res != _lastSpeed )
     {
-      _lastSpeed=res;
+      _lastSpeed = res;
       emit newSpeed();
     }
 
@@ -1080,33 +1118,33 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
 {
   QString result, tmp;
 
-  if (sentence[2]!= "1")
+  if( sentence[2] != "1" )
     {
       fixOK();
-      _lastSatInfo.fixValidity=sentence[2].toInt();
+      _lastSatInfo.fixValidity = sentence[2].toInt();
     }
 
-  for (int i=3; i<=14 && i < sentence.size() ; i++)
+  for( int i = 3; i <= 14 && i < sentence.size(); i++ )
     {
 
-      if ( sentence[i] != QString::null && sentence[i] != QString("") )
+      if( sentence[i] != QString::null && sentence[i] != QString( "" ) )
         {
-          tmp.sprintf("%02d",sentence[i].toInt());
-          result+=tmp;
+          tmp.sprintf( "%02d", sentence[i].toInt() );
+          result += tmp;
         }
     }
 
-  if (result!=_lastSatInfo.constellation)
+  if( result != _lastSatInfo.constellation )
     {
-      _lastSatInfo.constellationTime =_lastTime;
-      _lastSatInfo.constellation=result;
+      _lastSatInfo.constellationTime = _lastTime;
+      _lastSatInfo.constellation = result;
       emit newSatConstellation();
     }
 
   return result;
 }
 
-/** Extracts the satcount from the NMEA sentence. */
+/** Extracts the sat count from the NMEA sentence. */
 void GpsNmea::__ExtractSatcount(const QString& satcount)
 {
   int count = satcount.toInt();
@@ -1122,7 +1160,7 @@ void GpsNmea::__ExtractSatcount(const QString& satcount)
  *  a connection lost to the GPS receiver or daemon. */
 void GpsNmea::_slotGpsConnectionLost()
 {
-  if ( _ignoreConnectionLost )
+  if( _ignoreConnectionLost )
     {
       // Ignore a connection lost state. That must be done after a system
       // clock update to avoid senseless reporting to other modules.
@@ -1130,11 +1168,11 @@ void GpsNmea::_slotGpsConnectionLost()
       return;
     }
 
-  if ( _status != notConnected )
+  if( _status != notConnected )
     {
-      qWarning("GPS CONNECTION SEEMS TO BE LOST!");
+      qWarning( "GPS CONNECTION SEEMS TO BE LOST!" );
       resetDataObjects();
-      emit statusChange(_status);
+      emit statusChange( _status );
     }
 }
 
@@ -1145,11 +1183,12 @@ void GpsNmea::_slotGpsConnectionLost()
  */
 void GpsNmea::_slotTimeoutFix()
 {
-  if ( _status == validFix )
+  if( _status == validFix )
     {
       _status = noFix;
-      emit statusChange(_status);
-      qWarning("GPS FIX LOST!");
+      emit
+      statusChange( _status );
+      qWarning( "GPS FIX LOST!" );
       // stop timer, will be activated again with the next available fix
       timeOutFix->stop();
     }
@@ -1183,27 +1222,28 @@ void GpsNmea::dataOK()
 void GpsNmea::fixOK()
 {
   // restart timer for FIX supervision
-  timeOutFix->start(FIX_TO);
+  timeOutFix->start( FIX_TO );
 
-  if ( _status != validFix )
+  if( _status != validFix )
     {
       _status = validFix;
-      emit statusChange(_status);
-      qDebug("GPS FIX OBTAINED!");
+      emit
+      statusChange( _status );
+      qDebug( "GPS FIX OBTAINED!" );
     }
 }
-
 
 /** This function is called to indicate that a valid fix has been lost.
  *  It necessary updates the connection status.
  */
 void GpsNmea::fixNOK()
 {
-  if ( _status == validFix )
+  if( _status == validFix )
     {
       _status = noFix;
-      emit statusChange(_status);
-      qDebug("GPS FIX Lost!");
+      emit
+      statusChange( _status );
+      qDebug( "GPS FIX Lost!" );
     }
 }
 
@@ -1212,24 +1252,11 @@ void GpsNmea::fixNOK()
  *  the GPS receiver connection and to opens a new one to adjust the
  *  new settings.
  */
-
 void GpsNmea::slot_reset()
 {
   // qDebug("GpsNmea::slot_reset()");
-
   GeneralConfig *conf = GeneralConfig::instance();
-
-  // update altitude reference delivered by GPS unit
-  _deliveredAltitude = static_cast<GpsNmea::DeliveredAltitude> (conf->getGpsAltitude());
-  _userAltitudeCorrection = conf->getGpsUserAltitudeCorrection();
-
-  // reset altitudes
-  _lastMslAltitude = Altitude(0);
-  _lastGNSSAltitude = Altitude(0);
-  calcStdAltitude( Altitude(0) );
-  _lastPressureAltitude = Altitude(0);
-
-  QString oldDevice = gpsDevice;
+  QString oldDevice   = gpsDevice;
 
   if ( gpsDevice != conf->getGpsDevice() )
     {
@@ -1303,7 +1330,7 @@ void GpsNmea::switchDebugging (bool on)
 
 /**
  * Send the data of last valid fix to the gps receiver. Use the current utc
- * time as basis for calculating gps week and timeof week. This function is
+ * time as basis for calculating gps week and time of week. This function is
  * called only at initialization; we don't optimize to show the algorithm
  * clear.
  */
@@ -1389,14 +1416,14 @@ uint GpsNmea::calcCheckSum (int pos, const QString& sentence)
 {
   uchar sum = 0;
 
-  for ( int i=1; i < pos; i++ )
+  for( int i = 1; i < pos; i++ )
     {
       uchar c = (sentence[i]).toAscii();
 
-      if ( c == '$' ) // Start sign will not be considered
+      if( c == '$' ) // Start sign will not be considered
         continue;
 
-      if ( c == '*' ) // End of sentence reached
+      if( c == '*' ) // End of sentence reached
         break;
 
       sum ^= c;
@@ -1405,11 +1432,13 @@ uint GpsNmea::calcCheckSum (int pos, const QString& sentence)
   return sum;
 }
 
-/** This function checks if the checksum in the sentence matches the sentence. It retuns true if it matches, and false otherwise. */
+/** This function checks if the checksum in the sentence matches the sentence.
+ *  It returns true if it matches, and false otherwise. */
 bool GpsNmea::checkCheckSum(int pos, const QString& sentence)
 {
-  uchar check = (uchar) sentence.right(2).toUShort(0, 16);
-  return (check == calcCheckSum (pos, sentence));
+  uchar check = (uchar) sentence.right( 2 ).toUShort( 0, 16 );
+
+  return (check == calcCheckSum( pos, sentence ));
 }
 
 /** This function calculates the STD altitude from the passed MSL altitude. */
@@ -1419,7 +1448,7 @@ void GpsNmea::calcStdAltitude(const Altitude& altitude)
 
   int qnhDiff = 1013 - conf->getQNH();
 
-  if ( qnhDiff != 0 )
+  if( qnhDiff != 0 )
     {
       // Calculate altitude correction in meters from pressure difference.
       // The common approach is to expect a pressure difference of 1 hPa per
@@ -1440,7 +1469,7 @@ void GpsNmea::calcMslAltitude(const Altitude& altitude)
 
   int qnhDiff = 1013 - conf->getQNH();
 
-  if ( qnhDiff != 0 )
+  if( qnhDiff != 0 )
     {
       // Calculate altitude correction in meters from pressure difference.
       // The common approach is to expect a pressure difference of 1 hPa per
@@ -1454,7 +1483,7 @@ void GpsNmea::calcMslAltitude(const Altitude& altitude)
     }
 }
 
-/** write config data to allow restore of last fix */
+/** write configuration data to allow restore of last fix */
 void GpsNmea::writeConfig()
 {
   if (_status == validFix)
@@ -1469,28 +1498,28 @@ void GpsNmea::writeConfig()
 }
 
 
-/** Set system date/time. Input is utc related. */
+/** Set system date/time. Input is UTC related. */
 void GpsNmea::setSystemClock( const QDateTime& utcDt )
 {
-  if ( ! utcDt.isValid() )
+  if( !utcDt.isValid() )
     {
       return;
     }
 
-  if ( getuid() != 0 )
+  if( getuid() != 0 )
     {
       // we are not user root
-      qWarning("Only the superuser can set the system clock!");
+      qWarning( "Only the superuser can set the system clock!" );
       return;
     }
 
   static char *noTZ;
   static char *utcTZ;
-  noTZ  = strdup("TZ=");
-  utcTZ = strdup("TZ=UTC");
+  noTZ = strdup( "TZ=" );
+  utcTZ = strdup( "TZ=UTC" );
 
   // save current TZ
-  char *curTZ = getenv("TZ");
+  char *curTZ = getenv( "TZ" );
 
   // set TZ to UTC
   putenv( utcTZ );
@@ -1514,7 +1543,7 @@ void GpsNmea::setSystemClock( const QDateTime& utcDt )
   myTv.tv_sec = utcSeconds;
   myTv.tv_usec = 0;
 
-  if ( myTv.tv_sec != -1 )
+  if( myTv.tv_sec != -1 )
     {
       settimeofday( &myTv, 0 );
     }
@@ -1523,13 +1552,13 @@ void GpsNmea::setSystemClock( const QDateTime& utcDt )
 
   // set hardware clock via hwclock tool, because the writeHWClock()
   // method will not do that in every case
-  system("/sbin/hwclock --systohc");
+  system( "/sbin/hwclock --systohc" );
 
-  if ( curTZ ) // restore old time zone
+  if( curTZ ) // restore old time zone
     {
       // decrement pointer to get the original string TZ=... getenv
       // returns only the assigned value.
-      curTZ = curTZ-3;
+      curTZ = curTZ - 3;
     }
   else
     {
@@ -1540,45 +1569,51 @@ void GpsNmea::setSystemClock( const QDateTime& utcDt )
   tzset(); // reactivate saved time zone
 
   // restart timer to avoid fix losts
-  timeOutFix->start(FIX_TO);
+  timeOutFix->start( FIX_TO );
   // set flag to avoid reporting of connection lost
   _ignoreConnectionLost = true;
 
-  _globalMapView->message( tr("System clock synchronized") );
+  _globalMapView->message( tr( "System clock synchronized" ) );
 
   free( noTZ );
   free( utcTZ );
 }
 
-
-/** Extract Satelites In View (SIV) info from a NMEA sentence. */
+/** Extract Satellites In View (SIV) info from a NMEA sentence. */
 void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
 {
   //the GPGSV sentence can be split between multiple sentences.
   //qDebug("expecting: %d, found: %s",cntSIVSentence,sentence[2].toLatin1().data());
   //check if we were expecting this part of the info
-  if (cntSIVSentence != sentence[2].toUInt())
+  if( cntSIVSentence != sentence[2].toUInt() )
     {
       return;
     }
 
-  if (cntSIVSentence == 1) //this is the first sentence of our series
+  if( cntSIVSentence == 1 ) //this is the first sentence of our series
     {
       sivInfoInternal.clear();
     }
 
-  //extract info on the induvidual sats
-  __ExtractSatsInView( sentence[4], sentence[5], sentence[6], sentence[7]);
-  if (sentence.count()>11)
-    __ExtractSatsInView( sentence[8], sentence[9], sentence[10], sentence[11]);
-  if (sentence.count()>15)
-    __ExtractSatsInView( sentence[12], sentence[13], sentence[14], sentence[15]);
-  if (sentence.count()>19)
-    __ExtractSatsInView( sentence[16], sentence[17], sentence[18], sentence[19]);
+  //extract info on the individual sats
+  __ExtractSatsInView( sentence[4], sentence[5], sentence[6], sentence[7] );
+
+  if( sentence.count() > 11 )
+    {
+      __ExtractSatsInView( sentence[8], sentence[9], sentence[10], sentence[11] );
+    }
+  if( sentence.count() > 15 )
+    {
+      __ExtractSatsInView( sentence[12], sentence[13], sentence[14], sentence[15] );
+    }
+  if( sentence.count() > 19 )
+    {
+      __ExtractSatsInView( sentence[16], sentence[17], sentence[18], sentence[19] );
+    }
 
   cntSIVSentence++;
 
-  if (cntSIVSentence > sentence[1].toUInt()) //this was the last sentence in our series
+  if( cntSIVSentence > sentence[1].toUInt() ) //this was the last sentence in our series
     {
       cntSIVSentence = 1;
       sivInfo = sivInfoInternal;
@@ -1587,12 +1622,11 @@ void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
     }
 }
 
-
-/** Extract Satelites In View (SIV) info from a NMEA sentence. */
+/** Extract Satellites In View (SIV) info from a NMEA sentence. */
 void GpsNmea::__ExtractSatsInView(const QString& id, const QString& elev,
                                   const QString& azimuth, const QString& snr)
 {
-  if (id.isEmpty() || elev.isEmpty() || azimuth.isEmpty() || snr.isEmpty() )
+  if( id.isEmpty() || elev.isEmpty() || azimuth.isEmpty() || snr.isEmpty() )
     {
       // ignore empty data
       return;
@@ -1603,7 +1637,7 @@ void GpsNmea::__ExtractSatsInView(const QString& id, const QString& elev,
   sivi.elevation = elev.toInt();
   sivi.azimuth = azimuth.toInt();
 
-  if ( snr.isEmpty() )
+  if( snr.isEmpty() )
     {
       sivi.db = -1;
     }
@@ -1612,6 +1646,6 @@ void GpsNmea::__ExtractSatsInView(const QString& id, const QString& elev,
       sivi.db = snr.toInt();
     }
 
-  sivInfoInternal.append(sivi);
+  sivInfoInternal.append( sivi );
   //qDebug("new sivi info (snr: %d", sivi->db);
 }
