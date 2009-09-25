@@ -169,6 +169,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   connect(this, SIGNAL(query_close(bool&, QStringList& )),
           sptc, SLOT(slot_query_close(bool&, QStringList&)));
 
+  connect(this, SIGNAL(query_close(bool&, QStringList& )),
+          spu, SLOT(slot_query_close(bool&, QStringList&)));
+
   extern MapConfig *_globalMapConfig;
 
   connect(spa, SIGNAL(airspaceColorsUpdated()),
