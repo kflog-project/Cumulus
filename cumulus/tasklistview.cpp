@@ -74,8 +74,7 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
   list->setAlternatingRowColors(true);
   list->setSortingEnabled(false);
   list->setSelectionMode(QAbstractItemView::NoSelection);
-  list->setColumnCount(8);
-  list->hideColumn(7);
+  list->setColumnCount(7);
   list->setFocusPolicy(Qt::NoFocus);
 //  list->setEnabled(false);
 
@@ -244,7 +243,9 @@ void TaskListView::slot_Select()
 void TaskListView::slot_Info()
 {
   if (getSelectedWaypoint())
-    emit info(getSelectedWaypoint());
+    {
+      emit info(getSelectedWaypoint());
+    }
 }
 
 /** @ee This slot is called if the listview is closed without selecting */
@@ -314,8 +315,6 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
       wayPoint* wp = tmpList.at( loop );
       _TaskPoint* tp = new _TaskPoint( list, wp );
 
-      tp->setText( 7, QString("%1").arg(loop,1,10,QLatin1Char('0')) );
-
       if ( calcWp && calcWp->origP == wp->origP )
         {
           list->setCurrentItem( tp, 0 );
@@ -324,7 +323,6 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
         }
     }
 
-  list->sortByColumn(7, Qt::AscendingOrder);
   // set the total values in the header of this view
   distTotal->setText(  "S=" +_task->getTotalDistanceString() );
   speedTotal->setText( "V=" + _task->getSpeedString() );
