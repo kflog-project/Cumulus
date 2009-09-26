@@ -170,16 +170,17 @@ void SettingsPageUnits::slot_save()
 }
 
 /** This function returns the location of the value in the array. */
-int SettingsPageUnits::searchItem(int * p, int value, int max)
+int SettingsPageUnits::searchItem(int* p, int value, int max)
 {
-  int i;
-
-  for (i=1; i<=max; i++)
+  for (int i = 0; i < max; i++)
     {
-      if (*p==value)
+      if (*p == value)
         {
-          return i-1;
+          return i;
         }
+      int i;
+
+
       p++;
     }
 
@@ -192,13 +193,13 @@ void SettingsPageUnits::slot_query_close(bool& warn, QStringList& warnings)
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
 
-  changed  = conf->getUnitAlt()   != UnitAlt->currentIndex();
-  changed |= conf->getUnitSpeed() != UnitSpeed->currentIndex();
-  changed |= conf->getUnitDist()  != UnitDistance->currentIndex();
-  changed |= conf->getUnitVario() != UnitVario->currentIndex();
-  changed |= conf->getUnitWind()  != UnitWind->currentIndex();
-  changed |= conf->getUnitPos()   != UnitPosition->currentIndex();
-  changed |= conf->getUnitTime()  != UnitTime->currentIndex();
+  changed  = conf->getUnitAlt()   != altitudes[UnitAlt->currentIndex()];
+  changed |= conf->getUnitSpeed() != speeds[UnitSpeed->currentIndex()];
+  changed |= conf->getUnitDist()  != distances[UnitDistance->currentIndex()];
+  changed |= conf->getUnitVario() != varios[UnitVario->currentIndex()];
+  changed |= conf->getUnitWind()  != winds[UnitWind->currentIndex()];
+  changed |= conf->getUnitPos()   != positions[UnitPosition->currentIndex()];
+  changed |= conf->getUnitTime()  != times[UnitTime->currentIndex()];
 
   if (changed)
     {
