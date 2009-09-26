@@ -178,8 +178,6 @@ int SettingsPageUnits::searchItem(int* p, int value, int max)
         {
           return i;
         }
-      int i;
-
 
       p++;
     }
