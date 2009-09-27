@@ -140,11 +140,6 @@ public slots: // Public slots
   void slotConstellation();
 
   /**
-   * This slot is called to indicate that a new Utc is available.
-   */
-  void slotUtc( QDateTime& newUtc );
-
-  /**
    * This slot is called to start or end a log.
    */
   void slotToggleLogging();
