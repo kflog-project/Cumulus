@@ -564,6 +564,16 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
   const int w = Map::getInstance()->size().width();
   const int h = Map::getInstance()->size().height();
 
+  // Set pen color and width for the course line
+  QColor courseLineColor( Qt::darkMagenta );
+
+#ifndef MAEMO
+      qreal courseLineWidth = 5.0;
+#else
+      // use a bigger pen width for MAEMO to get better visible the course line
+      qreal courseLineWidth = 7.0;
+#endif
+
   // qDebug("QDesktop: w=%d, h=%d, ora=%d", w, h, ora );
 
   QRect viewport( -ora, -ora, w+2*ora, h+2*ora);
@@ -582,10 +592,10 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
       	{
       	  if( loop )
       	    {
-      	      painter->setPen(QPen(QColor(Qt::cyan), 3));
+      	      painter->setPen(QPen(courseLineColor, courseLineWidth));
       	      // Draws the course line
       	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-      				glMapMatrix->map(wpList->at(loop)->projP) );
+      				 glMapMatrix->map(wpList->at(loop)->projP) );
       	    }
       	}
 
@@ -620,9 +630,9 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
 
 	  if( loop )
 	    {
-	      painter->setPen(QPen(QColor(Qt::cyan), 3));
+	      painter->setPen(QPen(courseLineColor, courseLineWidth));
 	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-				                   glMapMatrix->map(wpList->at(loop)->projP) );
+				 glMapMatrix->map(wpList->at(loop)->projP) );
 	    }
 
 	  break;
@@ -652,9 +662,9 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
 	  if( loop &&
 	      wpList->at(loop - 1)->origP != wpList->at(loop)->origP )
 	    {
-	      painter->setPen(QPen(Qt::cyan, 3));
+	      painter->setPen(QPen(courseLineColor, courseLineWidth));
 	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-				                   glMapMatrix->map(wpList->at(loop)->projP) );
+				 glMapMatrix->map(wpList->at(loop)->projP) );
 	    }
 
 	  break;
@@ -680,9 +690,9 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
 			  drawShape );
 	    }
 
-	  painter->setPen(QPen(QColor(Qt::cyan), 3));
+	  painter->setPen(QPen(courseLineColor, courseLineWidth));
 	  painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-			                 glMapMatrix->map(wpList->at(loop)->projP) );
+			     glMapMatrix->map(wpList->at(loop)->projP) );
 	  break;
 
 	default:
@@ -692,9 +702,9 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
 	  if( loop &&
 	      wpList->at(loop - 1)->origP != wpList->at(loop)->origP )
 	    {
-	      painter->setPen(QPen(Qt::cyan, 3));
+	      painter->setPen(QPen(courseLineColor, courseLineWidth));
 	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-				                   glMapMatrix->map(wpList->at(loop)->projP ) );
+				 glMapMatrix->map(wpList->at(loop)->projP ) );
 	    }
 
 	  break;
@@ -738,6 +748,16 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawn
   const int w = Map::getInstance()->size().width();
   const int h = Map::getInstance()->size().height();
 
+  // Set pen color and width for the course line
+  QColor courseLineColor( Qt::darkMagenta );
+
+#ifndef MAEMO
+      qreal courseLineWidth = 5.0;
+#else
+      // use a bigger pen width for MAEMO to get better visible the course line
+      qreal courseLineWidth = 7.0;
+#endif
+
   QRect viewport( -10-r, -10-r, w+2*r, h+2*r );
 
   for( int loop=0; loop < wpList->count(); loop++ )
@@ -751,8 +771,7 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawn
       if( loop )
       	{
       	  // Draws the course line
-      	  painter->setPen(QPen(QColor( Qt::cyan ), 3));
-
+          painter->setPen(QPen(courseLineColor, courseLineWidth));
       	  painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
                              glMapMatrix->map(wpList->at(loop)->projP) );
       	}
@@ -880,7 +899,7 @@ void FlightTask::drawCircle( QPainter* painter, QPoint& centerCoordinate,
       // We draw the shape after the filling because filling would
       // overwrite our shape
       painter->setBrush(Qt::NoBrush);
-      painter->setPen(QPen(QColor(Qt::black), 2));
+      painter->setPen(QPen(QColor(Qt::black), 3));
       painter->drawEllipse( centerCoordinate.x()-radius, centerCoordinate.y()-radius,
                             radius*2, radius*2 );
     }
@@ -949,7 +968,7 @@ void FlightTask::drawSector( QPainter* painter,
       // We draw the shape after the filling because filling would
       // overwrite our shape
       painter->setBrush(Qt::NoBrush);
-      painter->setPen(QPen(QColor(Qt::black), 2));
+      painter->setPen(QPen(QColor(Qt::black), 3));
       painter->drawPath( pp );
     }
 }
