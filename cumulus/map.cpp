@@ -2110,10 +2110,17 @@ void Map::__drawDirectionLine(const QPoint& from)
 
       QColor col = ReachableList::getReachColor(calculator->getselectedWp()->origP);
 
+#ifndef MAEMO
+      qreal penWidth = 5.0;
+#else
+      // use a bigger pen width for MAEMO to get better visible the course line
+      qreal penWidth = 7.0;
+#endif
+
       QPainter lineP;
       lineP.begin(&m_pixInformationMap);
       lineP.setClipping(true);
-      lineP.setPen(QPen(col, 5, Qt::DashLine));
+      lineP.setPen(QPen(col, penWidth, Qt::DashLine));
       lineP.drawLine(from, to);
       lineP.end();
     }
