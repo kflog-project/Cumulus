@@ -13,6 +13,14 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[-] 2009-09-27 AP: The turquoise course line of a flight task is not good to
+                   see in sunshine. Changed the color to dark magenta.
+                   Furthermore was the width of the course lines to small under
+                   Maemo. Increased the size a little bit. That all are
+                   impressions from my cross country flight with an ultralight
+                   CT-SW today over 450Km.
+[-] 2009-09-26 AP: BUGFIX: Turnpoints were sorted wrong in task list view if
+                   their number exceeds 9.
 [+] 2009-09-22 AP: GPS parser/decoder extended to read MacCready value from
                    proprietary record of Cambridge logger device.
 [+] 2009-09-21 AP: Home button added to ReachableListView.
