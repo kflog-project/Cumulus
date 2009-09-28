@@ -139,14 +139,15 @@ void IgcLogger::slotMakeFixEntry()
   QString entry("B" + formatTime(lastfix.time) + formatPosition(lastfix.position) + "A"
                 + formatAltitude(lastfix.altitude) + formatAltitude(lastfix.GNSSAltitude));
 
-  if ( _logMode==standby )
+  if( _logMode == standby )
     {
-      _backtrack.add(entry);
+      _backtrack.add( entry );
     }
   else
     {
       _stream << entry << "\n";
-      emit madeEntry();
+      emit
+      madeEntry();
       _logfile.flush(); //make sure the file is flushed, so we will not lose data if something goes wrong
     }
 }
@@ -378,14 +379,6 @@ void IgcLogger::slotToggleLogging()
 void IgcLogger::slotConstellation()
 {
   makeSatConstEntry();
-}
-
-/**
- * This slot is called to indicate that a new Utc is available.
- */
-void IgcLogger::slotUtc( QDateTime& newUtc )
-{
-
 }
 
 
