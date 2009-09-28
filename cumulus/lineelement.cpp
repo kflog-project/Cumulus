@@ -19,6 +19,7 @@
 #include <QColor>
 
 #include "lineelement.h"
+#include "generalconfig.h"
 
 LineElement::LineElement( const QString& name,
                           const BaseMapElement::objectType t,
@@ -46,6 +47,39 @@ bool LineElement::drawMapElement(QPainter* targetP)
   // element is not visible, return.
 
   if( ! glConfig->isBorder(typeID) || ! isVisible())
+    {
+      return false;
+    }
+
+  // Do check load and drawing options
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  if( typeID == BaseMapElement::Forest && conf->getMapLoadForests() == false )
+    {
+      return false;
+    }
+
+  if( typeID == BaseMapElement::Highway && conf->getMapLoadHighways() == false )
+    {
+      return false;
+    }
+
+  if( typeID == BaseMapElement::Railway && conf->getMapLoadRoads() == false )
+    {
+      return false;
+    }
+
+  if( typeID == BaseMapElement::Road && conf->getMapLoadRoads() == false )
+    {
+      return false;
+    }
+
+  if( typeID == BaseMapElement::River && conf->getMapLoadWaterways() == false )
+    {
+      return false;
+    }
+
+  if( typeID == BaseMapElement::City && conf->getMapLoadCities() == false )
     {
       return false;
     }
