@@ -238,7 +238,7 @@ void SettingsPageMapObjects::fillLoadOptionList()
   int row = 0;
   int col = 0;
 
-  liCities = new QTableWidgetItem( tr("Cities & Villages") );
+  liCities = new QTableWidgetItem( tr("Cities") );
   liCities->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liCities );
 
