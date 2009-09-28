@@ -13,6 +13,7 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[-] 2009-09-28 AP: Drawing options of topographical items now considered.
 [-] 2009-09-27 AP: The turquoise course line of a flight task is not good to
                    see in sunshine. Changed the color to dark magenta.
                    Furthermore was the width of the course lines to small under
