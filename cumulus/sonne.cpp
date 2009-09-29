@@ -44,19 +44,19 @@ static const double pi=3.1415926535897932384626433832795;
 static const double RAD = 0.017453292519943295769236907684886;
 
 // Gregorianischer Kalender
-double Sonne::JulianischesDatum ( int Jahr, int Monat, int Tag, 
+double Sonne::JulianischesDatum ( int Jahr, int Monat, int Tag,
                                   int Stunde, int Minuten, double Sekunden )
 {
-  if( Monat <= 2 ) 
-    { 
-      Monat=Monat + 12; 
+  if( Monat <= 2 )
+    {
+      Monat=Monat + 12;
       Jahr = Jahr -1;
     }
 
   int Gregor = (Jahr/400)-(Jahr/100)+(Jahr/4); // Gregorianischer Kalender
 
   return 2400000.5+365L*Jahr - 679004L + Gregor
-    + int(30.6001*(Monat+1)) + Tag + Stunde/24.0 
+    + int(30.6001*(Monat+1)) + Tag + Stunde/24.0
     + Minuten/1440.0 + Sekunden/86400.0;
 }
 
@@ -77,12 +77,12 @@ double Sonne::eps( const double T )
 }
 
 double Sonne::BerechneZeitgleichung( double &DK,double T )
-{	
+{
   double RA_Mittel = 18.71506921 + 2400.0513369*T +(2.5862e-5 - 1.72e-9*T)*T*T;
 
-  double M  = InPi(pi2 * (0.993133 + 99.997361*T)); 
+  double M  = InPi(pi2 * (0.993133 + 99.997361*T));
   double L  = InPi(pi2 * (  0.7859453 + M/pi2 + (6893.0*sin(M)+72.0*sin(2.0*M)+6191.2*T) / 1296.0e3));
-  double e = eps(T);	
+  double e = eps(T);
   double RA = atan(tan(L)*cos(e));
 
   if (RA<0) RA+=pi;
@@ -93,7 +93,7 @@ double Sonne::BerechneZeitgleichung( double &DK,double T )
   DK = asin(sin(e)*sin(L));
 
   // Damit 0 <= RA_Mittel < 24
-  RA_Mittel = 24.0*InPi(pi2*RA_Mittel/24.0)/pi2; 
+  RA_Mittel = 24.0*InPi(pi2*RA_Mittel/24.0)/pi2;
 
   double dRA = RA_Mittel - RA;
 
@@ -132,21 +132,21 @@ bool Sonne::sonneAufUnter( QString& Auf, QString& Unter,
     }
 
   double JD = JulianischesDatum( Datum.year(), Datum.month(), Datum.day() ); // Stunde=12
-		
+
   double T = (JD - JD2000)/36525.0;
   double DK;
   double h = -50.0/60.0*RAD;
 
-  // Koordinaten muessen durch 600000 devidiert werden um sie wieder
+  // Koordinaten muessen durch 600000 dividiert werden um sie wieder
   // in normale Gradzahlen zu konvertieren
   double B = Position.x() / 600000.0 * RAD; // geographische Breite
-  double Laenge = Position.y() / 600000.0;  // geographische Laenge 
+  double Laenge = Position.y() / 600000.0;  // geographische Laenge
   double Zeitgleichung = BerechneZeitgleichung(DK,T);
   double Zeitdifferenz = acos((sin(h) - sin(B)*sin(DK)) / (cos(B)*cos(DK)))/pi;
 
   if( isnan(Zeitdifferenz) )
     {
-      // ist keine Zahl NaN (not a number)
+      // qDebug("Sonne::sonneAufUnter(): ist keine Zahl NaN (not a number)");
       return false;
     }
 
@@ -158,10 +158,18 @@ bool Sonne::sonneAufUnter( QString& Auf, QString& Unter,
   double AufgangWeltzeit = AufgangOrtszeit - Laenge /15;
   double UntergangWeltzeit = UntergangOrtszeit - Laenge /15;
 
-  if( AufgangWeltzeit < 0.0 || UntergangWeltzeit < 0.0 )
+  /**
+  qDebug( "Sonne::sonneAufUnter(): AufgangOrtszeit=%f, UntergangOrtszeit=%f",
+           AufgangOrtszeit, UntergangOrtszeit );
+
+  qDebug( "Sonne::sonneAufUnter(): AufgangWeltzeit=%f, UntergangWeltzeit=%f",
+           AufgangWeltzeit, UntergangWeltzeit );
+  **/
+
+  if( AufgangWeltzeit < 0.0 )
     {
-      // negative Zeiten sind Unsinn und entstehen nahe dem Polarkreis
-      return false;
+      // Richtung Osten kann die Weltzeit negativ werden. Das muss man korregieren.
+      AufgangWeltzeit += 24.0;
     }
 
   // Berechne Auf- und Untergang in Sekunden
@@ -173,13 +181,13 @@ bool Sonne::sonneAufUnter( QString& Auf, QString& Unter,
 
   int hAuf = (Aufgang / 3600) % 24;
   int mAuf = (Aufgang % 3600) / 60;
-  
+
   int hUnter = (Untergang / 3600) % 24;
   int mUnter = (Untergang % 3600) / 60;
 
   Auf.sprintf("%02d:%02d", hAuf, mAuf);
   Unter.sprintf("%02d:%02d", hUnter, mUnter);
-  
+
   // Die Auf- und Untergangszeiten sind auf UTC bezogen
   if( Time::getTimeUnit() == Time::local )
     {
