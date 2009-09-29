@@ -1005,7 +1005,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
         case BaseMapElement::Railway_D:
           READ_POINT_LIST
 
-          if ( !GeneralConfig::instance()->getMapLoadRailroads() ) break;
+          if ( !GeneralConfig::instance()->getMapLoadRailways() ) break;
 
           railList.append( LineElement("", typeIn, all, false, fileSecID) );
           break;

@@ -187,7 +187,7 @@ void SettingsPageMapObjects::slot_load()
   liLabelsInfo->setCheckState( conf->getMapShowLabelsExtraInfo() ? Qt::Checked : Qt::Unchecked );
   liRoads->setCheckState( conf->getMapLoadRoads() ? Qt::Checked : Qt::Unchecked );
   liHighways->setCheckState( conf->getMapLoadHighways() ? Qt::Checked : Qt::Unchecked );
-  liRailroads->setCheckState( conf->getMapLoadRailroads() ? Qt::Checked : Qt::Unchecked );
+  liRailways->setCheckState( conf->getMapLoadRailways() ? Qt::Checked : Qt::Unchecked );
   liCities->setCheckState( conf->getMapLoadCities() ? Qt::Checked : Qt::Unchecked );
   liWaterways->setCheckState( conf->getMapLoadWaterways() ? Qt::Checked : Qt::Unchecked );
   liForests->setCheckState( conf->getMapLoadForests() ? Qt::Checked : Qt::Unchecked );
@@ -216,7 +216,7 @@ void SettingsPageMapObjects::slot_save()
   conf->setMapShowIsoLineBorders(liIsolineBorders->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadRoads(liRoads->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadHighways(liHighways->checkState() == Qt::Checked ? true : false);
-  conf->setMapLoadRailroads(liRailroads->checkState() == Qt::Checked ? true : false);
+  conf->setMapLoadRailways(liRailways->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadCities(liCities->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadWaterways(liWaterways->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadForests(liForests->checkState() == Qt::Checked ? true : false);
@@ -262,9 +262,9 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liTargetLine->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liTargetLine );
 
-  liRailroads = new QTableWidgetItem( tr("Railroads") );
-  liRailroads->setFlags( Qt::ItemIsEnabled );
-  loadOptions->setItem( row++, col, liRailroads );
+  liRailways = new QTableWidgetItem( tr("Railways") );
+  liRailways->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, col, liRailways );
 
   // next column is one
   row = 0;
@@ -331,7 +331,7 @@ void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
   changed |= ( conf->getMapShowLabelsExtraInfo() ? Qt::Checked : Qt::Unchecked ) != liLabelsInfo->checkState();
   changed |= ( conf->getMapLoadRoads() ? Qt::Checked : Qt::Unchecked ) != liRoads->checkState();
   changed |= ( conf->getMapLoadHighways() ? Qt::Checked : Qt::Unchecked ) != liHighways->checkState();
-  changed |= ( conf->getMapLoadRailroads() ? Qt::Checked : Qt::Unchecked ) != liRailroads->checkState();
+  changed |= ( conf->getMapLoadRailways() ? Qt::Checked : Qt::Unchecked ) != liRailways->checkState();
   changed |= ( conf->getMapLoadCities() ? Qt::Checked : Qt::Unchecked ) != liCities->checkState();
   changed |= ( conf->getMapLoadWaterways() ? Qt::Checked : Qt::Unchecked ) != liWaterways->checkState();
   changed |= ( conf->getMapLoadForests() ? Qt::Checked : Qt::Unchecked ) != liForests->checkState();

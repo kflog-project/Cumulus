@@ -54,34 +54,65 @@ bool LineElement::drawMapElement(QPainter* targetP)
   // Do check load and drawing options
   GeneralConfig *conf = GeneralConfig::instance();
 
-  if( typeID == BaseMapElement::Forest && conf->getMapLoadForests() == false )
+  switch( typeID )
     {
-      return false;
-    }
+    case BaseMapElement::Forest:
 
-  if( typeID == BaseMapElement::Highway && conf->getMapLoadHighways() == false )
-    {
-      return false;
-    }
+      if( conf->getMapLoadForests() == false )
+        {
+          return false;
+        }
 
-  if( typeID == BaseMapElement::Railway && conf->getMapLoadRoads() == false )
-    {
-      return false;
-    }
+      break;
 
-  if( typeID == BaseMapElement::Road && conf->getMapLoadRoads() == false )
-    {
-      return false;
-    }
+    case BaseMapElement::Highway:
 
-  if( typeID == BaseMapElement::River && conf->getMapLoadWaterways() == false )
-    {
-      return false;
-    }
+      if( conf->getMapLoadHighways() == false )
+        {
+          return false;
+        }
 
-  if( typeID == BaseMapElement::City && conf->getMapLoadCities() == false )
-    {
-      return false;
+      break;
+
+    case BaseMapElement::Railway:
+
+      if( conf->getMapLoadRailways() == false )
+        {
+          return false;
+        }
+
+      break;
+
+    case BaseMapElement::Road:
+
+      if( conf->getMapLoadRoads() == false )
+        {
+          return false;
+        }
+
+      break;
+
+    case BaseMapElement::River:
+
+      if( conf->getMapLoadWaterways() == false )
+        {
+          return false;
+        }
+
+      break;
+
+    case BaseMapElement::City:
+
+      if( conf->getMapLoadCities() == false )
+        {
+          return false;
+        }
+
+      break;
+
+    default:
+
+      break;
     }
 
   QPolygon mP( glMapMatrix->map(projPolygon) );

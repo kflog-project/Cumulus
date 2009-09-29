@@ -43,11 +43,11 @@
 
 // default window display times
 #define MIN_POPUP_DISPLAY_TIME 2
-#define AIRFIELD_DISPLAY_TIME_DEFAULT 3
-#define AIRSPACE_DISPLAY_TIME_DEFAULT 3
-#define INFO_DISPLAY_TIME_DEFAULT 7
-#define WAYPOINT_DISPLAY_TIME_DEFAULT 3
-#define WARNING_DISPLAY_TIME_DEFAULT  3
+#define AIRFIELD_DISPLAY_TIME_DEFAULT 5
+#define AIRSPACE_DISPLAY_TIME_DEFAULT 5
+#define INFO_DISPLAY_TIME_DEFAULT     10
+#define WAYPOINT_DISPLAY_TIME_DEFAULT 5
+#define WARNING_DISPLAY_TIME_DEFAULT  5
 #define WARNING_SUPPRESS_TIME_DEFAULT 0 // time in minutes
 
 // default for audible alarm switch
@@ -1013,15 +1013,15 @@ class GeneralConfig : protected QSettings
     _mapLoadHighways = newValue;
   };
 
-  /** gets Map LoadRailroads */
-  bool getMapLoadRailroads() const
+  /** gets Map LoadRailways */
+  bool getMapLoadRailways() const
   {
-    return _mapLoadRailroads;
+    return _mapLoadRailways;
   };
-  /** sets Map LoadRailroads */
-  void setMapLoadRailroads(const bool newValue)
+  /** sets Map LoadRailways */
+  void setMapLoadRailways(const bool newValue)
   {
-    _mapLoadRailroads = newValue;
+    _mapLoadRailways = newValue;
   };
 
   /** gets Map LoadCities */
@@ -1804,8 +1804,8 @@ class GeneralConfig : protected QSettings
   bool _mapLoadRoads;
   // Map LoadHighways
   bool _mapLoadHighways;
-  // Map LoadRailroads
-  bool _mapLoadRailroads;
+  // Map LoadRailways
+  bool _mapLoadRailways;
   // Map LoadCities
   bool _mapLoadCities;
   // Map LoadWaterways

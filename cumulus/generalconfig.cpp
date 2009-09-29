@@ -211,10 +211,10 @@ void GeneralConfig::load()
   _mapShowIsoLineBorders          = value( "ShowIsoLineBorders", false ).toBool();
   _mapLoadRoads                   = value( "LoadRoads", true ).toBool();
   _mapLoadHighways                = value( "LoadHighways", true ).toBool();
-  _mapLoadRailroads               = value( "LoadRailroads", true ).toBool();
+  _mapLoadRailways                = value( "LoadRailways", true ).toBool();
   _mapLoadCities                  = value( "LoadCities", true ).toBool();
   _mapLoadWaterways               = value( "LoadWaterways", true ).toBool();
-  _mapLoadForests                 = value( "LoadForests", true ).toBool();
+  _mapLoadForests                 = value( "LoadForests", false ).toBool();
   _drawTrail                      = (UseInMode)value( "DrawTrail", 0 ).toInt();
   _mapShowAirfieldLabels          = value( "ShowAirfieldLabels", false ).toBool();
   _mapShowTaskPointLabels         = value( "ShowTaskPointLabels", false ).toBool();
@@ -510,7 +510,7 @@ void GeneralConfig::save()
   setValue( "ShowLabelsExtraInfo", _mapShowLabelsExtraInfo );
   setValue( "LoadRoads", _mapLoadRoads );
   setValue( "LoadHighways", _mapLoadHighways );
-  setValue( "LoadRailroads", _mapLoadRailroads );
+  setValue( "LoadRailways", _mapLoadRailways );
   setValue( "LoadCities", _mapLoadCities   );
   setValue( "LoadWaterways", _mapLoadWaterways );
   setValue( "LoadForests", _mapLoadForests );
