@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andr� Somers, 2008 Axel Pauli
+**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -19,7 +19,7 @@
  * This widget provides an interface to add, edit and delete gliders
  * from the glider list.
  *
- * @author Andr� Somers
+ * @author André Somers
  */
 
 #include <QPushButton>
@@ -114,17 +114,19 @@ void SettingsPageGlider::slot_delete()
 {
   Glider *glider = list->getSelectedGlider();
 
-  if (! glider) {
-    return;
-  }
+  if( !glider )
+    {
+      return;
+    }
 
   int answer= QMessageBox::question(this,tr("Delete?"),tr("Delete selected glider?"),
                                    QMessageBox::Yes,
                                    QMessageBox::No | QMessageBox::Escape);
 
-  if( answer == QMessageBox::Yes ) {
-    list->slot_Deleted(glider);
-  }
+  if( answer == QMessageBox::Yes )
+    {
+      list->slot_Deleted( glider );
+    }
 }
 
 /** Called to fill the tree list */
@@ -145,9 +147,10 @@ void SettingsPageGlider::slot_query_close(bool& warn, QStringList& warnings)
 {
   /* set warn to 'true' if the data has changed. Note that we can NOT just set warn equal to
     _changed, because that way we might erase a warning flag set by another page! */
-  if (list->has_changed()) {
-    warn = true;
-    warnings.append(tr("The Glider list"));
-  }
+  if( list->has_changed() )
+    {
+      warn = true;
+      warnings.append( tr( "The Glider list" ) );
+    }
 }
 
