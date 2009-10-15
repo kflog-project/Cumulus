@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2003      by André Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -25,18 +26,19 @@
 
 /**
  * An instance of a Glider object contains all the information available
- * on a glider: it's type, it's registration, callsign, polaire,
+ * on a glider: it's type, it's registration, call sign, polare,
  * two- or single seater, maximum water capacity, etc.
- * 
+ *
  * @author André Somers
  */
 
 class Glider
 {
-public: //types
-    enum seat{singleSeater, doubleSeater};
 
 public:
+
+    enum seat{ singleSeater=1, doubleSeater=2 };
+
     Glider();
     ~Glider();
 
@@ -56,7 +58,7 @@ public:
     /**
      * @returns the registration of the Glider, such as for instance 'PH-1024' or 'D-8482'.
      */
-    QString registration()const
+    QString registration() const
     {
         return _registration;
     };
@@ -70,19 +72,19 @@ public:
     };
 
     /**
-     * @returns the callsign of the Glider, such as for instance 'UT' or 'DW'.
+     * @returns the call sign of the Glider, such as for instance 'UT' or 'DW'.
      */
-    QString callsign()const
+    QString callSign() const
     {
-        return _callsign;
+        return _callSign;
     };
 
     /**
-     * Sets the callsign of the Glider, such as for instance 'UT' or 'DW'.
+     * Sets the callSign of the Glider, such as for instance 'UT' or 'DW'.
      */
-    void setCallsign(QString newValue)
+    void setCallSign(QString newValue)
     {
-        _callsign=newValue;
+        _callSign = newValue;
     };
 
     /**
@@ -118,7 +120,7 @@ public:
     };
 
     /**
-     * @returns a pointer to the polar object belonging to this glider. 
+     * @returns a pointer to the polar object belonging to this glider.
      */
     Polar *polar()
     {
@@ -126,7 +128,7 @@ public:
     };
 
     /**
-     * Sets the polar object belonging to this glider. 
+     * Sets the polar object belonging to this glider.
      */
     void setPolar(Polar * newPolar);
 
@@ -134,12 +136,12 @@ public:
      * This funtion loads the glider-data from the config-object.
      * The config object needs to be initialized to the correct
      * section beforehand! It tries to load the glider with id id,
-     * and returns true if it succeeds, and false otherwise. 
+     * and returns true if it succeeds, and false otherwise.
      */
     bool load(QSettings *config, int id);
 
     /**
-     * Stores the gliderinfo contained in config-object config under ID id. 
+     * Stores the gliderinfo contained in config-object config under ID id.
      */
     void safe(QSettings *config, int id);
 
@@ -162,9 +164,9 @@ public:
     /**
      * @returns the name of the co-pilot.
      */
-     QString coPilot()const
+    QString coPilot() const
     {
-        return _coPilot;
+      return _coPilot;
     };
 
     /**
@@ -181,7 +183,7 @@ private: // Private attributes
      */
     QString _type;
     QString _registration;
-    QString _callsign;
+    QString _callSign;
     seat _seats;
     Polar * _polar;
     int _maxWater;
