@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -50,40 +51,43 @@ GliderListWidget::~GliderListWidget()
 }
 
 
-/** Retreives the gliders from the config file, and fills the list. */
+/** Retrieves the gliders from the configuration file, and fills the list. */
 void GliderListWidget::fillList()
 {
-  qDeleteAll(Gliders);
+  qDeleteAll( Gliders );
   Gliders.clear();
 
   QSettings config( QSettings::UserScope, "Cumulus" );
-  config.beginGroup("Glider Data");
+  config.beginGroup( "Glider Data" );
 
-  QString keyname="Glider%1";
-  int i=1;
+  QString keyname = "Glider%1";
+  int i = 1;
 
-  while(config.contains(keyname.arg(i))) {
-    Glider *glider = new Glider();
-    
-    if (glider->load(&config ,i)) {
-      Gliders.append(glider);
-      
-      QStringList rowList;
-      rowList << glider->type() 
-              << glider->registration()
-              << glider->callsign()
-              << QString::number(glider->lastSafeID());
-              
-      addTopLevelItem( new QTreeWidgetItem(rowList, 0) );
-    } else {
-      delete glider; //loading failed!
+  while( config.contains( keyname.arg( i ) ) )
+    {
+      Glider *glider = new Glider();
+
+      if( glider->load( &config, i ) )
+        {
+          Gliders.append( glider );
+
+          QStringList rowList;
+          rowList << glider->type() << glider->registration() << glider->callSign()
+                  << QString::number( glider->lastSafeID() );
+
+          addTopLevelItem( new QTreeWidgetItem( rowList, 0 ) );
+        }
+      else
+        {
+          delete glider; //loading failed!
+        }
+      i++;
     }
-    i++;
-  }
 
-  if( i > 1) {
-    resizeListColumns();
-  }
+  if( i > 1 )
+    {
+      resizeListColumns();
+    }
 
   config.endGroup();
   // qDebug("GliderListWidget::fillList(): gliders=%d", Gliders.count());
@@ -97,7 +101,7 @@ void GliderListWidget::save()
 
   QString keyname="Glider%1";
 
-  config.remove(""); // remove all old entires
+  config.remove(""); // remove all old entries
 
   uint u=1;
   /* check for duplicate registrations
@@ -106,23 +110,29 @@ void GliderListWidget::save()
      In case of 5 gliders, the number of iterations is 10, and for 10 glider the number is 45 (worst
      case). That seems acceptable to me. For long lists, it would be more efficient to first sort
      the list, and then compare. */
-  for(int i=2;i<=Gliders.count();i++) {
-    for(int j=1;j<i;j++) {
-      if(Gliders.at(j-1)->registration()==Gliders.at(i-1)->registration())
-        // two gliders have the same registration, append a number to the second one.
-        Gliders.at(j-1)->setRegistration(Gliders.at(j-1)->registration() + "(" + QString::number(u++) + ")");
+  for( int i = 2; i <= Gliders.count(); i++ )
+    {
+      for( int j = 1; j < i; j++ )
+        {
+          if( Gliders.at( j - 1 )->registration() == Gliders.at( i - 1 )->registration() )
+
+            // two gliders have the same registration, append a number to the second one.
+            Gliders.at( j - 1 )->setRegistration(
+                Gliders.at( j - 1 )->registration() + "(" + QString::number( u++ )
+                    + ")" );
+        }
     }
-  }
 
   //Should we let the user know what we have done?
   // if(u>1)
   //     qDebug("changed %d registrations",u-1);
 
-  // store glider list in config file
-  for(int i=1;i<=Gliders.count();i++) {
-    // qDebug("saving glider %d",i);
-    Gliders.at(i-1)->safe(&config,i);
-  }
+  // store glider list in configuration file
+  for( int i = 1; i <= Gliders.count(); i++ )
+    {
+      // qDebug("saving glider %d",i);
+      Gliders.at( i - 1 )->safe( &config, i );
+    }
 
   config.endGroup();
   _changed=false;
@@ -133,26 +143,32 @@ void GliderListWidget::save()
     true, the glider object is taken from the list too. */
 Glider *GliderListWidget::getSelectedGlider(bool take)
 {
-  int i,n;
-  n =  Gliders.count();
+  int i, n;
+  n = Gliders.count();
 
-  if ( selectedItems().size() > 0 ) {
+  if( selectedItems().size() > 0 )
+    {
 
-    QTreeWidgetItem* selectedItem = selectedItems().at(0);
-    Glider* glider;
+      QTreeWidgetItem* selectedItem = selectedItems().at( 0 );
+      Glider* glider;
 
-    for (i=0; i < n; i++) {
-      glider = Gliders.at(i);
+      for( i = 0; i < n; i++ )
+        {
+          glider = Gliders.at( i );
 
-      if ( glider->lastSafeID() == selectedItem->text(3).toInt() ) {
-        if (take) {
-          return Gliders.takeAt(i);
-        } else {
-          return glider;
+          if( glider->lastSafeID() == selectedItem->text( 3 ).toInt() )
+            {
+              if( take )
+                {
+                  return Gliders.takeAt( i );
+                }
+              else
+                {
+                  return glider;
+                }
+            }
         }
-      }
     }
-  }
 
   return 0;
 }
@@ -161,61 +177,62 @@ Glider *GliderListWidget::getSelectedGlider(bool take)
 /** Called if a glider has been edited. */
 void GliderListWidget::slot_Edited(Glider *glider)
 {
-  if (glider) {
-    if ( selectedItems().size() > 0 ) {
-      QTreeWidgetItem* selectedItem = selectedItems().at(0);
+  if( glider )
+    {
+      if( selectedItems().size() > 0 )
+        {
+          QTreeWidgetItem* selectedItem = selectedItems().at( 0 );
 
-      selectedItem->setText(0, glider->type());
-      selectedItem->setText(1, glider->registration());
-      selectedItem->setText(2, glider->callsign());
-      selectedItem->setText(3, QString::number(glider->lastSafeID()));
-      resizeListColumns();
-      _changed = true;
+          selectedItem->setText( 0, glider->type() );
+          selectedItem->setText( 1, glider->registration() );
+          selectedItem->setText( 2, glider->callSign() );
+          selectedItem->setText( 3, QString::number( glider->lastSafeID() ) );
+          resizeListColumns();
+          _changed = true;
+        }
     }
-  }
 }
 
 
 /** Called if a glider has been added. */
 void GliderListWidget::slot_Added(Glider *glider)
 {
-  if (glider) {
-    _added++;
-    QStringList rowList;
-    rowList << glider->type()
-            << glider->registration()
-            << glider->callsign()
-            << QString::number(-_added);
+  if( glider )
+    {
+      _added++;
+      QStringList rowList;
+      rowList << glider->type() << glider->registration() << glider->callSign()
+              << QString::number( -_added );
 
-    addTopLevelItem( new QTreeWidgetItem(this, rowList, 0) );
-    setCurrentItem( itemAt(0,topLevelItemCount()-1) );
-    sortItems( 0, Qt::AscendingOrder );
-    resizeListColumns();
-    
-    glider->setID(-_added); //store temp ID
-    Gliders.append(glider);
-    _changed = true;
-  }
+      addTopLevelItem( new QTreeWidgetItem( this, rowList, 0 ) );
+      setCurrentItem( itemAt( 0, topLevelItemCount() - 1 ) );
+      sortItems( 0, Qt::AscendingOrder );
+      resizeListColumns();
+
+      glider->setID( -_added ); //store temp ID
+      Gliders.append( glider );
+      _changed = true;
+    }
 }
 
 
 void GliderListWidget::slot_Deleted(Glider *glider)
 {
-  if ( glider && currentItem() ) {
+  if( glider && currentItem() )
+    {
+      // remove from listView
+      delete takeTopLevelItem( currentIndex().row() );
 
-    // remove from listView
-    delete takeTopLevelItem( currentIndex().row() );
+      sortItems( 0, Qt::AscendingOrder );
+      setCurrentItem( 0 );
+      resizeColumnToContents( 0 );
+      resizeListColumns();
 
-    sortItems( 0, Qt::AscendingOrder );
-    setCurrentItem( 0 );
-    resizeColumnToContents(0);
-    resizeListColumns();
-
-    // remove glider from glider list
-    int index = Gliders.indexOf(glider);
-    delete Gliders.takeAt(index);
-    _changed = true;
-  }
+      // remove glider from glider list
+      int index = Gliders.indexOf( glider );
+      delete Gliders.takeAt( index );
+      _changed = true;
+    }
 }
 
 
@@ -224,36 +241,45 @@ Glider* GliderListWidget::getStoredSelection()
 {
   QSettings config( QSettings::UserScope, "Cumulus" );
 
-  config.beginGroup("Glider Selection");
-  QString stored = config.value("lastSelected", "").toString();
+  config.beginGroup( "Glider Selection" );
+  QString stored = config.value( "lastSelected", "" ).toString();
   config.endGroup();
 
-  config.beginGroup("Glider Data");
+  config.beginGroup( "Glider Data" );
 
-  if (!stored.isEmpty()) {
-    QString keyname="Glider%1";
-    int i=1;
-    
-    while(config.contains(keyname.arg(i))) {
-      Glider *glider=new Glider();
+  if( !stored.isEmpty() )
+    {
+      QString keyname = "Glider%1";
+      int i = 1;
 
-      if (glider->load(&config ,i)) {
-        if (glider->registration() == stored) {
-          return glider;
-        } else {
-          delete glider; //this is not the glider we're looking for...
-        }
-      } else {
-        delete glider; //loading failed!
-      }
-      i++;
-    } //while
-  } //!stored.isEmpty()
-  
+      while( config.contains( keyname.arg( i ) ) )
+        {
+          Glider *glider = new Glider();
+
+          if( glider->load( &config, i ) )
+            {
+              if( glider->registration() == stored )
+                {
+                  return glider;
+                }
+              else
+                {
+                  delete glider; //this is not the glider we're looking for...
+                }
+            }
+          else
+            {
+              delete glider; //loading failed!
+            }
+
+          i++;
+        } //while
+    } //!stored.isEmpty()
+
   config.endGroup();
   // if we end up here, there is no default: either loading failed, or
   // it is not set, or the set glider has been deleted.
-  return static_cast<Glider *> (0);
+  return static_cast<Glider *> ( 0 );
 }
 
 
@@ -280,7 +306,9 @@ void GliderListWidget::setStoredSelection(Glider* glider)
 void GliderListWidget::selectItemFromReg( const QString& registration )
 {
   QList<QTreeWidgetItem*> result = findItems( registration, Qt::MatchExactly, 1 );
-  if ( result.size() > 0 ) {
-    setCurrentItem( result.at(0) );
-  }
+
+  if( result.size() > 0 )
+    {
+      setCurrentItem( result.at( 0 ) );
+    }
 }
