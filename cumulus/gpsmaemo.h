@@ -66,6 +66,14 @@ class GpsMaemo : public QObject
      */
     bool stopGpsReceiving();
 
+    /**
+     * Returns the socket notifier of the daemon connection.
+     */
+    QSocketNotifier* getDaemonNotifier() const
+    {
+      return gpsDaemonNotifier;
+    }
+
   signals:
     /**
      * This signal is used every time a new sentence has arrived.
@@ -111,10 +119,10 @@ class GpsMaemo : public QObject
     // Data members
     //------------------------------------------------------------------------------
 
-    // Nofifier for QT main loop
+    // Notifier for QT main loop
     QSocketNotifier *gpsDaemonNotifier;
 
-    // used as timeout control for connection supervison
+    // used as timeout control for connection supervision
     QTimer *timer;
 
     // Socket port for ipc to daemon process
