@@ -45,6 +45,7 @@
 #include <QTextStream>
 #include <QTimer>
 #include <QDateTime>
+#include <QStringList>
 
 #include "altitude.h"
 #include "calculator.h"
@@ -72,6 +73,9 @@ public:
 
 public:
 
+  /** returns the existing singleton class */
+  static IgcLogger* instance();
+
   /**
    * Destructor
    */
@@ -83,43 +87,28 @@ public:
   void Stop();
 
   /**
-   * Starts logging of data
-   */
-  void Start();
-
-  /**
    * Switches to standby mode. If we are currently logging, the logfile will
    * be closed.
    */
   void Standby();
 
   /**
-   * Creates a log file
-   */
-  void CreateLogfile();
-
-  /**
-   * Closes the logfile.
-   */
-  void CloseFile();
-
-  /**
    * @returns true if we are currently logging
    */
-  virtual bool getIsLogging();
+  bool getIsLogging() const
+  {
+    return ( _logMode == on );
+  };
 
   /**
    * @returns true if we are currently standby
    */
-  virtual bool getIsStandby();
+  bool getIsStandby() const
+  {
+    return ( _logMode == standby );
+  };
 
-  /**
-   * @returns the instance of the IgcLogger, and creates an instance
-   * if there was none
-   */
-  static IgcLogger* instance();
-
-public slots: // Public slots
+public slots:
   /**
    * This slot is used internally by the timer to make a log entry on
    * an interval, but can also be used from outside the class to
@@ -145,11 +134,16 @@ public slots: // Public slots
   void slotToggleLogging();
 
   /**
-   * This slot is used to signal that a new flight mode has been detected.
-   * This is needed for auto-starting the logger if the logger is in
-   * standby mode.
+   * This slot is called to read the logger configuration items after a modification.
    */
-  void slotFlightMode(Calculator::flightmode);
+  void slotReadConfig();
+
+private slots:
+
+  /**
+   * This slot is called to reset the logger interval after a modification.
+   */
+  void slotResetLoggingTime();
 
 signals: // Signals
   /**
@@ -165,13 +159,26 @@ signals: // Signals
    */
   void madeEntry();
 
+private:
 
-private: // Private attributes
-  /** Provides a timer for the periodic recording of log entries */
-  QTimer *timer;
+  /**
+   * Constructor is private because this is a singleton class.
+   */
+  IgcLogger(QObject* parent = static_cast<QObject *>(0) );
 
-  /** Store time interval for faster logging */
-  QTime fasterLoggingTime;
+  /**
+   * Because this is a singleton, don't allow copies and assignments.
+   */
+  IgcLogger(const IgcLogger& right);
+  IgcLogger& operator=(const IgcLogger& right);
+
+  /**
+   * A pointer to the singleton existing instance.
+   */
+  static IgcLogger* _theInstance;
+
+  /** A timer to reset the logger interval to the default value after a modification. */
+  QTimer* resetTimer;
 
   /** The text stream object to write our data to. */
   QTextStream _stream;
@@ -179,10 +186,13 @@ private: // Private attributes
   /** This is our log file. It is being used via the _stream object. */
   QFile _logfile;
 
-  /** Indicates if logging is currently active. */
+  /** Contains the current active logging mode. */
   LogMode _logMode;
 
-  /** Time stamp of last logged fix */
+  /** Logger record time interval in seconds. */
+  int _logInterval;
+
+  /** Time stamp of the last logged fix */
   QTime lastLoggedFix;
 
   /** List of last would-be log entries.
@@ -191,21 +201,23 @@ private: // Private attributes
     * and logging is triggered, the list is used to write out some older events
     * to the log. This way, we can be sure that the complete start sequence is
     * available in the log. */
-  LimitedList<QString> _backtrack;
+  LimitedList<QStringList> _backtrack;
 
   /** Holds the flight number for this day */
-  int flightnumber;
+  int flightNumber;
 
-  /** A pointer to the instance */
-  static IgcLogger* _theInstance;
-
-
-private: // Private methods
   /**
-   * Constructor
-   * Private, because this is a singleton class
+   * Creates a log file, if it not yet already exists and writes the header items
+   * into it.
+   *
+   * Returns true if file is ready for further writing otherwise false.
    */
-  IgcLogger(QObject* parent = static_cast<QObject *>(0) );
+  bool isLogFileOpen();
+
+  /**
+   * Closes the logfile.
+   */
+  void CloseFile();
 
   /**
    * This function formats a date in the correct igc format DDMMYY
@@ -213,9 +225,14 @@ private: // Private methods
   QString formatDate(const QDate& date);
 
   /**
-   * This function writes the headers for the logfile to the logfile.
+   * This function formats a F record.
    */
-  void writeHeaders();
+  QString formatFRecord();
+
+  /**
+   * This function writes the header for the IGC file into the logfile.
+   */
+  void writeHeader();
 
   /**
    * Makes a fix entry in the logfile.
@@ -236,7 +253,7 @@ private: // Private methods
 
   /**
    * This function formats the position to the correct format for
-   * igc files. Latitude and Longitude are encoded as DDMMmmmADDDMMmmmO,
+   * IGC files. Latitude and Longitude are encoded as DDMMmmmADDDMMmmmO,
    * with A=N or S and O=E or W.
    */
   QString formatPosition(const QPoint& position);
