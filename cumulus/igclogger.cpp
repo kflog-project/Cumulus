@@ -424,6 +424,7 @@ void IgcLogger::slotToggleLogging()
         {
           // qDebug( "Logger standby mode turned off." );
           _logMode = off;
+          GeneralConfig::instance()->setLoggerAutostartMode(false);
         }
     }
   else
