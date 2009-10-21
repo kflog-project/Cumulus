@@ -59,7 +59,7 @@ GpsMaemo::GpsMaemo(QObject* parent) : QObject(parent)
   timer->connect(timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()));
 
   readCounter = 0;
-  gpsDaemonNotifier = 0;
+  gpsDaemonNotifier = static_cast<QSocketNotifier *>(0);
   ctx = 0;
 
   // Default GPSD port
@@ -124,7 +124,7 @@ bool GpsMaemo::startGpsReceiving()
   if (gpsDaemonNotifier)
     {
       delete gpsDaemonNotifier;
-      gpsDaemonNotifier = 0;
+      gpsDaemonNotifier = static_cast<QSocketNotifier *>(0);
     }
 
   if (ctx)
@@ -257,11 +257,10 @@ bool GpsMaemo::startGpsReceiving()
   // Add a socket notifier to the QT main loop, which will be
   // bound to slot_NotificationEvent. Qt will trigger this method, if
   // the gpsd has sent new data.
-  gpsDaemonNotifier
-      = new QSocketNotifier(client.getSock(), QSocketNotifier::Read, this);
+  gpsDaemonNotifier = new QSocketNotifier(client.getSock(), QSocketNotifier::Read, this);
 
   gpsDaemonNotifier->connect( gpsDaemonNotifier, SIGNAL(activated(int)),
-      this, SLOT(slot_NotificationEvent(int)) );
+                              this, SLOT(slot_NotificationEvent(int)) );
 
   // restart alive check timer with alive timeout
   timer->start(ALIVE_TO);
@@ -314,7 +313,7 @@ bool GpsMaemo::stopGpsReceiving()
   if (gpsDaemonNotifier)
     {
       delete gpsDaemonNotifier;
-      gpsDaemonNotifier = 0;
+      gpsDaemonNotifier = static_cast<QSocketNotifier *>(0);
     }
 
   return true;
@@ -480,7 +479,10 @@ GpsMaemo::readSentenceFromBuffer()
 
   // Deactivate socket notifier, during receive buffer processing to avoid
   // a recalling when signal newSentence is emitted.
-  if (gpsDaemonNotifier) gpsDaemonNotifier->setEnabled(false);
+  if (gpsDaemonNotifier)
+    {
+      gpsDaemonNotifier->setEnabled(false);
+    }
 
   while (strlen(start))
     {
@@ -489,7 +491,10 @@ GpsMaemo::readSentenceFromBuffer()
         {
           // No newline in the receiver buffer, wait for more
           // characters
-          if (gpsDaemonNotifier) gpsDaemonNotifier->setEnabled(true);
+          if (gpsDaemonNotifier)
+            {
+              gpsDaemonNotifier->setEnabled(true);
+            }
           return;
         }
 
@@ -538,6 +543,9 @@ GpsMaemo::readSentenceFromBuffer()
       // qDebug("After Read: datapointer=%x, dbsize=%d", datapointer, dbsize );
     }
 
-  if (gpsDaemonNotifier) gpsDaemonNotifier->setEnabled(true);
+  if (gpsDaemonNotifier)
+    {
+      gpsDaemonNotifier->setEnabled(true);
+    }
 }
 
