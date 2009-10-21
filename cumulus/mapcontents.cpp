@@ -1885,7 +1885,7 @@ void MapContents::slotReloadMapData()
 
   // We must block all GPS signals during the reload time to avoid
   // system crash due to out dated data.
-  GpsNmea::gps->blockSignals( true );
+  GpsNmea::gps->enableReceiving( false );
 
   // clear the airspace region list in map too
   Map::getInstance()->clearAirspaceRegionList();
@@ -1964,12 +1964,12 @@ void MapContents::slotReloadMapData()
 
   // enable gps data receiving
   GpsNmea::gps->ignoreConnectionLost();
-  GpsNmea::gps->blockSignals( false );
+  GpsNmea::gps->enableReceiving( true );
 
   mutex = false; // unlock mutex
 }
 
-/** Reload welt 2000 data file. Can be called after a configuration
+/** Reload Welt2000 data file. Can be called after a configuration
     change. */
 void MapContents::slotReloadWelt2000Data()
 {
@@ -1988,7 +1988,7 @@ void MapContents::slotReloadWelt2000Data()
 
   // We must block all GPS signals during the reload time to avoid
   // system crash due to outdated data.
-  GpsNmea::gps->blockSignals( true );
+  GpsNmea::gps->enableReceiving( false );
 
   // clear event queue
   qDebug("========= MapContents::slotReloadWelt2000Data() calls processEvents =========");
@@ -2009,7 +2009,7 @@ void MapContents::slotReloadWelt2000Data()
 
   // enable GPS data receiving
   GpsNmea::gps->ignoreConnectionLost();
-  GpsNmea::gps->blockSignals( false );
+  GpsNmea::gps->enableReceiving( true );
 
   mutex = false; // unlock mutex
 }

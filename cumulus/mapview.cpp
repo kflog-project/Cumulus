@@ -743,7 +743,7 @@ void MapView::slot_settingsChange()
 
 
 /** This slot is called if the number of satellites changes. */
-void MapView::slot_SatConstellation()
+void MapView::slot_SatCount()
 {
   if( GpsNmea::gps )
     {

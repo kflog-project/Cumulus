@@ -178,10 +178,8 @@ void PreFlightWidget::slot_accept()
   miscpage->save();
 
   hide();
-  emit
-  settingsChanged();
-  emit
-  closeConfig();
+  emit settingsChanged();
+  emit closeConfig();
   QWidget::close();
 }
 
@@ -189,8 +187,7 @@ void PreFlightWidget::slot_reject()
 {
   // qDebug("PreFlightWidget::slot_reject()");
   hide();
-  emit
-  closeConfig();
+  emit closeConfig();
   QWidget::close();
 }
 

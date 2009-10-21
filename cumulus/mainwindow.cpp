@@ -55,7 +55,6 @@
 #include "mapcontents.h"
 #include "mapmatrix.h"
 #include "calculator.h"
-#include "igclogger.h"
 #include "windanalyser.h"
 #include "configwidget.h"
 #include "wpeditdialog.h"
@@ -82,11 +81,6 @@ static osso_context_t *ossoContext = static_cast<osso_context_t *> (0);
  * Global available instance of this class
  */
 MainWindow *_globalMainWindow = static_cast<MainWindow *> (0);
-
-/**
- * Global available instance of logger class
- */
-IgcLogger *logger = static_cast<IgcLogger *> (0);
 
 /**
  * Used for transforming the map items.
@@ -134,6 +128,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   mapMenu = 0;
   setupMenu = 0;
   helpMenu = 0;
+  logger = static_cast<IgcLogger *> (0);
 
   // Eggert: make sure the app uses utf8 encoding for translated widgets
   QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
@@ -445,8 +440,8 @@ void MainWindow::slotCreateApplicationWidgets()
            calculator, SLOT( slot_GpsWind(const Speed&, const short) ) );
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
            viewMap, SLOT( slot_GPSStatus( GpsNmea::GpsStatus ) ) );
-  connect( GpsNmea::gps, SIGNAL( newSatConstellation() ),
-           viewMap, SLOT( slot_SatConstellation() ) );
+  connect( GpsNmea::gps, SIGNAL( newSatCount() ),
+           viewMap, SLOT( slot_SatCount() ) );
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
            this, SLOT( slotGpsStatus( GpsNmea::GpsStatus ) ) );
   connect( GpsNmea::gps, SIGNAL( newSatConstellation() ),
@@ -582,12 +577,13 @@ void MainWindow::slotCreateApplicationWidgets()
            viewMap, SLOT( slot_glider( const QString&) ) );
   connect( calculator, SIGNAL( flightModeChanged( Calculator::flightmode ) ),
            viewMap, SLOT( slot_setFlightStatus() ) );
-  connect( calculator, SIGNAL( flightModeChanged( Calculator::flightmode ) ),
-           logger, SLOT( slotFlightMode( Calculator::flightmode ) ) );
+
   connect( calculator, SIGNAL( taskpointSectorTouched() ),
            logger, SLOT( slotTaskSectorTouched() ) );
   connect( calculator, SIGNAL( taskInfo( const QString&, const bool ) ),
            this, SLOT( slotNotification( const QString&, const bool ) ) );
+  connect( calculator, SIGNAL( newSample() ),
+           logger, SLOT( slotMakeFixEntry() ) );
 
   connect( ( QObject* ) calculator->getReachList(), SIGNAL( newReachList() ),
            this, SLOT( slotNewReachList() ) );
@@ -679,6 +675,12 @@ void MainWindow::slotCreateApplicationWidgets()
   // Startup GPS client process now for data receiving
   GpsNmea::gps->blockSignals( false );
   GpsNmea::gps->startGpsReceiver();
+
+  if( GeneralConfig::instance()->getLoggerAutostartMode() == true )
+    {
+      // set logger in standby mode
+      logger->Standby();
+    }
 
   // close wait screen
   ws->setScreenUsage( false );
@@ -2016,6 +2018,9 @@ void MainWindow::slotPreFlight(const char *tabName)
 
   connect( cDlg, SIGNAL( settingsChanged() ),
            this, SLOT( slotPreFlightDataChanged() ) );
+
+  connect( cDlg, SIGNAL( settingsChanged() ),
+           IgcLogger::instance(), SLOT( slotReadConfig() ) );
 
   connect( cDlg, SIGNAL( newWaypoint( wayPoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );

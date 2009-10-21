@@ -267,7 +267,7 @@ SettingsPageGliderData::load()
       setCurrentText(comboType, _glider->type());
       comboType->setEditText(_glider->type());
       edtGReg->setText(_glider->registration());
-      edtGCall->setText(_glider->callsign());
+      edtGCall->setText(_glider->callSign());
 
       spinWater->setValue(_glider->maxWater());
 
@@ -302,7 +302,7 @@ SettingsPageGliderData::save()
 
   _glider->setType(comboType->currentText().trimmed());
   _glider->setRegistration(edtGReg->text().trimmed());
-  _glider->setCallsign(edtGCall->text().trimmed());
+  _glider->setCallSign(edtGCall->text().trimmed());
   _glider->setMaxWater(spinWater->value());
 
   if (comboSeats->currentIndex() == 1)

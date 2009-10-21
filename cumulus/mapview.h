@@ -2,7 +2,8 @@
                           mapview.h  -  This file is part of Cumulus.
                              -------------------
     begin                : Sun Jul 21 2002
-    copyright            : (C) 2002 by Andre Somers, 2008 Axel Pauli
+    copyright            : (C) 2002      by André Somers
+                               2008-2009 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -18,8 +19,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MAPVIEW_H
-#define MAPVIEW_H
+#ifndef MAP_VIEW_H
+#define MAP_VIEW_H
 
 #include <QWidget>
 #include <QStatusBar>
@@ -41,7 +42,7 @@
  * This is the main view for the application, providing the map and
  * other useful in flight information.
  *
- * @author Andre Somers
+ * @author André Somers
  */
 
 class MapInfoBox;
@@ -79,7 +80,7 @@ class MapView : public QWidget
     void message( const QString &message, int ms=5000 );
 
     /**
-     * @returns the altitute widget
+     * @returns the altitude widget
      */
     MapInfoBox* getAltitudeWidget () const
       {
@@ -87,7 +88,7 @@ class MapView : public QWidget
       };
 
     /**
-     * @returns the Vario widget
+     * @returns the Variometer widget
      */
     MapInfoBox* getVarioWidget () const
       {
@@ -99,7 +100,7 @@ class MapView : public QWidget
     /**
      * pointer to the map widget
      */
-    Map        *_theMap;
+    Map* _theMap;
 
   public slots: // Public slots
     /**
@@ -119,7 +120,7 @@ class MapView : public QWidget
 
     /**
      * This slot is called by calculator if a new ETA
-     * (Estimated Time to Arrival, or the time that is approximatly
+     * (Estimated Time to Arrival, or the time that is approximately
      * needed to arrive at the waypoint) has been calculated.
      */
     void slot_ETA(const QTime& eta);
@@ -143,7 +144,7 @@ class MapView : public QWidget
     void slot_RelBearing(int relbearing);
 
     /**
-     * This slot is called if a new positionfix has been established.
+     * This slot is called if a new position fix has been established.
      */
     void slot_Position(const QPoint& position, const int source);
 
@@ -158,9 +159,9 @@ class MapView : public QWidget
     void slot_GPSStatus(GpsNmea::GpsStatus status);
 
     /**
-     * This slot is called if the number of satelites changes.
+     * This slot is called if the number of satellites changes.
      */
-    void slot_SatConstellation();
+    void slot_SatCount();
 
     /**
      * This slot is being called if the altitude has changed.
@@ -220,7 +221,7 @@ class MapView : public QWidget
      */
     void slot_setFlightStatus();
 
-    /** Opens the inflight glider settings dialog. */
+    /** Opens the in flight glider settings dialog. */
     void slot_gliderFlightDialog();
 
     /** Opens the GPS status dialog */
@@ -228,16 +229,16 @@ class MapView : public QWidget
 
   signals: // Signals --------------------------------------------------
     /**
-     * toggle LD compution on/off
+     * toggle LD calculation on/off
      */
     void toggleLDCalculation( const bool );
     /**
-     * toggle ETA compution on/off
+     * toggle ETA calculation on/off
      */
     void toggleETACalculation( const bool );
 
     /**
-     * toggle vario compution on/off
+     * toggle variometer calculation on/off
      */
     void toggleVarioCalculation( const bool );
 
@@ -264,7 +265,7 @@ class MapView : public QWidget
     MapInfoBox* _ld;
     /** reference to the waypoint label */
     MapInfoBox* _waypoint;
-    /** reference to the flighttime label */
+    /** reference to the flight time label */
     //MapInfoBox* _flighttime;
     /** reference to the eta label */
     MapInfoBox* _eta;
@@ -274,17 +275,17 @@ class MapView : public QWidget
     MapInfoBox* _elevation;
     /** reference to the glide path label */
     MapInfoBox* _glidepath;
-    /** reference to statusbar */
+    /** reference to status bar */
     QStatusBar* _statusbar;
     /** reference to GPS status */
     CuLabel* _statusGps;
-    /** reference to flightstatus, including logging status and flightmode */
+    /** reference to flight status, including logging status and flight mode */
     QLabel* _statusFlightstatus;
-    /** reference to position for statusbar */
+    /** reference to position for status bar */
     QLabel* _statusPosition;
-    /** reference to selected glider for statusbar */
+    /** reference to selected glider for status bar */
     QLabel* _statusGlider;
-    /** reference to warning for statusbar */
+    /** reference to warning for status bar */
     QLabel* _statusWarning;
     /** reference to menu toggle */
     CuLabel* _menuToggle;
@@ -292,11 +293,11 @@ class MapView : public QWidget
     QTimer* loggingTimer;
     /** index of mode select button 0: MSL,  1: GND */
     int _altimeterMode;
-    /** bearing mode 0=invers bearing, 1=normal bearing */
+    /** bearing mode 0=inverse bearing, 1=normal bearing */
     int _bearingMode;
     /** value of last got bearing */
     int _lastBearing;
-    /** timer to reset invers bearing display */
+    /** timer to reset inverse bearing display */
     QTimer* _bearingTimer;
     /** default bg color */
     QColor _bearingBGColor;
@@ -310,12 +311,12 @@ class MapView : public QWidget
   private slots:
 
     /**
-     * toggle between distance and eta widget on mouse signal
+     * toggle between distance and ETA widget on mouse signal
      */
     void slot_toggleDistanceEta();
 
     /**
-     * toggle between wind and ld widget on mouse signal
+     * toggle between wind and LD widget on mouse signal
      */
     void slot_toggleWindAndLD();
 
@@ -325,14 +326,14 @@ class MapView : public QWidget
     void slot_toggleBearing();
 
     /**
-     * Reset invers bearing after a timeout
+     * Reset inverse bearing after a timeout
      */
     void slot_resetInversBearing();
 
     /** Opens the Variometer settings dialog. */
     void slot_VarioDialog();
 
-    /** Opens the Altimeter settings dialog. */
+    /** Opens the altimeter settings dialog. */
     void slot_AltimeterDialog();
 
     /** Called, if altimeter mode has been changed */

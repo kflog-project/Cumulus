@@ -37,6 +37,7 @@
 #include <QShortcut>
 #include <QPointer>
 
+#include "igclogger.h"
 #include "mapview.h"
 #include "waypointlistview.h"
 #include "airfieldlistview.h"
@@ -371,6 +372,8 @@ class MainWindow : public QMainWindow
     bool menuBarVisible;
     // Splash screen
     QPointer<Splash> splash;
+    // instance of IGC logger
+    IgcLogger *logger;
     // Store here, if the lists are visible or not.
     bool _taskListVisible;
     bool _reachpointListVisible;
