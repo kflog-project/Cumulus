@@ -90,6 +90,13 @@ class GpsNmea : public QObject
     virtual ~GpsNmea();
 
     /**
+     * @Enables or disables the notifications from the GPS receiver socket. Can
+     * be used to stop GPS data receiving for a certain time to prevent data loss.
+     * But be careful to prevent a receiver socket buffer overflow.
+     */
+    void enableReceiving( bool enable );
+
+    /**
      * @Starts the GPS receiver client process and activates the receiver.
      */
     void startGpsReceiver();
@@ -363,6 +370,12 @@ class GpsNmea : public QObject
     void newSatConstellation();
 
     /**
+     * This signal is send if a new satellite count
+     * has been detected.
+     */
+    void newSatCount();
+
+    /**
      * This signal is send to indicate a change in the
      * connected status. The new status is send as boolean
      * (connected=true).
@@ -454,6 +467,8 @@ class GpsNmea : public QObject
 
   private: // Private attributes
 
+    /** contains the time of the last RMC fix */
+    QTime _lastRmcTime;
     /** contains the time of the last fix */
     QTime _lastTime;
     /** contains the date of the last fix. */

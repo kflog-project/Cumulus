@@ -155,7 +155,7 @@ void GpsNmea::createGpsConnection()
     }
   else
     {
-      // The Maemo GPS deamon shall be used.
+      // The Maemo GPS daemon shall be used.
       gpsdConnection = new GpsMaemo( this );
       gpsObject = gpsdConnection;
     }
@@ -195,6 +195,39 @@ GpsNmea::~GpsNmea()
       delete gpsdConnection;
     }
 #endif
+}
+
+/**
+ * Enables or disables the notifications from the GPS receiver socket. Can
+ * be used to stop GPS data receiving for a certain time to prevent data loss.
+ * But be careful to prevent a receiver socket buffer overflow!
+ */
+void GpsNmea::enableReceiving( bool enable )
+{
+  QSocketNotifier* notifier;
+
+  qDebug("GpsNmea::enableReceiving(%s)", enable ? "true" : "false");
+
+#ifndef MAEMO
+
+  if ( serial )
+    {
+      notifier = serial->getDaemonNotifier();
+    }
+
+#else
+
+  if ( gpsdConnection )
+    {
+      notifier = gpsdConnection->getDaemonNotifier();
+    }
+
+#endif
+
+  if( notifier )
+    {
+      notifier->setEnabled( enable );
+    }
 }
 
 /**
@@ -319,8 +352,6 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
         { /* Data status A=OK, V=warning */
           fixOK();
 
-          QTime lastTime = _lastTime; // save previous time
-
           __ExtractTime(slst[1]);
           __ExtractDate(slst[9]);
           __ExtractKnotSpeed(slst[7]);
@@ -348,12 +379,13 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
                 }
             }
 
-          if( _lastTime != lastTime )
+          if( _lastTime != _lastRmcTime )
             {
               /**
                * The fix time has been changed and that is reported now.
                * We do check the fix time only here in the $GPRMC sentence.
                */
+              _lastRmcTime = _lastTime;
               emit newFix();
             }
         }
@@ -864,10 +896,7 @@ QTime GpsNmea::__ExtractTime(const QString& timeString)
       return QTime();
     }
 
-  if( _lastTime != res )
-    {
-      _lastTime = res;
-    }
+  _lastTime = res;
 
   return res;
 }
@@ -1134,6 +1163,18 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
         }
     }
 
+  if( sentence[15] != "" )
+    {
+      // PDOP in meters
+      bool ok;
+      int pdop = sentence[15].toInt( &ok );
+
+      if( ok == true && _lastSatInfo.fixAccuracy != pdop )
+        {
+          _lastSatInfo.fixAccuracy = pdop;
+        }
+    }
+
   if( result != _lastSatInfo.constellation )
     {
       _lastSatInfo.constellationTime = _lastTime;
@@ -1152,7 +1193,7 @@ void GpsNmea::__ExtractSatcount(const QString& satcount)
   if( count != _lastSatInfo.satCount )
     {
       _lastSatInfo.satCount = count;
-      emit newSatConstellation();
+      emit newSatCount();
     }
 }
 
