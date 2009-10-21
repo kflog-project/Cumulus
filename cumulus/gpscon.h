@@ -85,7 +85,7 @@ class GPSCon : public QObject
 
     /**
      * Sends nmea input sentence to GPS receiver. Checksum is calculated by
-     * this routine. Don't add an asterix at the end of the passed sentence! 
+     * this routine. Don't add an asterix at the end of the passed sentence!
      * That is part of the check sum.
      */
     void sendSentence(const QString&);
@@ -101,7 +101,15 @@ class GPSCon : public QObject
      */
     bool stopGpsReceiving();
 
-  signals:
+    /**
+     * Returns the socket notifier of the daemon connection.
+     */
+    QSocketNotifier* getDaemonNotifier() const
+    {
+      return clientNotifier;
+    };
+
+    signals:
     /**
      * This signal is send every time a new sentence has arrived.
      */
@@ -175,7 +183,7 @@ class GPSCon : public QObject
     // Pid of gps client process
     pid_t pid;
 
-    // Nofifier for QT main loop
+    // Notifier for QT main loop
     QSocketNotifier *listenNotifier;
     QSocketNotifier *clientNotifier;
 
