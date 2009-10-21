@@ -67,14 +67,14 @@ GPSCon::GPSCon(QObject* parent, const char *pathIn) : QObject(parent)
   timer = new QTimer(this);
   timer->connect( timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()) );
 
-  listenNotifier = 0;
-  clientNotifier = 0;
+  listenNotifier = static_cast<QSocketNotifier *>(0);
+  clientNotifier = static_cast<QSocketNotifier *>(0);
 
   initSignalHandler();
 
   GeneralConfig *conf = GeneralConfig::instance();
 
-  // Port can be read from config file for debugging purposes. If it
+  // Port can be read from the configuration file for debugging purposes. If it
   // is 0, the OS will take the next free available port.
 
   ushort port = conf->getGpsIpcPort();
@@ -299,7 +299,7 @@ bool GPSCon::startClientProcess()
 
   // not more relevant, remove it
   delete clientNotifier;
-  clientNotifier = NULL;
+  clientNotifier = static_cast<QSocketNotifier *>(0);
 
   QStringList pathes;
 
