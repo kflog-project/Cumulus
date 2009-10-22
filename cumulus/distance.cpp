@@ -2,7 +2,8 @@
                           distance.cpp  -  description
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by André Somers, 2007 Axel Pauli
+    copyright            : (C) 2002      by André Somers
+                         :     2007-2009 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -24,10 +25,10 @@
 //initializer for static member variable
 Distance::distanceUnit Distance::_distanceUnit=kilometers;
 
-const double Distance::mFromKm=1000.0;    // 1000.0 meters in 1 km.
-const double Distance::mFromMile=1609.3;  // 1609.3 meters in a mile
-const double Distance::mFromNMile=1852.0; // 1852 meters in a nautical mile
-const double Distance::mFromFeet=0.3048;  // a foot is a bit more than 30 cm
+const double Distance::mFromKm=1000.0;     // 1000.0 meters in 1 km.
+const double Distance::mFromMile=1609.344; // 1609.344 meters in a statute mile
+const double Distance::mFromNMile=1852.0;  // 1852 meters in a nautical mile
+const double Distance::mFromFeet=0.3048;   // a foot is a bit more than 30 cm
 
 
 Distance::Distance()
@@ -136,54 +137,62 @@ double Distance::operator / (const Distance& op) const
 }
 
 
-QString Distance::getText(bool withUnit, uint precision, uint chopOrder) const
+QString Distance::getText( bool withUnit, uint precision, uint chopOrder ) const
 {
   QString result, unit;
   double dist;
 
-  switch (_distanceUnit) {
-  case meters:
-    unit="m";
-    dist=getMeters();
-    break;
-  case feet:
-    unit="ft";
-    dist=getFeet();
-    break;
-  case kilometers:
-    unit="Km";
-    dist=getKilometers();
-    break;
-  case miles:
-    unit="M.";
-    dist=getMiles();
-    break;
-  case nautmiles:
-    unit="nM.";
-    dist=getNautMiles();
-    break;
-  default:
-    unit="m";
-    dist=getMeters();
-  }
+  switch( _distanceUnit )
+    {
+    case meters:
+      unit = "m";
+      dist = getMeters();
+      break;
+    case feet:
+      unit = "ft";
+      dist = getFeet();
+      break;
+    case kilometers:
+      unit = "km";
+      dist = getKilometers();
+      break;
+    case miles:
+      unit = "SM";
+      dist = getMiles();
+      break;
+    case nautmiles:
+      unit = "NM";
+      dist = getNautMiles();
+      break;
+    default:
+      unit = "m";
+      dist = getMeters();
+    }
 
   QString prec;
   //see if we need to lower the precision
-  if (chopOrder>0) {
-    while (precision>0 && pow(10,chopOrder)<=dist) {
-      precision--;
-      chopOrder++;
+  if( chopOrder > 0 )
+    {
+      while( precision > 0 && pow( 10, chopOrder ) <= dist )
+        {
+          precision--;
+          chopOrder++;
+        }
     }
-  }
-  prec.setNum(precision);
-  if (withUnit) {
 
-    QString fms = QString("%1.") + prec + "f %s";
-    result.sprintf( fms.toLatin1().data(), dist, unit.toLatin1().data() );
-  } else {
-    QString fms = QString("%1.") + prec + "f";
-    result.sprintf( fms.toLatin1().data(), dist );
-  }
+  prec.setNum( precision );
+
+  if( withUnit )
+    {
+
+      QString fms = QString( "%1." ) + prec + "f %s";
+      result.sprintf( fms.toLatin1().data(), dist, unit.toLatin1().data() );
+    }
+  else
+    {
+      QString fms = QString( "%1." ) + prec + "f";
+      result.sprintf( fms.toLatin1().data(), dist );
+    }
   return result;
 }
 
@@ -192,61 +201,75 @@ QString Distance::getText(double meters, bool withUnit, int precision)
 {
   QString result, unit;
   double dist;
-  uint defprec=1;
+  uint defprec = 1;
 
-  switch (_distanceUnit) {
-  case 0: //meters:
-    unit="m";
-    dist=meters;
-    defprec=0;
-    break;
-  case 1: //feet:
-    unit="ft";
-    dist=meters/mFromFeet;
-    defprec=0;
-    break;
-  case 2: //kilometers:
-    unit="Km";
-    dist=meters/mFromKm;
-    defprec=2;
-    break;
-  case 3: //miles:
-    unit="M.";
-    dist=meters/mFromMile;
-    defprec=3;
-    break;
-  case 4: //nautical miles:
-    unit="nM.";
-    dist=meters/mFromNMile;
-    defprec=3;
-    break;
-  default:
-    unit="m";
-    dist=meters;
-    defprec=0;
-  }
+  switch( _distanceUnit )
+    {
+    case 0: // meters:
+      unit = "m";
+      dist = meters;
+      defprec = 0;
+      break;
+    case 1: // feet:
+      unit = "ft";
+      dist = meters / mFromFeet;
+      defprec = 0;
+      break;
+    case 2: // kilometers:
+      unit = "km";
+      dist = meters / mFromKm;
+      defprec = 2;
+      break;
+    case 3: // statute miles:
+      unit = "SM";
+      dist = meters / mFromMile;
+      defprec = 3;
+      break;
+    case 4: // nautical miles:
+      unit = "NM";
+      dist = meters / mFromNMile;
+      defprec = 3;
+      break;
+    default:
+      unit = "m";
+      dist = meters;
+      defprec = 0;
+    }
 
-  if (precision<0)
-    precision=defprec;
+  if( precision < 0 )
+    {
+      precision = defprec;
+    }
 
   QString prec;
-  prec.setNum(precision);
 
-  if (dist<0) {
-    if (withUnit) {
-      result=unit;
-    } else {
-      result="";
+  prec.setNum( precision );
+
+  if( dist < 0 )
+    {
+      if( withUnit )
+        {
+          result = unit;
+        }
+      else
+        {
+          result = "";
+        }
     }
-  } else {
-    if (withUnit) {
-      QString fms = QString("%1.") + prec + "f %s";
-      result.sprintf( fms.toLatin1().data(), dist, unit.toLatin1().data() );
-    } else {
-      QString fms = QString("%1.") + prec + "f";
-      result.sprintf( fms.toLatin1().data(), dist);
+  else
+    {
+      if( withUnit )
+        {
+          QString fms = QString( "%1." ) + prec + "f %s";
+          result.sprintf( fms.toLatin1().data(), dist, unit.toLatin1().data() );
+        }
+      else
+        {
+          QString fms = QString( "%1." ) + prec + "f";
+          result.sprintf( fms.toLatin1().data(), dist );
+        }
     }
-  }
+
   return result;
 }
 
@@ -281,7 +304,7 @@ double Distance::getMiles() const
 }
 
 
-/** returns the distance in Nautical Miles */
+/** returns the distance in nautical miles */
 double Distance::getNautMiles() const
 {
   return _dist/mFromNMile;
@@ -309,7 +332,7 @@ void Distance::setMiles(double value)
 }
 
 
-/** sets the distance in Nauticle miles */
+/** sets the distance in nauticle miles */
 void Distance::setNautMiles(double value)
 {
   _dist=value*mFromNMile;
@@ -321,25 +344,26 @@ double Distance::convertToMeters(double dist)
 {
   double res;
 
-  switch (_distanceUnit) {
-  case 0: //meters:
-    res=dist;
-    break;
-  case 1: //feet:
-    res=dist*mFromFeet;
-    break;
-  case 2: //kilometers:
-    res=dist*mFromKm;
-    break;
-  case 3: //miles:
-    res=dist*mFromMile;
-    break;
-  case 4: //nautical miles:
-    res=dist*mFromNMile;
-    break;
-  default:
-    res=dist;
-  }
+  switch( _distanceUnit )
+    {
+    case 0: // meters:
+      res = dist;
+      break;
+    case 1: // feet:
+      res = dist * mFromFeet;
+      break;
+    case 2: // kilometers:
+      res = dist * mFromKm;
+      break;
+    case 3: // statute miles:
+      res = dist * mFromMile;
+      break;
+    case 4: // nautical miles:
+      res = dist * mFromNMile;
+      break;
+    default:
+      res = dist;
+    }
 
   return res;
 }
