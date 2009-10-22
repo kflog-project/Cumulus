@@ -1167,11 +1167,11 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
     {
       // PDOP in meters
       bool ok;
-      int pdop = sentence[15].toInt( &ok );
+      double pdop = sentence[15].toDouble( &ok );
 
       if( ok == true && _lastSatInfo.fixAccuracy != pdop )
         {
-          _lastSatInfo.fixAccuracy = pdop;
+          _lastSatInfo.fixAccuracy = rint(pdop);
         }
     }
 
