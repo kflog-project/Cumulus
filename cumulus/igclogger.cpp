@@ -303,19 +303,33 @@ void IgcLogger::writeHeader()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  QString surName = conf->getSurname();
-  QString date = formatDate( GpsNmea::gps->getLastDate() );
-  QString time = formatTime( GpsNmea::gps->getLastTime() );
+  QString pilot = conf->getSurname();
+  QString date  = formatDate( GpsNmea::gps->getLastDate() );
+  QString time  = formatTime( GpsNmea::gps->getLastTime() );
+
+  QString coPilot            = "UNKNOWN";
+  Glider::seat gliderSeats   = Glider::singleSeater;
+  QString gliderType         = "UNKNOWN";
+  QString gliderRegistration = "UNKNOWN";
+  QString gliderCallSign     = "UNKNOWN";
+
+  if( calculator->glider() )
+    {
+      // access glider items only if glider is defined
+      coPilot            = calculator->glider()->coPilot();
+      gliderSeats        = calculator->glider()->seats();
+      gliderType         = calculator->glider()->type();
+      gliderRegistration = calculator->glider()->registration();
+      gliderCallSign     = calculator->glider()->callSign();
+    }
 
   _stream << "AXXXCUM Cumulus soaring flight computer, Flight: " << flightNumber << "\r\n" ;
   _stream << "HFDTE" << date << "\r\n";
   _stream << "HFFXA500" << "\r\n";
-  _stream << "HFPLTPILOTINCHARGE: " << (surName.isEmpty() ? "Unknown" : surName.toLatin1().data()) << "\n";
+  _stream << "HFPLTPILOTINCHARGE: " << (pilot.isEmpty() ? "Unknown" : pilot) << "\r\n";
 
-  if( calculator->glider()->seats() == Glider::doubleSeater )
+  if( gliderSeats == Glider::doubleSeater )
     {
-      QString coPilot = calculator->glider()->coPilot();
-
       if( coPilot == "" )
         {
           coPilot = tr( "Unknown" );
@@ -324,15 +338,15 @@ void IgcLogger::writeHeader()
       _stream << "HFCM2CREW2: " << coPilot << "\r\n";
     }
 
-  _stream << "HFGTYGLIDERTYPE: " << calculator->glider()->type() << "\r\n";
-  _stream << "HFGIDGLIDERID: " << calculator->glider()->registration() << "\r\n";
+  _stream << "HFGTYGLIDERTYPE: " << gliderType << "\r\n";
+  _stream << "HFGIDGLIDERID: " << gliderRegistration << "\r\n";
   _stream << "HFDTM100GPSDATUM: WSG-1984\r\n";
   _stream << "HFRFWFIRMWAREVERION: " << CU_VERSION << "\r\n";
   _stream << "HFRHWHARDWAREVERSION: " << HwInfo::instance()->getTypeString() << "\r\n" ;
   _stream << "HFFTYFRTYPE: Cumulus Version: " << CU_VERSION << ", Qt/X11 Version: " << qVersion() << "\r\n";
   _stream << "HFGPS: UNKNOWN\r\n";
   _stream << "HFPRSPRESSALTSENSOR: UNKNOWN\r\n";
-  _stream << "HSCIDCOMPETITIONID: " << calculator->glider()->callSign() << "\r\n";
+  _stream << "HSCIDCOMPETITIONID: " << gliderCallSign << "\r\n";
 
   // GSP info lines committed for now
   // additional data (competition ID and class name) committed for now
@@ -361,26 +375,27 @@ void IgcLogger::writeHeader()
   QString fnr;
   fnr.sprintf( "%04d", flightNumber );
   QString tpnr;
-  tpnr.sprintf( "%02d", wpList.count() - 4 );
+  tpnr.sprintf( "%02d ", wpList.count() - 4 );
   QString taskId = task->getTaskTypeString();
 
-  // date/time UTC is expected
+  // date, time UTC is expected at first and second position
   _stream << "C"
-  << date.toLatin1().data()
-  << time.toLatin1().data()
-  << date.toLatin1().data()
-  << fnr.toLatin1().data()
-  << tpnr.toLatin1().data()
-  << taskId.toLatin1().data()
-  << "\r\n";
+          << date
+          << time
+          << QDate::currentDate().toString("ddMMyy")
+          << fnr
+          << tpnr
+          << task->getTaskDistanceString() << " "
+          << taskId
+          << "\r\n";
 
   for ( int i=0; i < wpList.count(); i++ )
     {
       wayPoint *wp = wpList.at(i);
 
       _stream << "C"
-      << formatPosition( wp->origP ).toLatin1().data()
-      << wp->name.toLatin1().data() << "\r\n";
+              << formatPosition( wp->origP )
+              << wp->name << "\r\n";
     }
 
   _stream.flush();
@@ -390,7 +405,7 @@ void IgcLogger::writeHeader()
 QString IgcLogger::formatDate(const QDate& date)
 {
   QString result;
-  result.sprintf("%02d%02d%02d",date.day(),date.month(),date.year()-2000);    //We don't expect this to be used a century from now....
+  result.sprintf("%02d%02d%02d",date.day(),date.month(),date.year()-2000);
   return result;
 }
 
@@ -398,12 +413,11 @@ QString IgcLogger::formatDate(const QDate& date)
 void IgcLogger::slotToggleLogging()
 {
   // qDebug("toggle logging!");
-
   if ( _logMode == on )
     {
       int answer = QMessageBox::question( 0, tr("Stop Logging?"),
                                           tr("<html>Are you sure you want<br>to close the logfile<br>and stop logging?</html>"),
-                                          QMessageBox::Yes,
+                                          QMessageBox::No|QMessageBox::Yes,
                                           QMessageBox::No );
 
       if (answer == QMessageBox::Yes)
@@ -413,33 +427,25 @@ void IgcLogger::slotToggleLogging()
           CloseFile();
         }
     }
-  else if( _logMode == standby )
+  else
     {
-      int answer= QMessageBox::question( 0, tr("Stop Logging?"),
-                                        tr("<html>Are you sure you want<br>to stop autostart logging?</html>"),
-                                        QMessageBox::Yes,
-                                        QMessageBox::No );
+      // Logger is in mode standby or off
+      int answer = QMessageBox::Yes;
+
+        if( ! calculator->glider() )
+          {
+            answer = QMessageBox::warning( 0, tr("Start Logging?"),
+                       tr("<html>You should select a glider<br>before start logging.<br>Continue start logging?</html>"),
+                       QMessageBox::No|QMessageBox::Yes,
+                       QMessageBox::No );
+          }
 
       if( answer == QMessageBox::Yes )
         {
-          // qDebug( "Logger standby mode turned off." );
-          _logMode = off;
-          GeneralConfig::instance()->setLoggerAutostartMode(false);
-        }
-    }
-  else
-    {
-      if( calculator->glider() )
-        {
           _logMode = on;
         }
-      else
-        {
-          QMessageBox::information( 0, tr("Can't start logger"),
-                                   tr("<html>You need to select a glider<br>before starting logging.</html>"),
-                                   QMessageBox::Ok );
-        }
     }
+
   // emit the logging state in all cases to allow update of actions in MainWindow
   emit logging(getIsLogging());
 }
@@ -448,7 +454,6 @@ void IgcLogger::slotToggleLogging()
 void IgcLogger::slotConstellation()
 {
   // qDebug("IgcLogger::slotConstellation()");
-
   makeSatConstEntry();
 }
 
@@ -457,6 +462,13 @@ void IgcLogger::makeSatConstEntry()
 {
   if( _logMode != off )
     {
+      if( ! lastLoggedFRecord.isNull() && lastLoggedFRecord.elapsed() < 5*60*1000 )
+        {
+          // According to ICG Specification F-records should not updated at intervals
+          // of less than 5 minutes.
+          return;
+        }
+
       QString entry = formatFRecord();
 
       if( _logMode == standby )
@@ -464,16 +476,16 @@ void IgcLogger::makeSatConstEntry()
           QStringList list;
           list << entry << entry;
           _backtrack.add( list );
-          return;
         }
-
-      if( isLogFileOpen() )
+      else if( isLogFileOpen() )
         {
           _stream << entry << "\r\n";
           emit madeEntry();
           // make sure the file is flushed, so we will not lose data if something goes wrong
           _stream.flush();
         }
+
+      lastLoggedFRecord.start();
     }
 }
 

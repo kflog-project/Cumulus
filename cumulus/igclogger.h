@@ -195,6 +195,9 @@ private:
   /** Time stamp of the last logged fix */
   QTime lastLoggedFix;
 
+  /** Time stamp of the last logged F record */
+  QTime lastLoggedFRecord;
+
   /** List of last would-be log entries.
     * This list is filled when in standby mode with strings that would be
     * in the log were logging enabled. When a change in flight mode is detected
