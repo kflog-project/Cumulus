@@ -160,8 +160,12 @@ void IgcLogger::slotMakeFixEntry()
 
   if( isLogFileOpen() )
     {
-      if( _logMode == standby )
+      if( _logMode == standby || _backtrack.size() > 0 )
         {
+          // There is a special case. The user can switch on the logger via toggle L
+          // but before the logger was in state standby and the backtrack contains
+          // entries. Such entries must be written out in the new opened log file
+          // before start with normal logging. Otherwise the first B record is missing.
           _logMode = on;
 
           // If log mode was before in standby we have to write out the backtrack entries.
@@ -172,13 +176,13 @@ void IgcLogger::slotMakeFixEntry()
                   // The backtrack contains at the last position a B record but IGC log
                   // should start with a F record. Therefore we take the corresponding
                   // F record from the stored string list.
-                  _stream << _backtrack.last().at( 1 ).toLatin1().data() << "\r\n";
+                  _stream << _backtrack.last().at( 1 ) << "\r\n";
                 }
 
               for( int i = _backtrack.count() - 1; i >= 0; i-- )
                 {
                   qDebug( "backtrack %d: %s", i, _backtrack.at(i).at(0).toLatin1().data() );
-                  _stream << _backtrack.at(i).at(0).toLatin1().data() << "\r\n";
+                  _stream << _backtrack.at(i).at(0) << "\r\n";
                 }
 
               _backtrack.clear(); // make sure we aren't leaving old data behind.
