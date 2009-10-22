@@ -194,6 +194,13 @@ void IgcLogger::slotMakeFixEntry()
 
       // make sure the file is flushed, so we will not lose data if something goes wrong
       _stream.flush();
+
+      if( lastLoggedFRecord.elapsed() >= 5*60*1000 )
+        {
+          // According to the IGC specification after 5 minutes a F record has
+          // to be logged. So we will do now.
+          makeSatConstEntry();
+        }
     }
 }
 
