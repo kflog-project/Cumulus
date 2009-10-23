@@ -2487,6 +2487,10 @@ void MapContents::setCurrentTask( FlightTask * _newVal)
     }
 
   currentTask = _newVal;
+
+  // Set declaration date-time in flight task. Is used by the IGC logger in the
+  // C record as declaration date-time.
+  currentTask->setDeclarationDateTime();
 }
 
 
