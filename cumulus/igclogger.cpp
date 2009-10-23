@@ -58,6 +58,7 @@ IgcLogger::IgcLogger(QObject* parent) :
 
   _logInterval = GeneralConfig::instance()->getLoggerInterval();
 
+  lastLoggedBRecord = new QTime();
   lastLoggedFRecord = new QTime();
 
   resetTimer = new QTimer( this );
@@ -74,6 +75,7 @@ IgcLogger::~IgcLogger()
 
   _theInstance = static_cast<IgcLogger *>(0);
 
+  delete lastLoggedBRecord;
   delete lastLoggedFRecord;
   delete resetTimer;
 }
@@ -139,13 +141,14 @@ void IgcLogger::slotMakeFixEntry()
   const flightSample &lastfix = calculator->samplelist.at(0);
 
   // check if we have a new fix to log
-  if ( lastLoggedFix.addSecs( _logInterval ) > lastfix.time )
+  if ( ! lastLoggedBRecord->isNull() &&
+         lastLoggedBRecord->addSecs( _logInterval ) > lastfix.time )
     {
       // there is no one
       return;
     }
 
-  lastLoggedFix = lastfix.time;
+  *lastLoggedBRecord = lastfix.time;
 
   QString entry("B" + formatTime(lastfix.time) + formatPosition(lastfix.position) + "A" +
                 formatAltitude(lastfix.altitude) + formatAltitude(lastfix.GNSSAltitude) +
@@ -260,8 +263,10 @@ void IgcLogger::Stop()
   _logMode = off;
   _backtrack.clear();
 
-  // Reset timer to initial state
+  // Reset time classes to initial state
+  delete lastLoggedBRecord;
   delete lastLoggedFRecord;
+  lastLoggedBRecord = new QTime();
   lastLoggedFRecord = new QTime();
   emit logging( getIsLogging() );
 }
@@ -280,8 +285,10 @@ void IgcLogger::Standby()
   _logMode = standby;
   _backtrack.clear();
 
-  // Reset timer to initial state
+  // Reset time classes to initial state
+  delete lastLoggedBRecord;
   delete lastLoggedFRecord;
+  lastLoggedBRecord = new QTime();
   lastLoggedFRecord = new QTime();
   emit logging( getIsLogging() );
 }

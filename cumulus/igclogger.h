@@ -193,8 +193,8 @@ private:
   /** Logger record time interval in seconds. */
   int _logInterval;
 
-  /** Time stamp of the last logged fix */
-  QTime lastLoggedFix;
+  /** Time stamp of the last logged B record */
+  QTime* lastLoggedBRecord;
 
   /** Time stamp of the last logged F record */
   QTime* lastLoggedFRecord;
