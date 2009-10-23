@@ -197,7 +197,7 @@ private:
   QTime lastLoggedFix;
 
   /** Time stamp of the last logged F record */
-  QTime lastLoggedFRecord;
+  QTime* lastLoggedFRecord;
 
   /** List of last would-be log entries.
     * This list is filled when in standby mode with strings that would be

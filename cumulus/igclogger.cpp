@@ -58,6 +58,8 @@ IgcLogger::IgcLogger(QObject* parent) :
 
   _logInterval = GeneralConfig::instance()->getLoggerInterval();
 
+  lastLoggedFRecord = new QTime();
+
   resetTimer = new QTimer( this );
 
   connect( resetTimer, SIGNAL(timeout()), this, SLOT(slotResetLoggingTime()) );
@@ -72,6 +74,7 @@ IgcLogger::~IgcLogger()
 
   _theInstance = static_cast<IgcLogger *>(0);
 
+  delete lastLoggedFRecord;
   delete resetTimer;
 }
 
@@ -161,7 +164,7 @@ void IgcLogger::slotMakeFixEntry()
 
       // Set last F recording time from the oldest log entry. Looks a little bit
       // tricky but should work so. ;-)
-      lastLoggedFRecord = QTime::fromString( _backtrack.last().at( 1 ).mid(1, 6), "hhmmss" );
+      *lastLoggedFRecord = QTime::fromString( _backtrack.last().at( 1 ).mid(1, 6), "hhmmss" );
       return;
     }
 
@@ -170,7 +173,7 @@ void IgcLogger::slotMakeFixEntry()
       if( _logMode == standby || _backtrack.size() > 0 )
         {
           // There is a special case. The user can switch on the logger via toggle L
-          // but before the logger was in state standby and the backtrack contains
+          // but the logger was before in state standby and the backtrack contains
           // entries. Such entries must be written out in the new opened log file
           // before start with normal logging. Otherwise the first B record is missing.
           _logMode = on;
@@ -194,6 +197,25 @@ void IgcLogger::slotMakeFixEntry()
 
               _backtrack.clear(); // make sure we aren't leaving old data behind.
             }
+          else
+            {
+              // If backtrack contains no entries we must write out a F record at first
+              makeSatConstEntry( lastfix.time );
+            }
+        }
+
+      /*
+      qDebug("F-TimeCheck: time=%s, elapsed=%dms",
+              lastLoggedFRecord->toString("hh:mm:ss").toLatin1().data(),
+              lastLoggedFRecord->elapsed());
+      */
+
+      // Check if F record has to be written
+      if( lastLoggedFRecord->elapsed() >= 5*60*1000 )
+        {
+          // According to the IGC specification after 5 minutes a F record has
+          // to be logged. So we will do now.
+          makeSatConstEntry( lastfix.time );
         }
 
       _stream << entry << "\r\n";
@@ -201,13 +223,6 @@ void IgcLogger::slotMakeFixEntry()
 
       // make sure the file is flushed, so we will not lose data if something goes wrong
       _stream.flush();
-
-      if( lastLoggedFRecord.elapsed() >= 5*60*1000 )
-        {
-          // According to the IGC specification after 5 minutes a F record has
-          // to be logged. So we will do now.
-          makeSatConstEntry( lastfix.time );
-        }
     }
 }
 
@@ -244,11 +259,15 @@ void IgcLogger::Stop()
 
   _logMode = off;
   _backtrack.clear();
+
+  // Reset timer to initial state
+  delete lastLoggedFRecord;
+  lastLoggedFRecord = new QTime();
   emit logging( getIsLogging() );
 }
 
 /**
- * Switches to standby mode. If we are currently logging, the logfile will
+ * Switches on the standby mode. If we are currently logging, the logfile will
  * be closed.
  */
 void IgcLogger::Standby()
@@ -260,6 +279,10 @@ void IgcLogger::Standby()
 
   _logMode = standby;
   _backtrack.clear();
+
+  // Reset timer to initial state
+  delete lastLoggedFRecord;
+  lastLoggedFRecord = new QTime();
   emit logging( getIsLogging() );
 }
 
@@ -443,8 +466,7 @@ void IgcLogger::slotToggleLogging()
       if (answer == QMessageBox::Yes)
         {
           // qDebug("Stopping logging...");
-          _logMode = off;
-          CloseFile();
+          Stop();
         }
     }
   else
@@ -482,7 +504,7 @@ void IgcLogger::makeSatConstEntry(const QTime &time)
 {
   if( _logMode == on )
     {
-      if( ! lastLoggedFRecord.isNull() && lastLoggedFRecord.elapsed() < 5*60*1000 )
+      if( ! lastLoggedFRecord->isNull() && lastLoggedFRecord->elapsed() < 5*60*1000 )
         {
           // According to ICG Specification F-records should not updated at intervals
           // of less than 5 minutes.
@@ -501,7 +523,7 @@ void IgcLogger::makeSatConstEntry(const QTime &time)
           _stream.flush();
         }
 
-      lastLoggedFRecord.start();
+      lastLoggedFRecord->start();
     }
 }
 
