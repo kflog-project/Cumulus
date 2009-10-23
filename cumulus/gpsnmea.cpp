@@ -1175,9 +1175,11 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
         }
     }
 
+  // Store receive time of constellation in every case.
+  _lastSatInfo.constellationTime = _lastTime;
+
   if( result != _lastSatInfo.constellation )
     {
-      _lastSatInfo.constellationTime = _lastTime;
       _lastSatInfo.constellation = result;
       emit newSatConstellation();
     }
