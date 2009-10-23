@@ -152,9 +152,16 @@ void IgcLogger::slotMakeFixEntry()
   if ( _logMode == standby && calculator->moving() == false )
     {
       // save entry in backtrack, if we are not in move
+      QString fRecord = "F" +
+                         formatTime( lastfix.time ) +
+                         GpsNmea::gps->getLastSatInfo().constellation;
       QStringList list;
-      list << entry << formatFRecord();
+      list << entry << fRecord;
       _backtrack.add( list );
+
+      // Set last F recording time from the oldest log entry. Looks a little bit
+      // tricky but should work so. ;-)
+      lastLoggedFRecord = QTime::fromString( _backtrack.last().at( 1 ).mid(1, 6), "hhmmss" );
       return;
     }
 
@@ -199,7 +206,7 @@ void IgcLogger::slotMakeFixEntry()
         {
           // According to the IGC specification after 5 minutes a F record has
           // to be logged. So we will do now.
-          makeSatConstEntry();
+          makeSatConstEntry( lastfix.time );
         }
     }
 }
@@ -297,7 +304,9 @@ bool IgcLogger::isLogFileOpen()
   _stream.setDevice(&_logfile);
 
   writeHeader();
-  makeSatConstEntry();
+
+  // As first create a F record
+  slotConstellation();
 
   return true;
 }
@@ -383,16 +392,16 @@ void IgcLogger::writeHeader()
       return; // too less waypoints
     }
 
-  QString fnr;
-  fnr.sprintf( "%04d", flightNumber );
-  QString tpnr;
-  tpnr.sprintf( "%02d ", wpList.count() - 4 );
+  QString taskDate = formatDate( task->getDeclarationDateTime().date() );
+  QString taskTime = formatTime( task->getDeclarationDateTime().time() );
+  QString fnr; fnr = fnr.sprintf( "%04d", flightNumber );
+  QString tpnr; tpnr = tpnr.sprintf( "%02d ", wpList.count() - 4 );
   QString taskId = task->getTaskTypeString();
 
   // date, time UTC is expected at first and second position
   _stream << "C"
-          << date
-          << time
+          << taskDate
+          << taskTime
           << QDate::currentDate().toString("ddMMyy")
           << fnr
           << tpnr
@@ -465,13 +474,13 @@ void IgcLogger::slotToggleLogging()
 void IgcLogger::slotConstellation()
 {
   // qDebug("IgcLogger::slotConstellation()");
-  makeSatConstEntry();
+  makeSatConstEntry( GpsNmea::gps->getLastSatInfo().constellationTime );
 }
 
-/** Makes a fix entry in the log file. */
-void IgcLogger::makeSatConstEntry()
+/** Makes a fix entry in the log file by using the passed time. */
+void IgcLogger::makeSatConstEntry(const QTime &time)
 {
-  if( _logMode != off )
+  if( _logMode == on )
     {
       if( ! lastLoggedFRecord.isNull() && lastLoggedFRecord.elapsed() < 5*60*1000 )
         {
@@ -480,15 +489,11 @@ void IgcLogger::makeSatConstEntry()
           return;
         }
 
-      QString entry = formatFRecord();
+      QString entry = "F" +
+                       formatTime( time ) +
+                       GpsNmea::gps->getLastSatInfo().constellation;
 
-      if( _logMode == standby )
-        {
-          QStringList list;
-          list << entry << entry;
-          _backtrack.add( list );
-        }
-      else if( isLogFileOpen() )
+      if( isLogFileOpen() )
         {
           _stream << entry << "\r\n";
           emit madeEntry();
@@ -500,15 +505,6 @@ void IgcLogger::makeSatConstEntry()
     }
 }
 
-
-/** This function formats a F record */
-QString IgcLogger::formatFRecord()
-{
-  QString result = "F" +
-                   formatTime( GpsNmea::gps->getLastSatInfo().constellationTime ) +
-                   GpsNmea::gps->getLastSatInfo().constellation;
-  return result;
-}
 
 /** This function formats a QTime to the correct format for IGC files (HHMMSS) */
 QString IgcLogger::formatTime(const QTime& time)

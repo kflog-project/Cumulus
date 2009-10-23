@@ -44,6 +44,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QTimer>
+#include <QTime>
 #include <QDateTime>
 #include <QStringList>
 
@@ -228,11 +229,6 @@ private:
   QString formatDate(const QDate& date);
 
   /**
-   * This function formats a F record.
-   */
-  QString formatFRecord();
-
-  /**
    * This function writes the header for the IGC file into the logfile.
    */
   void writeHeader();
@@ -240,7 +236,7 @@ private:
   /**
    * Makes a fix entry in the logfile.
    */
-  void makeSatConstEntry();
+  void makeSatConstEntry(const QTime &time);
 
   /**
    * This function formats an Altitude to the correct format
