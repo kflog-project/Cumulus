@@ -29,6 +29,7 @@
 #include <QPolygonF>
 #include <QPainter>
 #include <QPainterPath>
+#include <QDateTime>
 
 #include "waypoint.h"
 #include "basemapelement.h"
@@ -91,12 +92,12 @@ class FlightTask : public BaseMapElement
    * Returns true, if a triangle represented by the four length,
    * is a valid FAI-triangle.
    *
-   * A triangle is a valig FAI-triangle, if no side is less than 28%
+   * A triangle is a valid FAI-triangle, if no side is less than 28%
    * of the total length (total length less than 500 km), or no side
    * is less than 25% or larger than 45% of the total length
-   * (totallength >= 500km).
+   * (total length >= 500km).
    *
-   * @param  d_wp  totallength
+   * @param  d_wp  total length
    * @param  d1  first side
    * @param  d2  second side
    * @param  d3  third side
@@ -119,7 +120,7 @@ class FlightTask : public BaseMapElement
 
   /**
    * Returns a deep copy of the passed waypoint list. The ownership of
-   * the list is overtaken by the caller. For convenvience provided as
+   * the list is overtaken by the caller. For convenience provided as
    * static method.
    */
   static QList<wayPoint*> *copyWpList(QList<wayPoint*> *wpList);
@@ -141,14 +142,14 @@ class FlightTask : public BaseMapElement
   /**
    * @returns a string representing the total distance time of task as
    * hh:mm to use for user-display. The time is rounded up if seconds
-   * are greather than 30.
+   * are greater than 30.
    */
   QString getTotalDistanceTimeString();
 
   /**
    * @returns a string representing the distance time as hh:mm to use
-   * for user-display. The time is rounded up if seconds are greather
-   * than 30. Input has to be passed as seconds. For convenvience
+   * for user-display. The time is rounded up if seconds are greater
+   * than 30. Input has to be passed as seconds. For convenience
    * provided as static method.
    */
   static QString getDistanceTimeString(const int timeInSec);
@@ -174,7 +175,6 @@ class FlightTask : public BaseMapElement
     {
       return false;
     };
-
 
   /** */
   QString getTotalDistanceString() const;
@@ -308,6 +308,22 @@ class FlightTask : public BaseMapElement
       return true;
     };
 
+  /**
+   * Returns the declaration date-time of the task as UTC.
+   */
+  QDateTime getDeclarationDateTime() const
+  {
+    return _declarationDateTime.toUTC();
+  };
+
+  /**
+   * Sets the declaration date-time of the task as local time.
+   */
+  void setDeclarationDateTime()
+  {
+    _declarationDateTime = QDateTime::currentDateTime();
+  };
+
   /////////////////////////////////////////////////////////////////////////
 
  private:
@@ -318,11 +334,11 @@ class FlightTask : public BaseMapElement
    */
   void circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawnTp );
 
-  /**Reimplemented
-   * from BaseMapElement.
+  /**
+   * Reimplemented from BaseMapElement.
    * Draws a circle around the given position.
    *
-   * Paiter as Cumulus special painter device
+   * Painter as Cumulus special painter device
    * coordinate as projected position of the point
    * scaled radius as meters
    * fillColor, do not fill, if set to invalid
@@ -340,7 +356,7 @@ class FlightTask : public BaseMapElement
    * coordinate as projected position of the point
    * scaled inner radius as meters
    * scaled outer radius as meters
-   * bisector angle in debrees
+   * bisector angle in degrees
    * spanning angle in degrees
    * fillColor, do not fill, if set to invalid
    * drawShape, if set to true, draw outer circle with black color
@@ -400,7 +416,7 @@ class FlightTask : public BaseMapElement
   /** Total length */
   double distance_total;
 
-  /** WertungsDistanz f�r DMST*/
+  /** score distance for DMST */
   double distance_wert;
 
   /** Task length */
@@ -414,6 +430,9 @@ class FlightTask : public BaseMapElement
 
   /** task name */
   QString _taskName;
+
+  /** Declaration date-time of task */
+  QDateTime _declarationDateTime;
 };
 
 #endif
