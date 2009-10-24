@@ -44,7 +44,7 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
   currentProjType = ProjectionBase::Unknown;
-
+  GeneralConfig *conf = GeneralConfig::instance();
   QGridLayout *topLayout = new QGridLayout(this);
 
   int row=0;
@@ -67,17 +67,17 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   connect(cmbProjection, SIGNAL(activated(int)), this, SLOT(slotSelectProjection(int)));
 
   topLayout->addWidget(new QLabel(tr("1. St. Parallel:"), this), row, 0);
-  edtLat1=new LatEdit(this);
+  edtLat1=new LatEdit(this, conf->getHomeLat());
   topLayout->addWidget(edtLat1, row++, 1, 1, 2);
 
   edtLat2Label = new QLabel(tr("2. St. Parallel:"), this);
   topLayout->addWidget(edtLat2Label, row, 0);
-  edtLat2 = new LatEdit(this);
+  edtLat2 = new LatEdit(this, conf->getHomeLat());
   topLayout->addWidget(edtLat2, row++, 1, 1, 2);
 
-  edtLonLabel = new QLabel(tr("Origin Lon.:"), this);
+  edtLonLabel = new QLabel(tr("Origin Longitude:"), this);
   topLayout->addWidget(edtLonLabel, row, 0);
-  edtLon = new LongEdit(this);
+  edtLon = new LongEdit(this, conf->getHomeLon());
   topLayout->addWidget(edtLon, row++, 1, 1, 2);
 
   //------------------------------------------------------------------------------

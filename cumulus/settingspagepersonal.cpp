@@ -32,7 +32,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 {
   setObjectName("SettingsPagePersonal");
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-
+  GeneralConfig *conf = GeneralConfig::instance();
   QGridLayout* topLayout = new QGridLayout(this);
   int row=0;
 
@@ -55,13 +55,13 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 
   lbl = new QLabel(tr("Home site latitude:"), this);
   topLayout->addWidget(lbl, row, 0);
-  edtHomeLat = new LatEdit(this);
+  edtHomeLat = new LatEdit(this, conf->getHomeLat());
   topLayout->addWidget(edtHomeLat, row, 1, 1, 2);
   row++;
 
   lbl = new QLabel(tr("Home site longitude:"), this);
   topLayout->addWidget(lbl, row, 0);
-  edtHomeLong = new LongEdit(this);
+  edtHomeLong = new LongEdit(this, conf->getHomeLon());
   topLayout->addWidget(edtHomeLong, row, 1, 1, 2);
   row++;
 

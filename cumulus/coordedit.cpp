@@ -19,18 +19,16 @@
 
 #include <stdlib.h>
 
-// include files for project
-
 #include "coordedit.h"
 #include "mapcalc.h"
 #include "wgspoint.h"
+#include "generalconfig.h"
 
 CoordEdit::CoordEdit(QWidget *parent) : QLineEdit(parent)
 {
   setObjectName("CoordEdit");
   firstSet = true;
 }
-
 
 /** Returns true, if initial input text has been changed */
 bool CoordEdit::isInputChanged()
@@ -230,19 +228,25 @@ void CoordEdit::showEvent(QShowEvent *)
 
 LatEdit::LatEdit(QWidget *parent, const int base) : CoordEdit(parent)
 {
-  setObjectName("LatdEdit");
+  setObjectName("LatEdit");
 
   if ( WGSPoint::getFormat() != WGSPoint::DDM )
     {
       mask = "00\260 00' 00\" S";
-      if (base>0)
-        mask = "00\260 00' 00\" N";
+
+      if (base >= 0)
+        {
+          mask = "00\260 00' 00\" N";
+        }
     }
   else
     {
       mask = "00\260 00.000' S";
-      if (base>0)
-        mask = "00\260 00.000' N";
+
+      if (base >= 0)
+        {
+          mask = "00\260 00.000' N";
+        }
     }
 
   validDirection = "NS";
@@ -251,19 +255,25 @@ LatEdit::LatEdit(QWidget *parent, const int base) : CoordEdit(parent)
 
 LongEdit::LongEdit(QWidget *parent, const int base) : CoordEdit(parent)
 {
-  setObjectName("LongdEdit");
+  setObjectName("LongEdit");
 
   if ( WGSPoint::getFormat() != WGSPoint::DDM )
     {
       mask = "000\260 00' 00\" W";
-      if (base>0)
-        mask = "000\260 00' 00\" E";
+
+      if (base >= 0)
+        {
+          mask = "000\260 00' 00\" E";
+        }
     }
   else
     {
       mask = "000\260 00.000' W";
-      if (base>0)
-        mask = "000\260 00.000' E";
+
+      if (base >= 0)
+        {
+          mask = "000\260 00.000' E";
+        }
     }
 
   validDirection = "WE";
