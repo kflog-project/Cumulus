@@ -2,9 +2,11 @@
                           main.cpp  -  description
                              -------------------
     begin                : 23.12.2003
-    copyright            : (C) 2003 by Eckhard V�llm
+    copyright            : (C) 2003 by Eckhard Völlm
                                2008 Axel Pauli portage to Qt 4.3
-    email                : eckhard@kflog.org
+                               2009 Axel Pauli GSA extension
+
+    email                : axel@kflog.org
 
     $Id$
 
@@ -45,6 +47,7 @@
 
 #include "vector.h"
 #include "glider.h"
+#include "gpgsa.h"
 
 using namespace std;
 
@@ -241,7 +244,7 @@ void readConfig( void )
       fclose(file);
     }
 
-  cout << "Config file read" << endl;
+  cout << "Configuration file read" << endl;
 }
 
 
@@ -361,9 +364,19 @@ int main(int argc, char **argv)
 
   int t = (int)Time;
 
+  // This is used for the GSA output simulation
+  uint gsa = 0;
+  QStringList satIds;
+  satIds << "14" << "32" << "17" << "20" << "11" << "23" << "28" << "25" << "35";
+  QString pdop = "1.7";
+  QString hdop = "1.1";
+  QString vdop = "1.2";
+
   while( t > 0 )
     {
       t--;
+      gsa++;
+
       cout << "Second remaining: " << t << endl;
       usleep( 1000000 );
       if( mode == "str" )
@@ -374,6 +387,49 @@ int main(int argc, char **argv)
         myGl.FixedPos();
       if( mode == "gpos" )
         myGl.FixedPosGround();
+
+      // GSA output simulation
+      if( ! (gsa % 40) )
+        {
+          satIds.clear();
+          satIds << "14" << "32" << "17" << "20" << "11" << "23" << "28" << "25" << "35";
+          pdop = "1.7";
+          hdop = "1.1";
+          vdop = "1.2";
+        }
+      else if( ! (gsa % 30) )
+        {
+          satIds.clear();
+          satIds << "32" << "17" << "20" << "11" << "23" << "28" << "25" << "35";
+          pdop = "1.5";
+          hdop = "1.3";
+          vdop = "1.7";
+        }
+      else if( ! (gsa % 20) )
+        {
+          satIds.clear();
+          satIds << "10" << "15" << "33" << "17" << "19" << "11" << "23" << "28" << "25" << "36";
+          pdop = "1.2";
+          hdop = "1.4";          satIds.clear();
+          satIds << "14" << "32" << "17" << "20" << "11" << "23" << "28" << "25" << "35";
+          pdop = "1.7";
+          hdop = "1.1";
+          vdop = "1.2";
+
+          vdop = "1.3";
+        }
+      else if( ! (gsa % 10) )
+        {
+          satIds.clear();
+          satIds << "14" << "32" << "17" << "20" << "11" << "23" << "28";
+          pdop = "1.9";
+          hdop = "1.3";
+          vdop = "1.5";
+        }
+
+      GPGSA myGPGSA;
+      myGPGSA.send( satIds, pdop, hdop, vdop, fd );
+
       // safe actual position to file
       safeConfig();
     }
