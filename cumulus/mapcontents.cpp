@@ -2477,8 +2477,9 @@ FlightTask* MapContents::getCurrentTask()
 }
 
 
-/** Write property of FlightTask * currentTask. */
-void MapContents::setCurrentTask( FlightTask * _newVal)
+/** Take over a new FlightTask as current task. Note, that passed
+ *  task can be null, if it is reset. */
+void MapContents::setCurrentTask( FlightTask* _newVal)
 {
   // an old task instance must be deleted
   if ( currentTask != 0 )
@@ -2490,7 +2491,10 @@ void MapContents::setCurrentTask( FlightTask * _newVal)
 
   // Set declaration date-time in flight task. Is used by the IGC logger in the
   // C record as declaration date-time.
-  currentTask->setDeclarationDateTime();
+  if( _newVal )
+    {
+      currentTask->setDeclarationDateTime();
+    }
 }
 
 
