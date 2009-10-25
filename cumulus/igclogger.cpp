@@ -157,17 +157,18 @@ void IgcLogger::slotMakeFixEntry()
 
   if ( _logMode == standby && calculator->moving() == false )
     {
-      // save entry in backtrack, if we are not in move
+      // save B and F record and time in backtrack, if we are not in move
       QString fRecord = "F" +
                          formatTime( lastfix.time ) +
                          GpsNmea::gps->getLastSatInfo().constellation;
       QStringList list;
-      list << entry << fRecord;
+      list << entry << fRecord << QTime::currentTime ().toString("hhmmss");
       _backtrack.add( list );
+      qDebug( "_backtrack.size=%d", _backtrack.size() );
 
       // Set last F recording time from the oldest log entry. Looks a little bit
       // tricky but should work so. ;-)
-      *lastLoggedFRecord = QTime::fromString( _backtrack.last().at( 1 ).mid(1, 6), "hhmmss" );
+      *lastLoggedFRecord = QTime::fromString( _backtrack.last().at(2), "hhmmss" );
       return;
     }
 
@@ -194,7 +195,10 @@ void IgcLogger::slotMakeFixEntry()
 
               for( int i = _backtrack.count() - 1; i >= 0; i-- )
                 {
-                  qDebug( "backtrack %d: %s", i, _backtrack.at(i).at(0).toLatin1().data() );
+                  qDebug( "backtrack %d: %s, %s", i,
+                      _backtrack.at(i).at(0).toLatin1().data(),
+                      _backtrack.at(i).at(1).toLatin1().data() );
+
                   _stream << _backtrack.at(i).at(0) << "\r\n";
                 }
 
@@ -481,13 +485,13 @@ void IgcLogger::slotToggleLogging()
       // Logger is in mode standby or off
       int answer = QMessageBox::Yes;
 
-        if( ! calculator->glider() )
-          {
-            answer = QMessageBox::warning( 0, tr("Start Logging?"),
-                       tr("<html>You should select a glider<br>before start logging.<br>Continue start logging?</html>"),
-                       QMessageBox::No|QMessageBox::Yes,
-                       QMessageBox::No );
-          }
+      if( ! calculator->glider() )
+        {
+          answer = QMessageBox::warning( 0, tr("Start Logging?"),
+                     tr("<html>You should select a glider<br>before start logging.<br>Continue start logging?</html>"),
+                     QMessageBox::No|QMessageBox::Yes,
+                     QMessageBox::No );
+        }
 
       if( answer == QMessageBox::Yes )
         {
