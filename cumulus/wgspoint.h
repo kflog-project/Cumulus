@@ -41,7 +41,8 @@ public:
     enum Format {
         Unknown=-1,
         DMS=0,   // degrees, minutes, seconds
-        DDM=1    // degrees, decimal minutes
+        DDM=1,   // degrees, decimal minutes
+        DDD=2    // decimal degrees
     };
 
     /**
@@ -166,4 +167,4 @@ protected:
 
 };
 
-#endif // WGSPoint_H
+#endif // WGS_Point_H
