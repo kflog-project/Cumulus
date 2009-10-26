@@ -14,7 +14,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[+] 2009-10-24 AP: Nmea simulator extended by $GPGSA sentence.
+[-] 2009-10-26 AP: BUGFIX: NMEA simulator uses now UTC date and time in GGA and RMC
+                   sentence instead of local items. So we get a more realistic
+                   scenario for testing as before.
+[+] 2009-10-24 AP: NMEA simulator extended by $GPGSA sentence.
 [-] 2009-10-22 AP: BUGFIX: IGC Logging reworked and adapted to last IGC specification
                    as far as possible. Logging is now possible without selecting a
                    glider. In such a case a warning message is displayed.
