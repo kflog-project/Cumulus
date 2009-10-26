@@ -1,9 +1,9 @@
 /***************************************************************************
                           gprmc.h  -  description
                              -------------------
-    begin                : 23.12.2003 
-    copyright            : (C) 2003 by Eckhard Völlm 
-    email                : eckhard@kflog.org
+    begin                : 23.12.2003
+    copyright            : (C) 2003 by Eckhard VÃ¶llm
+    email                : axel@kflog.org
 
     $Id$
 
@@ -23,7 +23,7 @@
 class GPRMC
 {
 public:
-    GPRMC( void );
+    GPRMC();
     int send( double lat, double lon, float speed, float course, int fd );
 private:
     QString sentence;

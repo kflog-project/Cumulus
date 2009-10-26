@@ -1,9 +1,9 @@
 /***************************************************************************
                           glider.cpp  -  description
                              -------------------
-    begin                : 23.12.2003 
-    copyright            : (C) 2003 by Eckhard Völlm 
-    email                : eckhard@kflog.org
+    begin                : 23.12.2003
+    copyright            : (C) 2003 by Eckhard VÃ¶llm
+    email                : axel@kflog.org
 
     $Id$
 
@@ -18,10 +18,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "glider.h"
 #include <iostream>
 #include <stdlib.h>
 #include <cmath>
+
+#include "glider.h"
 
 using namespace std;
 
@@ -65,13 +66,13 @@ myGPRMC.send( lat,lon, 0.0, heading, myFd);
 void glider::Straight()
 {
     cout << heading << " " << speed << endl;
-    
+
     Vector gVec( (double)heading*M_PI/180, Speed( speed*1000.0/3600.0 ) );
     Vector wVec( (double)winddir*M_PI/180, Speed( wind*1000.0/3600.0 ) );
     cout << "Wind Speed:        " << wVec.getSpeed().getKph() << " km/h" << endl;
     // cout << "winddir:           " << winddir << endl;
     int wDir = int(wVec.getAngleDeg());
-    wDir += 180; 
+    wDir += 180;
     if(wDir > 360)
       wDir -= 360;
     cout << "Wind Dir (From):   " << wDir << endl;
@@ -93,7 +94,7 @@ void glider::Straight()
     // cout << yDelta*60*1.852*3600 << endl;
     double speed = gVec.getSpeed().getKnots();
     double head = gVec.getAngleDeg();
-    lon += xDelta;  // Länge
+    lon += xDelta;  // LÃ¤nge
     lat += yDelta;  // Breite
     altitude+=climb;
     myGPGGA.send( lat,lon, altitude , myFd);
@@ -118,7 +119,7 @@ void glider::Circle()
     Vector wVec( (double)winddir*M_PI/180, Speed( wind*1000/3600 ) );
     cout << "Wind Speed:        " << wVec.getSpeed().getKph() << endl;
     int wDir = int(wVec.getAngleDeg());
-    wDir += 180; 
+    wDir += 180;
     if(wDir > 360)
       wDir -= 360;
     cout << "Wind Dir (From):   " << wDir << endl;
@@ -144,7 +145,7 @@ void glider::Circle()
     // cout << yDelta << endl;
     // cout << xDelta << endl;
 
-    lon += xDelta;  // Länge
+    lon += xDelta;  // LÃ¤nge
     lat += yDelta;  // Breite
 
 

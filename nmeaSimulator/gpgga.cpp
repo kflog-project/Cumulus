@@ -1,9 +1,9 @@
 /***************************************************************************
                           gpgga.cpp  -  description
                              -------------------
-    begin                : 23.12.2003 
-    copyright            : (C) 2003 by Eckhard Völlm 
-    email                : eckhard@kflog.org
+    begin                : 23.12.2003
+    copyright            : (C) 2003 by Eckhard VÃ¶llm, 2009 by Axel Pauli
+    email                : axel@kflog.org
 
     $Id$
 
@@ -26,95 +26,93 @@
 
 using namespace std;
 
-GPGGA::GPGGA( void )
+GPGGA::GPGGA()
 {
 }
 
 char * GPGGA::dmshh_format_lat(double degrees)
 {
-    static char buf[16];
-    int deg_part;
-    double min_part;
+  static char buf[16];
+  int deg_part;
+  double min_part;
 
-    if (degrees < 0)
-        degrees = -degrees;
+  if( degrees < 0 )
+    {
+      degrees = -degrees;
+    }
 
-    deg_part = (int)degrees;
-    min_part = 60.0 * (degrees - deg_part);
+  deg_part = (int) degrees;
+  min_part = 60.0 * (degrees - deg_part);
 
-    sprintf(buf,"%02d%07.4f",deg_part,min_part );
+  sprintf( buf, "%02d%07.4f", deg_part, min_part );
 
-    return buf;
+  return buf;
 }
 
 char * GPGGA::dmshh_format_lon(double degrees)
 {
-    static char buf[16];
-    int deg_part;
-    double min_part;
+  static char buf[16];
+  int deg_part;
+  double min_part;
 
-    if (degrees < 0)
-        degrees = -degrees;
+  if( degrees < 0 )
+    {
+      degrees = -degrees;
+    }
 
-    deg_part = (int)degrees;
-    min_part = 60.0 * (degrees - deg_part);
+  deg_part = (int) degrees;
+  min_part = 60.0 * (degrees - deg_part);
 
-    sprintf(buf,"%03d%07.4f",deg_part,min_part );
+  sprintf( buf, "%03d%07.4f", deg_part, min_part );
 
-    return buf;
+  return buf;
 }
 
 uint GPGGA::calcCheckSum (int pos, const QString& sentence)
 {
-    uint sum=0;
-    for(int i=1;i<pos;i++)
+  uint sum = 0;
+
+  for( int i = 1; i < pos; i++ )
     {
-      sum ^= uint(sentence[i].toAscii());
+      sum ^= uint( sentence[i].toAscii() );
     }
-    return sum;
+  return sum;
 }
 
-// lat/lon are in NMEA degrees e.g. 48.544322
+// Example of GPGGA:
+// $GPGGA,223031.803,5228.1139,N,01334.0933,E,1,10,00.8,35.3,M,39.8,M,,*53
 int GPGGA::send( double lat, double lon, float altitude, int fd )
 {
-    sentence = "$GPGGA,";
-    QTime t = QTime::currentTime();
-    QString field;
-    field.sprintf("%02u",t.hour() );
-    sentence += field;
-    field.sprintf("%02u",t.minute() );
-    sentence += field;
-    field.sprintf("%02u",t.second() );
-    sentence += field;
+  QDateTime dateTimeUtc = QDateTime::currentDateTime().toUTC();
 
-    QString msec;
-    msec.sprintf(".%03u,",t.msec() );
-    sentence+= msec;
+  QString utcTime = dateTimeUtc.time().toString("hhmmss.zzz");
 
-    QString lati;
-    lati.sprintf("%s,%c,",dmshh_format_lat( lat ), lat > 0 ? 'N' : 'S' );
-    sentence += lati;
-    QString longi;
-    longi.sprintf("%s,%c,",dmshh_format_lon( lon ), lon > 0 ? 'E' : 'W' );
-    sentence += longi;
-    sentence += "1,"; // valid
-    sentence += "08,"; // Sats used
-    sentence += "2.1,"; // HDOP
-    QString alti;
-    alti.sprintf("%.1f,", altitude );
-    sentence += alti;
-    sentence += "M,,,,"; // unit in Meters, and some stuff
-    sentence += "0000,*"; // station ID
+  sentence = "$GPGGA," + utcTime +",";
 
-    int pos = sentence.length()-1;
-    uint sum=calcCheckSum( pos, sentence );
-    QString scheck;
-    scheck.sprintf ("%02X\n", sum);
-    sentence += scheck;
+  QString lati;
+  lati.sprintf( "%s,%c,", dmshh_format_lat( lat ), lat > 0 ? 'N' : 'S' );
+  sentence += lati;
+  QString longi;
+  longi.sprintf( "%s,%c,", dmshh_format_lon( lon ), lon > 0 ? 'E' : 'W' );
+  sentence += longi;
+  sentence += "1,"; // valid
+  sentence += "08,"; // Sats used
+  sentence += "2.1,"; // HDOP
+  QString alti;
+  alti.sprintf( "%.1f,", altitude );
+  sentence += alti;
+  sentence += "M,,,,"; // unit in Meters, and some stuff
+  sentence += "0000,*"; // station ID
 
-    int sent = write( fd, sentence.toAscii().data(), (int) sentence.length() );
+  int pos = sentence.length() - 1;
+  uint sum = calcCheckSum( pos, sentence );
+  QString scheck;
+  scheck.sprintf( "%02X\n", sum );
+  sentence += scheck;
 
-    cout << sentence.toAscii().data();
-    return sent;
+  int sent = write( fd, sentence.toAscii().data(), (int) sentence.length() );
+
+  cout << sentence.toAscii().data();
+  return sent;
 }
 

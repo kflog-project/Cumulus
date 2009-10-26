@@ -57,7 +57,7 @@ static    float  speed=100.0;
 static    QString  direction="right";
 static    float  heading=230.0;
 static    float  wind=25.0;
-static    float  winddir=270.0;   // wind is coming from west ususally
+static    float  winddir=270.0;   // wind is coming from west usually
 static    float  radius=120.0;    // default circle radius
 static    float  altitude=1000.0; // default altitude
 static    float  climb=0.0;       // default climb rate zero
@@ -127,7 +127,7 @@ void scanConfig( QString cfg )
           else if(NS=='N')
             ;
           else
-            cout << "Invalid Latidude Coordinate N|S possible not: " << NS << endl;
+            cout << "Invalid Latitude Coordinate N|S possible not: " << NS << endl;
         }
       else
         {
@@ -263,7 +263,7 @@ int main(int argc, char **argv)
     {
       char *prog = basename(argv[0]);
 
-      cout << "NMEA GPS Simulator for Cumulus, 2003-2008 E.Voellm  (GPL) 1.3.2" << endl << endl
+      cout << "NMEA GPS Simulator for Cumulus, 2003-2008 E. Voellm, 2009 A. Pauli  (GPL) 1.3.3" << endl << endl
            << "Usage: " << prog << " str|cir|pos|gpos [params]" << endl << endl
            << "Parameters: str:  Straight Flight "<< endl
            << "            cir:  Circling "<< endl
@@ -290,8 +290,8 @@ int main(int argc, char **argv)
 
   mode = Argv[1];
 
-  // First of all read command config from file
-  // Determine config file position. It is normally stored in the home
+  // First of all read command configuration from file.
+  // Determine configuration file position. It is normally stored in the home
   // directory of the user.
 
   const char *home = getenv("HOME");
@@ -331,7 +331,7 @@ int main(int argc, char **argv)
     {
       cout << "Mode:      Fixed Ground Position  " << endl;
       if( !gotAltitude)
-        altitude = 300.0;  // lower default Altitude
+        altitude = 100.0;  // lower default Altitude
     }
   if( mode == "pos" )
     {
@@ -364,7 +364,7 @@ int main(int argc, char **argv)
 
   int t = (int)Time;
 
-  // This is used for the GSA output simulation
+  // @AP: This is used for the GSA output simulation
   uint gsa = 0;
   QStringList satIds;
   satIds << "14" << "32" << "17" << "20" << "11" << "23" << "28" << "25" << "35";

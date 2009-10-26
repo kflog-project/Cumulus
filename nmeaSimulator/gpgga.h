@@ -1,9 +1,9 @@
 /***************************************************************************
                           gpgga.h  -  description
                              -------------------
-    begin                : 23.12.2003 
-    copyright            : (C) 2003 by Eckhard Völlm 
-    email                : eckhard@kflog.org
+    begin                : 23.12.2003
+    copyright            : (C) 2003 by Eckhard VÃ¶llm
+    email                : axel@kflog.org
 
     $Id$
 
@@ -23,7 +23,7 @@
 class GPGGA
 {
 public:
-    GPGGA( void );
+    GPGGA();
     int send( double lat, double lon, float altitude, int fd );
 private:
     QString sentence;

@@ -1,9 +1,9 @@
 /***************************************************************************
                           glider.h  -  description
                              -------------------
-    begin                : 23.12.2003 
-    copyright            : (C) 2003 by Eckhard Völlm 
-    email                : eckhard@kflog.org
+    begin                : 23.12.2003
+    copyright            : (C) 2003 by Eckhard VÃ¶llm
+    email                : axel@kflog.org
 
     $Id$
 
@@ -18,16 +18,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QTimer>
-
 #include "vector.h"
 #include "gpgga.h"
 #include "gprmc.h"
 
-
-class glider {
+class glider
+{
 
 public:
+
     glider( double &lat, double &lon, float &speed, float &heading, float wind, float winddir, float &altitude, float climb );
     ~glider();
     void setFd( int fd );
@@ -36,7 +35,8 @@ public:
     void Circle();
     void FixedPos();
     void FixedPosGround();
-private: // Private attributes
+
+private:
 
     int myFd;
     GPGGA myGPGGA;
