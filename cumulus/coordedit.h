@@ -32,12 +32,12 @@
 class CoordEdit : public QLineEdit
 {
     Q_OBJECT
+
 public:
 
     CoordEdit(QWidget *parent=0);
-    ~CoordEdit()
-    {}
-    ;
+    virtual ~CoordEdit(){};
+
     void keyPressEvent (QKeyEvent *e);
     void focusInEvent (QFocusEvent *e);
 
@@ -81,16 +81,16 @@ protected:
     QString initText;
     bool firstSet;
     int format;
-
 };
 
 class LatEdit : public CoordEdit
 {
     Q_OBJECT
-public:
-    LatEdit(QWidget *parent=0, const int base=1);
 
-    ~LatEdit(){};
+public:
+
+    LatEdit(QWidget *parent=0, const int base=1);
+    virtual ~LatEdit() {};
 
     /**
      * overloaded function
@@ -102,10 +102,11 @@ public:
 class LongEdit : public CoordEdit
 {
     Q_OBJECT
-public:
-    LongEdit(QWidget *parent=0, const int base=1);
 
-    ~LongEdit() {};
+public:
+
+    LongEdit(QWidget *parent=0, const int base=1);
+    virtual ~LongEdit() {};
 
     /**
      * Overloaded function
