@@ -164,7 +164,7 @@ void IgcLogger::slotMakeFixEntry()
       QStringList list;
       list << entry << fRecord << QTime::currentTime ().toString("hhmmss");
       _backtrack.add( list );
-      qDebug( "_backtrack.size=%d", _backtrack.size() );
+      // qDebug( "_backtrack.size=%d", _backtrack.size() );
 
       // Set last F recording time from the oldest log entry. Looks a little bit
       // tricky but should work so. ;-)
@@ -195,9 +195,9 @@ void IgcLogger::slotMakeFixEntry()
 
               for( int i = _backtrack.count() - 1; i >= 0; i-- )
                 {
-                  qDebug( "backtrack %d: %s, %s", i,
-                      _backtrack.at(i).at(0).toLatin1().data(),
-                      _backtrack.at(i).at(1).toLatin1().data() );
+                  // qDebug( "backtrack %d: %s, %s", i,
+                  // _backtrack.at(i).at(0).toLatin1().data(),
+                  // _backtrack.at(i).at(1).toLatin1().data() );
 
                   _stream << _backtrack.at(i).at(0) << "\r\n";
                 }
