@@ -10,7 +10,7 @@
  **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -109,9 +109,11 @@ SettingsPageUnits::SettingsPageUnits(QWidget *parent) : QWidget(parent)
   UnitPosition->setEditable(false);
   topLayout->addWidget(UnitPosition,row++,1);
   UnitPosition->addItem(tr("ddd°mm'ss\""));
-  UnitPosition->addItem(tr("ddd°mm.mmm\'"));
+  UnitPosition->addItem(tr("ddd°mm.mmm'"));
+  UnitPosition->addItem(tr("ddd.ddddd°"));
   positions[0] = WGSPoint::DMS;
   positions[1] = WGSPoint::DDM;
+  positions[2] = WGSPoint::DDD;
 
   label = new QLabel(tr("Time:"), this);
   topLayout->addWidget(label, row, 0);

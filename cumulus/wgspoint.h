@@ -2,14 +2,14 @@
 **
 **   wgspoint.h - general position representations
 **
-**   This file is part of Cumulus and has been extracted from mapmatrix.h
+**   This file is part of Cumulus
 **
 ************************************************************************
 **
 **   Copyright (c):  2008-2009 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -38,30 +38,33 @@ public:
     /**
      * defined position formats
      */
-    enum Format {
+    enum Format
+    {
         Unknown=-1,
-        DMS=0,   // degrees, minutes, seconds
-        DDM=1,   // degrees, decimal minutes
-        DDD=2    // decimal degrees
+        DMS=0, // degrees, minutes, seconds
+        DDM=1, // degrees, decimal minutes
+        DDD=2  // decimal degrees
     };
 
     /**
-     * Creates a new, empty WGSPoint.
+     * Creates an empty WGSPoint.
      */
     WGSPoint();
 
     /**
-     * Creates a new WGSPoint with the given coordinates.
+     * Creates a WGSPoint with the given coordinates. Input coordinates are expected
+     * in KFLog format.
      */
     WGSPoint(int lat, int lon);
 
     /**
-     * Creates a new WGSPoint with the given position.
+     * Creates a WGSPoint with the given position. Input coordinates are expected
+     * in KFLog format.
      */
     WGSPoint(const QPoint& pos);
 
     /**
-     * Returns the latitude in the internal format.
+     * Returns the latitude in the internal KFLog format.
      */
     int lat() const
     {
@@ -69,7 +72,7 @@ public:
     };
 
     /**
-     * Returns the longitude in the internal format.
+     * Returns the longitude in the internal KFLog format.
      */
     int lon() const
     {
@@ -77,7 +80,7 @@ public:
     };
 
     /**
-     * Sets the latitude.
+     * Sets the latitude. Input latitude is expected in KFLog format.
      */
     void setLat(int lat)
     {
@@ -85,7 +88,7 @@ public:
     };
 
     /**
-     * Sets the longitude.
+     * Sets the longitude. Input longitude is expected in KFLog format.
      */
     void setLon(int lon)
     {
@@ -93,7 +96,7 @@ public:
     };
 
     /**
-     * Sets the position.
+     * Sets the position. Input coordinates are expected in KFLog format.
      */
     void setPos(int lat, int lon)
     {
@@ -102,7 +105,7 @@ public:
     };
 
     /**
-     * Sets the position.
+     * Sets the position. Input coordinates are expected in KFLog format.
      */
     void setPos( const QPoint& pos )
     {
@@ -116,7 +119,7 @@ public:
     WGSPoint &operator=( const QPoint &p );
 
     /**
-     * Returns the current used format.
+     * Returns the current used coordinate format.
      */
     static int getFormat()
     {
@@ -124,7 +127,7 @@ public:
     };
 
     /**
-     * Sets the format to be used.
+     * Sets the coordinate format to be used.
      */
     static void setFormat( Format format )
     {
@@ -132,23 +135,28 @@ public:
     };
 
     /**
-     * Converts the given coordinate into separate values.
+     * Converts the given KFLog coordinate into separate WGS84 values.
      */
     static void calcPos (int coord, int& degree, int& min, int &sec);
 
     /**
-     * Converts the given coordinate into separate values.
+     * Converts the given KFLog coordinate into separate WGS84 values.
      */
     static void calcPos (int coord, int& degree, double& min);
 
     /**
-     * Converts the given coordinate into a readable string.
+     * Converts the given KFLog coordinate into separate WGS84 values.
+     */
+    static void calcPos (int coord, double& degree);
+
+    /**
+     * Converts the given KFLOG coordinate into a readable WGS84 string.
      * ( xxx,xxxx°[N,S,E,W] )
      */
     static QString printPos(int coord, bool isLat = true);
 
     /**
-     * Converts a coordinate in string format to the internal KFLog format
+     * Converts a WGS84 coordinate string into the internal KFLog format.
      */
     static int degreeToNum(QString degree);
 

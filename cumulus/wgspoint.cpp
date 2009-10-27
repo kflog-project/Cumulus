@@ -2,14 +2,14 @@
 **
 **   WGSPoint.cpp - general position representations
 **
-**   This file is part of Cumulus and has been extracted from mapmatrix.cpp
+**   This file is part of Cumulus
 **
 ************************************************************************
 **
 **   Copyright (c):  2008-2009 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -21,19 +21,18 @@
   * This class is used to handle WGS-coordinates. It inherits QPoint. The only
   * difference is, that the methods to access the coordinates are called "lat"
   * and "lon". Furthermore it controls the unit to be used for position
-  * representation.
+  * representation and make conversions between the internal used KFLog format
+  * and the WGS84 equivalents.
   *
   */
 
 #include <stdlib.h>
 #include <cmath>
-
 #include <QRegExp>
 
 #include "wgspoint.h"
 
 // set static format variable to default (degrees, minutes, seconds)
-
 WGSPoint::Format WGSPoint::_format = WGSPoint::DMS;
 
 
@@ -56,8 +55,8 @@ WGSPoint &WGSPoint::operator=( const QPoint &p )
 }
 
 /**
-  * Converts the given coordinate into separate values.
-  */
+ * Converts the given integer KFLog coordinate into real degrees, minutes and seconds.
+ */
 void WGSPoint::calcPos (int coord, int& degree, int& min, int &sec)
 {
   degree = coord / 600000;
@@ -77,11 +76,23 @@ void WGSPoint::calcPos (int coord, int& degree, int& min, int &sec)
     }
 }
 
+/**
+ * Converts the given integer KFLog coordinate into real degrees and minutes.
+ */
 void WGSPoint::calcPos (int coord, int& degree, double& min)
 {
   degree = coord / 600000;
   min = (coord % 600000) / 10000.0;
   // qDebug("Coord=%d, degree=%d, decMin=%f", coord, degree, min);
+}
+
+/**
+ * Converts the given integer KFLog coordinate into a real degree value.
+ */
+void WGSPoint::calcPos (int coord, double& degree)
+{
+  degree = coord / 600000.0;
+  // qDebug("Coord=%d, Degree=%f", coord, degree);
 }
 
 /**
@@ -91,15 +102,21 @@ QString WGSPoint::printPos(int coord, bool isLat)
 {
   QString pos, posDeg, posMin, posSec;
   int degree, min, sec;
-  double decMin;
+  double decDegree, decMin;
 
-  if ( getFormat() != WGSPoint::DDM )
+  if ( getFormat() == WGSPoint::DMS )
     {
       // default is always degrees, minutes, seconds
       calcPos (coord, degree, min, sec);
 
-      // qDebug("coord=%d, degree=%d, min=%d, sec=%d",
-      //         coord, degree, min, sec );
+      if (isLat)
+        {
+          posDeg.sprintf("%02d\260 ", (degree < 0)  ? -degree : degree);
+        }
+      else
+        {
+          posDeg.sprintf("%03d\260 ", (degree < 0)  ? -degree : degree);
+        }
 
       min = abs(min);
       posMin.sprintf("%02d'", min);
@@ -107,10 +124,19 @@ QString WGSPoint::printPos(int coord, bool isLat)
       sec = abs(sec);
       posSec.sprintf(" %02d\"", sec);
     }
-  else
+  else if ( getFormat() == WGSPoint::DDM )
     {
       // degrees and decimal minutes
       calcPos (coord, degree, decMin);
+
+      if (isLat)
+        {
+          posDeg.sprintf("%02d\260 ", (degree < 0)  ? -degree : degree);
+        }
+      else
+        {
+          posDeg.sprintf("%03d\260 ", (degree < 0)  ? -degree : degree);
+        }
 
       decMin = fabs(decMin);
 
@@ -123,31 +149,57 @@ QString WGSPoint::printPos(int coord, bool isLat)
           posMin.insert(0, "0");
         }
     }
+  else if ( getFormat() == WGSPoint::DDD )
+    {
+      // decimal degrees
+      calcPos (coord, decDegree);
+
+      posDeg.sprintf("%.5f\260", (decDegree < 0)  ? -decDegree : decDegree);
+
+      // Unfortunately sprintf does not support leading zero in float
+      // formating. So we must do it alone.
+      if (isLat)
+        {
+          if ( decDegree < 10.0 )
+            {
+              posDeg.insert(0, "0");
+            }
+        }
+      else
+        {
+          if ( decDegree < 10.0 )
+            {
+              posDeg.insert(0, "00");
+            }
+          else if ( decDegree < 100.0 )
+            {
+              posDeg.insert(0, "0");
+            }
+        }
+    }
+
+  pos = posDeg + posMin + posSec;
 
   if (isLat)
     {
       if (coord < 0)
         {
-          posDeg.sprintf("%02d\260 ", -degree);
-          pos = posDeg + posMin + posSec + " S";
+          pos += " S";
         }
       else
         {
-          posDeg.sprintf("%02d\260 ", degree);
-          pos = posDeg + posMin + posSec + " N";
+          pos += " N";
         }
     }
   else
     {
       if (coord < 0)
         {
-          posDeg.sprintf("%03d\260 ", -degree);
-          pos = posDeg + posMin + posSec + " W";
+          pos += " W";
         }
       else
         {
-          posDeg.sprintf("%03d\260 ", degree);
-          pos = posDeg + posMin + posSec + " E";
+          pos += " E";
         }
     }
 
@@ -156,7 +208,7 @@ QString WGSPoint::printPos(int coord, bool isLat)
   return pos;
 }
 
-
+/** Converts the degree input string into the internal KFLog format */
 int WGSPoint::degreeToNum(QString inDegree)
 {
   /*
@@ -164,6 +216,7 @@ int WGSPoint::degreeToNum(QString inDegree)
    *
    *  [g]gg° mm' ss"
    *  [g]gg° mm.mmmm'
+   *  [g]gg.ggggg°
    *  dddddddddd
    */
 
@@ -173,16 +226,20 @@ int WGSPoint::degreeToNum(QString inDegree)
   QString input = inDegree;
 
   QRegExp degreeDMS("^[0-1]?[0-9][0-9]" + degreeString + "[ ]*[0-5][0-9]'[ ]*[0-5][0-9]\"");
-  QRegExp degreeDMM("^[0-1]?[0-9][0-9]" + degreeString + "[ ]*[0-5][0-9].[0-9][0-9][0-9]'");
+  QRegExp degreeDDM("^[0-1]?[0-9][0-9]" + degreeString + "[ ]*[0-5][0-9].[0-9][0-9][0-9]'");
+  QRegExp degreeDDD("^[0-1]?[0-9][0-9].[0-9][0-9][0-9][0-9][0-9]" + degreeString);
   QRegExp number("^-?[0-9]+$");
 
   if (number.indexIn(inDegree) != -1)
     {
       return inDegree.toInt();
     }
-  else if (degreeDMS.indexIn(inDegree) != -1)
+
+  int result = 0;
+
+  if (degreeDMS.indexIn(inDegree) != -1)
     {
-      int deg = 0, min = 0, sec = 0, result = 0;
+      int deg = 0, min = 0, sec = 0;
 
       QRegExp deg1(degreeString);
       deg = inDegree.mid(0, deg1.indexIn(inDegree)).toInt();
@@ -196,24 +253,10 @@ int WGSPoint::degreeToNum(QString inDegree)
       sec = inDegree.mid(0, deg3.indexIn(inDegree)).toInt();
 
       result = (int)rint((600000.0 * deg) + (10000.0 * (min + (sec / 60.0))));
-
-      // We add 1 to avoid rounding-errors and to make it possible to use the
-      // zero value with a minus sign!
-      // result += 1;
-
-      QRegExp dir("[swSW]$");
-      if (dir.indexIn(inDegree) >= 0)
-        {
-          // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), -result);
-          return -result;
-        }
-
-      // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), result);
-      return result;
     }
-  else if ( degreeDMM.indexIn(inDegree) != -1)
+  else if ( degreeDDM.indexIn(inDegree) != -1)
     {
-      int deg = 0, result = 0;
+      int deg = 0;
       double min = 0;
 
       QRegExp deg1(degreeString);
@@ -225,26 +268,33 @@ int WGSPoint::degreeToNum(QString inDegree)
       inDegree = inDegree.mid(deg2.indexIn(inDegree) + 1, inDegree.length());
 
       result = (int)rint((600000.0 * deg) + (10000.0 * (min)));
+    }
+  else if ( degreeDDD.indexIn(inDegree) != -1)
+    {
+      double deg = 0;
 
-      // We add 1 to avoid rounding-errors and to make it possible to use the
-      // zero value with a minus sign!
-      // result += 1;
+      QRegExp deg1(degreeString);
+      deg = inDegree.mid(0, deg1.indexIn(inDegree)).toDouble();
 
-      QRegExp dir("[swSW]$");
+      result = (int) rint( 600000.0 * deg );
+    }
+  else
+    {
+      // @AP: inform the user that something has going wrong
+      qWarning("%s(%d) degreeToNum(): Wrong input format %s",
+               __FILE__, __LINE__, inDegree.toLatin1().data() );
 
-      if (dir.indexIn(inDegree) >= 0)
-        {
-          // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), -result);
-          return -result;
-        }
-
-      // qDebug("WGSPoint::degreeToNum(%s)=%d", input.latin1(), result);
-      return result;
+      return 0; ; // Auweia! That is a pitfall, all is set to zero on error.
     }
 
-  // @AP: inform the user that something has going wrong
-  qWarning("%s(%d) degreeToNum(): Wrong input format %s",
-           __FILE__, __LINE__, inDegree.toLatin1().data() );
+  QRegExp dir("[swSW]$");
 
-  return 0; // that is the pitfall, all is set to zero on error
+  if (dir.indexIn(inDegree) >= 0)
+    {
+      result = -result;
+    }
+
+  // qDebug("WGSPoint::degreeToNum(%s)=%d", input.toLatin1().data(), result);
+
+  return result;
 }

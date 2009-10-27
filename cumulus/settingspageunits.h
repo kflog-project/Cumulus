@@ -10,7 +10,7 @@
 **                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -36,7 +36,8 @@ public:
   SettingsPageUnits(QWidget *parent=0);
   ~SettingsPageUnits();
 
-public slots: // Public slots
+public slots:
+
   /**
    * Called to initiate loading of the configuration file
    */
@@ -71,7 +72,7 @@ private:
   int distances[3];
   int varios[3];
   int winds[5];
-  int positions[2];
+  int positions[3];
   int times[2];
 };
 
