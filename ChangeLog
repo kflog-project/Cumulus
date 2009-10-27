@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2009-10-27 AP: New coordinate format DDD (decimal degrees ddd.ddddd°) to settings
+                   page unit added. I hope that 5 digits after the decimal are sufficient.
 [-] 2009-10-26 AP: BUGFIX: NMEA simulator uses now UTC date and time in GGA and RMC
                    sentence instead of local items. So we get a more realistic
                    scenario for testing as before.
