@@ -57,7 +57,7 @@ Cumulus 2.5.x (Development based on X11/Qt-4.5.3)
                    Shortcut key SHIFT+H action changed. Pressing it moves
                    the current position to the home site but only in manual mode.
 [o] 2009-09-04 AP: New option Projection follows home added to map settings page.
-                   This option is only available for Plate Carree projection.
+                   This option is only available for Plate Carreé projection.
                    If this option is active and the user sets a new home site,
                    the projection latitude is also updated. That all triggers
                    a recomputing of map data projections. The result should be
@@ -65,7 +65,7 @@ Cumulus 2.5.x (Development based on X11/Qt-4.5.3)
                    is flying around his home site. Furthermore the projection
                    parallel must not be set by hand as before.
 [-] 2009-09-03 AP: BUGFIX: Map setting page should now display always the used
-                   map directory always the default one.                             
+                   map directory also the default one.                             
 [o] 2009-09-02 AP: Personal data item birthday removed. Was not used by cumulus.
 [o] 2009-09-02 AP: Class MapElementList used by airfields, glider sites, outlandings
                    replaced by simple QLists. Welt2000 parser now filters out
