@@ -44,14 +44,14 @@ class ReachableList;
 class WindAnalyser;
 
 /**
- * @short A single sample from a flight
+ * @short A single sample from a flight data
  *
  * This class represents a single sample of flight data obtained.
  *
  * @author Andrè Somers
  */
 
-class flightSample
+class FlightSample
 {
 public:
     /**
@@ -74,7 +74,6 @@ public:
      */
     Vector vector;
 
-
     /**
      * Time the sample was taken.
      */
@@ -91,13 +90,12 @@ public:
     int marker; //this marker can be used to reference a certain record...
 };
 
-
 /**
  * @short Flight calculator class
  *
  * This is the calculator for all flight-related parameters. It is at
- * the heart of the cumulus system. All data received from the GPS via
- * the @ref GPSNMEA class is routed here first. The data received is
+ * the heart of the Cumulus system. All data received from the GPS via
+ * the @ref GpsNmea class is routed here first. The data received is
  * relayed to the other listeners, like the @ref Map and the @ref
  * MapView. Data not in the GPS signal is being estimated or
  * calculated here or by classes initiated from here, including final
@@ -114,7 +112,7 @@ class Calculator : public QObject
 
 public:
     /**
-     * Different possible flightmodes
+     * Different possible flight modes
      */
     enum flightmode{unknown=0, standstill, cruising, circlingL, circlingR, wave};
 
@@ -140,7 +138,7 @@ public:
     const QTime& getlastETA() const { return lastETA; };
 
     /**
-     * Read property of int lastBearing.
+     * Read property of integer lastBearing.
      */
     const int& getlastBearing() const { return lastBearing; };
 
@@ -268,10 +266,10 @@ public:
     /**
      * Contains a list of samples from the flight
      */
-    LimitedList<flightSample> samplelist;
+    LimitedList<FlightSample> samplelist;
 
     /**
-     * Returns the current flightmode
+     * Returns the current flight mode
      */
     flightmode currentFlightMode()
       {
@@ -322,7 +320,7 @@ public:
     };
 
     /**
-     * @returns the vario object
+     * @returns the variometer object
      */
     const Vario* getVario()
     {
@@ -367,7 +365,7 @@ public:
         {
           return true;
         }
-        
+
       return false;
     };
 
@@ -412,27 +410,27 @@ public slots:
      */
     void slot_Heading();
     /**
-     * Chanched position to the North
+     * Change position to the North
      */
     void slot_changePositionN();
     /**
-     * Chanched position to the South
+     * Change position to the South
      */
     void slot_changePositionS();
     /**
-     * Chanched position to the East
+     * Change position to the East
      */
     void slot_changePositionE();
     /**
-     * Chanched position to the West
+     * Change position to the West
      */
     void slot_changePositionW();
     /**
-     * Chanched position to the Homesite
+     * Change position to the Homesite
      */
     void slot_changePositionHome();
     /**
-     * Chanched position to the selected waypoint
+     * Change position to the selected waypoint
      */
     void slot_changePositionWp();
     /**
@@ -485,7 +483,7 @@ public slots:
       _calculateLD = newVal;
     };
     /**
-     * Called to switch on/off Vario calculation
+     * Called to switch on/off Variometer calculation
      */
     void slot_toggleVarioCalculation(const bool newVal)
     {
@@ -503,13 +501,13 @@ public slots:
      * by the GPS/Logger device */
     void slot_GpsWind(const Speed& speed, const short direction);
     /**
-     * Called if the cumulus wind analyzer has a new measurement.
+     * Called if the Cumulus wind analyzer has a new measurement.
      */
     void slot_Wind(Vector&);
-    
+
     /**
      * Called to select the start point of a loaded task.
-     * That will also activate the automaitc task point switch.
+     * That will also activate the automatic task point switch.
      */
     void slot_startTask();
 
@@ -673,7 +671,7 @@ private: // Private methods
 
 private: // Private attributes
     /** Contains the last flight sample */
-    flightSample lastSample;
+    FlightSample lastSample;
     /** Contains the last calculated bearing */
     int lastBearing;
     /** Contains the last calculated distance to the waypoint */

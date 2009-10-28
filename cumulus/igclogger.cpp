@@ -138,7 +138,7 @@ void IgcLogger::slotMakeFixEntry()
       return;
     }
 
-  const flightSample &lastfix = calculator->samplelist.at(0);
+  const FlightSample &lastfix = calculator->samplelist.at(0);
 
   // check if we have a new fix to log
   if ( ! lastLoggedBRecord->isNull() &&

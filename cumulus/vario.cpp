@@ -69,8 +69,8 @@ void Vario::newAltitude()
     while( i < max ) {
         double energyAlt1 = 0.0;
         double energyAlt2 = 0.0;
-        const flightSample *sample1 = &calculator->samplelist.at(i-1);
-        const flightSample *sample2 = &calculator->samplelist.at(i);
+        const FlightSample *sample1 = &calculator->samplelist.at(i-1);
+        const FlightSample *sample2 = &calculator->samplelist.at(i);
         // calculate energy altitude for both samples
         if( _TEKOn ) {
             energyAlt1 = (sample1->airspeed.getMps() * sample1->airspeed.getMps())/(2*9.81);

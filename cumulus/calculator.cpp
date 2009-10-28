@@ -38,14 +38,15 @@
 #define MAX_MCCREADY 10.0
 #define MAX_SAMPLECOUNT 600
 
-Calculator *calculator = (Calculator *) 0;
+Calculator *calculator = static_cast<Calculator *> (0);
+
 extern MainWindow  *_globalMainWindow;
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 
 Calculator::Calculator(QObject* parent) :
     QObject(parent),
-    samplelist( LimitedList<flightSample>( MAX_SAMPLECOUNT ) )
+    samplelist( LimitedList<FlightSample>( MAX_SAMPLECOUNT ) )
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -602,8 +603,8 @@ void Calculator::calcLD()
       return;
     }
 
-  const flightSample *start = 0;
-  const flightSample *end = &samplelist.at(0);
+  const FlightSample *start = 0;
+  const FlightSample *end = &samplelist.at(0);
   int timeDiff = 0;
   double distance = 0.0;
   double newCurrentLD = -1.0;
@@ -1052,7 +1053,7 @@ void Calculator::slot_newFix()
     }
 
   // create a new sample structure
-  flightSample sample;
+  FlightSample sample;
 
   // fill it with the relevant data
   sample.time=GpsNmea::gps->getLastTime();
