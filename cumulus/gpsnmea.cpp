@@ -204,9 +204,9 @@ GpsNmea::~GpsNmea()
  */
 void GpsNmea::enableReceiving( bool enable )
 {
-  QSocketNotifier* notifier;
+  QSocketNotifier* notifier = static_cast<QSocketNotifier *> (0);
 
-  qDebug("GpsNmea::enableReceiving(%s)", enable ? "true" : "false");
+  // qDebug("GpsNmea::enableReceiving(%s)", enable ? "true" : "false");
 
 #ifndef MAEMO
 
@@ -1638,7 +1638,7 @@ void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
       sivInfoInternal.clear();
     }
 
-  //extract info on the individual sats
+  // extract info on the individual sats
   __ExtractSatsInView( sentence[4], sentence[5], sentence[6], sentence[7] );
 
   if( sentence.count() > 11 )
