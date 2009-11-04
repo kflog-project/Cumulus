@@ -1258,7 +1258,7 @@ void MainWindow::closeEvent( QCloseEvent* evt )
                   this,
                   Qt::Dialog );
 
-  mb.setDefaultButton( QMessageBox::Yes );
+  mb.setDefaultButton( QMessageBox::No );
 
   switch ( mb.exec() )
     {
