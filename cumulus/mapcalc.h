@@ -37,29 +37,31 @@
 #define MILE_kfl  (PI2 * RADIUS / (360.0 * 60.0))
 
 /**
- * Calculates the distance between two given points (in km).
+ * Calculates the distance between two given points according to great circle in km.
  */
 double dist(double lat1, double lon1, double lat2, double lon2);
 
-double distC(double lat1, double lon1, double lat2, double lon2);
+double distP(double lat1, double lon1, double lat2, double lon2);
+
+double distC1(double lat1, double lon1, double lat2, double lon2);
 
 /**
- * Calculates the distance between two given points (in km).
+ * Calculates the distance between two given points in km.
  */
 double dist(QPoint* p1, QPoint* p2);
 
 /**
- * Calculates the distance between two given points (in km).
+ * Calculates the distance between two given points in km.
  */
 double dist(wayPoint* wp1, wayPoint* wp2);
 
 /**
- * Calculates the distance between two given points (in km).
+ * Calculates the distance between two given points in km.
  */
 double dist(wayPoint* wp, FlightPoint* fp);
 
 /**
- * Calculates the distance between two given points (in km).
+ * Calculates the distance between two given points in km.
  */
 double dist( FlightPoint* fp1, FlightPoint* fp2);
 
