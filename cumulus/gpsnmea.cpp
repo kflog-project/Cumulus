@@ -1171,7 +1171,7 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
 
       if( ok == true && _lastSatInfo.fixAccuracy != pdop )
         {
-          _lastSatInfo.fixAccuracy = rint(pdop);
+          _lastSatInfo.fixAccuracy = static_cast<int>(rint(pdop));
         }
     }
 
