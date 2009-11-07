@@ -2590,10 +2590,10 @@ void MapContents::AddPointToRect(QRect& rect, const QPoint& point)
   if (rect.isValid())
     {
       rect.setCoords(
-        MIN(rect.left(), point.x()),
-        MIN(rect.top(), point.y()),
-        MAX(rect.right(), point.x()),
-        MAX(rect.bottom(), point.y()));
+        qMin(rect.left(), point.x()),
+        qMin(rect.top(), point.y()),
+        qMax(rect.right(), point.x()),
+        qMax(rect.bottom(), point.y()));
     }
   else
     {

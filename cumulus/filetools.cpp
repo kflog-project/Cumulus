@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by André Somers, 2007 Axel Pauli
+ **   Copyright (c):  2004      by André Somers,
+ **                   2007-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -15,10 +16,10 @@
  **
  ***********************************************************************/
 
+#include <QtGlobal>
 #include <QRect>
 
 #include "filetools.h"
-#include "resource.h"
 
 /** Save a QByteArray to a stream with only one leading byte instead of 4. */
 void ShortSave (QDataStream &s, const QByteArray &str )
@@ -29,7 +30,7 @@ void ShortSave (QDataStream &s, const QByteArray &str )
     }
 
   qint8 len;
-  len=MIN(str.size(), 255);
+  len = qMin(str.size(), 255);
   s << len;
   s.writeRawData( str.data(), len );
 }
@@ -65,7 +66,7 @@ void ShortLoad (QDataStream &s, QByteArray &str)
 /** Load a QString from a stream with only one leading byte instead of 4. */
 void ShortLoad (QDataStream &s, QString &str)
 {
-  //this is basicly a wrapper around the above function, provided for conveneance.
+  //this is basically a wrapper around the above function, provided for convenience.
   QByteArray tmp;
   ShortLoad(s, tmp);
   str=QString::fromUtf8(tmp);

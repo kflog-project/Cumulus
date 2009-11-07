@@ -305,7 +305,7 @@ double MapMatrix::centerToRect(const QRect& center, const QSize& pS)
     yScaleDelta = height / pS.height();
   }
 
-  double tempScale = MAX(cScale * MAX(xScaleDelta, yScaleDelta), MAX_SCALE);
+  double tempScale = qMax(cScale * qMax(xScaleDelta, yScaleDelta), MAX_SCALE);
 
   // Only change if difference is too large:
   if((tempScale / cScale) > 1.05 || (tempScale / cScale) < 0.95)

@@ -19,10 +19,10 @@
 #include <stdlib.h>
 #include <cmath>
 
+#include <QtGlobal>
+
 #include "mapcalc.h"
 #include "mapmatrix.h"
-#include "resource.h"
-
 
 static const double rad = M_PI / 108000000.0; // Pi / (180 degrees * 600000 KFlog degrees)
 static const double pi_180 = M_PI / 108000000.0;
@@ -56,6 +56,7 @@ double distP(double lat1, double lon1, double lat2, double lon2)
  *  Distance calculation according to great circle. Unfit for very short
  *  distances due to rounding errors but required for longer distances according
  *  to FAI Code Sportif, Annex C. It is used as default in Cumulus.
+ *  http://sis-at.streckenflug.at/2009/pdf/cs_annex_c.pdf
  */
 double dist(double lat1, double lon1, double lat2, double lon2)
 {
@@ -305,11 +306,14 @@ double outsideVector(QPoint center, QPoint p1, QPoint p2)
     res1=normalize(res1);
     res2=normalize(res2);
 
-    if(res1-MIN(v1,v2)< M_PI_2) {
+    if (res1 - qMin(v1, v2) < M_PI_2)
+      {
         return res1;
-    } else {
+      }
+    else
+      {
         return res2;
-    }
+      }
 }
 
 

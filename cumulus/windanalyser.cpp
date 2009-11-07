@@ -15,14 +15,12 @@
  **
  ***********************************************************************/
 
-#include <stdlib.h>
-#include <QtGlobal>
-
 #include <cmath>
+
+#include <QtGlobal>
 
 #include "windanalyser.h"
 #include "mapcalc.h"
-#include "resource.h"
 #include "gpsnmea.h"
 #include "generalconfig.h"
 

@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2003      by André Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -17,6 +18,7 @@
 
 #include <cmath>
 
+#include <QtGlobal>
 #include <QVBoxLayout>
 #include <QDesktopWidget>
 #include <QApplication>
@@ -24,7 +26,6 @@
 #include "gpsstatusdialog.h"
 #include "gpsnmea.h"
 #include "mapcalc.h"
-#include "resource.h"
 
 GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
 {
@@ -185,7 +186,7 @@ void GPSElevationAzimuthDisplay::paintEvent(QPaintEvent *)
   p.drawPixmap ( contentsRect().left(), contentsRect().top(), *background,
                  0, 0, background->width(), background->height() );
 
-  //draw satelites
+  //draw satellites
   if (sats.count())
     {
       for (int i=0; i < sats.count(); i++)
@@ -220,7 +221,7 @@ void GPSElevationAzimuthDisplay::drawSat(QPainter * p, const SIVInfo& sivi)
   //qDebug("%f", a);
 
   int R, G;
-  int db=MIN(sivi.db * 2, 99);
+  int db = qMin(sivi.db * 2, 99);
 
   if (db < 50)
     {
@@ -353,8 +354,8 @@ void GPSSnrDisplay::drawSat(QPainter * p, QPainter * pm, int i, int cnt, const S
   int bwidth = width / cnt;
   int left = bwidth * i + 2;
   int db = sivi.db * 2;
-  db = MIN(db, 100);
-  int bheight = MAX(int((double(height) / 99.0) * db), 14);
+  db = qMin(db, 100);
+  int bheight = qMax(int((double(height) / 99.0) * db), 14);
   //qDebug("id: %d, db: %d, bheight: %d (height: %d)", sivi->id, sivi->db, bheight, height);
   pm->fillRect(left, height, bwidth - 2, -bheight, Qt::color1);
 

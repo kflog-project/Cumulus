@@ -19,18 +19,6 @@
 #ifndef RESSOURCE_H
 #define RESSOURCE_H
 
-/* liefert den größeren der beiden übergebenen Werte zurück. */
-#define MAX(a,b)   ( ( a > b ) ? a : b )
-
-/* liefert den kleineren der beiden �bergebenen Werte zurück. */
-#define MIN(a,b)   ( ( a < b ) ? a : b )
-
-/* Liefert den Betrag (sollte nicht bei übergebenen Funktionen
-   verwendet werden) */
-#define ABS(a)     ( ( a > -a ) ? a : -a )
-
-#define ID_STATUS_MSG 1001
-
 /*
  * Definiert Macros zur Festlegung des Datei-Headers von KFLog-Karten
  *

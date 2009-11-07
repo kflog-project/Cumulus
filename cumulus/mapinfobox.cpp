@@ -3,7 +3,8 @@
                              -------------------
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002 by Andre Somers
-                               2008 by Axel Pauli, Josua Dietze
+                               2008 by Josua Dietze
+                               2008-2009 by Axel Pauli
     email                : axel@kflog.org
     
     $Id$
@@ -25,7 +26,6 @@
 #include <QVBoxLayout>
 #include <cmath>
 
-#include "resource.h"
 #include "generalconfig.h"
 
 CuLabel::CuLabel ( QWidget * parent, Qt::WFlags f ):
