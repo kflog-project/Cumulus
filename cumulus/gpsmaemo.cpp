@@ -21,8 +21,8 @@
  * This module manages the start/stop of the Maemo GPS daemon and the connection to
  * it. The Maemo daemon is requested to pass all GPS data in raw and watcher mode.
  *
- * This Class is only used by the Cumulus Maemo part to adapt the Cumulus GPS interface
- * to the Maemo requirements.
+ * This Class is only used by the Cumulus Maemo part to adapt the cumulus GPS
+ * interface to the Maemo requirements.
  */
 
 #include <stdlib.h>
@@ -34,8 +34,6 @@
 
 #include <QApplication>
 
-#include <gpsmgr.h>
-
 #include "signalhandler.h"
 #include "ipc.h"
 
@@ -44,14 +42,65 @@
 // Defines alive check timeout.
 #define ALIVE_TO 30000
 
-// Defines a retry timeout which is used after a failed pairing with the
-// BT gps manager. The time should not be to short otherwise cumulus is
-// most of the time blocked by the pairing action.
+// Defines a retry timeout which is used after a failed connect to the GPS.
+// daemon. The time should not be to short otherwise Cumulus is
+// most of the time blocked by the connect action.
 #define RETRY_TO 60000
+
+// global object pointer to this class
+GpsMaemo *GpsMaemo::instance = static_cast<GpsMaemo *> (0);
+
+/*
+ * The Maemo location service can emit three signal, which are handled by the
+ * next three static pure C-functions.
+ *
+ * See Maemo5: http://maemo.org/api_refs/5.0/beta/liblocation
+ * See Maemo4: http://maemo.org/maemo_release_documentation/maemo4.1.x/node10.html#SECTION001027000000000000000
+ *
+ * for more information.
+ */
+
+/**
+ * Is called from location service when GPSD is running. We try then
+ * to connect the GPSD Daemon.
+ */
+static void ::gpsdRunning( LocationGPSDControl * /*control*/, gpointer /*userData*/ )
+{
+  qDebug("GPSD Running");
+  GpsMaemo::getInstance()->handleGpsdRunning();
+}
+
+/**
+ * Is called from location service when GPSD was stopped.
+ */
+static void ::gpsdStopped( LocationGPSDControl * /*control*/, gpointer /*userData*/ )
+{
+  qDebug("GPSD Stopped");
+  GpsMaemo::getInstance()->handleGpsdStopped();
+}
+
+/**
+ * Is called from location service when GPSD was not startable.
+ */
+static void ::gpsdError( LocationGPSDControl * /*control*/, gpointer /*userData*/ )
+{
+  qDebug("GPSD Error");
+  GpsMaemo::getInstance()->handleGpsdError();
+}
+
+//--------------------------------------------------------------------------
+// Methods of GpsMaemo class
+//--------------------------------------------------------------------------
 
 GpsMaemo::GpsMaemo(QObject* parent) : QObject(parent)
 {
-  // qDebug("GpsMaemo::GpsMaemo()");
+  if ( instance  )
+    {
+      qWarning("GpsMaemo::GpsMaemo(): You can create only one class instance!");
+      return;
+    }
+
+  instance = this;
 
   initSignalHandler();
 
@@ -59,8 +108,8 @@ GpsMaemo::GpsMaemo(QObject* parent) : QObject(parent)
   timer->connect(timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()));
 
   readCounter = 0;
-  gpsDaemonNotifier = static_cast<QSocketNotifier *>(0);
-  ctx = 0;
+  gpsDaemonNotifier = static_cast<QSocketNotifier *> (0);
+  control = static_cast<LocationGPSDControl *> (0);
 
   // Default GPSD port
   daemonPort = 2947;
@@ -78,30 +127,39 @@ GpsMaemo::~GpsMaemo()
 {
   timer->stop();
 
+  if (control)
+    {
+      // Here we have to stop the GPSD.
+      LocationGPSDControl *ctrl = control;
+      control = static_cast<LocationGPSDControl *> (0);
+      location_gpsd_control_stop( ctrl );
+
+      // Give location service time for stopping of GPSD otherwise
+      // we will get problems during the next connection try.
+      sleep(2);
+    }
+
   if (client.getSock() != -1)
     {
       client.closeSock();
-    }
-
-  if (ctx)
-    {
-      gpsbt_stop(ctx);
-      delete ctx;
     }
 
   if (gpsDaemonNotifier)
     {
       delete gpsDaemonNotifier;
     }
+
+  instance = static_cast<GpsMaemo *> (0);
 }
 
 /**
- * The Maemon BT manager is called to start the pairing to available BT devices.
- * After that it is tried to contact the Maemo GPS daemon on its standard port.
- * The Maemo GPS daemon is based on freeware to find here http://gpsd.berlios.de.
- * The daemon is requested to hand over GPS data in raw and watcher mode. A socket
- * notifier is setup in the QT main loop for data receiving.
- */
+* The Maemo location service is called to start the selected devices. That
+* can be the internal GPS or a BT GPS mouse.
+* After that it is tried to contact the Maemo GPS daemon on its standard port.
+* The Maemo GPS daemon is based on freeware to find here http://gpsd.berlios.de.
+* The daemon is requested to hand over GPS data in raw and watcher mode. A socket
+* notifier is setup in the QT main loop for data receiving.
+*/
 bool GpsMaemo::startGpsReceiving()
 {
   // qDebug("GpsMaemo::startGpsReceiving()");
@@ -121,192 +179,64 @@ bool GpsMaemo::startGpsReceiving()
       client.closeSock();
     }
 
-  if (gpsDaemonNotifier)
+  if ( gpsDaemonNotifier )
     {
       delete gpsDaemonNotifier;
       gpsDaemonNotifier = static_cast<QSocketNotifier *>(0);
     }
 
-  if (ctx)
-    {
-      // delete old gpsd context
-      delete ctx;
-      ctx = 0;
-    }
+  // Get the GPSD control object from location service.
+  control = location_gpsd_control_get_default();
 
-  ctx = new gpsbt_t();
-  memset(ctx, 0, sizeof(gpsbt_t));
-  errno = 0;
-  char buf[256];
-  buf[0] = '\0';
-
-  if (gpsbt_start(NULL, 0, 0, daemonPort, &buf[0], sizeof(buf), 0, ctx) < 0)
+  if( ! control )
     {
-      qWarning("Starting GPSD failed: errno=%d, %s", errno, strerror(errno));
-      qWarning("GPSBT Error: %s", buf);
-      // restart alive check timer with a retry time
+      qWarning( "No GPSD control object returned" );
+
+      // setup timer for restart
       timer->start(RETRY_TO);
       return false;
     }
 
-  // print out returned GPS devices
-  for( int i = 0; ctx->rfcomms[i] != static_cast<char *> (0); i++ )
-    {
-      qDebug( "Found GPS Device %s", ctx->rfcomms[i] );
-    }
+  // Subscribe to location service signals
+  g_signal_connect( control, "error",        G_CALLBACK(gpsdError),   NULL );
+  g_signal_connect( control, "gpsd_stopped", G_CALLBACK(gpsdStopped), NULL );
+  g_signal_connect( control, "gpsd_running", G_CALLBACK(gpsdRunning), NULL );
 
-  // Restart alive check timer with a retry time which is used in case of error
-  // return.
-  timer->start(RETRY_TO);
-
-  // wait that daemon can make its initialization
-  sleep(3);
-
-  // try to connect the gpsd on its listen port
-  if (client.connect2Server("", daemonPort) == 0)
-    {
-      qDebug("GPSD successfully connected on port %d", daemonPort);
-    }
-  else
-    {
-      // Connection failed
-      qWarning("GPSD could not be connected on port %d", daemonPort);
-      return false;
-    }
-
-  // ask for protocol number, gpsd version , list of accepted letters
-  strcpy(buf, "l\n");
-
-  // Write message to gpsd to initialize in raw and watcher mode
-  int res = client.writeMsg(buf, strlen(buf));
-
-  if (res == -1)
-    {
-      qWarning("Write to GPSD failed");
-      client.closeSock();
-      return false;
-    }
-
-  res = client.readMsg(buf, sizeof(buf) - 1);
-
-  if (res == -1)
-    {
-      qWarning("Read from GPSD failed");
-      client.closeSock();
-      return false;
-    }
-
-  buf[res] = '\0';
-
-  qDebug("GPSD-l (ProtocolVersion-GPSDVersion-RequestLetters): %s", buf);
-
-  // ask for GPS identification string
-  strcpy(buf, "i\n");
-
-  // Write message to gpsd to get the GPS id string
-  res = client.writeMsg(buf, strlen(buf));
-
-  if (res == -1)
-    {
-      qWarning("Write to GPSD failed");
-      client.closeSock();
-      return false;
-    }
-
-  res = client.readMsg(buf, sizeof(buf) - 1);
-
-  if (res == -1)
-    {
-      qWarning("Read from GPSD failed");
-      client.closeSock();
-      return false;
-    }
-
-  buf[res] = '\0';
-
-  qDebug("GPSD-i (GPS-ID): %s", buf);
-
-  // request raw and watcher mode
-  strcpy(buf, "r+\nw+\n");
-
-  // Write message to gpsd to initialize it in raw and watcher mode.
-  // - Raw mode means, NMEA data records will be sent
-  // - Watcher mode means that new data will sent without polling
-  res = client.writeMsg(buf, strlen(buf));
-
-  if (res == -1)
-    {
-      qWarning("Write to GPSD failed");
-      client.closeSock();
-      return false;
-    }
-
-  res = client.readMsg(buf, sizeof(buf) - 1);
-
-  if (res == -1)
-    {
-      qWarning("Read from GPSD failed");
-      client.closeSock();
-      return false;
-    }
-
-  buf[res] = '\0';
-
-  // qDebug("GPSD-r+w+: %s", buf );
-
-  // Add a socket notifier to the QT main loop, which will be
-  // bound to slot_NotificationEvent. Qt will trigger this method, if
-  // the gpsd has sent new data.
-  gpsDaemonNotifier = new QSocketNotifier(client.getSock(), QSocketNotifier::Read, this);
-
-  gpsDaemonNotifier->connect( gpsDaemonNotifier, SIGNAL(activated(int)),
-                              this, SLOT(slot_NotificationEvent(int)) );
-
-  // restart alive check timer with alive timeout
-  timer->start(ALIVE_TO);
-
+  // Start GPSD, results are emitted by signals.
+  location_gpsd_control_start( control );
   return true;
 }
 
 /**
  * Closes the connection to the GPS Daemon and stops the daemon too.
  */
-bool GpsMaemo::stopGpsReceiving()
+bool GpsMaemo::stopGpsReceiving( const bool resetControl )
 {
+  // qDebug( "GpsMaemo::stopGpsReceiving: ResetCtrl=%d, control=%X", resetControl, control );
   timer->stop();
 
-  if (client.getSock() == -1)
+  if (client.getSock() != -1)
     {
-      // No connection to the server established.
-      return false;
-    }
+      // Close connection to the GPSD server.
+      char buf[256];
 
-  char buf[256];
+      // request clear watcher mode
+      strcpy(buf, "w-\n");
 
-  // request clear watcher mode
-  strcpy(buf, "w-\n");
+      // Write message to gpsd
+      int res = client.writeMsg(buf, strlen(buf));
 
-  // Write message to gpsd
-  int res = client.writeMsg(buf, strlen(buf));
+      // read answer
+      res = client.readMsg(buf, sizeof(buf) - 1);
 
-  // read answer
-  res = client.readMsg(buf, sizeof(buf) - 1);
+      if (res)
+        {
+          // buf[res] = '\0';
+          // qDebug("W-Answer: %s", buf);
+        }
 
-  if (res)
-    {
-      buf[res] = '\0';
-      // qDebug("W-Answer: %s", buf);
-    }
-
-  // close socket
-  client.closeSock();
-
-  // shutdown gpsd
-  if (ctx)
-    {
-      gpsbt_stop(ctx);
-      delete ctx;
-      ctx = 0;
+      // close socket
+      client.closeSock();
     }
 
   // reset QT notifier
@@ -314,6 +244,21 @@ bool GpsMaemo::stopGpsReceiving()
     {
       delete gpsDaemonNotifier;
       gpsDaemonNotifier = static_cast<QSocketNotifier *>(0);
+    }
+
+  // Shutdown GPSD, if we have started it.
+  if (control)
+    {
+      LocationGPSDControl *ctrl = control;
+
+      // Reset on request control object before calling stop to avoid a
+      // restart in the signal handler routine.
+      if( resetControl == true )
+        {
+          control = static_cast<LocationGPSDControl *> (0);
+        }
+
+      location_gpsd_control_stop( ctrl );
     }
 
   return true;
@@ -326,40 +271,37 @@ bool GpsMaemo::stopGpsReceiving()
  */
 void GpsMaemo::slot_Timeout()
 {
+  // qDebug( "GpsMaemo::slot_Timeout(): readCounter=%d", readCounter );
+
   extern bool shutdownState;
 
   if (shutdownState)
     {
       // Shutdown is requested via signal. Therefore we can close all sockets.
       stopGpsReceiving();
-
       QApplication::exit(0);
+      return;
+    }
+
+  if( ! control )
+    {
+      // There is no control object, try a restart of location service.
+      startGpsReceiving();
       return;
     }
 
   if ( readCounter == 0 )
     {
-      // check GPSD state, because no data have been read in the meantime
-      int res = gpsmgr_is_gpsd_running(0, 0, GPSMGR_MODE_JUST_CHECK);
+      // No data have been read in the meantime
+      qWarning("WD-TO: GPSD is running but not sending data - trying restart");
+      // Maybe the GPS connection is broken. Therefore we stop it for a restart.
+      emit gpsConnectionLost();
 
-      if (res == GPSMGR_RUNNING )
-        {
-          qWarning("WD-TO: GPSD is running but not sending data - stopping it");
-          // GPSD is alive but will not provide any data. Maybe his BT connection
-          // is broken. Therefore we stop it for a restart.
-          stopGpsReceiving();
-          // make a break before a new restart to give the OS time for
-          // internal clearing
-          sleep( 2 );
-        }
-
-        // GPSD is not running now, try to restart it
-        qWarning("WD-TO: GPSD is not running - trying restart");
-
-        emit gpsConnectionLost();
-
-        startGpsReceiving();
-        return;
+      // Stop GPSD but try a restart of it.
+      stopGpsReceiving( false );
+      // setup timer for restart
+      timer->start(RETRY_TO);
+      return;
     }
 
   // check socket connection
@@ -369,7 +311,9 @@ void GpsMaemo::slot_Timeout()
       qWarning("WD-TO: GPSD connection is broken - trying restart");
 
       emit gpsConnectionLost();
-      startGpsReceiving();
+      stopGpsReceiving( false );
+      // setup timer for restart
+      timer->start(RETRY_TO);
       return;
     }
 
@@ -381,8 +325,7 @@ void GpsMaemo::slot_Timeout()
  * This slot is triggered by the QT main loop and is used to take over
  * the provided data from the GPS daemon.
  */
-void
-GpsMaemo::slot_NotificationEvent(int /* socket */)
+void GpsMaemo::slot_NotificationEvent(int /* socket */)
 {
   readGpsData();
 }
@@ -392,8 +335,7 @@ GpsMaemo::slot_NotificationEvent(int /* socket */)
  * the function is called only once.
  * @return true=success / false=unsuccess
  */
-bool
-GpsMaemo::readGpsData()
+bool GpsMaemo::readGpsData()
 {
   static short caller = 0;
 
@@ -471,8 +413,7 @@ GpsMaemo::readGpsData()
  * GPSNMEA) and removes the sentences from the buffer.
  */
 
-void
-GpsMaemo::readSentenceFromBuffer()
+void GpsMaemo::readSentenceFromBuffer()
 {
   char *start = databuffer;
   char *end = 0;
@@ -549,3 +490,180 @@ GpsMaemo::readSentenceFromBuffer()
     }
 }
 
+/*
+ * Wrapper method to handle GLib signal emitted by the
+ * location service.
+ */
+void GpsMaemo::handleGpsdRunning()
+{
+  if( ! control )
+    {
+      // Get the GPSD control object from location service.
+      control = location_gpsd_control_get_default();
+    }
+
+  if ( ! control->can_control )
+    {
+      qWarning("GPSD can not be controlled by Cumulus!");
+    }
+
+  // print out returned GPS devices
+  if ( control->ctx )
+    {
+      for( int i = 0; control->ctx->rfcomms[i] != static_cast<char *> (0); i++ )
+        {
+          qDebug( "Found GPS Device %s", control->ctx->rfcomms[i] );
+        }
+    }
+
+  // Restart alive check timer with a retry time which is used in case of error
+  // return.
+  timer->start(RETRY_TO);
+
+  // wait that daemon can make its initialization
+  sleep(3);
+
+  // try to connect the gpsd on its listen port
+  if (client.connect2Server("", daemonPort) == 0)
+    {
+      qDebug("GPSD successfully connected on port %d", daemonPort);
+    }
+  else
+    {
+      // Connection failed
+      qWarning("GPSD could not be connected on port %d", daemonPort);
+      return;
+    }
+
+  // ask for protocol number, gpsd version , list of accepted letters
+  char buf[256];
+  strcpy(buf, "l\n");
+
+  // Write message to gpsd to initialize in raw and watcher mode
+  int res = client.writeMsg(buf, strlen(buf));
+
+  if (res == -1)
+    {
+      qWarning("Write to GPSD failed");
+      client.closeSock();
+      return;
+    }
+
+  res = client.readMsg(buf, sizeof(buf) - 1);
+
+  if (res == -1)
+    {
+      qWarning("Read from GPSD failed");
+      client.closeSock();
+      return;
+    }
+
+  buf[res] = '\0';
+
+  qDebug("GPSD-l (ProtocolVersion-GPSDVersion-RequestLetters): %s", buf);
+
+  // ask for GPS identification string
+  strcpy(buf, "i\n");
+
+  // Write message to gpsd to get the GPS id string
+  res = client.writeMsg(buf, strlen(buf));
+
+  if (res == -1)
+    {
+      qWarning("Write to GPSD failed");
+      client.closeSock();
+      return;
+    }
+
+  res = client.readMsg(buf, sizeof(buf) - 1);
+
+  if (res == -1)
+    {
+      qWarning("Read from GPSD failed");
+      client.closeSock();
+      return;
+    }
+
+  buf[res] = '\0';
+
+  qDebug("GPSD-i (GPS-ID): %s", buf);
+
+  // request raw and watcher mode
+  strcpy(buf, "r+\nw+\n");
+
+  // Write message to gpsd to initialize it in raw and watcher mode.
+  // - Raw mode means, NMEA data records will be sent
+  // - Watcher mode means that new data will sent without polling
+  res = client.writeMsg(buf, strlen(buf));
+
+  if (res == -1)
+    {
+      qWarning("Write to GPSD failed");
+      client.closeSock();
+      return;
+    }
+
+  res = client.readMsg(buf, sizeof(buf) - 1);
+
+  if (res == -1)
+    {
+      qWarning("Read from GPSD failed");
+      client.closeSock();
+      return;
+    }
+
+  buf[res] = '\0';
+
+  // qDebug("GPSD-r+w+: %s", buf );
+
+  // Add a socket notifier to the QT main loop, which will be
+  // bound to slot_NotificationEvent. Qt will trigger this method, if
+  // the gpsd has sent new data.
+  gpsDaemonNotifier = new QSocketNotifier(client.getSock(), QSocketNotifier::Read, this);
+
+  gpsDaemonNotifier->connect( gpsDaemonNotifier, SIGNAL(activated(int)),
+                              this, SLOT(slot_NotificationEvent(int)) );
+
+  // restart alive check timer with alive timeout
+  timer->start(ALIVE_TO);
+}
+
+/*
+ * Wrapper method to handle GLib signal emitted by the
+ * location service.
+ */
+void GpsMaemo::handleGpsdStopped()
+{
+  extern bool shutdownState;
+
+  if ( shutdownState || ! control )
+    {
+      // Shutdown is requested via signal resp. we no running GPSD.
+      // Therefore we can ignore this signal.
+      return;
+    }
+
+  if (control)
+    {
+      // Try a restart of the the location service.
+      qWarning( "GpsMaemo::handleGpsdStopped(): Trying restart!" );
+      control = 0;
+      sleep(2);
+      startGpsReceiving();
+    }
+}
+
+/*
+ * Wrapper method to handle GLib signal emitted by the
+ * location service.
+ */
+void GpsMaemo::handleGpsdError()
+{
+  if( control )
+    {
+      qWarning( "GpsMaemo::handleGpsdError(): Location service said GPSD Error, trying restart" );
+
+      // setup timer for restart
+      timer->start(RETRY_TO);
+    }
+}
