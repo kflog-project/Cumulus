@@ -68,7 +68,12 @@
 
 #ifdef MAEMO
 
+extern "C" {
+
+#include <glib-object.h>
 #include <libosso.h>
+
+}
 
 // @AP: That is a little hack, to avoid the include of all glib
 // functionality in the header file of this class. There are
@@ -140,6 +145,10 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 //         appFt.family().toLatin1().data(), appFt.pointSize(), appFt.pixelSize() );
 
 #ifdef MAEMO
+
+  // That we do need for the location service. This service emits signals, which
+  // are bound to a g_object. This call initializes the g_object handling.
+  g_type_init();
 
   // activate Hildon Input Method for Maemo
   QInputContext *hildonInputContext = 0;
