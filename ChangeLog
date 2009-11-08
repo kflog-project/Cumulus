@@ -14,10 +14,16 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[-] 2009-11-07 AP: Macros ABS, MAX and MIN removed from resource.h. MAX and MIN
+[o] 2009-11-08 AP: Maemo 5 has changed the interfaces to the GPSD. They support
+                   only the location services contained in Liblocation. Maemo 4
+                   has already these services on board. I changed the GpsMaemo
+                   class according to this new library. Was not so easy to do
+                   because there are used g_signals and other stuff from the
+                   glib and that library is pure C-code.
+[o] 2009-11-07 AP: Macros ABS, MAX and MIN removed from resource.h. MAX and MIN
                    are replaced by the QT terms qMax and qMin, ABS was not more
                    in use. 
-[-] 2009-11-05 AP: Distance calculation formula changed from Pythagoras to great
+[o] 2009-11-05 AP: Distance calculation formula changed from Pythagoras to great
                    circle. For longer distances the old formula calculated often
                    longer distances but FAI required calculation according to
                    great circle.
