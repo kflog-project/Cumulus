@@ -14,18 +14,24 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[-] 2009-11-11 AP: Distance calculation formula changed from Pythagoras to great circle.
-                   For longer distances the old formula calculated often longer
-                   distances but FAI required calculation according to great circle.
-[+] 2009-10-27 AP: New coordinate format DDD (decimal degrees ddd.ddddd°) to settings
-                   page unit added. I hope that 5 digits after the decimal are sufficient.
-[-] 2009-10-26 AP: BUGFIX: NMEA simulator uses now UTC date and time in GGA and RMC
-                   sentence instead of local items. So we get a more realistic
-                   scenario for testing as before.
+[-] 2009-11-07 AP: Macros ABS, MAX and MIN removed from resource.h. MAX and MIN
+                   are replaced by the QT terms qMax and qMin, ABS was not more
+                   in use. 
+[-] 2009-11-05 AP: Distance calculation formula changed from Pythagoras to great
+                   circle. For longer distances the old formula calculated often
+                   longer distances but FAI required calculation according to
+                   great circle.
+[+] 2009-10-27 AP: New coordinate format DDD (decimal degrees ddd.ddddd°) to
+                   settings page unit added. I hope that 5 digits after the
+                   decimal are sufficient.
+[-] 2009-10-26 AP: BUGFIX: NMEA simulator uses now UTC date and time in GGA and
+                   RMC sentence instead of local items. So we get a more
+                   realistic scenario for testing as before.
 [+] 2009-10-24 AP: NMEA simulator extended by $GPGSA sentence.
-[-] 2009-10-22 AP: BUGFIX: IGC Logging reworked and adapted to last IGC specification
-                   as far as possible. Logging is now possible without selecting a
-                   glider. In such a case a warning message is displayed.
+[-] 2009-10-22 AP: BUGFIX: IGC Logging reworked and adapted to last IGC
+                   specification as far as possible. Logging is now possible
+                   without selecting a glider. In such a case a warning message
+                   is displayed.
 [o] 2009-10-22 AP: Build done with new release Qt4.5.3
 
 -------------------------------------------------
