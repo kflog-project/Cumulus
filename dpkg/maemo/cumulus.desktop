@@ -9,6 +9,7 @@ Icon=cumulus
 X-Window-Icon=cumulus
 X-Window-Icon-Dimmed=cumulus
 X-HildonDesk-ShowInToolbar=true
+X-Osso-Service=org.kflog.Cumulus
 X-Osso-Type=application/x-executable
 Terminal=false
 
