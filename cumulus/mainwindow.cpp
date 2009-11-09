@@ -309,7 +309,7 @@ void MainWindow::slotCreateApplicationWidgets()
 
 #ifdef MAEMO
 
-  ossoContext = osso_initialize( "Cumulus", CU_VERSION, false, 0 );
+  ossoContext = osso_initialize( "org.kflog.Cumulus", CU_VERSION, false, 0 );
 
   if( ! ossoContext )
     {
