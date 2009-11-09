@@ -236,7 +236,8 @@ LIBS += -lstdc++ \
     -losso \
     -lgpsbt \
     -lgps \
-    -lgpsmgr
+    -lgpsmgr \
+    -llocation
     
 TRANSLATIONS = cumulus_de.ts \
     cumulus_nl.ts \
