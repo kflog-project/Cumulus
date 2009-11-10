@@ -136,6 +136,7 @@ dpkg_install:
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/airspaces
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/landscape
 	install -d $(DESTDIR)/usr/share/applications/hildon
+	install -d $(DESTDIR)/usr/share/dbus-1/services
 	install -d $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
 	install --mode=755 dpkg/maemo/start_cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 dpkg/maemo/start_simu $(DESTDIR)/$(INSTALL_ROOT)/bin
@@ -153,7 +154,7 @@ dpkg_install:
 	install --mode=644 help/en/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
-  install --mode=644 dpkg/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service
+	install --mode=644 dpkg/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service
 	install --mode=755 $(QT_LIBDIR)/libQtCore.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
 	install --mode=755 $(QT_LIBDIR)/libQtGui.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
 
