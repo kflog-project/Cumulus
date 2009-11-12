@@ -82,7 +82,7 @@ class GpsMaemo : public QObject
      * Closes the connection to the GPS Daemon and stops the daemon via the
      * location service.
      */
-    bool stopGpsReceiving( const bool resetControl = true );
+    bool stopGpsReceiving();
 
     /**
      * Returns the socket notifier of the daemon connection.

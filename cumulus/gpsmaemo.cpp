@@ -21,8 +21,9 @@
  * This module manages the start/stop of the Maemo GPS daemon and the connection to
  * it. The Maemo daemon is requested to pass all GPS data in raw and watcher mode.
  *
- * This Class is only used by the Cumulus Maemo part to adapt the cumulus GPS
- * interface to the Maemo requirements.
+ * This Class is only used by the Cumulus Maemo part to adapt the Cumulus GPS
+ * interface to the Maemo requirements. Cumulus uses the Nokia location library for
+ * that purpose.
  */
 
 #include <stdlib.h>
@@ -66,7 +67,7 @@ GpsMaemo *GpsMaemo::instance = static_cast<GpsMaemo *> (0);
  */
 static void ::gpsdRunning( LocationGPSDControl * /*control*/, gpointer /*userData*/ )
 {
-  qDebug("GPSD Running");
+  qDebug("G-Signal->GPSD Running");
   GpsMaemo::getInstance()->handleGpsdRunning();
 }
 
@@ -75,7 +76,7 @@ static void ::gpsdRunning( LocationGPSDControl * /*control*/, gpointer /*userDat
  */
 static void ::gpsdStopped( LocationGPSDControl * /*control*/, gpointer /*userData*/ )
 {
-  qDebug("GPSD Stopped");
+  qDebug("G-Signal->GPSD Stopped");
   GpsMaemo::getInstance()->handleGpsdStopped();
 }
 
@@ -84,7 +85,7 @@ static void ::gpsdStopped( LocationGPSDControl * /*control*/, gpointer /*userDat
  */
 static void ::gpsdError( LocationGPSDControl * /*control*/, gpointer /*userData*/ )
 {
-  qDebug("GPSD Error");
+  qDebug("G-Signal->GPSD Error");
   GpsMaemo::getInstance()->handleGpsdError();
 }
 
@@ -120,6 +121,21 @@ GpsMaemo::GpsMaemo(QObject* parent) : QObject(parent)
   if (gpsEntry)
     {
       daemonPort = ntohs(gpsEntry->s_port);
+    }
+
+  // Get the GPSD control object from location service.
+  control = location_gpsd_control_get_default();
+
+  if( ! control )
+    {
+      qWarning( "GpsMaemo::GpsMaemo(): No GPSD control object returned" );
+    }
+  else
+    {
+      // Subscribe to location service signals. That must be done only once!
+      g_signal_connect( control, "error",        G_CALLBACK(gpsdError),   NULL );
+      g_signal_connect( control, "gpsd_stopped", G_CALLBACK(gpsdStopped), NULL );
+      g_signal_connect( control, "gpsd_running", G_CALLBACK(gpsdRunning), NULL );
     }
 }
 
@@ -191,16 +207,10 @@ bool GpsMaemo::startGpsReceiving()
   if( ! control )
     {
       qWarning( "No GPSD control object returned" );
-
       // setup timer for restart
       timer->start(RETRY_TO);
       return false;
     }
-
-  // Subscribe to location service signals
-  g_signal_connect( control, "error",        G_CALLBACK(gpsdError),   NULL );
-  g_signal_connect( control, "gpsd_stopped", G_CALLBACK(gpsdStopped), NULL );
-  g_signal_connect( control, "gpsd_running", G_CALLBACK(gpsdRunning), NULL );
 
   // Start GPSD, results are emitted by signals.
   location_gpsd_control_start( control );
@@ -210,9 +220,9 @@ bool GpsMaemo::startGpsReceiving()
 /**
  * Closes the connection to the GPS Daemon and stops the daemon too.
  */
-bool GpsMaemo::stopGpsReceiving( const bool resetControl )
+bool GpsMaemo::stopGpsReceiving()
 {
-  // qDebug( "GpsMaemo::stopGpsReceiving: ResetCtrl=%d, control=%X", resetControl, control );
+  // qDebug( "GpsMaemo::stopGpsReceiving: control=%X", control );
   timer->stop();
 
   if (client.getSock() != -1)
@@ -249,16 +259,8 @@ bool GpsMaemo::stopGpsReceiving( const bool resetControl )
   // Shutdown GPSD, if we have started it.
   if (control)
     {
-      LocationGPSDControl *ctrl = control;
-
-      // Reset on request control object before calling stop to avoid a
-      // restart in the signal handler routine.
-      if( resetControl == true )
-        {
-          control = static_cast<LocationGPSDControl *> (0);
-        }
-
-      location_gpsd_control_stop( ctrl );
+      control = static_cast<LocationGPSDControl *> (0);
+      location_gpsd_control_stop( location_gpsd_control_get_default() );
     }
 
   return true;
@@ -272,7 +274,6 @@ bool GpsMaemo::stopGpsReceiving( const bool resetControl )
 void GpsMaemo::slot_Timeout()
 {
   // qDebug( "GpsMaemo::slot_Timeout(): readCounter=%d", readCounter );
-
   extern bool shutdownState;
 
   if (shutdownState)
@@ -285,7 +286,7 @@ void GpsMaemo::slot_Timeout()
 
   if( ! control )
     {
-      // There is no control object, try a restart of location service.
+      // There is no control object available, try a restart of location service.
       startGpsReceiving();
       return;
     }
@@ -297,8 +298,9 @@ void GpsMaemo::slot_Timeout()
       // Maybe the GPS connection is broken. Therefore we stop it for a restart.
       emit gpsConnectionLost();
 
-      // Stop GPSD but try a restart of it.
-      stopGpsReceiving( false );
+      // Stop GPSD
+      stopGpsReceiving();
+
       // setup timer for restart
       timer->start(RETRY_TO);
       return;
@@ -311,7 +313,10 @@ void GpsMaemo::slot_Timeout()
       qWarning("WD-TO: GPSD connection is broken - trying restart");
 
       emit gpsConnectionLost();
-      stopGpsReceiving( false );
+
+      // Stop GPSD
+      stopGpsReceiving();
+
       // setup timer for restart
       timer->start(RETRY_TO);
       return;
@@ -379,6 +384,18 @@ bool GpsMaemo::readGpsData()
     {
       qWarning("GpsMaemo: Read has read 0 bytes!");
       caller--;
+
+      if (client.getSock() != -1)
+        {
+          client.closeSock();
+        }
+
+      if (gpsDaemonNotifier)
+        {
+          delete gpsDaemonNotifier;
+          gpsDaemonNotifier = static_cast<QSocketNotifier *>(0);
+        }
+
       return false;
     }
 
@@ -386,6 +403,18 @@ bool GpsMaemo::readGpsData()
     {
       qWarning("GpsMaemo: Read error, errno=%d, %s", errno, strerror(errno));
       caller--;
+
+      if (client.getSock() != -1)
+        {
+          client.closeSock();
+        }
+
+      if (gpsDaemonNotifier)
+        {
+          delete gpsDaemonNotifier;
+          gpsDaemonNotifier = static_cast<QSocketNotifier *>(0);
+        }
+
       return false;
     }
 
@@ -634,36 +663,22 @@ void GpsMaemo::handleGpsdRunning()
  */
 void GpsMaemo::handleGpsdStopped()
 {
-  extern bool shutdownState;
-
-  if ( shutdownState || ! control )
-    {
-      // Shutdown is requested via signal resp. we no running GPSD.
-      // Therefore we can ignore this signal.
-      return;
-    }
-
-  if (control)
-    {
-      // Try a restart of the the location service.
-      qWarning( "GpsMaemo::handleGpsdStopped(): Trying restart!" );
-      control = 0;
-      sleep(2);
-      startGpsReceiving();
-    }
+  control = static_cast<LocationGPSDControl *> (0);
 }
 
 /*
- * Wrapper method to handle GLib signal emitted by the
- * location service.
+ * Wrapper method to handle GLib signal emitted by the location service.
  */
 void GpsMaemo::handleGpsdError()
 {
-  if( control )
-    {
-      qWarning( "GpsMaemo::handleGpsdError(): Location service said GPSD Error, trying restart" );
+  qWarning( "GpsMaemo::handleGpsdError(): Location service said GPSD Error, trying restart" );
 
-      // setup timer for restart
-      timer->start(RETRY_TO);
-    }
+  // Reset control object
+  control = static_cast<LocationGPSDControl *> (0);
+
+  // stop GPSD in error case
+  location_gpsd_control_stop( location_gpsd_control_get_default() );
+
+  // setup timer for restart
+  timer->start(RETRY_TO);
 }
