@@ -150,9 +150,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // are bound to a g_object. This call initializes the g_object handling.
   g_type_init();
 
-  // activate Hildon Input Method for Maemo
-  QInputContext *hildonInputContext = 0;
-
+  // Show available input methods
   QStringList inputMethods = QInputContextFactory::keys();
 
   foreach( QString inputMethod, inputMethods )
@@ -163,18 +161,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // Check, if virtual keyboard support is enabled
   if( GeneralConfig::instance()->getVirtualKeyboard() )
     {
-      hildonInputContext = QInputContextFactory::create( "hildon", 0 );
-
-      if ( !hildonInputContext )
-        {
-          qWarning( "QHildonInputMethod plugin not loadable!" );
-        }
-      else
-      	{
-          qDebug( "QHildonInputContext created" );
-      	}
-
-      qApp->setInputContext(hildonInputContext);
+      // qApp->setInputContext(hildonInputContext);
     }
 
   // For Maemo it's really better to pre-set style and font
