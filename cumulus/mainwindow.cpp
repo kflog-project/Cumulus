@@ -585,7 +585,7 @@ void MainWindow::slotCreateApplicationWidgets()
            this, SLOT( slotNewReachList() ) );
 
   connect( logger, SIGNAL( logging( bool ) ),
-           viewMap, SLOT( slot_setFlightStatus() ) );
+           viewMap, SLOT( slot_setLoggerStatus() ) );
   connect( logger, SIGNAL( logging( bool ) ),
            this, SLOT( slot_Logging( bool ) ) );
   connect( logger, SIGNAL( madeEntry() ),
@@ -691,6 +691,9 @@ void MainWindow::slotCreateApplicationWidgets()
 
   // show map view as the central widget
   setView( mapView );
+
+  // Make the status bar visible. Maemo do hide it per default.
+  slotViewStatusBar( true );
 
   qDebug( "End startup CmulusApp" );
 }
@@ -960,7 +963,13 @@ void MainWindow::initActions()
   // Toggle menu bar
   actionMenuBarToggle = new QAction( tr( "Toggle menu" ), this );
   QList<QKeySequence> mBTSCList;
-  mBTSCList << Qt::Key_F4 << Qt::Key_M << Qt::Key_Space;
+  mBTSCList << Qt::Key_M << Qt::Key_Space;
+
+#ifndef MAEMO_QT
+  // Maemo Qt has hard coded internally this key
+  mBTSCList << Qt::Key_F4;
+#endif
+
   actionMenuBarToggle->setShortcuts( mBTSCList );
   addAction( actionMenuBarToggle );
   connect( actionMenuBarToggle, SIGNAL( triggered() ),
