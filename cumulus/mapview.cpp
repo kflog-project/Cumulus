@@ -283,7 +283,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusbar->setFont(font);
 
   _menuToggle = new CuLabel( tr("Menu"),_statusbar);
-//  _menuToggle->setFrameStyle(QFrame::Box|QFrame::Plain);
   _menuToggle->setLineWidth(0);
   _menuToggle->setAlignment(Qt::AlignCenter);
   _menuToggle->setMargin(0);
@@ -291,7 +290,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   connect(_menuToggle, SIGNAL(mousePress()), (MainWindow*)parent, SLOT(slotToggleMenu()));
 
   _statusGps = new CuLabel(tr("Man"),_statusbar);
-//  _statusGps->setFrameStyle(QFrame::Box|QFrame::Plain);
   _statusGps->setLineWidth(0);
   _statusGps->setAlignment(Qt::AlignCenter);
   _statusGps->setMargin(0);
@@ -301,7 +299,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
 
   _statusFlightstatus = new QLabel(tr("?","Unknown"),_statusbar);
-//  _statusFlightstatus->setFrameStyle(QFrame::Box|QFrame::Plain);
   _statusFlightstatus->setLineWidth(0);
   _statusFlightstatus->setAlignment(Qt::AlignCenter);
   _statusFlightstatus->setMargin(0);
@@ -309,34 +306,25 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusbar->addWidget(_statusFlightstatus);
 
   _statusPosition = new QLabel(_statusbar);
-//  _statusPosition->setFrameStyle(QFrame::Box|QFrame::Plain);
   _statusPosition->setLineWidth(0);
   _statusPosition->setAlignment(Qt::AlignCenter);
   _statusPosition->setMargin(0);
   _statusbar->addWidget(_statusPosition);
 
   _statusGlider = new QLabel(_statusbar);
-//  _statusGlider->setFrameStyle(QFrame::Box|QFrame::Plain);
   _statusGlider->setLineWidth(0);
   _statusGlider->setAlignment(Qt::AlignCenter);
   _statusGlider->setMargin(0);
   _statusbar->addWidget(_statusGlider);
 
   _statusWarning = new QLabel(_statusbar);
-//  _statusWarning->setFrameStyle(QFrame::Box|QFrame::Plain);
-//  _statusWarning->setLineWidth(0);
   _statusWarning->setAlignment(Qt::AlignCenter);
   _statusWarning->setMargin(0);
   _statusbar->addWidget(_statusWarning, 1);
 
   QFrame* filler = new QFrame(_statusbar);
-//  filler->setFrameStyle(QFrame::NoFrame);
   filler->setLineWidth(0);
   _statusbar->addWidget(filler);
-
-  loggingTimer = new QTimer(this);
-  connect (loggingTimer, SIGNAL(timeout()),
-           this, SLOT(slot_setFlightStatus()));
   topLayout->addWidget(_statusbar);
 
   lastPositionChangeSource = Calculator::MAN;
@@ -360,7 +348,7 @@ void MapView::slot_Heading(int head)
 /** Called if speed has changed */
 void MapView::slot_Speed(const Speed& speed)
 {
-  if (speed.getMph()<0)
+  if (speed.getMph() < 0 )
     {
       _speed->setValue("-");
     }
@@ -588,12 +576,10 @@ void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
 }
 
 
-/** This slot is called if a log entry has been made. */
+/** This slot is called if a log entry has been made by the logger. */
 void MapView::slot_LogEntry()
 {
-  loggingTimer->setSingleShot(true);
-  loggingTimer->start(750);
-  slot_setFlightStatus();
+  slot_setLoggerStatus();
 }
 
 
@@ -760,38 +746,6 @@ void MapView::slot_setFlightStatus()
 {
   QString status="";
 
-  // logging status
-  IgcLogger* logger = IgcLogger::instance();
-
-  if( logger->getIsLogging() )
-    {
-      // are we logging right now?
-      _statusFlightstatus->setAutoFillBackground(true);
-      _statusFlightstatus->setBackgroundRole(QPalette::Window);
-      _statusFlightstatus->setPalette( QPalette(QColor(Qt::green)) );
-
-      status += tr("L","Logging") + " "; // so just insert an L
-    }
-  else
-    {
-      if (logger->getIsStandby())
-        {
-          _statusFlightstatus->setAutoFillBackground(true);
-          _statusFlightstatus->setBackgroundRole(QPalette::Window);
-          _statusFlightstatus->setPalette( QPalette( QColor(Qt::yellow) ));
-
-          status += tr("Ls", "LoggingStandby") + " ";
-        }
-      else
-        {
-          _statusFlightstatus->setAutoFillBackground(true);
-          _statusFlightstatus->setBackgroundRole(QPalette::Window);
-          _statusFlightstatus->setPalette( QPalette( _bearingBGColor ));
-
-          status += ""; //  we are not logging
-        }
-    }
-
   // flight mode status
   switch (calculator->currentFlightMode())
     {
@@ -816,6 +770,50 @@ void MapView::slot_setFlightStatus()
     }
 
   _statusFlightstatus->setText(status);
+}
+
+/*
+ * Sets the logger status in the status bar.
+ */
+void MapView::slot_setLoggerStatus()
+{
+  QString status = "";
+
+  IgcLogger* logger = IgcLogger::instance();
+
+  if( ! logger )
+    {
+      return;
+    }
+
+  if( logger->getIsLogging() )
+    {
+      // are we logging right now?
+      _statusFlightstatus->setAutoFillBackground( true );
+      _statusFlightstatus->setBackgroundRole( QPalette::Window );
+      _statusFlightstatus->setPalette( QPalette( QColor( Qt::green ) ) );
+
+      status += tr( "L", "Logging" ) + " "; // so just insert an L
+    }
+  else
+    {
+      if( logger->getIsStandby() )
+        {
+          _statusFlightstatus->setAutoFillBackground( true );
+          _statusFlightstatus->setBackgroundRole( QPalette::Window );
+          _statusFlightstatus->setPalette( QPalette( QColor( Qt::yellow ) ) );
+
+          status += tr( "Ls", "LoggingStandby" ) + " ";
+        }
+      else
+        {
+          _statusFlightstatus->setAutoFillBackground( true );
+          _statusFlightstatus->setBackgroundRole( QPalette::Window );
+          _statusFlightstatus->setPalette( QPalette( _bearingBGColor ) );
+
+          status += ""; //  we are not logging
+        }
+    }
 }
 
 /** toggle between distance and eta widget on mouse signal */

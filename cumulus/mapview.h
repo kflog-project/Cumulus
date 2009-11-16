@@ -95,14 +95,14 @@ class MapView : public QWidget
         return _vario;
       };
 
-  public: //public attributes
+  public:
 
     /**
      * pointer to the map widget
      */
     Map* _theMap;
 
-  public slots: // Public slots
+  public slots:
     /**
      * Called if speed has changed
      */
@@ -221,6 +221,11 @@ class MapView : public QWidget
      */
     void slot_setFlightStatus();
 
+    /*
+     * Sets the logger status in the status bar.
+     */
+    void slot_setLoggerStatus();
+
     /** Opens the in flight glider settings dialog. */
     void slot_gliderFlightDialog();
 
@@ -289,8 +294,6 @@ class MapView : public QWidget
     QLabel* _statusWarning;
     /** reference to menu toggle */
     CuLabel* _menuToggle;
-    /** timer to reset font for logging indicator */
-    QTimer* loggingTimer;
     /** index of mode select button 0: MSL,  1: GND */
     int _altimeterMode;
     /** bearing mode 0=inverse bearing, 1=normal bearing */
