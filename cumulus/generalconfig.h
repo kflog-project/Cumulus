@@ -675,6 +675,17 @@ class GeneralConfig : protected QSettings
     _guiFont = newValue;
   };
 
+  /** gets GUI menu font */
+  QString &getGuiMenuFont()
+  {
+    return _guiMenuFont;
+  };
+  /** sets GUI menu font  */
+  void setGuiMenuFont( const QString newValue )
+  {
+    _guiMenuFont = newValue;
+  };
+
   /** gets virtual keyboard usage */
   bool getVirtualKeyboard() const
   {
@@ -1736,6 +1747,8 @@ class GeneralConfig : protected QSettings
   QString _guiStyle;
   // GUI font
   QString _guiFont;
+  // GUI menu font
+  QString _guiMenuFont;
   // Virtual keyboard usage
   bool _virtualKeyboard;
   // Screen saver speed limit
@@ -1744,7 +1757,7 @@ class GeneralConfig : protected QSettings
   int _qnh;
   // logger interval
   int _loggerInterval;
-  // logger autostart mode flag
+  // logger auto start mode flag
   bool _loggerAutostartMode;
   // cruising speed
   int _cruisingSpeed;

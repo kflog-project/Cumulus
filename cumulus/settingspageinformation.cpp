@@ -35,7 +35,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   QHBoxLayout *hBox = new QHBoxLayout();
 
   QPushButton *soundSelection = new QPushButton( tr("Sound Player"), this );
-  soundSelection->setToolTip(tr("Select a sound player, use %s if played file is encloed in command line arguments"));
+  soundSelection->setToolTip(tr("Select a sound player, use %s if played file is enclosed in command line arguments"));
   hBox->addWidget(soundSelection);
 
   connect(soundSelection, SIGNAL( clicked()), this, SLOT(slot_openToolDialog()) );

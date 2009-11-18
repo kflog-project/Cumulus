@@ -208,7 +208,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 #endif
     }
 
-  // get last saved window geometric from generalconfig and set it again
+  // get last saved window geometric from GeneralConfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
 
   qWarning( "Cumulus, Release: %s, Build date:  %s based on Qt/X11 Version %s",
@@ -838,30 +838,37 @@ void MainWindow::initMenuBar()
   slotSetMenuBarFontSize();
 }
 
-/** set menubar font size to a reasonable and useable value */
+/** set menubar font size to a reasonable and usable value */
 void MainWindow::slotSetMenuBarFontSize()
 {
-#ifndef MAEMO
-  int minFontSize = 14;
-#else
-  int minFontSize = 20;
-#endif
+  qDebug("MainWindow::slotSetMenuBarFontSize()");
 
-  if( font().pointSize() < minFontSize )
+  int minFontSize = 8;
+
+  // sets the user's selected menu font, if defined
+  QString fontString = GeneralConfig::instance()->getGuiMenuFont();
+  QFont userFont;
+
+  if( fontString == "" || userFont.fromString( fontString ) == false )
     {
-      QFont cf = font();
-      cf.setPointSize( minFontSize );
-
-      menuBar()->setFont( cf );
-
-      // maybe NULL, if not initialized
-      if( fileMenu ) fileMenu->setFont( cf );
-      if( viewMenu ) viewMenu->setFont( cf );
-      if( mapMenu ) mapMenu->setFont( cf );
-      if( setupMenu ) setupMenu->setFont( cf );
-      if( helpMenu ) helpMenu->setFont( cf );
-      if( labelMenu ) labelMenu->setFont( cf );
+      // take current font as alternative
+      userFont = font();
     }
+
+  if( userFont.pointSize() < minFontSize )
+    {
+      userFont.setPointSize( minFontSize );
+    }
+
+  menuBar()->setFont( userFont );
+
+  // maybe NULL, if not initialized
+  if( fileMenu ) fileMenu->setFont( userFont );
+  if( viewMenu ) viewMenu->setFont( userFont );
+  if( mapMenu ) mapMenu->setFont( userFont );
+  if( setupMenu ) setupMenu->setFont( userFont );
+  if( helpMenu ) helpMenu->setFont( userFont );
+  if( labelMenu ) labelMenu->setFont( userFont );
 }
 
 /** initializes all QActions of the application */
@@ -1009,7 +1016,7 @@ void MainWindow::initActions()
   connect( actionViewInfo, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToInfoView() ) );
 
-  actionToggleStatusbar = new QAction( tr( "&Statusbar" ), this );
+  actionToggleStatusbar = new QAction( tr( "Status Bar" ), this );
   actionToggleStatusbar->setCheckable(true);
   actionToggleStatusbar->setChecked(true);
   addAction( actionToggleStatusbar );
@@ -2073,7 +2080,6 @@ void MainWindow::slotNewReachList()
   viewMap->_theMap->scheduleRedraw(Map::waypoints);
 }
 
-
 bool MainWindow::eventFilter( QObject *o , QEvent *e )
 {
   // qDebug("MainWindow::eventFilter() is called with event type %d", e->type());
@@ -2084,12 +2090,17 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
 
       qDebug( "Keycode of pressed key: %d, %X", k->key(), k->key() );
 
+#ifndef MAEMO_QT
+
       if( k->key() == Qt::Key_F6 )
         {
           // hardware Key F6 for maximize/normalize screen under Maemo
           setWindowState(windowState() ^ Qt::WindowFullScreen);
           return true;
         }
+
+#endif
+
     }
 
   return QWidget::eventFilter( o, e ); // standard event processing;

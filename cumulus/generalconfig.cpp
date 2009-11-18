@@ -75,8 +75,15 @@ void GeneralConfig::load()
   beginGroup("MainWindow");
   _windowSize            = value("Geometrie", QSize(800, 480)).toSize();
   _mapSideFrameColor     = QColor( value("MapSideFrameColor", "#687ec6").toString() );
+
+#ifndef MAEMO_QT
   _guiStyle              = value("Style", "Plastique").toString();
+#else
+  _guiStyle              = value("Style", "Hildon").toString();
+#endif
+
   _guiFont               = value("Font", "").toString();
+  _guiMenuFont           = value("MenuFont", "").toString();
   _virtualKeyboard       = value("VirtualKeyboard", false).toBool();
   _screenSaverSpeedLimit = value("ScreenSaverSpeedLimit", 10).toDouble();
   endGroup();
@@ -383,6 +390,7 @@ void GeneralConfig::save()
   setValue("MapSideFrameColor", _mapSideFrameColor);
   setValue("Style", _guiStyle);
   setValue("Font", _guiFont);
+  setValue("MenuFont", _guiMenuFont);
   setValue("VirtualKeyboard", _virtualKeyboard);
   setValue("ScreenSaverSpeedLimit", _screenSaverSpeedLimit);
   endGroup();

@@ -42,8 +42,12 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
 
   QTabWidget* tabWidget = new QTabWidget( this );
 
+  QScrollArea* sppArea = new QScrollArea( tabWidget );
+  sppArea->setWidgetResizable( true );
+  sppArea->setFrameStyle( QFrame::NoFrame );
   spp = new SettingsPagePersonal( this );
-  tabWidget->addTab( spp, tr( "Personal" ) );
+  sppArea->setWidget( spp );
+  tabWidget->addTab( sppArea, tr( "Personal" ) );
 
   spg = new SettingsPageGPS( this );
   tabWidget->addTab( spg, tr( "GPS" ) );
@@ -57,27 +61,33 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spmo = new SettingsPageMapObjects( this );
   tabWidget->addTab( spmo, tr( "Map Objects" ) );
 
+  QScrollArea* sptcArea = new QScrollArea( tabWidget );
+  sptcArea->setWidgetResizable( true );
+  sptcArea->setFrameStyle( QFrame::NoFrame );
   sptc = new SettingsPageTerrainColors( this );
-  tabWidget->addTab( sptc, tr( "Terrain Colors" ) );
+  sptcArea->setWidget( sptc );
+  tabWidget->addTab( sptcArea, tr( "Terrain Colors" ) );
 
-  QScrollArea* sectorArea = new QScrollArea( tabWidget );
-  sectorArea->setWidgetResizable( true );
-  sectorArea->setFrameStyle( QFrame::NoFrame );
-
+  QScrollArea* spsArea = new QScrollArea( tabWidget );
+  spsArea->setWidgetResizable( true );
+  spsArea->setFrameStyle( QFrame::NoFrame );
   sps = new SettingsPageSector( this );
-  sectorArea->setWidget( sps );
-  tabWidget->addTab( sectorArea, tr( "Sector" ) );
+  spsArea->setWidget( sps );
+  tabWidget->addTab( spsArea, tr( "Sector" ) );
 
-  QScrollArea* afArea = new QScrollArea( tabWidget );
-  afArea->setWidgetResizable( true );
-  afArea->setFrameStyle( QFrame::NoFrame );
-
+  QScrollArea* spafArea = new QScrollArea( tabWidget );
+  spafArea->setWidgetResizable( true );
+  spafArea->setFrameStyle( QFrame::NoFrame );
   spaf = new SettingsPageAirfields( this );
-  afArea->setWidget( spaf );
-  tabWidget->addTab( afArea, tr( "Airfields" ) );
+  spafArea->setWidget( spaf );
+  tabWidget->addTab( spafArea, tr( "Airfields" ) );
 
+  QScrollArea* asArea = new QScrollArea( tabWidget );
+  asArea->setWidgetResizable( true );
+  asArea->setFrameStyle( QFrame::NoFrame );
   spa = new SettingsPageAirspace( this );
-  tabWidget->addTab( spa, tr( "Airspaces" ) );
+  asArea->setWidget( spa );
+  tabWidget->addTab( asArea, tr( "Airspaces" ) );
 
   spu = new SettingsPageUnits( this );
   tabWidget->addTab( spu, tr( "Units" ) );
@@ -85,7 +95,6 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   QScrollArea* infoArea = new QScrollArea( tabWidget );
   infoArea->setWidgetResizable( true );
   infoArea->setFrameStyle( QFrame::NoFrame );
-
   spi = new SettingsPageInformation( this );
   infoArea->setWidget( spi );
   tabWidget->addTab( infoArea, tr( "Information" ) );

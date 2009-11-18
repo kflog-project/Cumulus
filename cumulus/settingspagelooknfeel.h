@@ -42,10 +42,10 @@ class SettingsPageLookNFeel : public QWidget
 
   public slots: // Public slots
 
-    /** called to initiate saving to the configurationfile */
+    /** called to initiate saving to the configuration file */
     void slot_save();
 
-    /** Called to initiate loading of the configurationfile. */
+    /** Called to initiate loading of the configuration file. */
     void slot_load();
 
     /**
@@ -55,20 +55,25 @@ class SettingsPageLookNFeel : public QWidget
 
   private slots:
 
-    /** Called to open the font dialog */
-    void slot_openFontDialog();
+  /** Called to open the font dialog */
+  void slot_openFontDialog();
 
-    /** Called to open the color dialog */
-    void slot_openColorDialog();
+  /** Called to open the menu font dialog */
+  void slot_openMenuFontDialog();
+
+  /** Called to open the color dialog */
+  void slot_openColorDialog();
 
   private:
 
-    bool loadConfig; // control loading of config data
+    bool loadConfig; // control loading of configuration data
     QString currentFont; // current selected font is saved here
+    QString currentMenuFont; // current selected menu font is saved here
     QColor  currentMapFrameColor; // current color of map frame
 
     QComboBox      *styleBox;
     QPushButton    *fontDialog;
+    QPushButton    *menuFontDialog;
     QPushButton    *editMapFrameColor;
     QDoubleSpinBox *screenSaverSpeedLimit;
     QCheckBox      *virtualKeybord;
