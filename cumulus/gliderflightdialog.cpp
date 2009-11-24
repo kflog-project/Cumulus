@@ -38,7 +38,8 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   setWindowTitle (tr("Set Flight Parameters"));
 
   QGridLayout* topLayout = new QGridLayout(this);
-  topLayout->setMargin(5);
+  topLayout->setMargin(20);
+  topLayout->setSpacing(25);
 
 #ifndef MAEMO
   int minFontSize = 14;
@@ -50,7 +51,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   b.setBold(true);
   setFont(b);
 
-  // set font size to a reasonable and useable value
+  // set font size to a reasonable and usable value
   if( font().pointSize() < minFontSize )
     {
       QFont cf = font();
@@ -92,6 +93,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   spinWater->setRange(0, 200);
   spinWater->setSingleStep(5);
   spinWater->setButtonSymbols(QSpinBox::NoButtons);
+  spinWater->setSuffix( "l" );
 
   waterPlus  = new QPushButton("+", this);
   waterPlus->setMaximumWidth( waterPlus->size().height() );
@@ -101,6 +103,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   waterMinus = new QPushButton("-", this);
   waterMinus->setMaximumWidth( waterMinus->size().height() );
   waterMinus->setMinimumWidth( waterMinus->size().height() );
+
   connect(waterMinus, SIGNAL(clicked()), this, SLOT(slotWaterMinus()));
 
   QHBoxLayout *waterSpinLayout = new QHBoxLayout;
@@ -117,11 +120,12 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   //---------------------------------------------------------------------
 
   lbl = new QLabel(tr("Bugs:"), this);
-  topLayout->addWidget(lbl,row,0);
+  topLayout->addWidget(lbl,row, 0);
   spinBugs = new QSpinBox (this);
   spinBugs->setButtonSymbols(QSpinBox::NoButtons);
   spinBugs->setRange(0, 90);
   spinBugs->setSingleStep(1);
+  spinBugs->setSuffix( "%" );
 
   bugsPlus  = new QPushButton("+", this);
   bugsPlus->setMaximumWidth( bugsPlus->size().height() );
@@ -139,19 +143,17 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   bugsSpinLayout->addWidget(spinBugs);
   bugsSpinLayout->addWidget(bugsMinus);
 
-  topLayout->addLayout(bugsSpinLayout, row, 1);
-  QLabel* unit = new QLabel(tr("%"), this);
-  topLayout->addWidget(unit, row++, 2);
+  topLayout->addLayout(bugsSpinLayout, row++, 1);
 
   //---------------------------------------------------------------------
 
-  topLayout->addItem(new QSpacerItem(0, 10), row++, 0);
+  topLayout->setRowMinimumHeight( row++, 20 );
 
   // Align ok and cancel button at the left and right side of the
   // widget to have enough space between them. That shall avoid wrong
   // button pressing in turbulent air.
-  QPushButton *ok = new QPushButton( tr("  OK  "), this);
-  QPushButton *cancel = new QPushButton (tr("Cancel"), this);
+  ok = new QPushButton( tr("  OK  "), this);
+  cancel = new QPushButton (tr("Cancel"), this);
 
   QHBoxLayout *butLayout = new QHBoxLayout;
   butLayout->addWidget( ok );
@@ -202,8 +204,21 @@ void GliderFlightDialog::showEvent(QShowEvent *)
       mc_step = 0.5;
     }
 
+  spinMcCready->setSuffix(Speed::getUnitText(Speed::getVerticalUnit()));
   spinMcCready->setMaximum(mc_max);
   spinMcCready->setSingleStep(mc_step);
+
+  QSize sizeOk = ok->size();
+  QSize sizeCancel = cancel->size();
+
+  if( sizeCancel.width() > sizeOk.width() )
+    {
+      ok->resize( sizeCancel );
+    }
+  else if( sizeCancel.width() < sizeOk.width() )
+    {
+      cancel->resize( sizeCancel );
+    }
 }
 
 void GliderFlightDialog::load()
@@ -319,7 +334,7 @@ void GliderFlightDialog::accept()
 
 void GliderFlightDialog::setTimer()
 {
-  if (_time>0)
+  if ( _time > 0 )
     {
       timeout->start(_time * 1000);
     }
