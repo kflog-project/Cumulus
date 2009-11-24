@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009 Axel Pauli
+**   Copyright (c): 2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -33,7 +33,7 @@
 #include "settingspagelooknfeel.h"
 
 SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
-  QWidget(parent), loadConfig(true), currentFont("")
+  QWidget(parent), loadConfig(true), currentFont(""), currentMenuFont("")
 {
   setObjectName("SettingsPageLookNFeel");
 
@@ -270,7 +270,7 @@ void SettingsPageLookNFeel::slot_openMenuFontDialog()
   else
     {
       // the user clicked cancel, reset currentMenuFont variable
-      currentMenuFont = GeneralConfig::instance()->getGuiFont();
+      currentMenuFont = GeneralConfig::instance()->getGuiMenuFont();
     }
 }
 
