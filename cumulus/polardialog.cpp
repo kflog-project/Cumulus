@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Eggert Ehmke, 2008 Axel Pauli
+**   Copyright (c):  2002      by Eggert Ehmke
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -20,6 +21,9 @@
 #include <QFont>
 
 #include "polardialog.h"
+#include "mainwindow.h"
+
+extern MainWindow  *_globalMainWindow;
 
 PolarDialog::PolarDialog(const Polar* polar, QWidget* parent) :
   QDialog(parent)
@@ -27,21 +31,19 @@ PolarDialog::PolarDialog(const Polar* polar, QWidget* parent) :
   setObjectName("PolarDialog");
   setModal(true);
 
-#ifdef MAEMO
-  resize(800,480);
-  setSizeGripEnabled(false);
-#else
-  resize(600,400);
-  setSizeGripEnabled(true);
-#endif
+  if( _globalMainWindow )
+    {
+      // Resize the dialog to the same size as the main window has. That will
+      // completely hide the parent window.
+      resize( _globalMainWindow->size() );
+    }
     
   _polar = const_cast<Polar*>(polar);
 
   QPalette palette;
   palette.setColor(backgroundRole(), Qt::white);
   setPalette(palette);
-  setWindowTitle ( "Polar for " + polar->name() + " - <Esc> or Tap to Close");
-//  setFont(QFont ( "Helvetica", 12, QFont::Bold ));
+  setWindowTitle ( "Polar for " + polar->name() + " - <Esc> or Mouse click to Close");
 
   QShortcut* rcUp =        new QShortcut(this);
   QShortcut* rcDown =      new QShortcut(this);
