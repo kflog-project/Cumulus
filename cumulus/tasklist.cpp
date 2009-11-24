@@ -46,7 +46,7 @@ TaskList::TaskList( QWidget* parent ) :
   taskLayout->setMargin(5);
 
   QHBoxLayout* editrow = new QHBoxLayout;
-  editrow->setSpacing(2);
+  editrow->setSpacing(5);
   taskLayout->addLayout( editrow );
 
   cruisingSpeed = new QSpinBox( this );
@@ -55,29 +55,28 @@ TaskList::TaskList( QWidget* parent ) :
   cruisingSpeed->setSingleStep( 5 );
   cruisingSpeed->setValue( GeneralConfig::instance()->getCruisingSpeed() );
   cruisingSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
-
-  editrow->addSpacing(10);
+  editrow->addWidget(cruisingSpeed);
   editrow->addStretch(10);
 
   QPushButton * cmdNew = new QPushButton(this);
   cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
   cmdNew->setIconSize(QSize(26,26));
   cmdNew->setToolTip(tr("Define a new task"));
-  editrow->addWidget(cmdNew,1);
+  editrow->addWidget(cmdNew);
 
   editrow->addSpacing(10);
   QPushButton * cmdEdit = new QPushButton(this);
   cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
   cmdEdit->setIconSize(QSize(26,26));
   cmdEdit->setToolTip(tr("Edit selected task"));
-  editrow->addWidget(cmdEdit,1);
+  editrow->addWidget(cmdEdit);
 
   editrow->addSpacing(10);
   QPushButton * cmdDel = new QPushButton(this);
   cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png")) );
   cmdDel->setIconSize(QSize(26,26));
   cmdDel->setToolTip(tr("Remove selected task"));
-  editrow->addWidget(cmdDel,1);
+  editrow->addWidget(cmdDel);
 
   splitter = new QSplitter( Qt::Vertical, this );
   splitter->setOpaqueResize( true );
