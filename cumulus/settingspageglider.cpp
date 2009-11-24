@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -29,7 +30,7 @@
 
 #include "generalconfig.h"
 #include "settingspageglider.h"
-#include "settingspagegliderdata.h"
+#include "glidereditor.h"
 
 SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
 {
@@ -84,10 +85,10 @@ void SettingsPageGlider::showEvent(QShowEvent *)
 /** Called when a new glider needs to be made. */
 void SettingsPageGlider::slot_new()
 {
-  SettingsPageGliderData *dlg = new SettingsPageGliderData(this, 0);
-  connect(dlg, SIGNAL(newGlider(Glider*)), list, SLOT(slot_Added(Glider *)));
+  GilderEditor *editor = new GilderEditor(this, 0);
+  connect(editor, SIGNAL(newGlider(Glider*)), list, SLOT(slot_Added(Glider *)));
 
-  dlg->show();
+  editor->show();
 }
 
 
@@ -102,10 +103,10 @@ void SettingsPageGlider::slot_edit()
       return;
     }
 
-  SettingsPageGliderData *dlg = new SettingsPageGliderData(this, selectedGlider );
-  connect(dlg, SIGNAL(editedGlider(Glider *)), list, SLOT(slot_Edited(Glider *)));
+  GilderEditor *editor = new GilderEditor(this, selectedGlider );
+  connect(editor, SIGNAL(editedGlider(Glider *)), list, SLOT(slot_Edited(Glider *)));
 
-  dlg->show();
+  editor->show();
 }
 
 
