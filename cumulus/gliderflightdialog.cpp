@@ -66,6 +66,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   spinMcCready->setRange(0.0, 20.0);
   spinMcCready->setSingleStep(0.5);
   spinMcCready->setButtonSymbols(QSpinBox::NoButtons);
+  spinMcCready->setSuffix(QString(" ") + Speed::getUnitText(Speed::getVerticalUnit()));
 
   mcPlus  = new QPushButton("+", this);
   mcPlus->setMaximumWidth( mcPlus->size().height() );
@@ -93,7 +94,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   spinWater->setRange(0, 200);
   spinWater->setSingleStep(5);
   spinWater->setButtonSymbols(QSpinBox::NoButtons);
-  spinWater->setSuffix( "l" );
+  spinWater->setSuffix( " l" );
 
   waterPlus  = new QPushButton("+", this);
   waterPlus->setMaximumWidth( waterPlus->size().height() );
@@ -125,7 +126,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   spinBugs->setButtonSymbols(QSpinBox::NoButtons);
   spinBugs->setRange(0, 90);
   spinBugs->setSingleStep(1);
-  spinBugs->setSuffix( "%" );
+  spinBugs->setSuffix( " %" );
 
   bugsPlus  = new QPushButton("+", this);
   bugsPlus->setMaximumWidth( bugsPlus->size().height() );
@@ -204,7 +205,6 @@ void GliderFlightDialog::showEvent(QShowEvent *)
       mc_step = 0.5;
     }
 
-  spinMcCready->setSuffix(Speed::getUnitText(Speed::getVerticalUnit()));
   spinMcCready->setMaximum(mc_max);
   spinMcCready->setSingleStep(mc_step);
 
