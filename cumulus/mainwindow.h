@@ -297,7 +297,7 @@ class MainWindow : public QMainWindow
     /**
      * set nearest or reachable headers
      */
-    void setNearestOrReachableHeders();
+    void setNearestOrReachableHeaders();
 
   public:
 

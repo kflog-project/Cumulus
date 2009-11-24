@@ -25,8 +25,9 @@ HEADERS = airfieldlistview.h \
     flightpoint.h \
     flighttask.h \
     generalconfig.h \
-    gliderflightdialog.h \
     glider.h \
+    glidereditor.h \
+    gliderflightdialog.h \
     gliderlistwidget.h \
     gpscon.h \
     gpsmaemo.h \
@@ -76,7 +77,6 @@ HEADERS = airfieldlistview.h \
     settingspageairspace.h \
     settingspagegps.h \
     settingspageglider.h \
-    settingspagegliderdata.h \
     settingspageinformation.h \
     settingspagelooknfeel.h \
     settingspagemapobjects.h \
@@ -133,6 +133,7 @@ SOURCES = airfieldlistview.cpp \
     flighttask.cpp \
     generalconfig.cpp \
     glider.cpp \
+    glidereditor.cpp \
     gliderflightdialog.cpp \
     gliderlistwidget.cpp \
     gpscon.cpp \
@@ -178,7 +179,6 @@ SOURCES = airfieldlistview.cpp \
     settingspageairspace.cpp \
     settingspagegps.cpp \
     settingspageglider.cpp \
-    settingspagegliderdata.cpp \
     settingspageinformation.cpp \
     settingspagelooknfeel.cpp \
     settingspagemapobjects.cpp \

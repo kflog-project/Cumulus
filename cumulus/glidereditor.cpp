@@ -1,15 +1,16 @@
 /***********************************************************************
  **
- **   settingspagegliderdata.cpp
+ **   glidereditor.cpp
  **
  **   This file is part of Cumulus.
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by Eggert Ehmke, 2009 Axel Pauli
+ **   Copyright (c):  2002      by Eggert Ehmke
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -25,27 +26,29 @@
 #include <QScrollArea>
 
 #include "polardialog.h"
-#include "settingspagegliderdata.h"
+#include "glidereditor.h"
 #include "polar.h"
 #include "speed.h"
 #include "mapview.h"
 #include "generalconfig.h"
+#include "mainwindow.h"
 
-extern MapView *_globalMapView;
+extern MapView     *_globalMapView;
+extern MainWindow  *_globalMainWindow;
 
-SettingsPageGliderData::SettingsPageGliderData(QWidget *parent, Glider *glider )
+GilderEditor::GilderEditor(QWidget *parent, Glider *glider )
   : QDialog(parent)
 {
   setObjectName("SettingsPageGliderData");
   setAttribute(Qt::WA_DeleteOnClose);
-  setModal(false);
+  setModal(true);
 
-#ifdef MAEMO
-  resize(800,480);
-  setSizeGripEnabled(false);
-#else
-  setSizeGripEnabled(true);
-#endif
+  if( _globalMainWindow )
+    {
+      // Resize the dialog to the same size as the main window has. That will
+      // completely hide the parent window.
+      resize( _globalMainWindow->size() );
+    }
 
   if (glider == 0)
     {
@@ -188,7 +191,7 @@ SettingsPageGliderData::SettingsPageGliderData(QWidget *parent, Glider *glider )
   itemsLayout->addWidget(buttonShow, row, 3);
 
   connect (comboType, SIGNAL(activated(const QString&)),
-      this, SLOT(slotActivated(const QString&)));
+           this, SLOT(slotActivated(const QString&)));
 
   connect(buttonShow, SIGNAL(clicked()), this, SLOT(slotButtonShow()));
 
@@ -230,13 +233,13 @@ SettingsPageGliderData::SettingsPageGliderData(QWidget *parent, Glider *glider )
   show();
 }
 
-SettingsPageGliderData::~SettingsPageGliderData()
+GilderEditor::~GilderEditor()
 {
   qDeleteAll(_polars);
 }
 
 Polar*
-SettingsPageGliderData::getPolar()
+GilderEditor::getPolar()
 {
   int pos = comboType->currentIndex();
 
@@ -260,7 +263,7 @@ setCurrentText(QComboBox* combo, const QString& text)
 
 /** Called to initiate loading of the configuration file. */
 void
-SettingsPageGliderData::load()
+GilderEditor::load()
 {
   if (_glider)
     {
@@ -293,7 +296,7 @@ SettingsPageGliderData::load()
 
 /** called to initiate saving to the configuration file */
 void
-SettingsPageGliderData::save()
+GilderEditor::save()
 {
   if (!_glider)
     {
@@ -342,9 +345,9 @@ SettingsPageGliderData::save()
 }
 
 void
-SettingsPageGliderData::readPolarData()
+GilderEditor::readPolarData()
 {
-  // qDebug ("SettingsPageGliderData::readPolarData ");
+  // qDebug ("GilderEditor::readPolarData ");
 
 #warning "location of glider.pol file is CUMULUS_ROOT/etc"
 
@@ -472,9 +475,9 @@ SettingsPageGliderData::readPolarData()
 
 /** called when a glider type has been selected */
 void
-SettingsPageGliderData::slotActivated(const QString& type)
+GilderEditor::slotActivated(const QString& type)
 {
-  // qDebug ("SettingsPageGliderData::slotActivated(%s)", type.toLatin1().data());
+  // qDebug ("GilderEditor::slotActivated(%s)", type.toLatin1().data());
 
   if (!_glider)
     {
@@ -515,7 +518,7 @@ SettingsPageGliderData::slotActivated(const QString& type)
 }
 
 void
-SettingsPageGliderData::slotButtonShow()
+GilderEditor::slotButtonShow()
 {
   // we create a polar object on the fly to allow test of changed polar values without saving
   Speed V1, V2, V3, W1, W2, W3;
@@ -527,8 +530,10 @@ SettingsPageGliderData::slotButtonShow()
   W2.setMps(spinW2->value());
   W3.setMps(spinW3->value());
 
-  Polar * polar = new Polar(comboType->currentText(), V1, W1, V2, W2, V3, W3, 0.0, 0.0, emptyWeight->value(), emptyWeight->value()
-              + addedLoad->value());
+  Polar * polar = new Polar( comboType->currentText(),
+                             V1, W1, V2, W2, V3, W3, 0.0, 0.0,
+                             emptyWeight->value(),
+                             emptyWeight->value() + addedLoad->value() );
 
   // polar->setWater(0, 0);
   polar->setWater(spinWater->value(), 0);
@@ -537,7 +542,7 @@ SettingsPageGliderData::slotButtonShow()
 }
 
 void
-SettingsPageGliderData::accept()
+GilderEditor::accept()
 {
   edtGReg->setText(edtGReg->text().trimmed()); //remove spaces
 
@@ -559,7 +564,7 @@ SettingsPageGliderData::accept()
 }
 
 void
-SettingsPageGliderData::reject()
+GilderEditor::reject()
 {
   // @AP: delete glider, if it was allocated in this class and not
   // emitted in accept method to avoid a memory leak.

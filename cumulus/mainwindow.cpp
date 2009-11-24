@@ -634,7 +634,7 @@ void MainWindow::slotCreateApplicationWidgets()
       sleep(1);
     }
 
-  setNearestOrReachableHeders();
+  setNearestOrReachableHeaders();
 
 #ifdef MAEMO
 
@@ -969,18 +969,17 @@ void MainWindow::initActions()
 
   // Toggle menu bar
   actionMenuBarToggle = new QAction( tr( "Toggle menu" ), this );
-  QList<QKeySequence> mBTSCList;
-  mBTSCList << Qt::Key_M << Qt::Key_Space;
 
 #ifndef MAEMO_QT
-  // Maemo Qt has hard coded internally this key
-  mBTSCList << Qt::Key_F4;
-#endif
-
+  // Under Maemo Qt the key F4 is hard coded internally by Qt to use
+  // the Hildon menu only. Therefore no shortcuts are setup by us.
+  QList<QKeySequence> mBTSCList;
+  mBTSCList << Qt::Key_M << Qt::Key_Space << Qt::Key_F4;
   actionMenuBarToggle->setShortcuts( mBTSCList );
   addAction( actionMenuBarToggle );
   connect( actionMenuBarToggle, SIGNAL( triggered() ),
            this, SLOT( slotToggleMenu() ) );
+#endif
 
   actionFileQuit = new QAction( tr( "&Exit" ), this );
   actionFileQuit->setShortcut( QKeySequence("Shift+E") );
@@ -1476,7 +1475,7 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
         viewMap->hide();
         viewInfo->hide();
 
-        setNearestOrReachableHeders();
+        setNearestOrReachableHeaders();
 
         listViewTabs->setCurrentWidget( viewRP );
         listViewTabs->show();
@@ -1600,7 +1599,7 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
 /**
  * Set nearest or reachable headers.
  */
-void MainWindow::setNearestOrReachableHeders()
+void MainWindow::setNearestOrReachableHeaders()
 {
   // Set the tabulator header according to calculation result.
   // If a glider is known, reachables by L/D are shown
@@ -2094,7 +2093,8 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
 
       if( k->key() == Qt::Key_F6 )
         {
-          // hardware Key F6 for maximize/normalize screen under Maemo
+          // Hardware Key F6 for maximize/normalize screen under Maemo.
+          // Hardcoded key under Maemo Qt.
           setWindowState(windowState() ^ Qt::WindowFullScreen);
           return true;
         }

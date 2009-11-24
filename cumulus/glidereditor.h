@@ -1,22 +1,23 @@
 /***********************************************************************
 **
-**   settingspagegliderdata.h
+**   glidereditor.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Eggert Ehmke, 2008 Axel Pauli
+**   Copyright (c):  2002      by Eggert Ehmke
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **  $Id$
 **
 ***********************************************************************/
 
-#ifndef SETTINGSPAGE_GLIDER_DATA_H
-#define SETTINGSPAGE_GLIDER_DATA_H
+#ifndef SETTINGS_PAGE_GLIDER_EDITOR_H
+#define SETTINGS_PAGE_GLIDER_EDITOR_H
 
 #include <QDialog>
 #include <QLineEdit>
@@ -31,17 +32,19 @@
 #include "glider.h"
 
 /**
- * This class represents the glider data settings page
+ * This class represents the glider editor dialog
  * @author Eggert Ehmke
  */
-class SettingsPageGliderData : public QDialog
+class GilderEditor : public QDialog
 {
     Q_OBJECT
 
 public:
 
-    SettingsPageGliderData(QWidget *parent=0, Glider * glider=0);
-    ~SettingsPageGliderData();
+    GilderEditor(QWidget *parent=0, Glider * glider=0);
+
+    ~GilderEditor();
+
     Polar* getPolar();
 
 private:
@@ -57,7 +60,7 @@ private:
       */
     void load();
 
-public slots: // Public slots
+public slots:
     /**
       * called when a glider type has been selected from the combobox
       */
@@ -69,7 +72,7 @@ public slots: // Public slots
     void slotButtonShow();
 
 
-signals: // Signals
+signals:
     /**
       * Send if a glider has been edited.
       */
