@@ -10,7 +10,7 @@
 **                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -52,14 +52,12 @@ TaskEditor::TaskEditor( QWidget* parent,
   setModal(true);
   setAttribute( Qt::WA_DeleteOnClose );
 
-#ifdef MAEMO
-  resize(800, 480);
-  setMinimumSize(800, 480); // @AP: hope that prevents the resize to a smaller size
-  setSizeGripEnabled(false);
-#else
-  resize(800, 480);
-  setSizeGripEnabled(true);
-#endif
+  if( _globalMainWindow )
+    {
+      // Resize the dialog to the same size as the main window has. That will
+      // completely hide the parent window.
+      resize( _globalMainWindow->size() );
+    }
 
   lastSelectedItem = -1;
 
