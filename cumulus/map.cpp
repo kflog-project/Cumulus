@@ -23,14 +23,12 @@
 
 #include <QCoreApplication>
 #include <QDesktopWidget>
-#include <QFontMetrics>
 #include <QPainter>
 #include <QPen>
 #include <QWhatsThis>
 #include <QLabel>
 #include <QPolygon>
 #include <QFont>
-#include <QFontMetrics>
 
 #include "airfield.h"
 #include "airspace.h"
