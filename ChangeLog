@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2009-11-25 AP: Waypoint editor size adapted to main window size. All single
+                   editor pages are embedded into scroll areas.
 [-] 2009-11-24 AP: BUGFIX: Layout error in TaskList class fixed.
 [o] 2009-11-24 AP: Sizes of different child widgets adapted to main window
                    size.
