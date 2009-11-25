@@ -10,7 +10,7 @@
 **                   2008-2009 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -26,6 +26,7 @@
 
 #include <QLabel>
 #include <QGridLayout>
+#include <QFontMetrics>
 
 #include "wpeditdialogpagegeneral.h"
 #include "generalconfig.h"
@@ -42,7 +43,12 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
 
   QGridLayout * topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
-  topLayout->setColumnMinimumWidth( 2, 50 );
+
+  // The description maximum length is 25 characters. We calculate
+  // the length of a M string of 27 characters. That is the maximum
+  // width of the QLineEdit widgets.
+  QFontMetrics fm( font() );
+  int charWidth = fm.width(QChar('M'));
 
   int row=0;
 
@@ -52,12 +58,16 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   topLayout->addWidget(lblName, row, 0);
   edtName = new QLineEdit(this);
   edtName->setMaxLength(9); // limit name to 9 characters
+  edtName->setMinimumWidth( 27*charWidth );
+  edtName->setMaximumWidth( 27*charWidth );
   topLayout->addWidget(edtName, row++, 1, 1, 2);
 
   QLabel * lblDescription = new QLabel(tr("Description:"), this);
   topLayout->addWidget(lblDescription, row, 0);
   edtDescription = new QLineEdit(this);
   edtDescription->setMaxLength(25); // limit name to 25 characters
+  edtDescription->setMinimumWidth( 27*charWidth );
+  edtDescription->setMaximumWidth( 27*charWidth );
   topLayout->addWidget(edtDescription, row++, 1, 1, 2);
 
   topLayout->setRowMinimumHeight(row++, 10);
@@ -110,6 +120,7 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
 
   topLayout->setRowStretch(row++, 10);
   topLayout->setColumnStretch(2, 10);
+  topLayout->setColumnStretch(3, 10);
 }
 
 
