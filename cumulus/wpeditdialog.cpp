@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002      by André Somers
+ **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -27,6 +28,7 @@
 #include <QTabWidget>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QScrollArea>
 
 #include "wpeditdialog.h"
 #include "wpeditdialogpagegeneral.h"
@@ -34,22 +36,24 @@
 #include "mapcontents.h"
 #include "mapmatrix.h"
 #include "generalconfig.h"
+#include "mainwindow.h"
 
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
+extern MainWindow  *_globalMainWindow;
 
-WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ):
-  QDialog(parent)
+WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ) : QDialog(parent)
 {
   setObjectName("WpEditDialog");
+  setAttribute(Qt::WA_DeleteOnClose);
   setModal(true);
 
-#ifdef MAEMO
-  resize(800,480);
-  setSizeGripEnabled(false);
-#else
-  setSizeGripEnabled(true);
-#endif
+  if( _globalMainWindow )
+    {
+      // Resize the dialog to the same size as the main window has. That will
+      // completely hide the parent window.
+      resize( _globalMainWindow->size() );
+    }
 
   if( wp == 0 )
     {
@@ -64,27 +68,43 @@ WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ):
 
   _wp = wp;
 
-  WpEditDialogPageGeneral *pageGeneral = new WpEditDialogPageGeneral(this);
-  WpEditDialogPageAero    *pageAero    = new WpEditDialogPageAero(this);
+  QTabWidget* tabWidget = new QTabWidget(this);
+
+  // Put all pages into a scroll area. Needed by Maemo Qt, if virtual
+  // keyboard is pop up.
+  QScrollArea* pgArea = new QScrollArea( tabWidget );
+  pgArea->setWidgetResizable( true );
+  pgArea->setFrameStyle( QFrame::NoFrame );
+  WpEditDialogPageGeneral *pageG = new WpEditDialogPageGeneral(this);
+  pgArea->setWidget( pageG );
+  tabWidget->addTab( pgArea, tr("General") );
+
+  QScrollArea* paArea = new QScrollArea( tabWidget );
+  paArea->setWidgetResizable( true );
+  paArea->setFrameStyle( QFrame::NoFrame );
+  WpEditDialogPageAero *pageA = new WpEditDialogPageAero(this);
+  paArea->setWidget( pageA );
+  tabWidget->addTab( paArea, tr("Aero") );
+
+  QScrollArea* pcArea = new QScrollArea( tabWidget );
+  pcArea->setWidgetResizable( true );
+  pcArea->setFrameStyle( QFrame::NoFrame );
   comment = new QTextEdit(this);
   comment->setWordWrapMode(QTextOption::WordWrap);
-
-  QTabWidget* tabWidget = new QTabWidget(this);
-  tabWidget->addTab(pageGeneral, tr("&General"));
-  tabWidget->addTab(pageAero, tr("&Aero"));
-  tabWidget->addTab(comment, tr("&Comments"));
+  pcArea->setWidget( comment );
+  tabWidget->addTab( pcArea, tr("Comment") );
 
   connect(this, SIGNAL(load(wayPoint *)),
-          pageGeneral, SLOT(slot_load(wayPoint *)));
+          pageG, SLOT(slot_load(wayPoint *)));
 
   connect(this, SIGNAL(load(wayPoint *)),
-          pageAero, SLOT(slot_load(wayPoint *)));
+          pageA, SLOT(slot_load(wayPoint *)));
 
   connect(this, SIGNAL(save(wayPoint *)),
-          pageGeneral, SLOT(slot_save(wayPoint *)));
+          pageG, SLOT(slot_save(wayPoint *)));
 
   connect(this, SIGNAL(save(wayPoint *)),
-          pageAero, SLOT(slot_save(wayPoint *)));
+          pageA, SLOT(slot_save(wayPoint *)));
 
   // Add ok and cancel buttons
   QPushButton *cancel = new QPushButton;
@@ -112,7 +132,7 @@ WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ):
   mainLayout->addLayout(buttonBox);
   setLayout(mainLayout);
 
-  tabWidget->setCurrentWidget(pageGeneral);
+  tabWidget->setCurrentWidget(pageG);
 
   // load waypoint data into tabulator widgets
   loadWaypointData();
