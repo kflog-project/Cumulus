@@ -190,15 +190,13 @@ void WaypointListView::slot_newWP()
 {
   WpEditDialog *dlg = new WpEditDialog( this, 0 );
 
-  dlg->setAttribute( Qt::WA_DeleteOnClose );
-
   connect( dlg, SIGNAL(wpListChanged(wayPoint &)), this,
            SLOT(slot_wpAdded(wayPoint &)) );
 
   dlg->show();
 }
 
-/** Called when the selected waypoint needs must be opened in the editor */
+/** Called when the selected waypoint needs to be opened in the editor */
 void WaypointListView::slot_editWP()
 {
   wayPoint *wp = getSelectedWaypoint();
@@ -206,7 +204,6 @@ void WaypointListView::slot_editWP()
   if( wp )
     {
       WpEditDialog *dlg = new WpEditDialog( this, wp );
-      dlg->setAttribute( Qt::WA_DeleteOnClose );
 
       connect( dlg, SIGNAL(wpListChanged(wayPoint &)), this,
                SLOT(slot_wpEdited(wayPoint &)) );
