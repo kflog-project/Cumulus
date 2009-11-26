@@ -14,6 +14,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2009-11-26 AP: Glider flight status dialog adapted to Hildon usage.
+[-] 2009-11-26 AP: BUGFIX: Under Maemo sometimes mouse events are delayed
+                   delivered. That could cause the creation of multiple
+                   glider flight status dialogs.
 [o] 2009-11-25 AP: Waypoint editor size adapted to main window size. All single
                    editor pages are embedded into scroll areas.
 [-] 2009-11-24 AP: BUGFIX: Layout error in TaskList class fixed.
