@@ -10,7 +10,7 @@
 **                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -30,9 +30,13 @@
 
 extern MapConfig* _globalMapConfig;
 
+// set static member variable
+int GliderFlightDialog::noOfInstances = 0;
+
 GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   QDialog(parent, Qt::WindowStaysOnTopHint)
 {
+  noOfInstances++;
   setObjectName("GliderFlightDialog");
   setModal(true);
   setWindowTitle (tr("Set Flight Parameters"));
@@ -40,6 +44,14 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   QGridLayout* topLayout = new QGridLayout(this);
   topLayout->setMargin(20);
   topLayout->setSpacing(25);
+
+  hildonStyle = false;
+
+  if( GeneralConfig::instance()->getGuiStyle() == "Hildon" )
+    {
+      // Maemo Qt has a special style, that required to use the normal spin boxes.
+      hildonStyle = true;
+    }
 
 #ifndef MAEMO
   int minFontSize = 14;
@@ -65,26 +77,34 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   spinMcCready = new QDoubleSpinBox(this);
   spinMcCready->setRange(0.0, 20.0);
   spinMcCready->setSingleStep(0.5);
-  spinMcCready->setButtonSymbols(QSpinBox::NoButtons);
   spinMcCready->setSuffix(QString(" ") + Speed::getUnitText(Speed::getVerticalUnit()));
 
-  mcPlus  = new QPushButton("+", this);
-  mcPlus->setMaximumWidth( mcPlus->size().height() );
-  mcPlus->setMinimumWidth( mcPlus->size().height() );
-  connect(mcPlus, SIGNAL(clicked()), this, SLOT(slotMcPlus()));
+  if( hildonStyle == false )
+    {
+      spinMcCready->setButtonSymbols(QSpinBox::NoButtons);
 
-  mcMinus = new QPushButton("-", this);
-  mcMinus->setMaximumWidth( mcMinus->size().height() );
-  mcMinus->setMinimumWidth( mcMinus->size().height() );
-  connect(mcMinus, SIGNAL(clicked()), this, SLOT(slotMcMinus()));
+      mcPlus  = new QPushButton("+", this);
+      mcPlus->setMaximumWidth( mcPlus->size().height() );
+      mcPlus->setMinimumWidth( mcPlus->size().height() );
+      connect(mcPlus, SIGNAL(clicked()), this, SLOT(slotMcPlus()));
 
-  QHBoxLayout *mcSpinLayout = new QHBoxLayout;
-  mcSpinLayout->setSpacing(0);
-  mcSpinLayout->addWidget(mcPlus);
-  mcSpinLayout->addWidget(spinMcCready);
-  mcSpinLayout->addWidget(mcMinus);
+      mcMinus = new QPushButton("-", this);
+      mcMinus->setMaximumWidth( mcMinus->size().height() );
+      mcMinus->setMinimumWidth( mcMinus->size().height() );
+      connect(mcMinus, SIGNAL(clicked()), this, SLOT(slotMcMinus()));
 
-  topLayout->addLayout(mcSpinLayout, row++, 1);
+      QHBoxLayout *mcSpinLayout = new QHBoxLayout;
+      mcSpinLayout->setSpacing(0);
+      mcSpinLayout->addWidget(mcPlus);
+      mcSpinLayout->addWidget(spinMcCready);
+      mcSpinLayout->addWidget(mcMinus);
+
+      topLayout->addLayout(mcSpinLayout, row++, 1);
+    }
+  else
+    {
+      topLayout->addWidget(spinMcCready, row++, 1);
+    }
 
   //---------------------------------------------------------------------
 
@@ -93,27 +113,35 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   spinWater = new QSpinBox (this);
   spinWater->setRange(0, 200);
   spinWater->setSingleStep(5);
-  spinWater->setButtonSymbols(QSpinBox::NoButtons);
   spinWater->setSuffix( " l" );
 
-  waterPlus  = new QPushButton("+", this);
-  waterPlus->setMaximumWidth( waterPlus->size().height() );
-  waterPlus->setMinimumWidth( waterPlus->size().height() );
-  connect(waterPlus, SIGNAL(clicked()), this, SLOT(slotWaterPlus()));
+  if( hildonStyle == false )
+    {
+      spinWater->setButtonSymbols(QSpinBox::NoButtons);
 
-  waterMinus = new QPushButton("-", this);
-  waterMinus->setMaximumWidth( waterMinus->size().height() );
-  waterMinus->setMinimumWidth( waterMinus->size().height() );
+      waterPlus  = new QPushButton("+", this);
+      waterPlus->setMaximumWidth( waterPlus->size().height() );
+      waterPlus->setMinimumWidth( waterPlus->size().height() );
+      connect(waterPlus, SIGNAL(clicked()), this, SLOT(slotWaterPlus()));
 
-  connect(waterMinus, SIGNAL(clicked()), this, SLOT(slotWaterMinus()));
+      waterMinus = new QPushButton("-", this);
+      waterMinus->setMaximumWidth( waterMinus->size().height() );
+      waterMinus->setMinimumWidth( waterMinus->size().height() );
 
-  QHBoxLayout *waterSpinLayout = new QHBoxLayout;
-  waterSpinLayout->setSpacing(0);
-  waterSpinLayout->addWidget(waterPlus);
-  waterSpinLayout->addWidget(spinWater);
-  waterSpinLayout->addWidget(waterMinus);
+      connect(waterMinus, SIGNAL(clicked()), this, SLOT(slotWaterMinus()));
 
-  topLayout->addLayout(waterSpinLayout, row, 1);
+      QHBoxLayout *waterSpinLayout = new QHBoxLayout;
+      waterSpinLayout->setSpacing(0);
+      waterSpinLayout->addWidget(waterPlus);
+      waterSpinLayout->addWidget(spinWater);
+      waterSpinLayout->addWidget(waterMinus);
+
+      topLayout->addLayout(waterSpinLayout, row, 1);
+    }
+  else
+    {
+      topLayout->addWidget(spinWater, row, 1);
+    }
 
   buttonDump = new QPushButton (tr("Dump"), this);
   topLayout->addWidget(buttonDump, row++, 2);
@@ -123,28 +151,36 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   lbl = new QLabel(tr("Bugs:"), this);
   topLayout->addWidget(lbl,row, 0);
   spinBugs = new QSpinBox (this);
-  spinBugs->setButtonSymbols(QSpinBox::NoButtons);
   spinBugs->setRange(0, 90);
   spinBugs->setSingleStep(1);
   spinBugs->setSuffix( " %" );
 
-  bugsPlus  = new QPushButton("+", this);
-  bugsPlus->setMaximumWidth( bugsPlus->size().height() );
-  bugsPlus->setMinimumWidth( bugsPlus->size().height() );
-  connect(bugsPlus, SIGNAL(clicked()), this, SLOT(slotBugsPlus()));
+  if( hildonStyle == false )
+    {
+      spinBugs->setButtonSymbols(QSpinBox::NoButtons);
 
-  bugsMinus = new QPushButton("-", this);
-  bugsMinus->setMaximumWidth( bugsMinus->size().height() );
-  bugsMinus->setMinimumWidth( bugsMinus->size().height() );
-  connect(bugsMinus, SIGNAL(clicked()), this, SLOT(slotBugsMinus()));
+      bugsPlus  = new QPushButton("+", this);
+      bugsPlus->setMaximumWidth( bugsPlus->size().height() );
+      bugsPlus->setMinimumWidth( bugsPlus->size().height() );
+      connect(bugsPlus, SIGNAL(clicked()), this, SLOT(slotBugsPlus()));
 
-  QHBoxLayout *bugsSpinLayout = new QHBoxLayout;
-  bugsSpinLayout->setSpacing(0);
-  bugsSpinLayout->addWidget(bugsPlus);
-  bugsSpinLayout->addWidget(spinBugs);
-  bugsSpinLayout->addWidget(bugsMinus);
+      bugsMinus = new QPushButton("-", this);
+      bugsMinus->setMaximumWidth( bugsMinus->size().height() );
+      bugsMinus->setMinimumWidth( bugsMinus->size().height() );
+      connect(bugsMinus, SIGNAL(clicked()), this, SLOT(slotBugsMinus()));
 
-  topLayout->addLayout(bugsSpinLayout, row++, 1);
+      QHBoxLayout *bugsSpinLayout = new QHBoxLayout;
+      bugsSpinLayout->setSpacing(0);
+      bugsSpinLayout->addWidget(bugsPlus);
+      bugsSpinLayout->addWidget(spinBugs);
+      bugsSpinLayout->addWidget(bugsMinus);
+
+      topLayout->addLayout(bugsSpinLayout, row++, 1);
+    }
+  else
+    {
+      topLayout->addWidget(spinBugs, row++, 1);
+    }
 
   //---------------------------------------------------------------------
 
@@ -180,7 +216,9 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
 }
 
 GliderFlightDialog::~GliderFlightDialog()
-{}
+{
+  noOfInstances--;
+}
 
 void GliderFlightDialog::showEvent(QShowEvent *)
 {
@@ -228,18 +266,21 @@ void GliderFlightDialog::load()
   if (glider)
     {
       spinMcCready->setEnabled(true);
-      mcPlus->setEnabled(true);
-      mcMinus->setEnabled(true);
-
       spinWater->setEnabled(true);
-      waterPlus->setEnabled(true);
-      waterMinus->setEnabled(true);
-
       spinBugs->setEnabled(true);
-      bugsPlus->setEnabled(true);
-      bugsMinus->setEnabled(true);
-
       buttonDump->setEnabled(true);
+
+      if( hildonStyle == false )
+        {
+          mcPlus->setEnabled(true);
+          mcMinus->setEnabled(true);
+
+          waterPlus->setEnabled(true);
+          waterMinus->setEnabled(true);
+
+          bugsPlus->setEnabled(true);
+          bugsMinus->setEnabled(true);
+        }
 
       spinWater->setMaximum(glider->maxWater());
 
@@ -256,18 +297,21 @@ void GliderFlightDialog::load()
   else
     {
       spinMcCready->setEnabled(false);
-      mcPlus->setEnabled(false);
-      mcMinus->setEnabled(false);
-
       spinWater->setEnabled(false);
-      waterPlus->setEnabled(false);
-      waterMinus->setEnabled(false);
-
       spinBugs->setEnabled(false);
-      bugsPlus->setEnabled(false);
-      bugsMinus->setEnabled(false);
-
       buttonDump->setEnabled(false);
+
+      if( hildonStyle == false )
+        {
+          mcPlus->setEnabled(false);
+          mcMinus->setEnabled(false);
+
+          waterPlus->setEnabled(false);
+          waterMinus->setEnabled(false);
+
+          bugsPlus->setEnabled(false);
+          bugsMinus->setEnabled(false);
+        }
     }
 
   setTimer();

@@ -2,7 +2,7 @@
 **
 **   gliderflightdialog.h
 **
-**   This file is part of QPushButton *cancelCumulus.
+**   This file is part of Cumulus.
 **
 ************************************************************************
 **
@@ -10,7 +10,7 @@
 **                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -39,17 +39,23 @@ public:
 
     GliderFlightDialog(QWidget *parent);
     ~GliderFlightDialog();
-    void load ();
+    void load();
+
+    static int getNrOfInstances()
+    {
+      return noOfInstances;
+    };
 
 protected:
 
-    void accept ();
+    void accept();
     void showEvent(QShowEvent *);
 
 private:
 
-    void save ();
+    void save();
 
+    bool hildonStyle;
     QDoubleSpinBox* spinMcCready;
     QSpinBox* spinWater;
     QSpinBox* spinBugs;
@@ -69,6 +75,9 @@ private:
     QPushButton *ok;
     QPushButton *cancel;
 
+    /** contains the current number of class instances */
+    static int noOfInstances;
+
 private slots:
 
     void slotDump();
@@ -84,6 +93,7 @@ private slots:
     void slotBugsMinus();
 
 signals:
+
     void settingsChanged();
 };
 
