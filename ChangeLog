@@ -14,6 +14,7 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2009-11-30 AP: Variometer dialog adapted to Hildon usage.
 [o] 2009-11-26 AP: Glider flight status dialog adapted to Hildon usage.
 [-] 2009-11-26 AP: BUGFIX: Under Maemo sometimes mouse events are delayed
                    delivered. That could cause the creation of multiple
