@@ -72,7 +72,6 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   scrollArea->setWidgetResizable( true );
   scrollArea->setFrameStyle( QFrame::NoFrame );
   QWidget* scrollWidget = new QWidget();
-  scrollArea->setWidget(scrollWidget);
 
   QGridLayout* gridLayout = new QGridLayout(scrollWidget);
   gridLayout->setMargin(20);
@@ -177,6 +176,8 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
       gridLayout->addWidget(spinTEK, row++, 1);
     }
 
+  scrollArea->setWidget(scrollWidget);
+
   //---------------------------------------------------------------------
 
   // Align ok and cancel button at the left and right side of the
@@ -279,7 +280,7 @@ void VarioModeDialog::load()
   spinTEK->setValue( _TEKAdjust );
   TEK->setChecked( _TEKComp );
 
-  TekChanged( _TEKAdjust );
+  TekChanged( _TEKComp );
 
   spinTime->setFocus();
   change(_curWidth);
