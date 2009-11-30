@@ -6,8 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Eckhard Voellm
-**                   2008 Axel Pauli
+**   Copyright (c):  2004      by Eckhard Voellm
+**                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -38,7 +38,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
 {
   setObjectName("AltimeterModeDialog");
   setModal(true);
-  setWindowTitle(tr("Altimeter"));
+  setWindowTitle(tr("Set Altimeter"));
 
 #ifndef MAEMO
   int minFontSize = 14;
@@ -50,7 +50,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   b.setBold(true);
   setFont(b);
 
-  // set font size to a reasonable and useable value
+  // set font size to a reasonable and usable value
   if( font().pointSize() < minFontSize )
     {
       QFont cf = font();
@@ -58,7 +58,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
       this->setFont(cf);
     }
 
-  QGroupBox* altMode = new QGroupBox(tr("Altimeter Mode"));
+  QGroupBox* altMode = new QGroupBox( this );
   _msl=new QRadioButton(tr("MSL"),altMode);
   _gnd=new QRadioButton(tr("AGL"),altMode);
   _std=new QRadioButton(tr("STD"),altMode);

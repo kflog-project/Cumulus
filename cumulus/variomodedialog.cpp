@@ -39,7 +39,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   noOfInstances++;
   setObjectName("VarioModeDialog");
   setModal(true);
-  setWindowTitle( tr("Set Vario Parameters") );
+  setWindowTitle( tr("Set Variometer") );
 
   hildonStyle = false;
 
