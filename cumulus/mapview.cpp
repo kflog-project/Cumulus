@@ -885,7 +885,15 @@ void MapView::slot_newAltimeterMode()
 /** Opens the Variometer settings dialog. */
 void MapView::slot_VarioDialog()
 {
-  VarioModeDialog  *vmDlg = new VarioModeDialog( this );
+  if( VarioModeDialog::getNrOfInstances() > 0 )
+    {
+      // Sometimes the mouse event is delayed under Maemo, which triggers this
+      // method. In such a case multiple dialogs are opened. This check shall
+      // prevent that.
+      return;
+    }
+
+  VarioModeDialog *vmDlg = new VarioModeDialog( this );
   // delete widget during close event
   vmDlg->setAttribute(Qt::WA_DeleteOnClose);
 
