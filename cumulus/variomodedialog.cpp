@@ -71,9 +71,9 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   QScrollArea* scrollArea = new QScrollArea(this);
   scrollArea->setWidgetResizable( true );
   scrollArea->setFrameStyle( QFrame::NoFrame );
-  QWidget* scrollWidget = new QWidget();
+  QWidget* scrollWidget = new QWidget;
 
-  QGridLayout* gridLayout = new QGridLayout(scrollWidget);
+  QGridLayout* gridLayout = new QGridLayout;
   gridLayout->setMargin(20);
   gridLayout->setSpacing(25);
 
@@ -176,8 +176,6 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
       gridLayout->addWidget(spinTEK, row++, 1);
     }
 
-  scrollArea->setWidget(scrollWidget);
-
   //---------------------------------------------------------------------
 
   // Align ok and cancel button at the left and right side of the
@@ -192,7 +190,10 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   butLayout->addWidget( cancel );
 
   gridLayout->addLayout(butLayout, row, 0, 1, 3);
-  setLayout(gridLayout);
+
+  scrollWidget->setLayout(gridLayout);
+  scrollArea->setWidget(scrollWidget);
+  scrollArea->resize( scrollWidget->size() );
 
   timer = new QTimer(this);
   timer->setSingleShot(true);
