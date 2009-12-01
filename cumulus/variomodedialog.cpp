@@ -67,6 +67,10 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
       this->setFont(cf);
     }
 
+  // http://www.qtforum.org/article/26043/problem-bug-with-qscrollarea.html
+  // That is solution for the problem with scrollarea :-)))
+  QVBoxLayout *vLayout = new QVBoxLayout(this);
+
   // Put dialog in a scroll area
   QScrollArea* scrollArea = new QScrollArea(this);
   scrollArea->setWidgetResizable( true );
@@ -193,7 +197,8 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
 
   scrollWidget->setLayout(gridLayout);
   scrollArea->setWidget(scrollWidget);
-  scrollArea->resize( scrollWidget->size() );
+
+  vLayout->addWidget(scrollArea);
 
   timer = new QTimer(this);
   timer->setSingleShot(true);
