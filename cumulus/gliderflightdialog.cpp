@@ -42,7 +42,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   setWindowTitle (tr("Set Flight Parameters"));
 
   QGridLayout* topLayout = new QGridLayout(this);
-  topLayout->setMargin(20);
+  topLayout->setMargin(10);
   topLayout->setSpacing(25);
 
   hildonStyle = false;
