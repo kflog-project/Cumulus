@@ -20,6 +20,7 @@
 #include <QFont>
 #include <QGridLayout>
 #include <QHBoxLayout>
+#include <QScrollArea>
 
 #include "gliderflightdialog.h"
 
@@ -40,10 +41,6 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   setObjectName("GliderFlightDialog");
   setModal(true);
   setWindowTitle (tr("Set Flight Parameters"));
-
-  QGridLayout* topLayout = new QGridLayout(this);
-  topLayout->setMargin(10);
-  topLayout->setSpacing(25);
 
   hildonStyle = false;
 
@@ -71,7 +68,24 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
       this->setFont(cf);
     }
 
+  // http://www.qtforum.org/article/26043/problem-bug-with-qscrollarea.html
+  // That is solution for the problem with scrollarea :-)))
+  QHBoxLayout *hLayout = new QHBoxLayout(this);
+  hLayout->setSpacing(0);
+
+  // Put dialog in a scroll area
+  QScrollArea* scrollArea = new QScrollArea(this);
+  scrollArea->setWidgetResizable( true );
+  scrollArea->setFrameStyle( QFrame::NoFrame );
+  scrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  QWidget* scrollWidget = new QWidget;
+
+  QGridLayout* topLayout = new QGridLayout;
+  topLayout->setMargin(5);
+  topLayout->setSpacing(25);
+
   int row = 0;
+
   QLabel* lbl = new QLabel(tr("McCready:"), this);
   topLayout->addWidget(lbl,row,0);
   spinMcCready = new QDoubleSpinBox(this);
@@ -198,6 +212,12 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   butLayout->addWidget( cancel );
 
   topLayout->addLayout( butLayout, row++, 0, 1, 3 );
+  topLayout->setColumnMinimumWidth ( 3, 25 );
+
+  scrollWidget->setLayout( topLayout );
+  scrollArea->setWidget( scrollWidget );
+
+  hLayout->addWidget( scrollArea );
 
   // @AP: let us take the user's defined info display time
   GeneralConfig *conf = GeneralConfig::instance();

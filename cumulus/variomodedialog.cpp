@@ -69,16 +69,18 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
 
   // http://www.qtforum.org/article/26043/problem-bug-with-qscrollarea.html
   // That is solution for the problem with scrollarea :-)))
-  QVBoxLayout *vLayout = new QVBoxLayout(this);
+  QHBoxLayout *hLayout = new QHBoxLayout(this);
+  hLayout->setSpacing(0);
 
   // Put dialog in a scroll area
   QScrollArea* scrollArea = new QScrollArea(this);
   scrollArea->setWidgetResizable( true );
   scrollArea->setFrameStyle( QFrame::NoFrame );
+  scrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   QWidget* scrollWidget = new QWidget;
 
   QGridLayout* gridLayout = new QGridLayout;
-  gridLayout->setMargin(20);
+  gridLayout->setMargin(5);
   gridLayout->setSpacing(25);
 
   int row = 0;
@@ -194,11 +196,12 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   butLayout->addWidget( cancel );
 
   gridLayout->addLayout(butLayout, row, 0, 1, 3);
+  gridLayout->setColumnMinimumWidth ( 3, 25 );
 
   scrollWidget->setLayout(gridLayout);
   scrollArea->setWidget(scrollWidget);
 
-  vLayout->addWidget(scrollArea);
+  hLayout->addWidget(scrollArea);
 
   timer = new QTimer(this);
   timer->setSingleShot(true);
@@ -233,6 +236,8 @@ VarioModeDialog::~VarioModeDialog()
 
 void VarioModeDialog::showEvent(QShowEvent *)
 {
+  qDebug("VarioModeDialog: w=%d, h=%d", size().width(), size().height() );
+
   QSize sizeOk = ok->size();
   QSize sizeCancel = cancel->size();
 
