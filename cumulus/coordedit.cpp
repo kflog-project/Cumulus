@@ -1,357 +1,499 @@
-/***************************************************************************
-    coordedit.cpp  -  This file is part of Cumulus
-                             -------------------
-    begin                : Mon Dec 3 2001
-    copyright            : (C) 2001      by Harald Maier
-                               2008-2009 by Axel Pauli
+/***********************************************************************
+**
+**   coordedit.cpp - Editor for WGS84 coordinates, supports three formats.
+**
+**   This file is part of Cumulus
+**
+************************************************************************
+**
+**   Copyright (c):  2001 by Harald Maier
+**                   2009 by Axel Pauli complete redesign done
+**
+**   Email:           axel@kflog.org
+**
+************************************************************************
+**
+**   This file is distributed under the terms of the General Public
+**   License. See the file COPYING for more information.
+**
+**   $Id$
+**
+***********************************************************************/
 
-    email                : axel@kflog.org
- ***************************************************************************/
+/**
+  * @short CorrEdit
+  *
+  * This class is used to edit WGS84 coordinates. It is subclassed by
+  * two extensions to handle latitude and longitude coordinates. Three
+  * different coordinate formats are supported.
+  *
+  * -degrees, minutes, seconds
+  * -degrees and decimal minutes
+  * -decimal degrees
+  */
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+#include <cmath>
+
+#include <QHBoxLayout>
+#include <QIntValidator>
+#include <QRegExpValidator>
+#include <QLabel>
+#include <QFontMetrics>
 
 #include "coordedit.h"
 #include "wgspoint.h"
 
-CoordEdit::CoordEdit(QWidget *parent) : QLineEdit(parent)
+CoordEdit::CoordEdit(QWidget *parent) : QWidget( parent )
 {
+  iniKflogDegree = 0;
+  iniDegree      = "";
+  iniMinute      = "";
+  iniSecond      = "";
+  iniDirection   = "";
+
   setObjectName("CoordEdit");
-  firstSet = true;
+
+  const int spaceItem1 = 5;
+  const int spaceItem2 = 10;
+
+  QLabel *label;
+  QHBoxLayout *hbox = new QHBoxLayout;
+  hbox->setSpacing(0);
+  hbox->setContentsMargins ( 0, 0, 0, 0 );
+
+  // In dependency of the selected coordinate format three different layouts
+  // are provided by this widget.
+  minuteBox = static_cast<QLineEdit *> (0);
+  secondBox = static_cast<QLineEdit *> (0);
+
+  // Degree input is always needed
+  degreeBox = new QLineEdit( this );
+  degreeBox->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+  hbox->addWidget( degreeBox );
+  hbox->addSpacing( spaceItem1 );
+  label = new QLabel( "\260", this );
+  hbox->addWidget( label );
+  hbox->addSpacing( spaceItem2 );
+
+  if ( WGSPoint::getFormat() == WGSPoint::DDM ||
+       WGSPoint::getFormat() == WGSPoint::DMS )
+    {
+      minuteBox = new QLineEdit( this );
+      minuteBox->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+      hbox->addWidget( minuteBox );
+      hbox->addSpacing( spaceItem1 );
+      label = new QLabel( "'", this );
+      hbox->addWidget( label );
+      hbox->addSpacing( spaceItem2 );
+    }
+
+  if ( WGSPoint::getFormat() == WGSPoint::DMS )
+    {
+      secondBox = new QLineEdit( this );
+      secondBox->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+      hbox->addWidget( secondBox );
+      hbox->addSpacing( spaceItem1 );
+      label = new QLabel( "\"", this );
+      hbox->addWidget( label );
+      hbox->addSpacing( spaceItem2 );
+    }
+
+  // add combo box for sky directions
+  directionBox = new QComboBox( this );
+  hbox->addWidget( directionBox );
+  hbox->addStretch( 10 );
+
+  setLayout( hbox );
+
+  if ( WGSPoint::getFormat() != WGSPoint::DDD )
+    {
+      // If the coordinate format is not equal to decimal degree, we have
+      // to check all the input boxes to prevent senseless values there.
+      connect( degreeBox, SIGNAL(textEdited( const QString&)),
+               this, SLOT(slot_textEdited( const QString& )) );
+
+      connect( minuteBox, SIGNAL(textEdited( const QString&)),
+               this, SLOT(slot_textEdited( const QString& )) );
+
+      if( WGSPoint::getFormat() == WGSPoint::DMS )
+        {
+          connect( secondBox, SIGNAL(textEdited( const QString&)),
+                   this, SLOT(slot_textEdited( const QString& )) );
+        }
+    }
 }
 
-/** Returns true, if initial input text has been changed */
+CoordEdit::~CoordEdit()
+{
+}
+
+/**
+ * Catch show events in this class to set a uniform width for different
+ * widgets depending on the used font.
+ *
+ */
+void CoordEdit::showEvent( QShowEvent * )
+{
+  QFontMetrics fm( font() );
+
+  if ( WGSPoint::getFormat() == WGSPoint::DMS )
+    {
+      int strWidth = fm.width(QString("00000"));
+
+      degreeBox->setMinimumWidth( strWidth );
+      degreeBox->setMaximumWidth( strWidth );
+      minuteBox->setMinimumWidth( strWidth );
+      minuteBox->setMaximumWidth( strWidth );
+      secondBox->setMinimumWidth( strWidth );
+      secondBox->setMaximumWidth( strWidth );
+    }
+  else if ( WGSPoint::getFormat() == WGSPoint::DDM )
+    {
+      int strWidth1 = fm.width(QString("00000"));
+      int strWidth2 = fm.width(QString("00.00000"));
+
+      degreeBox->setMinimumWidth( strWidth1 );
+      degreeBox->setMaximumWidth( strWidth1 );
+      minuteBox->setMinimumWidth( strWidth2 );
+      minuteBox->setMaximumWidth( strWidth2 );
+    }
+  else if ( WGSPoint::getFormat() == WGSPoint::DDD )
+    {
+      int strWidth = fm.width(QString("000.0000000"));
+
+      degreeBox->setMinimumWidth( strWidth );
+      degreeBox->setMaximumWidth( strWidth );
+    }
+
+  int charWidth = fm.width(QChar('W'));
+
+  directionBox->setMinimumWidth( charWidth + directionBox->size().height() );
+  directionBox->setMaximumWidth( charWidth + directionBox->size().height() );
+}
+
+/**
+ * Returns true, if initial input values have been modified by the user.
+ */
 bool CoordEdit::isInputChanged()
 {
-  bool res = QLineEdit::text() == initText;
+  bool changed = false;
 
-  // qDebug( "CoordEdit::isInputChanged(): %d", !res );
-  return !res;
+  if ( WGSPoint::getFormat() == WGSPoint::DDD )
+    {
+      changed |= iniDegree != degreeBox->text();
+    }
+  else if ( WGSPoint::getFormat() == WGSPoint::DDM )
+    {
+      changed |= iniDegree != degreeBox->text();
+      changed |= iniMinute != minuteBox->text();
+    }
+  else if ( WGSPoint::getFormat() == WGSPoint::DMS )
+    {
+      changed |= iniDegree != degreeBox->text();
+      changed |= iniMinute != minuteBox->text();
+      changed |= iniSecond != secondBox->text();
+    }
+
+  changed |= iniDirection != directionBox->currentText();
+
+  return changed;
 }
 
-void CoordEdit::focusInEvent (QFocusEvent *e)
-{
-  // overwrite default behavior of QLineEdit
-  // fake a mouse event to prevent text highlight
-  // e->setReason(QFocusEvent::Mouse);
-  QLineEdit::focusInEvent(e);
-  // set cursor to start of line
-  home(false);
-}
-
-
-// this function handle all the keyboard input
-void CoordEdit::keyPressEvent (QKeyEvent *e)
-{
-  QString s; // pressed Key will be assigned
-  QString b = QLineEdit::text(); // current buffer
-  int col;
-  bool isNumber;
-
-  if (e->text() != "")
-    {
-      s = e->text().toUpper();
-      col = cursorPosition();
-
-      if (hasSelectedText())
-        {
-          deselect();
-        }
-
-      switch (e->key())
-        {
-        case Qt::Key_Backspace:
-          col -= 1;
-          // fall through
-
-        case Qt::Key_Delete:
-          setText(text().replace(col, 1, mask.mid(col, 1)));
-          setCursorPosition(col);
-          break;
-
-        default:
-          if (col == int(text().length() - 1))
-            {
-              if (validDirection.contains(s))
-                {
-                  setText(text().replace(text().length() - 1, 1, s));
-                  setCursorPosition(text().length());
-                }
-            }
-          else
-            {
-              s.toInt(&isNumber);
-
-              if (isNumber && mask[col] == '0')
-                {
-                  // @AP: here we should check, if the input makes
-                  // sense. Otherwise we accept wrong entries, which will be set
-                  // to zero by KFLogDegree() conversion method.
-
-                  // qDebug("pos=%d, mask=%s, buffer=%s, input=%s",
-                  //     col, mask.latin1(), b.latin1(), s.latin1() );
-
-                  if ( validDirection == "NS" ) // latitude input
-                    {
-                      if ( col == 0 && s[0] == '9' )
-                        {
-                          // set the maximum
-                          if ( WGSPoint::getFormat() == WGSPoint::DMS )
-                            {
-                              setText(text().replace(0, 10, "90\260 00' 00"));
-                            }
-                          else if ( WGSPoint::getFormat() == WGSPoint::DDM )
-                            {
-                              setText(text().replace(0, 10, "90\260 00.000"));
-                            }
-                          else
-                            {
-                              setText(text().replace(0, 9, "90.00000\260"));
-                            }
-
-                          setCursorPosition(col+1);
-                          break;
-                        }
-                      else if ( col > 0 && b[0] == '9' && s[0] != '0' )
-                        {
-                          // set the maximum
-                        if ( WGSPoint::getFormat() == WGSPoint::DMS )
-                          {
-                            setText(text().replace(0, 10, "90\260 00' 00"));
-                          }
-                        else if ( WGSPoint::getFormat() == WGSPoint::DDM )
-                          {
-                            setText(text().replace(0, 10, "90\260 00.000"));
-                          }
-                        else
-                          {
-                            setText(text().replace(0, 9, "90.00000\260"));
-                          }
-
-                          setCursorPosition(col);
-                          break;
-                        }
-                      else if ( (WGSPoint::getFormat() == WGSPoint::DMS &&
-                                 (col == 4 || col == 8 ) && s[0] > '5' ) ||
-                                (WGSPoint::getFormat() == WGSPoint::DDM &&
-                                 col == 4  && s[0] > '5' ) )
-                        {
-                          // reset b[col] to 5
-                          setText(text().replace(col, 1, "5"));
-                          setCursorPosition(col);
-                          break;
-                        }
-                    }
-                  else // longitude input
-                    {
-                      if ( (col == 0 && (s[0] > '1' || (s[0] == '1' && b[1] >= '8') )) )
-                        {
-                          // set the maximum
-                          if ( WGSPoint::getFormat() == WGSPoint::DMS )
-                            {
-                              setText(text().replace(0, 11, "180\260 00' 00"));
-                            }
-                          else if ( WGSPoint::getFormat() == WGSPoint::DDM )
-                            {
-                              setText(text().replace(0, 11, "180\260 00.000"));
-                            }
-                          else
-                            {
-                              setText(text().replace(0, 10, "180.00000\260"));
-                            }
-
-                          setCursorPosition( s[0] == '1' ? col+1 : col );
-                          break;
-                        }
-                      else if ( col == 1 && b[0] == '1' && s[0] >= '8' )
-                        {
-                          // set the maximum
-                          if ( WGSPoint::getFormat() == WGSPoint::DMS )
-                            {
-                              setText(text().replace(0, 11, "180\260 00' 00"));
-                            }
-                          else if ( WGSPoint::getFormat() == WGSPoint::DDM )
-                            {
-                              setText(text().replace(0, 11, "180\260 00.000"));
-                            }
-                          else
-                            {
-                              setText(text().replace(0, 10, "180.00000\260"));
-                            }
-
-                          setCursorPosition( s[0] == '8' ? col+1 : col );
-                          break;
-                        }
-                      else if ( col > 1 && b[0] == '1' && b[1] == '8' && s[0] != '0' )
-                        {
-                          // set the maximum
-                        if ( WGSPoint::getFormat() == WGSPoint::DMS )
-                          {
-                            setText(text().replace(0, 11, "180\260 00' 00"));
-                          }
-                        else if ( WGSPoint::getFormat() == WGSPoint::DDM )
-                          {
-                            setText(text().replace(0, 11, "180\260 00.000"));
-                          }
-                        else
-                          {
-                            setText(text().replace(0, 10, "180.00000\260"));
-                          }
-
-                          setCursorPosition(col);
-                          break;
-                        }
-                      else if ( (WGSPoint::getFormat() == WGSPoint::DMS &&
-                                 (col == 5 || col == 9 ) && s[0] > '5' ) ||
-                                (WGSPoint::getFormat() == WGSPoint::DDM &&
-                                 col == 5  && s[0] > '5' ) )
-                        {
-                          // reset b[col] to 5
-                          setText(text().replace(col, 1, "5"));
-                          setCursorPosition(col);
-                          break;
-                        }
-                    }
-
-                  // General default handling for all other input
-                  setText(text().replace(col, 1, s));
-                  setCursorPosition(++col);
-
-                  // jump to next number field
-                  setCursor2NextNo(col);
-                  //qDebug("ENDE: pos=%d, mask=%s, buffer=%s, input=%s",
-                  // col, mask.latin1(), QLineEdit::text().latin1(), s.latin1() );
-                }
-            }
-        } // switch
-    }
-  else
-    {
-      // route all other to default handler
-      QLineEdit::keyPressEvent(e);
-    }
-}
-
-/** Set cursor in dependency of position and input mask to next number field */
-void CoordEdit::setCursor2NextNo( int pos )
-{
-  if (pos < text().length() && mask[pos] == '.')
-    {
-      setCursorPosition(pos + 1);
-    }
-  else if (pos < text().length() && mask[pos] != '0')
-    {
-      setCursorPosition(pos + 2);
-    }
-}
-
-/** Race condition, showEvent can be called earlier as the related slot_load
-    method. In this case the mask is always set */
-void CoordEdit::showEvent(QShowEvent *)
-{
-  if (text().isEmpty())
-    {
-      setText(mask);
-    }
-}
-
+/**
+ * Sets the controls for the latitude editor.
+ */
 LatEdit::LatEdit(QWidget *parent, const int base) : CoordEdit(parent)
 {
   setObjectName("LatEdit");
 
-  if ( WGSPoint::getFormat() == WGSPoint::DMS )
+  QRegExpValidator *eValidator;
+
+  if ( WGSPoint::getFormat() == WGSPoint::DDD )
     {
-      mask = "00\260 00' 00\"";
+      degreeBox->setInputMask( "99.99999" );
+      eValidator = new QRegExpValidator( QRegExp( "([0-8][0-9]\.[0-9]{5})|(90\.00000)" ), this );
+      degreeBox->setValidator( eValidator );
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DDM )
     {
-      mask = "00\260 00.000'";
+      degreeBox->setInputMask( "99" );
+      degreeBox->setValidator( new QIntValidator ( 0, 90, this ) );
+
+      minuteBox->setInputMask( "99.999" );
+      eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]\.[0-9]{3}" ), this );
+      minuteBox->setValidator( eValidator );
     }
-  else
+  else if ( WGSPoint::getFormat() == WGSPoint::DMS )
     {
-      mask = "00.00000\260";
+      degreeBox->setInputMask( "99");
+      degreeBox->setValidator( new QIntValidator ( 0, 90, this ) );
+
+      minuteBox->setInputMask( "99");
+      minuteBox->setValidator( new QIntValidator ( 0, 59, this ) );
+
+      secondBox->setInputMask( "99");
+      secondBox->setValidator( new QIntValidator ( 0, 59, this ) );
     }
 
+  directionBox->addItem( QString("N") );
+  directionBox->addItem( QString("S") );
+
+  // Set all edit fields to zero.
+  setKFLogDegree(0);
+
+  // Set default sky direction.
   if (base >= 0)
     {
-      mask += " N";
+      directionBox->setCurrentIndex( 0 );
     }
   else
     {
-      mask += " S";
+      directionBox->setCurrentIndex( 1 );
     }
-
-  validDirection = "NS";
 }
+
+/**
+ * Sets the controls for the longitude editor.
+ */
 
 LongEdit::LongEdit(QWidget *parent, const int base) : CoordEdit(parent)
 {
   setObjectName("LongEdit");
 
-  if ( WGSPoint::getFormat() == WGSPoint::DMS )
+  QRegExpValidator *eValidator;
+
+  if ( WGSPoint::getFormat() == WGSPoint::DDD )
     {
-      mask = "000\260 00' 00\"";
+      degreeBox->setInputMask( "999.99999" );
+      eValidator = new QRegExpValidator( QRegExp( "([0-1][0-7][0-9]\.[0-9]{5})|(180\.00000)" ), this );
+      degreeBox->setValidator( eValidator );
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DDM )
     {
-      mask = "000\260 00.000'";
+      degreeBox->setInputMask( "999" );
+      degreeBox->setValidator( new QIntValidator ( 0, 180, this ) );
+
+      minuteBox->setInputMask( "99.999" );
+      eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]\.[0-9]{3}" ), this );
+      minuteBox->setValidator( eValidator );
     }
-  else
+  else if ( WGSPoint::getFormat() == WGSPoint::DMS )
     {
-      mask = "000.00000\260";
+      degreeBox->setInputMask( "999");
+      degreeBox->setValidator( new QIntValidator ( 0, 180, this ) );
+
+      minuteBox->setInputMask( "99");
+      minuteBox->setValidator( new QIntValidator ( 0, 59, this ) );
+
+      secondBox->setInputMask( "99");
+      secondBox->setValidator( new QIntValidator ( 0, 59, this ) );
     }
 
+  directionBox->addItem( QString("E") );
+  directionBox->addItem( QString("W") );
+
+  // Set all edit fields to zero
+  setKFLogDegree(0);
+
+  // Set the default sky direction.
   if (base >= 0)
     {
-      mask += " E";
+      directionBox->setCurrentIndex( 0 );
     }
   else
     {
-      mask += " W";
+      directionBox->setCurrentIndex( 1 );
     }
-
-  validDirection = "WE";
 }
 
-/** No descriptions */
-void CoordEdit::clear()
+/** Used to check the user input in the editor fields. */
+void CoordEdit::slot_textEdited( const QString& text )
 {
-  setText(mask);
+  if( degreeBox->text() == "90" || degreeBox->text() == "180" )
+    {
+      // If the degree box is set to the possible maximum, the other
+      // boxes must be set to zero to prevent senseless results.
+      if ( WGSPoint::getFormat() == WGSPoint::DDM )
+          {
+            minuteBox->setText( "00.000" );
+            return;
+         }
+
+      if ( WGSPoint::getFormat() == WGSPoint::DMS )
+        {
+          minuteBox->setText( "00");
+          secondBox->setText( "00");
+          return;
+        }
+    }
 }
 
-/** Returns the value of the edit box in the KFLog internal format for degrees  */
+/**
+ * Calculates a degree value in the KFLog internal format for degrees from
+ * the input data fields.
+ */
 int CoordEdit::KFLogDegree()
 {
-  return WGSPoint::degreeToNum(QLineEdit::text());
-}
-
-
-/** Sets the edit box to reflect the given value. */
-void CoordEdit::setKFLogDegree(int value, bool isLat)
-{
-  setText(WGSPoint::printPos(value, isLat));
-
-  if ( firstSet )
+  if( isInputChanged() == false )
     {
-      firstSet = false;
-      initText = QLineEdit::text(); // save initial text
+      // Nothing was modified, return initial value to avoid rounding
+      // errors during conversions.
+      return iniKflogDegree;
     }
+
+  QString input = "";
+
+  if ( WGSPoint::getFormat() == WGSPoint::DMS )
+    {
+      input = degreeBox->text() + "\260 " +
+              minuteBox->text() + "' " +
+              secondBox->text() + "\"";
+    }
+  else if ( WGSPoint::getFormat() == WGSPoint::DDM )
+    {
+      input = degreeBox->text() + "\260 " +
+              minuteBox->text() + "'";
+    }
+  else if ( WGSPoint::getFormat() == WGSPoint::DDD )
+    {
+      input = degreeBox->text() + "\260";
+    }
+
+  input += " " + directionBox->currentText();
+
+  // This method make the conversion to the internal KFLog degree format.
+  return WGSPoint::degreeToNum( input );
 }
 
-/** overloaded function */
-void LatEdit::setKFLogDegree(int value)
+/**
+ * Sets all edit fields according to the passed coordinate value.
+ * The coordinate value is encoded in the KFLog internal format for degrees.
+ */
+void CoordEdit::setKFLogDegree( const int coord, const bool isLat )
 {
-  CoordEdit::setKFLogDegree(value, true);
+  QString posDeg, posMin, posSec;
+  int degree, min, sec;
+  double decDegree, decMin;
+
+  iniKflogDegree = coord; // save initial coordinate value
+
+  if ( WGSPoint::getFormat() == WGSPoint::DMS )
+    {
+      // degrees, minutes, seconds is used as format
+      WGSPoint::calcPos (coord, degree, min, sec);
+
+      if (isLat)
+        {
+          posDeg.sprintf("%02d", (degree < 0)  ? -degree : degree);
+        }
+      else
+        {
+          posDeg.sprintf("%03d", (degree < 0)  ? -degree : degree);
+        }
+
+      min = abs(min);
+      posMin.sprintf("%02d", min);
+
+      sec = abs(sec);
+      posSec.sprintf("%02d", sec);
+
+      degreeBox->setText( posDeg );
+      minuteBox->setText( posMin );
+      secondBox->setText( posSec );
+
+      // save initial values
+      iniDegree = posDeg;
+      iniMinute = posMin;
+      iniSecond = posSec;
+    }
+  else if ( WGSPoint::getFormat() == WGSPoint::DDM )
+    {
+      // degrees and decimal minutes is used as format
+      WGSPoint::calcPos (coord, degree, decMin);
+
+      if (isLat)
+        {
+          posDeg.sprintf("%02d", (degree < 0)  ? -degree : degree);
+        }
+      else
+        {
+          posDeg.sprintf("%03d", (degree < 0)  ? -degree : degree);
+        }
+
+      decMin = fabs(decMin);
+
+      posMin.sprintf("%.3f", decMin);
+
+      // Unfortunately sprintf does not support leading zero in float
+      // formating. So we must do it alone.
+      if ( decMin < 10.0 )
+        {
+          posMin.insert(0, "0");
+        }
+
+      degreeBox->setText( posDeg );
+      minuteBox->setText( posMin );
+
+      // save initial values
+      iniDegree = posDeg;
+      iniMinute = posMin;
+    }
+  else if ( WGSPoint::getFormat() == WGSPoint::DDD )
+    {
+      // decimal degrees is used as format
+      WGSPoint::calcPos (coord, decDegree);
+
+      posDeg.sprintf("%.5f", (decDegree < 0)  ? -decDegree : decDegree);
+
+      // Unfortunately sprintf does not support leading zero in float
+      // formating. So we must do it alone.
+      if (isLat)
+        {
+          if ( decDegree < 10.0 )
+            {
+              posDeg.insert(0, "0");
+            }
+        }
+      else
+        {
+          if ( decDegree < 10.0 )
+            {
+              posDeg.insert(0, "00");
+            }
+          else if ( decDegree < 100.0 )
+            {
+              posDeg.insert(0, "0");
+            }
+        }
+
+      degreeBox->setText( posDeg );
+
+      // save initial value
+      iniDegree = posDeg;
+    }
+
+  // Set sky direction in combo box
+  if (coord < 0)
+    {
+      directionBox->setCurrentIndex(1);
+    }
+  else
+    {
+      directionBox->setCurrentIndex(0);
+    }
+
+  // Save initial value of sky direction.
+  iniDirection = directionBox->currentText();
 }
 
-/** Overloaded function */
-void LongEdit::setKFLogDegree(int value)
+/** Sets all edit fields to the passed coordinate value in KFLog format. */
+void LatEdit::setKFLogDegree( const int coord )
 {
-  CoordEdit::setKFLogDegree(value, false);
+  CoordEdit::setKFLogDegree( coord, true );
+}
+
+/** Sets all edit fields to the passed coordinate value in KFLog format. */
+void LongEdit::setKFLogDegree( const int coord )
+{
+  CoordEdit::setKFLogDegree( coord, false );
 }
