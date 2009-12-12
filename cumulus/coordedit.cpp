@@ -167,6 +167,10 @@ void CoordEdit::showEvent( QShowEvent * )
 
   int charWidth = fm.width(QChar('W'));
 
+#ifdef MAEMO_QT
+  charWidth *= 2;
+#endif
+
   directionBox->setMinimumWidth( charWidth + directionBox->size().height() );
   directionBox->setMaximumWidth( charWidth + directionBox->size().height() );
 }
