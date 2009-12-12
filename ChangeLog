@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2009-12-12 AP: Coordinate editor layout complete redesigned to make input
+                   easier for Hildon usage.
 [o] 2009-11-30 AP: Variometer dialog adapted to Hildon usage.
 [o] 2009-11-26 AP: Glider flight status dialog adapted to Hildon usage.
 [-] 2009-11-26 AP: BUGFIX: Under Maemo sometimes mouse events are delayed
@@ -24,6 +26,7 @@ Cumulus changelog
 [-] 2009-11-24 AP: BUGFIX: Layout error in TaskList class fixed.
 [o] 2009-11-24 AP: Sizes of different child widgets adapted to main window
                    size.
+>>>>>>> .r3670
 [o] 2009-11-18 AP: New font dialog added to settings look and feel to set the
                    menu font independently from the GUI font. Both font dialogs
                    are set now to the current active font during pop up.
