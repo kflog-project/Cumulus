@@ -26,7 +26,6 @@ Cumulus changelog
 [-] 2009-11-24 AP: BUGFIX: Layout error in TaskList class fixed.
 [o] 2009-11-24 AP: Sizes of different child widgets adapted to main window
                    size.
->>>>>>> .r3670
 [o] 2009-11-18 AP: New font dialog added to settings look and feel to set the
                    menu font independently from the GUI font. Both font dialogs
                    are set now to the current active font during pop up.
