@@ -165,14 +165,7 @@ void CoordEdit::showEvent( QShowEvent * )
       degreeBox->setMaximumWidth( strWidth );
     }
 
-  int charWidth = fm.width(QChar('W'));
-
-#ifdef MAEMO_QT
-  charWidth *= 2;
-#endif
-
-  directionBox->setMinimumWidth( charWidth + directionBox->size().height() );
-  directionBox->setMaximumWidth( charWidth + directionBox->size().height() );
+  directionBox->setMinimumContentsLength( 2 );
 }
 
 /**
@@ -239,8 +232,8 @@ LatEdit::LatEdit(QWidget *parent, const int base) : CoordEdit(parent)
       secondBox->setValidator( new QIntValidator ( 0, 59, this ) );
     }
 
-  directionBox->addItem( QString("N") );
-  directionBox->addItem( QString("S") );
+  directionBox->addItem( QString(" N") );
+  directionBox->addItem( QString(" S") );
 
   // Set all edit fields to zero.
   setKFLogDegree(0);
@@ -293,8 +286,8 @@ LongEdit::LongEdit(QWidget *parent, const int base) : CoordEdit(parent)
       secondBox->setValidator( new QIntValidator ( 0, 59, this ) );
     }
 
-  directionBox->addItem( QString("E") );
-  directionBox->addItem( QString("W") );
+  directionBox->addItem( QString(" E") );
+  directionBox->addItem( QString(" W") );
 
   // Set all edit fields to zero
   setKFLogDegree(0);
