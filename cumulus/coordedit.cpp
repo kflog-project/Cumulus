@@ -208,7 +208,7 @@ LatEdit::LatEdit(QWidget *parent, const int base) : CoordEdit(parent)
   if ( WGSPoint::getFormat() == WGSPoint::DDD )
     {
       degreeBox->setInputMask( "99.99999" );
-      eValidator = new QRegExpValidator( QRegExp( "([0-8][0-9]\.[0-9]{5})|(90\.00000)" ), this );
+      eValidator = new QRegExpValidator( QRegExp( "([0-8][0-9]\\.[0-9]{5})|(90\\.00000)" ), this );
       degreeBox->setValidator( eValidator );
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DDM )
@@ -217,7 +217,7 @@ LatEdit::LatEdit(QWidget *parent, const int base) : CoordEdit(parent)
       degreeBox->setValidator( new QIntValidator ( 0, 90, this ) );
 
       minuteBox->setInputMask( "99.999" );
-      eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]\.[0-9]{3}" ), this );
+      eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]\\.[0-9]{3}" ), this );
       minuteBox->setValidator( eValidator );
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DMS )
@@ -262,7 +262,7 @@ LongEdit::LongEdit(QWidget *parent, const int base) : CoordEdit(parent)
   if ( WGSPoint::getFormat() == WGSPoint::DDD )
     {
       degreeBox->setInputMask( "999.99999" );
-      eValidator = new QRegExpValidator( QRegExp( "([0-1][0-7][0-9]\.[0-9]{5})|(180\.00000)" ), this );
+      eValidator = new QRegExpValidator( QRegExp( "([0-1][0-7][0-9]\\.[0-9]{5})|(180\\.00000)" ), this );
       degreeBox->setValidator( eValidator );
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DDM )
@@ -271,7 +271,7 @@ LongEdit::LongEdit(QWidget *parent, const int base) : CoordEdit(parent)
       degreeBox->setValidator( new QIntValidator ( 0, 180, this ) );
 
       minuteBox->setInputMask( "99.999" );
-      eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]\.[0-9]{3}" ), this );
+      eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]\\.[0-9]{3}" ), this );
       minuteBox->setValidator( eValidator );
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DMS )
@@ -304,7 +304,7 @@ LongEdit::LongEdit(QWidget *parent, const int base) : CoordEdit(parent)
 }
 
 /** Used to check the user input in the editor fields. */
-void CoordEdit::slot_textEdited( const QString& text )
+void CoordEdit::slot_textEdited( const QString& )
 {
   if( degreeBox->text() == "90" || degreeBox->text() == "180" )
     {
