@@ -356,7 +356,7 @@ int CoordEdit::KFLogDegree()
       input = degreeBox->text() + "\260";
     }
 
-  input += " " + directionBox->currentText();
+  input += " " + directionBox->currentText().trimmed();
 
   // This method make the conversion to the internal KFLog degree format.
   return WGSPoint::degreeToNum( input );
