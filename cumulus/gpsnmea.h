@@ -3,7 +3,7 @@
                             -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2009 by Axel Pauli
+                               2008-2010 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -438,9 +438,18 @@ class GpsNmea : public QObject
     void __ExtractSatsInView(const QString&, const QString&, const QString&, const QString&);
     /** Extracts wind, QNH and vario data from Cambridge's !w sentence. */
     void __ExtractCambridgeW(const QStringList& stringList);
-
+    /**
+     * Extracts speed, altitude, vario, heading, wind data from LX Navigation $LXWP0
+     * sentence.
+     */
+    void __ExtractLxwp0(const QStringList& stringList);
+    /**
+     * Extracts McCready data from LX Navigation $LXWP2 sentence.
+     */
+    void __ExtractLxwp2(const QStringList& stringList);
     /** This function is called to indicate that good data has been received.
-     *  It resets the TimeOut timer and if necessary changes the connected status. */
+     *  It resets the TimeOut timer and if necessary changes the connected status.
+     */
     void dataOK();
     /** This function is called to indicate that a good fix has been received. */
     void fixOK();

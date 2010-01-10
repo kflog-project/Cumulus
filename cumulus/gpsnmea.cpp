@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2009 by Axel Pauli
+                               2008-2010 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -705,7 +705,8 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   if ( slst[0] == "!w" )
     {
-      return __ExtractCambridgeW( slst );
+      __ExtractCambridgeW( slst );
+      return;
     }
 
   /**
@@ -714,7 +715,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   $PGCS,<1>,<2>,<3>,<4>,<5>*CS
   $PGCS,1,0EBC,0003,06A6,03*1F
 
-  Volkslogger pressure and pressurealtitude information
+  Volkslogger pressure and pressure altitude information
 
   0 - PGCS - Sentence ID
   1 - 1 - gcs-sentence no. 1
@@ -766,6 +767,60 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       return;
     }
 
+  /**
+  Used by LX Navigation devices. The LXWP0 sentence format is:
+
+  $LXWP0,<1>,<2>,<3>,<4>,<5>,<6>,<7>,<8>,<9>,<10>,<11>,<12>,*CS
+  LXWP0,Y,222.3,1665.5,1.71,,,,,,239,174,10.1
+
+  LX Navigation vario, pressssure altitude, airspeed, wind information
+
+  0 - LXWP0 - Sentence ID
+  1 - 'Y' or 'N' logger stored
+  2 - air speed in km/h as double
+  3 - pressure altitude in meters as double
+  4...9 - vario values in m/s, last 6 measurements in last second or only one value as double
+  10 - heading degree of plane as integer
+  11 - wind direction as degree
+  12 - wind speed km/h as double
+  CS - checksum of total sentence
+  */
+
+  if ( slst[0] == "$LXWP0" )
+    {
+      __ExtractLxwp0( slst );
+      return;
+    }
+
+  /**
+  Used by LX Navigation devices. The LXWP0 sentence format is:
+
+  $LXWP2,<1>,<2>,<3>,<4>,<5>,<6>,<7>,*CS
+  0 - LXWP0 - Sentence ID
+  1 - McCready float in m/s
+  2 - Bugs 0...100%
+  ...
+  */
+
+  if ( slst[0] == "$LXWP2" )
+    {
+    // extract MacCready, reading in 10ths of knots
+    bool ok;
+    Speed speed(0);
+    double num = slst[1].toDouble( &ok );
+    speed.setMps( num );
+
+    if ( ok && _lastMc != speed )
+      {
+        _lastMc = speed;
+        emit newMc( _lastMc ); // notify change
+      }
+
+      return;
+    }
+
+
+
   // qDebug ("Unsupported NMEA sentence: %s", sentence.toLatin1().data());
 }
 
@@ -785,8 +840,10 @@ Altitude GpsNmea::getLastAltitude() const
     return _lastMslAltitude;
   };
 
-/** Extracts wind, QNH and vario data from Cambridge's !w sentence. */
-void GpsNmea::__ExtractCambridgeW(const QStringList& stringList)
+/**
+ * Extracts wind, QNH and vario data from Cambridge's !w sentence.
+ */
+void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
 {
   bool ok, ok1;
   Speed speed(0);
@@ -837,7 +894,6 @@ void GpsNmea::__ExtractCambridgeW(const QStringList& stringList)
       emit newAltitude(); // notify change
     }
 
-
   // extract QNH
   ushort qnh = stringList[6].toUShort( &ok );
 
@@ -866,6 +922,158 @@ void GpsNmea::__ExtractCambridgeW(const QStringList& stringList)
       _lastMc = speed;
       emit newMc( _lastMc ); // notify change
     }
+}
+
+/**
+ * Extracts speed, altitude, vario, heading, wind data from LX Navigation $LXWP0
+ * sentence.
+
+   0 - LXWP0 - Sentence ID
+   1 - 'Y' or 'N' logger stored
+   2 - airspeed in km/h as double
+   3 - pressure altitude in meters as double
+   4...9 - vario values in m/s, last 6 measurements in last second or only one value as double
+   10 - heading of plane as integer degree
+   11 - wind direction as degree
+   12 - wind speed km/h as double
+   CS - checksum of total sentence
+*/
+
+void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
+{
+  bool ok, ok1;
+  Speed speed(0);
+  double num = 0.0;
+
+  if ( stringList.size() < 13 )
+    {
+      qWarning("$LXWP0 contains too less parameters!");
+      return;
+    }
+
+  // airspeed in km/h
+  if( ! stringList[2].isEmpty() )
+    {
+      num = stringList[2].toDouble( &ok );
+
+      if( ok )
+        {
+          speed.setKph( num );
+
+          if( _lastSpeed != speed )
+            {
+              _lastSpeed = speed;
+              emit newSpeed();
+            }
+        }
+    }
+
+  // pressure altitude in meters
+  if( ! stringList[3].isEmpty() )
+    {
+      num = stringList[3].toDouble( &ok );
+
+      if( ok )
+        {
+          Altitude altitude( num );
+
+          if( _lastPressureAltitude != altitude )
+            {
+              _lastPressureAltitude = altitude; // store the new pressure altitude
+
+              if( _deliveredAltitude == GpsNmea::PRESSURE )
+                {
+                  // set these altitudes too, when pressure is selected
+                  _lastMslAltitude = altitude;
+                  // calculate STD altitude
+                  calcStdAltitude( altitude );
+                }
+
+              emit newAltitude(); // notify change
+            }
+        }
+    }
+
+  // Variometer values 1...6 in m/s. Can be also zero or only one value available.
+  // If more than one value contained the average value is computed.
+  int varioValues = 0;
+  double varioTotal = 0.0;
+
+  for( int i = 4; i < 10; i++ )
+    {
+      if( ! stringList[i].isEmpty() )
+        {
+          num = stringList[i].toDouble( &ok );
+
+            if( ok )
+              {
+                varioTotal += num;
+                varioValues++;
+              }
+          }
+    }
+
+  if( varioValues > 0 )
+    {
+      // compute variometer average value
+      speed.setMps( varioTotal / (double) varioValues );
+
+      if ( _lastVariometer != speed )
+        {
+          _lastVariometer = speed;
+          emit newVario( _lastVariometer ); // notify change
+        }
+    }
+
+  // heading degree of plane
+  num = __ExtractHeading( stringList[10] );
+
+  // extract wind direction in degrees
+  int windDir = static_cast<int> (rint(stringList[11].toDouble( &ok )));
+
+  // wind speed in km/h
+  num = stringList[12].toDouble( &ok1 );
+  speed.setKph( num );
+
+  // Wind is only emitted if a valid position fix is available.
+  if ( ok && ok1 && _status == validFix &&
+      ( _lastWindDirection != windDir || _lastWindSpeed != speed ))
+    {
+      _lastWindDirection = windDir;
+      _lastWindSpeed = speed;
+      emit newWind( _lastWindSpeed, _lastWindDirection ); // notify change
+    }
+}
+
+/**
+ * Extracts McCready data from LX Navigation $LXWP2 sentence.
+ */
+void GpsNmea::__ExtractLxwp2( const QStringList& stringList )
+{
+  bool ok;
+  Speed speed(0);
+  double num = 0.0;
+
+  if ( stringList.size() < 8 )
+    {
+      qWarning("$LXWP2 contains too less parameters!");
+      return;
+    }
+
+  // extract MacCready in m/s
+  if( ! stringList[1].isEmpty() )
+    {
+      num = stringList[1].toDouble( &ok );
+      speed.setMps( num );
+
+      if ( ok && _lastMc != speed )
+        {
+          _lastMc = speed;
+          emit newMc( _lastMc ); // notify change
+        }
+    }
+
+  return;
 }
 
 /**
