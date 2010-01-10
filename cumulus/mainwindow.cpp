@@ -3,7 +3,7 @@
  -----------------------------------------
  begin                : Sun Jul 21 2002
  copyright            : (C) 2002      by André Somers
- ported to Qt4.x/X11  : (C) 2007-2009 by Axel Pauli
+ ported to Qt4.x/X11  : (C) 2007-2010 by Axel Pauli
  maintainer           : axel@kflog.org
 
  $Id$
@@ -1759,7 +1759,7 @@ void MainWindow::slotVersion()
                                  "<html>"
                                  "Cumulus X11 version %1<br>"
                                  "<font size=-1>(compiled at %2 with QT %3)</font><br>"
-                                 "&copy; 2002-2009 by<br>"
+                                 "&copy; 2002-2010 by<br>"
                                  "Andr&eacute; Somers, Eggert Ehmke<br>"
                                  "Axel Pauli, Eckhard V&ouml;llm<br>"
                                  "Josua Dietze, Michael Enke<br>"
