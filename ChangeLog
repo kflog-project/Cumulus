@@ -13,7 +13,8 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
-
+[+] 2010-01-10 AP: Support added for GPS sentences $LXWP0 and $LXWP2 of
+                   LX Navigation devices.
 [o] 2009-12-12 AP: Coordinate editor layout complete redesigned to make input
                    easier for Hildon usage.
 [o] 2009-11-30 AP: Variometer dialog adapted to Hildon usage.
