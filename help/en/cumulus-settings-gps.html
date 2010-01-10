@@ -40,10 +40,10 @@
 
 <p> Note that Cumulus will only accept GPS data sentences with a valid checksum.
     It is also able to process the proprietary sentences emitted by a
-    Cambridge or Volkslogger device and to work this these data.
-    Wind, variometer, MacCready and QNH data from a Cambridge device
+    Cambridge, Volkslogger or LX device and to process this these data.
+    Wind, variometer and MacCready data from such devices
     will be taken over automatically, if they are available. MSL and STD altitude,
-    derived from the pressure sonde, are only taken on demand.
+    derived from the pressure sonde are only taken on demand.
 
 <dl>
   <dt><b>GPS Device</b></dt>
@@ -94,6 +94,11 @@
     Settings. Shall Cumulus work on this base, select the <i>Pressure</i> item
     in the combo box and enable the sending of the PGCS record in the
     Volkslogger setup menu.
+    <br>If you use a LX device as GPS source, it delivers also
+    altitude values derived from a pressure sonde. Shall
+    Cumulus work on this base, select the <i>Pressure</i> item
+    in the combo box and enable the sending of the LXWP records in the
+    LX setup menu.
   </dd>
 
   <dt><b>Special Options</b></dt>
@@ -133,6 +138,8 @@ Cumulus processes the following NMEA and proprietary sentences:
   <tr><td>!w</td> <td>Cambridge proprietary sentence with MSL altitude, QHN setting,
                       wind direction, MacCready, wind speed and variometer </td></tr>
   <tr><td>$PGCS</td> <td>Volkslogger proprietary sentence with STD altitude</td></tr>
+  <tr><td>$LXWP0</td> <td>LX Navigation proprietary sentence with MSL altitude, variometer and wind data</td></tr>
+  <tr><td>$LXWP2</td> <td>LX Navigation proprietary sentence with McCready data</td></tr>
 </table>
 </p>
 
