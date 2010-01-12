@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008-2009  by Axel Pauli
+**                   2008-2010  by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -417,4 +417,51 @@ QRect getTileBox(const ushort tileNo)
 */
 
  return rect;
+}
+
+/**
+ * Calculates ground speed, wca and true course via the wind triangle.
+ */
+void windTriangle( const double trueHeading,
+                   const double trueAirSpeed,
+                   const double windDirection,
+                   const double windSpeed,
+                   double &groundSpeed,
+                   double &wca,
+                   double &trueCourse )
+{
+  double d1, d2, d3, d4;
+
+  d1 = trueHeading - windDirection;
+
+  if( d1 < 0.0 )
+    {
+      d2 = -(d1 + 180.0);
+    }
+  else
+    {
+      d2 = d1 - 180.0;
+    }
+
+  d3 = (sin(d2 * M_PI / 180.0) * windSpeed) / trueAirSpeed;
+
+  wca = asin( d3 ) * 180.0 / M_PI;
+  d4 = 180 - d2 - wca;
+
+  groundSpeed = (sin( d4 * M_PI / 180.0) * windSpeed) / ( sin(wca * M_PI / 180.0));
+  trueCourse = trueHeading - wca;
+
+  if( trueCourse < 0.0 )
+    {
+      trueCourse += 360.0;
+    }
+  else if( trueCourse >= 360.0 )
+    {
+      trueCourse -= 360.0;
+    }
+
+  // round results to integer
+  wca = rint(wca);
+  trueCourse = rint(trueCourse);
+  groundSpeed = rint(groundSpeed);
 }

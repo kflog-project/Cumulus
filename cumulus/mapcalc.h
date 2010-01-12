@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008-2009  by Axel Pauli
+**                   2008-2010  by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -141,5 +141,16 @@ QRect areaBox(QPoint center, double r);
  * The returned rectangle used the x-axis as longitude and the y-axis as latitude.
  */
 QRect getTileBox(const ushort tileNo);
+
+/**
+ * Calculates ground speed, wca and true course via the wind triangle.
+ */
+void windTriangle( const double trueHeading,
+                   const double trueAirSpeed,
+                   const double windDirection,
+                   const double windSpeed,
+                   double &groundSpeed,
+                   double &wca,
+                   double &trueCourse );
 
 #endif
