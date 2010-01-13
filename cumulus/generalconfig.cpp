@@ -7,10 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2009 by Axel Pauli
+ **                   2007-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -185,7 +185,9 @@ void GeneralConfig::load()
   _qnh                 = value( "QNH", 1013 ).toInt();
   _loggerInterval      = value( "LoggerInterval", 10 ).toInt();
   _loggerAutostartMode = value( "LoggerAutostartMode", false ).toBool();
-  _cruisingSpeed       = value( "CruisingSpeed", 100 ).toInt();
+  _tas                 = value( "TAS", 100 ).toInt();
+  _windDirection       = value( "WindDirection", 0 ).toInt();
+  _windSpeed           = value( "WindSpeed", 0 ).toInt();
   _currentTask         = value( "CurrentTask", "").toString();
   endGroup();
 
@@ -485,7 +487,9 @@ void GeneralConfig::save()
   setValue( "QNH", _qnh );
   setValue( "LoggerInterval", _loggerInterval );
   setValue( "LoggerAutostartMode", _loggerAutostartMode );
-  setValue( "CruisingSpeed", _cruisingSpeed );
+  setValue( "TAS", _tas );
+  setValue( "WindDirection", _windDirection );
+  setValue( "WindSpeed", _windSpeed );
   setValue( "CurrentTask", _currentTask);
   endGroup();
 

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2009 by Axel Pauli
+**                   2007-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -743,15 +743,39 @@ class GeneralConfig : protected QSettings
     _loggerAutostartMode = newValue;
   };
 
-  /** gets cruising speed */
-  int getCruisingSpeed() const
+  /** gets TAS */
+  int getTas() const
   {
-    return _cruisingSpeed;
+    return _tas;
   };
-  /** sets cruising speed */
-  void setCruisingSpeed( const int newValue )
+  /** sets TAS */
+  void setTas( const int newValue )
   {
-    _cruisingSpeed = newValue;
+    _tas = newValue;
+  };
+
+  /** gets wind speed */
+  int getWindSpeed() const
+  {
+    return _windSpeed;
+  };
+
+  /** sets wind speed */
+  void setWindSpeed( const int newValue )
+  {
+    _windSpeed = newValue;
+  };
+
+  /** gets wind direction */
+  int getWindDirection() const
+  {
+    return _windDirection;
+  };
+
+  /** sets wind direction */
+  void setWindDirection( const int newValue )
+  {
+    _windDirection = newValue;
   };
 
   /** gets current task */
@@ -1759,8 +1783,12 @@ class GeneralConfig : protected QSettings
   int _loggerInterval;
   // logger auto start mode flag
   bool _loggerAutostartMode;
-  // cruising speed
-  int _cruisingSpeed;
+  // true air speed
+  int _tas;
+  // wind direction
+  int _windDirection;
+  // wind speed
+  int _windSpeed;
   // current selected task
   QString _currentTask;
 

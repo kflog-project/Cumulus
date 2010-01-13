@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Heiner Lamprecht, 2008 Axel Pauli
+**   Copyright (c):  2002      by Heiner Lamprecht
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -75,15 +76,25 @@ private slots:
     /** overtake a edited task item from the editor */
     void slotEditTaskList( FlightTask* );
 
-    /** set new value in cruising spin box */
-    void slotCruisingSpeedChanged( int value );
+    /** value in TAS spin box has been changed, do update of task list. */
+    void slotTasChanged( int value );
+
+    /** value in wind direction spin box has been changed, do update of task list. */
+    void slotWDChanged( int value );
+
+    /** value in wind speed spin box has been changed, do update of task list. */
+    void slotWSChanged( int value );
 
 private:
 
     /** splitter widget */
     QSplitter* splitter;
-    /** spin box for cruising speed entry */
-    QSpinBox* cruisingSpeed;
+    /** spin box for TAS entry */
+    QSpinBox* tas;
+    /** spin box for wind direction entry*/
+    QSpinBox* windDirection;
+    /** spin box for wind speed entry */
+    QSpinBox* windSpeed;
     /** task list overview */
     QTreeWidget* taskListWidget;
     /** widget with task content in detail */

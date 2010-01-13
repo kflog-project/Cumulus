@@ -6,11 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Heiner Lamprecht
-**                   2009 by Axel Pauli
+**   Copyright (c):  2002      by Heiner Lamprecht
+**                   2009-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -26,6 +26,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QList>
+#include <QToolTip>
 
 #include "target.h"
 #include "tasklist.h"
@@ -49,13 +50,43 @@ TaskList::TaskList( QWidget* parent ) :
   editrow->setSpacing(5);
   taskLayout->addLayout( editrow );
 
-  cruisingSpeed = new QSpinBox( this );
-  cruisingSpeed->setButtonSymbols(QSpinBox::PlusMinus);
-  cruisingSpeed->setRange( 0, 1000);
-  cruisingSpeed->setSingleStep( 5 );
-  cruisingSpeed->setValue( GeneralConfig::instance()->getCruisingSpeed() );
-  cruisingSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
-  editrow->addWidget(cruisingSpeed);
+  QLabel *label = new QLabel( tr("TAS"), this );
+  editrow->addWidget(label);
+
+  tas = new QSpinBox( this );
+  tas->setToolTip( tr("True Air Speed") );
+  tas->setButtonSymbols(QSpinBox::PlusMinus);
+  tas->setRange( 0, 1000);
+  tas->setSingleStep( 5 );
+  tas->setValue( GeneralConfig::instance()->getTas() );
+  tas->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
+  editrow->addWidget(tas);
+
+  label = new QLabel( tr("WD"), this );
+  editrow->addWidget(label);
+
+  windDirection = new QSpinBox( this );
+  windDirection->setToolTip( tr("Wind Direction") );
+  windDirection->setButtonSymbols(QSpinBox::PlusMinus);
+  windDirection->setRange( 0, 359 );
+  windDirection->setWrapping(true);
+  windDirection->setSingleStep( 10 );
+  windDirection->setValue( GeneralConfig::instance()->getWindDirection() );
+  windDirection->setSuffix( QString(Qt::Key_degree) );
+  editrow->addWidget(windDirection);
+
+  label = new QLabel( tr("WS"), this );
+  editrow->addWidget(label);
+
+  windSpeed = new QSpinBox( this );
+  windSpeed->setToolTip( tr("Wind Speed") );
+  windSpeed->setButtonSymbols(QSpinBox::PlusMinus);
+  windSpeed->setRange( 0, 1000 );
+  windSpeed->setSingleStep( 5 );
+  windSpeed->setValue( GeneralConfig::instance()->getWindSpeed() );
+  windSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
+  editrow->addWidget(windSpeed);
+
   editrow->addStretch(10);
 
   QPushButton * cmdNew = new QPushButton(this);
@@ -84,6 +115,7 @@ TaskList::TaskList( QWidget* parent ) :
 
   taskListWidget = new QTreeWidget( splitter );
 
+  taskListWidget->setToolTip( tr("Select a flight task") );
   taskListWidget->setRootIsDecorated(false);
   taskListWidget->setItemsExpandable(false);
   taskListWidget->setUniformRowHeights(true);
@@ -109,7 +141,7 @@ TaskList::TaskList( QWidget* parent ) :
   connect(cmdNew, SIGNAL(clicked()), this, SLOT(slotNewTask()));
   connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slotEditTask()));
   connect(cmdDel, SIGNAL(clicked()), this, SLOT(slotDeleteTask()));
-  connect(cruisingSpeed, SIGNAL(valueChanged(int)), this, SLOT(slotCruisingSpeedChanged(int)));
+  connect(tas, SIGNAL(valueChanged(int)), this, SLOT(slotTasChanged(int)));
 
   connect( taskListWidget, SIGNAL( itemSelectionChanged() ),
            this, SLOT( slotTaskDetails() ) );
@@ -168,10 +200,28 @@ void TaskList::showEvent(QShowEvent *)
     }
 }
 
-/** new value in spin box set */
-void TaskList::slotCruisingSpeedChanged( int /* value */ )
+/** new value set in TAS spin box */
+void TaskList::slotTasChanged( int /* value */ )
 {
-  // The user has changed the value in the cruising speed spin box. We
+  // The user has changed the value in the TAS spin box. We
+  // have to initiate an update of the task details.
+  slotTaskDetails();
+  return;
+}
+
+/** value in wind direction spin box has been changed, do update of task list. */
+void TaskList::slotWDChanged( int /* value */ )
+{
+  // The user has changed the value in the wind direction spin box. We
+  // have to initiate an update of the task details.
+  slotTaskDetails();
+  return;
+}
+
+/** value in wind speed spin box has been changed, do update of task list. */
+void TaskList::slotWSChanged( int /* value */ )
+{
+  // The user has changed the value in the wind speed spin box. We
   // have to initiate an update of the task details.
   slotTaskDetails();
   return;
@@ -198,8 +248,8 @@ void TaskList::slotTaskDetails()
 
   FlightTask *task = taskList.at( id );
 
-  // update speed, can be changed in the meantime by the user
-  task->setSpeed( cruisingSpeed->value() );
+  // update TAS, can be changed in the meantime by the user
+  task->setSpeed( tas->value() );
 
   taskContent->slot_setTask( task );
 }
@@ -212,8 +262,10 @@ FlightTask* TaskList::takeSelectedTask()
 {
   // qDebug("TaskList::selectedTask()");
 
-  // save last used cruising speed
-  GeneralConfig::instance()->setCruisingSpeed( cruisingSpeed->value() );
+  // save last used TAS, and wind parameters
+  GeneralConfig::instance()->setTas( tas->value() );
+  GeneralConfig::instance()->setWindDirection( windDirection->value() );
+  GeneralConfig::instance()->setWindSpeed( windSpeed->value() );
 
   QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
 
@@ -340,7 +392,7 @@ bool TaskList::slotLoadTask()
                   // task complete
                   isTask = false;
                   FlightTask* task = new FlightTask( wpList, true,
-                                                     taskName, cruisingSpeed->value() );
+                                                     taskName, tas->value() );
                   taskList.append( task );
 
                   wpList = 0; // ownership was overtaken by FlighTask

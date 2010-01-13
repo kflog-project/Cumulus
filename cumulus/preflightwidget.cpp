@@ -7,10 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2003      by André Somers
- **                   2008-2009 by Axel Pauli
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -52,7 +52,6 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   tabWidget->addTab(gliderpage, tr("Glider"));
 
   taskpage = new TaskList(this);
-  taskpage->setToolTip(tr("Select or define a flight task"));
   tabWidget->addTab(taskpage, tr("Task"));
 
   miscpage = new PreFlightMiscPage(this);

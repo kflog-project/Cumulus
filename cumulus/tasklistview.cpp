@@ -6,11 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers
-**                   2009 by Axel Pauli
+**   Copyright (c):  2004      by André Somers
+**                   2009-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -57,12 +57,16 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
   QHBoxLayout *total = new QHBoxLayout;
   topLayout->addLayout( total );
 
-  distTotal  = new QLabel("", this );
   speedTotal = new QLabel("", this );
+  windDir    = new QLabel("", this );
+  windSpeed  = new QLabel("", this );
+  distTotal  = new QLabel("", this );
   timeTotal  = new QLabel("", this );
 
-  total->addWidget( distTotal );
   total->addWidget( speedTotal );
+  total->addWidget( windDir );
+  total->addWidget( windSpeed );
+  total->addWidget( distTotal );
   total->addWidget( timeTotal );
 
   list = new QTreeWidget( this );
@@ -82,10 +86,10 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
   sl << tr("Type")
   << tr("Name")
   << tr("Dist.")
-  << tr("Course")
+  << tr("TH")
   << tr("Time")
-  << tr("Description")
-  << tr("SS");
+  << tr("SS")
+  << tr("Description");
   list->setHeaderLabels(sl);
 
   topLayout->addWidget(list, 10);
@@ -139,7 +143,7 @@ TaskListView::~TaskListView()
 void TaskListView::slot_Selected()
 {
   _newSelectedTp = list->currentItem();
-  
+
   if ( _newSelectedTp == 0 )
     {
       return;
@@ -178,7 +182,7 @@ void TaskListView::showEvent(QShowEvent *)
 
   const wayPoint *calcWp = calculator->getselectedWp();
   bool foundWp = false;
-  
+
   for ( int i = 0; i < list->topLevelItemCount(); i++)
     {
 
@@ -324,9 +328,11 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
     }
 
   // set the total values in the header of this view
-  distTotal->setText(  "S=" +_task->getTotalDistanceString() );
-  speedTotal->setText( "V=" + _task->getSpeedString() );
-  timeTotal->setText(  "T=" + _task->getTotalDistanceTimeString() );
+  speedTotal->setText( "TAS=" + _task->getSpeedString() );
+  windDir->setText( "WD=000" + QString(Qt::Key_degree) );
+  windSpeed->setText( "WS=0" );
+  distTotal->setText( "S=" +_task->getTotalDistanceString() );
+  timeTotal->setText( "T=" + _task->getTotalDistanceTimeString() );
 
   list->resizeColumnToContents(0);
   list->resizeColumnToContents(1);
@@ -394,8 +400,8 @@ TaskListView::_TaskPoint::_TaskPoint (QTreeWidget *wpList, wayPoint *point ) : Q
 
   setText(4, " " + FlightTask::getDistanceTimeString(wp->distTime));
   setTextAlignment( 4, Qt::AlignRight|Qt::AlignVCenter );
-  setText(5, " " + wp->description);
-  setText(6, " " + ss + " " + tz);
+  setText(5, " " + ss + " " + tz);
+  setText(6, " " + wp->description);
 
   setIcon(1, QIcon(_globalMapConfig->getPixmap(wp->type, false, true)) );
 }
