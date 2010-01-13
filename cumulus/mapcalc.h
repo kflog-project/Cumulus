@@ -143,14 +143,25 @@ QRect areaBox(QPoint center, double r);
 QRect getTileBox(const ushort tileNo);
 
 /**
- * Calculates ground speed, wca and true course via the wind triangle.
+ * Calculates ground speed, wca and true heading via the wind triangle.
+ * See http://www.delphiforfun.org/programs/math_topics/WindTriangle.htm
+ * for more info. Thanks to the publisher.
+ *
+ * @param trueCourse TC in degree 0...359
+ * @param trueAirSpeed TAS, unit must be the same as for wind speed
+ * @param windDirection wind from direction in degree 0...359
+ * @param windSpeed wind speed, unit must be the same as for true air speed
+ * @param groundSpeed calculated ground speed, unit is the same as used for TAS and wind
+ * @param wca calculated wind correction angle in degree 0...359
+ * @param trueHeading calculated TH in degree 0...359
+ * @return true if results could calculated otherwise false, when the wind is too strong
  */
-void windTriangle( const double trueHeading,
+bool windTriangle( const double trueCourse,
                    const double trueAirSpeed,
                    const double windDirection,
                    const double windSpeed,
                    double &groundSpeed,
                    double &wca,
-                   double &trueCourse );
+                   double &trueHeading );
 
 #endif

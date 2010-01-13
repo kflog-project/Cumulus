@@ -420,48 +420,88 @@ QRect getTileBox(const ushort tileNo)
 }
 
 /**
- * Calculates ground speed, wca and true course via the wind triangle.
+ * Calculates ground speed, wca and true heading via the wind triangle.
+ * See http://www.delphiforfun.org/programs/math_topics/WindTriangle.htm
+ * for more info. Thanks to the publisher.
+ *
+ * @param trueCourse TC in degree 0...359
+ * @param trueAirSpeed TAS, unit must be the same as for wind speed
+ * @param windDirection wind from direction in degree 0...359
+ * @param windSpeed wind speed, unit must be the same as for true air speed
+ * @param groundSpeed calculated ground speed, unit is the same as used for TAS and wind
+ * @param wca calculated wind correction angle in degree 0...359
+ * @param trueHeading calculated TH in degree 0...359
+ * @return true if results could calculated otherwise false, when the wind is too strong
  */
-void windTriangle( const double trueHeading,
+bool windTriangle( const double trueCourse,
                    const double trueAirSpeed,
                    const double windDirection,
                    const double windSpeed,
                    double &groundSpeed,
                    double &wca,
-                   double &trueCourse )
+                   double &trueHeading )
 {
-  double d1, d2, d3, d4;
+  // Wind Direction Adjustment
+  // correct wind from direction to TO direction in radians
+  double windTo = (windDirection * M_PI / 180.0 ) + M_PI;
 
-  d1 = trueHeading - windDirection;
-
-  if( d1 < 0.0 )
+  if( windTo > M_PI )
     {
-      d2 = -(d1 + 180.0);
-    }
-  else
-    {
-      d2 = d1 - 180.0;
+      // correct angle
+      windTo -= 2 * M_PI;
     }
 
-  d3 = (sin(d2 * M_PI / 180.0) * windSpeed) / trueAirSpeed;
+  // Wind To Track Angle in radians
+  double wtAngle = (trueCourse * M_PI / 180.0) - windTo;
 
-  wca = asin( d3 ) * 180.0 / M_PI;
-  d4 = 180 - d2 - wca;
-
-  groundSpeed = (sin( d4 * M_PI / 180.0) * windSpeed) / ( sin(wca * M_PI / 180.0));
-  trueCourse = trueHeading - wca;
-
-  if( trueCourse < 0.0 )
+  if( wtAngle > M_PI )
     {
-      trueCourse += 360.0;
+      wtAngle -= 2 * M_PI;
     }
-  else if( trueCourse >= 360.0 )
+  else if( wtAngle < -M_PI )
     {
-      trueCourse -= 360.0;
+      wtAngle += 2 * M_PI;
     }
 
-  // round results to integer
+  // Sine of the wind correction angle
+  double sinWca = windSpeed / trueAirSpeed * sin(wtAngle);
+
+  if( fabs(sinWca) >= 1.0 )
+    {
+      // Too strong wind.
+      return false;
+    }
+
+  // wind correction angle in radians
+  wca = asin(sinWca);
+
+  // calculate ground speed
+  groundSpeed = trueAirSpeed * cos(wca) + windSpeed * cos(wtAngle);
+
+  // calculate true heading in degree
+  trueHeading = trueCourse + (wca * 180 / M_PI);
+
+  if( trueHeading >= 360.0 )
+    {
+      trueHeading -= 360.0;
+    }
+  else if( trueHeading < 0.0 )
+    {
+      trueHeading += 360.0;
+    }
+
+  // wca in degree
+  wca = wca * 180 / M_PI;
+
+  // round all results to integer
   wca = rint(wca);
-  trueCourse = rint(trueCourse);
+  trueHeading = rint(trueHeading);
   groundSpeed = rint(groundSpeed);
+
+  if( groundSpeed < 0.0 )
+    {
+      return false; // too strong wind
+    }
+
+  return true;
 }
