@@ -49,7 +49,7 @@ public:
     ~TaskListView();
 
     /**
-     * @Returns a pointer to the currently highlighted waypoint.
+     * @Returns a pointer to the currently high lighted waypoint.
      */
     wayPoint *getSelectedWaypoint();
 
@@ -72,7 +72,7 @@ public slots: // Public slots
      */
     void slot_Close ();
     /**
-     * Retreives the waypoints from the task, and fills the list.
+     * Retrieves the task points from the task, and fills the list.
      */
     void slot_setTask(const FlightTask *);
 
@@ -109,8 +109,7 @@ private:
     QPushButton *cmdShowOl;
     QPushButton *cmdHideOl;
     QPushButton *cmdSelect;
-    QLabel      *windDir;
-    QLabel      *windSpeed;
+    QLabel      *wind;
     QLabel      *distTotal;
     QLabel      *speedTotal;
     QLabel      *timeTotal;
@@ -129,20 +128,18 @@ private:
 
 private slots:
     /**
-     * This slot is called if the user selects a waypoint in the task
+     * This slot is called if the user selects a task point in the task
      */
     void slot_Selected();
 
 
 private:
 
-    class _TaskPoint : public QTreeWidgetItem
+  class _TaskPoint : public QTreeWidgetItem
     {
-    public:
-//        _TaskPoint(QTreeWidget* parent, const QStringList& strings, int type=0, waypoint* wp ):
-//                  QTreeWidgetItem( parent, strings, type );
-        _TaskPoint(QTreeWidget* wpList, wayPoint* point);
-        wayPoint *wp;
+      public:
+        _TaskPoint(QTreeWidget* tpList, TaskPoint* point);
+        TaskPoint *tp;
     };
 };
 

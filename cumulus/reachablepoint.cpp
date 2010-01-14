@@ -7,10 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm
- **                   2008-2009 by Axel Pauli
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -49,9 +49,6 @@ ReachablePoint::ReachablePoint(QString name,
   _wp.surface = rwSurf;
   _wp.runway = rwDir;
   _wp.length = rwLen;
-  _wp.sectorFAI = 0;
-  _wp.sector1 = 0;
-  _wp.sector2 = 0;
   _wp.origP = pos;
   _wp.projP = ppos;
   _wp.type = type;

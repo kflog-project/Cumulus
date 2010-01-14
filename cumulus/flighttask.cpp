@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2009 by Axel Pauli
+**                   2007-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -38,14 +38,17 @@
 extern Calculator *calculator;
 extern MapMatrix  *_globalMapMatrix;
 
-FlightTask::FlightTask( QList<wayPoint*> *wpListIn,
+FlightTask::FlightTask( QList<TaskPoint*> *tpListIn,
                         bool faiRules,
                         QString taskName,
                         int speed ) :
   BaseMapElement("FlightTask", BaseMapElement::Task ),
-  wpList(wpListIn),
+  tpList(tpListIn),
   faiRules(faiRules),
   cruisingSpeed(speed),
+  windDirection(0),
+  windSpeed(0),
+  wtCalculation(false),
   task_end(0),
   task_begin(0),
   olcPoints(0),
@@ -59,10 +62,10 @@ FlightTask::FlightTask( QList<wayPoint*> *wpListIn,
   _taskName(taskName)
 {
   // Check, if a valid object has been passed
-  if( wpList == 0 )
+  if( tpList == 0 )
     {
       // no, so let us create a new one
-      wpList = new QList<wayPoint*>;
+      tpList = new QList<TaskPoint*>;
     }
 
   if( _taskName.isNull() )
@@ -70,8 +73,8 @@ FlightTask::FlightTask( QList<wayPoint*> *wpListIn,
       _taskName = QObject::tr("unknown");
     }
 
-  // only do this if wpList is not empty!
-  if( wpList->count() != 0 )
+  // only do this if tpList is not empty!
+  if( tpList->count() != 0 )
     {
       updateTask();
     }
@@ -87,9 +90,12 @@ FlightTask::FlightTask( const FlightTask& inst )
 
   faiRules = inst.faiRules;
   cruisingSpeed = inst.cruisingSpeed;
+  windDirection = inst.windDirection;
+  windSpeed = inst.windSpeed;
+  wtCalculation = inst.wtCalculation;
 
-  // create a deep copy of the waypoint list
-  wpList = copyWpList( inst.wpList );
+  // create a deep copy of the task point list
+  tpList = copyTpList( inst.tpList );
 
   task_end = inst.task_end;
   task_begin = inst.task_begin;
@@ -108,8 +114,8 @@ FlightTask::FlightTask( const FlightTask& inst )
 FlightTask::~FlightTask()
 {
   // qDebug("FlightTask::~FlightTask(): name=%s, %X", _taskName.toLatin1().data(), this );
-  qDeleteAll(*wpList);
-  delete wpList;
+  qDeleteAll(*tpList);
+  delete tpList;
 }
 
 
@@ -122,31 +128,31 @@ void FlightTask::__determineTaskType()
   distance_total = 0;
   double distance_task_d = 0;
 
-  if( wpList->count() > 0 )
+  if( tpList->count() > 0 )
     {
-      for(int loop = 1; loop <= wpList->count() - 1; loop++)
+      for(int loop = 1; loop <= tpList->count() - 1; loop++)
         {
-          // qDebug("distance: %f", wpList->at(loop)->distance);
-          distance_total += wpList->at(loop)->distance;
+          // qDebug("distance: %f", tpList->at(loop)->distance);
+          distance_total += tpList->at(loop)->distance;
         }
       // qDebug("Total Distance: %f", distance_total);
     }
 
-  if(wpList->count() < 4)
+  if(tpList->count() < 4)
     {
       flightType = FlightTask::NotSet;
       return;
     }
 
 
-  distance_task = distance_total - wpList->at(1)->distance
-                  - wpList->at(wpList->count() - 1)->distance;
+  distance_task = distance_total - tpList->at(1)->distance
+                  - tpList->at(tpList->count() - 1)->distance;
 
-  if(dist(wpList->at(1),wpList->at(wpList->count() - 2)) < 1.0)
+  if(dist(tpList->at(1),tpList->at(tpList->count() - 2)) < 1.0)
     {
       // Distance between Takeoff and End point is lower as one km. We
       // check the FAI rules
-      switch(wpList->count() - 4)
+      switch(tpList->count() - 4)
         {
         case 0:
           // Fehler
@@ -160,8 +166,8 @@ void FlightTask::__determineTaskType()
 
         case 2:
           // FAI Dreieck
-          if(isFAI(distance_task,wpList->at(2)->distance,
-                   wpList->at(3)->distance, wpList->at(4)->distance))
+          if(isFAI(distance_task,tpList->at(2)->distance,
+                   tpList->at(3)->distance, tpList->at(4)->distance))
             flightType = FlightTask::FAI;
           else
             // Dreieck
@@ -175,11 +181,11 @@ void FlightTask::__determineTaskType()
           //
           // Erste Abfrage je nachdem ob Vieleck oder Dreieck mehr Punkte geben
           // würde
-          distance_task_d = distance_task - wpList->at(2)->distance
-                            - wpList->at(5)->distance + dist(wpList->at(2), wpList->at(4));
+          distance_task_d = distance_task - tpList->at(2)->distance
+                            - tpList->at(5)->distance + dist(tpList->at(2), tpList->at(4));
 
-          if(isFAI(distance_task_d, dist(wpList->at(2), wpList->at(4)),
-                   wpList->at(3)->distance, wpList->at(4)->distance))
+          if(isFAI(distance_task_d, dist(tpList->at(2), tpList->at(4)),
+                   tpList->at(3)->distance, tpList->at(4)->distance))
             {
               if(distance_task > distance_task_d * (1.0 + 1.0/3.0))
                 flightType = FlightTask::Vieleck;
@@ -204,27 +210,27 @@ void FlightTask::__determineTaskType()
         case 5:
           // 2x Dreieck nur als FAI gültig
           flightType = Unknown;
-          if( (distance_task / 2 <= 100) && (wpList->at(1) == wpList->at(4)) &&
-              (wpList->at(2) == wpList->at(5)) &&
-              (wpList->at(3) == wpList->at(6)) &&
-              isFAI(distance_task / 2, wpList->at(2)->distance,
-                    wpList->at(3)->distance, wpList->at(4)->distance))
+          if( (distance_task / 2 <= 100) && (tpList->at(1) == tpList->at(4)) &&
+              (tpList->at(2) == tpList->at(5)) &&
+              (tpList->at(3) == tpList->at(6)) &&
+              isFAI(distance_task / 2, tpList->at(2)->distance,
+                    tpList->at(3)->distance, tpList->at(4)->distance))
             flightType = FlightTask::FAI_2;
           break;
 
         case 6:
           // 2x Dreieck auf Schenkel FAI
           flightType = FlightTask::Unknown;
-          distance_task_d = distance_task - wpList->at(2)->distance
-                            - wpList->at(5)->distance
-                            + dist(wpList->at(2), wpList->at(4)) * 2;
+          distance_task_d = distance_task - tpList->at(2)->distance
+                            - tpList->at(5)->distance
+                            + dist(tpList->at(2), tpList->at(4)) * 2;
 
           if( (distance_task_d / 2 <= 100) &&
-              (wpList->at(2) == wpList->at(5)) &&
-              (wpList->at(3) == wpList->at(6)) &&
-              (wpList->at(4) == wpList->at(7)) &&
-              isFAI(distance_task, dist(wpList->at(2), wpList->at(4)),
-                    wpList->at(3)->distance, wpList->at(4)->distance))
+              (tpList->at(2) == tpList->at(5)) &&
+              (tpList->at(3) == tpList->at(6)) &&
+              (tpList->at(4) == tpList->at(7)) &&
+              isFAI(distance_task, dist(tpList->at(2), tpList->at(4)),
+                    tpList->at(3)->distance, tpList->at(4)->distance))
             {
               flightType = FlightTask::FAI_S2;
               distance_task = distance_task_d;
@@ -235,33 +241,33 @@ void FlightTask::__determineTaskType()
           // 3x FAI Dreieck
           flightType = Unknown;
           if( (distance_task / 3 <= 100) &&
-              (wpList->at(1) == wpList->at(4)) &&
-              (wpList->at(2) == wpList->at(5)) &&
-              (wpList->at(3) == wpList->at(6)) &&
-              (wpList->at(1) == wpList->at(7)) &&
-              (wpList->at(2) == wpList->at(8)) &&
-              (wpList->at(3) == wpList->at(9)) &&
-              isFAI(distance_task / 3, wpList->at(2)->distance,
-                    wpList->at(3)->distance, wpList->at(4)->distance))
+              (tpList->at(1) == tpList->at(4)) &&
+              (tpList->at(2) == tpList->at(5)) &&
+              (tpList->at(3) == tpList->at(6)) &&
+              (tpList->at(1) == tpList->at(7)) &&
+              (tpList->at(2) == tpList->at(8)) &&
+              (tpList->at(3) == tpList->at(9)) &&
+              isFAI(distance_task / 3, tpList->at(2)->distance,
+                    tpList->at(3)->distance, tpList->at(4)->distance))
             flightType = FlightTask::FAI_3;
           break;
 
         case 9:
           // 3x FAI Dreieck Start auf Schenkel
-          distance_task_d = distance_task - wpList->at(2)->distance
-                            - wpList->at(5)->distance
-                            + dist(wpList->at(2), wpList->at(4)) * 3;
+          distance_task_d = distance_task - tpList->at(2)->distance
+                            - tpList->at(5)->distance
+                            + dist(tpList->at(2), tpList->at(4)) * 3;
 
           flightType = Unknown;
           if( (distance_task_d / 3 <= 100) &&
-              (wpList->at(2) == wpList->at(5)) &&
-              (wpList->at(3) == wpList->at(6)) &&
-              (wpList->at(4) == wpList->at(7)) &&
-              (wpList->at(2) == wpList->at(8)) &&
-              (wpList->at(3) == wpList->at(9)) &&
-              (wpList->at(4) == wpList->at(10)) &&
-              isFAI(distance_task, dist(wpList->at(2), wpList->at(4)),
-                    wpList->at(3)->distance, wpList->at(4)->distance))
+              (tpList->at(2) == tpList->at(5)) &&
+              (tpList->at(3) == tpList->at(6)) &&
+              (tpList->at(4) == tpList->at(7)) &&
+              (tpList->at(2) == tpList->at(8)) &&
+              (tpList->at(3) == tpList->at(9)) &&
+              (tpList->at(4) == tpList->at(10)) &&
+              isFAI(distance_task, dist(tpList->at(2), tpList->at(4)),
+                    tpList->at(3)->distance, tpList->at(4)->distance))
             {
               flightType = FlightTask::FAI_S3;
               distance_task = distance_task_d;
@@ -273,7 +279,7 @@ void FlightTask::__determineTaskType()
     }
   else
     {
-      if( wpList->count() <= 5 )
+      if( tpList->count() <= 5 )
         // Zielstrecke
         flightType = FlightTask::ZielS;
       else
@@ -303,47 +309,47 @@ double FlightTask::__calculateSectorAngles( int loop )
   // In some cases during planning, this method is called with wrong
   // loop-values. Therefore we must check the id before calculating
   // the direction
-  switch( wpList->at(loop)->taskPointType )
+  switch( tpList->at(loop)->taskPointType )
     {
-    case wayPoint::Begin:
+    case TaskPointTypes::Begin:
 
 #ifdef CUMULUS_DEBUG
-      part = "WP-Begin (" + wpList->at(loop)->name + "-" + wpList->at(loop+1)->name + ")";
+      part = "WP-Begin (" + tpList->at(loop)->name + "-" + tpList->at(loop+1)->name + ")";
 #endif
 
       // directions to the next point
-      if(wpList->count() >= loop + 1)
+      if(tpList->count() >= loop + 1)
         {
-          bisectorAngle = getBearing(wpList->at(loop)->origP, wpList->at(loop+1)->origP);
+          bisectorAngle = getBearing(tpList->at(loop)->origP, tpList->at(loop+1)->origP);
         }
       break;
 
-    case wayPoint::RouteP:
+    case TaskPointTypes::RouteP:
 
 #ifdef CUMULUS_DEBUG
-      part = "WP-RouteP ( " + wpList->at(loop-1)->name + "-" +
-             wpList->at(loop)->name + "-" + wpList->at(loop+1)->name + ")";
+      part = "WP-RouteP ( " + tpList->at(loop-1)->name + "-" +
+             tpList->at(loop)->name + "-" + tpList->at(loop+1)->name + ")";
 #endif
 
-      if( loop >= 1 && wpList->count() >= loop + 1 )
+      if( loop >= 1 && tpList->count() >= loop + 1 )
         {
           // vector pointing to the outside of the two points
-          bisectorAngle = outsideVector(wpList->at(loop)->origP,
-                                        wpList->at(loop-1)->origP,
-                                        wpList->at(loop+1)->origP);
+          bisectorAngle = outsideVector(tpList->at(loop)->origP,
+                                        tpList->at(loop-1)->origP,
+                                        tpList->at(loop+1)->origP);
         }
       break;
 
-    case wayPoint::End:
+    case TaskPointTypes::End:
 
 #ifdef CUMULUS_DEBUG
-      part = "WP-End (" + wpList->at(loop)->name +"-" + wpList->at(loop-1)->name + ")";
+      part = "WP-End (" + tpList->at(loop)->name +"-" + tpList->at(loop-1)->name + ")";
 #endif
 
-      if(loop >= 1 && loop < wpList->count())
+      if(loop >= 1 && loop < tpList->count())
         {
           // direction to the previous point:
-          bisectorAngle=getBearing( wpList->at(loop)->origP, wpList->at(loop-1)->origP );
+          bisectorAngle=getBearing( tpList->at(loop)->origP, tpList->at(loop-1)->origP );
         }
       break;
 
@@ -353,7 +359,7 @@ double FlightTask::__calculateSectorAngles( int loop )
 
   // save bisector angle
   bisectorAngle = normalize( bisectorAngle );
-  wpList->at(loop)->angle = bisectorAngle;
+  tpList->at(loop)->angle = bisectorAngle;
 
   // invert bisector angle
   double invertAngle = bisectorAngle;
@@ -364,13 +370,13 @@ double FlightTask::__calculateSectorAngles( int loop )
   maxAngle = normalize( invertAngle + (sectorAngle/2.) );
 
   // save min and max bisector angles
-  wpList->at(loop)->minAngle = minAngle;
-  wpList->at(loop)->maxAngle = maxAngle;
+  tpList->at(loop)->minAngle = minAngle;
+  tpList->at(loop)->maxAngle = maxAngle;
 
 
 #ifdef CUMULUS_DEBUG
   qDebug( "Loop=%d, Part=%s, Name=%s, Scale=%f, BisectorAngle=%3.1f, minAngle=%3.1f, maxAngle=%3.1f",
-          loop, part.latin1(), wpList->at(loop)->name.latin1(), glMapMatrix->getScale(),
+          loop, part.latin1(), tpList->at(loop)->name.latin1(), glMapMatrix->getScale(),
           bisectorAngle*180/M_PI, minAngle*180/M_PI, maxAngle*180/M_PI );
 #endif
 
@@ -378,27 +384,27 @@ double FlightTask::__calculateSectorAngles( int loop )
 }
 
 /*
- * Sets the status of the waypoints, the durations in seconds, the
+ * Sets the status of the task points, the durations in seconds, the
  * distances in km and the bearings.
  */
 
 void FlightTask::__setTaskPointTypes()
 {
-  unsigned int cnt = wpList->count();
+  unsigned int cnt = tpList->count();
 
   if (cnt == 0)
     {
       return;
     }
 
-  wpList->at(0)->taskPointType = wayPoint::FreeP;
-  wpList->at(0)->distTime = 0;
+  tpList->at(0)->taskPointType = TaskPointTypes::FreeP;
+  tpList->at(0)->distTime = 0;
 
-  //  First waypoint has always bearing -1.
-  wpList->at(0)->bearing = -1.;
+  //  First task point has always bearing -1.
+  tpList->at(0)->bearing = -1.;
 
-  // First waypoint has always distance 0.0
-  wpList->at(0)->distance = 0.0;
+  // First task point has always distance 0.0
+  tpList->at(0)->distance = 0.0;
 
   // Reset total duration
   duration_total = 0;
@@ -430,60 +436,60 @@ void FlightTask::__setTaskPointTypes()
   // be zero!
   for( uint n = 1; n  < cnt; n++ )
     {
-      wpList->at(n)->distance = dist(wpList->at(n-1), wpList->at(n));
+      tpList->at(n)->distance = dist(tpList->at(n-1), tpList->at(n));
 
-      if( wpList->at(n-1)->origP == wpList->at(n)->origP )
+      if( tpList->at(n-1)->origP == tpList->at(n)->origP )
         {
-          wpList->at(n)->bearing = -1.;
+          tpList->at(n)->bearing = -1.;
         }
       else
         {
-          wpList->at(n)->bearing  = getBearing( wpList->at(n-1)->origP,
-                                                wpList->at(n)->origP );
+          tpList->at(n)->bearing  = getBearing( tpList->at(n-1)->origP,
+                                                tpList->at(n)->origP );
         }
 
-      wpList->at(n)->taskPointType = wayPoint::FreeP;
+      tpList->at(n)->taskPointType = TaskPointTypes::FreeP;
 
       double cs = speed.getMps();
 
       if( cs > 0 )
         {
           // t=s/v distance is calculated in km, duration time in seconds
-          wpList->at(n)->distTime =
-            int( rint(wpList->at(n)->distance * 1000 / cs) );
+          tpList->at(n)->distTime =
+            int( rint(tpList->at(n)->distance * 1000 / cs) );
 
           // summarize total duration as seconds
-          duration_total += wpList->at(n)->distTime;
+          duration_total += tpList->at(n)->distTime;
         }
       else
         {
           // reset duration to zero
-          wpList->at(n)->distTime = 0;
+          tpList->at(n)->distTime = 0;
         }
 
 #ifdef CUMULUS_DEBUG
       qDebug("WP=%s, dist=%f, duration=%d",
-             wpList->at(n)->name.latin1(),
-             wpList->at(n)->distance,
-             wpList->at(n)->distTime);
+             tpList->at(n)->name.latin1(),
+             tpList->at(n)->distance,
+             tpList->at(n)->distTime);
 #endif
 
     }
 
-  // to less waypoints
+  // to less task points
   if (cnt < 4)
     {
       return;
     }
 
-  wpList->at(0)->taskPointType = wayPoint::TakeOff;
-  wpList->at(1)->taskPointType = wayPoint::Begin;
-  wpList->at(cnt - 2)->taskPointType = wayPoint::End;
-  wpList->at(cnt - 1)->taskPointType = wayPoint::Landing;
+  tpList->at(0)->taskPointType = TaskPointTypes::TakeOff;
+  tpList->at(1)->taskPointType = TaskPointTypes::Begin;
+  tpList->at(cnt - 2)->taskPointType = TaskPointTypes::End;
+  tpList->at(cnt - 1)->taskPointType = TaskPointTypes::Landing;
 
   for(uint n = 2; n + 2 < cnt; n++)
     {
-      wpList->at(n)->taskPointType = wayPoint::RouteP;
+      tpList->at(n)->taskPointType = TaskPointTypes::RouteP;
     }
 }
 
@@ -580,12 +586,12 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
   painter->setClipRegion( viewport );
   painter->setClipping( true );
 
-  for( int loop=0; loop < wpList->count(); loop++ )
+  for( int loop=0; loop < tpList->count(); loop++ )
     {
       // Append all waypoints to the label list on user request
       if( drawTpLabels )
         {
-          drawnTp.append( wpList->at(loop) );
+          drawnTp.append( tpList->at(loop) );
         }
 
       if( flightType == Unknown )
@@ -594,20 +600,20 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
       	    {
       	      painter->setPen(QPen(courseLineColor, courseLineWidth));
       	      // Draws the course line
-      	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-      				 glMapMatrix->map(wpList->at(loop)->projP) );
+      	      painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+      				 glMapMatrix->map(tpList->at(loop)->projP) );
       	    }
       	}
 
       // map projected point to map
-      QPoint mPoint(glMapMatrix->map(wpList->at(loop)->projP));
+      QPoint mPoint(glMapMatrix->map(tpList->at(loop)->projP));
 
       // convert biangle (90...180) from radian to degrees
-      int biangle = (int) rint( ((wpList->at(loop)->angle) / M_PI ) * 180.0 );
+      int biangle = (int) rint( ((tpList->at(loop)->angle) / M_PI ) * 180.0 );
 
-      switch( wpList->at(loop)->taskPointType )
+      switch( tpList->at(loop)->taskPointType )
 	{
-	case wayPoint::RouteP:
+	case TaskPointTypes::RouteP:
 
 	  if( viewport.contains(mPoint) )
 	    {
@@ -631,13 +637,13 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
 	  if( loop )
 	    {
 	      painter->setPen(QPen(courseLineColor, courseLineWidth));
-	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-				 glMapMatrix->map(wpList->at(loop)->projP) );
+	      painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+				 glMapMatrix->map(tpList->at(loop)->projP) );
 	    }
 
 	  break;
 
-	case wayPoint::Begin:
+	case TaskPointTypes::Begin:
 
 	  if( viewport.contains(mPoint) )
 	    {
@@ -660,16 +666,16 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
 
 	  // Draw line from take off to begin, if both not identical
 	  if( loop &&
-	      wpList->at(loop - 1)->origP != wpList->at(loop)->origP )
+	      tpList->at(loop - 1)->origP != tpList->at(loop)->origP )
 	    {
 	      painter->setPen(QPen(courseLineColor, courseLineWidth));
-	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-				 glMapMatrix->map(wpList->at(loop)->projP) );
+	      painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+				 glMapMatrix->map(tpList->at(loop)->projP) );
 	    }
 
 	  break;
 
-	case wayPoint::End:
+	case TaskPointTypes::End:
 
 	  if( viewport.contains(mPoint) )
 	    {
@@ -691,8 +697,8 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
 	    }
 
 	  painter->setPen(QPen(courseLineColor, courseLineWidth));
-	  painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-			     glMapMatrix->map(wpList->at(loop)->projP) );
+	  painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+			     glMapMatrix->map(tpList->at(loop)->projP) );
 	  break;
 
 	default:
@@ -700,11 +706,11 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
 	  // Can be take off or landing point
 	  // Draw line from End to Landing point, if both not identical
 	  if( loop &&
-	      wpList->at(loop - 1)->origP != wpList->at(loop)->origP )
+	      tpList->at(loop - 1)->origP != tpList->at(loop)->origP )
 	    {
 	      painter->setPen(QPen(courseLineColor, courseLineWidth));
-	      painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-				 glMapMatrix->map(wpList->at(loop)->projP ) );
+	      painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+				 glMapMatrix->map(tpList->at(loop)->projP ) );
 	    }
 
 	  break;
@@ -760,20 +766,20 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawn
 
   QRect viewport( -10-r, -10-r, w+2*r, h+2*r );
 
-  for( int loop=0; loop < wpList->count(); loop++ )
+  for( int loop=0; loop < tpList->count(); loop++ )
     {
       // Append all waypoints to the label list on user request
       if( drawTpLabels )
         {
-          drawnTp.append( wpList->at(loop) );
+          drawnTp.append( tpList->at(loop) );
         }
 
       if( loop )
       	{
       	  // Draws the course line
           painter->setPen(QPen(courseLineColor, courseLineWidth));
-      	  painter->drawLine( glMapMatrix->map(wpList->at(loop - 1)->projP),
-                             glMapMatrix->map(wpList->at(loop)->projP) );
+      	  painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+                             glMapMatrix->map(tpList->at(loop)->projP) );
       	}
 
       if( cs > 350.0 || ( drawShape == false && fillShape == false ) )
@@ -783,7 +789,7 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawn
           continue;
         }
 
-      QPoint mPoint (glMapMatrix->map(wpList->at(loop)->projP));
+      QPoint mPoint (glMapMatrix->map(tpList->at(loop)->projP));
 
       // qDebug("MappedPoint: x=%d, y=%d", mPoint.x(), mPoint.y() );
 
@@ -798,12 +804,12 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawn
       if( fillShape )
         {
           // determine fill color
-          switch(wpList->at(loop)->taskPointType)
+          switch(tpList->at(loop)->taskPointType)
             {
-            case wayPoint::TakeOff:
+            case TaskPointTypes::TakeOff:
 
-              if( wpList->count() > loop &&
-                  wpList->at(loop)->origP == wpList->at(loop+1)->origP )
+              if( tpList->count() > loop &&
+                  tpList->at(loop)->origP == tpList->at(loop+1)->origP )
                 {
                   // TakeOff and Begin point are identical
                   continue;
@@ -812,10 +818,10 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawn
               color = QColor(Qt::gray);
               break;
 
-            case wayPoint::Begin:
+            case TaskPointTypes::Begin:
 
-              if( wpList->count() > 1 &&
-                  wpList->at(loop)->origP == wpList->at(wpList->count()-2)->origP )
+              if( tpList->count() > 1 &&
+                  tpList->at(loop)->origP == tpList->at(tpList->count()-2)->origP )
                 {
                   color = QColor(Qt::yellow); // Begin is also End, yellow is taken as color
                 }
@@ -825,14 +831,14 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawn
                 }
               break;
 
-            case wayPoint::RouteP:
+            case TaskPointTypes::RouteP:
               color = QColor(Qt::green);
               break;
 
-            case wayPoint::End:
+            case TaskPointTypes::End:
 
-              if( wpList->count() > 1
-                  && wpList->at(loop)->origP == wpList->at(1)->origP )
+              if( tpList->count() > 1
+                  && tpList->at(loop)->origP == tpList->at(1)->origP )
                 {
                   continue; // End is also Begin, yellow is taken as color
                 }
@@ -840,9 +846,9 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawn
               color = QColor(Qt::cyan);
               break;
 
-            case wayPoint::Landing:
+            case TaskPointTypes::Landing:
               if( loop > 1 &&
-                  wpList->at(loop)->origP == wpList->at(loop-1)->origP )
+                  tpList->at(loop)->origP == tpList->at(loop-1)->origP )
                 {
                   // End and Landing point are identical
                   continue;
@@ -908,11 +914,11 @@ void FlightTask::drawCircle( QPainter* painter, QPoint& centerCoordinate,
 /**
  * Draws a sector around the given position.
  *
- * Painter as Cumulus special painter device
+ * Painter as painter device
  * coordinate as projected position of the point
  * scaled inner radius as meters
  * scaled outer radius as meters
- * bisector angle in debrees
+ * bisector angle in degrees
  * spanning angle in degrees
  * fillColor, do not fill, if set to invalid
  * drawShape, if set to true, draw outer circle with black color
@@ -1039,7 +1045,7 @@ bool FlightTask::checkSector( const Distance& dist2TP,
                               const QPoint& position,
                               const int taskPointIndex )
 {
-  if( taskPointIndex >= wpList->count() )
+  if( taskPointIndex >= tpList->count() )
     {
       // taskPointIndex out of range
       return false;
@@ -1084,7 +1090,7 @@ bool FlightTask::checkSector( const Distance& dist2TP,
     }
 
   // Do special check for landing point
-  if( wpList->at( taskPointIndex )->taskPointType == wayPoint::Landing )
+  if( tpList->at( taskPointIndex )->taskPointType == TaskPointTypes::Landing )
     {
       // 1. Here we do apply only the outer radius check.
       // 2. DMST said target reached, if 1km radius has been arrived.
@@ -1102,11 +1108,11 @@ bool FlightTask::checkSector( const Distance& dist2TP,
 
   // Here we are inside of outer radius, therefore we have to
   // check the sector angle.
-  const double minAngle = wpList->at( taskPointIndex )->minAngle;
-  const double maxAngle = wpList->at( taskPointIndex )->maxAngle;
+  const double minAngle = tpList->at( taskPointIndex )->minAngle;
+  const double maxAngle = tpList->at( taskPointIndex )->maxAngle;
 
   // calculate bearing from tp to current position
-  const double bearing = getBearingWgs( wpList->at( taskPointIndex )->origP, position );
+  const double bearing = getBearingWgs( tpList->at( taskPointIndex )->origP, position );
 
 #ifdef CUMULUS_DEBUG
   qDebug( "FlightTask::checkSector(): minAngle=%f, maxAngel=%f, bearing=%f",
@@ -1147,7 +1153,7 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
                                      Altitude &arrivalAlt,
                                      Speed &bestSpeed )
 {
-  uint wpCount = wpList->count();
+  uint wpCount = tpList->count();
 
   arrivalAlt.setInvalid();
   bestSpeed.setInvalid();
@@ -1169,19 +1175,19 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
   Altitude arrAlt(0);
   Speed speed(0);
 
-  // calculate bearing from current position to next waypoint from
+  // calculate bearing from current position to next task point from
   // task in radian
   int bearing = int ( rint( getBearingWgs( calculator->getlastPosition(),
-                                           wpList->at( taskPointIndex )->origP ) ));
+                                           tpList->at( taskPointIndex )->origP ) ));
 
-  // calculate distance from current position to next waypoint from
+  // calculate distance from current position to next task point from
   // task in km
   QPoint p1 = calculator->getlastPosition();
-  QPoint p2 = wpList->at( taskPointIndex )->origP;
+  QPoint p2 = tpList->at( taskPointIndex )->origP;
   double distance = dist( &p1, &p2 );
 
   bool res = calculator->glidePath( bearing, Distance(distance * 1000.0),
-                                    wpList->at( taskPointIndex )->elevation,
+                                    tpList->at( taskPointIndex )->elevation,
                                     arrAlt, speed );
 
   if( ! res )
@@ -1191,10 +1197,10 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
 
 #ifdef CUMULUS_DEBUG
   qDebug( "WP=%s, Bearing=%.1f°, Dist=%.1fkm, Ele=%dm, ArrAlt=%.1f",
-          wpList->at( taskPointIndex )->name.toLatin1().data(),
+          tpList->at( taskPointIndex )->name.toLatin1().data(),
           bearing*180/M_PI,
           distance,
-          wpList->at( taskPointIndex )->elevation,
+          tpList->at( taskPointIndex )->elevation,
           arrAlt.getMeters() );
 #endif
 
@@ -1203,21 +1209,21 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
 
   for( uint i=taskPointIndex; i+1 < wpCount; i++ )
     {
-      if( wpList->at(i)->origP == wpList->at(i+1)->origP )
+      if( tpList->at(i)->origP == tpList->at(i+1)->origP )
         {
           continue; // points are equal, we ignore them
         }
 
-      res = calculator->glidePath( (int) rint( wpList->at( i+1 )->bearing ),
-                                   Distance( wpList->at( i+1 )->distance * 1000.0),
-                                   wpList->at( i+1 )->elevation,
+      res = calculator->glidePath( (int) rint( tpList->at( i+1 )->bearing ),
+                                   Distance( tpList->at( i+1 )->distance * 1000.0),
+                                   tpList->at( i+1 )->elevation,
                                    arrAlt, speed );
 #ifdef CUMULUS_DEBUG
       qDebug( "WP=%s, Bearing=%.1f°, Dist=%.1fkm, Ele=%dm, ArrAlt=%.1f",
-              wpList->at( i+1 )->name.toLatin1().data(),
-              wpList->at( i+1 )->bearing*180/M_PI,
-              wpList->at( i+1 )->distance,
-              wpList->at( i+1 )->elevation,
+              tpList->at( i+1 )->name.toLatin1().data(),
+              tpList->at( i+1 )->bearing*180/M_PI,
+              tpList->at( i+1 )->distance,
+              tpList->at( i+1 )->elevation,
               arrAlt.getMeters() );
 #endif
 
@@ -1259,22 +1265,6 @@ QString FlightTask::getTaskDistanceString() const
       return "--";
 
     return Distance::getText(distance_task*1000,true,1);
-  }
-
-
-QString FlightTask::getPointsString() const
-  {
-    if(flightType == FlightTask::NotSet)
-      return "--";
-
-    int points1 = (int) taskPoints;
-    if((int) ( (taskPoints - points1) * 10 ) > 5)
-      points1++;
-
-    QString pointString;
-    pointString.sprintf("%d", points1);
-
-    return pointString;
   }
 
 /**
@@ -1326,26 +1316,48 @@ QString FlightTask::getSpeedString() const
   return v;
 }
 
+/** Returns wind direction and speed in string format "Degree/Speed". */
+QString FlightTask::getWindString() const
+{
+  if( windSpeed == 0 )
+    {
+      return QObject::tr("none");
+    }
+
+  if( wtCalculation == false )
+    {
+      return QObject::tr("too strong!");
+    }
+
+  QString w;
+
+  w = QString( "%1%2/%3 %4")
+         .arg( windDirection, 3, 10, QChar('0') )
+         .arg( QString(Qt::Key_degree) )
+         .arg( windSpeed )
+         .arg( Speed::getHorizontalUnitText() );
+
+  return w;
+}
 
 /**
- * Overtakes a waypoint list. An old list is deleted.
+ * Takes over a task point list. An old list is deleted.
  */
-void FlightTask::setWaypointList(QList<wayPoint*> *newWpList)
+void FlightTask::setTaskPointList(QList<TaskPoint*> *newtpList)
 {
-  if( newWpList == 0 )
+  if( newtpList == 0 )
     {
       return; // ignore null object
     }
 
    // Remove old content of list
-  qDeleteAll(*wpList);
-  delete wpList;
+  qDeleteAll(*tpList);
+  delete tpList;
 
-  // @AP: overtake ownership about the new passed list
-  wpList = newWpList;
+  // @AP: take over ownership about the new passed list
+  tpList = newtpList;
   updateTask();
 }
-
 
 /**
  * updates the internal task data
@@ -1355,10 +1367,10 @@ void FlightTask::updateTask()
   __setTaskPointTypes();
   __determineTaskType();
 
-  for(int loop = 0; loop < wpList->count(); loop++)
+  for(int loop = 0; loop < tpList->count(); loop++)
     {
       // number point with index
-      wpList->at(loop)->taskPointIndex = loop;
+      tpList->at(loop)->taskPointIndex = loop;
 
       // calculate turn point sector angles
       __calculateSectorAngles( loop );
@@ -1366,59 +1378,59 @@ void FlightTask::updateTask()
 }
 
 /**
- * updates projection data of waypoint list
+ * updates projection data of all task point elements in the list
  */
 void FlightTask::updateProjection()
 {
-  for(int loop = 0; loop < wpList->count(); loop++)
+  for(int loop = 0; loop < tpList->count(); loop++)
     {
       // calculate projection data
-      wpList->at(loop)->projP = _globalMapMatrix->wgsToMap(wpList->at(loop)->origP);
+      tpList->at(loop)->projP = _globalMapMatrix->wgsToMap(tpList->at(loop)->origP);
     }
 }
 
 /**
- * @AP: Add a new waypoint to the list. This overtakes the ownership
+ * @AP: Add a new task point to the list. This takes over the ownership
  * of the passed object.
  */
-void FlightTask::addWaypoint( wayPoint *newWp )
+void FlightTask::addTaskPoint( TaskPoint *newTp )
 {
-  if( newWp == 0 )
+  if( newTp == static_cast<TaskPoint *>(0) )
     {
       return; // ignore null object
     }
 
-  wpList->append( newWp );
+  tpList->append( newTp );
   updateTask();
 }
 
 /**
- * Returns a deep copy of the waypoint list. The ownership of the list
- * is overtaken by the caller.
+ * Returns a deep copy of the task point list. The ownership of the list
+ * is taken over by the caller.
  */
-QList<wayPoint*> *FlightTask::getCopiedWPList()
+QList<TaskPoint*> *FlightTask::getCopiedTpList()
 {
-  return copyWpList( wpList );
+  return copyTpList( tpList );
 }
 
   /**
    * Returns a deep copy of the input list. The ownership of the
-   * list is overtaken by the caller.
+   * list is taken over by the caller.
    */
-QList<wayPoint*> *FlightTask::copyWpList(QList<wayPoint*> *wpListIn)
+QList<TaskPoint*> *FlightTask::copyTpList(QList<TaskPoint*> *tpListIn)
 {
-  QList<wayPoint*> *outList = new QList<wayPoint*>;
+  QList<TaskPoint*> *outList = new QList<TaskPoint*>;
 
-  if( wpListIn == 0 )
+  if( tpListIn == 0 )
     {
       // returns an empty list on no input
       return outList;
     }
 
-  for(int loop = 0; loop < wpListIn->count(); loop++)
+  for(int loop = 0; loop < tpListIn->count(); loop++)
     {
-      wayPoint *wp = new wayPoint( *wpListIn->at(loop) );
-      outList->append( wp );
+      TaskPoint *tp = new TaskPoint( *tpListIn->at(loop) );
+      outList->append( tp );
     }
 
   return outList;

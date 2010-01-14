@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -194,12 +194,12 @@ TaskEditor::TaskEditor( QWidget* parent,
     {
       taskName->setText( planTask->getTaskName() );
 
-      QList<wayPoint*> tmpList = planTask->getWPList();
+      QList<TaskPoint *> tmpList = planTask->getTpList();
 
       // @AP: Make a deep copy from all elements of the list
       for ( int i=0; i < tmpList.count(); i++ )
         {
-          taskWPList.append( new wayPoint(*tmpList.at(i)) );
+          tpList.append( new TaskPoint( *tmpList.at(i)) );
         }
 
       __showTask();
@@ -229,26 +229,26 @@ TaskEditor::~TaskEditor()
 {
   // qDebug("TaskEditor::~TaskEditor()");
 
-  qDeleteAll(taskWPList);
-  taskWPList.clear();
+  qDeleteAll(tpList);
+  tpList.clear();
 }
 
 void TaskEditor::__showTask()
 {
-  if ( taskWPList.count() == 0 )
+  if ( tpList.count() == 0 )
     {
       this->setWindowTitle(tr("New Task"));
       return;
     }
 
-  planTask->setWaypointList( FlightTask::copyWpList( &taskWPList ) );
+  planTask->setTaskPointList( FlightTask::copyTpList( &tpList ) );
 
   QString txt = planTask->getTaskTypeString() +
                 " / " + planTask->getTaskDistanceString();
 
   this->setWindowTitle(txt);
 
-  QList<wayPoint*> tmpList = planTask->getWPList();
+  QList<TaskPoint *> tmpList = planTask->getTpList();
 
   taskList->clear();
 
@@ -256,14 +256,14 @@ void TaskEditor::__showTask()
 
   for ( int loop = 0; loop < tmpList.count(); loop++ )
     {
-      wayPoint* wp = tmpList.at( loop );
-      typeName = wp->getTaskPointTypeString();
+      TaskPoint* tp = tmpList.at( loop );
+      typeName = tp->getTaskPointTypeString();
 
-      distance = Distance::getText(wp->distance*1000, true, 1);
+      distance = Distance::getText(tp->distance*1000, true, 1);
       idString = QString( "%1").arg( loop, 2, 10, QLatin1Char('0') );
 
       QStringList rowList;
-      rowList << idString << typeName << wp->name << distance;
+      rowList << idString << typeName << tp->name << distance;
       taskList->addTopLevelItem( new QTreeWidgetItem(rowList, 0) );
 
       // reselect last selected item
@@ -297,9 +297,11 @@ void TaskEditor::slotAddWaypoint()
   wayPoint *wp = waypointList[listSelectCB->currentIndex()]->getSelectedWaypoint();
 
   if ( wp == 0 )
-    return;
+    {
+      return;
+    }
 
-  taskWPList.append( new wayPoint(*wp) );
+  tpList.append( new TaskPoint(*wp) );
 
   __showTask();
 }
@@ -308,10 +310,12 @@ void TaskEditor::slotRemoveWaypoint()
 {
   QTreeWidgetItem* selected = taskList->currentItem();
   if ( selected == 0 )
-    return;
+    {
+      return;
+    }
 
   int id = selected->text(0).toInt();
-  delete taskWPList.takeAt( id );
+  delete tpList.takeAt( id );
 
   delete taskList->takeTopLevelItem( taskList->currentIndex().row() );
 
@@ -320,18 +324,18 @@ void TaskEditor::slotRemoveWaypoint()
 
 void TaskEditor::slotInvertWaypoints()
 {
-  if ( taskWPList.count() < 2 )
+  if ( tpList.count() < 2 )
     {
       // not possible to invert order, if elements are less 2
       return;
     }
 
   // invert list order
-  for ( int i= (int) taskWPList.count()-2; i >= 0; i-- )
+  for ( int i= tpList.count()-2; i >= 0; i-- )
     {
-      wayPoint* wp = taskWPList.at(i);
-      taskWPList.removeAt(i);
-      taskWPList.append( wp );
+      TaskPoint* tp = tpList.at(i);
+      tpList.removeAt(i);
+      tpList.append( tp );
     }
 
   __showTask();
@@ -341,9 +345,9 @@ void TaskEditor::accept()
 {
   // qDebug("TaskEditor::accept()");
 
-  // Check, if a sensible task has been defined. Tasks with less than
-  // four waypoints are incomplete
-  if ( taskWPList.count() < 4 )
+  // Check, if a valid task has been defined. Tasks with less than
+  // four task points are incomplete
+  if ( tpList.count() < 4 )
     {
       QMessageBox::critical(this,tr("Task Incomplete"),
                            tr("Task needs at least four waypoints"),
@@ -393,9 +397,13 @@ void TaskEditor::accept()
   planTask->setTaskName(txt);
 
   if ( editState == TaskEditor::create )
-    emit newTask( planTask );
+    {
+      emit newTask( planTask );
+    }
   else
-    emit editedTask( planTask );
+    {
+      emit editedTask( planTask );
+    }
 
   // emit done();
   // close and destroy dialog
@@ -424,7 +432,7 @@ void TaskEditor::slotMoveWaypointUp()
 
   lastSelectedItem = id - 1;
 
-  taskWPList.move(id, id-1);
+  tpList.move(id, id-1);
 
   __showTask();
 }
@@ -441,7 +449,7 @@ void TaskEditor::slotMoveWaypointDown()
 
   lastSelectedItem = id + 1;
 
-  taskWPList.move(id,  id + 1);
+  tpList.move(id,  id + 1);
 
   __showTask();
 }

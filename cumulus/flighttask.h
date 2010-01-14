@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2009 by Axel Pauli
+**                   2007-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -31,12 +31,12 @@
 #include <QPainterPath>
 #include <QDateTime>
 
-#include "waypoint.h"
 #include "basemapelement.h"
 #include "distance.h"
 #include "altitude.h"
 #include "speed.h"
 #include "reachablepoint.h"
+#include "taskpoint.h"
 
 class FlightTask : public BaseMapElement
 {
@@ -54,20 +54,20 @@ class FlightTask : public BaseMapElement
    */
   enum PlanningType {RouteBased, AreaBased};
 
- public: //methods
+ public:
 
   /**
    * Creates a task with the given points.
    *
-   * @param wpList the list of waypoints. Object ownership will be
-   *               overtaken by this class
+   * @param tpList the list of task points. Object ownership will be
+   *        taken over by this class
    *
    * @param  fai if true, drawing according of FAI rules, otherwise not
    *
    * @param  speed the planned cruising speed
    *
    */
-  FlightTask( QList<wayPoint*> *wpList=0, bool fai=true,
+  FlightTask( QList<TaskPoint*> *tpList=0, bool fai=true,
               QString taskName=QObject::tr("unknown"), int speed=0 );
 
   /**
@@ -105,25 +105,25 @@ class FlightTask : public BaseMapElement
   static bool isFAI(double d_wp, double d1, double d2, double d3);
 
   /**
-   * Returns the waypoint list by reference
+   * Returns the task point list by reference
    */
-  QList<wayPoint*>& getWPList()
+  QList<TaskPoint*>& getTpList()
   {
-    return *wpList;
+    return *tpList;
   };
 
   /**
-   * Returns a deep copy of the waypoint list. The ownership of the
-   * list is overtaken by the caller.
+   * Returns a deep copy of the task point list. The ownership of the
+   * list is taken over by the caller.
    */
-  QList<wayPoint*> *getCopiedWPList();
+  QList<TaskPoint*> *getCopiedTpList();
 
   /**
-   * Returns a deep copy of the passed waypoint list. The ownership of
-   * the list is overtaken by the caller. For convenience provided as
+   * Returns a deep copy of the passed task point list. The ownership of
+   * the list is taken over by the caller. For convenience provided as
    * static method.
    */
-  static QList<wayPoint*> *copyWpList(QList<wayPoint*> *wpList);
+  static QList<TaskPoint*> *copyTpList(QList<TaskPoint*> *wpList);
 
   /**
    * Returns the type of the task.
@@ -182,6 +182,9 @@ class FlightTask : public BaseMapElement
   /** */
   QString getTaskDistanceString() const;
 
+  /** Returns wind direction and speed in string format "Degree/Speed". */
+  QString getWindString() const;
+
   /** */
   QString getTaskName() const
   {
@@ -195,13 +198,10 @@ class FlightTask : public BaseMapElement
   };
 
   /** */
-  QString getPointsString() const;
+  void setTaskPointList(QList<TaskPoint*> *newTpList);
 
   /** */
-  void setWaypointList(QList<wayPoint*> *newWpList);
-
-  /** */
-  void addWaypoint( wayPoint *newWP );
+  void addTaskPoint( TaskPoint *newTP );
 
   /** */
   void setPlanningType( const int type );
@@ -212,7 +212,7 @@ class FlightTask : public BaseMapElement
     return __planningType;
   };
 
-  /** returns the set cruising speed */
+  /** returns the cruising speed */
   int getSpeed() const { return cruisingSpeed; };
 
   /** sets the cruising speed */
@@ -220,6 +220,38 @@ class FlightTask : public BaseMapElement
   {
     cruisingSpeed = newSpeed;
     updateTask();
+  };
+
+  /** returns the wind speed */
+  int getWindSpeed() const { return windSpeed; };
+
+  /** sets the wind speed */
+  void setWindSpeed( const int newSpeed )
+  {
+    windSpeed = newSpeed;
+    updateTask();
+  };
+
+  /** returns the wind direction */
+  int getWindDirection() const { return windDirection; };
+
+  /** sets the wind direction */
+  void setWindDirection( const int newDirection )
+  {
+    windDirection = newDirection;
+    updateTask();
+  };
+
+  /** sets wind triangle calculation flag of this task */
+  void setWtCalcFlag( const bool newValue )
+  {
+    wtCalculation = newValue;
+  };
+
+  /* returns wind triangle calculation flag of this task */
+  bool getWtCalcFlag() const
+  {
+    return wtCalculation;
   };
 
   /** sets FAI rule flag */
@@ -382,13 +414,13 @@ class FlightTask : public BaseMapElement
   double __calculateSectorAngles( int loop );
 
   /**
-   * Sets the status of the waypoints, the durations in seconds and
+   * Sets the status of the task points, the durations in seconds and
    * the distances in km.
    */
   void __setTaskPointTypes();
 
   /** */
-  QList<wayPoint*> *wpList;
+  QList<TaskPoint*> *tpList;
 
   /**
    * if true, FAI rules will be taken into account
@@ -397,6 +429,15 @@ class FlightTask : public BaseMapElement
 
   /** planned cruising speed */
   int cruisingSpeed;
+
+  /** planned wind direction */
+  int windDirection;
+
+  /** planned wind speed */
+  int windSpeed;
+
+  /** result of wind calculation via wind triangle */
+  bool wtCalculation;
 
   /** */
   uint task_end;

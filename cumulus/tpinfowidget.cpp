@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2009 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2007-2010 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -185,16 +185,16 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       return;
     }
 
-  QList<wayPoint*> wpList = task->getWPList();
+  QList<TaskPoint *> tpList = task->getTpList();
 
-  if( wpList.count() < 4 || wpList.count() <= currentTpIndex+1 )
+  if( tpList.count() < 4 || tpList.count() <= currentTpIndex+1 )
     {
       // to less waypoints in list
       return;
     }
 
-  wayPoint *currentTP = wpList.at( currentTpIndex );
-  wayPoint *nextTP    = wpList.at( currentTpIndex+1 );
+  wayPoint *currentTP = tpList.at( currentTpIndex );
+  wayPoint *nextTP    = tpList.at( currentTpIndex+1 );
 
   QString display;
   QString no1, no2;
@@ -341,12 +341,12 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   //-----------------------------------------------------------------------
   // Show data of landing (final) target, if it is not already
   // included
-  if( ( nextTP->taskPointType != wayPoint::Landing &&
-        nextTP->taskPointType != wayPoint::End ) ||
-      ( nextTP->taskPointType == wayPoint::End &&
-        nextTP->origP != wpList.at( wpList.count() - 1 )->origP ) )
+  if( ( nextTP->taskPointType != TaskPointTypes::Landing &&
+        nextTP->taskPointType != TaskPointTypes::End ) ||
+      ( nextTP->taskPointType == TaskPointTypes::End &&
+        nextTP->origP != tpList.at( tpList.count() - 1 )->origP ) )
   {
-    wayPoint *finalTP = wpList.at( wpList.count() - 1 );
+    TaskPoint *finalTP = tpList.at( tpList.count() - 1 );
     no1.sprintf( "%02d", finalTP->taskPointIndex );
 
     QString finalTpDes = finalTP->description;
@@ -361,10 +361,10 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     // distance in km to final target must be calculated
     double finalDistance = dist2Next;
 
-    for( int loop=currentTpIndex+2; loop <= wpList.count() - 1; loop++ )
+    for( int loop=currentTpIndex+2; loop <= tpList.count() - 1; loop++ )
         {
-          // qDebug("distance: %f", wpList.at(loop)->distance);
-          finalDistance += wpList.at(loop)->distance;
+          // qDebug("distance: %f", tpList.at(loop)->distance);
+          finalDistance += tpList.at(loop)->distance;
         }
 
     // to avoid wraping in the table we have to code spaces as forced
@@ -614,21 +614,21 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
       return;
     }
 
-  QList<wayPoint*> wpList = task->getWPList();
+  QList<TaskPoint *> tpList = task->getTpList();
 
-  if( wpList.count() < 4 )
+  if( tpList.count() < 4 )
     {
-      // to less waypoints in list
+      // to less task points in list
       display += "</table>";
       text->setText( display );
       return;
     }
 
-  wayPoint *finalTP = wpList.at( wpList.count() - 1 );
+  TaskPoint *finalTP = tpList.at( tpList.count() - 1 );
 
-  if( ( wp->taskPointType == wayPoint::End &&
+  if( ( wp->taskPointType == TaskPointTypes::End &&
         wp->origP == finalTP->origP ) ||
-        wp->taskPointType == wayPoint::Landing )
+        wp->taskPointType == TaskPointTypes::Landing )
     {
       // Waypoint is identical in position to landing point of flight
       // task. So we do display nothing more.
@@ -645,10 +645,10 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
   // distance in km to final target must be calculated
   double finalDistance = distance2Target.getKilometers();
 
-  for( int loop=tpIdx+1; loop <= wpList.count() - 1; loop++ )
+  for( int loop=tpIdx+1; loop <= tpList.count() - 1; loop++ )
     {
-      // qDebug("distance: %f", wpList.at(loop)->distance);
-      finalDistance += wpList.at(loop)->distance;
+      // qDebug("distance: %f", tpList.at(loop)->distance);
+      finalDistance += tpList.at(loop)->distance;
     }
 
     // to avoid wraping in the table we have to code spaces as forced

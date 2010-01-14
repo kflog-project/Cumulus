@@ -58,14 +58,12 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
   topLayout->addLayout( total );
 
   speedTotal = new QLabel("", this );
-  windDir    = new QLabel("", this );
-  windSpeed  = new QLabel("", this );
+  wind       = new QLabel("", this );
   distTotal  = new QLabel("", this );
   timeTotal  = new QLabel("", this );
 
   total->addWidget( speedTotal );
-  total->addWidget( windDir );
-  total->addWidget( windSpeed );
+  total->addWidget( wind );
   total->addWidget( distTotal );
   total->addWidget( timeTotal );
 
@@ -149,7 +147,7 @@ void TaskListView::slot_Selected()
       return;
     }
 
-  _selectedWp = ((_TaskPoint*)_newSelectedTp)->wp;
+  _selectedWp = ((_TaskPoint*)_newSelectedTp)->tp;
 
   if ( _selectedWp->taskPointIndex == 0 )
     {
@@ -186,8 +184,8 @@ void TaskListView::showEvent(QShowEvent *)
   for ( int i = 0; i < list->topLevelItemCount(); i++)
     {
 
-      _TaskPoint* tp = (_TaskPoint*) list->topLevelItem(i);
-      wayPoint*   wp = tp->wp;
+      _TaskPoint* _tp = (_TaskPoint *) list->topLevelItem(i);
+      wayPoint*   wp = _tp->tp;
 
       // Waypoints can be selected from different windows. We will
       // consider only waypoints for a selection, which are member of a
@@ -196,8 +194,8 @@ void TaskListView::showEvent(QShowEvent *)
            calcWp->taskPointIndex == wp->taskPointIndex )
         {
           list->setCurrentItem( list->topLevelItem(i), 0 );
-          _currSelectedTp = tp;
-          _newSelectedTp = tp;
+          _currSelectedTp = _tp;
+          _newSelectedTp = _tp;
           _selectedWp = wp;
           cmdSelect->setText(_unselectText);
           foundWp = true;
@@ -312,26 +310,28 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   // it in tasklist as selected too.
   const wayPoint *calcWp = calculator->getselectedWp();
 
-  QList<wayPoint *> tmpList = _task->getWPList();
+  QList<TaskPoint *> tmpList = _task->getTpList();
 
   for ( int loop = 0; loop < tmpList.count(); loop++ )
     {
-      wayPoint* wp = tmpList.at( loop );
-      _TaskPoint* tp = new _TaskPoint( list, wp );
+      TaskPoint* tp = tmpList.at( loop );
+      _TaskPoint* _tp = new _TaskPoint( list, tp );
 
-      if ( calcWp && calcWp->origP == wp->origP )
+      if ( calcWp && calcWp->origP == tp->origP )
         {
-          list->setCurrentItem( tp, 0 );
-          _currSelectedTp = tp;
-          _selectedWp = wp;
+          list->setCurrentItem( _tp, 0 );
+          _currSelectedTp = _tp;
+          _selectedWp = tp;
         }
     }
 
   // set the total values in the header of this view
   speedTotal->setText( "TAS=" + _task->getSpeedString() );
-  windDir->setText( "WD=000" + QString(Qt::Key_degree) );
-  windSpeed->setText( "WS=0" );
-  distTotal->setText( "S=" +_task->getTotalDistanceString() );
+
+  // wind direction and speed
+  wind->setText( "W=" + _task->getWindString() );
+
+  distTotal->setText( "S=" + _task->getTotalDistanceString() );
   timeTotal->setText( "T=" + _task->getTotalDistanceTimeString() );
 
   list->resizeColumnToContents(0);
@@ -365,43 +365,44 @@ wayPoint * TaskListView::getSelectedWaypoint()
 void TaskListView::clear()
 {
   list->clear();
+  wind->setText("");
   distTotal->setText("");
   speedTotal->setText("");
   timeTotal->setText("");
 }
 
-TaskListView::_TaskPoint::_TaskPoint (QTreeWidget *wpList, wayPoint *point ) : QTreeWidgetItem(wpList)
+TaskListView::_TaskPoint::_TaskPoint (QTreeWidget *tpList, TaskPoint *point ) : QTreeWidgetItem(tpList)
 {
-  wp = point;
-  QString typeName = wp->getTaskPointTypeString();
+  tp = point;
+  QString typeName = tp->getTaskPointTypeString();
 
-  // calculate sunset for the taskpoints
+  // calculate sunset for the task points
   QString sr, ss, tz;
   QDate date = QDate::currentDate();
-  Sonne::sonneAufUnter( sr, ss, date, wp->origP, tz );
+  Sonne::sonneAufUnter( sr, ss, date, tp->origP, tz );
 
   setText(0, typeName);
-  setText(1, wp->name);
-  setText(2, " " + Distance::getText(wp->distance*1000,false,1));
+  setText(1, tp->name);
+  setText(2, " " + Distance::getText(tp->distance*1000,false,1));
   setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
 
-  if ( wp->bearing == -1.0 )
+  if ( tp->bearing == -1.0 )
     {
       // bearing is undefined
       setText(3, " ");
     }
   else
     {
-      int bearing = (int) rint( wp->bearing*180./M_PI );
+      int bearing = (int) rint( tp->bearing*180./M_PI );
       setText(3, " " + QString::number( bearing ) + QString(Qt::Key_degree));
     }
 
   setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
 
-  setText(4, " " + FlightTask::getDistanceTimeString(wp->distTime));
+  setText(4, " " + FlightTask::getDistanceTimeString(tp->distTime));
   setTextAlignment( 4, Qt::AlignRight|Qt::AlignVCenter );
   setText(5, " " + ss + " " + tz);
-  setText(6, " " + wp->description);
+  setText(6, " " + tp->description);
 
-  setIcon(1, QIcon(_globalMapConfig->getPixmap(wp->type, false, true)) );
+  setIcon(1, QIcon(_globalMapConfig->getPixmap(tp->type, false, true)) );
 }

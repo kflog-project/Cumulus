@@ -125,8 +125,8 @@ private:
     /** */
     ListViewFilter* filter[NUM_LISTS];
 
-    /** */
-    QList<wayPoint*> taskWPList;
+    /** Task point list of flight task */
+    QList<TaskPoint *> tpList;
 
     /** */
     FlightTask* planTask;

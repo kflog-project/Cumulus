@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 modified by Josua Dietze
- **                   2008-2009 modified by Axel Pauli
+ **                   2008-2010 modified by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -374,9 +374,6 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
               w->runway = siteRunway.direction;
               w->length = siteRunway.length;
               w->comment = siteComment;
-              w->sectorFAI = 0;
-              w->sector1 = 0;
-              w->sector2 = 0;
 
               found = true;
               lastDist = dX+dY;

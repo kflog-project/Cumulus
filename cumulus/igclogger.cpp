@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2009 by Axel Pauli
+                               2008-2010 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -36,7 +36,7 @@
 #include "generalconfig.h"
 #include "mapcontents.h"
 #include "flighttask.h"
-#include "waypoint.h"
+#include "taskpoint.h"
 
 // initialize static variables
 IgcLogger* IgcLogger::_theInstance = static_cast<IgcLogger *> (0);
@@ -419,17 +419,17 @@ void IgcLogger::writeHeader()
       return; // no task active
     }
 
-  QList<wayPoint *> wpList = task->getWPList();
+  QList<TaskPoint *> tpList = task->getTpList();
 
-  if ( wpList.count() < 4 )
+  if ( tpList.count() < 4 )
     {
-      return; // too less waypoints
+      return; // too less task points
     }
 
   QString taskDate = formatDate( task->getDeclarationDateTime().date() );
   QString taskTime = formatTime( task->getDeclarationDateTime().time() );
   QString fnr; fnr = fnr.sprintf( "%04d", flightNumber );
-  QString tpnr; tpnr = tpnr.sprintf( "%02d ", wpList.count() - 4 );
+  QString tpnr; tpnr = tpnr.sprintf( "%02d ", tpList.count() - 4 );
   QString taskId = task->getTaskTypeString();
 
   // date, time UTC is expected at first and second position
@@ -443,13 +443,13 @@ void IgcLogger::writeHeader()
           << taskId
           << "\r\n";
 
-  for ( int i=0; i < wpList.count(); i++ )
+  for ( int i=0; i < tpList.count(); i++ )
     {
-      wayPoint *wp = wpList.at(i);
+      TaskPoint *tp = tpList.at(i);
 
       _stream << "C"
-              << formatPosition( wp->origP )
-              << wp->name << "\r\n";
+              << formatPosition( tp->origP )
+              << tp->name << "\r\n";
     }
 
   _stream.flush();

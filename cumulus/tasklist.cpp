@@ -142,6 +142,8 @@ TaskList::TaskList( QWidget* parent ) :
   connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slotEditTask()));
   connect(cmdDel, SIGNAL(clicked()), this, SLOT(slotDeleteTask()));
   connect(tas, SIGNAL(valueChanged(int)), this, SLOT(slotTasChanged(int)));
+  connect(windDirection, SIGNAL(valueChanged(int)), this, SLOT(slotWDChanged(int)));
+  connect(windSpeed, SIGNAL(valueChanged(int)), this, SLOT(slotWSChanged(int)));
 
   connect( taskListWidget, SIGNAL( itemSelectionChanged() ),
            this, SLOT( slotTaskDetails() ) );
@@ -251,6 +253,10 @@ void TaskList::slotTaskDetails()
   // update TAS, can be changed in the meantime by the user
   task->setSpeed( tas->value() );
 
+  // update wind parameters, can be changed in the meantime by the user
+  task->setWindDirection( windDirection->value() );
+  task->setWindSpeed( windSpeed->value() );
+
   taskContent->slot_setTask( task );
 }
 
@@ -330,7 +336,7 @@ bool TaskList::slotLoadTask()
   bool isTask( false );
   QString numTask, taskName;
   QStringList tmpList;
-  QList<wayPoint*> *wpList = 0;
+  QList<TaskPoint *> *tpList = 0;
 
   while ( !stream.atEnd() )
     {
@@ -346,15 +352,15 @@ bool TaskList::slotLoadTask()
           // new task ...
           isTask = true;
 
-          if ( wpList != 0 )
+          if ( tpList != 0 )
             {
               // remove all elements from previous incomplete step
-              qDeleteAll(*wpList);
-              wpList->clear();
+              qDeleteAll(*tpList);
+              tpList->clear();
             }
           else
             {
-              wpList = new QList<wayPoint*>;
+              tpList = new QList<TaskPoint *>;
             }
 
           tmpList = line.split( ",", QString::KeepEmptyParts );
@@ -364,26 +370,26 @@ bool TaskList::slotLoadTask()
         {
           if ( line.mid( 0, 2 ) == "TW" && isTask )
             {
-              // new waypoint
-              wayPoint* wp = new wayPoint;
-              wpList->append( wp );
+              // new task point
+              TaskPoint* tp = new TaskPoint;
+              tpList->append( tp );
 
               tmpList = line.split( ",", QString::KeepEmptyParts );
 
-              wp->origP.setLat( tmpList.at( 1 ).toInt() );
-              wp->origP.setLon( tmpList.at( 2 ) .toInt() );
-              wp->projP = _globalMapMatrix->wgsToMap( wp->origP );
-              wp->elevation = tmpList.at( 3 ).toInt();
-              wp->name = tmpList.at( 4 );
-              wp->icao = tmpList.at( 5 );
-              wp->description = tmpList.at( 6 );
-              wp->frequency = tmpList.at( 7 ).toDouble();
-              wp->comment = tmpList.at( 8 );
-              wp->isLandable = tmpList.at( 9 ).toInt();
-              wp->runway = tmpList.at( 10 ).toInt();
-              wp->length = tmpList.at( 11 ).toInt();
-              wp->surface = tmpList.at( 12 ).toInt();
-              wp->type = tmpList.at( 13 ).toInt();
+              tp->origP.setLat( tmpList.at( 1 ).toInt() );
+              tp->origP.setLon( tmpList.at( 2 ) .toInt() );
+              tp->projP = _globalMapMatrix->wgsToMap( tp->origP );
+              tp->elevation = tmpList.at( 3 ).toInt();
+              tp->name = tmpList.at( 4 );
+              tp->icao = tmpList.at( 5 );
+              tp->description = tmpList.at( 6 );
+              tp->frequency = tmpList.at( 7 ).toDouble();
+              tp->comment = tmpList.at( 8 );
+              tp->isLandable = tmpList.at( 9 ).toInt();
+              tp->runway = tmpList.at( 10 ).toInt();
+              tp->length = tmpList.at( 11 ).toInt();
+              tp->surface = tmpList.at( 12 ).toInt();
+              tp->type = tmpList.at( 13 ).toInt();
             }
           else
             {
@@ -391,11 +397,11 @@ bool TaskList::slotLoadTask()
                 {
                   // task complete
                   isTask = false;
-                  FlightTask* task = new FlightTask( wpList, true,
+                  FlightTask* task = new FlightTask( tpList, true,
                                                      taskName, tas->value() );
                   taskList.append( task );
 
-                  wpList = 0; // ownership was overtaken by FlighTask
+                  tpList = 0; // ownership was overtaken by FlighTask
                   numTask.sprintf( "%02d", taskList.count() );
 
                   rowList << numTask
@@ -415,11 +421,11 @@ bool TaskList::slotLoadTask()
 
   f.close();
 
-  if ( wpList != 0 )
+  if ( tpList != 0 )
     {
       // remove all elements from previous incomplete step
-      qDeleteAll(*wpList);
-      delete wpList;
+      qDeleteAll(*tpList);
+      delete tpList;
     }
 
   if ( taskList.count() == 0 )
@@ -487,7 +493,7 @@ void TaskList::slotEditTask()
   editTask = taskList.at(id.toInt() - 1);
 
   // make a deep copy of fetched task item
-  FlightTask* modTask = new FlightTask( editTask->getCopiedWPList(),
+  FlightTask* modTask = new FlightTask( editTask->getCopiedTpList(),
                                         true,
                                         editTask->getTaskName() );
 
@@ -605,19 +611,19 @@ bool TaskList::saveTaskList()
   for ( int i=0; i < taskList.count(); i++ )
     {
       FlightTask *task = taskList.at(i);
-      QList<wayPoint*> wpList = task->getWPList();
+      QList<TaskPoint *> tpList = task->getTpList();
 
-      stream << "TS," << task->getTaskName() << "," << wpList.count() << endl;
+      stream << "TS," << task->getTaskName() << "," << tpList.count() << endl;
 
-      for ( int j=0; j < wpList.count(); j++ )
+      for ( int j=0; j < tpList.count(); j++ )
         {
-          // saving each taskpoint ...
-          wayPoint* wp = wpList.at(j);
-          stream << "TW," << wp->origP.x() << "," << wp->origP.y() << ","
-          << wp->elevation << "," << wp->name << "," << wp->icao << ","
-          << wp->description << "," << wp->frequency << ","
-          << wp->comment << "," << wp->isLandable << "," << wp->runway << ","
-          << wp->length << "," << wp->surface << "," << wp->type << endl;
+          // saving each task point ...
+          TaskPoint* tp = tpList.at(j);
+          stream << "TW," << tp->origP.x() << "," << tp->origP.y() << ","
+          << tp->elevation << "," << tp->name << "," << tp->icao << ","
+          << tp->description << "," << tp->frequency << ","
+          << tp->comment << "," << tp->isLandable << "," << tp->runway << ","
+          << tp->length << "," << tp->surface << "," << tp->type << endl;
         }
 
       stream << "TE" << endl;

@@ -13,6 +13,12 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[o] 2010-01-14 AP: Class FlightPoint and related functions in MapCalc removed.
+                   Not used by Cumulus. New class TaskPoint introduced. This
+                   class is derived from wayPoint class and contains all specific
+                   flight task stuff. Most of the stuff was moved from wayPoint
+                   class to make it slimmer.
+[+] 2010-01-13 AP: Wind triangle calculation support added to MapCalc.                 
 [+] 2010-01-10 AP: Support added for GPS sentences $LXWP0 and $LXWP2 of
                    LX Navigation devices.
 [o] 2009-12-12 AP: Coordinate editor layout complete redesigned to make input

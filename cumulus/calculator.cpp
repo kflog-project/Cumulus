@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c): 2002      by André Somers
- **                  2008-2009 by Axel Pauli
+ **                  2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -267,7 +267,7 @@ void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
        selectedWp->taskPointIndex != -1 && newWp->taskPointIndex == -1 )
     {
       // A user action will overwrite a task point. That will stop the
-      // automatic taskpoint switch. We will notice the user about
+      // automatic task point switch. We will notice the user about
       // that fact.
 
       int answer=
@@ -326,14 +326,14 @@ void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
 
       if ( task != static_cast<FlightTask *> (0) )
         {
-          QList<wayPoint *> wpList = task->getWPList();
+          QList<TaskPoint *> tpList = task->getTpList();
 
           // Tasks with less 4 entries are incomplete! The selection
           // of the start point is also senseless. Therefore we start with one.
-          for ( int i=1; i < wpList.count() && wpList.count() > 3; i++ )
+          for ( int i=1; i < tpList.count() && tpList.count() > 3; i++ )
             {
-              if ( selectedWp->origP == wpList.at(i)->origP &&
-                   selectedWp->taskPointIndex == wpList.at(i)->taskPointIndex )
+              if ( selectedWp->origP == tpList.at(i)->origP &&
+                   selectedWp->taskPointIndex == tpList.at(i)->taskPointIndex )
                 {
                   selectedWpInList = i;
                   break;
@@ -410,7 +410,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
     }
 
   // load waypoint list from task
-  QList<wayPoint*> wpList = task->getWPList();
+  QList<TaskPoint *> tpList = task->getTpList();
 
   // Load active task switch scheme. Switch to next TP can be executed
   // by nearest to TP or touched TP sector/cylinder.
@@ -433,13 +433,13 @@ void Calculator::calcDistance( bool autoWpSwitch )
     {
       wpTouched = true;
 
-      // send a signal to the igc logger to increase logging interval
+      // send a signal to the IGC logger to increase logging interval
       emit taskpointSectorTouched();
 
       // Display a task end message under following conditions:
       // a) we touched the target radius
       // b) the last task point is selected
-      if ( selectedWp->taskPointType == wayPoint::Landing && taskEndReached == false )
+      if ( selectedWp->taskPointType == TaskPointTypes::Landing && taskEndReached == false )
         {
           taskEndReached = true;
           emit taskInfo( tr("Task target reached"), true );
@@ -482,7 +482,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
       return;
     }
 
-  // We arrived the taskpoint switch radius and after that event the
+  // We arrived the task point switch radius and after that event the
   // wpTouchedCounter reaches zero or the nearest position to the TP is
   // arrived. In this case we have to execute and announce the task
   // point switch.
@@ -490,30 +490,29 @@ void Calculator::calcDistance( bool autoWpSwitch )
          ( wpTouchCounter > 0 && --wpTouchCounter == 0 ) ) &&
        wpTouched == true )
     {
-
       wpTouched      = false;
       wpTouchCounter = 0;
 
-      if ( wpList.count() > selectedWpInList + 1 )
+      if ( tpList.count() > selectedWpInList + 1 )
         {
           // this loop excludes the last WP
-          wayPoint *lastWp = wpList.at(selectedWpInList);
+          wayPoint *lastWp = tpList.at(selectedWpInList);
           selectedWpInList++;
-          wayPoint *nextWp = wpList.at(selectedWpInList);
+          wayPoint *nextWp = tpList.at(selectedWpInList);
 
           // calculate distance to new waypoint
           Distance dist2Next( dist(double(lastPosition.x()), double(lastPosition.y()),
                                    nextWp->origP.lat(), nextWp->origP.lon()) * 1000);
           lastDistance = dist2Next;
 
-          // announce taskpoint change as none auto switch
+          // announce task point change as none auto switch
           slot_WaypointChange( nextWp, false );
 
-          // Here we send a notice to the user about the taskpoint
+          // Here we send a notice to the user about the task point
           // switch. If end point reached and landing point is identical
           // to end point, we will suppress the info message
-          if ( ! ( lastWp->taskPointType == wayPoint::End &&
-                   nextWp->taskPointType == wayPoint::Landing &&
+          if ( ! ( lastWp->taskPointType == TaskPointTypes::End &&
+                   nextWp->taskPointType == TaskPointTypes::Landing &&
                    lastWp->origP == nextWp->origP ) )
             {
 
@@ -1518,7 +1517,7 @@ void Calculator::slot_CheckHomeSiteSelection()
 
 /**
  * Called to select the start point of a loaded task.
- * That will also activate the automaitc task point switch.
+ * That will also activate the automatic task point switch.
  */
 void Calculator::slot_startTask()
 {
@@ -1530,29 +1529,29 @@ void Calculator::slot_startTask()
       return;
     }
 
-    QList<wayPoint *> wpList = task->getWPList();
+    QList<TaskPoint *> tpList = task->getTpList();
 
     // Tasks with less 4 entries are incomplete! The selection
     // of the start point is also senseless, request is ignored.
-    if( wpList.count() < 4 )
+    if( tpList.count() < 4 )
       {
         return;
       }
 
-    wayPoint *tp2Taken;
+    TaskPoint *tp2Taken;
 
     // The start point of a task depends of the type. If first and
     // second point are identical, we take always the second one
     // otherwise the first.
-    if( wpList.at(0)->origP != wpList.at(1)->origP )
+    if( tpList.at(0)->origP != tpList.at(1)->origP )
       {
-        // take first task waypoint
-        tp2Taken = wpList.at(0);
+        // take first task point
+        tp2Taken = tpList.at(0);
       }
     else
       {
-        // take second task waypoint
-        tp2Taken = wpList.at(1);
+        // take second task point
+        tp2Taken = tpList.at(1);
       }
 
     if( selectedWp )
