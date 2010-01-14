@@ -10,7 +10,7 @@
 **                   2008-2010  by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -21,7 +21,6 @@
 
 #include <QRect>
 
-#include "flightpoint.h"
 #include "waypoint.h"
 
 #define PI2 M_PI*2
@@ -56,35 +55,10 @@ double dist(QPoint* p1, QPoint* p2);
 double dist(wayPoint* wp1, wayPoint* wp2);
 
 /**
- * Calculates the distance between two given points in km.
- */
-double dist(wayPoint* wp, FlightPoint* fp);
-
-/**
- * Calculates the distance between two given points in km.
- */
-double dist( FlightPoint* fp1, FlightPoint* fp2);
-
-/**
  * Converts the given time (in sec.) into a readable string.
  * ( hh:mm:ss )
  */
 QString printTime(int time, bool isZero = false, bool isSecond = true);
-
-/**
- * Calculates the vario of a given point
- */
-float getVario(FlightPoint p);
-
-/**
- * Calculates the speed of a given point
- */
-float getSpeed(FlightPoint p);
-
-/**
- * Calculates the bearing to the previous point
- */
-float getBearing(FlightPoint p1, FlightPoint p2);
 
 /**
  * Calculates the bearing to the next point
