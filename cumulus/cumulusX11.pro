@@ -22,7 +22,6 @@ HEADERS = airfieldlistview.h \
     distance.h \
     elevationcolorimage.h \
     filetools.h \
-    flightpoint.h \
     flighttask.h \
     generalconfig.h \
     gliderflightdialog.h \
@@ -93,6 +92,7 @@ HEADERS = airfieldlistview.h \
     taskeditor.h \
     tasklist.h \
     tasklistview.h \
+    taskpoint.h \
     time_cu.h \
     tpinfowidget.h \
     vario.h \
@@ -192,6 +192,7 @@ SOURCES = airfieldlistview.cpp \
     taskeditor.cpp \
     tasklist.cpp \
     tasklistview.cpp \
+    taskpoint.cpp \
     time_cu.cpp \
     tpinfowidget.cpp \
     vario.cpp \

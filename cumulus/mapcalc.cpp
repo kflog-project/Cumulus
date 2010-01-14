@@ -10,7 +10,7 @@
 **                   2008-2010  by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -111,21 +111,6 @@ double dist(wayPoint* wp1, wayPoint* wp2)
                    wp2->origP.lat(), wp2->origP.lon() ) );
 }
 
-
-double dist(wayPoint* wp, FlightPoint* fp)
-{
-    return ( dist( wp->origP.lat(), wp->origP.lon(),
-                   fp->origP.lat(), fp->origP.lon() ) );
-}
-
-
-double dist(FlightPoint* fp1,  FlightPoint* fp2)
-{
-    return ( dist( fp1->origP.lat(), fp1->origP.lon(),
-                   fp2->origP.lat(), fp2->origP.lon() ) );
-}
-
-
 QString printTime(int time, bool isZero, bool isSecond)
 {
     QString hour, min, sec;
@@ -149,31 +134,10 @@ QString printTime(int time, bool isZero, bool isSecond)
     return ( hour + ":" + min );
 }
 
-
-float getSpeed(FlightPoint p)
-{
-    return (float)p.dS / (float)p.dT * 3.6;
-}
-
-
-float getVario(FlightPoint p)
-{
-    return (float)p.dH / (float)p.dT;
-}
-
-
-float getBearing(FlightPoint p1, FlightPoint p2)
-{
-    return (float)polar( ( p2.projP.x() - p1.projP.x() ),
-                         ( p2.projP.y() - p1.projP.y() ) );
-}
-
-
 float getBearing(QPoint p1, QPoint p2)
 {
     return (float) getBearingWgs(p1, p2);
 }
-
 
 // @AP: Note the bearing is computed with coordinates mapped to the
 // current selected projection.
@@ -212,7 +176,6 @@ double getBearing2(QPoint p1, QPoint p2)
 
     return angle;
 }
-
 
 /**
    Calculate the bearing from point p1 to point p2 from WGS84
@@ -259,7 +222,6 @@ double getBearingWgs( QPoint p1, QPoint p2 )
     return angle;
 }
 
-
 double polar(double y, double x)
 {
     double angle = 0.0;
@@ -289,7 +251,6 @@ double polar(double y, double x)
     return angle;
 }
 
-
 /**
  * Calculates the direction of the vector pointing to the outside
  * of the area spanned by the two vectors.
@@ -316,7 +277,6 @@ double outsideVector(QPoint center, QPoint p1, QPoint p2)
       }
 }
 
-
 double normalize(double angle)
 {
     //we needed to use a modulo for the integer version. We should
@@ -327,7 +287,6 @@ double normalize(double angle)
         return normalize(angle-PI2);
     return angle;
 }
-
 
 int normalize(int angle)
 {
@@ -367,7 +326,6 @@ double angleDiff(double ang1, double ang2)
         return(a+PI2);
     return a;
 }
-
 
 /**
  * Calculates a (crude) bounding box that contains the circle of radius @arg r
@@ -468,8 +426,7 @@ bool windTriangle( const double trueCourse,
 
   if( fabs(sinWca) >= 1.0 )
     {
-      // Too strong wind.
-      return false;
+      return false; // wind too strong
     }
 
   // wind correction angle in radians
@@ -493,14 +450,13 @@ bool windTriangle( const double trueCourse,
   // wca in degree
   wca = wca * 180 / M_PI;
 
-  // round all results to integer
+  // round wca and true heading to integer
   wca = rint(wca);
   trueHeading = rint(trueHeading);
-  groundSpeed = rint(groundSpeed);
 
   if( groundSpeed < 0.0 )
     {
-      return false; // too strong wind
+      return false; // wind too strong
     }
 
   return true;
