@@ -37,12 +37,6 @@ class TaskPoint : public wayPoint
   /** Returns the type of a task point in a string format. */
   QString getTaskPointTypeString() const;
 
-  /** The time, sector 1 has been reached. */
-  unsigned int sector1;
-  /** The time, sector 2 has been reached. */
-  unsigned int sector2;
-  /** The time, the fai-sector has been reached. */
-  unsigned int sectorFAI;
   /** The angle of the sector in radian */
   double angle;
   /** The minimum angle of the sector in radian */
@@ -56,7 +50,7 @@ class TaskPoint : public wayPoint
   /** The time distance to the previous task point in seconds */
   int distTime;
   /** wind correction angle from the previous task point in degree. */
-  short wca;
+  double wca;
   /** The true heading ( wind was considered) from the previous task point in degree. */
   double trueHeading;
   /**

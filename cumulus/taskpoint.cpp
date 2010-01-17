@@ -26,16 +26,13 @@
 
 TaskPoint::TaskPoint()
 {
-  sector1 = 0;
-  sector2 = 0;
-  sectorFAI = 0;
   bearing = -1;
   angle = 0.;
   minAngle = 0.;
   maxAngle = 0.;
   distance = 0.;
   distTime = 0;
-  wca = 0;
+  wca = 0.;
   trueHeading = -1;
   groundSpeed = 0.0;
   wtResult = false;
@@ -44,9 +41,6 @@ TaskPoint::TaskPoint()
 /** Construct object from waypoint reference */
 TaskPoint::TaskPoint( const wayPoint& wp ) : wayPoint( wp )
 {
-  sector1 = 0;
-  sector2 = 0;
-  sectorFAI = 0;
   bearing = -1;
   angle = 0.;
   minAngle = 0.;
@@ -62,9 +56,6 @@ TaskPoint::TaskPoint( const wayPoint& wp ) : wayPoint( wp )
 /** Copy constructor */
 TaskPoint::TaskPoint( const TaskPoint& inst ) : wayPoint( inst )
 {
-  sector1 = inst.sector1;
-  sector2 = inst.sector2;
-  sectorFAI = inst.sectorFAI;
   bearing = inst.bearing;
   angle = inst.angle;
   minAngle = inst.minAngle;
@@ -72,7 +63,7 @@ TaskPoint::TaskPoint( const TaskPoint& inst ) : wayPoint( inst )
   distance = inst.distance;
   distTime = inst.distTime;
   wca = inst.wca;
-  trueHeading = inst.wca;
+  trueHeading = inst.trueHeading;
   groundSpeed = inst.groundSpeed;
   wtResult = inst.wtResult;
 }
