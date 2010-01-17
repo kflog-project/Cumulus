@@ -31,7 +31,7 @@
 #include <QBoxLayout>
 
 #include "rowdelegate.h"
-#include "waypoint.h"
+#include "taskpoint.h"
 #include "flighttask.h"
 
 class MainWindow;
@@ -115,7 +115,7 @@ private:
     QLabel      *timeTotal;
     QPixmap     _arrows;
     FlightTask* _task;
-    wayPoint *  _selectedWp;
+    TaskPoint *  _selectedTp;
     QTreeWidgetItem * _currSelectedTp;
     QTreeWidgetItem * _newSelectedTp;
     QString _selectText, _unselectText;
@@ -135,10 +135,10 @@ private slots:
 
 private:
 
-  class _TaskPoint : public QTreeWidgetItem
+  class _TaskPointItem : public QTreeWidgetItem
     {
       public:
-        _TaskPoint(QTreeWidget* tpList, TaskPoint* point);
+        _TaskPointItem(QTreeWidget* tpList, TaskPoint* point);
         TaskPoint *tp;
     };
 };

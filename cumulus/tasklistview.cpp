@@ -41,7 +41,7 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
 
   _showButtons = showButtons;
   _task = 0;
-  _selectedWp = 0;
+  _selectedTp = 0;
   _currSelectedTp = 0;
   _newSelectedTp = 0;
   _selectText = tr("Select");
@@ -69,25 +69,26 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
 
   list = new QTreeWidget( this );
   list->setObjectName("TaskListView");
-
+  list->setColumnCount(9);
   list->setRootIsDecorated(false);
   list->setItemsExpandable(false);
   list->setUniformRowHeights(true);
   list->setAlternatingRowColors(true);
   list->setSortingEnabled(false);
   list->setSelectionMode(QAbstractItemView::NoSelection);
-  list->setColumnCount(7);
   list->setFocusPolicy(Qt::NoFocus);
 //  list->setEnabled(false);
 
   QStringList sl;
-  sl << tr("Type")
-  << tr("Name")
-  << tr("Dist.")
-  << tr("TH")
-  << tr("Time")
-  << tr("SS")
-  << tr("Description");
+  sl  << tr("Type")
+      << tr("Name")
+      << tr("Dist.")
+      << tr("GS")
+      << tr("WCA")
+      << tr("TH")
+      << tr("Time")
+      << tr("SS")
+      << tr("Description");
   list->setHeaderLabels(sl);
 
   topLayout->addWidget(list, 10);
@@ -147,9 +148,9 @@ void TaskListView::slot_Selected()
       return;
     }
 
-  _selectedWp = ((_TaskPoint*)_newSelectedTp)->tp;
+  _selectedTp = ((_TaskPointItem *)_newSelectedTp)->tp;
 
-  if ( _selectedWp->taskPointIndex == 0 )
+  if ( _selectedTp->taskPointIndex == 0 )
     {
       // Take-off point should not be selectable in taskview
       cmdSelect->setEnabled(false);
@@ -167,7 +168,7 @@ void TaskListView::slot_Selected()
       cmdSelect->setText(_selectText);
     }
   //qDebug("New Selected Waypoint name: %s, Index=%d",
-  //       _selectedWp->name.latin1(), _selectedWp->taskPointIndex );
+  //       _selectedTp->name.latin1(), _selectedTp->taskPointIndex );
 }
 
 void TaskListView::showEvent(QShowEvent *)
@@ -184,19 +185,19 @@ void TaskListView::showEvent(QShowEvent *)
   for ( int i = 0; i < list->topLevelItemCount(); i++)
     {
 
-      _TaskPoint* _tp = (_TaskPoint *) list->topLevelItem(i);
-      wayPoint*   wp = _tp->tp;
+      _TaskPointItem* _tp = (_TaskPointItem *) list->topLevelItem(i);
+      TaskPoint*   tp = _tp->tp;
 
       // Waypoints can be selected from different windows. We will
       // consider only waypoints for a selection, which are member of a
       // flighttask. In this case the taskPointIndex should be unequal to -1.
-      if ( calcWp && calcWp->origP == wp->origP &&
-           calcWp->taskPointIndex == wp->taskPointIndex )
+      if ( calcWp && calcWp->origP == tp->origP &&
+           calcWp->taskPointIndex == tp->taskPointIndex )
         {
           list->setCurrentItem( list->topLevelItem(i), 0 );
           _currSelectedTp = _tp;
           _newSelectedTp = _tp;
-          _selectedWp = wp;
+          _selectedTp = tp;
           cmdSelect->setText(_unselectText);
           foundWp = true;
           break;
@@ -207,7 +208,7 @@ void TaskListView::showEvent(QShowEvent *)
     {
       // if no calculator waypoint selected, clear selection on listview
       list->clearSelection();
-      _selectedWp = 0;
+      _selectedTp = 0;
       _currSelectedTp = 0;
       _newSelectedTp = 0;
     }
@@ -220,7 +221,7 @@ void TaskListView::showEvent(QShowEvent *)
 void TaskListView::slot_Select()
 {
   // qDebug("TaskListView::slot_Select(): Selected WP= %s, Index=%d",
-  //       _selectedWp->name.latin1(), _selectedWp->taskPointIndex );
+  //       _selectedTp->name.latin1(), _selectedTp->taskPointIndex );
 
   if (_newSelectedTp == _currSelectedTp)
     {
@@ -229,7 +230,7 @@ void TaskListView::slot_Select()
       emit newWaypoint(0, true);
       list->clearSelection();
       cmdSelect->setText(_selectText);
-      _selectedWp = 0;
+      _selectedTp = 0;
       _currSelectedTp = 0;
       _newSelectedTp = 0;
     }
@@ -315,13 +316,13 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   for ( int loop = 0; loop < tmpList.count(); loop++ )
     {
       TaskPoint* tp = tmpList.at( loop );
-      _TaskPoint* _tp = new _TaskPoint( list, tp );
+      _TaskPointItem* _tp = new _TaskPointItem( list, tp );
 
       if ( calcWp && calcWp->origP == tp->origP )
         {
           list->setCurrentItem( _tp, 0 );
           _currSelectedTp = _tp;
-          _selectedWp = tp;
+          _selectedTp = tp;
         }
     }
 
@@ -341,6 +342,8 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   list->resizeColumnToContents(4);
   list->resizeColumnToContents(5);
   list->resizeColumnToContents(6);
+  list->resizeColumnToContents(7);
+  list->resizeColumnToContents(8);
 }
 
 /**
@@ -356,10 +359,10 @@ void TaskListView::slot_updateTask()
     }
 }
 
-/** Returns a pointer to the currently highlighted taskpoint. */
-wayPoint * TaskListView::getSelectedWaypoint()
+/** Returns a pointer to the currently highlighted task point. */
+wayPoint *TaskListView::getSelectedWaypoint()
 {
-  return _selectedWp;
+  return _selectedTp;
 }
 
 void TaskListView::clear()
@@ -371,7 +374,7 @@ void TaskListView::clear()
   timeTotal->setText("");
 }
 
-TaskListView::_TaskPoint::_TaskPoint (QTreeWidget *tpList, TaskPoint *point ) : QTreeWidgetItem(tpList)
+TaskListView::_TaskPointItem::_TaskPointItem (QTreeWidget *tpList, TaskPoint *point ) : QTreeWidgetItem(tpList)
 {
   tp = point;
   QString typeName = tp->getTaskPointTypeString();
@@ -383,26 +386,56 @@ TaskListView::_TaskPoint::_TaskPoint (QTreeWidget *tpList, TaskPoint *point ) : 
 
   setText(0, typeName);
   setText(1, tp->name);
-  setText(2, " " + Distance::getText(tp->distance*1000,false,1));
+  setText(2, " " + Distance::getText(tp->distance*1000, false, 1));
   setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
 
-  if ( tp->bearing == -1.0 )
+  if( tp->wtResult == true )
     {
-      // bearing is undefined
-      setText(3, " ");
+      Speed gs(tp->groundSpeed); // unit is m/s
+      int gsInt = static_cast<int> (rint(gs.getHorizontalValue()));
+      QString gsString;
+      gsString = QString("%1").arg(gsInt);
+      setText(3, gsString);
+      setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
+
+      int wca = static_cast<int> (tp->wca);
+      QString wcaString;
+      wcaString = QString("%1").arg(wca);
+      setText(4, wcaString);
+      setTextAlignment( 4, Qt::AlignCenter );
+
+      int th = static_cast<int> (tp->trueHeading);
+      qDebug("TH=%f, TH=%d", tp->trueHeading, th);
+      QString thString;
+      thString = QString("%1%2").arg(th).arg(QString(Qt::Key_degree));
+      setText(5, thString);
+      setTextAlignment( 5, Qt::AlignRight|Qt::AlignVCenter );
     }
   else
     {
-      int bearing = (int) rint( tp->bearing*180./M_PI );
-      setText(3, " " + QString::number( bearing ) + QString(Qt::Key_degree));
+      setText(3, "-" );
+      setTextAlignment( 3, Qt::AlignCenter );
+      setText(4, "-" );
+      setTextAlignment( 4, Qt::AlignCenter );
+
+      if ( tp->bearing == -1.0 )
+        {
+          // bearing is undefined
+          setText(5, "-");
+          setTextAlignment( 5, Qt::AlignCenter );
+        }
+      else
+        {
+          int bearing = (int) rint( tp->bearing*180./M_PI );
+          setText(5, " " + QString::number( bearing ) + QString(Qt::Key_degree));
+          setTextAlignment( 5, Qt::AlignRight|Qt::AlignVCenter );
+        }
     }
 
-  setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
-
-  setText(4, " " + FlightTask::getDistanceTimeString(tp->distTime));
-  setTextAlignment( 4, Qt::AlignRight|Qt::AlignVCenter );
-  setText(5, " " + ss + " " + tz);
-  setText(6, " " + tp->description);
+  setText(6, " " + FlightTask::getDistanceTimeString(tp->distTime));
+  setTextAlignment( 6, Qt::AlignRight|Qt::AlignVCenter );
+  setText(7, " " + ss + " " + tz);
+  setText(8, " " + tp->description);
 
   setIcon(1, QIcon(_globalMapConfig->getPixmap(tp->type, false, true)) );
 }

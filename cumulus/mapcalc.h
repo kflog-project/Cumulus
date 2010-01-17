@@ -63,7 +63,7 @@ QString printTime(int time, bool isZero = false, bool isSecond = true);
 /**
  * Calculates the bearing to the next point
  */
-float getBearing(QPoint p1, QPoint p2);
+double getBearing(QPoint p1, QPoint p2);
 
 /**
  * Calculates the bearing to the next point with coordinates mapped to

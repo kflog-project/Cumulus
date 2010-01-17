@@ -408,7 +408,7 @@ class FlightTask : public BaseMapElement
   void __determineTaskType();
 
   /**
-   * Calculates the task point sector angles in radian. The sector angle
+   * Calculates the task point sector angles in radians. The sector angle
    * between two task points is the bisecting line of the angle.
    */
   double __calculateSectorAngles( int loop );
@@ -417,7 +417,7 @@ class FlightTask : public BaseMapElement
    * Sets the status of the task points, the durations in seconds and
    * the distances in km.
    */
-  void __setTaskPointTypes();
+  void __setTaskPointData();
 
   /** */
   QList<TaskPoint*> *tpList;
@@ -430,7 +430,7 @@ class FlightTask : public BaseMapElement
   /** planned cruising speed */
   int cruisingSpeed;
 
-  /** planned wind direction */
+  /** planned wind direction in degree */
   int windDirection;
 
   /** planned wind speed */

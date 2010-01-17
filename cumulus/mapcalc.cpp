@@ -134,9 +134,9 @@ QString printTime(int time, bool isZero, bool isSecond)
     return ( hour + ":" + min );
 }
 
-float getBearing(QPoint p1, QPoint p2)
+double getBearing(QPoint p1, QPoint p2)
 {
-    return (float) getBearingWgs(p1, p2);
+    return getBearingWgs(p1, p2);
 }
 
 // @AP: Note the bearing is computed with coordinates mapped to the

@@ -82,9 +82,14 @@ TaskList::TaskList( QWidget* parent ) :
   windSpeed->setToolTip( tr("Wind Speed") );
   windSpeed->setButtonSymbols(QSpinBox::PlusMinus);
   windSpeed->setRange( 0, 1000 );
-  windSpeed->setSingleStep( 5 );
   windSpeed->setValue( GeneralConfig::instance()->getWindSpeed() );
-  windSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
+  windSpeed->setSuffix( QString(" ") + Speed::getWindUnitText() );
+
+  if( Speed::getWindUnit() != Speed::metersPerSecond )
+    {
+      windSpeed->setSingleStep( 5 );
+    }
+
   editrow->addWidget(windSpeed);
 
   editrow->addStretch(10);

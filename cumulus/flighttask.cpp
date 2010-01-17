@@ -33,7 +33,7 @@
 #include "calculator.h"
 #include "speed.h"
 
-#undef CUMULUS_DEBUG
+#define CUMULUS_DEBUG
 
 extern Calculator *calculator;
 extern MapMatrix  *_globalMapMatrix;
@@ -376,7 +376,8 @@ double FlightTask::__calculateSectorAngles( int loop )
 
 #ifdef CUMULUS_DEBUG
   qDebug( "Loop=%d, Part=%s, Name=%s, Scale=%f, BisectorAngle=%3.1f, minAngle=%3.1f, maxAngle=%3.1f",
-          loop, part.latin1(), tpList->at(loop)->name.latin1(), glMapMatrix->getScale(),
+          loop, part.toLatin1().data(), tpList->at(loop)->name.toLatin1().data(),
+          glMapMatrix->getScale(),
           bisectorAngle*180/M_PI, minAngle*180/M_PI, maxAngle*180/M_PI );
 #endif
 
@@ -387,10 +388,9 @@ double FlightTask::__calculateSectorAngles( int loop )
  * Sets the status of the task points, the durations in seconds, the
  * distances in km and the bearings.
  */
-
-void FlightTask::__setTaskPointTypes()
+void FlightTask::__setTaskPointData()
 {
-  unsigned int cnt = tpList->count();
+  int cnt = tpList->count();
 
   if (cnt == 0)
     {
@@ -398,63 +398,91 @@ void FlightTask::__setTaskPointTypes()
     }
 
   tpList->at(0)->taskPointType = TaskPointTypes::FreeP;
+
+  //  First task point is always set to these values
   tpList->at(0)->distTime = 0;
-
-  //  First task point has always bearing -1.
   tpList->at(0)->bearing = -1.;
-
-  // First task point has always distance 0.0
   tpList->at(0)->distance = 0.0;
+  tpList->at(0)->wca = 0;
+  tpList->at(0)->trueHeading = -1;
+  tpList->at(0)->groundSpeed = 0.0;
+  tpList->at(0)->wtResult = false;
 
   // Reset total duration
   duration_total = 0;
 
-  // get current speed unit and initialize speed instance
-  enum Speed::speedUnit unit = Speed::getHorizontalUnit();
-  Speed speed;
+  // initialize TAS and wind speed instances
+  Speed tas(0);
+  Speed wind(0);
 
-  switch( unit )
+  tas.setHorizontalValue( cruisingSpeed );
+  wind.setWindValue( windSpeed );
+
+  if( windSpeed <= 0 )
     {
-    case Speed::knots:
-      speed.setKnot(cruisingSpeed);
-      break;
-    case Speed::milesPerHour:
-      speed.setMph(cruisingSpeed);
-      break;
-    case Speed::metersPerSecond:
-      speed.setMps(cruisingSpeed);
-      break;
-    case Speed::kilometersPerHour:
-      speed.setKph(cruisingSpeed);
-      break;
-    default:
-      speed.setMps(cruisingSpeed);
-      break;
+      // No wind triangle calculation possible
+      wtCalculation = false;
+    }
+  else
+    {
+      // consider wind in calculations
+      wtCalculation = true;
     }
 
-  // Distances, durations and bearings calculation. Note the speed can
-  // be zero!
-  for( uint n = 1; n  < cnt; n++ )
+  // Distances, durations and bearings calculation. Note that TAS or the
+  // distance between two points can be zero!
+  for( int n = 1; n < cnt; n++ )
     {
-      tpList->at(n)->distance = dist(tpList->at(n-1), tpList->at(n));
+      // Set default parameters for every item
+      tpList->at(n)->bearing = -1.;
+      tpList->at(n)->distance = 0.;
+      tpList->at(n)->wca = 0;
+      tpList->at(n)->trueHeading = -1.;
+      tpList->at(n)->groundSpeed = 0.0;
+      tpList->at(n)->wtResult = false;
 
-      if( tpList->at(n-1)->origP == tpList->at(n)->origP )
+      if( tpList->at(n-1)->origP != tpList->at(n)->origP )
         {
-          tpList->at(n)->bearing = -1.;
-        }
-      else
-        {
-          tpList->at(n)->bearing  = getBearing( tpList->at(n-1)->origP,
-                                                tpList->at(n)->origP );
+          // Points are not identical, do calculate navigation parameters.
+          // calculate bearing
+          tpList->at(n)->bearing = getBearing( tpList->at(n-1)->origP,
+                                               tpList->at(n)->origP );
+
+          // calculate distance
+          tpList->at(n)->distance = dist(tpList->at(n-1), tpList->at(n));
+
+          // calculate wind parameters, if wind speed is defined. Ground
+          // speed unit is meter per second.
+          if( wtCalculation )
+              {
+                tpList->at(n)->wtResult =
+                    windTriangle( tpList->at(n)->bearing * 180/M_PI,
+                                  tas.getMps(),
+                                  windDirection,
+                                  wind.getMps(),
+                                  tpList->at(n)->groundSpeed,
+                                  tpList->at(n)->wca,
+                                  tpList->at(n)->trueHeading );
+
+                if( tpList->at(n)->wtResult == false )
+                  {
+                    // No wind triangle calculation possible. In such a case
+                    // we do reset the global wt calculation flag too.
+                    wtCalculation = false;
+                  }
+              }
         }
 
       tpList->at(n)->taskPointType = TaskPointTypes::FreeP;
 
-      double cs = speed.getMps();
+      double cs = tas.getMps();
 
-      if( cs > 0 )
+      // Calculate all without wind because wind can be too strong at
+      // one of the next legs.
+      if( cs > 0. && tpList->at(n)->distance > 0.)
         {
-          // t=s/v distance is calculated in km, duration time in seconds
+          // t=s/v distance unit is m, duration time unit is seconds and
+          // TAS unit is meter per second.
           tpList->at(n)->distTime =
             int( rint(tpList->at(n)->distance * 1000 / cs) );
 
@@ -468,12 +496,57 @@ void FlightTask::__setTaskPointTypes()
         }
 
 #ifdef CUMULUS_DEBUG
-      qDebug("WP=%s, dist=%f, duration=%d",
-             tpList->at(n)->name.latin1(),
+      qDebug("Without Wind: WP=%s, TAS=%f, dist=%f, duration=%d, tc=%f, th=%f",
+             tpList->at(n)->name.toLatin1().data(),
+             tas.getKph(),
              tpList->at(n)->distance,
-             tpList->at(n)->distTime);
+             tpList->at(n)->distTime,
+             tpList->at(n)->bearing,
+             tpList->at(n)->trueHeading);
 #endif
 
+    }
+
+  // Check, if wt calculation was successful for all legs. In this case the
+  // duration time is calculated with wind influence by using ground speed.
+  if( wtCalculation == true )
+    {
+      // Reset total duration
+      duration_total = 0;
+
+      for( int n = 1; n < cnt; n++ )
+        {
+          double gs = tpList->at(n)->groundSpeed;
+
+          // Calculate all without wind because wind can be too strong at
+          // one of the next legs.
+          if( gs > 0. && tpList->at(n)->distance > 0.)
+            {
+              // t=s/v distance unit is m, duration time unit is seconds and
+              // ground speed unit is meter per second.
+              tpList->at(n)->distTime =
+                int( rint(tpList->at(n)->distance * 1000 / gs) );
+
+              // summarize total duration as seconds
+              duration_total += tpList->at(n)->distTime;
+            }
+          else
+            {
+              // reset duration to zero
+              tpList->at(n)->distTime = 0;
+            }
+
+#ifdef CUMULUS_DEBUG
+          qDebug("With Wind: WP=%s, GS=%f, Wca=%f, dist=%f, duration=%d, th=%f",
+                 tpList->at(n)->name.toLatin1().data(),
+                 gs*3.6,
+                 tpList->at(n)->wca,
+                 tpList->at(n)->distance,
+                 tpList->at(n)->distTime,
+                 tpList->at(n)->trueHeading);
+#endif
+
+        }
     }
 
   // to less task points
@@ -487,7 +560,7 @@ void FlightTask::__setTaskPointTypes()
   tpList->at(cnt - 2)->taskPointType = TaskPointTypes::End;
   tpList->at(cnt - 1)->taskPointType = TaskPointTypes::Landing;
 
-  for(uint n = 2; n + 2 < cnt; n++)
+  for(int n = 2; n + 2 < cnt; n++)
     {
       tpList->at(n)->taskPointType = TaskPointTypes::RouteP;
     }
@@ -595,15 +668,15 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
         }
 
       if( flightType == Unknown )
-      	{
-      	  if( loop )
-      	    {
-      	      painter->setPen(QPen(courseLineColor, courseLineWidth));
-      	      // Draws the course line
-      	      painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-      				 glMapMatrix->map(tpList->at(loop)->projP) );
-      	    }
-      	}
+        {
+          if( loop )
+            {
+              painter->setPen(QPen(courseLineColor, courseLineWidth));
+              // Draws the course line
+              painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+               glMapMatrix->map(tpList->at(loop)->projP) );
+            }
+        }
 
       // map projected point to map
       QPoint mPoint(glMapMatrix->map(tpList->at(loop)->projP));
@@ -612,109 +685,109 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
       int biangle = (int) rint( ((tpList->at(loop)->angle) / M_PI ) * 180.0 );
 
       switch( tpList->at(loop)->taskPointType )
-	{
-	case TaskPointTypes::RouteP:
+  {
+  case TaskPointTypes::RouteP:
 
-	  if( viewport.contains(mPoint) )
-	    {
-	      QColor c;
+    if( viewport.contains(mPoint) )
+      {
+        QColor c;
 
-	      if( fillShape )
-      		{
-      		  c = QColor(Qt::green);
-      		}
+        if( fillShape )
+          {
+            c = QColor(Qt::green);
+          }
 
-	      drawSector( painter,
-			  mPoint,
-			  ira,
-			  ora,
-			  biangle,
-			  sectorAngle,
-			  c,
-			  drawShape );
-	    }
+        drawSector( painter,
+        mPoint,
+        ira,
+        ora,
+        biangle,
+        sectorAngle,
+        c,
+        drawShape );
+      }
 
-	  if( loop )
-	    {
-	      painter->setPen(QPen(courseLineColor, courseLineWidth));
-	      painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-				 glMapMatrix->map(tpList->at(loop)->projP) );
-	    }
+    if( loop )
+      {
+        painter->setPen(QPen(courseLineColor, courseLineWidth));
+        painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+         glMapMatrix->map(tpList->at(loop)->projP) );
+      }
 
-	  break;
+    break;
 
-	case TaskPointTypes::Begin:
+  case TaskPointTypes::Begin:
 
-	  if( viewport.contains(mPoint) )
-	    {
-	      QColor c;
+    if( viewport.contains(mPoint) )
+      {
+        QColor c;
 
-	      if( fillShape )
-      		{
-      		  c = QColor(Qt::green);
-      		}
+        if( fillShape )
+          {
+            c = QColor(Qt::green);
+          }
 
-	      drawSector( painter,
-			  mPoint,
-			  ira,
-			  ora,
-			  biangle,
-			  sectorAngle,
-			  c,
-			  drawShape );
-	    }
+        drawSector( painter,
+        mPoint,
+        ira,
+        ora,
+        biangle,
+        sectorAngle,
+        c,
+        drawShape );
+      }
 
-	  // Draw line from take off to begin, if both not identical
-	  if( loop &&
-	      tpList->at(loop - 1)->origP != tpList->at(loop)->origP )
-	    {
-	      painter->setPen(QPen(courseLineColor, courseLineWidth));
-	      painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-				 glMapMatrix->map(tpList->at(loop)->projP) );
-	    }
+    // Draw line from take off to begin, if both not identical
+    if( loop &&
+        tpList->at(loop - 1)->origP != tpList->at(loop)->origP )
+      {
+        painter->setPen(QPen(courseLineColor, courseLineWidth));
+        painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+         glMapMatrix->map(tpList->at(loop)->projP) );
+      }
 
-	  break;
+    break;
 
-	case TaskPointTypes::End:
+  case TaskPointTypes::End:
 
-	  if( viewport.contains(mPoint) )
-	    {
-	      QColor c;
+    if( viewport.contains(mPoint) )
+      {
+        QColor c;
 
-	      if( fillShape )
-      		{
-      		  c = QColor(Qt::cyan);
-      		}
+        if( fillShape )
+          {
+            c = QColor(Qt::cyan);
+          }
 
-	      drawSector( painter,
-			  mPoint,
-			  ira,
-			  ora,
-			  biangle,
-			  sectorAngle,
-			  c,
-			  drawShape );
-	    }
+        drawSector( painter,
+        mPoint,
+        ira,
+        ora,
+        biangle,
+        sectorAngle,
+        c,
+        drawShape );
+      }
 
-	  painter->setPen(QPen(courseLineColor, courseLineWidth));
-	  painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-			     glMapMatrix->map(tpList->at(loop)->projP) );
-	  break;
+    painter->setPen(QPen(courseLineColor, courseLineWidth));
+    painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+           glMapMatrix->map(tpList->at(loop)->projP) );
+    break;
 
-	default:
+  default:
 
-	  // Can be take off or landing point
-	  // Draw line from End to Landing point, if both not identical
-	  if( loop &&
-	      tpList->at(loop - 1)->origP != tpList->at(loop)->origP )
-	    {
-	      painter->setPen(QPen(courseLineColor, courseLineWidth));
-	      painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-				 glMapMatrix->map(tpList->at(loop)->projP ) );
-	    }
+    // Can be take off or landing point
+    // Draw line from End to Landing point, if both not identical
+    if( loop &&
+        tpList->at(loop - 1)->origP != tpList->at(loop)->origP )
+      {
+        painter->setPen(QPen(courseLineColor, courseLineWidth));
+        painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+         glMapMatrix->map(tpList->at(loop)->projP ) );
+      }
 
-	  break;
-	}
+    break;
+  }
     }
 }
 
@@ -775,12 +848,12 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawn
         }
 
       if( loop )
-      	{
-      	  // Draws the course line
+        {
+          // Draws the course line
           painter->setPen(QPen(courseLineColor, courseLineWidth));
-      	  painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+          painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
                              glMapMatrix->map(tpList->at(loop)->projP) );
-      	}
+        }
 
       if( cs > 350.0 || ( drawShape == false && fillShape == false ) )
         {
@@ -794,10 +867,10 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawn
       // qDebug("MappedPoint: x=%d, y=%d", mPoint.x(), mPoint.y() );
 
       if( ! viewport.contains(mPoint) )
-      	{
-      	  // ignore not visible points
-      	  continue;
-      	}
+        {
+          // ignore not visible points
+          continue;
+        }
 
       QColor color;
 
@@ -879,8 +952,8 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawn
  */
 
 void FlightTask::drawCircle( QPainter* painter, QPoint& centerCoordinate,
-			     const int radius,
-			     QColor& fillColor, const bool drawShape )
+           const int radius,
+           QColor& fillColor, const bool drawShape )
 {
   if( radius == 0 || (fillColor.isValid() == false && drawShape == false) )
     {
@@ -925,13 +998,13 @@ void FlightTask::drawCircle( QPainter* painter, QPoint& centerCoordinate,
  */
 
 void FlightTask::drawSector( QPainter* painter,
-			     QPoint& centerCoordinate,
-			     const int innerRadius,
-			     const int outerRadius,
-			     const int biangle,
-			     const int spanningAngle,
-			     QColor& fillColor,
-			     const bool drawShape )
+           QPoint& centerCoordinate,
+           const int innerRadius,
+           const int outerRadius,
+           const int biangle,
+           const int spanningAngle,
+           QColor& fillColor,
+           const bool drawShape )
 {
   // fetch current scale, scale uses unit meter/pixel
   const double cs = glMapMatrix->getScale(MapMatrix::CurrentScale);
@@ -984,22 +1057,22 @@ void FlightTask::drawSector( QPainter* painter,
  * Calculates the sector array used for the drawing of the task point
  * sector.
  *
- * pp	sector result painter path
- * ocx	scaled outer radius center coordinate x
- * ocy	scaled outer radius center coordinate y
- * icx	scaled inner radius center coordinate x
- * icy	scaled inner radius center coordinate y
- * ora	scaled outer radius
- * ira	scaled inner radius
- * sba	sector biangle in degrees
- * sa	sector angle in degrees
+ * pp sector result painter path
+ * ocx  scaled outer radius center coordinate x
+ * ocy  scaled outer radius center coordinate y
+ * icx  scaled inner radius center coordinate x
+ * icy  scaled inner radius center coordinate y
+ * ora  scaled outer radius
+ * ira  scaled inner radius
+ * sba  sector biangle in degrees
+ * sa sector angle in degrees
  *
  */
 void FlightTask::calculateSector( QPainterPath& pp,
-				  int ocx, int ocy,
-				  int icx, int icy,
-				  int ora, int ira,
-				  int sba, int sa )
+          int ocx, int ocy,
+          int icx, int icy,
+          int ora, int ira,
+          int sba, int sa )
 {
   // @AP: Correct angel, drawArc starts at 3 o'clock position.
   // Must be turned by 90 degrees to get the right position.
@@ -1335,7 +1408,7 @@ QString FlightTask::getWindString() const
          .arg( windDirection, 3, 10, QChar('0') )
          .arg( QString(Qt::Key_degree) )
          .arg( windSpeed )
-         .arg( Speed::getHorizontalUnitText() );
+         .arg( Speed::getWindUnitText() );
 
   return w;
 }
@@ -1364,7 +1437,7 @@ void FlightTask::setTaskPointList(QList<TaskPoint*> *newtpList)
  */
 void FlightTask::updateTask()
 {
-  __setTaskPointTypes();
+  __setTaskPointData();
   __determineTaskType();
 
   for(int loop = 0; loop < tpList->count(); loop++)
@@ -1439,5 +1512,5 @@ QList<TaskPoint*> *FlightTask::copyTpList(QList<TaskPoint*> *tpListIn)
 void FlightTask::setPlanningType(const int type)
 {
   __planningType = type;
-  __setTaskPointTypes();
+  __setTaskPointData();
 }
