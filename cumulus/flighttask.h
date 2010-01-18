@@ -10,7 +10,7 @@
 **                   2007-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -64,11 +64,11 @@ class FlightTask : public BaseMapElement
    *
    * @param  fai if true, drawing according of FAI rules, otherwise not
    *
-   * @param  speed the planned cruising speed
+   * @param  tas the planned true airspeed
    *
    */
   FlightTask( QList<TaskPoint*> *tpList=0, bool fai=true,
-              QString taskName=QObject::tr("unknown"), int speed=0 );
+              QString taskName=QObject::tr("unknown"), int tas=0 );
 
   /**
    * Copy constructor
@@ -107,7 +107,7 @@ class FlightTask : public BaseMapElement
   /**
    * Returns the task point list by reference
    */
-  QList<TaskPoint*>& getTpList()
+  QList<TaskPoint *>& getTpList()
   {
     return *tpList;
   };
@@ -116,14 +116,14 @@ class FlightTask : public BaseMapElement
    * Returns a deep copy of the task point list. The ownership of the
    * list is taken over by the caller.
    */
-  QList<TaskPoint*> *getCopiedTpList();
+  QList<TaskPoint *> *getCopiedTpList();
 
   /**
    * Returns a deep copy of the passed task point list. The ownership of
    * the list is taken over by the caller. For convenience provided as
    * static method.
    */
-  static QList<TaskPoint*> *copyTpList(QList<TaskPoint*> *wpList);
+  static QList<TaskPoint *> *copyTpList(QList<TaskPoint *> *tpListIn);
 
   /**
    * Returns the type of the task.
@@ -160,7 +160,7 @@ class FlightTask : public BaseMapElement
    * @param drawnWp List of drawn waypoints, if taskpoint label drawing
    *       option is set.
    */
-  void drawTask(QPainter* painter, QList<wayPoint*> &drawnTp );
+  void drawTask(QPainter* painter, QList<wayPoint *> &drawnTp );
 
   /**
    * function for drawing the element into the given painter.
@@ -185,20 +185,20 @@ class FlightTask : public BaseMapElement
   /** Returns wind direction and speed in string format "Degree/Speed". */
   QString getWindString() const;
 
-  /** */
+  /** Returns the name of the task. */
   QString getTaskName() const
   {
     return _taskName;
   };
 
-  /** */
+  /** Sets the name of the task. */
   void setTaskName( QString& newName )
   {
     _taskName = newName;
   };
 
   /** */
-  void setTaskPointList(QList<TaskPoint*> *newTpList);
+  void setTaskPointList(QList<TaskPoint *> *newTpList);
 
   /** */
   void addTaskPoint( TaskPoint *newTP );
@@ -212,10 +212,10 @@ class FlightTask : public BaseMapElement
     return __planningType;
   };
 
-  /** returns the cruising speed */
+  /** returns the planned cruising speed */
   int getSpeed() const { return cruisingSpeed; };
 
-  /** sets the cruising speed */
+  /** sets the planned cruising speed */
   void setSpeed( const int newSpeed )
   {
     cruisingSpeed = newSpeed;
@@ -419,7 +419,7 @@ class FlightTask : public BaseMapElement
    */
   void __setTaskPointData();
 
-  /** */
+  /** Flight task with single task points. */
   QList<TaskPoint*> *tpList;
 
   /**
@@ -439,26 +439,11 @@ class FlightTask : public BaseMapElement
   /** result of wind calculation via wind triangle */
   bool wtCalculation;
 
-  /** */
-  uint task_end;
-
-  /** */
-  uint task_begin;
-
-  /** */
-  double olcPoints;
-
-  /** */
-  double taskPoints;
-
-  /** */
+  /** Type of flight task */
   unsigned int flightType;
 
   /** Total length */
   double distance_total;
-
-  /** score distance for DMST */
-  double distance_wert;
 
   /** Task length */
   double distance_task;

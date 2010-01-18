@@ -10,7 +10,7 @@
 **                   2007-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -33,39 +33,34 @@
 #include "calculator.h"
 #include "speed.h"
 
-#define CUMULUS_DEBUG
+#undef CUMULUS_DEBUG
 
 extern Calculator *calculator;
 extern MapMatrix  *_globalMapMatrix;
 
-FlightTask::FlightTask( QList<TaskPoint*> *tpListIn,
+FlightTask::FlightTask( QList<TaskPoint *> *tpListIn,
                         bool faiRules,
                         QString taskName,
-                        int speed ) :
+                        int tas ) :
   BaseMapElement("FlightTask", BaseMapElement::Task ),
   tpList(tpListIn),
   faiRules(faiRules),
-  cruisingSpeed(speed),
+  cruisingSpeed(tas),
   windDirection(0),
   windSpeed(0),
   wtCalculation(false),
-  task_end(0),
-  task_begin(0),
-  olcPoints(0),
-  taskPoints(0),
   flightType(FlightTask::NotSet),
   distance_total(0),
-  distance_wert(0),
   distance_task(0),
   duration_total(0),
   __planningType(RouteBased),
   _taskName(taskName)
 {
   // Check, if a valid object has been passed
-  if( tpList == 0 )
+  if( tpList == static_cast<QList<TaskPoint *> *> (0) )
     {
       // no, so let us create a new one
-      tpList = new QList<TaskPoint*>;
+      tpList = new QList<TaskPoint *>;
     }
 
   if( _taskName.isNull() )
@@ -97,14 +92,8 @@ FlightTask::FlightTask( const FlightTask& inst )
   // create a deep copy of the task point list
   tpList = copyTpList( inst.tpList );
 
-  task_end = inst.task_end;
-  task_begin = inst.task_begin;
-
-  olcPoints = inst.olcPoints;
-  taskPoints = inst.taskPoints;
   flightType = inst.flightType;
   distance_total = inst.distance_total;
-  distance_wert = inst.distance_wert;
   distance_task = inst.distance_task;
   duration_total = inst.duration_total;
   __planningType = inst.__planningType;
@@ -114,10 +103,9 @@ FlightTask::FlightTask( const FlightTask& inst )
 FlightTask::~FlightTask()
 {
   // qDebug("FlightTask::~FlightTask(): name=%s, %X", _taskName.toLatin1().data(), this );
-  qDeleteAll(*tpList);
+  qDeleteAll( *tpList );
   delete tpList;
 }
-
 
 /**
  * Determines the type of the task.
@@ -386,7 +374,8 @@ double FlightTask::__calculateSectorAngles( int loop )
 
 /*
  * Sets the status of the task points, the durations in seconds, the
- * distances in km and the bearings.
+ * distances in km, the bearings in radian, the true heading and the wca
+ * in degree the ground speed in m/s.
  */
 void FlightTask::__setTaskPointData()
 {
@@ -411,7 +400,7 @@ void FlightTask::__setTaskPointData()
   // Reset total duration
   duration_total = 0;
 
-  // initialize TAS and wind speed instances
+  // Initialize TAS and wind speed instances by using user defined units.
   Speed tas(0);
   Speed wind(0);
 
@@ -555,8 +544,8 @@ void FlightTask::__setTaskPointData()
       return;
     }
 
-  tpList->at(0)->taskPointType = TaskPointTypes::TakeOff;
-  tpList->at(1)->taskPointType = TaskPointTypes::Begin;
+  tpList->at(0)->taskPointType       = TaskPointTypes::TakeOff;
+  tpList->at(1)->taskPointType       = TaskPointTypes::Begin;
   tpList->at(cnt - 2)->taskPointType = TaskPointTypes::End;
   tpList->at(cnt - 1)->taskPointType = TaskPointTypes::Landing;
 
@@ -565,7 +554,6 @@ void FlightTask::__setTaskPointData()
       tpList->at(n)->taskPointType = TaskPointTypes::RouteP;
     }
 }
-
 
 QString FlightTask::getTaskTypeString() const
   {
@@ -1110,7 +1098,7 @@ void FlightTask::calculateSector( QPainterPath& pp,
  *
  * dist2TP: distance to task point
  * position: current position as WGS84 datum
- * taskPointIndex: index of TP in waypoint list
+ * taskPointIndex: index of TP in taskpoint list
  *
  * returns true, if inside of sector otherwise false
  */
@@ -1326,16 +1314,20 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
 QString FlightTask::getTotalDistanceString() const
   {
     if(flightType == FlightTask::NotSet)
-      return "--";
+      {
+        return "--";
+      }
 
-    return Distance::getText(distance_total*1000,true,1);
+    return Distance::getText(distance_total*1000, true, 1);
   }
 
 
 QString FlightTask::getTaskDistanceString() const
   {
     if(flightType == FlightTask::NotSet)
-      return "--";
+      {
+        return "--";
+      }
 
     return Distance::getText(distance_task*1000,true,1);
   }
@@ -1343,7 +1335,7 @@ QString FlightTask::getTaskDistanceString() const
 /**
  * @returns a string representing the total distance time of task as
  * hh:mm to use for user-display. The time is rounded up if seconds
- * are greather than 30.
+ * are greater than 30.
  */
 QString FlightTask::getTotalDistanceTimeString()
 {
@@ -1352,40 +1344,46 @@ QString FlightTask::getTotalDistanceTimeString()
 
 /**
  * @returns a string representing the distance time as hh:mm to use
- * for user-display. The time is rounded up if seconds are greather
+ * for user-display. The time is rounded up if seconds are greater
  * than 30. Input has to be passed as seconds.
  */
 QString FlightTask::getDistanceTimeString(const int timeInSec)
 {
   if( timeInSec == 0 )
     {
-      return "0:00";
+      return "-";
     }
 
   int dt = timeInSec;
 
-  // Roud up, if seconds over 30. Must be done because the seconds
+  // Round up, if seconds over 30. Must be done because the seconds
   // will be truncated from the time string without rounding
   if( dt % 60 > 30 ) dt +=30;
 
   QString duration;
-  duration.sprintf("%d:%02d", dt/3600, (dt % 3600)/60 );
+
+  duration = QString("%1:%2")
+                .arg(dt/3600)
+                .arg((dt % 3600)/60, 2, 10, QChar('0') );
+
   return duration;
 }
 
 /**
- * @returns a string representing the cruising spped to use for
+ * @returns a string representing the cruising speed to use for
  * user-display.
  */
 QString FlightTask::getSpeedString() const
 {
   if( flightType == FlightTask::NotSet || cruisingSpeed == 0 )
     {
-      return "--";
+      return QObject::tr("none");
     }
 
   QString v;
-  v.sprintf( "%d %s", cruisingSpeed, Speed::getHorizontalUnitText().toLatin1().data() );
+
+  v = QString("%1%2").arg(cruisingSpeed).arg(Speed::getHorizontalUnitText());
+
   return v;
 }
 
@@ -1404,7 +1402,7 @@ QString FlightTask::getWindString() const
 
   QString w;
 
-  w = QString( "%1%2/%3 %4")
+  w = QString( "%1%2/%3%4")
          .arg( windDirection, 3, 10, QChar('0') )
          .arg( QString(Qt::Key_degree) )
          .arg( windSpeed )
@@ -1492,7 +1490,7 @@ QList<TaskPoint*> *FlightTask::getCopiedTpList()
    */
 QList<TaskPoint*> *FlightTask::copyTpList(QList<TaskPoint*> *tpListIn)
 {
-  QList<TaskPoint*> *outList = new QList<TaskPoint*>;
+  QList<TaskPoint *> *outList = new QList<TaskPoint *>;
 
   if( tpListIn == 0 )
     {
