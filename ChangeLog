@@ -13,6 +13,11 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[+] 2010-01-18 AP: Preflight planning widget extended by two spin boxes one for
+                   wind direction and one for wind speed. If wind speed is greater
+                   as zero the wca, the true heading and the ground speed are
+                   calculated via the wind triangle and displayed in the task
+                   list, if results are meaningful.
 [o] 2010-01-14 AP: Class FlightPoint and related functions in MapCalc removed.
                    Not used by Cumulus. New class TaskPoint introduced. This
                    class is derived from wayPoint class and contains all specific
