@@ -10,7 +10,7 @@
 **                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -37,13 +37,15 @@
 class MainWindow;
 
 /**
- * Presents a view that holds a list of the waypoints in the currently selected task.
+ * Presents a view that holds a list of the task points in the currently selected task.
  * @author André Somers
  */
 class TaskListView : public QWidget
 {
     Q_OBJECT
+
 public:
+
   TaskListView( QWidget *parent=0, bool showButtons=true );
 
     ~TaskListView();
@@ -53,10 +55,13 @@ public:
      */
     wayPoint *getSelectedWaypoint();
 
-    /** clears all data */
+    /** clears all data of the list */
     void clear();
 
-public slots: // Public slots
+    /** sets the header of the list */
+    void setHeader();
+
+public slots:
     /**
      * This signal is called to indicate that a selection has
      * been made.
@@ -82,7 +87,7 @@ public slots: // Public slots
      */
     void slot_updateTask();
 
-signals: // Signals
+signals:
     /**
      * This signal is emitted if a new waypoint is selected.
      */
@@ -99,32 +104,34 @@ signals: // Signals
 
 
 protected:
+
     void showEvent(QShowEvent *);
 
 private:
-    QTreeWidget*  list;
-    MainWindow  *par;
-    QBoxLayout  *buttonrow;
-    bool        _outlandShow;
-    QPushButton *cmdShowOl;
-    QPushButton *cmdHideOl;
-    QPushButton *cmdSelect;
-    QLabel      *wind;
-    QLabel      *distTotal;
-    QLabel      *speedTotal;
-    QLabel      *timeTotal;
-    QPixmap     _arrows;
-    FlightTask* _task;
-    TaskPoint *  _selectedTp;
+
+    QTreeWidget     *list;
+    MainWindow      *par;
+    QBoxLayout      *buttonrow;
+    bool            _outlandShow;
+    QPushButton     *cmdShowOl;
+    QPushButton     *cmdHideOl;
+    QPushButton     *cmdSelect;
+    QLabel          *wind;
+    QLabel          *distTotal;
+    QLabel          *speedTotal;
+    QLabel          *timeTotal;
+    QPixmap         _arrows;
+    FlightTask      *_task;
+    TaskPoint       *_selectedTp;
     QTreeWidgetItem * _currSelectedTp;
     QTreeWidgetItem * _newSelectedTp;
-    QString _selectText, _unselectText;
+    QString         _selectText;
+    QString         _unselectText;
 
-    // flag for showing buttons (or not)
+    // flag for showing buttons or not
     bool _showButtons;
 
     RowDelegate* rowDelegate;
-
 
 private slots:
     /**
@@ -132,13 +139,35 @@ private slots:
      */
     void slot_Selected();
 
-
 private:
 
+  /**
+   * Extension of QTreeWidgetItem to store additional information of a single
+   * task point.
+   */
   class _TaskPointItem : public QTreeWidgetItem
     {
       public:
-        _TaskPointItem(QTreeWidget* tpList, TaskPoint* point);
+
+        /**
+         * This class constructor sets all data of a QTreeWidgetItem.
+         *
+         * @param tpList Parent of QTreeWidget.
+         * @param point Data of task point to be set.
+         * @param wtCalcFlag Flag to indicate if wind triangle calculation
+         *        was successful for all task legs or not.
+         */
+        _TaskPointItem( QTreeWidget* tpList, TaskPoint* point, bool wtCalcFlag );
+
+        /** Returns the task point of this item. */
+        TaskPoint *getTaskPoint() const
+        {
+          return tp;
+        };
+
+      private:
+
+        /** Passed task point instance in constructor. */
         TaskPoint *tp;
     };
 };

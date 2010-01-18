@@ -400,7 +400,7 @@ bool windTriangle( const double trueCourse,
                    double &trueHeading )
 {
   // Wind Direction Adjustment
-  // correct wind from direction to TO direction in radians
+  // correct wind from direction to TO direction in radian
   double windTo = (windDirection * M_PI / 180.0 ) + M_PI;
 
   if( windTo > M_PI )
@@ -409,7 +409,7 @@ bool windTriangle( const double trueCourse,
       windTo -= 2 * M_PI;
     }
 
-  // Wind To Track Angle in radians
+  // Wind To Track Angle in radian
   double wtAngle = (trueCourse * M_PI / 180.0) - windTo;
 
   if( wtAngle > M_PI )
@@ -429,7 +429,7 @@ bool windTriangle( const double trueCourse,
       return false; // wind too strong
     }
 
-  // wind correction angle in radians
+  // wind correction angle in radian
   wca = asin(sinWca);
 
   // calculate ground speed

@@ -59,7 +59,7 @@ TaskList::TaskList( QWidget* parent ) :
   tas->setRange( 0, 1000);
   tas->setSingleStep( 5 );
   tas->setValue( GeneralConfig::instance()->getTas() );
-  tas->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
+  tas->setSuffix( Speed::getHorizontalUnitText() );
   editrow->addWidget(tas);
 
   label = new QLabel( tr("WD"), this );
@@ -83,7 +83,7 @@ TaskList::TaskList( QWidget* parent ) :
   windSpeed->setButtonSymbols(QSpinBox::PlusMinus);
   windSpeed->setRange( 0, 1000 );
   windSpeed->setValue( GeneralConfig::instance()->getWindSpeed() );
-  windSpeed->setSuffix( QString(" ") + Speed::getWindUnitText() );
+  windSpeed->setSuffix( Speed::getWindUnitText() );
 
   if( Speed::getWindUnit() != Speed::metersPerSecond )
     {
@@ -158,7 +158,6 @@ TaskList::TaskList( QWidget* parent ) :
       return;
     }
 }
-
 
 TaskList::~TaskList()
 {

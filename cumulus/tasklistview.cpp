@@ -79,17 +79,7 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
   list->setFocusPolicy(Qt::NoFocus);
 //  list->setEnabled(false);
 
-  QStringList sl;
-  sl  << tr("Type")
-      << tr("Name")
-      << tr("Dist.")
-      << tr("GS")
-      << tr("WCA")
-      << tr("TH")
-      << tr("Time")
-      << tr("SS")
-      << tr("Description");
-  list->setHeaderLabels(sl);
+  setHeader();
 
   topLayout->addWidget(list, 10);
 
@@ -139,16 +129,52 @@ TaskListView::~TaskListView()
     }
 }
 
+/** sets the header of the list */
+void TaskListView::setHeader()
+{
+  QStringList sl;
+  QString course;
+
+  if( _task && _task->getWtCalcFlag() ==true )
+    {
+      course = tr("TH"); // true heading
+    }
+  else
+    {
+      course = tr("TC"); // true course
+    }
+
+  sl << tr("Type")
+     << tr("Name")
+     << tr("Dist.")
+     << tr("GS")
+     << tr("WCA")
+     << course
+     << tr("Time")
+     << tr("SS")
+     << tr("Description");
+
+  list->setHeaderLabels(sl);
+}
+
 void TaskListView::slot_Selected()
 {
   _newSelectedTp = list->currentItem();
 
-  if ( _newSelectedTp == 0 )
+  if ( _newSelectedTp == static_cast<QTreeWidgetItem *> (0) )
     {
       return;
     }
 
-  _selectedTp = ((_TaskPointItem *)_newSelectedTp)->tp;
+  _TaskPointItem *tpi = dynamic_cast<_TaskPointItem *> (_newSelectedTp);
+
+  if( ! tpi )
+    {
+      // dynamic cast has failed
+      return;
+    }
+
+  _selectedTp = tpi->getTaskPoint();
 
   if ( _selectedTp->taskPointIndex == 0 )
     {
@@ -167,8 +193,9 @@ void TaskListView::slot_Selected()
     {
       cmdSelect->setText(_selectText);
     }
-  //qDebug("New Selected Waypoint name: %s, Index=%d",
-  //       _selectedTp->name.latin1(), _selectedTp->taskPointIndex );
+
+  qDebug("New Selected Task point name: %s, Index=%d",
+         _selectedTp->name.toLatin1().data(), _selectedTp->taskPointIndex );
 }
 
 void TaskListView::showEvent(QShowEvent *)
@@ -185,12 +212,12 @@ void TaskListView::showEvent(QShowEvent *)
   for ( int i = 0; i < list->topLevelItemCount(); i++)
     {
 
-      _TaskPointItem* _tp = (_TaskPointItem *) list->topLevelItem(i);
-      TaskPoint*   tp = _tp->tp;
+      _TaskPointItem* _tp = static_cast<_TaskPointItem *> (list->topLevelItem(i));
+      TaskPoint*   tp = _tp->getTaskPoint();
 
       // Waypoints can be selected from different windows. We will
       // consider only waypoints for a selection, which are member of a
-      // flighttask. In this case the taskPointIndex should be unequal to -1.
+      // flight task. In this case the taskPointIndex should be unequal to -1.
       if ( calcWp && calcWp->origP == tp->origP &&
            calcWp->taskPointIndex == tp->taskPointIndex )
         {
@@ -215,7 +242,6 @@ void TaskListView::showEvent(QShowEvent *)
 
   list->setFocus();
 }
-
 
 /** This signal is called to indicate that a selection has been made. */
 void TaskListView::slot_Select()
@@ -263,25 +289,23 @@ void TaskListView::slot_Close ()
 }
 
 /**
- * Retrieves the waypoints from the task, and fills the list.
+ * Retrieves the task points from the task, and fills the list.
  */
 void TaskListView::slot_setTask(const FlightTask *tsk)
 {
-  // qDebug("TaskListView::slot_setTask()");
-
   // delete old task
   if ( _task )
     {
       delete _task;
-      _task = 0;
+      _task = static_cast<FlightTask *> (0);
     }
 
   list->clear();
 
-  if (tsk == 0 )
+  if (tsk == static_cast<FlightTask *> (0) )
     {
       // No new task passed
-      _task = 0;
+      _task = static_cast<FlightTask *> (0);
       return;
     }
 
@@ -305,10 +329,10 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
     }
 
   // create a deep task copy
-  _task = new FlightTask(*tsk);
+  _task = new FlightTask( *tsk );
 
   // Check if a waypoint is selected in calculator. In this case set
-  // it in tasklist as selected too.
+  // it in task list as selected too.
   const wayPoint *calcWp = calculator->getselectedWp();
 
   QList<TaskPoint *> tmpList = _task->getTpList();
@@ -316,7 +340,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   for ( int loop = 0; loop < tmpList.count(); loop++ )
     {
       TaskPoint* tp = tmpList.at( loop );
-      _TaskPointItem* _tp = new _TaskPointItem( list, tp );
+      _TaskPointItem* _tp = new _TaskPointItem( list, tp, _task->getWtCalcFlag() );
 
       if ( calcWp && calcWp->origP == tp->origP )
         {
@@ -332,8 +356,17 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   // wind direction and speed
   wind->setText( "W=" + _task->getWindString() );
 
-  distTotal->setText( "S=" + _task->getTotalDistanceString() );
-  timeTotal->setText( "T=" + _task->getTotalDistanceTimeString() );
+  distTotal->setText( "S=" + _task->getTotalDistanceString().remove(QChar(' ')) );
+
+  if( _task->getSpeed() == 0 )
+    {
+      // TAS is zero
+      timeTotal->setText( "T=" + tr("none") );
+    }
+  else
+    {
+      timeTotal->setText( "T=" + _task->getTotalDistanceTimeString() + "h" );
+    }
 
   list->resizeColumnToContents(0);
   list->resizeColumnToContents(1);
@@ -344,6 +377,8 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   list->resizeColumnToContents(6);
   list->resizeColumnToContents(7);
   list->resizeColumnToContents(8);
+
+  setHeader();
 }
 
 /**
@@ -352,8 +387,11 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
  */
 void TaskListView::slot_updateTask()
 {
+  qDebug("TaskListView::slot_updateTask()");
+
   if ( _task )
     {
+      setHeader();
       _task->updateTask();
       _task->updateProjection();
     }
@@ -374,22 +412,34 @@ void TaskListView::clear()
   timeTotal->setText("");
 }
 
-TaskListView::_TaskPointItem::_TaskPointItem (QTreeWidget *tpList, TaskPoint *point ) : QTreeWidgetItem(tpList)
+/**
+ * This class constructor sets all data of a QTreeWidgetItem.
+ *
+ * @param tpList Parent of QTreeWidget.
+ * @param point Data of task point to be set.
+ * @param wtCalcFlag Flag to indicate if wind triangle calculation
+ *        was successful for all task legs or not.
+ */
+TaskListView::_TaskPointItem::_TaskPointItem( QTreeWidget *tpList,
+                                              TaskPoint *point,
+                                              bool wtCalcFlag ) :
+  QTreeWidgetItem(tpList)
 {
-  tp = point;
-  QString typeName = tp->getTaskPointTypeString();
+  tp = point; // save passed task point for later use
 
-  // calculate sunset for the task points
+  // calculate sunset for the task point
   QString sr, ss, tz;
   QDate date = QDate::currentDate();
   Sonne::sonneAufUnter( sr, ss, date, tp->origP, tz );
 
-  setText(0, typeName);
+  setText(0, tp->getTaskPointTypeString());
   setText(1, tp->name);
   setText(2, " " + Distance::getText(tp->distance*1000, false, 1));
   setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
 
-  if( tp->wtResult == true )
+  // If wind calculation is available for all task legs, we do consider that
+  // in task display.
+  if( wtCalcFlag == true && tp->wtResult == true )
     {
       Speed gs(tp->groundSpeed); // unit is m/s
       int gsInt = static_cast<int> (rint(gs.getHorizontalValue()));
@@ -400,12 +450,11 @@ TaskListView::_TaskPointItem::_TaskPointItem (QTreeWidget *tpList, TaskPoint *po
 
       int wca = static_cast<int> (tp->wca);
       QString wcaString;
-      wcaString = QString("%1").arg(wca);
+      wcaString = QString("%1%2").arg(wca).arg(QString(Qt::Key_degree));
       setText(4, wcaString);
       setTextAlignment( 4, Qt::AlignCenter );
 
       int th = static_cast<int> (tp->trueHeading);
-      qDebug("TH=%f, TH=%d", tp->trueHeading, th);
       QString thString;
       thString = QString("%1%2").arg(th).arg(QString(Qt::Key_degree));
       setText(5, thString);
@@ -413,9 +462,11 @@ TaskListView::_TaskPointItem::_TaskPointItem (QTreeWidget *tpList, TaskPoint *po
     }
   else
     {
-      setText(3, "-" );
+      // No wind calculation available, use dash as display value for ground
+      // speed and wca.
+      setText(3, "-" ); // GS
       setTextAlignment( 3, Qt::AlignCenter );
-      setText(4, "-" );
+      setText(4, "-" ); // WCA
       setTextAlignment( 4, Qt::AlignCenter );
 
       if ( tp->bearing == -1.0 )
@@ -433,7 +484,16 @@ TaskListView::_TaskPointItem::_TaskPointItem (QTreeWidget *tpList, TaskPoint *po
     }
 
   setText(6, " " + FlightTask::getDistanceTimeString(tp->distTime));
-  setTextAlignment( 6, Qt::AlignRight|Qt::AlignVCenter );
+
+  if( tp->distTime == 0 )
+    {
+      setTextAlignment( 6, Qt::AlignCenter );
+    }
+  else
+    {
+      setTextAlignment( 6, Qt::AlignRight|Qt::AlignVCenter );
+    }
+
   setText(7, " " + ss + " " + tz);
   setText(8, " " + tp->description);
 
