@@ -27,35 +27,42 @@
 
 <p>This window is split into two subwindos. In the upper window
 you can see all defined tasks by you. Clicking on a task will select it
-and display the details in the lower window. In the speed box in the
-upper left corner you can enter a speed you want to fly. This spped is
-used for the time calculation in the displayed task.</p>
-<p>If you leave the menu with
-the OK button, the selected task is treated as to fly now. In this case
-the task is drawn on the map. To activate the automatic task point
-switch, you have to select in the task view the first approach point by
-hand. Alternatively you can use the shortcut key <b>b</b> to do that. But
-note the difference. The shortcut key <b>b</b> will always select the
-first approach point of a flight task whilst in the task view you can select
-any point. If you could not touch a task point sector or cylinder you
-must select by hand the next task point. There is no automatic switch done
-to the next point as some GPS devices are doing.
+and display the details in the lower window. In the upper line you can see
+different spin boxes. In one speed box you can enter your true air speed TAS
+you want to fly. Also wind direction and wind speed can be entered. If TAS and
+wind speed are greater than zero they will be included in the task calculation.
+In this case you can see under the column TH (true heading) the course to be
+flown to reach the next target. In the other case the column is named TC
+(true course). That means wind speed or TAS are zero. If wind triangle calculation
+fails, you will see also the column TC (true course). In such a case wind
+correction angle (WCA) and ground speed (GS) are set to be undefined.
+</p>
+
+<p>If you leave the menu with the OK button, the selected task is treated as
+to fly now. In this case the task is drawn on the map. To activate the automatic
+task point switch, you have to select in the task view the first approach point
+by hand. Alternatively you can use the shortcut key <b>b</b> to do that. But
+note the difference. The shortcut key <b>b</b> will always select the first
+approach point of a flight task whilst in the task view you can select any
+point. If you could not touch a task point sector or cylinder you must select by
+hand the next task point. There is no automatic switch done to the next point as
+some GPS devices are doing.
+
 <br>
-If you select the first approach point already on ground and move
-faster than 35 Km/h the automatic switch to the next task point will
-become active. </p>
+If you select the first approach point already on ground and move faster than 35
+Km/h the automatic switch to the next task point will become active.</p>
 
 <p> If you approach into the sector described by the task point
 switch radius, the next task point is selected automatically. The task
 point switch behaviour can be configured in <a href="cumulus-settings-sector.html">
 Settings Sector</a>.</p>
 
-<p> A selected task can be removed or edited by clicking on the
-related icons in the right upper corner of the window. If you want to
-define a new task, click on the editor icon. This will open a new
-screen, where you can select waypoints and airfields from a toggle list
-to be used for task definition. Use the arrows for moving up/down
-waypoints or to the change the order of the task points.
+<p>A selected task can be removed or edited by clicking on the related icons
+in the right upper corner of the window. If you want to define a new task, click
+on the editor icon. This will open a new screen, where you can select waypoints,
+airfields and outlanding points from a toggle list to be used for task
+definition. Use the arrows for moving up/down of task points or to the change the
+order of the task points.
 
 <table width="100%">
   <tbody>
