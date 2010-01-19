@@ -194,8 +194,8 @@ void TaskListView::slot_Selected()
       cmdSelect->setText(_selectText);
     }
 
-  qDebug("New Selected Task point name: %s, Index=%d",
-         _selectedTp->name.toLatin1().data(), _selectedTp->taskPointIndex );
+  // qDebug("New Selected Task point name: %s, Index=%d",
+  //        _selectedTp->name.toLatin1().data(), _selectedTp->taskPointIndex );
 }
 
 void TaskListView::showEvent(QShowEvent *)
@@ -387,7 +387,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
  */
 void TaskListView::slot_updateTask()
 {
-  qDebug("TaskListView::slot_updateTask()");
+  // qDebug("TaskListView::slot_updateTask()");
 
   if ( _task )
     {
