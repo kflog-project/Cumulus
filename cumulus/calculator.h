@@ -110,6 +110,12 @@ class Calculator : public QObject
 {
     Q_OBJECT
 
+private:
+    /**
+     * That macro forbids the copy constructor and the assignment operator.
+     */
+    Q_DISABLE_COPY( Calculator )
+
 public:
     /**
      * Different possible flight modes
