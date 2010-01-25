@@ -133,7 +133,6 @@ void HttpClient::slotCancelDownload()
 {
   qDebug( "HttpClient(%d): Download canceled!", __LINE__ );
 
-
   if ( _progressDialog != static_cast<QProgressDialog *> (0) )
     {
       _progressDialog->reset();
