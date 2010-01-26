@@ -13,6 +13,10 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+
+[-] 2010-01-26 AP: BUGFIX: Missing initialization of QTime variable last in
+                   constructor of class GpsClient done. Prevents error
+                   message during startup of Cumulus.
 [+] 2010-01-18 AP: Preflight planning widget extended by two spin boxes one for
                    wind direction and one for wind speed. If wind speed is greater
                    as zero the wca, the true heading and the ground speed are
