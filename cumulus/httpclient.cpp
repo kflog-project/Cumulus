@@ -24,6 +24,7 @@
 
 #include "httpclient.h"
 #include "authdialog.h"
+#include "target.h"
 
  HttpClient::HttpClient( QObject *parent, const bool showProgressDialog ) :
    QObject(parent),
@@ -33,7 +34,6 @@
    tmpFile(0),
    _url(""),
    _destination(""),
-   httpRequestAborted(false),
    downloadRunning(false)
  {
    if( showProgressDialog )
@@ -57,7 +57,7 @@
 
 bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
 {
-  qDebug("url=%s, dest=%s", urlIn.toLatin1().data(), destinationIn.toLatin1().data() );
+  qDebug() << "url=" << urlIn << ", dest=" <<destinationIn;
 
   if( downloadRunning == true )
     {
@@ -92,9 +92,10 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
     }
 
   QNetworkRequest request;
+  QString appl = QString("Cumulus/") + CU_VERSION;
 
   request.setUrl( QUrl( _url, QUrl::TolerantMode ));
-  request.setRawHeader("User-Agent", "Cumulus 2.4");
+  request.setRawHeader( "User-Agent", appl.toAscii() );
 
   reply = manager->get(request);
 
@@ -115,7 +116,6 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
   connect( reply, SIGNAL(downloadProgress(qint64, qint64)),
            this, SLOT(slotDownloadProgress( qint64, qint64 )) );
 
-  httpRequestAborted = false;
   downloadRunning = true;
 
   if ( _progressDialog != static_cast<QProgressDialog *> (0) )
@@ -141,49 +141,44 @@ void HttpClient::slotCancelDownload()
 
   if( reply )
    {
+      // That aborts the running download and sets the error state in the
+      // reply object to QNetworkReply::OperationCanceledError. As next the
+      // error signal and then the finish signal is emitted.
      reply->abort();
-     httpRequestAborted = true;
    }
 }
 
-/** Network error occurred. */
+/**
+ * Network error occurred. Don't call abort() or close() in this method,
+ * that leads to an endless loop!
+ */
 void HttpClient::slotError( QNetworkReply::NetworkError code )
 {
   qWarning( "HttpClient(%d): Network error %d, %s ",
            __LINE__, code, reply->errorString().toLatin1().data() );
 
-  if( code == QNetworkReply::NoError )
+  if( code == QNetworkReply::NoError ||
+      code == QNetworkReply::OperationCanceledError )
     {
+      // Ignore these errors.
       return;
     }
 
-  QMessageBox::information( 0, QObject::tr("HTTP"),
-                           QObject::tr("Download failed with %1:%2")
-                           .arg(code)
-                           .arg(reply->errorString() ));
-
+  // If progress dialog is not activated, do not report anything more.
   if ( _progressDialog != static_cast<QProgressDialog *> (0) )
     {
       _progressDialog->reset();
       _progressDialog->hide();
-    }
 
-  if( reply )
-    {
-      reply->abort();
-      httpRequestAborted = true;
-      downloadRunning = false;
+      QMessageBox::information( 0, QObject::tr("HTTP-%1").arg(code),
+                               QObject::tr("Download failed with: %1")
+                               .arg(reply->errorString() ));
     }
 }
 
 /** Report download progress to the user */
 void HttpClient::slotDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  if( httpRequestAborted && ! downloadRunning )
-    {
-       return;
-    }
-
   if ( _progressDialog != static_cast<QProgressDialog *> (0) )
     {
       // Report results to the progress dialog.
@@ -250,7 +245,7 @@ void HttpClient::slotSslErrors( QNetworkReply *reply, const QList<QSslError> &er
 
 #endif
 
-/** Downloaded ata for reading available. Put all of them into the opened
+/** Downloaded data for reading available. Put all of them into the opened
  *  temporary result file.
  */
 void HttpClient::slotReadyRead()
@@ -288,15 +283,16 @@ void HttpClient::slotFinished()
 
   if( reply && tmpFile )
     {
-      if( httpRequestAborted )
+      if( reply->error() != QNetworkReply::NoError )
         {
+          qDebug() << "ReplyError=" << reply->error();
           // Request was aborted.
           reply->close();
           tmpFile->close();
           tmpFile->remove();
 
           // Inform about the result.
-          emit finished( _url, false );
+          emit finished( _url, reply->error() );
         }
       else
         {
@@ -311,7 +307,7 @@ void HttpClient::slotFinished()
           tmpFile->rename( _destination );
 
           // Inform about the result.
-          emit finished( _url, true );
+          emit finished( _url, reply->error() );
         }
 
       delete tmpFile;

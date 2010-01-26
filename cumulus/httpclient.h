@@ -53,6 +53,14 @@ class HttpClient : public QObject
   bool downloadFile( QString &url, QString &destination );
 
   /**
+   * Returns the network manager to be used by the HTTP client.
+   */
+  QNetworkAccessManager *networkManager() const
+  {
+    return manager;
+  };
+
+  /**
    * Returns true, if a download is running otherwise false.
    */
   bool isDownloadRunning() const
@@ -63,7 +71,7 @@ class HttpClient : public QObject
  signals:
 
   /** Sent a finish signal with the downloaded url and the related result. */
-  void finished( QString &url, bool result );
+  void finished( QString &url, QNetworkReply::NetworkError code );
 
   /** Forwarded signal from QNetworkReply. Is sent out, when no progress dialog
    *  is set up.
@@ -101,11 +109,8 @@ class HttpClient : public QObject
   QNetworkAccessManager *manager;
   QNetworkReply         *reply;
   QFile                 *tmpFile;
-
   QString               _url;
   QString               _destination;
-
-  bool                  httpRequestAborted;
   bool                  downloadRunning;
 };
 
