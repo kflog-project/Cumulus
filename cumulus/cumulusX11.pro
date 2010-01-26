@@ -8,6 +8,8 @@ CONFIG = debug \
     qt \
     warn_on
     
+QT += network
+    
 HEADERS = airfieldlistview.h \
     airfieldlistwidget.h \
     airfield.h \
@@ -16,6 +18,7 @@ HEADERS = airfieldlistview.h \
     airspacewarningdistance.h \
     altimetermodedialog.h \
     altitude.h \
+    authdialog.h \
     basemapelement.h \
     configwidget.h \
     calculator.h \
@@ -33,6 +36,7 @@ HEADERS = airfieldlistview.h \
     gpsstatusdialog.h \
     coordedit.h \
     helpbrowser.h \
+    httpclient.h \
     hwinfo.h \
     igclogger.h \
     interfaceelements.h \
@@ -122,6 +126,7 @@ SOURCES = airfieldlistview.cpp \
     airspace.cpp \
     altimetermodedialog.cpp \
     altitude.cpp \
+    authdialog.cpp \
     basemapelement.cpp \
     configwidget.cpp \
     calculator.cpp \
@@ -139,6 +144,7 @@ SOURCES = airfieldlistview.cpp \
     gpsstatusdialog.cpp \
     coordedit.cpp \
     helpbrowser.cpp \
+    httpclient.cpp \
     hwinfo.cpp \
     igclogger.cpp \
     ipc.cpp \

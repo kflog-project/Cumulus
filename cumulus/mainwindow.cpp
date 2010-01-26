@@ -66,6 +66,9 @@
 #include "sound.h"
 #include "time_cu.h"
 
+#include "httpclient.h"
+
+
 #ifdef MAEMO
 
 extern "C" {
@@ -696,6 +699,15 @@ void MainWindow::slotCreateApplicationWidgets()
   slotViewStatusBar( true );
 
   qDebug( "End startup CmulusApp" );
+
+  QString url = "http://www.segelflug.de/vereine/welt2000/download/WELT2000_09-06-19.TXT";
+  //QString url = "http://www.baec.de";
+
+  QString dest = "/tmp/welt2000.txt";
+
+  HttpClient *client = new HttpClient();
+
+  client->downloadFile( url, dest );
 }
 
 MainWindow::~MainWindow()
