@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2009 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2010 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -93,6 +93,9 @@ GpsClient::GpsClient( const ushort portIn )
           return;
         }
     }
+
+  // Set last time to current time.
+  last.start();
 }
 
 GpsClient::~GpsClient()
@@ -267,7 +270,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
     {
       int ret = mkfifo(device, S_IRUSR | S_IWUSR);
 
-      if(ret && errno != EEXIST)
+      if( ret && errno != EEXIST )
         {
           perror("mkfifo");
         }
