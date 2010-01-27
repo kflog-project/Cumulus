@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2010 Axel Pauli
+**   Copyright (c): 2010 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,15 +26,16 @@
 #include "authdialog.h"
 #include "target.h"
 
- HttpClient::HttpClient( QObject *parent, const bool showProgressDialog ) :
-   QObject(parent),
-   _parent(parent),
-   _progressDialog(0),
-   reply(0),
-   tmpFile(0),
-   _url(""),
-   _destination(""),
-   downloadRunning(false)
+HttpClient::HttpClient( QObject *parent, const bool showProgressDialog ) :
+  QObject(parent),
+  _parent(parent),
+  _progressDialog(0),
+  manager(0),
+  reply(0),
+  tmpFile(0),
+  _url(""),
+  _destination(""),
+  downloadRunning(false)
  {
    if( showProgressDialog )
      {
@@ -55,9 +56,17 @@
 
 }
 
+HttpClient::~HttpClient()
+{
+  if( _progressDialog )
+    {
+      delete _progressDialog;
+    }
+}
+
 bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
 {
-  qDebug() << "url=" << urlIn << ", dest=" <<destinationIn;
+  qDebug() << "downloadFile: url=" << urlIn << ", dest=" << destinationIn;
 
   if( downloadRunning == true )
     {
@@ -73,7 +82,7 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
 
   if( urlIn.isEmpty() || ! url.isValid() || fileInfo.fileName().isEmpty() )
     {
-      qWarning( "HttpClient(%d): url or destination file are invalid!", __LINE__ );
+      qWarning( "HttpClient(%d): Url or destination file are invalid!", __LINE__ );
       return false;
     }
 
@@ -81,7 +90,7 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
 
   if( ! tmpFile->open( QIODevice::WriteOnly ) )
     {
-      qWarning( "HttpClient(%d): Unable to save the file %s: %s",
+      qWarning( "HttpClient(%d): Unable to open the file %s: %s",
                  __LINE__,
                  tmpFile->fileName ().toLatin1().data(),
                  tmpFile->errorString().toLatin1().data() );
@@ -92,7 +101,7 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
     }
 
   QNetworkRequest request;
-  QString appl = QString("Cumulus/") + CU_VERSION;
+  QString appl = QString("Cumulus/") + CU_VERSION + " (Qt/X11)";
 
   request.setUrl( QUrl( _url, QUrl::TolerantMode ));
   request.setRawHeader( "User-Agent", appl.toAscii() );
@@ -101,7 +110,7 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
 
   if( ! reply )
     {
-      qWarning("HttpClient(%d): Reply object is invalid!", __LINE__ );
+      qWarning( "HttpClient(%d): Reply object is invalid!", __LINE__ );
       return false;
     }
 
@@ -136,7 +145,7 @@ void HttpClient::slotCancelDownload()
   if ( _progressDialog != static_cast<QProgressDialog *> (0) )
     {
       _progressDialog->reset();
-      _progressDialog->hide();
+      //_progressDialog->hide();
     }
 
   if( reply )
@@ -250,18 +259,15 @@ void HttpClient::slotSslErrors( QNetworkReply *reply, const QList<QSslError> &er
  */
 void HttpClient::slotReadyRead()
 {
-  qDebug("HttpClient::slotReadyRead()");
-
   if( reply && tmpFile )
     {
       QByteArray byteArray = reply->readAll();
 
-      qDebug("%d bytes read", byteArray.size());
+      // qDebug("%d bytes read", byteArray.size());
 
       if( byteArray.size() > 0 )
         {
           tmpFile->write( byteArray );
-          qDebug("%d bytes written into file", byteArray.size());
         }
     }
 }
@@ -283,31 +289,31 @@ void HttpClient::slotFinished()
 
   if( reply && tmpFile )
     {
-      if( reply->error() != QNetworkReply::NoError )
-        {
-          qDebug() << "ReplyError=" << reply->error();
-          // Request was aborted.
-          reply->close();
-          tmpFile->close();
-          tmpFile->remove();
+      // read reply error status
+      enum QNetworkReply::NetworkError error = reply->error();
 
-          // Inform about the result.
-          emit finished( _url, reply->error() );
+      // close opened IO device
+      reply->close();
+
+      // close temporary file
+      tmpFile->close();
+
+      if( error != QNetworkReply::NoError )
+        {
+          qDebug() << "ReplyError=" << error;
+          // Request was aborted, tmp file is removed.
+          tmpFile->remove();
         }
       else
         {
           // Read last received bytes. Seems not to be necessary.
           // slotReadyRead();
-          reply->close();
 
           // Remove an old existing destination file before rename file.
           QFile::remove( _destination );
 
           // Rename temporary file to destination file.
           tmpFile->rename( _destination );
-
-          // Inform about the result.
-          emit finished( _url, reply->error() );
         }
 
       delete tmpFile;
@@ -316,7 +322,12 @@ void HttpClient::slotFinished()
       // Destroy reply object
       reply->deleteLater();
       reply = static_cast<QNetworkReply *> (0);
-    }
 
-  downloadRunning = false;
+      // Reset run flag before signal emit because signal finished can trigger
+      // the next download.
+      downloadRunning = false;
+
+      // Inform about the result.
+      emit finished( _url, error );
+    }
 }

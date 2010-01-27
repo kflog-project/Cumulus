@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2010 Axel Pauli
+**   Copyright (c): 2010 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -45,6 +45,8 @@ class HttpClient : public QObject
    * Pass false via showProgressDialog to suppress the progress dialog.
    */
   HttpClient( QObject *parent = 0, const bool showProgressDialog = true );
+
+  virtual ~HttpClient();
 
   /**
    * Requests to download the passed url and to store the result under the
