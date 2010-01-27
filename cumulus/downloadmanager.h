@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2010 Axel Pauli
+**   Copyright (c): 2010 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -39,14 +39,21 @@ class DownloadManager : public QObject
 
   /**
    * Requests to download the passed url and to store the result under the
-   * passed file destination.
+   * passed file destination. Destination must consist of a full path.
    */
-  bool downloadFile( QString &url, QString &destination );
+  bool downloadRequest( QString &url, QString &destination );
+
+  signals:
+
+   /** Sends a finish signal if all requested downloads are done. */
+   void finished();
+
+ private:
 
   /**
-   * Returns the free blocks of the file system for non root users.
+   * Returns the free size of the file system in bytes for non root users.
    */
-  long getFreeUserSpace( QString& path );
+  ulong getFreeUserSpace( QString& path );
 
  private slots:
 
@@ -55,17 +62,28 @@ class DownloadManager : public QObject
 
  private:
 
+  /** HTTP download client */
   HttpClient *client;
 
   /** Download working flag */
   bool downloadRunning;
 
-  QSet<QString> urlSet; // Set of urls to be downloaded for fast checks
+  /** Set of urls to be downloaded, used for fast checks */
+  QSet<QString> urlSet;
 
   /**
    * The download queue containing url and destination as string pair.
    */
   QQueue< QPair<QString, QString> > queue;
+
+  /** Mutex to protect data accesses. */
+  QMutex mutex;
+
+  /**
+   * Required minimum space in bytes on file system destination to
+   * execute the download request.
+   */
+  static const ulong MinFsSpace;
 };
 
 #endif /* DOWNLOAD_MANAGER_H */
