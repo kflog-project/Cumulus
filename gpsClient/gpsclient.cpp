@@ -257,6 +257,12 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
   ioSpeedTerminal = getBaudrate(ioSpeedIn);
   bool fifo       = false;
 
+  if( deviceIn == (const char *) 0 || strlen(deviceIn) == 0 )
+    {
+      // no valid device has been passed
+      return false;
+    }
+
   // remove all old queued messages
   queue.clear();
 
