@@ -22,14 +22,8 @@
 #ifndef HTTP_CLIENT_H
 #define HTTP_CLIENT_H
 
-#include <QObject>
-#include <QNetworkAccessManager>
-#include <QList>
-#include <QFile>
-#include <QProgressDialog>
-#include <QString>
-#include <QNetworkReply>
-#include <QAuthenticator>
+#include <QtGui>
+#include <QtNetwork>
 
 class HttpClient : public QObject
 {
@@ -114,6 +108,7 @@ class HttpClient : public QObject
   QString               _url;
   QString               _destination;
   bool                  downloadRunning;
+  QTimer                *timer;
 };
 
 #endif /* HTTP_CLIENT_H */

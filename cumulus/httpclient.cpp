@@ -19,9 +19,6 @@
  * This class is a simple HTTP download client.
  */
 
-#include <QtGui>
-#include <QtNetwork>
-
 #include "httpclient.h"
 #include "authdialog.h"
 #include "target.h"
@@ -35,7 +32,8 @@ HttpClient::HttpClient( QObject *parent, const bool showProgressDialog ) :
   tmpFile(0),
   _url(""),
   _destination(""),
-  downloadRunning(false)
+  downloadRunning(false),
+  timer(0)
  {
    if( showProgressDialog )
      {
@@ -54,6 +52,11 @@ HttpClient::HttpClient( QObject *parent, const bool showProgressDialog ) :
             this, SLOT(slotSslErrors( QNetworkReply *, const QList<QSslError> & )) );
 #endif
 
+   // timer to supervise connection.
+   timer = new QTimer( this );
+   timer->setInterval( 30000 ); // Timeout is 30s
+
+   connect( timer, SIGNAL(timeout()), this, SLOT(slotCancelDownload()) );
 }
 
 HttpClient::~HttpClient()
@@ -66,7 +69,7 @@ HttpClient::~HttpClient()
 
 bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
 {
-  qDebug() << "downloadFile: url=" << urlIn << ", dest=" << destinationIn;
+  // qDebug() << "HttpClient::downloadFile: url=" << urlIn << ", dest=" << destinationIn;
 
   if( downloadRunning == true )
     {
@@ -114,6 +117,8 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
       return false;
     }
 
+  reply->setReadBufferSize(0);
+
   connect( reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()) );
 
   connect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
@@ -134,6 +139,7 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
       _progressDialog->show();
     }
 
+  timer->start();
   return true;
 }
 
@@ -141,6 +147,8 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
 void HttpClient::slotCancelDownload()
 {
   qDebug( "HttpClient(%d): Download canceled!", __LINE__ );
+
+  timer->start();
 
   if ( _progressDialog != static_cast<QProgressDialog *> (0) )
     {
@@ -166,6 +174,8 @@ void HttpClient::slotError( QNetworkReply::NetworkError code )
   qWarning( "HttpClient(%d): Network error %d, %s ",
            __LINE__, code, reply->errorString().toLatin1().data() );
 
+  timer->start();
+
   if( code == QNetworkReply::NoError ||
       code == QNetworkReply::OperationCanceledError )
     {
@@ -188,6 +198,8 @@ void HttpClient::slotError( QNetworkReply::NetworkError code )
 /** Report download progress to the user */
 void HttpClient::slotDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
+  // qDebug() << "HttpClient::slotDownloadProgress" << bytesReceived << bytesTotal;
+
   if ( _progressDialog != static_cast<QProgressDialog *> (0) )
     {
       // Report results to the progress dialog.
@@ -199,18 +211,24 @@ void HttpClient::slotDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
       // Emit this signal to the outside, when no progress dialog is set up.
       emit downloadProgress( bytesReceived, bytesTotal );
     }
+
+  timer->start();
 }
 
 void HttpClient::slotAuthenticationRequired( QNetworkReply * /* reply */,
                                              QAuthenticator *authenticator )
 {
-  return getUserPassword( authenticator );
+  timer->stop();
+  getUserPassword( authenticator );
+  timer->start();
 }
 
 void HttpClient::slotProxyAuthenticationRequired( const QNetworkProxy & /* proxy */,
                                                   QAuthenticator *authenticator )
 {
-  return getUserPassword( authenticator );
+  timer->stop();
+  getUserPassword( authenticator );
+  timer->start();
 }
 
 void HttpClient::getUserPassword( QAuthenticator *authenticator )
@@ -244,12 +262,16 @@ void HttpClient::slotSslErrors( QNetworkReply *reply, const QList<QSslError> &er
       errorString += errors.at(i).errorString();
     }
 
+  timer->stop();
+
   if( QMessageBox::warning( 0, QObject::tr( "HTTP SSL Error" ),
       QObject::tr("One or more SSL errors has occurred: %1" ).arg( errorString ),
       QMessageBox::Ignore | QMessageBox::Abort ) == QMessageBox::Ignore )
     {
       reply->ignoreSslErrors();
     }
+
+  timer->start();
 }
 
 #endif
@@ -263,13 +285,13 @@ void HttpClient::slotReadyRead()
     {
       QByteArray byteArray = reply->readAll();
 
-      // qDebug("%d bytes read", byteArray.size());
-
       if( byteArray.size() > 0 )
         {
           tmpFile->write( byteArray );
         }
     }
+
+  timer->start();
 }
 
 /**
@@ -278,7 +300,9 @@ void HttpClient::slotReadyRead()
  */
 void HttpClient::slotFinished()
 {
-  qDebug("HttpClient::slotFinished()");
+  qDebug("Download %s finished with %d", _url.toLatin1().data(), reply->error() );
+
+  timer->stop();
 
   // Hide progress dialog.
   if ( _progressDialog != static_cast<QProgressDialog *> (0) )
@@ -300,7 +324,6 @@ void HttpClient::slotFinished()
 
       if( error != QNetworkReply::NoError )
         {
-          qDebug() << "ReplyError=" << error;
           // Request was aborted, tmp file is removed.
           tmpFile->remove();
         }
