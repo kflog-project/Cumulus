@@ -10,7 +10,7 @@
 **                   2007-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -859,6 +859,18 @@ class GeneralConfig : protected QSettings
   void setMapRootDir( QString newValue )
   {
     _mapUserDir = newValue;
+  };
+
+  /** gets map server url */
+  QString getMapServerUrl()
+  {
+    return _mapServerUrl;
+  };
+
+  /** sets map server url */
+  void setMapServerUrl( QString newValue )
+  {
+    _mapServerUrl = newValue;
   };
 
   /** gets map scale */
@@ -1801,6 +1813,9 @@ class GeneralConfig : protected QSettings
 
   // Map directory, defined by user
   QString _mapUserDir;
+
+  // KFLog map room server Url
+  QString _mapServerUrl;
 
   // Map Scale
   double _mapScale;

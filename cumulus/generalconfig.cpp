@@ -44,7 +44,7 @@ using namespace std;
 #ifdef MAEMO
 #define USER_DATA_DIR QDir::homePath() + "/MyDocs/Cumulus"
 #else
-#define USER_DATA_DIR QDir::homePath() + "/cumulus"
+#define USER_DATA_DIR QDir::homePath() + "/Cumulus"
 #endif
 
 // define NULL static instance
@@ -239,10 +239,11 @@ void GeneralConfig::load()
   beginGroup("Map Data");
   _home.setX( value( "Homesite Latitude", HOME_DEFAULT_LAT).toInt() );
   _home.setY( value( "Homesite Longitude", HOME_DEFAULT_LON).toInt() );
-  _mapUserDir  = value("Map Root", "").toString();
-  _centerLat  = value("Center Latitude", HOME_DEFAULT_LAT).toInt();
-  _centerLon  = value("Center Longitude", HOME_DEFAULT_LON).toInt();
-  _mapScale   = value("Map Scale", 200).toDouble();
+  _mapUserDir        = value("Map Root", "").toString();
+  _mapServerUrl      = value("Map Server Url", "http://www.kflog.org/data/landscape/").toString();
+  _centerLat         = value("Center Latitude", HOME_DEFAULT_LAT).toInt();
+  _centerLon         = value("Center Longitude", HOME_DEFAULT_LON).toInt();
+  _mapScale          = value("Map Scale", 200).toDouble();
   _mapProjectionType = value("Projection Type", ProjectionBase::Cylindric ).toInt();
 
   _welt2000CountryFilter    = value("Welt2000CountryFilter", "").toString();
@@ -540,6 +541,7 @@ void GeneralConfig::save()
   setValue("Homesite Latitude", _home.x());
   setValue("Homesite Longitude", _home.y());
   setValue("Map Root", _mapUserDir);
+  setValue("Map Server Url", _mapServerUrl);
   setValue("Center Latitude", _centerLat);
   setValue("Center Longitude", _centerLon);
   setValue("Map Scale", _mapScale);
