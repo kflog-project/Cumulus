@@ -30,6 +30,7 @@
 #include <string.h>
 #include <signal.h>
 #include <sys/ioctl.h>
+#include <sys/statvfs.h>
 
 #include <QDesktopWidget>
 #include <QTextCodec>
@@ -40,6 +41,7 @@
 #include <QList>
 #include <QVector>
 #include <QMessageBox>
+#include <QDebug>
 
 #ifdef MAEMO
 #include <QInputContext>
@@ -66,7 +68,7 @@
 #include "sound.h"
 #include "time_cu.h"
 
-#include "httpclient.h"
+#include "downloadmanager.h"
 
 
 #ifdef MAEMO
@@ -699,15 +701,6 @@ void MainWindow::slotCreateApplicationWidgets()
   slotViewStatusBar( true );
 
   qDebug( "End startup CmulusApp" );
-
-  QString url = "http://www.segelflug.de/vereine/welt2000/download/WELT2000_09-06-19.TXT";
-  //QString url = "http://www.baec.de";
-
-  QString dest = "/tmp/welt2000.txt";
-
-  HttpClient *client = new HttpClient();
-
-  client->downloadFile( url, dest );
 }
 
 MainWindow::~MainWindow()
