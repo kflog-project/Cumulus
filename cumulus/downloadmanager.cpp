@@ -22,6 +22,9 @@
 
 #include <sys/statvfs.h>
 
+#include <QtCore>
+#include <QtNetwork>
+
 #include "downloadmanager.h"
 #include "calculator.h"
 #include "gpsnmea.h"
@@ -36,7 +39,18 @@ DownloadManager::DownloadManager( QObject *parent ) :
   client(0),
   downloadRunning(false)
 {
-  client = new HttpClient(this);
+  client = new HttpClient(this, false);
+
+#if 0
+  QNetworkAccessManager *networkManager = client->networkManager();
+
+  QNetworkProxy proxy;
+  proxy.setType(QNetworkProxy::HttpProxy);
+  proxy.setHostName("");
+  proxy.setPort(8080);
+
+  networkManager->setProxy( proxy );
+#endif
 
   connect( client, SIGNAL( finished(QString &, QNetworkReply::NetworkError) ),
            this, SLOT( slotFinished(QString &, QNetworkReply::NetworkError) ));
@@ -74,8 +88,8 @@ bool DownloadManager::downloadRequest( QString &url, QString &destination )
   // download is rejected.
   if( getFreeUserSpace( destDir ) < MinFsSpace )
     {
-      qWarning( "DownloadManager(%d): Free space on %s less than 25MB!",
-                __LINE__, destDir.toLatin1().data() );
+      qWarning( "DownloadManager(%d): Free space on %s less than %ldMB!",
+                __LINE__, destDir.toLatin1().data(), MinFsSpace/(1024*1024) );
 
       mutex.unlock();
       return false;
@@ -88,6 +102,7 @@ bool DownloadManager::downloadRequest( QString &url, QString &destination )
         {
           qWarning( "DownloadManager(%d): Download of '%s' failed!",
                      __LINE__, url.toLatin1().data() );
+
           // Start of download failed.
           mutex.unlock();
           return false;
@@ -164,8 +179,8 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
   // download is not executed.
   if( getFreeUserSpace( destDir ) < MinFsSpace )
     {
-      qWarning( "DownloadManager(%d): Free space on %s less than 25MB!",
-                __LINE__, destDir.toLatin1().data() );
+      qWarning( "DownloadManager(%d): Free space on %s less than %ldMB!",
+                __LINE__, destDir.toLatin1().data(), MinFsSpace/(1024*1024) );
 
       mutex.unlock();
 
@@ -175,12 +190,15 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
       return;
     }
 
+  sleep(1); // make a short break
+
   // Start the next download.
   if( client->downloadFile( url, destination ) == false )
     {
+    // Start of download failed.
       qWarning( "DownloadManager(%d): Download of '%s' failed!",
                  __LINE__, url.toLatin1().data() );
-      // Start of download failed.
+
       mutex.unlock();
 
       // We simulate an operation cancel error, if download
@@ -208,10 +226,12 @@ ulong DownloadManager::getFreeUserSpace( QString& path )
       return 0;
     }
 
-  qDebug() << "FSBlockSize=" << buf.f_bsize
+#if 0
+  qDebug() << "DM: FSBlockSize=" << buf.f_bsize
            << "FSSizeInBlocks=" << buf.f_blocks
            << "FreeAvail=" << buf.f_bfree
-           << "FreeAvailNonRoot=" << buf.f_bavail;
+           << "FreeAvailNonRoot=" << buf.f_bavail*buf.f_bsize/(1024*1024) << "MB";
+#endif
 
   // free size available to non-superuser in bytes
   return buf.f_bavail * buf.f_bsize;
