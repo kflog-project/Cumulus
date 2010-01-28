@@ -23,6 +23,7 @@ HEADERS = airfieldlistview.h \
     configwidget.h \
     calculator.h \
     distance.h \
+    downloadmanager.h \
     elevationcolorimage.h \
     filetools.h \
     flighttask.h \
@@ -131,6 +132,7 @@ SOURCES = airfieldlistview.cpp \
     configwidget.cpp \
     calculator.cpp \
     distance.cpp \
+    downloadmanager.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \
     flighttask.cpp \
