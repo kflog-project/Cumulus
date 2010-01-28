@@ -7,10 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008-2009 by Axel Pauli
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -35,6 +35,7 @@
 #include "flighttask.h"
 #include "waitscreen.h"
 #include "isolist.h"
+#include "downloadmanager.h"
 
 class Isohypse;
 class LineElement;
@@ -292,6 +293,11 @@ class MapContents : public QObject
     /** Reload welt 2000 data file */
     void slotReloadWelt2000Data();
 
+  private slots:
+
+    /** Called, if all downloads are finished. */
+    void downloadsFinished();
+
   signals:
 
     /**
@@ -333,6 +339,15 @@ class MapContents : public QObject
      */
     bool __readTerrainFile( const int fileSecID,
                             const int fileTypeID );
+
+    /**
+     * Try to download a missing ground/terrain file.
+     *
+     * @param file The name of the file without any path prefixes.
+     * @param directory The destination directory.
+     *
+     */
+    bool __downloadMapFile( QString &file, QString &directory );
 
     /**
      * shows a progress message at the wait screen
@@ -506,6 +521,8 @@ class MapContents : public QObject
      */
     QList<wayPoint> wpList;
 
+    /** Manager to handle downloads of missing map file. */
+    DownloadManager *downloadManger;
   };
 
 #endif

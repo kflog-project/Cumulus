@@ -6,11 +6,11 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2009 by Axel Pauli
+ **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -20,22 +20,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <QDataStream>
-#include <QTextStream>
-#include <QBuffer>
-#include <QDateTime>
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
-#include <QRegExp>
-#include <QString>
-#include <QRegion>
-#include <QPolygon>
-#include <QByteArray>
-#include <QCoreApplication>
+#include <QtCore>
+#include <QtGui>
 
 #include "mapcontents.h"
 #include "mapmatrix.h"
+#include "map.h"
 #include "mapview.h"
 #include "mapcalc.h"
 #include "airfield.h"
@@ -119,7 +109,8 @@ const short MapContents::isoLevels[] =
 
 MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
     QObject(parent),
-    isFirst(true)
+    isFirst(true),
+    downloadManger(0)
 {
   ws = waitscreen;
 
@@ -237,15 +228,23 @@ bool MapContents::__readTerrainFile( const int fileSecID,
   QString kflPathName, kfcPathName, pathName;
   QString kflName, kfcName;
 
-  kflName.sprintf("landscape/%c_%.5d.kfl", fileTypeID, fileSecID);
-  kflExists = locateFile(kflName, kflPathName);
+  kflName.sprintf("%c_%.5d.kfl", fileTypeID, fileSecID);
+  kflExists = locateFile("landscape/" + kflName, kflPathName);
 
   kfcName.sprintf("landscape/%c_%.5d.kfc", fileTypeID, fileSecID);
   kfcExists = locateFile(kfcName, kfcPathName);
 
   if ( ! (kflExists || kfcExists) )
     {
-      qWarning( "Cumulus: no map file (%s or %s) found! Please install %s file", kflName.toLatin1().data(), kfcName.toLatin1().data(), kflName.toLatin1().data() );
+      QString path = GeneralConfig::instance()->getUserDataDirectory() + "/maps/landscape";
+
+      if( ! __downloadMapFile( kflName, path ) )
+        {
+          qWarning( "Cumulus: no map files (%s or %s) found! Please install %s.",
+                    kflName.toLatin1().data(), kfcName.toLatin1().data(),
+                    kflName.toLatin1().data() );
+        }
+
       return false; // file could not be located in any of the possible map directories.
     }
 
@@ -670,16 +669,23 @@ bool MapContents::__readBinaryFile(const int fileSecID,
   QString kflPathName, kfcPathName, pathName;
   QString kflName, kfcName;
 
-  kflName.sprintf("landscape/%c_%.5d.kfl", fileTypeID, fileSecID);
-  kflExists = locateFile(kflName, kflPathName);
+  kflName.sprintf("%c_%.5d.kfl", fileTypeID, fileSecID);
+  kflExists = locateFile("landscape/" + kflName, kflPathName);
 
   kfcName.sprintf("landscape/%c_%.5d.kfc", fileTypeID, fileSecID);
   kfcExists = locateFile(kfcName, kfcPathName);
 
   if ( ! (kflExists || kfcExists) )
     {
-      qWarning( "Cumulus: no map files (%s or %s) found! Please install %s.",
-                kflName.toLatin1().data(), kfcName.toLatin1().data(), kflName.toLatin1().data() );
+      QString path = GeneralConfig::instance()->getUserDataDirectory() + "/maps/landscape";
+
+      if( ! __downloadMapFile( kflName, path ) )
+        {
+          qWarning( "Cumulus: no map files (%s or %s) found! Please install %s.",
+                    kflName.toLatin1().data(), kfcName.toLatin1().data(),
+                    kflName.toLatin1().data() );
+        }
+
       return false; // file could not be located in any of the possible map directories.
     }
 
@@ -1237,6 +1243,50 @@ bool MapContents::__readBinaryFile(const int fileSecID,
     }
 
   return true;
+}
+
+/**
+ * Try to download a missing ground/terrain file.
+ *
+ * @param file The name of the file without any path prefixes.
+ * @param directory The destination directory.
+ *
+ */
+bool MapContents::__downloadMapFile( QString &file, QString &directory )
+{
+  extern Calculator* calculator;
+
+  if( GpsNmea::gps->getConnected() && calculator->moving() )
+    {
+      // We have a GPS connection and are in move. That does not allow
+      // to make any downloads.
+      return false;
+    }
+
+  if( downloadManger == static_cast<DownloadManager *> (0) )
+    {
+      downloadManger = new DownloadManager(this);
+
+      connect( downloadManger, SIGNAL(finished()),
+               this, SLOT(downloadsFinished()) );
+    }
+
+  QString url = GeneralConfig::instance()->getMapServerUrl() + file;
+  QString dest = directory + "/" + file;
+
+  downloadManger->downloadRequest( url, dest );
+  return true;
+}
+
+/** Called, if all downloads are finished. */
+void MapContents::downloadsFinished()
+{
+  // All has finished, free not more needed resources
+  downloadManger->deleteLater();
+  downloadManger = static_cast<DownloadManager *> (0);
+
+  // initiate a map redraw
+  Map::instance->scheduleRedraw( Map::baseLayer );
 }
 
 void MapContents::proofeSection()
