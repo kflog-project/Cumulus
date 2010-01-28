@@ -549,6 +549,8 @@ class Map : public QWidget
     QTime _lastVeryNearTime;
     QTime _lastInsideTime;
 
+  public:
+
     static Map *instance;
 };
 
