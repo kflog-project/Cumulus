@@ -117,6 +117,17 @@ QRect areaBox(QPoint center, double r);
 QRect getTileBox(const ushort tileNo);
 
 /**
+ * Calculates the map tile number from the passed coordinate. The coordinate
+ * format is decimal degree. Positive numbers are N and E, negative numbers
+ * are W and S.
+ *
+ * @param lat Latitude in decimal degree. 90...-90
+ * @param lon Longitude in decimal degree. -180...180
+ * @return map tile number 0...16199
+ */
+int calcMapTileNumber( double lat, double lon );
+
+/**
  * Calculates ground speed, wca and true heading via the wind triangle.
  * See http://www.delphiforfun.org/programs/math_topics/WindTriangle.htm
  * for more info. Thanks to the publisher.
