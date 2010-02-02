@@ -350,6 +350,16 @@ class MapContents : public QObject
     bool __downloadMapFile( QString &file, QString &directory );
 
     /**
+     * Downloads all map tiles enclosed by the square with the center point. The
+     * square edges are in parallel with the sky directions N, S, W, E. inside
+     * the square you can place a circle with radius length.
+     *
+     * @param center The center coordinates (Lat/lon) in KFLog format
+     * @param length The half length of the square edge in meters.
+     */
+    void __downloadMapArea( const QPoint &center, const double length );
+
+    /**
      * shows a progress message at the wait screen
      */
     void showProgress2WaitScreen( QString message );

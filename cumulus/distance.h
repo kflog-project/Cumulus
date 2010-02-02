@@ -46,6 +46,7 @@ class Distance
   enum distanceUnit{meters=0, feet=1, kilometers=2, miles=3, nautmiles=4};
 
  public:
+
   Distance();
 
   /**
@@ -137,6 +138,11 @@ class Distance
   {
     return Distance(_dist * op);
   };
+
+  /**
+   * @returns a string for the currently set distance unit.
+   */
+  static QString getUnitText();
 
   /**
    * Represent a distance as a string.
@@ -240,6 +246,7 @@ class Distance
   bool _isValid;
 
  private:
+
   static distanceUnit _distanceUnit;
 };
 

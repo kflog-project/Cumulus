@@ -248,18 +248,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   qDebug( "QDir::homePath()=%s", QDir::homePath().toLatin1().data() );
   qDebug( "DISPLAY=%s", qwsdisplay ? qwsdisplay : "NULL" );
 
-  // Check, if in users home a Cumulus application directory exists,
-  // otherwise create it with all subdirectories.
-  QDir cuApps( QDir::homePath() + "/cumulus" );
-
-  if ( ! cuApps.exists() )
-    {
-      cuApps.mkpath( QDir::homePath() + "/cumulus/maps" );
-      cuApps.mkpath( QDir::homePath() + "/cumulus/maps/airfields" );
-      cuApps.mkpath( QDir::homePath() + "/cumulus/maps/airspaces" );
-      cuApps.mkpath( QDir::homePath() + "/cumulus/maps/landscape" );
-    }
-
   setFocusPolicy( Qt::StrongFocus );
   setFocus();
 

@@ -386,7 +386,7 @@ QRect getTileBox(const ushort tileNo)
  * @param lon Longitude in decimal degree. -180...180
  * @return map tile number 0...16199
  */
-int calcMapTileNumber( double lat, double lon )
+int mapTileNumber( double lat, double lon )
 {
   // check and correct input ranges
   if( lat <= -90 ) lat = -88;

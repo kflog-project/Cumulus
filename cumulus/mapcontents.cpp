@@ -236,7 +236,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
 
   if ( ! (kflExists || kfcExists) )
     {
-      QString path = GeneralConfig::instance()->getUserDataDirectory() + "/maps/landscape";
+      QString path = GeneralConfig::instance()->getMapRootDir() + "/landscape";
 
       if( ! __downloadMapFile( kflName, path ) )
         {
@@ -677,7 +677,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
   if ( ! (kflExists || kfcExists) )
     {
-      QString path = GeneralConfig::instance()->getUserDataDirectory() + "/maps/landscape";
+      QString path = GeneralConfig::instance()->getMapRootDir() + "/landscape";
 
       if( ! __downloadMapFile( kflName, path ) )
         {
@@ -1243,6 +1243,57 @@ bool MapContents::__readBinaryFile(const int fileSecID,
     }
 
   return true;
+}
+
+/**
+ * Downloads all map tiles enclosed by the square with the center point. The
+ * square edges are in parallel with the sky directions N, S, W, E. inside
+ * the square you can place a circle with radius length.
+ *
+ * @param center The center coordinates (Lat/lon) in KFLog format
+ * @param length The half length of the square edge in meters.
+ */
+void MapContents::__downloadMapArea( const QPoint &center, const double length )
+{
+  // Calculate length in degree along the latitude and the longitude.
+  // For the calculation the circle formula  is used.
+  double delta_lat = 180/M_PIl * length/RADIUS;
+  double delta_lon = 180/M_PIl * length/RADIUS * cos ( M_PIl / 180.0 * center.x() );
+
+  // Calculate the sky boarders of the square.
+  int north = (int) ceil(center.x() + delta_lat);
+  int south = (int) floor( center.x() - delta_lat);
+  int east  = (int) ceil(center.y() + delta_lon);
+  int west  = (int) floor(center.y() - delta_lon);
+
+  // Round up and down to even numbers
+  north += abs(north % 2);
+  south -= abs(south % 2);
+
+  east += abs(east % 2);
+  west -= abs(west % 2);
+
+  // Check and correct boarders
+  if( north > 90 )
+    {
+      north = 90;
+    }
+
+  if( south < -90 )
+    {
+      south = -90;
+    }
+
+  printf("N=%d, S=%d, E=%d, W=%d\n", north, south, east, west );
+
+  for( int i = west; i < east; i+=2 )
+    {
+      for( int j = north; j > south; j-=2 )
+        {
+          int tile = mapTileNumber( j, i );
+          printf("Lat=%d, Lon=%d, Tile=%d\n", j, i, tile );
+        }
+    }
 }
 
 /**

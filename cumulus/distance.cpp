@@ -136,6 +136,36 @@ double Distance::operator / (const Distance& op) const
   return _dist / op._dist;
 }
 
+/**
+ * @returns a string for the currently set distance unit.
+ */
+QString Distance::getUnitText()
+{
+  QString unit;
+
+  switch( _distanceUnit )
+    {
+    case meters:
+      unit = "m";
+      break;
+    case feet:
+      unit = "ft";
+      break;
+    case kilometers:
+      unit = "km";
+      break;
+    case miles:
+      unit = "SM";
+      break;
+    case nautmiles:
+      unit = "NM";
+      break;
+    default:
+      unit = "m";
+    }
+
+  return unit;
+}
 
 QString Distance::getText( bool withUnit, uint precision, uint chopOrder ) const
 {

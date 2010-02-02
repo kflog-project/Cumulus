@@ -38,13 +38,16 @@ using namespace std;
 #include "maemostyle.h"
 #endif
 
-// We use different places for the default user data directory.
+// We can use different places for the default user data directory and
+// user map directory.
 // Only files are visible with the normal Maemo file manager, if they are
 // located in the subdirectory MyDocs.
 #ifdef MAEMO
 #define USER_DATA_DIR QDir::homePath() + "/MyDocs/Cumulus"
+#define USER_MAP_DIR "/media/mmc2/Cumulus/maps"
 #else
 #define USER_DATA_DIR QDir::homePath() + "/Cumulus"
+#define USER_MAP_DIR QString(USER_DATA_DIR) + "/maps"
 #endif
 
 // define NULL static instance
@@ -215,6 +218,8 @@ void GeneralConfig::load()
   beginGroup("Map");
   _mapProjFollowsHome             = value( "ProjectionFollowsHome", true ).toBool();
   _mapUnload                      = value( "UnloadUnneededMap", true ).toBool();
+  _downloadMissingMaps            = value( "DownloadMissingMaps", false ).toBool();
+  _mapInstallRadius               = value( "MapInstallRadius", 1000 ).toInt();
   _mapBearLine                    = value( "BearLine", true ).toBool();
   _mapLoadIsoLines                = value( "LoadIsoLines", true ).toBool();
   _mapShowIsoLineBorders          = value( "ShowIsoLineBorders", false ).toBool();
@@ -239,7 +244,7 @@ void GeneralConfig::load()
   beginGroup("Map Data");
   _home.setX( value( "Homesite Latitude", HOME_DEFAULT_LAT).toInt() );
   _home.setY( value( "Homesite Longitude", HOME_DEFAULT_LON).toInt() );
-  _mapUserDir        = value("Map Root", "").toString();
+  _mapUserDir        = value("Map Root", USER_MAP_DIR).toString();
   _mapServerUrl      = value("Map Server Url", "http://www.kflog.org/data/landscape/").toString();
   _centerLat         = value("Center Latitude", HOME_DEFAULT_LAT).toInt();
   _centerLon         = value("Center Longitude", HOME_DEFAULT_LON).toInt();
@@ -378,6 +383,24 @@ void GeneralConfig::load()
   Speed::setWindUnit( Speed::speedUnit( getUnitWind() ) );
   Time::setUnit( Time::timeUnit( getUnitTime() ) );
   WGSPoint::setFormat( WGSPoint::Format( getUnitPos() ) );
+
+  // Check if user data and user map directories do exist. Create missing structures.
+  QDir cuMapDir( _mapUserDir );
+
+  if( ! cuMapDir.exists() )
+    {
+      cuMapDir.mkpath( _mapUserDir );
+      cuMapDir.mkpath( _mapUserDir + "/airfields" );
+      cuMapDir.mkpath( _mapUserDir + "/airspaces" );
+      cuMapDir.mkpath( _mapUserDir + "/landscape" );
+    }
+
+  QDir cuDataDir( _userDataDirectory );
+
+  if( ! cuMapDir.exists() )
+    {
+      cuDataDir.mkpath( _userDataDirectory );
+    }
 }
 
 void GeneralConfig::save()
@@ -516,6 +539,8 @@ void GeneralConfig::save()
   beginGroup("Map");
   setValue( "ProjectionFollowsHome", _mapProjFollowsHome );
   setValue( "UnloadUnneededMap", _mapUnload );
+  setValue( "DownloadMissingMaps", _downloadMissingMaps );
+  setValue( "MapInstallRadius", _mapInstallRadius );
   setValue( "BearLine", _mapBearLine );
   setValue( "LoadIsoLines", _mapLoadIsoLines );
   setValue( "ShowIsoLineBorders", _mapShowIsoLineBorders );
@@ -1360,16 +1385,14 @@ QStringList GeneralConfig::getMapDirectories()
   QString     mapHome    = USER_DATA_DIR + "/maps";
   QString     mapInstall = _installRoot  + "/maps";
 
-  // First check, if user has defined an own map directory
-
+  // First take map directory
   if(  ! _mapUserDir.isEmpty() )
     {
       mapDirs << _mapUserDir;
     }
 
-  // Next follow $HOME/cumulus/maps and at last the installation area with
+  // Next follow $HOME/Cumulus/maps and at last the installation area with
   // $INSTALL_ROOT/maps.
-
   if( _mapUserDir != mapHome )
     {
       // add only if different

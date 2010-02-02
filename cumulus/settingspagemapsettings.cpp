@@ -7,10 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -92,6 +92,25 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   topLayout->addWidget(chkUnloadUnneeded, row, 0, 1, 2);
   row++;
 
+  chkDownloadMissingMaps = new QCheckBox(tr("Download missing maps"), this );
+  topLayout->addWidget(chkDownloadMissingMaps, row, 0, 1, 2);
+  row++;
+
+  installMaps = new QPushButton( tr("Install Maps"), this );
+  installMaps->setToolTip(tr("Install maps around home position"));
+  topLayout->addWidget(installMaps, row, 0 );
+
+  installRadius = new QSpinBox( this );
+  installRadius->setToolTip( tr("Radius around home position") );
+  installRadius->setButtonSymbols(QSpinBox::PlusMinus);
+  installRadius->setRange( 0, 20000 );
+  installRadius->setWrapping(true);
+  installRadius->setSingleStep( 100 );
+  installRadius->setValue( GeneralConfig::instance()->getMapInstallRadius() );
+  installRadius->setSuffix( Distance::getUnitText() );
+
+  topLayout->addWidget(installRadius, row++, 1 );
+
   topLayout->setColumnStretch( 2, 10 );
   topLayout->setRowStretch( row, 10 );
 }
@@ -108,6 +127,8 @@ void SettingsPageMapSettings::slot_load()
 
   chkUnloadUnneeded->setChecked( conf->getMapUnload() );
   chkProjectionFollowHome->setChecked( conf->getMapProjectionFollowsHome() );
+  chkDownloadMissingMaps->setChecked( conf->getDownloadMissingMaps() );
+  installRadius->setValue( GeneralConfig::instance()->getMapInstallRadius() );
 
   currentProjType = conf->getMapProjectionType();
   lambertV1 =       conf->getLambertParallel1();
@@ -170,6 +191,8 @@ void SettingsPageMapSettings::slot_save()
   conf->setMapRootDir( mapDirectory->text() );
   conf->setMapUnload( chkUnloadUnneeded->isChecked() );
   conf->setMapProjectionFollowsHome( chkProjectionFollowHome->isChecked() );
+  conf->setDownloadMissingMaps( chkDownloadMissingMaps->isChecked() );
+  conf->setMapInstallRadius( installRadius->value() );
   conf->setMapProjectionType( currentProjType );
   conf->setLambertParallel1( lambertV1 );
   conf->setLambertParallel2( lambertV2 );
@@ -289,6 +312,8 @@ void SettingsPageMapSettings::slot_query_close(bool& warn, QStringList& warnings
   changed = changed || ( mapDirectory->text() != conf->getMapRootDir() );
   changed = changed || ( chkUnloadUnneeded->isChecked() != conf->getMapUnload() );
   changed = changed || ( chkProjectionFollowHome->isChecked() != conf->getMapProjectionFollowsHome() );
+  changed = changed || ( chkDownloadMissingMaps->isChecked() != conf->getDownloadMissingMaps() );
+  changed = changed || ( installRadius->value() != conf->getMapInstallRadius() );
   changed = changed || checkIsProjectionChanged();
 
   if (changed)

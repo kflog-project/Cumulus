@@ -1126,6 +1126,28 @@ class GeneralConfig : protected QSettings
     _mapUnload = newValue;
   };
 
+  /** gets download missing map files */
+  bool getDownloadMissingMaps() const
+  {
+    return _downloadMissingMaps;
+  };
+  /** sets download missing map files */
+  void setDownloadMissingMaps(const bool newValue)
+  {
+    _downloadMissingMaps = newValue;
+  };
+
+  /** gets map install radius */
+  int getMapInstallRadius() const
+  {
+    return _mapInstallRadius;
+  };
+  /** sets map install radius */
+  void setMapInstallRadius(const int newValue)
+  {
+    _mapInstallRadius = newValue;
+  };
+
   /** Gets the welt2000 country filter */
   QString &getWelt2000CountryFilter()
     {
@@ -1825,6 +1847,10 @@ class GeneralConfig : protected QSettings
   bool _mapProjFollowsHome;
   // Map unload unneeded
   bool _mapUnload;
+  // Download missing map files
+  bool _downloadMissingMaps;
+  // Map install radius for download
+  int _mapInstallRadius;
 
   // Welt2000 country filter
   QString _welt2000CountryFilter;
