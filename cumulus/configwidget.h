@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2007-2009 by Axel Pauli
+**                   2007-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -45,6 +45,10 @@
 class ConfigWidget : public QWidget
   {
     Q_OBJECT
+
+  private:
+
+    Q_DISABLE_COPY ( ConfigWidget )
 
   public:
     /**
