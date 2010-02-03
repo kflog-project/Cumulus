@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2009 by Axel Pauli
+ **                   2007-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -30,7 +30,10 @@
 #include "configwidget.h"
 #include "generalconfig.h"
 #include "mapconfig.h"
+#include "mapcontents.h"
 #include "gpsnmea.h"
+
+extern MapContents *_globalMapContents;
 
 ConfigWidget::ConfigWidget(QWidget *parent) :
   QWidget(parent), loadConfig(true)
@@ -185,6 +188,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
 
   connect(spa, SIGNAL(airspaceColorsUpdated()),
           _globalMapConfig, SLOT(slotReloadAirspaceColors()));
+
+  connect(spms, SIGNAL(downloadMapArea( const QPoint&, const Distance& )),
+          _globalMapContents, SLOT(slotDownloadMapArea( const QPoint&, const Distance&)));
 
   QHBoxLayout *contentLayout = new QHBoxLayout;
   contentLayout->addWidget( tabWidget );
