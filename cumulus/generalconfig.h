@@ -641,6 +641,17 @@ class GeneralConfig : protected QSettings
     _language = newValue;
   };
 
+  /** Gets the proxy */
+  QString &getProxy()
+    {
+      return _proxy;
+    };
+  /** Sets the proxy */
+  void setProxy( const QString newValue )
+  {
+    _proxy = newValue;
+  };
+
   /** Gets the map sidebar frame color */
   QColor &getMapFrameColor()
     {
@@ -1717,10 +1728,10 @@ class GeneralConfig : protected QSettings
 
  private:
 
-   /** loads the terrain default colors */
-   void loadTerrainDefaultColors();
+  /** loads the terrain default colors */
+  void loadTerrainDefaultColors();
 
-   static GeneralConfig *_theInstance;
+  static GeneralConfig *_theInstance;
 
   // Root path of cumulus installation
   QString _installRoot;
@@ -1730,6 +1741,9 @@ class GeneralConfig : protected QSettings
 
   // user data directory
   QString _userDataDirectory;
+
+  // Internet proxy
+  QString _proxy;
 
   // terrain colors
   QColor _terrainColors[SIZEOF_TERRAIN_COLORS];

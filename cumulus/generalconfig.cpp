@@ -180,6 +180,7 @@ void GeneralConfig::load()
   _surname           = value("SurName", "").toString();
   _language          = value("Language", "en").toString();
   _userDataDirectory = value("UserDataDir", USER_DATA_DIR).toString();
+  _proxy             = value("Proxy", "").toString();
   endGroup();
 
   // Preflight settings
@@ -219,7 +220,7 @@ void GeneralConfig::load()
   _mapProjFollowsHome             = value( "ProjectionFollowsHome", true ).toBool();
   _mapUnload                      = value( "UnloadUnneededMap", true ).toBool();
   _downloadMissingMaps            = value( "DownloadMissingMaps", false ).toBool();
-  _mapInstallRadius               = value( "MapInstallRadius", 1000 ).toInt();
+  _mapInstallRadius               = value( "MapInstallRadius", 500 ).toInt();
   _mapBearLine                    = value( "BearLine", true ).toBool();
   _mapLoadIsoLines                = value( "LoadIsoLines", true ).toBool();
   _mapShowIsoLineBorders          = value( "ShowIsoLineBorders", false ).toBool();
@@ -503,6 +504,7 @@ void GeneralConfig::save()
   setValue("SurName", _surname);
   setValue("Language", _language);
   setValue( "UserDataDir", _userDataDirectory);
+  setValue("Proxy", _proxy);
   endGroup();
 
   // Preflight data
