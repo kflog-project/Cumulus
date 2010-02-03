@@ -32,15 +32,21 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QSpinBox>
+#include <QPoint>
 
 #include "coordedit.h"
 #include "projectionbase.h"
+#include "distance.h"
 
 class SettingsPageMapSettings : public QWidget
 {
   Q_OBJECT
 
-    public:
+ private:
+
+  Q_DISABLE_COPY ( SettingsPageMapSettings )
+
+ public:
 
   /**
    * Constructor
@@ -57,14 +63,18 @@ class SettingsPageMapSettings : public QWidget
    */
   bool checkIsProjectionChanged();
 
-  public slots: // Public slots
+ signals:
+
+  void downloadMapArea( const QPoint&, const Distance& );
+
+ public slots:
   /**
    * Called to initiate saving to the configuration file.
    */
   void slot_save();
 
   /**
-   * Called to initiate loading of the configurationfile
+   * Called to initiate loading of the configuration file
    */
   void slot_load();
 
@@ -73,14 +83,21 @@ class SettingsPageMapSettings : public QWidget
    */
   void slot_query_close(bool& warn, QStringList& warnings);
 
-  private slots: // Private slots
+ private slots:
+
+  void slot_selectProjection(int);
 
   /**
    * Called if the map selection button is pressed
    */
   void slot_openFileDialog();
 
- protected:
+  /**
+   * Called if the install maps button is pressed
+   */
+  void slot_installMaps();
+
+ private:
 
   QPushButton *mapSelection;
   QLineEdit   *mapDirectory;
@@ -95,6 +112,8 @@ class SettingsPageMapSettings : public QWidget
   LongEdit    *edtLon;
   QPushButton *installMaps;
   QSpinBox    *installRadius;
+  LatEdit     *edtCenterLat;
+  LongEdit    *edtCenterLong;
 
   int cylinPar;
   int lambertV1;
@@ -103,10 +122,6 @@ class SettingsPageMapSettings : public QWidget
 
   // variable currentProjType is an enumeration ProjectionBase::ProjectionType
   int currentProjType;
-
-  protected slots:
-
-  void slotSelectProjection(int);
 };
 
 #endif

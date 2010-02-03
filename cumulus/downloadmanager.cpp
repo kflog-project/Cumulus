@@ -82,7 +82,7 @@ bool DownloadManager::downloadRequest( QString &url, QString &destination )
       return false;
     }
 
-  QString destDir = QFileInfo(destination).dir().absolutePath();
+  QString destDir = QFileInfo(destination).absolutePath();
 
   // Check free size of destination file system. If size is less than 25MB the
   // download is rejected.
@@ -173,7 +173,7 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
   QString url = pair.first;
   QString destination = pair.second;
 
-  QString destDir = QFileInfo(destination).dir().absolutePath();
+  QString destDir = QFileInfo(destination).absolutePath();
 
   // Check free size of destination file system. If size is less than 25MB the
   // download is not executed.
@@ -216,6 +216,8 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
  */
 ulong DownloadManager::getFreeUserSpace( QString& path )
 {
+  qDebug() << "Check Path=" << path;
+
   struct statvfs buf;
   int res;
 
@@ -223,10 +225,11 @@ ulong DownloadManager::getFreeUserSpace( QString& path )
 
   if( res )
     {
+      perror("getFreeUserSpace");
       return 0;
     }
 
-#if 0
+#if 1
   qDebug() << "DM: FSBlockSize=" << buf.f_bsize
            << "FSSizeInBlocks=" << buf.f_blocks
            << "FreeAvail=" << buf.f_bfree

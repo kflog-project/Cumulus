@@ -22,16 +22,13 @@
 **
 ***********************************************************************/
 
-#include <QGridLayout>
-#include <QMessageBox>
-#include <QGroupBox>
-#include <QFileDialog>
-#include <QDir>
-#include <QToolTip>
-#include <QStringList>
+#include <QtCore>
+#include <QtGui>
 
 #include "settingspagemapsettings.h"
 #include "generalconfig.h"
+#include "mapcontents.h"
+#include "distance.h"
 
 /***********************************************************/
 /*  map setting page                                       */
@@ -64,7 +61,8 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   cmbProjection->addItem(tr("Lambert"));
   cmbProjection->addItem(tr("Plate Carrée")); // Qt::Key_Eacute
 
-  connect(cmbProjection, SIGNAL(activated(int)), this, SLOT(slotSelectProjection(int)));
+  connect(cmbProjection, SIGNAL(activated(int)),
+          this, SLOT(slot_selectProjection(int)));
 
   topLayout->addWidget(new QLabel(tr("1. St. Parallel:"), this), row, 0);
   edtLat1=new LatEdit(this, conf->getHomeLat());
@@ -96,9 +94,21 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   topLayout->addWidget(chkDownloadMissingMaps, row, 0, 1, 2);
   row++;
 
+  QLabel *label = new QLabel(tr("Center Latitude:"), this);
+  topLayout->addWidget(label, row, 0);
+  edtCenterLat = new LatEdit(this, conf->getHomeLat());
+  topLayout->addWidget(edtCenterLat, row++, 1, 1, 2);
+
+  label = new QLabel(tr("Center Longitude:"), this);
+  topLayout->addWidget(label, row, 0);
+  edtCenterLong = new LongEdit(this, conf->getHomeLon());
+  topLayout->addWidget(edtCenterLong, row++, 1, 1, 2);
+
   installMaps = new QPushButton( tr("Install Maps"), this );
   installMaps->setToolTip(tr("Install maps around home position"));
   topLayout->addWidget(installMaps, row, 0 );
+
+  connect(installMaps, SIGNAL( clicked()), this, SLOT(slot_installMaps()) );
 
   installRadius = new QSpinBox( this );
   installRadius->setToolTip( tr("Radius around home position") );
@@ -128,6 +138,8 @@ void SettingsPageMapSettings::slot_load()
   chkUnloadUnneeded->setChecked( conf->getMapUnload() );
   chkProjectionFollowHome->setChecked( conf->getMapProjectionFollowsHome() );
   chkDownloadMissingMaps->setChecked( conf->getDownloadMissingMaps() );
+  edtCenterLat->setKFLogDegree( conf->getHomeLat() );
+  edtCenterLong->setKFLogDegree( conf->getHomeLon() );
   installRadius->setValue( GeneralConfig::instance()->getMapInstallRadius() );
 
   currentProjType = conf->getMapProjectionType();
@@ -141,7 +153,7 @@ void SettingsPageMapSettings::slot_load()
   // to get the right value.
   int projIndex = currentProjType - 1;
   cmbProjection->setCurrentIndex(projIndex);
-  slotSelectProjection(projIndex);
+  slot_selectProjection(projIndex);
 }
 
 
@@ -198,6 +210,33 @@ void SettingsPageMapSettings::slot_save()
   conf->setLambertParallel2( lambertV2 );
   conf->setLambertOrign( lambertOrigin );
   conf->setCylinderParallel( cylinPar );
+}
+
+/**
+ * Called if the install maps button is pressed
+ */
+void SettingsPageMapSettings::slot_installMaps()
+{
+  if( installRadius->value() == 0 )
+    {
+      // Radius distance is zero, ignore request.
+      return;
+    }
+
+  int answer = QMessageBox::question( this, tr("Download Maps?"),
+      tr("Active Internet connection is needed!") +
+      QString("<p>") + tr("Start download now?"),
+      QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+
+  if( answer == QMessageBox::No )
+    {
+      return;
+    }
+
+  Distance distance( Distance::convertToMeters( installRadius->value() ));
+  QPoint home = GeneralConfig::instance()->getHomeCoord();
+
+  emit downloadMapArea( home, distance );
 }
 
 /**
@@ -265,7 +304,7 @@ void SettingsPageMapSettings::slot_openFileDialog()
 // selection in the combo box has been changed. index is a reference
 // to the current entry. initialize widgets with the internal values
 // normally read from the configuration file.
-void SettingsPageMapSettings::slotSelectProjection(int index)
+void SettingsPageMapSettings::slot_selectProjection(int index)
 {
 
   switch (index)

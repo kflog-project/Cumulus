@@ -7,10 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -33,6 +33,10 @@
 class SettingsPagePersonal : public QWidget
 {
   Q_OBJECT
+
+  private:
+
+  Q_DISABLE_COPY ( SettingsPagePersonal )
 
   public:
 
@@ -73,6 +77,7 @@ class SettingsPagePersonal : public QWidget
     LatEdit   *edtHomeLat;
     LongEdit  *edtHomeLong;
     QLineEdit *userDataDir;
+    QLineEdit *proxy;
 };
 
 #endif

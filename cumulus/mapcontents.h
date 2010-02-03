@@ -54,6 +54,10 @@ class MapContents : public QObject
   {
     Q_OBJECT
 
+  private:
+
+    Q_DISABLE_COPY ( MapContents )
+
   public:
 
     /**
@@ -290,8 +294,18 @@ class MapContents : public QObject
      */
     void slotReloadMapData();
 
-    /** Reload welt 2000 data file */
+    /** Reload Welt2000 data file */
     void slotReloadWelt2000Data();
+
+    /**
+     * Downloads all map tiles enclosed by the square with the center point. The
+     * square edges are in parallel with the sky directions N, S, W, E. inside
+     * the square you can place a circle with radius length.
+     *
+     * @param center The center coordinates (Lat/lon) in KFLog format
+     * @param length The half length of the square edge in meters.
+     */
+    void slotDownloadMapArea( const QPoint &center, const Distance& length );
 
   private slots:
 
@@ -348,16 +362,6 @@ class MapContents : public QObject
      *
      */
     bool __downloadMapFile( QString &file, QString &directory );
-
-    /**
-     * Downloads all map tiles enclosed by the square with the center point. The
-     * square edges are in parallel with the sky directions N, S, W, E. inside
-     * the square you can place a circle with radius length.
-     *
-     * @param center The center coordinates (Lat/lon) in KFLog format
-     * @param length The half length of the square edge in meters.
-     */
-    void __downloadMapArea( const QPoint &center, const double length );
 
     /**
      * shows a progress message at the wait screen

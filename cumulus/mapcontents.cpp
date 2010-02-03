@@ -1253,18 +1253,29 @@ bool MapContents::__readBinaryFile(const int fileSecID,
  * @param center The center coordinates (Lat/lon) in KFLog format
  * @param length The half length of the square edge in meters.
  */
-void MapContents::__downloadMapArea( const QPoint &center, const double length )
+void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& length )
 {
+  double radius = length.getMeters();
+
+  if( radius == 0.0 )
+    {
+      return;
+    }
+
+  // Convert center point from KFLog degree into decimal degree
+  double centerLat = center.x() / 600000.;
+  double centerLon = center.y() / 600000.;
+
   // Calculate length in degree along the latitude and the longitude.
   // For the calculation the circle formula  is used.
-  double delta_lat = 180/M_PIl * length/RADIUS;
-  double delta_lon = 180/M_PIl * length/RADIUS * cos ( M_PIl / 180.0 * center.x() );
+  double deltaLat = 180/M_PIl * radius/RADIUS;
+  double deltaLon = 180/M_PIl * radius/RADIUS * cos ( M_PIl / 180.0 * centerLat );
 
   // Calculate the sky boarders of the square.
-  int north = (int) ceil(center.x() + delta_lat);
-  int south = (int) floor( center.x() - delta_lat);
-  int east  = (int) ceil(center.y() + delta_lon);
-  int west  = (int) floor(center.y() - delta_lon);
+  int north = (int) ceil(centerLat + deltaLat);
+  int south = (int) floor( centerLat - deltaLat);
+  int east  = (int) ceil(centerLon + deltaLon);
+  int west  = (int) floor(centerLon - deltaLon);
 
   // Round up and down to even numbers
   north += abs(north % 2);
@@ -1286,12 +1297,35 @@ void MapContents::__downloadMapArea( const QPoint &center, const double length )
 
   printf("N=%d, S=%d, E=%d, W=%d\n", north, south, east, west );
 
+  QString mapDir = GeneralConfig::instance()->getMapRootDir() + "/landscape/";
+
   for( int i = west; i < east; i+=2 )
     {
       for( int j = north; j > south; j-=2 )
         {
           int tile = mapTileNumber( j, i );
           printf("Lat=%d, Lon=%d, Tile=%d\n", j, i, tile );
+
+          const char fileType[3] = { FILE_TYPE_GROUND,
+                                     FILE_TYPE_TERRAIN,
+                                     FILE_TYPE_MAP };
+
+          for( uint k = 0; k < sizeof(fileType); k++ )
+            {
+              QString kflName, kflPathName, destination;
+
+              kflName.sprintf( "%c_%.5d.kfl", fileType[k], tile );
+
+              if( locateFile( "landscape/" + kflName, kflPathName ) == true )
+                {
+                  // File already exists
+                  continue;
+                }
+
+              destination = mapDir + kflName;
+              // File is missing, request it to download
+              __downloadMapFile( kflName, destination );
+            }
         }
     }
 }
@@ -1305,6 +1339,8 @@ void MapContents::__downloadMapArea( const QPoint &center, const double length )
  */
 bool MapContents::__downloadMapFile( QString &file, QString &directory )
 {
+  qDebug() << "Download: File=" << file << "Dest=" << directory;
+
   extern Calculator* calculator;
 
   if( GpsNmea::gps->getConnected() && calculator->moving() )

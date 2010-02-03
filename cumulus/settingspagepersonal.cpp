@@ -7,10 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -75,6 +75,12 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   topLayout->addWidget(userDataDir, row, 1, 1, 2);
   row++;
 
+  lbl = new QLabel(tr("Internet Proxy : Port"), this);
+  topLayout->addWidget(lbl, row, 0);
+  proxy = new QLineEdit(this);
+  topLayout->addWidget(proxy, row, 1, 1, 2);
+  row++;
+
   topLayout->setRowStretch(row, 10);
   topLayout->setColumnStretch( 2, 10 );
 }
@@ -88,11 +94,10 @@ void SettingsPagePersonal::slot_load()
   GeneralConfig *conf = GeneralConfig::instance();
 
   edtName->setText( conf->getSurname() );
-
   edtHomeLat->setKFLogDegree(conf->getHomeLat());
   edtHomeLong->setKFLogDegree(conf->getHomeLon());
-
   userDataDir->setText( conf->getUserDataDirectory() );
+  proxy->setText( conf->getProxy() );
 
   // search item to be selected
   int idx = langBox->findText(conf->getLanguage());
@@ -111,6 +116,7 @@ void SettingsPagePersonal::slot_save()
   conf->setSurname( edtName->text() );
   conf->setLanguage( langBox->currentText() );
   conf->setUserDataDirectory( userDataDir->text() );
+  conf->setProxy( proxy->text() );
 
   // Check, if string input values have been changed. If not, no
   // storage is done to avoid rounding errors. They can appear if the
@@ -180,6 +186,7 @@ void SettingsPagePersonal::slot_query_close( bool& warn, QStringList& warnings )
   changed |= (langBox->currentText() != conf->getLanguage());
   changed |= checkIsHomePositionChanged();
   changed |= (userDataDir->text() != conf->getUserDataDirectory());
+  changed |= (proxy->text() != conf->getProxy());
 
   if (changed)
     {
