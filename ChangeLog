@@ -25,6 +25,11 @@ Cumulus changelog
                    The user is ask once if he wants to download missing map
                    file from the internet. Download is disabled, when Cumulus
                    is in move. In move means faster as 5Km/h.
+[o] 2010-02-04 AP: Map default installation directory under Maemo changed to
+                   /media/mmc2/Cumulus/maps. That area has more space and is
+                   accessible from the outside, if the tablet is connected via
+                   USB to a PC. All needed directories resp. subdirectories
+                   will be created during startup, if they are missing.            
 [-] 2010-01-26 AP: BUGFIX: Missing initialization of QTime variable last in
                    constructor of class GpsClient done. Prevents error
                    message during startup of Cumulus.
