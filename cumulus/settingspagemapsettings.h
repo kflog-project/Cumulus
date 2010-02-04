@@ -113,7 +113,8 @@ class SettingsPageMapSettings : public QWidget
   QPushButton *installMaps;
   QSpinBox    *installRadius;
   LatEdit     *edtCenterLat;
-  LongEdit    *edtCenterLong;
+  LongEdit    *edtCenterLon;
+  QLineEdit   *proxy;
 
   int cylinPar;
   int lambertV1;

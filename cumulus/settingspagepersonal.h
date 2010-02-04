@@ -77,7 +77,6 @@ class SettingsPagePersonal : public QWidget
     LatEdit   *edtHomeLat;
     LongEdit  *edtHomeLong;
     QLineEdit *userDataDir;
-    QLineEdit *proxy;
 };
 
 #endif

@@ -80,38 +80,43 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   //------------------------------------------------------------------------------
 
-  topLayout->setRowMinimumHeight(row++,10);
+  topLayout->setRowMinimumHeight(row++,15);
 
   chkProjectionFollowHome = new QCheckBox(tr("Projection follows Home Position"), this );
   topLayout->addWidget(chkProjectionFollowHome, row, 0, 1, 2);
   row++;
 
-  chkUnloadUnneeded = new QCheckBox(tr("Immediately unload unneeded maps"), this );
+  chkUnloadUnneeded = new QCheckBox(tr("Unload unused maps from RAM"), this );
   topLayout->addWidget(chkUnloadUnneeded, row, 0, 1, 2);
   row++;
 
-  chkDownloadMissingMaps = new QCheckBox(tr("Download missing maps"), this );
-  topLayout->addWidget(chkDownloadMissingMaps, row, 0, 1, 2);
+  topLayout->setRowMinimumHeight(row++,15);
+
+  QLabel *label = new QLabel(tr("Proxy : Port"), this);
+  topLayout->addWidget(label, row, 0);
+  proxy = new QLineEdit(this);
+  proxy->setToolTip(tr("Enter Proxy data if needed"));
+  topLayout->addWidget(proxy, row, 1, 1, 2);
   row++;
 
-  QLabel *label = new QLabel(tr("Center Latitude:"), this);
+  label = new QLabel(tr("Center Latitude:"), this);
   topLayout->addWidget(label, row, 0);
   edtCenterLat = new LatEdit(this, conf->getHomeLat());
   topLayout->addWidget(edtCenterLat, row++, 1, 1, 2);
 
   label = new QLabel(tr("Center Longitude:"), this);
   topLayout->addWidget(label, row, 0);
-  edtCenterLong = new LongEdit(this, conf->getHomeLon());
-  topLayout->addWidget(edtCenterLong, row++, 1, 1, 2);
+  edtCenterLon = new LongEdit(this, conf->getHomeLon());
+  topLayout->addWidget(edtCenterLon, row++, 1, 1, 2);
 
   installMaps = new QPushButton( tr("Install Maps"), this );
-  installMaps->setToolTip(tr("Install maps around home position"));
+  installMaps->setToolTip(tr("Install maps around center point"));
   topLayout->addWidget(installMaps, row, 0 );
 
   connect(installMaps, SIGNAL( clicked()), this, SLOT(slot_installMaps()) );
 
   installRadius = new QSpinBox( this );
-  installRadius->setToolTip( tr("Radius around home position") );
+  installRadius->setToolTip( tr("Radius around center point") );
   installRadius->setButtonSymbols(QSpinBox::PlusMinus);
   installRadius->setRange( 0, 20000 );
   installRadius->setWrapping(true);
@@ -137,10 +142,9 @@ void SettingsPageMapSettings::slot_load()
 
   chkUnloadUnneeded->setChecked( conf->getMapUnload() );
   chkProjectionFollowHome->setChecked( conf->getMapProjectionFollowsHome() );
-  chkDownloadMissingMaps->setChecked( conf->getDownloadMissingMaps() );
-  edtCenterLat->setKFLogDegree( conf->getHomeLat() );
-  edtCenterLong->setKFLogDegree( conf->getHomeLon() );
-  installRadius->setValue( GeneralConfig::instance()->getMapInstallRadius() );
+  proxy->setText( conf->getProxy() );
+  edtCenterLat->setKFLogDegree(conf->getHomeLat());
+  edtCenterLon->setKFLogDegree(conf->getHomeLon());
 
   currentProjType = conf->getMapProjectionType();
   lambertV1 =       conf->getLambertParallel1();
@@ -203,7 +207,7 @@ void SettingsPageMapSettings::slot_save()
   conf->setMapRootDir( mapDirectory->text() );
   conf->setMapUnload( chkUnloadUnneeded->isChecked() );
   conf->setMapProjectionFollowsHome( chkProjectionFollowHome->isChecked() );
-  conf->setDownloadMissingMaps( chkDownloadMissingMaps->isChecked() );
+  conf->setProxy( proxy->text() );
   conf->setMapInstallRadius( installRadius->value() );
   conf->setMapProjectionType( currentProjType );
   conf->setLambertParallel1( lambertV1 );
@@ -233,10 +237,28 @@ void SettingsPageMapSettings::slot_installMaps()
       return;
     }
 
-  Distance distance( Distance::convertToMeters( installRadius->value() ));
-  QPoint home = GeneralConfig::instance()->getHomeCoord();
+  QString hostName;
+  quint16 port;
 
-  emit downloadMapArea( home, distance );
+  // Check proxy settings
+  if( ! proxy->text().trimmed().isEmpty() &&
+      HttpClient::parseProxy( proxy->text(), hostName, port ) == false )
+    {
+      QMessageBox::information ( this,
+                                 tr("Proxy settings invalid!"),
+                                 tr("Please correct your Proxy settings!") +
+                                 "<p>" + tr("Expected format: <b>Host:Port</b>") );
+      return;
+    }
+
+  // Store the proxy settings, can be changed in the meantime
+  GeneralConfig::instance()->setProxy( proxy->text().trimmed() );
+  Distance distance( Distance::convertToMeters( installRadius->value() ));
+  QPoint center;
+  center.setX( edtCenterLat->KFLogDegree() );
+  center.setY( edtCenterLon->KFLogDegree() );
+
+  emit downloadMapArea( center, distance );
 }
 
 /**
@@ -348,12 +370,12 @@ void SettingsPageMapSettings::slot_query_close(bool& warn, QStringList& warnings
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
 
-  changed = changed || ( mapDirectory->text() != conf->getMapRootDir() );
-  changed = changed || ( chkUnloadUnneeded->isChecked() != conf->getMapUnload() );
-  changed = changed || ( chkProjectionFollowHome->isChecked() != conf->getMapProjectionFollowsHome() );
-  changed = changed || ( chkDownloadMissingMaps->isChecked() != conf->getDownloadMissingMaps() );
-  changed = changed || ( installRadius->value() != conf->getMapInstallRadius() );
-  changed = changed || checkIsProjectionChanged();
+  changed |= ( mapDirectory->text() != conf->getMapRootDir() );
+  changed |= ( chkUnloadUnneeded->isChecked() != conf->getMapUnload() );
+  changed |= ( chkProjectionFollowHome->isChecked() != conf->getMapProjectionFollowsHome() );
+  changed |= ( installRadius->value() != conf->getMapInstallRadius() );
+  changed |= (proxy->text() != conf->getProxy());
+  changed |= checkIsProjectionChanged();
 
   if (changed)
     {
@@ -373,17 +395,17 @@ bool SettingsPageMapSettings::checkIsProjectionChanged()
   switch( cmbProjection->currentIndex() )
     {
       case 0:
-        changed = changed || ( edtLat1->isInputChanged() );
-        changed = changed || ( edtLat2->isInputChanged() );
-        changed = changed || ( edtLon->isInputChanged() );
+        changed |= ( edtLat1->isInputChanged() );
+        changed |= ( edtLat2->isInputChanged() );
+        changed |= ( edtLon->isInputChanged() );
         break;
 
       case 1:
-        changed = changed || ( edtLat1->isInputChanged() );
+        changed |= ( edtLat1->isInputChanged() );
         break;
     }
 
-  changed = changed || ( conf->getMapProjectionType() != currentProjType );
+  changed |= ( conf->getMapProjectionType() != currentProjType );
 
   // qDebug( "SettingsPageMapSettings::()checkIsProjectionChanged: %d", changed );
   return changed;
