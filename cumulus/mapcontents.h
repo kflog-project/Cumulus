@@ -299,7 +299,7 @@ class MapContents : public QObject
 
     /**
      * Downloads all map tiles enclosed by the square with the center point. The
-     * square edges are in parallel with the sky directions N, S, W, E. inside
+     * square edges are in parallel with the sky directions N, S, W, E. Inside
      * the square you can place a circle with radius length.
      *
      * @param center The center coordinates (Lat/lon) in KFLog format
@@ -362,6 +362,13 @@ class MapContents : public QObject
      *
      */
     bool __downloadMapFile( QString &file, QString &directory );
+
+    /**
+     * Ask the user once for download of missing map files. The answer
+     * is stored permanently to have it for further request.
+     * Returns true, if download is desired otherwise false.
+     */
+    bool __askUserForDownload();
 
     /**
      * shows a progress message at the wait screen
@@ -537,6 +544,12 @@ class MapContents : public QObject
 
     /** Manager to handle downloads of missing map file. */
     DownloadManager *downloadManger;
+
+    /** Store user decision to download missing map file. */
+    bool shallDownloadMaps;
+
+    /** Store that user has asked once for download of missing map file. */
+    bool hasAskForDownload;
   };
 
 #endif

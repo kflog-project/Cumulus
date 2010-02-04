@@ -110,7 +110,9 @@ const short MapContents::isoLevels[] =
 MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
     QObject(parent),
     isFirst(true),
-    downloadManger(0)
+    downloadManger(0),
+    shallDownloadMaps(false),
+    hasAskForDownload(false)
 {
   ws = waitscreen;
 
@@ -238,7 +240,14 @@ bool MapContents::__readTerrainFile( const int fileSecID,
     {
       QString path = GeneralConfig::instance()->getMapRootDir() + "/landscape";
 
-      if( ! __downloadMapFile( kflName, path ) )
+      bool res = __askUserForDownload();
+
+      if( res == true )
+        {
+          res = __downloadMapFile( kflName, path );
+        }
+
+      if( res == false  )
         {
           qWarning( "Cumulus: no map files (%s or %s) found! Please install %s.",
                     kflName.toLatin1().data(), kfcName.toLatin1().data(),
@@ -679,7 +688,14 @@ bool MapContents::__readBinaryFile(const int fileSecID,
     {
       QString path = GeneralConfig::instance()->getMapRootDir() + "/landscape";
 
-      if( ! __downloadMapFile( kflName, path ) )
+      bool res = __askUserForDownload();
+
+      if( res == true )
+        {
+          res = __downloadMapFile( kflName, path );
+        }
+
+      if( res == false  )
         {
           qWarning( "Cumulus: no map files (%s or %s) found! Please install %s.",
                     kflName.toLatin1().data(), kfcName.toLatin1().data(),
@@ -1247,7 +1263,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
 /**
  * Downloads all map tiles enclosed by the square with the center point. The
- * square edges are in parallel with the sky directions N, S, W, E. inside
+ * square edges are in parallel with the sky directions N, S, W, E. Inside
  * the square you can place a circle with radius length.
  *
  * @param center The center coordinates (Lat/lon) in KFLog format
@@ -1266,10 +1282,20 @@ void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& len
   double centerLat = center.x() / 600000.;
   double centerLon = center.y() / 600000.;
 
+  // Latitude 90N or 90S causes division by zero. Set it too a smaller value.
+  if( centerLat >=90. )
+    {
+      centerLat = 88.;
+    }
+  else if( centerLat <=-90. )
+    {
+      centerLat = -88.;
+    }
+
   // Calculate length in degree along the latitude and the longitude.
   // For the calculation the circle formula  is used.
   double deltaLat = 180/M_PIl * radius/RADIUS;
-  double deltaLon = 180/M_PIl * radius/RADIUS * cos ( M_PIl / 180.0 * centerLat );
+  double deltaLon = 180/M_PIl * radius/(RADIUS * cos ( M_PIl / 180.0 * centerLat ));
 
   // Calculate the sky boarders of the square.
   int north = (int) ceil(centerLat + deltaLat);
@@ -1295,16 +1321,18 @@ void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& len
       south = -90;
     }
 
-  printf("N=%d, S=%d, E=%d, W=%d\n", north, south, east, west );
+  qDebug("MapAreaDownloadBox: N=%d, S=%d, E=%d, W=%d", north, south, east, west );
 
-  QString mapDir = GeneralConfig::instance()->getMapRootDir() + "/landscape/";
+  QString mapDir = GeneralConfig::instance()->getMapRootDir() + "/landscape";
+
+  int needed = 0;
 
   for( int i = west; i < east; i+=2 )
     {
       for( int j = north; j > south; j-=2 )
         {
           int tile = mapTileNumber( j, i );
-          printf("Lat=%d, Lon=%d, Tile=%d\n", j, i, tile );
+          // qDebug("Lat=%d, Lon=%d, Tile=%d", j, i, tile );
 
           const char fileType[3] = { FILE_TYPE_GROUND,
                                      FILE_TYPE_TERRAIN,
@@ -1312,26 +1340,30 @@ void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& len
 
           for( uint k = 0; k < sizeof(fileType); k++ )
             {
-              QString kflName, kflPathName, destination;
+              QString kflName, kflPathName;
 
               kflName.sprintf( "%c_%.5d.kfl", fileType[k], tile );
 
               if( locateFile( "landscape/" + kflName, kflPathName ) == true )
                 {
                   // File already exists
+                  // qDebug() << "Existing File:" << kflName;
                   continue;
                 }
 
-              destination = mapDir + kflName;
               // File is missing, request it to download
-              __downloadMapFile( kflName, destination );
+              // qDebug() << "Download File:" << kflName;
+              __downloadMapFile( kflName, mapDir );
+              needed++;
             }
         }
     }
+
+  qDebug( "MapAreaDownload: %d Maps required by download", needed );
 }
 
 /**
- * Try to download a missing ground/terrain file.
+ * Try to download a missing ground/terrain/map file.
  *
  * @param file The name of the file without any path prefixes.
  * @param directory The destination directory.
@@ -1339,8 +1371,6 @@ void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& len
  */
 bool MapContents::__downloadMapFile( QString &file, QString &directory )
 {
-  qDebug() << "Download: File=" << file << "Dest=" << directory;
-
   extern Calculator* calculator;
 
   if( GpsNmea::gps->getConnected() && calculator->moving() )
@@ -1374,6 +1404,41 @@ void MapContents::downloadsFinished()
 
   // initiate a map redraw
   Map::instance->scheduleRedraw( Map::baseLayer );
+
+  QMessageBox::information( Map::instance,
+                            tr("Downloads done"),
+                            tr("All downloads done.") );
+}
+
+/**
+ * Ask the user once for download of missing map files. The answer
+ * is stored permanently to have it for further request.
+ * Returns true, if download is desired otherwise false.
+ */
+bool MapContents::__askUserForDownload()
+{
+  if( hasAskForDownload == true )
+    {
+      return shallDownloadMaps;
+    }
+
+  hasAskForDownload = true;
+
+  int answer = QMessageBox::question( Map::instance,
+                  tr("Download missing Maps?"),
+                  tr("Download missing Maps from the Internet?"),
+                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+
+  if( answer == QMessageBox::Yes )
+    {
+      shallDownloadMaps = true;
+    }
+  else
+    {
+      shallDownloadMaps = false;
+    }
+
+  return shallDownloadMaps;
 }
 
 void MapContents::proofeSection()
