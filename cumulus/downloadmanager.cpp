@@ -41,17 +41,6 @@ DownloadManager::DownloadManager( QObject *parent ) :
 {
   client = new HttpClient(this, false);
 
-#if 0
-  QNetworkAccessManager *networkManager = client->networkManager();
-
-  QNetworkProxy proxy;
-  proxy.setType(QNetworkProxy::HttpProxy);
-  proxy.setHostName("");
-  proxy.setPort(8080);
-
-  networkManager->setProxy( proxy );
-#endif
-
   connect( client, SIGNAL( finished(QString &, QNetworkReply::NetworkError) ),
            this, SLOT( slotFinished(QString &, QNetworkReply::NetworkError) ));
 }
@@ -213,11 +202,10 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
 
 /**
  * Returns the free size of the file system in bytes for non root users.
+ * The passed path must be exist otherwise the call will fail!
  */
 ulong DownloadManager::getFreeUserSpace( QString& path )
 {
-  qDebug() << "Check Path=" << path;
-
   struct statvfs buf;
   int res;
 
@@ -225,11 +213,11 @@ ulong DownloadManager::getFreeUserSpace( QString& path )
 
   if( res )
     {
-      perror("getFreeUserSpace");
+      perror("GetFreeUserSpace");
       return 0;
     }
 
-#if 1
+#if 0
   qDebug() << "DM: FSBlockSize=" << buf.f_bsize
            << "FSSizeInBlocks=" << buf.f_blocks
            << "FreeAvail=" << buf.f_bfree
