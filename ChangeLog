@@ -14,6 +14,17 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-02-04 AP: To make installation of maps easier for the user a new extension
+                   has been added to the Map Settings tabulator. The user can now
+                   define a radius and a center point. On demand all maps of this
+                   area are downloaded from the KFLog map server. If Cumulus
+                   is faster as 5Km/h in move no downloads are executed. I hope
+                   that releases the users from the annoying installation procedure
+                   by hand.
+[+] 2010-02-04 AP: Automatic download of missing map files added on user decision.
+                   The user is ask once if he wants to download missing map
+                   file from the internet. Download is disabled, when Cumulus
+                   is in move. In move means faster as 5Km/h.
 [-] 2010-01-26 AP: BUGFIX: Missing initialization of QTime variable last in
                    constructor of class GpsClient done. Prevents error
                    message during startup of Cumulus.
@@ -39,7 +50,7 @@ Cumulus changelog
                    glider flight status dialogs.
 [o] 2009-11-25 AP: Waypoint editor size adapted to main window size. All single
                    editor pages are embedded into scroll areas.
-[-] 2009-11-24 AP: BUGFIX: Layout error in TaskList class fixed.
+[-] 2009-11-24 AP: BUGFIX: Layout error in TaskList widget fixed.
 [o] 2009-11-24 AP: Sizes of different child widgets adapted to main window
                    size.
 [o] 2009-11-18 AP: New font dialog added to settings look and feel to set the
@@ -78,7 +89,7 @@ Cumulus 2.5.x (Development based on X11/Qt-4.5.3)
 [-] 2009-09-28 AP: Drawing options of topographical items now considered.
 [-] 2009-09-27 AP: The turquoise course line of a flight task is not good to
                    see in sunshine. Changed the color to dark magenta.
-                   Furthermore was the width of the course lines to small under
+                   Furthermore the width of the course line was to small under
                    Maemo. Increased the size a little bit. That all are
                    impressions from my cross country flight with an ultralight
                    CT-SW today over 450Km.
