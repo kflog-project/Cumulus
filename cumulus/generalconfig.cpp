@@ -174,13 +174,17 @@ void GeneralConfig::load()
     qMax(0, qMin(100, value("fillingInsideLateral", AS_FILL_INSIDE).toInt()));
   endGroup();
 
+  // Internet settings
+  beginGroup("Internet");
+  _proxy             = value("Proxy", "").toString();
+  endGroup();
+
   // Personal settings
   beginGroup("Personal Data");
   _disclaimerVersion = value( "Disclaimer", 0).toInt();
   _surname           = value("SurName", "").toString();
   _language          = value("Language", "en").toString();
   _userDataDirectory = value("UserDataDir", USER_DATA_DIR).toString();
-  _proxy             = value("Proxy", "").toString();
   endGroup();
 
   // Preflight settings
@@ -496,6 +500,11 @@ void GeneralConfig::save()
   setValue("fillingNearLateral", _lateralAirspaceFillings[Airspace::near]);
   setValue("fillingVeryNearLateral", _lateralAirspaceFillings[Airspace::veryNear]);
   setValue("fillingInsideLateral", _lateralAirspaceFillings[Airspace::inside]);
+  endGroup();
+
+  // Internet settings
+  beginGroup("Internet");
+  setValue("Proxy", _proxy);
   endGroup();
 
   // Personal settings
@@ -955,20 +964,6 @@ bool GeneralConfig::getPopupAirspaceWarnings() const
 void GeneralConfig::setPopupAirspaceWarnings(const bool newValue)
 {
   _popupAirspaceWarnings = newValue;
-}
-
-
-/** Gets the Gps Device */
-QString &GeneralConfig::getGpsDevice()
-{
-  return _gpsDevice;
-}
-
-
-/** Sets the Gps Device */
-void GeneralConfig::setGpsDevice( const QString newValue )
-{
-  _gpsDevice = newValue;
 }
 
 

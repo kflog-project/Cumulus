@@ -153,7 +153,7 @@ class GeneralConfig : protected QSettings
   void setUserDataDirectory( QString newDir );
 
   /** get main window size */
-  QSize getWindowSize()
+  QSize getWindowSize() const
   {
     return _windowSize;
   };
@@ -861,7 +861,7 @@ class GeneralConfig : protected QSettings
   QStringList getMapDirectories();
 
   /** gets map root dir */
-  QString getMapRootDir()
+  QString getMapRootDir() const
   {
     return _mapUserDir;
   };
@@ -873,7 +873,7 @@ class GeneralConfig : protected QSettings
   };
 
   /** gets map server url */
-  QString getMapServerUrl()
+  QString getMapServerUrl() const
   {
     return _mapServerUrl;
   };
@@ -1386,9 +1386,15 @@ class GeneralConfig : protected QSettings
   void setPopupAirspaceWarnings(const bool newValue);
 
   /** Gets the Gps Device */
-  QString &getGpsDevice();
+  QString &getGpsDevice()
+  {
+    return _gpsDevice;
+  };
   /** Sets the Gps Device */
-  void setGpsDevice( const QString newValue );
+  void setGpsDevice( const QString newValue )
+  {
+    _gpsDevice = newValue;
+  };
 
   /** Gets the Gps Speed */
   int getGpsSpeed() const;
