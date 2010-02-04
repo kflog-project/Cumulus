@@ -18,9 +18,12 @@
 /**
  * This class is a simple HTTP download client.
  */
+#include <QtGui>
+#include <QtNetwork>
 
 #include "httpclient.h"
 #include "authdialog.h"
+#include "generalconfig.h"
 #include "target.h"
 
 HttpClient::HttpClient( QObject *parent, const bool showProgressDialog ) :
@@ -89,7 +92,7 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
       return false;
     }
 
-  tmpFile = new QFile( destinationIn + "_tmp" );
+  tmpFile = new QFile( destinationIn + "_" + QDateTime::currentDateTime().toString(Qt::ISODate) );
 
   if( ! tmpFile->open( QIODevice::WriteOnly ) )
     {
@@ -101,6 +104,22 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
       delete tmpFile;
       tmpFile = static_cast<QFile *> (0);
       return false;
+    }
+
+  // Check, if a proxy is defined. If yes, we do set it.
+  if( ! GeneralConfig::instance()->getProxy().isEmpty() )
+    {
+      QString hostName;
+      quint16 port;
+
+      if( parseProxy( GeneralConfig::instance()->getProxy(), hostName, port ) == true )
+        {
+          QNetworkProxy proxy;
+          proxy.setType( QNetworkProxy::HttpProxy );
+          proxy.setHostName( hostName );
+          proxy.setPort( port );
+          manager->setProxy( proxy );
+        }
     }
 
   QNetworkRequest request;
@@ -353,4 +372,31 @@ void HttpClient::slotFinished()
       // Inform about the result.
       emit finished( _url, error );
     }
+}
+
+/**
+ * Returns true, if proxy parameters are valid.
+ */
+bool HttpClient::parseProxy( QString proxyIn, QString& hostName, quint16& port )
+{
+  QStringList proxyParams = proxyIn.split(":", QString::SkipEmptyParts);
+
+  if( proxyParams.size() != 2 )
+    {
+      // too less or too much parameters
+      return false;
+    }
+
+  hostName = proxyParams.at(0).trimmed();
+
+  bool ok = false;
+
+  port = proxyParams.at(1).trimmed().toUShort(&ok);
+
+  if( hostName.isEmpty() || ok == false )
+    {
+      return false;
+    }
+
+  return true;
 }

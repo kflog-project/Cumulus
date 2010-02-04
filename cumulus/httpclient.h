@@ -22,8 +22,16 @@
 #ifndef HTTP_CLIENT_H
 #define HTTP_CLIENT_H
 
-#include <QtGui>
-#include <QtNetwork>
+#include <QString>
+#include <QFile>
+#include <QTimer>
+#include <QList>
+
+#include <QProgressDialog>
+#include <QAuthenticator>
+#include <QNetworkReply>
+#include <QNetworkProxy>
+#include <QNetworkAccessManager>
 
 class HttpClient : public QObject
 {
@@ -63,6 +71,11 @@ class HttpClient : public QObject
   {
     return downloadRunning;
   };
+
+  /**
+   * Returns true, if proxy parameters are valid.
+   */
+  static bool parseProxy( QString proxyIn, QString& hostName, quint16& port );
 
  signals:
 
