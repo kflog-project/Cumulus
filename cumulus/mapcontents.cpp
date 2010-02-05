@@ -1310,7 +1310,7 @@ void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& len
   east += abs(east % 2);
   west -= abs(west % 2);
 
-  // Check and correct boarders
+  // Check and correct boarders to their limits.
   if( north > 90 )
     {
       north = 90;
@@ -1319,6 +1319,16 @@ void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& len
   if( south < -90 )
     {
       south = -90;
+    }
+
+  if( east > 180 )
+    {
+      east = 180;
+    }
+
+  if( west < -180 )
+    {
+      west = -180;
     }
 
   qDebug("MapAreaDownloadBox: N=%d, S=%d, E=%d, W=%d", north, south, east, west );
