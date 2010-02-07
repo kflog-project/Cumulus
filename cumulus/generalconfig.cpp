@@ -44,7 +44,7 @@ using namespace std;
 // located in the subdirectory MyDocs.
 #ifdef MAEMO
 #define USER_DATA_DIR QDir::homePath() + "/MyDocs/Cumulus"
-#define USER_MAP_DIR "/media/mmc2/Cumulus/maps"
+#define USER_MAP_DIR ""
 #else
 #define USER_DATA_DIR QDir::homePath() + "/Cumulus"
 #define USER_MAP_DIR QString(USER_DATA_DIR) + "/maps"
@@ -249,7 +249,7 @@ void GeneralConfig::load()
   beginGroup("Map Data");
   _home.setX( value( "Homesite Latitude", HOME_DEFAULT_LAT).toInt() );
   _home.setY( value( "Homesite Longitude", HOME_DEFAULT_LON).toInt() );
-  _mapUserDir        = value("Map Root", USER_MAP_DIR).toString();
+  _mapRootDir        = value("Map Root", USER_MAP_DIR).toString();
   _mapServerUrl      = value("Map Server Url", "http://www.kflog.org/data/landscape/").toString();
   _centerLat         = value("Center Latitude", HOME_DEFAULT_LAT).toInt();
   _centerLon         = value("Center Longitude", HOME_DEFAULT_LON).toInt();
@@ -389,23 +389,63 @@ void GeneralConfig::load()
   Time::setUnit( Time::timeUnit( getUnitTime() ) );
   WGSPoint::setFormat( WGSPoint::Format( getUnitPos() ) );
 
-  // Check if user data and user map directories do exist. Create missing structures.
-  QDir cuMapDir( _mapUserDir );
+  // Check if user data and user map directories do exist.
+  // Try to create missing structures.
+  QDir userDataDir( _userDataDirectory );
 
-  if( ! cuMapDir.exists() )
+  if( ! userDataDir.exists() )
     {
-      cuMapDir.mkpath( _mapUserDir );
-      cuMapDir.mkpath( _mapUserDir + "/airfields" );
-      cuMapDir.mkpath( _mapUserDir + "/airspaces" );
-      cuMapDir.mkpath( _mapUserDir + "/landscape" );
+      userDataDir.mkpath( _userDataDirectory );
     }
 
-  QDir cuDataDir( _userDataDirectory );
+#ifdef MAEMO
 
-  if( ! cuMapDir.exists() )
+  QDir testMapDir( _mapRootDir );
+
+  if( _mapRootDir.isEmpty() || ! testMapDir.exists() )
     {
-      cuDataDir.mkpath( _userDataDirectory );
+      QStringList paths;
+      paths << "/media/mmc2" << "/media/mmc1" << QDir::homePath();
+
+      QDir path("");
+
+      // Check, if root paths do exist. The assumption is, that $HOME
+      // does always exist.
+      for( int i = 0; i < paths.size(); i++ )
+        {
+          path.setPath( paths.at(i));
+
+          if( ! path.exists() )
+            {
+              continue;
+            }
+
+          QString root = paths.at(i);
+
+          // That is the fall back solution but normally unfit for map files
+          // due to limited space on that file system.
+          if( root == QDir::homePath() )
+            {
+              root += "/MyDocs";
+            }
+
+          root += "/Cumulus/maps";
+
+          _mapRootDir = root;
+          break;
+        }
     }
+
+#endif
+
+  QDir mapRootDir( _mapRootDir );
+
+  // Try to create all directories whether they do exist or not.
+  mapRootDir.mkpath( _mapRootDir );
+  mapRootDir.mkpath( _mapRootDir + "/airfields" );
+  mapRootDir.mkpath( _mapRootDir + "/airspaces" );
+  mapRootDir.mkpath( _mapRootDir + "/landscape" );
+
 }
 
 void GeneralConfig::save()
@@ -576,7 +616,7 @@ void GeneralConfig::save()
 
   setValue("Homesite Latitude", _home.x());
   setValue("Homesite Longitude", _home.y());
-  setValue("Map Root", _mapUserDir);
+  setValue("Map Root", _mapRootDir);
   setValue("Map Server Url", _mapServerUrl);
   setValue("Center Latitude", _centerLat);
   setValue("Center Longitude", _centerLon);
@@ -1383,20 +1423,20 @@ QStringList GeneralConfig::getMapDirectories()
   QString     mapInstall = _installRoot  + "/maps";
 
   // First take map directory
-  if(  ! _mapUserDir.isEmpty() )
+  if(  ! _mapRootDir.isEmpty() )
     {
-      mapDirs << _mapUserDir;
+      mapDirs << _mapRootDir;
     }
 
   // Next follow $HOME/Cumulus/maps and at last the installation area with
   // $INSTALL_ROOT/maps.
-  if( _mapUserDir != mapHome )
+  if( _mapRootDir != mapHome )
     {
       // add only if different
       mapDirs << mapHome;
     }
 
-  if( _mapUserDir != mapInstall )
+  if( _mapRootDir != mapInstall )
     {
       // add only if different
       mapDirs << mapInstall;

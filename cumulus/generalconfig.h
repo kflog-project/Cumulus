@@ -863,13 +863,13 @@ class GeneralConfig : protected QSettings
   /** gets map root dir */
   QString getMapRootDir() const
   {
-    return _mapUserDir;
+    return _mapRootDir;
   };
 
   /** sets map root dir */
   void setMapRootDir( QString newValue )
   {
-    _mapUserDir = newValue;
+    _mapRootDir = newValue;
   };
 
   /** gets map server url */
@@ -1854,7 +1854,7 @@ class GeneralConfig : protected QSettings
   int _centerLon;
 
   // Map directory, defined by user
-  QString _mapUserDir;
+  QString _mapRootDir;
 
   // KFLog map room server Url
   QString _mapServerUrl;
