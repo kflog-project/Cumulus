@@ -57,7 +57,7 @@ extern MapView *_globalMapView;
  * in the same directory as cumulus.
  */
 
-GPSCon::GPSCon(QObject* parent, const char *pathIn) : QObject(parent)
+GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
 {
   exe = QString("%1/%2").arg(pathIn).arg("gpsClient");
   pid = -1;
@@ -106,7 +106,7 @@ GPSCon::GPSCon(QObject* parent, const char *pathIn) : QObject(parent)
 }
 
 
-GPSCon::~GPSCon()
+GpsCon::~GpsCon()
 {
   timer->stop();
 
@@ -132,7 +132,7 @@ GPSCon::~GPSCon()
  * Serial device and speed are sent to the client, that it can opens the
  * appropriate device for receiving.
  */
-bool GPSCon::startGpsReceiving()
+bool GpsCon::startGpsReceiving()
 {
   static QString method = "GPSCon::startGpsReceiving():";
 
@@ -182,7 +182,7 @@ bool GPSCon::startGpsReceiving()
 /**
  * Stops the gps receiver on the client side.
  */
-bool GPSCon::stopGpsReceiving()
+bool GpsCon::stopGpsReceiving()
 {
   static QString method = "GPSCon::stopGpsReceiving():";
 
@@ -216,7 +216,7 @@ bool GPSCon::stopGpsReceiving()
  * alive. Alive check is triggered by timer routine every 10s. If process is
  * down, a new one will be started.
  */
-bool GPSCon::startClientProcess()
+bool GpsCon::startClientProcess()
 {
   static QString method = "GPSCon::startClientProcess():";
 
@@ -451,7 +451,7 @@ bool GPSCon::startClientProcess()
  * the timer is expired. This is the alive check for the forked gpsClient
  * process and ensures the cleaning up of zombies.
  */
-void GPSCon::slot_Timeout()
+void GpsCon::slot_Timeout()
 {
   extern bool shutdownState;
 
@@ -488,7 +488,7 @@ void GPSCon::slot_Timeout()
  * channel, second as notification channel.
  */
 // socket parameter not used. Can it be removed?
-void GPSCon::slot_ListenEvent(int /*socket*/)
+void GpsCon::slot_ListenEvent(int /*socket*/)
 {
   static QString method = "GPSCon::slot_ListenEvent():";
 
@@ -562,7 +562,7 @@ void GPSCon::slot_ListenEvent(int /*socket*/)
  * This slot is triggered by the QT main loop and is used to handle the
  * notification events from the client.
  */
-void GPSCon::slot_NotificationEvent(int socket)
+void GpsCon::slot_NotificationEvent(int socket)
 {
   QString method = QString("GPSCon::slot_NotificationEvent(%1):").arg(socket);
 
@@ -591,7 +591,7 @@ void GPSCon::slot_NotificationEvent(int socket)
  * Query the client, if NMEA records are available. If true, the data will
  * be hand over to the cumulus process.
  */
-void GPSCon::queryClient()
+void GpsCon::queryClient()
 {
   if( server.getClientSock(0) == -1 )
     {
@@ -654,7 +654,7 @@ void GPSCon::queryClient()
  * parts. First the message length is read as unsigned integer, after that the
  * actual message as 8 bit character string.
  */
-void GPSCon::readClientMessage( uint index, QString &result )
+void GpsCon::readClientMessage( uint index, QString &result )
 {
   result = "";
 
@@ -702,7 +702,7 @@ void GPSCon::readClientMessage( uint index, QString &result )
  * parts. First the message length is read as unsigned integer, after that the
  * actual message as 8 bit character string.
  */
-void GPSCon::writeClientMessage( uint index, const char *msg  )
+void GpsCon::writeClientMessage( uint index, const char *msg  )
 {
   uint msgLen = strlen( msg );
 
@@ -725,7 +725,7 @@ void GPSCon::writeClientMessage( uint index, const char *msg  )
  * routine. Don't add an asterix at the end of the passed sentence! That is
  * part of the check sum.
  */
-void GPSCon::sendSentence(const QString& sentence)
+void GpsCon::sendSentence(const QString& sentence)
 {
   static QString method = "GPSCon::sendSentence():";
 

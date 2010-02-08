@@ -48,7 +48,7 @@ extern MapView   *_globalMapView;
 extern MapMatrix *_globalMapMatrix;
 
 // global GPS object pointer
-GpsNmea *GpsNmea::gps = 0;
+GpsNmea *GpsNmea::gps = static_cast<GpsNmea *> (0);
 
 // number of created class instances
 short GpsNmea::instances = 0;
@@ -71,7 +71,7 @@ GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
   connect (timeOutFix, SIGNAL(timeout()), this, SLOT(_slotTimeoutFix()));
 
   gpsDevice = "";
-  serial = 0;
+  serial = static_cast<GpsCon *> (0);
 
 #ifdef MAEMO
   gpsdConnection = 0;
@@ -114,6 +114,7 @@ void GpsNmea::resetDataObjects()
   _lastQnh = 0;
   _lastVariometer = Speed(0);
   _lastMc = Speed(0);
+  _lastTas = Speed(0);
   _lastUtc = QDateTime();
 
   _ignoreConnectionLost = false;
@@ -127,10 +128,10 @@ void GpsNmea::createGpsConnection()
 
 #ifndef MAEMO
 
-  // We create only a GPSCon instance. The GPS daemon process will be started later
+  // We create only a GpsCon instance. The GPS daemon process will be started later
   QString callPath = GeneralConfig::instance()->getInstallRoot() + "/bin";
 
-  serial = new GPSCon(this, callPath.toAscii().data());
+  serial = new GpsCon(this, callPath.toAscii().data());
 
   gpsObject = serial;
 
@@ -150,7 +151,7 @@ void GpsNmea::createGpsConnection()
     // and will start the cumulus gps client process
     QString callPath = GeneralConfig::instance()->getInstallRoot() + "/bin";
 
-      serial = new GPSCon(this, callPath.toAscii().data());
+      serial = new GpsCon(this, callPath.toAscii().data());
       gpsObject = serial;
     }
   else
@@ -252,7 +253,7 @@ void GpsNmea::startGpsReceiver()
 }
 
 /**
- * This slot is called by the GPSCon object when a new sentence has
+ * This slot is called by the GpsCon object when a new sentence has
  * arrived from the GPS receiver. The argument contains the sentence to
  * analyze.
  *
@@ -903,6 +904,23 @@ void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
       GeneralConfig::instance()->setQNH( qnh );
     }
 
+  // True airspeed in 100ths of Meters per second
+  if( ! stringList[7].isEmpty() )
+    {
+      num = stringList[7].toDouble( &ok ) / 100.0;
+
+      if( ok )
+        {
+          speed.setMps( num );
+
+          if( _lastTas != speed )
+            {
+              _lastTas = speed;
+              emit newTas( _lastTas );
+            }
+        }
+    }
+
   // extract variometer, reading in 10ths of knots + 200
   num = (stringList[8].toDouble( &ok ) - 200.0) / 10.0;
   speed.setKnot( num );
@@ -951,7 +969,7 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
       return;
     }
 
-  // airspeed in km/h
+  // airspeed TAS in km/h
   if( ! stringList[2].isEmpty() )
     {
       num = stringList[2].toDouble( &ok );
@@ -960,10 +978,10 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
         {
           speed.setKph( num );
 
-          if( _lastSpeed != speed )
+          if( _lastTas != speed )
             {
-              _lastSpeed = speed;
-              emit newSpeed();
+              _lastTas = speed;
+              emit newTas( _lastTas );
             }
         }
     }

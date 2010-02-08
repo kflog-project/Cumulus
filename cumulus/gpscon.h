@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004, 2008 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c):  2004-2010 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  **
  ***********************************************************************/
 
-#ifndef GPSCON_H
-#define GPSCON_H
+#ifndef GPS_CON_H
+#define GPS_CON_H
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -36,31 +36,35 @@
 
 /**
  * This module manages the startup and supervision of the GPS client process
- * and the communication between this client process and the cumulus
+ * and the communication between this client process and the Cumulus
  * process. All data transfer between the two processes is be done via a
- * socket interface. The path name, used during startup of cumulus must be
+ * socket interface. The path name, used during startup of Cumulus must be
  * passed in the constructor, that the gpsClient binary can be found. It lays
- * in the same directory as cumulus.
+ * in the same directory as Cumulus.
  */
-class GPSCon : public QObject
+class GpsCon : public QObject
   {
     Q_OBJECT
 
-  public:
+ private:
 
-    GPSCon(QObject*, const char *path);
+  Q_DISABLE_COPY ( GpsCon )
 
-    virtual ~GPSCon();
+ public:
+
+    GpsCon(QObject*, const char *path);
+
+    virtual ~GpsCon();
 
     /**
-     * Starts a new gps client process via fork/exec or checks, if process is
+     * Starts a new GPS client process via fork/exec or checks, if process is
      * alive. Alive check is triggered by timer routine every 10s. If process
      * is down, a new one will be started.
      */
     bool startClientProcess();
 
     /**
-     * This function returns the currently used bautrate for this connection
+     * This function returns the currently used baud rate for this connection
      */
     int currentBautrate()const
       {
@@ -75,7 +79,7 @@ class GPSCon : public QObject
         return device;
       };
 
-    /** This function returns the current pid of the client process or
+    /** This function returns the current PID of the client process or
      * -1 if there isn't any
      */
     int getPid() const
@@ -84,7 +88,7 @@ class GPSCon : public QObject
       };
 
     /**
-     * Sends nmea input sentence to GPS receiver. Checksum is calculated by
+     * Sends NMEA input sentence to GPS receiver. Checksum is calculated by
      * this routine. Don't add an asterix at the end of the passed sentence!
      * That is part of the check sum.
      */
@@ -97,7 +101,7 @@ class GPSCon : public QObject
     bool startGpsReceiving();
 
     /**
-     * Stops the gps receiver on the client side.
+     * Stops the GPS receiver on the client side.
      */
     bool stopGpsReceiving();
 
@@ -146,7 +150,7 @@ class GPSCon : public QObject
 
     /**
      * Query the client, if NMEA records are available. If true, the data will
-     * be hand over to the cumulus process.
+     * be hand over to the Cumulus process.
      */
     void queryClient();
 
@@ -160,7 +164,7 @@ class GPSCon : public QObject
 
     /**
      * This slot is triggered by the QT main loop and is used to handle the
-     * listen socket events. The gps client tries to connect to the cumulus
+     * listen socket events. The gps client tries to connect to the Cumulus
      * process. There are two connections opened by the client, first as data
      * channel, second as notification channel.
      */

@@ -69,6 +69,7 @@ Calculator::Calculator(QObject* parent) :
   _calculateWind = true;
   selectedWp=(wayPoint *) 0;
   lastMc = 0.0;
+  lastTas = 0.0;
   _polar = 0;
   _vario = new Vario (this);
   _windAnalyser = new WindAnalyser(this);
@@ -960,6 +961,14 @@ void Calculator::slot_Mc(const Speed& spd)
   lastMc.setMps(spd.getMps());
   calcGlidePath();
   emit newMc (lastMc);
+}
+
+/**
+ * set TAS value
+ */
+void Calculator::slot_Tas(const Speed& spd)
+{
+  lastTas.setMps(spd.getMps());
 }
 
 

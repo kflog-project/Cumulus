@@ -6,7 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -252,6 +253,14 @@ public:
     };
 
     /**
+     * Read property of TAS setting
+     */
+    const Speed& getlastTas()
+    {
+      return lastTas;
+    };
+
+    /**
      * Read property of int lastWind.
      */
     const Vector& getlastWind() const { return lastWind; };
@@ -443,6 +452,10 @@ public slots:
      * set McCready value
      */
     void slot_Mc(const Speed&);
+    /**
+     * set TAS value
+     */
+    void slot_Tas(const Speed&);
     /**
      * increment McCready value
      */
@@ -694,6 +707,8 @@ private: // Private attributes
     Speed lastBestSpeed;
     /** Contains the last McCready setting */
     Speed lastMc;
+    /** Contains the last TAS value */
+    Speed lastTas;
     /** Contains the last variometer value */
     Speed lastVario;
     /** Contains the last known glide path information */

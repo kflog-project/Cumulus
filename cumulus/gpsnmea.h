@@ -74,6 +74,10 @@ class GpsNmea : public QObject
   {
     Q_OBJECT
 
+  private:
+
+    Q_DISABLE_COPY ( GpsNmea )
+
   public:
 
     /**
@@ -123,6 +127,14 @@ class GpsNmea : public QObject
     Speed getLastSpeed() const
       {
         return _lastSpeed;
+      };
+
+    /**
+     * @Returns the last known TAS.
+     */
+    Speed getLastTas() const
+      {
+        return _lastTas;
       };
 
     /**
@@ -288,7 +300,7 @@ class GpsNmea : public QObject
 
   public slots: // Public slots
     /**
-     * This slot is called by the GPSCon object when a new
+     * This slot is called by the GpsCon object when a new
      * sentence has arrived on the serial port. The argument
      * contains the sentence to analyze.
      */
@@ -353,6 +365,10 @@ class GpsNmea : public QObject
     void newWind( const Speed&, const short );
 
     /**
+     * This signal is emitted if a new TAS value has been established.
+     */
+    void newTas( const Speed& );
+    /**
      * This signal is emitted if a new variometer value has been established.
      */
     void newVario( const Speed& );
@@ -401,7 +417,7 @@ class GpsNmea : public QObject
     void newSatInViewInfo();
 
     /**
-     * Relay GPSCon newSentence signal
+     * Relay GpsCon newSentence signal
      */
     void newSentence(const QString&);
 
@@ -517,6 +533,8 @@ class GpsNmea : public QObject
     Speed _lastVariometer;
     /** Contains the last MacCready setting */
     Speed _lastMc;
+    /** Contains the last TAS setting */
+    Speed _lastTas;
 
     /** This timer fires if a timeout on the data reception occurs.
      * The connection is then probably (temporary?) lost. */
@@ -543,7 +561,7 @@ class GpsNmea : public QObject
     /** selected GPS device */
     QString gpsDevice;
     /** reference to the normal serial connection */
-    GPSCon* serial;
+    GpsCon* serial;
 
 #ifdef MAEMO
     /** reference to the Maemo GPS daemon connection */
