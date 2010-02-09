@@ -76,7 +76,7 @@ void GeneralConfig::load()
 
   // Main window properties
   beginGroup("MainWindow");
-  _windowSize            = value("Geometrie", QSize(800, 480)).toSize();
+  _windowSize            = value("Geometry", QSize(800, 480)).toSize();
   _mapSideFrameColor     = QColor( value("MapSideFrameColor", "#687ec6").toString() );
 
 #ifndef MAEMO_QT
@@ -391,61 +391,10 @@ void GeneralConfig::load()
 
   // Check if user data and user map directories do exist.
   // Try to create missing structures.
-  QDir userDataDir( _userDataDirectory );
+  setUserDataDirectory( _userDataDirectory );
 
-  if( ! userDataDir.exists() )
-    {
-      userDataDir.mkpath( _userDataDirectory );
-    }
-
-#ifdef MAEMO
-
-  QDir testMapDir( _mapRootDir );
-
-  if( _mapRootDir.isEmpty() || ! testMapDir.exists() )
-    {
-      QStringList paths;
-      paths << "/media/mmc2" << "/media/mmc1" << QDir::homePath();
-
-      QDir path("");
-
-      // Check, if root paths do exist. The assumption is, that $HOME
-      // does always exist.
-      for( int i = 0; i < paths.size(); i++ )
-        {
-          path.setPath( paths.at(i));
-
-          if( ! path.exists() )
-            {
-              continue;
-            }
-
-          QString root = paths.at(i);
-
-          // That is the fall back solution but normally unfit for map files
-          // due to limited space on that file system.
-          if( root == QDir::homePath() )
-            {
-              root += "/MyDocs";
-            }
-
-          root += "/Cumulus/maps";
-
-          _mapRootDir = root;
-          break;
-        }
-    }
-
-#endif
-
-  QDir mapRootDir( _mapRootDir );
-
-  // Try to create all directories whether they do exist or not.
-  mapRootDir.mkpath( _mapRootDir );
-  mapRootDir.mkpath( _mapRootDir + "/airfields" );
-  mapRootDir.mkpath( _mapRootDir + "/airspaces" );
-  mapRootDir.mkpath( _mapRootDir + "/landscape" );
-
+  // Checks and guarantees existence of map directories.
+  setMapRootDir( _mapRootDir );
 }
 
 void GeneralConfig::save()
@@ -457,7 +406,7 @@ void GeneralConfig::save()
 
   // Main window properties
   beginGroup("MainWindow");
-  setValue("Geometrie", _windowSize );
+  setValue("Geometry", _windowSize );
   setValue("MapSideFrameColor", _mapSideFrameColor);
   setValue("Style", _guiStyle);
   setValue("Font", _guiFont);
@@ -1411,16 +1360,119 @@ void GeneralConfig::removePixmap( const QString& pixmapName )
   QPixmapCache::remove( _installRoot + "/icons/" + pixmapName );
 }
 
+/**
+ * Sets map root directory. All needed subdirectories are created
+ * if they are missing.
+ */
+void GeneralConfig::setMapRootDir( QString newValue )
+{
+  if( newValue.isEmpty() )
+    {
+      // New directory name is empty, fall back to a default one
+      newValue = getMapDefaultRootDir();
+    }
+  else
+    {
+      QDir testMapDir( newValue );
+
+      if( ! testMapDir.exists() )
+        {
+          qWarning( "Cannot create map root directory %s! Fall back to default.",
+                      _mapRootDir.toLatin1().data() );
+
+          if( ! testMapDir.mkpath( newValue ) )
+            {
+              // New directory not creatable, fall back to a default one
+              newValue = getMapDefaultRootDir();
+            }
+        }
+    }
+
+  _mapRootDir = newValue;
+
+  QDir mapDir = QDir( _mapRootDir );
+
+  if( ! mapDir.exists() )
+    {
+      // try to create it
+      if( ! mapDir.mkpath( _mapRootDir ) )
+        {
+          qWarning( "Cannot create user map root directory %s!",
+                      _mapRootDir.toLatin1().data() );
+          return;
+        }
+    }
+
+  // Check existence of subdirectories and create all missing one.
+  QStringList subDirs;
+  subDirs << _mapRootDir + "/airfields"
+          << _mapRootDir + "/airspaces"
+          << _mapRootDir + "/landscape";
+
+  for( int i = 0; i < subDirs.size(); i++ )
+    {
+      mapDir.setPath( subDirs.at(i) );
+
+      if( mapDir.exists() == false )
+        {
+          mapDir.mkpath( subDirs.at(i) );
+        }
+    }
+}
+
+/** Gets the map default root directory. */
+QString GeneralConfig::getMapDefaultRootDir()
+{
+  QString root;
+  QStringList paths;
+
+#ifdef MAEMO
+  paths << "/media/mmc1"
+        << "/media/mmc2";
+#endif
+
+  paths << QDir::homePath();
+
+  QDir path( "" );
+
+  // Check, if root paths do exist. The assumption is, that $HOME
+  // does always exist.
+  for( int i = 0; i < paths.size(); i++ )
+    {
+      path.setPath( paths.at( i ) );
+
+      if( !path.exists() )
+        {
+          continue;
+        }
+
+      root = paths.at( i );
+
+      // That is the fall back solution but normally unfit for map files
+      // due to limited space on that file system.
+#ifdef MAEMO
+
+      if( root == QDir::homePath() )
+        {
+          root += "/MyDocs";
+        }
+
+#endif
+      root += "/Cumulus/maps";
+      break;
+    }
+
+  return root;
+}
+
 /** Returns the expected places of map directories
     There are: 1. Map directory defined by user
                2. $HOME/cumulus/maps (desktop) or $HOME/MyDocs/Cumulus/maps (Maemo)
-               3. $INSTALL_DIR/maps
 */
 QStringList GeneralConfig::getMapDirectories()
 {
   QStringList mapDirs;
-  QString     mapHome    = USER_DATA_DIR + "/maps";
-  QString     mapInstall = _installRoot  + "/maps";
+  QString     mapHome = USER_DATA_DIR + "/maps";
 
   // First take map directory
   if(  ! _mapRootDir.isEmpty() )
@@ -1428,18 +1480,11 @@ QStringList GeneralConfig::getMapDirectories()
       mapDirs << _mapRootDir;
     }
 
-  // Next follow $HOME/Cumulus/maps and at last the installation area with
-  // $INSTALL_ROOT/maps.
+  // Next follow $HOME/Cumulus/maps
   if( _mapRootDir != mapHome )
     {
       // add only if different
       mapDirs << mapHome;
-    }
-
-  if( _mapRootDir != mapInstall )
-    {
-      // add only if different
-      mapDirs << mapInstall;
     }
 
   return mapDirs;
@@ -1484,7 +1529,7 @@ void GeneralConfig::setUserDataDirectory( QString newDir )
       if( ! userDir.mkpath( newDir ) )
         {
           qWarning( "Cannot create user data directory %s", newDir.toLatin1().data() );
-          // user data directory not createable, fallback is set to
+          // user data directory not creatable, fallback is set to
           // default one
           _userDataDirectory = USER_DATA_DIR;
           userDir.mkpath( _userDataDirectory );

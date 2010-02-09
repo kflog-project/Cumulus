@@ -860,17 +860,18 @@ class GeneralConfig : protected QSettings
   /** gets the expected places of map directories */
   QStringList getMapDirectories();
 
-  /** gets map root dir */
+  /** gets map root directory */
   QString getMapRootDir() const
   {
     return _mapRootDir;
   };
+  /** Sets map root directory. All needed subdirectories are created if
+   *  they are missing.
+   */
+  void setMapRootDir( QString newValue );
 
-  /** sets map root dir */
-  void setMapRootDir( QString newValue )
-  {
-    _mapRootDir = newValue;
-  };
+  /** gets the map default root directory */
+  QString getMapDefaultRootDir();
 
   /** gets map server url */
   QString getMapServerUrl() const
