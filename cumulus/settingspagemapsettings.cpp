@@ -251,6 +251,10 @@ void SettingsPageMapSettings::slot_installMaps()
       return;
     }
 
+  // Save map directory, can be changed in the meantime.
+  // Saving will create all missing map directories.
+  GeneralConfig::instance()->setMapRootDir( mapDirectory->text() );
+
   // Store the proxy settings, can be changed in the meantime
   GeneralConfig::instance()->setProxy( proxy->text().trimmed() );
   Distance distance( Distance::convertToMeters( installRadius->value() ));
@@ -285,42 +289,6 @@ void SettingsPageMapSettings::slot_openFileDialog()
     }
 
   mapDirectory->setText( mapDirNew );
-
-  // Now check, if all needed map subdirectories are exist under the new map root
-  QStringList missingDirs;
-
-  if( ! mapDir.exists( mapDirNew + "/airfields" ))
-    {
-      missingDirs << "airfields";
-    }
-
-  if( ! mapDir.exists( mapDirNew + "/airspaces" ))
-    {
-      missingDirs << "airspaces";
-    }
-
-  if( ! mapDir.exists( mapDirNew + "/landscape" ))
-    {
-      missingDirs << "landscape";
-    }
-
-  if( missingDirs.size() != 0 )
-    {
-      // map subdirectories are missing, ask user for creation
-        int answer = QMessageBox::question( this, tr("Map Subdirectories?"),
-            tr("Missing Map subdirectories:") + QString("<p>") +
-            missingDirs.join(", ") +
-            QString("<p>") + tr("Shall they be created now?"),
-            QMessageBox::Yes | QMessageBox::No );
-
-      if( answer == QMessageBox::Yes )
-        {
-          for( int i = 0; i < missingDirs.size(); i++ )
-            {
-              mapDir.mkpath( mapDirNew + "/" + missingDirs.at(i) );
-            }
-        }
-    }
 }
 
 // selection in the combo box has been changed. index is a reference

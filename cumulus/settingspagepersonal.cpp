@@ -108,7 +108,7 @@ void SettingsPagePersonal::slot_save()
 
   conf->setSurname( edtName->text() );
   conf->setLanguage( langBox->currentText() );
-  conf->setUserDataDirectory( userDataDir->text() );
+  conf->setUserDataDirectory( userDataDir->text().trimmed() );
 
   // Check, if string input values have been changed. If not, no
   // storage is done to avoid rounding errors. They can appear if the
