@@ -30,24 +30,11 @@
 #include <string.h>
 #include <signal.h>
 #include <sys/ioctl.h>
-#include <sys/statvfs.h>
 
-#include <QDesktopWidget>
-#include <QTextCodec>
-#include <QtGlobal>
-#include <QFile>
-#include <QDateTime>
-#include <QDir>
-#include <QList>
-#include <QVector>
-#include <QMessageBox>
-#include <QDebug>
+#include <QtCore>
+#include <QtGui>
 
 #ifdef MAEMO
-#include <QInputContext>
-#include <QInputContextFactory>
-#include <QtDebug>
-
 #include "maemostyle.h"
 #endif
 
@@ -67,9 +54,6 @@
 #include "helpbrowser.h"
 #include "sound.h"
 #include "time_cu.h"
-
-#include "downloadmanager.h"
-
 
 #ifdef MAEMO
 
