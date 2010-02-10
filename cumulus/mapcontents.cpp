@@ -1394,8 +1394,8 @@ bool MapContents::__downloadMapFile( QString &file, QString &directory )
     {
       downloadManger = new DownloadManager(this);
 
-      connect( downloadManger, SIGNAL(finished()),
-               this, SLOT(downloadsFinished()) );
+      connect( downloadManger, SIGNAL(finished( int, int )),
+               this, SLOT(slotDownloadsFinished( int, int )) );
     }
 
   QString url = GeneralConfig::instance()->getMapServerUrl() + file;
@@ -1406,7 +1406,7 @@ bool MapContents::__downloadMapFile( QString &file, QString &directory )
 }
 
 /** Called, if all downloads are finished. */
-void MapContents::downloadsFinished()
+void MapContents::slotDownloadsFinished( int requests, int errors )
 {
   // All has finished, free not more needed resources
   downloadManger->deleteLater();
@@ -1415,9 +1415,12 @@ void MapContents::downloadsFinished()
   // initiate a map redraw
   Map::instance->scheduleRedraw( Map::baseLayer );
 
+  QString msg;
+  msg = QString(tr("%1 requests with %2 errors done.")).arg(requests).arg(errors);
+
   QMessageBox::information( Map::instance,
-                            tr("Downloads done"),
-                            tr("All downloads done.") );
+                            tr("Downloads finished"),
+                            msg );
 }
 
 /**

@@ -37,7 +37,9 @@ const ulong DownloadManager::MinFsSpace = 25*1024*1024; // 25MB
 DownloadManager::DownloadManager( QObject *parent ) :
   QObject(parent),
   client(0),
-  downloadRunning(false)
+  downloadRunning(false),
+  requests(0),
+  errors(0)
 {
   client = new HttpClient(this, false);
 
@@ -104,6 +106,7 @@ bool DownloadManager::downloadRequest( QString &url, QString &destination )
   urlSet.insert( url );
   QPair<QString, QString> pair( url, destination );
   queue.enqueue( pair );
+  requests++;
 
   mutex.unlock();
   return true;
@@ -120,6 +123,7 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
   if( codeIn != QNetworkReply::NoError )
     {
       // Error already reported by the HTTP client
+      errors++;
     }
 
   // Remove last done request from the queue and from the url set.
@@ -134,7 +138,7 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
     {
       // No more entries in queue. All downloads are finished.
       downloadRunning = false;
-      emit finished();
+      emit finished( requests, errors );
       mutex.unlock();
       return;
     }
@@ -151,7 +155,7 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
       queue.clear();
       urlSet.clear();
       downloadRunning = false;
-      emit finished();
+      emit finished( requests, errors );
       mutex.unlock();
       return;
     }

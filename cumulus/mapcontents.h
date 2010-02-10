@@ -310,7 +310,7 @@ class MapContents : public QObject
   private slots:
 
     /** Called, if all downloads are finished. */
-    void downloadsFinished();
+    void slotDownloadsFinished( int requests, int errors );
 
   signals:
 

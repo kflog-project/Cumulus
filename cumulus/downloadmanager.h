@@ -46,7 +46,7 @@ class DownloadManager : public QObject
   signals:
 
    /** Sends a finish signal if all requested downloads are done. */
-   void finished();
+   void finished( int requests, int errors );
 
  private:
 
@@ -78,6 +78,12 @@ class DownloadManager : public QObject
 
   /** Mutex to protect data accesses. */
   QMutex mutex;
+
+  /** Counter for download request. */
+  int requests;
+
+  /** Counter for download errors. */
+  int errors;
 
   /**
    * Required minimum space in bytes on file system destination to
