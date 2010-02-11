@@ -951,7 +951,6 @@ void Map::__redrawMap(mapLayer fromLayer)
   if (fromLayer < navigationLayer)
     {
       __drawAeroLayer(fromLayer < aeroLayer);
-      QCoreApplication::processEvents( QEventLoop::AllEvents, 500 );
     }
 
   if (fromLayer < informationLayer)
