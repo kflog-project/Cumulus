@@ -754,6 +754,17 @@ class GeneralConfig : protected QSettings
     _loggerAutostartMode = newValue;
   };
 
+  /** gets logger extended mode */
+  bool getLoggerExtendedMode() const
+  {
+    return _loggerExtendedMode;
+  };
+  /** sets logger extended mode */
+  void setLoggerExtendedMode( const bool newValue )
+  {
+    _loggerExtendedMode = newValue;
+  };
+
   /** gets TAS */
   int getTas() const
   {
@@ -1838,6 +1849,8 @@ class GeneralConfig : protected QSettings
   int _loggerInterval;
   // logger auto start mode flag
   bool _loggerAutostartMode;
+  // logger extended mode
+  bool _loggerExtendedMode;
   // true air speed
   int _tas;
   // wind direction

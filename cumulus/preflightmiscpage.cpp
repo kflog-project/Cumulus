@@ -6,11 +6,11 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by      André Somers
- **                   2008-2009 by Axel Pauli
+ **   Copyright (c):  2004      by André Somers
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -96,6 +96,11 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   topLayout->addWidget(chkLogAutoStart, row, 0, 1, 3);
   row++;
 
+  chkLogExtended = new QCheckBox(tr("Extended logging"), this);
+  chkLogExtended->setObjectName("extendedLogging");
+  topLayout->addWidget(chkLogExtended, row, 0, 1, 3);
+  row++;
+
   topLayout->setRowStretch(row, 10);
 }
 
@@ -127,6 +132,7 @@ void PreFlightMiscPage::load()
   edtQNH->setValue( conf->getQNH() );
   loggerInterval->setValue( conf->getLoggerInterval() );
   chkLogAutoStart->setChecked( conf->getLoggerAutostartMode() );
+  chkLogExtended->setChecked( conf->getLoggerExtendedMode() );
 }
 
 void PreFlightMiscPage::save()
@@ -153,6 +159,7 @@ void PreFlightMiscPage::save()
     }
 
   conf->setLoggerAutostartMode( chkLogAutoStart->isChecked() );
+  conf->setLoggerExtendedMode( chkLogExtended->isChecked() );
 
   // @AP: Store altitude always as meter.
   if (altUnit == Altitude::meters)

@@ -193,6 +193,7 @@ void GeneralConfig::load()
   _qnh                 = value( "QNH", 1013 ).toInt();
   _loggerInterval      = value( "LoggerInterval", 10 ).toInt();
   _loggerAutostartMode = value( "LoggerAutostartMode", false ).toBool();
+  _loggerExtendedMode  = value( "LoggerExtendedMode", false ).toBool();
   _tas                 = value( "TAS", 100 ).toInt();
   _windDirection       = value( "WindDirection", 0 ).toInt();
   _windSpeed           = value( "WindSpeed", 0 ).toInt();
@@ -511,6 +512,7 @@ void GeneralConfig::save()
   setValue( "QNH", _qnh );
   setValue( "LoggerInterval", _loggerInterval );
   setValue( "LoggerAutostartMode", _loggerAutostartMode );
+  setValue( "LoggerExtendedMode", _loggerExtendedMode );
   setValue( "TAS", _tas );
   setValue( "WindDirection", _windDirection );
   setValue( "WindSpeed", _windSpeed );

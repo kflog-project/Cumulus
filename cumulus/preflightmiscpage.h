@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2004 by André Somers
+**                   2008-2010 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -32,6 +33,10 @@ class PreFlightMiscPage : public QWidget
 {
     Q_OBJECT
 
+  private:
+
+  Q_DISABLE_COPY ( PreFlightMiscPage )
+
 public:
     PreFlightMiscPage(QWidget *parent=0);
 
@@ -44,11 +49,9 @@ public:
 private:
 
     QCheckBox* chkLogAutoStart;
-
+    QCheckBox* chkLogExtended;
     QSpinBox* edtMinimalArrival;
-
     QSpinBox* edtQNH;
-
     QSpinBox* loggerInterval; // logger record interval in seconds
 
     /** saves altitude unit set during construction of object */
