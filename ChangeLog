@@ -14,6 +14,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-02-18 AP: New option Extended Logging added under the menu point Pre-flight
+                   Settings tabulator Common. If this option is enabled the IGC
+                   logger is logging additional parameters by using the K-Record.
+                   Additional parameters are HDT, TAS, WDI, WSP, VAT.
 [+] 2010-02-04 AP: To make installation of maps easier for the user a new extension
                    has been added to the Map Settings tabulator. The user can now
                    define a radius and a center point. On demand all maps of this

@@ -1025,7 +1025,7 @@ void Map::__drawBaseLayer()
   // make sure we have all the map files we need loaded
   _globalMapContents->proofeSection();
 
-  QCoreApplication::processEvents( QEventLoop::AllEvents, 1000 );
+  //QCoreApplication::processEvents( QEventLoop::AllEvents, 500 );
 
   // qDebug("Map::__drawBaseLayer(): zoomFactor=%f", zoomFactor );
 
@@ -1039,7 +1039,7 @@ void Map::__drawBaseLayer()
   // first, draw the iso lines
   _globalMapContents->drawIsoList(&baseMapP);
 
-  QCoreApplication::processEvents( QEventLoop::AllEvents, 1000 );
+  //QCoreApplication::processEvents( QEventLoop::AllEvents, 500 );
 
   // next, draw the topographical elements and the cities
   _globalMapContents->drawList(&baseMapP, MapContents::TopoList);
