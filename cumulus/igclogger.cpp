@@ -43,6 +43,7 @@ IgcLogger* IgcLogger::_theInstance = static_cast<IgcLogger *> (0);
 
 IgcLogger::IgcLogger(QObject* parent) :
   QObject(parent),
+  _extendedLogging(false),
   _backtrack( LimitedList<QStringList> (15) )
 {
   if ( GeneralConfig::instance()->getLoggerAutostartMode() )
@@ -125,8 +126,8 @@ void IgcLogger::slotResetLoggingTime()
   _logInterval = GeneralConfig::instance()->getLoggerInterval();
 }
 
-/** This slot is called by the calculator if a new flight sample is ready to make a log
- *  entry on a predefined interval into the IGC file.
+/** This slot is called by the calculator if a new flight sample is ready to
+ *  make a log entry on a predefined interval into the IGC file.
  */
 void IgcLogger::slotMakeFixEntry()
 {
@@ -150,10 +151,10 @@ void IgcLogger::slotMakeFixEntry()
 
   *lastLoggedBRecord = lastfix.time;
 
-  QString entry("B" + formatTime(lastfix.time) + formatPosition(lastfix.position) + "A" +
-                formatAltitude(lastfix.altitude) + formatAltitude(lastfix.GNSSAltitude) +
-                QString("%1").arg(GpsNmea::gps->getLastSatInfo().fixAccuracy, 3, 10, QChar('0')) +
-                QString("%1").arg(GpsNmea::gps->getLastSatInfo().satCount, 2, 10, QChar('0')) );
+  QString bRecord( "B" + formatTime(lastfix.time) + formatPosition(lastfix.position) + "A" +
+                   formatAltitude(lastfix.altitude) + formatAltitude(lastfix.GNSSAltitude) +
+                   QString("%1").arg(GpsNmea::gps->getLastSatInfo().fixAccuracy, 3, 10, QChar('0')) +
+                   QString("%1").arg(GpsNmea::gps->getLastSatInfo().satCount, 2, 10, QChar('0')) );
 
   if ( _logMode == standby && calculator->moving() == false )
     {
@@ -162,7 +163,7 @@ void IgcLogger::slotMakeFixEntry()
                          formatTime( lastfix.time ) +
                          GpsNmea::gps->getLastSatInfo().constellation;
       QStringList list;
-      list << entry << fRecord << QTime::currentTime ().toString("hhmmss");
+      list << bRecord << fRecord << QTime::currentTime ().toString("hhmmss");
       _backtrack.add( list );
       // qDebug( "_backtrack.size=%d", _backtrack.size() );
 
@@ -225,7 +226,37 @@ void IgcLogger::slotMakeFixEntry()
           makeSatConstEntry( lastfix.time );
         }
 
-      _stream << entry << "\r\n";
+      _stream << bRecord << "\r\n";
+
+      // Write K Record if extended logging is activated.
+      /**
+       *  The additional five parameters are logged as K record.
+
+          0         1            2           3         4
+          1234567 890 123456 789 012 3456789 01234567890
+          KHHMMSS hdt taskph wdi wsp -vat...
+                                     +
+          Example: K120000 090 100kph 270 020 -001200
+
+          08-10 HDT, true heading as 3 numbers
+          11-16 TAS, true airspeed as 3 numbers with unit kph
+          17-19 WDI, wind direction as 3 numbers
+          20-22 WSP, wind speed as 3 numbers in kph
+          23-29 VAT, vario speed in meters as sign +/-, 3 numbers with 3 decimal numbers
+       *
+       */
+      if( _extendedLogging == true )
+        {
+          QString kRecord( "K" + formatTime(lastfix.time) +
+                           QString("%1").arg( (int) rint(GpsNmea::gps->getLastHeading()), 3, 10, QChar('0')) +
+                           QString("%1").arg( (int) rint(GpsNmea::gps->getLastTas().getKph()), 3, 10, QChar('0')) + "kph" +
+                           QString("%1").arg( calculator->getlastWind().getAngleDeg(), 3, 10, QChar('0')) +
+                           QString("%1").arg( (int) rint(calculator->getlastWind().getSpeed().getKph()), 3, 10, QChar('0')) +
+                           formatVario(calculator->getlastVario()) );
+
+          _stream << kRecord << "\r\n";
+        }
+
       emit madeEntry();
 
       // make sure the file is flushed, so we will not lose data if something goes wrong
@@ -297,7 +328,6 @@ void IgcLogger::Standby()
   emit logging( getIsLogging() );
 }
 
-
 /**
  * Creates a log file, if it not yet already exists and writes the header items
  * into it.
@@ -350,7 +380,6 @@ void IgcLogger::CloseFile()
 {
   _logfile.close();
 }
-
 
 /** This function writes the header of the IGC file into the logfile. */
 void IgcLogger::writeHeader()
@@ -405,9 +434,20 @@ void IgcLogger::writeHeader()
   // GSP info lines committed for now
   // additional data (competition ID and class name) committed for now
   _stream << "I023638FXA3940SIU\r\n"; // Fix accuracy and sat count as add ons
-  _stream.flush();
 
-  // no J record for now
+  // Write J Record definitions, if extended logging is activated by the user.
+  if( conf->getLoggerExtendedMode() )
+    {
+      // Set extended logging flag used for writing of K record.
+      _extendedLogging = true;
+      _stream << "J050810HDT1116TAS1719WDI2022WSP2329VAT" << "\r\n";
+    }
+  else
+    {
+      _extendedLogging = false;
+    }
+
+  _stream.flush();
 
   // task support: C records
   extern MapContents* _globalMapContents;
@@ -538,7 +578,6 @@ void IgcLogger::makeSatConstEntry(const QTime &time)
     }
 }
 
-
 /** This function formats a QTime to the correct format for IGC files (HHMMSS) */
 QString IgcLogger::formatTime(const QTime& time)
 {
@@ -547,6 +586,31 @@ QString IgcLogger::formatTime(const QTime& time)
   return result;
 }
 
+/**
+ * This function formats the variometer speed value in meters with sign +/-,
+ * 3 numbers with 3 decimal numbers.
+ */
+QString IgcLogger::formatVario(const Speed vSpeed)
+{
+  QString result;
+
+  double mps = vSpeed.getMps();
+
+  if( mps == 0.0 )
+    {
+      result += " ";
+    }
+  else if( mps > 0.0 )
+    {
+      result += "+";
+    }
+
+  // We need a number with 6 digits and without a decimal point. Therefore
+  // the value meter per second is multiplied with 1000.
+  result += QString("%1").arg( (int) rint(mps*1000.0), 6, 10, QChar('0') );
+
+  return result;
+}
 
 /** This function formats an Altitude to the correct format for IGC files (XXXXX) */
 QString IgcLogger::formatAltitude(Altitude altitude)
@@ -556,7 +620,6 @@ QString IgcLogger::formatAltitude(Altitude altitude)
   return result;
 
 }
-
 
 /** This function formats the position to the correct format for igc files. Latitude and Longitude are encoded as DDMMmmmADDDMMmmmO, with A=N or S and O=E or W. */
 QString IgcLogger::formatPosition(const QPoint& position)
@@ -606,7 +669,6 @@ QString IgcLogger::formatPosition(const QPoint& position)
   result.sprintf("%02d%05d%1s%03d%05d%1s",latdeg,latmin,latmark.toLatin1().data(),londeg,lonmin,lonmark.toLatin1().data());
   return result;
 }
-
 
 /** Creates a new filename for the IGC file according to the IGC standards (IGC GNSS FR Specification, may 2002, Section 2.5) YMDCXXXF.IGC */
 QString IgcLogger::createFileName(const QString& path)

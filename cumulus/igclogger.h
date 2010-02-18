@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2009 by Axel Pauli
+                               2008-2010 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -61,6 +61,10 @@
 class IgcLogger : public QObject
 {
   Q_OBJECT
+
+private:
+
+  Q_DISABLE_COPY ( IgcLogger )
 
 public:
 
@@ -168,12 +172,6 @@ private:
   IgcLogger(QObject* parent = static_cast<QObject *>(0) );
 
   /**
-   * Because this is a singleton, don't allow copies and assignments.
-   */
-  IgcLogger(const IgcLogger& right);
-  IgcLogger& operator=(const IgcLogger& right);
-
-  /**
    * A pointer to the singleton existing instance.
    */
   static IgcLogger* _theInstance;
@@ -192,6 +190,9 @@ private:
 
   /** Logger record time interval in seconds. */
   int _logInterval;
+
+  /** Enable extended logging. */
+  bool _extendedLogging;
 
   /** Time stamp of the last logged B record */
   QTime* lastLoggedBRecord;
@@ -256,6 +257,12 @@ private:
    * with A=N or S and O=E or W.
    */
   QString formatPosition(const QPoint& position);
+
+  /**
+   * This function formats the variometer speed value in meters with sign +/-,
+   * 3 numbers with 3 decimal numbers.
+   */
+  QString formatVario(const Speed vSpeed);
 
   /**
    * Creates a new filename for the IGC file according to the IGC
