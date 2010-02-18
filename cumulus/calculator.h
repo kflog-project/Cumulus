@@ -253,17 +253,28 @@ public:
     };
 
     /**
-     * Read property of TAS setting
+     * Read property of TAS setting.
      */
-    const Speed& getlastTas()
+    Speed& getlastTas()
     {
       return lastTas;
     };
 
     /**
-     * Read property of int lastWind.
+     * Read property of variometer setting.
      */
-    const Vector& getlastWind() const { return lastWind; };
+    Speed& getlastVario()
+    {
+      return lastVario;
+    };
+
+    /**
+     * Read property of last Wind.
+     */
+    Vector& getlastWind()
+    {
+      return lastWind;
+    };
 
     /**
      * Read property of int lastHeading.
@@ -470,7 +481,7 @@ public slots:
     void slot_Variometer(const Speed&);
     /**
      * GPS variometer lift receiver. The internal variometer
-     * calculation can be switched off, if we got values vis this slot.
+     * calculation can be switched off, if we got values via this slot.
      */
     void slot_GpsVariometer(const Speed&);
     /**
