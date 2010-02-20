@@ -14,6 +14,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2010-02-20 AP: BUGFIX: Up to Qt4.6.0 Cumulus did crash, when processEvents()
+                   was called during resize event handling. It was called
+                   several times to empty the GPS receiver buffer during the map
+                   load and drawing. For Maemo a new method was provided in
+                   GpsNmea to do that now.
 [+] 2010-02-18 AP: New option Extended Logging added under the menu point Pre-flight
                    Settings tabulator Common. If this option is enabled the IGC
                    logger is logging additional parameters by using the K-Record.
