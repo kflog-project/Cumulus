@@ -23,29 +23,29 @@
 #include <QtCore>
 #include <QtGui>
 
-#include "mapcontents.h"
-#include "mapmatrix.h"
-#include "map.h"
-#include "mapview.h"
-#include "mapcalc.h"
 #include "airfield.h"
 #include "airspace.h"
 #include "basemapelement.h"
+#include "calculator.h"
+#include "filetools.h"
+#include "flighttask.h"
+#include "generalconfig.h"
+#include "gpsnmea.h"
+#include "hwinfo.h"
 #include "isohypse.h"
 #include "lineelement.h"
+#include "map.h"
+#include "mapcalc.h"
+#include "mapcontents.h"
+#include "mapmatrix.h"
+#include "mapview.h"
+#include "openairparser.h"
+#include "projectionbase.h"
 #include "radiopoint.h"
 #include "singlepoint.h"
-#include "projectionbase.h"
-#include "wgspoint.h"
-#include "filetools.h"
-#include "hwinfo.h"
-#include "openairparser.h"
-#include "welt2000.h"
-#include "calculator.h"
-#include "flighttask.h"
-#include "gpsnmea.h"
 #include "waypointcatalog.h"
-#include "generalconfig.h"
+#include "welt2000.h"
+#include "wgspoint.h"
 
 extern MapView* _globalMapView;
 
@@ -2184,13 +2184,13 @@ void MapContents::slotReloadMapData()
   mutex = false; // unlock mutex
 }
 
-/** Reload Welt2000 data file. Can be called after a configuration
-    change. */
+/**
+ * Reload Welt2000 data file. Can be called after a configuration change.
+ */
 void MapContents::slotReloadWelt2000Data()
 {
   // @AP: defined a static mutex variable, to prevent the recursive
   // calling of this method
-
   static bool mutex = false;
 
   if ( mutex )
@@ -2204,10 +2204,6 @@ void MapContents::slotReloadWelt2000Data()
   // We must block all GPS signals during the reload time to avoid
   // system crash due to outdated data.
   GpsNmea::gps->enableReceiving( false );
-
-  // clear event queue
-  qDebug("========= MapContents::slotReloadWelt2000Data() calls processEvents =========");
-  QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
 
   airfieldList.clear();
   gliderSiteList.clear();
