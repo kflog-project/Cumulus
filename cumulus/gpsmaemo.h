@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2008-2009 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c):  2008-2010 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -46,12 +46,16 @@ extern "C" {
  * This module manages the start/stop of the Maemo GPS daemon and the connection to
  * it. The Maemo daemon is requested to pass all GPS data in raw and watcher mode.
  *
- * This Class is only used by the Cumulus Maemo part to adapt the cumulus GPS
+ * This Class is only used by the Cumulus Maemo part to adapt the Cumulus GPS
  * interface to the Maemo requirements.
  */
 class GpsMaemo : public QObject
   {
     Q_OBJECT
+
+private:
+
+  Q_DISABLE_COPY ( GpsMaemo )
 
   public:
 
@@ -83,6 +87,12 @@ class GpsMaemo : public QObject
      * location service.
      */
     bool stopGpsReceiving();
+
+    /**
+     * Checks, if data are available in the socket receiver buffer and if yes
+     * all data will be read.
+     */
+    void checkAndReadGpsData();
 
     /**
      * Returns the socket notifier of the daemon connection.

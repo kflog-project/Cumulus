@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2009 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2008-2010 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -336,6 +336,20 @@ void GpsMaemo::slot_NotificationEvent(int /* socket */)
 }
 
 /**
+ * Checks, if GPS data are available in the socket receiver buffer and if yes
+ * all data will be read.
+ */
+void GpsMaemo::checkAndReadGpsData()
+{
+  qDebug("GpsMaemo::checkAndReadGpsData() is called");
+
+  if( client.numberOfReadableBytes() > 0 )
+    {
+      readGpsData();
+    }
+}
+
+/**
  * This method reads the data provided by the GPS daemon. It is checked, if
  * the function is called only once.
  * @return true=success / false=unsuccess
@@ -344,7 +358,7 @@ bool GpsMaemo::readGpsData()
 {
   static short caller = 0;
 
-  if (client.getSock() == -1) // no connection is active
+  if( client.getSock() == -1 ) // no connection is active
     {
       return false;
     }
