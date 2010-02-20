@@ -36,6 +36,7 @@
 #include "mainwindow.h"
 #include "distance.h"
 #include "generalconfig.h"
+#include "gpsnmea.h"
 #include "hwinfo.h"
 #include "map.h"
 #include "mapcalc.h"
@@ -1025,7 +1026,9 @@ void Map::__drawBaseLayer()
   // make sure we have all the map files we need loaded
   _globalMapContents->proofeSection();
 
-  //QCoreApplication::processEvents( QEventLoop::AllEvents, 500 );
+  // To avoid an overflow in the GPS receiver buffer, we do empty the receiver
+  // buffer after a long action.
+  GpsNmea::gps->readDataFromGps();
 
   // qDebug("Map::__drawBaseLayer(): zoomFactor=%f", zoomFactor );
 
@@ -1039,7 +1042,9 @@ void Map::__drawBaseLayer()
   // first, draw the iso lines
   _globalMapContents->drawIsoList(&baseMapP);
 
-  //QCoreApplication::processEvents( QEventLoop::AllEvents, 500 );
+  // To avoid an overflow in the GPS receiver buffer, we do empty the receiver
+  // buffer after a long action.
+  GpsNmea::gps->readDataFromGps();
 
   // next, draw the topographical elements and the cities
   _globalMapContents->drawList(&baseMapP, MapContents::TopoList);
