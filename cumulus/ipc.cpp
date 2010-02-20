@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2004-2009 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2004-2010 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ using namespace std;
 #include <string.h>
 #include <sys/time.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <iostream>
@@ -108,7 +109,7 @@ Ipc::Server::~Server()
  * @returns:         true on success otherwise false
  */
 bool Ipc::Server::init( const char *ipAddress,
-                              const unsigned short port )
+                        const unsigned short port )
 {
   static const char* method = ( "Ipc::Server::init(): " );
 
@@ -723,4 +724,30 @@ int Ipc::Client::closeSock()
     }
 
   return res;
+}
+
+/**
+ * Returns the number of the readable bytes in the read queue.
+ * @returns 0 if nothing is to read or in error case.
+ */
+int Ipc::Client::numberOfReadableBytes()
+{
+  static const char* method = ( "Ipc::Client::numberOfReadableBytes(): " );
+
+  int bytes = 0;
+
+  if( sock != -1 )
+    {
+      // Number of bytes currently in the socket receiver buffer.
+      if( ioctl( sock, FIONREAD, &bytes) == -1 )
+        {
+          bytes = 0;
+          cerr << method
+               << "ioctl() returns with ERROR: errno="
+               << errno
+               << ", " << strerror(errno) << endl;
+        }
+    }
+
+  return bytes;
 }

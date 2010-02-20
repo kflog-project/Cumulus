@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2010 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 
 /**
  * This class manages the low layer interfaces for the interprocess
- * cummunication via sockets. The server part can handle up to two client
+ * communication via sockets. The server part can handle up to two client
  * connections. All io is done in blocking mode.
  */
 class Ipc
@@ -92,7 +92,7 @@ public:
          * @returns:         true on success otherwise false
          */
         bool init( const char *ipAddress=0,
-                         const unsigned short port=0 );
+                   const unsigned short port=0 );
 
         /**
          * @returns the socket descriptor of the next available client connection
@@ -126,7 +126,7 @@ public:
 
         int getListenSock() const
         {
-            return listenSock;
+          return listenSock;
         };
 
         int getClientSock(uint index) const
@@ -139,7 +139,7 @@ public:
 
         unsigned short getListenPort() const
         {
-            return listenPort;
+          return listenPort;
         };
 
         const char *getIpAddress()
@@ -186,7 +186,7 @@ public:
          * @returns         -1 in error case otherwise 0
          */
         int connect2Server( const char *ipAddressIn,
-                                  const unsigned short portIn );
+                            const unsigned short portIn );
 
         /**
          * Reads one time data from the connected client socket and returns.
@@ -208,19 +208,24 @@ public:
 
         int getSock() const
         {
-            return sock;
+          return sock;
         };
 
         unsigned short getPort() const
         {
-            return port;
+          return port;
         };
 
         const char *getIpAddress()
         {
-            return ipAddress.data();
+          return ipAddress.data();
         };
 
+        /**
+         * Returns the number of the readable bytes in the read queue.
+         * @returns 0 if nothing is to read or in error case.
+         */
+        int numberOfReadableBytes();
     };
 
 };
