@@ -106,6 +106,13 @@ class GpsNmea : public QObject
     void startGpsReceiver();
 
     /**
+     * This method can be used to read data from the connected GPS. It is provided
+     * to empty the receiver queue during long running other actions to avoid a
+     * buffer overflow.
+     */
+    void readDataFromGps();
+
+    /**
      * @Returns the current GPS connection status.
      */
     GpsNmea::GpsStatus getGpsStatus() const

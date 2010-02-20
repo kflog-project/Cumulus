@@ -232,6 +232,30 @@ void GpsNmea::enableReceiving( bool enable )
 }
 
 /**
+ * This method can be used to read data from the connected GPS. It is provided
+ * to empty the receiver queue during long running other actions to avoid a
+ * buffer overflow. At the moment only Maemo uses it because it is not clear
+ * how long the MAEMO GPS daemon can buffer data.
+ * For the Cumulus GPS daemon with method is not necessary. It can queue 500
+ * NMEA sentences internally.
+ */
+void GpsNmea::readDataFromGps()
+{
+#ifdef MAEMO
+
+  enableReceiving( false );
+
+  if ( gpsdConnection )
+    {
+      gpsdConnection->checkAndReadGpsData();
+    }
+
+  enableReceiving( true );
+
+#endif
+}
+
+/**
  * @Starts the GPS receiver client process and activates the receiver.
  */
 void GpsNmea::startGpsReceiver()
