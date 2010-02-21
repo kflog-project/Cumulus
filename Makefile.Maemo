@@ -1,7 +1,7 @@
 ################################################################################
 # Makefile to build a Cumulus release based on Maemo4
 #
-# Copyright (c): 2008-2009 by Axel Pauli (axel@kflog.org)
+# Copyright (c): 2008-2010 by Axel Pauli (axel@kflog.org)
 # 
 # $Id$
 #
@@ -14,7 +14,7 @@
 VERSION = `cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2`
 
 # current Qt version
-QT_VERSION=4.5.3
+QT_VERSION=4.6.2
 
 # installation directory of Qt libraries
 QT_LIBDIR=/opt/qt$(QT_VERSION)/lib
@@ -157,6 +157,7 @@ dpkg_install:
 	install --mode=644 dpkg/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service
 	install --mode=755 $(QT_LIBDIR)/libQtCore.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
 	install --mode=755 $(QT_LIBDIR)/libQtGui.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
+  install --mode=755 $(QT_LIBDIR)/libQtNetwork.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
 
 .PHONY : install_lang
 install_lang:
