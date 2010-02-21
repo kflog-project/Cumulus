@@ -138,7 +138,7 @@ SOURCES = airfieldlistview.cpp \
     airspace.cpp \
     altimetermodedialog.cpp \
     altitude.cpp \
-    authdialog.h \
+    authdialog.cpp \
     basemapelement.cpp \
     configwidget.cpp \
     calculator.cpp \
