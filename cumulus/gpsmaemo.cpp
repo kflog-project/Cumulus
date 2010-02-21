@@ -343,8 +343,11 @@ void GpsMaemo::checkAndReadGpsData()
 {
   qDebug("GpsMaemo::checkAndReadGpsData() is called");
 
-  if( client.numberOfReadableBytes() > 0 )
+  int maxLoop = 25;
+
+  while( maxLoop > 0 && client.numberOfReadableBytes() > 0 )
     {
+      maxLoop--;
       readGpsData();
     }
 }
