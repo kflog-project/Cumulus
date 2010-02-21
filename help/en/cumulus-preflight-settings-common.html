@@ -50,17 +50,36 @@
   pressure airspaces. The default value is 1013hPa.
   </dd>
 
-  <dt><b>Logger Interval</b></dt>
-
-  <dd>Interval for logging of IGC data records. Default time is
-  10 seconds. Note, that lower times&nbsp; will increase the log file size.
-  </dd>
-
   <dt><b>Autostart logging</b></dt>
 
-  <dd> If you activate this check box, cumulus starts
+  <dd> If you activate this check box, Cumulus starts
   automatically the IGC logging, when you start with moving.
   </dd>
+
+  <dt><b>B-Record Interval</b></dt>
+
+  <dd>Interval for logging of the IGC B-Record. Default time is
+  10 seconds. Note, that lower times will increase the log file size.
+  </dd>
+
+  <dt><b>K-Record Interval</b></dt>
+
+  <dd>Interval for logging of the IGC K-Record. Default is <i>None</i>,
+	that means switched off. If you enter a valid time, the following
+	additional items are logged, if they are available. Otherwise default values
+	are used. Note, the activation of this option will increase the log file size.
+
+	<ul>
+		<li>HDT, true heading as 3 numbers</li>
+		<li>TAS, true airspeed as 3 numbers with unit kph</li>
+		<li>WDI, wind direction as 3 numbers</li>
+		<li>WSP, wind speed as 3 numbers in kph</li>
+		<li>VAT, variometer speed in meters with sign +/-, 3 numbers with
+		    3 decimal numbers. If the speed is zero the sign is reset to space.</li>
+	</ul>
+
+	</dd>
+
 </dl>
 
 <table width="100%">
