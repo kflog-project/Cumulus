@@ -172,6 +172,11 @@ private:
   IgcLogger(QObject* parent = static_cast<QObject *>(0) );
 
   /**
+   * Writes a K-Record, if all conditions are true.
+   */
+  void writeKRecord( const QTime& timeFix );
+
+  /**
    * A pointer to the singleton existing instance.
    */
   static IgcLogger* _theInstance;
@@ -188,17 +193,23 @@ private:
   /** Contains the current active logging mode. */
   LogMode _logMode;
 
-  /** Logger record time interval in seconds. */
-  int _logInterval;
+  /** B-Record logger time interval in seconds. */
+  int _bRecordInterval;
 
-  /** Enable extended logging. */
-  bool _extendedLogging;
+  /** K-Record logger time interval in seconds. */
+  int _kRecordInterval;
+
+  /** Enable K-Record logging. */
+  bool _kRecordLogging;
 
   /** Time stamp of the last logged B record */
   QTime* lastLoggedBRecord;
 
   /** Time stamp of the last logged F record */
   QTime* lastLoggedFRecord;
+
+  /** Time stamp of the last logged K record */
+  QTime* lastLoggedKRecord;
 
   /** List of last would-be log entries.
     * This list is filled when in standby mode with strings that would be

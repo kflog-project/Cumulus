@@ -43,7 +43,7 @@ IgcLogger* IgcLogger::_theInstance = static_cast<IgcLogger *> (0);
 
 IgcLogger::IgcLogger(QObject* parent) :
   QObject(parent),
-  _extendedLogging(false),
+  _kRecordLogging(false),
   _backtrack( LimitedList<QStringList> (15) )
 {
   if ( GeneralConfig::instance()->getLoggerAutostartMode() )
@@ -57,10 +57,13 @@ IgcLogger::IgcLogger(QObject* parent) :
       _logMode = off;
     }
 
-  _logInterval = GeneralConfig::instance()->getLoggerInterval();
+  // load user configuration items
+  _bRecordInterval = GeneralConfig::instance()->getBRecordInterval();
+  _kRecordInterval = GeneralConfig::instance()->getKRecordInterval();
 
   lastLoggedBRecord = new QTime();
   lastLoggedFRecord = new QTime();
+  lastLoggedKRecord = new QTime();
 
   resetTimer = new QTimer( this );
 
@@ -78,6 +81,7 @@ IgcLogger::~IgcLogger()
 
   delete lastLoggedBRecord;
   delete lastLoggedFRecord;
+  delete lastLoggedKRecord;
   delete resetTimer;
 }
 
@@ -115,7 +119,8 @@ void IgcLogger::slotReadConfig()
         }
     }
 
-  _logInterval = GeneralConfig::instance()->getLoggerInterval();
+  _bRecordInterval = GeneralConfig::instance()->getBRecordInterval();
+  _kRecordInterval = GeneralConfig::instance()->getKRecordInterval();
 }
 
 /**
@@ -123,7 +128,8 @@ void IgcLogger::slotReadConfig()
  */
 void IgcLogger::slotResetLoggingTime()
 {
-  _logInterval = GeneralConfig::instance()->getLoggerInterval();
+  _bRecordInterval = GeneralConfig::instance()->getBRecordInterval();
+  _kRecordInterval = GeneralConfig::instance()->getKRecordInterval();
 }
 
 /** This slot is called by the calculator if a new flight sample is ready to
@@ -141,11 +147,12 @@ void IgcLogger::slotMakeFixEntry()
 
   const FlightSample &lastfix = calculator->samplelist.at(0);
 
-  // check if we have a new fix to log
+  // check if we have to log a new B-Record
   if ( ! lastLoggedBRecord->isNull() &&
-         lastLoggedBRecord->addSecs( _logInterval ) > lastfix.time )
+         lastLoggedBRecord->addSecs( _bRecordInterval ) > lastfix.time )
     {
-      // there is no one
+      // write K-Record, if needed
+      writeKRecord( lastfix.time );
       return;
     }
 
@@ -228,40 +235,63 @@ void IgcLogger::slotMakeFixEntry()
 
       _stream << bRecord << "\r\n";
 
-      // Write K Record if extended logging is activated.
-      /**
-       *  The additional five parameters are logged as K record.
-
-          0         1            2           3         4
-          1234567 890 123456 789 012 3456789 01234567890
-          KHHMMSS hdt taskph wdi wsp -vat...
-                                     +
-          Example: K120000 090 100kph 270 020 -001200
-
-          08-10 HDT, true heading as 3 numbers
-          11-16 TAS, true airspeed as 3 numbers with unit kph
-          17-19 WDI, wind direction as 3 numbers
-          20-22 WSP, wind speed as 3 numbers in kph
-          23-29 VAT, vario speed in meters as sign +/-, 3 numbers with 3 decimal numbers
-       *
-       */
-      if( _extendedLogging == true )
-        {
-          QString kRecord( "K" + formatTime(lastfix.time) +
-                           QString("%1").arg( (int) rint(GpsNmea::gps->getLastHeading()), 3, 10, QChar('0')) +
-                           QString("%1").arg( (int) rint(GpsNmea::gps->getLastTas().getKph()), 3, 10, QChar('0')) + "kph" +
-                           QString("%1").arg( calculator->getlastWind().getAngleDeg(), 3, 10, QChar('0')) +
-                           QString("%1").arg( (int) rint(calculator->getlastWind().getSpeed().getKph()), 3, 10, QChar('0')) +
-                           formatVario(calculator->getlastVario()) );
-
-          _stream << kRecord << "\r\n";
-        }
+      // write K-Record
+      writeKRecord( lastfix.time );
 
       emit madeEntry();
 
       // make sure the file is flushed, so we will not lose data if something goes wrong
       _stream.flush();
     }
+}
+
+/**
+ * Writes a K-Record, if all conditions are true.
+ */
+void IgcLogger::writeKRecord( const QTime& timeFix )
+{
+  if( ! _logfile.isOpen() || _kRecordLogging == false )
+    {
+      // 1. Logfile is not open.
+      // 2. K-record logging is switched off
+      return;
+    }
+
+  // check if we have to log a new K-Record
+  if ( ! lastLoggedKRecord->isNull() &&
+         lastLoggedKRecord->addSecs( _kRecordInterval ) > timeFix )
+    {
+      // there is no log to do
+      return;
+    }
+
+  *lastLoggedKRecord = timeFix;
+
+  /**
+   *  The additional five parameters are logged as K record.
+
+      0         1            2           3         4
+      1234567 890 123456 789 012 3456789 01234567890
+      KHHMMSS hdt taskph wdi wsp -vat...
+                                 +
+      Example: K120000 090 100kph 270 020 -001200
+
+      08-10 HDT, true heading as 3 numbers
+      11-16 TAS, true airspeed as 3 numbers with unit kph
+      17-19 WDI, wind direction as 3 numbers
+      20-22 WSP, wind speed as 3 numbers in kph
+      23-29 VAT, vario speed in meters as sign +/-, 3 numbers with 3 decimal numbers
+   *
+   */
+  QString kRecord( "K" + formatTime(timeFix) +
+                   QString("%1").arg( (int) rint(GpsNmea::gps->getLastHeading()), 3, 10, QChar('0')) +
+                   QString("%1").arg( (int) rint(GpsNmea::gps->getLastTas().getKph()), 3, 10, QChar('0')) + "kph" +
+                   QString("%1").arg( calculator->getlastWind().getAngleDeg(), 3, 10, QChar('0')) +
+                   QString("%1").arg( (int) rint(calculator->getlastWind().getSpeed().getKph()), 3, 10, QChar('0')) +
+                   formatVario(calculator->getlastVario()) );
+
+  _stream << kRecord << "\r\n";
+  _stream.flush();
 }
 
 /** Call this slot, if a task sector has been touched to increase
@@ -280,7 +310,7 @@ void IgcLogger::slotTaskSectorTouched()
   resetTimer->start( 30*1000 );
 
   // activate a shorter logger interval
-  _logInterval = 1; // log every second up to now
+  _bRecordInterval = 1; // log every second up to now
 
   slotMakeFixEntry(); // save current position of touch
 }
@@ -301,8 +331,10 @@ void IgcLogger::Stop()
   // Reset time classes to initial state
   delete lastLoggedBRecord;
   delete lastLoggedFRecord;
+  delete lastLoggedKRecord;
   lastLoggedBRecord = new QTime();
   lastLoggedFRecord = new QTime();
+  lastLoggedKRecord = new QTime();
   emit logging( getIsLogging() );
 }
 
@@ -323,8 +355,10 @@ void IgcLogger::Standby()
   // Reset time classes to initial state
   delete lastLoggedBRecord;
   delete lastLoggedFRecord;
+  delete lastLoggedKRecord;
   lastLoggedBRecord = new QTime();
   lastLoggedFRecord = new QTime();
+  lastLoggedKRecord = new QTime();
   emit logging( getIsLogging() );
 }
 
@@ -436,15 +470,15 @@ void IgcLogger::writeHeader()
   _stream << "I023638FXA3940SIU\r\n"; // Fix accuracy and sat count as add ons
 
   // Write J Record definitions, if extended logging is activated by the user.
-  if( conf->getLoggerExtendedMode() )
+  if( conf->getKRecordInterval() > 0 )
     {
       // Set extended logging flag used for writing of K record.
-      _extendedLogging = true;
+      _kRecordLogging = true;
       _stream << "J050810HDT1116TAS1719WDI2022WSP2329VAT" << "\r\n";
     }
   else
     {
-      _extendedLogging = false;
+      _kRecordLogging = false;
     }
 
   _stream.flush();
