@@ -191,9 +191,9 @@ void GeneralConfig::load()
   beginGroup("Preflight Data");
   _safetyAltitude.setMeters(  value( "Arrival Altitude", 200.0 ).toDouble() );
   _qnh                 = value( "QNH", 1013 ).toInt();
-  _loggerInterval      = value( "LoggerInterval", 10 ).toInt();
+  _bRecordInterval     = value( "B-RecordLoggerInterval", 10 ).toInt();
+  _kRecordInterval     = value( "K-RecordLoggerInterval", 0 ).toInt();
   _loggerAutostartMode = value( "LoggerAutostartMode", false ).toBool();
-  _loggerExtendedMode  = value( "LoggerExtendedMode", false ).toBool();
   _tas                 = value( "TAS", 100 ).toInt();
   _windDirection       = value( "WindDirection", 0 ).toInt();
   _windSpeed           = value( "WindSpeed", 0 ).toInt();
@@ -510,9 +510,9 @@ void GeneralConfig::save()
   beginGroup("Preflight Data");
   setValue( "Arrival Altitude", _safetyAltitude.getMeters() );
   setValue( "QNH", _qnh );
-  setValue( "LoggerInterval", _loggerInterval );
+  setValue( "B-RecordLoggerInterval", _bRecordInterval );
+  setValue( "K-RecordLoggerInterval", _kRecordInterval );
   setValue( "LoggerAutostartMode", _loggerAutostartMode );
-  setValue( "LoggerExtendedMode", _loggerExtendedMode );
   setValue( "TAS", _tas );
   setValue( "WindDirection", _windDirection );
   setValue( "WindSpeed", _windSpeed );

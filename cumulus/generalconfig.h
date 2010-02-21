@@ -732,15 +732,26 @@ class GeneralConfig : protected QSettings
     _qnh = newValue;
   };
 
-  /** gets logger interval */
-  int getLoggerInterval() const
+  /** gets B-Record logger interval */
+  int getBRecordInterval() const
   {
-    return _loggerInterval;
+    return _bRecordInterval;
   };
-  /** sets logger interval */
-  void setLoggerInterval( const int newValue )
+  /** sets B-Record logger interval */
+  void setBRecordInterval( const int newValue )
   {
-    _loggerInterval = newValue;
+    _bRecordInterval = newValue;
+  };
+
+  /** gets K-Record logger interval */
+  int getKRecordInterval() const
+  {
+    return _kRecordInterval;
+  };
+  /** sets K-Record logger interval */
+  void setKRecordInterval( const int newValue )
+  {
+    _kRecordInterval = newValue;
   };
 
   /** gets logger autostart mode */
@@ -752,17 +763,6 @@ class GeneralConfig : protected QSettings
   void setLoggerAutostartMode( const bool newValue )
   {
     _loggerAutostartMode = newValue;
-  };
-
-  /** gets logger extended mode */
-  bool getLoggerExtendedMode() const
-  {
-    return _loggerExtendedMode;
-  };
-  /** sets logger extended mode */
-  void setLoggerExtendedMode( const bool newValue )
-  {
-    _loggerExtendedMode = newValue;
   };
 
   /** gets TAS */
@@ -1845,12 +1845,12 @@ class GeneralConfig : protected QSettings
   double _screenSaverSpeedLimit;
   // QNH
   int _qnh;
-  // logger interval
-  int _loggerInterval;
-  // logger auto start mode flag
+  // B-Record logger interval
+  int _bRecordInterval;
+  // K-Record logger interval
+  int _kRecordInterval;
+  // auto logger start mode
   bool _loggerAutostartMode;
-  // logger extended mode
-  bool _loggerExtendedMode;
   // true air speed
   int _tas;
   // wind direction
