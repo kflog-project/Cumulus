@@ -1,5 +1,14 @@
-# Cumulus Maemo project file for qmake
+##################################################################
+# Cumulus Maemo 4.2 project file for qmake
+#
+# Copyright (c): 2008-2010 Axel Pauli
+#
+# This file is distributed under the terms of the General Public
+# License. See the file COPYING for more information.
+#
 # $Id$
+##################################################################
+
 TEMPLATE = app
 
 CONFIG = qt \
@@ -7,6 +16,8 @@ CONFIG = qt \
     release
 
 # CONFIG = debug qt warn_on
+
+QT += network
 
 HEADERS = airfieldlistview.h \
     airfieldlistwidget.h \
@@ -20,6 +31,7 @@ HEADERS = airfieldlistview.h \
     configwidget.h \
     calculator.h \
     distance.h \
+    downloadmanager.h \    
     elevationcolorimage.h \
     filetools.h \
     flighttask.h \
@@ -34,6 +46,7 @@ HEADERS = airfieldlistview.h \
     gpsstatusdialog.h \
     coordedit.h \
     helpbrowser.h \
+    httpclient.h \    
     hwinfo.h \
     igclogger.h \
     interfaceelements.h \
@@ -128,6 +141,7 @@ SOURCES = airfieldlistview.cpp \
     configwidget.cpp \
     calculator.cpp \
     distance.cpp \
+    downloadmanager.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \
     flighttask.cpp \
@@ -142,6 +156,7 @@ SOURCES = airfieldlistview.cpp \
     gpsstatusdialog.cpp \
     coordedit.cpp \
     helpbrowser.cpp \
+    httpclient.cpp \
     hwinfo.cpp \
     igclogger.cpp \
     ipc.cpp \
