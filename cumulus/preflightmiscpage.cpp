@@ -18,9 +18,7 @@
 
 #include <cmath>
 
-#include <QLabel>
-#include <QMessageBox>
-#include <QGridLayout>
+#include <QtGui>
 
 #include "preflightmiscpage.h"
 #include "igclogger.h"
@@ -60,8 +58,8 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
     }
 
   edtMinimalArrival->setButtonSymbols(QSpinBox::PlusMinus);
+  edtMinimalArrival->setSuffix(unit);
   topLayout->addWidget(edtMinimalArrival, row, 1);
-  topLayout->addWidget(new QLabel(unit, this), row, 2);
   topLayout->setColumnStretch(2, 2);
   row++;
 
@@ -71,34 +69,36 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   edtQNH->setObjectName("QNH");
   edtQNH->setMaximum(1999);
   edtQNH->setButtonSymbols(QSpinBox::PlusMinus);
-
+  edtQNH->setSuffix("hPa");
   topLayout->addWidget(edtQNH, row, 1);
-  topLayout->addWidget(new QLabel("hPa", this), row, 2);
-  row++;
-
-  lbl = new QLabel(tr("Logger Interval:"), this);
-  topLayout->addWidget(lbl, row, 0);
-  loggerInterval = new QSpinBox(this);
-  loggerInterval->setMinimum(1);
-  loggerInterval->setMaximum(60);
-  loggerInterval->setObjectName("LoggerInterval");
-  loggerInterval->setButtonSymbols(QSpinBox::PlusMinus);
-
-  topLayout->addWidget(loggerInterval, row, 1);
-  topLayout->addWidget(new QLabel("s", this), row, 2);
   row++;
 
   topLayout->setRowMinimumHeight(row, 25);
   row++;
 
-  chkLogAutoStart = new QCheckBox(tr("Autostart logging"), this);
-  chkLogAutoStart->setObjectName("autoStartLogger");
+  chkLogAutoStart = new QCheckBox(tr("Autostart IGC logger"), this);
   topLayout->addWidget(chkLogAutoStart, row, 0, 1, 3);
   row++;
 
-  chkLogExtended = new QCheckBox(tr("Extended logging"), this);
-  chkLogExtended->setObjectName("extendedLogging");
-  topLayout->addWidget(chkLogExtended, row, 0, 1, 3);
+  lbl = new QLabel(tr("B-Record Interval:"), this);
+  topLayout->addWidget(lbl, row, 0);
+  bRecordInterval = new QSpinBox(this);
+  bRecordInterval->setMinimum(1);
+  bRecordInterval->setMaximum(60);
+  bRecordInterval->setButtonSymbols(QSpinBox::PlusMinus);
+  bRecordInterval->setSuffix("s");
+  topLayout->addWidget(bRecordInterval, row, 1);
+  row++;
+
+  lbl = new QLabel(tr("K-Record Interval:"), this);
+  topLayout->addWidget(lbl, row, 0);
+  kRecordInterval = new QSpinBox(this);
+  kRecordInterval->setMinimum(0);
+  kRecordInterval->setMaximum(300);
+  kRecordInterval->setButtonSymbols(QSpinBox::PlusMinus);
+  kRecordInterval->setSpecialValueText(tr("None"));
+  kRecordInterval->setSuffix("s");
+  topLayout->addWidget(kRecordInterval, row, 1);
   row++;
 
   topLayout->setRowStretch(row, 10);
@@ -130,9 +130,9 @@ void PreFlightMiscPage::load()
     }
 
   edtQNH->setValue( conf->getQNH() );
-  loggerInterval->setValue( conf->getLoggerInterval() );
+  bRecordInterval->setValue( conf->getBRecordInterval() );
+  kRecordInterval->setValue( conf->getKRecordInterval() );
   chkLogAutoStart->setChecked( conf->getLoggerAutostartMode() );
-  chkLogExtended->setChecked( conf->getLoggerExtendedMode() );
 }
 
 void PreFlightMiscPage::save()
@@ -159,7 +159,6 @@ void PreFlightMiscPage::save()
     }
 
   conf->setLoggerAutostartMode( chkLogAutoStart->isChecked() );
-  conf->setLoggerExtendedMode( chkLogExtended->isChecked() );
 
   // @AP: Store altitude always as meter.
   if (altUnit == Altitude::meters)
@@ -175,7 +174,7 @@ void PreFlightMiscPage::save()
     }
 
   conf->setQNH(edtQNH->value());
-
-  conf->setLoggerInterval(loggerInterval->value());
+  conf->setBRecordInterval(bRecordInterval->value());
+  conf->setKRecordInterval(kRecordInterval->value());
 }
 

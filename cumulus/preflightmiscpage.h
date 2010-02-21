@@ -38,6 +38,7 @@ class PreFlightMiscPage : public QWidget
   Q_DISABLE_COPY ( PreFlightMiscPage )
 
 public:
+
     PreFlightMiscPage(QWidget *parent=0);
 
     virtual ~PreFlightMiscPage();
@@ -49,10 +50,10 @@ public:
 private:
 
     QCheckBox* chkLogAutoStart;
-    QCheckBox* chkLogExtended;
     QSpinBox* edtMinimalArrival;
     QSpinBox* edtQNH;
-    QSpinBox* loggerInterval; // logger record interval in seconds
+    QSpinBox* bRecordInterval; // B-Record logging interval in seconds
+    QSpinBox* kRecordInterval; // K-Record logging interval in seconds
 
     /** saves altitude unit set during construction of object */
     Altitude::altitude altUnit;
