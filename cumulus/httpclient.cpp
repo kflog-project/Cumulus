@@ -92,7 +92,8 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
       return false;
     }
 
-  tmpFile = new QFile( destinationIn + "_" + QDateTime::currentDateTime().toString(Qt::ISODate) );
+  tmpFile = new QFile( destinationIn + "." +
+                       QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") );
 
   if( ! tmpFile->open( QIODevice::WriteOnly ) )
     {
