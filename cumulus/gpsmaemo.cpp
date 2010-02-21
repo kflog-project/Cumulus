@@ -341,9 +341,9 @@ void GpsMaemo::slot_NotificationEvent(int /* socket */)
  */
 void GpsMaemo::checkAndReadGpsData()
 {
-  qDebug("GpsMaemo::checkAndReadGpsData() is called");
+  // qDebug("GpsMaemo::checkAndReadGpsData() is called");
 
-  int maxLoop = 25;
+  int maxLoop = 25; // limit looping
 
   while( maxLoop > 0 && client.numberOfReadableBytes() > 0 )
     {
