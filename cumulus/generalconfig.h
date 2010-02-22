@@ -1182,6 +1182,18 @@ class GeneralConfig : protected QSettings
     _welt2000CountryFilter = newValue;
   };
 
+  /** Gets the welt2000 link name. */
+  QString &getWelt2000Link()
+    {
+      return _welt2000Link;
+    };
+
+  /** Gets the welt2000 file name used on web page. */
+  QString &getWelt2000FileName()
+    {
+      return _welt2000FileName;
+    };
+
   /** gets the welt2000 home radius */
   int getWelt2000HomeRadius() const
   {
@@ -1892,6 +1904,10 @@ class GeneralConfig : protected QSettings
   int _welt2000HomeRadius;
   // Welt2000 outlanding load flag
   bool _welt2000LoadOutlandings;
+  // Welt2000 download link
+  QString _welt2000Link;
+  // Welt2000 filename on web page
+  QString _welt2000FileName;
 
   // Airfield/WP lists page size (entries)
   int _listDisplayPageSize;

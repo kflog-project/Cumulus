@@ -260,6 +260,8 @@ void GeneralConfig::load()
   _welt2000CountryFilter    = value("Welt2000CountryFilter", "").toString();
   _welt2000HomeRadius       = value("Welt2000HomeRadius", 500).toInt(); // km is assumed
   _welt2000LoadOutlandings  = value("Welt2000LoadOutlandings", false ).toBool();
+  _welt2000Link             = value("Welt2000Link", "http://www.segelflug.de/vereine/welt2000/download").toString();
+  _welt2000FileName         = value("Welt2000FileName", "WELT2000_09-06-19.TXT").toString();
 
   for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {
