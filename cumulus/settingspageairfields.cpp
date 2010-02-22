@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2008-2009 Axel Pauli
+ **   Copyright (c):  2008-2010 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -32,6 +32,7 @@
 
 #include "generalconfig.h"
 #include "settingspageairfields.h"
+#include "httpclient.h"
 
 SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   QWidget(parent)
@@ -62,18 +63,18 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   // Input accepts different units
   if (distUnit == Distance::kilometers)
     {
-      unit = " km";
+      unit = "km";
     }
   else if (distUnit == Distance::miles)
     {
-      unit = " ml";
+      unit = "ml";
     }
   else // if( distUnit == Distance::nautmiles )
     {
-      unit = " nm";
+      unit = "nm";
     }
 
-  lbl = new QLabel(tr("Home Radius:"), (weltGroup));
+  lbl = new QLabel(tr("Home Radius:"), weltGroup);
   weltLayout->addWidget(lbl, grow, 0);
   homeRadius = new QSpinBox(weltGroup);
   homeRadius->setRange(0, 10000);
@@ -84,9 +85,30 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   loadOutlandings = new QCheckBox( tr("Load Outlandings"), weltGroup );
   weltLayout->addWidget(loadOutlandings, grow, 2, Qt::AlignRight );
+  grow++;
+
+  weltLayout->setRowMinimumHeight(grow++, 15);
+
+  lbl = new QLabel(tr("Proxy : Port"), weltGroup);
+  weltLayout->addWidget(lbl, grow, 0);
+  proxy = new QLineEdit(weltGroup);
+  proxy->setToolTip(tr("Enter Proxy data if needed"));
+  weltLayout->addWidget(proxy, grow, 1, 1, 3);
+  grow++;
+
+  installWelt2000 = new QPushButton( tr("Install Airfields"), weltGroup );
+  installWelt2000->setToolTip(tr("Install Welt2000 airfields"));
+  weltLayout->addWidget(installWelt2000, grow, 0 );
+
+  connect(installWelt2000, SIGNAL( clicked()), this, SLOT(slot_installWelt2000()) );
+
+  welt2000FileName = new QLineEdit(weltGroup);
+  welt2000FileName->setToolTip(tr("Enter Welt2000 filename as to see on the web page"));
+  weltLayout->addWidget(welt2000FileName, grow, 1, 1, 3);
 
   weltLayout->setColumnStretch(2, 10);
 
+  //----------------------------------------------------------------------------
   // JD: adding group box for diverse list display settings
 
   grow = 0;
@@ -134,6 +156,15 @@ SettingsPageAirfields::~SettingsPageAirfields()
 }
 
 /**
+ * Set proxy, if widget is shown. It could be changed in the meantime
+ * in another tabulator.
+ */
+void SettingsPageAirfields::showEvent(QShowEvent *)
+{
+  proxy->setText( GeneralConfig::instance()->getProxy() );
+}
+
+/**
  * Called to initiate loading of the configuration file
  */
 void SettingsPageAirfields::slot_load()
@@ -152,6 +183,9 @@ void SettingsPageAirfields::slot_load()
     {
       loadOutlandings->setCheckState( Qt::Unchecked );
     }
+
+  proxy->setText( conf->getProxy() );
+  welt2000FileName->setText( conf->getWelt2000FileName() );
 
   pageSize->setValue(conf->getListDisplayPageSize());
   afMargin->setValue(conf->getListDisplayAFMargin());
@@ -192,14 +226,16 @@ void SettingsPageAirfields::slot_save()
   conf->setWelt2000CountryFilter(countryFilter->text());
   conf->setWelt2000HomeRadius(homeRadius->value());
 
-if( loadOutlandings->checkState() == Qt::Checked )
-  {
-    conf->setWelt2000LoadOutlandings( true );
-  }
-else
-  {
-    conf->setWelt2000LoadOutlandings( false );
-  }
+  if( loadOutlandings->checkState() == Qt::Checked )
+    {
+      conf->setWelt2000LoadOutlandings( true );
+    }
+  else
+    {
+      conf->setWelt2000LoadOutlandings( false );
+    }
+
+  conf->setProxy( proxy->text() );
 
   conf->setListDisplayPageSize(pageSize->value());
   conf->setListDisplayAFMargin(afMargin->value());
@@ -240,6 +276,51 @@ void SettingsPageAirfields::slot_query_close(bool& warn, QStringList& warnings)
       warn = true;
       warnings.append(tr("The Airfield settings"));
     }
+}
+
+/**
+ * Called, if install button of Welt2000 is clicked.
+ */
+void SettingsPageAirfields::slot_installWelt2000()
+{
+  QString hostName;
+  quint16 port;
+
+  // Check proxy settings
+  if( ! proxy->text().trimmed().isEmpty() &&
+      HttpClient::parseProxy( proxy->text(), hostName, port ) == false )
+    {
+      QMessageBox::information ( this,
+                                 tr("Proxy settings invalid!"),
+                                 tr("Please correct your Proxy settings!") +
+                                 "<p>" + tr("Expected format: <b>Host:Port</b>") );
+      return;
+    }
+
+  // Store the proxy settings, can be changed in the meantime
+  GeneralConfig::instance()->setProxy( proxy->text().trimmed() );
+
+  QString wfn = welt2000FileName->text().trimmed();
+
+  if( wfn.isEmpty() )
+    {
+      QMessageBox::information ( this,
+                                 tr("Welt2000 settings invalid!"),
+                                 tr("Please add a valid Welt2000 filename!") );
+      return;
+    }
+
+  int answer = QMessageBox::question( this, tr("Download Welt2000?"),
+      tr("Active Internet connection is needed!") +
+      QString("<p>") + tr("Start download now?"),
+      QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+
+  if( answer == QMessageBox::No )
+    {
+      return;
+    }
+
+  emit downloadWelt2000( wfn );
 }
 
 /**

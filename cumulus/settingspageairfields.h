@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2009 Axel Pauli
+**   Copyright (c):  2008-2010 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -31,6 +31,7 @@
 #include <QLineEdit>
 #include <QStringList>
 #include <QCheckBox>
+#include <QPushButton>
 
 #include "distance.h"
 
@@ -38,7 +39,11 @@ class SettingsPageAirfields : public QWidget
 {
   Q_OBJECT
 
-    public:
+  private:
+
+  Q_DISABLE_COPY ( SettingsPageAirfields )
+
+  public:
 
   /**
    * Constructor
@@ -59,6 +64,10 @@ class SettingsPageAirfields : public QWidget
    * Checks if the configuration of list display has been changed
    */
   bool checkIsListDisplayChanged();
+
+  protected:
+
+  void showEvent(QShowEvent *);
 
   public slots: // Public slots
   /**
@@ -83,7 +92,21 @@ class SettingsPageAirfields : public QWidget
    */
   void slot_filterChanged( const QString& text );
 
- private:
+  /**
+   * Called, if install button of Welt2000 is clicked.
+   */
+  void slot_installWelt2000();
+
+  signals:
+
+  /**
+   * This signal is emitted when a Welt2000 file shall be downloaded from
+   * the internet. The filename must be the name of the web page without
+   * any path prefixes.
+   */
+  void downloadWelt2000( const QString& welt2000FileName );
+
+  private:
 
   /** Country filter for Welt2000 data file */
   QLineEdit* countryFilter;
@@ -94,7 +117,17 @@ class SettingsPageAirfields : public QWidget
   /** Check box to load outlandings or not. */
   QCheckBox* loadOutlandings;
 
-  /** Number of page entries in airfield/waypoint lists. 0 disables */
+  /** Line editor for proxy host and port input. */
+  QLineEdit *proxy;
+
+  /** Download and install Welt2000 file. */
+  QPushButton *installWelt2000;
+
+  /** Line editor for Welt2000 filename input. The file name on the web page
+   *  is extended by a date string. */
+  QLineEdit *welt2000FileName;
+
+   /** Number of page entries in airfield/waypoint lists. 0 disables */
   QSpinBox* pageSize;
 
   /** Pixels to add to the row height in airfield/waypoint lists
