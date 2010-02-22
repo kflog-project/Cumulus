@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2001      by Heiner Lamprecht
- **                   2008-2009 by Axel Pauli
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -454,7 +454,7 @@ void MapMatrix::slotSetScale(const double& nScale)
   cScale = qMin( (int) cScale, scaleBorders[UpperLimit]);
 
   _MaxScaleToCScaleRatio=int((MIN_SCALE/cScale)*(MAX_SCALE));
-  qDebug("MapMatrix::slotSetScale(): Set new scale to %f ratio: %d ",cScale,_MaxScaleToCScaleRatio );
+  // qDebug("MapMatrix::slotSetScale(): Set new scale to %f ratio: %d ",cScale,_MaxScaleToCScaleRatio );
 }
 
 void MapMatrix::slotInitMatrix()
