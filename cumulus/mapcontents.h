@@ -298,6 +298,13 @@ class MapContents : public QObject
     void slotReloadWelt2000Data();
 
     /**
+     * This slot is called to download the Welt2000 file from the internet.
+     * @param welt2000FileName The Welt2000 filename as written at the web page
+     * without any path prefixes.
+     */
+    void slotDownloadWelt2000( const QString& welt2000FileName );
+
+    /**
      * Downloads all map tiles enclosed by the square with the center point. The
      * square edges are in parallel with the sky directions N, S, W, E. Inside
      * the square you can place a circle with radius length.
