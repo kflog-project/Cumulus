@@ -192,6 +192,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   connect(spms, SIGNAL(downloadMapArea( const QPoint&, const Distance& )),
           _globalMapContents, SLOT(slotDownloadMapArea( const QPoint&, const Distance&)));
 
+  connect(spaf, SIGNAL(downloadWelt2000( const QString& )),
+          _globalMapContents, SLOT(slotDownloadWelt2000( const QString& )));
+
   QHBoxLayout *contentLayout = new QHBoxLayout;
   contentLayout->addWidget( tabWidget );
   contentLayout->addLayout( buttonBox );
