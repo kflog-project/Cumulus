@@ -96,7 +96,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   kRecordInterval->setMinimum(0);
   kRecordInterval->setMaximum(300);
   kRecordInterval->setButtonSymbols(QSpinBox::PlusMinus);
-  kRecordInterval->setSpecialValueText(tr("None"));
+  kRecordInterval->setSpecialValueText(tr("Off"));
   kRecordInterval->setSuffix("s");
   topLayout->addWidget(kRecordInterval, row, 1);
   row++;
