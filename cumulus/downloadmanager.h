@@ -48,6 +48,11 @@ class DownloadManager : public QObject
    /** Sends a finish signal if all requested downloads are done. */
    void finished( int requests, int errors );
 
+   /** Sends a finish signal if the Welt2000 file has been downloaded
+    *  successfully.
+    */
+   void welt2000Downloaded();
+
  private:
 
   /**

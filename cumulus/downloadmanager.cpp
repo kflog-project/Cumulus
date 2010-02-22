@@ -129,9 +129,17 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
   // Remove last done request from the queue and from the url set.
   if( ! queue.isEmpty() )
     {
-      queue.removeFirst();
+      QPair<QString, QString> pair = queue.dequeue();
+
+      if( pair.second.contains( "welt2000.txt") &&  codeIn == QNetworkReply::NoError )
+        {
+          // Special check for Welt2000 download to signal that. The signal
+          // is the trigger for the reload of the Welt2000 data file.
+          emit welt2000Downloaded();
+        }
     }
 
+  // Remove last done request from the url set.
   urlSet.remove( urlIn );
 
   if( queue.isEmpty() )
