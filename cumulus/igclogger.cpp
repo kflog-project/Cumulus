@@ -239,25 +239,22 @@ void IgcLogger::slotMakeFixEntry()
       writeKRecord( lastfix.time );
 
       emit madeEntry();
-
-      // make sure the file is flushed, so we will not lose data if something goes wrong
-      _stream.flush();
     }
 }
 
 /**
- * Writes a K-Record, if all conditions are true.
+ * Writes a K-Record, if all conditions for that are true.
  */
 void IgcLogger::writeKRecord( const QTime& timeFix )
 {
-  if( ! _logfile.isOpen() || _kRecordLogging == false )
+  if( _kRecordLogging == false || ! _logfile.isOpen()  )
     {
-      // 1. Logfile is not open.
-      // 2. K-record logging is switched off
+      // 1. K-Record logging is switched off
+      // 2. IGC logfile is not open.
       return;
     }
 
-  // check if we have to log a new K-Record
+  // Check if we have to log a new K-Record.
   if ( ! lastLoggedKRecord->isNull() &&
          lastLoggedKRecord->addSecs( _kRecordInterval ) > timeFix )
     {
@@ -291,7 +288,6 @@ void IgcLogger::writeKRecord( const QTime& timeFix )
                    formatVario(calculator->getlastVario()) );
 
   _stream << kRecord << "\r\n";
-  _stream.flush();
 }
 
 /** Call this slot, if a task sector has been touched to increase
@@ -412,7 +408,10 @@ bool IgcLogger::isLogFileOpen()
 /** Closes the logfile. */
 void IgcLogger::CloseFile()
 {
-  _logfile.close();
+  if( _logfile.isOpen() )
+    {
+      _logfile.close();
+    }
 }
 
 /** This function writes the header of the IGC file into the logfile. */
@@ -481,9 +480,7 @@ void IgcLogger::writeHeader()
       _kRecordLogging = false;
     }
 
-  _stream.flush();
-
-  // task support: C records
+  // Task support: C-Records
   extern MapContents* _globalMapContents;
 
   FlightTask* task = _globalMapContents->getCurrentTask();
@@ -525,8 +522,6 @@ void IgcLogger::writeHeader()
               << formatPosition( tp->origP )
               << tp->name << "\r\n";
     }
-
-  _stream.flush();
 }
 
 /** This function formats a date in the correct IGC format DDMMYY */
@@ -604,8 +599,6 @@ void IgcLogger::makeSatConstEntry(const QTime &time)
         {
           _stream << entry << "\r\n";
           emit madeEntry();
-          // make sure the file is flushed, so we will not lose data if something goes wrong
-          _stream.flush();
         }
 
       lastLoggedFRecord->start();
