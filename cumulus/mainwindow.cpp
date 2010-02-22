@@ -818,8 +818,6 @@ void MainWindow::initMenuBar()
 /** set menubar font size to a reasonable and usable value */
 void MainWindow::slotSetMenuBarFontSize()
 {
-  qDebug("MainWindow::slotSetMenuBarFontSize()");
-
   int minFontSize = 8;
 
   // sets the user's selected menu font, if defined
