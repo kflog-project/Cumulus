@@ -29,6 +29,7 @@
 #include "generalconfig.h"
 #include "mapcontents.h"
 #include "distance.h"
+#include "httpclient.h"
 
 /***********************************************************/
 /*  map setting page                                       */
@@ -133,6 +134,15 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 SettingsPageMapSettings::~SettingsPageMapSettings()
 {}
 
+/**
+ * Set proxy, if widget is shown. It could be changed in the meantime
+ * in another tabulator.
+ */
+void SettingsPageMapSettings::showEvent(QShowEvent *)
+{
+  proxy->setText( GeneralConfig::instance()->getProxy() );
+}
+
 void SettingsPageMapSettings::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
@@ -227,16 +237,6 @@ void SettingsPageMapSettings::slot_installMaps()
       return;
     }
 
-  int answer = QMessageBox::question( this, tr("Download Maps?"),
-      tr("Active Internet connection is needed!") +
-      QString("<p>") + tr("Start download now?"),
-      QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
-
-  if( answer == QMessageBox::No )
-    {
-      return;
-    }
-
   QString hostName;
   quint16 port;
 
@@ -248,6 +248,16 @@ void SettingsPageMapSettings::slot_installMaps()
                                  tr("Proxy settings invalid!"),
                                  tr("Please correct your Proxy settings!") +
                                  "<p>" + tr("Expected format: <b>Host:Port</b>") );
+      return;
+    }
+
+  int answer = QMessageBox::question( this, tr("Download Maps?"),
+      tr("Active Internet connection is needed!") +
+      QString("<p>") + tr("Start download now?"),
+      QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+
+  if( answer == QMessageBox::No )
+    {
       return;
     }
 

@@ -63,6 +63,10 @@ class SettingsPageMapSettings : public QWidget
    */
   bool checkIsProjectionChanged();
 
+ protected:
+
+  void showEvent(QShowEvent *);
+
  signals:
 
   void downloadMapArea( const QPoint&, const Distance& );
