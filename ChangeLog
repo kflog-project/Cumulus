@@ -14,6 +14,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-02-22 AP: To make the installation of Welt2000 easier for the user
+                   a new extension has been added to the Airfield Settings
+                   tabulator. The user can download on demand the Welt2000 file
+                   now. If Cumulus is faster as 5Km/h in move no download is
+                   executed. I hope that releases the users from the annoying
+                   installation procedure by hand.
 [o] 2010-02-21 AP: Recording time intervals of IGC B-Record and K-Record can now
                    be defined separately in Pre-Flight settings Common.
 [-] 2010-02-20 AP: BUGFIX: Up to Qt4.6.0 Cumulus did crash when processEvents()
@@ -29,13 +35,13 @@ Cumulus 2.6.x (Development based on X11/Qt-4.6.2)
                    Settings tabulator Common. If this option is enabled the IGC
                    logger is logging additional parameters by using the K-Record.
                    Additional parameters are HDT, TAS, WDI, WSP, VAT.
-[+] 2010-02-04 AP: To make installation of maps easier for the user a new extension
-                   has been added to the Map Settings tabulator. The user can now
-                   define a radius and a center point. On demand all maps of this
-                   area are downloaded from the KFLog map server. If Cumulus
-                   is faster as 5Km/h in move no downloads are executed. I hope
-                   that releases the users from the annoying installation procedure
-                   by hand.
+[+] 2010-02-04 AP: To make the installation of maps easier for the user a new
+                   extension has been added to the Map Settings tabulator. The
+                   user can now define a radius and a center point. On demand
+                   all maps of this area are downloaded from the KFLog map server.
+                   If Cumulus is faster as 5Km/h in move no downloads are executed.
+                   I hope that releases the users from the annoying installation 
+                   procedure by hand.
 [+] 2010-02-04 AP: Automatic download of missing map files added on user decision.
                    The user is ask once if he wants to download missing map
                    file from the internet. Download is disabled, when Cumulus

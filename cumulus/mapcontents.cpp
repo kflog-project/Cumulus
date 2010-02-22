@@ -1405,6 +1405,39 @@ bool MapContents::__downloadMapFile( QString &file, QString &directory )
   return true;
 }
 
+/**
+ * This slot is called to download the Welt2000 file from the internet.
+ * @param welt2000FileName The Welt2000 filename as written at the web page
+ * without any path prefixes.
+ */
+void MapContents::slotDownloadWelt2000( const QString& welt2000FileName )
+{
+  extern Calculator* calculator;
+
+  if( GpsNmea::gps->getConnected() && calculator->moving() )
+    {
+      // We have a GPS connection and are in move. That does not allow
+      // to make any downloads.
+      return;
+    }
+
+  if( downloadManger == static_cast<DownloadManager *> (0) )
+    {
+      downloadManger = new DownloadManager(this);
+
+      connect( downloadManger, SIGNAL(finished( int, int )),
+               this, SLOT(slotDownloadsFinished( int, int )) );
+    }
+
+  connect( downloadManger, SIGNAL(welt2000Downloaded()),
+           this, SLOT(slotReloadWelt2000Data()) );
+
+  QString url  = GeneralConfig::instance()->getWelt2000Link() + "/" + welt2000FileName;
+  QString dest = GeneralConfig::instance()->getMapRootDir() + "/airfields/welt2000.txt";
+
+  downloadManger->downloadRequest( url, dest );
+}
+
 /** Called, if all downloads are finished. */
 void MapContents::slotDownloadsFinished( int requests, int errors )
 {
@@ -1416,7 +1449,7 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
   Map::instance->scheduleRedraw( Map::baseLayer );
 
   QString msg;
-  msg = QString(tr("%1 requests with %2 errors done.")).arg(requests).arg(errors);
+  msg = QString(tr("%1 download(s) with %2 error(s) done.")).arg(requests).arg(errors);
 
   QMessageBox::information( Map::instance,
                             tr("Downloads finished"),
