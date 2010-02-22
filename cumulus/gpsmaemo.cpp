@@ -332,7 +332,7 @@ void GpsMaemo::slot_Timeout()
  */
 void GpsMaemo::slot_NotificationEvent(int /* socket */)
 {
-  readGpsData();
+  checkAndReadGpsData();
 }
 
 /**
@@ -343,12 +343,24 @@ void GpsMaemo::checkAndReadGpsData()
 {
   // qDebug("GpsMaemo::checkAndReadGpsData() is called");
 
+  // Deactivate socket notifier during receive buffer processing to avoid
+  // a recalling when signals like newSentence are emitted.
+  if (gpsDaemonNotifier)
+    {
+      gpsDaemonNotifier->setEnabled(false);
+    }
+
   int maxLoop = 25; // limit looping
 
   while( maxLoop > 0 && client.numberOfReadableBytes() > 0 )
     {
       maxLoop--;
       readGpsData();
+    }
+
+  if (gpsDaemonNotifier)
+    {
+      gpsDaemonNotifier->setEnabled(true);
     }
 }
 
@@ -464,24 +476,13 @@ void GpsMaemo::readSentenceFromBuffer()
   char *start = databuffer;
   char *end = 0;
 
-  // Deactivate socket notifier, during receive buffer processing to avoid
-  // a recalling when signal newSentence is emitted.
-  if (gpsDaemonNotifier)
-    {
-      gpsDaemonNotifier->setEnabled(false);
-    }
-
-  while (strlen(start))
+  while( strlen(start) )
     {
       // Search for a newline in the receiver buffer
-      if (!(end = strchr(start, '\n')))
+      if ( !(end = strchr(start, '\n')) )
         {
           // No newline in the receiver buffer, wait for more
           // characters
-          if (gpsDaemonNotifier)
-            {
-              gpsDaemonNotifier->setEnabled(true);
-            }
           return;
         }
 
@@ -528,11 +529,6 @@ void GpsMaemo::readSentenceFromBuffer()
       end = 0;
 
       // qDebug("After Read: datapointer=%x, dbsize=%d", datapointer, dbsize );
-    }
-
-  if (gpsDaemonNotifier)
-    {
-      gpsDaemonNotifier->setEnabled(true);
     }
 }
 

@@ -243,14 +243,10 @@ void GpsNmea::readDataFromGps()
 {
 #ifdef MAEMO
 
-  enableReceiving( false );
-
   if ( gpsdConnection )
     {
       gpsdConnection->checkAndReadGpsData();
     }
-
-  enableReceiving( true );
 
 #endif
 }
