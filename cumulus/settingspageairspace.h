@@ -6,8 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Eggert Ehmke
-**                   2009 by Axel Pauli
+**   Copyright (c):  2002      by Eggert Ehmke
+**                   2009-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -46,6 +46,10 @@ class SettingsPageAirspaceFilling;
 class SettingsPageAirspace : public QWidget
   {
     Q_OBJECT
+
+  private:
+
+  Q_DISABLE_COPY ( SettingsPageAirspace )
 
   public:
 

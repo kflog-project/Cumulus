@@ -122,7 +122,7 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
 
   if( opacity < 100.0 )
     {
-      // use transparent filled air regions
+      // use solid filled air regions
       drawB.setStyle( Qt::SolidPattern );
     }
 

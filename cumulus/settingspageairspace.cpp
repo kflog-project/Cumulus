@@ -6,11 +6,11 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by Eggert Ehmke
- **                   2009 by Axel Pauli
+ **   Copyright (c):  2002      by Eggert Ehmke
+ **                   2009-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -18,16 +18,7 @@
 
 #include <cmath>
 
-#include <QLabel>
-#include <QDialogButtonBox>
-#include <QPushButton>
-#include <QHeaderView>
-#include <QToolTip>
-#include <QGroupBox>
-#include <QSignalMapper>
-#include <QHBoxLayout>
-#include <QColorDialog>
-#include <QGridLayout>
+#include <QtGui>
 
 #include "airspace.h"
 #include "basemapelement.h"
