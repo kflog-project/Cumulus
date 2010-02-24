@@ -14,6 +14,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2010-02-24 AP: BUGFIX: Border color TMZ was not correctly saved. There was
+                   used border color of danger instead.
+[o] 2010-02-23 AP: Airspace colors modified to be more in accordance with the
+                   ICAO guidelines.
 [+] 2010-02-22 AP: To make the installation of Welt2000 easier for the user
                    a new extension has been added to the Airfield Settings
                    tabulator. The user can download on demand the Welt2000 file
