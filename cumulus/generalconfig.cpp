@@ -447,35 +447,35 @@ void GeneralConfig::save()
   setValue("checkGliderSector", _airspaceDrawingEnabled[BaseMapElement::GliderSector]);
 
   // Airspace border draw color
-  setValue("borderColorAirspaceA", _borderColorAirspaceA.name());
-  setValue("borderColorAirspaceB", _borderColorAirspaceB.name());
-  setValue("borderColorAirspaceC", _borderColorAirspaceC.name());
-  setValue("borderColorAirspaceD", _borderColorAirspaceD.name());
-  setValue("borderColorAirspaceE", _borderColorAirspaceE.name());
-  setValue("borderColorAirspaceF", _borderColorAirspaceF.name());
-  setValue("borderColorWaveWindow", _borderColorWaveWindow.name());
-  setValue("borderColorControlC", _borderColorControlC.name());
-  setValue("borderColorControlD", _borderColorControlD.name());
-  setValue("borderColorRestricted", _borderColorRestricted.name());
-  setValue("borderColorDanger", _borderColorDanger.name());
-  setValue("borderColorTMZ", _borderColorDanger.name());
-  setValue("borderColorLowFlight", _borderColorLowFlight.name());
+  setValue("borderColorAirspaceA",    _borderColorAirspaceA.name());
+  setValue("borderColorAirspaceB",    _borderColorAirspaceB.name());
+  setValue("borderColorAirspaceC",    _borderColorAirspaceC.name());
+  setValue("borderColorAirspaceD",    _borderColorAirspaceD.name());
+  setValue("borderColorAirspaceE",    _borderColorAirspaceE.name());
+  setValue("borderColorAirspaceF",    _borderColorAirspaceF.name());
+  setValue("borderColorWaveWindow",   _borderColorWaveWindow.name());
+  setValue("borderColorControlC",     _borderColorControlC.name());
+  setValue("borderColorControlD",     _borderColorControlD.name());
+  setValue("borderColorRestricted",   _borderColorRestricted.name());
+  setValue("borderColorDanger",       _borderColorDanger.name());
+  setValue("borderColorTMZ",          _borderColorTMZ.name());
+  setValue("borderColorLowFlight",    _borderColorLowFlight.name());
   setValue("borderColorGliderSector", _borderColorGliderSector.name());
 
   // Airspace fill (brush) draw color
-  setValue("fillColorAirspaceA", _fillColorAirspaceA.name());
-  setValue("fillColorAirspaceB", _fillColorAirspaceB.name());
-  setValue("fillColorAirspaceC", _fillColorAirspaceC.name());
-  setValue("fillColorAirspaceD", _fillColorAirspaceD.name());
-  setValue("fillColorAirspaceE", _fillColorAirspaceE.name());
-  setValue("fillColorAirspaceF", _fillColorAirspaceF.name());
-  setValue("fillColorWaveWindow", _fillColorWaveWindow.name());
-  setValue("fillColorControlC", _fillColorControlC.name());
-  setValue("fillColorControlD", _fillColorControlD.name());
-  setValue("fillColorRestricted", _fillColorRestricted.name());
-  setValue("fillColorDanger", _fillColorDanger.name());
-  setValue("fillColorTMZ", _fillColorDanger.name());
-  setValue("fillColorLowFlight", _fillColorLowFlight.name());
+  setValue("fillColorAirspaceA",    _fillColorAirspaceA.name());
+  setValue("fillColorAirspaceB",    _fillColorAirspaceB.name());
+  setValue("fillColorAirspaceC",    _fillColorAirspaceC.name());
+  setValue("fillColorAirspaceD",    _fillColorAirspaceD.name());
+  setValue("fillColorAirspaceE",    _fillColorAirspaceE.name());
+  setValue("fillColorAirspaceF",    _fillColorAirspaceF.name());
+  setValue("fillColorWaveWindow",   _fillColorWaveWindow.name());
+  setValue("fillColorControlC",     _fillColorControlC.name());
+  setValue("fillColorControlD",     _fillColorControlD.name());
+  setValue("fillColorRestricted",   _fillColorRestricted.name());
+  setValue("fillColorDanger",       _fillColorDanger.name());
+  setValue("fillColorTMZ",          _fillColorDanger.name());
+  setValue("fillColorLowFlight",    _fillColorLowFlight.name());
   setValue("fillColorGliderSector", _fillColorGliderSector.name());
 
   setValue("enableAirspaceWarning", _airspaceWarningGeneral);
