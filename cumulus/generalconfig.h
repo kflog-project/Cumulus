@@ -881,8 +881,10 @@ class GeneralConfig : protected QSettings
    */
   void setMapRootDir( QString newValue );
 
-  /** gets the map default root directory */
-  QString getMapDefaultRootDir();
+  /** Gets the user's default root directory. This is the root for the data
+   * and map directories.
+   */
+  QString getUserDefaultRootDir();
 
   /** gets map server url */
   QString getMapServerUrl() const

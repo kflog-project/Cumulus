@@ -38,18 +38,6 @@ using namespace std;
 #include "maemostyle.h"
 #endif
 
-// We can use different places for the default user data directory and
-// user map directory.
-// Only files are visible with the normal Maemo file manager, if they are
-// located in the subdirectory MyDocs.
-#ifdef MAEMO
-#define USER_DATA_DIR QDir::homePath() + "/MyDocs/Cumulus"
-#define USER_MAP_DIR ""
-#else
-#define USER_DATA_DIR QDir::homePath() + "/Cumulus"
-#define USER_MAP_DIR QString(USER_DATA_DIR) + "/maps"
-#endif
-
 // define NULL static instance
 GeneralConfig* GeneralConfig::_theInstance = 0;
 
@@ -184,7 +172,7 @@ void GeneralConfig::load()
   _disclaimerVersion = value( "Disclaimer", 0).toInt();
   _surname           = value("SurName", "").toString();
   _language          = value("Language", "en").toString();
-  _userDataDirectory = value("UserDataDir", USER_DATA_DIR).toString();
+  _userDataDirectory = value("UserDataDir", "").toString();
   endGroup();
 
   // Preflight settings
@@ -250,7 +238,7 @@ void GeneralConfig::load()
   beginGroup("Map Data");
   _home.setX( value( "Homesite Latitude", HOME_DEFAULT_LAT).toInt() );
   _home.setY( value( "Homesite Longitude", HOME_DEFAULT_LON).toInt() );
-  _mapRootDir        = value("Map Root", USER_MAP_DIR).toString();
+  _mapRootDir        = value("Map Root", "").toString();
   _mapServerUrl      = value("Map Server Url", "http://www.kflog.org/data/landscape/").toString();
   _centerLat         = value("Center Latitude", HOME_DEFAULT_LAT).toInt();
   _centerLon         = value("Center Longitude", HOME_DEFAULT_LON).toInt();
@@ -474,7 +462,7 @@ void GeneralConfig::save()
   setValue("fillColorControlD",     _fillColorControlD.name());
   setValue("fillColorRestricted",   _fillColorRestricted.name());
   setValue("fillColorDanger",       _fillColorDanger.name());
-  setValue("fillColorTMZ",          _fillColorDanger.name());
+  setValue("fillColorTMZ",          _fillColorTMZ.name());
   setValue("fillColorLowFlight",    _fillColorLowFlight.name());
   setValue("fillColorGliderSector", _fillColorGliderSector.name());
 
@@ -1372,8 +1360,8 @@ void GeneralConfig::setMapRootDir( QString newValue )
 {
   if( newValue.isEmpty() )
     {
-      // New directory name is empty, fall back to a default one
-      newValue = getMapDefaultRootDir();
+      // New directory name is empty, fall back to a default one.
+      newValue = getUserDefaultRootDir() + "/maps";
     }
   else
     {
@@ -1386,8 +1374,8 @@ void GeneralConfig::setMapRootDir( QString newValue )
 
           if( ! testMapDir.mkpath( newValue ) )
             {
-              // New directory not creatable, fall back to a default one
-              newValue = getMapDefaultRootDir();
+              // New directory not creatable, fall back to a default one.
+              newValue = getUserDefaultRootDir() + "/maps";
             }
         }
     }
@@ -1424,14 +1412,18 @@ void GeneralConfig::setMapRootDir( QString newValue )
     }
 }
 
-/** Gets the map default root directory. */
-QString GeneralConfig::getMapDefaultRootDir()
+/** Gets the user's default root directory. This is the root for the data
+ * and map directories.
+ */
+QString GeneralConfig::getUserDefaultRootDir()
 {
   QString root;
   QStringList paths;
 
 #ifdef MAEMO
-  paths << "/media/mmc1"
+  // Look if MMCs are mounted
+  paths << "/media/mmc"
+        << "/media/mmc1"
         << "/media/mmc2";
 #endif
 
@@ -1452,17 +1444,19 @@ QString GeneralConfig::getMapDefaultRootDir()
 
       root = paths.at( i );
 
-      // That is the fall back solution but normally unfit for map files
-      // due to limited space on that file system.
+      // That is the fall back solution but normally unfit for map files on a
+      // N800 or N810 due to the limited space on that file system.
+      // For N900 it is a good location because the file system lays there
+      // on the internal MMC.
 #ifdef MAEMO
 
       if( root == QDir::homePath() )
         {
-          root += "/MyDocs";
+          root += "/MyDocs"; // Maemo user directory
         }
 
 #endif
-      root += "/Cumulus/maps";
+      root += "/Cumulus"; // Cumulus user directory
       break;
     }
 
@@ -1471,24 +1465,25 @@ QString GeneralConfig::getMapDefaultRootDir()
 
 /** Returns the expected places of map directories
     There are: 1. Map directory defined by user
-               2. $HOME/cumulus/maps (desktop) or $HOME/MyDocs/Cumulus/maps (Maemo)
+               2. $HOME/cumulus/maps (desktop) or
+                  /media/mmc.../Cumulus/maps resp. $HOME/MyDocs/Cumulus/maps (Maemo)
 */
 QStringList GeneralConfig::getMapDirectories()
 {
   QStringList mapDirs;
-  QString     mapHome = USER_DATA_DIR + "/maps";
+  QString     mapDefault = getUserDefaultRootDir() + "/maps";
 
-  // First take map directory
+  // First takes defined map directory
   if(  ! _mapRootDir.isEmpty() )
     {
       mapDirs << _mapRootDir;
     }
 
-  // Next follow $HOME/Cumulus/maps
-  if( _mapRootDir != mapHome )
+  // Next follows default map directory
+  if( _mapRootDir != mapDefault )
     {
       // add only if different
-      mapDirs << mapHome;
+      mapDirs << mapDefault;
     }
 
   return mapDirs;
@@ -1506,9 +1501,8 @@ QString GeneralConfig::getUserDataDirectory()
       // try to create it
       if( ! userDir.mkpath( _userDataDirectory ) )
         {
-          // user data directory not createable, fall back is set to
-          // default one
-          _userDataDirectory = USER_DATA_DIR;
+          // user data directory is not createable, fall back to the default one
+          _userDataDirectory = getUserDefaultRootDir();
           userDir.mkpath( _userDataDirectory );
           qWarning( "Cannot create user data directory %s",
                     _userDataDirectory.toLatin1().data() );
@@ -1518,11 +1512,19 @@ QString GeneralConfig::getUserDataDirectory()
   return _userDataDirectory;
 }
 
-/** sets the user data directory where waypoint file, task file,
+/** Sets the user data directory where waypoint file, task file,
     glider.pol,logger files are stored */
 void GeneralConfig::setUserDataDirectory( QString newDir )
 {
-  _userDataDirectory = newDir;
+  if( newDir.isEmpty() )
+    {
+      // No directory defined, we do fall back to the default one.
+      _userDataDirectory = getUserDefaultRootDir();
+    }
+  else
+    {
+      _userDataDirectory = newDir;
+    }
 
   // Check, if directory exists
   QDir userDir = QDir( newDir );
@@ -1533,9 +1535,8 @@ void GeneralConfig::setUserDataDirectory( QString newDir )
       if( ! userDir.mkpath( newDir ) )
         {
           qWarning( "Cannot create user data directory %s", newDir.toLatin1().data() );
-          // user data directory not creatable, fallback is set to
-          // default one
-          _userDataDirectory = USER_DATA_DIR;
+          // user data directory not creatable, fallback to the default one
+          _userDataDirectory = getUserDefaultRootDir();
           userDir.mkpath( _userDataDirectory );
         }
     }
