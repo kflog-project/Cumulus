@@ -111,7 +111,7 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
     QObject(parent),
     isFirst(true),
     downloadManger(0),
-    shallDownloadMaps(false),
+    shallDownloadData(false),
     hasAskForDownload(false)
 {
   ws = waitscreen;
@@ -1457,7 +1457,7 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
 }
 
 /**
- * Ask the user once for download of missing map files. The answer
+ * Ask the user once for download of missing Welt200 or map files. The answer
  * is stored permanently to have it for further request.
  * Returns true, if download is desired otherwise false.
  */
@@ -1465,26 +1465,26 @@ bool MapContents::__askUserForDownload()
 {
   if( hasAskForDownload == true )
     {
-      return shallDownloadMaps;
+      return shallDownloadData;
     }
 
   hasAskForDownload = true;
 
   int answer = QMessageBox::question( Map::instance,
-                  tr("Download missing Maps?"),
-                  tr("Download missing Maps from the Internet?"),
+                  tr("Download missing Data?"),
+                  tr("Download missing Data from the Internet?"),
                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
 
   if( answer == QMessageBox::Yes )
     {
-      shallDownloadMaps = true;
+      shallDownloadData = true;
     }
   else
     {
-      shallDownloadMaps = false;
+      shallDownloadData = false;
     }
 
-  return shallDownloadMaps;
+  return shallDownloadData;
 }
 
 void MapContents::proofeSection()
@@ -1539,7 +1539,13 @@ void MapContents::proofeSection()
       ws->slot_SetText2(tr("Reading Welt 2000 File"));
       // @AP: Look for and if available load a welt2000 airfield file
       Welt2000 welt2000;
-      welt2000.load( airfieldList, gliderSiteList, outLandingList );
+
+      if( ! welt2000.load( airfieldList, gliderSiteList, outLandingList ) &&
+          __askUserForDownload() == true )
+        {
+          // Welt2000 load failed, try to download a new Welt2000 File.
+          slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
+        }
     }
 
   unloadDone = false;

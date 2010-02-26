@@ -552,10 +552,10 @@ class MapContents : public QObject
     /** Manager to handle downloads of missing map file. */
     DownloadManager *downloadManger;
 
-    /** Store user decision to download missing map file. */
-    bool shallDownloadMaps;
+    /** Store user decision to download missing data files. */
+    bool shallDownloadData;
 
-    /** Store that user has asked once for download of missing map file. */
+    /** Store that user has asked once for download of missing data file. */
     bool hasAskForDownload;
   };
 
