@@ -14,6 +14,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-02-26 AP: Automatic download added of missing Welt2000 file on user
+                   decision. The user is ask once if he wants to download the
+                   missing file from the internet. Download is disabled, when
+                   Cumulus is in move. In move means faster as 5Km/h.
 [-] 2010-02-24 AP: BUGFIX: Border color TMZ was not correctly saved. There was
                    used border color of danger instead.
 [o] 2010-02-23 AP: Airspace colors modified to be more in accordance with the
@@ -46,7 +50,7 @@ Cumulus 2.6.x (Development based on X11/Qt-4.6.2)
                    If Cumulus is faster as 5Km/h in move no downloads are executed.
                    I hope that releases the users from the annoying installation 
                    procedure by hand.
-[+] 2010-02-04 AP: Automatic download of missing map files added on user decision.
+[+] 2010-02-04 AP: Automatic download added of missing map files on user decision.
                    The user is ask once if he wants to download missing map
                    file from the internet. Download is disabled, when Cumulus
                    is in move. In move means faster as 5Km/h.
