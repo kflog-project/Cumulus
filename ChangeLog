@@ -13,7 +13,8 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
-
+[-] 2010-02-28 AP: BUGFIX: If transparent airspace filling was disabled no brush
+                   has been drawn inside the airspace.
 [-] 2010-02-28 AP: BUGFIX: First loading of airspace fill colors failed. Hard
                    coded values have been taken instead of user values.
 [+] 2010-02-26 AP: Automatic download added of missing Welt2000 file on user
