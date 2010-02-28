@@ -96,11 +96,13 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   topLayout->addWidget( screenSaverSpeedLimit, row, 1 );
   row++;
 
+#if 0
   virtualKeybord = new QCheckBox(tr("Virtual Keyboard"), this);
   virtualKeybord->setObjectName("VirtualKeyboard");
   virtualKeybord->setChecked(false);
   topLayout->addWidget( virtualKeybord, row, 0 );
   row++;
+#endif
 
   topLayout->setRowStretch( row, 10 );
   topLayout->setColumnStretch( 2, 10 );
@@ -133,7 +135,7 @@ void SettingsPageLookNFeel::slot_load()
   // save loaded value for change control
   loadedSpeed = screenSaverSpeedLimit->value();
 
-  virtualKeybord->setChecked( conf->getVirtualKeyboard() );
+  // virtualKeybord->setChecked( conf->getVirtualKeyboard() );
 }
 
 /** called to initiate saving to the configuration items */
@@ -172,7 +174,7 @@ void SettingsPageLookNFeel::slot_save()
     }
 
   // Note! enabling/disabling requires GUI restart
-  conf->setVirtualKeyboard( virtualKeybord->isChecked() );
+  // conf->setVirtualKeyboard( virtualKeybord->isChecked() );
 }
 
 /**
@@ -190,7 +192,7 @@ void SettingsPageLookNFeel::slot_query_close( bool& warn, QStringList& warnings 
   changed |= conf->getGuiFont() != currentFont;
   changed |= conf->getGuiMenuFont() != currentMenuFont;
   changed |= conf->getGuiStyle() != styleBox->currentText();
-  changed |= conf->getVirtualKeyboard() != virtualKeybord->isChecked();
+  // changed |= conf->getVirtualKeyboard() != virtualKeybord->isChecked();
   changed |= conf->getMapFrameColor() != currentMapFrameColor;
   changed |= loadedSpeed != screenSaverSpeedLimit->value() ;
 
