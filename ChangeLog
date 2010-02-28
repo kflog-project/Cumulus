@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2010-02-28 AP: BUGFIX: First loading of airspace fill colors failed. Hard
+                   coded values have been taken instead of user values.
 [+] 2010-02-26 AP: Automatic download added of missing Welt2000 file on user
                    decision. The user is ask once if he wants to download the
                    missing file from the internet. Download is disabled, when
