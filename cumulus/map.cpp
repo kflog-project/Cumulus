@@ -1023,6 +1023,9 @@ void Map::__drawBaseLayer()
   // are no terrain map data available, this is the default map ground color.
   m_pixBaseMap.fill( GeneralConfig::instance()->getTerrainColor(0) );
 
+  // Maps could be loaded before. We do empty the receiver GPS buffer.
+  GpsNmea::gps->readDataFromGps();
+
   // make sure we have all the map files we need loaded
   _globalMapContents->proofeSection();
 
