@@ -414,10 +414,10 @@
 #define AIRA_BRUSH_COLOR_3 QColor(0,180,0)
 #define AIRA_BRUSH_COLOR_4 QColor(0,180,0)
 
-#define AIRA_BRUSH_STYLE_1 Qt::NoBrush
-#define AIRA_BRUSH_STYLE_2 Qt::NoBrush
-#define AIRA_BRUSH_STYLE_3 Qt::NoBrush
-#define AIRA_BRUSH_STYLE_4 Qt::NoBrush
+#define AIRA_BRUSH_STYLE_1 Qt::Dense7Pattern
+#define AIRA_BRUSH_STYLE_2 Qt::Dense7Pattern
+#define AIRA_BRUSH_STYLE_3 Qt::Dense7Pattern
+#define AIRA_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Airspace B]
 #define AIRB_PEN_WIDTH_1 4
@@ -442,10 +442,10 @@
 #define AIRB_BRUSH_COLOR_3 QColor(0,180,0)
 #define AIRB_BRUSH_COLOR_4 QColor(0,180,0)
 
-#define AIRB_BRUSH_STYLE_1 Qt::NoBrush
-#define AIRB_BRUSH_STYLE_2 Qt::NoBrush
-#define AIRB_BRUSH_STYLE_3 Qt::NoBrush
-#define AIRB_BRUSH_STYLE_4 Qt::NoBrush
+#define AIRB_BRUSH_STYLE_1 Qt::Dense7Pattern
+#define AIRB_BRUSH_STYLE_2 Qt::Dense7Pattern
+#define AIRB_BRUSH_STYLE_3 Qt::Dense7Pattern
+#define AIRB_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Airspace C]
 #define AIRC_PEN_WIDTH_1 4
@@ -470,10 +470,10 @@
 #define AIRC_BRUSH_COLOR_3 QColor(0,180,0)
 #define AIRC_BRUSH_COLOR_4 QColor(0,180,0)
 
-#define AIRC_BRUSH_STYLE_1 Qt::NoBrush
-#define AIRC_BRUSH_STYLE_2 Qt::NoBrush
-#define AIRC_BRUSH_STYLE_3 Qt::NoBrush
-#define AIRC_BRUSH_STYLE_4 Qt::NoBrush
+#define AIRC_BRUSH_STYLE_1 Qt::Dense7Pattern
+#define AIRC_BRUSH_STYLE_2 Qt::Dense7Pattern
+#define AIRC_BRUSH_STYLE_3 Qt::Dense7Pattern
+#define AIRC_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Airspace D]
 #define AIRD_PEN_WIDTH_1 4
@@ -498,10 +498,10 @@
 #define AIRD_BRUSH_COLOR_3 QColor(0,180,0)
 #define AIRD_BRUSH_COLOR_4 QColor(0,180,0)
 
-#define AIRD_BRUSH_STYLE_1 Qt::NoBrush
-#define AIRD_BRUSH_STYLE_2 Qt::NoBrush
-#define AIRD_BRUSH_STYLE_3 Qt::NoBrush
-#define AIRD_BRUSH_STYLE_4 Qt::NoBrush
+#define AIRD_BRUSH_STYLE_1 Qt::Dense7Pattern
+#define AIRD_BRUSH_STYLE_2 Qt::Dense7Pattern
+#define AIRD_BRUSH_STYLE_3 Qt::Dense7Pattern
+#define AIRD_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Airspace E]
 #define AIRE_PEN_WIDTH_1 4
@@ -750,10 +750,10 @@
 #define TMZ_BRUSH_COLOR_3 QColor(0,0,128)
 #define TMZ_BRUSH_COLOR_4 QColor(0,0,128)
 
-#define TMZ_BRUSH_STYLE_1 Qt::NoBrush
-#define TMZ_BRUSH_STYLE_2 Qt::NoBrush
-#define TMZ_BRUSH_STYLE_3 Qt::NoBrush
-#define TMZ_BRUSH_STYLE_4 Qt::NoBrush
+#define TMZ_BRUSH_STYLE_1 Qt::Dense7Pattern
+#define TMZ_BRUSH_STYLE_2 Qt::Dense7Pattern
+#define TMZ_BRUSH_STYLE_3 Qt::Dense7Pattern
+#define TMZ_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Glider Sector]
 #define GLIDER_SECTOR_PEN_WIDTH_1 4
