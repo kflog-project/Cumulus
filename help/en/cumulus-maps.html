@@ -23,20 +23,21 @@
 <p>Cumulus uses the following sets of maps:</p>
 
 <ul>
-  <li><b>Ground and Terrain Maps</b> with streets, highways, cities, rivers, lakes, ... and
-      terrain data with elevation information. They cover the entire world and you should
-      download only the part which you need for your flying. Goto the
-      <a href="http://www.kflog.org/maproom/ground-and-terrain-data">Map Room</a>,
-      make a selection and install the downloaded map files in the expected directory.
-  </li>
+	<li><b>Ground and Terrain Maps</b> with streets, highways, cities,
+	rivers, lakes, ... and terrain data with elevation information. They
+	cover the entire. The maps are to find in the
+  <a href="http://www.kflog.org/maproom/ground-and-terrain-data">KFLog Map Room</a>.
+  Cumulus is able to download all map files which you need. See
+  <a href="cumulus-maps.html">Maps</a> for more information.
+	</li>
 
-  <li><b>Airspaces:</b> Cumulus does only support the OpenAir file format for airspace structures.
-      Please search in the Internet for files of the region where you do fly.
-      Adresses where you can find information maybe:
-      <ul>
-        <li><a href="http://soaringweb.org/SUA/">soaringweb.org/SUA</a>
-        <li><a href="http://www.daec.de/aul/luftr_d.php">Airspace Data Germany</a> published by the DAeC
-      </ul>
+	<li><b>Airspaces:</b> Cumulus does only support the OpenAir file format
+	for airspace structures. Please search in the Internet for files of the
+	region where you do fly. Adresses where you can find information maybe:
+	<ul>
+     <li><a href="http://soaringweb.org/SUA/">soaringweb.org/SUA</a>
+     <li><a href="http://www.daec.de/aul/luftr_d.php">Airspace Data Germany</a> published by the DAeC
+  </ul>
   </li>
 
   <li><b>Airports, Airfields and Outlanding Points:</b> These data are read from the
@@ -47,13 +48,15 @@
 <p>The maps can be installed at two different places:</p>
 
 <ul>
-  <li>In <b>$HOME/cumulus/maps</b> (Desktop) or in <b>$HOME/MyDocs/Cumulus/maps</b>
+  <li>In <b>$HOME/Cumulus/maps</b> (Desktop) or in <b>$HOME/MyDocs/Cumulus/maps</b>
       (Maemo). These are the default locations.</li>
 
-  <li>Anywhere else, e.g. on a SD card. Under Maemo (Nokia Internet Tablet)
-      it is recommended to change to this location because the internal
-      memory is limited and not accessible via USB from the outside.</li>
+  <li>Anywhere else. On a PDA you can use a SD card for that.
+  </li>
 </ul>
+
+<p>At the first startup on the Nokia Internet Tablet Cumulus tries it self 
+   to find out the best location for map storing.</p>
 
 <p><b>Please Note! The map files have to be stored in different subdirectories
 under the root map path.</b>
@@ -72,18 +75,13 @@ under the root map path.</b>
 
 </ul>
 
-<p>You must create these subdirectories alone under the map root.</p>
-
 <p>
 If the maps are installed outside of the known locations, e.g. on a SD card
 at your Internet Tablet, you must setup the path to the new map root directory
-in the Map Settings configuration page
-(Setup-&gt;General Setup-&gt;Map Setting). Use the <i>Maps</i>
+in the Map Settings configuration page (Setup-&gt;General Setup-&gt;Map Setting).
+Use the <i>Maps</i>
 button to navigate to the appropriate root directory under which the expected
-maps subdirectories are to find. Is nothing is setup the maps are searched
-only under the default location. But this directory is unsuitably for the
-Nokia Internet Tablet due to no access via an USB connection and the limited
-space at the home file system.
+maps subdirectories are to find.
 </p>
 
 <p>
@@ -184,13 +182,18 @@ case sensitive!</b></p>
 <p><b>Usage of Welt2000 airfield and outlanding data</b></p>
 
 <p>Cumulus uses for airfields and outlandings the Welt2000 data base. These data
-were created by Michael Meier, called Milomei, as one big file
-<a href="http://www.segelflug.de/vereine/welt2000/download/WELT2000.TXT">here.</a>
+were created by Michael Meier, called Milomei, as one big file <i>WELT2000.TXT</i>
+to find 
+<a href="http://www.segelflug.de/vereine/welt2000">here.</a>
 </p>
 
-<p>Just install this file in the subdirectory <i>airfields</i>
-and make sure that it carries the name <i>welt2000.txt</i>.
-Because a welt2000.txt file covers the whole world, the amount of data
+<p>Cumulus can download this file.
+See under <a href="cumulus-settings-airfields.html">Airfields</a> how to do
+that.</p>
+
+<p>The Welt2000 file is installed in the subdirectory <i>airfields</i>.
+It must carries the name <i>welt2000.txt</i>.
+Because a Welt2000 file covers the whole world, the amount of data
 to be read in must be limited in a useful kind. Cumulus provides for
 that two ways:</p>
 
