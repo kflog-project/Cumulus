@@ -8,7 +8,7 @@
 **
 **   Copyright (c):  2001      by Heiner Lamprecht,
 **                   2002      by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -51,13 +51,9 @@ class MapConfig : public QObject
 {
   Q_OBJECT
 
-private:
+  private:
 
-  /**
-   * Don't allow copies and assignments.
-   */
-  MapConfig(const MapConfig& );
-  MapConfig& operator=(const MapConfig& x);
+    Q_DISABLE_COPY ( MapConfig )
 
 public:
     /**

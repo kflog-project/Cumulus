@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2001      by Heiner Lamprecht,
  **                   2002      by André Somers
- **                   2008-2009 by Axel Pauli
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -48,8 +48,10 @@
 // number of created class instances
 short MapConfig::instances = 0;
 
-MapConfig::MapConfig(QObject* parent)
-    : QObject(parent), scaleIndex(0), isSwitch(false)
+MapConfig::MapConfig(QObject* parent) :
+  QObject(parent),
+  scaleIndex(0),
+  isSwitch(false)
 {
   if ( ++instances > 1 )
     {
@@ -152,7 +154,7 @@ void MapConfig::slotReadConfig()
            HIGH_PEN_STYLE_1, HIGH_PEN_STYLE_2, HIGH_PEN_STYLE_3, HIGH_PEN_STYLE_4)
 
   READ_PEN_BRUSH("Lake", lakePenList, lakeBorder, lakeBrushList,
-                 LAKE_COLOR_1, LAKE_COLOR_2, LAKE_COLOR_3,LAKE_COLOR_4,
+                 LAKE_COLOR_1, LAKE_COLOR_2, LAKE_COLOR_3, LAKE_COLOR_4,
                  LAKE_PEN_WIDTH_1, LAKE_PEN_WIDTH_2, LAKE_PEN_WIDTH_3, LAKE_PEN_WIDTH_4,
                  LAKE_PEN_STYLE_1, LAKE_PEN_STYLE_2, LAKE_PEN_STYLE_3, LAKE_PEN_STYLE_4,
                  LAKE_BRUSH_COLOR_1, LAKE_BRUSH_COLOR_2,
@@ -161,7 +163,7 @@ void MapConfig::slotReadConfig()
                  LAKE_BRUSH_STYLE_3, LAKE_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("City", cityPenList, cityBorder, cityBrushList,
-                 CITY_COLOR_1, CITY_COLOR_2, CITY_COLOR_3,CITY_COLOR_4,
+                 CITY_COLOR_1, CITY_COLOR_2, CITY_COLOR_3, CITY_COLOR_4,
                  CITY_PEN_WIDTH_1, CITY_PEN_WIDTH_2, CITY_PEN_WIDTH_3, CITY_PEN_WIDTH_4,
                  CITY_PEN_STYLE_1, CITY_PEN_STYLE_2, CITY_PEN_STYLE_3, CITY_PEN_STYLE_4,
                  CITY_BRUSH_COLOR_1, CITY_BRUSH_COLOR_2,
@@ -205,131 +207,8 @@ void MapConfig::slotReadConfig()
                  RIVER_T_BRUSH_STYLE_1, RIVER_T_BRUSH_STYLE_2,
                  RIVER_T_BRUSH_STYLE_3, RIVER_T_BRUSH_STYLE_4)
 
-  READ_PEN_BRUSH("Airspace A", airAPenList, airABorder, airABrushList,
-                 conf->getBorderColorAirspaceA(), conf->getBorderColorAirspaceA(), conf->getBorderColorAirspaceA(), conf->getBorderColorAirspaceA(),
-                 AIRA_PEN_WIDTH_1, AIRA_PEN_WIDTH_2, AIRA_PEN_WIDTH_3, AIRA_PEN_WIDTH_4,
-                 AIRA_PEN_STYLE_1, AIRA_PEN_STYLE_2, AIRA_PEN_STYLE_3, AIRA_PEN_STYLE_4,
-                 AIRA_BRUSH_COLOR_1, AIRA_BRUSH_COLOR_2,
-                 AIRA_BRUSH_COLOR_3, AIRA_BRUSH_COLOR_4,
-                 AIRA_BRUSH_STYLE_1, AIRA_BRUSH_STYLE_2,
-                 AIRA_BRUSH_STYLE_3, AIRA_BRUSH_STYLE_4)
-
-  READ_PEN_BRUSH("Airspace B", airBPenList, airBBorder, airBBrushList,
-                 conf->getBorderColorAirspaceB(), conf->getBorderColorAirspaceB(), conf->getBorderColorAirspaceB(), conf->getBorderColorAirspaceB(),
-                 AIRB_PEN_WIDTH_1, AIRB_PEN_WIDTH_2, AIRB_PEN_WIDTH_3, AIRB_PEN_WIDTH_4,
-                 AIRB_PEN_STYLE_1, AIRB_PEN_STYLE_2, AIRB_PEN_STYLE_3, AIRB_PEN_STYLE_4,
-                 AIRB_BRUSH_COLOR_1, AIRB_BRUSH_COLOR_2,
-                 AIRB_BRUSH_COLOR_3, AIRB_BRUSH_COLOR_4,
-                 AIRB_BRUSH_STYLE_1, AIRB_BRUSH_STYLE_2,
-                 AIRB_BRUSH_STYLE_3, AIRB_BRUSH_STYLE_4)
-
-  READ_PEN_BRUSH("Airspace C", airCPenList, airCBorder, airCBrushList,
-                 conf->getBorderColorAirspaceC(), conf->getBorderColorAirspaceC(), conf->getBorderColorAirspaceC(), conf->getBorderColorAirspaceC(),
-                 AIRC_PEN_WIDTH_1, AIRC_PEN_WIDTH_2, AIRC_PEN_WIDTH_3, AIRC_PEN_WIDTH_4,
-                 AIRC_PEN_STYLE_1, AIRC_PEN_STYLE_2, AIRC_PEN_STYLE_3, AIRC_PEN_STYLE_4,
-                 AIRC_BRUSH_COLOR_1, AIRC_BRUSH_COLOR_2,
-                 AIRC_BRUSH_COLOR_3, AIRC_BRUSH_COLOR_4,
-                 AIRC_BRUSH_STYLE_1, AIRC_BRUSH_STYLE_2,
-                 AIRC_BRUSH_STYLE_3, AIRC_BRUSH_STYLE_4)
-
-  READ_PEN_BRUSH("Airspace D", airDPenList, airDBorder, airDBrushList,
-                 conf->getBorderColorAirspaceD(), conf->getBorderColorAirspaceD(), conf->getBorderColorAirspaceD(), conf->getBorderColorAirspaceD(),
-                 AIRD_PEN_WIDTH_1, AIRD_PEN_WIDTH_2, AIRD_PEN_WIDTH_3, AIRD_PEN_WIDTH_4,
-                 AIRD_PEN_STYLE_1, AIRD_PEN_STYLE_2, AIRD_PEN_STYLE_3, AIRD_PEN_STYLE_4,
-                 AIRD_BRUSH_COLOR_1, AIRD_BRUSH_COLOR_2,
-                 AIRD_BRUSH_COLOR_3, AIRD_BRUSH_COLOR_4,
-                 AIRD_BRUSH_STYLE_1, AIRD_BRUSH_STYLE_2,
-                 AIRD_BRUSH_STYLE_3, AIRD_BRUSH_STYLE_4)
-
-  READ_PEN_BRUSH("Airspace E", airEPenList, airEBorder, airEBrushList,
-                 conf->getBorderColorAirspaceE(), conf->getBorderColorAirspaceE(), conf->getBorderColorAirspaceE(), conf->getBorderColorAirspaceE(),
-                 AIRE_PEN_WIDTH_1, AIRE_PEN_WIDTH_2, AIRE_PEN_WIDTH_3, AIRE_PEN_WIDTH_4,
-                 AIRE_PEN_STYLE_1, AIRE_PEN_STYLE_2, AIRE_PEN_STYLE_3, AIRE_PEN_STYLE_4,
-                 AIRE_BRUSH_COLOR_1, AIRE_BRUSH_COLOR_2,
-                 AIRE_BRUSH_COLOR_3, AIRE_BRUSH_COLOR_4,
-                 AIRE_BRUSH_STYLE_1, AIRE_BRUSH_STYLE_2,
-                 AIRE_BRUSH_STYLE_3, AIRE_BRUSH_STYLE_4)
-
-  READ_PEN_BRUSH("Airspace F", airFPenList, airFBorder, airFBrushList,
-                 conf->getBorderColorAirspaceF(), conf->getBorderColorAirspaceF(), conf->getBorderColorAirspaceF(), conf->getBorderColorAirspaceF(),
-                 AIRF_PEN_WIDTH_1, AIRF_PEN_WIDTH_2, AIRF_PEN_WIDTH_3, AIRF_PEN_WIDTH_4,
-                 AIRF_PEN_STYLE_1, AIRF_PEN_STYLE_2, AIRF_PEN_STYLE_3, AIRF_PEN_STYLE_4,
-                 AIRF_BRUSH_COLOR_1, AIRF_BRUSH_COLOR_2,
-                 AIRF_BRUSH_COLOR_3, AIRF_BRUSH_COLOR_4,
-                 AIRF_BRUSH_STYLE_1, AIRF_BRUSH_STYLE_2,
-                 AIRF_BRUSH_STYLE_3, AIRF_BRUSH_STYLE_4)
-
-  READ_PEN_BRUSH("Wave Window", waveWindowPenList, waveWindowBorder, waveWindowBrushList,
-                 conf->getBorderColorWaveWindow(), conf->getBorderColorWaveWindow(), conf->getBorderColorWaveWindow(), conf->getBorderColorWaveWindow(),
-                 WAVE_WINDOW_PEN_WIDTH_1, WAVE_WINDOW_PEN_WIDTH_2, WAVE_WINDOW_PEN_WIDTH_3, WAVE_WINDOW_PEN_WIDTH_4,
-                 WAVE_WINDOW_PEN_STYLE_1, WAVE_WINDOW_PEN_STYLE_2, WAVE_WINDOW_PEN_STYLE_3, WAVE_WINDOW_PEN_STYLE_4,
-                 WAVE_WINDOW_BRUSH_COLOR_1, WAVE_WINDOW_BRUSH_COLOR_2,
-                 WAVE_WINDOW_BRUSH_COLOR_3, WAVE_WINDOW_BRUSH_COLOR_4,
-                 WAVE_WINDOW_BRUSH_STYLE_1, WAVE_WINDOW_BRUSH_STYLE_2,
-                 WAVE_WINDOW_BRUSH_STYLE_3, WAVE_WINDOW_BRUSH_STYLE_4)
-
-  READ_PEN_BRUSH("Control C", ctrCPenList, ctrCBorder,ctrCBrushList,
-                 conf->getBorderColorControlC(), conf->getBorderColorControlC(), conf->getBorderColorControlC(), conf->getBorderColorControlC(),
-                 CTRC_PEN_WIDTH_1, CTRC_PEN_WIDTH_2, CTRC_PEN_WIDTH_3, CTRC_PEN_WIDTH_4,
-                 CTRC_PEN_STYLE_1, CTRC_PEN_STYLE_2, CTRC_PEN_STYLE_3, CTRC_PEN_STYLE_4,
-                 CTRC_BRUSH_COLOR_1, CTRC_BRUSH_COLOR_2,
-                 CTRC_BRUSH_COLOR_3, CTRC_BRUSH_COLOR_4,
-                 CTRC_BRUSH_STYLE_1, CTRC_BRUSH_STYLE_2,
-                 CTRC_BRUSH_STYLE_3, CTRC_BRUSH_STYLE_4)
-
-  READ_PEN_BRUSH("Control D", ctrDPenList, ctrDBorder, ctrDBrushList,
-                 conf->getBorderColorControlD(), conf->getBorderColorControlD(), conf->getBorderColorControlD(), conf->getBorderColorControlD(),
-                 CTRD_PEN_WIDTH_1, CTRD_PEN_WIDTH_2, CTRD_PEN_WIDTH_3, CTRD_PEN_WIDTH_4,
-                 CTRD_PEN_STYLE_1, CTRD_PEN_STYLE_2, CTRD_PEN_STYLE_3, CTRD_PEN_STYLE_4,
-                 CTRD_BRUSH_COLOR_1, CTRD_BRUSH_COLOR_2,
-                 CTRD_BRUSH_COLOR_3, CTRD_BRUSH_COLOR_4,
-                 CTRD_BRUSH_STYLE_1, CTRD_BRUSH_STYLE_2,
-                 CTRD_BRUSH_STYLE_3, CTRD_BRUSH_STYLE_4)
-
-  READ_PEN_BRUSH("Danger", dangerPenList, dangerBorder, dangerBrushList,
-                 conf->getBorderColorDanger(), conf->getBorderColorDanger(), conf->getBorderColorDanger(), conf->getBorderColorDanger(),
-                 DNG_PEN_WIDTH_1, DNG_PEN_WIDTH_2, DNG_PEN_WIDTH_3, DNG_PEN_WIDTH_4,
-                 DNG_PEN_STYLE_1, DNG_PEN_STYLE_2, DNG_PEN_STYLE_3, DNG_PEN_STYLE_4,
-                 DNG_BRUSH_COLOR_1, DNG_BRUSH_COLOR_2,
-                 DNG_BRUSH_COLOR_3, DNG_BRUSH_COLOR_4,
-                 DNG_BRUSH_STYLE_1, DNG_BRUSH_STYLE_2,
-                 DNG_BRUSH_STYLE_3, DNG_BRUSH_STYLE_4)
-
-  READ_PEN_BRUSH("Low Flight", lowFPenList, lowFBorder,lowFBrushList,
-                 conf->getBorderColorLowFlight(), conf->getBorderColorLowFlight(), conf->getBorderColorLowFlight(), conf->getBorderColorLowFlight(),
-                 LOWF_PEN_WIDTH_1, LOWF_PEN_WIDTH_2, LOWF_PEN_WIDTH_3, LOWF_PEN_WIDTH_4,
-                 LOWF_PEN_STYLE_1, LOWF_PEN_STYLE_2, LOWF_PEN_STYLE_3, LOWF_PEN_STYLE_4,
-                 LOWF_BRUSH_COLOR_1, LOWF_BRUSH_COLOR_2,
-                 LOWF_BRUSH_COLOR_3, LOWF_BRUSH_COLOR_4,
-                 LOWF_BRUSH_STYLE_1, LOWF_BRUSH_STYLE_2,
-                 LOWF_BRUSH_STYLE_3, LOWF_BRUSH_STYLE_4)
-
-  READ_PEN_BRUSH("Restricted Area", restrPenList, restrBorder, restrBrushList,
-                 conf->getBorderColorRestricted(), conf->getBorderColorRestricted(), conf->getBorderColorRestricted(), conf->getBorderColorRestricted(),
-                 RES_PEN_WIDTH_1, RES_PEN_WIDTH_2, RES_PEN_WIDTH_3, RES_PEN_WIDTH_4,
-                 RES_PEN_STYLE_1, RES_PEN_STYLE_2, RES_PEN_STYLE_3, RES_PEN_STYLE_4,
-                 RES_BRUSH_COLOR_1, RES_BRUSH_COLOR_2,
-                 RES_BRUSH_COLOR_3, RES_BRUSH_COLOR_4,
-                 RES_BRUSH_STYLE_1, RES_BRUSH_STYLE_2,
-                 RES_BRUSH_STYLE_3, RES_BRUSH_STYLE_4)
-
-  READ_PEN_BRUSH("TMZ", tmzPenList, tmzBorder, tmzBrushList,
-                 conf->getBorderColorTMZ(), conf->getBorderColorTMZ(), conf->getBorderColorTMZ(), conf->getBorderColorTMZ(),
-                 TMZ_PEN_WIDTH_1, TMZ_PEN_WIDTH_2, TMZ_PEN_WIDTH_3, TMZ_PEN_WIDTH_4,
-                 TMZ_PEN_STYLE_1, TMZ_PEN_STYLE_2, TMZ_PEN_STYLE_3, TMZ_PEN_STYLE_4,
-                 TMZ_BRUSH_COLOR_1, TMZ_BRUSH_COLOR_2,
-                 TMZ_BRUSH_COLOR_3, TMZ_BRUSH_COLOR_4,
-                 TMZ_BRUSH_STYLE_1, TMZ_BRUSH_STYLE_2,
-                 TMZ_BRUSH_STYLE_3, TMZ_BRUSH_STYLE_4)
-
-  READ_PEN_BRUSH("Glider Sector", gliderSectorPenList, gliderSectorBorder, gliderSectorBrushList,
-                 conf->getBorderColorGliderSector(), conf->getBorderColorGliderSector(), conf->getBorderColorGliderSector(), conf->getBorderColorGliderSector(),
-                 GLIDER_SECTOR_PEN_WIDTH_1, GLIDER_SECTOR_PEN_WIDTH_2, GLIDER_SECTOR_PEN_WIDTH_3, GLIDER_SECTOR_PEN_WIDTH_4,
-                 GLIDER_SECTOR_PEN_STYLE_1, GLIDER_SECTOR_PEN_STYLE_2, GLIDER_SECTOR_PEN_STYLE_3, GLIDER_SECTOR_PEN_STYLE_4,
-                 GLIDER_SECTOR_BRUSH_COLOR_1, GLIDER_SECTOR_BRUSH_COLOR_2,
-                 GLIDER_SECTOR_BRUSH_COLOR_3, GLIDER_SECTOR_BRUSH_COLOR_4,
-                 GLIDER_SECTOR_BRUSH_STYLE_1, GLIDER_SECTOR_BRUSH_STYLE_2,
-                 GLIDER_SECTOR_BRUSH_STYLE_3, GLIDER_SECTOR_BRUSH_STYLE_4)
+  /* That loads all airspace ren and brush data. */
+  slotReloadAirspaceColors();
 }
 
 /**
@@ -343,114 +222,142 @@ void MapConfig::slotReloadAirspaceColors()
   GeneralConfig *conf = GeneralConfig::instance();
 
   READ_PEN_BRUSH("Airspace A", airAPenList, airABorder, airABrushList,
-                 conf->getBorderColorAirspaceA(), conf->getBorderColorAirspaceA(), conf->getBorderColorAirspaceA(), conf->getBorderColorAirspaceA(),
+                 conf->getBorderColorAirspaceA(), conf->getBorderColorAirspaceA(),
+                 conf->getBorderColorAirspaceA(), conf->getBorderColorAirspaceA(),
                  AIRA_PEN_WIDTH_1, AIRA_PEN_WIDTH_2, AIRA_PEN_WIDTH_3, AIRA_PEN_WIDTH_4,
                  AIRA_PEN_STYLE_1, AIRA_PEN_STYLE_2, AIRA_PEN_STYLE_3, AIRA_PEN_STYLE_4,
-                 conf->getFillColorAirspaceA(), conf->getFillColorAirspaceA(), conf->getFillColorAirspaceA(), conf->getFillColorAirspaceA(),
+                 conf->getFillColorAirspaceA(), conf->getFillColorAirspaceA(),
+                 conf->getFillColorAirspaceA(), conf->getFillColorAirspaceA(),
                  AIRA_BRUSH_STYLE_1, AIRA_BRUSH_STYLE_2,
                  AIRA_BRUSH_STYLE_3, AIRA_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Airspace B", airBPenList, airBBorder, airBBrushList,
-                 conf->getBorderColorAirspaceB(), conf->getBorderColorAirspaceB(), conf->getBorderColorAirspaceB(), conf->getBorderColorAirspaceB(),
+                 conf->getBorderColorAirspaceB(), conf->getBorderColorAirspaceB(),
+                 conf->getBorderColorAirspaceB(), conf->getBorderColorAirspaceB(),
                  AIRB_PEN_WIDTH_1, AIRB_PEN_WIDTH_2, AIRB_PEN_WIDTH_3, AIRB_PEN_WIDTH_4,
                  AIRB_PEN_STYLE_1, AIRB_PEN_STYLE_2, AIRB_PEN_STYLE_3, AIRB_PEN_STYLE_4,
-                 conf->getFillColorAirspaceB(), conf->getFillColorAirspaceB(), conf->getFillColorAirspaceB(), conf->getFillColorAirspaceB(),
+                 conf->getFillColorAirspaceB(), conf->getFillColorAirspaceB(),
+                 conf->getFillColorAirspaceB(), conf->getFillColorAirspaceB(),
                  AIRB_BRUSH_STYLE_1, AIRB_BRUSH_STYLE_2,
                  AIRB_BRUSH_STYLE_3, AIRB_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Airspace C", airCPenList, airCBorder, airCBrushList,
-                 conf->getBorderColorAirspaceC(), conf->getBorderColorAirspaceC(), conf->getBorderColorAirspaceC(), conf->getBorderColorAirspaceC(),
+                 conf->getBorderColorAirspaceC(), conf->getBorderColorAirspaceC(),
+                 conf->getBorderColorAirspaceC(), conf->getBorderColorAirspaceC(),
                  AIRC_PEN_WIDTH_1, AIRC_PEN_WIDTH_2, AIRC_PEN_WIDTH_3, AIRC_PEN_WIDTH_4,
                  AIRC_PEN_STYLE_1, AIRC_PEN_STYLE_2, AIRC_PEN_STYLE_3, AIRC_PEN_STYLE_4,
-                 conf->getFillColorAirspaceC(), conf->getFillColorAirspaceC(), conf->getFillColorAirspaceC(), conf->getFillColorAirspaceC(),
+                 conf->getFillColorAirspaceC(), conf->getFillColorAirspaceC(),
+                 conf->getFillColorAirspaceC(), conf->getFillColorAirspaceC(),
                  AIRC_BRUSH_STYLE_1, AIRC_BRUSH_STYLE_2,
                  AIRC_BRUSH_STYLE_3, AIRC_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Airspace D", airDPenList, airDBorder, airDBrushList,
-                 conf->getBorderColorAirspaceD(), conf->getBorderColorAirspaceD(), conf->getBorderColorAirspaceD(), conf->getBorderColorAirspaceD(),
+                 conf->getBorderColorAirspaceD(), conf->getBorderColorAirspaceD(),
+                 conf->getBorderColorAirspaceD(), conf->getBorderColorAirspaceD(),
                  AIRD_PEN_WIDTH_1, AIRD_PEN_WIDTH_2, AIRD_PEN_WIDTH_3, AIRD_PEN_WIDTH_4,
                  AIRD_PEN_STYLE_1, AIRD_PEN_STYLE_2, AIRD_PEN_STYLE_3, AIRD_PEN_STYLE_4,
-                 conf->getFillColorAirspaceD(), conf->getFillColorAirspaceD(), conf->getFillColorAirspaceD(), conf->getFillColorAirspaceD(),
+                 conf->getFillColorAirspaceD(), conf->getFillColorAirspaceD(),
+                 conf->getFillColorAirspaceD(), conf->getFillColorAirspaceD(),
                  AIRD_BRUSH_STYLE_1, AIRD_BRUSH_STYLE_2,
                  AIRD_BRUSH_STYLE_3, AIRD_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Airspace E", airEPenList, airEBorder, airEBrushList,
-                 conf->getBorderColorAirspaceE(), conf->getBorderColorAirspaceE(), conf->getBorderColorAirspaceE(), conf->getBorderColorAirspaceE(),
+                 conf->getBorderColorAirspaceE(), conf->getBorderColorAirspaceE(),
+                 conf->getBorderColorAirspaceE(), conf->getBorderColorAirspaceE(),
                  AIRE_PEN_WIDTH_1, AIRE_PEN_WIDTH_2, AIRE_PEN_WIDTH_3, AIRE_PEN_WIDTH_4,
                  AIRE_PEN_STYLE_1, AIRE_PEN_STYLE_2, AIRE_PEN_STYLE_3, AIRE_PEN_STYLE_4,
-                 conf->getFillColorAirspaceE(), conf->getFillColorAirspaceE(), conf->getFillColorAirspaceE(), conf->getFillColorAirspaceE(),
+                 conf->getFillColorAirspaceE(), conf->getFillColorAirspaceE(),
+                 conf->getFillColorAirspaceE(), conf->getFillColorAirspaceE(),
                  AIRE_BRUSH_STYLE_1, AIRE_BRUSH_STYLE_2,
                  AIRE_BRUSH_STYLE_3, AIRE_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Airspace F", airFPenList, airFBorder, airFBrushList,
-                 conf->getBorderColorAirspaceF(), conf->getBorderColorAirspaceF(), conf->getBorderColorAirspaceF(), conf->getBorderColorAirspaceF(),
+                 conf->getBorderColorAirspaceF(), conf->getBorderColorAirspaceF(),
+                 conf->getBorderColorAirspaceF(), conf->getBorderColorAirspaceF(),
                  AIRF_PEN_WIDTH_1, AIRF_PEN_WIDTH_2, AIRF_PEN_WIDTH_3, AIRF_PEN_WIDTH_4,
                  AIRF_PEN_STYLE_1, AIRF_PEN_STYLE_2, AIRF_PEN_STYLE_3, AIRF_PEN_STYLE_4,
-                 conf->getFillColorAirspaceF(), conf->getFillColorAirspaceF(), conf->getFillColorAirspaceF(), conf->getFillColorAirspaceF(),
+                 conf->getFillColorAirspaceF(), conf->getFillColorAirspaceF(),
+                 conf->getFillColorAirspaceF(), conf->getFillColorAirspaceF(),
                  AIRF_BRUSH_STYLE_1, AIRF_BRUSH_STYLE_2,
                  AIRF_BRUSH_STYLE_3, AIRF_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Wave Window", waveWindowPenList, waveWindowBorder, waveWindowBrushList,
-                 conf->getBorderColorWaveWindow(), conf->getBorderColorWaveWindow(), conf->getBorderColorWaveWindow(), conf->getBorderColorWaveWindow(),
+                 conf->getBorderColorWaveWindow(), conf->getBorderColorWaveWindow(),
+                 conf->getBorderColorWaveWindow(), conf->getBorderColorWaveWindow(),
                  WAVE_WINDOW_PEN_WIDTH_1, WAVE_WINDOW_PEN_WIDTH_2, WAVE_WINDOW_PEN_WIDTH_3, WAVE_WINDOW_PEN_WIDTH_4,
                  WAVE_WINDOW_PEN_STYLE_1, WAVE_WINDOW_PEN_STYLE_2, WAVE_WINDOW_PEN_STYLE_3, WAVE_WINDOW_PEN_STYLE_4,
-                 conf->getFillColorWaveWindow(), conf->getFillColorWaveWindow(), conf->getFillColorWaveWindow(), conf->getFillColorWaveWindow(),
+                 conf->getFillColorWaveWindow(), conf->getFillColorWaveWindow(),
+                 conf->getFillColorWaveWindow(), conf->getFillColorWaveWindow(),
                  WAVE_WINDOW_BRUSH_STYLE_1, WAVE_WINDOW_BRUSH_STYLE_2,
                  WAVE_WINDOW_BRUSH_STYLE_3, WAVE_WINDOW_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Control C", ctrCPenList, ctrCBorder,ctrCBrushList,
-                 conf->getBorderColorControlC(), conf->getBorderColorControlC(), conf->getBorderColorControlC(), conf->getBorderColorControlC(),
+                 conf->getBorderColorControlC(), conf->getBorderColorControlC(),
+                 conf->getBorderColorControlC(), conf->getBorderColorControlC(),
                  CTRC_PEN_WIDTH_1, CTRC_PEN_WIDTH_2, CTRC_PEN_WIDTH_3, CTRC_PEN_WIDTH_4,
                  CTRC_PEN_STYLE_1, CTRC_PEN_STYLE_2, CTRC_PEN_STYLE_3, CTRC_PEN_STYLE_4,
-                 conf->getFillColorControlC(), conf->getFillColorControlC(), conf->getFillColorControlC(), conf->getFillColorControlC(),
-                  CTRC_BRUSH_STYLE_1, CTRC_BRUSH_STYLE_2,
+                 conf->getFillColorControlC(), conf->getFillColorControlC(),
+                 conf->getFillColorControlC(), conf->getFillColorControlC(),
+                 CTRC_BRUSH_STYLE_1, CTRC_BRUSH_STYLE_2,
                  CTRC_BRUSH_STYLE_3, CTRC_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Control D", ctrDPenList, ctrDBorder, ctrDBrushList,
-                 conf->getBorderColorControlD(), conf->getBorderColorControlD(), conf->getBorderColorControlD(), conf->getBorderColorControlD(),
+                 conf->getBorderColorControlD(), conf->getBorderColorControlD(),
+                 conf->getBorderColorControlD(), conf->getBorderColorControlD(),
                  CTRD_PEN_WIDTH_1, CTRD_PEN_WIDTH_2, CTRD_PEN_WIDTH_3, CTRD_PEN_WIDTH_4,
                  CTRD_PEN_STYLE_1, CTRD_PEN_STYLE_2, CTRD_PEN_STYLE_3, CTRD_PEN_STYLE_4,
-                 conf->getFillColorControlD(), conf->getFillColorControlD(), conf->getFillColorControlD(), conf->getFillColorControlD(),
+                 conf->getFillColorControlD(), conf->getFillColorControlD(),
+                 conf->getFillColorControlD(), conf->getFillColorControlD(),
                  CTRD_BRUSH_STYLE_1, CTRD_BRUSH_STYLE_2,
                  CTRD_BRUSH_STYLE_3, CTRD_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Danger", dangerPenList, dangerBorder, dangerBrushList,
-                 conf->getBorderColorDanger(), conf->getBorderColorDanger(), conf->getBorderColorDanger(), conf->getBorderColorDanger(),
+                 conf->getBorderColorDanger(), conf->getBorderColorDanger(),
+                 conf->getBorderColorDanger(), conf->getBorderColorDanger(),
                  DNG_PEN_WIDTH_1, DNG_PEN_WIDTH_2, DNG_PEN_WIDTH_3, DNG_PEN_WIDTH_4,
                  DNG_PEN_STYLE_1, DNG_PEN_STYLE_2, DNG_PEN_STYLE_3, DNG_PEN_STYLE_4,
-                 conf->getFillColorDanger(), conf->getFillColorDanger(), conf->getFillColorDanger(), conf->getFillColorDanger(),
+                 conf->getFillColorDanger(), conf->getFillColorDanger(),
+                 conf->getFillColorDanger(), conf->getFillColorDanger(),
                  DNG_BRUSH_STYLE_1, DNG_BRUSH_STYLE_2,
                  DNG_BRUSH_STYLE_3, DNG_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Low Flight", lowFPenList, lowFBorder,lowFBrushList,
-                 conf->getBorderColorLowFlight(), conf->getBorderColorLowFlight(), conf->getBorderColorLowFlight(), conf->getBorderColorLowFlight(),
+                 conf->getBorderColorLowFlight(), conf->getBorderColorLowFlight(),
+                 conf->getBorderColorLowFlight(), conf->getBorderColorLowFlight(),
                  LOWF_PEN_WIDTH_1, LOWF_PEN_WIDTH_2, LOWF_PEN_WIDTH_3, LOWF_PEN_WIDTH_4,
                  LOWF_PEN_STYLE_1, LOWF_PEN_STYLE_2, LOWF_PEN_STYLE_3, LOWF_PEN_STYLE_4,
-                 conf->getFillColorLowFlight(), conf->getFillColorLowFlight(), conf->getFillColorLowFlight(), conf->getFillColorLowFlight(),
+                 conf->getFillColorLowFlight(), conf->getFillColorLowFlight(),
+                 conf->getFillColorLowFlight(), conf->getFillColorLowFlight(),
                  LOWF_BRUSH_STYLE_1, LOWF_BRUSH_STYLE_2,
                  LOWF_BRUSH_STYLE_3, LOWF_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Restricted Area", restrPenList, restrBorder, restrBrushList,
-                 conf->getBorderColorRestricted(), conf->getBorderColorRestricted(), conf->getBorderColorRestricted(), conf->getBorderColorRestricted(),
+                 conf->getBorderColorRestricted(), conf->getBorderColorRestricted(),
+                 conf->getBorderColorRestricted(), conf->getBorderColorRestricted(),
                  RES_PEN_WIDTH_1, RES_PEN_WIDTH_2, RES_PEN_WIDTH_3, RES_PEN_WIDTH_4,
                  RES_PEN_STYLE_1, RES_PEN_STYLE_2, RES_PEN_STYLE_3, RES_PEN_STYLE_4,
-                 conf->getFillColorRestricted(), conf->getFillColorRestricted(), conf->getFillColorRestricted(), conf->getFillColorRestricted(),
+                 conf->getFillColorRestricted(), conf->getFillColorRestricted(),
+                 conf->getFillColorRestricted(), conf->getFillColorRestricted(),
                  RES_BRUSH_STYLE_1, RES_BRUSH_STYLE_2,
                  RES_BRUSH_STYLE_3, RES_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("TMZ", tmzPenList, tmzBorder, tmzBrushList,
-                 conf->getBorderColorTMZ(), conf->getBorderColorTMZ(), conf->getBorderColorTMZ(), conf->getBorderColorTMZ(),
+                 conf->getBorderColorTMZ(), conf->getBorderColorTMZ(),
+                 conf->getBorderColorTMZ(), conf->getBorderColorTMZ(),
                  TMZ_PEN_WIDTH_1, TMZ_PEN_WIDTH_2, TMZ_PEN_WIDTH_3, TMZ_PEN_WIDTH_4,
                  TMZ_PEN_STYLE_1, TMZ_PEN_STYLE_2, TMZ_PEN_STYLE_3, TMZ_PEN_STYLE_4,
-                 conf->getFillColorTMZ(), conf->getFillColorTMZ(), conf->getFillColorTMZ(), conf->getFillColorTMZ(),
+                 conf->getFillColorTMZ(), conf->getFillColorTMZ(),
+                 conf->getFillColorTMZ(), conf->getFillColorTMZ(),
                  TMZ_BRUSH_STYLE_1, TMZ_BRUSH_STYLE_2,
                  TMZ_BRUSH_STYLE_3, TMZ_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Glider Sector", gliderSectorPenList, gliderSectorBorder, gliderSectorBrushList,
-                 conf->getBorderColorGliderSector(), conf->getBorderColorGliderSector(), conf->getBorderColorGliderSector(), conf->getBorderColorGliderSector(),
+                 conf->getBorderColorGliderSector(), conf->getBorderColorGliderSector(),
+                 conf->getBorderColorGliderSector(), conf->getBorderColorGliderSector(),
                  GLIDER_SECTOR_PEN_WIDTH_1, GLIDER_SECTOR_PEN_WIDTH_2, GLIDER_SECTOR_PEN_WIDTH_3, GLIDER_SECTOR_PEN_WIDTH_4,
                  GLIDER_SECTOR_PEN_STYLE_1, GLIDER_SECTOR_PEN_STYLE_2, GLIDER_SECTOR_PEN_STYLE_3, GLIDER_SECTOR_PEN_STYLE_4,
-                 conf->getFillColorGliderSector(), conf->getFillColorGliderSector(), conf->getFillColorGliderSector(), conf->getFillColorGliderSector(),
+                 conf->getFillColorGliderSector(), conf->getFillColorGliderSector(),
+                 conf->getFillColorGliderSector(), conf->getFillColorGliderSector(),
                  GLIDER_SECTOR_BRUSH_STYLE_1, GLIDER_SECTOR_BRUSH_STYLE_2,
                  GLIDER_SECTOR_BRUSH_STYLE_3, GLIDER_SECTOR_BRUSH_STYLE_4)
 }
