@@ -650,17 +650,21 @@ void Map::__drawAirspaces( bool reset )
           // determine vertical conflict
           Airspace::ConflictType vConflict = currentAirS->conflicts( alt, awd );
 
-          if( lConflict == Airspace::inside )
+          if( fillAirspace == true )
             {
-              // We are inside from the lateral position out,
-              // vertical conflict has priority.
-              airspaceOpacity = (qreal) settings->getAirspaceFillingVertical( vConflict );
-            }
-          else
-            {
-              // We are not inside from the lateral position out,
-              // lateral conflict has priority.
-              airspaceOpacity = (qreal) settings->getAirspaceFillingLateral( lConflict );
+              // load user settings for opacity
+              if( lConflict == Airspace::inside )
+                {
+                  // We are inside from the lateral position out,
+                  // vertical conflict has priority.
+                  airspaceOpacity = (qreal) settings->getAirspaceFillingVertical( vConflict );
+                }
+              else
+                {
+                  // We are not inside from the lateral position out,
+                  // lateral conflict has priority.
+                  airspaceOpacity = (qreal) settings->getAirspaceFillingLateral( lConflict );
+                }
             }
         }
 
