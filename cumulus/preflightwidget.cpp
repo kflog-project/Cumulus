@@ -109,7 +109,6 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
     }
 
   show();
-  setWindowState(windowState() ^ Qt::WindowFullScreen);
 }
 
 PreFlightWidget::~PreFlightWidget()
