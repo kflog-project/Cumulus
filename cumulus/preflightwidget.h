@@ -20,10 +20,10 @@
 
 #include <QTabWidget>
 
-#include "tasklist.h"
-
 class PreFlightGliderPage;
 class PreFlightMiscPage;
+class PreFlightTaskList;
+class wayPoint;
 
 /**
  * @short widget for pre-flight settings
@@ -84,7 +84,7 @@ private slots:
 
 private:
 
-    TaskList *taskpage;
+    PreFlightTaskList *taskpage;
     PreFlightGliderPage *gliderpage;
     PreFlightMiscPage *miscpage;
     QTabWidget* tabWidget;

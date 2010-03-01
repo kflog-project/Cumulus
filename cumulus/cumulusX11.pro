@@ -72,6 +72,7 @@ HEADERS = airfieldlistview.h \
     preflightwidget.h \
     preflightgliderpage.h \
     preflightmiscpage.h \
+    preflighttasklist.h \
     projectionbase.h \
     projectioncylindric.h \
     projectionlambert.h \
@@ -103,7 +104,6 @@ HEADERS = airfieldlistview.h \
     splash.h \
     target.h \
     taskeditor.h \
-    tasklist.h \
     tasklistview.h \
     taskpoint.h \
     time_cu.h \
@@ -178,6 +178,7 @@ SOURCES = airfieldlistview.cpp \
     preflightwidget.cpp \
     preflightgliderpage.cpp \
     preflightmiscpage.cpp \
+    preflighttasklist.cpp \
     projectionbase.cpp \
     projectioncylindric.cpp \
     projectionlambert.cpp \
@@ -206,7 +207,6 @@ SOURCES = airfieldlistview.cpp \
     speed.cpp \
     splash.cpp \
     taskeditor.cpp \
-    tasklist.cpp \
     tasklistview.cpp \
     taskpoint.cpp \
     time_cu.cpp \

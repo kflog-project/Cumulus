@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   tasklist.h
+**   preflighttasklist.h
 **
 **   This file is part of Cumulus.
 **
@@ -16,8 +16,8 @@
 **
 ***********************************************************************/
 
-#ifndef TASK_LIST_H
-#define TASK_LIST_H
+#ifndef PREFLIGHT_TASK_LIST_H
+#define PREFLIGHT_TASK_LIST_H
 
 #include <QList>
 #include <QTreeWidget>
@@ -30,16 +30,16 @@
 #include "flighttask.h"
 #include "tasklistview.h"
 
-class TaskList : public QWidget
+class PreFlightTaskList : public QWidget
 {
     Q_OBJECT
 
 public:
     /** */
-    TaskList( QWidget* parent );
+    PreFlightTaskList( QWidget* parent );
 
     /** */
-    ~TaskList();
+    ~PreFlightTaskList();
 
     /** Takes out the selected task from the task list. */
     FlightTask* takeSelectedTask();

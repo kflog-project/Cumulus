@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   tasklist.cpp
+**   preflighttasklist.cpp
 **
 **   This file is part of Cumulus.
 **
@@ -29,7 +29,7 @@
 #include <QToolTip>
 
 #include "target.h"
-#include "tasklist.h"
+#include "preflighttasklist.h"
 #include "generalconfig.h"
 #include "mapmatrix.h"
 #include "mapcontents.h"
@@ -37,7 +37,7 @@
 #include "distance.h"
 #include "speed.h"
 
-TaskList::TaskList( QWidget* parent ) :
+PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   QWidget( parent ),
   editTask(0)
 {
@@ -159,13 +159,13 @@ TaskList::TaskList( QWidget* parent ) :
     }
 }
 
-TaskList::~TaskList()
+PreFlightTaskList::~PreFlightTaskList()
 {
-  // qDebug("TaskList::~TaskList()");
+  // qDebug("PreFlightTaskList::~PreFlightTaskList()");
   qDeleteAll(taskList);
 }
 
-void TaskList::showEvent(QShowEvent *)
+void PreFlightTaskList::showEvent(QShowEvent *)
 {
   static bool first = true;
 
@@ -207,7 +207,7 @@ void TaskList::showEvent(QShowEvent *)
 }
 
 /** new value set in TAS spin box */
-void TaskList::slotTasChanged( int /* value */ )
+void PreFlightTaskList::slotTasChanged( int /* value */ )
 {
   // The user has changed the value in the TAS spin box. We
   // have to initiate an update of the task details.
@@ -216,7 +216,7 @@ void TaskList::slotTasChanged( int /* value */ )
 }
 
 /** value in wind direction spin box has been changed, do update of task list. */
-void TaskList::slotWDChanged( int /* value */ )
+void PreFlightTaskList::slotWDChanged( int /* value */ )
 {
   // The user has changed the value in the wind direction spin box. We
   // have to initiate an update of the task details.
@@ -225,7 +225,7 @@ void TaskList::slotWDChanged( int /* value */ )
 }
 
 /** value in wind speed spin box has been changed, do update of task list. */
-void TaskList::slotWSChanged( int /* value */ )
+void PreFlightTaskList::slotWSChanged( int /* value */ )
 {
   // The user has changed the value in the wind speed spin box. We
   // have to initiate an update of the task details.
@@ -233,7 +233,7 @@ void TaskList::slotWSChanged( int /* value */ )
   return;
 }
 
-void TaskList::slotTaskDetails()
+void PreFlightTaskList::slotTaskDetails()
 {
   QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
 
@@ -268,9 +268,9 @@ void TaskList::slotTaskDetails()
 // the selected task from the task list. The ownership of the taken
 // FlightTask object goes over the the caller. He has to delete the
 // object!!!
-FlightTask* TaskList::takeSelectedTask()
+FlightTask* PreFlightTaskList::takeSelectedTask()
 {
-  // qDebug("TaskList::selectedTask()");
+  // qDebug("PreFlightTaskList::selectedTask()");
 
   // save last used TAS, and wind parameters
   GeneralConfig::instance()->setTas( tas->value() );
@@ -304,7 +304,7 @@ FlightTask* TaskList::takeSelectedTask()
 }
 
 /** load tasks from file*/
-bool TaskList::slotLoadTask()
+bool PreFlightTaskList::slotLoadTask()
 {
   extern MapMatrix *_globalMapMatrix;
   QStringList rowList;
@@ -452,7 +452,7 @@ bool TaskList::slotLoadTask()
   return true;
 }
 
-void TaskList::slotNewTask()
+void PreFlightTaskList::slotNewTask()
 {
   TaskEditor *te = new TaskEditor(this, taskNames);
 
@@ -465,7 +465,7 @@ void TaskList::slotNewTask()
 /**
  * taking over a new flight task from editor
  */
-void TaskList::slotUpdateTaskList( FlightTask *newTask)
+void PreFlightTaskList::slotUpdateTaskList( FlightTask *newTask)
 {
   taskList.append( newTask );
   saveTaskList();
@@ -477,7 +477,7 @@ void TaskList::slotUpdateTaskList( FlightTask *newTask)
 /**
  * pass the selected task to the editor
  */
-void TaskList::slotEditTask()
+void PreFlightTaskList::slotEditTask()
 {
   // fetch selected task item
   QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
@@ -517,9 +517,9 @@ void TaskList::slotEditTask()
 /**
  * taking over an edited flight task from editor
  */
-void TaskList::slotEditTaskList( FlightTask *editedTask)
+void PreFlightTaskList::slotEditTaskList( FlightTask *editedTask)
 {
-  // qDebug("TaskList::slotEditTaskList()");
+  // qDebug("PreFlightTaskList::slotEditTaskList()");
 
   // search task item being edited
   int index = taskList.indexOf( editTask );
@@ -546,7 +546,7 @@ void TaskList::slotEditTaskList( FlightTask *editedTask)
 /**
  * remove the selected task from the list
  */
-void TaskList::slotDeleteTask()
+void PreFlightTaskList::slotDeleteTask()
 {
   QTreeWidgetItem* selected = taskListWidget->currentItem();
 
@@ -592,7 +592,7 @@ void TaskList::slotDeleteTask()
   slotLoadTask();
 }
 
-bool TaskList::saveTaskList()
+bool PreFlightTaskList::saveTaskList()
 {
   // currently hard coded ...
   QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/tasks.tsk" );
@@ -639,7 +639,7 @@ bool TaskList::saveTaskList()
 }
 
 /** Select the last stored task */
-void TaskList::selectLastTask()
+void PreFlightTaskList::selectLastTask()
 {
   QString lastTask = GeneralConfig::instance()->getCurrentTask();
 

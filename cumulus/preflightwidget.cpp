@@ -26,7 +26,9 @@
 #include "preflightwidget.h"
 #include "mapcontents.h"
 #include "preflightgliderpage.h"
+#include "preflighttasklist.h"
 #include "preflightmiscpage.h"
+
 #include "calculator.h"
 
 extern MapContents* _globalMapContents;
@@ -51,7 +53,7 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   gliderpage->setToolTip(tr("Select a glider to be used"));
   tabWidget->addTab(gliderpage, tr("Glider"));
 
-  taskpage = new TaskList(this);
+  taskpage = new PreFlightTaskList(this);
   tabWidget->addTab(taskpage, tr("Task"));
 
   miscpage = new PreFlightMiscPage(this);
