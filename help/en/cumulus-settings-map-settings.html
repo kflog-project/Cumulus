@@ -88,15 +88,48 @@ is especially so if you are far away from the coordinates used in the
 projection!
 </dd>
 
-<dt><b>Map Management</b></dt>
+<dt><b>Projection follows Home Position</b></dt>
 
-<dd>Cumulus supports two strategies for keeping maps in memory.
+<dd>
+If this check box is selected a Home Position change will trigger automatically
+a recompilation of the map files. This option ensures best drawing results but
+it is only available for the <i>Plate Carr&eacute;e</i> projection.
+</dd>
+
+<dt><b>Unload unused maps from RAM</b></dt>
+
+<dd>
+Cumulus supports two strategies for keeping maps in memory.
 Maps are only loaded if needed, but they can either stay there until
 they really need to be moved out of memory, or they can be removed
 sooner. The first strategy is more suited for users who want to zoom in
 and out a lot and have plenty of memory in their device, the latter
 strategy is the default one and to be recommended for people with
 lower memory devices.
+</dd>
+
+<dt><b>Proxy : Port</b></dt>
+
+<dd>
+Define here a proxy if it is needed for downloads from the Internet. The syntax
+expects the following entries. Proxy name separated by a colon from the port.
+</dd>
+
+<dt><b>Center Latitude/Longitude</b></dt>
+
+<dd>
+The coordinates of the middle point around that map files shall be downloaded
+from the Internet.
+</dd>
+
+<dt><b>Install Maps and Distance</b></dt>
+
+<dd>
+Define a distance in the spin box around your center point and press then the
+<i>Install Maps</i> button. Cumulus tries to download all map files from the
+KFLog Map Room, which lays around the center point. Ensure that an active Internet
+connection is available to that time. Otherwise all downloads do fail. If Cumulus
+is in move (faster as 5 Km/h) no downloads are executed.
 </dd>
 
 </dl>
