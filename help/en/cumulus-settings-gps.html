@@ -28,7 +28,7 @@
 <p><b>GPS</b></p>
 
 <p> Here you can enter connection information regarding your GPS receiver.
-    Select the correct device and baud rate, if necessary, for your GPS.
+    Select the correct device and baud rate for your GPS if necessary.
     Please refer to your GPS manual for these values.
 <p>
     Cumulus can provide you some status information concerning your GPS
@@ -64,8 +64,8 @@
     operation. The default serial NMEA connection speed is 4800 bps for
     Bluetooth we recommend to use 115200 bps.
     <p>
-    If you use a Nokia Internet Tablet N800/N810 the entry
-    <i>GPS Daemon</i> should be your first selection. Unless you want
+    If you use a Nokia Internet Tablet N800/N810/N900 the entry
+    <i>GPS Daemon</i> should be your first selection unless you want
     to connect via your USB interface adapter to the GPS. In such a
     case select the device <i>/dev/ttyUSB0</i>.
     </p>
@@ -73,7 +73,7 @@
     one of the predefined entries to your need. This is unsupported on the
     Nokia Internet Tablet.
   </dd>
-
+  
   <dt><b>Altitude Reference</b></dt>
 
   <dd>
@@ -107,12 +107,15 @@
     PC transfer speed.
     </ul>
     </p>
+    <b>Please note!</b> If you have selected the pressure item in the combo box
+     Cumulus expects the special NMEA records from the connected logger devices.
+     Otherwise you will not get displayed any altitude and variometer data!   
   </dd>
 
   <dt><b>Special Options</b></dt>
 
   <dd>
-    Some gps devices can be initialized by saved position data to find
+    Some GPS devices can be initialized by saved position data to find
     a satellite signal more quickly. To enable this check <i>Soft
     start</i>.  If this does not work, a <i>Hard start</i> can be
     forced when Cumulus starts up.  If there are still problems to get
@@ -125,7 +128,7 @@
   <dd>
     Cumulus is able to synchronize the PDA system clock to the GPS
     time, if the option <i>Update system clock</i> is activated. But
-    this will only work, if cumulus is running as user root. On Nokia
+    this will only work, if Cumulus is running as user root. On Nokia
     Internet tablet this feature is switched off.
   </dd>
 </dl>

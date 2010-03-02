@@ -112,13 +112,13 @@ lower memory devices.
 
 <dd>
 Define here a proxy if it is needed for downloads from the Internet. The syntax
-expects the following entries. Proxy name separated by a colon from the port.
+expects the following format. Proxy name separated by a colon from the port.
 </dd>
 
 <dt><b>Center Latitude/Longitude</b></dt>
 
 <dd>
-The coordinates of the middle point around that map files shall be downloaded
+The coordinates of your center point around that map files shall be downloaded
 from the Internet.
 </dd>
 
@@ -129,7 +129,10 @@ Define a distance in the spin box around your center point and press then the
 <i>Install Maps</i> button. Cumulus tries to download all map files from the
 KFLog Map Room, which lays around the center point. Ensure that an active Internet
 connection is available to that time. Otherwise all downloads do fail. If Cumulus
-is in move (faster as 5 Km/h) no downloads are executed.
+is in move (faster as 5 Km/h) no downloads are executed. If all download requests
+are processed you will get once a result message. Cumulus does not record a special
+log file for that. If Cumulus is started in a X-Terminal window you can see the
+single results as debug messages.
 </dd>
 
 </dl>

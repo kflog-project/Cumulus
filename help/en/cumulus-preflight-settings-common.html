@@ -49,13 +49,24 @@
   considered in the warning distance calculation to standard
   pressure airspaces. The default value is 1013hPa.
   </dd>
-
+</dl>
+  
+The Cumulus IGC logger does not fulfill the IGC requirements in all points.
+There is no security G-Record written into the log file because the PDA device
+cannot be secured against external manipulations. Furthermore there are not
+always pressure altitude values available as required by the IGC.
+For more information about the FAI IGC requirements see
+<a href="http://www.fai.org/gliding/gnss/tech_spec_gnss.asp">here</a>.
+  
+<dl>
   <dt><b>Autostart logging</b></dt>
 
-  <dd> If you activate this check box, Cumulus starts
-  automatically the IGC logging, when you start with moving.
+  <dd> If you activate this check box, Cumulus starts automatically the IGC
+  logging, when you be in motion faster as 5Km/h. The current logger
+  status is signaled by different colors and to see in the
+  <a href="cumulus-display.html#Status_Bar">status bar</a>. 
   </dd>
-
+  
   <dt><b>B-Record Interval</b></dt>
 
   <dd>Interval for logging of the IGC B-Record. Default time is
@@ -67,19 +78,19 @@
   <dd>Interval for logging of the IGC K-Record. Default is <i>None</i>,
 	that means switched off. If you enter a valid time, the following
 	additional items are logged, if they are available. Otherwise default values
-	are used. Note, the activation of this option will increase the log file size.
+	are used.
 
-	<ul>
+	<p><ul>
 		<li>HDT, true heading as 3 numbers</li>
 		<li>TAS, true airspeed as 3 numbers with unit kph</li>
 		<li>WDI, wind direction as 3 numbers</li>
 		<li>WSP, wind speed as 3 numbers in kph</li>
 		<li>VAT, variometer speed in meters with sign +/-, 3 numbers with
 		    3 decimal numbers. If the speed is zero the sign is reset to space.</li>
-	</ul>
+	</ul></p>
 
+  Note, the activation of this option will increase the log file size.
 	</dd>
-
 </dl>
 
 <table width="100%">

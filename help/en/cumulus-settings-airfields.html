@@ -27,8 +27,14 @@
 
 <p><b>Airfields</b></p>
 
-<p>In the Welt2000 area you can set different options for airfield
-data loading.</p>
+<p>
+	Cumulus uses the Welt2000 file as airfield and outlanding data base. See 
+	<a href="cumulus-maps.html#Welt2000">here</a> for more information.
+</p>
+
+<p>
+    In the Welt2000 area you can set different options for airfield data loading.
+</p>
 
 <dl>
 
@@ -64,12 +70,38 @@ data loading.</p>
   If the check box <i>Load Outlandings</i> is activated all outlandings
   contained in the selected region will be loaded too.
   </dd>
+  
+  <dt><b>Proxy : Port</b></dt>
+
+	<dd>
+	Define here a proxy if it is needed for downloads from the Internet. The syntax
+	expects the following format. Proxy name separated by a colon from the port.
+	</dd>
+  
+  <dt><b>Install Airfields and Welt2000 File Name</b></dt>
+
+	<dd>
+	Cumulus can download the Welt2000 file which contains the airfield data from
+	the regarding web page out the Internet. Important for that is the right file
+	name. Unfortunately the name is combined with a date and can be changed from
+	time to time. Please check
+	<a href="http://www.segelflug.de/vereine/welt2000">here</a>
+	the correct spelling, if the download fails. Look at the web page into the last
+	row of the table where the entry <i>WELT2000.TXT</i> is to find. In the right
+	column you can see a date link. Go onto this link and check if the last component
+	do match the input of the editor field.
+	<br>
+	If Cumulus is in move (faster as 5 Km/h) no download is executed. If the download
+	request is processed you will get once a result message. Cumulus does not record
+	a special log file for that. If Cumulus is started in a X-Terminal window you can
+	see the single result as debug message.
+	</dd>
 
   <dt><b>Welt2000 Data Reload</b></dt>
 
   <dd>
-  If the home position or the configuration are modified,
-  cumulus will trigger an automatic reload of Welt2000 data.
+  After a download, a home position or configuration change
+  Cumulus will trigger an automatic reload of the Welt2000 data.
   </dd>  
 
 </dl>
