@@ -2,6 +2,7 @@
 Encoding=UTF-8
 Version=1.0
 Type=Application
+StartupWMClass=cumulus
 Name=Cumulus
 Comment=Flight navigation program
 Exec=/opt/cumulus/bin/start_cumulus
