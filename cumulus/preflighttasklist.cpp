@@ -18,15 +18,7 @@
 
 #include <limits.h>
 
-#include <QSplitter>
-#include <QDir>
-#include <QTextStream>
-#include <QPushButton>
-#include <QMessageBox>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QList>
-#include <QToolTip>
+#include <QtGui>
 
 #include "target.h"
 #include "preflighttasklist.h"
@@ -506,12 +498,7 @@ void PreFlightTaskList::slotEditTask()
   connect( te, SIGNAL(editedTask( FlightTask * )),
            this, SLOT(slotEditTaskList( FlightTask * )));
 
-#ifdef MAEMO
-  te->showMaximized();
-#else
   te->show();
-#endif
-
 }
 
 /**
