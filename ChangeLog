@@ -13,6 +13,11 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+
+[-] 2010-03-04 AP: BUGFIX: Item PreFlightTaskList added to cumulus.desktop.
+                   It was missing by Maemo.
+[o] 2010-03-02 AP: Class TaskList renamed to PreFlightTaskList to get more
+                   clearness about their use.
 [-] 2010-02-28 AP: BUGFIX: If transparent airspace filling was disabled no brush
                    has been drawn inside the airspace.
 [-] 2010-02-28 AP: BUGFIX: First loading of airspace fill colors failed. Hard
