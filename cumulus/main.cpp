@@ -178,10 +178,16 @@ int main(int argc, char *argv[])
 
       QFont font = msgBox.font();
 
-      if( font.pixelSize() < 16 )
+      int size = 16;
+
+#ifdef MAEMO
+      size = 20;
+#endif
+
+      if( font.pixelSize() < size )
         {
           // adapt font size to a readable one
-          font.setPixelSize( 16 );
+          font.setPixelSize( size );
           msgBox.setFont( font );
         }
 
