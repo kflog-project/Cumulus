@@ -3,7 +3,7 @@
  **   main.cpp
  **
  **   This file is part of Cumulus. It contains the start procedure of
- **   the GUI. Currently we use the release QT/X11 4.x for the build
+ **   the GUI. Currently we use the release QT/X11 4.6.x for the build
  **   process.
  **
  ************************************************************************
@@ -13,7 +13,7 @@
  **   Email of maintainer: axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -49,8 +49,8 @@ int main(int argc, char *argv[])
   // Log2File is set to true.
   GeneralConfig *conf = GeneralConfig::instance();
 
-  // @AP: make install root of cumulus available for other modules via
-  // general config. The assumption is that cumulus is installed at
+  // @AP: make install root of Cumulus available for other modules via
+  // general config. The assumption is that Cumulus is installed at
   // <root>/bin/cumulus. The <root> path will be passed to general
   // config.
   char *callPath = dirname(argv[0]);
@@ -72,9 +72,10 @@ int main(int argc, char *argv[])
     {
 
 #ifdef MAEMO
-      // check for alternate pathes under Maemo on MMC
-      QDir path1("/media/mmc1");
-      QDir path2("/media/mmc2");
+      // check for alternate paths under Maemo on MMC
+      QDir path1("/media/mmc1"); // N8x0
+      QDir path2("/media/mmc2"); // N8x0
+      QDir path3("/media/mmc");  // N900
 
       if( path1.exists() )
         {
@@ -84,6 +85,11 @@ int main(int argc, char *argv[])
         {
           logDir = path2.absolutePath();
         }
+      else if( path3.exists() )
+         {
+           logDir = path3.absolutePath();
+         }
+
 #endif
 
       logDir += "/cumulus.log";
@@ -127,7 +133,7 @@ int main(int argc, char *argv[])
       unsetenv("LD_BIND_NOW");
     }
 
-  /* Load selected language translations for cumulus */
+  /* Load selected language translations for Cumulus */
 
   QString langFile = QString("cumulus") + QString("_") + conf->getLanguage() + ".qm";
   QString langDir = root + "/locale/" + conf->getLanguage();
@@ -152,20 +158,43 @@ int main(int argc, char *argv[])
     {
       QApplication::beep();
 
-      if (QMessageBox::warning (NULL, QObject::tr("Cumulus Disclaimer"),
-                                QObject::tr(  //upon changing the text, you should also increase the value of DISCLAIMERVERSION with 1
-                                  "<html><b>"
-                                  "This program comes with ABSOLUTELY NO WARRANTY!<p>"
-                                  "Do not rely on this software program as your<br>"
-                                  "primary source of navigation. You as user are<br>"
-                                  "responsible for using official aeronautical<br>"
-                                  "charts and proper methods for safe navigation.<br>"
-                                  "The information presented in this software<br>"
-                                  "program may be outdated or incorrect.<p>"
-                                  "Do you accept these terms?"
-                                  "</html></b>"
-                                ),
-                                QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+      QString disclaimer =
+          QObject::tr(  //upon changing the text, you should also increase the value of DISCLAIMERVERSION with 1
+            "<html>"
+            "This program comes with"
+            "<p><b>ABSOLUTELY NO WARRANTY!</b></p>"
+            "Do not rely on this software program as your<br>"
+            "primary source of navigation. You as user are<br>"
+            "responsible for using official aeronautical<br>"
+            "charts and proper methods for safe navigation.<br>"
+            "The information presented in this software<br>"
+            "program may be outdated or incorrect.<p>"
+            "</html>");
+
+      QString question =
+          QObject::tr( "<b>Do You accept these terms?</b>" );
+
+      QMessageBox msgBox;
+
+      QFont font = msgBox.font();
+
+      if( font.pixelSize() < 16 )
+        {
+          // adapt font size to a readable one
+          font.setPixelSize( 16 );
+          msgBox.setFont( font );
+        }
+
+      msgBox.setWindowTitle( QObject::tr("Cumulus Disclaimer") );
+      msgBox.setIcon ( QMessageBox::Warning );
+      msgBox.setText( disclaimer );
+      msgBox.setInformativeText( question );
+      msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+      msgBox.setDefaultButton( QMessageBox::Yes );
+
+      int button = msgBox.exec();
+
+      if( button == QMessageBox::Yes )
         {
           conf->setDisclaimerVersion( DISCLAIMERVERSION );
           conf->save();
@@ -177,7 +206,7 @@ int main(int argc, char *argv[])
         }
     }
 
-  // creates the cumulus application
+  // creates the Cumulus application
   MainWindow *cumulus = new MainWindow( Qt::WindowContextHelpButtonHint );
 
   // start window manager event processing loop
