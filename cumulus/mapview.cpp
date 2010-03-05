@@ -5,7 +5,7 @@
 
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2009 by Axel Pauli
+                               2008-2010 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -321,10 +321,10 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusGlider->setMargin(0);
   _statusbar->addWidget(_statusGlider);
 
-  _statusWarning = new QLabel(_statusbar);
-  _statusWarning->setAlignment(Qt::AlignCenter);
-  _statusWarning->setMargin(0);
-  _statusbar->addWidget(_statusWarning, 1);
+  _statusInfo = new QLabel(_statusbar);
+  _statusInfo->setAlignment(Qt::AlignCenter);
+  _statusInfo->setMargin(0);
+  _statusbar->addWidget(_statusInfo, 1);
 
   QFrame* filler = new QFrame(_statusbar);
   filler->setLineWidth(0);
@@ -707,11 +707,11 @@ void MapView::slot_glider( const QString& glider )
 }
 
 /**
- * This slot is called if a warning message shall be displayed
+ * This slot is called if a info message shall be displayed
  */
-void MapView::slot_warning( const QString& warning )
+void MapView::slot_info( const QString& info )
 {
-  _statusWarning->setText( warning );
+  _statusInfo->setText( info );
 }
 
 

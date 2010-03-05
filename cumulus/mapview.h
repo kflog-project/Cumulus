@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2009 by Axel Pauli
+                               2008-2010 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -53,6 +53,10 @@ class MainWindow;
 class MapView : public QWidget
   {
     Q_OBJECT
+
+  private:
+
+   Q_DISABLE_COPY ( MapView )
 
   public:
     /**
@@ -205,9 +209,9 @@ class MapView : public QWidget
     void slot_glider( const QString& glider );
 
     /**
-     * This slot is called if a warning message shall be displayed
+     * This slot is called if a info message shall be displayed
      */
-    void slot_warning( const QString& warning );
+    void slot_info( const QString& info );
 
     /**
      * This slot is called if the settings have been changed.
@@ -290,8 +294,8 @@ class MapView : public QWidget
     QLabel* _statusPosition;
     /** reference to selected glider for status bar */
     QLabel* _statusGlider;
-    /** reference to warning for status bar */
-    QLabel* _statusWarning;
+    /** reference to status bar info */
+    QLabel* _statusInfo;
     /** reference to menu toggle */
     CuLabel* _menuToggle;
     /** index of mode select button 0: MSL,  1: GND */
