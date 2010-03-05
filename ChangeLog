@@ -14,6 +14,7 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-03-05 AP: Download progess is displayed in the status bar.
 [-] 2010-03-04 AP: BUGFIX: Item PreFlightTaskList added to cumulus.desktop.
                    It was missing by Maemo.
 [o] 2010-03-02 AP: Class TaskList renamed to PreFlightTaskList to get more

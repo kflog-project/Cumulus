@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2004-2009 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2004-2010 by Axel Pauli (axel@kflog.org)
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -15,12 +15,7 @@
  **
  ***********************************************************************/
 
-#include <QFont>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QSignalMapper>
-#include <QPushButton>
-#include <QScrollArea>
+#include <QtGui>
 
 #include "vario.h"
 #include "variomodedialog.h"
@@ -68,7 +63,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
     }
 
   // http://www.qtforum.org/article/26043/problem-bug-with-qscrollarea.html
-  // That is solution for the problem with scrollarea :-)))
+  // That is the solution for the problem with scrollarea :-)))
   QHBoxLayout *hLayout = new QHBoxLayout(this);
   hLayout->setSpacing(0);
 
@@ -110,7 +105,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
 
   spinTime = new QSpinBox(this);
   spinTime->setRange(5, 150);
-  spinTime->setSuffix( " s" );
+  spinTime->setSuffix( "s" );
 
   if( hildonStyle == false )
     {
@@ -154,7 +149,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   spinTEK = new QSpinBox( this );
   spinTEK->setRange( -100, 100 );
   spinTEK->setSingleStep( 1 );
-  spinTEK->setSuffix( " %" );
+  spinTEK->setSuffix( "%" );
 
   if( hildonStyle == false )
     {
@@ -184,19 +179,25 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
 
   //---------------------------------------------------------------------
 
-  // Align ok and cancel button at the left and right side of the
-  // widget to have enough space between them. That shall avoid wrong
+  // Align ok and cancel button at the upper and lower position of the right
+  // side of the widget to have enough space between them. That shall avoid wrong
   // button pressing in turbulent air.
-  ok     = new QPushButton(tr("OK"), this);
-  cancel = new QPushButton(tr("Cancel"), this);
+  cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(26, 46));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
-  QHBoxLayout *butLayout = new QHBoxLayout;
+  ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(26, 46));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QVBoxLayout *butLayout = new QVBoxLayout;
   butLayout->addWidget( ok );
   butLayout->addStretch();
   butLayout->addWidget( cancel );
 
-  gridLayout->addLayout(butLayout, row, 0, 1, 3);
-  gridLayout->setColumnMinimumWidth ( 3, 25 );
+  gridLayout->addLayout(butLayout, 0, 3, row, 1);
 
   scrollWidget->setLayout(gridLayout);
   scrollArea->setWidget(scrollWidget);

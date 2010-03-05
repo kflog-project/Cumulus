@@ -169,11 +169,16 @@ class SettingsPageAirspace : public QWidget
     SettingsPageAirspaceWarnings* m_warningsDlg;
   };
 
-//-------------------------------------------------------------------------
+//----------------------------SettingsPageAirspaceFilling-----------------------
 
 class SettingsPageAirspaceFilling: public QDialog
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
+
+  private:
+
+  Q_DISABLE_COPY ( SettingsPageAirspaceFilling )
+
   public:
 
     SettingsPageAirspaceFilling( QWidget *parent=0 );
@@ -245,11 +250,16 @@ class SettingsPageAirspaceFilling: public QDialog
     QSpinBox*  lateralInside;
   };
 
-//-------------------------------------------------------------------------
+//-------------------SettingsPageAirspaceWarnings-------------------------------
 
 class SettingsPageAirspaceWarnings : public QDialog
   {
     Q_OBJECT
+
+  private:
+
+    Q_DISABLE_COPY ( SettingsPageAirspaceWarnings )
+
   public:
 
     SettingsPageAirspaceWarnings( QWidget *parent=0 );
