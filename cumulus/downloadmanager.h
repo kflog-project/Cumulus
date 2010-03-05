@@ -45,6 +45,9 @@ class DownloadManager : public QObject
 
   signals:
 
+   /** Sends out a status message. */
+   void status( const QString& msg );
+
    /** Sends a finish signal if all requested downloads are done. */
    void finished( int requests, int errors );
 

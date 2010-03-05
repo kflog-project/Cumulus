@@ -99,6 +99,8 @@ bool DownloadManager::downloadRequest( QString &url, QString &destination )
           return false;
         }
 
+      QString destFile = QFileInfo(destination).fileName();
+      emit status( tr("downloading ") + destFile );
       downloadRunning = true;
     }
 
@@ -146,6 +148,7 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
     {
       // No more entries in queue. All downloads are finished.
       downloadRunning = false;
+      emit status( tr("Downloads finished") );
       emit finished( requests, errors );
       mutex.unlock();
       return;
@@ -207,6 +210,9 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
       slotFinished( url, QNetworkReply::OperationCanceledError );
       return;
     }
+
+  QString destFile = QFileInfo(destination).fileName();
+  emit status( tr("downloading ") + destFile );
 
   mutex.unlock();
   return;
