@@ -1396,6 +1396,9 @@ bool MapContents::__downloadMapFile( QString &file, QString &directory )
 
       connect( downloadManger, SIGNAL(finished( int, int )),
                this, SLOT(slotDownloadsFinished( int, int )) );
+
+      connect( downloadManger, SIGNAL(status( const QString& )),
+               _globalMapView, SLOT(slot_info( const QString& )) );
     }
 
   QString url = GeneralConfig::instance()->getMapServerUrl() + file;
@@ -1431,6 +1434,9 @@ void MapContents::slotDownloadWelt2000( const QString& welt2000FileName )
 
   connect( downloadManger, SIGNAL(welt2000Downloaded()),
            this, SLOT(slotReloadWelt2000Data()) );
+
+  connect( downloadManger, SIGNAL(status( const QString& )),
+           _globalMapView, SLOT(slot_info( const QString& )) );
 
   QString url  = GeneralConfig::instance()->getWelt2000Link() + "/" + welt2000FileName;
   QString dest = GeneralConfig::instance()->getMapRootDir() + "/airfields/welt2000.txt";
