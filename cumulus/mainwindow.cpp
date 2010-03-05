@@ -744,7 +744,7 @@ void MainWindow::slotNotification( const QString& msg, const bool sound )
       playSound("notify");
     }
 
-  viewMap->slot_warning( msg );
+  viewMap->slot_info( msg );
 }
 
 void MainWindow::slotAlarm( const QString& msg, const bool sound )
@@ -759,7 +759,7 @@ void MainWindow::slotAlarm( const QString& msg, const bool sound )
       playSound("alarm");
     }
 
-  viewMap->slot_warning( msg );
+  viewMap->slot_info( msg );
 }
 
 void MainWindow::initMenuBar()
