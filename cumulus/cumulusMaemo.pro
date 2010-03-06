@@ -188,7 +188,7 @@ SOURCES = airfieldlistview.cpp \
     projectionbase.cpp \
     projectioncylindric.cpp \
     projectionlambert.cpp \
-    proxydialog.h \
+    proxydialog.cpp \
     radiopoint.cpp \
     reachablelist.cpp \
     reachablepoint.cpp \
