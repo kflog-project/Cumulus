@@ -101,6 +101,11 @@ class SettingsPageMapSettings : public QWidget
    */
   void slot_installMaps();
 
+  /**
+   * Opens proxy dialog on user request.
+   */
+  void slot_editProxy();
+
  private:
 
   QPushButton *mapSelection;
@@ -118,7 +123,12 @@ class SettingsPageMapSettings : public QWidget
   QSpinBox    *installRadius;
   LatEdit     *edtCenterLat;
   LongEdit    *edtCenterLon;
-  QLineEdit   *proxy;
+
+  /** Dialog editor for proxy host and port input. */
+  QPushButton *editProxy;
+
+  /** Label to show the current proxy settings. */
+  QLabel *proxyDisplay;
 
   int cylinPar;
   int lambertV1;

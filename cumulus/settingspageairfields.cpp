@@ -6,17 +6,16 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2008-2010 Axel Pauli
+ **   Copyright (c): 2008-2010 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
  ***********************************************************************/
 
 /**
- *
  * contains airfield related data settings
  *
  * @author Axel Pauli, axel@kflog.org
@@ -32,6 +31,7 @@
 
 #include "generalconfig.h"
 #include "settingspageairfields.h"
+#include "proxydialog.h"
 #include "httpclient.h"
 
 SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
@@ -89,18 +89,21 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   weltLayout->setRowMinimumHeight(grow++, 15);
 
-  lbl = new QLabel(tr("Proxy : Port"), weltGroup);
-  weltLayout->addWidget(lbl, grow, 0);
-  proxy = new QLineEdit(weltGroup);
-  proxy->setToolTip(tr("Enter Proxy data if needed"));
-  weltLayout->addWidget(proxy, grow, 1, 1, 3);
+  editProxy = new QPushButton( tr("Set Proxy"), weltGroup );
+  editProxy->setToolTip(tr("Enter Proxy data if needed"));
+
+  connect( editProxy, SIGNAL( clicked()), this, SLOT(slot_editProxy()) );
+
+  weltLayout->addWidget(editProxy, grow, 0);
+  proxyDisplay = new QLabel(weltGroup);
+  weltLayout->addWidget(proxyDisplay, grow, 1, 1, 3);
   grow++;
 
   installWelt2000 = new QPushButton( tr("Install Airfields"), weltGroup );
   installWelt2000->setToolTip(tr("Install Welt2000 airfields"));
   weltLayout->addWidget(installWelt2000, grow, 0 );
 
-  connect(installWelt2000, SIGNAL( clicked()), this, SLOT(slot_installWelt2000()) );
+  connect( installWelt2000, SIGNAL( clicked()), this, SLOT(slot_installWelt2000()) );
 
   welt2000FileName = new QLineEdit(weltGroup);
   welt2000FileName->setToolTip(tr("Enter Welt2000 filename as to see on the web page"));
@@ -161,7 +164,7 @@ SettingsPageAirfields::~SettingsPageAirfields()
  */
 void SettingsPageAirfields::showEvent(QShowEvent *)
 {
-  proxy->setText( GeneralConfig::instance()->getProxy() );
+  proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
 }
 
 /**
@@ -184,7 +187,7 @@ void SettingsPageAirfields::slot_load()
       loadOutlandings->setCheckState( Qt::Unchecked );
     }
 
-  proxy->setText( conf->getProxy() );
+  proxyDisplay->setText( conf->getProxy() );
   welt2000FileName->setText( conf->getWelt2000FileName() );
 
   pageSize->setValue(conf->getListDisplayPageSize());
@@ -235,8 +238,6 @@ void SettingsPageAirfields::slot_save()
       conf->setWelt2000LoadOutlandings( false );
     }
 
-  conf->setProxy( proxy->text() );
-
   conf->setListDisplayPageSize(pageSize->value());
   conf->setListDisplayAFMargin(afMargin->value());
   conf->setListDisplayRPMargin(rpMargin->value());
@@ -283,23 +284,6 @@ void SettingsPageAirfields::slot_query_close(bool& warn, QStringList& warnings)
  */
 void SettingsPageAirfields::slot_installWelt2000()
 {
-  QString hostName;
-  quint16 port;
-
-  // Check proxy settings
-  if( ! proxy->text().trimmed().isEmpty() &&
-      HttpClient::parseProxy( proxy->text(), hostName, port ) == false )
-    {
-      QMessageBox::information ( this,
-                                 tr("Proxy settings invalid!"),
-                                 tr("Please correct your Proxy settings!") +
-                                 "<p>" + tr("Expected format: <b>Host:Port</b>") );
-      return;
-    }
-
-  // Store the proxy settings, can be changed in the meantime
-  GeneralConfig::instance()->setProxy( proxy->text().trimmed() );
-
   QString wfn = welt2000FileName->text().trimmed();
 
   if( wfn.isEmpty() )
@@ -321,6 +305,20 @@ void SettingsPageAirfields::slot_installWelt2000()
     }
 
   emit downloadWelt2000( wfn );
+}
+
+/**
+ * Opens proxy dialog on user request.
+ */
+void SettingsPageAirfields::slot_editProxy()
+{
+  ProxyDialog *dialog = new ProxyDialog( this );
+
+  if( dialog->exec() == QDialog::Accepted )
+    {
+      // update proxy display
+      proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
+    }
 }
 
 /**

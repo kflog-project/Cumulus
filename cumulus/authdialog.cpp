@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2010 Axel Pauli
+**   Copyright (c): 2010 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -85,7 +85,7 @@ AuthDialog::AuthDialog( QString &user, QString &password,
 
 AuthDialog::~AuthDialog()
 {
-  qDebug("AuthDialog::~AuthDialog()");
+  // qDebug("AuthDialog::~AuthDialog()");
 }
 
 /** User has pressed Ok button */

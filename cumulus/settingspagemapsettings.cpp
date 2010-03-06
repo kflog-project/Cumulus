@@ -30,6 +30,7 @@
 #include "mapcontents.h"
 #include "distance.h"
 #include "httpclient.h"
+#include "proxydialog.h"
 
 /***********************************************************/
 /*  map setting page                                       */
@@ -93,14 +94,17 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   topLayout->setRowMinimumHeight(row++,15);
 
-  QLabel *label = new QLabel(tr("Proxy : Port"), this);
-  topLayout->addWidget(label, row, 0);
-  proxy = new QLineEdit(this);
-  proxy->setToolTip(tr("Enter Proxy data if needed"));
-  topLayout->addWidget(proxy, row, 1, 1, 2);
+  editProxy = new QPushButton( tr("Set Proxy"), this );
+  editProxy->setToolTip(tr("Enter Proxy data if needed"));
+
+  connect( editProxy, SIGNAL( clicked()), this, SLOT(slot_editProxy()) );
+
+  topLayout->addWidget(editProxy, row, 0);
+  proxyDisplay = new QLabel(this);
+  topLayout->addWidget(proxyDisplay, row, 1, 1, 2);
   row++;
 
-  label = new QLabel(tr("Center Latitude:"), this);
+  QLabel *label = new QLabel(tr("Center Latitude:"), this);
   topLayout->addWidget(label, row, 0);
   edtCenterLat = new LatEdit(this, conf->getHomeLat());
   topLayout->addWidget(edtCenterLat, row++, 1, 1, 2);
@@ -132,7 +136,8 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 }
 
 SettingsPageMapSettings::~SettingsPageMapSettings()
-{}
+{
+}
 
 /**
  * Set proxy, if widget is shown. It could be changed in the meantime
@@ -140,7 +145,7 @@ SettingsPageMapSettings::~SettingsPageMapSettings()
  */
 void SettingsPageMapSettings::showEvent(QShowEvent *)
 {
-  proxy->setText( GeneralConfig::instance()->getProxy() );
+  proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
 }
 
 void SettingsPageMapSettings::slot_load()
@@ -152,7 +157,7 @@ void SettingsPageMapSettings::slot_load()
 
   chkUnloadUnneeded->setChecked( conf->getMapUnload() );
   chkProjectionFollowHome->setChecked( conf->getMapProjectionFollowsHome() );
-  proxy->setText( conf->getProxy() );
+  proxyDisplay->setText( conf->getProxy() );
   edtCenterLat->setKFLogDegree(conf->getHomeLat());
   edtCenterLon->setKFLogDegree(conf->getHomeLon());
 
@@ -217,7 +222,6 @@ void SettingsPageMapSettings::slot_save()
   conf->setMapRootDir( mapDirectory->text() );
   conf->setMapUnload( chkUnloadUnneeded->isChecked() );
   conf->setMapProjectionFollowsHome( chkProjectionFollowHome->isChecked() );
-  conf->setProxy( proxy->text() );
   conf->setMapInstallRadius( installRadius->value() );
   conf->setMapProjectionType( currentProjType );
   conf->setLambertParallel1( lambertV1 );
@@ -237,20 +241,6 @@ void SettingsPageMapSettings::slot_installMaps()
       return;
     }
 
-  QString hostName;
-  quint16 port;
-
-  // Check proxy settings
-  if( ! proxy->text().trimmed().isEmpty() &&
-      HttpClient::parseProxy( proxy->text(), hostName, port ) == false )
-    {
-      QMessageBox::information ( this,
-                                 tr("Proxy settings invalid!"),
-                                 tr("Please correct your Proxy settings!") +
-                                 "<p>" + tr("Expected format: <b>Host:Port</b>") );
-      return;
-    }
-
   int answer = QMessageBox::question( this, tr("Download Maps?"),
       tr("Active Internet connection is needed!") +
       QString("<p>") + tr("Start download now?"),
@@ -265,8 +255,6 @@ void SettingsPageMapSettings::slot_installMaps()
   // Saving will create all missing map directories.
   GeneralConfig::instance()->setMapRootDir( mapDirectory->text() );
 
-  // Store the proxy settings, can be changed in the meantime
-  GeneralConfig::instance()->setProxy( proxy->text().trimmed() );
   Distance distance( Distance::convertToMeters( installRadius->value() ));
   QPoint center;
   center.setX( edtCenterLat->KFLogDegree() );
@@ -352,13 +340,26 @@ void SettingsPageMapSettings::slot_query_close(bool& warn, QStringList& warnings
   changed |= ( chkUnloadUnneeded->isChecked() != conf->getMapUnload() );
   changed |= ( chkProjectionFollowHome->isChecked() != conf->getMapProjectionFollowsHome() );
   changed |= ( installRadius->value() != conf->getMapInstallRadius() );
-  changed |= (proxy->text() != conf->getProxy());
   changed |= checkIsProjectionChanged();
 
   if (changed)
     {
       warn = true;
       warnings.append(tr("The Map Settings"));
+    }
+}
+
+/**
+ * Opens proxy dialog on user request.
+ */
+void SettingsPageMapSettings::slot_editProxy()
+{
+  ProxyDialog *dialog = new ProxyDialog( this );
+
+  if( dialog->exec() == QDialog::Accepted )
+    {
+      // update proxy display
+      proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
     }
 }
 

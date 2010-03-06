@@ -28,6 +28,7 @@
 
 #include <QWidget>
 #include <QSpinBox>
+#include <QLabel>
 #include <QLineEdit>
 #include <QStringList>
 #include <QCheckBox>
@@ -97,6 +98,11 @@ class SettingsPageAirfields : public QWidget
    */
   void slot_installWelt2000();
 
+  /**
+   * Opens proxy dialog on user request.
+   */
+  void slot_editProxy();
+
   signals:
 
   /**
@@ -117,8 +123,11 @@ class SettingsPageAirfields : public QWidget
   /** Check box to load outlandings or not. */
   QCheckBox* loadOutlandings;
 
-  /** Line editor for proxy host and port input. */
-  QLineEdit *proxy;
+  /** Dialog editor for proxy host and port input. */
+  QPushButton *editProxy;
+
+  /** Label to show the current proxy settings. */
+  QLabel *proxyDisplay;
 
   /** Download and install Welt2000 file. */
   QPushButton *installWelt2000;
