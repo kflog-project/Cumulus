@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2004-2009 by Axel Pauli (axel@kflog.org)
+**   Copyright (c): 2004-2010 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -33,6 +33,10 @@
 class VarioModeDialog : public QDialog
 {
   Q_OBJECT
+
+private:
+
+  Q_DISABLE_COPY ( VarioModeDialog )
 
 public:
 
