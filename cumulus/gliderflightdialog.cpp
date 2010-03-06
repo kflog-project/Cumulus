@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,14 +16,9 @@
 **
 ***********************************************************************/
 
-#include <QLabel>
-#include <QFont>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QScrollArea>
+#include <QtGui>
 
 #include "gliderflightdialog.h"
-
 #include "calculator.h"
 #include "glider.h"
 #include "mapconfig.h"
@@ -203,8 +198,15 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   // Align ok and cancel button at the left and right side of the
   // widget to have enough space between them. That shall avoid wrong
   // button pressing in turbulent air.
-  ok = new QPushButton( tr("  OK  "), this);
-  cancel = new QPushButton (tr("Cancel"), this);
+  cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(70, 26));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(70, 26));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QHBoxLayout *butLayout = new QHBoxLayout;
   butLayout->addWidget( ok );

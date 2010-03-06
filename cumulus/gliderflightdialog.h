@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -34,6 +34,10 @@
 class GliderFlightDialog : public QDialog
 {
     Q_OBJECT
+
+private:
+
+  Q_DISABLE_COPY ( GliderFlightDialog )
 
 public:
 
