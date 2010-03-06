@@ -77,6 +77,7 @@ HEADERS = airfieldlistview.h \
     projectioncylindric.h \
     projectionlambert.h \
     protocol.h \
+    proxydialog.h \
     radiopoint.h \
     reachablelist.h \
     reachablepoint.h \
@@ -182,6 +183,7 @@ SOURCES = airfieldlistview.cpp \
     projectionbase.cpp \
     projectioncylindric.cpp \
     projectionlambert.cpp \
+    proxydialog.cpp \
     radiopoint.cpp \
     reachablelist.cpp \
     reachablepoint.cpp \
