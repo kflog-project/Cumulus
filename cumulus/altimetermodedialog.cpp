@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Voellm
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -84,8 +84,15 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   // Align ok and cancel button at the left and right side of the
   // widget to have enough space between them. That shall avoid wrong
   // button pressing in turbulent air.
-  QPushButton *ok = new QPushButton(tr("OK"), this);
-  QPushButton *cancel = new QPushButton (tr("Cancel"), this);
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(70, 26));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(70, 26));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QHBoxLayout *butLayout = new QHBoxLayout;
   butLayout->addWidget( ok );
@@ -93,6 +100,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   butLayout->addWidget( cancel );
 
   mainLayout->addLayout(modeLayout);
+  mainLayout->addSpacing(25);
   mainLayout->addLayout(butLayout);
 
   timeout = new QTimer(this);
