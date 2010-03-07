@@ -68,7 +68,11 @@ GpsMaemo *GpsMaemo::instance = static_cast<GpsMaemo *> (0);
 static void ::gpsdRunning( LocationGPSDControl * /*control*/, gpointer /*userData*/ )
 {
   qDebug("G-Signal->GPSD Running");
-  GpsMaemo::getInstance()->handleGpsdRunning();
+
+  if( GpsMaemo::getInstance() )
+    {
+      GpsMaemo::getInstance()->handleGpsdRunning();
+    }
 }
 
 /**
@@ -77,7 +81,11 @@ static void ::gpsdRunning( LocationGPSDControl * /*control*/, gpointer /*userDat
 static void ::gpsdStopped( LocationGPSDControl * /*control*/, gpointer /*userData*/ )
 {
   qDebug("G-Signal->GPSD Stopped");
-  GpsMaemo::getInstance()->handleGpsdStopped();
+
+  if( GpsMaemo::getInstance() )
+    {
+      GpsMaemo::getInstance()->handleGpsdStopped();
+    }
 }
 
 /**
@@ -86,7 +94,11 @@ static void ::gpsdStopped( LocationGPSDControl * /*control*/, gpointer /*userDat
 static void ::gpsdError( LocationGPSDControl * /*control*/, gpointer /*userData*/ )
 {
   qDebug("G-Signal->GPSD Error");
-  GpsMaemo::getInstance()->handleGpsdError();
+
+  if( GpsMaemo::getInstance() )
+    {
+      GpsMaemo::getInstance()->handleGpsdError();
+    }
 }
 
 //--------------------------------------------------------------------------
