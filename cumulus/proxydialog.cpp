@@ -78,7 +78,7 @@ ProxyDialog::ProxyDialog( QWidget *parent ) :
 
       if( ! list.at(1).isEmpty() )
         {
-          portEdit->setText( list.at(0).trimmed() );
+          portEdit->setText( list.at(1).trimmed() );
         }
     }
 
