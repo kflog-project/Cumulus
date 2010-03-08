@@ -189,8 +189,10 @@ release: clean all langpacks
 .PHONY : copy_web
 copy_web:
 	scp -C ChangeLog web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/ChangeLog_$(VERSION)_`date '+%F'`
-	scp -C dpkg/cumulus_$(VERSION)_armel_n8x0.deb dpkg/cumulus_$(VERSION)_armel.changes \
+	scp -C dpkg/cumulus_$(VERSION)_armel.changes \
 	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
+	scp -C dpkg/cumulus_$(VERSION)_armel.deb \
+	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_armel_n8x0.deb
 
 qmake: cumulus/Makefile gpsClient/Makefile nmeaSimulator/Makefile
 
