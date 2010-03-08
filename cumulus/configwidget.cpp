@@ -189,6 +189,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   connect(spa, SIGNAL(airspaceColorsUpdated()),
           _globalMapConfig, SLOT(slotReloadAirspaceColors()));
 
+  connect(spa, SIGNAL(downloadAirspace( QString& )),
+          _globalMapContents, SLOT(slotDownloadAirspace( QString& )));
+
   connect(spms, SIGNAL(downloadMapArea( const QPoint&, const Distance& )),
           _globalMapContents, SLOT(slotDownloadMapArea( const QPoint&, const Distance&)));
 
