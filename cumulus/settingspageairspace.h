@@ -10,7 +10,7 @@
 **                   2009-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -54,6 +54,7 @@ class SettingsPageAirspace : public QWidget
   public:
 
     SettingsPageAirspace(QWidget *parent=0);
+
     virtual ~SettingsPageAirspace();
 
   protected:
@@ -92,12 +93,27 @@ class SettingsPageAirspace : public QWidget
      */
     void slot_setColorDefaults();
 
-  signals: // Signals
+    /**
+     * Called to request the download of an airspace file.
+     */
+    void slot_installAirspace();
+
+    /**
+     * Called to start a download of an airspace file.
+     */
+     void slot_startDownload( QString &url );
+
+  signals:
 
   /**
    * Emitted if the airspace colors have been updated
    */
   void airspaceColorsUpdated();
+
+  /**
+   * Emitted if an airspace shall be installed
+   */
+  void downloadAirspace( QString& url );
 
   protected:
     /**
@@ -108,6 +124,7 @@ class SettingsPageAirspace : public QWidget
     QPushButton* cmdWarning;
     QPushButton* cmdFilling;
     QPushButton* cmdColorDefaults;
+    QPushButton* cmdInstall;
 
     QTableWidget* drawOptions;
 

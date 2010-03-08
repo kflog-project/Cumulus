@@ -21,6 +21,7 @@
 #include <QtGui>
 
 #include "airspace.h"
+#include "airspacedownloaddialog.h"
 #include "basemapelement.h"
 #include "distance.h"
 #include "generalconfig.h"
@@ -41,8 +42,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   QString unit = (altUnit == Altitude::meters) ? " m" : " ft";
 
   m_warningsDlg = new SettingsPageAirspaceWarnings(this);
-
-  m_fillingDlg = new SettingsPageAirspaceFilling(this);
+  m_fillingDlg  = new SettingsPageAirspaceFilling(this);
 
   QGridLayout *topLayout = new QGridLayout(this);
   topLayout->setMargin(3);
@@ -105,12 +105,16 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   topLayout->setRowMinimumHeight( row++, 20 );
 
+  cmdInstall = new QPushButton(tr("Install Airspace"), this);
+  topLayout->addWidget(cmdInstall, row, 0, Qt::AlignLeft);
+  connect (cmdInstall, SIGNAL(clicked()), this, SLOT(slot_installAirspace()));
+
   cmdWarning = new QPushButton(tr("Airspace Warnings"), this);
-  topLayout->addWidget(cmdWarning, row, 0, 1, 1, Qt::AlignLeft);
+  topLayout->addWidget(cmdWarning, row, 1, Qt::AlignCenter);
   connect (cmdWarning, SIGNAL(clicked()), m_warningsDlg, SLOT(show()));
 
   cmdFilling = new QPushButton(tr("Airspace filling"), this);
-  topLayout->addWidget(cmdFilling, row, 2, 1, 1, Qt::AlignRight);
+  topLayout->addWidget(cmdFilling, row, 2, Qt::AlignRight);
   connect (cmdFilling, SIGNAL(clicked()), m_fillingDlg, SLOT(show()));
 
   row = 0;
@@ -587,6 +591,27 @@ void SettingsPageAirspace::slot_toggleCheckBox( int row, int column )
       QTableWidgetItem *item = drawOptions->item( row, column );
       item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
     }
+}
+
+/**
+ * Called to request the download an airspace file.
+ */
+void SettingsPageAirspace::slot_installAirspace()
+{
+  AirspaceDownloadDialog *dlg = new AirspaceDownloadDialog( this );
+
+  connect( dlg, SIGNAL(downloadAirspace( QString& )),
+           this, SLOT(slot_startDownload( QString& )));
+
+  dlg->show();
+}
+
+/**
+ * Called to start a download of an airspace file.
+ */
+void SettingsPageAirspace::slot_startDownload( QString &url )
+{
+  emit downloadAirspace( url );
 }
 
 /* Called to ask is confirmation on the close is needed. */
