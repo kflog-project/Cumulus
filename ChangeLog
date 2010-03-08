@@ -14,6 +14,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-03-08 AP: New dialog added for downloading of airspaces in Settings
+                   Airspaces.
+[-] 2010-03-07 AP: BUGFIX: Cumulus did crash if the GPS device was changed
+                   from the GPS Daemon to another one.
 [o] 2010-03-06 AP: Ok and cancel button of the variometer dialog moved from
                    the bottom to the right side to avoid a scrollbar on Maemo.
 [o] 2010-03-05 AP: Download progess is displayed in the rihgt side of the 
