@@ -27,10 +27,10 @@
 
 <p><b>Airspaces</b></p>
 
-<p>The list shows you which kind of airspaces can be drawn onto the map.
+<p>The table shows you which kind of airspaces can be drawn onto the map.
    Check the items of the airspaces to be displayed. To change the color
    of the airspace border or the airspace area touch the related field in
-   the list. That will opens a color dialog, where you can change the current
+   the table. That will opens a color dialog where you can change the current
    color. Pressing button <i>Color Defaults</i> will assign the programmed
    default colors to all airspaces.
 </p>
@@ -45,6 +45,24 @@
     smaller than the specified value, the position is considered
     <i>near</i> respectively <i>very near</i> to the airspace.
 </p>
+
+<p>
+  If you press the button <i>Install Airspace</i> a new dialog box is opened.
+  In that box you can define a proxy by pressing button <i>Set Proxy</i> if you
+  need one for Internet access. Beside the label <i>Airspace Url</i> you can
+  enter an url pointing to an airspace file. The url must consist of the following
+  items:
+  <ul>
+    <li>Scheme, like <i>http</i></li>
+    <li>Hostname</li>
+    <li>Pathname</li>
+  </ul>
+  
+  If one of them is missing the url is rejected. Furthermore the file to be
+  downloaded must be a normal file, not compressed, and must carry the extension 
+  <i>.txt</i> to be read in after download.
+</p>
+
 <p>
     If you press the button <i>Airspace filling</i> you can enable,
     that the airspaces are filled with a transparent color with
