@@ -52,6 +52,7 @@ AirspaceDownloadDialog::AirspaceDownloadDialog( QWidget *parent ) :
 
   editAirspaceUrl = new QLineEdit(this);
   editAirspaceUrl->setToolTip(tr("Enter URL of airspace filename to be installed"));
+  editAirspaceUrl->setText( GeneralConfig::instance()->getLastAirspaceUrl() );
   gridLayout->addWidget(editAirspaceUrl, row, 1);
 
   buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel |
@@ -98,7 +99,7 @@ AirspaceDownloadDialog::AirspaceDownloadDialog( QWidget *parent ) :
 
 AirspaceDownloadDialog::~AirspaceDownloadDialog()
 {
-  qDebug("AirspaceDownloadDialog::~AirspaceDownloadDialog()");
+  // qDebug("AirspaceDownloadDialog::~AirspaceDownloadDialog()");
 }
 
 /** User has pressed Ok button */
@@ -117,7 +118,8 @@ void AirspaceDownloadDialog::accept()
       return;
     }
 
-
+  // Save last used url
+  GeneralConfig::instance()->setLastAirspaceUrl( urlString );
   emit downloadAirspace( urlString );
 
   // close and destroy dialog
