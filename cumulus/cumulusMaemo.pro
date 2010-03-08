@@ -19,11 +19,13 @@ CONFIG = qt \
 
 QT += network
 
-HEADERS = airfieldlistview.h \
+HEADERS = \
+    airfieldlistview.h \
     airfieldlistwidget.h \
     airfield.h \
     airregion.h \
     airspace.h \
+    airspacedownloaddialog.h \    
     airspacewarningdistance.h \
     altimetermodedialog.h \
     altitude.h \
@@ -132,11 +134,13 @@ HEADERS = airfieldlistview.h \
     wpinfowidget.h \
     wplistwidgetparent.h
 
-SOURCES = airfieldlistview.cpp \
+SOURCES = \
+    airfieldlistview.cpp \
     airfieldlistwidget.cpp \
     airfield.cpp \
     airregion.cpp \
     airspace.cpp \
+    airspacedownloaddialog.cpp \    
     altimetermodedialog.cpp \
     altitude.cpp \
     authdialog.cpp \
