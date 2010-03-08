@@ -860,7 +860,7 @@ void Map::resizeEvent(QResizeEvent* event)
       event->size().height() < m_pixPaintBuffer.height() &&
       (m_pixPaintBuffer.height() - event->size().height()) <= 35 )
     {
-      qDebug("Map::resizeEvent(): EventSize.height <= PaintBufferSize.height-35 ->ignore Event");
+      // qDebug("Map::resizeEvent(): EventSize.height <= PaintBufferSize.height-35 ->ignore Event");
       return; // we assume, that the menu bar has been opened and ignore this event
     }
 
