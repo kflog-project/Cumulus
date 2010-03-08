@@ -20,7 +20,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <QtCore>
 #include <QtGui>
 
 #include "airfield.h"
@@ -1444,6 +1443,42 @@ void MapContents::slotDownloadWelt2000( const QString& welt2000FileName )
   downloadManger->downloadRequest( url, dest );
 }
 
+/**
+ * This slot is called to download an airspace file from the internet.
+ * @param url The url of the web page where the file is to find.
+ */
+void MapContents::slotDownloadAirspace( QString& url )
+{
+  extern Calculator* calculator;
+
+  if( GpsNmea::gps->getConnected() && calculator->moving() )
+    {
+      // We have a GPS connection and are in move. That does not allow
+      // to make any downloads.
+      return;
+    }
+
+  if( downloadManger == static_cast<DownloadManager *> (0) )
+    {
+      downloadManger = new DownloadManager(this);
+
+      connect( downloadManger, SIGNAL(finished( int, int )),
+               this, SLOT(slotDownloadsFinished( int, int )) );
+    }
+
+  connect( downloadManger, SIGNAL(airspaceDownloaded() ),
+           this, SLOT(slotReloadAirspaceData()) );
+
+  connect( downloadManger, SIGNAL(status( const QString& )),
+           _globalMapView, SLOT(slot_info( const QString& )) );
+
+  QUrl airspaceUrl( url );
+  QString file = QFileInfo( airspaceUrl.path() ).fileName();
+  QString dest = GeneralConfig::instance()->getMapRootDir() + "/airspaces/" + file;
+
+  downloadManger->downloadRequest( url, dest );
+}
+
 /** Called, if all downloads are finished. */
 void MapContents::slotDownloadsFinished( int requests, int errors )
 {
@@ -1542,7 +1577,7 @@ void MapContents::proofeSection()
       // finally, sort the airspaces
       airspaceList.sort();
 
-      ws->slot_SetText2(tr("Reading Welt 2000 File"));
+      ws->slot_SetText2(tr("Reading Welt2000 File"));
       // @AP: Look for and if available load a welt2000 airfield file
       Welt2000 welt2000;
 
@@ -2240,7 +2275,6 @@ void MapContents::slotReloadWelt2000Data()
 
   if ( mutex )
     {
-      qDebug("MapContents::slotReloadWelt2000Data(): mutex is locked, returning");
       return; // return immediately, if reentry in method is not possible
     }
 
@@ -2260,6 +2294,52 @@ void MapContents::slotReloadWelt2000Data()
   welt2000.load( airfieldList, gliderSiteList, outLandingList );
 
   _globalMapView->message( tr("Reloading Welt2000 finished") );
+
+  emit mapDataReloaded();
+
+  // enable GPS data receiving
+  GpsNmea::gps->ignoreConnectionLost();
+  GpsNmea::gps->enableReceiving( true );
+
+  mutex = false; // unlock mutex
+}
+
+/**
+ * Reloads the airspace data files. Can be called after a configuration change
+ * or a download.
+ */
+void MapContents::slotReloadAirspaceData()
+{
+  // @AP: defined a static mutex variable, to prevent the recursive
+  // calling of this method
+  static bool mutex = false;
+
+  if ( mutex )
+    {
+      return; // return immediately, if reentry in method is not possible
+    }
+
+  mutex = true;
+
+  // We must block all GPS signals during the reload time to avoid
+  // system crash due to outdated data.
+  GpsNmea::gps->enableReceiving( false );
+
+  // clear the airspace region list in map too
+  Map::getInstance()->clearAirspaceRegionList();
+
+  qDeleteAll(airspaceList);
+  airspaceList.clear();
+
+  _globalMapView->message( tr("Reloading Airspaces started") );
+
+  OpenAirParser oap;
+  oap.load( airspaceList );
+
+  // finally, sort the airspaces
+  airspaceList.sort();
+
+  _globalMapView->message( tr("Reloading Airspaces finished") );
 
   emit mapDataReloaded();
 

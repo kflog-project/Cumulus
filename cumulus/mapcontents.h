@@ -298,6 +298,12 @@ class MapContents : public QObject
     void slotReloadWelt2000Data();
 
     /**
+     * Reloads the airspace data files. Can be called after a configuration
+     * change or a download.
+     */
+    void slotReloadAirspaceData();
+
+    /**
      * This slot is called to download the Welt2000 file from the internet.
      * @param welt2000FileName The Welt2000 filename as written at the web page
      * without any path prefixes.
@@ -313,6 +319,12 @@ class MapContents : public QObject
      * @param length The half length of the square edge in meters.
      */
     void slotDownloadMapArea( const QPoint &center, const Distance& length );
+
+    /**
+     * This slot is called to download an airspace file from the internet.
+     * @param url The url of the web page where the file is to find.
+     */
+    void slotDownloadAirspace( QString& url );
 
   private slots:
 
