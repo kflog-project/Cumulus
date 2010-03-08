@@ -14,7 +14,7 @@
 VERSION = `cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2`
 
 # current Qt version
-QT_VERSION=4.6.2
+QT_VERSION=4.5.3
 
 # installation directory of Qt libraries
 QT_LIBDIR=/opt/qt$(QT_VERSION)/lib
@@ -189,7 +189,7 @@ release: clean all langpacks
 .PHONY : copy_web
 copy_web:
 	scp -C ChangeLog web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/ChangeLog_$(VERSION)_`date '+%F'`
-	scp -C dpkg/cumulus_$(VERSION)_armel.deb dpkg/cumulus_$(VERSION)_armel.changes \
+	scp -C dpkg/cumulus_$(VERSION)_armel_n8x0.deb dpkg/cumulus_$(VERSION)_armel.changes \
 	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
 
 qmake: cumulus/Makefile gpsClient/Makefile nmeaSimulator/Makefile
