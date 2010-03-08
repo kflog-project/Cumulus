@@ -128,16 +128,25 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
       errors++;
     }
 
-  // Remove last done request from the queue and from the url set.
+  // Remove the last done request from the queue and from the url set.
   if( ! queue.isEmpty() )
     {
       QPair<QString, QString> pair = queue.dequeue();
 
-      if( pair.second.contains( "welt2000.txt") &&  codeIn == QNetworkReply::NoError )
+      if( codeIn == QNetworkReply::NoError )
         {
-          // Special check for Welt2000 download to signal that. The signal
-          // is the trigger for the reload of the Welt2000 data file.
-          emit welt2000Downloaded();
+          if( pair.second.contains( "welt2000.txt") )
+            {
+              // Special check for Welt2000 download to signal that. The signal
+              // is the trigger for the reload of the Welt2000 data file.
+              emit welt2000Downloaded();
+            }
+          else if( pair.second.contains( "/airspaces/") )
+            {
+              // Special check for an airspace download. The signal is the
+              // trigger for the reload of the airspace data file.
+              emit airspaceDownloaded();
+            }
         }
     }
 

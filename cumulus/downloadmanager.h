@@ -56,6 +56,11 @@ class DownloadManager : public QObject
     */
    void welt2000Downloaded();
 
+   /**
+    *  Sends a signal if an airspace file has been downloaded successfully.
+    */
+   void airspaceDownloaded();
+
  private:
 
   /**
