@@ -88,6 +88,7 @@ void GeneralConfig::load()
   _awd.verBelowClose     = value("VerticalWarningDistanceBelow", 200.0).toDouble() ;
   _awd.verBelowVeryClose = value("VerticalWarningDistanceBelowVC", 100.0).toDouble();
 
+  _lastAirspaceUrl      = value("LastAirspaceUrl", "").toString();
   _forceDrawing         = value("forceLowAirspaceDrawing", true ).toBool();
   _forceDrawingDistance = value("forceLowAirspaceDrawingDistance", 150.0).toDouble();
 
@@ -415,6 +416,7 @@ void GeneralConfig::save()
   setValue("VerticalWarningDistanceBelow", _awd.verBelowClose.getMeters());
   setValue("VerticalWarningDistanceBelowVC", _awd.verBelowVeryClose.getMeters());
 
+  setValue("LastAirspaceUrl", _lastAirspaceUrl);
   setValue("forceLowAirspaceDrawing", _forceDrawing);
   setValue("forceLowAirspaceDrawingDistance", _forceDrawingDistance.getMeters());
 

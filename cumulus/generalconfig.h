@@ -591,6 +591,17 @@ class GeneralConfig : protected QSettings
     _forceDrawingDistance = dist;
   };
 
+  /** Gets the last airspace url */
+  QString &getLastAirspaceUrl()
+    {
+      return _lastAirspaceUrl;
+    };
+  /** Sets the surname */
+  void setLastAirspaceUrl( const QString newValue )
+  {
+    _lastAirspaceUrl = newValue;
+  };
+
   /** gets disclaimer version */
   int getDisclaimerVersion() const
   {
@@ -1837,6 +1848,9 @@ class GeneralConfig : protected QSettings
   bool _forceDrawing;
   //vertical distance below airspace
   Distance _forceDrawingDistance;
+
+  // last used airspace url
+  QString _lastAirspaceUrl;
 
   // disclaimer version
   int _disclaimerVersion;
