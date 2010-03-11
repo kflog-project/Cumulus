@@ -84,7 +84,7 @@ public:
     * The Maemo5 location service is called to start the selected device. That
     * can be the internal GPS or a BT GPS mouse.
     */
-    void startGpsReceiving();
+    bool startGpsReceiving();
 
     /**
      * The Maemo5 location service is called to stop GPS receiving.

@@ -28,12 +28,10 @@ using namespace std;
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
-#include <time.h>
 
-#include <QStringList>
+#include <QtCore>
 
 #include "gpsmaemoclient.h"
-#include "signalhandler.h"
 #include "protocol.h"
 #include "ipc.h"
 
@@ -110,19 +108,19 @@ static void LocationCb::gpsdErrorVerbose( LocationGPSDControl *control,
   switch( error )
     {
     case LOCATION_ERROR_USER_REJECTED_DIALOG:
-      qWarning( "User didn't enable requested methods" );
+      qWarning( "GpsdError: User didn't enable requested methods" );
       break;
     case LOCATION_ERROR_USER_REJECTED_SETTINGS:
-      qWarning( "User changed settings, which disabled location" );
+      qWarning( "GpsdError: User changed settings, which disabled location" );
       break;
     case LOCATION_ERROR_BT_GPS_NOT_AVAILABLE:
-      qWarning( "Problems with BT GPS" );
+      qWarning( "GpsdError: Problems with BT GPS" );
       break;
     case LOCATION_ERROR_METHOD_NOT_ALLOWED_IN_OFFLINE_MODE:
-      qWarning( "Requested method is not allowed in offline mode" );
+      qWarning( "GpsdError: Requested method is not allowed in offline mode" );
       break;
     case LOCATION_ERROR_SYSTEM:
-      qWarning( "System error" );
+      qWarning( "GpsdError: System error" );
       break;
     }
 
@@ -164,8 +162,6 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
   shutdown        = false;
   timeSpan        = 0;
   instance        = this;
-
-  initSignalHandler();
 
   // establish a connection to the server
   if( ipcPort )
@@ -249,7 +245,7 @@ void GpsMaemoClient::handleGpsdRunning()
   gpsIsRunning   = true;
   connectionLost = false;
 
-  // restart alive check timer with alive timeout
+  // restart timer with alive check supervision
   startTimer(ALIVE_TO);
 }
 
@@ -334,8 +330,14 @@ void GpsMaemoClient::processEvent( fd_set *fdMask )
 * The Maemo5 location service is called to start the selected devices. That
 * can be the internal GPS or a BT GPS mouse.
 */
-void GpsMaemoClient::startGpsReceiving()
+bool GpsMaemoClient::startGpsReceiving()
 {
+  if( gpsIsRunning == true )
+    {
+      qWarning( "GpsMaemoClient::startGpsReceiving(): GPSD is running, ignore request!" );
+      return true;
+    }
+
   // remove all old queued messages
   queue.clear();
 
@@ -344,6 +346,8 @@ void GpsMaemoClient::startGpsReceiving()
 
   // Start GPSD, results are emitted by signals.
   location_gpsd_control_start( control );
+
+  return true;
 }
 
 /**
@@ -382,17 +386,21 @@ void GpsMaemoClient::toController()
           queueMsg( MSG_CONLOST );
         }
 
-#ifdef ERROR_LOG
-      cerr << "GpsMaemoClient::toController(): "
-           << "Connection to GPS seems to be dead, trying restart."
-           << endl;
-#endif
-
-      // try to reconnect to the GPS receiver
-      if( startGpsReceiving( device, ioSpeedDevice ) == false )
+      if( gpsIsRunning == false )
         {
-          last.start(); // set next retry time point
+          qWarning() << "GpsMaemoClient::toController():"
+                     << "Connection to GPS seems to be dead, trying restart.";
+
+          // GPS is not running, try a restart of location service.
+          startGpsReceiving();
+          return;
         }
+
+      // Stop GPSD due to timeout and initiate a restart.
+      stopGpsReceiving();
+
+      // setup timer for restart
+      timer->start(RETRY_TO);
     }
 }
 
@@ -415,9 +423,8 @@ void GpsMaemoClient::readServerMsg()
   if( msgLen > 256 )
     {
       // such messages length are not defined. we will ignore that.
-      cerr << "GpsMaemoClient::readServerMsg(): "
-           << "message " << msgLen << " too large, ignoring it!"
-           << endl;
+      qWarning() << "GpsMaemoClient::readServerMsg():"
+                 << "message" << msgLen << "too large, ignoring it!";
       return;
     }
 
@@ -436,7 +443,7 @@ void GpsMaemoClient::readServerMsg()
     }
 
 #ifdef DEBUG
-  cout << "GpsMaemoClient::readServerMsg(): Received Message: " << buf << endl;
+   cout << "GpsMaemoClient::readServerMsg(): Received Message: " << buf << endl;
 #endif
 
   // Split the received message into its single parts. Space is used
@@ -453,7 +460,6 @@ void GpsMaemoClient::readServerMsg()
     {
       // Get message is requested. We take the oldest element out of the
       // queue, if there is any.
-
       if( queue.count() == 0 ) // queue empty
         {
           writeServerMsg( MSG_NEG );
@@ -482,19 +488,19 @@ void GpsMaemoClient::readServerMsg()
 
       writeServerMsg( MSG_POS );
     }
-  else if( MSG_OPEN == args[0] && args.count() == 3 )
+  else if( MSG_OPEN == args[0] )
     {
-      // Initialization of gps device is requested. The message
-      // consists of two parts separated by spaces.
-      // 1) serial device
-      // 2) io speed
-
-      bool res = startGpsReceiving( args[1].toLatin1(), args[2].toUInt() );
+      // Initialization of GPSD location device is requested.
+      bool res = startGpsReceiving();
 
       if( res )
-        writeServerMsg( MSG_POS );
+        {
+          writeServerMsg( MSG_POS );
+        }
       else
-        writeServerMsg( MSG_NEG );
+        {
+          writeServerMsg( MSG_NEG );
+        }
     }
   else if( MSG_CLOSE == args[0] )
     {
@@ -512,17 +518,8 @@ void GpsMaemoClient::readServerMsg()
     }
   else if( MSG_SM == args[0] && args.count() == 2 )
     {
-      // Sent message to the GPS device
-      int res = writeGpsData( args[1].toLatin1() );
-
-      if( res == -1 )
-        {
-          writeServerMsg( MSG_NEG );
-        }
-      else
-        {
-          writeServerMsg( MSG_POS );
-        }
+      // Sent message to the GPS device is not supported.
+      writeServerMsg( MSG_NEG );
     }
   else if( MSG_SHD == args[0] )
     {
@@ -604,8 +601,8 @@ void GpsMaemoClient::queueMsg( const char* msg )
       // start dequeuing, to avoid memory overflows
       queue.dequeue ();
 
-      cerr << "queueMsg: Max.queue size of " << QUEUE_SIZE
-           << " reached, remove oldest element!" << endl;
+      qWarning() << "GpsMaemoClient::queueMsg: Max. queue size of" << QUEUE_SIZE
+                 << "reached, remove oldest element!" << endl;
     }
 
   if( notify )
