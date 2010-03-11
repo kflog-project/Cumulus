@@ -400,7 +400,7 @@ void GpsMaemoClient::toController()
       stopGpsReceiving();
 
       // setup timer for restart
-      timer->start(RETRY_TO);
+      startTimer(RETRY_TO);
     }
 }
 

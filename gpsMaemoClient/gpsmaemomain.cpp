@@ -31,11 +31,12 @@ using namespace std;
 #include <iostream>
 
 #include <glib.h>
+#include <glib-object.h>
 
 #include <qstring.h>
 
 #include "signalhandler.h"
-#include "gpsclient.h"
+#include "gpsmaemoclient.h"
 
 //----------------------------------------------------
 // import global sutdown flag, set by SignalHandler
@@ -148,7 +149,7 @@ int main( int argc, char* argv[] )
   GMainLoop *gloop = g_main_loop_new(NULL, FALSE);
 
   // GPS client module, manages the connection between the GPS and to Cumulus.
-  GpsClient *client = new GpsClient( ipcPort );
+  GpsMaemoClient *client = new GpsMaemoClient( ipcPort );
 
   struct timeval timerInterval;
 
