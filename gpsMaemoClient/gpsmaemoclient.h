@@ -203,38 +203,4 @@ private:
     bool shutdown;
 };
 
-//---------------LibLocation Wrapper Functions----------------------------------
-
-namespace
-{ // we put the glib wrapper functions in anonymous name space
-  // so they are not exported at link time
-namespace LocationCb
-  {
-    extern "C"
-    {
-      /**
-       * Is called from location service when GPSD is running.
-       */
-      static void gpsdRunning( LocationGPSDControl* control, gpointer userData );
-
-      /**
-       * Is called from location service when GPSD was stopped.
-       */
-      static void gpsdStopped( LocationGPSDControl* control, gpointer userData );
-
-      /**
-       * Is called from location service when GPSD was not startable.
-       */
-      static void gpsdErrorVerbose( LocationGPSDControl *control,
-                                    LocationGPSDControlError error,
-                                    gpointer user_data );
-      /**
-       * Is called from location service when new gps data are available.
-       */
-      static void gpsdLocationchanged( LocationGPSDevice *device,
-                                       gpointer user_data );
-    }
-  }
-}
-
 #endif
