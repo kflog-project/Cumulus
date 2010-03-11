@@ -61,7 +61,7 @@ public:
      * Gets the single instance of this class. Can be Null, if no instance
      * was created before.
      */
-    static GpsMaemoClient* getInstance() const
+    static GpsMaemoClient* getInstance()
     {
       return instance;
     };
@@ -84,12 +84,12 @@ public:
     * The Maemo5 location service is called to start the selected device. That
     * can be the internal GPS or a BT GPS mouse.
     */
-    bool startGpsReceiving();
+    void startGpsReceiving();
 
     /**
      * The Maemo5 location service is called to stop GPS receiving.
      */
-    bool stopGpsReceiving();
+    void stopGpsReceiving();
 
     /**
      * timeout controller
@@ -182,7 +182,7 @@ private:
 
     // Defined time span in milli seconds for timeout supervision. If set to
     // zero Timeout handler do nothing.
-    uint timeSpan;
+    long timeSpan;
 
     // Queue used for intermediate storing
     QQueue<QByteArray> queue;

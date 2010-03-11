@@ -33,6 +33,7 @@ using namespace std;
 #include <QStringList>
 
 #include "gpsmaemoclient.h"
+#include "signalhandler.h"
 #include "protocol.h"
 #include "ipc.h"
 
@@ -212,7 +213,7 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
     }
 
   // Setup device instance
-  device = g_object_new(LOCATION_TYPE_GPS_DEVICE, NULL);
+  device = (LocationGPSDevice *) g_object_new(LOCATION_TYPE_GPS_DEVICE, NULL);
 
   // Subscribe to location service signal.
   g_signal_connect( device, "changed", G_CALLBACK(LocationCb::gpsdLocationchanged), NULL );
@@ -236,12 +237,7 @@ GpsMaemoClient::~GpsMaemoClient()
   g_object_unref( device );
   g_object_unref( control );
 
-  if (client.getSock() != -1)
-    {
-      client.closeSock();
-    }
-
-  instance = static_cast<GpsMaemo *> (0);
+  instance = static_cast<GpsMaemoClient *> (0);
 }
 
 /*
@@ -338,7 +334,7 @@ void GpsMaemoClient::processEvent( fd_set *fdMask )
 * The Maemo5 location service is called to start the selected devices. That
 * can be the internal GPS or a BT GPS mouse.
 */
-bool GpsMaemoClient::startGpsReceiving()
+void GpsMaemoClient::startGpsReceiving()
 {
   // remove all old queued messages
   queue.clear();
@@ -348,7 +344,6 @@ bool GpsMaemoClient::startGpsReceiving()
 
   // Start GPSD, results are emitted by signals.
   location_gpsd_control_start( control );
-  return true;
 }
 
 /**
@@ -392,19 +387,6 @@ void GpsMaemoClient::toController()
            << "Connection to GPS seems to be dead, trying restart."
            << endl;
 #endif
-
-      // A timeout occurs from GPS side, when the receiver is
-      // switched off or the adapter cable is disconnected.
-      // In such a case we close the device, that the OS can
-      // release the temporary allocated resource. Otherwise
-      // we will block the resource and a reconnect is never
-      // possible.
-      if( fd != -1 )
-        {
-          // closes an existing connection before opening a new one
-          stopGpsReceiving();
-          sleep(2); // wait before a restart is tried
-        }
 
       // try to reconnect to the GPS receiver
       if( startGpsReceiving( device, ioSpeedDevice ) == false )

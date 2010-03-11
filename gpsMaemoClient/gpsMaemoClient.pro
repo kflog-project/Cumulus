@@ -15,20 +15,22 @@ CONFIG     = qt warn_on release
 QT -= gui # Only the core module is used.
 
 HEADERS = \
-  gpsclient.h \
+  gpsmaemoclient.h \
   ../cumulus/ipc.h \
   ../cumulus/protocol.h \
   ../cumulus/signalhandler.h
 
 SOURCES = \
-  gpsclient.cpp \
-  gpsmain.cpp \
+  gpsmaemoclient.cpp \
+  gpsmaemomain.cpp \
   ../cumulus/ipc.cpp \
   ../cumulus/signalhandler.cpp
 
 DESTDIR = .
 TARGET = gpsClient
-INCLUDEPATH += ../cumulus
+INCLUDEPATH += ../cumulus \
+	       /usr/lib/glib-2.0/include \
+	       /usr/include/glib-2.0
 
 LIBS += -lstdc++ \
   -llocation
