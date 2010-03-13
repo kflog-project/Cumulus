@@ -116,7 +116,7 @@ public:
     /**
      * Wrapper method to handle GLib signal emitted by the location service.
      */
-    void handleGpsdLocationchanged( LocationGPSDevice *device );
+    void handleGpsdLocationChanged( LocationGPSDevice *device );
 
     void setShutdownFlag( bool newState )
     {

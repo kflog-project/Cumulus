@@ -173,7 +173,7 @@ static void LocationCb::gpsdLocationchanged( LocationGPSDevice *device,
 {
   if( GpsMaemoClient::getInstance() )
     {
-      GpsMaemoClient::getInstance()->handleGpsdLocationchanged( device );
+      GpsMaemoClient::getInstance()->handleGpsdLocationChanged( device );
     }
 }
 
@@ -313,16 +313,127 @@ void GpsMaemoClient::handleGpsdError()
 /**
  * Wrapper method to handle GLib signal emitted by the location service.
  */
-void GpsMaemoClient::handleGpsdLocationchanged( LocationGPSDevice *device )
+void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
 {
   // New GPS data available.
-
-
-
+  if( !device )
+    {
+       return;
+    }
 
   // update supervision timer/variables
   startTimer(ALIVE_TO);
   connectionLost = false;
+
+  /**
+   * Definition of two proprietary sentences to transmit MAEMO GPS data.
+   *
+   *  0) $MAEMO
+   *  1) Mode
+   *  2) Time stamp
+   *  3) Ept
+   *  4) Latitude in KFLog degrees
+   *  5) Longitude in KFLog degrees
+   *  6) Eph
+   *  7) Speed in km/h
+   *  8) Eps
+   *  9) Track in degree 0...359
+   * 10) Epd
+   * 11) Altitude in meters
+   * 12) Epv
+   * 13) Climb
+   * 14) Epc
+   *
+   *  0) $MAEMO1
+   *  1) Status
+   *  2) Satellites in view
+   *  3) Satellites in use
+   *  4) Satellite number
+   *  5) Elevation
+   *  6) Azimuth
+   *  7) Signal strength
+   *  8) Satellite in use
+   *  9) Repetition of 4-8 according to Satellites in view
+   */
+
+   if (device->fix && device->fix->mode != LOCATION_GPS_DEVICE_MODE_NOT_SEEN )
+    {
+      QString mode = QString("%1").arg(device->fix->mode);
+      QString altitude = "";
+      QString epv = "";
+      QString speed = "";
+      QString eps = "";
+      QSTRING track = "";
+      QString epd = "";
+      QString climb = "";
+      QString epc = "";
+      QString latitude = "";
+      QString longitude = "";
+      QStrimf eph = "";
+      QString time = "";
+      QString ept = "";
+
+      if (device->fix->fields & LOCATION_GPS_DEVICE_ALTITUDE_SET)
+        {
+          altitude = QString("%1").arg(device->fix->altitude, 0, 'f');
+          epv      = QString("%1").arg(device->fix->epv, 0, 'f');
+        }
+
+      if (device->fix->fields & LOCATION_GPS_DEVICE_SPEED_SET)
+        {
+          speed = QString("%1").arg(device->fix->speed, 0, 'f');
+          eps   = QString("%1").arg(device->fix->eps, 0, 'f');
+        }
+
+      if (device->fix->fields & LOCATION_GPS_DEVICE_TRACK_SET)
+        {
+          track = QString("%1").arg(device->fix->track, 0, 'f');
+          epd   = QString("%1").arg(device->fix->epd, 0, 'f');
+        }
+
+      if (device->fix->fields & LOCATION_GPS_DEVICE_CLIMB_SET)
+        {
+          climb = QString("%1").arg(device->fix->climb, 0, 'f');
+          epc = QString("%1").arg(device->fix->epc, 0, 'f');
+        }
+
+      if (device->fix->fields & LOCATION_GPS_DEVICE_LATLONG_SET)
+        {
+          latitude  = QString("%1").arg(static_cast<int> (rint( device->fix->latitude * 600000.0)));
+          longitude = QString("%1").arg(static_cast<int> (rint( device->fix->longitude * 600000.0)));
+          eph = QString("%1").arg(device->fix->eph, 0, 'f');
+        }
+
+      if (device->fix->fields & LOCATION_GPS_DEVICE_TIME_SET)
+        {
+          time = QString("%1").arg(device->fix->time, 0, 'f');
+          ept  = QString("%1").arg(device->fix->ept, 0, 'f');
+        }
+
+      QStringList list;
+      list << "$MAEMO0"
+           << mode
+           << time
+           << ept
+           << latitude
+           << longitude
+           << eph
+           << speed
+           << eps
+           << track
+           << epd
+           << altitude
+           << epv
+           << climb
+           << ecp
+           << "\r\n";
+
+      QString sentence = list.join( ",");
+
+      // store the new sentence in the queue
+      queueMsg( sentence.toAscii().data() );
+   }
+
 }
 
 /**

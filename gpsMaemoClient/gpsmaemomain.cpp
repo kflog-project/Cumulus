@@ -209,7 +209,15 @@ int main( int argc, char* argv[] )
             }
         }
 
-      else if ( result > 0 ) // read event occurred
+      // Check G-main loop if events are pending. Found no other way
+      // as to poll it periodically.
+      if( gloop->g_main_context_pending() )
+        {
+          // process all pending events
+          gloop->g_main_context_dispatch( g_main_context_default() );
+        }
+
+      if ( result > 0 ) // read event occurred
         {
           // call gps client for event processing
           client->processEvent( readFds );
@@ -223,6 +231,8 @@ int main( int argc, char* argv[] )
       client->toController();
 
     } // End of while
+
+  g_main_loop_unref( gloop ); // destroy G-main loop
 
   delete client; // shutdown clients activities
 
