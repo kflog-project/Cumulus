@@ -11,7 +11,7 @@
 ################################################################################
 
 # Version is determined from the header file target.h
-VERSION = `cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2`
+VERSION=`cat cumulus/target.h | grep CU_VERSION | cut -d '\"' -f 2`
 
 # current Qt version
 QT_VERSION=4.5.3
