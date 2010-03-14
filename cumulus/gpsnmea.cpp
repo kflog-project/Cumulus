@@ -73,7 +73,7 @@ GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
   gpsDevice = "";
   serial = static_cast<GpsCon *> (0);
 
-#ifdef MAEMO
+#ifdef MAEMO4
   gpsdConnection = 0;
 #endif
 
@@ -126,7 +126,7 @@ void GpsNmea::createGpsConnection()
 
   QObject *gpsObject = 0;
 
-#ifndef MAEMO
+#ifndef MAEMO4
 
   // We create only a GpsCon instance. The GPS daemon process will be started later
   QString callPath = GeneralConfig::instance()->getInstallRoot() + "/bin";
@@ -190,7 +190,7 @@ GpsNmea::~GpsNmea()
       writeConfig();
     }
 
-#ifdef MAEMO
+#ifdef MAEMO4
   if ( gpsdConnection )
     {
       delete gpsdConnection;
@@ -209,7 +209,7 @@ void GpsNmea::enableReceiving( bool enable )
 
   // qDebug("GpsNmea::enableReceiving(%s)", enable ? "true" : "false");
 
-#ifndef MAEMO
+#ifndef MAEMO4
 
   if ( serial )
     {
@@ -241,7 +241,7 @@ void GpsNmea::enableReceiving( bool enable )
  */
 void GpsNmea::readDataFromGps()
 {
-#ifdef MAEMO
+#ifdef MAEMO4
 
   if ( gpsdConnection )
     {
@@ -264,7 +264,7 @@ void GpsNmea::startGpsReceiver()
       serial->startGpsReceiving();
     }
 
-#ifdef MAEMO
+#ifdef MAEMO4
   if ( gpsdConnection )
     {
       gpsdConnection->startGpsReceiving();
@@ -1559,7 +1559,7 @@ void GpsNmea::slot_reset()
           serial = 0;
         }
 
-#ifdef MAEMO
+#ifdef MAEMO4
       if ( gpsdConnection )
         {
           if ( oldDevice == gpsDevice )

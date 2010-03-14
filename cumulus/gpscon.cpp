@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004-2009 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c):  2004-2010 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -28,8 +28,7 @@
 #include <libgen.h>
 #include <linux/limits.h>
 
-#include <QApplication>
-#include <QString>
+#include <QtCore>
 
 #include "generalconfig.h"
 #include "mapview.h"
@@ -50,16 +49,30 @@ extern MapView *_globalMapView;
 
 /**
  * This module manages the startup and supervision of the GPS client process
- * and the communication between this client process and the cumulus
+ * and the communication between this client process and the Cumulus
  * process. All data transfer between the two processes is be done via a
- * socket interface. The path name, used during startup of cumulus must be
- * passed in the constructor, that the gpsClient binary can be found. It lays
- * in the same directory as cumulus.
+ * socket interface. The path name, used during startup of Cumulus must be
+ * passed in the constructor, that the gpsClient resp. gpsMaemoClient binary
+ * can be found. It lays in the same directory as Cumulus.
  */
-
 GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
 {
-  exe = QString("%1/%2").arg(pathIn).arg("gpsClient");
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  QString gpsDevice = conf->getGpsDevice();
+
+  // Do check, what kind of connection the user has  selected. Under Maemo5
+  // we have to consider two possibilities.
+  if( gpsDevice != MAEMO_LOCATION_SERVICE )
+    {
+      exe = QString("%1/%2").arg(pathIn).arg("gpsClient");
+    }
+  else
+    {
+      // Location Service has an own client.
+      exe = QString("%1/%2").arg(pathIn).arg("gpsMaemoClient");
+    }
+
   pid = -1;
   ioSpeed = 0;
   device = "";
@@ -71,8 +84,6 @@ GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
   clientNotifier = static_cast<QSocketNotifier *>(0);
 
   initSignalHandler();
-
-  GeneralConfig *conf = GeneralConfig::instance();
 
   // Port can be read from the configuration file for debugging purposes. If it
   // is 0, the OS will take the next free available port.
@@ -127,7 +138,6 @@ GpsCon::~GpsCon()
     }
 }
 
-
 /**
  * Serial device and speed are sent to the client, that it can opens the
  * appropriate device for receiving.
@@ -136,18 +146,29 @@ bool GpsCon::startGpsReceiving()
 {
   static QString method = "GPSCon::startGpsReceiving():";
 
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  device  = conf->getGpsDevice();
-  ioSpeed = conf->getGpsSpeed();
-
   if( server.getClientSock(0) != -1 )
     {
       // send the initialization data to the client process, if a client is
       // connected. Otherwise the initialization will be done in
       // slot_ListenEvent(), if the client makes its connect.
+    GeneralConfig *conf = GeneralConfig::instance();
+    QString gpsDevice   = conf->getGpsDevice();
+    QString msg;
 
-      QString msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(device).arg(QString::number(ioSpeed));
+    // Do check, what kind of connection the user has  selected. Under Maemo5
+    // we have to consider two possibilities.
+    if( gpsDevice != MAEMO_LOCATION_SERVICE )
+      {
+        device  = conf->getGpsDevice();
+        ioSpeed = conf->getGpsSpeed();
+        msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(device).arg(QString::number(ioSpeed));
+      }
+    else
+      {
+        // Using Location Service under Maemo5 needs no arguments because we
+        // have no access to the GPS hardware devices.
+        msg = QString(MSG_OPEN);
+      }
 
       writeClientMessage( 0, msg.toLatin1().data() );
       readClientMessage( 0, msg );
@@ -177,7 +198,6 @@ bool GpsCon::startGpsReceiving()
 
   return false;
 }
-
 
 /**
  * Stops the gps receiver on the client side.
@@ -318,9 +338,11 @@ bool GpsCon::startClientProcess()
 
   // look, if gpsClient is to find via paths of PATH variable and the
   // added ones
+  QString fileName = QFileInfo(exe).fileName();
+
   for( int i=0; i < pathes.count(); i++ )
     {
-      QString testExe = QString("%1/%2").arg(pathes[i]).arg("gpsClient");
+      QString testExe = QString("%1/%2").arg(pathes[i]).arg(fileName);
 
       if( access(testExe.toLatin1().data(), X_OK) == 0 )
         {
@@ -333,9 +355,10 @@ bool GpsCon::startClientProcess()
   // Check, if passed GPS client binary is accessible
   if( found == false && access(exe.toLatin1().data(), X_OK) != 0 )
     {
-      qWarning("%s Gps client binary gpsClient is not accessible! "
+      qWarning("%s Gps client binary %s is not accessible! "
                "Cannot start Gps client.",
-               method.toLatin1().data() );
+               method.toLatin1().data(),
+               fileName.toLatin1().data());
 
       return false;
     }
@@ -445,7 +468,6 @@ bool GpsCon::startClientProcess()
   return true;
 }
 
-
 /**
  * This timeout method is used, to call the method startClientProcess(), when
  * the timer is expired. This is the alive check for the forked gpsClient
@@ -473,7 +495,8 @@ void GpsCon::slot_Timeout()
       return;
     }
 
-  if( device.length() != 0 && ioSpeed != 0 && lastQuery.elapsed () > ALIVE_TO )
+  if( GeneralConfig::instance()->getGpsDevice() != NMEASIM_DEVICE &&
+      lastQuery.elapsed () > ALIVE_TO )
     {
       // more as 15s no new data notification came in. We send a query to the
       // client to be sure, that the notification has not gone lost.
@@ -483,11 +506,10 @@ void GpsCon::slot_Timeout()
 
 /**
  * This slot is triggered by the QT main loop and is used to handle the listen
- * socket events. The gps client tries to connect to the cumulus
+ * socket events. The GPS client tries to connect to the Cumulus
  * process. There are two connections opened by the client, first as data
  * channel, second as notification channel.
  */
-// socket parameter not used. Can it be removed?
 void GpsCon::slot_ListenEvent(int /*socket*/)
 {
   static QString method = "GPSCon::slot_ListenEvent():";
@@ -539,11 +561,10 @@ void GpsCon::slot_ListenEvent(int /*socket*/)
           return;
         }
 
-      // Open again gps receiver, if speed and device are defined. In this
+      // Open again GPS receiver, if it is not the simulator. In this
       // case we had likely a crash. Otherwise we will wait for the
       // appropriate command.
-
-      if( ioSpeed && device.length() )
+      if( GeneralConfig::instance()->getGpsDevice() != NMEASIM_DEVICE )
         {
           startGpsReceiving();
         }

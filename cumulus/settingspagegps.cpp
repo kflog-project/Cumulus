@@ -7,10 +7,10 @@
 ************************************************************************
 **
 **   Copyright(c): 2002      by Andrè Somers,
-**                 2007-2009 by Axel Pauli
+**                 2007-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -63,7 +63,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsDev->setEditable(false);  // forbid edit for the user
 
   // Under Maemo there are only three predefined sources.
-  GpsDev->addItem("GPS Daemon");   // Maemo GPS Daemon
+  GpsDev->addItem(MAEMO_LOCATION_SERVICE); // Maemo GPS Location Service
   GpsDev->addItem("/dev/ttyUSB0"); // external USB device
   GpsDev->addItem(NMEASIM_DEVICE); // Cumulus NMEA simulator
 #endif
