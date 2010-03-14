@@ -48,14 +48,6 @@ using namespace std;
 #undef DEBUG
 #endif
 
-// Switch this on for permanent error logging. That will display
-// all open and reconnect failures. Because open and reconnect
-// is done periodically you will get a lot of such message in error
-// case.
-#ifdef ERROR_LOG
-#undef ERROR_LOG
-#endif
-
 // Size of internal message queue.
 #define QUEUE_SIZE 500
 
@@ -649,19 +641,17 @@ void GpsMaemoClient::readServerMsg()
     }
 
 #ifdef DEBUG
-   cout << "GpsMaemoClient::readServerMsg(): Received Message: " << buf << endl;
+   qDebug() << "GpsMaemoClient::readServerMsg(): Received Message:" << buf;
 #endif
 
   // Split the received message into its single parts. Space is used
   // as separator.
-
   QString qbuf( buf );
   QStringList args = qbuf.split(" ");
   delete [] buf;
   buf = 0;
 
   // look, what server is requesting
-
   if( MSG_GM == args[0] )
     {
       // Get message is requested. We take the oldest element out of the
@@ -790,7 +780,7 @@ void GpsMaemoClient::writeNotifMsg( const char *msg )
     }
 
 #ifdef DEBUG
-  cout << method.toLatin1().data() << " " << msg << endl;
+  qDebug() << method << msg;
 #endif
 
   return;

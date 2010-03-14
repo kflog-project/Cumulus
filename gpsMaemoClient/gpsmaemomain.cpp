@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c): 2010 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ using namespace std;
 #include <glib.h>
 #include <glib-object.h>
 
-#include <qstring.h>
+#include <QtCore>
 
 #include "signalhandler.h"
 #include "gpsmaemoclient.h"
@@ -41,9 +41,7 @@ using namespace std;
 //----------------------------------------------------
 // import global sutdown flag, set by SignalHandler
 //----------------------------------------------------
-
 extern bool shutdownState;
-
 
 // ===========================================================================
 // Usage of programm
@@ -60,7 +58,7 @@ void usage( char * progName )
 }
 
 /**
- * Main of GPS client program. The program has three options
+ * Main of GPS Maemo client program. The program has three options
  *
  * a) -help shows the usage to the caller
  * b) -port Port number of listening end point of cumulus process
@@ -73,8 +71,6 @@ void usage( char * progName )
 int main( int argc, char* argv[] )
 {
   static QString method( "Main(): " );
-
-  int result;  // temporary return result variable
 
   unsigned short ipcPort = 0;
   bool           slave   = false;
@@ -148,7 +144,7 @@ int main( int argc, char* argv[] )
   // Setup GLib main loop for signal handling of libLocation.
   GMainLoop *gloop = g_main_loop_new(NULL, FALSE);
 
-  // GPS client module, manages the connection between the GPS and to Cumulus.
+  // GPS client module, manages the connection between the libLocation and Cumulus.
   GpsMaemoClient *client = new GpsMaemoClient( ipcPort );
 
   struct timeval timerInterval;
@@ -161,7 +157,6 @@ int main( int argc, char* argv[] )
     {
       // check, if GpsClient instance has set shutdown flag or if
       // signal handler was called for shutdown
-
       if ( client->getShutdownFlag() || shutdownState )
         {
           cerr << "Gps client main loop has discovered "
@@ -171,7 +166,6 @@ int main( int argc, char* argv[] )
 
       // Check, if process is running as slave and the parent is
       // alive. When not, initiate shutdown of own process.
-
       if ( slave && getppid() == 1 )
         {
           cerr << "Cumulus has going down, "
@@ -189,9 +183,8 @@ int main( int argc, char* argv[] )
       timerInterval.tv_usec =  500000;
 
       // Wait for read events or timeout
-
-      result = select( maxFds, readFds, (fd_set *) 0,
-                       (fd_set *) 0, &timerInterval );
+      int result = select( maxFds, readFds, (fd_set *) 0,
+                          (fd_set *) 0, &timerInterval );
 
       if ( result == -1 ) // Select returned with error
         {
@@ -219,7 +212,7 @@ int main( int argc, char* argv[] )
 
       if ( result > 0 ) // read event occurred
         {
-          // call gps client for event processing
+          // call Gps Maemo client for event processing
           client->processEvent( readFds );
         }
       else if ( result == 0 ) // timeout, do low prioritized things
@@ -237,5 +230,4 @@ int main( int argc, char* argv[] )
   delete client; // shutdown clients activities
 
   exit(0);
-
 } // End of main

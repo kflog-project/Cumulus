@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c): 2010 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -195,7 +195,7 @@ private:
     // renew the request.
     bool notify;
 
-    // flag to indicate gps connection lost
+    // flag to indicate GPS connection lost
     bool connectionLost;
 
     // Shutdown flag for main loop. Will be set in case of fatal error
