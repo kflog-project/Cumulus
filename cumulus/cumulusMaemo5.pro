@@ -257,9 +257,6 @@ DEFINES += MAEMO MAEMO5
 
 LIBS += -lstdc++ \
     -losso \
-    -lgpsbt \
-    -lgps \
-    -lgpsmgr \
     -llocation
     
 TRANSLATIONS = cumulus_de.ts \
