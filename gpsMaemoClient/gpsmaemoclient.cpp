@@ -1,21 +1,30 @@
 /***********************************************************************
 **
-**   gpsmaemoclient.cpp
+** gpsmaemoclient.cpp
 **
-**   This file is part of Cumulus
+** This file is part of Cumulus
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 by Axel Pauli (axel@kflog.org)
+** Copyright (c): 2010 by Axel Pauli (axel@kflog.org)
 **
-**   This program is free software; you can redistribute it and/or modify
-**   it under the terms of the GNU General Public License as published by
-**   the Free Software Foundation; either version 2 of the License, or
-**   (at your option) any later version.
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
 **
-**   $Id$
+** $Id$
 **
 ***********************************************************************/
+
+/**
+ * This class handles the interface between Cumulus and the Location Service used
+ * by Maemo5. Nokia has removed the former GPSD daemon in Maemo5. Therefore the
+ * Location API must be use to get data from the GPS receiver hardware. The API
+ * does not use NMEA sentences and is programmed by using GLib functionality.
+ * The Location data are converted into a string format and send via the socket
+ * connection to the Cumulus process.
+ */
 
 using namespace std;
 
@@ -61,8 +70,8 @@ using namespace std;
 // global object pointer to this class
 GpsMaemoClient *GpsMaemoClient::instance = static_cast<GpsMaemoClient *> (0);
 
-/*
- * The Maemo5 location service can emit four signal, which are handled by the
+/**
+ * The Maemo5 Location Service can emit four signal, which are handled by the
  * next four static pure C-functions.
  *
  * See Maemo5: http://wiki.maemo.org/Documentation/Maemo_5_Developer_Guide/Using_Connectivity_Components/Using_Location_API
@@ -97,7 +106,7 @@ namespace LocationCb
                                     LocationGPSDControlError error,
                                     gpointer user_data );
       /**
-       * Is called from location service when new gps data are available.
+       * Is called from location service when new GPS data are available.
        */
       static void gpsdLocationchanged( LocationGPSDevice *device,
                                        gpointer user_data );
@@ -177,11 +186,12 @@ static void LocationCb::gpsdLocationchanged( LocationGPSDevice *device,
     }
 }
 
-
-// Constructor requires a socket port of the server (listening end point)
-// useable for interprocess communication. As related host is always localhost
-// used. It will be opened two sockets to the server, one for data transfer,
-// the other only as notification channel.
+/**
+ * Constructor requires a socket port of the server (listening end point)
+ * useable for interprocess communication. As related host is always localhost
+ * used. It will be opened two sockets to the server, one for data transfer,
+ * the other only as notification channel.
+ */
 GpsMaemoClient::GpsMaemoClient( const ushort portIn )
 {
   if ( instance  )
@@ -316,13 +326,20 @@ void GpsMaemoClient::handleGpsdError()
 void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
 {
   // New GPS data available.
-  if( !device )
+  if( ! device )
     {
        return;
     }
 
   // update supervision timer/variables
   startTimer(ALIVE_TO);
+
+  if( ! device->online )
+    {
+      // There is no connection to the GPS hardware. We do ignore this call.
+      return;
+    }
+
   connectionLost = false;
 
   /**
@@ -363,13 +380,13 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
       QString epv = "";
       QString speed = "";
       QString eps = "";
-      QSTRING track = "";
+      QString track = "";
       QString epd = "";
       QString climb = "";
       QString epc = "";
       QString latitude = "";
       QString longitude = "";
-      QStrimf eph = "";
+      QString eph = "";
       QString time = "";
       QString ept = "";
 
@@ -410,34 +427,69 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
           ept  = QString("%1").arg(device->fix->ept, 0, 'f');
         }
 
-      QStringList list;
-      list << "$MAEMO0"
-           << mode
-           << time
-           << ept
-           << latitude
-           << longitude
-           << eph
-           << speed
-           << eps
-           << track
-           << epd
-           << altitude
-           << epv
-           << climb
-           << ecp
-           << "\r\n";
+      QStringList list0;
+      list0 << "$MAEMO0"
+            << mode
+            << time
+            << ept
+            << latitude
+            << longitude
+            << eph
+            << speed
+            << eps
+            << track
+            << epd
+            << altitude
+            << epv
+            << climb
+            << epc
+            << "\r\n";
 
-      QString sentence = list.join( ",");
+      QString sentence0 = list0.join( ",");
 
       // store the new sentence in the queue
-      queueMsg( sentence.toAscii().data() );
+      queueMsg( sentence0.toAscii().data() );
    }
 
+   QString status = QString("%1").arg( device->status );
+   QString satellitesInView = QString("%1").arg( device->satellites_in_view );
+   QString satellitesInUse = QString("%1").arg( device->satellites_in_use );
+
+   QStringList list1;
+   list1 << "$MAEMO1"
+         << status
+         << satellitesInView
+         << satellitesInUse;
+
+   if( device->satellites != static_cast<GPtrArray *>(0) )
+     {
+       GPtrArray* sats = device->satellites;
+
+       // There are satellite information available. Append them to the list
+       for( uint i = 0; i < sats->len; i++ )
+         {
+           LocationGPSDeviceSatellite* sat =
+               static_cast<LocationGPSDeviceSatellite *>(g_ptr_array_index( sats, i ));
+
+           list1 << QString("%1").arg( sat->prn )
+                 << QString("%1").arg( sat->elevation )
+                 << QString("%1").arg( sat->azimuth )
+                 << QString("%1").arg( sat->signal_strength )
+                 << QString("%1").arg( sat->in_use )
+                 << "\r\n";
+
+           sats++;
+         }
+     }
+
+   QString sentence1 = list1.join( ",");
+
+   // store the new sentence in the queue
+   queueMsg( sentence1.toAscii().data() );
 }
 
 /**
- * Return all currently used read file descriptors as mask, useable by the
+ * Returns the currently used read file descriptors as mask, useable by the
  * select call
  */
 fd_set *GpsMaemoClient::getReadFdMask()
@@ -458,7 +510,9 @@ fd_set *GpsMaemoClient::getReadFdMask()
   return &fdMask;
 }
 
-// Processes incoming read events. They can come from the server.
+/**
+ * Processes incoming read events. They can come from the server.
+ */
 void GpsMaemoClient::processEvent( fd_set *fdMask )
 {
   if( ipcPort )
@@ -490,6 +544,9 @@ bool GpsMaemoClient::startGpsReceiving()
   // setup alive check, that guarantees a restart after unsuccessful start
   startTimer(ALIVE_TO);
 
+  // There is no active connection, set flag.
+  connectionLost = true;
+
   // Start GPSD, results are emitted by signals.
   location_gpsd_control_start( control );
 
@@ -511,7 +568,9 @@ void GpsMaemoClient::stopGpsReceiving()
     }
 }
 
-// timeout controller
+/**
+ * Timeout controller for connection supervision.
+ */
 void GpsMaemoClient::toController()
 {
   if( timeSpan == 0 )
@@ -550,10 +609,11 @@ void GpsMaemoClient::toController()
     }
 }
 
-// Reads a server message from the socket. The protocol consists of
-// two parts. First the message length is read as unsigned
-// integer, after that the actual message as 8 bit character string.
-
+/**
+ * Reads a server message from the socket. The protocol consists of
+ * two parts. First the message length is read as unsigned
+ * integer, after that the actual message as 8 bit character string.
+ */
 void GpsMaemoClient::readServerMsg()
 {
   uint msgLen = 0;
@@ -686,10 +746,11 @@ void GpsMaemoClient::readServerMsg()
   return;
 }
 
-// Send a message via data socket to the server. The protocol consists of two
-// parts. First the message length is transmitted as unsigned integer, after
-// that the actual message as 8 bit character string.
-
+/**
+ * Send a message via data socket to the server. The protocol consists of two
+ * parts. First the message length is transmitted as unsigned integer, after
+ * that the actual message as 8 bit character string.
+ */
 void GpsMaemoClient::writeServerMsg( const char *msg )
 {
   uint msgLen = strlen( msg );
@@ -707,10 +768,11 @@ void GpsMaemoClient::writeServerMsg( const char *msg )
   return;
 }
 
-// Sent a message via notification socket to the server. The protocol consists
-// of two parts. First the message length is transmitted as unsigned integer,
-// after that the actual message as 8 bit character string.
-
+/**
+ * Sent a message via notification socket to the server. The protocol consists
+ * of two parts. First the message length is transmitted as unsigned integer,
+ * after that the actual message as 8 bit character string.
+ */
 void GpsMaemoClient::writeNotifMsg( const char *msg )
 {
   static QString method = "GpsMaemoClient::writeNotifMsg():";
@@ -734,10 +796,11 @@ void GpsMaemoClient::writeNotifMsg( const char *msg )
   return;
 }
 
-// put a new message into the process queue and sent a notification to
-// the server, if option notify is true. The notification is sent
-// only once to avoid a flood of them, if server is busy.
-
+/**
+ *  put a new message into the process queue and sent a notification to
+ *  the server, if option notify is true. The notification is sent
+ *  only once to avoid a flood of them, if server is busy.
+ */
 void GpsMaemoClient::queueMsg( const char* msg )
 {
   queue.enqueue( msg );

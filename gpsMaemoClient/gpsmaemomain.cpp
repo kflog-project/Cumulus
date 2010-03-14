@@ -211,10 +211,10 @@ int main( int argc, char* argv[] )
 
       // Check G-main loop if events are pending. Found no other way
       // as to poll it periodically.
-      if( gloop->g_main_context_pending() )
+      if( g_main_context_pending( g_main_context_default() ) )
         {
           // process all pending events
-          gloop->g_main_context_dispatch( g_main_context_default() );
+          g_main_context_dispatch( g_main_context_default() );
         }
 
       if ( result > 0 ) // read event occurred

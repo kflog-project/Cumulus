@@ -1,5 +1,6 @@
 ################################################################################
-# GPS Maemo Cumulus Client project file for qmake
+# GPS Maemo5 Client project file of Cumulus for qmake
+#
 # (c) 2010 Axel Pauli
 #
 # This template generates a makefile for the gpsMaemoClient binary.
@@ -27,7 +28,7 @@ SOURCES = \
   ../cumulus/signalhandler.cpp
 
 DESTDIR = .
-TARGET = gpsClient
+TARGET = gpsMaemoClient
 INCLUDEPATH += ../cumulus \
 	       /usr/lib/glib-2.0/include \
 	       /usr/include/glib-2.0
