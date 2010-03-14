@@ -7,6 +7,7 @@
 # License. See the file COPYING for more information.
 #
 # $Id$
+#
 ##################################################################
 
 TEMPLATE = app
