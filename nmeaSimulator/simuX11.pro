@@ -1,8 +1,18 @@
-# NMEA Simulator for cumulus
+################################################################################
+# NMEA Simulator project file of Cumulus for qmake
+#
+# (c) 2008-2010 Axel Pauli
+#
+# This template generates a makefile for the NMEA Simulator binary.
+#
 # $Id$
+#
+################################################################################
 
 TEMPLATE    = app
 CONFIG      = qt warn_on release
+
+QT -= gui # Only the core module is used.
 
 HEADERS     = \
 glider.h \
