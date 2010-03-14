@@ -6,7 +6,7 @@
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
 #
-# $Id: cumulusMaemo4.pro -1   $
+# $Id$
 #
 ##################################################################
 
