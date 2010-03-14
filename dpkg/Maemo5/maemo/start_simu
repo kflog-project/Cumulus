@@ -1,0 +1,11 @@
+#!/bin/sh
+# $Id: start_simu 3293 2009-03-26 19:48:32Z axel $
+# Maemo start script for NMEA cumulus simulator. The own Qt libraries have to be taken into account
+
+# set qt library path for run-time loader
+LD_LIBRARY_PATH=/opt/cumulus/lib
+export LD_LIBRARY_PATH
+
+# launch cumulus nmea simulator
+exec /opt/cumulus/bin/nmeaSimu $@
+

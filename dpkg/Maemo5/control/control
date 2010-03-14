@@ -1,0 +1,39 @@
+Source: cumulus
+Section: user/other
+Priority: optional
+Maintainer: Axel Pauli <axel@kflog.org>
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.2
+
+Package: cumulus
+Architecture: any
+Depends:
+Description: Cumulus is a flight computer for glider pilots.
+ Cumulus features a full-colored moving map display with elevations,
+ airspace, terrain and airfields information. It can use
+ waypoints, supports flight tasks and log flights according to the
+ IGC format standard.
+ .
+ Cumulus can be used with or without a GPS receiver (either serial or BT).
+XB-Maemo-Icon-26:
+ iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAADKUlEQVRIie3W
+ T2wVRRwH8N/M/nv79vW9lv6z9E9ouilKsBdDGhsJkhBvcPBmIBGiRg6aEGk0
+ 6VFPJpyIEUKI4EVNRA8EOJASDBg5gBqiBpAK7ePx/r99u/vezu7M7M54ookB
+ aptSwoHffb6f32/mdxgkpYSnUfipKM+hlVYMoBSafu6D6U/eUdcKOf3738pY
+ T0dWxXhCCnF8zaBqmwyGgb8tBckrrtv8bi0g9YfLP+8p3yls/bPp58d6Ow8b
+ hl5/YtDl2wtKQFl/j8IOZnXV682mz9YajT9oGBa+OvIlW/UyYIxf71s/eLDq
+ eK+isDXt+d6LQUg3aKohY5SpTb/7NgMAWNVEqqq+Zo+Pv7Xx5YnNiuRdkIgc
+ ofRe2rReikEbBaV+ZbGhVTj66NjYe1umpiY/mpmZ00Rs8XJ5pqu7787IwMCQ
+ PTSQ6zCNaLGp5SRGjCIhBAAAmEZKOhFDOU0d+vb0GcI5m0eSX9w+NXkSAKDq
+ R5qIGW6REGV0fXGQJaFqPa8GTO5QFHUCI9wZRIz/mi/6tr2x89Ls7F7Xceej
+ iB459PGH3zw4wxKRlpwpISFw8+YNANj1eKhUuotC0rKKPv1Mxep2hFC/EEIJ
+ ORdmwsTXJ44pNa/dNTA4GvdtsMe/uHDNXt/bm2Q0BN0pmJQ8yvmtNrLSKbTk
+ RL9VWmYixO5uTdsphRimjOltEkHTbcP9ag3uleuQKDq4QdgRFEpvkLm83ZGx
+ RNZKwabhdT0hIU5ImYNSafZI6OzFWd1JjEyA9GED2N5MLjUiONW8tg/lehPy
+ JSdZKDdaDRJfS1lmiYS0pHIIuABJGQOmK1BpuNebnicjxn8xs50PL8P358/b
+ IBObUvbC/ZbsN4GO6DRdJaQNtWYNCpU6z1f8RtHnf/kSn4pCdgu7XiF/8lOy
+ 1DsvQud+umBQxjNSovelkG8mMdUqtdat0t3bp27k0rLhNsHxGkAi6sRgXleH
+ p87NHdrHlxP+H4hE0Q4AmAEhN/kkuvpPsX702IH9P6406H8hAPgcAOYwRgfS
+ hn4pa1nFJ408gPYDgI8xLq3Lmu7unbtWfC3LKfT8F/TMQ/8C5TuVBuYSDVoA
+ AAAASUVORK5CYII=
+

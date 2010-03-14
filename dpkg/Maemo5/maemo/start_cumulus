@@ -1,0 +1,15 @@
+#!/bin/sh
+# $Id: start_cumulus 3343 2009-04-21 21:27:58Z axel $
+# Maemo start script for cumulus. The own Qt libraries have to be taken into account
+
+# set qt library path for run-time loader
+LD_LIBRARY_PATH=/opt/cumulus/lib
+export LD_LIBRARY_PATH
+
+# workaround to start browser from QTextView
+BROWSER="browser --url"
+export BROWSER
+
+# launch cumulus
+exec /opt/cumulus/bin/cumulus
+

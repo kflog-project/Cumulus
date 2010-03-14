@@ -1,0 +1,16 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+StartupWMClass=cumulus
+Name=Cumulus
+Comment=Flight navigation program
+Exec=/opt/cumulus/bin/start_cumulus
+Icon=cumulus
+X-Window-Icon=cumulus
+X-Window-Icon-Dimmed=cumulus
+X-HildonDesk-ShowInToolbar=true
+X-Osso-Service=org.kflog.Cumulus
+X-Osso-Type=application/x-executable
+Terminal=false
+
