@@ -27,7 +27,7 @@
 #include <QPoint>
 #include <QTimer>
 
-#ifdef MAEMO
+#ifdef MAEMO4
 #include "gpsmaemo.h"
 #endif
 
@@ -39,7 +39,7 @@
 /**
  * This class parses and decodes the NMEA sentences and provides access
  * to the last know data. Furthermore it is managing the connection to a GPS
- * receiver connected by RS232, USB or to a GPS daemon process.
+ * receiver connected by RS232, USB or to a Maemo GPS daemon process.
  */
 
 struct SatInfo
@@ -69,6 +69,51 @@ struct GPSInfo
     bool Wind;
     bool AirSpeed;
   };
+
+#ifdef MAEMO5
+
+/**
+ * The following two enumerations are used by Maemo's Location Service for
+ * status and mode encoding. They are reused here again for decoding purposes.
+ *
+ * See here for more information:
+ *
+ * http://maemo.org/api_refs/5.0/5.0-final/liblocation/LocationGPSDevice.html
+ */
+
+/**
+Enumeration representing the various states that a Maemo GPS device can be in.
+
+LOCATION_GPS_DEVICE_STATUS_NO_FIX   The device does not have a fix.
+LOCATION_GPS_DEVICE_STATUS_FIX      The device has a fix.
+LOCATION_GPS_DEVICE_STATUS_DGPS_FIX The device has a DGPS fix.
+                                    Deprecated: this constant is not used anymore.
+*/
+
+typedef enum
+  {
+    LOCATION_GPS_DEVICE_STATUS_NO_FIX,
+    LOCATION_GPS_DEVICE_STATUS_FIX,
+    LOCATION_GPS_DEVICE_STATUS_DGPS_FIX,
+  } LocationGPSDeviceStatus;
+
+/**
+Enumeration representing the modes that a Maemo GPS device can operate in.
+
+LOCATION_GPS_DEVICE_MODE_NOT_SEEN The device has not seen a satellite yet.
+LOCATION_GPS_DEVICE_MODE_NO_FIX   The device has no fix.
+LOCATION_GPS_DEVICE_MODE_2D       The device has latitude and longitude fix.
+LOCATION_GPS_DEVICE_MODE_3D       The device has latitude, longitude, and altitude.
+*/
+typedef enum
+  {
+    LOCATION_GPS_DEVICE_MODE_NOT_SEEN,
+    LOCATION_GPS_DEVICE_MODE_NO_FIX,
+    LOCATION_GPS_DEVICE_MODE_2D,
+    LOCATION_GPS_DEVICE_MODE_3D
+  } LocationGPSDeviceMode;
+
+#endif
 
 class GpsNmea : public QObject
   {
@@ -428,7 +473,7 @@ class GpsNmea : public QObject
      */
     void newSentence(const QString&);
 
-  private: // Private methods
+  private:
 
     /** Resets all data objects to their initial values. This is called
      *  at startup, at restart and if the GPS fix has been lost. */
@@ -470,6 +515,18 @@ class GpsNmea : public QObject
      * Extracts McCready data from LX Navigation $LXWP2 sentence.
      */
     void __ExtractLxwp2(const QStringList& stringList);
+
+#ifdef MAEMO5
+    /**
+     * Extract proprietary sentence $MAEMO0.
+     */
+    void __ExtractMaemo0(const QString& string);
+    /**
+     * Extract proprietary sentence $MAEMO1.
+     */
+    void __ExtractMaemo1(const QString& string);
+#endif
+
     /** This function is called to indicate that good data has been received.
      *  It resets the TimeOut timer and if necessary changes the connected status.
      */
@@ -570,7 +627,7 @@ class GpsNmea : public QObject
     /** reference to the normal serial connection */
     GpsCon* serial;
 
-#ifdef MAEMO
+#ifdef MAEMO4
     /** reference to the Maemo GPS daemon connection */
     GpsMaemo* gpsdConnection;
 #endif

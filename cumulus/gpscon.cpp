@@ -53,7 +53,7 @@ extern MapView *_globalMapView;
  * process. All data transfer between the two processes is be done via a
  * socket interface. The path name, used during startup of Cumulus must be
  * passed in the constructor, that the gpsClient resp. gpsMaemoClient binary
- * can be found. It lays in the same directory as Cumulus.
+ * can be found. It lays in the same directory as the Cumulus binary.
  */
 GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
 {
@@ -200,7 +200,7 @@ bool GpsCon::startGpsReceiving()
 }
 
 /**
- * Stops the gps receiver on the client side.
+ * Stops the GPS receiver on the client side.
  */
 bool GpsCon::stopGpsReceiving()
 {
@@ -358,7 +358,7 @@ bool GpsCon::startClientProcess()
       qWarning("%s Gps client binary %s is not accessible! "
                "Cannot start Gps client.",
                method.toLatin1().data(),
-               fileName.toLatin1().data());
+               exe.toLatin1().data());
 
       return false;
     }

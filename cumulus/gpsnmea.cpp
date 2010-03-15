@@ -20,7 +20,14 @@
 /**
  * This class parses and decodes the NMEA sentences and provides access
  * to the last know data. Furthermore it is managing the connection to a GPS
- * receiver connected by RS232, USB or to a GPS daemon process.
+ * receiver connected by RS232, USB or to a GPS daemon process on Maemo. Due to
+ * different APIs under Maemo4 and Maemo5 different conditional defines are used
+ * for special adaptions. The following defines are in use:
+ *
+ * MAEMO  for Maemo in general
+ * MAEMO4 for Maemo 4, OS2008, devices N8x0
+ * MAEMO5 for Maemo 5, OS2009, devices N900
+ *
  */
 
 #include <stdio.h>
@@ -31,7 +38,7 @@
 #include <time.h>
 #include <cmath>
 
-#include <QStringList>
+#include <QtCore>
 
 #include "gpsnmea.h"
 #include "mapmatrix.h"
@@ -310,6 +317,24 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   sentence = sentence.replace( QRegExp("[\n\r]"), "" );
 
+#ifdef MAEMO5
+
+  // Handle sentences created by GPS Maemo Client process. These sentences
+  // contain no checksum items.
+  if( sentence.startsWith( "$MAEMO0") )
+    {
+      __ExtractMaemo0( sentence );
+      return;
+    }
+
+  if( sentence.startsWith( "$MAEMO1") )
+    {
+      __ExtractMaemo1( sentence );
+      return;
+    }
+
+#endif
+
   int i = sentence.lastIndexOf('*');
 
   if ( i == -1)
@@ -329,7 +354,6 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   // comma. The first part will contain the identifier, the rest the
   // arguments.  no reason to truncate. Checksum will be ignored.
   // sentence.truncate(i-1);
-
   QStringList slst = sentence.split( QRegExp("[,*:]"), QString::KeepEmptyParts );
 
   dataOK();
@@ -1298,7 +1322,7 @@ double GpsNmea::__ExtractHeading(const QString& headingstring)
       return 0.0;
     }
 
-  if ( heading !=_lastHeading )
+  if ( heading != _lastHeading )
     {
       _lastHeading = heading;
       emit newHeading();
@@ -1314,11 +1338,18 @@ Altitude GpsNmea::__ExtractAltitude(const QString& altitude, const QString& unit
   // qDebug("alt=%s, unit=%s, hae=%s, unit=%s",
   //  altitude.toLatin1().data(), unitAlt.toLatin1().data(), heightOfGeoid.toLatin1().data(), unitHeight.toLatin1().data() );
 
+  bool ok, ok1;
+
   Altitude res(0);
-  double alt = altitude.toDouble();
+  double alt = altitude.toDouble(&ok);
 
   Altitude sep(0);
-  double hae = heightOfGeoid.toDouble();
+  double hae = heightOfGeoid.toDouble(&ok1);
+
+  if( ok == false || ok1 == false )
+    {
+      return res;
+    }
 
   // check for other unit as meters, meters is the default
   if ( unitAlt.toLower() == "f" )
@@ -1433,17 +1464,259 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
   return result;
 }
 
-/** Extracts the sat count from the NMEA sentence. */
+/** Extracts the satellite count in view from the NMEA sentence. */
 void GpsNmea::__ExtractSatcount(const QString& satcount)
 {
-  int count = satcount.toInt();
+  bool ok;
 
-  if( count != _lastSatInfo.satCount )
+  int count = satcount.toInt(&ok);
+
+  if( ok && count != _lastSatInfo.satCount )
     {
       _lastSatInfo.satCount = count;
       emit newSatCount();
     }
 }
+
+#ifdef MAEMO5
+
+/**
+ * Extract proprietary sentence $MAEMO0. It is created by the GPS Maemo Client
+ * and not all positions are always set. In such a case they are empty.
+ */
+void GpsNmea::__ExtractMaemo0(const QString& string)
+{
+  /**
+   * Definition of proprietary sentence $MAEMO0.
+   *
+   *  0) $MAEMO
+   *  1) Mode
+   *  2) Time stamp
+   *  3) Ept
+   *  4) Latitude  in KFLog degrees
+   *  5) Longitude in KFLog degrees
+   *  6) Eph in cm
+   *  7) Speed in km/h
+   *  8) Eps
+   *  9) Track in degree 0...359
+   * 10) Epd
+   * 11) Altitude in meters
+   * 12) Epv
+   * 13) Climb
+   * 14) Epc
+   */
+
+  dataOK();
+
+  QStringList slist = sentence.split( ",", QString::KeepEmptyParts );
+  bool ok, ok1;
+
+  /*
+  Extract mode. Possible values can be:
+  LOCATION_GPS_DEVICE_MODE_NOT_SEEN The device has not seen a satellite yet. (Not used by Cumulus)
+  LOCATION_GPS_DEVICE_MODE_NO_FIX   The device has no fix.
+  LOCATION_GPS_DEVICE_MODE_2D       The device has latitude and longitude fix.
+  LOCATION_GPS_DEVICE_MODE_3D       The device has latitude, longitude, and altitude.
+  */
+  if( ! slist[1].isEmpty() )
+    {
+      int mode = slist[1].toInt( &ok );
+
+      if( ok )
+        {
+          _lastSatInfo.fixValidity = mode;
+
+          if( mode == LOCATION_GPS_DEVICE_MODE_2D ||
+              mode == LOCATION_GPS_DEVICE_MODE_3D )
+            {
+              fixOK();
+            }
+          else
+            {
+              fixNOK();
+            }
+        }
+    }
+
+  // Extract time info. It is encoded in UTC seconds (I assume that).
+  if( ! slist[2].isEmpty() )
+    {
+      double doubleTime = slist[2].toDouble( &ok );
+
+      uint uintTime = static_cast<uint>( rint(doubleTime) );
+
+      if( ok )
+        {
+          QDateTime utc = QDateTime::setTime_t( uintTime );
+
+          if( utc.isValid() )
+            {
+              _utc = utc;
+              _lastTime = utc.time();
+              _lastDate = utc.date();
+            }
+        }
+    }
+
+  // Extract Latitude and Longitude. They are encoded in KFLog format.
+  if( ! slist[4].isEmpty() && ! slist[5].isEmpty() )
+    {
+      int lat = slist[4].toInt( &ok );
+      int lon = slist[5].toInt( &ok1 );
+
+      if( ok && ok1 )
+        {
+          QPoint res(lat, lon);
+
+          if( _lastCoord != res )
+            {
+              _lastCoord = res;
+              emit newPosition();
+            }
+        }
+    }
+
+  // Extract Eph, horizontal position accuracy, encoded in cm.
+  if( ! slist[6].isEmpty() )
+    {
+      // PDOP is handled in meters
+      bool ok;
+      double pdop = sentence[6].toDouble( &ok ) / 100.0;
+
+      if( ok == true && _lastSatInfo.fixAccuracy != pdop )
+        {
+          _lastSatInfo.fixAccuracy = static_cast<int>(rint(pdop));
+        }
+    }
+
+  // Extract Speed, encoded in km/h.
+  if( ! slist[7].isEmpty() )
+    {
+      double kph = slist[7].toDouble( &ok );
+
+      if( ok )
+        {
+          Speed res;
+          res.setKph( kph );
+
+          if( res != _lastSpeed )
+            {
+              _lastSpeed = res;
+              emit newSpeed();
+            }
+        }
+    }
+
+  // Extract track (heading) info.Track is encoded in degree 0...359.
+  if( ! slist[9].isEmpty() )
+    {
+      __ExtractHeading( slist[9] );
+    }
+
+  // Extract altitude info. Altitude is encoded in meters
+  if( ! slist[11].isEmpty() )
+    {
+      __ExtractAltitude( slist[11], "M", "0", "M" );
+    }
+
+  // Climb info not extracted at the moment!
+
+  // Do report a new fix, if the time has been changed. That must be the last
+  // action after the end of extraction.
+  if( _lastTime != _lastRmcTime )
+    {
+      /**
+       * The fix time has been changed and that is reported now.
+       * We do check the fix time only once in the $GPRMC sentence.
+       */
+      _lastRmcTime = _lastTime;
+      emit newFix();
+    }
+}
+
+/**
+ * Extract proprietary sentence $MAEMO1.
+ */
+void GpsNmea::__ExtractMaemo1(const QString& string)
+{
+  /**
+   * Definition of proprietary sentence $MAEMO1.
+   *
+   *  0) $MAEMO1
+   *  1) Status
+   *  2) Satellites in view
+   *  3) Satellites in use
+   *  4) Satellite number
+   *  5) Elevation
+   *  6) Azimuth
+   *  7) Signal strength
+   *  8) Satellite in use
+   *  9) Repetition of 4-8 according to Satellites in view
+   */
+
+  dataOK();
+
+  // Store receive time of constellation in every case.
+  _lastSatInfo.constellationTime = _lastTime;
+
+  QStringList slist = sentence.split( ",", QString::KeepEmptyParts );
+  bool ok, ok1;
+
+  /**
+  Extract status, possible values are:
+  LOCATION_GPS_DEVICE_STATUS_NO_FIX   The device does not have a fix.
+  LOCATION_GPS_DEVICE_STATUS_FIX      The device has a fix.
+  */
+  if( ! slist[1].isEmpty() )
+    {
+      int status = slist[1].toInt( &ok );
+
+      if( ok )
+        {
+          if( status == LOCATION_GPS_DEVICE_STATUS_FIX  )
+            {
+              fixOK();
+            }
+          else
+            {
+              fixNOK();
+            }
+        }
+    }
+
+  // Extracts Satellites in view
+  if( ! slist[2].isEmpty() )
+    {
+      int satsInView = slist[2].toInt( &ok );
+
+      if( ok )
+        {
+          __ExtractSatcount( slist[2] );
+
+          QString satsForFix;
+          sivInfoInternal.clear();
+
+          for( int i = 4; i <= slist.size() - 5; i +=5 )
+            {
+              __ExtractSatsInView( slist[i], slist[i+1], slist[i+2], slist[i+3] );
+
+              if( ! slist[i+4].isEmpty() && slist[i+4] != "0" )
+                {
+                  // Satellite is used for fix
+                  satsForFix += QString("%1").arg( slist[i], 2, 10, '0' );
+                }
+            }
+
+          if( satsForFix != _lastSatInfo.constellation )
+            {
+              _lastSatInfo.constellation = satsForFix;
+              emit newSatConstellation();
+            }
+        }
+    }
+}
+
+#endif
 
 /** This slot is called by the external GPS receiver process to signal
  *  a connection lost to the GPS receiver or daemon. */
