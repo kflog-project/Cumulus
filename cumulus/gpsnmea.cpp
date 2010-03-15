@@ -1465,17 +1465,24 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
 }
 
 /** Extracts the satellite count in view from the NMEA sentence. */
-void GpsNmea::__ExtractSatcount(const QString& satcount)
+bool GpsNmea::__ExtractSatcount(const QString& satcount)
 {
   bool ok;
 
   int count = satcount.toInt(&ok);
+
+  if( ! ok )
+    {
+      return false;
+    }
 
   if( ok && count != _lastSatInfo.satCount )
     {
       _lastSatInfo.satCount = count;
       emit newSatCount();
     }
+
+  return true;
 }
 
 #ifdef MAEMO5
@@ -1508,7 +1515,7 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
 
   dataOK();
 
-  QStringList slist = sentence.split( ",", QString::KeepEmptyParts );
+  QStringList slist = string.split( ",", QString::KeepEmptyParts );
   bool ok, ok1;
 
   /*
@@ -1547,11 +1554,12 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
 
       if( ok )
         {
-          QDateTime utc = QDateTime::setTime_t( uintTime );
+          QDateTime utc;
+          utc.setTime_t( uintTime );
 
           if( utc.isValid() )
             {
-              _utc = utc;
+              _lastUtc = utc;
               _lastTime = utc.time();
               _lastDate = utc.date();
             }
@@ -1581,7 +1589,7 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
     {
       // PDOP is handled in meters
       bool ok;
-      double pdop = sentence[6].toDouble( &ok ) / 100.0;
+      double pdop = slist[6].toDouble( &ok ) / 100.0;
 
       if( ok == true && _lastSatInfo.fixAccuracy != pdop )
         {
@@ -1659,8 +1667,8 @@ void GpsNmea::__ExtractMaemo1(const QString& string)
   // Store receive time of constellation in every case.
   _lastSatInfo.constellationTime = _lastTime;
 
-  QStringList slist = sentence.split( ",", QString::KeepEmptyParts );
-  bool ok, ok1;
+  QStringList slist = string.split( ",", QString::KeepEmptyParts );
+  bool ok;
 
   /**
   Extract status, possible values are:
@@ -1687,12 +1695,8 @@ void GpsNmea::__ExtractMaemo1(const QString& string)
   // Extracts Satellites in view
   if( ! slist[2].isEmpty() )
     {
-      int satsInView = slist[2].toInt( &ok );
-
-      if( ok )
+      if( __ExtractSatcount( slist[2] ) )
         {
-          __ExtractSatcount( slist[2] );
-
           QString satsForFix;
           sivInfoInternal.clear();
 
@@ -1703,7 +1707,8 @@ void GpsNmea::__ExtractMaemo1(const QString& string)
               if( ! slist[i+4].isEmpty() && slist[i+4] != "0" )
                 {
                   // Satellite is used for fix
-                  satsForFix += QString("%1").arg( slist[i], 2, 10, '0' );
+                  int sat =  slist[i].toInt( &ok );
+                  satsForFix += QString("%1").arg( sat, 2, 10, QChar('0') );
                 }
             }
 

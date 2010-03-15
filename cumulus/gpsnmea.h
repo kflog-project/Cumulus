@@ -499,7 +499,7 @@ class GpsNmea : public QObject
     /** Extracts the constellation from the NMEA sentence. */
     QString __ExtractConstellation(const QStringList& sentence);
     /** Extracts the satellites count from the NMEA sentence. */
-    void __ExtractSatcount(const QString& satcount);
+    bool __ExtractSatcount(const QString& satcount);
     /** Extracts satellites In View (SIV) info from a NMEA sentence. */
     void __ExtractSatsInView(const QStringList& sentence);
     /** Extracts satellites In View (SIV) info from a NMEA sentence. */
