@@ -19,11 +19,14 @@
 
 /**
  * This class handles the interface between Cumulus and the Location Service used
- * by Maemo5. Nokia has removed the former GPSD daemon in Maemo5. Therefore the
- * Location API must be use to get data from the GPS receiver hardware. The API
- * does not use NMEA sentences and is programmed by using GLib functionality.
- * The Location data are converted into a string format and send via the socket
- * connection to the Cumulus process.
+ * by Maemo5. Nokia has removed the former GPSD daemon in Maemo5 and replaced by
+ * liblocation API library and a set of on-request daemon processes for different
+ * location methods. Therefore the Location API must be used to get data from the
+ * GPS receiver hardware. The API does not use NMEA sentences and is programmed
+ * by using GLib functionality :-(( The received Location data are converted into
+ * a string format by this class and send via the socket connection to the
+ * Cumulus process. Different methods of this class are called by the running
+ * main loops (see source file gpsmaemomain.cpp).
  */
 
 using namespace std;
@@ -72,7 +75,7 @@ GpsMaemoClient *GpsMaemoClient::instance = static_cast<GpsMaemoClient *> (0);
  */
 
 
-//---------------LibLocation Wrapper Functions----------------------------------
+/*------Declaration of LibLocation Wrapper Functions--------------------------*/
 
 namespace
 { // we put the glib wrapper functions in anonymous name space
@@ -105,6 +108,8 @@ namespace LocationCb
     }
   }
 }
+
+/*------Implementation of LibLocation Wrapper Functions-----------------------*/
 
 /**
  * Is called from location service when GPSD is running.
@@ -205,8 +210,8 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
     {
       if( clientData.connect2Server( IPC_IP, ipcPort ) == -1 )
         {
-          cerr << "Command channel Connection to Cumulus Server failed!"
-               << " Fatal error, terminate process!" << endl;
+          qWarning() << "Command channel Connection to Cumulus Server failed!"
+                     << "Fatal error, terminate process!";
 
           setShutdownFlag(true);
           return;
@@ -214,8 +219,8 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
 
       if( clientNotif.connect2Server( IPC_IP, ipcPort ) == -1 )
         {
-          cerr << "Notification channel Connection to Cumulus Server failed!"
-               << " Fatal error, terminate process!" << endl;
+          qWarning() << "Notification channel Connection to Cumulus Server failed!"
+                     << "Fatal error, terminate process!";
 
           setShutdownFlag(true);
           return;
@@ -274,8 +279,7 @@ GpsMaemoClient::~GpsMaemoClient()
 }
 
 /*
- * Wrapper method to handle GLib signal emitted by the
- * location service.
+ * Wrapper method to handle GLib signal emitted by the location service.
  */
 void GpsMaemoClient::handleGpsdRunning()
 {
@@ -343,7 +347,7 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
    *  3) Ept
    *  4) Latitude in KFLog degrees
    *  5) Longitude in KFLog degrees
-   *  6) Eph
+   *  6) Eph in cm
    *  7) Speed in km/h
    *  8) Eps
    *  9) Track in degree 0...359
@@ -443,9 +447,9 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
       queueMsg( sentence0.toAscii().data() );
    }
 
-   QString status = QString("%1").arg( device->status );
+   QString status           = QString("%1").arg( device->status );
    QString satellitesInView = QString("%1").arg( device->satellites_in_view );
-   QString satellitesInUse = QString("%1").arg( device->satellites_in_use );
+   QString satellitesInUse  = QString("%1").arg( device->satellites_in_use );
 
    QStringList list1;
    list1 << "$MAEMO1"
@@ -469,8 +473,6 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
                  << QString("%1").arg( sat->signal_strength )
                  << QString("%1").arg( sat->in_use )
                  << "\r\n";
-
-           sats++;
          }
      }
 
@@ -673,9 +675,9 @@ void GpsMaemoClient::readServerMsg()
       // check protocol versions, reply with pos or neg
       if( MSG_PROTOCOL != args[1] )
         {
-          cerr << "GpsMaemoClient::readServerMsg(): "
-               << "Message protocol versions are incompatible, "
-               << "closes connection and shutdown client" << endl;
+          qWarning() << "GpsMaemoClient::readServerMsg():"
+                     << "Message protocol versions are incompatible,"
+                     << "closes connection and shutdown client";
 
           writeServerMsg( MSG_NEG );
           setShutdownFlag(true);
@@ -719,16 +721,15 @@ void GpsMaemoClient::readServerMsg()
     }
   else if( MSG_SHD == args[0] )
     {
-      // Shutdown is requested by the server. This message will not be
-      // acked!
+      // Shutdown is requested by the server. This message will not be acked!
       clientData.closeSock();
       clientNotif.closeSock();
       setShutdownFlag(true);
     }
   else
     {
-      cerr << "GpsMaemoClient::readServerMsg(): "
-           << "Unknown message received: " << buf << endl;
+      qWarning() << "GpsMaemoClient::readServerMsg():"
+                 << "Unknown message received:" << buf;
       writeServerMsg( MSG_NEG );
     }
 

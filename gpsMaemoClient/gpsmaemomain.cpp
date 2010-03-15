@@ -82,7 +82,6 @@ int main( int argc, char* argv[] )
     }
 
   // process passed arguments
-
   int i = 1;
   int res;
 
@@ -178,7 +177,7 @@ int main( int argc, char* argv[] )
       // get all session file descriptors
       fd_set *readFds = client->getReadFdMask();
 
-      // main loop timeout set to 500ms seconds
+      // main loop timeout set to 500 milliseconds
       timerInterval.tv_sec  =  0;
       timerInterval.tv_usec =  500000;
 
