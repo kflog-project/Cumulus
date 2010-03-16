@@ -3,4 +3,4 @@
 # Found no other way to get it running
 
 install:
-	cd ../..; $(MAKE) -f  Makefile.Maemo DESTDIR=$(DESTDIR) dpkg_install
+	cd ../../..; $(MAKE) -f  Makefile.Maemo5 DESTDIR=$(DESTDIR) dpkg_install
