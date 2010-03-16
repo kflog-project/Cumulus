@@ -80,7 +80,7 @@ check_dir:
 
 # Use this target to install Cumulus in scratchbox for X86 emulation.
 install: check_dir deinstall install_lang
-	@echo '===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====='
+	@echo "===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====="
 	strip cumulus/cumulus
 	strip gpsClient/gpsClient
 	strip gpsMaemoClient/gpsMaemoClient
