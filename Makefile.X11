@@ -61,9 +61,6 @@ install: check_dir deinstall install_lang
 	install -d $(INSTALL_ROOT)/icons/windarrows
 	install -d $(INSTALL_ROOT)/locale
 	install -d $(INSTALL_ROOT)/sounds
-	install -d $(INSTALL_ROOT)/maps/airfields
-	install -d $(INSTALL_ROOT)/maps/airspaces
-	install -d $(INSTALL_ROOT)/maps/landscape
 	install --mode=755 cumulus/cumulus $(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(INSTALL_ROOT)/bin
@@ -94,7 +91,6 @@ deinstall:
 .PHONY : langpacks
 langpacks: langpack_de
 	@echo 'All language packs created'
-
 .PHONY : langpack_de
 langpack_de:
 	cd cumulus; $(LRELEASE) -verbose -nounfinished cumulus_de.ts -qm cumulus_de_DE.qm

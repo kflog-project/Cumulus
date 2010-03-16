@@ -14,6 +14,16 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-03-16 AP: Nokia has replaced in Maemo5 the traditional GPS daemon by
+                   other internal processes. The location services must be taken
+                   now to get the GPS data. Therefore a new client process with
+                   the name gpsMaemoClient has been added to Cumulus to handle
+                   that.
+[o] 2010-03-16 AP: NMEA parser extracts too the satellites in use now.
+                   Some signals in NMEA parser modified. The change information
+                   is added to them to avoid unneeded callbacks.
+[-] 2010-03-16 AP: BUGFIX: Satellites in use have to be recorded by IGC logger
+                   and not satellites in view.
 [+] 2010-03-08 AP: New dialog added for downloading of airspaces in Settings
                    Airspaces.
 [-] 2010-03-07 AP: BUGFIX: Cumulus did crash if the GPS device was changed

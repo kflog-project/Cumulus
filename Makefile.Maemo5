@@ -11,15 +11,22 @@
 ################################################################################
 
 # Version is determined from the header file target.h
-VERSION=`cat cumulus/target.h | grep CU_VERSION | cut -d '\"' -f 2`
+VERSION=`cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2`
 
-CUMULUS_REL=cumulus-$(VERSION)-n900
+CUMULUS_REL=cumulus-$(VERSION)
+
+# Debian package build directory
+CUMULUS_DEB=dpkg/n900/$(CUMULUS_REL)
 
 # current Qt version
 QT_VERSION=4.5.3
 
 # installation directory of Qt libraries
 QT_LIBDIR=/opt/qt$(QT_VERSION)/lib
+
+# Reset language environment because the date can be formatted according
+# to local rules. That does not like dpkg-buildpackage.
+LANG=
 
 DATE=`date +'%a, %d %b %Y %H:%M:%S %z'`
 
@@ -30,7 +37,7 @@ INSTALL_ROOT = /opt/cumulus
 QMAKE    = qmake
 LRELEASE = lrelease
 
-all:	qmake resetdate
+all:	$(QMAKE) resetdate
 	cd cumulus; make
 	cd gpsClient; make
 	cd gpsMaemoClient; make
@@ -71,7 +78,7 @@ check_dir:
 
 .PHONY : install
 
-# installs cumulus under scratchbox X86 target
+# Use this target to install Cumulus in scratchbox for X86 emulation.
 install: check_dir deinstall install_lang
 	@echo '===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====='
 	strip cumulus/cumulus
@@ -87,9 +94,6 @@ install: check_dir deinstall install_lang
 	install -d $(INSTALL_ROOT)/icons/windarrows
 	install -d $(INSTALL_ROOT)/locale
 	install -d $(INSTALL_ROOT)/sounds
-	install -d $(INSTALL_ROOT)/maps/airfields
-	install -d $(INSTALL_ROOT)/maps/airspaces
-	install -d $(INSTALL_ROOT)/maps/landscape
 	install -d $(DESTDIR)/usr/share/applications/hildon
 	install -d $(DESTDIR)/usr/share/dbus-1/services
 	install -d $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
@@ -115,29 +119,29 @@ install: check_dir deinstall install_lang
 .PHONY : dpkg dpkg_make
 dpkg:
 	@echo "===== Building Fremantle Maemo5 package for Cumulus $(VERSION) ====="
-	@$(MAKE) -f Makefile.Maemo VERSION=$(VERSION) dpkg_make
+	$(MAKE) -f Makefile.Maemo5 VERSION=$(VERSION) dpkg_make
 
 # This target will build the debian package. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation mark
 # cause problems in other shell commands, if they not expanded before.
 dpkg_make:
-	rm -fr dpkg/$(CUMULUS_REL)
-	mkdir -p dpkg/Maemo5/$(CUMULUS_REL)
-	cd dpkg/$(CUMULUS_REL); \
-	echo '\n' | dh_make -c GPL -e axel@kflog.org -s -n
-	cp dpkg/Maemo5/control/makefile dpkg/$(CUMULUS_REL)
-	sed -e "s/__DATE__/$(DATE)/g" dpkg/control/copyright > dpkg/$(CUMULUS_REL)/debian/copyright
-	cp dpkg/Maemo5/control/control dpkg/$(CUMULUS_REL)/debian/
-	cp dpkg/Maemo5/control/rules dpkg/$(CUMULUS_REL)/debian/
-	cp dpkg/Maemo5/control/postinst dpkg/$(CUMULUS_REL)/debian/
-	cp dpkg/Maemo5/control/prerm dpkg/$(CUMULUS_REL)/debian/
-	cp dpkg/Maemo5/control/postrm dpkg/$(CUMULUS_REL)/debian/
-	sed -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/README > dpkg/$(CUMULUS_REL)/debian/README
-	cp dpkg/Maemo5/$(CUMULUS_REL)/debian/README dpkg/$(VERSION)/debian/README.Debian
-	sed -e "s/__VERSION__/$(CUMULUS_REL)/g" -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/changelog > dpkg/$(CUMULUS_REL)/debian/changelog
-	cd dpkg/$(CUMULUS_REL); \
+	rm -fr $(CUMULUS_DEB)
+	mkdir -p $(CUMULUS_DEB)
+	cd $(CUMULUS_DEB); \
+	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -e axel@kflog.org -s -n
+	cp dpkg/Maemo5/control/makefile $(CUMULUS_DEB)
+	sed -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/copyright > $(CUMULUS_DEB)/debian/copyright
+	cp dpkg/Maemo5/control/control $(CUMULUS_DEB)/debian/
+	cp dpkg/Maemo5/control/rules $(CUMULUS_DEB)/debian/
+	cp dpkg/Maemo5/control/postinst $(CUMULUS_DEB)/debian/
+	cp dpkg/Maemo5/control/prerm $(CUMULUS_DEB)/debian/
+	cp dpkg/Maemo5/control/postrm $(CUMULUS_DEB)/debian/
+	sed -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/README > $(CUMULUS_DEB)/debian/README
+	cp $(CUMULUS_DEB)/debian/README $(CUMULUS_DEB)/debian/README.Debian
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/changelog > $(CUMULUS_DEB)/debian/changelog
+	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage -rfakeroot
-	rm -f dpkg/$(CUMULUS_REL).dsc dpkg/$(CUMULUS_REL).tar.gz
+	rm -f $(CUMULUS_DEB)/../cumulus_$(VERSION).dsc $(CUMULUS_DEB)/../cumulus_$(VERSION).tar.gz
 
 # copies all files of cumulus into the debian package area
 .PHONY : dpkg_install
@@ -145,6 +149,7 @@ dpkg_install:
 	@echo '===== Installing Cumulus $(VERSION) under $(DESTDIR)/$(INSTALL_ROOT) ====='
 	strip cumulus/cumulus
 	strip gpsClient/gpsClient
+	strip gpsMaemoClient/gpsMaemoClient
 	strip nmeaSimulator/nmeaSimu
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/etc
@@ -156,9 +161,6 @@ dpkg_install:
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/lib
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/locale
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/sounds
-	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/airfields
-	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/airspaces
-	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/landscape
 	install -d $(DESTDIR)/usr/share/applications/hildon
 	install -d $(DESTDIR)/usr/share/dbus-1/services
 	install -d $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
@@ -166,6 +168,7 @@ dpkg_install:
 	install --mode=755 dpkg/Maemo5/maemo/start_simu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 cumulus/cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install --mode=755 gpsMaemoClient/gpsMaemoClient $(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 dpkg/Maemo5/maemo/aplay $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=644 etc/glider.pol $(DESTDIR)/$(INSTALL_ROOT)/etc
@@ -177,8 +180,8 @@ dpkg_install:
 	install --mode=644 help/de/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install --mode=644 help/en/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
-	install --mode=644 dpkg/Maemo5/Maemo5/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
-	install --mode=644 dpkg/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service
+	install --mode=644 dpkg/Maemo5/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
+	install --mode=644 dpkg/Maemo5/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service
 	install --mode=755 $(QT_LIBDIR)/libQtCore.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
 	install --mode=755 $(QT_LIBDIR)/libQtGui.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
 	install --mode=755 $(QT_LIBDIR)/libQtNetwork.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
@@ -209,14 +212,13 @@ langpack_de:
 .PHONY : release
 release: clean all langpacks
 
-# copies change log and debian package to web page
+# copies change log and debian package to the web page
 .PHONY : copy_web
 copy_web:
-	scp -C ChangeLog web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/ChangeLog_$(VERSION)_`date '+%F'`
-	scp -C dpkg/cumulus_$(VERSION)_armel.changes \
+	scp -C $(CUMULUS_DEB)/../cumulus_$(VERSION)_armel.changes \
 	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
-	scp -C dpkg/cumulus_$(VERSION)_armel.deb \
-	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_armel_n8x0.deb
+	scp -C $(CUMULUS_DEB)/../cumulus_$(VERSION)_armel.deb \
+	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_armel_n900.deb
 
 qmake: cumulus/Makefile gpsClient/Makefile gpsMaemoClient/Makefile nmeaSimulator/Makefile
 

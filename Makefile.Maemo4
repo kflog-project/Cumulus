@@ -13,11 +13,20 @@
 # Version is determined from the header file target.h
 VERSION = `cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2`
 
+CUMULUS_REL=cumulus-$(VERSION)
+
+# Debian package build directory
+CUMULUS_DEB=dpkg/n8x0/$(CUMULUS_REL)
+
 # current Qt version
-QT_VERSION=4.5.3
+QT_VERSION=4.6.2
 
 # installation directory of Qt libraries
 QT_LIBDIR=/opt/qt$(QT_VERSION)/lib
+
+# Reset language environment because the date can be formatted according
+# to local rules. That does not like dpkg-buildpackage.
+LANG=
 
 DATE=`date +'%a, %d %b %Y %H:%M:%S %z'`
 
@@ -51,13 +60,16 @@ clean:
 
 .PHONY : check_dir
 check_dir:
-	@if [ ! -w  $(INSTALL_ROOT) ]; \
+	@mkdir -p $(INSTALL_ROOT); \
+	if [ ! -w  $(INSTALL_ROOT) ]; \
 	then \
 		echo "Install Directory '$(INSTALL_ROOT)' not writeable - Are you root?"; \
 		exit 99; \
 	fi
 
 .PHONY : install
+
+# Use this target to install Cumulus in scratchbox for X86 emulation.
 install: check_dir deinstall install_lang
 	@echo '===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====='
 	strip cumulus/cumulus
@@ -72,9 +84,11 @@ install: check_dir deinstall install_lang
 	install -d $(INSTALL_ROOT)/icons/windarrows
 	install -d $(INSTALL_ROOT)/locale
 	install -d $(INSTALL_ROOT)/sounds
-	install -d $(INSTALL_ROOT)/maps/airfields
-	install -d $(INSTALL_ROOT)/maps/airspaces
-	install -d $(INSTALL_ROOT)/maps/landscape
+	install -d $(DESTDIR)/usr/share/applications/hildon
+	install -d $(DESTDIR)/usr/share/dbus-1/services
+	install -d $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
+	install --mode=755 dpkg/Maemo4/maemo/start_cumulus $(INSTALL_ROOT)/bin
+	install --mode=755 dpkg/Maemo4/maemo/start_simu $(INSTALL_ROOT)/bin
 	install --mode=755 cumulus/cumulus $(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(INSTALL_ROOT)/bin
@@ -86,39 +100,42 @@ install: check_dir deinstall install_lang
 	install --mode=644 help/de/*.html icons/cumulus.png $(INSTALL_ROOT)/help/de
 	install --mode=644 help/en/*.html icons/cumulus.png $(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(INSTALL_ROOT)/sounds
+	install --mode=644 dpkg/Maemo4/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
+	install --mode=644 dpkg/Maemo4/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service
+	install --mode=644 icons/cumulus-desktop.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps/cumulus.png
 
 # call dpkg target to build a debian Maemo package
 .PHONY : dpkg dpkg_make
 dpkg:
-	@echo "===== Building OS2008 Maemo package for Cumulus $(VERSION) ====="
-	@$(MAKE) -f Makefile.Maemo VERSION=$(VERSION) dpkg_make
+	@echo "===== Building Diablo Maemo4 package for Cumulus $(VERSION) ====="
+	@$(MAKE) -f Makefile.Maemo4 VERSION=$(VERSION) dpkg_make
 
 # This target will build the debian packge. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation makrk
 # cause problems in ohter shell commands, if they not expanded before.
 dpkg_make:
-	rm -fr dpkg/cumulus-$(VERSION)
-	mkdir -p dpkg/cumulus-$(VERSION)
-	cd dpkg/cumulus-$(VERSION); \
-	echo '\n' | dh_make -c GPL -e axel@kflog.org -s -n
-	cp dpkg/control/makefile dpkg/cumulus-$(VERSION)
-	sed -e "s/__DATE__/$(DATE)/g" dpkg/control/copyright > dpkg/cumulus-$(VERSION)/debian/copyright
-	cp dpkg/control/control dpkg/cumulus-$(VERSION)/debian/
-	cp dpkg/control/rules dpkg/cumulus-$(VERSION)/debian/
-	cp dpkg/control/postinst dpkg/cumulus-$(VERSION)/debian/
-	cp dpkg/control/prerm dpkg/cumulus-$(VERSION)/debian/
-	cp dpkg/control/postrm dpkg/cumulus-$(VERSION)/debian/
-	sed -e "s/__DATE__/$(DATE)/g" dpkg/control/README > dpkg/cumulus-$(VERSION)/debian/README
-	cp dpkg/cumulus-$(VERSION)/debian/README dpkg/cumulus-$(VERSION)/debian/README.Debian
-	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/control/changelog > dpkg/cumulus-$(VERSION)/debian/changelog
-	cd dpkg/cumulus-$(VERSION); \
+	rm -fr $(CUMULUS_DEB)
+	mkdir -p $(CUMULUS_DEB)
+	cd $(CUMULUS_DEB); \
+	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -e axel@kflog.org -s -n
+	cp dpkg/Maemo4/control/makefile $(CUMULUS_DEB)
+	sed -e "s/__DATE__/$(DATE)/g" dpkg/Maemo4/control/copyright > $(CUMULUS_DEB)/debian/copyright
+	cp dpkg/Maemo4/control/control $(CUMULUS_DEB)/debian/
+	cp dpkg/Maemo4/control/rules $(CUMULUS_DEB)/debian/
+	cp dpkg/Maemo4/control/postinst $(CUMULUS_DEB)/debian/
+	cp dpkg/Maemo4/control/prerm $(CUMULUS_DEB)/debian/
+	cp dpkg/Maemo4/control/postrm $(CUMULUS_DEB)/debian/
+	sed -e "s/__DATE__/$(DATE)/g" dpkg/Maemo4/control/README > $(CUMULUS_DEB)/debian/README
+	cp $(CUMULUS_DEB)/debian/README $(CUMULUS_DEB)/debian/README.Debian
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/Maemo4/control/changelog > $(CUMULUS_DEB)/debian/changelog
+	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage -rfakeroot
-	rm -f dpkg/cumulus_$(VERSION).dsc dpkg/cumulus_$(VERSION).tar.gz
+	rm -f $(CUMULUS_DEB)/../cumulus_$(VERSION).dsc $(CUMULUS_DEB)/../cumulus_$(VERSION).tar.gz
 
 # copies all files of cumulus into the debian package area
 .PHONY : dpkg_install
 dpkg_install:
-	@echo '===== Installing Cumulus $(VERSION) under $(DESTDIR)/$(INSTALL_ROOT) ====='
+	@echo '===== Installing Cumulus $(VERSION) under $(DESTDIR)$(INSTALL_ROOT) ====='
 	strip cumulus/cumulus
 	strip gpsClient/gpsClient
 	strip nmeaSimulator/nmeaSimu
@@ -132,18 +149,15 @@ dpkg_install:
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/lib
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/locale
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/sounds
-	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/airfields
-	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/airspaces
-	install -d $(DESTDIR)/$(INSTALL_ROOT)/maps/landscape
 	install -d $(DESTDIR)/usr/share/applications/hildon
 	install -d $(DESTDIR)/usr/share/dbus-1/services
 	install -d $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
-	install --mode=755 dpkg/maemo/start_cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
-	install --mode=755 dpkg/maemo/start_simu $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install --mode=755 dpkg/Maemo4/maemo/start_cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install --mode=755 dpkg/Maemo4/maemo/start_simu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 cumulus/cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(DESTDIR)/$(INSTALL_ROOT)/bin
-	install --mode=755 dpkg/maemo/aplay $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install --mode=755 dpkg/Maemo4/maemo/aplay $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=644 etc/glider.pol $(DESTDIR)/$(INSTALL_ROOT)/etc
 	install --mode=644 icons/*.xpm $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 icons/*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
@@ -153,8 +167,8 @@ dpkg_install:
 	install --mode=644 help/de/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install --mode=644 help/en/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
-	install --mode=644 dpkg/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
-	install --mode=644 dpkg/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service
+	install --mode=644 dpkg/Maemo4/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
+	install --mode=644 dpkg/Maemo4/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service
 	install --mode=755 $(QT_LIBDIR)/libQtCore.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
 	install --mode=755 $(QT_LIBDIR)/libQtGui.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
 	install --mode=755 $(QT_LIBDIR)/libQtNetwork.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
