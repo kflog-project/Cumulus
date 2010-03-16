@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: postrm 2925 2008-08-16 19:39:35Z axel $
+# $Id$
 # postrm script for cumulus
 #
 # see: dh_installdeb(1)

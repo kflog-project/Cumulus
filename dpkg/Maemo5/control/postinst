@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: postinst 2825 2008-07-14 19:58:43Z axel $
+# $Id$
 # postinst script for cumulus
 #
 # see: dh_installdeb(1)
