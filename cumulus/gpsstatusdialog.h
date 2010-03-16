@@ -6,17 +6,18 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+**   Copyright (c): 2003 by André Somers
+**                  2008-2010 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-#ifndef GPSSTATUSDIALOG_H
-#define GPSSTATUSDIALOG_H
+#ifndef GPS_STATUS_DIALOG_H
+#define GPS_STATUS_DIALOG_H
 
 #include <QDialog>
 #include <QFrame>
@@ -35,17 +36,18 @@ class GPSSnrDisplay;
 
 /**
   *@short dialog displaying the GPS status
-  *This dialog provides info on the current GPS status, including statalites
+  *This dialog provides info on the current GPS status, including satellites
   *tracked, elevation, azimuth and signal strengths.
   *@author André Somers
   */
 class GpsStatusDialog : public QDialog
 {
     Q_OBJECT
+
 public:
     /**
      * Constructor
-     * @argument parent Pointer to parentwidget
+     * @argument parent Pointer to parent widget
      */
     GpsStatusDialog(QWidget * parent);
 
@@ -55,6 +57,7 @@ public:
     ~GpsStatusDialog();
 
     void keyPressEvent(QKeyEvent *);
+
 public slots:
 
     /**
@@ -63,10 +66,9 @@ public slots:
     void slot_Sentence(const QString& sentence);
 
     /**
-     * Called if new info on the satelites in view is available
+     * Called if new info on the satellites in view is available
      */
-    void slot_SIV();
-
+    void slot_SIV( QList<SIVInfo>& siv );
 
 protected slots:
     /**
@@ -92,10 +94,11 @@ protected:
 class GPSElevationAzimuthDisplay: public QFrame
 {
     Q_OBJECT
+
 public:
     /**
      * Constructor
-     * @argument parent Pointer to parentwidget
+     * @argument parent Pointer to parent widget
      */
     GPSElevationAzimuthDisplay(QWidget * parent);
     ~GPSElevationAzimuthDisplay();
@@ -119,10 +122,11 @@ private:
 class GPSSnrDisplay: public QFrame
 {
     Q_OBJECT
+
 public:
     /**
      * Constructor
-     * @argument parent Pointer to parentwidget
+     * @argument parent Pointer to parent widget
      */
     GPSSnrDisplay(QWidget * parent);
     ~GPSSnrDisplay();

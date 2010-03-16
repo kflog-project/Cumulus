@@ -324,7 +324,7 @@ void MainWindow::slotCreateApplicationWidgets()
           size().width(),
           size().height() );
 
-  // This is the main widget of cumulus
+  // This is the main widget of Cumulus
   viewMap = new MapView( this );
   viewMap->hide();
 
@@ -413,8 +413,8 @@ void MainWindow::slotCreateApplicationWidgets()
            calculator, SLOT( slot_GpsWind(const Speed&, const short) ) );
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
            viewMap, SLOT( slot_GPSStatus( GpsNmea::GpsStatus ) ) );
-  connect( GpsNmea::gps, SIGNAL( newSatCount() ),
-           viewMap, SLOT( slot_SatCount() ) );
+  connect( GpsNmea::gps, SIGNAL( newSatCount(SatInfo&) ),
+           viewMap, SLOT( slot_SatCount(SatInfo&) ) );
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
            this, SLOT( slotGpsStatus( GpsNmea::GpsStatus ) ) );
   connect( GpsNmea::gps, SIGNAL( newSatConstellation() ),

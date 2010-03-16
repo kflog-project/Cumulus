@@ -733,14 +733,11 @@ void MapView::slot_settingsChange()
 
 
 /** This slot is called if the number of satellites changes. */
-void MapView::slot_SatCount()
+void MapView::slot_SatCount( SatInfo& satInfo )
 {
-  if( GpsNmea::gps )
-    {
-      SatInfo info = GpsNmea::gps->getLastSatInfo();
-      QString msg = QString ("G-%1").arg(info.satCount);
-      _statusGps->setText (msg);
-    }
+  // Display the number of satellites in use.
+  QString msg = QString ("G-%1").arg(satInfo.satsInUse);
+  _statusGps->setText (msg);
 }
 
 

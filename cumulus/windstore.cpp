@@ -66,7 +66,7 @@ void WindStore::recalculateWind()
 
   if (CurWind!=_lastWind) {
     _lastWind=CurWind;
-    qDebug("emit newWind: %d/%f",_lastWind.getAngleDeg(),_lastWind.getSpeed().getKph() );
+    //qDebug("emit newWind: %d/%f",_lastWind.getAngleDeg(),_lastWind.getSpeed().getKph() );
     emit newWind(_lastWind);
   }
 }

@@ -6,8 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003      by André Somers
-**                   2008-2009 by Axel Pauli
+**   Copyright (c): 2003      by André Somers
+**                  2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,10 +18,7 @@
 
 #include <cmath>
 
-#include <QtGlobal>
-#include <QVBoxLayout>
-#include <QDesktopWidget>
-#include <QApplication>
+#include <QtGui>
 
 #include "gpsstatusdialog.h"
 #include "gpsnmea.h"
@@ -73,8 +70,8 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
 
   connect(GpsNmea::gps, SIGNAL(newSentence(const QString&)),
           this, SLOT(slot_Sentence(const QString&)));
-  connect(GpsNmea::gps, SIGNAL(newSatInViewInfo()),
-          this, SLOT(slot_SIV()));
+  connect(GpsNmea::gps, SIGNAL(newSatInViewInfo(QList<SIVInfo>&)),
+          this, SLOT(slot_SIV(QList<SIVInfo>&)));
 }
 
 
@@ -83,16 +80,16 @@ GpsStatusDialog::~GpsStatusDialog()
   // qDebug("GpsStatusDialog::~GpsStatusDialog()");
   disconnect(GpsNmea::gps, SIGNAL(newSentence(const QString&)),
              this, SLOT(slot_Sentence(const QString&)));
-  disconnect(GpsNmea::gps, SIGNAL(newSatInViewInfo()),
-             this, SLOT(slot_SIV()));
+  disconnect(GpsNmea::gps, SIGNAL(newSatInViewInfo(QList<SIVInfo>&)),
+             this, SLOT(slot_SIV(QList<SIVInfo>&)));
 }
 
 
-void GpsStatusDialog::slot_SIV()
+void GpsStatusDialog::slot_SIV( QList<SIVInfo>& siv )
 {
   //qDebug("received new sivi info signal");
-  elevAziDisplay->setSatInfo(GpsNmea::gps->getSivInfo());
-  snrDisplay->setSatInfo(GpsNmea::gps->getSivInfo());
+  elevAziDisplay->setSatInfo( siv );
+  snrDisplay->setSatInfo( siv );
 }
 
 

@@ -165,7 +165,7 @@ class MapView : public QWidget
     /**
      * This slot is called if the number of satellites changes.
      */
-    void slot_SatCount();
+    void slot_SatCount( SatInfo& satInfo );
 
     /**
      * This slot is being called if the altitude has changed.

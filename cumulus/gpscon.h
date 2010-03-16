@@ -46,7 +46,7 @@
  * can be found. It lays in the same directory as Cumulus.
  */
 class GpsCon : public QObject
-  {
+{
     Q_OBJECT
 
  private:
@@ -180,7 +180,8 @@ class GpsCon : public QObject
      */
     void slot_Timeout();
 
-  private: //members
+  private:
+
     // gpsClient program name with path
     QString exe;
 
@@ -211,6 +212,6 @@ class GpsCon : public QObject
 
     // Serial device
     QString device;
-  };
+ };
 
 #endif

@@ -46,14 +46,15 @@ struct SatInfo
   {
     int fixValidity;
     int fixAccuracy;
-    int satCount;
+    int satsInView;
+    int satsInUse;
     QString constellation;
     QTime constellationTime;
   };
 
 struct SIVInfo
   {
-    int id;        // Satellite id
+    int id;        // Satellite identifier
     int db;        // signal to noise ratio (0-99), or negative for not tracking
     int azimuth;   // 0-359
     int elevation; // 0-90
@@ -441,7 +442,7 @@ class GpsNmea : public QObject
      * This signal is send if a new satellite count
      * has been detected.
      */
-    void newSatCount();
+    void newSatCount( SatInfo& satInfo );
 
     /**
      * This signal is send to indicate a change in the
@@ -466,7 +467,7 @@ class GpsNmea : public QObject
      * This signal is send to indicate that new satellite in view
      * info is available.
      */
-    void newSatInViewInfo();
+    void newSatInViewInfo( QList<SIVInfo>& siv);
 
     /**
      * Relay GpsCon newSentence signal
@@ -498,8 +499,8 @@ class GpsNmea : public QObject
     Altitude __ExtractAltitude(const QString& number, const QString& unit );
     /** Extracts the constellation from the NMEA sentence. */
     QString __ExtractConstellation(const QStringList& sentence);
-    /** Extracts the satellites count from the NMEA sentence. */
-    bool __ExtractSatcount(const QString& satcount);
+    /** Extracts the satellites in view from the NMEA sentence. */
+    bool __ExtractSatsInView(const QString& satcount);
     /** Extracts satellites In View (SIV) info from a NMEA sentence. */
     void __ExtractSatsInView(const QStringList& sentence);
     /** Extracts satellites In View (SIV) info from a NMEA sentence. */

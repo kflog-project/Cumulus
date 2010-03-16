@@ -61,7 +61,7 @@ GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
 
   QString gpsDevice = conf->getGpsDevice();
 
-  // Do check, what kind of connection the user has  selected. Under Maemo5
+  // Do check, what kind of connection the user has selected. Under Maemo5
   // we have to consider two possibilities.
   if( gpsDevice != MAEMO_LOCATION_SERVICE )
     {
@@ -108,7 +108,6 @@ GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
   // Add a listen socket notifier to the QT main loop, which will be
   // bound to slot_ListenEvent. If a client makes a connection, the
   // slot slot_ListenEvent is called.
-
   listenNotifier = new QSocketNotifier( server.getListenSock(),
                                         QSocketNotifier::Read, this );
 
@@ -336,8 +335,7 @@ bool GpsCon::startClientProcess()
 
   bool found = false;
 
-  // look, if gpsClient is to find via paths of PATH variable and the
-  // added ones
+  // look, if gpsClient is to find via paths of PATH variable and the added ones
   QString fileName = QFileInfo(exe).fileName();
 
   for( int i=0; i < pathes.count(); i++ )
@@ -406,25 +404,23 @@ bool GpsCon::startClientProcess()
       // otherwise the new process has not such devices. That can
       // cause trouble, if a module uses printf with stdout or stderr
       // respectively.
-
       struct rlimit rlim;
 
       memset( &rlim, 0, sizeof(rlimit) );
 
       // ask for the current maximum value, can be changed
-
       int maxOpenFds = getrlimit( RLIMIT_NOFILE, &rlim );
 
       if( maxOpenFds == -1 ) // call failed
         {
           maxOpenFds = NR_OPEN; // normal default from linux/limits.h
-        } else
+        }
+      else
         {
           maxOpenFds = rlim.rlim_cur;
         }
 
       // Start closing with fd 3
-
       for( int fd=3; fd <= maxOpenFds; fd++ )
         {
           fcntl( fd, F_SETFD, FD_CLOEXEC );
@@ -436,7 +432,6 @@ bool GpsCon::startClientProcess()
       // arguments are:
       // 1) -port portNumber
       // 2) -slave
-
       int res = execl( exe.toLatin1().data(),
                        exe.toLatin1().data(),
                        "-port",
@@ -516,7 +511,6 @@ void GpsCon::slot_ListenEvent(int /*socket*/)
 
   // Client tries to connect. Normally we accept only one connection. That
   // means if the file descriptor is occupied the next one is taken.
-
   if( server.getClientSock(0) == -1 ) // data channel
     {
       // open cmd/data channel to client
@@ -578,7 +572,6 @@ void GpsCon::slot_ListenEvent(int /*socket*/)
   return;
 }
 
-
 /**
  * This slot is triggered by the QT main loop and is used to handle the
  * notification events from the client.
@@ -606,7 +599,6 @@ void GpsCon::slot_NotificationEvent(int socket)
 
   queryClient();
 }
-
 
 /**
  * Query the client, if NMEA records are available. If true, the data will
@@ -669,7 +661,6 @@ void GpsCon::queryClient()
   lastQuery.start();
 }
 
-
 /**
  * Reads a client message from the socket. The protocol consists of two
  * parts. First the message length is read as unsigned integer, after that the
@@ -717,7 +708,6 @@ void GpsCon::readClientMessage( uint index, QString &result )
   buf=NULL;
 }
 
-
 /**
  * Writes a client message to the socket. The protocol consists of two
  * parts. First the message length is read as unsigned integer, after that the
@@ -740,9 +730,8 @@ void GpsCon::writeClientMessage( uint index, const char *msg  )
   return;
 }
 
-
 /**
- * Sends nmea input sentence to GPS receiver. Checksum is calculated by this
+ * Sends NMEA input sentence to the GPS receiver. Checksum is calculated by this
  * routine. Don't add an asterix at the end of the passed sentence! That is
  * part of the check sum.
  */
@@ -772,6 +761,5 @@ void GpsCon::sendSentence(const QString& sentence)
       qDebug("%s Send GPS message %s succeeded",
              method.toLatin1().data(), sentence.toLatin1().data());
 #endif
-
     }
 }

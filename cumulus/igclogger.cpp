@@ -161,7 +161,7 @@ void IgcLogger::slotMakeFixEntry()
   QString bRecord( "B" + formatTime(lastfix.time) + formatPosition(lastfix.position) + "A" +
                    formatAltitude(lastfix.altitude) + formatAltitude(lastfix.GNSSAltitude) +
                    QString("%1").arg(GpsNmea::gps->getLastSatInfo().fixAccuracy, 3, 10, QChar('0')) +
-                   QString("%1").arg(GpsNmea::gps->getLastSatInfo().satCount, 2, 10, QChar('0')) );
+                   QString("%1").arg(GpsNmea::gps->getLastSatInfo().satsInUse, 2, 10, QChar('0')) );
 
   if ( _logMode == standby && calculator->moving() == false )
     {

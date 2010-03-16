@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by Andre Somers, 2009 Axel Pauli
+ **   Copyright (c):  2002      by Andre Somers
+ **                   2009-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -196,9 +197,9 @@ void WindAnalyser::_calcWind()
 
 void WindAnalyser::slot_newConstellation()
 {
-  satCnt = GpsNmea::gps->getLastSatInfo().satCount;
+  satCnt = GpsNmea::gps->getLastSatInfo().satsInUse;
 
-  if (active && (satCnt<minSatCnt))  //we are active, but the sat count drops below minimum
+  if (active && (satCnt < minSatCnt))  //we are active, but the sat count drops below minimum
     {
       active=false;
       curModeOK=true;

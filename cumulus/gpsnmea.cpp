@@ -103,10 +103,11 @@ void GpsNmea::resetDataObjects()
   cntSIVSentence = 1;
 
   // initialize satellite info
-  _lastSatInfo.fixValidity = 1; //invalid
-  _lastSatInfo.fixAccuracy = 999; //not very accurate
-  _lastSatInfo.satCount = 0; //no satellites in view;
-  _lastSatInfo.constellation = "";
+  _lastSatInfo.fixValidity       = 1; //invalid
+  _lastSatInfo.fixAccuracy       = 999; //not very accurate
+  _lastSatInfo.satsInView        = 0; //no satellites in view;
+  _lastSatInfo.satsInUse         = 0; //no satellites in use;
+  _lastSatInfo.constellation     = "";
   _lastSatInfo.constellationTime = QTime::currentTime();
   _lastClockOffset = 0;
 
@@ -135,7 +136,8 @@ void GpsNmea::createGpsConnection()
 
 #ifndef MAEMO4
 
-  // We create only a GpsCon instance. The GPS daemon process will be started later
+  // We create only a GpsCon instance. The GPS daemon process will be started
+  // later. This is also valid hence Maemo5.
   QString callPath = GeneralConfig::instance()->getInstallRoot() + "/bin";
 
   serial = new GpsCon(this, callPath.toAscii().data());
@@ -144,7 +146,7 @@ void GpsNmea::createGpsConnection()
 
 #else
 
-  // Under Maemo we have to contact the Maemo gpsd process on its listen port.
+  // Under Maemo4 we have to contact the Maemo gpsd process on its listen port.
   // If the device name is the nmea simulator or contains the substring USB/usb
   // the cumulus GPS daemon is started.
   gpsDevice = GeneralConfig::instance()->getGpsDevice();
@@ -241,10 +243,10 @@ void GpsNmea::enableReceiving( bool enable )
 /**
  * This method can be used to read data from the connected GPS. It is provided
  * to empty the receiver queue during long running other actions to avoid a
- * buffer overflow. At the moment only Maemo uses it because it is not clear
+ * buffer overflow. At the moment only Maemo4 uses it because it is not clear
  * how long the MAEMO GPS daemon can buffer data.
- * For the Cumulus GPS daemon with method is not necessary. It can queue 500
- * NMEA sentences internally.
+ * For the Cumulus GPS daemon or hence Mameo5 with method is not necessary.
+ * The Cumulus GPS daemon can queue 500 NMEA sentences internally.
  */
 void GpsNmea::readDataFromGps()
 {
@@ -289,6 +291,10 @@ void GpsNmea::startGpsReceiver()
  * (MSL and STD) derived from a pressure sonde. If these values should be
  * used as base altitude instead of the normal GPS altitude, the user option
  * altitude must be set to PRESSURE.
+ *
+ * @AP 2010-03-16: There was added special support for Maemo5. Two proprietary
+ * sentences $MAEMO[0/1] are used to transfer the GPS data from the daemon process
+ * to Cumulus.
  */
 void GpsNmea::slot_sentence(const QString& sentenceIn)
 {
@@ -309,7 +315,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   // Cambridge proprietary sentence starts with a ! sign
   if (sentence[0] != '$' && sentence[0] != '!')
     {
-      qWarning("Invalid GPS sentence! %s", sentence.toLatin1().data());
+      qWarning() << "Invalid GPS sentence!" << sentence;
       return;
     }
 
@@ -550,7 +556,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
             }
 
           __ExtractAltitude(slst[9],slst[10],slst[11],slst[12]);
-          __ExtractSatcount(slst[7]);
+          __ExtractSatsInView(slst[7]);
         }
       else if( slst[6] == "0" )
         {
@@ -594,7 +600,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
    Field Number:
     1) Selection mode
-    2) Mode
+    2) Mode, 1=no-Fix, 2=2D-Fix, 3=3D-Fix
     3) ID of 1st satellite used for fix
     4) ID of 2nd satellite used for fix
     ...
@@ -1424,20 +1430,43 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
 {
   QString result, tmp;
 
-  if( sentence[2] != "1" )
+  if( sentence[2] != "" )
     {
-      fixOK();
-      _lastSatInfo.fixValidity = sentence[2].toInt();
+      bool ok;
+
+      int fix = sentence[2].toInt(&ok);
+
+      if( ok )
+        {
+          _lastSatInfo.fixValidity = fix;
+
+          if( fix == 1 )
+            {
+              fixNOK();
+            }
+          else
+            {
+              fixOK();
+            }
+        }
     }
+
+  int lastSatsInUse = _lastSatInfo.satsInUse;
+  _lastSatInfo.satsInUse = 0;
 
   for( int i = 3; i <= 14 && i < sentence.size(); i++ )
     {
-
-      if( sentence[i] != QString::null && sentence[i] != QString( "" ) )
+      if( sentence[i] != "" )
         {
+          _lastSatInfo.satsInUse++;
           tmp.sprintf( "%02d", sentence[i].toInt() );
           result += tmp;
         }
+    }
+
+  if( lastSatsInUse != _lastSatInfo.satsInUse )
+    {
+      emit newSatCount( _lastSatInfo );
     }
 
   if( sentence[15] != "" )
@@ -1465,7 +1494,7 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
 }
 
 /** Extracts the satellite count in view from the NMEA sentence. */
-bool GpsNmea::__ExtractSatcount(const QString& satcount)
+bool GpsNmea::__ExtractSatsInView(const QString& satcount)
 {
   bool ok;
 
@@ -1476,10 +1505,10 @@ bool GpsNmea::__ExtractSatcount(const QString& satcount)
       return false;
     }
 
-  if( ok && count != _lastSatInfo.satCount )
+  if( ok && count != _lastSatInfo.satsInView )
     {
-      _lastSatInfo.satCount = count;
-      emit newSatCount();
+      _lastSatInfo.satsInView = count;
+      emit newSatCount( _lastSatInfo );
     }
 
   return true;
@@ -1604,12 +1633,12 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
 
       if( ok )
         {
-          Speed res;
-          res.setKph( kph );
+          Speed speed;
+          speed.setKph( kph );
 
-          if( res != _lastSpeed )
+          if( speed != _lastSpeed )
             {
-              _lastSpeed = res;
+              _lastSpeed = speed;
               emit newSpeed();
             }
         }
@@ -1687,6 +1716,7 @@ void GpsNmea::__ExtractMaemo1(const QString& string)
             }
           else
             {
+              _lastSatInfo.fixValidity = LOCATION_GPS_DEVICE_MODE_NO_FIX;
               fixNOK();
             }
         }
@@ -1695,7 +1725,7 @@ void GpsNmea::__ExtractMaemo1(const QString& string)
   // Extracts Satellites in view
   if( ! slist[2].isEmpty() )
     {
-      if( __ExtractSatcount( slist[2] ) )
+      if( __ExtractSatsInView( slist[2] ) )
         {
           QString satsForFix;
           sivInfoInternal.clear();
@@ -1712,12 +1742,29 @@ void GpsNmea::__ExtractMaemo1(const QString& string)
                 }
             }
 
+          sivInfo = sivInfoInternal;
+
           if( satsForFix != _lastSatInfo.constellation )
             {
               _lastSatInfo.constellation = satsForFix;
               emit newSatConstellation();
             }
+
+          emit newSatInViewInfo( sivInfo );
+
         }
+    }
+
+  // Extracts Satellites in use
+  if( ! slist[3].isEmpty() )
+    {
+      int satsInUse = slist[3].toInt( &ok );
+
+    if( ok )
+      {
+        _lastSatInfo.satsInUse = satsInUse;
+        emit newSatCount( _lastSatInfo );
+      }
     }
 }
 
@@ -1794,8 +1841,7 @@ void GpsNmea::fixOK()
   if( _status != validFix )
     {
       _status = validFix;
-      emit
-      statusChange( _status );
+      emit statusChange( _status );
       qDebug( "GPS FIX OBTAINED!" );
     }
 }
@@ -1808,8 +1854,7 @@ void GpsNmea::fixNOK()
   if( _status == validFix )
     {
       _status = noFix;
-      emit
-      statusChange( _status );
+      emit statusChange( _status );
       qDebug( "GPS FIX Lost!" );
     }
 }
@@ -2184,7 +2229,7 @@ void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
     {
       cntSIVSentence = 1;
       sivInfo = sivInfoInternal;
-      emit newSatInViewInfo();
+      emit newSatInViewInfo( sivInfo );
       //qDebug("triggered new sivi signal");
     }
 }
