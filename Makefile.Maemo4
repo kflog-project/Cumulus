@@ -11,7 +11,7 @@
 ################################################################################
 
 # Version is determined from the header file target.h
-VERSION = `cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2`
+VERSION=$shell(cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2)
 
 CUMULUS_REL=cumulus-$(VERSION)
 

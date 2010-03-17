@@ -191,6 +191,10 @@ static void LocationCb::gpsdLocationchanged( LocationGPSDevice *device,
  */
 GpsMaemoClient::GpsMaemoClient( const ushort portIn )
 {
+#ifdef DEBUG
+  qDebug() << "GpsMaemoClient::GpsMaemoClient()";
+#endif
+
   if ( instance  )
     {
       qWarning("GpsMaemo::GpsMaemo(): You can create only one class instance!");
@@ -262,6 +266,10 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
 
 GpsMaemoClient::~GpsMaemoClient()
 {
+#ifdef DEBUG
+  qDebug() << "GpsMaemoClient::~GpsMaemoClient()";
+#endif
+
   if( gpsIsRunning == true )
     {
       // Here we have to stop the GPSD.
@@ -283,6 +291,10 @@ GpsMaemoClient::~GpsMaemoClient()
  */
 void GpsMaemoClient::handleGpsdRunning()
 {
+#ifdef DEBUG
+  qDebug() << "GpsMaemoClient::handleGpsdRunning()";
+#endif
+
   gpsIsRunning   = true;
   connectionLost = false;
 
@@ -295,6 +307,10 @@ void GpsMaemoClient::handleGpsdRunning()
  */
 void GpsMaemoClient::handleGpsdStopped()
 {
+#ifdef DEBUG
+  qDebug() << "GpsMaemoClient::handleGpsdStopped()";
+#endif
+
   gpsIsRunning   = false;
   connectionLost = true;
 }
@@ -304,7 +320,7 @@ void GpsMaemoClient::handleGpsdStopped()
  */
 void GpsMaemoClient::handleGpsdError()
 {
-  qWarning( "GpsMaemo::handleGpsdError(): Location service said GPSD Error, trying restart" );
+  qWarning( "GpsMaemoClient: Location service said GPSD Error, trying restart" );
 
   gpsIsRunning   = false;
   connectionLost = true;
@@ -321,6 +337,10 @@ void GpsMaemoClient::handleGpsdError()
  */
 void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
 {
+#ifdef DEBUG
+  qDebug() << "GpsMaemoClient::handleGpsdLocationChanged()";
+#endif
+
   // New GPS data available.
   if( ! device )
     {
@@ -526,6 +546,10 @@ void GpsMaemoClient::processEvent( fd_set *fdMask )
 */
 bool GpsMaemoClient::startGpsReceiving()
 {
+#ifdef DEBUG
+  qDebug() << "GpsMaemoClient::startGpsReceiving()";
+#endif
+
   if( gpsIsRunning == true )
     {
       qWarning( "GpsMaemoClient::startGpsReceiving(): GPSD is running, ignore request!" );
@@ -552,6 +576,10 @@ bool GpsMaemoClient::startGpsReceiving()
  */
 void GpsMaemoClient::stopGpsReceiving()
 {
+#ifdef DEBUG
+  qDebug() << "GpsMaemoClient::stopGpsReceiving()";
+#endif
+
   // Stop timer
   timeSpan = 0;
 
@@ -567,6 +595,10 @@ void GpsMaemoClient::stopGpsReceiving()
  */
 void GpsMaemoClient::toController()
 {
+#ifdef DEBUG
+  qDebug() << "GpsMaemoClient::toController()";
+#endif
+
   if( timeSpan == 0 )
     {
       // Do nothing if time span is set to zero.
@@ -610,6 +642,10 @@ void GpsMaemoClient::toController()
  */
 void GpsMaemoClient::readServerMsg()
 {
+#ifdef DEBUG
+  qDebug() << "GpsMaemoClient::readServerMsg()";
+#endif
+
   uint msgLen = 0;
 
   uint done = clientData.readMsg( &msgLen, sizeof(msgLen) );
@@ -744,6 +780,10 @@ void GpsMaemoClient::readServerMsg()
  */
 void GpsMaemoClient::writeServerMsg( const char *msg )
 {
+#ifdef DEBUG
+  qDebug() << "GpsMaemoClient::writeServerMsg():" << msg;
+#endif
+
   uint msgLen = strlen( msg );
 
   int done = clientData.writeMsg( (char *) &msgLen, sizeof(msgLen) );
@@ -794,6 +834,10 @@ void GpsMaemoClient::writeNotifMsg( const char *msg )
  */
 void GpsMaemoClient::queueMsg( const char* msg )
 {
+#ifdef DEBUG
+  qDebug() << "GpsMaemoClient::queueMsg():" << msg;
+#endif
+
   queue.enqueue( msg );
 
   if( queue.count() > QUEUE_SIZE )
@@ -817,6 +861,10 @@ void GpsMaemoClient::queueMsg( const char* msg )
 /** Setup timeout controller. */
 void GpsMaemoClient::startTimer( uint milliSec )
 {
+#ifdef DEBUG
+  qDebug() << "GpsMaemoClient::startTimer(): TS=" << milliSec << "ms";
+#endif
+
   last.start();
   timeSpan = milliSec;
 }

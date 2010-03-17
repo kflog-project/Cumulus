@@ -305,7 +305,6 @@ bool GpsCon::startClientProcess()
   childDeadState = false;
 
   // Closes previous IPC client sockets. Client has died.
-
   if( server.getClientSock(0) != -1 )
     {
       server.closeClientSock(0);
@@ -316,9 +315,12 @@ bool GpsCon::startClientProcess()
       server.closeClientSock(1);
     }
 
-  // not more relevant, remove it
-  delete clientNotifier;
-  clientNotifier = static_cast<QSocketNotifier *>(0);
+  // not more relevant after a crash, remove it
+  if( clientNotifier )
+    {
+      delete clientNotifier;
+      clientNotifier = static_cast<QSocketNotifier *>(0);
+    }
 
   QStringList pathes;
 
@@ -530,8 +532,11 @@ void GpsCon::slot_ListenEvent(int /*socket*/)
       // programmed to send a notification, if there are new data
       // available. That makes polling superfluous.
 
-      // delete an old notifier, it remains after a crash
-      delete clientNotifier;
+      // Delete an old existing notifier, it remains after a crash.
+      if( clientNotifier )
+        {
+          delete clientNotifier;
+        }
 
       clientNotifier = new QSocketNotifier( server.getClientSock(1),
                                             QSocketNotifier::Read, this );
