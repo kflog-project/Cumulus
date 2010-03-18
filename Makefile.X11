@@ -5,13 +5,13 @@
 # 
 # $Id$
 #
-# This file is distributed under the terms of the General Public Licence.
+# This file is distributed under the terms of the General Public License.
 # See the file COPYING for more information.
 #
 ################################################################################
 
 # Version is determined from the header file target.h
-VERSION=$shell(cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2)
+VERSION=$(shell cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2)
 
 # adapt install path to your needs if necessary
 INSTALL_ROOT = /opt/cumulus
@@ -51,7 +51,7 @@ check_dir:
 
 .PHONY : install
 install: check_dir deinstall install_lang
-	@echo ===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) =====
+	@echo "===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====="
 	install -d $(INSTALL_ROOT)/bin
 	install -d $(INSTALL_ROOT)/etc
 	install -d $(INSTALL_ROOT)/help/de
