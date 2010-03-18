@@ -6,10 +6,11 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel Pauli
+ **   Copyright (c):  2004      by Eckhard Völlm
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -57,7 +58,8 @@ class HwInfo
     {
       other,
       n800,
-      n810
+      n810,
+      n900
     };
 
     /**
@@ -70,8 +72,11 @@ class HwInfo
      */
     static HwInfo* instance( void )
     {
-      if(!theInstance)
-        theInstance = new HwInfo;
+      if(! theInstance)
+        {
+          theInstance = new HwInfo;
+        }
+
       return( theInstance );
     };
 
@@ -82,7 +87,8 @@ class HwInfo
     {
       return _hwType;
     };
-    inline hwSubType getSubType( void )
+
+    hwSubType getSubType( void )
     {
       return _hwSubType;
     };

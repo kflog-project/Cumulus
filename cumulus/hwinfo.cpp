@@ -7,10 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2004 by      Eckhard Völlm
- **                   2008-2009 by Axel Pauli
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -36,11 +36,11 @@ HwInfo* HwInfo::theInstance = 0;
 HwInfo::HwInfo()
 {
   // Readout Hardware information and initialize variables
-  _hwType = unknown;
+  _hwType    = unknown;
   _hwSubType = other;
-  _hwString=QString("");
-  _fbRot = 0;
-  _fbDepth = 16;
+  _hwString  = QString("");
+  _fbRot     = 0;
+  _fbDepth   = 16;
 
   // @AP: Due to a bug in Qt4 it is not possible to read from special
   // file devices without problems. Old good C solution will work fine :-))
@@ -73,6 +73,10 @@ HwInfo::HwInfo()
                     {
                       _hwSubType = n810;
                     }
+                  else if ( line.toUpper().contains( "RX-51" ) )
+                    {
+                      _hwSubType = n900;
+                    }
                 }
 
               break;
@@ -103,12 +107,10 @@ HwInfo::HwInfo()
     }
 }
 
-
 HwInfo::~HwInfo()
 {
   // Singleton lives till power off...
 }
-
 
 int HwInfo::getFreeMemory()
 {
@@ -172,7 +174,6 @@ int HwInfo::getFreeMemory()
 
   return res;
 }
-
 
 const QString HwInfo::getCfDevice( void )
 {

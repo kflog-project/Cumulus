@@ -1544,24 +1544,30 @@ void GeneralConfig::setUserDataDirectory( QString newDir )
     }
 }
 
-/** Get the GPS default device depending on the hardware type */
+/** Get the GPS default device depending on the hardware type. */
 QString GeneralConfig::getGpsDefaultDevice()
 {
   if( HwInfo::instance()->getSubType() == HwInfo::n800 )
     {
-      return "GPS Daemon";
+      return MAEMO_LOCATION_SERVICE;
     }
 
   if( HwInfo::instance()->getSubType() == HwInfo::n810 )
     {
-      return "GPS Daemon";
+      return MAEMO_LOCATION_SERVICE;
+    }
+
+  if( HwInfo::instance()->getSubType() == HwInfo::n900 )
+    {
+      return MAEMO_LOCATION_SERVICE;
     }
 
   // Default in unknown case is the serial device
   return "/dev/ttyS0";
 }
 
-/** Sets the GUI style, selected by the user.
+/**
+ * Sets the GUI style, selected by the user.
  * Overwrites some GUI Style elements under Maemo to make them user friendly.
  */
 void GeneralConfig::setOurGuiStyle()
