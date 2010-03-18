@@ -47,9 +47,7 @@ using namespace std;
 #include "protocol.h"
 #include "ipc.h"
 
-#ifdef DEBUG
-#undef DEBUG
-#endif
+#define DEBUG 1
 
 // Size of internal message queue.
 #define QUEUE_SIZE 500
@@ -208,6 +206,8 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
   shutdown        = false;
   timeSpan        = 0;
   instance        = this;
+  device          = 0;
+  control         = 0;
 
   // establish a connection to the server
   if( ipcPort )
@@ -280,8 +280,15 @@ GpsMaemoClient::~GpsMaemoClient()
       sleep(2);
     }
 
-  g_object_unref( device );
-  g_object_unref( control );
+  if( device )
+    {
+      g_object_unref( device );
+    }
+
+  if( control )
+    {
+      g_object_unref( control );
+    }
 
   instance = static_cast<GpsMaemoClient *> (0);
 }
