@@ -14,6 +14,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-03-18 AP: N900 hardware items added to HwInfo class.
+[+] 2010-03-18 AP: Process environment is checked for http_proxy variable, if
+                   no proxy has been defined by the user in Cumulus. If the
+                   variable is defined it is taken as default proxy in
+                   the related widgets.
 [o] 2010-03-16 AP: Nokia has replaced in Maemo5 the traditional GPS daemon by
                    other internal processes. The location services must be taken
                    now to get the GPS data. Therefore a new client process with
