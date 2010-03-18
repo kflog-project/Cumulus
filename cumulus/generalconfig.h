@@ -652,6 +652,12 @@ class GeneralConfig : protected QSettings
     _language = newValue;
   };
 
+  /**
+   * Tries to get the default proxy setting from the environment. If nothing
+   * is defined an empty string is returned.
+   *  */
+  QString getDefaultProxy();
+
   /** Gets the proxy */
   QString &getProxy()
     {

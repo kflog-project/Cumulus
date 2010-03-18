@@ -165,7 +165,7 @@ void GeneralConfig::load()
 
   // Internet settings
   beginGroup("Internet");
-  _proxy             = value("Proxy", "").toString();
+  _proxy             = value("Proxy", getDefaultProxy() ).toString();
   endGroup();
 
   // Personal settings
@@ -1564,6 +1564,22 @@ QString GeneralConfig::getGpsDefaultDevice()
 
   // Default in unknown case is the serial device
   return "/dev/ttyS0";
+}
+
+/**
+ * Tries to get the default proxy setting from the environment. If nothing
+ * is defined an empty string is returned.
+ *  */
+QString GeneralConfig::getDefaultProxy()
+{
+  char* proxy = getenv("http_proxy");
+
+  if( proxy )
+    {
+      return QString(proxy);
+    }
+
+  return "";
 }
 
 /**
