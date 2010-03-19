@@ -168,7 +168,7 @@ dpkg_install:
 	install --mode=755 dpkg/Maemo5/maemo/start_simu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 cumulus/cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(DESTDIR)/$(INSTALL_ROOT)/bin
-	install --mode=755 gpsMaemoClient/gpsMaemoClient $(INSTALL_ROOT)/bin
+	install --mode=755 gpsMaemoClient/gpsMaemoClient $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 dpkg/Maemo5/maemo/aplay $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=644 etc/glider.pol $(DESTDIR)/$(INSTALL_ROOT)/etc
