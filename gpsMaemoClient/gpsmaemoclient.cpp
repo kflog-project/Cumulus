@@ -47,7 +47,7 @@ using namespace std;
 #include "protocol.h"
 #include "ipc.h"
 
-#define DEBUG 1
+// #define DEBUG 1
 
 // Size of internal message queue.
 #define QUEUE_SIZE 500
