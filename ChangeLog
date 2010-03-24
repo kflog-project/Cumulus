@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2010-03-24 AP: BUGFIX: Http prefix removed from proxy environment setting.
+[-] 2010-03-24 AP: BUGFIX: Wrong Mc value decoding from Cambrigde device fixed.
 [o] 2010-03-18 AP: N900 hardware items added to HwInfo class.
 [+] 2010-03-18 AP: Process environment is checked for http_proxy variable, if
                    no proxy has been defined by the user in Cumulus. If the

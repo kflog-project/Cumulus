@@ -982,7 +982,7 @@ void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
     }
 
   // extract MacCready, reading in 10ths of knots
-  num = stringList[11].toDouble( &ok );
+  num = stringList[11].toDouble( &ok ) / 10.0;
   speed.setKnot( num );
 
   if ( ok && _lastMc != speed )

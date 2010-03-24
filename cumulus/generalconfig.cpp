@@ -387,6 +387,12 @@ void GeneralConfig::load()
 
   // Checks and guarantees existence of map directories.
   setMapRootDir( _mapRootDir );
+
+  // Check proxy and try default setting again if it is an empty string.
+  if( _proxy.isEmpty() )
+    {
+      _proxy = getDefaultProxy();
+    }
 }
 
 void GeneralConfig::save()
@@ -1576,7 +1582,10 @@ QString GeneralConfig::getDefaultProxy()
 
   if( proxy )
     {
-      return QString(proxy);
+      QString qProxy(proxy);
+
+      // remove an existing http prefix
+      return qProxy.remove("http://");
     }
 
   return "";
