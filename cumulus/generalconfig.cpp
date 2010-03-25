@@ -1425,48 +1425,41 @@ void GeneralConfig::setMapRootDir( QString newValue )
  */
 QString GeneralConfig::getUserDefaultRootDir()
 {
-  QString root;
-  QStringList paths;
+  QString root = QDir::homePath();
 
 #ifdef MAEMO
+
+  QStringList paths;
+
   // Look if MMCs are mounted
-  paths << "/media/mmc"
-        << "/media/mmc1"
+  paths << "/media/mmc1"
         << "/media/mmc2";
-#endif
 
-  paths << QDir::homePath();
-
-  QDir path( "" );
-
-  // Check, if root paths do exist. The assumption is, that $HOME
-  // does always exist.
+  // Check, if root path is mounted.
   for( int i = 0; i < paths.size(); i++ )
     {
-      path.setPath( paths.at( i ) );
-
-      if( !path.exists() )
+      if( ! HwInfo::isMounted( paths.at(i)) )
         {
           continue;
         }
 
-      root = paths.at( i );
+      root = paths.at(i);
 
-      // That is the fall back solution but normally unfit for map files on a
-      // N800 or N810 due to the limited space on that file system.
-      // For N900 it is a good location because the file system lays there
-      // on the internal MMC.
-#ifdef MAEMO
-
-      if( root == QDir::homePath() )
-        {
-          root += "/MyDocs"; // Maemo user directory
-        }
-
-#endif
-      root += "/Cumulus"; // Cumulus user directory
       break;
     }
+
+  // That is the fall back solution but normally unfit for map files on a
+  // N800 or N810 due to the limited space on that file system.
+  // For N900 it is a good location because the file system lays there
+  // on the internal MMC.
+  if( root == QDir::homePath() )
+    {
+      root += "/MyDocs"; // Maemo user default directory
+    }
+
+#endif
+
+  root += "/Cumulus"; // Cumulus default root directory
 
   return root;
 }
