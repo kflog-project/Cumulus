@@ -236,9 +236,9 @@ bool HwInfo::isMounted( const QString& mountPoint )
         {
           QString line(buf);
 
-          QStringList list = line.split(" \\t", QString::SkipEmptyParts);
+          QStringList list = line.split(" ", QString::SkipEmptyParts);
 
-          if( list[1].contains(mountPoint) )
+          if( list.size() >= 2 && list[1].contains(mountPoint) )
             {
               return true;
             }
