@@ -14,19 +14,9 @@
 **
 **   $Id$
 **
-**   Description: This class handles creation and modification of
-**   flight tasks in a simple editor.
-**
 ***********************************************************************/
 
-#include <QLabel>
-#include <QMessageBox>
-#include <QPushButton>
-#include <QToolTip>
-#include <QGridLayout>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QVector>
+#include <QtGui>
 
 #include "airfield.h"
 #include "taskeditor.h"
@@ -45,11 +35,12 @@ extern MainWindow  *_globalMainWindow;
 TaskEditor::TaskEditor( QWidget* parent,
                         QStringList &taskNamesInUse,
                         FlightTask* task ) :
-  QDialog( parent ),
+  QWidget( parent ),
   taskNamesInUse( taskNamesInUse )
 {
   setObjectName("TaskEditor");
-  setModal(true);
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
   setAttribute( Qt::WA_DeleteOnClose );
 
   if( _globalMainWindow )
@@ -217,9 +208,9 @@ TaskEditor::TaskEditor( QWidget* parent,
            this, SLOT( slotInvertWaypoints() ) );
 
   connect( okButton, SIGNAL( clicked() ),
-           this, SLOT( accept() ) );
+           this, SLOT( slotAccept() ) );
   connect( cancelButton, SIGNAL( clicked() ),
-           this, SLOT( reject() ) );
+           this, SLOT( slotReject() ) );
 
   connect( listSelectCB, SIGNAL(activated(int)),
            this, SLOT(slotToggleList(int)));
@@ -341,7 +332,7 @@ void TaskEditor::slotInvertWaypoints()
   __showTask();
 }
 
-void TaskEditor::accept()
+void TaskEditor::slotAccept()
 {
   // qDebug("TaskEditor::accept()");
 
@@ -405,19 +396,18 @@ void TaskEditor::accept()
       emit editedTask( planTask );
     }
 
-  // emit done();
-  // close and destroy dialog
-  QDialog::done(QDialog::Accepted);
+  // closes and destroys window
+  close();
 }
 
-void TaskEditor::reject()
+void TaskEditor::slotReject()
 {
   // qDebug("TaskEditor::reject()");
 
   // delete rejected task object
   delete planTask;
-  // close and destroy dialog
-  QDialog::done(QDialog::Rejected);
+  // closes and destroys window
+  close();
 }
 
 void TaskEditor::slotMoveWaypointUp()
