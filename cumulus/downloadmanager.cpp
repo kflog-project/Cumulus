@@ -240,6 +240,9 @@ ulong DownloadManager::getFreeUserSpace( QString& path )
 
   if( res )
     {
+      qWarning( "DownloadManager(%d): Free space check failed for %s!",
+                __LINE__, path.toLatin1().data() );
+
       perror("GetFreeUserSpace");
       return 0;
     }
