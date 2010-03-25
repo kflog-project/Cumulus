@@ -1759,7 +1759,7 @@ void MainWindow::slotHelp()
 {
   HelpBrowser *hb = new HelpBrowser(this);
   hb->setAttribute(Qt::WA_DeleteOnClose);
-  hb->resize( windowState() );
+  hb->setWindowState( windowState() );
   hb->show();
 }
 
