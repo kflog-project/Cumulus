@@ -1,26 +1,28 @@
 /***************************************************************************
                           mainwindow.h  -  main application object
                              -------------------
-    begin                : Sun Jul 21 2002
-    copyright            : (C) 2002      by André Somers
-    ported to Qt4.x/X11  : (C) 2007-2009 by Axel Pauli
-    email                : axel@kflog.org
+   begin                : Sun Jul 21 2002
+   copyright            : (C) 2002      by André Somers
+   ported to Qt4.x/X11  : (C) 2007-2009 by Axel Pauli
+   email                : axel@kflog.org
 
-    This file is distributed under the terms of the General Public
-    Licence. See the file COPYING for more information.
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
 
-    $Id$
+   $Id$
 
  ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/**
+ * \author André Somers, Axel Pauli
+ *
+ * \brief This class provides the main window of Cumulus.
+ *
+ * This class provides the main window of Cumulus. All needed other stuff
+ * is initialized and handled here:
+ *
+ */
 
 #ifndef _MainWindow_h
 #define _MainWindow_h
@@ -49,14 +51,13 @@
 #include "waitscreen.h"
 #include "splash.h"
 
-/**
- * @short This class provides the main window of Cumulus.
- * @author André Somers
- */
-
 class MainWindow : public QMainWindow
-  {
+{
     Q_OBJECT
+
+  private:
+
+    Q_DISABLE_COPY ( MainWindow )
 
   public: // application view types
 
@@ -383,7 +384,8 @@ class MainWindow : public QMainWindow
 
   private:
 
-    QTimer *ossoDisplayTrigger; // timer for triggering display on
+    /** Timer for triggering display on. */
+    QTimer *ossoDisplayTrigger;
 
   private slots:
 

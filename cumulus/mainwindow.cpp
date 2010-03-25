@@ -222,7 +222,8 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   char *home = getenv( "HOME" );
   char *lang = getenv( "LANG" );
   char *ldpath = getenv( "LD_LIBRARY_PATH" );
-  char *qwsdisplay = getenv( "DISPLAY" );
+  char *display = getenv( "DISPLAY" );
+  char *proxy = getenv( "http_proxy" );
 
   qDebug( "PWD=%s", pwd ? pwd : "NULL" );
   qDebug( "USER=%s", user ? user : "NULL" );
@@ -230,7 +231,14 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   qDebug( "LANG=%s", lang ? lang : "NULL" );
   qDebug( "LD_LIBRARY_PATH=%s", ldpath ? ldpath : "NULL" );
   qDebug( "QDir::homePath()=%s", QDir::homePath().toLatin1().data() );
-  qDebug( "DISPLAY=%s", qwsdisplay ? qwsdisplay : "NULL" );
+  qDebug( "DISPLAY=%s", display ? display : "NULL" );
+  qDebug( "HTTP_PROXY=%s", proxy ? proxy : "NULL" );
+
+  qDebug( "UserDataDir=%s",
+          GeneralConfig::instance()->getUserDataDirectory().toLatin1().data() );
+
+  qDebug( "MapRootDir=%s",
+          GeneralConfig::instance()->getMapRootDir().toLatin1().data() );
 
   setFocusPolicy( Qt::StrongFocus );
   setFocus();
