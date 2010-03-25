@@ -35,11 +35,11 @@
 #include "settingspageterraincolors.h"
 
 /**
-  * @short Configuration widget of Cumulus
+  * \brief Configuration widget of Cumulus
   *
   * This is the general configuration widget for Cumulus.
   *
-  * @author André Somers
+  * \author André Somers, Axel Pauli
   *
   */
 class ConfigWidget : public QWidget
