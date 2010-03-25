@@ -25,9 +25,7 @@ using namespace std;
 #include <malloc.h>
 #include <stdio.h>
 
-#include <QFile>
-#include <QTextStream>
-#include <QString>
+#include <QtCore>
 
 #include "hwinfo.h"
 
@@ -209,3 +207,44 @@ const QString HwInfo::getCfDevice( void )
     }
   return res;
 }
+
+/**
+ * Checks if an active mount does exist.
+ *
+ * @param mountPoint Path to be check for mounting.
+ *
+ * @returns true in case of success otherwise false.
+ */
+bool HwInfo::isMounted( const QString& mountPoint )
+{
+  /*
+    /proc/mounts
+    This file provides a list of all mounts in use by the system:
+
+    rootfs / rootfs rw 0 0
+    /dev/mmcblk0p1 /media/mmc2 vfat rw,nosuid,nodev,noexec,noatime,nodiratime,uid=299
+    ...
+  */
+
+  FILE *in = fopen( PATH_PROC_MOUNTINFO, "r" );
+
+  if ( in )
+    {
+      char buf[256];
+
+      while ( fgets( buf, sizeof( buf ) -1, in ) )
+        {
+          QString line(buf);
+
+          QStringList list = line.split(" \\t", QString::SkipEmptyParts);
+
+          if( list[1].contains(mountPoint) )
+            {
+              return true;
+            }
+        }
+    }
+
+  return false;
+}
+

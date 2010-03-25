@@ -16,10 +16,25 @@
  **
  ***********************************************************************/
 
+/**
+ * @author Eckhard Völlm, Axel Pauli
+ *
+ * @short Returns information on the underlying hardware
+ *
+ * This class is used for all hardware depending functions. It can
+ * return things like the type of a device and other useful hardware
+ * information.
+ *
+ */
+
 #ifndef CLASS_HWINFO
 #define CLASS_HWINFO
-#define PATH_PROC_CPUINFO "/proc/cpuinfo"
-#define PATH_PROC_MEMINFO "/proc/meminfo"
+
+#include <QString>
+
+#define PATH_PROC_CPUINFO   "/proc/cpuinfo"
+#define PATH_PROC_MEMINFO   "/proc/meminfo"
+#define PATH_PROC_MOUNTINFO "/proc/mounts"
 
 /* This number (0,5 MB in KB) is subtracted from the amount of free space
    on the heap, to allow for memory fragmentation. It may need to be
@@ -35,15 +50,6 @@
 // Path under OpenZaurus
 #define PATH_CF_INFO1   "/var/run/stab"
 
-/**
- * @short Returns information on the underlying hardware
- *
- * @author Eckhard Völlm
- *
- * This class is used for all hardware depending-functions. It can
- * return things like the type of device, and other useful hardware
- * information.
- */
 class HwInfo
   {
   public:
@@ -81,13 +87,16 @@ class HwInfo
     };
 
     /**
-     * @returns the type of hardware device Cumulus is running on.
+     * @returns the type or vendor of hardware device Cumulus is running on.
      */
     hwType getType( void )
     {
       return _hwType;
     };
 
+    /**
+     * @returns the subtype of hardware device Cumulus is running on.
+     */
     hwSubType getSubType( void )
     {
       return _hwSubType;
@@ -113,7 +122,7 @@ class HwInfo
     const QString getCfDevice( void );
 
     /**
-     * @returns the rotation of the framebuffer:
+     * @returns the rotation of the frame buffer:
      * 0    no rotation
      * 1    90 degrees rotation
      * 2    180 degrees rotation
@@ -125,12 +134,21 @@ class HwInfo
     };
 
     /**
-     * @returns the depth of the framebuffer in bits
+     * @returns the depth of the frame buffer in bits
      */
     int getFBDepth()
     {
       return _fbDepth;
     };
+
+    /**
+     * Checks if an active mount does exist.
+     *
+     * @param mountPoint Path to be check for mounting.
+     *
+     * @returns true in case of success otherwise false.
+     */
+    static bool isMounted( const QString& mountPoint );
 
   private:
     /**
