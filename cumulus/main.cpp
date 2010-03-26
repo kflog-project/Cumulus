@@ -8,7 +8,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2008 by Axel Pauli
+ **   Copyright (c):  2008-2010 by Axel Pauli
  **
  **   Email of maintainer: axel@kflog.org
  **
@@ -18,6 +18,21 @@
  **   $Id$
  **
  ***********************************************************************/
+
+/**
+ * \author Axel Pauli
+ *
+ * \brief Main of Cumulus
+ *
+ * This file contains the start procedure of the Cumulus GUI. Cumulus is a C++
+ * Application built with the QT/X11 SDK from Nokia. Qt is a cross-platform
+ * application and UI framework. See here for more information:
+ *
+ * http://qt.nokia.com
+ *
+ * Cumulus is built with the release 4.6.x.
+ *
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -77,15 +92,15 @@ int main(int argc, char *argv[])
       QDir path2("/media/mmc2"); // N8x0
       QDir path3("/media/mmc");  // N900
 
-      if( path1.exists() )
+      if( path1.exists() && HwInfo::isMounted(path1) )
         {
           logDir = path1.absolutePath();
         }
-      else if( path2.exists() )
+      else if( path2.exists() && HwInfo::isMounted(path2) )
         {
           logDir = path2.absolutePath();
         }
-      else if( path3.exists() )
+      else if( path3.exists() && HwInfo::isMounted(path3) )
          {
            logDir = path3.absolutePath();
          }
