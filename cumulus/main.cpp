@@ -50,6 +50,7 @@
 #include "mainwindow.h"
 #include "generalconfig.h"
 #include "messagehandler.h"
+#include "hwinfo.h"
 
 /////////////////////
 int main(int argc, char *argv[])
@@ -92,15 +93,15 @@ int main(int argc, char *argv[])
       QDir path2("/media/mmc2"); // N8x0
       QDir path3("/media/mmc");  // N900
 
-      if( path1.exists() && HwInfo::isMounted(path1) )
+      if( path1.exists() && HwInfo::isMounted(path1.absolutePath()) )
         {
           logDir = path1.absolutePath();
         }
-      else if( path2.exists() && HwInfo::isMounted(path2) )
+      else if( path2.exists() && HwInfo::isMounted(path2.absolutePath()) )
         {
           logDir = path2.absolutePath();
         }
-      else if( path3.exists() && HwInfo::isMounted(path3) )
+      else if( path3.exists() && HwInfo::isMounted(path3.absolutePath()) )
          {
            logDir = path3.absolutePath();
          }
