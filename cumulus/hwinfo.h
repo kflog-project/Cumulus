@@ -19,7 +19,7 @@
 /**
  * @author Eckhard Völlm, Axel Pauli
  *
- * @short Returns information on the underlying hardware
+ * @short Delivers information on the underlying hardware
  *
  * This class is used for all hardware depending functions. It can
  * return things like the type of a device and other useful hardware
@@ -114,7 +114,7 @@ class HwInfo
      * Reads the still usable memory (free + cache + buffers) from /proc/meminfo
      * @returns the usable memory in kB.
      */
-    int getFreeMemory();
+    static int getFreeMemory();
 
     /**
      * Reads /var/lib/pcmcia/stab to find out the device for the CF GPS
