@@ -14,6 +14,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-03-25 AP: Task editor widget was a dialog, changed it to a tool window.
+[+] 2010-03-25 AP: New method isMounted added to class HwInfo to get information
+                   about mounted MMC cards.
+[o] 2010-03-25 AP: Help browser is opened now in the same size as the parent.
+                   On tablet means that also maximized, if parent is maximized.
 [-] 2010-03-24 AP: BUGFIX: Http prefix removed from proxy environment setting.
 [-] 2010-03-24 AP: BUGFIX: Wrong Mc value decoding from Cambrigde device fixed.
 [o] 2010-03-18 AP: N900 hardware items added to HwInfo class.
