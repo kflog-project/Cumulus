@@ -442,7 +442,7 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
           // convertion to KFLog degree
           latitude  = QString("%1").arg(static_cast<int> (rint( device->fix->latitude * 600000.0)));
           longitude = QString("%1").arg(static_cast<int> (rint( device->fix->longitude * 600000.0)));
-          eph = QString("%1").arg(device->fix->eph, 0, 'f') / 100.; // convertion to meter
+          eph = QString("%1").arg(device->fix->eph / 100., 0, 'f'); // convertion to meter
         }
 
       if (device->fix->fields & LOCATION_GPS_DEVICE_TIME_SET)
