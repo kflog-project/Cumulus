@@ -370,11 +370,11 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
    *
    *  0) $MAEMO
    *  1) Mode
-   *  2) Time stamp
+   *  2) Time stamp as unsigned integer
    *  3) Ept
    *  4) Latitude in KFLog degrees
    *  5) Longitude in KFLog degrees
-   *  6) Eph in cm
+   *  6) Eph in m
    *  7) Speed in km/h
    *  8) Eps
    *  9) Track in degree 0...359
@@ -439,14 +439,16 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
 
       if (device->fix->fields & LOCATION_GPS_DEVICE_LATLONG_SET)
         {
+          // convertion to KFLog degree
           latitude  = QString("%1").arg(static_cast<int> (rint( device->fix->latitude * 600000.0)));
           longitude = QString("%1").arg(static_cast<int> (rint( device->fix->longitude * 600000.0)));
-          eph = QString("%1").arg(device->fix->eph, 0, 'f');
+          eph = QString("%1").arg(device->fix->eph, 0, 'f') / 100.; // convertion to meter
         }
 
       if (device->fix->fields & LOCATION_GPS_DEVICE_TIME_SET)
         {
-          time = QString("%1").arg(device->fix->time, 0, 'f');
+          uint uiTime = static_cast<uint> (rint( device->fix->time));
+          time = QString("%1").arg(uiTime);
           ept  = QString("%1").arg(device->fix->ept, 0, 'f');
         }
 
