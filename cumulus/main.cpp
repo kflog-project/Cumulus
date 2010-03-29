@@ -88,10 +88,10 @@ int main(int argc, char *argv[])
     {
 
 #ifdef MAEMO
-      // check for alternate paths under Maemo on MMC
+      // check for alternate paths under Maemo
       QDir path1("/media/mmc1"); // N8x0
       QDir path2("/media/mmc2"); // N8x0
-      QDir path3("/media/mmc");  // N900
+      QDir path3("/home/user/MyDocs");
 
       if( path1.exists() && HwInfo::isMounted(path1.absolutePath()) )
         {
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
         {
           logDir = path2.absolutePath();
         }
-      else if( path3.exists() && HwInfo::isMounted(path3.absolutePath()) )
+      else if( path3.exists() )
          {
            logDir = path3.absolutePath();
          }

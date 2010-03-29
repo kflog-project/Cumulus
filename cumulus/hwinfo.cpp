@@ -24,6 +24,7 @@ using namespace std;
 #include <iostream>
 #include <malloc.h>
 #include <stdio.h>
+#include <mntent.h>
 
 #include <QtCore>
 
@@ -116,7 +117,6 @@ int HwInfo::getFreeMemory()
 
   // @AP: Due to a bug in Qt4 it is not possible to read from special
   // file devices without problems. Old good C solution will work fine :-))
-
   FILE *in = fopen( PATH_PROC_MEMINFO, "r" );
 
   if ( in )
@@ -162,14 +162,12 @@ int HwInfo::getFreeMemory()
   int heapfree = m.fordblks/1024;
 
   // qDebug("free heap space: %d KB", heapfree);
-
   if (heapfree > HEAP_FRAGMENTATION_FACTOR)
     {
       res += heapfree - HEAP_FRAGMENTATION_FACTOR;
     }
 
   // qDebug("Free memory=%d KB", res);
-
   return res;
 }
 
@@ -211,7 +209,7 @@ const QString HwInfo::getCfDevice( void )
 /**
  * Checks if an active mount does exist.
  *
- * @param mountPoint Path to be check for mounting.
+ * @param mountPoint Path to be checked for mounting.
  *
  * @returns true in case of success otherwise false.
  */
@@ -226,25 +224,23 @@ bool HwInfo::isMounted( const QString& mountPoint )
     ...
   */
 
-  FILE *in = fopen( PATH_PROC_MOUNTINFO, "r" );
+  bool result = false;
 
-  if ( in )
+  struct mntent *fs;
+
+  FILE *fp = setmntent("/etc/mtab", "r");
+
+  while( (fs = getmntent(fp)) !=  static_cast<struct mntent *> (0) )
     {
-      char buf[256];
-
-      while ( fgets( buf, sizeof( buf ) -1, in ) )
+      // printf ("%s %s %s %d %d\n", fs->mnt_fsname, fs->mnt_dir, fs->mnt_type, fs->mnt_opts, fs->mnt_freq,  fs->mnt_passno);
+      if( QString( fs->mnt_dir ) == mountPoint )
         {
-          QString line(buf);
-
-          QStringList list = line.split(" ", QString::SkipEmptyParts);
-
-          if( list.size() > 1 && list[1].contains(mountPoint) )
-            {
-              return true;
-            }
+          result = true;
+          break;
         }
     }
 
-  return false;
-}
+  endmntent( fp );
 
+  return result;
+}

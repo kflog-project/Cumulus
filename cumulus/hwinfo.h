@@ -19,7 +19,7 @@
 /**
  * @author Eckhard Völlm, Axel Pauli
  *
- * @short Delivers information on the underlying hardware
+ * @short Returns information on the underlying hardware
  *
  * This class is used for all hardware depending functions. It can
  * return things like the type of a device and other useful hardware
@@ -34,7 +34,6 @@
 
 #define PATH_PROC_CPUINFO   "/proc/cpuinfo"
 #define PATH_PROC_MEMINFO   "/proc/meminfo"
-#define PATH_PROC_MOUNTINFO "/proc/mounts"
 
 /* This number (0,5 MB in KB) is subtracted from the amount of free space
    on the heap, to allow for memory fragmentation. It may need to be
@@ -114,7 +113,7 @@ class HwInfo
      * Reads the still usable memory (free + cache + buffers) from /proc/meminfo
      * @returns the usable memory in kB.
      */
-    static int getFreeMemory();
+    int getFreeMemory();
 
     /**
      * Reads /var/lib/pcmcia/stab to find out the device for the CF GPS
@@ -144,7 +143,7 @@ class HwInfo
     /**
      * Checks if an active mount does exist.
      *
-     * @param mountPoint Path to be check for mounting.
+     * @param mountPoint Path to be checked for mounting.
      *
      * @returns true in case of success otherwise false.
      */

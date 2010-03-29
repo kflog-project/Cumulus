@@ -1527,11 +1527,11 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
    *
    *  0) $MAEMO
    *  1) Mode
-   *  2) Time stamp
+   *  2) Time stamp as unsigned integer
    *  3) Ept
    *  4) Latitude  in KFLog degrees
    *  5) Longitude in KFLog degrees
-   *  6) Eph in cm
+   *  6) Eph in m
    *  7) Speed in km/h
    *  8) Eps
    *  9) Track in degree 0...359
@@ -1577,9 +1577,7 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
   // Extract time info. It is encoded in UTC seconds (I assume that).
   if( ! slist[2].isEmpty() )
     {
-      double doubleTime = slist[2].toDouble( &ok );
-
-      uint uintTime = static_cast<uint>( rint(doubleTime) );
+      uint uintTime = slist[2].toUInt( &ok );
 
       if( ok )
         {
@@ -1613,12 +1611,12 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
         }
     }
 
-  // Extract Eph, horizontal position accuracy, encoded in cm.
+  // Extract Eph, horizontal position accuracy, encoded in m.
   if( ! slist[6].isEmpty() )
     {
       // PDOP is handled in meters
       bool ok;
-      double pdop = slist[6].toDouble( &ok ) / 100.0;
+      double pdop = slist[6].toDouble( &ok );
 
       if( ok == true && _lastSatInfo.fixAccuracy != pdop )
         {
