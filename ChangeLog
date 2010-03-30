@@ -14,6 +14,7 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-03-30 AP: Variometer dialog modified to better finger usage.
 [o] 2010-03-25 AP: Task editor widget was a dialog, changed it to a tool window.
 [+] 2010-03-25 AP: New method isMounted added to class HwInfo to get information
                    about mounted MMC cards.
