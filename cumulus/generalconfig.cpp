@@ -292,8 +292,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Variometer");
-  _varioIntegrationTime = value( "IntegrationTime", 20 ).toInt();
-  _varioStepWidth       = value("StepWidth", 1).toInt();
+  _varioIntegrationTime = value( "IntegrationTime", 5 ).toInt();
   _varioTekCompensation = value( "TekCompensation", false ).toBool();
   _varioTekAdjust       = value( "TekAdjust", 0 ).toInt();
   endGroup();
@@ -616,7 +615,6 @@ void GeneralConfig::save()
 
   beginGroup("Variometer");
   setValue( "IntegrationTime", _varioIntegrationTime );
-  setValue( "StepWidth", _varioStepWidth );
   setValue( "TekCompensation", _varioTekCompensation );
   setValue( "TekAdjust", _varioTekAdjust );
   endGroup();
@@ -685,63 +683,6 @@ void GeneralConfig::save()
   endGroup();
 }
 
-
-/** gets vario integration time */
-int GeneralConfig::getVarioIntegrationTime() const
-{
-  return _varioIntegrationTime;
-}
-
-
-/** sets vario integration time */
-void GeneralConfig::setVarioIntegrationTime(const int newValue)
-{
-  _varioIntegrationTime = newValue;
-}
-
-
-/** gets vario vario step width */
-int GeneralConfig::getVarioStepWidth() const
-{
-  return _varioStepWidth;
-}
-
-
-/** sets vario vario step width */
-void GeneralConfig::setVarioStepWidth(const int newValue)
-{
-  _varioStepWidth = newValue;
-}
-
-
-/** gets vario tek adjust */
-int GeneralConfig::getVarioTekAdjust() const
-{
-  return _varioTekAdjust;
-}
-
-
-/** sets vario tek adjust */
-void GeneralConfig::setVarioTekAdjust(const int newValue)
-{
-  _varioTekAdjust = newValue;
-};
-
-
-/** gets vario tek compensation */
-bool GeneralConfig::getVarioTekCompensation() const
-{
-  return _varioTekCompensation;
-}
-
-
-/** sets vario tek compensation */
-void GeneralConfig::setVarioTekCompensation(const bool newValue)
-{
-  _varioTekCompensation = newValue;
-}
-
-
 /** gets altimeter mode */
 int GeneralConfig::getAltimeterMode() const
 {
@@ -755,20 +696,17 @@ void GeneralConfig::setAltimeterMode(const int newValue)
   _altimeterMode = newValue;
 }
 
-
 /** gets altimeter toggle mode */
 bool GeneralConfig::getAltimeterToggleMode() const
 {
   return _altimeterToggleMode;
 }
 
-
 /** sets altimeter toggle mode */
 void GeneralConfig::setAltimeterToggleMode(const bool newValue)
 {
   _altimeterToggleMode = newValue;
 }
-
 
 /**
  * @returns Struct with warning distances for airspace warnings
@@ -778,7 +716,6 @@ AirspaceWarningDistance GeneralConfig::getAirspaceWarningDistances()
   return _awd;
 }
 
-
 /**
  * Sets the warningdistances for airspaces
  */
@@ -787,13 +724,11 @@ void GeneralConfig::setAirspaceWarningDistances(const AirspaceWarningDistance& a
   _awd = awd;
 }
 
-
 /** gets log to file mode */
 bool GeneralConfig::getLog2FileMode() const
 {
   return _log2File;
 }
-
 
 /** sets log to file mode */
 void GeneralConfig::setLog2FileMode(const bool newValue)
@@ -801,13 +736,11 @@ void GeneralConfig::setLog2FileMode(const bool newValue)
   _log2File = newValue;
 }
 
-
 /** gets system log mode */
 bool GeneralConfig::getSystemLogMode() const
 {
   return _useSysLog;
 }
-
 
 /** sets log to file mode */
 void GeneralConfig::setSystemLogMode(const bool newValue)
@@ -815,13 +748,11 @@ void GeneralConfig::setSystemLogMode(const bool newValue)
   _useSysLog = newValue;
 }
 
-
 /** gets nearest site calculator switch */
 bool GeneralConfig::getNearestSiteCalculatorSwitch() const
 {
   return _nearestSiteCalculatorSwitch;
 }
-
 
 /** sets nearest site calculator switch */
 void GeneralConfig::setNearestSiteCalculatorSwitch(const bool newValue)
@@ -829,13 +760,11 @@ void GeneralConfig::setNearestSiteCalculatorSwitch(const bool newValue)
   _nearestSiteCalculatorSwitch = newValue;
 }
 
-
 /** gets max nearest site calculator sites */
 int GeneralConfig::getMaxNearestSiteCalculatorSites() const
 {
   return _maxNearestSiteCalculatorSites;
 }
-
 
 /** sets max nearest site calculator sites */
 void GeneralConfig::setMaxNearestSiteCalculatorSites(const int newValue)
@@ -843,20 +772,17 @@ void GeneralConfig::setMaxNearestSiteCalculatorSites(const int newValue)
   _maxNearestSiteCalculatorSites = newValue;
 }
 
-
 /** gets AirfieldDisplayTime */
 int GeneralConfig::getAirfieldDisplayTime() const
 {
   return _airfieldDisplayTime;
 }
 
-
 /** sets AirfieldDisplayTime */
 void GeneralConfig::setAirfieldDisplayTime(const int newValue)
 {
   _airfieldDisplayTime = newValue;
 }
-
 
 /** gets AirspaceDisplayTime */
 int GeneralConfig::getAirspaceDisplayTime() const

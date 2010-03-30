@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Eggert Ehmke, 2008 Axel Pauli
+**   Copyright (c):  2002      by Eggert Ehmke
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -24,56 +25,84 @@
 #include "speed.h"
 
 /**
- * @author Eggert Ehmke
+ * \author Eggert Ehmke, Axel Pauli
+ *
+ * \brief Variometer calculations.
+ *
+ * This class realizes the variometer calculations.
+ *
  */
-// default integration time in s for vario calculation
 
-#define INT_TIME 20
+/** Default integration time in s for variometer calculation. */
+#define INT_TIME 5
 
 class Vario: public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
+
+  private:
+
+  Q_DISABLE_COPY ( Vario )
+
 public:
 
-    Vario(QObject*);
+  Vario(QObject*);
 
-    virtual ~Vario();
+  virtual ~Vario();
 
-    void newAltitude();
-
+  /**
+   * Called to signal that a new altitude value is available. That triggers the
+   * variometer calculation.
+   */
+  void newAltitude();
 
 public slots:
-    /**
-     * This slot is called, if the integration time has
-     * been changed. Passes value in seconds.
-     */
-    void slotNewVarioTime(int newTime);
 
-    void slotNewTEKMode(bool newMode);
+  /**
+   * This slot is called, if the integration time has been changed in the UI.
+   *
+   * @param newTime new time value in seconds
+   */
+  void slotNewVarioTime(int newTime);
 
-    void slotNewTEKAdjust(int newAdjust);
+  /**
+   * This slot is called, if the TEK mode has been changed in the UI.
+   *
+   * @param newMode new mode value used to switch on/off TEK calculation
+   */
+  void slotNewTEKMode(bool newMode);
 
-    void slotNewAirspeed(const Speed& airspeed);
-
+  /**
+   * This slot is called, if the TEK adjust value has been changed in the UI.
+   *
+   * @param newAdjust new adjust value in percent
+   */
+  void slotNewTEKAdjust(int newAdjust);
 
 signals:
-    void newVario(const Speed&);
 
+  /**
+   * This signal is emitted when a new variometer value is available.
+   *
+   * @param newLift new available lift value
+   */
+  void newVario(const Speed& newLift);
 
 private:
-    QTimer _timeOut; // calling supervision timer
-    int    _intTime; // integration time
-    bool   _TEKOn;   // TEK compensated Mode
-    double  _energyAlt; // v*v/2g
-    double  _TekAdjust; // adjust TEK Compensation
 
+  QTimer  _timeOut; // calling supervision timer
+  int     _intTime; // integration time
+  bool    _TEKOn;   // TEK compensated Mode
+  double  _energyAlt; // v*v/2g
+  double  _TekAdjust; // adjust TEK Compensation
 
-private slots: // Private slots
-    /**
-     * This slot is called by the internal timer, to signal a
-     * timeout. It resets the vario to initial.
-     */
-    void _slotTimeout();
+private slots:
+
+  /**
+   * This slot is called by the internal timer to signal a
+   * timeout. It resets the variometer to the initial settings.
+   */
+  void _slotTimeout();
 };
 
 #endif

@@ -1323,28 +1323,38 @@ class GeneralConfig : protected QSettings
     _cylinderParallel = newValue;
   };
 
-  // NOTICE! @AP: got some trouble with inline function
-  // definition. They didn't work up to here. Not clear why.
+  /** gets variometer integration time */
+  int getVarioIntegrationTime() const
+  {
+    return _varioIntegrationTime;
+  };
+  /** sets variometer integration time */
+  void setVarioIntegrationTime(const int newValue)
+  {
+    _varioIntegrationTime = newValue;
+  };
 
-  /** gets vario integration time */
-  int getVarioIntegrationTime() const;
-  /** sets vario integration time */
-  void setVarioIntegrationTime(const int newValue);
+  /** gets variometer tek adjust */
+  int getVarioTekAdjust() const
+  {
+    return _varioTekAdjust;
+  };
+  /** sets variometer tek adjust */
+  void setVarioTekAdjust(const int newValue)
+  {
+    _varioTekAdjust = newValue;
+  };
 
-  /** gets vario vario step width */
-  int getVarioStepWidth() const;
-  /** sets vario vario step width */
-  void setVarioStepWidth(const int newValue);
-
-  /** gets vario tek adjust */
-  int getVarioTekAdjust() const;
-  /** sets vario tek adjust */
-  void setVarioTekAdjust(const int newValue);
-
-  /** gets vario tek compensation */
-  bool getVarioTekCompensation() const;
-  /** sets vario tek compensation */
-  void setVarioTekCompensation(const bool newValue);
+  /** gets variometer tek compensation */
+  bool getVarioTekCompensation() const
+  {
+    return _varioTekCompensation;
+  };
+  /** sets variometer tek compensation */
+  void setVarioTekCompensation(const bool newValue)
+  {
+    _varioTekCompensation = newValue;
+  };
 
   /** gets altimeter mode */
   int getAltimeterMode() const;
@@ -1486,9 +1496,9 @@ class GeneralConfig : protected QSettings
   /** sets Gps last fix latitude */
   void setGpsLastFixLat(const int newValue);
 
-  /** gets Gps last fix logitude */
+  /** gets Gps last fix longitude */
   int getGpsLastFixLon() const;
-  /** sets Gps last fix logitude */
+  /** sets Gps last fix longitude */
   void setGpsLastFixLon(const int newValue);
 
   /** gets Gps last fix altitude */
@@ -1541,9 +1551,9 @@ class GeneralConfig : protected QSettings
   /** Sets the unit for speed */
   void setUnitSpeed(const int newValue);
 
-  /** Gets the unit for vario */
+  /** Gets the unit for variometer */
   int getUnitVario() const;
-  /** Sets the unit for vario */
+  /** Sets the unit for variometer */
   void setUnitVario(const int newValue);
 
   /** Gets the unit for wind */
@@ -1579,41 +1589,41 @@ class GeneralConfig : protected QSettings
   /**
    * Get the filling percentages for the indicated "nearness"
    * in the vertical direction only.
-   * @arg nearness Which filling are you looking for?
+   * @param nearness Which filling are you looking for?
    * @returns a percentage filling
    */
   int getAirspaceFillingVertical(Airspace::ConflictType nearness);
   /**
    * Set the filling percentages for the indicated "nearness"
    * in the vertical direction only.
-   * @arg nearness Which filling are you looking for?
-   * @arg filling a percentage filling (0-100 inclusive)
+   * @param nearness Which filling are you looking for?
+   * @param filling a percentage filling (0-100 inclusive)
    */
   void setAirspaceFillingVertical(Airspace::ConflictType nearness, int filling);
 
   /**
    * Get the filling percentages for the indicated "nearness"
    * in both directions.
-   * @arg nearness Which filling are you looking for?
+   * @param nearness Which filling are you looking for?
    * @returns a percentage filling
    */
   int getAirspaceFillingLateral(Airspace::ConflictType nearness);
   /**
    * Set the filling percentages for the indicated "nearness"
    * in both directions.
-   * @arg nearness Which filling are you looking for?
-   * @arg filling a percentage filling (0-100 inclusive)
+   * @param nearness Which filling are you looking for?
+   * @param filling a percentage filling (0-100 inclusive)
    */
   void setAirspaceFillingLateral(Airspace::ConflictType nearness, int filling);
 
   /**
    * @returns the filling for the given nearnesses.
-   * This is a conveneance funtion that combines the results of
+   * This is a convenience function that combines the results of
    * getAirspaceFillingVertical and getAirspaceFillingTotal. It returns
    * 0 if airspace fillings are not enabled.
    *
-   * @arg vertical nearness in vertical direction only
-   * @arg total total nearness in both directions
+   * @param vertical nearness in vertical direction only
+   * @param total total nearness in both directions
    */
   int airspaceFilling(Airspace::ConflictType vertical,
                       Airspace::ConflictType total)
@@ -1705,7 +1715,7 @@ class GeneralConfig : protected QSettings
   {
     return _taskFillShape;
   };
-  /** sets cylinder/secotr fill option */
+  /** sets cylinder/sector fill option */
   void setTaskFillShape( const bool newValue )
   {
     _taskFillShape = newValue;
@@ -1991,13 +2001,11 @@ class GeneralConfig : protected QSettings
   // Cylindrical Projection
   int _cylinderParallel;
 
-  // vario integration time
+  // variometer integration time
   int _varioIntegrationTime;
-  // vario step width
-  int _varioStepWidth;
-  // vario tek compensation
+  // variometer tek compensation
   bool _varioTekCompensation;
-  // vario tek adjust
+  // variometer tek adjust
   int _varioTekAdjust;
 
   // altimeter mode
@@ -2015,7 +2023,7 @@ class GeneralConfig : protected QSettings
   // maximum sites considered by nearest site calculator
   int _maxNearestSiteCalculatorSites;
 
-  // sound player seleted by user
+  // sound player selected by user
   QString _soundPlayer;
   // AirfieldDisplayTime
   int _airfieldDisplayTime;
@@ -2040,7 +2048,7 @@ class GeneralConfig : protected QSettings
   int _gpsSpeed;
   // Gps delivered altitude
   int _gpsAltitudeType;
-  // Gps deliverd altitude user correction
+  // Gps delivered altitude user correction
   Altitude _gpsAltitudeUserCorrection;
   // Gps soft start
   bool _gpsSoftStart;
@@ -2054,7 +2062,7 @@ class GeneralConfig : protected QSettings
   bool _gpsStartClient;
   // Gps last fix latitude
   int _gpsLastFixLat;
-  // Gps last fix logitude
+  // Gps last fix longitude
   int _gpsLastFixLon;
   // Gps last fix altitude
   int _gpsLastFixAlt;
@@ -2111,7 +2119,7 @@ class GeneralConfig : protected QSettings
   bool _taskFillShape;
 
   /** Waypoint drawing scale borders. Addressed by waypoint importance
-   *  (Low=0, Normal=1, High=2). It contains the sacle borders defined
+   *  (Low=0, Normal=1, High=2). It contains the scale borders defined
    *  user.
    */
   int _wayPointScaleBorders[3];
