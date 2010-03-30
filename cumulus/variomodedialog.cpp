@@ -102,15 +102,21 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   QPushButton *mminus  = new QPushButton("--", this);
   QPushButton *minus   = new QPushButton("-", this);
 
-  pplus->setMinimumSize(40, 40);
-  plus->setMinimumSize(40, 40);
-  minus->setMinimumSize(40, 40);
-  mminus->setMinimumSize(40, 40);
+  int size = 40;
 
-  pplus->setMaximumSize(40, 40);
-  plus->setMaximumSize(40, 40);
-  minus->setMaximumSize(40, 40);
-  mminus->setMaximumSize(40, 40);
+#ifdef MAEMO
+  size = 80;
+#endif
+
+  pplus->setMinimumSize(size, size);
+  plus->setMinimumSize(size, size);
+  minus->setMinimumSize(size, size);
+  mminus->setMinimumSize(size, size);
+
+  pplus->setMaximumSize(size, size);
+  plus->setMaximumSize(size, size);
+  minus->setMaximumSize(size, size);
+  mminus->setMaximumSize(size, size);
 
   pplus->setFocusPolicy(Qt::NoFocus);
   plus->setFocusPolicy(Qt::NoFocus);
@@ -121,6 +127,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   pmLayout->setSpacing(5);
   pmLayout->addWidget(pplus, Qt::AlignLeft);
   pmLayout->addWidget(plus, Qt::AlignLeft);
+  pmLayout->addSpacing(20);
   pmLayout->addStretch(100);
   pmLayout->addWidget(minus, Qt::AlignRight);
   pmLayout->addWidget(mminus, Qt::AlignRight);
@@ -135,21 +142,21 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancel->setIconSize(QSize(30, 30));
-  cancel->setMinimumSize(40, 40);
-  cancel->setMaximumSize(40, 40);
+  cancel->setMinimumSize(size, size);
+  cancel->setMaximumSize(size, size);
 
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
   ok->setIconSize(QSize(30, 30));
-  ok->setMinimumSize(40, 40);
-  ok->setMaximumSize(40, 40);
+  ok->setMinimumSize(size, size);
+  ok->setMaximumSize(size, size);
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QVBoxLayout *butLayout = new QVBoxLayout;
   butLayout->addWidget( cancel );
-  butLayout->addStretch();
+  butLayout->addStretch(10);
   butLayout->addWidget( ok );
 
   gridLayout->addLayout(butLayout, 0, 3, row, 1);
