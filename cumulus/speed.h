@@ -310,7 +310,7 @@ public:
     /**
      * Gets if the distance is valid
      */
-    inline bool isValid()
+    inline bool isValid() const
     {
         return _isValid;
     };
