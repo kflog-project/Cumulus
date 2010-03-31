@@ -20,8 +20,11 @@
 
 <h3 align="center">Display</h3>
 
-<p> The main view of Cumulus consists of three information areas, displays containing flight information, a map and a status
-bar. This screen is also called the map view.</p>
+<p>
+The main view of Cumulus consists of three information areas, displays
+containing flight information, a map and a status bar. This screen is also
+called the map view.
+</p>
 
 <p> <b>Flight information</b></p>
 
@@ -29,55 +32,52 @@ bar. This screen is also called the map view.</p>
 
 <ul>
 
-  <li><b>Trk</b> - Track (also indicated by the
-direction of the glider symbol)</li>
+  <li><b>Trk</b> - Track (also indicated by the direction of the glider symbol)</li>
 
-  <li><b>Brg</b> - Bearing to target. Tipping on
-number shows for five seconds with red background the reverse course.</li>
+  <li><b>Brg</b> - Bearing to target. Tipping on number shows for five seconds
+                   with red background the reverse course.</li>
 
   <li><b>Arrow</b> - Bearing to target relative to the current heading. 
-      Tipping on icon will save the current position as waypoint.</li>
+                     Tipping on icon will save the current position as waypoint.</li>
 
-  <li><b>Dis/Eta</b> - Distance respectively
-estimated time of arrival to selected target. Tip on label to toggle
-display.</li>
+  <li><b>Dis/Eta</b> - Distance respectively estimated time of arrival to
+                       selected target. Tip on label to toggle display.</li>
 
   <li><b>Gs</b> - Current ground speed</li>
 
-  <li><b>Msl/Agl/Std</b> - Current Altitude above
-MSL/AGL and Standard pressure. Tip on the number to toggle the display.</li>
+  <li><b>Msl/Agl/Std</b> - Current Altitude above MSL/AGL and Standard pressure.
+                           Tip on the number to toggle the display.</li>
 
-  <li><b>Arv</b> - Arrival Altitude above (positive)
-or below (negative) about selected target <a href="#glidepath">
-(see glide path)</a> </li>
+  <li><b>Arv</b> - Arrival Altitude above (positive) or below (negative) about
+                   selected target <a href="#glidepath">(see glide path)</a> </li>
 
-  <li><b>To</b> - Selected target and in parentheses
-its elevation. Tip on label to select another target. </li>
+  <li><b>To</b> - Selected target and in parentheses its elevation. Tip on label
+                  to select another target. </li>
 
-  <li><b>Var</b> - Variometer display derived from
-gps altitude. Tip on label brings up a dialog box where you can change
-the integration time. </li>
+  <li><b>Var</b> - Variometer display normally derived from gps altitude. If a
+                   logger device provides variometer information this one is
+                   taken. Tip on label brings up a dialog box where you can change
+                   the integration time and the TEK adjustment. </li>
 
-  <li><b>Wd</b> - Wind speed and direction.
-Wind display can be toggled with LD display. Tip on label Wd
-will toggle the display.</li>
+  <li><b>Wd</b> - Wind speed and direction. Wind display can be toggled with LD
+                  display. Tip on label Wd will toggle the display.</li>
 
-  <li><b>LD</b> - Required and current LD to selected
-target. Can be toggled with Wind display. Tip on label LD will
-toggle the display. <a href="#ld"> See also LD paragraph
-for more info.</a> </li>
+  <li><b>LD</b> - Required and current LD to selected target. Can be toggled
+                  with Wind display. Tip on label LD will toggle the display.
+                  <a href="#ld"> See also LD paragraph for more info.</a> </li>
 
-  <li><b>Mc</b> - McCready value used for glide path
-and best speed calculation. Tip to open the in flight dialog.</li>
+  <li><b>Mc</b> - McCready value used for glide path and best speed calculation.
+                  Tip to open the in flight dialog.</li>
 
-  <li><b>S2f</b> - Best airspeed for current
-McCready, variometer and wind information</li>
-
+  <li><b>S2f</b> - Best airspeed for current McCready setting, bug setting and
+                   wind information if a target is selected. Variometer
+                   information is not considered at the moment. It is set to
+                   zero.</li>
 </ul>
 
-Of course, all information are displayed in the units you selected in
-the <a href="cumulus-settings-units.html">Units Settings</a>
-dialog.
+Of course all information are displayed in the units you selected in
+the <a href="cumulus-settings-units.html">Units Settings</a> dialog.
+
 <p><b>Map</b></p>
 
 <p> The map displays a graphical representation of the current
@@ -190,7 +190,7 @@ displayed calculated over the last 60s. If the current LD is higher as
 the required LD you should be on a safe way to your selected target.
 When you have climbed or you could fly on the same altitude level in
 the last 60s the display shows a value like <i>&gt;99</i>.
-If the calculation result is not sensefull, a dash is shown as result
+If the calculation result is not sense full a dash is shown as result
 in the display.</a></p>
 
 <a name="ld"> </a>
