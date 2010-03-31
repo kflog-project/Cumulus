@@ -14,7 +14,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-03-31 AP: Flight dialog modified to better finger usage.
 [o] 2010-03-30 AP: Variometer dialog modified to better finger usage.
+                   Tek calculation adjustment modified. If not circling ground
+                   speed is taken as basis.
 [o] 2010-03-25 AP: Task editor widget was a dialog, changed it to a tool window.
 [+] 2010-03-25 AP: New method isMounted added to class HwInfo to get information
                    about mounted MMC cards.
