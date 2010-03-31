@@ -105,6 +105,7 @@ public:
  * This is a Singleton class.
  *
  * @author Andrè Somers
+ *
  */
 
 class Calculator : public QObject
@@ -464,6 +465,10 @@ public slots:
      */
     void slot_Mc(const Speed&);
     /**
+     * set water and bug values used by glider polare.
+     */
+    void slot_WaterAndBugs( const int water, const int bugs );
+    /**
      * set TAS value
      */
     void slot_Tas(const Speed&);
@@ -611,7 +616,7 @@ signals: // Signals
     /**
      * Sent if a new McCready value has been set
      */
-    void newMc (const Speed&);
+    void newMc (const Speed& mc);
 
     /**
      * Sent if a new variometer value has been set

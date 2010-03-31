@@ -68,7 +68,8 @@ Calculator::Calculator(QObject* parent) :
   _calculateVario = true;
   _calculateWind = true;
   selectedWp=(wayPoint *) 0;
-  lastMc = 0.0;
+  lastMc.setInvalid();
+  lastBestSpeed.setInvalid();
   lastTas = 0.0;
   _polar = 0;
   _vario = new Vario (this);
@@ -94,7 +95,6 @@ Calculator::Calculator(QObject* parent) :
   // analyzer are replaced by direct calls, when a new sample or flight
   // mode is available and the wind calculation is enabled. Wind calculation
   // can be disabled when the Logger device delivers already wind data.
-
   connect (_windAnalyser, SIGNAL(newMeasurement(Vector, int)),
            _windStore, SLOT(slot_measurement(Vector, int)));
 
@@ -109,7 +109,6 @@ Calculator::Calculator(QObject* parent) :
   connect (this, SIGNAL(flightModeChanged(Calculator::flightmode)),
            this, SLOT(slot_flightModeChanged(Calculator::flightmode)));
 }
-
 
 Calculator::~Calculator()
 {
@@ -301,6 +300,9 @@ void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
 
   if ( newWp == 0 )
     {
+      lastBestSpeed.setInvalid();
+      emit bestSpeed( lastBestSpeed );
+
       // reset LD display
       emit newLD( lastRequiredLD=-1, lastCurrentLD=-1 );
       selectedWpInList = -1;
@@ -364,14 +366,13 @@ void Calculator::slot_WaypointDelete(wayPoint* newWp)
       wpTouchCounter = 0;
       taskEndReached = false;
       setSelectedWp(0);
-      calcDistance();
       calcBearing();
       calcETA();
-      calcGlidePath();
+      lastBestSpeed.setInvalid();
+      emit bestSpeed( lastBestSpeed );
       emit newLD( lastRequiredLD=-1, lastCurrentLD=-1 );
     }
 }
-
 
 /** Calculates the distance to the currently selected waypoint and
     emits newDistance if the distance has been changed. If a flight
@@ -752,7 +753,7 @@ bool Calculator::glidePath(int aLastBearing, Distance aDistance,
 
 void Calculator::calcGlidePath()
 {
-//  qDebug ("Calculator::calcGlidePath");
+  // qDebug ("Calculator::calcGlidePath");
   Speed speed;
   Altitude above;
 
@@ -771,6 +772,7 @@ void Calculator::calcGlidePath()
       lastBestSpeed = speed;
       emit bestSpeed (speed);
     }
+
   if (above != lastGlidePath)
     {
       lastGlidePath = above;
@@ -946,21 +948,48 @@ void Calculator::slot_changePositionWp()
 /** increment McCready value */
 void Calculator::slot_McUp()
 {
-  if (lastMc.getMps() <= MAX_MCCREADY - 0.5)
+  if( _glider && lastMc.getMps() <= MAX_MCCREADY - 0.5 )
     {
-      lastMc.setMps(lastMc.getMps()+0.5);
+      lastMc.setMps( lastMc.getMps() + 0.5 );
       calcGlidePath();
-      emit newMc (lastMc);
+      emit newMc( lastMc );
     }
 }
 
-
 /** set McCready value */
-void Calculator::slot_Mc(const Speed& spd)
+void Calculator::slot_Mc(const Speed& mc)
 {
-  lastMc.setMps(spd.getMps());
-  calcGlidePath();
-  emit newMc (lastMc);
+  if( _glider && lastMc.getMps() != mc.getMps() )
+    {
+      lastMc = mc;
+      calcGlidePath();
+      emit newMc( mc );
+    }
+}
+
+/** decrement McCready value; don't get negative */
+void Calculator::slot_McDown()
+{
+  if( _glider && lastMc.getMps() >= 0.5 )
+    {
+      lastMc.setMps( lastMc.getMps() - 0.5 );
+      calcGlidePath();
+      emit newMc( lastMc );
+    }
+}
+
+/**
+ * set water and bug values used by glider polare.
+ */
+void Calculator::slot_WaterAndBugs( const int water, const int bugs )
+{
+  if( _glider &&
+      (_glider->polar()->water() != water ||
+       _glider->polar()->bugs() != bugs) )
+    {
+      _glider->polar()->setWater( water, bugs );
+      calcGlidePath();
+    }
 }
 
 /**
@@ -969,18 +998,6 @@ void Calculator::slot_Mc(const Speed& spd)
 void Calculator::slot_Tas(const Speed& spd)
 {
   lastTas.setMps(spd.getMps());
-}
-
-
-/** decrement McCready value; don't get negative */
-void Calculator::slot_McDown()
-{
-  if (lastMc.getMps() >= 0.5)
-    {
-      lastMc.setMps(lastMc.getMps()-0.5);
-      calcGlidePath();
-      emit newMc (lastMc);
-    }
 }
 
 /**
@@ -1436,14 +1453,21 @@ void Calculator::setGlider(Glider* _newVal)
     {
       _glider = _newVal;
       _polar = _glider->polar();
+      lastMc.setKph(0);
       calcETA();
       calcGlidePath();
       emit newGlider( _glider->type() );
     }
   else
     {
+      lastMc.setInvalid();
+      lastBestSpeed.setInvalid();
+      emit bestSpeed( lastBestSpeed );
       emit newGlider( QString::null );
     }
+
+  // Switches on/off Mc in map view
+  emit newMc( lastMc );
 
   // Recalculate the nearest reachable sites because
   // glider has been modified resp. removed.
