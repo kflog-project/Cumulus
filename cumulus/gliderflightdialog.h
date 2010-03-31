@@ -28,77 +28,128 @@
 #include "speed.h"
 
 /**
- * @author Eggert Ehmke
+ * \author Eggert Ehmke, Axel Pauli
+ *
+ * \brief This dialog is the user interface for the in flight settings.
+ *
+ * This dialog handles the Mc, load balance and bug settings. It shall enable
+ * a simple change also during flight.
  */
 
 class GliderFlightDialog : public QDialog
 {
-    Q_OBJECT
+  Q_OBJECT
 
-private:
+ private:
 
   Q_DISABLE_COPY ( GliderFlightDialog )
 
-public:
+ public:
 
-    GliderFlightDialog(QWidget *parent);
-    ~GliderFlightDialog();
-    void load();
+  GliderFlightDialog(QWidget *parent);
 
-    static int getNrOfInstances()
-    {
-      return noOfInstances;
-    };
+  virtual ~GliderFlightDialog();
 
-protected:
+  /**
+   * @return Returns the current number of instances.
+   */
+  static int getNrOfInstances()
+  {
+    return noOfInstances;
+  };
 
-    void accept();
-    void showEvent(QShowEvent *);
+ protected:
 
-private:
+  /**
+   * This method is called, if the user has pressed the ok button.
+   */
+  void accept();
 
-    void save();
+  void showEvent(QShowEvent *);
 
-    bool hildonStyle;
-    QDoubleSpinBox* spinMcCready;
-    QSpinBox* spinWater;
-    QSpinBox* spinBugs;
-    QPushButton* buttonDump;
-    QTimer* timeout;
-    int _time;
+ private slots:
 
-    QPushButton* mcPlus;
-    QPushButton* mcMinus;
+  /**
+  * This method changes the value in the spin box which has the current focus.
+  *
+  * @param newStep value to be set in spin box
+  */
+  void slotChange( int newStep );
 
-    QPushButton* waterPlus;
-    QPushButton* waterMinus;
+  /**
+   * This slot is called if the user has pressed the dump button.
+   */
+  void slotDump();
 
-    QPushButton* bugsPlus;
-    QPushButton* bugsMinus;
+  /** Increments spin box value according to set step width. */
+  void slotMcPlus();
 
-    QPushButton *ok;
-    QPushButton *cancel;
+  /** Decrements spin box value according to set step width. */
+  void slotMcMinus();
 
-    /** contains the current number of class instances */
-    static int noOfInstances;
+  /** Increments spin box value according to set step width. */
+  void slotWaterPlus();
 
-private slots:
+  /** Decrements spin box value according to set step width. */
+  void slotWaterMinus();
 
-    void slotDump();
-    void setTimer();
+  /** Increments spin box value according to set step width. */
+  void slotBugsPlus();
 
-    void slotMcPlus();
-    void slotMcMinus();
+  /** Decrements spin box value according to set step width. */
+  void slotBugsMinus();
 
-    void slotWaterPlus();
-    void slotWaterMinus();
+  /**
+   * This slot is called if a value in a spin box has been changed
+   * to restart the close timer.
+   */
+  void slotSpinValueChanged( const QString& text );
 
-    void slotBugsPlus();
-    void slotBugsMinus();
+ signals:
 
-signals:
+  /**
+   * This signal is emitted, if water or bugs have been changed.
+   */
+  void newWaterAndBugs( const int water, const int bugs );
 
-    void settingsChanged();
+ /**
+  * This signal is emitted, if the Mc value has been changed.
+  */
+  void newMc( const Speed& mc );
+
+ private:
+
+  /** Loads the permanent widget data. */
+  void load();
+
+  /** Saves the permanent widget data. */
+  void save();
+
+  /**
+   * This method starts a timer which closes the dialog automatically after
+   * the timer has expired.
+   */
+  void startTimer();
+
+  QDoubleSpinBox* spinMcCready;
+  double mcSmallStep;
+  double mcBigStep;
+  QSpinBox* spinWater;
+  QSpinBox* spinBugs;
+  QPushButton* buttonDump;
+  QTimer* timer;
+  int _time;
+
+  QPushButton *plus;
+  QPushButton *pplus;
+  QPushButton *minus;
+  QPushButton *mminus;
+
+  QPushButton *ok;
+  QPushButton *cancel;
+
+  /** contains the current number of class instances */
+  static int noOfInstances;
 };
 
 #endif
