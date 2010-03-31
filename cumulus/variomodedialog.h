@@ -46,7 +46,7 @@ public:
 
   VarioModeDialog(QWidget *parent);
 
-  ~VarioModeDialog();
+  virtual ~VarioModeDialog();
 
   /**
    * @return Returns the current number of instances.
@@ -96,7 +96,7 @@ private slots:
 
 signals:
   /**
-   * This slot is called, if the integration time has
+   * This signal is emitted, if the integration time has
    * been changed. Passed value unit is seconds.
    *
    * @param newTime new time value in seconds
@@ -104,14 +104,14 @@ signals:
   void newVarioTime(int newTime);
 
   /**
-   * This slot is called, if the TEK Mode has been changed.
+   * This signal is emitted, if the TEK Mode has been changed.
    *
    * @param newMode switches on/off the TEK adjustment
    */
   void newTEKMode( bool newMode );
 
   /**
-   * This slot is called, if the TEK Mode has been changed.
+   * This signal is emitted, if the TEK Mode has been changed.
    *
    * @param newAdjust new adjust value in percent
    */

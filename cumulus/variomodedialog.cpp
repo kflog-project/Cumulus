@@ -97,10 +97,10 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
 
   //---------------------------------------------------------------------
 
-  QPushButton *pplus   = new QPushButton("++", this);
-  QPushButton *plus    = new QPushButton("+", this);
-  QPushButton *mminus  = new QPushButton("--", this);
-  QPushButton *minus   = new QPushButton("-", this);
+  pplus   = new QPushButton("++", this);
+  plus    = new QPushButton("+", this);
+  mminus  = new QPushButton("--", this);
+  minus   = new QPushButton("-", this);
 
   int size = 40;
 
