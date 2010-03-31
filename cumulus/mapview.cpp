@@ -22,11 +22,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QFrame>
-#include <QPalette>
-#include <QWhatsThis>
-#include <QBoxLayout>
-#include <QToolTip>
+#include <QtGui>
 
 #include "mapview.h"
 #include "gpsnmea.h"
@@ -250,7 +246,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   //add McCready widget
   _mc = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _mc->setPreText("Mc");
-  _mc->setValue("0.0");
+  calculator->glider() ? _mc->setValue("0.0") : _mc->setValue("-");
   MSLayout->addWidget( _mc );
   connect(_mc, SIGNAL(mousePress()), this, SLOT(slot_gliderFlightDialog()));
 
@@ -590,8 +586,6 @@ void MapView::slot_LogEntry()
 /** This slot is being called if the altitude has changed. */
 void MapView::slot_Altitude(const Altitude& /*alt*/)
 {
-  //    Altitude alti = calculator->getAltimeterAltitude();
-  //    _altitude->setValue(alti.getText (false,0));
   QString altiText = calculator->getAltimeterAltitudeText();
   _altitude->setValue(altiText);
 }
@@ -607,14 +601,28 @@ void MapView::slot_GlidePath (const Altitude& above)
 /** This slot is called when the best speed value has changed */
 void MapView::slot_bestSpeed (const Speed& speed)
 {
-  _speed2fly->setValue(speed.getHorizontalText(false,0));
+  if( speed.isValid() )
+    {
+      _speed2fly->setValue(speed.getHorizontalText(false, 0));
+    }
+  else
+    {
+      _speed2fly->setValue("-");
+    }
 }
 
 
 /** This slot is called if a new McCready value has been set */
 void MapView::slot_Mc (const Speed& mc)
 {
-  _mc->setValue (mc.getVerticalText(false,1));
+  if( mc.isValid() )
+    {
+      _mc->setValue(mc.getVerticalText(false, 1));
+    }
+  else
+    {
+      _mc->setValue("-");
+    }
 }
 
 
@@ -891,8 +899,6 @@ void MapView::slot_VarioDialog()
     }
 
   VarioModeDialog *vmDlg = new VarioModeDialog( this );
-  // delete widget during close event
-  vmDlg->setAttribute(Qt::WA_DeleteOnClose);
 
   connect( vmDlg, SIGNAL( newVarioTime( int ) ),
            calculator->getVario(), SLOT( slotNewVarioTime( int ) ) );
@@ -916,8 +922,9 @@ void MapView::slot_gpsStatusDialog()
 /** Opens the inflight glider settings dialog. */
 void MapView::slot_gliderFlightDialog()
 {
-  if( GliderFlightDialog::getNrOfInstances() > 0 )
+  if( ! calculator->glider() || GliderFlightDialog::getNrOfInstances() > 0 )
     {
+      // If no glider is selected we don't open the dialog.
       // Sometimes the mouse event is delayed under Maemo, which triggers this
       // method. In such a case multiple dialogs are opened. This check shall
       // prevent that.
@@ -925,13 +932,13 @@ void MapView::slot_gliderFlightDialog()
     }
 
   GliderFlightDialog *gfDlg = new GliderFlightDialog( this );
-  // delete widget during close event
-  gfDlg->setAttribute(Qt::WA_DeleteOnClose);
 
-  connect( gfDlg, SIGNAL( settingsChanged() ),
-           calculator, SLOT( slot_settingsChanged() ) );
+  connect( gfDlg, SIGNAL(newMc(const Speed&)),
+           calculator, SLOT(slot_Mc(const Speed&)) );
 
-  gfDlg->load();
+  connect( gfDlg, SIGNAL(newWaterAndBugs(const int, const int)),
+           calculator, SLOT(slot_WaterAndBugs(const int, const int)) );
+
   gfDlg->show();
 }
 
