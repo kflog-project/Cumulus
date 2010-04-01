@@ -6,10 +6,11 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2005 by André Somers, 2009 Axel Pauli
+ **   Copyright (c):  2005      by André Somers
+ **                   2009-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -68,13 +69,14 @@ OpenAirParser::OpenAirParser()
 
 OpenAirParser::~OpenAirParser()
 {
-  if( h_projection ) {
-    delete h_projection;
-  }
+  if ( h_projection )
+    {
+      delete h_projection;
+    }
 }
 
 /**
- * Searchs on default places for openair files. That can be source
+ * Searches on default places for openair files. That can be source
  * files or compiled versions of them.
  *
  * @returns number of successfully loaded files
@@ -91,24 +93,23 @@ uint OpenAirParser::load( QList<Airspace*>& list )
   QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
   QStringList preselect;
 
-  for( int i = 0; i < mapDirs.size(); ++i )
+  for ( int i = 0; i < mapDirs.size(); ++i )
     {
       MapContents::addDir(preselect, mapDirs.at(i) + "/airspaces", "*.txt");
       MapContents::addDir(preselect, mapDirs.at(i) + "/airspaces", "*.TXT");
       MapContents::addDir(preselect, mapDirs.at(i) + "/airspaces", "*.txc");
     }
 
-  if(preselect.count() == 0)
+  if (preselect.count() == 0)
     {
       qWarning( "OpenAirParser: No Open Air files could be found in the map directories" );
       return loadCounter;
     }
 
-
   // First check, if we have found a file name in upper letters. May
-  // be true, if a file was downloaded from welt 2000. We will convert
+  // be true, if a file was downloaded from the internet. We will convert
   // such a file name to lower cases and replace it in the file list.
-  for( int i = 0; i < preselect.size(); ++i )
+  for ( int i = 0; i < preselect.size(); ++i )
     {
       if ( preselect.at(i).endsWith( ".TXT" ) )
         {
@@ -124,116 +125,125 @@ uint OpenAirParser::load( QList<Airspace*>& list )
   // source files follows compiled files
   preselect.sort();
 
-  while ( ! preselect.isEmpty() ) {
-    QString txtName, txcName;
-    _doCompile = false;
+  while (!preselect.isEmpty())
+    {
+      QString txtName, txcName;
+      _doCompile = false;
 
-    if ( preselect.first().endsWith( QString(".txt") ) ) {
-      // there can't be the same name txc after this txt
-      // parse found txt file
-      txtName = preselect.first();
-      _doCompile = true;
+      if (preselect.first().endsWith(QString(".txt")))
+        {
+          // there can't be the same name txc after this txt
+          // parse found txt file
+          txtName = preselect.first();
+          _doCompile = true;
 
-      if( parse( txtName, list ) )
-        loadCounter++;
+          if (parse(txtName, list))
+            {
+              loadCounter++;
+            }
 
-      preselect.removeAt( 0 );
-      continue;
-    }
-
-    // At first we found a binary file with the extension txc.
-    txcName = preselect.first();
-
-    // Now we have to check if there's to find a source file with
-    // extension txt after the binary file
-    txcName = preselect.first();
-    preselect.removeAt( 0 );
-    txtName = txcName;
-    txtName.replace( txtName.length()-1, 1, QString("t") );
-
-    if ( ! preselect.isEmpty() && txtName == preselect.first() ) {
-      preselect.removeAt( 0 );
-      // We found the related source file and will do some checks to
-      // decide which type of file will be read in.
-
-      // Lets check, if we can read the header of the compiled file
-      if( ! setHeaderData( txcName ) ) {
-        // Compiled file format is not the expected one, remove
-        // wrong file and start a reparsing of source file.
-        unlink( txcName.toLatin1().data() );
-        _doCompile = true;
-
-        if( parse( txtName, list ) )
-          loadCounter++;
-
-        preselect.removeAt( 0 );
-        continue;
-      }
-
-      // Do a date-time check. If the source file is younger in its
-      // modification time as the compiled file, a new compilation
-      // must be forced.
-
-      QFileInfo fi(txtName);
-      QDateTime lastModTxt = fi.lastModified();
-
-      if( h_creationDateTime < lastModTxt ) {
-        // Modification date-time of source is younger as from
-        // compiled file. Therefore we do start a reparsing of the
-        // source file.
-        unlink( txcName.toLatin1().data() );
-        _doCompile = true;
-        if( parse( txtName, list ) )
-          loadCounter++;
-        continue;
-      }
-
-      // Check date-time against the config file
-      QString confName = fi.path() + "/" + fi.baseName() + "_mappings.conf";
-      QFileInfo fiConf( confName );
-
-      if( fiConf.exists() && fi.isReadable() &&
-          h_creationDateTime < fiConf.lastModified() ) {
-        // Conf file was modified, make a new compilation. It is not
-        // deeper checked, what was modified due to the effort and
-        // in the assumption that a config file will not be changed
-        // every minute.
-        unlink( txcName.toLatin1().data() );
-        _doCompile = true;
-        if( parse( txtName, list ) )
-          loadCounter++;
-        continue;
-      }
-
-      // Check, if the projection has been changed in the meantime
-      ProjectionBase *currentProjection = _globalMapMatrix->getProjection();
-
-      if( ! MapContents::compareProjections( h_projection, currentProjection ) ) {
-        // Projection has changed in the meantime
-        if(  h_projection ) {
-          delete h_projection;
-          h_projection = 0;
+          preselect.removeAt(0);
+          continue;
         }
 
-        unlink( txcName.toLatin1().data() );
-        _doCompile = true;
-        if( parse( txtName, list ) )
-          loadCounter++;
-        continue;
-      }
-    }
+      // At first we found a binary file with the extension txc.
+      txcName = preselect.first();
 
-    // we will read the compiled file, because a source file is not to
-    // find after it or all checks were successfully passed
-    if( readCompiledFile( txcName, list ) )
-      loadCounter++;
+      // Now we have to check if there's to find a source file with
+      // extension txt after the binary file
+      txcName = preselect.first();
+      preselect.removeAt( 0 );
+      txtName = txcName;
+      txtName.replace( txtName.length()-1, 1, QString("t") );
 
-  } // End of While
+      if ( ! preselect.isEmpty() && txtName == preselect.first() )
+        {
+          preselect.removeAt( 0 );
+          // We found the related source file and will do some checks to
+          // decide which type of file will be read in.
+
+          // Lets check, if we can read the header of the compiled file
+          if ( ! setHeaderData( txcName ) )
+            {
+              // Compiled file format is not the expected one, remove
+              // wrong file and start a reparsing of source file.
+              unlink( txcName.toLatin1().data() );
+              _doCompile = true;
+
+              if ( parse( txtName, list ) )
+                loadCounter++;
+
+              preselect.removeAt( 0 );
+              continue;
+            }
+
+          // Do a date-time check. If the source file is younger in its
+          // modification time as the compiled file, a new compilation
+          // must be forced.
+
+          QFileInfo fi(txtName);
+          QDateTime lastModTxt = fi.lastModified();
+
+          if ( h_creationDateTime < lastModTxt )
+            {
+              // Modification date-time of source is younger as from
+              // compiled file. Therefore we do start a reparsing of the
+              // source file.
+              unlink( txcName.toLatin1().data() );
+              _doCompile = true;
+              if ( parse( txtName, list ) )
+                loadCounter++;
+              continue;
+            }
+
+          // Check date-time against the config file
+          QString confName = fi.path() + "/" + fi.baseName() + "_mappings.conf";
+          QFileInfo fiConf( confName );
+
+          if ( fiConf.exists() && fi.isReadable() &&
+               h_creationDateTime < fiConf.lastModified() )
+            {
+              // Conf file was modified, make a new compilation. It is not
+              // deeper checked, what was modified due to the effort and
+              // in the assumption that a config file will not be changed
+              // every minute.
+              unlink( txcName.toLatin1().data() );
+              _doCompile = true;
+              if ( parse( txtName, list ) )
+                loadCounter++;
+              continue;
+            }
+
+          // Check, if the projection has been changed in the meantime
+          ProjectionBase *currentProjection = _globalMapMatrix->getProjection();
+
+          if ( ! MapContents::compareProjections( h_projection, currentProjection ) )
+            {
+              // Projection has changed in the meantime
+              if (  h_projection )
+                {
+                  delete h_projection;
+                  h_projection = 0;
+                }
+
+              unlink( txcName.toLatin1().data() );
+              _doCompile = true;
+              if ( parse( txtName, list ) )
+                loadCounter++;
+              continue;
+            }
+        }
+
+      // we will read the compiled file, because a source file is not to
+      // find after it or all checks were successfully passed
+      if ( readCompiledFile( txcName, list ) )
+        loadCounter++;
+
+    } // End of While
 
   qDebug("OpenAirParser: %d OpenAir file(s) loaded in %dms", loadCounter, t.elapsed());
   return loadCounter;
 }
-
 
 bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
 {
@@ -241,59 +251,68 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
   t.start();
   QFile source(path);
 
-  if (!source.open(QIODevice::ReadOnly)) {
-    qWarning("OpenAirParser: Cannot open airspace file %s!", path.toLatin1().data());
-    return false;
-  }
+  if (!source.open(QIODevice::ReadOnly))
+    {
+      qWarning("OpenAirParser: Cannot open airspace file %s!", path.toLatin1().data());
+      return false;
+    }
 
   resetState();
   initializeStringMapping( path );
 
-  if( _doCompile ) {
-    // we open a buffer for temporary storage of extracted airspace
-    // elements
-    _bufData = new QByteArray();
-    _buffer = new QBuffer();
-    _outbuf = new QDataStream();
+  if ( _doCompile )
+    {
+      // we open a buffer for temporary storage of extracted airspace
+      // elements
+      _bufData = new QByteArray();
+      _buffer = new QBuffer();
+      _outbuf = new QDataStream();
 
 #ifdef BOUNDING_BOX
-    _boundingBox = new QRect();
+      _boundingBox = new QRect();
 #endif
 
-    _buffer->setBuffer( _bufData );
-    _buffer->open(QIODevice::ReadWrite);
-    _outbuf->setDevice( _buffer );
-  }
+      _buffer->setBuffer( _bufData );
+      _buffer->open(QIODevice::ReadWrite);
+      _outbuf->setDevice( _buffer );
+    }
 
   QTextStream in(&source);
   //start parsing
   QString line=in.readLine();
   _lineNumber++;
 
-  while (!line.isNull()) {
-    // qDebug("reading line %d: '%s'", _lineNumber, line.toLatin1().data());
-    line = line.simplified();
+  while (!line.isNull())
+    {
+      // qDebug("reading line %d: '%s'", _lineNumber, line.toLatin1().data());
+      line = line.simplified();
 
-    if (line.startsWith("*") || line.startsWith("#")) {
-      //comment, ignore
-    } else if (line.isEmpty()) {
-      //empty line, ignore
-    } else {
-      // delete comments at the end of the line before parsing it
-      line = line.split('*')[0];
-      line = line.split('#')[0];
-      parseLine(line);
+      if (line.startsWith("*") || line.startsWith("#"))
+        {
+          //comment, ignore
+        }
+      else if (line.isEmpty())
+        {
+          //empty line, ignore
+        }
+      else
+        {
+          // delete comments at the end of the line before parsing it
+          line = line.split('*')[0];
+          line = line.split('#')[0];
+          parseLine(line);
+        }
+      line=in.readLine();
+      _lineNumber++;
     }
-    line=in.readLine();
-    _lineNumber++;
-  }
 
   if (_isCurrentAirspace)
     finishAirspace();
 
-  for (int i  = 0; i < _airlist.count(); i++) {
-    list.append(_airlist.at(i));
-  }
+  for (int i  = 0; i < _airlist.count(); i++)
+    {
+      list.append(_airlist.at(i));
+    }
 
   QFileInfo fi( path );
   qDebug( "OpenAirParser: %d airspace objects read from file %s in %dms",
@@ -302,62 +321,67 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
   source.close();
 
   // handle creation of a compiled file version
-  if( _doCompile ) {
-    // close opened buffer
-    _buffer->close();
+  if ( _doCompile )
+    {
+      // close opened buffer
+      _buffer->close();
 
-    if( _objCounter ) {
-      // airspace objects were created during parsing, we will save
-      // them in a txc file.
-      QFile compFile;
-      QDataStream out;
+      if ( _objCounter )
+        {
+          // airspace objects were created during parsing, we will save
+          // them in a txc file.
+          QFile compFile;
+          QDataStream out;
 
-      // build the compiled file name with the extension .txc from
-      // the source file name
-      QString cfn = fi.path() + "/" + fi.baseName() + ".txc";
+          // build the compiled file name with the extension .txc from
+          // the source file name
+          QString cfn = fi.path() + "/" + fi.completeBaseName() + ".txc";
 
-      compFile.setFileName( cfn );
-      out.setDevice( &compFile );
+          compFile.setFileName( cfn );
+          out.setDevice( &compFile );
 
-      if( !compFile.open(QIODevice::WriteOnly) ) {
-        // Can't open output file, reset compile flag
-        qWarning("OpenAirParser: Cannot open file %s!", cfn.toLatin1().data());
-        _doCompile = false;
-      } else {
+          if ( !compFile.open(QIODevice::WriteOnly) )
+            {
+              // Can't open output file, reset compile flag
+              qWarning("OpenAirParser: Cannot open file %s!", cfn.toLatin1().data());
+              _doCompile = false;
+            }
+          else
+            {
 
-        qDebug("OpenAirParser: writing file %s", cfn.toLatin1().data());
+              qDebug("OpenAirParser: writing file %s", cfn.toLatin1().data());
 
-        // create compiled binary version
-        out << quint32( KFLOG_FILE_MAGIC );
-        out << qint8( FILE_TYPE_AIRSPACE_C );
-        out << quint16( FILE_VERSION_AIRSPACE_C );
-        out << QDateTime::currentDateTime();
-        SaveProjection( out, _globalMapMatrix->getProjection() );
+              // create compiled binary version
+              out << quint32( KFLOG_FILE_MAGIC );
+              out << qint8( FILE_TYPE_AIRSPACE_C );
+              out << quint16( FILE_VERSION_AIRSPACE_C );
+              out << QDateTime::currentDateTime();
+              SaveProjection( out, _globalMapMatrix->getProjection() );
 
 #ifdef BOUNDING_BOX
 
-        out << *_boundingBox;
+              out << *_boundingBox;
 #endif
-        // write data on airspaces from buffer
-        out << *_bufData;
-        compFile.close();
-      }
+              // write data on airspaces from buffer
+              out << *_bufData;
+              compFile.close();
+            }
+        }
+
+      // delete all dynamically allocated objects
+
+#ifdef BOUNDING_BOX
+      delete _boundingBox;
+      _boundingBox = 0;
+#endif
+
+      delete _outbuf;
+      _outbuf  = 0;
+      delete _buffer;
+      _buffer  = 0;
+      delete _bufData;
+      _bufData = 0;
     }
-
-    // delete all dynamically allocated objects
-
-#ifdef BOUNDING_BOX
-    delete _boundingBox;
-    _boundingBox = 0;
-#endif
-
-    delete _outbuf;
-    _outbuf  = 0;
-    delete _buffer;
-    _buffer  = 0;
-    delete _bufData;
-    _bufData = 0;
-  }
 
   return true;
 }
@@ -375,14 +399,15 @@ void OpenAirParser::resetState()
 
 void OpenAirParser::parseLine(QString& line)
 {
-  if (line.startsWith("AC ")) {
-    //type of record. This also indicates we're starting a new object
-    if (_isCurrentAirspace)
-      finishAirspace();
-    newAirspace();
-    parseType(line);
-    return;
-  }
+  if (line.startsWith("AC "))
+    {
+      //type of record. This also indicates we're starting a new object
+      if (_isCurrentAirspace)
+        finishAirspace();
+      newAirspace();
+      parseType(line);
+      return;
+    }
 
   //the rest of the records don't make sense if we're not parsing an object
   int lat, lon;
@@ -392,91 +417,106 @@ void OpenAirParser::parseLine(QString& line)
   if (!_isCurrentAirspace)
     return;
 
-  if (line.startsWith("AN ")) {
-    //name
-    asName = line.mid(3);
-    return;
-  }
-
-  if (line.startsWith("AH ")) {
-    //airspace ceiling
-    QString alt = line.mid(3);
-    parseAltitude(alt, asUpperType, asUpper);
-    return;
-  }
-
-  if (line.startsWith("AL ")) {
-    //airspace floor
-    QString alt = line.mid(3);
-    parseAltitude(alt, asLowerType, asLower);
-    return;
-  }
-
-  if (line.startsWith("DP ")) {
-    //polygon coordinate
-    QString coord = line.mid(3);
-    parseCoordinate(coord, lat, lon);
-    asPA.resize(asPA.count()+1);
-    asPA.setPoint(asPA.count()-1,lat,lon);
-    // qDebug( "addDP: lat=%d, lon=%d", lat, lon );
-    return;
-  }
-
-  if (line.startsWith("DC ")) {
-    //circle
-    radius=line.mid(3).toDouble(&ok);
-    if (ok) {
-      addCircle(radius);
+  if (line.startsWith("AN "))
+    {
+      //name
+      asName = line.mid(3);
+      return;
     }
-    return;
-  }
 
-  if (line.startsWith("DA ")) {
+  if (line.startsWith("AH "))
+    {
+      //airspace ceiling
+      QString alt = line.mid(3);
+      parseAltitude(alt, asUpperType, asUpper);
+      return;
+    }
 
-    makeAngleArc(line.mid(3));
-    return;
-  }
+  if (line.startsWith("AL "))
+    {
+      //airspace floor
+      QString alt = line.mid(3);
+      parseAltitude(alt, asLowerType, asLower);
+      return;
+    }
 
-  if (line.startsWith("DB ")) {
-    makeCoordinateArc(line.mid(3));
-    return;
-  }
+  if (line.startsWith("DP "))
+    {
+      //polygon coordinate
+      QString coord = line.mid(3);
+      parseCoordinate(coord, lat, lon);
+      asPA.resize(asPA.count()+1);
+      asPA.setPoint(asPA.count()-1,lat,lon);
+      // qDebug( "addDP: lat=%d, lon=%d", lat, lon );
+      return;
+    }
 
-  if (line.startsWith("DY ")) {
-    //airway
-    return;
-  }
+  if (line.startsWith("DC "))
+    {
+      //circle
+      radius=line.mid(3).toDouble(&ok);
+      if (ok)
+        {
+          addCircle(radius);
+        }
+      return;
+    }
 
-  if (line.startsWith("V ")) {
-    parseVariable(line.mid(2));
-    return;
-  }
+  if (line.startsWith("DA "))
+    {
+
+      makeAngleArc(line.mid(3));
+      return;
+    }
+
+  if (line.startsWith("DB "))
+    {
+      makeCoordinateArc(line.mid(3));
+      return;
+    }
+
+  if (line.startsWith("DY "))
+    {
+      //airway
+      return;
+    }
+
+  if (line.startsWith("V "))
+    {
+      parseVariable(line.mid(2));
+      return;
+    }
 
   //ignored record types
-  if (line.startsWith("AT ")) {
-    //label placement, ignore
-    return;
-  }
+  if (line.startsWith("AT "))
+    {
+      //label placement, ignore
+      return;
+    }
 
-  if (line.startsWith("TO ")) {
-    //terrain open polygon, ignore
-    return;
-  }
+  if (line.startsWith("TO "))
+    {
+      //terrain open polygon, ignore
+      return;
+    }
 
-  if (line.startsWith("TC ")) {
-    //terrain closed polygon, ignore
-    return;
-  }
+  if (line.startsWith("TC "))
+    {
+      //terrain closed polygon, ignore
+      return;
+    }
 
-  if (line.startsWith("SP ")) {
-    //pen definition, ignore
-    return;
-  }
+  if (line.startsWith("SP "))
+    {
+      //pen definition, ignore
+      return;
+    }
 
-  if (line.startsWith("SB ")) {
-    //brush definition, ignore
-    return;
-  }
+  if (line.startsWith("SB "))
+    {
+      //brush definition, ignore
+      return;
+    }
   //unknown record type
 }
 
@@ -508,7 +548,7 @@ void OpenAirParser::finishAirspace()
 
   // @AP: Airspaces are stored as polygones and should not contain the start point
   // twice as done in OpenAir description.
-  if( asPA.count() > 2 && asPA.first() == asPA.last() )
+  if ( asPA.count() > 2 && asPA.first() == asPA.last() )
     {
       // remove the last point because it is identical to the first point
       asPA.remove(asPA.count()-1);
@@ -530,25 +570,27 @@ void OpenAirParser::finishAirspace()
   _isCurrentAirspace = false;
   // qDebug("finalized airspace %s. %d points in airspace", asName.toLatin1().data(), cnt);
 
-  if( _doCompile ) {
-    // we temporary save the airspace element in a memory buffer to
-    // store it persistently later on in a binary file.
-    ShortSave( *_outbuf, asName );
-    *_outbuf << quint8( asType );
-    *_outbuf << quint8( asLowerType );
-    *_outbuf << qint16( asLower );
-    *_outbuf << quint8( asUpperType );
-    *_outbuf << qint16( asUpper );
-    ShortSave( *_outbuf, asPA );
+  if ( _doCompile )
+    {
+      // we temporary save the airspace element in a memory buffer to
+      // store it persistently later on in a binary file.
+      ShortSave( *_outbuf, asName );
+      *_outbuf << quint8( asType );
+      *_outbuf << quint8( asLowerType );
+      *_outbuf << qint16( asLower );
+      *_outbuf << quint8( asUpperType );
+      *_outbuf << qint16( asUpper );
+      ShortSave( *_outbuf, asPA );
 
 #ifdef BOUNDING_BOX
 
-    if( !asPA.isEmpty() ) {
-      *_boundingBox |= asPA.boundingRect();
-    }
+      if ( !asPA.isEmpty() )
+        {
+          *_boundingBox |= asPA.boundingRect();
+        }
 #endif
 
-  }
+    }
 }
 
 
@@ -602,38 +644,47 @@ void OpenAirParser::initializeStringMapping(const QString& mapFilePath)
 
   QString path = fi.path() + "/" + fi.baseName() + "_mappings.conf";
   fi.setFile(path);
-  if (fi.exists() && fi.isFile() && fi.isReadable()) {
-    QFile f(path);
-    if (!f.open(QIODevice::ReadOnly)) {
-      qWarning("OpenAirParser: Cannot open airspace mapping file %s!", path.toLatin1().data());
-      return;
-    }
-
-    QTextStream in(&f);
-    qDebug("Parsing mapping file '%s'.", path.toLatin1().data());
-
-    //start parsing
-    QString line = in.readLine();
-
-    while (!line.isNull()) {
-      line = line.simplified();
-      if (line.startsWith("*") || line.startsWith("#")) {
-        //comment, ignore
-      } else if (line.isEmpty()) {
-        //empty line, ignore
-      } else {
-        int pos = line.indexOf("=");
-        if (pos>0 && pos < int(line.length())) {
-          QString key = line.left(pos).simplified();
-          QString value = line.mid(pos+1).simplified();
-          qDebug("  added '%s' => '%s' to mappings", key.toLatin1().data(), value.toLatin1().data());
-          m_stringTypeMap.remove(key);
-          m_stringTypeMap.insert(key, value);
+  if (fi.exists() && fi.isFile() && fi.isReadable())
+    {
+      QFile f(path);
+      if (!f.open(QIODevice::ReadOnly))
+        {
+          qWarning("OpenAirParser: Cannot open airspace mapping file %s!", path.toLatin1().data());
+          return;
         }
-      }
-      line=in.readLine();
+
+      QTextStream in(&f);
+      qDebug("Parsing mapping file '%s'.", path.toLatin1().data());
+
+      //start parsing
+      QString line = in.readLine();
+
+      while (!line.isNull())
+        {
+          line = line.simplified();
+          if (line.startsWith("*") || line.startsWith("#"))
+            {
+              //comment, ignore
+            }
+          else if (line.isEmpty())
+            {
+              //empty line, ignore
+            }
+          else
+            {
+              int pos = line.indexOf("=");
+              if (pos>0 && pos < int(line.length()))
+                {
+                  QString key = line.left(pos).simplified();
+                  QString value = line.mid(pos+1).simplified();
+                  qDebug("  added '%s' => '%s' to mappings", key.toLatin1().data(), value.toLatin1().data());
+                  m_stringTypeMap.remove(key);
+                  m_stringTypeMap.insert(key, value);
+                }
+            }
+          line=in.readLine();
+        }
     }
-  }
 }
 
 
@@ -641,23 +692,29 @@ void OpenAirParser::parseType(QString& line)
 {
   line=line.mid(3);
 
-  if (!m_stringTypeMap.contains(line)) {
-    //no mapping from the found type to a Cumulus basetype was found
-    qWarning("OpenAirParser: Line=%d Type, '%s' not mapped to basetype. Object not interpretted.", _lineNumber, line.toLatin1().data());
-    _isCurrentAirspace = false; //stop accepting other lines in this object
-    return;
-  } else {
-    QString stringType = m_stringTypeMap[line];
-    if (!m_baseTypeMap.contains(stringType)) {
-      //the indicated basetype is not a valid Cumulus basetype.
-      qWarning("OpenAirParser:=Line %d, Type '%s' is not a valid basetype. Object not interpretted.", _lineNumber, stringType.toLatin1().data());
+  if (!m_stringTypeMap.contains(line))
+    {
+      //no mapping from the found type to a Cumulus basetype was found
+      qWarning("OpenAirParser: Line=%d Type, '%s' not mapped to basetype. Object not interpretted.", _lineNumber, line.toLatin1().data());
       _isCurrentAirspace = false; //stop accepting other lines in this object
       return;
-    } else {
-      //all seems to be right with the world!
-      asType = m_baseTypeMap[stringType];
     }
-  }
+  else
+    {
+      QString stringType = m_stringTypeMap[line];
+      if (!m_baseTypeMap.contains(stringType))
+        {
+          //the indicated basetype is not a valid Cumulus basetype.
+          qWarning("OpenAirParser:=Line %d, Type '%s' is not a valid basetype. Object not interpretted.", _lineNumber, stringType.toLatin1().data());
+          _isCurrentAirspace = false; //stop accepting other lines in this object
+          return;
+        }
+      else
+        {
+          //all seems to be right with the world!
+          asType = m_baseTypeMap[stringType];
+        }
+    }
 }
 
 
@@ -679,16 +736,18 @@ void OpenAirParser::parseAltitude(QString& line, BaseMapElement::elevationType& 
   //we start with the text parts
   QRegExp reg("[A-Za-z]+");
 
-  while (line.length()>0) {
-    pos = reg.indexIn(line, pos+len);
-    len = reg.matchedLength();
-    if (pos<0) {
-      break;
+  while (line.length()>0)
+    {
+      pos = reg.indexIn(line, pos+len);
+      len = reg.matchedLength();
+      if (pos<0)
+        {
+          break;
+        }
+      elements.append(line.mid(pos, len));
+      //qDebug("element: '%s'", line.mid(pos, len).toLatin1().data());
+      //line=line.mid(len);
     }
-    elements.append(line.mid(pos, len));
-    //qDebug("element: '%s'", line.mid(pos, len).toLatin1().data());
-    //line=line.mid(len);
-  }
 
   //now, get our number parts
 
@@ -696,78 +755,91 @@ void OpenAirParser::parseAltitude(QString& line, BaseMapElement::elevationType& 
   pos=0;
   len=0;
 
-  while (line.length()>0) {
-    pos = reg.indexIn(line, pos+len);
-    len = reg.matchedLength();
+  while (line.length()>0)
+    {
+      pos = reg.indexIn(line, pos+len);
+      len = reg.matchedLength();
 
-    if (pos<0) {
-      break;
+      if (pos<0)
+        {
+          break;
+        }
+      elements.append(line.mid(pos, len));
+      //qDebug("element: '%s'", line.mid(pos, len).toLatin1().data());
+      line=line.mid(len);
     }
-    elements.append(line.mid(pos, len));
-    //qDebug("element: '%s'", line.mid(pos, len).toLatin1().data());
-    line=line.mid(len);
-  }
 
   // now, try parsing piece by piece
   // print it out
 
-  for ( QStringList::Iterator it = elements.begin(); it != elements.end(); ++it ) {
-    part = (*it).toUpper();
-    BaseMapElement::elevationType newType = BaseMapElement::NotSet;
+  for ( QStringList::Iterator it = elements.begin(); it != elements.end(); ++it )
+    {
+      part = (*it).toUpper();
+      BaseMapElement::elevationType newType = BaseMapElement::NotSet;
 
-    // first, try to interpret as elevation type
-    if (part=="AMSL" || part=="MSL") {
-      newType=BaseMapElement::MSL;
-    }
-    else if (part=="GND" || part=="SFC" || part=="ASFC" || part=="AGL") {
-      newType=BaseMapElement::GND;
-    }
-    else if (part.startsWith("UNL")) {
-      newType=BaseMapElement::UNLTD;
-    }
-    else if (part=="FL") {
-      newType=BaseMapElement::FL;
-    }
-    else if (part=="STD") {
-      newType=BaseMapElement::STD;
-    }
+      // first, try to interpret as elevation type
+      if (part=="AMSL" || part=="MSL")
+        {
+          newType=BaseMapElement::MSL;
+        }
+      else if (part=="GND" || part=="SFC" || part=="ASFC" || part=="AGL")
+        {
+          newType=BaseMapElement::GND;
+        }
+      else if (part.startsWith("UNL"))
+        {
+          newType=BaseMapElement::UNLTD;
+        }
+      else if (part=="FL")
+        {
+          newType=BaseMapElement::FL;
+        }
+      else if (part=="STD")
+        {
+          newType=BaseMapElement::STD;
+        }
 
-    if( type == BaseMapElement::NotSet && newType != BaseMapElement::NotSet ) {
-      type = newType;
-      continue;
-    }
+      if ( type == BaseMapElement::NotSet && newType != BaseMapElement::NotSet )
+        {
+          type = newType;
+          continue;
+        }
 
-    if( type != BaseMapElement::NotSet && newType != BaseMapElement::NotSet ) {
-      // @AP: Here we stept into a problem. We found a second
-      // elevation type. That can be only a mistake in the data
-      // and will be ignored.
-      qWarning( "OpenAirParser: Line=%d, '%s' contains more than one elevation type. Only first one is taken",
-                _lineNumber, input.toLatin1().data());
-      continue;
-    }
+      if ( type != BaseMapElement::NotSet && newType != BaseMapElement::NotSet )
+        {
+          // @AP: Here we stept into a problem. We found a second
+          // elevation type. That can be only a mistake in the data
+          // and will be ignored.
+          qWarning( "OpenAirParser: Line=%d, '%s' contains more than one elevation type. Only first one is taken",
+                    _lineNumber, input.toLatin1().data());
+          continue;
+        }
 
-    //see if it is a way of setting units to feet
-    if (part=="FT") {
-      altitudeIsFeet=true;
-      continue;
-    }
+      //see if it is a way of setting units to feet
+      if (part=="FT")
+        {
+          altitudeIsFeet=true;
+          continue;
+        }
 
-    //see if it is a way of setting units to meters
-    if (part=="M") {
-      convertFromMeters=true;
-      continue;
-    }
+      //see if it is a way of setting units to meters
+      if (part=="M")
+        {
+          convertFromMeters=true;
+          continue;
+        }
 
-    //try to interpret as a number
-    num = part.toInt(&ok);
-    if (ok) {
-      alt = num;
-    }
+      //try to interpret as a number
+      num = part.toInt(&ok);
+      if (ok)
+        {
+          alt = num;
+        }
 
-    //ignore other parts
-  }
-  if( altitudeIsFeet && type == BaseMapElement::NotSet )
-      type = BaseMapElement::MSL;
+      //ignore other parts
+    }
+  if ( altitudeIsFeet && type == BaseMapElement::NotSet )
+    type = BaseMapElement::MSL;
 
   if (convertFromMeters)
     alt = (int) rint( alt/Distance::mFromFeet);
@@ -801,10 +873,12 @@ bool OpenAirParser::parseCoordinate(QString& line, int& lat, int& lon)
 
 bool OpenAirParser::parseCoordinatePart(QString& line, int& lat, int& lon)
 {
-  const double factor[4]= {
+  const double factor[4]=
+  {
     600000, 10000, 166.666666667, 0
   };
-  const double factor100[4]= {
+  const double factor100[4]=
+  {
     600000, 600000, 10000, 0
   };
   bool decimal=false;
@@ -817,66 +891,84 @@ bool OpenAirParser::parseCoordinatePart(QString& line, int& lat, int& lon)
 
   QRegExp reg("[0-9]+");
 
-  if (line.isEmpty()) {
-    qWarning("Tried to parse empty coordinate part! Line %d", _lineNumber);
-    return false;
-  }
+  if (line.isEmpty())
+    {
+      qWarning("Tried to parse empty coordinate part! Line %d", _lineNumber);
+      return false;
+    }
 
-  while (cur_factor<3 && line.length()) {
-    pos=reg.indexIn(line, pos+len);
-    len = reg.matchedLength();
+  while (cur_factor<3 && line.length())
+    {
+      pos=reg.indexIn(line, pos+len);
+      len = reg.matchedLength();
 
-    if (pos==-1) {
-      break;
-    } else {
-      part=line.mid(pos, len).toInt(&ok);
-      if (ok) {
-        if( decimal )   {
-          value+=(int) rint(part / pow(10,len) * factor100[cur_factor]);
-          // qDebug("part=%f add=%d v=%d  cf=%d %d", part, int(part / pow(10,len) * factor100[cur_factor]), value, cur_factor, decimal );
-        } else {
-          value+=(int) rint(part * factor[cur_factor]);
-          // qDebug("part=%f add=%d v=%d  cf=%d %d", part, int(part * factor[cur_factor]), value, cur_factor, decimal );
+      if (pos==-1)
+        {
+          break;
         }
-        found=true;
-      } else {
-        break;
-      }
+      else
+        {
+          part=line.mid(pos, len).toInt(&ok);
+          if (ok)
+            {
+              if ( decimal )
+                {
+                  value+=(int) rint(part / pow(10,len) * factor100[cur_factor]);
+                  // qDebug("part=%f add=%d v=%d  cf=%d %d", part, int(part / pow(10,len) * factor100[cur_factor]), value, cur_factor, decimal );
+                }
+              else
+                {
+                  value+=(int) rint(part * factor[cur_factor]);
+                  // qDebug("part=%f add=%d v=%d  cf=%d %d", part, int(part * factor[cur_factor]), value, cur_factor, decimal );
+                }
+              found=true;
+            }
+          else
+            {
+              break;
+            }
+        }
+      if (line.mid(pos+len,1)==":")
+        {
+          len++;
+          decimal = false;
+          cur_factor++;
+          continue;
+        }
+      else if (line.mid(pos+len,1)==".")
+        {
+          len++;
+          cur_factor++;
+          decimal = true;
+          continue;
+        }
     }
-    if (line.mid(pos+len,1)==":") {
-      len++;
-      decimal = false;
-      cur_factor++;
-      continue;
-    } else if (line.mid(pos+len,1)==".") {
-      len++;
-      cur_factor++;
-      decimal = true;
-      continue;
-    }
-  }
 
   if (!found)
     return false;
 
   // qDebug("%s value=%d", line.ascii(), value);
 
-  if (line.indexOf('N')>0) {
-    lat=value;
-    return true;
-  }
-  if (line.indexOf('S')>0) {
-    lat=-value;
-    return true;
-  }
-  if (line.indexOf('E')>0) {
-    lon=value;
-    return true;
-  }
-  if (line.indexOf('W')>0) {
-    lon=-value;
-    return true;
-  }
+  if (line.indexOf('N')>0)
+    {
+      lat=value;
+      return true;
+    }
+  if (line.indexOf('S')>0)
+    {
+      lat=-value;
+      return true;
+    }
+  if (line.indexOf('E')>0)
+    {
+      lon=value;
+      return true;
+    }
+  if (line.indexOf('W')>0)
+    {
+      lon=-value;
+      return true;
+    }
   return false;
 }
 
@@ -900,38 +992,48 @@ bool OpenAirParser::parseVariable(QString line)
   QString variable=arguments[0].simplified().toUpper();
   QString value=arguments[1].simplified();
   // qDebug("line %d: variable = '%s', value='%s'", _lineNumber, variable.toLatin1().data(), value.toLatin1().data());
-  if (variable=="X") {
-    //coordinate
-    return parseCoordinate(value, _center);
-  }
-
-  if (variable=="D") {
-    //direction
-    if (value=="+") {
-      _direction=+1;
-    } else if (value=="-") {
-      _direction=-1;
-    } else {
-      return false;
+  if (variable=="X")
+    {
+      //coordinate
+      return parseCoordinate(value, _center);
     }
-    return true;
-  }
 
-  if (variable=="W") {
-    //airway width
-    bool ok;
-    double result=value.toDouble(&ok);
-    if (ok) {
-      _awy_width = result;
+  if (variable=="D")
+    {
+      //direction
+      if (value=="+")
+        {
+          _direction=+1;
+        }
+      else if (value=="-")
+        {
+          _direction=-1;
+        }
+      else
+        {
+          return false;
+        }
       return true;
     }
-    return false;
-  }
 
-  if (variable=="Z") {
-    //zoom visiblity at zoom level; ignore
-    return true;
-  }
+  if (variable=="W")
+    {
+      //airway width
+      bool ok;
+      double result=value.toDouble(&ok);
+      if (ok)
+        {
+          _awy_width = result;
+          return true;
+        }
+      return false;
+    }
+
+  if (variable=="Z")
+    {
+      //zoom visiblity at zoom level; ignore
+      return true;
+    }
 
   return false;
 }
@@ -951,21 +1053,24 @@ bool OpenAirParser::makeAngleArc(QString line)
 
   radius=arguments[0].trimmed().toDouble(&ok);
 
-  if ( !ok ) {
-    return false;
-  }
+  if ( !ok )
+    {
+      return false;
+    }
 
   angle1=arguments[1].trimmed().toDouble(&ok);
 
-  if (!ok) {
-    return false;
-  }
+  if (!ok)
+    {
+      return false;
+    }
 
   angle2=arguments[2].trimmed().toDouble(&ok);
 
-  if (!ok) {
-    return false;
-  }
+  if (!ok)
+    {
+      return false;
+    }
 
   int lat = _center.x();
   int lon = _center.y();
@@ -1013,13 +1118,18 @@ double OpenAirParser::bearing( QPoint& p1, QPoint& p2 )
   // double angleOri = angle;
 
   // assign computed angle to the right quadrant
-  if( dx >= 0 && dy < 0 ) {
-    angle = (2 * M_PI) - angle;
-  } else if( dx <=0 && dy <= 0 ) {
-    angle =  M_PI + angle;
-  } else if( dx < 0 && dy >= 0 ) {
-    angle = M_PI - angle;
-  }
+  if ( dx >= 0 && dy < 0 )
+    {
+      angle = (2 * M_PI) - angle;
+    }
+  else if ( dx <=0 && dy <= 0 )
+    {
+      angle =  M_PI + angle;
+    }
+  else if ( dx < 0 && dy >= 0 )
+    {
+      angle = M_PI - angle;
+    }
 
   //qDebug( "dx=%d, dy=%d - AngleRadOri=%f, AngleGradOri=%f - AngleRadCorr=%f, AngleGradCorr=%f",
   //  dx, dy, angleOri, angleOri * 180/M_PI, angle, angle * 180/M_PI);
@@ -1080,15 +1190,16 @@ void OpenAirParser::addCircle(const double& rLat, const double& rLon)
   asPA.resize(pai+360);
   // qDebug("rLat: %d, rLon:%d", rLat, rLon);
 
-  for (int i=0; i<360; i+=1) {
-    phi=double(i)/180.0*M_PI;
-    x = cos(phi)*rLat;
-    y = sin(phi)*rLon;
-    x +=_center.x();
-    y +=_center.y();
-    asPA.setPoint(pai, QPoint(int(rint(x)), int(rint(y))));
-    pai++;
-  }
+  for (int i=0; i<360; i+=1)
+    {
+      phi=double(i)/180.0*M_PI;
+      x = cos(phi)*rLat;
+      y = sin(phi)*rLon;
+      x +=_center.x();
+      y +=_center.y();
+      asPA.setPoint(pai, QPoint(int(rint(x)), int(rint(y))));
+      pai++;
+    }
 }
 
 
@@ -1119,13 +1230,16 @@ void OpenAirParser::addArc(const double& rX, const double& rY,
   double x, y;
   int pai=asPA.count();
 
-  if (_direction>0) {
-    if (angle1>=angle2)
-      angle2+=2.0*M_PI;
-  } else {
-    if (angle2>=angle1)
-      angle1+=2.0*M_PI;
-  }
+  if (_direction>0)
+    {
+      if (angle1>=angle2)
+        angle2+=2.0*M_PI;
+    }
+  else
+    {
+      if (angle2>=angle1)
+        angle1+=2.0*M_PI;
+    }
 
   int nsteps=abs(int(((angle2-angle1)*180)/(STEP_WIDTH*M_PI)))+2;
   asPA.resize(pai+nsteps);
@@ -1135,17 +1249,21 @@ void OpenAirParser::addArc(const double& rX, const double& rY,
   const double step=(STEP_WIDTH*M_PI)/180.0;
 
   double phi=angle1;
-  for (int i=0; i<nsteps-1; i++) {
-    x = ( cos(phi)*rX ) + _center.x();
-    y = ( sin(phi)*rY ) + _center.y();
-    asPA.setPoint(pai, (int) rint(x), (int) rint(y));
-    pai++;
-    if (_direction>0) { //clockwise
-      phi+=step;
-    } else {
-      phi-=step;
+  for (int i=0; i<nsteps-1; i++)
+    {
+      x = ( cos(phi)*rX ) + _center.x();
+      y = ( sin(phi)*rY ) + _center.y();
+      asPA.setPoint(pai, (int) rint(x), (int) rint(y));
+      pai++;
+      if (_direction>0)   //clockwise
+        {
+          phi+=step;
+        }
+      else
+        {
+          phi-=step;
+        }
     }
-  }
   x = ( cos(angle2)*rX ) + _center.x();
   y = ( sin(angle2)*rY ) + _center.y();
   asPA.setPoint(pai, (int) rint(x), (int) rint(y));
@@ -1166,10 +1284,11 @@ bool OpenAirParser::readCompiledFile( QString &path, QList<Airspace*>& list )
 
   QFile inFile(path);
 
-  if( !inFile.open(QIODevice::ReadOnly) ) {
-    qWarning("OpenAirParser: Cannot open airspace file %s!", path.toLatin1().data());
-    return false;
-  }
+  if ( !inFile.open(QIODevice::ReadOnly) )
+    {
+      qWarning("OpenAirParser: Cannot open airspace file %s!", path.toLatin1().data());
+      return false;
+    }
 
   QDataStream in(&inFile);
 
@@ -1193,27 +1312,30 @@ bool OpenAirParser::readCompiledFile( QString &path, QList<Airspace*>& list )
 
   in >> magic;
 
-  if( magic != KFLOG_FILE_MAGIC ) {
-    qWarning( "OpenAirParser: wrong magic key %x read! Aborting ...", h_magic );
-    inFile.close();
-    return false;
-  }
+  if ( magic != KFLOG_FILE_MAGIC )
+    {
+      qWarning( "OpenAirParser: wrong magic key %x read! Aborting ...", h_magic );
+      inFile.close();
+      return false;
+    }
 
   in >> fileType;
 
-  if( fileType != FILE_TYPE_AIRSPACE_C ) {
-    qWarning( "OpenAirParser: wrong file type %x read! Aborting ...", h_fileType );
-    inFile.close();
-    return false;
-  }
+  if ( fileType != FILE_TYPE_AIRSPACE_C )
+    {
+      qWarning( "OpenAirParser: wrong file type %x read! Aborting ...", h_fileType );
+      inFile.close();
+      return false;
+    }
 
   in >> fileVersion;
 
-  if( fileVersion != FILE_VERSION_AIRSPACE_C ) {
-    qWarning( "OpenAirParser: wrong file version %x read! Aborting ...", h_fileVersion );
-    inFile.close();
-    return false;
-  }
+  if ( fileVersion != FILE_VERSION_AIRSPACE_C )
+    {
+      qWarning( "OpenAirParser: wrong file version %x read! Aborting ...", h_fileVersion );
+      inFile.close();
+      return false;
+    }
 
   in >> creationDateTime;
 
@@ -1244,25 +1366,26 @@ bool OpenAirParser::readCompiledFile( QString &path, QList<Airspace*>& list )
   qint16 upper;
   QPolygon pa;
 
-  while( ! in.atEnd() ) {
-    counter++;
-    pa.resize(0);
+  while ( ! in.atEnd() )
+    {
+      counter++;
+      pa.resize(0);
 
-    ShortLoad(in, name);
-    in >> type;
-    in >> lowerType;
-    in >> lower;
-    in >> upperType;
-    in >> upper;
-    ShortLoad( in, pa );
+      ShortLoad(in, name);
+      in >> type;
+      in >> lowerType;
+      in >> lower;
+      in >> upperType;
+      in >> upper;
+      ShortLoad( in, pa );
 
-    Airspace *a = new Airspace( name,
-                                (BaseMapElement::objectType) type,
-                                pa,
-                                upper, (BaseMapElement::elevationType) upperType,
-                                lower, (BaseMapElement::elevationType) lowerType );
-    list.append(a);
-  }
+      Airspace *a = new Airspace( name,
+                                  (BaseMapElement::objectType) type,
+                                  pa,
+                                  upper, (BaseMapElement::elevationType) upperType,
+                                  lower, (BaseMapElement::elevationType) lowerType );
+      list.append(a);
+    }
 
   inFile.close();
 
@@ -1288,43 +1411,48 @@ bool OpenAirParser::setHeaderData( QString &path )
   h_fileType = 0;
   h_fileVersion = 0;
 
-  if( h_projection ) {
-    // delete an older projection object
-    delete  h_projection;
-    h_projection = 0;
-  }
+  if ( h_projection )
+    {
+      // delete an older projection object
+      delete  h_projection;
+      h_projection = 0;
+    }
 
   QFile inFile(path);
-  if( !inFile.open( QIODevice::ReadOnly) ) {
-    qWarning("OpenAirParser: Cannot open airspace file %s!", path.toLatin1().data());
-    return false;
-  }
+  if ( !inFile.open( QIODevice::ReadOnly) )
+    {
+      qWarning("OpenAirParser: Cannot open airspace file %s!", path.toLatin1().data());
+      return false;
+    }
 
   QDataStream in(&inFile);
 
   in >> h_magic;
 
-  if( h_magic != KFLOG_FILE_MAGIC ) {
-    qWarning( "OpenAirParser: wrong magic key %x read! Aborting ...", h_magic );
-    inFile.close();
-    return false;
-  }
+  if ( h_magic != KFLOG_FILE_MAGIC )
+    {
+      qWarning( "OpenAirParser: wrong magic key %x read! Aborting ...", h_magic );
+      inFile.close();
+      return false;
+    }
 
   in >> h_fileType;
 
-  if( h_fileType != FILE_TYPE_AIRSPACE_C ) {
-    qWarning( "OpenAirParser: wrong file type %x read! Aborting ...", h_fileType );
-    inFile.close();
-    return false;
-  }
+  if ( h_fileType != FILE_TYPE_AIRSPACE_C )
+    {
+      qWarning( "OpenAirParser: wrong file type %x read! Aborting ...", h_fileType );
+      inFile.close();
+      return false;
+    }
 
   in >> h_fileVersion;
 
-  if( h_fileVersion != FILE_VERSION_AIRSPACE_C ) {
-    qWarning( "OpenAirParser: wrong file version %x read! Aborting ...", h_fileVersion );
-    inFile.close();
-    return false;
-  }
+  if ( h_fileVersion != FILE_VERSION_AIRSPACE_C )
+    {
+      qWarning( "OpenAirParser: wrong file version %x read! Aborting ...", h_fileVersion );
+      inFile.close();
+      return false;
+    }
 
   in >> h_creationDateTime;
 
