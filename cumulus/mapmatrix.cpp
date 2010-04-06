@@ -69,7 +69,6 @@
 #define mulfp8p24(x,y)   ( ( (int64_t)(x) *  (int64_t)(y)) >> 24 )
 
 
-
 /*************************************************************************
  **
  **  MapMatrix
@@ -89,7 +88,7 @@ MapMatrix::MapMatrix(QObject* parent)
   mapCenterArea=QRect(0,0,0,0);
   mapCenterAreaProj=QRect(0,0,0,0);
 
-  // @AP: Load projection type from config data, to construct the
+  // @AP: Load projection type from configuration data, to construct the
   // right type and to avoid a later change in the slotInitMatrix
   // call.
 
@@ -673,28 +672,48 @@ QPolygon MapMatrix::map(const QPolygon &a) const
 // The new function using fixed point multiplication
 QPolygon MapMatrix::map(const QPolygon &a) const
 {
-    int size = a.size();
-    int i;
-    QPolygon p(size);
-    const QPoint *da = a.constData();
-    QPoint *dp = p.data();
-    for(i = 0; i < size; i++) {
-        fp24p8_t fx = itofp24p8( da[i].x() );
-        fp24p8_t fy = itofp24p8( da[i].y() );
-        // some cheating involved; multiplication with the "wrong" macro
-        // after "left shifting" the "m" value in createMatrix
-        dp[i].setX( fp24p8toi( mulfp8p24(m11,fx) + mulfp8p24(m21,fy) + dx) );
-        dp[i].setY( fp24p8toi( mulfp8p24(m22,fy) + mulfp8p24(m12,fx) + dy) );
+  int size = a.size();
+  int64_t fx;
+  int64_t fy;
+  int32_t curx;
+  int32_t cury;
+  int32_t lastx;
+  int32_t lasty;
+
+  QPolygon p(size);
+
+  int j = 0;
+
+  for( int i = 0; i < size; i++ )
+    {
+      a.point(i, &curx, &cury);
+      fx = itofp24p8( curx );
+      fy = itofp24p8( cury );
+      // some cheating involved; multiplication with the "wrong" macro
+      // after "left shifting" the "m" value in createMatrix
+      curx = fp24p8toi( mulfp8p24(m11,fx) + mulfp8p24(m21,fy) + dx);
+      cury = fp24p8toi( mulfp8p24(m22,fy) + mulfp8p24(m12,fx) + dy);
+
+      if ( ((curx - lastx) | (cury - lasty)) != 0 )
+        {
+          p.setPoint(j, curx, cury);
+          j++;
+        }
+
+      lastx = curx;
+      lasty = cury;
     }
-    return p;
+
+  p.resize(j);
+  return p;
 }
 
 QPoint MapMatrix::map(const QPoint& p) const
 {
-	fp24p8_t fx = itofp24p8( p.x() );
-	fp24p8_t fy = itofp24p8( p.y() );
-        // some cheating involved; multiplication with the "wrong" macro
-        // after "left shifting" the "m" value in createMatrix
-	return QPoint( fp24p8toi( mulfp8p24(m11,fx) + mulfp8p24(m21,fy) + dx),
-                       fp24p8toi( mulfp8p24(m22,fy) + mulfp8p24(m12,fx) + dy) );
+  int64_t fx = itofp24p8( p.x() );
+  int64_t fy = itofp24p8( p.y() );
+  // some cheating involved; multiplication with the "wrong" macro
+  // after "left shifting" the "m" value in createMatrix
+  return QPoint( fp24p8toi( mulfp8p24(m11,fx) + mulfp8p24(m21,fy) + dx),
+                 fp24p8toi( mulfp8p24(m22,fy) + mulfp8p24(m12,fx) + dy) );
 }
