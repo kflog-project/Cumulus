@@ -1513,7 +1513,9 @@ bool MapContents::__askUserForDownload()
 
   int answer = QMessageBox::question( Map::instance,
                   tr("Download missing Data?"),
-                  tr("Download missing Data from the Internet?"),
+                  tr("Download missing Data from the Internet?") +
+                  QString("<p>") +
+                  tr("Active Internet connection is needed!"),
                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
 
   if( answer == QMessageBox::Yes )
