@@ -680,9 +680,7 @@ QPolygon MapMatrix::map(const QPolygon &a) const
   int32_t lastx;
   int32_t lasty;
 
-  QPolygon p(size);
-
-  int j = 0;
+  QPolygon p;
 
   for( int i = 0; i < size; i++ )
     {
@@ -694,17 +692,14 @@ QPolygon MapMatrix::map(const QPolygon &a) const
       curx = fp24p8toi( mulfp8p24(m11,fx) + mulfp8p24(m21,fy) + dx);
       cury = fp24p8toi( mulfp8p24(m22,fy) + mulfp8p24(m12,fx) + dy);
 
-      if ( ((curx - lastx) | (cury - lasty)) != 0 )
+      if ( (i==0) | ( ((curx - lastx) | (cury - lasty)) != 0) )
         {
-          p.setPoint(j, curx, cury);
-          j++;
+          p.append(QPoint(curx, cury));
+          lastx = curx;
+          lasty = cury;
         }
-
-      lastx = curx;
-      lasty = cury;
     }
 
-  p.resize(j);
   return p;
 }
 
