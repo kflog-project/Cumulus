@@ -14,6 +14,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-04-08 AP: HTTP download manager modified that all queued downloads are
+                   canceled if an network error occurred. That prevents now
+                   a flood of error messages. If the user has automatic downloads
+                   enabled this is also reset in such a case. 
+[-] 2010-04-08 AP: BUGFIX: Cumulus did crash if the user has not confirmed an
+                   aborted download.
 [o] 2010-04-06 PT: Speed up map projection patch provided by Peter Turczak.
                    Improves map drawing on large scales by 20%.
 [-] 2010-04-01 AP: BUGFIX: Base filename was not correctly derived from source
