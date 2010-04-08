@@ -445,8 +445,7 @@ void OpenAirParser::parseLine(QString& line)
       //polygon coordinate
       QString coord = line.mid(3);
       parseCoordinate(coord, lat, lon);
-      asPA.resize(asPA.count()+1);
-      asPA.setPoint(asPA.count()-1,lat,lon);
+      asPA.append( QPoint(lat, lon) );
       // qDebug( "addDP: lat=%d, lon=%d", lat, lon );
       return;
     }
@@ -526,7 +525,7 @@ void OpenAirParser::newAirspace()
   asName = "(unnamed)";
   asType = BaseMapElement::NotSelected;
   //asTypeLetter = "";
-  asPA.resize(0);
+  asPA.clear();
   asUpper = BaseMapElement::NotSet;
   asUpperType = BaseMapElement::NotSet;
   asLower = BaseMapElement::NotSet;
@@ -538,7 +537,7 @@ void OpenAirParser::newAirspace()
 
 void OpenAirParser::newPA()
 {
-  asPA.resize(0);
+  asPA.clear();
 }
 
 
@@ -546,7 +545,7 @@ void OpenAirParser::finishAirspace()
 {
   extern MapMatrix * _globalMapMatrix;
 
-  // @AP: Airspaces are stored as polygones and should not contain the start point
+  // @AP: Airspaces are stored as polygons and should not contain the start point
   // twice as done in OpenAir description.
   if ( asPA.count() > 2 && asPA.first() == asPA.last() )
     {
@@ -555,17 +554,19 @@ void OpenAirParser::finishAirspace()
     }
 
   // Translate all WGS84 points to current map projection
-  for (int i=0; i < asPA.count(); i++)
+  QPolygon astPA;
+
+  for (int i = 0; i < asPA.count(); i++)
     {
-      asPA.setPoint(i, _globalMapMatrix->wgsToMap(asPA.point(i)));
+      astPA.append( _globalMapMatrix->wgsToMap(asPA.at(i)) );
     }
 
-  Airspace* a= new Airspace(asName,
-                            asType,
-                            asPA,
-                            asUpper, asUpperType,
-                            asLower, asLowerType);
-  _airlist.append(a);
+  Airspace* as = new Airspace( asName,
+                               asType,
+                               astPA,
+                               asUpper, asUpperType,
+                               asLower, asLowerType );
+  _airlist.append(as);
   _objCounter++;
   _isCurrentAirspace = false;
   // qDebug("finalized airspace %s. %d points in airspace", asName.toLatin1().data(), cnt);
@@ -580,7 +581,7 @@ void OpenAirParser::finishAirspace()
       *_outbuf << qint16( asLower );
       *_outbuf << quint8( asUpperType );
       *_outbuf << qint16( asUpper );
-      ShortSave( *_outbuf, asPA );
+      ShortSave( *_outbuf, astPA );
 
 #ifdef BOUNDING_BOX
 
@@ -1186,10 +1187,8 @@ bool OpenAirParser::makeCoordinateArc(QString line)
 void OpenAirParser::addCircle(const double& rLat, const double& rLon)
 {
   double x, y, phi;
-  int pai=asPA.count();
-  asPA.resize(pai+360);
-  // qDebug("rLat: %d, rLon:%d", rLat, rLon);
 
+  // qDebug("rLat: %d, rLon:%d", rLat, rLon);
   for (int i=0; i<360; i+=1)
     {
       phi=double(i)/180.0*M_PI;
@@ -1197,8 +1196,8 @@ void OpenAirParser::addCircle(const double& rLat, const double& rLon)
       y = sin(phi)*rLon;
       x +=_center.x();
       y +=_center.y();
-      asPA.setPoint(pai, QPoint(int(rint(x)), int(rint(y))));
-      pai++;
+
+      asPA.append( QPoint(int(rint(x)), int(rint(y))) );
     }
 }
 
@@ -1228,45 +1227,47 @@ void OpenAirParser::addArc(const double& rX, const double& rY,
   //qDebug("addArc() dir=%d, a1=%f a2=%f",_direction, angle1*180/M_PI , angle2*180/M_PI );
 
   double x, y;
-  int pai=asPA.count();
 
-  if (_direction>0)
+  if (_direction > 0)
     {
-      if (angle1>=angle2)
-        angle2+=2.0*M_PI;
+      if (angle1 >= angle2)
+        angle2 += 2.0 * M_PI;
     }
   else
     {
-      if (angle2>=angle1)
-        angle1+=2.0*M_PI;
+      if (angle2 >= angle1)
+        angle1 += 2.0 * M_PI;
     }
 
-  int nsteps=abs(int(((angle2-angle1)*180)/(STEP_WIDTH*M_PI)))+2;
-  asPA.resize(pai+nsteps);
+  int nsteps = abs(int(((angle2 - angle1) * 180) / (STEP_WIDTH * M_PI))) + 2;
 
   //qDebug("delta=%d pai=%d",int(((angle2-angle1)*180)/(STEP_WIDTH*M_PI)), pai );
 
-  const double step=(STEP_WIDTH*M_PI)/180.0;
+  const double step = (STEP_WIDTH * M_PI) / 180.0;
 
-  double phi=angle1;
-  for (int i=0; i<nsteps-1; i++)
+  double phi = angle1;
+
+  for (int i = 0; i < nsteps - 1; i++)
     {
-      x = ( cos(phi)*rX ) + _center.x();
-      y = ( sin(phi)*rY ) + _center.y();
-      asPA.setPoint(pai, (int) rint(x), (int) rint(y));
-      pai++;
-      if (_direction>0)   //clockwise
+      x = (cos(phi) * rX) + _center.x();
+      y = (sin(phi) * rY) + _center.y();
+
+      asPA.append( QPoint((int) rint(x), (int) rint(y)) );
+
+      if (_direction > 0) //clockwise
         {
-          phi+=step;
+          phi += step;
         }
       else
         {
-          phi-=step;
+          phi -= step;
         }
     }
-  x = ( cos(angle2)*rX ) + _center.x();
-  y = ( sin(angle2)*rY ) + _center.y();
-  asPA.setPoint(pai, (int) rint(x), (int) rint(y));
+
+  x = (cos(angle2) * rX) + _center.x();
+  y = (sin(angle2) * rY) + _center.y();
+
+  asPA.append( QPoint( (int) rint(x), (int) rint(y)) );
 }
 
 /**
@@ -1275,7 +1276,7 @@ void OpenAirParser::addArc(const double& rX, const double& rY,
  *
  * @param path Full name with path of OpenAir binary file
  * @param list All airspace objects have to be stored in this list
- * @returns true (success) or false (error occured)
+ * @returns true (success) or false (error occurred)
  */
 bool OpenAirParser::readCompiledFile( QString &path, QList<Airspace*>& list )
 {
