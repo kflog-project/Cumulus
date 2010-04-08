@@ -1396,6 +1396,9 @@ bool MapContents::__downloadMapFile( QString &file, QString &directory )
       connect( downloadManger, SIGNAL(finished( int, int )),
                this, SLOT(slotDownloadsFinished( int, int )) );
 
+      connect( downloadManger, SIGNAL(networkError()),
+               this, SLOT(slotNetworkError()) );
+
       connect( downloadManger, SIGNAL(status( const QString& )),
                _globalMapView, SLOT(slot_info( const QString& )) );
     }
@@ -1429,13 +1432,16 @@ void MapContents::slotDownloadWelt2000( const QString& welt2000FileName )
 
       connect( downloadManger, SIGNAL(finished( int, int )),
                this, SLOT(slotDownloadsFinished( int, int )) );
+
+      connect( downloadManger, SIGNAL(networkError()),
+               this, SLOT(slotNetworkError()) );
+
+      connect( downloadManger, SIGNAL(status( const QString& )),
+               _globalMapView, SLOT(slot_info( const QString& )) );
     }
 
   connect( downloadManger, SIGNAL(welt2000Downloaded()),
            this, SLOT(slotReloadWelt2000Data()) );
-
-  connect( downloadManger, SIGNAL(status( const QString& )),
-           _globalMapView, SLOT(slot_info( const QString& )) );
 
   QString url  = GeneralConfig::instance()->getWelt2000Link() + "/" + welt2000FileName;
   QString dest = GeneralConfig::instance()->getMapRootDir() + "/airfields/welt2000.txt";
@@ -1464,13 +1470,16 @@ void MapContents::slotDownloadAirspace( QString& url )
 
       connect( downloadManger, SIGNAL(finished( int, int )),
                this, SLOT(slotDownloadsFinished( int, int )) );
+
+      connect( downloadManger, SIGNAL(networkError()),
+               this, SLOT(slotNetworkError()) );
+
+      connect( downloadManger, SIGNAL(status( const QString& )),
+               _globalMapView, SLOT(slot_info( const QString& )) );
     }
 
   connect( downloadManger, SIGNAL(airspaceDownloaded() ),
            this, SLOT(slotReloadAirspaceData()) );
-
-  connect( downloadManger, SIGNAL(status( const QString& )),
-           _globalMapView, SLOT(slot_info( const QString& )) );
 
   QUrl airspaceUrl( url );
   QString file = QFileInfo( airspaceUrl.path() ).fileName();
@@ -1494,6 +1503,24 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
 
   QMessageBox::information( Map::instance,
                             tr("Downloads finished"),
+                            msg );
+}
+
+/** Called, if a network error occurred during the downloads. */
+void MapContents::slotNetworkError()
+{
+  // A network error has occurred. We do stop all further downloads.
+  downloadManger->deleteLater();
+  downloadManger = static_cast<DownloadManager *> (0);
+
+  // Reset user decision flag
+  shallDownloadData = false;
+
+  QString msg;
+  msg = QString(tr("Network error occurred.\nAll downloads are canceled!"));
+
+  QMessageBox::information( Map::instance,
+                            tr("Network Error"),
                             msg );
 }
 

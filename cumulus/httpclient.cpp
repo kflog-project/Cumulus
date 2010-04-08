@@ -57,7 +57,7 @@ HttpClient::HttpClient( QObject *parent, const bool showProgressDialog ) :
 
    // timer to supervise connection.
    timer = new QTimer( this );
-   timer->setInterval( 30000 ); // Timeout is 30s
+   timer->setInterval( 120000 ); // Timeout is 120s
 
    connect( timer, SIGNAL(timeout()), this, SLOT(slotCancelDownload()) );
 }
@@ -168,7 +168,7 @@ void HttpClient::slotCancelDownload()
 {
   qDebug( "HttpClient(%d): Download canceled!", __LINE__ );
 
-  timer->start();
+  timer->stop();
 
   if ( _progressDialog != static_cast<QProgressDialog *> (0) )
     {
@@ -191,6 +191,13 @@ void HttpClient::slotCancelDownload()
  */
 void HttpClient::slotError( QNetworkReply::NetworkError code )
 {
+  if( ! reply )
+    {
+      // Do ignore this call, because the reply object is already destroyed.
+      // Do happen if the user don't close the message box.
+      return;
+    }
+
   qWarning( "HttpClient(%d): Network error %d, %s ",
            __LINE__, code, reply->errorString().toLatin1().data() );
 
@@ -320,8 +327,6 @@ void HttpClient::slotReadyRead()
  */
 void HttpClient::slotFinished()
 {
-  qDebug("Download %s finished with %d", _url.toLatin1().data(), reply->error() );
-
   timer->stop();
 
   // Hide progress dialog.
@@ -333,6 +338,8 @@ void HttpClient::slotFinished()
 
   if( reply && tmpFile )
     {
+      qDebug( "Download %s finished with %d", _url.toLatin1().data(), reply->error() );
+
       // read reply error status
       enum QNetworkReply::NetworkError error = reply->error();
 

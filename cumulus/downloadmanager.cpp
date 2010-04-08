@@ -128,6 +128,21 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
       errors++;
     }
 
+  if( codeIn != QNetworkReply::NoError && codeIn != QNetworkReply::ContentNotFoundError )
+    {
+      // There was a fatal problem on the network. We do abort all further downloads
+      // to avoid an error avalanche.
+      qWarning( "DownloadManager(%d): Network problem occurred, canceling of all downloads!",
+                __LINE__ );
+
+      queue.clear();
+      urlSet.clear();
+      downloadRunning = false;
+      emit networkError();
+      mutex.unlock();
+      return;
+    }
+
   // Remove the last done request from the queue and from the url set.
   if( ! queue.isEmpty() )
     {

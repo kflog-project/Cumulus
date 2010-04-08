@@ -331,7 +331,10 @@ class MapContents : public QObject
     /** Called, if all downloads are finished. */
     void slotDownloadsFinished( int requests, int errors );
 
-  signals:
+    /** Called, if a network error occurred during the downloads. */
+    void slotNetworkError();
+
+    signals:
 
     /**
      * Emitted if a new file is being loaded.
