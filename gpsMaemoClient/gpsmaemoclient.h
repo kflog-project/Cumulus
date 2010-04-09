@@ -23,14 +23,14 @@
  * \brief GPS Maemo client wrapper
  *
  * This class handles the interface between Cumulus and the Location Service used
- * by Maemo5. Nokia has removed the former GPSD daemon in Maemo5 and replaced by
+ * by Maemo4/5. Nokia has removed the former GPSD daemon in Maemo5 and replaced by
  * liblocation API library and a set of on-request daemon processes for different
  * location methods. Therefore the Location API must be used to get data from the
  * GPS receiver hardware. The API does not use NMEA sentences and is programmed
  * by using GLib functionality :-(( The received Location data are converted into
  * a string format by this class and send via the socket connection to the
  * Cumulus process. Different methods of this class are called by the running
- * main loops (see source file gpsmaemomain.cpp).
+ * main loop (see source file gpsmaemomain.cpp).
  *
  */
 
@@ -85,7 +85,7 @@ public:
 
     /**
      * Processes incoming read events. They can come from the server or
-     * from the Gps device.
+     * from the GPS device.
      */
     void processEvent( fd_set *fdMaskIn );
 
@@ -173,19 +173,19 @@ private:
 
 private:
 
-    // Single instance of this class
+    /** Single instance of this class */
     static GpsMaemoClient* instance;
 
-    // Maemo5 GPS location service control instance
+    /** Maemo GPS location service control instance */
     LocationGPSDControl *control;
 
-    // Maemo5 GPS location service device instance
+    /** Maemo GPS location service device instance */
     LocationGPSDevice *device;
 
-    // Socket port for ipc to server process
+    /** Socket port for IPC to server process */
     ushort ipcPort;
 
-    // read file descriptor set in use by ipc
+    /** read file descriptor set in use by IPC */
     fd_set fdMask;
 
     // IPC instance to server process as data channel

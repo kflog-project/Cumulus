@@ -33,6 +33,8 @@ INCLUDEPATH += ../cumulus \
 	       /usr/lib/glib-2.0/include \
 	       /usr/include/glib-2.0
 
+DEFINES += MAEMO5
+
 LIBS += -lstdc++ \
   -llocation
 

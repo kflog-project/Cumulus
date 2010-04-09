@@ -17,18 +17,6 @@
 **
 ***********************************************************************/
 
-/**
- * This class handles the interface between Cumulus and the Location Service used
- * by Maemo5. Nokia has removed the former GPSD daemon in Maemo5 and replaced by
- * liblocation API library and a set of on-request daemon processes for different
- * location methods. Therefore the Location API must be used to get data from the
- * GPS receiver hardware. The API does not use NMEA sentences and is programmed
- * by using GLib functionality :-(( The received Location data are converted into
- * a string format by this class and send via the socket connection to the
- * Cumulus process. Different methods of this class are called by the running
- * main loops (see source file gpsmaemomain.cpp).
- */
-
 using namespace std;
 
 #include <stdio.h>
@@ -50,15 +38,15 @@ using namespace std;
 // #define DEBUG 1
 
 // Size of internal message queue.
-#define QUEUE_SIZE 500
+#define QUEUE_SIZE 250
 
 // Defines alive check timeout in ms.
-#define ALIVE_TO 30000
+#define ALIVE_TO 10*60*1000
 
 // Defines a retry timeout in ms which is used after a failed connect to the GPS.
-// daemon. The time should not be to short otherwise Cumulus is
-// most of the time blocked by the connect action.
-#define RETRY_TO 60000
+// daemon. The time should not be to short otherwise the OS has problems to
+// follow.
+#define RETRY_TO 30000
 
 // global object pointer to this class
 GpsMaemoClient *GpsMaemoClient::instance = static_cast<GpsMaemoClient *> (0);
@@ -76,7 +64,7 @@ GpsMaemoClient *GpsMaemoClient::instance = static_cast<GpsMaemoClient *> (0);
 /*------Declaration of LibLocation Wrapper Functions--------------------------*/
 
 namespace
-{ // we put the glib wrapper functions in anonymous name space
+{ // we put the GLib wrapper functions in anonymous name space
   // so they are not exported at link time
 namespace LocationCb
   {
@@ -92,12 +80,23 @@ namespace LocationCb
        */
       static void gpsdStopped( LocationGPSDControl* control, gpointer userData );
 
+#ifndef MAEMO4
+
       /**
        * Is called from location service when GPSD was not startable.
        */
       static void gpsdErrorVerbose( LocationGPSDControl *control,
                                     LocationGPSDControlError error,
                                     gpointer user_data );
+#endif
+
+      /**
+       * Is called from location service when GPSD was not startable. Should
+       * be used only in Maemo4.
+       */
+      static void gpsdError( LocationGPSDControl * /*control*/,
+                             gpointer /*userData*/ );
+
       /**
        * Is called from location service when new GPS data are available.
        */
@@ -137,6 +136,8 @@ static void LocationCb::gpsdStopped( LocationGPSDControl* control,
     }
 }
 
+#ifndef MAEMO4
+
 /**
  * Is called from location service when GPSD was not startable.
  */
@@ -169,8 +170,25 @@ static void LocationCb::gpsdErrorVerbose( LocationGPSDControl *control,
     }
 }
 
+#endif
+
 /**
- * Is called from location service when new gps data are available.
+ * Is called from location service when GPSD was not startable. Should
+ * be used only in Maemo4.
+ */
+static void LocationCb::gpsdError( LocationGPSDControl * /*control*/,
+                                   gpointer /*userData*/ )
+{
+  qDebug("G-Signal->GPSD Error");
+
+  if( GpsMaemoClient::getInstance() )
+    {
+      GpsMaemoClient::getInstance()->handleGpsdError();
+    }
+}
+
+/**
+ * Is called from location service when new GPS data are available.
  */
 static void LocationCb::gpsdLocationchanged( LocationGPSDevice *device,
                                              gpointer user_data )
@@ -209,7 +227,8 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
   device          = 0;
   control         = 0;
 
-  // establish a connection to the server
+  // Establish a connection to the server. The server is the Cumulus process
+  // which has forked this process.
   if( ipcPort )
     {
       if( clientData.connect2Server( IPC_IP, ipcPort ) == -1 )
@@ -240,6 +259,14 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
     }
   else
     {
+
+#ifdef MAEMO4
+
+      // Maemo4 knows only this signal.
+      // Subscribe to location service signals. That must be done only once!
+      g_signal_connect( control, "error", G_CALLBACK(LocationCb::gpsdError), NULL );
+
+#else
       // Set preferred-method in control
       g_object_set( G_OBJECT(control), "preferred-method",
                     LOCATION_METHOD_GNSS, NULL );
@@ -250,6 +277,9 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
 
       // Subscribe to location service signals. That must be done only once!
       g_signal_connect( control, "error-verbose", G_CALLBACK(LocationCb::gpsdErrorVerbose), NULL );
+
+#endif
+
       g_signal_connect( control, "gpsd_stopped",  G_CALLBACK(LocationCb::gpsdStopped), NULL );
       g_signal_connect( control, "gpsd_running",  G_CALLBACK(LocationCb::gpsdRunning), NULL );
     }
@@ -307,6 +337,25 @@ void GpsMaemoClient::handleGpsdRunning()
 
   // restart timer with alive check supervision
   startTimer(ALIVE_TO);
+
+#ifdef MAEMO4
+
+  if ( control && ! control->can_control )
+    {
+      qWarning( "GPSD can not be controlled by Cumulus!" );
+    }
+
+  // print out returned GPS devices
+  if ( control && control->ctx )
+    {
+      for( int i = 0; control->ctx->rfcomms[i] != static_cast<char *> (0); i++ )
+        {
+          qDebug( "Found GPS Device %s", control->ctx->rfcomms[i] );
+        }
+    }
+
+#endif
+
 }
 
 /*
@@ -348,20 +397,22 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
   qDebug() << "GpsMaemoClient::handleGpsdLocationChanged()";
 #endif
 
-  // New GPS data available.
   if( ! device )
     {
-       return;
+      // Device is lost, set retry timeout to make a restart.
+      startTimer(RETRY_TO);
+      return;
+    }
+
+  if( ! device->online )
+    {
+      startTimer(RETRY_TO);
+      // There is no connection to the GPS hardware. We do ignore this call.
+      return;
     }
 
   // update supervision timer/variables
   startTimer(ALIVE_TO);
-
-  if( ! device->online )
-    {
-      // There is no connection to the GPS hardware. We do ignore this call.
-      return;
-    }
 
   connectionLost = false;
 
@@ -413,43 +464,87 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
       QString time = "";
       QString ept = "";
 
+      // @AP: Note all items must be checked, if the are numbers!
+      // Otherwise you can get nan (not a number) as string.
       if (device->fix->fields & LOCATION_GPS_DEVICE_ALTITUDE_SET)
         {
-          altitude = QString("%1").arg(device->fix->altitude, 0, 'f');
-          epv      = QString("%1").arg(device->fix->epv, 0, 'f');
+          if( ! isnan(device->fix->altitude) )
+            {
+              altitude = QString("%1").arg(device->fix->altitude, 0, 'f');
+            }
+
+          if( ! isnan(device->fix->epv) )
+            {
+              epv = QString("%1").arg(device->fix->epv, 0, 'f');
+            }
         }
 
       if (device->fix->fields & LOCATION_GPS_DEVICE_SPEED_SET)
         {
-          speed = QString("%1").arg(device->fix->speed, 0, 'f');
-          eps   = QString("%1").arg(device->fix->eps, 0, 'f');
+          if( ! isnan(device->fix->speed) )
+            {
+              speed = QString("%1").arg(device->fix->speed, 0, 'f');
+            }
+
+          if( ! isnan(device->fix->eps) )
+            {
+              eps = QString("%1").arg(device->fix->eps, 0, 'f');
+            }
         }
 
       if (device->fix->fields & LOCATION_GPS_DEVICE_TRACK_SET)
         {
-          track = QString("%1").arg(device->fix->track, 0, 'f');
-          epd   = QString("%1").arg(device->fix->epd, 0, 'f');
+          if( ! isnan(device->fix->track) )
+            {
+              track = QString("%1").arg(device->fix->track, 0, 'f');
+            }
+
+          if( ! isnan(device->fix->epd) )
+            {
+              epd   = QString("%1").arg(device->fix->epd, 0, 'f');
+            }
         }
 
       if (device->fix->fields & LOCATION_GPS_DEVICE_CLIMB_SET)
         {
-          climb = QString("%1").arg(device->fix->climb, 0, 'f');
-          epc = QString("%1").arg(device->fix->epc, 0, 'f');
+          if( ! isnan(device->fix->climb) )
+            {
+              climb = QString("%1").arg(device->fix->climb, 0, 'f');
+            }
+
+          if( ! isnan(device->fix->epc) )
+            {
+              epc = QString("%1").arg(device->fix->epc, 0, 'f');
+            }
         }
 
       if (device->fix->fields & LOCATION_GPS_DEVICE_LATLONG_SET)
         {
-          // convertion to KFLog degree
-          latitude  = QString("%1").arg(static_cast<int> (rint( device->fix->latitude * 600000.0)));
-          longitude = QString("%1").arg(static_cast<int> (rint( device->fix->longitude * 600000.0)));
-          eph = QString("%1").arg(device->fix->eph / 100., 0, 'f'); // convertion to meter
+          if( (! isnan(device->fix->latitude)) && (! isnan(device->fix->longitude)) )
+            {
+              // conversion to KFLog degree
+              latitude  = QString("%1").arg(static_cast<int> (rint( device->fix->latitude * 600000.0)));
+              longitude = QString("%1").arg(static_cast<int> (rint( device->fix->longitude * 600000.0)));
+            }
+
+          if( ! isnan(device->fix->eph) )
+            {
+              eph = QString("%1").arg(device->fix->eph / 100., 0, 'f'); // conversion to meter
+            }
         }
 
       if (device->fix->fields & LOCATION_GPS_DEVICE_TIME_SET)
         {
-          uint uiTime = static_cast<uint> (rint( device->fix->time));
-          time = QString("%1").arg(uiTime);
-          ept  = QString("%1").arg(device->fix->ept, 0, 'f');
+          if( ! isnan(device->fix->time) && device->fix->time > 0.0 )
+            {
+              uint uiTime = static_cast<uint> (rint( device->fix->time));
+              time = QString("%1").arg(uiTime);
+            }
+
+          if( ! isnan(device->fix->ept) )
+            {
+              ept  = QString("%1").arg(device->fix->ept, 0, 'f');
+            }
         }
 
       QStringList list0;
@@ -467,18 +562,29 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
             << altitude
             << epv
             << climb
-            << epc
-            << "\r\n";
+            << epc;
 
-      QString sentence0 = list0.join( ",");
+      QString sentence0 = list0.join( ",") + "\r\n";
 
       // store the new sentence in the queue
       queueMsg( sentence0.toAscii().data() );
    }
 
+   QString satellitesInView = "0";
+   QString satellitesInUse  = "0";
    QString status           = QString("%1").arg( device->status );
-   QString satellitesInView = QString("%1").arg( device->satellites_in_view );
-   QString satellitesInUse  = QString("%1").arg( device->satellites_in_use );
+
+   if( device->satellites_in_view >= 0 )
+     {
+       // @AP: Sometimes -1 has been seen by me.
+       satellitesInView = QString("%1").arg( device->satellites_in_view );
+     }
+
+   if( device->satellites_in_use >= 0 )
+     {
+       // @AP: Sometimes -1 has been seen by me.
+       satellitesInUse = QString("%1").arg( device->satellites_in_use );
+     }
 
    QStringList list1;
    list1 << "$MAEMO1"
@@ -500,12 +606,11 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
                  << QString("%1").arg( sat->elevation )
                  << QString("%1").arg( sat->azimuth )
                  << QString("%1").arg( sat->signal_strength )
-                 << QString("%1").arg( sat->in_use )
-                 << "\r\n";
+                 << QString("%1").arg( sat->in_use );
          }
      }
 
-   QString sentence1 = list1.join( ",");
+   QString sentence1 = list1.join( ",") + "\r\n";
 
    // store the new sentence in the queue
    queueMsg( sentence1.toAscii().data() );
@@ -568,8 +673,8 @@ bool GpsMaemoClient::startGpsReceiving()
   // remove all old queued messages
   queue.clear();
 
-  // setup alive check, that guarantees a restart after unsuccessful start
-  startTimer(ALIVE_TO);
+  // setup alive check, that guarantees a restart after an unsuccessful start
+  startTimer(RETRY_TO);
 
   // There is no active connection, set flag.
   connectionLost = true;
@@ -843,6 +948,8 @@ void GpsMaemoClient::writeNotifMsg( const char *msg )
  */
 void GpsMaemoClient::queueMsg( const char* msg )
 {
+  qDebug() << "GpsMaemoClient::queueMsg():" << msg;
+
 #ifdef DEBUG
   qDebug() << "GpsMaemoClient::queueMsg():" << msg;
 #endif

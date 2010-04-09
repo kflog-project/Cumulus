@@ -140,6 +140,9 @@ int main( int argc, char* argv[] )
   // Initialize GObject type system
   g_type_init();
 
+  // Initialize the GLib thread system
+  g_thread_init( NULL );
+
   // Setup GLib main loop for signal handling of libLocation.
   GMainLoop *gloop = g_main_loop_new(NULL, FALSE);
 

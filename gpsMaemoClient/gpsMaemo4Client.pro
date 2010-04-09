@@ -5,7 +5,7 @@
 #
 # This template generates a makefile for the gpsMaemoClient binary.
 #
-# $Id: gpsMaemoClient.pro 3873 2010-03-16 21:39:28Z axel $
+# $Id$
 #
 ################################################################################
 
