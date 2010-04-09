@@ -144,6 +144,7 @@ dpkg_install:
 	@echo '===== Installing Cumulus $(VERSION) under $(DESTDIR)$(INSTALL_ROOT) ====='
 	strip cumulus/cumulus
 	strip gpsClient/gpsClient
+	strip gpsMaemoClient/gpsMaemoClient
 	strip nmeaSimulator/nmeaSimu
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/etc
@@ -227,7 +228,7 @@ cumulus/Makefile: cumulus/cumulusMaemo4.pro
 gpsClient/Makefile: gpsClient/gpsClientMaemo.pro
 	cd gpsClient; $(QMAKE) gpsClientMaemo.pro -o Makefile
 
-gpsMaemoClient/Makefile: gpsMaemoClient/gpsMaemoClient.pro
+gpsMaemoClient/Makefile: gpsMaemoClient/gpsMaemo4Client.pro
 	cd gpsMaemoClient; $(QMAKE) gpsMaemo4Client.pro -o Makefile
 
 nmeaSimulator/Makefile: nmeaSimulator/simuX11.pro
