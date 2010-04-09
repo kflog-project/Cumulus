@@ -45,7 +45,6 @@ HEADERS = \
     gliderflightdialog.h \
     gliderlistwidget.h \
     gpscon.h \
-    gpsmaemo.h \
     gpsnmea.h \
     gpsstatusdialog.h \
     coordedit.h \
@@ -159,7 +158,6 @@ SOURCES = \
     gliderflightdialog.cpp \
     gliderlistwidget.cpp \
     gpscon.cpp \
-    gpsmaemo.cpp \
     gpsnmea.cpp \
     gpsstatusdialog.cpp \
     coordedit.cpp \
