@@ -49,8 +49,8 @@ extern MapView *_globalMapView;
 
 /**
  * This module manages the startup and supervision of the GPS client process
- * and the communication between this client process and the Cumulus
- * process. All data transfer between the two processes is be done via a
+ * and the communication between this client and the Cumulus process.
+ * All data transfer between the two processes is be done via a
  * socket interface. The path name, used during startup of Cumulus must be
  * passed in the constructor, that the gpsClient resp. gpsMaemoClient binary
  * can be found. It lays in the same directory as the Cumulus binary.
@@ -61,7 +61,7 @@ GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
 
   QString gpsDevice = conf->getGpsDevice();
 
-  // Do check, what kind of connection the user has selected. Under Maemo5
+  // Do check, what kind of connection the user has selected. Under Maemo
   // we have to consider two possibilities.
   if( gpsDevice != MAEMO_LOCATION_SERVICE )
     {
@@ -74,8 +74,9 @@ GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
     }
 
   pid = -1;
-  ioSpeed = 0;
-  device = "";
+
+  device  = conf->getGpsDevice();
+  ioSpeed = conf->getGpsSpeed();
 
   timer = new QTimer(this);
   timer->connect( timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()) );
@@ -95,11 +96,11 @@ GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
 
   if( server.init( IPC_IP, port ) == false )
     {
-      qDebug("IPC Server init failed !");
+      qWarning("IPC Server init failed!");
       return;
     }
 
-  qDebug("IPC Server init success listening %s:%d",IPC_IP, port );
+  qDebug( "IPC Server init success listening %s:%d", IPC_IP, port );
 
   // Check the start client option. It is introduced for debugging
   // purposes. If set to false, no client process will be started.
@@ -145,36 +146,37 @@ bool GpsCon::startGpsReceiving()
 {
   static QString method = "GPSCon::startGpsReceiving():";
 
-  if( server.getClientSock(0) != -1 )
+  if (server.getClientSock(0) != -1)
     {
       // send the initialization data to the client process, if a client is
       // connected. Otherwise the initialization will be done in
       // slot_ListenEvent(), if the client makes its connect.
-    GeneralConfig *conf = GeneralConfig::instance();
-    QString gpsDevice   = conf->getGpsDevice();
-    QString msg;
+      GeneralConfig *conf = GeneralConfig::instance();
+      QString gpsDevice = conf->getGpsDevice();
+      QString msg;
 
-    // Do check, what kind of connection the user has  selected. Under Maemo5
-    // we have to consider two possibilities.
-    if( gpsDevice != MAEMO_LOCATION_SERVICE )
-      {
-        device  = conf->getGpsDevice();
-        ioSpeed = conf->getGpsSpeed();
-        msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(device).arg(QString::number(ioSpeed));
-      }
-    else
-      {
-        // Using Location Service under Maemo5 needs no arguments because we
-        // have no access to the GPS hardware devices.
-        msg = QString(MSG_OPEN);
-      }
-
-      writeClientMessage( 0, msg.toLatin1().data() );
-      readClientMessage( 0, msg );
-
-      if( msg == MSG_NEG )
+      // Do check, what kind of connection the user has  selected. Under Maemo5
+      // we have to consider two possibilities.
+      if (gpsDevice != MAEMO_LOCATION_SERVICE)
         {
-          _globalMapView->message( tr("GPS initialization failed!") );
+          device = conf->getGpsDevice();
+          ioSpeed = conf->getGpsSpeed();
+          msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(device).arg(
+              QString::number(ioSpeed));
+        }
+      else
+        {
+          // Using Location Service under Maemo5 needs no arguments because we
+          // have no access to the GPS hardware devices.
+          msg = QString(MSG_OPEN);
+        }
+
+      writeClientMessage(0, msg.toLatin1().data());
+      readClientMessage(0, msg);
+
+      if (msg == MSG_NEG)
+        {
+          _globalMapView->message(tr("GPS initialization failed!"));
           return false;
         }
       else
@@ -186,8 +188,8 @@ bool GpsCon::startGpsReceiving()
         }
 
       // we want to get a notification, if data are available on client side.
-      writeClientMessage( 0, MSG_NTY );
-      readClientMessage( 0, msg );
+      writeClientMessage(0, MSG_NTY );
+      readClientMessage(0, msg);
 
       // remember last start time
       lastQuery.start();
@@ -204,10 +206,6 @@ bool GpsCon::startGpsReceiving()
 bool GpsCon::stopGpsReceiving()
 {
   static QString method = "GPSCon::stopGpsReceiving():";
-
-  // Reset speed and device
-  ioSpeed = 0;
-  device = "";
 
   if( server.getClientSock(0) == -1 )
     {
@@ -591,7 +589,6 @@ void GpsCon::slot_NotificationEvent(int socket)
   readClientMessage( 1, msg );
 
 #ifdef DEBUG
-
   qDebug("%s %s, got notification", method.toLatin1().data(), msg.toLatin1().data());
 #endif
 
@@ -611,7 +608,7 @@ void GpsCon::slot_NotificationEvent(int socket)
  */
 void GpsCon::queryClient()
 {
-  if( server.getClientSock(0) == -1 )
+  if (server.getClientSock(0) == -1)
     {
       // No connection to the client established.
       return;
@@ -619,30 +616,31 @@ void GpsCon::queryClient()
 
   QString msg;
 
-  // Now get all messages from the gps client
-  while( true )
+  // Now get all messages from the GPS client
+  while (true)
     {
-      writeClientMessage( 0, MSG_GM );
-      readClientMessage( 0, msg );
+      writeClientMessage(0, MSG_GM );
+      readClientMessage(0, msg);
 
-      if( server.getClientSock(0) == -1 )
+      if (server.getClientSock(0) == -1)
         {
           // socket will be closed in case of any problems, e.g. client
           // crash. we check that to avoid a dead lock here
           return;
         }
 
-      if( msg.indexOf( MSG_RM ) == 0 )
+      if (msg.indexOf(MSG_RM) == 0)
         {
           // reply message received, 2 kinds are possible. remove message key
           // and space separator before further processing
           msg = msg.right(msg.length() - strlen(MSG_RM) - 1);
 
-          if( msg == MSG_CONLOST ) // connection lost
+          if (msg == MSG_CONLOST) // connection lost
             {
               emit gpsConnectionLost();
               qDebug(MSG_CONLOST);
-            } else // Gps NMEA record
+            }
+          else // GPS NMEA record
             {
               emit newSentence(msg);
             }
@@ -651,7 +649,7 @@ void GpsCon::queryClient()
         }
 
       // no more messages are available on client
-      if( msg.indexOf( MSG_NEG ) == 0 )
+      if (msg.indexOf(MSG_NEG) == 0)
         {
           // no more data available
           break;
@@ -659,8 +657,8 @@ void GpsCon::queryClient()
     }
 
   // renew notification subscription
-  writeClientMessage( 0, MSG_NTY );
-  readClientMessage( 0, msg );
+  writeClientMessage(0, MSG_NTY );
+  readClientMessage(0, msg);
 
   // remember last start time
   lastQuery.start();
