@@ -228,7 +228,7 @@ gpsClient/Makefile: gpsClient/gpsClientMaemo.pro
 	cd gpsClient; $(QMAKE) gpsClientMaemo.pro -o Makefile
 
 gpsMaemoClient/Makefile: gpsMaemoClient/gpsMaemoClient.pro
-	cd gpsMaemoClient; $(QMAKE) gpsMaemoClient.pro -o Makefile
+	cd gpsMaemoClient; $(QMAKE) gpsMaemo4Client.pro -o Makefile
 
 nmeaSimulator/Makefile: nmeaSimulator/simuX11.pro
 	cd nmeaSimulator; $(QMAKE) simuX11.pro -o Makefile
