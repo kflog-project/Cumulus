@@ -40,6 +40,7 @@ LRELEASE = lrelease
 all:	qmake resetdate
 	cd cumulus; make
 	cd gpsClient; make
+	cd gpsMaemoClient; make
 	cd nmeaSimulator; make
 
 .PHONY : clean
@@ -51,6 +52,10 @@ clean:
 	@if [ -f gpsClient/Makefile ]; \
 	then \
 		cd gpsClient; make distclean; rm -f Makefile; \
+	fi
+	@if [ -f gpsMaemoClient/Makefile ]; \
+	then \
+		cd gpsMaemoClient; make distclean; rm -f Makefile; \
 	fi
 	@if [ -f nmeaSimulator/Makefile ]; \
 	then \
@@ -91,6 +96,7 @@ install: check_dir deinstall install_lang
 	install --mode=755 dpkg/Maemo4/maemo/start_simu $(INSTALL_ROOT)/bin
 	install --mode=755 cumulus/cumulus $(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(INSTALL_ROOT)/bin
+	install --mode=755 gpsMaemoClient/gpsMaemoClient $(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(INSTALL_ROOT)/bin
 	install --mode=644 etc/glider.pol $(INSTALL_ROOT)/etc
 	install --mode=644 icons/*.xpm $(INSTALL_ROOT)/icons
@@ -156,6 +162,7 @@ dpkg_install:
 	install --mode=755 dpkg/Maemo4/maemo/start_simu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 cumulus/cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install --mode=755 gpsMaemoClient/gpsMaemoClient $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 dpkg/Maemo4/maemo/aplay $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=644 etc/glider.pol $(DESTDIR)/$(INSTALL_ROOT)/etc
@@ -208,7 +215,7 @@ copy_web:
 	scp -C dpkg/n8x0/cumulus_$(VERSION)_armel.deb \
 	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_armel_n8x0.deb
 
-qmake: cumulus/Makefile gpsClient/Makefile nmeaSimulator/Makefile
+qmake: cumulus/Makefile gpsClient/Makefile gpsMaemoClient/Makefile nmeaSimulator/Makefile
 
 .PHONY : resetdate
 resetdate:
@@ -219,6 +226,9 @@ cumulus/Makefile: cumulus/cumulusMaemo4.pro
 
 gpsClient/Makefile: gpsClient/gpsClientMaemo.pro
 	cd gpsClient; $(QMAKE) gpsClientMaemo.pro -o Makefile
+
+gpsMaemoClient/Makefile: gpsMaemoClient/gpsMaemoClient.pro
+	cd gpsMaemoClient; $(QMAKE) gpsMaemoClient.pro -o Makefile
 
 nmeaSimulator/Makefile: nmeaSimulator/simuX11.pro
 	cd nmeaSimulator; $(QMAKE) simuX11.pro -o Makefile
