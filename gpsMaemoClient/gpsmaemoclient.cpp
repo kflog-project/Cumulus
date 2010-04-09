@@ -948,8 +948,6 @@ void GpsMaemoClient::writeNotifMsg( const char *msg )
  */
 void GpsMaemoClient::queueMsg( const char* msg )
 {
-  qDebug() << "GpsMaemoClient::queueMsg():" << msg;
-
 #ifdef DEBUG
   qDebug() << "GpsMaemoClient::queueMsg():" << msg;
 #endif
