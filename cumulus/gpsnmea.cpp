@@ -77,12 +77,9 @@ GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
   timeOutFix = new QTimer(this);
   connect (timeOutFix, SIGNAL(timeout()), this, SLOT(_slotTimeoutFix()));
 
-  gpsDevice = "";
-  serial = static_cast<GpsCon *> (0);
-
-#ifdef MAEMO4
-  gpsdConnection = 0;
-#endif
+  // Load last used device
+  gpsDevice = GeneralConfig::instance()->getGpsDevice();
+  serial    = static_cast<GpsCon *> (0);
 
   createGpsConnection();
 }
@@ -134,8 +131,6 @@ void GpsNmea::createGpsConnection()
 
   QObject *gpsObject = 0;
 
-#ifndef MAEMO4
-
   // We create only a GpsCon instance. The GPS daemon process will be started
   // later. This is also valid hence Maemo5.
   QString callPath = GeneralConfig::instance()->getInstallRoot() + "/bin";
@@ -143,34 +138,6 @@ void GpsNmea::createGpsConnection()
   serial = new GpsCon(this, callPath.toAscii().data());
 
   gpsObject = serial;
-
-#else
-
-  // Under Maemo4 we have to contact the Maemo gpsd process on its listen port.
-  // If the device name is the nmea simulator or contains the substring USB/usb
-  // the cumulus GPS daemon is started.
-  gpsDevice = GeneralConfig::instance()->getGpsDevice();
-
-  // qDebug("GpsDevive=%s", gpsDevice.toLatin1().data() );
-
-  if ( gpsDevice == NMEASIM_DEVICE ||
-       gpsDevice.indexOf( QRegExp("USB|usb") ) != -1 )
-  {
-    // We assume, that the nmea simulator or a usb device shall be used
-    // and will start the cumulus gps client process
-    QString callPath = GeneralConfig::instance()->getInstallRoot() + "/bin";
-
-      serial = new GpsCon(this, callPath.toAscii().data());
-      gpsObject = serial;
-    }
-  else
-    {
-      // The Maemo GPS daemon shall be used.
-      gpsdConnection = new GpsMaemo( this );
-      gpsObject = gpsdConnection;
-    }
-
-#endif
 
   connect (gpsObject, SIGNAL(newSentence(const QString&)),
            this, SLOT(slot_sentence(const QString&)) );
@@ -198,13 +165,6 @@ GpsNmea::~GpsNmea()
       delete serial;
       writeConfig();
     }
-
-#ifdef MAEMO4
-  if ( gpsdConnection )
-    {
-      delete gpsdConnection;
-    }
-#endif
 }
 
 /**
@@ -217,22 +177,10 @@ void GpsNmea::enableReceiving( bool enable )
   QSocketNotifier* notifier = static_cast<QSocketNotifier *> (0);
 
   // qDebug("GpsNmea::enableReceiving(%s)", enable ? "true" : "false");
-
-#ifndef MAEMO4
-
   if ( serial )
     {
       notifier = serial->getDaemonNotifier();
     }
-
-#else
-
-  if ( gpsdConnection )
-    {
-      notifier = gpsdConnection->getDaemonNotifier();
-    }
-
-#endif
 
   if( notifier )
     {
@@ -250,14 +198,6 @@ void GpsNmea::enableReceiving( bool enable )
  */
 void GpsNmea::readDataFromGps()
 {
-#ifdef MAEMO4
-
-  if ( gpsdConnection )
-    {
-      gpsdConnection->checkAndReadGpsData();
-    }
-
-#endif
 }
 
 /**
@@ -265,20 +205,12 @@ void GpsNmea::readDataFromGps()
  */
 void GpsNmea::startGpsReceiver()
 {
-  // qDebug("GpsNmea::startGpsReceiver()");
-
+  qDebug("GpsNmea::startGpsReceiver()");
   if ( serial )
     {
       serial->startClientProcess();
       serial->startGpsReceiving();
     }
-
-#ifdef MAEMO4
-  if ( gpsdConnection )
-    {
-      gpsdConnection->startGpsReceiving();
-    }
-#endif
 }
 
 /**
@@ -292,7 +224,7 @@ void GpsNmea::startGpsReceiver()
  * used as base altitude instead of the normal GPS altitude, the user option
  * altitude must be set to PRESSURE.
  *
- * @AP 2010-03-16: There was added special support for Maemo5. Two proprietary
+ * @AP 2010-03-16: There was added special support for Maemo. Two proprietary
  * sentences $MAEMO[0/1] are used to transfer the GPS data from the daemon process
  * to Cumulus.
  */
@@ -323,7 +255,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   sentence = sentence.replace( QRegExp("[\n\r]"), "" );
 
-#ifdef MAEMO5
+#ifdef MAEMO
 
   // Handle sentences created by GPS Maemo Client process. These sentences
   // contain no checksum items.
@@ -1514,7 +1446,7 @@ bool GpsNmea::__ExtractSatsInView(const QString& satcount)
   return true;
 }
 
-#ifdef MAEMO5
+#ifdef MAEMO
 
 /**
  * Extract proprietary sentence $MAEMO0. It is created by the GPS Maemo Client
@@ -1554,6 +1486,12 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
   LOCATION_GPS_DEVICE_MODE_2D       The device has latitude and longitude fix.
   LOCATION_GPS_DEVICE_MODE_3D       The device has latitude, longitude, and altitude.
   */
+
+#if 0
+
+  // @AP: This fix information stands sometimes in contradiction to the reported
+  // fix information in the $MAEMO1 sentence. Therefore I do ignore the information
+  // here. Otherwise we get a ping pong setting of fix ok or nok.
   if( ! slist[1].isEmpty() )
     {
       int mode = slist[1].toInt( &ok );
@@ -1562,8 +1500,7 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
         {
           _lastSatInfo.fixValidity = mode;
 
-          if( mode == LOCATION_GPS_DEVICE_MODE_2D ||
-              mode == LOCATION_GPS_DEVICE_MODE_3D )
+          if( mode == LOCATION_GPS_DEVICE_MODE_3D )
             {
               fixOK();
             }
@@ -1574,21 +1511,27 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
         }
     }
 
-  // Extract time info. It is encoded in UTC seconds (I assume that).
+#endif
+
+  // Extract time info. It is encoded in local seconds and is converted to UTC
   if( ! slist[2].isEmpty() )
     {
       uint uintTime = slist[2].toUInt( &ok );
 
       if( ok )
         {
+          QDateTime local;
+          local.setTime_t( uintTime );
+
           QDateTime utc;
-          utc.setTime_t( uintTime );
+          utc = local.toUTC();
 
           if( utc.isValid() )
             {
               _lastUtc = utc;
               _lastTime = utc.time();
               _lastDate = utc.date();
+              // qDebug() << _lastUtc.toString();
             }
         }
     }
@@ -1864,12 +1807,13 @@ void GpsNmea::fixNOK()
  */
 void GpsNmea::slot_reset()
 {
-  // qDebug("GpsNmea::slot_reset()");
+  qDebug("GpsNmea::slot_reset()");
   GeneralConfig *conf = GeneralConfig::instance();
   QString oldDevice   = gpsDevice;
 
   if ( gpsDevice != conf->getGpsDevice() )
     {
+      qDebug() << "slot_reset(): GPS Device changed";
       // GPS device has been changed by the user
       gpsDevice = conf->getGpsDevice();
 
@@ -1879,22 +1823,6 @@ void GpsNmea::slot_reset()
           delete serial;
           serial = 0;
         }
-
-#ifdef MAEMO4
-      if ( gpsdConnection )
-        {
-          if ( oldDevice == gpsDevice )
-            {
-              // Ignore device modifications. Only switch between GPSD and Simulator is
-              // of interest for Maemo.
-              return;
-            }
-
-          gpsdConnection->stopGpsReceiving();
-          delete gpsdConnection;
-          gpsdConnection = 0;
-        }
-#endif
 
       // reset data objects
       resetDataObjects();
@@ -1910,6 +1838,7 @@ void GpsNmea::slot_reset()
     {
       if ( serial->currentBautrate() != conf->getGpsSpeed() )
         {
+          qDebug() << "slot_reset(): GPS Baudrate changed";
           serial->stopGpsReceiving();
           serial->startGpsReceiving();
         }
@@ -2004,7 +1933,7 @@ void GpsNmea::sendLastFix (bool hard, bool soft)
 /** force a reset of the serial connection after a resume */
 void GpsNmea::forceReset()
 {
-  // qDebug("GpsNmea::forceReset()");
+  qDebug("GpsNmea::forceReset()");
 
   if ( serial )
     {

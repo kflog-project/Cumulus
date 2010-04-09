@@ -27,10 +27,6 @@
 #include <QPoint>
 #include <QTimer>
 
-#ifdef MAEMO4
-#include "gpsmaemo.h"
-#endif
-
 #include "speed.h"
 #include "altitude.h"
 #include "gpscon.h"
@@ -71,7 +67,7 @@ struct GPSInfo
     bool AirSpeed;
   };
 
-#ifdef MAEMO5
+#ifdef MAEMO
 
 /**
  * The following two enumerations are used by Maemo's Location Service for
@@ -517,7 +513,7 @@ class GpsNmea : public QObject
      */
     void __ExtractLxwp2(const QStringList& stringList);
 
-#ifdef MAEMO5
+#ifdef MAEMO
     /**
      * Extract proprietary sentence $MAEMO0.
      */
@@ -627,11 +623,6 @@ class GpsNmea : public QObject
     QString gpsDevice;
     /** reference to the normal serial connection */
     GpsCon* serial;
-
-#ifdef MAEMO4
-    /** reference to the Maemo GPS daemon connection */
-    GpsMaemo* gpsdConnection;
-#endif
 
     // number of created class instances
     static short instances;
