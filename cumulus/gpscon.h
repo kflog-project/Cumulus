@@ -123,11 +123,16 @@ class GpsCon : public QObject
     void newSentence(const QString& sentence);
 
     /**
-     * This signal is send, if the gps connection has been lost
+     * This signal is send, if the GPS connection has been lost.
      */
-    void gpsConnectionLost();
+    void gpsConnectionOff();
 
-  private:
+    /**
+     * This signal is send, if the GPS connection has been established.
+     */
+    void gpsConnectionOn();
+
+ private:
 
     /**
      * Stores process identifier of forked client
@@ -167,7 +172,7 @@ class GpsCon : public QObject
 
     /**
      * This slot is triggered by the QT main loop and is used to handle the
-     * listen socket events. The gps client tries to connect to the Cumulus
+     * listen socket events. The GPS client tries to connect to the Cumulus
      * process. There are two connections opened by the client, first as data
      * channel, second as notification channel.
      */
@@ -188,14 +193,14 @@ class GpsCon : public QObject
     // start client process flag, used for debugging purposes only
     bool startClient;
 
-    // Pid of gps client process
+    // Pid of GPS client process
     pid_t pid;
 
     // Notifier for QT main loop
     QSocketNotifier *listenNotifier;
     QSocketNotifier *clientNotifier;
 
-    // used as timeout control for connection supervison
+    // used as timeout control for connection supervision
     QTimer *timer;
 
     // Time of last client query

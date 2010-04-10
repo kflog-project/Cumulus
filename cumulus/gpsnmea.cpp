@@ -147,8 +147,12 @@ void GpsNmea::createGpsConnection()
            this, SIGNAL(newSentence(const QString&)) );
 
   // The connection to the GPS receiver or daemon has been lost
-  connect (gpsObject, SIGNAL(gpsConnectionLost()),
-           this, SLOT( _slotGpsConnectionLost()) );
+  connect (gpsObject, SIGNAL(gpsConnectionOff()),
+           this, SLOT( _slotGpsConnectionOff()) );
+
+  // The connection to the GPS receiver or daemon has been established
+  connect (gpsObject, SIGNAL(gpsConnectionOn()),
+           this, SLOT( _slotGpsConnectionOn()) );
 }
 
 GpsNmea::~GpsNmea()
@@ -1718,7 +1722,7 @@ void GpsNmea::__ExtractMaemo1(const QString& string)
 
 /** This slot is called by the external GPS receiver process to signal
  *  a connection lost to the GPS receiver or daemon. */
-void GpsNmea::_slotGpsConnectionLost()
+void GpsNmea::_slotGpsConnectionOff()
 {
   if( _ignoreConnectionLost )
     {
@@ -1734,6 +1738,14 @@ void GpsNmea::_slotGpsConnectionLost()
       resetDataObjects();
       emit statusChange( _status );
     }
+}
+
+/** This slot is called by the external GPS receiver process to signal
+ *  a established connection to the GPS receiver or daemon.
+ */
+void GpsNmea::_slotGpsConnectionOn()
+{
+  dataOK();
 }
 
 /** This slot is called by the internal timer to signal a timeout.

@@ -604,7 +604,7 @@ void GpsCon::slot_NotificationEvent(int socket)
 
 /**
  * Query the client, if NMEA records are available. If true, the data will
- * be hand over to the cumulus process.
+ * be hand over to the Cumulus process.
  */
 void GpsCon::queryClient()
 {
@@ -631,14 +631,19 @@ void GpsCon::queryClient()
 
       if (msg.indexOf(MSG_RM) == 0)
         {
-          // reply message received, 2 kinds are possible. remove message key
+          // reply message received, 3 kinds are possible. remove message key
           // and space separator before further processing
           msg = msg.right(msg.length() - strlen(MSG_RM) - 1);
 
-          if (msg == MSG_CONLOST) // connection lost
+          if (msg == MSG_CON_OFF) // GPS connection has gone off
             {
-              emit gpsConnectionLost();
-              qDebug(MSG_CONLOST);
+              emit gpsConnectionOff();
+              qDebug(MSG_CON_OFF);
+            }
+          else if ( msg == MSG_CON_ON ) // GPS connection has gone on
+            {
+              emit gpsConnectionOn();
+              qDebug(MSG_CON_ON);
             }
           else // GPS NMEA record
             {

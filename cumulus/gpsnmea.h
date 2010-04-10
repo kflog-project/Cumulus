@@ -376,8 +376,14 @@ class GpsNmea : public QObject
   private slots: // Private slots
 
     /** This slot is called by the external GPS receiver process to signal
-     *  a connection lost to the GPS receiver or daemon. */
-    void _slotGpsConnectionLost();
+     *  a connection lost to the GPS receiver or daemon.
+     */
+    void _slotGpsConnectionOff();
+
+    /** This slot is called by the external GPS receiver process to signal
+     *  a established connection to the GPS receiver or daemon.
+     */
+    void _slotGpsConnectionOn();
 
     /** This slot is called by the internal timer to signal a timeout.
      *  This timeout occurs if no valid position fix has been received since
