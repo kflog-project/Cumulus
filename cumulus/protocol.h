@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2010 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
 /**
  * This file contains the messages used during interprocess communication
- * between the cumulus and the gps client process.
+ * between the Cumulus and the GPS client process.
  */
 
 #ifndef _Protocol_h_
@@ -27,7 +27,7 @@
 
 // Message Key word definitions
 
-#define MSG_PROTOCOL         "Cumulus-GPS_Client_IPC_V1.0_Axel@kflog.org"
+#define MSG_PROTOCOL         "Cumulus-GPS_Client_IPC_V1.1_Axel@kflog.org"
 
 #define MSG_MAGIC            "\\Magic\\"
 
@@ -35,15 +35,15 @@
 
 #define MSG_NEG		     "\\Negative\\"
 
-// data available notitication
+// data available notification
 
 #define MSG_DA		     "\\Data_Available\\"
 
-// open serial device "Open" <device> <speed>
+// open connection to the GPS device "Open" <device> <speed>
 
 #define MSG_OPEN	     "\\Open\\"
 
-// close serial device
+// close connection to the GPS device
 
 #define MSG_CLOSE	     "\\Close\\"
 
@@ -69,6 +69,8 @@
 
 //------- Other message strings-------//
 
-#define MSG_CONLOST          "#GPS_Connection_lost#"
+#define MSG_CON_OFF          "#GPS_Connection_off#"
+
+#define MSG_CON_ON           "#GPS_Connection_on#"
 
 #endif  // #ifndef _Protocol_h_
