@@ -1459,12 +1459,12 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
    *
    *  0) $MAEMO
    *  1) Mode
-   *  2) Time stamp as unsigned integer
+   *  2) Time stamp as unsigned integer, local time (Maemo4)
    *  3) Ept
    *  4) Latitude  in KFLog degrees
    *  5) Longitude in KFLog degrees
    *  6) Eph in m
-   *  7) Speed in km/h
+   *  7) Speed in m/s (Maemo4), km/h (Maemo5)
    *  8) Eps
    *  9) Track in degree 0...359
    * 10) Epd
@@ -1567,15 +1567,20 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
         }
     }
 
-  // Extract Speed, encoded in km/h.
+  // Extract Speed, encoded in m/s under Maemo4 in Km/h under Maemo5
   if( ! slist[7].isEmpty() )
     {
-      double kph = slist[7].toDouble( &ok );
+      double dSpeed = slist[7].toDouble( &ok );
 
       if( ok )
         {
           Speed speed;
-          speed.setKph( kph );
+
+#ifdef MAEMO4
+          speed.setMps( dSpeed ); // m/s under Maemo4
+#else
+          speed.setKph( dSpeed );
+#endif
 
           if( speed != _lastSpeed )
             {
