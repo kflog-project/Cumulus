@@ -495,7 +495,7 @@ void GpsClient::toController()
         {
           // connection is lost, send only one message to the server
           connectionLost = true;
-          queueMsg( MSG_CONLOST );
+          queueMsg( MSG_CON_OFF );
         }
 
 #ifdef ERROR_LOG
