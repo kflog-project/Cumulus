@@ -338,6 +338,10 @@ void GpsMaemoClient::handleGpsdRunning()
   // restart timer with alive check supervision
   startTimer(ALIVE_TO);
 
+  // Sends a message to Cumulus to signal that the GPS connection is established.
+  // LibLocation reports not before a GPS fix any data.
+  queueMsg( MSG_CON_ON );
+
 #ifdef MAEMO4
 
   if ( control && ! control->can_control )
@@ -728,7 +732,7 @@ void GpsMaemoClient::toController()
         {
           // connection is lost, send only one message to the server
           connectionLost = true;
-          queueMsg( MSG_CONLOST );
+          queueMsg( MSG_CON_OFF );
         }
 
       if( gpsIsRunning == false )
