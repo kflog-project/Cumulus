@@ -403,6 +403,7 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
 
   if( ! device )
     {
+      queueMsg( MSG_CON_OFF );
       // Device is lost, set retry timeout to make a restart.
       startTimer(RETRY_TO);
       return;
