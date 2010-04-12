@@ -6,11 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008-2009  by Axel Pauli
+**   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -19,7 +19,6 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <QRegion>
 #include <QMap>
 #include <QPoint>
 #include <QWidget>

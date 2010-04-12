@@ -19,32 +19,32 @@
 
 /**
  * Constructor.
- * @param region Region in coordinate system of the map object, not in KFLog system
+ * @param path Path in coordinate system of the map object, not in KFLog system
  * @param height the elevation of the isoline in meters
  */
-IsoListEntry::IsoListEntry( QRegion* region, const int height )
+IsoListEntry::IsoListEntry( QPainterPath* path, const int height )
 {
-  this->region = region;
+  this->path = path;
   this->height = height;
 };
 
 /**
- * Copy constructor is needed to make a deep copy of the QRegion pointer.
+ * Copy constructor is needed to make a deep copy of the QPainterPath pointer.
  */
 IsoListEntry::IsoListEntry( const IsoListEntry& x )
 {
   height = x.height;
-  region = x.region;
+  path = x.path;
 
-  // Make a deep copy of the QRegion object, if it exists.
-  if( x.region )
+  // Make a deep copy of the QPainterPath object, if it exists.
+  if( x.path )
     {
-      region = new QRegion( *x.region );
+      path = new QPainterPath( *x.path );
     }
 }
 
 /**
- * Assignment operator is needed to make a deep copy of the QRegion pointer.
+ * Assignment operator is needed to make a deep copy of the QPainterPath pointer.
  */
 IsoListEntry& IsoListEntry::operator=(const IsoListEntry& x)
 {
@@ -57,17 +57,17 @@ IsoListEntry& IsoListEntry::operator=(const IsoListEntry& x)
   // overtake height
   height = x.height;
 
-  // The QRegion object of the left side must be deleted, if it exists.
-  if( region )
+  // The QPainterPath object of the left side must be deleted, if it exists.
+  if( path )
     {
-      delete region;
-      region = static_cast<QRegion *> (0);
+      delete path;
+      path = static_cast<QPainterPath *> (0);
     }
 
-  // Make a deep copy of the QRegion object from the right side, if it exists.
-  if( x.region )
+  // Make a deep copy of the QPainterPath object from the right side, if it exists.
+  if( x.path )
     {
-      region = new QRegion( *x.region );
+      path = new QPainterPath( *x.path );
     }
 
   return *this;
@@ -78,9 +78,9 @@ IsoListEntry& IsoListEntry::operator=(const IsoListEntry& x)
  */
 IsoListEntry::~IsoListEntry()
 {
-  // QRegion must be deleted, if it was allocated.
-  if( region )
+  // QPainterPath must be deleted, if it was allocated.
+  if( path )
     {
-      delete region;
+      delete path;
     }
 }

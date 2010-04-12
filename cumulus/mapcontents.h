@@ -226,7 +226,7 @@ class MapContents : public QObject
     /** Returns list of IsoHypse Regions */
     IsoList* getIsohypseRegions()
     {
-      return &regIsoLines;
+      return &pathIsoLines;
     };
 
     /** Returns the elevation index for an elevation step in meters
@@ -532,7 +532,7 @@ class MapContents : public QObject
     /**
      * List of all drawn isohypses.
      */
-    IsoList regIsoLines;
+    IsoList pathIsoLines;
 
     /**
      * Elevation where the next search for the current elevation will start.

@@ -18,13 +18,13 @@
 #ifndef ISO_LIST_H
 #define ISO_LIST_H
 
-#include <QRegion>
+#include <QPainterPath>
 #include <QList>
 
 /**
  * @short Entry in the isolist
  *
- * This class contains a @ref QRegion and a height. A list of entries
+ * This class contains a @ref QPainterPath and a height. A list of entries
  * like this is created when the map is drawn and is used to detect the
  * elevation at a given position, for instance under the mouse cursor.
  *
@@ -36,18 +36,18 @@ class IsoListEntry
 
   /**
    * Constructor.
-   * @param region Region in coordinate system of the map-object, not in KFLog system
+   * @param path Path in coordinate system of the map-object, not in KFLog system
    * @param height the elevation of the isoline in meters
    */
-  IsoListEntry( QRegion* region, const int height=0 );
+  IsoListEntry( QPainterPath* path, const int height=0 );
 
   /**
-   * Copy constructor is needed to make a deep copy of the QRegion pointer.
+   * Copy constructor is needed to make a deep copy of the QPainterPath pointer.
    */
   IsoListEntry( const IsoListEntry& x );
 
   /**
-   * Assignment operator is needed to make a deep copy of the QRegion pointer.
+   * Assignment operator is needed to make a deep copy of the QPainterPath pointer.
    */
   IsoListEntry& operator=(const IsoListEntry& x);
 
@@ -91,7 +91,7 @@ class IsoListEntry
     return (iso1->height < iso2->height);
   };
 
-  QRegion* region;
+  QPainterPath* path;
   int height;
 
   /**

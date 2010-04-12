@@ -6,9 +6,9 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **   Modified:       2008 by Axel Pauli, Josua Dietze
- **                   2009 by Axel Pauli
+ **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
+ **   Modified:       2008      by Josua Dietze
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
@@ -87,9 +87,10 @@ Airspace::~Airspace()
   // pointer in the other object. Check is necessary to avoid usage of
   // null pointer.
 
-  if( _airRegion ) {
-    _airRegion->airspace = 0;
-  }
+  if( _airRegion )
+    {
+      _airRegion->airspace = 0;
+    }
 }
 
 /**
@@ -162,11 +163,14 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
  * Return a pointer to the mapped airspace region data. The caller takes
  * the ownership about the returned object.
  */
-QRegion* Airspace::createRegion()
+QPainterPath* Airspace::createRegion()
 {
   QPolygon tP = glMapMatrix->map(projPolygon);
 
-  return (new QRegion(tP));
+  QPainterPath *path = new QPainterPath;
+  path->addPolygon(tP);
+  path->closeSubpath();
+  return path;
 }
 
 /**
@@ -174,39 +178,40 @@ QRegion* Airspace::createRegion()
  */
 QString Airspace::getTypeName (objectType type)
 {
-  switch(type) {
-  case BaseMapElement::AirA:
-    return QObject::tr("AS-A");
-  case BaseMapElement::AirB:
-    return QObject::tr("AS-B");
-  case BaseMapElement::AirC:
-    return QObject::tr("AS-C");
-  case BaseMapElement::AirD:
-    return QObject::tr("AS-D");
-  case BaseMapElement::AirE:
-    return QObject::tr("AS-E");
-  case BaseMapElement::WaveWindow:
-    return QObject::tr("Wave Window");
-  case BaseMapElement::AirF:
-    return QObject::tr("AS-F");
-  case BaseMapElement::Restricted:
-    return QObject::tr("Restricted");
-  case BaseMapElement::Danger:
-    return QObject::tr("Danger");
-  case BaseMapElement::Prohibited:
-    return QObject::tr("Prohibited");
-  case BaseMapElement::ControlC:
-    return QObject::tr("CTR-C");
-  case BaseMapElement::ControlD:
-    return QObject::tr("CTR-D");
-  case BaseMapElement::LowFlight:
-    return QObject::tr("Low Flight");
-  case BaseMapElement::Tmz:
-    return QObject::tr("TMZ");
-  case BaseMapElement::GliderSector:
-    return QObject::tr("Glider Sector");
-  default:
-    return "<B><EM>" + QObject::tr("unknown") + "</EM></B>";
+  switch(type)
+  {
+    case BaseMapElement::AirA:
+      return QObject::tr("AS-A");
+    case BaseMapElement::AirB:
+      return QObject::tr("AS-B");
+    case BaseMapElement::AirC:
+      return QObject::tr("AS-C");
+    case BaseMapElement::AirD:
+      return QObject::tr("AS-D");
+    case BaseMapElement::AirE:
+      return QObject::tr("AS-E");
+    case BaseMapElement::WaveWindow:
+      return QObject::tr("Wave Window");
+    case BaseMapElement::AirF:
+      return QObject::tr("AS-F");
+    case BaseMapElement::Restricted:
+      return QObject::tr("Restricted");
+    case BaseMapElement::Danger:
+      return QObject::tr("Danger");
+    case BaseMapElement::Prohibited:
+      return QObject::tr("Prohibited");
+    case BaseMapElement::ControlC:
+      return QObject::tr("CTR-C");
+    case BaseMapElement::ControlD:
+      return QObject::tr("CTR-D");
+    case BaseMapElement::LowFlight:
+      return QObject::tr("Low Flight");
+    case BaseMapElement::Tmz:
+      return QObject::tr("TMZ");
+    case BaseMapElement::GliderSector:
+      return QObject::tr("Glider Sector");
+    default:
+      return "<B><EM>" + QObject::tr("unknown") + "</EM></B>";
   }
 }
 

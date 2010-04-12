@@ -20,7 +20,7 @@
 #define ISOHYPSE_H
 
 #include <QRect>
-#include <QRegion>
+#include <QPainterPath>
 
 #include "lineelement.h"
 
@@ -56,7 +56,7 @@ class Isohypse : public LineElement
      *
      * @param  targetP  The painter to draw the element into.
      */
-    QRegion* drawRegion( QPainter* targetP, const QRect &viewRect,
+    QPainterPath* drawRegion( QPainter* targetP, const QRect &viewRect,
                          bool really_draw, bool isolines=false );
 
     /**

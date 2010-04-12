@@ -222,8 +222,11 @@ bool Map::__zoomButtonPress(const QPoint& point)
   int plusWidth  = _globalMapConfig->getPlusButton().width();
   int minusWidth = _globalMapConfig->getMinusButton().width();
 
-  QRegion plus( width()-plusWidth, 0, plusWidth, plusWidth );
-  QRegion minus( width()-minusWidth, height()-minusWidth, minusWidth, minusWidth );
+  QPainterPath plus;
+  plus.addRect( width()-plusWidth, 0, plusWidth, plusWidth );
+
+  QPainterPath minus;
+  minus.addRect( width()-minusWidth, height()-minusWidth, minusWidth, minusWidth );
 
   if( plus.contains( point ) )
     {
@@ -572,7 +575,8 @@ void Map::__drawAirspaces( bool reset )
 
   if( reset )
     {
-      qDeleteAll(airspaceRegionList); airspaceRegionList.clear();
+      qDeleteAll(airspaceRegionList);
+      airspaceRegionList.clear();
     }
 
   GeneralConfig* settings     = GeneralConfig::instance();

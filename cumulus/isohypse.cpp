@@ -8,16 +8,16 @@
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 by Axel Pauli, Josua Dietze
- **                   2009 by Axel Pauli
+ **                   2009-2010 by Axel Pauli, Peter Turczak
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
  ***********************************************************************/
 
-#include <QRegion>
+#include <QPainterPath>
 #include <QString>
 #include <QSize>
 
@@ -43,12 +43,13 @@ Isohypse::Isohypse( QPolygon elevationCoordinates,
 Isohypse::~Isohypse()
 {}
 
-QRegion* Isohypse::drawRegion( QPainter* targetP, const QRect &viewRect,
-                               bool really_draw, bool isolines )
+QPainterPath* Isohypse::drawRegion( QPainter* targetP, const QRect &viewRect,
+                                    bool really_draw, bool isolines )
 {
+
   if( !glMapMatrix->isVisible(bBox, getTypeID()) )
     {
-     return static_cast<QRegion *> (0);
+     return static_cast<QPainterPath *> (0);
     }
 
   QPolygon tP = glMapMatrix->map(projPolygon);
@@ -58,7 +59,7 @@ QRegion* Isohypse::drawRegion( QPainter* targetP, const QRect &viewRect,
       if (tP.boundingRect().isNull())
         {
           // ignore null values and return also no region
-          return static_cast<QRegion *> (0);
+          return static_cast<QPainterPath *> (0);
         }
 
       targetP->setClipRegion(viewRect);
@@ -75,8 +76,11 @@ QRegion* Isohypse::drawRegion( QPainter* targetP, const QRect &viewRect,
   // case, also when drawing was skipped.
   if( glMapMatrix->isInProjCenterArea(bBox) )
     {
-      return new QRegion( tP );
+      QPainterPath *path = new QPainterPath;
+      path->addPolygon(tP);
+      path->closeSubpath();
+      return path;
     }
 
-  return static_cast<QRegion *> (0);
+  return static_cast<QPainterPath *> (0);
 }

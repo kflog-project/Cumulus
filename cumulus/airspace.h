@@ -6,11 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
-**                   2009 Axel Pauli
+**   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
+**                   2009-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -24,6 +24,7 @@
 #include <QDateTime>
 #include <QPolygon>
 #include <QPainter>
+#include <QPainterPath>
 #include <QRect>
 
 #include "altitude.h"
@@ -55,7 +56,7 @@ private:
 
 public:
 
-    enum ConflictType {none=0, near=1, veryNear=2, inside=3};
+    enum ConflictType { none=0, near=1, veryNear=2, inside=3 };
 
     /**
      * Creates a new Airspace-object. n is the name, t the typeID. length
@@ -63,9 +64,9 @@ public:
      * of the airspace and the type of value (MSL, GND, FL); lower and
      * lowerType give the value for the lower limit.
      */
-    Airspace(QString n, BaseMapElement::objectType t, QPolygon pP,
-             int upper, BaseMapElement::elevationType upperType,
-             int lower, BaseMapElement::elevationType lowerType);
+    Airspace( QString n, BaseMapElement::objectType t, QPolygon pP,
+              int upper, BaseMapElement::elevationType upperType,
+              int lower, BaseMapElement::elevationType lowerType);
 
     /**
      * Destructor
@@ -93,7 +94,7 @@ public:
      * Return a pointer to the mapped airspace region data. The caller takes
      * the ownership about the returned object.
      */
-    QRegion* createRegion();
+    QPainterPath* createRegion();
 
     /**
      * Returns the upper limit of the airspace.
@@ -209,7 +210,7 @@ public:
      * Compares two items, in this case, Airspaces.
      * The items are compared on their levels. Because cumulus provides a view
      * where the user looks down on the map, the first airspace you'll see is the
-     * one with the highest ceiling. So, an item with a heigher ceiling is
+     * one with the highest ceiling. So, an item with a higher ceiling is
      * bigger than an item with a lower ceiling. In case these are the same,
      * the item with the bigger floor will be the bigger item.
      *

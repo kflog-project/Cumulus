@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by André Somers, 2008 Axel pauli
+**   Copyright (c):  2004      by André Somers
+**                   2008-2010 by Axel pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -19,13 +20,13 @@
 #ifndef AirRegion_h
 #define AirRegion_h
 
-#include <QRegion>
+#include <QPainterPath>
 #include <QPoint>
 
 #include "airspace.h"
 
 /**
- * @short Container for @ref Airspace objects with a QRegion
+ * @short Container for @ref Airspace objects with a QPainterPath
  * @author André Somers
  *
  * Contains the projected region of an airspace onto the map.
@@ -43,20 +44,21 @@
 
 class AirRegion
 {
+
 private:
 
   /**
    * Don't allow copies and assignments.
    */
-  AirRegion(const AirRegion& ){};
-  AirRegion& operator=(const AirRegion& ){return *this;};
+  AirRegion(const AirRegion& ) {};
+  AirRegion& operator=(const AirRegion& ) {return *this;};
 
 public:
 
-    QRegion* region;
+    QPainterPath* region;
     Airspace* airspace;
 
-    AirRegion(QRegion* reg, Airspace* air);
+    AirRegion( QPainterPath* reg, Airspace* air );
     virtual ~AirRegion();
 
     /**
@@ -70,7 +72,7 @@ public:
      */
     Airspace::ConflictType conflicts( const QPoint& pos,
                                       const AirspaceWarningDistance& awd,
-                                      bool* changed = 0 ) const;
+                                      bool* changed = 0 );
 
     /**
      * @returns the last known horizontal conflict for this airspace
@@ -84,20 +86,20 @@ private:
     /**
      * Create new regions around the current position to check for collisions
      */
-    void createRegions() const;
+    void createRegions();
     /**
      * @returns true if the position, the airspace warning distances or the
      * scale has changed. If so, the static parameters that contain these
      * values as well as ms_smallPostionChange are set to reflect the
      * new situation.
      */
-    bool parametersChanged(const QPoint& pos, const AirspaceWarningDistance& awd) const;
+    bool parametersChanged( const QPoint& pos, const AirspaceWarningDistance& awd );
 
     /** the result returned last time */
-    mutable Airspace::ConflictType m_lastResult;
+    Airspace::ConflictType m_lastResult;
 
     /** true if this is the first time this region is used */
-    mutable bool m_isNew;
+    bool m_isNew;
 
     /**
      * Projected pos *this* instance has last been used with.
@@ -105,7 +107,7 @@ private:
      * This value is used to check if we need to re-check for
      * horizontal conflicts.
      */
-    mutable QPoint m_lastProjPos;
+    QPoint m_lastProjPos;
 
 private:
     // given values
@@ -118,9 +120,9 @@ private:
 
     // calculated values based on the values above
     /** contains a large circular region around ms_lastProjPos */
-    static QRegion ms_regNear;
+    static QPainterPath ms_regNear;
     /** contains a small circular region around ms_lastProjPos */
-    static QRegion ms_regVeryNear;
+    static QPainterPath ms_regVeryNear;
     /** contains the last position projected */
     static QPoint ms_lastProjPos;
     /** true if the last position change was a small change */

@@ -2211,7 +2211,7 @@ void MapContents::slotReloadMapData()
   // system crash due to out dated data.
   GpsNmea::gps->enableReceiving( false );
 
-  // clear the airspace region list in map too
+  // clear the airspace path list in map too
   Map::getInstance()->clearAirspaceRegionList();
 
   qDeleteAll(airspaceList);
@@ -2354,7 +2354,7 @@ void MapContents::slotReloadAirspaceData()
   // system crash due to outdated data.
   GpsNmea::gps->enableReceiving( false );
 
-  // clear the airspace region list in map too
+  // clear the airspace path list in map too
   Map::getInstance()->clearAirspaceRegionList();
 
   qDeleteAll(airspaceList);
@@ -2631,7 +2631,7 @@ void MapContents::drawIsoList(QPainter* targetP)
   extern MapMatrix* _globalMapMatrix;
   _lastIsoEntry = 0;
   _isoLevelReset = true;
-  regIsoLines.clear();
+  pathIsoLines.clear();
   bool isolines = false;
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -2710,15 +2710,15 @@ void MapContents::drawIsoList(QPainter* targetP)
                 }
 
               // draw the single isoline
-              QRegion* reg = isoLine.drawRegion( targetP,
+              QPainterPath* Path = isoLine.drawRegion( targetP,
                                                  _globalMapView->rect(),
                                                  true,
                                                  isolines);
-              if (reg)
+              if (Path)
                 {
-                  // store drawn region in extra list for elevation finding
-                  IsoListEntry entry(reg, isoLine.getElevation());
-                  regIsoLines.append(entry);
+                  // store drawn path in extra list for elevation finding
+                  IsoListEntry entry(Path, isoLine.getElevation());
+                  pathIsoLines.append(entry);
                   //qDebug("  added Iso: %04x, %d", (int)reg, iso2.getElevation() );
                 }
             }
@@ -2726,7 +2726,7 @@ void MapContents::drawIsoList(QPainter* targetP)
     }
 
   targetP->restore();
-  regIsoLines.sort();
+  pathIsoLines.sort();
   _isoLevelReset = false;
 
   qDebug( "IsoList, drawTime=%dms", t.elapsed() );
@@ -2734,9 +2734,9 @@ void MapContents::drawIsoList(QPainter* targetP)
 #if 0
   QString isos;
 
-  for ( int l = 0; l < regIsoLines.count(); l++ )
+  for ( int l = 0; l < pathIsoLines.count(); l++ )
     {
-      isos += QString("%1, ").arg(regIsoLines.at(l).height);
+      isos += QString("%1, ").arg(pathIsoLines.at(l).height);
     }
 
   qDebug( isos.toLatin1().data() );
@@ -3038,12 +3038,12 @@ int MapContents::findElevation(const QPoint& coordP, Distance* errorDist)
   for ( int i=0; i<cnt; i++ )
     {
       entry = &(list->at(i));
-      // qDebug("i: %d entry->height %d contains %d",i,entry->height, entry->region->contains(coord) );
+      // qDebug("i: %d entry->height %d contains %d",i,entry->height, entry->path->contains(coord) );
       // qDebug("Point x:%d y:%d", coord.x(), coord.y() );
-      // qDebug("boundingRect l:%d r:%d t:%d b:%d", entry->region->boundingRect().left(),
-      //                                 entry->region->boundingRect().right(),
-      //                                 entry->region->boundingRect().top(),
-      //                                 entry->region->boundingRect().bottom() );
+      // qDebug("boundingRect l:%d r:%d t:%d b:%d", entry->path->boundingRect().left(),
+      //                                 entry->path->boundingRect().right(),
+      //                                 entry->path->boundingRect().top(),
+      //                                 entry->path->boundingRect().bottom() );
 
       if (entry->height > height && /*there is no reason to search a lower level if we already have a hit on a higher one*/
           entry->height <= _nextIsoLevel) /* since the odds of skipping a level between two fixes are not too high, we can ignore higher levels, making searching more efficient.*/
@@ -3051,9 +3051,9 @@ int MapContents::findElevation(const QPoint& coordP, Distance* errorDist)
           if (entry->height == _lastIsoLevel && _lastIsoEntry)
             {
               //qDebug("Trying previous entry...");
-              if (_lastIsoEntry->region->contains(coord))
+              if (_lastIsoEntry->path->contains(coord))
                 {
-                  height=qMax(height, entry->height);
+                  height = qMax(height, entry->height);
                   //qDebug("Found on height %d",entry->height);
                   break;
                 }
@@ -3066,7 +3066,7 @@ int MapContents::findElevation(const QPoint& coordP, Distance* errorDist)
 
           //qDebug("Probing on height %d...", entry->height);
 
-          if (entry->region->contains(coord))
+          if (entry->path->contains(coord))
             {
               height = qMax(height,entry->height);
               //qDebug("Found on height %d",entry->height);
