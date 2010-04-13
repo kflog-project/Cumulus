@@ -14,6 +14,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-04-13 AP: NMEA parser extended. Barometric altitude emitted by FLARM
+                   in sentence PGRMZ is now extracted by Cumulus.
+[o] 2010-04-13 AP: The new client process gpsMaemoClient is also used now by
+                   MAEMO4. The differences between LibLocation in MAEMO4 and
+                   MAEMO5 are not so big and Cumulus uses again an uniform inter-
+                   face in both cases.
 [o] 2010-04-12 AP: QRegion usage replaced by QPainterPath. That increased the
                    map drawing performance in general. Thanks again to Peter
                    Turczak, he found out that.
@@ -213,7 +219,7 @@ Cumulus 2.5.x (Development based on X11/Qt-4.5.3)
                    parallel must not be set by hand as before.
 [-] 2009-09-03 AP: BUGFIX: Map setting page should now display always the used
                    map directory also the default one.                             
-[o] 2009-09-02 AP: Personal data item birthday removed. Was not used by cumulus.
+[o] 2009-09-02 AP: Personal data item birthday removed. Was not used by Cumulus.
 [o] 2009-09-02 AP: Class MapElementList used by airfields, glider sites, outlandings
                    replaced by simple QLists. Welt2000 parser now filters out
                    multiple entries.
@@ -226,7 +232,7 @@ Cumulus 2.5.x (Development based on X11/Qt-4.5.3)
                    to bold was not ported to Qt4.5. Hope that new solution is
                    better visible as before.
 [+] 2009-08-13 AP: New unit option time added to settings menu. You can now choose
-                   between Utc or local time for the display.
+                   between UTC or local time for the display.
 [-] 2009-08-13 AP: BUGFIX: Wrong UTC time display in sunset fixed. Hours greater
                    than 23 were displayed. Saw it during by Boston/USA trip.
 
