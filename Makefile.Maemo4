@@ -92,6 +92,7 @@ install: check_dir deinstall install_lang
 	install -d $(DESTDIR)/usr/share/applications/hildon
 	install -d $(DESTDIR)/usr/share/dbus-1/services
 	install -d $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
+	install -d $(DESTDIR)/usr/share/icons/hicolor/scalable/apps
 	install --mode=755 dpkg/Maemo4/maemo/start_cumulus $(INSTALL_ROOT)/bin
 	install --mode=755 dpkg/Maemo4/maemo/start_simu $(INSTALL_ROOT)/bin
 	install --mode=755 cumulus/cumulus $(INSTALL_ROOT)/bin
@@ -108,7 +109,8 @@ install: check_dir deinstall install_lang
 	install --mode=644 sounds/*.wav $(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/Maemo4/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
 	install --mode=644 dpkg/Maemo4/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service
-	install --mode=644 icons/cumulus-desktop.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps/cumulus.png
+	install --mode=644 icons/cumulus-desktop26x26.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps/cumulus.png
+	install --mode=644 icons/cumulus-desktop64x64.png $(DESTDIR)/usr/share/icons/hicolor/scalable/apps/cumulus.png
 
 # call dpkg target to build a debian Maemo package
 .PHONY : dpkg dpkg_make
@@ -159,6 +161,7 @@ dpkg_install:
 	install -d $(DESTDIR)/usr/share/applications/hildon
 	install -d $(DESTDIR)/usr/share/dbus-1/services
 	install -d $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
+	install -d $(DESTDIR)/usr/share/icons/hicolor/scalable/apps
 	install --mode=755 dpkg/Maemo4/maemo/start_cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 dpkg/Maemo4/maemo/start_simu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 cumulus/cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
@@ -171,7 +174,8 @@ dpkg_install:
 	install --mode=644 icons/*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 icons/small/* $(DESTDIR)/$(INSTALL_ROOT)/icons/small
 	install --mode=644 icons/windarrows/* $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
-	install --mode=644 icons/cumulus-desktop.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps/cumulus.png
+	install --mode=644 icons/cumulus-desktop26x26.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps/cumulus.png
+	install --mode=644 icons/cumulus-desktop64x64.png $(DESTDIR)/usr/share/icons/hicolor/scalable/apps/cumulus.png
 	install --mode=644 help/de/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install --mode=644 help/en/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
