@@ -105,6 +105,11 @@
     the entry LXWP? to 'Y'. Set the transfer speed in Cumulus to 4800 bps. The
     LX20 device uses this speed for NEMA transfer regardless of the selected
     PC transfer speed.
+    <li> If you use a FLARM device as GPS source, it delivers also
+    altitude values derived from a pressure sonde. Shall
+    Cumulus work on this base, select the <i>Pressure</i> item
+    in the combo box and enable the sending of the PGRMZ record in the
+    FLARM setup menu. 
     </ul>
     </p>
     <b>Please note!</b> If you have selected the pressure item in the combo box
@@ -129,7 +134,8 @@
     Cumulus is able to synchronize the PDA system clock to the GPS
     time, if the option <i>Update system clock</i> is activated. But
     this will only work, if Cumulus is running as user root. On Nokia
-    Internet tablet this feature is switched off.
+    Internet tablet this feature is switched off because user processes
+    are not running under the root id.
   </dd>
 </dl>
 
@@ -144,13 +150,16 @@ Cumulus processes the following NMEA and proprietary sentences:
   <tr><td>$GPGSA</td> <td>GNSS DOP and Active Satellites</td></tr>
   <tr><td>$GPGSV</td> <td>GNSS Satellites in View</td></tr>
   <tr><td>$GPDTM</td> <td>Map datum</td></tr>
-  <tr><td>$PGRMZ</td> <td>Garmin proprietary sentence with altitude information</td></tr>
+  <tr><td>$PGRMZ</td> <td>Garmin proprietary sentence with altitude information,
+                          also used by FLARM.</td></tr>
   <tr><td>$PCAID</td> <td>Cambridge proprietary sentence with STD altitude</td></tr>
   <tr><td>!w</td> <td>Cambridge proprietary sentence with MSL altitude, QHN setting,
                       wind direction, MacCready, wind speed and variometer </td></tr>
   <tr><td>$PGCS</td> <td>Volkslogger proprietary sentence with STD altitude</td></tr>
   <tr><td>$LXWP0</td> <td>LX Navigation proprietary sentence with MSL altitude, variometer and wind data</td></tr>
   <tr><td>$LXWP2</td> <td>LX Navigation proprietary sentence with McCready data</td></tr>
+  <tr><td>$MAEMO0</td> <td>Cumulus internal proprietary sentence, if LibLocation from MAEMO is used.</td></tr>
+  <tr><td>$MAEMO1</td> <td>Cumulus internal proprietary sentence, if LibLocation from MAEMO is used.</td></tr>
 </table>
 </p>
 
