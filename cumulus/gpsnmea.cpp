@@ -506,7 +506,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   Used by Garmin devices
   $PGRMZ,93,f,3*21
          93,f         Altitude in feet
-         3            Position fix dimensions 2 = user altitude
+         3            Position fix dimensions 2 = FLARM barometric altitude
                                               3 = GPS altitude
   */
 
@@ -519,12 +519,39 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
         }
 
       /* Garmin proprietary sentence with altitude information */
-      if (slst[3]== "3")
-        { // 1=Altitude value, 3=GPS altitude, 2=user altitude (pressure?)
-          __ExtractAltitude(slst[1], slst[2]);
-        }
+      if ( slst[3] == "2" ) // pressure altitude
+        {
+          bool ok;
+          double num = slst[1].toDouble( &ok );
 
-      return;
+          if( ok )
+            {
+              Altitude altitude( num );
+
+              if( _lastPressureAltitude != altitude )
+                {
+                  _lastPressureAltitude = altitude; // store the new pressure altitude
+
+                  if( _deliveredAltitude == GpsNmea::PRESSURE )
+                    {
+                      // set these altitudes too, when pressure is selected
+                      _lastMslAltitude = altitude;
+                      // calculate STD altitude
+                      calcStdAltitude( altitude );
+                    }
+
+                  emit newAltitude(); // notify change
+                }
+              }
+
+            return;
+          }
+
+      if ( slst[3] == "3" ) // 3=GPS altitude
+        {
+          __ExtractAltitude(slst[1], slst[2]);
+          return;
+        }
     }
 
   /**
@@ -806,8 +833,6 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       return;
     }
 
-
-
   // qDebug ("Unsupported NMEA sentence: %s", sentence.toLatin1().data());
 }
 
@@ -863,10 +888,10 @@ void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
 
   // extract true altitude in Meters + 1000 (Hendrik said: pressure altitude related to MSL)
   Altitude res(0);
-  num = stringList[5].toDouble() -1000.0;
+  num = stringList[5].toDouble( &ok ) -1000.0;
   res.setMeters( num );
 
-  if ( _lastPressureAltitude != res )
+  if ( ok && _lastPressureAltitude != res )
     {
       _lastPressureAltitude = res; // store the new pressure altitude
 
@@ -1344,13 +1369,23 @@ Altitude GpsNmea::__ExtractAltitude(const QString& altitude, const QString& unit
 Altitude GpsNmea::__ExtractAltitude(const QString& number, const QString& unit)
 {
   Altitude res(0);
-  double num = number.toDouble();
+  bool ok;
+  double num = number.toDouble( &ok );
+
+  if( ! ok )
+    {
+      return res;
+    }
 
   // check for other unit as meters, meters is the default
   if ( unit.toLower() == "f" )
-    res.setFeet(num);
+    {
+      res.setFeet(num);
+    }
   else
-    res.setMeters(num);
+    {
+      res.setMeters(num);
+    }
 
   if ( _lastMslAltitude != res && _deliveredAltitude != GpsNmea::PRESSURE )
     {
