@@ -276,6 +276,10 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
   // snap distance are 15 pixel
   delta = 15;
 
+#ifdef MAEMO
+  delta = 25;
+#endif
+
   // Manhattan-distance to found point.
   int lastDist=2*delta+1;
 
