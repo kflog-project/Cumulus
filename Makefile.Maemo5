@@ -97,6 +97,7 @@ install: check_dir deinstall install_lang
 	install -d $(DESTDIR)/usr/share/applications/hildon
 	install -d $(DESTDIR)/usr/share/dbus-1/services
 	install -d $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
+	install -d $(DESTDIR)/usr/share/icons/hicolor/scalable/apps
 	install --mode=755 dpkg/Maemo5/maemo/start_cumulus $(INSTALL_ROOT)/bin
 	install --mode=755 dpkg/Maemo5/maemo/start_simu $(INSTALL_ROOT)/bin
 	install --mode=755 cumulus/cumulus $(INSTALL_ROOT)/bin
@@ -165,6 +166,7 @@ dpkg_install:
 	install -d $(DESTDIR)/usr/share/applications/hildon
 	install -d $(DESTDIR)/usr/share/dbus-1/services
 	install -d $(DESTDIR)/usr/share/icons/hicolor/26x26/apps
+	install -d $(DESTDIR)/usr/share/icons/hicolor/scalable/apps
 	install --mode=755 dpkg/Maemo5/maemo/start_cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 dpkg/Maemo5/maemo/start_simu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 cumulus/cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
