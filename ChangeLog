@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-04-13 AP: Mouse snap radius increased to 25 pixels on MAEMO. That shall
+                   ensure a better hit of icons with the finger on the map.
 [+] 2010-04-13 AP: NMEA parser extended. Barometric altitude emitted by FLARM
                    in sentence PGRMZ is now extracted by Cumulus.
 [o] 2010-04-13 AP: The new client process gpsMaemoClient is also used now by
