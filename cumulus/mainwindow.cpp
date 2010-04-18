@@ -34,7 +34,7 @@
 #include <QtCore>
 #include <QtGui>
 
-#ifdef MAEMO
+#ifdef MAEMO4
 #include "maemostyle.h"
 #endif
 
@@ -159,6 +159,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // Set our own GUI style
   GeneralConfig::instance()->setOurGuiStyle();
 
+#ifdef MAEMO4
   // N8x0 display has bad contrast for light shades, so make the (dialog)
   // background darker
   QPalette appPal = QApplication::palette();
@@ -168,6 +169,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   appPal.setColor(QPalette::Normal,QPalette::AlternateBase,QColor(246,246,246));
   appPal.setColor(QPalette::Normal,QPalette::Highlight,Qt::darkBlue);
   QApplication::setPalette(appPal);
+#endif
 
 #endif
 
@@ -640,18 +642,11 @@ void MainWindow::slotCreateApplicationWidgets()
 
 #endif
 
-  // The calling of the Bluetooth GPS initialization under Maemo can take a while.
-  // In this time the cumulus application is blocked.
-  // Therefore the wait screen shall show that but under Maemo this
-  // message was never to see. Now I try to process all events
-  // before calling GPS initialization in the hope that this do work.
-
   splash->show();
   ws->slot_SetText1( tr( "Initializing GPS" ) );
   ws->show();
 
   QCoreApplication::processEvents();
-  QCoreApplication::sendPostedEvents();
 
   // Startup GPS client process now for data receiving
   GpsNmea::gps->blockSignals( false );
@@ -953,16 +948,12 @@ void MainWindow::initActions()
   // Toggle menu bar
   actionMenuBarToggle = new QAction( tr( "Toggle menu" ), this );
 
-#ifndef MAEMO_QT
-  // Under Maemo Qt the key F4 is hard coded internally by Qt to use
-  // the Hildon menu only. Therefore no shortcuts are setup by us.
   QList<QKeySequence> mBTSCList;
   mBTSCList << Qt::Key_M << Qt::Key_Space << Qt::Key_F4;
   actionMenuBarToggle->setShortcuts( mBTSCList );
   addAction( actionMenuBarToggle );
   connect( actionMenuBarToggle, SIGNAL( triggered() ),
            this, SLOT( slotToggleMenu() ) );
-#endif
 
   actionFileQuit = new QAction( tr( "&Exit" ), this );
   actionFileQuit->setShortcut( QKeySequence("Shift+E") );
@@ -2073,18 +2064,12 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
 
       qDebug( "Keycode of pressed key: %d, %X", k->key(), k->key() );
 
-#ifndef MAEMO_QT
-
       if( k->key() == Qt::Key_F6 )
         {
           // Hardware Key F6 for maximize/normalize screen under Maemo.
-          // Hardcoded key under Maemo Qt.
           setWindowState(windowState() ^ Qt::WindowFullScreen);
           return true;
         }
-
-#endif
-
     }
 
   return QWidget::eventFilter( o, e ); // standard event processing;

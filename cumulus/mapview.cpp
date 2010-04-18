@@ -278,16 +278,12 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   font.setPixelSize(13);
   _statusbar->setFont(font);
 
-#ifndef MAEMO_QT
-   // Maemo Qt allows only key F4 for menu pop up. Therefore it is deactivated
-   // here, if build is only for Maemo Qt.
   _menuToggle = new CuLabel( tr("Menu"),_statusbar);
   _menuToggle->setLineWidth(0);
   _menuToggle->setAlignment(Qt::AlignCenter);
   _menuToggle->setMargin(0);
   _statusbar->addWidget(_menuToggle);
   connect(_menuToggle, SIGNAL(mousePress()), (MainWindow*)parent, SLOT(slotToggleMenu()));
-#endif
 
   _statusGps = new CuLabel(tr("Man"),_statusbar);
   _statusGps->setLineWidth(0);
