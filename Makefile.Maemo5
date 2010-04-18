@@ -19,10 +19,10 @@ CUMULUS_REL=cumulus-$(VERSION)
 CUMULUS_DEB=dpkg/n900/$(CUMULUS_REL)
 
 # current Qt version
-QT_VERSION=4.5.3
+QT_VERSION=4.6.2
 
 # installation directory of Qt libraries
-QT_LIBDIR=/opt/qt$(QT_VERSION)/lib
+QT_LIBDIR=/usr/lib
 
 # Reset language environment because the date can be formatted according
 # to local rules. That does not like dpkg-buildpackage.
