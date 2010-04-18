@@ -34,10 +34,6 @@
 #include <QtCore>
 #include <QtGui>
 
-#ifdef MAEMO4
-#include "maemostyle.h"
-#endif
-
 #include "generalconfig.h"
 #include "mainwindow.h"
 #include "mapconfig.h"
