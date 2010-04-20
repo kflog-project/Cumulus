@@ -625,6 +625,9 @@ bool MapMatrix::isWaypoint2Draw( wayPoint::Importance importance ) const
 void MapMatrix::slotSetNewHome(const QPoint& newHome)
 {
   // qDebug( "MapMatrix::slotSetNewHome() is called" );
+  homeLat = newHome.x();
+  homeLon = newHome.y();
+
   GeneralConfig *conf = GeneralConfig::instance();
 
   if( currentProjection->projectionType() == ProjectionBase::Cylindric &&
