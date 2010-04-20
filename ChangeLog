@@ -14,6 +14,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-04-20 AP: New altitude kind, above home site level added. You can set
+                   the home site elevation under personal settings and if the
+                   altitude kind Ahl (above home site level) is selected you get
+                   displayed the altitude above your home site position.
 [o] 2010-04-13 AP: Mouse snap radius increased to 25 pixels on MAEMO. That shall
                    ensure a better hit of icons with the finger on the map.
 [+] 2010-04-13 AP: NMEA parser extended. Barometric altitude emitted by FLARM
