@@ -111,8 +111,6 @@ MapConfig::~MapConfig()
 
 void MapConfig::slotReadConfig()
 {
-  GeneralConfig *conf = GeneralConfig::instance();
-
   READ_PEN("Road", roadPenList, roadBorder,
            ROAD_COLOR_1, ROAD_COLOR_2, ROAD_COLOR_3, ROAD_COLOR_4,
            ROAD_PEN_WIDTH_1, ROAD_PEN_WIDTH_2, ROAD_PEN_WIDTH_3, ROAD_PEN_WIDTH_4,

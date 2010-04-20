@@ -504,6 +504,11 @@ void WPInfoWidget::slot_setNewHome()
                                    QMessageBox::No, QMessageBox::Yes );
   if( answer == QMessageBox::Yes )
     {
+      // save new home position and elevation
+      GeneralConfig *conf = GeneralConfig::instance();
+      conf->setHomeCoord( _wp.origP );
+      conf->setHomeElevation( Distance(_wp.elevation) );
+
       emit newHomePosition( _wp.origP );
       homeChanged = true;
       cmdHome->hide();

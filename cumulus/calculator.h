@@ -166,7 +166,7 @@ public:
     const Altitude& getlastAltitude()const { return lastAltitude; };
 
     /**
-     * @returns the last known altitude AGL (Above Ground Level)
+     * @returns the last known altitude AGL (Above ground Level)
      */
     const Altitude& getlastAGLAltitude()
       {
@@ -175,9 +175,13 @@ public:
       };
 
     /**
-     * Read property of known altitude GND (Above reference plain formed by waypoint)
+     * @returns the last known altitude AHL (Above home level)
      */
-    const Altitude& getlastGNDAltitude();
+    const Altitude& getlastAHLAltitude()
+      {
+        lastAHLAltitude = lastAltitude - GeneralConfig::instance()->getHomeElevation();
+        return lastAHLAltitude;
+      };
 
     /**
      * Read property of Speed lastSpeed.
@@ -739,11 +743,11 @@ private: // Private attributes
     Distance lastAGLAltitudeError;
     /** Contains the last known altitude */
     Altitude lastGNSSAltitude;
-    /** Contains the last known altitude */
-    Altitude lastGNDAltitude;
+    /** Contains the last known altitude about home level. */
+    Altitude lastAHLAltitude;
     /** Contains the altitude used for manual navigation mode */
     Altitude manualAltitude;
-    /** Contains the error margin for the lastGNDAltitude */
+    /** Contains the error margin for the lastElevation */
     Distance lastElevationError;
     /** Contains the last known elevation */
     Altitude lastElevation;
@@ -785,8 +789,6 @@ private: // Private attributes
     bool _pastFirstFix;
     /** Direction of cruise if we are in cruising mode */
     int _cruiseDirection;
-    /** index of mode select button 0: MSL,  1: GND */
-    int _altimeter_mode;
     /** the index in wpList for the actual selected WP */
     int selectedWpInList;
     /** waypoint touch flag */

@@ -23,7 +23,9 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QStringList>
+#include <QSpinBox>
 
+#include "altitude.h"
 #include "coordedit.h"
 
 /**
@@ -76,7 +78,15 @@ class SettingsPagePersonal : public QWidget
     QComboBox *langBox;
     LatEdit   *edtHomeLat;
     LongEdit  *edtHomeLong;
+    QSpinBox  *spinHomeElevation;
     QLineEdit *userDataDir;
+
+    int spinHomeElevationValue;
+
+    /**
+     * saves current altitude unit during construction of object
+     */
+    Altitude::altitude altUnit;
 };
 
 #endif

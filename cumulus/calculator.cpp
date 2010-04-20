@@ -51,10 +51,11 @@ Calculator::Calculator(QObject* parent) :
   GeneralConfig *conf = GeneralConfig::instance();
 
   manualAltitude.setMeters( conf->getManualNavModeAltitude() );
-  lastAltitude = manualAltitude;  // provide support to config altitude in settings
-  lastAGLAltitude = manualAltitude;
-  lastSTDAltitude = manualAltitude;
+  lastAltitude     = manualAltitude;
+  lastAGLAltitude  = manualAltitude;
+  lastSTDAltitude  = manualAltitude;
   lastGNSSAltitude = manualAltitude;
+  lastAHLAltitude  = manualAltitude;
   lastAGLAltitudeError.setMeters(0);
 
   lastETA=QTime(0,0);
@@ -80,7 +81,6 @@ Calculator::Calculator(QObject* parent) :
   _marker=0;
   _glider=0;
   _pastFirstFix=false;
-  _altimeter_mode = AltimeterModeDialog::mode();
   selectedWpInList = -1;
   wpTouched = false;
   wpTouchCounter = 0;
@@ -127,38 +127,24 @@ Calculator::~Calculator()
   GeneralConfig::instance()->setCenterLon(lastPosition.y());
 }
 
-
-/** Read property of Altitude lastAltitude. */
-const Altitude& Calculator::getlastGNDAltitude()
-{
-  if ( selectedWp )
-    {
-      lastGNDAltitude = lastAltitude - selectedWp->elevation;
-      return lastGNDAltitude;
-    }
-  else
-    {
-      lastGNDAltitude = lastAltitude;
-      return lastGNDAltitude;
-    }
-}
-
-
 /** Read property of Altitude for Altimeter display */
 const Altitude& Calculator::getAltimeterAltitude()
 {
   // qDebug("Calculator::getAltimeterAltitude(): %d",  _altimeter_mode );
-  switch ( _altimeter_mode )
+  switch ( AltimeterModeDialog::mode() )
     {
     case 0:
       return lastAltitude; // MSL
       break;
     case 1:
-      return lastAGLAltitude; // GND
+      return lastSTDAltitude; // STD
       break;
     case 2:
+      return lastAGLAltitude; // AGL
+      break;
+    case 3:
     default:
-      return lastSTDAltitude; // STD
+      return lastAHLAltitude; // AHL
       break;
     }
 }
@@ -168,9 +154,8 @@ const QString Calculator::getAltimeterAltitudeText()
   Altitude alti = getAltimeterAltitude();
   // to be implemented: if height > transition height switch to FL
   //double d = alti.getFL();
-  return alti.getText (false,0);
+  return alti.getText(false, 0);
 }
-
 
 const AltitudeCollection& Calculator::getAltitudeCollection()
 {
@@ -187,11 +172,12 @@ const AltitudeCollection& Calculator::getAltitudeCollection()
 /** called on altitude change */
 void Calculator::slot_Altitude()
 {
-  lastAltitude=GpsNmea::gps->getLastAltitude();
-  lastSTDAltitude=GpsNmea::gps->getLastStdAltitude();
-  lastGNSSAltitude=GpsNmea::gps->getLastGNSSAltitude();
-  lastAGLAltitude = lastAltitude - Altitude( _globalMapContents->findElevation(lastPosition, &lastAGLAltitudeError) );
-  emit newAltitude(lastAltitude);
+  lastAltitude     = GpsNmea::gps->getLastAltitude();
+  lastSTDAltitude  = GpsNmea::gps->getLastStdAltitude();
+  lastGNSSAltitude = GpsNmea::gps->getLastGNSSAltitude();
+  lastAGLAltitude  = lastAltitude - Altitude( _globalMapContents->findElevation(lastPosition, &lastAGLAltitudeError ) );
+  lastAHLAltitude  = lastAltitude - GeneralConfig::instance()->getHomeElevation();
+  emit newAltitude( lastAltitude );
   calcGlidePath();
   // qDebug("slot_Altitude");
 }
@@ -873,8 +859,9 @@ void Calculator::slot_changePosition(int direction)
   lastElevation = Altitude( _globalMapContents->findElevation(lastPosition, &lastElevationError) );
   emit newPosition(lastPosition, Calculator::MAN);
 
-  lastAltitude = manualAltitude;  // provide support to config altitude in settings
-  lastAGLAltitude = lastAltitude - Altitude( _globalMapContents->findElevation(lastPosition) );
+  lastAltitude    = manualAltitude;  // provide support to config altitude in settings
+  lastAGLAltitude = lastAltitude - lastElevation;
+  lastAHLAltitude = lastAltitude - GeneralConfig::instance()->getHomeElevation();
   lastSTDAltitude = manualAltitude;
 
   GeneralConfig *conf = GeneralConfig::instance();
@@ -1047,7 +1034,6 @@ void Calculator::setPosition(const QPoint& newPos)
 /** Resets some internal item to the initial state */
 void Calculator::slot_settingsChanged ()
 {
-  _altimeter_mode = AltimeterModeDialog::mode();
   emit newAltitude(lastAltitude);  // show initial altitude for manual mode
   // qDebug("Settings changed %d",_altimeter_mode );
 

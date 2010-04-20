@@ -865,8 +865,6 @@ void MapView::slot_toggleWindAndLD()
 void MapView::slot_AltimeterDialog()
 {
   AltimeterModeDialog *amDlg = new AltimeterModeDialog( this );
-  // delete widget during close event
-  amDlg->setAttribute(Qt::WA_DeleteOnClose);
 
   connect( amDlg, SIGNAL( newAltimeterMode() ),
            this, SLOT( slot_newAltimeterMode() ) );

@@ -16,13 +16,7 @@
 **
 ***********************************************************************/
 
-#include <cmath>
-#include <QLabel>
-#include <QGridLayout>
-#include <QPushButton>
-#include <QToolTip>
-#include <QDir>
-#include <QFileDialog>
+#include <QtGui>
 
 #include "generalconfig.h"
 #include "settingspagepersonal.h"
@@ -32,6 +26,12 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 {
   setObjectName("SettingsPagePersonal");
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
+  // save current altitude unit. This unit must be considered during
+  // storage. The internal storage is always in meters.
+  altUnit = Altitude::getUnit();
+  QString unit = (altUnit == Altitude::meters) ? "m" : "ft";
+
   GeneralConfig *conf = GeneralConfig::instance();
   QGridLayout* topLayout = new QGridLayout(this);
   int row=0;
@@ -65,6 +65,18 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   topLayout->addWidget(edtHomeLong, row, 1, 1, 2);
   row++;
 
+  lbl = new QLabel(tr("Home site elevation:"), this);
+  topLayout->addWidget(lbl, row, 0);
+  spinHomeElevation = new QSpinBox(this);
+  spinHomeElevation->setSingleStep( 10 );
+  spinHomeElevation->setMaximum( 9999 );
+  spinHomeElevation->setMinimum( -9999 );
+  spinHomeElevation->setButtonSymbols(QSpinBox::PlusMinus);
+  spinHomeElevation->setSuffix( unit );
+
+  topLayout->addWidget(spinHomeElevation, row, 1);
+  row++;
+
   QPushButton* userDirSelection = new QPushButton( tr("Data Directory"), this );
   userDirSelection->setToolTip(tr("Select your personal data directory"));
   topLayout->addWidget(userDirSelection, row, 0);
@@ -90,6 +102,19 @@ void SettingsPagePersonal::slot_load()
   edtName->setText( conf->getSurname() );
   edtHomeLat->setKFLogDegree(conf->getHomeLat());
   edtHomeLong->setKFLogDegree(conf->getHomeLon());
+
+  if( altUnit == Altitude::meters )
+    { // user wants meters
+      spinHomeElevation->setValue((int) rint(conf->getHomeElevation().getMeters()));
+    }
+  else
+    { // user get feet
+      spinHomeElevation->setValue((int) rint(conf->getHomeElevation().getFeet()));
+    }
+
+  // save spinbox value for later change check
+  spinHomeElevationValue = spinHomeElevation->value();
+
   userDataDir->setText( conf->getUserDataDirectory() );
 
   // search item to be selected
@@ -108,6 +133,20 @@ void SettingsPagePersonal::slot_save()
 
   conf->setSurname( edtName->text() );
   conf->setLanguage( langBox->currentText() );
+
+  Distance homeElevation;
+
+  if( altUnit == Altitude::meters )
+    {
+      homeElevation.setMeters( spinHomeElevation->value() );
+    }
+  else
+    {
+      homeElevation.setFeet( spinHomeElevation->value() );
+    }
+
+  conf->setHomeElevation(homeElevation);
+
   conf->setUserDataDirectory( userDataDir->text().trimmed() );
 
   // Check, if string input values have been changed. If not, no
@@ -177,6 +216,7 @@ void SettingsPagePersonal::slot_query_close( bool& warn, QStringList& warnings )
   changed  = (edtName->text() != conf->getSurname());
   changed |= (langBox->currentText() != conf->getLanguage());
   changed |= checkIsHomePositionChanged();
+  changed |= spinHomeElevationValue != spinHomeElevation->value();
   changed |= (userDataDir->text() != conf->getUserDataDirectory());
 
   if (changed)

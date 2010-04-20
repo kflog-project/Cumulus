@@ -10,19 +10,13 @@
 **                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-#include <QLabel>
-#include <QFont>
-#include <QHBoxLayout>
-#include <QGroupBox>
-#include <QBoxLayout>
-#include <QSignalMapper>
-#include <QPushButton>
+#include <QtGui>
 
 #include "generalconfig.h"
 #include "altimetermodedialog.h"
@@ -39,6 +33,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   setObjectName("AltimeterModeDialog");
   setModal(true);
   setWindowTitle(tr("Set Altimeter"));
+  setAttribute(Qt::WA_DeleteOnClose);
 
 #ifndef MAEMO
   int minFontSize = 14;
@@ -59,14 +54,16 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
     }
 
   QGroupBox* altMode = new QGroupBox( this );
-  _msl=new QRadioButton(tr("MSL"),altMode);
-  _gnd=new QRadioButton(tr("AGL"),altMode);
-  _std=new QRadioButton(tr("STD"),altMode);
-  _msl->setChecked(true);
+  _msl = new QRadioButton( tr( "MSL" ), altMode );
+  _std = new QRadioButton( tr( "STD" ), altMode );
+  _agl = new QRadioButton( tr( "AGL" ), altMode );
+  _ahl = new QRadioButton( tr( "AHL" ), altMode );
+  _msl->setChecked( true );
 
-  _msl->setEnabled(true);
-  _gnd->setEnabled(true);
-  _std->setEnabled(true);
+  _msl->setEnabled( true );
+  _std->setEnabled( true );
+  _agl->setEnabled( true );
+  _ahl->setEnabled( true );
 
   QVBoxLayout* mainLayout = new QVBoxLayout(this);
   mainLayout->setObjectName("mainlayout");
@@ -78,20 +75,31 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
   QHBoxLayout* radioLayout = new QHBoxLayout(altMode);
   radioLayout->setObjectName("radiolayout");
   radioLayout->addWidget(_msl);
-  radioLayout->addWidget(_gnd);
   radioLayout->addWidget(_std);
+  radioLayout->addWidget(_agl);
+  radioLayout->addWidget(_ahl);
 
   // Align ok and cancel button at the left and right side of the
   // widget to have enough space between them. That shall avoid wrong
   // button pressing in turbulent air.
+  int size = 40;
+
+#ifdef MAEMO
+  size = 80;
+#endif
+
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(70, 26));
+  cancel->setIconSize(QSize(30, 30));
+  cancel->setMinimumSize(size, size);
+  cancel->setMaximumSize(size, size);
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QPushButton *ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(70, 26));
+  ok->setIconSize(QSize(30, 30));
+  ok->setMinimumSize(size, size);
+  ok->setMaximumSize(size, size);
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QHBoxLayout *butLayout = new QHBoxLayout;
@@ -105,15 +113,18 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent)
 
   timeout = new QTimer(this);
   timeout->setSingleShot(true);
+
   QSignalMapper* signalMapper = new QSignalMapper(this);
   connect(_msl, SIGNAL(clicked()), signalMapper, SLOT(map()));
   signalMapper->setMapping(_msl, 0);
-  connect(_gnd, SIGNAL(clicked()), signalMapper, SLOT(map()));
-  signalMapper->setMapping(_gnd, 1);
   connect(_std, SIGNAL(clicked()), signalMapper, SLOT(map()));
-  signalMapper->setMapping(_std, 2);
-  connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(change_mode(int)));
+  signalMapper->setMapping(_std, 1);
+  connect(_agl, SIGNAL(clicked()), signalMapper, SLOT(map()));
+  signalMapper->setMapping(_agl, 2);
+  connect(_ahl, SIGNAL(clicked()), signalMapper, SLOT(map()));
+  signalMapper->setMapping(_ahl, 3);
 
+  connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(change_mode(int)));
   connect (timeout, SIGNAL(timeout()), this, SLOT(reject()));
   connect (ok, SIGNAL(clicked()), this, SLOT(accept()));
   connect (cancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -126,12 +137,15 @@ QString AltimeterModeDialog::mode2String()
   switch( GeneralConfig::instance()->getAltimeterMode() )
     {
     case 0:
-      return QString("Msl");
+      return QString("Msl"); // Mean sea level
     case 1:
-      return QString("Agl");
+      return QString("Std"); // standard pressure
     case 2:
+      return QString("Agl"); // above ground level
+    case 3:
+      return QString("Ahl"); // above home level
     default:
-      return QString("Std");
+      return QString("Ukn"); // unknown
     }
 }
 
@@ -154,13 +168,16 @@ void AltimeterModeDialog::load()
       _msl->setChecked(true);
       break;
     case 1:
-      _gnd->setChecked(true);
-      break;
-    case 2:
       _std->setChecked(true);
       break;
+    case 2:
+      _agl->setChecked(true);
+      break;
+    case 3:
+      _ahl->setChecked(true);
+      break;
     default:
-      qFatal("AltimeterModeDialog::load(): invalid mode: %d", _mode);
+      qWarning("AltimeterModeDialog::load(): invalid mode: %d", _mode);
   }
 
   setTimer();
@@ -188,6 +205,9 @@ void AltimeterModeDialog::work()
           save( 2 );
           break;
         case 2:
+          save( 3 );
+          break;
+        case 3:
         default:
           save( 0 );
           break;
@@ -199,7 +219,7 @@ void AltimeterModeDialog::work()
     }
 }
 
-void AltimeterModeDialog::save(int mode)
+void AltimeterModeDialog::save( int mode )
 {
   _mode = mode;
   GeneralConfig *conf = GeneralConfig::instance();
@@ -210,7 +230,8 @@ void AltimeterModeDialog::save(int mode)
   emit settingsChanged();
 }
 
-void AltimeterModeDialog::change_mode (int mode) {
+void AltimeterModeDialog::change_mode( int mode )
+{
   _mode = mode;
 }
 
@@ -230,6 +251,5 @@ void AltimeterModeDialog::setTimer()
   if( _time > 0 )
     {
       timeout->start (_time * 1000);
-    }    setModal(true);
-
+    }
 }

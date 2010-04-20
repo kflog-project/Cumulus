@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Eckhard Voellm, 2008-2010 Axel Pauli
+**   Copyright (c):  2004      by Eckhard Voellm
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   Lisense. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -23,7 +24,12 @@
 #include <QRadioButton>
 
 /**
-  *@author Eckhard Voellm 
+  * \author Eckhard Voellm, Axel Pauli
+  *
+  * \brief Dialog for altimeter user interaction.
+  *
+  * This dialog is the user interface for the altimeter settings.
+  *
   */
 
 class AltimeterModeDialog : public QDialog
@@ -46,17 +52,18 @@ protected:
 
   void load ();
   void accept ();
-  void save (int mode); // 0: MSL,  1: GND,  2: STD
+  void save (int mode); // 0: MSL,  1: STD,  2: AGL, 3: AHL
 
 private:
 
   QTimer* timeout;
   int _time;
-  int _mode;  	 // 0: MSL,  1: GND,  2: STD
+  int _mode;  	 // 0: MSL,  1: STD,  2: AGL, 3: AHL
   bool _toggling_mode;   // 1: On
   QRadioButton * _msl;
-  QRadioButton * _gnd;
+  QRadioButton * _agl;
   QRadioButton * _std;
+  QRadioButton * _ahl;
 
 private slots:
 

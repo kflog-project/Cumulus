@@ -625,24 +625,9 @@ bool MapMatrix::isWaypoint2Draw( wayPoint::Importance importance ) const
 void MapMatrix::slotSetNewHome(const QPoint& newHome)
 {
   // qDebug( "MapMatrix::slotSetNewHome() is called" );
-
-  if( homeLat == newHome.x() && homeLon == newHome.y() )
-    {
-      return;
-    }
-
-  int oldHomeLat = homeLat;
-  int oldHomeLon = homeLon;
-
-  homeLat = newHome.x();
-  homeLon = newHome.y();
-
-  // save new home position
   GeneralConfig *conf = GeneralConfig::instance();
-  conf->setHomeCoord( newHome );
 
   if( currentProjection->projectionType() == ProjectionBase::Cylindric &&
-      oldHomeLat != homeLat &&
       conf->getMapProjectionFollowsHome() == true )
     {
       // Update parallel of cylinder projection

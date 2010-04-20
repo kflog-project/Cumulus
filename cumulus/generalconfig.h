@@ -863,6 +863,18 @@ class GeneralConfig : protected QSettings
     _home = newValue;
   };
 
+  /** Gets homesite elevation. */
+  Distance &getHomeElevation()
+  {
+    return _homeElevation;
+  };
+
+  /** Sets homesite elevation. */
+  void setHomeElevation( const Distance &newValue )
+  {
+    _homeElevation = newValue;
+  };
+
   /** gets Center Latitude */
   int getCenterLat()  const
   {
@@ -1904,7 +1916,9 @@ class GeneralConfig : protected QSettings
   // current selected task
   QString _currentTask;
 
-  // Homesite
+  // Homesite elevation
+  Distance _homeElevation;
+  // Homesite coordinates
   QPoint _home;
   // Center Latitude
   int _centerLat;

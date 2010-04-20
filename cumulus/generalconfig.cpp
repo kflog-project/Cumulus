@@ -239,6 +239,7 @@ void GeneralConfig::load()
   beginGroup("Map Data");
   _home.setX( value( "Homesite Latitude", HOME_DEFAULT_LAT).toInt() );
   _home.setY( value( "Homesite Longitude", HOME_DEFAULT_LON).toInt() );
+  _homeElevation.setMeters( value("Homesite Elevation", 0.0).toDouble() );
   _mapRootDir        = value("Map Root", "").toString();
   _mapServerUrl      = value("Map Server Url", "http://www.kflog.org/data/landscape/").toString();
   _centerLat         = value("Center Latitude", HOME_DEFAULT_LAT).toInt();
@@ -564,6 +565,7 @@ void GeneralConfig::save()
 
   setValue("Homesite Latitude", _home.x());
   setValue("Homesite Longitude", _home.y());
+  setValue("Homesite Elevation", _homeElevation.getMeters() );
   setValue("Map Root", _mapRootDir);
   setValue("Map Server Url", _mapServerUrl);
   setValue("Center Latitude", _centerLat);
