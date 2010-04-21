@@ -14,6 +14,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2010-04-21 AP: Bugfix: Connection to Nmea simulator was never established
+                   after GPS interface change due to MAEMO5.
+[o] 2010-04-21 AP: Labels of map info boxes in map view set to an uniform width.
+                   The width of the greatest text is taken for all boxes.
 [+] 2010-04-20 AP: New altitude kind, above home site level added. You can set
                    the home site elevation under personal settings and if the
                    altitude kind Ahl (above home site level) is selected you get
