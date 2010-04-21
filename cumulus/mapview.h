@@ -39,10 +39,13 @@
 #include "map.h"
 
 /**
- * This is the main view for the application, providing the map and
+ * \author André Somers
+ *
+ * \brief Main view of the application.
+ *
+ * This is the main view of the application, providing the map and
  * other useful in flight information.
  *
- * @author André Somers
  */
 
 class MapInfoBox;
@@ -98,6 +101,10 @@ class MapView : public QWidget
       {
         return _vario;
       };
+
+  protected:
+
+    void showEvent(QShowEvent* event);
 
   public:
 
@@ -274,14 +281,10 @@ class MapView : public QWidget
     MapInfoBox* _ld;
     /** reference to the waypoint label */
     MapInfoBox* _waypoint;
-    /** reference to the flight time label */
-    //MapInfoBox* _flighttime;
-    /** reference to the eta label */
+    /** reference to the ETA label */
     MapInfoBox* _eta;
     /** reference to the altitude label */
     MapInfoBox* _altitude;
-    /** reference to the elevation label */
-    MapInfoBox* _elevation;
     /** reference to the glide path label */
     MapInfoBox* _glidepath;
     /** reference to status bar */
@@ -337,7 +340,7 @@ class MapView : public QWidget
      */
     void slot_resetInversBearing();
 
-    /** Opens the Variometer settings dialog. */
+    /** Opens the variometer settings dialog. */
     void slot_VarioDialog();
 
     /** Opens the altimeter settings dialog. */

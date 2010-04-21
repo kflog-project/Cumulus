@@ -2,9 +2,10 @@
                           mapinfobox.cpp  -  description
                              -------------------
     begin                : Sun Jul 21 2002
-    copyright            : (C) 2002 by Andre Somers
-                               2008 by Josua Dietze
-                               2008-2009 by Axel Pauli
+    copyright            : (C) 2002      by Andre Somers
+                               2008      by Josua Dietze
+                               2008-2010 by Axel Pauli
+
     email                : axel@kflog.org
     
     $Id$
@@ -22,27 +23,29 @@
 
 #include "mapinfobox.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QtGui>
 #include <cmath>
 
 #include "generalconfig.h"
 
-CuLabel::CuLabel ( QWidget * parent, Qt::WFlags f ):
+CuLabel::CuLabel ( QWidget * parent, Qt::WFlags f ) :
   QLabel(parent, f)
 {}
 
-CuLabel::CuLabel ( const QString & text, QWidget * parent, Qt::WFlags f ):
-  QLabel(text, parent, f)
+CuLabel::CuLabel ( const QString& text, QWidget* parent, Qt::WFlags flags ) :
+  QLabel(text, parent, flags)
 {}
 
-void CuLabel::mousePressEvent ( QMouseEvent * /*e*/ )
+void CuLabel::mousePressEvent ( QMouseEvent* event )
 {
+  Q_UNUSED(event)
+
   emit mousePress();
 }
 
 
-MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, int fontDotsize, bool minusInPretext ) :
+MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor,
+                        int fontDotsize, bool minusInPretext ) :
   QFrame( parent )
 {
   basics( borderColor );
@@ -66,16 +69,17 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, int fontDots
   _ptext->setFont(f);
 
   _ptext->setAlignment( Qt::AlignRight );
-  _ptext->setFixedWidth(25);
+  _ptext->setFixedWidth( 27 );
   preLayout->addWidget(_ptext);
 
-  if ( minusInPretext ) {
-    _minus = new QLabel(this);
-    _minus->setPixmap( GeneralConfig::instance()->loadPixmap("minus.png") );
-    _minus->setFixedWidth(25);
-    preLayout->addWidget( _minus );
-    _minus->hide();
-  }
+  if( minusInPretext )
+    {
+      _minus = new QLabel( this );
+      _minus->setPixmap( GeneralConfig::instance()->loadPixmap( "minus.png" ) );
+      _minus->setFixedWidth( 25 );
+      preLayout->addWidget( _minus );
+      _minus->hide();
+    }
 
   topLayout->addLayout(preLayout, 0);
 
@@ -92,7 +96,7 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, int fontDots
 }
 
 
-MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, const QPixmap& pixmap ) :
+MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor, const QPixmap& pixmap ) :
   QFrame( parent )
 {
   basics( borderColor );
@@ -103,7 +107,7 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString borderColor, const QPixma
 }
 
 
-void MapInfoBox::basics( const QString borderColor )
+void MapInfoBox::basics( const QString& borderColor )
 {
   QHBoxLayout* topLayout = new QHBoxLayout(this);
   topLayout->setMargin(0);
@@ -122,24 +126,15 @@ void MapInfoBox::basics( const QString borderColor )
 }
 
 
-MapInfoBox::~MapInfoBox()
-{
-}
-
-
-/** Read property of QString _PreText. */
-const QString& MapInfoBox::getPreText()
-{
-  return _PreText;
-}
-
-
 /** Write property of QString _PreText. */
-void MapInfoBox::setPreText( const QString newVal)
+void MapInfoBox::setPreText( const QString& newVal )
 {
   // Are we text or pixmap? For pixmap, ptext is unused
   if ( _ptext == 0 )
-    return;  
+    {
+      return;
+    }
+
   _PreText = newVal;
   _ptext->setText(_PreText);
 }
@@ -149,87 +144,93 @@ void MapInfoBox::setPixmap( const QPixmap& newPixmap )
 {
   // Are we text or pixmap? For pixmap, ptext is unused
   if ( _ptext != 0 )
-    return;  
+    {
+      return;
+    }
+
   _text->setPixmap(newPixmap);
 }
 
-
-/** Read property of QString _value. */
-const QString& MapInfoBox::getValue()
-{
-  return _value;
-}
-
-
 /** Write property of QString _value. */
-void MapInfoBox::setValue( const QString newVal)
+void MapInfoBox::setValue( const QString& newVal )
 {
   int fontDotsize = _maxFontDotsize;
   int diff;
 
   _value = newVal;
 
-  _text->setStyleSheet( QString(
-		"border-style: none;"
-		"border-width: 0px;"
-		"background-color: white;"
-		"padding-left: 1px;"
-		"padding-right: 1px;"
-		"margin: 0px;"
-		"font-size: %1px;"
-		"text-align: left;"
-  ).arg(fontDotsize) );
-  if ( _preMinus ) {
-    if ( _value.startsWith('-') && _value.size() > 1) {
-	  _value = _value.remove( 0, 1 );
-      _minus->show();
-    } else {
-      _minus->hide();
+  _text->setStyleSheet( QString( "border-style: none;"
+                                 "border-width: 0px;"
+                                 "background-color: white;"
+                                 "padding-left: 1px;"
+                                 "padding-right: 1px;"
+                                 "margin: 0px;"
+                                 "font-size: %1px;"
+                                 "text-align: left;" ).arg(fontDotsize) );
+
+  if( _preMinus )
+    {
+      if( _value.startsWith( '-' ) && _value.size() > 1 )
+        {
+          _value = _value.remove( 0, 1 );
+          _minus->show();
+        }
+      else
+        {
+          _minus->hide();
+        }
     }
-  }
+
   _text->setText(_value);
 
   //@JD: set font size dynamically depending on size hint after
   //     displaying the new value
-
   diff = minimumSizeHint().width() - width();
-  while ( diff > 1 ) {
-    diff = diff/10;
-    if (diff == 0)
-      diff = 1;
-    fontDotsize = fontDotsize - diff;
-    _text->setStyleSheet( QString(
-		"border-style: none;"
-		"border-width: 0px;"
-		"background-color: white;"
-		"padding-left: 1px;"
-		"padding-right: 1px;"
-		"margin: 0px;"
-		"font-size: %1px;"
-		"text-align: left;"
-    ).arg(fontDotsize) );
-    diff = minimumSizeHint().width() - width();
-  }
+
+  while( diff > 1 )
+    {
+      diff = diff / 10;
+
+      if( diff == 0 )
+        {
+          diff = 1;
+        }
+
+      fontDotsize = fontDotsize - diff;
+
+      _text->setStyleSheet( QString( "border-style: none;"
+                                     "border-width: 0px;"
+                                     "background-color: white;"
+                                     "padding-left: 1px;"
+                                     "padding-right: 1px;"
+                                     "margin: 0px;"
+                                     "font-size: %1px;"
+                                     "text-align: left;" ).arg( fontDotsize ) );
+
+      diff = minimumSizeHint().width() - width();
+    }
 }
 
 
-bool MapInfoBox::event(QEvent * e)
+bool MapInfoBox::event( QEvent* event )
 {
-  if (e->type() == QEvent::MouseButtonPress) {
-    emit mousePress() ;
-    return true;
-  }
+  if( event->type() == QEvent::MouseButtonPress )
+    {
+      emit mousePress();
+      return true;
+    }
 
-  return QWidget::event( e );
+  return QWidget::event( event );
 }
 
 
-bool MapInfoBox::eventFilter(QObject * o, QEvent * e)
+bool MapInfoBox::eventFilter(QObject* o, QEvent* e)
 {
-  if (e->type() == QEvent::MouseButtonPress) {
-    emit mousePress();
-    return true;
-  }
+  if( e->type() == QEvent::MouseButtonPress )
+    {
+      emit mousePress();
+      return true;
+    }
 
   return QWidget::eventFilter( o, e );
 }

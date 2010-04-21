@@ -332,6 +332,61 @@ MapView::~MapView()
   // qDebug("MapView::~MapView() destructor is called");
 }
 
+void MapView::showEvent( QShowEvent* event )
+{
+  Q_UNUSED( event );
+
+  // Used map info box widgets
+  MapInfoBox *boxWidgets[14] = { _heading,
+                                 _bearing,
+                                 _rel_bearing,
+                                 _distance,
+                                 _speed,
+                                 _speed2fly,
+                                 _mc,
+                                 _vario,
+                                 _wind,
+                                 _ld,
+                                 _waypoint,
+                                 _eta,
+                                 _altitude,
+                                 _glidepath };
+
+  int gtWidth = 0;
+  QFontMetrics fm( font() );
+
+  // Determine the greatest pretext width of the used map info boxes.
+  for( int i = 0; i < 14; i++ )
+    {
+      MapInfoBox *ptr = boxWidgets[i];
+
+      if( ptr->isVisible() )
+        {
+          int w = fm.width( ptr->getPreText() );
+
+          if( w > gtWidth )
+            {
+              gtWidth = w;
+            }
+        }
+    }
+
+  // qDebug() << "maxWidth=" << gtWidth;
+
+  for( int i = 0; i < 14; i++ )
+    {
+      // Set uniform width for pretext of all map info boxes.
+      MapInfoBox *ptr = boxWidgets[i];
+
+      if( ptr->getPreText().isEmpty() )
+        {
+          // No text box, do nothing.
+          continue;
+        }
+
+      ptr->getPreTextLabelWidget()->setFixedWidth( gtWidth );
+    }
+}
 
 /** called if heading has changed */
 void MapView::slot_Heading(int head)
@@ -580,8 +635,10 @@ void MapView::slot_LogEntry()
 
 
 /** This slot is being called if the altitude has changed. */
-void MapView::slot_Altitude(const Altitude& /*alt*/)
+void MapView::slot_Altitude(const Altitude& altitude )
 {
+  Q_UNUSED(altitude)
+
   QString altiText = calculator->getAltimeterAltitudeText();
   _altitude->setValue(altiText);
 }
