@@ -205,15 +205,13 @@ void GpsNmea::readDataFromGps()
 }
 
 /**
- * @Starts the GPS receiver client process and activates the receiver.
+ * Starts the GPS client process and activates the GPS receiver.
  */
 void GpsNmea::startGpsReceiver()
 {
-  qDebug("GpsNmea::startGpsReceiver()");
   if ( serial )
     {
       serial->startClientProcess();
-      serial->startGpsReceiving();
     }
 }
 
@@ -1859,13 +1857,12 @@ void GpsNmea::fixNOK()
  */
 void GpsNmea::slot_reset()
 {
-  qDebug("GpsNmea::slot_reset()");
   GeneralConfig *conf = GeneralConfig::instance();
   QString oldDevice   = gpsDevice;
 
   if ( gpsDevice != conf->getGpsDevice() )
     {
-      qDebug() << "slot_reset(): GPS Device changed";
+      // qDebug() << "slot_reset(): GPS Device changed";
       // GPS device has been changed by the user
       gpsDevice = conf->getGpsDevice();
 
@@ -1890,7 +1887,7 @@ void GpsNmea::slot_reset()
     {
       if ( serial->currentBautrate() != conf->getGpsSpeed() )
         {
-          qDebug() << "slot_reset(): GPS Baudrate changed";
+          // qDebug() << "slot_reset(): GPS Baudrate changed";
           serial->stopGpsReceiving();
           serial->startGpsReceiving();
         }

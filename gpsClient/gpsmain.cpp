@@ -105,7 +105,7 @@ int main( int argc, char* argv[] )
             {
               res = sscanf( argv[i+1], "%hu", &ipcPort );
 
-              if ( res != 1 ) // conversion error ocurred
+              if ( res != 1 ) // conversion error occurred
                 {
                   cerr << basename(argv[0])
                        << ": wrong -port argument passed!"

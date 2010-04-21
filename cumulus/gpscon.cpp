@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004-2010 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2004-2010 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -88,12 +88,10 @@ GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
 
   // Port can be read from the configuration file for debugging purposes. If it
   // is 0, the OS will take the next free available port.
-
   ushort port = conf->getGpsIpcPort();
 
   // Initialize IPC instance for gps client connection. A listening
   // end point will be created.
-
   if( server.init( IPC_IP, port ) == false )
     {
       qWarning("IPC Server init failed!");
@@ -144,7 +142,9 @@ GpsCon::~GpsCon()
  */
 bool GpsCon::startGpsReceiving()
 {
+#ifdef DEBUG
   static QString method = "GPSCon::startGpsReceiving():";
+#endif
 
   if (server.getClientSock(0) != -1)
     {
@@ -161,8 +161,7 @@ bool GpsCon::startGpsReceiving()
         {
           device = conf->getGpsDevice();
           ioSpeed = conf->getGpsSpeed();
-          msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(device).arg(
-              QString::number(ioSpeed));
+          msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(device).arg(QString::number(ioSpeed));
         }
       else
         {
@@ -558,21 +557,13 @@ void GpsCon::slot_ListenEvent(int /*socket*/)
           return;
         }
 
-      // Open again GPS receiver, if it is not the simulator. In this
-      // case we had likely a crash. Otherwise we will wait for the
-      // appropriate command.
-      if( GeneralConfig::instance()->getGpsDevice() != NMEASIM_DEVICE )
-        {
-          startGpsReceiving();
-        }
-
+      // Start the GPS receiver after a new connect to get it running.
+      startGpsReceiving();
       return;
     }
 
   qWarning("%s All available socket descriptors are occupied!",
            method.toLatin1().data());
-
-  return;
 }
 
 /**

@@ -143,7 +143,7 @@ class GpsNmea : public QObject
     void enableReceiving( bool enable );
 
     /**
-     * @Starts the GPS receiver client process and activates the receiver.
+     * Starts the GPS client process and activates the GPS receiver.
      */
     void startGpsReceiver();
 
