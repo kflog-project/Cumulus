@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   settingspagesector.h
+**   settingspagetask.h
 **
 **   This file is part of Cumulus.
 **
@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef __SettingsPageSector__h
-#define __SettingsPageSector__h
+#ifndef __SettingsPageTask__h
+#define __SettingsPageTask__h
 
 #include <QWidget>
 #include <QCheckBox>
@@ -34,19 +34,19 @@
  * @author Axel Pauli
  */
 
-class SettingsPageSector : public QWidget
+class SettingsPageTask : public QWidget
 {
   Q_OBJECT
 
 private:
 
-  Q_DISABLE_COPY ( SettingsPageSector )
+  Q_DISABLE_COPY ( SettingsPageTask )
 
 public:
 
-  SettingsPageSector( QWidget *parent=0);
-  
-  virtual ~SettingsPageSector();
+  SettingsPageTask( QWidget *parent=0);
+
+  virtual ~SettingsPageTask();
 
 public slots:
 
@@ -82,7 +82,7 @@ private:
   QDoubleSpinBox* innerSectorRadius; // inner sector radius of task point in meter or feet
   QDoubleSpinBox* outerSectorRadius; // outer sector radius of task point in meter or feet
   QSpinBox*       sectorAngle;       // 0-180 degrees
-    
+
   // Drawing options
   QGroupBox* shapeGroup;
   QCheckBox* drawShape;

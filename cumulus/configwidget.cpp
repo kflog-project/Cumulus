@@ -71,8 +71,8 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   QScrollArea* spsArea = new QScrollArea( tabWidget );
   spsArea->setWidgetResizable( true );
   spsArea->setFrameStyle( QFrame::NoFrame );
-  sps = new SettingsPageSector( this );
-  spsArea->setWidget( sps );
+  spt = new SettingsPageTask( this );
+  spsArea->setWidget( spt );
   tabWidget->addTab( spsArea, tr( "Task" ) );
 
   QScrollArea* spafArea = new QScrollArea( tabWidget );
@@ -129,7 +129,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   connect(this, SIGNAL(load()), spp, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spgl, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spg, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), sps, SLOT(slot_load()));
+  connect(this, SIGNAL(load()), spt, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spms, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spmo, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spaf, SLOT(slot_load()));
@@ -144,7 +144,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   connect(this, SIGNAL(save()), spp, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spgl, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spg, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), sps, SLOT(slot_save()));
+  connect(this, SIGNAL(save()), spt, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spms, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spmo, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spaf, SLOT(slot_save()));

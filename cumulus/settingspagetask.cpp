@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   settingspagesector.cpp
+**   settingspagetask.cpp
 **
 **   This file is part of Cumulus.
 **
@@ -11,13 +11,13 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id: settingspagesector.cpp 2965 2008-08-25 16:53:17Z axel $
+**   $Id$
 **
 ***********************************************************************/
 
 #include <QtGui>
 
-#include "settingspagesector.h"
+#include "settingspagetask.h"
 #include "generalconfig.h"
 #include "flighttask.h"
 #include "mapcontents.h"
@@ -32,7 +32,7 @@ extern MapContents  *_globalMapContents;
  */
 
 // Constructor of class
-SettingsPageSector::SettingsPageSector( QWidget *parent) :
+SettingsPageTask::SettingsPageTask( QWidget *parent) :
   QWidget( parent ),
   loadedCylinderRadius(0),
   loadedInnerSectorRadius(0),
@@ -45,17 +45,17 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
   int row = 0;
-  
+
   QGridLayout *topLayout = new QGridLayout( this );
   topLayout->setMargin(3);
   topLayout->setSpacing(3);
-  
+
   QGroupBox *tsBox = new QGroupBox( tr("TP Scheme"), this );
   topLayout->addWidget( tsBox, row, 0 );
 
   QRadioButton* cylinder = new QRadioButton( tr("Cylinder"), this );
   QRadioButton* sector   = new QRadioButton( tr("Sector"), this );
-  
+
   csScheme = new QButtonGroup(this);
   csScheme->addButton( cylinder, 0 );
   csScheme->addButton( sector, 1 );
@@ -78,7 +78,7 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
     {
       csScheme->button(selectedCSScheme)->setChecked(true);
     }
-  
+
   //---------------------------------------------------------------
 
   QGroupBox *ssBox = new QGroupBox( tr("Switch Scheme"), this );
@@ -88,7 +88,7 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
 
   QRadioButton* nearest   = new QRadioButton( tr("Nearest"), this );
   QRadioButton* touched  = new QRadioButton( tr("Touched"), this );
- 
+
   ntScheme->addButton( nearest, 0 );
   ntScheme->addButton( touched, 1 );
 
@@ -129,24 +129,24 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   fillShape->setChecked( conf->getTaskFillShape() );
 
   row++;
-  
+
   //--------------------------------------------------------------
   // as next cylinder group is added
   cylinderGroup = new QGroupBox( tr("Cylinder"), this );
   topLayout->addWidget( cylinderGroup, row++, 0, 1, 3 );
-  
+
   QHBoxLayout *hbox = new QHBoxLayout;
 
   QLabel *lbl = new QLabel( tr("Radius:"), this );
   hbox->addWidget( lbl );
-  
+
   // get current distance unit. This unit must be considered during
   // storage. The internal storage is always in meters.
   distUnit = Distance::getUnit();
 
   const char *unit = "";
 
-  // Input accepts different units 
+  // Input accepts different units
   if( distUnit == Distance::kilometers )
     {
       unit = " km";
@@ -159,7 +159,7 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
     {
       unit = " nm";
     }
-    
+
   cylinderRadius = new QDoubleSpinBox( this );
   cylinderRadius->setRange(0.1, 10.0);
   cylinderRadius->setSingleStep(0.1);
@@ -174,7 +174,7 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   // as next sector group is added
   sectorGroup = new QGroupBox( tr("Sector"), this );
   topLayout->addWidget( sectorGroup, row++, 0, 1, 3 );
-  
+
   QGridLayout *sectorLayout = new QGridLayout( sectorGroup );
   sectorLayout->setMargin(10);
   sectorLayout->setSpacing(3);
@@ -212,7 +212,7 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
   sectorAngle->setWrapping( true );
   sectorAngle->setValue( conf->getTaskSectorAngle() );
   sectorLayout->addWidget( sectorAngle, row1, 1 );
-  
+
   sectorLayout->setColumnStretch(2, 10);
 
   //--------------------------------------------------------------
@@ -260,12 +260,12 @@ SettingsPageSector::SettingsPageSector( QWidget *parent) :
 }
 
 // Destructor of class
-SettingsPageSector::~SettingsPageSector()
+SettingsPageTask::~SettingsPageTask()
 {
 }
 
 // value of outer spin box changed
-void SettingsPageSector::slot_outerSBChanged( double /* value */ )
+void SettingsPageTask::slot_outerSBChanged( double /* value */ )
 {
   // set max range of inner radius spin box to current value of this box
   innerSectorRadius->setMaximum( outerSectorRadius->value() );
@@ -279,7 +279,7 @@ void SettingsPageSector::slot_outerSBChanged( double /* value */ )
 
 // Set the passed scheme widget as active and the other one to
 // inactive
-void SettingsPageSector::slot_buttonPressedCS( int newScheme )
+void SettingsPageTask::slot_buttonPressedCS( int newScheme )
 {
   selectedCSScheme = newScheme;
 
@@ -295,13 +295,13 @@ void SettingsPageSector::slot_buttonPressedCS( int newScheme )
     }
 }
 
-void SettingsPageSector::slot_buttonPressedNT( int newScheme )
+void SettingsPageTask::slot_buttonPressedNT( int newScheme )
 {
   selectedNTScheme = newScheme;
 }
 
 /** Opens the color chooser dialog for the course line */
-void SettingsPageSector::slot_editClColor()
+void SettingsPageTask::slot_editClColor()
 {
   // Open color chooser dialog to edit course line color
   QString title = tr("Course Line Color");
@@ -319,7 +319,7 @@ void SettingsPageSector::slot_editClColor()
     }
 }
 
-void SettingsPageSector::slot_load()
+void SettingsPageTask::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -372,7 +372,7 @@ void SettingsPageSector::slot_load()
   clWidth->setValue( seletedClWidth );
 }
 
-void SettingsPageSector::slot_save()
+void SettingsPageTask::slot_save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -417,7 +417,7 @@ void SettingsPageSector::slot_save()
         {
           iRadius.setNautMiles( innerSectorRadius->value() );
         }
-      
+
       conf->setTaskSectorInnerRadius( iRadius );
     }
 
@@ -433,7 +433,7 @@ void SettingsPageSector::slot_save()
         }
       else // ( distUnit == Distance::nautmiles )
         {
-          oRadius.setNautMiles( outerSectorRadius->value() ); 
+          oRadius.setNautMiles( outerSectorRadius->value() );
         }
 
       conf->setTaskSectorOuterRadius( oRadius );

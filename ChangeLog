@@ -14,6 +14,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-04-22 AP: Setting tabulator Sector renamed to Task. Added two new
+                   configuration items for task course line color and width.
+                   Was desired from Robin King.
+[o] 2010-04-22 AP: Background color of arrival info box is set to red, if
+                   arrival altitude becomes negativ.
 [-] 2010-04-21 AP: Bugfix: Connection to Nmea simulator was never established
                    after GPS interface change due to MAEMO5.
 [o] 2010-04-21 AP: Labels of map info boxes in map view set to an uniform width.
@@ -22,6 +27,7 @@ Cumulus changelog
                    the home site elevation under personal settings and if the
                    altitude kind Ahl (above home site level) is selected you get
                    displayed the altitude above your home site position.
+                   Was desired from Robin King.
 [o] 2010-04-13 AP: Mouse snap radius increased to 25 pixels on MAEMO. That shall
                    ensure a better hit of icons with the finger on the map.
 [+] 2010-04-13 AP: NMEA parser extended. Barometric altitude emitted by FLARM

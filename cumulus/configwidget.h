@@ -29,7 +29,7 @@
 #include "settingspageairfields.h"
 #include "settingspageairspace.h"
 #include "settingspageinformation.h"
-#include "settingspagesector.h"
+#include "settingspagetask.h"
 #include "settingspageglider.h"
 #include "settingspagelooknfeel.h"
 #include "settingspageterraincolors.h"
@@ -130,7 +130,7 @@ class ConfigWidget : public QWidget
     // Single configuration widgets
     SettingsPagePersonal*      spp;
     SettingsPageGlider*        spgl;
-    SettingsPageSector*        sps;
+    SettingsPageTask*          spt;
     SettingsPageGPS*           spg;
     SettingsPageMapSettings*   spms;
     SettingsPageTerrainColors* sptc;
