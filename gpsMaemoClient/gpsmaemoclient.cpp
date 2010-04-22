@@ -268,8 +268,9 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
 
 #else
       // Set preferred-method in control
+      /* temporary switched off
       g_object_set( G_OBJECT(control), "preferred-method",
-                    LOCATION_METHOD_GNSS, NULL );
+                    LOCATION_METHOD_GNSS, NULL ); */
 
       // Set preferred-interval in control to one second
       g_object_set(G_OBJECT(control), "preferred-interval",
