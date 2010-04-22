@@ -42,12 +42,12 @@
   */
 
 // default window display times
-#define MIN_POPUP_DISPLAY_TIME 2
-#define AIRFIELD_DISPLAY_TIME_DEFAULT 5
-#define AIRSPACE_DISPLAY_TIME_DEFAULT 5
+#define MIN_POPUP_DISPLAY_TIME 3
+#define AIRFIELD_DISPLAY_TIME_DEFAULT 10
+#define AIRSPACE_DISPLAY_TIME_DEFAULT 10
 #define INFO_DISPLAY_TIME_DEFAULT     10
-#define WAYPOINT_DISPLAY_TIME_DEFAULT 5
-#define WARNING_DISPLAY_TIME_DEFAULT  5
+#define WAYPOINT_DISPLAY_TIME_DEFAULT 10
+#define WARNING_DISPLAY_TIME_DEFAULT  10
 #define WARNING_SUPPRESS_TIME_DEFAULT 0 // time in minutes
 
 // default for audible alarm switch
@@ -1640,11 +1640,10 @@ class GeneralConfig : protected QSettings
   int airspaceFilling(Airspace::ConflictType vertical,
                       Airspace::ConflictType total)
   {
-    if (!m_airspaceFillingEnabled)
-      return 0;
+    if (! m_airspaceFillingEnabled) return 0;
+
     return qMax(getAirspaceFillingVertical(vertical),
-                getAirspaceFillingLateral(total)
-                );
+                getAirspaceFillingLateral(total) );
   }
 
   /**
@@ -1790,6 +1789,29 @@ class GeneralConfig : protected QSettings
     return _groundColor;
   };
 
+  /** Sets the task course line color */
+  void setTaskCourseLineColor( const QColor& newValue )
+  {
+    _taskCourseLineColor = newValue;
+  };
+
+  /** Gets the task course line color */
+  QColor& getTaskCourseLineColor()
+  {
+    return _taskCourseLineColor;
+  };
+
+  /** gets task course line width */
+  int getTaskCourseLineWidth() const
+  {
+    return _taskCourseLineWidth;
+  };
+  /** sets task course line width */
+  void setTaskCourseLineWidth(const int newValue)
+  {
+    _taskCourseLineWidth = newValue;
+  };
+
   /** Gets waypoint scale border. */
   int getWaypointScaleBorder( const wayPoint::Importance importance) const;
 
@@ -1815,6 +1837,12 @@ class GeneralConfig : protected QSettings
 
   // Internet proxy
   QString _proxy;
+
+  // Task course line color
+  QColor _taskCourseLineColor;
+
+  // Task course line width
+  int _taskCourseLineWidth;
 
   // terrain colors
   QColor _terrainColors[SIZEOF_TERRAIN_COLORS];

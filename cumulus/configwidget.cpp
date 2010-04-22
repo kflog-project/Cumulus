@@ -17,15 +17,12 @@
  ***********************************************************************/
 
 /**
- * This is the configuration widget of cumulus. General settings are
+ * This is the configuration widget of Cumulus. General settings are
  * handled here. These are in general not related to the preflight
  * preparation. For that exists a separate configuration widget.
  */
 
-#include <QMessageBox>
-#include <QDialogButtonBox>
-#include <QScrollArea>
-#include <QLabel>
+#include <QtGui>
 
 #include "configwidget.h"
 #include "generalconfig.h"
@@ -76,7 +73,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spsArea->setFrameStyle( QFrame::NoFrame );
   sps = new SettingsPageSector( this );
   spsArea->setWidget( sps );
-  tabWidget->addTab( spsArea, tr( "Sector" ) );
+  tabWidget->addTab( spsArea, tr( "Task" ) );
 
   QScrollArea* spafArea = new QScrollArea( tabWidget );
   spafArea->setWidgetResizable( true );

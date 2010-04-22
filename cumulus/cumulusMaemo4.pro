@@ -99,7 +99,7 @@ HEADERS = \
     settingspagemapobjects.h \
     settingspagemapsettings.h \
     settingspagepersonal.h \
-    settingspagesector.h \
+    settingspagetask.h \
     settingspageterraincolors.h \
     settingspageunits.h \
     signalhandler.h \
@@ -207,7 +207,7 @@ SOURCES = \
     settingspagemapobjects.cpp \
     settingspagemapsettings.cpp \
     settingspagepersonal.cpp \
-    settingspagesector.cpp \
+    settingspagetask.cpp \
     settingspageterraincolors.cpp \
     settingspageunits.cpp \
     signalhandler.cpp \

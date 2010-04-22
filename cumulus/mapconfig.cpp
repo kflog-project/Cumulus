@@ -11,7 +11,7 @@
  **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -840,7 +840,7 @@ QPixmap& MapConfig::getPlusButton()
 #ifndef MAEMO
       int size = 50;
 #else
-      int size = 60;
+      int size = 70;
 #endif
 
       plusButton = QPixmap( size+6, size+6 );
@@ -874,7 +874,7 @@ QPixmap& MapConfig::getMinusButton()
 #ifndef MAEMO
       int size = 50;
 #else
-      int size = 60;
+      int size = 70;
 #endif
       minusButton = QPixmap( size+6, size+6 );
       minusButton.fill(Qt::transparent);

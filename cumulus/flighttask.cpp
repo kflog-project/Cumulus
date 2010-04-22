@@ -20,11 +20,7 @@
 ***********************************************************************/
 
 #include <cmath>
-
-#include <QApplication>
-#include <QDesktopWidget>
-#include <QDateTime>
-#include <QRect>
+#include <QtGui>
 
 #include "flighttask.h"
 #include "generalconfig.h"
@@ -632,14 +628,8 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
   const int h = Map::getInstance()->size().height();
 
   // Set pen color and width for the course line
-  QColor courseLineColor( Qt::darkMagenta );
-
-#ifndef MAEMO
-      qreal courseLineWidth = 5.0;
-#else
-      // use a bigger pen width for MAEMO to get better visible the course line
-      qreal courseLineWidth = 7.0;
-#endif
+  QColor courseLineColor = conf->getTaskCourseLineColor();
+  qreal courseLineWidth  = conf->getTaskCourseLineWidth();
 
   // qDebug("QDesktop: w=%d, h=%d, ora=%d", w, h, ora );
 

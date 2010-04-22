@@ -108,6 +108,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //add Glide Path widget
   _glidepath = new MapInfoBox( this, conf->getMapFrameColor().name(), 42 );
+  _glidepathBGColor = wayBar->palette().color(QPalette::Window);
   _glidepath->setValue("-");
   _glidepath->setPreText("Arr");
   _glidepath->setFixedHeight(60);
@@ -451,6 +452,9 @@ void MapView::slot_Waypoint(const wayPoint *wp)
       // @AP: No waypoint is selected, reset waypoint and glidepath display
       _waypoint->setValue("");
       _glidepath->setValue("-");
+      _glidepath->setAutoFillBackground(true);
+      _glidepath->setBackgroundRole(QPalette::Window);
+      _glidepath->setPalette( QPalette(_glidepathBGColor) );
       // @JD: reset distance too
       _distance->setValue("-");
       QPixmap arrow = _arrows.copy(24 * 60 + 3, 3, 54, 54);
@@ -647,9 +651,26 @@ void MapView::slot_Altitude(const Altitude& altitude )
 /** This slot is called when the "above glide path" value has changed */
 void MapView::slot_GlidePath (const Altitude& above)
 {
-  _glidepath->setValue(above.getText(false,0));
-}
+  static QColor lastColor = _glidepathBGColor;
 
+  _glidepath->setValue(above.getText(false,0));
+
+  if( above.getMeters() < 0.0 && lastColor != QColor(Qt::red) )
+    {
+      // display red background if arrival is under zero
+      _glidepath->setAutoFillBackground(true);
+      _glidepath->setBackgroundRole(QPalette::Window);
+      _glidepath->setPalette( QPalette(QColor(Qt::red)) );
+      lastColor = QColor(Qt::red);
+    }
+  else if( above.getMeters() >= 0.0 && lastColor != _glidepathBGColor )
+    {
+      _glidepath->setAutoFillBackground(true);
+      _glidepath->setBackgroundRole(QPalette::Window);
+      _glidepath->setPalette( QPalette(_glidepathBGColor) );
+      lastColor = _glidepathBGColor;
+    }
+}
 
 /** This slot is called when the best speed value has changed */
 void MapView::slot_bestSpeed (const Speed& speed)

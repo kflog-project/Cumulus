@@ -210,6 +210,15 @@ void GeneralConfig::load()
   _taskSectorAngle     = value( "Angle", 90).toInt();
   endGroup();
 
+  beginGroup("Task");
+#ifndef MAEMO
+  _taskCourseLineWidth = value( "CourseLineWidth", 5 ).toInt();
+#else
+  _taskCourseLineWidth = value( "CourseLineWidth", 7 ).toInt();
+#endif
+  _taskCourseLineColor = QColor( value("CourseLineColor", QColor(Qt::darkMagenta).name()).toString() );
+  endGroup();
+
   beginGroup("Map");
   _mapProjFollowsHome             = value( "ProjectionFollowsHome", true ).toBool();
   _mapUnload                      = value( "UnloadUnneededMap", true ).toBool();
@@ -534,6 +543,11 @@ void GeneralConfig::save()
   setValue( "InnerRadius", _taskSectorInnerRadius.getMeters() );
   setValue( "OuterRadius", _taskSectorOuterRadius.getMeters() );
   setValue( "Angle",       _taskSectorAngle );
+  endGroup();
+
+  beginGroup("Task");
+  setValue( "CourseLineWidth", _taskCourseLineWidth );
+  setValue( "CourseLineColor", _taskCourseLineColor.name() );
   endGroup();
 
   beginGroup("Map");

@@ -311,6 +311,8 @@ class MapView : public QWidget
     QTimer* _bearingTimer;
     /** default bg color */
     QColor _bearingBGColor;
+    /** default bg color */
+    QColor _glidepathBGColor;
     /** Pixmap containing arrows to be drawn*/
     QPixmap _arrows;
     /** can be CuCalc::GPS or CuCalc::MAN */
