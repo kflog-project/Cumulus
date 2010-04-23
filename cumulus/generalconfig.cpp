@@ -70,7 +70,7 @@ void GeneralConfig::load()
 #ifndef MAEMO_QT
   _guiStyle              = value("Style", "Plastique").toString();
 #else
-  _guiStyle              = value("Style", "Hildon").toString();
+  _guiStyle              = value("Style", "Plastique").toString();
 #endif
 
   _guiFont               = value("Font", "").toString();
@@ -91,6 +91,12 @@ void GeneralConfig::load()
   _lastAirspaceUrl      = value("LastAirspaceUrl", "").toString();
   _forceDrawing         = value("forceLowAirspaceDrawing", true ).toBool();
   _forceDrawingDistance = value("forceLowAirspaceDrawingDistance", 150.0).toDouble();
+
+#ifndef MAEMO
+  _airspaceLineWidth = value( "AirSpaceLineWidth", 5 ).toInt();
+#else
+  _airspaceLineWidth = value( "AirSpaceLineWidth", 7 ).toInt();
+#endif
 
   // Airspace warning types
   _airspaceDrawingEnabled[BaseMapElement::AirA]         = value("checkAirspaceA", true).toBool();
@@ -434,6 +440,7 @@ void GeneralConfig::save()
   setValue("LastAirspaceUrl", _lastAirspaceUrl);
   setValue("forceLowAirspaceDrawing", _forceDrawing);
   setValue("forceLowAirspaceDrawingDistance", _forceDrawingDistance.getMeters());
+  setValue( "AirSpaceLineWidth", _airspaceLineWidth );
 
   // Airspace warning types
   setValue("checkAirspaceA", _airspaceDrawingEnabled[BaseMapElement::AirA]);

@@ -38,12 +38,19 @@
 #include "waypointcatalog.h"
 
 /**
- * This class provides basic functions for displaying the map.
+ * \author Heiner Lamprecht, Florian Ehinger, Andre Somers, Axel Pauli
+ *
+ * \short This class provides the basic functions for the map display.
+ *
  */
 
 class Map : public QWidget
 {
   Q_OBJECT
+
+  private:
+
+  Q_DISABLE_COPY ( Map )
 
   public: //types
     /**

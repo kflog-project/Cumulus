@@ -81,13 +81,13 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   QHBoxLayout *hbox = new QHBoxLayout;
 
-  enableForceDrawing = new QCheckBox(tr("Force airspace drawing <"), this);
+  enableForceDrawing = new QCheckBox(tr("Draw all Airspaces <"), this);
   enableForceDrawing->setChecked(true);
   hbox->addWidget( enableForceDrawing );
   connect( enableForceDrawing, SIGNAL(toggled(bool)), SLOT(slot_enabledToggled(bool)));
 
   spinForceMargin = new QSpinBox(this);
-  spinForceMargin-> setRange( 0, 99999 );
+  spinForceMargin->setRange( 0, 99999 );
   spinForceMargin->setSingleStep( 10 );
   spinForceMargin->setButtonSymbols(QSpinBox::PlusMinus);
   spinForceMargin->setSuffix( unit );
@@ -101,6 +101,20 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   connect( cmdColorDefaults, SIGNAL(clicked()), this, SLOT(slot_setColorDefaults()) );
 
   topLayout->addLayout( hbox, row, 0, 1, 3 );
+  row++;
+
+  hbox = new QHBoxLayout;
+  hbox->addWidget( new QLabel(tr("Line Width:"), this ));
+
+  spinAsLineWidth = new QSpinBox(this);
+  spinAsLineWidth->setRange( 3, 15 );
+  spinAsLineWidth->setSingleStep( 1 );
+  spinAsLineWidth->setButtonSymbols(QSpinBox::PlusMinus);
+
+  hbox->addWidget( spinAsLineWidth );
+  hbox->addStretch( 10 );
+
+  topLayout->addLayout( hbox, row, 0, 1, 2 );
   row++;
 
   topLayout->setRowMinimumHeight( row++, 20 );
@@ -369,6 +383,10 @@ void SettingsPageAirspace::slot_load()
   // save spinbox value for later change check
   spinForceMarginValue = spinForceMargin->value();
 
+  // save spinbox value for later change check
+  spinAsLineWidthValue = conf->getAirspaceLineWidth();
+  spinAsLineWidth->setValue( spinAsLineWidthValue );
+
   drawAirspaceA->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::AirA) ? Qt::Checked : Qt::Unchecked );
   drawAirspaceB->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::AirB) ? Qt::Checked : Qt::Unchecked );
   drawAirspaceC->setCheckState (conf->getAirspaceDrawingEnabled(BaseMapElement::AirC) ? Qt::Checked : Qt::Unchecked );
@@ -439,6 +457,8 @@ void SettingsPageAirspace::slot_save()
 
   conf->setForceAirspaceDrawingDistance(forceDist);
   conf->setForceAirspaceDrawingEnabled(enableForceDrawing->checkState() == Qt::Checked ? true : false);
+
+  conf->setAirspaceLineWidth( spinAsLineWidth->value() );
 
   conf->setAirspaceDrawingEnabled(BaseMapElement::AirA,drawAirspaceA->checkState() == Qt::Checked ? true : false);
   conf->setAirspaceDrawingEnabled(BaseMapElement::AirB,drawAirspaceB->checkState() == Qt::Checked ? true : false);
@@ -621,6 +641,8 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   bool changed=false;
 
   changed |= spinForceMarginValue != spinForceMargin->value();
+  changed |= spinAsLineWidthValue != spinAsLineWidth->value();
+
   changed |= conf->getForceAirspaceDrawingEnabled() != enableForceDrawing->isChecked();
   changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::AirA) != (drawAirspaceA->checkState() == Qt::Checked ? true : false);
   changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::AirB) != (drawAirspaceB->checkState() == Qt::Checked ? true : false);

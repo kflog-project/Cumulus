@@ -17,11 +17,13 @@
 ***********************************************************************/
 
 /**
+ * \author Eggert Ehmke, Axel Pauli
+ *
+ * \brief Widget for Airspace configurations.
+ *
  * The three widgets SettingsPageAirspace, SettingsPageAirspaceFilling and
  * SettingsPageAirspaceWarnings in this file provide all options for airspace
  * configuration.
- *
- * @author Eggert Ehmke
  *
  */
 
@@ -176,11 +178,13 @@ class SettingsPageAirspace : public QWidget
     QWidget* fillColorWaveWindow;
     QWidget* fillColorGliderSector;
 
-    QCheckBox*      enableForceDrawing;
-    QSpinBox*       spinForceMargin;
+    QCheckBox* enableForceDrawing;
+    QSpinBox*  spinForceMargin;
+    QSpinBox*  spinAsLineWidth;
 
-    // value of spin box after load
+    // values of spin boxes after load
     int spinForceMarginValue;
+    int spinAsLineWidthValue;
 
     SettingsPageAirspaceFilling*  m_fillingDlg;
     SettingsPageAirspaceWarnings* m_warningsDlg;

@@ -552,29 +552,29 @@ void FlightTask::__setTaskPointData()
 }
 
 QString FlightTask::getTaskTypeString() const
-  {
-    switch(flightType)
-      {
-      case FlightTask::NotSet:
-        return QObject::tr("not set");
-      case FlightTask::ZielS:
-        return QObject::tr("Free Distance");
-      case FlightTask::ZielR:
-        return QObject::tr("Free Out and Return Distance");
-      case FlightTask::FAI:
-        return QObject::tr("FAI Triangle");
-      case FlightTask::Dreieck:
-        return QObject::tr("Triangle");
-      case FlightTask::FAI_S:
-        return QObject::tr("FAI Triangle Start on leg");
-      case FlightTask::Dreieck_S:
-        return QObject::tr("Triangle Start on leg");
-      case FlightTask::Abgebrochen:
-        return QObject::tr("Broken off");
-      }
+{
+  switch(flightType)
+    {
+    case FlightTask::NotSet:
+      return QObject::tr("not set");
+    case FlightTask::ZielS:
+      return QObject::tr("Free Distance");
+    case FlightTask::ZielR:
+      return QObject::tr("Free Out and Return Distance");
+    case FlightTask::FAI:
+      return QObject::tr("FAI Triangle");
+    case FlightTask::Dreieck:
+      return QObject::tr("Triangle");
+    case FlightTask::FAI_S:
+      return QObject::tr("FAI Triangle Start on leg");
+    case FlightTask::Dreieck_S:
+      return QObject::tr("Triangle Start on leg");
+    case FlightTask::Abgebrochen:
+      return QObject::tr("Broken off");
+    }
 
-    return QObject::tr("Unknown");
-  }
+  return QObject::tr("Unknown");
+}
 
 /** Check for small or large FAI triangle */
 bool FlightTask::isFAI(double d_wp, double d1, double d2, double d3)
@@ -663,109 +663,109 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
       int biangle = (int) rint( ((tpList->at(loop)->angle) / M_PI ) * 180.0 );
 
       switch( tpList->at(loop)->taskPointType )
-  {
-  case TaskPointTypes::RouteP:
-
-    if( viewport.contains(mPoint) )
       {
-        QColor c;
+      case TaskPointTypes::RouteP:
 
-        if( fillShape )
+        if( viewport.contains(mPoint) )
           {
-            c = QColor(Qt::green);
+            QColor c;
+
+            if( fillShape )
+              {
+                c = QColor(Qt::green);
+              }
+
+            drawSector( painter,
+            mPoint,
+            ira,
+            ora,
+            biangle,
+            sectorAngle,
+            c,
+            drawShape );
           }
 
-        drawSector( painter,
-        mPoint,
-        ira,
-        ora,
-        biangle,
-        sectorAngle,
-        c,
-        drawShape );
-      }
-
-    if( loop )
-      {
-        painter->setPen(QPen(courseLineColor, courseLineWidth));
-        painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-         glMapMatrix->map(tpList->at(loop)->projP) );
-      }
-
-    break;
-
-  case TaskPointTypes::Begin:
-
-    if( viewport.contains(mPoint) )
-      {
-        QColor c;
-
-        if( fillShape )
+        if( loop )
           {
-            c = QColor(Qt::green);
+            painter->setPen(QPen(courseLineColor, courseLineWidth));
+            painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+             glMapMatrix->map(tpList->at(loop)->projP) );
           }
 
-        drawSector( painter,
-        mPoint,
-        ira,
-        ora,
-        biangle,
-        sectorAngle,
-        c,
-        drawShape );
-      }
+        break;
 
-    // Draw line from take off to begin, if both not identical
-    if( loop &&
-        tpList->at(loop - 1)->origP != tpList->at(loop)->origP )
-      {
-        painter->setPen(QPen(courseLineColor, courseLineWidth));
-        painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-         glMapMatrix->map(tpList->at(loop)->projP) );
-      }
+      case TaskPointTypes::Begin:
 
-    break;
-
-  case TaskPointTypes::End:
-
-    if( viewport.contains(mPoint) )
-      {
-        QColor c;
-
-        if( fillShape )
+        if( viewport.contains(mPoint) )
           {
-            c = QColor(Qt::cyan);
+            QColor c;
+
+            if( fillShape )
+              {
+                c = QColor(Qt::green);
+              }
+
+            drawSector( painter,
+            mPoint,
+            ira,
+            ora,
+            biangle,
+            sectorAngle,
+            c,
+            drawShape );
           }
 
-        drawSector( painter,
-        mPoint,
-        ira,
-        ora,
-        biangle,
-        sectorAngle,
-        c,
-        drawShape );
-      }
+        // Draw line from take off to begin, if both not identical
+        if( loop &&
+            tpList->at(loop - 1)->origP != tpList->at(loop)->origP )
+          {
+            painter->setPen(QPen(courseLineColor, courseLineWidth));
+            painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+             glMapMatrix->map(tpList->at(loop)->projP) );
+          }
 
-    painter->setPen(QPen(courseLineColor, courseLineWidth));
-    painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-           glMapMatrix->map(tpList->at(loop)->projP) );
-    break;
+        break;
 
-  default:
+      case TaskPointTypes::End:
 
-    // Can be take off or landing point
-    // Draw line from End to Landing point, if both not identical
-    if( loop &&
-        tpList->at(loop - 1)->origP != tpList->at(loop)->origP )
-      {
+        if( viewport.contains(mPoint) )
+          {
+            QColor c;
+
+            if( fillShape )
+              {
+                c = QColor(Qt::cyan);
+              }
+
+            drawSector( painter,
+            mPoint,
+            ira,
+            ora,
+            biangle,
+            sectorAngle,
+            c,
+            drawShape );
+          }
+
         painter->setPen(QPen(courseLineColor, courseLineWidth));
         painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-         glMapMatrix->map(tpList->at(loop)->projP ) );
-      }
+                           glMapMatrix->map(tpList->at(loop)->projP) );
+        break;
 
-    break;
-  }
+      default:
+
+        // Can be take off or landing point
+        // Draw line from End to Landing point, if both not identical
+        if( loop &&
+            tpList->at(loop - 1)->origP != tpList->at(loop)->origP )
+          {
+            painter->setPen(QPen(courseLineColor, courseLineWidth));
+            painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
+             glMapMatrix->map(tpList->at(loop)->projP ) );
+          }
+
+        break;
+      }
     }
 }
 
@@ -806,14 +806,8 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawn
   const int h = Map::getInstance()->size().height();
 
   // Set pen color and width for the course line
-  QColor courseLineColor( Qt::darkMagenta );
-
-#ifndef MAEMO
-      qreal courseLineWidth = 5.0;
-#else
-      // use a bigger pen width for MAEMO to get better visible the course line
-      qreal courseLineWidth = 7.0;
-#endif
+  QColor courseLineColor = conf->getTaskCourseLineColor();
+  qreal courseLineWidth  = conf->getTaskCourseLineWidth();
 
   QRect viewport( -10-r, -10-r, w+2*r, h+2*r );
 

@@ -21,14 +21,7 @@
 #include <stdlib.h>
 #include <cmath>
 
-#include <QCoreApplication>
-#include <QDesktopWidget>
-#include <QPainter>
-#include <QPen>
-#include <QWhatsThis>
-#include <QLabel>
-#include <QPolygon>
-#include <QFont>
+#include <QtGui>
 
 #include "airfield.h"
 #include "airspace.h"
@@ -819,7 +812,7 @@ void Map::__drawTrail()
   if (!calculator->matchesFlightMode(GeneralConfig::instance()->getDrawTrail()))
     return;
 
-  if (calculator->samplelist.count()<5)
+  if (calculator->samplelist.count() < 5)
     {
       return;
     }
@@ -827,7 +820,8 @@ void Map::__drawTrail()
   QPainter p;
   p.begin(&m_pixInformationMap);
 
-  QPen pen1(Qt::black, 2);
+  QPen pen1(Qt::black, 3);
+
   QTime minTime=QTime::currentTime().addSecs(-150);
   //minTime.addSecs(-maxSecs);
   QPoint pos;
@@ -2107,7 +2101,7 @@ void Map::slotSetScale(const double& newScale)
  */
 void Map::__drawDirectionLine(const QPoint& from)
 {
-  if ( !GeneralConfig::instance()->getMapBearLine() )
+  if ( ! GeneralConfig::instance()->getMapBearLine() )
     {
       return;
     }
@@ -2124,12 +2118,8 @@ void Map::__drawDirectionLine(const QPoint& from)
 
       QColor col = ReachableList::getReachColor(calculator->getselectedWp()->origP);
 
-#ifndef MAEMO
-      qreal penWidth = 5.0;
-#else
-      // use a bigger pen width for MAEMO to get better visible the course line
-      qreal penWidth = 7.0;
-#endif
+      // we do take the task course line width
+      qreal penWidth = GeneralConfig::instance()->getTaskCourseLineWidth();
 
       QPainter lineP;
       lineP.begin(&m_pixInformationMap);

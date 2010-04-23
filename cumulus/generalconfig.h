@@ -1589,6 +1589,17 @@ class GeneralConfig : protected QSettings
     _unitTime = newValue;
   };
 
+  /** Gets the airspace line width */
+  int getAirspaceLineWidth() const
+  {
+    return _airspaceLineWidth;
+  };
+  /** Sets the airspace line width */
+  void setAirspaceLineWidth(const int newValue)
+  {
+    _airspaceLineWidth = newValue;
+  };
+
   /**
    * Get whether airspace filling is enabled at all
    */
@@ -1904,6 +1915,9 @@ class GeneralConfig : protected QSettings
   bool _forceDrawing;
   //vertical distance below airspace
   Distance _forceDrawingDistance;
+
+  // airspace line width
+  int _airspaceLineWidth;
 
   // last used airspace url
   QString _lastAirspaceUrl;
