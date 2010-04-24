@@ -32,6 +32,9 @@
  * Cumulus process. Different methods of this class are called by the running
  * main loop (see source file gpsmaemomain.cpp).
  *
+ * Because LibLocation in MAEMO4 does not report continuous altitude information
+ * the GPS daemon is directly connected by this class.
+ *
  */
 
 #ifndef _GpsMaemoClient_hh_
@@ -65,159 +68,192 @@ class GpsMaemoClient
 
 public:
 
-    /**
-     * Constructor requires a socket port of the server (listening end
-     * point) useable for interprocess communication. As related host is
-     * always localhost used.
-     */
-    GpsMaemoClient( const ushort portIn );
+  /**
+   * Constructor requires a socket port of the server (listening end
+   * point) useable for interprocess communication. As related host is
+   * always localhost used.
+   */
+  GpsMaemoClient( const ushort portIn );
 
-    virtual ~GpsMaemoClient();
+  virtual ~GpsMaemoClient();
 
-    /*
-     * Gets the single instance of this class. Can be Null, if no instance
-     * was created before.
-     */
-    static GpsMaemoClient* getInstance()
-    {
-      return instance;
-    };
+  /*
+   * Gets the single instance of this class. Can be Null, if no instance
+   * was created before.
+   */
+  static GpsMaemoClient* getInstance()
+  {
+    return instance;
+  };
 
-    /**
-     * Processes incoming read events. They can come from the server or
-     * from the GPS device.
-     */
-    void processEvent( fd_set *fdMaskIn );
+  /**
+   * Processes incoming read events. They can come from the server or
+   * from the GPS device.
+   */
+  void processEvent( fd_set *fdMaskIn );
 
-    /**
-     * @return all used read file descriptors as mask, useable by the
-     * select call
-     */
-    fd_set *getReadFdMask();
+  /**
+   * @return all used read file descriptors as mask, usable by the
+   * select call
+   */
+  fd_set *getReadFdMask();
 
-    int writeGpsData( const char *dataIn );
+  int writeGpsData( const char *dataIn );
 
-    /**
-    * The Maemo5 location service is called to start the selected device. That
-    * can be the internal GPS or a BT GPS mouse.
-    */
-    bool startGpsReceiving();
+  /**
+  * The Maemo location service is called to start the selected device. That
+  * can be the internal GPS or a BT GPS mouse.
+  */
+  bool startGpsReceiving();
 
-    /**
-     * The Maemo5 location service is called to stop GPS receiving.
-     */
-    void stopGpsReceiving();
+  /**
+   * The Maemo location service is called to stop GPS receiving.
+   */
+  void stopGpsReceiving();
 
-    /**
-     * timeout controller
-     */
-    void toController();
+  /**
+   * timeout controller
+   */
+  void toController();
 
-    /*
-     * Wrapper method to handle GLib signal emitted by the
-     * location service.
-     */
-    void handleGpsdRunning();
+  /*
+   * Wrapper method to handle GLib signal emitted by the
+   * location service.
+   */
+  void handleGpsdRunning();
 
-    /*
-     * Wrapper method to handle GLib signal emitted by the
-     * location service.
-     */
-    void handleGpsdStopped();
+  /*
+   * Wrapper method to handle GLib signal emitted by the
+   * location service.
+   */
+  void handleGpsdStopped();
 
-    /*
-     * Wrapper method to handle GLib signal emitted by the location service.
-     */
-    void handleGpsdError();
+  /*
+   * Wrapper method to handle GLib signal emitted by the location service.
+   */
+  void handleGpsdError();
 
-    /**
-     * Wrapper method to handle GLib signal emitted by the location service.
-     */
-    void handleGpsdLocationChanged( LocationGPSDevice *device );
+  /**
+   * Wrapper method to handle GLib signal emitted by the location service.
+   */
+  void handleGpsdLocationChanged( LocationGPSDevice *device );
 
-    void setShutdownFlag( bool newState )
-    {
-        shutdown = newState;
-    };
+  void setShutdownFlag( bool newState )
+  {
+      shutdown = newState;
+  };
 
-    bool getShutdownFlag() const
-    {
-        return shutdown;
-    };
-
-private:
-
-    //----------------------------------------------------------------------
-    // Messages from/to the Cumulus will be read/written via the
-    // client IPC instance.
-    //----------------------------------------------------------------------
-
-    void readServerMsg();
-
-    void writeServerMsg( const char *msg );
-
-    void writeNotifMsg( const char *msg );
-
-    /**
-     * put a new message into the process queue and sent a notification
-     * to the server, if option notify is true.
-     */
-    void queueMsg( const char* msg );
-
-    /** Setup timeout controller. */
-    void startTimer( uint milliSec );
-
-    //----------------------------------------------------------------------
-    // Private data elements of Class
-    //----------------------------------------------------------------------
+  bool getShutdownFlag() const
+  {
+      return shutdown;
+  };
 
 private:
 
-    /** Single instance of this class */
-    static GpsMaemoClient* instance;
+  //----------------------------------------------------------------------
+  // Messages from/to the Cumulus will be read/written via the
+  // client IPC instance.
+  //----------------------------------------------------------------------
 
-    /** Maemo GPS location service control instance */
-    LocationGPSDControl *control;
+  void readServerMsg();
 
-    /** Maemo GPS location service device instance */
-    LocationGPSDevice *device;
+  void writeServerMsg( const char *msg );
 
-    /** Socket port for IPC to server process */
-    ushort ipcPort;
+  void writeNotifMsg( const char *msg );
 
-    /** read file descriptor set in use by IPC */
-    fd_set fdMask;
+  /**
+   * put a new message into the process queue and sent a notification
+   * to the server, if option notify is true.
+   */
+  void queueMsg( const char* msg );
 
-    // IPC instance to server process as data channel
-    Ipc::Client clientData;
+  /** Setup timeout controller. */
+  void startTimer( uint milliSec );
 
-    // IPC instance to server process as notification channel
-    Ipc::Client clientNotif;
+  //----------------------------------------------------------------------
+  // Private data elements of Class
+  //----------------------------------------------------------------------
 
-    // used as timeout control for fix and connection
-    QTime last;
+private:
 
-    // Defined time span in milli seconds for timeout supervision. If set to
-    // zero Timeout handler do nothing.
-    long timeSpan;
+  /** Single instance of this class */
+  static GpsMaemoClient* instance;
 
-    // Queue used for intermediate storing
-    QQueue<QByteArray> queue;
+  /** Maemo GPS location service control instance */
+  LocationGPSDControl *control;
 
-    // GPS running flag.
-    bool gpsIsRunning;
+  /** Maemo GPS location service device instance */
+  LocationGPSDevice *device;
 
-    // If true, a notification is sent to the server, when new data are
-    // available in the queue. After that the flag is reset and the server must
-    // renew the request.
-    bool notify;
+  /** Socket port for IPC to server process */
+  ushort ipcPort;
 
-    // flag to indicate GPS connection lost
-    bool connectionLost;
+  /** read file descriptor set in use by IPC */
+  fd_set fdMask;
 
-    // Shutdown flag for main loop. Will be set in case of fatal error
-    // or if a shutdown message has been received from the server.
-    bool shutdown;
+  // IPC instance to server process as data channel
+  Ipc::Client clientData;
+
+  // IPC instance to server process as notification channel
+  Ipc::Client clientNotif;
+
+  // used as timeout control for fix and connection
+  QTime last;
+
+  // Defined time span in milli seconds for timeout supervision. If set to
+  // zero Timeout handler do nothing.
+  long timeSpan;
+
+  // Queue used for intermediate storing
+  QQueue<QByteArray> queue;
+
+  // GPS running flag.
+  bool gpsIsRunning;
+
+  // If true, a notification is sent to the server, when new data are
+  // available in the queue. After that the flag is reset and the server must
+  // renew the request.
+  bool notify;
+
+  // flag to indicate GPS connection lost
+  bool connectionLost;
+
+  // Shutdown flag for main loop. Will be set in case of fatal error
+  // or if a shutdown message has been received from the server.
+  bool shutdown;
+
+#ifdef MAEMO4
+
+  /**
+  * This method tries to read all lines contained in the receive buffer. A line
+  * is always terminated by a newline. If it finds any, it sends them as
+  * QStrings via the newSentence signal to whoever is listening (that will be
+  * GPSNMEA) and removes the sentences from the buffer.
+  */
+  void readSentenceFromBuffer();
+
+  /**
+   * This method reads the data provided by the GPS daemon.
+   * @return true=success / false=unsuccess
+   */
+  bool readGpsData();
+
+  // Socket port for IPC to GPS Daemon process
+  ushort gpsDaemonPort;
+
+  // IPC instance to GPS Daemon, only used by MAEMO4
+  Ipc::Client gpsDaemon;
+
+  // data buffers and pointers
+  char* datapointer;
+  char  databuffer[2048];
+  int   dbsize;
+
+  // counter used for read data check
+  int   readCounter;
+
+#endif
+
 };
 
 #endif

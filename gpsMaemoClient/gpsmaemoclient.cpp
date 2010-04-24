@@ -28,12 +28,14 @@ using namespace std;
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
+#include <netdb.h>
 
 #include <QtCore>
 
 #include "gpsmaemoclient.h"
 #include "protocol.h"
 #include "ipc.h"
+#include "hwinfo.h"
 
 // #define DEBUG 1
 
@@ -52,7 +54,7 @@ using namespace std;
 GpsMaemoClient *GpsMaemoClient::instance = static_cast<GpsMaemoClient *> (0);
 
 /**
- * The Maemo5 Location Service can emit four signal, which are handled by the
+ * The Maemo5 Location Service can emit four signals which are handled by the
  * next four static pure C-functions.
  *
  * See Maemo5: http://wiki.maemo.org/Documentation/Maemo_5_Developer_Guide/Using_Connectivity_Components/Using_Location_API
@@ -73,14 +75,20 @@ namespace LocationCb
       /**
        * Is called from location service when GPSD is running.
        */
-      static void gpsdRunning( LocationGPSDControl* control, gpointer userData );
+      static void gpsdRunning( LocationGPSDControl* control, gpointer user_data );
 
       /**
        * Is called from location service when GPSD was stopped.
        */
-      static void gpsdStopped( LocationGPSDControl* control, gpointer userData );
+      static void gpsdStopped( LocationGPSDControl* control, gpointer user_data );
 
-#ifndef MAEMO4
+      /**
+       * Is called from location service when new GPS data are available.
+       */
+      static void gpsdLocationchanged( LocationGPSDevice *device,
+                                       gpointer user_data );
+
+#ifdef MAEMO5
 
       /**
        * Is called from location service when GPSD was not startable.
@@ -90,18 +98,15 @@ namespace LocationCb
                                     gpointer user_data );
 #endif
 
+#ifdef MAEMO4
       /**
        * Is called from location service when GPSD was not startable. Should
        * be used only in Maemo4.
        */
-      static void gpsdError( LocationGPSDControl * /*control*/,
-                             gpointer /*userData*/ );
+      static void gpsdError( LocationGPSDControl * control,
+                             gpointer user_data );
+#endif
 
-      /**
-       * Is called from location service when new GPS data are available.
-       */
-      static void gpsdLocationchanged( LocationGPSDevice *device,
-                                       gpointer user_data );
     }
   }
 }
@@ -112,8 +117,11 @@ namespace LocationCb
  * Is called from location service when GPSD is running.
  */
 static void LocationCb::gpsdRunning( LocationGPSDControl* control,
-                                     gpointer userData )
+                                     gpointer user_data )
 {
+  Q_UNUSED( control )
+  Q_UNUSED( user_data )
+
   qDebug("G-Signal->GPSD Running");
 
   if( GpsMaemoClient::getInstance() )
@@ -126,8 +134,11 @@ static void LocationCb::gpsdRunning( LocationGPSDControl* control,
  * Is called from location service when GPSD was stopped.
  */
 static void LocationCb::gpsdStopped( LocationGPSDControl* control,
-                                     gpointer userData )
+                                     gpointer user_data )
 {
+  Q_UNUSED( control )
+  Q_UNUSED( user_data )
+
   qDebug("G-Signal->GPSD Stopped");
 
   if( GpsMaemoClient::getInstance() )
@@ -136,7 +147,7 @@ static void LocationCb::gpsdStopped( LocationGPSDControl* control,
     }
 }
 
-#ifndef MAEMO4
+#ifdef MAEMO5
 
 /**
  * Is called from location service when GPSD was not startable.
@@ -145,6 +156,9 @@ static void LocationCb::gpsdErrorVerbose( LocationGPSDControl *control,
                                           LocationGPSDControlError error,
                                           gpointer user_data )
 {
+  Q_UNUSED( control )
+  Q_UNUSED( user_data )
+
   switch( error )
     {
     case LOCATION_ERROR_USER_REJECTED_DIALOG:
@@ -172,27 +186,36 @@ static void LocationCb::gpsdErrorVerbose( LocationGPSDControl *control,
 
 #endif
 
+#ifdef MAEMO4
 /**
  * Is called from location service when GPSD was not startable. Should
  * be used only in Maemo4.
  */
-static void LocationCb::gpsdError( LocationGPSDControl * /*control*/,
-                                   gpointer /*userData*/ )
+static void LocationCb::gpsdError( LocationGPSDControl *control,
+                                   gpointer user_data )
 {
   qDebug("G-Signal->GPSD Error");
+
+  Q_UNUSED(control)
+  Q_UNUSED(user_data)
 
   if( GpsMaemoClient::getInstance() )
     {
       GpsMaemoClient::getInstance()->handleGpsdError();
     }
 }
+#endif
 
 /**
- * Is called from location service when new GPS data are available.
+ * Is called from location service when new GPS data are available. Under MAEMO4
+ * altitude information is not reported continuous by this method. Do not know
+ * what is going on under MAEMO5.
  */
 static void LocationCb::gpsdLocationchanged( LocationGPSDevice *device,
                                              gpointer user_data )
 {
+  Q_UNUSED(user_data)
+
   if( GpsMaemoClient::getInstance() )
     {
       GpsMaemoClient::getInstance()->handleGpsdLocationChanged( device );
@@ -226,6 +249,23 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
   instance        = this;
   device          = 0;
   control         = 0;
+
+#ifdef MAEMO4
+
+  readCounter = 0;
+
+  // Default GPSD port
+  gpsDaemonPort = 2947;
+
+  // get GPSD port from host service file
+  struct servent *gpsEntry = getservbyname("gpsd", "tcp");
+
+  if (gpsEntry)
+    {
+      gpsDaemonPort = ntohs(gpsEntry->s_port);
+    }
+
+#endif
 
   // Establish a connection to the server. The server is the Cumulus process
   // which has forked this process.
@@ -266,9 +306,11 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
       // Subscribe to location service signals. That must be done only once!
       g_signal_connect( control, "error", G_CALLBACK(LocationCb::gpsdError), NULL );
 
-#else
+#endif
+
+#ifdef MAEMO5
       // Set preferred-method in control
-      /* temporary switched off
+      /* temporary switched off because user reported long fix times, if that is set here.
       g_object_set( G_OBJECT(control), "preferred-method",
                     LOCATION_METHOD_GNSS, NULL ); */
 
@@ -322,6 +364,15 @@ GpsMaemoClient::~GpsMaemoClient()
     }
 
   instance = static_cast<GpsMaemoClient *> (0);
+
+#ifdef MAEMO4
+
+  if( gpsDaemon.getSock() != -1 )
+    {
+      gpsDaemon.closeSock();
+    }
+
+#endif
 }
 
 /*
@@ -340,7 +391,7 @@ void GpsMaemoClient::handleGpsdRunning()
   startTimer(ALIVE_TO);
 
   // Sends a message to Cumulus to signal that the GPS connection is established.
-  // LibLocation reports not before a GPS fix any data.
+  // LibLocation reports not any data before a GPS fix.
   queueMsg( MSG_CON_ON );
 
 #ifdef MAEMO4
@@ -359,6 +410,101 @@ void GpsMaemoClient::handleGpsdRunning()
         }
     }
 
+  // wait that daemon can make its initialization
+  sleep(3);
+
+  // try to connect the GPSD on its listen port
+  if (gpsDaemon.connect2Server("", gpsDaemonPort) == 0)
+    {
+      qDebug("GPSD successfully connected on port %d", gpsDaemonPort);
+    }
+  else
+    {
+      // Connection failed
+      qWarning("GPSD could not be connected on port %d", gpsDaemonPort);
+      return;
+    }
+
+  // ask for protocol number, gpsd version , list of accepted letters
+  char buf[256];
+  strcpy(buf, "l\n");
+
+  // Write message to gpsd to initialize in raw and watcher mode
+  int res = gpsDaemon.writeMsg(buf, strlen(buf));
+
+  if (res == -1)
+    {
+      qWarning("Write to GPSD failed");
+      gpsDaemon.closeSock();
+      return;
+    }
+
+  res = gpsDaemon.readMsg(buf, sizeof(buf) - 1);
+
+  if (res == -1)
+    {
+      qWarning("Read from GPSD failed");
+      gpsDaemon.closeSock();
+      return;
+    }
+
+  buf[res] = '\0';
+
+  qDebug("GPSD-l (ProtocolVersion-GPSDVersion-RequestLetters): %s", buf);
+
+  // ask for GPS identification string
+  strcpy(buf, "i\n");
+
+  // Write message to gpsd to get the GPS id string
+  res = gpsDaemon.writeMsg(buf, strlen(buf));
+
+  if (res == -1)
+    {
+      qWarning("Write to GPSD failed");
+      gpsDaemon.closeSock();
+      return;
+    }
+
+  res = gpsDaemon.readMsg(buf, sizeof(buf) - 1);
+
+  if (res == -1)
+    {
+      qWarning("Read from GPSD failed");
+      gpsDaemon.closeSock();
+      return;
+    }
+
+  buf[res] = '\0';
+
+  qDebug("GPSD-i (GPS-ID): %s", buf);
+
+  // request raw and watcher mode
+  strcpy(buf, "r+\nw+\n");
+
+  // Write message to gpsd to initialize it in raw and watcher mode.
+  // - Raw mode means, NMEA data records will be sent
+  // - Watcher mode means that new data will sent without polling
+  res = gpsDaemon.writeMsg(buf, strlen(buf));
+
+  if (res == -1)
+    {
+      qWarning("Write to GPSD failed");
+      gpsDaemon.closeSock();
+      return;
+    }
+
+  res = gpsDaemon.readMsg(buf, sizeof(buf) - 1);
+
+  if (res == -1)
+    {
+      qWarning("Read from GPSD failed");
+      gpsDaemon.closeSock();
+      return;
+    }
+
+  buf[res] = '\0';
+
+  // qDebug("GPSD-r+w+: %s", buf );
 #endif
 
 }
@@ -422,6 +568,7 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
 
   connectionLost = false;
 
+#ifdef MAEMO5
   /**
    * Definition of two proprietary sentences to transmit MAEMO GPS data.
    *
@@ -620,10 +767,13 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
 
    // store the new sentence in the queue
    queueMsg( sentence1.toAscii().data() );
+
+#endif
+
 }
 
 /**
- * Returns the currently used read file descriptors as mask, useable by the
+ * Returns the currently used read file descriptors as mask, usable by the
  * select call
  */
 fd_set *GpsMaemoClient::getReadFdMask()
@@ -631,7 +781,7 @@ fd_set *GpsMaemoClient::getReadFdMask()
   // Reset file descriptor mask bits
   FD_ZERO( &fdMask );
 
-  if( ipcPort ) // data channel to server
+  if( ipcPort ) // data channel to Cumulus
     {
       int sfd = clientData.getSock();
 
@@ -641,11 +791,21 @@ fd_set *GpsMaemoClient::getReadFdMask()
         }
     }
 
+#ifdef MAEMO4
+
+  // Channel to GPSD
+  if( gpsDaemon.getSock() != -1 )
+    {
+      FD_SET( gpsDaemon.getSock(), &fdMask );
+    }
+
+#endif
+
   return &fdMask;
 }
 
 /**
- * Processes incoming read events. They can come from the server.
+ * Processes incoming read events. They can come from Cumulus or the GPSD.
  */
 void GpsMaemoClient::processEvent( fd_set *fdMask )
 {
@@ -658,10 +818,22 @@ void GpsMaemoClient::processEvent( fd_set *fdMask )
           readServerMsg();
         }
     }
+
+#ifdef MAEMO4
+
+  int gpsSock = gpsDaemon.getSock();
+
+  if( gpsSock != -1 && FD_ISSET( gpsSock, fdMask ) )
+    {
+      readGpsData();
+    }
+
+#endif
+
 }
 
 /**
-* The Maemo5 location service is called to start the selected devices. That
+* The Maemo location service is called to start the selected devices. That
 * can be the internal GPS or a BT GPS mouse.
 */
 bool GpsMaemoClient::startGpsReceiving()
@@ -675,6 +847,23 @@ bool GpsMaemoClient::startGpsReceiving()
       qWarning( "GpsMaemoClient::startGpsReceiving(): GPSD is running, ignore request!" );
       return true;
     }
+
+#ifdef MAEMO4
+
+  readCounter = 0;
+
+  // reset buffer pointer
+  datapointer = databuffer;
+  dbsize = 0;
+  memset(databuffer, 0, sizeof(databuffer));
+
+  if ( gpsDaemon.getSock() != -1 )
+    {
+      // close a previous connection
+      gpsDaemon.closeSock();
+    }
+
+#endif
 
   // remove all old queued messages
   queue.clear();
@@ -692,12 +881,40 @@ bool GpsMaemoClient::startGpsReceiving()
 }
 
 /**
- * The Maemo5 location service is called to stop GPS receiving.
+ * The Maemo location service is called to stop GPS receiving.
  */
 void GpsMaemoClient::stopGpsReceiving()
 {
 #ifdef DEBUG
   qDebug() << "GpsMaemoClient::stopGpsReceiving()";
+#endif
+
+#ifdef MAEMO4
+
+  if (gpsDaemon.getSock() != -1)
+    {
+      // Close connection to the GPSD server.
+      char buf[256];
+
+      // request clear watcher mode
+      strcpy(buf, "w-\n");
+
+      // Write message to gpsd
+      int res = gpsDaemon.writeMsg(buf, strlen(buf));
+
+      // read answer
+      res = gpsDaemon.readMsg(buf, sizeof(buf) - 1);
+
+      if (res)
+        {
+          // buf[res] = '\0';
+          // qDebug("W-Answer: %s", buf);
+        }
+
+      // close socket
+      gpsDaemon.closeSock();
+    }
+
 #endif
 
   // Stop timer
@@ -988,3 +1205,162 @@ void GpsMaemoClient::startTimer( uint milliSec )
   last.start();
   timeSpan = milliSec;
 }
+
+#ifdef MAEMO4
+/**
+ * This method reads the data provided by the GPS daemon. It is checked, if
+ * the function is called only once.
+ * @return true=success / false=unsuccess
+ */
+bool GpsMaemoClient::readGpsData()
+{
+  static short caller = 0;
+
+  if( gpsDaemon.getSock() == -1 ) // no connection is active
+    {
+      return false;
+    }
+
+  if( caller )
+    {
+      qWarning("GpsMaemo::readGpsData() is called recursive");
+      return false;
+    }
+
+  caller++;
+
+  // Check for end of buffer. If this happens we will discard all
+  // data to avoid a dead lock. Should normally not happen, if valid
+  // data records are passed containing a terminating new line.
+  if ( (sizeof(databuffer) - dbsize - 1) < 100 )
+    {
+      qWarning( "GpsMaemo::readGpsData reached end of buffer, discarding all received data!" );
+
+      // reset buffer pointer
+      datapointer = databuffer;
+      dbsize = 0;
+      databuffer[0] = '\0';
+
+      caller--;
+      return false;
+    }
+
+  // all available GPS data lines are read successive
+  int bytes = 0;
+
+  // qDebug("-> datapointer=%x, databuffer=%x, dbsize=%d", datapointer, databuffer, dbsize );
+
+  bytes = read( gpsDaemon.getSock(), datapointer, sizeof(databuffer) - dbsize - 1 );
+
+  if (bytes == 0) // Nothing read, should normally not happen
+    {
+      qWarning("GpsMaemo: Read has read 0 bytes!");
+      caller--;
+
+      if (gpsDaemon.getSock() != -1)
+        {
+          gpsDaemon.closeSock();
+        }
+
+      return false;
+    }
+
+  if (bytes == -1)
+    {
+      qWarning("GpsMaemo: Read error, errno=%d, %s", errno, strerror(errno));
+      caller--;
+
+      if( gpsDaemon.getSock() != -1 )
+        {
+          gpsDaemon.closeSock();
+        }
+
+      return false;
+    }
+
+  if (bytes > 0)
+    {
+      readCounter++;
+      dbsize += bytes;
+      datapointer += bytes;
+      databuffer[dbsize] = '\0'; // terminate buffer with a null
+
+      // qDebug("<- bytes=%d, datapointer=%x, databuffer=%x, dbsize=%d", bytes, datapointer, databuffer, dbsize );
+
+      // extract NMEA sentences from buffer and forward it via signal
+      readSentenceFromBuffer();
+    }
+
+  caller--;
+  return true;
+}
+#endif
+
+#ifdef MAEMO4
+/**
+ * This method tries to read all lines contained in the receive buffer. A line
+ * is always terminated by a newline. If it finds any, it sends them as
+ * QStrings via the newSentence signal to whoever is listening (that will be
+ * GPSNMEA) and removes the sentences from the buffer.
+ */
+void GpsMaemoClient::readSentenceFromBuffer()
+{
+  char *start = databuffer;
+  char *end = 0;
+
+  while( strlen(start) )
+    {
+      // Search for a newline in the receiver buffer
+      if ( !(end = strchr(start, '\n')) )
+        {
+          // No newline in the receiver buffer, wait for more
+          // characters
+          return;
+        }
+
+      if (start == end)
+        {
+          // skip newline and start at next position with a new search
+          start++;
+          continue;
+        }
+
+      // found a complete record in the buffer, it will be extracted now
+      char *record = (char *) malloc(end - start + 2);
+
+      memset(record, 0, end - start + 2);
+
+      strncpy(record, start, end - start + 1);
+
+      QString qRecord(record);
+
+      if ( qRecord.startsWith( "GPSD,") )
+        {
+          // Filter out and display GPSD messages
+          qWarning( "GPSD Message: %s", record );
+        }
+      else
+        {
+          // forward GPS record to subscribers
+          // qDebug( "GpsMaemo: Extracted NMEA Record: %s", record );
+          queueMsg( qRecord.toAscii().data() );
+        }
+
+      free(record);
+      record = 0;
+
+      // remove queued record from receive buffer
+      memmove(databuffer, end + 1, databuffer + sizeof(databuffer) - 1 - end);
+
+      datapointer -= (end + 1 - databuffer);
+
+      dbsize -= (end + 1 - databuffer);
+
+      start = databuffer;
+
+      end = 0;
+
+      // qDebug("After Read: datapointer=%x, dbsize=%d", datapointer, dbsize );
+    }
+}
+#endif
