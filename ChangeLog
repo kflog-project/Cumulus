@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-04-25 AP: Fall back to old GPS connection solution for the N8x0 due to
+                   stochastic altitude reporting of LibLoaction service.
 [+] 2010-04-23 AP: Width of the bearing course line is taken over from the
                    configured task course line width.
 [+] 2010-04-22 AP: Setting tabulator Sector renamed to Task. Added two new
