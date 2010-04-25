@@ -45,13 +45,14 @@ called the map view.
 
   <li><b>Gs</b> - Current ground speed</li>
 
-  <li><b>Msl/Std/Agl/Ahl</b> - Current Altitude above MSL, Standard pressure, 
-                               above ground level or above home level.
+  <li><b>Msl/Std/Agl/Ahl</b> - Current Altitude related to MSL, standard pressure, 
+                               above ground or home site level. For further explanations
+                               <a href="#altitude">see here</a>.
                                Tip on the number to toggle the display.</li>
 
-  <li><b>Arv</b> - Arrival Altitude above (positive) or below (negative) about
+  <li><b>Arv</b> - Arrival Altitude above (positive) or below (negative) of the
                    selected target <a href="#glidepath">(see glide path)</a>.
-                   If the arrival altitude is less than zero the background color
+                   If the arrival altitude is negative the background color
                    is set to red. </li>
 
   <li><b>To</b> - Selected target and in parentheses its elevation. Tip on label
@@ -67,7 +68,7 @@ called the map view.
 
   <li><b>LD</b> - Required and current LD to selected target. Can be toggled
                   with Wind display. Tip on label LD will toggle the display.
-                  <a href="#ld"> See also LD paragraph for more info.</a> </li>
+                  See also <a href="#ld">LD paragraph</a> for more info.</li>
 
   <li><b>Mc</b> - McCready value used for glide path and best speed calculation.
                   Tip to open the in flight dialog.</li>
@@ -163,6 +164,24 @@ The last item is used as display for warnings and other information.
 <p> If you want to maximize the screen area for the map display,
 you can disable the status bar via the menu entry <i>View/Statusbar</i>.
 </p>
+
+<p><b>Altitude display</b></p>
+
+<p><a name="altitude"> The altitude display can handle four different altitude
+kinds. All are derived from the GPS altitude unless there is pressure altitude
+provided from an external device.</a></p>
+
+<ul>
+
+  <li>Msl - Altitude above mean sea level.</li>
+  <li>Std - Altitude base on standard pressure 1013,25hPa. Is used to determine
+      the warning distance to airspaces based on flight level.</li>
+  <li>Agl - Altitude above ground level. Only available when terrain data have
+      been loaded.</li>
+  <li>Ahl - Altitude above home site level also called QFE. Requires the right
+      elevation setting above MSL <a href="cumulus-settings-personal.html">here.</a></li>
+
+</ul>
 
 <p><b>Glide path</b></p>
 
