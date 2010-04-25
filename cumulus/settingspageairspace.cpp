@@ -113,6 +113,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   hbox->addWidget( spinAsLineWidth );
   hbox->addStretch( 10 );
+  hbox->setEnabled( false );
 
   topLayout->addLayout( hbox, row, 0, 1, 2 );
   row++;
