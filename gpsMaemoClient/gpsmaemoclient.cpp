@@ -1238,6 +1238,11 @@ bool GpsMaemoClient::readGpsData()
 
   caller++;
 
+  // update supervision timer/variables
+  startTimer(ALIVE_TO);
+
+  connectionLost = false;
+
   // Check for end of buffer. If this happens we will discard all
   // data to avoid a dead lock. Should normally not happen, if valid
   // data records are passed containing a terminating new line.
