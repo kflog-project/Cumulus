@@ -228,7 +228,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   clLayout->addWidget( lbl, row1, 0 );
 
   clWidth = new QSpinBox( clGroup );
-  clWidth->setRange( 3, 15 );
+  clWidth->setRange( 3, 10 );
   clWidth->setSingleStep( 1 );
   clWidth->setButtonSymbols( QSpinBox::PlusMinus );
   clLayout->addWidget( clWidth, row1, 1 );
