@@ -778,10 +778,8 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
 
    // store the new sentence in the queue
    queueMsg( sentence1.toAscii().data() );
-
-#endif
-
 }
+#endif
 
 /**
  * Returns the currently used read file descriptors as mask, usable by the
