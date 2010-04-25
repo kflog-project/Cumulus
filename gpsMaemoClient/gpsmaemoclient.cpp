@@ -42,8 +42,16 @@ using namespace std;
 // Size of internal message queue.
 #define QUEUE_SIZE 250
 
-// Defines alive check timeout in ms.
-#define ALIVE_TO 10*60*1000
+#ifndef MAEMO4
+// Defines alive check timeout 10 minutes
+#define ALIVE_TO 10*60*1000 // ms
+
+#else
+
+// Defines alive check timeout 60s for MAEMO4
+#define ALIVE_TO 60000 // ms
+
+#endif
 
 // Defines a retry timeout in ms which is used after a failed connect to the GPS.
 // daemon. The time should not be to short otherwise the OS has problems to
@@ -82,13 +90,12 @@ namespace LocationCb
        */
       static void gpsdStopped( LocationGPSDControl* control, gpointer user_data );
 
+#ifdef MAEMO5
       /**
        * Is called from location service when new GPS data are available.
        */
       static void gpsdLocationchanged( LocationGPSDevice *device,
                                        gpointer user_data );
-
-#ifdef MAEMO5
 
       /**
        * Is called from location service when GPSD was not startable.
@@ -206,6 +213,7 @@ static void LocationCb::gpsdError( LocationGPSDControl *control,
 }
 #endif
 
+#ifdef MAEMO5
 /**
  * Is called from location service when new GPS data are available. Under MAEMO4
  * altitude information is not reported continuous by this method. Do not know
@@ -221,6 +229,7 @@ static void LocationCb::gpsdLocationchanged( LocationGPSDevice *device,
       GpsMaemoClient::getInstance()->handleGpsdLocationChanged( device );
     }
 }
+#endif
 
 /**
  * Constructor requires a socket port of the server (listening end point)
@@ -327,11 +336,13 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
       g_signal_connect( control, "gpsd_running",  G_CALLBACK(LocationCb::gpsdRunning), NULL );
     }
 
+#ifdef MAEMO5
   // Setup device instance
   device = (LocationGPSDevice *) g_object_new(LOCATION_TYPE_GPS_DEVICE, NULL);
 
   // Subscribe to location service signal.
   g_signal_connect( device, "changed", G_CALLBACK(LocationCb::gpsdLocationchanged), NULL );
+#endif
 
   // Set last time to current time.
   last.start();
@@ -539,6 +550,7 @@ void GpsMaemoClient::handleGpsdError()
   startTimer(RETRY_TO);
 }
 
+#ifdef MAEMO5
 /**
  * Wrapper method to handle GLib signal emitted by the location service.
  */
@@ -568,7 +580,6 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
 
   connectionLost = false;
 
-#ifdef MAEMO5
   /**
    * Definition of two proprietary sentences to transmit MAEMO GPS data.
    *

@@ -184,6 +184,11 @@ int main( int argc, char* argv[] )
       timerInterval.tv_sec  =  0;
       timerInterval.tv_usec =  500000;
 
+#ifdef MAEMO4
+      // main loop timeout 1s sufficient for MAEMO4
+      timerInterval.tv_usec =  1000000;
+#endif
+
       // Wait for read events or timeout
       int result = select( maxFds, readFds, (fd_set *) 0,
                           (fd_set *) 0, &timerInterval );
