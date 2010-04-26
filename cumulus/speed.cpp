@@ -31,18 +31,16 @@ Speed::speedUnit Speed::_horizontalUnit = kilometersPerHour;
 Speed::speedUnit Speed::_verticalUnit   = metersPerSecond;
 Speed::speedUnit Speed::_windUnit       = kilometersPerHour;
 
-Speed::Speed()
+Speed::Speed() :
+  _speed(0),
+  _isValid(false)
 {
-  _speed = 0;
-  _isValid = false;
-  changed();
 }
 
-Speed::Speed(double Mps)
+Speed::Speed(double Mps) :
+  _speed(Mps),
+  _isValid(true)
 {
-  _speed = Mps;
-  _isValid = true;
-  changed();
 }
 
 Speed::~Speed()

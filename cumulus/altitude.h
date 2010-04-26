@@ -3,7 +3,9 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002 by André Somers
-    email                : andre@kflog.org
+                               2010 by Axel Pauli
+
+    email                : axel@kflog.org
 
     This file is part of Cumulus.
 
@@ -26,10 +28,11 @@
 #include "distance.h"
 
 /**
-  * @short Abstract altitude
+ *  \author André Somers, Axel Pauli
+ *
+  * \brief Class to calculate altitudes in different units.
   *
-  * This class provides an altitude object, which can represent it's data in any major format.
-  * @author André Somers
+  * This class calculates altitude in different units.
   */
 
 class Altitude : public Distance
@@ -38,9 +41,10 @@ public:
     /*
      * Altitude units
      */
-    enum altitude{meters=0, feet=1, kilometers=2, miles=3, nautmiles=4, flightlevel=5};      //just an extention of distance
+    enum altitude{ meters=0, feet=1, kilometers=2, miles=3, nautmiles=4, flightlevel=5 };
 
 public:
+
     Altitude();
     /**
      * Constructor
@@ -78,7 +82,7 @@ public:
     static void setUnit(altitude unit);
 
     /**
-     * returns the current set unit
+     * returns the current altitude unit
      */
     static altitude getUnit()
     {
@@ -114,17 +118,14 @@ public:
     static double convertToMeters(double dist);
 
     /**
-     * Basicly the same as @ref getText, but returns the internally stored altitude.
+     * Basically the same as @ref getText, but returns the internally stored altitude.
      */
     QString getText(bool withUnit, uint precision=1) const;
 
-    /* Get Altitude as Flightlevel */
-    //  double getFL(double pressure) const;
     /**
-     *Get altitude as flightlevel (at standard pressure)
+     * Get altitude as flight level based on standard pressure 1013.25hPa
      */
     double getFL() const;
-
 
     /**
      * implements == operator for altitude
@@ -209,6 +210,7 @@ public:
     };
 
 protected:
+
     static altitude _altitudeUnit;
 };
 
@@ -217,9 +219,9 @@ protected:
  * @short Collection of the different expressions for the current altitude
  * @author André Somers
  *
- * This struct contains different representations for the current altitude.
+ * This structure contains different representations for the current altitude.
  * There are different ways to express the current altitude, and there are
- * some uncertainties too. All that data can be stored in this struct, so it
+ * some uncertainties too. All that data can be stored in this structure, so it
  * can be nicely passed as a single parameter.
  */
 struct AltitudeCollection

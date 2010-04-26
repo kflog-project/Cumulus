@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                         :     2007-2009 by Axel Pauli
+                         :     2007-2010 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -31,31 +31,28 @@ const double Distance::mFromNMile=1852.0;  // 1852 meters in a nautical mile
 const double Distance::mFromFeet=0.3048;   // a foot is a bit more than 30 cm
 
 
-Distance::Distance()
+Distance::Distance() :
+  _dist(0), _isValid(false)
 {
-  _dist=0;
-  _isValid=false;
 }
 
 
-Distance::Distance(int meters)
+Distance::Distance(int meters) :
+  _dist((double)meters), _isValid(true)
 {
-  _dist=double(meters);
-  _isValid=true;
 }
 
 
-Distance::Distance(double meters)
+Distance::Distance(double meters) :
+  _dist(meters), _isValid(true)
 {
-  _dist=meters;
-  _isValid=true;
 }
 
 
-Distance::Distance(const Distance& dst)
+Distance::Distance(const Distance& dst) :
+  _dist(dst._dist),
+  _isValid(dst._isValid)
 {
-  _dist = dst._dist;
-  _isValid=dst._isValid;
 }
 
 
