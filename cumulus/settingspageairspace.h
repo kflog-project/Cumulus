@@ -121,7 +121,7 @@ class SettingsPageAirspace : public QWidget
     /**
      * saves current altitude unit during construction of object
      */
-    Altitude::altitude altUnit;
+    Altitude::altitudeUnit altUnit;
 
     QPushButton* cmdWarning;
     QPushButton* cmdFilling;
@@ -330,7 +330,7 @@ class SettingsPageAirspaceWarnings : public QDialog
     /**
      * saves current altitude unit during construction of object
      */
-    Altitude::altitude altUnit;
+    Altitude::altitudeUnit altUnit;
 
     QCheckBox* enableWarning;
 

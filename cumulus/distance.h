@@ -23,14 +23,17 @@
 
 #include <QString>
 
-/** @short Abstract Distance
+/**
+ *  \author Heiner Lamprecht, Axel Pauli
+ *
+ * \brief This class handles different distance units and arithmetics.
  *
  * An object of this class represents a distance. It can express this
  * distance in a number of major formats.
  * It also features a couple of static methods to convert from the set
  * unit to meters or to display a distance in the currently selected unit.
  *
- * @author Heiner Lamprecht
+ *
  */
 
 class Distance
@@ -76,32 +79,54 @@ class Distance
   /**
    * Set the distance in meters
    */
-  void setMeters(int meters);
-
-  /**
-   * Set distance in feet
-   */
-  void setFeet (int feet);
+  void setMeters(int meters)
+  {
+    _dist=double(meters);
+    _isValid=true;
+  };
 
   /**
    * Set the distance in meters
    */
-  void setMeters(double meters);
+  void setMeters(double meters)
+  {
+    _dist=meters;
+    _isValid=true;
+  };
 
   /**
    * Set distance in feet
    */
-  void setFeet (double feet);
+  void setFeet(int feet)
+  {
+    _dist=double(feet)*mFromFeet;
+    _isValid=true;
+  };
+
+  /**
+   * Set distance in feet
+   */
+  void setFeet(double feet)
+  {
+    _dist=feet*mFromFeet;
+    _isValid=true;
+  };
 
   /**
    * Get distance in feet
    */
-  double getFeet() const;
+  double getFeet() const
+  {
+    return _dist / mFromFeet;
+  };
 
   /**
    * Returns distance in meters
    */
-  double getMeters() const;
+  double getMeters() const
+  {
+    return _dist;
+  };
 
   /**
    * implements == operator for distance
@@ -168,11 +193,6 @@ class Distance
   QString getText(bool withUnit, uint precision=1, uint chopOrder=0) const;
 
   /**
-   * Sets the unit for distances.
-   */
-  static void setUnit(distanceUnit unit);
-
-  /**
    * Converts a distance from the current unit set with @ref setUnit to meters.
    */
   static double convertToMeters(double dist);
@@ -180,42 +200,78 @@ class Distance
   /**
    * Sets the distance in kilometers
    */
-  void setKilometers(double km);
+  void setKilometers(double km)
+  {
+    _dist=km*mFromKm;
+    _isValid=true;
+  };
 
   /**
    * Sets the distance in kilometers
    */
-  void setKilometers(int km);
+  void setKilometers(int km)
+  {
+    _dist=double(km)*mFromKm;
+    _isValid=true;
+  };
 
   /**
    * sets the distance in Nauticle miles
    */
-  void setNautMiles(double value);
+  void setNautMiles(double value)
+  {
+    _dist=value*mFromNMile;
+    _isValid=true;
+  };
 
   /**
    * Sets the distance in miles
    */
-  void setMiles(double value);
+  void setMiles(double value)
+  {
+    _dist=value*mFromMile;
+    _isValid=true;
+  };
+
+  /**
+   * Sets the unit for distances.
+   */
+  static void setUnit(distanceUnit unit)
+  {
+    _distanceUnit=unit;
+  };
 
   /**
    * Return the currently set unit for distances
    */
-  static distanceUnit getUnit();
+  static distanceUnit getUnit()
+  {
+    return _distanceUnit;
+  };
 
   /**
    * Returns the distance in Nautical Miles
    */
-  double getNautMiles() const;
+  double getNautMiles() const
+  {
+    return _dist/mFromNMile;
+  };
 
   /**
    * returns the distance in miles
    */
-  double getMiles() const ;
+  double getMiles() const
+  {
+    return _dist/mFromMile;
+  };
 
   /**
    * returns the distance in kilometers
    */
-  double getKilometers() const;
+  double getKilometers() const
+  {
+    return _dist/mFromKm;
+  };
 
   /**
    * Sets the distance to be invalid

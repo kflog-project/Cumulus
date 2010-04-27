@@ -25,15 +25,18 @@
 #ifndef ALTITUDE_H
 #define ALTITUDE_H
 
+#include <cmath>
+
 #include "distance.h"
 
 /**
  *  \author André Somers, Axel Pauli
  *
-  * \brief Class to calculate altitudes in different units.
-  *
-  * This class calculates altitude in different units.
-  */
+ * \brief Class to calculate altitudes in different units.
+ *
+ * This class handles different altitude units and arithmetics.
+ *
+ */
 
 class Altitude : public Distance
 {
@@ -41,7 +44,7 @@ public:
     /*
      * Altitude units
      */
-    enum altitude{ meters=0, feet=1, kilometers=2, miles=3, nautmiles=4, flightlevel=5 };
+    enum altitudeUnit{ meters=0, feet=1, flightlevel=2 };
 
 public:
 
@@ -79,12 +82,15 @@ public:
      * Sets the unit for altitudes. This unit is used to return the correct string
      * in @ref getText.
      */
-    static void setUnit(altitude unit);
+    static void setUnit(altitudeUnit unit)
+    {
+      _altitudeUnit=unit;
+    };
 
     /**
      * returns the current altitude unit
      */
-    static altitude getUnit()
+    static altitudeUnit getUnit()
     {
         return _altitudeUnit;
     };
@@ -105,7 +111,12 @@ public:
      * @param withUnit determines if the unit-string is included in the output
      * @param precision number of digits after the decimal separator
      */
-    static QString getText(double meter, bool withUnit, int precision=1);
+    static QString getText( double meter, bool withUnit, int precision=1 );
+
+    /**
+     * Basically the same as @ref getText, but returns the internally stored altitude.
+     */
+    QString getText( bool withUnit, int precision=1 ) const;
 
     /**
      * Get current unit as text
@@ -118,14 +129,12 @@ public:
     static double convertToMeters(double dist);
 
     /**
-     * Basically the same as @ref getText, but returns the internally stored altitude.
-     */
-    QString getText(bool withUnit, uint precision=1) const;
-
-    /**
      * Get altitude as flight level based on standard pressure 1013.25hPa
      */
-    double getFL() const;
+    double getFL() const
+    {
+      return rint( Distance::getFeet() / 100.0 );
+    };
 
     /**
      * implements == operator for altitude
@@ -211,7 +220,7 @@ public:
 
 protected:
 
-    static altitude _altitudeUnit;
+    static altitudeUnit _altitudeUnit;
 };
 
 

@@ -56,7 +56,7 @@ private:
     QSpinBox* kRecordInterval; // K-Record logging interval in seconds
 
     /** saves altitude unit set during construction of object */
-    Altitude::altitude altUnit;
+    Altitude::altitudeUnit altUnit;
 };
 
 #endif

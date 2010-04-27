@@ -3,7 +3,8 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : 2002      by Andre Somers
-                         : 2007-2009 by Axel Pauli
+                         : 2007-2010 by Axel Pauli
+
     email                : axel@kflog.org
 
     This file is part of Cumulus
@@ -20,9 +21,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-#include <cmath>
-#include <QByteArray>
 
 #include "speed.h"
 
@@ -45,86 +43,6 @@ Speed::Speed(double Mps) :
 
 Speed::~Speed()
 {
-}
-
-/** Set speed in meters per second. */
-void
-Speed::setMps(double speed)
-{
-  _speed = speed;
-  _isValid = true;
-  changed();
-}
-
-/** Set speed in Kilometers per hour */
-void
-Speed::setKph(double speed)
-{
-  _speed = speed / toKph;
-  _isValid = true;
-  changed();
-}
-
-/** Set speed in knots */
-void
-Speed::setKnot(double speed)
-{
-  _speed = speed / toKnot;
-  _isValid = true;
-  changed();
-}
-
-/** Set speed in statute miles per hour */
-void
-Speed::setMph(double speed)
-{
-  _speed = speed / toMph;
-  _isValid = true;
-  changed();
-}
-
-/** Set speed in feet per minute */
-void
-Speed::setFpm(double speed)
-{
-  _speed = speed / toFpm;
-  _isValid = true;
-  changed();
-}
-
-/** Get speed in Meters per Second */
-double
-Speed::getMps() const
-{
-  return (_speed);
-}
-
-/** Get speed in Kilometers per hour */
-double
-Speed::getKph() const
-{
-  return (_speed * toKph);
-}
-
-/** Get speed in Knots. */
-double
-Speed::getKnots() const
-{
-  return (_speed * toKnot);
-}
-
-/** Get speed in statute miles per hour */
-double
-Speed::getMph() const
-{
-  return (_speed * toMph);
-}
-
-/** Get speed in feet per minute */
-double
-Speed::getFpm() const
-{
-  return (_speed * toFpm);
 }
 
 /** + operator for speed. */
@@ -198,23 +116,18 @@ Speed::operator -() const
 }
 
 /** Returns a formatted string for the default horizontal unit setting. */
-QString
-Speed::getHorizontalText(bool withUnit, uint precision) const
+QString Speed::getHorizontalText(bool withUnit, uint precision) const
 {
-  QString result, unit;
-  double speed;
-  unit = getUnitText(_horizontalUnit);
-  speed = getHorizontalValue();
+  QString result;
 
-  QByteArray prec;
-  prec.setNum(precision);
   if (withUnit)
     {
-      result.sprintf("%1." + prec + "f %s", speed, unit.toLatin1().data());
+      result = QString("%1 %2").arg( getHorizontalValue(), 0, 'f', precision )
+                               .arg( getUnitText(_horizontalUnit) );
     }
   else
     {
-      result.sprintf("%1." + prec + "f", speed);
+      result = QString("%1").arg( getHorizontalValue(), 0, 'f', precision );
     }
 
   return result;
@@ -223,21 +136,16 @@ Speed::getHorizontalText(bool withUnit, uint precision) const
 /** Returns a formatted string for the default wind unit setting. */
 QString Speed::getWindText(bool withUnit, uint precision) const
 {
-  QString result, unit;
-  double speed;
-  unit = getUnitText(_windUnit);
-  speed = getWindValue();
-
-  QByteArray prec;
-  prec.setNum(precision);
+  QString result;
 
   if (withUnit)
     {
-      result.sprintf("%1." + prec + "f %s", speed, unit.toLatin1().data());
+      result = QString("%1 %2").arg( getWindValue(), 0, 'f', precision )
+                               .arg( getUnitText(_windUnit) );
     }
   else
     {
-      result.sprintf("%1." + prec + "f", speed);
+      result = QString("%1").arg( getWindValue(), 0, 'f', precision );
     }
 
   return result;
@@ -246,114 +154,98 @@ QString Speed::getWindText(bool withUnit, uint precision) const
 /** Returns a formatted string for the default vertical speed units. */
 QString Speed::getVerticalText(bool withUnit, uint precision) const
 {
-  QString result, unit;
-  double speed;
-
-  unit = getUnitText(_verticalUnit);
-  speed = getVerticalValue();
+  QString result;
 
   //@JD: If unit is feet/minute set precision to 0. Saves display space
   //     and should really be sufficient (1 foot/min is 0.005 m/s ...)
   if (_verticalUnit == feetPerMinute)
-    precision = 0;
-
-  QByteArray prec;
-  prec.setNum(precision);
+    {
+      precision = 0;
+    }
 
   if (withUnit)
     {
-      result.sprintf("%1." + prec + "f %s", speed, unit.toLatin1().data());
+      result = QString("%1 %2").arg( getVerticalValue(), 0, 'f', precision )
+                               .arg( getUnitText(_verticalUnit) );
     }
   else
     {
-      result.sprintf("%1." + prec + "f", speed);
+      result = QString("%1").arg( getVerticalValue(), 0, 'f', precision );
     }
 
   return result;
 }
 
-void
-Speed::setValueInUnit(double speed, speedUnit unit)
+void Speed::setValueInUnit(double speed, speedUnit unit)
 {
   switch (unit)
     {
-  case knots:
-    setKnot(speed);
-    break;
-  case milesPerHour:
-    setMph(speed);
-    break;
-  case metersPerSecond:
-    setMps(speed);
-    break;
-  case kilometersPerHour:
-    setKph(speed);
-    break;
-  case feetPerMinute:
-    setFpm(speed);
-    break;
-  default:
-    setMps(speed);
-    break;
+      case knots:
+        setKnot(speed);
+        break;
+      case milesPerHour:
+        setMph(speed);
+        break;
+      case metersPerSecond:
+        setMps(speed);
+        break;
+      case kilometersPerHour:
+        setKph(speed);
+        break;
+      case feetPerMinute:
+        setFpm(speed);
+        break;
+      default:
+        setMps(speed);
+        break;
     }
 }
 
-QString
-Speed::getUnitText(speedUnit unit)
+QString Speed::getUnitText(speedUnit unit)
 {
   switch (unit)
     {
-  case knots:
-    return "Kn";
-    break;
-  case milesPerHour:
-    return "Mph";
-    break;
-  case metersPerSecond:
-    return "m/s";
-    break;
-  case kilometersPerHour:
-    return "Km/h";
-    break;
-  case feetPerMinute:
-    return "Fpm";
-    break;
-  default:
-    return "m/s";
+      case knots:
+        return "Kn";
+        break;
+      case milesPerHour:
+        return "Mph";
+        break;
+      case metersPerSecond:
+        return "m/s";
+        break;
+      case kilometersPerHour:
+        return "Km/h";
+        break;
+      case feetPerMinute:
+        return "Fpm";
+        break;
+      default:
+        return "m/s";
     }
 }
 
-double
-Speed::getValueInUnit(speedUnit unit) const
+double Speed::getValueInUnit(speedUnit unit) const
 {
   switch (unit)
     {
-  case knots:
-    return getKnots();
-    break;
-  case milesPerHour:
-    return getMph();
-    break;
-  case metersPerSecond:
-    return getMps();
-    break;
-  case kilometersPerHour:
-    return getKph();
-    break;
-  case feetPerMinute:
-    return getFpm();
-    break;
-  default:
-    return getMps();
+      case knots:
+        return getKnots();
+        break;
+      case milesPerHour:
+        return getMph();
+        break;
+      case metersPerSecond:
+        return getMps();
+        break;
+      case kilometersPerHour:
+        return getKph();
+        break;
+      case feetPerMinute:
+        return getFpm();
+        break;
+      default:
+        return getMps();
     }
-}
-
-void Speed::changed()
-{
-  // @AP Note: we have negative speed values in the variometer
-  // calculation. Setting to zero is not a good idea.
-
-  // speed should not be less than 0
-  // if (_speed<0) _speed=0;
 }
 

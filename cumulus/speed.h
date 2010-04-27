@@ -3,7 +3,8 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : 2002      by Andre Somers
-                         : 2007-2009 by Axel Pauli
+                         : 2007-2010 by Axel Pauli
+
     email                : axel@kflog.org
 
     This file is part of Cumulus
@@ -34,7 +35,9 @@ const double toKnot=1.9438;
 const double toFpm=196.8504;
 
 /**
- * @short Abstract speed
+ *  \author Andre Somers, Axel Pauli
+ *
+ * \brief This class handles different speed units and arithmetics.
  *
  * This class can contain a speed. It provides set and get functions for
  * all popular units. For this class, there are two default units you can
@@ -43,7 +46,6 @@ const double toFpm=196.8504;
  * etc. There are convenience functions to access the value using both
  * appropriate units.
  *
- * @author Andre Somers
  */
 class Speed
 {
@@ -54,11 +56,11 @@ public:
      */
     enum speedUnit
     {
-        metersPerSecond=0,   /**< meters per second */
-        kilometersPerHour=1, /**< kilometers per hour */
-        knots=2,             /**< knots (nautical miles per hour) */
-        milesPerHour=3,      /**< statute miles per hour */
-        feetPerMinute=4        /**< feet per minute */
+      metersPerSecond=0,   /**< meters per second */
+      kilometersPerHour=1, /**< kilometers per hour */
+      knots=2,             /**< knots (nautical miles per hour) */
+      milesPerHour=3,      /**< statute miles per hour */
+      feetPerMinute=4        /**< feet per minute */
     };
 
     /**
@@ -81,52 +83,87 @@ public:
     /**
      * Get speed in Knots.
      */
-    double getKnots() const;
+    double getKnots() const
+    {
+      return (_speed * toKnot);
+    };
 
     /**
      * Get speed in Kilometers per hour
      */
-    double getKph() const;
+    double getKph() const
+    {
+      return (_speed * toKph);
+    };
 
     /**
      * Get speed in Meters per Second
      */
-    double getMps() const;
+    double getMps() const
+    {
+      return (_speed);
+    };
 
     /**
      * Get speed in statute miles per hour
      */
-    double getMph() const;
+    double getMph() const
+    {
+      return (_speed * toMph);
+    };
 
     /**
      * Get speed in Feed per minute
      */
-    double getFpm() const;
+    double getFpm() const
+    {
+      return (_speed * toFpm);
+    };
 
     /**
      * Set speed in statute miles per hour
      */
-    void setMph(double speed);
+    void setMph(double speed)
+    {
+      _speed = speed / toMph;
+      _isValid = true;
+    };
 
     /**
      * Set speed in knots
      */
-    void setKnot(double speed);
+    void setKnot(double speed)
+    {
+      _speed = speed / toKnot;
+      _isValid = true;
+    };
 
     /**
      * Set speed in Kilometers per hour
      */
-    void setKph(double speed);
+    void setKph(double speed)
+    {
+      _speed = speed / toKph;
+      _isValid = true;
+    };
 
     /**
      * Set speed in meters per second.
      */
-    void setMps(double speed);
+    void setMps(double speed)
+    {
+      _speed = speed;
+      _isValid = true;
+    };
 
     /**
      * Set speed in feet per minute.
      */
-    void setFpm(double speed);
+    void setFpm(double speed)
+    {
+      _speed = speed / toFpm;
+      _isValid = true;
+    };
 
     /**
      * Set speed in selected horizontal unit.
@@ -301,7 +338,7 @@ public:
     /**
      * Sets the distance to be invalid
      */
-    inline void setInvalid()
+    void setInvalid()
     {
         _isValid=false;
         _speed=0;
@@ -310,7 +347,7 @@ public:
     /**
      * Gets if the distance is valid
      */
-    inline bool isValid() const
+    bool isValid() const
     {
         return _isValid;
     };
@@ -376,11 +413,6 @@ protected:
      * Contains the unit used for wind speeds
      */
     static speedUnit _windUnit;
-
-    /**
-     * called if the value has been changed. Can be overridden in derived classes
-     */
-    virtual void changed();
 };
 
 /**

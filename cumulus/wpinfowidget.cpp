@@ -350,7 +350,7 @@ void WPInfoWidget::writeText()
         }
 
       // save current unit
-      Altitude::altitude currentUnit = Altitude::getUnit();
+      Altitude::altitudeUnit currentUnit = Altitude::getUnit();
 
       Altitude::setUnit(Altitude::meters);
       QString meters = Altitude::getText(_wp.elevation, true, 0);

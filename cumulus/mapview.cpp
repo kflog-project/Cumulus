@@ -641,10 +641,7 @@ void MapView::slot_LogEntry()
 /** This slot is being called if the altitude has changed. */
 void MapView::slot_Altitude(const Altitude& altitude )
 {
-  Q_UNUSED(altitude)
-
-  QString altiText = calculator->getAltimeterAltitudeText();
-  _altitude->setValue(altiText);
+  _altitude->setValue( altitude.getText( false, 0 ) );
 }
 
 
@@ -708,7 +705,7 @@ void MapView::slot_Vario (const Speed& vario)
   // if altitude has more than 3 digits, vario is rounded to one
   // digit. Normal vario display is e.g. 1.1 (2 digits plus decimal
   // point)
-  if( calculator->getAltimeterAltitudeText().size() > 4 )
+  if( _altitude->getValue().size() > 4 )
     {
       varValue = vario.getVerticalText(false, 0);
     }

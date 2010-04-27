@@ -166,7 +166,7 @@ void SettingsPageUnits::slot_save()
   Speed::setHorizontalUnit(Speed::speedUnit(speeds[UnitSpeed->currentIndex()]));
   Speed::setVerticalUnit(Speed::speedUnit(varios[UnitVario->currentIndex()]));
   Speed::setWindUnit(Speed::speedUnit(winds[UnitWind->currentIndex()]));
-  Altitude::setUnit(Altitude::altitude(altitudes[UnitAlt->currentIndex()]));
+  Altitude::setUnit(Altitude::altitudeUnit(altitudes[UnitAlt->currentIndex()]));
   WGSPoint::setFormat(WGSPoint::Format(positions[UnitPosition->currentIndex()]));
   Time::setUnit(Time::timeUnit(times[UnitTime->currentIndex()]));
 }

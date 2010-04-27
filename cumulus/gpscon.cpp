@@ -504,8 +504,10 @@ void GpsCon::slot_Timeout()
  * process. There are two connections opened by the client, first as data
  * channel, second as notification channel.
  */
-void GpsCon::slot_ListenEvent(int /*socket*/)
+void GpsCon::slot_ListenEvent( int socket )
 {
+  Q_UNUSED( socket )
+
   static QString method = "GPSCon::slot_ListenEvent():";
 
   // Client tries to connect. Normally we accept only one connection. That
@@ -570,9 +572,12 @@ void GpsCon::slot_ListenEvent(int /*socket*/)
  * This slot is triggered by the QT main loop and is used to handle the
  * notification events from the client.
  */
-void GpsCon::slot_NotificationEvent(int socket)
+void GpsCon::slot_NotificationEvent( int socket )
 {
   QString method = QString("GPSCon::slot_NotificationEvent(%1):").arg(socket);
+
+  // Disable client notifier if socket shall be read. Advised by Qt.
+  clientNotifier->setEnabled( false );
 
   QString msg = "";
 
@@ -587,10 +592,14 @@ void GpsCon::slot_NotificationEvent(int socket)
     {
       qWarning("%s unexpected notification message code %s",
                method.toLatin1().data(), msg.toLatin1().data() );
-      return;
+    }
+  else
+    {
+      queryClient();
     }
 
-  queryClient();
+  // Enable client notifier after read.
+  clientNotifier->setEnabled( true );
 }
 
 /**
@@ -676,6 +685,7 @@ void GpsCon::readClientMessage( uint index, QString &result )
   if( done <= 0 )
     {
       server.closeClientSock(index);
+      qWarning() << "GpsCon::readClientMessage ERROR, errno=" << errno;
       return; // Error occurred
     }
 

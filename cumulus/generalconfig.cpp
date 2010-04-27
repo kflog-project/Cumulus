@@ -388,7 +388,7 @@ void GeneralConfig::load()
   endGroup();
 
   // configure static units
-  Altitude::setUnit( Altitude::altitude( getUnitAlt() ) );
+  Altitude::setUnit( Altitude::altitudeUnit( getUnitAlt() ) );
   Distance::setUnit( Distance::distanceUnit( getUnitDist() ) );
   Speed::setHorizontalUnit( Speed::speedUnit( getUnitSpeed() ) );
   Speed::setVerticalUnit( Speed::speedUnit( getUnitVario() ) );

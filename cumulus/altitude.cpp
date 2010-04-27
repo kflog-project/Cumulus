@@ -22,10 +22,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QtCore>
 #include "altitude.h"
 
 // initialize static value
-Altitude::altitude Altitude::_altitudeUnit=meters;
+Altitude::altitudeUnit Altitude::_altitudeUnit = meters;
 
 Altitude::Altitude() : Distance()
 {
@@ -40,7 +41,7 @@ Altitude::Altitude(double meters) : Distance(meters)
 /** copy constructor */
 Altitude::Altitude (const Altitude& alt) : Distance()
 {
-  _dist = alt._dist;
+  _dist    = alt._dist;
   _isValid = alt._isValid;
 }
 
@@ -50,57 +51,28 @@ Altitude::Altitude (const Distance& dst): Distance (dst)
 Altitude::~Altitude()
 {}
 
-/** Get altitude as flight level (at standard pressure) */
-double Altitude::getFL() const
-{
-  return Distance::getFeet()/100;
-}
-
-void Altitude::setUnit(altitude unit)
-{
-  _altitudeUnit=unit;
-}
 
 QString Altitude::getText(double meter, bool withUnit, int precision)
 {
-  QString result, unit;
+  QString result;
   double dist;
   int defprec=1;
 
   switch (_altitudeUnit)
   {
     case meters:
-      unit="m";
       dist=meter;
       defprec=0;
       break;
     case feet:
-      unit="ft";
       dist=meter/mFromFeet;
       defprec=0;
       break;
-    case kilometers:
-      unit="Km";
-      dist=meter/mFromKm;
-      defprec=2;
-      break;
-    case miles:
-      unit="M.";
-      dist=meter/mFromMile;
-      defprec=3;
-      break;
-    case nautmiles:
-      unit="nM.";
-      dist=meter/mFromNMile;
-      defprec=3;
-      break;
     case flightlevel:
-      unit="FL";
-      dist=meter/(mFromFeet*100.0);
+      dist=rint(meter/(mFromFeet*100.0));
       defprec=3;
       break;
     default:
-      unit="m";
       dist=meter;
       defprec=0;
   }
@@ -109,132 +81,57 @@ QString Altitude::getText(double meter, bool withUnit, int precision)
     {
       precision = defprec;
     }
-
-  QString prec;
-  prec.setNum(precision);
-
-  if( dist < 0 )
-    {
-      if( withUnit )
-        {
-          result = unit;
-        }
-      else
-        {
-          result = "";
-        }
-    }
   else
     {
       if( withUnit )
         {
           if( _altitudeUnit == flightlevel )
             {
-              QString fms = QString( "%s %1." ) + prec + "f";
-              result.sprintf( fms.toLatin1().data(), unit.toLatin1().data(), dist );
+              result = QString("%1 %2").arg( getUnitText() )
+                                       .arg( dist, 0, 'f', precision );
+
             }
           else
             {
-              QString fms = QString( "%1." ) + prec + "f %s";
-              result.sprintf( fms.toLatin1().data(), dist, unit.toLatin1().data() );
+              result = QString("%1 %2").arg( dist, 0, 'f', precision )
+                                       .arg( getUnitText() );
             }
         }
       else
         {
-          QString fms = QString( "%1." ) + prec + "f";
-          result.sprintf( fms.toLatin1().data(), dist );
+          result = QString("%1").arg( dist, 0, 'f', precision );
         }
     }
 
   return result;
 }
 
+QString Altitude::getText( bool withUnit, int precision ) const
+{
+  return getText( getMeters(), withUnit, precision );
+}
 
 /** Converts a distance from the current units to meters. */
 double Altitude::convertToMeters(double dist)
 {
   double res;
 
-  switch (_altitudeUnit) {
-  case 0: //meters:
-    res=dist;
-    break;
-  case 1: //feet:
-    res=dist*mFromFeet;
-    break;
-  case 2: //kilometers:
-    res=dist*mFromKm;
-    break;
-  case 3: //miles:
-    res=dist*mFromMile;
-    break;
-  case 4: //nautmiles:
-    res=dist*mFromNMile;
-    break;
-  case 5: //flightlevel:
-    res=dist*(mFromFeet/100.0);
-  default:
-    res=dist;
+  switch (_altitudeUnit)
+  {
+    case meters:
+      res=dist;
+      break;
+    case feet:
+      res=dist*mFromFeet;
+      break;
+    case flightlevel:
+      res=dist*(mFromFeet/100.0);
+    default:
+      res=dist;
   }
 
   return res;
 }
-
-
-QString Altitude::getText(bool withUnit, uint precision) const
-{
-  QString result, unit;
-  double dist;
-
-  switch (_altitudeUnit)
-  {
-    case meters:
-      unit="m";
-      dist=getMeters();
-      break;
-    case feet:
-      unit="ft";
-      dist=getFeet();
-      break;
-    case kilometers:
-      unit="Km";
-      dist=getKilometers();
-      break;
-    case miles:
-      unit="M.";
-      dist=getMiles();
-      break;
-    case nautmiles:
-      unit="nM.";
-      dist=getNautMiles();
-      break;
-    case flightlevel:
-      unit="FL";
-      dist=getFL();
-      break;
-    default:
-      unit="m";
-      dist=getMeters();
-  }
-
-  QString prec;
-  prec.setNum(precision);
-  if (withUnit) {
-    if( _altitudeUnit == flightlevel ) {
-      QString fms = QString("%s %1.") + prec + "f";
-      result.sprintf( fms.toLatin1().data(), unit.toLatin1().data(), dist );
-    }
-    else {
-      QString fms = QString("%1.") + prec + "f %s";
-      result.sprintf( fms.toLatin1().data(), dist, unit.toLatin1().data() );
-    }
-  } else {
-    QString fms = QString("%1.") + prec + "f";
-    result.sprintf( fms.toLatin1().data(), dist);
-  }
-  return result;
-}
-
 
 QString Altitude::getUnitText()
 {
@@ -247,15 +144,6 @@ QString Altitude::getUnitText()
       break;
     case feet:
       unit="ft";
-      break;
-    case kilometers:
-      unit="Km";
-      break;
-    case miles:
-      unit="M.";
-      break;
-    case nautmiles:
-      unit="nM.";
       break;
     case flightlevel:
       unit="FL";

@@ -184,13 +184,12 @@ public:
       };
 
     /**
-     * Read property of Speed lastSpeed.
+     * Read property of altitude.
      */
     const Altitude& getAltimeterAltitude();
-    const QString getAltimeterAltitudeText();
 
     /**
-     * Read property of lastSpeed.
+     * Read property of altitude collection.
      */
     const AltitudeCollection& getAltitudeCollection();
 

@@ -51,6 +51,7 @@ Calculator::Calculator(QObject* parent) :
   GeneralConfig *conf = GeneralConfig::instance();
 
   manualAltitude.setMeters( conf->getManualNavModeAltitude() );
+
   lastAltitude     = manualAltitude;
   lastAGLAltitude  = manualAltitude;
   lastSTDAltitude  = manualAltitude;
@@ -147,14 +148,6 @@ const Altitude& Calculator::getAltimeterAltitude()
       return lastAHLAltitude; // AHL
       break;
     }
-}
-
-const QString Calculator::getAltimeterAltitudeText()
-{
-  Altitude alti = getAltimeterAltitude();
-  // to be implemented: if height > transition height switch to FL
-  //double d = alti.getFL();
-  return alti.getText(false, 0);
 }
 
 const AltitudeCollection& Calculator::getAltitudeCollection()

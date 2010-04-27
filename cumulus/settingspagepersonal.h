@@ -86,7 +86,7 @@ class SettingsPagePersonal : public QWidget
     /**
      * saves current altitude unit during construction of object
      */
-    Altitude::altitude altUnit;
+    Altitude::altitudeUnit altUnit;
 };
 
 #endif
