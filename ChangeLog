@@ -14,6 +14,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-04-27 AP: Did performance tuning in Distance, Altitude and Speed
+                   classes.
+[-] 2010-04-27 AP: Bugfix: GPS user altitude and user altitude correction
+                   were not taken over in GPS module after a user modification.
 [o] 2010-04-25 AP: Fall back to old GPS connection solution for the N8x0 due to
                    stochastic altitude reporting of LibLoaction service.
 [+] 2010-04-23 AP: Width of the bearing course line is taken over from the
