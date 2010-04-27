@@ -4,6 +4,7 @@
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
                                2008-2010 by Axel Pauli
+
     email                : axel@kflog.org
 
     $Id$
@@ -128,7 +129,6 @@ void GpsNmea::resetDataObjects()
 void GpsNmea::createGpsConnection()
 {
   // qDebug("GpsNmea::createGpsConnection()");
-
   QObject *gpsObject = 0;
 
   // We create only a GpsCon instance. The GPS daemon process will be started
@@ -1858,6 +1858,11 @@ void GpsNmea::fixNOK()
 void GpsNmea::slot_reset()
 {
   GeneralConfig *conf = GeneralConfig::instance();
+
+  // altitude reference delivered by GPS unit
+  _deliveredAltitude = static_cast<GpsNmea::DeliveredAltitude> (conf->getGpsAltitude());
+  _userAltitudeCorrection = conf->getGpsUserAltitudeCorrection();
+
   QString oldDevice   = gpsDevice;
 
   if ( gpsDevice != conf->getGpsDevice() )
@@ -2084,7 +2089,6 @@ void GpsNmea::writeConfig()
       conf->save();
     }
 }
-
 
 /** Set system date/time. Input is UTC related. */
 void GpsNmea::setSystemClock( const QDateTime& utcDt )
