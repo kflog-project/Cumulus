@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!-- $Id$ -->
 <html>
 <head>
@@ -23,66 +22,77 @@
 <table border="1" width="100%">
 
   <tr>
+    <th>No</th>
     <th>Directory</th>
     <th>File</th>
     <th>Description</th>
   </tr>
   
   <tr>
+    <td>1</td>
     <td>$HOME/.config</td>
     <td>Cumulus.conf</td>
     <td>File with configuration data of Cumulus</td>
   </tr>
 
   <tr>
+    <td>2</td>
     <td>/opt/cumulus/etc</td>
     <td>glider.pol</td>
     <td>File with polar data of gliders</td>
   </tr>
   
   <tr>
+    <td>3</td>
     <td>$HOME/Cumulus</td>
     <td>task.tsk</td>
     <td>Flight task data file, default location on desktop</td>
   </tr>
   
   <tr>
+    <td>4</td>
     <td>$HOME/Cumulus</td>
     <td>cumulus.kwp</td>
     <td>Waypoint data file, default location on desktop</td>
   </tr>
 
   <tr>
-    <td>$HOME/Cumulus</td>
+   <td>5</td>
+   <td>$HOME/Cumulus</td>
     <td>*.IGC</td>
     <td>IGC logger files, default location on desktop</td>
   </tr>
 
   <tr>
-    <td>$HOME/Cumulu/maps/[airfields|airspaces|landscape]</td>
+    <td>6</td>
+    <td>$HOME/Cumulus/maps/[airfields|airspaces|landscape]</td>
     <td>map data files</td>
     <td>Map files, default root location on desktop</td>
   </tr>
 
   <tr>
+    <td>7</td>
     <td>$HOME/MyDocs/Cumulus</td>
     <td>task.tsk</td>
     <td>Flight task data file, default location on Maemo</td>
   </tr>
   
   <tr>
+    <td>8</td>
     <td>$HOME/MyDocs/Cumulus</td>
     <td>cumulus.kwp</td>
     <td>Waypoint data file, default location on Maemo</td>
   </tr>
 
   <tr>
+    <td>9</td>
     <td>$HOME/MyDocs/Cumulus</td>
     <td>*.IGC</td>
     <td>IGC logger files, default location on Maemo</td>
   </tr>
   
   <tr>
+    <td>10</td>
     <td>$HOME/MyDocs/Cumulus/maps/[airfields|airspaces|landscape]</td>
     <td>map data files</td>
     <td>Map files, default root location on Maemo</td>
@@ -91,6 +101,25 @@
 </table>
 
 <p>
+Notes:
+</p> 
+In Maemo (e.g., in Nokia hardware devices, like the N800, 810 and 900),
+the location of files numbered 7,8,9 and 10 is defined in Setup/General, Personal
+as the <i>Data Directory</i>. If Cumulus does not find this entry, it tries to
+create it in the following directories in order:
+
+<UL>
+	<LI>/media/mmc1/Cumulus</LI>
+	<LI>/media/mmc2/Cumulus</LI>
+	<LI>/home/user/MyDocs/Cumulus</LI>
+</UL>
+<p>
+The location of files numbered 6 to 10 is defined in Setup/General, Map Settings
+as <a href="cumulus-settings-map-settings.html#Maps"><i>Maps</i></a>,
+under which are found the airfields, airspaces and landscape folders.
+</p>
+<p>
+
 <table width="100%">
   <tbody>
     <tr>
@@ -104,4 +133,3 @@
 
 </body>
 </html>
-
