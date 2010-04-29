@@ -14,8 +14,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2010-04-27 AP: Did performance tuning in Distance, Altitude and Speed
-                   classes.
+[o] 2010-04-29 AP: Welt2000 download link in airfield settings updated.
+[o] 2010-04-29 AP: Performance tuning in MapInfoBox class. Dynamic layout was
+                   to often recalculated. Caused a lot of overhead. Furthermore
+                   found a possible endless while loop where font size became
+                   negative.
+[o] 2010-04-27 AP: Performance tuning in Distance, Altitude and Speed classes.
 [-] 2010-04-27 AP: Bugfix: GPS user altitude and user altitude correction
                    were not taken over in GPS module after a user modification.
 [o] 2010-04-25 AP: Fall back to old GPS connection solution for the N8x0 due to
