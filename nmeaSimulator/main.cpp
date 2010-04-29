@@ -65,7 +65,7 @@ static    float  Time=3600.0;     // lets fly one hour per default
 static    bool   gotAltitude = false;
 static    QString confFile;   // configuration file name
 
-// name pipe, default is /tmp/nmeasim
+// name of used pipe
 static    QString device = "/tmp/nmeasim";
 
 void fifoExit(int /* signal */ )
@@ -102,12 +102,10 @@ int init_io( void )
 
 void usleep( int t )
 {
-  // nanosleep not available in gcc-2.95.3
-  //struct timespec ts;
-  //ts.tv_sec  = t/1000000;
-  //ts.tv_nsec = (t%1000000)*1000;
-  //nanosleep (&ts, NULL);
-  sleep(t/1000000);
+  struct timespec ts;
+  ts.tv_sec  = t/1000000;
+  ts.tv_nsec = (t%1000000)*1000;
+  nanosleep (&ts, NULL);
 }
 
 void scanConfig( QString cfg )
@@ -117,17 +115,18 @@ void scanConfig( QString cfg )
       int deg,min,sec;
       char NS;
       float flat;
-      cout << "EEE " << cfg.toLatin1().data()+6 << endl;
+
       if(cfg.contains(':') )
         {
           sscanf(cfg.toLatin1().data()+4,"%2d:%2d:%2d%c", &deg,&min,&sec, &NS );
           lat = (double)deg+(double)min/60.0+(double)sec/3600.0;
+
           if (NS=='S')
             lat = -lat;
           else if(NS=='N')
             ;
           else
-            cout << "Invalid Latitude Coordinate N|S possible not: " << NS << endl;
+            cerr << "Invalid Latitude Coordinate N|S possible not: " << NS << endl;
         }
       else
         {
@@ -140,18 +139,18 @@ void scanConfig( QString cfg )
       int deg,min,sec;
       char EW;
       float flon;
+
       if(cfg.contains(':') )
         {
-
           sscanf(cfg.toLatin1().data()+4,"%3d:%2d:%2d%c", &deg,&min,&sec, &EW );
           lon = (double)deg+(double)min/60.0+(double)sec/3600.0;
-          cout << EW << endl;
+
           if (EW=='W')
             lon = -lon;
           else if(EW=='E')
             ;
           else
-            cout << "Invalid Longitude Coordinate E|S possible not: " << EW << endl;
+            cerr << "Invalid Longitude Coordinate E|S possible not: " << EW << endl;
         }
       else
         {
@@ -202,7 +201,7 @@ void scanConfig( QString cfg )
       device = cfg.mid(7).trimmed();
     }
   else
-    cout << "Unknown parameter: " << cfg.toLatin1().data() << " trashed!" << endl;
+    cerr << "Unknown parameter: " << cfg.toLatin1().data() << " trashed!" << endl;
 }
 
 void safeConfig( void )
@@ -410,7 +409,8 @@ int main(int argc, char **argv)
           satIds.clear();
           satIds << "10" << "15" << "33" << "17" << "19" << "11" << "23" << "28" << "25" << "36";
           pdop = "1.2";
-          hdop = "1.4";          satIds.clear();
+          hdop = "1.4";
+          satIds.clear();
           satIds << "14" << "32" << "17" << "20" << "11" << "23" << "28" << "25" << "35";
           pdop = "1.7";
           hdop = "1.1";
