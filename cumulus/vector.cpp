@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2009 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2009-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -19,15 +20,15 @@
 #include "vector.h"
 #include "mapcalc.h"
 
-Vector::Vector()
+Vector::Vector() :
+  _angle(0.0),
+  dirtyXY(false),
+  dirtyDR(false),
+  _x(0.0),
+  _y(0.0),
+  _speed(0.0),
+  _isValid(false)
 {
-    _angle=0.0;
-    _speed=0.0;
-    _x=0.0;
-    _y=0.0;
-    dirtyXY=false;
-    dirtyDR=false;
-    _isValid=false;
 }
 
 
