@@ -142,7 +142,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //add ETA widget
   _eta = new MapInfoBox( this, conf->getMapFrameColor().name() );
-  _eta->hide();
+  _eta->setVisible(false);
   _eta->setPreText( "Eta" );
   _eta->setValue("-");
   DEBLayout->addWidget( _eta );
@@ -203,7 +203,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //add LD widget
   _ld = new MapInfoBox( this, conf->getMapFrameColor().name() );
-  _ld->hide();
+  _ld->setVisible(false);
   _ld->setPreText( "LD" );
   _ld->setValue("-/-");
   WLLayout->addWidget( _ld );
@@ -421,8 +421,7 @@ void MapView::slot_Waypoint(const wayPoint *wp)
     {
       if (wp->taskPointIndex != -1)
         {
-          QString idx;
-          idx.sprintf("%d ", wp->taskPointIndex);
+          QString idx = QString("%1 ").arg( wp->taskPointIndex );
           dest += tr("TP") + idx;
         }
 
@@ -544,13 +543,13 @@ void MapView::slot_RelBearing(int relbearing)
 /** This slot is called by calculator if a new distance has been calculated. */
 void MapView::slot_Distance(const Distance& distance)
 {
-  if (distance.getMeters()<0)
+  if (distance.getMeters() < 0 )
     {
       _distance->setValue("-");
     }
   else
     {
-      _distance->setValue(distance.getText(false,1,uint (2)));
+      _distance->setValue(distance.getText(false, 1, (uint) 2 ) );
     }
 }
 
@@ -564,8 +563,8 @@ void MapView::slot_ETA(const QTime& eta)
     }
   else
     {
-      QString txt;
-      txt.sprintf("%d:%02d", eta.hour(), eta.minute());
+      QString txt = QString("%1:%2").arg( eta.hour() )
+                                    .arg( eta.minute(), 2, 10, QChar('0') );
       _eta->setValue(txt);
     }
 }
@@ -742,15 +741,15 @@ void MapView::slot_LD( const double& rLD, const double& cLD )
     }
   else if( rLD < 100.0 )
     {
-      rld.sprintf("%2.1f", rLD);
+      rld = QString("%1").arg( rLD, 2, 'f', 1 );
     }
   else if( rLD < 1000.0 )
     {
-      rld.sprintf("%3.0f", rLD);
+      rld = QString("%1").arg( rLD, 3, 'f', 0 );
     }
   else
     {
-      rld.sprintf(">999");
+      rld = ">999";
     }
 
   // format current LD
@@ -760,11 +759,11 @@ void MapView::slot_LD( const double& rLD, const double& cLD )
     }
   else if( cLD < 100.0 )
     {
-      cld.sprintf("%2.1f", cLD);
+      cld = QString("%1").arg( cLD, 2, 'f', 1 );
     }
   else
     {
-      cld.sprintf(">99");
+      cld = ">99";
     }
 
   _ld->setValue( rld + "/" + cld );
@@ -901,15 +900,15 @@ void MapView::slot_toggleDistanceEta()
 {
   if( _distance->isVisible() )
     {
-      _distance->hide();
-      _eta->show();
+      _distance->setVisible(false);
+      _eta->setVisible(true);
       _eta->setValue( _eta->getValue() );
       emit toggleETACalculation( true );
     }
   else
     {
-      _eta->hide();
-      _distance->show();
+      _eta->setVisible(false);
+      _distance->setVisible(true);
       _distance->setValue( _distance->getValue() );
       emit toggleETACalculation( false );
     }
@@ -920,16 +919,16 @@ void MapView::slot_toggleWindAndLD()
 {
   if( _wind->isVisible() )
     {
-      _wind->hide();
-      _ld->show();
+      _wind->setVisible(false);
+      _ld->setVisible(true);
       _ld->setValue( _ld->getValue() );
       // switch on LD calculation in calculator
       emit toggleLDCalculation( true );
     }
   else
     {
-      _ld->hide();
-      _wind->show();
+      _ld->setVisible(false);
+      _wind->setVisible(true);
       _wind->setValue( _wind->getValue() );
       // switch off LD calculation in calculator
       emit toggleLDCalculation( false );
@@ -947,7 +946,7 @@ void MapView::slot_AltimeterDialog()
            calculator, SLOT( slot_settingsChanged() ) );
 
   amDlg->work();
-  amDlg->show();
+  amDlg->setVisible(true);
 }
 
 /** Called, if altimeter mode has been changed */
@@ -976,7 +975,7 @@ void MapView::slot_VarioDialog()
   connect( vmDlg, SIGNAL( newTEKAdjust( int ) ),
            calculator->getVario(), SLOT( slotNewTEKAdjust( int ) ) );
 
-  vmDlg->show();
+  vmDlg->setVisible(true);
 }
 
 /** Opens the GPS status dialog */
@@ -985,7 +984,7 @@ void MapView::slot_gpsStatusDialog()
   GpsStatusDialog *gpsDlg = new GpsStatusDialog( this );
   // delete widget during close event
   gpsDlg->setAttribute(Qt::WA_DeleteOnClose);
-  gpsDlg->show();
+  gpsDlg->setVisible(true);
 }
 
 /** Opens the inflight glider settings dialog. */
@@ -1008,7 +1007,7 @@ void MapView::slot_gliderFlightDialog()
   connect( gfDlg, SIGNAL(newWaterAndBugs(const int, const int)),
            calculator, SLOT(slot_WaterAndBugs(const int, const int)) );
 
-  gfDlg->show();
+  gfDlg->setVisible(true);
 }
 
 /**
