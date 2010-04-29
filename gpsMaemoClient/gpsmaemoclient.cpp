@@ -1353,7 +1353,10 @@ void GpsMaemoClient::readSentenceFromBuffer()
           // Filter out and display GPSD messages
           qWarning( "GPSD Message: %s", record );
         }
-      else
+      else if( ! qRecord.startsWith( "$PNOKU,") &&
+               ! qRecord.startsWith( "$GPVTG,") &&
+               ! qRecord.startsWith( "$GPGLL,") &&
+               ! qRecord.startsWith( "$GPGST,") )
         {
           // forward GPS record to subscribers
           // qDebug( "GpsMaemo: Extracted NMEA Record: %s", record );
