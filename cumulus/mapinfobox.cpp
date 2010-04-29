@@ -28,12 +28,12 @@
 
 #include "generalconfig.h"
 
-CuLabel::CuLabel ( QWidget * parent, Qt::WFlags f ) :
-  QLabel(parent, f)
+CuLabel::CuLabel( QWidget * parent, Qt::WFlags flags ) :
+  QLabel( parent, flags )
 {}
 
-CuLabel::CuLabel ( const QString& text, QWidget* parent, Qt::WFlags flags ) :
-  QLabel(text, parent, flags)
+CuLabel::CuLabel( const QString& text, QWidget* parent, Qt::WFlags flags ) :
+  QLabel( text, parent, flags )
 {}
 
 void CuLabel::mousePressEvent ( QMouseEvent* event )
@@ -43,6 +43,7 @@ void CuLabel::mousePressEvent ( QMouseEvent* event )
   emit mousePress();
 }
 
+//------------------------------------------------------------------------------
 
 MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor,
                         int fontDotsize, bool minusInPretext ) :
@@ -78,15 +79,26 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor,
       _minus->setPixmap( GeneralConfig::instance()->loadPixmap( "minus.png" ) );
       _minus->setFixedWidth( 25 );
       preLayout->addWidget( _minus );
-      _minus->hide();
+      _minus->setVisible(false);
     }
 
   topLayout->addLayout(preLayout, 0);
 
   _text = new QLabel(this);
   _text->setIndent(0);
+  f.setPixelSize(fontDotsize);
+  _text->setFont(f);
 
   topLayout->addWidget(_text,10);
+
+  _text->setStyleSheet( QString( "border-style: none;"
+                                 "border-width: 0px;"
+                                 "background-color: white;"
+                                 "padding-left: 1px;"
+                                 "padding-right: 1px;"
+                                 "margin: 0px;"
+                                 "font-size: %1px;"
+                                 "text-align: left;" ).arg(fontDotsize) );
 
   setValue("-");
   setPreText("");
@@ -120,13 +132,13 @@ void MapInfoBox::basics( const QString& borderColor )
   setLineWidth(3);
   setMaximumHeight(60);
 
-  _PreText = QString("");
+  _preText = QString("");
   _value =  QString("");
   _ptext = 0;
 }
 
 
-/** Write property of QString _PreText. */
+/** Write property of QString _preText. */
 void MapInfoBox::setPreText( const QString& newVal )
 {
   // Are we text or pixmap? For pixmap, ptext is unused
@@ -135,8 +147,8 @@ void MapInfoBox::setPreText( const QString& newVal )
       return;
     }
 
-  _PreText = newVal;
-  _ptext->setText(_PreText);
+  _preText = newVal;
+  _ptext->setText(_preText);
 }
 
 /** Set new pixmap as the main content */
@@ -152,51 +164,80 @@ void MapInfoBox::setPixmap( const QPixmap& newPixmap )
 }
 
 /** Write property of QString _value. */
-void MapInfoBox::setValue( const QString& newVal )
+void MapInfoBox::setValue( const QString& newVal, bool showEvent )
 {
-  int fontDotsize = _maxFontDotsize;
-  int diff;
+  int fontDotsize   = _maxFontDotsize;
+  int lastValueSize = _value.size();
 
   _value = newVal;
 
-  _text->setStyleSheet( QString( "border-style: none;"
-                                 "border-width: 0px;"
-                                 "background-color: white;"
-                                 "padding-left: 1px;"
-                                 "padding-right: 1px;"
-                                 "margin: 0px;"
-                                 "font-size: %1px;"
-                                 "text-align: left;" ).arg(fontDotsize) );
-
-  if( _preMinus )
+  if(  _minus && _preMinus && showEvent == false )
     {
       if( _value.startsWith( '-' ) && _value.size() > 1 )
         {
           _value = _value.remove( 0, 1 );
-          _minus->show();
+          _minus->setVisible(true);
         }
       else
         {
-          _minus->hide();
+          _minus->setVisible(false);
         }
     }
 
   _text->setText(_value);
 
+  if( _value.isEmpty() )
+    {
+      // We ignore empty values in further processing
+      return;
+    }
+
+  if( ! isVisible() )
+    {
+      // We make no style actions if the widget is hidden.
+      return;
+    }
+
+#ifdef DEBUG
+  qDebug() << _preText << _value
+           << "MSH=" <<  minimumSizeHint().width() << "W=" << width()
+           << "Visible" << isVisible();
+#endif
+
+  if( minimumSizeHint().width() > width() || lastValueSize != _value.size() )
+    {
+      // Do only setup a new style, if it is really necessary.
+      _text->setStyleSheet( QString( "border-style: none;"
+                                     "border-width: 0px;"
+                                     "background-color: white;"
+                                     "padding-left: 1px;"
+                                     "padding-right: 1px;"
+                                     "margin: 0px;"
+                                     "font-size: %1px;"
+                                     "text-align: left;" ).arg(fontDotsize) );
+    }
+
   //@JD: set font size dynamically depending on size hint after
   //     displaying the new value
-  diff = minimumSizeHint().width() - width();
+  int diff = minimumSizeHint().width() - width();
 
-  while( diff > 1 )
+  /** @AP: Check font size too, to avoid running under zero. Had this
+   * behavior during my tests. Can cause a very long loop time.
+   */
+  while( diff > 0 && fontDotsize > 10 )
     {
-      diff = diff / 10;
+      diff /= 5;
 
-      if( diff == 0 )
+      if( diff < 1 )
         {
           diff = 1;
         }
+      else if( diff > 5 )
+        {
+          diff = 5;
+        }
 
-      fontDotsize = fontDotsize - diff;
+      fontDotsize -= diff;
 
       _text->setStyleSheet( QString( "border-style: none;"
                                      "border-width: 0px;"
@@ -208,9 +249,28 @@ void MapInfoBox::setValue( const QString& newVal )
                                      "text-align: left;" ).arg( fontDotsize ) );
 
       diff = minimumSizeHint().width() - width();
+
+#ifdef DEBUG
+      qDebug() << "Loop MSH=" <<  minimumSizeHint().width()
+               << "W=" << width()
+               << "Diff=" << diff
+               << "FoSize=" << fontDotsize;
+#endif
+
     }
 }
 
+void MapInfoBox::showEvent(QShowEvent *event)
+{
+  Q_UNUSED(event)
+
+  if( _ptext != 0 )
+    {
+      // Update text box only, if it is a text box. Calling setValue shall ensure
+      // that the font is adapted to the layout size.
+      setValue( _value, true );
+    }
+}
 
 bool MapInfoBox::event( QEvent* event )
 {
@@ -222,7 +282,6 @@ bool MapInfoBox::event( QEvent* event )
 
   return QWidget::event( event );
 }
-
 
 bool MapInfoBox::eventFilter(QObject* o, QEvent* e)
 {

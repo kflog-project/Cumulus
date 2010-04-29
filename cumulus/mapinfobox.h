@@ -53,7 +53,7 @@ public:
 
 signals:
 
-     // Emitted when the mouse is pressed over the label
+     /** Emitted when the mouse is pressed over the label */
     void mousePress();
 
 private:
@@ -62,12 +62,12 @@ private:
 };
 
 /**
- * \author Andre Somers, Josua Dietze
+ * \author Andre Somers, Josua Dietze, Axel Pauli
  *
  * \brief Specialized widget for text or icon display.
  *
  * This is a specialized widget that can display either a label with a
- * pre-text or a pixmap; optionally it can be clicked and connected to
+ * pre-text or a pixmap. Optionally it can be clicked and connected to
  * a slot. Used on the MapView.
  *
  */
@@ -96,22 +96,22 @@ public:
   void basics( const QString& borderColor );
 
   /**
-   * Write property of QString _PreText.
+   * Write property of QString _preText.
    */
   void setPreText( const QString& _newVal);
 
   /**
-   * Read property of QString _PreText.
+   * Read property of QString _preText.
    */
   const QString& getPreText()
   {
-    return _PreText;
+    return _preText;
   };
 
   /**
    * Write property of QString _value.
    */
-  void setValue( const QString& _newVal);
+  void setValue( const QString& _newVal, bool showEvent=false );
 
   /**
    * Read property of QString _value.
@@ -141,7 +141,12 @@ protected:
   /**
    * Reimplemented from QWidget
    */
-  bool event(QEvent *);
+  bool event(QEvent *event);
+
+  /**
+   * Reimplemented from QWidget
+   */
+  void showEvent(QShowEvent *event);
 
   /**
    * Reimplemented from QObject
@@ -150,7 +155,7 @@ protected:
 
 private:
   /** The text displayed before the value. */
-  QString _PreText;
+  QString _preText;
   /** The value of the box */
   QString _value;
   /** Pointer to the internal text label */
