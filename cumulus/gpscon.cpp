@@ -615,9 +615,10 @@ void GpsCon::queryClient()
     }
 
   QString msg;
+  int loops = 250; // limit loops to avoid a dead lock
 
   // Now get all messages from the GPS client
-  while (true)
+  while( loops-- )
     {
       writeClientMessage(0, MSG_GM );
       readClientMessage(0, msg);
