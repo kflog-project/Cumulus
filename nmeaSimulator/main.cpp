@@ -5,6 +5,7 @@
     copyright            : (C) 2003 by Eckhard Völlm
                                2008 Axel Pauli portage to Qt 4.3
                                2009 Axel Pauli GSA extension
+                               2010 Axel Pauli Pause option
 
     email                : axel@kflog.org
 
@@ -290,7 +291,7 @@ int main(int argc, char **argv)
     {
       char *prog = basename(argv[0]);
 
-      cout << "NMEA GPS Simulator for Cumulus, 2003-2008 E. Voellm, 2009 A. Pauli  (GPL) 1.3.3" << endl << endl
+      cout << "NMEA GPS Simulator 1.3.4 for Cumulus, 2003-2008 E. Voellm, 2009-2010 A. Pauli (GPL)" << endl << endl
            << "Usage: " << prog << " str|cir|pos|gpos [params]" << endl << endl
            << "Parameters: str:  Straight Flight "<< endl
            << "            cir:  Circling "<< endl
