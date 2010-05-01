@@ -44,6 +44,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <QString>
+#include <QStringList>
+#include <QTime>
 
 #include "vector.h"
 #include "glider.h"
@@ -61,7 +63,8 @@ static    float  winddir=270.0;   // wind is coming from west usually
 static    float  radius=120.0;    // default circle radius
 static    float  altitude=1000.0; // default altitude
 static    float  climb=0.0;       // default climb rate zero
-static    float  Time=3600.0;     // lets fly one hour per default
+static    int    Time=3600;       // lets fly one hour per default
+static    int    Pause=1000;       // default pause is 1000ms
 static    bool   gotAltitude = false;
 static    QString confFile;   // configuration file name
 
@@ -110,6 +113,11 @@ void usleep( int t )
 
 void scanConfig( QString cfg )
 {
+  if( cfg.trimmed().isEmpty() )
+    {
+      return;
+    }
+
   if( cfg.left(4) == "lat=" )
     {
       int deg,min,sec;
@@ -186,7 +194,7 @@ void scanConfig( QString cfg )
     }
   else if( cfg.left(5) == "time=" )
     {
-      sscanf(cfg.toLatin1().data()+5,"%f", &Time );
+      sscanf(cfg.toLatin1().data()+5,"%d", &Time );
     }
   else if( cfg.left(4) == "dir=" )
     {
@@ -200,14 +208,23 @@ void scanConfig( QString cfg )
     {
       device = cfg.mid(7).trimmed();
     }
+  else if( cfg.left(6) == "pause=" )
+    {
+      sscanf(cfg.toLatin1().data()+6,"%d", &Pause );
+    }
   else
-    cerr << "Unknown parameter: " << cfg.toLatin1().data() << " trashed!" << endl;
+    {
+      cerr << "Unknown parameter: '"
+           << cfg.toLatin1().data()
+           << "' ignored!" << endl;
+    }
 }
 
 void safeConfig( void )
 {
   FILE * file;
   file = fopen(confFile.toLatin1().data(), "w");
+
   fprintf(file,"lat=%f\n", (float)lat );
   fprintf(file,"lon=%f\n", (float)lon );
   fprintf(file,"speed=%f\n", (float)speed );
@@ -217,20 +234,22 @@ void safeConfig( void )
   fprintf(file,"radius=%f\n", (float)radius );
   fprintf(file,"alt=%f\n", (float)altitude );
   fprintf(file,"climb=%f\n", (float)climb );
-  fprintf(file,"time=%f\n", (float)Time );
+  fprintf(file,"time=%d\n", (int)Time );
   fprintf(file,"dir=%s\n", direction.toLatin1().data() );
   fprintf(file,"device=%s\n", device.toLatin1().data() );
+  fprintf(file,"pause=%d\n", (int)Pause );
 
   fclose(file);
 }
 
 void readConfig( void )
 {
-  cout << "Configuration from persistent File: " << endl;
+  cout << "Configuration from persistent File: "
+       << confFile.toLatin1().data() << endl;
+
   FILE * file;
   char line[100];
   file = fopen(confFile.toLatin1().data(), "r");
-  cout << "Used file: " << file << endl;
 
   if (file )
     {
@@ -238,7 +257,13 @@ void readConfig( void )
         {
           cout << line ;
           QString l=line;
-          scanConfig(l);
+
+          l.trimmed();
+
+          if( ! l.isEmpty())
+            {
+              scanConfig(l);
+            }
         }
       fclose(file);
     }
@@ -254,9 +279,12 @@ int main(int argc, char **argv)
   // The wind-Vector must be reversed as given *from*
   // where the wind comes
 
-  QString Argv[30];
-  for (int i = 1; i<=argc; i++)
-    Argv[i] = argv[i];
+  QStringList Argv;
+
+  for (int i = 1; i <= argc; i++)
+    {
+      Argv << argv[i];
+    }
 
   if( argc < 2 )
     {
@@ -278,6 +306,7 @@ int main(int argc, char **argv)
            << "              alt=[m]: Altitude of Glider" << endl
            << "              climb=[m/s]: Climbrate" << endl
            << "              time=[s]: duration of operation" << endl
+           << "              pause=[ms]: pause between to send periods" << endl
            << "              device=[path to named pipe]: write into this pipe, default is /tmp/nmeasim" << endl
            << "            Note: all values can also be specified as float, like 110.5 " << endl << endl
            << "Example: " << prog << " str lat=48:31:48N lon=009:24:00E speed=125 winddir=270" << endl << endl
@@ -287,7 +316,7 @@ int main(int argc, char **argv)
         exit (0);
     }
 
-  mode = Argv[1];
+  mode = Argv[0];
 
   // First of all read command configuration from file.
   // Determine configuration file position. It is normally stored in the home
@@ -305,10 +334,11 @@ int main(int argc, char **argv)
     }
 
   readConfig();
-  // Override by things given at command line
-  cout << "Parameters from command line:" << endl;
 
-  for (int i = 2; i<argc; i++)
+  // Override by things given at command line
+  cout << "\nParameters from command line:" << endl;
+
+  for (int i = 1; i < argc; i++)
     {
       cout <<  Argv[i].toLatin1().data() << endl;
       scanConfig( Argv[i] );
@@ -332,6 +362,7 @@ int main(int argc, char **argv)
       if( !gotAltitude)
         altitude = 100.0;  // lower default Altitude
     }
+
   if( mode == "pos" )
     {
       cout << "Mode:      Fixed Position in Flight (Standstill in a wave) " << endl;
@@ -348,6 +379,7 @@ int main(int argc, char **argv)
   cout << "Direction: " << direction.toLatin1().data() << " Turn" << endl;
   cout << "Climbrate: " << climb << " m/s" << endl;
   cout << "Time:      " << Time << " sec" << endl;
+  cout << "Pause:     " << Pause << " ms" << endl;
   cout << "Device:    " << device.toLatin1().data() << endl;
 
   const int fd = init_io();
@@ -361,8 +393,6 @@ int main(int argc, char **argv)
   myGl.setFd( fd );
   myGl.setCircle( radius, direction );
 
-  int t = (int)Time;
-
   // @AP: This is used for the GSA output simulation
   uint gsa = 0;
   QStringList satIds;
@@ -371,13 +401,28 @@ int main(int argc, char **argv)
   QString hdop = "1.1";
   QString vdop = "1.2";
 
-  while( t > 0 )
+  QTime start = QTime::currentTime();
+
+  if( Pause < 100 )
     {
-      t--;
+      // Minimum is set to 100ms
+      Pause = 100;
+    }
+
+  int nextTimeReporting = 0;
+
+  while( start.elapsed() < Time*1000 )
+    {
       gsa++;
 
-      cout << "Second remaining: " << t << endl;
-      usleep( 1000000 );
+      if( nextTimeReporting < start.elapsed() )
+        {
+          nextTimeReporting = start.elapsed() + 1000;
+          cout << "Seconds remaining: " << Time - start.elapsed()/1000 << endl;
+        }
+
+      usleep( Pause * 1000 );
+
       if( mode == "str" )
         myGl.Straight();
       if( mode == "cir" )
