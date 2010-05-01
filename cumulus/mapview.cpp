@@ -286,7 +286,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 #ifndef MAEMO  
   font.setPixelSize(13);
 #else  
-  font.setPixelSize(16);
+  font.setPixelSize(17);
 #endif  
   _statusbar->setFont(font);
 
