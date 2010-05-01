@@ -14,6 +14,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-05-01 AP: New position display in status bar limited to 5s, if
+                   GPS has a fix. That shall decrease the X-Server load.
+                   In manual mode every position change is displayed.
 [+] 2010-05-01 AP: New method calcFlarmPos added to class WGSPoint to calculate
                    FLARM positions from FLARM data.
 [o] 2010-05-01 AP: Performance tuning in GpsNmea class by eliminating needless
