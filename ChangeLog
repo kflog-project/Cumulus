@@ -14,6 +14,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-05-01 AP: New method calcFlarmPos added to class WGSPoint to calculate
+                   FLARM positions from FLARM data.
+[o] 2010-05-01 AP: Performance tuning in GpsNmea class by eliminating needless
+                   call backs from slots caused by missing values in emitted
+                   signal. Needed values added to the signal call.
 [o] 2010-04-29 AP: Welt2000 download link in airfield settings updated.
 [o] 2010-04-29 AP: Performance tuning in MapInfoBox class. Dynamic layout was
                    to often recalculated. Caused a lot of overhead. Furthermore
