@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2009 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2008-2010 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,21 +16,22 @@
 ***********************************************************************/
 
 /**
-  * @short Abstract position
-  *
-  * This class is used to handle WGS-coordinates. It inherits QPoint. The only
-  * difference is, that the methods to access the coordinates are called "lat"
-  * and "lon". Furthermore it controls the unit to be used for position
-  * representation and make conversions between the internal used KFLog format
-  * and the WGS84 equivalents.
-  *
-  */
+ * \author André Somers, Axel Pauli
+ *
+ * \short Class to handle WGS84 coordinates
+ *
+ * This class is used to handle WGS84 coordinates. It inherits QPoint. The only
+ * difference is, that the methods to access the coordinates are called "lat"
+ * and "lon". Furthermore it controls the unit to be used for position
+ * representation.
+ */
 
 #include <stdlib.h>
 #include <cmath>
 #include <QRegExp>
 
 #include "wgspoint.h"
+#include "mapcalc.h"
 
 // set static format variable to default (degrees, minutes, seconds)
 WGSPoint::Format WGSPoint::_format = WGSPoint::DMS;
@@ -93,6 +94,73 @@ void WGSPoint::calcPos (int coord, double& degree)
 {
   degree = coord / 600000.0;
   // qDebug("Coord=%d, Degree=%f", coord, degree);
+}
+
+/**
+ * Calculates the Flarm position and distance in relation to the own position.
+ *
+ * @param ownPos Own position in KFLog WGS84 coordinates.
+ * @param north Relative position in meter true north from own position
+ * @param east Relative position in meter true east from own position
+ * @param flarmPos Calculated Flarm position in KFLog WGS84 coordinates.
+ * @param flarmDistance Calculated Flarm distance in meters.
+ * @returns true (success) or false (error occurred)
+ */
+bool WGSPoint::calcFlarmPos ( QPoint& ownPos, int north, int east,
+                              QPoint& flarmPos, double& flarmDistance )
+{
+  flarmPos.setX(0);
+  flarmPos.setY(0);
+  flarmDistance = -1;
+
+  // Convert own position from KFLog degree into decimal degree
+  double ownLat = ownPos.x() / 600000.;
+  double ownLon = ownPos.y() / 600000.;
+
+  // Latitude 90N or 90S causes division by zero.
+  if( ownLat >=90. || ownLat <=-90. || ownLon < -180. || ownLon > 180. )
+    {
+      return false;
+    }
+
+  const double rad = M_PIl/180;
+  const double degree = 180/M_PIl;
+
+  const double northD = (double) north;
+  const double eastD  = (double) east;
+
+  // Calculate length in degree along the latitude and the longitude.
+  // For the calculation the circle formula  is used.
+  double deltaLat = degree * northD/RADIUS;
+  double deltaLon = degree * eastD/(RADIUS * cos ( rad * ownLat ));
+
+  double flarmLat = ownLat + deltaLat;
+  double flarmLon = ownLon + deltaLon;
+
+  if( flarmLat >=90. || flarmLat <=-90. )
+    {
+      // Assuming we do not fly in pole region
+      return false;
+    }
+
+  // Check for crossing E/W longitude border
+  if( flarmLon > 180. )
+    {
+      flarmLon = -(180. - (flarmLon - 180.));
+    }
+  else if( flarmLon < -180. )
+    {
+      flarmLon = (180. + (flarmLon + 180.));
+    }
+
+  // store Flarm position
+  flarmPos.setX( static_cast<int>(rint(flarmLat * 600000)) );
+  flarmPos.setY( static_cast<int>(rint(flarmLon * 600000)) );
+
+  // Calculate flarmDistance in meters according to Pythagoras
+  flarmDistance = sqrt( (north*north) + (east*east) );
+
+  return true;
 }
 
 /**

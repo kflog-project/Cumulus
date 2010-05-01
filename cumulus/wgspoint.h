@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2009 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2008-2010 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,14 +16,15 @@
 ***********************************************************************/
 
 /**
-  * @short WGS position
-  *
-  * This class is used to handle WGS-coordinates. It inherits QPoint. The only
-  * difference is, that the methods to access the coordinates are called "lat"
-  * and "lon". Furthermore it controls the unit to be used for position
-  * representation.
-  *
-  */
+ * \author André Somers, Axel Pauli
+ *
+ * \short Class to handle WGS84 coordinates
+ *
+ * This class is used to handle WGS84 coordinates. It inherits QPoint. The only
+ * difference is, that the methods to access the coordinates are called "lat"
+ * and "lon". Furthermore it controls the unit to be used for position
+ * representation.
+ */
 
 #ifndef WGS_Point_H
 #define WGS_Point_H
@@ -36,7 +37,7 @@ class WGSPoint : public QPoint
 public:
 
     /**
-     * defined position formats
+     * known coordinate formats
      */
     enum Format
     {
@@ -168,6 +169,19 @@ public:
     {
       return QString("%1.%2").arg(position.x()).arg(position.y());
     };
+
+    /**
+     * Calculates the Flarm position and distance in relation to the own position.
+     *
+     * @param ownPos Own position in KFLog WGS84 coordinates.
+     * @param north Relative position in meter true north from own position
+     * @param east Relative position in meter true east from own position
+     * @param flarmPos Calculated Flarm position in KFLog WGS84 coordinates.
+     * @param flarmDistance Calculated Flarm distance in meters.
+     * @returns true (success) or false (error occurred)
+     */
+    static bool calcFlarmPos ( QPoint& ownPos, int north, int east,
+                               QPoint& flarmPos, double& flarmDistance );
 
 protected:
 
