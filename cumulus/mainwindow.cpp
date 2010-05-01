@@ -423,20 +423,20 @@ void MainWindow::slotCreateApplicationWidgets()
            viewMap, SLOT( slot_SatCount(SatInfo&) ) );
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
            this, SLOT( slotGpsStatus( GpsNmea::GpsStatus ) ) );
-  connect( GpsNmea::gps, SIGNAL( newSatConstellation() ),
-           logger, SLOT( slotConstellation() ) );
-  connect( GpsNmea::gps, SIGNAL( newSatConstellation() ),
-           calculator->getWindAnalyser(), SLOT( slot_newConstellation() ) );
-  connect( GpsNmea::gps, SIGNAL( newSpeed() ),
-           calculator, SLOT( slot_Speed() ) );
-  connect( GpsNmea::gps, SIGNAL( newPosition() ),
-           calculator, SLOT( slot_Position() ) );
-  connect( GpsNmea::gps, SIGNAL( newAltitude() ),
-           calculator, SLOT( slot_Altitude() ) );
-  connect( GpsNmea::gps, SIGNAL( newHeading() ),
-           calculator, SLOT( slot_Heading() ) );
-  connect( GpsNmea::gps, SIGNAL( newFix() ),
-           calculator, SLOT( slot_newFix() ) );
+  connect( GpsNmea::gps, SIGNAL( newSatConstellation(SatInfo&) ),
+           logger, SLOT( slotConstellation(SatInfo&) ) );
+  connect( GpsNmea::gps, SIGNAL( newSatConstellation(SatInfo&) ),
+           calculator->getWindAnalyser(), SLOT( slot_newConstellation(SatInfo&) ) );
+  connect( GpsNmea::gps, SIGNAL( newSpeed(Speed&) ),
+           calculator, SLOT( slot_Speed(Speed&) ) );
+  connect( GpsNmea::gps, SIGNAL( newPosition(QPoint&) ),
+           calculator, SLOT( slot_Position(QPoint&) ) );
+  connect( GpsNmea::gps, SIGNAL( newAltitude(Altitude&, Altitude&, Altitude&) ),
+           calculator, SLOT( slot_Altitude(Altitude&, Altitude&, Altitude&) ) );
+  connect( GpsNmea::gps, SIGNAL( newHeading(const double&) ),
+           calculator, SLOT( slot_Heading(const double&) ) );
+  connect( GpsNmea::gps, SIGNAL( newFix(const QTime&) ),
+           calculator, SLOT( slot_newFix(const QTime&) ) );
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
            calculator, SLOT( slot_GpsStatus( GpsNmea::GpsStatus ) ) );
 

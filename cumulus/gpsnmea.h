@@ -291,7 +291,7 @@ class GpsNmea : public QObject
     /**
      * @Returns the last know satellite constellation string.
      */
-    SatInfo getLastSatInfo() const
+    SatInfo& getLastSatInfo()
       {
         return _lastSatInfo;
       };
@@ -396,22 +396,22 @@ class GpsNmea : public QObject
     /**
      * This signal is emitted if the position has been changed.
      */
-    void newPosition();
+    void newPosition( QPoint &newPosition );
 
     /**
      * This signal is emitted if the altitude has been changed.
      */
-    void newAltitude();
+    void newAltitude( Altitude& user, Altitude& std, Altitude& gnns );
 
     /**
      * This signal is emitted if a new speed fix has been established.
      */
-    void newSpeed();
+    void newSpeed( Speed& newSpeed );
 
     /**
      * This signal is emitted if a new heading has been established.
      */
-    void newHeading();
+    void newHeading( const double& newHeading );
 
     /**
      * This signal is emitted if a new wind (speed, direction)
@@ -438,7 +438,7 @@ class GpsNmea : public QObject
      * has been detected (that is, the satellites used to
      * make a fix have changed).
      */
-    void newSatConstellation();
+    void newSatConstellation( SatInfo& newConstellation );
 
     /**
      * This signal is send if a new satellite count
@@ -463,7 +463,7 @@ class GpsNmea : public QObject
      * This signal is send to indicate that there is a new fix.
      * Data send after this fix belongs to the new fix!
      */
-    void newFix();
+    void newFix( const QTime& newFixTime );
 
     /**
      * This signal is send to indicate that new satellite in view

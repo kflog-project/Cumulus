@@ -195,9 +195,9 @@ void WindAnalyser::_calcWind()
   emit newMeasurement(result,quality);
 }
 
-void WindAnalyser::slot_newConstellation()
+void WindAnalyser::slot_newConstellation( SatInfo& newConstellation )
 {
-  satCnt = GpsNmea::gps->getLastSatInfo().satsInUse;
+  satCnt = newConstellation.satsInUse;
 
   if (active && (satCnt < minSatCnt))  //we are active, but the sat count drops below minimum
     {

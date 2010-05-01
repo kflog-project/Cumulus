@@ -163,11 +163,12 @@ const AltitudeCollection& Calculator::getAltitudeCollection()
 }
 
 /** called on altitude change */
-void Calculator::slot_Altitude()
+void Calculator::slot_Altitude(Altitude& user, Altitude& std, Altitude& gnns)
 {
-  lastAltitude     = GpsNmea::gps->getLastAltitude();
-  lastSTDAltitude  = GpsNmea::gps->getLastStdAltitude();
-  lastGNSSAltitude = GpsNmea::gps->getLastGNSSAltitude();
+  lastAltitude     = user;
+  lastSTDAltitude  = std;
+  lastGNSSAltitude = gnns;
+
   lastAGLAltitude  = lastAltitude - Altitude( _globalMapContents->findElevation(lastPosition, &lastAGLAltitudeError ) );
   lastAHLAltitude  = lastAltitude - GeneralConfig::instance()->getHomeElevation();
   emit newAltitude( lastAltitude );
@@ -176,7 +177,7 @@ void Calculator::slot_Altitude()
 }
 
 /** Called if a new heading has been obtained */
-void Calculator::slot_Heading()
+void Calculator::slot_Heading( const double& newHeadingValue )
 {
   // qDebug("lastSpeed=%f m/s", lastSpeed.getMps());
   if ( lastSpeed.getMps() <= 0.3 )
@@ -187,7 +188,8 @@ void Calculator::slot_Heading()
       return;
     }
 
-  lastHeading = (int)rint(GpsNmea::gps->getLastHeading());
+  lastHeading = static_cast<int> (rint(newHeadingValue));
+
   emit newHeading(lastHeading);
   // if we have no bearing, lastBearing is -1;
   // this is only a small mistake, relBearing points to north
@@ -202,19 +204,19 @@ void Calculator::slot_Heading()
 
 
 /** called if a new speed fix has been received */
-void Calculator::slot_Speed()
+void Calculator::slot_Speed( Speed& newSpeedValue )
 {
-  lastSpeed=GpsNmea::gps->getLastSpeed();
-  emit newSpeed(lastSpeed);
+  lastSpeed = newSpeedValue;
+  emit newSpeed(newSpeedValue);
 }
 
 
 /** called if a new position-fix has been established. */
-void Calculator::slot_Position()
+void Calculator::slot_Position( QPoint& newPositionValue )
 {
-  lastGPSPosition = GpsNmea::gps->getLastCoord();
+  lastGPSPosition = newPositionValue;
 
-  if( !manualInFlight )
+  if( ! manualInFlight )
     {
       lastPosition = lastGPSPosition;
     }
@@ -1046,7 +1048,7 @@ void Calculator::slot_settingsChanged ()
 }
 
 /** This slot is called by the NMEA interpreter if a new fix has been received.  */
-void Calculator::slot_newFix()
+void Calculator::slot_newFix( const QTime& newFixTime )
 {
   // before we start making samples, let's be sure we have all the
   // data we need for that. So, we wait for the second Fix.
@@ -1060,7 +1062,7 @@ void Calculator::slot_newFix()
   FlightSample sample;
 
   // fill it with the relevant data
-  sample.time=GpsNmea::gps->getLastTime();
+  sample.time = newFixTime;
   sample.altitude.setMeters(lastAltitude.getMeters());
   sample.GNSSAltitude.setMeters(lastGNSSAltitude.getMeters());
   sample.position=lastPosition;

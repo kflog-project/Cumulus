@@ -371,7 +371,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
                * We do check the fix time only here in the $GPRMC sentence.
                */
               _lastRmcTime = _lastTime;
-              emit newFix();
+              emit newFix( _lastRmcTime );
             }
         }
       else
@@ -538,7 +538,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
                       calcStdAltitude( altitude );
                     }
 
-                  emit newAltitude(); // notify change
+                  emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
                 }
               }
 
@@ -773,7 +773,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
           // Since in GpsNmea::PRESSURE mode _lastPressureAltitude is returned,
           // we set it, too.
           _lastPressureAltitude = _lastMslAltitude;
-          emit newAltitude();     // notify change
+          emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
         }
 
       return;
@@ -901,7 +901,7 @@ void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
           // calcStdAltitude( res );
         }
 
-      emit newAltitude(); // notify change
+      emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
     }
 
   // extract QNH
@@ -1016,7 +1016,7 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
                   calcStdAltitude( altitude );
                 }
 
-              emit newAltitude(); // notify change
+              emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
             }
         }
     }
@@ -1194,7 +1194,7 @@ Speed GpsNmea::__ExtractKnotSpeed(const QString& speedString)
   if( res != _lastSpeed )
     {
       _lastSpeed = res;
-      emit newSpeed();
+      emit newSpeed( _lastSpeed );
     }
 
   return res;
@@ -1264,7 +1264,7 @@ QPoint GpsNmea::__ExtractCoord(const QString& slat, const QString& slatNS,
   if ( _lastCoord != res )
     {
       _lastCoord=res;
-      emit newPosition();
+      emit newPosition( _lastCoord );
     }
 
   return _lastCoord;
@@ -1290,7 +1290,7 @@ double GpsNmea::__ExtractHeading(const QString& headingstring)
   if ( heading != _lastHeading )
     {
       _lastHeading = heading;
-      emit newHeading();
+      emit newHeading( _lastHeading );
     }
 
   return heading;
@@ -1357,7 +1357,7 @@ Altitude GpsNmea::__ExtractAltitude(const QString& altitude, const QString& unit
       // set these altitudes only, when pressure is not selected
       _lastMslAltitude = res;
       calcStdAltitude( res );
-      emit newAltitude();
+      emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
     }
 
   return res;
@@ -1388,7 +1388,7 @@ Altitude GpsNmea::__ExtractAltitude(const QString& number, const QString& unit)
   if ( _lastMslAltitude != res && _deliveredAltitude != GpsNmea::PRESSURE )
     {
       _lastMslAltitude = res;  // store the new altitude
-      emit newAltitude();      // let everyone know we have it!
+      emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
     }
 
   return res;
@@ -1456,7 +1456,7 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
   if( result != _lastSatInfo.constellation )
     {
       _lastSatInfo.constellation = result;
-      emit newSatConstellation();
+      emit newSatConstellation( _lastSatInfo );
     }
 
   return result;
@@ -1586,7 +1586,7 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
           if( _lastCoord != res )
             {
               _lastCoord = res;
-              emit newPosition();
+              emit newPosition( _lastCoord );
             }
         }
     }
@@ -1622,7 +1622,7 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
           if( speed != _lastSpeed )
             {
               _lastSpeed = speed;
-              emit newSpeed();
+              emit newSpeed( _lastSpeed );
             }
         }
     }
@@ -1650,7 +1650,7 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
        * We do check the fix time only once in the $GPRMC sentence.
        */
       _lastRmcTime = _lastTime;
-      emit newFix();
+      emit newFix( _lastRmcTime );
     }
 }
 
@@ -1730,7 +1730,7 @@ void GpsNmea::__ExtractMaemo1(const QString& string)
           if( satsForFix != _lastSatInfo.constellation )
             {
               _lastSatInfo.constellation = satsForFix;
-              emit newSatConstellation();
+              emit newSatConstellation( _lastSatInfo );
             }
 
           emit newSatInViewInfo( sivInfo );
@@ -1811,7 +1811,7 @@ void GpsNmea::dataOK()
       _lastGNSSAltitude = Altitude(0);
       calcStdAltitude( Altitude(0) );
       _lastPressureAltitude = Altitude(0);
-      emit newAltitude();
+      emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
 
       _status = noFix;
       emit statusChange(_status);

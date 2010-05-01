@@ -400,7 +400,7 @@ bool IgcLogger::isLogFileOpen()
   writeHeader();
 
   // As first create a F record
-  slotConstellation();
+  slotConstellation( GpsNmea::gps->getLastSatInfo() );
 
   return true;
 }
@@ -573,10 +573,10 @@ void IgcLogger::slotToggleLogging()
 }
 
 /** This slot is called to indicate that a new satellite constellation is now in use. */
-void IgcLogger::slotConstellation()
+void IgcLogger::slotConstellation( SatInfo& newConstellation )
 {
   // qDebug("IgcLogger::slotConstellation()");
-  makeSatConstEntry( GpsNmea::gps->getLastSatInfo().constellationTime );
+  makeSatConstEntry( newConstellation.constellationTime );
 }
 
 /** Makes a fix entry in the log file by using the passed time. */

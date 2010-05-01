@@ -58,7 +58,7 @@ class WindAnalyser : public QObject
   /**
    * Called if a new satellite constellation has been detected.
    */
-  void slot_newConstellation();
+  void slot_newConstellation( SatInfo& newConstellation );
 
  private: // Private attributes
   int circleCount; //we are counting the number of circles, the first onces are probably not very round

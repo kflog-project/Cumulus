@@ -421,16 +421,16 @@ public slots:
     /**
      * called if a new position-fix has been established.
      */
-    void slot_Position();
+    void slot_Position( QPoint& newPosition );
 
     /**
      * called if a new speed fix has been received
      */
-    void slot_Speed();
+    void slot_Speed( Speed& newSpeed );
     /**
      * called on altitude change
      */
-    void slot_Altitude();
+    void slot_Altitude(Altitude& user, Altitude& std, Altitude& gnns);
     /**
      * Called if the position is changed manually.
      */
@@ -438,7 +438,7 @@ public slots:
     /**
      * Called if a new heading has been obtained
      */
-    void slot_Heading();
+    void slot_Heading( const double& newHeading );
     /**
      * Change position to the North
      */
@@ -499,7 +499,7 @@ public slots:
     /**
      * This slot is called by the NMEA interpreter if a new fix has been received.
      */
-    void slot_newFix();
+    void slot_newFix( const QTime& newFixTime );
     /**
      * Called if the status of the GPS changes.
      */

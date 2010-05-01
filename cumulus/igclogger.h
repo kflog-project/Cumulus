@@ -131,7 +131,7 @@ public slots:
    * This slot is called to indicate that a new satellite constellation is
    * now in use.
    */
-  void slotConstellation();
+  void slotConstellation( SatInfo& newConstellation );
 
   /**
    * This slot is called to start or end a log.
