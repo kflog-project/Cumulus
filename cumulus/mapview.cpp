@@ -573,6 +573,11 @@ void MapView::slot_ETA(const QTime& eta)
 /** This slot is called if a new position fix has been established. */
 void MapView::slot_Position(const QPoint& position, const int source)
 {
+  static QTime lastDisplay;
+
+  // remember for slot_settingsChange
+  lastPositionChangeSource = source;
+
   // this slot is called:
   // a) from GPS data coming in, not in manual mode
   // b) for Manual data if no GPS data coming in
@@ -580,22 +585,33 @@ void MapView::slot_Position(const QPoint& position, const int source)
 
   // check airspace for newPosition from GPS and not for Manual
   // this covers a) and b)
-  if(!calculator->isManualInFlight())
+  if( ! calculator->isManualInFlight() )
     {
       _theMap->checkAirspace (position);
     }
 
+  if( GpsNmea::gps->getGpsStatus() == GpsNmea::validFix &&
+      source != Calculator::MAN )
+    {
+      // If we have a valid fix the display is updated every 5 seconds only.
+      // That will reduce the X-Server load.
+      if( lastDisplay.elapsed() < 5000 )
+        {
+          return;
+        }
+
+      lastDisplay = QTime::currentTime();
+    }
+
   // if in manual mode: show position in status bar for the cross, not for the glider
   // this covers a) and b) or c) with source manual
-  if(!calculator->isManualInFlight() ||
+  if( !calculator->isManualInFlight() ||
       (calculator->isManualInFlight() && (source == Calculator::MAN)))
     {
       _statusPosition->setText(" " + WGSPoint::printPos(position.x(),true) +
                              " / " + WGSPoint::printPos(position.y(),false) + " ");
     }
 
-  // remember for slot_settingsChange
-  lastPositionChangeSource = source;
 }
 
 
