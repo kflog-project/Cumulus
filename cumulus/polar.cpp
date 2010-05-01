@@ -1,8 +1,9 @@
 /***************************************************************************
                           polar.cpp  -  description
                              -------------------
-    begin                : Fre Okt 18 2002
-    copyright            : (C) 2002 by Eggert Ehmke, 2008 Axel Pauli
+    begin                : Okt 18 2002
+    copyright            : (C) 2002      by Eggert Ehmke
+                               2008-2010 by Axel Pauli
     email                : eggert.ehmke@berlin.de, axel@kflog.org
 
 
@@ -143,6 +144,7 @@ Speed Polar::bestSpeed (const Speed& wind, const Speed& lift, const Speed& mc) c
     // the Reichmann equation V on Page 183 does not include wind. Mistake ?
     Speed speed;
     double temp = (wind*wind*_a - wind*_b + _c + lift - mc)/_a;
+
     if (temp >= 0.0)
         // now we go back into the original coordinate system
         speed = sqrt(temp) - wind;
@@ -195,7 +197,7 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
     case Speed::kilometersPerHour:
         minspeed = 60;
         maxspeed = 250;
-        stepspeed = 20;
+        stepspeed = 30;
         break;
     case Speed::knots:
         minspeed = 30;
@@ -213,8 +215,10 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
         stepspeed = 0;
         qFatal ("invalid horizontal speed: %d", Speed::getHorizontalUnit());
     }
+
     Speed sink;
     int minsink, maxsink, stepsink;
+
     switch (Speed::getVerticalUnit()) {
     case Speed::metersPerSecond:
         minsink = 1;
@@ -265,9 +269,9 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
         p.setPen (Qt::black);
         p.drawLine ((int)(speed.getMps()*X), -5, (int)(speed.getMps()*X),0);
         QString txt;
-        txt.sprintf("%3d", spd);
+        txt.sprintf("%3d %s", spd, Speed::getHorizontalUnitText().toLatin1().data() );
         p.setPen (Qt::blue);
-        p.drawText ((int)(speed.getMps()*X)-10, -5, txt);
+        p.drawText ((int)(speed.getMps()*X)-25, -5, txt);
         p.setPen (Qt::darkGray);
         p.drawLine ((int)(speed.getMps()*X), 1, (int)(speed.getMps()*X),(int)(sink.getMps()*Y));
     }
@@ -279,9 +283,9 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
         sink.setVerticalValue (snk);
 
         QString txt;
-        txt.sprintf("%d", snk);
+        txt.sprintf("%d %s", snk, Speed::getVerticalUnitText().toLatin1().data() );
         p.setPen (Qt::blue);
-        p.drawText (-15, (int)(sink.getMps()*Y), txt);
+        p.drawText ( 5, (int)(sink.getMps()*Y), txt);
         p.setPen (Qt::black);
         p.drawLine (-5, (int)(sink.getMps()*Y), 0, (int)(sink.getMps()*Y));
         p.setPen (Qt::darkGray);
@@ -346,11 +350,14 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
 
     int y = (int)(sink*Y)+5;
     QString msg;
+
+#if 0
     if (Speed::getVerticalUnit() != Speed::metersPerSecond) {
         msg = QString(" = %1 m/s").arg( sink.getMps(), 0, 'f', 1 );
-//        msg.sprintf(" = %1.1f m/s", sink.getMps());
         p.drawText(0, y+=font.pixelSize()+2, sink.getVerticalText() + msg);
     }
+#endif
+
     if (fabs (wind.getMps()) > 0.01 && fabs (lift.getMps()) > 0.01 ) {
       p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Wind: ") + wind.getHorizontalText() +
                   ", " + QObject::tr("Lift: ")+lift.getVerticalText());
@@ -360,19 +367,43 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
       p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Lift: ")+lift.getVerticalText());
     }
 
+    msg = "";
+
     if ( _emptyWeight < _grossWeight )
-      p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Added load: %1 Kg").arg((int)(_grossWeight-_emptyWeight)));
+      {
+        msg += QString( QObject::tr("Added load: %1 Kg") ).arg((int)(_grossWeight-_emptyWeight));
+      }
 
-    if (_water != 0)
-      p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Water ballast: %1 l").arg(_water));
-    if (_bugs != 0)
-      p.drawText (0, y+=font.pixelSize()+2, QObject::tr("Bug factor: %1 %").arg(_bugs));
+    if ( _water != 0 )
+      {
+        if( msg.size() > 0 )
+          {
+            msg += ", ";
+          }
 
-    // p.drawText(0, y+=font.pixelSize()+2, tr("McCready: ")+mc.getTextVertical());
-  p.drawText(0, y+=font.pixelSize()+2, QObject::tr("Best speed: ") + bestspeed.getHorizontalText());
-  p.drawText(0, y+=font.pixelSize()+2, QObject::tr("Sinking: ") + getSink(bestspeed).getVerticalText(true, 2));
+        msg += QString( QObject::tr("Water ballast: %1 l").arg(_water) );
+      }
 
-    msg = QString(QObject::tr("Best l/d: %1")).arg( bestld, 0, 'f', 1 );
+    if ( _bugs != 0 )
+      {
+        if( msg.size() > 0 )
+          {
+            msg += ", ";
+          }
+
+      msg += QString( QObject::tr("Bugs: %1 %").arg(_bugs) );
+
+      }
+
+    p.drawText (0, y+=font.pixelSize()+2, msg );
+
+    msg = QString( QObject::tr("Best speed: %1, Sinking: %2") )
+                  .arg( bestspeed.getHorizontalText() )
+                  .arg( getSink(bestspeed).getVerticalText(true, 2) );
+
+    p.drawText(0, y+=font.pixelSize()+2, msg);
+
+    msg = QString(QObject::tr("Best L/D: %1")).arg( bestld, 0, 'f', 1 );
     p.drawText(0, y+=font.pixelSize()+2, msg);
 
     y = (int)(sink*Y)+5;

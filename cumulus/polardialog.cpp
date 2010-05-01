@@ -7,10 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -119,6 +119,11 @@ void PolarDialog::slot_shiftkeydown()
 
 void PolarDialog::slot_keyleft()
 {
+  if( wind.getKph() > 100.0 )
+    {
+      return;
+    }
+
   wind.setKph(wind.getKph()+5.0);
   repaint ();
 }
@@ -126,6 +131,11 @@ void PolarDialog::slot_keyleft()
 
 void PolarDialog::slot_keyright()
 {
+  if( wind.getKph() < -100.0 )
+    {
+      return;
+    }
+
   wind.setKph(wind.getKph()-5.0);
   repaint ();
 }
