@@ -273,10 +273,21 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusbar = new QStatusBar(this);
   _statusbar->setObjectName("status");
   _statusbar->setSizeGripEnabled(false);
+
+#ifndef MAEMO
   _statusbar->setFixedHeight(20);
+#else  
+  _statusbar->setFixedHeight(25);
+#endif
+
   QFont font = _statusbar->font();
   font.setBold(true);
+
+#ifndef MAEMO  
   font.setPixelSize(13);
+#else  
+  font.setPixelSize(16);
+#endif  
   _statusbar->setFont(font);
 
   _menuToggle = new CuLabel( tr("Menu"),_statusbar);
@@ -290,8 +301,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusGps->setLineWidth(0);
   _statusGps->setAlignment(Qt::AlignCenter);
   _statusGps->setMargin(0);
-  _statusGps->setMaximumWidth(30);
-  _statusGps->setMinimumWidth(10);
   _statusbar->addWidget(_statusGps);
   connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
 
