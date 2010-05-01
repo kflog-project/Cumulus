@@ -611,7 +611,6 @@ void MapView::slot_Position(const QPoint& position, const int source)
       _statusPosition->setText(" " + WGSPoint::printPos(position.x(),true) +
                              " / " + WGSPoint::printPos(position.y(),false) + " ");
     }
-
 }
 
 
