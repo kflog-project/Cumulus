@@ -55,12 +55,6 @@ double dist(QPoint* p1, QPoint* p2);
 double dist(wayPoint* wp1, wayPoint* wp2);
 
 /**
- * Converts the given time (in sec.) into a readable string.
- * ( hh:mm:ss )
- */
-QString printTime(int time, bool isZero = false, bool isSecond = true);
-
-/**
  * Calculates the bearing to the next point
  */
 double getBearing(QPoint p1, QPoint p2);

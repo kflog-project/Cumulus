@@ -111,29 +111,6 @@ double dist(wayPoint* wp1, wayPoint* wp2)
                    wp2->origP.lat(), wp2->origP.lon() ) );
 }
 
-QString printTime(int time, bool isZero, bool isSecond)
-{
-    QString hour, min, sec;
-
-    int hh = time / 3600;
-    int mm = (time - (hh * 3600)) / 60;
-    int ss = time - (hh * 3600) - mm * 60;
-
-    if( isZero )
-        hour.sprintf("%0d", hh);
-    else
-        hour.sprintf("%d", hh);
-
-        min.sprintf("%02d", mm);
-
-        sec.sprintf("%02d", ss);
-
-    if(isSecond)
-        return (hour + ":" + min + ":" + sec);
-
-    return ( hour + ":" + min );
-}
-
 double getBearing(QPoint p1, QPoint p2)
 {
     return getBearingWgs(p1, p2);
