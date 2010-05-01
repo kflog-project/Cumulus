@@ -14,6 +14,7 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-05-01 AP: Status bar made a little bit bigger for MAEMO.
 [o] 2010-05-01 AP: New position display in status bar limited to 5s, if
                    GPS has a fix. That shall decrease the X-Server load.
                    In manual mode every position change is displayed.
