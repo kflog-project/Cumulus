@@ -206,7 +206,7 @@ QString Speed::getUnitText(speedUnit unit)
   switch (unit)
     {
       case knots:
-        return "Kn";
+        return "Kt"; // can also be abbreviated as Kn
         break;
       case milesPerHour:
         return "Mph";
