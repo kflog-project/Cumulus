@@ -25,55 +25,65 @@
 
 <h3 align="center">Settings</h3>
 
-<p><b>Airspaces</b></p>
+<h4><b>General setup-&gt;Airspaces</b></h4>
 
-<p>The table shows you which kind of airspaces can be drawn onto the map.
-   Check the items of the airspaces to be displayed. To change the color
-   of the airspace border or the airspace area touch the related field in
-   the table. That will opens a color dialog where you can change the current
-   color. Pressing button <i>Color Defaults</i> will assign the programmed
-   default colors to all airspaces.
+<p>The table shows you which kind of airspaces can be drawn on the map.
+   Mark the boxes of the airspaces you want displayed. To change the colour
+   of the airspace border or the airspace area, touch on the related field in
+   the table. This will open a colour dialog. Pressing the 
+   <i>Color Defaults</i> button will assign the programmed default colours 
+   to all the airspaces.
 </p>
       
-<p> Note that Cumulus will only warn you for airspaces that are drawn.</p>
 <p>
-    You will get optical and acoustical warnings if you are near, very
-    near or inside of specified airspaces. If you press the button
-    <i>Airspace Warnings</i> you can set lateral and vertical
-    distances (separately for above and below) that will be applied
-    when generating warnings. If the distance to an airspace is
-    smaller than the specified value, the position is considered
-    <i>near</i> respectively <i>very near</i> to the airspace.
-</p>
-
-<p>
-  If you press the button <i>Install Airspace</i> a new dialog box is opened.
-  In that box you can define a proxy by pressing button <i>Set Proxy</i> if you
-  need one for Internet access. Beside the label <i>Airspace Url</i> you can
-  enter an url pointing to an airspace file. The url must consist of the following
+  The <i>Install Airspace</i> button opens a new dialog box, in which you can 
+  define a proxy (by pressing the <i>Set Proxy</i> button) if you
+  need one for Internet access. In the box labelled <i>Airspace Url</i> you can
+  enter a url pointing to an airspace file. The url must consist of the following
   items:
   <ul>
-    <li>Scheme, like <i>http</i></li>
+    <li>Scheme, such as <i>http</i></li>
     <li>Hostname</li>
     <li>Pathname</li>
   </ul>
   
-  If one of them is missing the url is rejected. Furthermore the file to be
+  If one of these is missing, the url is rejected. Furthermore, the file to be
   downloaded must be a normal file, not compressed, and must carry the extension 
-  <i>.txt</i> to be read in after download.
+  <i>.txt</i> to enable it to be read in after download.
 </p>
 
 <p>
-    If you press the button <i>Airspace filling</i> you can enable,
-    that the airspaces are filled with a transparent color with
-    different transparency according to the near of the airspace.
+    You will get an optical and acoustical warning if you are near, very
+    near or inside the specified airspace 
+    (see also <a href="cumulus-settings-information.html">
+    <i>General setup-&gt;Information</i></a>).
+    If you press the button
+    <i>Airspace Warnings</i> you can set the lateral and vertical
+    distances (separately for above and below) that will be applied
+    when generating warnings. If the distance to an airspace is
+    smaller than the specified values, the position is considered
+    <i>near</i> or <i>very near</i> to the airspace.
+</p>
+<p>
+    <b>Note that Cumulus will only warn you for airspaces that are drawn unless
+       you have activated the check box <i>Draw all airspaces ... above me.</i>
+    </b>
+</p>
+<p>
+    The <i>Airspace filling</i> button enables you to switch on or off
+    the changing of the airspace fill colour according to the glider's 
+    proximity. As you get closer to the airspace vertically or horizontally,
+    the transparency of the airspace fill colour changes, the percentage 
+    amount of change being set by the table according to whether you are 
+    near, very near or inside the airspace in question.
     If you disable the airspace filling, a fixed pattern is used for
     filling.
 </p>
 <p>
-    The units used for the distances can be configured via the Units
-    page. The corresponding item is Altitude. If unit meters is
-    selected, meter will be used as distance otherwise food.
+    The units used for the vertical and horizontal proximity distances can be
+    configured on 
+    the <a href="cumulus-settings-units.html"><i>General setup-&gt;Units</i></a>
+    page. 
 </p>
     
 <table width="100%">
