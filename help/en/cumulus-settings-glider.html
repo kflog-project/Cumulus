@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!-- $Id$ -->
 <html>
 <head>
@@ -12,143 +11,87 @@
     <tbody>
     <tr>
     <td></td>
-
-
     <td align="center"><a href="cumulus.html">start</a></td>
-
-
     <td></td>
-
-
     </tr>
-
-
     <tr>
-
-
     <td align="left"><a href="cumulus-settings-personal.html">back</a></td>
-
-
     <td align="center"><a href="cumulus-settings.html">overview</a></td>
-
-
     <td align="right"><a href="cumulus-settings-task.html">next</a></td>
-
-
     </tr>
-
-
-    
-  
   </tbody>
 </table>
 
-
-
 <h3 align="center">Settings</h3>
 
-
-    
-<p><b>Gliders</b></p>
+<h4><b>General setup-&gt;Gliders</b></h4>
 
 <p>
-	Cumulus supports multiple gliders you can configure. So you can choose the glider you will be using for
-	a particular flight from a list and have all relevant data available instantly. Using the buttons above
-	the list, you can add (paper icon), edit (map icon) or delete (trashcan icon) gliders from your
-	list. Like with other settings, changes are stored only if you exit the settings dialog with the OK 
-	button. If you accidentally delete a glider from you list, just hit the cancel button or the little x and
-	you'll be fine.</p>
+	Cumulus supports multiple gliders that you can configure. You can then choose 
+	the glider you will be using for a particular flight from a list and have all 
+	the relevant data instantly available. Using the buttons above the list, you 
+	can add (paper icon), edit (pencil icon) or delete (trashcan icon) gliders 
+	from your list. As with other settings, changes are only stored if you exit 
+	the settings dialog with the OK (green with the white tick) button. If you 
+	accidentally delete a glider from your list, just tap the cancel (red with 
+	the white x) button and you'll be fine.</p>
 
 
 	
 <p>
-    If you tab the add or edit button, you'll be presented with a new dialog. 
-	Here you can enter information about your glider. The polar is used for final glide calculations. Select
-    your glider from the list or enter the correct values for your glider in the boxes. The values represent
-    three points on your gliders polare, that are used to make an approximation of this polare. These points
-    are represented as pairs of speed (in km/h) and rate of sink (in m/s). 
-    For optimal results, take the speed for the best L/D as the first point,
-    a value between 170 km/h and Vne as the third, 
-    and a point halfway in between these as the second point.
-    </p>
-
-
-    
-<p>    
-    If your glider can take on water ballast, enter the capacity in liters. You can enter the amount you
-	actually take with you on a flight in the preflight dialog.
-    </p>
-
-
-    
+  If you tap the add or edit buttons, you'll be presented with a new dialog. 
+	Here you can enter information about your glider. The polar is used for the 
+	final glide calculations. Select your glider from the list or enter the 
+	correct values for your glider in the boxes. The values represent three points 
+	on your glider's polar; these are used to make an approximation to this curve.
+	These points are given as pairs of speed (in km/h) and rate of sink (in m/s). 
+	For optimal results, take the values at the speed for best L/D as the first point,
+	V<sub>Ne</sub> as the third, and a point halfway between these as the second point.
+  Note that the boxes for "Added load" and 
+	"Max. water" are only intended for use in checking what the polar would look like 
+	at the all-up weight given by Empty weight + Added load + Max water. They do not
+	affect the in-flight speed-to-fly or gliding angle calculations. However, if your
+	glider can carry water, leave the full amount entered here, as this value will limit
+	the actual amount you can enter on the
+	<a href="cumulus-preflight-settings-glider.html">
+	<i>Pre-flight setup-&gt;Glider</i></a>
+	menu page. The actual Added load is also entered on the same page.
+</p>
+ 
 <p>
-    You can see a graphical representation of the resulting polar if
-    you select the <i>Show Polar</i> button. Included in this display
-    is information on the best speed and L/D for the selected
-    glider. With the cursor rocker you can simulate wind and lift by
-    pressing the up/down (lift) and left/right (wind) buttons. The
-    related tangent is calculated, the best speed and the resulting
-    sink is displayed accordingly. With the center key you can reset
-    all to the defaults.
-    </p>
+	You can see a graphical representation of the resulting polar if you
+	select the <i>Show Polar</i> button. Included in this display is
+	information on the speed for the best L/D for the selected glider. Using
+	the cursor rocker you can simulate wind and lift by pressing the up/down
+	(lift) and left/right (wind) buttons. The related tangent is calculated,
+	and the best speed-to-fly and resulting sink are displayed accordingly.
+</p>
 
-
-    
 <p>
-    To add your own types to the selection list, please edit the file
-    <i>glider.pol</i> located at /opt/cumulus/etc.
-    </p>
+	To add your own types to the selection list, please edit the file
+	<i>glider.pol</i> located at /opt/cumulus/etc. But better would be to send
+	your polar data to the Cumulus team for insertion into that file.
+</p>
 
-
-    
 <p>
-    The values for registration and call sign are used in the logfiles
-    and as a unique identifier for the glider.
-    </p>
+	The values for registration and call sign are used in the IGC logfile
+	and as a unique identifier for the glider.
+</p>
 
-
-
-    
 <table width="100%">
-
-
     <tbody>
-
     <tr>
-
-
     <td></td>
-
-
     <td align="center"><a href="cumulus.html">start</a></td>
-
-
     <td></td>
-
-
     </tr>
-
-
     <tr>
-
-
     <td align="left"><a href="cumulus-settings-personal.html">back</a></td>
-
-
     <td align="center"><a href="cumulus-settings.html">overview</a></td>
-
-
     <td align="right"><a href="cumulus-settings-task.html">next</a></td>
-
-
     </tr>
-
-
-    
-  
   </tbody>
 </table>
-
 
 </body>
 </html>
