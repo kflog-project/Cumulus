@@ -92,8 +92,7 @@ void Polar::setWater (int water, int bugs)
     // Kg.
 
     double addedLoad = 0.0;
-    ;
-    double weight = _emptyWeight;
+    double weight    = _emptyWeight;
     double A;
 
     if ( _emptyWeight >= _grossWeight ) {
@@ -188,72 +187,75 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
     // all drawing is done with meters/second units in both directions.
     // we use the Speed class to do the conversions.
     int minspeed, maxspeed, stepspeed;
-    switch (Speed::getHorizontalUnit()) {
-    case Speed::metersPerSecond:
-        minspeed = 10;
-        maxspeed = 70;
-        stepspeed = 10;
-        break;
-    case Speed::kilometersPerHour:
-        minspeed = 60;
-        maxspeed = 250;
-        stepspeed = 30;
-        break;
-    case Speed::knots:
-        minspeed = 30;
-        maxspeed = 130;
-        stepspeed = 20;
-        break;
-    case Speed::milesPerHour:
-        minspeed = 40;
-        maxspeed = 150;
-        stepspeed = 20;
-        break;
-    default:
-        minspeed = 0;
-        maxspeed = 0;
-        stepspeed = 0;
-        qFatal ("invalid horizontal speed: %d", Speed::getHorizontalUnit());
+
+    switch (Speed::getHorizontalUnit())
+    {
+      case Speed::metersPerSecond:
+          minspeed = 10;
+          maxspeed = 70;
+          stepspeed = 10;
+          break;
+      case Speed::kilometersPerHour:
+          minspeed = 60;
+          maxspeed = 240;
+          stepspeed = 30;
+          break;
+      case Speed::knots:
+          minspeed = 30;
+          maxspeed = 130;
+          stepspeed = 20;
+          break;
+      case Speed::milesPerHour:
+          minspeed = 40;
+          maxspeed = 150;
+          stepspeed = 20;
+          break;
+      default:
+          minspeed = 0;
+          maxspeed = 0;
+          stepspeed = 0;
+          qFatal ("invalid horizontal speed: %d", Speed::getHorizontalUnit());
     }
 
     Speed sink;
     int minsink, maxsink, stepsink;
 
-    switch (Speed::getVerticalUnit()) {
-    case Speed::metersPerSecond:
-        minsink = 1;
-        maxsink = 5;
-        stepsink = 1;
-        sink.setMps(maxsink);
-        break;
-    case Speed::kilometersPerHour:
-        minsink = 5;
-        maxsink = 20;
-        stepsink = 5;
-        sink.setKph(maxsink);
-        break;
-    case Speed::knots:
-        minsink = 2;
-        maxsink = 10;
-        stepsink = 2;
-        sink.setKnot(maxsink);
-        break;
-    case Speed::feetPerMinute:
-        minsink = 200;
-        maxsink = 1000;
-        stepsink = 200;
-        sink.setFpm(maxsink);
-        break;
-    default:
-        minsink = 0;
-        maxsink = 0;
-        stepsink = 0;
-        qFatal ("invalid vertical speed: %d", Speed::getVerticalUnit());
+    switch (Speed::getVerticalUnit())
+    {
+      case Speed::metersPerSecond:
+          minsink = 1;
+          maxsink = 5;
+          stepsink = 1;
+          sink.setMps(maxsink);
+          break;
+      case Speed::kilometersPerHour:
+          minsink = 5;
+          maxsink = 20;
+          stepsink = 5;
+          sink.setKph(maxsink);
+          break;
+      case Speed::knots:
+          minsink = 2;
+          maxsink = 10;
+          stepsink = 2;
+          sink.setKnot(maxsink);
+          break;
+      case Speed::feetPerMinute:
+          minsink = 200;
+          maxsink = 1000;
+          stepsink = 200;
+          sink.setFpm(maxsink);
+          break;
+      default:
+          minsink = 0;
+          maxsink = 0;
+          stepsink = 0;
+          qFatal ("invalid vertical speed: %d", Speed::getVerticalUnit());
     }
 
     Speed speed;
     speed.setHorizontalValue (maxspeed);
-    X = double(view->width() - 25) / double(speed.getMps());
+    X = double(view->width() - 30) / double(speed.getMps());
     Y = double(view->height() - 30 - 80) / double(sink.getMps());
 
     QFont font = p.font();
@@ -320,7 +322,7 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
             break;
         }
 
-        //qDebug("(x,y) = (%d, %d); sink=%f",x,y, getSink(spd).getMps());
+        // qDebug("(x,y) = (%d, %d); sink=%f",x,y, getSink(spd).getMps());
         p.drawLine (lastX, lastY, x, y);
         lastX = x;
         lastY = y;
