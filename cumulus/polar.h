@@ -1,9 +1,13 @@
 /***************************************************************************
-                          polar.h  -  description
+                          polar.cpp  -  description
                              -------------------
-    begin                : Fre Okt 18 2002
-    copyright            : (C) 2002 by Eggert Ehmke, 2008 Axel Pauli
+    begin                : Okt 18 2002
+    copyright            : (C) 2002      by Eggert Ehmke
+                               2008-2010 by Axel Pauli
+
     email                : eggert.ehmke@berlin.de, axel@kflog.org
+
+    $Id$
 
  ***************************************************************************/
 
@@ -25,7 +29,10 @@
 #include "speed.h"
 
 /**
- * @author Eggert Ehmke
+ * \author Eggert Ehmke
+ *
+ * \brief Class for glider polar calculations and drawing.
+ *
  */
 class Polar
 {

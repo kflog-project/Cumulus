@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -32,8 +32,10 @@
 #include "glider.h"
 
 /**
- * This class represents the glider editor dialog
- * @author Eggert Ehmke
+ * \author Eggert Ehmke, Axel Pauli
+ *
+ * \ brief This class represents a glider editor dialog.
+ *
  */
 class GilderEditor : public QDialog
 {
@@ -114,6 +116,22 @@ private:
     bool isNew;
     /** Flag to indicate if a glider object was created by this class */
     bool gliderCreated;
+
+    /**
+     * saves current horizontal/vertical speed unit during construction of object
+     */
+    Speed::speedUnit currHSpeedUnit;
+    Speed::speedUnit currVSpeedUnit;
+
+    /**
+     * Loaded values in spin boxes.
+     */
+    double currV1;
+    double currV2;
+    double currV3;
+    double currW1;
+    double currW2;
+    double currW3;
 };
 
 #endif

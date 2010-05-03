@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2008-2009 by Axel Pauli
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -16,14 +16,7 @@
  **
  ***********************************************************************/
 
-#include <QDir>
-#include <QFile>
-#include <QTextStream>
-#include <QLabel>
-#include <QRadioButton>
-#include <QMessageBox>
-#include <QString>
-#include <QScrollArea>
+#include <QtGui>
 
 #include "polardialog.h"
 #include "glidereditor.h"
@@ -36,12 +29,17 @@
 extern MapView     *_globalMapView;
 extern MainWindow  *_globalMainWindow;
 
-GilderEditor::GilderEditor(QWidget *parent, Glider *glider )
-  : QDialog(parent)
+GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
+  QDialog(parent)
 {
   setObjectName("SettingsPageGliderData");
   setAttribute(Qt::WA_DeleteOnClose);
   setModal(true);
+
+  // save current horizontal/vertical speed unit. This unit must be considered
+  // during storage.
+  currHSpeedUnit = Speed::getHorizontalUnit();
+  currVSpeedUnit = Speed::getVerticalUnit();
 
   if( _globalMainWindow )
     {
@@ -109,15 +107,25 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider )
   spinV1->setRange(0.0, 150.0);
   spinV1->setSingleStep(1.0);
   spinV1->setButtonSymbols(QSpinBox::PlusMinus);
-  spinV1->setSuffix(" km/h");
+  spinV1->setSuffix( Speed::getHorizontalUnitText() );
   spinboxLayout->addWidget(spinV1, srow, 1);
 
   spinboxLayout->addWidget(new QLabel("w1:", this), srow, 2);
   spinW1 = new QDoubleSpinBox(this);
-  spinW1->setRange(-5.0, 0);
-  spinW1->setSingleStep(0.01);
+
+  if( Speed::getVerticalUnit() !=  Speed::feetPerMinute )
+    {
+      spinW1->setRange(-5.0, 0);
+      spinW1->setSingleStep(0.01);
+    }
+  else
+    {
+      spinW1->setRange(-1000.0, 0);
+      spinW1->setSingleStep(2.0);
+    }
+
   spinW1->setButtonSymbols(QSpinBox::PlusMinus);
-  spinW1->setSuffix(" m/s");
+  spinW1->setSuffix( Speed::getVerticalUnitText() );
   spinboxLayout->addWidget(spinW1, srow, 3);
 
   spinboxLayout->addWidget(new QLabel(tr("Empty weight:"), this), srow, 4);
@@ -126,7 +134,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider )
   emptyWeight->setMaximum(1000);
   emptyWeight->setSingleStep(5);
   emptyWeight->setButtonSymbols(QSpinBox::PlusMinus);
-  emptyWeight->setSuffix(" kg");
+  emptyWeight->setSuffix("kg");
   spinboxLayout->addWidget(emptyWeight, srow, 5);
   srow++;
 
@@ -135,15 +143,25 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider )
   spinV2->setRange(0.0, 200.0);
   spinV2->setSingleStep(1.0);
   spinV2->setButtonSymbols(QSpinBox::PlusMinus);
-  spinV2->setSuffix(" km/h");
+  spinV2->setSuffix( Speed::getHorizontalUnitText() );
   spinboxLayout->addWidget(spinV2, srow, 1);
 
   spinboxLayout->addWidget(new QLabel("w2:", this), srow, 2);
   spinW2 = new QDoubleSpinBox(this);
-  spinW2->setRange(-5.0, 0);
-  spinW2->setSingleStep(0.01);
+
+  if( Speed::getVerticalUnit() !=  Speed::feetPerMinute )
+    {
+      spinW2->setRange(-5.0, 0);
+      spinW2->setSingleStep(0.01);
+    }
+  else
+    {
+      spinW2->setRange(-1000.0, 0);
+      spinW2->setSingleStep(2.0);
+    }
+
   spinW2->setButtonSymbols(QSpinBox::PlusMinus);
-  spinW2->setSuffix(" m/s");
+  spinW2->setSuffix( Speed::getVerticalUnitText() );
   spinboxLayout->addWidget(spinW2, srow, 3);
 
   spinboxLayout->addWidget(new QLabel(tr("Added load:"), this), srow, 4);
@@ -152,7 +170,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider )
   addedLoad->setMaximum(1000);
   addedLoad->setSingleStep(5);
   addedLoad->setButtonSymbols(QSpinBox::PlusMinus);
-  addedLoad->setSuffix(" kg");
+  addedLoad->setSuffix("kg");
   spinboxLayout->addWidget(addedLoad, srow, 5);
   srow++;
 
@@ -161,15 +179,25 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider )
   spinV3->setRange(0.0, 250.0);
   spinV3->setSingleStep(1.0);
   spinV3->setButtonSymbols(QSpinBox::PlusMinus);
-  spinV3->setSuffix(" km/h");
+  spinV3->setSuffix( Speed::getHorizontalUnitText() );
   spinboxLayout->addWidget(spinV3, srow, 1);
 
   spinboxLayout->addWidget(new QLabel("w3:", this), srow, 2);
   spinW3 = new QDoubleSpinBox(this);
-  spinW3->setRange(-5.0, 0);
-  spinW3->setSingleStep(0.01);
+
+  if( Speed::getVerticalUnit() !=  Speed::feetPerMinute )
+    {
+      spinW3->setRange(-5.0, 0);
+      spinW3->setSingleStep(0.01);
+    }
+  else
+    {
+      spinW3->setRange(-1000.0, 0);
+      spinW3->setSingleStep(2.0);
+    }
+
   spinW3->setButtonSymbols(QSpinBox::PlusMinus);
-  spinW3->setSuffix(" m/s");
+  spinW3->setSuffix( Speed::getVerticalUnitText() );
   spinboxLayout->addWidget(spinW3, srow, 3);
 
   spinboxLayout->addWidget(new QLabel(tr("Max. water:"), this), srow, 4);
@@ -178,7 +206,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider )
   spinWater->setMaximum(300);
   spinWater->setSingleStep(5);
   spinWater->setButtonSymbols(QSpinBox::PlusMinus);
-  spinWater->setSuffix(" l");
+  spinWater->setSuffix("l");
   spinboxLayout->addWidget(spinWater, srow, 5);
 
   itemsLayout->addLayout(spinboxLayout, row, 0, 1, 4);
@@ -238,8 +266,7 @@ GilderEditor::~GilderEditor()
   qDeleteAll(_polars);
 }
 
-Polar*
-GilderEditor::getPolar()
+Polar* GilderEditor::getPolar()
 {
   int pos = comboType->currentIndex();
 
@@ -250,8 +277,7 @@ GilderEditor::getPolar()
 }
 
 // just a helper function
-void
-setCurrentText(QComboBox* combo, const QString& text)
+void setCurrentText(QComboBox* combo, const QString& text)
 {
   int idx = combo->findText(text);
 
@@ -262,8 +288,7 @@ setCurrentText(QComboBox* combo, const QString& text)
 }
 
 /** Called to initiate loading of the configuration file. */
-void
-GilderEditor::load()
+void GilderEditor::load()
 {
   if (_glider)
     {
@@ -275,28 +300,41 @@ GilderEditor::load()
       spinWater->setValue(_glider->maxWater());
 
       if (_glider->seats() == Glider::doubleSeater)
-        comboSeats->setCurrentIndex(1);
+        {
+          comboSeats->setCurrentIndex(1);
+        }
       else
-        comboSeats->setCurrentIndex(0);
+        {
+          comboSeats->setCurrentIndex(0);
+        }
 
-      spinV1->setValue(_glider->polar()->v1().getKph());
-      spinV2->setValue(_glider->polar()->v2().getKph());
-      spinV3->setValue(_glider->polar()->v3().getKph());
+      spinV1->setValue( _glider->polar()->v1().getHorizontalValue() );
+      spinV2->setValue( _glider->polar()->v2().getHorizontalValue() );
+      spinV3->setValue( _glider->polar()->v3().getHorizontalValue() );
 
-      spinW1->setValue(_glider->polar()->w1().getMps());
-      spinW2->setValue(_glider->polar()->w2().getMps());
-      spinW3->setValue(_glider->polar()->w3().getMps());
+      spinW1->setValue( _glider->polar()->w1().getVerticalValue() );
+      spinW2->setValue( _glider->polar()->w2().getVerticalValue() );
+      spinW3->setValue( _glider->polar()->w3().getVerticalValue() );
 
       emptyWeight->setValue((int) _glider->polar()->emptyWeight());
-      double load = _glider->polar()->grossWeight()
-          - _glider->polar()->emptyWeight();
+      double load = _glider->polar()->grossWeight() -
+                    _glider->polar()->emptyWeight();
+
       addedLoad->setValue((int) load);
+
+      // Save load values to avoid rounding errors during save
+      currV1 = spinV1->value();
+      currV2 = spinV2->value();
+      currV3 = spinV3->value();
+
+      currW1 = spinW1->value();
+      currW1 = spinW2->value();
+      currW1 = spinW3->value();
     }
 }
 
 /** called to initiate saving to the configuration file */
-void
-GilderEditor::save()
+void GilderEditor::save()
 {
   if (!_glider)
     {
@@ -309,18 +347,86 @@ GilderEditor::save()
   _glider->setMaxWater(spinWater->value());
 
   if (comboSeats->currentIndex() == 1)
-    _glider->setSeats(Glider::doubleSeater);
+    {
+      _glider->setSeats(Glider::doubleSeater);
+    }
   else
-    _glider->setSeats(Glider::singleSeater);
+    {
+      _glider->setSeats(Glider::singleSeater);
+    }
 
   Speed V1, V2, V3, W1, W2, W3;
-  V1.setKph(spinV1->value());
-  V2.setKph(spinV2->value());
-  V3.setKph(spinV3->value());
 
-  W1.setMps(spinW1->value());
-  W2.setMps(spinW2->value());
-  W3.setMps(spinW3->value());
+  // save the current set units, maybe changed in the meantime.
+  Speed::speedUnit hSpeedUnit = Speed::getHorizontalUnit();
+  Speed::speedUnit vSpeedUnit = Speed::getVerticalUnit();
+
+  // set units valid during load of speeds
+  Speed::setHorizontalUnit( currHSpeedUnit );
+  Speed::setVerticalUnit( currVSpeedUnit );
+
+  // Save values only, if they were changed to avoid rounding errors.
+  if( spinV1->value() != currV1 )
+    {
+      qDebug() << "Ungleich V1" << spinV1->value() << currV1;
+      V1.setHorizontalValue(spinV1->value());
+    }
+  else
+    {
+      V1.setHorizontalValue( _glider->polar()->v1().getHorizontalValue() );
+    }
+
+  if( spinV2->value() != currV2 )
+    {
+       qDebug() << "Ungleich V2" << spinV2->value() << currV2;
+       V2.setHorizontalValue(spinV2->value());
+    }
+  else
+    {
+      V2.setHorizontalValue( _glider->polar()->v2().getHorizontalValue() );
+    }
+
+  if( spinV3->value() != currV3 )
+     {
+        qDebug() << "Ungleich V3" << spinV3->value() << currV3;
+        V3.setHorizontalValue(spinV3->value());
+     }
+  else
+    {
+      V3.setHorizontalValue( _glider->polar()->v3().getHorizontalValue() );
+    }
+
+  if( spinW1->value() != currW1 )
+     {
+        W1.setVerticalValue(spinW1->value());
+     }
+  else
+    {
+      W1.setVerticalValue( _glider->polar()->w1().getVerticalValue() );
+    }
+
+  if( spinW2->value() != currW2 )
+     {
+        W2.setVerticalValue(spinW2->value());
+     }
+  else
+    {
+      W2.setVerticalValue( _glider->polar()->w2().getVerticalValue() );
+    }
+
+  if( spinW3->value() != currW3 )
+     {
+        W3.setVerticalValue(spinW3->value());
+     }
+  else
+    {
+      W3.setVerticalValue( _glider->polar()->w3().getVerticalValue() );
+    }
+
+  // restore current speed units.
+  Speed::setHorizontalUnit( hSpeedUnit );
+  Speed::setVerticalUnit( vSpeedUnit );
+
   // qDebug("_polar->emptyWeight() %f  _polar->grossWeight() %f",
   //         (float)_glider->polar()->emptyWeight(),  (float)_glider->polar()->grossWeight() );
   _glider->setPolar(
@@ -344,8 +450,7 @@ GilderEditor::save()
   gliderCreated = false;
 }
 
-void
-GilderEditor::readPolarData()
+void GilderEditor::readPolarData()
 {
   // qDebug ("GilderEditor::readPolarData ");
 
@@ -474,8 +579,7 @@ GilderEditor::readPolarData()
 }
 
 /** called when a glider type has been selected */
-void
-GilderEditor::slotActivated(const QString& type)
+void GilderEditor::slotActivated(const QString& type)
 {
   // qDebug ("GilderEditor::slotActivated(%s)", type.toLatin1().data());
 
@@ -517,8 +621,7 @@ GilderEditor::slotActivated(const QString& type)
   _glider->setType(type);
 }
 
-void
-GilderEditor::slotButtonShow()
+void GilderEditor::slotButtonShow()
 {
   // we create a polar object on the fly to allow test of changed polar values without saving
   Speed V1, V2, V3, W1, W2, W3;
@@ -541,8 +644,7 @@ GilderEditor::slotButtonShow()
   dlg->show();
 }
 
-void
-GilderEditor::accept()
+void GilderEditor::accept()
 {
   edtGReg->setText(edtGReg->text().trimmed()); //remove spaces
 
@@ -563,8 +665,7 @@ GilderEditor::accept()
     }
 }
 
-void
-GilderEditor::reject()
+void GilderEditor::reject()
 {
   // @AP: delete glider, if it was allocated in this class and not
   // emitted in accept method to avoid a memory leak.
