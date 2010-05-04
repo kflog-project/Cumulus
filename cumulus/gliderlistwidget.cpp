@@ -87,6 +87,7 @@ void GliderListWidget::fillList()
   if( i > 1 )
     {
       resizeListColumns();
+      sortItems( 0, Qt::AscendingOrder );
     }
 
   config.endGroup();
