@@ -14,6 +14,13 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-05-04 AP: Class Polar can handle different units now. Drawing of polar
+                   improved for slow gliders.
+[o] 2010-05-04 AP: Polar object in class Glider changed from pointer to value.
+[o] 2010-05-04 AP: Polar list in GliderEditor changed from pointer to value list.
+                   List is sorted after loading now and supports different units.
+[-] 2010-05-04 AP: BUGFIX: GliderListWidget did not sort the list of gliders
+                   at the first load.
 [-] 2010-05-03 AP: BUGFIX: Different problems in polar drawing fixed. Drawing
                    enabled for slow flying gliders. Different units can be
                    used in polar settings now.
@@ -26,7 +33,7 @@ Cumulus changelog
 [o] 2010-05-01 AP: Performance tuning in GpsNmea class by eliminating needless
                    call backs from slots caused by missing values in emitted
                    signal. Needed values added to the signal call.
-[o] 2010-04-29 AP: Welt2000 download link in airfield settings updated.
+[o] 2010-04-29 AP: Welt2000 download link updated in airfield settings .
 [o] 2010-04-29 AP: Performance tuning in MapInfoBox class. Dynamic layout was
                    to often recalculated. Caused a lot of overhead. Furthermore
                    found a possible endless while loop where font size became
