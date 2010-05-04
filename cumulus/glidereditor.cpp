@@ -75,7 +75,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   itemsLayout->addWidget(new QLabel(tr("Glider type:"), this), row, 0);
   comboType = new QComboBox(this);
   comboType->setEditable(true);
-  // comboType->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+  comboType->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
   itemsLayout->addWidget(comboType, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Seats:"), this), row, 2);
@@ -263,7 +263,6 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
 
 GilderEditor::~GilderEditor()
 {
-  qDeleteAll(_polars);
 }
 
 Polar* GilderEditor::getPolar()
@@ -271,9 +270,13 @@ Polar* GilderEditor::getPolar()
   int pos = comboType->currentIndex();
 
   if ((pos >= 0) && (pos < _polars.count()))
-    return _polars.at(pos);
+    {
+      return &(_polars[pos]);
+    }
   else
-    return static_cast<Polar *> (0);
+    {
+      return static_cast<Polar *> (0);
+    }
 }
 
 // just a helper function
@@ -336,7 +339,7 @@ void GilderEditor::load()
 /** called to initiate saving to the configuration file */
 void GilderEditor::save()
 {
-  if (!_glider)
+  if( !_glider )
     {
       _glider = new Glider;
     }
@@ -368,7 +371,6 @@ void GilderEditor::save()
   // Save values only, if they were changed to avoid rounding errors.
   if( spinV1->value() != currV1 )
     {
-      qDebug() << "Ungleich V1" << spinV1->value() << currV1;
       V1.setHorizontalValue(spinV1->value());
     }
   else
@@ -378,7 +380,6 @@ void GilderEditor::save()
 
   if( spinV2->value() != currV2 )
     {
-       qDebug() << "Ungleich V2" << spinV2->value() << currV2;
        V2.setHorizontalValue(spinV2->value());
     }
   else
@@ -388,7 +389,6 @@ void GilderEditor::save()
 
   if( spinV3->value() != currV3 )
      {
-        qDebug() << "Ungleich V3" << spinV3->value() << currV3;
         V3.setHorizontalValue(spinV3->value());
      }
   else
@@ -429,9 +429,10 @@ void GilderEditor::save()
 
   // qDebug("_polar->emptyWeight() %f  _polar->grossWeight() %f",
   //         (float)_glider->polar()->emptyWeight(),  (float)_glider->polar()->grossWeight() );
-  _glider->setPolar(
-      new Polar( _glider->type(), V1, W1, V2, W2, V3, W3, 0.0, 0.0, emptyWeight->value(), emptyWeight->value()
-          + addedLoad->value()));
+  Polar polar( _glider->type(), V1, W1, V2, W2, V3, W3, 0.0, 0.0,
+               emptyWeight->value(), emptyWeight->value() + addedLoad->value() );
+
+  _glider->setPolar( polar );
 
   // emit glider object to GliderListWidget
   if (isNew)
@@ -474,19 +475,20 @@ void GilderEditor::readPolarData()
     }
 
   QTextStream stream(&file);
-  Polar* pol;
 
   if (file.open(QIODevice::ReadOnly))
     {
       while (!stream.atEnd())
         {
-          QString line = stream.readLine();
+          QString line = stream.readLine().trimmed();
           // ignore comments
           if (line[0] == '#')
-            continue;
+            {
+              continue;
+            }
+
           QStringList list = line.split(",", QString::KeepEmptyParts);
           QString glidertype = list[0];
-          comboType->addItem(glidertype);
 
           // the sink values are positive in this file; we need them negative
           Speed v1, w1, v2, w2, v3, w3;
@@ -501,32 +503,49 @@ void GilderEditor::readPolarData()
           double wingarea = list[9].toDouble();
           double emptyMass = list[10].toDouble();
 
-          pol
-              = new Polar(glidertype, v1, w1, v2, w2, v3, w3, wingload, wingarea, emptyMass, emptyMass);
+          Polar polar = Polar( glidertype, v1, w1, v2, w2, v3, w3,
+                               wingload, wingarea, emptyMass, emptyMass );
+
           if (list.count() >= 12)
             {
-              pol->setMaxWater(list[11].toInt());
+              polar.setMaxWater(list[11].toInt());
             }
           else
             {
-              pol->setMaxWater(0);
+              polar.setMaxWater(0);
             }
+
           if (list.count() >= 13)
             {
-              pol->setSeats(list[12].toInt());
+              polar.setSeats(list[12].toInt());
             }
           else
-            pol->setSeats(1);
-          _polars.append(pol);
+            {
+              polar.setSeats(1);
+            }
+
+          _polars.append( polar );
         }
+
+      if( _polars.size() )
+        {
+          // sort polar data list according to their names
+          qSort( _polars.begin(), _polars.end(), Polar::lessThan );
+
+          for( int i = 0; i < _polars.size(); i++ )
+            {
+              comboType->addItem( _polars[i].name() );
+            }
+        }
+
       QString firstGlider = comboType->itemText(0);
       slotActivated(firstGlider);
     }
   else
     {
       _globalMapView->message(tr("Missing polar file"));
-      qWarning("Could not open polar file: %s",
-          file.fileName().toLatin1().data());
+      qWarning( "Could not open polar file: %s",
+                file.fileName().toLatin1().data() );
     }
 
 #if 0
@@ -582,66 +601,63 @@ void GilderEditor::readPolarData()
 void GilderEditor::slotActivated(const QString& type)
 {
   // qDebug ("GilderEditor::slotActivated(%s)", type.toLatin1().data());
-
-  if (!_glider)
+  if( !_glider )
     {
       _glider = new Glider();
       gliderCreated = true;
     }
 
+  _glider->setType( type );
+
   _polar = getPolar();
 
-  if (_polar)
+  if( _polar )
     {
-      spinV1->setValue(_polar->v1().getKph());
-      spinW1->setValue(_polar->w1().getMps());
-      spinV2->setValue(_polar->v2().getKph());
-      spinW2->setValue(_polar->w2().getMps());
-      spinV3->setValue(_polar->v3().getKph());
-      spinW3->setValue(_polar->w3().getMps());
+      _glider->setPolar( *_polar );
 
-      emptyWeight->setValue((int) _polar->emptyWeight());
+      spinV1->setValue( _polar->v1().getHorizontalValue() );
+      spinW1->setValue( _polar->w1().getVerticalValue() );
+      spinV2->setValue( _polar->v2().getHorizontalValue() );
+      spinW2->setValue( _polar->w2().getVerticalValue() );
+      spinV3->setValue( _polar->v3().getHorizontalValue() );
+      spinW3->setValue( _polar->w3().getVerticalValue() );
+
+      emptyWeight->setValue( (int) _polar->emptyWeight() );
       double load = _polar->grossWeight() - _polar->emptyWeight();
-      addedLoad->setValue((int) load);
-      spinWater->setValue(_polar->maxWater());
+      addedLoad->setValue( (int) load );
+      spinWater->setValue( _polar->maxWater() );
 
-      if (_polar->seats() == 2)
+      if( _polar->seats() == 2 )
         {
-          comboSeats->setCurrentIndex(1);
+          comboSeats->setCurrentIndex( 1 );
         }
       else
         {
-          comboSeats->setCurrentIndex(0);
+          comboSeats->setCurrentIndex( 0 );
         }
     }
-
-  // @AP: make a deep copy of polare, because setPolar will remove the
-  // previous passed polare
-  _glider->setPolar(new Polar(*_polar));
-  _glider->setType(type);
 }
 
 void GilderEditor::slotButtonShow()
 {
   // we create a polar object on the fly to allow test of changed polar values without saving
   Speed V1, V2, V3, W1, W2, W3;
-  V1.setKph(spinV1->value());
-  V2.setKph(spinV2->value());
-  V3.setKph(spinV3->value());
+  V1.setHorizontalValue(spinV1->value());
+  V2.setHorizontalValue(spinV2->value());
+  V3.setHorizontalValue(spinV3->value());
 
-  W1.setMps(spinW1->value());
-  W2.setMps(spinW2->value());
-  W3.setMps(spinW3->value());
+  W1.setVerticalValue(spinW1->value());
+  W2.setVerticalValue(spinW2->value());
+  W3.setVerticalValue(spinW3->value());
 
-  Polar * polar = new Polar( comboType->currentText(),
-                             V1, W1, V2, W2, V3, W3, 0.0, 0.0,
-                             emptyWeight->value(),
-                             emptyWeight->value() + addedLoad->value() );
+  Polar polar( comboType->currentText(),
+               V1, W1, V2, W2, V3, W3, 0.0, 0.0,
+               emptyWeight->value(),
+               emptyWeight->value() + addedLoad->value() );
 
-  // polar->setWater(0, 0);
-  polar->setWater(spinWater->value(), 0);
-  PolarDialog* dlg = new PolarDialog(polar, this);
-  dlg->show();
+  polar.setWater(spinWater->value(), 0);
+  PolarDialog* dlg = new PolarDialog( polar, this );
+  dlg->setVisible(true);
 }
 
 void GilderEditor::accept()

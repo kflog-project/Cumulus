@@ -110,7 +110,7 @@ private:
     QSpinBox* spinWater;
     QComboBox* comboSeats;
 
-    QList<Polar*> _polars;
+    QList<Polar> _polars;
     Glider * _glider;
     Polar  * _polar;
     bool isNew;
