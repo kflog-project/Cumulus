@@ -16,17 +16,16 @@
 **
 ***********************************************************************/
 
-#include <QKeySequence>
-#include <QShortcut>
-#include <QFont>
+#include <QtGui>
 
 #include "polardialog.h"
 #include "mainwindow.h"
 
 extern MainWindow  *_globalMainWindow;
 
-PolarDialog::PolarDialog(const Polar* polar, QWidget* parent) :
-  QDialog(parent)
+PolarDialog::PolarDialog( Polar& polar, QWidget* parent) :
+  QDialog(parent),
+  _polar(polar)
 {
   setObjectName("PolarDialog");
   setModal(true);
@@ -37,13 +36,11 @@ PolarDialog::PolarDialog(const Polar* polar, QWidget* parent) :
       // completely hide the parent window.
       resize( _globalMainWindow->size() );
     }
-    
-  _polar = const_cast<Polar*>(polar);
 
   QPalette palette;
   palette.setColor(backgroundRole(), Qt::white);
   setPalette(palette);
-  setWindowTitle ( "Polar for " + polar->name() + " - <Esc> or Mouse click to Close");
+  setWindowTitle ( "Polar for " + polar.name() + " - <Esc> or Mouse click to Close");
 
   QShortcut* rcUp =        new QShortcut(this);
   QShortcut* rcDown =      new QShortcut(this);
@@ -52,6 +49,7 @@ PolarDialog::PolarDialog(const Polar* polar, QWidget* parent) :
   QShortcut* rcLeft =      new QShortcut(this);
   QShortcut* rcRight =     new QShortcut(this);
   QShortcut* rcSpace =     new QShortcut(this);
+
   rcUp->setKey        (Qt::Key_Up);
   rcDown->setKey      (Qt::Key_Down);
   rcShiftUp->setKey   (Qt::Key_Up + Qt::SHIFT);
@@ -74,48 +72,40 @@ PolarDialog::PolarDialog(const Polar* polar, QWidget* parent) :
           this,       SLOT(slot_keyright()));
   connect(rcSpace,    SIGNAL(activated()),
           this,       SLOT(slot_keyhome()));
-  show();
-}
 
+  setVisible(true );
+}
 
 PolarDialog::~PolarDialog()
 {
-  if( _polar )
-    {
-      delete _polar;
-    }
 }
-
 
 void PolarDialog::slot_keyup()
 {
-  lift.setMps(lift.getMps()+0.1);
-  repaint ();
+  lift.setMps( lift.getMps() + 0.1 );
+  repaint();
 }
-
 
 void PolarDialog::slot_keydown()
 {
-  lift.setMps(lift.getMps()-0.1);
-  repaint ();
+  lift.setMps( lift.getMps() - 0.1 );
+  repaint();
 }
-
 
 void PolarDialog::slot_shiftkeyup()
 {
-  mc.setMps(mc.getMps()+0.5);
-  repaint ();
+  mc.setMps( mc.getMps() + 0.5 );
+  repaint();
 }
-
 
 void PolarDialog::slot_shiftkeydown()
 {
-  if (mc.getMps() > 0.01) {
-    mc.setMps(mc.getMps()-0.5);
-    repaint ();
-  }
+  if( mc.getMps() > 0.01 )
+    {
+      mc.setMps( mc.getMps() - 0.5 );
+      repaint();
+    }
 }
-
 
 void PolarDialog::slot_keyleft()
 {
@@ -124,10 +114,9 @@ void PolarDialog::slot_keyleft()
       return;
     }
 
-  wind.setKph(wind.getKph()+5.0);
-  repaint ();
+  wind.setKph( wind.getKph() + 5.0 );
+  repaint();
 }
-
 
 void PolarDialog::slot_keyright()
 {
@@ -137,21 +126,19 @@ void PolarDialog::slot_keyright()
     }
 
   wind.setKph(wind.getKph()-5.0);
-  repaint ();
+  repaint();
 }
-
 
 void PolarDialog::slot_keyhome()
 {
   wind.setKph(0.0);
   lift.setMps(0.0);
-  repaint ();
+  repaint();
 }
-
 
 void PolarDialog::paintEvent (QPaintEvent*)
 {
-  _polar->drawPolar(this, wind, lift, mc);
+  _polar.drawPolar(this, wind, lift, mc);
 }
 
 // Close the dialog on mouse press. Needed by Maemo, there is no close
