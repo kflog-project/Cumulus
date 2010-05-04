@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,13 +25,14 @@
 #include "polar.h"
 
 /**
- * An instance of a Glider object contains all the information available
- * on a glider: it's type, it's registration, call sign, polare,
- * two- or single seater, maximum water capacity, etc.
+ * \author André Somers
  *
- * @author André Somers
+ * \brief Class to handle different glider attributes.
+ *
+ * An instance of a Glider object contains all the information available
+ * on a glider: it's type, it's registration, call sign, polar,
+ * single or double seater, maximum water capacity, etc.
  */
-
 class Glider
 {
 
@@ -40,6 +41,7 @@ public:
     enum seat{ singleSeater=1, doubleSeater=2 };
 
     Glider();
+
     ~Glider();
 
     /**
@@ -53,7 +55,10 @@ public:
     /**
      * Sets the type of the Glider, such as for instance 'ASK 21' or 'Duo Discus', etc.
      */
-    void setType(QString newValue);
+    void setType(QString newValue)
+    {
+      _type = newValue;
+    };
 
     /**
      * @returns the registration of the Glider, such as for instance 'PH-1024' or 'D-8482'.
@@ -116,7 +121,7 @@ public:
      */
     void setMaxWater(int newValue)
     {
-        _maxWater=newValue;
+      _maxWater=newValue;
     };
 
     /**
@@ -124,13 +129,16 @@ public:
      */
     Polar *polar()
     {
-        return _polar;
+      return &_polar;
     };
 
     /**
      * Sets the polar object belonging to this glider.
      */
-    void setPolar(Polar * newPolar);
+    void setPolar(Polar& newPolar)
+    {
+      _polar = newPolar;
+    };
 
     /**
      * This funtion loads the glider-data from the config-object.
@@ -141,7 +149,7 @@ public:
     bool load(QSettings *config, int id);
 
     /**
-     * Stores the gliderinfo contained in config-object config under ID id.
+     * Stores the glider info contained in configuration object config under id.
      */
     void safe(QSettings *config, int id);
 
@@ -177,7 +185,7 @@ public:
         _coPilot=newValue;
     };
 
-private: // Private attributes
+private:
     /**
      * Contains the type of glider, for instance Ka-8 or ASH 25
      */
@@ -185,7 +193,7 @@ private: // Private attributes
     QString _registration;
     QString _callSign;
     seat _seats;
-    Polar * _polar;
+    Polar _polar;
     int _maxWater;
     int _lastSafeID;
 
