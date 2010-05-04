@@ -38,6 +38,8 @@ class Polar
 {
 public:
   
+    Polar();
+
     Polar(const QString& name,const Speed& v1, const Speed& w1,
           const Speed& v2, const Speed& w2,
           const Speed& v3, const Speed& w3,
@@ -149,6 +151,14 @@ public:
     void setMaxWater(int liters)
     {
         _maxWater=qMax(0, liters);
+    };
+
+    /**
+     * compares two entries to sort list by name.
+     */
+    static bool lessThan(const Polar &p1, const Polar &p2)
+    {
+      return p1._name < p2._name;
     };
 
 private:

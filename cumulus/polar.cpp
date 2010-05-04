@@ -28,6 +28,29 @@
 
 #include "polar.h"
 
+Polar::Polar() :
+  _name(""),
+  _v1(0),
+  _w1(0),
+  _v2(0),
+  _w2(0),
+  _v3(0),
+  _w3(0),
+  _a(0),
+  _aa(0),
+  _b(0),
+  _bb(0),
+  _c(0),
+  _cc(0),
+  _water(0),
+  _bugs(0),
+  _emptyWeight(0),
+  _grossWeight(0),
+  _seats(0),
+  _maxWater(0)
+{
+}
+
 Polar::Polar(const QString& name,const Speed& v1, const Speed& w1,
              const Speed& v2, const Speed& w2,
              const Speed& v3, const Speed& w3,
@@ -572,3 +595,4 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
     msg = QObject::tr("Use <Shift> up/down to adjust sinking");
     p.drawText(x, y+=font.pixelSize()+2, msg);
 }
+
