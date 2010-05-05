@@ -1894,10 +1894,12 @@ void Map::slotSwitchManualInFlight()
 void Map::__drawGlider()
 {
   // get the projected coordinates of the current position
-  QPoint projPos=_globalMapMatrix->wgsToMap(curGPSPos);
+  QPoint projPos = _globalMapMatrix->wgsToMap(curGPSPos);
   // map them to a coordinate on the pixmap
-  int Rx = _globalMapMatrix->map(projPos).x();
-  int Ry = _globalMapMatrix->map(projPos).y();
+  QPoint mapPos = _globalMapMatrix->map(projPos);
+
+  int Rx = mapPos.x();
+  int Ry = mapPos.y();
 
   QRect rect( QPoint(0, 0), this->size() );
 
@@ -1925,8 +1927,10 @@ void Map::__drawX()
   // get the projected coordinates of the current position
   QPoint projPos=_globalMapMatrix->wgsToMap(curMANPos);
   // map them to a coordinate on the pixmap
-  int Rx = _globalMapMatrix->map(projPos).x();
-  int Ry = _globalMapMatrix->map(projPos).y();
+  QPoint mapPos = _globalMapMatrix->map(projPos);
+
+  int Rx = mapPos.x();
+  int Ry = mapPos.y();
 
   QRect rect( QPoint(0, 0), this->size() );
 
