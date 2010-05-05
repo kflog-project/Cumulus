@@ -401,6 +401,19 @@ void MapView::showEvent( QShowEvent* event )
 /** called if heading has changed */
 void MapView::slot_Heading(int head)
 {
+  static QTime lastDisplay;
+
+  // The display is updated every 1 seconds only.
+  // That will reduce the X-Server load.
+  if( lastDisplay.elapsed() < 750 )
+    {
+      return;
+    }
+  else
+    {
+      lastDisplay = QTime::currentTime();
+    }
+
   _heading->setValue(QString("%1").arg( head, 3, 10, QChar('0') ));
   _theMap->setHeading(head);
 }
@@ -415,6 +428,19 @@ void MapView::slot_Speed(const Speed& speed)
     }
   else
     {
+      static QTime lastDisplay;
+
+      // The display is updated every 1 seconds only.
+      // That will reduce the X-Server load.
+      if( lastDisplay.elapsed() < 750 )
+        {
+          return;
+        }
+      else
+        {
+          lastDisplay = QTime::currentTime();
+        }
+
       _speed->setValue(speed.getHorizontalText(false,0));
     }
 }
@@ -485,6 +511,18 @@ void MapView::slot_Bearing(int bearing)
     }
   else
     {
+      static QTime lastDisplay;
+
+      // The display is updated every 1 seconds only.
+      // That will reduce the X-Server load.
+      if( lastDisplay.elapsed() < 750 )
+        {
+          return;
+        }
+      else
+        {
+          lastDisplay = QTime::currentTime();
+        }
 
       int ival = bearing;
 
@@ -540,11 +578,27 @@ void MapView::slot_RelBearing(int relbearing)
       return;
     }
 
-  while (relbearing < 0)
-    relbearing += 360;
-  int rot=((relbearing+7)/15) % 24;  //we only want to rotate in steps of 15 degrees. Finer is not useful.
-  QPixmap arrow = _arrows.copy( rot*60+3, 3, 54, 54 );
+  static QTime lastDisplay;
 
+  // The display is updated every 1 seconds only.
+  // That will reduce the X-Server load.
+  if( lastDisplay.elapsed() < 750 )
+    {
+      return;
+    }
+  else
+    {
+      lastDisplay = QTime::currentTime();
+    }
+
+  while (relbearing < 0)
+    {
+      relbearing += 360;
+    }
+
+  //we only want to rotate in steps of 15 degrees. Finer is not useful.
+  int rot=((relbearing+7)/15) % 24;
+  QPixmap arrow = _arrows.copy( rot*60+3, 3, 54, 54 );
   _rel_bearing->setPixmap (arrow);
 }
 
@@ -558,12 +612,29 @@ void MapView::slot_Distance(const Distance& distance)
     }
   else
     {
+      static QTime lastDisplay;
+
+      // The display is updated every 1 seconds only.
+      // That will reduce the X-Server load.
+      if( lastDisplay.elapsed() < 750 )
+        {
+          return;
+        }
+      else
+        {
+          lastDisplay = QTime::currentTime();
+        }
+
       _distance->setValue(distance.getText(false, 1, (uint) 2 ) );
     }
 }
 
 
-/** This slot is called by calculator if a new ETA (Estimated Time to Arrival, or the time that is approximatly needed to arrive at the waypoint) has been calculated. */
+/**
+ * This slot is called by the calculator if a new ETA (Estimated Time to Arrival
+ * or the time that is approximately needed to arrive at the waypoint) has been
+ * calculated.
+ */
 void MapView::slot_ETA(const QTime& eta)
 {
   if( eta.isNull() )
@@ -572,6 +643,19 @@ void MapView::slot_ETA(const QTime& eta)
     }
   else
     {
+      static QTime lastDisplay;
+
+      // The display is updated every 1 seconds only.
+      // That will reduce the X-Server load.
+      if( lastDisplay.elapsed() < 750 )
+        {
+          return;
+        }
+      else
+        {
+          lastDisplay = QTime::currentTime();
+        }
+
       QString txt = QString("%1:%2").arg( eta.hour() )
                                     .arg( eta.minute(), 2, 10, QChar('0') );
       _eta->setValue(txt);
@@ -664,6 +748,19 @@ void MapView::slot_LogEntry()
 /** This slot is being called if the altitude has changed. */
 void MapView::slot_Altitude(const Altitude& altitude )
 {
+  static QTime lastDisplay;
+
+  // The display is updated every 1 seconds only.
+  // That will reduce the X-Server load.
+  if( lastDisplay.elapsed() < 750 )
+    {
+      return;
+    }
+  else
+    {
+      lastDisplay = QTime::currentTime();
+    }
+
   _altitude->setValue( altitude.getText( false, 0 ) );
 }
 
@@ -723,6 +820,19 @@ void MapView::slot_Mc (const Speed& mc)
 /** This slot is called if a new variometer value has been set */
 void MapView::slot_Vario (const Speed& vario)
 {
+  static QTime lastDisplay;
+
+  // The display is updated every 1 seconds only.
+  // That will reduce the X-Server load.
+  if( lastDisplay.elapsed() < 750 )
+    {
+      return;
+    }
+  else
+    {
+      lastDisplay = QTime::currentTime();
+    }
+
   QString varValue;
 
   // if altitude has more than 3 digits, vario is rounded to one
@@ -754,6 +864,19 @@ void MapView::slot_Wind(Vector& wind)
 /** This slot is called if a new current LD value has been set */
 void MapView::slot_LD( const double& rLD, const double& cLD )
 {
+  static QTime lastDisplay;
+
+  // The display is updated every 1 seconds only.
+  // That will reduce the X-Server load.
+  if( lastDisplay.elapsed() < 750 )
+    {
+      return;
+    }
+  else
+    {
+      lastDisplay = QTime::currentTime();
+    }
+
   // qDebug( "MapView::slot_LD: %f, %f", rLD, cLD );
 
   QString cld, rld;
