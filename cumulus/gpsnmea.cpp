@@ -257,7 +257,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   sentence = sentence.replace( QRegExp("[\n\r]"), "" );
 
-#ifdef MAEMO
+#ifdef MAEMO5
 
   // Handle sentences created by GPS Maemo Client process. These sentences
   // contain no checksum items.
@@ -1484,7 +1484,7 @@ bool GpsNmea::__ExtractSatsInView(const QString& satcount)
   return true;
 }
 
-#ifdef MAEMO
+#ifdef MAEMO5
 
 /**
  * Extract proprietary sentence $MAEMO0. It is created by the GPS Maemo Client
@@ -1620,7 +1620,7 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
           speed.setKph( dSpeed );
 #endif
 
-          if( res != _lastSpeed && fabs((speed - _lastSpeed).getMps()) > 0.3 )
+          if( speed != _lastSpeed && fabs((speed - _lastSpeed).getMps()) > 0.3 )
             {
               // report speed change only if the difference is greater than 0.3m/s, 1.08Km/h
               _lastSpeed = speed;
