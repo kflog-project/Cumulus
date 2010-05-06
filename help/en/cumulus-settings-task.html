@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!-- $Id$ -->
 <html>
 <head>
@@ -23,68 +22,70 @@
 
 <h3 align="center">Settings</h3>
 
-    <p><b>Task</b><p> Here you can define the task point schemes and
-    the drawing options. The task point scheme defines how the
-    automatic switch to the next task point is executed, if a flight
-    task is active. A flight task can be defined and activated in the
-    <a href="cumulus-preflight-settings-task.html">Setup Preflight
-    Task Dialog</a>. The drawing options define the look of the task
-    points.
+    <h4><b>General setup-&gt;Task</b></h4> 
+    
+    <p>Here you can define the task turnpoint schemes and
+    the drawing options. 
     </p>
 
     <dl>
       <dt><b>TP Scheme</b></dt>
 
       <dd>
-      Two task point schemes are supported, Cylinder and Sector. The
-      activated check box will make available the appropriate
-      definition area.
+      The turnpoint scheme defines how the automatic switch to the next 
+      turnpoint is executed, if a flight task is active. A flight task 
+      can be defined and activated in the
+    <a href="cumulus-preflight-settings-task.html">Preflight setup 
+    Task Dialog</a>. Two turnpoint schemes are supported, Cylinder and 
+    Sector. Whichever is selected, the appropriate definition window will
+    appear containing the selectable parameters.
       </dd>
 
       <dt><b>Switch Scheme</b></dt>
 
       <dd>
-      The automatic task point switch provides two modes. Nearst mean
-      the switch to the next task point will be executed if the
-      minimum distance to the current task point was reached. Touched
-      means the outer border of the cylinder or sector has been
-      arrived. Furthermore in case of arrive the IGC logger interval
-      will be set automatically to one second for a duration of 30s to
-      ensure the recording of task point passage.
+      The automatic task turnpoint switch provides two modes. In both cases the
+      area specified by the cylinder or sector has to be actually entered, or 
+      at least touched. "Nearest" means that the switch to the next task point 
+      will be executed after the distance to the TP, which has up to that time 
+      been decreasing, starts to increase, i.e., the minimum distance to the 
+      current turnpoint has been reached. "Touched" means that the switch occurs 
+      when the the outer border of the cylinder or sector is first crossed. In 
+      both arrival cases, the IGC logger interval is automatically set to one 
+      second for a duration of 30s to ensure the recording of the turnpoint passage.
       </dd>
 
       <dt><b>Cylinder</b></dt>
 
       <dd>
-      Here you can define the radius around the task point, if TP
-      Scheme Cylinder is selected.
+      If Cylinder is selected in the TP Scheme, you can here define its radius 
+      centred on the turnpoint. 
       </dd>
 
       <dt><b>Sector</b></dt>
 
       <dd>
-      Here you can define a Sector around the task point, if TP Scheme
-      Sector is selected. Three items can be used for the sector
-      configuration. The inner radius is a circle around the task
-      point. It can vary between zero and the outer radius. If inner
-      and outer radius are equal you will get a full circle as result
-      without any sector. The angle of the sector can vary between 90
-      and 180 degrees. For a so called FAI photo sector inner radius
-      is zero, outer radius infinite and the angle 90 degrees.
+      If Sector is selected in the TP Scheme, you can here define a Sector 
+      centred on the turnpoint. Three parameters can be used for the sector
+      configuration. "Inner radius" defines a circle around the task
+      point, whose radius can vary between zero and the value of "Outer radius". 
+      If the inner and outer radii are equal, the result will be a full circle 
+      without a sector. The angle of the sector can vary between 90 and 180 degrees. 
       </dd>
 
       <dt><b>Shape</b></dt>
 
       <dd>
-      Here you can define, if the used Cylinder/Sector shall have a
-      outer border line and shall be filled with a transparent
-      color. Switching off both will make the task point invisible.
+      Here you can define whether the Cylinder/Sector used has an
+      outer border line or not, and whether this is filled with a 
+      transparent colour. Switching off both will make the turnpoint invisible,
+      if it is not otherwise marked by a symbol, such as an airfield.
       </dd>
       
       <dt><b>Course Line</b></dt>
 
       <dd>
-      Here you can define the width and the color of the drawn task course line.
+      Here you can define the width and the colour of the task course line.
       </dd>
 
     </dl>
