@@ -312,9 +312,8 @@ void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
         {
           QList<TaskPoint *> tpList = task->getTpList();
 
-          // Tasks with less 4 entries are incomplete! The selection
-          // of the start point is also senseless. Therefore we start with one.
-          for ( int i=1; i < tpList.count() && tpList.count() > 3; i++ )
+          // Tasks with less 4 entries are incomplete!
+          for ( int i=0; i < tpList.count() && tpList.count() > 3; i++ )
             {
               if ( selectedWp->origP == tpList.at(i)->origP &&
                    selectedWp->taskPointIndex == tpList.at(i)->taskPointIndex )
@@ -401,11 +400,11 @@ void Calculator::calcDistance( bool autoWpSwitch )
     GeneralConfig::instance()->getActiveNTTaskScheme();
 
   // If we are fast enough (speed > 35Km/h), we do check, if we could
-  // inside of an selected task sector. This condition is not
+  // inside of an selected task area. This condition is not
   // considered in manual mode to make testing possible.
   bool inside = false;
 
-  if ( lastSpeed.getKph() > 35 || ! GpsNmea::gps->getConnected() )
+  if ( lastSpeed.getKph() > 35 || GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
     {
       inside = task->checkSector( curDistance, lastPosition, selectedWp->taskPointIndex );
     }
@@ -433,7 +432,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
                          "<p><center><b>" +
                          tr("Congratulations!") +
                          "</b></center></p><br><br><b>" +
-                         tr("You have reached the <br>task target sector:") +
+                         tr("You have reached the <br>task target:") +
                          "</b><p align=\"left\"><b>" +
                          selectedWp->name + " (" + selectedWp->description + ")</b></p><br></html>";
 
@@ -449,7 +448,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
             {
               // Announce task point touch only, if nearest switch scheme is
               // chosen by the user to avoid to much info for him.
-              emit taskInfo( tr("Taskpoint sector reached"), true );
+              emit taskInfo( tr("Taskpoint area reached"), true );
             }
           else
             {
