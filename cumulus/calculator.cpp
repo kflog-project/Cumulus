@@ -426,15 +426,16 @@ void Calculator::calcDistance( bool autoWpSwitch )
           taskEndReached = true;
           emit taskInfo( tr("Task target reached"), true );
 
-          QString text = "<html><hr><b><nobr>" +
-                         tr("Task Target reached") +
-                         "</nobr></b><hr>" +
-                         "<p><center><b>" +
-                         tr("Congratulations!") +
-                         "</b></center></p><br><br><b>" +
-                         tr("You have reached the <br>task target:") +
-                         "</b><p align=\"left\"><b>" +
-                         selectedWp->name + " (" + selectedWp->description + ")</b></p><br></html>";
+          QString text = QString("<html>") +
+                         "<b><p><center>" +
+                         tr("Task Target") +
+                         "</center></p>" +
+                         "<p align=\"left\">" +
+                         selectedWp->name + " (" + selectedWp->description + ")</p>" +
+                         "<p><center>" +
+                         tr("reached") +
+                         "</center></p></b>" +
+                         "</html>";
 
           // fetch info show time from config and compute it as milli seconds
           int showTime = GeneralConfig::instance()->getInfoDisplayTime() * 1000;
@@ -469,8 +470,8 @@ void Calculator::calcDistance( bool autoWpSwitch )
   // arrived. In this case we have to execute and announce the task
   // point switch.
   if ( ( curDistance.getMeters() > lastDistance.getMeters() ||
-         ( wpTouchCounter > 0 && --wpTouchCounter == 0 ) ) &&
-       wpTouched == true )
+       ( wpTouchCounter > 0 && --wpTouchCounter == 0 ) ) &&
+         wpTouched == true )
     {
       wpTouched      = false;
       wpTouchCounter = 0;
@@ -491,7 +492,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
           slot_WaypointChange( nextWp, false );
 
           // Here we send a notice to the user about the task point
-          // switch. If end point reached and landing point is identical
+          // switch. If end point is reached and landing point is identical
           // to end point, we will suppress the info message
           if ( ! ( lastWp->taskPointType == TaskPointTypes::End &&
                    nextWp->taskPointType == TaskPointTypes::Landing &&
@@ -504,7 +505,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
               tpInfo->prepareSwitchText( lastWp->taskPointIndex, dist2Next.getKilometers() );
 
               // switch back to map view on close of tp info widget
-              connect( tpInfo, SIGNAL( close() ),
+              connect( tpInfo, SIGNAL( closed() ),
                        _globalMainWindow, SLOT( slotSwitchToMapView() ) );
 
               // switch off all set accelerators
