@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2010-05-11 AP: BUGFIX: Core dump fixed in task switch management. Thanks
+                   to Robin King who has detect it and informed me.
 [o] 2010-05-04 AP: Class Polar can handle different units now. Drawing of polar
                    improved for slow gliders.
 [o] 2010-05-04 AP: Polar object in class Glider changed from pointer to value.
