@@ -6,25 +6,29 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2007, 2008 Axel Pauli, axel@kflog.org
+ **   Copyright (c):  2007-2010 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
- ************************************************************************
- **
- **   This class is part of Cumulus. It provides a widget to display
- **   information like task point switch, distance to next, duration to
- **   next, ETA, when a task point has been reached. Widget will be
- **   closed automatically after a configurable time period, if user do
- **   nothing. The user can stop the automatic close.
- **   
  ************************************************************************/
 
-#ifndef TPINFOWIDGET_H
-#define TPINFOWIDGET_H
+/**
+ * \author Axel Pauli
+ *
+ * \brief Widget for displaying task point information.
+ *
+ * This class provides a widget to display information like task point switch,
+ * distance to next, duration to next, ETA, when a task point has been reached.
+ * The widget will be closed automatically after a configurable time period,
+ * if user do nothing. The user can stop the automatic close.
+ *
+ */
+
+#ifndef TP_INFO_WIDGET_H
+#define TP_INFO_WIDGET_H
 
 #include <QWidget>
 #include <QTimer>
@@ -40,7 +44,11 @@ class TPInfoWidget : public QWidget
 {
   Q_OBJECT
 
-public:
+ private:
+
+  Q_DISABLE_COPY ( TPInfoWidget )
+
+ public:
 
   TPInfoWidget( QWidget *parent=0 );
 
@@ -71,14 +79,14 @@ public:
    */
   void prepareArrivalInfoText( wayPoint *wp );
 
-signals: // Signals
+ signals:
 
     /**
      * Send if the widget is closed
      */
-  void close();
+  void closed();
 
-public slots: // Public slots
+ public slots:
 
   /**
    * This slot is called by the KeepOpen button to keep the dialog
@@ -92,21 +100,21 @@ public slots: // Public slots
    */
   void slot_Close();
 
-private slots: // Private slots
+ private slots:
 
   /**
    * This slot get called on the timer timeout.
    */
   void slot_Timeout();
 
-protected:
+ protected:
 
     /**
      * Called, if the widget will be shown.
      */
     void showEvent(QShowEvent *);
 
-private: // Private objects
+ private:
 
   /**
    * This is the widget that actually contains the info we
@@ -129,11 +137,9 @@ private: // Private objects
   /** TimerCount */
   int _timerCount;
 
-
   /** Contains a reference to the parent of the application. */
   QWidget     *parent;
   QHBoxLayout *buttonrow;
-
 };
 
 #endif

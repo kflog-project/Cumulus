@@ -9,28 +9,16 @@
 **   Copyright (c):  2007-2010 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
-**
-************************************************************************
-**
-**   This class is part of Cumulus. It provides a widget to display
-**   information like task point switch, distance to next, duration to
-**   next, ETA, when a task point has been reached. Widget will be
-**   closed automatically after a configureable time period, if user do
-**   nothing. The user can stop the automatic close.
 **
 ************************************************************************/
 
 #include <cmath>
 #include <time.h>
 
-#include <QApplication>
-#include <QDateTime>
-#include <QFont>
-#include <QRegExp>
-#include <QShortcut>
+#include <QtGui>
 
 #include "tpinfowidget.h"
 #include "generalconfig.h"
@@ -89,7 +77,7 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()));
 
-  // activate keyboard shotcut cancel for close of widget
+  // activate keyboard shortcut cancel for close of widget
   QShortcut* scClose = new QShortcut( this );
   scClose->setKey( Qt::Key_Escape );
   connect( scClose, SIGNAL(activated()), this, SLOT( slot_Close() ));
@@ -108,7 +96,7 @@ void TPInfoWidget::slot_Close()
 {
   hide();
   text->clearFocus();
-  emit close();
+  emit closed();
   QWidget::close();
 }
 
@@ -163,7 +151,7 @@ void TPInfoWidget::showEvent(QShowEvent *)
   // qDebug("TPInfoWidget::showEvent(): name=%s", name());
 
   // set focus to text widget
-//  text->setFocus();
+  //  text->setFocus();
 }
 
 /**
@@ -175,7 +163,7 @@ void TPInfoWidget::showEvent(QShowEvent *)
  *
  */
 void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
-				      const double dist2Next )
+				                              const double dist2Next )
 {
   FlightTask *task = _globalMapContents->getCurrentTask();
 
@@ -221,7 +209,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     "<th colspan=2 align=left>" + nextTP->name + "&nbsp;(" + nextTpDes + ")" +
     "</th></tr>";
 
-  // to avoid wraping in the table we have to code spaces as forced spaces in html
+  // to avoid wrapping in the table we have to code spaces as forced spaces in html
   QString distance = Distance::getText(dist2Next * 1000., true, 1);
   distance.replace(  QRegExp(" "), "&nbsp;" );
 
@@ -651,7 +639,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
       finalDistance += tpList.at(loop)->distance;
     }
 
-    // to avoid wraping in the table we have to code spaces as forced
+    // to avoid wrapping in the table we have to code spaces as forced
     // spaces in html
     distance = Distance::getText( finalDistance*1000., true, 1);
     distance.replace(  QRegExp(" "), "&nbsp;" );
