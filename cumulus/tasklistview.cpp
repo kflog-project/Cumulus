@@ -178,9 +178,28 @@ void TaskListView::slot_Selected()
 
   if ( _selectedTp->taskPointIndex == 0 )
     {
-      // Take-off point should not be selectable in taskview
-      cmdSelect->setEnabled(false);
-      return;
+      QTreeWidgetItem* tpBelow = list->itemBelow( _newSelectedTp );
+      _TaskPointItem *tpiBelow = 0;;
+      TaskPoint *below = 0;
+
+      if( tpBelow )
+        {
+          tpiBelow = dynamic_cast<_TaskPointItem *> (tpBelow);
+
+          if( tpiBelow )
+            {
+              below = tpiBelow->getTaskPoint();
+            }
+        }
+
+      if( ! (below && below->taskPointIndex == 1 &&
+             below->origP != _selectedTp->origP) )
+        {
+          // Take-off point should not be selectable in taskview, if it is
+          // identical to the start point.
+          cmdSelect->setEnabled(false);
+          return;
+        }
     }
 
   cmdSelect->setEnabled(true);

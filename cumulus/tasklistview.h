@@ -14,10 +14,6 @@
 **
 **   $Id$
 **
-**   Displays all points of a task as list with different buttons for
-**   actions. Can be used in two modes, as display only, buttons for
-**   actions are not visible or with command buttons.
-**
 ***********************************************************************/
 
 #ifndef TASK_LIST_VIEW_H
@@ -37,12 +33,23 @@
 class MainWindow;
 
 /**
- * Presents a view that holds a list of the task points in the currently selected task.
- * @author André Somers
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Presents a view that holds a list of the task points of a flight task.
+ *
+ * Displays all points of a task as list with different buttons for
+ * actions. Can be used in two modes, as display only, buttons for
+ * actions are not visible or with command buttons.
+ *
  */
+
 class TaskListView : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
+
+private:
+
+  Q_DISABLE_COPY ( TaskListView )
 
 public:
 
