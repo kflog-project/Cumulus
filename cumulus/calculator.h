@@ -92,9 +92,11 @@ public:
 };
 
 /**
- * @short Flight calculator class
+ * \author Andrè Somers, Axel Pauli
  *
- * This is the calculator for all flight-related parameters. It is at
+ * \brief Flight calculator class
+ *
+ * This is the calculator for all flight-related parameters. It is
  * the heart of the Cumulus system. All data received from the GPS via
  * the @ref GpsNmea class is routed here first. The data received is
  * relayed to the other listeners, like the @ref Map and the @ref
@@ -103,8 +105,6 @@ public:
  * glide information and wind information.
  *
  * This is a Singleton class.
- *
- * @author Andrè Somers
  *
  */
 

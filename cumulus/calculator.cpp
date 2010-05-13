@@ -427,14 +427,17 @@ void Calculator::calcDistance( bool autoWpSwitch )
           emit taskInfo( tr("Task target reached"), true );
 
           QString text = QString("<html>") +
-                         "<b><p><center>" +
+                         "<table cellpadding=2 cellspacing=0>" +
+                         "<tr><th>" +
                          tr("Task Target") +
-                         "</center></p>" +
-                         "<p align=\"left\">" +
-                         selectedWp->name + " (" + selectedWp->description + ")</p>" +
-                         "<p><center>" +
+                         "</th></tr>" +
+                         "<tr><td>" +
+                         selectedWp->name + " (" + selectedWp->description + ")" +
+                         "</td></tr>" +
+                         "<tr><td align=center>" +
                          tr("reached") +
-                         "</center></p></b>" +
+                         "</td></tr>" +
+                         "</table" +
                          "</html>";
 
           // fetch info show time from config and compute it as milli seconds
