@@ -6,11 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008 by Josua Dietze
-**                   2009 by Axel Pauli
+**   Copyright (c):  2008      by Josua Dietze
+**                   2009-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -40,6 +40,7 @@ WpListWidgetParent::WpListWidgetParent(QWidget *parent) : QWidget(parent)
   list->setRootIsDecorated(false);
   list->setItemsExpandable(false);
   list->setUniformRowHeights(true);
+  list->setAlternatingRowColors(true);
 //  list->setSortingEnabled(true);
   list->setColumnCount(3);
   list->setAllColumnsShowFocus(true);

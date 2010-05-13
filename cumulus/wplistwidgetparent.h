@@ -6,11 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008 by Josua Dietze
-**                   2009 by Axel Pauli
+**   Copyright (c):  2008      by Josua Dietze
+**                   2009-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -28,6 +28,10 @@
 #include "rowdelegate.h"
 
 /**
+ * \author Josua Dietze
+ *
+ * \brief Base class for airfield, waypoint, outlanding widget.
+ *
  * This widget provides a new widget base class to remove double code in
  * airfield list view, waypoint list view and task editor.
  * Contains standard airfield list and attached filters (filter button row on
@@ -35,12 +39,17 @@
  *
  * Subclassed by airfieldlistwidget and waypointlistwidget.
  *
- * @author Josua Dietze
  */
 
 class WpListWidgetParent : public QWidget
 {
   Q_OBJECT
+
+  private:
+    /**
+     * That macro forbids the copy constructor and the assignment operator.
+     */
+    Q_DISABLE_COPY( WpListWidgetParent )
 
   public:
 
