@@ -16,6 +16,17 @@
 **
 ***********************************************************************/
 
+/**
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Configuration encapsulation class
+ *
+ * This class is used to store and retrieve all kinds of
+ * configuration options. This class is a singleton class. Use the
+ * static instance method to get a reference to the instance.
+ *
+*/
+
 #ifndef GENERAL_CONFIG_H
 #define GENERAL_CONFIG_H
 
@@ -31,15 +42,6 @@
 #include "altitude.h"
 #include "waypoint.h"
 #include "mapdefaults.h"
-
-/**
-  * @short Configuration encapsulation class
-  * @author André Somers, Axel Pauli
-  *
-  * This class is used to store and retrieve all kinds of
-  * configuration options. This class is a singleton class. Use the
-  * static @ref instance method to get a reference to the instance.
-  */
 
 // default window display times
 #define MIN_POPUP_DISPLAY_TIME 3

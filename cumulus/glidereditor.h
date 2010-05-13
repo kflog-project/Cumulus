@@ -16,6 +16,13 @@
 **
 ***********************************************************************/
 
+/**
+ * \author Eggert Ehmke, Axel Pauli
+ *
+ * \brief This class represents a glider editor dialog.
+ *
+ */
+
 #ifndef SETTINGS_PAGE_GLIDER_EDITOR_H
 #define SETTINGS_PAGE_GLIDER_EDITOR_H
 
@@ -31,12 +38,6 @@
 #include "polar.h"
 #include "glider.h"
 
-/**
- * \author Eggert Ehmke, Axel Pauli
- *
- * \ brief This class represents a glider editor dialog.
- *
- */
 class GilderEditor : public QDialog
 {
     Q_OBJECT

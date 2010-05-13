@@ -16,14 +16,6 @@
 **
 ***********************************************************************/
 
-#ifndef GLIDER_H
-#define GLIDER_H
-
-#include <QString>
-#include <QSettings>
-
-#include "polar.h"
-
 /**
  * \author André Somers
  *
@@ -32,7 +24,16 @@
  * An instance of a Glider object contains all the information available
  * on a glider: it's type, it's registration, call sign, polar,
  * single or double seater, maximum water capacity, etc.
- */
+*/
+
+#ifndef GLIDER_H
+#define GLIDER_H
+
+#include <QString>
+#include <QSettings>
+
+#include "polar.h"
+
 class Glider
 {
 

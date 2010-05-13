@@ -16,7 +16,10 @@
 ***********************************************************************/
 
 /**
- * This class is a simple HTTP download client.
+ * \author Axel Pauli
+ *
+ * \brief This class is a simple HTTP download client.
+ *
  */
 
 #ifndef HTTP_CLIENT_H

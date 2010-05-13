@@ -17,6 +17,16 @@
  *                                                                         *
  ***************************************************************************/
 
+/**
+ * \author André Somers, Axel Pauli
+ *
+ * \brief NMEA parser, decoder and GPS connection handler.
+ *
+ * This class parses and decodes the NMEA sentences and provides access
+ * to the last know data. Furthermore it is managing the connection to a GPS
+ * receiver connected by RS232, USB or to a Maemo GPS daemon process.
+ */
+
 #ifndef GPS_NMEA_H
 #define GPS_NMEA_H
 
@@ -31,12 +41,6 @@
 #include "altitude.h"
 #include "gpscon.h"
 #include "wgspoint.h"
-
-/**
- * This class parses and decodes the NMEA sentences and provides access
- * to the last know data. Furthermore it is managing the connection to a GPS
- * receiver connected by RS232, USB or to a Maemo GPS daemon process.
- */
 
 struct SatInfo
   {
@@ -127,6 +131,9 @@ class GpsNmea : public QObject
      */
     enum DeliveredAltitude {MSL=0, HAE=1, USER=2, PRESSURE=3};
 
+    /**
+     * defines the states of the GPS unit
+     */
     enum GpsStatus {notConnected=0, noFix=1, validFix=2};
 
   public:
@@ -136,7 +143,7 @@ class GpsNmea : public QObject
     virtual ~GpsNmea();
 
     /**
-     * @Enables or disables the notifications from the GPS receiver socket. Can
+     * Enables or disables the notifications from the GPS receiver socket. Can
      * be used to stop GPS data receiving for a certain time to prevent data loss.
      * But be careful to prevent a receiver socket buffer overflow.
      */

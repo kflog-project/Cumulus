@@ -21,7 +21,9 @@
 ***********************************************************************/
 
 /**
-  * @short CorrEdit
+  * \author Harald Maier, Axel Pauli
+  *
+  * \brief Editor widget for WGS84 coordinates.
   *
   * This class is used to edit WGS84 coordinates. It is subclassed by
   * two extensions to handle latitude and longitude coordinates. Three
