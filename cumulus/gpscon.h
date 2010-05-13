@@ -17,6 +17,19 @@
  **
  ***********************************************************************/
 
+/**
+ * \author Axel Pauli
+ *
+ * \brief GPS connection handler.
+ *
+ * This module manages the startup and supervision of the GPS client process
+ * and the communication between this client process and the Cumulus
+ * process. All data transfer between the two processes is be done via a
+ * socket interface. The path name, used during startup of Cumulus must be
+ * passed in the constructor, that the gpsClient resp. gpsMaemoClient binary
+ * can be found. It lays in the same directory as Cumulus.
+ */
+
 #ifndef GPS_CON_H
 #define GPS_CON_H
 
@@ -37,14 +50,6 @@
 // Device name for the Maemo location service.
 #define MAEMO_LOCATION_SERVICE "GPS Location"
 
-/**
- * This module manages the startup and supervision of the GPS client process
- * and the communication between this client process and the Cumulus
- * process. All data transfer between the two processes is be done via a
- * socket interface. The path name, used during startup of Cumulus must be
- * passed in the constructor, that the gpsClient resp. gpsMaemoClient binary
- * can be found. It lays in the same directory as Cumulus.
- */
 class GpsCon : public QObject
 {
     Q_OBJECT

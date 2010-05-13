@@ -27,6 +27,7 @@
 
 /**
  * @short Container for @ref Airspace objects with a QPainterPath
+ *
  * @author André Somers
  *
  * Contains the projected region of an airspace onto the map.

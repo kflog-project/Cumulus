@@ -18,7 +18,7 @@
  *                                                                         *
  **************************************************************************/
 
-/**
+/*
  * This class parses and decodes the NMEA sentences and provides access
  * to the last know data. Furthermore it is managing the connection to a GPS
  * receiver connected by RS232, USB or to a GPS daemon process on Maemo. Due to

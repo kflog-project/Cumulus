@@ -30,7 +30,7 @@
 #include "distance.h"
 
 /**
- *  \author André Somers, Axel Pauli
+ * \author André Somers, Axel Pauli
  *
  * \brief Class to calculate altitudes in different units.
  *
