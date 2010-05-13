@@ -19,6 +19,13 @@
 **
 ***********************************************************************/
 
+/**
+ * \author Heiner Lamprecht, Axel Pauli
+ *
+ * \brief Class to handle all things of a flight task.
+ *
+ */
+
 #ifndef FLIGHT_TASK_H
 #define FLIGHT_TASK_H
 
