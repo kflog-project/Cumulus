@@ -6,11 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers
-**                   2008 Axel Pauli                
+**   Copyright (c):  2002      by AndrÃ© Somers
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -39,7 +39,12 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
   autohideTimer->setSingleShot( true );
 
   doc = new QTextDocument( this );
+
+#ifndef MAEMO
   doc->setDefaultFont( QFont ("Helvetica", 16 ) );
+#else
+  doc->setDefaultFont( QFont ("Helvetica", 18 ) );
+#endif
 
   // check, what kind of text has been passed
   if( txt.contains("<html>", Qt::CaseInsensitive ) ||

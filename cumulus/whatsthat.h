@@ -6,17 +6,18 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by AndrÃ© Somers
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-#ifndef WHATSTHAT_H
-#define WHATSTHAT_H
+#ifndef WHATS_THAT_H
+#define WHATS_THAT_H
 
 #include <QWidget>
 #include <QTimer>
@@ -24,14 +25,24 @@
 #include <QTextDocument>
 
 /**
- * Redesign by Axel Pauli at 2008. Now we use the Qt4 official classes
- * for realization.
+ * \author AndrÃ© Somers, Axel Pauli
  *
- * @author André Somers
+ * \brief Popup window to display user information.
+ *
+ * This class is used to display user information e.g. about airspaces.
+ * It is realized as a frame less popup window and is closed by tipping on
+ * it or automatically after a certain time. It can display play or html text.
+ *
  */
 class WhatsThat : public QWidget
 {
     Q_OBJECT
+
+  private:
+    /**
+     * That macro forbids the copy constructor and the assignment operator.
+     */
+    Q_DISABLE_COPY( WhatsThat )
 
   public:
 
