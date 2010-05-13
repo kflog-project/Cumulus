@@ -23,7 +23,7 @@ following components are mandatory:
 A Qt Release 4.5.0 or higher has to be used.
 
 The different Linux distributions do provide normally installable packages for
-that. For Xubuntu 9.04 you have to execute the following command to get it:
+that. For Xubuntu 9.10 you have to execute the following command to get it:
 
   sudo apt-get install g++ subversion qt4-qmake libqtgui4 libqtcore4 libqt4-dev
 
@@ -32,13 +32,13 @@ But you can build too Qt from the sources.
 If all Qt stuff is already available you can continue with step 2)
 
 To build your own Qt from scratch download a X11/Qt release from
-ftp.trolltech.com/qt/source. I recommend the release:
+ftp.qt.nokia.com/qt/source. I recommend the release:
 
-ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-4.5.3.tar.gz
+ftp://ftp.qt.nokia.com/qt/source/qt-x11-opensource-src-4.5.3.tar.gz
 
 I did the development with this release. For Cumulus you need the standard
-Qt4 libraries libQtCore and libQtGui. If you want to debug Cumulus together
-with Qt it is recommend to activate the debug option during run of the
+Qt4 libraries libQtCore, libQtGui and libQtNetwork. If you want to debug Cumulus
+together with Qt it is recommend to activate the debug option during run of the
 configure script.
 
 Copy the Qt tar ball in a local directory of your Linux desktop and extract it
@@ -55,7 +55,9 @@ following options:
               -nomake translations -no-nis -no-cups
               
 Note, that all options must be passed on one line. If you want to set another
-prefix option please do it now. The installation is done under this path and under /opt/... you need later on root rights. To build Qt with debugging on add the option -debug to the others.
+prefix option please do it now. The installation is done under this path and
+under /opt/... you need later on root rights. To build Qt with debugging on add
+the option -debug to the others.
             
 If configure has finished successfully, call as next:
 
@@ -63,7 +65,7 @@ If configure has finished successfully, call as next:
 
 That can take a while (1-3 hours). If make has finished successfully call:
 
-  su -c 'make install'
+  su -c 'make install' or sudo make install
 
 For executing this command you need root rights to install the Qt installation
 under /opt/... Please enter the root password when you ask for it.
@@ -89,7 +91,7 @@ Step 2)
 Check if you can call 'g++ --version' from a shell command line. You should
 see some output like this:
 
-  g++ (Ubuntu 4.3.3-5ubuntu4) 4.3.3
+  g++ (Ubuntu 4.4.1-4ubuntu9) 4.4.1
   
 Check if you can call 'qmake -v' from a shell command line. You should
 see some output like this:
@@ -174,9 +176,13 @@ the Cumulus application is therefore /opt/cumulus further called INSTALL_ROOT.
 To install Cumulus issue the following command:
 
   su -c 'make -f Makefile.X11 install'
+  
+  or under Ubuntu
+  
+  sudo make -f Makefile.X11 install
 
-'su -c' is necessary for the installation under /opt/cumulus. You need root
-rights do do that. Please enter the root password when you ask for it.
+'su -c' or sudo are necessary for the installation under /opt/cumulus. You need
+root rights to do that. Please enter the root password when you ask for it.
 If you would prefer another installation place, you can change the installation
 directory during call of 'make install' in the following way:
 
@@ -188,7 +194,7 @@ The needed map data (airfields, airspaces and landscape) have to be installed
 under the following directory structure:
 
                    +-/airfields/ (Only Welt2000 data file is supported)
-$HOME/cumulus/maps/+-/airspaces/ (Only OpenAir file format is supported)
+$HOME/Cumulus/maps/+-/airspaces/ (Only OpenAir file format is supported)
                    +-/landscape/ (Use map data from KFLog's map room)
 
 Note, that Cumulus does support airspace files only in openair
@@ -200,12 +206,14 @@ or under
 
 http://www.kflog.org/fileadmin/user_upload/cumulus_help/en/cumulus-maps.html
 
-for more information how to get it.
+for more information.
 
-The landscape files can be downloaded from the KFLog Map room. Follow the link
-below to get them.
+The landscape files are to find in the KFLog Map room. 
 
 http://www.kflog.org/maproom/ground-and-terrain-data
+
+Welt2000 and landscape files are downloaded by Cumulus after the startup, if you
+permit that.
 
 Step 7)
 
@@ -213,7 +221,7 @@ To start Cumulus issue the command:
 
   INSTALL_PATH/bin/cumulus
 
-Personal stuff is stored under $HOME/cumulus. There you can find the task file
+Personal stuff is stored under $HOME/Cumulus. There you can find the task file
 'tasks.tsk', the waypoint file 'cumulus.kwp' and the IGC log files.
 
 The Cumulus configuration file is stored under $HOME/.config/Cumulus.conf.
