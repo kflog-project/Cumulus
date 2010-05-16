@@ -10,24 +10,16 @@
  **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
  ***********************************************************************/
 
-/**
- * This widget shows the details of a waypoint.
- */
-
 #include <cmath>
 #include <time.h>
 
-#include <QMessageBox>
-#include <QFont>
-#include <QRegExp>
-#include <QShortcut>
-#include <QDateTime>
+#include <QtGui>
 
 #include "mainwindow.h"
 #include "basemapelement.h"
@@ -52,7 +44,6 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
   mainWindow = parent;
   _lastView = MainWindow::mapView;
   _wp.name = "";
-  arrivalInfo = 0;
   homeChanged = false;
 
   resize(parent->size());
@@ -62,14 +53,12 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
 
   QBoxLayout *topLayout = new QVBoxLayout(this);
 
-  text = new QLabel(this);
+  text = new QTextEdit(this);
+  text->setReadOnly( true );
 
   QPalette p = palette();
   p.setColor(QPalette::Window, Qt::white);
   text->setPalette(p);
-  text->setAutoFillBackground(true);
-  text->setFrameStyle( QFrame::Panel | QFrame::Sunken );
-  text->setLineWidth(2);
 
   topLayout->addWidget(text, 10);
 
@@ -166,11 +155,11 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint& wp)
   // Check if new point is in the waypoint list, so make sure we can add it.
   if (_globalMapContents->isInWaypointList(wp.origP))
     {
-      cmdAddWaypoint->hide();
+      cmdAddWaypoint->setVisible( false );
     }
   else
     {
-      cmdAddWaypoint->show();
+      cmdAddWaypoint->setVisible( true );
     }
 
   // Reset home changed
@@ -185,11 +174,11 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint& wp)
   // a reload of the airfield list.
   if( home == wp.origP || calculator->moving() )
     {
-      cmdHome->hide();
+      cmdHome->setVisible( false );
     }
   else
     {
-      cmdHome->show();
+      cmdHome->setVisible( true );
     }
 
   // Check if Waypoint is not selected, so make sure we can select it.
@@ -199,26 +188,26 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint& wp)
     {
       if( wp.origP == calcWp->origP )
         {
-          cmdUnselectWaypoint->show();
-          cmdSelectWaypoint->hide();
+          cmdUnselectWaypoint->setVisible( true );
+          cmdSelectWaypoint->setVisible( false );
         }
       else
         {
-          cmdSelectWaypoint->show();
-          cmdUnselectWaypoint->hide();
+          cmdSelectWaypoint->setVisible( true );
+          cmdUnselectWaypoint->setVisible( false );
         }
     }
   else
     {
-      cmdSelectWaypoint->show();
-      cmdUnselectWaypoint->hide();
+      cmdSelectWaypoint->setVisible( true );
+      cmdUnselectWaypoint->setVisible( false );
     }
 
   if( wp.taskPointIndex == 0 )
     {
       // take-off task points are not select or unselectable
-      cmdSelectWaypoint->hide();
-      cmdUnselectWaypoint->hide();
+      cmdSelectWaypoint->setVisible( false );
+      cmdUnselectWaypoint->setVisible( false );
     }
 
   writeText();
@@ -231,16 +220,16 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint& wp)
       timer->start(1000);
       QString txt = tr("Close (%1)").arg(_timerCount);
       cmdClose->setText(txt);
-      cmdKeep->show();
+      cmdKeep->setVisible( true );
     }
   else
     {
       // Timer is set to zero, no automatic window close
       cmdClose->setText(tr("Close"));
-      cmdKeep->hide();
+      cmdKeep->setVisible( false );
     }
 
-  show();
+  setVisible( true );
   return true;
 }
 
@@ -260,7 +249,7 @@ void WPInfoWidget::writeText()
 {
   if( _wp.name.isEmpty() )
     {
-      text->setText("<html><big><center><b>" +
+      text->setHtml("<html><big><center><b>" +
                     tr("No waypoint data available") +
                     "</b></center></big></html>");
     }
@@ -406,24 +395,16 @@ void WPInfoWidget::writeText()
 
       itxt+="<!--/big--></html>";
 
-      text->setText(itxt);
+      text->setHtml(itxt);
     }
 }
 
 /** Hide widget and return to the calling view in MainWindow */
 void WPInfoWidget::slot_SwitchBack()
 {
-  if( arrivalInfo )
-    {
-      // destroy the arrival widget, if exists
-      disconnect( arrivalInfo, SIGNAL(close() ) );
-      arrivalInfo->slot_Close();
-      arrivalInfo = 0;
-    }
-
   timer->stop();
   text->clearFocus();
-  hide();
+  setVisible( false );
 
   if( _lastView == MainWindow::infoView )
     {
@@ -448,7 +429,7 @@ void WPInfoWidget::slot_KeepOpen()
 {
   timer->stop();
   cmdClose->setText( tr( "Close" ) );
-  cmdKeep->hide();
+  cmdKeep->setVisible( false );
 }
 
 
@@ -483,7 +464,7 @@ void WPInfoWidget::slot_addAsWaypoint()
   _wp.importance = wayPoint::High; //importance is high
   emit waypointAdded(_wp);
 
-  cmdAddWaypoint->hide();
+  cmdAddWaypoint->setVisible( false );
   slot_KeepOpen();
 }
 
@@ -511,7 +492,7 @@ void WPInfoWidget::slot_setNewHome()
 
       emit newHomePosition( _wp.origP );
       homeChanged = true;
-      cmdHome->hide();
+      cmdHome->setVisible( false );
     }
 }
 
@@ -527,24 +508,17 @@ void WPInfoWidget::slot_arrival()
   scClose->setEnabled(false);
 
   // create arrival info widget
-  arrivalInfo = new TPInfoWidget( this );
+  TPInfoWidget *arrivalInfo = new TPInfoWidget( this );
   arrivalInfo->prepareArrivalInfoText( &_wp );
   arrivalInfo->showTP( false );
 
-  connect( arrivalInfo, SIGNAL(close()),
+  connect( arrivalInfo, SIGNAL(closed()),
            this, SLOT(slot_arrivalClose()));
 }
 
 // sets focus back to wp text view after closing arrival widget
 void WPInfoWidget::slot_arrivalClose()
 {
-  disconnect( arrivalInfo, SIGNAL(close() ));
-  arrivalInfo = 0;
-
   // switch on close shortcut keys
   scClose->setEnabled(true);
-
-  // get focus back
-  text->setFocus();
-  show();
 }

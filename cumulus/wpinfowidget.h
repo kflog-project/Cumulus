@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,7 +21,8 @@
 
 #include <QWidget>
 #include <QTimer>
-#include <QLabel>
+#include <QTextEdit>
+#include <QHBoxLayout>
 #include <QPushButton>
 #include <QMainWindow>
 #include <QShortcut>
@@ -30,171 +31,174 @@
 #include "tpinfowidget.h"
 
 /**
- * This widget shows the details of a waypoint.
- * @author André Somers
+ * \author André Somers, Axel Pauli
+ *
+ * \brief This widget shows the details of a waypoint.
+ *
  */
 
 class MainWindow;
 
 class WPInfoWidget : public QWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
+private:
 
-    WPInfoWidget( MainWindow *parent=0 );
+  Q_DISABLE_COPY ( WPInfoWidget )
 
-    virtual ~WPInfoWidget();
+public:
 
-    /**
-     * This method is called by MainWindow to set the view to which
-     * there must be returned and the waypoint to view.
-     */
-    bool showWP(int lastView, const wayPoint& wp);
+  WPInfoWidget( MainWindow *parent=0 );
 
-  public slots: // Public slots
+  virtual ~WPInfoWidget();
 
-    /**
-     * No descriptions
-     */
-    void slot_SwitchBack();
+  /**
+   * This method is called by MainWindow to set the view to which
+   * there must be returned and the waypoint to view.
+   */
+  bool showWP(int lastView, const wayPoint& wp);
 
-    /**
-     * This slot is called by the KeepOpen button to...
-     * yes... keep the dialog open. :-)
-     * Any timer that would close the dialog will be stopped.
-     */
-    void slot_KeepOpen();
+public slots:
 
-  signals: // Signals
+  /**
+   * No descriptions
+   */
+  void slot_SwitchBack();
 
-    /**
-     * Emitted if a waypoint has been added to the list.
-     */
-    void waypointAdded(wayPoint& wp);
+  /**
+   * This slot is called by the KeepOpen button to...
+   * yes... keep the dialog open. :-)
+   * Any timer that would close the dialog will be stopped.
+   */
+  void slot_KeepOpen();
 
-    /**
-     * Emitted if a waypoint has been selected.
-     */
-    void waypointSelected(wayPoint*, bool);
+signals:
 
-    /**
-     * Emitted if a new home position is selected
-     */
-    void newHomePosition(const QPoint&);
+  /**
+   * Emitted if a waypoint has been added to the list.
+   */
+  void waypointAdded(wayPoint& wp);
 
-    /**
-     * Emitted to move the map to the new home position
-     */
-    void gotoHomePosition();
+  /**
+   * Emitted if a waypoint has been selected.
+   */
+  void waypointSelected(wayPoint*, bool);
 
-  protected:
+  /**
+   * Emitted if a new home position is selected
+   */
+  void newHomePosition(const QPoint&);
 
-    /**
-     * Called, if the widget will be shown.
-     */
-    void showEvent(QShowEvent *);
+  /**
+   * Emitted to move the map to the new home position
+   */
+  void gotoHomePosition();
 
-  private: // Private methods
+protected:
 
-    /**
-     * Set the visibility of the widget buttons
-     */
-    void setButtonsVisibility();
+  /**
+   * Called, if the widget will be shown.
+   */
+  void showEvent(QShowEvent *);
 
-    /**
-     * This method actually fills the widget with the info.
-     */
-    void writeText();
+private:
+
+  /**
+   * Set the visibility of the widget buttons
+   */
+  void setButtonsVisibility();
+
+  /**
+   * This method actually fills the widget with the info.
+   */
+  void writeText();
 
 
-  private slots: // Private slots
+private slots:
 
-    /**
-     * This slot get called on the timer timeout.
-     */
-    void slot_timeout();
+  /**
+   * This slot get called on the timer timeout.
+   */
+  void slot_timeout();
 
-    /**
-     * This slot is called if the Add as Waypoint button is clicked.
-     */
-    void slot_addAsWaypoint();
+  /**
+   * This slot is called if the Add as Waypoint button is clicked.
+   */
+  void slot_addAsWaypoint();
 
-    /**
-     * This slot is called if the Home button is clicked.
-     */
-    void slot_setNewHome();
+  /**
+   * This slot is called if the Home button is clicked.
+   */
+  void slot_setNewHome();
 
-    /**
-     * This slot is called if the Select Waypoint button is clicked.
-     */
-    void slot_selectWaypoint();
+  /**
+   * This slot is called if the Select Waypoint button is clicked.
+   */
+  void slot_selectWaypoint();
 
-    /**
-     * This slot is called if the Unselect Waypoint button is clicked.
-     */
-    void slot_unselectWaypoint();
+  /**
+   * This slot is called if the Unselect Waypoint button is clicked.
+   */
+  void slot_unselectWaypoint();
 
-    /**
-     * This slot is called if the arrival button is clicked.
-     */
-    void slot_arrival();
+  /**
+   * This slot is called if the arrival button is clicked.
+   */
+  void slot_arrival();
 
-    /**
-     * This slot is called if the arrival widget is closed
-     */
-    void slot_arrivalClose();
+  /**
+   * This slot is called if the arrival widget is closed
+   */
+  void slot_arrivalClose();
 
-  private: // Private attributes
+private: // Private attributes
 
-    /**
-     * This is the widget that actually contains the info we
-     * want to represent.
-     */
-    QLabel* text;
+  /**
+   * This is the widget that actually contains the info we
+   * want to represent.
+   */
+  QTextEdit* text;
 
-    QHBoxLayout* buttonrow1;
-    QHBoxLayout* buttonrow2;
+  QHBoxLayout* buttonrow1;
+  QHBoxLayout* buttonrow2;
 
-    QPushButton* cmdClose;
-    QPushButton* cmdKeep;
-    QPushButton* cmdAddWaypoint;
-    QPushButton* cmdHome;
-    QPushButton* cmdSelectWaypoint;
-    QPushButton* cmdUnselectWaypoint;
-    QPushButton* cmdArrival;
+  QPushButton* cmdClose;
+  QPushButton* cmdKeep;
+  QPushButton* cmdAddWaypoint;
+  QPushButton* cmdHome;
+  QPushButton* cmdSelectWaypoint;
+  QPushButton* cmdUnselectWaypoint;
+  QPushButton* cmdArrival;
 
-    QShortcut* scClose;
+  QShortcut* scClose;
 
-    /** arrival info widget */
-    TPInfoWidget* arrivalInfo;
+  /**
+   * Reference to a timer. When this timer fires, the view
+   * is returned to the previous one. This allow for a brief
+   * display of data (i.e.: what is the frequency of my target
+   * field?) after which the view is automatically returned to
+   * the last one.
+   */
+  QTimer* timer;
 
-    /**
-     * Reference to a timer. When this timer fires, the view
-     * is returned to the previous one. This allow for a brief
-     * display of data (i.e.: what is the frequency of my target
-     * field?) after which the view is automatically returned to
-     * the last one.
-     */
-    QTimer* timer;
+  /** TimerCount */
+  int _timerCount;
 
-    /** TimerCount */
-    int _timerCount;
+  /** Reference to the waypoint who's details to be displayed. */
+  wayPoint _wp;
 
-    /** Reference to the waypoint who's details to be displayed. */
-    wayPoint _wp;
+  /** last selected waypoint  */
+  wayPoint myWp;
 
-    /** last selected waypoint  */
-    wayPoint myWp;
+  /** contains the ID of the last view (the view that called this one) */
+  int _lastView;
 
-    /** contains the ID of the last view (the view that called this one) */
-    int _lastView;
+  /** contains a reference to the parent, the application */
+  MainWindow *mainWindow;
 
-    /** contains a reference to the parent, the application */
-    MainWindow *mainWindow;
-
-    /** that shall store a home position change */
-    bool homeChanged;
-  };
+  /** that shall store a home position change */
+  bool homeChanged;
+};
 
 #endif
