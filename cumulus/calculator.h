@@ -577,9 +577,15 @@ signals: // Signals
     void newETA(const QTime&);
 
     /**
-     * Sent if a new altitude has been obtained
+     * Sent if a new altitude has been obtained. The altitude is related to MSL.
      */
     void newAltitude(const Altitude&);
+
+    /**
+     * Sent if a new altitude has been obtained. The altitude is related to the
+     * user selection. That can be MSL, STD, AGL, AHL.
+     */
+    void newUserAltitude(const Altitude&);
 
     /**
      * Sent if a new speed has been obtained

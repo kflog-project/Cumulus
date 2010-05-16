@@ -172,6 +172,8 @@ void Calculator::slot_Altitude(Altitude& user, Altitude& std, Altitude& gnns)
   lastAGLAltitude  = lastAltitude - Altitude( _globalMapContents->findElevation(lastPosition, &lastAGLAltitudeError ) );
   lastAHLAltitude  = lastAltitude - GeneralConfig::instance()->getHomeElevation();
   emit newAltitude( lastAltitude );
+  emit newUserAltitude( getAltimeterAltitude() );
+
   calcGlidePath();
   // qDebug("slot_Altitude");
 }
@@ -878,6 +880,7 @@ void Calculator::slot_changePosition(int direction)
     }
 
   emit newAltitude(lastAltitude);
+  emit newUserAltitude( getAltimeterAltitude() );
 
   calcDistance();
   calcBearing();
@@ -1029,10 +1032,10 @@ void Calculator::setPosition(const QPoint& newPos)
 }
 
 
-/** Resets some internal item to the initial state */
+/** Resets some internal items to the initial state */
 void Calculator::slot_settingsChanged ()
 {
-  emit newAltitude(lastAltitude);  // show initial altitude for manual mode
+  emit newUserAltitude( getAltimeterAltitude() );
   // qDebug("Settings changed %d",_altimeter_mode );
 
   // Send last known wind to mapview for update of speed. User maybe
