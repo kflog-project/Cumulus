@@ -18,7 +18,7 @@
 /**
  * \author Axel Pauli
  *
- * \brief Widget for displaying task point information.
+ * \brief This widget shows the details of a task point.
  *
  * This class provides a widget to display information like task point switch,
  * distance to next, duration to next, ETA, when a task point has been reached.
@@ -32,9 +32,8 @@
 
 #include <QWidget>
 #include <QTimer>
-#include <QLabel>
+#include <QTextEdit>
 #include <QPushButton>
-#include <QHBoxLayout>
 
 #include "distance.h"
 #include "speed.h"
@@ -120,7 +119,7 @@ class TPInfoWidget : public QWidget
    * This is the widget that actually contains the info we
    * want to display.
    */
-  QLabel *text;
+  QTextEdit *text;
 
   /**  */
   QPushButton *cmdClose;
@@ -138,8 +137,7 @@ class TPInfoWidget : public QWidget
   int _timerCount;
 
   /** Contains a reference to the parent of the application. */
-  QWidget     *parent;
-  QHBoxLayout *buttonrow;
+  QWidget *parent;
 };
 
 #endif

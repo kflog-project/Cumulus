@@ -50,18 +50,15 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
 
   QBoxLayout *topLayout = new QVBoxLayout( this );
 
-  text = new QLabel(this);
-
+  text = new QTextEdit(this);
+  text->setReadOnly( true );
   QPalette p = palette();
   p.setColor(QPalette::Window, Qt::white);
   text->setPalette(p);
   text->setAutoFillBackground(true);
-  text->setFrameStyle( QFrame::Panel | QFrame::Sunken );
-  text->setLineWidth(2);
-
   topLayout->addWidget(text, 5 );
 
-  buttonrow = new QHBoxLayout;
+  QHBoxLayout *buttonrow = new QHBoxLayout;
   topLayout->addLayout(buttonrow);
 
   cmdClose = new QPushButton(tr("Close"), this);
@@ -94,8 +91,7 @@ TPInfoWidget::~TPInfoWidget()
  */
 void TPInfoWidget::slot_Close()
 {
-  hide();
-  text->clearFocus();
+  setVisible(false);
   emit closed();
   QWidget::close();
 }
@@ -148,10 +144,6 @@ void TPInfoWidget::showTP( bool automaticClose )
  */
 void TPInfoWidget::showEvent(QShowEvent *)
 {
-  // qDebug("TPInfoWidget::showEvent(): name=%s", name());
-
-  // set focus to text widget
-  //  text->setFocus();
 }
 
 /**
@@ -163,7 +155,7 @@ void TPInfoWidget::showEvent(QShowEvent *)
  *
  */
 void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
-				                              const double dist2Next )
+				      const double dist2Next )
 {
   FlightTask *task = _globalMapContents->getCurrentTask();
 
@@ -451,7 +443,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   }
 
   display += "</table></big><html>";
-  text->setText( display );
+  text->setHtml( display );
 }
 
 /**
@@ -598,7 +590,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
     {
       // no flight task point resp. flight task active
       display += "</table>";
-      text->setText( display );
+      text->setHtml( display );
       return;
     }
 
@@ -608,7 +600,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
     {
       // to less task points in list
       display += "</table>";
-      text->setText( display );
+      text->setHtml( display );
       return;
     }
 
@@ -621,7 +613,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
       // Waypoint is identical in position to landing point of flight
       // task. So we do display nothing more.
       display += "</table>";
-      text->setText( display );
+      text->setHtml( display );
      return;
     }
 
@@ -713,7 +705,7 @@ void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
       }
 
     display += "</table></big></html>";
-    text->setText( display );
+    text->setHtml( display );
 }
 
 /** This slot is called by the Keep Open button to keep the dialog open. :-) */
