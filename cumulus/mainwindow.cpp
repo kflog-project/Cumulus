@@ -530,7 +530,7 @@ void MainWindow::slotCreateApplicationWidgets()
            viewMap, SLOT( slot_Heading( int ) ) );
   connect( calculator, SIGNAL( newSpeed( const Speed& ) ),
            viewMap, SLOT( slot_Speed( const Speed& ) ) );
-  connect( calculator, SIGNAL( newAltitude( const Altitude& ) ),
+  connect( calculator, SIGNAL( newUserAltitude( const Altitude& ) ),
            viewMap, SLOT( slot_Altitude( const Altitude& ) ) );
   connect( calculator, SIGNAL( newPosition( const QPoint&, const int ) ),
            viewMap, SLOT( slot_Position( const QPoint&, const int ) ) );
