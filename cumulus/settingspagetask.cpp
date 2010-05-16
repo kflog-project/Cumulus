@@ -161,7 +161,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
     }
 
   cylinderRadius = new QDoubleSpinBox( this );
-  cylinderRadius->setRange(0.1, 10.0);
+  cylinderRadius->setRange(0.1, 1000.0);
   cylinderRadius->setSingleStep(0.1);
   cylinderRadius->setButtonSymbols(QSpinBox::PlusMinus);
   cylinderRadius->setSuffix( unit );
@@ -195,7 +195,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   lbl = new QLabel( tr("Outer Radius:"), sectorGroup );
   sectorLayout->addWidget( lbl, row1, 0 );
   outerSectorRadius = new QDoubleSpinBox( sectorGroup );
-  outerSectorRadius->setRange(0.1, 10.0);
+  outerSectorRadius->setRange(0.1, 1000.0);
   outerSectorRadius->setSingleStep(0.1);
   outerSectorRadius->setButtonSymbols(QSpinBox::PlusMinus);
   outerSectorRadius->setSuffix( unit );
