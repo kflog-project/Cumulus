@@ -665,8 +665,8 @@ QPolygon MapMatrix::map(const QPolygon &a) const
   int64_t fy;
   int32_t curx;
   int32_t cury;
-  int32_t lastx;
-  int32_t lasty;
+  int32_t lastx = 0;
+  int32_t lasty = 0;
 
   QPolygon p;
 
