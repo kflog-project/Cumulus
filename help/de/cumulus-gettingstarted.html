@@ -1,92 +1,93 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//DE">
 <html>
 <head>
   <title>Cumulus Einf&uuml;hrung</title>
-
-
+  <link rel="stylesheet" type="text/css" href="text.css">
 </head>
-
 
 <body>
 
 <table width="100%">
-
   <tbody>
-
     <tr>
-
       <td align="left"><a href="cumulus.html">zur&uuml;ck</a></td>
-
       <td align="center"><a href="cumulus.html">Anfang</a></td>
-
       <td align="right"><a href="cumulus-maps.html">weiter</a></td>
-
     </tr>
-
   </tbody>
 </table>
 
 <h3 align="center">Einf&uuml;hrung</h3>
 
-Um Cumulus sinnvoll nutzen zu k&ouml;nnen, sind ein PDA, ein
-GPS-Empf&auml;nger und die entsprechenden Karten Dateien
-erforderlich. Im Augenblick unterst&uuml;tzt Cumulus nur die PDAs
-Nokia Internet Tablet N800 und N810. Das N810 verf&uuml;gt bereits
-&uuml;ber einen internen &nbsp;GPS Empf&auml;nger. Cumulus
-kann ebenfalls auf einem Linux Desktop System unter X11/Qt4 laufen.
+Um Cumulus sinnvoll nutzen zu k&ouml;nnen, sind ein PDA, ein GPS-Empf&auml;nger
+und die entsprechenden Karten Dateien erforderlich. Im Augenblick
+unterst&uuml;tzt Cumulus nur die PDAs Nokia Internet Tablet N800/N810 mit Maemo
+OS2008 und das N900 mit Maemo5 OS2009. Cumulus kann ebenfalls auf einem PC mit
+einer Linux Installtion z.B. Ubuntu unter X11/Qt4 laufen.
+
+<P>Wenn Cumulus gestartet wird, werden alle erforderlichen Daten
+Verzeichnisse auf Ihrem Computer angelegt, sofern sie noch nicht existieren
+sollten. Weiterhin werden Sie einmalig gefragt, ob fehlende Karten oder
+Flugplatzdaten aus dem Internet runter geladen werden sollen. Ihre getroffene
+Entscheidung ist bis zum Verlassen des Programms g&uuml;ltig. Aktivieren Sie das
+automatische Runterladen nur, wenn Sie eine Internetverbindung aktiviert haben.</P>
+
 <dl>
 
   <dt><b>PDA</b></dt>
 
-  <dd> W&auml;hrend das Programm auf dem PDA l&auml;uft
-und Sie in Bewegung sind (&gt; 5 Km/h) ist&nbsp;der
-Bildschirmschoner deaktiviert. Bewegen Sie sich langsamer, wird der
-Bildschirmschoner nach der von Ihnen programmierten Zeit wieder aktiviert. Bewegen
-Sie sich wieder schneller, wird er wieder deaktiviert. Es ist unbedingt
-erforderlich den PDA bei l&auml;ngeren Betriebszeiten mit einer zus&auml;tzlichen Stromversorgung auszustatten. </dd>
+  <dd>W&auml;hrend das Programm auf dem PDA l&auml;uft und Sie in Bewegung
+  sind (&gt; 5 Km/h) ist der Bildschirmschoner deaktiviert. Bewegen Sie sich
+  langsamer, wird der Bildschirmschoner nach der von Ihnen programmierten Zeit
+  wieder aktiviert. Bewegen Sie sich wieder schneller, wird er wieder
+  deaktiviert. Die Geschwindigkeitsgrenze kann im Konfigurationsmen&uuml;
+  <A HREF="cumulus-settings-look-feel.html#Screensaver">Look&amp;Feel</A>
+  eingestellt werden.
+  <br>
+  Weiterhin ist es unbedingt erforderlich den PDA bei l&auml;ngeren
+  Betriebszeiten mit einer zus&auml;tzlichen Stromversorgung auszustatten.
+  Schalten Sie vor dem Start unbedingt alle automatischen Sachen, wie WLAN
+  Verbindungsversuche oder Suche nach Versionsaktualisierungen, ab. Diese
+  fressen unn&ouml;tig Resourcen und k&ouml;nnen Sie mit Nachrichtendialogen
+  nerven.</dd>
 
   <dt><b>GPS</b></dt>
 
-  <dd> Sie k&ouml;nnen einen externen GPS Empf&auml;nger
-benutzen der sich mit dem PDA &uuml;ber ein Kabel oder
-&uuml;ber Bluetooth verbinden l&auml;sst und Daten
-&uuml;ber eine serielle Schnittstelle im NMEA-Format
-&uuml;bertr&auml;gt. Cumulus kann auch ohne GPS betrieben
-werden, ist dann jedoch bei weitem nicht so n&uuml;tzlich.
-    <p> Sobald Sie Ihren GPS Empf&auml;nger aktiviert haben,
-w&auml;hlen Sie die entsprechende Ger&auml;teschnittstelle und
-die dazugeh&ouml;rige &Uuml;bertragungsrate im <a href="cumulus-settings.html">Konfigurationdialog</a>
-in Cumulus aus. Lesen Sie im Handbuch Ihres GPS Empf&auml;ngers nach um die
-erforderlichen Daten zu erfahren. Die meisten seriellen Verbindungen
-arbeiten mit der Ger&auml;teschnittstelle <i>/dev/ttyS0</i>.
-F&uuml;r Bluetooth Empf&auml;nger ist <i>/dev/rfcomm0</i>
-&uuml;blich. Beim N810 benutzen Sie bitte <i>/dev/pts/0. </i>Die
-&Uuml;bertragungsrate betr&auml;gt normalerweise 4800 bps,
-f&uuml;r Bluetooth empfehlen wir 115200 bps. </p>
+  <dd>Sie k&ouml;nnen einen externen GPS Empf&auml;nger benutzen der sich
+  mit dem PDA &uuml;ber ein Kabel oder &uuml;ber Bluetooth verbinden l&auml;sst
+  und Daten &uuml;ber eine serielle Schnittstelle im NMEA-Format
+  &uuml;bertr&auml;gt. Cumulus kann auch ohne GPS betrieben werden, ist dann
+  jedoch bei weitem nicht so n&uuml;tzlich.
+  <p>Sobald Sie Ihren GPS Empf&auml;nger aktiviert haben, w&auml;hlen Sie
+  die entsprechende Ger&auml;teschnittstelle und die dazugeh&ouml;rige
+  &Uuml;bertragungsrate im <a href="cumulus-settings.html">Konfigurationdialog</a>
+  in Cumulus aus. Lesen Sie im Handbuch Ihres GPS Empf&auml;ngers nach um die
+  erforderlichen Daten zu erfahren. Die meisten seriellen Verbindungen arbeiten
+  mit der Ger&auml;teschnittstelle <i>/dev/ttyS0</i>. F&uuml;r Bluetooth
+  Empf&auml;nger ist <i>/dev/rfcomm0</i> &uuml;blich. Beim N810 benutzen Sie
+  bitte <i>/dev/pts/0. </i>Die &Uuml;bertragungsrate betr&auml;gt normalerweise
+  4800 bps, f&uuml;r Bluetooth empfehlen wir 115200 bps.</p>
 
-Nachdem alles verbunden bzw. eingestellt ist, sollten Sie
-die Taste <b>G</b> dr&uuml;cken, um in den GPS Status
-Monitor zu wechseln. Bei korrektem Empfang sehen Sie hier die
-Sattelitenpositionen und die NMEA-Datens&auml;tze im Anzeigefeld.
-Sie k&ouml;nne diesen Dialog wieder mit der ESC Taste verlassen.
+  Nachdem alles verbunden bzw. eingestellt ist, sollten Sie die Taste <b>G</b>
+  dr&uuml;cken, um in den GPS Status Monitor zu wechseln. Bei korrektem Empfang
+  sehen Sie hier die Sattelitenpositionen und die NMEA-Datens&auml;tze im
+  Anzeigefeld. Sie k&ouml;nne diesen Dialog wieder mit der ESC Taste verlassen.
   </dd>
 
   <dt><b>Personal</b></dt>
 
   <dd> Definieren Sie im Men&uuml; <a href="cumulus-settings-personal.html">
-Pers&ouml;nliche
-Einstellungen</a> ein Daten Verzeichnis, wo die Dateien
-f&uuml;r
-Wegpunkte, Aufgaben und Loggeraufzeichnungen abgelegt werden sollen.
-Ratsam
-ist, hierf&uuml;r einen Platz auf der MMC (Multimedia Card) zu
-w&auml;hlen.</dd>
+  Pers&ouml;nliche
+  Einstellungen</a> ein Daten Verzeichnis, wo die Dateien
+  f&uuml;r
+  Wegpunkte, Aufgaben und Loggeraufzeichnungen abgelegt werden sollen.
+  Ratsam ist, hierf&uuml;r einen Platz auf der MMC (Multimedia Card) zu
+  w&auml;hlen.</dd>
 
   <dt><b>Flugzeuge</b></dt>
 
   <dd>Definieren Sie im Men&uuml;
     <a href="cumulus-settings-glider.html">Flugzeuge</a>
-Ihre bevorzugten Favoriten.</dd>
+    Ihre bevorzugten Favoriten.</dd>
 
   <dt><b>Karten</b></dt>
 
@@ -124,19 +125,12 @@ f&uuml;r weitere Hinweise zu Aufgaben. </dd>
 </dl>
 
 <table width="100%">
-
   <tbody>
-
     <tr>
-
       <td align="left"><a href="cumulus.html">zur&uuml;ck</a></td>
-
       <td align="center"><a href="cumulus.html">Anfang</a></td>
-
       <td align="right"><a href="cumulus-maps.html">weiter</a></td>
-
     </tr>
-
   </tbody>
 </table>
 
