@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2009 by Axel Pauli (axel@kflog.org)
+**                   2008-2010 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -17,9 +17,9 @@
 ***********************************************************************/
 
 /**
- * This is the general page for the waypoint editor dialog
+ * \brief This is the general page of the waypoint editor
  *
- * @author André Somers
+ * \author André Somers
  */
 
 #include <math.h>
@@ -88,7 +88,7 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   topLayout->addLayout(elevLayout, row++, 1);
   edtElev = new QLineEdit(this);
   elevLayout->addWidget(edtElev);
-  QLabel * lblElevUnit = new QLabel(Altitude::getText(-1,true), this);
+  QLabel * lblElevUnit = new QLabel(Altitude::getUnitText(), this);
   elevLayout->addWidget(lblElevUnit);
 
   topLayout->setRowMinimumHeight(row++, 10);
