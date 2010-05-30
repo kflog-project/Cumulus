@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2002      by André Somers
-**                  2007-2009 by Axel Pauli
+**                  2007-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -30,6 +30,7 @@ class WaypointCatalog;
 
 /**
  * This widget provides a list of waypoints and a means to select one.
+ *
  * @author André Somers
  */
 class WaypointListView : public QWidget
@@ -106,7 +107,7 @@ public slots: // Public slots
      */
     void slot_reloadList()
     {
-      listw->refillWpList();
+      listw->fillWpList();
     };
 
 signals: // Signals

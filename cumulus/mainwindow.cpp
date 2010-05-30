@@ -384,8 +384,6 @@ void MainWindow::slotCreateApplicationWidgets()
   // waypoint info widget
   viewInfo = new WPInfoWidget( this );
 
-  viewWP->listWidget()->fillWpList();
-
   // create GPS object
   GpsNmea::gps = new GpsNmea( this );
   GpsNmea::gps->blockSignals( true );
@@ -1463,7 +1461,6 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
       menuBar()->hide();
       viewMap->hide();
       viewInfo->hide();
-      viewAF->listWidget()->fillWpList();
       listViewTabs->setCurrentWidget( viewAF );
       listViewTabs->show();
 
@@ -1479,7 +1476,6 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
       menuBar()->hide();
       viewMap->hide();
       viewInfo->hide();
-      viewOL->listWidget()->fillWpList();
       listViewTabs->setCurrentWidget( viewOL );
       listViewTabs->show();
 
@@ -1592,6 +1588,7 @@ void MainWindow::setNearestOrReachableHeaders()
 /** Switches to mapview. */
 void MainWindow::slotSwitchToMapView()
 {
+
   setView( mapView );
 }
 

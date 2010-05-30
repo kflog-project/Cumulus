@@ -7,14 +7,21 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
+
+/**
+ * \author André Somers, Axel Pauli
+ *
+ * \brief This widget provides a list of airfields and a means to select one.
+ *
+ */
 
 #ifndef AIRFIELD_LIST_WIDGET_H
 #define AIRFIELD_LIST_WIDGET_H
@@ -26,14 +33,15 @@
 #include "wplistwidgetparent.h"
 #include "mapcontents.h"
 
-/**
- * This widget provides a list of airfields and a means to select one.
- * @author André Somers
- */
-
 class AirfieldListWidget : public WpListWidgetParent
 {
     Q_OBJECT
+
+private:
+  /**
+   * That macro forbids the copy constructor and the assignment operator.
+   */
+  Q_DISABLE_COPY( AirfieldListWidget )
 
 public:
 
@@ -43,19 +51,18 @@ public:
     virtual ~AirfieldListWidget();
 
     /**
-     * @returns a pointer to the currently highlighted waypoint.
+     * @returns a pointer to the currently high lighted waypoint.
      */
     wayPoint *getSelectedWaypoint();
 
     /**
-     * Clears and refills the airfield item list
-     */
-    void refillWpList();
-
-    /**
-     * Generates the complete list of airfield items; display is done by the filter
+     * Clears and fills the airfield item list.
      */
     void fillWpList();
+
+protected:
+
+    void showEvent( QShowEvent *event );
 
 private:
 

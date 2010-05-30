@@ -7,10 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -18,8 +18,7 @@
 
 #include "airfieldlistwidget.h"
 
-#include <QRegExp>
-#include <QVBoxLayout>
+#include <QtGui>
 
 #include "generalconfig.h"
 #include "mapconfig.h"
@@ -33,7 +32,7 @@ AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsLis
                                         QWidget *parent ) : WpListWidgetParent(parent)
 {
   setObjectName("AirfieldListWidget");
-  list->setObjectName("AFTreeWidget");
+  list->setObjectName("AfTreeWidget");
 
   this->itemList = itemList;
 
@@ -47,52 +46,29 @@ AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsLis
 
 AirfieldListWidget::~AirfieldListWidget()
 {
-  // JD: Never forget to take ALL items out of the WP list !
-  // Items are deleted in filter destructor
-  while ( list->topLevelItemCount() > 0 )
-    {
-      list->takeTopLevelItem(0);
-    }
 }
 
-/** Clears and refills the airfield item list, if the list is not empty. */
-
-void AirfieldListWidget::refillWpList()
+void AirfieldListWidget::showEvent( QShowEvent *event )
 {
-  // qDebug("AirfieldListWidget::refillWpList()");
+  qDebug() << "AirfieldListWidget::showEvent";
 
-  if ( ! listFilled )
+  Q_UNUSED( event )
+
+  // load list items during first show
+  if( firstLoadDone == false )
     {
-      // list is empty, ignore request
-      return;
+      firstLoadDone = true;
+      fillWpList();
     }
-
-  // Remove all content from list widget; deleting is done in filter
-  while ( list->topLevelItemCount() > 0 )
-    {
-      list->takeTopLevelItem(0);
-    }
-
-  filter->clear();
-
-  listFilled = false;
-
-  // reload list
-  fillWpList();
 }
 
-
-/** Retrieves the airfields from the map contents, and fills the list. */
+/** Clears and refills the airfield item list. */
 void AirfieldListWidget::fillWpList()
 {
-  // qDebug("AirfieldListWidget::fillWpList()");
-
-  if ( listFilled )
-    {
-      return;
-    }
-
+  qDebug("AirfieldListWidget::fillWpList()");
   list->setUpdatesEnabled(false);
+  list->clear();
+
   configRowHeight();
 
   for ( int item = 0; item < itemList.size(); item++ )
@@ -107,15 +83,13 @@ void AirfieldListWidget::fillWpList()
           filter->addListItem( new _AirfieldItem(site) );
         }
     }
+
   // sorting is done in filter->reset()
+  resizeListColumns();
 
   filter->reset();
-  resizeListColumns();
   list->setUpdatesEnabled(true);
-
-  listFilled = true;
 }
-
 
 /** Returns a pointer to the currently highlighted airfield. */
 wayPoint* AirfieldListWidget::getSelectedWaypoint()

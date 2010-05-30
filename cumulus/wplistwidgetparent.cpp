@@ -14,18 +14,9 @@
 **
 **   $Id$
 **
-************************************************************************
-** This widget provides a new widget base class to remove double code in
-** airfield list view, waypoint list view and task editor.
-** Contains standard airfield list and attached filters (filter button row on
-** demand).
-**
-** Subclassed by airfieldlistwidget and waypointlistwidget.
-**
-** @author Josua Dietze
 ************************************************************************/
 
-#include <QVBoxLayout>
+#include <QtGui>
 
 #include "wplistwidgetparent.h"
 #include "generalconfig.h"
@@ -53,8 +44,8 @@ WpListWidgetParent::WpListWidgetParent(QWidget *parent) : QWidget(parent)
   list->setHeaderLabels(sl);
   list->setFocus();
 
-  filter = new ListViewFilter(list, this);
-  filter->setObjectName("ListViewFilter");
+  filter = new ListViewFilter( list, this );
+  filter->setObjectName( "ListViewFilter" );
 
   topLayout->addWidget(filter);
   topLayout->addWidget(list, 10);
@@ -62,8 +53,8 @@ WpListWidgetParent::WpListWidgetParent(QWidget *parent) : QWidget(parent)
   connect( list, SIGNAL( itemClicked(QTreeWidgetItem*,int) ),
            this, SLOT( slot_listItemClicked(QTreeWidgetItem*,int) ) );
 
-  rowDelegate = 0;
-  listFilled = false;
+  rowDelegate   = 0;
+  firstLoadDone = false;
 }
 
 WpListWidgetParent::~WpListWidgetParent()
@@ -72,8 +63,10 @@ WpListWidgetParent::~WpListWidgetParent()
   delete filter;
 }
 
-void WpListWidgetParent::showEvent(QShowEvent *)
+void WpListWidgetParent::showEvent( QShowEvent *event )
 {
+  Q_UNUSED(event)
+
   // align colums to contents before showing
   list->resizeColumnToContents(0);
   list->resizeColumnToContents(1);
@@ -98,9 +91,12 @@ void WpListWidgetParent::configRowHeight()
 }
 
 /** This slot is called from parent when closing */
-void WpListWidgetParent::slot_Done ()
+void WpListWidgetParent::slot_Done()
 {
-  filter->off();
+  // Remove all list items and the filter items.
+  filter->clear();
+  list->clear();
+  firstLoadDone = false;
 }
 
 /** This slot sends a signal to indicate that a selection has been made. */

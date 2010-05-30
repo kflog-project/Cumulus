@@ -53,7 +53,7 @@ class WpListWidgetParent : public QWidget
 
   public:
 
-    WpListWidgetParent(QWidget *parent = 0);
+    WpListWidgetParent( QWidget *parent = 0 );
 
     virtual ~WpListWidgetParent();
 
@@ -69,7 +69,7 @@ class WpListWidgetParent : public QWidget
     virtual wayPoint* getSelectedWaypoint() = 0;
 
     /**
-     * Retrieves the waypoints or airfields from the map contents and fills
+     * Retrieves the locations from the map contents and fills
      * the list. The user must implement this method in his subclass.
      */
     virtual void fillWpList() = 0;
@@ -93,14 +93,13 @@ class WpListWidgetParent : public QWidget
     };
 
   public slots:
-    // Public slots
 
     /**
      * Called from parent when closing
      */
     void slot_Done();
 
-  signals: // Signals
+  signals:
 
     /**
      * This signal is emitted if the list selection has changed.
@@ -109,11 +108,13 @@ class WpListWidgetParent : public QWidget
 
   protected:
 
-    void
-    showEvent(QShowEvent *);
-    QTreeWidget* list;
+    void showEvent(QShowEvent *);
+
+    QTreeWidget*    list;
     ListViewFilter* filter;
-    bool listFilled;
+
+    /** Flag to indicate that a first load of the list items has been done. */
+    bool firstLoadDone;
 
   private:
 

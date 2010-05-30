@@ -7,17 +7,16 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-#include <QSignalMapper>
-#include <QHBoxLayout>
+#include <QtGui>
 
 #include "listviewfilter.h"
 #include "generalconfig.h"
@@ -29,17 +28,16 @@ bool itemBefore(const QTreeWidgetItem* it1, const QTreeWidgetItem* it2)
 }
 
 // Initialize static members
-const uint ListViewFilter::buttonCount     = 5;
+const int ListViewFilter::buttonCount      = 5;
 const QString ListViewFilter::NextPage     = tr("Next Page");
 const QString ListViewFilter::PreviousPage = tr("Previous Page");
 
 ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(parent)
 {
   _tw = tw;
-  QPushButton* cmd;
   QHBoxLayout* layout=new QHBoxLayout(this);
   layout->setContentsMargins( 0, 0, 0, 5 );
-  setMinimumWidth( 5*25 );
+  setMinimumWidth( 5*40 );
 
   QSignalMapper* smap=new QSignalMapper(this);
   smap->setObjectName("signal_mapper");
@@ -47,21 +45,21 @@ ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(paren
   _rootFilter=0;
   _activeFilter=0;
   showIndex=0;
-  recursionLevel=0;
+  _filterIndex=0;
 
-  for( uint i = 0; i != buttonCount; i++)
+  for( int i = 0; i != buttonCount; i++)
     {
-      cmd = new QPushButton(this);
-      cmd->setMinimumWidth(25);
+      QPushButton *cmd = new QPushButton(this);
+      cmd->setMinimumWidth(40);
       layout->addWidget(cmd);
       _buttonList.append(cmd);
       smap->setMapping(cmd, i);
       connect(cmd, SIGNAL(clicked()), smap, SLOT(map()));
     }
 
-  if (tw->topLevelItemCount() <6 )
+  if( tw->topLevelItemCount() < 8 )
     {
-      this->hide();
+      this->setVisible( false );
     }
 
   QStringList sl;
@@ -76,288 +74,344 @@ ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(paren
 
 ListViewFilter::~ListViewFilter()
 {
-  // JD: Never forget to take ALL widget items out of the list before
-  // deleting the filter item list ! Multiple pointers to items !
-  if( _rootFilter != 0 )
+  // Maybe that is not necessary because the parent object is also destroyed.
+  QList< QList<ListViewFilterItem *> > _filterList;
+
+  for( int i = 0; i < _filterList.size(); i++ )
     {
-      qDeleteAll( _rootFilter->items );
-      delete _rootFilter;
+      QList<ListViewFilterItem *> &itemList = _filterList[i];
+
+      qDeleteAll( itemList );
+      itemList.clear();
     }
 
   delete next;
   delete prev;
 }
 
-
 void ListViewFilter::addListItem( QTreeWidgetItem* it )
 {
-  if( it == static_cast<QTreeWidgetItem *> ( 0 ) )
+  if( it == static_cast<QTreeWidgetItem *> (0) )
     {
       return;
     }
 
-  if( _rootFilter == static_cast<ListViewFilterItem *> ( 0 ) )
-    {
-      _rootFilter = new ListViewFilterItem();
-    }
-
-  _rootFilter->items.append( it );
+  _tw->addTopLevelItem( it );
 }
 
 void ListViewFilter::removeListItem( QTreeWidgetItem* it )
 {
-  if( it == static_cast<QTreeWidgetItem *> ( 0 ) )
+  if( it == static_cast<QTreeWidgetItem *> (0) )
     {
       return;
     }
 
-  if( _rootFilter == static_cast<ListViewFilterItem *> ( 0 ) )
+  qDebug() << "ListViewFilter::removeListItem: " << it->text(0);
+
+  // Note! According to QtForum removeItemWidget removes not the item in the tree.
+  // The method takeTopLevelItem has to be used instead.
+  int idx = _tw->indexOfTopLevelItem(it);
+
+  if( idx != -1 )
     {
-      return;
+      QTreeWidgetItem* item = _tw->takeTopLevelItem( idx );
+
+      if( item )
+        {
+          delete item;
+        }
     }
-
-  _rootFilter->items.removeAll( it );
-
 }
 
 void ListViewFilter::reset()
 {
-  if( _tw == 0 || _rootFilter == 0 )
+  qDebug() << "ListViewFilter::reset()";
+
+  clear();
+
+  if( _tw == static_cast<QTreeWidget *> (0) || _tw->topLevelItemCount() == 0 )
     {
       return;
     }
 
-  qDeleteAll( _rootFilter->subfilters );
-  _rootFilter->subfilters.clear();
-  _rootFilter->_split = false;
+  _tw->sortItems( 0, Qt::AscendingOrder );
 
-  showIndex = 0;
-  recursionLevel = 0;
-
-  qSort( _rootFilter->items.begin(), _rootFilter->items.end(), itemBefore );
-
-  if( _rootFilter->items.count() < 6 )
+  // switch on all list elements
+  for( int i = 0; i < _tw->topLevelItemCount(); i++ )
     {
-      this->hide();
+      _tw->topLevelItem( i )->setHidden( false );
+    }
+
+  if( _tw->topLevelItemCount() < 6 )
+    {
+      this->setVisible( false );
     }
   else
     {
-      this->show();
+      this->setVisible( true );
     }
+
+  // setup a new root filter
+  _rootFilter = new ListViewFilterItem( _tw, 0 );
+
+  _rootFilter->beginIdx = 0;
+  _rootFilter->endIdx   = _tw->topLevelItemCount();
+
+  QList<ListViewFilterItem *> itemList;
+  itemList.append( _rootFilter );
+  _filterList.append( itemList );
 
   activateFilter( _rootFilter );
 }
 
-/** All tree widget items and the root filter are deleted. Use this before
- *  a reload of that view. */
+/** All filter items are deleted. Use this before a reload of that view. */
 void ListViewFilter::clear()
 {
-  if( _rootFilter )
+  qDebug() << "ListViewFilter::clear()";
+  showIndex    = 0;
+  _filterIndex = 0;
+
+  for( int i = 0; i < _filterList.size(); i++ )
     {
-      // first remove filter items
-      qDeleteAll( _rootFilter->items );
-      delete _rootFilter;
+      QList<ListViewFilterItem *> &itemList = _filterList[i];
+
+      qDeleteAll( itemList );
+      itemList.clear();
     }
 
-  _rootFilter = static_cast<ListViewFilterItem *> ( 0 );
+  _filterList.clear();
+
+  _rootFilter   = static_cast<ListViewFilterItem *> (0);
+  _activeFilter = static_cast<ListViewFilterItem *> (0);
+
+  // Switch off all filter buttons.
+  for( int i = 0; i < _buttonList.count(); i++ )
+    {
+       _buttonList.at( i )->setVisible( false );
+    }
 }
 
-/** A push button is pressed */
-void ListViewFilter::slot_CmdPush(int id)
+/** A push button has been pressed. */
+void ListViewFilter::slot_CmdPush( int id )
 {
+  qDebug() << "slot_CmdPush" << "ID=" << id << "_filterIndex" << _filterIndex;
+
   if( id == 0 && _rootFilter != _activeFilter )
     {
-      activateFilter( _activeFilter->parent );
+      // Go one level back
+      _activeFilter = _activeFilter->_parent;
+
+      // Remove subfilters
+      QList<ListViewFilterItem *> subFilters = _filterList.takeAt( _filterIndex );
+      qDeleteAll( subFilters );
+      _filterIndex--;
+
+      subFilters = _filterList.at( _filterIndex );
+
+      int start = 1;
+
+      // Show buttons
+      if( _activeFilter == _rootFilter )
+        {
+          // Root filter has no back icon and one real button more.
+          _buttonList.at( 0 )->setIcon( QIcon( QPixmap() ) );
+          start = 0;
+        }
+
+      for( int i = 0; i < _buttonList.count(); i++ )
+        {
+          int j = i + start;
+
+          if( j >= _buttonList.count() )
+            {
+              break;
+            }
+
+          if( i < subFilters.count() && subFilters.at( i )->itemCount() > 0 )
+            {
+              _buttonList.at( j )->setVisible( true );
+              _buttonList.at( j )->setText( subFilters.at( i )->buttonText );
+            }
+          else
+            {
+              _buttonList.at( j )->setVisible( false );
+            }
+        }
+
+      // show tree elements of filter
+      _activeFilter->showFilterItems();
       return;
     }
+
+  // Go one level forward, means do further splitting
+  QList<ListViewFilterItem *> subFilters = _filterList.at( _filterIndex );
 
   if( _rootFilter != _activeFilter )
     {
-      activateFilter( _activeFilter->subfilters.at( id - 1 ) );
-      return;
+      // Button 0 is the return button and has no entry in the subFilters list.
+      // Therefore the id must be reduced by one.
+      activateFilter( subFilters.at( id - 1 ) );
     }
   else
     {
-      activateFilter( _activeFilter->subfilters.at( id ) );
-      return;
+      activateFilter( subFilters.at( id ) );
     }
 }
 
-void ListViewFilter::activateFilter(ListViewFilterItem* filter, int shrink)
+void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
 {
-    //make sure we have subdivided our list
+  qDebug() << "ListViewFilter::activateFilter: shrink=" << shrink;
+
+    // save the active filter
   _activeFilter = filter;
-  QString teststr;
-  //setup buttons
-  int i;
-  teststr = "";
-  int spacefactor = 0;
 
-  if( shrink > 4 )
+  int i, start;
+
+  // list to save subfilters
+  QList<ListViewFilterItem *> subFilters;
+
+  // Determine the possible subfilter item count. We assume minimal 8 entries
+  // per subfilter page.
+  int newPartCount = (filter->itemCount() / 8) + 1;
+
+  qDebug() << "newPartCount" << newPartCount;
+
+  if( newPartCount >= buttonCount )
     {
-      spacefactor = 2;
-    }
-  else if( shrink > 2 )
-    {
-      spacefactor = shrink - 2;
-    }
-
-  if( _activeFilter != _rootFilter ) //normal filters, not the root filter
-    {
-      filter->divide( buttonCount - 1 - spacefactor ); //we can's use the first button, so divide into (buttonCount-1) parts
-      _buttonList.at( 0 )->show();
-      _buttonList.at( 0 )->setText( "" ); //first button switches to the filter above this one
-      _buttonList.at( 0 )->setIcon( QIcon(
-      GeneralConfig::instance()->loadPixmap( "up.png" ) ) ); // icon is more clear than text.
-      _buttonList.at( 0 )->setIconSize( QSize( 26, 26 ) );
-      _buttonList.at( 0 )->setMinimumSize( 1, _buttonList.at( 1 )->height() );
-
-      for( i = 1; i < filter->subfilters.count() + 1; i++ )
+      if( _activeFilter == _rootFilter )
         {
-          if( filter->subfilters.at( i - 1 )->items.count() > 0 )
-            {
-              _buttonList.at( i )->show();
-            }
-          else
-            {
-              _buttonList.at( i )->hide();
-              continue;
-            }
-
-          if( filter->subfilters.at( i - 1 )->from == filter->subfilters.at( i - 1 )->to )
-            {
-              if( shrink >= 2 )
-                {
-                  _buttonList.at( i )->setText(
-                      (filter->subfilters.at( i - 1 )->from).toLower() );
-                }
-              else
-                {
-                  _buttonList.at( i )->setText(
-                      filter->subfilters.at( i - 1 )->from );
-                }
-            }
-          else
-            {
-              if( shrink >= 2 )
-                {
-                  _buttonList.at( i )->setText(
-                      (filter->subfilters.at( i - 1 )->from + "-"
-                          + filter->subfilters.at( i - 1 )->to).toLower() );
-                }
-              else if( shrink == 1 )
-                {
-                  _buttonList.at( i )->setText(
-                      filter->subfilters.at( i - 1 )->from + "-"
-                          + filter->subfilters.at( i - 1 )->to );
-                }
-              if( shrink == 0 )
-                {
-                  _buttonList.at( i )->setText(
-                      filter->subfilters.at( i - 1 )->from + " - "
-                          + filter->subfilters.at( i - 1 )->to );
-                }
-
-            }
-
-          teststr += _buttonList.at( i )->text();
+          newPartCount = buttonCount;
         }
-
-      if( _buttonList.at( 0 )->fontMetrics().width( teststr ) > 200
-          && spacefactor < 2 )
+      else
         {
-          shrink++;
-          recursionLevel++;
-          this->activateFilter( filter, shrink );
-        }
-    }
-  else
-    { //this is the root filter
-      filter->divide( buttonCount ); //divide in (buttonCount) parts, as the first button can be used just as the others
-      _buttonList.at( 0 )->setIcon( QIcon( QPixmap() ) );
-
-      for( i = 0; i < filter->subfilters.count(); i++ )
-        {
-          if( filter->subfilters.at( i )->items.count() > 0 )
-            {
-              _buttonList.at( i )->show();
-            }
-          else
-            {
-              _buttonList.at( i )->hide();
-              continue;
-            }
-
-          if( filter->subfilters.at( i )->from == filter->subfilters.at( i )->to )
-            {
-              if( shrink >= 2 )
-                {
-                  _buttonList.at( i )->setText(
-                      (filter->subfilters.at( i )->from).toLower() );
-                }
-              else
-                {
-                  _buttonList.at( i )->setText(
-                      filter->subfilters.at( i )->from );
-                }
-            }
-          else
-            {
-              if( shrink >= 2 )
-                {
-                  _buttonList.at( i )->setText(
-                      (filter->subfilters.at( i )->from + "-"
-                          + filter->subfilters.at( i )->to).toLower() );
-                }
-              else if( shrink == 1 )
-                {
-                  _buttonList.at( i )->setText(
-                      filter->subfilters.at( i )->from + "-"
-                          + filter->subfilters.at( i )->to );
-                }
-              if( shrink == 0 )
-                {
-                  _buttonList.at( i )->setText(
-                      filter->subfilters.at( i )->from + " - "
-                          + filter->subfilters.at( i )->to );
-                }
-            }
-          teststr += _buttonList.at( i )->text();
-        }
-
-      if( _buttonList.at( 0 )->fontMetrics().width( teststr ) > 200
-          && spacefactor < 2 )
-        {
-          shrink++;
-          recursionLevel++;
-          this->activateFilter( filter, shrink );
+          newPartCount = buttonCount - 1;
         }
     }
 
-  //@JD: Prevent repeating list filling and clearing. Do it once after recursion.
-  if( recursionLevel > 0 )
+  newPartCount -= shrink;
+
+  if( newPartCount < 1 )
     {
-      recursionLevel--;
+      // That here shall prevent an endless loop.
+      qWarning() << "ListViewFilter: Button count < 1, cannot create filters!";
       return;
     }
 
-  while( i < (int) buttonCount )
-    { //hide any buttons that may be left over
-      _buttonList.at( i++ )->hide();
-    }
-
-  // @JD, after using QTreeWidget over Q3ListView:
-  // There is a bug somewhere; crash if taking out the last airfield item from _tw.
-  // Workaround: always keep one item in ...
-
-  //  A "dummy" item to prevent the list from running empty
-  _tw->insertTopLevelItem( 0, next );
-
-  // workaround: stop taking at item 1
-  while( _tw->topLevelItemCount() > 1 )
+  if( _activeFilter != _rootFilter )
     {
-      _tw->takeTopLevelItem( 1 );
+      // Normal filters, not the root filter. The first button is reserved
+      // for the return to the parent filter.
+      start = 1;
+
+      if( newPartCount >= buttonCount )
+        {
+          // We can't use the first button if condition is true.
+          // So divide into (newPartCount-1) parts
+          newPartCount--;
+        }
+
+      filter->divide( newPartCount, subFilters );
+      _buttonList.at( 0 )->show();
+      _buttonList.at( 0 )->setText( "" ); // first button switches to the filter above this one
+      _buttonList.at( 0 )->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "up.png" ) ) ); // icon is more clear than text.
+      _buttonList.at( 0 )->setIconSize( QSize( 26, 26 ) );
+      _buttonList.at( 0 )->setMinimumSize( 1, _buttonList.at( 1 )->height() );
     }
+  else
+    {
+      // This is the root filter.
+      // Divide in (buttonCount) parts, as the first button can be used just as the others
+      filter->divide( newPartCount, subFilters );
+      _buttonList.at( 0 )->setIcon( QIcon( QPixmap() ) );
+      start = 0;
+    }
+
+  qDebug() << "SubFilters=" << subFilters.count() << "Start=" << start;
+
+  for( i = 0; i < _buttonList.count(); i++ )
+    {
+      // The root filter has one filter button more as the subfilters.
+      // Button 0 of a subfilter is the return button to the upper level.
+      // Therefore the button array is addressed with j to consider that.
+      int j = i + start;
+
+      if( j >= _buttonList.count() )
+        {
+          break;
+        }
+
+      if( i < subFilters.count() && subFilters.at( i )->itemCount() > 0 )
+        {
+          _buttonList.at( j )->setVisible( true );
+        }
+      else
+        {
+          _buttonList.at( j )->setVisible( false );
+          continue;
+        }
+
+      if( subFilters.at( i )->from == subFilters.at( i )->to )
+        {
+          if( shrink >= 2 )
+            {
+              _buttonList.at( j )->setText( (subFilters.at( i )->from).toLower() );
+            }
+          else
+            {
+              _buttonList.at( j )->setText( subFilters.at( i )->from );
+            }
+        }
+      else
+        {
+          if( shrink >= 2 )
+            {
+              _buttonList.at( j )->setText( (subFilters.at( i )->from + "-" +
+                                             subFilters.at( i )->to).toLower() );
+            }
+          else
+            {
+              _buttonList.at( j )->setText( subFilters.at( i )->from + "-" +
+                                            subFilters.at( i )->to );
+            }
+         }
+
+      // Save button text into related list view filter item.
+      subFilters.at( i )->buttonText = _buttonList.at( j )->text();
+    }
+
+  // Check, if the button text has enough space in the button widget
+  for( i = start; i < _buttonList.count(); i++ )
+    {
+      if( _buttonList.at(i)->isVisible() == false )
+        {
+          // Button is invisible, ignore it.
+          continue;
+        }
+
+      QString buttonText = _buttonList.at( i )->text();
+
+      int buttonWidth = _buttonList.at(i)->width();
+
+      int textWidth = _buttonList.at( i )->fontMetrics().width( buttonText );
+
+      qDebug() << "activateFilter: Text=" << buttonText
+               << "buttonWidth" << buttonWidth
+               << "textWidth" << textWidth;
+
+      if( textWidth > buttonWidth && newPartCount > 2 )
+        {
+          // Remove allocated list items
+          qDeleteAll( subFilters );
+
+          // Call again the splitting method
+          activateFilter( filter, ++shrink );
+          return;
+        }
+    }
+
+  // save new subfilter set
+  _filterIndex++;
+  _filterList.append( subFilters );
 
   // show first page of current filter list
   showIndex = 0;
@@ -365,12 +419,15 @@ void ListViewFilter::activateFilter(ListViewFilterItem* filter, int shrink)
   // showPage will enable the updating again
 }
 
-
 void ListViewFilter::showPage(bool up)
 {
   int pageSize = GeneralConfig::instance()->getListDisplayPageSize();
-  int maxIndex = _activeFilter->items.count() - 1;
+  int maxIndex = _activeFilter->itemCount() - 1;
   int maxPageIndex = 0;
+
+  _activeFilter->showFilterItems();
+
+  return;
 
   // breakdown to 'pages' disabled ?
   if( pageSize == 0 )
@@ -407,48 +464,6 @@ void ListViewFilter::showPage(bool up)
 
   //qDebug("airfield list page view: showIndex %d, maxIndex %d, maxPageIndex %d", showIndex, maxIndex, maxPageIndex );
 
-  // @JD: Another strange bug: removing all counted items (except one) with a
-  // "for" loop leaves the list with lots of items left. "while" loop works
-
-  while( _tw->topLevelItemCount() > 1 )
-    {
-      _tw->takeTopLevelItem( 0 );
-    }
-
-  // @JD: Still we can't be sure the list looks like expected. With the next lines
-  // the whole shebang is finally working. Numerous hours wasted here
-
-  // again, a "dummy" item to prevent the list from running empty
-  _tw->insertTopLevelItem( 0, next );
-
-  while( _tw->topLevelItemCount() > 1 )
-    {
-      _tw->takeTopLevelItem( 1 );
-    }
-
-  QList<QTreeWidgetItem*> addList;
-
-  // not the first page? Then add "Previous" item
-  if( showIndex > 0 )
-    {
-      addList << prev;
-    }
-
-  // add the waypoint/airfield items
-  for( int i = showIndex; i <= showIndex + maxPageIndex; i++ )
-    {
-      addList << _activeFilter->items.at( i );
-    }
-
-  // insert whole list _before_ "Next" item
-  _tw->insertTopLevelItems( 0, addList );
-
-  // last page of list
-  if( maxIndex - showIndex <= pageSize )
-    {
-      _tw->takeTopLevelItem( _tw->indexOfTopLevelItem( next ) );
-    }
-
   if( showIndex == 0 )
     {
       _tw->setCurrentItem( _tw->topLevelItem( 0 ) );
@@ -465,77 +480,129 @@ void ListViewFilter::showPage(bool up)
 
 void ListViewFilter::off()
 {
-  if (_rootFilter)
+  qDebug() << "ListViewFilter::off(): filterIndex=" << _filterIndex;
+
+  if( ! _rootFilter )
     {
-      activateFilter(_rootFilter);
+      return;
     }
+
+  QList<ListViewFilterItem *> subFilters;
+
+  while( _filterIndex > 1 )
+    {
+      subFilters = _filterList.takeAt( _filterIndex );
+      qDeleteAll( subFilters );
+      _filterIndex--;
+    }
+
+  // Set active filter to root filter
+  _activeFilter = _rootFilter;
+
+  // Set filter buttons
+  subFilters = _filterList.at( _filterIndex );
+
+  // Root filter has no back icon.
+  _buttonList.at( 0 )->setIcon( QIcon( QPixmap() ) );
+
+  // Show all buttons
+  for( int i = 0; i < _buttonList.count(); i++ )
+    {
+      if( i < subFilters.count() && subFilters.at( i )->itemCount() > 0 )
+        {
+          _buttonList.at( i )->setVisible( true );
+          _buttonList.at( i )->setText( subFilters.at( i )->buttonText );
+        }
+      else
+        {
+          _buttonList.at( i )->setVisible( false );
+        }
+    }
+
+  // show tree elements of filter
+  _rootFilter->showFilterItems();
 }
 
-ListViewFilterItem::ListViewFilterItem(ListViewFilterItem* parent)
+ListViewFilterItem::ListViewFilterItem(QTreeWidget *tw, ListViewFilterItem *parent) :
+  _parent( parent ),
+  _tw(tw),
+  from(""),
+  to(""),
+  buttonText(""),
+  beginIdx(-1),
+  endIdx(-1)
 {
-  this->parent = parent;
-  from = "";
-  to = "";
-  _split = false;
 }
 
 ListViewFilterItem::~ListViewFilterItem()
 {
-  qDeleteAll( subfilters );
-  subfilters.clear();
+  qDebug() << "~ListViewFilterItem()" << this;
 }
 
-void ListViewFilterItem::divide(int partcount)
+void ListViewFilterItem::divide( int partCount, QList<ListViewFilterItem *> &subFilters )
 {
-  if( _split )
+  qDebug() << "ListViewFilterItem::divide() partCount=" << partCount;
+
+  if( partCount < 2 )
     {
-      return; //no need to split an already split filter item.
+      // No need to further splits because part count is too less.
+      qDebug() << "divide! partCount is less than 2";
+      return;
     }
 
-  int totalLen = items.count();
-  int avgPLen = totalLen / partcount;
+  int totalLen = itemCount();
+  int avgPLen = totalLen / partCount;
 
-  if( totalLen < 6 )
+  // qDebug() << "itemCount=" << itemCount() << "avgPLen=" << avgPLen;
+
+  if( totalLen < 9 )
     {
-      return; //5 or less items in this list, we're not going to split this further.
+     // 8 or less items in this list, we're not going to split this further.
+      return;
     }
-
-  subfilters.clear(); //remove any current filters in the set
 
   int tmpMinDiff;
   int tmpMinPos;
   int startPos;
-  bool reachedMax;
   int spread;
   int tmpDiff;
-  ListViewFilterItem* itm;
-  int maxSpread = avgPLen / 3; //the maximum distance we'll search is 1/3 of the length of the average list
+  bool reachedMax;
 
-  int diff[partcount + 1]; //initialize arrays that will hold the differences and their positions.
-  int pos[partcount + 1];
-  diff[0] = 1; //we need to initialize the first one
-  pos[0] = -1;
-  diff[partcount] = 1; //and the last one
-  pos[partcount] = items.count() - 1;
+  // the maximum distance we'll search is 1/3 of the length of the average list
+  int maxSpread = avgPLen / 3;
 
-  for( int i = 0; i < partcount - 1; i++ )
+  // initialize arrays that will hold the differences and their positions.
+  int diff[partCount + 1];
+  int pos[partCount + 1];
+
+  diff[0]         = 1; // we need to initialize the first one
+  diff[partCount] = 1; // and the last one
+
+  pos[0]         = beginIdx - 1;
+  pos[partCount] = endIdx - 1;
+
+  for( int i = 0; i < partCount - 1; i++ )
     {
-      startPos = (i + 1) * avgPLen; //our start position is the optimal point to split the list
+      // our start position is the optimal point to split the list
+      startPos = ((i + 1) * avgPLen) + beginIdx;
       tmpMinPos = startPos;
       reachedMax = false;
       spread = 0;
-      //qDebug ("Startpos: %d, listLength: %d, maxSpread: %d", startPos, items.count(), maxSpread);
-      tmpMinDiff = diffLevel( items.at( startPos )->text( 0 ),
-                              items.at( startPos + 1 )->text( 0 ) ); //get the diffLevel for this position
 
-      while( tmpMinDiff > 1 && !reachedMax ) //search within the defined limits for the optimum solution (1 is best).
+      // qDebug ("StartPos: %d, listLength: %d, maxSpread: %d", startPos, itemCount(), maxSpread);
+
+      // get the diffLevel for this position
+      tmpMinDiff = diffLevel( itemTextAt( startPos ), itemTextAt( startPos + 1 ) );
+
+      while( tmpMinDiff > 1 && !reachedMax )
         {
+          // search within the defined limits for the optimum solution (1 is best).
           spread++;
 
-          if( ((int) startPos - (int) spread + 1) >= 0 )
+          if( (startPos - spread + 1) >= 0 )
             {
-              tmpDiff = diffLevel( items.at( startPos - spread )->text( 0 ),
-                                   items.at( startPos - spread + 1 )->text( 0 ) );
+              tmpDiff = diffLevel( itemTextAt( startPos - spread ),
+                                   itemTextAt( startPos - spread + 1 ) );
 
               if( tmpDiff < tmpMinDiff )
                 {
@@ -544,10 +611,10 @@ void ListViewFilterItem::divide(int partcount)
                 }
             }
 
-          if( startPos + spread + 1 < items.count() )
+          if( startPos + spread + 1 < itemCount() )
             {
-              tmpDiff = diffLevel( items.at( startPos + spread )->text( 0 ),
-                                   items.at( startPos + spread + 1 )->text( 0 ) );
+              tmpDiff = diffLevel( itemTextAt( startPos + spread ),
+                                   itemTextAt( startPos + spread + 1 ) );
 
               if( tmpDiff < tmpMinDiff )
                 {
@@ -559,29 +626,56 @@ void ListViewFilterItem::divide(int partcount)
           reachedMax = (spread >= maxSpread);
         }
 
-      diff[i + 1] = tmpMinDiff; //store the position and diffLevel we found in our array
-      pos[i + 1] = tmpMinPos;
-      //qDebug("chosen split: pos %d, difflevel %d", tmpMinPos, tmpMinDiff);
+      // store the position and diffLevel we found in our array
+      diff[i + 1] = tmpMinDiff;
+      pos[i + 1]  = tmpMinPos;
+
+      // qDebug( "Chosen split: pos %d, diffLevel %d", tmpMinPos, tmpMinDiff );
     }
 
-  // Now, create the actual filters with the found split points.
-  for( int i = 1; i <= partcount; i++ )
+  qDebug() << "Filter to Divide:"
+           << "beginIdx=" << beginIdx
+           << "endIdx" << endIdx;
+
+  // Set the begin and end diff element to its found neighbor
+  diff[0]         = diff[1];
+  diff[partCount] = diff[partCount-1];
+
+  // Now, create the actual filters with the found split points and put them
+  // into the result list.
+  for( int i = 1; i <= partCount; i++ )
     {
-      itm = new ListViewFilterItem( this );
+      ListViewFilterItem *itm = new ListViewFilterItem( _tw, this );
 
-      itm->from = items.at( pos[i - 1] + 1 )->text( 0 ).left( diff[i - 1] );
-      itm->to = items.at( pos[i] )->text( 0 ).left( diff[i] );
-      subfilters.append( itm );
+      itm->from = itemTextAt( pos[i - 1] + 1 ).left( diff[i - 1] );
+      itm->to   = itemTextAt( pos[i] ).left( diff[i] );
 
-      for( int j = pos[i - 1] + 1; j <= pos[i]; j++ )
-        {
-          itm->items.append( items.at( j ) );
-        }
+      itm->beginIdx = pos[i - 1] + 1;
+      itm->endIdx   = pos[i] + 1;
+
+      subFilters.append( itm );
+
+      qDebug() << "Divide: i=" << i
+               << "fromTxt=" << itm->from
+               << "toTxt=" << itm->to
+               << "beginIdx=" << itm->beginIdx
+               << "endIdx" << itm->endIdx;
     }
-
-  _split = true;
 }
 
+/** Returns the first text element at the item position */
+QString ListViewFilterItem::itemTextAt( const int pos )
+{
+  QTreeWidgetItem *it = _tw->topLevelItem( pos );
+
+  if( it )
+    {
+      // qDebug() << "Pos=" << pos << "Text=" << it->text(0);
+      return it->text(0);
+    }
+
+  return "";
+}
 
 int ListViewFilterItem::diffLevel(const QString& s1, const QString& s2)
 {
@@ -592,8 +686,8 @@ int ListViewFilterItem::diffLevel(const QString& s1, const QString& s2)
 
   while( pos < max )
     {
-      //qDebug (" S1='%s' S2='%s'  level=%d", S1.toLatin1().data(), S2.toLatin1().data(), pos+1);
-      //if( S1.mid( pos, 1 ) != S2.mid( pos, 1 ) )
+      // qDebug (" S1='%s' S2='%s' level=%d", S1.toLatin1().data(), S2.toLatin1().data(), pos+1);
+
       if( S1[pos] != S2[pos] )
         {
           return pos + 1;
@@ -603,4 +697,32 @@ int ListViewFilterItem::diffLevel(const QString& s1, const QString& s2)
     }
 
   return pos;
+}
+
+/** Make all items of the filter visible. */
+void ListViewFilterItem::showFilterItems()
+{
+  // switch off all list elements
+  for( int i = 0; i < beginIdx && i < _tw->topLevelItemCount(); i++ )
+    {
+      _tw->topLevelItem( i )->setHidden( true );
+    }
+
+  // switch on all list elements
+  for( int i = beginIdx; i < endIdx && i < _tw->topLevelItemCount(); i++ )
+    {
+      _tw->topLevelItem( i )->setHidden( false );
+    }
+
+  // switch off all list elements
+  for( int i = endIdx; i < _tw->topLevelItemCount(); i++ )
+    {
+      _tw->topLevelItem( i )->setHidden( true );
+    }
+
+  if( itemCount() > 0 )
+    {
+      // Set focus at first list item
+      _tw->setCurrentItem( _tw->topLevelItem( beginIdx ) );
+    }
 }

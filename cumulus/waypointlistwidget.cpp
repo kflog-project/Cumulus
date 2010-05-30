@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,8 +16,7 @@
 **
 ***********************************************************************/
 
-#include <QPushButton>
-#include <QMessageBox>
+#include <QtGui>
 
 #include "waypointlistwidget.h"
 #include "generalconfig.h"
@@ -37,40 +36,27 @@ WaypointListWidget::WaypointListWidget(QWidget *parent) :
 
 WaypointListWidget::~WaypointListWidget()
 {
-  // JD: Never forget to take ALL items out of the list !
-  // Items are deleted in filter destructor
-  while ( list->topLevelItemCount() > 0 )
-    {
-      list->takeTopLevelItem(0);
-    }
+}
 
-  filter->clear();
+void WaypointListWidget::showEvent( QShowEvent *event )
+{
+  qDebug() << "WaypointListWidget::showEvent";
+
+  Q_UNUSED( event )
+
+  // load list items during first show
+  if( firstLoadDone == false )
+    {
+      firstLoadDone = true;
+      fillWpList();
+    }
 }
 
 /** Clears and refills the waypoint item list. */
-void WaypointListWidget::refillWpList()
-{
-  // qDebug("WaypointListWidget::refillWpList()");
-
-  // Remove all content from list widget; deleting is done in filter
-  while ( list->topLevelItemCount() > 0 )
-    {
-      list->takeTopLevelItem(0);
-    }
-
-  filter->clear();
-
-  // reload list
-  fillWpList();
-}
-
-// JD: initial sorting of WP items and filling the list widget is now
-// entirely up to the filter ( reset() does it )
-
-/** Retrieves waypoints from the map contents and fills the list. */
 void WaypointListWidget::fillWpList()
 {
   list->setUpdatesEnabled(false);
+  list->clear();
 
   configRowHeight();
 
@@ -79,12 +65,12 @@ void WaypointListWidget::fillWpList()
   for (int i=0; i < wpList.count(); i++)
     {
       wayPoint& wp = wpList[i];
-      filter->addListItem( new _WaypointItem(wp) );
+      list->addTopLevelItem( new _WaypointItem(wp) );
     }
 
-  filter->reset();
-
   resizeListColumns();
+
+  filter->reset();
 
   if ( wpList.count() > 0 )
     {

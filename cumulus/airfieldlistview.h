@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2009 by Axel pauli
+**                   2008-2010 by Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   Licence. See the file COPYING for more information.
@@ -15,6 +15,13 @@
 **   $Id$
 **
 ***********************************************************************/
+
+/**
+ * \brief André Somers
+ *
+ * \brief This widget provides a list of waypoints and a means to select one.
+ *
+ */
 
 #ifndef AIRFIELD_LIST_VIEW_H
 #define AIRFIELD_LIST_VIEW_H
@@ -27,11 +34,6 @@
 #include "airfieldlistwidget.h"
 #include "waypoint.h"
 #include "mapcontents.h"
-
-/**
- * This widget provides a list of waypoints and a means to select one.
- * @author André Somers
- */
 
 class AirfieldListView : public QWidget
 {
@@ -69,7 +71,7 @@ private:
 
 protected:
 
-    void showEvent(QShowEvent *);
+    void showEvent( QShowEvent *event );
 
 public slots: // Public slots
     /**
@@ -97,7 +99,7 @@ public slots: // Public slots
      */
     void slot_reloadList()
     {
-      listw->refillWpList();
+      listw->fillWpList();
     };
 
 signals: // Signals

@@ -7,10 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -29,9 +29,16 @@ class ListViewFilterItem : QObject
 {
   Q_OBJECT
 
+  private:
+  /**
+   * That macro forbids the copy constructor and the assignment operator.
+   */
+  Q_DISABLE_COPY( ListViewFilterItem )
+
 public:
 
-  ListViewFilterItem( ListViewFilterItem* parent=static_cast<ListViewFilterItem *>(0) );
+  ListViewFilterItem( QTreeWidget *tw,
+                      ListViewFilterItem* parent=static_cast<ListViewFilterItem *>(0) );
 
   virtual ~ListViewFilterItem();
 
@@ -40,25 +47,48 @@ public:
    * lists, and creates the appropriate ListViewFilterItem instances.
    * these instances are initialized and added to @ref subfilters for
    * future reference. @ref _split is set. */
-  void divide(int);
+  void divide( int partcount, QList<ListViewFilterItem *> &subFilters );
 
-  //holds the first letter(s) for the filter
+  /** Returns the number of items in the list tree assigned to this filter item.*/
+  int itemCount()
+    {
+      if( beginIdx < 0 )
+        {
+          return 0;
+        }
+
+      return (endIdx - beginIdx);
+    };
+
+  /** Returns the first text element at the item position */
+  QString itemTextAt( const int pos );
+
+  /** Make all items of the filter visible. */
+  void showFilterItems();
+
+  /** Reference to ListViewFilterItem one level higher than this instance. */
+  ListViewFilterItem *_parent;
+
+  /** Pointer to tree widget with all list elements. */
+  QTreeWidget *_tw;
+
+  /** Holds the first letter(s) for the filter. */
   QString from;
 
-  //holds the last letter(s) for the filter
+  /** Holds the last letter(s) for the filter. */
   QString to;
 
-  //set of filters that further subdivides the result of this filter
+  /** Holds the text of the assigned button. */
+  QString buttonText;
+
+  /** Begin index of this filter item in the tree widget. */
+  int beginIdx;
+
+  /** End index of this filter item in the tree widget. */
+  int endIdx;
+
+  /** set of filters that further subdivides the result of this filter. */
   QList<ListViewFilterItem *> subfilters;
-
-  //list that holds the items that belong to this filter
-  QList<QTreeWidgetItem *> items;
-
-  //flag that indicates this filter has subfilters and the split has already been done
-  bool _split;
-
-  //reference to ListViewFilterItem one lever higher than this instance
-  ListViewFilterItem* parent;
 
 private:
 
@@ -66,17 +96,27 @@ private:
 };
 
 /**
- * Creates a filter bar for a QTreeViewWidget in order to quickly filter the listview.
- * @author André Somers
+ * \author André Somers
+ *
+ * \brief Creates a filter bar for a QTreeWidget
+ *
+ * Creates a filter bar for a QTreeWidget in order to quickly filter the list view.
+ *
  */
 class ListViewFilter : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
+
+private:
+  /**
+   * That macro forbids the copy constructor and the assignment operator.
+   */
+  Q_DISABLE_COPY( ListViewFilter )
 
 private:
 
-    // defines the number of filter buttons
-    static const uint buttonCount;
+  /** Defines the maximum number of available filter buttons. */
+  static const int buttonCount;
 
 public:
 
@@ -86,11 +126,11 @@ public:
 
   /**
    * Constructor.
-   * @arg lv Reference to the listview this filter works on.
+   * @arg tw Pointer to the listview this filter works on.
    */
   ListViewFilter( QTreeWidget* tw, QWidget* parent=static_cast<QWidget *>(0) );
 
-  ~ListViewFilter();
+  virtual ~ListViewFilter();
 
   void addListItem(QTreeWidgetItem* it);
   void removeListItem(QTreeWidgetItem* it);
@@ -108,7 +148,7 @@ public:
   void off();
 
   /**
-   * Clears the filter tree and deletes all items (for refilling)
+   * Removes all filter items and resets all to default.
    */
   void clear();
 
@@ -119,27 +159,36 @@ public:
 
 private:
 
-  //pointer to tree view
-  QTreeWidget* _tw; // _lv
-  QTreeWidgetItem* prev;
-  QTreeWidgetItem* next;
-  //list of buttons
-  QList<QPushButton *> _buttonList;
-  //active filter
-  ListViewFilterItem* _activeFilter;
-  //root of the filter tree
-  ListViewFilterItem* _rootFilter;
-
-  int showIndex;
-  int recursionLevel;
-
   /**
    * Activates the indicated filter. The list this filter holds is subdivided
    * if needed and the button row is adjusted to match.
    */
   void activateFilter( ListViewFilterItem* filter, int shrink=0 );
 
+  // pointer to display table view
+  QTreeWidget*     _tw;
+  QTreeWidgetItem* prev;
+  QTreeWidgetItem* next;
+
+  /** list of filter buttons */
+  QList<QPushButton *> _buttonList;
+
+  /** list of filter lists accessed by _filterIndex */
+  QList< QList<ListViewFilterItem *> > _filterList;
+
+  /** current index to _filterList */
+  int _filterIndex;
+
+  /** active filter */
+  ListViewFilterItem* _activeFilter;
+
+  /** root filter of the tree */
+  ListViewFilterItem* _rootFilter;
+
+  int showIndex;
+
 private slots:
+
   /**
    * Called if one of the buttons is clicked. The argument indicates which button.
    */
