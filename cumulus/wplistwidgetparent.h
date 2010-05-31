@@ -22,22 +22,23 @@
 #include <QWidget>
 #include <QTreeWidget>
 #include <QItemDelegate>
+#include <QVBoxLayout>
 
 #include "waypoint.h"
 #include "listviewfilter.h"
 #include "rowdelegate.h"
 
 /**
- * \author Josua Dietze
+ * \author Josua Dietze, Axel Pauli
  *
- * \brief Base class for airfield, waypoint, outlanding widget.
+ * \brief Base class for airfield, waypoint and outlanding widget.
  *
  * This widget provides a new widget base class to remove double code in
- * airfield list view, waypoint list view and task editor.
+ * the airfield and waypoint list view and the task editor.
  * Contains standard airfield list and attached filters (filter button row on
  * demand).
  *
- * Subclassed by airfieldlistwidget and waypointlistwidget.
+ * Subclassed by AirfieldListWidget and WaypointListWidget.
  *
  */
 
@@ -53,7 +54,7 @@ class WpListWidgetParent : public QWidget
 
   public:
 
-    WpListWidgetParent( QWidget *parent = 0 );
+    WpListWidgetParent( QWidget *parent = 0, bool showMovePage=true );
 
     virtual ~WpListWidgetParent();
 
@@ -72,10 +73,17 @@ class WpListWidgetParent : public QWidget
      * Retrieves the locations from the map contents and fills
      * the list. The user must implement this method in his subclass.
      */
-    virtual void fillWpList() = 0;
+    virtual void fillItemList() = 0;
 
     /**
-     * @returns a pointer to the "list" widget
+     * Clears and refills the item list, if items are loaded. Called
+     * if the map projection has been changed to ensure an update of the
+     * projected coordinates.
+     */
+    void refillItemList();
+
+    /**
+     * @returns a pointer to the list widget
      */
     QTreeWidget* listWidget()
     {
@@ -113,6 +121,10 @@ class WpListWidgetParent : public QWidget
     QTreeWidget*    list;
     ListViewFilter* filter;
 
+    /** Up and down buttons for page moving */
+    QPushButton* up;
+    QPushButton* down;
+
     /** Flag to indicate that a first load of the list items has been done. */
     bool firstLoadDone;
 
@@ -126,6 +138,16 @@ class WpListWidgetParent : public QWidget
      * Called from tree widget when an entry is tapped on.
      */
     void slot_listItemClicked(QTreeWidgetItem*, int);
+
+    /**
+     * Move page up.
+     */
+    void slot_PageUp();
+
+    /**
+     * Move page down.
+     */
+    void slot_PageDown();
 };
 
 #endif
