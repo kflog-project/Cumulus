@@ -1825,11 +1825,8 @@ void MainWindow::slotReadconfig()
 
   viewRP->fillRpList();
   viewAF->listWidget()->configRowHeight();
-  viewAF->listWidget()->slot_Done();
   viewOL->listWidget()->configRowHeight();
-  viewOL->listWidget()->slot_Done();
   viewWP->listWidget()->configRowHeight();
-  viewWP->listWidget()->slot_Done();
 
   GeneralConfig *conf = GeneralConfig::instance();
 

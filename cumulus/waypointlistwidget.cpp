@@ -53,7 +53,7 @@ void WaypointListWidget::showEvent( QShowEvent *event )
 /** Clears and refills the waypoint item list. */
 void WaypointListWidget::fillItemList()
 {
-  qDebug() << "WaypointListWidget::fillItemList()";
+  // qDebug() << "WaypointListWidget::fillItemList()";
 
   list->setUpdatesEnabled(false);
   list->clear();
@@ -80,7 +80,7 @@ void WaypointListWidget::fillItemList()
   list->setUpdatesEnabled(true);
 }
 
-/** Returns a pointer to the currently high lighted waypoint. */
+/** Returns a pointer to the currently selected item. */
 wayPoint* WaypointListWidget::getSelectedWaypoint()
 {
   QTreeWidgetItem* li = list->currentItem();
@@ -198,7 +198,7 @@ void WaypointListWidget::addWaypoint(wayPoint& newWp)
   // qDebug("WaypointListWidget::addWaypoint: name=%s", wp.name.toLatin1().data() );
 }
 
-WaypointListWidget::_WaypointItem::_WaypointItem(wayPoint& waypoint):
+WaypointListWidget::_WaypointItem::_WaypointItem( wayPoint& waypoint ) :
   QTreeWidgetItem(),  wp(waypoint)
 {
   QPainter pnt;
@@ -213,7 +213,7 @@ WaypointListWidget::_WaypointItem::_WaypointItem(wayPoint& waypoint):
   setText(1, wp.description);
   setText(2, wp.icao);
 
-  selectIcon = QPixmap(18,18);
+  selectIcon = QPixmap( 18, 18 );
   pnt.begin(&selectIcon);
   selectIcon.fill( Qt::white );
   pnt.drawPixmap(1, 1, _globalMapConfig->getPixmap(wp.type,false,true) );

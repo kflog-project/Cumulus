@@ -104,7 +104,7 @@ void WpListWidgetParent::showEvent( QShowEvent *event )
 }
 
 /**
- * Clears and refills the airfield item list, if items are loaded. Called
+ * Clears and refills the item list, if items are loaded. Called
  * if the map projection has been changed to ensure an update of the
  * projected coordinates.
  */
@@ -158,14 +158,18 @@ void WpListWidgetParent::slot_listItemClicked(QTreeWidgetItem* li, int)
  */
 void WpListWidgetParent::slot_PageUp()
 {
-  int pageSize = GeneralConfig::instance()->getListDisplayPageSize();
-
   QTreeWidgetItem *item = list->currentItem();
 
   if( item )
     {
+      QModelIndex index = list->currentIndex();
+      QRect rect = list->visualRect( index );
+
+      // Calculate rows per page. Headline must be subtracted.
+      int pageRows = ( list->height() / rect.height() ) - 1;
+
       int itemIdx = list->indexOfTopLevelItem( item );
-      int newIdx  = itemIdx - pageSize;
+      int newIdx  = itemIdx - pageRows;
 
       if( filter->activeFilter() )
         {
@@ -185,14 +189,18 @@ void WpListWidgetParent::slot_PageUp()
  */
 void WpListWidgetParent::slot_PageDown()
 {
-  int pageSize = GeneralConfig::instance()->getListDisplayPageSize();
-
   QTreeWidgetItem *item = list->currentItem();
 
   if( item )
     {
+      QModelIndex index = list->currentIndex();
+      QRect rect = list->visualRect( index );
+
+      // Calculate rows per page. Headline must be subtracted.
+      int pageRows = ( list->height() / rect.height() ) - 1;
+
       int itemIdx = list->indexOfTopLevelItem( item );
-      int newIdx  = itemIdx + pageSize;
+      int newIdx  = itemIdx + pageRows;
 
       if( filter->activeFilter() )
         {

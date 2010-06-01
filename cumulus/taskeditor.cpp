@@ -219,8 +219,6 @@ TaskEditor::TaskEditor( QWidget* parent,
 
 TaskEditor::~TaskEditor()
 {
-  qDebug("TaskEditor::~TaskEditor()");
-
   qDeleteAll(tpList);
   tpList.clear();
 }

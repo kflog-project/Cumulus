@@ -48,13 +48,10 @@ AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsLis
 
 AirfieldListWidget::~AirfieldListWidget()
 {
-  qDebug() << "AirfieldListWidget::~AirfieldListWidget()";
 }
 
 void AirfieldListWidget::showEvent( QShowEvent *event )
 {
-  qDebug() << "AirfieldListWidget::showEvent";
-
   Q_UNUSED( event )
 
   // load list items during first show
@@ -68,8 +65,6 @@ void AirfieldListWidget::showEvent( QShowEvent *event )
 /** Clears and refills the airfield item list. */
 void AirfieldListWidget::fillItemList()
 {
-  qDebug("AirfieldListWidget::fillItemList()");
-
   list->setUpdatesEnabled(false);
   list->clear();
 
@@ -135,8 +130,8 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
   return &wp;
 }
 
-AirfieldListWidget::_AirfieldItem::_AirfieldItem(Airfield* site):
-    QTreeWidgetItem(), airfield(site)
+AirfieldListWidget::_AirfieldItem::_AirfieldItem(Airfield* site) :
+  QTreeWidgetItem(), airfield(site)
 {
   QString name = site->getWPName();
   // QRegExp blank("[ ]");

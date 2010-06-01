@@ -232,7 +232,7 @@ void ListViewFilter::slot_CmdPush( int id )
 
 void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
 {
-  qDebug() << "ListViewFilter::activateFilter: shrink=" << shrink;
+  // qDebug() << "ListViewFilter::activateFilter: shrink=" << shrink;
 
     // save the active filter
   _activeFilter = filter;
@@ -245,8 +245,6 @@ void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
   // Determine the possible subfilter item count. We assume minimal 8 entries
   // per subfilter page.
   int newPartCount = (filter->itemCount() / 8) + 1;
-
-  qDebug() << "newPartCount" << newPartCount;
 
   if( newPartCount >= buttonCount )
     {
@@ -283,6 +281,7 @@ void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
         }
 
       filter->divide( newPartCount, subFilters );
+
       _buttonList.at( 0 )->show();
       _buttonList.at( 0 )->setText( "" ); // first button switches to the filter above this one
       _buttonList.at( 0 )->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "up.png" ) ) ); // icon is more clear than text.
@@ -298,7 +297,7 @@ void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
       start = 0;
     }
 
-  qDebug() << "SubFilters=" << subFilters.count() << "Start=" << start;
+  // qDebug() << "SubFilters=" << subFilters.count() << "Start=" << start;
 
   for( i = 0; i < _buttonList.count(); i++ )
     {
@@ -366,9 +365,11 @@ void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
 
       int textWidth = _buttonList.at( i )->fontMetrics().width( buttonText );
 
+      /*
       qDebug() << "activateFilter: Text=" << buttonText
                << "buttonWidth" << buttonWidth
                << "textWidth" << textWidth;
+      */
 
       if( textWidth > buttonWidth && newPartCount > 2 )
         {
@@ -392,7 +393,7 @@ void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
 
 void ListViewFilter::off()
 {
-  qDebug() << "ListViewFilter::off(): filterIndex=" << _filterIndex;
+  // qDebug() << "ListViewFilter::off(): filterIndex=" << _filterIndex;
 
   if( ! _rootFilter )
     {
@@ -448,17 +449,17 @@ ListViewFilterItem::ListViewFilterItem(QTreeWidget *tw, ListViewFilterItem *pare
 
 ListViewFilterItem::~ListViewFilterItem()
 {
-  qDebug() << "~ListViewFilterItem()" << this;
+  // qDebug() << "~ListViewFilterItem()" << this;
 }
 
 void ListViewFilterItem::divide( int partCount, QList<ListViewFilterItem *> &subFilters )
 {
-  qDebug() << "ListViewFilterItem::divide() partCount=" << partCount;
+  // qDebug() << "ListViewFilterItem::divide() partCount=" << partCount;
 
   if( partCount < 2 )
     {
       // No need to further splits because part count is too less.
-      qDebug() << "divide! partCount is less than 2";
+      // qDebug() << "divide! partCount is less than 2";
       return;
     }
 
@@ -545,9 +546,11 @@ void ListViewFilterItem::divide( int partCount, QList<ListViewFilterItem *> &sub
       // qDebug( "Chosen split: pos %d, diffLevel %d", tmpMinPos, tmpMinDiff );
     }
 
+  /*
   qDebug() << "Filter to Divide:"
            << "beginIdx=" << beginIdx
            << "endIdx" << endIdx;
+  */
 
   // Set the begin and end diff element to its found neighbor
   diff[0]         = diff[1];
@@ -567,11 +570,13 @@ void ListViewFilterItem::divide( int partCount, QList<ListViewFilterItem *> &sub
 
       subFilters.append( itm );
 
+      /*
       qDebug() << "Divide: i=" << i
                << "fromTxt=" << itm->from
                << "toTxt=" << itm->to
                << "beginIdx=" << itm->beginIdx
                << "endIdx" << itm->endIdx;
+      */
     }
 }
 
