@@ -96,7 +96,7 @@ private:
 };
 
 /**
- * \author André Somers
+ * \author André Somers, Axel Pauli
  *
  * \brief Creates a filter bar for a QTreeWidget
  *
@@ -120,10 +120,6 @@ private:
 
 public:
 
-  // defines the strings to be used in widget tree for browsing
-  static const QString NextPage;
-  static const QString PreviousPage;
-
   /**
    * Constructor.
    * @arg tw Pointer to the listview this filter works on.
@@ -136,9 +132,7 @@ public:
   void removeListItem(QTreeWidgetItem* it);
 
   /**
-   * Re-creates the index for the filter
-   * @arg forget Don't try to re-insert any removed items, just forget them.
-   *          This is needed when items are deleted from the list.
+   * Resets all filters to the root filter.
    */
   void reset();
 
@@ -152,10 +146,17 @@ public:
    */
   void clear();
 
-  /**
-   * Shows items of active filter in list, optionally divided in pages
-   */
-  void showPage(bool up);
+  /** Returns the active filter */
+  ListViewFilterItem* activeFilter() const
+    {
+      return _activeFilter;
+    };
+
+  /** Returns the root filter. */
+  ListViewFilterItem* rootFilter() const
+    {
+      return _rootFilter;
+    };
 
 private:
 
@@ -165,15 +166,13 @@ private:
    */
   void activateFilter( ListViewFilterItem* filter, int shrink=0 );
 
-  // pointer to display table view
+  /** Pinter to display table view */
   QTreeWidget*     _tw;
-  QTreeWidgetItem* prev;
-  QTreeWidgetItem* next;
 
-  /** list of filter buttons */
+  /** List of filter buttons. */
   QList<QPushButton *> _buttonList;
 
-  /** list of filter lists accessed by _filterIndex */
+  /** List of filter lists accessed by _filterIndex. */
   QList< QList<ListViewFilterItem *> > _filterList;
 
   /** current index to _filterList */
@@ -184,8 +183,6 @@ private:
 
   /** root filter of the tree */
   ListViewFilterItem* _rootFilter;
-
-  int showIndex;
 
 private slots:
 

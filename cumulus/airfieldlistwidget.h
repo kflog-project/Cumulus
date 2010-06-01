@@ -46,7 +46,7 @@ private:
 public:
 
     AirfieldListWidget( QVector<enum MapContents::MapContentsListID> &itemList,
-                        QWidget *parent=0);
+                        QWidget *parent=0, bool showMovePage=true );
 
     virtual ~AirfieldListWidget();
 
@@ -58,7 +58,7 @@ public:
     /**
      * Clears and fills the airfield item list.
      */
-    void fillWpList();
+    void fillItemList();
 
 protected:
 
@@ -72,8 +72,9 @@ private:
 class _AirfieldItem : public QTreeWidgetItem
   {
     public:
+
       _AirfieldItem(Airfield*);
-      Airfield* airport;
+      Airfield* airfield;
   };
 };
 

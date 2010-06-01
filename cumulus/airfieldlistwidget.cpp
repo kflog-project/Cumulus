@@ -29,7 +29,9 @@ extern MapContents *_globalMapContents;
 extern MapConfig   *_globalMapConfig;
 
 AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsListID> &itemList,
-                                        QWidget *parent ) : WpListWidgetParent(parent)
+                                        QWidget *parent,
+                                        bool showMovePage ) :
+                                        WpListWidgetParent( parent, showMovePage )
 {
   setObjectName("AirfieldListWidget");
   list->setObjectName("AfTreeWidget");
@@ -46,6 +48,7 @@ AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsLis
 
 AirfieldListWidget::~AirfieldListWidget()
 {
+  qDebug() << "AirfieldListWidget::~AirfieldListWidget()";
 }
 
 void AirfieldListWidget::showEvent( QShowEvent *event )
@@ -58,14 +61,15 @@ void AirfieldListWidget::showEvent( QShowEvent *event )
   if( firstLoadDone == false )
     {
       firstLoadDone = true;
-      fillWpList();
+      fillItemList();
     }
 }
 
 /** Clears and refills the airfield item list. */
-void AirfieldListWidget::fillWpList()
+void AirfieldListWidget::fillItemList()
 {
-  qDebug("AirfieldListWidget::fillWpList()");
+  qDebug("AirfieldListWidget::fillItemList()");
+
   list->setUpdatesEnabled(false);
   list->clear();
 
@@ -75,7 +79,7 @@ void AirfieldListWidget::fillWpList()
     {
       int nr = _globalMapContents->getListLength(itemList.at(item));
 
-      // qDebug("fillWpList N: %d, items %d", item, nr );
+      // qDebug("fillItemList N: %d, items %d", item, nr );
 
       for (int i=0; i<nr; i++ )
         {
@@ -97,29 +101,21 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
   // qDebug("AirfieldListWidget::getSelectedWaypoint()");
   QTreeWidgetItem* li = list->currentItem();
 
-  if ( li == 0)
+  if ( li == 0 )
     {
       return 0;
     }
 
-  // Special rows selected?
-  QString test = li->text(1);
-
-  if ( test == ListViewFilter::NextPage || test == ListViewFilter::PreviousPage )
-    {
-      return 0;
-    }
-
-  // Now we're left with the real waypoints/airports
-  _AirfieldItem* apli = static_cast<_AirfieldItem*>(li);
+  // Now we're left with the real airfields
+  _AirfieldItem* afItem = static_cast<_AirfieldItem *> (li);
 
   // @ee may be null if the cast failed.
-  if (apli == 0)
+  if ( afItem == static_cast<_AirfieldItem *> (0) )
     {
-      return 0;
+      return static_cast<wayPoint *> (0);
     }
 
-  Airfield* site = apli->airport;
+  Airfield* site = afItem->airfield;
 
   wp.name = site->getWPName();
   wp.origP = site->getWGSPosition();
@@ -135,11 +131,12 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
   wp.surface = site->getRunway().surface;
   wp.comment = site->getComment();
   wp.isLandable = true;
+
   return &wp;
 }
 
 AirfieldListWidget::_AirfieldItem::_AirfieldItem(Airfield* site):
-    QTreeWidgetItem(), airport(site)
+    QTreeWidgetItem(), airfield(site)
 {
   QString name = site->getWPName();
   // QRegExp blank("[ ]");

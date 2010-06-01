@@ -41,7 +41,7 @@ private:
 
 public:
 
-  WaypointListWidget(QWidget *parent=0);
+  WaypointListWidget( QWidget *parent=0, bool showMovePage=true );
 
   virtual ~WaypointListWidget();
 
@@ -68,7 +68,7 @@ public:
   /**
    * Clears and fills the waypoint item list with the current waypoints.
    */
-  void fillWpList();
+  void fillItemList();
 
 protected:
 

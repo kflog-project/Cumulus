@@ -21,16 +21,8 @@
 #include "listviewfilter.h"
 #include "generalconfig.h"
 
-// Helper function to qSort filter items according to WP name
-bool itemBefore(const QTreeWidgetItem* it1, const QTreeWidgetItem* it2)
-{
-  return it1->text(0).toLower() < it2->text(0).toLower();
-}
-
 // Initialize static members
-const int ListViewFilter::buttonCount      = 5;
-const QString ListViewFilter::NextPage     = tr("Next Page");
-const QString ListViewFilter::PreviousPage = tr("Previous Page");
+const int ListViewFilter::buttonCount = 5;
 
 ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(parent)
 {
@@ -44,7 +36,6 @@ ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(paren
   connect(smap, SIGNAL(mapped(int)), this, SLOT(slot_CmdPush(int)));
   _rootFilter=0;
   _activeFilter=0;
-  showIndex=0;
   _filterIndex=0;
 
   for( int i = 0; i != buttonCount; i++)
@@ -61,22 +52,10 @@ ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(paren
     {
       this->setVisible( false );
     }
-
-  QStringList sl;
-  sl << " " << PreviousPage << tr("(click)");
-  prev = new QTreeWidgetItem( sl );
-
-  QStringList nl;
-  nl << " " << NextPage << tr("(click)");
-  next = new QTreeWidgetItem( nl );
 }
-
 
 ListViewFilter::~ListViewFilter()
 {
-  // Maybe that is not necessary because the parent object is also destroyed.
-  QList< QList<ListViewFilterItem *> > _filterList;
-
   for( int i = 0; i < _filterList.size(); i++ )
     {
       QList<ListViewFilterItem *> &itemList = _filterList[i];
@@ -84,9 +63,6 @@ ListViewFilter::~ListViewFilter()
       qDeleteAll( itemList );
       itemList.clear();
     }
-
-  delete next;
-  delete prev;
 }
 
 void ListViewFilter::addListItem( QTreeWidgetItem* it )
@@ -106,8 +82,6 @@ void ListViewFilter::removeListItem( QTreeWidgetItem* it )
       return;
     }
 
-  qDebug() << "ListViewFilter::removeListItem: " << it->text(0);
-
   // Note! According to QtForum removeItemWidget removes not the item in the tree.
   // The method takeTopLevelItem has to be used instead.
   int idx = _tw->indexOfTopLevelItem(it);
@@ -125,8 +99,7 @@ void ListViewFilter::removeListItem( QTreeWidgetItem* it )
 
 void ListViewFilter::reset()
 {
-  qDebug() << "ListViewFilter::reset()";
-
+  // qDebug() << "ListViewFilter::reset()";
   clear();
 
   if( _tw == static_cast<QTreeWidget *> (0) || _tw->topLevelItemCount() == 0 )
@@ -167,8 +140,7 @@ void ListViewFilter::reset()
 /** All filter items are deleted. Use this before a reload of that view. */
 void ListViewFilter::clear()
 {
-  qDebug() << "ListViewFilter::clear()";
-  showIndex    = 0;
+  // qDebug() << "ListViewFilter::clear()";
   _filterIndex = 0;
 
   for( int i = 0; i < _filterList.size(); i++ )
@@ -194,7 +166,7 @@ void ListViewFilter::clear()
 /** A push button has been pressed. */
 void ListViewFilter::slot_CmdPush( int id )
 {
-  qDebug() << "slot_CmdPush" << "ID=" << id << "_filterIndex" << _filterIndex;
+  // qDebug() << "slot_CmdPush" << "ID=" << id << "_filterIndex" << _filterIndex;
 
   if( id == 0 && _rootFilter != _activeFilter )
     {
@@ -414,69 +386,9 @@ void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
   _filterList.append( subFilters );
 
   // show first page of current filter list
-  showIndex = 0;
-  showPage( false );
-  // showPage will enable the updating again
-}
-
-void ListViewFilter::showPage(bool up)
-{
-  int pageSize = GeneralConfig::instance()->getListDisplayPageSize();
-  int maxIndex = _activeFilter->itemCount() - 1;
-  int maxPageIndex = 0;
-
   _activeFilter->showFilterItems();
-
-  return;
-
-  // breakdown to 'pages' disabled ?
-  if( pageSize == 0 )
-    {
-      pageSize = maxIndex + 1;
-    }
-
-  if( up )
-    {
-      if( showIndex + pageSize > maxIndex )
-        {
-          return;
-        }
-
-      showIndex += pageSize;
-    }
-  else
-    { // down
-      showIndex -= pageSize;
-
-      if( showIndex < 0 )
-        {
-          showIndex = 0;
-        }
-    }
-
-  maxPageIndex = pageSize - 1;
-
-  // last page of list
-  if( maxIndex - showIndex <= pageSize )
-    {
-      maxPageIndex = maxIndex - showIndex;
-    }
-
-  //qDebug("airfield list page view: showIndex %d, maxIndex %d, maxPageIndex %d", showIndex, maxIndex, maxPageIndex );
-
-  if( showIndex == 0 )
-    {
-      _tw->setCurrentItem( _tw->topLevelItem( 0 ) );
-    }
-  else
-    {
-      _tw->setCurrentItem( _tw->topLevelItem( 1 ) );
-    }
-
-  _tw->setFocus();
-
-  //qDebug("airfield list page view: after function showIndex %d, items in list %d", showIndex, _tw->topLevelItemCount() );
 }
+
 
 void ListViewFilter::off()
 {

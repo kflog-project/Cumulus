@@ -27,8 +27,8 @@
 extern MapContents* _globalMapContents;
 extern MapConfig*   _globalMapConfig;
 
-WaypointListWidget::WaypointListWidget(QWidget *parent) :
-  WpListWidgetParent(parent)
+WaypointListWidget::WaypointListWidget( QWidget *parent, bool showMovePage ) :
+  WpListWidgetParent( parent, showMovePage )
 {
   setObjectName("WaypointListWidget");
   list->setObjectName("WpTreeWidget");
@@ -40,21 +40,21 @@ WaypointListWidget::~WaypointListWidget()
 
 void WaypointListWidget::showEvent( QShowEvent *event )
 {
-  qDebug() << "WaypointListWidget::showEvent";
-
   Q_UNUSED( event )
 
   // load list items during first show
   if( firstLoadDone == false )
     {
       firstLoadDone = true;
-      fillWpList();
+      fillItemList();
     }
 }
 
 /** Clears and refills the waypoint item list. */
-void WaypointListWidget::fillWpList()
+void WaypointListWidget::fillItemList()
 {
+  qDebug() << "WaypointListWidget::fillItemList()";
+
   list->setUpdatesEnabled(false);
   list->clear();
 
@@ -90,16 +90,8 @@ wayPoint* WaypointListWidget::getSelectedWaypoint()
       return static_cast<wayPoint *>(0);
     }
 
-  // Special rows selected?
-  QString test = li->text(1);
-
-  if (test == ListViewFilter::NextPage || test == ListViewFilter::PreviousPage)
-    {
-      return static_cast<wayPoint *>(0);
-    }
-
   // Now we're left with the real waypoints
-  _WaypointItem* wpi = static_cast<_WaypointItem *>(li);
+  _WaypointItem* wpi = static_cast<_WaypointItem *> (li);
 
   if ( !wpi )
     {

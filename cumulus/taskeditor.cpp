@@ -75,7 +75,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   taskList->setRootIsDecorated(false);
   taskList->setItemsExpandable(false);
   taskList->setUniformRowHeights(true);
-//  taskList->setSortingEnabled(true);
+  // taskList->setSortingEnabled(true);
   taskList->setSelectionBehavior(QAbstractItemView::SelectRows);
   taskList->setSelectionMode(QAbstractItemView::SingleSelection);
   taskList->setColumnCount(4);
@@ -83,6 +83,8 @@ TaskEditor::TaskEditor( QWidget* parent,
   QStringList sl;
   sl << "ID" << "Type" << "Waypoint" << "Distance";
   taskList->setHeaderLabels(sl);
+
+  taskList->header()->setResizeMode( QHeaderView::ResizeToContents );
 
   QPushButton* upButton = new QPushButton( this );
   upButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
@@ -150,22 +152,21 @@ TaskEditor::TaskEditor( QWidget* parent,
   listSelectText[2] = tr("Outlandings");
 
   // create the actual lists
-  waypointList[0] = new WaypointListWidget(this);
+  waypointList[0] = new WaypointListWidget( this, false );
 
   // Airfield list
   QVector<enum MapContents::MapContentsListID> itemList;
   itemList << MapContents::AirfieldList << MapContents::GliderSiteList;
-  waypointList[1] = new AirfieldListWidget( itemList, this );
+  waypointList[1] = new AirfieldListWidget( itemList, this, false );
 
   // outlanding list
   itemList.clear();
   itemList << MapContents::OutLandingList;
-  waypointList[2] = new AirfieldListWidget( itemList, this );
+  waypointList[2] = new AirfieldListWidget( itemList, this, false );
 
-  for( int i=0; i<NUM_LISTS; i++ )
+  for( int i = 0; i < NUM_LISTS; i++ )
     {
       listSelectCB->addItem(listSelectText[i], i);
-      waypointList[i]->fillWpList();
       totalLayout->addWidget( waypointList[i], 1, 3, 1, 4 );
     }
 
@@ -218,7 +219,7 @@ TaskEditor::TaskEditor( QWidget* parent,
 
 TaskEditor::~TaskEditor()
 {
-  // qDebug("TaskEditor::~TaskEditor()");
+  qDebug("TaskEditor::~TaskEditor()");
 
   qDeleteAll(tpList);
   tpList.clear();

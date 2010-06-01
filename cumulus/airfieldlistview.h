@@ -99,7 +99,7 @@ public slots: // Public slots
      */
     void slot_reloadList()
     {
-      listw->fillWpList();
+      listw->refillItemList();
     };
 
 signals: // Signals

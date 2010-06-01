@@ -21,7 +21,8 @@
 #include "wplistwidgetparent.h"
 #include "generalconfig.h"
 
-WpListWidgetParent::WpListWidgetParent(QWidget *parent) : QWidget(parent)
+WpListWidgetParent::WpListWidgetParent( QWidget *parent, bool showMovePage ) :
+  QWidget(parent)
 {
   QVBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setContentsMargins( 0, 0, 0, 0  );
@@ -32,7 +33,6 @@ WpListWidgetParent::WpListWidgetParent(QWidget *parent) : QWidget(parent)
   list->setItemsExpandable(false);
   list->setUniformRowHeights(true);
   list->setAlternatingRowColors(true);
-//  list->setSortingEnabled(true);
   list->setColumnCount(3);
   list->setAllColumnsShowFocus(true);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -47,11 +47,43 @@ WpListWidgetParent::WpListWidgetParent(QWidget *parent) : QWidget(parent)
   filter = new ListViewFilter( list, this );
   filter->setObjectName( "ListViewFilter" );
 
-  topLayout->addWidget(filter);
-  topLayout->addWidget(list, 10);
+  up = new QPushButton( this );
+  up->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
+  up->setIconSize( QSize(26, 26) );
+  up->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
+  up->setToolTip( tr("move page up") );
+
+  down = new QPushButton( this );
+  down->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png")) );
+  down->setIconSize( QSize(26, 26) );
+  down->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
+  down->setToolTip( tr("move page down") );
+
+  QVBoxLayout* movePageBox = new QVBoxLayout;
+  movePageBox->setSpacing( 0 );
+  movePageBox->addWidget( up, 10 );
+  movePageBox->addSpacing( 10 );
+  movePageBox->addWidget( down, 10 );
+
+  QHBoxLayout *hBox = new QHBoxLayout;
+
+  hBox->addWidget( list );
+  hBox->addLayout( movePageBox );
+
+  topLayout->addWidget( filter );
+  topLayout->addLayout( hBox);
+
+  if( showMovePage == false )
+    {
+      up->setVisible( false );
+      down->setVisible( false );
+    }
 
   connect( list, SIGNAL( itemClicked(QTreeWidgetItem*,int) ),
            this, SLOT( slot_listItemClicked(QTreeWidgetItem*,int) ) );
+
+  connect( up, SIGNAL(clicked()), this, SLOT(slot_PageUp()) );
+  connect( down, SIGNAL(clicked()), this, SLOT(slot_PageDown()) );
 
   rowDelegate   = 0;
   firstLoadDone = false;
@@ -59,7 +91,6 @@ WpListWidgetParent::WpListWidgetParent(QWidget *parent) : QWidget(parent)
 
 WpListWidgetParent::~WpListWidgetParent()
 {
-  // qDebug("WpListWidgetParent::~WpListWidgetParent()");
   delete filter;
 }
 
@@ -67,11 +98,22 @@ void WpListWidgetParent::showEvent( QShowEvent *event )
 {
   Q_UNUSED(event)
 
-  // align colums to contents before showing
-  list->resizeColumnToContents(0);
-  list->resizeColumnToContents(1);
-  list->resizeColumnToContents(2);
+  // align columns to contents before showing
+  resizeListColumns();
   list->setFocus();
+}
+
+/**
+ * Clears and refills the airfield item list, if items are loaded. Called
+ * if the map projection has been changed to ensure an update of the
+ * projected coordinates.
+ */
+void WpListWidgetParent::refillItemList()
+{
+  if ( list->topLevelItemCount() > 0 )
+    {
+      fillItemList();
+    }
 }
 
 void WpListWidgetParent::configRowHeight()
@@ -81,7 +123,7 @@ void WpListWidgetParent::configRowHeight()
 
   if ( rowDelegate )
     {
-      rowDelegate->setVerticalMargin(afMargin);
+      rowDelegate->setVerticalMargin( afMargin );
     }
   else
     {
@@ -90,10 +132,10 @@ void WpListWidgetParent::configRowHeight()
     }
 }
 
-/** This slot is called from parent when closing */
+/** This slot is called from parent when closing. */
 void WpListWidgetParent::slot_Done()
 {
-  // Remove all list items and the filter items.
+  // Remove all list and filter items.
   filter->clear();
   list->clear();
   firstLoadDone = false;
@@ -102,29 +144,65 @@ void WpListWidgetParent::slot_Done()
 /** This slot sends a signal to indicate that a selection has been made. */
 void WpListWidgetParent::slot_listItemClicked(QTreeWidgetItem* li, int)
 {
-//  qDebug("WpListWidgetParent::slot_listItemClicked");
-  if ( li == 0)
+  // qDebug("WpListWidgetParent::slot_listItemClicked");
+  if( li == 0)
     {
       return;
     }
 
-  // Special rows selected?
-  QString test = li->text(1);
+  emit wpSelectionChanged();
+}
 
-  if (test == ListViewFilter::NextPage)
+/**
+ * Move page up.
+ */
+void WpListWidgetParent::slot_PageUp()
+{
+  int pageSize = GeneralConfig::instance()->getListDisplayPageSize();
+
+  QTreeWidgetItem *item = list->currentItem();
+
+  if( item )
     {
-      list->setUpdatesEnabled(false);
-      filter->showPage(true); // "true" is forward
-      list->setUpdatesEnabled(true);
+      int itemIdx = list->indexOfTopLevelItem( item );
+      int newIdx  = itemIdx - pageSize;
+
+      if( filter->activeFilter() )
+        {
+          if( newIdx < filter->activeFilter()->beginIdx )
+            {
+              newIdx = filter->activeFilter()->beginIdx;
+            }
+
+          list->setCurrentItem( list->topLevelItem(newIdx) );
+          list->scrollToItem( list->topLevelItem(newIdx) );
+        }
     }
-  else if (test == ListViewFilter::PreviousPage)
+}
+
+/**
+ * Move page down.
+ */
+void WpListWidgetParent::slot_PageDown()
+{
+  int pageSize = GeneralConfig::instance()->getListDisplayPageSize();
+
+  QTreeWidgetItem *item = list->currentItem();
+
+  if( item )
     {
-      list->setUpdatesEnabled(false);
-      filter->showPage(false); // "false" is backward
-      list->setUpdatesEnabled(true);
-    }
-  else
-    {
-      emit wpSelectionChanged();
+      int itemIdx = list->indexOfTopLevelItem( item );
+      int newIdx  = itemIdx + pageSize;
+
+      if( filter->activeFilter() )
+        {
+          if( newIdx >= filter->activeFilter()->endIdx )
+            {
+              newIdx = filter->activeFilter()->endIdx - 1;
+            }
+
+          list->setCurrentItem( list->topLevelItem(newIdx) );
+          list->scrollToItem( list->topLevelItem(newIdx) );
+        }
     }
 }

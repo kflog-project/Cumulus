@@ -1588,6 +1588,14 @@ void MainWindow::setNearestOrReachableHeaders()
 /** Switches to mapview. */
 void MainWindow::slotSwitchToMapView()
 {
+  if( view == afView || view == olView || view == wpView )
+    {
+      // If one of these views was active, we do remove all list and
+      // filter content after closing widget to spare memory.
+      viewAF->listWidget()->slot_Done();
+      viewOL->listWidget()->slot_Done();
+      viewWP->listWidget()->slot_Done();
+    }
 
   setView( mapView );
 }

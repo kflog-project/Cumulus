@@ -127,8 +127,7 @@ void AirfieldListView::slot_Close ()
 {
   // That will switch back to the map view. This must be done first to ensure
   // that the home position change does work.
-  emit
-  done();
+  emit done();
 
   // Check, if we are in manual mode. In this case we do move the map to the
   // new home position.
