@@ -28,7 +28,7 @@ extern MapContents* _globalMapContents;
 extern MapConfig*   _globalMapConfig;
 
 WaypointListWidget::WaypointListWidget( QWidget *parent, bool showMovePage ) :
-  WpListWidgetParent( parent, showMovePage )
+  ListWidgetParent( parent, showMovePage )
 {
   setObjectName("WaypointListWidget");
   list->setObjectName("WpTreeWidget");

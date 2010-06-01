@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   wplistwidgetparent.h
+**   listwidgetparent.h
 **
 **   This file is part of Cumulus.
 **
@@ -16,8 +16,8 @@
 **
 ***********************************************************************/
 
-#ifndef WP_LISTWIDGET_PARENT_H
-#define WP_LISTWIDGET_PARENT_H
+#ifndef LISTWIDGET_PARENT_H
+#define LISTWIDGET_PARENT_H
 
 #include <QWidget>
 #include <QTreeWidget>
@@ -42,7 +42,7 @@
  *
  */
 
-class WpListWidgetParent : public QWidget
+class ListWidgetParent : public QWidget
 {
   Q_OBJECT
 
@@ -50,13 +50,13 @@ class WpListWidgetParent : public QWidget
     /**
      * That macro forbids the copy constructor and the assignment operator.
      */
-    Q_DISABLE_COPY( WpListWidgetParent )
+    Q_DISABLE_COPY( ListWidgetParent )
 
   public:
 
-    WpListWidgetParent( QWidget *parent = 0, bool showMovePage=true );
+    ListWidgetParent( QWidget *parent = 0, bool showMovePage=true );
 
-    virtual ~WpListWidgetParent();
+    virtual ~ListWidgetParent();
 
     /**
      * sets the list row height from configuration

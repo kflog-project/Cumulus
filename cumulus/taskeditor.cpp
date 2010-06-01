@@ -25,7 +25,7 @@
 #include "distance.h"
 #include "generalconfig.h"
 #include "mainwindow.h"
-#include "wplistwidgetparent.h"
+#include "listwidgetparent.h"
 #include "airfieldlistwidget.h"
 #include "waypointlistwidget.h"
 

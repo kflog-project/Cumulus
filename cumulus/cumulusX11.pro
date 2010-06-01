@@ -57,6 +57,7 @@ HEADERS = \
     limitedlist.h \
     lineelement.h \
     listviewfilter.h \
+    listwidgetparent.h \
     mainwindow.h \
     mapcalc.h \
     mapconfig.h \
@@ -128,8 +129,7 @@ HEADERS = \
     wpeditdialogpageaero.h \
     wpeditdialogpagegeneral.h \
     waypoint.h \
-    wpinfowidget.h \
-    wplistwidgetparent.h
+    wpinfowidget.h
     
 SOURCES = \
     airfieldlistview.cpp \
@@ -167,6 +167,7 @@ SOURCES = \
     isolist.cpp \
     lineelement.cpp \
     listviewfilter.cpp \
+    listwidgetparent.cpp \
     main.cpp \
     mainwindow.cpp \
     mapcalc.cpp \
@@ -234,8 +235,7 @@ SOURCES = \
     wpeditdialog.cpp \
     wpeditdialogpageaero.cpp \
     wpeditdialogpagegeneral.cpp \
-    wpinfowidget.cpp \
-    wplistwidgetparent.cpp
+    wpinfowidget.cpp
     
 INTERFACES = 
 

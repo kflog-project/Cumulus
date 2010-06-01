@@ -26,10 +26,10 @@
 #ifndef WAYPOINT_LIST_WIDGET_H
 #define WAYPOINT_LIST_WIDGET_H
 
-#include "wplistwidgetparent.h"
+#include "listwidgetparent.h"
 #include "waypoint.h"
 
-class WaypointListWidget : public WpListWidgetParent
+class WaypointListWidget : public ListWidgetParent
 {
   Q_OBJECT
 

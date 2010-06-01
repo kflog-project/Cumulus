@@ -40,7 +40,7 @@
 #include "flighttask.h"
 #include "waypoint.h"
 #include "listviewfilter.h"
-#include "wplistwidgetparent.h"
+#include "listwidgetparent.h"
 
 class TaskEditor : public QWidget
 {
@@ -144,7 +144,7 @@ signals:
 #define NUM_LISTS 3
 
   /** selection lists with waypoints */
-  WpListWidgetParent* waypointList[NUM_LISTS];
+  ListWidgetParent* waypointList[NUM_LISTS];
 
   /** name of current task */
   QLineEdit* taskName;

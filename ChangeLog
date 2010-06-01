@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-06-01 AP: ListViewFilters redesigned and performance optimized.
+[o] 2010-06-01 AP: Class WpListWidgetParent renamed to ListWidgetParent.
 [o] 2010-05-16 AP: Display widget in TpInfoWidget and WpInfoWidget changed from
                    QLabel to QTextEdit to ensure to display of longer text.
                    QTextEdit enables scroll bars if necessary.

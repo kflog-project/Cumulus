@@ -132,7 +132,7 @@ HEADERS = \
     wpeditdialogpagegeneral.h \
     waypoint.h \
     wpinfowidget.h \
-    wplistwidgetparent.h
+    listwidgetparent.h
 
 SOURCES = \
     airfieldlistview.cpp \
@@ -240,7 +240,7 @@ SOURCES = \
     wpeditdialogpageaero.cpp \
     wpeditdialogpagegeneral.cpp \
     wpinfowidget.cpp \
-    wplistwidgetparent.cpp
+    listwidgetparent.cpp
     
 INTERFACES = 
 TARGET = cumulus

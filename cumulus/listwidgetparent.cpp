@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   wplistwidgetparent.cpp
+**   listwidgetparent.cpp
 **
 **   This file is part of Cumulus.
 **
@@ -18,10 +18,10 @@
 
 #include <QtGui>
 
-#include "wplistwidgetparent.h"
+#include "listwidgetparent.h"
 #include "generalconfig.h"
 
-WpListWidgetParent::WpListWidgetParent( QWidget *parent, bool showMovePage ) :
+ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
   QWidget(parent)
 {
   QVBoxLayout *topLayout = new QVBoxLayout( this );
@@ -89,12 +89,12 @@ WpListWidgetParent::WpListWidgetParent( QWidget *parent, bool showMovePage ) :
   firstLoadDone = false;
 }
 
-WpListWidgetParent::~WpListWidgetParent()
+ListWidgetParent::~ListWidgetParent()
 {
   delete filter;
 }
 
-void WpListWidgetParent::showEvent( QShowEvent *event )
+void ListWidgetParent::showEvent( QShowEvent *event )
 {
   Q_UNUSED(event)
 
@@ -108,7 +108,7 @@ void WpListWidgetParent::showEvent( QShowEvent *event )
  * if the map projection has been changed to ensure an update of the
  * projected coordinates.
  */
-void WpListWidgetParent::refillItemList()
+void ListWidgetParent::refillItemList()
 {
   if ( list->topLevelItemCount() > 0 )
     {
@@ -116,7 +116,7 @@ void WpListWidgetParent::refillItemList()
     }
 }
 
-void WpListWidgetParent::configRowHeight()
+void ListWidgetParent::configRowHeight()
 {
   // set new row height from configuration
   int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
@@ -133,7 +133,7 @@ void WpListWidgetParent::configRowHeight()
 }
 
 /** This slot is called from parent when closing. */
-void WpListWidgetParent::slot_Done()
+void ListWidgetParent::slot_Done()
 {
   // Remove all list and filter items.
   filter->clear();
@@ -142,9 +142,9 @@ void WpListWidgetParent::slot_Done()
 }
 
 /** This slot sends a signal to indicate that a selection has been made. */
-void WpListWidgetParent::slot_listItemClicked(QTreeWidgetItem* li, int)
+void ListWidgetParent::slot_listItemClicked(QTreeWidgetItem* li, int)
 {
-  // qDebug("WpListWidgetParent::slot_listItemClicked");
+  // qDebug("ListWidgetParent::slot_listItemClicked");
   if( li == 0)
     {
       return;
@@ -156,7 +156,7 @@ void WpListWidgetParent::slot_listItemClicked(QTreeWidgetItem* li, int)
 /**
  * Move page up.
  */
-void WpListWidgetParent::slot_PageUp()
+void ListWidgetParent::slot_PageUp()
 {
   QTreeWidgetItem *item = list->currentItem();
 
@@ -187,7 +187,7 @@ void WpListWidgetParent::slot_PageUp()
 /**
  * Move page down.
  */
-void WpListWidgetParent::slot_PageDown()
+void ListWidgetParent::slot_PageDown()
 {
   QTreeWidgetItem *item = list->currentItem();
 

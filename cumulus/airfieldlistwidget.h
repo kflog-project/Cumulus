@@ -30,10 +30,10 @@
 #include <QVector>
 
 #include "waypoint.h"
-#include "wplistwidgetparent.h"
+#include "listwidgetparent.h"
 #include "mapcontents.h"
 
-class AirfieldListWidget : public WpListWidgetParent
+class AirfieldListWidget : public ListWidgetParent
 {
     Q_OBJECT
 

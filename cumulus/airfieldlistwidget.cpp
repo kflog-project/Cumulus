@@ -31,7 +31,7 @@ extern MapConfig   *_globalMapConfig;
 AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsListID> &itemList,
                                         QWidget *parent,
                                         bool showMovePage ) :
-                                        WpListWidgetParent( parent, showMovePage )
+                                        ListWidgetParent( parent, showMovePage )
 {
   setObjectName("AirfieldListWidget");
   list->setObjectName("AfTreeWidget");
