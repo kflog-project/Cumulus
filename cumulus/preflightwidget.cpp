@@ -16,12 +16,7 @@
  **
  ***********************************************************************/
 
-#include <QMessageBox>
-#include <QShortcut>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QToolTip>
-#include <QLabel>
+#include <QtGui>
 
 #include "preflightwidget.h"
 #include "mapcontents.h"
@@ -32,11 +27,6 @@
 #include "calculator.h"
 
 extern MapContents* _globalMapContents;
-
-/** Widget for preflight settings. To reserve the full vertical space for the
- *  the content of the tabulators, tabulators are arranged at the
- *  left side and the ok and cancel buttons are arranged on the right side.
- */
 
 PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   QWidget(parent)
@@ -138,7 +128,7 @@ void PreFlightWidget::slot_accept()
       int answer = QMessageBox::question(this, tr("Replace previous task?"), tr(
           "<html><b>"
             "Do you want to replace the previous task?<br>"
-            "Waypoint selection is reset at start position."
+            "A selected target is reset at task start."
             "</b></html>"), QMessageBox::Yes,
           QMessageBox::No | QMessageBox::Escape);
 
@@ -171,6 +161,21 @@ void PreFlightWidget::slot_accept()
         {
           // reset taskpoint selection
           emit newWaypoint(static_cast<wayPoint *> (0), true);
+        }
+    }
+  else
+    {
+      extern Calculator* calculator;
+
+      // If a waypoint selection exists, we do overwrite it with the begin
+      // point of the new flight task.
+      if( calculator->getselectedWp() )
+        {
+          // Reset taskpoint selection in calculator to prevent user query.
+          emit newWaypoint(static_cast<wayPoint *> (0), true);
+
+          // Select the start point of the new task.
+          calculator->slot_startTask();
         }
     }
 

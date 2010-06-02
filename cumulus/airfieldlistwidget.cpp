@@ -50,18 +50,6 @@ AirfieldListWidget::~AirfieldListWidget()
 {
 }
 
-void AirfieldListWidget::showEvent( QShowEvent *event )
-{
-  Q_UNUSED( event )
-
-  // load list items during first show
-  if( firstLoadDone == false )
-    {
-      firstLoadDone = true;
-      fillItemList();
-    }
-}
-
 /** Clears and refills the airfield item list. */
 void AirfieldListWidget::fillItemList()
 {

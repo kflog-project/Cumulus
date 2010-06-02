@@ -14,10 +14,21 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2010-06-02 AP: BUGFIX: If a task is replaced by another one and it exist a
+                   target selection, the start point of the new task is selected
+                   as the new target.
+[o] 2010-06-02 AP: Welt2000 download link updated.
+[o] 2010-06-02 AP: Option page size in airfield settings removed. Two buttons
+                   added at the right widget side for page up and down move
+                   to airfield, outlanding and waypoint list views. Loaded
+                   lists are freed now, if the list views are closed to spare
+                   memory and reloaded at first show event.
 [o] 2010-06-01 AP: ListViewFilters redesigned and performance optimized.
-[o] 2010-06-01 AP: Class WpListWidgetParent renamed to ListWidgetParent.
+[o] 2010-06-01 AP: Class WpListWidgetParent renamed to ListWidgetParent. Up and
+                   down page buttons removed to have more space for the list
+                   items at a page.
 [o] 2010-05-16 AP: Display widget in TpInfoWidget and WpInfoWidget changed from
-                   QLabel to QTextEdit to ensure to display of longer text.
+                   QLabel to QTextEdit to ensure the display of longer text.
                    QTextEdit enables scroll bars if necessary.
 [o] 2010-05-16 AP: Task radii value in spin boxes enlarged to 1000.
 [-] 2010-05-11 AP: BUGFIX: Core dump fixed in task switch management. Thanks

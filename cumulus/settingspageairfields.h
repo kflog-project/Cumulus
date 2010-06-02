@@ -9,17 +9,16 @@
 **   Copyright (c):  2008-2010 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
 /**
+ * \author Axel Pauli
  *
- * contains airfield related data settings
- *
- * @author Axel Pauli, axel@kflog.org
+ * \brief Contains the airfield data settings.
  *
  */
 
@@ -54,7 +53,7 @@ class SettingsPageAirfields : public QWidget
   /**
    * Destructor
    */
-  ~SettingsPageAirfields();
+  virtual ~SettingsPageAirfields();
 
   /**
    * Checks if the configuration of the Welt2000 has been changed
@@ -68,7 +67,7 @@ class SettingsPageAirfields : public QWidget
 
   protected:
 
-  void showEvent(QShowEvent *);
+  void showEvent( QShowEvent *event );
 
   public slots: // Public slots
   /**
@@ -135,9 +134,6 @@ class SettingsPageAirfields : public QWidget
   /** Line editor for Welt2000 filename input. The file name on the web page
    *  is extended by a date string. */
   QLineEdit *welt2000FileName;
-
-   /** Number of page entries in airfield/waypoint lists. 0 disables */
-  QSpinBox* pageSize;
 
   /** Pixels to add to the row height in airfield/waypoint lists
    *  (for easy finger selection)

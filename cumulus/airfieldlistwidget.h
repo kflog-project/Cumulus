@@ -60,10 +60,6 @@ public:
      */
     void fillItemList();
 
-protected:
-
-    void showEvent( QShowEvent *event );
-
 private:
 
     wayPoint wp;

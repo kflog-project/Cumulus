@@ -70,10 +70,6 @@ public:
    */
   void fillItemList();
 
-protected:
-
-  void showEvent( QShowEvent *event );
-
 private:
 
   class _WaypointItem : public QTreeWidgetItem

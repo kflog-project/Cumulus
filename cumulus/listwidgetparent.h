@@ -116,7 +116,7 @@ class ListWidgetParent : public QWidget
 
   protected:
 
-    void showEvent(QShowEvent *);
+    void showEvent( QShowEvent *event );
 
     QTreeWidget*    list;
     ListViewFilter* filter;

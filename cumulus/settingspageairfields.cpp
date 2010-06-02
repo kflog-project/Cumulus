@@ -16,9 +16,9 @@
  ***********************************************************************/
 
 /**
- * contains airfield related data settings
+ * \author Axel Pauli
  *
- * @author Axel Pauli, axel@kflog.org
+ * \brief Contains the airfield data settings.
  *
  */
 
@@ -120,15 +120,6 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   QGridLayout* listLayout = new QGridLayout(listGroup);
 
-  lbl = new QLabel(tr( "Entries per Page in AF/WP/OL Lists (0 to disable):"), listGroup);
-  listLayout->addWidget(lbl, grow, 0);
-  pageSize = new QSpinBox(listGroup);
-  pageSize->setRange(0, 100);
-  pageSize->setSingleStep(5);
-  pageSize->setButtonSymbols(QSpinBox::PlusMinus);
-  listLayout->addWidget(pageSize, grow, 1);
-
-  grow++;
   lbl = new QLabel(tr( "Entry Height Increase (Pixels) in AF/WP/OL Lists:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
   afMargin = new QSpinBox(listGroup);
@@ -190,7 +181,6 @@ void SettingsPageAirfields::slot_load()
   proxyDisplay->setText( conf->getProxy() );
   welt2000FileName->setText( conf->getWelt2000FileName() );
 
-  pageSize->setValue(conf->getListDisplayPageSize());
   afMargin->setValue(conf->getListDisplayAFMargin());
   rpMargin->setValue(conf->getListDisplayRPMargin());
 
@@ -238,7 +228,6 @@ void SettingsPageAirfields::slot_save()
       conf->setWelt2000LoadOutlandings( false );
     }
 
-  conf->setListDisplayPageSize(pageSize->value());
   conf->setListDisplayAFMargin(afMargin->value());
   conf->setListDisplayRPMargin(rpMargin->value());
 }
@@ -354,7 +343,6 @@ bool SettingsPageAirfields::checkIsListDisplayChanged()
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
 
-  changed = changed || (conf->getListDisplayPageSize() != pageSize->value());
   changed = changed || (conf->getListDisplayAFMargin() != afMargin->value());
   changed = changed || (conf->getListDisplayRPMargin() != rpMargin->value());
 

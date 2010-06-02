@@ -38,18 +38,6 @@ WaypointListWidget::~WaypointListWidget()
 {
 }
 
-void WaypointListWidget::showEvent( QShowEvent *event )
-{
-  Q_UNUSED( event )
-
-  // load list items during first show
-  if( firstLoadDone == false )
-    {
-      firstLoadDone = true;
-      fillItemList();
-    }
-}
-
 /** Clears and refills the waypoint item list. */
 void WaypointListWidget::fillItemList()
 {

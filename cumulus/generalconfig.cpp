@@ -239,7 +239,7 @@ void GeneralConfig::load()
   _mapLoadCities                  = value( "LoadCities", true ).toBool();
   _mapLoadWaterways               = value( "LoadWaterways", true ).toBool();
   _mapLoadForests                 = value( "LoadForests", false ).toBool();
-  _drawTrail                      = (UseInMode)value( "DrawTrail", 0 ).toInt();
+  _drawTrail                      = (UseInMode) value( "DrawTrail", 0 ).toInt();
   _mapShowAirfieldLabels          = value( "ShowAirfieldLabels", false ).toBool();
   _mapShowTaskPointLabels         = value( "ShowTaskPointLabels", false ).toBool();
   _mapShowOutLandingLabels        = value( "ShowOutLandingLabels", false ).toBool();
@@ -266,7 +266,7 @@ void GeneralConfig::load()
   _welt2000HomeRadius       = value("Welt2000HomeRadius", 500).toInt(); // km is assumed
   _welt2000LoadOutlandings  = value("Welt2000LoadOutlandings", false ).toBool();
   _welt2000Link             = value("Welt2000Link", "http://www.segelflug.de/vereine/welt2000/download").toString();
-  _welt2000FileName         = value("Welt2000FileName", "WELT2000_10-03-20.TXT").toString();
+  _welt2000FileName         = value("Welt2000FileName", "WELT2000_10-05-17.TXT").toString();
 
   for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {
