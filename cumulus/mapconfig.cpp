@@ -846,7 +846,7 @@ QPixmap& MapConfig::getPlusButton()
       plusButton = QPixmap( size+6, size+6 );
       plusButton.fill(Qt::transparent);
       QPainter painter(&plusButton);
-      QPen pen(Qt::gray);
+      QPen pen(Qt::darkGray);
       pen.setWidth(4);
       painter.setPen( pen );
       painter.setBrush(Qt::NoBrush);
@@ -879,7 +879,7 @@ QPixmap& MapConfig::getMinusButton()
       minusButton = QPixmap( size+6, size+6 );
       minusButton.fill(Qt::transparent);
       QPainter painter(&minusButton);
-      QPen pen(Qt::gray);
+      QPen pen(Qt::darkGray);
       pen.setWidth(4);
       painter.setPen( pen );
       painter.setBrush(Qt::NoBrush);
