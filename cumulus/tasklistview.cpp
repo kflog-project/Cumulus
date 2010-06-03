@@ -20,8 +20,7 @@
 **
 ***********************************************************************/
 
-#include <QDesktopWidget>
-#include <QShortcut>
+#include <QtGui>
 
 #include "mainwindow.h"
 #include "tasklistview.h"
@@ -104,14 +103,19 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
       cmdSelect = new QPushButton(_selectText, this);
       buttonrow->addWidget(cmdSelect);
 
+      QPushButton *cmdStart = new QPushButton(tr("Start"), this);
+      buttonrow->addWidget(cmdStart);
+
       connect( cmdSelect, SIGNAL(clicked()),
                this, SLOT(slot_Select()) );
       connect( cmdInfo, SIGNAL(clicked() ),
                this, SLOT(slot_Info()));
       connect( cmdClose, SIGNAL(clicked() ),
                this, SLOT(slot_Close()) );
-      connect( list, SIGNAL(itemSelectionChanged()),
+      connect( list, SIGNAL(itemSelectionChanged() ),
                this, SLOT(slot_Selected()) );
+      connect( cmdStart, SIGNAL(clicked() ),
+               this, SLOT(slot_Start()) );
 
       // activate keyboard shortcut Return as select
       QShortcut* scSelect = new QShortcut( this );
@@ -156,6 +160,13 @@ void TaskListView::setHeader()
 
   list->setHeaderLabels(sl);
 }
+
+void TaskListView::slot_Start()
+{
+  calculator->slot_startTask();
+  emit done();
+}
+
 
 void TaskListView::slot_Selected()
 {
