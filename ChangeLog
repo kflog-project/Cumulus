@@ -14,6 +14,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2010-06-04 AP: BUGFIX: If a task is replaced by another one and the flight
+                   logger is already running, the user is asked now, if he wants
+                   to open a new log file. Otherwise the new task declaration
+                   cannot written into the current logfile. That is not allowed
+                   according to the IGC specification. Thanks to Robin King for
+                   this bug report.                 
+[o] 2010-06-03 AP: Task start button added to task list view, that there is no
+                   need to use the keypad B letter.
 [-] 2010-06-02 AP: BUGFIX: If a task is replaced by another one and it exist a
                    target selection, the start point of the new task is selected
                    as the new target.
