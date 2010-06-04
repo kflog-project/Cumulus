@@ -125,11 +125,11 @@ void PreFlightWidget::slot_accept()
 
   if (curTask && newTask && newTaskPassed)
     {
-      int answer = QMessageBox::question(this, tr("Replace previous task?"), tr(
-          "<html><b>"
-            "Do you want to replace the previous task?<br>"
-            "A selected target is reset at task start."
-            "</b></html>"), QMessageBox::Yes,
+      int answer = QMessageBox::question(this, tr("Replace previous task?"),
+          tr( "<html>"
+              "Do you want to replace the previous task?<br>"
+              "A selected target is reset at task start."
+              "</html>"), QMessageBox::Yes,
           QMessageBox::No | QMessageBox::Escape);
 
       if (answer != QMessageBox::Yes)
@@ -177,6 +177,9 @@ void PreFlightWidget::slot_accept()
           // Select the start point of the new task.
           calculator->slot_startTask();
         }
+
+      // Inform others about the new task
+      emit newTaskSelected();
     }
 
   gliderpage->save();

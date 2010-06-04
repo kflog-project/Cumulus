@@ -254,7 +254,8 @@ void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
       // that fact.
 
       int answer=
-        QMessageBox::question( 0, tr("Replace current task point?"),
+        QMessageBox::question( QApplication::activeWindow(),
+                               tr("Replace current task point?"),
                                tr("<html>"
                                   "A flight task is activated!<br>"
                                   "This selection will stop the automatic task point switch."
@@ -1589,7 +1590,8 @@ void Calculator::slot_startTask()
             selectedWp->taskPointIndex != tp2Taken->taskPointIndex )
           {
             int answer =
-              QMessageBox::question( 0, tr("Restart current task?"),
+              QMessageBox::question( QApplication::activeWindow(),
+                                     tr("Restart current task?"),
                                      tr("<html>"
                                         "A flight task is running!<br>"
                                         "This command will start the<br>"

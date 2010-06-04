@@ -387,7 +387,7 @@ bool IgcLogger::isLogFileOpen()
 
   _logfile.setFileName( fname );
 
-  if ( ! _logfile.open(QIODevice::WriteOnly ) )
+  if ( ! _logfile.open(QIODevice::WriteOnly) )
     {
       qWarning( "IGC-Logger: Cannot open file %s", fname.toLatin1().data() );
       return false;
@@ -538,8 +538,9 @@ void IgcLogger::slotToggleLogging()
   // qDebug("toggle logging!");
   if ( _logMode == on )
     {
-      int answer = QMessageBox::question( 0, tr("Stop Logging?"),
-                                          tr("<html>Are you sure you want<br>to close the logfile<br>and stop logging?</html>"),
+      int answer = QMessageBox::question( QApplication::activeWindow(),
+                                          tr("Stop Logging?"),
+                                          tr("<html>Are you sure you want<br>stop logging?</html>"),
                                           QMessageBox::No|QMessageBox::Yes,
                                           QMessageBox::No );
 
@@ -556,7 +557,8 @@ void IgcLogger::slotToggleLogging()
 
       if( ! calculator->glider() )
         {
-          answer = QMessageBox::warning( 0, tr("Start Logging?"),
+          answer = QMessageBox::warning( QApplication::activeWindow(),
+                     tr("Start Logging?"),
                      tr("<html>You should select a glider<br>before start logging.<br>Continue start logging?</html>"),
                      QMessageBox::No|QMessageBox::Yes,
                      QMessageBox::No );
@@ -570,6 +572,32 @@ void IgcLogger::slotToggleLogging()
 
   // emit the logging state in all cases to allow update of actions in MainWindow
   emit logging(getIsLogging());
+}
+
+/**
+ * This slot is called, if a new task has been selected.
+ */
+void IgcLogger::slotNewTaskSelected()
+{
+  if( ! _logfile.isOpen() )
+    {
+      // Logger does not run, ignore this call.
+      return;
+    }
+
+  int answer = QMessageBox::question( QApplication::activeWindow(),
+                                      tr("Restart Logging?"),
+                                      tr("<html>A new flight task was selected.<br>Restart logging?</html>"),
+                                      QMessageBox::No|QMessageBox::Yes,
+                                      QMessageBox::No );
+
+  if( answer == QMessageBox::Yes )
+    {
+      // qDebug("Restarting logging...");
+      Stop();
+      _logMode = on;
+      emit logging(getIsLogging());
+    }
 }
 
 /** This slot is called to indicate that a new satellite constellation is now in use. */

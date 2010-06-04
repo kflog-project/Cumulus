@@ -2006,6 +2006,9 @@ void MainWindow::slotPreFlight(const char *tabName)
   connect( cDlg, SIGNAL( settingsChanged() ),
            IgcLogger::instance(), SLOT( slotReadConfig() ) );
 
+  connect( cDlg, SIGNAL( newTaskSelected() ),
+           IgcLogger::instance(), SLOT( slotNewTaskSelected() ) );
+
   connect( cDlg, SIGNAL( newWaypoint( wayPoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
 

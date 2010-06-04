@@ -67,15 +67,23 @@ signals:
    * This signal is emitted if the settings are changed
    */
   void settingsChanged();
+
   /**
    * This signal is emitted if a new waypoint is selected.
    */
   void newWaypoint(wayPoint *, bool);
+
   /**
    * This signal is emitted before the widget is closed.
    * MainWindow will use it to update the current view setting.
    */
   void closeConfig();
+
+  /**
+   * This signal is emitted, if a new task has been selected. IGC logger
+   * uses this info to restart the flight recording.
+   */
+  void newTaskSelected();
 
 protected slots:
 

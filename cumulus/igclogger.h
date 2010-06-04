@@ -22,6 +22,16 @@
  *                                                                         *
  ***************************************************************************/
 
+/**
+ * \author André Somers, Axel Pauli
+ *
+ * \brief IGC logger
+ *
+ * This class provides the IGC logging facilities, using the
+ * parsed data from the GPS NMEA object.
+ *
+ */
+
 #ifndef IGC_LOGGER_H
 #define IGC_LOGGER_H
 
@@ -51,12 +61,6 @@
 #include "altitude.h"
 #include "calculator.h"
 #include "limitedlist.h"
-
-/** @short IGC logger
- * This object provides the IGC logging facilities, using the
- * parsed data from the GPSNMEA object.
- * @author André Somers
- */
 
 class IgcLogger : public QObject
 {
@@ -137,6 +141,11 @@ public slots:
    * This slot is called to start or end a log.
    */
   void slotToggleLogging();
+
+  /**
+   * This slot is called, if a new task has been selected.
+   */
+  void slotNewTaskSelected();
 
   /**
    * This slot is called to read the logger configuration items after a modification.
