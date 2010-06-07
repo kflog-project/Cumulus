@@ -19,7 +19,7 @@ CUMULUS_REL=cumulus-$(VERSION)
 CUMULUS_DEB=dpkg/n900/$(CUMULUS_REL)
 
 # current Qt version
-QT_VERSION=4.6.2
+#QT_VERSION=4.5.3
 
 # installation directory of Qt libraries
 QT_LIBDIR=/usr/lib
@@ -186,9 +186,6 @@ dpkg_install:
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/Maemo5/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
 	install --mode=644 dpkg/Maemo5/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service
-	install --mode=755 $(QT_LIBDIR)/libQtCore.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
-	install --mode=755 $(QT_LIBDIR)/libQtGui.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
-	install --mode=755 $(QT_LIBDIR)/libQtNetwork.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
 
 .PHONY : install_lang
 install_lang:
