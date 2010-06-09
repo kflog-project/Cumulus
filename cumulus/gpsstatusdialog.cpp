@@ -28,19 +28,18 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
 {
   setWindowTitle(tr("GPS Status - <Esc> to Close"));
   setModal(true);
-
-#ifdef MAEMO
-  resize(500,480);
-  setSizeGripEnabled(false);
-#else
   setSizeGripEnabled(true);
-#endif
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
 
   elevAziDisplay = new GPSElevationAzimuthDisplay(this);
-  elevAziDisplay->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+  //elevAziDisplay->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
   snrDisplay = new GPSSnrDisplay(this);
-  snrDisplay->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+  //snrDisplay->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
   nmeaBox = new QTextEdit(this);
   nmeaBox->setObjectName("NmeaBox");
