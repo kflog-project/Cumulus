@@ -14,6 +14,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-06-10 AP: GPS status dialog enlarged by Start/Stop and Save button.
+                   Start/Stop controls the NMEA display and with save the
+                   content of the display is written into a file.
+[+] 2010-06-10 AP: QNH spin box added to glider flight status dialog. Makes
+                   changes of QNH during flight easier.
 [-] 2010-06-04 AP: BUGFIX: If a task is replaced by another one and the flight
                    logger is already running, the user is asked now, if he wants
                    to open a new log file. Otherwise the new task declaration
