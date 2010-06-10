@@ -15,6 +15,14 @@
 **   $Id$
 **
 ***********************************************************************/
+/**
+ * \author Eggert Ehmke, Axel Pauli
+ *
+ * \brief This dialog is the user interface for the in flight settings.
+ *
+ * This dialog handles the QNH, Mc, load balance and bug settings. It shall
+ * enable a simple change also during flight.
+ */
 
 #ifndef GLIDER_FLIGHT_DIALOG_H
 #define GLIDER_FLIGHT_DIALOG_H
@@ -26,15 +34,6 @@
 #include <QDoubleSpinBox>
 
 #include "speed.h"
-
-/**
- * \author Eggert Ehmke, Axel Pauli
- *
- * \brief This dialog is the user interface for the in flight settings.
- *
- * This dialog handles the Mc, load balance and bug settings. It shall enable
- * a simple change also during flight.
- */
 
 class GliderFlightDialog : public QDialog
 {
@@ -80,6 +79,12 @@ class GliderFlightDialog : public QDialog
    * This slot is called if the user has pressed the dump button.
    */
   void slotDump();
+
+  /** Increments spin box value according to set step width. */
+  void slotQnhPlus();
+
+  /** Decrements spin box value according to set step width. */
+  void slotQnhMinus();
 
   /** Increments spin box value according to set step width. */
   void slotMcPlus();
@@ -136,6 +141,7 @@ class GliderFlightDialog : public QDialog
   double mcBigStep;
   QSpinBox* spinWater;
   QSpinBox* spinBugs;
+  QSpinBox* spinQnh;
   QPushButton* buttonDump;
   QTimer* timer;
   int _time;
