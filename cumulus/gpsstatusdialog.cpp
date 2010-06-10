@@ -24,7 +24,8 @@
 #include "gpsnmea.h"
 #include "mapcalc.h"
 
-GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
+GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent),
+  showNmeaData( true )
 {
   setWindowTitle(tr("GPS Status - <Esc> to Close"));
   setModal(true);
@@ -36,53 +37,54 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent)
     }
 
   elevAziDisplay = new GPSElevationAzimuthDisplay(this);
-  //elevAziDisplay->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-
-  snrDisplay = new GPSSnrDisplay(this);
-  //snrDisplay->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+  snrDisplay     = new GPSSnrDisplay(this);
 
   nmeaBox = new QTextEdit(this);
   nmeaBox->setObjectName("NmeaBox");
   nmeaBox->setReadOnly(true);
-  nmeaBox->document()->setMaximumBlockCount(100);
+  nmeaBox->document()->setMaximumBlockCount(200);
   nmeaBox->setLineWrapMode(QTextEdit::NoWrap);
-
   QFont f = font();
   f.setPixelSize(14);
   nmeaBox->setFont(f);
 
-  /* #warning: FIXME
-     Something is seriously rotten here. I can add either the
-     snrDisplay _or_ the nmeaBox. Adding both will result in a
-     crash. I really, really have no idea what's causing that,
-     and I don't want to spend any more frustrating hours finding
-     the cause just now. So, I ditched the NMEA box for now.
-     The crash most often happens with showMaximized, but on
-     destruction is also a rather popular moment.
+  startStop = new QPushButton( tr("Stop"), this );
+  save      = new QPushButton( tr("Save"), this );
 
-     A.S. */
+  QVBoxLayout* buttonBox = new QVBoxLayout;
+  buttonBox->addStretch( 5 );
+  buttonBox->addWidget( startStop );
+  buttonBox->addSpacing( 10 );
+  buttonBox->addWidget( save );
+  buttonBox->addStretch( 5 );
 
-  QVBoxLayout* topLayout=new QVBoxLayout(this);
-  topLayout->addWidget(elevAziDisplay, 10);
-  topLayout->addWidget(snrDisplay, 5);
-  topLayout->addWidget(nmeaBox, 5);
+  QVBoxLayout* gDisplayBox = new QVBoxLayout;
+  gDisplayBox->addWidget(elevAziDisplay, 10);
+  gDisplayBox->addWidget(snrDisplay, 5);
 
-  connect(GpsNmea::gps, SIGNAL(newSentence(const QString&)),
-          this, SLOT(slot_Sentence(const QString&)));
-  connect(GpsNmea::gps, SIGNAL(newSatInViewInfo(QList<SIVInfo>&)),
-          this, SLOT(slot_SIV(QList<SIVInfo>&)));
+  QHBoxLayout* hBox = new QHBoxLayout;
+  hBox->addSpacing( 40 );
+  hBox->addLayout( gDisplayBox, 2 );
+  hBox->addSpacing( 40 );
+  hBox->addLayout( buttonBox );
+
+  QVBoxLayout* topLayout = new QVBoxLayout( this );
+  topLayout->addLayout( hBox );
+  topLayout->addWidget( nmeaBox );
+
+  connect( GpsNmea::gps, SIGNAL(newSentence(const QString&)),
+           this, SLOT(slot_Sentence(const QString&)) );
+  connect( GpsNmea::gps, SIGNAL(newSatInViewInfo(QList<SIVInfo>&)),
+           this, SLOT(slot_SIV(QList<SIVInfo>&)) );
+
+  connect( startStop, SIGNAL(clicked()), this, SLOT(slot_toggleStartStop()) );
+
+  connect( save, SIGNAL(clicked()), this, SLOT(slot_SaveNmeaData()) );
 }
-
 
 GpsStatusDialog::~GpsStatusDialog()
 {
-  // qDebug("GpsStatusDialog::~GpsStatusDialog()");
-  disconnect(GpsNmea::gps, SIGNAL(newSentence(const QString&)),
-             this, SLOT(slot_Sentence(const QString&)));
-  disconnect(GpsNmea::gps, SIGNAL(newSatInViewInfo(QList<SIVInfo>&)),
-             this, SLOT(slot_SIV(QList<SIVInfo>&)));
 }
-
 
 void GpsStatusDialog::slot_SIV( QList<SIVInfo>& siv )
 {
@@ -94,9 +96,61 @@ void GpsStatusDialog::slot_SIV( QList<SIVInfo>& siv )
 
 void GpsStatusDialog::slot_Sentence(const QString& sentence)
 {
-  nmeaBox->insertPlainText(sentence.trimmed().append("\n"));
+  if( showNmeaData )
+    {
+      nmeaBox->insertPlainText(sentence.trimmed().append("\n"));
+    }
 }
 
+/**
+ * Called if the start/stop button is pressed to start or stop NMEA display.
+ */
+void GpsStatusDialog::slot_toggleStartStop()
+{
+  showNmeaData = ! showNmeaData;
+
+  if( showNmeaData )
+    {
+      startStop->setText( tr("Stop") );
+    }
+  else
+    {
+      startStop->setText( tr("Start") );
+    }
+}
+
+/**
+ * Called if the save button is pressed to save NMEA display content into a file.
+ */
+void GpsStatusDialog::slot_SaveNmeaData()
+{
+  QString text = nmeaBox->toPlainText();
+
+  if( text.isEmpty() )
+    {
+      // nothing to save
+      return;
+    }
+
+  bool ok;
+
+  QString fileName = QInputDialog::getText( this, tr("Append to?"),
+                                            tr("File name:"), QLineEdit::Normal,
+                                            "nmea-stream.log", &ok);
+  if( ok && ! fileName.isEmpty() )
+    {
+      QFile file( QDir::homePath() + "/" + fileName );
+
+      if( ! file.open( QIODevice::Append | QIODevice::Text ) )
+        {
+          QMessageBox::warning( this, tr("Save failed"), tr("Cannot open file!") );
+          return;
+        }
+
+      file.write( text.toAscii() );
+      file.close();
+    }
+}
 
 void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
 {
@@ -122,7 +176,6 @@ void GpsStatusDialog::reject()
   QDialog::reject();
 }
 
-
 /*************************************************************************************/
 
 #define MARGIN 10
@@ -134,12 +187,10 @@ GPSElevationAzimuthDisplay::GPSElevationAzimuthDisplay(QWidget *parent):
   background = new QPixmap();
 }
 
-
 GPSElevationAzimuthDisplay::~GPSElevationAzimuthDisplay()
 {
   delete background;
 }
-
 
 void GPSElevationAzimuthDisplay::resizeEvent(QResizeEvent *)
 {
@@ -160,7 +211,7 @@ void GPSElevationAzimuthDisplay::resizeEvent(QResizeEvent *)
   background->fill( palette().color(QPalette::Window) );
 
   QPainter p(background);
-  p.setPen( QPen( Qt::black, 1, Qt::SolidLine ) );
+  p.setPen( QPen( Qt::black, 2, Qt::SolidLine ) );
   //outer circle
   p.drawEllipse(center.x() - ( width / 2 ), center.y() - ( width / 2 ), width, width);
   //inner circle. This is the 45 degrees. The diameter is cos(angle)
@@ -243,8 +294,7 @@ void GPSElevationAzimuthDisplay::drawSat(QPainter * p, const SIVInfo& sivi)
 
 /*************************************************************************************/
 
-GPSSnrDisplay::GPSSnrDisplay(QWidget *parent):
-    QFrame(parent)
+GPSSnrDisplay::GPSSnrDisplay(QWidget *parent) : QFrame(parent)
 {
   setObjectName("GPSSnrDisplay");
   background = new QPixmap();
@@ -307,7 +357,6 @@ void GPSSnrDisplay::paintEvent(QPaintEvent *)
   p.begin(canvas);
   p.drawPixmap( 0, 0, *background, 0, 0, background->width(), background->height() );
 
-//  p.fillRect(0, 0, width, height, palette().color(QPalette::Window) );
   //draw satellites
   if (sats.count())
     {

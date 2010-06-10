@@ -16,6 +16,16 @@
 **
 ***********************************************************************/
 
+/**
+  * \author André Somers, Axel Pauli
+  *
+  * \brief dialog displaying the GPS status
+  *
+  * This dialog provides info on the current GPS status, including satellites
+  * tracked, elevation, azimuth and signal strengths.
+  *
+  */
+
 #ifndef GPS_STATUS_DIALOG_H
 #define GPS_STATUS_DIALOG_H
 
@@ -28,66 +38,75 @@
 #include <QBitmap>
 #include <QPainter>
 #include <QKeyEvent>
+#include <QPushButton>
 
 #include "gpsnmea.h"
 
 class GPSElevationAzimuthDisplay;
 class GPSSnrDisplay;
 
-/**
-  *@short dialog displaying the GPS status
-  *This dialog provides info on the current GPS status, including satellites
-  *tracked, elevation, azimuth and signal strengths.
-  *@author André Somers
-  */
 class GpsStatusDialog : public QDialog
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    /**
-     * Constructor
-     * @argument parent Pointer to parent widget
-     */
-    GpsStatusDialog(QWidget * parent);
+  /**
+   * Constructor
+   * @argument parent Pointer to parent widget
+   */
+  GpsStatusDialog( QWidget *parent );
 
-    /**
-     * Destructor
-     */
-    ~GpsStatusDialog();
+  /**
+   * Destructor
+   */
+  virtual ~GpsStatusDialog();
 
-    void keyPressEvent(QKeyEvent *);
+  void keyPressEvent( QKeyEvent *event );
 
 public slots:
 
-    /**
-     * Called if a new sentence arrives from the GPS
-     */
-    void slot_Sentence(const QString& sentence);
+  /**
+   * Called if a new sentence arrives from the GPS
+   */
+  void slot_Sentence(const QString& sentence);
 
-    /**
-     * Called if new info on the satellites in view is available
-     */
-    void slot_SIV( QList<SIVInfo>& siv );
+  /**
+   * Called if new info on the satellites in view is available
+   */
+  void slot_SIV( QList<SIVInfo>& siv );
 
 protected slots:
-    /**
-     * Called if dialog is accepted (OK button is clicked)
-     */
-    virtual void accept();
+  /**
+   * Called if dialog is accepted (OK button is clicked)
+   */
+  virtual void accept();
 
-    /**
-     * Called if dialog is rejected (X button is clicked)
-     */
-    virtual void reject();
-    //virtual void hide();
+  /**
+   * Called if dialog is rejected (X button is clicked)
+   */
+  virtual void reject();
 
 private slots:
 
+  /**
+   * Called if the start/stop button is pressed to start or stop NMEA display.
+   */
+  void slot_toggleStartStop();
+
+  /**
+   * Called if the save button is pressed to save NMEA display content into a file.
+   */
+  void slot_SaveNmeaData();
+
 protected:
-    GPSElevationAzimuthDisplay * elevAziDisplay;
-    GPSSnrDisplay * snrDisplay;
-    QTextEdit * nmeaBox;
+
+    GPSElevationAzimuthDisplay *elevAziDisplay;
+    GPSSnrDisplay              *snrDisplay;
+    QTextEdit                  *nmeaBox;
+    QPushButton                *startStop;
+    QPushButton                *save;
+
+    bool                        showNmeaData;
 };
 
 
@@ -101,7 +120,7 @@ public:
      * @argument parent Pointer to parent widget
      */
     GPSElevationAzimuthDisplay(QWidget * parent);
-    ~GPSElevationAzimuthDisplay();
+    virtual ~GPSElevationAzimuthDisplay();
 
     void setSatInfo(QList<SIVInfo>&);
 
@@ -129,7 +148,7 @@ public:
      * @argument parent Pointer to parent widget
      */
     GPSSnrDisplay(QWidget * parent);
-    ~GPSSnrDisplay();
+    virtual ~GPSSnrDisplay();
 
     void setSatInfo(QList<SIVInfo>&);
 

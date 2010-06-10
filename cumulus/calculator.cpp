@@ -875,7 +875,7 @@ void Calculator::slot_changePosition(int direction)
       // 30ft until 18.000ft. 30ft are 9.1437m
       int delta = (int) rint( qnhDiff * 9.1437 );
 
-      // qDebug("Calculator::slot_changePosition(): QHN=%d, Delta=%d", conf->getQNH(), delta);
+      // qDebug("Calculator::slot_changePosition(): QNH=%d, Delta=%d", conf->getQNH(), delta);
 
       lastSTDAltitude.setMeters(manualAltitude.getMeters() + delta );
     }

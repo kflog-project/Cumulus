@@ -1137,9 +1137,8 @@ void MapView::slot_gpsStatusDialog()
 /** Opens the inflight glider settings dialog. */
 void MapView::slot_gliderFlightDialog()
 {
-  if( ! calculator->glider() || GliderFlightDialog::getNrOfInstances() > 0 )
+  if( GliderFlightDialog::getNrOfInstances() > 0 )
     {
-      // If no glider is selected we don't open the dialog.
       // Sometimes the mouse event is delayed under Maemo, which triggers this
       // method. In such a case multiple dialogs are opened. This check shall
       // prevent that.
