@@ -58,14 +58,9 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent),
   buttonBox->addWidget( save );
   buttonBox->addStretch( 5 );
 
-  QVBoxLayout* gDisplayBox = new QVBoxLayout;
-  gDisplayBox->addWidget(elevAziDisplay, 10);
-  gDisplayBox->addWidget(snrDisplay, 5);
-
   QHBoxLayout* hBox = new QHBoxLayout;
-  hBox->addSpacing( 40 );
-  hBox->addLayout( gDisplayBox, 2 );
-  hBox->addSpacing( 40 );
+  hBox->addWidget(elevAziDisplay, 1);
+  hBox->addWidget(snrDisplay, 2);
   hBox->addLayout( buttonBox );
 
   QVBoxLayout* topLayout = new QVBoxLayout( this );
