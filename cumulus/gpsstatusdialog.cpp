@@ -22,7 +22,6 @@
 
 #include "gpsstatusdialog.h"
 #include "gpsnmea.h"
-#include "mapcalc.h"
 
 GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent),
   showNmeaData( true )
@@ -36,13 +35,13 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent),
       resize( parent->size() );
     }
 
-  elevAziDisplay = new GPSElevationAzimuthDisplay(this);
-  snrDisplay     = new GPSSnrDisplay(this);
+  elevAziDisplay = new GpsElevationAzimuthDisplay(this);
+  snrDisplay     = new GpsSnrDisplay(this);
 
   nmeaBox = new QTextEdit(this);
   nmeaBox->setObjectName("NmeaBox");
   nmeaBox->setReadOnly(true);
-  nmeaBox->document()->setMaximumBlockCount(200);
+  nmeaBox->document()->setMaximumBlockCount(250);
   nmeaBox->setLineWrapMode(QTextEdit::NoWrap);
   QFont f = font();
   f.setPixelSize(14);
@@ -51,11 +50,15 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent),
   startStop = new QPushButton( tr("Stop"), this );
   save      = new QPushButton( tr("Save"), this );
 
+  QPushButton* close = new QPushButton( tr("Close"), this );
+
   QVBoxLayout* buttonBox = new QVBoxLayout;
   buttonBox->addStretch( 5 );
   buttonBox->addWidget( startStop );
   buttonBox->addSpacing( 10 );
   buttonBox->addWidget( save );
+  buttonBox->addSpacing( 10 );
+  buttonBox->addWidget( close );
   buttonBox->addStretch( 5 );
 
   QHBoxLayout* hBox = new QHBoxLayout;
@@ -75,6 +78,8 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent),
   connect( startStop, SIGNAL(clicked()), this, SLOT(slot_toggleStartStop()) );
 
   connect( save, SIGNAL(clicked()), this, SLOT(slot_SaveNmeaData()) );
+
+  connect( close, SIGNAL(clicked()), this, SLOT(accept()) );
 }
 
 GpsStatusDialog::~GpsStatusDialog()
@@ -134,7 +139,15 @@ void GpsStatusDialog::slot_SaveNmeaData()
                                             "nmea-stream.log", &ok);
   if( ok && ! fileName.isEmpty() )
     {
-      QFile file( QDir::homePath() + "/" + fileName );
+      if( ! fileName.startsWith( "/") )
+        {
+          // We will store the file in the user's home location, when it not
+          // starts with a slash. Other cases as . or .. are ignored by us.
+          QFileInfo fi( fileName );
+          fileName = QDir::homePath() + "/" + fi.fileName();
+        }
+
+      QFile file( fileName );
 
       if( ! file.open( QIODevice::Append | QIODevice::Text ) )
         {
@@ -161,34 +174,29 @@ void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
     }
 }
 
-void GpsStatusDialog::accept()
-{
-  QDialog::accept();
-}
-
-void GpsStatusDialog::reject()
-{
-  QDialog::reject();
-}
-
 /*************************************************************************************/
 
 #define MARGIN 10
 
-GPSElevationAzimuthDisplay::GPSElevationAzimuthDisplay(QWidget *parent):
-    QFrame(parent)
+GpsElevationAzimuthDisplay::GpsElevationAzimuthDisplay(QWidget *parent) :
+  QFrame(parent)
 {
-  setObjectName("ElevationAzimuthDisplay");
+  setFrameStyle(StyledPanel | QFrame::Plain);
+  setLineWidth(2);
+  setMidLineWidth(2);
+
   background = new QPixmap();
 }
 
-GPSElevationAzimuthDisplay::~GPSElevationAzimuthDisplay()
+GpsElevationAzimuthDisplay::~GpsElevationAzimuthDisplay()
 {
   delete background;
 }
 
-void GPSElevationAzimuthDisplay::resizeEvent(QResizeEvent *)
+void GpsElevationAzimuthDisplay::resizeEvent( QResizeEvent *event )
 {
+  QFrame::resizeEvent( event );
+
   width = contentsRect().width();
   height = contentsRect().height();
 
@@ -197,8 +205,9 @@ void GPSElevationAzimuthDisplay::resizeEvent(QResizeEvent *)
       width = height;
     }
 
-  width -= ( MARGIN * 2 ); //keep a 10 pixel margin
-  center = QPoint(contentsRect().width()/2, contentsRect().height()/2);
+  width  -= ( MARGIN * 2 ); //keep a 10 pixel margin
+  height -= ( MARGIN * 2 );
+  center  = QPoint(contentsRect().width()/2, contentsRect().height()/2);
 
   delete background;
   background = new QPixmap( contentsRect().width(), contentsRect().height() );
@@ -217,18 +226,21 @@ void GPSElevationAzimuthDisplay::resizeEvent(QResizeEvent *)
   p.drawLine(center.x() - ( width / 2 ) -5 , center.y(), center.x() + ( width / 2 ) + 5, center.y());
 }
 
-void GPSElevationAzimuthDisplay::paintEvent(QPaintEvent *)
+void GpsElevationAzimuthDisplay::paintEvent( QPaintEvent *event )
 {
+  // Call paint method from QFrame otherwise the frame is not drawn.
+  QFrame::paintEvent( event );
+
   QPainter p(this);
   QFont f = font();
   f.setPixelSize(12);
   p.setFont(f);
 
-  //copy background to widget
+  // copy background to widget
   p.drawPixmap ( contentsRect().left(), contentsRect().top(), *background,
                  0, 0, background->width(), background->height() );
 
-  //draw satellites
+  // draw satellites
   if (sats.count())
     {
       for (int i=0; i < sats.count(); i++)
@@ -241,20 +253,21 @@ void GPSElevationAzimuthDisplay::paintEvent(QPaintEvent *)
       p.fillRect( center.x()-23, center.y()-7, 46, 14, palette().color(QPalette::Window) );
       p.drawText(center.x()-23, center.y()-7, 46, 14, Qt::AlignCenter, tr("No Data"));
     }
-
 }
 
-void GPSElevationAzimuthDisplay::setSatInfo(QList<SIVInfo>& list)
+void GpsElevationAzimuthDisplay::setSatInfo( QList<SIVInfo>& list )
 {
   sats = list;
   // update();
   repaint();
 }
 
-void GPSElevationAzimuthDisplay::drawSat(QPainter * p, const SIVInfo& sivi)
+void GpsElevationAzimuthDisplay::drawSat( QPainter *p, const SIVInfo& sivi )
 {
   if (sivi.db < 0)
-    return;
+    {
+      return;
+    }
 
   double a = (double(( sivi.azimuth - 180 )/ -180.0) * M_PI);
   double r = (90 - sivi.elevation) / 90.0;
@@ -286,27 +299,31 @@ void GPSElevationAzimuthDisplay::drawSat(QPainter * p, const SIVInfo& sivi)
   p->drawText(x - 9, y - 5, 18 , 14 , Qt::AlignCenter, QString::number(sivi.id) );
 }
 
-
 /*************************************************************************************/
 
-GPSSnrDisplay::GPSSnrDisplay(QWidget *parent) : QFrame(parent)
+GpsSnrDisplay::GpsSnrDisplay(QWidget *parent) : QFrame(parent)
 {
-  setObjectName("GPSSnrDisplay");
+  setFrameStyle(StyledPanel | QFrame::Plain);
+  setLineWidth(2);
+  setMidLineWidth(2);
+
   background = new QPixmap();
   canvas = new QPixmap();
   mask = new QBitmap();
 }
 
-GPSSnrDisplay::~GPSSnrDisplay()
+GpsSnrDisplay::~GpsSnrDisplay()
 {
   delete background;
   delete canvas;
   delete mask;
 }
 
-void GPSSnrDisplay::resizeEvent(QResizeEvent *)
+void GpsSnrDisplay::resizeEvent( QResizeEvent *event )
 {
-  width = contentsRect().width();
+  QFrame::resizeEvent( event );
+
+  width  = contentsRect().width();
   height = contentsRect().height();
   center = QPoint(contentsRect().width()/2, contentsRect().height()/2);
 
@@ -345,19 +362,21 @@ void GPSSnrDisplay::resizeEvent(QResizeEvent *)
     }
 }
 
-void GPSSnrDisplay::paintEvent(QPaintEvent *)
+void GpsSnrDisplay::paintEvent( QPaintEvent *event )
 {
-  QPainter p;
+  // Call paint method from QFrame otherwise the frame is not drawn.
+  QFrame::paintEvent( event );
 
+  QPainter p;
   p.begin(canvas);
   p.drawPixmap( 0, 0, *background, 0, 0, background->width(), background->height() );
 
-  //draw satellites
-  if (sats.count())
+  // draw satellites
+  if( sats.count() )
     {
       QPainter pm(mask);
       pm.fillRect(0, 0, width, height, Qt::color0);
-      // int cnt=MIN(sats->count(), 8);
+
       for (int i=0; i < sats.count(); i++)
         {
           drawSat(&p, &pm, i, sats.count(), sats.at(i));
@@ -382,14 +401,14 @@ void GPSSnrDisplay::paintEvent(QPaintEvent *)
     }
 }
 
-void GPSSnrDisplay::setSatInfo(QList<SIVInfo>& list)
+void GpsSnrDisplay::setSatInfo(QList<SIVInfo>& list)
 {
   sats = list;
   // update();
   repaint();
 }
 
-void GPSSnrDisplay::drawSat(QPainter * p, QPainter * pm, int i, int cnt, const SIVInfo& sivi)
+void GpsSnrDisplay::drawSat(QPainter * p, QPainter * pm, int i, int cnt, const SIVInfo& sivi)
 {
   int bwidth = width / cnt;
   int left = bwidth * i + 2;

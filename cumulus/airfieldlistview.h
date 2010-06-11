@@ -39,6 +39,12 @@ class AirfieldListView : public QWidget
 {
     Q_OBJECT
 
+private:
+  /**
+   * That macro forbids the copy constructor and the assignment operator.
+   */
+  Q_DISABLE_COPY( AirfieldListView )
+
 public:
 
     AirfieldListView( QVector<enum MapContents::MapContentsListID> &itemList,

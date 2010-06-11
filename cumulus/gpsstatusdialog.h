@@ -19,10 +19,11 @@
 /**
   * \author André Somers, Axel Pauli
   *
-  * \brief dialog displaying the GPS status
+  * \brief Dialog displaying GPS satellites and NMEA data stream.
   *
-  * This dialog provides info on the current GPS status, including satellites
-  * tracked, elevation, azimuth and signal strengths.
+  * This dialog provides information about the current GPS status, including
+  * satellites tracked, elevation, azimuth, signal strengths and the NMEA
+  * data stream. NMEA data stream can be save into a file on user request.
   *
   */
 
@@ -42,12 +43,18 @@
 
 #include "gpsnmea.h"
 
-class GPSElevationAzimuthDisplay;
-class GPSSnrDisplay;
+class GpsElevationAzimuthDisplay;
+class GpsSnrDisplay;
 
 class GpsStatusDialog : public QDialog
 {
   Q_OBJECT
+
+private:
+  /**
+   * That macro forbids the copy constructor and the assignment operator.
+   */
+  Q_DISABLE_COPY( GpsStatusDialog )
 
 public:
   /**
@@ -75,17 +82,6 @@ public slots:
    */
   void slot_SIV( QList<SIVInfo>& siv );
 
-protected slots:
-  /**
-   * Called if dialog is accepted (OK button is clicked)
-   */
-  virtual void accept();
-
-  /**
-   * Called if dialog is rejected (X button is clicked)
-   */
-  virtual void reject();
-
 private slots:
 
   /**
@@ -100,8 +96,8 @@ private slots:
 
 protected:
 
-    GPSElevationAzimuthDisplay *elevAziDisplay;
-    GPSSnrDisplay              *snrDisplay;
+    GpsElevationAzimuthDisplay *elevAziDisplay;
+    GpsSnrDisplay              *snrDisplay;
     QTextEdit                  *nmeaBox;
     QPushButton                *startStop;
     QPushButton                *save;
@@ -110,62 +106,77 @@ protected:
 };
 
 
-class GPSElevationAzimuthDisplay: public QFrame
+class GpsElevationAzimuthDisplay: public QFrame
 {
-    Q_OBJECT
-
-public:
-    /**
-     * Constructor
-     * @argument parent Pointer to parent widget
-     */
-    GPSElevationAzimuthDisplay(QWidget * parent);
-    virtual ~GPSElevationAzimuthDisplay();
-
-    void setSatInfo(QList<SIVInfo>&);
-
-protected:
-    virtual void resizeEvent ( QResizeEvent * );
-    virtual void paintEvent ( QPaintEvent * );
-    void drawSat(QPainter *, const SIVInfo &);
+  Q_OBJECT
 
 private:
-    QPixmap * background;
-    QPoint center;
-    int width;
-    int height;
-    QList<SIVInfo> sats;
+  /**
+   * That macro forbids the copy constructor and the assignment operator.
+   */
+  Q_DISABLE_COPY( GpsElevationAzimuthDisplay )
+
+public:
+  /**
+   * Constructor
+   * @argument parent Pointer to parent widget
+   */
+  GpsElevationAzimuthDisplay(QWidget * parent);
+  virtual ~GpsElevationAzimuthDisplay();
+
+  void setSatInfo(QList<SIVInfo>&);
+
+protected:
+
+  virtual void resizeEvent ( QResizeEvent *event );
+  virtual void paintEvent ( QPaintEvent *event );
+  void drawSat(QPainter *, const SIVInfo &);
+
+private:
+
+  QPixmap *background;
+  QPoint center;
+  int width;
+  int height;
+  QList<SIVInfo> sats;
 };
 
 
-class GPSSnrDisplay: public QFrame
+class GpsSnrDisplay: public QFrame
 {
-    Q_OBJECT
-
-public:
-    /**
-     * Constructor
-     * @argument parent Pointer to parent widget
-     */
-    GPSSnrDisplay(QWidget * parent);
-    virtual ~GPSSnrDisplay();
-
-    void setSatInfo(QList<SIVInfo>&);
-
-protected:
-    virtual void resizeEvent ( QResizeEvent * );
-    virtual void paintEvent ( QPaintEvent * );
-    void drawSat(QPainter *, QPainter *, int, int, const SIVInfo &);
+  Q_OBJECT
 
 private:
-    QPixmap * background;
-    QPixmap * canvas;
-    QBitmap * mask;
-    QPoint center;
-    int width;
-    int height;
-    QList<SIVInfo> sats;
-};
+  /**
+   * That macro forbids the copy constructor and the assignment operator.
+   */
+  Q_DISABLE_COPY( GpsSnrDisplay )
 
+public:
+  /**
+   * Constructor
+   * @argument parent Pointer to parent widget
+   */
+  GpsSnrDisplay(QWidget * parent);
+  virtual ~GpsSnrDisplay();
+
+  void setSatInfo(QList<SIVInfo>&);
+
+protected:
+
+  virtual void resizeEvent ( QResizeEvent *event );
+  virtual void paintEvent ( QPaintEvent *event );
+  void drawSat(QPainter *, QPainter *, int, int, const SIVInfo &);
+
+private:
+
+  QPixmap *background;
+  QPixmap *canvas;
+  QBitmap *mask;
+  QPoint center;
+  int width;
+  int height;
+  QList<SIVInfo> sats;
+};
 
 #endif
