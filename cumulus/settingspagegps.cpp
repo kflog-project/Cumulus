@@ -24,9 +24,7 @@
  *  and Maemo. Under Maemo RS232 devices are supported only via USB.
  */
 
-#include <QLabel>
-#include <QLineEdit>
-#include <QGridLayout>
+#include <QtGui>
 
 #include "generalconfig.h"
 #include "settingspagegps.h"
@@ -217,9 +215,11 @@ void SettingsPageGPS::slot_load()
       GpsSpeed->setEnabled( false );
     }
 
+#ifndef MAEMO
   checkSoftStart->setChecked( conf->getGpsSoftStart() );
   checkHardStart->setChecked( conf->getGpsHardStart() );
   checkSyncSystemClock->setChecked( conf->getGpsSyncSystemClock() );
+#endif
 }
 
 /** Called to initiate saving to the configuration file. */
@@ -240,9 +240,12 @@ void SettingsPageGPS::slot_save()
     }
 
   conf->setGpsSpeed( GpsSpeed->currentText().toInt() );
+
+#ifndef MAEMO
   conf->setGpsHardStart( checkHardStart->isChecked() );
   conf->setGpsSoftStart( checkSoftStart->isChecked() );
   conf->setGpsSyncSystemClock( checkSyncSystemClock->isChecked() );
+#endif
 }
 
 void SettingsPageGPS::slot_altitude_mode(int mode)
