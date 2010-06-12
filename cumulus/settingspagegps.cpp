@@ -217,11 +217,9 @@ void SettingsPageGPS::slot_load()
       GpsSpeed->setEnabled( false );
     }
 
-#ifndef MAEMO
   checkSoftStart->setChecked( conf->getGpsSoftStart() );
   checkHardStart->setChecked( conf->getGpsHardStart() );
   checkSyncSystemClock->setChecked( conf->getGpsSyncSystemClock() );
-#endif
 }
 
 /** Called to initiate saving to the configuration file. */
@@ -241,13 +239,10 @@ void SettingsPageGPS::slot_save()
       conf->setGpsUserAltitudeCorrection( 0 );
     }
 
-#ifndef MAEMO
   conf->setGpsSpeed( GpsSpeed->currentText().toInt() );
   conf->setGpsHardStart( checkHardStart->isChecked() );
   conf->setGpsSoftStart( checkSoftStart->isChecked() );
   conf->setGpsSyncSystemClock( checkSyncSystemClock->isChecked() );
-#endif
-
 }
 
 void SettingsPageGPS::slot_altitude_mode(int mode)
