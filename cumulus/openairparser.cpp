@@ -808,7 +808,7 @@ void OpenAirParser::parseAltitude(QString& line, BaseMapElement::elevationType& 
 
       if ( type != BaseMapElement::NotSet && newType != BaseMapElement::NotSet )
         {
-          // @AP: Here we stept into a problem. We found a second
+          // @AP: Here we stepped into a problem. We found a second
           // elevation type. That can be only a mistake in the data
           // and will be ignored.
           qWarning( "OpenAirParser: Line=%d, '%s' contains more than one elevation type. Only first one is taken",
@@ -840,10 +840,21 @@ void OpenAirParser::parseAltitude(QString& line, BaseMapElement::elevationType& 
       //ignore other parts
     }
   if ( altitudeIsFeet && type == BaseMapElement::NotSet )
-    type = BaseMapElement::MSL;
+    {
+      type = BaseMapElement::MSL;
+    }
 
   if (convertFromMeters)
-    alt = (int) rint( alt/Distance::mFromFeet);
+    {
+      alt = (int) rint( alt/Distance::mFromFeet);
+    }
+
+  if( alt == 0 && type == BaseMapElement::NotSet )
+    {
+      // @AP: Altitude is zero but no type is assigned. In this case GND
+      // is assumed. Found that in a polish airspace file.
+      type=BaseMapElement::GND;
+    }
 
   // qDebug("Line %d: Returned altitude %d, type %d", _lineNumber, alt, int(type));
 }
