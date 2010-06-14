@@ -130,7 +130,6 @@ fd_set *GpsClient::getReadFdMask()
   return &fdMask;
 }
 
-
 // Processes incoming read events. They can come from the server or
 // from the Gps device.
 void GpsClient::processEvent( fd_set *fdMask )
@@ -144,7 +143,7 @@ void GpsClient::processEvent( fd_set *fdMask )
           closeGps();
           sleep(2);
           // reopen connection
-          openGps( device, ioSpeedDevice );
+          openGps( device.data(), ioSpeedDevice );
         }
     }
 
@@ -215,11 +214,9 @@ bool GpsClient::readGpsData()
   return true;
 }
 
-
 // Sends a NMEA sentence to the GPS. Check sum will be calculated by
 // this routine. Don't add an asterix at the end of the sentance. It
 // will be part of the check sum.
-
 int GpsClient::writeGpsData( const char *sentence )
 {
   // don't try to send anything if there is no valid connection
@@ -249,9 +246,10 @@ int GpsClient::writeGpsData( const char *sentence )
 
 // Opens the connection to the Gps. All old messages in the queue will
 // be removed.
-
 bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 {
+  qDebug() << "GpsClient::openGps:" << deviceIn << "," << ioSpeedIn;
+
   device          = deviceIn;
   ioSpeedDevice   = ioSpeedIn;
   ioSpeedTerminal = getBaudrate(ioSpeedIn);
@@ -274,7 +272,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
   // create a fifo for the nmea simulator, if device starts not with /dev/
   if( strncmp( "/dev/", deviceIn, strlen("/dev/") ) != 0 )
     {
-      int ret = mkfifo(device, S_IRUSR | S_IWUSR);
+      int ret = mkfifo( device.data(), S_IRUSR | S_IWUSR );
 
       if( ret && errno != EEXIST )
         {
@@ -293,7 +291,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       sleep(2);
     }
 
-  fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK);
+  fd = open( device.data(), O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK );
 
   if( fd == -1 )
     {
@@ -313,11 +311,9 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
     {
       // Fifo needs no serial initialization.
       // Write a notice for the user about that fact
-#ifdef ERROR_LOG
-      cerr << "GpsClient::openGps: Device '" << device.data()
-           << "' is not connected to a TTY!" << endl;
-#endif
-
+      qDebug() << "GpsClient::openGps: Device '"
+               << deviceIn
+               << "' is not a TTY!";
     }
   else
     {
@@ -363,7 +359,6 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
   last.start(); // store time point for supervision control
   return true;
 }
-
 
 /**
  * This method tries to read all lines contained in the receive buffer. A line
@@ -465,7 +460,6 @@ void GpsClient::closeGps()
 
 
 // calculate check sum over nmea record
-
 uchar GpsClient::calcCheckSum( const char *sentence )
 {
   uchar sum = 0;
@@ -518,7 +512,7 @@ void GpsClient::toController()
         }
 
       // try to reconnect to the GPS receiver
-      if( openGps( device, ioSpeedDevice ) == false )
+      if( openGps( device.data(), ioSpeedDevice ) == false )
         {
           last.start(); // set next retry time point
         }
@@ -618,18 +612,23 @@ void GpsClient::readServerMsg()
       // 1) serial device
       // 2) io speed
 
-      bool res = openGps( args[1].toLatin1(), args[2].toUInt() );
+      bool res = openGps( args[1].toLatin1().data(), args[2].toUInt() );
 
       if( res )
-        writeServerMsg( MSG_POS );
+        {
+          writeServerMsg( MSG_POS );
+        }
       else
-        writeServerMsg( MSG_NEG );
+        {
+          writeServerMsg( MSG_NEG );
+        }
     }
   else if( MSG_CLOSE == args[0] )
     {
       // Close Gps device is requested
       closeGps();
       writeServerMsg( MSG_POS );
+      sleep(1);
     }
   else if( MSG_NTY == args[0] )
     {
