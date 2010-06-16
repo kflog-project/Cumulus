@@ -1136,6 +1136,7 @@ void GpsNmea::__ExtractPflau(const QStringList& stringList)
   short value;
 
   // RX number of received devices
+  flarmStatus.RX = 0;
   value = stringList[1].toShort( &ok );
 
   if( ok )
@@ -1144,6 +1145,7 @@ void GpsNmea::__ExtractPflau(const QStringList& stringList)
     }
 
   // TX Transmission status
+  flarmStatus.TX = 0;
   value = stringList[2].toShort( &ok );
 
   if( ok )
@@ -1152,6 +1154,7 @@ void GpsNmea::__ExtractPflau(const QStringList& stringList)
     }
 
   // GPS status
+  flarmStatus.Gps = notConnected;
   value = stringList[3].toShort( &ok );
 
   if( ok )
@@ -1169,6 +1172,7 @@ void GpsNmea::__ExtractPflau(const QStringList& stringList)
     }
 
   // Power status
+  flarmStatus.Power = 0;
   value = stringList[4].toShort( &ok );
 
   if( ok )
@@ -1178,6 +1182,7 @@ void GpsNmea::__ExtractPflau(const QStringList& stringList)
 
   // AlarmLevel
   value = stringList[5].toShort( &ok );
+  flarmStatus.AlarmLevel = 0;
 
   if( ok )
     {
@@ -1185,15 +1190,11 @@ void GpsNmea::__ExtractPflau(const QStringList& stringList)
     }
 
   // RelativeBearing
-  value = stringList[6].toShort( &ok );
-
-  if( ok )
-    {
-      flarmStatus.RelativeBearing = value;
-    }
+  flarmStatus.RelativeBearing = stringList[6];
 
   // AlarmType
   value = stringList[7].toShort( &ok );
+  flarmStatus.AlarmType = 0;
 
   if( ok )
     {
@@ -1201,28 +1202,15 @@ void GpsNmea::__ExtractPflau(const QStringList& stringList)
     }
 
   // RelativeVertical
-  value = stringList[8].toShort( &ok );
-
-  if( ok )
-    {
-      flarmStatus.RelativeVertical = value;
-    }
+  flarmStatus.RelativeVertical = stringList[8];
 
   // RelativeDistance
-  value = stringList[9].toShort( &ok );
-
-  if( ok )
-    {
-      flarmStatus.RelativeDistance = value;
-    }
+  flarmStatus.RelativeDistance = stringList[9];
 
   // ID 6-digit hex value
-  value = stringList[10].toShort( &ok );
+  flarmStatus.ID = stringList[10];
 
-  if( ok )
-    {
-      flarmStatus.ID = value;
-    }
+  flarmStatus.valid = true;
 }
 
 /**

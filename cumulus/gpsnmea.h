@@ -142,17 +142,17 @@ class GpsNmea : public QObject
      */
     struct FlarmStatus
     {
-      bool  valid; // true displays a valid filled structure
-      short RX;
-      short TX;
-      enum  GpsStatus Gps;
-      short Power;
-      short AlarmLevel;
-      short RelativeBearing;
-      short AlarmType;
-      short RelativeVertical;
-      short RelativeDistance;
-      int   ID;
+      bool    valid; // true displays a valid filled structure
+      short   RX;
+      short   TX;
+      enum    GpsStatus Gps;
+      short   Power;
+      short   AlarmLevel;
+      QString RelativeBearing;
+      short   AlarmType;
+      QString RelativeVertical;
+      QString RelativeDistance;
+      QString ID;
     };
 
   public:
