@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2009 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2010 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -23,13 +23,13 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include <qdatetime.h>
+#include <QDateTime>
 #include <QByteArray>
 #include <QQueue>
 
 #include "ipc.h"
 
-#define _POSIX_SOURCE 1 /* POSIX compliant source */
+#define _POSIX_SOURCE 1 /* POSIX complaint source */
 
 //++++++++++++++++++++++ CLASS GpsClient +++++++++++++++++++++++++++
 
@@ -40,7 +40,7 @@ public:
 
     /**
      * Constructor requires a socket port of the server (listening end
-     * point) useable for interprocess communication. As related host is
+     * point) usable for interprocess communication. As related host is
      * always localhost used.  Additionally serial device and transfer
      * speed can be passed.
      */
@@ -176,6 +176,9 @@ private:
     // Shutdown flag for main loop. Will be set in case of fatal error
     // or if a shutdown message has been received from the server.
     bool shutdown;
+
+    // Quality sentence counter
+    int badSentences;
 };
 
 #endif  // #ifndef _GpsClient_hh_

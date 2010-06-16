@@ -71,6 +71,7 @@ GpsClient::GpsClient( const ushort portIn )
   shutdown         = false;
   datapointer      = databuffer;
   dbsize           = 0;
+  badSentences     = 0;
 
   // establish a connection to the server
   if( ipcPort )
@@ -141,7 +142,7 @@ void GpsClient::processEvent( fd_set *fdMask )
           // problem occurred, likely buffer overrun. we do restart the gps
           // receiving.
           closeGps();
-          sleep(2);
+          sleep(1);
           // reopen connection
           openGps( device.data(), ioSpeedDevice );
         }
@@ -215,7 +216,7 @@ bool GpsClient::readGpsData()
 }
 
 // Sends a NMEA sentence to the GPS. Check sum will be calculated by
-// this routine. Don't add an asterix at the end of the sentance. It
+// this routine. Don't add an asterix at the end of the sentence. It
 // will be part of the check sum.
 int GpsClient::writeGpsData( const char *sentence )
 {
@@ -254,6 +255,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
   ioSpeedDevice   = ioSpeedIn;
   ioSpeedTerminal = getBaudrate(ioSpeedIn);
   bool fifo       = false;
+  badSentences    = 0;
 
   if( deviceIn == (const char *) 0 || strlen(deviceIn) == 0 )
     {
@@ -319,8 +321,6 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
     {
       tcgetattr(fd, &oldtio); // get current options from port
 
-      fcntl(fd, F_SETFL, FNDELAY); // NON blocking io is requested
-
       // copy current values into new structure for changes
       memcpy( &newtio, &oldtio, sizeof(newtio) );
 
@@ -331,12 +331,17 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       // - no cr
       // - blocking mode
 
-      newtio.c_cflag = (CSIZE & CS8) | CLOCAL | CREAD;
+      newtio.c_cflag &= ~PARENB;
+      newtio.c_cflag &= ~CSTOPB;
+      newtio.c_cflag &= ~CSIZE;
 
-      newtio.c_iflag = IGNPAR | IGNCR; // no parity and no cr
+      newtio.c_cflag |= CS8 | CLOCAL | CREAD;
+
+      newtio.c_iflag = IGNCR; // no cr
 
       newtio.c_oflag = ONLCR; // map nl to cr-nl
 
+      // raw input without any echo
       newtio.c_lflag = ~(ICANON | ECHO | ECHOE | ISIG );
 
       newtio.c_cc[VMIN] = 1;
@@ -348,12 +353,13 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       // destroy the already assigned values! Needed me several hours
       // to find out that. Setting the baud rate under c_cflag seems
       // also to work.
-
       cfsetispeed( &newtio, ioSpeedTerminal ); // set baud rate for input
       cfsetospeed( &newtio, ioSpeedTerminal ); // set baud rate for output
 
       tcflush(fd, TCIOFLUSH);
       tcsetattr(fd, TCSANOW, &newtio);
+
+      fcntl(fd, F_SETFL, FNDELAY); // NON blocking io is requested
     }
 
   last.start(); // store time point for supervision control
@@ -426,7 +432,6 @@ void GpsClient::readSentenceFromBuffer()
 /**
  * closes the connection to the Gps
  */
-
 void GpsClient::closeGps()
 {
   if( fd != -1 )
@@ -435,20 +440,13 @@ void GpsClient::closeGps()
         {
           tcflush(fd, TCIOFLUSH);
 
-          newtio.c_ispeed = B0;
-          newtio.c_ospeed = B0;
+          //cfsetispeed( &newtio, B0 ); // set baud rate for input
+          //cfsetospeed( &newtio, B0 ); // set baud rate for output
 
-          cfsetispeed( &newtio, B0 ); // set baud rate for input
-          cfsetospeed( &newtio, B0 ); // set baud rate for output
-
-          tcsetattr( fd, TCSANOW, &newtio ); // stop tty
-
-          oldtio.c_cflag |= HUPCL;  // make sure DTR goes down
-
-          tcsetattr( fd, TCSANOW, &oldtio );
+          //tcsetattr( fd, TCSANOW, &newtio ); // stop tty
+          //tcsetattr( fd, TCSANOW, &oldtio );
         }
 
-      fcntl( fd, F_SETFL, 0 ); // reset channel to blocking mode
       close(fd);
       fd = -1;
     }
@@ -456,10 +454,10 @@ void GpsClient::closeGps()
   // remove all queued messages
   queue.clear();
   connectionLost = true;
+  badSentences   = 0;
 }
 
-
-// calculate check sum over nmea record
+// calculate check sum over NMEA record
 uchar GpsClient::calcCheckSum( const char *sentence )
 {
   uchar sum = 0;
@@ -508,7 +506,7 @@ void GpsClient::toController()
         {
           // closes an existing connection before opening a new one
           closeGps();
-          sleep(2); // wait before a restart is tried
+          sleep(3); // wait before a restart is tried
         }
 
       // try to reconnect to the GPS receiver
@@ -628,7 +626,6 @@ void GpsClient::readServerMsg()
       // Close Gps device is requested
       closeGps();
       writeServerMsg( MSG_POS );
-      sleep(1);
     }
   else if( MSG_NTY == args[0] )
     {
@@ -693,11 +690,9 @@ void GpsClient::writeServerMsg( const char *msg )
   return;
 }
 
-
 // Sent a message via notification socket to the server. The protocol consists
 // of two parts. First the message length is transmitted as unsigned integer,
 // after that the actual message as 8 bit character string.
-
 void GpsClient::writeNotifMsg( const char *msg )
 {
   static QString method = "GpsClient::writeNotifMsg():";
@@ -723,7 +718,6 @@ void GpsClient::writeNotifMsg( const char *msg )
 
 
 // Translate baud rate to terminal speed definition.
-
 uint GpsClient::getBaudrate(int rate)
 {
   switch (rate)
@@ -746,18 +740,36 @@ uint GpsClient::getBaudrate(int rate)
       return B57600;
     case 115200:
       return B115200;
+    case 230400:
+      return B230400;
     default:
       return B4800;
     }
 }
 
-
 // put a new message into the process queue and sent a notification to
 // the server, if option notify is true. The notification is sent
 // only once to avoid a flood of them, if server is busy.
-
 void GpsClient::queueMsg( const char* msg )
 {
+  // Filter out wrong data messages read in from the GPS port. Known messages
+  // do start with a hash or a dollar sign.
+  if( msg[0] != '#' && msg[0] != '$' )
+    {
+      qDebug() << "GpsClient::queueMsg: ignore sentence" << msg;
+      badSentences++;
+
+      if( badSentences >= 3 )
+        {
+          // Close the receiver after 3 bad sentences
+          closeGps();
+        }
+
+      return;
+    }
+
+  badSentences = 0;
+
   queue.enqueue( msg );
 
   if( queue.count() > QUEUE_SIZE )
