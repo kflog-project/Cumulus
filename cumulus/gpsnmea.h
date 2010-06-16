@@ -136,6 +136,25 @@ class GpsNmea : public QObject
      */
     enum GpsStatus {notConnected=0, noFix=1, validFix=2};
 
+    /**
+     * FLARM status structure. It contains the last data of the sentence
+     * PFLAU.
+     */
+    struct FlarmStatus
+    {
+      bool  valid; // true displays a valid filled structure
+      short RX;
+      short TX;
+      enum  GpsStatus Gps;
+      short Power;
+      short AlarmLevel;
+      short RelativeBearing;
+      short AlarmType;
+      short RelativeVertical;
+      short RelativeDistance;
+      int   ID;
+    };
+
   public:
 
     GpsNmea(QObject* parent);
@@ -525,6 +544,10 @@ class GpsNmea : public QObject
      * Extracts McCready data from LX Navigation $LXWP2 sentence.
      */
     void __ExtractLxwp2(const QStringList& stringList);
+    /**
+     * Extracts $PFLAU sentence from Flarm device.
+     */
+    void __ExtractPflau(const QStringList& stringList);
 
 #ifdef MAEMO
     /**
@@ -636,6 +659,9 @@ class GpsNmea : public QObject
     QString gpsDevice;
     /** reference to the normal serial connection */
     GpsCon* serial;
+
+    /** Flarm status */
+    struct FlarmStatus flarmStatus;
 
     // number of created class instances
     static short instances;

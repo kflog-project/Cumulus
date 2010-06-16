@@ -124,6 +124,8 @@ void GpsNmea::resetDataObjects()
   _lastUtc = QDateTime();
 
   _ignoreConnectionLost = false;
+
+  flarmStatus.valid = false;
 }
 
 void GpsNmea::createGpsConnection()
@@ -426,7 +428,6 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
           fixOK();
           __ExtractTime(slst[5]);
           __ExtractCoord(slst[1],slst[2],slst[3],slst[4]);
-          // qDebug("GPGLL interpreted");
         }
       else
         {
@@ -501,7 +502,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
     }
 
   /**
-  Used by Garmin devices
+  Used by Garmin and Flarm devices
   $PGRMZ,93,f,3*21
          93,f         Altitude in feet
          3            Position fix dimensions 2 = FLARM barometric altitude
@@ -831,6 +832,17 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       return;
     }
 
+  /**
+  $PFLAU,<RX>,<TX>,<GPS>,<Power>,<AlarmLevel>,<RelativeBearing>,<AlarmType>,
+  <RelativeVertical>,<RelativeDistance>,<ID>
+  */
+
+  if ( slst[0] == "$PFLAU" )
+    {
+      __ExtractPflau( slst );
+      return;
+    }
+
   // qDebug ("Unsupported NMEA sentence: %s", sentence.toLatin1().data());
 }
 
@@ -1101,6 +1113,116 @@ void GpsNmea::__ExtractLxwp2( const QStringList& stringList )
     }
 
   return;
+}
+
+/**
+ * Extracts $PFLAU sentence from Flarm device.
+ */
+void GpsNmea::__ExtractPflau(const QStringList& stringList)
+{
+  if ( stringList.size() < 11 )
+    {
+      qWarning("$PFLAU contains too less parameters!");
+      return;
+    }
+
+
+  /**
+    $PFLAU,<RX>,<TX>,<GPS>,<Power>,<AlarmLevel>,<RelativeBearing>,<AlarmType>,
+    <RelativeVertical>,<RelativeDistance>,<ID>
+  */
+
+  bool ok;
+  short value;
+
+  // RX number of received devices
+  value = stringList[1].toShort( &ok );
+
+  if( ok )
+    {
+      flarmStatus.RX = value;
+    }
+
+  // TX Transmission status
+  value = stringList[2].toShort( &ok );
+
+  if( ok )
+    {
+      flarmStatus.TX = value;
+    }
+
+  // GPS status
+  value = stringList[3].toShort( &ok );
+
+  if( ok )
+    {
+      if( value == 0 )
+        {
+          flarmStatus.Gps = noFix;
+          fixNOK();
+        }
+      else if( value == 1 || value == 2 )
+        {
+          flarmStatus.Gps = validFix;
+          fixOK();
+        }
+    }
+
+  // Power status
+  value = stringList[4].toShort( &ok );
+
+  if( ok )
+    {
+      flarmStatus.Power = value;
+    }
+
+  // AlarmLevel
+  value = stringList[5].toShort( &ok );
+
+  if( ok )
+    {
+      flarmStatus.AlarmLevel = value;
+    }
+
+  // RelativeBearing
+  value = stringList[6].toShort( &ok );
+
+  if( ok )
+    {
+      flarmStatus.RelativeBearing = value;
+    }
+
+  // AlarmType
+  value = stringList[7].toShort( &ok );
+
+  if( ok )
+    {
+      flarmStatus.AlarmType = value;
+    }
+
+  // RelativeVertical
+  value = stringList[8].toShort( &ok );
+
+  if( ok )
+    {
+      flarmStatus.RelativeVertical = value;
+    }
+
+  // RelativeDistance
+  value = stringList[9].toShort( &ok );
+
+  if( ok )
+    {
+      flarmStatus.RelativeDistance = value;
+    }
+
+  // ID 6-digit hex value
+  value = stringList[10].toShort( &ok );
+
+  if( ok )
+    {
+      flarmStatus.ID = value;
+    }
 }
 
 /**
