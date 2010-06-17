@@ -258,7 +258,7 @@ void GliderFlightDialog::showEvent( QShowEvent *event )
   spinMcCready->setMaximum(mcMax);
   spinMcCready->setSingleStep(mcSmallStep);
 
-  spinQnh->setFocus();
+  spinMcCready->setFocus();
   startTimer();
 }
 
