@@ -360,10 +360,46 @@ class GpsNmea : public QObject
         return _deliveredAltitude;
       };
 
+    /**
+     * @Returns the satellites in view.
+     */
     QList<SIVInfo>& getSivInfo()
     {
       return sivInfo;
     };
+
+    /**
+     * @Returns the Flarm status structure with the last received data.
+     */
+    FlarmStatus& getFlarmStatus()
+    {
+      return flarmStatus;
+    };
+
+    /**
+     * @param relativeBearing Returns the relative bearing in degree from the
+     * own position as integer -180...+180.
+     *
+     * @return true is a valid value exists otherwise false
+     */
+    bool getFlarmRelativeBearing( int &relativeBearing );
+
+    /**
+     * @param relativeVertical Returns the relative vertical separation in
+     * meters from the own position as integer. Plus means above own position
+     * minus means below own position.
+     *
+     * @return true is a valid value exists otherwise false
+     */
+    bool getFlarmRelativeVertical( int &relativeVertical );
+
+    /**
+     * @param relativeDistance Returns the relative horizontal distance in
+     * meters from the own position as integer.
+     *
+     * @return true is a valid value exists otherwise false
+     */
+    bool getFlarmRelativeDistance( int &relativeDistance );
 
     /**
      * @Returns the map datum of the GPS receiver.
@@ -661,7 +697,7 @@ class GpsNmea : public QObject
     GpsCon* serial;
 
     /** Flarm status */
-    struct FlarmStatus flarmStatus;
+    FlarmStatus flarmStatus;
 
     // number of created class instances
     static short instances;

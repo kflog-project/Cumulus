@@ -2353,3 +2353,66 @@ void GpsNmea::__ExtractSatsInView(const QString& id, const QString& elev,
   sivInfoInternal.append( sivi );
   //qDebug("new sivi info (snr: %d", sivi->db);
 }
+
+bool GpsNmea::getFlarmRelativeBearing( int &relativeBearing )
+{
+  if( ! flarmStatus.valid && flarmStatus.RelativeBearing.isEmpty() )
+    {
+      return false;
+    }
+
+  bool ok;
+
+  relativeBearing = flarmStatus.RelativeBearing.toInt( &ok );
+
+  if( ok )
+    {
+      return true;
+    }
+  else
+    {
+      return false;
+    }
+}
+
+bool GpsNmea::getFlarmRelativeVertical( int &relativeVertical )
+{
+  if( ! flarmStatus.valid && flarmStatus.RelativeVertical.isEmpty() )
+    {
+      return false;
+    }
+
+  bool ok;
+
+  relativeVertical = flarmStatus.RelativeVertical.toInt( &ok );
+
+  if( ok )
+    {
+      return true;
+    }
+  else
+    {
+      return false;
+    }
+}
+
+bool GpsNmea::getFlarmRelativeDistance( int &relativeDistance )
+{
+  if( ! flarmStatus.valid && flarmStatus.RelativeDistance.isEmpty() )
+    {
+      return false;
+    }
+
+  bool ok;
+
+  relativeDistance = flarmStatus.RelativeDistance.toInt( &ok );
+
+  if( ok )
+    {
+      return true;
+    }
+  else
+    {
+      return false;
+    }
+}
