@@ -527,10 +527,11 @@ void GpsClient::readServerMsg()
 
   uint done = clientData.readMsg( &msgLen, sizeof(msgLen) );
 
-  if( done <= 0 )
+  if( done < sizeof(msgLen) )
     {
+      qWarning() << "GpsClient::readServerMsg(): MSG length" << done << "too short";
       clientData.closeSock();
-      return; // Error occurred
+      exit(-1); // Error occurred
     }
 
   if( msgLen > 256 )
@@ -539,7 +540,7 @@ void GpsClient::readServerMsg()
       cerr << "GpsClient::readServerMsg(): "
            << "message " << msgLen << " too large, ignoring it!"
            << endl;
-      return;
+      exit(-1); // Error occurred
     }
 
   char *buf = new char[msgLen+1];
@@ -550,10 +551,11 @@ void GpsClient::readServerMsg()
 
   if( done <= 0 )
     {
+      qWarning() << "GpsClient::readServerMsg(): MSG data" << done << "too short";
       clientData.closeSock();
       delete [] buf;
       buf = 0;
-      return; // Error occurred
+      exit(-1); // Error occurred
     }
 
 #ifdef DEBUG

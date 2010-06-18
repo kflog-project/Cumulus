@@ -996,10 +996,11 @@ void GpsMaemoClient::readServerMsg()
 
   uint done = clientData.readMsg( &msgLen, sizeof(msgLen) );
 
-  if( done <= 0 )
+  if( done < sizeof(msgLen) )
     {
+      qWarning() << "GpsMaemoClient::readServerMsg(): MSG length" << done << "too short";
       clientData.closeSock();
-      return; // Error occurred
+      exit(-1); // Error occurred
     }
 
   if( msgLen > 256 )
@@ -1007,7 +1008,7 @@ void GpsMaemoClient::readServerMsg()
       // such messages length are not defined. we will ignore that.
       qWarning() << "GpsMaemoClient::readServerMsg():"
                  << "message" << msgLen << "too large, ignoring it!";
-      return;
+      exit(-1); // Error occurred
     }
 
   char *buf = new char[msgLen+1];
@@ -1021,7 +1022,7 @@ void GpsMaemoClient::readServerMsg()
       clientData.closeSock();
       delete [] buf;
       buf = 0;
-      return; // Error occurred
+      exit(-1); // Error occurred
     }
 
 #ifdef DEBUG
