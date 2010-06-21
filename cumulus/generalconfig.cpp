@@ -354,7 +354,7 @@ void GeneralConfig::load()
   beginGroup("GPS");
   _gpsDevice          = value( "Device", getGpsDefaultDevice() ).toString();
   _gpsSpeed           = value( "Speed", 4800 ).toInt();
-  _gpsAltitudeType    = value( "AltitudeType", (int) GpsNmea::MSL ).toInt();
+  _gpsAltitudeType    = value( "AltitudeType", (int) GpsNmea::GPS ).toInt();
   _gpsAltitudeUserCorrection.setMeters(value( "AltitudeCorrection", 0 ).toInt());
   _gpsSoftStart       = value( "SoftStart", false ).toBool();
   _gpsHardStart       = value( "HardStart", false ).toBool();
