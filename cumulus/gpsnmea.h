@@ -129,7 +129,7 @@ class GpsNmea : public QObject
     /**
      * defines altitude bases delivered by GPS unit
      */
-    enum DeliveredAltitude {MSL=0, HAE=1, USER=2, PRESSURE=3};
+    enum DeliveredAltitude {GPS=0, PRESSURE=1};
 
     /**
      * defines the states of the GPS unit
@@ -556,11 +556,8 @@ class GpsNmea : public QObject
     QPoint __ExtractCoord(const QString& slat, const QString& slatNS, const QString& slon, const QString& slonEW);
     /** Extract the heading from the NMEA sentence. */
     double __ExtractHeading(const QString& headingstring);
-    /** Extracts the altitude from a NMEA GGA sentence */
-    Altitude __ExtractAltitude(const QString& altitude, const QString& unitAlt,
-                               const QString& heightOfGeoid, const QString& unitHeight);
-    /** Extracts the altitude from a NMEA PGRMZ sentence */
-    Altitude __ExtractAltitude(const QString& number, const QString& unit );
+    /** Extracts the altitude from a NMEA GGA or Gramin/Flarm PGRMZ sentence */
+    Altitude __ExtractAltitude(const QString& altitude, const QString& unit);
     /** Extracts the constellation from the NMEA sentence. */
     QString __ExtractConstellation(const QStringList& sentence);
     /** Extracts the satellites in view from the NMEA sentence. */
