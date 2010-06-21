@@ -276,18 +276,18 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
 #ifndef MAEMO
   _statusbar->setFixedHeight(20);
-#else  
+#else
   _statusbar->setFixedHeight(25);
 #endif
 
   QFont font = _statusbar->font();
   font.setBold(true);
 
-#ifndef MAEMO  
+#ifndef MAEMO
   font.setPixelSize(13);
-#else  
+#else
   font.setPixelSize(17);
-#endif  
+#endif
   _statusbar->setFont(font);
 
   _menuToggle = new CuLabel( tr("Menu"),_statusbar);
@@ -748,19 +748,6 @@ void MapView::slot_LogEntry()
 /** This slot is being called if the altitude has changed. */
 void MapView::slot_Altitude(const Altitude& altitude )
 {
-  static QTime lastDisplay;
-
-  // The display is updated every 1 seconds only.
-  // That will reduce the X-Server load.
-  if( lastDisplay.elapsed() < 750 )
-    {
-      return;
-    }
-  else
-    {
-      lastDisplay = QTime::currentTime();
-    }
-
   _altitude->setValue( altitude.getText( false, 0 ) );
 }
 
@@ -1091,8 +1078,9 @@ void MapView::slot_AltimeterDialog()
            this, SLOT( slot_newAltimeterMode() ) );
   connect( amDlg, SIGNAL( settingsChanged() ),
            calculator, SLOT( slot_settingsChanged() ) );
+  connect( amDlg, SIGNAL( newAltimeterSetting() ),
+           GpsNmea::gps, SLOT( slot_reset() ) );
 
-  amDlg->work();
   amDlg->setVisible(true);
 }
 
