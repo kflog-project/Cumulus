@@ -7,14 +7,20 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
+
+/**
+ * \author André Somers, Axel Pauli
+ *
+ * \brief This class represents the GPS device configuration page.
+ */
 
 #ifndef SETTINGS_PAGE_GPS_H
 #define SETTINGS_PAGE_GPS_H
@@ -25,31 +31,31 @@
 #include <QCheckBox>
 #include <QSpinBox>
 
-/**
- * This class represents the GPS settings page.
- * @author André Somers
- */
 class SettingsPageGPS : public QWidget
   {
     Q_OBJECT
 
+  private:
+
+    Q_DISABLE_COPY ( SettingsPageGPS )
+
   public:
 
-    SettingsPageGPS(QWidget *parent=0);
-    ~SettingsPageGPS();
+    SettingsPageGPS( QWidget *parent=0 );
+    virtual ~SettingsPageGPS();
 
   private:
 
-    QComboBox* GpsDev;
-    QComboBox* GpsSpeed;
-    QComboBox* GpsAltitude;
-    QCheckBox* checkSoftStart;
-    QCheckBox* checkHardStart;
-    QCheckBox* checkSyncSystemClock;
+    QComboBox*   GpsDev;
+    QComboBox*   GpsSpeed;
+    QComboBox*   GpsAltitude;
+    QCheckBox*   checkSoftStart;
+    QCheckBox*   checkHardStart;
+    QCheckBox*   checkSyncSystemClock;
     QPushButton* buttonReset;
-    QSpinBox* spinUserCorrection;
+    QSpinBox*    spinUserCorrection;
 
-  public slots: // Public slots
+  public slots:
 
     /**
      * Called to initiate saving to the configuration file.
@@ -62,11 +68,6 @@ class SettingsPageGPS : public QWidget
     void slot_load();
 
   private slots:
-
-  /**
-   * Called when the GPS altitude mode is changed.
-   */
-  void slot_altitude_mode(int);
 
   /**
    * Called when the GPS device is changed.

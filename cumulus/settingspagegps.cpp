@@ -58,8 +58,6 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   // add entry for NMEA simulator choice
   GpsDev->addItem(NMEASIM_DEVICE);
 #else
-  GpsDev->setEditable(false);  // forbid edit for the user
-
   // Under Maemo there are only three predefined sources.
   GpsDev->addItem(MAEMO_LOCATION_SERVICE); // Maemo GPS Location Service
   GpsDev->addItem("/dev/ttyUSB0"); // external USB device
@@ -75,6 +73,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsSpeed->setObjectName("GPSSpeed");
   GpsSpeed->setEditable(false);
   topLayout->addWidget(GpsSpeed, row++, 1);
+  GpsSpeed->addItem("230400");
   GpsSpeed->addItem("115200");
   GpsSpeed->addItem("57600");
   GpsSpeed->addItem("38400");
@@ -85,25 +84,20 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsSpeed->addItem("1200");
   GpsSpeed->addItem("600");
 
-  // @AP: Some GPS CF Cards (e.g. BC-307) deliver only height above the WGS 84
-  // ellipsoid in GGA record. This is not derivable from the received
-  // record. Therefore we need an additional configuration entry :(
+  // Defines from which device the altitude data shall be taken. Possible
+  // devices are the GPS or a pressure sonde.
   topLayout->addWidget(new QLabel(tr("Altitude Reference:"), this),row,0);
   GpsAltitude = new QComboBox(this);
   GpsAltitude->setObjectName("GPSAltitude");
   GpsAltitude->setEditable(false);
   topLayout->addWidget(GpsAltitude,row++,1);
-  GpsAltitude->addItem(tr("MSL"));
-  GpsAltitude->addItem(tr("HAE"));
-  GpsAltitude->addItem(tr("User"));
+  GpsAltitude->addItem(tr("GPS"));
   GpsAltitude->addItem(tr("Pressure"));
 
-  connect( GpsAltitude, SIGNAL(activated(int )),
-           this, SLOT(slot_altitude_mode(int )) );
   topLayout->setColumnStretch(2,10);
 
-  //AS: Some GPS units (like the Pretec) don't include any form of HAE correction.
-  //For these, the user can manually enter the correction.
+  // Sometime the delivered GPS or pressure altitude needs to be corrected
+  // by a user defined constant.
   topLayout->addWidget(new QLabel(tr("Altitude Correction:"), this),row,0);
   spinUserCorrection = new QSpinBox(this);
   spinUserCorrection->setObjectName("GPSAltitudeCorrection");
@@ -188,8 +182,6 @@ void SettingsPageGPS::slot_load()
 
   spinUserCorrection->setValue( (int) conf->getGpsUserAltitudeCorrection().getMeters() );
 
-  slot_altitude_mode( conf->getGpsAltitude() );
-
   QString rate = QString::number( conf->getGpsSpeed() );
 
   for (int i=0; i < GpsSpeed->count(); i++)
@@ -229,16 +221,7 @@ void SettingsPageGPS::slot_save()
 
   conf->setGpsDevice( GpsDev->currentText() );
   conf->setGpsAltitude( GpsNmea::DeliveredAltitude(GpsAltitude->currentIndex()) );
-
-  if ( GpsAltitude->currentIndex() == GpsNmea::USER )
-    {
-      conf->setGpsUserAltitudeCorrection( Altitude(spinUserCorrection->value()) );
-    }
-  else
-    {
-      conf->setGpsUserAltitudeCorrection( 0 );
-    }
-
+  conf->setGpsUserAltitudeCorrection( Altitude(spinUserCorrection->value()) );
   conf->setGpsSpeed( GpsSpeed->currentText().toInt() );
 
 #ifndef MAEMO
@@ -246,11 +229,6 @@ void SettingsPageGPS::slot_save()
   conf->setGpsSoftStart( checkSoftStart->isChecked() );
   conf->setGpsSyncSystemClock( checkSyncSystemClock->isChecked() );
 #endif
-}
-
-void SettingsPageGPS::slot_altitude_mode(int mode)
-{
-  spinUserCorrection->setEnabled( mode == GpsNmea::USER );
 }
 
 /**
@@ -269,7 +247,7 @@ void SettingsPageGPS::slot_gpsDeviceChanged( const QString& text )
     }
 
 #ifdef MAEMO
-  if( text != "/dev/ttyUSB0" )
+  if( ! text.startsWith("/dev/ttyUSB") )
     {
       // Switch off access to speed box, when USB is not selected.
       // That is done only for Maemo because in those cases a speed
