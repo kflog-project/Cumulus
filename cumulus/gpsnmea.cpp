@@ -483,14 +483,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
           fixOK();
           __ExtractTime(slst[1]);
           __ExtractCoord(slst[2],slst[3],slst[4],slst[5]);
-
-          if ( slst[11] == "" )
-            {
-              slst[11] = "0";
-              slst[12] = "M";
-            }
-
-          __ExtractAltitude(slst[9],slst[10],slst[11],slst[12]);
+          __ExtractAltitude(slst[9],slst[10]);
           __ExtractSatsInView(slst[7]);
         }
       else if( slst[6] == "0" )
@@ -533,13 +526,14 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
                   if( _deliveredAltitude == GpsNmea::PRESSURE )
                     {
-                      // set these altitudes too, when pressure is selected
-                      _lastMslAltitude = altitude;
+                      // Set these altitudes too, when pressure is selected.
+                      _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
+
                       // calculate STD altitude
-                      calcStdAltitude( altitude );
+                      calcStdAltitude( _lastMslAltitude );
                     }
 
-                  emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
+                  emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
                 }
               }
 
@@ -774,7 +768,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
           // Since in GpsNmea::PRESSURE mode _lastPressureAltitude is returned,
           // we set it, too.
           _lastPressureAltitude = _lastMslAltitude;
-          emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
+          emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
         }
 
       return;
@@ -786,7 +780,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   $LXWP0,<1>,<2>,<3>,<4>,<5>,<6>,<7>,<8>,<9>,<10>,<11>,<12>,*CS
   LXWP0,Y,222.3,1665.5,1.71,,,,,,239,174,10.1
 
-  LX Navigation vario, pressssure altitude, airspeed, wind information
+  LX Navigation vario, pressure altitude, airspeed, wind information
 
   0 - LXWP0 - Sentence ID
   1 - 'Y' or 'N' logger stored
@@ -908,12 +902,12 @@ void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
       if ( _deliveredAltitude == GpsNmea::PRESSURE )
         {
           // set these altitudes too, when pressure is selected
-          _lastMslAltitude = res;
+          _lastMslAltitude.setMeters( res.getMeters() + _userAltitudeCorrection.getMeters() );
           // STD altitude is delivered by Cambrigde via $PCAID record
           // calcStdAltitude( res );
         }
 
-      emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
+      emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
     }
 
   // extract QNH
@@ -1023,12 +1017,12 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
               if( _deliveredAltitude == GpsNmea::PRESSURE )
                 {
                   // set these altitudes too, when pressure is selected
-                  _lastMslAltitude = altitude;
+                  _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
                   // calculate STD altitude
                   calcStdAltitude( altitude );
                 }
 
-              emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
+              emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
             }
         }
     }
@@ -1407,99 +1401,42 @@ double GpsNmea::__ExtractHeading(const QString& headingstring)
   return heading;
 }
 
-/** Extracts the altitude from a NMEA GGA sentence */
-Altitude GpsNmea::__ExtractAltitude(const QString& altitude, const QString& unitAlt,
-                                    const QString& heightOfGeoid, const QString& unitHeight)
+/**
+ * Extracts the altitude from a NMEA GGA sentence or from a Garmin/Flarm
+ * proprietary PGRMZ sentence.
+ */
+Altitude GpsNmea::__ExtractAltitude( const QString& altitude, const QString& unit )
 {
-  // qDebug("alt=%s, unit=%s, hae=%s, unit=%s",
-  //  altitude.toLatin1().data(), unitAlt.toLatin1().data(), heightOfGeoid.toLatin1().data(), unitHeight.toLatin1().data() );
-
-  bool ok, ok1;
+  // qDebug("alt=%s, unit=%s", altitude.toLatin1().data(), unitAlt.toLatin1().data() );
+  bool ok;
 
   Altitude res(0);
   double alt = altitude.toDouble(&ok);
 
-  Altitude sep(0);
-  double hae = heightOfGeoid.toDouble(&ok1);
-
-  if( ok == false || ok1 == false )
+  if( ok == false )
     {
       return res;
     }
 
-  // check for other unit as meters, meters is the default
-  if ( unitAlt.toLower() == "f" )
-    res.setFeet(alt);
+  // Check for other unit as meters, meters is the default.
+  // Consider user's altitude correction
+  if ( unit.toLower() == "f" )
+    {
+      res.setFeet( alt + _userAltitudeCorrection.getFeet() );
+    }
   else
-    res.setMeters(alt);
-
-  // check for other unit as meters, meters is the default
-  if ( unitHeight.toLower() == "f" )
-    sep.setFeet(hae);
-  else
-    sep.setMeters(hae);
-
-  if ( _deliveredAltitude == GpsNmea::HAE )
     {
-      // @AP: GPS unit delivers Height above the WGS 84 ellipsoid. We must
-      // adapt this to our internal variables.
-      _lastGNSSAltitude.setMeters( res.getMeters() );
+      res.setMeters( alt + _userAltitudeCorrection.getMeters() );
+    }
 
-      // calculate MSL
-      res.setMeters( res.getMeters() - sep.getMeters() );
-    }
-  else if ( _deliveredAltitude == GpsNmea::USER )
-    {
-      // @AP: GPS unit delivers an unknown reference altitude. We must
-      // adapt this to our internal variables.
-      _lastGNSSAltitude.setMeters( res.getMeters() );
-
-      // calculate MSL by considering user correction factor
-      res.setMeters( res.getMeters() + _userAltitudeCorrection.getMeters() );
-    }
-  else // MSL comes in
-    {
-      // calculate HAE
-      _lastGNSSAltitude.setMeters( res.getMeters() + sep.getMeters() );
-    }
+  _lastGNSSAltitude = res;
 
   if ( _lastMslAltitude != res && _deliveredAltitude != GpsNmea::PRESSURE )
     {
       // set these altitudes only, when pressure is not selected
       _lastMslAltitude = res;
       calcStdAltitude( res );
-      emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
-    }
-
-  return res;
-}
-
-/** Extracts the altitude from a Garmin proprietary PGRMZ sentence */
-Altitude GpsNmea::__ExtractAltitude(const QString& number, const QString& unit)
-{
-  Altitude res(0);
-  bool ok;
-  double num = number.toDouble( &ok );
-
-  if( ! ok )
-    {
-      return res;
-    }
-
-  // check for other unit as meters, meters is the default
-  if ( unit.toLower() == "f" )
-    {
-      res.setFeet(num);
-    }
-  else
-    {
-      res.setMeters(num);
-    }
-
-  if ( _lastMslAltitude != res && _deliveredAltitude != GpsNmea::PRESSURE )
-    {
-      _lastMslAltitude = res;  // store the new altitude
-      emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
+      emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
     }
 
   return res;
@@ -1748,7 +1685,7 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
   // Extract altitude info. Altitude is encoded in meters
   if( ! slist[11].isEmpty() )
     {
-      __ExtractAltitude( slist[11], "M", "0", "M" );
+      __ExtractAltitude( slist[11], "M" );
     }
 
   // Climb info not extracted at the moment!
@@ -1923,7 +1860,7 @@ void GpsNmea::dataOK()
       _lastGNSSAltitude = Altitude(0);
       calcStdAltitude( Altitude(0) );
       _lastPressureAltitude = Altitude(0);
-      emit newAltitude( _lastMslAltitude, _lastStdAltitude,_lastGNSSAltitude );
+      emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
 
       _status = noFix;
       emit statusChange(_status);
@@ -1964,8 +1901,8 @@ void GpsNmea::fixNOK()
 
 /**
  * This slot is called if the GPS needs to reset or update. It is used to stop
- *  the GPS receiver connection and to opens a new one to adjust the
- *  new settings.
+ * the GPS receiver connection and to opens a new one to adjust the
+ * new settings.
  */
 void GpsNmea::slot_reset()
 {
@@ -1975,7 +1912,7 @@ void GpsNmea::slot_reset()
   _deliveredAltitude = static_cast<GpsNmea::DeliveredAltitude> (conf->getGpsAltitude());
   _userAltitudeCorrection = conf->getGpsUserAltitudeCorrection();
 
-  QString oldDevice   = gpsDevice;
+  QString oldDevice = gpsDevice;
 
   if ( gpsDevice != conf->getGpsDevice() )
     {
