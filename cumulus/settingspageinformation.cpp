@@ -6,19 +6,16 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003, 2008 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2003-2010 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-#include <QLabel>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QFileDialog>
+#include <QtGui>
 
 #include "generalconfig.h"
 #include "mapdefaults.h"
@@ -116,12 +113,6 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   topLayout->addWidget( calculateNearestSites, row, 0 );
   row++;
 
-  checkAltimeterToggle = new QCheckBox(tr("Toggle Altimeter on tip"), this);
-  checkAltimeterToggle->setObjectName("altimeterToggle");
-  checkAltimeterToggle->setChecked(false);
-  topLayout->addWidget( checkAltimeterToggle, row, 0 );
-  row++,
-
   topLayout->setRowStretch ( row, 10 );
   topLayout->setColumnStretch( 2, 10 );
 
@@ -129,10 +120,8 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
            this, SLOT(slot_setFactoryDefault()));
 }
 
-
 SettingsPageInformation::~SettingsPageInformation()
 {}
-
 
 void SettingsPageInformation::slot_load()
 {
@@ -159,9 +148,7 @@ void SettingsPageInformation::slot_load()
   spinSuppress->setValue( conf->getWarningSuppressTime() );
   checkAlarmSound->setChecked( conf->getAlarmSoundOn() );
   calculateNearestSites->setChecked( conf->getNearestSiteCalculatorSwitch() );
-  checkAltimeterToggle->setChecked( conf->getAltimeterToggleMode() );
 }
-
 
 void SettingsPageInformation::slot_save()
 {
@@ -176,9 +163,7 @@ void SettingsPageInformation::slot_save()
   conf->setWarningSuppressTime( spinSuppress->value() );
   conf->setAlarmSoundOn( checkAlarmSound->isChecked() );
   conf->setNearestSiteCalculatorSwitch( calculateNearestSites->isChecked() );
-  conf->setAltimeterToggleMode( checkAltimeterToggle->isChecked() );
 }
-
 
 void SettingsPageInformation::slot_setFactoryDefault()
 {
@@ -191,7 +176,6 @@ void SettingsPageInformation::slot_setFactoryDefault()
   spinSuppress->setValue(WARNING_SUPPRESS_TIME_DEFAULT);
   checkAlarmSound->setChecked(ALARM_SOUND_DEFAULT);
   calculateNearestSites->setChecked(NEAREST_SITE_CALCULATOR_DEFAULT);
-  checkAltimeterToggle->setChecked( false );
 }
 
 void SettingsPageInformation::slot_openToolDialog()

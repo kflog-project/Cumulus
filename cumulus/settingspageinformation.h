@@ -6,14 +6,21 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003, 2008 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2003-2010 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
+
+/**
+ * \author Axel Pauli
+ *
+ * \brief The class manages the popup window display times and the alarm sound.
+ *
+ */
 
 #ifndef  SettingsPageInformation_H
 #define  SettingsPageInformation_H
@@ -24,14 +31,15 @@
 #include <QPushButton>
 #include <QLineEdit>
 
-/**
- * The class manages the pop up window stay times and the alarm sound.
- * @author Axel Pauli
- */
 class SettingsPageInformation : public QWidget
 {
   Q_OBJECT
-    public:
+
+  private:
+
+  Q_DISABLE_COPY ( SettingsPageInformation )
+
+  public:
 
   SettingsPageInformation(QWidget *parent=0);
 
@@ -40,12 +48,12 @@ class SettingsPageInformation : public QWidget
 
   public slots: // Public slots
   /**
-   * Called to initiate saving to the configurationfile.
+   * Called to initiate saving to the configuration file.
    */
   void slot_save();
 
   /**
-   * Called to initiate loading of the configurationfile
+   * Called to initiate loading of the configuration file
    */
   void slot_load();
 
@@ -71,11 +79,9 @@ class SettingsPageInformation : public QWidget
   QSpinBox*    spinSuppress;
   QCheckBox*   checkAlarmSound;
   QCheckBox*   calculateNearestSites;
-  QCheckBox*   checkAltimeterToggle;
   QPushButton* buttonReset;
 
   bool loadConfig; // control loading of config data
-
 };
 
 #endif // SettingsPageInformation_h
