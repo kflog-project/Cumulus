@@ -107,10 +107,11 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   GRLayout->setSpacing(2);
 
   //add Glide Path widget
-  _glidepath = new MapInfoBox( this, conf->getMapFrameColor().name(), 42 );
+  _glidepath = new MapInfoBox( this, conf->getMapFrameColor().name(), true, false, 42 );
   _glidepathBGColor = wayBar->palette().color(QPalette::Window);
   _glidepath->setValue("-");
   _glidepath->setPreText("Arr");
+  _glidepath->setPreUnit( Altitude::getUnitText() );
   _glidepath->setFixedHeight(60);
   GRLayout->addWidget( _glidepath );
 
@@ -134,9 +135,10 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   DEBLayout->setSpacing(2);
 
   //add Distance widget
-  _distance = new MapInfoBox( this, conf->getMapFrameColor().name() );
+  _distance = new MapInfoBox( this, conf->getMapFrameColor().name(), true );
   _distance->setPreText("Dis");
   _distance->setValue("-");
+  _distance->setPreUnit( Distance::getUnitText() );
   DEBLayout->addWidget( _distance);
   connect(_distance, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
 
@@ -215,19 +217,18 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   VALayout->setSpacing(2);
 
   //add Vario widget
-  _vario = new MapInfoBox( this, conf->getMapFrameColor().name(), 38, true );
+  _vario = new MapInfoBox( this, conf->getMapFrameColor().name(), false, true );
   _vario->setPreText("Var");
   _vario->setValue("-");
   VALayout->addWidget(_vario, 2 );
-  connect(_vario, SIGNAL(mousePress()),
-          this, SLOT(slot_VarioDialog()));
+  connect(_vario, SIGNAL(mousePress()), this, SLOT(slot_VarioDialog()));
 
-  _altitude = new MapInfoBox( this, conf->getMapFrameColor().name() );
-  _altitude->setPreText(AltimeterModeDialog::mode2String()); // get current mode
+  _altitude = new MapInfoBox( this, conf->getMapFrameColor().name(), true );
+  _altitude->setPreText(AltimeterModeDialog::mode2String());
+  _altitude->setPreUnit( Altitude::getUnitText() );
   _altitude->setValue("-");
   VALayout->addWidget( _altitude, 3 );
-  connect(_altitude, SIGNAL(mousePress()),
-          this, SLOT(slot_AltimeterDialog()));
+  connect(_altitude, SIGNAL(mousePress()), this, SLOT(slot_AltimeterDialog()));
 
   sideLayout->addWidget( commonBar, 3 );
 
@@ -745,7 +746,7 @@ void MapView::slot_LogEntry()
 }
 
 
-/** This slot is being called if the altitude has changed. */
+/** This slot is being called if the altitude has been changed. */
 void MapView::slot_Altitude(const Altitude& altitude )
 {
   _altitude->setValue( altitude.getText( false, 0 ) );
@@ -933,7 +934,7 @@ void MapView::slot_info( const QString& info )
 void MapView::slot_settingsChange()
 {
   // qDebug("MapView::slot_settingsChange");
-  slot_Altitude(calculator->getlastAltitude());
+  slot_newAltimeterMode();
   slot_Position(calculator->getlastPosition(), lastPositionChangeSource);
   slot_Speed(calculator->getLastSpeed());
   slot_Distance(calculator->getlastDistance());
@@ -941,6 +942,9 @@ void MapView::slot_settingsChange()
   slot_bestSpeed(calculator->getlastBestSpeed());
   slot_Mc(calculator->getlastMc());
   slot_Waypoint(calculator->getselectedWp());
+
+  _glidepath->setPreUnit( Altitude::getUnitText() );
+  _distance->setPreUnit( Distance::getUnitText() );
 }
 
 
@@ -1076,18 +1080,21 @@ void MapView::slot_AltimeterDialog()
 
   connect( amDlg, SIGNAL( newAltimeterMode() ),
            this, SLOT( slot_newAltimeterMode() ) );
-  connect( amDlg, SIGNAL( settingsChanged() ),
-           calculator, SLOT( slot_settingsChanged() ) );
-  connect( amDlg, SIGNAL( newAltimeterSetting() ),
+  connect( amDlg, SIGNAL( newAltimeterSettings() ),
            GpsNmea::gps, SLOT( slot_reset() ) );
 
   amDlg->setVisible(true);
 }
 
-/** Called, if altimeter mode has been changed */
+/** Called, if altimeter mode has been changed. */
 void MapView::slot_newAltimeterMode()
 {
-  _altitude->setPreText(AltimeterModeDialog::mode2String());
+  _altitude->setPreText( AltimeterModeDialog::mode2String() );
+  _altitude->setPreUnit( Altitude::getUnitText() );
+  _glidepath->setPreUnit( Altitude::getUnitText() );
+
+  // Mode change needs always a altitude display update.
+  slot_Altitude( calculator->getlastAltitude() );
 }
 
 /** Opens the Variometer settings dialog. */
@@ -1125,8 +1132,9 @@ void MapView::slot_gpsStatusDialog()
 /** Opens the inflight glider settings dialog. */
 void MapView::slot_gliderFlightDialog()
 {
-  if( GliderFlightDialog::getNrOfInstances() > 0 )
+  if( ! calculator->glider() || GliderFlightDialog::getNrOfInstances() > 0 )
     {
+      // Open dialog only, if a glider is selected.
       // Sometimes the mouse event is delayed under Maemo, which triggers this
       // method. In such a case multiple dialogs are opened. This check shall
       // prevent that.
