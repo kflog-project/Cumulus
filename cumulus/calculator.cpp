@@ -1036,9 +1036,6 @@ void Calculator::setPosition(const QPoint& newPos)
 /** Resets some internal items to the initial state */
 void Calculator::slot_settingsChanged ()
 {
-  emit newUserAltitude( getAltimeterAltitude() );
-  // qDebug("Settings changed %d",_altimeter_mode );
-
   // Send last known wind to mapview for update of speed. User maybe
   // changed the speed unit.
   if ( lastWind.getSpeed().getMps() != 0 )
