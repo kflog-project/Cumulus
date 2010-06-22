@@ -14,17 +14,23 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-06-22 AP: MapInfoBox widget enlarged, that units can be also displayed
+                   in the pre-text field. The altitude display do that using now.
+[+] 2010-06-22 AP: Altitude user dialog enlarged by QNH and unit setting and
+                   altitude leveling. Leveling can adjust displayed GPS or
+                   pressure altitude on ground, if there is a constant offset
+                   in the expected values. QNH and unit can be changed in flight
+                   easier as before by using fingers.
 [o] 2010-06-21 AP: Altitude selection in Gps settings page reduced to GPS and
-                   Pressure. Altitude user correction is now always visible and
-                   usable.
-[-] 2010-06-21 AP: Feature toggle altimeter unit on tip removed.
+                   Pressure. Altitude user correction has been moved to the
+                   altitude user dialog.
+[-] 2010-06-21 AP: Feature toggle altimeter unit on tip removed from MapView and
+                   from the information setting page.
 [+] 2010-06-10 AP: NMEA parser extended to extract $PFLAU sentence emitted by
                    Flarm. GPS status is taken over from this sentence.
 [+] 2010-06-10 AP: GPS status dialog enlarged by Start/Stop and Save button.
                    Start/Stop controls the NMEA display and with save the
                    content of the display is written into a file.
-[+] 2010-06-10 AP: QNH spin box added to glider flight status dialog. Makes
-                   changes of QNH during flight easier.
 [-] 2010-06-04 AP: BUGFIX: If a task is replaced by another one and the flight
                    logger is already running, the user is asked now, if he wants
                    to open a new log file. Otherwise the new task declaration
