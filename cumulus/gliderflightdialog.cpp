@@ -65,27 +65,12 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   gridLayout->setSpacing(15);
   int row = 0;
 
-  QLabel* lbl = new QLabel(tr("QNH:"), this);
-  gridLayout->addWidget(lbl, row, 0);
-  spinQnh = new QSpinBox (this);
-  spinQnh->setRange(500, 1500);
-  spinQnh->setSingleStep(1);
-  spinQnh->setSuffix( "hPa" );
-  spinQnh->setButtonSymbols(QSpinBox::NoButtons);
-
-  connect( spinQnh, SIGNAL(valueChanged(const QString&)),
-           this, SLOT(slotSpinValueChanged(const QString&)));
-
-  gridLayout->addWidget(spinQnh, row++, 1);
-
-  //---------------------------------------------------------------------
-
-  lbl = new QLabel(tr("McCready:"), this);
+  QLabel* lbl = new QLabel(tr("McCready:"), this);
   gridLayout->addWidget(lbl, row, 0);
   spinMcCready = new QDoubleSpinBox(this);
   spinMcCready->setRange(0.0, 20.0);
   spinMcCready->setSingleStep(0.5);
-  spinMcCready->setSuffix(Speed::getUnitText(Speed::getVerticalUnit()));
+  spinMcCready->setSuffix( QString(" ") + Speed::getUnitText(Speed::getVerticalUnit()));
   spinMcCready->setButtonSymbols(QSpinBox::NoButtons);
   spinMcCready->setFocus();
 
@@ -101,7 +86,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   spinWater = new QSpinBox (this);
   spinWater->setRange(0, 200);
   spinWater->setSingleStep(5);
-  spinWater->setSuffix( "l" );
+  spinWater->setSuffix( " l" );
   spinWater->setButtonSymbols(QSpinBox::NoButtons);
 
   connect( spinWater, SIGNAL(valueChanged(const QString&)),
@@ -121,7 +106,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   spinBugs = new QSpinBox (this);
   spinBugs->setRange(0, 90);
   spinBugs->setSingleStep(1);
-  spinBugs->setSuffix( "%" );
+  spinBugs->setSuffix( " %" );
   spinBugs->setButtonSymbols(QSpinBox::NoButtons);
 
   connect( spinBugs, SIGNAL(valueChanged(const QString&)),
@@ -266,9 +251,8 @@ void GliderFlightDialog::load()
 {
   Glider *glider = calculator->glider();
 
-  if (glider)
+  if( glider )
     {
-      spinQnh->setEnabled(true);
       spinMcCready->setEnabled(true);
       spinWater->setEnabled(true);
       spinBugs->setEnabled(true);
@@ -292,18 +276,15 @@ void GliderFlightDialog::load()
     }
   else
     {
-      spinQnh->setEnabled(true);
       spinMcCready->setEnabled(false);
       spinWater->setEnabled(false);
       spinBugs->setEnabled(false);
       buttonDump->setEnabled(false);
-      pplus->setEnabled(true);
-      plus->setEnabled(true);
-      mminus->setEnabled(true);
-      minus->setEnabled(true);
+      pplus->setEnabled(false);
+      plus->setEnabled(false);
+      mminus->setEnabled(false);
+      minus->setEnabled(false);
     }
-
-  spinQnh->setValue( GeneralConfig::instance()->getQNH() );
 }
 
 void GliderFlightDialog::save()
@@ -315,18 +296,6 @@ void GliderFlightDialog::save()
     Speed mc; mc.setVerticalValue( spinMcCready->value() );
     emit newMc( mc );
   }
-
-  GeneralConfig::instance()->setQNH( spinQnh->value() );
-}
-
-void GliderFlightDialog::slotQnhPlus()
-{
-  spinQnh->setValue( spinQnh->value() + spinQnh->singleStep() );
-}
-
-void GliderFlightDialog::slotQnhMinus()
-{
-  spinQnh->setValue( spinQnh->value() - spinQnh->singleStep() );
 }
 
 void GliderFlightDialog::slotMcPlus()
@@ -367,32 +336,6 @@ void GliderFlightDialog::slotBugsMinus()
 void GliderFlightDialog::slotChange( int newStep )
 {
   // Look which spin box has the focus
-  if( QApplication::focusWidget() == spinQnh )
-    {
-      // qDebug() << "spinQnh has focus";
-      switch(newStep)
-        {
-        case 0: // ++ was pressed
-          spinQnh->setSingleStep( 5 );
-          slotQnhPlus();
-          break;
-        case 1: // + was pressed
-          spinQnh->setSingleStep( 1 );
-          slotQnhPlus();
-          break;
-        case 2: // - was pressed
-          spinQnh->setSingleStep( 1 );
-          slotQnhMinus();
-          break;
-        case 3: // -- was pressed
-          spinQnh->setSingleStep( 5 );
-          slotQnhMinus();
-          break;
-        }
-
-      return;
-    }
-
   if( QApplication::focusWidget() == spinMcCready )
     {
       // qDebug() << "spinMcCready has focus";
@@ -472,8 +415,9 @@ void GliderFlightDialog::slotChange( int newStep )
     }
 }
 
-void GliderFlightDialog::slotSpinValueChanged( const QString& /* text */)
+void GliderFlightDialog::slotSpinValueChanged( const QString& text )
 {
+  Q_UNUSED( text )
   // Restarts the timer after a spin box value change
   startTimer();
 }
