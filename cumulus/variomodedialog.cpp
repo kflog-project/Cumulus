@@ -67,7 +67,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
 
   spinTime = new QSpinBox(this);
   spinTime->setRange(3, 150);
-  spinTime->setSuffix( "s" );
+  spinTime->setSuffix( " s" );
   spinTime->setButtonSymbols(QSpinBox::NoButtons);
   spinTime->setFocus();
 
@@ -90,7 +90,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   spinTEK = new QSpinBox( this );
   spinTEK->setRange( -100, 100 );
   spinTEK->setSingleStep( 1 );
-  spinTEK->setSuffix( "%" );
+  spinTEK->setSuffix( " %" );
 
   spinTEK->setButtonSymbols(QSpinBox::NoButtons);
   gridLayout->addWidget(spinTEK, row++, 1);

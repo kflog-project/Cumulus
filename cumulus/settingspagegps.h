@@ -32,7 +32,7 @@
 #include <QSpinBox>
 
 class SettingsPageGPS : public QWidget
-  {
+{
     Q_OBJECT
 
   private:
@@ -53,7 +53,6 @@ class SettingsPageGPS : public QWidget
     QCheckBox*   checkHardStart;
     QCheckBox*   checkSyncSystemClock;
     QPushButton* buttonReset;
-    QSpinBox*    spinUserCorrection;
 
   public slots:
 
@@ -73,12 +72,6 @@ class SettingsPageGPS : public QWidget
    * Called when the GPS device is changed.
    */
   void slot_gpsDeviceChanged( const QString& text );
-
-  /**
-   * Called when the user correction value is changed.
-   */
-  void slot_spinUserCorrectionChanged( int newValue );
-
-  };
+};
 
 #endif

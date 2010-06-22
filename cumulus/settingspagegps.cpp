@@ -16,12 +16,13 @@
 **
 ***********************************************************************/
 
-/** This widget is used to define the GPS interface parameters.
- *  The user can select different source devices and some special
- *  GPS parameters.
+/**
+ * This widget is used to define the GPS interface parameters.
+ * The user can select different source devices and some special
+ * GPS parameters.
  *
- *  There is a difference in the provided options between normal Desktop
- *  and Maemo. Under Maemo RS232 devices are supported only via USB.
+ * There is a difference in the provided options between normal Desktop
+ * and Maemo. Under Maemo RS232 devices are supported only via USB.
  */
 
 #include <QtGui>
@@ -35,7 +36,7 @@
 SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 {
   setObjectName("SettingsPageGPS");
-  QGridLayout * topLayout = new QGridLayout(this);
+  QGridLayout* topLayout = new QGridLayout(this);
 
   int row=0;
 
@@ -96,19 +97,6 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 
   topLayout->setColumnStretch(2,10);
 
-  // Sometime the delivered GPS or pressure altitude needs to be corrected
-  // by a user defined constant.
-  topLayout->addWidget(new QLabel(tr("Altitude Correction:"), this),row,0);
-  spinUserCorrection = new QSpinBox(this);
-  spinUserCorrection->setObjectName("GPSAltitudeCorrection");
-  spinUserCorrection->setMinimum(-1000);
-  spinUserCorrection->setMaximum(1000);
-  spinUserCorrection->setButtonSymbols(QSpinBox::PlusMinus);
-  topLayout->addWidget(spinUserCorrection,row++,1);
-
-  connect( spinUserCorrection, SIGNAL(valueChanged(int)),
-           this, SLOT(slot_spinUserCorrectionChanged(int)) );
-
 #ifndef MAEMO
   topLayout->setRowMinimumHeight( row++, 10);
 
@@ -130,8 +118,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   topLayout->addWidget(buttonReset, row, 2, Qt::AlignRight);
   row++;
 
-  connect( buttonReset, SIGNAL(clicked()),
-           GpsNmea::gps, SLOT(sendFactoryReset()) );
+  connect( buttonReset, SIGNAL(clicked()), GpsNmea::gps, SLOT(sendFactoryReset()) );
 
 #else
   topLayout->setRowStretch(row++,10);
@@ -180,8 +167,6 @@ void SettingsPageGPS::slot_load()
 
   GpsAltitude->setCurrentIndex( conf->getGpsAltitude() );
 
-  spinUserCorrection->setValue( (int) conf->getGpsUserAltitudeCorrection().getMeters() );
-
   QString rate = QString::number( conf->getGpsSpeed() );
 
   for (int i=0; i < GpsSpeed->count(); i++)
@@ -221,7 +206,6 @@ void SettingsPageGPS::slot_save()
 
   conf->setGpsDevice( GpsDev->currentText() );
   conf->setGpsAltitude( GpsNmea::DeliveredAltitude(GpsAltitude->currentIndex()) );
-  conf->setGpsUserAltitudeCorrection( Altitude(spinUserCorrection->value()) );
   conf->setGpsSpeed( GpsSpeed->currentText().toInt() );
 
 #ifndef MAEMO
@@ -259,19 +243,3 @@ void SettingsPageGPS::slot_gpsDeviceChanged( const QString& text )
 
   GpsSpeed->setEnabled( true );
 }
-
-/**
- * Called when the user correction value is changed.
- */
-void SettingsPageGPS::slot_spinUserCorrectionChanged( int newValue )
-{
-  if( newValue <= 0 )
-    {
-      spinUserCorrection->setPrefix("");
-    }
-  else
-    {
-      spinUserCorrection->setPrefix("+");
-    }
-}
-
