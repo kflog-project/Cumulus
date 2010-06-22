@@ -81,8 +81,11 @@ private:
 
 public:
 
-  MapInfoBox( QWidget* parent, const QString& borderColor,
-              int fontDotsize=38, bool minusInPretext=false );
+  MapInfoBox( QWidget* parent,
+              const QString& borderColor,
+              bool unitInPretext=false,
+              bool minusInPretext=false,
+              int fontDotsize=38 );
 
   MapInfoBox( QWidget* parent, const QString& borderColor, const QPixmap& pixmap );
 
@@ -99,6 +102,11 @@ public:
    * Write property of QString _preText.
    */
   void setPreText( const QString& _newVal);
+
+  /**
+   * Write property of QString _preUnit.
+   */
+  void setPreUnit( const QString& _newVal);
 
   /**
    * Read property of QString _preText.
@@ -154,20 +162,22 @@ protected:
   bool eventFilter(QObject *, QEvent *);
 
 private:
-  /** The text displayed before the value. */
+  /** The upper text displayed before the value. */
   QString _preText;
+  /** The lower text displayed before the value. */
+  QString _preUnit;
   /** The value of the box */
   QString _value;
   /** Pointer to the internal text label */
   QLabel  *_text;
   /** Pointer to the internal pre-text label */
   QLabel  *_ptext;
+  /** Pointer to the internal pre-unit label */
+  QLabel  *_punit;
   /** Pointer to the pre-text minus sign */
   QLabel  *_minus;
   /** The maximum font size */
   int _maxFontDotsize;
-  /** If the minus sign is shown in pre-text or text label */
-  bool _preMinus;
 };
 
 #endif

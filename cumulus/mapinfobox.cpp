@@ -45,33 +45,34 @@ void CuLabel::mousePressEvent ( QMouseEvent* event )
 
 //------------------------------------------------------------------------------
 
-MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor,
-                        int fontDotsize, bool minusInPretext ) :
+MapInfoBox::MapInfoBox( QWidget *parent,
+                        const QString& borderColor,
+                        bool unitInPretext,
+                        bool minusInPretext,
+                        int fontDotsize ) :
   QFrame( parent )
 {
   basics( borderColor );
   QHBoxLayout* topLayout = (QHBoxLayout*) this->layout();
-  _preMinus = minusInPretext;
+
   _maxFontDotsize = fontDotsize;
+
+  QFont f;
+  f.setPixelSize(16);
 
   QVBoxLayout* preLayout = new QVBoxLayout;
   preLayout->setMargin(0);
   preLayout->setSpacing(3);
-  preLayout->setAlignment(Qt::AlignTop);
 
   _ptext = new QLabel(this);
 
   QPalette p = _ptext->palette();
   p.setColor( QPalette::Foreground, Qt::black );
   _ptext->setPalette(p);
-
-  QFont f;
-  f.setPixelSize(16);
   _ptext->setFont(f);
-
   _ptext->setAlignment( Qt::AlignRight );
   _ptext->setFixedWidth( 27 );
-  preLayout->addWidget(_ptext);
+  preLayout->addWidget(_ptext, 0, Qt::AlignRight|Qt::AlignTop);
 
   if( minusInPretext )
     {
@@ -80,6 +81,23 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor,
       _minus->setFixedWidth( 25 );
       preLayout->addWidget( _minus );
       _minus->setVisible(false);
+    }
+
+  if( unitInPretext )
+    {
+      // A unit shall be displayed in the pre-text box.
+      _punit = new QLabel(this);
+
+      p = _punit->palette();
+      p.setColor( QPalette::Foreground, Qt::black );
+
+      _punit->setPalette(p);
+      _punit->setFont(f);
+      _punit->setAlignment( Qt::AlignRight );
+      _punit->setFixedWidth( 27 );
+
+      preLayout->addStretch( 5 );
+      preLayout->addWidget(_punit, 0, Qt::AlignRight|Qt::AlignBottom);
     }
 
   topLayout->addLayout(preLayout, 0);
@@ -102,11 +120,11 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor,
 
   setValue("-");
   setPreText("");
+  setPreUnit("");
 
   _text->installEventFilter(this);
   _ptext->installEventFilter(this);
 }
-
 
 MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor, const QPixmap& pixmap ) :
   QFrame( parent )
@@ -117,7 +135,6 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor, const QPixm
   _text->setPixmap(pixmap);
   topLayout->addWidget( _text );
 }
-
 
 void MapInfoBox::basics( const QString& borderColor )
 {
@@ -133,10 +150,13 @@ void MapInfoBox::basics( const QString& borderColor )
   setMaximumHeight(60);
 
   _preText = QString("");
+  _preUnit = QString("");
   _value =  QString("");
-  _ptext = 0;
-}
+  _ptext = 0; // can be unused
+  _minus = 0; // can be unused
+  _punit = 0; // can be unused
 
+}
 
 /** Write property of QString _preText. */
 void MapInfoBox::setPreText( const QString& newVal )
@@ -150,6 +170,20 @@ void MapInfoBox::setPreText( const QString& newVal )
   _preText = newVal;
   _ptext->setText(_preText);
 }
+
+/** Write property of QString _preUnit. */
+void MapInfoBox::setPreUnit( const QString& newVal )
+{
+  // pre-unit can be unused
+  if ( _punit == 0 )
+    {
+      return;
+    }
+
+  _preUnit = newVal;
+  _punit->setText(_preUnit);
+}
+
 
 /** Set new pixmap as the main content */
 void MapInfoBox::setPixmap( const QPixmap& newPixmap )
@@ -171,7 +205,7 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
 
   _value = newVal;
 
-  if(  _minus && _preMinus && showEvent == false )
+  if( _minus && showEvent == false )
     {
       if( _value.startsWith( '-' ) && _value.size() > 1 )
         {
