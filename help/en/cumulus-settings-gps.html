@@ -75,13 +75,16 @@
   <dt><b>Altitude Reference</b></dt>
 
   <dd>
-    Most of the GPS devices send MSL (mean sea level) altitudes but
-    some send HAE (Height above ellipsoid.) If your displayed altitude
-    deviate always by a constant factor, add a correction value in the
-    spin box labeled with Altitude Correction. Positive values will be added
-    and negative values subtracted from the delivered altitude.
+    The default selection is GPS. Most of the GPS devices send MSL (mean sea
+    level) altitudes but some send HAE (Height above ellipsoid.) If your displayed
+    altitude deviate always by a constant factor from the expected value you can
+    correct that in the altitude dialog. You can open it by tipping on the
+    altitude display at the map view. Add your correction value in the spin box
+    labeled with Leveling. Positive values will be added and negative values
+    subtracted from the delivered altitude. If a GPS fix is established the
+    correction value will be applied immediately.
     <p>
-    Some logger devices can also deliver altitude values derived from a pressure
+    Some logger devices can deliver altitude values derived from a pressure
     sonde. If you want to use pressure data, you have to select in the Altitude
     Reference combo box the entry <i>Pressure</i>.
     <br><b>Please note!</b> If you have selected the pressure item Cumulus
