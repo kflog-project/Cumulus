@@ -42,7 +42,7 @@ class AltimeterModeDialog : public QDialog
 
 public:
 
-  AltimeterModeDialog(QWidget *parent);
+  AltimeterModeDialog( QWidget *parent );
   virtual ~AltimeterModeDialog();
 
   static QString mode2String();
@@ -50,33 +50,42 @@ public:
 
 protected:
 
-  void load();
+  /** User has pressed the ok button. */
   void accept();
-  void save( int mode ); // 0: MSL,  1: STD,  2: AGL, 3: AHL
 
 private:
 
-  QTimer* timeout;
-  int _time;
-  int _mode;  	 // 0: MSL,  1: STD,  2: AGL, 3: AHL
-  bool _toggling_mode;   // 1: On
+  /** Gets the initial data for all widgets which needs a start configuration. */
+  void load();
 
-  // Altitude references
+  /** Starts resp. restarts the inactively timer. */
+  void startTimer();
+
+
+  /** inactively timer control */
+  QTimer* timeout;
+
+  /** Altitude references */
   QRadioButton* _msl;
   QRadioButton* _agl;
   QRadioButton* _std;
   QRadioButton* _ahl;
 
-  // Altitude units
+  /** Altitude modes */
+  int _mode; // 0: MSL,  1: STD,  2: AGL, 3: AHL
+
+  /** Altitude units */
   int _unit;     // 0: Meter,  1: Feet,  2: FL
   QRadioButton* _meter;
   QRadioButton* _feet;
-  QRadioButton* _fl;
 
-  // Spin box for altitude correction
-  QSpinBox* spinUserCorrection;
+  /** Spin box for altitude leveling */
+  QSpinBox* spinLeveling;
 
-  // Setup buttons
+  /** Spin box for QNH setting */
+  QSpinBox* spinQnh;
+
+  /** Setup buttons */
   QPushButton *plus;
   QPushButton *pplus;
   QPushButton *minus;
@@ -84,16 +93,37 @@ private:
 
 private slots:
 
-  void slotSetTimer();
-  void slotChangeMode( int mode );
-  void slotChangeUnit( int unit );
-  void slotChangeValue( int unit );
+  /**
+   * This slot is called if the altitude reference has been changed. It
+   * restarts too the close timer.
+   */
+  void slotModeChanged( int mode );
+
+  /**
+   * This slot is called if the altitude unit has been changed. It
+   * restarts too the close timer.
+   */
+  void slotUnitChanged( int unit );
+
+  /**
+   * This slot is called if a value in a spin box has been changed
+   * to restart the close timer.
+   */
+  void slotSpinValueChanged( const QString& text );
+
+  /**
+   * This slot is called if a button is pressed to change the content of the
+   * related spin box which has the current focus.
+   */
+  void slotChangeSpinValue( int button );
 
 signals:
 
-  void settingsChanged();
+  /** Emitted, if the altimeter mode has been changed. */
   void newAltimeterMode();
-  void newAltimeterSetting();
+
+  /** Emitted, if the altimeter QNH resp. leveling have been changed. */
+  void newAltimeterSettings();
 };
 
 #endif
