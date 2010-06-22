@@ -216,19 +216,20 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   commonLayout->addLayout(VALayout);
   VALayout->setSpacing(2);
 
-  //add Vario widget
-  _vario = new MapInfoBox( this, conf->getMapFrameColor().name(), false, true );
-  _vario->setPreText("Var");
-  _vario->setValue("-");
-  VALayout->addWidget(_vario, 2 );
-  connect(_vario, SIGNAL(mousePress()), this, SLOT(slot_VarioDialog()));
-
+  // add altitude widget
   _altitude = new MapInfoBox( this, conf->getMapFrameColor().name(), true );
   _altitude->setPreText(AltimeterModeDialog::mode2String());
   _altitude->setPreUnit( Altitude::getUnitText() );
   _altitude->setValue("-");
   VALayout->addWidget( _altitude, 3 );
   connect(_altitude, SIGNAL(mousePress()), this, SLOT(slot_AltimeterDialog()));
+
+  // add Vario widget
+  _vario = new MapInfoBox( this, conf->getMapFrameColor().name(), false, true );
+  _vario->setPreText("Var");
+  _vario->setValue("-");
+  VALayout->addWidget(_vario, 2 );
+  connect(_vario, SIGNAL(mousePress()), this, SLOT(slot_VarioDialog()));
 
   sideLayout->addWidget( commonBar, 3 );
 
