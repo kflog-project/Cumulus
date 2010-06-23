@@ -97,25 +97,25 @@ void WGSPoint::calcPos (int coord, double& degree)
 }
 
 /**
- * Calculates the Flarm position and distance in relation to the own position.
+ * Calculates the other position and distance in relation to the own position.
  *
- * @param ownPos Own position in KFLog WGS84 coordinates.
+ * @param own Own position in KFLog WGS84 coordinates.
  * @param north Relative position in meter true north from own position
  * @param east Relative position in meter true east from own position
- * @param flarmPos Calculated Flarm position in KFLog WGS84 coordinates.
- * @param flarmDistance Calculated Flarm distance in meters.
+ * @param other Calculated other position in KFLog WGS84 coordinates.
+ * @param distance Calculated distance between own and other position in meters.
  * @returns true (success) or false (error occurred)
  */
-bool WGSPoint::calcFlarmPos ( QPoint& ownPos, int north, int east,
-                              QPoint& flarmPos, double& flarmDistance )
+bool WGSPoint::calcFlarmPos( QPoint& own, int north, int east,
+                             QPoint& other, double& distance )
 {
-  flarmPos.setX(0);
-  flarmPos.setY(0);
-  flarmDistance = -1;
+  other.setX(0);
+  other.setY(0);
+  distance = -1;
 
   // Convert own position from KFLog degree into decimal degree
-  double ownLat = ownPos.x() / 600000.;
-  double ownLon = ownPos.y() / 600000.;
+  double ownLat = own.x() / 600000.;
+  double ownLon = own.y() / 600000.;
 
   // Latitude 90N or 90S causes division by zero.
   if( ownLat >=90. || ownLat <=-90. || ownLon < -180. || ownLon > 180. )
@@ -130,7 +130,7 @@ bool WGSPoint::calcFlarmPos ( QPoint& ownPos, int north, int east,
   const double eastD  = (double) east;
 
   // Calculate length in degree along the latitude and the longitude.
-  // For the calculation the circle formula  is used.
+  // For the calculation the circle formula is used.
   double deltaLat = degree * northD/RADIUS;
   double deltaLon = degree * eastD/(RADIUS * cos ( rad * ownLat ));
 
@@ -154,11 +154,46 @@ bool WGSPoint::calcFlarmPos ( QPoint& ownPos, int north, int east,
     }
 
   // store Flarm position
-  flarmPos.setX( static_cast<int>(rint(flarmLat * 600000)) );
-  flarmPos.setY( static_cast<int>(rint(flarmLon * 600000)) );
+  other.setX( static_cast<int>(rint(flarmLat * 600000)) );
+  other.setY( static_cast<int>(rint(flarmLon * 600000)) );
 
-  // Calculate flarmDistance in meters according to Pythagoras
-  flarmDistance = sqrt( (north*north) + (east*east) );
+  // Calculate distance in meters according to Pythagoras
+  distance = sqrt( (north*north) + (east*east) );
+
+  return true;
+}
+
+/**
+ * Calculates the other position in relation to the own position by using
+ * bearing and radius distance. Only usable for short distances.
+ *
+ * @param radius Distance from own position in meters to other position
+ * @param bearing True bearing (0...359) from own position to other position
+ * @param own Own position in KFLog WGS84 coordinates
+ * @param other Calculated other position in KFLog WGS84 coordinates.
+ * @returns true (success) or false (error occurred)
+ */
+bool WGSPoint::calcFlarmPos( int radius, int bearing, QPoint& own, QPoint& other )
+{
+  const double rad    = M_PIl/180;
+  const double degree = 180/M_PIl;
+
+  // Convert own position from KFLog degree into decimal degree
+  double ownLat = own.x() / 600000.;
+  double ownLon = own.y() / 600000.;
+
+  double rx = degree * radius/RADIUS;
+  double ry = degree * radius/(RADIUS * cos ( rad * ownLat ));
+
+  double phi = bearing * rad;
+
+  // calculate polar coordinates
+  double x = (cos(phi) * rx) + ownLat;
+  double y = (sin(phi) * ry) + ownLon;
+
+  // store other position
+  other.setX( static_cast<int>(rint(x * 600000)) );
+  other.setY( static_cast<int>(rint(y * 600000)) );
 
   return true;
 }

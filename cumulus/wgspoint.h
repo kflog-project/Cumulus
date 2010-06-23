@@ -171,17 +171,30 @@ public:
     };
 
     /**
-     * Calculates the Flarm position and distance in relation to the own position.
+     * Calculates the other position and distance in relation to the own position.
      *
-     * @param ownPos Own position in KFLog WGS84 coordinates.
+     * @param own Own position in KFLog WGS84 coordinates.
      * @param north Relative position in meter true north from own position
      * @param east Relative position in meter true east from own position
-     * @param flarmPos Calculated Flarm position in KFLog WGS84 coordinates.
-     * @param flarmDistance Calculated Flarm distance in meters.
+     * @param other Calculated other position in KFLog WGS84 coordinates.
+     * @param distance Calculated distance between own and other position in meters.
      * @returns true (success) or false (error occurred)
      */
-    static bool calcFlarmPos ( QPoint& ownPos, int north, int east,
-                               QPoint& flarmPos, double& flarmDistance );
+     static bool calcFlarmPos ( QPoint& own, int north, int east,
+                                QPoint& other, double& distance );
+
+    /**
+     * Calculates the other position in relation to the own position by using
+     * bearing and radius distance. Only usable for short distances.
+     *
+     * @param radius Distance from own position in meters to other position
+     * @param bearing True bearing (0...359) from own position to other position
+     * @param own Own position in KFLog WGS84 coordinates
+     * @param other Calculated other position in KFLog WGS84 coordinates.
+     * @returns true (success) or false (error occurred)
+     */
+    static bool calcFlarmPos( int radius, int bearing,
+                              QPoint& own, QPoint& other );
 
 protected:
 
