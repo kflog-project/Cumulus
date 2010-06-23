@@ -36,6 +36,7 @@ HEADERS = \
     downloadmanager.h \
     elevationcolorimage.h \
     filetools.h \
+    flarm.h \
     flighttask.h \
     generalconfig.h \
     gliderflightdialog.h \
@@ -148,6 +149,7 @@ SOURCES = \
     downloadmanager.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \
+    flarm.cpp \
     flighttask.cpp \
     generalconfig.cpp \
     glider.cpp \
@@ -247,6 +249,8 @@ INCLUDEPATH += ../
 
 QMAKE_CXXFLAGS += -fno-default-inline \
                   -fno-inline -Wextra
+                  
+DEFINES += FLARM
     
 LIBS += -lstdc++
 

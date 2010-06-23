@@ -38,6 +38,7 @@ HEADERS = \
     downloadmanager.h \    
     elevationcolorimage.h \
     filetools.h \
+    flarm.h \
     flighttask.h \
     generalconfig.h \
     glider.h \
@@ -151,6 +152,7 @@ SOURCES = \
     downloadmanager.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \
+    flarm.cpp \
     flighttask.cpp \
     generalconfig.cpp \
     glider.cpp \
@@ -253,7 +255,7 @@ INCLUDEPATH += ../ \
     /usr/include/dbus-1.0 \
     /usr/lib/dbus-1.0/include
     
-DEFINES += MAEMO MAEMO4
+DEFINES += MAEMO MAEMO4 FLARM
 
 LIBS += -lstdc++ \
     -losso \
