@@ -14,6 +14,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-06-23 AP: New class Flarm added to handle Flarm specific stuff.
+                   NMEA parser extended to extract $PFLAA sentence emitted by
+                   Flarm. All Flarm stuff is enclosed in conditional defines
+                   to make it easy on/off switchable.
 [o] 2010-06-22 AP: Position of altitude and variometer display swapped to make
                    altitude display visible on MAEMO if altitude dialog is
                    opened.
