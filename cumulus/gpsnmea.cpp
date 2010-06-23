@@ -48,6 +48,10 @@
 
 #include "generalconfig.h"
 
+#ifdef FLARM
+#include "flarm.h"
+#endif
+
 // @AP: define timeout constants for GPS fix supervision in milli seconds.
 //      After this time an alarm is generated.
 #define FIX_TO 25000
@@ -63,7 +67,6 @@ short GpsNmea::instances = 0;
 
 GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
 {
-  // qDebug("GpsNmea::GpsNmea()");
   if ( ++instances > 1 )
     {
       // There exists already a class instance as singleton.
@@ -83,6 +86,22 @@ GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
   serial    = static_cast<GpsCon *> (0);
 
   createGpsConnection();
+}
+
+GpsNmea::~GpsNmea()
+{
+  // decrement instance counter
+  if ( --instances )
+    {
+      return;
+    }
+
+  // stop GPS client process
+  if ( serial )
+    {
+      delete serial;
+      writeConfig();
+    }
 }
 
 /** Resets all data objects to their initial values. This is called
@@ -124,8 +143,6 @@ void GpsNmea::resetDataObjects()
   _lastUtc = QDateTime();
 
   _ignoreConnectionLost = false;
-
-  flarmStatus.valid = false;
 }
 
 void GpsNmea::createGpsConnection()
@@ -155,22 +172,6 @@ void GpsNmea::createGpsConnection()
   // The connection to the GPS receiver or daemon has been established
   connect (gpsObject, SIGNAL(gpsConnectionOn()),
            this, SLOT( _slotGpsConnectionOn()) );
-}
-
-GpsNmea::~GpsNmea()
-{
-  // decrement instance counter
-  if ( --instances )
-    {
-      return;
-    }
-
-  // stop GPS client process
-  if ( serial )
-    {
-      delete serial;
-      writeConfig();
-    }
 }
 
 /**
@@ -826,6 +827,8 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       return;
     }
 
+#ifdef FLARM
+
   /**
   $PFLAU,<RX>,<TX>,<GPS>,<Power>,<AlarmLevel>,<RelativeBearing>,<AlarmType>,
   <RelativeVertical>,<RelativeDistance>,<ID>
@@ -833,9 +836,28 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   if ( slst[0] == "$PFLAU" )
     {
-      __ExtractPflau( slst );
+      bool res = Flarm::instance()->extractPflau( slst );
+
+      if( res )
+        {
+          // Check the GPS fix state reported by Flarm.
+          Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
+
+          if( status.Gps == Flarm::NoFix )
+            {
+              fixNOK();
+            }
+          else
+            {
+              fixOK();
+            }
+
+        }
+
       return;
     }
+
+#endif
 
   // qDebug ("Unsupported NMEA sentence: %s", sentence.toLatin1().data());
 }
@@ -1109,103 +1131,6 @@ void GpsNmea::__ExtractLxwp2( const QStringList& stringList )
   return;
 }
 
-/**
- * Extracts $PFLAU sentence from Flarm device.
- */
-void GpsNmea::__ExtractPflau(const QStringList& stringList)
-{
-  if ( stringList.size() < 11 )
-    {
-      qWarning("$PFLAU contains too less parameters!");
-      return;
-    }
-
-
-  /**
-    $PFLAU,<RX>,<TX>,<GPS>,<Power>,<AlarmLevel>,<RelativeBearing>,<AlarmType>,
-    <RelativeVertical>,<RelativeDistance>,<ID>
-  */
-
-  bool ok;
-  short value;
-
-  // RX number of received devices
-  flarmStatus.RX = 0;
-  value = stringList[1].toShort( &ok );
-
-  if( ok )
-    {
-      flarmStatus.RX = value;
-    }
-
-  // TX Transmission status
-  flarmStatus.TX = 0;
-  value = stringList[2].toShort( &ok );
-
-  if( ok )
-    {
-      flarmStatus.TX = value;
-    }
-
-  // GPS status
-  flarmStatus.Gps = notConnected;
-  value = stringList[3].toShort( &ok );
-
-  if( ok )
-    {
-      if( value == 0 )
-        {
-          flarmStatus.Gps = noFix;
-          fixNOK();
-        }
-      else if( value == 1 || value == 2 )
-        {
-          flarmStatus.Gps = validFix;
-          fixOK();
-        }
-    }
-
-  // Power status
-  flarmStatus.Power = 0;
-  value = stringList[4].toShort( &ok );
-
-  if( ok )
-    {
-      flarmStatus.Power = value;
-    }
-
-  // AlarmLevel
-  value = stringList[5].toShort( &ok );
-  flarmStatus.AlarmLevel = 0;
-
-  if( ok )
-    {
-      flarmStatus.AlarmLevel = value;
-    }
-
-  // RelativeBearing
-  flarmStatus.RelativeBearing = stringList[6];
-
-  // AlarmType
-  value = stringList[7].toShort( &ok );
-  flarmStatus.AlarmType = 0;
-
-  if( ok )
-    {
-      flarmStatus.AlarmType = value;
-    }
-
-  // RelativeVertical
-  flarmStatus.RelativeVertical = stringList[8];
-
-  // RelativeDistance
-  flarmStatus.RelativeDistance = stringList[9];
-
-  // ID 6-digit hex value
-  flarmStatus.ID = stringList[10];
-
-  flarmStatus.valid = true;
-}
 
 /**
  * This function returns a QTime from the time encoded in a MNEA sentence.
@@ -1304,7 +1229,6 @@ Speed GpsNmea::__ExtractKnotSpeed(const QString& speedString)
 
   return res;
 }
-
 
 /** This function converts the coordinate data from the NMEA sentence to the internal QPoint format. */
 QPoint GpsNmea::__ExtractCoord(const QString& slat, const QString& slatNS,
@@ -2289,67 +2213,4 @@ void GpsNmea::__ExtractSatsInView(const QString& id, const QString& elev,
 
   sivInfoInternal.append( sivi );
   //qDebug("new sivi info (snr: %d", sivi->db);
-}
-
-bool GpsNmea::getFlarmRelativeBearing( int &relativeBearing )
-{
-  if( ! flarmStatus.valid && flarmStatus.RelativeBearing.isEmpty() )
-    {
-      return false;
-    }
-
-  bool ok;
-
-  relativeBearing = flarmStatus.RelativeBearing.toInt( &ok );
-
-  if( ok )
-    {
-      return true;
-    }
-  else
-    {
-      return false;
-    }
-}
-
-bool GpsNmea::getFlarmRelativeVertical( int &relativeVertical )
-{
-  if( ! flarmStatus.valid && flarmStatus.RelativeVertical.isEmpty() )
-    {
-      return false;
-    }
-
-  bool ok;
-
-  relativeVertical = flarmStatus.RelativeVertical.toInt( &ok );
-
-  if( ok )
-    {
-      return true;
-    }
-  else
-    {
-      return false;
-    }
-}
-
-bool GpsNmea::getFlarmRelativeDistance( int &relativeDistance )
-{
-  if( ! flarmStatus.valid && flarmStatus.RelativeDistance.isEmpty() )
-    {
-      return false;
-    }
-
-  bool ok;
-
-  relativeDistance = flarmStatus.RelativeDistance.toInt( &ok );
-
-  if( ok )
-    {
-      return true;
-    }
-  else
-    {
-      return false;
-    }
 }

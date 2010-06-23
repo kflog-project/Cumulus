@@ -134,26 +134,7 @@ class GpsNmea : public QObject
     /**
      * defines the states of the GPS unit
      */
-    enum GpsStatus {notConnected=0, noFix=1, validFix=2};
-
-    /**
-     * FLARM status structure. It contains the last data of the sentence
-     * PFLAU.
-     */
-    struct FlarmStatus
-    {
-      bool    valid; // true displays a valid filled structure
-      short   RX;
-      short   TX;
-      enum    GpsStatus Gps;
-      short   Power;
-      short   AlarmLevel;
-      QString RelativeBearing;
-      short   AlarmType;
-      QString RelativeVertical;
-      QString RelativeDistance;
-      QString ID;
-    };
+    enum GpsStatus { notConnected=0, noFix=1, validFix=2 };
 
   public:
 
@@ -369,39 +350,6 @@ class GpsNmea : public QObject
     };
 
     /**
-     * @Returns the Flarm status structure with the last received data.
-     */
-    FlarmStatus& getFlarmStatus()
-    {
-      return flarmStatus;
-    };
-
-    /**
-     * @param relativeBearing Returns the relative bearing in degree from the
-     * own position as integer -180...+180.
-     *
-     * @return true is a valid value exists otherwise false
-     */
-    bool getFlarmRelativeBearing( int &relativeBearing );
-
-    /**
-     * @param relativeVertical Returns the relative vertical separation in
-     * meters from the own position as integer. Plus means above own position
-     * minus means below own position.
-     *
-     * @return true is a valid value exists otherwise false
-     */
-    bool getFlarmRelativeVertical( int &relativeVertical );
-
-    /**
-     * @param relativeDistance Returns the relative horizontal distance in
-     * meters from the own position as integer.
-     *
-     * @return true is a valid value exists otherwise false
-     */
-    bool getFlarmRelativeDistance( int &relativeDistance );
-
-    /**
      * @Returns the map datum of the GPS receiver.
      */
     QString getMapDatum() const
@@ -577,10 +525,6 @@ class GpsNmea : public QObject
      * Extracts McCready data from LX Navigation $LXWP2 sentence.
      */
     void __ExtractLxwp2(const QStringList& stringList);
-    /**
-     * Extracts $PFLAU sentence from Flarm device.
-     */
-    void __ExtractPflau(const QStringList& stringList);
 
 #ifdef MAEMO
     /**
@@ -692,9 +636,6 @@ class GpsNmea : public QObject
     QString gpsDevice;
     /** reference to the normal serial connection */
     GpsCon* serial;
-
-    /** Flarm status */
-    FlarmStatus flarmStatus;
 
     // number of created class instances
     static short instances;
