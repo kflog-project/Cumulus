@@ -18,6 +18,9 @@ CONFIG = qt \
 
 # CONFIG = debug qt warn_on
 
+# Enable Flarm feature, if not wanted comment out the next line with a hash
+CONFIG += flarm
+
 QT += network
 
 HEADERS = \
@@ -38,7 +41,6 @@ HEADERS = \
     downloadmanager.h \    
     elevationcolorimage.h \
     filetools.h \
-    flarm.h \
     flighttask.h \
     generalconfig.h \
     glider.h \
@@ -151,7 +153,6 @@ SOURCES = \
     downloadmanager.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \
-    flarm.cpp \
     flighttask.cpp \
     generalconfig.cpp \
     glider.cpp \
@@ -241,6 +242,12 @@ SOURCES = \
     wpeditdialogpagegeneral.cpp \
     wpinfowidget.cpp \
     listwidgetparent.cpp
+
+flarm {
+    HEADERS += flarm.h
+    SOURCES += flarm.cpp
+    DEFINES += FLARM
+}
     
 INTERFACES = 
 TARGET = cumulus
@@ -253,7 +260,7 @@ INCLUDEPATH += ../ \
     /usr/include/dbus-1.0 \
     /usr/lib/dbus-1.0/include
     
-DEFINES += MAEMO MAEMO5 FLARM
+DEFINES += MAEMO MAEMO5
 
 LIBS += -lstdc++ \
     -losso \

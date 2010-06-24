@@ -47,11 +47,15 @@
 #include "waypoint.h"
 #include "wpeditdialog.h"
 
-extern MainWindow      *_globalMainWindow;
-extern MapContents     *_globalMapContents;
-extern MapMatrix       *_globalMapMatrix;
-extern MapConfig       *_globalMapConfig;
-extern MapView         *_globalMapView;
+#ifdef FLARM
+#include "flarm.h"
+#endif
+
+extern MainWindow  *_globalMainWindow;
+extern MapContents *_globalMapContents;
+extern MapMatrix   *_globalMapMatrix;
+extern MapConfig   *_globalMapConfig;
+extern MapView     *_globalMapView;
 
 Map *Map::instance = static_cast<Map *>(0);
 
@@ -872,7 +876,7 @@ void Map::resizeEvent(QResizeEvent* event)
   slotDraw();
 }
 
-void Map::__redrawMap(mapLayer fromLayer)
+void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
 {
   static bool first = true; // mark first calling of method
 
@@ -896,7 +900,7 @@ void Map::__redrawMap(mapLayer fromLayer)
       return;
     }
 
-  if( mutex() )
+  if( mutex() && queueRequest )
     {
       // @AP: we queue only the redraw request, timer will be started
       // again by __redrawMap() method.
@@ -1227,6 +1231,11 @@ void Map::__drawInformationLayer()
   if (ShowGlider)
     {
       __drawGlider();
+
+#ifdef FLARM
+      __drawOtherAircraft();
+#endif
+
     }
 
   if(!ShowGlider || calculator->isManualInFlight())
@@ -1806,8 +1815,11 @@ void Map::__drawScale(QPainter& scaleP)
   scaleP.drawText(leftTPos,this->height()-10+txtRect.height()/2,scaleText);
 }
 
-
-/** This slot is called to set a new position. The map object determines if it is necessary to recenter the map, or if the glider can just be drawn on a different position. */
+/**
+ * This slot is called to set a new position. The map object determines if it
+ * is necessary to recenter the map, or if the glider can just be drawn on a
+ * different position.
+ */
 void Map::slotPosition(const QPoint& newPos, const int source)
 {
   // qDebug("Map::slot_position x=%d y=%d", newPos.x(), newPos.y() );
@@ -1838,7 +1850,7 @@ void Map::slotPosition(const QPoint& newPos, const int source)
               else
                 {
                   // this is the faster redraw
-                  __redrawMap( informationLayer );
+                  __redrawMap( informationLayer, false );
                 }
             }
           else
@@ -1889,6 +1901,100 @@ void Map::slotSwitchManualInFlight()
     }
 }
 
+#ifdef FLARM
+
+/** Draws the most important aircraft reported by Flarm. */
+void Map::__drawOtherAircraft()
+{
+  const int diameter = 20;
+
+  if( blackCircle.isNull() )
+    {
+      // do create all needed pixmaps once.
+      extern MapConfig* _globalMapConfig;
+
+      _globalMapConfig->createCircle( blackCircle, diameter, QColor(Qt::black), 1.0 );
+      _globalMapConfig->createCircle( redCircle, diameter, QColor(Qt::red), 1.0 );
+      _globalMapConfig->createCircle( blueCircle, diameter, QColor(Qt::blue), 1.0 );
+    }
+
+  if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) > 56.0 )
+    {
+      // scale to large
+      return;
+    }
+
+  const Flarm::FlarmStatus& status = Flarm::getFlarmStatus();
+
+  if( status.valid == false ||
+      status.RelativeBearing.isEmpty() ||
+      status.RelativeVertical.isEmpty() ||
+      status.RelativeDistance.isEmpty() )
+    {
+      // no valid data available
+      return;
+    }
+
+  // compute true bearing to other aircraft
+  bool ok1, ok2, ok3;
+
+  int relBearing  = status.RelativeBearing.toInt( &ok1 );
+  int relVertical = status.RelativeVertical.toInt( &ok2 );
+  int relDistance = status.RelativeDistance.toInt( &ok3 );
+
+  if( ! (ok1 & ok2 & ok3) )
+    {
+      // conversion error
+      return;
+    }
+
+  // calculate true heading to the other object
+  int th = normalize( static_cast<int> ( GpsNmea::gps->getLastHeading()) + relBearing );
+
+  // calculate coordinates of other object
+  QPoint other;
+  WGSPoint::calcFlarmPos( relDistance, th, curGPSPos, other );
+
+  // get the projected coordinates of the other position
+  QPoint projPos = _globalMapMatrix->wgsToMap( other );
+
+  // map them to a coordinate on the pixmap
+  QPoint mapPos = _globalMapMatrix->map( projPos );
+
+  int Rx = mapPos.x();
+  int Ry = mapPos.y();
+
+  QRect rect( QPoint(0, 0), this->size() );
+
+  // don't continue if position is outside of window's view port
+  if( ! rect.contains( Rx, Ry, false ) )
+    {
+      return;
+    }
+
+  // Check, which circle we do need
+  QPainter p(&m_pixInformationMap);
+
+  if( status.Alarm != Flarm::No )
+    {
+      // alarm is active
+      p.drawPixmap(  Rx-diameter, Ry-diameter, redCircle );
+      return;
+    }
+
+  if( relVertical < 0 )
+    {
+      p.drawPixmap(  Rx-diameter, Ry-diameter, blackCircle );
+    }
+  else
+    {
+      p.drawPixmap(  Rx-diameter, Ry-diameter, blueCircle );
+    }
+
+  // additional info can be drawn here, like horizontal and vertical distance
+}
+
+#endif
 
 /** Draws the glider symbol on the pixmap */
 void Map::__drawGlider()

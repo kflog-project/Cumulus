@@ -405,6 +405,7 @@ void AltimeterModeDialog::accept()
 
   GeneralConfig *conf = GeneralConfig::instance();
 
+  conf->setUnitAlt( _unit );
   conf->setAltimeterMode( _mode );
   conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters(spinLeveling->value()) );
   conf->setQNH( spinQnh->value() );

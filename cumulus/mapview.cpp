@@ -313,6 +313,17 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusFlightstatus->setMinimumSize(_statusFlightstatus->fontMetrics().boundingRect(" L ? ").width(), 5);
   _statusbar->addWidget(_statusFlightstatus);
 
+#ifdef FLARM
+
+  _statusFlarm = new CuLabel( tr( "F" ), _statusbar );
+  _statusFlarm->setLineWidth( 0 );
+  _statusFlarm->setAlignment( Qt::AlignCenter );
+  _statusFlarm->setMargin( 0 );
+  _statusbar->addWidget( _statusFlarm );
+  _statusFlarm->setVisible( false );
+
+#endif
+
   _statusPosition = new QLabel(_statusbar);
   _statusPosition->setLineWidth(0);
   _statusPosition->setAlignment(Qt::AlignCenter);
@@ -337,7 +348,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   lastPositionChangeSource = Calculator::MAN;
 }
-
 
 MapView::~MapView()
 {
@@ -957,6 +967,29 @@ void MapView::slot_SatCount( SatInfo& satInfo )
   _statusGps->setText (msg);
 }
 
+#ifdef FLARM
+
+/** This slot is called if the number of received Flarms has been changed. */
+void MapView::slot_FlarmCount( int flarmCount )
+{
+  // Display the number of Flarms received.
+  if( flarmCount == -1 )
+    {
+      // hide Flarm display
+      _statusFlarm->setVisible( false );
+      return;
+    }
+
+  QString msg = QString ("F-%1").arg( flarmCount );
+  _statusFlarm->setText (msg);
+
+  if( _statusFlarm->isVisible() == false )
+    {
+      _statusFlarm->setVisible( true );
+    }
+}
+
+#endif
 
 /** This slot updates the FlightStatus status bar-widget with the
     current logging and flight mode status */

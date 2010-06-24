@@ -12,9 +12,13 @@
 TEMPLATE = app
 
 # CONFIG = qt warn_on release
+
 CONFIG = debug \
-    qt \
-    warn_on
+         qt \
+         warn_on
+         
+# Enable Flarm feature, if not wanted comment out the next line with a hash
+CONFIG += flarm
     
 QT += network
     
@@ -36,7 +40,6 @@ HEADERS = \
     downloadmanager.h \
     elevationcolorimage.h \
     filetools.h \
-    flarm.h \
     flighttask.h \
     generalconfig.h \
     gliderflightdialog.h \
@@ -149,7 +152,6 @@ SOURCES = \
     downloadmanager.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \
-    flarm.cpp \
     flighttask.cpp \
     generalconfig.cpp \
     glider.cpp \
@@ -239,6 +241,12 @@ SOURCES = \
     wpeditdialogpagegeneral.cpp \
     wpinfowidget.cpp
     
+flarm {
+		HEADERS += flarm.h
+		SOURCES += flarm.cpp
+		DEFINES += FLARM
+}
+    
 INTERFACES = 
 
 TARGET = cumulus
@@ -249,8 +257,6 @@ INCLUDEPATH += ../
 
 QMAKE_CXXFLAGS += -fno-default-inline \
                   -fno-inline -Wextra
-                  
-DEFINES += FLARM
     
 LIBS += -lstdc++
 

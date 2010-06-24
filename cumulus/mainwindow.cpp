@@ -438,6 +438,11 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
            calculator, SLOT( slot_GpsStatus( GpsNmea::GpsStatus ) ) );
 
+#ifdef FLARM
+  connect( GpsNmea::gps, SIGNAL( newFlarmCount(int) ),
+           viewMap, SLOT( slot_FlarmCount(int) ) );
+#endif
+
   connect( viewWP, SIGNAL( newWaypoint( wayPoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
   connect( viewWP, SIGNAL( deleteWaypoint( wayPoint* ) ),

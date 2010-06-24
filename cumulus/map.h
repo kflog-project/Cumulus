@@ -284,7 +284,7 @@ class Map : public QWidget
      * redraw is already in progress, a new redraw is scheduled so the
      * redraw can take place on a later time.
      */
-    void __redrawMap(mapLayer fromLayer);
+    void __redrawMap(mapLayer fromLayer, bool queueRequest=true);
 
     /**
      * Draws the base layer of the map.
@@ -423,6 +423,19 @@ class Map : public QWidget
      */
     void __drawDirectionLine(const QPoint& from);
 
+#ifdef FLARM
+
+    /**
+     * Draws the most important aircraft reported by Flarm.
+     */
+    void __drawOtherAircraft();
+
+    /** Pixmaps used by Flarm for object drawing */
+    QPixmap blackCircle;
+    QPixmap redCircle;
+    QPixmap blueCircle;
+
+#endif
 
   private: //members
     /**

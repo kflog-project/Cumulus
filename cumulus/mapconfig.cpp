@@ -776,7 +776,7 @@ QPixmap& MapConfig::getGreenCircle( int diameter )
       return greenCircle;
     }
 
-  __createCircle( greenCircle, diameter, QColor( Qt::green ) );
+  createCircle( greenCircle, diameter, QColor( Qt::green ) );
 
   return greenCircle;
 }
@@ -794,7 +794,7 @@ QPixmap& MapConfig::getMagentaCircle( int diameter )
        return magentaCircle;
     }
 
-  __createCircle( magentaCircle, diameter, QColor(Qt::magenta) );
+  createCircle( magentaCircle, diameter, QColor(Qt::magenta) );
 
   return magentaCircle;
 }
@@ -802,9 +802,10 @@ QPixmap& MapConfig::getMagentaCircle( int diameter )
 /**
   * Returns a pixmap containing a circle in the wanted size
   * and filled with wanted color. The circle has no border and
-  * is transparent.
+  * is normally semi-transparent.
   */
-void MapConfig::__createCircle( QPixmap& pixmap, int diameter, QColor color)
+void MapConfig::createCircle( QPixmap& pixmap, int diameter,
+                              QColor color, double opacity )
 {
   if( diameter % 2 )
     {
@@ -820,7 +821,7 @@ void MapConfig::__createCircle( QPixmap& pixmap, int diameter, QColor color)
   painter.setBrush( QBrush( color, Qt::SolidPattern ) );
 #ifndef MAEMO
   // @AP: that did not work under Maemo. No idea why?
-  painter.setOpacity ( 0.50 ); // 50% opacity
+  painter.setOpacity ( opacity ); // 50% opacity
 #endif
   painter.drawEllipse( 2, 2, diameter-4, diameter-4 );
 }

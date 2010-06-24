@@ -192,6 +192,14 @@ public:
       */
     QPixmap& getMinusButton();
 
+    /**
+      * Returns a pixmap containing a circle in the wanted size
+      * and filled with wanted color. The circle has no border and
+      * is semi-transparent.
+      */
+    void createCircle( QPixmap& pixmap, int diameter,
+                       QColor color, double opacity=0.5 );
+
 public slots:
     /**
      * Forces MapConfig to reload its configuration data.
@@ -218,13 +226,6 @@ public slots:
     void slotSetMatrixValues(int index, bool isSwitch);
 
 private:
-
-  /**
-    * Returns a pixmap containing a circle in the wanted size
-    * and filled with wanted color. The circle has no border and
-    * is transparent.
-    */
-  void __createCircle( QPixmap& pixmap, int diameter, QColor color);
 
   /**
      * Determines the brush to be used to draw or print a given element-type.

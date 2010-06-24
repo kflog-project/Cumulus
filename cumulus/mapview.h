@@ -243,6 +243,13 @@ class MapView : public QWidget
     /** Opens the GPS status dialog */
     void slot_gpsStatusDialog();
 
+#ifdef FLARM
+
+    /** This slot is called if the number of received Flarms has been changed.*/
+    void slot_FlarmCount( int flarmCount );
+
+#endif
+
   signals: // Signals --------------------------------------------------
     /**
      * toggle LD calculation on/off
@@ -291,6 +298,12 @@ class MapView : public QWidget
     QStatusBar* _statusbar;
     /** reference to GPS status */
     CuLabel* _statusGps;
+
+#ifdef FLARM
+    /** reference to Flarm status */
+    CuLabel* _statusFlarm;
+#endif
+
     /** reference to flight status, including logging status and flight mode */
     QLabel* _statusFlightstatus;
     /** reference to position for status bar */

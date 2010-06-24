@@ -28,6 +28,7 @@
 #include <QObject>
 #include <QString>
 #include <QTime>
+#include <QHash>
 
 class Flarm : public QObject
 {
@@ -78,11 +79,11 @@ public:
     enum    GpsStatus Gps;
     short   Power;
     enum AlarmLevel Alarm;
-    QString RelativeBearing;
+    QString RelativeBearing;  // can be empty
     short   AlarmType;
-    QString RelativeVertical;
-    QString RelativeDistance;
-    QString ID;
+    QString RelativeVertical; // can be empty
+    QString RelativeDistance; // can be empty
+    QString ID;               // can be empty
   };
 
   /**
@@ -118,9 +119,31 @@ public:
   };
 
   /**
+   * @param flag true or false to switch on/off PFLAA data collection.
+   */
+  static void setCollectPflaa( bool flag )
+  {
+    collectPflaa = flag;
+
+    if( flag == false )
+      {
+        // Clear hash, if data are not more needed
+        pflaaHash.clear();
+      }
+  };
+
+  /**
+   * @return flag return current state of PFLAA data collection flag.
+   */
+  static bool getCollectPflaa()
+  {
+    return collectPflaa;
+  };
+
+  /**
    * @Returns the Flarm status structure with the last parsed data
    */
-  FlarmStatus& getFlarmStatus()
+  static const FlarmStatus& getFlarmStatus()
   {
     return flarmStatus;
   };
@@ -148,14 +171,14 @@ public:
   bool getFlarmRelativeDistance( int &relativeDistance );
 
   /**
-   * Extracts the $PFLAU sentence sent by the Flarm device.
+   * Extracts all items from the $PFLAU sentence sent by the Flarm device.
    * @param stringList Flarm sentence $PFLAU as string list
    * @return true is a valid value exists otherwise false
    */
   bool extractPflau(const QStringList& stringList);
 
   /**
-   * Extracts the $PFLAA sentence sent by the Flarm device.
+   * Extracts all items from the $PFLAA sentence sent by the Flarm device.
    *
    * @param stringList Flarm sentence $PFLAA as string list
    * @param aircraft extracted aircraft data from sentence
@@ -163,10 +186,48 @@ public:
    */
   bool extractPflaa( const QStringList& stringList, FlarmAcft& aircraft );
 
+  /**
+   * Creates a hash key by using the passed parameters.
+   *
+   * @param idType <ID-Type> tag of Flarm sentence $PFLAA
+   * @param id <ID> tag of Flarm sentence $PFLAA
+   */
+  static QString createHashKey( int idType, int id )
+  {
+    return QString("%1-%2").arg(idType).arg(id);
+  };
+
+  /**
+   * @return the pflaaHash to the caller.
+   */
+  static QHash<QString, FlarmAcft>& getPflaaHash()
+  {
+    return pflaaHash;
+  };
+
+  /**
+   * Resets the internal stored Flarm data.
+   */
+  static void reset()
+  {
+    pflaaHash.clear();
+    flarmStatus.valid = false;
+  };
+
 private:
 
-  /** Flarm status */
-  FlarmStatus flarmStatus;
+  /**
+   * Flarm status structure. Contains the data of the last parsed PFLAU
+   * sentence.
+   */
+  static FlarmStatus flarmStatus;
+
+  /** Flag to switch on the collecting of PFLAA data. */
+  static bool collectPflaa;
+
+  /** Hash map with collected PFLAA records. The key is a concatenation of
+   *  the Flarm tags <ID-Type> and <ID>.*/
+  static QHash<QString, FlarmAcft> pflaaHash;
 };
 
 #endif /* FLARM_H_ */

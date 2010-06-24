@@ -143,6 +143,11 @@ void GpsNmea::resetDataObjects()
   _lastUtc = QDateTime();
 
   _ignoreConnectionLost = false;
+
+#ifdef FLARM
+  Flarm::reset();
+  emit newFlarmCount( -1 );
+#endif
 }
 
 void GpsNmea::createGpsConnection()
@@ -300,6 +305,23 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   QStringList slst = sentence.split( QRegExp("[,*:]"), QString::KeepEmptyParts );
 
   dataOK();
+
+#if 0
+//aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+  if( slst[0] == "$GPRMC" )
+    {
+      QString pflau ="$PFLAU,5,1,2,1,1,90,0,100,5000,5A77B1*";
+
+      uint sum = calcCheckSum( pflau.size(), pflau );
+
+      QString sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
+
+      slot_sentence( pflau + sumStr );
+    }
+
+//aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+#endif
 
   /**
 
@@ -745,6 +767,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       Altitude res(0);
       bool ok;
       int num = slst[3].toInt(&ok, 16);
+
       if (!ok)
         {
           qWarning("$PGCS contains corrupt pressure altitude!");
@@ -840,8 +863,10 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
       if( res )
         {
+          static QTime lastReporting;
+
           // Check the GPS fix state reported by Flarm.
-          Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
+          const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
 
           if( status.Gps == Flarm::NoFix )
             {
@@ -852,6 +877,15 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
               fixOK();
             }
 
+          if( lastReporting.elapsed() >= 5000 )
+            {
+              // To reduce load, Flarm count is reported only after 5s.
+              // We do send always a new state independently of a change
+              // in the mean time.
+              lastReporting  = QTime::currentTime();
+
+              emit newFlarmCount( status.RX );
+            }
         }
 
       return;
@@ -1877,7 +1911,7 @@ void GpsNmea::slot_reset()
     }
 }
 
-
+#if 0
 /** This slot is called to reset the gps device to factory settings */
 void GpsNmea::sendFactoryReset()
 {
@@ -1892,7 +1926,6 @@ void GpsNmea::switchDebugging (bool on)
   cmd.sprintf ("$PSRF105,%d", on);
   if ( serial ) serial->sendSentence (cmd);
 }
-
 
 /**
  * Send the data of last valid fix to the gps receiver. Use the current utc
@@ -1955,6 +1988,7 @@ void GpsNmea::sendLastFix (bool hard, bool soft)
   if (!cmd.isEmpty())
     if ( serial ) serial->sendSentence (cmd);
 }
+#endif
 
 
 /** force a reset of the serial connection after a resume */

@@ -19,6 +19,13 @@
 
 #include "flarm.h"
 
+// initialize static data items
+bool Flarm::collectPflaa = false;
+
+Flarm::FlarmStatus Flarm::flarmStatus;
+
+QHash<QString, Flarm::FlarmAcft> Flarm::pflaaHash;
+
 Flarm::Flarm(QObject* parent) : QObject(parent)
 {
   flarmStatus.valid = false;
@@ -29,7 +36,7 @@ Flarm::~Flarm()
 }
 
 /**
- * Extracts $PFLAU sentence from Flarm device.
+ * Extracts all items from $PFLAU sentence from Flarm device.
  */
 bool Flarm::extractPflau( const QStringList& stringList )
 {
@@ -121,7 +128,7 @@ bool Flarm::extractPflau( const QStringList& stringList )
 }
 
 /**
- * Extracts the $PFLAA sentence sent by the Flarm device.
+ * Extracts all items from the $PFLAA sentence sent by the Flarm device.
  */
 bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
 {
@@ -230,6 +237,27 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
   if( ! ok )
     {
       aircraft.AcftType = 0; // unknown
+    }
+
+  // Check, if parsed data should be collected. In this case the data record
+  // is put or updated in the pflaaHash hash dictionary.
+
+  if( collectPflaa == true )
+    {
+      QString key = createHashKey( aircraft.IdType, aircraft.Id );
+
+      // first check, if record is already contained in the hash.
+      if( pflaaHash.contains( key ) == true )
+        {
+          // update entry
+          FlarmAcft& aircraftEntry = pflaaHash[key];
+          aircraftEntry = aircraft;
+        }
+      else
+        {
+          // insert new entry
+          pflaaHash.insert( key, aircraft );
+        }
     }
 
   return true;

@@ -372,6 +372,7 @@ class GpsNmea : public QObject
      */
     void slot_reset();
 
+#if 0
     /**
      * This slot is called to reset the gps device to factory
      * settings
@@ -382,6 +383,10 @@ class GpsNmea : public QObject
      * This slot is called to switch debugging mode on/off
      */
     void switchDebugging (bool on);
+
+    /** This function sends the data of last valid fix to the gps receiver. */
+    void sendLastFix (bool hard, bool soft);
+#endif
 
   private slots: // Private slots
 
@@ -486,6 +491,16 @@ class GpsNmea : public QObject
      */
     void newSentence(const QString&);
 
+#ifdef FLARM
+
+    /**
+     * This signal is send to indicate that the number of received
+     * Flarms has been changed.
+     */
+    void newFlarmCount( int newCount );
+
+#endif
+
   private:
 
     /** Resets all data objects to their initial values. This is called
@@ -557,8 +572,6 @@ class GpsNmea : public QObject
     /** This function calculates the MSL altitude from the passed STD altitude. */
     void calcMslAltitude(const Altitude& altitude);
 
-    /** This function sends the data of last valid fix to the gps receiver. */
-    void sendLastFix (bool hard, bool soft);
     /** Set system date/time. Input is UTC related. */
     void setSystemClock( const QDateTime& utcDt );
     /** create a GPS connection */
