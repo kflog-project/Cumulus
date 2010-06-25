@@ -81,26 +81,24 @@ QString Altitude::getText(double meter, bool withUnit, int precision)
     {
       precision = defprec;
     }
-  else
-    {
-      if( withUnit )
-        {
-          if( _altitudeUnit == flightlevel )
-            {
-              result = QString("%1 %2").arg( getUnitText() )
-                                       .arg( dist, 0, 'f', precision );
 
-            }
-          else
-            {
-              result = QString("%1 %2").arg( dist, 0, 'f', precision )
-                                       .arg( getUnitText() );
-            }
+  if( withUnit )
+    {
+      if( _altitudeUnit == flightlevel )
+        {
+          result = QString("%1 %2").arg( getUnitText() )
+                                   .arg( dist, 0, 'f', precision );
+
         }
       else
         {
-          result = QString("%1").arg( dist, 0, 'f', precision );
+          result = QString("%1 %2").arg( dist, 0, 'f', precision )
+                                   .arg( getUnitText() );
         }
+    }
+  else
+    {
+      result = QString("%1").arg( dist, 0, 'f', precision );
     }
 
   return result;
