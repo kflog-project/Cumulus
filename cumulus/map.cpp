@@ -1906,7 +1906,11 @@ void Map::slotSwitchManualInFlight()
 /** Draws the most important aircraft reported by Flarm. */
 void Map::__drawOtherAircraft()
 {
+#ifndef MAEMO	
   const int diameter = 20;
+#else
+  const int diameter = 30;
+#endif  
 
   if( blackCircle.isNull() )
     {
@@ -1996,7 +2000,7 @@ void Map::__drawOtherAircraft()
   QFont font = painter.font();
 
 #ifdef MAEMO
-  font.setPointSize( 20 );
+  font.setPointSize( 24 );
 #else
   font.setPointSize( 16 );
 #endif
@@ -2005,7 +2009,7 @@ void Map::__drawOtherAircraft()
 
   if( relVertical > 0 )
     {
-      // prefix positive value with a plus signb
+      // prefix positive value with a plus sign
       text += "+";
     }
 
