@@ -23,7 +23,7 @@
  * to the last know data. Furthermore it is managing the connection to a GPS
  * receiver connected by RS232, USB or to a GPS daemon process on Maemo. Due to
  * different APIs under Maemo4 and Maemo5 different conditional defines are used
- * for special adaptions. The following defines are in use:
+ * for special adoptions. The following defines are in use:
  *
  * MAEMO  for Maemo in general
  * MAEMO4 for Maemo 4, OS2008, devices N8x0
@@ -306,12 +306,12 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   dataOK();
 
-#if 0
+//#if 0
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
   if( slst[0] == "$GPRMC" )
     {
-      QString pflau ="$PFLAU,5,1,2,1,1,90,0,100,5000,5A77B1*";
+      QString pflau ="$PFLAU,5,1,2,1,0,-99,0,-200,1050,5A77B1*";
 
       uint sum = calcCheckSum( pflau.size(), pflau );
 
@@ -321,7 +321,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
     }
 
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-#endif
+//#endif
 
   /**
 
