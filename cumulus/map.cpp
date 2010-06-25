@@ -1907,7 +1907,7 @@ void Map::slotSwitchManualInFlight()
 void Map::__drawOtherAircraft()
 {
 #ifndef MAEMO	
-  const int diameter = 20;
+  const int diameter = 22;
 #else
   const int diameter = 30;
 #endif  
@@ -2002,7 +2002,7 @@ void Map::__drawOtherAircraft()
 #ifdef MAEMO
   font.setPointSize( 24 );
 #else
-  font.setPointSize( 16 );
+  font.setPointSize( 18 );
 #endif
 
   QString text = Distance::getText( relDistance, false, -1 ) + "/";
