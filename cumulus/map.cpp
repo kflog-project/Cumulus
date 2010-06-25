@@ -1465,9 +1465,9 @@ void Map::__drawLabel( QPainter* painter,
   QFont font = painter->font();
 
 #ifdef MAEMO
-  font.setPixelSize( 24 );
+  font.setPointSize( 24 );
 #else
-  font.setPixelSize( 20 );
+  font.setPointSize( 20 );
 #endif
 
   QString labelText = name;
@@ -1703,7 +1703,7 @@ void Map::__drawScale(QPainter& scaleP)
   pen.setCapStyle(Qt::RoundCap);
   scaleP.setPen(pen);
   QFont f = scaleP.font();
-  f.setPixelSize(14);
+  f.setPointSize(14);
   scaleP.setFont(f);
 
   double scale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
@@ -1973,25 +1973,61 @@ void Map::__drawOtherAircraft()
     }
 
   // Check, which circle we do need
-  QPainter p(&m_pixInformationMap);
+  QPainter painter( &m_pixInformationMap );
 
   if( status.Alarm != Flarm::No )
     {
       // alarm is active
-      p.drawPixmap(  Rx-diameter, Ry-diameter, redCircle );
-      return;
+      painter.drawPixmap(  Rx-diameter/2, Ry-diameter/2, redCircle );
     }
-
-  if( relVertical < 0 )
+  else if( relVertical < 0 )
     {
-      p.drawPixmap(  Rx-diameter, Ry-diameter, blackCircle );
+      painter.drawPixmap(  Rx-diameter/2, Ry-diameter/2, blackCircle );
     }
   else
     {
-      p.drawPixmap(  Rx-diameter, Ry-diameter, blueCircle );
+      painter.drawPixmap(  Rx-diameter/2, Ry-diameter/2, blueCircle );
     }
 
   // additional info can be drawn here, like horizontal and vertical distance
+
+  // Set font size used for text painting a little bit bigger, that
+  // the labels are good to see at the map.
+  QFont font = painter.font();
+
+#ifdef MAEMO
+  font.setPointSize( 20 );
+#else
+  font.setPointSize( 16 );
+#endif
+
+  QString text = Distance::getText( relDistance, false, -1 ) + "/";
+
+  if( relVertical > 0 )
+    {
+      // prefix positive value with a plus signb
+      text += "+";
+    }
+
+  text += Altitude::getText( relVertical, false, -1 );
+
+  painter.setFont( font );
+  painter.setPen( QPen(Qt::black, 4, Qt::SolidLine) );
+
+  if( th >= 0 && th <= 180 )
+    {
+      // draw text at the right side of the circle
+      painter.drawText( Rx + diameter/2 + 5,
+                        Ry + painter.font().pointSize()/2, text );
+    }
+  else
+    {
+      // draw text at the left side of the circle
+      QRect textRect = painter.fontMetrics().boundingRect( text );
+
+      painter.drawText( Rx-diameter/2 - 5 - textRect.width(),
+                        Ry + painter.font().pointSize()/2, text );
+    }
 }
 
 #endif
