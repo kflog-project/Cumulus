@@ -306,7 +306,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   dataOK();
 
-//#if 0
+#if 0
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
   if( slst[0] == "$GPRMC" )
@@ -321,7 +321,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
     }
 
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-//#endif
+#endif
 
   /**
 
