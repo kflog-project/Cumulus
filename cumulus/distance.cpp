@@ -181,15 +181,15 @@ QString Distance::getText(double meters, bool withUnit, int precision)
       break;
     case 2: // kilometers:
       dist = meters / mFromKm;
-      defprec = 2;
+      defprec = ( dist < 1.0 ) ? 2 : 1;
       break;
     case 3: // statute miles:
       dist = meters / mFromMile;
-      defprec = 3;
+      defprec = ( dist < 1.0 ) ? 3 : 2;
       break;
     case 4: // nautical miles:
       dist = meters / mFromNMile;
-      defprec = 3;
+      defprec = ( dist < 1.0 ) ? 3 : 2;
       break;
     default:
       dist = meters;
