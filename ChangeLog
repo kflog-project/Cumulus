@@ -14,7 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[+] 2010-06-27 AP: BUGFIX: Minus sign of variometer was not right aligned
+[-] 2010-06-27 AP: BUGFIX: Wrong polar entry for glider 1-26E fixed
+[-] 2010-06-27 AP: BUGFIX: Minus sign of variometer was not right aligned
                    in the middle of the pre-text field.
 [+] 2010-06-23 AP: New class Flarm added to handle Flarm specific stuff.
                    NMEA parser extended to extract $PFLAA sentence emitted by
