@@ -80,6 +80,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
       _minus->setPixmap( GeneralConfig::instance()->loadPixmap( "minus.png" ) );
       _minus->setFixedWidth( 25 );
       preLayout->addWidget( _minus );
+      preLayout->addStretch( 5 );
       _minus->setVisible(false);
     }
 
