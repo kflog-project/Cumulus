@@ -31,8 +31,11 @@
 
 #include "generalconfig.h"
 #include "settingspageairfields.h"
+
+#ifdef INTERNET
 #include "proxydialog.h"
 #include "httpclient.h"
+#endif
 
 SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   QWidget(parent)
@@ -54,38 +57,20 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   weltLayout->addWidget(countryFilter, grow, 1, 1, 3);
   grow++;
 
-  // get current distance unit. This unit must be considered during
-  // storage. The internal storage is always in meters.
-  distUnit = Distance::getUnit();
-
-  const char *unit = "";
-
-  // Input accepts different units
-  if (distUnit == Distance::kilometers)
-    {
-      unit = "km";
-    }
-  else if (distUnit == Distance::miles)
-    {
-      unit = "ml";
-    }
-  else // if( distUnit == Distance::nautmiles )
-    {
-      unit = "nm";
-    }
-
   lbl = new QLabel(tr("Home Radius:"), weltGroup);
   weltLayout->addWidget(lbl, grow, 0);
   homeRadius = new QSpinBox(weltGroup);
   homeRadius->setRange(0, 10000);
   homeRadius->setSingleStep(10);
   homeRadius->setButtonSymbols(QSpinBox::PlusMinus);
-  homeRadius->setSuffix(unit);
+  homeRadius->setSuffix( " " + Distance::getUnitText() );
   weltLayout->addWidget(homeRadius, grow, 1 );
 
   loadOutlandings = new QCheckBox( tr("Load Outlandings"), weltGroup );
   weltLayout->addWidget(loadOutlandings, grow, 2, Qt::AlignRight );
   grow++;
+
+#ifdef INTERNET
 
   weltLayout->setRowMinimumHeight(grow++, 15);
 
@@ -108,6 +93,8 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   welt2000FileName = new QLineEdit(weltGroup);
   welt2000FileName->setToolTip(tr("Enter Welt2000 filename as to see on the web page"));
   weltLayout->addWidget(welt2000FileName, grow, 1, 1, 3);
+
+#endif
 
   weltLayout->setColumnStretch(2, 10);
 
@@ -155,7 +142,11 @@ SettingsPageAirfields::~SettingsPageAirfields()
  */
 void SettingsPageAirfields::showEvent(QShowEvent *)
 {
+
+#ifdef INTERNET
   proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
+#endif
+
 }
 
 /**
@@ -178,8 +169,12 @@ void SettingsPageAirfields::slot_load()
       loadOutlandings->setCheckState( Qt::Unchecked );
     }
 
+#ifdef INTERNET
+
   proxyDisplay->setText( conf->getProxy() );
   welt2000FileName->setText( conf->getWelt2000FileName() );
+
+#endif
 
   afMargin->setValue(conf->getListDisplayAFMargin());
   rpMargin->setValue(conf->getListDisplayRPMargin());
@@ -268,6 +263,8 @@ void SettingsPageAirfields::slot_query_close(bool& warn, QStringList& warnings)
     }
 }
 
+#ifdef INTERNET
+
 /**
  * Called, if install button of Welt2000 is clicked.
  */
@@ -309,6 +306,8 @@ void SettingsPageAirfields::slot_editProxy()
       proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
     }
 }
+
+#endif
 
 /**
  * Checks, if the configuration of the Welt2000 has been changed

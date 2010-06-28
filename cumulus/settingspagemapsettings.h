@@ -56,7 +56,7 @@ class SettingsPageMapSettings : public QWidget
   /**
    * Destructor
    */
-  ~SettingsPageMapSettings();
+  virtual ~SettingsPageMapSettings();
 
   /**
    * Checks, if the configuration of the projection has been changed
@@ -69,7 +69,11 @@ class SettingsPageMapSettings : public QWidget
 
  signals:
 
+#ifdef INTERNET
+
   void downloadMapArea( const QPoint&, const Distance& );
+
+#endif
 
  public slots:
   /**
@@ -96,6 +100,8 @@ class SettingsPageMapSettings : public QWidget
    */
   void slot_openFileDialog();
 
+#ifdef INTERNET
+
   /**
    * Called if the install maps button is pressed
    */
@@ -106,6 +112,8 @@ class SettingsPageMapSettings : public QWidget
    */
   void slot_editProxy();
 
+#endif
+
  private:
 
   QPushButton *mapSelection;
@@ -113,12 +121,15 @@ class SettingsPageMapSettings : public QWidget
   QCheckBox   *chkUnloadUnneeded;
   QCheckBox   *chkProjectionFollowHome;
   QComboBox   *cmbProjection;
-  QCheckBox   *chkDownloadMissingMaps;
   LatEdit     *edtLat1;
   QLabel      *edtLat2Label;
   LatEdit     *edtLat2;
   QLabel      *edtLonLabel;
   LongEdit    *edtLon;
+
+#ifdef INTERNET
+
+  QCheckBox   *chkDownloadMissingMaps;
   QPushButton *installMaps;
   QSpinBox    *installRadius;
   LatEdit     *edtCenterLat;
@@ -129,6 +140,8 @@ class SettingsPageMapSettings : public QWidget
 
   /** Label to show the current proxy settings. */
   QLabel *proxyDisplay;
+
+#endif
 
   int cylinPar;
   int lambertV1;

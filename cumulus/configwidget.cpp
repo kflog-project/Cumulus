@@ -186,6 +186,8 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   connect(spa, SIGNAL(airspaceColorsUpdated()),
           _globalMapConfig, SLOT(slotReloadAirspaceColors()));
 
+#ifdef INTERNET
+
   connect(spa, SIGNAL(downloadAirspace( QString& )),
           _globalMapContents, SLOT(slotDownloadAirspace( QString& )));
 
@@ -194,6 +196,8 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
 
   connect(spaf, SIGNAL(downloadWelt2000( const QString& )),
           _globalMapContents, SLOT(slotDownloadWelt2000( const QString& )));
+
+#endif
 
   QHBoxLayout *contentLayout = new QHBoxLayout;
   contentLayout->addWidget( tabWidget );

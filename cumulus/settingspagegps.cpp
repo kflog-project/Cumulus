@@ -118,7 +118,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   topLayout->addWidget(buttonReset, row, 2, Qt::AlignRight);
   row++;
 
-  connect( buttonReset, SIGNAL(clicked()), GpsNmea::gps, SLOT(sendFactoryReset()) );
+  // connect( buttonReset, SIGNAL(clicked()), GpsNmea::gps, SLOT(sendFactoryReset()) );
 
 #else
   topLayout->setRowStretch(row++,10);

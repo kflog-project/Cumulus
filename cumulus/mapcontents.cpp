@@ -108,10 +108,14 @@ const short MapContents::isoLevels[] =
 
 MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
     QObject(parent),
-    isFirst(true),
-    downloadManger(0),
+    isFirst(true)
+#ifdef INTERNET
+
+    , downloadManger(0),
     shallDownloadData(false),
     hasAskForDownload(false)
+
+#endif
 {
   ws = waitscreen;
 
@@ -239,12 +243,18 @@ bool MapContents::__readTerrainFile( const int fileSecID,
     {
       QString path = GeneralConfig::instance()->getMapRootDir() + "/landscape";
 
-      bool res = __askUserForDownload();
+      bool res = false;
+
+#ifdef INTERNET
+
+      res = __askUserForDownload();
 
       if( res == true )
         {
           res = __downloadMapFile( kflName, path );
         }
+
+#endif
 
       if( res == false  )
         {
@@ -687,12 +697,18 @@ bool MapContents::__readBinaryFile(const int fileSecID,
     {
       QString path = GeneralConfig::instance()->getMapRootDir() + "/landscape";
 
-      bool res = __askUserForDownload();
+      bool res = false;
+
+#ifdef INTERNET
+
+      res = __askUserForDownload();
 
       if( res == true )
         {
           res = __downloadMapFile( kflName, path );
         }
+
+#endif
 
       if( res == false  )
         {
@@ -1260,6 +1276,8 @@ bool MapContents::__readBinaryFile(const int fileSecID,
   return true;
 }
 
+#ifdef INTERNET
+
 /**
  * Downloads all map tiles enclosed by the square with the center point. The
  * square edges are in parallel with the sky directions N, S, W, E. Inside
@@ -1557,6 +1575,8 @@ bool MapContents::__askUserForDownload()
   return shallDownloadData;
 }
 
+#endif
+
 void MapContents::proofeSection()
 {
   // qDebug("MapContents::proofeSection()");
@@ -1610,11 +1630,19 @@ void MapContents::proofeSection()
       // @AP: Look for and if available load a welt2000 airfield file
       Welt2000 welt2000;
 
-      if( ! welt2000.load( airfieldList, gliderSiteList, outLandingList ) &&
-          __askUserForDownload() == true )
+      if( ! welt2000.load( airfieldList, gliderSiteList, outLandingList ) )
         {
-          // Welt2000 load failed, try to download a new Welt2000 File.
-          slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
+
+#ifdef INTERNET
+
+          if( __askUserForDownload() == true )
+            {
+              // Welt2000 load failed, try to download a new Welt2000 File.
+              slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
+            }
+
+#endif
+
         }
     }
 

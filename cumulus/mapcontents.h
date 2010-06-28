@@ -35,7 +35,10 @@
 #include "flighttask.h"
 #include "waitscreen.h"
 #include "isolist.h"
+
+#ifdef INTERNET
 #include "downloadmanager.h"
+#endif
 
 class Isohypse;
 class LineElement;
@@ -303,6 +306,7 @@ class MapContents : public QObject
      */
     void slotReloadAirspaceData();
 
+#ifdef INTERNET
     /**
      * This slot is called to download the Welt2000 file from the internet.
      * @param welt2000FileName The Welt2000 filename as written at the web page
@@ -334,7 +338,9 @@ class MapContents : public QObject
     /** Called, if a network error occurred during the downloads. */
     void slotNetworkError();
 
-    signals:
+#endif
+
+  signals:
 
     /**
      * Emitted if a new file is being loaded.
@@ -375,6 +381,7 @@ class MapContents : public QObject
      */
     bool __readTerrainFile( const int fileSecID,
                             const int fileTypeID );
+#ifdef INTERNET
 
     /**
      * Try to download a missing ground/terrain file.
@@ -391,6 +398,8 @@ class MapContents : public QObject
      * Returns true, if download is desired otherwise false.
      */
     bool __askUserForDownload();
+
+#endif
 
     /**
      * shows a progress message at the wait screen
@@ -564,6 +573,8 @@ class MapContents : public QObject
      */
     QList<wayPoint> wpList;
 
+#ifdef INTERNET
+
     /** Manager to handle downloads of missing map file. */
     DownloadManager *downloadManger;
 
@@ -572,6 +583,9 @@ class MapContents : public QObject
 
     /** Store that user has asked once for download of missing data file. */
     bool hasAskForDownload;
+
+#endif
+
   };
 
 #endif

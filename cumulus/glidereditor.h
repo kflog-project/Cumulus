@@ -42,7 +42,11 @@ class GilderEditor : public QDialog
 {
     Q_OBJECT
 
-public:
+  private:
+
+    Q_DISABLE_COPY ( GilderEditor )
+
+  public:
 
     GilderEditor(QWidget *parent=0, Glider * glider=0);
 
@@ -50,7 +54,7 @@ public:
 
     Polar* getPolar();
 
-private:
+  private:
 
     void readPolarData ();
     /**
@@ -63,7 +67,7 @@ private:
       */
     void load();
 
-public slots:
+  public slots:
     /**
       * called when a glider type has been selected from the combobox
       */
@@ -75,7 +79,7 @@ public slots:
     void slotButtonShow();
 
 
-signals:
+  signals:
     /**
       * Send if a glider has been edited.
       */
@@ -85,7 +89,7 @@ signals:
       */
     void newGlider(Glider*);
 
-protected:
+  protected:
 
     /** overwritten method from QDialog */
     virtual void accept();
@@ -93,7 +97,7 @@ protected:
     /** overwritten method from QDialog */
     virtual void reject();
 
-private:
+  private:
 
     QComboBox* comboType;
     QDoubleSpinBox* spinV1;

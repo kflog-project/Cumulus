@@ -21,13 +21,16 @@
 #include <QtGui>
 
 #include "airspace.h"
-#include "airspacedownloaddialog.h"
 #include "basemapelement.h"
 #include "distance.h"
 #include "generalconfig.h"
 #include "settingspageairspace.h"
 #include "mapdefaults.h"
 #include "mapview.h"
+
+#ifdef INTERNET
+#include "airspacedownloaddialog.h"
+#endif
 
 SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   QWidget(parent)
@@ -120,6 +123,8 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   topLayout->setRowMinimumHeight( row++, 20 );
 
+#ifdef INTERNET
+
   cmdInstall = new QPushButton(tr("Install Airspace"), this);
   topLayout->addWidget(cmdInstall, row, 0, Qt::AlignLeft);
   connect (cmdInstall, SIGNAL(clicked()), this, SLOT(slot_installAirspace()));
@@ -127,6 +132,14 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   cmdWarning = new QPushButton(tr("Airspace Warnings"), this);
   topLayout->addWidget(cmdWarning, row, 1, Qt::AlignCenter);
   connect (cmdWarning, SIGNAL(clicked()), m_warningsDlg, SLOT(show()));
+
+#else
+
+  cmdWarning = new QPushButton(tr("Airspace Warnings"), this);
+  topLayout->addWidget(cmdWarning, row, 0, Qt::AlignLeft);
+  connect (cmdWarning, SIGNAL(clicked()), m_warningsDlg, SLOT(show()));
+
+#endif
 
   cmdFilling = new QPushButton(tr("Airspace filling"), this);
   topLayout->addWidget(cmdFilling, row, 2, Qt::AlignRight);
@@ -614,6 +627,8 @@ void SettingsPageAirspace::slot_toggleCheckBox( int row, int column )
     }
 }
 
+#ifdef INTERNET
+
 /**
  * Called to request the download an airspace file.
  */
@@ -634,6 +649,8 @@ void SettingsPageAirspace::slot_startDownload( QString &url )
 {
   emit downloadAirspace( url );
 }
+
+#endif
 
 /* Called to ask is confirmation on the close is needed. */
 void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)

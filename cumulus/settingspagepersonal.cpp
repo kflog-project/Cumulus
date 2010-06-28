@@ -30,7 +30,6 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   // save current altitude unit. This unit must be considered during
   // storage. The internal storage is always in meters.
   altUnit = Altitude::getUnit();
-  QString unit = (altUnit == Altitude::meters) ? "m" : "ft";
 
   GeneralConfig *conf = GeneralConfig::instance();
   QGridLayout* topLayout = new QGridLayout(this);
@@ -72,7 +71,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   spinHomeElevation->setMaximum( 9999 );
   spinHomeElevation->setMinimum( -9999 );
   spinHomeElevation->setButtonSymbols(QSpinBox::PlusMinus);
-  spinHomeElevation->setSuffix( unit );
+  spinHomeElevation->setSuffix( " " + Altitude::getUnitText() );
 
   topLayout->addWidget(spinHomeElevation, row, 1);
   row++;

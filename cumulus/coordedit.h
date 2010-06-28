@@ -49,7 +49,11 @@ class CoordEdit : public QWidget
 {
     Q_OBJECT
 
-public:
+  private:
+
+    Q_DISABLE_COPY ( CoordEdit )
+
+  public:
 
     CoordEdit( QWidget *parent=0 );
 
@@ -78,7 +82,7 @@ public:
      */
     void slot_textEdited( const QString& text );
 
-protected:
+  protected:
 
     /**
      * Catch show events in this class to set the widths of some widgets.
@@ -106,7 +110,11 @@ class LatEdit : public CoordEdit
 {
     Q_OBJECT
 
-public:
+  private:
+
+    Q_DISABLE_COPY ( LatEdit )
+
+  public:
 
     LatEdit( QWidget *parent=0, const int base=1 );
 
@@ -123,7 +131,11 @@ class LongEdit : public CoordEdit
 {
     Q_OBJECT
 
-public:
+  private:
+
+    Q_DISABLE_COPY ( LongEdit )
+
+  public:
 
     LongEdit( QWidget *parent=0, const int base=1 );
 

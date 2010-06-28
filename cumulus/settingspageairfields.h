@@ -76,7 +76,7 @@ class SettingsPageAirfields : public QWidget
   void slot_save();
 
   /**
-   * Called to initiate loading of the configurationfile
+   * Called to initiate loading of the configuration file
    */
   void slot_load();
 
@@ -91,6 +91,8 @@ class SettingsPageAirfields : public QWidget
    * Called if the text of the filter has been changed
    */
   void slot_filterChanged( const QString& text );
+
+#ifdef INTERNET
 
   /**
    * Called, if install button of Welt2000 is clicked.
@@ -111,6 +113,8 @@ class SettingsPageAirfields : public QWidget
    */
   void downloadWelt2000( const QString& welt2000FileName );
 
+#endif
+
   private:
 
   /** Country filter for Welt2000 data file */
@@ -121,6 +125,21 @@ class SettingsPageAirfields : public QWidget
 
   /** Check box to load outlandings or not. */
   QCheckBox* loadOutlandings;
+
+  /** Pixels to add to the row height in airfield/waypoint lists
+   *  (for easy finger selection)
+   */
+  QSpinBox* afMargin;
+
+  /** Pixels to add to the row height in emergency (reachable points) list
+   *  (for easy finger selection)
+   */
+  QSpinBox* rpMargin;
+
+  /** stores distance unit set during construction of object */
+  Distance::distanceUnit distUnit;
+
+#ifdef INTERNET
 
   /** Dialog editor for proxy host and port input. */
   QPushButton *editProxy;
@@ -135,18 +154,7 @@ class SettingsPageAirfields : public QWidget
    *  is extended by a date string. */
   QLineEdit *welt2000FileName;
 
-  /** Pixels to add to the row height in airfield/waypoint lists
-   *  (for easy finger selection)
-   */
-  QSpinBox* afMargin;
-
-  /** Pixels to add to the row height in emergency (reachable points) list
-   *  (for easy finger selection)
-   */
-  QSpinBox* rpMargin;
-
-  /** stores distance unit set during construction of object */
-  Distance::distanceUnit distUnit;
+#endif
 
 };
 

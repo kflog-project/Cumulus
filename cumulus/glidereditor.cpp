@@ -104,10 +104,10 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
 
   spinboxLayout->addWidget(new QLabel("v1:", this), srow, 0);
   spinV1 = new QDoubleSpinBox(this);
-  spinV1->setRange(0.0, 150.0);
+  spinV1->setRange(0.0, 250.0);
   spinV1->setSingleStep(1.0);
   spinV1->setButtonSymbols(QSpinBox::PlusMinus);
-  spinV1->setSuffix( Speed::getHorizontalUnitText() );
+  spinV1->setSuffix( " " + Speed::getHorizontalUnitText() );
   spinboxLayout->addWidget(spinV1, srow, 1);
 
   spinboxLayout->addWidget(new QLabel("w1:", this), srow, 2);
@@ -115,7 +115,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
 
   if( Speed::getVerticalUnit() !=  Speed::feetPerMinute )
     {
-      spinW1->setRange(-5.0, 0);
+      spinW1->setRange(-25.0, 0);
       spinW1->setSingleStep(0.01);
     }
   else
@@ -125,25 +125,25 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
     }
 
   spinW1->setButtonSymbols(QSpinBox::PlusMinus);
-  spinW1->setSuffix( Speed::getVerticalUnitText() );
+  spinW1->setSuffix( " " + Speed::getVerticalUnitText() );
   spinboxLayout->addWidget(spinW1, srow, 3);
 
   spinboxLayout->addWidget(new QLabel(tr("Empty weight:"), this), srow, 4);
   emptyWeight = new QSpinBox(this);
   emptyWeight->setObjectName("emptyWeight");
-  emptyWeight->setMaximum(1000);
+  emptyWeight->setRange(0, 1000);
   emptyWeight->setSingleStep(5);
   emptyWeight->setButtonSymbols(QSpinBox::PlusMinus);
-  emptyWeight->setSuffix("kg");
+  emptyWeight->setSuffix(" kg");
   spinboxLayout->addWidget(emptyWeight, srow, 5);
   srow++;
 
   spinboxLayout->addWidget(new QLabel("v2", this), srow, 0);
   spinV2 = new QDoubleSpinBox(this);
-  spinV2->setRange(0.0, 200.0);
+  spinV2->setRange(0.0, 250.0);
   spinV2->setSingleStep(1.0);
   spinV2->setButtonSymbols(QSpinBox::PlusMinus);
-  spinV2->setSuffix( Speed::getHorizontalUnitText() );
+  spinV2->setSuffix( " " + Speed::getHorizontalUnitText() );
   spinboxLayout->addWidget(spinV2, srow, 1);
 
   spinboxLayout->addWidget(new QLabel("w2:", this), srow, 2);
@@ -151,7 +151,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
 
   if( Speed::getVerticalUnit() !=  Speed::feetPerMinute )
     {
-      spinW2->setRange(-5.0, 0);
+      spinW2->setRange(-25.0, 0);
       spinW2->setSingleStep(0.01);
     }
   else
@@ -161,16 +161,16 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
     }
 
   spinW2->setButtonSymbols(QSpinBox::PlusMinus);
-  spinW2->setSuffix( Speed::getVerticalUnitText() );
+  spinW2->setSuffix( " " + Speed::getVerticalUnitText() );
   spinboxLayout->addWidget(spinW2, srow, 3);
 
   spinboxLayout->addWidget(new QLabel(tr("Added load:"), this), srow, 4);
   addedLoad = new QSpinBox(this);
   addedLoad->setObjectName("addedLoad");
-  addedLoad->setMaximum(1000);
+  addedLoad->setRange(0, 1000);
   addedLoad->setSingleStep(5);
   addedLoad->setButtonSymbols(QSpinBox::PlusMinus);
-  addedLoad->setSuffix("kg");
+  addedLoad->setSuffix(" kg");
   spinboxLayout->addWidget(addedLoad, srow, 5);
   srow++;
 
@@ -179,15 +179,15 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   spinV3->setRange(0.0, 250.0);
   spinV3->setSingleStep(1.0);
   spinV3->setButtonSymbols(QSpinBox::PlusMinus);
-  spinV3->setSuffix( Speed::getHorizontalUnitText() );
+  spinV3->setSuffix( " " + Speed::getHorizontalUnitText() );
   spinboxLayout->addWidget(spinV3, srow, 1);
 
   spinboxLayout->addWidget(new QLabel("w3:", this), srow, 2);
   spinW3 = new QDoubleSpinBox(this);
 
-  if( Speed::getVerticalUnit() !=  Speed::feetPerMinute )
+  if( Speed::getVerticalUnit() != Speed::feetPerMinute )
     {
-      spinW3->setRange(-5.0, 0);
+      spinW3->setRange(-25.0, 0);
       spinW3->setSingleStep(0.01);
     }
   else
@@ -197,16 +197,16 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
     }
 
   spinW3->setButtonSymbols(QSpinBox::PlusMinus);
-  spinW3->setSuffix( Speed::getVerticalUnitText() );
+  spinW3->setSuffix( " " + Speed::getVerticalUnitText() );
   spinboxLayout->addWidget(spinW3, srow, 3);
 
   spinboxLayout->addWidget(new QLabel(tr("Max. water:"), this), srow, 4);
   spinWater = new QSpinBox(this);
   spinWater->setObjectName("spinWater");
-  spinWater->setMaximum(300);
+  spinWater->setRange(0, 1000);
   spinWater->setSingleStep(5);
   spinWater->setButtonSymbols(QSpinBox::PlusMinus);
-  spinWater->setSuffix("l");
+  spinWater->setSuffix(" l");
   spinboxLayout->addWidget(spinWater, srow, 5);
 
   itemsLayout->addLayout(spinboxLayout, row, 0, 1, 4);
@@ -625,6 +625,9 @@ void GilderEditor::slotActivated(const QString& type)
       emptyWeight->setValue( (int) _polar->emptyWeight() );
       double load = _polar->grossWeight() - _polar->emptyWeight();
       addedLoad->setValue( (int) load );
+
+      qDebug() << "MaxWater" << _polar->maxWater();
+
       spinWater->setValue( _polar->maxWater() );
 
       if( _polar->seats() == 2 )

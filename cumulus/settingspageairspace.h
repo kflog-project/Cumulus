@@ -46,8 +46,8 @@ class SettingsPageAirspaceWarnings;
 class SettingsPageAirspaceFilling;
 
 class SettingsPageAirspace : public QWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
   private:
 
@@ -95,6 +95,8 @@ class SettingsPageAirspace : public QWidget
      */
     void slot_setColorDefaults();
 
+#ifdef INTERNET
+
     /**
      * Called to request the download of an airspace file.
      */
@@ -104,6 +106,8 @@ class SettingsPageAirspace : public QWidget
      * Called to start a download of an airspace file.
      */
      void slot_startDownload( QString &url );
+
+#endif
 
   signals:
 
@@ -123,12 +127,14 @@ class SettingsPageAirspace : public QWidget
      */
     Altitude::altitudeUnit altUnit;
 
+    QTableWidget* drawOptions;
     QPushButton* cmdWarning;
     QPushButton* cmdFilling;
     QPushButton* cmdColorDefaults;
-    QPushButton* cmdInstall;
 
-    QTableWidget* drawOptions;
+#ifdef INTERNET
+    QPushButton* cmdInstall;
+#endif
 
     // enable/disable drawing of airspaces
     QTableWidgetItem* drawAirspaceA;

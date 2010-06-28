@@ -29,8 +29,13 @@
 #include "generalconfig.h"
 #include "mapcontents.h"
 #include "distance.h"
+
+#ifdef INTERNET
+
 #include "httpclient.h"
 #include "proxydialog.h"
+
+#endif
 
 /***********************************************************/
 /*  map setting page                                       */
@@ -92,6 +97,8 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   topLayout->addWidget(chkUnloadUnneeded, row, 0, 1, 2);
   row++;
 
+#ifdef INTERNET
+
   topLayout->setRowMinimumHeight(row++,15);
 
   editProxy = new QPushButton( tr("Set Proxy"), this );
@@ -131,6 +138,8 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   topLayout->addWidget(installRadius, row++, 1 );
 
+#endif
+
   topLayout->setColumnStretch( 2, 10 );
   topLayout->setRowStretch( row, 10 );
 }
@@ -145,7 +154,13 @@ SettingsPageMapSettings::~SettingsPageMapSettings()
  */
 void SettingsPageMapSettings::showEvent(QShowEvent *)
 {
+
+#ifdef INTERNET
+
   proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
+
+#endif
+
 }
 
 void SettingsPageMapSettings::slot_load()
@@ -157,9 +172,14 @@ void SettingsPageMapSettings::slot_load()
 
   chkUnloadUnneeded->setChecked( conf->getMapUnload() );
   chkProjectionFollowHome->setChecked( conf->getMapProjectionFollowsHome() );
+
+#ifdef INTERNET
+
   proxyDisplay->setText( conf->getProxy() );
   edtCenterLat->setKFLogDegree(conf->getHomeLat());
   edtCenterLon->setKFLogDegree(conf->getHomeLon());
+
+#endif
 
   currentProjType = conf->getMapProjectionType();
   lambertV1 =       conf->getLambertParallel1();
@@ -222,13 +242,17 @@ void SettingsPageMapSettings::slot_save()
   conf->setMapRootDir( mapDirectory->text() );
   conf->setMapUnload( chkUnloadUnneeded->isChecked() );
   conf->setMapProjectionFollowsHome( chkProjectionFollowHome->isChecked() );
+#ifdef INTERNET
   conf->setMapInstallRadius( installRadius->value() );
+#endif
   conf->setMapProjectionType( currentProjType );
   conf->setLambertParallel1( lambertV1 );
   conf->setLambertParallel2( lambertV2 );
   conf->setLambertOrign( lambertOrigin );
   conf->setCylinderParallel( cylinPar );
 }
+
+#ifdef INTERNET
 
 /**
  * Called if the install maps button is pressed
@@ -262,6 +286,8 @@ void SettingsPageMapSettings::slot_installMaps()
 
   emit downloadMapArea( center, distance );
 }
+
+#endif
 
 /**
  * Called if the map selection button is pressed
@@ -339,7 +365,11 @@ void SettingsPageMapSettings::slot_query_close(bool& warn, QStringList& warnings
   changed |= ( mapDirectory->text() != conf->getMapRootDir() );
   changed |= ( chkUnloadUnneeded->isChecked() != conf->getMapUnload() );
   changed |= ( chkProjectionFollowHome->isChecked() != conf->getMapProjectionFollowsHome() );
+
+#ifdef INTERNET
   changed |= ( installRadius->value() != conf->getMapInstallRadius() );
+#endif
+
   changed |= checkIsProjectionChanged();
 
   if (changed)
@@ -348,6 +378,8 @@ void SettingsPageMapSettings::slot_query_close(bool& warn, QStringList& warnings
       warnings.append(tr("The Map Settings"));
     }
 }
+
+#ifdef INTERNET
 
 /**
  * Opens proxy dialog on user request.
@@ -362,6 +394,8 @@ void SettingsPageMapSettings::slot_editProxy()
       proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
     }
 }
+
+#endif
 
 /**
  * Checks, if the configuration of the projection has been changed
