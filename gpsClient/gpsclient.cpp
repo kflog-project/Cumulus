@@ -313,9 +313,12 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
     {
       // Fifo needs no serial initialization.
       // Write a notice for the user about that fact
-      qDebug() << "GpsClient::openGps: Device '"
-               << deviceIn
-               << "' is not a TTY!";
+      if( ! device.startsWith("/tmp/nmeasim") )
+        {
+          qDebug() << "GpsClient::openGps: Device '"
+                   << deviceIn
+                   << "' is not a TTY!";
+        }
     }
   else
     {
