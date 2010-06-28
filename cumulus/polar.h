@@ -23,8 +23,7 @@
 #ifndef POLAR_H
 #define POLAR_H
 
-#include <QWidget>
-#include <QString>
+#include <QtGui>
 
 #include "speed.h"
 
@@ -37,7 +36,7 @@
 class Polar
 {
 public:
-  
+
     Polar();
 
     Polar(const QString& name,const Speed& v1, const Speed& w1,
@@ -45,7 +44,7 @@ public:
           const Speed& v3, const Speed& w3,
           double wingload, double wingarea,
           double emptyWeight, double grossWeight);
-    
+
     Polar (const Polar&);
 
     virtual ~Polar();
@@ -150,7 +149,7 @@ public:
 
     void setMaxWater(int liters)
     {
-        _maxWater=qMax(0, liters);
+        _maxWater=liters;
     };
 
     /**
@@ -162,7 +161,7 @@ public:
     };
 
 private:
-  
+
     QString _name;
     Speed _v1;
     Speed _w1;
@@ -170,7 +169,7 @@ private:
     Speed _w2;
     Speed _v3;
     Speed _w3;
-    // these are the parabel parameters used for approximation
+    // these are the parabola parameters used for approximation
     double _a, _aa, _b, _bb, _c, _cc;
     int _water;
     int _bugs;
