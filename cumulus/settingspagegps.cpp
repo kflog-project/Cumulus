@@ -42,10 +42,13 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 
   topLayout->addWidget(new QLabel(tr("GPS Device:"), this), row, 0);
   GpsDev = new QComboBox(this);
-  GpsDev->setObjectName ("GPSDevice");
   topLayout->addWidget(GpsDev, row++, 1);
   GpsDev->setEditable(true);
   topLayout->setColumnStretch(2, 10);
+
+#ifdef TOMTOM
+  GpsDev->addItem(TOMTOM_DEVICE);
+#endif
 
 #ifndef MAEMO
   GpsDev->addItem("/dev/ttyS0");
@@ -69,11 +72,9 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   connect( GpsDev, SIGNAL(activated(const QString &)),
            this, SLOT(slot_gpsDeviceChanged(const QString&)) );
 
-  topLayout->addWidget(new QLabel(tr("Transfer rate (bps):"), this), row, 0);
+  topLayout->addWidget(new QLabel(tr("Speed (bps):"), this), row, 0);
   GpsSpeed = new QComboBox(this);
-  GpsSpeed->setObjectName("GPSSpeed");
   GpsSpeed->setEditable(false);
-  topLayout->addWidget(GpsSpeed, row++, 1);
   GpsSpeed->addItem("230400");
   GpsSpeed->addItem("115200");
   GpsSpeed->addItem("57600");
@@ -84,12 +85,12 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsSpeed->addItem("2400");
   GpsSpeed->addItem("1200");
   GpsSpeed->addItem("600");
+  topLayout->addWidget(GpsSpeed, row++, 1);
 
   // Defines from which device the altitude data shall be taken. Possible
   // devices are the GPS or a pressure sonde.
   topLayout->addWidget(new QLabel(tr("Altitude Reference:"), this),row,0);
   GpsAltitude = new QComboBox(this);
-  GpsAltitude->setObjectName("GPSAltitude");
   GpsAltitude->setEditable(false);
   topLayout->addWidget(GpsAltitude,row++,1);
   GpsAltitude->addItem(tr("GPS"));
@@ -100,30 +101,12 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 #ifndef MAEMO
   topLayout->setRowMinimumHeight( row++, 10);
 
-  checkSoftStart = new QCheckBox (tr("Soft start"), this);
-  topLayout->addWidget(checkSoftStart, row, 0 );
-  row++;
-
-  checkHardStart = new QCheckBox (tr("Hard start"), this);
-  topLayout->addWidget(checkHardStart, row, 0 );
-  row++;
-
-  checkSyncSystemClock = new QCheckBox (tr("Update system clock"), this);
+  checkSyncSystemClock = new QCheckBox (tr("Sync Clock"), this);
   topLayout->addWidget(checkSyncSystemClock, row, 0 );
   row++;
-
-  topLayout->setRowStretch(row++, 10);
-
-  buttonReset = new QPushButton (tr("Reset to factory settings"), this);
-  topLayout->addWidget(buttonReset, row, 2, Qt::AlignRight);
-  row++;
-
-  // connect( buttonReset, SIGNAL(clicked()), GpsNmea::gps, SLOT(sendFactoryReset()) );
-
-#else
-  topLayout->setRowStretch(row++,10);
 #endif
 
+  topLayout->setRowStretch(row++, 10);
   topLayout->setColumnStretch(2,10);
 
   // search for GPS device to be selected
@@ -186,15 +169,13 @@ void SettingsPageGPS::slot_load()
     }
 #endif
 
-  if( GpsDev->currentText() == NMEASIM_DEVICE )
+  if( GpsDev->currentText() == NMEASIM_DEVICE || GpsDev->currentText() == TOMTOM_DEVICE )
     {
       // switch off access to speed box, when NMEA Simulator is selected
       GpsSpeed->setEnabled( false );
     }
 
 #ifndef MAEMO
-  checkSoftStart->setChecked( conf->getGpsSoftStart() );
-  checkHardStart->setChecked( conf->getGpsHardStart() );
   checkSyncSystemClock->setChecked( conf->getGpsSyncSystemClock() );
 #endif
 }
@@ -209,8 +190,6 @@ void SettingsPageGPS::slot_save()
   conf->setGpsSpeed( GpsSpeed->currentText().toInt() );
 
 #ifndef MAEMO
-  conf->setGpsHardStart( checkHardStart->isChecked() );
-  conf->setGpsSoftStart( checkSoftStart->isChecked() );
   conf->setGpsSyncSystemClock( checkSyncSystemClock->isChecked() );
 #endif
 }
@@ -223,9 +202,9 @@ void SettingsPageGPS::slot_gpsDeviceChanged( const QString& text )
 {
   // qDebug("text=%s", text.toLatin1().data());
 
-  if( text == NMEASIM_DEVICE )
+  if( text == NMEASIM_DEVICE || text == TOMTOM_DEVICE )
     {
-      // Switch off access to speed box, when NMEA Simulator is selected.
+      // Switch off access to speed box, when a named pipe is used.
       GpsSpeed->setEnabled( false );
       return;
     }

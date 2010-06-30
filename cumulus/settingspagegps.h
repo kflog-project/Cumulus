@@ -27,9 +27,7 @@
 
 #include <QWidget>
 #include <QComboBox>
-#include <QPushButton>
 #include <QCheckBox>
-#include <QSpinBox>
 
 class SettingsPageGPS : public QWidget
 {
@@ -49,10 +47,7 @@ class SettingsPageGPS : public QWidget
     QComboBox*   GpsDev;
     QComboBox*   GpsSpeed;
     QComboBox*   GpsAltitude;
-    QCheckBox*   checkSoftStart;
-    QCheckBox*   checkHardStart;
     QCheckBox*   checkSyncSystemClock;
-    QPushButton* buttonReset;
 
   public slots:
 
