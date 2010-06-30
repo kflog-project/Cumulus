@@ -132,7 +132,7 @@ To checkout a certain release you have to use a url which starts with:
   https://svn.kflog.org/svn/repos/cumulus/qt4/tags/
   
 followed by a release tag e.g. Release_2.3.3. You can browse through the
-Cumulus subversion archive with your internet browser to see the release tags.
+Cumulus subversion archive with your Internet browser to see the release tags.
 Type in the following url:
 
   https://svn.kflog.org/svn/repos/cumulus
@@ -166,6 +166,11 @@ command:
   clean    Cleans the build area and removes all generated objects.
            Use it after done modifications of qmake project files.
   install  Installs Cumulus under $(INSTALL_ROOT), normally /opt/cumulus
+  
+If you want to build a smaller release you can switch off the features
+Flarm and Internet download in the related qmake project file. Change into the
+subdirectory cumulus and edit the file cumulusX11.pro. Comment out the lines
+"CONFIG += flarm" or "CONFIG +=internet" with a hash mark.
 
 Step 5)
 

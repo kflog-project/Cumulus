@@ -14,6 +14,17 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-06-30 AP: Map scale bar was bad to recognize because the scale unit
+                   was drawn in the middle of it. Moved the scale unit label
+                   above the scale bar. 
+[o] 2010-06-30 AP: Map info display boxes make some trouble in alignment and
+                   color under Qt 4.6.3. Tried to fix that.
+[+] 2010-06-29 AP: The features Flarm and Internet download can be switched
+                   on or off by configuration items in the qmake project file.
+[-] 2010-06-29 AP: BUGFIX: Copy constructor of class Polar was incomplete.
+                   The items _seats and _maxWater were never considered.
+                   That caused funny results in polar drawing. That was
+                   a very old bug not caused by the Qt port.
 [-] 2010-06-28 AP: BUGFIX: Spin box limits in GilderEditor were partly set to
                    small. Vertical speed unit knots did not work properly
                    in polar drawing. Thanks to Paul Scorer for his hint ;-)

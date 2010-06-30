@@ -134,7 +134,7 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   installRadius->setWrapping(true);
   installRadius->setSingleStep( 100 );
   installRadius->setValue( GeneralConfig::instance()->getMapInstallRadius() );
-  installRadius->setSuffix( Distance::getUnitText() );
+  installRadius->setSuffix( " " + Distance::getUnitText() );
 
   topLayout->addWidget(installRadius, row++, 1 );
 
