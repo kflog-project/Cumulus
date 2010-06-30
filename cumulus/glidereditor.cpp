@@ -64,12 +64,12 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   _glider = glider;
 
   QHBoxLayout* topLayout = new QHBoxLayout(this);
-
-  QScrollArea* itemArea = new QScrollArea(this);
+  QScrollArea* itemArea  = new QScrollArea(this);
 
   QWidget* itemWidget = new QWidget();
   QGridLayout* itemsLayout = new QGridLayout(itemWidget);
   itemsLayout->setHorizontalSpacing(10);
+  itemsLayout->setVerticalSpacing(10);
   int row = 0;
 
   itemsLayout->addWidget(new QLabel(tr("Glider type:"), this), row, 0);
@@ -85,8 +85,6 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   itemsLayout->addWidget(comboSeats, row, 3);
   row++;
 
-  itemsLayout->setRowMinimumHeight(row++, 10);
-
   itemsLayout->addWidget(new QLabel(tr("Registration:"), this), row, 0);
   edtGReg = new QLineEdit(this);
   itemsLayout->addWidget(edtGReg, row, 1);
@@ -100,6 +98,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
 
   QGridLayout* spinboxLayout = new QGridLayout;
   spinboxLayout->setHorizontalSpacing(10);
+  spinboxLayout->setVerticalSpacing(10);
   int srow = 0;
 
   spinboxLayout->addWidget(new QLabel("v1:", this), srow, 0);
@@ -543,7 +542,7 @@ void GilderEditor::readPolarData()
     }
   else
     {
-      _globalMapView->message(tr("Missing polar file"));
+      _globalMapView->slot_info(tr("Missing polar file"));
       qWarning( "Could not open polar file: %s",
                 file.fileName().toLatin1().data() );
     }
@@ -601,6 +600,7 @@ void GilderEditor::readPolarData()
 void GilderEditor::slotActivated(const QString& type)
 {
   // qDebug ("GilderEditor::slotActivated(%s)", type.toLatin1().data());
+
   if( !_glider )
     {
       _glider = new Glider();
@@ -625,8 +625,6 @@ void GilderEditor::slotActivated(const QString& type)
       emptyWeight->setValue( (int) _polar->emptyWeight() );
       double load = _polar->grossWeight() - _polar->emptyWeight();
       addedLoad->setValue( (int) load );
-
-      qDebug() << "MaxWater" << _polar->maxWater();
 
       spinWater->setValue( _polar->maxWater() );
 

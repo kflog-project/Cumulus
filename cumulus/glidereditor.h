@@ -19,7 +19,7 @@
 /**
  * \author Eggert Ehmke, Axel Pauli
  *
- * \brief This class represents a glider editor dialog.
+ * \brief This class provides a glider editor dialog.
  *
  */
 
@@ -48,17 +48,24 @@ class GilderEditor : public QDialog
 
   public:
 
-    GilderEditor(QWidget *parent=0, Glider * glider=0);
+    GilderEditor(QWidget* parent=0, Glider* glider=0);
 
-    ~GilderEditor();
+    virtual ~GilderEditor();
 
+    /**
+     * @return The currently selected polar is returned.
+     */
     Polar* getPolar();
 
   private:
 
-    void readPolarData ();
     /**
-      * called to initiate saving to the configuration file
+     * Reads in the data from the Cumulus polar file.
+     */
+    void readPolarData ();
+
+    /**
+      * Called to initiate saving to the configuration file.
       */
     void save();
 
@@ -69,12 +76,12 @@ class GilderEditor : public QDialog
 
   public slots:
     /**
-      * called when a glider type has been selected from the combobox
+      * Called when a glider type has been selected in the combo box.
       */
     void slotActivated(const QString&);
 
     /**
-      * called when the show button was pressed
+      * Called when the show button was pressed to draw the polar.
       */
     void slotButtonShow();
 
@@ -84,6 +91,7 @@ class GilderEditor : public QDialog
       * Send if a glider has been edited.
       */
     void editedGlider(Glider*);
+
     /**
       * Send if a new glider has been made.
       */
