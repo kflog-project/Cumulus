@@ -83,7 +83,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   //widget to group waypoint functions
   QWidget *wayBar = new QWidget( this );
   wayBar->setFixedWidth(216);
-  wayBar->setContentsMargins(-9,-9,-9,-3);
+  wayBar->setContentsMargins(-9,-9,-9,-6);
 
   wayBar->setAutoFillBackground(true);
   wayBar->setBackgroundRole(QPalette::Window);
@@ -91,13 +91,13 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   // vertical layout for waypoint widgets
   QBoxLayout *wayLayout = new QVBoxLayout( wayBar );
-  wayLayout->setSpacing(4);
+  wayLayout->setSpacing(2);
 
   //add Waypoint widget (whole line)
   _waypoint = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _waypoint->setPreText("To");
   _waypoint->setValue("-");
-  wayLayout->addWidget( _waypoint );
+  wayLayout->addWidget( _waypoint, 1 );
   connect(_waypoint, SIGNAL(mousePress()),
           (MainWindow*)parent, SLOT(slotSwitchToWPListViewExt()));
 
@@ -131,7 +131,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   //layout for Distance/ETA and Bearing
   QBoxLayout *DEBLayout = new QHBoxLayout;
-  wayLayout->addLayout(DEBLayout);
+  wayLayout->addLayout(DEBLayout, 1);
   DEBLayout->setSpacing(2);
 
   //add Distance widget
@@ -139,7 +139,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _distance->setPreText("Dis");
   _distance->setValue("-");
   _distance->setPreUnit( Distance::getUnitText() );
-  DEBLayout->addWidget( _distance);
+  DEBLayout->addWidget( _distance );
   connect(_distance, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
 
   //add ETA widget
@@ -168,11 +168,14 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   //widget to group common displays
   QWidget *commonBar = new QWidget( this );
   commonBar->setFixedWidth(216);
-  commonBar->setContentsMargins( -9, -3, -9, -3);
+  commonBar->setContentsMargins( -9, -6, -9, -6);
+  commonBar->setAutoFillBackground(true);
+  commonBar->setBackgroundRole(QPalette::Window);
+  commonBar->setPalette( QPalette(QColor(230, 230, 230)) );
 
   // vertical layout for common display widgets
   QBoxLayout *commonLayout = new QVBoxLayout( commonBar );
-  commonLayout->setSpacing(4);
+  commonLayout->setSpacing(2);
 
   //layout for Speed and Heading
   QBoxLayout *SHLayout = new QHBoxLayout;
@@ -180,21 +183,23 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   SHLayout->setSpacing(2);
 
   //add Speed widget
-  _speed = new MapInfoBox( this, "#cfcfcf" );
+  _speed = new MapInfoBox( this, "#c0c0c0" );
+  //_speed = new MapInfoBox( this, QColor(Qt::darkGray).name() );
+
   _speed->setPreText("Gs");
   _speed->setValue("-");
   SHLayout->addWidget( _speed);
 
   //add Heading widget
-  _heading = new MapInfoBox( this, "#cfcfcf" );
+  _heading = new MapInfoBox( this, "#c0c0c0" );
+  //_heading = new MapInfoBox( this, QColor(Qt::darkGray).name() );
   _heading->setPreText("Trk");
   _heading->setValue("-");
   SHLayout->addWidget( _heading);
 
-
   //layout for Wind/LD
   QBoxLayout *WLLayout = new QHBoxLayout;
-  commonLayout->addLayout(WLLayout);
+  commonLayout->addLayout(WLLayout, 1);
 
   //add Wind widget; this is head/tailwind, no direction given !
   _wind = new MapInfoBox( this, conf->getMapFrameColor().name() );
@@ -236,7 +241,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   //widget to group McCready functions
   QWidget *mcBar = new QWidget( this );
   mcBar->setFixedWidth(216);
-  mcBar->setContentsMargins(-9,-3,-9,-9);
+  mcBar->setContentsMargins(-9,-6,-9,-9);
 
   mcBar->setAutoFillBackground(true);
   mcBar->setBackgroundRole(QPalette::Window);
@@ -258,6 +263,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _speed2fly->setPreText("S2f");
   _speed2fly->setValue("-");
   MSLayout->addWidget( _speed2fly );
+  connect(_speed2fly, SIGNAL(mousePress()), (MainWindow*)parent, SLOT(slotToggleMenu()));
 
   sideLayout->addWidget( mcBar, 1 );
 
@@ -291,13 +297,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   font.setPixelSize(17);
 #endif
   _statusbar->setFont(font);
-
-  _menuToggle = new CuLabel( tr("Menu"),_statusbar);
-  _menuToggle->setLineWidth(0);
-  _menuToggle->setAlignment(Qt::AlignCenter);
-  _menuToggle->setMargin(0);
-  _statusbar->addWidget(_menuToggle);
-  connect(_menuToggle, SIGNAL(mousePress()), (MainWindow*)parent, SLOT(slotToggleMenu()));
 
   _statusGps = new CuLabel(tr("Man"),_statusbar);
   _statusGps->setLineWidth(0);
@@ -722,6 +721,18 @@ void MapView::slot_Position(const QPoint& position, const int source)
 /** This slot is called if the status of the GPS changes. */
 void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
 {
+  switch ( status )
+    {
+    case GpsNmea::validFix:
+      slot_info( tr( "GPS new fix" ) );
+      break;
+    case GpsNmea::noFix:
+      slot_info(tr( "GPS fix lost" ) );
+      break;
+    default:
+      slot_info( tr( "GPS lost" ) );
+    }
+
   if(status>GpsNmea::notConnected)
     {
       _statusGps->setText(tr("GPS"));
@@ -734,19 +745,8 @@ void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
       _altitude->setValue("-");
     }
 
-  _theMap->setShowGlider(status == GpsNmea::validFix); //only show glider symbol if the GPS is connected.
-
-  if(status == GpsNmea::validFix)
-    {
-      _mainWindow->actionToggleManualInFlight->setEnabled(true);
-    }
-  else
-    {
-      if(!_mainWindow->actionToggleManualInFlight->isChecked())
-        {
-          _mainWindow->actionToggleManualInFlight->setEnabled(false);
-        }
-    }
+  // Only show glider symbol if the GPS is connected.
+  _theMap->setShowGlider( status == GpsNmea::validFix );
 }
 
 

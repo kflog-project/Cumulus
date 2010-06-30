@@ -312,8 +312,6 @@ class MapView : public QWidget
     QLabel* _statusGlider;
     /** reference to status bar info */
     QLabel* _statusInfo;
-    /** reference to menu toggle */
-    CuLabel* _menuToggle;
     /** index of mode select button 0: MSL,  1: GND */
     int _altimeterMode;
     /** bearing mode 0=inverse bearing, 1=normal bearing */
