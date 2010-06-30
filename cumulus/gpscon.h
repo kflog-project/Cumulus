@@ -47,6 +47,9 @@
 // Device name for NMEA simulator. This name is also taken for the named pipe.
 #define NMEASIM_DEVICE "/tmp/nmeasim"
 
+// GPS device name for TomTom
+#define TOMTOM_DEVICE "/var/run/gpspipe"
+
 // Device name for the Maemo location service.
 #define MAEMO_LOCATION_SERVICE "GPS Location"
 
