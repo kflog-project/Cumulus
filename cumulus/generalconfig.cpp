@@ -64,10 +64,16 @@ void GeneralConfig::load()
 
   // Main window properties
   beginGroup("MainWindow");
+
+#ifdef TOMTOM
+  _windowSize            = value("Geometry", QSize(480, 272)).toSize();
+#else
   _windowSize            = value("Geometry", QSize(800, 480)).toSize();
+#endif
+
   _mapSideFrameColor     = QColor( value("MapSideFrameColor", "#687ec6").toString() );
 
-#ifndef MAEMO_QT
+#ifndef MAEMO
   _guiStyle              = value("Style", "Plastique").toString();
 #else
   _guiStyle              = value("Style", "Plastique").toString();
