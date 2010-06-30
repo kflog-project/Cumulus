@@ -39,8 +39,6 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   // storage. The internal storage is always in meters.
   altUnit = Altitude::getUnit();
 
-  const char *unit = "";
-
   // Input accept only feet and meters all other make no sense. Therefore all
   // other (FL) is treated as feet.
   edtMinimalArrival = new QSpinBox(this);
@@ -49,16 +47,14 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   if (altUnit == Altitude::meters)
     {
       edtMinimalArrival->setMaximum(1000);
-      unit = "m";
     }
   else
     {
       edtMinimalArrival->setMaximum(3000);
-      unit = "ft";
     }
 
   edtMinimalArrival->setButtonSymbols(QSpinBox::PlusMinus);
-  edtMinimalArrival->setSuffix(unit);
+  edtMinimalArrival->setSuffix(" " + Altitude::getUnitText());
   topLayout->addWidget(edtMinimalArrival, row, 1);
   topLayout->setColumnStretch(2, 2);
   row++;
@@ -69,7 +65,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   edtQNH->setObjectName("QNH");
   edtQNH->setMaximum(1999);
   edtQNH->setButtonSymbols(QSpinBox::PlusMinus);
-  edtQNH->setSuffix("hPa");
+  edtQNH->setSuffix(" hPa");
   topLayout->addWidget(edtQNH, row, 1);
   row++;
 
@@ -86,7 +82,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   bRecordInterval->setMinimum(1);
   bRecordInterval->setMaximum(60);
   bRecordInterval->setButtonSymbols(QSpinBox::PlusMinus);
-  bRecordInterval->setSuffix("s");
+  bRecordInterval->setSuffix(" s");
   topLayout->addWidget(bRecordInterval, row, 1);
   row++;
 
@@ -97,7 +93,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   kRecordInterval->setMaximum(300);
   kRecordInterval->setButtonSymbols(QSpinBox::PlusMinus);
   kRecordInterval->setSpecialValueText(tr("Off"));
-  kRecordInterval->setSuffix("s");
+  kRecordInterval->setSuffix(" s");
   topLayout->addWidget(kRecordInterval, row, 1);
   row++;
 
