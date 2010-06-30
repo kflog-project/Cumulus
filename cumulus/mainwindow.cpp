@@ -1919,18 +1919,6 @@ void MainWindow::slotReadconfig()
 /** Called if the status of the GPS changes, and controls the availability of manual navigation. */
 void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )
 {
-  switch ( status )
-    {
-    case GpsNmea::validFix:
-      viewMap->message( tr( "GPS fix established" ) );
-      break;
-    case GpsNmea::noFix:
-      viewMap->message(tr( "GPS connection - no fix" ) );
-      break;
-    default:
-      viewMap->message( tr( "GPS lost" ) );
-    }
-
   playSound("notify");
 
   if ( ( status != GpsNmea::validFix || calculator->isManualInFlight()) && ( view == mapView ) )
@@ -1943,8 +1931,16 @@ void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )
       toggleManualNavActions( false );
       toggleGpsNavActions( true );
     }
-}
 
+  if( status == GpsNmea::validFix )
+    {
+      actionToggleManualInFlight->setEnabled( true );
+    }
+  else
+    {
+       actionToggleManualInFlight->setEnabled( false );
+    }
+}
 
 /** This slot is called if the user presses C in manual navigation mode. It centers
   * the map on the current waypoint. */
