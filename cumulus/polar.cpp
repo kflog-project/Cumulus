@@ -22,9 +22,7 @@
 
 #include <cmath>
 
-#include <QObject>
-#include <QString>
-#include <QPainter>
+#include <QtGui>
 
 #include "polar.h"
 
@@ -102,7 +100,6 @@ Polar::Polar(const QString& name,const Speed& v1, const Speed& w1,
   _c = _cc = W3 - _aa*V3*V3 - _bb*V3;
 }
 
-
 Polar::Polar (const Polar& polar) :
   _name (polar._name),
   _v1 (polar._v1),
@@ -120,20 +117,20 @@ Polar::Polar (const Polar& polar) :
   _water (polar._water),
   _bugs (polar._bugs),
   _emptyWeight (polar._emptyWeight),
-  _grossWeight (polar._grossWeight)
+  _grossWeight (polar._grossWeight),
+  _seats (polar._seats),
+  _maxWater (polar._maxWater)
 {}
 
 Polar::~Polar()
 {}
-
 
 void Polar::setWater (int water, int bugs)
 {
   _water = water;
   _bugs = bugs;
 
-  // If empty weight equal gross weight we assume a added load of 90
-  // Kg.
+  // If empty weight equal gross weight we assume a added load of 90 Kg.
 
   double addedLoad = 0.0;
   double weight    = _emptyWeight;
@@ -149,7 +146,6 @@ void Polar::setWater (int water, int bugs)
     }
 
   // qDebug( "Polar::setWater: water=%d, bugs=%d, addedLoad=%f", water, bugs, addedLoad );
-
   if( weight != 0.0 )
     {
       A = sqrt( (weight + addedLoad + _water) / weight );
@@ -169,7 +165,6 @@ void Polar::setWater (int water, int bugs)
   // we just increase the #sinking rate; this is not quite correct but gives reasonable results
 }
 
-
 /**
  * calculate sinking rate for given airspeed
  * we return a positive value for sinking !
@@ -179,7 +174,6 @@ Speed Polar::getSink (const Speed& speed) const
   // this is the basic polar equation III, Reichmann page 181
   return -(speed*speed*_a + speed*_b + _c);
 }
-
 
 /**
  * calculate best airspeed for given wind, lift and Mc
@@ -202,14 +196,13 @@ Speed Polar::bestSpeed (const Speed& wind, const Speed& lift, const Speed& mc) c
     }
   else
     {
-      // qDebug ("inside polare, no valid result");
+      // qDebug ("inside polar, no valid result");
       // is this a reasonable approach ?
       speed = -wind;
     }
   // qDebug ("best speed: %s", speed.getTextHorizontal().latin1());
   return speed;
 }
-
 
 /**
   * calculate best glide ratio for given wind and lift;
@@ -224,7 +217,6 @@ double Polar::bestLD (const Speed& airspeed,
   // qDebug ("best ld: %f", ld);
   return ld;
 }
-
 
 /** draw a graphical polar on the given widget;
   * draw glide path according to lift, wind and McCready value

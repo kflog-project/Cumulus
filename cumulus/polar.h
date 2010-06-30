@@ -23,7 +23,8 @@
 #ifndef POLAR_H
 #define POLAR_H
 
-#include <QtGui>
+#include <QWidget>
+#include <QString>
 
 #include "speed.h"
 
@@ -162,21 +163,26 @@ public:
 
 private:
 
+    /** Glider type */
     QString _name;
-    Speed _v1;
-    Speed _w1;
-    Speed _v2;
-    Speed _w2;
-    Speed _v3;
-    Speed _w3;
-    // these are the parabola parameters used for approximation
+
+    /** Data points of glider polar */
+    Speed   _v1;
+    Speed   _w1;
+    Speed   _v2;
+    Speed   _w2;
+    Speed   _v3;
+    Speed   _w3;
+
+    /** these are the parabola parameters used for approximation */
     double _a, _aa, _b, _bb, _c, _cc;
-    int _water;
-    int _bugs;
+
+    int    _water;
+    int    _bugs;
     double _emptyWeight;
     double _grossWeight;
-    int _seats;
-    int _maxWater;
+    int    _seats;
+    int    _maxWater;
 };
 
 #endif
