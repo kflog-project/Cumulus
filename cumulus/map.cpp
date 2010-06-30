@@ -1703,7 +1703,13 @@ void Map::__drawScale(QPainter& scaleP)
   pen.setCapStyle(Qt::RoundCap);
   scaleP.setPen(pen);
   QFont f = scaleP.font();
+
+#ifndef MAEMO
+  f.setPointSize(12);
+#else
   f.setPointSize(14);
+#endif
+
   scaleP.setFont(f);
 
   double scale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
@@ -1793,8 +1799,8 @@ void Map::__drawScale(QPainter& scaleP)
   int leftXPos=this->width()-drawLength-5;
 
   //Now, draw the bar
-  scaleP.drawLine(leftXPos, this->height()-5,this->width()-5,this->height()-5);       //main bar
-  pen.setWidth(2);
+  scaleP.drawLine(leftXPos, this->height()-5, this->width()-5, this->height()-5); //main bar
+  pen.setWidth(3);
   scaleP.setPen(pen);
   scaleP.drawLine(leftXPos, this->height()-9,leftXPos,this->height()-1);              //left endbar
   scaleP.drawLine(this->width()-5,this->height()-9,this->width()-5,this->height()-1);//right endbar
@@ -1808,11 +1814,15 @@ void Map::__drawScale(QPainter& scaleP)
   //draw white box to draw text on
   scaleP.setBrush(brush);
   scaleP.setPen(Qt::NoPen);
-  scaleP.drawRect(leftTPos,this->height()-txtRect.height()+2, txtRect.width()+1, txtRect.height()-2);
+  scaleP.drawRect( leftTPos, this->height()-txtRect.height()-8,
+                   txtRect.width()+4, txtRect.height() );
 
   //draw text itself
   scaleP.setPen(pen);
-  scaleP.drawText(leftTPos,this->height()-10+txtRect.height()/2,scaleText);
+  // scaleP.drawText( leftTPos, this->height()-10+txtRect.height()/2, scaleText );
+  scaleP.drawText( leftTPos, this->height()-txtRect.height()-8,
+                   txtRect.width()+4, txtRect.height(), Qt::AlignCenter,
+                   scaleText );
 }
 
 /**
@@ -2741,7 +2751,8 @@ void Map::checkAirspace(const QPoint& pos)
           {
               // Reset warning in status bar without alarm, if no warning is active.
             _lastAsType = "";
-            emit airspaceWarning( " ", false );
+            // Last message in status bar should not be cleared.
+            // emit airspaceWarning( " ", false );
           }
         }
 
