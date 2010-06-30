@@ -21,7 +21,7 @@ CONFIG = debug \
 CONFIG += flarm
 
 # Enable Internet features, if not wanted comment out the next line with a hash
-# CONFIG +=internet
+CONFIG += internet
     
 HEADERS = \
     airfieldlistview.h \

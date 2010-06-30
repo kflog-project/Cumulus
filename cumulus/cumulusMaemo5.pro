@@ -21,7 +21,8 @@ CONFIG = qt \
 # Enable Flarm feature, if not wanted comment out the next line with a hash
 CONFIG += flarm
 
-QT += network
+# Enable Internet features, if not wanted comment out the next line with a hash
+CONFIG +=internet
 
 HEADERS = \
     airfieldlistview.h \
@@ -29,7 +30,6 @@ HEADERS = \
     airfield.h \
     airregion.h \
     airspace.h \
-    airspacedownloaddialog.h \    
     airspacewarningdistance.h \
     altimetermodedialog.h \
     altitude.h \
@@ -38,7 +38,6 @@ HEADERS = \
     configwidget.h \
     calculator.h \
     distance.h \
-    downloadmanager.h \    
     elevationcolorimage.h \
     filetools.h \
     flighttask.h \
@@ -52,7 +51,6 @@ HEADERS = \
     gpsstatusdialog.h \
     coordedit.h \
     helpbrowser.h \
-    httpclient.h \    
     hwinfo.h \
     igclogger.h \
     interfaceelements.h \
@@ -84,7 +82,6 @@ HEADERS = \
     projectioncylindric.h \
     projectionlambert.h \
     protocol.h \
-    proxydialog.h \
     radiopoint.h \
     reachablelist.h \
     reachablepoint.h \
@@ -142,7 +139,6 @@ SOURCES = \
     airfield.cpp \
     airregion.cpp \
     airspace.cpp \
-    airspacedownloaddialog.cpp \    
     altimetermodedialog.cpp \
     altitude.cpp \
     authdialog.cpp \
@@ -150,7 +146,6 @@ SOURCES = \
     configwidget.cpp \
     calculator.cpp \
     distance.cpp \
-    downloadmanager.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \
     flighttask.cpp \
@@ -164,7 +159,6 @@ SOURCES = \
     gpsstatusdialog.cpp \
     coordedit.cpp \
     helpbrowser.cpp \
-    httpclient.cpp \
     hwinfo.cpp \
     igclogger.cpp \
     ipc.cpp \
@@ -192,7 +186,6 @@ SOURCES = \
     projectionbase.cpp \
     projectioncylindric.cpp \
     projectionlambert.cpp \
-    proxydialog.cpp \
     radiopoint.cpp \
     reachablelist.cpp \
     reachablepoint.cpp \
@@ -247,6 +240,22 @@ flarm {
     HEADERS += flarm.h
     SOURCES += flarm.cpp
     DEFINES += FLARM
+}
+
+internet {
+    QT += network
+    
+    HEADERS += airspacedownloaddialog.h \
+               downloadmanager.h \
+               httpclient.h \
+               proxydialog.h
+                              
+    SOURCES += airspacedownloaddialog.cpp \
+               downloadmanager.cpp \
+               httpclient.cpp \
+               proxydialog.cpp
+               
+    DEFINES += INTERNET
 }
     
 INTERFACES = 
