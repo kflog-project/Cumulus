@@ -14,6 +14,19 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-07-01 AP: Calculation of elevation was done twice in Calculator class
+                   but there was no need for that. That coast performance.
+                   Thanks to Peter Turczak who gave me the hint ;-)
+[+] 2010-06-30 AP: If a Flarm device is connected as GPS source, the most
+                   important reported object by Flarm is drawn at the map.
+                   Drawing is bound to the current map scale level. If map
+                   scale level is less than 60 the Flarm object is drawn as
+                   a circle and labeled with the distance and the relative
+                   vertical separation.
+[o] 2010-06-30 AP: Removed menu label in status bar. It was difficult to hit
+                   with the stylus. As alternative the menu toggle was added
+                   to the speed to fly box located right beside the McCready
+                   display. Now the menu toggle can be operated by finger use.
 [o] 2010-06-30 AP: Map scale bar was bad to recognize because the scale unit
                    was drawn in the middle of it. Moved the scale unit label
                    above the scale bar. 
@@ -39,7 +52,7 @@ Cumulus changelog
                    altitude display visible on MAEMO if altitude dialog is
                    opened.
 [+] 2010-06-22 AP: MapInfoBox widget enlarged, that units can be also displayed
-                   in the pre-text field. The altitude display do that using now.
+                   in the pre-text field. The altitude display uses that now.
 [+] 2010-06-22 AP: Altitude user dialog enlarged by QNH and unit setting and
                    altitude leveling. Leveling can adjust displayed GPS or
                    pressure altitude on ground, if there is a constant offset
