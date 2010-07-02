@@ -823,7 +823,7 @@ void MapConfig::createCircle( QPixmap& pixmap, int diameter,
   // @AP: that did not work under Maemo. No idea why?
   painter.setOpacity ( opacity ); // 50% opacity
 #endif
-  painter.drawEllipse( 2, 2, diameter-4, diameter-4 );
+  painter.drawEllipse( 0, 0, diameter, diameter );
 }
 
 /**

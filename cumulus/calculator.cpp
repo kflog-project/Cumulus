@@ -20,8 +20,8 @@
 
 #include <stdlib.h>
 #include <cmath>
-#include <QMessageBox>
-#include <QtGlobal>
+
+#include <QtGui>
 
 #include "generalconfig.h"
 #include "calculator.h"
@@ -45,8 +45,8 @@ extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 
 Calculator::Calculator(QObject* parent) :
-    QObject(parent),
-    samplelist( LimitedList<FlightSample>( MAX_SAMPLECOUNT ) )
+  QObject(parent),
+  samplelist( LimitedList<FlightSample>( MAX_SAMPLECOUNT ) )
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -69,7 +69,7 @@ Calculator::Calculator(QObject* parent) :
   _calculateETA = false;
   _calculateVario = true;
   _calculateWind = true;
-  selectedWp=(wayPoint *) 0;
+  selectedWp = static_cast<wayPoint *> (0);
   lastMc.setInvalid();
   lastBestSpeed.setInvalid();
   lastTas = 0.0;
@@ -80,7 +80,7 @@ Calculator::Calculator(QObject* parent) :
   _windStore = new WindStore(this);
   lastFlightMode=unknown;
   _marker=0;
-  _glider=0;
+  _glider=static_cast<Glider *> (0);
   _pastFirstFix=false;
   selectedWpInList = -1;
   wpTouched = false;
@@ -118,7 +118,7 @@ Calculator::~Calculator()
       delete _glider;
     }
 
-  if ( selectedWp != 0 )
+  if ( selectedWp )
     {
       delete selectedWp;
     }
@@ -165,11 +165,12 @@ const AltitudeCollection& Calculator::getAltitudeCollection()
 /** called on altitude change */
 void Calculator::slot_Altitude(Altitude& user, Altitude& std, Altitude& gnns)
 {
-  lastAltitude     = user;
-  lastSTDAltitude  = std;
-  lastGNSSAltitude = gnns;
+  lastAltitude         = user;
+  lastSTDAltitude      = std;
+  lastGNSSAltitude     = gnns;
+  lastAGLAltitude      = lastAltitude - lastElevation;
+  lastAGLAltitudeError = lastElevationError;
 
-  lastAGLAltitude  = lastAltitude - Altitude( _globalMapContents->findElevation(lastPosition, &lastAGLAltitudeError ) );
   lastAHLAltitude  = lastAltitude - GeneralConfig::instance()->getHomeElevation();
   emit newAltitude( lastAltitude );
   emit newUserAltitude( getAltimeterAltitude() );
@@ -1423,7 +1424,7 @@ void Calculator::slot_Wind(Vector& v)
 }
 
 /** Store the property of a new Glider. */
-void Calculator::setGlider(Glider* _newVal)
+void Calculator::setGlider(Glider* glider)
 {
   if (_glider)
     {
@@ -1434,9 +1435,9 @@ void Calculator::setGlider(Glider* _newVal)
       _polar  = 0;
     }
 
-  if (_newVal)
+  if (glider)
     {
-      _glider = _newVal;
+      _glider = glider;
       _polar = _glider->polar();
       lastMc.setKph(0);
       calcETA();
@@ -1448,7 +1449,7 @@ void Calculator::setGlider(Glider* _newVal)
       lastMc.setInvalid();
       lastBestSpeed.setInvalid();
       emit bestSpeed( lastBestSpeed );
-      emit newGlider( QString::null );
+      emit newGlider( "" );
     }
 
   // Switches on/off Mc in map view

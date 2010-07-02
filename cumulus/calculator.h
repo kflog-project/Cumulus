@@ -281,7 +281,7 @@ public:
     };
 
     /**
-     * Read property of int lastHeading.
+     * Read property of lastHeading.
      */
     int getlastHeading()
     {
@@ -307,6 +307,11 @@ public:
       };
 
     /**
+     * Write property of Glider glider.
+     */
+    void setGlider( Glider* glider);
+
+    /**
      * Read property of Glider glider.
      */
     Glider* glider() const
@@ -319,7 +324,7 @@ public:
      */
     QString gliderType () const
     {
-      return ( _glider != 0 ) ? _glider->type() : QString::null;
+      return ( _glider != 0 ) ? _glider->type() : "";
     };
 
     /**
@@ -331,7 +336,7 @@ public:
     /**
      * @returns the Glider Polar
      */
-    Polar * getPolar()
+    Polar* getPolar()
     {
       return _polar;
     };
@@ -339,7 +344,7 @@ public:
     /**
      * @returns the Reachable List
      */
-    ReachableList * getReachList()
+    ReachableList* getReachList()
     {
         return _reachablelist;
     };
@@ -504,11 +509,6 @@ public slots:
      * Called if the status of the GPS changes.
      */
     void slot_GpsStatus(GpsNmea::GpsStatus);
-    /**
-     * Write property of Glider glider.
-     */
-    void setGlider( Glider* _newVal);
-
     /**
      * Connected to the signal flightModeChanged and used to re-emit with marker value
      */
