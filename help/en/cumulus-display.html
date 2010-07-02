@@ -94,17 +94,22 @@ the <a href="cumulus-settings-units.html">Units Settings</a> dialog.
 symbol) and heading (indicated by the rotation of the glider symbol). If there
 is no GPS fix, Cumulus displays an X symbol instead of a glider. See 
 <a href="cumulus-manual.html"> manual navigation mode</a> for more details. The
-current scale is displayed in the lower left corner of the map.<br>
+current scale is displayed in the lower left corner of the map.</p>
 
-<br>
+<p>
+If Cumulus is connected with a Flarm device and the current map scale is low,
+the most important object reported by Flarm is also drawn at the map as circle
+and labeled with the distance and the relative vertical separation.
+</p>
 
+<p>
 The map shows the terrain elevation using colours. The detail level of this
 display changes with the zoom factor: more zoom gives more detail in the terrain
-shapes. You can turn off drawing of the elevation in the <a
-  href="cumulus-settings-map.html">Map Settings</a> dialog.<br>
+shapes. You can turn off drawing of the elevation in the 
+<a href="cumulus-settings-map.html">Map Settings</a> dialog.
+</p>
 
-<br>
-
+<p>
 Depending on the maps you installed, Cumulus displays airports (the type is
 indicated by the standard ICAO symbol), cities (yellow), highways (red/white),
 roads (red), railways (dark dashed line) and water (blue). Not all details are
@@ -113,13 +118,16 @@ different types being indicated by different colours. For basic information on
 an airport or airspace structure simply touch the related symbol or area on the
 screen, when the info on the interesting object will appear in a pop-up window.
 The window disappears automatically after a certain time that can be configured
-in the <i>General Setup</i> menu in the <a
-  href="cumulus-settings-information.html">Information</a> tab. <br>
-
+in the <i>General Setup</i> menu in the 
+<a href="cumulus-settings-information.html">Information</a> tab.
+</p>
+<p>
 If you touch on an airfield icon, you will get detailed information on this
 item. You can add an airfield to your waypoint list if it isn't in the list
-already. Added waypoints will have a <i>normal</i> priority. <br>
+already. Added waypoints will have a <i>normal</i> priority.
+</p>
 
+<p>
 Cumulus can calculate which airfields or waypoints are within reach. These
 airfields/waypoints have a green background to them. If you would arrive below
 the safety height, the point has a magenta background to it. The line to the
@@ -131,12 +139,13 @@ setup/Common menu page.</p>
 <p><b>Status bar</b></p>
 
 <p> The status bar displays the following items (from left to right):</p>
+
 <p>The first item shows the mode Cumulus is operating in. If no GPS connection
    has been established (i.e., Cumulus is in Manual mode), <i>G-0</i> will appear,
    otherwise <i>G-N</i>, where N is the number of satellites in use by the GPS
    receiver.</p>
 
-<p>The second item in the status bar combines a logging and flight indicator.
+<p>The next item in the status bar combines a logging and flight indicator.
 If IGC logging is enabled and running, the background is green, whereas if the
 logger is in standby mode (autostart), the background is yellow. A grey box
 means that the logger is not enabled. The flight status symbol is shown by one
@@ -151,12 +160,21 @@ of the character symbols below:</p>
   <li><b>W</b> - Wave </li>
 </ul>
 
-The third item in the status bar indicates the current position in latitude and
-longitude.<br>
-<br>
-The forth item shows the glider selected.<br>
-<br>
+<p>The next item shows the number of received Flarm devices. If no Flarms
+   to see around <i>F-0</i> will appear, otherwise <i>F-N</i>, where N is the
+   number of received Flarms. This item is only to see, if Cumulus is connected
+   with a Flarm device.</p>
+
+<p>
+The next item in the status bar indicates the current position in latitude and
+longitude.
+</p>
+<p>
+The next item shows the glider selected.
+</p>
+<p>
 The rest of the status bar is used to display warnings and other information.
+</p>
 <p> If you want to maximize the screen area for the map display,
 you can disable the status bar via the menu entry <i>View/Statusbar</i>.
 </p>
