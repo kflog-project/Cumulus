@@ -44,6 +44,10 @@
 #include "gpsstatusdialog.h"
 #include "variomodedialog.h"
 
+#ifdef FLARM
+#include "flarmview.h"
+#endif
+
 MapView::MapView(QWidget *parent) : QWidget(parent)
 {
   setObjectName("MapView");
@@ -271,10 +275,19 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   //layout for the map
   QBoxLayout *MapLayout = new QHBoxLayout;
   centerLayout->addLayout(MapLayout);
-  _theMap = new Map(this);
   centerLayout->setStretchFactor( MapLayout, 1 );
+  _theMap = new Map(this);
   MapLayout->addWidget(_theMap, 10);
   _theMap->setMode(Map::headUp);
+
+#if 0 // #ifdef FLARM
+
+  // Flarm radar view
+  _flarmView = new FlarmView(this);
+  MapLayout->addWidget(_flarmView, 10);
+  _flarmView->setVisible( false );
+
+#endif
 
   //--------------------------------------------------------------------
   // Status bar

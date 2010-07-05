@@ -48,10 +48,14 @@
  *
  */
 
-class MapInfoBox;
 class CuLabel;
 class Map;
+class MapInfoBox;
 class MainWindow;
+
+#ifdef FLARM
+class FlarmView;
+#endif
 
 class MapView : public QWidget
   {
@@ -70,7 +74,7 @@ class MapView : public QWidget
     /**
      * Destructor
      */
-    ~MapView();
+    virtual ~MapView();
 
     /**
      * @returns the status bar object
@@ -302,6 +306,8 @@ class MapView : public QWidget
 #ifdef FLARM
     /** reference to Flarm status */
     CuLabel* _statusFlarm;
+    /** Reference to Flarm view widget */
+    FlarmView* _flarmView;
 #endif
 
     /** reference to flight status, including logging status and flight mode */
