@@ -235,8 +235,12 @@ SOURCES = \
     wpinfowidget.cpp
     
 flarm {
-		HEADERS += flarm.h
-		SOURCES += flarm.cpp
+		HEADERS += flarm.h \
+		           flarmview.h
+		           
+		SOURCES += flarm.cpp \
+		           flarmview.cpp
+		           
 		DEFINES += FLARM
 }
 
