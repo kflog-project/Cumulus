@@ -17,9 +17,14 @@
  **
  ***********************************************************************/
 
+#include <cmath>
+
+#include <QtGui>
+
 #include "basemapelement.h"
 #include "mapdefaults.h"
 #include "generalconfig.h"
+#include "mapcalc.h"
 
 // Different macros used by read method for configuration data
 #define READ_BORDER(a) \
@@ -824,6 +829,74 @@ void MapConfig::createCircle( QPixmap& pixmap, int diameter,
   painter.setOpacity ( opacity ); // 50% opacity
 #endif
   painter.drawEllipse( 0, 0, diameter, diameter );
+}
+
+/**
+  * Draws on a pixmap a triangle in the wanted size,
+  * filled with the wanted color and rotated in the wanted direction.
+  * The triangle has no border and is semi-transparent. The top of the
+  * triangle is north oriented if rotation is zero.
+  *
+  * @param pixmap Reference to pixmap which contains the drawn triangle
+  * @param size Size of the pixmap to be drawn
+  * @param color fill color of triangle
+  * @param rotate rotation angle in degree of triangle
+  * @param opacity a value between 0.0 ... 1.0
+  */
+void MapConfig::createTriangle( QPixmap& pixmap, int size,
+                                QColor color, int rotate, double opacity )
+{
+  if( size % 2 )
+    {
+      // increase size, if unsymmetrically
+      size++;
+    }
+
+  pixmap = QPixmap( size, size );
+  pixmap.fill(Qt::transparent);
+
+  QPainter painter(&pixmap);
+
+  painter.setPen( Qt::NoPen );
+  painter.setBrush( QBrush( color, Qt::SolidPattern ) );
+#ifndef MAEMO
+  // @AP: that did not work under Maemo. No idea why?
+  painter.setOpacity ( opacity ); // 50% opacity
+#endif
+
+  static const double rad = M_PI / 180.;
+
+  // Note, that the Cartesian coordinate system must be mirrored at the
+  // the X-axis to get the painter's coordinate system. That means all
+  // angles must be multiplied by -1.
+  double angle1 = -rad * normalize(90  - rotate);
+  double angle2 = -rad * normalize(230 - rotate);
+  double angle3 = -rad * normalize(310 - rotate);
+
+  int radius = size/2;
+
+  // Calculate the polygon points by using polar coordinates. So the triangle
+  // is turned always around the same center point.
+  int px1 = static_cast<int> (rint(cos(angle1) * radius));
+  int py1 = static_cast<int> (rint(sin(angle1) * radius));
+
+  int px2 = static_cast<int> (rint(cos(angle2) * radius));
+  int py2 = static_cast<int> (rint(sin(angle2) * radius));
+
+  int px3 = static_cast<int> (rint(cos(angle3) * radius));
+  int py3 = static_cast<int> (rint(sin(angle3) * radius));
+
+  QPoint points[3];
+
+  points[0] = QPoint(px1, py1);
+  points[1] = QPoint(px2, py2);
+  points[2] = QPoint(px3, py3);
+
+  // Move Cartesian middle point into painter's coordinate system.
+  painter.translate( radius, radius );
+
+  // Draw the triangle
+  painter.drawPolygon( points, 3);
 }
 
 /**

@@ -200,6 +200,21 @@ public:
     void createCircle( QPixmap& pixmap, int diameter,
                        QColor color, double opacity=0.5 );
 
+    /**
+      * Draws on a pixmap a triangle in the wanted size,
+      * filled with the wanted color and rotated in the wanted direction.
+      * The triangle has no border and is semi-transparent. The top of the
+      * triangle is north oriented if rotation is zero.
+      *
+      * @param pixmap Reference to pixmap which contains the drawn triangle
+      * @param size Size of the pixmap to be drawn
+      * @param color fill color of triangle
+      * @param rotate rotation angle in degree of triangle
+      * @param opacity a value between 0.0 ... 1.0
+      */
+    void createTriangle( QPixmap& pixmap, int size,
+                         QColor color, int rotate=0, double opacity=0.5 );
+
 public slots:
     /**
      * Forces MapConfig to reload its configuration data.
