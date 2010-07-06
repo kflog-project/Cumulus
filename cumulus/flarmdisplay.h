@@ -106,7 +106,7 @@ private:
   /** Current used height */
   int height;
 
-  /** Current used scale distance to pixels */
+  /** Current used scale radius distance to pixels */
   double scale;
 
   /** Current outer circle radius. */

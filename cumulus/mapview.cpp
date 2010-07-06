@@ -201,6 +201,10 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _heading->setValue("-");
   SHLayout->addWidget( _heading);
 
+#ifdef FLARM
+  connect(_heading, SIGNAL(mousePress()), this, SLOT(slot_OpenFlarmView()));
+#endif
+
   //layout for Wind/LD
   QBoxLayout *WLLayout = new QHBoxLayout;
   commonLayout->addLayout(WLLayout, 1);
@@ -280,13 +284,13 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   MapLayout->addWidget(_theMap, 10);
   _theMap->setMode(Map::headUp);
 
-#if 0 // #ifdef FLARM
+#ifdef FLARM
 
   // Flarm radar view
   _flarmView = new FlarmView(this);
   MapLayout->addWidget(_flarmView, 10);
   _flarmView->setVisible( false );
-
+  connect( _flarmView, SIGNAL(closed()), this, SLOT(slot_OpenMapView()) );
 #endif
 
   //--------------------------------------------------------------------
@@ -999,6 +1003,26 @@ void MapView::slot_FlarmCount( int flarmCount )
   if( _statusFlarm->isVisible() == false )
     {
       _statusFlarm->setVisible( true );
+    }
+}
+
+/** Opens the Flarm view. */
+void MapView::slot_OpenFlarmView()
+{
+  if( _theMap->isVisible() == true )
+    {
+      _theMap->setVisible( false );
+      _flarmView->setVisible( true );
+    }
+}
+
+/** Opens the Map view. */
+void MapView::slot_OpenMapView()
+{
+  if( _theMap->isVisible() == false )
+    {
+      _theMap->setVisible( true );
+      _flarmView->setVisible( false );
     }
 }
 

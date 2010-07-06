@@ -74,6 +74,8 @@ void FlarmDisplay::createBackground()
   width  -= ( MARGIN * 2 ); // keep a margin around
   height -= ( MARGIN * 2 );
 
+  qDebug() << "SWM=" << width << "SHM=" << height;
+
   centerX  = size().width() / 2;
   centerY  = size().height() / 2;
 
@@ -100,8 +102,6 @@ void FlarmDisplay::createBackground()
 
   QPainter painter( &background );
 
-  // painter.translate( margin, margin );
-
   QPen pen(Qt::black);
   pen.setWidth(3);
   painter.setPen( pen );
@@ -111,17 +111,15 @@ void FlarmDisplay::createBackground()
   painter.drawEllipse( centerX-3, centerY-3, 6, 6 );
 
   // scale maximum distance to pixels
-  scale = height / radius;
+  scale = (double) (height/2) / (double) radius;
 
   painter.setBrush(Qt::NoBrush);
 
   // draw inner radius, half of the outer radius
-  int iR = static_cast<int> (rint( radius/2 * scale ));
-  painter.drawEllipse( centerX - iR/2, centerY - iR/2, iR, iR );
+  painter.drawEllipse( centerX - width/4, centerY - height/4, width/2, height/2 );
 
   // draw outer radius
-  int oR = static_cast<int> (rint( radius * scale ));
-  painter.drawEllipse( centerX - oR/2, centerY - oR/2, oR, oR );
+  painter.drawEllipse( centerX - width/2, centerY - height/2, width, height );
 
   QFont f = font();
   f.setPixelSize(18);
@@ -233,6 +231,10 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
 
         }
 
+      // scale distances
+      north = static_cast<int> (rint(static_cast<double> (north) * scale));
+      east  = static_cast<int> (rint(static_cast<double> (east)  * scale));
+
       // Draw object as triangle
       extern MapConfig* _globalMapConfig;
       QPixmap triangle;
@@ -241,10 +243,32 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
 
       if( acft.Track != INT_MIN )
         {
-          // relTrack = acft.Track - calculator->getlastHeading();
+          int myTrack = calculator->getlastHeading();
+
+          if( myTrack > 180 )
+            {
+              myTrack -= 360;
+            }
+
+          int acftTrack = acft.Track;
+
+          if( acftTrack > 180 )
+            {
+              acftTrack -= 360;
+            }
+
+          relTrack = acftTrack - myTrack;
+
+          qDebug() << "myTrack" << myTrack
+                   << "acftTrack" << acftTrack
+                   << "relTrack" << relTrack;
+
         }
 
-      _globalMapConfig->createTriangle( triangle, 30, QColor(Qt::black), relTrack, 1.0);
+      _globalMapConfig->createTriangle( triangle, 30, QColor(Qt::black), relTrack, 1.0 );
 
+      painter.drawPixmap( east-triangle.size().width()/2,
+                          north-triangle.size().height()/2,
+                          triangle );
     }
 }

@@ -38,6 +38,11 @@
 #include "calculator.h"
 #include "map.h"
 
+#ifdef FLARM
+#include "flarmview.h"
+#endif
+
+
 /**
  * \author André Somers
  *
@@ -52,10 +57,6 @@ class CuLabel;
 class Map;
 class MapInfoBox;
 class MainWindow;
-
-#ifdef FLARM
-class FlarmView;
-#endif
 
 class MapView : public QWidget
   {
@@ -105,6 +106,18 @@ class MapView : public QWidget
       {
         return _vario;
       };
+
+#ifdef FLARM
+
+    /**
+     * @return the Flarm view widget.
+     */
+    FlarmView* getFlarmViewWidget() const
+      {
+        return _flarmView;
+      };
+
+#endif
 
   protected:
 
@@ -251,6 +264,12 @@ class MapView : public QWidget
 
     /** This slot is called if the number of received Flarms has been changed.*/
     void slot_FlarmCount( int flarmCount );
+
+    /** Opens the Flarm view. */
+    void slot_OpenFlarmView();
+
+    /** Opens the Map view. */
+    void slot_OpenMapView();
 
 #endif
 

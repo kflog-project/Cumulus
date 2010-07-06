@@ -24,11 +24,12 @@
  *
  */
 
-#ifndef FLARM_VIEW_H_
-#define FLARM_VIEW_H_
+#ifndef FLARM_VIEW_H
+#define FLARM_VIEW_H
 
 #include <QWidget>
-#include <QPixmap>
+
+class FlarmDisplay;
 
 class FlarmView : public QWidget
 {
@@ -40,9 +41,6 @@ private:
 
 public:
 
-  /** The three supported Zoom levels (5km, 1km, 0,5km). */
-  enum Zoom { Low=0, Middle=1, High=2 };
-
   /**
    * Constructor
    */
@@ -53,22 +51,22 @@ public:
    */
   virtual ~FlarmView();
 
+private slots:
+
+  /** Called to report widget closing. */
+  void slotClosed();
+
+  /** Called if zoom level shall be changed. */
+  void slotZoom();
+
+signals:
+
+  /** Emitted if the close button was pressed. */
+  void closed();
+
 private:
 
-  /** Creates the base picture with the radar screen. */
-  void createBasePicture();
-
-private:
-
-  /** Flarm radar screen */
-  QWidget* screen;
-
-  /** Base picture according to zoom level as radar screen */
-  QPixmap basePicture;
-
-  /** current zoom level */
-  enum Zoom zoomLevel;
-
+  FlarmDisplay* display;
 };
 
-#endif /* FLARM_VIEW_H_ */
+#endif /* FLARM_VIEW_H */

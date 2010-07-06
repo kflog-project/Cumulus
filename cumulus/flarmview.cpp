@@ -17,43 +17,41 @@
 
 #include <QtGui>
 
+#include "flarmdisplay.h"
 #include "flarmview.h"
 
 /**
  * Constructor
  */
 FlarmView::FlarmView( QWidget *parent ) :
-  QWidget( parent ),
-  zoomLevel(FlarmView::Low)
+  QWidget( parent )
 {
   qDebug( "FlarmView window size is width=%d x height=%d",
           parent->size().width(),
           parent->size().height() );
 
+  setContentsMargins(-4,-8,-4,-8);
+
   QHBoxLayout *topLayout = new QHBoxLayout( this );
-  topLayout->setSpacing(0);
+  topLayout->setSpacing(5);
 
-  screen = new QWidget( this );
-  screen->setContentsMargins(-9,-9,-9,-9);
-  screen->setFixedWidth( parent->size().width() );
-
-  screen->setAutoFillBackground(true);
-  screen->setBackgroundRole(QPalette::Window);
-  screen->setPalette( QPalette(QColor(Qt::lightGray)) );
-
-  topLayout->addWidget( screen );
+  display = new FlarmDisplay( this );
+  topLayout->addWidget( display, 2 );
 
   QGroupBox* buttonBox = new QGroupBox( this );
 
-  QPushButton *zoomButton = new QPushButton( tr("Zoom") );
-  QPushButton *listButton = new QPushButton( tr("List") );
+  QPushButton *zoomButton  = new QPushButton( tr("Zoom") );
+  QPushButton *listButton  = new QPushButton( tr("List") );
   QPushButton *closeButton = new QPushButton( tr("Close") );
+
+  connect( zoomButton, SIGNAL(clicked() ), this, SLOT(slotZoom()) );
+  connect( closeButton, SIGNAL(clicked() ), this, SLOT(slotClosed()) );
 
   QVBoxLayout *vbox = new QVBoxLayout;
   vbox->addWidget( zoomButton );
   vbox->addWidget( listButton );
   vbox->addWidget( closeButton );
-  // vbox->addStretch(1);
+  vbox->addStretch(1);
   buttonBox->setLayout( vbox );
 
   topLayout->addWidget( buttonBox );
@@ -66,60 +64,29 @@ FlarmView::~FlarmView()
 {
 }
 
-/** Creates the base picture with the radar screen. */
-void FlarmView::createBasePicture()
+/** Called to report widget closing. */
+void FlarmView::slotClosed()
 {
-  basePicture = QPixmap( screen->size() );
-  basePicture.fill( Qt::lightGray );
+  setVisible( false );
+  display->slotResetBackground();
+  emit closed();
+}
 
-  double r1; // inner radius in meters
-  double r2; // outer radius in meters
+/** Called if zoom level shall be changed. */
+void FlarmView::slotZoom()
+{
+  enum FlarmDisplay::Zoom zoom = display->getZoomLevel();
 
-  // calculate the resolution according to the zoom level
-  switch( zoomLevel )
+  if( zoom == FlarmDisplay::Low )
     {
-      case FlarmView::Low:
-        r1 = 250;
-        r2 = 500;
-        break;
-      case FlarmView::Middle:
-        r1 = 500;
-        r2 = 1000;
-        break;
-      case FlarmView::High:
-        r1 = 2500;
-        r2 = 5000;
-        break;
-      default:
-        r1 = 250;
-        r2 = 500;
+      display->slotSwitchZoom( FlarmDisplay::Middle );
     }
-
-  // define a margin
-  const int margin = 5;
-
-  QPainter painter( &basePicture );
-
-  painter.translate( margin, margin );
-
-  QPen pen(Qt::black);
-  pen.setWidth(3);
-  painter.setPen( pen );
-  painter.setBrush(Qt::black);
-
-  // inner black filled circle
-  painter.drawEllipse( 0, 0, 5, 5 );
-
-  // scale distances to pixels
-  double scale = screen->size().height() - (margin*2) / r2;
-
-  painter.setBrush(Qt::NoBrush);
-
-  // inner radius
-  int iR = static_cast<int> (rint( r1*scale ));
-  painter.drawEllipse( 0, 0, iR, iR );
-
-  // outer radius
-  int oR = static_cast<int> (rint( r2*scale ));
-  painter.drawEllipse( 0, 0, oR, oR );
+  else if( zoom == FlarmDisplay::Middle )
+    {
+      display->slotSwitchZoom( FlarmDisplay::High );
+    }
+  else
+    {
+      display->slotSwitchZoom( FlarmDisplay::Low );
+    }
 }
