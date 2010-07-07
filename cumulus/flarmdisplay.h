@@ -83,6 +83,9 @@ public slots:
   /** Switch to a new zoom level. */
   void slotSwitchZoom( enum Zoom value );
 
+  /** Update display */
+  void slotUpdateDisplay();
+
 private:
 
   /** Creates the background picture with the radar screen. */

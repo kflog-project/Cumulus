@@ -82,7 +82,7 @@ void FlarmDisplay::createBackground()
   background = QPixmap( size() );
 
   // a very light gray
-  background.fill( QColor(240, 240, 240) );
+  background.fill( QColor(248, 248, 248) );
 
   // calculate the resolution according to the zoom level in meters
   switch( zoomLevel )
@@ -157,6 +157,16 @@ void FlarmDisplay::slotSwitchZoom( enum Zoom value )
   repaint();
 }
 
+/** Update display */
+void FlarmDisplay::slotUpdateDisplay()
+{
+  // Generate a paint event for this widget, if it is visible.
+  if( isVisible() == true )
+    {
+      repaint();
+    }
+}
+
 void FlarmDisplay::showEvent( QShowEvent *event )
 {
   qDebug() << "FlarmDisplay::showEvent";
@@ -186,9 +196,6 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
   QWidget::paintEvent( event );
 
   QPainter painter( this );
-  QFont f = font();
-  f.setPixelSize(12);
-  painter.setFont(f);
 
   // copy background to widget
   painter.drawPixmap( rect(), background );
@@ -223,21 +230,43 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       int north = acft.RelativeNorth;
       int east  = acft.RelativeEast;
 
+      double distAcft = 0.0;
+
       // Check, if object is inside of the drawing area. Otherwise it is placed
       // at the outer circle.
-      if( abs(north) > radius || abs(east) > radius )
+      if( abs(north) > radius || abs(east) > radius ||
+          (distAcft = sqrt( north*north + east*east)) > radius )
         {
-          // Objects out of draw range, must be reset to radius.
+          if( distAcft == 0.0 )
+            {
+              // We need the distance to use the cosine in further processing.
+              distAcft = sqrt( north*north + east*east);
+            }
 
+          // Object is out of draw range and must be placed at outer radius.
+          // We do that by calculating the polar coordinates.
+
+          double xxx = (double) east / distAcft;
+          qDebug() << "XXX" << xxx;
+
+          double alpha = acos( ((double) east) / distAcft );
+
+          int x = static_cast<int> (rint(cos(alpha) * width/2));
+          int y = static_cast<int> (rint(sin(alpha) * height/2));
+
+          double aaa = alpha*180/M_PIl;
+          qDebug() << "North" << north << "East" << east << "distAcft" << distAcft;
+          qDebug() << "Radius back mapped: x" << x << "y" << y << "Alpha" << aaa;
+
+          east  = x; //(east  < 0) ? -x : x;
+          north = (north < 0) ? -y : y;
         }
-
-      // scale distances
-      north = static_cast<int> (rint(static_cast<double> (north) * scale));
-      east  = static_cast<int> (rint(static_cast<double> (east)  * scale));
-
-      // Draw object as triangle
-      extern MapConfig* _globalMapConfig;
-      QPixmap triangle;
+      else
+        {
+          // scale distances
+          north = static_cast<int> (rint(static_cast<double> (north) * scale));
+          east  = static_cast<int> (rint(static_cast<double> (east)  * scale));
+        }
 
       int relTrack = 0;
 
@@ -262,13 +291,29 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           qDebug() << "myTrack" << myTrack
                    << "acftTrack" << acftTrack
                    << "relTrack" << relTrack;
-
         }
 
-      _globalMapConfig->createTriangle( triangle, 30, QColor(Qt::black), relTrack, 1.0 );
+      // Draw object as circle, triangle or square
+      QPixmap object;
 
-      painter.drawPixmap( east-triangle.size().width()/2,
-                          north-triangle.size().height()/2,
-                          triangle );
+      if( acft.TurnRate != 0 )
+        {
+          // Object is circling
+          MapConfig::createCircle( object, 30, QColor(Qt::black), 1.0 );
+        }
+      else if( acft.Track != INT_MIN )
+        {
+          // Object with track info
+          MapConfig::createTriangle( object, 30, QColor(Qt::black), relTrack, 1.0 );
+        }
+      else
+        {
+          // Object without track info
+          MapConfig::createSquare( object, 30, QColor(Qt::black), 1.0 );
+        }
+
+      painter.drawPixmap( centerX + east  - object.size().width()/2,
+                          centerY - north - object.size().height()/2,
+                          object );
     }
 }

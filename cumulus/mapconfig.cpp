@@ -832,6 +832,32 @@ void MapConfig::createCircle( QPixmap& pixmap, int diameter,
 }
 
 /**
+  * Returns a pixmap containing a square in the wanted size
+  * and filled with wanted color. The quare has no border and
+  * is semi-transparent.
+  */
+void MapConfig::createSquare( QPixmap& pixmap, int size,
+                              QColor color, double opacity )
+{
+  if( size % 2 )
+    {
+      // increase size, if unsymmetrically
+      size++;
+    }
+
+  pixmap = QPixmap( size, size );
+
+  QPainter painter(&pixmap);
+  painter.setPen( Qt::NoPen );
+  painter.setBrush( QBrush( color, Qt::SolidPattern ) );
+#ifndef MAEMO
+  // @AP: that did not work under Maemo. No idea why?
+  painter.setOpacity ( opacity ); // 50% opacity
+#endif
+  painter.drawRect( 0, 0, size, size );
+}
+
+/**
   * Draws on a pixmap a triangle in the wanted size,
   * filled with the wanted color and rotated in the wanted direction.
   * The triangle has no border and is semi-transparent. The top of the

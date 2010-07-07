@@ -51,6 +51,10 @@ public:
    */
   virtual ~FlarmView();
 
+protected:
+
+  void showEvent( QShowEvent *event );
+
 private slots:
 
   /** Called to report widget closing. */

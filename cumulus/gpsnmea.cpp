@@ -145,6 +145,7 @@ void GpsNmea::resetDataObjects()
   _ignoreConnectionLost = false;
 
 #ifdef FLARM
+  pflaaIsReceiving = false;
   Flarm::reset();
   emit newFlarmCount( -1 );
 #endif
@@ -306,7 +307,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   dataOK();
 
-#if 0
+#if 1
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
   if( slst[0] == "$GPRMC" )
@@ -318,9 +319,67 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       QString sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
       slot_sentence( pflau + sumStr );
+
+      //-------------------------------------------------------------
+      QString pflaa0 = "$PFLAA,0,250,250,100,2,111111,,0,30,0,1*";
+
+      sum = calcCheckSum( pflaa0.size(), pflaa0 );
+
+      sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
+
+      slot_sentence( pflaa0 + sumStr );
+
+      //---------------------------------------------------------------
+      QString pflaa1 = "$PFLAA,0,-1000,-1000,100,2,222222,0,0,30,0,1*";
+
+      sum = calcCheckSum( pflaa1.size(), pflaa1 );
+
+      sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
+
+      slot_sentence( pflaa1 + sumStr );
+
+      //-------------------------------------------------------------
+      QString pflaa2 = "$PFLAA,0,-1000,1000,100,2,333333,180,0,30,0,1*";
+
+      sum = calcCheckSum( pflaa2.size(), pflaa2 );
+
+      sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
+
+      slot_sentence( pflaa2 + sumStr );
+
+      //---------------------------------------------------------------
+      QString pflaa3 = "$PFLAA,3,400,-400,100,2,444444,180,7,30,0,1*";
+
+      sum = calcCheckSum( pflaa1.size(), pflaa3 );
+
+      sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
+
+      slot_sentence( pflaa3 + sumStr );
+
     }
 
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+#endif
+
+#ifdef FLARM
+
+  if( Flarm::getCollectPflaa() )
+    {
+      if( slst[0] == "$PFLAA" )
+        {
+          // PFLAA receiving starts
+          pflaaIsReceiving = true;
+          qDebug() << "PFLAA receiving started";
+        }
+      else if( pflaaIsReceiving == true )
+        {
+          // PFLAA receiving is finished
+          pflaaIsReceiving = false;
+          qDebug() << "PFLAA receiving finished";
+          Flarm::instance()->collectPflaaFinished();
+        }
+    }
+
 #endif
 
   /**
@@ -857,7 +916,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   <RelativeVertical>,<RelativeDistance>,<ID>
   */
 
-  if ( slst[0] == "$PFLAU" )
+  if( slst[0] == "$PFLAU" )
     {
       bool res = Flarm::instance()->extractPflau( slst );
 
@@ -888,6 +947,18 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
             }
         }
 
+      return;
+    }
+
+  /**
+  $PFLAA,<AlarmLevel>,<RelativeNorth>,<RelativeEast>,<RelativeVertical>,
+  <IDType>,<ID>,<Track>,<TurnRate>,<GroundSpeed>,<ClimbRate>,<AcftType>
+  */
+  if( Flarm::getCollectPflaa() && slst[0] == "$PFLAA" )
+    {
+      Flarm::FlarmAcft aircraft;
+
+      Flarm::instance()->extractPflaa( slst, aircraft );
       return;
     }
 

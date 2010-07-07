@@ -98,7 +98,7 @@ public:
     int     RelativeEast;
     int     RelativeVertical;
     int     IdType;
-    int     Id;
+    QString ID;
     int     Track;       // 0-359 or INT_MIN in stealth mode
     double  TurnRate;    // degrees per second or INT_MIN in stealth mode
     double  GroundSpeed; // meters per second or INT_MIN in stealth mode
@@ -192,7 +192,7 @@ public:
    * @param idType <ID-Type> tag of Flarm sentence $PFLAA
    * @param id <ID> tag of Flarm sentence $PFLAA
    */
-  static QString createHashKey( int idType, int id )
+  static QString createHashKey( int idType, QString id )
   {
     return QString("%1-%2").arg(idType).arg(id);
   };
@@ -213,6 +213,19 @@ public:
     pflaaHash.clear();
     flarmStatus.valid = false;
   };
+
+  /**
+   * PFLAA data collection is finished.
+   */
+  void collectPflaaFinished();
+
+signals:
+
+  /**
+   * This signal is emitted if a complete sequence of PFLAA sentences has been
+   * received.
+   */
+  void newFlarmPflaaData();
 
 private:
 

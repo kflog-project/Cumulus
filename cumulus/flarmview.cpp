@@ -17,8 +17,10 @@
 
 #include <QtGui>
 
+#include "flarm.h"
 #include "flarmdisplay.h"
 #include "flarmview.h"
+#include "gpsnmea.h"
 
 /**
  * Constructor
@@ -37,6 +39,9 @@ FlarmView::FlarmView( QWidget *parent ) :
 
   display = new FlarmDisplay( this );
   topLayout->addWidget( display, 2 );
+
+  connect( Flarm::instance(), SIGNAL(newFlarmPflaaData()),
+           display, SLOT(slotUpdateDisplay()) );
 
   QGroupBox* buttonBox = new QGroupBox( this );
 
@@ -64,10 +69,24 @@ FlarmView::~FlarmView()
 {
 }
 
+void FlarmView::showEvent( QShowEvent *event )
+{
+  qDebug() << "FlarmView::showEvent";
+
+  Q_UNUSED( event )
+
+  // Start $PFLAA data collecting
+  Flarm::setCollectPflaa( true );
+}
+
+
 /** Called to report widget closing. */
 void FlarmView::slotClosed()
 {
   setVisible( false );
+
+  // Stop $PFLAA collecting
+  Flarm::setCollectPflaa( false );
   display->slotResetBackground();
   emit closed();
 }

@@ -197,9 +197,16 @@ public:
       * and filled with wanted color. The circle has no border and
       * is semi-transparent.
       */
-    void createCircle( QPixmap& pixmap, int diameter,
-                       QColor color, double opacity=0.5 );
+    static void createCircle( QPixmap& pixmap, int diameter,
+                              QColor color, double opacity=0.5 );
 
+    /**
+      * Returns a pixmap containing a square in the wanted size
+      * and filled with wanted color. The quare has no border and
+      * is semi-transparent.
+      */
+    static void createSquare( QPixmap& pixmap, int size,
+                              QColor color, double opacity=0.5 );
     /**
       * Draws on a pixmap a triangle in the wanted size,
       * filled with the wanted color and rotated in the wanted direction.
@@ -212,8 +219,8 @@ public:
       * @param rotate rotation angle in degree of triangle
       * @param opacity a value between 0.0 ... 1.0
       */
-    void createTriangle( QPixmap& pixmap, int size,
-                         QColor color, int rotate=0, double opacity=0.5 );
+    static void createTriangle( QPixmap& pixmap, int size,
+                                QColor color, int rotate=0, double opacity=0.5 );
 
 public slots:
     /**

@@ -129,7 +129,7 @@ class GpsNmea : public QObject
     /**
      * defines altitude bases delivered by GPS unit
      */
-    enum DeliveredAltitude {GPS=0, PRESSURE=1};
+    enum DeliveredAltitude { GPS=0, PRESSURE=1 };
 
     /**
      * defines the states of the GPS unit
@@ -649,6 +649,13 @@ class GpsNmea : public QObject
     QString gpsDevice;
     /** reference to the normal serial connection */
     GpsCon* serial;
+
+#ifdef FLARM
+
+    /** Flag to control begin and end of receiving PFLAA sentences. */
+    bool pflaaIsReceiving;
+
+#endif
 
     // number of created class instances
     static short instances;
