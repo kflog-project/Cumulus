@@ -53,6 +53,7 @@ public:
 
 protected:
 
+  /** Called by parent before widget is shown. */
   void showEvent( QShowEvent *event );
 
 private slots:
@@ -65,11 +66,12 @@ private slots:
 
 signals:
 
-  /** Emitted if the close button was pressed. */
+  /** Emitted when the close button was pressed. */
   void closed();
 
 private:
 
+  /** Display with radar view. */
   FlarmDisplay* display;
 };
 

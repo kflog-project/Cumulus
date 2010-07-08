@@ -21,6 +21,9 @@
 
 #include "flarmdisplay.h"
 #include "flarm.h"
+#include "distance.h"
+#include "altitude.h"
+#include "speed.h"
 #include "calculator.h"
 #include "distance.h"
 #include "mapconfig.h"
@@ -36,11 +39,12 @@ FlarmDisplay::FlarmDisplay( QWidget *parent ) :
   width(0),
   height(0),
   scale(0.0),
-  radius(0)
+  radius(0),
+  selectedObject("")
 {
-  qDebug( "FlarmDisplay window size is width=%d x height=%d",
+  /* qDebug( "FlarmDisplay window size is width=%d x height=%d",
           parent->size().width(),
-          parent->size().height() );
+          parent->size().height() ); */
 }
 
 /**
@@ -48,7 +52,6 @@ FlarmDisplay::FlarmDisplay( QWidget *parent ) :
  */
 FlarmDisplay::~FlarmDisplay()
 {
-  qDebug() << "~FlarmDisplay()";
 }
 
 /** Creates the background picture with the radar screen. */
@@ -60,7 +63,7 @@ void FlarmDisplay::createBackground()
   width  = size().width();
   height = size().height();
 
-  qDebug() << "SW=" << width << "SH=" << height;
+  // qDebug() << "SW=" << width << "SH=" << height;
 
   if( width > height )
     {
@@ -74,7 +77,7 @@ void FlarmDisplay::createBackground()
   width  -= ( MARGIN * 2 ); // keep a margin around
   height -= ( MARGIN * 2 );
 
-  qDebug() << "SWM=" << width << "SHM=" << height;
+  // qDebug() << "SWM=" << width << "SHM=" << height;
 
   centerX  = size().width() / 2;
   centerY  = size().height() / 2;
@@ -110,7 +113,7 @@ void FlarmDisplay::createBackground()
   // inner black filled circle
   painter.drawEllipse( centerX-3, centerY-3, 6, 6 );
 
-  // scale maximum distance to pixels
+  // scale pixels to maximum distance
   scale = (double) (height/2) / (double) radius;
 
   painter.setBrush(Qt::NoBrush);
@@ -180,6 +183,25 @@ void FlarmDisplay::showEvent( QShowEvent *event )
     }
 }
 
+void FlarmDisplay::hideEvent( QHideEvent *event )
+{
+  qDebug() << "FlarmDisplay::hideEvent, spontan=" << event->spontaneous();
+
+  if( event->spontaneous() )
+    {
+      return;
+    }
+
+  if( background.isNull() == false )
+    {
+      // Reset background pixmap
+      background = QPixmap();
+    }
+
+  objectHash.clear();
+  event->accept();
+};
+
 void FlarmDisplay::resizeEvent( QResizeEvent *event )
 {
   qDebug() << "FlarmDisplay::resizeEvent";
@@ -188,9 +210,62 @@ void FlarmDisplay::resizeEvent( QResizeEvent *event )
   createBackground();
 }
 
+void FlarmDisplay::mousePressEvent( QMouseEvent *event )
+{
+  // qDebug() << "FlarmDisplay::mouseEvent: Pos=" << event->pos();
+
+  if (event->button() != Qt::LeftButton)
+    {
+      return;
+    }
+
+  // Try to find an object in the hash dictionary in the near of the mouse
+  // pointer.
+  QPoint pos = event->pos();
+
+  QMutableHashIterator<QString, QPoint> it( objectHash );
+
+  bool found = false;
+
+  // Radius for Mouse Snapping
+  int delta = 25, dX = 0, dY = 0;
+
+  // Manhattan distance to found point.
+  int lastDist = 2*delta + 1;
+
+  QString hashKey;
+
+  while( it.hasNext() )
+    {
+      it.next();
+
+      // Get next aircraft
+      QPoint &acftPosition = it.value();
+
+      // calculate Manhattan distance
+      dX = abs(acftPosition.x() - pos.x());
+      dY = abs(acftPosition.y() - pos.y());
+
+      if( dX < delta && dY < delta && (dX+dY) < lastDist )
+        {
+          found = true;
+          lastDist = dX+dY;
+          selectedObject = it.key();
+
+          /* qDebug() << "Object=" << selectedObject
+                   << "Delta=" << delta
+                   << "dX" << dX
+                   << "dY=" << dY
+                   << "MD=" << lastDist; */
+        }
+    }
+
+  event->accept();
+}
+
 void FlarmDisplay::paintEvent( QPaintEvent *event )
 {
-  qDebug() << "FlarmDisplay::paintEvent";
+  //qDebug() << "FlarmDisplay::paintEvent";
 
   // Call paint method from QWidget.
   QWidget::paintEvent( event );
@@ -209,6 +284,8 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       return;
     }
 
+  objectHash.clear();
+
   QMutableHashIterator<QString, Flarm::FlarmAcft> it(flarmAcfts);
 
   while( it.hasNext() )
@@ -216,9 +293,9 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       it.next();
 
       // Get next aircraft
-      Flarm::FlarmAcft acft = it.value();
+      Flarm::FlarmAcft& acft = it.value();
 
-      // Make time expire check, check time is in milli seconds.
+      // Make time expire check, check time unit is in milli seconds.
       if( acft.TimeStamp.elapsed() > 5000 )
         {
           // Object was longer time not updated, so we do remove it from the
@@ -244,22 +321,31 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
             }
 
           // Object is out of draw range and must be placed at outer radius.
-          // We do that by calculating the polar coordinates.
-
-          double xxx = (double) east / distAcft;
-          qDebug() << "XXX" << xxx;
-
+          // We do that by calculating the angle with the triangle sentence
+          // and by using polar coordinates.
           double alpha = acos( ((double) east) / distAcft );
 
           int x = static_cast<int> (rint(cos(alpha) * width/2));
           int y = static_cast<int> (rint(sin(alpha) * height/2));
 
-          double aaa = alpha*180/M_PIl;
-          qDebug() << "North" << north << "East" << east << "distAcft" << distAcft;
-          qDebug() << "Radius back mapped: x" << x << "y" << y << "Alpha" << aaa;
+          // correcting of signs, if necessary
+          if( (east < 0 && x > 0) || (east > 0 && x < 0) )
+            {
+              east = -x;
+            }
+          else
+            {
+              east = x;
+            }
 
-          east  = x; //(east  < 0) ? -x : x;
-          north = (north < 0) ? -y : y;
+          if( (north < 0 && y > 0) || (north > 0 && y < 0) )
+            {
+              north = -y;
+            }
+          else
+            {
+              north = y;
+            }
         }
       else
         {
@@ -288,32 +374,106 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
 
           relTrack = acftTrack - myTrack;
 
-          qDebug() << "myTrack" << myTrack
+          /* qDebug() << "myTrack" << myTrack
                    << "acftTrack" << acftTrack
-                   << "relTrack" << relTrack;
+                   << "relTrack" << relTrack; */
         }
 
       // Draw object as circle, triangle or square
       QPixmap object;
+      QColor color(Qt::black);
+
+      if( it.key() == selectedObject )
+        {
+          // If object is selected, we use another color
+          color = QColor(Qt::magenta);
+
+          QFont f = font();
+          f.setPixelSize(18);
+          f.setBold( true );
+          painter.setFont(f);
+
+          QPen pen(Qt::magenta);
+          pen.setWidth(3);
+          painter.setPen( pen );
+
+          // Draw the Flarm aircraft Id of the selected object.
+          painter.drawText( 5, size().height() - 5, acft.ID );
+
+          // Draw the distance to the selected object
+          if( distAcft == 0.0 )
+            {
+              // Calculate distance in meters
+              distAcft = sqrt( north*north + east*east);
+            }
+
+          QString text = Distance::getText( distAcft, true, -1 );
+
+          QRect textRect = painter.fontMetrics().boundingRect( text );
+
+          painter.drawText( size().width() - 5 - textRect.width(),
+                            size().height() - 5, text );
+
+
+          text = "";
+
+          // Draw the relative vertical separation
+          if( acft.RelativeVertical > 0 )
+            {
+              // prefix positive value with a plus sign
+              text = "+";
+            }
+
+          text += Altitude::getText( acft.RelativeVertical, true, 0 );
+
+          textRect = painter.fontMetrics().boundingRect( text );
+
+          painter.drawText( size().width() - 5 - textRect.width(),
+                            5 + f.pixelSize(), text );
+
+          text = "";
+
+          // Draw climb rate, if available
+          if( acft.ClimbRate != INT_MIN )
+            {
+              Speed speed(acft.ClimbRate);
+
+              if( acft.ClimbRate > 0 )
+                {
+                  // prefix positive value with a plus sign
+                  text = "+";
+                }
+
+              text += speed.getVerticalText( true, 1 );
+
+              textRect = painter.fontMetrics().boundingRect( text );
+
+              painter.drawText( size().width() - 5 - textRect.width(),
+                                10 + 2 * f.pixelSize(), text );
+            }
+        }
 
       if( acft.TurnRate != 0 )
         {
           // Object is circling
-          MapConfig::createCircle( object, 30, QColor(Qt::black), 1.0 );
+          MapConfig::createCircle( object, 30, color, 1.0 );
         }
       else if( acft.Track != INT_MIN )
         {
           // Object with track info
-          MapConfig::createTriangle( object, 30, QColor(Qt::black), relTrack, 1.0 );
+          MapConfig::createTriangle( object, 30, color, relTrack, 1.0 );
         }
       else
         {
           // Object without track info
-          MapConfig::createSquare( object, 30, QColor(Qt::black), 1.0 );
+          MapConfig::createSquare( object, 30, color, 1.0 );
         }
 
       painter.drawPixmap( centerX + east  - object.size().width()/2,
                           centerY - north - object.size().height()/2,
                           object );
+
+      // store the draw coordinates for mouse snapping
+      objectHash.insert( it.key(), QPoint(centerX + east, centerY - north) );
     }
 }

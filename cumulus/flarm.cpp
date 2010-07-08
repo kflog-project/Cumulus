@@ -241,12 +241,9 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
     {
       QString key = createHashKey( aircraft.IdType, aircraft.ID );
 
-      qDebug() << "NewKey" << key;
-
       // first check, if record is already contained in the hash.
       if( pflaaHash.contains( key ) == true )
         {
-          qDebug() << "update Entry";
           // update entry
           FlarmAcft& aircraftEntry = pflaaHash[key];
           aircraftEntry = aircraft;
@@ -254,7 +251,6 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
       else
         {
           // insert new entry
-          qDebug() << "new Entry";
           pflaaHash.insert( key, aircraft );
         }
     }

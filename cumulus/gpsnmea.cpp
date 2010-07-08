@@ -321,7 +321,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflau + sumStr );
 
       //-------------------------------------------------------------
-      QString pflaa0 = "$PFLAA,0,250,250,100,2,111111,,0,30,0,1*";
+      QString pflaa0 = "$PFLAA,0,500,0,100,2,111111,,0,30,-0.7,1*";
 
       sum = calcCheckSum( pflaa0.size(), pflaa0 );
 
@@ -330,7 +330,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflaa0 + sumStr );
 
       //---------------------------------------------------------------
-      QString pflaa1 = "$PFLAA,0,-1000,-1000,100,2,222222,0,0,30,0,1*";
+      QString pflaa1 = "$PFLAA,0,-700,-700,100,2,222222,0,0,30,0,1*";
 
       sum = calcCheckSum( pflaa1.size(), pflaa1 );
 
@@ -339,7 +339,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflaa1 + sumStr );
 
       //-------------------------------------------------------------
-      QString pflaa2 = "$PFLAA,0,-1000,1000,100,2,333333,180,0,30,0,1*";
+      QString pflaa2 = "$PFLAA,0,-900,900,100,2,333333,180,0,30,0,1*";
 
       sum = calcCheckSum( pflaa2.size(), pflaa2 );
 
@@ -348,9 +348,9 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflaa2 + sumStr );
 
       //---------------------------------------------------------------
-      QString pflaa3 = "$PFLAA,3,400,-400,100,2,444444,180,7,30,0,1*";
+      QString pflaa3 = "$PFLAA,3,277,-277,100,2,444444,180,7,30,1.5,1*";
 
-      sum = calcCheckSum( pflaa1.size(), pflaa3 );
+      sum = calcCheckSum( pflaa3.size(), pflaa3 );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
@@ -369,13 +369,13 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
         {
           // PFLAA receiving starts
           pflaaIsReceiving = true;
-          qDebug() << "PFLAA receiving started";
+          //qDebug() << "PFLAA receiving started";
         }
       else if( pflaaIsReceiving == true )
         {
           // PFLAA receiving is finished
           pflaaIsReceiving = false;
-          qDebug() << "PFLAA receiving finished";
+          //qDebug() << "PFLAA receiving finished";
           Flarm::instance()->collectPflaaFinished();
         }
     }

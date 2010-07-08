@@ -28,10 +28,6 @@
 FlarmView::FlarmView( QWidget *parent ) :
   QWidget( parent )
 {
-  qDebug( "FlarmView window size is width=%d x height=%d",
-          parent->size().width(),
-          parent->size().height() );
-
   setContentsMargins(-4,-8,-4,-8);
 
   QHBoxLayout *topLayout = new QHBoxLayout( this );
@@ -52,6 +48,7 @@ FlarmView::FlarmView( QWidget *parent ) :
   connect( zoomButton, SIGNAL(clicked() ), this, SLOT(slotZoom()) );
   connect( closeButton, SIGNAL(clicked() ), this, SLOT(slotClosed()) );
 
+  // vertical box with operator buttons
   QVBoxLayout *vbox = new QVBoxLayout;
   vbox->addWidget( zoomButton );
   vbox->addWidget( listButton );
@@ -71,8 +68,6 @@ FlarmView::~FlarmView()
 
 void FlarmView::showEvent( QShowEvent *event )
 {
-  qDebug() << "FlarmView::showEvent";
-
   Q_UNUSED( event )
 
   // Start $PFLAA data collecting
@@ -83,11 +78,13 @@ void FlarmView::showEvent( QShowEvent *event )
 /** Called to report widget closing. */
 void FlarmView::slotClosed()
 {
+  // hide widget
   setVisible( false );
 
   // Stop $PFLAA collecting
   Flarm::setCollectPflaa( false );
-  display->slotResetBackground();
+
+  // Informs others about widget closing.
   emit closed();
 }
 

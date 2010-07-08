@@ -29,6 +29,7 @@
 #include <QString>
 #include <QTime>
 #include <QHash>
+#include <QPoint>
 
 class Flarm : public QObject
 {

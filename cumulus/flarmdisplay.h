@@ -32,6 +32,9 @@
 #include <QResizeEvent>
 #include <QPaintEvent>
 #include <QShowEvent>
+#include <QMouseEvent>
+#include <QHash>
+#include <QPoint>
 
 class FlarmDisplay : public QWidget
 {
@@ -72,13 +75,11 @@ protected:
 
   void showEvent( QShowEvent *event );
 
-public slots:
+  void hideEvent( QHideEvent *event );
 
-  /** Called to destroy the background pixmap. */
-  void slotResetBackground()
-  {
-    background = QPixmap();
-  };
+  void mousePressEvent( QMouseEvent *event);
+
+public slots:
 
   /** Switch to a new zoom level. */
   void slotSwitchZoom( enum Zoom value );
@@ -109,11 +110,19 @@ private:
   /** Current used height */
   int height;
 
-  /** Current used scale radius distance to pixels */
+  /** Current used scale radius as pixels per distance */
   double scale;
 
-  /** Current outer circle radius. */
+  /** Current used outer circle radius. */
   int radius;
+
+  /** Hash key of the selected object */
+  QString selectedObject;
+
+  /** Hash dictionary containing drawn objects and their positions at the
+   *  screen.
+   */
+  QHash<QString, QPoint> objectHash;
 
 };
 #endif /* FLARM_DISPLAY_H */
