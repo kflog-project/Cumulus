@@ -21,6 +21,7 @@
 #include "flarmdisplay.h"
 #include "flarmview.h"
 #include "gpsnmea.h"
+#include "generalconfig.h"
 
 /**
  * Constructor
@@ -41,9 +42,20 @@ FlarmView::FlarmView( QWidget *parent ) :
 
   QGroupBox* buttonBox = new QGroupBox( this );
 
-  QPushButton *zoomButton  = new QPushButton( tr("Zoom") );
-  QPushButton *listButton  = new QPushButton( tr("List") );
-  QPushButton *closeButton = new QPushButton( tr("Close") );
+  QPushButton *zoomButton  = new QPushButton;
+  zoomButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("zoom32.png")));
+  zoomButton->setIconSize(QSize(32, 32));
+  zoomButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *listButton  = new QPushButton;
+  listButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("list32.png")));
+  listButton->setIconSize(QSize(32, 32));
+  listButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *closeButton = new QPushButton;
+  closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  closeButton->setIconSize(QSize(32, 32));
+  closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   connect( zoomButton, SIGNAL(clicked() ), this, SLOT(slotZoom()) );
   connect( closeButton, SIGNAL(clicked() ), this, SLOT(slotClosed()) );
@@ -51,9 +63,10 @@ FlarmView::FlarmView( QWidget *parent ) :
   // vertical box with operator buttons
   QVBoxLayout *vbox = new QVBoxLayout;
   vbox->addWidget( zoomButton );
+  vbox->addSpacing(32);
   vbox->addWidget( listButton );
+  vbox->addStretch(2);
   vbox->addWidget( closeButton );
-  vbox->addStretch(1);
   buttonBox->setLayout( vbox );
 
   topLayout->addWidget( buttonBox );

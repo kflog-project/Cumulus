@@ -58,7 +58,7 @@ FlarmDisplay::~FlarmDisplay()
 void FlarmDisplay::createBackground()
 {
   // define a margin
-  const int MARGIN = 15;
+  const int MARGIN = 20;
 
   width  = size().width();
   height = size().height();
@@ -461,7 +461,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       else if( acft.Track != INT_MIN )
         {
           // Object with track info
-          MapConfig::createTriangle( object, 30, color, relTrack, 1.0 );
+          MapConfig::createTriangle( object, 32, color, relTrack, 1.0 );
         }
       else
         {
