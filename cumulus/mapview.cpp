@@ -44,10 +44,6 @@
 #include "gpsstatusdialog.h"
 #include "variomodedialog.h"
 
-#ifdef FLARM
-#include "flarmview.h"
-#endif
-
 MapView::MapView(QWidget *parent) : QWidget(parent)
 {
   setObjectName("MapView");
@@ -202,7 +198,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   SHLayout->addWidget( _heading);
 
 #ifdef FLARM
-  connect(_heading, SIGNAL(mousePress()), this, SLOT(slot_OpenFlarmView()));
+  connect(_heading, SIGNAL(mousePress()), this, SLOT(slot_OpenFlarmWidget()));
 #endif
 
   //layout for Wind/LD
@@ -286,11 +282,11 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
 #ifdef FLARM
 
-  // Flarm radar view
-  _flarmView = new FlarmView(this);
-  MapLayout->addWidget(_flarmView, 10);
-  _flarmView->setVisible( false );
-  connect( _flarmView, SIGNAL(closed()), this, SLOT(slot_OpenMapView()) );
+  // Flarm widget with radar view
+  _flarmWidget = new FlarmWidget(this);
+  MapLayout->addWidget(_flarmWidget, 10);
+  _flarmWidget->setVisible( false );
+  connect( _flarmWidget, SIGNAL(closed()), this, SLOT(slot_OpenMapView()) );
 #endif
 
   //--------------------------------------------------------------------
@@ -1006,13 +1002,15 @@ void MapView::slot_FlarmCount( int flarmCount )
     }
 }
 
-/** Opens the Flarm view. */
-void MapView::slot_OpenFlarmView()
+/** Opens the Flarm widget. */
+void MapView::slot_OpenFlarmWidget()
 {
   if( _theMap->isVisible() == true )
     {
+      extern MainWindow  *_globalMainWindow;
+      _globalMainWindow->setView( MainWindow::flarmView );
       _theMap->setVisible( false );
-      _flarmView->setVisible( true );
+      _flarmWidget->setVisible( true );
     }
 }
 
@@ -1021,8 +1019,10 @@ void MapView::slot_OpenMapView()
 {
   if( _theMap->isVisible() == false )
     {
+      extern MainWindow  *_globalMainWindow;
+      _globalMainWindow->setView( MainWindow::mapView );
       _theMap->setVisible( true );
-      _flarmView->setVisible( false );
+      _flarmWidget->setVisible( false );
     }
 }
 

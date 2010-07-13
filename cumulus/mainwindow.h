@@ -3,7 +3,7 @@
                              -------------------
    begin                : Sun Jul 21 2002
    copyright            : (C) 2002      by André Somers
-   ported to Qt4.x/X11  : (C) 2007-2009 by Axel Pauli
+   ported to Qt4.x/X11  : (C) 2007-2010 by Axel Pauli
    email                : axel@kflog.org
 
    This program is free software; you can redistribute it and/or modify
@@ -69,7 +69,8 @@ class MainWindow : public QMainWindow
                    olView=5,        // outlanding
                    tpView=6,        // taskpoint
                    tpSwitchView=7,  // taskpoint switch
-                   cfView=8 };      // configuration
+                   cfView=8,        // configuration
+                   flarmView=9};    // flarm view
 
   public: //methods
     /**
@@ -85,12 +86,12 @@ class MainWindow : public QMainWindow
     /**
      * Sets the view type
      */
-    virtual void setView (const appView& _newVal, const wayPoint* wp = 0);
+    void setView (const appView& _newVal, const wayPoint* wp = 0);
 
     /**
      * @returns the view type
      */
-    virtual appView getView();
+    appView getView();
 
     /**
      * play some sound

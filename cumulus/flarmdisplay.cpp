@@ -183,25 +183,6 @@ void FlarmDisplay::showEvent( QShowEvent *event )
     }
 }
 
-void FlarmDisplay::hideEvent( QHideEvent *event )
-{
-  qDebug() << "FlarmDisplay::hideEvent, spontan=" << event->spontaneous();
-
-  if( event->spontaneous() )
-    {
-      return;
-    }
-
-  if( background.isNull() == false )
-    {
-      // Reset background pixmap
-      background = QPixmap();
-    }
-
-  objectHash.clear();
-  event->accept();
-};
-
 void FlarmDisplay::resizeEvent( QResizeEvent *event )
 {
   qDebug() << "FlarmDisplay::resizeEvent";
@@ -294,15 +275,6 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
 
       // Get next aircraft
       Flarm::FlarmAcft& acft = it.value();
-
-      // Make time expire check, check time unit is in milli seconds.
-      if( acft.TimeStamp.elapsed() > 5000 )
-        {
-          // Object was longer time not updated, so we do remove it from the
-          // hash. No other way available as the time expire check.
-          it.remove();
-          continue;
-        }
 
       int north = acft.RelativeNorth;
       int east  = acft.RelativeEast;

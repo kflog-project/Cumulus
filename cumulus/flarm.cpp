@@ -326,5 +326,26 @@ bool Flarm::getFlarmRelativeDistance( int &relativeDistance )
  */
 void Flarm::collectPflaaFinished()
 {
+  // Check the hash dictionary for expired data. This old data items have to
+  // be removed. Seems to be the best place, to do it after the end trigger as
+  // to trust that following methods will do that.
+  QMutableHashIterator<QString, Flarm::FlarmAcft> it(pflaaHash);
+
+  while( it.hasNext() )
+    {
+      it.next();
+
+      // Get next aircraft
+      Flarm::FlarmAcft& acft = it.value();
+
+      // Make time expire check, check time unit is in milli seconds.
+      if( acft.TimeStamp.elapsed() > 5000 )
+        {
+          // Object was longer time not updated, so we do remove it from the
+          // hash. No other way available as the time expire check.
+          it.remove();
+        }
+    }
+
   emit newFlarmPflaaData();
 }

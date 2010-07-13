@@ -236,12 +236,16 @@ SOURCES = \
     
 flarm {
 		HEADERS += flarm.h \
-		           flarmview.h \
-		           flarmdisplay.h
+		           flarmdisplay.h \
+		           flarmlistview.h \
+		           flarmradarview.h \
+		           flarmwidget.h
 		           
 		SOURCES += flarm.cpp \
-		           flarmview.cpp \
-		           flarmdisplay.cpp
+		           flarmdisplay.cpp \
+		           flarmlistview.cpp \
+		           flarmradarview.cpp \
+		           flarmwidget.cpp
 		           
 		DEFINES += FLARM
 }

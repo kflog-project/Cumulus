@@ -39,9 +39,8 @@
 #include "map.h"
 
 #ifdef FLARM
-#include "flarmview.h"
+#include "flarmwidget.h"
 #endif
-
 
 /**
  * \author André Somers
@@ -110,11 +109,11 @@ class MapView : public QWidget
 #ifdef FLARM
 
     /**
-     * @return the Flarm view widget.
+     * @return the Flarm widget.
      */
-    FlarmView* getFlarmViewWidget() const
+    FlarmWidget* getFlarmWidget() const
       {
-        return _flarmView;
+        return _flarmWidget;
       };
 
 #endif
@@ -265,8 +264,8 @@ class MapView : public QWidget
     /** This slot is called if the number of received Flarms has been changed.*/
     void slot_FlarmCount( int flarmCount );
 
-    /** Opens the Flarm view. */
-    void slot_OpenFlarmView();
+    /** Opens the Flarm widget. */
+    void slot_OpenFlarmWidget();
 
     /** Opens the Map view. */
     void slot_OpenMapView();
@@ -325,8 +324,8 @@ class MapView : public QWidget
 #ifdef FLARM
     /** reference to Flarm status */
     CuLabel* _statusFlarm;
-    /** Reference to Flarm view widget */
-    FlarmView* _flarmView;
+    /** Reference to Flarm widget */
+    FlarmWidget* _flarmWidget;
 #endif
 
     /** reference to flight status, including logging status and flight mode */

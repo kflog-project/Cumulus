@@ -1556,6 +1556,16 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
       toggleActions( false );
       break;
 
+    case flarmView:
+      // called if Flarm view is created
+      menuBar()->hide();
+
+      toggleManualNavActions( false );
+      toggleGpsNavActions( false );
+      actionMenuBarToggle->setEnabled( false );
+      toggleActions( false );
+      break;
+
     default:
       // @AP: Should normally not happen but Vorsicht ist die Mutter
       // der Porzellankiste ;-)

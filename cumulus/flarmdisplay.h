@@ -75,8 +75,6 @@ protected:
 
   void showEvent( QShowEvent *event );
 
-  void hideEvent( QHideEvent *event );
-
   void mousePressEvent( QMouseEvent *event);
 
 public slots:
@@ -125,4 +123,5 @@ private:
   QHash<QString, QPoint> objectHash;
 
 };
+
 #endif /* FLARM_DISPLAY_H */
