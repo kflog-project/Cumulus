@@ -32,6 +32,8 @@
 #include "rowdelegate.h"
 
 class QTreeWidget;
+class QString;
+class QTreeWidget;
 
 class FlarmListView : public QWidget
 {
@@ -72,6 +74,13 @@ protected:
 
   void showEvent( QShowEvent *event );
 
+public slots:
+
+  /**
+   * Called if new Flarm data are available.
+   */
+  void slot_Update();
+
 private slots:
 
   /**
@@ -80,16 +89,26 @@ private slots:
   void slot_Select();
 
   /**
+   * This slot is called to make a deselection of the selected row.
+   */
+  void slot_Unselect();
+
+  /**
    * This slot is called when the list view should be closed without selection.
    */
   void slot_Close ();
 
 signals:
 
-  /*
+  /**
    * Requests FlarmWidget to close this widget.
    */
   void closeListView();
+
+  /**
+   * Emit a new Flarm object selection.
+   */
+  void newObjectSelection( QString newObject );
 
 private:
 

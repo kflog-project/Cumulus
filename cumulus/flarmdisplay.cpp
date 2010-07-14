@@ -170,6 +170,12 @@ void FlarmDisplay::slotUpdateDisplay()
     }
 }
 
+/** Set object to be selected. It is the hash key. */
+void FlarmDisplay::slotSetSelectedObject( QString newObject )
+{
+  selectedObject = newObject;
+}
+
 void FlarmDisplay::showEvent( QShowEvent *event )
 {
   qDebug() << "FlarmDisplay::showEvent";

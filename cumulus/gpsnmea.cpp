@@ -321,40 +321,40 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflau + sumStr );
 
       //-------------------------------------------------------------
-      QString pflaa0 = "$PFLAA,0,500,0,100,2,111111,,0,30,-0.7,1*";
+      QString pflaa = "$PFLAA,0,500,0,100,2,111111,,0,30,-0.7,1*";
 
-      sum = calcCheckSum( pflaa0.size(), pflaa0 );
+      sum = calcCheckSum( pflaa.size(), pflaa );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
-      slot_sentence( pflaa0 + sumStr );
+      slot_sentence( pflaa + sumStr );
 
       //---------------------------------------------------------------
-      QString pflaa1 = "$PFLAA,0,-700,-700,100,2,222222,0,0,30,0,1*";
+      pflaa = "$PFLAA,0,-700,-700,100,2,222222,0,0,30,0,1*";
 
-      sum = calcCheckSum( pflaa1.size(), pflaa1 );
+      sum = calcCheckSum( pflaa.size(), pflaa );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
-      slot_sentence( pflaa1 + sumStr );
+      slot_sentence( pflaa + sumStr );
 
       //-------------------------------------------------------------
-      QString pflaa2 = "$PFLAA,0,-900,900,100,2,333333,180,0,30,0,1*";
+      pflaa = "$PFLAA,0,-900,900,100,2,333333,180,0,30,0,1*";
 
-      sum = calcCheckSum( pflaa2.size(), pflaa2 );
+      sum = calcCheckSum( pflaa.size(), pflaa );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
-      slot_sentence( pflaa2 + sumStr );
+      slot_sentence( pflaa + sumStr );
 
       //---------------------------------------------------------------
-      QString pflaa3 = "$PFLAA,3,277,-277,100,2,444444,180,7,30,1.5,1*";
+      pflaa = "$PFLAA,3,347,1669,444,2,444444,180,7,30,1.5,1*";
 
-      sum = calcCheckSum( pflaa3.size(), pflaa3 );
+      sum = calcCheckSum( pflaa.size(), pflaa );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
-      slot_sentence( pflaa3 + sumStr );
+      slot_sentence( pflaa + sumStr );
 
     }
 

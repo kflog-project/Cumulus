@@ -61,7 +61,12 @@ void FlarmWidget::showEvent( QShowEvent *event )
       listView->resize( size() );
       listView->setVisible( false );
 
-      connect( listView, SIGNAL(closeListView() ), this, SLOT(slotCloseListView()) );
+      connect( listView, SIGNAL(closeListView()), this, SLOT(slotCloseListView()) );
+
+      FlarmDisplay* display = radarView->getDisplay();
+
+      connect( listView, SIGNAL(newObjectSelection(QString)),
+               display, SLOT(slotSetSelectedObject(QString)) );
     }
 }
 

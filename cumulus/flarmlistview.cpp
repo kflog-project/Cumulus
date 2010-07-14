@@ -14,6 +14,7 @@
 **   $Id$
 **
 ***********************************************************************/
+
 #include <cmath>
 
 #include <QtGui>
@@ -36,8 +37,6 @@ FlarmListView::FlarmListView( QWidget *parent ) :
   list(0),
   rowDelegate(0)
 {
-  qDebug() << "FlarmListView::FlarmListView";
-
   setAttribute( Qt::WA_DeleteOnClose );
 
   QBoxLayout *topLayout = new QVBoxLayout( this );
@@ -64,7 +63,7 @@ FlarmListView::FlarmListView( QWidget *parent ) :
      << tr("DR")
      << tr("Speed")
      << tr("Climb")
-     << "    ";
+     << " ";
 
   list->setHeaderLabels(sl);
 
@@ -78,8 +77,15 @@ FlarmListView::FlarmListView( QWidget *parent ) :
   QPushButton *cmdSelect = new QPushButton( tr( "Select" ), this );
   buttonrow->addWidget( cmdSelect );
 
+  QPushButton *cmdUnselect = new QPushButton( tr( "Unselect" ), this );
+  buttonrow->addWidget( cmdUnselect );
+
   connect( cmdSelect, SIGNAL(clicked()), this, SLOT(slot_Select()) );
+  connect( cmdUnselect, SIGNAL(clicked()), this, SLOT(slot_Unselect()) );
   connect( cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()) );
+
+  connect( Flarm::instance(), SIGNAL(newFlarmPflaaData()),
+           this, SLOT(slot_Update()) );
 }
 
 /**
@@ -136,6 +142,8 @@ void FlarmListView::fillItemList()
 
   QMutableHashIterator<QString, Flarm::FlarmAcft> it(flarmAcfts);
 
+  QString selection = "";
+
   while( it.hasNext() )
     {
       it.next();
@@ -183,7 +191,7 @@ void FlarmListView::fillItemList()
          << Distance::getText( distAcft, true, -1 )
          << vertical
          << ""
-         << Speed( acft.GroundSpeed ).getHorizontalText()
+         << Speed( acft.GroundSpeed ).getHorizontalText( false )
          << climb;
 
       QTreeWidgetItem* item = new QTreeWidgetItem( sl );
@@ -193,22 +201,27 @@ void FlarmListView::fillItemList()
       item->setTextAlignment( 5, Qt::AlignRight|Qt::AlignVCenter );
       item->setTextAlignment( 6, Qt::AlignRight|Qt::AlignVCenter );
 
-      double alpha = acos( ((double) north) / distAcft ) * 180. / M_PI;
+      double alpha = atan2( ((double) north), (double) east ) * 180. / M_PI;
 
-      qDebug() << "Alpha" << alpha;
+      // correct angle because the different coordinate systems.
+      alpha = 90 - alpha;
+
+      // qDebug() << "ID=" << it.key() << "Alpha" << alpha;
+
       QPixmap pixmap;
 
       MapConfig::createTriangle( pixmap, this->font().pointSize() + 4,
                                  QColor(Qt::black), alpha, 1.0 );
       QIcon qi;
       qi.addPixmap( pixmap );
-      //qi.addPixmap( pixmap, QIcon::Selected );
       item->setIcon( 4, qi );
 
       list->addTopLevelItem( item );
     }
 
   list->sortByColumn ( 2, Qt::AscendingOrder );
+
+  list->setCurrentItem(list->topLevelItem(0));
   resizeListColumns();
 }
 
@@ -230,6 +243,27 @@ void FlarmListView::resizeListColumns()
  */
 void FlarmListView::slot_Select()
 {
+  QTreeWidgetItem* item = list->currentItem();
+
+  if( item )
+    {
+      emit newObjectSelection( item->text( 0 ) );
+
+      // Request closing widget.
+      emit closeListView();
+    }
+}
+
+/**
+ * This slot is called to make a deselection of the selected row.
+ */
+void FlarmListView::slot_Unselect()
+{
+  if( list->topLevelItemCount() )
+    {
+      list->clearSelection();
+      emit newObjectSelection( "" );
+    }
 }
 
 /**
@@ -239,4 +273,26 @@ void FlarmListView::slot_Close()
 {
   // Requests FlarmWidget to close the widget.
   emit closeListView();
+}
+
+/**
+ * Called if new Flarm data are available.
+ */
+void FlarmListView::slot_Update()
+{
+  static int interval = 0;
+
+  if( isVisible() == false )
+    {
+      // widget is not visible, do nothing in this case.
+      return;
+    }
+
+  if( ++interval % 3 == 0 )
+    {
+      // Update all 3s the list.
+      fillItemList();
+
+      qDebug() << "FlarmListView::slot_update()";
+    }
 }

@@ -29,6 +29,8 @@
 
 #include <QWidget>
 
+#include "flarmdisplay.h"
+
 class QGroupBox;
 class FlarmDisplay;
 
@@ -51,6 +53,14 @@ public:
    * Destructor
    */
   virtual ~FlarmRadarView();
+
+  /**
+   * @return The display widget.
+   */
+  FlarmDisplay* getDisplay() const
+    {
+      return display;
+    };
 
 private slots:
 

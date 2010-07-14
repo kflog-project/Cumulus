@@ -85,6 +85,9 @@ public slots:
   /** Update display */
   void slotUpdateDisplay();
 
+  /** Set object to be selected. It is the hash key. */
+  void slotSetSelectedObject( QString newObject );
+
 private:
 
   /** Creates the background picture with the radar screen. */
