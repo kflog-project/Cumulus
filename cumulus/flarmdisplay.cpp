@@ -28,6 +28,12 @@
 #include "distance.h"
 #include "mapconfig.h"
 
+#ifdef MAEMO
+#define FontSize 22
+#else
+#define FontSize 18
+#endif
+
 /**
  * Constructor
  */
@@ -121,7 +127,7 @@ void FlarmDisplay::createBackground()
   painter.drawEllipse( centerX - width/2, centerY - height/2, width, height );
 
   QFont f = font();
-  f.setPixelSize(18);
+  f.setPointSize(FontSize);
   f.setBold( true );
   painter.setFont(f);
 
@@ -129,7 +135,7 @@ void FlarmDisplay::createBackground()
 
   // Draw scale unit in the upper left corner
   QString unitText = QString("%1 Km").arg(distance.getKilometers(), 0, 'f', 1);
-  painter.drawText( 10, f.pixelSize() + 10, unitText );
+  painter.drawText( 10, f.pointSize() + 10, unitText );
 
   pen.setWidth(0);
   painter.setPen( pen );
@@ -357,7 +363,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           color = QColor(Qt::magenta);
 
           QFont f = font();
-          f.setPixelSize(18);
+          f.setPointSize(FontSize);
           f.setBold( true );
           painter.setFont(f);
 
@@ -397,7 +403,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           textRect = painter.fontMetrics().boundingRect( text );
 
           painter.drawText( size().width() - 5 - textRect.width(),
-                            5 + f.pixelSize(), text );
+                            5 + f.pointSize(), text );
 
           text = "";
 
@@ -417,7 +423,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
               textRect = painter.fontMetrics().boundingRect( text );
 
               painter.drawText( size().width() - 5 - textRect.width(),
-                                10 + 2 * f.pixelSize(), text );
+                                10 + 2 * f.pointSize(), text );
             }
         }
 
