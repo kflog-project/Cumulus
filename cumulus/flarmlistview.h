@@ -34,6 +34,7 @@
 class QTreeWidget;
 class QString;
 class QTreeWidget;
+class QTreeWidgetItem;
 
 class FlarmListView : public QWidget
 {
@@ -63,7 +64,7 @@ public:
   /**
    * Fills the item list with their data.
    */
-  void fillItemList();
+  void fillItemList( QString& object2Select );
 
   /**
    * aligns the columns to their contents
@@ -81,7 +82,20 @@ public slots:
    */
   void slot_Update();
 
+  /** Set object to be selected. It is the object's hash key. */
+  void slot_SetSelectedObject( QString newObject )
+  {
+    selectedFlarmObject = newObject;
+  };
+
 private slots:
+
+  /**
+   * This slot is called if the user clicks in a new row of the list. The new
+   * list selection must be saved otherwise it will get lost during the next
+   * update cycle.
+   */
+  void slot_ListItemClicked( QTreeWidgetItem* item, int column );
 
   /**
    * This slot is called to indicate that a selection has been made.
@@ -114,6 +128,12 @@ private:
 
   QTreeWidget* list;
   RowDelegate* rowDelegate;
+
+  /** Hash key of the selected Flarm object in the FlarmRadarView. */
+  QString selectedFlarmObject;
+
+  /** Hash key of the current selected object in the list view. */
+  QString selectedListObject;
 
 };
 

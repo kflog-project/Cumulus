@@ -310,6 +310,12 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 #if 1
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
+  static int t1 = 0;
+  static int t2 = 90;
+  static int t3 = 180;
+
+  QString arg;
+
   if( slst[0] == "$GPRMC" )
     {
       QString pflau ="$PFLAU,5,1,2,1,0,-99,0,-200,1050,5A77B1*";
@@ -330,7 +336,10 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflaa + sumStr );
 
       //---------------------------------------------------------------
-      pflaa = "$PFLAA,0,-700,-700,100,2,222222,0,0,30,0,1*";
+      t1 = (t1 + 5) % 360;
+      arg = QString( "%1" ).arg(t1);
+
+      pflaa = "$PFLAA,0,-700,-700,100,2,222222," + arg + ",0,30,0,1*";
 
       sum = calcCheckSum( pflaa.size(), pflaa );
 
@@ -339,7 +348,10 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflaa + sumStr );
 
       //-------------------------------------------------------------
-      pflaa = "$PFLAA,0,-900,900,100,2,333333,180,0,30,0,1*";
+      t2 = (t2+5)%360;
+      arg = QString( "%1" ).arg(t2);
+
+      pflaa = "$PFLAA,0,-900,900,100,2,333333," + arg + ",0,30,0,1*";
 
       sum = calcCheckSum( pflaa.size(), pflaa );
 
@@ -348,7 +360,10 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflaa + sumStr );
 
       //---------------------------------------------------------------
-      pflaa = "$PFLAA,3,347,1669,444,2,444444,180,7,30,1.5,1*";
+      t3 = (t3+5)%360;
+      arg = QString( "%1" ).arg(t3);
+
+      pflaa = "$PFLAA,3,347,1669,444,2,444444," + arg + ",7,30,1.5,1*";
 
       sum = calcCheckSum( pflaa.size(), pflaa );
 

@@ -337,12 +337,7 @@ void MainWindow::slotCreateApplicationWidgets()
   _globalMapView = viewMap;
   view = mapView;
 
-#ifndef MAEMO
-  QFont fnt( "Helvetica", 14 );
-#else
   QFont fnt = font();
-#endif
-
   fnt.setBold(true);
 
   listViewTabs = new QTabWidget( this );

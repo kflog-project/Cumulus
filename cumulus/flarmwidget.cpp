@@ -43,6 +43,9 @@ void FlarmWidget::showEvent( QShowEvent *event )
   // Start $PFLAA data collecting
   Flarm::setCollectPflaa( true );
 
+  QFont fnt = font();
+  fnt.setBold(true);
+
   // Dynamically created
   if( radarView == static_cast<FlarmRadarView *> (0) )
     {
@@ -60,13 +63,18 @@ void FlarmWidget::showEvent( QShowEvent *event )
       listView = new FlarmListView( this );
       listView->resize( size() );
       listView->setVisible( false );
+      listView->setFont( fnt );
 
       connect( listView, SIGNAL(closeListView()), this, SLOT(slotCloseListView()) );
 
       FlarmDisplay* display = radarView->getDisplay();
 
       connect( listView, SIGNAL(newObjectSelection(QString)),
-               display, SLOT(slotSetSelectedObject(QString)) );
+               display, SLOT(slot_SetSelectedObject(QString)) );
+
+      connect( display, SIGNAL(newObjectSelection(QString)),
+               listView, SLOT(slot_SetSelectedObject(QString)) );
+
     }
 }
 

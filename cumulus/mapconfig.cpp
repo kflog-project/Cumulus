@@ -870,7 +870,9 @@ void MapConfig::createSquare( QPixmap& pixmap, int size,
   * @param opacity a value between 0.0 ... 1.0
   */
 void MapConfig::createTriangle( QPixmap& pixmap, int size,
-                                QColor color, int rotate, double opacity )
+                                QColor color, int rotate,
+                                double opacity,
+                                QColor bg )
 {
   if( size % 2 )
     {
@@ -879,7 +881,15 @@ void MapConfig::createTriangle( QPixmap& pixmap, int size,
     }
 
   pixmap = QPixmap( size, size );
-  pixmap.fill(Qt::transparent);
+
+  if( bg.isValid() )
+    {
+      pixmap.fill( bg );
+    }
+  else
+    {
+      pixmap.fill(Qt::transparent);
+    }
 
   QPainter painter(&pixmap);
 

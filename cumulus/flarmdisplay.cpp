@@ -63,8 +63,6 @@ void FlarmDisplay::createBackground()
   width  = size().width();
   height = size().height();
 
-  // qDebug() << "SW=" << width << "SH=" << height;
-
   if( width > height )
     {
       width = height;
@@ -76,8 +74,6 @@ void FlarmDisplay::createBackground()
 
   width  -= ( MARGIN * 2 ); // keep a margin around
   height -= ( MARGIN * 2 );
-
-  // qDebug() << "SWM=" << width << "SHM=" << height;
 
   centerX  = size().width() / 2;
   centerY  = size().height() / 2;
@@ -148,7 +144,7 @@ void FlarmDisplay::createBackground()
 }
 
 /** Switch to a new zoom level. */
-void FlarmDisplay::slotSwitchZoom( enum Zoom value )
+void FlarmDisplay::slot_SwitchZoom( enum Zoom value )
 {
   if( zoomLevel == value )
     {
@@ -161,7 +157,7 @@ void FlarmDisplay::slotSwitchZoom( enum Zoom value )
 }
 
 /** Update display */
-void FlarmDisplay::slotUpdateDisplay()
+void FlarmDisplay::slot_UpdateDisplay()
 {
   // Generate a paint event for this widget, if it is visible.
   if( isVisible() == true )
@@ -170,16 +166,8 @@ void FlarmDisplay::slotUpdateDisplay()
     }
 }
 
-/** Set object to be selected. It is the hash key. */
-void FlarmDisplay::slotSetSelectedObject( QString newObject )
-{
-  selectedObject = newObject;
-}
-
 void FlarmDisplay::showEvent( QShowEvent *event )
 {
-  qDebug() << "FlarmDisplay::showEvent";
-
   Q_UNUSED( event )
 
   if( background.isNull() == true )
@@ -191,8 +179,6 @@ void FlarmDisplay::showEvent( QShowEvent *event )
 
 void FlarmDisplay::resizeEvent( QResizeEvent *event )
 {
-  qDebug() << "FlarmDisplay::resizeEvent";
-
   QWidget::resizeEvent( event );
   createBackground();
 }
@@ -247,13 +233,17 @@ void FlarmDisplay::mousePressEvent( QMouseEvent *event )
         }
     }
 
+  if( found == true )
+    {
+      // Report new selection to FlarmListView
+      emit newObjectSelection( selectedObject );
+    }
+
   event->accept();
 }
 
 void FlarmDisplay::paintEvent( QPaintEvent *event )
 {
-  //qDebug() << "FlarmDisplay::paintEvent";
-
   // Call paint method from QWidget.
   QWidget::paintEvent( event );
 

@@ -20,7 +20,9 @@
  *
  * \brief Flarm widget to handle different views.
  *
- * This widget handles the different Flram views.
+ * This widget handles the two different Flarm views. It opens at first the
+ * radar view. From the radar view the user can open the list view. All open
+ * and close widget requests are handled by this widget.
  *
  */
 

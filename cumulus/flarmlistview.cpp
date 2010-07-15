@@ -35,7 +35,9 @@
 FlarmListView::FlarmListView( QWidget *parent ) :
   QWidget( parent ),
   list(0),
-  rowDelegate(0)
+  rowDelegate(0),
+  selectedFlarmObject(""),
+  selectedListObject("")
 {
   setAttribute( Qt::WA_DeleteOnClose );
 
@@ -60,12 +62,24 @@ FlarmListView::FlarmListView( QWidget *parent ) :
      << tr("ID")
      << tr("Distance")
      << tr("Vertical")
-     << tr("DR")
-     << tr("Speed")
-     << tr("Climb")
-     << " ";
+     << tr("R")
+     << tr("Vg")
+     << tr("R/C")
+     << "";
 
   list->setHeaderLabels(sl);
+
+  QTreeWidgetItem* headerItem = list->headerItem();
+  headerItem->setTextAlignment( 0, Qt::AlignCenter );
+  headerItem->setTextAlignment( 1, Qt::AlignCenter );
+  headerItem->setTextAlignment( 2, Qt::AlignCenter );
+  headerItem->setTextAlignment( 3, Qt::AlignCenter );
+  headerItem->setTextAlignment( 4, Qt::AlignCenter );
+  headerItem->setTextAlignment( 5, Qt::AlignCenter );
+  headerItem->setTextAlignment( 6, Qt::AlignCenter );
+
+  connect( list, SIGNAL(itemClicked( QTreeWidgetItem*, int )),
+           this, SLOT(slot_ListItemClicked( QTreeWidgetItem*, int )) );
 
   topLayout->addWidget( list, 10 );
   QBoxLayout *buttonrow = new QHBoxLayout;
@@ -93,17 +107,18 @@ FlarmListView::FlarmListView( QWidget *parent ) :
  */
 FlarmListView::~FlarmListView()
 {
-  qDebug() << "FlarmListView::~FlarmListView()";
 }
 
 void FlarmListView::showEvent( QShowEvent *event )
 {
-  qDebug() << "FlarmListView::showEvent";
-
   Q_UNUSED( event )
 
   configRowHeight();
-  fillItemList();
+
+  // Set the list object to be selected to the current selected Flarm object.
+  // List selection can be changed by user interaction.
+  selectedListObject = selectedFlarmObject;
+  fillItemList( selectedFlarmObject );
   list->setFocus();
 }
 
@@ -126,7 +141,7 @@ void FlarmListView::configRowHeight()
 /**
  * Fills the item list with their data.
  */
-void FlarmListView::fillItemList()
+void FlarmListView::fillItemList( QString& object2Select )
 {
   list->clear();
 
@@ -141,8 +156,6 @@ void FlarmListView::fillItemList()
     }
 
   QMutableHashIterator<QString, Flarm::FlarmAcft> it(flarmAcfts);
-
-  QString selection = "";
 
   while( it.hasNext() )
     {
@@ -182,7 +195,7 @@ void FlarmListView::fillItemList()
                climb = "+";
              }
 
-           climb += speed.getVerticalText( true, 1 );
+           climb += speed.getVerticalText( false, 1 );
          }
 
       // Add hash key as invisible column
@@ -191,10 +204,11 @@ void FlarmListView::fillItemList()
          << Distance::getText( distAcft, true, -1 )
          << vertical
          << ""
-         << Speed( acft.GroundSpeed ).getHorizontalText( false )
+         << Speed( acft.GroundSpeed ).getHorizontalText( false, 0 )
          << climb;
 
       QTreeWidgetItem* item = new QTreeWidgetItem( sl );
+      item->setTextAlignment( 1, Qt::AlignRight|Qt::AlignVCenter );
       item->setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
       item->setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
       item->setTextAlignment( 4, Qt::AlignCenter );
@@ -210,18 +224,22 @@ void FlarmListView::fillItemList()
 
       QPixmap pixmap;
 
-      MapConfig::createTriangle( pixmap, this->font().pointSize() + 4,
-                                 QColor(Qt::black), alpha, 1.0 );
+      MapConfig::createTriangle( pixmap, this->font().pointSize() + 10,
+                                 QColor(Qt::black), alpha, 1.0, QColor(Qt::cyan) );
       QIcon qi;
       qi.addPixmap( pixmap );
       item->setIcon( 4, qi );
 
       list->addTopLevelItem( item );
+
+      if( object2Select == it.key() )
+        {
+          // This item is the current selected one.
+          list->setCurrentItem( item );
+        }
     }
 
   list->sortByColumn ( 2, Qt::AscendingOrder );
-
-  list->setCurrentItem(list->topLevelItem(0));
   resizeListColumns();
 }
 
@@ -239,6 +257,21 @@ void FlarmListView::resizeListColumns()
 }
 
 /**
+ * This slot is called if the user clicks in a new row of the list. The new
+ * list selection must be saved otherwise it will get lost during the next
+ * update cycle.
+ */
+void FlarmListView::slot_ListItemClicked( QTreeWidgetItem* item, int column )
+{
+  Q_UNUSED( column )
+
+  if( item )
+    {
+      selectedListObject = item->text( 0 );
+    }
+}
+
+/**
  * This slot is called to indicate that a selection has been made.
  */
 void FlarmListView::slot_Select()
@@ -247,7 +280,12 @@ void FlarmListView::slot_Select()
 
   if( item )
     {
-      emit newObjectSelection( item->text( 0 ) );
+      // Save the hash key of the selected object
+      selectedFlarmObject = item->text( 0 );
+      selectedListObject  = selectedFlarmObject;
+
+      // Emit new object selection to FlarmDisplay.
+      emit newObjectSelection( selectedFlarmObject );
 
       // Request closing widget.
       emit closeListView();
@@ -262,7 +300,11 @@ void FlarmListView::slot_Unselect()
   if( list->topLevelItemCount() )
     {
       list->clearSelection();
-      emit newObjectSelection( "" );
+
+      selectedFlarmObject = "";
+      selectedListObject  = "";
+
+      emit newObjectSelection( selectedFlarmObject );
     }
 }
 
@@ -291,8 +333,6 @@ void FlarmListView::slot_Update()
   if( ++interval % 3 == 0 )
     {
       // Update all 3s the list.
-      fillItemList();
-
-      qDebug() << "FlarmListView::slot_update()";
+      fillItemList( selectedListObject );
     }
 }

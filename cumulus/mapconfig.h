@@ -218,9 +218,13 @@ public:
       * @param color fill color of triangle
       * @param rotate rotation angle in degree of triangle
       * @param opacity a value between 0.0 ... 1.0
+      * @param bg background color of pixmap. If invalid, background
+      *        is set to transparent.
       */
     static void createTriangle( QPixmap& pixmap, int size,
-                                QColor color, int rotate=0, double opacity=0.5 );
+                                QColor color, int rotate=0,
+                                double opacity=0.5,
+                                QColor bg=QColor() );
 
 public slots:
     /**

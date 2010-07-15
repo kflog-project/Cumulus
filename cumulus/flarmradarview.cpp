@@ -39,7 +39,7 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   topLayout->addWidget( display, 2 );
 
   connect( Flarm::instance(), SIGNAL(newFlarmPflaaData()),
-           display, SLOT(slotUpdateDisplay()) );
+           display, SLOT(slot_UpdateDisplay()) );
 
   buttonBox = new QGroupBox( this );
 
@@ -79,7 +79,6 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
  */
 FlarmRadarView::~FlarmRadarView()
 {
-  qDebug() << "FlarmRadarView::~FlarmRadarView()";
 }
 
 /** Called if zoom level shall be changed. */
@@ -89,15 +88,15 @@ void FlarmRadarView::slotZoom()
 
   if( zoom == FlarmDisplay::Low )
     {
-      display->slotSwitchZoom( FlarmDisplay::Middle );
+      display->slot_SwitchZoom( FlarmDisplay::Middle );
     }
   else if( zoom == FlarmDisplay::Middle )
     {
-      display->slotSwitchZoom( FlarmDisplay::High );
+      display->slot_SwitchZoom( FlarmDisplay::High );
     }
   else
     {
-      display->slotSwitchZoom( FlarmDisplay::Low );
+      display->slot_SwitchZoom( FlarmDisplay::Low );
     }
 }
 

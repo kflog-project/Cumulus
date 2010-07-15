@@ -237,9 +237,19 @@ SOURCES = \
     listwidgetparent.cpp
 
 flarm {
-    HEADERS += flarm.h
-    SOURCES += flarm.cpp
-    DEFINES += FLARM
+		HEADERS += flarm.h \
+		           flarmdisplay.h \
+		           flarmlistview.h \
+		           flarmradarview.h \
+		           flarmwidget.h
+		           
+		SOURCES += flarm.cpp \
+		           flarmdisplay.cpp \
+		           flarmlistview.cpp \
+		           flarmradarview.cpp \
+		           flarmwidget.cpp
+		           
+		DEFINES += FLARM
 }
 
 internet {

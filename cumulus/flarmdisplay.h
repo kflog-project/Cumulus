@@ -77,16 +77,26 @@ protected:
 
   void mousePressEvent( QMouseEvent *event);
 
+signals:
+
+  /**
+   * Emit a new Flarm object selection.
+   */
+  void newObjectSelection( QString newObject );
+
 public slots:
 
   /** Switch to a new zoom level. */
-  void slotSwitchZoom( enum Zoom value );
+  void slot_SwitchZoom( enum Zoom value );
 
   /** Update display */
-  void slotUpdateDisplay();
+  void slot_UpdateDisplay();
 
   /** Set object to be selected. It is the hash key. */
-  void slotSetSelectedObject( QString newObject );
+  void slot_SetSelectedObject( QString newObject )
+  {
+    selectedObject = newObject;
+  };
 
 private:
 
