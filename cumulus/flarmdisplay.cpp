@@ -435,7 +435,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       else if( acft.Track != INT_MIN )
         {
           // Object with track info
-          MapConfig::createTriangle( object, 32, color, relTrack, 1.0 );
+          MapConfig::createTriangle( object, 34, color, relTrack, 1.0 );
         }
       else
         {
