@@ -215,17 +215,27 @@ void FlarmListView::fillItemList( QString& object2Select )
       item->setTextAlignment( 5, Qt::AlignRight|Qt::AlignVCenter );
       item->setTextAlignment( 6, Qt::AlignRight|Qt::AlignVCenter );
 
-      double alpha = atan2( ((double) north), (double) east ) * 180. / M_PI;
-
-      // correct angle because the different coordinate systems.
-      alpha = 90 - alpha;
-
-      // qDebug() << "ID=" << it.key() << "Alpha" << alpha;
-
       QPixmap pixmap;
 
-      MapConfig::createTriangle( pixmap, this->font().pointSize() + 10,
-                                 QColor(Qt::black), alpha, 1.0, QColor(Qt::cyan) );
+      if( north == 0 && east == 0 )
+        {
+          // Special case Flarm object is above or below us. We draw a circle.
+          MapConfig::createCircle( pixmap, this->font().pointSize(),
+                                   QColor(Qt::black), 1.0 );
+        }
+      else
+        {
+          double alpha = atan2( ((double) north), (double) east ) * 180. / M_PI;
+
+          // correct angle because the different coordinate systems.
+          alpha = 90 - alpha;
+
+          // qDebug() << "ID=" << it.key() << "Alpha" << alpha;
+
+          MapConfig::createTriangle( pixmap, this->font().pointSize() + 10,
+                                     QColor(Qt::black), alpha, 1.0, QColor(Qt::cyan) );
+        }
+
       QIcon qi;
       qi.addPixmap( pixmap );
       item->setIcon( 4, qi );

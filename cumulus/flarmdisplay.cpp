@@ -48,9 +48,6 @@ FlarmDisplay::FlarmDisplay( QWidget *parent ) :
   radius(0),
   selectedObject("")
 {
-  /* qDebug( "FlarmDisplay window size is width=%d x height=%d",
-          parent->size().width(),
-          parent->size().height() ); */
 }
 
 /**
@@ -99,7 +96,7 @@ void FlarmDisplay::createBackground()
         radius = 1000;
         break;
       case FlarmDisplay::High:
-        radius = 5000;
+        radius = 6000;
         break;
       default:
         radius = 500;

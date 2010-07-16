@@ -868,6 +868,7 @@ void MapConfig::createSquare( QPixmap& pixmap, int size,
   * @param color fill color of triangle
   * @param rotate rotation angle in degree of triangle
   * @param opacity a value between 0.0 ... 1.0
+  * @param bg background color of pixmap. Default is set to transparent.s
   */
 void MapConfig::createTriangle( QPixmap& pixmap, int size,
                                 QColor color, int rotate,
@@ -882,16 +883,9 @@ void MapConfig::createTriangle( QPixmap& pixmap, int size,
 
   pixmap = QPixmap( size, size );
 
-  if( bg.isValid() )
-    {
-      pixmap.fill( bg );
-    }
-  else
-    {
-      pixmap.fill(Qt::transparent);
-    }
+  pixmap.fill( bg );
 
-  QPainter painter(&pixmap);
+  QPainter painter( &pixmap );
 
   painter.setPen( Qt::NoPen );
   painter.setBrush( QBrush( color, Qt::SolidPattern ) );

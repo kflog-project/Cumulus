@@ -327,7 +327,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflau + sumStr );
 
       //-------------------------------------------------------------
-      QString pflaa = "$PFLAA,0,500,0,100,2,111111,,0,30,-0.7,1*";
+      QString pflaa = "$PFLAA,0,0,0,100,2,111111,,0,30,-0.7,1*";
 
       sum = calcCheckSum( pflaa.size(), pflaa );
 
