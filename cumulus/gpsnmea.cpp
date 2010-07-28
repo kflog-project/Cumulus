@@ -615,7 +615,9 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
           if( ok )
             {
-              Altitude altitude( num );
+              Altitude altitude;
+
+              altitude.setFeet( num );
 
               if( _lastPressureAltitude != altitude )
                 {
