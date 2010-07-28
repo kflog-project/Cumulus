@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2010-07-28 AP: BUGFIX: Altitude of GPS Sentence $PGRMZ was taken as meter
+                   and not as foot. That caused a wrong display.
 [+] 2010-07-15 AP: Flarm radar and list view added as new features. Tip on
                    track label in map view will open it.
 [o] 2010-07-01 AP: Calculation of elevation was done twice in Calculator class
