@@ -318,7 +318,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   if( slst[0] == "$GPRMC" )
     {
-      QString pflau ="$PFLAU,5,1,2,1,0,-99,0,-200,1050,5A77B1*";
+      QString pflau ="$PFLAU,0,1,2,1,0,-48,0,-134,2141,DD8452*";
 
       uint sum = calcCheckSum( pflau.size(), pflau );
 
@@ -327,14 +327,16 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflau + sumStr );
 
       //-------------------------------------------------------------
-      QString pflaa = "$PFLAA,0,0,0,100,2,111111,,0,30,-0.7,1*";
+      QString pflaa = "$PFLAA,0,-1219,-1694,-134,2,DD8452,238,,21,0.4,1*";
 
       sum = calcCheckSum( pflaa.size(), pflaa );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
       slot_sentence( pflaa + sumStr );
-
+    }
+#endif
+#if 0
       //---------------------------------------------------------------
       t1 = (t1 + 5) % 360;
       arg = QString( "%1" ).arg(t1);
@@ -989,16 +991,16 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
  * selection MSL or Pressure. MSL is the default.
  */
 Altitude GpsNmea::getLastAltitude() const
-  {
-    if ( GeneralConfig::instance()->getGpsAltitude() == GpsNmea::PRESSURE )
-      {
-        return _lastPressureAltitude;
-      }
+{
+  if ( GeneralConfig::instance()->getGpsAltitude() == GpsNmea::PRESSURE )
+    {
+      return _lastPressureAltitude;
+    }
 
-    // MSL is the default in all other cases, when the user did
-    // not select pressure.
-    return _lastMslAltitude;
-  };
+  // MSL is the default in all other cases, when the user did
+  // not select pressure.
+  return _lastMslAltitude;
+};
 
 /**
  * Extracts wind, QNH and vario data from Cambridge's !w sentence.
