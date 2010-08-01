@@ -424,7 +424,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
             }
         }
 
-      if( acft.TurnRate != 0 )
+      if( acft.TurnRate != INT_MIN )
         {
           // Object is circling
           MapConfig::createCircle( object, 30, color, 1.0 );
