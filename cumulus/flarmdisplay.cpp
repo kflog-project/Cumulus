@@ -279,12 +279,19 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       int east  = acft.RelativeEast;
 
       double distAcft = 0.0;
+      double distAcftShort;
+      double alpha;
+      bool reduced = false;
+
+      int myTrack = calculator->getlastHeading();
 
       // Check, if object is inside of the drawing area. Otherwise it is placed
       // at the outer circle.
       if( abs(north) > radius || abs(east) > radius ||
           (distAcft = sqrt( north*north + east*east)) > radius )
         {
+          reduced = true;
+
           if( distAcft == 0.0 )
             {
               // We need the distance to use the cosine in further processing.
@@ -294,7 +301,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           // Object is out of draw range and must be placed at outer radius.
           // We do that by calculating the angle with the triangle sentence
           // and by using polar coordinates.
-          double alpha = acos( ((double) east) / distAcft );
+          alpha = acos( ((double) east) / distAcft );
 
           int x = static_cast<int> (rint(cos(alpha) * width/2));
           int y = static_cast<int> (rint(sin(alpha) * height/2));
@@ -318,7 +325,18 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
               north = y;
             }
         }
+
+      if( reduced == false )
+        {
+          distAcft = sqrt( north*north + east*east);
+          distAcftShort = distAcft;
+          alpha = acos( ((double) east) / distAcft );
+        }
       else
+        {
+          distAcftShort = sqrt( north*north + east*east);
+        }
+
         {
           // scale distances
           north = static_cast<int> (rint(static_cast<double> (north) * scale));
