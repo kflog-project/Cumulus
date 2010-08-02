@@ -18,17 +18,25 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef GPGGA_H_
+#define GPGGA_H_
+
 #include <QString>
 
 class GPGGA
 {
+
 public:
-    GPGGA();
-    int send( double lat, double lon, float altitude, int fd );
+
+  GPGGA();
+  int send( double lat, double lon, float altitude, int fd );
+
 private:
-    QString sentence;
-    uint calcCheckSum (int pos, const QString& sentence);
-    char * dmshh_format_lat(double degrees);
-    char * dmshh_format_lon(double degrees);
+
+  QString sentence;
+  uint calcCheckSum (int pos, const QString& sentence);
+  char * dmshh_format_lat(double degrees);
+  char * dmshh_format_lon(double degrees);
 };
 
+#endif

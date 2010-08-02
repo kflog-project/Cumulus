@@ -1,8 +1,8 @@
 /***************************************************************************
-                          gprmc.h  -  description
+                          pgrmz.h  -  description
                              -------------------
-    begin                : 23.12.2003
-    copyright            : (C) 2003 by Eckhard Völlm
+    begin                : 02.08.2010
+    copyright            : (C) 2009 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -18,25 +18,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef GPRMC_H_
-#define GPRMC_H_
+#ifndef PGRMZ_H_
+#define PGRMZ_H_
 
 #include <QString>
 
-class GPRMC
+class PGRMZ
 {
+
 public:
 
-  GPRMC();
-  int send( double lat, double lon, float speed, float course, int fd );
+  PGRMZ();
+
+  /** Altitude unit is expected as meters. */
+  int send( float altitude, int fd );
 
 private:
 
-  QString sentence;
   uint calcCheckSum (int pos, const QString& sentence);
-  char * dmshh_format_lat(double degrees);
-  char * dmshh_format_lon(double degrees);
-
 };
 
-#endif
+#endif /* PGRMZ_H_ */

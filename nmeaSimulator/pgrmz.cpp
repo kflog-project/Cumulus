@@ -1,7 +1,7 @@
 /***************************************************************************
-                          gpgsa.cpp  -  description
+                          pgrmz.h  -  description
                              -------------------
-    begin                : 24.10.2009
+    begin                : 02.08.2010
     copyright            : (C) 2009 by Axel Pauli
     email                : axel@kflog.org
 
@@ -19,57 +19,33 @@
  ***************************************************************************/
 
 #include <iostream>
+#include <stdio.h>
+#include <unistd.h>
 
-#include "gpgsa.h"
+#include "pgrmz.h"
 
 using namespace std;
 
-GPGSA::GPGSA()
+PGRMZ::PGRMZ()
 {
 }
 
 /**
-GSA - GPS DOP and active satellites
+  Used by Garmin and Flarm devices
+  $PGRMZ,93,f,3*21
+         93,f         Altitude in feet
+         3            Position fix dimensions 2 = FLARM barometric altitude
+                                              3 = GPS altitude
 
-        1 2 3                    14 15  16  17  18
-        | | |                    |  |   |   |   |
- $--GSA,a,a,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x.x,x.x*hh<CR><LF>
+  Flarm example: $PGRMZ,2963,F,2*04
 
- Field Number:
-  1) Selection mode
-  2) Mode
-  3) ID of 1st satellite used for fix
-  4) ID of 2nd satellite used for fix
-  ...
-  14) ID of 12th satellite used for fix
-  15) PDOP in meters
-  16) HDOP in meters
-  17) VDOP in meters
-  18) checksum
- */
-
-// $GPGSA,A,3,14,32,17,20,11,23,28,,,,,,1.7,1.1,1.2*3C
-
-int GPGSA::send( QStringList& satIds, QString& pdop, QString& hdop, QString &vdop, int fd )
+  Input parameter altitude is expected as meters.
+*/
+int PGRMZ::send( float altitude, int fd )
 {
-  QString sentence = "$GPGSA,A,3";
+  QString sentence = QString("$PGRMZ,%1,F,2*").arg( altitude*3.28095, 0, 'f', 0);
 
-  for( int i = 0; i < satIds.size(); i++ )
-    {
-      sentence += "," + satIds[i];
-    }
-
-  if( satIds.size() < 12 )
-    {
-      for( int i = satIds.size(); i < 12; i++ )
-        {
-          sentence += ",";
-        }
-    }
-
-  sentence += "," + pdop + "," + hdop + "," + vdop + "*";
-
-  int pos = sentence.length()-1;
+  int pos = sentence.length() - 1;
   uint sum = calcCheckSum( pos, sentence );
   QString scheck;
   scheck.sprintf ("%02X\n", sum);
@@ -81,13 +57,13 @@ int GPGSA::send( QStringList& satIds, QString& pdop, QString& hdop, QString &vdo
   return sent;
 }
 
-uint GPGSA::calcCheckSum (int pos, const QString& sentence)
+uint PGRMZ::calcCheckSum (int pos, const QString& sentence)
 {
   uint sum = 0;
 
-  for (int i = 1; i < pos; i++)
+  for( int i = 1; i < pos; i++ )
     {
-      sum ^= uint(sentence[i].toAscii());
+      sum ^= uint( sentence[i].toAscii() );
     }
 
   return sum;

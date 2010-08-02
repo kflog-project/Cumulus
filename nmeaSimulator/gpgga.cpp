@@ -76,6 +76,7 @@ uint GPGGA::calcCheckSum (int pos, const QString& sentence)
     {
       sum ^= uint( sentence[i].toAscii() );
     }
+
   return sum;
 }
 

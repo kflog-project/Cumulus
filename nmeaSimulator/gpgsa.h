@@ -18,6 +18,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef GPGSA_H_
+#define GPGSA_H_
+
 #include <QString>
 #include <QStringList>
 
@@ -49,13 +52,12 @@ class GPGSA
 public:
 
   GPGSA();
-  ~GPGSA();
 
   int send( QStringList& satIds, QString& pdop, QString& hdop, QString &vdop, int fd );
 
 private:
 
-  QString sentence;
   uint calcCheckSum (int pos, const QString& sentence);
 };
 
+#endif

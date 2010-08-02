@@ -19,6 +19,7 @@ glider.h \
 gpgga.h \
 gprmc.h \
 gpgsa.h \
+pgrmz.h \
 ../cumulus/speed.h \
 vector.h
 
@@ -27,6 +28,7 @@ glider.cpp \
 gpgga.cpp \
 gprmc.cpp \
 gpgsa.cpp \
+pgrmz.cpp \
 main.cpp \
 ../cumulus/speed.cpp \
 vector.cpp \
