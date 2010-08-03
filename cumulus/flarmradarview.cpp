@@ -42,31 +42,51 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
            display, SLOT(slot_UpdateDisplay()) );
 
   buttonBox = new QGroupBox( this );
+  buttonBox->setContentsMargins(2,2,2,2);
+
+  int size = 40;
 
   QPushButton *zoomButton  = new QPushButton;
   zoomButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("zoom32.png")));
   zoomButton->setIconSize(QSize(32, 32));
   zoomButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  zoomButton->setMinimumSize(size, size);
+  zoomButton->setMaximumSize(size, size);
 
   QPushButton *listButton  = new QPushButton;
   listButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("list32.png")));
   listButton->setIconSize(QSize(32, 32));
   listButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  listButton->setMinimumSize(size, size);
+  listButton->setMaximumSize(size, size);
+
+  display->setUpdateInterval( 2 );
+  updateButton = new QPushButton( "2s" );
+  updateButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  updateButton->setMinimumSize(size, size);
+  updateButton->setMaximumSize(size, size);
 
   QPushButton *closeButton = new QPushButton;
   closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   closeButton->setIconSize(QSize(32, 32));
   closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  closeButton->setMinimumSize(size, size);
+  closeButton->setMaximumSize(size, size);
 
   connect( zoomButton, SIGNAL(clicked() ), this, SLOT(slotZoom()) );
   connect( listButton, SIGNAL(clicked() ), this, SLOT(slotOpenListView()) );
+  connect( updateButton, SIGNAL(clicked() ), this, SLOT(slotUpdateInterval()) );
   connect( closeButton, SIGNAL(clicked() ), this, SLOT(slotClose()) );
 
   // vertical box with operator buttons
   QVBoxLayout *vbox = new QVBoxLayout;
+
+  vbox->setSpacing(0);
   vbox->addWidget( zoomButton );
   vbox->addSpacing(32);
   vbox->addWidget( listButton );
+  vbox->addSpacing(32);
+  vbox->addWidget( updateButton );
   vbox->addStretch(2);
   vbox->addWidget( closeButton );
   buttonBox->setLayout( vbox );
@@ -111,4 +131,32 @@ void FlarmRadarView::slotClose()
 {
   // Ask FlarmWidget to close the widget.
   emit closeRadarView();
+}
+
+/** Called if update interval button was pressed. */
+void FlarmRadarView::slotUpdateInterval()
+{
+  QString text = updateButton->text();
+
+  QString newText = "2s";
+  int newValue = 2;
+
+  if( text == "1s" )
+    {
+      newText = "2s";
+      newValue = 2;
+    }
+  else if( text == "2s" )
+    {
+      newText = "3s";
+      newValue = 3;
+    }
+  else if( text == "3s" )
+    {
+      newText = "1s";
+      newValue = 1;
+    }
+
+  updateButton->setText( newText );
+  display->setUpdateInterval( newValue );
 }

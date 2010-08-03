@@ -29,15 +29,16 @@
 #include "distance.h"
 #include "mapconfig.h"
 
+QString FlarmListView::selectedListObject = "";
+QString FlarmListView::selectedFlarmObject = "";
+
 /**
  * Constructor
  */
 FlarmListView::FlarmListView( QWidget *parent ) :
   QWidget( parent ),
   list(0),
-  rowDelegate(0),
-  selectedFlarmObject(""),
-  selectedListObject("")
+  rowDelegate(0)
 {
   setAttribute( Qt::WA_DeleteOnClose );
 
@@ -225,15 +226,15 @@ void FlarmListView::fillItemList( QString& object2Select )
         }
       else
         {
-          double alpha = atan2( ((double) north), (double) east ) * 180. / M_PI;
+          int alpha = static_cast<int> (rint(atan2( ((double) north), (double) east ) * 180. / M_PI));
 
           // correct angle because the different coordinate systems.
-          alpha = 90 - alpha;
+          int heading2Object = calculator->getlastHeading() + (90 - alpha);
 
-          // qDebug() << "ID=" << it.key() << "Alpha" << alpha;
+          // qDebug() << "ID=" << it.key() << "Alpha" << alpha << "H2O=" << heading2Object;
 
           MapConfig::createTriangle( pixmap, this->font().pointSize() + 10,
-                                     QColor(Qt::black), alpha, 1.0, QColor(Qt::cyan) );
+                                     QColor(Qt::black), heading2Object, 1.0, QColor(Qt::cyan) );
         }
 
       QIcon qi;

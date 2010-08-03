@@ -67,6 +67,11 @@ public:
     return zoomLevel;
   };
 
+  void setUpdateInterval( int newInterval )
+  {
+    updateInterval = newInterval;
+  };
+
 protected:
 
   void resizeEvent( QResizeEvent *event );
@@ -109,7 +114,10 @@ private:
   QPixmap background;
 
   /** current zoom level */
-  enum Zoom zoomLevel;
+  static enum Zoom zoomLevel;
+
+  /** Hash key of the selected object */
+  static QString selectedObject;
 
   /** Current used center point */
   int centerX;
@@ -127,14 +135,15 @@ private:
   /** Current used outer circle radius. */
   int radius;
 
-  /** Hash key of the selected object */
-  QString selectedObject;
-
   /** Hash dictionary containing drawn objects and their positions at the
    *  screen.
    */
   QHash<QString, QPoint> objectHash;
 
+  /**
+   * Time interval of screen update in seconds.
+   */
+  int updateInterval;
 };
 
 #endif /* FLARM_DISPLAY_H */

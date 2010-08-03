@@ -31,6 +31,8 @@
 #include <QHash>
 #include <QPoint>
 
+class QTimer;
+
 class Flarm : public QObject
 {
   Q_OBJECT
@@ -228,6 +230,11 @@ signals:
    */
   void newFlarmPflaaData();
 
+private slots:
+
+  /** Called if timer has expired. Used for Flarm data clearing. */
+  void slotTimeout();
+
 private:
 
   /**
@@ -242,6 +249,9 @@ private:
   /** Hash map with collected PFLAA records. The key is a concatenation of
    *  the Flarm tags <ID-Type> and <ID>.*/
   static QHash<QString, FlarmAcft> pflaaHash;
+
+  /** Timer for data clearing. */
+  QTimer *timer;
 };
 
 #endif /* FLARM_H_ */

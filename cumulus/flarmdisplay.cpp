@@ -34,19 +34,23 @@
 #define FontSize 18
 #endif
 
+// Initialize static variables
+enum FlarmDisplay::Zoom FlarmDisplay::zoomLevel = FlarmDisplay::Low;
+
+QString FlarmDisplay::selectedObject = "";
+
 /**
  * Constructor
  */
 FlarmDisplay::FlarmDisplay( QWidget *parent ) :
   QWidget( parent ),
-  zoomLevel(FlarmDisplay::Low),
   centerX(0),
   centerY(0),
   width(0),
   height(0),
   scale(0.0),
   radius(0),
-  selectedObject("")
+  updateInterval(2)
 {
 }
 
@@ -162,11 +166,15 @@ void FlarmDisplay::slot_SwitchZoom( enum Zoom value )
 /** Update display */
 void FlarmDisplay::slot_UpdateDisplay()
 {
+  static int counter = 0;
+
   // Generate a paint event for this widget, if it is visible.
-  if( isVisible() == true )
+  if( isVisible() == true && (counter % updateInterval) == 0 )
     {
       repaint();
     }
+
+  counter++;
 }
 
 void FlarmDisplay::showEvent( QShowEvent *event )
@@ -281,16 +289,14 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       double distAcft = 0.0;
       double distAcftShort;
       double alpha;
-      bool reduced = false;
-
-      int myTrack = calculator->getlastHeading();
+      bool doScale = true;
 
       // Check, if object is inside of the drawing area. Otherwise it is placed
       // at the outer circle.
       if( abs(north) > radius || abs(east) > radius ||
           (distAcft = sqrt( north*north + east*east)) > radius )
         {
-          reduced = true;
+          doScale = false;
 
           if( distAcft == 0.0 )
             {
@@ -301,46 +307,36 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           // Object is out of draw range and must be placed at outer radius.
           // We do that by calculating the angle with the triangle sentence
           // and by using polar coordinates.
-          alpha = acos( ((double) east) / distAcft );
+          alpha = atan2( ((double) north), (double) east );
 
-          int x = static_cast<int> (rint(cos(alpha) * width/2));
-          int y = static_cast<int> (rint(sin(alpha) * height/2));
+          east  = static_cast<int> (rint(cos(alpha) * width/2));
+          north = static_cast<int> (rint(sin(alpha) * height/2));
 
-          // correcting of signs, if necessary
-          if( (east < 0 && x > 0) || (east > 0 && x < 0) )
-            {
-              east = -x;
-            }
-          else
-            {
-              east = x;
-            }
-
-          if( (north < 0 && y > 0) || (north > 0 && y < 0) )
-            {
-              north = -y;
-            }
-          else
-            {
-              north = y;
-            }
-        }
-
-      if( reduced == false )
-        {
-          distAcft = sqrt( north*north + east*east);
-          distAcftShort = distAcft;
-          alpha = acos( ((double) east) / distAcft );
+          distAcftShort = sqrt( north*north + east*east);
         }
       else
         {
-          distAcftShort = sqrt( north*north + east*east);
+          distAcft = sqrt( north*north + east*east);
+          distAcftShort = distAcft;
+
+          alpha = atan2( ((double) north), (double) east );
         }
 
+      double heading2Object = ((double) calculator->getlastHeading() * M_PI / 180.) + (M_PI_2 - alpha);
+
+      double x = cos(heading2Object) * distAcftShort;
+      double y = sin(heading2Object) * distAcftShort;
+
+      // scale distances, if not reduced to outer circle
+      if( doScale )
         {
-          // scale distances
-          north = static_cast<int> (rint(static_cast<double> (north) * scale));
-          east  = static_cast<int> (rint(static_cast<double> (east)  * scale));
+          north = static_cast<int> (rint(x * scale));
+          east  = static_cast<int> (rint(y * scale));
+        }
+      else
+        {
+          north = x;
+          east  = y;
         }
 
       int relTrack = 0;
@@ -390,19 +386,12 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           painter.drawText( 5, size().height() - 5, acft.ID );
 
           // Draw the distance to the selected object
-          if( distAcft == 0.0 )
-            {
-              // Calculate distance in meters
-              distAcft = sqrt( north*north + east*east);
-            }
-
           QString text = Distance::getText( distAcft, true, -1 );
 
           QRect textRect = painter.fontMetrics().boundingRect( text );
 
           painter.drawText( size().width() - 5 - textRect.width(),
                             size().height() - 5, text );
-
 
           text = "";
 

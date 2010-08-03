@@ -130,10 +130,10 @@ private:
   RowDelegate* rowDelegate;
 
   /** Hash key of the selected Flarm object in the FlarmRadarView. */
-  QString selectedFlarmObject;
+  static QString selectedFlarmObject;
 
   /** Hash key of the current selected object in the list view. */
-  QString selectedListObject;
+  static QString selectedListObject;
 
 };
 

@@ -32,6 +32,7 @@
 #include "flarmdisplay.h"
 
 class QGroupBox;
+class QPushButton;
 class FlarmDisplay;
 
 class FlarmRadarView : public QWidget
@@ -73,6 +74,9 @@ private slots:
   /** Called if list view button was pressed. */
   void slotOpenListView();
 
+  /** Called if update interval button was pressed. */
+  void slotUpdateInterval();
+
 signals:
 
   /** Emitted if the list view shall be opened with all Flarm objects. */
@@ -88,6 +92,9 @@ private:
 
   /** Button box. */
   QGroupBox* buttonBox;
+
+  /** Update interval button. */
+  QPushButton* updateButton;
 };
 
 #endif /* FLARM_RADAR_VIEW_H */

@@ -29,6 +29,11 @@ QHash<QString, Flarm::FlarmAcft> Flarm::pflaaHash;
 Flarm::Flarm(QObject* parent) : QObject(parent)
 {
   flarmStatus.valid = false;
+
+  // Setup timer for data clearing
+  timer = new QTimer( this );
+  timer->setSingleShot( true );
+  connect( timer, SIGNAL(timeout()), this, SLOT(slotTimeout()) );
 }
 
 Flarm::~Flarm()
@@ -339,7 +344,7 @@ void Flarm::collectPflaaFinished()
       Flarm::FlarmAcft& acft = it.value();
 
       // Make time expire check, check time unit is in milli seconds.
-      if( acft.TimeStamp.elapsed() > 5000 )
+      if( acft.TimeStamp.elapsed() > 3000 )
         {
           // Object was longer time not updated, so we do remove it from the
           // hash. No other way available as the time expire check.
@@ -347,5 +352,14 @@ void Flarm::collectPflaaFinished()
         }
     }
 
+  // Start Flarm data clearing supervision.
+  timer->start( 6000 );
+  emit newFlarmPflaaData();
+}
+
+/** Called if timer has expired. Used for Flarm data clearing. */
+void Flarm::slotTimeout()
+{
+  pflaaHash.clear();
   emit newFlarmPflaaData();
 }
