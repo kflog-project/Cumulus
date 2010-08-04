@@ -46,6 +46,10 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
 
   int size = 40;
 
+#ifdef MAEMO
+  size = 60;
+#endif
+
   QPushButton *zoomButton  = new QPushButton;
   zoomButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("zoom32.png")));
   zoomButton->setIconSize(QSize(32, 32));
