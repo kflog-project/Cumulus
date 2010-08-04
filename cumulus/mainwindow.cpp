@@ -499,6 +499,7 @@ void MainWindow::slotCreateApplicationWidgets()
            this, SLOT( slotAlarm( const QString&, const bool ) ) );
   connect( viewMap, SIGNAL( toggleLDCalculation( const bool ) ),
            calculator, SLOT( slot_toggleLDCalculation(const bool) ) );
+  connect( viewMap, SIGNAL( toggleMenu() ), this, SLOT( slotToggleMenu() ) );
 
   connect( viewInfo, SIGNAL( waypointAdded( wayPoint& ) ),
            viewWP, SLOT( slot_wpAdded( wayPoint& ) ) );

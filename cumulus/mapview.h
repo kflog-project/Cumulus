@@ -287,7 +287,13 @@ class MapView : public QWidget
      */
     void toggleVarioCalculation( const bool );
 
-  private: // Private attributes
+    /**
+     * toggle menu in main window.
+     */
+    void toggleMenu();
+
+  private:
+
     /** reference to the heading label */
     MapInfoBox* _heading;
     /** reference to the bearing label */
@@ -385,6 +391,9 @@ class MapView : public QWidget
 
     /** Called, if altimeter mode has been changed */
     void slot_newAltimeterMode();
+
+    /** Called to toggle the menu of the main window. */
+    void slot_toggleMenu();
   };
 
 #endif

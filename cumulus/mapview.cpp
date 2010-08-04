@@ -267,7 +267,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _speed2fly->setPreText("S2f");
   _speed2fly->setValue("-");
   MSLayout->addWidget( _speed2fly );
-  connect(_speed2fly, SIGNAL(mousePress()), (MainWindow*)parent, SLOT(slotToggleMenu()));
+  connect(_speed2fly, SIGNAL(mousePress()), this, SLOT(slot_toggleMenu()));
 
   sideLayout->addWidget( mcBar, 1 );
 
@@ -574,6 +574,16 @@ void MapView::slot_toggleBearing()
 
   _bearingTimer->setSingleShot(true);
   _bearingTimer->start(5000);
+}
+
+/** Called to toggle the menu of the main window. */
+void MapView::slot_toggleMenu()
+{
+  if( _theMap->isVisible() == true )
+    {
+      // Toggle menu only, if map widget is visible
+      emit toggleMenu();
+    }
 }
 
 /**
