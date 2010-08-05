@@ -1932,7 +1932,7 @@ void Map::__drawOtherAircraft()
       _globalMapConfig->createCircle( blueCircle, diameter, QColor(Qt::blue), 1.0 );
     }
 
-  if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) > 56.0 )
+  if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) > 100.0 )
     {
       // scale to large
       return;

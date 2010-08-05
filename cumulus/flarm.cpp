@@ -18,6 +18,7 @@
 #include <QtCore>
 
 #include "flarm.h"
+#include "flarmdisplay.h"
 
 // initialize static data items
 bool Flarm::collectPflaa = false;
@@ -241,11 +242,10 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
 
   // Check, if parsed data should be collected. In this case the data record
   // is put or updated in the pflaaHash hash dictionary.
+  QString key = createHashKey( aircraft.IdType, aircraft.ID );
 
-  if( collectPflaa == true )
+  if( collectPflaa == true || key == FlarmDisplay::getSelectedObject() )
     {
-      QString key = createHashKey( aircraft.IdType, aircraft.ID );
-
       // first check, if record is already contained in the hash.
       if( pflaaHash.contains( key ) == true )
         {
@@ -353,8 +353,16 @@ void Flarm::collectPflaaFinished()
     }
 
   // Start Flarm data clearing supervision.
-  timer->start( 6000 );
-  emit newFlarmPflaaData();
+  if( pflaaHash.size() > 0 )
+    {
+      timer->start( 6000 );
+    }
+
+  // Emit signal, if further processing in radar view is required.
+  if( Flarm::getCollectPflaa() )
+    {
+      emit newFlarmPflaaData();
+    }
 }
 
 /** Called if timer has expired. Used for Flarm data clearing. */

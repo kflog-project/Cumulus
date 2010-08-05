@@ -67,9 +67,20 @@ public:
     return zoomLevel;
   };
 
+  /**
+   * Sets the update interval to the new value. The unit is seconds.
+   */
   void setUpdateInterval( int newInterval )
   {
     updateInterval = newInterval;
+  };
+
+  /**
+   * Returns the hash key of the currently selected Flarm object.
+   */
+  static QString& getSelectedObject()
+  {
+    return selectedObject;
   };
 
 protected:

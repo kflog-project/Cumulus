@@ -166,7 +166,20 @@ void FlarmDisplay::slot_SwitchZoom( enum Zoom value )
 /** Update display */
 void FlarmDisplay::slot_UpdateDisplay()
 {
+  static QTime lastDisplay;
+
   static int counter = 0;
+
+  // The display is updated every 1 seconds only.
+  // That will reduce the X-Server load.
+  if( lastDisplay.elapsed() < 750 )
+    {
+      return;
+    }
+  else
+    {
+      lastDisplay = QTime::currentTime();
+    }
 
   // Generate a paint event for this widget, if it is visible.
   if( isVisible() == true && (counter % updateInterval) == 0 )
@@ -368,10 +381,19 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       QPixmap object;
       QColor color(Qt::black);
 
+      if( acft.Alarm == Flarm::Important )
+        {
+          color = QColor(255, 128, 0);
+        }
+      else if( acft.Alarm == Flarm::Urgent )
+        {
+          color = Qt::red;
+        }
+
       if( it.key() == selectedObject )
         {
           // If object is selected, we use another color
-          color = QColor(Qt::magenta);
+          color = Qt::magenta;
 
           QFont f = font();
           f.setPointSize(FontSize);
