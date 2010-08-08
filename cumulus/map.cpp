@@ -49,6 +49,7 @@
 
 #ifdef FLARM
 #include "flarm.h"
+#include "flarmdisplay.h"
 #endif
 
 extern MainWindow  *_globalMainWindow;
@@ -1916,11 +1917,27 @@ void Map::slotSwitchManualInFlight()
 /** Draws the most important aircraft reported by Flarm. */
 void Map::__drawOtherAircraft()
 {
-#ifndef MAEMO	
+  qDebug() << "Map::__drawOtherAircraft()";
+
+#ifndef MAEMO
   const int diameter = 22;
 #else
   const int diameter = 30;
-#endif  
+#endif
+
+  if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) > 150.0 )
+    {
+      // scale to large
+      return;
+    }
+
+  const Flarm::FlarmStatus& status = Flarm::getFlarmStatus();
+
+  if( status.valid == false )
+    {
+      // No valid Flarm data available.
+      return;
+    }
 
   if( blackCircle.isNull() )
     {
@@ -1930,25 +1947,73 @@ void Map::__drawOtherAircraft()
       _globalMapConfig->createCircle( blackCircle, diameter, QColor(Qt::black), 1.0 );
       _globalMapConfig->createCircle( redCircle, diameter, QColor(Qt::red), 1.0 );
       _globalMapConfig->createCircle( blueCircle, diameter, QColor(Qt::blue), 1.0 );
+      _globalMapConfig->createCircle( magentaCircle, diameter, QColor(Qt::magenta), 1.0 );
     }
 
-  if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) > 100.0 )
+  // Load selected Flarm object. It is empty in case of no selection.
+  QString& selectedObject = FlarmDisplay::getSelectedObject();
+
+  qDebug() << "selectedObject" << selectedObject;
+
+  bool selectedObjectFound = false;
+
+  if( ! selectedObject.isEmpty() && Flarm::getPflaaHash().contains(selectedObject) )
     {
-      // scale to large
-      return;
+      selectedObjectFound = true;
     }
 
-  const Flarm::FlarmStatus& status = Flarm::getFlarmStatus();
+  qDebug() << "Contains" << Flarm::getPflaaHash().contains(selectedObject)
+           << "Size" << Flarm::getPflaaHash().size();
 
-  if( status.valid == false ||
-      status.RelativeBearing.isEmpty() ||
+  qDebug() << "selectedObjectFound" << selectedObjectFound;
+
+  // Check, if Flarm most relevant object is identical to selected object
+  if( selectedObjectFound )
+    {
+      const Flarm::FlarmAcft& flarmAcft = Flarm::getPflaaHash().value( selectedObject );
+
+      if( status.ID == flarmAcft.ID )
+        {
+          // Draw only selected object because both objects are identical
+          __drawSelectedFlarmObject( flarmAcft );
+        }
+      else
+        {
+          // Draw both most relevant object and selected object
+          __drawMostRelevantObject( status );
+          __drawSelectedFlarmObject( flarmAcft );
+        }
+    }
+  else
+    {
+      // Draw most relevant object.
+      __drawMostRelevantObject( status );
+    }
+}
+
+/**
+ * Draws the most important object reported by Flarm.
+ */
+void Map::__drawMostRelevantObject( const Flarm::FlarmStatus& status )
+{
+  qDebug() << "Map::__drawMostRelevantObject";
+
+#ifndef MAEMO
+  const int diameter = 22;
+  const int fontPointSize = 18;
+#else
+  const int diameter = 30;
+  const int fontPointSize = 24;
+#endif
+
+  if( status.RelativeBearing.isEmpty() ||
       status.RelativeVertical.isEmpty() ||
-      status.RelativeDistance.isEmpty() )
+      status.RelativeDistance.isEmpty() ||
+      status.Alarm == Flarm::No )
     {
-      // no valid data available
+      // no valid data available resp. no alarm
       return;
     }
-
   // compute true bearing to other aircraft
   bool ok1, ok2, ok3;
 
@@ -2008,12 +2073,7 @@ void Map::__drawOtherAircraft()
   // Set font size used for text painting a little bit bigger, that
   // the labels are good to see at the map.
   QFont font = painter.font();
-
-#ifdef MAEMO
-  font.setPointSize( 24 );
-#else
-  font.setPointSize( 18 );
-#endif
+  font.setPointSize( fontPointSize );
 
   QString text = Distance::getText( relDistance, false, -1 ) + "/";
 
@@ -2029,6 +2089,110 @@ void Map::__drawOtherAircraft()
   painter.setPen( QPen(Qt::black, 4, Qt::SolidLine) );
 
   if( th >= 0 && th <= 180 )
+    {
+      // draw text at the right side of the circle
+      painter.drawText( Rx + diameter/2 + 5,
+                        Ry + painter.font().pointSize()/2, text );
+    }
+  else
+    {
+      // draw text at the left side of the circle
+      QRect textRect = painter.fontMetrics().boundingRect( text );
+
+      painter.drawText( Rx-diameter/2 - 5 - textRect.width(),
+                        Ry + painter.font().pointSize()/2, text );
+    }
+}
+
+/**
+ * Draws the user selected Flarm object.
+ */
+void Map::__drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
+{
+  qDebug() << "Map::__drawSelectedFlarmObject";
+
+#ifndef MAEMO
+  const int diameter = 22;
+  const int fontPointSize = 18;
+#else
+  const int diameter = 30;
+  const int fontPointSize = 24;
+#endif
+
+  QPoint other;
+  double distance = 0.0;
+
+  bool result = WGSPoint::calcFlarmPos( curGPSPos,
+                                        flarmAcft.RelativeNorth,
+                                        flarmAcft.RelativeEast,
+                                        other,
+                                        distance );
+
+  if( ! result )
+    {
+      // Other Flarm position calculation failed
+      return;
+    }
+
+  // get the projected coordinates of the other position
+  QPoint projPos = _globalMapMatrix->wgsToMap( other );
+
+  // map them to a coordinate on the pixmap
+  QPoint mapPos = _globalMapMatrix->map( projPos );
+
+  int Rx = mapPos.x();
+  int Ry = mapPos.y();
+
+  QRect rect( QPoint(0, 0), this->size() );
+
+  // don't continue if position is outside of window's view port
+  if( ! rect.contains( Rx, Ry, false ) )
+    {
+      return;
+    }
+
+  // Check, which circle we do need
+  QPainter painter( &m_pixInformationMap );
+
+  if( flarmAcft.Track == INT_MIN )
+    {
+      // Stealth mode is active, no additional information are available.
+      // We draw only a circle.
+      painter.drawPixmap(  Rx-diameter/2, Ry-diameter/2, magentaCircle );
+    }
+  else
+    {
+      // Additional Information are available. We draw a triangle.
+      QPixmap object;
+      MapConfig::createTriangle( object, diameter,
+                                 Qt::magenta, flarmAcft.Track, 1.0 );
+
+      painter.drawPixmap(  Rx-diameter/2, Ry-diameter/2, object );
+    }
+
+  // additional info can be drawn here, like horizontal arelDistancend vertical distance
+
+  // Set font size used for text painting a little bit bigger, that
+  // the labels are good to see at the map.
+  QFont font = painter.font();
+  font.setPointSize( fontPointSize );
+
+  QString text = Distance::getText( distance, false, -1 );
+
+  if( flarmAcft.ClimbRate != INT_MIN )
+    {
+      // prefix positive value with a plus sign
+      text +=  "/+";
+
+      Speed climb(flarmAcft.ClimbRate);
+
+      text += climb.getVerticalText( false, 1);
+    }
+
+  painter.setFont( font );
+  painter.setPen( QPen(Qt::magenta, 4, Qt::SolidLine) );
+
+  if( flarmAcft.RelativeEast >= 0 )
     {
       // draw text at the right side of the circle
       painter.drawText( Rx + diameter/2 + 5,

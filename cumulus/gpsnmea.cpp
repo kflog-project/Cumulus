@@ -307,7 +307,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   dataOK();
 
-#if 0
+#if 1
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
   static int t1 = 0;
@@ -318,7 +318,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   if( slst[0] == "$GPRMC" )
     {
-      QString pflau ="$PFLAU,0,1,2,1,0,-48,0,-134,2141,DD8452*";
+      QString pflau ="$PFLAU,8,1,2,1,2,-48,0,-134,2141,DD8452*";
 
       uint sum = calcCheckSum( pflau.size(), pflau );
 
@@ -327,21 +327,19 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflau + sumStr );
 
       //-------------------------------------------------------------
-      QString pflaa = "$PFLAA,0,-1219,-1694,-134,2,DD8452,238,,21,0.4,1*";
+      QString pflaa = "$PFLAA,0,-1219,-1694,-134,2,DD8452,238,,21,1.4,1*";
 
       sum = calcCheckSum( pflaa.size(), pflaa );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
       slot_sentence( pflaa + sumStr );
-    }
-#endif
-#if 0
+
       //---------------------------------------------------------------
       t1 = (t1 + 5) % 360;
       arg = QString( "%1" ).arg(t1);
 
-      pflaa = "$PFLAA,0,-700,-700,100,2,222222," + arg + ",0,30,0,1*";
+      pflaa = "$PFLAA,0,-700,-700,100,2,222222," + arg + ",0,30,0.7,1*";
 
       sum = calcCheckSum( pflaa.size(), pflaa );
 
@@ -353,7 +351,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       t2 = (t2+5)%360;
       arg = QString( "%1" ).arg(t2);
 
-      pflaa = "$PFLAA,0,-900,900,100,2,333333," + arg + ",0,30,0,1*";
+      pflaa = "$PFLAA,0,-900,900,100,2,333333," + arg + ",0,30,4.0,1*";
 
       sum = calcCheckSum( pflaa.size(), pflaa );
 
@@ -973,7 +971,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   $PFLAA,<AlarmLevel>,<RelativeNorth>,<RelativeEast>,<RelativeVertical>,
   <IDType>,<ID>,<Track>,<TurnRate>,<GroundSpeed>,<ClimbRate>,<AcftType>
   */
-  if( Flarm::getCollectPflaa() && slst[0] == "$PFLAA" )
+  if( slst[0] == "$PFLAA" )
     {
       Flarm::FlarmAcft aircraft;
 
@@ -1880,8 +1878,8 @@ void GpsNmea::_slotGpsConnectionOn()
 
 /** This slot is called by the internal timer to signal a timeout.
  *  This timeout occurs if no valid position fix has been received since
- *  the last fix for the given time. The cause can be bad receiver conditions
- *  view to the sky is not clear a.s.o.
+ *  the last fix for the given time. The cause can be bad receiver conditions,
+ *  view to the sky is not clear, a.s.o.
  */
 void GpsNmea::_slotTimeoutFix()
 {
@@ -1893,6 +1891,15 @@ void GpsNmea::_slotTimeoutFix()
       qWarning( "GPS FIX LOST!" );
       // stop timer, will be activated again with the next available fix
       timeOutFix->stop();
+
+#ifdef FLARM
+
+      pflaaIsReceiving = false;
+      Flarm::reset();
+      emit newFlarmCount( -1 );
+
+#endif
+
     }
 }
 

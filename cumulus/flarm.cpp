@@ -352,7 +352,9 @@ void Flarm::collectPflaaFinished()
         }
     }
 
-  // Start Flarm data clearing supervision.
+  // Start Flarm PFLAA data clearing supervision. There is no other way
+  // of solution because the PFLAA sentences are only sent if other
+  // aircrafts are in view of the FLARM receiver.
   if( pflaaHash.size() > 0 )
     {
       timer->start( 6000 );
@@ -365,7 +367,7 @@ void Flarm::collectPflaaFinished()
     }
 }
 
-/** Called if timer has expired. Used for Flarm data clearing. */
+/** Called if timer has expired. Used for Flarm PFLAA data clearing. */
 void Flarm::slotTimeout()
 {
   pflaaHash.clear();

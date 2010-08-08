@@ -37,6 +37,10 @@
 #include "flighttask.h"
 #include "waypointcatalog.h"
 
+#ifdef FLARM
+#include "flarm.h"
+#endif
+
 /**
  * \author Heiner Lamprecht, Florian Ehinger, Andre Somers, Axel Pauli
  *
@@ -426,14 +430,26 @@ class Map : public QWidget
 #ifdef FLARM
 
     /**
-     * Draws the most important aircraft reported by Flarm.
+     * Draws the Flarm most important reported object and
+     * the user selected object.
      */
     void __drawOtherAircraft();
+
+    /**
+     * Draws the most important object reported by Flarm.
+     */
+    void __drawMostRelevantObject( const Flarm::FlarmStatus& status );
+
+    /**
+     * Draws the user selected Flarm object.
+     */
+    void __drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft );
 
     /** Pixmaps used by Flarm for object drawing */
     QPixmap blackCircle;
     QPixmap redCircle;
     QPixmap blueCircle;
+    QPixmap magentaCircle;
 
 #endif
 
