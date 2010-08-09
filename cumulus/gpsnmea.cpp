@@ -307,18 +307,12 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   dataOK();
 
-#if 1
+#if 0
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
-  static int t1 = 0;
-  static int t2 = 90;
-  static int t3 = 180;
-
-  QString arg;
 
   if( slst[0] == "$GPRMC" )
     {
-      QString pflau ="$PFLAU,8,1,2,1,2,-48,0,-134,2141,DD8452*";
+      QString pflau ="$PFLAU,9,1,2,1,3,20,2,-139,2073,DD8452*";
 
       uint sum = calcCheckSum( pflau.size(), pflau );
 
@@ -327,19 +321,19 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflau + sumStr );
 
       //-------------------------------------------------------------
-      QString pflaa = "$PFLAA,0,-1219,-1694,-134,2,DD8452,238,,21,1.4,1*";
+      QString pflaa = "$PFLAA,3,-242,40,-139,2,DD8452,270,,21,0.9,1*";
 
       sum = calcCheckSum( pflaa.size(), pflaa );
 
-      sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
+      sumStr = QString("%1").arg( sum, 2, 16, QChar('0') );
 
       slot_sentence( pflaa + sumStr );
 
-      //---------------------------------------------------------------
-      t1 = (t1 + 5) % 360;
-      arg = QString( "%1" ).arg(t1);
+      //sentence = "$GPRMC,132224.00,A,5228.14984,N,01408.19080,E,50.954,180.00,300710,,,A*";
+      //slst = sentence.split( QRegExp("[,*:]"), QString::KeepEmptyParts );
 
-      pflaa = "$PFLAA,0,-700,-700,100,2,222222," + arg + ",0,30,0.7,1*";
+      //---------------------------------------------------------------
+      pflaa = "$PFLAA,2,-700,-700,100,2,222222,0,,30,-0.2,1*";
 
       sum = calcCheckSum( pflaa.size(), pflaa );
 
@@ -348,10 +342,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflaa + sumStr );
 
       //-------------------------------------------------------------
-      t2 = (t2+5)%360;
-      arg = QString( "%1" ).arg(t2);
-
-      pflaa = "$PFLAA,0,-900,900,100,2,333333," + arg + ",0,30,4.0,1*";
+      pflaa = "$PFLAA,0,-2000,2000,100,2,333333,90,,30,-0.3,1*";
 
       sum = calcCheckSum( pflaa.size(), pflaa );
 
@@ -360,10 +351,47 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       slot_sentence( pflaa + sumStr );
 
       //---------------------------------------------------------------
-      t3 = (t3+5)%360;
-      arg = QString( "%1" ).arg(t3);
+      pflaa = "$PFLAA,0,-1547,69,444,2,444444,180,,30,1.4,1*";
 
-      pflaa = "$PFLAA,3,347,1669,444,2,444444," + arg + ",7,30,1.5,1*";
+      sum = calcCheckSum( pflaa.size(), pflaa );
+
+      sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
+
+      slot_sentence( pflaa + sumStr );
+
+      pflaa = "$PFLAA,1,347,-1669,1555,2,555555,270,,30,1.5,1*";
+
+      sum = calcCheckSum( pflaa.size(), pflaa );
+
+      sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
+
+      slot_sentence( pflaa + sumStr );
+
+      pflaa = "$PFLAA,2,347,-69,2666,2,666666,66,,30,-1.6,1*";
+
+      sum = calcCheckSum( pflaa.size(), pflaa );
+
+      sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
+
+      slot_sentence( pflaa + sumStr );
+
+      pflaa = "$PFLAA,0,-2747,3669,-77,2,777777,359,,30,1.7,1*";
+
+      sum = calcCheckSum( pflaa.size(), pflaa );
+
+      sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
+
+      slot_sentence( pflaa + sumStr );
+
+      pflaa = "$PFLAA,0,-3,-5000,400,2,888888,199,,30,-1.8,1*";
+
+      sum = calcCheckSum( pflaa.size(), pflaa );
+
+      sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
+
+      slot_sentence( pflaa + sumStr );
+
+      pflaa = "$PFLAA,0,4747,-2,999,2,999999,245,,30,2.9,1*";
 
       sum = calcCheckSum( pflaa.size(), pflaa );
 
@@ -378,21 +406,18 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
 #ifdef FLARM
 
-  if( Flarm::getCollectPflaa() )
+  if( slst[0] == "$PFLAA" )
     {
-      if( slst[0] == "$PFLAA" )
-        {
-          // PFLAA receiving starts
-          pflaaIsReceiving = true;
-          //qDebug() << "PFLAA receiving started";
-        }
-      else if( pflaaIsReceiving == true )
-        {
-          // PFLAA receiving is finished
-          pflaaIsReceiving = false;
-          //qDebug() << "PFLAA receiving finished";
-          Flarm::instance()->collectPflaaFinished();
-        }
+      // PFLAA receiving starts
+      pflaaIsReceiving = true;
+      //qDebug() << "PFLAA receiving started";
+    }
+  else if( pflaaIsReceiving == true )
+    {
+      // PFLAA receiving is finished
+      pflaaIsReceiving = false;
+      //qDebug() << "PFLAA receiving finished";
+      Flarm::instance()->collectPflaaFinished();
     }
 
 #endif

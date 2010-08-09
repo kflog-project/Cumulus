@@ -914,8 +914,7 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
       return;
     }
 
-  // set mutex to block recursive entries and unwanted data
-  // modifications.
+  // set mutex to block recursive entries and unwanted data modifications.
 
   setMutex(true);
 
@@ -1860,8 +1859,21 @@ void Map::slotPosition(const QPoint& newPos, const int source)
                 }
               else
                 {
-                  // this is the faster redraw
-                  __redrawMap( informationLayer, false );
+                  static QTime lastDisplay;
+
+                  // The display is updated every 1 seconds only.
+                  // That will reduce the X-Server load.
+                  if( lastDisplay.elapsed() < 750 )
+                    {
+                      scheduleRedraw( informationLayer );
+                    }
+                  else
+                    {
+                      // this is the faster redraw
+                      __redrawMap( informationLayer, false );
+
+                      lastDisplay = QTime::currentTime();
+                    }
                 }
             }
           else
@@ -1917,7 +1929,6 @@ void Map::slotSwitchManualInFlight()
 /** Draws the most important aircraft reported by Flarm. */
 void Map::__drawOtherAircraft()
 {
-  qDebug() << "Map::__drawOtherAircraft()";
 
 #ifndef MAEMO
   const int diameter = 22;
@@ -1953,19 +1964,12 @@ void Map::__drawOtherAircraft()
   // Load selected Flarm object. It is empty in case of no selection.
   QString& selectedObject = FlarmDisplay::getSelectedObject();
 
-  qDebug() << "selectedObject" << selectedObject;
-
   bool selectedObjectFound = false;
 
   if( ! selectedObject.isEmpty() && Flarm::getPflaaHash().contains(selectedObject) )
     {
       selectedObjectFound = true;
     }
-
-  qDebug() << "Contains" << Flarm::getPflaaHash().contains(selectedObject)
-           << "Size" << Flarm::getPflaaHash().size();
-
-  qDebug() << "selectedObjectFound" << selectedObjectFound;
 
   // Check, if Flarm most relevant object is identical to selected object
   if( selectedObjectFound )
@@ -1980,8 +1984,8 @@ void Map::__drawOtherAircraft()
       else
         {
           // Draw both most relevant object and selected object
-          __drawMostRelevantObject( status );
           __drawSelectedFlarmObject( flarmAcft );
+          __drawMostRelevantObject( status );
         }
     }
   else
@@ -1996,7 +2000,6 @@ void Map::__drawOtherAircraft()
  */
 void Map::__drawMostRelevantObject( const Flarm::FlarmStatus& status )
 {
-  qDebug() << "Map::__drawMostRelevantObject";
 
 #ifndef MAEMO
   const int diameter = 22;
@@ -2086,22 +2089,31 @@ void Map::__drawMostRelevantObject( const Flarm::FlarmStatus& status )
   text += Altitude::getText( relVertical, false, -1 );
 
   painter.setFont( font );
-  painter.setPen( QPen(Qt::black, 4, Qt::SolidLine) );
+  QRect textRect = painter.fontMetrics().boundingRect( text );
+
+  int xOffset = 0;
+  int yOffset = 0;
 
   if( th >= 0 && th <= 180 )
     {
       // draw text at the right side of the circle
-      painter.drawText( Rx + diameter/2 + 5,
-                        Ry + painter.font().pointSize()/2, text );
+      xOffset = Rx + diameter / 2 + 5;
+      yOffset = Ry - textRect.height() / 2;
     }
   else
     {
       // draw text at the left side of the circle
-      QRect textRect = painter.fontMetrics().boundingRect( text );
-
-      painter.drawText( Rx-diameter/2 - 5 - textRect.width(),
-                        Ry + painter.font().pointSize()/2, text );
+      xOffset = Rx - diameter / 2 - 5 - textRect.width();
+      yOffset = Ry - textRect.height() / 2;
     }
+
+  painter.setPen( QPen( Qt::NoPen ) );
+  painter.setBrush( Qt::white );
+  textRect.setRect( xOffset, yOffset, textRect.width(), textRect.height() );
+  painter.drawRect( textRect );
+
+  painter.setPen( QPen( Qt::black ) );
+  painter.drawText( textRect, Qt::AlignCenter, text );
 }
 
 /**
@@ -2109,18 +2121,20 @@ void Map::__drawMostRelevantObject( const Flarm::FlarmStatus& status )
  */
 void Map::__drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
 {
-  qDebug() << "Map::__drawSelectedFlarmObject";
 
 #ifndef MAEMO
   const int diameter = 22;
   const int fontPointSize = 18;
+  const int triangle = 26;
 #else
   const int diameter = 30;
   const int fontPointSize = 24;
+  const int triangle = 34;
 #endif
 
   QPoint other;
   double distance = 0.0;
+  int usedObjectSize;
 
   bool result = WGSPoint::calcFlarmPos( curGPSPos,
                                         flarmAcft.RelativeNorth,
@@ -2159,15 +2173,17 @@ void Map::__drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
       // Stealth mode is active, no additional information are available.
       // We draw only a circle.
       painter.drawPixmap(  Rx-diameter/2, Ry-diameter/2, magentaCircle );
+      usedObjectSize = diameter;
     }
   else
     {
       // Additional Information are available. We draw a triangle.
       QPixmap object;
-      MapConfig::createTriangle( object, diameter,
+      MapConfig::createTriangle( object, triangle,
                                  Qt::magenta, flarmAcft.Track, 1.0 );
 
-      painter.drawPixmap(  Rx-diameter/2, Ry-diameter/2, object );
+      painter.drawPixmap(  Rx-triangle/2, Ry-triangle/2, object );
+      usedObjectSize = triangle;
     }
 
   // additional info can be drawn here, like horizontal arelDistancend vertical distance
@@ -2181,8 +2197,13 @@ void Map::__drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
 
   if( flarmAcft.ClimbRate != INT_MIN )
     {
-      // prefix positive value with a plus sign
-      text +=  "/+";
+      text +=  "/";
+
+      if( flarmAcft.ClimbRate > 0 )
+        {
+          // prefix positive value with a plus sign
+          text +=  "+";
+        }
 
       Speed climb(flarmAcft.ClimbRate);
 
@@ -2190,22 +2211,31 @@ void Map::__drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
     }
 
   painter.setFont( font );
-  painter.setPen( QPen(Qt::magenta, 4, Qt::SolidLine) );
+  QRect textRect = painter.fontMetrics().boundingRect( text );
+
+  int xOffset = 0;
+  int yOffset = 0;
 
   if( flarmAcft.RelativeEast >= 0 )
     {
       // draw text at the right side of the circle
-      painter.drawText( Rx + diameter/2 + 5,
-                        Ry + painter.font().pointSize()/2, text );
+      xOffset = Rx + usedObjectSize / 2 + 5;
+      yOffset = Ry - textRect.height() / 2;
     }
   else
     {
       // draw text at the left side of the circle
-      QRect textRect = painter.fontMetrics().boundingRect( text );
-
-      painter.drawText( Rx-diameter/2 - 5 - textRect.width(),
-                        Ry + painter.font().pointSize()/2, text );
+      xOffset = Rx - usedObjectSize / 2 - 5 - textRect.width();
+      yOffset = Ry - textRect.height() / 2;
     }
+
+  painter.setPen( QPen( Qt::NoPen ) );
+  painter.setBrush( Qt::white );
+  textRect.setRect( xOffset, yOffset, textRect.width(), textRect.height() );
+  painter.drawRect( textRect );
+
+  painter.setPen( QPen( Qt::magenta ) );
+  painter.drawText( textRect, Qt::AlignCenter, text );
 }
 
 #endif
