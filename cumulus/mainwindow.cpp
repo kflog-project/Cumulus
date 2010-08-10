@@ -1083,7 +1083,7 @@ void MainWindow::initActions()
   connect ( actionStartFlightTask, SIGNAL( triggered() ),
             calculator, SLOT( slot_startTask() ) );
 
-  actionToggleManualInFlight = new QAction( tr( "Manual" ), this );
+  actionToggleManualInFlight = new QAction( tr( "Manual Move" ), this );
   actionToggleManualInFlight->setShortcut(Qt::Key_M + Qt::SHIFT);
   actionToggleManualInFlight->setEnabled(false);
   actionToggleManualInFlight->setCheckable(true);
