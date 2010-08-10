@@ -1217,18 +1217,19 @@ void Map::__drawInformationLayer()
 {
   m_pixInformationMap = m_pixNavigationMap;
 
-  //draw the trail (if enabled)
+  // draw the trail (if enabled)
   __drawTrail();
 
-  //draw the wind arrow, if pixmap was initialized by slot slotNewWind
+  // draw the wind arrow, if pixmap was initialized by slot slotNewWind
   if( ! windArrow.isNull() )
     {
       QPainter p(&m_pixInformationMap);
       p.drawPixmap( 8, 8, windArrow );
     }
 
-  //draw a location symbol on the buffer
-  if (ShowGlider)
+  // Draw a glider symbol on the map if GPS has a fix and no manual mode
+  // is selected by the user.
+  if( ShowGlider && calculator->isManualInFlight() == false)
     {
       __drawGlider();
 
@@ -1238,12 +1239,14 @@ void Map::__drawInformationLayer()
 
     }
 
-  if(!ShowGlider || calculator->isManualInFlight())
+  // Draw an X at the map, if no GPS fix is available or if user has seleted
+  // the manual mode.
+  if( ShowGlider == false || calculator->isManualInFlight() )
     {
       __drawX();
     }
 
-  // draw zoom buttons
+  // Draw the zoom buttons at the map
   QPainter p(&m_pixInformationMap);
 
   QPixmap plus  = _globalMapConfig->getPlusButton();
