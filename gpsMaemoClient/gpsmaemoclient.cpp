@@ -1252,7 +1252,7 @@ bool GpsMaemoClient::verifyCheckSum( const char *sentence )
 }
 
 /** Calculate check sum over NMEA record. */
-uchar GpsMaemoClient::GpsMaemoClient( const char *sentence )
+uchar GpsMaemoClient::calcCheckSum( const char *sentence )
 {
   uchar sum = 0;
 
