@@ -371,5 +371,10 @@ void Flarm::collectPflaaFinished()
 void Flarm::slotTimeout()
 {
   pflaaHash.clear();
-  emit newFlarmPflaaData();
+
+  // Emit signal, if further processing in radar view is required.
+  if( Flarm::getCollectPflaa() )
+    {
+      emit newFlarmPflaaData();
+    }
 }

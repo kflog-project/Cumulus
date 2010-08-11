@@ -387,8 +387,7 @@ void GpsClient::readSentenceFromBuffer()
       // That is the normal end of a GPS sentence.
       if( ! (end = strchr( start, '\n' )) )
         {
-          // No newline in the receiver buffer, wait for more
-          // characters
+          // No newline in the receiver buffer, wait for more characters
           return;
         }
 
@@ -399,16 +398,18 @@ void GpsClient::readSentenceFromBuffer()
           continue;
         }
 
-      // found a complete record in the buffer, it will be extracted
-      // now
+      // found a complete record in the buffer, it will be extracted now
       char *record = (char *) malloc( end-start + 2 );
 
       memset( record, 0, end-start + 2 );
 
       strncpy( record, start, end-start + 1);
 
-      // store sentence in the receiver queue
-      queueMsg( record );
+      if( verifyCheckSum( record ) == true )
+        {
+          // store sentence in the receiver queue, if checksum is ok
+          queueMsg( record );
+        }
 
 #ifdef DEBUG
       cout << "GpsClient(): Extracted NMEA Record: " << record;
@@ -460,20 +461,80 @@ void GpsClient::closeGps()
   badSentences   = 0;
 }
 
-// calculate check sum over NMEA record
+/**
+ * Verify the checksum of the passed sentences.
+ *
+ * @returns true (success) or false (error occurred)
+ */
+bool GpsClient::verifyCheckSum( const char *sentence )
+{
+  // Filter out wrong data messages read in from the GPS port. Known messages
+  // do start with a dollar sign or an exclamation mark.
+  if( sentence[0] != '$' && sentence[0] != '!' )
+    {
+      qDebug() << "GpsClient::verifyCheckSum: ignore sentence" << sentence;
+      badSentences++;
+
+      if( badSentences >= 3 )
+        {
+          // Close the receiver after 3 bad sentences back-to-back.
+          closeGps();
+        }
+
+      return false;
+    }
+
+  badSentences = 0;
+
+  for( int i = strlen(sentence) - 1; i >= 0; i-- )
+    {
+      if( sentence[i] == '*' )
+        {
+          if( (strlen(sentence) - 1 - i) < 2 )
+            {
+              // too less characters
+              return false;
+            }
+
+          char checkBytes[3];
+          checkBytes[0] = sentence[i+1];
+          checkBytes[1] = sentence[i+2];
+          checkBytes[2] = '\0';
+
+          uchar checkSum = (uchar) QString( checkBytes ).toUShort( 0, 16 );
+
+          if( checkSum == calcCheckSum( sentence ) )
+            {
+              return true;
+            }
+          else
+            {
+              return false;
+            }
+        }
+    }
+
+  return false;
+}
+
+/** Calculate check sum over NMEA record. */
 uchar GpsClient::calcCheckSum( const char *sentence )
 {
   uchar sum = 0;
 
-  for( uint i=1; i<strlen(sentence); i++ )
+  for( uint i = 1; i < strlen( sentence ); i++ )
     {
       uchar c = (uchar) sentence[i];
 
       if( c == '$' ) // Start sign will not be considered
-        continue;
+        {
+          continue;
+        }
 
       if( c == '*' ) // End of sentence reached
-        break;
+        {
+          break;
+        }
 
       sum ^= c;
     }
@@ -757,24 +818,6 @@ uint GpsClient::getBaudrate(int rate)
 // only once to avoid a flood of them, if server is busy.
 void GpsClient::queueMsg( const char* msg )
 {
-  // Filter out wrong data messages read in from the GPS port. Known messages
-  // do start with a hash or a dollar sign.
-  if( msg[0] != '#' && msg[0] != '$' )
-    {
-      qDebug() << "GpsClient::queueMsg: ignore sentence" << msg;
-      badSentences++;
-
-      if( badSentences >= 3 )
-        {
-          // Close the receiver after 3 bad sentences
-          closeGps();
-        }
-
-      return;
-    }
-
-  badSentences = 0;
-
   queue.enqueue( msg );
 
   if( queue.count() > QUEUE_SIZE )

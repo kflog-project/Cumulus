@@ -148,6 +148,22 @@ public:
       return shutdown;
   };
 
+#ifdef MAEMO4
+
+  /**
+   * calculate check sum over NMEA record
+   */
+  uchar calcCheckSum( const char *sentence );
+
+  /**
+   * Verify the checksum of the passed sentences.
+   *
+   * @returns true (success) or false (error occurred)
+   */
+  bool verifyCheckSum( const char *sentence );
+
+#endif
+
 private:
 
   //----------------------------------------------------------------------

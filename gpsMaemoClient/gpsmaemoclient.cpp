@@ -1205,6 +1205,79 @@ void GpsMaemoClient::queueMsg( const char* msg )
     }
 }
 
+#ifdef MAEMO4
+/**
+ * Verify the checksum of the passed sentences.
+ *
+ * @returns true (success) or false (error occurred)
+ */
+bool GpsMaemoClient::verifyCheckSum( const char *sentence )
+{
+  // Filter out wrong data messages read in from the GPS port. Known messages
+  // do start with a dollar sign or an exclamation mark.
+  if( sentence[0] != '$' && sentence[0] != '!' )
+    {
+      return false;
+    }
+
+  for( int i = strlen(sentence) - 1; i >= 0; i-- )
+    {
+      if( sentence[i] == '*' )
+        {
+          if( (strlen(sentence) - 1 - i) < 2 )
+            {
+              // too less characters
+              return false;
+            }
+
+          char checkBytes[3];
+          checkBytes[0] = sentence[i+1];
+          checkBytes[1] = sentence[i+2];
+          checkBytes[2] = '\0';
+
+          uchar checkSum = (uchar) QString( checkBytes ).toUShort( 0, 16 );
+
+          if( checkSum == calcCheckSum( sentence ) )
+            {
+              return true;
+            }
+          else
+            {
+              return false;
+            }
+        }
+    }
+
+  return false;
+}
+
+/** Calculate check sum over NMEA record. */
+uchar GpsMaemoClient::GpsMaemoClient( const char *sentence )
+{
+  uchar sum = 0;
+
+  for( uint i = 1; i < strlen( sentence ); i++ )
+    {
+      uchar c = (uchar) sentence[i];
+
+      if( c == '$' ) // Start sign will not be considered
+        {
+          continue;
+        }
+
+      if( c == '*' ) // End of sentence reached
+        {
+          break;
+        }
+
+      sum ^= c;
+    }
+
+  return sum;
+}
+
+#endif
+
 /** Setup timeout controller. */
 void GpsMaemoClient::startTimer( uint milliSec )
 {
@@ -1359,9 +1432,12 @@ void GpsMaemoClient::readSentenceFromBuffer()
                ! qRecord.startsWith( "$GPGLL,") &&
                ! qRecord.startsWith( "$GPGST,") )
         {
-          // forward GPS record to subscribers
-          // qDebug( "GpsMaemo: Extracted NMEA Record: %s", record );
-          queueMsg( qRecord.toAscii().data() );
+          if( verifyCheckSum( record ) == true )
+            {
+              // Store sentence in the receiver queue, if checksum is ok.
+              // qDebug( "GpsMaemo: Extracted NMEA Record: %s", record );
+              queueMsg( record );
+            }
         }
 
       free(record);

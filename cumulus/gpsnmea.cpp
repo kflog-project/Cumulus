@@ -252,17 +252,9 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       return;
     }
 
+  // Note, the GPS sentence checksum is checked now in the receiver function.
+
   QString sentence = sentenceIn;
-
-  // NMEA records do start with a $ sign normally
-  // Cambridge proprietary sentence starts with a ! sign
-  if (sentence[0] != '$' && sentence[0] != '!')
-    {
-      qWarning() << "Invalid GPS sentence!" << sentence;
-      return;
-    }
-
-  // qDebug("received sentence '%s'", sentence.toLatin1().data());
 
   sentence = sentence.replace( QRegExp("[\n\r]"), "" );
 
@@ -283,21 +275,6 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
     }
 
 #endif
-
-  int i = sentence.lastIndexOf('*');
-
-  if ( i == -1)
-    {
-      qWarning("Missing checksum in sentence! %s", sentence.toLatin1().data());
-      return;
-    }
-
-  // We take only sentences with a valid checksum
-  if ( !checkCheckSum(i, sentence) )
-    {
-      qWarning("Invalid checksum in sentence! %s", sentence.toLatin1().data());
-      return; // the checksum did not match, ignore the sentence!
-    }
 
   // dump everything behind the * and split sentence in parts for each
   // comma. The first part will contain the identifier, the rest the

@@ -14,6 +14,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-08-11 AP: Checksum of GPS sentences is checked now in the receiver
+                   process and not more in the GpsNmea class. That shall save
+                   performance in Cumulus.
 [+] 2010-08-02 AP: Sentence $PGRMZ added to NMEA simulator for a better
                    FLARM simulation.
 [-] 2010-07-28 AP: BUGFIX: Altitude of GPS Sentence $PGRMZ was taken as meter

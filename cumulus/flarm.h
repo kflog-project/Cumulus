@@ -127,12 +127,6 @@ public:
   static void setCollectPflaa( bool flag )
   {
     collectPflaa = flag;
-
-    if( flag == false )
-      {
-        // Clear hash, if data are not more needed
-        pflaaHash.clear();
-      }
   };
 
   /**

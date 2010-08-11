@@ -83,9 +83,16 @@ public:
     void toController();
 
     /**
-     * calculate check sum over nmea record
+     * calculate check sum over NMEA record
      */
     uchar calcCheckSum( const char *sentence );
+
+    /**
+     * Verify the checksum of the passed sentences.
+     *
+     * @returns true (success) or false (error occurred)
+     */
+    bool verifyCheckSum( const char *sentence );
 
     void setShutdownFlag( bool newState )
     {
