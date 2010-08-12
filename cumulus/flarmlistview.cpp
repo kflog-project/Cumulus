@@ -75,9 +75,11 @@ FlarmListView::FlarmListView( QWidget *parent ) :
   headerItem->setTextAlignment( 1, Qt::AlignCenter );
   headerItem->setTextAlignment( 2, Qt::AlignCenter );
   headerItem->setTextAlignment( 3, Qt::AlignCenter );
-  headerItem->setTextAlignment( 4, Qt::AlignCenter );
+  headerItem->setTextAlignment( 4, Qt::AlignLeft );
   headerItem->setTextAlignment( 5, Qt::AlignCenter );
   headerItem->setTextAlignment( 6, Qt::AlignCenter );
+
+  list->setColumnWidth( 4, 25 );
 
   connect( list, SIGNAL(itemClicked( QTreeWidgetItem*, int )),
            this, SLOT(slot_ListItemClicked( QTreeWidgetItem*, int )) );
@@ -212,7 +214,7 @@ void FlarmListView::fillItemList( QString& object2Select )
       item->setTextAlignment( 1, Qt::AlignRight|Qt::AlignVCenter );
       item->setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
       item->setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
-      item->setTextAlignment( 4, Qt::AlignCenter );
+      item->setTextAlignment( 4, Qt::AlignLeft );
       item->setTextAlignment( 5, Qt::AlignRight|Qt::AlignVCenter );
       item->setTextAlignment( 6, Qt::AlignRight|Qt::AlignVCenter );
 
@@ -263,7 +265,10 @@ void FlarmListView::resizeListColumns()
 
   for( int i = 0; i < count; i++ )
     {
-      list->resizeColumnToContents( i );
+      if( i != 4 )
+        {
+          list->resizeColumnToContents( i );
+        }
     }
 }
 
