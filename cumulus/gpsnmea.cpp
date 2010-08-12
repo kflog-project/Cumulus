@@ -65,6 +65,9 @@ GpsNmea *GpsNmea::gps = static_cast<GpsNmea *> (0);
 // number of created class instances
 short GpsNmea::instances = 0;
 
+// Dictionary with known sentence keywords
+QHash<QString, short> GpsNmea::gpsHash;
+
 GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
 {
   if ( ++instances > 1 )
@@ -76,6 +79,32 @@ GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
   ++instances;
 
   resetDataObjects();
+
+  // Load known GPS sentence identifier.
+  gpsHash.insert( "$GPRMC", 0);
+  gpsHash.insert( "$GPGLL", 1);
+  gpsHash.insert( "$GPGGA", 2);
+  gpsHash.insert( "$GPGSA", 3);
+  gpsHash.insert( "$GPGSV", 4);
+  gpsHash.insert( "$PGRMZ", 5);
+  gpsHash.insert( "$PCAID", 6);
+  gpsHash.insert( "!w",     7);
+  gpsHash.insert( "$PGCS",  8);
+  gpsHash.insert( "$LXWP0", 9);
+  gpsHash.insert( "$LXWP2", 10);
+  gpsHash.insert( "$GPDTM", 11);
+
+#ifdef FLARM
+  gpsHash.insert( "$PFLAA", 12);
+  gpsHash.insert( "$PFLAU", 13);
+#endif
+
+#ifdef MAEMO5
+  gpsHash.insert( "$MAEMO0", 14);
+  gpsHash.insert( "$MAEMO1", 15);
+#endif
+
+  gpsHash.squeeze();
 
   // GPS fix supervision, is started after the first fix was received
   timeOutFix = new QTimer(this);
@@ -231,13 +260,19 @@ void GpsNmea::startGpsReceiver()
  *
  * @AP 2009-03-02: There was added support for a Cambrigde device. This device
  * emits proprietary sentences $PCAID and !w. It can also deliver altitudes
- * (MSL and STD) derived from a pressure sonde. If these values should be
+ * (MSL and STD) derived from a pressure sensor. If these values should be
  * used as base altitude instead of the normal GPS altitude, the user option
  * altitude must be set to PRESSURE.
  *
  * @AP 2010-03-16: There was added special support for Maemo. Two proprietary
  * sentences $MAEMO[0/1] are used to transfer the GPS data from the daemon process
  * to Cumulus.
+ *
+ * @AP 2010-07-31: There was added support for FLARM devices. The sentences
+ * $PFLAU, $PFLAA and $PGRMZ are processed.
+ *
+ * @AP 2010-08-12: The GPS sentence checksum is checked now in the receiver
+ * function. Only positive verified sentences are forwarded to this slot.
  */
 void GpsNmea::slot_sentence(const QString& sentenceIn)
 {
@@ -252,39 +287,37 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       return;
     }
 
-  // Note, the GPS sentence checksum is checked now in the receiver function.
+  // Split sentence in single parts for each comma and the checksum. The first
+  // part will contain the identifier, the rest the arguments.
+  QStringList slst = sentenceIn.split( QRegExp("[,*]"), QString::KeepEmptyParts );
 
-  QString sentence = sentenceIn;
-
-  sentence = sentence.replace( QRegExp("[\n\r]"), "" );
-
-#ifdef MAEMO5
-
-  // Handle sentences created by GPS Maemo Client process. These sentences
-  // contain no checksum items.
-  if( sentence.startsWith( "$MAEMO0") )
+  if( ! gpsHash.contains(slst[0]) )
     {
-      __ExtractMaemo0( sentence );
+      qDebug() << "GpsNmea::slot_sentence: No Id found for" << slst[0];
       return;
     }
 
-  if( sentence.startsWith( "$MAEMO1") )
+  dataOK();
+
+#ifdef FLARM
+
+  if( slst[0] == "$PFLAA" )
     {
-      __ExtractMaemo1( sentence );
-      return;
+      // PFLAA receiving starts
+      pflaaIsReceiving = true;
+      //qDebug() << "PFLAA receiving started";
+    }
+  else if( pflaaIsReceiving == true )
+    {
+      // PFLAA receiving is finished
+      pflaaIsReceiving = false;
+      //qDebug() << "PFLAA receiving finished";
+      Flarm::instance()->collectPflaaFinished();
     }
 
 #endif
 
-  // dump everything behind the * and split sentence in parts for each
-  // comma. The first part will contain the identifier, the rest the
-  // arguments.  no reason to truncate. Checksum will be ignored.
-  // sentence.truncate(i-1);
-  QStringList slst = sentence.split( QRegExp("[,*:]"), QString::KeepEmptyParts );
-
-  dataOK();
-
-#if 0
+#if 1
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
   if( slst[0] == "$GPRMC" )
@@ -305,9 +338,6 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       sumStr = QString("%1").arg( sum, 2, 16, QChar('0') );
 
       slot_sentence( pflaa + sumStr );
-
-      //sentence = "$GPRMC,132224.00,A,5228.14984,N,01408.19080,E,50.954,180.00,300710,,,A*";
-      //slst = sentence.split( QRegExp("[,*:]"), QString::KeepEmptyParts );
 
       //---------------------------------------------------------------
       pflaa = "$PFLAA,2,-700,-700,100,2,222222,0,,30,-0.2,1*";
@@ -381,34 +411,96 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 #endif
 
+  // Call the decode methods for the know sentences
+  switch( gpsHash.value( slst[0] ) )
+  {
+    case 0: // GPRMC
+      __ExtractGprmc( slst );
+      return;
+    case 1: // GPGLL
+      __ExtractGpgll( slst );
+      return;
+    case 2: // GPGGA
+      __ExtractGpgga( slst );
+      return;
+    case 3: // GPGSA
+      __ExtractConstellation( slst );
+      return;
+    case 4: // GPGSV
+      __ExtractSatsInView( slst );
+      return;
+    case 5: // PGRMZ
+      __ExtractPgrmz( slst );
+      return;
+    case 6: // PCAID
+      __ExtractPcaid( slst );
+      return;
+    case 7: // !w
+      __ExtractCambridgeW( slst );
+      return;
+    case 8: // $PGCS
+      __ExtractPgcs( slst );
+      return;
+    case 9: // $LXWP0
+      __ExtractLxwp0( slst );
+      return;
+    case 10: // $LXWP2
+      __ExtractLxwp2( slst );
+      return;
+    case 11: // $GPDTM
+      __ExtractGpdtm( slst );
+      return;
+
 #ifdef FLARM
 
-  if( slst[0] == "$PFLAA" )
-    {
-      // PFLAA receiving starts
-      pflaaIsReceiving = true;
-      //qDebug() << "PFLAA receiving started";
-    }
-  else if( pflaaIsReceiving == true )
-    {
-      // PFLAA receiving is finished
-      pflaaIsReceiving = false;
-      //qDebug() << "PFLAA receiving finished";
-      Flarm::instance()->collectPflaaFinished();
-    }
+    case 12: // $PFLAA
+      {
+        Flarm::FlarmAcft aircraft;
+        Flarm::instance()->extractPflaa( slst, aircraft );
+        return;
+      }
+    case 13: // $PFLAU
+      __ExtractPflau( slst );
+      return;
 
 #endif
 
-  /**
+#ifdef MAEMO5
+
+    case 14:
+      // Handle sentences created by GPS Maemo Client process. These sentenceIns
+      // contain no checksum items.
+      __ExtractMaemo0( slst );
+      return;
+
+    case 15:
+      // Handle sentences created by GPS Maemo Client process. These sentenceIns
+      // contain no checksum items.
+      __ExtractMaemo1( slst );
+      return;
+
+#endif
+
+    default:
+
+      qDebug() << "Unknown GPS sentence:" << sentenceIn;
+      return;
+  }
+
+}
+
+/**
 
   See http://www.nmea.de/nmea0183datensaetze.html
 
   RMC - Recommended Minimum Navigation Information
 
-                                                              12
-          1         2 3       4 5        6 7   8   9    10  11|
-          |         | |       | |        | |   |   |    |   | |
-   $--RMC,hhmmss.ss,A,llll.ll,a,yyyyy.yy,a,x.x,x.x,xxxx,x.x,a*hh<CR><LF>
+                                                               12
+          1         2 3       4 5        6 7   8   9     10  11 | 13
+          |         | |       | |        | |   |   |      |   | | |
+   $--RMC,hhmmss.ss,A,llll.ll,a,yyyyy.yy,a,x.x,x.x,ddmmyy,x.x,a,a*hh<CR><LF>
+
+   $GPRMC,132217.00,A,5228.19856,N,01408.32249,E,47.100,267.38,300710,,,A*58
 
    Field Number:
     1) UTC Time
@@ -422,82 +514,80 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
     9) UTC date of position fix, ddmmyy format
    10) Magnetic Variation, degrees
    11) Magnetic Variation direction, E or W
-   12) Checksum
-  */
-
-  if( slst[0] == "$GPRMC" )
+   12) Signal integrity, A=Autonomous mode
+   13) Checksum, hh
+*/
+void GpsNmea::__ExtractGprmc( const QStringList& slst )
+{
+  if( slst.size() < 10 )
     {
-      if( slst.size() < 10 )
-        {
-          qWarning( "$GPRMC contains too less parameters!" );
-          return;
-        }
-
-      //qDebug("%s",slst[2].toLatin1().data());
-      if( slst[2] == "A" )
-        { /* Data status A=OK, V=warning */
-          fixOK();
-
-          __ExtractTime(slst[1]);
-          __ExtractDate(slst[9]);
-          __ExtractKnotSpeed(slst[7]);
-          __ExtractCoord(slst[3],slst[4],slst[5],slst[6]);
-          __ExtractHeading(slst[8]);
-
-          if( _lastTime.isValid() && _lastDate.isValid() )
-            {
-              QDateTime utc( _lastDate, _lastTime, Qt::UTC );
-
-              if( utc != _lastUtc )
-                {
-                  _lastUtc = utc;
-                }
-
-              static bool updateClock = true;
-
-              GeneralConfig *conf = GeneralConfig::instance();
-
-              if( updateClock && conf->getGpsSyncSystemClock() )
-                {
-                  // @AP: we make only one update to avoid confusing of running timers
-                  updateClock = false;
-                  setSystemClock( utc );
-                }
-            }
-
-          if( _lastTime != _lastRmcTime )
-            {
-              /**
-               * The fix time has been changed and that is reported now.
-               * We do check the fix time only here in the $GPRMC sentence.
-               */
-              _lastRmcTime = _lastTime;
-              emit newFix( _lastRmcTime );
-            }
-        }
-      else
-        {
-          fixNOK();
-
-          QTime time = __ExtractTime( slst[1] );
-          QDate date = __ExtractDate( slst[9] );
-
-          if( time.isValid() && date.isValid() )
-            {
-              QDateTime utc( _lastDate, _lastTime, Qt::UTC );
-
-              if( utc != _lastUtc )
-                {
-                  // save date and time as UTC
-                  _lastUtc = utc;
-                }
-            }
-        }
-
+      qWarning( "$GPRMC contains too less parameters!" );
       return;
     }
 
-  /**
+  //qDebug("%s",slst[2].toLatin1().data());
+  if( slst[2] == "A" )
+    { /* Data status A=OK, V=warning */
+      fixOK();
+
+      __ExtractTime(slst[1]);
+      __ExtractDate(slst[9]);
+      __ExtractKnotSpeed(slst[7]);
+      __ExtractCoord(slst[3],slst[4],slst[5],slst[6]);
+      __ExtractHeading(slst[8]);
+
+      if( _lastTime.isValid() && _lastDate.isValid() )
+        {
+          QDateTime utc( _lastDate, _lastTime, Qt::UTC );
+
+          if( utc != _lastUtc )
+            {
+              _lastUtc = utc;
+            }
+
+          static bool updateClock = true;
+
+          GeneralConfig *conf = GeneralConfig::instance();
+
+          if( updateClock && conf->getGpsSyncSystemClock() )
+            {
+              // @AP: we make only one update to avoid confusing of running timers
+              updateClock = false;
+              setSystemClock( utc );
+            }
+        }
+
+      if( _lastTime != _lastRmcTime )
+        {
+          /**
+           * The fix time has been changed and that is reported now.
+           * We do check the fix time only here in the $GPRMC sentence.
+           */
+          _lastRmcTime = _lastTime;
+          emit newFix( _lastRmcTime );
+        }
+    }
+  else
+    {
+      fixNOK();
+
+      QTime time = __ExtractTime( slst[1] );
+      QDate date = __ExtractDate( slst[9] );
+
+      if( time.isValid() && date.isValid() )
+        {
+          QDateTime utc( _lastDate, _lastTime, Qt::UTC );
+
+          if( utc != _lastUtc )
+            {
+              // save date and time as UTC
+              _lastUtc = utc;
+            }
+        }
+    }
+}
+
+/**
   GLL - Geographic Position - Latitude/Longitude
 
          1       2 3        4 5         6 7
@@ -512,31 +602,28 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
     5) Universal Time Coordinated (UTC)
     6) Status A - Data Valid, V - Data Invalid
     7) Checksum
-   */
-
-  if (slst[0]== "$GPGLL")
-    { // GGL - Geographic Position - Latitude/Longitude
-      if ( slst.size() < 7 )
-        {
-          qWarning("$GPGLL contains too less parameters!");
-          return;
-        }
-
-      if (slst[6] == "A")
-        {
-          fixOK();
-          __ExtractTime(slst[5]);
-          __ExtractCoord(slst[1],slst[2],slst[3],slst[4]);
-        }
-      else
-        {
-          fixNOK();
-        }
-
+*/
+void GpsNmea::__ExtractGpgll( const QStringList& slst )
+{
+  if ( slst.size() < 7 )
+    {
+      qWarning("$GPGLL contains too less parameters!");
       return;
     }
 
-  /**
+  if (slst[6] == "A")
+    {
+      fixOK();
+      __ExtractTime(slst[5]);
+      __ExtractCoord(slst[1],slst[2],slst[3],slst[4]);
+    }
+  else
+    {
+      fixNOK();
+    }
+}
+
+/**
   GGA - Global Positioning System Fix Data, Time, Position and fix related data for a GPS receiver.
 
           1         2       3 4        5 6 7  8   9  10 11 12 13  14   15
@@ -566,147 +653,214 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
        type 1 or 9 update, null field when DGPS is not used
    14) Differential reference station ID, 0000-1023
    15) Checksum
-   */
-
-  if (slst[0] == "$GPGGA")
-    { // GGA - Global Positioning System Fixed Data
-      // qDebug ("sentence: %s", sentence.toLatin1().data());
-      if ( slst.size() < 15 )
-        {
-          qWarning("$GPGGA contains too less parameters!");
-          return;
-        }
-
-      if ( slst[6] != "0" && ! slst[6].isEmpty() )
-        { /*a value of 0 means invalid fix and we don't need that one */
-          fixOK();
-          __ExtractTime(slst[1]);
-          __ExtractCoord(slst[2],slst[3],slst[4],slst[5]);
-          __ExtractAltitude(slst[9],slst[10]);
-          __ExtractSatsInView(slst[7]);
-        }
-      else if( slst[6] == "0" )
-        {
-          fixNOK();
-        }
-
+*/
+void GpsNmea::__ExtractGpgga( const QStringList& slst )
+{
+  if ( slst.size() < 15 )
+    {
+      qWarning("$GPGGA contains too less parameters!");
       return;
     }
 
-  /**
+  if ( slst[6] != "0" && ! slst[6].isEmpty() )
+    { /*a value of 0 means invalid fix and we don't need that one */
+      fixOK();
+      __ExtractTime(slst[1]);
+      __ExtractCoord(slst[2],slst[3],slst[4],slst[5]);
+      __ExtractAltitude(slst[9],slst[10]);
+      __ExtractSatsInView(slst[7]);
+    }
+  else if( slst[6] == "0" )
+    {
+      fixNOK();
+    }
+}
+
+/**
   Used by Garmin and Flarm devices
   $PGRMZ,93,f,3*21
          93,f         Altitude in feet
          3            Position fix dimensions 2 = FLARM barometric altitude
                                               3 = GPS altitude
-  */
-
-  if (slst[0]== "$PGRMZ")
+*/
+void GpsNmea::__ExtractPgrmz( const QStringList& slst )
+{
+  if ( slst.size() < 4 )
     {
-      if ( slst.size() < 4 )
-        {
-          qWarning("$PGRMZ contains too less parameters!");
-          return;
-        }
+      qWarning("$PGRMZ contains too less parameters!");
+      return;
+    }
 
-      /* Garmin proprietary sentence with altitude information */
-      if ( slst[3] == "2" ) // pressure altitude
-        {
-          bool ok;
-          double num = slst[1].toDouble( &ok );
+  /* Garmin proprietary sentence with altitude information */
+  if ( slst[3] == "2" ) // pressure altitude
+    {
+      bool ok;
+      double num = slst[1].toDouble( &ok );
 
-          if( ok )
+      if( ok )
+        {
+          Altitude altitude;
+
+          altitude.setFeet( num );
+
+          if( _lastPressureAltitude != altitude )
             {
-              Altitude altitude;
+              _lastPressureAltitude = altitude; // store the new pressure altitude
 
-              altitude.setFeet( num );
-
-              if( _lastPressureAltitude != altitude )
+              if( _deliveredAltitude == GpsNmea::PRESSURE )
                 {
-                  _lastPressureAltitude = altitude; // store the new pressure altitude
+                  // Set these altitudes too, when pressure is selected.
+                  _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
 
-                  if( _deliveredAltitude == GpsNmea::PRESSURE )
-                    {
-                      // Set these altitudes too, when pressure is selected.
-                      _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
-
-                      // calculate STD altitude
-                      calcStdAltitude( _lastMslAltitude );
-                    }
-
-                  emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+                  // calculate STD altitude
+                  calcStdAltitude( _lastMslAltitude );
                 }
-              }
 
-            return;
+              emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+            }
           }
 
-      if ( slst[3] == "3" ) // 3=GPS altitude
-        {
-          __ExtractAltitude(slst[1], slst[2]);
-          return;
-        }
+        return;
+      }
+
+  if ( slst[3] == "3" ) // 3=GPS altitude
+    {
+      __ExtractAltitude(slst[1], slst[2]);
+      return;
     }
+}
 
-  /**
-  GSA - GPS DOP and active satellites
+/**
+  Used by Cambridge devices. The PCAID sentence format is:
 
-          1 2 3                    14 15  16  17  18
-          | | |                    |  |   |   |   |
-   $--GSA,a,a,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x.x,x.x,x.x*hh<CR><LF>
+  $PCAID,<1>,<2>,<3>,<4>*hh<CR><LF>
+  $PCAID,N,-00084,000,128*0B
 
-   Field Number:
-    1) Selection mode
-    2) Mode, 1=no-Fix, 2=2D-Fix, 3=3D-Fix
-    3) ID of 1st satellite used for fix
-    4) ID of 2nd satellite used for fix
-    ...
-    14) ID of 12th satellite used for fix
-    15) PDOP in meters
-    16) HDOP in meters
-    17) VDOP in meters
-    18) checksum
-   */
-
-  if (slst[0] == "$GPGSA")
-    { // GSA - GNSS DOP and Active Satellites
-      if ( slst.size() < 18 )
-        {
-          qWarning("$GPGSA contains too less parameters!");
-          return;
-        }
-
-      __ExtractConstellation(slst);
+  <1>     Logged 'L' Last point Logged 'N' Last Point not logged
+  <2>     Barometer Altitude in meters (Leading zeros will be transmitted), Hendrik said: STD
+  <3>     Engine Noise Level
+  <4>     Log Flags
+  *hh     Checksum, XOR of all bytes of the sentence after the `$' and before the '!'
+*/
+void GpsNmea::__ExtractPcaid( const QStringList& slst )
+{
+  if ( slst.size() < 5 )
+    {
+      qWarning("$PCAID contains too less parameters!");
       return;
     }
 
-  /**
-  GSV - Satellites in view
+  Altitude res(0);
+  double num = slst[2].toDouble();
+  res.setMeters( num );
 
-          1 2 3 4 5 6 7     n
-          | | | | | | |     |
-   $--GSV,x,x,x,x,x,x,x,...*hh<CR><LF>
+  if ( _lastStdAltitude != res && _deliveredAltitude == GpsNmea::PRESSURE )
+    {
+      // Store this altitude as STD, if the user has pressure selected.
+      // In the other case the STD is derived from the GPS altitude.
+      _lastStdAltitude = res;
+      // This altitude must not be notified as new value because
+      // the Cambridge device delivers also MSL in its !w sentence.
+    }
+}
 
-   Field Number:
-    1) total number of messages
-    2) message number
-    3) satellites in view
-    4) satellite number
-    5) elevation in degrees
-    6) azimuth in degrees to true
-    7) SNR in dB
-    more satellite infos like 4)-7)
-    n) checksum
-   */
+/**
+  Used by Garrecht Volkslogger devices. The PGCS1 sentence format is:
 
-  if (slst[0]=="$GPGSV")
-    { // GSV - GNSS Satellites in View
-      // qDebug("%s", sentenceIn.toLatin1().data());
-      __ExtractSatsInView(slst);
+  $PGCS,<1>,<2>,<3>,<4>,<5>*CS
+  $PGCS,1,0EBC,0003,06A6,03*1F
+
+  Volkslogger pressure and pressure altitude information
+
+  0  - PGCS - Sentence ID
+  1  - 1 - gcs-sentence no. 1
+  2  - 0EBC - (pressure * 4096) / 1100: value of pressure-sensor (hex coded)
+  3  - 0003 - pressure altitude [m] (hex coded)
+  4  - 06A6 - reserved for further use?
+  5  - 03 - reserved for further use?
+  CS - 1F - checksum of total sentence
+*/
+void GpsNmea::__ExtractPgcs( const QStringList& slst )
+{
+  if ( slst.size() < 6 )
+    {
+      qWarning("$PGCS contains too less parameters!");
       return;
     }
 
+  Altitude res(0);
+  bool ok;
+  int num = slst[3].toInt(&ok, 16);
+
+  if (!ok)
+    {
+      qWarning("$PGCS contains corrupt pressure altitude!");
+      return;
+    }
+
+  if (num > 32768)
+    {
+      num -= 65536;  // FFFF = -1, FFFE = -2, etc.
+    }
+
+  res.setMeters( num );
+
+  if ( _lastStdAltitude != res && _deliveredAltitude == GpsNmea::PRESSURE )
+    {
+      // Store this altitude as STD, if the user has pressure selected.
+      // In the other case the STD is derived from the GPS altitude.
+      _lastStdAltitude = res;
+      // We only get a STD altitude from the Volkslogger, so we calculate
+      // the MSL altitude using the QNH provided by the user
+      calcMslAltitude( res );
+      // Since in GpsNmea::PRESSURE mode _lastPressureAltitude is returned,
+      // we set it, too.
+      _lastPressureAltitude = _lastMslAltitude;
+      emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+    }
+}
+
+#ifdef FLARM
+
   /**
+  $PFLAU,<RX>,<TX>,<GPS>,<Power>,<AlarmLevel>,<RelativeBearing>,<AlarmType>,
+  <RelativeVertical>,<RelativeDistance>,<ID>
+  */
+void GpsNmea::__ExtractPflau( const QStringList& slst )
+{
+  bool res = Flarm::instance()->extractPflau( slst );
+
+  if( res )
+    {
+      static QTime lastReporting;
+
+      // Check the GPS fix state reported by Flarm.
+      const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
+
+      if( status.Gps == Flarm::NoFix )
+        {
+          fixNOK();
+        }
+      else
+        {
+          fixOK();
+        }
+
+      if( lastReporting.elapsed() >= 5000 )
+        {
+          // To reduce load, Flarm count is reported only after 5s.
+          // We do send always a new state independently of a change
+          // in the mean time.
+          lastReporting  = QTime::currentTime();
+
+          emit newFlarmCount( status.RX );
+        }
+    }
+}
+
+#endif
+
+/**
   DTM - Datum Reference
 
          1   2 3       4 5       6 7 8  9
@@ -734,60 +888,35 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       P90 - PE90
       ...
   9) Checksum
-  */
-
-  if (slst[0] == "$GPDTM")
+*/
+void GpsNmea::__ExtractGpdtm( const QStringList& slst )
+{
+  if ( slst.size() < 9 )
     {
-      if ( slst.size() < 9 )
-        {
-          qWarning("$GPDTM contains too less parameters!");
-          return;
-        }
-
-      _mapDatum = slst[8];
-
+      qWarning("$GPDTM contains too less parameters!");
       return;
     }
 
-  /**
-  Used by Cambridge devices. The PCAID sentence format is:
+  _mapDatum = slst[8];
+}
 
-  $PCAID,<1>,<2>,<3>,<4>*hh<CR><LF>
-  $PCAID,N,-00084,000,128*0B
-
-  <1>     Logged 'L' Last point Logged 'N' Last Point not logged
-  <2>     Barometer Altitude in meters (Leading zeros will be transmitted), Hendrik said: STD
-  <3>     Engine Noise Level
-  <4>     Log Flags
-  *hh     Checksum, XOR of all bytes of the sentence after the `$' and before the '!'
-  */
-
-  if ( slst[0] == "$PCAID" )
+/**
+ * @Returns the last know GPS altitude depending on user
+ * selection MSL or Pressure. MSL is the default.
+ */
+Altitude GpsNmea::getLastAltitude() const
+{
+  if ( GeneralConfig::instance()->getGpsAltitude() == GpsNmea::PRESSURE )
     {
-      if ( slst.size() < 5 )
-        {
-          qWarning("$PCAID contains too less parameters!");
-          return;
-        }
-
-      Altitude res(0);
-      double num = slst[2].toDouble();
-      res.setMeters( num );
-
-      if ( _lastStdAltitude != res && _deliveredAltitude == GpsNmea::PRESSURE )
-        {
-          // Store this altitude as STD, if the user has pressure selected.
-          // In the other case the STD is derived from the GPS altitude.
-          _lastStdAltitude = res;
-          // This altitude must not be notified as new value because
-          // the Cambridge device delivers also MSL in its !w sentence.
-          // emit newAltitude();     // notify change
-        }
-
-      return;
+      return _lastPressureAltitude;
     }
 
-  /**
+  // MSL is the default in all other cases, when the user did
+  // not select pressure.
+  return _lastMslAltitude;
+};
+
+/**
   Used by Cambridge devices. The !w proprietary  sentence format is:
 
   !w,<1>,<2>,<3>,<4>,<5>,<6>,<7>,<8>,<9>,<10>,<11>,<12>,<13>*hh<CR><LF>
@@ -809,202 +938,9 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   <13>   Instrument Bug setting
 
   *hh   Checksum, XOR of all bytes of the sentence after the `!' and before the '*'
-  */
 
-  if ( slst[0] == "!w" )
-    {
-      __ExtractCambridgeW( slst );
-      return;
-    }
-
-  /**
-  Used by Garrecht Volkslogger devices. The PGCS1 sentence format is:
-
-  $PGCS,<1>,<2>,<3>,<4>,<5>*CS
-  $PGCS,1,0EBC,0003,06A6,03*1F
-
-  Volkslogger pressure and pressure altitude information
-
-  0 - PGCS - Sentence ID
-  1 - 1 - gcs-sentence no. 1
-  2 - 0EBC - (pressure * 4096) / 1100: value of pressure-sensor (hex coded)
-  3 - 0003 - pressure altitude [m] (hex coded)
-  4 - 06A6 - reserved for further use?
-  5 - 03 - reserved for further use?
-  CS - 1F - checksum of total sentence
-  */
-
-  if ( slst[0] == "$PGCS" )
-    {
-      if ( slst.size() < 6 )
-        {
-          qWarning("$PGCS contains too less parameters!");
-          return;
-        }
-
-      Altitude res(0);
-      bool ok;
-      int num = slst[3].toInt(&ok, 16);
-
-      if (!ok)
-        {
-          qWarning("$PGCS contains corrupt pressure altitude!");
-          return;
-        }
-
-      if (num > 32768)
-        {
-          num -= 65536;  // FFFF = -1, FFFE = -2, etc.
-        }
-
-      res.setMeters( num );
-
-      if ( _lastStdAltitude != res && _deliveredAltitude == GpsNmea::PRESSURE )
-        {
-          // Store this altitude as STD, if the user has pressure selected.
-          // In the other case the STD is derived from the GPS altitude.
-          _lastStdAltitude = res;
-          // We only get a STD altitude from the Volkslogger, so we calculate
-          // the MSL altitude using the QNH provided by the user
-          calcMslAltitude( res );
-          // Since in GpsNmea::PRESSURE mode _lastPressureAltitude is returned,
-          // we set it, too.
-          _lastPressureAltitude = _lastMslAltitude;
-          emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
-        }
-
-      return;
-    }
-
-  /**
-  Used by LX Navigation devices. The LXWP0 sentence format is:
-
-  $LXWP0,<1>,<2>,<3>,<4>,<5>,<6>,<7>,<8>,<9>,<10>,<11>,<12>,*CS
-  LXWP0,Y,222.3,1665.5,1.71,,,,,,239,174,10.1
-
-  LX Navigation vario, pressure altitude, airspeed, wind information
-
-  0 - LXWP0 - Sentence ID
-  1 - 'Y' or 'N' logger stored
-  2 - air speed in km/h as double
-  3 - pressure altitude in meters as double
-  4...9 - vario values in m/s, last 6 measurements in last second or only one value as double
-  10 - heading degree of plane as integer
-  11 - wind direction as degree
-  12 - wind speed km/h as double
-  CS - checksum of total sentence
-  */
-
-  if ( slst[0] == "$LXWP0" )
-    {
-      __ExtractLxwp0( slst );
-      return;
-    }
-
-  /**
-  Used by LX Navigation devices. The LXWP0 sentence format is:
-
-  $LXWP2,<1>,<2>,<3>,<4>,<5>,<6>,<7>,*CS
-  0 - LXWP0 - Sentence ID
-  1 - McCready float in m/s
-  2 - Bugs 0...100%
-  ...
-  */
-
-  if ( slst[0] == "$LXWP2" )
-    {
-    // extract MacCready, reading in 10ths of knots
-    bool ok;
-    Speed speed(0);
-    double num = slst[1].toDouble( &ok );
-    speed.setMps( num );
-
-    if ( ok && _lastMc != speed )
-      {
-        _lastMc = speed;
-        emit newMc( _lastMc ); // notify change
-      }
-
-      return;
-    }
-
-#ifdef FLARM
-
-  /**
-  $PFLAU,<RX>,<TX>,<GPS>,<Power>,<AlarmLevel>,<RelativeBearing>,<AlarmType>,
-  <RelativeVertical>,<RelativeDistance>,<ID>
-  */
-
-  if( slst[0] == "$PFLAU" )
-    {
-      bool res = Flarm::instance()->extractPflau( slst );
-
-      if( res )
-        {
-          static QTime lastReporting;
-
-          // Check the GPS fix state reported by Flarm.
-          const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
-
-          if( status.Gps == Flarm::NoFix )
-            {
-              fixNOK();
-            }
-          else
-            {
-              fixOK();
-            }
-
-          if( lastReporting.elapsed() >= 5000 )
-            {
-              // To reduce load, Flarm count is reported only after 5s.
-              // We do send always a new state independently of a change
-              // in the mean time.
-              lastReporting  = QTime::currentTime();
-
-              emit newFlarmCount( status.RX );
-            }
-        }
-
-      return;
-    }
-
-  /**
-  $PFLAA,<AlarmLevel>,<RelativeNorth>,<RelativeEast>,<RelativeVertical>,
-  <IDType>,<ID>,<Track>,<TurnRate>,<GroundSpeed>,<ClimbRate>,<AcftType>
-  */
-  if( slst[0] == "$PFLAA" )
-    {
-      Flarm::FlarmAcft aircraft;
-
-      Flarm::instance()->extractPflaa( slst, aircraft );
-      return;
-    }
-
-#endif
-
-  // qDebug ("Unsupported NMEA sentence: %s", sentence.toLatin1().data());
-}
-
-/**
- * @Returns the last know GPS altitude depending on user
- * selection MSL or Pressure. MSL is the default.
- */
-Altitude GpsNmea::getLastAltitude() const
-{
-  if ( GeneralConfig::instance()->getGpsAltitude() == GpsNmea::PRESSURE )
-    {
-      return _lastPressureAltitude;
-    }
-
-  // MSL is the default in all other cases, when the user did
-  // not select pressure.
-  return _lastMslAltitude;
-};
-
-/**
- * Extracts wind, QNH and vario data from Cambridge's !w sentence.
- */
+  Extracts wind, QNH and vario data from Cambridge's !w sentence.
+*/
 void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
 {
   bool ok, ok1;
@@ -1107,15 +1043,22 @@ void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
  * Extracts speed, altitude, vario, heading, wind data from LX Navigation $LXWP0
  * sentence.
 
-   0 - LXWP0 - Sentence ID
-   1 - 'Y' or 'N' logger stored
-   2 - airspeed in km/h as double
-   3 - pressure altitude in meters as double
-   4...9 - vario values in m/s, last 6 measurements in last second or only one value as double
-   10 - heading of plane as integer degree
-   11 - wind direction as degree
-   12 - wind speed km/h as double
-   CS - checksum of total sentence
+    Used by LX Navigation devices. The LXWP0 sentence format is:
+
+    $LXWP0,<1>,<2>,<3>,<4>,<5>,<6>,<7>,<8>,<9>,<10>,<11>,<12>,*CS
+    LXWP0,Y,222.3,1665.5,1.71,,,,,,239,174,10.1
+
+    LX Navigation vario, pressure altitude, airspeed, wind information
+
+    0 - LXWP0 - Sentence ID
+    1 - 'Y' or 'N' logger stored
+    2 - air speed in km/h as double
+    3 - pressure altitude in meters as double
+    4...9 - vario values in m/s, last 6 measurements in last second or only one value as double
+    10 - heading degree of plane as integer
+    11 - wind direction as degree
+    12 - wind speed km/h as double
+    CS - checksum of total sentence
 */
 
 void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
@@ -1225,8 +1168,16 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
 }
 
 /**
- * Extracts McCready data from LX Navigation $LXWP2 sentence.
- */
+    Used by LX Navigation devices. The LXWP0 sentence format is:
+
+    $LXWP2,<1>,<2>,<3>,<4>,<5>,<6>,<7>,*CS
+    0 - LXWP0 - Sentence ID
+    1 - McCready float in m/s
+    2 - Bugs 0...100%
+    ...
+
+   Extracts McCready data from LX Navigation $LXWP2 sentence.
+*/
 void GpsNmea::__ExtractLxwp2( const QStringList& stringList )
 {
   bool ok;
@@ -1251,10 +1202,7 @@ void GpsNmea::__ExtractLxwp2( const QStringList& stringList )
           emit newMc( _lastMc ); // notify change
         }
     }
-
-  return;
 }
-
 
 /**
  * This function returns a QTime from the time encoded in a MNEA sentence.
@@ -1490,9 +1438,35 @@ Altitude GpsNmea::__ExtractAltitude( const QString& altitude, const QString& uni
   return res;
 }
 
-/** Extracts the constellation from the NMEA sentence. */
+/**
+  GSA - GPS DOP and active satellites
+
+          1 2 3                    14 15  16  17  18
+          | | |                    |  |   |   |   |
+   $--GSA,a,a,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x.x,x.x,x.x*hh<CR><LF>
+
+   Field Number:
+    1) Selection mode
+    2) Mode, 1=no-Fix, 2=2D-Fix, 3=3D-Fix
+    3) ID of 1st satellite used for fix
+    4) ID of 2nd satellite used for fix
+    ...
+    14) ID of 12th satellite used for fix
+    15) PDOP in meters
+    16) HDOP in meters
+    17) VDOP in meters
+    18) checksum
+
+  Extracts the constellation from the NMEA sentence.
+*/
 QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
 {
+  if ( sentence.size() < 18 )
+    {
+      qWarning("$GPGSA contains too less parameters!");
+      return "";
+    }
+
   QString result, tmp;
 
   if( sentence[2] != "" )
@@ -2277,7 +2251,26 @@ void GpsNmea::setSystemClock( const QDateTime& utcDt )
   free( utcTZ );
 }
 
-/** Extract Satellites In View (SIV) info from a NMEA sentence. */
+/**
+  GSV - Satellites in view
+
+          1 2 3 4 5 6 7     n
+          | | | | | | |     |
+   $--GSV,x,x,x,x,x,x,x,...*hh<CR><LF>
+
+   Field Number:
+    1) total number of messages
+    2) message number
+    3) satellites in view
+    4) satellite number
+    5) elevation in degrees
+    6) azimuth in degrees to true
+    7) SNR in dB
+    more satellite infos like 4)-7)
+    n) checksum
+
+  Extract Satellites In View (SIV) info from a NMEA sentence.
+*/
 void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
 {
   //the GPGSV sentence can be split between multiple sentences.

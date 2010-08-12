@@ -36,11 +36,13 @@
 #include <QDateTime>
 #include <QPoint>
 #include <QTimer>
+#include <QHash>
 
 #include "speed.h"
 #include "altitude.h"
 #include "gpscon.h"
 #include "wgspoint.h"
+
 
 struct SatInfo
   {
@@ -509,6 +511,27 @@ class GpsNmea : public QObject
 
     /** write configuration data to allow restore of last fix */
     void writeConfig();
+
+    /** Extracts GPRMC sentence. */
+    void __ExtractGprmc( const QStringList& slst );
+    /** Extracts GPGLL sentence. */
+    void __ExtractGpgll( const QStringList& slst );
+    /** Extracts GPGGA sentence. */
+    void __ExtractGpgga( const QStringList& slst );
+    /** Extracts PGRMZ sentence. */
+    void __ExtractPgrmz( const QStringList& slst );
+    /** Extracts PCAID sentence. */
+    void __ExtractPcaid( const QStringList& slst );
+    /** Extracts PGCS sentence. */
+    void __ExtractPgcs( const QStringList& slst );
+    /** Extracts GPDTM sentence. */
+    void __ExtractGpdtm( const QStringList& slst );
+
+#ifdef FLARM
+    /** Extracts PFLAU sentence. */
+    void __ExtractPflau( const QStringList& slst );
+#endif
+
     /** This function returns a QTime from the time encoded in a MNEA sentence. */
     QTime __ExtractTime(const QString& timestring);
     /** This function returns a QDate from the date encoded in a MNEA sentence. */
@@ -659,6 +682,9 @@ class GpsNmea : public QObject
 
     // number of created class instances
     static short instances;
+
+    // Dictionary with known sentence keywords
+    static QHash<QString, short> gpsHash;
 
   public:
 
