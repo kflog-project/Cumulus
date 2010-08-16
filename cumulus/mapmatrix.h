@@ -20,7 +20,7 @@
 #define MAP_MATRIX_H
 
 #include <QObject>
-#include <QMatrix>
+#include <QTransform>
 #include <QPolygon>
 #include <QString>
 
@@ -386,7 +386,7 @@ class MapMatrix : public QObject
 
   /**
    */
-  QMatrix worldMatrix;
+  QTransform worldMatrix;
 
   /**
    * The mapCenter is the position displayed in the center of the map.

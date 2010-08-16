@@ -257,7 +257,7 @@ double MapMatrix::getScale(unsigned int type)
 void MapMatrix::centerToPoint(const QPoint& center)
 {
   bool result = true;
-  QMatrix invertMatrix = worldMatrix.inverted(&result);
+  QTransform invertMatrix = worldMatrix.inverted(&result);
 
   if(!result)
     // Houston, we've got a problem !!!
@@ -318,7 +318,7 @@ double MapMatrix::centerToRect(const QRect& center, const QSize& pS)
 QPoint MapMatrix::mapToWgs(const QPoint& pos) const
 {
   bool result = true;
-  QMatrix invertMatrix = worldMatrix.inverted(&result);
+  QTransform invertMatrix = worldMatrix.inverted(&result);
 
   if(!result)
     // Houston, we've got a problem !!!
@@ -375,13 +375,13 @@ void MapMatrix::createMatrix(const QSize& newSize)
   // qDebug("rotationArc: %f", rotationArc);
   double sinscaled = sin(rotationArc) * scale;
   double cosscaled = cos(rotationArc) * scale;
-  worldMatrix.setMatrix(cosscaled, sinscaled, -sinscaled, cosscaled, 0, 0);
+  worldMatrix = QTransform(cosscaled, sinscaled, -sinscaled, cosscaled, 0, 0);
 
   /* Set the translation */
-  const QPoint map (worldMatrix.map(tempPoint));
-  QMatrix translateMatrix(1, 0, 0, 1,
-                           currentProjection->getTranslationX(newSize.width(),map.x()),
-                           currentProjection->getTranslationY(newSize.height(),map.y()));
+  const QPoint map = worldMatrix.map(tempPoint);
+  QTransform translateMatrix(1, 0, 0, 1,
+                             currentProjection->getTranslationX(newSize.width(),map.x()),
+                             currentProjection->getTranslationY(newSize.height(),map.y()));
 
   worldMatrix *= translateMatrix;
 
@@ -395,7 +395,7 @@ void MapMatrix::createMatrix(const QSize& newSize)
 
   // Setting the viewBorder
   bool result = true;
-  QMatrix invertMatrix (worldMatrix.inverted(&result));
+  QTransform invertMatrix (worldMatrix.inverted(&result));
 
   if(!result)
     // Houston, wir haben ein Problem !!!
