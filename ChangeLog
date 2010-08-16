@@ -14,6 +14,7 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-08-16 AP: Obsolete class QMatrix replaced by QTransform in MapMatrix.
 [o] 2010-08-11 AP: Checksum of GPS sentences is checked now in the receiver
                    process and not more in the GpsNmea class. That shall save
                    performance in Cumulus.
