@@ -17,7 +17,7 @@
 ***********************************************************************/
 
 /**
- * \brief André Somers
+ * \author André Somers
  *
  * \brief This widget provides a list of waypoints and a means to select one.
  *
