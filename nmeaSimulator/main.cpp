@@ -6,6 +6,7 @@
                                2008 Axel Pauli portage to Qt 4.3
                                2009 Axel Pauli GSA extension
                                2010 Axel Pauli Pause option
+                               2010 Axel Pauli Sentence extension
 
     email                : axel@kflog.org
 
@@ -44,20 +45,20 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <QString>
-#include <QStringList>
-#include <QTime>
+
+#include <QtCore>
 
 #include "vector.h"
 #include "glider.h"
 #include "gpgsa.h"
+#include "sentence.h"
 
 using namespace std;
 
 static    double lat=48.50;
 static    double lon=9.4510;
 static    float  speed=100.0;
-static    QString  direction="right";
+static    QString direction="right";
 static    float  heading=230.0;
 static    float  wind=25.0;
 static    float  winddir=270.0;   // wind is coming from west usually
@@ -69,11 +70,19 @@ static    int    Pause=1000;       // default pause is 1000ms
 static    bool   gotAltitude = false;
 static    QString confFile;   // configuration file name
 
+static    QString sentences[10];
+
 // name of used pipe
 static    QString device = "/tmp/nmeasim";
 
+// Function declarations
+void safeConfig();
+
 void fifoExit(int /* signal */ )
 {
+  // safe current used parameters to file
+  safeConfig();
+
   // if we do not unlink, we can start this prog again and again and
   // cumulus gets back the GPS fix. If we unlink, no chance to
   // reconnect without major changes maybe we should unlink the fifo
@@ -213,6 +222,16 @@ void scanConfig( QString cfg )
     {
       sscanf(cfg.toLatin1().data()+6,"%d", &Pause );
     }
+  else if( cfg.startsWith("sentence") )
+    {
+      bool ok;
+      int i = cfg.mid(8,1).toInt(&ok);
+
+      if( ok )
+        {
+          sentences[i] = cfg.mid(10).trimmed();
+        }
+    }
   else
     {
       cerr << "Unknown parameter: '"
@@ -221,9 +240,9 @@ void scanConfig( QString cfg )
     }
 }
 
-void safeConfig( void )
+void safeConfig()
 {
-  FILE * file;
+  FILE* file;
   file = fopen(confFile.toLatin1().data(), "w");
 
   fprintf(file,"lat=%f\n", (float)lat );
@@ -240,16 +259,27 @@ void safeConfig( void )
   fprintf(file,"device=%s\n", device.toLatin1().data() );
   fprintf(file,"pause=%d\n", (int)Pause );
 
+  for( int i = 0; i < 10; i++ )
+    {
+      QString key = QString("sentence%1=").arg(i);
+
+      if( ! sentences[i].isEmpty() )
+        {
+          key += sentences[i];
+          fprintf( file,"%s\n", key.toLatin1().data() );
+        }
+    }
+
   fclose(file);
 }
 
-void readConfig( void )
+void readConfig()
 {
   cout << "Configuration from persistent File: "
        << confFile.toLatin1().data() << endl;
 
-  FILE * file;
-  char line[100];
+  FILE* file;
+  char line[128];
   file = fopen(confFile.toLatin1().data(), "r");
 
   if (file )
@@ -266,6 +296,7 @@ void readConfig( void )
               scanConfig(l);
             }
         }
+
       fclose(file);
     }
 
@@ -291,7 +322,7 @@ int main(int argc, char **argv)
     {
       char *prog = basename(argv[0]);
 
-      cout << "NMEA GPS Simulator 1.3.4 for Cumulus, 2003-2008 E. Voellm, 2009-2010 A. Pauli (GPL)" << endl << endl
+      cout << "NMEA GPS Simulator 1.3.5 for Cumulus, 2003-2008 E. Voellm, 2009-2010 A. Pauli (GPL)" << endl << endl
            << "Usage: " << prog << " str|cir|pos|gpos [params]" << endl << endl
            << "Parameters: str:  Straight Flight "<< endl
            << "            cir:  Circling "<< endl
@@ -303,9 +334,10 @@ int main(int argc, char **argv)
            << "              speed=[km/h] head=[deg]: Glider speed and heading" << endl
            << "              wind=[km/h]  winddir=[deg]: Wind force and direction" << endl
            << "              radius=[m]:  needed for circling" << endl
-           << "              dir=[right|left]:  Direction of Circle" << endl
+           << "              dir=[right|left]: Direction of Circle" << endl
            << "              alt=[m]: Altitude of Glider" << endl
            << "              climb=[m/s]: Climbrate" << endl
+           << "              sentence0...9='KEYWORD,...,': free sentence format" << endl
            << "              time=[s]: duration of operation" << endl
            << "              pause=[ms]: pause between to send periods" << endl
            << "              device=[path to named pipe]: write into this pipe, default is /tmp/nmeasim" << endl
@@ -382,6 +414,18 @@ int main(int argc, char **argv)
   cout << "Time:      " << Time << " sec" << endl;
   cout << "Pause:     " << Pause << " ms" << endl;
   cout << "Device:    " << device.toLatin1().data() << endl;
+
+  for( int i = 0; i < 10; i++ )
+    {
+      QString key = QString("sentence%1: ").arg(i);
+
+      if( ! sentences[i].isEmpty() )
+        {
+          key += sentences[i];
+
+          cout << key.toLatin1().data() << endl;
+        }
+    }
 
   const int fd = init_io();
 
@@ -476,9 +520,18 @@ int main(int argc, char **argv)
       GPGSA myGPGSA;
       myGPGSA.send( satIds, pdop, hdop, vdop, fd );
 
-      // safe actual position to file
-      safeConfig();
+      for( int i = 0; i < 10; i++ )
+        {
+          if( ! sentences[i].isEmpty() )
+            {
+              Sentence mySentence;
+              mySentence.send( sentences[i], fd );
+            }
+        }
     }
+
+  // safe current parameters to file
+  safeConfig();
 
   close( fd );
   fifoExit(-1);
