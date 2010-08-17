@@ -2,7 +2,7 @@
                           pgrmz.h  -  description
                              -------------------
     begin                : 02.08.2010
-    copyright            : (C) 2009 by Axel Pauli
+    copyright            : (C) 2010 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$

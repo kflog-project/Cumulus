@@ -1,5 +1,5 @@
 /***************************************************************************
-                          pgrmz.h  -  description
+                          pgrmz.cpp - description
                              -------------------
     begin                : 02.08.2010
     copyright            : (C) 2009 by Axel Pauli
