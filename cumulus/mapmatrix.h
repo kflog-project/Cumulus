@@ -7,10 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c): 2001      by Heiner Lamprecht, Florian Ehinger
- **                  2008-2009 by Axel Pauli
+ **                  2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -33,6 +33,10 @@ typedef int32_t fp8p24_t;
 #include "waypoint.h"
 
 /**
+ * \author Heiner Lamprecht, Florian Ehinger, Axel Pauli
+ *
+ * \brief Map projection control class.
+ *
  * This class provides functions for converting coordinates between
  * several coordinate-systems. It takes control over the map scale
  * and the projection-type. To avoid problems, there should be only
@@ -43,11 +47,15 @@ class MapMatrix : public QObject
 {
   Q_OBJECT
 
-    public:
+private:
+
+  Q_DISABLE_COPY ( MapMatrix )
+
+public:
   /**
    * Creates a new MapMatrix object.
    */
-  MapMatrix(QObject*);
+  MapMatrix( QObject* object );
 
   /**
    * Destructor
@@ -129,11 +137,11 @@ class MapMatrix : public QObject
 */
 
   /**
-   * Maps the given projected rect into the current map-matrix.
+   * Maps the given projected rectangle into the current map-matrix.
    *
-   * @param  rect  The rect to be mapped
+   * @param  rect  The rectangle to be mapped
    *
-   * @return the mapped rect
+   * @return the mapped rectangle
    */
 
 /*  QRect map(const QRect& rect) const;*/
@@ -173,7 +181,7 @@ class MapMatrix : public QObject
 
   int getScaleRatio()
   {
-    return ( _MaxScaleToCScaleRatio );
+    return _MaxScaleToCScaleRatio;
   };
 
   /**
@@ -322,7 +330,7 @@ class MapMatrix : public QObject
   };
 
   /**
-   * @returns the current projectiontype
+   * @returns the current projection type
    */
   ProjectionBase* getProjection() const
     {
@@ -330,7 +338,8 @@ class MapMatrix : public QObject
     };
 
   public slots:
-  /** */
+
+  /** Sets all mapping parameters of the projection matrix. */
   void slotInitMatrix();
 
   /**
@@ -385,8 +394,14 @@ class MapMatrix : public QObject
   QPoint __mapToWgs(int x, int y) const;
 
   /**
+   * Used map transformation matrix.
    */
   QTransform worldMatrix;
+
+  /**
+   * Used map invert transformation matrix.
+   */
+  QTransform invertMatrix;
 
   /**
    * The mapCenter is the position displayed in the center of the map.

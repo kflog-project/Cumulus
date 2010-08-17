@@ -27,15 +27,11 @@
 #include "generalconfig.h"
 
 // Projektions-Massstab
-// 10 Meter Hoehe pro Pixel ist die staerkste Vergroesserung.
+// 50 Meter Hoehe pro Pixel ist die staerkste Vergroesserung.
 // Bei dieser Vergroesserung erfolgt die eigentliche Projektion
 #define MAX_SCALE 50.0   // 40.0
 #define MIN_SCALE 2000.0 // 800.0
 
-// Mit welchem Radius muessen wir rechnen ???
-// #define RADIUS 6370290 //6370289.509
-// #define NUM_TO_RAD(num) ( ( M_PI * (double)(num) ) / 108000000.0 )
-// this is faster !
 #define NUM_TO_RAD(num) ( (M_PI / 108000000.0) * (double)(num) )
 #define RAD_TO_NUM(rad) ( ( (rad) * (108000000.0 / M_PI) ) )
 
@@ -43,11 +39,6 @@
 //
 // Fixed point math improves polygon and point mapping;
 // isoline drawing gains up to one second
-
-//#include <stdint.h>
-
-//typedef int32_t fp24p8_t;
-//typedef int32_t fp8p24_t;
 
 /* int to fixed point */
 
@@ -75,10 +66,10 @@
  **
  *************************************************************************/
 
-MapMatrix::MapMatrix(QObject* parent)
-  : QObject(parent),
-    mapCenterLat(0), mapCenterLon(0),
-    homeLat(0), homeLon(0), cScale(0), pScale(0), rotationArc(0)
+MapMatrix::MapMatrix( QObject* parent ) :
+  QObject(parent),
+  mapCenterLat(0), mapCenterLon(0),
+  homeLat(0), homeLon(0), cScale(0), pScale(0), rotationArc(0)
 {
   viewBorder.setTop(32000000);
   viewBorder.setBottom(25000000);
@@ -89,9 +80,7 @@ MapMatrix::MapMatrix(QObject* parent)
   mapCenterAreaProj=QRect(0,0,0,0);
 
   // @AP: Load projection type from configuration data, to construct the
-  // right type and to avoid a later change in the slotInitMatrix
-  // call.
-
+  // right type and to avoid a later change in the slotInitMatrix call.
   GeneralConfig *conf = GeneralConfig::instance();
 
   // get current map root directory to detect user changes during run-time
@@ -119,17 +108,14 @@ MapMatrix::MapMatrix(QObject* parent)
 //  qDebug("Map matrix initialized ...");
 }
 
-
 MapMatrix::~MapMatrix()
 {
   writeMatrixOptions();
   delete currentProjection;
 }
 
-
 void MapMatrix::writeMatrixOptions()
 {
-  // qDebug ("MapMatrix::writeMatrixOptions()");
   GeneralConfig *conf = GeneralConfig::instance();
 
   conf->setCenterLat( mapCenterLat );
@@ -138,12 +124,10 @@ void MapMatrix::writeMatrixOptions()
   conf->save();
 }
 
-
 QPoint MapMatrix::wgsToMap(const QPoint& origPoint) const
 {
-  return wgsToMap(origPoint.x(), origPoint.y());
+  return wgsToMap( origPoint.x(), origPoint.y() );
 }
-
 
 QPoint MapMatrix::wgsToMap(int lat, int lon) const
 {
@@ -197,8 +181,6 @@ bool MapMatrix::isVisible( const QRect& itemBorder, int typeID) const
   // ! check for < 10000 is a workaround for a bug other where
   //   that came out after fixing the scale criteria that was always true
   //   before
-#warning "FIXME: There is a bug, leading to very large with() and height() values treated by a workaround here"
-
   if( typeID == BaseMapElement::Highway ||
       typeID == BaseMapElement::Road ||
       typeID == BaseMapElement::Trail ||
@@ -256,14 +238,7 @@ double MapMatrix::getScale(unsigned int type)
 
 void MapMatrix::centerToPoint(const QPoint& center)
 {
-  bool result = true;
-  QTransform invertMatrix = worldMatrix.inverted(&result);
-
-  if(!result)
-    // Houston, we've got a problem !!!
-    qFatal("Cumulus: Cannot invert worldMatrix! File=%s, Line=%d", __FILE__, __LINE__);
-
-  QPoint projCenter = __mapToWgs(invertMatrix.map(center));
+  QPoint projCenter = __mapToWgs( invertMatrix.map( center ) );
   mapCenterLat = projCenter.y();
   mapCenterLon = projCenter.x();
 }
@@ -296,19 +271,24 @@ double MapMatrix::centerToRect(const QRect& center, const QSize& pS)
 
   double xScaleDelta, yScaleDelta;
 
-  if(pS == QSize(0,0)) {
-    xScaleDelta = width / mapViewSize.width();
-    yScaleDelta = height / mapViewSize.height();
-  } else {
-    xScaleDelta = width / pS.width();
-    yScaleDelta = height / pS.height();
-  }
+  if( pS == QSize( 0, 0 ) )
+    {
+      xScaleDelta = width / mapViewSize.width();
+      yScaleDelta = height / mapViewSize.height();
+    }
+  else
+    {
+      xScaleDelta = width / pS.width();
+      yScaleDelta = height / pS.height();
+    }
 
   double tempScale = qMax(cScale * qMax(xScaleDelta, yScaleDelta), MAX_SCALE);
 
   // Only change if difference is too large:
   if((tempScale / cScale) > 1.05 || (tempScale / cScale) < 0.95)
-    cScale = tempScale;
+    {
+      cScale = tempScale;
+    }
 
   centerToPoint(QPoint(centerX, centerY));
 
@@ -317,14 +297,7 @@ double MapMatrix::centerToRect(const QRect& center, const QSize& pS)
 
 QPoint MapMatrix::mapToWgs(const QPoint& pos) const
 {
-  bool result = true;
-  QTransform invertMatrix = worldMatrix.inverted(&result);
-
-  if(!result)
-    // Houston, we've got a problem !!!
-    qFatal("Cumulus: Cannot invert worldMatrix! File=%s, Line=%d", __FILE__, __LINE__);
-
-  return __mapToWgs(invertMatrix.map(pos));
+  return __mapToWgs( invertMatrix.map(pos) );
 }
 
 void MapMatrix::__moveMap(int dir)
@@ -367,7 +340,6 @@ void MapMatrix::__moveMap(int dir)
 void MapMatrix::createMatrix(const QSize& newSize)
 {
   const QPoint tempPoint(wgsToMap(mapCenterLat, mapCenterLon));
-  worldMatrix.reset();
 
   /* Set rotating and scaling */
   const double scale = MAX_SCALE / cScale;
@@ -375,13 +347,13 @@ void MapMatrix::createMatrix(const QSize& newSize)
   // qDebug("rotationArc: %f", rotationArc);
   double sinscaled = sin(rotationArc) * scale;
   double cosscaled = cos(rotationArc) * scale;
-  worldMatrix = QTransform(cosscaled, sinscaled, -sinscaled, cosscaled, 0, 0);
+  worldMatrix = QTransform( cosscaled, sinscaled, -sinscaled, cosscaled, 0, 0 );
 
   /* Set the translation */
   const QPoint map = worldMatrix.map(tempPoint);
-  QTransform translateMatrix(1, 0, 0, 1,
-                             currentProjection->getTranslationX(newSize.width(),map.x()),
-                             currentProjection->getTranslationY(newSize.height(),map.y()));
+  QTransform translateMatrix( 1, 0, 0, 1,
+                              currentProjection->getTranslationX(newSize.width(),map.x()),
+                              currentProjection->getTranslationY(newSize.height(),map.y()));
 
   worldMatrix *= translateMatrix;
 
@@ -395,13 +367,14 @@ void MapMatrix::createMatrix(const QSize& newSize)
 
   // Setting the viewBorder
   bool result = true;
-  QTransform invertMatrix (worldMatrix.inverted(&result));
+  invertMatrix = worldMatrix.inverted( &result );
 
-  if(!result)
-    // Houston, wir haben ein Problem !!!
-    qFatal("Cumulus: Cannot invert worldMatrix! File=%s, Line=%d", __FILE__, __LINE__);
+  if( !result )
+    {
+      // Houston, wir haben ein Problem !!!
+      qFatal("Cumulus: Cannot invert worldMatrix! File=%s, Line=%d", __FILE__, __LINE__);
+    }
 
-  //
   // Die Berechnung der Kartengrenze funktioniert so nur auf der
   // Nordhalbkugel. Auf der Südhalbkugel stimmen die Werte nur
   // näherungsweise.
@@ -417,23 +390,23 @@ void MapMatrix::createMatrix(const QSize& newSize)
   viewBorder.setRight(trCorner.x());
   viewBorder.setBottom( qMin(blCorner.y(), brCorner.y()) );
 
-  mapBorder = invertMatrix.mapRect(QRect(0,0, newSize.width(), newSize.height()));
+  mapBorder = invertMatrix.mapRect( QRect( 0, 0, newSize.width(), newSize.height() ) );
   mapViewSize = newSize;
 
   //create the map center area definition
-  int vqDist=-viewBorder.height()/5;
-  int hqDist=viewBorder.width()/5;
+  int vqDist = -viewBorder.height() / 5;
+  int hqDist = viewBorder.width() / 5;
 
   mapCenterArea=QRect(mapCenterLat - vqDist, mapCenterLon - hqDist, 2* vqDist, 2* hqDist);
 
-  vqDist=mapBorder.height()/5;
-  hqDist=mapBorder.width()/5;
+  vqDist = mapBorder.height() / 5;
+  hqDist = mapBorder.width() / 5;
 
   mapCenterAreaProj=QRect(tempPoint.x() - vqDist,
                           tempPoint.y() - hqDist,
                           2* vqDist, 2* hqDist);
 
-  //fixed math mapping value assignment
+  // fixed math mapping value assignment
   m11 = (fp24p8_t)( worldMatrix.m11() * 16777216.0 );
   m12 = (fp24p8_t)( worldMatrix.m12() * 16777216.0 );
   m21 = (fp24p8_t)( worldMatrix.m21() * 16777216.0 );
@@ -503,7 +476,7 @@ void MapMatrix::slotInitMatrix()
 
         case ProjectionBase::Cylindric:
         default:
-          // fallback is cylindrical
+          // fall back is cylindrical
           currentProjection = new ProjectionCylindric(conf->getCylinderParallel());
           qDebug ("Map projection changed to Cylinder");
           break;
