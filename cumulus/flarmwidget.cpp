@@ -21,14 +21,15 @@
 #include "flarmwidget.h"
 #include "flarmlistview.h"
 #include "flarmradarview.h"
-
+#include "flarmaliaslist.h"
 /**
  * Constructor
  */
 FlarmWidget::FlarmWidget( QWidget *parent ) :
   QWidget( parent ),
   radarView(0),
-  listView(0)
+  listView(0),
+  aliasList(0)
 {
 }
 
@@ -54,6 +55,7 @@ void FlarmWidget::showEvent( QShowEvent *event )
       radarView->setVisible( true );
 
       connect( radarView, SIGNAL(openListView() ), this, SLOT(slotOpenListView()) );
+      connect( radarView, SIGNAL(openAliasList() ), this, SLOT(slotOpenAliasList()) );
       connect( radarView, SIGNAL(closeRadarView() ), this, SLOT(slotCloseRadarView()) );
     }
 
@@ -90,6 +92,33 @@ void FlarmWidget::slotCloseListView()
 {
   radarView->setVisible( true );
   listView->setVisible( false );
+}
+
+/** Called if alias list shall be opened with all Flarm objects. */
+void FlarmWidget::slotOpenAliasList()
+{
+  qDebug() << "FlarmWidget::slotOpenAliasList()";
+
+  if( aliasList )
+    {
+      qDebug() << "Alias ist da";
+      // Prevent multiple instances of alias list, if system works slow.
+      return;
+    }
+
+  aliasList = new FlarmAliasList( this );
+  aliasList->resize( size() );
+  connect( aliasList, SIGNAL(closed() ), this, SLOT(slotAliasListClosed()) );
+
+  radarView->setVisible( false );
+  aliasList->setVisible( true );
+}
+
+/** Called if alias list shall be closed with all Flarm objects. */
+void FlarmWidget::slotAliasListClosed()
+{
+  radarView->setVisible( true );
+  aliasList = static_cast<FlarmAliasList *>(0);
 }
 
 /** Called if radar view shall be closed. */

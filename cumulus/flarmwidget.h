@@ -33,6 +33,7 @@
 
 class FlarmRadarView;
 class FlarmListView;
+class FlarmAliasList;
 
 class FlarmWidget : public QWidget
 {
@@ -70,6 +71,12 @@ public slots:
   /** Called if radar view shall be closed. */
   void slotCloseRadarView();
 
+  /** Called if alias list shall be opened with all Flarm objects. */
+  void slotOpenAliasList();
+
+  /** Called if alias list was closed with all Flarm objects. */
+  void slotAliasListClosed();
+
 signals:
 
   /** Emitted when the close button was pressed. */
@@ -79,6 +86,9 @@ private:
 
   FlarmRadarView* radarView;
   FlarmListView*  listView;
+
+  /** Widget to handle Flarm alias data. */
+  FlarmAliasList* aliasList;
 };
 
 #endif /* FLARM_WIDGET_H */

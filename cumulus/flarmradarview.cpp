@@ -41,7 +41,7 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   connect( Flarm::instance(), SIGNAL(newFlarmPflaaData()),
            display, SLOT(slot_UpdateDisplay()) );
 
-  buttonBox = new QGroupBox( this );
+  QGroupBox* buttonBox = new QGroupBox( this );
   buttonBox->setContentsMargins(2,2,2,2);
 
   int size = 40;
@@ -70,6 +70,13 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   updateButton->setMinimumSize(size, size);
   updateButton->setMaximumSize(size, size);
 
+  QPushButton *aliasButton  = new QPushButton;
+  aliasButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("monkey32.png")));
+  aliasButton->setIconSize(QSize(32, 32));
+  aliasButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  aliasButton->setMinimumSize(size, size);
+  aliasButton->setMaximumSize(size, size);
+
   QPushButton *closeButton = new QPushButton;
   closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   closeButton->setIconSize(QSize(32, 32));
@@ -80,6 +87,7 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   connect( zoomButton, SIGNAL(clicked() ), this, SLOT(slotZoom()) );
   connect( listButton, SIGNAL(clicked() ), this, SLOT(slotOpenListView()) );
   connect( updateButton, SIGNAL(clicked() ), this, SLOT(slotUpdateInterval()) );
+  connect( aliasButton, SIGNAL(clicked() ), this, SLOT(slotOpenAliasList()) );
   connect( closeButton, SIGNAL(clicked() ), this, SLOT(slotClose()) );
 
   // vertical box with operator buttons
@@ -91,6 +99,8 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   vbox->addWidget( listButton );
   vbox->addSpacing(32);
   vbox->addWidget( updateButton );
+  vbox->addSpacing(32);
+  vbox->addWidget( aliasButton );
   vbox->addStretch(2);
   vbox->addWidget( closeButton );
   buttonBox->setLayout( vbox );
@@ -163,4 +173,11 @@ void FlarmRadarView::slotUpdateInterval()
 
   updateButton->setText( newText );
   display->setUpdateInterval( newValue );
+}
+
+/** Called if alias list button was pressed. */
+void FlarmRadarView::slotOpenAliasList()
+{
+  qDebug() << "FlarmRadarView::slotOpenAliasList()";
+  emit openAliasList();
 }

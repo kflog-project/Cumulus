@@ -77,21 +77,24 @@ private slots:
   /** Called if update interval button was pressed. */
   void slotUpdateInterval();
 
+  /** Called if alias list button was pressed. */
+  void slotOpenAliasList();
+
 signals:
 
   /** Emitted if the list view shall be opened with all Flarm objects. */
   void openListView();
 
-  /** Emitted when the close button was pressed. */
+  /** Emitted if the alias list shall be opened with all Flarm entries. */
+  void openAliasList();
+
+  /** Emitted when the close button of the radar widget was pressed. */
   void closeRadarView();
 
 private:
 
   /** Display with radar view. */
   FlarmDisplay* display;
-
-  /** Button box. */
-  QGroupBox* buttonBox;
 
   /** Update interval button. */
   QPushButton* updateButton;
