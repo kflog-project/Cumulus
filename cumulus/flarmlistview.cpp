@@ -20,6 +20,7 @@
 #include <QtGui>
 
 #include "flarmlistview.h"
+#include "flarmaliaslist.h"
 #include "flarm.h"
 #include "generalconfig.h"
 #include "distance.h"
@@ -201,9 +202,12 @@ void FlarmListView::fillItemList( QString& object2Select )
            climb += speed.getVerticalText( false, 1 );
          }
 
+       // Try tp map the Flarm Id to an alias name
+       const QHash<QString, QString> &aliasHash = FlarmAliasList::getAliasHash();
+
       // Add hash key as invisible column
       sl << it.key()
-         << acft.ID
+         << aliasHash.value( acft.ID, acft.ID )
          << Distance::getText( distAcft, true, -1 )
          << vertical
          << ""

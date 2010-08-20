@@ -189,7 +189,7 @@ public:
    * @param idType <ID-Type> tag of Flarm sentence $PFLAA
    * @param id <ID> tag of Flarm sentence $PFLAA
    */
-  static QString createHashKey( int idType, QString id )
+  static QString createHashKey( int idType, const QString& id )
   {
     return QString("%1-%2").arg(idType).arg(id);
   };
@@ -197,7 +197,7 @@ public:
   /**
    * @return the pflaaHash to the caller.
    */
-  static QHash<QString, FlarmAcft>& getPflaaHash()
+  static const QHash<QString, FlarmAcft>& getPflaaHash()
   {
     return pflaaHash;
   };

@@ -20,6 +20,7 @@
 #include <QtGui>
 
 #include "flarmdisplay.h"
+#include "flarmaliaslist.h"
 #include "flarm.h"
 #include "distance.h"
 #include "altitude.h"
@@ -404,8 +405,13 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           pen.setWidth(3);
           painter.setPen( pen );
 
+          const QHash<QString, QString> &aliasHash = FlarmAliasList::getAliasHash();
+
+          // Try tp map the Flarm Id to an alias name
+          QString actfId = aliasHash.value( acft.ID, acft.ID );
+
           // Draw the Flarm aircraft Id of the selected object.
-          painter.drawText( 5, size().height() - 5, acft.ID );
+          painter.drawText( 5, size().height() - 5, actfId );
 
           // Draw the distance to the selected object
           QString text = Distance::getText( distAcft, true, -1 );

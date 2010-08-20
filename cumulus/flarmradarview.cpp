@@ -178,6 +178,5 @@ void FlarmRadarView::slotUpdateInterval()
 /** Called if alias list button was pressed. */
 void FlarmRadarView::slotOpenAliasList()
 {
-  qDebug() << "FlarmRadarView::slotOpenAliasList()";
   emit openAliasList();
 }

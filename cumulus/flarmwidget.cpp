@@ -97,12 +97,9 @@ void FlarmWidget::slotCloseListView()
 /** Called if alias list shall be opened with all Flarm objects. */
 void FlarmWidget::slotOpenAliasList()
 {
-  qDebug() << "FlarmWidget::slotOpenAliasList()";
-
   if( aliasList )
     {
-      qDebug() << "Alias ist da";
-      // Prevent multiple instances of alias list, if system works slow.
+      // Prevents multiple instances of alias list, if system works slow.
       return;
     }
 
@@ -114,7 +111,7 @@ void FlarmWidget::slotOpenAliasList()
   aliasList->setVisible( true );
 }
 
-/** Called if alias list shall be closed with all Flarm objects. */
+/** Called if alias list was closed with all Flarm objects. */
 void FlarmWidget::slotAliasListClosed()
 {
   radarView->setVisible( true );

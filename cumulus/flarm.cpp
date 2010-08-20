@@ -19,6 +19,7 @@
 
 #include "flarm.h"
 #include "flarmdisplay.h"
+#include "flarmaliaslist.h"
 
 // initialize static data items
 bool Flarm::collectPflaa = false;
@@ -35,6 +36,9 @@ Flarm::Flarm(QObject* parent) : QObject(parent)
   timer = new QTimer( this );
   timer->setSingleShot( true );
   connect( timer, SIGNAL(timeout()), this, SLOT(slotTimeout()) );
+
+  // Load Flarm alias data
+  FlarmAliasList::loadAliasData();
 }
 
 Flarm::~Flarm()
