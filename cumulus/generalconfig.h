@@ -1832,6 +1832,12 @@ class GeneralConfig : protected QSettings
   void setWaypointScaleBorder( const wayPoint::Importance importance,
                                const int newScale );
 
+  /** Gets the Flarm alias file name. */
+  const QString &getFlarmAliasFileName() const
+    {
+      return _flarmAliasFileName;
+    };
+
  private:
 
   /** loads the terrain default colors */
@@ -2138,6 +2144,9 @@ class GeneralConfig : protected QSettings
 
   // Waypoint data file name
   QString _waypointFile;
+
+  /** Flarm alias file name. */
+  QString _flarmAliasFileName;
 
   // In the unit items is stored the label index of the related combo box.
   // The indexes are used in the unit setting tabulator.

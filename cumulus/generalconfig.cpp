@@ -383,6 +383,10 @@ void GeneralConfig::load()
   _manualNavModeAltitude = value( "ManualNavModeAltitude", 1000 ).toInt();
   endGroup();
 
+  beginGroup ("Flarm");
+  _flarmAliasFileName = value("FlarmAliasFileName", "cumulus-flarm.txt").toString();
+  endGroup();
+
   beginGroup("Units");
   _unitAlt   = value( "Altitude", Altitude::meters).toInt();
   _unitDist  = value( "Distance", Distance::kilometers).toInt();
