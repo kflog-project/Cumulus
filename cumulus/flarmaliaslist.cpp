@@ -21,6 +21,9 @@
 #include "generalconfig.h"
 #include "flarmaliaslist.h"
 
+// The alias name length is limited to 15 characters
+#define MaxAliasLength 15
+
 QHash<QString, QString> FlarmAliasList::aliasHash;
 
 /**
@@ -199,14 +202,13 @@ void FlarmAliasList::slot_DeleteRows()
 
       if( rows2Remove.contains( row ) )
         {
-          qDebug() << "Row" << row << "is in list";
           continue;
         }
 
       rows2Remove.append( row );
     }
 
-  qSort(rows2Remove );
+  qSort( rows2Remove );
 
   for( int i = rows2Remove.size()-1; i >= 0; i-- )
     {
@@ -241,9 +243,9 @@ void FlarmAliasList::slot_Ok()
   // Save all to alias hash
   for( int i = 0; i < list->rowCount(); i++ )
     {
-      // Alias names are limited to 15 characters
+      // Alias names are limited to MaxAliasLength characters
       aliasHash.insert( list->item( i, 0 )->text().trimmed(),
-                        list->item( i, 1 )->text().trimmed().left(15) );
+                        list->item( i, 1 )->text().trimmed().left(MaxAliasLength) );
     }
 
   saveAliasData(); // Save data into file
@@ -281,8 +283,8 @@ void FlarmAliasList::slot_CellChanged( int row, int column )
     }
   else
     {
-      // Limits alias names to 15 characters.
-      item->setText( item->text().trimmed().left(15) );
+      // Limits alias name to MaxAliasLength characters.
+      item->setText( item->text().trimmed().left(MaxAliasLength) );
     }
 }
 
@@ -339,8 +341,8 @@ bool FlarmAliasList::loadAliasData()
           continue;
         }
 
-      // Alias names are limited to 15 characters
-      aliasHash.insert( key, val.left(15) );
+      // Alias names are limited to MaxAliasLength characters
+      aliasHash.insert( key, val.left(MaxAliasLength) );
     }
 
   f.close();

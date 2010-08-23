@@ -14,6 +14,7 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-08-20 AP: Flarm alias handling added as new feature.
 [o] 2010-08-17 AP: NMEA simulator extended by a new option. Up to 10 different
                    GPS sentences can be passed by using the sentence0 to
                    sentence9 option. That make it easier to test FLARM features.

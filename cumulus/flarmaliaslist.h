@@ -20,8 +20,9 @@
  *
  * \brief Flarm alias list display and editor.
  *
- * This widget can provide alias names for FLARM hexadecimal identifiers.
- * The names are displayed in a table and can be edited.
+ * This widget can create, modify or remove alias names for FLARM hexadecimal
+ * identifiers. The names are displayed in a two column table. The content of
+ * the table is stored in a text file in the user's data directory.
  *
  */
 
@@ -74,11 +75,25 @@ protected:
 
 private slots:
 
+  /** Adds a new row with two columns to the table. */
   void slot_AddRow( QString col0="", QString col1="" );
+
+  /** Removes all selected rows from the table. */
   void slot_DeleteRows();
+
+  /** Ok button press is handled here. */
   void slot_Ok();
+
+  /** Close button press is handled here. */
   void slot_Close();
+
+  /** Cell content change is handled here. */
   void slot_CellChanged( int row, int column );
+
+  /**
+   * Header click is handled here. It sorts the clicked column in ascending
+   * order.
+   */
   void slot_HeaderClicked( int section );
 
 signals:
