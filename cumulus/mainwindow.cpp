@@ -762,48 +762,43 @@ void MainWindow::slotAlarm( const QString& msg, const bool sound )
 
 void MainWindow::initMenuBar()
 {
-  fileMenu = menuBar()->addMenu(tr("&File"));
+  fileMenu = menuBar()->addMenu(tr("File"));
   fileMenu->addAction( actionFileQuit );
 
-  viewMenu = menuBar()->addMenu(tr("&View"));
+  viewMenu = menuBar()->addMenu(tr("View"));
+  viewMenu->addAction( actionViewAirfields );
+  viewMenu->addAction( actionViewReachpoints );
+  viewMenu->addAction( actionViewInfo );
+  actionViewInfo->setEnabled( false );
   viewMenu->addAction( actionViewTaskpoints );
   actionViewTaskpoints->setEnabled( false );
   viewMenu->addAction( actionViewWaypoints );
-  viewMenu->addAction( actionViewReachpoints );
-  viewMenu->addAction( actionViewAirfields );
-  viewMenu->addAction( actionViewInfo );
-  actionViewInfo->setEnabled( false );
   viewMenu->addSeparator();
-  // add a submenu for Label management
-  labelMenu = viewMenu->addMenu( tr("Labels"));
+  viewMenu->addAction( actionViewGPSStatus );
+
+  labelMenu = menuBar()->addMenu( tr("Toggles"));
   labelMenu->addAction( actionToggleAfLabels );
   labelMenu->addAction( actionToggleOlLabels );
   labelMenu->addAction( actionToggleTpLabels );
   labelMenu->addAction( actionToggleWpLabels );
-  viewMenu->addSeparator();
   labelMenu->addAction( actionToggleLabelsInfo );
+  labelMenu->addSeparator();
+  labelMenu->addAction( actionToggleLogging );
+  labelMenu->addAction( actionToggleManualInFlight );
+  labelMenu->addAction( actionToggleStatusbar );
 
-  viewMenu->addAction( actionToggleStatusbar );
-  viewMenu->addSeparator();
-  viewMenu->addAction( actionViewGPSStatus );
-
-  mapMenu = menuBar()->addMenu(tr("&Map"));
-  mapMenu->addAction( actionToggleLogging );
+  mapMenu = menuBar()->addMenu(tr("Map"));
   mapMenu->addAction( actionSelectTask );
   mapMenu->addAction( actionManualNavHome );
   mapMenu->addAction( actionNav2Home );
-  mapMenu->addAction( actionToggleManualInFlight );
-  mapMenu->addSeparator();
   mapMenu->addAction( actionEnsureVisible );
-  mapMenu->addAction( actionZoomInZ );
-  mapMenu->addAction( actionZoomOutZ );
 
-  setupMenu = menuBar()->addMenu(tr("&Setup"));
+  setupMenu = menuBar()->addMenu(tr("Setup"));
   setupMenu->addAction( actionSetupConfig );
   setupMenu->addAction( actionPreFlight );
   setupMenu->addAction( actionSetupInFlight );
 
-  helpMenu = menuBar()->addMenu(tr("&Help"));
+  helpMenu = menuBar()->addMenu(tr("Help"));
   helpMenu->addAction( actionHelpCumulus );
   helpMenu->addAction( actionHelpAboutApp );
   helpMenu->addAction( actionHelpAboutQt );
@@ -956,12 +951,12 @@ void MainWindow::initActions()
   connect( actionFileQuit, SIGNAL( triggered() ),
            this, SLOT( slotFileQuit() ) );
 
-  actionViewWaypoints = new QAction ( tr( "&Waypoints" ), this );
+  actionViewWaypoints = new QAction ( tr( "Waypoints" ), this );
   addAction( actionViewWaypoints );
   connect( actionViewWaypoints, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToWPListView() ) );
 
-  actionViewAirfields = new QAction ( tr( "&Airfields" ), this );
+  actionViewAirfields = new QAction ( tr( "Airfields" ), this );
   addAction( actionViewAirfields );
   connect( actionViewAirfields, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToAFListView() ) );
@@ -972,13 +967,13 @@ void MainWindow::initActions()
   connect( actionViewReachpoints, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToReachListView() ) );
 
-  actionViewTaskpoints = new QAction ( tr( "&Task" ), this );
+  actionViewTaskpoints = new QAction ( tr( "Task" ), this );
   addAction( actionViewTaskpoints );
   connect( actionViewTaskpoints, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToTaskListView() ) );
 
   // Show info about selected target
-  actionViewInfo = new QAction( tr( "&Info Target" ), this );
+  actionViewInfo = new QAction( tr( "Target Info" ), this );
   actionViewInfo->setShortcut(Qt::Key_I);
   addAction( actionViewInfo );
   connect( actionViewInfo, SIGNAL( triggered() ),
@@ -991,7 +986,7 @@ void MainWindow::initActions()
   connect( actionToggleStatusbar, SIGNAL( toggled( bool ) ),
            this, SLOT( slotViewStatusBar( bool ) ) );
 
-  actionViewGPSStatus = new QAction( tr( "GPS Status" ), this );
+  actionViewGPSStatus = new QAction( tr( "&GPS Status" ), this );
   actionViewGPSStatus->setShortcut(Qt::Key_G);
   addAction( actionViewGPSStatus );
   connect( actionViewGPSStatus, SIGNAL( triggered() ),
@@ -1018,7 +1013,7 @@ void MainWindow::initActions()
   connect ( actionZoomOutZ, SIGNAL( triggered() ),
             viewMap->_theMap , SLOT( slotZoomOut() ) );
 
-  actionToggleAfLabels = new QAction ( tr( "Airfield labels" ), this);
+  actionToggleAfLabels = new QAction ( tr( "&Airfield labels" ), this);
   actionToggleAfLabels->setShortcut(Qt::Key_A);
   actionToggleAfLabels->setCheckable(true);
   actionToggleAfLabels->setChecked( GeneralConfig::instance()->getMapShowAirfieldLabels() );
@@ -1026,7 +1021,7 @@ void MainWindow::initActions()
   connect( actionToggleAfLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleAfLabels( bool ) ) );
 
-  actionToggleOlLabels = new QAction ( tr( "Outlanding labels" ), this);
+  actionToggleOlLabels = new QAction ( tr( "&Outlanding labels" ), this);
   actionToggleOlLabels->setShortcut(Qt::Key_O);
   actionToggleOlLabels->setCheckable(true);
   actionToggleOlLabels->setChecked( GeneralConfig::instance()->getMapShowOutLandingLabels() );
@@ -1034,7 +1029,7 @@ void MainWindow::initActions()
   connect( actionToggleOlLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleOlLabels( bool ) ) );
 
-  actionToggleTpLabels = new QAction ( tr( "Taskpoint labels" ), this);
+  actionToggleTpLabels = new QAction ( tr( "&Taskpoint labels" ), this);
   actionToggleTpLabels->setShortcut(Qt::Key_T);
   actionToggleTpLabels->setCheckable(true);
   actionToggleTpLabels->setChecked( GeneralConfig::instance()->getMapShowTaskPointLabels() );
@@ -1042,7 +1037,7 @@ void MainWindow::initActions()
   connect( actionToggleTpLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleTpLabels( bool ) ) );
 
-  actionToggleWpLabels = new QAction ( tr( "Waypoint labels" ), this);
+  actionToggleWpLabels = new QAction ( tr( "&Waypoint labels" ), this);
   actionToggleWpLabels->setShortcut(Qt::Key_W);
   actionToggleWpLabels->setCheckable(true);
   actionToggleWpLabels->setChecked( GeneralConfig::instance()->getMapShowWaypointLabels() );
@@ -1050,7 +1045,7 @@ void MainWindow::initActions()
   connect( actionToggleWpLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleWpLabels( bool ) ) );
 
-  actionToggleLabelsInfo = new QAction (  tr( "Labels extra info" ), this);
+  actionToggleLabelsInfo = new QAction (  tr( "&Extra labels info" ), this);
   actionToggleLabelsInfo->setShortcut(Qt::Key_E);
   actionToggleLabelsInfo->setCheckable(true);
   actionToggleLabelsInfo->setChecked( GeneralConfig::instance()->getMapShowLabelsExtraInfo() );
@@ -1058,14 +1053,14 @@ void MainWindow::initActions()
   connect( actionToggleLabelsInfo, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleLabelsInfo( bool ) ) );
 
-  actionToggleLogging = new QAction( tr( "Logging" ), this );
+  actionToggleLogging = new QAction( tr( "&Logging" ), this );
   actionToggleLogging->setShortcut(Qt::Key_L);
   actionToggleLogging->setCheckable(true);
   addAction( actionToggleLogging );
   connect ( actionToggleLogging, SIGNAL( triggered() ),
             logger, SLOT( slotToggleLogging() ) );
 
-  actionEnsureVisible = new QAction ( tr( "Ensure waypoint visible" ), this );
+  actionEnsureVisible = new QAction ( tr( "Visualize waypoint" ), this );
   actionEnsureVisible->setShortcut(Qt::Key_V);
   addAction( actionEnsureVisible );
   connect ( actionEnsureVisible, SIGNAL( triggered() ),
@@ -1091,13 +1086,13 @@ void MainWindow::initActions()
   connect( actionToggleManualInFlight, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleManualInFlight( bool ) ) );
 
-  actionPreFlight = new QAction( tr( "Pre-flight setup" ), this );
+  actionPreFlight = new QAction( tr( "Pre-flight" ), this );
   actionPreFlight->setShortcut(Qt::Key_P);
   addAction( actionPreFlight );
   connect ( actionPreFlight, SIGNAL( triggered() ),
             this, SLOT( slotPreFlightGlider() ) );
 
-  actionSetupConfig = new QAction( tr ( "General setup" ), this );
+  actionSetupConfig = new QAction( tr ( "General" ), this );
   actionSetupConfig->setShortcut(Qt::Key_S + Qt::SHIFT);
   addAction( actionSetupConfig );
   connect ( actionSetupConfig, SIGNAL( triggered() ),
