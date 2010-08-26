@@ -21,7 +21,8 @@
 #include <QList>
 
 /**
-  * @author André Somers, Axel Pauli
+  * @author AndrÃ© Somers, Axel Pauli
+  *
   * @short Template for a list which limits the number of items it contains.
   *
   * 2008-02-22 AP: This class was modified from a pointer based list
@@ -30,7 +31,7 @@
   * The LimitedList template class implements a QList based value list
   * with a limited number of items. If more items are added, the least
   * important item will be deleted automatically. The item to delete
-  * it determined by the getLeastImportantItemIndex() member funtion,
+  * it determined by the getLeastImportantItemIndex() member function,
   * which may be overridden by child classes if needed. The default
   * implementation removes the oldest item from the list.
   */
@@ -46,7 +47,7 @@ public:
    * @param limit the maximum number of elements in this list. Defaults to 10
    */
   LimitedList(int limit=10);
-    
+
   /**
    * Destructor
    */
@@ -61,7 +62,7 @@ public:
   /**
    * Sets the new limit for the number of items in the list. If the new list
    * is shorter then the last, the excess items are deleted.
-   * 
+   *
    * @param limit the new limit
    */
   void setLimit( const int limit );
@@ -88,7 +89,7 @@ public:
  * ====================================================================
  *
  * The implementation is stored in the header file because that's the
- * only way it will compile without linkererrors. This has to do with
+ * only way it will compile without linker errors. This has to do with
  * the fact that it's a template. See:
  *  http://www.ecs.fullerton.edu/~sowell/cs331/TemplateClasses.html
  * for information on the how and why.
