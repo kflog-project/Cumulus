@@ -490,7 +490,7 @@ void Vector::add(Vector arg)
 
 
 /** Returns a copy of the object */
-Vector Vector::Clone()
+Vector Vector::clone()
 {
   Vector result;
   result._speed = _speed;

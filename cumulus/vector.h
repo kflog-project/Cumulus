@@ -182,7 +182,7 @@ public:
     /**
      * Returns a copy of the object
      */
-    Vector Clone();
+    Vector clone();
 
     /**
      * Sets the distance to be invalid
