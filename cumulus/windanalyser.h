@@ -9,7 +9,7 @@
  **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -24,27 +24,37 @@
 #include "calculator.h"
 
 /**
+ * \author André Somers
+ *
+ * \brief wind analyzer
+ *
  * The wind analyzer analyzes the list of flight samples looking
  * for wind speed and direction.
- * @author André Somers
  */
+
 class WindAnalyser : public QObject
 {
   Q_OBJECT
 
-    public:
-  WindAnalyser(QObject * parent);
+private:
 
-  ~WindAnalyser();
+  Q_DISABLE_COPY ( WindAnalyser )
 
- signals: // Signals
+public:
+
+  WindAnalyser(QObject* parent);
+
+  virtual ~WindAnalyser();
+
+signals:
+
   /**
-   * Send if a new windmeasurement has been made. The result is included in wind,
+   * Send if a new wind measurement has been made. The result is included in wind,
    * the quality of the measurement (1-5; 1 is bad, 5 is excellent) in quality.
    */
   void newMeasurement(Vector wind, int quality);
 
-  public slots: // Public slots
+public slots:
   /**
    * Called if the flight mode changes
    */
@@ -60,7 +70,10 @@ class WindAnalyser : public QObject
    */
   void slot_newConstellation( SatInfo& newConstellation );
 
- private: // Private attributes
+private:
+
+  void _calcWind();
+
   int circleCount; //we are counting the number of circles, the first onces are probably not very round
   bool circleLeft; //true=left, false=right
   bool active;     //active is set to true or false by the slot_newFlightMode slot
@@ -74,9 +87,6 @@ class WindAnalyser : public QObject
   int satCnt;
   int minSatCnt;
   bool curModeOK;
-
- private: // Private member functions
-  void _calcWind();
 };
 
 #endif

@@ -57,67 +57,78 @@
 WindAnalyser::WindAnalyser(QObject * parent) : QObject(parent)
 {
   // Initialization
-  active=false;
-  circleLeft=false;
-  circleCount=0;
-  startmarker=0;
+  active = false;
+  circleLeft = false;
+  circleCount = 0;
+  startmarker = 0;
   circleDeg = 0;
-  lastHeading = 0;
-  pastHalfway=false;
+  lastHeading = -1;
+  pastHalfway = false;
 
   GeneralConfig *conf = GeneralConfig::instance();
 
   minSatCnt = conf->getWindMinSatCount();
-  curModeOK=false;
+  curModeOK = false;
 }
-
 
 WindAnalyser::~WindAnalyser()
 {}
 
-
 /** Called if a new sample is available in the sample list. */
 void WindAnalyser::slot_newSample()
 {
-  if (!active)
-    return; //only work if we are in active mode
-  Vector curVec=calculator->samplelist.at(0).vector;
-  bool fullCircle=false;
-  // qDebug( "WindAnalyser" );
-  //circle detection
-  if( lastHeading ) {
-    int diff= abs( curVec.getAngleDeg() - lastHeading );
-    if( diff > 180 )
-      diff = abs(diff - 360 );
-    // qDebug("diff: %d",diff );
-    circleDeg += diff;
-  }
+  if( ! active )
+    {
+      return; // do only work if we are in active mode
+    }
+
+  Vector &curVec = calculator->samplelist[0].vector;
+
+  // circle detection
+  if( lastHeading != -1 )
+    {
+      int diff = abs( curVec.getAngleDeg() - lastHeading );
+      // qDebug("diff: %d", diff );
+      circleDeg += diff;
+    }
+  else
+    {
+      minVector = curVec.clone();
+      maxVector = curVec.clone();
+    }
+
   lastHeading = curVec.getAngleDeg();
-  // qDebug( "circling: %d",circleDeg  );
 
-  if(circleDeg > 360 ) {
-    //full circle made!
-    fullCircle=true;
-    circleDeg = 0;
-    circleCount++;  //increase the number of circles flown (used to determine the quality)
-  }
+  if( circleDeg >= 360 )
+    {
+      // full circle made!
+      circleDeg = 0;
 
-  if (fullCircle) { //we have completed a full circle!
-    _calcWind();    //calculate the wind for this circle
-    fullCircle=false;
-    minVector=curVec.Clone();
-    maxVector=curVec.Clone();
-    //no need to reset fullCircle, it will automatically be reset in the next iteration.
-  } else {
-    // qDebug("curVec: %f/%f", (float)curVec.getKph(), (float)curVec.getAngleDeg() );
-    if (curVec.getSpeed().getMps()<minVector.getSpeed().getMps())
-      minVector=curVec.Clone();
-    if (curVec.getSpeed().getMps()>maxVector.getSpeed().getMps())
-      maxVector=curVec.Clone();
-    // qDebug("minVec: %f/%d", (float)minVector.getKph(), (int)minVector.getAngleDeg() );
-    // qDebug("maxVec: %f/%d", (float)maxVector.getKph(), (int)maxVector.getAngleDeg() );
+      // increase the number of circles flown (used to determine the quality)
+      circleCount++;
 
-  }
+      // calculate the wind for this circle
+      _calcWind();
+
+      minVector = curVec.clone();
+      maxVector = curVec.clone();
+    }
+  else
+    {
+      // qDebug("curVec: %f/%f", (float)curVec.getKph(), (float)curVec.getAngleDeg() );
+      if( curVec.getSpeed().getMps() < minVector.getSpeed().getMps() )
+        {
+          minVector = curVec.clone();
+        }
+
+      if( curVec.getSpeed().getMps() > maxVector.getSpeed().getMps() )
+        {
+          maxVector = curVec.clone();
+        }
+
+      qDebug("minVec: %f/%d", (float)minVector.getSpeed().getKph(), minVector.getAngleDeg() );
+      qDebug("maxVec: %f/%d", (float)maxVector.getSpeed().getKph(), maxVector.getAngleDeg() );
+    }
 }
 
 
@@ -145,16 +156,17 @@ void WindAnalyser::slot_newFlightMode(Calculator::flightmode fm, int marker)
   startmarker=marker;
   startheading=calculator->samplelist[0].vector.getAngleDeg();
   active=true;
-  minVector=calculator->samplelist[0].vector.Clone();
-  maxVector=minVector.Clone();
+  minVector=calculator->samplelist[0].vector.clone();
+  maxVector=minVector.clone();
 }
 
 
 void WindAnalyser::_calcWind()
 {
-  int aDiff=angleDiff((int)minVector.getAngleDeg(),(int)maxVector.getAngleDeg());
-  int quality;
-  // qDebug(" _calcWind %d min:%d max:%d\n\n", aDiff, minVector.getAngleDeg(), maxVector.getAngleDeg());
+  int aDiff = angleDiff( minVector.getAngleDeg(), maxVector.getAngleDeg() );
+
+  qDebug(" _calcWind diff=%d min=%d max=%d\n\n", aDiff, minVector.getAngleDeg(), maxVector.getAngleDeg());
+
   /*determine quality.
     Currently, we are using the question how well the min and the max vectors
     are on opposing sides of the circle to determine the quality. 140 degrees is
@@ -162,56 +174,69 @@ void WindAnalyser::_calcWind()
     Furthermore, the first two circles are considered to be of lesser quality.
   */
 
-  quality=5-((180-abs(aDiff))/8);
-  if (circleCount<2)
-    quality--;
-  if (circleCount<1)
-    quality--;
-  // qDebug("quality %d",quality );
+  int quality = 5 - ((180 - abs( aDiff )) / 8);
 
-  if (quality<1)
-    return;   //Measurement quality too low
+  if( circleCount < 2 )
+    {
+      quality--;
+    }
 
-  quality = qMax(quality,5);  //5 is maximum quality, make sure we honor that.
+  if( circleCount < 1 )
+    {
+      quality--;
+    }
 
-  //change to work with radials, that's faster because it is the internal format.
-  int ang= maxVector.getAngleDeg();
-  maxVector.setAngle( int(normalize(int(ang+180)) ));
-  Vector a = maxVector.Clone();
+  qDebug() << "WindQuality=" << quality;
+
+  if( quality < 1 )
+    {
+      return; // Measurement quality too low
+    }
+
+  quality = qMin( quality, 5 ); // 5 is maximum quality, make sure we honor that.
+
+  // change to work with radian, that's faster because it is the internal format.
+  int ang = maxVector.getAngleDeg();
+  maxVector.setAngle( normalize( ang + 180 ) );
+  Vector a = maxVector.clone();
   a.add( minVector );
 
-  //take both directions for min and max vector into account
-  // qDebug("maxAngle %d/%f minAngle %d/%f mid:%d/%f", maxVector.getAngleDeg(),maxVector.getKph(), minVector.getAngleDeg(),  minVector.getKph(),   a.getAngleDeg(), a.getKph() );
+  // take both directions for min and max vector into account
+  qDebug("maxAngle %d/%f minAngle %d/%f mid:%d/%f",
+          maxVector.getAngleDeg(), maxVector.getSpeed().getKph(),
+          minVector.getAngleDeg(), minVector.getSpeed().getKph(),
+          a.getAngleDeg(), a.getSpeed().getKph() );
 
   //create a vector object for the resulting wind
   Vector result;
   //the direction of the wind is the direction where the greatest speed occurred
-  result.setAngle(int(a.getAngleDeg()));
+  result.setAngle( a.getAngleDeg() );
   //the speed of the wind is half the difference between the minimum and the maximum speeds.
-  result.setSpeed(Speed((maxVector.getSpeed().getMps()-minVector.getSpeed().getMps())/2));
+  result.setSpeed( Speed( (maxVector.getSpeed().getMps()- minVector.getSpeed().getMps()) / 2 ) );
 
-  //let the world know about our measurement!
+  // let the world know about our measurement!
   //qDebug("Wind: %d/%f\n", (int)result.getAngleDeg(),(float)result.getSpeed().getKph());
-  emit newMeasurement(result,quality);
+  emit newMeasurement( result, quality );
 }
 
 void WindAnalyser::slot_newConstellation( SatInfo& newConstellation )
 {
   satCnt = newConstellation.satsInUse;
 
-  if (active && (satCnt < minSatCnt))  //we are active, but the sat count drops below minimum
+  if( active && (satCnt < minSatCnt) ) // we are active, but the sat count drops below minimum
     {
-      active=false;
-      curModeOK=true;
+      active    = false;
+      curModeOK = true;
       return;
     }
 
-  if (!active && curModeOK && satCnt>=minSatCnt) { //we are not active because we had low sat count, but that has been rectified so we become active
-    //initialize analyzer-parameters
-    startmarker=calculator->samplelist[0].marker;
-    startheading=calculator->samplelist[0].vector.getAngleDeg();
-    active=true;
-    minVector=calculator->samplelist[0].vector.Clone();
-    maxVector=minVector.Clone();
-  }
+  if( !active && curModeOK && satCnt >= minSatCnt )
+    { // we are not active because we had low sat count, but that has been rectified so we become active
+      // initialize analyzer-parameters
+      startmarker  = calculator->samplelist[0].marker;
+      startheading = calculator->samplelist[0].vector.getAngleDeg();
+      active = true;
+      minVector = calculator->samplelist[0].vector.clone();
+      maxVector = minVector.clone();
+    }
 }
