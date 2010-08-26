@@ -31,7 +31,6 @@ Vector::Vector() :
 {
 }
 
-
 Vector::Vector(const double& x, const double& y)
 {
     _angle=0.0;
@@ -44,7 +43,6 @@ Vector::Vector(const double& x, const double& y)
     dirtyDR=true;
     _isValid=true;
 }
-
 
 Vector::Vector(const Speed& x, const Speed& y)
 {
@@ -59,7 +57,6 @@ Vector::Vector(const Speed& x, const Speed& y)
     _isValid=true;
 }
 
-
 Vector::Vector(const double& angle, const Speed& R)
 {
     _x=0.0;
@@ -72,7 +69,6 @@ Vector::Vector(const double& angle, const Speed& R)
     dirtyXY=true;
     _isValid=true;
 }
-
 
 Vector::Vector(const int angle, const Speed& R)
 {
@@ -87,41 +83,43 @@ Vector::Vector(const int angle, const Speed& R)
     _isValid=true;
 }
 
-
 Vector::~Vector()
 {}
-
 
 /** Read property of int angle. */
 int Vector::getAngleDeg()
 {
   if( dirtyDR )
-    recalcDR();
+    {
+      recalcDR();
+    }
 
   return int( rint( (_angle / M_PI) * 180.0 ) );
 }
-
 
 /** Get angle in rad */
 double Vector::getAngleRad()
 {
   if( dirtyDR )
-    recalcDR();
+    {
+      recalcDR();
+    }
 
   return _angle;
 }
-
 
 /** Set property of int angle in degrees*/
 void Vector::setAngle(const int angle)
 {
   if( dirtyDR )
-    recalcDR();
+    {
+      recalcDR();
+    }
+
   _angle = (double( normalize( angle ) ) / 180.0) * M_PI;
   dirtyXY = true;
   _isValid = true;
 }
-
 
 /**
  * set the angle in degrees  and the speed
@@ -129,7 +127,10 @@ void Vector::setAngle(const int angle)
 void Vector::setAngleAndSpeed(const int angle, const Speed & spd)
 {
   if( dirtyDR )
-    recalcDR();
+    {
+      recalcDR();
+    }
+
   setAngle( angle );
   _speed = spd.getMps();
   dirtyDR = false;
@@ -137,18 +138,19 @@ void Vector::setAngleAndSpeed(const int angle, const Speed & spd)
   _isValid = true;
 }
 
-
 /** Set property of int angle in rad*/
 void Vector::setAngleRad(const double& angle)
 {
   if( dirtyDR )
-    recalcDR();
+    {
+      recalcDR();
+    }
+
   _angle = normalize( angle );
   dirtyXY = true;
   dirtyDR = false;
   _isValid = true;
 }
-
 
 /**
  * Set the speed
@@ -164,7 +166,6 @@ void Vector::setSpeed(const Speed & s)
   _isValid = true;
 }
 
-
 /**
  * @return The speed
  */
@@ -177,7 +178,6 @@ Speed Vector::getSpeed()
 
   return Speed( _speed );
 }
-
 
 /** Recalculates the the angle and the speed from the known x and y values. */
 void Vector::recalcDR()
@@ -490,8 +490,7 @@ void Vector::add(Vector arg)
 
 
 /** Returns a copy of the object */
-Vector
-Vector::Clone()
+Vector Vector::Clone()
 {
   Vector result;
   result._speed = _speed;
