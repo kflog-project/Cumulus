@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2009 Axel Pauli
+**   Copyright (c):  2002 by André Somers
+**                   2009-2010 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -27,8 +28,8 @@
  * It is a subclass from the @ref Speed class, meaning you can use it as a
  * normal Speed object. The values returned or set in that way are the
  * values in the given direction. You can read or set that direction using
- * the @ref getAngle and @ref setAngle member function (or their variants). You can
- * also access the components of the speed in the X and Y directions.
+ * the @ref getAngle and @ref setAngle member function (or their variants).
+ * You can also access the components of the speed in the X and Y directions.
  * Note that X counts latitudinal, Y count longitudinal.
  *
  * @author André Somers
@@ -36,6 +37,7 @@
 class Vector
 {
 public:
+
     Vector();
     Vector(const double& x, const double& y);
     Vector(const Speed& x, const Speed& y);
@@ -50,7 +52,7 @@ public:
     int getAngleDeg() ;
 
     /**
-     * Get angle in rad
+     * Get angle in radian
      */
     double getAngleRad() ;
 
@@ -65,7 +67,7 @@ public:
     void setAngleAndSpeed(const int angle, const Speed&);
 
     /**
-     * set the angle in rad
+     * set the angle in radian
      */
     void setAngleRad(const double& angle);
 
@@ -80,7 +82,7 @@ public:
     Speed getSpeed() ;
 
     /**
-     * @return The speed in Y (longtide) direction
+     * @return The speed in Y (longitude) direction
      * (east is positive, west is negative)
      */
     Speed getY() ;
@@ -92,7 +94,7 @@ public:
     Speed getX() ;
 
     /**
-     * @returns The speed in Y (longtide) direction
+     * @returns The speed in Y (longitude) direction
      * (east is positive, west is negative) in meters per second
      */
     double getYMps() ;
