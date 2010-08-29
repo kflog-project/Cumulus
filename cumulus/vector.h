@@ -72,14 +72,19 @@ public:
     void setAngleRad(const double& angle);
 
     /**
-     * @return The speed
+     * set the speed
      */
-    void setSpeed(const Speed &) ;
+    void setSpeed(const Speed& speed);
+
+    /**
+     * Set the speed. Expected unit is meter per second.
+     */
+    void setSpeed(const double mps);
 
     /**
      * @return The speed
      */
-    Speed getSpeed() ;
+    Speed getSpeed();
 
     /**
      * @return The speed in Y (longitude) direction

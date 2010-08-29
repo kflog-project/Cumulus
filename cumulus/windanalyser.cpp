@@ -54,21 +54,21 @@
   a number of wind measurements and calculates a weighted average based on quality.
 */
 
-WindAnalyser::WindAnalyser(QObject * parent) : QObject(parent)
+WindAnalyser::WindAnalyser(QObject* parent) :
+  QObject(parent),
+  active(false),
+  circleCount(0),
+  circleLeft(false),
+  circleDeg(0),
+  lastHeading(-1),
+  satCnt(0),
+  minSatCnt(4),
+  ciclingMode(false),
+  minVector(0.0, 0.0),
+  maxVector(0.0, 0.0)
 {
   // Initialization
-  active = false;
-  circleLeft = false;
-  circleCount = 0;
-  startmarker = 0;
-  circleDeg = 0;
-  lastHeading = -1;
-  pastHalfway = false;
-
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  minSatCnt = conf->getWindMinSatCount();
-  curModeOK = false;
+  minSatCnt = GeneralConfig::instance()->getWindMinSatCount();
 }
 
 WindAnalyser::~WindAnalyser()
@@ -99,7 +99,7 @@ void WindAnalyser::slot_newSample()
 
   lastHeading = curVec.getAngleDeg();
 
-  if( circleDeg >= 360 )
+  if( circleDeg > 360 )
     {
       // full circle made!
       circleDeg = 0;
@@ -126,38 +126,52 @@ void WindAnalyser::slot_newSample()
           maxVector = curVec.clone();
         }
 
-      qDebug("minVec: %f/%d", (float)minVector.getSpeed().getKph(), minVector.getAngleDeg() );
-      qDebug("maxVec: %f/%d", (float)maxVector.getSpeed().getKph(), maxVector.getAngleDeg() );
+      qDebug( "minVec: %f/%d, maxVec: %f/%d",
+              (float) minVector.getSpeed().getKph(), minVector.getAngleDeg(),
+              (float) maxVector.getSpeed().getKph(), maxVector.getAngleDeg() );
     }
 }
 
-
 /** Called if the flight mode changes */
-void WindAnalyser::slot_newFlightMode(Calculator::flightmode fm, int marker)
+void WindAnalyser::slot_newFlightMode( Calculator::flightmode newFlightMode )
 {
-  active=false;  //we are inactive by default
-  circleCount=0; //reset the circle counter for each flight mode change. The important thing to measure is the number of turns in this thermal only.
-  circleDeg = 0;
-  if (fm==Calculator::circlingL) {
-    circleLeft=true;
-  } else if (fm==Calculator::circlingR) {
-    circleLeft=false;
-  } else {
-    curModeOK=false;
-    return; //ok, so we are not circling. Exit function.
-  }
-  //remember that our current mode is ok.
-  curModeOK=true;
-  //do we have enough satellites in view?
-  if (satCnt<minSatCnt)
-    return;
+  // Reset the circle counter for each flight mode change. The important thing
+  // to measure is the number of turns in a thermal per turn direction.
+  circleCount = 0;
+  circleDeg   = 0;
+  lastHeading = -1;
+  minVector   = Vector( 0.0, 0.0 );
+  maxVector   = Vector( 0.0, 0.0 );
 
-  //initialize analyzer-parameters
-  startmarker=marker;
-  startheading=calculator->samplelist[0].vector.getAngleDeg();
-  active=true;
-  minVector=calculator->samplelist[0].vector.clone();
-  maxVector=minVector.clone();
+  // We are inactive as default.
+  active = false;
+
+  if( newFlightMode == Calculator::circlingL )
+    {
+      circleLeft = true;
+    }
+  else if( newFlightMode == Calculator::circlingR )
+    {
+      circleLeft = false;
+    }
+  else
+    {
+      ciclingMode = false;
+      return; // ok, so we are not circling. Exit function.
+    }
+
+  // Set circle mode to true.
+  ciclingMode = true;
+
+  // Do we have enough satellites in view? The minimum should be four. Otherwise
+  // the calculated wind results are very bad.
+  if( satCnt < minSatCnt )
+    {
+      return;
+    }
+
+  // We are active now.
+  active = true;
 }
 
 
@@ -193,7 +207,8 @@ void WindAnalyser::_calcWind()
       return; // Measurement quality too low
     }
 
-  quality = qMin( quality, 5 ); // 5 is maximum quality, make sure we honor that.
+  // 5 is maximum quality, make sure we honor that.
+  quality = qMin( quality, 5 );
 
   // change to work with radian, that's faster because it is the internal format.
   int ang = maxVector.getAngleDeg();
@@ -202,19 +217,21 @@ void WindAnalyser::_calcWind()
   a.add( minVector );
 
   // take both directions for min and max vector into account
-  qDebug("maxAngle %d/%f minAngle %d/%f mid:%d/%f",
+  qDebug("maxAngle=%d/%f minAngle=%d/%f avr=%d/%f",
           maxVector.getAngleDeg(), maxVector.getSpeed().getKph(),
           minVector.getAngleDeg(), minVector.getSpeed().getKph(),
           a.getAngleDeg(), a.getSpeed().getKph() );
 
-  //create a vector object for the resulting wind
+  // create a vector object for the resulting wind
   Vector result;
-  //the direction of the wind is the direction where the greatest speed occurred
-  result.setAngle( a.getAngleDeg() );
-  //the speed of the wind is half the difference between the minimum and the maximum speeds.
-  result.setSpeed( Speed( (maxVector.getSpeed().getMps()- minVector.getSpeed().getMps()) / 2 ) );
 
-  // let the world know about our measurement!
+  // the direction of the wind is the direction where the greatest speed occurred
+  result.setAngle( a.getAngleDeg() );
+
+  // The speed of the wind is half the difference between the minimum and the maximum speeds.
+  result.setSpeed( (maxVector.getSpeed().getMps() - minVector.getSpeed().getMps()) / 2 );
+
+  // Let the world know about our measurement!
   //qDebug("Wind: %d/%f\n", (int)result.getAngleDeg(),(float)result.getSpeed().getKph());
   emit newMeasurement( result, quality );
 }
@@ -223,20 +240,20 @@ void WindAnalyser::slot_newConstellation( SatInfo& newConstellation )
 {
   satCnt = newConstellation.satsInUse;
 
-  if( active && (satCnt < minSatCnt) ) // we are active, but the sat count drops below minimum
+  if( active && (satCnt < minSatCnt) )
     {
-      active    = false;
-      curModeOK = true;
+      // we are active, but the satellite count drops below minimum
+      active = false;
       return;
     }
 
-  if( !active && curModeOK && satCnt >= minSatCnt )
-    { // we are not active because we had low sat count, but that has been rectified so we become active
-      // initialize analyzer-parameters
-      startmarker  = calculator->samplelist[0].marker;
-      startheading = calculator->samplelist[0].vector.getAngleDeg();
-      active = true;
-      minVector = calculator->samplelist[0].vector.clone();
-      maxVector = minVector.clone();
+  if( !active && ciclingMode && satCnt >= minSatCnt )
+    {
+      // we are not active because we had low satellite count but that has been
+      // changed now. So we become active.
+      // Initialize analyzer-parameters
+      circleCount = 0;
+      circleDeg   = 0;
+      lastHeading = -1;
     }
 }

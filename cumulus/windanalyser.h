@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+ **   Copyright (c):  2002       by André Somers,
+ **                   20082-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -58,7 +59,7 @@ public slots:
   /**
    * Called if the flight mode changes
    */
-  void slot_newFlightMode(Calculator::flightmode, int);
+  void slot_newFlightMode( Calculator::flightmode newMode );
 
   /**
    * Called if a new sample is available in the sample list.
@@ -74,19 +75,17 @@ private:
 
   void _calcWind();
 
-  int circleCount; //we are counting the number of circles, the first onces are probably not very round
-  bool circleLeft; //true=left, false=right
-  bool active;     //active is set to true or false by the slot_newFlightMode slot
-  int startmarker;
-  int startheading;
+  /** active is set to true or false by the slot_newFlightMode slot. */
+  bool active;
+  int circleCount; // we are counting the number of circles, the first onces are probably not very round
+  bool circleLeft; // true=left, false=right
   int circleDeg;
   int lastHeading;
-  bool pastHalfway;
-  Vector minVector;
-  Vector maxVector;
   int satCnt;
   int minSatCnt;
-  bool curModeOK;
+  bool ciclingMode;
+  Vector minVector;
+  Vector maxVector;
 };
 
 #endif

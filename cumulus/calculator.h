@@ -648,11 +648,6 @@ signals: // Signals
     void flightModeChanged(Calculator::flightmode);
 
     /**
-     * Sent if the flight mode changes
-     */
-    void flightModeChanged(Calculator::flightmode, int marker);
-
-    /**
      * Sent if a new sample has been added to the sample list
      */
     void newSample();

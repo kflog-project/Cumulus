@@ -155,14 +155,28 @@ void Vector::setAngleRad(const double& angle)
 /**
  * Set the speed
  */
-void Vector::setSpeed(const Speed & s)
+void Vector::setSpeed(const Speed& speed)
 {
   if( dirtyDR )
     {
       recalcDR();
     }
 
-  _speed = s.getMps();
+  _speed = speed.getMps();
+  _isValid = true;
+}
+
+/**
+ * Set the speed. Expected unit is meter per second.
+ */
+void Vector::setSpeed(const double mps)
+{
+  if( dirtyDR )
+    {
+      recalcDR();
+    }
+
+  _speed = mps;
   _isValid = true;
 }
 

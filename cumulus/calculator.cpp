@@ -104,11 +104,6 @@ Calculator::Calculator(QObject* parent) :
 
   connect (this, SIGNAL(newAltitude(const Altitude&)),
            _windStore, SLOT(slot_Altitude(const Altitude&)));
-
-  // make internal connection so the flightModeChanged signal is
-  // re-emitted with the marker value
-  connect (this, SIGNAL(flightModeChanged(Calculator::flightmode)),
-           this, SLOT(slot_flightModeChanged(Calculator::flightmode)));
 }
 
 Calculator::~Calculator()
@@ -1206,7 +1201,7 @@ void Calculator::determineFlightStatus()
     case wave: //we are not moving at all, except vertically!  Needs lots of tweaking and testing...
       if (samplelist[0].position == samplelist[1].position)    //may be too ridged, GPS errors could cause problems here
         {
-          return; //no change in flight mode
+          return; //no change in flight mslot_flightModeChangedode
         }
       else
         {
@@ -1357,7 +1352,7 @@ void Calculator::determineFlightStatus()
       lastFlightMode=newFlightMode;
       samplelist[0].marker=++_marker;
       // qDebug("new flightmode: %d",lastFlightMode);
-      emit flightModeChanged(newFlightMode);
+      slot_flightModeChanged(newFlightMode);
     }
 }
 
@@ -1374,7 +1369,7 @@ void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
       lastFlightMode=newFlightMode;
       samplelist[0].marker=++_marker;
       // qDebug("new flightmode: %d",lastFlightMode);
-      emit flightModeChanged(newFlightMode);
+      slot_flightModeChanged(newFlightMode);
     }
 
   if ( newState == GpsNmea::noFix )
@@ -1394,10 +1389,10 @@ void Calculator::slot_flightModeChanged(Calculator::flightmode fm)
     {
       // Wind calculation can be disabled when the Logger device
       // delivers already wind data.
-      _windAnalyser->slot_newFlightMode( fm, _marker );
+      _windAnalyser->slot_newFlightMode( fm );
     }
 
-  emit flightModeChanged(fm, _marker);
+  emit flightModeChanged( fm );
 }
 
 /** Called if a new wind measurement is delivered by the GPS/Logger device */
