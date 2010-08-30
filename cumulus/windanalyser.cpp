@@ -60,12 +60,11 @@ WindAnalyser::WindAnalyser(QObject* parent) :
   circleCount(0),
   circleLeft(false),
   circleDeg(0),
+  circleSectors(0),
   lastHeading(-1),
   satCnt(0),
   minSatCnt(4),
-  ciclingMode(false),
-  minVector(0.0, 0.0),
-  maxVector(0.0, 0.0)
+  ciclingMode(false)
 {
   // Initialization
   minSatCnt = GeneralConfig::instance()->getWindMinSatCount();
@@ -88,13 +87,21 @@ void WindAnalyser::slot_newSample()
   if( lastHeading != -1 )
     {
       int diff = abs( curVec.getAngleDeg() - lastHeading );
-      // qDebug("diff: %d", diff );
+
+      if( diff > 180 )
+        {
+          // Correct difference, if current angle has 360 degree passed.
+          // In such a case it starts with smaller values again.
+          diff = abs(diff - 360 );
+        }
+
       circleDeg += diff;
+      circleSectors++;
     }
   else
     {
-      minVector = curVec.clone();
-      maxVector = curVec.clone();
+      minVector = curVec;
+      maxVector = curVec;
     }
 
   lastHeading = curVec.getAngleDeg();
@@ -102,33 +109,34 @@ void WindAnalyser::slot_newSample()
   if( circleDeg > 360 )
     {
       // full circle made!
-      circleDeg = 0;
-
       // increase the number of circles flown (used to determine the quality)
       circleCount++;
 
       // calculate the wind for this circle
       _calcWind();
 
-      minVector = curVec.clone();
-      maxVector = curVec.clone();
+      circleDeg     = 0;
+      circleSectors = 0;
+
+      minVector = curVec;
+      maxVector = curVec;
     }
   else
     {
-      // qDebug("curVec: %f/%f", (float)curVec.getKph(), (float)curVec.getAngleDeg() );
       if( curVec.getSpeed().getMps() < minVector.getSpeed().getMps() )
         {
-          minVector = curVec.clone();
+          minVector = curVec;
         }
 
-      if( curVec.getSpeed().getMps() > maxVector.getSpeed().getMps() )
+      if( curVec.getSpeed().getMps() >= maxVector.getSpeed().getMps() )
         {
-          maxVector = curVec.clone();
+          maxVector = curVec;
         }
 
-      qDebug( "minVec: %f/%d, maxVec: %f/%d",
-              (float) minVector.getSpeed().getKph(), minVector.getAngleDeg(),
-              (float) maxVector.getSpeed().getKph(), maxVector.getAngleDeg() );
+      /* qDebug( "curVec: %.0f/%dGrad, minVec: %.0f/%dGrad, maxVec: %.0f/%dGrad",
+               curVec.getSpeed().getKph(), curVec.getAngleDeg(),
+               minVector.getSpeed().getKph(), minVector.getAngleDeg(),
+               maxVector.getSpeed().getKph(), maxVector.getAngleDeg() ); */
     }
 }
 
@@ -137,11 +145,10 @@ void WindAnalyser::slot_newFlightMode( Calculator::flightmode newFlightMode )
 {
   // Reset the circle counter for each flight mode change. The important thing
   // to measure is the number of turns in a thermal per turn direction.
-  circleCount = 0;
-  circleDeg   = 0;
-  lastHeading = -1;
-  minVector   = Vector( 0.0, 0.0 );
-  maxVector   = Vector( 0.0, 0.0 );
+  circleCount   = 0;
+  circleDeg     = 0;
+  circleSectors = 0;
+  lastHeading   = -1;
 
   // We are inactive as default.
   active = false;
@@ -177,9 +184,10 @@ void WindAnalyser::slot_newFlightMode( Calculator::flightmode newFlightMode )
 
 void WindAnalyser::_calcWind()
 {
-  int aDiff = angleDiff( minVector.getAngleDeg(), maxVector.getAngleDeg() );
+  int aDiff = angleDiff( minVector.getAngleDeg(), maxVector.getAngleDeg() - circleDeg/circleSectors);
 
-  qDebug(" _calcWind diff=%d min=%d max=%d\n\n", aDiff, minVector.getAngleDeg(), maxVector.getAngleDeg());
+  qDebug( "CalcWind AngleDiff=%d AngleMin=%d AngleMax=%d Grad/Sector=%d",
+           aDiff, minVector.getAngleDeg(), maxVector.getAngleDeg(), circleDeg/circleSectors);
 
   /*determine quality.
     Currently, we are using the question how well the min and the max vectors
@@ -232,7 +240,7 @@ void WindAnalyser::_calcWind()
   result.setSpeed( (maxVector.getSpeed().getMps() - minVector.getSpeed().getMps()) / 2 );
 
   // Let the world know about our measurement!
-  //qDebug("Wind: %d/%f\n", (int)result.getAngleDeg(),(float)result.getSpeed().getKph());
+  qDebug("### ComputedWind: %dGrad/%.0fKm/h", result.getAngleDeg(), result.getSpeed().getKph());
   emit newMeasurement( result, quality );
 }
 
@@ -252,8 +260,9 @@ void WindAnalyser::slot_newConstellation( SatInfo& newConstellation )
       // we are not active because we had low satellite count but that has been
       // changed now. So we become active.
       // Initialize analyzer-parameters
-      circleCount = 0;
-      circleDeg   = 0;
-      lastHeading = -1;
+      circleCount   = 0;
+      circleDeg     = 0;
+      circleSectors = 0;
+      lastHeading   = -1;
     }
 }

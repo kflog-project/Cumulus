@@ -80,6 +80,7 @@ private:
   int circleCount; // we are counting the number of circles, the first onces are probably not very round
   bool circleLeft; // true=left, false=right
   int circleDeg;
+  int circleSectors;
   int lastHeading;
   int satCnt;
   int minSatCnt;
