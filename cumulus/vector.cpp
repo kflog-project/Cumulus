@@ -33,60 +33,60 @@ Vector::Vector() :
 
 Vector::Vector(const double& x, const double& y)
 {
-    _angle=0.0;
-    _speed=0.0;
-    dirtyXY=false;
-    dirtyDR=false;
-    setX(x);
-    setY(y);
-    dirtyXY=false;
-    dirtyDR=true;
-    _isValid=true;
+  _angle = 0.0;
+  _speed = 0.0;
+  dirtyXY = false;
+  dirtyDR = false;
+  setX( x );
+  setY( y );
+  dirtyXY = false;
+  dirtyDR = true;
+  _isValid = true;
 }
 
 Vector::Vector(const Speed& x, const Speed& y)
 {
-    _angle=0.0;
-    _speed=0.0;
-    dirtyXY=false;
-    dirtyDR=false;
-    setX(x);
-    setY(y);
-    dirtyXY=false;
-    dirtyDR=true;
-    _isValid=true;
+  _angle = 0.0;
+  _speed = 0.0;
+  dirtyXY = false;
+  dirtyDR = false;
+  setX( x );
+  setY( y );
+  dirtyXY = false;
+  dirtyDR = true;
+  _isValid = true;
 }
 
 Vector::Vector(const double& angle, const Speed& R)
 {
-    _x=0.0;
-    _y=0.0;
-    dirtyXY=false;
-    dirtyDR=false;
-    _speed=R.getMps();
-    setAngleRad(angle);
-    dirtyDR=false;
-    dirtyXY=true;
-    _isValid=true;
+  _x = 0.0;
+  _y = 0.0;
+  dirtyXY = false;
+  dirtyDR = false;
+  _speed = R.getMps();
+  setAngleRad( angle );
+  dirtyDR = false;
+  dirtyXY = true;
+  _isValid = true;
 }
 
 Vector::Vector(const int angle, const Speed& R)
 {
-    _x=0.0;
-    _y=0.0;
-    dirtyXY=false;
-    dirtyDR=false;
-    _speed=R.getMps();
-    setAngle(angle);
-    dirtyDR=false;
-    dirtyXY=true;
-    _isValid=true;
+  _x = 0.0;
+  _y = 0.0;
+  dirtyXY = false;
+  dirtyDR = false;
+  _speed = R.getMps();
+  setAngle( angle );
+  dirtyDR = false;
+  dirtyXY = true;
+  _isValid = true;
 }
 
 Vector::~Vector()
 {}
 
-/** Read property of int angle. */
+/** Read property of integer angle. */
 int Vector::getAngleDeg()
 {
   if( dirtyDR )
@@ -97,7 +97,7 @@ int Vector::getAngleDeg()
   return int( rint( (_angle / M_PI) * 180.0 ) );
 }
 
-/** Get angle in rad */
+/** Get angle in radian. */
 double Vector::getAngleRad()
 {
   if( dirtyDR )
@@ -108,7 +108,7 @@ double Vector::getAngleRad()
   return _angle;
 }
 
-/** Set property of int angle in degrees*/
+/** Set property of integer angle in degrees. */
 void Vector::setAngle(const int angle)
 {
   if( dirtyDR )
@@ -122,7 +122,7 @@ void Vector::setAngle(const int angle)
 }
 
 /**
- * set the angle in degrees  and the speed
+ * set the angle in degrees and the speed.
  */
 void Vector::setAngleAndSpeed(const int angle, const Speed & spd)
 {
@@ -138,7 +138,7 @@ void Vector::setAngleAndSpeed(const int angle, const Speed & spd)
   _isValid = true;
 }
 
-/** Set property of int angle in rad*/
+/** Set property of double angle as radian. */
 void Vector::setAngleRad(const double& angle)
 {
   if( dirtyDR )
@@ -250,9 +250,12 @@ double Vector::getXMps()
 /** Returns the speed in Y (longitude) direction (east is positive, west is negative) */
 double Vector::getYMps()
 {
-    if (dirtyXY)
-        recalcXY();
-    return _y;
+  if( dirtyXY )
+    {
+      recalcXY();
+    }
+
+  return _y;
 }
 
 
@@ -266,6 +269,7 @@ void Vector::setX(const double& x)
 
   _x = x;
   dirtyDR = true;
+  _isValid = true;
 }
 
 
@@ -279,6 +283,7 @@ void Vector::setY(const double& y)
 
   _y = y;
   dirtyDR = true;
+  _isValid = true;
 }
 
 
@@ -313,6 +318,7 @@ void Vector::setY(const Speed& y)
 /** = operator for Vector. */
 Vector& Vector::operator = (const Vector& x)
 {
+  _isValid = x._isValid;
   setX( x._x );
   setY( x._y );
   _speed = x._speed;
@@ -331,6 +337,7 @@ Vector Vector::operator + (Vector& x)
     {
       recalcXY();
     }
+
   if( x.dirtyXY )
     {
       x.recalcXY();
@@ -469,7 +476,6 @@ Vector operator * (Vector& left, double right)
 /** * operator for vector. */
 Vector operator * (double left, Vector& right)
 {
-
   return Vector( right.getAngleRad(), Speed( left * right.getSpeed().getMps() ) );
 }
 
@@ -477,14 +483,12 @@ Vector operator * (double left, Vector& right)
 /** / operator for vector. */
 Vector operator /( Vector& left, double right )
 {
-
   return Vector( left.getAngleRad(), Speed( left.getSpeed().getMps() / right ) );
 }
 
 /** / operator for vector. */
 Vector operator /( Vector& left, int right )
 {
-
   return Vector( left.getAngleRad(), Speed( left.getSpeed().getMps() / right ) );
 }
 
@@ -492,6 +496,11 @@ Vector operator /( Vector& left, int right )
 /** Poor man's solution for not getting the + operator to work properly. */
 void Vector::add(Vector arg)
 {
+  if( arg.dirtyXY )
+    {
+      arg.recalcXY();
+    }
+
   if( dirtyXY )
     {
       recalcXY();
@@ -499,6 +508,7 @@ void Vector::add(Vector arg)
 
   _x += arg.getXMps();
   _y += arg.getYMps();
+
   dirtyDR = true;
 }
 
@@ -507,6 +517,8 @@ void Vector::add(Vector arg)
 Vector Vector::clone()
 {
   Vector result;
+
+  result._isValid = _isValid;
   result._speed = _speed;
   result.setAngleRad( this->getAngleRad() );
   result.dirtyDR = false;
