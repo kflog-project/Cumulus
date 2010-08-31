@@ -134,6 +134,42 @@ GpsCon::~GpsCon()
     {
       kill( getPid(), SIGTERM );
     }
+
+  // Wait 10 seconds for termination of GPS client process to prevent a zombie.
+  int time = 10;
+  bool result = false;
+
+  while( time-- )
+    {
+      // Ask the system for state of child process. If process has crashed,
+      // the zombie will be removed now.
+
+      int stat_loc = 0;
+      errno        = 0;
+
+      pid_t pid = waitpid( getPid(), &stat_loc, WNOHANG );
+
+      if(  pid == getPid() )
+        {
+          // child process has died
+          result = true;
+          break;
+        }
+
+      if(  pid == -1 && errno == ECHILD )
+        {
+          // child process does not exist any more
+          result = true;
+          break;
+        }
+
+      sleep(1);
+    }
+
+  if( result == false )
+    {
+      qWarning() << "~GpsCon(): TO, Receiver stop failed!";
+    }
 }
 
 /**
@@ -220,7 +256,7 @@ bool GpsCon::stopGpsReceiving()
 
   if( msg != MSG_POS )
     {
-      qWarning("%s Gps receiver stop failed!", method.toLatin1().data());
+      qWarning() << method << "Nack, Receiver stop failed!";
       return false;
     }
 
