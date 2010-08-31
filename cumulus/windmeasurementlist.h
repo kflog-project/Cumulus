@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2007 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2007-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -29,17 +30,20 @@
  */
 class WindMeasurement
 {
-public:
-    Vector vector;
-    int quality;
-    QTime time;
-    Altitude altitude;
-    bool operator < (const WindMeasurement& other) const;
 
-    static bool lessThan(const WindMeasurement &w1, const WindMeasurement &w2)
-    {
-      return w1.altitude < w2.altitude;
-    };
+public:
+
+  Vector vector;
+  int quality;
+  QTime time;
+  Altitude altitude;
+
+  bool operator < (const WindMeasurement& other) const;
+
+  static bool lessThan(const WindMeasurement &w1, const WindMeasurement &w2)
+  {
+    return w1.altitude < w2.altitude;
+  };
 
 };
 
@@ -50,8 +54,11 @@ public:
  */
 class WindMeasurementList : public LimitedList<WindMeasurement>
 {
+
 public:
+
     WindMeasurementList();
+
     virtual ~WindMeasurementList();
 
     /**
@@ -59,10 +66,10 @@ public:
      * if no valid vector could be calculated (for instance: too little or
      * too low quality data).
      */
-    Vector getWind(Altitude alt);
+    Vector getWind( const Altitude& alt );
 
     /** Adds the wind vector vector with quality quality to the list. */
-    void addMeasurement(Vector vector, Altitude alt, int quality);
+    void addMeasurement( const Vector& vector, const Altitude& alt, int quality );
 
 protected:
     /**

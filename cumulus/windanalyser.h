@@ -53,7 +53,7 @@ signals:
    * Send if a new wind measurement has been made. The result is included in wind,
    * the quality of the measurement (1-5; 1 is bad, 5 is excellent) in quality.
    */
-  void newMeasurement(Vector wind, int quality);
+  void newMeasurement( const Vector& wind, int quality );
 
 public slots:
   /**
@@ -79,9 +79,9 @@ private:
   bool active;
   int circleCount; // we are counting the number of circles, the first onces are probably not very round
   bool circleLeft; // true=left, false=right
-  int circleDeg;
-  int circleSectors;
-  int lastHeading;
+  int circleDegrees; // Degrees of current flown circle
+  int circleSectors; // Sectors of current flown circle
+  int lastHeading; // Last processed heading
   int satCnt;
   int minSatCnt;
   bool ciclingMode;

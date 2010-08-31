@@ -96,8 +96,8 @@ Calculator::Calculator(QObject* parent) :
   // analyzer are replaced by direct calls, when a new sample or flight
   // mode is available and the wind calculation is enabled. Wind calculation
   // can be disabled when the Logger device delivers already wind data.
-  connect (_windAnalyser, SIGNAL(newMeasurement(Vector, int)),
-           _windStore, SLOT(slot_measurement(Vector, int)));
+  connect (_windAnalyser, SIGNAL(newMeasurement(const Vector&, int)),
+           _windStore, SLOT(slot_Measurement(const Vector&, int)));
 
   connect (_windStore, SIGNAL(newWind(Vector&)),
            this, SLOT(slot_Wind(Vector&)));

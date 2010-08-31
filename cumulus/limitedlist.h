@@ -6,10 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -37,7 +38,7 @@
   */
 
 template <class type>
-class LimitedList : public QList <type>
+class LimitedList : public QList<type>
 {
 
 public:
@@ -90,18 +91,17 @@ public:
  *
  * The implementation is stored in the header file because that's the
  * only way it will compile without linker errors. This has to do with
- * the fact that it's a template. See:
- *  http://www.ecs.fullerton.edu/~sowell/cs331/TemplateClasses.html
+ * the fact that it's a template.
+ * See: http://www.ecs.fullerton.edu/~sowell/cs331/TemplateClasses.html
  * for information on the how and why.
  *
  */
 
 template <class type>
-LimitedList<type>::LimitedList( int limit )
+LimitedList<type>::LimitedList( int limit ) :
+  _limit(limit)
 {
-  _limit = limit;
 }
-
 
 template <class type>
 LimitedList<type>::~LimitedList()
@@ -110,7 +110,6 @@ LimitedList<type>::~LimitedList()
   QList<type>::clear();
 }
 
-
 template <class type>
 void LimitedList<type>::add( const type &elem )
 {
@@ -118,7 +117,7 @@ void LimitedList<type>::add( const type &elem )
 
   int length = QList<type>::count();
 
-  if( length > (int) _limit )
+  if( length > _limit )
     {
       int idx = getLeastImportantItemIndex();
 
@@ -128,7 +127,6 @@ void LimitedList<type>::add( const type &elem )
         }
   }
 }
-
 
 template <class type>
 int LimitedList<type>::getLeastImportantItemIndex() const
@@ -140,15 +138,10 @@ int LimitedList<type>::getLeastImportantItemIndex() const
 template <class type>
 void LimitedList<type>::setLimit( const int limit )
 {
-  if( _limit <= limit )
-    {
-      return; // no adaption necessary
-    }
-
   // set new limit
   _limit = limit;
 
-  if( limit == 0 )
+  if( _limit == 0 )
     {
       QList<type>::clear();
       return;
