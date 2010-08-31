@@ -1559,7 +1559,7 @@ bool GpsNmea::__ExtractSatsInView(const QString& satcount)
  * Extract proprietary sentence $MAEMO0. It is created by the GPS Maemo Client
  * and not all positions are always set. In such a case they are empty.
  */
-void GpsNmea::__ExtractMaemo0(const QStringList& stringList)
+void GpsNmea::__ExtractMaemo0(const QStringList& slist)
 {
   /**
    * Definition of proprietary sentence $MAEMO0.
@@ -1724,7 +1724,7 @@ void GpsNmea::__ExtractMaemo0(const QStringList& stringList)
 /**
  * Extract proprietary sentence $MAEMO1.
  */
-void GpsNmea::__ExtractMaemo1(const QStringList& stringList)
+void GpsNmea::__ExtractMaemo1(const QStringList& slist)
 {
   /**
    * Definition of proprietary sentence $MAEMO1.
