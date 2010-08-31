@@ -1559,7 +1559,7 @@ bool GpsNmea::__ExtractSatsInView(const QString& satcount)
  * Extract proprietary sentence $MAEMO0. It is created by the GPS Maemo Client
  * and not all positions are always set. In such a case they are empty.
  */
-void GpsNmea::__ExtractMaemo0(const QString& string)
+void GpsNmea::__ExtractMaemo0(const QStringList& stringList)
 {
   /**
    * Definition of proprietary sentence $MAEMO0.
@@ -1581,9 +1581,6 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
    * 14) Epc
    */
 
-  dataOK();
-
-  QStringList slist = string.split( ",", QString::KeepEmptyParts );
   bool ok, ok1;
 
   /*
@@ -1665,7 +1662,6 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
   if( ! slist[6].isEmpty() )
     {
       // PDOP is handled in meters
-      bool ok;
       double pdop = slist[6].toDouble( &ok );
 
       if( ok == true && _lastSatInfo.fixAccuracy != pdop )
@@ -1728,7 +1724,7 @@ void GpsNmea::__ExtractMaemo0(const QString& string)
 /**
  * Extract proprietary sentence $MAEMO1.
  */
-void GpsNmea::__ExtractMaemo1(const QString& string)
+void GpsNmea::__ExtractMaemo1(const QStringList& stringList)
 {
   /**
    * Definition of proprietary sentence $MAEMO1.
@@ -1745,12 +1741,9 @@ void GpsNmea::__ExtractMaemo1(const QString& string)
    *  9) Repetition of 4-8 according to Satellites in view
    */
 
-  dataOK();
-
   // Store receive time of constellation in every case.
   _lastSatInfo.constellationTime = _lastTime;
 
-  QStringList slist = string.split( ",", QString::KeepEmptyParts );
   bool ok;
 
   /**

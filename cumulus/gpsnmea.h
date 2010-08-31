@@ -568,11 +568,11 @@ class GpsNmea : public QObject
     /**
      * Extract proprietary sentence $MAEMO0.
      */
-    void __ExtractMaemo0(const QString& string);
+    void __ExtractMaemo0(const QStringList& stringList);
     /**
      * Extract proprietary sentence $MAEMO1.
      */
-    void __ExtractMaemo1(const QString& string);
+    void __ExtractMaemo1(const QStringList& stringList);
 #endif
 
     /** This function is called to indicate that good data has been received.
