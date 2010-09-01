@@ -98,11 +98,11 @@ int GPRMC::send( double lat, double lon, float speed, float course, int fd )
   sentence += longi;
 
   QString sp;
-  sp.sprintf( "%4.1f,", speed );
+  sp.sprintf( "%0.3f,", speed );
   sentence += sp;
 
   QString co;
-  co.sprintf( "%4.1f,", course );
+  co.sprintf( "%0.2f,", course );
   sentence += co;
 
   sentence += utcDate;
