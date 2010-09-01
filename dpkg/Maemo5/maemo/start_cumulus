@@ -15,5 +15,6 @@ GTK2_RC_FILES=""
 export GTK2_RC_FILES
 
 # launch cumulus
-exec /opt/cumulus/bin/cumulus
+exec /opt/cumulus/bin/cumulus -style=platinum
+
 
