@@ -119,7 +119,7 @@ void WindAnalyser::slot_newSample()
     }
 
   /*
-  qDebug( "curVec: %.0f/%dGrad, minVec: %.0f/%dGrad, maxVec: %.0f/%dGrad",
+  qDebug( "curVec: %.3f/%dGrad, minVec: %.3f/%dGrad, maxVec: %.3f/%dGrad",
          curVec.getSpeed().getKph(), curVec.getAngleDeg(),
          minVector.getSpeed().getKph(), minVector.getAngleDeg(),
          maxVector.getSpeed().getKph(), maxVector.getAngleDeg() );
@@ -187,21 +187,13 @@ void WindAnalyser::slot_newFlightMode( Calculator::flightmode newFlightMode )
 
 void WindAnalyser::_calcWind()
 {
-  int degreePerStep = circleDegrees / circleSectors;
-
-  if( degreePerStep < 15 )
-    {
-      // Add one circle sector to the found minimum and maximum if the
-      // angle speed is below 15 degree per second to improve the
-      // result. Note that we do take only the first found minimum and
-      // maximum.
-      minVector.setAngle( minVector.getAngleDeg() + degreePerStep );
-      maxVector.setAngle( maxVector.getAngleDeg() + degreePerStep );
-    }
+  // int degreePerStep = circleDegrees / circleSectors;
 
   int aDiff = angleDiff( minVector.getAngleDeg(), maxVector.getAngleDeg() );
 
-  /*determine quality.
+  /*
+    Determine quality.
+
     Currently, we are using the question how well the min and the max vectors
     are on opposing sides of the circle to determine the quality. 140 degrees is
     the minimum separation, 180 is ideal.
