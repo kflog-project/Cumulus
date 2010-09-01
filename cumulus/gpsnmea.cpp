@@ -1292,9 +1292,8 @@ Speed GpsNmea::__ExtractKnotSpeed(const QString& speedString)
 
   res.setKnot( speed );
 
-  if( res != _lastSpeed && fabs((res - _lastSpeed).getMps()) > 0.3 )
+  if( res != _lastSpeed )
     {
-      // report speed change only if the difference is greater than 0.3m/s, 1.08Km/h
       _lastSpeed = res;
       emit newSpeed( _lastSpeed );
     }
@@ -1685,9 +1684,8 @@ void GpsNmea::__ExtractMaemo0(const QStringList& slist)
           speed.setKph( dSpeed );
 #endif
 
-          if( speed != _lastSpeed && fabs((speed - _lastSpeed).getMps()) > 0.3 )
+          if( speed != _lastSpeed )
             {
-              // report speed change only if the difference is greater than 0.3m/s, 1.08Km/h
               _lastSpeed = speed;
               emit newSpeed( _lastSpeed );
             }
