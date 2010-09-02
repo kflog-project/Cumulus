@@ -14,6 +14,7 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-09-02 AP: Wind calculation partly reworked.
 [-] 2010-09-01 AP: BUGFIX: Additional handling added to ~GpsCon to prevent
                    GPS client zombies.
 [-] 2010-09-01 AP: BUGFIX: Method recalculateWind() of class WindStore emitted
