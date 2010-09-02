@@ -17,6 +17,7 @@
 ***********************************************************************/
 
 #include <cmath>
+
 #include "vector.h"
 #include "mapcalc.h"
 
@@ -354,6 +355,7 @@ Vector Vector::operator - (Vector& x)
     {
       recalcXY();
     }
+
   if( x.dirtyXY )
     {
       x.recalcXY();
@@ -376,7 +378,7 @@ Vector Vector::operator * (double left)
 
 Vector Vector::operator * (int left)
 {
-    if( !dirtyDR )
+  if( !dirtyDR )
     {
       return Vector( _angle, Speed( double( left * _speed ) ) );
     }

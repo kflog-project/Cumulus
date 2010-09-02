@@ -43,60 +43,115 @@ WindMeasurementList::~WindMeasurementList()
  * if no valid vector could be calculated (for instance: too little or
  * too low quality data).
  */
-Vector WindMeasurementList::getWind( const Altitude& alt )
+Vector WindMeasurementList::getWind( const Altitude& alt, const int timeWindow )
 {
-  // relative weight for each factor
+// relative weight for each factor in percent
 #define REL_FACTOR_QUALITY 100
 #define REL_FACTOR_ALTITUDE 100
 #define REL_FACTOR_TIME 200
 
+  // counts the number of calls to prevent endless recursion.
+  static short entry = 0;
+
+  Vector result;
+
+  if( size() == 0 )
+    {
+      // Measurement list is empty.
+      return result;
+    }
+
+  entry++;
+
   GeneralConfig *conf = GeneralConfig::instance();
-  int altRange  = conf->getWindAltitudeRange();
-  int timeRange = conf->getWindTimeRange();
+  int altRange  = conf->getWindAltitudeRange() / 2;  // 1000m
+
+  int timeRange = timeWindow;
+
+  if( timeRange == 0 )
+    {
+      // If no time range has been passed, take default one from configuration.
+      // The default is set to 10 minutes to get the last current wind.
+      timeRange = conf->getWindTimeRange(); // 600s
+    }
 
   int total_quality = 0;
   int quality = 0, q_quality = 0, a_quality = 0, t_quality = 0;
-  Vector result;
-  QTime now    = QTime::currentTime();
-  int altdiff  = 0;
-  int timediff = 0;
+  QTime now = QTime::currentTime();
 
-  for( int i = 0; i < LimitedList<WindMeasurement>::count(); i++ )
+  double altDiff  = 0.0;
+  double timeDiff = 0.0;
+
+  for( int i = 0; i < count(); i++ )
     {
       const WindMeasurement& wm = at( i );
 
-      altdiff = (int) rint( (alt - wm.altitude).getMeters() );
-      timediff = wm.time.secsTo( now );
+      altDiff = (alt - wm.altitude).getMeters() / (double) altRange;
+      timeDiff = fabs( (double) wm.time.secsTo(now) / (double) timeRange );
 
-      if (altdiff > -altRange && altdiff < altRange && timediff < timeRange)
+      if( (fabs(altDiff) < 1.0) && (timeDiff < 1.0) )
         {
-          q_quality = wm.quality * REL_FACTOR_QUALITY / 5; //measurement quality
+          // Measurement quality range is 1...5, 5 is the best quality
+          // Maximum quality is 5*100/5 = 100%
+          // Minimum quality is 1*100/5 = 20%
+          q_quality = qMin(5, wm.quality) * REL_FACTOR_QUALITY / 5;
 
-          // factor in altitude difference between current altitude and measurement.
-          // Maximum altitude difference is 1000 m.
-          a_quality = ((10*altRange) - (altdiff*altdiff/100)) * REL_FACTOR_ALTITUDE / (10*altRange);
+          // Factor in altitude difference between current altitude and measurement.
+          // altRange is 1000 m, altDiff = 0 -> 100%, altDiff = 1 -> 0%
+          a_quality = (int) rint(((2.0 / (altDiff * altDiff + 1.0)) - 1.0) * REL_FACTOR_ALTITUDE );
 
-          // factor in time difference. Maximum difference is 2 hours.
-          timediff = (timeRange - timediff) / 10;
+          // Factor in time difference. Default timeRange is 600s.
+          const double k = 0.75;
 
-          // factor in time difference. Maximum difference is 2 hours.
-          t_quality = (((timediff) * (timediff))) * REL_FACTOR_TIME / (72 * timeRange);
+          // timeDiff = 0 -> 200%, timeDiff = 1 -> 0%
+          t_quality = (int) rint((k * (1.0 - timeDiff) / (timeDiff * timeDiff + k)) * REL_FACTOR_TIME);
 
           quality = q_quality * a_quality * t_quality;
 
-          // qDebug("i:%d q:%d w:%d/%f (%d, %d, %d)", i, quality, LimitedList<WindMeasurement>::at(i)->vector.getAngleDeg(),LimitedList<WindMeasurement>::at(i)->vector.getSpeed().getKph(), q_quality, a_quality, t_quality    );
-          result.add( LimitedList<WindMeasurement>::value(i).vector * LimitedList<WindMeasurement>::value(i).quality );
-          total_quality += LimitedList<WindMeasurement>::at(i).quality;
-          // qDebug("Cur result: %d/%f (tQ: %d)",result.getAngleDeg(),result.getSpeed().getKph(),total_quality );
+          /*
+          qDebug("i=%d alt=%f qual=%d wind=%d/%f (%d, %d, %d)",
+                  i, wm.altitude.getMeters(), quality,
+                  value(i).vector.getAngleDeg(),
+                  value(i).vector.getSpeed().getKph(),
+                  q_quality, a_quality, t_quality );
+          */
+
+          if( quality == 0 )
+            {
+              continue;
+            }
+
+          result.add( value(i).vector * quality );
+          total_quality += quality;
+
+          /*
+          qDebug( "Cur result=%d/%f (tQ=%d)",
+                  result.getAngleDeg(),
+                  result.getSpeed().getKph() / total_quality,
+                  total_quality );
+          */
         }
   }
 
   if( total_quality > 0 )
     {
-      result = result / (int) total_quality;
+      result = result / total_quality;
     }
 
-  // qDebug("WindMeasurementList::getWind %d/%f ",result.getAngleDeg(),result.getSpeed().getKph() );
+  /*
+  qDebug( "Round=%d, Alt=%f, WindResult=%d/%f",
+          entry, alt.getMeters(),
+          result.getAngleDeg(), result.getSpeed().getKph() );
+  */
+
+  if( ! result.isValid() && entry == 1 )
+    {
+      // If there is no younger wind available make a second round with a time
+      // window of one hour.
+      result = getWind( alt, 3600 );
+    }
+
+  entry--;
 
   return result;
 }

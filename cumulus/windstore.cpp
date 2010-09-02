@@ -16,7 +16,7 @@
 **
 ***********************************************************************/
 
-#include <stdlib.h>
+#include <cmath>
 
 #include "windstore.h"
 #include "calculator.h"
@@ -43,19 +43,22 @@ void WindStore::slot_Measurement( const Vector& windVector, int quality )
 }
 
 /**
- * Called if the altitude changes.
- * Determines where measurements are stored and may result in a
- * newWind signal.
+ * Called if the altitude changes. Can recalculate the wind and may result
+ * in a newWind signal.
  */
 void WindStore::slot_Altitude( const Altitude& altitude )
 {
-  if( fabs( (altitude - _lastAltitude).getMeters() ) >= 25.0 )
+  if( calculator->currentFlightMode() != Calculator::circlingL &&
+      calculator->currentFlightMode() != Calculator::circlingR &&
+      fabs( (altitude - _lastAltitude).getMeters() ) >= 25.0 )
     {
-      // only recalculate if there is a significant change
+      // Only recalculate wind, if we are not circling and there is a
+      // significant altitude change. During circling newer wind is always
+      // calculated and distributed.
       recalculateWind();
-    }
 
-  _lastAltitude = calculator->getlastAltitude();
+      _lastAltitude = calculator->getlastAltitude();
+    }
 }
 
 /**

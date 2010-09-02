@@ -65,8 +65,15 @@ public:
      * Returns the weighted mean wind vector over the stored values, or 0
      * if no valid vector could be calculated (for instance: too little or
      * too low quality data).
+     *
+     * \param alt Altitude where wind is requested
+     *
+     * \param timeWindow Time window in seconds for wind search
+     *
+     * \return Vector containing found wind. Is set to invalid, if no wind was
+     *         found.
      */
-    Vector getWind( const Altitude& alt );
+    Vector getWind( const Altitude& alt, const int timeWindow=0 );
 
     /** Adds the wind vector vector with quality quality to the list. */
     void addMeasurement( const Vector& vector, const Altitude& alt, int quality );
