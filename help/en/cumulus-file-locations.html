@@ -1,7 +1,7 @@
 <!-- $Id$ -->
 <html>
 <head>
-  <title>Cumulus File Storage Locations</title>
+  <title>File Storage Locations</title>
   <link rel="stylesheet" type="text/css" href="text.css">
 </head>
 
@@ -17,7 +17,7 @@
   </tbody>
 </table>
 
-<h3 align="center">Cumulus File Storage Locations</h3>
+<h3 align="center">File Storage Locations</h3>
 
 <table border="1" width="100%">
 
@@ -65,34 +65,48 @@
 
   <tr>
     <td>6</td>
+    <td>$HOME/Cumulus</td>
+    <td>cumulus-flarm.txt</td>
+    <td>File containing Flarm alias names, default location on desktop</td>
+  </tr>
+
+  <tr>
+    <td>7</td>
     <td>$HOME/Cumulus/maps/[airfields|airspaces|landscape]</td>
     <td>map data files</td>
     <td>Map files, default root location on desktop</td>
   </tr>
 
   <tr>
-    <td>7</td>
+    <td>8</td>
     <td>$HOME/MyDocs/Cumulus</td>
     <td>task.tsk</td>
     <td>Flight task data file, default location on Maemo</td>
   </tr>
   
   <tr>
-    <td>8</td>
+    <td>9</td>
     <td>$HOME/MyDocs/Cumulus</td>
     <td>cumulus.kwp</td>
     <td>Waypoint data file, default location on Maemo</td>
   </tr>
 
   <tr>
-    <td>9</td>
+    <td>10</td>
     <td>$HOME/MyDocs/Cumulus</td>
     <td>*.IGC</td>
     <td>IGC logger files, default location on Maemo</td>
   </tr>
   
+    <tr>
+    <td>11</td>
+    <td>$HOME/MyDocs/Cumulus</td>
+    <td>cumulus-flarm.txt</td>
+    <td>File containing Flarm alias names, default location on Maemo</td>
+  </tr>
+
   <tr>
-    <td>10</td>
+    <td>12</td>
     <td>$HOME/MyDocs/Cumulus/maps/[airfields|airspaces|landscape]</td>
     <td>map data files</td>
     <td>Map files, default root location on Maemo</td>
@@ -104,7 +118,7 @@
 Notes:
 </p> 
 In Maemo (e.g., in Nokia hardware devices, like the N800, 810 and 900),
-the location of files numbered 7,8,9 and 10 is defined in Setup/General, Personal
+the location of files numbered 8, 9, 10 and 11 is defined in Setup/General, Personal
 as the <i>Data Directory</i>. If Cumulus does not find this entry, it tries to
 create it in the following directories in order:
 
@@ -114,7 +128,7 @@ create it in the following directories in order:
 	<LI>/home/user/MyDocs/Cumulus</LI>
 </UL>
 <p>
-The location of files numbered 6 to 10 is defined in Setup/General, Map Settings
+The location of files numbered 7 and 12 is defined in Setup/General, Map Settings
 as <a href="cumulus-settings-map-settings.html#Maps"><i>Maps</i></a>,
 under which are found the airfields, airspaces and landscape folders.
 </p>
