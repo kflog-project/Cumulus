@@ -1,3 +1,5 @@
+<!-- $Id$ -->
+
 <html>
 <head>
   <title>Cumulus Einf&uuml;hrung</title>
@@ -7,20 +9,18 @@
 <body>
 
 <table width="100%">
-  <tbody>
     <tr>
       <td align="left"><a href="cumulus.html">zur&uuml;ck</a></td>
       <td align="center"><a href="cumulus.html">Anfang</a></td>
       <td align="right"><a href="cumulus-maps.html">weiter</a></td>
     </tr>
-  </tbody>
 </table>
 
 <h3 align="center">Einf&uuml;hrung</h3>
 
 Um Cumulus sinnvoll nutzen zu k&ouml;nnen, sind ein PDA, ein GPS-Empf&auml;nger
 und die entsprechenden Karten Dateien erforderlich. Im Augenblick
-unterst&uuml;tzt Cumulus nur die PDAs Nokia Internet Tablet N800/N810 mit Maemo
+unterst&uuml;tzt Cumulus nur die PDAs Nokia Internet Tablet N800/N810 mit Maemo 4
 OS2008 und das N900 mit Maemo5 OS2009. Cumulus kann ebenfalls auf einem PC mit
 einer Linux Installtion z.B. Ubuntu unter X11/Qt4 laufen.
 
@@ -28,8 +28,12 @@ einer Linux Installtion z.B. Ubuntu unter X11/Qt4 laufen.
 Verzeichnisse auf Ihrem Computer angelegt, sofern sie noch nicht existieren
 sollten. Weiterhin werden Sie einmalig gefragt, ob fehlende Karten oder
 Flugplatzdaten aus dem Internet runter geladen werden sollen. Ihre getroffene
-Entscheidung ist bis zum Verlassen des Programms g&uuml;ltig. Aktivieren Sie das
-automatische Runterladen nur, wenn Sie eine Internetverbindung aktiviert haben.</P>
+Entscheidung ist bis zum Verlassen des Programms g&uuml;ltig. Bewegen Sie sich
+schneller als 5Km/h werden laufende Downloads abgebrochen bzw. es wird auch nicht
+nachgefragt, ob sie gemacht werden sollen.</P>
+<P>
+Aktivieren Sie das automatische Runterladen nur, wenn Sie eine
+Internetverbindung aktiviert haben!</P>
 
 <dl>
 
@@ -43,95 +47,109 @@ automatische Runterladen nur, wenn Sie eine Internetverbindung aktiviert haben.<
   <A HREF="cumulus-settings-look-feel.html#Screensaver">Look&amp;Feel</A>
   eingestellt werden.
   <br>
-  Weiterhin ist es unbedingt erforderlich den PDA bei l&auml;ngeren
-  Betriebszeiten mit einer zus&auml;tzlichen Stromversorgung auszustatten.
+  Weiterhin ist es erforderlich den PDA bei l&auml;ngeren
+  Betriebszeiten mit Cumulus mit einer externen Stromversorgung zu verbinden.
   Schalten Sie vor dem Start unbedingt alle automatischen Sachen, wie WLAN
-  Verbindungsversuche oder Suche nach Versionsaktualisierungen, ab. Diese
-  fressen unn&ouml;tig Resourcen und k&ouml;nnen Sie mit Nachrichtendialogen
-  nerven.</dd>
+  Verbindungsversuche oder Suche nach Versionsaktualisierungen, aus. Diese
+  fressen unn&ouml;tig Resourcen und k&ouml;nnen Sie mit Dialogboxen
+  w&auml;hrend des Fluges nerven.</dd>
 
   <dt><b>GPS</b></dt>
 
-  <dd>Sie k&ouml;nnen einen externen GPS Empf&auml;nger benutzen der sich
+  <dd>Sie k&ouml;nnen einen externen GPS Empf&auml;nger benutzen, der sich
   mit dem PDA &uuml;ber ein Kabel oder &uuml;ber Bluetooth verbinden l&auml;sst
-  und Daten &uuml;ber eine serielle Schnittstelle im NMEA-Format
-  &uuml;bertr&auml;gt. Cumulus kann auch ohne GPS betrieben werden, ist dann
-  jedoch bei weitem nicht so n&uuml;tzlich.
+  und Daten &uuml;ber eine serielle oder USB Schnittstelle im NMEA-Format
+  &uuml;bertr&auml;gt. Nat&uuml;rlich kann auch ein im PDA integrierter
+  GPS Empf&auml;nger verwendet werden.<br>
+  Cumulus kann auch ohne GPS betrieben werden, ist dann jedoch bei weitem nicht
+  so n&uuml;tzlich.
   <p>Sobald Sie Ihren GPS Empf&auml;nger aktiviert haben, w&auml;hlen Sie
   die entsprechende Ger&auml;teschnittstelle und die dazugeh&ouml;rige
-  &Uuml;bertragungsrate im <a href="cumulus-settings.html">Konfigurationdialog</a>
-  in Cumulus aus. Lesen Sie im Handbuch Ihres GPS Empf&auml;ngers nach um die
-  erforderlichen Daten zu erfahren. Die meisten seriellen Verbindungen arbeiten
-  mit der Ger&auml;teschnittstelle <i>/dev/ttyS0</i>. F&uuml;r Bluetooth
-  Empf&auml;nger ist <i>/dev/rfcomm0</i> &uuml;blich. Beim N810 benutzen Sie
-  bitte <i>/dev/pts/0. </i>Die &Uuml;bertragungsrate betr&auml;gt normalerweise
-  4800 bps, f&uuml;r Bluetooth empfehlen wir 115200 bps.</p>
+  &Uuml;bertragungsrate im <a href="cumulus-settings-gps.html">
+  GPS-Konfigurationsmen&uuml;</a> in Cumulus aus. Lesen Sie im Handbuch Ihres
+  GPS Empf&auml;ngers nach um die erforderlichen Daten zu erfahren. Viele
+  Ger&auml;te arbeiten mit folgenden Schnittstellen:</p>
+  
+  <ul>
+    <li><i>/dev/ttyS0</i> - RS232 serielles Ger&auml;t</li>
+    <li><i>/dev/rfcomm0</i> - Bluetooth Ger&auml;t</li>
+    <li><i>/dev/ttyUSB0</i> - USB Ger&auml;t</li>
+  </ul>
+  
+  <p>Die NMEA Standard &Uuml;bertragungsrate betr&auml;gt 4800 bps. F&uuml;r
+  Bluetooth Ger&auml;te kann sie auch h&ouml;her liegen.</p>
+  
+  <p>
+  Wenn Sie ein Nokia Internet Tablet N800, N810 oder N900 benutzen, ist es nicht
+  erforderlich spezielle Einstellungen zus&auml;tzlich zu machen, so lange Sie
+  die Voreinstellung <i>GPS Location</i> benutzen. Soll ein Bluetooth Ger&auml;t
+  verwendet werden, so muss dieses &uuml;ber den GPS Dialog von Maemo
+  eingebunden werden.
+  </p>
 
-  Nachdem alles verbunden bzw. eingestellt ist, sollten Sie die Taste <b>G</b>
+  Nachdem alles verbunden und eingestellt ist, sollten Sie die Taste <b>G</b>
   dr&uuml;cken, um in den GPS Status Monitor zu wechseln. Bei korrektem Empfang
-  sehen Sie hier die Sattelitenpositionen und die NMEA-Datens&auml;tze im
-  Anzeigefeld. Sie k&ouml;nne diesen Dialog wieder mit der ESC Taste verlassen.
+  sehen Sie hier die Satteliten Positionen und die NMEA-Datens&auml;tze im
+  Anzeigefeld. Sie k&ouml;nnen diesen Dialog mit der ESC Taste oder
+  dem <i>Schlie&szlig;en</i> Knopf verlassen.
   </dd>
 
   <dt><b>Personal</b></dt>
 
-  <dd> Definieren Sie im Men&uuml; <a href="cumulus-settings-personal.html">
-  Pers&ouml;nliche
-  Einstellungen</a> ein Daten Verzeichnis, wo die Dateien
-  f&uuml;r
-  Wegpunkte, Aufgaben und Loggeraufzeichnungen abgelegt werden sollen.
-  Ratsam ist, hierf&uuml;r einen Platz auf der MMC (Multimedia Card) zu
-  w&auml;hlen.</dd>
+  <dd>
+  Definieren Sie im Men&uuml; <a href="cumulus-settings-personal.html">
+  Pers&ouml;nliche Einstellungen</a> die Position Ihres Heimatflugplatzes.
+  Diese Einstellung is entscheidend f&uuml;r eine unverzerrte Kartendarstellung.
+  </dd>
 
   <dt><b>Flugzeuge</b></dt>
 
   <dd>Definieren Sie im Men&uuml;
     <a href="cumulus-settings-glider.html">Flugzeuge</a>
-    Ihre bevorzugten Favoriten.</dd>
+    Ihre zu benutzten Favoriten.</dd>
 
   <dt><b>Karten</b></dt>
 
-  <dd> Cumulus benutzt die gleichen Karten wie <i>KFLog</i>,
-das KDE Flugplanungs- und Auswertungsprogramm. Laden Sie sich die
-ben&ouml;tigten Karten, Luftr&auml;ume und Flugplatzdaten aus
-dem Internet herunter und installieren
-Sie sie auf Ihrem PDA. Siehe unter <a href="cumulus-maps.html">Karten</a>
-f&uuml;r mehr Informationen dazu. Definieren Sie in
-    <a href="cumulus-settings-map-settings.html">Karteneinstellungen</a>
-ein Daten Verzeichnis f&uuml;r Ihre Karten auf der MMC und installieren
-Sie diese dort. Weitherhin setzen Sie die Standardparallelen auf eine
-Position in der N&auml;he Ihres Heimatplatzes, um die
-Kartenverzerrungen gering zu halten.</dd>
-
+  <dd>
+  Cumulus benutzt die gleichen Karten wie <i>KFLog</i>,
+  das KDE Flugplanungs- und Auswertungsprogramm. Laden Sie sich die
+  ben&ouml;tigten Karten, Luftr&auml;ume und Flugplatzdaten aus
+  dem Internet herunter und installieren
+  Sie diese auf Ihrem PDA. Siehe unter <a href="cumulus-maps.html">Karten</a>
+  f&uuml;r mehr Informationen dazu. Flugpl&auml;tze und Landkarten werden
+  auch automatisch durch Cumulus herunter geladen, wenn Sie diese Option beim
+  Programmstart erlauben.
+  </dd>
 
   <dt><b>Wegpunkte</b></dt>
 
-  <dd> Cumulus benutzt Wegpunkte um die Navigation zu
-erleichtern. Sie k&ouml;nnen Ihre Wegpunktdateien in Cumulus
-bearbeiten oder auch mit Hilfe von <i>KFLog</i> auf Ihrem
-Arbeitsplatzrechner vorbereiten und sie dann auf ihren PDA
-&uuml;bertragen. Siehe auch unter <a href="cumulus-waypoints.html">Wegpunkte</a>
-f&uuml;r weitere Hinweise. </dd>
+  <dd>
+  Cumulus benutzt Wegpunkte f&uuml;r die Navigation. Sie k&ouml;nnen Ihre
+  Wegpunktdateien in Cumulus bearbeiten oder auch mit Hilfe von <i>KFLog</i> auf
+  Ihrem Arbeitsplatzrechner vorbereiten und sie dann auf ihren PDA
+  &uuml;bertragen. Siehe auch unter <a href="cumulus-waypoints.html">Wegpunkte</a>
+  f&uuml;r weitere Hinweise.
+  </dd>
 
   <dt><b>Aufgaben</b></dt>
 
-  <dd> Cumulus unterst&uuml;tzt auch die Definition von
-Flugaufgaben. Sie k&ouml;nnen diese entweder auf dem PDA editieren
-oder sie auf dem Arbeitsplatzrechner mit Hilfe von <i>KFLog</i>
-erstellen und sie anschlie&szlig;end auf den PDA runter laden.
-Siehe auch unter <a href="cumulus-preflight-settings-task.html">Aufgabe</a>
-f&uuml;r weitere Hinweise zu Aufgaben. </dd>
+  <dd>
+  Cumulus unterst&uuml;tzt auch die Definition von
+  Flugaufgaben. Sie k&ouml;nnen diese entweder auf dem PDA editieren
+  oder sie auf dem Arbeitsplatzrechner mit Hilfe von <i>KFLog</i>
+  erstellen und sie anschlie&szlig;end auf den PDA runter laden.
+  Siehe auch unter <a href="cumulus-preflight-settings-task.html">Aufgabe</a>
+  f&uuml;r weitere Hinweise zu Aufgaben.
+  </dd>
 
 </dl>
 
 <table width="100%">
-  <tbody>
     <tr>
       <td align="left"><a href="cumulus.html">zur&uuml;ck</a></td>
       <td align="center"><a href="cumulus.html">Anfang</a></td>
       <td align="right"><a href="cumulus-maps.html">weiter</a></td>
     </tr>
-  </tbody>
 </table>
 
 </body>
