@@ -42,10 +42,14 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   mcSmallStep = 0.5;
   mcBigStep   = 1.0;
 
-#ifndef MAEMO
   int minFontSize = 14;
-#else
-  int minFontSize = 20;
+
+#ifdef MAEMO4
+  minFontSize = 20;
+#endif
+
+#ifdef MAEMO5
+  minFontSize = 22;
 #endif
 
   QFont b = font();
