@@ -263,9 +263,10 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   connect(_mc, SIGNAL(mousePress()), this, SLOT(slot_gliderFlightDialog()));
 
   //add Best Speed widget
-  _speed2fly = new MapInfoBox( this, "#a6a6a6" );
+  _speed2fly = new MapInfoBox( this, "#a6a6a6", true );
   _speed2fly->setPreText("S2f");
   _speed2fly->setValue("-");
+  _speed2fly->setPreUnit( "<>" );
   MSLayout->addWidget( _speed2fly );
   connect(_speed2fly, SIGNAL(mousePress()), this, SLOT(slot_toggleMenu()));
 
