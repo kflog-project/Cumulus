@@ -939,7 +939,7 @@ void MainWindow::initActions()
   actionMenuBarToggle = new QAction( tr( "Toggle menu" ), this );
 
   QList<QKeySequence> mBTSCList;
-  mBTSCList << Qt::Key_M << Qt::Key_Space << Qt::Key_F4;
+  mBTSCList << Qt::Key_M << Qt::Key_F4;
   actionMenuBarToggle->setShortcuts( mBTSCList );
   addAction( actionMenuBarToggle );
   connect( actionMenuBarToggle, SIGNAL( triggered() ),
@@ -2067,9 +2067,10 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
 
       qDebug( "Keycode of pressed key: %d, %X", k->key(), k->key() );
 
-      if( k->key() == Qt::Key_F6 )
+      if( k->key() == Qt::Key_F6 || k->key() == Qt::Key_Space )
         {
-          // Hardware Key F6 for maximize/normalize screen under Maemo.
+          // Hardware Key F6 for maximize/normalize screen under Maemo 4.
+          // Maemo 5 has no keys. Therefore the space key is activated for that.
           setWindowState(windowState() ^ Qt::WindowFullScreen);
           return true;
         }
