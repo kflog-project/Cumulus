@@ -188,7 +188,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
       if( appFt.pointSize() < 14 )
         {
           // the system font size is too small, we are setting a bigger default
-          appFt.setPointSize( 14 );
+          appFt.setPointSize( 22 );
         }
 
       QApplication::setFont( appFt );
