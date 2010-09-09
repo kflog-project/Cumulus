@@ -1207,7 +1207,6 @@ void MapView::slot_gpsStatusDialog()
 {
   GpsStatusDialog *gpsDlg = new GpsStatusDialog( this );
   // delete widget during close event
-  gpsDlg->setAttribute(Qt::WA_DeleteOnClose);
   gpsDlg->setVisible(true);
 
 #ifdef MAEMO
