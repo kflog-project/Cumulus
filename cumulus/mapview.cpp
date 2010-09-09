@@ -1209,6 +1209,11 @@ void MapView::slot_gpsStatusDialog()
   // delete widget during close event
   gpsDlg->setAttribute(Qt::WA_DeleteOnClose);
   gpsDlg->setVisible(true);
+
+#ifdef MAEMO
+  gpsDlg->showMaximized();
+#endif
+
 }
 
 /** Opens the inflight glider settings dialog. */
