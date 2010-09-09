@@ -17,82 +17,126 @@
 
 <h3 align="center">Karten</h3>
 
-    <p>Cumulus benutzt die gleichen Karten wie KFLog. Sie sind frei
-    verf&uuml;gbar und k&ouml;nnen von
-    <A HREF="http://www.kflog.org/maproom">www.kflog.org/maproom</A>
-    heruntergeladen werden. Um die besten Ergebnisse zu erzielen,
-    ben&ouml;tigen Sie alle Kartenarten, die dort zu finden sind.
-
-    <p>Dies sind:
+    <p>Cumulus benutzt die folgenden Kartenarten:</p>
 
     <ul>
-        <li><a href="http://www.kflog.org/maproom/ground-and-terrain-data">Bodenkarten</a>
-        (ground) mit Merkmalen wie Stra&szlig;en, St&auml;dten, Fl&uuml;ssen und Gel&auml;ndekarten (terrain)
-        mit H&ouml;henangaben</li>
-        
-        <li>Luftr&auml;ume (airspace), <b>Nicht mehr unterst&uuml;tzt! Benutzen Sie andere Alternativen,
-            z.B. <a href="http://www.segelflug.de/segelflieger/michael.meier/download/OPENAIR.TXT">OPENAIR.TXT</a></b></li>
+        <li><b>Boden- und Gel&auml;ndekarten</b> mit Merkmalen wie
+        Autobahnen, Stra&szlig;en, St&auml;dten, Fl&uuml;ssen, Seen und
+        mit H&ouml;henlinien. Diese decken die ganze Welt ab. Diese Karten
+        k&ouml;nnen aus dem
+        <a href="http://www.kflog.org/maproom/ground-and-terrain-data">
+        KFLog Karten Raum</a> herunter geladen werden. Cumulus ist aber auch
+        selber in der Lage alle ben&ouml;tigten Karten aus dem Internet zu
+        laden. Siehe dazu auch unter
+        <a href="cumulus-settings-map-settings.html#Download">
+        Karten Einstellungen</a> f&uuml;r mehr Informationen.</li>
 
-        <li>Flugpl&auml;tze (airfields), <b>Nicht mehr unterst&uuml;tzt! Benutzen Sie die Welt2000 Datenbasis,
-            <a href="#Welt2000">Welt2000</a></b></li>
+        <li><b>Luftr&auml;ume:</b> Cumulus &uuml;terst&uuml;tzt nur das OpenAir
+        Dateiformat f&uuml;r Luftraumstrukturen. Suchen Sie bitte im Internet nach
+        Dateien f&uuml;r Ihre Gegend wo Sie fliegen. Adressen wo man solche Daten
+        finden kann, sind:
+
+        <ul>
+          <li><a href="http://soaringweb.org">Soaring Services - Airspace</a>
+          <li><a href="http://www.daec.de/aul/luftr_d.php">Luftraum Deutschland</a>
+          ver&ouml;ffentlicht vom DAeC
+          <li> Das AIP des jeweiligen Landes, in dem Sie fliegen wollen.
+        </ul>
+
+        <li><b>Flugh&auml;fen, Flugpl&auml;tze und Au&szlig;enlandefelder:</b>
+        Diese Daten werden aus der Welt2000 Datenbasis bezogen.
+        Mehr Informationen dazu sind
+        unter Punkt <a href="#Welt2000">Welt2000</a> zu finden.</li>
     </ul>
 
+    <p>
+    Die Karten k&ouml;nnen in zwei verschiedenen Verzeichnissen installiert
+    werden:</p>
+    <ul>
+      <li>In <i>$HOME/Cumulus/maps</i> (Desktop) oder in
+          <i>$HOME/MyDocs/Cumulus/maps</i> (Maemo). Das sind die Standard
+          Verzeichnisse.
+      </li>
+      <li>Irgendwo anders. Auf einem PDA sollten Sie als Speicherort eine MMC
+          Karte w&auml;hlen, da das interne Dateisystem oft im Speichervolumen
+          begrenzt ist.</li>
+    </ul>
+
+    <p>
+    Beim ersten Start von Cumulus auf den Nokia Internet Tablets versucht Cumulus
+    selbst den besten Speicherort f&uuml;r die Karten heraus zu finden. Die folgenden
+    Pl&auml;tze werden der Reihe nach gepr&uuml;ft, ob sie existieren:
+    </p>
+
+   <ul>
+     <li>/media/mmc1/Cumulus</li>
+     <li>/media/mmc2/Cumulus</li>
+     <li>/home/user/MyDocs/Cumulus</li>
+   </ul>
+
+   <p>
+   Der erste Treffer wird genommen und die erforderlichen Unterverzeichnisse
+   darunter angelegt.
+   </p>
+
+   <p>
+   <u>Bitte beachten Sie! Die Kartendateien sind in verschiedenen
+   Unterverzeichnissen unter dem jeweiligen Wurzelverzeichnis zu speichern.</u>
+   </p>
+
+   <ul>
+    <li>Boden- und Gel&auml;ndekarten sind im Unterverzeichnis <i>landsacpe</i>
+        auzulegen.</li>
+    <li>Flugplatzdaten sind im Unterverzeichnis <i>airfields</i>
+        auzulegen.</li>
+    <li>Luftraumdateien sind im Unterverzeichnis <i>airspaces</i>
+        auzulegen.</li>
+   </ul>
+
+    <p>Wenn Sie die Karten unter einem anderen Wurzelverzeichnis als den hier
+    genannten installieren,
+    so m&uuml;ssen Sie anschlie&szlig;end auf der Kartenkonfigurationsseite den
+    Pfad zum Wurzelverzeichnis der installierten Karten eintragen. Dr&uuml;cken
+    Sie dazu auf den Knopf Karten oben links in der Ecke und navigieren Sie zu
+    Ihrem Installationsverzeichnis, wo die Karten zu finden sind.
+    </p>
+
+    <p>
     Installieren Sie nur die Luftraum- und Flugplatzdateien des
     Gebietes, in dem Sie fliegen wollen, da Cumulus ansonsten
     un&ouml;tig viel Speicher verbraucht. Dies kann sich auch negativ
-    auf die Arbeitsgeschwindigkeit auswirken. Die Bodenkarten sind
-    davon nicht betroffen. Es werden nur immer diejenigen geladen, die
+    auf die Arbeitsgeschwindigkeit auswirken. Die Boden- und Gel&auml;ndekarten
+    sind davon nicht betroffen. Es werden nur immer diejenigen geladen, die
     auch gerade ben&ouml;tigt werden.
-
-    <p>
-    Die Karten k&ouml;nnen in drei Verzeichnissen installiert werden:
-    <ul>
-      <li>In $HOME/maps/
-      </li>
-      <li>Im Installationsverzeichnis unter /opt/cumulus/maps.</li>
-      <li>Irgendwo z.B. auf der MMC. Unter Maemo (Nokia Internet Tablet) ist es empfehlenswert, diesen Ort zu benutzen, da der interne Speicher begrenzt ist.</li>
-    </ul>
     </p>
-
-    <p>Wenn Sie die Karten auf der SD Karte installieren, so m&uumlig;ssen Sie
-    anschlie&szlig;end auf der Kartenkonfigurationsseite den Pfad zum Wurzelverzeichnis
-    der installierten Karten eintragen. Dr&uumlig;cken Sie dazu auf den Knopf Karten oben links
-    in der Ecke und navigieren Sie zu Ihrem Installationsverzeichnis, wo die Karten zu finden sind.
-    Diese speichern Sie bitte ab. Ist kein Pfad gesetzt, so werden die Karten in $HOME/maps and
-    /opt/cumulus/maps gesucht.
-
-    <p>
-    Die Bodenkarten sind im Unterverzeichnis <i>landscape</i> von <i>maps</i> abzulegen.
-    Die Flugplatz- und Luftraumdateien sind in 
-    Unterverzeichnissen von <i>maps</i> mit den Namen <i>airfields</i>
-    bzw. <i>airspaces</i> zu speichern.
 
     <p>Wenn Sie Speicherprobleme beim Betrieb von Cumulus bekommen,
     k&ouml;nnen Sie sich entscheiden, bestimmte Kartenarten nicht zu
     installieren.  Sie k&ouml;nnen z.B. auf die Oberfl&auml;chenkarten
-    (terrain files) verzichten.  Dadurch wird das Zeichnen der
+    (terrain files) verzichten. Dadurch wird das Zeichnen der
     Gel&auml;ndeh&ouml;he unterdr&uuml;ckt, daf&uuml;r sparen Sie aber
     Speicherplatz und beschleunigen das Laden der Karten. Es ist
     empfehlenswert, zumindest die Bodenkarten zu installieren, da
     sonst nur ein blauer Hintergrund angezeigt wird, was die
-    Navigation nicht gerade erleichtert.
+    Navigation nicht gerade erleichtert.</p>
+
     <p>
     Die von Ihnen installierten Karten sind Rohdaten und noch nicht
     auf eine bestimmte Projektion zugeschnitten. Das wird erst
     w&auml;hrend des erstmaligen Ladens gemacht. Dabei werden die
-    Kartendaten in das neue Format umgerechnet und in diesem auch als
+    Kartendaten in das neue Format konvertiert und in diesem auch als
     <i>.kfc</i> oder <i>.txc</i> Dateien gespeichert. Dieser Vorgang
     nimmt einige Zeit in Anspruch, hat aber den Vorteil, das die neuen
     Dateien kleiner sind und dann auch schneller geladen werden
-    k&ouml;nnen. In dem Men&uuml; <a
-    href="cumulus-settings-map-advanced.html"> Einstellungen Karten,
-    Weitere Optionen</a> k&ouml;nnen Sie die Projektionsart und das
-    L&ouml;schen der Originalkarten nach dem Kompilieren einstellen.
+    k&ouml;nnen. In dem Men&uuml;
+    <a href="cumulus-settings-map-advanced.html">Einstellungen Karten</a>
+    k&ouml;nnen Sie die Projektionsart und weitere Kartenparameter einstellen.
+    </p>
 
     <p><b>OpenAir Luftraumdateien</b></p>
 
     Cumulus kann nur Luftraumdateien im OpenAir Format lesen.
-    Installieren sie diese Dateien im Unterverzeichnis <i>airspaces</i> 
+    Installieren sie diese Dateien im Unterverzeichnis <i>airspaces</i>
     und versehen sie
     diese mit der <b>klein</b> geschrieben Endung <i>.txt</i>.
     Cumulus benutzt bei den Luftraumdateien standardm&auml;&szlig;ig
@@ -103,9 +147,10 @@
     diese im gleichen Verzeichnis wie die zugeh&ouml;rige OpenAir
     Luftraumdatei abzulegen. Diese Datei muss den selben Basisnamen
     (ohne <i>.txt</i> Endung) tragen wie die Originaldatei und ist
-    dann mit der Kennung <i>_mappings.conf</i> zu erweitern.</p>
+    dann mit der Kennung <i>_mappings.conf</i> zu erweitern.
 
-    <P>Beispiel: QuellDatei=<i>openair.txt</i>, MappingDatei=<i>openair_mappings.conf</i></p>
+    <p>Beispiel: QuellDatei=<i>openair.txt</i>,
+       MappingDatei=<i>openair_mappings.conf</i></p>
 
     <p>F&uuml;r seine interne Zuordnung verwendet Cumulus die folgenden
     Elemente:
@@ -156,9 +201,9 @@
     werden, die eine andere Zuordnung erhalten sollen. Diese
     &uuml;berschreiben dann die Standardzuordnung.</p>
 
-    <P>Beispiel: <i>CTR=ControlD</i></p>
+    <p>Beispiel: <i>CTR=ControlD</i></p>
 
-    <P>Hiermit wird die Standardzuordnung von <i>CTR</i> zu
+    <p>Hiermit wird die Standardzuordnung von <i>CTR</i> zu
     <i>ControlC</i> auf <i>ControlD</i> ge&auml;ndert.</p>
 
     <p><b>Achten Sie auch auf die korrekte Schreibweise, alle
@@ -166,37 +211,35 @@
 
 <a name="Welt2000"></a>
 
-    <p><b>Benutzung von Welt 2000 Flugplatzdaten</b></p>
+    <p><b>Benutzung von Welt2000 Flugplatz- und Au&szlig;enlandefelderdaten</b></p>
 
-    <p>Die Flugplatzdaten werden von Cumulus aus der Welt
-    2000 Datei gelesen. Diese
-    wird von Michael Meier als eine gro&szlig;e Datei 
+    <p>Die Flugplatz- und Au&szlig;enlandefelderdaten werden von Cumulus aus der
+    Welt2000 Datei gelesen. Diese wurde von Michael Meier, auch bekannt als
+    Milomei, als eine gro&szlig;e Datei kreiert. Die Datei ist auf dieser
+    <a href="http://www.segelflug.de/vereine/welt2000/">Seite</a>
+    hier in der Tabelle unter dem Namen <i>WELT2000.TXT</i> zu finden.</p>
 
-    <a href="http://www.segelflug.de/segelflieger/michael.meier/download/WELT2000.TXT">hier</a>
+    <p>Cumulus kann diese Datei auch selber herunter laden. Sehen Sie
+    <a href="cumulus-settings-airfields.html#Download">hier</a> nach, wie
+    das zu machen ist.
+    </p>
 
-    bereit gestellt. Installieren sie diese Datei im 
-    Unterverzeichnis <i>airfields</i>  unter den Namen
-    <i>welt2000.txt</i>. Da eine Welt 2000 Datei die
+    <p>Die Welt2000 Datei ist im Unterverzeichnis <i>airfields</i> unter den
+    Namen <i>welt2000.txt</i> zu installieren. Da eine Welt2000 Datei die
     ganze Welt beinhaltet, ist es erforderlich, die eingelesene
     Datenmenge sinvoll zu begrenzen um einen Speicher&uuml;berlauf in
     Cumulus zu vermeiden. Cumulus bietet dazu zwei Wege an:</p>
 
-    <ul>
-      <li>Filtern nach L&auml;ndern, die Sie unter dem Men&uuml; <a
-      href="cumulus-settings-map-advanced.html#Welt2000Filter">
-      Einstellungen Karten, Weitere Optionen</a> eingeben
-      k&ouml;nnen. Dies sollte der bevorzugte Weg sein.
+    <ol>
+      <li>Filtern nach L&auml;ndern</li>
+      <li>Flitern nach einem vorgegebenen Radius um die Heimatposition</li>
+    </ol>
 
-      <li>Filtern nach L&auml;ndern, die in einer Konfigurationsdatei
-      mit dem Namen <i>welt2000.conf</i> definiert sind. Siehe weiter
-      unten, wie man das macht. Dies ist eine alte Option und sie
-      sollte nicht mehr verwendet werden. Verfahren Sie bitte nach dem
-      vorhergehenden Punkt. <b>Achtung!</b> Eine Filterregel, die �ber
-      die Cumulus Oberfl&auml;che gemacht wird, &uuml;berschreibt die
-      Filterregel aus der Konfigurationsdatei.
-    </ul>
+    Die entsprechenden Parameter dazu k&ouml;nnen Sie unter dem Men&uuml;
+    <a href="cumulus-settings-airfields.html#Welt2000Filter">
+    Einstellungen-&gt;Allgemein-&gt;Flugpl&auml;tze</a> eingeben.
 
-    <p>Ein Nachteil ist, dass Welt 2000 nur 3 Typen von
+    <p>Ein Nachteil ist, dass Welt2000 nur drei Typen von
     Flugpl&auml;tzen kennt (Flugplatz, Segelfluggel&auml;nde,
     UL-Platz) aber Cumulus eine Menge mehr. Dieses Defizit wird
     &uuml;ber eine zus&auml;tzliche Zuordnungsm&ouml;glichkeit f&uuml;r
@@ -226,7 +269,7 @@
     <li><b>MAP_SHORT_NAME</b> <i>kurz-name</i>=<i>cumulus-karten-element</i>
 
     <br>Diese Zeile definiert eine Regel um einem Kurznamen (ersten
-    sechs links stehenden Zeichen) eines Welt 2000 Eintrages ein
+    sechs links stehenden Zeichen) eines Welt2000 Eintrages ein
     bestimmtes Cumulus Kartenelement zuzuweisen.
 
     <li><b>MAP_ICAO</b> <i>icao-zeichen</i>=<i>cumulus-karten-element</i>
@@ -284,18 +327,22 @@
     <i>welt2000.txc</i> und wird solange benutzt, wie die
     Originaldatei, die Konfigurationsdatei, die Kartenprojektion oder
     die Heimatposition nicht ge&auml;ndert werden. Das minimiert die
-    Einlesezeit nach einem Restart.
+    Einlesezeit nach einem Restart.</p>
 
-    <p>Falls Sie erforderliche Korrekturen an Eintr&auml;gen in der
-    Welt 2000 Datei vornehmen, so melden Sie diese bitte auch an
-    Michael Meier, der die Quelle bereit stellt und pflegt. Seine
-    Emailadresse ist im Kopfteil der Welt 2000 Datei zu finden.
+    <p>Falls Sie Korrekturen an Eintr&auml;gen in der Welt2000 Datei vornehmen,
+    so melden Sie diese bitte auch an Michael K&ouml;ster, der die Quelle im Moment
+    nach Milomeis Tod weiter pflegt. Seine Emailadresse ist im Kopfteil der
+    Welt2000 Datei bzw. auf dieser
+    <a href="http://www.segelflug.de/vereine/welt2000/">Webseite</a>
+    zu finden. Wir alle sollten dazu beitragen, dass die Welt2000 Datenbasis
+    so aktuell wie m&ouml;glich bleibt und denjenigen danken, die das alles
+    kostenlos in ihrer Freizeit machen.</p>
 
-    <p><table width="100%">
+    <table width="100%">
     <tr>
-    <td align="left"><a href="cumulus-gettingstarted.html">zur&uuml;ck</a></td>
-    <td align="center"><a href="cumulus.html">Anfang</a></td>
-    <td align="right"><a href="cumulus-settings.html">weiter</a></td>
+      <td align="left"><a href="cumulus-gettingstarted.html">zur&uuml;ck</a></td>
+      <td align="center"><a href="cumulus.html">Anfang</a></td>
+      <td align="right"><a href="cumulus-settings.html">weiter</a></td>
     </tr>
     </table>
 </body>
