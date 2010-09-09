@@ -30,7 +30,7 @@
 #ifndef GPS_STATUS_DIALOG_H
 #define GPS_STATUS_DIALOG_H
 
-#include <QDialog>
+#include <QWidget>
 #include <QFrame>
 #include <QList>
 #include <QPoint>
@@ -46,7 +46,7 @@
 class GpsElevationAzimuthDisplay;
 class GpsSnrDisplay;
 
-class GpsStatusDialog : public QDialog
+class GpsStatusDialog : public QWidget
 {
   Q_OBJECT
 

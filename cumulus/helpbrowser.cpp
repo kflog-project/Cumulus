@@ -39,6 +39,7 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
 {
   setWindowTitle(tr("Cumulus Help"));
   setWindowIcon( GeneralConfig::instance()->loadPixmap( "cumulus.png" ) );
+  setAttribute(Qt::WA_DeleteOnClose);
 
   browser = new QTextBrowser(this);
   browser->setOpenLinks( true );
@@ -143,7 +144,7 @@ void HelpBrowser::keyPressEvent( QKeyEvent *event )
 {
   // Toggle display between full and normal screen. That is a predefined
   // Maemo hardware key.
-  if( event->key() == Qt::Key_F6 )
+  if( event->key() == Qt::Key_F6 || event->key() == Qt::Key_Space )
     {
       setWindowState(windowState() ^ Qt::WindowFullScreen);
       return;

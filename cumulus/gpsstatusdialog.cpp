@@ -23,16 +23,18 @@
 #include "gpsstatusdialog.h"
 #include "gpsnmea.h"
 
-GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent),
+GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
+  QWidget( parent, Qt::Window ),
   showNmeaData( true )
 {
-  setWindowTitle(tr("GPS Status - <Esc> to Close"));
-  setModal(true);
-  setSizeGripEnabled(true);
+  setWindowTitle(tr("GPS Status"));
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
 
   if( parent )
     {
       resize( parent->size() );
+      move( parent->pos() );
     }
 
   elevAziDisplay = new GpsElevationAzimuthDisplay(this);
@@ -79,7 +81,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) : QDialog(parent),
 
   connect( save, SIGNAL(clicked()), this, SLOT(slot_SaveNmeaData()) );
 
-  connect( close, SIGNAL(clicked()), this, SLOT(accept()) );
+  connect( close, SIGNAL(clicked()), this, SLOT(close()) );
 }
 
 GpsStatusDialog::~GpsStatusDialog()
@@ -169,7 +171,7 @@ void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Enter:
     case Qt::Key_Return:
     case Qt::Key_Escape:
-      accept();
+      close();
       break;
     }
 }
