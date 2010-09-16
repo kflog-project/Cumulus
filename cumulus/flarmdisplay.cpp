@@ -336,7 +336,15 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           alpha = atan2( ((double) north), (double) east );
         }
 
-      double heading2Object = ((double) calculator->getlastHeading() * M_PI / 180.) + (M_PI_2 - alpha);
+      double heading2Object = ((double) (360 - calculator->getlastHeading()) * M_PI / 180.) + (M_PI_2 - alpha);
+
+      /*
+      qDebug() << "North=" << north
+               << "East=" << east
+               << "Heading=" << calculator->getlastHeading()
+               << "H2O=" << heading2Object * 180. / M_PI
+               << "Alpha=" << alpha * 180. / M_PI;
+      */
 
       double x = cos(heading2Object) * distAcftShort;
       double y = sin(heading2Object) * distAcftShort;
