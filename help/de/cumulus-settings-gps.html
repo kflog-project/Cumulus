@@ -9,51 +9,120 @@
 
     <table width="100%">
     <tr>
-    <td></td>
-    <td align="center"><a href="cumulus.html">Anfang</a></td>
-    <td></td>
+      <td></td>
+      <td align="center"><a href="cumulus.html">Anfang</a></td>
+      <td></td>
     </tr>
     <tr>
-    <td align="left"><a href="cumulus-settings-sector.html">zur&uuml;ck</a></td>
-    <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
-    <td align="right"><a href="cumulus-settings-map.html">weiter</a></td>
+      <td align="left"><a href="cumulus-settings-personal.html">zur&uuml;ck</a></td>
+      <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
+      <td align="right"><a href="cumulus-settings-glider.html">weiter</a></td>
     </tr>
     </table>
 
 <h3 align="center">Einstellungen</h3>
 
-    <p><b>GPS</b><p>
+    <p><b>GPS</b></p>
 
-    Hier w&auml;hlen Sie die Ger&auml;teschnittstelle und die korrekte
-    &Uuml;bertragungsrate aus. Lesen Sie das Handbuch Ihres
-    GPS-Empf&auml;ngers um die Daten zu erfahren. Die meisten
-    seriellen Verbindungen arbeiten mit der Ger&auml;teschnittstelle
-    <i>/dev/ttyS0</i>. F&uuml;r Compact Flash Empf&auml;nger ist
-    <i>/dev/ttyS3</i> &uuml;blich, w&auml;hrend Blue Tooth Ger&auml;te mit der
-    Schnittstelle <i>/dev/rfcomm0</i> arbeiten.
-    Cumulus kann automatisch das richtige Ger&auml;t bei CF Kartenbenutzung
-    erkennen, wenn Sie den
-    Eintrag <i>CF</i> ausw&auml;hlen. Die Standard
-    &Uuml;bertragungsrate betr&auml;gt normalerweise 4800 bps.
+    <p>Hier w&auml;hlen Sie die Ger&auml;teschnittstelle und die korrekte
+    &Uuml;bertragungsrate aus. Schauen Sie in das Handbuch Ihres
+    GPS-Empf&auml;ngers um diese Daten zu erfahren.</p>
+
+    <p>Cumulus stellt eine GPS Status&uuml;bersicht bereit, in der Sie die Anzahl
+    der empfangenen Satelliten, deren Signalst&auml;rke und die empfangenen NMEA
+    Datens&auml;tze sehen k&ouml;nnen. Diese &Uuml;bersicht kann mit der <i>g</i>-Taste oder
+    duch antippen des GPS Status Indikators in der Statuszeile ge&ouml;ffnet werden.
     </p>
 
-    <p> Einige GPS-Empf&auml;nger k&ouml;nnen mit gespeicherten
-    Positionsdaten initialisiert werden, so dass sie ihre aktuelle
-    Position schneller erkennen. Aktivieren Sie <i>Soft Start</i>, um
-    dies zu erm&ouml;glichen. Wenn dies nicht ausreicht, aktivieren
-    Sie <i>Hard Start</i>, um den Empf&auml;nger beim Hochlauf von
-    Cumulus zur&uuml;ckzusetzen. Wenn es dennoch Probleme gibt, kann
-    der Knopf <i>Zur&uuml;cksetzen zum Auslieferungszustand</i>
-    benutzt werden.
+    <p><b>Achtung!</b> Cumulus verarbeitet nur NMEA Datens&auml;tze mit einer g&uuml;ltigen
+    Checksumme. Es kann ebenfalls einige propriet&auml;re NMEA Datens&auml;tze verarbeiten,
+    die von Ger&auml;ten wie, Cambridge, Volkslogger, Flarm or LX angeboten werden.
+    Solche Daten sind Wind, barometrische H&ouml;he, Variometer, MacCraedy und
+    Kollisions und Hinderniss Informationen.</p>
+
+<dl>
+  <dt><b>GPS Ger&auml;te</b></dt>
+
+  <dd>
+    In der Combobox k&ouml;nnen Sie die Ger&auml;teschnittstelle ausw&auml;hlen, &uuml;ber die
+    die Verbindung zum GPS Empf&auml;nger hergestellt werden soll:
+    <p>
+    <ul>
+      <li> Serialle Schittstelle (RS232) z.B. /dev/ttyS0.
+      <li> Bluetooth Schittstelle z.B. /dev/rfcomm0
+      <li> USB Schittstelle z.B. /dev/ttyUSB0
+      <li> GPS Location
+      <li> NMEA Simulator
+    </ul>
+    </p>
 
     <p>
-      Die meisten GPS Ger&auml;te liefern auf MSL (H&ouml;he &uuml;ber NN) bezogene
-H&ouml;henangaben. Einige von ihnen (z.B. CF BC-307) k&ouml;nnen aber auch die HAE (H&ouml;he
-&uuml;ber dem WGS84 Ellipsoid) liefern. Sollten Sie eine konstante Abweichnung in der angezeigten
-H&ouml;he nach oben oder unten feststellen, sollten Sie die jeweils andere Einstellung ausprobieren.
-Sollte dies alles nicht zum Erfolg f&uuml;hren, so w&auml;hlen Sie bitte die
-H&ouml;heneinstellung<em>Nutzer</em>. Nun haben Sie die M&ouml;glichkeit, einen entsprechenden
-&nbsp;H&ouml;henkorrekturwert Ihrer Wahl in der darunter sichtbar werdenden Spinbox einzutragen.
+    Serielle and Bluetooth Schittstellen ben&ouml;tigen eine Geschwindigkeitsangabe
+    zur &Uuml;bertragung. Die NMEA Standard &Uuml;bertragungsgeschwindigkeit betragt
+    4800 bps. Bei Bluetooth kann sie auch h&ouml;her liegen.</p>
+    <p>
+    Wenn Sie ein Nokia Internet Tablet N800/N810/N900 verwenden, dann sollte
+    der Eintrag <i>GPS Location</i> Ihre erste Wahl sein au&szlig;er Sie wollen sich
+    per USB zum GPS Empf&auml;nger verbinden. In solch einem Fall w&auml;hlen Sie
+    bitte den Eintrag <i>/dev/ttyUSB0</i> aus.</p>
+
+    <p>Ist Ihre Schittstelle nicht in der Liste zu finden, so &auml;ndern Sie
+    einfach einen bestehenden Eintrag, entspreched Ihren W&uuml;nschen, ab.</p>
+  </dd>
+
+  <dt><b>Höhenreferenz</b></dt>
+
+  <dd>
+    The default selection is GPS. Most of the GPS devices send MSL (mean sea
+    level) altitudes but some send HAE (Height above ellipsoid.) If your displayed
+    altitude deviate always by a constant factor from the expected value you can
+    correct that in the altitude dialog. You can open it by tipping on the
+    altitude display at the map view. Add your correction value in the spin box
+    labeled with Leveling. Positive values will be added and negative values
+    subtracted from the delivered altitude. If a GPS fix is established the
+    correction value will be applied immediately.
+    <p>
+    Some logger devices can deliver altitude values derived from a pressure
+    sonde. If you want to use pressure data, you have to select in the Altitude
+    Reference combo box the entry <i>Pressure</i>.
+    <br><b>Please note!</b> If you have selected the pressure item Cumulus
+    expects special NMEA records from the connected logger devices.
+    Otherwise you will not get displayed any altitude and variometer data!
+    <p>The following devices are supported by Cumulus:</p>
+    <ul>
+    <li>Cambrigde device: It delivers altitude values (MSL and STD)
+        derived from a pressure sonde.
+    <li>Volkslogger device: It can deliver the STD altitude derived from a
+        pressure sonde. To get the right MSL altitude, you have to setup the
+        correct QNH value in the Preflight Settings. Furthermore do enable the
+        sending of the PGCS record in the Volkslogger setup menu.
+    <li>LX Navigation devices: They deliver also altitude values derived from a
+        pressure sonde. Do enable the sending of the LXWP records
+        in the LX setup menu. On a LX20 device you have to enter the Password
+        menu. Enter the password, default is 96990 and goto the NMEA menu.
+        In the NEMA menu set the entry LXWP? to 'Y'. Set the transfer speed in
+        Cumulus to 4800 bps. The LX20 device uses this speed for NEMA transfer
+        regardless of the selected PC transfer speed.
+    <li>FLARM device, hardware version 2 or later: It delivers altitude values
+        derived from a pressure sonde. Do enable the sending of the PGRMZ record
+        in the FLARM setup menu.
+    </ul>
+    </p>
+
+  </dd>
+
+  <dt><b>Abgleich der Systemuhr</b></dt>
+
+  <dd>
+    Cumulus is able to synchronize the PDA system clock to the GPS
+    time, if the option <i>Sync Clock</i> is activated. But
+    this will only work, if Cumulus is running as user root. On Nokia
+    Internet tablet this feature is switched off because user processes
+    are not running under the root identity.
+  </dd>
+</dl>
+
+
 
     <p> Cumulus gestattet auch das Abgleichen der Systemuhr des PDA
     auf die GPS Zeit, wenn diese Option aktiviert wird. Dazu muss das
@@ -66,9 +135,9 @@ H&ouml;heneinstellung<em>Nutzer</em>. Nun haben Sie die M&ouml;glichkeit, einen 
     <td></td>
     </tr>
     <tr>
-    <td align="left"><a href="cumulus-settings-sector.html">zur&uuml;ck</a></td>
+    <td align="left"><a href="cumulus-settings-personal.html">zur&uuml;ck</a></td>
     <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
-    <td align="right"><a href="cumulus-settings-map.html">weiter</a></td>
+    <td align="right"><a href="cumulus-settings-glider.html">weiter</a></td>
     </tr>
     </table>
 </body>
