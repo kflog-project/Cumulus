@@ -357,8 +357,8 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
         }
       else
         {
-          north = x;
-          east  = y;
+          north = static_cast<int> (rint(x));
+          east  = static_cast<int> (rint(y));
         }
 
       int relTrack = 0;
