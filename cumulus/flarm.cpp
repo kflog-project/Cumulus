@@ -359,7 +359,7 @@ void Flarm::collectPflaaFinished()
   // Start Flarm PFLAA data clearing supervision. There is no other way
   // of solution because the PFLAA sentences are only sent if other
   // aircrafts are in view of the FLARM receiver.
-  timer->start( 6000 );
+  timer->start( 3000 );
 
   // Emit signal, if further processing in radar view is required.
   if( Flarm::getCollectPflaa() )
