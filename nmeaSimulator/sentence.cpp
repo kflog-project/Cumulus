@@ -32,7 +32,7 @@ Sentence::Sentence()
 
 /**
  * A complete GPS sentence is expected starting after the $ with the keyword
- * and endingwithout the asterix. Starting $ sign, ending asterix and
+ * and ending without the asterix. Starting $ sign, ending asterix and
  * checksum are added by this method before sending.
  */
 int Sentence::send( QString& sentence, int fd )
