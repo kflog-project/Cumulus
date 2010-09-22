@@ -1961,7 +1961,7 @@ void Map::__drawOtherAircraft()
       _globalMapConfig->createCircle( blackCircle, diameter, QColor(Qt::black), 1.0 );
       _globalMapConfig->createCircle( redCircle, diameter, QColor(Qt::red), 1.0 );
       _globalMapConfig->createCircle( blueCircle, diameter, QColor(Qt::blue), 1.0 );
-      _globalMapConfig->createCircle( magentaCircle, diameter, QColor(Qt::darkMagenta), 1.0 );
+      _globalMapConfig->createCircle( magentaCircle, diameter, QColor(Qt::magenta), 1.0 );
     }
 
   // Load selected Flarm object. It is empty in case of no selection.
@@ -2182,8 +2182,11 @@ void Map::__drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
     {
       // Additional Information are available. We draw a triangle.
       QPixmap object;
-      MapConfig::createTriangle( object, triangle,
-                                 Qt::darkMagenta, flarmAcft.Track, 1.0 );
+
+      QPen pen(Qt::black);
+      pen.setWidth(3);
+      MapConfig::createTriangle( object, triangle, Qt::magenta,
+                                 flarmAcft.Track, 1.0, Qt::transparent, pen );
 
       painter.drawPixmap(  Rx-triangle/2, Ry-triangle/2, object );
       usedObjectSize = triangle;

@@ -868,12 +868,13 @@ void MapConfig::createSquare( QPixmap& pixmap, int size,
   * @param color fill color of triangle
   * @param rotate rotation angle in degree of triangle
   * @param opacity a value between 0.0 ... 1.0
-  * @param bg background color of pixmap. Default is set to transparent.s
+  * @param bg background color of pixmap. Default is set to transparent
   */
 void MapConfig::createTriangle( QPixmap& pixmap, int size,
                                 QColor color, int rotate,
                                 double opacity,
-                                QColor bg )
+                                QColor bg,
+                                QPen pen )
 {
   if( size % 2 )
     {
@@ -887,7 +888,7 @@ void MapConfig::createTriangle( QPixmap& pixmap, int size,
 
   QPainter painter( &pixmap );
 
-  painter.setPen( Qt::NoPen );
+  painter.setPen( pen );
   painter.setBrush( QBrush( color, Qt::SolidPattern ) );
 #ifndef MAEMO
   // @AP: that did not work under Maemo. No idea why?

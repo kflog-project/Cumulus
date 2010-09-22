@@ -395,7 +395,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       if( it.key() == selectedObject )
         {
           // If object is selected, we use another color
-          color = Qt::darkMagenta;
+          color = Qt::magenta;
 
           QFont f = font();
           f.setPointSize(FontSize);
@@ -468,7 +468,10 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       else if( acft.Track != INT_MIN )
         {
           // Object with track info
-          MapConfig::createTriangle( object, 34, color, relTrack, 1.0 );
+          QPen pen(Qt::black);
+          pen.setWidth(3);
+          MapConfig::createTriangle( object, 34, color, relTrack,
+                                     1.0, Qt::transparent, pen );
         }
       else
         {

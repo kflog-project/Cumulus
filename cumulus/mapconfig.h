@@ -223,7 +223,8 @@ public:
     static void createTriangle( QPixmap& pixmap, int size,
                                 QColor color, int rotate=0,
                                 double opacity=0.5,
-                                QColor bg=Qt::transparent );
+                                QColor bg=Qt::transparent,
+                                QPen pen=Qt::NoPen );
 
 public slots:
     /**
