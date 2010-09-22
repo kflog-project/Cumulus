@@ -41,6 +41,9 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   connect( Flarm::instance(), SIGNAL(newFlarmPflaaData()),
            display, SLOT(slot_UpdateDisplay()) );
 
+  connect( Flarm::instance(), SIGNAL(flarmPflaaDataTimeout()),
+           display, SLOT(slot_ResetDisplay()) );
+
   QGroupBox* buttonBox = new QGroupBox( this );
   buttonBox->setContentsMargins(2,2,2,2);
 

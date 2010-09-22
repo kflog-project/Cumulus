@@ -224,6 +224,12 @@ signals:
    */
   void newFlarmPflaaData();
 
+  /**
+   * This signal is emitted, if no new Flarm data are received and the
+   * data expecting timeout has expired.
+   */
+  void flarmPflaaDataTimeout();
+
 private slots:
 
   /** Called if timer has expired. Used for Flarm data clearing. */

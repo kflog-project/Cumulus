@@ -108,6 +108,9 @@ public slots:
   /** Update display */
   void slot_UpdateDisplay();
 
+  /** Reset display to background. */
+  void slot_ResetDisplay();
+
   /** Set object to be selected. It is the hash key. */
   void slot_SetSelectedObject( QString newObject )
   {

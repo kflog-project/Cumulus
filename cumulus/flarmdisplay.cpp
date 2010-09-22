@@ -178,6 +178,12 @@ void FlarmDisplay::slot_UpdateDisplay()
   counter++;
 }
 
+/** Reset display to background. */
+void FlarmDisplay::slot_ResetDisplay()
+{
+  repaint();
+}
+
 void FlarmDisplay::showEvent( QShowEvent *event )
 {
   Q_UNUSED( event )
@@ -198,7 +204,6 @@ void FlarmDisplay::resizeEvent( QResizeEvent *event )
 void FlarmDisplay::mousePressEvent( QMouseEvent *event )
 {
   // qDebug() << "FlarmDisplay::mouseEvent: Pos=" << event->pos();
-
   if (event->button() != Qt::LeftButton)
     {
       return;
@@ -269,6 +274,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
 
   if( flarmAcfts.size() == 0 )
     {
+      qDebug() << "FlarmDisplay::paintEvent: empty hash";
       // hash is empty
       return;
     }
@@ -389,14 +395,14 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       if( it.key() == selectedObject )
         {
           // If object is selected, we use another color
-          color = Qt::magenta;
+          color = Qt::darkMagenta;
 
           QFont f = font();
           f.setPointSize(FontSize);
           f.setBold( true );
           painter.setFont(f);
 
-          QPen pen(Qt::magenta);
+          QPen pen(color);
           pen.setWidth(3);
           painter.setPen( pen );
 

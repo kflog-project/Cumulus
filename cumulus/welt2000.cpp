@@ -6,10 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2006-2009 by Axel Pauli, axel@kflog.org
+ **   Copyright (c):  2006-2010 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -18,16 +18,7 @@
 #include <math.h>
 #include <unistd.h>
 
-#include <QBuffer>
-#include <QDateTime>
-#include <QFile>
-#include <QFileInfo>
-#include <QRegExp>
-#include <QTextStream>
-#include <QByteArray>
-#include <QHash>
-#include <QSet>
-#include <QObject>
+#include <QtCore>
 
 #include "airfield.h"
 #include "basemapelement.h"
@@ -52,7 +43,7 @@
 // #define BOUNDING_BOX 1
 
 // type definition for compiled airfield files
-#define FILE_TYPE_AIRFIELD_C 0x62
+#define FILE_TYPE_AIRFIELD_C 0x63
 
 // version used for files created from welt2000 data
 #define FILE_VERSION_AIRFIELD_C 202
@@ -537,6 +528,7 @@ bool Welt2000::parse( QString& path,
   QTime t;
   t.start();
 
+#if 0
   // Filter out the needed extract for us from the Welt2000
   // file. That will reduce the file size over the half.
   if( filter( path ) == false )
@@ -544,6 +536,7 @@ bool Welt2000::parse( QString& path,
       // It seems, that no Welt2000 file has been passed
       return false;
     }
+#endif
 
   QFile in(path);
 
@@ -1097,11 +1090,11 @@ bool Welt2000::parse( QString& path,
       if( ( !ok || f < 117.97 || f > 137.0 ) )
         {
           if( olField == false )
-        {
-              // Don't display warnings for outlandings
-          qWarning( "W2000, Line %d: %s (%s) missing or wrong frequency, set value to 0!",
-                    lineNo, afName.toLatin1().data(), country.toLatin1().data() );
-        }
+            {
+                  // Don't display warnings for outlandings
+              qWarning( "W2000, Line %d: %s (%s) missing or wrong frequency, set value to 0!",
+                        lineNo, afName.toLatin1().data(), country.toLatin1().data() );
+            }
 
           frequency = "000.000"; // reset frequency to unknown
         }
@@ -1275,7 +1268,14 @@ bool Welt2000::parse( QString& path,
           // elevation in meters
           outbuf << qint16( elevation);
           // frequency written as e.g. 126.500, must be put into 16 bits
-          outbuf << quint16(frequency.left(3).toInt()*1000+frequency.right(3).toInt()-100000);
+          if( frequency == "000.000" )
+            {
+              outbuf << quint16(0);
+            }
+          else
+            {
+              outbuf << quint16(frequency.left(3).toInt()*1000+frequency.right(3).toInt()-100000);
+            }
           // two runway directions packed in a word
           outbuf << quint16(rwDir);
           // runway length in meters
@@ -1470,7 +1470,16 @@ bool Welt2000::readCompiledFile( QString &path,
       in >> position;
       in >> elevation;
       in >> inFrequency;
-      frequency.sprintf("%3d.%03d",(inFrequency+100000)/1000,(inFrequency)%1000);
+
+      if( inFrequency == 0 )
+        {
+          frequency = "000.000";
+        }
+      else
+        {
+          frequency.sprintf("%3d.%03d",(inFrequency+100000)/1000,(inFrequency)%1000);
+        }
+
       in >> rwDir;
       in >> rwLen;
       in >> rwSurface;

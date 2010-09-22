@@ -376,6 +376,6 @@ void Flarm::slotTimeout()
   // Emit signal, if further processing in radar view is required.
   if( Flarm::getCollectPflaa() )
     {
-      emit newFlarmPflaaData();
+      emit flarmPflaaDataTimeout();
     }
 }
