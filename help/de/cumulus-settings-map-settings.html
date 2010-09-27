@@ -14,58 +14,131 @@
     <td></td>
     </tr>
     <tr>
-    <td align="left"><a href="cumulus-settings-gps.html">zur&uuml;ck</a></td>
+    <td align="left"><a href="cumulus-settings-glider.html">zur&uuml;ck</a></td>
     <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
-    <td align="right"><a href="cumulus-settings-map-advanced.html">weiter</a></td>
+    <td align="right"><a href="cumulus-settings-map-objects.html">weiter</a></td>
     </tr>
     </table>
 
 <h3 align="center">Einstellungen</h3>
     <p><b>Karte</b><p>
 
-    Hier k&ouml;nnen Sie einige Einstellungen f&uuml;r die Darstellung
-    der Karte festlegen.
-    <p>
-    Wenn Sie Probleme mit dem Speicherverbrauch haben oder wenn Sie
-    die Menge der dargestellten Information reduzieren m&ouml;chten,
-    k&ouml;nnen Sie einige optionale Elemente auf der Karte
-    deaktivieren.  Diese Elemente werden dann nicht mehr geladen.
-    Danach m&uuml;ssen Sie aber Cumulus beenden und neu starten, damit
-    diese Optionen wirksam werden.
-    <p>
-    Das Deaktivieren von einzelnen Kartenelementen beschleunigt
-    generell das Laden der Karten.
-    </p>
+    Hier k&ouml;nnen Sie den Speicherort f&uuml;r die Karten und die Einstellungen
+    f&uuml;r die Darstellung der Karte festlegen.
 
-    <p>
-    Das Laden der H&ouml;henlinien kann ebenfalls deaktiviert werden.
-    Wenn H&ouml;henlinien aktiviert sind, wird die Karte entsprechend
-    der H&ouml;he eingef&auml;rbt. Diese Einf&auml;rbung ist
-    detailierter, wenn Sie einen hohen Zoom Faktor w&auml;hlen, im
-    anderen Fall wird sie grober. Beachten Sie, dass die
-    H&ouml;henlinien f&uuml;r andere Funktionen die die
-    Bodenh&ouml;he ben&ouml;tigen essenziell ist.
-    </p>
+    <dl>
 
-    <p>
-    Das Ausschalten der Darstellung von Wegpunkten l&ouml;scht diese
-    auf der gesamten Kartendarstellung. Durch dr&uuml;cken der Taste
-    <b>A</b> kann man zwischen beiden M&ouml;glichkeiten hin- und
-    herschalten.
-    </p>
+<a name="Karten"></a>
+<dt><b>Maps</b></dt>
+</a>
 
-    <p>
-    Die Kurslinie ist eine Linie von Ihrer gegenw&auml;rtigen Position
-    zum ausgew&auml;hlten Zielpunkt. Sie wird als lila Linie
-    gezeichnet.
-    </p>
+<dd>
+Als Speicherort f&uuml;r die Kartendaten sollten Sie unter Maemo
+(Nokia Internet Tablet) ein Verzeichnis auf einer der beiden SD Karten anlegen.
+Mit Hilfe des Knopfes <i>Karten</i> k&ouml;nnen Sie einen Verzeichnis Auswahl Dialog
+&ouml;ffnen und zu einen neuen Ort auf einer der SD Karten navigieren. Diese sind
+unter den Wurzeln <i>/media/mmc[1|2]</i> zu finden. Im Textfeld neben dem Knopf
+sehen Sie das gerade ausgew&auml;hlte Verzeichnis. Sie k&ouml;nnen diesen Texteintrag
+auch mit der Hand modifizieren und so Ihre bevorzugte Position setzen.
+</dd>
 
-    <p>
-    Im Men&uuml; <a href="cumulus-settings-map-advanved.html">Weitere
-    Optionen...</a>, in welches man durch dr&uuml;cken des
-    entsprechenden Knopfes gelangt, lassen sind weitere
-    Kartenspezifika einstellen.
-    </p>
+<a name="Projection"></a>
+<dt><b>Projektion</b></dt>
+
+<dd>
+Die gespeicherten Koordinatenpunkte der Rohkarten von Cumulus sind nach dem
+WGS84 Datum kodiert und m&uuml;ssen zur Darstellung noch auf ein Projektionsabbild
+umgerechnet werden, da die Erde die Form eines abgerundeten K&ouml;rpers hat und
+nicht flach ist. Es gibt viele Arten von Kartenprojektionen, Cumlus unterst&uuml;tzt
+die folgenden zwei:
+
+<p>
+<ul>
+  <li><i>Plate Carr&eacute;e</i> - Zylinder Projektion</li>
+  <li><i>Lambert</i> - Lambertsche Schnittkegel Projektion</li>
+</ul>
+</p>
+
+Die Zylinder Projektion ist einfacher und schneller zu berechnen und deshalb der
+Standard in Cumulus. Die Lambertsche Schnittkegel Projektion ist mehr komplex
+und braucht deswegen auch l&auml;nger f&uuml;r das erte Laden aber sie ist auch
+verzerrungs&auml;rmer als die Zylinder Projektion.
+
+<br>
+Jede Kartenprojektion ben&ouml;tigt einige Basisdaten. W&auml;hlen Sie f&uuml;r die Zylinder
+Projektion einen Breitengrad nahe Ihres Heimatplatzes aus. Wenn die Option
+<i>Projektion folgt Heimatposition</i> aktiviert ist, wird automatisch die
+Breite Ihres Heimatplatzes hier als bevorzugter Ort eingesetzt, sobald ein
+Heimatort gesetzt wird. Das sichert immer beste Zeichenergebnisse f&uuml;r die Karte
+und ist der Standard in Cumulus.
+
+<br>F&uuml;r die <i>Lambert</i> Projektion sollten Sie zwei Breitengrade und einen
+L&auml;ngengrad von dem Gebiet in dem Sie gew&ouml;hnlich fliegen ausw&auml;hlen. Allerdings
+wird hier kein automatisches Setzen der Daten bei Ver&auml;nderung des Heimatortes
+unterst&uuml;tzt. Deswegen w&auml;hlen Sie diese Darstellung nur, wenn Sie mit der
+Handhabung der Lambert Projektion auch vetraut sind.
+
+<br>
+Nach dem &Auml;ndern der Projektionsdaten muss Cumulus alle Karten aus den
+Rohdaten neu berechnen. <b>Bitte beachten Sie!</b> Wenn die Projektionsdaten
+nicht korrekt gesetzt sind, kann man eine verzerrte Kartendarstellung oder auch
+keine Karte zu sehen bekommen. Das trifft besonders dann zu, wenn man sich sehr
+weit weg von den gesetzten Projektionskoordinaten entfernt.
+</dd>
+
+<dt><b>Projektion folgt Heimatposition</b></dt>
+
+<dd>
+Wenn diese Checkbox aktiviert ist, werden alle Karten automatisch nach einem
+Heimatortwechsel neu berechnet. Diese Option sichert die besten Zeichenresultate
+ist aber nur f&uuml;r die <i>Zylinder Projektion</i> verf&uuml;gbar.
+
+</dd>
+
+<dt><b>L&ouml;sche unbenutzte Karten</b></dt>
+
+<dd>
+Cumulus &uuml;nterst&uuml;tzt zwei Speicherstrategien f&uuml;r die Kartenverwaltung.
+Karten werden nur geladen, wenn sie ben&ouml;tigt werden, verbleiben aber solange
+im Speicher bis der zur Verf&uuml;gung stehende Platz aufgebraucht ist oder werden
+sofort wieder gel&ouml;scht, wenn sie nicht mehr gebraucht werden. Die erste Variante
+kann man anwenden, wenn man sehr viel Speicher hat und auch oft die Karte
+start vergr&ouml;&szlig;ern oder stark verkleinern will. Die zweite Variante ist der
+Standard und wird besonders f&uuml;r Ger&auml;te mit wenig Speicher empfohlen.
+</dd>
+
+<a name="Download"></a>
+<dt><b>Setze Proxy</b></dt>
+
+<dd>
+Dr&uuml;cken Sie den Knopf <i>Setze Proxy</i>, wenn Sie einen Proxy f&uuml;r Downloads
+aus dem Internet brauchen. Es wird eine Dialogbox ge&ouml;ffnet, in der Sie den Host
+und den Port eingeben k&ouml;nnen. Lassen Sie alle Felder leer, wenn Sie keinen
+Proxy ben&ouml;tigen. Der gesetzte Proxy wird rechts neben dem Proxy Knopf angezeigt.
+</dd>
+
+<dt><b>Mittelpunkt Breite/L&auml;nge</b></dt>
+
+<dd>
+Tragen Sie hier die Koordinaten Ihres Mittelpunkts ein, um den herum Karten
+aus dem Internet herunter geladen werden sollen.
+</dd>
+
+<dt><b>Installiere Karten</b></dt>
+
+<dd>
+Definieren Sie einen Radius in der Spinbox um Ihren Mittelpunkt herum, aus
+dessen Bereich alle Karten aus dem Internet herunter geladen werden sollen.
+Durch Dr&uuml;cken von <i>Installiere Karten</i> wird der Download gestartet.
+Stellen Sie sicher, das Sie eine aktive Internetverbindung zur Verf&uuml;gung haben,
+andererseits schl&auml;gt der Download fehl. Wenn Cumulus sich schneller als 5Km/h
+bewegt, werden keine Downloads mehr ausgef&uuml;hrt. Wenn alle Downloads abgearbeitet
+sind, wird eine Ergebnismeldung angezeigt. Cumulus f&uuml;hrt keine spezielle
+Logdatei &uuml;ber die Downloads. Wenn man Cumulus in einen X-Terminal Fenster
+startet, kann man die einzelnen Ergebnisse als Debug Nachrichten darin sehen.
+</dd>
+
+</dl>
 
     <table width="100%">
     <tr>
@@ -74,9 +147,9 @@
     <td></td>
     </tr>
     <tr>
-    <td align="left"><a href="cumulus-settings-gps.html">zur&uuml;ck</a></td>
+    <td align="left"><a href="cumulus-settings-glider.html">zur&uuml;ck</a></td>
     <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
-    <td align="right"><a href="cumulus-settings-map-advanced.html">weiter</a></td>
+    <td align="right"><a href="cumulus-settings-map-objects.html">weiter</a></td>
     </tr>
     </table>
 </body>

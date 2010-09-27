@@ -38,7 +38,7 @@
     Checksumme. Es kann ebenfalls einige propriet&auml;re NMEA Datens&auml;tze verarbeiten,
     die von Ger&auml;ten wie, Cambridge, Volkslogger, Flarm or LX angeboten werden.
     Solche Daten sind Wind, barometrische H&ouml;he, Variometer, MacCraedy und
-    Kollisions und Hinderniss Informationen.</p>
+    Kollisions- und Hindernisinformationen.</p>
 
 <dl>
   <dt><b>GPS Ger&auml;te</b></dt>
@@ -66,67 +66,99 @@
     per USB zum GPS Empf&auml;nger verbinden. In solch einem Fall w&auml;hlen Sie
     bitte den Eintrag <i>/dev/ttyUSB0</i> aus.</p>
 
-    <p>Ist Ihre Schittstelle nicht in der Liste zu finden, so &auml;ndern Sie
-    einfach einen bestehenden Eintrag, entspreched Ihren W&uuml;nschen, ab.</p>
+    Ist Ihre Schittstelle nicht in der Liste zu finden, so &auml;ndern Sie
+    einfach einen bestehenden Eintrag, entspreched Ihren W&uuml;nschen, ab.
   </dd>
 
-  <dt><b>Höhenreferenz</b></dt>
+  <dt><b>H&ouml;henreferenz</b></dt>
 
   <dd>
-    The default selection is GPS. Most of the GPS devices send MSL (mean sea
-    level) altitudes but some send HAE (Height above ellipsoid.) If your displayed
-    altitude deviate always by a constant factor from the expected value you can
-    correct that in the altitude dialog. You can open it by tipping on the
-    altitude display at the map view. Add your correction value in the spin box
-    labeled with Leveling. Positive values will be added and negative values
-    subtracted from the delivered altitude. If a GPS fix is established the
-    correction value will be applied immediately.
+    Die Standardeinstellung ist GPS. Die meisten GPS Ger&auml;te liefern die H&ouml;he auf
+    den Meeresspiegel bezogen, als sogenanntes MSL (mean sea level). Manche
+    Ger&auml;te liefern auch die H&ouml;he auf den zu Grunde liegenden Ellipsiod bezogen
+    oder haben eine eingebaute Drucksonde. Wenn Ihre angezeigte H&ouml;he immer um
+    einen konstanten Betrag von der richtigen H&ouml;he &uuml;ber dem Meer abweicht, so
+    l&auml;&szlig;t sich dieses mittels des H&ouml;hendialogs korregieren. Tippen Sie auf die
+    H&ouml;henanzeige in der Kartenansicht und der Dialog wird ge&ouml;ffnet. Selektieren
+    Sie das Feld Abgleich und &auml;ndern Sie mit den Plus bzw. Minus Tasten den
+    eingestellten Wert. Positive Werte werden zur angezeigten H&ouml;he dazu addiert,
+    negative Werten werden abgezogen. Wenn ein GPS Fix existiert, wird der
+    Korrekturwert sofort auf die Anzeige angewendet.
     <p>
-    Some logger devices can deliver altitude values derived from a pressure
-    sonde. If you want to use pressure data, you have to select in the Altitude
-    Reference combo box the entry <i>Pressure</i>.
-    <br><b>Please note!</b> If you have selected the pressure item Cumulus
-    expects special NMEA records from the connected logger devices.
-    Otherwise you will not get displayed any altitude and variometer data!
-    <p>The following devices are supported by Cumulus:</p>
-    <ul>
-    <li>Cambrigde device: It delivers altitude values (MSL and STD)
-        derived from a pressure sonde.
-    <li>Volkslogger device: It can deliver the STD altitude derived from a
-        pressure sonde. To get the right MSL altitude, you have to setup the
-        correct QNH value in the Preflight Settings. Furthermore do enable the
-        sending of the PGCS record in the Volkslogger setup menu.
-    <li>LX Navigation devices: They deliver also altitude values derived from a
-        pressure sonde. Do enable the sending of the LXWP records
-        in the LX setup menu. On a LX20 device you have to enter the Password
-        menu. Enter the password, default is 96990 and goto the NMEA menu.
-        In the NEMA menu set the entry LXWP? to 'Y'. Set the transfer speed in
-        Cumulus to 4800 bps. The LX20 device uses this speed for NEMA transfer
-        regardless of the selected PC transfer speed.
-    <li>FLARM device, hardware version 2 or later: It delivers altitude values
-        derived from a pressure sonde. Do enable the sending of the PGRMZ record
-        in the FLARM setup menu.
-    </ul>
+    Einige Logger Ger&auml;te k&ouml;nnen H&ouml;hen liefern, die von ihrer eingebauten
+    Drucksonde stammen. Um diese Daten zu nutzen, m&uuml;ssen Sie den Eintrag
+    <i>Druck</i> bei der H&ouml;henreferenz Einstellung aus w&auml;hlen.
+    <br><b>Achtung!</b> Wenn Sie den Eintrag Druck gew&auml;hlt haben, erwartet
+    Cumulus spezielle NMEA Datens&auml;tze von Ihren angeschlossenen Logger Ger&auml;t.
+    Andernfalls werden weder H&ouml;he noch Variometer Daten angezeigt!
     </p>
+    <p>
+    Die folgenden Ger&auml;te werden von Cumulus unterst&uuml;tzt:
+    </p>
+
+    <ul>
+    <li>Cambrigde Ger&auml;te: Es liefert H&ouml;hendaten (MSL und STD), die von einer
+        Drucksonde stammen.</li>
+    <li>Volkslogger Ger&auml;te: Es liefert H&ouml;hendaten bezogen auf STD, die von einer
+        Drucksonde stammen. Um die richtige MSL H&ouml;he zu bekommen, muss der
+        korrekte QHN Wert im H&ouml;hendialog eingestellt werden. Weiterhin m&uuml;ssen
+        Sie das Senden des PGCS Datensatzes im Volkslogger Einstellmen&uuml;
+        aktivieren.</li>
+    <li>LX Navigation Ger&auml;te: Es liefert H&ouml;hendaten bezogen auf MSL, die von einer
+        Drucksonde stammen. Dazu muss das Senden der LXWP Datens&auml;tze im
+        Einstellmen&uuml; des Ger&auml;tes aktiviert werden. Bei einem LX20 m&uuml;ssen Sie
+        in das Passwort Men&uuml; gehen, das aktuelle Passwort (Standard ist 96990)
+        eingeben und ins NMEA Men&uuml; dann wechseln. Hier setzen Sie den Eintrag
+        LXWP? auf 'Y'. Setzen Sie die &Uuml;bertragungsgeschwingigkeit in Cumulus
+        auf 4800 bps. Das ist die Standardgeschwindigkeit des LX Ger&auml;tes
+        unabh&auml;ngig von der eingestellten &Uuml;bertragungsgeschwingigkeit zum PC.
+        </li>
+    <li>FLARM Ger&auml;t, Hardware Version 2 und sp&auml;ter: Es liefert H&ouml;hendaten
+        bezogen auf MSL, die von einer Drucksonde stammen. Aktivieren Sie im
+        FLARM Men&uuml; das Senden der PGRMZ, PRMC, GPGGA, GPPSA und der
+        propriet&auml;ren FLARM Datens&auml;tze.</li>
+    </ul>
 
   </dd>
 
   <dt><b>Abgleich der Systemuhr</b></dt>
 
   <dd>
-    Cumulus is able to synchronize the PDA system clock to the GPS
-    time, if the option <i>Sync Clock</i> is activated. But
-    this will only work, if Cumulus is running as user root. On Nokia
-    Internet tablet this feature is switched off because user processes
-    are not running under the root identity.
+    Cumulus gestattet auch das Abgleichen der Systemuhr des PDA
+    auf die GPS Zeit, wenn die Option <i>Sync Clock</i> aktiviert wird.
+    Dazu muss das Programm aber unter dem Benutzer <i>root</i> laufen. Bei den
+    Nokia Internet Tablets ist diese Option nicht verf&uuml;gbar, da Cumulus dort
+    nur unter dem Benutzernamen <i>user</i> laufen kann.
   </dd>
 </dl>
 
+<p><b>Verarbeitete GPS Datens&auml;tze</b>
+<p>
+Cumulus verarbeitet die folgenden NMEA and propriet&auml;ren Datens&auml;tze:
+<p>
+<table border="1">
+  <tr><td>$GPRMC</td> <td>Recommended Minimum Specific GNSS Data</td></tr>
+  <tr><td>$GPGLL</td> <td>Geographic Position - Latitude and Longitude</td></tr>
+  <tr><td>$GPGGA</td> <td>Global Positioning System Fixed Data</td></tr>
+  <tr><td>$GPGSA</td> <td>GNSS DOP and Active Satellites</td></tr>
+  <tr><td>$GPGSV</td> <td>GNSS Satellites in View</td></tr>
+  <tr><td>$GPDTM</td> <td>Map datum</td></tr>
+  <tr><td>$PGRMZ</td> <td>Garmin and FLARM proprietary sentence with barometric or GPS altitude data.</td></tr>
 
+  <tr><td>$PFLAU</td> <td>FLARM proprietary sentence with status, intruder and obstacle data.</td></tr>
+  <tr><td>$PFLAA</td> <td>FLARM proprietary sentence with data about other aircraft around.</td></tr>
 
-    <p> Cumulus gestattet auch das Abgleichen der Systemuhr des PDA
-    auf die GPS Zeit, wenn diese Option aktiviert wird. Dazu muss das
-    Programm aber unter dem Benutzer root laufen.
+  <tr><td>$PCAID</td> <td>Cambridge proprietary sentence with STD altitude</td></tr>
+  <tr><td>!w</td> <td>Cambridge proprietary sentence with MSL altitude, QHN setting,
+                      wind direction, MacCready, wind speed and variometer </td></tr>
+  <tr><td>$PGCS</td> <td>Volkslogger proprietary sentence with STD altitude</td></tr>
+  <tr><td>$LXWP0</td> <td>LX Navigation proprietary sentence with MSL altitude, variometer and wind data</td></tr>
+  <tr><td>$LXWP2</td> <td>LX Navigation proprietary sentence with McCready data</td></tr>
+  <tr><td>$MAEMO0</td> <td>Cumulus internal proprietary sentence, if LibLocation from MAEMO 5 is used.</td></tr>
+  <tr><td>$MAEMO1</td> <td>Cumulus internal proprietary sentence, if LibLocation from MAEMO 5 is used.</td></tr>
+</table>
+</p>
+
 
     <table width="100%">
     <tr>
