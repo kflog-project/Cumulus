@@ -14,121 +14,71 @@
     <td></td>
     </tr>
     <tr>
-    <td align="left"><a href="cumulus-settings-map.html">zur&uuml;ck</a></td>
+    <td align="left"><a href="cumulus-settings-map-settings.html">zur&uuml;ck</a></td>
     <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
-    <td align="right"><a href="cumulus-settings-airspace.html">weiter</a></td>
+    <td align="right"><a href="cumulus-settings-terrain.html">weiter</a></td>
     </tr>
     </table>
 
 <h3 align="center">Einstellungen</h3>
 
-<p><b>Karte - Weitere Optionen</b></p>
+<p><b>Karte - Objekte</b></p>
 
 <p>
-Auf dieser Seite lassen sich einige spezifische Karteneigenschaften
-einstellen.
+Hier k&ouml;nnen Sie die Objekte ausw&auml;hlen, die geladen und auf der Karte angezeigt
+werden sollen.</p>
 
-<dl>
+<p>
+Wenn Sie zu wenig Arbeitsspeicher haben oder Sie wollen die Menge der angezeigten
+Informationen auf der Karte reduzieren, dann sollten Sie die entsprechende Kreuze
+bei den angezeigten Ojekten in der Tabelle entfernen. Diese Objekte werden dann auch nicht mehr
+geladen. Sie m&uuml;ssen nach &Auml;nderungen einen Neustart von Cumulus durchf&uuml;hren,
+damit Ihre neue Auswahl auch aktiv wird.
+</p>
 
-<dt><b>Projektion</b></dt>
+<p>
+Das Abschalten von einzelnen Objekten steigert die Lade- und Zeichengeschwindigkeit
+und nimmt auch weniger Arbeitsspeicher in Anspruch. Besonders betroffen sind davon
+die H&ouml;henfl&auml;chen. Ist das Laden und Zeichen dieser aktiviert, wird das Gel&auml;nde
+entsprechend den vorgegebenen Terrainfarben eingef&auml;rbt.
+<b>Beachten Sie!</b> Um Gel&auml;ndeh&ouml;hen zur Verf&uuml;gung zu haben, m&uuml;ssen die
+H&ouml;henfl&auml;chen aktiviert sein.</p>
 
-<dd>
-Die Rohkartendaten, die Cumulus benutzt, sind noch nicht auf eine
-bestimme Projektion bezogen. Dies wird erst beim ersten Laden
-ausgef&uuml;hrt. Es gibt die verschiedensten Arten von
-Kartenprojektionen. Man ben&ouml;tigt eine solche Projektion, da die
-Erde ein Rotationsellipsoid ist aber die Karte nur ein ebenes Abbild
-wieder gibt.
+<p>
+Die Kurslinie ist eine Linie von Ihrer gegenw&auml;rtigen Position zu Ihrem
+gew&auml;hlten Ziel. Sie kann in unterschiedlichen Farben gezeichnet werden, wenn
+ein Flugzeug ausgew&auml;hlt wurde. Die Farben symbolisieren die Erreichbarkeit
+Ihres Zieles.</p>
 
-<p>Cumulus unterst&uuml;zt 2 Projektionsarten:
+<p>
+Beschriftungsmarken neben bestimmten Kartenobjekten k&ouml;nnen hier und auch &uuml;ber
+das Men&uuml; ein- bzw. ausgeschaltet werden. Weiterhin gibt es bestimmte Tasten
+daf&uuml;r. Siehe <a href="cumulus-usage.html#shortcuts">hier</a> f&uuml;r weitere
+Hinweise dazu. Eine Beschriftungsmarke, normaler Weise der Name des Objektes,
+wird nebem dem Objekt gezeichnet, wenn die entsprechende Option aktiv ist.
+Seinen Sie vorsichtig mit der Aktivierung solcher Marken. Sie k&ouml;nnen bei gr&ouml;&szlig;en
+Kartenma&szlig;st&auml;ben sich gegenseitig oder auch andere Kartenobjekte verdecken.
+</p>
+
+<p>
+Wegpunkte sind mit einem Wertungsattribut versehen. Die folgenden Attribute sind
+in Verwendung:
+</p>
 
 <ul>
-<li><i>Plate Carr&eacute;e</i> - &auml;quidistante zylindrische Projektion
-
-<li><i>Lambert</i> - winkeltreue Schnittkegelprojektion
-
+  <li> klein
+  <li> normal
+  <li> gro&szlig;
 </ul>
 
-Die erstere ist einfacher zu handhaben, w&auml;hrend die Lambert
-Projektion komlexer ist und deswegen auch mehr Zeit beim Laden
-ben&ouml;tigt. Aber sie ist detailgetreuer in der Wiedergabe.
+<a name="WaypointImportance"></a>
 
 <p>
-Jede Kartenprojektion ben&ouml;tigt Referenzpunkte (Standard Parallelen),
-auf die sie sich beziehen kann. Diese sollten stets in der N&auml;he
-Ihres Heimatplatzes liegen. F&uuml;r die <i>Plate Carr&eacute;e</i>
-Projektion ist nur eine Breitenparallele ausw&auml;hlen. Die
-<i>Lambert</i> Projektion dagegen ben&ouml;tigt zwei Standard Parallen
-als Bezugspunkt. W&auml;hlen Sie hier zwei Breitengrade aus, die
-das von ihnen beflogne Gebiet einfassen. Beispielsweise k&ouml;nnen Sie die
-Standardparallelen ihrer offiziellen Flugkarten benutzen, um eine
-&auml;quivalente Darstellung zu diesen Karten zu erhalten.
-Den L&auml;ngengrad w&auml;hlen sie aus der Mitte des von ihnen beflogenen 
-Gebietes aus. Er hat nichts mit der eigentlichen Projektion zu tun, mu&szlig; 
-aber aus technischen Gr&uuml;nden angegeben werden.
-
-<p>
-Nach dem Wechsel der Projektionsart bzw. der Standard Parallelen
-m&uuml;ssen alle internen Karten neu erstellt werden. Stellen Sie
-sicher, dass die entsprechenden Originalkartendateien verf�gbar sind!
-
-<p>
-<b>Bitte beachten Sie:</b> Sind die Standard Parallelen falsch
-gew&auml;hlt, dann werden Sie unter Umst&auml;nden nur einen blauen
-Hintergrund sehen. Dies tritt besonders dann ein, wenn diese weit
-entfernt vom gegenw&auml;rtigen Standort liegen. Wechseln Sie die
-Hemisph&auml;re dann m&uuml;ssen Sie auch die Standard Parallelen
-unbedingt anpassen!
-</dd>
-
-<a name="Welt2000Filter"></a>
-
-<dt><b>Welt 2000 L&auml;nder Filter</b></dt>
-
-<dd>Hier k&ouml;nnen Sie die L&auml;nder definieren, die Cumulus aus
-der Welt 2000 Datei einlesen soll. Verschiedene L&auml;nder
-k&ouml;nnen hintereinander durch Kommas oder Leerzeichen getrennt
-angegeben werden. Die L&auml;nderkennungen sind nach ISO-3166
-kodiert. Falls eine solche Filterregel definiert wird, werden nur die
-darin aufgef&uuml;hrten L&auml;nder aus der Welt 2000 Datei
-extrahiert. Falls Sie hier eine Regel eintragen, sollten Sie nicht
-dasselbe in der Konfigurationsdatei machen. Die hier definierte Regel
-hat die h&ouml;here Priotit&auml;t.
-</dd>
-
-<dt><b>Welt 2000 Radius Filter</b></dt>
-
-<dd>Als Alternative zum L&auml;nderfilter k&ouml;nnen Sie hier einen
-Radius um Ihre Heimatposition herum angeben. Alle innerhalb des Radius
-liegenden Flugpl&auml;tze werden dann aus der Welt 2000 Datei
-eingelesen. Diese Option ist nur verf&uuml;gbar, wenn kein Welt 2000
-L&auml;nder Filter definiert wurde. Wird der Radius auf Null gesetzt,
-wird intern ein Radius von 1000Km angenommen.
-</dd>
-
-<dt><b>Welt 2000 Daten Reload</b></dt>
-
-<dd>Wird die Heimatposition bzw. die Welt 2000 Konfiguration
-ver&auml;ndert, wird automatisch ein Reload der Welt 2000 Datei
-initiiert.
-</dd>
-
-<dt><b>Karten Verwaltung</b></dt>
-
-<dd>Cumulus unterst&uuml;tzt zwei unterschiedliche Strategien
-bez&uuml;glich der Kartenverwaltung im Laufzeitspeicher. Karten werden
-nur geladen, wenn Sie gebraucht werden aber sie k&ouml;nnen im
-Speicher verbleiben, solange gen&uuml;gend Platz da ist. Erst wenn
-dieser aufgebraucht ist, werden nicht ben&ouml;tigte Karten
-entladen. Die andere Strategie ist, immer wenn Karten neu geladen
-werden, alle nicht ben&ouml;tigten Karten sofort zu entladen. Dies hat
-den Nachteil, das eventuell die selben Karten ja nach Flugweg wieder
-geladen werden m&uuml;ssen, ist aber f&uuml;r Ger&auml;te mit wenig freien
-Laufzeitspeicher ( < 32MB RAM ) und ohne Swap-Device die bessere
-Alternative.
-</dd>
-
-</dl>
+In der Box <i>Zeichne Wegpunkte bis Skala</i> k&ouml;nnen Sie festlegen, bis zu
+welcher Skala Wegpunkte entsprechend Ihres zugeordneten Wertungsattribut
+auf der Karte gezeichnet werden. Bei Erreichen des vorgegebenen Limits,
+werden die Wegpunkte automatisch ausgeblendet.
+</p>
 
     <table width="100%">
     <tr>
@@ -137,9 +87,9 @@ Alternative.
     <td></td>
     </tr>
     <tr>
-    <td align="left"><a href="cumulus-settings-map.html">zur&uuml;ck</a></td>
+    <td align="left"><a href="cumulus-settings-map-settings.html">zur&uuml;ck</a></td>
     <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
-    <td align="right"><a href="cumulus-settings-airspace.html">weiter</a></td>
+    <td align="right"><a href="cumulus-settings-terrain.html">weiter</a></td>
     </tr>
     </table>
 </body>
