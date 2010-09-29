@@ -22,34 +22,90 @@
 
   <h3 align="center">Einstellungen</h3>
 
-  <p><b>Luftraum</b><br>
+  <h4>Luftraum</h4>
 
-  <p>
-  Die Tabelle der Luftr&auml;ume bestimmt, welche von ihnen auf der
-  Karte dargestellt werden. Aktivieren bzw. deaktivieren Sie die
-  kleinen Boxen entsprechend Ihren W&uuml;nschen. Wenn Sie auf
-  die farbigen Spalten neben den Checkboxen klicken, kann man die
-  Farben, mit der die Au&szlig;engrenze gezeichnet und die Fl&auml;che des
-  entsprechenden Luftraumes ausgef&uuml;llt wird, neu bestimmen.
-  </p>
-  
-  <p>
-  <b>Achtung!<b> Warnungen werden nur f&uuml;r die Luftr&auml;ume
-  erzeugt, die in der aufgef&uuml;hrten Liste aktiviert sind.
-  
-  <p>
-  Wenn Sie sich nah, sehr nah oder innerhalb bestimmter
-  Luftr&auml;ume befinden, erhalten Sie eine visuelle und akustische
-  Warnung. Hier k&ouml;nnen Sie die horizontalen und vertikalen
-  Abst&auml;nde einstellen, die bei der Erzeugung der Warnungen
-  ber&uuml;cksichtigt werden.  Wenn die Entfernung zu einem Luftraum
-  geringer ist als der eingestellte Wert, wird die Position als
-  <i>nahe</i> bzw. <i>sehr nahe</i> bewertet.
-  <p>
-  Die Einheit, die f&uuml;r die Entfernung benutzt wird, kann auf der
-  Seite Einheiten eingestellt werden. Wurde Meter f&uuml;r die
-  H&ouml;he gew&auml;hlt, wird Meter genommen, andernfalls Fu&szlig;.
+  <dl>
 
+    <dt><b>Luftraumtabelle</b></dt>
+
+    <dd>
+    Die Tabelle mit den Luftr&auml;umen bestimmt, welche von ihnen auf der
+    Karte dargestellt werden. Aktivieren bzw. deaktivieren Sie die
+    kleinen Boxen entsprechend Ihren W&uuml;nschen. Wenn Sie auf
+    die farbigen Spalten neben den Checkboxen klicken, kann man die
+    Farben, mit der die Au&szlig;engrenze gezeichnet und die Fl&auml;che des
+    entsprechenden Luftraumes ausgef&uuml;llt wird, neu bestimmen.
+
+    <p><b>Achtung! Warnungen werden nur f&uuml;r die Luftr&auml;ume erzeugt,
+    die in der obigen Tabelle auch aktiviert sind. Sie k&ouml;nnen zus&auml;tzlich
+    die Checkbox <i>Zeichne alle Luftr&auml;ume &lt; ... &uuml;ber mir</i> aktivieren,
+    um in jeden Fall eine Warnung zu bekommen, wenn Sie von unten her in einen
+    dar&uuml;ber liegenden Luftraum eindringen sollten.</b></p>
+    </dd>
+
+    <dt><b>Installiere Luftraum</b></dt>
+
+    <dd>
+    Der <i>Installiere Luftraum</i> Knopf &ouml;ffnet eine Dialogbox, in der Sie
+    einen Proxy definieren k&ouml;nnen, wenn Sie einen solchen f&uuml;r den Internet
+    Zugriff ben&ouml;tigen. In diesem Fall dr&uuml;cken Sie den Knopf <i>Setze Proxy</i>
+    und tragen die erforderlichen Parameter dort ein. Im Feld, beschriftet mit
+    <i>Luftraum Url</i>, k&ouml;nnen Sie eine Url eintragen, die auf eine Luftraum
+    Datei im Internet verweist. Die Url besteht aus den folgenden Elementen:
+
+    <p><ol>
+      <li>Schema, normalerweise <i>http</i></li>
+      <li>Hostname</li>
+      <li>Pfadname</li>
+    </ol></p>
+
+    <p>
+    z.B. http://www.daec.de/aul/downfiles/2009/22_10_09_Grenze_Deutschland.txt
+    </p>
+
+    <p>
+    Wenn eines dieser Elemente fehlt, wird die Url abgewiesen. Achten Sie weiterhin
+    darauf, dass die Datei, die Sie herunter laden wollen, im OpenAir Format erstellt
+    wurde, nicht komprimiert ist und als Endung die Erweiterung <i>.txt</i> tr&auml;gt.
+    Nur dann kann Cumulus diese Datei auch sp&auml;ter lesen.
+    </p>
+    </dd>
+
+    <dt><b>Luftraum Warnung</b></dt>
+
+    <dd>
+    Wenn Sie sich nahe, sehr nahe oder innerhalb bestimmter
+    Luftr&auml;ume befinden, k&ouml;nnen Sie eine visuelle und akustische
+    Warnung erhalten. Dr&uuml;cken Sie den Knopf <i>Luftraum Warnung</i>, um die
+    die seitlichen und vertikalen Abst&auml;nde einstellen, die bei der Erzeugung
+    der Warnungen ber&uuml;cksichtigt werden sollen.
+    <p>
+    Die Anzeigedauer von Warnungen bzw. deren Unterdr&uuml;ckung f&uuml;r eine bestimmte
+    Zeit, k&ouml;nnen auf der Seite
+    <a href="cumulus-settings-information.html">Informationen</a>
+    einstellt werden.
+    <br>
+    Die Einheiten, die f&uuml;r die Entfernung und die H&ouml;he benutzt werden, k&ouml;nnen
+    auf der Seite <a href="cumulus-settings-units.html">Einheiten</a> eingestellt
+    werden.
+    </p>
+    </dd>
+
+    <dt><b>Luftraum F&uuml;llung</b></dt>
+
+    <dd>
+    Der <i>Luftraum F&uuml;llung</i> Knopf gestattet es, in einer neuen Dialogbox zu
+    bestimmen, ob die Luftr&auml;ume mit einem festes Muster oder mit transparenter
+    Farbe ausgef&uuml;llt werden. Die Tranzparenz der F&uuml;llfarbe kann man in Abh&auml;ngigkeit
+    von der Entfernung zum Luftraum bestimmen. 0% bedeutet keine F&uuml;llfarbe,
+    bei 100% verdeckt die F&uuml;llfarbe die darunter liegenden Kartenabschnitte
+    komplett. F&uuml;r leistungsschwache Ger&auml;te wird das F&uuml;llen mit einem festen
+    Muster empfohlen.
+    </dd>
+
+  </dl>
+
+  <p></p>
   <table width="100%">
     <tr>
     <td></td>
@@ -62,6 +118,6 @@
     <td align="right"><a href="cumulus-settings-units.html">weiter</a></td>
     </tr>
   </table>
-    
+
 </body>
 </html>

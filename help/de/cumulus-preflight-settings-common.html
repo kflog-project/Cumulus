@@ -7,7 +7,96 @@
 </head>
 <body >
 
-    <table width="100%">
+  <table width="100%">
+    <tr>
+    <td></td>
+    <td align="center"><a href="cumulus.html">Anfang</a></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td align="left"><a href="cumulus-preflight-settings-task.html">zur&uuml;ck</a></td>
+    <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
+    <td align="right"><a href="cumulus-display.html">weiter</a></td>
+    </tr>
+  </table>
+
+  <h3 align="center">Vorflug Einstellungen</h3>
+
+  <h4>Allgemein</h4>
+
+  Hier k&ouml;nnen Sie verschiedene allgemeine Vorflugeinstellungen vornehmen.</p>
+
+  <dl>
+
+    <dt><b>Ankunftsh&ouml;he</b></dt>
+
+    <dd>
+    Die minimale Ankunftsh&ouml;he flie&szlig;t in die
+    Zielanflugberechnung mit ein. Die H&ouml;he des Zielpunktes
+    &uuml;ber MSL wird dabei ebenfalls ber&uuml;cksichtigt. Die
+    Ankunftsh&ouml;he wird in Metern eingegeben, sofern Meter als
+    Basiseinheit f&uuml;r die H&ouml;he eingestellt ist. Andernfalls werden
+    die Werte als Fu&szlig; angenommen.
+    </dd>
+
+    <br><dt><b>QNH</b></dt>
+
+    <dd>
+    Das QHN kann nur in hPa (Hekto Pascal) eingegeben werden.
+    Es findet Ber&uuml;cksichtigung bei der Abstandsberechnung zu
+    Luftr&auml;umen, deren H&ouml;he auf Standarddruck bezogen ist, um
+    die Warnung auf die unterschiedlichen Luftdr&uuml;cke anzupassen.
+    Der Standardwert ist 1013hPa.
+    </dd>
+
+    <br><dt><b>Autostart Logger</b></dt>
+
+    <dd>
+    Wenn Sie diese Check Box aktivieren, beginnt Cumulus automatisch
+    mit dem Schreiben der IGC Datei, wenn Sie sich mit dem Flugzeug schneller
+    als 5 Km/h bewegen. Der aktuelle Loggerstatus wird duch verschiedene Farben
+    in der unteren <a href="cumulus-display.html#Status_Bar">Statuszeile</a>
+    angezeigt.
+    </dd>
+
+    <br><dt><b>B-Record Intervall</b></dt>
+
+    <dd>Intervall f&uuml;r das Aufzeichnen des IGC B-Records. Die Standardzeit
+    betr&auml;gt 10 Sekunden.
+    <b>Beachten Sie!</b> K&uuml;rzere Zeiten erzeugen gr&ouml;&szlig;ere Logdateien und
+    mehr Prozessorlast.
+    </dd>
+
+    <br><dt><b>K-Record Intervall</b></dt>
+
+    <dd>Intervall f&uuml;r das Aufzeichnen des IGC K-Records. Standard ist <i>Nein</i>,
+  	d.h ausgeschaltet. Tragen Sie hier eine g&uuml;ltige Zeit ein, werden zus&auml;tzlich
+  	folgende Daten mit aufgezeichnet, falls diese in Cumulus verf&uuml;gbar sind:
+  	<p><ol>
+  		<li>HDT, true heading als 3 stellige Zahl</li>
+  		<li>TAS, true airspeed als 3 stellige Zahl in der Einheit km/h</li>
+  		<li>WDI, Wind Richtung als 3 stellige Zahl</li>
+  		<li>WSP, Wind Geschwindigkeit in km/h als 3 stellige Zahl</li>
+  		<li>VAT, kompensiertes Variometer (total energy/netto), vertikal Geschwindigkeit in m/s
+  		    als Kommazahl mit negativen Vorzeichen, falls negativ</li>
+  	</ol></p>
+
+    <b>Beachten Sie!</b> Die Aktivierung dieser Option erzeugt gr&ouml;&szlig;ere Logdateien
+    und mehr Prozessorlast.
+ 	  </dd>
+
+  </dl>
+
+  Es wird darauf hingewiesen, dass der Cumulus IGC Logger nicht in allen Punkten
+  die IGC Spezifikation erf&uuml;llt. Es wird kein Sicherheits-G-Record am Ende der
+  IGC Datei geschrieben, weil ein PDA nicht gegen externe Manipulationen
+  abgesichert werden kann. Weiterhin ist nicht immer die barometrische H&ouml;he, wie
+  von der IGC gefordert, verf&uuml;gbar. Interessieren Sie sich mehr f&uuml;r die
+  FAI IGC Logger Anforderungen, so lesen Sie bitte dieses
+  <a href="http://www.fai.org/gliding/gnss/tech_spec_gnss.asp">Dokument</a> hier.
+  <br><br>
+
+  <table width="100%">
     <tr>
     <td></td>
     <td align="center"><a href="cumulus.html">Anfang</a></td>
@@ -20,69 +109,5 @@
     </tr>
     </table>
 
-<h3 align="center">Vorflug Einstellungen</h3>
-
-    <p><b>Allgemein</b><p>
-    
-    Hier k&ouml;nnen Sie verschiedene allgemeine Vorflugeinstellungen vornehmen.</p>
-
-    <dl>
-      <dt><b>Ankunftsh&ouml;he</b></dt>
-
-      <dd>
-      Die minimale Ankunftsh&ouml;he flie&szlig;t in die
-      Zielanflugberechnung mit ein. Die H&ouml;he des Zielpunktes
-      &uuml;ber MSL wird dabei ebenfalls ber&uuml;cksichtigt. Die
-      Ankunftsh&ouml;he wird in Metern eingegeben, sofern Meter als
-      Basiseinheit f&uuml;r die H&ouml;he eingestellt ist. Andernfalls werden
-      die Werte als Fu&szlig; angenommen.
-      </dd>
-
-      <dt><b>QNH</b></dt>
-
-      <dd>
-      Das QHN kann nur in hPa (Hekto Pascal) eingegeben werden.
-      Es findet Ber&uuml;cksichtigung bei der Abstandsberechnung zu
-      Luftr&auml;umen, deren H&ouml;he auf Standarddruck bezogen ist, um
-      die Warnung auf die unterschiedlichen Luftdr&uuml;cke anzupassen.
-      Der Standardwert ist 1013hPa.
-      </dd>
-
-      <dt><b>Aufgabenpunkt Umschalteradius</b></dt>
-
-      <dd>
-      Falls Sie eine Aufgabe aktiviert haben, ist Cumulus in der
-      Lage automatisch auf den n&auml;chsten Aufgabenpunkt umzuschalten,
-      wenn ein bestimmter Abstand zum ausgew&auml;hlten Punkt unterschritten
-      wird. Hier k&ouml;nnen diesen Radius um den Aufgabenpunkt herum definieren.
-      Die Umschaltung wird dann ausgef&uuml;hrt, wenn Sie in den durch den Radius
-      beschriebenen Sektor eingeflogen sind und den minimalen Abstand zum
-      selektierten Punkt erreicht haben. Der Radius kann im Bereich
-      von 0.1 ... 10.0 in der eingestellten Entfernungseinheit (Kilometer,
-      Meilen oder nautische Meilen) administriert werden.
-      </dd>
-
-      <dt><b>Autostart Logger</b></dt>
-
-      <dd>
-      Wenn Sie diese Check Box aktivieren, beginnt Cumulus automatisch
-      mit dem Schreiben der IGC Datei, wenn Sie sich mit dem Flieger in
-      Bewegung setzten.
-      </dd>
-
-    </dl>
-
-    <table width="100%">
-    <tr>
-    <td></td>
-    <td align="center"><a href="cumulus.html">Anfang</a></td>
-    <td></td>
-    </tr>
-    <tr>
-    <td align="left"><a href="cumulus-preflight-settings-task.html">zur&uuml;ck</a></td>
-    <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
-    <td align="right"><a href="cumulus-display.html">weiter</a></td>
-    </tr>
-    </table>
 </body>
 </html>
