@@ -22,16 +22,14 @@
 
 <h3 align="center">Settings</h3>
 
-<p><b>General setup-&gt;Map Settings</b></p>
+<h4>Maps</h4>
 
-<p>On this page you can set the maps storage location and the map
-basic data.</p>
+On this page you can set the maps storage location and the map basic data.
 
 <dl>
 
-<a name="Maps">
-<dt><b>Maps</b></dt>
-</a>
+<a name="Maps"></a>
+<dt><b>Maps Location</b></dt>
 
 <dd>
 As location for the map data for Maemo (Nokia Internet Tablet)
@@ -43,7 +41,7 @@ You can modify the text field also by hand and set so your preferred location.
 </dd>
 
 <a name="Projection"></a>
-<dt><b>Projection</b></dt>
+<br><dt><b>Projection</b></dt>
 
 <dd>The coordinate points of the raw maps Cumulus uses are not projected.
 They are coded according to WGS84 datum. Therefore all these points are
@@ -51,20 +49,20 @@ projected on first loading. There are many types of map projections available.
 You need a projection because the earth is a sphere (or close to it) and your
 map is flat.
 
-<br><br>Cumulus supports two projections:
+<p>Cumulus supports two projections:</p>
 
-<br><br>
-<ul>
+<ol>
   <li><i>Plate Carr&eacute;e</i> - Equidistant Cylindrical Projection</li>
   <li><i>Lambert</i> - Conical Orthomorphic Projection</li>
-</ul>
+</ol>
 
-<br>
+<p>
 The first is computationally simpler and thus the preferred one in Cumulus.
 The latter is more complex, so your maps will take much longer on first load
 but it is more realistic.
-<br>
-Each map projection needs a basis from where to work. For the <i>Plate
+Each map projection needs a basis from where to work. 
+
+<br>For the <i>Plate
 Carr&eacute;e</i> projection choose a parallel close to your home base.
 If the option <i>Projection follows Home Position</i> is activated, the
 parallel is automatically set to the latitude of your Home Position in the
@@ -83,11 +81,14 @@ is done here. You must do that always by hand. Therefore use this kind of
 projection only, if you are familiar with the Lambert projection.
 <br>
 After changing the projection kind or the standard
-parallel values Cumulus is forced to recompile your map files. <b>Please
-note that:</b> If you don't set the projection options correctly,
+parallel values Cumulus is forced to recompile your map files.
+</p>
+<p>
+<b>Please note that:</b> If you don't set the projection options correctly,
 you will likely end up with a blue screen or a skewed map. This
 is especially so if you are far away from the coordinates used in the
 projection!
+</p>
 </dd>
 
 <dt><b>Projection follows Home Position</b></dt>
@@ -98,7 +99,7 @@ a recompilation of the map files. This option ensures best drawing results but
 it is only available for the <i>Plate Carr&eacute;e</i> projection.
 </dd>
 
-<dt><b>Unload unused maps from RAM</b></dt>
+<br><dt><b>Unload unused maps from RAM</b></dt>
 
 <dd>
 Cumulus supports two strategies for keeping maps in memory.
@@ -111,7 +112,7 @@ lower memory devices.
 </dd>
 
 <a name="Download"></a>
-<dt><b>Set Proxy</b></dt>
+<br><dt><b>Set Proxy</b></dt>
 
 <dd>
 Press the <i>Set Proxy</i> button if a proxy is needed for downloads from the
@@ -120,14 +121,14 @@ port entries. Let all fields empty if you need no proxy. The configured proxy
 is displayed right of the setup button.
 </dd>
 
-<dt><b>Center Latitude/Longitude</b></dt>
+<br><dt><b>Center Latitude/Longitude</b></dt>
 
 <dd>
 The coordinates of your center point around that map files shall be downloaded
 from the Internet.
 </dd>
 
-<dt><b>Install Maps and Distance</b></dt>
+<br><dt><b>Install Maps and Distance</b></dt>
 
 <dd>
 Define a distance in the spin box around your center point and press then the
@@ -141,6 +142,8 @@ single results as debug messages.
 </dd>
 
 </dl>
+
+<p></p>
 
 <table width="100%">
     <tr>

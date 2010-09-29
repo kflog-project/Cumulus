@@ -24,9 +24,9 @@
 
 <h3 align="center">Settings</h3>
 
-<p><b>General setup-&gt;GPS</b></p>
+<h4>GPS</h4>
 
-<p> Here you can enter connection information regarding your GPS receiver.
+    Here you can enter connection information regarding your GPS receiver.
     Select the correct device and baud rate for your GPS if necessary.
     Please refer to your GPS manual for these values.
 <p>
@@ -42,7 +42,7 @@
     Cambridge, Volkslogger, Flarm or LX device and to process this these data.
     Wind, variometer and MacCready data from such devices
     will be taken over automatically, if they are available. MSL and STD altitude,
-    derived from the pressure sonde are only taken on demand.
+    derived from the pressure sensor are only taken on demand.
 
 <dl>
   <dt><b>GPS Device</b></dt>
@@ -72,7 +72,7 @@
     one of the predefined entries to your need.
   </dd>
   
-  <dt><b>Altitude Reference</b></dt>
+  <br><dt><b>Altitude Reference</b></dt>
 
   <dd>
     The default selection is GPS. Most of the GPS devices send MSL (mean sea
@@ -85,7 +85,7 @@
     correction value will be applied immediately.
     <p>
     Some logger devices can deliver altitude values derived from a pressure
-    sonde. If you want to use pressure data, you have to select in the Altitude
+    sensor. If you want to use pressure data, you have to select in the Altitude
     Reference combo box the entry <i>Pressure</i>.
     <br><b>Please note!</b> If you have selected the pressure item Cumulus
     expects special NMEA records from the connected logger devices.
@@ -93,20 +93,20 @@
     <p>The following devices are supported by Cumulus:</p>
     <ul>
     <li>Cambrigde device: It delivers altitude values (MSL and STD)
-        derived from a pressure sonde.
+        derived from a pressure sensor.
     <li>Volkslogger device: It can deliver the STD altitude derived from a
-        pressure sonde. To get the right MSL altitude, you have to setup the
+        pressure sensor. To get the right MSL altitude, you have to setup the
         correct QNH value in the Preflight Settings. Furthermore do enable the
         sending of the PGCS record in the Volkslogger setup menu.
     <li>LX Navigation devices: They deliver also altitude values derived from a
-        pressure sonde. Do enable the sending of the LXWP records
+        pressure sensor. Do enable the sending of the LXWP records
         in the LX setup menu. On a LX20 device you have to enter the Password
         menu. Enter the password, default is 96990 and goto the NMEA menu.
         In the NEMA menu set the entry LXWP? to 'Y'. Set the transfer speed in
         Cumulus to 4800 bps. The LX20 device uses this speed for NEMA transfer
         regardless of the selected PC transfer speed.
     <li>FLARM device, hardware version 2 or later: It delivers altitude values
-        derived from a pressure sonde. Do enable the sending of the PGRMZ record
+        derived from a pressure sensor. Do enable the sending of the PGRMZ record
         in the FLARM setup menu. 
     </ul>
     </p>
