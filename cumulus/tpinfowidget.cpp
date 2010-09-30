@@ -66,7 +66,7 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   buttonrow->addWidget(cmdClose);
   connect(cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()));
 
-  cmdKeep = new QPushButton(tr("Keep"), this);
+  cmdKeep = new QPushButton(tr("Stop"), this);
   cmdKeep->setFont(bfont);
   buttonrow->addWidget(cmdKeep);
   connect(cmdKeep, SIGNAL(clicked()), this, SLOT(slot_KeepOpen()));

@@ -98,7 +98,7 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
   connect( scClose, SIGNAL(activated()),
            this, SLOT( slot_SwitchBack() ));
 
-  cmdKeep = new QPushButton(tr("Keep"), this);
+  cmdKeep = new QPushButton(tr("Stop"), this);
   cmdKeep->setFont(bfont);
   buttonrow1->addWidget(cmdKeep);
   connect(cmdKeep, SIGNAL(clicked()),
