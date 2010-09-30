@@ -19,17 +19,23 @@
 
 <h3 align="center">Display</h3>
 
-<p>The main, so-called map view of Cumulus consists of three information areas:
-these contain 1) flight information, 2) a map and 3) a status bar.</p>
+The main, so-called map view of Cumulus consists of three information areas.
+These contain:
 
-<p> <b>Flight information</b></p>
+  <ol>
+   <li>the flight information</li>
+   <li>a map</li>
+   <li>a status bar</li>
+  </ol>
+
+<h4>Flight information</h4>
 
 <p>The group of small windows on the left-hand side are (from top to bottom
 and left to right) as follows:</p>
 
 <ul>
 
-  <li><b>To</b> - Selected target and in parentheses its elevation. Tap on label
+  <li><b>To</b> - Selected target and in parentheses its elevation. Tap on display
                   to select a target from the Waypoints, Reachable or Airfields
                   lists. </li>
                   
@@ -43,8 +49,8 @@ and left to right) as follows:</p>
                      flag.</li>
                      
   <li><b>Dis/Eta</b> - Distance to, or estimated time of arrival at, selected
-         							 target, respectively. Tap on the label to toggle between
-                       the wo.</li>
+         							 target, respectively. Tap on the display to toggle between
+                       the two.</li>
   
   <li><b>Brg</b> - Bearing to target. Tapping on this number causes the reverse
    								 course to be shown with a red label background for five
@@ -53,61 +59,66 @@ and left to right) as follows:</p>
   <li><b>Gs</b> - Current ground speed</li>
                   
   <li><b>Trk</b> - Track (also indicated by the direction of the glider symbol)
-                   If you tip at the label it opens the Flarm Radar view.</li>
+                   If you tip at the display it opens the FLARM Radar view.</li>
 
   <li><b>Wd</b> - Wind speed and direction. This can be toggled with the LD
-                  display by tapping on the Wd label.</li>
+                  display by tapping on the Wd display.</li>
 
   <li><b>LD</b> - Required and current LD to selected target. Can be toggled
-                  with Wind display by tapping on the LD label.
+                  with Wind display by tapping on the LD display.
                   See also <a href="#ld">LD paragraph</a> for more info.</li>
 
   <li><b>Var</b> - Variometer display normally derived from the gps altitude. If a
                    logger device provides variometer information this is used
-                   instead. Tap on the label to bring up a dialog box where you
+                   instead. Tap on the display to bring up a dialog box where you
                    can change the integration time and the TEK adjustment. </li>
 
   <li><b>Msl/Std/Agl/Ahl</b> - Current aircraft height in relation to MSL,
                   standard pressure, ground altitude below the aircraft or
-                  altitude of the home site . For further explanations,
+                  altitude of the home site. For further explanations,
                   <a href="#altitude">see here</a>. 
-                  Tap on the number to get the dialog box sub-menu.</li>
+                  Tap on the display to get the dialog box sub-menu.</li>
 
   <li><b>Mc</b> - McCready value used for glide path and best speed calculation.
                   Tap to open the in-flight dialog for changing the expected lift,
-    							water ballast amount or deterioration in performance due to bugs.</li>
+    							water ballast amount or deterioration in performance due to bugs.
+                  This display is only active, if a glider has been selected.</li>
 
-  <li><b>S2f</b> - Best airspeed for the current McCready setting, wing loading
-                   and bug setting. Also takes into account wind information if
-                   a target is selected in the <b>To</b> window.
-                   Variometer information is not considered at present: it is set
-                   to zero. If you tip at the label it toggles the menu bar,
-                   placing it along the top of the display.</li>
+  <li><b>S2f/MU</b> - Best airspeed for the current McCready setting, wing loading
+                   and bug setting. This display is only active, if a glider
+                   and a target are selected. The target is to see in the
+                   <b>To</b> window. Variometer information is not considered
+                   at present: it is set to zero.
+                   <br>If you tip at the window it toggles the menu bar,
+                   placing it along the top of the display. The letters
+                   <b>MU</b> shall remember to that.</li>
 </ul>
 
 Of course all information is displayed in the units you selected in
 the <a href="cumulus-settings-units.html">Units Settings</a> dialog.
 
-<p><b>Map</b></p>
+<h4>Map</h4>
 
-<p>The map displays a graphical representation of the current position
+The map displays a graphical representation of the current position
 (indicated by the intersection of the fuselage and the wings in the glider
 symbol) and heading (indicated by the rotation of the glider symbol). If there
 is no GPS fix, Cumulus displays an X symbol instead of a glider. See 
 <a href="cumulus-manual.html"> manual navigation mode</a> for more details. The
-current scale is displayed in the lower left corner of the map.</p>
+current scale is displayed in the lower left corner of the map.
 
 <p>
 If Cumulus is connected with a Flarm device and the current map scale is low,
 the most important object reported by Flarm is also drawn at the map as circle
 and labeled with the distance and the relative vertical separation.
+Just as you can select in the Flarm menus a Flarm contact, which shall displayed
+at the map too, if it is in view.
 </p>
 
 <p>
 The map shows the terrain elevation using colours. The detail level of this
 display changes with the zoom factor: more zoom gives more detail in the terrain
-shapes. You can turn off drawing of the elevation in the 
-<a href="cumulus-settings-map.html">Map Settings</a> dialog.
+shapes. You can turn off drawing of the elevation at the
+<a href="cumulus-settings-map-objects.html">Map Objects</a> setting page.
 </p>
 
 <p>
@@ -115,13 +126,16 @@ Depending on the maps you installed, Cumulus displays airports (the type is
 indicated by the standard ICAO symbol), cities (yellow), highways (red/white),
 roads (red), railways (dark dashed line) and water (blue). Not all details are
 displayed at all zoom factors. Cumulus also displays airspace structures, the
-different types being indicated by different colours. For basic information on
+different types being indicated by different colours configurable under
+<a href="cumulus-settings-airspace.html"><i>Settings/Airspaces</i></a>.
+For basic information on
 an airport or airspace structure simply touch the related symbol or area on the
 screen, when the info on the interesting object will appear in a pop-up window.
 The window disappears automatically after a certain time that can be configured
 in the <i>General Setup</i> menu in the 
 <a href="cumulus-settings-information.html">Information</a> tab.
 </p>
+
 <p>
 If you touch on an airfield icon, you will get detailed information on this
 item. You can add an airfield to your waypoint list if it isn't in the list
@@ -133,13 +147,14 @@ Cumulus can calculate which airfields or waypoints are within reach. These
 airfields/waypoints have a green background to them. If you would arrive below
 the safety height, the point has a magenta background to it. The line to the
 currently selected waypoint is coloured to match, and will be in red if the
-waypoint is not within reach. The safety height margin is set in the Pre-flight
-setup/Common menu page.</p>
+waypoint is not within reach. The safety height margin is set at the
+<a href="cumulus-preflight-settings-common.html#ArrivalAltitude">
+<i>Preflight Settings/Common</i></a> page.</p>
 
+<h4>Status bar</h4>
 <a name="Status_Bar"></a>
-<p><b>Status bar</b></p>
 
-<p> The status bar displays the following items (from left to right):</p>
+The status bar displays the following items (from left to right):
 
 <p>The first item shows the mode Cumulus is operating in. If no GPS connection
    has been established (i.e., Cumulus is in Manual mode), <i>G-0</i> will appear,
@@ -177,17 +192,16 @@ The next item shows the glider selected.
 The rest of the status bar is used to display warnings and other information.
 </p>
 <p> If you want to maximize the screen area for the map display,
-you can disable the status bar via the menu entry <i>View/Statusbar</i>.
+you can disable the status bar via the menu entry <i>Toggles/Statusbar</i>.
 </p>
 
-<a name="altitude">
-<p><b>Altitude display</b></p>
-</a>
+<h4>Altitude display</h4>
+<a name="altitude"></a>
 
-<p>The altitude display can present the aircraft's
+The altitude display can present the aircraft's
 altitude according to four different references. All are derived from the GPS
 altitude unless there is pressure altitude information provided from an external
-device.</p>
+device.
 
 <ul>
 
@@ -205,27 +219,38 @@ device.</p>
 
 </ul>
 
-<p><b>Glide path</b></p>
+<p>You can very easy modify the altitude display. Tip on the display and a
+configuration dialog is opened, where you can change the altitude reference,
+the unit, the height correction factor and the QNH. The height correction factor
+is used to compensate the difference between the delivered and the true
+altitude. Often differs the GPS or pressure altitude from the expected altitude.
+</p>
 
-<p><a name="glidepath"> The glide path indicator
-gives you an estimate of whether or not your selected target is in
-range. It calculates the performance of your glider using the 
+<h4>Glide path</h4>
+<a name="glidepath"></a>
+
+The glide path indicator gives you an estimate of whether or not your selected
+target is in range. It calculates the performance of your glider using the
 polar values given in the Settings dialog
-</a><a href="cumulus-settings-glider.html">Glider tab</a>. It
+<a href="cumulus-settings-glider.html">Glider tab</a>. It
 is assumed that you fly at the indicated best airspeed for the current
 McCready value. You can enter a minimum arrival height on the
-<a href="cumulus-settings-personal.html">Personal tab</a>.<br>
+<a href="cumulus-preflight-settings-common.html#ArrivalAltitude">
+<i>Preflight Settings/Common</i></a> page.
+<br>
 
 If the indicator shows a negative value, you are below the glide path and
 the target is not within reach. If you are above the glide path, i.e.,
 the target is reachable, you can probably fly a bit faster to reach it sooner,
 depending on the polar of your glider. The theoretical value of the speed to fly
 can be found by increasing your McCready value until the glide-path indicator
-shows just slightly positive.</p>
+shows just slightly positive.
 
-<p><b>LD-Display</b></p>
 
-<p><a name="ld"> In addition to the glide path indicator you can check
+<h4>LD-Display</h4>
+<a name="ld"></a>
+
+In addition to the glide path indicator you can check
 your situation with the LD display, too. A precondition for the LD calculation
 is that you have selected a target, otherwise nothing is displayed. The LD
 display consists of two values, separated by a slash. On the left side is
@@ -236,9 +261,9 @@ right side is displayed the current LD as calculated over the last 60s. If the
 current LD is higher than the required LD you should be on a safe glide path to
 your selected target. If you have climbed or flown at the same altitude in the
 last 60s, the display shows a value like <i>&gt;99</i>. If the calculation
-result is not sensible, a dash is shown in the display.</a></p>
+result is not sensible, a dash is shown in the display.
 
-<a name="ld"> </a>
+<p></p>
 
 <table width="100%">
   <tbody>
