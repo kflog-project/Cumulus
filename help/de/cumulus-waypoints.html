@@ -7,105 +7,181 @@
 </head>
 <body>
 
-    <table width="100%">
-    <tr>
-    <td align="left"><a href="cumulus-manual.html">zur&uuml;ck</a></td>
-    <td align="center"><a href="cumulus.html">Anfang</a></td>
-    <td align="right"><a href="cumulus-tasks.html">weiter</a></td>
-    </tr>
-    </table>
+  <table width="100%">
+  <tr>
+  <td align="left"><a href="cumulus-manual.html">zur&uuml;ck</a></td>
+  <td align="center"><a href="cumulus.html">Anfang</a></td>
+  <td align="right"><a href="cumulus-tasks.html">weiter</a></td>
+  </tr>
+  </table>
 
-<h3 align="center">Wegpunkte</h3>
-    <p>
-    Wegpunkte werden von Cumulus benutzt um die Navigation zu
-    erleichtern. Sie werden auch als Wendepunkte in Aufgaben
-    verwendet. Die Wegpunkte k&ouml;nnen auch mit <i>KFLog</i> auf den
-    Linux Desktop Rechner bearbeitet werden. Unter KFLog ist es
-    einfacher die Liste zu verwalten oder Wegpunkte aus
-    Flugplatzdateien oder anderen Dateien zu importieren.
+  <h3 align="center">Wegpunkte</h3>
+
+  Wegpunkte werden von Cumulus benutzt um die Navigation zu erleichtern. Sie
+  werden auch in Aufgaben verwendet. Wegpunkte k&ouml;nnen in Cumulus
+  erstellt und ge&auml;ndert werden oder auch mit <i>KFLog</i> auf dem Linux Desktop
+  Rechner bearbeitet werden. Unter KFLog ist es einfacher die Liste zu verwalten
+  oder Wegpunkte aus Flugplatzdateien oder anderen Dateien zu importieren.
+
+  <dl>
+  <dt><b>Wegpunktdatei</b></dt>
+
+  <dd>
     Cumulus &uuml;nterst&uuml;tzt im Moment nur eine Wegpunktdatei.
-    Diese ist unter <i>$HOME/Applications/cumulus</i> zu finden.
-    Als Dateiname muss <i>cumulus.kwp</i> benutzt werden.
-    </p>
+    Diese ist im
+    <a href="cumulus-settings-personal.html#DataDirectory">
+    <i>Benutzer Datenverzeichnis</i></a> zu finden bzw. muss dort abgelegt
+    werden. Als Dateiname muss <i>cumulus.kwp</i> benutzt werden. Dieser
+    Name ist im Moment hart kodiert.
+  </dd>
 
-    <p>
-    Um einen Wegpunkt auszuw&auml;hlen, dr&uuml;cken Sie
-    <i><b>W</b></i> um die Wegpunktliste zu &ouml;ffnen. Navigieren
-    Sie zu einen Wegpunkt mit Hilfe der Anfangsbuchstaben oder mit den
-    Pfeiltasten. Dr&uuml;cken Sie dann die <i><b>Leer-</b></i> oder
-    <i><b>Auswahltaste</b></i> um den selektierten Wegpunkt
-    auszuw&auml;hlen.
-    <p>
-    Benutzen Sie den Knopf <b><i>Information</i></b> am Fu&szlig; der
-    Liste, um mehr Informationen &uuml;ber den hervorgehobenen
-    Wegpunkt zu erhalten.  Der Informationsbildschirm wird automatisch
-    nach 7 Sekunden geschlossen.  Dr&uuml;cken Sie <b><i>I</i></b>
-    um den Bildschirm f&uuml; 7 weitere Sekunden offen zu halten, und
-    dr&uuml;cken Sie <b><i>K</i></b> um den Bildschirm ge&ouml;ffnet zu halten.
-    Dr&uuml;cken Sie die Leer- oder Auswahltastetaste um ihn zu
-    schlie&szlig;en.
-    </p>
+  <br><dt><b>Wegpunkt Dateitransfer</b></dt>
 
-    <p>
-    Der ausgew&auml;hlte Wegpunkt wird auf der Karte durch umgekehrte
-    Einf&auml;rbung des Namens gekennzeichnet.  Um sicherzustellen,
-    dass der ausgew&auml;hlte Wegpunkt auf der Karte sichbar ist,
-    k&ouml;nnen Sie die Taste <b><i>V</i></b> benutzen.
-    </p>
+  <dd>
+    Sie k&ouml;nnen die Wegpunktdatei zwischen PC und PDA hin und her
+    &uuml;bertragen. Beachten Sie aber, dass Culumus zu dieser Zeit
+    <b>nicht l&auml;uft</b>, andernfalls kann dadurch die Datei besch&auml;digt,
+    ungewollt &uuml;berschrieben oder auch zerst&ouml;rt werden.
+  </dd>
 
-    <p>
-    Um Wegpunkte hinzuzuf&uuml;gen, zu ver&auml;ndern oder zu l&ouml;schen,
-    benutzen Sie bitte die Ikonen am Kopf der Wegpunktliste:
+  <br><dt><b>Wegpunktlisten Anzeige</b></dt>
 
-    <ul>
-      <li> Neu = weisses Blatt
-      <li> Bearbeiten = Bleistift
-      <li> L&ouml;schen = Papierkorb
-     </ul>
+  <dd>
+    Zum &ouml;ffnen der Wegpunktliste tippen Sie auf die Wegpunktanzeige in der
+    linken oberen Ecke von der Kartenansicht. Es wird eine alphabetisch sotierte
+    Liste mit den geladenen Wegpunkten angezeigt. Mit verschiedenen
+    Kn&ouml;pfen im Fenster kann man verschiedene Kommands pro Wegpunkt ausf&uuml;hren.
 
-    <p><b>Tun Sie das aber nicht w&auml;hrend des Fluges!</b><p>
+		<p><ul>
+		  <li>Druch dr&uuml;cken eines Filterknopfes oberhalb der Liste kann man relativ
+          schnell zu einen bestimmten Wegpunkt navigieren.</li>
+		  <li>Dr&uuml;cken vom Plus Knopf erstellt einen neuen Wegpunkt.</li>
+		  <li>Dr&uuml;cken vom Bleistift Knopf editiert den selektierten Wegpunkt.</li>
+		  <li>Dr&uuml;cken vom M&uuml;lleimer Knopf l&ouml;scht den selektierten Wegpunkt.</li>
+		  <li>Dr&uuml;cken vom Haus Knopf setzt den selektierten Wegpunkt als neue
+          Heimatposition.</li>
+		  <li>Dr&uuml;cken Sie den <b><i>Info</i></b> Knopf, um die Wegpunktdetails
+          anzuzeigen. Das ge&ouml;ffnete Infofenster wird automatisch nach einigen
+          Sekunden wieder geschlossen. Dr&uuml;cken Sie den <i>Stop</i> Knopf
+          um das zu verhindern. Der <b><i>Heimat</i></b> Knopf setzt
+          diesen Wegpunkt als die neue Heimatposition.</li>
+		  <li>Dr&uuml;cken Sie den <b><i>Selekt</i></b> Knopf, um den selektierten
+          Wegpunkt zu Ihrem neuen Ziel zu machen. Anschlie&szlig;end k&ouml;nnen Sie
+          die <b><i>V</i></b> Taste benutzen, um den Wegpunkt auf der Karte
+          sichtbar zu machen.</li>
+		</ul></p>
+  </dd>
 
-    Wenn Sie <i>Neu</i> oder <i>Bearbeiten</i> ausw&auml;hlen, wird
-    ein Dialog mit Eingabefeldern f&uuml;r die Eigenschaften des
-    Wegpunktes ge&ouml;ffnet.  Die Eigenschaft <i>Wichtigkeit</i>
-    bedarf einer Erkl&auml;rung.  Um zu verhindern, dass die Karte bei
-    niedrigen Aufl&ouml;sungen mit Wegpunkten &uuml;berflutet wird,
-    werden nicht alle Wegpunkte in allen Aufl&ouml;sungen gezeigt.
-    Sie k&ouml;nnen dies kontrollieren, indem Sie die Wichtigkeit des
-    Wegpunktes geeignet w&auml;hlen.  Wenn sie <i>hoch</i>
-    w&auml;hlen, wird der Wegpunkt immer gezeichnet.  Dies ist
-    sinnvoll f&uuml;r den Heimatplatz und andere wichtige Pl&auml;tze.
-    Wenn Sie <i>normal</i> w&auml;hlen, wird der Wegpunkt in mittleren
-    und hohen Aufl&ouml;sungen gezeichnet, nicht jedoch in niedrigen
-    Aufl&ouml;sungen.  Wegpunkte mit niedriger Wichtigkeit werden nur
-    in hohen Aufl&ouml;sungen gezeichnet.  Der ausgew&auml;hlte
-    Wegpunkt ist immer sichtbar.
-    </p>
+  <dt><b>Wegpunktlisten Filter</b></dt>
 
-    <p>
-    Sie k&ouml;nnen jederzeit <i><b>R</b></i> dr&uuml;cken um die
-    augenblickliche Position und H&ouml;he als Wegpunkt festzuhalten.
-    Ein neuer Wegpunkt mit dem Namen <i>WPX HH:MM</i> wird dann
-    generiert.  Er enth&auml;lt die augenblicklichen Koordinaten und
-    die H&ouml;he, wobei <i>HH:MM</i> von der aktuellen UTC Zeit
-    abgeleitet wird. Der neue Wegpunkt erscheint sogleich auf der
-    Karte und kann in der Wegpunktliste wie jeder andere Wegpunkt
+  <dd>
+    Sie k&ouml;nnen die Anzahl der in der Liste angezeigten Wegpunkte verringern,
+    indem Sie auf die Kn&ouml;pfe oberhalb der Liste dr&uuml;cken. Diese arbeiten als
+    Filter und zeigen nur noch die Wegpunkte an, die mit den dargestellten
+    Buchstabenkombinationen beginnen bzw. enden. So kann man relativ schnell
+    gro&szlig;e Listen verkleinern und z&uuml;gig zum gesuchten Wegpunkt gelangen.
+  </dd>
+
+  <br><dt><b>Erzeugen eines Wegpunktes von der aktuellen Position</b></dt>
+
+  <dd>
+    Zu jeder Zeit k&ouml;nnen Sie auf den Kurspfeil in der Kartenansicht tippen
+    und sich so Ihre Position als Wegpunkt merken. Der Wegpunkt wird mit
+    dem Namen <i>WPx-HH:MM</i> angelegt und enth&auml;lt die aktuellen Koordinaten
+    und die H&ouml;he &uuml;ber dem Meer, falls verf&uuml;gbar. Als Zeit <i>HH:MM</i> wird
+    die aktuelle Zeit genommen. Der neue Wegpunkt wird auf der Karte
+    angezeigt und kann wie jeder andere Wegpunkt auch, &uuml;ber der Wegpunktliste
     bearbeitet werden.
-    </p>
+  </dd>
 
-    <p>
-    Wegpunkte werden auch f&uuml;r die Zielanflugberechnung benutzt.
-    Wenn Sie diese Eigenschaft von Cumulus benutzen wollen, stellen
-    Sie sicher, dass die Position und die H&ouml;he des Wegpunktes
-    &uuml;ber MSL korrekt sind!
-    </p>
+  <br><dt><b>Wegpunkt Verwaltung</b></dt>
 
-    <table width="100%">
-    <tr>
-    <td align="left"><a href="cumulus-manual.html">zur&uuml;ck</a></td>
-    <td align="center"><a href="cumulus.html">Anfang</a></td>
-    <td align="right"><a href="cumulus-tasks.html">weiter</a></td>
-    </tr>
-    </table>
+  <dd>
+    Wenn Sie Wegpunkte erzeugen, ver&auml;ndern oder l&ouml;schen wollen, benutzen Sie
+    die Kn&ouml;pfe mit den Ikonen am rechten Fensterrand.
+    <b>Aus Sicherheitsgr&uuml;nden sollten Sie das nie im Fluge tun!</b>
+    Wenn Sie den Plus bzw. Bleistift Knopf dr&uuml;cken, &ouml;ffnet sich ein Editor
+    Fenster mit den Wegpunktdaten, in dem Sie Ihre &Auml;nderungen vornehmen k&ouml;nnen.
+  </dd>
+
+  <br><dt><b>Wegpunkt Wertigkeit</b></dt>
+
+  <dd>
+    Die <i>Wertigkeit</i> eines Wegpunktes bedarf einiger Erkl&auml;rungen. Um das
+    &Uuml;berquellen der Karte mit Wegpunkten bei gro&szlig;en Ma&szlig;st&auml;ben zu verhindern,
+    wurde das Wertigkeitsattribut eingef&uuml;hrt. Entsprechend der zugeordneten
+    Wertigkeit werden Wegpunkte nur bis zu einem bestimmten Ma&szlig;stab gezeichnet.
+    Wegpunkte mit der Wertigkeit <i>hoch</i> werden immer gezeichnet. Dieses
+    Attribut sollten Sie z.B. f&uuml;r wichtige Orte wie Ihren Heimatplatz anwenden.
+    Die Wertigkeit <i>normal</i> wird nur bis zu mittleren Ma&szlig;st&auml;ben gezeichet,
+    w&auml;hrend die Wertigkeit <i>gering</i> nur bei ganz kleinen Ma&szlig;st&auml;ben zu sehen
+    ist. Der gerade selektierte Wegpunkt wird unabh&auml;ngig von seiner Wertigkeit
+    immer gezeichnet. Unter
+    <a href="cumulus-settings-map-objects.html#WaypointImportance">
+    <i>Einstellungen/Karten-Objekte</i></a> k&ouml;nnen Sie die Skalengrenzen setzen,
+    bis zu denen Wegpunkte entsprechend Ihrer zugeordneten Wertigkeit
+    gezeichnet werden.
+  </dd>
+
+  <br><dt><b>Wegpunkt Landerichtungen</b></dt>
+
+  <dd>
+    Im Wegpunkt Editor gibt es zwei Comboboxen f&uuml;r die Landerichtungen.
+    Die Handhabung der Landerichtungen ist ein wenig trickreich und von
+    Welt2000 abgeleitet. Die folgenden M&ouml;glichkeiten gibt es:
+
+    <p><ul>
+		  <li><b>09/27</b> bedeutet, es gibt eine Piste mit zwei nutzbaren Landerichtungen.
+                       <b>Achtung! Die Differenz zwischen den beiden Richtungen
+                       muss immer 18 sein.</b></li>
+		  <li><b>09/09</b> bedeutet, es gibt eine Piste mit nur einer nutzbaren
+                       Landerichtung.</li>
+		  <li><b>09/18</b> bedeutet, es gibt zwei Pisten 09/27 und 18/36 mit zwei
+                       nutzbaren Landerichtungen.
+                       <b>Achtung! Die Differenz zwischen den beiden Richtungen
+                       darf nicht gleich 18 sein.</b></li>
+    </ul></p>
+
+  </dd>
+
+  <dt><b>Wegpunktnamen und Zusatzinformationen</b></dt>
+
+  <dd>
+    Mittels der Men&uuml;leisten Punkte
+    <i>Schalter/Wegpunkt Marken</i> und <i>Schalter/Extra Marken Info</i>
+    k&ouml;nnen Sie die Anzeige von Wegpunkt Marken und ihrer Erreichbarkeit
+    (Entfernung und Ankunftsh&ouml;he) ein- bzw. ausschalten. Die Anzeige der
+    Erreichbarkeit ist an eine Flugzeugauswahl gebunden. Die Textmarken werden
+    auf wei&szlig;em Untergrund mit schwarzen Buchstaben gezeichnet. Wenn der
+    Wegpunkt landbar und erreichbar ist, wird der Text fett dargestellt.
+    <b>Die Darstellung der Erreichbarkeit wird nur angezeigt, wenn das
+    Attribut landbar vom Wegpunkt gesetzt ist.</b> Ist der Wegpunkt unter
+    die Sicherheitsh&ouml;he abgesunken, wird der Rahmen der Textbox rot gezeichnet.
+    <br>
+    Das selbe gilt auch f&uuml;r Flugpl&auml;tze, Au&szlig;enlandefelder und Aufgabenpunkte.
+  </dd>
+
+  <br><dt><b>Zielanflug</b></dt>
+
+  <dd>
+    Wegpunkte werden auch zur Zielanflugberechnung benutzt. Wenn Sie diese
+    M&ouml;glichkeit benutzen, achten Sie darauf, dass die Koordinaten und
+    die Gel&auml;ndeh&ouml;hen der Wegpunkte korrekt angegeben sind.
+    Andernfalls k&ouml;nnen Sie falsche Anflugresultate erhalten!
+  </dd>
+
+  </dl>
+
+  <p>
+  </p>
+
+  <table width="100%">
+  <tr>
+  <td align="left"><a href="cumulus-manual.html">zur&uuml;ck</a></td>
+  <td align="center"><a href="cumulus.html">Anfang</a></td>
+  <td align="right"><a href="cumulus-tasks.html">weiter</a></td>
+  </tr>
+
+</table>
 </body>
 </html>
