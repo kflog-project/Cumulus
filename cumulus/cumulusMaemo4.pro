@@ -271,8 +271,7 @@ internet {
                
     DEFINES += INTERNET
 }
-    
-INTERFACES = 
+
 TARGET = cumulus
 
 DESTDIR = .
