@@ -286,10 +286,10 @@ void ConfigWidget::accept()
       emit welt2000ConfigChanged();
     }
 
-  if( homePositionChange == true && GpsNmea::gps->getConnected() == false )
+  // Check, if we have not a valid GPS fix. In this case we do move the map
+  // to the new home position.
+  if( homePositionChange == true && GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
     {
-      // That moves the map to the new home position. We do that only,
-      // if we have no GPS connection.
       emit gotoHomePosition();
     }
 

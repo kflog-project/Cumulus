@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,11 +16,7 @@
 **
 ***********************************************************************/
 
-#include <QPushButton>
-#include <QFont>
-#include <QMessageBox>
-#include <QTreeWidgetItem>
-#include <QShortcut>
+#include <QtGui>
 
 #include "reachpointlistview.h"
 #include "mainwindow.h"
@@ -398,9 +394,9 @@ void ReachpointListView::slot_Close ()
 {
   emit done();
 
-  // Check, if we are in manual mode. In this case we do move the map to the
-  // new home position.
-  if( homeChanged == true && GpsNmea::gps->getConnected() == false )
+  // Check, if we have not a valid GPS fix. In this case we do move the map
+  // to the new home position.
+  if( homeChanged == true && GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
     {
       emit gotoHomePosition();
       homeChanged = false;

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Andre Somers
-**                   2007-2009 by Axel Pauli
+**                   2007-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,12 +16,7 @@
 **
 ***********************************************************************/
 
-#include <QMessageBox>
-#include <QShortcut>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QToolTip>
+#include <QtGui>
 
 #include "waypointlistview.h"
 #include "generalconfig.h"
@@ -161,9 +156,9 @@ void WaypointListView::slot_Close()
   // that the home position change does work.
   emit done();
 
-  // Check, if we are in manual mode. In this case we do move the map to the
-  // new home position.
-  if( homeChanged == true && GpsNmea::gps->getConnected() == false )
+  // Check, if we have not a valid GPS fix. In this case we do move the map
+  // to the new home position.
+  if( homeChanged == true && GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
     {
       emit gotoHomePosition();
       homeChanged = false;

@@ -414,9 +414,9 @@ void WPInfoWidget::slot_SwitchBack()
 
   mainWindow->setView( (MainWindow::appView) _lastView );
 
-  // Check, if we are in manual mode. In this case we do move the map to the
-  // new home position.
-  if( homeChanged == true && GpsNmea::gps->getConnected() == false )
+  // Check, if we have not a valid GPS fix. In this case we do move the map
+  // to the new home position.
+  if( homeChanged == true && GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
     {
       emit gotoHomePosition();
       homeChanged = false;
