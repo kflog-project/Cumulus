@@ -21,20 +21,22 @@
   </table>
 
   <h3 align="center">Einstellungen</h3>
-  
+
   <h4>Karte</h4>
 
   Hier k&ouml;nnen Sie den Speicherort f&uuml;r die Karten und die Einstellungen
   f&uuml;r die Darstellung der Karte festlegen.
 
   <dl>
-  
-    <a name="Maps"></a>
+
+    <a name="Maps">
     <dt><b>Karten</b></dt>
+    </a>
 
     <dd>
     Als Speicherort f&uuml;r die Kartendaten sollten Sie unter Maemo
-    (Nokia Internet Tablet) ein Verzeichnis auf einer der beiden SD Karten anlegen.
+    (Nokia Internet Tablets N8x0) ein Verzeichnis auf einer der beiden SD Karten anlegen.
+    F&uuml;r ein N900 ist das nicht erforderlich.
     Mit Hilfe des Knopfes <i>Karten</i> k&ouml;nnen Sie einen Verzeichnis Auswahl Dialog
     &ouml;ffnen und zu einen neuen Ort auf einer der SD Karten navigieren. Diese sind
     unter den Wurzeln <i>/media/mmc[1|2]</i> zu finden. Im Textfeld neben dem Knopf
@@ -42,8 +44,9 @@
     auch mit der Hand modifizieren und so Ihre bevorzugte Position setzen.
     </dd>
 
-    <a name="Projection"></a>
-    <br><dt><b>Projektion</b></dt>
+    <br><a name="Projection">
+    <dt><b>Projektion</b></dt>
+    </a>
 
     <dd>
     Die gespeicherten Koordinatenpunkte der Rohkarten von Cumulus sind nach dem
@@ -61,7 +64,7 @@
 
     Die Zylinder Projektion ist einfacher und schneller zu berechnen und ist deshalb
     der Standard in Cumulus. Die Lambertsche Schnittkegel Projektion ist mehr komplex
-    und braucht deswegen auch l&auml;nger f&uuml;r das erte Laden aber sie ist auch
+    und braucht deswegen auch l&auml;nger f&uuml;r das erste Laden aber sie ist auch
     verzerrungs&auml;rmer als die Zylinder Projektion.
 
     <br>
@@ -69,16 +72,16 @@
     sich beziehen kann. Diese sollten stets in der N&auml;he Ihres Heimatplatzes liegen.
     F&uuml;r die <i>Zylinder Projektion</i> ist nur eine Breitenparallele auszuw&auml;hlen.
     Die <i>Lambert Projektion</i> dagegen ben&ouml;tigt zwei Standard Parallen als
-    Bezugspunkt. W&auml;hlen Sie hier zwei Breitengrade aus, die das von ihnen beflogne
+    Bezugspunkt. W&auml;hlen Sie hier zwei Breitengrade aus, die das von ihnen beflogene
     Gebiet einfassen. Beispielsweise k&ouml;nnen Sie die Standard Parallelen ihrer offiziellen
     Flugkarten benutzen, um eine &auml;quivalente Darstellung zu diesen Karten zu
     erhalten. Den L&auml;ngengrad w&auml;hlen sie aus der Mitte des von ihnen beflogenen
     Gebietes aus. Er hat nichts mit der eigentlichen Projektion zu tun, mu&szlig; aber
-    aus technischen Gr&uuml;nden angegeben werden.
+    aus technischen Gr&uuml;nden mit angegeben werden.
 
     <br>
     Nach dem &Auml;ndern der Projektionsdaten muss Cumulus alle Karten aus den
-    Rohdaten neu berechnen. <b>Bitte beachten Sie!</b>
+    Rohdaten neu berechnen. <b>Achtung!</b>
     Sind die Standard Parallelen falsch gew&auml;hlt, kann es zur einer verzerrten
     Darstellung der Karte kommen. Unter Umst&auml;nden sehen Sie nur einen blauen
     Hintergrund. Dies tritt besonders dann zu, wenn die Standard Parallelen
@@ -112,8 +115,9 @@
     Alternative. Diese Variante ist der Standard in Cumulus.
     </dd>
 
-    <a name="Download"></a>
-    <br><dt><b>Setze Proxy</b></dt>
+    <br><a name="Download">
+    <dt><b>Setze Proxy</b></dt>
+    </a>
 
     <dd>
     Dr&uuml;cken Sie den Knopf <i>Setze Proxy</i>, wenn Sie einen Proxy f&uuml;r Downloads
@@ -122,7 +126,9 @@
     Proxy ben&ouml;tigen. Der gesetzte Proxy wird rechts neben dem Proxy Knopf angezeigt.
     </dd>
 
-    <br><dt><b>Mittelpunkt Breite/L&auml;nge</b></dt>
+    <br><a name="CenterPoint">
+    <dt><b>Mittelpunkt Breite/L&auml;nge</b></dt>
+    </a>
 
     <dd>
     Tragen Sie hier die Koordinaten Ihres Mittelpunkts ein, um den herum Karten
@@ -142,7 +148,7 @@
     Logdatei &uuml;ber die Downloads. Wenn man Cumulus in einen X-Terminal Fenster
     startet, kann man die einzelnen Ergebnisse als Debug Nachrichten darin sehen.
     </dd>
-    
+
   </dl>
 
   <table width="100%">
@@ -157,6 +163,6 @@
   <td align="right"><a href="cumulus-settings-map-objects.html">weiter</a></td>
   </tr>
   </table>
-  
+
 </body>
 </html>

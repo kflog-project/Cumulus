@@ -213,9 +213,9 @@ this in two ways:</p>
 <ul>
 
   <li> Filtering by countries or by a radius around your home position, as
-      defined in the configuration setup for Airfields (Setup-&gt;General setup-&gt;Airfields).
-      See <a href="cumulus-settings-airfields.html#Welt2000Filter">
-      Settings - Airfields</a> for more information. </li>
+      defined in the configuration setup for
+      <a href="cumulus-settings-airfields.html#Welt2000Filter">
+      Airfields</a>. </li>
 
   <li> Filtering by countries defined in a configuration
       file with the name <i>welt2000.conf</i>. See below for how to
@@ -234,7 +234,8 @@ mapping. You can map the short names or ICAO identifiers of the
 Welt2000 file entries onto other Cumulus map elements in a configuration file, using the
 simple syntax shown below. The configuration
 file must have the name <i>welt2000.conf</i> and must
-be located in the same directory as the source file <i>welt2000.txt</i>. The file uses the following syntax: </p>
+be located in the same directory as the source file <i>welt2000.txt</i>.
+The file uses the following syntax:</p>
 
 <ul>
 
@@ -249,14 +250,16 @@ This line defines a country filter rule. Several countries can be
 entered after the equal sign in one line as a comma-separated list.
 The country identifiers have to be coded according to ISO-3166. If such
 a rule is defined, only the listed countries will be extracted from the
-Welt2000 source file. As mentioned above, the use of the Cumulus GUI now makes this filter method obsolete. It is possible to define
+Welt2000 source file. As mentioned above, the use of the Cumulus GUI now makes
+this filter method obsolete. It is possible to define
 more than one filter rule. </li>
 
   <li><b>MAP_SHORT_NAME</b> <i>short-name</i>=<i>map-element-of-cumulus</i>
     <br>
 
-This line defines a rule for the mapping of the short name (the first six characters from the left) of a Welt2000 entry onto a special Cumulus map
-element. </li>
+This line defines a rule for the mapping of the short name
+(the first six characters from the left) of a Welt2000 entry onto a special
+Cumulus map element. </li>
 
   <li><b>MAP_ICAO</b> <i>icao-sign</i>=<i>map-element-of-cumulus</i>
     <br>
@@ -267,32 +270,20 @@ entry onto a special Cumulus map element. </li>
 </ul>
 
 The supported Cumulus map elements for airfields are:
+
 <ul>
-
   <li>IntAirport </li>
-
   <li>Airport </li>
-
   <li>MilAirport </li>
-
   <li>CivMilAirport </li>
-
   <li>Airfield </li>
-
   <li>ClosedAirfield </li>
-
   <li>CivHeliport </li>
-
   <li>MilHeliport </li>
-
   <li>AmbHeliport </li>
-
   <li>Glidersite </li>
-
   <li>UltraLight </li>
-
   <li>HangGlider </li>
-
 </ul>
 
 <u>Remember that the cumulus map elements used in the mapping rules

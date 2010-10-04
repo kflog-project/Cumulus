@@ -31,13 +31,13 @@
   <p>Cumulus stellt eine GPS Status&uuml;bersicht bereit, in der Sie die Anzahl
   der empfangenen Satelliten, deren Signalst&auml;rke und die empfangenen NMEA
   Datens&auml;tze sehen k&ouml;nnen. Diese &Uuml;bersicht kann mit der <i>g</i>-Taste oder
-  duch antippen des GPS Status Indikators in der Statuszeile ge&ouml;ffnet werden.
+  duch antippen des GPS Status Indikators in der Statusleiste ge&ouml;ffnet werden.
   </p>
 
   <p><b>Achtung!</b> Cumulus verarbeitet nur NMEA Datens&auml;tze mit einer g&uuml;ltigen
-  Checksumme. Es kann ebenfalls einige propriet&auml;re NMEA Datens&auml;tze verarbeiten,
-  die von Ger&auml;ten wie, Cambridge, Volkslogger, Flarm or LX angeboten werden.
-  Solche Daten sind Wind, barometrische H&ouml;he, Variometer, MacCraedy und
+  Checksumme. Es kann ebenfalls einige propriet&auml;re Datens&auml;tze verarbeiten,
+  die von Ger&auml;ten wie, Cambridge, Volkslogger, Flarm oder LX angeboten werden.
+  Solche Daten sind Wind, barometrische H&ouml;he, Variometer, MacCready,
   Kollisions- und Hindernisinformationen.</p>
 
 <dl>
@@ -64,7 +64,9 @@
     Wenn Sie ein Nokia Internet Tablet N800/N810/N900 verwenden, dann sollte
     der Eintrag <i>GPS Location</i> Ihre erste Wahl sein au&szlig;er Sie wollen sich
     per USB zum GPS Empf&auml;nger verbinden. In solch einem Fall w&auml;hlen Sie
-    bitte den Eintrag <i>/dev/ttyUSB0</i> aus.</p>
+    bitte den Eintrag <i>/dev/ttyUSB0</i> aus. Falls Sie einen RS232-USB Konverter
+    verwenden, m&uuml;ssen Sie auch eine passende &Uuml;bertragungsgeschwingigkeit dazu
+    ausw&auml;hlen.</p>
 
     Ist Ihre Schittstelle nicht in der Liste zu finden, so &auml;ndern Sie
     einfach einen bestehenden Eintrag, entspreched Ihren W&uuml;nschen, ab.
@@ -85,8 +87,8 @@
     negative Werten werden abgezogen. Wenn ein GPS Fix existiert, wird der
     Korrekturwert sofort auf die Anzeige angewendet.
     <p>
-    Einige Logger Ger&auml;te k&ouml;nnen H&ouml;henangaben liefern, die von ihrer
-    eingebauten Drucksonde stammen. Um diese Daten zu nutzen, m&uuml;ssen
+    Einige Ger&auml;te, z.B. Flarm, k&ouml;nnen H&ouml;henangaben liefern, die
+    von ihrer eingebauten Drucksonde stammen. Um diese Daten zu nutzen, m&uuml;ssen
     Sie den Eintrag <i>Druck</i> bei der H&ouml;henreferenz Einstellung
     ausw&auml;hlen.
     </p>
@@ -132,7 +134,7 @@
     Nokia Internet Tablets ist diese Option nicht verf&uuml;gbar, da Cumulus dort
     nur unter dem Benutzernamen <i>user</i> laufen kann.
   </dd>
-  
+
 </dl>
 
 <p><b>Verarbeitete GPS Datens&auml;tze</b>

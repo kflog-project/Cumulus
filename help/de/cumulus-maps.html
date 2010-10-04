@@ -22,14 +22,14 @@
     <ul>
         <li><b>Boden- und Gel&auml;ndekarten</b> mit Merkmalen wie
         Autobahnen, Stra&szlig;en, St&auml;dten, Fl&uuml;ssen, Seen und
-        mit H&ouml;henlinien. Diese decken die ganze Welt ab. Diese Karten
+        mit H&ouml;henlinien. Diese decken die ganze Weltab. Diese Karten
         k&ouml;nnen aus dem
         <a href="http://www.kflog.org/maproom/ground-and-terrain-data">
         KFLog Karten Raum</a> herunter geladen werden. Cumulus ist aber auch
         selber in der Lage alle ben&ouml;tigten Karten aus dem Internet zu
-        laden. Siehe dazu auch unter
+        laden. Unter dem Punkt
         <a href="cumulus-settings-map-settings.html#Download">
-        Karten Einstellungen</a> f&uuml;r mehr Informationen.</li>
+        Einstellungen/Karte</a> finden Sie weitere Hinweise dazu.</li>
 
         <li><b>Luftr&auml;ume:</b> Cumulus &uuml;terst&uuml;tzt nur das OpenAir
         Dateiformat f&uuml;r Luftraumstrukturen. Suchen Sie bitte im Internet nach
@@ -94,8 +94,9 @@
    </ul>
 
     <p>Wenn Sie die Karten unter einem anderen Wurzelverzeichnis als den hier
-    genannten installieren,
-    so m&uuml;ssen Sie anschlie&szlig;end auf der Kartenkonfigurationsseite den
+    genannten installieren, so m&uuml;ssen Sie anschlie&szlig;end das Men&uuml;
+    <a href="cumulus-settings-map-settings.html#Maps">
+    Einstellungen/Karte</a> aufrufen und den
     Pfad zum Wurzelverzeichnis der installierten Karten eintragen. Dr&uuml;cken
     Sie dazu auf den Knopf Karten oben links in der Ecke und navigieren Sie zu
     Ihrem Installationsverzeichnis, wo die Karten zu finden sind.
@@ -129,7 +130,7 @@
     nimmt einige Zeit in Anspruch, hat aber den Vorteil, das die neuen
     Dateien kleiner sind und dann auch schneller geladen werden
     k&ouml;nnen. In dem Men&uuml;
-    <a href="cumulus-settings-map-advanced.html">Einstellungen Karten</a>
+    <a href="cumulus-settings-map-settings.html">Einstellungen/Karte</a>
     k&ouml;nnen Sie die Projektionsart und weitere Kartenparameter einstellen.
     </p>
 
@@ -209,18 +210,19 @@
     <p><b>Achten Sie auch auf die korrekte Schreibweise, alle
     Zuordnungen sind davon abh&auml;gig.</b>
 
-    <a name="Welt2000"></a>
+    <a name="Welt2000">
     <h4>Benutzung von Welt2000 Flugplatz- und Au&szlig;enlandefelderdaten</h4>
+    </a>
 
-    <p>Die Flugplatz- und Au&szlig;enlandefelderdaten werden von Cumulus aus der
+    Die Flugplatz- und Au&szlig;enlandefelderdaten werden von Cumulus aus der
     Welt2000 Datei gelesen. Diese wurde von Michael Meier, auch bekannt als
-    Milomei, als eine gro&szlig;e Datei kreiert. Die Datei ist auf dieser
+    Milomei, als eine gro&szlig;e Datei erstellt. Die Datei ist auf dieser
     <a href="http://www.segelflug.de/vereine/welt2000/">Seite</a>
-    hier in der Tabelle unter dem Namen <i>WELT2000.TXT</i> zu finden.</p>
+    hier in der Tabelle Downloads unter dem Namen <i>WELT2000.TXT</i> zu finden.
 
-    <p>Cumulus kann diese Datei auch selber herunter laden. Sehen Sie
-    <a href="cumulus-settings-airfields.html#Download">hier</a> nach, wie
-    das zu machen ist.
+    <p>Cumulus kann diese Datei auch selber herunter laden. Sehen Sie unter
+    <a href="cumulus-settings-airfields.html#Download">
+    Einstellungen/Flugpl&auml;tze</a> nach, wie das zu machen ist.
     </p>
 
     <p>Die Welt2000 Datei ist im Unterverzeichnis <i>airfields</i> unter den
@@ -231,18 +233,18 @@
 
     <ol>
       <li>Filtern nach L&auml;ndern</li>
-      <li>Flitern nach einem vorgegebenen Radius um die Heimatposition</li>
+      <li>Filtern nach einem vorgegebenen Radius um die Heimatposition</li>
     </ol>
 
     Die entsprechenden Parameter dazu k&ouml;nnen Sie unter dem Men&uuml;
     <a href="cumulus-settings-airfields.html#Welt2000Filter">
-    Einstellungen-&gt;Allgemein-&gt;Flugpl&auml;tze</a> eingeben.
+     Einstellungen/Flugpl&auml;tze</a> eingeben.
 
     <p>Ein Nachteil ist, dass Welt2000 nur drei Typen von
     Flugpl&auml;tzen kennt (Flugplatz, Segelfluggel&auml;nde,
     UL-Platz) aber Cumulus eine Menge mehr. Dieses Defizit wird
     &uuml;ber eine zus&auml;tzliche Zuordnungsm&ouml;glichkeit f&uuml;r
-    ICAO Kenner und Kurznamen von Welt 2000 Eintr&auml;gen zu Cumulus
+    ICAO Kenner und Kurznamen von Welt2000 Eintr&auml;gen zu Cumulus
     Kartenelementen wieder ausgeglichen. In einer Konfigurationsdatei
     mit dem Namen <i>welt2000.conf</i> kann man entsprechende Regeln
     daf&uuml;r definieren. Diese Datei ist in dem selben Directory zu
@@ -255,15 +257,16 @@
 
     <li><b>FILTER countries=</b><i>land1_1[,...,land_n]</i>
 
-    <br>Diese Zeile definiert eine L&auml;nderfilter
-    Regel. Verschiedene L&auml;nder k&ouml;nnen hintereinander durch
+    <br>Diese Zeile definiert eine L&auml;nderfilter Regel.
+    Verschiedene L&auml;nder k&ouml;nnen hintereinander durch
     Kommas getrennt angegeben werden. Die L&auml;nderkennungen sind
     nach ISO-3166 kodiert. Falls eine solche Filterregel definiert
     wurde, werden nur die darin aufgef&uuml;hrten L&auml;nder aus der
-    Welt 2000 Quelldatei extrahiert. Dies sollte als der &uuml;bliche
-    Weg benutzt werden, um die gew&uuml;nschten Flugpl&auml;tze in
-    Cumulus einzulesen. Es ist m&ouml;glich, mehr als eine Filterregel
-    zu definieren.
+    Welt2000 Quelldatei extrahiert. Es ist m&ouml;glich, mehr als eine
+    Filterregel zu definieren. Da diese Regel auch &uuml;ber die Oberfl&auml;che
+    angeboten wird, sollten Sie diese in der Konfigurationsdatei <b>nicht</b>
+    mehr anwenden. Eine Regel, die &uuml;ber die Oberfl&auml;che definiert wurde,
+    &uuml;berschreibt immer die Regel aus der Konfigurationsdatei!
 
     <li><b>MAP_SHORT_NAME</b> <i>kurz-name</i>=<i>cumulus-karten-element</i>
 
@@ -274,7 +277,7 @@
     <li><b>MAP_ICAO</b> <i>icao-zeichen</i>=<i>cumulus-karten-element</i>
 
     <br>Diese Zeile definiert eine Regel um einem ICAO Zeichen eines
-    Welt 2000 Eintrages ein bestimmtes Cumulus Kartenelement
+    Welt2000 Eintrages ein bestimmtes Cumulus Kartenelement
     zuzuweisen.
     </ul>
 
@@ -305,8 +308,9 @@
     <p># Beispiel einer welt2000.conf Datei, beginnend mit einer Kommentarzeile
     <br>$ Dies ist ebenfalls eine Kommentarzeile
     <br>#
-    <br># Es folgt eine L&auml;nderfilter Regel
+    <br># Es folgt eine L&auml;nderfilter Regel.
     <br># Nur die  L&auml;nder Deutschland, Polen und Tschechien werden aus der welt2000.txt Quelle extrahiert
+    <br># Regel bitte nicht mehr verwenden, kann durch die GUI &uuml;berschrieben werden!
     <br>FILTER countries=de,pl,cz
     <br>#
     <br># Es folgt eine ICAO Zuweisungsregel
