@@ -369,7 +369,7 @@ MapView::~MapView()
 
 void MapView::showEvent( QShowEvent* event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
 
   // Used map info box widgets
   MapInfoBox *boxWidgets[14] = { _heading,

@@ -112,10 +112,7 @@ public slots:
   void slot_ResetDisplay();
 
   /** Set object to be selected. It is the hash key. */
-  void slot_SetSelectedObject( QString newObject )
-  {
-    selectedObject = newObject;
-  };
+  void slot_SetSelectedObject( QString newObject );
 
 private:
 

@@ -20,6 +20,7 @@
 #include "target.h"
 #include "generalconfig.h"
 #include "flarmaliaslist.h"
+#include "flarmdisplay.h"
 
 // The alias name length is limited to 15 characters
 #define MaxAliasLength 15
@@ -162,6 +163,13 @@ void FlarmAliasList::slot_AddRow( QString col0, QString col1 )
   item->setFlags( Qt::ItemIsSelectable| Qt::ItemIsEditable | Qt::ItemIsEnabled );
   list->setItem( row, 1, item );
 
+  if( ! col0.isEmpty() && col0 == FlarmDisplay::getSelectedObject() )
+    {
+      // Set this row to be selected because Flarm Id is selected in display.
+      list->setCurrentCell( row, 0,
+                            QItemSelectionModel::Select|QItemSelectionModel::Rows );
+    }
+
   list->resizeColumnToContents( 0 );
 }
 
@@ -249,6 +257,25 @@ void FlarmAliasList::slot_Ok()
     }
 
   saveAliasData(); // Save data into file
+
+  // Check, if only one row is selected. In this case this item is set as
+  // the selected Flarm identifier. No row selection will reset the current
+  // selected Flarm identifier.
+  QList<QTableWidgetItem *> items = list->selectedItems();
+
+  if( items.size() >= 0 && items.size() <= 2 )
+    {
+      QString selectedObject = "";
+
+      if( items.size() > 0 )
+        {
+          QTableWidgetItem *item = items.at(0);
+          selectedObject = item->text().trimmed();
+        }
+
+      // Report new selection to FlarmListView and FlarmDisplay
+      emit newObjectSelection( selectedObject );
+    }
 
   slot_Close();
 }

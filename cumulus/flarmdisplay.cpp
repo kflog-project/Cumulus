@@ -149,6 +149,23 @@ void FlarmDisplay::createBackground()
   // Draw horizontal cross line
   painter.drawLine( centerX - width/2 - 10, centerY,
                     centerX + width/2 + 10, centerY );
+
+  // Draw the selected Flarm object identifier, if an selection is active.
+  if( selectedObject.isEmpty() == false )
+    {
+      // If object is selected, we use another color
+      QPen pen(Qt::magenta);
+      pen.setWidth(3);
+      painter.setPen( pen );
+
+      const QHash<QString, QString> &aliasHash = FlarmAliasList::getAliasHash();
+
+      // Try to map the Flarm Id to an alias name
+      QString actfId = aliasHash.value(selectedObject, selectedObject );
+
+      // Draw the Flarm Id of the selected object.
+      painter.drawText( 5, size().height() - 5, actfId );
+    }
 }
 
 /** Switch to a new zoom level. */
@@ -184,15 +201,18 @@ void FlarmDisplay::slot_ResetDisplay()
   repaint();
 }
 
+/** Set object to be selected. It is the hash key. */
+void FlarmDisplay::slot_SetSelectedObject( QString newObject )
+{
+  selectedObject = newObject;
+  update();
+}
+
 void FlarmDisplay::showEvent( QShowEvent *event )
 {
   Q_UNUSED( event )
 
-  if( background.isNull() == true )
-    {
-      // No base picture available do create one.
-      createBackground();
-    }
+  createBackground();
 }
 
 void FlarmDisplay::resizeEvent( QResizeEvent *event )
@@ -254,6 +274,8 @@ void FlarmDisplay::mousePressEvent( QMouseEvent *event )
     {
       // Report new selection to FlarmListView
       emit newObjectSelection( selectedObject );
+      createBackground();
+      update();
     }
 
   event->accept();
@@ -274,7 +296,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
 
   if( flarmAcfts.size() == 0 )
     {
-      qDebug() << "FlarmDisplay::paintEvent: empty hash";
+      // qDebug() << "FlarmDisplay::paintEvent: empty hash";
       // hash is empty
       return;
     }
@@ -394,9 +416,35 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
 
       if( it.key() == selectedObject )
         {
-          // If object is selected, we use another color
+          // If a Flarm object is selected, we use another color
           color = Qt::magenta;
+        }
 
+      QPen pen(Qt::black);
+      pen.setWidth(3);
+      painter.setPen( pen );
+
+      if( acft.TurnRate != INT_MIN )
+        {
+          // Object is circling, not yet supported by FLARM atm.
+          MapConfig::createCircle( object, 30, color,
+                                   1.0, Qt::transparent, pen );
+        }
+      else if( acft.Track != INT_MIN )
+        {
+          // Object with track info
+          MapConfig::createTriangle( object, 34, color, relTrack,
+                                     1.0, Qt::transparent, pen );
+        }
+      else
+        {
+          // Object without track info
+          MapConfig::createSquare( object, 30, color, 1.0, pen );
+        }
+
+      if( it.key() == selectedObject )
+        {
+          // If a Flarm object is selected, we draw some additional information
           QFont f = font();
           f.setPointSize(FontSize);
           f.setBold( true );
@@ -405,14 +453,6 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           QPen pen(color);
           pen.setWidth(3);
           painter.setPen( pen );
-
-          const QHash<QString, QString> &aliasHash = FlarmAliasList::getAliasHash();
-
-          // Try tp map the Flarm Id to an alias name
-          QString actfId = aliasHash.value( acft.ID, acft.ID );
-
-          // Draw the Flarm aircraft Id of the selected object.
-          painter.drawText( 5, size().height() - 5, actfId );
 
           // Draw the distance to the selected object
           QString text = Distance::getText( distAcft, true, -1 );
@@ -458,25 +498,6 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
               painter.drawText( size().width() - 5 - textRect.width(),
                                 10 + 2 * f.pointSize(), text );
             }
-        }
-
-      if( acft.TurnRate != INT_MIN )
-        {
-          // Object is circling
-          MapConfig::createCircle( object, 30, color, 1.0 );
-        }
-      else if( acft.Track != INT_MIN )
-        {
-          // Object with track info
-          QPen pen(Qt::black);
-          pen.setWidth(3);
-          MapConfig::createTriangle( object, 34, color, relTrack,
-                                     1.0, Qt::transparent, pen );
-        }
-      else
-        {
-          // Object without track info
-          MapConfig::createSquare( object, 30, color, 1.0 );
         }
 
       painter.drawPixmap( centerX + east  - object.size().width()/2,

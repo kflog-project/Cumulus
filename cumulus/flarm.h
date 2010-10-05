@@ -187,11 +187,14 @@ public:
    * Creates a hash key by using the passed parameters.
    *
    * @param idType <ID-Type> tag of Flarm sentence $PFLAA
-   * @param id <ID> tag of Flarm sentence $PFLAA
+   * @param id <ID> 6-digit hex value of Flarm sentence $PFLAA
    */
   static QString createHashKey( int idType, const QString& id )
   {
-    return QString("%1-%2").arg(idType).arg(id);
+    Q_UNUSED(idType)
+    // return QString("%1-%2").arg(idType).arg(id);
+    // idType is not more considered due to alias selection
+    return QString(id);
   };
 
   /**

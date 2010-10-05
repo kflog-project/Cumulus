@@ -810,7 +810,9 @@ QPixmap& MapConfig::getMagentaCircle( int diameter )
   * is normally semi-transparent.
   */
 void MapConfig::createCircle( QPixmap& pixmap, int diameter,
-                              QColor color, double opacity )
+                              QColor color, double opacity,
+                              QColor bg,
+                              QPen pen )
 {
   if( diameter % 2 )
     {
@@ -819,10 +821,10 @@ void MapConfig::createCircle( QPixmap& pixmap, int diameter,
     }
 
   pixmap = QPixmap( diameter, diameter );
-  pixmap.fill(Qt::transparent);
+  pixmap.fill( bg );
 
   QPainter painter(&pixmap);
-  painter.setPen( Qt::NoPen );
+  painter.setPen( pen );
   painter.setBrush( QBrush( color, Qt::SolidPattern ) );
 #ifndef MAEMO
   // @AP: that did not work under Maemo. No idea why?
@@ -833,11 +835,12 @@ void MapConfig::createCircle( QPixmap& pixmap, int diameter,
 
 /**
   * Returns a pixmap containing a square in the wanted size
-  * and filled with wanted color. The quare has no border and
+  * and filled with wanted color. The square has no border and
   * is semi-transparent.
   */
 void MapConfig::createSquare( QPixmap& pixmap, int size,
-                              QColor color, double opacity )
+                              QColor color, double opacity,
+                              QPen pen )
 {
   if( size % 2 )
     {
@@ -848,7 +851,7 @@ void MapConfig::createSquare( QPixmap& pixmap, int size,
   pixmap = QPixmap( size, size );
 
   QPainter painter(&pixmap);
-  painter.setPen( Qt::NoPen );
+  painter.setPen( pen );
   painter.setBrush( QBrush( color, Qt::SolidPattern ) );
 #ifndef MAEMO
   // @AP: that did not work under Maemo. No idea why?
@@ -869,6 +872,7 @@ void MapConfig::createSquare( QPixmap& pixmap, int size,
   * @param rotate rotation angle in degree of triangle
   * @param opacity a value between 0.0 ... 1.0
   * @param bg background color of pixmap. Default is set to transparent
+  * @param pen to be used for outlining
   */
 void MapConfig::createTriangle( QPixmap& pixmap, int size,
                                 QColor color, int rotate,

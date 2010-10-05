@@ -11,7 +11,7 @@
 **                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -198,15 +198,18 @@ public:
       * is semi-transparent.
       */
     static void createCircle( QPixmap& pixmap, int diameter,
-                              QColor color, double opacity=0.5 );
+                              QColor color, double opacity=0.5,
+                              QColor bg=Qt::transparent,
+                              QPen pen=Qt::NoPen );
 
     /**
       * Returns a pixmap containing a square in the wanted size
-      * and filled with wanted color. The quare has no border and
+      * and filled with wanted color. The square has no border and
       * is semi-transparent.
       */
     static void createSquare( QPixmap& pixmap, int size,
-                              QColor color, double opacity=0.5 );
+                              QColor color, double opacity=0.5,
+                              QPen pen=Qt::NoPen );
     /**
       * Draws on a pixmap a triangle in the wanted size,
       * filled with the wanted color and rotated in the wanted direction.
@@ -219,6 +222,7 @@ public:
       * @param rotate rotation angle in degree of triangle
       * @param opacity a value between 0.0 ... 1.0
       * @param bg background color of pixmap. Default is set to transparent.
+      * @param pen to be used for outlining
       */
     static void createTriangle( QPixmap& pixmap, int size,
                                 QColor color, int rotate=0,

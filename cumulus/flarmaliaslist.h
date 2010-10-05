@@ -31,6 +31,7 @@
 
 #include <QWidget>
 #include <QHash>
+#include <QString>
 
 class QTableWidget;
 class QString;
@@ -97,6 +98,11 @@ private slots:
   void slot_HeaderClicked( int section );
 
 signals:
+
+  /**
+   * Emit a new Flarm object selection.
+   */
+  void newObjectSelection( QString newObject );
 
   /** Emitted if the widget was closed. */
   void closed();

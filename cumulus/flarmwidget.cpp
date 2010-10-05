@@ -76,7 +76,6 @@ void FlarmWidget::showEvent( QShowEvent *event )
 
       connect( display, SIGNAL(newObjectSelection(QString)),
                listView, SLOT(slot_SetSelectedObject(QString)) );
-
     }
 }
 
@@ -105,6 +104,15 @@ void FlarmWidget::slotOpenAliasList()
 
   aliasList = new FlarmAliasList( this );
   aliasList->resize( size() );
+
+  FlarmDisplay* display = radarView->getDisplay();
+
+  connect( aliasList, SIGNAL(newObjectSelection(QString)),
+           display, SLOT(slot_SetSelectedObject(QString)) );
+
+  connect( aliasList, SIGNAL(newObjectSelection(QString)),
+           listView, SLOT(slot_SetSelectedObject(QString)) );
+
   connect( aliasList, SIGNAL(closed() ), this, SLOT(slotAliasListClosed()) );
 
   radarView->setVisible( false );
