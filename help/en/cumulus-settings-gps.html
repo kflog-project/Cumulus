@@ -7,44 +7,47 @@
 
 <body>
 
-<table width="100%">
-  <tbody>
-    <tr>
-      <td></td>
-      <td align="center"><a href="cumulus.html">start</a></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td align="left"><a href="cumulus-settings-personal.html">back</a></td>
-      <td align="center"><a href="cumulus-settings.html">overview</a></td>
-      <td align="right"><a href="cumulus-settings-glider.html">next</a></td>
-    </tr>
-  </tbody>
-</table>
+  <table width="100%">
+    <tbody>
+      <tr>
+        <td></td>
+        <td align="center"><a href="cumulus.html">start</a></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td align="left"><a href="cumulus-settings-personal.html">back</a></td>
+        <td align="center"><a href="cumulus-settings.html">overview</a></td>
+        <td align="right"><a href="cumulus-settings-glider.html">next</a></td>
+      </tr>
+    </tbody>
+  </table>
 
-<h3 align="center">Settings</h3>
+  <h3 align="center">Settings</h3>
 
-<h4>GPS</h4>
+  <h4>GPS</h4>
 
-    Here you can enter connection information regarding your GPS receiver.
-    Select the correct device and baud rate for your GPS if necessary.
-    Please refer to your GPS manual for these values.
-<p>
-    Cumulus can provide you some status information concerning your GPS
-    reception. If you want to know what satellites are in view, where they
-    are, how strong their signal is, or if you want to take a look at the
-    raw NMEA stream of your GPS, use the <b><i>G</i></b> key or click on
-    the GPS status indicator in the status bar. This will open a status
-    dialog for the GPS. The dialog can be closed with the <b>Escape key</b>.
-
-<p> Note that Cumulus will only accept GPS data sentences with a valid checksum.
-    It is also able to process the proprietary sentences emitted by a
-    Cambridge, Volkslogger, Flarm or LX device and to process this these data.
-    Wind, variometer and MacCready data from such devices
-    will be taken over automatically, if they are available. MSL and STD altitude,
-    derived from the pressure sensor are only taken on demand.
-
-<dl>
+  Here you can enter connection information regarding your GPS receiver.
+  Select the correct device and baud rate for your GPS if necessary.
+  Please refer to your GPS manual for these values.
+  <p>
+  Cumulus can provide you some status information concerning your GPS
+  reception. If you want to know what satellites are in view, where they
+  are, how strong their signal is, or if you want to take a look at the
+  raw NMEA stream of your GPS, use the <b><i>G</i></b> key or click on
+  the GPS status indicator in the status bar. This will open a status
+  dialog for the GPS. The dialog can be closed with the <b>Escape key</b>
+  or with the close button.
+  </p>
+  <p>
+  Note that Cumulus will only accept GPS data sentences with a valid checksum.
+  It is also able to process the proprietary sentences emitted by a
+  Cambridge, Volkslogger, Flarm or LX device and to process this these data.
+  Wind, variometer and MacCready data from such devices
+  will be taken over automatically, if they are available. MSL and STD altitude,
+  derived from the pressure sensor are only taken on demand.
+  </p>
+  
+  <dl>
   <dt><b>GPS Device</b></dt>
 
   <dd>
@@ -89,8 +92,11 @@
     Reference combo box the entry <i>Pressure</i>.
     <br><b>Please note!</b> If you have selected the pressure item Cumulus
     expects special NMEA records from the connected logger devices.
-    Otherwise you will not get displayed any altitude and variometer data! 
+    Otherwise you will not get displayed any altitude and variometer data!
+    </p>
+    
     <p>The following devices are supported by Cumulus:</p>
+    
     <ul>
     <li>Cambrigde device: It delivers altitude values (MSL and STD)
         derived from a pressure sensor.
@@ -109,8 +115,6 @@
         derived from a pressure sensor. Do enable the sending of the PGRMZ record
         in the FLARM setup menu. 
     </ul>
-    </p>
-      
   </dd>
 
   <dt><b>Sync Clock</b></dt>
@@ -122,49 +126,51 @@
     Internet tablet this feature is switched off because user processes
     are not running under the root identity.
   </dd>
-</dl>
-
-<p><b>Processed GPS sentences</b>
-<p>
-Cumulus processes the following NMEA and proprietary sentences:
-<p>
-<table border="1">
-  <tr><td>$GPRMC</td> <td>Recommended Minimum Specific GNSS Data</td></tr>
-  <tr><td>$GPGLL</td> <td>Geographic Position - Latitude and Longitude</td></tr>
-  <tr><td>$GPGGA</td> <td>Global Positioning System Fixed Data</td></tr>
-  <tr><td>$GPGSA</td> <td>GNSS DOP and Active Satellites</td></tr>
-  <tr><td>$GPGSV</td> <td>GNSS Satellites in View</td></tr>
-  <tr><td>$GPDTM</td> <td>Map datum</td></tr>
-  <tr><td>$PGRMZ</td> <td>Garmin and FLARM proprietary sentence with barometric or GPS altitude data.</td></tr>
   
-  <tr><td>$PFLAU</td> <td>FLARM proprietary sentence with status, intruder and obstacle data.</td></tr>
-  <tr><td>$PFLAA</td> <td>FLARM proprietary sentence with data about other aircraft around.</td></tr>
-  
-  <tr><td>$PCAID</td> <td>Cambridge proprietary sentence with STD altitude</td></tr>
-  <tr><td>!w</td> <td>Cambridge proprietary sentence with MSL altitude, QHN setting,
-                      wind direction, MacCready, wind speed and variometer </td></tr>
-  <tr><td>$PGCS</td> <td>Volkslogger proprietary sentence with STD altitude</td></tr>
-  <tr><td>$LXWP0</td> <td>LX Navigation proprietary sentence with MSL altitude, variometer and wind data</td></tr>
-  <tr><td>$LXWP2</td> <td>LX Navigation proprietary sentence with McCready data</td></tr>
-  <tr><td>$MAEMO0</td> <td>Cumulus internal proprietary sentence, if LibLocation from MAEMO 5 is used.</td></tr>
-  <tr><td>$MAEMO1</td> <td>Cumulus internal proprietary sentence, if LibLocation from MAEMO 5 is used.</td></tr>
-</table>
-</p>
+  </dl>
 
-<table width="100%">
-  <tbody>
-    <tr>
-      <td></td>
-      <td align="center"><a href="cumulus.html">start</a></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td align="left"><a href="cumulus-settings-personal.html">back</a></td>
-      <td align="center"><a href="cumulus-settings.html">overview</a></td>
-      <td align="right"><a href="cumulus-settings-glider.html">next</a></td>
-    </tr>
-  </tbody>
-</table>
+  <h4>Processed GPS sentences</h4>
+
+  Cumulus processes the following NMEA and proprietary sentences:
+
+  <p>
+  <table border="1">
+    <tr><td>$GPRMC</td> <td>Recommended Minimum Specific GNSS Data</td></tr>
+    <tr><td>$GPGLL</td> <td>Geographic Position - Latitude and Longitude</td></tr>
+    <tr><td>$GPGGA</td> <td>Global Positioning System Fixed Data</td></tr>
+    <tr><td>$GPGSA</td> <td>GNSS DOP and Active Satellites</td></tr>
+    <tr><td>$GPGSV</td> <td>GNSS Satellites in View</td></tr>
+    <tr><td>$GPDTM</td> <td>Map datum</td></tr>
+    <tr><td>$PGRMZ</td> <td>Garmin and FLARM proprietary sentence with barometric or GPS altitude data.</td></tr>
+
+    <tr><td>$PFLAU</td> <td>FLARM proprietary sentence with status, intruder and obstacle data.</td></tr>
+    <tr><td>$PFLAA</td> <td>FLARM proprietary sentence with data about other aircraft around.</td></tr>
+
+    <tr><td>$PCAID</td> <td>Cambridge proprietary sentence with STD altitude</td></tr>
+    <tr><td>!w</td> <td>Cambridge proprietary sentence with MSL altitude, QHN setting,
+                        wind direction, MacCready, wind speed and variometer </td></tr>
+    <tr><td>$PGCS</td> <td>Volkslogger proprietary sentence with STD altitude</td></tr>
+    <tr><td>$LXWP0</td> <td>LX Navigation proprietary sentence with MSL altitude, variometer and wind data</td></tr>
+    <tr><td>$LXWP2</td> <td>LX Navigation proprietary sentence with McCready data</td></tr>
+    <tr><td>$MAEMO0</td> <td>Cumulus internal proprietary sentence, if LibLocation from MAEMO 5 is used.</td></tr>
+    <tr><td>$MAEMO1</td> <td>Cumulus internal proprietary sentence, if LibLocation from MAEMO 5 is used.</td></tr>
+  </table>
+  </p>
+
+  <table width="100%">
+    <tbody>
+      <tr>
+        <td></td>
+        <td align="center"><a href="cumulus.html">start</a></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td align="left"><a href="cumulus-settings-personal.html">back</a></td>
+        <td align="center"><a href="cumulus-settings.html">overview</a></td>
+        <td align="right"><a href="cumulus-settings-glider.html">next</a></td>
+      </tr>
+    </tbody>
+  </table>
 
 </body>
 </html>

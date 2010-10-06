@@ -1,43 +1,45 @@
+<!-- $Id$ -->
+
 <HTML>
 
 <HEAD>
   <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
   <TITLE>Cumulus Getting Started</TITLE>
-  <!-- $Id$ -->
   <link rel="stylesheet" type="text/css" href="text.css">
 </HEAD>
 
 <BODY>
-<table width="100%">
-  <tbody>
-    <tr>
-      <td align="left"><a href="cumulus.html">back</a></td>
-      <td align="center"><a href="cumulus.html">start</a></td>
-      <td align="right"><a href="cumulus-maps.html">next</a></td>
-    </tr>
-  </tbody>
-</table>
+  <table width="100%">
+    <tbody>
+      <tr>
+        <td align="left"><a href="cumulus.html">back</a></td>
+        <td align="center"><a href="cumulus.html">start</a></td>
+        <td align="right"><a href="cumulus-maps.html">next</a></td>
+      </tr>
+    </tbody>
+  </table>
 
-<H3 ALIGN=CENTER>Getting Started</H3>
+  <H3 ALIGN=CENTER>Getting Started</H3>
 
-<P>To take full advantage of Cumulus, you need a PDA with either an
-internal or an external GPS receiver and a set of map files.
-Currently Cumulus supports as hardware devices the Nokia Internet
-Tablet N800/N810 with Maemo OS2008 and the N900 with Maemo OS2009. It
-can also run on a Linux desktop under X11/Qt4. 
-</P>
+  <P>To take full advantage of Cumulus, you need a PDA with either an
+  internal or an external GPS receiver and a set of map files.
+  Currently Cumulus supports as hardware devices the Nokia Internet
+  Tablet N800/N810 with Maemo OS2008 and the N900 with Maemo OS2009. It
+  can also run on a Linux desktop under X11/Qt4.
+  </P>
 
-<P>When you start Cumulus, it will create all the necessary data
-directories by itself, if they do not already exist. Furthermore you
-will be asked once whether you want to download missing airfield or
-map files from the Internet. Your decision is valid until to the
-termination of the program. If Cumulus is moving faster than 5 km/h,
-no downloads are executed. Only enable the automatic download if you
-have an active Internet connection running!</P>
+  <P>When you start Cumulus, it will create all the necessary data
+  directories by itself, if they do not already exist. Furthermore you
+  will be asked once whether you want to download missing airfield or
+  map files from the Internet. Your decision is valid until to the
+  termination of the program. If Cumulus is moving faster than 5 km/h,
+  no downloads are executed. Only enable the automatic download if you
+  have an active Internet connection running!</P>
 
-<DL>
-  <DT><B>PDA</B> 
-  </DT><DD>
+  <DL>
+  <DT><B>PDA</B></DT>
+
+  <DD>
   As long as the program runs on the PDA and you are on the move, the
   automatic shut-down of the screen to save battery life is
   deactivated. If you move slower than 5 km/h, the screen is switched
@@ -50,9 +52,11 @@ have an active Internet connection running!</P>
   version updates, ...) before take-off, as these can rob Cumulus  of
   resources, slowing it down for a while and irritating you with popup
   dialogs. 
-  </DD><DT>
-  <B>GPS</B> 
-  </DT><DD>
+  </DD>
+
+  <DT><B>GPS</B></DT>
+
+  <DD>
   Any external GPS receiver, such as a Bluetooth GPS mouse or a flight
   logger, provided that it outputs NMEA data records, can be connected
   to your PDA,  using either a serial, a USB or a Bluetooth
@@ -65,9 +69,9 @@ have an active Internet connection running!</P>
 
   <p>
   <UL>
-  <LI> <I>/dev/ttyS0</I> - RS232 serial device <LI>
-  <I>/dev/rfcomm0</I> - Bluetooth device <LI>
-  <I>/dev/ttyUSB0</I> - USB device
+    <LI> <I>/dev/ttyS0</I> - RS232 serial device</LI>
+    <LI> <I>/dev/rfcomm0</I> - Bluetooth device</LI>
+    <LI> <I>/dev/ttyUSB0</I> - USB device</LI>
   </UL>
   </p>
   
@@ -79,54 +83,66 @@ have an active Internet connection running!</P>
   USB. In this case you have to select the USB device from the GPS
   configuration options. <BR><BR>Once your GPS device is set up, press
   the key <I><B>G</B></I> or click on the GPS status indicator in the
-  status bar to check the GPS status. You can remove  the GPS status
-  page with the Escape key. 
-  </DD><DT>
-  <B>Personal</B> 
-  </DT><DD>
+  status bar to check the GPS status. You can remove the GPS status
+  page with the Escape key or with the close button.
+  </DD>
+
+  <DT><B>Personal</B></DT>
+
+  <DD>
   In Personal Settings you define the coordinates of your home
   position in the area in which you fly. The setting is important to
   ensure an  unskewed map rendering! See <A HREF="cumulus-settings-personal.html">Personal
   Settings</A> for more details. 
-  </DD><DT>
-  <B>Glider</B> 
-  </DT><DD>
-  Define your preferred gliders in Glider Settings. See <A HREF="cumulus-settings-glider.html">Glider
-  Settings</A> for more details. 
-  </DD><DT>
-  <B>Maps</B> 
-  </DT><DD>
+  </DD>
+
+  <DT><B>Glider</B></DT>
+
+  <DD>
+  Define your preferred gliders in Glider Settings. See
+  <A HREF="cumulus-settings-glider.html">Glider Settings</A> for more details.
+  </DD>
+
+  <DT><B>Maps</B></DT>
+
+  <DD>
   Cumulus uses the same maps as <I>KFLog,</I> the KDE Flight Logger.
   Download the maps, airspaces and airfields you need to your PC and
   install them from there in your PDA. See <A HREF="cumulus-maps.html">Maps</A>
   for more information. Airfields and map files can be downloaded
   automatically by Cumulus, if you enable this option at start-up. 
-  </DD><DT>
-  <B>Waypoints</B> 
-  </DT><DD>
+  </DD>
+
+  <DT><B>Waypoints</B></DT>
+
+  <DD>
   Cumulus uses waypoints to facilitate navigation. You can either edit
   the waypoint files on the PDA or prepare them on a PC using <I>KFLog</I>
   and then transfer them to the PDA. See <A HREF="cumulus-waypoints.html">waypoints</A>
   for more details. 
-  </DD><DT>
-  <B>Tasks</B> 
-  </DT><DD>
+  </DD>
+
+  <DT><B>Tasks</B></DT>
+
+  <DD>
   Cumulus also supports the definition of flight tasks. You can either
   create and edit a task file on the PDA or prepare it first on your
   PC using <I>KFLog</I> before transferring it to the PDA.
   See <A HREF="cumulus-preflight-settings-task.html">here</A>
   for more details on tasks. 
-  </DD></DL>
+  </DD>
+  </DL>
   
-<table width="100%">
- <tbody>
-  <tr>
-    <td align="left"><a href="cumulus.html">back</a></td>
-    <td align="center"><a href="cumulus.html">start</a></td>
-    <td align="right"><a href="cumulus-maps.html">next</a></td>
-  </tr>
- </tbody>
-</table>
+  <p></p>
+  <table width="100%">
+   <tbody>
+    <tr>
+      <td align="left"><a href="cumulus.html">back</a></td>
+      <td align="center"><a href="cumulus.html">start</a></td>
+      <td align="right"><a href="cumulus-maps.html">next</a></td>
+    </tr>
+   </tbody>
+  </table>
 
 </BODY>
 </HTML>
