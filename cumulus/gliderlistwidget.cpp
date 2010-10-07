@@ -16,8 +16,7 @@
 **
 ***********************************************************************/
 
-#include <QSettings>
-#include <QHeaderView>
+#include <QtGui>
 
 #include "generalconfig.h"
 #include "gliderlistwidget.h"
@@ -36,7 +35,7 @@ GliderListWidget::GliderListWidget(QWidget *parent) : QTreeWidget(parent)
   hideColumn(3);
 
   QStringList sl;
-  sl << "Type" << "Registration" << "Callsign";
+  sl << tr("Type") << tr("Registration") << tr("Callsign");
   setHeaderLabels(sl);
 
   _added=0;

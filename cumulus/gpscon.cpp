@@ -323,7 +323,7 @@ bool GpsCon::startClientProcess()
           qWarning( "%s gpsClient(%d) process has died!",
                     method.toLatin1().data(), getPid() );
 
-          _globalMapView->message( tr("GPS daemon process crashed!") );
+          _globalMapView->message( tr("GPS daemon crashed!") );
         }
       else if(  pid == -1 && errno == ECHILD )
         {
@@ -479,7 +479,7 @@ bool GpsCon::startClientProcess()
           qWarning( "%s Startup of a new gpsClient process failed!",
                     method.toLatin1().data() );
 
-          _globalMapView->message( tr("GPS daemon process start failed!") );
+          _globalMapView->message( tr("GPS daemon start failed!") );
           return false;
         }
 

@@ -108,9 +108,9 @@ SettingsPageUnits::SettingsPageUnits(QWidget *parent) : QWidget(parent)
   UnitPosition->setObjectName("UnitPosition");
   UnitPosition->setEditable(false);
   topLayout->addWidget(UnitPosition,row++,1);
-  UnitPosition->addItem(tr("ddd°mm'ss\""));
-  UnitPosition->addItem(tr("ddd°mm.mmm'"));
-  UnitPosition->addItem(tr("ddd.ddddd°"));
+  UnitPosition->addItem("ddd\260mm'ss\"");
+  UnitPosition->addItem("ddd\260mm.mmm'");
+  UnitPosition->addItem("ddd.ddddd\260");
   positions[0] = WGSPoint::DMS;
   positions[1] = WGSPoint::DDM;
   positions[2] = WGSPoint::DDD;

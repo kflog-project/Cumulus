@@ -81,7 +81,11 @@ TaskEditor::TaskEditor( QWidget* parent,
   taskList->setColumnCount(4);
 
   QStringList sl;
-  sl << "ID" << "Type" << "Waypoint" << "Distance";
+  sl << tr("ID")
+     << tr("Type")
+     << tr("Waypoint")
+     << tr("Distance");
+
   taskList->setHeaderLabels(sl);
 
   taskList->header()->setResizeMode( QHeaderView::ResizeToContents );

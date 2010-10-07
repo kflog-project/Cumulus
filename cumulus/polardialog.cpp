@@ -27,7 +27,6 @@ PolarDialog::PolarDialog( Polar& polar, QWidget* parent) :
   QDialog(parent),
   _polar(polar)
 {
-  setObjectName("PolarDialog");
   setModal(true);
 
   if( _globalMainWindow )
@@ -40,7 +39,7 @@ PolarDialog::PolarDialog( Polar& polar, QWidget* parent) :
   QPalette palette;
   palette.setColor(backgroundRole(), Qt::white);
   setPalette(palette);
-  setWindowTitle ( "Polar for " + polar.name() + " - <Esc> or Mouse click to Close");
+  setWindowTitle ( tr("Polar for ") + polar.name() + tr(" - <Esc> or Mouse click to Close") );
 
   QShortcut* rcUp =        new QShortcut(this);
   QShortcut* rcDown =      new QShortcut(this);

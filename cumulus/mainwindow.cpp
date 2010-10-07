@@ -1700,7 +1700,7 @@ void MainWindow::slotSwitchToInfoView( wayPoint* wp )
 /** Opens the configuration widget */
 void MainWindow::slotConfig()
 {
-  setWindowTitle( "Cumulus Settings" );
+  setWindowTitle( tr("Cumulus Settings") );
   ConfigWidget *cDlg = new ConfigWidget( this );
   cDlg->resize( size() );
   configView = static_cast<QWidget *> (cDlg);
@@ -1993,7 +1993,7 @@ void MainWindow::slotPreFlightTask()
 /** Opens the pre-flight widget and brings the selected tabulator to the front */
 void MainWindow::slotPreFlight(const char *tabName)
 {
-  setWindowTitle( "Pre-Flight Settings" );
+  setWindowTitle( tr("Pre-Flight Settings") );
   PreFlightWidget* cDlg = new PreFlightWidget( this, tabName );
   cDlg->setObjectName("PreFlightDialog");
   cDlg->resize( size() );

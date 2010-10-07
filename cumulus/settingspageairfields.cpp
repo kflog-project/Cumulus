@@ -107,21 +107,23 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   QGridLayout* listLayout = new QGridLayout(listGroup);
 
-  lbl = new QLabel(tr( "Entry Height Increase (Pixels) in AF/WP/OL Lists:"), listGroup);
+  lbl = new QLabel(tr( "Increase row height in AF/WP/OL Lists at:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
   afMargin = new QSpinBox(listGroup);
   afMargin->setRange(0, 60);
   afMargin->setSingleStep(2);
   afMargin->setButtonSymbols(QSpinBox::PlusMinus);
+  afMargin->setSuffix( tr(" Pixels") );
   listLayout->addWidget(afMargin, grow, 1);
 
   grow++;
-  lbl = new QLabel(tr( "Entry Height Increase (Pixels) in Emergency List:"), listGroup);
+  lbl = new QLabel(tr( "Increase row height in Emergency List at:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
   rpMargin = new QSpinBox(listGroup);
   rpMargin->setRange(0, 60);
   rpMargin->setSingleStep(2);
   rpMargin->setButtonSymbols(QSpinBox::PlusMinus);
+  rpMargin->setSuffix( tr(" Pixels") );
   listLayout->addWidget(rpMargin, grow, 1);
 
   grow++;

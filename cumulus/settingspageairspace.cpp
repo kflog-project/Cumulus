@@ -61,7 +61,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   QHeaderView *vHeader = drawOptions->verticalHeader();
   vHeader->setVisible(false);
 
-  QTableWidgetItem *item = new QTableWidgetItem( tr("Enable Drawing") );
+  QTableWidgetItem *item = new QTableWidgetItem( tr("Airspace") );
   drawOptions->setHorizontalHeaderItem( 0, item );
 
   item = new QTableWidgetItem( tr("Border") );
@@ -70,7 +70,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   item = new QTableWidgetItem( tr("Area") );
   drawOptions->setHorizontalHeaderItem( 2, item );
 
-  item = new QTableWidgetItem( tr("Enable Drawing") );
+  item = new QTableWidgetItem( tr("Airspace") );
   drawOptions->setHorizontalHeaderItem( 3, item );
 
   item = new QTableWidgetItem( tr("Border") );
@@ -737,7 +737,7 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
 
   QVBoxLayout * topLayout = new QVBoxLayout(this);
 
-  enableFilling = new QCheckBox(tr("Enable airspace filling"), this);
+  enableFilling = new QCheckBox(tr("Enable filling"), this);
   enableFilling->setToolTip(tr("Switch on/off Airspace filling"));
 
   connect(enableFilling, SIGNAL(toggled(bool)), SLOT(slot_enabledToggled(bool)));
@@ -926,13 +926,13 @@ void SettingsPageAirspaceFilling::slot_load()
 }
 
 /**
- * Called to set all spinboxes to the default value
+ * Called to set all spin boxes to the default value
  */
 void SettingsPageAirspaceFilling::slot_defaults()
 {
   if( ! enableFilling->isChecked() )
     {
-      // spinboxes are insensitive, do nothing
+      // spin boxes are insensitive, do nothing
       return;
     }
 
@@ -1054,7 +1054,7 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
 
   QVBoxLayout *topLayout = new QVBoxLayout(this);
 
-  enableWarning = new QCheckBox(tr("Enable Airspace Warning"), this);
+  enableWarning = new QCheckBox(tr("Enable Warnings"), this);
   enableWarning->setObjectName("EnableWarnings");
   enableWarning->setChecked(true);
   enableWarning->setToolTip(tr("Switch on/off Airspace Warnings"));
@@ -1064,10 +1064,10 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
 
   // make the step width of the spin boxes configurable in different steps
   QGroupBox* stepGroup = new QGroupBox(tr("Spin step width"), this);
-  s1 = new QRadioButton(tr("1"), stepGroup);
-  s2 = new QRadioButton(tr("10"), stepGroup);
-  s3 = new QRadioButton(tr("100"), stepGroup);
-  s4 = new QRadioButton(tr("1000"), stepGroup);
+  s1 = new QRadioButton("1", stepGroup);
+  s2 = new QRadioButton("10", stepGroup);
+  s3 = new QRadioButton("100", stepGroup);
+  s4 = new QRadioButton("1000", stepGroup);
 
   s1->setChecked(true);
 

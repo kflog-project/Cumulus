@@ -399,7 +399,15 @@ void GpsSnrDisplay::paintEvent( QPaintEvent *event )
       f.setPixelSize(12);
       pd.setFont(f);
       pd.fillRect( center.x()-23, center.y()-7, 46, 14, palette().color(QPalette::Window) );
-      pd.drawText(center.x()-23, center.y()-7, 46, 14, Qt::AlignCenter, tr("No Data"));
+
+      QString text = tr("No Data");
+
+      QFontMetrics fm( font() );
+
+      int w = fm.width( text );
+      int h = fm.height();
+
+      pd.drawText(center.x()-w/2, center.y()+h/2, text );
     }
 }
 

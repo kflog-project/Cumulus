@@ -86,7 +86,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
 
   ntScheme = new QButtonGroup(this);
 
-  QRadioButton* nearest   = new QRadioButton( tr("Nearest"), this );
+  QRadioButton* nearest  = new QRadioButton( tr("Minimum"), this );
   QRadioButton* touched  = new QRadioButton( tr("Touched"), this );
 
   ntScheme->addButton( nearest, 0 );

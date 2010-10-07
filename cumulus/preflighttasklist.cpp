@@ -122,7 +122,11 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   taskListWidget->setColumnCount(4);
 
   QStringList sl;
-  sl << "No." << "Name" << "Type" << "Distance";
+  sl << tr("No.")
+     << tr("Name")
+     << tr("Type")
+     << tr("Distance");
+
   taskListWidget->setHeaderLabels(sl);
 
   taskListWidget->setColumnWidth( 0, 70 );

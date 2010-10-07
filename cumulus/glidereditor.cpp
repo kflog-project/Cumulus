@@ -80,8 +80,8 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
 
   itemsLayout->addWidget(new QLabel(tr("Seats:"), this), row, 2);
   comboSeats = new QComboBox(this);
-  comboSeats->addItem(tr("Single"));
-  comboSeats->addItem(tr("Double"));
+  comboSeats->addItem("1");
+  comboSeats->addItem("2");
   itemsLayout->addWidget(comboSeats, row, 3);
   row++;
 

@@ -258,7 +258,7 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liIsolineBorders->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liIsolineBorders );
 
-  liTargetLine = new QTableWidgetItem( tr("Line to selected target") );
+  liTargetLine = new QTableWidgetItem( tr("Target line") );
   liTargetLine->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liTargetLine );
 

@@ -36,9 +36,8 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   QWidget(parent), loadConfig(true)
 {
   // qDebug("ConfigWidget: height=%d, width=%d", parent->height(), parent->width());
-  setObjectName( "ConfigWidget" );
   setAttribute( Qt::WA_DeleteOnClose );
-  setWindowTitle( "General Settings" );
+  setWindowTitle( tr("General Settings") );
 
   QTabWidget* tabWidget = new QTabWidget( this );
 
