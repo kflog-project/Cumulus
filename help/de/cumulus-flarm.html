@@ -33,20 +33,28 @@ wie es Flarm tut. Cumulus ersetzt kein Flarmger&auml;t, es ist nur eine Erg&auml
 zu ihm!
 </b></font>
 
-<h4>Voreinstellungen</h4>
+<h4>Flarm Anschluss</h4>
 
-Cumulus kann mit einem Flarmger&auml;t &uuml;ber eine RS232 Schittstelle oder mittels
-eines RS232-USB Adapters verbunden werden, je nach zur Verf&uuml;gung stehender
-Hardware. Um die spezifischen Flarmdaten zu erhalten, m&uuml;ssen Sie im Flarm
+Flarmger&auml;te verf&uuml;gen nur &uuml;ber ein bidirektionales serielles RS232
+Interface. Cumulus kann mit einem Flarmger&auml;t &uuml;ber diese Schnittstelle
+oder mittels eines RS232-USB Adapters verbunden werden, je nach zur Verf&uuml;gung
+stehender Hardware von Ihrem PDA. Bei einem USB Anschluss muss der USB Port
+den OTG (On-the-go) Mode &uuml;nterst&uuml;tzen. Das ist im Moment nur beim
+Nokia Internet Tablet N8x0 der Fall aber nicht beim N900 Model.
+
+<h4>Flarm Konfiguration</h4>
+
+Um die spezifischen Flarmdaten zu erhalten, m&uuml;ssen Sie im Flarm
 Konfigurationsmen&uuml; die Option NMEAOUT einschalten. Aktivieren Sie hierzu
 das Senden der GPRMC, GPGGA, GPPSA, PGRMZ und der Flarm spezifischen
 Datens&auml;tze. Als &Uuml;bertragungsgeschwindigkeit w&auml;hlen Sie 57,6 kBaud aus.
 Cumulus sendet keine Initialisierungsdaten zum Flarm. Daher m&uuml;ssen Sie
 das Flarm mittels einer Initialisierungsdatei <i>flarmcfg.txt</i>,
-enthalten auf einer Micro SD Karte, die ins Flarm geschoben wird, konfigurieren.
-Ein anderer Weg ist das Benutzen des Flarm Tools auf einem PC, an dem das
-Flarm angeschlossen wird. Sehen Sie auch in der <i>FLARM DATA PORT SPECIFICATIONS</i>
-nach, wie man Flarm zu konfigurieren hat, zu finden auf der Webseite
+enthalten auf einer Micro SD Karte, die ins Flarm vor dem Einschalten geschoben
+wird, konfigurieren. Ein anderer Weg ist das Benutzen des Flarm Tools auf einem
+PC, an dem das Flarm angeschlossen wird. Sehen Sie auch in der
+<i>FLARM DATA PORT SPECIFICATIONS</i> nach, wie man Flarm zu konfigurieren hat,
+zu finden auf der Webseite
 <a href="http://www.flarm.org">www.flarm.org</a>.
 
 <h4>Cumulus GPS Einstellungen</h4>
@@ -118,7 +126,7 @@ angeordnet:
 </blockquote>
 
 Flarm Objekte werden in der Radaransicht in verschiedenen Formen, entsprechend
-den zu ihnen verf&uuml;gbaren Informationen, angezeigt.
+den zu ihnen gelieferten Informationen, angezeigt.
 
 <p></p>
 <blockquote>
@@ -143,8 +151,8 @@ den zu ihnen verf&uuml;gbaren Informationen, angezeigt.
 </blockquote>
 
 Objekte werden in verschiedenen Farben dargestellt, entsprechend der ihnen
-zugeordneten Alarmwertigkeit und in Abh&auml;ngigkeit ihrer Auswahl. Die verwendeten
-Farbenj sind:
+zugeordneten Alarmwertigkeit und in Abh&auml;ngigkeit ihrer Auswahl. Die
+verwendeten Farben sind:
 
 <p></p>
 <blockquote>
@@ -219,7 +227,7 @@ diese Informationen werden in der Farbe Magenta dargestellt. Diese sind:
 
 Wenn Sie den Listenknopf in der Radaransicht dr&uuml;cken, wird ein neues Fenster
 mit einer Listenansicht ge&ouml;ffnet, in der alle gerade empfangenen Flarm
-Kontakte zu sehen sind. Die folgenden Informatione k&ouml;nnen darin zu sehen sein:
+Kontakte zu sehen sind. Die folgenden Daten k&ouml;nnen darin zu sehen sein:
 
 <p></p>
 <blockquote>
@@ -269,7 +277,7 @@ Kontakte zu sehen sind. Die folgenden Informatione k&ouml;nnen darin zu sehen se
 </blockquote>
 
 Einen bestimmtem Listeneintrag k&ouml;nnen Sie durch tippen auf ihn ausw&auml;hlen.
-Wenn Sie den Knopf <i>Selekt</i> dr&uuml;cken, wird das Fenster geschlossen und
+Wenn Sie dann den Knopf <i>Selekt</i> dr&uuml;cken, wird das Fenster geschlossen und
 zur Radaransicht zur&uuml;ckgekehrt. In dieser werden nun alle verf&uuml;gbaren
 Zusatzdaten des selektierten Objekts mit angezeigt. Eine einmal gemachte Selektion
 kann r&uuml;ckgesetzt werden, indem Sie den <i>Deselekt</i> Knopf, gefolgt vom
@@ -277,7 +285,7 @@ kann r&uuml;ckgesetzt werden, indem Sie den <i>Deselekt</i> Knopf, gefolgt vom
 
 <h4><a name="AliasList"></a>Flarm Aliasliste</h4>
 
-Wenn Sie den Affenknopf dr&uuml;cken, wird ein neues Fenter mit einer
+Wenn Sie den Affenknopf dr&uuml;cken, wird ein neues Fenster mit einer
 Tabellen&uuml;bersicht ge&ouml;ffnet, in der Sie alle definierten Flarm Aliasnamen sehnen
 k&ouml;nnen. Eine 6 stellige Hexadezimalkennung kann durch einen sprechenden Namen
 ersetzt werden. Die L&auml;nge des Aliasnamens ist auf 15 Zeichen begrenzt.
@@ -285,10 +293,10 @@ Um einen neuen Aliasnamen hinzu zuf&uuml;gen, dr&uuml;cken Sie den <i>Plus</i> K
 Daraufhin wird eine neue Zeile ans Ende der Tabelle angeh&auml;ngt. In der linken
 Spalte tragen Sie die Flarmkennung ein, die Sie ersetzen wollen und in der
 rechten Spalte den dazu gew&uuml;nschten Aliasnamen. Ein bestehender Eintrag
-kann durch klicken auf die entsprechende Spalte ge&auml;ndert werden.
+kann durch klicken auf die entsprechende Zelle ge&auml;ndert werden.
 <b>Achtung!</b> Wenn Sie mehrere gleiche Flarmkennungen zur Tabelle hinzu
 f&uuml;gen, wird nur der letzte Eintrag abgespeichert. Wenn Sie ein oder mehrere
-Eintr&auml;ge l&ouml;schen wollen, so w&auml;hlen Sie diese aus und dr&uuml;cken auf den
+Eintr&auml;ge l&ouml;schen wollen, so selektieren Sie diese und dr&uuml;cken auf den
 <i>M&uuml;lleimer</i> Knopf.
 
 <p>
@@ -298,25 +306,24 @@ zu speichern oder mit dem <i>X</i> Knopf, um sie zu verwerfen.
 
 <p>
 Sie haben die M&ouml;glichkeit, eine Zeile in der Tabelle zu selektieren und das Fenster
-mit dem <i>Ok</i> Knopf zu verlassen. Das ausgew&auml;hlte Flarm Objekt wird Ihre
+mit dem <i>Ok</i> Knopf zu verlassen. Das ausgew&auml;hlte Flarm Objekt wird dann Ihre
 neue Auswahl in der Radaranzeige. Wollen Sie ein selektiertes Objekt in der
 Radaranzeige wieder deselektieren, gehen Sie in die Aliasliste, selektieren
 dort nichts und verlassen das Fenster wieder mit dem <i>Ok</i> Knopf.
 </p>
 
-<p>
+<h4>Flarm Aliasdatei</h4>
+
 Der Inhalt der Flarm Aliastabelle wird in einer Datei mit dem Namen
 <a href="cumulus-file-locations.html">cumulus-flarm.txt</a> gespeichert.
 Dieser Dateiname ist hard kodiert und die Datei wird im Benutzer
 <a href="cumulus-settings-personal.html#DataDirectory">
 Datenverzeichnis</a> abgelegt.
-</p>
-
-<h4>Flarm Alias Dateiformat</h4>
-
+<p>
 Das Format der Flarm Aliasdatei ist sehr einfach. Eine Kommentarzeile beginnt
 mit einem Rautezeichen ganz links und endet mit dem Zeilenendezeichen.
 Ein g&uuml;ltiger Eintrag hat das folgende Format:
+</p>
 
 <blockquote>
 <b>&lt;Flarm-Id&gt; '=' &lt;Alias-Name&gt;</b>
@@ -324,7 +331,7 @@ Ein g&uuml;ltiger Eintrag hat das folgende Format:
 <p>
 <b>Beispiel:</b>
 <pre>
-# Flarm Alias Datei
+# Flarm Alias Datei, Kommentarzeile
 ABCDEF=Kumpel Klaus
 </pre>
 </p>
@@ -343,7 +350,7 @@ regelm&auml;&szlig;ig alle Flarm Kontakte gel&ouml;scht, die nicht innerhalb von
 aktualisiert wurden.
 
 <p>
-Die Daten in der Flarm Listen&uuml;bersicht werden alle drei Sekunden nur
+Die Daten in der Flarm Listen&uuml;bersicht werden nur alle drei Sekunden
 aktualisiert, um die Prozessorlast zu reduzieren.
 </p>
 
