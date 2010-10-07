@@ -93,7 +93,7 @@ langpacks: langpack_de
 	@echo 'All language packs created'
 .PHONY : langpack_de
 langpack_de:
-	cd cumulus; $(LRELEASE) -verbose -nounfinished cumulus_de.ts -qm cumulus_de_DE.qm
+	cd cumulus; $(LRELEASE) -verbose -removeidentical -nounfinished cumulus_de.ts -qm cumulus_de_DE.qm
 
 .PHONY : release
 release: clean all langpacks
