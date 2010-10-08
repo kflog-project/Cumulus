@@ -22,11 +22,7 @@
 #include <unistd.h>
 
 //Qt includes
-#include <QFile>
-#include <QFileInfo>
-#include <QRegExp>
-#include <QStringList>
-#include <QTextStream>
+#include <QtCore>
 
 //project includes
 #include "resource.h"
