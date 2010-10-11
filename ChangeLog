@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-10-11 AP: English and German online help pages reworked. A PDF file
+                   is provided now for every language on the web page.
 [o] 2010-10-04 AP: Allow move to home site also if GPS has no valid fix.
 [-] 2010-09-22 AP: BUGFIX: Wrong frequency conversion fixed in case of
                    undefined frequency in Welt2000 parser.
