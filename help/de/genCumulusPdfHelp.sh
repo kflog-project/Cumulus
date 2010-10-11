@@ -52,7 +52,7 @@ wkhtmltopdf -t -s A4 -T 20 -B 20 -L 25 -R 25 \
  --footer-right "[date]" \
  --disable-external-links \
  --cover $Cover \
- --toc-header-text Inhaltsverzeichnis --title Cumlus \
+ --toc-header-text Inhaltsverzeichnis --title Cumulus \
  $Files Cumulus.pdf
 
 cp Cumulus.pdf $SaveDir
