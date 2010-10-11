@@ -343,7 +343,7 @@ bool FlarmAliasList::loadAliasData()
       line = stream.readLine();
       lineNo++;
 
-      if ( line.startsWith("#") || line.startsWith("//") || line.trimmed().isEmpty() )
+      if ( line.startsWith("#") || line.startsWith("$") || line.trimmed().isEmpty() )
         {
           // ignore comment and empty lines
           continue;

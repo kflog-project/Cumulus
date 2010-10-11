@@ -6,10 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009 Axel Pauli
+**   Copyright (c):  2009-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -35,28 +35,33 @@
  */
 
 class SettingsPageTerrainColors : public QWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
+
+  private:
+
+  Q_DISABLE_COPY ( SettingsPageTerrainColors )
 
   public:
 
-    SettingsPageTerrainColors(QWidget *parent=0);
-    ~SettingsPageTerrainColors();
+  SettingsPageTerrainColors(QWidget *parent=0);
+  ~SettingsPageTerrainColors();
 
-  public slots: // Public slots
-    /**
-     * Called to initiate saving to the configuration file.
-     */
-    void slot_save();
+  public slots:
 
-    /**
-     * Called to initiate loading of the configuration file
-     */
-    void slot_load();
-    /**
-     * Called to ask is confirmation on the close is needed.
-     */
-    void slot_query_close(bool& warn, QStringList& warnings);
+  /**
+   * Called to initiate saving to the configuration file.
+   */
+  void slot_save();
+
+  /**
+   * Called to initiate loading of the configuration file
+   */
+  void slot_load();
+  /**
+   * Called to ask is confirmation on the close is needed.
+   */
+  void slot_query_close(bool& warn, QStringList& warnings);
 
   private slots:
 
@@ -70,40 +75,40 @@ class SettingsPageTerrainColors : public QWidget
    */
   void slot_editGroundColor();
 
-    /**
-     * Called to set all colors to their default value.
-     */
-    void slot_setColorDefaults();
+  /**
+   * Called to set all colors to their default value.
+   */
+  void slot_setColorDefaults();
 
   private:
 
-    // size of the color pixmaps used in icons
-    QSize pixmapSize;
+  // size of the color pixmaps used in icons
+  QSize pixmapSize;
 
-    // modification color flag
-    bool colorsChanged;
+  // modification color flag
+  bool colorsChanged;
 
-    // widget which shows the elevation color bar
-    ElevationColorImage *elevationImage;
+  // widget which shows the elevation color bar
+  ElevationColorImage *elevationImage;
 
-    // Internal temporary color working list. Will be saved as new colors,
-    // when the method slot_save() is called.
-    QColor terrainColor[51];
+  // Internal temporary color working list. Will be saved as new colors,
+  // when the method slot_save() is called.
+  QColor terrainColor[51];
 
-    // temporary storage of ground color
-    QColor groundColor;
+  // temporary storage of ground color
+  QColor groundColor;
 
-    // brings up the color chooser dialog
-    QPushButton* editColorButton;
+  // brings up the color chooser dialog
+  QPushButton* editColorButton;
 
-    // brings up the color chooser dialog for the grund color
-    QPushButton* groundColorButton;
+  // brings up the color chooser dialog for the grund color
+  QPushButton* groundColorButton;
 
-    // set all colors back to the defaults.
-    QPushButton* defaultColorButton;
+  // set all colors back to the defaults.
+  QPushButton* defaultColorButton;
 
-    // Selects the elevation level to be modified
-    QComboBox* elevationBox;
+  // Selects the elevation level to be modified
+  QComboBox* elevationBox;
 };
 
 #endif

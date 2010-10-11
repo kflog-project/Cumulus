@@ -6,22 +6,16 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009 Axel Pauli
+**   Copyright (c):  2009-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-#include <QColorDialog>
-#include <QGroupBox>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QIcon>
-#include <QPixmap>
+#include <QtGui>
 
 #include "altitude.h"
 #include "generalconfig.h"
@@ -123,7 +117,7 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   topLayout->addWidget( elevationImage );
 
   // all editor widgets will be put into a group box to get a better view
-  QGroupBox *editBox = new QGroupBox( tr("Color Editor"), this );
+  QGroupBox *editBox = new QGroupBox( tr("Color Selection"), this );
 
   // put group box in an extra VBox layout to center it vertically
   QVBoxLayout *editAll = new QVBoxLayout;
