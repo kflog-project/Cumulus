@@ -22,7 +22,7 @@
     <ul>
         <li><b>Boden- und Gel&auml;ndekarten</b> mit Merkmalen wie
         Autobahnen, Stra&szlig;en, St&auml;dten, Fl&uuml;ssen, Seen und
-        mit H&ouml;henlinien. Diese decken die ganze Weltab. Diese Karten
+        mit H&ouml;henlinien. Diese decken die ganze Welt ab. Die Karten
         k&ouml;nnen aus dem
         <a href="http://www.kflog.org/maproom/ground-and-terrain-data">
         KFLog Karten Raum</a> herunter geladen werden. Cumulus ist aber auch
@@ -31,7 +31,7 @@
         <a href="cumulus-settings-map-settings.html#Download">
         Einstellungen/Karte</a> finden Sie weitere Hinweise dazu.</li>
 
-        <li><b>Luftr&auml;ume:</b> Cumulus &uuml;terst&uuml;tzt nur das OpenAir
+        <li><b>Luftr&auml;ume:</b> Cumulus unterst&uuml;tzt nur das OpenAir
         Dateiformat f&uuml;r Luftraumstrukturen. Suchen Sie bitte im Internet nach
         Dateien f&uuml;r Ihre Gegend wo Sie fliegen. Adressen wo man solche Daten
         finden kann, sind:
@@ -85,26 +85,27 @@
    </p>
 
    <ul>
-    <li>Boden- und Gel&auml;ndekarten sind im Unterverzeichnis <i>landsacpe</i>
-        auzulegen.</li>
+    <li>Boden- und Gel&auml;ndekarten sind im Unterverzeichnis <i>landscape</i>
+        abzulegen.</li>
     <li>Flugplatzdaten sind im Unterverzeichnis <i>airfields</i>
-        auzulegen.</li>
+        abzulegen.</li>
     <li>Luftraumdateien sind im Unterverzeichnis <i>airspaces</i>
-        auzulegen.</li>
+        abzulegen.</li>
    </ul>
 
     <p>Wenn Sie die Karten unter einem anderen Wurzelverzeichnis als den hier
     genannten installieren, so m&uuml;ssen Sie anschlie&szlig;end das Men&uuml;
     <a href="cumulus-settings-map-settings.html#Maps">
     Einstellungen/Karte</a> aufrufen und den
-    Pfad zum Wurzelverzeichnis der installierten Karten eintragen. Dr&uuml;cken
-    Sie dazu auf den Knopf Karten oben links in der Ecke und navigieren Sie zu
-    Ihrem Installationsverzeichnis, wo die Karten zu finden sind.
+    Pfad zum Wurzelverzeichnis der installierten Karten dort eintragen. Dr&uuml;cken
+    Sie dazu auf den Knopf <i>Karten</i> oben links in der Ecke des Men&uuml;s
+    und navigieren Sie zu Ihrem Installationsverzeichnis, dort wo Sie die Karten
+    abgelegt haben.
     </p>
 
     <p>
-    Installieren Sie nur die Luftraum- und Flugplatzdateien des
-    Gebietes, in dem Sie fliegen wollen, da Cumulus ansonsten
+    Installieren Sie nur die Luftraumdateien und laden Sie nur die Flugpl&auml;tze
+    des Gebietes, in dem Sie fliegen wollen, da Cumulus ansonsten
     un&ouml;tig viel Speicher verbraucht. Dies kann sich auch negativ
     auf die Arbeitsgeschwindigkeit auswirken. Die Boden- und Gel&auml;ndekarten
     sind davon nicht betroffen. Es werden nur immer diejenigen geladen, die
@@ -117,7 +118,7 @@
     (terrain files) verzichten. Dadurch wird das Zeichnen der
     Gel&auml;ndeh&ouml;he unterdr&uuml;ckt, daf&uuml;r sparen Sie aber
     Speicherplatz und beschleunigen das Laden der Karten. Es ist
-    empfehlenswert, zumindest die Bodenkarten zu installieren, da
+    empfehlenswert, zumindestens die Bodenkarten zu installieren, da
     sonst nur ein blauer Hintergrund angezeigt wird, was die
     Navigation nicht gerade erleichtert.</p>
 
@@ -176,7 +177,7 @@
     Die Syntax f&uuml;r eine Mapping Datei sieht folgenderma&szlig;en
     aus. Leerzeilen und Zeilen die mit <i>#</i> or <i>*</i> beginnen
     (Kommentarzeilen) werden ignoriert. Alle anderen Zeilen sollten
-    die Form <i>Name = Wert</i> haben, immer ein solcher Eintrag pro
+    die Form <i>Name = Wert</i> haben, immer nur ein Eintrag pro
     Zeile. <i>Name</i> ist der Luftraumtyp aus der OpenAir Datei und
     <i>Wert</i> die entsprechende Luftraumzuweisung f&uuml;r
     Cumulus. Die Standardzuordnung ist folgenderma&szlig;en:
@@ -192,7 +193,7 @@
 	  <li>R = Restricted
 	  <li>TRA = Restricted
 	  <li>Q = Danger
-	  <li>CTR = ControlC
+	  <li>CTR = ControlD
 	  <li>TMZ = Tmz
 	  <li>GSEC = GliderSector
 	  <li>W = WaveWindow
@@ -202,12 +203,12 @@
     werden, die eine andere Zuordnung erhalten sollen. Diese
     &uuml;berschreiben dann die Standardzuordnung.</p>
 
-    <p>Beispiel: <i>CTR=ControlD</i></p>
+    <p>Beispiel: <i>CTR=ControlC</i></p>
 
     <p>Hiermit wird die Standardzuordnung von <i>CTR</i> zu
-    <i>ControlC</i> auf <i>ControlD</i> ge&auml;ndert.</p>
+    <i>ControlD</i> auf <i>ControlC</i> ge&auml;ndert.</p>
 
-    <p><b>Achtung!</b> Achten Sie auch auf die korrekte Schreibweise, alle
+    <p><b>Achtung!</b> Achten Sie auf die korrekte Schreibweise, alle
     Zuordnungen sind davon abh&auml;gig.</p>
 
     <a name="Welt2000">
@@ -236,7 +237,7 @@
       <li>Filtern nach einem vorgegebenen Radius um die Heimatposition</li>
     </ol>
 
-    Die entsprechenden Parameter dazu k&ouml;nnen Sie unter dem Men&uuml;
+    Die entsprechenden Parameter dazu k&ouml;nnen Sie in dem Men&uuml;
     <a href="cumulus-settings-airfields.html#Welt2000Filter">
      Einstellungen/Flugpl&auml;tze</a> eingeben.
 
@@ -262,9 +263,9 @@
     Kommas getrennt angegeben werden. Die L&auml;nderkennungen sind
     nach ISO-3166 kodiert. Falls eine solche Filterregel definiert
     wurde, werden nur die darin aufgef&uuml;hrten L&auml;nder aus der
-    Welt2000 Quelldatei extrahiert. Es ist m&ouml;glich, mehr als eine
-    Filterregel zu definieren. Da diese Regel auch &uuml;ber die Oberfl&auml;che
-    angeboten wird, sollten Sie diese in der Konfigurationsdatei <b>nicht</b>
+    Welt2000 Quelldatei gelesen. Es ist m&ouml;glich, mehr als eine
+    Filterregel zu definieren. Da diese M&ouml;glichkeit auch &uuml;ber die Oberfl&auml;che
+    angeboten wird, sollten Sie diese Regel in der Konfigurationsdatei <b>nicht</b>
     mehr anwenden. Eine Regel, die &uuml;ber die Oberfl&auml;che definiert wurde,
     &uuml;berschreibt immer die Regel aus der Konfigurationsdatei!
 
@@ -309,8 +310,8 @@
     <br>$ Dies ist ebenfalls eine Kommentarzeile
     <br>#
     <br># Es folgt eine L&auml;nderfilter Regel.
-    <br># Nur die  L&auml;nder Deutschland, Polen und Tschechien werden aus der welt2000.txt Quelle extrahiert
-    <br># Regel bitte nicht mehr verwenden, kann durch die GUI &uuml;berschrieben werden!
+    <br># Nur die  L&auml;nder Deutschland, Polen und Tschechien werden aus der welt2000.txt Quelle gelesen
+    <br># <b>Regel bitte nicht mehr verwenden, kann durch die GUI &uuml;berschrieben werden!</b>
     <br>FILTER countries=de,pl,cz
     <br>#
     <br># Es folgt eine ICAO Zuweisungsregel

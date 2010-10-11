@@ -21,9 +21,12 @@
 
 Cumulus kann auch mit einem Flarmger&auml;t verbunden werden und ist in der Lage,
 die vom Flarmger&auml;t gelieferten NMEA und propriet&auml;ren Datens&auml;tze zu
-verarbeiten. Es zeigt das meist bedeutenste und ein ausgew&auml;hltes Objekt auf der
-Karte an. Weiterhin stellt es eine Radaransicht bereit, in der alle empfangenen
-Flarm Kontakte zu sehen sind.
+verarbeiten. Flarm meldet Ihnen ein Objekt, wenn es zu einer Ber&uuml;hrung oder
+gef&auml;hrlichen Begegnung kommen k&ouml;nnte. Es wird immer nur das im Augenblick
+gef&auml;hrlichte Objekt gemeldet. Dieses Objekt und ein von Ihnen zus&auml;tzlich
+ausgew&auml;hltes werden von Cumulus nur auf der Karte angezeigt, um diese nicht
+mit Flarm Informationen zu &uuml;berladen. Ein vollst&auml;ndiges Bild aller
+empfangenen Flarm Kontakte sehen Sie nur in der Radaransicht.
 
 <font color="#CC0000">
 <h4>Warnung</h4>
@@ -53,7 +56,7 @@ das Flarm mittels einer Initialisierungsdatei <i>flarmcfg.txt</i>,
 enthalten auf einer Micro SD Karte, die ins Flarm vor dem Einschalten geschoben
 wird, konfigurieren. Ein anderer Weg ist das Benutzen des Flarm Tools auf einem
 PC, an dem das Flarm angeschlossen wird. Sehen Sie auch in der
-<i>FLARM DATA PORT SPECIFICATIONS</i> nach, wie man Flarm zu konfigurieren hat,
+<b>FLARM DATA PORT SPECIFICATIONS</b> nach, wie man Flarm zu konfigurieren hat,
 zu finden auf der Webseite
 <a href="http://www.flarm.org">www.flarm.org</a>.
 
@@ -62,7 +65,7 @@ zu finden auf der Webseite
 W&auml;hlen Sie im <a href="cumulus-settings-gps.html">Einstellungen/GPS</a> Men&uuml;
 eine serielle, Bluetooth oder USB Schnittstelle, entsprechend Ihrer
 verf&uuml;gbaren Hardware aus und setzen Sie die &Uuml;bertragungsgeschwindigkeit
-auf 57600. Als <i>H&ouml;henreferenz</i> stellen Sie die Auswahl <i>Druck</i>
+auf 57600. Als <b>H&ouml;henreferenz</b> stellen Sie die Auswahl <b>Druck</b>
 ein. Das stellt sicher, dass die H&ouml;hendaten von der Flarm Drucksonde auch
 genommen werden. Kalibrieren Sie die gelieferte H&ouml;he auf die erwartete H&ouml;he
 im H&ouml;hendialog. Dieser kann durch tippen auf die H&ouml;henanzeige in der
@@ -70,8 +73,8 @@ Kartenansicht ge&ouml;ffnet werden.
 
 <h4>Flarm Radaransicht</h4>
 
-Sie k&ouml;nnen die Flarm Radaransicht durch tippen auf die Track (Trk) Anzeige
-in der Kartenansicht &ouml;ffnen. Die Radaransicht besteht aus einem inneren und
+Sie  &ouml;ffnen die Flarm Radaransicht durch tippen auf die Track (Trk) Anzeige
+in der Kartenansicht. Die Radaransicht besteht aus einem inneren und
 &auml;u&szlig;eren Kreis und einem Kreuz in der Mitte. Oben ist die Richtung 12Uhr. In der
 linken oberen Ecke sehen Sie den gerade ausgew&auml;hlten Ma&szlig;stab und auf der rechten
 Fensterseite haben Sie verschiedene Bedienkn&ouml;pfe von oben nach unten
@@ -111,7 +114,7 @@ angeordnet:
     <td><a href="#AliasList"><b>Aliase:</b></a></td>
     <td>
     Durch dr&uuml;cken vom Affenknopf wird eine Tabellen&uuml;bersicht ge&ouml;ffnet,
-    in der Sie Ihre definierten Flarm Aliasnamen einsehen k&ouml;nnen.
+    in der Sie Ihre definierten Flarm Aliasnamen einsehen und bearbeiten k&ouml;nnen.
     </td>
   </tr>
 
@@ -277,16 +280,16 @@ Kontakte zu sehen sind. Die folgenden Daten k&ouml;nnen darin zu sehen sein:
 </blockquote>
 
 Einen bestimmtem Listeneintrag k&ouml;nnen Sie durch tippen auf ihn ausw&auml;hlen.
-Wenn Sie dann den Knopf <i>Selekt</i> dr&uuml;cken, wird das Fenster geschlossen und
+Wenn Sie dann den Knopf <b>W&auml;hlen</b> dr&uuml;cken, wird das Fenster geschlossen und
 zur Radaransicht zur&uuml;ckgekehrt. In dieser werden nun alle verf&uuml;gbaren
-Zusatzdaten des selektierten Objekts mit angezeigt. Eine einmal gemachte Selektion
-kann r&uuml;ckgesetzt werden, indem Sie den <i>Deselekt</i> Knopf, gefolgt vom
-<i>Schlie&szlig;en</i> Knopf dr&uuml;cken.
+Zusatzdaten des gew&auml;hlten Objektes mit angezeigt. Eine einmal gemachte Auswahl
+kann r&uuml;ckgesetzt werden, indem Sie den <b>Abw&auml;hlen</b> Knopf, gefolgt vom
+<b>Schlie&szlig;en</b> Knopf dr&uuml;cken.
 
 <h4><a name="AliasList"></a>Flarm Aliasliste</h4>
 
 Wenn Sie den Affenknopf dr&uuml;cken, wird ein neues Fenster mit einer
-Tabellen&uuml;bersicht ge&ouml;ffnet, in der Sie alle definierten Flarm Aliasnamen sehnen
+Tabellen&uuml;bersicht ge&ouml;ffnet, in der Sie alle definierten Flarm Aliasnamen sehen
 k&ouml;nnen. Eine 6 stellige Hexadezimalkennung kann durch einen sprechenden Namen
 ersetzt werden. Die L&auml;nge des Aliasnamens ist auf 15 Zeichen begrenzt.
 Um einen neuen Aliasnamen hinzu zuf&uuml;gen, dr&uuml;cken Sie den <i>Plus</i> Knopf.
@@ -321,7 +324,7 @@ Dieser Dateiname ist hard kodiert und die Datei wird im Benutzer
 Datenverzeichnis</a> abgelegt.
 <p>
 Das Format der Flarm Aliasdatei ist sehr einfach. Eine Kommentarzeile beginnt
-mit einem Rautezeichen ganz links und endet mit dem Zeilenendezeichen.
+mit einem Raute- oder Dollarzeichen ganz links und endet mit dem Zeilenendezeichen.
 Ein g&uuml;ltiger Eintrag hat das folgende Format:
 </p>
 
@@ -332,6 +335,7 @@ Ein g&uuml;ltiger Eintrag hat das folgende Format:
 <b>Beispiel:</b>
 <pre>
 # Flarm Alias Datei, Kommentarzeile
+$ Das ist auch eine Kommentarzeile
 ABCDEF=Kumpel Klaus
 </pre>
 </p>
