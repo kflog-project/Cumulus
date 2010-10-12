@@ -30,7 +30,7 @@
  *
  * http://qt.nokia.com
  *
- * Cumulus is built with the release 4.6.x.
+ * Cumulus is built with the release 4.7.x.
  *
  */
 
@@ -42,10 +42,7 @@
 #include <fcntl.h>
 #include <libgen.h>
 
-#include <QApplication>
-#include <QMessageBox>
-#include <QTranslator>
-#include <QDir>
+#include <QtGui>
 
 #include "mainwindow.h"
 #include "generalconfig.h"
@@ -66,9 +63,8 @@ int main(int argc, char *argv[])
   GeneralConfig *conf = GeneralConfig::instance();
 
   // @AP: make install root of Cumulus available for other modules via
-  // general config. The assumption is that Cumulus is installed at
-  // <root>/bin/cumulus. The <root> path will be passed to general
-  // config.
+  // GeneralConfig. The assumption is that Cumulus is installed at
+  // <root>/bin/cumulus. The <root> path will be passed to GeneralConfig.
   char *callPath = dirname(argv[0]);
   char *startDir = getcwd(0,0);
   chdir( callPath );
@@ -149,23 +145,28 @@ int main(int argc, char *argv[])
       unsetenv("LD_BIND_NOW");
     }
 
-  /* Load selected language translations for Cumulus */
-
-  QString langFile = QString("cumulus") + QString("_") + conf->getLanguage() + ".qm";
-  QString langDir = root + "/locale/" + conf->getLanguage();
+  // Load language translations for Cumulus, if English is not chosen.
+  QString language = conf->getLanguage();
 
   QTranslator translator;
 
-  if( translator.load( langFile, langDir ) )
+  if( ! language.isEmpty() && language != "en" )
     {
-      app.installTranslator(&translator);
-      qDebug( "Using translation file %s for language %s",
-              langFile.toLatin1().data(),
-              conf->getLanguage().toLatin1().data() );
-    }
-  else
-    {
-      qDebug( "No language translation file found in %s", langDir.toLatin1().data() );
+      QString langFile = "cumulus_" + language + ".qm";
+      QString langDir = root + "/locale/" + language;
+
+      if( translator.load( langFile, langDir ) )
+        {
+          app.installTranslator(&translator);
+          qDebug() << "Using translation file"
+                   << langFile
+                   << "for language"
+                   << language;
+        }
+      else
+        {
+          qWarning() << "No language translation file found in" << langDir;
+        }
     }
 
 #define DISCLAIMERVERSION 1
@@ -174,8 +175,10 @@ int main(int argc, char *argv[])
     {
       QApplication::beep();
 
+      // upon changing the text, you should also increase the value of DISCLAIMERVERSION with 1
+
       QString disclaimer =
-          QObject::tr(  //upon changing the text, you should also increase the value of DISCLAIMERVERSION with 1
+          QObject::tr(
             "<html>"
             "This program comes with"
             "<p><b>ABSOLUTELY NO WARRANTY!</b></p>"
@@ -184,11 +187,10 @@ int main(int argc, char *argv[])
             "responsible for using official aeronautical<br>"
             "charts and proper methods for safe navigation.<br>"
             "The information presented in this software<br>"
-            "program may be outdated or incorrect.<p>"
+            "program may be outdated or incorrect."
             "</html>");
 
-      QString question =
-          QObject::tr( "<b>Do You accept these terms?</b>" );
+      QString question = QObject::tr( "<b>Do You accept these terms?</b>" );
 
       QMessageBox msgBox;
 
@@ -228,13 +230,13 @@ int main(int argc, char *argv[])
         }
     }
 
-  // creates the Cumulus application
+  // create the Cumulus application window
   MainWindow *cumulus = new MainWindow( Qt::WindowContextHelpButtonHint );
 
   // start window manager event processing loop
   int result = QApplication::exec();
 
-  // remove first MainWindow because class objects inside can call GeneralConfig
+  // remove as first MainWindow because class objects inside can call GeneralConfig
   delete cumulus;
 
   // remove GeneralConfig, it is created during first call to it
