@@ -213,7 +213,7 @@ dpkg_make_lang:
 	@rm -fr $(CUMULUS_LANG_DEB)
 	@mkdir -p $(CUMULUS_LANG_DEB)
 	@cd $(CUMULUS_LANG_DEB); \
-	echo '\n' | dh_make --packagename $(CUMULUS_LANG_REL) -c GPL -e axel@kflog.org -n -i
+	echo '\n' | dh_make --packagename $(CUMULUS_LANG_REL) -c GPL -e axel@kflog.org -s -n
 	@cp dpkg/Languages/control/makefile $(CUMULUS_LANG_DEB)
 	@cp dpkg/Languages/control/rules $(CUMULUS_LANG_DEB)/debian/
 	@sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/copyright > $(CUMULUS_LANG_DEB)/debian/copyright
