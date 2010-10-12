@@ -15,8 +15,12 @@ VERSION=$(shell cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2)
 
 CUMULUS_REL=cumulus-$(VERSION)
 
-# Debian package build directory
+CUMULUS_LANG_REL=cumuluslanguages-$(VERSION)
+
+# Debian package build directories
 CUMULUS_DEB=dpkg/n8x0/$(CUMULUS_REL)
+
+CUMULUS_LANG_DEB=dpkg/Languages/$(CUMULUS_LANG_REL)
 
 # current Qt version
 QT_VERSION=4.5.3
@@ -72,10 +76,13 @@ check_dir:
 		exit 99; \
 	fi
 
+#####################################################################
+# Use this target to install Cumulus in scratchbox for X86 emulation.
+#####################################################################
+
 .PHONY : install
 
-# Use this target to install Cumulus in scratchbox for X86 emulation.
-install: check_dir deinstall install_lang
+install: check_dir deinstall langpacks install_lang
 	@echo "===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====="
 	strip cumulus/cumulus
 	strip gpsClient/gpsClient
@@ -112,7 +119,10 @@ install: check_dir deinstall install_lang
 	install --mode=644 icons/cumulus-desktop26x26.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps/cumulus.png
 	install --mode=644 icons/cumulus-desktop64x64.png $(DESTDIR)/usr/share/icons/hicolor/scalable/apps/cumulus.png
 
-# call dpkg target to build a debian Maemo package
+##########################################################
+# call dpkg target to build a debian Cumulus Maemo package
+##########################################################
+
 .PHONY : dpkg dpkg_make
 dpkg:
 	@echo "===== Building Diablo Maemo4 package for Cumulus $(VERSION) ====="
@@ -121,6 +131,7 @@ dpkg:
 # This target will build the debian packge. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation makrk
 # cause problems in ohter shell commands, if they not expanded before.
+
 dpkg_make:
 	rm -fr $(CUMULUS_DEB)
 	mkdir -p $(CUMULUS_DEB)
@@ -150,7 +161,6 @@ dpkg_install:
 	strip nmeaSimulator/nmeaSimu
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/etc
-	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons/small
@@ -176,7 +186,6 @@ dpkg_install:
 	install --mode=644 icons/windarrows/* $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
 	install --mode=644 icons/cumulus-desktop26x26.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps/cumulus.png
 	install --mode=644 icons/cumulus-desktop64x64.png $(DESTDIR)/usr/share/icons/hicolor/scalable/apps/cumulus.png
-	install --mode=644 help/de/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install --mode=644 help/en/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/Maemo4/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
@@ -185,6 +194,51 @@ dpkg_install:
 	install --mode=755 $(QT_LIBDIR)/libQtGui.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
 	install --mode=755 $(QT_LIBDIR)/libQtNetwork.so.$(QT_VERSION) $(DESTDIR)/$(INSTALL_ROOT)/lib
 
+################################################################################
+# DPKG Language Package Build
+################################################################################
+
+# call dpkg_lang target to build a debian Maemo language package
+.PHONY : dpkg_lang dpkg_make_lang
+
+dpkg_lang:  langpacks
+	@echo "===== Building Maemo Languages package for Cumulus $(VERSION) ====="
+	@$(MAKE) -f Makefile.Maemo4 -s VERSION=$(VERSION) dpkg_make_lang
+
+# This target will build the debian packge. It is called via another makefile
+# due to the VERSION macro. The special letters apostroph and quotation mark
+# cause problems in ohter shell commands, if they not expanded before.
+
+dpkg_make_lang:
+	@rm -fr $(CUMULUS_LANG_DEB)
+	@mkdir -p $(CUMULUS_LANG_DEB)
+	@cd $(CUMULUS_LANG_DEB); \
+	echo '\n' | dh_make --packagename $(CUMULUS_LANG_REL) -c GPL -e axel@kflog.org -n -i
+	@cp dpkg/Languages/control/makefile $(CUMULUS_LANG_DEB)
+	@cp dpkg/Languages/control/rules $(CUMULUS_LANG_DEB)/debian/
+	@sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/copyright > $(CUMULUS_LANG_DEB)/debian/copyright
+	@sed -e "s/__VERSION__/$(VERSION)/g" dpkg/Languages/control/control > $(CUMULUS_LANG_DEB)/debian/control
+	@cp dpkg/Languages/control/postrm $(CUMULUS_LANG_DEB)/debian/
+	@sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/README > $(CUMULUS_LANG_DEB)/debian/README
+	@cp $(CUMULUS_LANG_DEB)/debian/README $(CUMULUS_LANG_DEB)/debian/README.Debian
+	@sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" \
+            dpkg/Languages/control/changelog > $(CUMULUS_LANG_DEB)/debian/changelog
+	cd $(CUMULUS_LANG_DEB); \
+	dpkg-buildpackage -b -rfakeroot
+	@cd $(CUMULUS_LANG_DEB)/..; \
+	rm -f cumuluslanguages_$(VERSION).dsc cumuluslanguages_$(VERSION).tar.gz
+
+# copies all language files of cumulus into the debian package area
+
+.PHONY : dpkg_install_lang
+dpkg_install_lang:
+	@echo '===== Installing Cumulus Languages $(VERSION) under $(DESTDIR)$(INSTALL_ROOT) ====='
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/de
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/locale/de
+	install --mode=644 help/de/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
+	install --mode=644 cumulus/cumulus_de.qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/cumulus_de.qm
+
+# installs all language dependend parts
 .PHONY : install_lang
 install_lang:
 	install -d $(INSTALL_ROOT)/locale/de
@@ -193,7 +247,7 @@ install_lang:
 
 .PHONY : deinstall
 deinstall:
-	@if [ -d  $(INSTALL_ROOT)/maps ]; \
+	@if [ -d $(INSTALL_ROOT)/maps ]; \
 	then \
 	        cd $(INSTALL_ROOT); rm -rf bin etc help icons locale sounds; \
         else \
@@ -202,11 +256,11 @@ deinstall:
 
 .PHONY : langpacks
 langpacks: langpack_de
-	@echo 'All language packs created'
+	@echo 'Language packages are created'
 
 .PHONY : langpack_de
 langpack_de:
-	cd cumulus; $(LRELEASE) -verbose -nounfinished cumulus_de.ts -qm cumulus_de_DE.qm
+	cd cumulus; $(LRELEASE) -verbose -nounfinished cumulus_de.ts -qm cumulus_de.qm
 
 .PHONY : release
 release: clean all langpacks
@@ -220,7 +274,13 @@ copy_web:
 	scp -C dpkg/n8x0/cumulus_$(VERSION)_armel.deb \
 	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_armel_n8x0.deb
 
-qmake: cumulus/Makefile gpsClient/Makefile gpsMaemoClient/Makefile nmeaSimulator/Makefile
+# copies debian language package to web page
+.PHONY : copy_lang_web
+copy_lang_web:
+  scp -C dpkg/Languages/cumuluslanguages_$(VERSION)_armel.deb \
+         web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
+
+qmake:	cumulus/Makefile gpsClient/Makefile gpsMaemoClient/Makefile nmeaSimulator/Makefile
 
 .PHONY : resetdate
 resetdate:

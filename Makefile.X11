@@ -1,7 +1,7 @@
 ################################################################################
-# Makefile to build a Cumulus release based on Qt4.5.x/X11
+# Makefile to build a Cumulus release based on Qt4.7.x/X11
 #
-# Copyright (c): 2008-2009 by Axel Pauli (axel@kflog.org)
+# Copyright (c): 2008-2010 by Axel Pauli (axel@kflog.org)
 # 
 # $Id$
 #
@@ -54,7 +54,6 @@ install: check_dir deinstall install_lang
 	@echo "===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====="
 	install -d $(INSTALL_ROOT)/bin
 	install -d $(INSTALL_ROOT)/etc
-	install -d $(INSTALL_ROOT)/help/de
 	install -d $(INSTALL_ROOT)/help/en
 	install -d $(INSTALL_ROOT)/icons
 	install -d $(INSTALL_ROOT)/icons/small
@@ -69,15 +68,16 @@ install: check_dir deinstall install_lang
 	install --mode=644 icons/*.png $(INSTALL_ROOT)/icons
 	install --mode=644 icons/small/* $(INSTALL_ROOT)/icons/small
 	install --mode=644 icons/windarrows/* $(INSTALL_ROOT)/icons/windarrows
-	install --mode=644 help/de/* icons/cumulus.png $(INSTALL_ROOT)/help/de
 	install --mode=644 help/en/* icons/cumulus.png $(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(INSTALL_ROOT)/sounds
 
 .PHONY : install_lang
-install_lang:
+install_lang:	langpacks
+	@echo "===== Installing Cumulus $(VERSION) languages under $(INSTALL_ROOT) ====="
 	install -d $(INSTALL_ROOT)/locale/de
-	test -f cumulus/cumulus_de.qm  || touch cumulus/cumulus_de.qm
+	install -d $(INSTALL_ROOT)/help/de
 	install --mode=644 cumulus/cumulus_de.qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
+	install --mode=644 help/de/* icons/cumulus.png $(INSTALL_ROOT)/help/de
 
 .PHONY : deinstall
 deinstall:
@@ -90,10 +90,12 @@ deinstall:
 
 .PHONY : langpacks
 langpacks: langpack_de
-	@echo 'All language packs created'
+	@echo 'Language packages are created'
+
 .PHONY : langpack_de
 langpack_de:
-	cd cumulus; $(LRELEASE) -verbose -removeidentical -nounfinished cumulus_de.ts -qm cumulus_de_DE.qm
+	cd cumulus; \
+	$(LRELEASE) -silent -removeidentical -nounfinished cumulus_de.ts -qm cumulus_de.qm
 
 .PHONY : release
 release: clean all langpacks
