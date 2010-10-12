@@ -14,6 +14,7 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2010-10-12 AP: German language package created and provided now for Maemo.
 [o] 2010-10-11 AP: English and German online help pages reworked. A PDF file
                    is provided now for every language on the web page.
 [o] 2010-10-04 AP: Allow move to home site also if GPS has no valid fix.
