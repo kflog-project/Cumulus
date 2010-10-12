@@ -245,7 +245,7 @@
     <message>
         <location filename="configwidget.cpp" line="68"/>
         <source>Terrain Colors</source>
-        <translation>Terrain Farben</translation>
+        <translation>Geländefarben</translation>
     </message>
     <message>
         <location filename="configwidget.cpp" line="75"/>
@@ -556,7 +556,7 @@
 <context>
     <name>GpsSnrDisplay</name>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="402"/>
+        <location filename="gpsstatusdialog.cpp" line="403"/>
         <source>No Data</source>
         <translation>Keine Daten</translation>
     </message>
@@ -851,7 +851,7 @@
     <message>
         <location filename="mainwindow.cpp" line="917"/>
         <source>Select home site</source>
-        <translation>Makiere Heimatort</translation>
+        <translation>Markiere Heimatort</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="924"/>
@@ -1082,7 +1082,7 @@
         <location filename="map.cpp" line="2755"/>
         <location filename="map.cpp" line="2876"/>
         <source>Very Near</source>
-        <translation>Sehr Nahe</translation>
+        <translation>Dicht</translation>
     </message>
     <message>
         <location filename="map.cpp" line="2778"/>
@@ -1379,7 +1379,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="polardialog.cpp" line="42"/>
         <source> - &lt;Esc&gt; or Mouse click to Close</source>
-        <translation type="unfinished"> - &lt;Esc&gt; oder Mouseklick zum Schließen</translation>
+        <translation> - &lt;Esc&gt; oder Mouseklick zum Schließen</translation>
     </message>
 </context>
 <context>
@@ -1598,7 +1598,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightwidget.cpp" line="129"/>
         <source>&lt;html&gt;Do you want to replace the previous task?&lt;br&gt;A selected target is reset at task start.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Alte Aufgabe ersetzen?&lt;br&gt;Das gerade makierte Ziel wird auf Aufgabenbeginn gesetzt.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;Alte Aufgabe ersetzen?&lt;br&gt;Das gerade markierte Ziel wird auf Aufgabenbeginn gesetzt.&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1970,17 +1970,17 @@ Alle Downloads verworfen!</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="main.cpp" line="178"/>
-        <source>&lt;html&gt;This program comes with&lt;p&gt;&lt;b&gt;ABSOLUTELY NO WARRANTY!&lt;/b&gt;&lt;/p&gt;Do not rely on this software program as your&lt;br&gt;primary source of navigation. You as user are&lt;br&gt;responsible for using official aeronautical&lt;br&gt;charts and proper methods for safe navigation.&lt;br&gt;The information presented in this software&lt;br&gt;program may be outdated or incorrect.&lt;p&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Für dieses Programm wird&lt;p&gt;&lt;b&gt;keinerlei Garantie übernommen!&lt;/b&gt;&lt;/p&gt;Benutzen Sie diese Software nicht als Grundlage&lt;br&gt;Ihrer primären Navigation. Als Benutzer sind&lt;br&gt;Sie verpflichtet, behördlich zugelassene&lt;br&gt;Luftfahrtkarten und zuverlässige Navigations-&lt;br&gt;methoden zu benutzen. Beachten Sie!&lt;br&gt;Die durch dieses Programm dargestellten&lt;br&gt;Informationen können veraltet oder &lt;br&gt;auch falsch sein.&lt;p&gt;&lt;/html&gt;</translation>
+        <location filename="main.cpp" line="181"/>
+        <source>&lt;html&gt;This program comes with&lt;p&gt;&lt;b&gt;ABSOLUTELY NO WARRANTY!&lt;/b&gt;&lt;/p&gt;Do not rely on this software program as your&lt;br&gt;primary source of navigation. You as user are&lt;br&gt;responsible for using official aeronautical&lt;br&gt;charts and proper methods for safe navigation.&lt;br&gt;The information presented in this software&lt;br&gt;program may be outdated or incorrect.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;Für dieses Programm wird&lt;p&gt;&lt;b&gt;keinerlei Garantie übernommen!&lt;/b&gt;&lt;/p&gt;Benutzen Sie diese Software nicht als Grundlage&lt;br&gt;Ihrer primären Navigation. Als Benutzer sind&lt;br&gt;Sie verpflichtet, behördlich zugelassene&lt;br&gt;Luftfahrtkarten und zuverlässige Navigations-&lt;br&gt;methoden zu benutzen. Beachten Sie!&lt;br&gt;Die durch dieses Programm dargestellten&lt;br&gt;Informationen können veraltet oder &lt;br&gt;auch falsch sein.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="191"/>
+        <location filename="main.cpp" line="193"/>
         <source>&lt;b&gt;Do You accept these terms?&lt;/b&gt;</source>
         <translation>&lt;b&gt;Akzeptieren Sie diese Bedingungen?&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="210"/>
+        <location filename="main.cpp" line="212"/>
         <source>Cumulus Disclaimer</source>
         <translation>Cumulus Ausschluß</translation>
     </message>
@@ -3028,36 +3028,36 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageTerrainColors</name>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="126"/>
-        <source>Color Editor</source>
-        <translation>Farben Editor</translation>
+        <location filename="settingspageterraincolors.cpp" line="120"/>
+        <source>Color Selection</source>
+        <translation>Farbenauswahl</translation>
     </message>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="139"/>
-        <location filename="settingspageterraincolors.cpp" line="241"/>
+        <location filename="settingspageterraincolors.cpp" line="133"/>
+        <location filename="settingspageterraincolors.cpp" line="235"/>
         <source>Terrain Level</source>
-        <translation></translation>
+        <translation>Geländehöhe</translation>
     </message>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="186"/>
+        <location filename="settingspageterraincolors.cpp" line="180"/>
         <source>Terrain Color</source>
-        <translation>Terrain Farbe</translation>
+        <translation>Geländefarbe</translation>
     </message>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="195"/>
-        <location filename="settingspageterraincolors.cpp" line="264"/>
+        <location filename="settingspageterraincolors.cpp" line="189"/>
+        <location filename="settingspageterraincolors.cpp" line="258"/>
         <source>Ground Color</source>
-        <translation>Boden Farbe</translation>
+        <translation>Bodenfarbe</translation>
     </message>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="209"/>
+        <location filename="settingspageterraincolors.cpp" line="203"/>
         <source>Color Defaults</source>
-        <translation>Standard Farben</translation>
+        <translation>Standardfarben</translation>
     </message>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="393"/>
+        <location filename="settingspageterraincolors.cpp" line="387"/>
         <source>The Terrain color settings</source>
-        <translation>Die Terrain Farben Optionen</translation>
+        <translation>Die Geländefarben Optionen</translation>
     </message>
 </context>
 <context>
@@ -3673,17 +3673,17 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="waypointlistview.cpp" line="53"/>
         <source>Edit selected waypoint</source>
-        <translation>Editiere makierten Wegpunkt</translation>
+        <translation>Editiere markierten Wegpunkt</translation>
     </message>
     <message>
         <location filename="waypointlistview.cpp" line="59"/>
         <source>Delete selected waypoint</source>
-        <translation>Lösche makierten Wegpunkt</translation>
+        <translation>Lösche markierten Wegpunkt</translation>
     </message>
     <message>
         <location filename="waypointlistview.cpp" line="67"/>
         <source>Set home site to selected waypoint</source>
-        <translation>Setze Heimat auf makierten Wegpunkt</translation>
+        <translation>Setze Heimat auf markierten Wegpunkt</translation>
     </message>
     <message>
         <location filename="waypointlistview.cpp" line="75"/>
