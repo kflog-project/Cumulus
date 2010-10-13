@@ -33,8 +33,12 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
 
   if( parent )
     {
-      resize( parent->size() );
-      move( parent->pos() );
+      // Map current position of parent at global screen
+      QPoint curPos = parent->mapToGlobal( parent->pos() );
+
+      // Set this window directly at the parent window with the same size
+      setGeometry( curPos.x(), curPos.y(),
+                    parent->size().width(), parent->size().height() );
     }
 
   elevAziDisplay = new GpsElevationAzimuthDisplay(this);
@@ -252,8 +256,24 @@ void GpsElevationAzimuthDisplay::paintEvent( QPaintEvent *event )
     }
   else
     {
-      p.fillRect( center.x()-23, center.y()-7, 46, 14, palette().color(QPalette::Window) );
-      p.drawText(center.x()-23, center.y()-7, 46, 14, Qt::AlignCenter, tr("No Data"));
+      QString text( tr("No Data") );
+      QRect rect = p.fontMetrics().boundingRect( text );
+
+      int w = rect.width();
+      int h = rect.height();
+
+      p.fillRect( center.x() - w / 2,
+                  center.y() - h / 2,
+                  w,
+                  h,
+                  palette().color(QPalette::Window) );
+
+      p.drawText( center.x() - w / 2,
+                  center.y() - h / 2,
+                  w,
+                  h,
+                  Qt::AlignCenter,
+                  text );
     }
 }
 
