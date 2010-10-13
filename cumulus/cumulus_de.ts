@@ -613,24 +613,36 @@
 <context>
     <name>HelpBrowser</name>
     <message>
-        <location filename="helpbrowser.cpp" line="40"/>
+        <location filename="helpbrowser.cpp" line="28"/>
         <source>Cumulus Help</source>
         <translation>Cumulus Hilfe</translation>
     </message>
     <message>
+        <location filename="helpbrowser.cpp" line="40"/>
+        <source>Begin</source>
+        <translation>Beginn</translation>
+    </message>
+    <message>
+        <location filename="helpbrowser.cpp" line="46"/>
+        <source>Backward</source>
+        <oldsource>Go backward</oldsource>
+        <translation>Zurück</translation>
+    </message>
+    <message>
         <location filename="helpbrowser.cpp" line="52"/>
-        <source>Goto home</source>
-        <translation>Nach Hause</translation>
+        <source>Forward</source>
+        <oldsource>Go forward</oldsource>
+        <translation>Vorwärts</translation>
     </message>
     <message>
         <location filename="helpbrowser.cpp" line="58"/>
-        <source>Go back</source>
-        <translation>Gehe zurück</translation>
+        <source>Zoom in</source>
+        <translation>Vergrößern</translation>
     </message>
     <message>
         <location filename="helpbrowser.cpp" line="64"/>
-        <source>Go forward</source>
-        <translation>Gehe vorwärts</translation>
+        <source>Zoom out</source>
+        <translation>Verkleinern</translation>
     </message>
     <message>
         <location filename="helpbrowser.cpp" line="70"/>
@@ -638,7 +650,7 @@
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="131"/>
+        <location filename="helpbrowser.cpp" line="135"/>
         <source>&lt;html&gt;&lt;b&gt;The help file was not found.&lt;br&gt;Maybe it is not installed?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Hilfedatei nicht gefunden.&lt;br&gt;Ist sie installiert?&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
