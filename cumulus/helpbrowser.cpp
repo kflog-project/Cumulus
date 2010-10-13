@@ -6,10 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2008-2010 by Axel Pauli (axel@kflog.org)
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   This class is used for displaying the help usage of Cumulus.
  **
@@ -17,23 +17,11 @@
  **
  ***********************************************************************/
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QMessageBox>
-#include <QToolTip>
-#include <QFileInfo>
-#include <QFont>
-#include <QKeyEvent>
+#include <QtGui>
 
 #include "helpbrowser.h"
 #include "generalconfig.h"
 
-/** Creates a help browser widget as single window and loads
- *  the cumulus help file into it according to the selected
- *  language. The user can navigate through the text, zoom in and out,
- *  maximize/normalize the window display size.
- */
 HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
                                               firstCall(true)
 {
@@ -49,19 +37,31 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
   home->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home_new.png") ) );
   home->setIconSize(QSize(26,26));
   // home->setFlat(true);
-  home->setToolTip( tr("Goto home") );
+  home->setToolTip( tr("Begin") );
 
   QPushButton *back = new QPushButton();
   back->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "left.png") ) );
   back->setIconSize(QSize(26,26));
   //back->setFlat(true);
-  back->setToolTip( tr("Go back") );
+  back->setToolTip( tr("Backward") );
 
   QPushButton *forward = new QPushButton();
   forward->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "right.png") ) );
   forward->setIconSize(QSize(26,26));
   // forward->setFlat(true);
-  forward->setToolTip( tr("Go forward") );
+  forward->setToolTip( tr("Forward") );
+
+  QPushButton *zoomIn = new QPushButton();
+  zoomIn->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomin.png") ) );
+  zoomIn->setIconSize(QSize(26,26));
+  // forward->setFlat(true);
+  zoomIn->setToolTip( tr("Zoom in") );
+
+  QPushButton *zoomOut = new QPushButton();
+  zoomOut->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomout.png") ) );
+  zoomOut->setIconSize(QSize(26,26));
+  // forward->setFlat(true);
+  zoomOut->setToolTip( tr("Zoom out") );
 
   QPushButton *close = new QPushButton();
   close->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "cancel.png") ) );
@@ -73,8 +73,10 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
   butLayout->addWidget( home );
   butLayout->addWidget( back );
   butLayout->addWidget( forward );
-  butLayout->addWidget( close );
+  butLayout->addWidget( zoomIn );
+  butLayout->addWidget( zoomOut );
   butLayout->addStretch();
+  butLayout->addWidget( close );
 
   QVBoxLayout *mainLayout = new QVBoxLayout;
   mainLayout->addLayout( butLayout );
@@ -84,6 +86,8 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
   connect( home, SIGNAL(clicked()),    browser, SLOT(home()));
   connect( back, SIGNAL(clicked()),    browser, SLOT(backward()));
   connect( forward, SIGNAL(clicked()), browser, SLOT(forward()));
+  connect( zoomIn, SIGNAL(clicked()),  this, SLOT( slotZoomIn()));
+  connect( zoomOut, SIGNAL(clicked()), this, SLOT( slotZoomOut()));
   connect( close, SIGNAL(clicked()),   this, SLOT( close()));
 }
 
@@ -92,7 +96,7 @@ HelpBrowser::~HelpBrowser()
   // qDebug("HelpBrowser::~HelpBrowser()");
 }
 
-/** Catch show events. If the first event is catched, we will load
+/** Catch show events. If the first event is caught, we will load
  *  the help file into the browser.
  */
 void HelpBrowser::showEvent( QShowEvent * )
@@ -103,7 +107,7 @@ void HelpBrowser::showEvent( QShowEvent * )
       return;
     }
 
-  // first call, we try to load the cumulus html help file
+  // first call, we try to load the Cumulus HTML help file
   firstCall = false;
 
   QString lang = GeneralConfig::instance()->getLanguage();
@@ -116,7 +120,7 @@ void HelpBrowser::showEvent( QShowEvent * )
 
   if( ! info.isReadable() )
     {
-      // fall back to english as default
+      // fall back to English as default
       lang = "en";
       helpFile = GeneralConfig::instance()->getInstallRoot() +
         "/help/" + lang + "/cumulus.html";
@@ -139,6 +143,32 @@ void HelpBrowser::showEvent( QShowEvent * )
   browser->setSource( url );
 }
 
+/** User request, to zoom into the document. */
+void HelpBrowser::slotZoomIn()
+{
+  QFont curFt = font();
+
+  if( curFt.pointSize() < 18 )
+    {
+      curFt.setPointSize( curFt.pointSize() + 1 );
+      setFont( curFt );
+      update();
+    }
+}
+
+/** User request, to zoom out the document. */
+void HelpBrowser::slotZoomOut()
+{
+  QFont curFt = font();
+
+  if( curFt.pointSize() > 10 )
+    {
+      curFt.setPointSize( curFt.pointSize() - 1 );
+      setFont( curFt );
+      update();
+    }
+}
+
 /** catch certain key events for special handling */
 void HelpBrowser::keyPressEvent( QKeyEvent *event )
 {
@@ -151,30 +181,16 @@ void HelpBrowser::keyPressEvent( QKeyEvent *event )
     }
 
   // Zoom in with key F7. That is a predefined Maemo hardware key for zooming.
-  QFont curFt = font();
-
-  if( event->key() == Qt::Key_F7 )
+  if( event->key() == Qt::Key_F7 || event->key() == QKeySequence::ZoomIn )
     {
-      if( curFt.pointSize() < 18 )
-        {
-          curFt.setPointSize( curFt.pointSize() + 1 );
-          setFont( curFt );
-          update();
-        }
-
+      slotZoomIn();
       return;
     }
 
   // Zoom out with key F8. That is a predefined Maemo hardware key for zooming.
-  if( event->key() == Qt::Key_F8 )
+  if( event->key() == Qt::Key_F8 || event->key() == QKeySequence::ZoomOut )
     {
-      if( curFt.pointSize() > 10 )
-        {
-          curFt.setPointSize( curFt.pointSize() - 1 );
-          setFont( curFt );
-          update();
-        }
-
+      slotZoomOut();
       return;
     }
 }

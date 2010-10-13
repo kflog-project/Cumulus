@@ -6,10 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008 by Axel Pauli (axel@kflog.org)
+**   Copyright (c): 2008-2010 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   This class is used for displaying the help usage of Cumulus.
 **
@@ -24,12 +24,24 @@
 #include <QTextBrowser>
 
 /**
- * @author Axel Pauli
+ * \author Axel Pauli
+ *
+ * \brief This class provides a widget usable as help browser.
+ *
+ * Creates a help browser widget as single window and loads
+ * the Cumulus help file into it according to the selected
+ * language. The user can navigate through the text, zoom in and out,
+ * maximize/normalize the window display size.
+ *
  */
 
 class HelpBrowser : public QWidget
 {
   Q_OBJECT
+
+private:
+
+  Q_DISABLE_COPY ( HelpBrowser )
 
  public:
 
@@ -41,6 +53,14 @@ class HelpBrowser : public QWidget
 
   /** catch key events */
   void keyPressEvent( QKeyEvent *event );
+
+ private slots:
+
+  /** User request, to zoom into the document. */
+  void slotZoomIn();
+
+  /** User request, to zoom out the document. */
+  void slotZoomOut();
 
  private:
 
