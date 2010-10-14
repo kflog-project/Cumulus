@@ -60,12 +60,12 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(26, 26));
+  cancel->setIconSize(QSize(32, 32));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QPushButton *ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(26, 26));
+  ok->setIconSize(QSize(32, 32));
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QLabel *titlePix = new QLabel(this);
