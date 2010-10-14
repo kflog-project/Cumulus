@@ -6,32 +6,43 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-#ifndef WPEDIT_DIALOG_H
-#define WPEDIT_DIALOG_H
+#ifndef WP_EDIT_DIALOG_H
+#define WP_EDIT_DIALOG_H
 
 #include <QWidget>
-#include <QDialog>
+#include <QString>
 #include <QTextEdit>
+
 #include "waypoint.h"
 
 /**
- * The WpEditDialog allows the creation of a new waypoint or the modification
- * of an existing waypoint.
- * @author André Somers
+ * \author André Somers, Axel Pauli
+ *
+ * \brief The WpEditDialog widget allows the creation of a new waypoint or the
+ * modification of an existing waypoint. It is a modal window.
+ *
  */
 
-class WpEditDialog : public QDialog
+class WpEditDialog : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
+
+private:
+
+  /**
+   * That macro forbids the copy constructor and the assignment operator.
+   */
+  Q_DISABLE_COPY( WpEditDialog )
 
 public:
     /**

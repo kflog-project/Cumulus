@@ -23,12 +23,7 @@
  * @author André Somers
  */
 
-#include <QMessageBox>
-#include <QPushButton>
-#include <QTabWidget>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QScrollArea>
+#include <QtGui>
 
 #include "wpeditdialog.h"
 #include "wpeditdialogpagegeneral.h"
@@ -42,15 +37,18 @@ extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 extern MainWindow  *_globalMainWindow;
 
-WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ) : QDialog(parent)
+WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ) :
+  QWidget( parent, Qt::Window )
 {
-  setObjectName("WpEditDialog");
+  setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
-  setModal(true);
 
   if( _globalMainWindow )
     {
-      // Resize the dialog to the same size as the main window has. That will
+      // Move this window directly to the same position of the main window
+      move( _globalMainWindow->pos() );
+
+      // Resize the window to the same size as the main window has. That will
       // completely hide the parent window.
       resize( _globalMainWindow->size() );
     }
@@ -109,16 +107,16 @@ WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ) : QDialog(parent)
   // Add ok and cancel buttons
   QPushButton *cancel = new QPushButton;
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(26, 26));
+  cancel->setIconSize(QSize(32, 32));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QPushButton *ok = new QPushButton;
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(26, 26));
+  ok->setIconSize(QSize(32, 32));
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
-  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
@@ -205,7 +203,7 @@ void WpEditDialog::accept()
       emit wpListChanged( *_wp );
     }
 
-  QDialog::accept();
+  QWidget::close();
 }
 
 /**
