@@ -35,37 +35,37 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
 
   QPushButton *home = new QPushButton();
   home->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home_new.png") ) );
-  home->setIconSize(QSize(26,26));
+  home->setIconSize(QSize(32,32));
   // home->setFlat(true);
   home->setToolTip( tr("Begin") );
 
   QPushButton *back = new QPushButton();
   back->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "left.png") ) );
-  back->setIconSize(QSize(26,26));
+  back->setIconSize(QSize(32,32));
   //back->setFlat(true);
   back->setToolTip( tr("Backward") );
 
   QPushButton *forward = new QPushButton();
   forward->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "right.png") ) );
-  forward->setIconSize(QSize(26,26));
+  forward->setIconSize(QSize(32,32));
   // forward->setFlat(true);
   forward->setToolTip( tr("Forward") );
 
   QPushButton *zoomIn = new QPushButton();
   zoomIn->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomin.png") ) );
-  zoomIn->setIconSize(QSize(26,26));
+  zoomIn->setIconSize(QSize(32,32));
   // forward->setFlat(true);
   zoomIn->setToolTip( tr("Zoom in") );
 
   QPushButton *zoomOut = new QPushButton();
   zoomOut->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomout.png") ) );
-  zoomOut->setIconSize(QSize(26,26));
+  zoomOut->setIconSize(QSize(32,32));
   // forward->setFlat(true);
   zoomOut->setToolTip( tr("Zoom out") );
 
   QPushButton *close = new QPushButton();
   close->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "cancel.png") ) );
-  close->setIconSize(QSize(26,26));
+  close->setIconSize(QSize(32,32));
   // close->setFlat(true);
   close->setToolTip( tr("Close") );
 
@@ -148,7 +148,7 @@ void HelpBrowser::slotZoomIn()
 {
   QFont curFt = font();
 
-  if( curFt.pointSize() < 18 )
+  if( curFt.pointSize() < 24 )
     {
       curFt.setPointSize( curFt.pointSize() + 1 );
       setFont( curFt );
