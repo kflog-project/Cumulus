@@ -52,6 +52,13 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   minFontSize = 22;
 #endif
 
+  // button size
+  int size = 40;
+
+#ifdef MAEMO
+  size = 80;
+#endif
+
   QFont b = font();
   b.setBold(true);
   setFont(b);
@@ -99,9 +106,14 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   gridLayout->addWidget(spinWater, row, 1);
 
   buttonDump = new QPushButton (tr("Dump"), this);
+  buttonDump->setMinimumHeight( size );
   buttonDump->setFocusPolicy(Qt::NoFocus);
 
-  gridLayout->addWidget(buttonDump, row++, 2);
+  QVBoxLayout *waterLayout = new QVBoxLayout;
+  waterLayout->addWidget( buttonDump );
+  waterLayout->addStretch(10);
+
+  gridLayout->addLayout(waterLayout, row++, 2);
 
   //---------------------------------------------------------------------
 
@@ -124,12 +136,6 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   plus   = new QPushButton("+", this);
   mminus = new QPushButton("--", this);
   minus  = new QPushButton("-", this);
-
-  int size = 40;
-
-#ifdef MAEMO
-  size = 80;
-#endif
 
   pplus->setMinimumSize(size, size);
   plus->setMinimumSize(size, size);
@@ -164,7 +170,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   // button pressing in turbulent air.
   cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(30, 30));
+  cancel->setIconSize(QSize(32, 32));
   cancel->setMinimumSize(size, size);
   cancel->setMaximumSize(size, size);
 
@@ -172,7 +178,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
 
   ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(30, 30));
+  ok->setIconSize(QSize(32, 32));
   ok->setMinimumSize(size, size);
   ok->setMaximumSize(size, size);
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);

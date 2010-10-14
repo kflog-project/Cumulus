@@ -88,21 +88,21 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
 
   QPushButton * cmdNew = new QPushButton(this);
   cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
-  cmdNew->setIconSize(QSize(26,26));
+  cmdNew->setIconSize(QSize(32,32));
   cmdNew->setToolTip(tr("Define a new task"));
   editrow->addWidget(cmdNew);
 
   editrow->addSpacing(10);
   QPushButton * cmdEdit = new QPushButton(this);
   cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
-  cmdEdit->setIconSize(QSize(26,26));
+  cmdEdit->setIconSize(QSize(32,32));
   cmdEdit->setToolTip(tr("Edit selected task"));
   editrow->addWidget(cmdEdit);
 
   editrow->addSpacing(10);
   QPushButton * cmdDel = new QPushButton(this);
   cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png")) );
-  cmdDel->setIconSize(QSize(26,26));
+  cmdDel->setIconSize(QSize(32,32));
   cmdDel->setToolTip(tr("Remove selected task"));
   editrow->addWidget(cmdDel);
 
