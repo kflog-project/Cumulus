@@ -1158,12 +1158,24 @@ void MapView::slot_toggleWindAndLD()
 /** Opens the Altimeter settings dialog. */
 void MapView::slot_AltimeterDialog()
 {
+  if( AltimeterModeDialog::getNrOfInstances() > 0 )
+    {
+      // Sometimes the mouse event is delayed under Maemo, which triggers this
+      // method. In such a case multiple dialogs are opened. This check shall
+      // prevent that.
+      return;
+    }
+
   AltimeterModeDialog *amDlg = new AltimeterModeDialog( this );
+
+  amDlg->slotAltitudeChanged( calculator->getAltimeterAltitude() );
 
   connect( amDlg, SIGNAL( newAltimeterMode() ),
            this, SLOT( slot_newAltimeterMode() ) );
   connect( amDlg, SIGNAL( newAltimeterSettings() ),
            GpsNmea::gps, SLOT( slot_reset() ) );
+  connect( calculator, SIGNAL( newUserAltitude( const Altitude& ) ),
+           amDlg, SLOT( slotAltitudeChanged( const Altitude& ) ) );
 
   amDlg->setVisible(true);
 }
@@ -1175,8 +1187,8 @@ void MapView::slot_newAltimeterMode()
   _altitude->setPreUnit( Altitude::getUnitText() );
   _glidepath->setPreUnit( Altitude::getUnitText() );
 
-  // Mode change needs always a altitude display update.
-  slot_Altitude( calculator->getlastAltitude() );
+  // Mode change needs always an altitude display update.
+  slot_Altitude( calculator->getAltimeterAltitude() );
 }
 
 /** Opens the Variometer settings dialog. */

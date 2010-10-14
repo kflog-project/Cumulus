@@ -622,6 +622,8 @@ class GpsNmea : public QObject
     Altitude _lastMslAltitude;
     /** Contains the last known HAE */
     Altitude _lastGNSSAltitude;
+    /** Force one altitude report after reset, regardless of change or not */
+    bool _reportAltitude;
     /** Contains the last known heading */
     double _lastHeading;
     /** Contains the last known satellite information */

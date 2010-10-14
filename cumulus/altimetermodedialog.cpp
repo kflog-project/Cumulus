@@ -19,10 +19,14 @@
 #include <QtGui>
 
 #include "generalconfig.h"
+#include "altitude.h"
 #include "altimetermodedialog.h"
 #include "calculator.h"
 #include "glider.h"
 #include "mapconfig.h"
+
+// set static member variable
+int AltimeterModeDialog::noOfInstances = 0;
 
 extern MapConfig *_globalMapConfig;
 
@@ -31,6 +35,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   _mode( 0 ),
   _unit( 0 )
 {
+  noOfInstances++;
   setObjectName( "AltimeterModeDialog" );
   setModal( true );
   setWindowTitle( tr( "Altimeter Settings" ) );
@@ -112,7 +117,12 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   connect( spinLeveling, SIGNAL(valueChanged(const QString&)),
            this, SLOT(slotSpinValueChanged(const QString&)));
 
-  spinboxLayout->addWidget( spinLeveling, row++, 1 );
+  spinboxLayout->addWidget( spinLeveling, row, 1 );
+
+  lbl = new QLabel( tr( "Altitude:" ), this );
+  spinboxLayout->addWidget( lbl, row, 2 );
+  _altitudeDisplay = new QLabel( "0", this );
+  spinboxLayout->addWidget( _altitudeDisplay, row++, 3 );
 
   lbl = new QLabel( tr( "QNH:" ), this );
   spinboxLayout->addWidget( lbl, row, 0 );
@@ -175,16 +185,15 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   // widget to have enough space between them. That shall avoid wrong
   // button pressing in turbulent air.
   QPushButton *cancel = new QPushButton( this );
-  cancel->setIcon(
-      QIcon( GeneralConfig::instance()->loadPixmap( "cancel.png" ) ) );
-  cancel->setIconSize( QSize( 30, 30 ) );
+  cancel->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "cancel.png" ) ) );
+  cancel->setIconSize( QSize( 32, 32 ) );
   cancel->setMinimumSize( size, size );
   cancel->setMaximumSize( size, size );
   cancel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
 
   QPushButton *ok = new QPushButton( this );
   ok->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "ok.png" ) ) );
-  ok->setIconSize( QSize( 30, 30 ) );
+  ok->setIconSize( QSize( 32, 32 ) );
   ok->setMinimumSize( size, size );
   ok->setMaximumSize( size, size );
   ok->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
@@ -242,6 +251,11 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   load();
 }
 
+AltimeterModeDialog::~AltimeterModeDialog()
+{
+  noOfInstances--;
+}
+
 QString AltimeterModeDialog::mode2String()
 {
   switch( GeneralConfig::instance()->getAltimeterMode() )
@@ -262,10 +276,6 @@ QString AltimeterModeDialog::mode2String()
 int AltimeterModeDialog::mode()
 {
   return GeneralConfig::instance()->getAltimeterMode();
-}
-
-AltimeterModeDialog::~AltimeterModeDialog()
-{
 }
 
 void AltimeterModeDialog::load()
@@ -290,9 +300,13 @@ void AltimeterModeDialog::load()
       qWarning("AltimeterModeDialog::load(): invalid mode: %d", _mode);
   }
 
+  saveMode = _mode;
+
   GeneralConfig *conf = GeneralConfig::instance();
 
-  switch( Altitude::getUnit() )
+  saveUnit = Altitude::getUnit();
+
+  switch( saveUnit )
   {
     case Altitude::meters:
       _meter->setChecked(true);
@@ -310,7 +324,11 @@ void AltimeterModeDialog::load()
       break;
   }
 
-  spinQnh->setValue( conf->getQNH() );
+  saveLeveling = spinLeveling->value();
+
+  saveQnh = conf->getQNH();
+
+  spinQnh->setValue( saveQnh );
 
   startTimer();
 }
@@ -325,6 +343,12 @@ void AltimeterModeDialog::slotUnitChanged( int unit )
 {
   _unit = unit;
   startTimer();
+}
+
+/** This slot is being called if the altitude has been changed. */
+void AltimeterModeDialog::slotAltitudeChanged(const Altitude& altitude )
+{
+  _altitudeDisplay->setText( altitude.getText( true, 0 ) );
 }
 
 void AltimeterModeDialog::slotChangeSpinValue( int button )
@@ -385,9 +409,10 @@ void AltimeterModeDialog::slotChangeSpinValue( int button )
       Altitude::setUnit( (Altitude::altitudeUnit) _unit );
 
       GeneralConfig *conf = GeneralConfig::instance();
-      conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters(spinLeveling->value()) );
-      emit newAltimeterSettings();
+      conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters( spinLeveling->value()) );
 
+      emit newAltimeterMode();     // informs MapView
+      emit newAltimeterSettings(); // informs GpsNmea
       return;
     }
 }
@@ -399,22 +424,59 @@ void AltimeterModeDialog::slotSpinValueChanged( const QString& text )
   startTimer();
 }
 
+bool AltimeterModeDialog::changesDone()
+{
+  if( _unit != saveUnit ||
+      _mode != saveMode ||
+      saveLeveling != spinLeveling->value() ||
+      saveQnh != spinQnh->value() )
+    {
+      return true;
+    }
+
+  return false;
+}
+
 void AltimeterModeDialog::accept()
 {
-  Altitude::setUnit( (Altitude::altitudeUnit) _unit );
+  if( changesDone() )
+    {
+      Altitude::setUnit( (Altitude::altitudeUnit) _unit );
 
-  GeneralConfig *conf = GeneralConfig::instance();
+      GeneralConfig *conf = GeneralConfig::instance();
 
-  conf->setUnitAlt( _unit );
-  conf->setAltimeterMode( _mode );
-  conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters(spinLeveling->value()) );
-  conf->setQNH( spinQnh->value() );
-  conf->save();
+      conf->setUnitAlt( _unit );
+      conf->setAltimeterMode( _mode );
+      conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters(spinLeveling->value()) );
+      conf->setQNH( spinQnh->value() );
+      conf->save();
 
-  emit newAltimeterMode();     // informs MapView
-  emit newAltimeterSettings(); // informs GpsNmea
+      emit newAltimeterMode();     // informs MapView
+      emit newAltimeterSettings(); // informs GpsNmea
+    }
 
   QDialog::accept();
+}
+
+void AltimeterModeDialog::reject()
+{
+  if( changesDone() )
+    {
+      Altitude::setUnit( (Altitude::altitudeUnit) saveUnit );
+
+      GeneralConfig *conf = GeneralConfig::instance();
+
+      conf->setUnitAlt( saveUnit );
+      conf->setAltimeterMode( saveMode );
+      conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters(saveLeveling) );
+      conf->setQNH( saveQnh );
+      conf->save();
+
+      emit newAltimeterMode();     // informs MapView
+      emit newAltimeterSettings(); // informs GpsNmea
+    }
+
+  QDialog::reject();
 }
 
 void AltimeterModeDialog::startTimer()

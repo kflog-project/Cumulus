@@ -142,6 +142,7 @@ void GpsNmea::resetDataObjects()
   _lastGNSSAltitude = Altitude(0);
   calcStdAltitude( Altitude(0) );
   _lastPressureAltitude = Altitude(0);
+  _reportAltitude = true;
   _lastCoord = QPoint(0,0);
   _lastSpeed = Speed(-1.0);
   _lastHeading = -1;
@@ -703,8 +704,9 @@ void GpsNmea::__ExtractPgrmz( const QStringList& slst )
 
           altitude.setFeet( num );
 
-          if( _lastPressureAltitude != altitude )
+          if( _lastPressureAltitude != altitude || _reportAltitude == true )
             {
+              _reportAltitude = false;
               _lastPressureAltitude = altitude; // store the new pressure altitude
 
               if( _deliveredAltitude == GpsNmea::PRESSURE )
@@ -805,8 +807,10 @@ void GpsNmea::__ExtractPgcs( const QStringList& slst )
 
   res.setMeters( num );
 
-  if ( _lastStdAltitude != res && _deliveredAltitude == GpsNmea::PRESSURE )
+  if( ( _lastStdAltitude != res || _reportAltitude == true ) &&
+      _deliveredAltitude == GpsNmea::PRESSURE )
     {
+      _reportAltitude = false;
       // Store this altitude as STD, if the user has pressure selected.
       // In the other case the STD is derived from the GPS altitude.
       _lastStdAltitude = res;
@@ -977,25 +981,29 @@ void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
   num = stringList[5].toDouble( &ok ) -1000.0;
   res.setMeters( num );
 
-  if ( ok && _lastPressureAltitude != res )
+  if( ok )
     {
-      _lastPressureAltitude = res; // store the new pressure altitude
+      if( _lastPressureAltitude != res || _reportAltitude == true )
+      {
+        _reportAltitude = false;
+        _lastPressureAltitude = res; // store the new pressure altitude
 
-      if ( _deliveredAltitude == GpsNmea::PRESSURE )
-        {
-          // set these altitudes too, when pressure is selected
-          _lastMslAltitude.setMeters( res.getMeters() + _userAltitudeCorrection.getMeters() );
-          // STD altitude is delivered by Cambrigde via $PCAID record
-          // calcStdAltitude( res );
-        }
+        if ( _deliveredAltitude == GpsNmea::PRESSURE )
+          {
+            // set these altitudes too, when pressure is selected
+            _lastMslAltitude.setMeters( res.getMeters() + _userAltitudeCorrection.getMeters() );
+            // STD altitude is delivered by Cambrigde via $PCAID record
+            // calcStdAltitude( res );
+          }
 
-      emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+        emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+      }
     }
 
   // extract QNH
   ushort qnh = stringList[6].toUShort( &ok );
 
-  if ( ok && _lastQnh != qnh )
+  if( ok && _lastQnh != qnh )
     {
       // update the QNH in GeneralConfig
       GeneralConfig::instance()->setQNH( qnh );
@@ -1099,8 +1107,9 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
         {
           Altitude altitude( num );
 
-          if( _lastPressureAltitude != altitude )
+          if( _lastPressureAltitude != altitude || _reportAltitude == true )
             {
+              _reportAltitude = false;
               _lastPressureAltitude = altitude; // store the new pressure altitude
 
               if( _deliveredAltitude == GpsNmea::PRESSURE )
@@ -1426,8 +1435,10 @@ Altitude GpsNmea::__ExtractAltitude( const QString& altitude, const QString& uni
 
   _lastGNSSAltitude = res;
 
-  if ( _lastMslAltitude != res && _deliveredAltitude != GpsNmea::PRESSURE )
+  if( ( _lastMslAltitude != res || _reportAltitude == true ) &&
+      _deliveredAltitude != GpsNmea::PRESSURE )
     {
+      _reportAltitude = false;
       // set these altitudes only, when pressure is not selected
       _lastMslAltitude = res;
       calcStdAltitude( res );
@@ -1933,6 +1944,7 @@ void GpsNmea::slot_reset()
   // altitude reference delivered by GPS unit
   _deliveredAltitude = static_cast<GpsNmea::DeliveredAltitude> (conf->getGpsAltitude());
   _userAltitudeCorrection = conf->getGpsUserAltitudeCorrection();
+  _reportAltitude = true;
 
   QString oldDevice = gpsDevice;
 

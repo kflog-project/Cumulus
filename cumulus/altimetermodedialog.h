@@ -20,11 +20,15 @@
 #define ALTIMETER_MODE_DIALOG_H
 
 #include <QDialog>
+#include <QLabel>
 #include <QTimer>
 #include <QRadioButton>
 #include <QSpinBox>
+
+class Altitude;
+
 /**
-  * \author Eckhard Voellm, Axel Pauli
+  * \author Eckhard Völlm, Axel Pauli
   *
   * \brief Dialog for altimeter user interaction.
   *
@@ -48,10 +52,21 @@ public:
   static QString mode2String();
   static int mode();
 
+  /**
+   * @return Returns the current number of instances.
+   */
+  static int getNrOfInstances()
+  {
+    return noOfInstances;
+  };
+
 protected:
 
   /** User has pressed the ok button. */
   void accept();
+
+  /** User has pressed cancel button or timeout has occurred. */
+  void reject();
 
 private:
 
@@ -61,6 +76,8 @@ private:
   /** Starts resp. restarts the inactively timer. */
   void startTimer();
 
+  /** Check for configuration changes. */
+  bool changesDone();
 
   /** inactively timer control */
   QTimer* timeout;
@@ -79,6 +96,9 @@ private:
   QRadioButton* _meter;
   QRadioButton* _feet;
 
+  /** Altitude display */
+  QLabel* _altitudeDisplay;
+
   /** Spin box for altitude leveling */
   QSpinBox* spinLeveling;
 
@@ -90,6 +110,20 @@ private:
   QPushButton *pplus;
   QPushButton *minus;
   QPushButton *mminus;
+
+  /** Save the initial values here. They are needed in the reject case. */
+  int saveMode;
+  int saveUnit;
+  int saveQnh;
+  int saveLeveling;
+
+  /** contains the current number of class instances */
+  static int noOfInstances;
+
+public slots:
+
+  /** This slot is being called if the altitude value has been changed. */
+  void slotAltitudeChanged(const Altitude& altitude );
 
 private slots:
 
