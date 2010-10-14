@@ -93,47 +93,52 @@
 <context>
     <name>AltimeterModeDialog</name>
     <message>
-        <location filename="altimetermodedialog.cpp" line="36"/>
+        <location filename="altimetermodedialog.cpp" line="41"/>
         <source>Altimeter Settings</source>
         <translation>Höhenmesser Einstellungen</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="58"/>
+        <location filename="altimetermodedialog.cpp" line="63"/>
         <source>MSL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="59"/>
+        <location filename="altimetermodedialog.cpp" line="64"/>
         <source>STD</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="60"/>
+        <location filename="altimetermodedialog.cpp" line="65"/>
         <source>AGL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="61"/>
+        <location filename="altimetermodedialog.cpp" line="66"/>
         <source>AHL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="83"/>
+        <location filename="altimetermodedialog.cpp" line="88"/>
         <source>Meters</source>
         <translation>Meter</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="84"/>
+        <location filename="altimetermodedialog.cpp" line="89"/>
         <source>Feet</source>
         <translation>Fuß</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="105"/>
+        <location filename="altimetermodedialog.cpp" line="110"/>
         <source>Leveling:</source>
         <translation>Abgleich:</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="117"/>
+        <location filename="altimetermodedialog.cpp" line="122"/>
+        <source>Altitude:</source>
+        <translation>Höhe:</translation>
+    </message>
+    <message>
+        <location filename="altimetermodedialog.cpp" line="127"/>
         <source>QNH:</source>
         <translation></translation>
     </message>
@@ -540,7 +545,7 @@
 <context>
     <name>GpsElevationAzimuthDisplay</name>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="256"/>
+        <location filename="gpsstatusdialog.cpp" line="259"/>
         <source>No Data</source>
         <translation>Keine Daten</translation>
     </message>
@@ -548,7 +553,7 @@
 <context>
     <name>GpsNmea</name>
     <message>
-        <location filename="gpsnmea.cpp" line="2239"/>
+        <location filename="gpsnmea.cpp" line="2251"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -556,7 +561,7 @@
 <context>
     <name>GpsSnrDisplay</name>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="403"/>
+        <location filename="gpsstatusdialog.cpp" line="423"/>
         <source>No Data</source>
         <translation>Keine Daten</translation>
     </message>
@@ -569,43 +574,43 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="52"/>
-        <location filename="gpsstatusdialog.cpp" line="116"/>
+        <location filename="gpsstatusdialog.cpp" line="56"/>
+        <location filename="gpsstatusdialog.cpp" line="120"/>
         <source>Stop</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="53"/>
+        <location filename="gpsstatusdialog.cpp" line="57"/>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="55"/>
+        <location filename="gpsstatusdialog.cpp" line="59"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="120"/>
+        <location filename="gpsstatusdialog.cpp" line="124"/>
         <source>Start</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="139"/>
+        <location filename="gpsstatusdialog.cpp" line="143"/>
         <source>Append to?</source>
         <translation>Anhängen an?</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="140"/>
+        <location filename="gpsstatusdialog.cpp" line="144"/>
         <source>File name:</source>
         <translation>Dateiname:</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="156"/>
+        <location filename="gpsstatusdialog.cpp" line="160"/>
         <source>Save failed</source>
         <translation>Speicherfehler</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="156"/>
+        <location filename="gpsstatusdialog.cpp" line="160"/>
         <source>Cannot open file!</source>
         <translation>Datei nicht vorhanden!</translation>
     </message>
@@ -2549,17 +2554,17 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageGlider</name>
     <message>
-        <location filename="settingspageglider.cpp" line="123"/>
+        <location filename="settingspageglider.cpp" line="120"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="settingspageglider.cpp" line="123"/>
+        <location filename="settingspageglider.cpp" line="120"/>
         <source>Delete selected glider?</source>
         <translation>Flugzeug löschen?</translation>
     </message>
     <message>
-        <location filename="settingspageglider.cpp" line="154"/>
+        <location filename="settingspageglider.cpp" line="151"/>
         <source>The Glider list</source>
         <translation>Die Flugzeugliste</translation>
     </message>
