@@ -82,7 +82,7 @@ check_dir:
 
 .PHONY : install
 
-install: check_dir deinstall langpacks install_lang
+install: check_dir deinstall install_lang
 	@echo "===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====="
 	strip cumulus/cumulus
 	strip gpsClient/gpsClient
@@ -111,8 +111,8 @@ install: check_dir deinstall langpacks install_lang
 	install --mode=644 icons/*.png $(INSTALL_ROOT)/icons
 	install --mode=644 icons/small/* $(INSTALL_ROOT)/icons/small
 	install --mode=644 icons/windarrows/* $(INSTALL_ROOT)/icons/windarrows
-	install --mode=644 help/de/*.html icons/cumulus.png $(INSTALL_ROOT)/help/de
-	install --mode=644 help/en/*.html icons/cumulus.png $(INSTALL_ROOT)/help/en
+	install --mode=644 help/de/*.html help/de/text.css icons/cumulus.png $(INSTALL_ROOT)/help/de
+	install --mode=644 help/en/*.html help/en/text.css icons/cumulus.png $(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/Maemo4/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
 	install --mode=644 dpkg/Maemo4/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service
@@ -153,6 +153,7 @@ dpkg_make:
 
 # copies all files of cumulus into the debian package area
 .PHONY : dpkg_install
+
 dpkg_install:
 	@echo '===== Installing Cumulus $(VERSION) under $(DESTDIR)$(INSTALL_ROOT) ====='
 	strip cumulus/cumulus
@@ -166,7 +167,6 @@ dpkg_install:
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons/small
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/lib
-	install -d $(DESTDIR)/$(INSTALL_ROOT)/locale
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install -d $(DESTDIR)/usr/share/applications/hildon
 	install -d $(DESTDIR)/usr/share/dbus-1/services
@@ -186,7 +186,7 @@ dpkg_install:
 	install --mode=644 icons/windarrows/* $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
 	install --mode=644 icons/cumulus-desktop26x26.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps/cumulus.png
 	install --mode=644 icons/cumulus-desktop64x64.png $(DESTDIR)/usr/share/icons/hicolor/scalable/apps/cumulus.png
-	install --mode=644 help/en/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
+	install --mode=644 help/en/*.html help/en/text.css icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/Maemo4/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
 	install --mode=644 dpkg/Maemo4/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service
@@ -235,24 +235,18 @@ dpkg_install_lang:
 	@echo '===== Installing Cumulus Languages $(VERSION) under $(DESTDIR)$(INSTALL_ROOT) ====='
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/locale/de
-	install --mode=644 help/de/* icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
+	install --mode=644 help/de/*.html help/de/text.css icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install --mode=644 cumulus/cumulus_de.qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/cumulus_de.qm
 
 # installs all language dependend parts
 .PHONY : install_lang
-install_lang:
+install_lang:	langpacks
 	install -d $(INSTALL_ROOT)/locale/de
-	test -f cumulus/cumulus_de.qm  || touch cumulus/cumulus_de.qm
 	install --mode=644 cumulus/cumulus_de.qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
 
 .PHONY : deinstall
 deinstall:
-	@if [ -d $(INSTALL_ROOT)/maps ]; \
-	then \
-	        cd $(INSTALL_ROOT); rm -rf bin etc help icons locale sounds; \
-        else \
-                rm -rf $(INSTALL_ROOT)/*; \
-        fi
+	rm -rf $(INSTALL_ROOT)/*
 
 .PHONY : langpacks
 langpacks: langpack_de
@@ -260,7 +254,8 @@ langpacks: langpack_de
 
 .PHONY : langpack_de
 langpack_de:
-	cd cumulus; $(LRELEASE) -verbose -nounfinished cumulus_de.ts -qm cumulus_de.qm
+	cd cumulus; \
+	$(LRELEASE) -silent -removeidentical -nounfinished cumulus_de.ts -qm cumulus_de.qm
 
 .PHONY : release
 release: clean all langpacks
