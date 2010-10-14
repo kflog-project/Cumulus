@@ -14,6 +14,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-10-14 AP: Altitude display added to altimeter dialog because under
+                   Maemo5 the dialog layout hides completely the altitude
+                   display of the map.
+[o] 2010-10-13 AP: Window type of GPS status dialog changed from dialog to
+                   window. That was necessary for Maemo5 at the N900 device
+                   because dialogs there have a special look and do not allow
+                   to use the whole window space.
+[o] 2010-10-13 AP: Help browser extended by font zoom buttons.
 [+] 2010-10-12 AP: German language package created and provided now for Maemo.
 [o] 2010-10-11 AP: English and German online help pages reworked. A PDF file
                    is provided now for every language on the web page.
