@@ -112,12 +112,12 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   QPushButton* okButton = new QPushButton( this );
   okButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "ok.png")) );
-  okButton->setIconSize(QSize(26,26));
+  okButton->setIconSize(QSize(32,32));
   okButton->setToolTip( tr("save task") );
 
   QPushButton* cancelButton = new QPushButton( this );
   cancelButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "cancel.png")) );
-  cancelButton->setIconSize(QSize(26,26));
+  cancelButton->setIconSize(QSize(32,32));
   cancelButton->setToolTip( tr("cancel task") );
 
   // all single widgets and layouts in this grid
