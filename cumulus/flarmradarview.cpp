@@ -21,6 +21,7 @@
 #include "flarmdisplay.h"
 #include "flarmradarview.h"
 #include "generalconfig.h"
+#include "layout.h"
 
 /**
  * Constructor
@@ -55,14 +56,14 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
 
   QPushButton *zoomButton  = new QPushButton;
   zoomButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("zoom32.png")));
-  zoomButton->setIconSize(QSize(32, 32));
+  zoomButton->setIconSize(QSize(IconSize, IconSize));
   zoomButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
   zoomButton->setMinimumSize(size, size);
   zoomButton->setMaximumSize(size, size);
 
   QPushButton *listButton  = new QPushButton;
   listButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("list32.png")));
-  listButton->setIconSize(QSize(32, 32));
+  listButton->setIconSize(QSize(IconSize, IconSize));
   listButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
   listButton->setMinimumSize(size, size);
   listButton->setMaximumSize(size, size);
@@ -75,14 +76,14 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
 
   QPushButton *aliasButton  = new QPushButton;
   aliasButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("monkey32.png")));
-  aliasButton->setIconSize(QSize(32, 32));
+  aliasButton->setIconSize(QSize(IconSize, IconSize));
   aliasButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
   aliasButton->setMinimumSize(size, size);
   aliasButton->setMaximumSize(size, size);
 
   QPushButton *closeButton = new QPushButton;
   closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  closeButton->setIconSize(QSize(32, 32));
+  closeButton->setIconSize(QSize(IconSize, IconSize));
   closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
   closeButton->setMinimumSize(size, size);
   closeButton->setMaximumSize(size, size);

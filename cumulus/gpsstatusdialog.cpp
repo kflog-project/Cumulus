@@ -22,24 +22,27 @@
 
 #include "gpsstatusdialog.h"
 #include "gpsnmea.h"
+#include "mainwindow.h"
 
 GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
-  QWidget( parent, Qt::Window ),
+  QWidget( parent ),
   showNmeaData( true )
 {
   setWindowTitle(tr("GPS Status"));
+  setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
 
-  if( parent )
+  if( _globalMainWindow )
     {
-      // Map current position of parent at global screen
-      QPoint curPos = parent->mapToGlobal( parent->pos() );
-
-      // Set this window directly at the parent window with the same size
-      setGeometry( curPos.x(), curPos.y(),
-                    parent->size().width(), parent->size().height() );
+      // Resize the window to the same size as the main window has. That will
+      // completely hide the parent window.
+      resize( _globalMainWindow->size() );
     }
+
+#ifdef MAEMO
+  setWindowState( Qt::WindowFullScreen );
+#endif
 
   elevAziDisplay = new GpsElevationAzimuthDisplay(this);
   snrDisplay     = new GpsSnrDisplay(this);

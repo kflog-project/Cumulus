@@ -109,7 +109,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   buttonDump->setMinimumHeight( size );
   buttonDump->setFocusPolicy(Qt::NoFocus);
 
-  QVBoxLayout *waterLayout = new QVBoxLayout;
+  QHBoxLayout *waterLayout = new QHBoxLayout;
   waterLayout->addWidget( buttonDump );
   waterLayout->addStretch(10);
 

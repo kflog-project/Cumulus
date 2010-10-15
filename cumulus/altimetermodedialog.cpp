@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004      by Eckhard Voellm
+**   Copyright (c):  2004      by Eckhard Völlm
 **                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
@@ -24,6 +24,7 @@
 #include "calculator.h"
 #include "glider.h"
 #include "mapconfig.h"
+#include "layout.h"
 
 // set static member variable
 int AltimeterModeDialog::noOfInstances = 0;
@@ -101,14 +102,14 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
 
   //---------------------------------------------------------------------------
 
-  QGroupBox* altSettings = new QGroupBox( this );
-  QGridLayout* spinboxLayout = new QGridLayout;
-  spinboxLayout->setMargin( 5 );
-  spinboxLayout->setSpacing( 15 );
+  QGroupBox* altitudeBox = new QGroupBox( this );
+  QGridLayout* altitudeLayout = new QGridLayout;
+  altitudeLayout->setMargin( 5 );
+  altitudeLayout->setSpacing( 15 );
   int row = 0;
 
   QLabel* lbl = new QLabel( tr( "Leveling:" ), this );
-  spinboxLayout->addWidget( lbl, row, 0 );
+  altitudeLayout->addWidget( lbl, row, 0 );
   spinLeveling = new QSpinBox( this );
   spinLeveling->setMinimum( -1000 );
   spinLeveling->setMaximum( 1000 );
@@ -117,15 +118,15 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   connect( spinLeveling, SIGNAL(valueChanged(const QString&)),
            this, SLOT(slotSpinValueChanged(const QString&)));
 
-  spinboxLayout->addWidget( spinLeveling, row, 1 );
+  altitudeLayout->addWidget( spinLeveling, row, 1 );
 
   lbl = new QLabel( tr( "Altitude:" ), this );
-  spinboxLayout->addWidget( lbl, row, 2 );
+  altitudeLayout->addWidget( lbl, row, 2 );
   _altitudeDisplay = new QLabel( "0", this );
-  spinboxLayout->addWidget( _altitudeDisplay, row++, 3 );
+  altitudeLayout->addWidget( _altitudeDisplay, row++, 3 );
 
   lbl = new QLabel( tr( "QNH:" ), this );
-  spinboxLayout->addWidget( lbl, row, 0 );
+  altitudeLayout->addWidget( lbl, row, 0 );
   spinQnh = new QSpinBox( this );
   spinQnh->setRange( 500, 1500 );
   spinQnh->setSingleStep( 1 );
@@ -135,11 +136,11 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   connect( spinQnh, SIGNAL(valueChanged(const QString&)),
            this, SLOT(slotSpinValueChanged(const QString&)));
 
-  spinboxLayout->addWidget( spinQnh, row++, 1 );
-  spinboxLayout->setColumnStretch( 2, 5 );
+  altitudeLayout->addWidget( spinQnh, row++, 1 );
+  altitudeLayout->setColumnStretch( 4, 5 );
 
-  altSettings->setLayout( spinboxLayout );
-  controlLayout->addWidget( altSettings );
+  altitudeBox->setLayout( altitudeLayout );
+  controlLayout->addWidget( altitudeBox );
 
   //---------------------------------------------------------------------------
 
@@ -186,14 +187,14 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   // button pressing in turbulent air.
   QPushButton *cancel = new QPushButton( this );
   cancel->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "cancel.png" ) ) );
-  cancel->setIconSize( QSize( 32, 32 ) );
+  cancel->setIconSize( QSize( IconSize, IconSize ) );
   cancel->setMinimumSize( size, size );
   cancel->setMaximumSize( size, size );
   cancel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
 
   QPushButton *ok = new QPushButton( this );
   ok->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "ok.png" ) ) );
-  ok->setIconSize( QSize( 32, 32 ) );
+  ok->setIconSize( QSize( IconSize, IconSize ) );
   ok->setMinimumSize( size, size );
   ok->setMaximumSize( size, size );
   ok->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );

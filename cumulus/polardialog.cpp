@@ -21,25 +21,29 @@
 #include "polardialog.h"
 #include "mainwindow.h"
 
-extern MainWindow  *_globalMainWindow;
-
 PolarDialog::PolarDialog( Polar& polar, QWidget* parent) :
-  QDialog(parent),
+  QWidget(parent),
   _polar(polar)
 {
-  setModal(true);
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
 
   if( _globalMainWindow )
     {
-      // Resize the dialog to the same size as the main window has. That will
+      // Resize the window to the same size as the main window has. That will
       // completely hide the parent window.
       resize( _globalMainWindow->size() );
     }
 
+#ifdef MAEMO
+  setWindowState( Qt::WindowFullScreen );
+#endif
+
   QPalette palette;
   palette.setColor(backgroundRole(), Qt::white);
   setPalette(palette);
-  setWindowTitle ( tr("Polar for ") + polar.name() + tr(" - <Esc> or Mouse click to Close") );
+  setWindowTitle ( tr("Polar for ") + polar.name() + tr(" - Mouse click to Close") );
 
   QShortcut* rcUp =        new QShortcut(this);
   QShortcut* rcDown =      new QShortcut(this);
@@ -144,5 +148,5 @@ void PolarDialog::paintEvent (QPaintEvent*)
 // button in the upper window frame
 void PolarDialog::mousePressEvent( QMouseEvent* )
 {
-  QDialog::accept();
+  QWidget::close();
 }

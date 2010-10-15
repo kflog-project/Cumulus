@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2009 by Axel Pauli
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -32,26 +32,29 @@
 #include "mapmatrix.h"
 #include "generalconfig.h"
 #include "mainwindow.h"
+#include "layout.h"
 
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 extern MainWindow  *_globalMainWindow;
 
 WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ) :
-  QWidget( parent, Qt::Window )
+  QWidget( parent )
 {
+  setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
 
   if( _globalMainWindow )
     {
-      // Move this window directly to the same position of the main window
-      move( _globalMainWindow->pos() );
-
       // Resize the window to the same size as the main window has. That will
       // completely hide the parent window.
       resize( _globalMainWindow->size() );
     }
+
+#ifdef MAEMO
+  setWindowState( Qt::WindowFullScreen );
+#endif
 
   if( wp == 0 )
     {
@@ -107,12 +110,12 @@ WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ) :
   // Add ok and cancel buttons
   QPushButton *cancel = new QPushButton;
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(32, 32));
+  cancel->setIconSize(QSize(IconSize, IconSize));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QPushButton *ok = new QPushButton;
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(32, 32));
+  ok->setIconSize(QSize(IconSize, IconSize));
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   connect(ok, SIGNAL(clicked()), this, SLOT(accept()));

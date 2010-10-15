@@ -23,8 +23,8 @@
 #include "preflightgliderpage.h"
 #include "preflighttasklist.h"
 #include "preflightmiscpage.h"
-
 #include "calculator.h"
+#include "layout.h"
 
 extern MapContents* _globalMapContents;
 
@@ -60,12 +60,12 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(32, 32));
+  cancel->setIconSize(QSize(IconSize, IconSize));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QPushButton *ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(32, 32));
+  ok->setIconSize(QSize(IconSize, IconSize));
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QLabel *titlePix = new QLabel(this);

@@ -25,28 +25,32 @@
 #include "mapview.h"
 #include "generalconfig.h"
 #include "mainwindow.h"
+#include "layout.h"
 
 extern MapView     *_globalMapView;
-extern MainWindow  *_globalMainWindow;
 
 GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
-  QDialog(parent)
+  QWidget(parent)
 {
-  setObjectName("SettingsPageGliderData");
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
-  setModal(true);
+
+  if( _globalMainWindow )
+    {
+      // Resize the window to the same size as the main window has. That will
+      // completely hide the parent window.
+      resize( _globalMainWindow->size() );
+    }
+
+#ifdef MAEMO
+  setWindowState( Qt::WindowFullScreen );
+#endif
 
   // save current horizontal/vertical speed unit. This unit must be considered
   // during storage.
   currHSpeedUnit = Speed::getHorizontalUnit();
   currVSpeedUnit = Speed::getVerticalUnit();
-
-  if( _globalMainWindow )
-    {
-      // Resize the dialog to the same size as the main window has. That will
-      // completely hide the parent window.
-      resize( _globalMainWindow->size() );
-    }
 
   if (glider == 0)
     {
@@ -227,12 +231,12 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   // Add ok and cancel buttons
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(26, 26));
+  cancel->setIconSize(QSize(IconSize, IconSize));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QPushButton *ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(26, 26));
+  ok->setIconSize(QSize(IconSize, IconSize));
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
@@ -678,7 +682,7 @@ void GilderEditor::accept()
   else
     {
       save();
-      QDialog::accept();
+      QWidget::close();
     }
 }
 
@@ -692,5 +696,5 @@ void GilderEditor::reject()
       _glider = 0;
     }
 
-  QDialog::reject();
+  QWidget::close();
 }

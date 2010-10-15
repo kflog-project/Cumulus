@@ -22,6 +22,7 @@
 #include "calculator.h"
 #include "mapconfig.h"
 #include "generalconfig.h"
+#include "layout.h"
 
 extern MapConfig *_globalMapConfig;
 
@@ -141,7 +142,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   // button pressing in turbulent air.
   cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(30, 30));
+  cancel->setIconSize(QSize(IconSize, IconSize));
   cancel->setMinimumSize(size, size);
   cancel->setMaximumSize(size, size);
 
@@ -149,7 +150,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
 
   ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(30, 30));
+  ok->setIconSize(QSize(IconSize, IconSize));
   ok->setMinimumSize(size, size);
   ok->setMaximumSize(size, size);
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);

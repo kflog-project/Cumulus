@@ -57,6 +57,7 @@ HEADERS = \
     ipc.h \
     isohypse.h \
     isolist.h \
+    layout.h \
     limitedlist.h \
     lineelement.h \
     listviewfilter.h \

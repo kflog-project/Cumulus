@@ -16,8 +16,8 @@
 **
 ***********************************************************************/
 
-#ifndef PREFLIGHT_TASK_LIST_H
-#define PREFLIGHT_TASK_LIST_H
+#ifndef PRE_FLIGHT_TASK_LIST_H
+#define PRE_FLIGHT_TASK_LIST_H
 
 #include <QList>
 #include <QTreeWidget>
@@ -32,79 +32,89 @@
 
 class PreFlightTaskList : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
+
+private:
+
+  /**
+   * That macro forbids the copy constructor and the assignment operator.
+   */
+  Q_DISABLE_COPY( PreFlightTaskList )
 
 public:
-    /** */
-    PreFlightTaskList( QWidget* parent );
 
-    /** */
-    ~PreFlightTaskList();
+  /** */
+  PreFlightTaskList( QWidget* parent );
 
-    /** Takes out the selected task from the task list. */
-    FlightTask* takeSelectedTask();
+  /** */
+  ~PreFlightTaskList();
 
-  protected:
-    void showEvent(QShowEvent *);
+  /** Takes out the selected task from the task list. */
+  FlightTask* takeSelectedTask();
+
+protected:
+
+  void showEvent(QShowEvent *);
 
 private:
-    /** Save task list */
-    bool saveTaskList();
 
-    /** Select the last stored task */
-    void selectLastTask();
+  /** Save task list */
+  bool saveTaskList();
+
+  /** Select the last stored task */
+  void selectLastTask();
 
 private slots:
-    /** show the details of a task */
-    void slotTaskDetails();
+  /** show the details of a task */
+  void slotTaskDetails();
 
-    /** load tasks from the file */
-    bool slotLoadTask();
+  /** load tasks from the file */
+  bool slotLoadTask();
 
-    /** create a new task */
-    void slotNewTask();
+  /** create a new task */
+  void slotNewTask();
 
-    /** edit an existing task */
-    void slotEditTask();
+  /** edit an existing task */
+  void slotEditTask();
 
-    /** remove a task */
-    void slotDeleteTask();
+  /** remove a task */
+  void slotDeleteTask();
 
-    /** overtake a new task item from the editor */
-    void slotUpdateTaskList( FlightTask* );
+  /** overtake a new task item from the editor */
+  void slotUpdateTaskList( FlightTask* );
 
-    /** overtake a edited task item from the editor */
-    void slotEditTaskList( FlightTask* );
+  /** overtake a edited task item from the editor */
+  void slotEditTaskList( FlightTask* );
 
-    /** value in TAS spin box has been changed, do update of task list. */
-    void slotTasChanged( int value );
+  /** value in TAS spin box has been changed, do update of task list. */
+  void slotTasChanged( int value );
 
-    /** value in wind direction spin box has been changed, do update of task list. */
-    void slotWDChanged( int value );
+  /** value in wind direction spin box has been changed, do update of task list. */
+  void slotWDChanged( int value );
 
-    /** value in wind speed spin box has been changed, do update of task list. */
-    void slotWSChanged( int value );
+  /** value in wind speed spin box has been changed, do update of task list. */
+  void slotWSChanged( int value );
 
 private:
 
-    /** splitter widget */
-    QSplitter* splitter;
-    /** spin box for TAS entry */
-    QSpinBox* tas;
-    /** spin box for wind direction entry*/
-    QSpinBox* windDirection;
-    /** spin box for wind speed entry */
-    QSpinBox* windSpeed;
-    /** task list overview */
-    QTreeWidget* taskListWidget;
-    /** widget with task content in detail */
-    TaskListView* taskContent;
-    /** list with all defined flight tasks */
-    QList<FlightTask*> taskList;
-    /** flight task being edited */
-    FlightTask* editTask;
-    /** names of flight tasks */
-    QStringList taskNames;
+  /** splitter widget */
+  QSplitter* splitter;
+  /** spin box for TAS entry */
+  QSpinBox* tas;
+  /** spin box for wind direction entry*/
+  QSpinBox* windDirection;
+  /** spin box for wind speed entry */
+  QSpinBox* windSpeed;
+  /** task list overview */
+  QTreeWidget* taskListWidget;
+  /** widget with task content in detail */
+  TaskListView* taskContent;
+  /** list with all defined flight tasks */
+  QList<FlightTask*> taskList;
+  /** flight task being edited */
+  FlightTask* editTask;
+  /** names of flight tasks */
+  QStringList taskNames;
 };
 
-#endif // TASK_LIST_H
+#endif

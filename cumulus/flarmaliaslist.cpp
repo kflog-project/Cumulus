@@ -21,6 +21,7 @@
 #include "generalconfig.h"
 #include "flarmaliaslist.h"
 #include "flarmdisplay.h"
+#include "layout.h"
 
 // The alias name length is limited to 15 characters
 #define MaxAliasLength 15
@@ -74,28 +75,28 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
 
   QPushButton *addButton  = new QPushButton;
   addButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "add.png" ) ) );
-  addButton->setIconSize(QSize(32, 32));
+  addButton->setIconSize(QSize(IconSize, IconSize));
   addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
   addButton->setMinimumSize(size, size);
   addButton->setMaximumSize(size, size);
 
   QPushButton *deleteButton  = new QPushButton;
   deleteButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "delete.png" ) ) );
-  deleteButton->setIconSize(QSize(32, 32));
+  deleteButton->setIconSize(QSize(IconSize, IconSize));
   deleteButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
   deleteButton->setMinimumSize(size, size);
   deleteButton->setMaximumSize(size, size);
 
   QPushButton *okButton = new QPushButton;
   okButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  okButton->setIconSize(QSize(32, 32));
+  okButton->setIconSize(QSize(IconSize, IconSize));
   okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
   okButton->setMinimumSize(size, size);
   okButton->setMaximumSize(size, size);
 
   QPushButton *closeButton = new QPushButton;
   closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  closeButton->setIconSize(QSize(32, 32));
+  closeButton->setIconSize(QSize(IconSize, IconSize));
   closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
   closeButton->setMinimumSize(size, size);
   closeButton->setMaximumSize(size, size);

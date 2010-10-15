@@ -28,6 +28,7 @@
 #include "taskeditor.h"
 #include "distance.h"
 #include "speed.h"
+#include "layout.h"
 
 PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   QWidget( parent ),
@@ -88,21 +89,21 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
 
   QPushButton * cmdNew = new QPushButton(this);
   cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
-  cmdNew->setIconSize(QSize(32,32));
+  cmdNew->setIconSize(QSize(IconSize, IconSize));
   cmdNew->setToolTip(tr("Define a new task"));
   editrow->addWidget(cmdNew);
 
   editrow->addSpacing(10);
   QPushButton * cmdEdit = new QPushButton(this);
   cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
-  cmdEdit->setIconSize(QSize(32,32));
+  cmdEdit->setIconSize(QSize(IconSize, IconSize));
   cmdEdit->setToolTip(tr("Edit selected task"));
   editrow->addWidget(cmdEdit);
 
   editrow->addSpacing(10);
   QPushButton * cmdDel = new QPushButton(this);
   cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png")) );
-  cmdDel->setIconSize(QSize(32,32));
+  cmdDel->setIconSize(QSize(IconSize, IconSize));
   cmdDel->setToolTip(tr("Remove selected task"));
   editrow->addWidget(cmdDel);
 
@@ -184,22 +185,22 @@ void PreFlightTaskList::showEvent(QShowEvent *)
           // set the splitter line to a new place
           splitter->setSizes(sizeList);
         }
+
+      // Notice user how to add a new task
+      QTreeWidgetItem* selected = taskListWidget->selectedItems().at(0);
+
+      if ( selected->text( 0 ) == " " &&
+           selected->text( 1 ) == tr("(No tasks defined)") )
+        {
+          QMessageBox::information( this,
+                                    tr("Create New Task"),
+                                    tr("Push <b>Plus</b> button to add a task") );
+        }
     }
 
   taskListWidget->resizeColumnToContents(0);
   taskListWidget->resizeColumnToContents(1);
   taskListWidget->resizeColumnToContents(2);
-
-  // Notice user how to add a new task
-  QTreeWidgetItem* selected = taskListWidget->selectedItems().at(0);
-
-  if ( selected->text( 0 ) == " " &&
-       selected->text( 1 ) == tr("(No tasks defined)") )
-    {
-      QMessageBox::information( this,
-                                tr("Create New Task"),
-                                tr("Push <b>Plus</b> button to add a task") );
-    }
 }
 
 /** new value set in TAS spin box */

@@ -44,7 +44,7 @@
 
 class TaskEditor : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
 private:
 
@@ -53,8 +53,8 @@ private:
 public:
 
   /** Constructor */
-  TaskEditor( QWidget* parent, QStringList &taskNamesInUse, FlightTask* task =
-      0 );
+  TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
+              FlightTask* task=0 );
 
   /** Destructor */
   ~TaskEditor();
@@ -63,52 +63,41 @@ private:
   /**
    * aligns the task list columns to their contents
    */
-  void
-  resizeTaskListColumns();
+  void resizeTaskListColumns();
 
 signals:
 
   /** Signals that a new flight task is ready for take over. */
-  void
-  newTask( FlightTask* );
+  void newTask( FlightTask* );
 
   /** Signals that an edited flight task is ready for take over. */
-  void
-  editedTask( FlightTask* );
+  void editedTask( FlightTask* );
 
  private slots:
 
   /** Handles the addition of a waypoint to the list. */
-  void
-  slotAddWaypoint();
+  void slotAddWaypoint();
 
   /** Handles the remove of a waypoint from the list. */
-  void
-  slotRemoveWaypoint();
+  void slotRemoveWaypoint();
 
   /** Handles moving up of a waypoint in the list. */
-  void
-  slotMoveWaypointUp();
+  void slotMoveWaypointUp();
 
   /** Handles moving down of a waypoint in the list. */
-  void
-  slotMoveWaypointDown();
+  void slotMoveWaypointDown();
 
   /** Creates the list in reverse order. */
-  void
-  slotInvertWaypoints();
+  void slotInvertWaypoints();
 
   /** Toggle between WP or AF list on user request */
-  void
-  slotToggleList( int );
+  void slotToggleList( int );
 
   /** Handles button press ok. */
-  void
-  slotAccept();
+  void slotAccept();
 
   /** Handles button press cancel. */
-  void
-  slotReject();
+  void slotReject();
 
  private:
 
@@ -119,20 +108,16 @@ signals:
   };
 
   /** */
-  void
-  __showWPList();
+  void __showWPList();
 
   /** */
-  void
-  __showAFList();
+  void __showAFList();
 
   /** */
-  void
-  __showTask();
+  void __showTask();
 
   /** creates a deep copy of the waypoint list */
-  QList<wayPoint*> *
-  copyWpList();
+  QList<wayPoint*> *copyWpList();
 
   /** list containing defined tasks */
   QTreeWidget* taskList;

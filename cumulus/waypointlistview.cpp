@@ -23,6 +23,7 @@
 #include "wpeditdialog.h"
 #include "calculator.h"
 #include "mainwindow.h"
+#include "layout.h"
 
 WaypointListView::WaypointListView( QMainWindow *parent ) :
   QWidget(parent),
@@ -43,19 +44,19 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
 
   QPushButton *cmdNew = new QPushButton( this );
   cmdNew->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "add.png" ) ) );
-  cmdNew->setIconSize( QSize( 26, 26 ) );
+  cmdNew->setIconSize( QSize( IconSize, IconSize ) );
   cmdNew->setToolTip( tr( "Add a new waypoint" ) );
   editRow->addWidget( cmdNew );
 
   QPushButton *cmdEdit = new QPushButton( this );
   cmdEdit->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "edit_new.png" ) ) );
-  cmdEdit->setIconSize( QSize( 26, 26 ) );
+  cmdEdit->setIconSize( QSize( IconSize, IconSize ) );
   cmdEdit->setToolTip( tr( "Edit selected waypoint" ) );
   editRow->addWidget( cmdEdit );
 
   QPushButton *cmdDel = new QPushButton( this );
   cmdDel->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "delete.png" ) ) );
-  cmdDel->setIconSize( QSize( 26, 26 ) );
+  cmdDel->setIconSize( QSize( IconSize, IconSize ) );
   cmdDel->setToolTip( tr( "Delete selected waypoint" ) );
   editRow->addWidget( cmdDel );
 
@@ -63,7 +64,7 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
 
   cmdHome = new QPushButton( this );
   cmdHome->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home_new.png" ) ) );
-  cmdHome->setIconSize( QSize( 26, 26 ) );
+  cmdHome->setIconSize( QSize( IconSize, IconSize ) );
   cmdHome->setToolTip( tr( "Set home site to selected waypoint" ) );
   editRow->addWidget( cmdHome );
 

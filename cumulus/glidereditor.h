@@ -26,7 +26,7 @@
 #ifndef SETTINGS_PAGE_GLIDER_EDITOR_H
 #define SETTINGS_PAGE_GLIDER_EDITOR_H
 
-#include <QDialog>
+#include <QWidget>
 #include <QLineEdit>
 #include <QComboBox>
 #include <QPushButton>
@@ -38,7 +38,7 @@
 #include "polar.h"
 #include "glider.h"
 
-class GilderEditor : public QDialog
+class GilderEditor : public QWidget
 {
     Q_OBJECT
 
@@ -85,6 +85,13 @@ class GilderEditor : public QDialog
       */
     void slotButtonShow();
 
+  private slots:
+
+    /** Called when Ok button is pressed */
+    void accept();
+
+    /** Called when Cancel button is pressed */
+    void reject();
 
   signals:
     /**
@@ -96,14 +103,6 @@ class GilderEditor : public QDialog
       * Send if a new glider has been made.
       */
     void newGlider(Glider*);
-
-  protected:
-
-    /** overwritten method from QDialog */
-    virtual void accept();
-
-    /** overwritten method from QDialog */
-    virtual void reject();
 
   private:
 

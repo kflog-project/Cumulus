@@ -19,7 +19,7 @@
 #ifndef POLAR_DIALOG_H
 #define POLAR_DIALOG_H
 
-#include <QDialog>
+#include <QWidget>
 
 #include "speed.h"
 #include "polar.h"
@@ -29,7 +29,7 @@
  *
  * \brief Class to handle glider polar changes done by the user.
  */
-class PolarDialog : public QDialog
+class PolarDialog : public QWidget
 {
   Q_OBJECT
 

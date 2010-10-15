@@ -1218,13 +1218,8 @@ void MapView::slot_VarioDialog()
 void MapView::slot_gpsStatusDialog()
 {
   GpsStatusDialog *gpsDlg = new GpsStatusDialog( this );
-  // delete widget during close event
+
   gpsDlg->setVisible(true);
-
-#ifdef MAEMO
-  gpsDlg->setWindowState( Qt::WindowFullScreen );
-#endif
-
 }
 
 /** Opens the inflight glider settings dialog. */

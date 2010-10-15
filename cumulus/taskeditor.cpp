@@ -28,6 +28,7 @@
 #include "listwidgetparent.h"
 #include "airfieldlistwidget.h"
 #include "waypointlistwidget.h"
+#include "layout.h"
 
 extern MapContents *_globalMapContents;
 extern MainWindow  *_globalMainWindow;
@@ -49,6 +50,10 @@ TaskEditor::TaskEditor( QWidget* parent,
       // completely hide the parent window.
       resize( _globalMainWindow->size() );
     }
+
+#ifdef MAEMO
+  setWindowState( Qt::WindowFullScreen );
+#endif
 
   lastSelectedItem = -1;
 
@@ -92,32 +97,37 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   QPushButton* upButton = new QPushButton( this );
   upButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
+  upButton->setIconSize(QSize(IconSize, IconSize));
   upButton->setToolTip( tr("move selected waypoint up") );
 
   QPushButton* downButton = new QPushButton( this );
   downButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png")) );
+  downButton->setIconSize(QSize(IconSize, IconSize));
   downButton->setToolTip( tr("move selected waypoint down") );
 
   QPushButton* invertButton = new QPushButton( this );
   invertButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "resort.png")) );
+  invertButton->setIconSize(QSize(IconSize, IconSize));
   invertButton->setToolTip( tr("reverse waypoint order") );
 
   QPushButton* addButton = new QPushButton( this );
   addButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "left.png")) );
+  addButton->setIconSize(QSize(IconSize, IconSize));
   addButton->setToolTip( tr("add waypoint") );
 
   QPushButton* delButton = new QPushButton( this );
   delButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "right.png")) );
+  delButton->setIconSize(QSize(IconSize, IconSize));
   delButton->setToolTip( tr("remove waypoint") );
 
   QPushButton* okButton = new QPushButton( this );
   okButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "ok.png")) );
-  okButton->setIconSize(QSize(32,32));
+  okButton->setIconSize(QSize(IconSize, IconSize));
   okButton->setToolTip( tr("save task") );
 
   QPushButton* cancelButton = new QPushButton( this );
   cancelButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "cancel.png")) );
-  cancelButton->setIconSize(QSize(32,32));
+  cancelButton->setIconSize(QSize(IconSize, IconSize));
   cancelButton->setToolTip( tr("cancel task") );
 
   // all single widgets and layouts in this grid

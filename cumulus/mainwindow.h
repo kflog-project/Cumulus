@@ -51,6 +51,8 @@
 #include "waitscreen.h"
 #include "splash.h"
 
+extern MainWindow  *_globalMainWindow;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
