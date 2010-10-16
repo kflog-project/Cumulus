@@ -1222,7 +1222,7 @@ void MapView::slot_gpsStatusDialog()
   gpsDlg->setVisible(true);
 
 #ifdef MAEMO
-  gpsDlg->setWindowState( Qt::WindowFullScreen );
+  gpsDlg->setWindowState( _globalMainWindow->windowState() );
 #endif
 }
 
