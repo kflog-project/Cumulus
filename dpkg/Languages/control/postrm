@@ -20,7 +20,7 @@
 
 
 case "$1" in
-    purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    purge|remove)
     	# remove remaining language parts of cumulus
         test -d /opt/cumulus/locale/de && rm -rf /opt/cumulus/locale/de
 	test -d /opt/cumulus/help/de && rm -rf /opt/cumulus/help/de
