@@ -40,10 +40,6 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
       resize( _globalMainWindow->size() );
     }
 
-#ifdef MAEMO
-  setWindowState( Qt::WindowFullScreen );
-#endif
-
   elevAziDisplay = new GpsElevationAzimuthDisplay(this);
   snrDisplay     = new GpsSnrDisplay(this);
 

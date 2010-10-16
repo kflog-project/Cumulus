@@ -27,7 +27,7 @@
 #include "mainwindow.h"
 #include "layout.h"
 
-extern MapView     *_globalMapView;
+extern MapView *_globalMapView;
 
 GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   QWidget(parent)
@@ -42,10 +42,6 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
       // completely hide the parent window.
       resize( _globalMainWindow->size() );
     }
-
-#ifdef MAEMO
-  setWindowState( Qt::WindowFullScreen );
-#endif
 
   // save current horizontal/vertical speed unit. This unit must be considered
   // during storage.
@@ -663,6 +659,10 @@ void GilderEditor::slotButtonShow()
   polar.setWater(spinWater->value(), 0);
   PolarDialog* dlg = new PolarDialog( polar, this );
   dlg->setVisible(true);
+
+#ifdef MAEMO
+  dlg->setWindowState( Qt::WindowFullScreen );
+#endif
 }
 
 void GilderEditor::accept()

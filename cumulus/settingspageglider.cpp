@@ -86,7 +86,11 @@ void SettingsPageGlider::slot_new()
   GilderEditor *editor = new GilderEditor(this, 0);
   connect(editor, SIGNAL(newGlider(Glider*)), list, SLOT(slot_Added(Glider *)));
 
-  editor->show();
+  editor->setVisible( true );
+
+#ifdef MAEMO
+  editor->setWindowState( Qt::WindowFullScreen );
+#endif
 }
 
 
@@ -104,7 +108,11 @@ void SettingsPageGlider::slot_edit()
   GilderEditor *editor = new GilderEditor(this, selectedGlider );
   connect(editor, SIGNAL(editedGlider(Glider *)), list, SLOT(slot_Edited(Glider *)));
 
-  editor->show();
+  editor->setVisible( true );
+
+#ifdef MAEMO
+  editor->setWindowState( Qt::WindowFullScreen );
+#endif
 }
 
 

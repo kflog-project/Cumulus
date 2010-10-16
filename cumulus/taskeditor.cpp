@@ -51,10 +51,6 @@ TaskEditor::TaskEditor( QWidget* parent,
       resize( _globalMainWindow->size() );
     }
 
-#ifdef MAEMO
-  setWindowState( Qt::WindowFullScreen );
-#endif
-
   lastSelectedItem = -1;
 
   if ( task )

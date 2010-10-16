@@ -189,7 +189,11 @@ void WaypointListView::slot_newWP()
   connect( dlg, SIGNAL(wpListChanged(wayPoint &)), this,
            SLOT(slot_wpAdded(wayPoint &)) );
 
-  dlg->show();
+  dlg->setVisible( true );
+
+#ifdef MAEMO
+  dlg->setWindowState( Qt::WindowFullScreen );
+#endif
 }
 
 /** Called when the selected waypoint needs to be opened in the editor */
@@ -204,7 +208,11 @@ void WaypointListView::slot_editWP()
       connect( dlg, SIGNAL(wpListChanged(wayPoint &)), this,
                SLOT(slot_wpEdited(wayPoint &)) );
 
-      dlg->show();
+      dlg->setVisible( true );
+
+#ifdef MAEMO
+      dlg->setWindowState( Qt::WindowFullScreen );
+#endif
     }
 }
 

@@ -52,10 +52,6 @@ WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ) :
       resize( _globalMainWindow->size() );
     }
 
-#ifdef MAEMO
-  setWindowState( Qt::WindowFullScreen );
-#endif
-
   if( wp == 0 )
     {
       setWindowTitle(tr("New Waypoint"));

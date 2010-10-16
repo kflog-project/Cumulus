@@ -36,10 +36,6 @@ PolarDialog::PolarDialog( Polar& polar, QWidget* parent) :
       resize( _globalMainWindow->size() );
     }
 
-#ifdef MAEMO
-  setWindowState( Qt::WindowFullScreen );
-#endif
-
   QPalette palette;
   palette.setColor(backgroundRole(), Qt::white);
   setPalette(palette);
