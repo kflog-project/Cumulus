@@ -659,10 +659,6 @@ void GilderEditor::slotButtonShow()
   polar.setWater(spinWater->value(), 0);
   PolarDialog* dlg = new PolarDialog( polar, this );
   dlg->setVisible(true);
-
-#ifdef MAEMO
-  dlg->setWindowState( Qt::WindowFullScreen );
-#endif
 }
 
 void GilderEditor::accept()

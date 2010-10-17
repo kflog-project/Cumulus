@@ -134,7 +134,7 @@ void GpsStatusDialog::slot_ToggleStartStop()
  */
 void GpsStatusDialog::slot_ToggleWindowSize()
 {
-  setWindowState(windowState() ^ Qt::WindowFullScreen);
+  //setWindowState(windowState() ^ Qt::WindowFullScreen);
 }
 
 /**

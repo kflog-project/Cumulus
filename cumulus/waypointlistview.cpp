@@ -103,7 +103,6 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
 
 WaypointListView::~WaypointListView()
 {
-  // qDebug("WaypointListView::~WaypointListView()");
 }
 
 
@@ -190,10 +189,6 @@ void WaypointListView::slot_newWP()
            SLOT(slot_wpAdded(wayPoint &)) );
 
   dlg->setVisible( true );
-
-#ifdef MAEMO
-  dlg->setWindowState( Qt::WindowFullScreen );
-#endif
 }
 
 /** Called when the selected waypoint needs to be opened in the editor */
@@ -209,10 +204,6 @@ void WaypointListView::slot_editWP()
                SLOT(slot_wpEdited(wayPoint &)) );
 
       dlg->setVisible( true );
-
-#ifdef MAEMO
-      dlg->setWindowState( Qt::WindowFullScreen );
-#endif
     }
 }
 

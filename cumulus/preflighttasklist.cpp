@@ -457,10 +457,6 @@ void PreFlightTaskList::slotNewTask()
            SLOT(slotUpdateTaskList( FlightTask * )));
 
   te->setVisible( true );
-
-#ifdef MAEMO
-  te->setWindowState( Qt::WindowFullScreen );
-#endif
 }
 
 /**
@@ -508,10 +504,6 @@ void PreFlightTaskList::slotEditTask()
            this, SLOT(slotEditTaskList( FlightTask * )));
 
   te->setVisible( true );
-
-#ifdef MAEMO
-  te->setWindowState( Qt::WindowFullScreen );
-#endif
 }
 
 /**

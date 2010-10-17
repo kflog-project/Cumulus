@@ -253,11 +253,11 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   splash = new Splash( this );
 
   setCentralWidget( splash );
-  splash->show();
-  show();
+  splash->setVisible( true );
+  setVisible( true );
 
   ws = new WaitScreen(this);
-  ws->show();
+  ws->setVisible( true );
 
   qApp->processEvents();
 
@@ -637,9 +637,9 @@ void MainWindow::slotCreateApplicationWidgets()
 
 #endif
 
-  splash->show();
+  splash->setVisible( true );
   ws->slot_SetText1( tr( "Initializing GPS" ) );
-  ws->show();
+  ws->setVisible( true );
 
   QCoreApplication::processEvents();
 
@@ -1258,7 +1258,7 @@ void MainWindow::slotToggleMenu()
   if ( !menuBar()->isVisible() )
     {
       menuBarVisible = true;
-      menuBar()->show();
+      menuBar()->setVisible( true );
     }
   else
     {
@@ -1310,7 +1310,7 @@ void MainWindow::slotToggleLabelsInfo( bool toggle )
 void MainWindow::slotViewStatusBar( bool toggle )
 {
   if ( toggle )
-    viewMap->statusBar()->show();
+    viewMap->statusBar()->setVisible( true );
   else
     viewMap->statusBar()->hide();
 }
@@ -1381,7 +1381,7 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
       // space for the other widgets.
       if( menuBarVisible )
         {
-          menuBar()->show();
+          menuBar()->setVisible( true );
         }
       else
         {
@@ -1396,7 +1396,7 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
 
       listViewTabs->hide();
       viewInfo->hide();
-      viewMap->show();
+      viewMap->setVisible( true );
 
       toggleManualNavActions( GpsNmea::gps->getGpsStatus() != GpsNmea::validFix ||
                               calculator->isManualInFlight() );
@@ -1424,7 +1424,7 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
       viewMap->hide();
       viewInfo->hide();
       listViewTabs->setCurrentWidget( viewWP );
-      listViewTabs->show();
+      listViewTabs->setVisible( true );
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
@@ -1442,7 +1442,7 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
         setNearestOrReachableHeaders();
 
         listViewTabs->setCurrentWidget( viewRP );
-        listViewTabs->show();
+        listViewTabs->setVisible( true );
 
         toggleManualNavActions( false );
         toggleGpsNavActions( false );
@@ -1458,7 +1458,7 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
       viewMap->hide();
       viewInfo->hide();
       listViewTabs->setCurrentWidget( viewAF );
-      listViewTabs->show();
+      listViewTabs->setVisible( true );
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
@@ -1473,7 +1473,7 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
       viewMap->hide();
       viewInfo->hide();
       listViewTabs->setCurrentWidget( viewOL );
-      listViewTabs->show();
+      listViewTabs->setVisible( true );
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
@@ -1494,7 +1494,7 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
       viewMap->hide();
       viewInfo->hide();
       listViewTabs->setCurrentWidget( viewTP );
-      listViewTabs->show();
+      listViewTabs->setVisible( true );
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
@@ -1716,7 +1716,7 @@ void MainWindow::slotConfig()
   connect( cDlg, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
-  cDlg->show();
+  cDlg->setVisible( true );
 }
 
 
@@ -1758,7 +1758,7 @@ void MainWindow::slotHelp()
   HelpBrowser *hb = new HelpBrowser(this);
   hb->resize( this->size() );
   hb->setWindowState( windowState() );
-  hb->show();
+  hb->setVisible( true );
 }
 
 void MainWindow::slotRememberWaypoint()
@@ -2016,7 +2016,7 @@ void MainWindow::slotPreFlight(const char *tabName)
   connect( cDlg, SIGNAL( closeConfig() ),
            this, SLOT( slotCloseConfig() ) );
 
-  cDlg->show();
+  cDlg->setVisible( true );
 }
 
 
