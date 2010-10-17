@@ -297,14 +297,14 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
 
 void MapInfoBox::showEvent(QShowEvent *event)
 {
-  Q_UNUSED(event)
-
   if( _ptext != 0 )
     {
       // Update text box only, if it is a text box. Calling setValue shall ensure
       // that the font is adapted to the layout size.
       setValue( _value, true );
     }
+
+  QFrame::showEvent( event );
 }
 
 bool MapInfoBox::event( QEvent* event )
@@ -315,7 +315,7 @@ bool MapInfoBox::event( QEvent* event )
       return true;
     }
 
-  return QWidget::event( event );
+  return QFrame::event( event );
 }
 
 bool MapInfoBox::eventFilter(QObject* o, QEvent* e)
@@ -326,5 +326,5 @@ bool MapInfoBox::eventFilter(QObject* o, QEvent* e)
       return true;
     }
 
-  return QWidget::eventFilter( o, e );
+  return QFrame::eventFilter( o, e );
 }
