@@ -1217,6 +1217,12 @@ void MapView::slot_VarioDialog()
 /** Opens the GPS status dialog */
 void MapView::slot_gpsStatusDialog()
 {
+  if( GpsStatusDialog::getNrOfInstances() > 0 )
+    {
+      // Only one instance of GPS status dialog is allowed.
+      return;
+    }
+
   GpsStatusDialog *gpsDlg = new GpsStatusDialog( this );
 
   gpsDlg->setVisible(true);

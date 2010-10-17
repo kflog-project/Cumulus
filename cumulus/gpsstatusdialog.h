@@ -68,6 +68,14 @@ public:
    */
   virtual ~GpsStatusDialog();
 
+  /**
+   * @return Returns the current number of instances.
+   */
+  static int getNrOfInstances()
+  {
+    return noOfInstances;
+  };
+
   void keyPressEvent( QKeyEvent *event );
 
 public slots:
@@ -108,6 +116,9 @@ protected:
     QPushButton                *save;
 
     bool                        showNmeaData;
+
+    /** contains the current number of class instances */
+    static int noOfInstances;
 };
 
 

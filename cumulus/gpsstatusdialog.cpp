@@ -24,10 +24,15 @@
 #include "gpsnmea.h"
 #include "mainwindow.h"
 
+// set static member variable
+int GpsStatusDialog::noOfInstances = 0;
+
 GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   QWidget( parent ),
   showNmeaData( true )
 {
+  noOfInstances++;
+
   setWindowTitle(tr("GPS Status"));
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
@@ -94,6 +99,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
 
 GpsStatusDialog::~GpsStatusDialog()
 {
+  noOfInstances--;
 }
 
 void GpsStatusDialog::slot_SIV( QList<SIVInfo>& siv )
