@@ -1220,10 +1220,6 @@ void MapView::slot_gpsStatusDialog()
   GpsStatusDialog *gpsDlg = new GpsStatusDialog( this );
 
   gpsDlg->setVisible(true);
-
-#ifdef MAEMO
-  gpsDlg->setWindowState( _globalMainWindow->windowState() );
-#endif
 }
 
 /** Opens the inflight glider settings dialog. */

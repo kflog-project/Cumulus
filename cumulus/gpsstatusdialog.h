@@ -87,12 +87,17 @@ private slots:
   /**
    * Called if the start/stop button is pressed to start or stop NMEA display.
    */
-  void slot_toggleStartStop();
+  void slot_ToggleStartStop();
 
   /**
    * Called if the save button is pressed to save NMEA display content into a file.
    */
   void slot_SaveNmeaData();
+
+  /**
+   * Called if space button is pressed to toggle the window size.
+   */
+  void slot_ToggleWindowSize();
 
 protected:
 

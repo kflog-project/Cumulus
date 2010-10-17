@@ -75,12 +75,17 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   topLayout->addLayout( hBox );
   topLayout->addWidget( nmeaBox );
 
+  QShortcut* keySpace = new QShortcut( QKeySequence(Qt::Key_Space), this);
+
+  connect( keySpace, SIGNAL(activated()),
+           this, SLOT(slot_ToggleWindowSize()));
+
   connect( GpsNmea::gps, SIGNAL(newSentence(const QString&)),
            this, SLOT(slot_Sentence(const QString&)) );
   connect( GpsNmea::gps, SIGNAL(newSatInViewInfo(QList<SIVInfo>&)),
            this, SLOT(slot_SIV(QList<SIVInfo>&)) );
 
-  connect( startStop, SIGNAL(clicked()), this, SLOT(slot_toggleStartStop()) );
+  connect( startStop, SIGNAL(clicked()), this, SLOT(slot_ToggleStartStop()) );
 
   connect( save, SIGNAL(clicked()), this, SLOT(slot_SaveNmeaData()) );
 
@@ -110,7 +115,7 @@ void GpsStatusDialog::slot_Sentence(const QString& sentence)
 /**
  * Called if the start/stop button is pressed to start or stop NMEA display.
  */
-void GpsStatusDialog::slot_toggleStartStop()
+void GpsStatusDialog::slot_ToggleStartStop()
 {
   showNmeaData = ! showNmeaData;
 
@@ -122,6 +127,14 @@ void GpsStatusDialog::slot_toggleStartStop()
     {
       startStop->setText( tr("Start") );
     }
+}
+
+/**
+ * Called if space button is pressed to toggle the window size.
+ */
+void GpsStatusDialog::slot_ToggleWindowSize()
+{
+  setWindowState(windowState() ^ Qt::WindowFullScreen);
 }
 
 /**
