@@ -52,6 +52,7 @@ public slots:
   void slot_keyleft();
   void slot_keyright();
   void slot_keyhome();
+  void slot_keyreturn();
 
 protected:
 

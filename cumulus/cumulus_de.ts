@@ -401,77 +401,77 @@
 <context>
     <name>GilderEditor</name>
     <message>
-        <location filename="glidereditor.cpp" line="57"/>
+        <location filename="glidereditor.cpp" line="53"/>
         <source>New Glider</source>
         <translation>Neues Flugzeug</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="62"/>
+        <location filename="glidereditor.cpp" line="58"/>
         <source>Edit Glider</source>
         <translation>Editiere Flugzeug</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="79"/>
+        <location filename="glidereditor.cpp" line="75"/>
         <source>Glider type:</source>
         <translation>Flugzeug Typ:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="85"/>
+        <location filename="glidereditor.cpp" line="81"/>
         <source>Seats:</source>
         <translation>Sitze:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="92"/>
+        <location filename="glidereditor.cpp" line="88"/>
         <source>Registration:</source>
         <translation>Kennzeichen:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="96"/>
+        <location filename="glidereditor.cpp" line="92"/>
         <source>Callsign:</source>
         <translation>Rufzeichen:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="134"/>
+        <location filename="glidereditor.cpp" line="130"/>
         <source>Empty weight:</source>
         <translation>Leergewicht:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="170"/>
+        <location filename="glidereditor.cpp" line="166"/>
         <source>Added load:</source>
         <translation>Zuladung:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="206"/>
+        <location filename="glidereditor.cpp" line="202"/>
         <source>Max. water:</source>
         <translation>Max. Wasser:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="221"/>
+        <location filename="glidereditor.cpp" line="217"/>
         <source>Show Polar</source>
         <translation>Zeige Polare</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="549"/>
+        <location filename="glidereditor.cpp" line="545"/>
         <source>Missing polar file</source>
         <translation>Vermisse Polarendatei</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="674"/>
+        <location filename="glidereditor.cpp" line="670"/>
         <source>Missing registration!</source>
         <translation>Vermisse Kennzeichen!</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="675"/>
+        <location filename="glidereditor.cpp" line="671"/>
         <source>Please enter a valid registration.</source>
         <translation>Geben Sie ein gültiges Kennzeichen ein..</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="679"/>
+        <location filename="glidereditor.cpp" line="675"/>
         <source>Missing glider type!</source>
         <translation>Vermisse Flugzeugtyp!</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="680"/>
+        <location filename="glidereditor.cpp" line="676"/>
         <source>Please enter a valid glider type.</source>
         <translation>Geben Sie einen Flugzeugtyp ein.</translation>
     </message>
@@ -545,7 +545,7 @@
 <context>
     <name>GpsElevationAzimuthDisplay</name>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="262"/>
+        <location filename="gpsstatusdialog.cpp" line="271"/>
         <source>No Data</source>
         <translation>Keine Daten</translation>
     </message>
@@ -561,7 +561,7 @@
 <context>
     <name>GpsSnrDisplay</name>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="426"/>
+        <location filename="gpsstatusdialog.cpp" line="435"/>
         <source>No Data</source>
         <translation>Keine Daten</translation>
     </message>
@@ -574,43 +574,43 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="59"/>
-        <location filename="gpsstatusdialog.cpp" line="123"/>
+        <location filename="gpsstatusdialog.cpp" line="55"/>
+        <location filename="gpsstatusdialog.cpp" line="124"/>
         <source>Stop</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="60"/>
+        <location filename="gpsstatusdialog.cpp" line="56"/>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="62"/>
+        <location filename="gpsstatusdialog.cpp" line="58"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="127"/>
+        <location filename="gpsstatusdialog.cpp" line="128"/>
         <source>Start</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="146"/>
+        <location filename="gpsstatusdialog.cpp" line="155"/>
         <source>Append to?</source>
         <translation>Anhängen an?</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="147"/>
+        <location filename="gpsstatusdialog.cpp" line="156"/>
         <source>File name:</source>
         <translation>Dateiname:</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="163"/>
+        <location filename="gpsstatusdialog.cpp" line="172"/>
         <source>Save failed</source>
         <translation>Speicherfehler</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="163"/>
+        <location filename="gpsstatusdialog.cpp" line="172"/>
         <source>Cannot open file!</source>
         <translation>Datei nicht vorhanden!</translation>
     </message>
@@ -1389,12 +1389,11 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>PolarDialog</name>
     <message>
-        <location filename="polardialog.cpp" line="46"/>
         <source>Polar for </source>
-        <translation>Polare zu</translation>
+        <translation type="obsolete">Polare zu </translation>
     </message>
     <message>
-        <location filename="polardialog.cpp" line="46"/>
+        <location filename="polardialog.cpp" line="42"/>
         <source> - Mouse click to Close</source>
         <translation> - Mausklick zum Schließen</translation>
     </message>
@@ -3317,115 +3316,115 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>TaskEditor</name>
     <message>
-        <location filename="taskeditor.cpp" line="71"/>
-        <location filename="taskeditor.cpp" line="244"/>
+        <location filename="taskeditor.cpp" line="67"/>
+        <location filename="taskeditor.cpp" line="240"/>
         <source>New Task</source>
         <translation>Neue Aufgabe</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="89"/>
+        <location filename="taskeditor.cpp" line="85"/>
         <source>ID</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="90"/>
+        <location filename="taskeditor.cpp" line="86"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="91"/>
+        <location filename="taskeditor.cpp" line="87"/>
         <source>Waypoint</source>
         <translation>Wegpunkt</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="92"/>
+        <location filename="taskeditor.cpp" line="88"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="101"/>
+        <location filename="taskeditor.cpp" line="97"/>
         <source>move selected waypoint up</source>
         <translation>markierten Wegpunkt hoch schieben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="106"/>
+        <location filename="taskeditor.cpp" line="102"/>
         <source>move selected waypoint down</source>
         <translation>markierten Wegpunkt runter schieben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="111"/>
+        <location filename="taskeditor.cpp" line="107"/>
         <source>reverse waypoint order</source>
         <translation>Wegpunktreihenfolge umkehren</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="116"/>
+        <location filename="taskeditor.cpp" line="112"/>
         <source>add waypoint</source>
         <translation>Wegpunkt hinzufügen</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="121"/>
+        <location filename="taskeditor.cpp" line="117"/>
         <source>remove waypoint</source>
         <translation>Wegpunkt löschen</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="126"/>
+        <location filename="taskeditor.cpp" line="122"/>
         <source>save task</source>
         <translation>speichere Aufgabe</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="131"/>
+        <location filename="taskeditor.cpp" line="127"/>
         <source>cancel task</source>
         <translation>verwerfe Aufgabe</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="141"/>
+        <location filename="taskeditor.cpp" line="137"/>
         <source>Name:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="164"/>
+        <location filename="taskeditor.cpp" line="160"/>
         <source>Waypoints</source>
         <translation>Wegpunkte</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="165"/>
+        <location filename="taskeditor.cpp" line="161"/>
         <source>Airfields</source>
         <translation>Flugplätze</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="166"/>
+        <location filename="taskeditor.cpp" line="162"/>
         <source>Outlandings</source>
         <translation>Landefelder</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="356"/>
+        <location filename="taskeditor.cpp" line="352"/>
         <source>Task Incomplete</source>
         <translation>Aufgabe unvollständig</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="357"/>
+        <location filename="taskeditor.cpp" line="353"/>
         <source>Task needs at least four waypoints</source>
         <translation>Eine Aufgabe hat mindestens 4 Wegpunkte</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="367"/>
+        <location filename="taskeditor.cpp" line="363"/>
         <source>Name Missing</source>
         <translation>Vermisse Name</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="368"/>
+        <location filename="taskeditor.cpp" line="364"/>
         <source>Enter a name for the task to save it</source>
         <translation>Bitte Tasknamen eingeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="380"/>
-        <location filename="taskeditor.cpp" line="393"/>
+        <location filename="taskeditor.cpp" line="376"/>
+        <location filename="taskeditor.cpp" line="389"/>
         <source>Name in Use</source>
         <translation>Name schon vergeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="381"/>
-        <location filename="taskeditor.cpp" line="394"/>
+        <location filename="taskeditor.cpp" line="377"/>
+        <location filename="taskeditor.cpp" line="390"/>
         <source>Please enter a different name</source>
         <translation>Bitte anderen Namen eingeben</translation>
     </message>
@@ -3718,27 +3717,27 @@ Alle Downloads verworfen!</translation>
         <translation>Wählen</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="221"/>
+        <location filename="waypointlistview.cpp" line="220"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="222"/>
+        <location filename="waypointlistview.cpp" line="221"/>
         <source>Delete selected waypoint?</source>
         <translation>Markierten Wegpunkt löschen?</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="285"/>
+        <location filename="waypointlistview.cpp" line="284"/>
         <source>Set home site</source>
         <translation>Neue Heimat</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="286"/>
+        <location filename="waypointlistview.cpp" line="285"/>
         <source>Use point&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;as your home site?</source>
         <translation>Benutze Punkt&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;als Heimat?</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="287"/>
+        <location filename="waypointlistview.cpp" line="286"/>
         <source>&lt;br&gt;Change can take&lt;br&gt;a few seconds.</source>
         <translation>&lt;br&gt;Wechsel kann einige Sekunden dauern.</translation>
     </message>
@@ -3746,37 +3745,37 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>WpEditDialog</name>
     <message>
-        <location filename="wpeditdialog.cpp" line="61"/>
+        <location filename="wpeditdialog.cpp" line="57"/>
         <source>New Waypoint</source>
         <translation>Neuer Wegpunkt</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="66"/>
+        <location filename="wpeditdialog.cpp" line="62"/>
         <source>Edit Waypoint</source>
         <translation>Editiere Wegpunkt</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="81"/>
+        <location filename="wpeditdialog.cpp" line="77"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="88"/>
+        <location filename="wpeditdialog.cpp" line="84"/>
         <source>Aero</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="96"/>
+        <location filename="wpeditdialog.cpp" line="92"/>
         <source>Comment</source>
         <translation>Kommentar</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="220"/>
+        <location filename="wpeditdialog.cpp" line="216"/>
         <source>Name?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="221"/>
+        <location filename="wpeditdialog.cpp" line="217"/>
         <source>Please add
 a waypoint
 name</source>
@@ -3784,12 +3783,12 @@ name</source>
 Wegpunktnamen an</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="228"/>
+        <location filename="wpeditdialog.cpp" line="224"/>
         <source>Description?</source>
         <translation>Beschreibung?</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="229"/>
+        <location filename="wpeditdialog.cpp" line="225"/>
         <source>Please add
 a waypoint
 description</source>
@@ -3797,25 +3796,25 @@ description</source>
 Wegpunktbeschreibung an</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="236"/>
+        <location filename="wpeditdialog.cpp" line="232"/>
         <source>Coordinates?</source>
         <translation>Koordinaten?</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="237"/>
+        <location filename="wpeditdialog.cpp" line="233"/>
         <source>Waypoint coordinates not set, continue?</source>
         <translation>Wegpunkt Koordinaten sind
 nicht gesetzt, fortfahren?</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="263"/>
-        <location filename="wpeditdialog.cpp" line="283"/>
+        <location filename="wpeditdialog.cpp" line="259"/>
+        <location filename="wpeditdialog.cpp" line="279"/>
         <source>Name Conflict</source>
         <translation>Namenskonflikt</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="264"/>
-        <location filename="wpeditdialog.cpp" line="284"/>
+        <location filename="wpeditdialog.cpp" line="260"/>
+        <location filename="wpeditdialog.cpp" line="280"/>
         <source>Please use another name
 for your new waypoint</source>
         <translation>Benutzen Sie einen anderen

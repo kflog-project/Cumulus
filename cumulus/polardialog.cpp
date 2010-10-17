@@ -39,7 +39,7 @@ PolarDialog::PolarDialog( Polar& polar, QWidget* parent) :
   QPalette palette;
   palette.setColor(backgroundRole(), Qt::white);
   setPalette(palette);
-  setWindowTitle ( tr("Polar for ") + polar.name() + tr(" - Mouse click to Close") );
+  setWindowTitle ( polar.name() + tr(" - Mouse click to Close") );
 
   QShortcut* rcUp =        new QShortcut(this);
   QShortcut* rcDown =      new QShortcut(this);
@@ -48,6 +48,7 @@ PolarDialog::PolarDialog( Polar& polar, QWidget* parent) :
   QShortcut* rcLeft =      new QShortcut(this);
   QShortcut* rcRight =     new QShortcut(this);
   QShortcut* rcSpace =     new QShortcut(this);
+  QShortcut* rcReturn =    new QShortcut(this);
 
   rcUp->setKey        (Qt::Key_Up);
   rcDown->setKey      (Qt::Key_Down);
@@ -56,6 +57,7 @@ PolarDialog::PolarDialog( Polar& polar, QWidget* parent) :
   rcLeft->setKey      (Qt::Key_Left);
   rcRight->setKey     (Qt::Key_Right);
   rcSpace->setKey     (Qt::Key_Space);
+  rcReturn->setKey    (Qt::Key_Return);
 
   connect(rcUp,       SIGNAL(activated()),
           this,       SLOT(slot_keyup()));
@@ -71,6 +73,8 @@ PolarDialog::PolarDialog( Polar& polar, QWidget* parent) :
           this,       SLOT(slot_keyright()));
   connect(rcSpace,    SIGNAL(activated()),
           this,       SLOT(slot_keyhome()));
+  connect(rcReturn,   SIGNAL(activated()),
+          this,       SLOT(slot_keyreturn()));
 
   setVisible(true );
 }
@@ -133,6 +137,11 @@ void PolarDialog::slot_keyhome()
   wind.setKph(0.0);
   lift.setMps(0.0);
   repaint();
+}
+
+void PolarDialog::slot_keyreturn()
+{
+  QWidget::close();
 }
 
 void PolarDialog::paintEvent (QPaintEvent*)
