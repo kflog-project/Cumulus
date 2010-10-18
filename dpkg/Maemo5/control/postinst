@@ -21,9 +21,6 @@ set -e
 
 case "$1" in
     configure)
-    # don't update ldconfig cache - only create necessary links for the Qt libraries
-    /sbin/ldconfig -n /opt/cumulus/lib
-
     # update icon cache
     gtk-update-icon-cache /usr/share/icons/hicolor
     ;;
