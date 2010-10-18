@@ -14,6 +14,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+
+[o] 2010-10-18 AP: Welt2000 has changed the file name. The date part was
+                   removed and the name is now WELT2000.TXT.
 [o] 2010-10-15 AP: Several dialog windows changed to a tool window because
                    dialog windows have a special layout under Maemo5. The dialog
                    layout of Maemo5 uses not all available space of the parent

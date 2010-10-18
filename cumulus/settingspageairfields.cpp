@@ -22,12 +22,7 @@
  *
  */
 
-#include <QLabel>
-#include <QGridLayout>
-#include <QMessageBox>
-#include <QGroupBox>
-#include <QGridLayout>
-#include <QVBoxLayout>
+#include <QtGui>
 
 #include "generalconfig.h"
 #include "settingspageairfields.h"
