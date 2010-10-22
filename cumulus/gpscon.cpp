@@ -191,7 +191,7 @@ bool GpsCon::startGpsReceiving()
       QString gpsDevice = conf->getGpsDevice();
       QString msg;
 
-      // Do check, what kind of connection the user has  selected. Under Maemo5
+      // Do check, what kind of connection the user has  selected. Under Maemo
       // we have to consider two possibilities.
       if (gpsDevice != MAEMO_LOCATION_SERVICE)
         {
@@ -201,7 +201,7 @@ bool GpsCon::startGpsReceiving()
         }
       else
         {
-          // Using Location Service under Maemo5 needs no arguments because we
+          // Using Location Service under Maemo needs no arguments because we
           // have no access to the GPS hardware devices.
           msg = QString(MSG_OPEN);
         }

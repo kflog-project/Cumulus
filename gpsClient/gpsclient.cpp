@@ -37,6 +37,13 @@ using namespace std;
 #include "protocol.h"
 #include "ipc.h"
 
+#ifdef BLUEZ
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/hci.h>
+#include <bluetooth/hci_lib.h>
+#include <bluetooth/rfcomm.h>
+#endif
+
 #ifdef DEBUG
 #undef DEBUG
 #endif
@@ -254,7 +261,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
   device          = deviceIn;
   ioSpeedDevice   = ioSpeedIn;
   ioSpeedTerminal = getBaudrate(ioSpeedIn);
-  bool fifo       = false;
+  bool istty      = true;
   badSentences    = 0;
 
   if( deviceIn == (const char *) 0 || strlen(deviceIn) == 0 )
@@ -271,6 +278,48 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
   dbsize = 0;
   memset( databuffer, 0, sizeof(databuffer) );
 
+  if( fd != -1 )
+    {
+      // closes an existing connection before opening a new one
+      closeGps();
+      sleep(2);
+    }
+
+#ifdef BLUEZ
+
+  // Define a reg. expression for a bluetooth address like "XX:XX:XX:XX:XX:XX"
+  QRegExp regExp("([0-9A-Fa-f]{2,2}:){5,5}[0-9A-Fa-f]{2,2}");
+
+  if( QString(deviceIn).contains(QRegExp( regExp )) )
+    {
+      fd = socket( AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM );
+
+      struct sockaddr_rc addr;
+
+      memset( &addr, 0, sizeof (addr) );
+
+      // get number of first available adapter
+      int btAdapterNumber = hci_get_route( 0 );
+
+      qDebug() << "BTDefAdapterNo=" << btAdapterNumber;
+
+      addr.rc_family = AF_BLUETOOTH;
+      addr.rc_channel = (uint8_t) btAdapterNumber;
+      str2ba( deviceIn, &addr.rc_bdaddr );
+
+      if( connect( fd, (struct sockaddr *) &addr, sizeof (addr)) == -1 )
+        {
+          return false;
+        }
+
+      fcntl(fd, F_SETFL, O_NONBLOCK); // NON blocking io is requested
+
+      last.start(); // store time point for supervision control
+      return true;
+    }
+
+#endif
+
   // create a fifo for the nmea simulator, if device starts not with /dev/
   if( strncmp( "/dev/", deviceIn, strlen("/dev/") ) != 0 )
     {
@@ -282,15 +331,8 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
         }
       else
         {
-          fifo = true;
+          istty = true;
         }
-    }
-
-  if( fd != -1 )
-    {
-      // closes an existing connection before opening a new one
-      closeGps();
-      sleep(2);
     }
 
   fd = open( device.data(), O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK );
@@ -313,7 +355,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
     {
       // Fifo needs no serial initialization.
       // Write a notice for the user about that fact
-      if( ! device.startsWith("/tmp/nmeasim") )
+      if( device.startsWith("/dev/") )
         {
           qDebug() << "GpsClient::openGps: Device '"
                    << deviceIn

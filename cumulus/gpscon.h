@@ -53,13 +53,16 @@
 // Device name for the Maemo location service.
 #define MAEMO_LOCATION_SERVICE "GPS Location"
 
+// Bluetooth default adapter of bluez stack.
+#define BT_ADAPTER "BT Adapter"
+
 class GpsCon : public QObject
 {
     Q_OBJECT
 
  private:
 
-  Q_DISABLE_COPY ( GpsCon )
+  Q_DISABLE_COPY( GpsCon )
 
  public:
 

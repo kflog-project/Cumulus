@@ -59,11 +59,17 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   // Bluetooth default devices
   GpsDev->addItem("/dev/rfcomm0");
   GpsDev->addItem("/dev/rfcomm1");
+#ifdef BLUEZ
+  // Bluetooth default adapter
+  GpsDev->addItem(BT_ADAPTER);
+#endif
   // add entry for NMEA simulator choice
   GpsDev->addItem(NMEASIM_DEVICE);
 #else
   // Under Maemo there are only three predefined sources.
   GpsDev->addItem(MAEMO_LOCATION_SERVICE); // Maemo GPS Location Service
+  // Bluetooth default adapter
+  GpsDev->addItem(BT_ADAPTER);
   GpsDev->addItem("/dev/ttyUSB0"); // external USB device
   GpsDev->addItem(NMEASIM_DEVICE); // Cumulus NMEA simulator
 #endif
@@ -169,9 +175,12 @@ void SettingsPageGPS::slot_load()
     }
 #endif
 
-  if( GpsDev->currentText() == NMEASIM_DEVICE || GpsDev->currentText() == TOMTOM_DEVICE )
+  if( GpsDev->currentText() == NMEASIM_DEVICE ||
+      GpsDev->currentText() == TOMTOM_DEVICE ||
+      GpsDev->currentText() == BT_ADAPTER )
     {
-      // switch off access to speed box, when NMEA Simulator is selected
+      // switch off access to speed box, when NMEA Simulator, TomTom or
+      // BT adapter are selected
       GpsSpeed->setEnabled( false );
     }
 
@@ -202,7 +211,7 @@ void SettingsPageGPS::slot_gpsDeviceChanged( const QString& text )
 {
   // qDebug("text=%s", text.toLatin1().data());
 
-  if( text == NMEASIM_DEVICE || text == TOMTOM_DEVICE )
+  if( text == NMEASIM_DEVICE || text == TOMTOM_DEVICE || text == BT_ADAPTER )
     {
       // Switch off access to speed box, when a named pipe is used.
       GpsSpeed->setEnabled( false );
