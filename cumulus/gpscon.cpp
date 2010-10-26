@@ -196,10 +196,11 @@ bool GpsCon::startGpsReceiving()
       // we have to consider two possibilities.
       if( gpsDevice != MAEMO_LOCATION_SERVICE)
         {
+          ioSpeed = conf->getGpsSpeed();
+
           if( gpsDevice != BT_ADAPTER )
             {
               device = conf->getGpsDevice();
-              ioSpeed = conf->getGpsSpeed();
               msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(device).arg(QString::number(ioSpeed));
             }
           else
@@ -214,7 +215,7 @@ bool GpsCon::startGpsReceiving()
 
                 }
 
-              msg = QString("%1 %2").arg(MSG_OPEN).arg(device);
+              msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(device).arg(QString::number(ioSpeed));
 #endif
             }
         }
@@ -913,7 +914,7 @@ QString GpsCon::getBtDevice()
 
   if( item.contains( QRegExp( regExp ) ) )
     {
-      qDebug() << "Item is a BT Address";
+      qDebug() << "Item" << item << "is a BT Address";
       return item;
     }
 
