@@ -1864,9 +1864,8 @@ void GpsNmea::_slotTimeoutFix()
   if( _status == validFix )
     {
       _status = noFix;
-      emit
-      statusChange( _status );
-      qWarning( "GPS FIX LOST!" );
+      emit statusChange( _status );
+      qWarning( "TO: GPS FIX LOST!" );
       // stop timer, will be activated again with the next available fix
       timeOutFix->stop();
 
