@@ -318,7 +318,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
 #endif
 
-#if 1
+#if 0
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
   if( slst[0] == "$GPRMC" )
@@ -1923,6 +1923,9 @@ void GpsNmea::fixOK( const char* who )
  */
 void GpsNmea::fixNOK( const char* who )
 {
+  // stop timer, will be activated again with the next available fix
+  timeOutFix->stop();
+
   if( _status == validFix )
     {
       _status = noFix;
