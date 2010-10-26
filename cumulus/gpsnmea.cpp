@@ -529,7 +529,7 @@ void GpsNmea::__ExtractGprmc( const QStringList& slst )
   //qDebug("%s",slst[2].toLatin1().data());
   if( slst[2] == "A" )
     { /* Data status A=OK, V=warning */
-      fixOK();
+      fixOK( "RMC" );
 
       __ExtractTime(slst[1]);
       __ExtractDate(slst[9]);
@@ -570,7 +570,7 @@ void GpsNmea::__ExtractGprmc( const QStringList& slst )
     }
   else
     {
-      fixNOK();
+      fixNOK( "RMC" );
 
       QTime time = __ExtractTime( slst[1] );
       QDate date = __ExtractDate( slst[9] );
@@ -614,13 +614,13 @@ void GpsNmea::__ExtractGpgll( const QStringList& slst )
 
   if (slst[6] == "A")
     {
-      fixOK();
+      fixOK( "GGL" );
       __ExtractTime(slst[5]);
       __ExtractCoord(slst[1],slst[2],slst[3],slst[4]);
     }
   else
     {
-      fixNOK();
+      fixNOK( "GGL" );
     }
 }
 
@@ -665,7 +665,7 @@ void GpsNmea::__ExtractGpgga( const QStringList& slst )
 
   if ( slst[6] != "0" && ! slst[6].isEmpty() )
     { /*a value of 0 means invalid fix and we don't need that one */
-      fixOK();
+      fixOK( "GGA" );
       __ExtractTime(slst[1]);
       __ExtractCoord(slst[2],slst[3],slst[4],slst[5]);
       __ExtractAltitude(slst[9],slst[10]);
@@ -673,7 +673,7 @@ void GpsNmea::__ExtractGpgga( const QStringList& slst )
     }
   else if( slst[6] == "0" )
     {
-      fixNOK();
+      fixNOK( "GGA" );
     }
 }
 
@@ -843,11 +843,11 @@ void GpsNmea::__ExtractPflau( const QStringList& slst )
 
       if( status.Gps == Flarm::NoFix )
         {
-          fixNOK();
+          fixNOK( "PFLAU" );
         }
       else
         {
-          fixOK();
+          fixOK( "PFLAU" );
         }
 
       if( lastReporting.elapsed() >= 5000 )
@@ -1491,11 +1491,11 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
 
           if( fix == 1 )
             {
-              fixNOK();
+              fixNOK( "GSA" );
             }
           else
             {
-              fixOK();
+              fixOK( "GSA" );
             }
         }
     }
@@ -1616,11 +1616,11 @@ void GpsNmea::__ExtractMaemo0(const QStringList& slist)
 
           if( mode == LOCATION_GPS_DEVICE_MODE_3D )
             {
-              fixOK();
+              fixOK( "Maemo0" );
             }
           else
             {
-              fixNOK();
+              fixNOK( "Maemo0" );
             }
         }
     }
@@ -1768,12 +1768,12 @@ void GpsNmea::__ExtractMaemo1(const QStringList& slist)
         {
           if( status == LOCATION_GPS_DEVICE_STATUS_FIX  )
             {
-              fixOK();
+              fixOK( "Maemo1" );
             }
           else
             {
               _lastSatInfo.fixValidity = LOCATION_GPS_DEVICE_MODE_NO_FIX;
-              fixNOK();
+              fixNOK( "Maemo1" ) ;
             }
         }
     }
@@ -1905,7 +1905,7 @@ void GpsNmea::dataOK()
  *  It resets/restarts the FIX TimeOut timer and if necessary updates
  *  the connection status.
  */
-void GpsNmea::fixOK()
+void GpsNmea::fixOK( const char* who )
 {
   // restart timer for FIX supervision
   timeOutFix->start( FIX_TO );
@@ -1914,20 +1914,20 @@ void GpsNmea::fixOK()
     {
       _status = validFix;
       emit statusChange( _status );
-      qDebug( "GPS FIX OBTAINED!" );
+      qDebug() << who << "GPS FIX OBTAINED!";
     }
 }
 
 /** This function is called to indicate that a valid fix has been lost.
  *  It necessary updates the connection status.
  */
-void GpsNmea::fixNOK()
+void GpsNmea::fixNOK( const char* who )
 {
   if( _status == validFix )
     {
       _status = noFix;
       emit statusChange( _status );
-      qDebug( "GPS FIX Lost!" );
+      qDebug() << who << "GPS FIX Lost!";
     }
 }
 
