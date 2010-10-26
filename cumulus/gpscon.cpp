@@ -17,6 +17,7 @@
  **
  ***********************************************************************/
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
@@ -28,7 +29,7 @@
 #include <libgen.h>
 #include <linux/limits.h>
 
-#include <QtCore>
+#include <QtGui>
 
 #include "generalconfig.h"
 #include "mapview.h"
@@ -182,7 +183,7 @@ bool GpsCon::startGpsReceiving()
   static QString method = "GPSCon::startGpsReceiving():";
 #endif
 
-  if (server.getClientSock(0) != -1)
+  if( server.getClientSock(0) != -1 )
     {
       // send the initialization data to the client process, if a client is
       // connected. Otherwise the initialization will be done in
@@ -193,11 +194,29 @@ bool GpsCon::startGpsReceiving()
 
       // Do check, what kind of connection the user has  selected. Under Maemo
       // we have to consider two possibilities.
-      if (gpsDevice != MAEMO_LOCATION_SERVICE)
+      if( gpsDevice != MAEMO_LOCATION_SERVICE)
         {
-          device = conf->getGpsDevice();
-          ioSpeed = conf->getGpsSpeed();
-          msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(device).arg(QString::number(ioSpeed));
+          if( gpsDevice != BT_ADAPTER )
+            {
+              device = conf->getGpsDevice();
+              ioSpeed = conf->getGpsSpeed();
+              msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(device).arg(QString::number(ioSpeed));
+            }
+          else
+            {
+              // BT Adapter is used. Get available BT devices and let the user
+              // select one of them.
+#ifdef BLUEZ
+              device = getBtDevice();
+
+              if( device.isEmpty() )
+                {
+
+                }
+
+              msg = QString("%1 %2").arg(MSG_OPEN).arg(device);
+#endif
+            }
         }
       else
         {
@@ -219,7 +238,6 @@ bool GpsCon::startGpsReceiving()
 #ifdef DEBUG
           qDebug("%s Gps client initialization succeeded", method.toLatin1().data());
 #endif
-
         }
 
       // we want to get a notification, if data are available on client side.
@@ -265,7 +283,7 @@ bool GpsCon::stopGpsReceiving()
 
 /**
  * Starts a new GPS client process via fork/exec or checks, if process is
- * alive. Alive check is triggered by timer routine every 10s. If process is
+ * alive. Alive check is triggered by timer routine every 15s. If process is
  * down, a new one will be started.
  */
 bool GpsCon::startClientProcess()
@@ -809,3 +827,97 @@ void GpsCon::sendSentence(const QString& sentence)
 #endif
     }
 }
+
+#ifdef BLUEZ
+
+/**
+ * Let the user select a BT device. Returns an empty string, if no one
+ * is available. Otherwise the BT device address is returned.
+ */
+QString GpsCon::getBtDevice()
+{
+  // Read the BT remote devices by using hcitool. Got not running Dbus
+  // bluetooth interface on Maemo.
+  FILE* pipe = popen( "/usr/bin/hcitool scan", "r" );
+
+  if( ! pipe )
+    {
+      qWarning() << "Calling hcitool failed";
+      return "";
+    }
+
+  QMap<QString, QString> knownDevices;
+
+  char buf[128];
+
+  while( fgets( buf, sizeof(buf), pipe ) )
+    {
+      QString line( buf );
+
+      line = line.trimmed();
+
+      qDebug() << "Line:" << line;
+
+      // Address of BT device XX:XX...
+      QString value = line.left(17);
+
+      // Name of BT device
+      QString key;
+
+      if( line.size() > 17 )
+         {
+            key = line.mid(17).trimmed();
+         }
+      else
+         {
+            key = value;
+         }
+
+      // Define a reg. expression for a bluetooth address like "XX:XX:XX:XX:XX:XX"
+      QRegExp regExp( "([0-9A-Fa-f]{2,2}:){5,5}[0-9A-Fa-f]{2,2}" );
+
+      if( value.contains( QRegExp( regExp ) ) )
+        {
+          knownDevices.insert( key, value );
+        }
+      else
+        {
+          qDebug() << "No BT Address!" << value;
+          continue;
+        }
+    }
+
+  pclose( pipe );
+
+  if( knownDevices.isEmpty() )
+    {
+      return "";
+    }
+
+  QStringList items( knownDevices.keys() );
+
+  bool ok;
+
+  QString item = QInputDialog::getItem( 0, QObject::tr( "Select BT Adapter" ),
+                                        QObject::tr( "BT Adapter:" ),
+                                        items, 0, false, &ok );
+  if( ! ok || item.isEmpty() )
+    {
+      return "";
+    }
+
+  item = knownDevices.value( item );
+
+  // Define a reg. expression for a bluetooth address like "XX:XX:XX:XX:XX:XX"
+  QRegExp regExp( "([0-9A-Fa-f]{2,2}:){5,5}[0-9A-Fa-f]{2,2}" );
+
+  if( item.contains( QRegExp( regExp ) ) )
+    {
+      qDebug() << "Item is a BT Address";
+      return item;
+    }
+
+  return "";
+}
+
+#endif

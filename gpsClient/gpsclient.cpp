@@ -298,13 +298,10 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 
       memset( &addr, 0, sizeof (addr) );
 
-      // get number of first available adapter
-      int btAdapterNumber = hci_get_route( 0 );
-
-      qDebug() << "BTDefAdapterNo=" << btAdapterNumber;
-
       addr.rc_family = AF_BLUETOOTH;
-      addr.rc_channel = (uint8_t) btAdapterNumber;
+
+      // 1 is the default channel for a connection to the BT daemon
+      addr.rc_channel = (uint8_t) 1;
       str2ba( deviceIn, &addr.rc_bdaddr );
 
       if( connect( fd, (struct sockaddr *) &addr, sizeof (addr)) == -1 )
