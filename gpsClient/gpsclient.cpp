@@ -294,6 +294,8 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
     {
       fd = socket( AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM );
 
+      fcntl( fd, F_SETFL, O_NONBLOCK ); // NON blocking io is requested
+
       struct sockaddr_rc addr;
 
       memset( &addr, 0, sizeof (addr) );
@@ -306,10 +308,13 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 
       if( connect( fd, (struct sockaddr *) &addr, sizeof (addr)) == -1 )
         {
+          cerr << "BT connect error, errno="
+          << errno << ", " << strerror(errno) << endl;
+
+          close( fd );
+          fd = -1;
           return false;
         }
-
-      fcntl(fd, F_SETFL, O_NONBLOCK); // NON blocking io is requested
 
       last.start(); // store time point for supervision control
       return true;
