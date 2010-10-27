@@ -287,6 +287,8 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
     {
       fd = socket( AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM );
 
+      fcntl( fd, F_SETFL, O_NONBLOCK ); // NON blocking io is requested
+
       struct sockaddr_rc addr;
 
       memset( &addr, 0, sizeof (addr) );
@@ -310,8 +312,6 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
           setShutdownFlag(true);
           return false;
         }
-
-      fcntl( fd, F_SETFL, O_NONBLOCK ); // NON blocking io is requested
 
       // Stop supervision control to give the BT daemon time for connection.
       // The first data read will activate it again.
