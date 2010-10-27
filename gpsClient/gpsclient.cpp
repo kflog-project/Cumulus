@@ -305,7 +305,8 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
           close( fd );
           fd = -1;
 
-          last.start(); // store time point for restart control
+          last = QTime();
+          setShutdownFlag(true);
           return false;
         }
 
