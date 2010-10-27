@@ -1463,6 +1463,17 @@ class GeneralConfig : protected QSettings
     _gpsDevice = newValue;
   };
 
+  /** Gets the Gps BT Device */
+  QString &getGpsBtDevice()
+  {
+    return _gpsBtDevice;
+  };
+  /** Sets the Gps BT Device */
+  void setGpsBtDevice( const QString newValue )
+  {
+    _gpsBtDevice = newValue;
+  };
+
   /** Gets the Gps Speed */
   int getGpsSpeed() const;
   /** Sets the Gps Speed */
@@ -2108,6 +2119,8 @@ class GeneralConfig : protected QSettings
 
   // Gps device
   QString _gpsDevice;
+  // Gps BT device
+  QString _gpsBtDevice;
   // Gps speed
   int _gpsSpeed;
   // Gps delivered altitude

@@ -359,6 +359,7 @@ void GeneralConfig::load()
 
   beginGroup("GPS");
   _gpsDevice          = value( "Device", getGpsDefaultDevice() ).toString();
+  _gpsBtDevice        = value( "BT-Device", "" ).toString();
   _gpsSpeed           = value( "Speed", 4800 ).toInt();
   _gpsAltitudeType    = value( "AltitudeType", (int) GpsNmea::GPS ).toInt();
   _gpsAltitudeUserCorrection.setMeters(value( "AltitudeCorrection", 0 ).toInt());
@@ -681,6 +682,7 @@ void GeneralConfig::save()
 
   beginGroup("GPS");
   setValue( "Device", _gpsDevice );
+  setValue( "BT-Device", _gpsBtDevice );
   setValue( "Speed", _gpsSpeed );
   setValue( "AltitudeType", _gpsAltitudeType );
   setValue( "AltitudeCorrection", _gpsAltitudeUserCorrection.getMeters() );
