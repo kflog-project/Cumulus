@@ -525,18 +525,22 @@
 <context>
     <name>GpsCon</name>
     <message>
-        <location filename="gpscon.cpp" line="214"/>
         <source>GPS initialization failed!</source>
-        <translation>GPS Init Fehler!</translation>
+        <translation type="obsolete">GPS Init Fehler!</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="326"/>
+        <location filename="gpscon.cpp" line="258"/>
+        <source>GPS device not reachable!</source>
+        <translation>GPS Gerät nicht erreichbar!</translation>
+    </message>
+    <message>
+        <location filename="gpscon.cpp" line="369"/>
         <source>GPS daemon crashed!</source>
         <oldsource>GPS daemon process crashed!</oldsource>
         <translation>GPS Dämon abgestürtzt!</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="482"/>
+        <location filename="gpscon.cpp" line="525"/>
         <source>GPS daemon start failed!</source>
         <oldsource>GPS daemon process start failed!</oldsource>
         <translation>GPS Dämon Start Fehler!</translation>
@@ -545,7 +549,7 @@
 <context>
     <name>GpsElevationAzimuthDisplay</name>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="271"/>
+        <location filename="gpsstatusdialog.cpp" line="277"/>
         <source>No Data</source>
         <translation>Keine Daten</translation>
     </message>
@@ -553,7 +557,7 @@
 <context>
     <name>GpsNmea</name>
     <message>
-        <location filename="gpsnmea.cpp" line="2251"/>
+        <location filename="gpsnmea.cpp" line="2253"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -561,7 +565,7 @@
 <context>
     <name>GpsSnrDisplay</name>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="435"/>
+        <location filename="gpsstatusdialog.cpp" line="441"/>
         <source>No Data</source>
         <translation>Keine Daten</translation>
     </message>
@@ -569,48 +573,48 @@
 <context>
     <name>GpsStatusDialog</name>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="31"/>
+        <location filename="gpsstatusdialog.cpp" line="36"/>
         <source>GPS Status</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="55"/>
-        <location filename="gpsstatusdialog.cpp" line="124"/>
+        <location filename="gpsstatusdialog.cpp" line="60"/>
+        <location filename="gpsstatusdialog.cpp" line="130"/>
         <source>Stop</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="56"/>
+        <location filename="gpsstatusdialog.cpp" line="61"/>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="58"/>
+        <location filename="gpsstatusdialog.cpp" line="63"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="128"/>
+        <location filename="gpsstatusdialog.cpp" line="134"/>
         <source>Start</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="155"/>
+        <location filename="gpsstatusdialog.cpp" line="161"/>
         <source>Append to?</source>
         <translation>Anhängen an?</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="156"/>
+        <location filename="gpsstatusdialog.cpp" line="162"/>
         <source>File name:</source>
         <translation>Dateiname:</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="172"/>
+        <location filename="gpsstatusdialog.cpp" line="178"/>
         <source>Save failed</source>
         <translation>Speicherfehler</translation>
     </message>
     <message>
-        <location filename="gpsstatusdialog.cpp" line="172"/>
+        <location filename="gpsstatusdialog.cpp" line="178"/>
         <source>Cannot open file!</source>
         <translation>Datei nicht vorhanden!</translation>
     </message>
@@ -2108,6 +2112,37 @@ Alle Downloads verworfen!</translation>
         <source>Emergency Field No: </source>
         <translation>Notlandefeld Nr:</translation>
     </message>
+    <message>
+        <location filename="gpscon.cpp" line="222"/>
+        <source>GPS BT Devices?</source>
+        <translation>GPS BT Geräte?</translation>
+    </message>
+    <message>
+        <location filename="gpscon.cpp" line="223"/>
+        <source>No GPS BT devices are in view!</source>
+        <oldsource>No GPS BT devices are reachable!</oldsource>
+        <translation>Keine GPS BT Geräte sind in Sicht!</translation>
+    </message>
+    <message>
+        <location filename="gpscon.cpp" line="871"/>
+        <source>hcitool error! </source>
+        <translation>hcitool Fehler!</translation>
+    </message>
+    <message>
+        <location filename="gpscon.cpp" line="925"/>
+        <source>Please switch on your BT GPS!</source>
+        <translation>Bitte schalten Sie Ihr BT GPS ein!</translation>
+    </message>
+    <message>
+        <location filename="gpscon.cpp" line="949"/>
+        <source>Select BT Adapter</source>
+        <translation>BT Adapter Auswahl</translation>
+    </message>
+    <message>
+        <location filename="gpscon.cpp" line="950"/>
+        <source>BT Adapter:</source>
+        <translation></translation>
+    </message>
 </context>
 <context>
     <name>ReachpointListView</name>
@@ -2190,109 +2225,109 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirfields</name>
     <message>
-        <location filename="settingspageairfields.cpp" line="47"/>
+        <location filename="settingspageairfields.cpp" line="42"/>
         <source>Welt2000</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="53"/>
+        <location filename="settingspageairfields.cpp" line="48"/>
         <source>Country Filter:</source>
         <translation>Länderfilter:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="60"/>
+        <location filename="settingspageairfields.cpp" line="55"/>
         <source>Home Radius:</source>
         <translation>Heimat Radius:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="69"/>
+        <location filename="settingspageairfields.cpp" line="64"/>
         <source>Load Outlandings</source>
         <translation>Lade Landefelder</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="77"/>
+        <location filename="settingspageairfields.cpp" line="72"/>
         <source>Set Proxy</source>
         <translation>Setze Proxy</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="78"/>
+        <location filename="settingspageairfields.cpp" line="73"/>
         <source>Enter Proxy data if needed</source>
         <translation>Definiere Proxy bei Bedarf</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="87"/>
+        <location filename="settingspageairfields.cpp" line="82"/>
         <source>Install Airfields</source>
         <translation>Flugplätze installieren</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="88"/>
+        <location filename="settingspageairfields.cpp" line="83"/>
         <source>Install Welt2000 airfields</source>
         <translation>Welt2000 Flugplätze installieren</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="94"/>
+        <location filename="settingspageairfields.cpp" line="89"/>
         <source>Enter Welt2000 filename as to see on the web page</source>
         <translation>Welt2000 Dateiname wie er auf Webseite steht</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="105"/>
+        <location filename="settingspageairfields.cpp" line="100"/>
         <source>List Display</source>
         <translation>Listenanzeige</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="110"/>
+        <location filename="settingspageairfields.cpp" line="105"/>
         <source>Increase row height in AF/WP/OL Lists at:</source>
         <oldsource>Entry Height Increase (Pixels) in AF/WP/OL Lists:</oldsource>
         <translation>Zeilenhöhe in  AF/WP/OL Listen erhöhen um:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="116"/>
-        <location filename="settingspageairfields.cpp" line="126"/>
+        <location filename="settingspageairfields.cpp" line="111"/>
+        <location filename="settingspageairfields.cpp" line="121"/>
         <source> Pixels</source>
         <translation> Pixel</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="120"/>
+        <location filename="settingspageairfields.cpp" line="115"/>
         <source>Increase row height in Emergency List at:</source>
         <translation>Zeilenhöhe in Notfalliste erhöhen um:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="209"/>
+        <location filename="settingspageairfields.cpp" line="204"/>
         <source>Please check entries</source>
         <translation>Einträge bitte prüfen</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="210"/>
+        <location filename="settingspageairfields.cpp" line="205"/>
         <source>Every Welt2000 county sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma.&lt;br&gt;Your modification will not be saved!</source>
         <translation>Jedes Welt2000 Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.&lt;br&gt;Ihre Änderungen werden nicht gespeichert!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="264"/>
+        <location filename="settingspageairfields.cpp" line="259"/>
         <source>The Airfield settings</source>
         <translation>Die Flugplatz Optionen</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="280"/>
+        <location filename="settingspageairfields.cpp" line="275"/>
         <source>Welt2000 settings invalid!</source>
         <translation>Welt2000 Eingabe ungültig!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="281"/>
+        <location filename="settingspageairfields.cpp" line="276"/>
         <source>Please add a valid Welt2000 filename!</source>
         <translation>Bitte gültigen Welt2000 Dateinamen eintragen!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="285"/>
+        <location filename="settingspageairfields.cpp" line="280"/>
         <source>Download Welt2000?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="286"/>
+        <location filename="settingspageairfields.cpp" line="281"/>
         <source>Active Internet connection is needed!</source>
         <translation>Aktive Internetverbindung ist erforderlich!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="287"/>
+        <location filename="settingspageairfields.cpp" line="282"/>
         <source>Start download now?</source>
         <translation>Start Download?</translation>
     </message>
@@ -2525,27 +2560,27 @@ Alle Downloads verworfen!</translation>
         <translation>GPS Gerät:</translation>
     </message>
     <message>
-        <location filename="settingspagegps.cpp" line="75"/>
+        <location filename="settingspagegps.cpp" line="81"/>
         <source>Speed (bps):</source>
         <translation>Geschwindigkeit (bps):</translation>
     </message>
     <message>
-        <location filename="settingspagegps.cpp" line="92"/>
+        <location filename="settingspagegps.cpp" line="98"/>
         <source>Altitude Reference:</source>
         <translation>Höhenreferenz:</translation>
     </message>
     <message>
-        <location filename="settingspagegps.cpp" line="96"/>
+        <location filename="settingspagegps.cpp" line="102"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="settingspagegps.cpp" line="97"/>
+        <location filename="settingspagegps.cpp" line="103"/>
         <source>Pressure</source>
         <translation>Druck</translation>
     </message>
     <message>
-        <location filename="settingspagegps.cpp" line="104"/>
+        <location filename="settingspagegps.cpp" line="110"/>
         <source>Sync Clock</source>
         <translation></translation>
     </message>
