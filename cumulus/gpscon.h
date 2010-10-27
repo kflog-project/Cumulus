@@ -58,7 +58,7 @@
 
 class GpsCon : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 
  private:
 
@@ -174,11 +174,13 @@ class GpsCon : public QObject
     void queryClient();
 
 #ifdef BLUEZ
+
     /**
-     * Let the user select a BT device. Returns an empty string, if no one
-     * is available. Otherwise the BT device address is returned.
+     * Lets the user select a BT device. Returns false and an error string,
+     * if no one is available. Otherwise true is returned together with the
+     * selected BT device address.
      */
-    QString getBtDevice();
+    bool getBtDevice( QString& result );
 
 #endif
 

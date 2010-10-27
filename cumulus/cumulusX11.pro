@@ -24,7 +24,7 @@ CONFIG += flarm
 CONFIG += internet
 
 # Enable bluetooth feature, if not wanted comment out the next line with a hash
-# CONFIG += bluetooth
+CONFIG += bluetooth
 
 HEADERS = \
     airfieldlistview.h \

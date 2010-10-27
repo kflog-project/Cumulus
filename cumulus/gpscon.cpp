@@ -99,7 +99,7 @@ GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
       return;
     }
 
-  qDebug( "IPC Server init success listening %s:%d", IPC_IP, port );
+  qDebug( "IPC Server listening on %s:%d", IPC_IP, port );
 
   // Check the start client option. It is introduced for debugging
   // purposes. If set to false, no client process will be started.
@@ -114,7 +114,6 @@ GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
   listenNotifier->connect( listenNotifier, SIGNAL(activated(int)),
                            this, SLOT(slot_ListenEvent(int)) );
 }
-
 
 GpsCon::~GpsCon()
 {
@@ -174,8 +173,13 @@ GpsCon::~GpsCon()
 }
 
 /**
- * Serial device and speed are sent to the client, that it can opens the
- * appropriate device for receiving.
+ * Device arguments are sent to the client, that it can opens the
+ * appropriate device for reading. As devices are usable:
+ *
+ * a) RS232
+ * b) USB
+ * c) BT via RFCOMM
+ * d) MAEMO Location service
  */
 bool GpsCon::startGpsReceiving()
 {
@@ -190,39 +194,67 @@ bool GpsCon::startGpsReceiving()
       // slot_ListenEvent(), if the client makes its connect.
       GeneralConfig *conf = GeneralConfig::instance();
       QString gpsDevice = conf->getGpsDevice();
+      ioSpeed = conf->getGpsSpeed();
       QString msg;
 
-      // Do check, what kind of connection the user has  selected. Under Maemo
+      // Do check, what kind of connection the user has selected. Under Maemo
       // we have to consider two possibilities.
       if( gpsDevice != MAEMO_LOCATION_SERVICE)
         {
-          ioSpeed = conf->getGpsSpeed();
-
           if( gpsDevice != BT_ADAPTER )
             {
-              device = conf->getGpsDevice();
-              msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(device).arg(QString::number(ioSpeed));
+              msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(gpsDevice).arg(QString::number(ioSpeed));
             }
+
+#ifdef BLUEZ
+
           else
             {
-              // BT Adapter is used. Get available BT devices and let the user
-              // select one of them.
-#ifdef BLUEZ
-              device = getBtDevice();
+              // BT Adapter shall be used. Get available BT devices and let the
+              // user select one of them.
+              QString device;
 
-              if( device.isEmpty() )
+              bool ok = getBtDevice( device );
+
+              if( ok == false )
                 {
+                  QMessageBox msgBox( QMessageBox::Critical,
+                                      QObject::tr("GPS BT Devices?"),
+                                      QObject::tr("No GPS BT devices are in view!"),
+                                      QMessageBox::Ok,
+                                      _globalMapView );
 
+                  msgBox.setInformativeText( device );
+                  msgBox.exec();
+
+                  // No BT device available or other error. We do shutdown
+                  // the GPS client process. That will initiate a restart
+                  // by the process supervision.
+                  clientNotifier->setEnabled( false );
+                  delete clientNotifier;
+                  clientNotifier = static_cast<QSocketNotifier *>(0);
+
+                  writeClientMessage( 0, MSG_SHD );
+
+                  server.closeClientSock(0);
+                  server.closeClientSock(1);
+
+                  // Try next daemon restart after 30s
+                  timer->start( 30000 );
+                  return false;
                 }
 
+              // Note! Device and speed are always expected at GPS client side,
+              // never mind are necessary or not.
               msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(device).arg(QString::number(ioSpeed));
-#endif
             }
+#endif
+
         }
       else
         {
-          // Using Location Service under Maemo needs no arguments because we
-          // have no access to the GPS hardware devices.
+          // Using Location Service under MAEMO needs no arguments because we
+          // have no access to the GPS hardware device.
           msg = QString(MSG_OPEN);
         }
 
@@ -231,7 +263,7 @@ bool GpsCon::startGpsReceiving()
 
       if (msg == MSG_NEG)
         {
-          _globalMapView->message(tr("GPS initialization failed!"));
+          _globalMapView->message(tr("GPS device not reachable!"));
           return false;
         }
       else
@@ -453,7 +485,7 @@ bool GpsCon::startClientProcess()
       close(i);
 #endif
 
-      // Set close on exit bit for all useable file descriptors. Don't
+      // Set close on exit bit for all usable file descriptors. Don't
       // do that for the standard devices (stdin, stdout, stderr)
       // otherwise the new process has not such devices. That can
       // cause trouble, if a module uses printf with stdout or stderr
@@ -474,14 +506,14 @@ bool GpsCon::startClientProcess()
           maxOpenFds = rlim.rlim_cur;
         }
 
-      // Start closing with fd 3
+      // Start closing beginning at file descriptor 3
       for( int fd=3; fd <= maxOpenFds; fd++ )
         {
           fcntl( fd, F_SETFD, FD_CLOEXEC );
         }
 
-      // exec a new gps client. the binary is expected at the same
-      // directory as cumulus.
+      // Start a new GPS client. The binary is expected at the same
+      // directory as Cumulus.
       //
       // arguments are:
       // 1) -port portNumber
@@ -741,7 +773,9 @@ void GpsCon::readClientMessage( uint index, QString &result )
   if( done <= 0 )
     {
       server.closeClientSock(index);
-      qWarning() << "GpsCon::readClientMessage ERROR, errno=" << errno;
+      qWarning() << "GpsCon::readClientMessage ERROR"
+                 << errno
+                 << strerror(errno);
       return; // Error occurred
     }
 
@@ -763,14 +797,12 @@ void GpsCon::readClientMessage( uint index, QString &result )
     {
       server.closeClientSock(index);
       delete [] buf;
-      buf=NULL;
+      buf = 0;
       return; // Error occurred
     }
 
   result = buf;
-
   delete [] buf;
-  buf=NULL;
 }
 
 /**
@@ -832,32 +864,41 @@ void GpsCon::sendSentence(const QString& sentence)
 #ifdef BLUEZ
 
 /**
- * Let the user select a BT device. Returns an empty string, if no one
- * is available. Otherwise the BT device address is returned.
+ * Lets the user select a BT device. Returns false and an error string,
+ * if no one is available. Otherwise true is returned together with the
+ * selected BT device address.
  */
-QString GpsCon::getBtDevice()
+bool GpsCon::getBtDevice( QString& result )
 {
-  // Read the BT remote devices by using hcitool. Got not running Dbus
-  // bluetooth interface on Maemo.
+  // Read the reachable BT remote devices by using hcitool. Got not running
+  // Dbus bluetooth interface on Maemo.
+  qDebug() << "Calling: /usr/bin/hcitool scan";
+
   FILE* pipe = popen( "/usr/bin/hcitool scan", "r" );
 
   if( ! pipe )
     {
-      qWarning() << "Calling hcitool failed";
-      return "";
+      result = QObject::tr("hcitool error! ") + strerror(errno);
+
+      qWarning() << "GpsCon::getBtDevice:" << result;
+
+      return false;
     }
+
+  // Define a regular expression for a bluetooth address like "XX:XX:XX:XX:XX:XX"
+  QRegExp regExp( "([0-9A-Fa-f]{2,2}:){5,5}[0-9A-Fa-f]{2,2}" );
 
   QMap<QString, QString> knownDevices;
 
-  char buf[128];
+  char buf[256];
 
+  // We do parse the output of the hcitool. A valid line starts with a BT address
+  // followed by the device name.
   while( fgets( buf, sizeof(buf), pipe ) )
     {
       QString line( buf );
 
       line = line.trimmed();
-
-      qDebug() << "Line:" << line;
 
       // Address of BT device XX:XX...
       QString value = line.left(17);
@@ -871,19 +912,18 @@ QString GpsCon::getBtDevice()
          }
       else
          {
+            // Not always a name is defined. We use the BT address as name
+            // in such a case.
             key = value;
          }
 
-      // Define a reg. expression for a bluetooth address like "XX:XX:XX:XX:XX:XX"
-      QRegExp regExp( "([0-9A-Fa-f]{2,2}:){5,5}[0-9A-Fa-f]{2,2}" );
-
       if( value.contains( QRegExp( regExp ) ) )
         {
+          // Check validity of BT address.
           knownDevices.insert( key, value );
         }
       else
         {
-          qDebug() << "No BT Address!" << value;
           continue;
         }
     }
@@ -892,33 +932,46 @@ QString GpsCon::getBtDevice()
 
   if( knownDevices.isEmpty() )
     {
-      return "";
+      result = QObject::tr("Please switch on your BT GPS!");
+      return false;
     }
+
+  QString lastBtDevice = GeneralConfig::instance()->getGpsBtDevice();
 
   QStringList items( knownDevices.keys() );
 
-  bool ok;
+  // Try to preselect a previous used BT GPS device
+  int no = 0;
 
-  QString item = QInputDialog::getItem( 0, QObject::tr( "Select BT Adapter" ),
+  if( ! lastBtDevice.isEmpty() )
+    {
+      for( int i = 0; i < items.size(); i++ )
+        {
+          if( items[i] == lastBtDevice )
+            {
+              no = i;
+              break;
+            }
+        }
+    }
+
+  QString item = QInputDialog::getItem( _globalMapView,
+                                        QObject::tr( "Select BT Adapter" ),
                                         QObject::tr( "BT Adapter:" ),
-                                        items, 0, false, &ok );
-  if( ! ok || item.isEmpty() )
+                                        items, no, false );
+  if( item.isEmpty() )
     {
-      return "";
+      result = "Empty line error!";
+      return false;
     }
 
-  item = knownDevices.value( item );
+  // Get BT address from device map.
+  result = knownDevices.value( item );
 
-  // Define a reg. expression for a bluetooth address like "XX:XX:XX:XX:XX:XX"
-  QRegExp regExp( "([0-9A-Fa-f]{2,2}:){5,5}[0-9A-Fa-f]{2,2}" );
+  // Save last selected BT device.
+  GeneralConfig::instance()->setGpsBtDevice( item );
 
-  if( item.contains( QRegExp( regExp ) ) )
-    {
-      qDebug() << "Item" << item << "is a BT Address";
-      return item;
-    }
-
-  return "";
+  return true;
 }
 
 #endif

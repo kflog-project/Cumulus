@@ -62,10 +62,7 @@ using namespace std;
 // define connection lost timeout in milli seconds
 #define TO_CONLOST  10000
 
-// Constructor requires a socket port of the server (listening end point)
-// useable for interprocess communication. As related host is always localhost
-// used. It will be opened two sockets to the server, one for data transfer,
-// the other only as notification channel.
+
 GpsClient::GpsClient( const ushort portIn )
 {
   device           = "";
@@ -101,9 +98,6 @@ GpsClient::GpsClient( const ushort portIn )
           return;
         }
     }
-
-  // Set last time to current time.
-  last.start();
 }
 
 GpsClient::~GpsClient()
@@ -112,7 +106,7 @@ GpsClient::~GpsClient()
 }
 
 /**
- * Return all currently used read file descriptors as mask, useable by the
+ * Return all currently used read file descriptors as mask, usable by the
  * select call
  */
 fd_set *GpsClient::getReadFdMask()
@@ -146,7 +140,7 @@ void GpsClient::processEvent( fd_set *fdMask )
     {
       if( readGpsData() == false )
         {
-          // problem occurred, likely buffer overrun. we do restart the gps
+          // problem occurred, likely buffer overrun. we do restart the GPS
           // receiving.
           closeGps();
           sleep(1);
@@ -187,7 +181,7 @@ bool GpsClient::readGpsData()
       dbsize = 0;
     }
 
-  // all available gps data lines are read successive
+  // all available GPS data lines are read successive
   int bytes = 0;
 
   bytes = read(fd, datapointer, sizeof(databuffer) - dbsize -1);
@@ -215,7 +209,7 @@ bool GpsClient::readGpsData()
       readSentenceFromBuffer();
 
       // update supervision timer/variables
-      last.restart();
+      last.start();
       connectionLost = false;
     }
 
@@ -261,7 +255,6 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
   device          = deviceIn;
   ioSpeedDevice   = ioSpeedIn;
   ioSpeedTerminal = getBaudrate(ioSpeedIn);
-  bool istty      = true;
   badSentences    = 0;
 
   if( deviceIn == (const char *) 0 || strlen(deviceIn) == 0 )
@@ -294,8 +287,6 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
     {
       fd = socket( AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM );
 
-      fcntl( fd, F_SETFL, O_NONBLOCK ); // NON blocking io is requested
-
       struct sockaddr_rc addr;
 
       memset( &addr, 0, sizeof (addr) );
@@ -313,10 +304,16 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 
           close( fd );
           fd = -1;
+
+          last.start(); // store time point for restart control
           return false;
         }
 
-      last.start(); // store time point for supervision control
+      fcntl( fd, F_SETFL, O_NONBLOCK ); // NON blocking io is requested
+
+      // Stop supervision control to give the BT daemon time for connection.
+      // The first data read will activate it again.
+      last = QTime();
       return true;
     }
 
@@ -330,10 +327,6 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       if( ret && errno != EEXIST )
         {
           perror("mkfifo");
-        }
-      else
-        {
-          istty = true;
         }
     }
 
@@ -350,6 +343,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
            << ioSpeedIn << endl;
 #endif
 
+      last.start(); // store time point for restart control
       return false;
     }
 
@@ -478,7 +472,7 @@ void GpsClient::readSentenceFromBuffer()
 
 
 /**
- * closes the connection to the Gps
+ * closes the connection to the GPS device
  */
 void GpsClient::closeGps()
 {
@@ -503,6 +497,7 @@ void GpsClient::closeGps()
   queue.clear();
   connectionLost = true;
   badSentences   = 0;
+  last = QTime();
 }
 
 /**
@@ -523,6 +518,7 @@ bool GpsClient::verifyCheckSum( const char *sentence )
         {
           // Close the receiver after 3 bad sentences back-to-back.
           closeGps();
+          last.start(); // activate restart control
         }
 
       return false;
@@ -586,10 +582,11 @@ uchar GpsClient::calcCheckSum( const char *sentence )
   return sum;
 }
 
-// timeout controller
+// Timeout controller
 void GpsClient::toController()
 {
-  if( last.elapsed() > TO_CONLOST )
+  // Null time is used to switch off the timeout control.
+  if( last.isNull() == false && last.elapsed() > TO_CONLOST )
     {
       if( connectionLost == false )
         {
