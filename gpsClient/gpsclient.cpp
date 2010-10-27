@@ -297,7 +297,8 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       addr.rc_channel = (uint8_t) 1;
       str2ba( deviceIn, &addr.rc_bdaddr );
 
-      if( connect( fd, (struct sockaddr *) &addr, sizeof (addr)) == -1 )
+      if( connect( fd, (struct sockaddr *) &addr, sizeof (addr)) == -1 &&
+          errno != EINPROGRESS )
         {
           cerr << "BT connect error, errno="
           << errno << ", " << strerror(errno) << endl;
