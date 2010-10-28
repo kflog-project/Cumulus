@@ -57,7 +57,7 @@ void BluetoothDevices::run()
 {
   // Start this timer to continue the processing after stepping into the
   // thread's event loop.
-  QTimer::singleShot( 0, this, SLOT(slot_RetrieveBtDevice()) );
+  QTimer::singleShot( 1000, this, SLOT(slot_RetrieveBtDevice()) );
 
   // Starts the event loop of this thread.
   exec();
@@ -69,6 +69,10 @@ void BluetoothDevices::slot_RetrieveBtDevice()
 
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &mutex );
+
+  // The following code is taken from:
+  // http://people.csail.mit.edu/albert/bluez-intr
+  // A special thank you to the author
 
   // Get the device identifier of the local default adapter
   int devId = hci_get_route(0);
