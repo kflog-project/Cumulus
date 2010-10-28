@@ -148,7 +148,7 @@ public:
   private:
 
   //----------------------------------------------------------------------
-  // Messages from/to Ccumulus will be read/written via the
+  // Messages from/to Cumulus will be read/written via the
   // client IPC instance.
   //----------------------------------------------------------------------
 

@@ -74,9 +74,12 @@ void Sound::run()
       return;
     }
 
-  // Try to lock mutex. If mutex is locked we wait until mutex is
-  // released to avoid parallel playing of sounds.
-  mutex.lock();
+  // Try to lock mutex. If mutex is locked we return immediately to avoid a
+  // system overload.
+  if( mutex.tryLock() == false )
+    {
+      return;
+    }
 
   QString cmd;
 

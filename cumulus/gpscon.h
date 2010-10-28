@@ -109,8 +109,8 @@ class GpsCon : public QObject
     void sendSentence(const QString&);
 
     /**
-     * Serial device and speed are sent to the client, that it can
-     * opens the appropriate device for receiving.
+     * Device name and speed are sent to the client, that it
+     * can open the connection to the GPS device for data receiving.
      */
     bool startGpsReceiving();
 
@@ -173,17 +173,6 @@ class GpsCon : public QObject
      */
     void queryClient();
 
-#ifdef BLUEZ
-
-    /**
-     * Lets the user select a BT device. Returns false and an error string,
-     * if no one is available. Otherwise true is returned together with the
-     * selected BT device address.
-     */
-    bool getBtDevice( QString& result );
-
-#endif
-
   private slots:
     /**
      * This slot is triggered by the QT main loop and is used to handle the
@@ -205,6 +194,23 @@ class GpsCon : public QObject
      * gpsClient process and ensures the cleaning up of zombies.
      */
     void slot_Timeout();
+
+#ifdef BLUEZ
+
+    /**
+     * This slot is called by the Bluetooth device search method, to
+     * present the search results. In dependency of the results the
+     * connection to the BT GPS device will be established.
+     *
+     * \param ok        True means a BT device has been found. In case of
+     *                  false an error message is contained in parameter
+     *                  btAddress.
+     * \param btAddress Address of the the Bluetooth device to be used
+     *                  for connect or an error string.
+     */
+    void slot_StartGpsBtReceiving( bool ok, QString& btAddress );
+
+#endif
 
   private:
 

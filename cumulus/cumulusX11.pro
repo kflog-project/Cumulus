@@ -273,8 +273,13 @@ internet {
 }
 
 bluetooth {
-  DEFINES += BLUEZ
-  # LIBS += -lbluetooth
+    DEFINES += BLUEZ
+  
+    HEADERS += bluetoothdevices.h
+    
+    SOURCES += bluetoothdevices.cpp
+    
+    LIBS += -lbluetooth
 }
 
 TARGET = cumulus

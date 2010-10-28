@@ -17,10 +17,7 @@
 **
 ***********************************************************************/
 
-using namespace std;
-
 #include <stdio.h>
-#include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -39,8 +36,6 @@ using namespace std;
 
 #ifdef BLUEZ
 #include <bluetooth/bluetooth.h>
-#include <bluetooth/hci.h>
-#include <bluetooth/hci_lib.h>
 #include <bluetooth/rfcomm.h>
 #endif
 
@@ -82,8 +77,8 @@ GpsClient::GpsClient( const ushort portIn )
     {
       if( clientData.connect2Server( IPC_IP, ipcPort ) == -1 )
         {
-          cerr << "Command channel Connection to Cumulus Server failed!"
-               << " Fatal error, terminate process!" << endl;
+          qCritical() << "Command channel Connection to Cumulus Server failed!"
+                      << "Fatal error, terminate process!" << endl;
 
           setShutdownFlag(true);
           return;
@@ -91,8 +86,8 @@ GpsClient::GpsClient( const ushort portIn )
 
       if( clientNotif.connect2Server( IPC_IP, ipcPort ) == -1 )
         {
-          cerr << "Notification channel Connection to Cumulus Server failed!"
-               << " Fatal error, terminate process!" << endl;
+          qCritical() << "Notification channel Connection to Cumulus Server failed!"
+                      << "Fatal error, terminate process!";
 
           setShutdownFlag(true);
           return;
@@ -103,6 +98,8 @@ GpsClient::GpsClient( const ushort portIn )
 GpsClient::~GpsClient()
 {
   closeGps();
+  clientData.closeSock();
+  clientNotif.closeSock();
 }
 
 /**
@@ -184,18 +181,18 @@ bool GpsClient::readGpsData()
   // all available GPS data lines are read successive
   int bytes = 0;
 
-  bytes = read(fd, datapointer, sizeof(databuffer) - dbsize -1);
+  bytes = read( fd, datapointer, sizeof(databuffer) - dbsize -1 );
 
   if( bytes == 0 ) // Nothing read, should normally not happen
     {
-      cerr << "Read has read 0 bytes!" << endl;
+      qWarning() << "GpsClient::readGpsData(): 0 bytes read!";
       return false;
     }
 
   if( bytes == -1 )
     {
-      cerr << "Read error, errno="
-      << errno << ", " << strerror(errno) << endl;
+      qWarning() << "GpsClient::readGpsData(): Read error"
+                 << errno << "," << strerror(errno);
       return false;
     }
 
@@ -238,16 +235,16 @@ int GpsClient::writeGpsData( const char *sentence )
 
   if (result != (int) cmd.length())
     {
-      cerr << "Only " << result
-           << " characters were written: "
-           << cmd.toLatin1().data() << endl;
+      qWarning() << "GpsClient::writeGpsData Only"
+                 << result
+                 << "characters were written:"
+                 << cmd;
     }
 
   return result;
 }
 
-// Opens the connection to the Gps. All old messages in the queue will
-// be removed.
+// Opens the connection to the GPS. All old messages in the queue are removed.
 bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 {
   qDebug() << "GpsClient::openGps:" << deviceIn << "," << ioSpeedIn;
@@ -268,7 +265,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 
   // reset buffer pointer
   datapointer = databuffer;
-  dbsize = 0;
+  dbsize      = 0;
   memset( databuffer, 0, sizeof(databuffer) );
 
   if( fd != -1 )
@@ -302,8 +299,8 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       if( connect( fd, (struct sockaddr *) &addr, sizeof (addr)) == -1 &&
           errno != EINPROGRESS )
         {
-          cerr << "BT connect error, errno="
-          << errno << ", " << strerror(errno) << endl;
+          qCritical() << "GpsClient::openGps(): BT connect error"
+                      << errno << "," << strerror(errno);
 
           close( fd );
           fd = -1;
@@ -340,9 +337,9 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 
       // Could not open the serial device.
 #ifdef ERROR_LOG
-      cerr << "openGps: Unable to open GPS device "
-           << device.data() << " at transfer rate "
-           << ioSpeedIn << endl;
+      qWarning() << "openGps: Unable to open GPS device"
+                 << device << "at transfer rate"
+                 << ioSpeedIn;
 #endif
 
       last.start(); // store time point for restart control
@@ -452,7 +449,7 @@ void GpsClient::readSentenceFromBuffer()
         }
 
 #ifdef DEBUG
-      cout << "GpsClient(): Extracted NMEA Record: " << record;
+      qDebug() << "GpsClient(): Extracted NMEA Record:" << record;
 #endif
 
       free(record);
@@ -513,7 +510,8 @@ bool GpsClient::verifyCheckSum( const char *sentence )
   // do start with a dollar sign or an exclamation mark.
   if( sentence[0] != '$' && sentence[0] != '!' )
     {
-      qDebug() << "GpsClient::verifyCheckSum: ignore sentence" << sentence;
+      qWarning() << "GpsClient::verifyCheckSum: ignore sentence" << sentence;
+
       badSentences++;
 
       if( badSentences >= 3 )
@@ -598,9 +596,8 @@ void GpsClient::toController()
         }
 
 #ifdef ERROR_LOG
-      cerr << "GpsClient::toController(): "
-           << "Connection to GPS seems to be dead, trying restart."
-           << endl;
+      qWarning() << "GpsClient::toController():"
+                 << "Connection to GPS seems to be dead, trying restart.";
 #endif
 
       // A timeout occurs from GPS side, when the receiver is
@@ -630,24 +627,27 @@ void GpsClient::toController()
 
 void GpsClient::readServerMsg()
 {
+  static const char* method = "GpsClient::readServerMsg():";
+
   uint msgLen = 0;
 
   uint done = clientData.readMsg( &msgLen, sizeof(msgLen) );
 
   if( done < sizeof(msgLen) )
     {
-      qWarning() << "GpsClient::readServerMsg(): MSG length" << done << "too short";
-      clientData.closeSock();
-      exit(-1); // Error occurred
+      qWarning() << method << "MSG length" << done << "too short";
+      setShutdownFlag(true);
+      return; // Error occurred
     }
 
   if( msgLen > 256 )
     {
       // such messages length are not defined. we will ignore that.
-      cerr << "GpsClient::readServerMsg(): "
-           << "message " << msgLen << " too large, ignoring it!"
-           << endl;
-      exit(-1); // Error occurred
+      qWarning() << method
+                 << "message" << msgLen << "too large, ignoring it!";
+
+      setShutdownFlag(true);
+      return; // Error occurred
     }
 
   char *buf = new char[msgLen+1];
@@ -658,15 +658,15 @@ void GpsClient::readServerMsg()
 
   if( done <= 0 )
     {
-      qWarning() << "GpsClient::readServerMsg(): MSG data" << done << "too short";
-      clientData.closeSock();
+      qWarning() << method << "MSG data" << done << "too short";
       delete [] buf;
       buf = 0;
-      exit(-1); // Error occurred
+      setShutdownFlag(true);
+      return; // Error occurred
     }
 
 #ifdef DEBUG
-  cout << "GpsClient::readServerMsg(): Received Message: " << buf << endl;
+  qDebug() << method << "Received Message:" << buf;
 #endif
 
   // Split the received message into its single parts. Space is used
@@ -701,9 +701,9 @@ void GpsClient::readServerMsg()
       // check protocol versions, reply with pos or neg
       if( MSG_PROTOCOL != args[1] )
         {
-          cerr << "GpsClient::readServerMsg(): "
-               << "Message protocol versions are incompatible, "
-               << "closes connection and shutdown client" << endl;
+          qWarning() << method
+                     << "Message protocol versions are incompatible,"
+                     << "closes connection and shutdown client";
 
           writeServerMsg( MSG_NEG );
           setShutdownFlag(true);
@@ -714,9 +714,9 @@ void GpsClient::readServerMsg()
     }
   else if( MSG_OPEN == args[0] && args.count() == 3 )
     {
-      // Initialization of gps device is requested. The message
+      // Initialization of GPS device is requested. The message
       // consists of two parts separated by spaces.
-      // 1) serial device
+      // 1) device name
       // 2) io speed
 
       bool res = openGps( args[1].toLatin1().data(), args[2].toUInt() );
@@ -732,7 +732,7 @@ void GpsClient::readServerMsg()
     }
   else if( MSG_CLOSE == args[0] )
     {
-      // Close Gps device is requested
+      // Close GPS device is requested
       closeGps();
       writeServerMsg( MSG_POS );
     }
@@ -761,22 +761,18 @@ void GpsClient::readServerMsg()
   else if( MSG_SHD == args[0] )
     {
       // Shutdown is requested by the server. This message will not be
-      // acked!
-      clientData.closeSock();
-      clientNotif.closeSock();
+      // acknowledge!
       setShutdownFlag(true);
     }
   else
     {
-      cerr << "GpsClient::readServerMsg(): "
-           << "Unknown message received: " << buf << endl;
+      qWarning() << method << "Unknown message received:" << buf;
       writeServerMsg( MSG_NEG );
     }
 
   delete [] buf;
   return;
 }
-
 
 // Send a message via data socket to the server. The protocol consists of two
 // parts. First the message length is transmitted as unsigned integer, after
@@ -792,8 +788,8 @@ void GpsClient::writeServerMsg( const char *msg )
 
   if( done < 0 )
     {
-      // Error occurred, close socket
-      clientData.closeSock();
+      // Error occurred, make shutdown of process
+      setShutdownFlag(true);
     }
 
   return;
@@ -804,7 +800,9 @@ void GpsClient::writeServerMsg( const char *msg )
 // after that the actual message as 8 bit character string.
 void GpsClient::writeNotifMsg( const char *msg )
 {
+#ifdef DEBUG
   static QString method = "GpsClient::writeNotifMsg():";
+#endif
 
   uint msgLen = strlen( msg );
 
@@ -814,12 +812,12 @@ void GpsClient::writeNotifMsg( const char *msg )
 
   if( done < 0 )
     {
-      // Error occurred, close socket
-      clientNotif.closeSock();
+      // Error occurred, make shutdown of process
+      setShutdownFlag(true);
     }
 
 #ifdef DEBUG
-  cout << method.toLatin1().data() << " " << msg << endl;
+  qDebug() << method << msg;
 #endif
 
   return;
@@ -868,14 +866,13 @@ void GpsClient::queueMsg( const char* msg )
       // start dequeuing, to avoid memory overflows
       queue.dequeue ();
 
-      cerr << "queueMsg: Max.queue size of " << QUEUE_SIZE
-           << " reached, remove oldest element!" << endl;
+      qWarning() << "GpsClient: Max. queue size of" << QUEUE_SIZE
+                 << "is reached, remove oldest element!";
     }
 
   if( notify )
     {
-      // inform server about new messages available, if not already
-      // done.
+      // inform server about new messages available, if not already done.
       writeNotifMsg( MSG_DA );
       notify = false;
     }
