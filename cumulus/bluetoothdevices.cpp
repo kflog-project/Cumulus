@@ -102,30 +102,20 @@ void BluetoothDevices::slot_RetrieveBtDevice()
 
   int num_rsp;
 
-  while( true )
+  num_rsp = hci_inquiry( devId, len, max_rsp, 0, &ii, flags );
+
+  if( errno != EINTR && num_rsp < 0 )
     {
-      num_rsp = hci_inquiry( devId, len, max_rsp, 0, &ii, flags );
+      result = QObject::tr("Bluetooth Scan failed!");
 
-      if( errno == EINTR )
-        {
-          continue;
-        }
+      qWarning() << result << strerror(errno);
 
-      if( num_rsp < 0 )
-        {
-          result = QObject::tr("Bluetooth Scan failed!");
+      emit retrievedBtDevice( false, result );
 
-          qWarning() << result << strerror(errno);
-
-          emit retrievedBtDevice( false, result );
-
-          // Stop the event loop and destroy this thread.
-          free( ii );
-          quit();
-          return;
-        }
-
-      break;
+      // Stop the event loop and destroy this thread.
+      free( ii );
+      quit();
+      return;
     }
 
   // Device map where the key is the BT name and the value is the BT address.
