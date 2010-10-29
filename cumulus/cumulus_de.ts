@@ -529,19 +529,25 @@
         <translation type="obsolete">GPS Init Fehler!</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="250"/>
-        <location filename="gpscon.cpp" line="317"/>
+        <location filename="gpscon.cpp" line="222"/>
+        <source>Searching GPS BT devices</source>
+        <oldsource>Searching GPS-BT devices</oldsource>
+        <translation>Suche GPS BT Geräte</translation>
+    </message>
+    <message>
+        <location filename="gpscon.cpp" line="251"/>
+        <location filename="gpscon.cpp" line="318"/>
         <source>GPS device not reachable!</source>
         <translation>GPS Gerät nicht erreichbar!</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="427"/>
+        <location filename="gpscon.cpp" line="428"/>
         <source>GPS daemon crashed!</source>
         <oldsource>GPS daemon process crashed!</oldsource>
         <translation>GPS Dämon abgestürtzt!</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="583"/>
+        <location filename="gpscon.cpp" line="584"/>
         <source>GPS daemon start failed!</source>
         <oldsource>GPS daemon process start failed!</oldsource>
         <translation>GPS Dämon Start Fehler!</translation>
@@ -2114,38 +2120,42 @@ Alle Downloads verworfen!</translation>
         <translation>Notlandefeld Nr:</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="283"/>
+        <location filename="gpscon.cpp" line="284"/>
         <source>GPS BT Devices?</source>
         <translation>GPS BT Geräte?</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="284"/>
+        <location filename="gpscon.cpp" line="285"/>
         <source>No GPS BT devices are in view!</source>
         <oldsource>No GPS BT devices are reachable!</oldsource>
         <translation>Keine GPS BT Geräte sind in Sicht!</translation>
     </message>
     <message>
-        <location filename="bluetoothdevices.cpp" line="82"/>
+        <location filename="bluetoothdevices.cpp" line="86"/>
         <source>Bluetooth Service is offline!</source>
         <translation>Bluetooth Service ist offline!</translation>
     </message>
     <message>
-        <location filename="bluetoothdevices.cpp" line="101"/>
         <source>hcitool error! </source>
-        <translation>hcitool Fehler!</translation>
+        <translation type="obsolete">hcitool Fehler!</translation>
     </message>
     <message>
-        <location filename="bluetoothdevices.cpp" line="159"/>
+        <location filename="bluetoothdevices.cpp" line="107"/>
+        <source>Bluetooth Scan failed!</source>
+        <translation>Bluetooth Scan Fehler!</translation>
+    </message>
+    <message>
+        <location filename="bluetoothdevices.cpp" line="150"/>
         <source>Please switch on your BT GPS!</source>
         <translation>Bitte schalten Sie Ihr BT GPS ein!</translation>
     </message>
     <message>
-        <location filename="bluetoothdevices.cpp" line="187"/>
+        <location filename="bluetoothdevices.cpp" line="178"/>
         <source>Select BT Adapter</source>
         <translation>BT Adapter Auswahl</translation>
     </message>
     <message>
-        <location filename="bluetoothdevices.cpp" line="188"/>
+        <location filename="bluetoothdevices.cpp" line="179"/>
         <source>BT Adapter:</source>
         <translation></translation>
     </message>

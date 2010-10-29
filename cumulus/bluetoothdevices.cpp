@@ -71,8 +71,8 @@ void BluetoothDevices::slot_RetrieveBtDevice()
   QMutexLocker locker( &mutex );
 
   // The following code is taken from:
-  // http://people.csail.mit.edu/albert/bluez-intr
-  // A special thank you to the author
+  // http://people.csail.mit.edu/albert/bluez-intro
+  // A special thank you to the author!
 
   // Get the device identifier of the local default adapter
   int devId = hci_get_route(0);
@@ -85,7 +85,7 @@ void BluetoothDevices::slot_RetrieveBtDevice()
     {
       result = QObject::tr("Bluetooth Service is offline!");
 
-      // qWarning() << result << strerror(errno);
+      qWarning() << result << strerror(errno);
 
       emit retrievedBtDevice( false, result );
 
@@ -94,69 +94,56 @@ void BluetoothDevices::slot_RetrieveBtDevice()
       return;
     }
 
-  // Read the reachable BT remote devices by using hcitool. Got not running
-  // Dbus bluetooth interface on Maemo.
-  qDebug() << "Calling: /usr/bin/hcitool scan";
+  int len = 8;
+  int max_rsp = 255;
+  long flags = IREQ_CACHE_FLUSH;
 
-  FILE* pipe = popen( "/usr/bin/hcitool scan", "r" );
+  inquiry_info *ii = (inquiry_info *) malloc( max_rsp * sizeof(inquiry_info) );
 
-  if( ! pipe )
+  int num_rsp = hci_inquiry( devId, len, max_rsp, 0, &ii, flags );
+
+  if( num_rsp < 0 )
     {
-      result = QObject::tr("hcitool error! ") + strerror(errno);
+      result = QObject::tr("Bluetooth Scan failed!");
 
-      qWarning() << "GpsCon::getBtDevice:" << result;
+      qWarning() << result << strerror(errno);
 
       emit retrievedBtDevice( false, result );
 
       // Stop the event loop and destroy this thread.
+      free( ii );
       quit();
       return;
     }
 
-  // Define a regular expression for a bluetooth address like "XX:XX:XX:XX:XX:XX"
-  QRegExp regExp( "([0-9A-Fa-f]{2,2}:){5,5}[0-9A-Fa-f]{2,2}" );
-
+  // Device map where the key is the BT name and the value is the BT address.
   QMap<QString, QString> knownDevices;
 
-  char buf[256];
+  char addr[19];
+  char name[248];
 
-  // We do parse the output of the hcitool. A valid line starts with a BT address
-  // followed by the device name.
-  while( fgets( buf, sizeof(buf), pipe ) )
+  for( int i = 0; i < num_rsp; i++ )
     {
-      QString line( buf );
+      memset( addr, 0, sizeof(addr) );
+      memset( name, 0, sizeof(name) );
 
-      line = line.trimmed();
+      ba2str( &(ii+i)->bdaddr, addr );
 
-      // Address of BT device XX:XX...
-      QString value = line.left(17);
-
-      // Name of BT device
-      QString key;
-
-      if( line.size() > 17 )
-         {
-            key = line.mid(17).trimmed();
-         }
-      else
-         {
-            // Not always a name is defined. We use the BT address as name
-            // in such a case.
-            key = value;
-         }
-
-      if( value.contains( QRegExp( regExp ) ) )
+      if( hci_read_remote_name( btSocket, &(ii+i)->bdaddr, sizeof(name), name, 0) < 0 )
         {
-          // Check validity of BT address.
-          knownDevices.insert( key, value );
+          // No name available for BT address.
+          knownDevices.insert( QString(addr), QString(addr) );
         }
       else
         {
-          continue;
+          knownDevices.insert( QString(name), QString(addr) );
         }
-    }
 
-  pclose( pipe );
+      qDebug() << "BT-Name:"  << name << "BT-Address:" << addr;
+  }
+
+  free( ii );
+  hci_close_dev( btSocket );
 
   if( knownDevices.isEmpty() )
     {

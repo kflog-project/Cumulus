@@ -219,6 +219,7 @@ bool GpsCon::startGpsReceiving()
           // user select one of them. This is done in an extra thread.
           if( BluetoothDevices::getNoOfInstances() == 0 )
             {
+              _globalMapView->message( tr("Searching GPS BT devices") );
               // allow only one instance to run.
               BluetoothDevices *btThread = new BluetoothDevices( this );
 

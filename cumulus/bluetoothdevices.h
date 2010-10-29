@@ -20,7 +20,7 @@
  *
  * \brief A class for retrieving of reachable bluetooth devices
  *
- * This class uses the bluetooth hcitool command line tool to retrieve the
+ * This class uses the bluetooth library function hci_inquiry to retrieve the
  * reachable bluetooth devices. If devices are found, the user has to select one
  * device from a combo box dialog. The results are emitted via a signal. This
  * class is realized as a thread because scanning of bluetooth devices can take
