@@ -95,14 +95,14 @@ void BluetoothDevices::slot_RetrieveBtDevice()
     }
 
   int len = 8;
-  int max_rsp = 255;
+  int max_rsp = 0;
   long flags = IREQ_CACHE_FLUSH;
 
-  inquiry_info *ii = (inquiry_info *) malloc( max_rsp * sizeof(inquiry_info) );
+  inquiry_info *info = static_cast<inquiry_info *> (0);
 
   int num_rsp;
 
-  num_rsp = hci_inquiry( devId, len, max_rsp, 0, &ii, flags );
+  num_rsp = hci_inquiry( devId, len, max_rsp, 0, &info, flags );
 
   if( errno != EINTR && num_rsp < 0 )
     {
@@ -113,7 +113,6 @@ void BluetoothDevices::slot_RetrieveBtDevice()
       emit retrievedBtDevice( false, result );
 
       // Stop the event loop and destroy this thread.
-      free( ii );
       quit();
       return;
     }
@@ -121,7 +120,7 @@ void BluetoothDevices::slot_RetrieveBtDevice()
   // Device map where the key is the BT name and the value is the BT address.
   QMap<QString, QString> knownDevices;
 
-  char addr[19];
+  char addr[18];
   char name[248];
 
   for( int i = 0; i < num_rsp; i++ )
@@ -129,9 +128,9 @@ void BluetoothDevices::slot_RetrieveBtDevice()
       memset( addr, 0, sizeof(addr) );
       memset( name, 0, sizeof(name) );
 
-      ba2str( &(ii+i)->bdaddr, addr );
+      ba2str( &(info+i)->bdaddr, addr );
 
-      if( hci_read_remote_name( btSocket, &(ii+i)->bdaddr, sizeof(name), name, 0) < 0 )
+      if( hci_read_remote_name( btSocket, &(info+i)->bdaddr, sizeof(name), name, 25000 ) < 0 )
         {
           // No name available for BT address.
           knownDevices.insert( QString(addr), QString(addr) );
@@ -144,7 +143,7 @@ void BluetoothDevices::slot_RetrieveBtDevice()
       qDebug() << "BT-Name:"  << name << "BT-Address:" << addr;
   }
 
-  free( ii );
+  if( info ) free( info );
   hci_close_dev( btSocket );
 
   if( knownDevices.isEmpty() )
