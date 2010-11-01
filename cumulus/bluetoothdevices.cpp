@@ -102,7 +102,7 @@ void BluetoothDevices::retrieveBtDevice()
 
   inquiry_info *info = static_cast<inquiry_info *> (0);
 
-  int num_rsp;
+  int num_rsp = 0;
 
   num_rsp = hci_inquiry( devId, len, max_rsp, lap, &info, flags );
 
