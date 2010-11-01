@@ -55,17 +55,13 @@ BluetoothDevices::~BluetoothDevices()
 
 void BluetoothDevices::run()
 {
-  // Start this timer to continue the processing after stepping into the
-  // thread's event loop.
-  QTimer::singleShot( 1000, this, SLOT(slot_RetrieveBtDevice()) );
-
   // Starts the event loop of this thread.
   exec();
 }
 
-void BluetoothDevices::slot_RetrieveBtDevice()
+void BluetoothDevices::retrieveBtDevice()
 {
-  qDebug() << "slot_RetrieveBtDevice() in" << objectName();
+  qDebug() << "retrieveBtDevice() in" << objectName();
 
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &mutex );
@@ -77,11 +73,9 @@ void BluetoothDevices::slot_RetrieveBtDevice()
   // Get the device identifier of the local default adapter
   int devId = hci_get_route(0);
 
-  int btSocket = hci_open_dev( devId );
-
   QString result;
 
-  if( devId < 0 || btSocket < 0 )
+  if( devId < 0 )
     {
       result = QObject::tr("Bluetooth Service is offline!");
 
@@ -94,19 +88,42 @@ void BluetoothDevices::slot_RetrieveBtDevice()
       return;
     }
 
+  struct hci_dev_info di;
+
+  if( hci_devinfo(devId, &di) < 0 )
+    {
+       qDebug() << "Error" << errno << "hci_devinfo:" << strerror(errno);
+    }
+
   int len = 8;
   int max_rsp = 0;
   long flags = IREQ_CACHE_FLUSH;
+  uint8_t lap[3] = { 0x33, 0x8b, 0x9e };
 
   inquiry_info *info = static_cast<inquiry_info *> (0);
 
   int num_rsp;
 
-  num_rsp = hci_inquiry( devId, len, max_rsp, 0, &info, flags );
+  num_rsp = hci_inquiry( devId, len, max_rsp, lap, &info, flags );
 
-  if( errno != EINTR && num_rsp < 0 )
+  if( num_rsp < 0 )
     {
       result = QObject::tr("Bluetooth Scan failed!");
+
+      qWarning() << result << strerror(errno);
+
+      emit retrievedBtDevice( false, result );
+
+      // Stop the event loop and destroy this thread.
+      quit();
+      return;
+    }
+
+  int btSocket = hci_open_dev( devId );
+
+  if( btSocket < 0 )
+    {
+      result = QObject::tr("Bluetooth Service is offline!");
 
       qWarning() << result << strerror(errno);
 
@@ -121,7 +138,7 @@ void BluetoothDevices::slot_RetrieveBtDevice()
   QMap<QString, QString> knownDevices;
 
   char addr[18];
-  char name[248];
+  char name[249];
 
   for( int i = 0; i < num_rsp; i++ )
     {
@@ -175,13 +192,15 @@ void BluetoothDevices::slot_RetrieveBtDevice()
         }
     }
 
+  bool ok;
+
   QString item = QInputDialog::getItem( _globalMapView,
                                         QObject::tr( "Select BT Adapter" ),
                                         QObject::tr( "BT Adapter:" ),
-                                        items, no, false );
-  if( item.isEmpty() )
+                                        items, no, false, &ok );
+  if( ! ok || item.isEmpty() )
     {
-      result = "Empty line error!";
+      result = "";
       emit retrievedBtDevice( false, result );
 
       // Stop the event loop and destroy this thread.

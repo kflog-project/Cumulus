@@ -55,6 +55,11 @@ class BluetoothDevices : public QThread
     return noOfInstances;
   }
 
+  /**
+   * Starts the Bluetooth device search.
+   */
+  void retrieveBtDevice();
+
  protected:
 
   /**
@@ -66,14 +71,6 @@ class BluetoothDevices : public QThread
 
   /** Called to delete the thread. */
   void slot_destroy();
-
-  /**
-   * Helper method, which is called by a timer signal. The timer is setup in the
-   * run method of this thread, to call this method after timeout has expired.
-   * So the run method can step into the event loop, which is needed for
-   * event distributing and processing.
-   */
-  void slot_RetrieveBtDevice();
 
  signals:
 

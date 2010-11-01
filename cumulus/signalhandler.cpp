@@ -41,7 +41,7 @@ void initSignalHandler()
   sigemptyset( &sigset );  // set all signals in sigset
 
   sigaddset( &sigset, SIGHUP );
-  sigaddset( &sigset, SIGINT );
+  //sigaddset( &sigset, SIGINT );
   sigaddset( &sigset, SIGTERM );
   sigaddset( &sigset, SIGCHLD );
   sigaddset( &sigset, SIGPIPE );
@@ -60,7 +60,7 @@ void initSignalHandler()
   sigemptyset(&act.sa_mask);
 
   // We're only interested in children that have terminated, not ones
-  // which have been stopped (eg user pressing control-Z at terminal)
+  // which have been stopped (e.g. user pressing control-Z at terminal)
 
   act.sa_flags = SA_NOCLDSTOP | SA_RESTART;
 
@@ -69,10 +69,12 @@ void initSignalHandler()
       fprintf( stderr, "sigaction for signal SIGHUP failed\n" );
     }
 
+#ifdef INTERRUPT_YES
   if ( sigaction(SIGINT, &act, 0) < 0 )
     {
       fprintf( stderr, "sigaction for signal SIGINT failed\n" );
     }
+#endif
 
   if ( sigaction(SIGTERM, &act, 0) < 0 )
     {

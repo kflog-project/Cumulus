@@ -231,6 +231,7 @@ bool GpsCon::startGpsReceiving()
                        SLOT(slot_StartGpsBtReceiving(bool, QString&)) );
 
               btThread->start();
+              btThread->retrieveBtDevice();
             }
 
           return true;
@@ -280,14 +281,17 @@ void GpsCon::slot_StartGpsBtReceiving( bool ok, QString& btAddress )
   // First check for unsuccess
   if( ok == false )
     {
-      QMessageBox msgBox( QMessageBox::Critical,
-                          QObject::tr("GPS BT Devices?"),
-                          QObject::tr("No GPS BT devices are in view!"),
-                          QMessageBox::Ok,
-                          _globalMapView );
+      if( ! btAddress.isEmpty() )
+        {
+          QMessageBox msgBox( QMessageBox::Critical,
+                              QObject::tr("GPS BT Devices?"),
+                              QObject::tr("No GPS BT devices are in view!"),
+                              QMessageBox::Ok,
+                              _globalMapView );
 
-      msgBox.setInformativeText( btAddress );
-      msgBox.exec();
+          msgBox.setInformativeText( btAddress );
+          msgBox.exec();
+        }
 
       // No BT device available or other error. We do shutdown
       // the GPS client process. That will initiate a restart
