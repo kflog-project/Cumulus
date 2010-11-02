@@ -225,10 +225,14 @@ bool GpsCon::startGpsReceiving()
 
               // Connect the receiver of the results. It is located in this
               // thread and not in the new opened thread.
+              //typedef QMap<QString, QString> BtDeviceMap;
+
+              qRegisterMetaType<BtDeviceMap>("BtDeviceMap");
+
               connect( btThread,
-                       SIGNAL(retrievedBtDevice(bool, QString)),
+                       SIGNAL(retrievedBtDevices(bool, QString, BtDeviceMap)),
                        this,
-                       SLOT(slot_StartGpsBtReceiving(bool, QString)) );
+                       SLOT(slot_StartGpsBtReceiving(bool, QString, BtDeviceMap)) );
 
               btThread->start();
             }
@@ -273,7 +277,9 @@ bool GpsCon::startGpsReceiving()
 
 #ifdef BLUEZ
 
-void GpsCon::slot_StartGpsBtReceiving( bool ok, QString btAddress )
+void GpsCon::slot_StartGpsBtReceiving( bool ok,
+                                       QString error,
+                                       BtDeviceMap devices )
 {
   qDebug() << "GpsCon::slot_StartGpsBtReceiving in"
            << objectName() << QThread::currentThreadId();
@@ -281,34 +287,56 @@ void GpsCon::slot_StartGpsBtReceiving( bool ok, QString btAddress )
   // First check for unsuccess
   if( ok == false )
     {
-      if( ! btAddress.isEmpty() )
-        {
-          QMessageBox msgBox( QMessageBox::Critical,
-                              QObject::tr("GPS BT Devices?"),
-                              QObject::tr("No GPS BT devices are in view!"),
-                              QMessageBox::Ok,
-                              _globalMapView );
+      QMessageBox msgBox( QMessageBox::Critical,
+                          QObject::tr("GPS BT Devices?"),
+                          QObject::tr("No GPS BT devices are in view!"),
+                          QMessageBox::Ok,
+                          _globalMapView );
 
-          msgBox.setInformativeText( btAddress );
-          msgBox.exec();
-        }
+      msgBox.setInformativeText( error );
+      msgBox.exec();
 
-      // No BT device available or other error. We do shutdown
-      // the GPS client process. That will initiate a restart
-      // by the Cumulus process supervision.
-      clientNotifier->setEnabled( false );
-      delete clientNotifier;
-      clientNotifier = static_cast<QSocketNotifier *>(0);
-
-      writeClientMessage( 0, MSG_SHD );
-
-      server.closeClientSock(0);
-      server.closeClientSock(1);
-
-      // Try next daemon restart after 30s
-      timer->start( 30000 );
+      // No BT device available or other error.
+      triggerRetry();
       return;
     }
+
+  QString lastBtDevice = GeneralConfig::instance()->getGpsBtDevice();
+
+  QStringList items( devices.keys() );
+
+  // Try to preselect a previous used BT GPS device
+  int no = 0;
+
+  if( ! lastBtDevice.isEmpty() )
+    {
+      for( int i = 0; i < items.size(); i++ )
+        {
+          if( items[i] == lastBtDevice )
+            {
+              no = i;
+              break;
+            }
+        }
+    }
+
+  bool okay;
+
+  QString item = QInputDialog::getItem( _globalMapView,
+                                        QObject::tr( "Select BT Adapter" ),
+                                        QObject::tr( "BT Adapter:" ),
+                                        items, no, false, &okay );
+  if( ! okay || item.isEmpty() )
+    {
+      triggerRetry();
+      return;
+    }
+
+  // Get BT address from device map.
+  QString btAddress = devices.value( item );
+
+  // Save last selected BT device.
+  GeneralConfig::instance()->setGpsBtDevice( item );
 
   // We do send the connection data to the GPS client process now.
   // Note! Device and speed are always expected at GPS client side,
@@ -340,6 +368,24 @@ void GpsCon::slot_StartGpsBtReceiving( bool ok, QString btAddress )
 }
 
 #endif
+
+void GpsCon::triggerRetry()
+{
+  // No BT devices available or other error. We do shutdown
+  // the GPS client process. That will initiate a restart
+  // by the Cumulus process supervision.
+  clientNotifier->setEnabled( false );
+  delete clientNotifier;
+  clientNotifier = static_cast<QSocketNotifier *>(0);
+
+  writeClientMessage( 0, MSG_SHD );
+
+  server.closeClientSock(0);
+  server.closeClientSock(1);
+
+  // Try next daemon restart after 30s
+  timer->start( 30000 );
+}
 
 /**
  * Stops the GPS receiver on the client side.

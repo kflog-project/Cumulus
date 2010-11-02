@@ -38,6 +38,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QMap>
 #include <QSocketNotifier>
 #include <QDateTime>
 #include <QTimer>
@@ -173,6 +174,11 @@ class GpsCon : public QObject
      */
     void queryClient();
 
+    /**
+     * Triggers a connection retry in case of error.
+     */
+    void triggerRetry();
+
   private slots:
     /**
      * This slot is triggered by the QT main loop and is used to handle the
@@ -200,15 +206,21 @@ class GpsCon : public QObject
     /**
      * This slot is called by the Bluetooth device search method, to
      * present the search results. In dependency of the results the
-     * connection to the BT GPS device will be established.
+     * connection to the BT GPS device will be established or not.
      *
      * \param ok        True means a BT device has been found. In case of
      *                  false an error message is contained in parameter
      *                  btAddress.
-     * \param btAddress Address of the the Bluetooth device to be used
-     *                  for connect or an error string.
+     * \param error     An error string, if ok is false.
+     * \param devices   Found bluetooth devices. Key is the logical name,
+     *                  value is the bluetooth address.
+     *
      */
-    void slot_StartGpsBtReceiving( bool ok, QString btAddress );
+    typedef QMap<QString, QString> BtDeviceMap;
+
+    void slot_StartGpsBtReceiving( bool ok,
+                                   QString error,
+                                   BtDeviceMap devices );
 
 #endif
 

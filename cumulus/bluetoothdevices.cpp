@@ -55,7 +55,7 @@ BluetoothDevices::~BluetoothDevices()
 
 void BluetoothDevices::run()
 {
-  qDebug() << "BT run() entry, Tid=" << pthread_self();
+  qDebug() << "BT run() entry, Tid=" << QThread::currentThreadId();
 
   QTimer timer;
   timer.setSingleShot( true );
@@ -71,12 +71,17 @@ void BluetoothDevices::run()
   // Starts the event loop of this thread.
   exec();
 
-  qDebug() << "BT run() exit, Tid=" << pthread_self();
+  qDebug() << "BT run() exit, Tid=" << QThread::currentThreadId();
 }
 
 void BluetoothDevices::slot_RetrieveBtDevice()
 {
-  qDebug() << "slot_RetrieveBtDevice() in" << objectName();
+  qDebug() << "slot_RetrieveBtDevice() in"
+           << objectName()
+           << QThread::currentThreadId();
+
+  // Device map where the key is the BT name and the value is the BT address.
+  BtDeviceMap btDevices;
 
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &mutex );
@@ -88,15 +93,15 @@ void BluetoothDevices::slot_RetrieveBtDevice()
   // Get the device identifier of the local default adapter
   int devId = hci_get_route(0);
 
-  QString result;
+  QString error;
 
   if( devId < 0 )
     {
-      result = QObject::tr("Bluetooth Service is offline!");
+      error = QObject::tr("Bluetooth Service is offline!");
 
-      qWarning() << result << strerror(errno);
+      qWarning() << error << strerror(errno);
 
-      emit retrievedBtDevice( false, result );
+      emit retrievedBtDevices( false, error, btDevices );
 
       // Stop the event loop and destroy this thread.
       quit();
@@ -123,11 +128,11 @@ void BluetoothDevices::slot_RetrieveBtDevice()
 
   if( num_rsp < 0 )
     {
-      result = QObject::tr("Bluetooth Scan failed!");
+      error = QObject::tr("Bluetooth Scan failed!");
 
-      qWarning() << result << strerror(errno);
+      qWarning() << error << strerror(errno);
 
-      emit retrievedBtDevice( false, result );
+      emit retrievedBtDevices( false, error, btDevices );
 
       // Stop the event loop and destroy this thread.
       quit();
@@ -138,19 +143,16 @@ void BluetoothDevices::slot_RetrieveBtDevice()
 
   if( btSocket < 0 )
     {
-      result = QObject::tr("Bluetooth Service is offline!");
+      error = QObject::tr("Bluetooth Service is offline!");
 
-      qWarning() << result << strerror(errno);
+      qWarning() << error << strerror(errno);
 
-      emit retrievedBtDevice( false, result );
+      emit retrievedBtDevices( false, error, btDevices );
 
       // Stop the event loop and destroy this thread.
       quit();
       return;
     }
-
-  // Device map where the key is the BT name and the value is the BT address.
-  QMap<QString, QString> knownDevices;
 
   char addr[18];
   char name[249];
@@ -162,14 +164,15 @@ void BluetoothDevices::slot_RetrieveBtDevice()
 
       ba2str( &(info+i)->bdaddr, addr );
 
+      // Translate bt address into an human name.
       if( hci_read_remote_name( btSocket, &(info+i)->bdaddr, sizeof(name), name, 25000 ) < 0 )
         {
           // No name available for BT address.
-          knownDevices.insert( QString(addr), QString(addr) );
+          btDevices.insert( QString(addr), QString(addr) );
         }
       else
         {
-          knownDevices.insert( QString(name), QString(addr) );
+          btDevices.insert( QString(name), QString(addr) );
         }
 
       qDebug() << "BT-Name:"  << name << "BT-Address:" << addr;
@@ -178,58 +181,15 @@ void BluetoothDevices::slot_RetrieveBtDevice()
   if( info ) free( info );
   hci_close_dev( btSocket );
 
-  if( knownDevices.isEmpty() )
+  if( btDevices.isEmpty() )
     {
-      result = QObject::tr("Please switch on your BT GPS!");
-      emit retrievedBtDevice( false, result );
-
-      // Stop the event loop and destroy this thread.
-      quit();
-      return;
+      error = QObject::tr("Please switch on your BT GPS!");
+      emit retrievedBtDevices( false, error, btDevices );
     }
-
-  QString lastBtDevice = GeneralConfig::instance()->getGpsBtDevice();
-
-  QStringList items( knownDevices.keys() );
-
-  // Try to preselect a previous used BT GPS device
-  int no = 0;
-
-  if( ! lastBtDevice.isEmpty() )
+  else
     {
-      for( int i = 0; i < items.size(); i++ )
-        {
-          if( items[i] == lastBtDevice )
-            {
-              no = i;
-              break;
-            }
-        }
+      emit retrievedBtDevices( true, error, btDevices );
     }
-
-  bool ok;
-
-  QString item = QInputDialog::getItem( _globalMapView,
-                                        QObject::tr( "Select BT Adapter" ),
-                                        QObject::tr( "BT Adapter:" ),
-                                        items, no, false, &ok );
-  if( ! ok || item.isEmpty() )
-    {
-      result = "";
-      emit retrievedBtDevice( false, result );
-
-      // Stop the event loop and destroy this thread.
-      quit();
-      return;
-    }
-
-  // Get BT address from device map.
-  result = knownDevices.value( item );
-
-  // Save last selected BT device.
-  GeneralConfig::instance()->setGpsBtDevice( item );
-
-  emit retrievedBtDevice( true, result );
 
   // Stop the event loop and destroy this thread.
   quit();

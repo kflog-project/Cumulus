@@ -34,6 +34,7 @@
 #include <QThread>
 #include <QMutex>
 #include <QString>
+#include <QMap>
 
 class BluetoothDevices : public QThread
 {
@@ -80,10 +81,14 @@ class BluetoothDevices : public QThread
   *
   * \param ok True is a BT device has been found and selected.
   *
-  * \param btAddress Address of select BT device if ok is true, otherwise
-  *                  it contains an error text.
+  * \param error An error string, if ok is false.
+  *
+  * \param devices Found bluetooth devices. Key is the logical name,
+  *                value is the bluetooth address.
   */
-  void retrievedBtDevice( bool ok, QString btAddress );
+  typedef QMap<QString, QString> BtDeviceMap;
+
+  void retrievedBtDevices( bool ok, QString error, BtDeviceMap devices );
 
  private:
 
