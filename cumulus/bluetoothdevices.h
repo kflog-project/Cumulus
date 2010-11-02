@@ -55,11 +55,6 @@ class BluetoothDevices : public QThread
     return noOfInstances;
   }
 
-  /**
-   * Starts the Bluetooth device search.
-   */
-  void retrieveBtDevice();
-
  protected:
 
   /**
@@ -70,7 +65,12 @@ class BluetoothDevices : public QThread
  private slots:
 
   /** Called to delete the thread. */
-  void slot_destroy();
+  void slot_Destroy();
+
+  /**
+   * Starts the Bluetooth device search.
+   */
+  void slot_RetrieveBtDevice();
 
  signals:
 
@@ -83,7 +83,7 @@ class BluetoothDevices : public QThread
   * \param btAddress Address of select BT device if ok is true, otherwise
   *                  it contains an error text.
   */
-  void retrievedBtDevice( bool ok, QString& btAddress );
+  void retrievedBtDevice( bool ok, QString btAddress );
 
  private:
 

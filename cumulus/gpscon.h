@@ -208,7 +208,7 @@ class GpsCon : public QObject
      * \param btAddress Address of the the Bluetooth device to be used
      *                  for connect or an error string.
      */
-    void slot_StartGpsBtReceiving( bool ok, QString& btAddress );
+    void slot_StartGpsBtReceiving( bool ok, QString btAddress );
 
 #endif
 

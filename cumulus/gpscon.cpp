@@ -226,12 +226,11 @@ bool GpsCon::startGpsReceiving()
               // Connect the receiver of the results. It is located in this
               // thread and not in the new opened thread.
               connect( btThread,
-                       SIGNAL(retrievedBtDevice(bool, QString&)),
+                       SIGNAL(retrievedBtDevice(bool, QString)),
                        this,
-                       SLOT(slot_StartGpsBtReceiving(bool, QString&)) );
+                       SLOT(slot_StartGpsBtReceiving(bool, QString)) );
 
               btThread->start();
-              btThread->retrieveBtDevice();
             }
 
           return true;
@@ -274,9 +273,10 @@ bool GpsCon::startGpsReceiving()
 
 #ifdef BLUEZ
 
-void GpsCon::slot_StartGpsBtReceiving( bool ok, QString& btAddress )
+void GpsCon::slot_StartGpsBtReceiving( bool ok, QString btAddress )
 {
-  qDebug() << "GpsCon::slot_StartGpsBtReceiving in" << objectName();
+  qDebug() << "GpsCon::slot_StartGpsBtReceiving in"
+           << objectName() << QThread::currentThreadId();
 
   // First check for unsuccess
   if( ok == false )

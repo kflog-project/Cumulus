@@ -45,7 +45,7 @@ BluetoothDevices::BluetoothDevices( QObject *parent ) : QThread( parent )
   setObjectName( "BluetoothDevices" );
 
   // Activate self destroy after finish signal has been caught.
-  connect( this, SIGNAL(finished()), this, SLOT(slot_destroy()) );
+  connect( this, SIGNAL(finished()), this, SLOT(slot_Destroy()) );
 }
 
 BluetoothDevices::~BluetoothDevices()
@@ -55,13 +55,28 @@ BluetoothDevices::~BluetoothDevices()
 
 void BluetoothDevices::run()
 {
+  qDebug() << "BT run() entry, Tid=" << pthread_self();
+
+  QTimer timer;
+  timer.setSingleShot( true );
+
+  // @AP Note! The flag Qt::DirectConnection is the most important one,
+  //  otherwise the wrong thread is connected.
+  connect( &timer, SIGNAL(timeout()),
+           this, SLOT(slot_RetrieveBtDevice()),
+           Qt::DirectConnection );
+
+  timer.start(0);
+
   // Starts the event loop of this thread.
   exec();
+
+  qDebug() << "BT run() exit, Tid=" << pthread_self();
 }
 
-void BluetoothDevices::retrieveBtDevice()
+void BluetoothDevices::slot_RetrieveBtDevice()
 {
-  qDebug() << "retrieveBtDevice() in" << objectName();
+  qDebug() << "slot_RetrieveBtDevice() in" << objectName();
 
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &mutex );
@@ -221,7 +236,7 @@ void BluetoothDevices::retrieveBtDevice()
   return;
 }
 
-void BluetoothDevices::slot_destroy()
+void BluetoothDevices::slot_Destroy()
 {
   // deletes the thread object after execution is finished
   delete this;
