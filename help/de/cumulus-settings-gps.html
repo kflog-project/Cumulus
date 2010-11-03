@@ -53,6 +53,7 @@
       <li> Serialle Schittstelle (RS232) z.B. /dev/ttyS0.
       <li> Bluetooth Schittstelle z.B. /dev/rfcomm0
       <li> USB Schittstelle z.B. /dev/ttyUSB0
+      <li> BT Adapter
       <li> GPS Location
       <li> NMEA Simulator
     </ul>
@@ -69,6 +70,17 @@
     bitte den Eintrag <i>/dev/ttyUSB0</i> aus. Falls Sie einen RS232-USB Konverter
     verwenden, m&uuml;ssen Sie auch eine passende &Uuml;bertragungsgeschwingigkeit dazu
     ausw&auml;hlen.</p>
+
+    <p>Eine andere Auswahlm&ouml;glichkeit ist der Eintrag <i>BT-Adapter</i>. Wenn
+    Sie diesen w&auml;hlen, startet Cumulus automatisch einen Suchlauf nach
+    erreichbaren Bluetooth Ger&auml;ten in Ihrer Umgebung. Werden solche
+    Ger&auml;te gefunden, werden Sie in einem Combobox Dialog nach einiger Zeit
+    angeboten. W&auml;hlen Sie dort einen passenden Eintrag aus. War Ihre Auswahl
+    falsch, so m&uuml;ssen Sie Cumulus neu starten. Eine andere M&ouml;glichkeit
+    gibt es in diesem Fall nicht. Der direkte Kontakt eines GPS Ger&auml;tes &uuml;ber
+    Bluetooth bietet f&uuml;r Cumulus die M&ouml;glichkeit auch alle angebotenen NMEA
+    Datens&auml;tze von diesem Ger&auml;t ungefiltert zu erhalten. Das selbe
+    gilt f&uuml;r RS232 und USB Schnittstellen.</p>
 
     Ist Ihre Schittstelle nicht in der Liste zu finden, so &auml;ndern Sie
     einfach einen bestehenden Eintrag, entspreched Ihren W&uuml;nschen, ab.

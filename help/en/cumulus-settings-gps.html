@@ -61,6 +61,7 @@
       <li> Serial devices (RS232) like /dev/ttyS0.
       <li> Bluetooth devices like /dev/rfcomm0
       <li> USB devices like /dev/ttyUSB0
+      <li> BT Adapter
       <li> GPS Location
       <li> NMEA Simulator
     </ul>
@@ -72,7 +73,12 @@
     If you use a Nokia Internet Tablet N800/N810/N900 the entry
     <i>GPS Location</i> should be your first selection unless you want
     to connect via your USB interface adapter to the GPS. In such a
-    case select the device <i>/dev/ttyUSB0</i>.
+    case select the device <i>/dev/ttyUSB0</i>. Another possibility is to select
+    the entry <i>BT Adapter</i>. In this case Cumulus will scan automatically
+    your environment for reachable GPS Bluetooth devices. If devices have been
+    found, a combo box dialog is opened and you can select one device from the
+    list. Cumulus tries then to open a connection to this device. If your
+    device selection was wrong, you have to restart Cumulus.
     </p>
     If your device is not contained in the selection list, you can change
     one of the predefined entries to your need.
