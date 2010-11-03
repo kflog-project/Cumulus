@@ -14,7 +14,16 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-
+[-] 2010-11-03 AP: BUGFIX: Wrong floating point formatting fixed in GPS
+                   simulator, if language is not C on N8x0 and N900. The decimal
+                   point was replaced by a comma.
+[+] 2010-11-03 AP: Bluetooth GPS devices can be directly connected by Cumulus
+                   now. That ensures the full access to their reported NMEA
+                   stream. LibLocation of Maemo4 and Maemo5 provides only
+                   GPS basic data and that is sometimes to less.
+[+] 2010-11-03 AP: GPS sentence filter added to daemon process, to ensure that
+                   only well known NMEA sentences are processed and forwarded
+                   to the Cumulus GUI processs.
 [o] 2010-10-18 AP: Welt2000 has changed the file name. The date part was
                    removed and the name is now WELT2000.TXT.
 [o] 2010-10-15 AP: Several dialog windows changed to a tool window because
