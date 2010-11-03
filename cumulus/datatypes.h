@@ -36,8 +36,8 @@
 /**
  * Special data type to return the found Bluetooth devices to the GUI thread
  * via a signal from another running thread.
- * The map key is the logical bluetooth device name, the map value is the
- * bluetooth address belonging to key.
+ * The map key is the logical Bluetooth device name, the map value is the
+ * Bluetooth address belonging to key.
  */
 typedef QMap<QString, QString> BtDeviceMap;
 
