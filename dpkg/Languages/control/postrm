@@ -23,8 +23,12 @@ case "$1" in
     purge|remove)
     	# remove remaining language parts of cumulus
         test -d /opt/cumulus/locale/de && rm -rf /opt/cumulus/locale/de
-	test -d /opt/cumulus/help/de && rm -rf /opt/cumulus/help/de
-	exit 0
+      	test -d /opt/cumulus/help/de && rm -rf /opt/cumulus/help/de
+      	exit 0
+    ;;
+
+    upgrade|disappear|failed-upgrade|abort-install|abort-upgrade)
+        exit 0
     ;;
 
     *)
