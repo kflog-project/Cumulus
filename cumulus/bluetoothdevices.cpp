@@ -26,11 +26,7 @@
 
 #include <QtGui>
 
-#include "mapview.h"
 #include "bluetoothdevices.h"
-#include "generalconfig.h"
-
-extern MapView *_globalMapView;
 
 // set static member variable
 QMutex BluetoothDevices::mutex;
@@ -55,31 +51,26 @@ BluetoothDevices::~BluetoothDevices()
 
 void BluetoothDevices::run()
 {
-  qDebug() << "BT run() entry, Tid=" << QThread::currentThreadId();
+  // qDebug() << "BT run() entry, Tid=" << QThread::currentThreadId();
 
   QTimer timer;
   timer.setSingleShot( true );
 
   // @AP Note! The flag Qt::DirectConnection is the most important one,
-  //  otherwise the wrong thread is connected.
+  //     otherwise the wrong thread is connected.
   connect( &timer, SIGNAL(timeout()),
            this, SLOT(slot_RetrieveBtDevice()),
            Qt::DirectConnection );
 
+  // Trick to get event loop running and to continue handling.
   timer.start(0);
 
-  // Starts the event loop of this thread.
+  // Starts the event loop of this thread. Event loop is stopped by calling quit().
   exec();
-
-  qDebug() << "BT run() exit, Tid=" << QThread::currentThreadId();
 }
 
 void BluetoothDevices::slot_RetrieveBtDevice()
 {
-  qDebug() << "slot_RetrieveBtDevice() in"
-           << objectName()
-           << QThread::currentThreadId();
-
   // Device map where the key is the BT name and the value is the BT address.
   BtDeviceMap btDevices;
 
@@ -88,9 +79,11 @@ void BluetoothDevices::slot_RetrieveBtDevice()
 
   // The following code is taken from:
   // http://people.csail.mit.edu/albert/bluez-intro
-  // A special thank you to the author!
+  // A special thank you to the author! But notice, not all coding examples
+  // are correct. Look into the code of the bluetooth tool 'hcitool' under
+  // the scan option.
 
-  // Get the device identifier of the local default adapter
+  // Get the device identifier of the local bluetooth default adapter
   int devId = hci_get_route(0);
 
   QString error;
@@ -103,7 +96,7 @@ void BluetoothDevices::slot_RetrieveBtDevice()
 
       emit retrievedBtDevices( false, error, btDevices );
 
-      // Stop the event loop and destroy this thread.
+      // Stop the thread event loop.
       quit();
       return;
     }
@@ -112,7 +105,7 @@ void BluetoothDevices::slot_RetrieveBtDevice()
 
   if( hci_devinfo(devId, &di) < 0 )
     {
-       qDebug() << "Error" << errno << "hci_devinfo:" << strerror(errno);
+       qWarning() << "Error" << errno << "hci_devinfo:" << strerror(errno);
     }
 
   int len = 8;
@@ -134,7 +127,7 @@ void BluetoothDevices::slot_RetrieveBtDevice()
 
       emit retrievedBtDevices( false, error, btDevices );
 
-      // Stop the event loop and destroy this thread.
+      // Stop the thread event loop.
       quit();
       return;
     }
@@ -149,7 +142,7 @@ void BluetoothDevices::slot_RetrieveBtDevice()
 
       emit retrievedBtDevices( false, error, btDevices );
 
-      // Stop the event loop and destroy this thread.
+      // Stop the thread event loop.
       quit();
       return;
     }
@@ -175,10 +168,14 @@ void BluetoothDevices::slot_RetrieveBtDevice()
           btDevices.insert( QString(name), QString(addr) );
         }
 
-      qDebug() << "BT-Name:"  << name << "BT-Address:" << addr;
+      // qDebug() << "BT-Name:"  << name << "BT-Address:" << addr;
   }
 
-  if( info ) free( info );
+  if( info )
+    {
+      free( info );
+    }
+
   hci_close_dev( btSocket );
 
   if( btDevices.isEmpty() )
@@ -191,7 +188,7 @@ void BluetoothDevices::slot_RetrieveBtDevice()
       emit retrievedBtDevices( true, error, btDevices );
     }
 
-  // Stop the event loop and destroy this thread.
+  // Stop the thread event loop.
   quit();
   return;
 }

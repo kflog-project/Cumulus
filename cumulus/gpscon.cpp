@@ -33,6 +33,7 @@
 
 #include "generalconfig.h"
 #include "mapview.h"
+#include "gpsnmea.h"
 #include "gpscon.h"
 #include "signalhandler.h"
 #include "protocol.h"
@@ -101,7 +102,7 @@ GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
   // end point will be created.
   if( server.init( IPC_IP, port ) == false )
     {
-      qWarning("IPC Server init failed!");
+      qWarning() << "IPC Server init failed!";
       return;
     }
 
@@ -223,12 +224,12 @@ bool GpsCon::startGpsReceiving()
               // allow only one instance to run.
               BluetoothDevices *btThread = new BluetoothDevices( this );
 
-              // Connect the receiver of the results. It is located in this
-              // thread and not in the new opened thread.
-              //typedef QMap<QString, QString> BtDeviceMap;
-
+              // Register a special data type for return results. That must be
+              // done to transfer the results between different threads.
               qRegisterMetaType<BtDeviceMap>("BtDeviceMap");
 
+              // Connect the receiver of the results. It is located in this
+              // thread and not in the new opened thread.
               connect( btThread,
                        SIGNAL(retrievedBtDevices(bool, QString, BtDeviceMap)),
                        this,
@@ -281,9 +282,6 @@ void GpsCon::slot_StartGpsBtReceiving( bool ok,
                                        QString error,
                                        BtDeviceMap devices )
 {
-  qDebug() << "GpsCon::slot_StartGpsBtReceiving in"
-           << objectName() << QThread::currentThreadId();
-
   // First check for unsuccess
   if( ok == false )
     {
@@ -305,7 +303,7 @@ void GpsCon::slot_StartGpsBtReceiving( bool ok,
 
   QStringList items( devices.keys() );
 
-  // Try to preselect a previous used BT GPS device
+  // Try to preselect a previous used BT GPS device from the returned results.
   int no = 0;
 
   if( ! lastBtDevice.isEmpty() )
@@ -322,9 +320,10 @@ void GpsCon::slot_StartGpsBtReceiving( bool ok,
 
   bool okay;
 
+  // Ask the user to select a BT device.
   QString item = QInputDialog::getItem( _globalMapView,
-                                        QObject::tr( "Select BT Adapter" ),
-                                        QObject::tr( "BT Adapter:" ),
+                                        QObject::tr( "Select GPS BT Device" ),
+                                        QObject::tr( "GPS BT Device:" ),
                                         items, no, false, &okay );
   if( ! okay || item.isEmpty() )
     {
@@ -353,7 +352,7 @@ void GpsCon::slot_StartGpsBtReceiving( bool ok,
   else
     {
 #ifdef DEBUG
-      qDebug("%s Gps client initialization succeeded", method.toLatin1().data());
+      qDebug() << method << "GPS client initialization succeeded";
 #endif
     }
 
@@ -371,7 +370,7 @@ void GpsCon::slot_StartGpsBtReceiving( bool ok,
 
 void GpsCon::triggerRetry()
 {
-  // No BT devices available or other error. We do shutdown
+  // No GPS BT devices are available or other error. We do shutdown
   // the GPS client process. That will initiate a restart
   // by the Cumulus process supervision.
   clientNotifier->setEnabled( false );
@@ -461,8 +460,10 @@ bool GpsCon::startClientProcess()
 
 #ifdef DEBUG
 
-          qDebug( "%s gpsClient(%d) process is alive!",
-                  method.toLatin1().data(), getPid() );
+          qDebug() << method
+                   << "gpsClient process"
+                   << getPid()
+                   << "is alive!";
 #endif
 
           return true;
@@ -540,16 +541,18 @@ bool GpsCon::startClientProcess()
   // Check, if passed GPS client binary is accessible
   if( found == false && access(exe.toLatin1().data(), X_OK) != 0 )
     {
-      qWarning("%s Gps client binary %s is not accessible! "
-               "Cannot start Gps client.",
-               method.toLatin1().data(),
-               exe.toLatin1().data());
+      qWarning() << method
+                 << "GPS client binary"
+                 << exe
+                 << "is not accessible! Cannot start GPS client.";
 
       return false;
     }
 
 #ifdef DEBUG
-  qDebug( "%s used path to gpsClient is: %s", method.toLatin1().data(), exe.toLatin1().data() );
+  qDebug() << method
+           << "Path to gpsClient is:"
+           << exe;
 #endif
 
   //---------------------------------------------------------------
@@ -561,8 +564,10 @@ bool GpsCon::startClientProcess()
   if( pid == -1 ) // fork error
     {
 
-      qWarning( "%s vfork() returns with ERROR: errno=%d, %s",
-                method.toLatin1().data(), errno, strerror(errno) );
+      qWarning() << method
+                 << "vfork() ERROR:"
+                 << errno
+                 << strerror(errno);
 
       return false;
     }
@@ -628,8 +633,8 @@ bool GpsCon::startClientProcess()
 
       if( res == -1 )
         {
-          qWarning( "%s Startup of a new gpsClient process failed!",
-                    method.toLatin1().data() );
+          qWarning() << method
+                     << "Startup gpsClient process failed!";
 
           _globalMapView->message( tr("GPS daemon start failed!") );
           return false;
@@ -644,8 +649,10 @@ bool GpsCon::startClientProcess()
 
   setPid( pid ); // store child's pid
 
-  qWarning( "%s Startup of a new gpsClient(%d) process succeeded!",
-            method.toLatin1().data(), getPid() );
+  qDebug() << method
+           << "Startup gpsClient process"
+           << getPid()
+           << "succeeded!";
 
   return true;
 }
@@ -743,17 +750,19 @@ void GpsCon::slot_ListenEvent( int socket )
 
       if( msg == MSG_NEG )
         {
-          qWarning("%s Client-Server protocol mismatch!", method.toLatin1().data());
+          qWarning() << method << "Client-Server protocol mismatch!";
           return;
         }
+
+      // Tells the client, what GPS sentences are to be processed.
+      sendGpsKeys();
 
       // Start the GPS receiver after a new connect to get it running.
       startGpsReceiving();
       return;
     }
 
-  qWarning("%s All available socket descriptors are occupied!",
-           method.toLatin1().data());
+  qWarning() << method << "All available socket descriptors are occupied!";
 }
 
 /**
@@ -762,7 +771,7 @@ void GpsCon::slot_ListenEvent( int socket )
  */
 void GpsCon::slot_NotificationEvent( int socket )
 {
-  QString method = QString("GPSCon::slot_NotificationEvent(%1):").arg(socket);
+  static QString method = QString("GPSCon::slot_NotificationEvent(%1):").arg(socket);
 
   // Disable client notifier if socket shall be read. Advised by Qt.
   clientNotifier->setEnabled( false );
@@ -935,7 +944,7 @@ void GpsCon::writeClientMessage( uint index, const char *msg  )
  */
 void GpsCon::sendSentence(const QString& sentence)
 {
-  static QString method = "GPSCon::sendSentence():";
+  QString method = "GPSCon::sendSentence():";
 
   // don't try to send anything if there is no valid file
   if( server.getClientSock(0) == -1 )
@@ -950,14 +959,43 @@ void GpsCon::sendSentence(const QString& sentence)
 
   if( msg == MSG_NEG )
     {
-      qWarning("%s Send GPS message %s failed",
-               method.toLatin1().data(), sentence.toLatin1().data());
+      qWarning() << method << msg << "failed!";
     }
   else
     {
 #ifdef DEBUG
-      qDebug("%s Send GPS message %s succeeded",
-             method.toLatin1().data(), sentence.toLatin1().data());
+      qDebug() << method << msg << "succeeded!";
+#endif
+    }
+}
+
+void GpsCon::sendGpsKeys()
+{
+  QString method = "GPSCon::sendGpsKeys():";
+
+  const QHash<QString, short>& gpsHash = GpsNmea::getGpsMessageKeys();
+
+  if( gpsHash.isEmpty() )
+    {
+      return;
+    }
+
+  // Retrieve all GPS message keys from the GPS hash dictionary.
+  QStringList items( gpsHash.keys() );
+
+  QString msg = QString("%1 %2").arg(MSG_GPS_KEYS).arg(items.join(","));
+
+  writeClientMessage( 0, msg.toLatin1().data() );
+  readClientMessage( 0, msg );
+
+  if( msg == MSG_NEG )
+    {
+      qWarning() << method << msg << "failed!";
+    }
+  else
+    {
+#ifdef DEBUG
+      qDebug() << method << msg << "succeeded!";
 #endif
     }
 }

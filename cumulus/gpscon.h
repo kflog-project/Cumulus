@@ -44,6 +44,7 @@
 #include <QTimer>
 
 #include "ipc.h"
+#include "datatypes.h"
 
 // Device name for NMEA simulator. This name is also taken for the named pipe.
 #define NMEASIM_DEVICE "/tmp/nmeasim"
@@ -128,6 +129,14 @@ class GpsCon : public QObject
       return clientNotifier;
     };
 
+    /**
+     * Sends the well known GPS message keys to the GPS client process.
+     * Only GPS sentences starting with such a key are processed and forwarded
+     * to the Cumulus process. That shall avoid unneeded traffic between the
+     * two processes.
+     */
+    void sendGpsKeys();
+
     signals:
     /**
      * This signal is send every time a new sentence has arrived.
@@ -204,24 +213,21 @@ class GpsCon : public QObject
 #ifdef BLUEZ
 
     /**
-     * This slot is called by the Bluetooth device search method, to
-     * present the search results. In dependency of the results the
+     * This slot is called by the Bluetooth device search thread, to
+     * return the search results. In dependency of the results the
      * connection to the BT GPS device will be established or not.
      *
-     * \param ok        True means a BT device has been found. In case of
+     * \param ok        True means BT devices have been found. In case of
      *                  false an error message is contained in parameter
-     *                  btAddress.
+     *                  error.
      * \param error     An error string, if ok is false.
      * \param devices   Found bluetooth devices. Key is the logical name,
      *                  value is the bluetooth address.
      *
      */
-    typedef QMap<QString, QString> BtDeviceMap;
-
     void slot_StartGpsBtReceiving( bool ok,
                                    QString error,
                                    BtDeviceMap devices );
-
 #endif
 
   private:
@@ -254,7 +260,7 @@ class GpsCon : public QObject
     // RX/TX rate of serial device
     uint ioSpeed;
 
-    // Serial device
+    // GPS device name
     QString device;
  };
 

@@ -25,11 +25,11 @@
 #ifndef _Protocol_h_
 #define _Protocol_h_
 
-// Message Key word definitions
+// Message key word definitions
 
-#define MSG_PROTOCOL         "Cumulus-GPS_Client_IPC_V1.1_Axel@kflog.org"
+#define MSG_PROTOCOL   "Cumulus-GPS_Client_IPC_V1.2_Axel@kflog.org"
 
-#define MSG_MAGIC            "\\Magic\\"
+#define MSG_MAGIC      "\\Magic\\"
 
 #define MSG_POS		     "\\Positive\\"
 
@@ -65,12 +65,16 @@
 
 // shutdown request
 
-#define MSG_SHD	             "\\Shutdown\\"
+#define MSG_SHD	       "\\Shutdown\\"
+
+// GPS message keys to be processed.
+
+#define MSG_GPS_KEYS   "\\GPS_Msg_Keys\\"
 
 //------- Other message strings-------//
 
-#define MSG_CON_OFF          "#GPS_Connection_off#"
+#define MSG_CON_OFF     "#GPS_Connection_off#"
 
-#define MSG_CON_ON           "#GPS_Connection_on#"
+#define MSG_CON_ON      "#GPS_Connection_on#"
 
 #endif  // #ifndef _Protocol_h_

@@ -21,10 +21,10 @@
  * \brief A class for retrieving of reachable bluetooth devices
  *
  * This class uses the bluetooth library function hci_inquiry to retrieve the
- * reachable bluetooth devices. If devices are found, the user has to select one
- * device from a combo box dialog. The results are emitted via a signal. This
- * class is realized as a thread because scanning of bluetooth devices can take
- * some time and shall not block other GUI activities.
+ * reachable bluetooth devices. The found devices or an error description
+ * are emitted via a signal to the caller. This class is realized as a thread
+ * because scanning of bluetooth devices can take some time and shall not block
+ * other GUI activities.
  */
 
 #ifndef BLUETOOTH_DEVICES_H
@@ -34,7 +34,8 @@
 #include <QThread>
 #include <QMutex>
 #include <QString>
-#include <QMap>
+
+#include "datatypes.h"
 
 class BluetoothDevices : public QThread
 {
@@ -86,8 +87,6 @@ class BluetoothDevices : public QThread
   * \param devices Found bluetooth devices. Key is the logical name,
   *                value is the bluetooth address.
   */
-  typedef QMap<QString, QString> BtDeviceMap;
-
   void retrievedBtDevices( bool ok, QString error, BtDeviceMap devices );
 
  private:

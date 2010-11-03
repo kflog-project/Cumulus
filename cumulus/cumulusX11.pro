@@ -39,6 +39,7 @@ HEADERS = \
     basemapelement.h \
     configwidget.h \
     calculator.h \
+    datatypes.h \
     distance.h \
     elevationcolorimage.h \
     filetools.h \

@@ -24,6 +24,9 @@ CONFIG += flarm
 # Enable Internet features, if not wanted comment out the next line with a hash
 CONFIG +=internet
 
+# Enable bluetooth feature, if not wanted comment out the next line with a hash
+CONFIG += bluetooth
+
 HEADERS = \
     airfieldlistview.h \
     airfieldlistwidget.h \
@@ -37,6 +40,7 @@ HEADERS = \
     basemapelement.h \
     configwidget.h \
     calculator.h \
+    datatypes.h \
     distance.h \
     elevationcolorimage.h \
     filetools.h \
@@ -271,6 +275,16 @@ internet {
                proxydialog.cpp
                
     DEFINES += INTERNET
+}
+
+bluetooth {
+    DEFINES += BLUEZ
+  
+    HEADERS += bluetoothdevices.h
+    
+    SOURCES += bluetoothdevices.cpp
+    
+    LIBS += -lbluetooth
 }
 
 TARGET = cumulus

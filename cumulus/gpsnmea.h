@@ -359,6 +359,11 @@ class GpsNmea : public QObject
         return _mapDatum;
       };
 
+    static const QHash<QString, short>& getGpsMessageKeys()
+    {
+      return gpsHash;
+    };
+
   public slots: // Public slots
     /**
      * This slot is called by the GpsCon object when a new
