@@ -13,7 +13,7 @@
  **   the Free Software Foundation; either version 2 of the License, or
  **   (at your option) any later version.
  **
- **   $Id: messagehandler.cpp,v 1.0
+ **   $Id$
  **
  ***********************************************************************/
 
