@@ -22,6 +22,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <unistd.h>
+#include <math.h>
+
 #include <QDateTime>
 
 using namespace std;
@@ -41,7 +43,7 @@ char* GPRMC::dmshh_format_lat(double degrees)
       degrees = -degrees;
     }
 
-  deg_part = (int) degrees;
+  deg_part = (int) rint(degrees);
   min_part = 60.0 * (degrees - deg_part);
 
   sprintf( buf, "%02d%07.4f", deg_part, min_part );
@@ -60,7 +62,7 @@ char* GPRMC::dmshh_format_lon(double degrees)
       degrees = -degrees;
     }
 
-  deg_part = (int) degrees;
+  deg_part = (int) rint(degrees);
   min_part = 60.0 * (degrees - deg_part);
 
   sprintf( buf, "%03d%07.4f", deg_part, min_part );

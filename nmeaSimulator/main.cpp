@@ -7,6 +7,9 @@
                                2009 Axel Pauli GSA extension
                                2010 Axel Pauli Pause option
                                2010 Axel Pauli Sentence extension
+                               2010 Axel Pauli Reset language environment
+                                               variables to prevent wrong floating
+                                               point formatting.
 
     email                : axel@kflog.org
 
@@ -322,7 +325,7 @@ int main(int argc, char **argv)
     {
       char *prog = basename(argv[0]);
 
-      cout << "NMEA GPS Simulator 1.3.5 for Cumulus, 2003-2008 E. Voellm, 2009-2010 A. Pauli (GPL)" << endl << endl
+      cout << "NMEA GPS Simulator 1.3.6 for Cumulus, 2003-2008 E. Voellm, 2009-2010 A. Pauli (GPL)" << endl << endl
            << "Usage: " << prog << " str|cir|pos|gpos [params]" << endl << endl
            << "Parameters: str:  Straight Flight "<< endl
            << "            cir:  Circling "<< endl
@@ -350,6 +353,10 @@ int main(int argc, char **argv)
     }
 
   mode = Argv[0];
+
+  // Set language to C otherwise printed floats can have commas.
+  setenv( "LANG", "C", 1 );
+  setenv( "LC_NUMERIC", "C", 1 );
 
   // First of all read command configuration from file.
   // Determine configuration file position. It is normally stored in the home
