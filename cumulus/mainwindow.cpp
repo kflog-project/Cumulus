@@ -1734,21 +1734,29 @@ void MainWindow::slotCloseConfig()
 /** Shows version and copyright information */
 void MainWindow::slotVersion()
 {
-  QMessageBox::about ( this,
-                       "Cumulus",
-                       QString(tr(
-                                 "<html>"
-                                 "Cumulus X11 version %1<br>"
-                                 "<font size=-1>(compiled at %2 with QT %3)</font><br>"
-                                 "&copy; 2002-2010 by<br>"
-                                 "Andr&eacute; Somers, Eggert Ehmke<br>"
-                                 "Axel Pauli, Eckhard V&ouml;llm<br>"
-                                 "Josua Dietze, Michael Enke<br>"
-                                 "Hendrik M&uuml;ller, Florian Ehinger<br>"
-                                 "Heiner Lamprecht<br>"
-                                 "<a href=\"http://www.kflog.org/cumulus\">http://www.kflog.org/cumulus</a><br>"
-                                 "Published under the GPL<br>"
-                                 "</html>" ).arg( QString(CU_VERSION) ).arg( QString( __DATE__ )).arg( QString(QT_VERSION_STR) ) ) );
+  QMessageBox msgBox( QMessageBox::NoIcon,
+                      QObject::tr("About Cumulus"),
+                      QString(tr("Cumulus version %1")).arg( CU_VERSION),
+                      QMessageBox::Ok,
+                      this );
+
+  QString infoText(tr(
+            "<html>"
+            "Cumulus %1<br>"
+            "<font size=-1>(compiled at %2 with QT %3)</font><br>"
+            "&copy; 2002-2010 by<br>"
+            "Andr&eacute; Somers, Eggert Ehmke<br>"
+            "Axel Pauli, Eckhard V&ouml;llm<br>"
+            "Josua Dietze, Michael Enke<br>"
+            "Hendrik M&uuml;ller, Florian Ehinger<br>"
+            "Heiner Lamprecht<br>"
+            "<a href=\"http://www.kflog.org/cumulus\">http://www.kflog.org/cumulus</a><br>"
+            "Published under the GPL<br>"
+            "</html>" ).arg( QString(CU_VERSION) ).arg( QString( __DATE__ )).arg( QString(QT_VERSION_STR) ) );
+
+
+  msgBox.setInformativeText( infoText );
+  msgBox.exec();
 }
 
 

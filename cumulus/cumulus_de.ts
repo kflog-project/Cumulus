@@ -910,7 +910,7 @@
     </message>
     <message>
         <location filename="mainwindow.cpp" line="970"/>
-        <location filename="mainwindow.cpp" line="2040"/>
+        <location filename="mainwindow.cpp" line="2048"/>
         <source>Task</source>
         <translation>Aufgabe</translation>
     </message>
@@ -1016,7 +1016,7 @@
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1579"/>
-        <location filename="mainwindow.cpp" line="1867"/>
+        <location filename="mainwindow.cpp" line="1875"/>
         <source>Reachable</source>
         <translation>Erreichbar</translation>
     </message>
@@ -1032,46 +1032,55 @@
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1739"/>
-        <source>&lt;html&gt;Cumulus X11 version %1&lt;br&gt;&lt;font size=-1&gt;(compiled at %2 with QT %3)&lt;/font&gt;&lt;br&gt;&amp;copy; 2002-2010 by&lt;br&gt;Andr&amp;eacute; Somers, Eggert Ehmke&lt;br&gt;Axel Pauli, Eckhard V&amp;ouml;llm&lt;br&gt;Josua Dietze, Michael Enke&lt;br&gt;Hendrik M&amp;uuml;ller, Florian Ehinger&lt;br&gt;Heiner Lamprecht&lt;br&gt;&lt;a href=&quot;http://www.kflog.org/cumulus&quot;&gt;http://www.kflog.org/cumulus&lt;/a&gt;&lt;br&gt;Published under the GPL&lt;br&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Cumulus X11 Version %1&lt;br&gt;&lt;font size=-1&gt;(Kompiliert am %2 mit QT %3)&lt;/font&gt;&lt;br&gt;&amp;copy; 2002-2010 durch&lt;br&gt;Andr&amp;eacute; Somers, Eggert Ehmke&lt;br&gt;Axel Pauli, Eckhard V&amp;ouml;llm&lt;br&gt;Josua Dietze, Michael Enke&lt;br&gt;Hendrik M&amp;uuml;ller, Florian Ehinger&lt;br&gt;Heiner Lamprecht&lt;br&gt;&lt;a href=&quot;http://www.kflog.org/cumulus&quot;&gt;http://www.kflog.org/cumulus&lt;/a&gt;&lt;br&gt;Veröffentlicht unter der GPL&lt;br&gt;&lt;/html&gt;</translation>
+        <source>Cumulus version %1</source>
+        <translation>Cumulus Version %1</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1769"/>
+        <location filename="mainwindow.cpp" line="1743"/>
+        <source>&lt;html&gt;Cumulus %1&lt;br&gt;&lt;font size=-1&gt;(compiled at %2 with QT %3)&lt;/font&gt;&lt;br&gt;&amp;copy; 2002-2010 by&lt;br&gt;Andr&amp;eacute; Somers, Eggert Ehmke&lt;br&gt;Axel Pauli, Eckhard V&amp;ouml;llm&lt;br&gt;Josua Dietze, Michael Enke&lt;br&gt;Hendrik M&amp;uuml;ller, Florian Ehinger&lt;br&gt;Heiner Lamprecht&lt;br&gt;&lt;a href=&quot;http://www.kflog.org/cumulus&quot;&gt;http://www.kflog.org/cumulus&lt;/a&gt;&lt;br&gt;Published under the GPL&lt;br&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;Cumulus %1&lt;br&gt;&lt;font size=-1&gt;(Kompiliert am %2 mit QT %3)&lt;/font&gt;&lt;br&gt;&amp;copy; 2002-2010 durch&lt;br&gt;Andr&amp;eacute; Somers, Eggert Ehmke&lt;br&gt;Axel Pauli, Eckhard V&amp;ouml;llm&lt;br&gt;Josua Dietze, Michael Enke&lt;br&gt;Hendrik M&amp;uuml;ller, Florian Ehinger&lt;br&gt;Heiner Lamprecht&lt;br&gt;&lt;a href=&quot;http://www.kflog.org/cumulus&quot;&gt;http://www.kflog.org/cumulus&lt;/a&gt;&lt;br&gt;Veröffentlicht unter der GPL&lt;br&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;Cumulus X11 version %1&lt;br&gt;&lt;font size=-1&gt;(compiled at %2 with QT %3)&lt;/font&gt;&lt;br&gt;&amp;copy; 2002-2010 by&lt;br&gt;Andr&amp;eacute; Somers, Eggert Ehmke&lt;br&gt;Axel Pauli, Eckhard V&amp;ouml;llm&lt;br&gt;Josua Dietze, Michael Enke&lt;br&gt;Hendrik M&amp;uuml;ller, Florian Ehinger&lt;br&gt;Heiner Lamprecht&lt;br&gt;&lt;a href=&quot;http://www.kflog.org/cumulus&quot;&gt;http://www.kflog.org/cumulus&lt;/a&gt;&lt;br&gt;Published under the GPL&lt;br&gt;&lt;/html&gt;</source>
+        <translation type="obsolete">&lt;html&gt;Cumulus X11 Version %1&lt;br&gt;&lt;font size=-1&gt;(Kompiliert am %2 mit QT %3)&lt;/font&gt;&lt;br&gt;&amp;copy; 2002-2010 durch&lt;br&gt;Andr&amp;eacute; Somers, Eggert Ehmke&lt;br&gt;Axel Pauli, Eckhard V&amp;ouml;llm&lt;br&gt;Josua Dietze, Michael Enke&lt;br&gt;Hendrik M&amp;uuml;ller, Florian Ehinger&lt;br&gt;Heiner Lamprecht&lt;br&gt;&lt;a href=&quot;http://www.kflog.org/cumulus&quot;&gt;http://www.kflog.org/cumulus&lt;/a&gt;&lt;br&gt;Veröffentlicht unter der GPL&lt;br&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="1777"/>
         <source>WP%1-%2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1796"/>
+        <location filename="mainwindow.cpp" line="1804"/>
         <source>user created</source>
         <translation>Benutzer erzeugt</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1797"/>
+        <location filename="mainwindow.cpp" line="1805"/>
         <source>created by remember action at </source>
         <translation>Erzeugt durch Erinnerungsaktion am</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1898"/>
+        <location filename="mainwindow.cpp" line="1906"/>
         <source>Outlandings</source>
         <translation>Landefelder</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1973"/>
+        <location filename="mainwindow.cpp" line="1981"/>
         <source>Waypoint out of map range.</source>
         <translation>Wegpunkt außerhalb der Karte.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1996"/>
+        <location filename="mainwindow.cpp" line="2004"/>
         <source>Pre-Flight Settings</source>
         <translation>Vorflug Einstellungen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2086"/>
+        <location filename="mainwindow.cpp" line="2094"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2087"/>
+        <location filename="mainwindow.cpp" line="2095"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
@@ -2163,6 +2172,11 @@ Alle Downloads verworfen!</translation>
     <message>
         <source>Select BT Adapter</source>
         <translation type="obsolete">BT Adapter Auswahl</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="1738"/>
+        <source>About Cumulus</source>
+        <translation>Über Cumulus</translation>
     </message>
 </context>
 <context>
