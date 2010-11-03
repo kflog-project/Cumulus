@@ -139,8 +139,18 @@ void GpsClient::processEvent( fd_set *fdMask )
         {
           // problem occurred, likely buffer overrun. we do restart the GPS
           // receiving.
+          int error = errno; // Save errno
           closeGps();
-          sleep(1);
+
+          if( error == ECONNREFUSED )
+            {
+              // BT devices can reject a connection try. If we don't return here
+              // we run in an endless loop.
+              setShutdownFlag(true);
+              return;
+            }
+
+          sleep(3);
           // reopen connection
           openGps( device.data(), ioSpeedDevice );
         }
@@ -253,6 +263,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
   ioSpeedDevice   = ioSpeedIn;
   ioSpeedTerminal = getBaudrate(ioSpeedIn);
   badSentences    = 0;
+  unknownsReported.clear();
 
   if( deviceIn == (const char *) 0 || strlen(deviceIn) == 0 )
     {
@@ -444,8 +455,12 @@ void GpsClient::readSentenceFromBuffer()
 
       if( verifyCheckSum( record ) == true )
         {
-          // store sentence in the receiver queue, if checksum is ok
-          queueMsg( record );
+          // Store sentence in the receiver queue, if checksum is ok and
+          // processing is desired.
+          if( checkGpsMessageFilter( record ) == true )
+            {
+              queueMsg( record );
+            }
         }
 
 #ifdef DEBUG
@@ -468,7 +483,6 @@ void GpsClient::readSentenceFromBuffer()
       end = 0;
     }
 }
-
 
 /**
  * closes the connection to the GPS device
@@ -497,6 +511,41 @@ void GpsClient::closeGps()
   connectionLost = true;
   badSentences   = 0;
   last = QTime();
+}
+
+/**
+ * Check GPS message key, if it shall be processed or discarded.
+ *
+ * @returns true if processing desired otherwise false
+ */
+bool GpsClient::checkGpsMessageFilter( const char *sentence )
+{
+  QString msgKey( sentence );
+
+  int idx = msgKey.indexOf(",");
+
+  if( idx == -1 )
+    {
+      return false;
+    }
+
+  // Extract message key.
+  msgKey = msgKey.left(idx);
+
+  if( gpsMessageFilter.contains( msgKey ) || gpsMessageFilter.isEmpty() )
+    {
+      // message shall be processed.
+      return true;
+    }
+
+  if( unknownsReported.contains( msgKey ) == false )
+    {
+      // Message shall be discarded. We do report that only once.
+      unknownsReported.insert( msgKey );
+      qWarning() << "GPS sentence discarded!" << sentence;
+    }
+
+  return false;
 }
 
 /**
@@ -566,7 +615,7 @@ uchar GpsClient::calcCheckSum( const char *sentence )
     {
       uchar c = (uchar) sentence[i];
 
-      if( c == '$' ) // Start sign will not be considered
+      if( c == '$' || c == '!' ) // Start sign will not be considered
         {
           continue;
         }
@@ -671,19 +720,16 @@ void GpsClient::readServerMsg()
 
   // Split the received message into its single parts. Space is used
   // as separator.
-
   QString qbuf( buf );
   QStringList args = qbuf.split(" ");
   delete [] buf;
   buf = 0;
 
   // look, what server is requesting
-
   if( MSG_GM == args[0] )
     {
       // Get message is requested. We take the oldest element out of the
       // queue, if there is any.
-
       if( queue.count() == 0 ) // queue empty
         {
           writeServerMsg( MSG_NEG );
@@ -701,9 +747,10 @@ void GpsClient::readServerMsg()
       // check protocol versions, reply with pos or neg
       if( MSG_PROTOCOL != args[1] )
         {
-          qWarning() << method
-                     << "Message protocol versions are incompatible,"
-                     << "closes connection and shutdown client";
+          qCritical() << method
+                      << "Client-Server protocol mismatch!"
+                      << "Client:" << MSG_PROTOCOL
+                      << "Server:" << args[1];
 
           writeServerMsg( MSG_NEG );
           setShutdownFlag(true);
@@ -757,6 +804,23 @@ void GpsClient::readServerMsg()
         {
           writeServerMsg( MSG_POS );
         }
+    }
+  else if( MSG_GPS_KEYS == args[0] && args.count() == 2 )
+    {
+      // Well known GPS message keys are received.
+      QStringList keys = args[1].split( ",", QString::SkipEmptyParts );
+
+      // Clear old content.
+      gpsMessageFilter.clear();
+
+      for( int i = 0; i < keys.size(); i++ )
+        {
+          gpsMessageFilter.insert( keys.at(i) );
+        }
+
+      // qDebug() << "GPS-Keys:" << gpsMessageFilter;
+
+      writeServerMsg( MSG_POS );
     }
   else if( MSG_SHD == args[0] )
     {

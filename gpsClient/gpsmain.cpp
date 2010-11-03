@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2010 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ using namespace std;
 #include <sys/time.h>
 #include <iostream>
 
-#include <qstring.h>
+#include <QtCore>
 
 #include "signalhandler.h"
 #include "gpsclient.h"
@@ -41,7 +41,6 @@ using namespace std;
 //----------------------------------------------------
 
 extern bool shutdownState;
-
 
 // ===========================================================================
 // Usage of programm
@@ -54,7 +53,7 @@ void usage( char * progName )
        << "       -slave  (optional)  process is running as slave" << endl
        << endl;
 
-  exit (2);
+  exit(2);
 }
 
 /**
@@ -70,10 +69,6 @@ void usage( char * progName )
  */
 int main( int argc, char* argv[] )
 {
-  static QString method( "Main(): " );
-
-  int result;  // temporary return result variable
-
   unsigned short ipcPort = 0;
   bool           slave   = false;
 
@@ -137,6 +132,9 @@ int main( int argc, char* argv[] )
       usage( argv[0] );
     }
 
+  // install message handler
+  qInstallMsgHandler(0);
+
   // install signal handler for catching termination requests
   initSignalHandler();
 
@@ -149,7 +147,7 @@ int main( int argc, char* argv[] )
   // main loop of Gps Client process
   // ==========================================================================
 
-  while (1) // process event loop
+  while( true ) // process event loop
     {
       // check, if GpsClient instance has set shutdown flag or if
       // signal handler was called for shutdown
@@ -182,12 +180,12 @@ int main( int argc, char* argv[] )
 
       // Wait for read events or timeout
 
-      result = select( maxFds, readFds, (fd_set *) 0,
+      int result = select( maxFds, readFds, (fd_set *) 0,
                        (fd_set *) 0, &timerInterval );
 
-      if ( result == -1 ) // Select returned with error
+      if( result == -1 ) // Select returned with error
         {
-          if ( errno == EINTR )
+          if( errno == EINTR )
             {
               continue; // interrupted select call, ignore it
             }
@@ -201,12 +199,12 @@ int main( int argc, char* argv[] )
             }
         }
 
-      else if ( result > 0 ) // read event occurred
+      else if( result > 0 ) // read event occurred
         {
           // call gps client for event processing
           client->processEvent( readFds );
         }
-      else if ( result == 0 ) // timeout, do low prioritized things
+      else if( result == 0 ) // timeout, do low prioritized things
         {
         }
 
@@ -216,7 +214,7 @@ int main( int argc, char* argv[] )
 
     } // End of while
 
-  if (!strcmp(client->getDevice(), NMEASIM_DEVICE))
+  if( !strcmp(client->getDevice(), NMEASIM_DEVICE) )
     {
       // delete fifo: we leave the system as we found;
       // if start first cumulus and after that nmea simulator,
@@ -227,6 +225,5 @@ int main( int argc, char* argv[] )
 
   delete client; // shutdown clients activities
 
-  exit(0);
-
+  return 0;
 } // End of main

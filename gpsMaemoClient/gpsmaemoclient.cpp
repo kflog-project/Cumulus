@@ -1058,9 +1058,10 @@ void GpsMaemoClient::readServerMsg()
       // check protocol versions, reply with pos or neg
       if( MSG_PROTOCOL != args[1] )
         {
-          qWarning() << "GpsMaemoClient::readServerMsg():"
-                     << "Message protocol versions are incompatible,"
-                     << "closes connection and shutdown client";
+          qCritical() << "GpsMaemoClient::readServerMsg():"
+                      << "Client-Server protocol mismatch!"
+                      << "Client:" << MSG_PROTOCOL
+                      << "Server:" << args[1];
 
           writeServerMsg( MSG_NEG );
           setShutdownFlag(true);
@@ -1101,6 +1102,11 @@ void GpsMaemoClient::readServerMsg()
     {
       // Sent message to the GPS device is not supported.
       writeServerMsg( MSG_NEG );
+    }
+  else if( MSG_GPS_KEYS == args[0] && args.count() == 2 )
+    {
+      // Well known GPS message keys are received. We do ignore that here.
+      writeServerMsg( MSG_POS );
     }
   else if( MSG_SHD == args[0] )
     {

@@ -27,7 +27,8 @@
  *
  * a) RS232
  * b) USB
- * c) Bluetooth via RFCOMM
+ * c) a named pipe
+ * d) Bluetooth via RFCOMM
  *
  * The communication between this client class and the Cumulus main
  * process is realized via two sockets. One socket for NMEA data message
@@ -43,6 +44,7 @@
 #include <QDateTime>
 #include <QByteArray>
 #include <QQueue>
+#include <QSet>
 
 #include "ipc.h"
 
@@ -125,11 +127,18 @@ public:
   bool verifyCheckSum( const char *sentence );
 
   /**
+   * Check GPS message key, if it shall be processed or filtered out.
+   *
+   * @returns true if processing desired otherwise false
+   */
+  bool checkGpsMessageFilter( const char *sentence );
+
+  /**
    * \param newState The new value for the shutdown state.
    */
   void setShutdownFlag( bool newState )
   {
-      shutdown = newState;
+    shutdown = newState;
   };
 
   /**
@@ -137,7 +146,7 @@ public:
    */
   bool getShutdownFlag() const
   {
-      return shutdown;
+    return shutdown;
   };
 
   /**
@@ -158,11 +167,13 @@ public:
 
   void writeNotifMsg( const char *msg );
 
-  uint getBaudrate(int rate);
+  uint getBaudrate( int rate );
 
   /**
-   * put a new message into the process queue and sent a notification
+   * Puts a new message into the GPS sentence queue and sends a notification
    * to the server, if option notify is true.
+   *
+   * \param msg A GPS NMEA message to be queued
    */
   void queueMsg( const char* msg );
 
@@ -174,7 +185,8 @@ public:
 
   private:
 
-  // Serial device
+  // Used GPS device. Can be a /dev/... device name, a named pipe or a
+  // Bluetooth address.
   QByteArray device;
 
   // RX/TX rate of serial device
@@ -225,6 +237,18 @@ public:
 
   // Quality sentence counter
   int badSentences;
+
+  /**
+   * Filter set with well known GPS message keys. Only GPS messages starting
+   * with such a key are processed and forwarded.
+   */
+  QSet<QString> gpsMessageFilter;
+
+  /**
+   * Set containing reported unknown GPS message keys to avoid an endless error
+   * reporting.
+   */
+  QSet<QString> unknownsReported;
 };
 
 #endif
