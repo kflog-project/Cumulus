@@ -304,7 +304,7 @@
         <location filename="downloadmanager.cpp" line="103"/>
         <location filename="downloadmanager.cpp" line="239"/>
         <source>downloading </source>
-        <translation>download von</translation>
+        <translation>download von </translation>
     </message>
     <message>
         <location filename="downloadmanager.cpp" line="175"/>
