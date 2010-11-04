@@ -1,7 +1,7 @@
 ===============================================================================
-Building and installing Cumulus under X11 and Qt4.5.x for Linux/Unix
+Building and installing Cumulus under X11 and Qt4.7.x for Linux/Unix
 
-Last update: 2009-06-30 by Axel Pauli
+Last update: 2009-11-04 by Axel Pauli
 
 SVN info: $Id$
 ===============================================================================
@@ -17,24 +17,29 @@ following components are mandatory:
 
   a) The g++ tool, GNUs C++ compiler
   b) The Qt tools qmake, moc and lrelease
-  c) The Qt libraries libQtCore and libQtGui
+  c) The Qt libraries libQtCore, libQtGui, libQtNetwork
   d) The Qt header files
+  e) The Bluetooth header files and the libbluetooth library
   
-A Qt Release 4.5.0 or higher has to be used.
+At least a Qt Release 4.5.3 or higher has to be used.
 
 The different Linux distributions do provide normally installable packages for
-that. For Xubuntu 9.10 you have to execute the following command to get it:
+that. For Xubuntu 10.10 you have to execute the following command to get them:
 
-  sudo apt-get install g++ subversion qt4-qmake libqtgui4 libqtcore4 libqt4-dev
+  sudo apt-get install g++ subversion
+  sudo apt-get install qt4-qmake qt4-dev-tools libqtcore4 libqtgui4 \
+                       libqt4-dev libqt4-network
+  sudo apt-get install libbluetooth-dev bluez-utils bluez
 
-But you can build too Qt from the sources.
+You can build too Qt from the sources but that is not recommend, if you not
+familiar with that. 
 
 If all Qt stuff is already available you can continue with step 2)
 
 To build your own Qt from scratch download a X11/Qt release from
 ftp.qt.nokia.com/qt/source. I recommend the release:
 
-ftp://ftp.qt.nokia.com/qt/source/qt-x11-opensource-src-4.5.3.tar.gz
+ftp://ftp.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.7.0.tar.gz
 
 I did the development with this release. For Cumulus you need the standard
 Qt4 libraries libQtCore, libQtGui and libQtNetwork. If you want to debug Cumulus
@@ -44,12 +49,12 @@ configure script.
 Copy the Qt tar ball in a local directory of your Linux desktop and extract it
 with:
   
-  tar zxf qt-x11-opensource-src-4.5.3.tar.gz
+  tar zxf qt-everywhere-opensource-src-4.7.0.tar.gz
 
 Call the configure script in the root directory of your Qt source tree with the
 following options:
 
-  ./configure -prefix /opt/qt4.5.3 -opensource -no-qt3support -no-xmlpatterns
+  ./configure -prefix /opt/qt4.7.0 -opensource -no-qt3support -no-xmlpatterns
               -no-phonon -no-phonon-backend -no-webkit -no-scripttools
               -no-openssl -nomake examples -nomake demos -nomake docs
               -nomake translations -no-nis -no-cups
@@ -78,10 +83,10 @@ To use your own Qt version, you have to add the
 
 e.g. BASH example
 
-  PATH=/opt/qt4.5.3/bin:$PATH
+  PATH=/opt/qt4.7.0/bin:$PATH
   export PATH
 	
-  in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.5.3'.
+  in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.7.0'.
 
 The PATH variable can be displayed by calling 'echo $PATH' on a shell
 command line.
@@ -91,21 +96,21 @@ Step 2)
 Check if you can call 'g++ --version' from a shell command line. You should
 see some output like this:
 
-  g++ (Ubuntu 4.4.1-4ubuntu9) 4.4.1
+  gcc version 4.4.5 (Ubuntu/Linaro 4.4.4-14ubuntu5)
   
 Check if you can call 'qmake -v' from a shell command line. You should
 see some output like this:
 
   QMake version 2.01a
-  Using Qt version 4.5.3 in ...
+  Using Qt version 4.7.0 in /usr/lib
    
 Check if you can call 'moc -v' from a shell command line. You should
 see some output like this:
 
-  Qt Meta Object Compiler version 61 (Qt 4.5.3)
+  Qt Meta Object Compiler version 62 (Qt 4.7.0)
    
 If both checks are successfully Qt is right installed. If a call fails or you
-see a version less than 4.5 check the PATH variable for containing the right
+see a version less than 4.7 check the PATH variable for containing the right
 Qt bin directory at the first position (see above).
 
 Step 3)
@@ -168,9 +173,16 @@ command:
   install  Installs Cumulus under $(INSTALL_ROOT), normally /opt/cumulus
   
 If you want to build a smaller release you can switch off the features
-Flarm and Internet download in the related qmake project file. Change into the
-subdirectory cumulus and edit the file cumulusX11.pro. Comment out the lines
-"CONFIG += flarm" or "CONFIG +=internet" with a hash mark.
+Flarm, Internet download or Bluetooth in the related qmake project file. Change
+into the subdirectory cumulus and edit the file cumulusX11.pro. Comment out
+one or more of the lines:
+
+CONFIG += flarm
+CONFIG += internet
+CONFIG += bluetooth
+
+with a hash mark. That disables the related feature. The bluetooth feature must
+be disabled too in the project file gpsClient/gpsClientX11.pro.
 
 Step 5)
 
@@ -217,8 +229,8 @@ The landscape files are to find in the KFLog Map room.
 
 http://www.kflog.org/maproom/ground-and-terrain-data
 
-Welt2000 and landscape files are downloaded by Cumulus after the startup, if you
-permit that.
+NOTE! Welt2000 and landscape files are downloaded automatically by Cumulus
+after the startup, if you permit that.
 
 Step 7)
 
@@ -245,6 +257,30 @@ can use it for generation of NMEA data. Call it without any arguments and you
 will get a help usage displayed. The output of the simulator is written in a
 named pipe. Select in Cumulus as GPS device /tmp/nmeasim and Cumulus will read
 the data from the simulator.
+
+===============================================================================
+
+Cumulus package for Maemo
+
+Cumulus packages for the Nokia Internet Tablets N8x0 and N900 can only be built
+in a scratchbox environment called Maemo SDK. How to setup it look here:
+
+  http://maemo.org/development/
+
+The makefiles Makefile.Maemo4 or Makefile.Maemo5 will do the package build.
+
+Issue the following make comand for Maemo4 (N8x0)
+
+  make -f Makefile.Maemo4 all dpkg dpkg_lang
+
+Issue the following make comand for Maemo5 (N900)
+
+  make -f Makefile.Maemo5 all dpkg
+  make -f Makefile.Maemo4 dpkg_lang
+
+in the right Maemo SDK envrironment to get a dpkg package of Cumulus. Maemo 4
+and Maemo 5 uses different SDK installations. The make target dpkg_lang provides
+a German language package for the GUI.
 
 Hints, improvements or help are always welcome. Please contact the maintainer of
 Cumulus, Axel Pauli, via email axel@kflog.org or use the mailing lists of KFLog
