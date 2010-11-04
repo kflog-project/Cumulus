@@ -272,8 +272,8 @@ copy_web:
 # copies debian language package to web page
 .PHONY : copy_lang_web
 copy_lang_web:
-  scp -C dpkg/Languages/cumuluslanguages_$(VERSION)_armel.deb \
-         web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
+	scp -C dpkg/Languages/cumuluslanguages_$(VERSION)_armel.deb \
+               web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
 
 qmake:	cumulus/Makefile gpsClient/Makefile gpsMaemoClient/Makefile nmeaSimulator/Makefile
 
