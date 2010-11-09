@@ -172,9 +172,9 @@ SOURCES = \
     isolist.cpp \
     lineelement.cpp \
     listviewfilter.cpp \
+    maemostyle.cpp \
     main.cpp \
     mainwindow.cpp \
-    maemostyle.cpp \
     mapcalc.cpp \
     mapconfig.cpp \
     mapcontents.cpp \

@@ -22,9 +22,7 @@ using namespace std;
 #include <stdlib.h>
 #include <cmath>
 
-#include <QApplication>
-#include <QDir>
-#include <QPixmapCache>
+#include <QtGui>
 
 #include "generalconfig.h"
 #include "hwinfo.h"
@@ -34,7 +32,7 @@ using namespace std;
 #include "distance.h"
 #include "time_cu.h"
 
-#ifdef MAEMO4
+#ifdef MAEMO
 #include "maemostyle.h"
 #endif
 
@@ -1551,29 +1549,14 @@ QString GeneralConfig::getDefaultProxy()
  */
 void GeneralConfig::setOurGuiStyle()
 {
-#ifdef MAEMO4
+  qDebug() << "GuiStyle:" << _guiStyle;
 
-  if( _guiStyle == "Windows" )
-    {
-      QApplication::setStyle( new MaemoWindowsStyle() );
-    }
-  else if( _guiStyle == "Cleanlooks" )
-    {
-      QApplication::setStyle( new MaemoCleanlooksStyle() );
-    }
-  else if( _guiStyle == "Plastique" )
-    {
-      QApplication::setStyle( new MaemoPlastiqueStyle() );
-    }
-  else
-    {
-      QApplication::setStyle( _guiStyle );
-    }
-#else
+  QStyle* style = QApplication::setStyle( _guiStyle );
 
-  QApplication::setStyle( _guiStyle );
-
+#ifdef MAEMO
+  QApplication::setStyle( new MaemoProxyStyle( style ) );
 #endif
+
 }
 
 /** Sets the terrain color at position index */

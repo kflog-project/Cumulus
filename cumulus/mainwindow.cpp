@@ -31,7 +31,6 @@
 #include <signal.h>
 #include <sys/ioctl.h>
 
-#include <QtCore>
 #include <QtGui>
 
 #include "generalconfig.h"
@@ -149,8 +148,10 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
       // qApp->setInputContext(hildonInputContext);
     }
 
-  // For Maemo it's really better to pre-set style and font
-  // QApplication::setGlobalStrut( QSize(24,16) );
+  // For Maemo it's really better to pre-set style and font. That is partly done
+  // in the class MaemoStyle.
+
+  qDebug() << "GuiStyles:" << QStyleFactory::keys();
 
   // Set our own GUI style
   GeneralConfig::instance()->setOurGuiStyle();
@@ -167,12 +168,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   QApplication::setPalette(appPal);
 #endif
 
-  // increase width of scrollers in tab bars. The default is 20 pixels.
-  qApp->setStyleSheet( "QTabBar::scroller { width: 40px; }" );
-
 #endif
-
-  //qApp->setStyleSheet( "QComboBox::drop-down { width: 15px; }" );
 
   // sets the user's selected font, if defined
   QString fontString = GeneralConfig::instance()->getGuiFont();

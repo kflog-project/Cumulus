@@ -65,6 +65,7 @@ HEADERS = \
     limitedlist.h \
     lineelement.h \
     listviewfilter.h \
+    maemostyle.h \
     mainwindow.h \
     mapcalc.h \
     mapconfig.h \
@@ -171,6 +172,7 @@ SOURCES = \
     isolist.cpp \
     lineelement.cpp \
     listviewfilter.cpp \
+    maemostyle.cpp \
     main.cpp \
     mainwindow.cpp \
     mapcalc.cpp \
