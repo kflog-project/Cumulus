@@ -36,6 +36,10 @@ public:
 
   virtual ~MaemoProxyStyle() {};
 
+  /**
+   * \param metric Pixel metric where is ask for its size.
+   * \return The value of the given pixel metric.
+   */
   virtual int pixelMetric( PixelMetric metric,
                            const QStyleOption *option = 0,
                            const QWidget *widget = 0 ) const;

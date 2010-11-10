@@ -15,6 +15,7 @@
 **
 ***********************************************************************/
 
+#include <signal.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,6 +53,11 @@ BluetoothDevices::~BluetoothDevices()
 void BluetoothDevices::run()
 {
   // qDebug() << "BT run() entry, Tid=" << QThread::currentThreadId();
+  sigset_t sigset;
+  sigfillset( &sigset );
+
+  // deactivate all signals in this thread
+  pthread_sigmask( SIG_SETMASK, &sigset, 0 );
 
   QTimer timer;
   timer.setSingleShot( true );

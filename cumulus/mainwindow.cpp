@@ -128,6 +128,13 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 //  qDebug("QAppFont family %s, pointSize=%d pixelSize=%d",
 //         appFt.family().toLatin1().data(), appFt.pointSize(), appFt.pixelSize() );
 
+  // For Maemo it's really better to adapt the size of some common widget
+  // elements. That is done with the help of the class MaemoStyle.
+  qDebug() << "GuiStyles:" << QStyleFactory::keys();
+
+  // Set GUI style and style proxy.
+  GeneralConfig::instance()->setOurGuiStyle();
+
 #ifdef MAEMO
 
   // That we do need for the location service. This service emits signals, which
@@ -147,14 +154,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
     {
       // qApp->setInputContext(hildonInputContext);
     }
-
-  // For Maemo it's really better to pre-set style and font. That is partly done
-  // in the class MaemoStyle.
-
-  qDebug() << "GuiStyles:" << QStyleFactory::keys();
-
-  // Set our own GUI style
-  GeneralConfig::instance()->setOurGuiStyle();
 
 #ifdef MAEMO4
   // N8x0 display has bad contrast for light shades, so make the (dialog)
@@ -199,8 +198,8 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // get last saved window geometric from GeneralConfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
 
-  qWarning( "Cumulus, Release: %s, Build date:  %s based on Qt/X11 Version %s",
-            CU_VERSION, __DATE__, QT_VERSION_STR );
+  qDebug( "Cumulus, Release: %s, Build date:  %s based on Qt/X11 Version %s",
+           CU_VERSION, __DATE__, QT_VERSION_STR );
 
   qDebug( "Desktop size is %dx%d, width=%d, height=%d",
           QApplication::desktop()->screenGeometry().width(),
@@ -258,22 +257,23 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   setVisible( true );
 
   ws = new WaitScreen(this);
-  ws->setVisible( true );
+  ws->slot_SetText1( tr( "Starting Cumulus..." ) );
 
-  qApp->processEvents();
+  QCoreApplication::processEvents();
 
   // Here we do finish the base initialization and start a timer
   // to continue startup in another method. This is done, to get
-  // running the window manager event loop. Otherwise the behavior
+  // running the window's manager event loop. Otherwise the behavior
   // of some widgets is undefined.
 
   // when the timer expires the cumulus startup is continued
-  QTimer::singleShot(400, this, SLOT(slotCreateApplicationWidgets()));
+  QTimer::singleShot(2000, this, SLOT(slotCreateApplicationWidgets()));
  }
 
-/** creates the application widgets after the base initialization
- *  of the core application window.
-*/
+/**
+ * Creates the application widgets after the base initialization
+ * of the core application window.
+ */
 void MainWindow::slotCreateApplicationWidgets()
 {
   // qDebug( "MainWindow::slotCreateApplicationWidgets()" );
@@ -333,7 +333,7 @@ void MainWindow::slotCreateApplicationWidgets()
 
   // This is the main widget of Cumulus
   viewMap = new MapView( this );
-  viewMap->hide();
+  viewMap->setVisible( false );
 
   _globalMapView = viewMap;
   view = mapView;
@@ -656,7 +656,7 @@ void MainWindow::slotCreateApplicationWidgets()
 
   // close wait screen
   ws->setScreenUsage( false );
-  ws->hide();
+  ws->setVisible( false );
   // closes and removes the splash screen
   splash->close();
 
@@ -688,7 +688,7 @@ MainWindow::~MainWindow()
 
 #ifdef MAEMO
 
-  // stop maemo screen saver off triggering
+  // stop Maemo screen saver off triggering
   if( ossoContext )
     {
       ossoDisplayTrigger->stop();
@@ -804,7 +804,7 @@ void MainWindow::initMenuBar()
   helpMenu->addAction( actionHelpAboutApp );
   helpMenu->addAction( actionHelpAboutQt );
 
-  menuBar()->hide();
+  menuBar()->setVisible( false );
 
   slotSetMenuBarFontSize();
 }
@@ -1264,7 +1264,7 @@ void MainWindow::slotToggleMenu()
   else
     {
       menuBarVisible = false;
-      menuBar()->hide();
+      menuBar()->setVisible( false );
     }
 }
 
@@ -1313,7 +1313,7 @@ void MainWindow::slotViewStatusBar( bool toggle )
   if ( toggle )
     viewMap->statusBar()->setVisible( true );
   else
-    viewMap->statusBar()->hide();
+    viewMap->statusBar()->setVisible( false );
 }
 
 /** Called if the logging is actually toggled */
@@ -1386,7 +1386,7 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
         }
       else
         {
-          menuBar()->hide();
+          menuBar()->setVisible( false );
         }
 
       fileMenu->setEnabled( true );
@@ -1395,8 +1395,8 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
       setupMenu->setEnabled( true );
       helpMenu->setEnabled( true );
 
-      listViewTabs->hide();
-      viewInfo->hide();
+      listViewTabs->setVisible( false );
+      viewInfo->setVisible( false );
       viewMap->setVisible( true );
 
       toggleManualNavActions( GpsNmea::gps->getGpsStatus() != GpsNmea::validFix ||
@@ -1421,9 +1421,9 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
 
     case wpView:
 
-      menuBar()->hide();
-      viewMap->hide();
-      viewInfo->hide();
+      menuBar()->setVisible( false );
+      viewMap->setVisible( false );
+      viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewWP );
       listViewTabs->setVisible( true );
 
@@ -1436,9 +1436,9 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
 
     case rpView:
       {
-        menuBar()->hide();
-        viewMap->hide();
-        viewInfo->hide();
+        menuBar()->setVisible( false );
+        viewMap->setVisible( false );
+        viewInfo->setVisible( false );
 
         setNearestOrReachableHeaders();
 
@@ -1455,9 +1455,9 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
 
     case afView:
 
-      menuBar()->hide();
-      viewMap->hide();
-      viewInfo->hide();
+      menuBar()->setVisible( false );
+      viewMap->setVisible( false );
+      viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewAF );
       listViewTabs->setVisible( true );
 
@@ -1470,9 +1470,9 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
 
     case olView:
 
-      menuBar()->hide();
-      viewMap->hide();
-      viewInfo->hide();
+      menuBar()->setVisible( false );
+      viewMap->setVisible( false );
+      viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewOL );
       listViewTabs->setVisible( true );
 
@@ -1491,9 +1491,9 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
           return;
         }
 
-      menuBar()->hide();
-      viewMap->hide();
-      viewInfo->hide();
+      menuBar()->setVisible( false );
+      viewMap->setVisible( false );
+      viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewTP );
       listViewTabs->setVisible( true );
 
@@ -1511,9 +1511,9 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
           return;
         }
 
-      menuBar()->hide();
-      viewMap->hide();
-      listViewTabs->hide();
+      menuBar()->setVisible( false );
+      viewMap->setVisible( false );
+      listViewTabs->setVisible( false );
       viewInfo->showWP( view, *wp );
 
       toggleManualNavActions( false );
@@ -1525,9 +1525,9 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
 
     case tpSwitchView:
 
-      menuBar()->hide();
-      viewMap->hide();
-      listViewTabs->hide();
+      menuBar()->setVisible( false );
+      viewMap->setVisible( false );
+      listViewTabs->setVisible( false );
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
@@ -1538,9 +1538,9 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
 
     case cfView:
       // called if configuration or preflight widget was created
-      menuBar()->hide();
-      viewMap->hide();
-      listViewTabs->hide();
+      menuBar()->setVisible( false );
+      viewMap->setVisible( false );
+      listViewTabs->setVisible( false );
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
@@ -1550,7 +1550,7 @@ void MainWindow::setView( const appView& newVal, const wayPoint* wp )
 
     case flarmView:
       // called if Flarm view is created
-      menuBar()->hide();
+      menuBar()->setVisible( false );
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );

@@ -6,8 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by Andre Somers
-**                   2009 by Axel Pauli
+**   Copyright (c):  2002 by André Somers
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,29 +16,22 @@
 **
 ***********************************************************************/
 
-#include <QFrame>
-#include <QPainter>
+#include <QtGui>
 
 #include "waitscreen.h"
-#include "whatsthat.h"
-#include "mapview.h"
 #include "generalconfig.h"
 
-extern MapView *_globalMapView;
-
 WaitScreen::WaitScreen(QWidget *parent ) :
-  QDialog( parent, Qt::FramelessWindowHint | Qt::WindowTitleHint )
+  QDialog( parent, Qt::FramelessWindowHint )
 {
   setObjectName("WaitScreen");
-  setModal(true);
+  //setModal(true);
   _screenUsage = true;
-
-  setWindowTitle(tr("Please wait..."));
 
   QGridLayout * backLayout = new QGridLayout(this);
   QGridLayout * topLayout  = new QGridLayout();
   backLayout->setMargin(0);
-  topLayout->setMargin(0);
+  topLayout->setMargin(5);
 
   backLayout->addLayout(topLayout, 1, 1);
 
@@ -49,7 +42,7 @@ WaitScreen::WaitScreen(QWidget *parent ) :
 
   topLayout->setColumnMinimumWidth(0, 45);
 
-  QFrame * frm = new QFrame(this);
+  QFrame* frm = new QFrame(this);
   frm->setFrameStyle(QFrame::Box | QFrame::Plain);
   frm->setLineWidth(3);
   backLayout->addWidget(frm, 0, 0, 3, 3);
@@ -57,16 +50,16 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   Glider = new QLabel(this);
   topLayout->addWidget(Glider, 0, 0, 3, 0);
 
-  QLabel * txt = new QLabel(tr("Cumulus is working. Please wait ... "), this);
-  txt->setMinimumHeight(20);
+  QLabel* txt = new QLabel(tr("Cumulus is working, please wait!"), this);
+  txt->setMinimumHeight(22);
   topLayout->addWidget(txt, 0, 1);
 
   Text1 = new QLabel(this);
-  Text1->setMinimumHeight(20);
+  Text1->setMinimumHeight(22);
   topLayout->addWidget(Text1, 1, 1);
 
   Text2 = new QLabel(this);
-  Text2->setMinimumHeight(20);
+  Text2->setMinimumHeight(22);
   topLayout->addWidget(Text2, 2, 1);
 
   progress=0;
@@ -77,9 +70,10 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   _glider.fill( Glider->palette().color(QPalette::Window) );
 
   QPainter p(&_glider);
-  p.drawPixmap( 0, 0, _gliders, 0, 0, 40, 40);
+  p.drawPixmap( 0, 0, _gliders );
 
   Glider->setPixmap(_glider);
+  setVisible( true );
 }
 
 WaitScreen::~WaitScreen()
@@ -93,29 +87,22 @@ void WaitScreen::slot_SetText1(const QString& text)
 
   // qDebug("slot_SetText1(): text=%s\n", text.latin1());
 
-  if( WhatsThat::getInstance() )
-    {
-      // @AP: Return, if popup is active to avoid a blocking of wm
-      // return;
-    }
-
   if( screenUsage() )
     {
       slot_Progress(1);
     }
-  else
-    {
-      // _globalMapView->message(text);
-    }
 }
 
-
-/** This slot is used to set the secondary text, such as the name of the airspace file that is being loaded. It is also reset to an empty string if SetText1 is called. */
+/**
+ * This slot is used to set the secondary text, such as the name of the
+ * airspace file that is being loaded. It is also reset to an empty string
+ * if SetText1 is called.
+ */
 void WaitScreen::slot_SetText2(const QString& text)
 {
   QString shortText = text;
 
-  if(text.length()>32)
+  if( text.length() > 32 )
     {
       shortText="..." + text.right(32);
 
@@ -130,49 +117,34 @@ void WaitScreen::slot_SetText2(const QString& text)
 
   Text2->setText(shortText);
 
-  if( WhatsThat::getInstance() )
-    {
-      // @AP: Return, if popup is active to avoid a blocking of wm
-      // return;
-    }
-
   if( screenUsage() )
     {
       slot_Progress(1);
     }
-  else
-    {
-      // _globalMapView->message(shortText);
-    }
 }
 
-
-/** This slot is called to indicate progress. It is used to rotate the glider-icon to indicate to the user that something is in fact happening... */
-void WaitScreen::slot_Progress(int stepsize)
+/**
+ * This slot is called to indicate progress. It is used to rotate the
+ * glider-icon to indicate to the user that something is in fact happening...
+ */
+void WaitScreen::slot_Progress( int stepsize )
 {
-  if( WhatsThat::getInstance() )
-    {
-      // @AP: Return, if popup is active to avoid a blocking of wm
-      // return;
-    }
-
   if( screenUsage() )
     {
-      progress+=stepsize;
-      //  Prog->setText(QString("progress: %1").arg(progress));
-      int rot=(progress) % 24;  //we are rotating in steps of 15 degrees.
+      progress += stepsize;
 
-      if (lastRot!=rot)
+      int rot = progress % 24;  //we are rotating in steps of 15 degrees.
+
+      if( lastRot != rot )
         {
-          _glider.fill( Glider->palette().color(QPalette::Window) );
+          _glider.fill( Glider->palette().color( QPalette::Window ) );
 
-          QPainter p(&_glider);
-          p.drawPixmap( 0, 0, _gliders, rot*40, 0, 40, 40);
-          Glider->setPixmap(_glider);
+          QPainter p( &_glider );
+          p.drawPixmap( 0, 0, _gliders, rot * 40, 0, 40, 40 );
+          Glider->setPixmap( _glider );
 
-          lastRot=rot;
-          show();
-          // qDebug("========= WaitScreen::slot_Progress() calls repaint =========");
+          lastRot = rot;
+          setVisible( true );
           repaint();
         }
     }

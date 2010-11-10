@@ -1545,18 +1545,22 @@ QString GeneralConfig::getDefaultProxy()
 
 /**
  * Sets the GUI style, selected by the user.
- * Overwrites some GUI Style elements under Maemo4 to make them user friendly.
+ * Overwrites some GUI Style elements under Maemo to make them user friendly.
  */
 void GeneralConfig::setOurGuiStyle()
 {
-  qDebug() << "GuiStyle:" << _guiStyle;
-
-  QStyle* style = QApplication::setStyle( _guiStyle );
+  qDebug() << "Setting GuiStyle:" << _guiStyle;
 
 #ifdef MAEMO
-  QApplication::setStyle( new MaemoProxyStyle( style ) );
-#endif
 
+  QStyle* style = QApplication::setStyle( _guiStyle );
+  QApplication::setStyle( new MaemoProxyStyle( style ) );
+
+#else
+
+  QApplication::setStyle( _guiStyle );
+
+#endif
 }
 
 /** Sets the terrain color at position index */

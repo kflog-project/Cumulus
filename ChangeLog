@@ -14,6 +14,15 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-11-10 AP: WaitScreen class reworked.
+[o] 2010-11-10 AP: Qt 2.7.1 is used now for the build process of Maemo4.
+
+-------------------------------------------------
+Cumulus 2.7.x (Development based on X11/Qt-4.7.1)
+-------------------------------------------------
+
+[+] 2010-11-10 AP: Setup of a style proxy to make some widget elements larger
+                   on Maemo. E.g. the very small tab bar buttons are enlarged.
 [-] 2010-11-03 AP: BUGFIX: Wrong floating point formatting fixed in GPS
                    simulator, if language is not C on N8x0 and N900. The decimal
                    point was replaced by a comma.

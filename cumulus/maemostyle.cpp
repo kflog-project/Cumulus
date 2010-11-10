@@ -62,6 +62,7 @@ int MaemoProxyStyle::pixelMetric( PixelMetric metric,
     }
   else if( metric == PM_TabBarScrollButtonWidth )
     {
+      // increase width of tab bar buttons
       return TB_SB_WIDTH;
     }
   else
