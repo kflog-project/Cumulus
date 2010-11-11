@@ -1,16 +1,11 @@
 #!/bin/sh
 # $Id$
-# Maemo start script for cumulus. The own Qt libraries have to be taken into account
+# Maemo 5 start script for Cumulus.
 
 # workaround to start browser from QTextView
 BROWSER="browser --url"
 export BROWSER
 
-# reset environment variable to prevent ui modifications defined in /etc/osso-af-init/osso-gtk.defs
-GTK2_RC_FILES=""
-export GTK2_RC_FILES
-
 # launch cumulus
 exec /opt/cumulus/bin/cumulus -style=platinum
-
 
