@@ -23,7 +23,7 @@ CUMULUS_DEB=dpkg/n8x0/$(CUMULUS_REL)
 CUMULUS_LANG_DEB=dpkg/Languages/$(CUMULUS_LANG_REL)
 
 # current Qt version
-QT_VERSION=4.7.0
+QT_VERSION=4.7.1
 
 # installation directory of Qt libraries
 QT_LIBDIR=/opt/qt$(QT_VERSION)/lib
