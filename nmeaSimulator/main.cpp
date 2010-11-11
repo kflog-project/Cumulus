@@ -48,6 +48,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <locale.h>
 
 #include <QtCore>
 
@@ -354,9 +355,8 @@ int main(int argc, char **argv)
 
   mode = Argv[0];
 
-  // Set language to C otherwise printed floats can have commas.
-  setenv( "LANG", "C", 1 );
-  setenv( "LC_NUMERIC", "C", 1 );
+  // @AP: Reset the locale that is used for number formatting to "C" locale.
+  setlocale( LC_NUMERIC,"C" );
 
   // First of all read command configuration from file.
   // Determine configuration file position. It is normally stored in the home
