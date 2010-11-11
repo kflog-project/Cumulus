@@ -28,6 +28,9 @@ QT_VERSION=4.7.1
 # installation directory of Qt libraries
 QT_LIBDIR=/opt/qt$(QT_VERSION)/lib
 
+# installation directory of Qt translations
+QT_TRANSLATIONS=/opt/qt$(QT_VERSION)/translations
+
 # Reset language environment because the date can be formatted according
 # to local rules. That does not like dpkg-buildpackage.
 LANG=
@@ -237,6 +240,7 @@ dpkg_install_lang:
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/locale/de
 	install --mode=644 help/de/*.html help/de/text.css icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install --mode=644 cumulus/cumulus_de.qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/cumulus_de.qm
+	install --mode=644 $(QT_TRANSLATIONS)/qt_de.qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/qt_de.qm
 
 # installs all language dependend parts
 .PHONY : install_lang
