@@ -259,7 +259,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   ws = new WaitScreen(this);
   ws->slot_SetText1( tr( "Starting Cumulus..." ) );
 
-  QCoreApplication::processEvents();
+  QCoreApplication::flush();
 
   // Here we do finish the base initialization and start a timer
   // to continue startup in another method. This is done, to get

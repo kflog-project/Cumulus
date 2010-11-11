@@ -3,7 +3,7 @@
  **   main.cpp
  **
  **   This file is part of Cumulus. It contains the start procedure of
- **   the GUI. Currently we use the release QT/X11 4.6.x for the build
+ **   the GUI. Currently we use the release QT/X11 4.7.x for the build
  **   process.
  **
  ************************************************************************
@@ -41,9 +41,11 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <libgen.h>
+#include <locale.h>
 
 #include <QtGui>
 
+#include "target.h"
 #include "mainwindow.h"
 #include "generalconfig.h"
 #include "messagehandler.h"
@@ -56,6 +58,14 @@ int main(int argc, char *argv[])
 
   // @AP: we installing our own message handler
   qInstallMsgHandler(messageHandler);
+
+  // @AP: Reset the locale that is used for number formatting to "C" locale.
+  setlocale(LC_NUMERIC,"C");
+
+  QCoreApplication::setApplicationName( "Cumulus" );
+  QCoreApplication::setApplicationVersion( CU_VERSION );
+  QCoreApplication::setOrganizationName( "KFLog" );
+  QCoreApplication::setOrganizationDomain( "www.kflog.org" );
 
   // @AP: to make trace output available, if process is started via
   // QT/X11, we can redirect all output into a file, if config option
@@ -71,7 +81,7 @@ int main(int argc, char *argv[])
   char *callDir = getcwd(0,0);
   QString root = QString(dirname(callDir));
   conf->setInstallRoot( root );
-  // change back to start dir
+  // change back to start directory
   chdir( startDir );
   free( callDir );
   free( startDir );
@@ -145,29 +155,8 @@ int main(int argc, char *argv[])
       unsetenv("LD_BIND_NOW");
     }
 
-  // Load language translations for Cumulus, if English is not chosen.
-  QString language = conf->getLanguage();
-
-  QTranslator translator;
-
-  if( ! language.isEmpty() && language != "en" )
-    {
-      QString langFile = "cumulus_" + language + ".qm";
-      QString langDir = root + "/locale/" + language;
-
-      if( translator.load( langFile, langDir ) )
-        {
-          app.installTranslator(&translator);
-          qDebug() << "Using translation file"
-                   << langFile
-                   << "for language"
-                   << language;
-        }
-      else
-        {
-          qWarning() << "No language translation file found in" << langDir;
-        }
-    }
+  // Load language translations for Cumulus.
+  conf->setLanguage( conf->getLanguage() );
 
 #define DISCLAIMERVERSION 1
 
@@ -225,7 +214,7 @@ int main(int argc, char *argv[])
         }
       else
         {
-          qWarning("Closing application, user does not accept conditions.");
+          qWarning("Closing application, user does not accept conditions!");
           return 0;
         }
     }

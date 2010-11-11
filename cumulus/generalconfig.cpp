@@ -45,11 +45,27 @@ GeneralConfig::GeneralConfig() : QSettings( QSettings::UserScope, "Cumulus" )
 {
   loadTerrainDefaultColors();
   load();
+
+  cumulusTranslator = static_cast<QTranslator *> (0);
+  qtTranslator      = static_cast<QTranslator *> (0);
 }
 
 GeneralConfig::~GeneralConfig()
 {
   save();
+
+  if( cumulusTranslator )
+    {
+      QCoreApplication::removeTranslator( cumulusTranslator );
+      delete cumulusTranslator;
+    }
+
+  if( qtTranslator )
+    {
+      QCoreApplication::removeTranslator( qtTranslator );
+      delete qtTranslator;
+    }
+
   _theInstance = 0;
 }
 
@@ -1729,4 +1745,99 @@ void GeneralConfig::setWaypointScaleBorder( const wayPoint::Importance importanc
       qWarning("setWaypointScaleBorder(): Undefined Importance=%d passed!", importance );
       break;
   }
+}
+
+/**
+ * Sets the language for the GUI and for the Qt libraries.
+ * This was a helpful link :-) concerning that:
+ *
+ * http://flylib.com/books/en/2.18.1.93/1/
+ *
+ */
+void GeneralConfig::setLanguage( const QString& newValue )
+{
+  static bool first = true; // first call flag
+
+  qDebug() << "GeneralConfig::setLanguage" << newValue;
+
+  if( first == false && _language == newValue )
+    {
+      // No change of language, ignore this call.
+      return;
+    }
+
+  first     = false;
+  _language = newValue;
+
+  if( _language == "en" )
+    {
+      // That is a reset to the default language English.
+      if( cumulusTranslator )
+        {
+          QCoreApplication::removeTranslator( cumulusTranslator );
+          delete cumulusTranslator;
+          cumulusTranslator = static_cast<QTranslator *> (0);
+        }
+
+      if( qtTranslator )
+        {
+          QCoreApplication::removeTranslator( qtTranslator );
+          delete qtTranslator;
+          qtTranslator = static_cast<QTranslator *> (0);
+        }
+
+      return;
+    }
+
+  if( ! _language.isEmpty() )
+    {
+      QString langFile = "cumulus_" + _language + ".qm";
+      QString langDir = _installRoot + "/locale/" + _language;
+
+      // Load GUI translation file
+      if( ! cumulusTranslator )
+        {
+          cumulusTranslator = new QTranslator;
+        }
+
+      if( cumulusTranslator->load( langFile, langDir ) )
+        {
+          QCoreApplication::installTranslator( cumulusTranslator );
+          qDebug() << "Using GUI translation file"
+                   << langFile
+                   << "for language"
+                   << _language;
+        }
+      else
+        {
+          qWarning() << "No GUI translation file found in" << langDir;
+        }
+
+      // Load Qt library translation file, e.g. qt_de.qm
+      langFile = "qt_" + _language + ".qm";
+
+#ifdef MAEMO5
+      // MAEMO5 stores here the language files of Qt.
+      langDir = "/usr/share/qt4/translations";
+#endif
+
+      // Load library translation file
+      if( ! qtTranslator )
+        {
+          qtTranslator = new QTranslator;
+        }
+
+      if( qtTranslator->load( langFile, langDir ) )
+        {
+          QCoreApplication::installTranslator( qtTranslator );
+          qDebug() << "Using Library translation file"
+                   << langFile
+                   << "for language"
+                   << _language;
+        }
+      else
+        {
+          qWarning() << "No Library translation file found in" << langDir;
+        }
+    }
 }

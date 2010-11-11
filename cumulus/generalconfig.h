@@ -63,6 +63,8 @@
 #define AS_FILL_VERY_NEAR 15
 #define AS_FILL_INSIDE    20
 
+class QTranslator;
+
 // We do derive from the QT settings class as base class
 class GeneralConfig : protected QSettings
 {
@@ -643,16 +645,13 @@ class GeneralConfig : protected QSettings
     _surname = newValue;
   };
 
-  /** Gets the language */
+  /** Gets the used language */
   QString &getLanguage()
     {
       return _language;
     };
-  /** Sets the language */
-  void setLanguage( const QString newValue )
-  {
-    _language = newValue;
-  };
+  /** Sets the language to be used. */
+  void setLanguage( const QString& newValue );
 
   /**
    * Tries to get the default proxy setting from the environment. If nothing
@@ -2203,6 +2202,12 @@ class GeneralConfig : protected QSettings
    *  user.
    */
   int _wayPointScaleBorders[3];
+
+  /** Translator for other GUI languages as English. */
+  QTranslator *cumulusTranslator;
+
+  /** Translator for other Qt library languages as English. */
+  QTranslator *qtTranslator;
 };
 
 #endif
