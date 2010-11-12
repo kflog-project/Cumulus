@@ -14,6 +14,7 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2010-11-12 AP: Several resize issues fixed on task page.
 [o] 2010-11-10 AP: WaitScreen class reworked.
 [o] 2010-11-10 AP: Qt 2.7.1 is used now for the build process of Maemo4.
 
