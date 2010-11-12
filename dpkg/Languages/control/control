@@ -8,7 +8,7 @@ Homepage: http://www.kflog.org/cumulus/
 
 Package: cumuluslanguages
 Architecture: any
-Pre-Depends: cumulus (=__VERSION__)
+Pre-Depends: cumulus (>=__VERSION__)
 Description: Cumulus is a flight computer for glider pilots.
  This package provides additional languages for Cumulus.
 XB-Maemo-Icon-26:
