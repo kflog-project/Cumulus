@@ -1562,29 +1562,29 @@ Alle Downloads verworfen!</translation>
         <translation>Entfernung</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="193"/>
-        <location filename="preflighttasklist.cpp" line="324"/>
-        <location filename="preflighttasklist.cpp" line="434"/>
+        <location filename="preflighttasklist.cpp" line="185"/>
+        <location filename="preflighttasklist.cpp" line="316"/>
+        <location filename="preflighttasklist.cpp" line="430"/>
         <source>(No tasks defined)</source>
         <translation>(Keine Aufgaben definiert)</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="196"/>
+        <location filename="preflighttasklist.cpp" line="188"/>
         <source>Create New Task</source>
         <translation>Erzeuge neue Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="197"/>
+        <location filename="preflighttasklist.cpp" line="189"/>
         <source>Push &lt;b&gt;Plus&lt;/b&gt; button to add a task</source>
         <translation>Drücke&lt;b&gt;Plus&lt;/b&gt; Knopf für neue Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="441"/>
+        <location filename="preflighttasklist.cpp" line="437"/>
         <source>(Reset selection)</source>
         <translation>(Reset Auswahl)</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="441"/>
+        <location filename="preflighttasklist.cpp" line="437"/>
         <source>none</source>
         <translation>keiner</translation>
     </message>
@@ -1607,37 +1607,42 @@ Alle Downloads verworfen!</translation>
         <translation>Vorflug Einstellungen</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="43"/>
+        <location filename="preflightwidget.cpp" line="117"/>
         <source>Select a glider to be used</source>
         <translation>Wähle zu benutzendes Flugzeug aus</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="44"/>
+        <location filename="preflightwidget.cpp" line="113"/>
         <source>Glider</source>
         <translation>Flugzeug</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="47"/>
+        <location filename="preflightwidget.cpp" line="114"/>
         <source>Task</source>
         <translation>Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="50"/>
+        <location filename="preflightwidget.cpp" line="118"/>
+        <source>Flight task management</source>
+        <translation>Flugaufgaben Verwaltung</translation>
+    </message>
+    <message>
+        <location filename="preflightwidget.cpp" line="119"/>
         <source>Define common flight parameters</source>
         <translation>Allgemeine Flugparameter festlegen</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="51"/>
+        <location filename="preflightwidget.cpp" line="115"/>
         <source>Common</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="128"/>
+        <location filename="preflightwidget.cpp" line="152"/>
         <source>Replace previous task?</source>
         <translation>Alte Aufgabe ersetzen?</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="129"/>
+        <location filename="preflightwidget.cpp" line="153"/>
         <source>&lt;html&gt;Do you want to replace the previous task?&lt;br&gt;A selected target is reset at task start.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Alte Aufgabe ersetzen?&lt;br&gt;Das gerade markierte Ziel wird auf Aufgabenbeginn gesetzt.&lt;/html&gt;</translation>
     </message>
@@ -2011,17 +2016,17 @@ Alle Downloads verworfen!</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="main.cpp" line="181"/>
+        <location filename="main.cpp" line="170"/>
         <source>&lt;html&gt;This program comes with&lt;p&gt;&lt;b&gt;ABSOLUTELY NO WARRANTY!&lt;/b&gt;&lt;/p&gt;Do not rely on this software program as your&lt;br&gt;primary source of navigation. You as user are&lt;br&gt;responsible for using official aeronautical&lt;br&gt;charts and proper methods for safe navigation.&lt;br&gt;The information presented in this software&lt;br&gt;program may be outdated or incorrect.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Für dieses Programm wird&lt;p&gt;&lt;b&gt;keinerlei Garantie übernommen!&lt;/b&gt;&lt;/p&gt;Benutzen Sie diese Software nicht als Grundlage&lt;br&gt;Ihrer primären Navigation. Als Benutzer sind&lt;br&gt;Sie verpflichtet, behördlich zugelassene&lt;br&gt;Luftfahrtkarten und zuverlässige Navigations-&lt;br&gt;methoden zu benutzen. Beachten Sie!&lt;br&gt;Die durch dieses Programm dargestellten&lt;br&gt;Informationen können veraltet oder &lt;br&gt;auch falsch sein.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="193"/>
+        <location filename="main.cpp" line="182"/>
         <source>&lt;b&gt;Do You accept these terms?&lt;/b&gt;</source>
         <translation>&lt;b&gt;Akzeptieren Sie diese Bedingungen?&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="212"/>
+        <location filename="main.cpp" line="201"/>
         <source>Cumulus Disclaimer</source>
         <translation>Cumulus Ausschluß</translation>
     </message>
@@ -2155,8 +2160,8 @@ Alle Downloads verworfen!</translation>
         <translation>GPS BT Gerät:</translation>
     </message>
     <message>
-        <location filename="bluetoothdevices.cpp" line="93"/>
-        <location filename="bluetoothdevices.cpp" line="139"/>
+        <location filename="bluetoothdevices.cpp" line="99"/>
+        <location filename="bluetoothdevices.cpp" line="145"/>
         <source>Bluetooth Service is offline!</source>
         <translation>Bluetooth Service ist offline!</translation>
     </message>
@@ -2165,12 +2170,12 @@ Alle Downloads verworfen!</translation>
         <translation type="obsolete">hcitool Fehler!</translation>
     </message>
     <message>
-        <location filename="bluetoothdevices.cpp" line="124"/>
+        <location filename="bluetoothdevices.cpp" line="130"/>
         <source>Bluetooth Scan failed!</source>
         <translation>Bluetooth Scan Fehler!</translation>
     </message>
     <message>
-        <location filename="bluetoothdevices.cpp" line="183"/>
+        <location filename="bluetoothdevices.cpp" line="189"/>
         <source>Please switch on your BT GPS!</source>
         <translation>Bitte schalten Sie Ihr BT GPS ein!</translation>
     </message>
@@ -3582,7 +3587,7 @@ Alle Downloads verworfen!</translation>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="394"/>
+        <location filename="tasklistview.cpp" line="398"/>
         <source>none</source>
         <translation>keine</translation>
     </message>

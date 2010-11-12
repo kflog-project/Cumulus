@@ -64,12 +64,12 @@ private:
   /** Select the last stored task */
   void selectLastTask();
 
+  /** load tasks from the file */
+  bool loadTaskList();
+
 private slots:
   /** show the details of a task */
   void slotTaskDetails();
-
-  /** load tasks from the file */
-  bool slotLoadTask();
 
   /** create a new task */
   void slotNewTask();

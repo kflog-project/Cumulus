@@ -19,6 +19,7 @@
 #ifndef _PreFlightWidget_h
 #define _PreFlightWidget_h
 
+#include <QString>
 #include <QTabWidget>
 
 class PreFlightGliderPage;
@@ -60,6 +61,16 @@ public:
    * Destructor
    */
   virtual ~PreFlightWidget();
+
+protected:
+
+  /** Used to handle language change events */
+  virtual void changeEvent( QEvent* event );
+
+private:
+
+  /** Sets all widget labels, which need a translation. */
+  void setLabels();
 
 signals:
 

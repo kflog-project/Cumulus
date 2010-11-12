@@ -139,7 +139,7 @@ void TaskListView::setHeader()
   QStringList sl;
   QString course;
 
-  if( _task && _task->getWtCalcFlag() ==true )
+  if( _task && _task->getWtCalcFlag() == true )
     {
       course = tr("TH"); // true heading
     }
@@ -159,6 +159,8 @@ void TaskListView::setHeader()
      << tr("Description");
 
   list->setHeaderLabels(sl);
+
+  resizeTaskList();
 }
 
 void TaskListView::slot_Start()
@@ -230,6 +232,8 @@ void TaskListView::slot_Selected()
 
 void TaskListView::showEvent(QShowEvent *)
 {
+  resizeTaskList();
+
   if ( _showButtons == false )
     {
       // do nothing as display, there are no buttons visible
@@ -239,11 +243,10 @@ void TaskListView::showEvent(QShowEvent *)
   const wayPoint *calcWp = calculator->getselectedWp();
   bool foundWp = false;
 
-  for ( int i = 0; i < list->topLevelItemCount(); i++)
+  for( int i = 0; i < list->topLevelItemCount(); i++ )
     {
-
       _TaskPointItem* _tp = static_cast<_TaskPointItem *> (list->topLevelItem(i));
-      TaskPoint*   tp = _tp->getTaskPoint();
+      TaskPoint*       tp = _tp->getTaskPoint();
 
       // Waypoints can be selected from different windows. We will
       // consider only waypoints for a selection, which are member of a
@@ -336,6 +339,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
     {
       // No new task passed
       _task = static_cast<FlightTask *> (0);
+      resizeTaskList();
       return;
     }
 
@@ -398,16 +402,6 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
       timeTotal->setText( "T=" + _task->getTotalDistanceTimeString() + "h" );
     }
 
-  list->resizeColumnToContents(0);
-  list->resizeColumnToContents(1);
-  list->resizeColumnToContents(2);
-  list->resizeColumnToContents(3);
-  list->resizeColumnToContents(4);
-  list->resizeColumnToContents(5);
-  list->resizeColumnToContents(6);
-  list->resizeColumnToContents(7);
-  list->resizeColumnToContents(8);
-
   setHeader();
 }
 
@@ -419,18 +413,33 @@ void TaskListView::slot_updateTask()
 {
   // qDebug("TaskListView::slot_updateTask()");
 
-  if ( _task )
+  if( _task )
     {
-      setHeader();
       _task->updateTask();
       _task->updateProjection();
     }
+
+  setHeader();
 }
 
 /** Returns a pointer to the currently highlighted task point. */
 wayPoint *TaskListView::getSelectedWaypoint()
 {
   return _selectedTp;
+}
+
+/** Resizes the columns of the task list to their contents. */
+void TaskListView::resizeTaskList()
+{
+  list->resizeColumnToContents(0);
+  list->resizeColumnToContents(1);
+  list->resizeColumnToContents(2);
+  list->resizeColumnToContents(3);
+  list->resizeColumnToContents(4);
+  list->resizeColumnToContents(5);
+  list->resizeColumnToContents(6);
+  list->resizeColumnToContents(7);
+  list->resizeColumnToContents(8);
 }
 
 void TaskListView::clear()
@@ -440,6 +449,8 @@ void TaskListView::clear()
   distTotal->setText("");
   speedTotal->setText("");
   timeTotal->setText("");
+
+  setHeader();
 }
 
 /**

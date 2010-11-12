@@ -40,15 +40,13 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   tabWidget->setTabPosition(QTabWidget::West);
 
   gliderpage = new PreFlightGliderPage(this);
-  gliderpage->setToolTip(tr("Select a glider to be used"));
-  tabWidget->addTab(gliderpage, tr("Glider"));
+  tabWidget->addTab(gliderpage, "");
 
   taskpage = new PreFlightTaskList(this);
-  tabWidget->addTab(taskpage, tr("Task"));
+  tabWidget->addTab(taskpage, "");
 
   miscpage = new PreFlightMiscPage(this);
-  miscpage->setToolTip(tr("Define common flight parameters"));
-  tabWidget->addTab(miscpage, tr("Common"));
+  tabWidget->addTab(miscpage, "");
 
   QShortcut* scLeft = new QShortcut(Qt::Key_Left, this);
   QShortcut* scRight = new QShortcut(Qt::Key_Right, this);
@@ -100,12 +98,38 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
       tabWidget->setCurrentIndex(tabWidget->indexOf(gliderpage));
     }
 
-  show();
+  setLabels();
+  setVisible( true );
 }
 
 PreFlightWidget::~PreFlightWidget()
 {
   // qDebug("PreFlightWidget::~PreFlightWidget()");
+}
+
+/** Sets all widget labels, which need a translation. */
+void PreFlightWidget::setLabels()
+{
+  tabWidget->setTabText( 0, tr("Glider") );
+  tabWidget->setTabText( 1, tr("Task") );
+  tabWidget->setTabText( 2, tr("Common") );
+
+  gliderpage->setToolTip(tr("Select a glider to be used"));
+  taskpage->setToolTip(tr("Flight task management"));
+  miscpage->setToolTip(tr("Define common flight parameters"));
+}
+
+/** Used to handle language change events */
+void PreFlightWidget::changeEvent( QEvent* event )
+{
+  if( event->type() == QEvent::LanguageChange )
+    {
+      setLabels();
+    }
+  else
+    {
+      QWidget::changeEvent( event );
+    }
 }
 
 void PreFlightWidget::slot_accept()

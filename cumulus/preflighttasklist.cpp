@@ -129,11 +129,6 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
      << tr("Distance");
 
   taskListWidget->setHeaderLabels(sl);
-
-  taskListWidget->setColumnWidth( 0, 70 );
-  taskListWidget->setColumnWidth( 1, 222 );
-  taskListWidget->setColumnWidth( 2, 200 );
-
   taskListWidget->setFocus();
 
   taskContent = new TaskListView( splitter, false );
@@ -150,10 +145,7 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   connect( taskListWidget, SIGNAL( itemSelectionChanged() ),
            this, SLOT( slotTaskDetails() ) );
 
-  if ( ! slotLoadTask() )
-    {
-      return;
-    }
+  loadTaskList();
 }
 
 PreFlightTaskList::~PreFlightTaskList()
@@ -301,7 +293,7 @@ FlightTask* PreFlightTaskList::takeSelectedTask()
 }
 
 /** load tasks from file*/
-bool PreFlightTaskList::slotLoadTask()
+bool PreFlightTaskList::loadTaskList()
 {
   extern MapMatrix *_globalMapMatrix;
   QStringList rowList;
@@ -328,6 +320,10 @@ bool PreFlightTaskList::slotLoadTask()
 
       // reset current task
       GeneralConfig::instance()->setCurrentTask( "" );
+
+      taskListWidget->resizeColumnToContents(0);
+      taskListWidget->resizeColumnToContents(1);
+      taskListWidget->resizeColumnToContents(2);
 
       return false;
     }
@@ -446,6 +442,10 @@ bool PreFlightTaskList::slotLoadTask()
 
   selectLastTask();
 
+  taskListWidget->resizeColumnToContents(0);
+  taskListWidget->resizeColumnToContents(1);
+  taskListWidget->resizeColumnToContents(2);
+
   return true;
 }
 
@@ -468,7 +468,7 @@ void PreFlightTaskList::slotUpdateTaskList( FlightTask *newTask)
   saveTaskList();
   taskContent->clear();
   taskListWidget->clear();
-  slotLoadTask();
+  loadTaskList();
 }
 
 /**
@@ -532,7 +532,7 @@ void PreFlightTaskList::slotEditTaskList( FlightTask *editedTask)
   saveTaskList();
   taskContent->clear();
   taskListWidget->clear();
-  slotLoadTask();
+  loadTaskList();
 }
 
 /**
@@ -581,7 +581,7 @@ void PreFlightTaskList::slotDeleteTask()
   saveTaskList();
   taskContent->clear();
   taskListWidget->clear();
-  slotLoadTask();
+  loadTaskList();
 }
 
 bool PreFlightTaskList::saveTaskList()

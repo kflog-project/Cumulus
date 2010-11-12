@@ -68,11 +68,15 @@ public:
   /** sets the header of the list */
   void setHeader();
 
+private:
+
+  /** Resizes the columns of the task list to their contents. */
+  void resizeTaskList();
+
 public slots:
 
   /**
-   * This signal is called to indicate that a selection has
-   * been made.
+   * This signal is called to indicate that a selection has been made.
    */
   void slot_Select();
 
