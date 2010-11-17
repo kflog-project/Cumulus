@@ -1,0 +1,175 @@
+################################################################################
+# Makefile to build a Cumulus Language release for Maemo
+#
+# Copyright (c): 2010 by Axel Pauli (axel@kflog.org)
+# 
+# $Id$
+#
+# This file is distributed under the terms of the General Public License.
+# See the file COPYING for more information.
+#
+################################################################################
+
+# Version is determined from the header file target.h
+VERSION=$(shell cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2)
+
+CUMULUS_LANG_REL=cumuluslanguages-$(VERSION)
+
+# Debian package build directories
+CUMULUS_LANG_DEB=dpkg/Languages/$(CUMULUS_LANG_REL)
+
+# current Qt version
+QT_VERSION=4.7.1
+
+# my installation directory of Qt translations
+MY_QT_TRANSLATIONS=/opt/qt$(QT_VERSION)/translations
+
+# Qt's translation directory
+QT_TRANSLATIONS=/usr/share/qt4/translations
+
+# Reset language environment because the date can be formatted according
+# to local rules. That does not like dpkg-buildpackage.
+LANG=
+
+DATE=`date +'%a, %d %b %Y %H:%M:%S %z'`
+
+# adapt install path to your needs if necessary
+INSTALL_ROOT = /opt/cumulus
+
+# adapt call pathes to your needs if necessary
+LRELEASE = lrelease
+
+.PHONY : usage
+
+usage:
+	@echo ""
+	@echo "usage: make -f Makefile.Language <target> ..."
+	@echo "  all     - Builds the Qt language translation file"
+	@echo "  clean   - Removes all build results"
+	@echo "  install - Installs the language parts under $(INSTALL_ROOT)"
+	@echo "  dpkg    - Builds a Debian package file"
+	
+all:	langpacks
+
+install:	install_lang
+	
+dpkg:	check_file dpkg_lang
+
+.PHONY : clean
+
+clean:
+	@cd cumulus; rm -f cumulus_de.qm
+	@rm -fr $(CUMULUS_LANG_DEB)
+	@echo "Build area cleaned"
+
+.PHONY : check_dir
+
+check_dir:
+	@mkdir -p $(INSTALL_ROOT); \
+	if [ ! -w  $(INSTALL_ROOT) ]; \
+	then \
+		echo "Install Directory '$(INSTALL_ROOT)' not writeable - Are you root?"; \
+		exit 99; \
+	fi
+
+.PHONY : check_file
+
+check_file:
+	@if [ ! -f $(MY_QT_TRANSLATIONS)/qt_de.qm -a ! -f $(QT_TRANSLATIONS)/qt_de.qm ]; \
+	then \
+		echo ""; \
+	  echo "WARNING!"; \
+		echo "Qt Library translations '$(QT_TRANSLATIONS)/qt_de.qm' not found!"; \
+		echo "Not needed for Maemo5. Continue make? Answer with 'y'!"; \
+		read answer; \
+		if [ "$$answer" = 'y' ]; \
+		then \
+			exit 0; \
+		fi; \
+		exit 99; \
+	fi
+
+################################################################################
+# DPKG Language Package Build
+################################################################################
+
+# call dpkg_lang target to build a debian Maemo language package
+.PHONY : dpkg_lang dpkg_make_lang
+
+dpkg_lang:  langpacks
+	@echo "===== Building Maemo Languages package for Cumulus $(VERSION) ====="
+	@$(MAKE) -f Makefile.Language -s VERSION=$(VERSION) dpkg_make_lang
+
+# This target will build the debian package. It is called via another makefile
+# due to the VERSION macro. The special letters apostroph and quotation mark
+# cause problems in ohter shell commands, if they not expanded before.
+
+dpkg_make_lang:
+	@rm -fr $(CUMULUS_LANG_DEB)
+	@mkdir -p $(CUMULUS_LANG_DEB)
+	@cd $(CUMULUS_LANG_DEB); \
+	echo '\n' | dh_make --packagename $(CUMULUS_LANG_REL) -c GPL -e axel@kflog.org -s -n
+	@cp dpkg/Languages/control/makefile $(CUMULUS_LANG_DEB)
+	@cp dpkg/Languages/control/rules $(CUMULUS_LANG_DEB)/debian/
+	@sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/copyright > $(CUMULUS_LANG_DEB)/debian/copyright
+	@sed -e "s/__VERSION__/$(VERSION)/g" dpkg/Languages/control/control > $(CUMULUS_LANG_DEB)/debian/control
+	@cp dpkg/Languages/control/postrm $(CUMULUS_LANG_DEB)/debian/
+	@sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/README > $(CUMULUS_LANG_DEB)/debian/README
+	@cp $(CUMULUS_LANG_DEB)/debian/README $(CUMULUS_LANG_DEB)/debian/README.Debian
+	@sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" \
+            dpkg/Languages/control/changelog > $(CUMULUS_LANG_DEB)/debian/changelog
+	cd $(CUMULUS_LANG_DEB); \
+	dpkg-buildpackage -b -rfakeroot
+	@cd $(CUMULUS_LANG_DEB)/..; \
+	rm -f cumuluslanguages_$(VERSION).dsc cumuluslanguages_$(VERSION).tar.gz
+
+# copies all language files of Cumulus into the debian package area
+
+.PHONY : dpkg_install_lang
+
+dpkg_install_lang:
+	@echo '===== Installing Cumulus Languages $(VERSION) under $(DESTDIR)$(INSTALL_ROOT) ====='
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/de
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/locale/de
+	install --mode=644 help/de/*.html help/de/text.css icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
+	install --mode=644 cumulus/cumulus_de.qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/cumulus_de.qm
+	if [ -f "$(MY_QT_TRANSLATIONS)/qt_de.qm" ]; \
+	then \
+		install --mode=644 $(MY_QT_TRANSLATIONS)/qt_de.qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/qt_de.qm; \
+	else \
+		install --mode=644 $(QT_TRANSLATIONS)/qt_de.qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/qt_de.qm; \
+	fi
+
+# installs all language dependend parts
+.PHONY : install_lang
+
+install_lang:	langpacks
+	@echo '===== Installing Cumulus Languages $(VERSION) under $(INSTALL_ROOT) ====='
+	install -d $(INSTALL_ROOT)/help/de
+	install -d $(INSTALL_ROOT)/locale/de
+	install --mode=644 help/de/*.html help/de/text.css icons/cumulus.png $(INSTALL_ROOT)/help/de
+	install --mode=644 cumulus/cumulus_de.qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
+	install --mode=644 $(QT_TRANSLATIONS)/qt_de.qm $(INSTALL_ROOT)/locale/de/qt_de.qm
+
+.PHONY : deinstall
+
+deinstall:
+	rm -rf $(INSTALL_ROOT)/help/de $(INSTALL_ROOT)/locale/de
+
+.PHONY : langpacks
+langpacks: langpack_de
+	@echo 'Language packages are created'
+
+.PHONY : langpack_de
+
+langpack_de:
+	cd cumulus; \
+	$(LRELEASE) -silent -removeidentical -nounfinished cumulus_de.ts -qm cumulus_de.qm
+
+# copies debian language package to web page
+
+.PHONY : copylang2web
+
+copylang2web:
+	scp -C dpkg/Languages/cumuluslanguages_$(VERSION)_armel.deb \
+      web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/

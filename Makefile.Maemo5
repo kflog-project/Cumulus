@@ -37,6 +37,22 @@ INSTALL_ROOT = /opt/cumulus
 QMAKE    = qmake
 LRELEASE = lrelease
 
+.PHONY : usage
+
+usage:
+	@echo ""
+	@echo "Cumulus build environment for Scratchbox ONLY!"
+	@echo ""
+	@echo "usage: make -f Makefile.Language <target> ..."
+	@echo "  all          - Builds the whole Cumulus application"
+	@echo "  clean        - Removes all build results"
+	@echo "  install      - Installs Cumulus under $(INSTALL_ROOT)"
+	@echo "  deinstall    - Deinstalls Cumulus under $(INSTALL_ROOT)"
+	@echo "  dpkg         - Builds a Debian package file"
+	@echo "  dpkg_lang    - Builds a Debian language package"
+	@echo "  copy2web     - Copies Cumulus application package to web page"
+	@echo "  copylang2web - Copies Cumulus language package to web page"
+
 all:	$(QMAKE) resetdate
 	cd cumulus; make
 	cd gpsClient; make
@@ -44,6 +60,7 @@ all:	$(QMAKE) resetdate
 	cd nmeaSimulator; make
 
 .PHONY : clean
+
 clean:
 	@if [ -f cumulus/Makefile ]; \
 	then \
@@ -68,6 +85,7 @@ clean:
 	@echo "Build area cleaned"
 
 .PHONY : check_dir
+
 check_dir:
 	@mkdir -p $(INSTALL_ROOT); \
 	if [ ! -w  $(INSTALL_ROOT) ]; \
@@ -76,11 +94,10 @@ check_dir:
 		exit 99; \
 	fi
 
-.PHONY : install
-
 #####################################################################
 # Use this target to install Cumulus in scratchbox for X86 emulation.
 #####################################################################
+.PHONY : install install_lang
 
 install: check_dir deinstall install_lang
 	@echo "===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====="
@@ -120,11 +137,20 @@ install: check_dir deinstall install_lang
 	install --mode=644 icons/cumulus-desktop26x26.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps/cumulus.png
 	install --mode=644 icons/cumulus-desktop64x64.png $(DESTDIR)/usr/share/icons/hicolor/scalable/apps/cumulus.png
 
+install_lang:
+	@$(MAKE) -f Makefile.Language -s clean install
+
+.PHONY : deinstall
+
+deinstall:
+	rm -rf $(INSTALL_ROOT)/*
+
 ##########################################################
 # call dpkg target to build a debian Cumulus Maemo package
 ##########################################################
 
 .PHONY : dpkg dpkg_make
+
 dpkg:
 	@echo "===== Building Fremantle Maemo5 package for Cumulus $(VERSION) ====="
 	$(MAKE) -f Makefile.Maemo5 VERSION=$(VERSION) dpkg_make
@@ -153,6 +179,7 @@ dpkg_make:
 
 # copies all files of cumulus into the debian package area
 .PHONY : dpkg_install
+
 dpkg_install:
 	@echo '===== Installing Cumulus $(VERSION) under $(DESTDIR)/$(INSTALL_ROOT) ====='
 	strip cumulus/cumulus
@@ -190,44 +217,36 @@ dpkg_install:
 	install --mode=644 dpkg/Maemo5/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
 	install --mode=644 dpkg/Maemo5/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service
 
-.PHONY : install_lang
+################################################################################
+# DPKG Language Package Build
+################################################################################
 
-install_lang:	langpacks
-	install -d $(INSTALL_ROOT)/locale/de
-	test -f cumulus/cumulus_de.qm  || touch cumulus/cumulus_de.qm
-	install --mode=644 cumulus/cumulus_de.qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
+# call dpkg_lang target to build a debian Maemo language package
+.PHONY : dpkg_lang
 
-.PHONY : deinstall
-
-deinstall:
-	rm -rf $(INSTALL_ROOT)/*
-
-.PHONY : langpacks
-
-langpacks: langpack_de
-	@echo 'All language packs created'
-
-.PHONY : langpack_de
-
-langpack_de:
-	cd cumulus; \
-	$(LRELEASE) -verbose -nounfinished cumulus_de.ts -qm cumulus_de_DE.qm
-
-.PHONY : release
-
-release: clean all langpacks
+dpkg_lang:
+	@echo "===== Building Maemo Languages package for Cumulus $(VERSION) ====="
+	@$(MAKE) -f Makefile.Language -s clean dpkg
 
 # copies change log and debian package to the web page
-.PHONY : copy_web
-copy_web:
+.PHONY : copy2web
+
+copy2web:
 	scp -C $(CUMULUS_DEB)/../cumulus_$(VERSION)_armel.changes \
 	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
 	scp -C $(CUMULUS_DEB)/../cumulus_$(VERSION)_armel.deb \
 	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_armel_n900.deb
 
+# copies debian language package to web page
+.PHONY : copylang2web
+
+copylang2web:
+	@$(MAKE) -f Makefile.Language -s copylang2web
+
 qmake: cumulus/Makefile gpsClient/Makefile gpsMaemoClient/Makefile nmeaSimulator/Makefile
 
 .PHONY : resetdate
+
 resetdate:
 	rm -rf cumulus/mainwindow.o
 
