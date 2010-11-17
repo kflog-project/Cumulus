@@ -14,12 +14,19 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-11-17 AP: All language build actions extracted from Makefile.Maemo4
+                   and put into a new file with name Makefile.Language. The
+                   Language build process does not depends on a single
+                   Maemo release.
+[-] 2010-11-16 AP: Several resize issues fixed on glider page.
+[+] 2010-11-15 AP: German Qt library translations added to language package.
 [-] 2010-11-12 AP: Several resize issues fixed on task page.
 [o] 2010-11-10 AP: WaitScreen class reworked.
-[o] 2010-11-10 AP: Qt 2.7.1 is used now for the build process of Maemo4.
+[o] 2010-11-10 AP: Qt 4.7.1 is used now for the build process of Maemo4. The
+                   graphic system raster was chosen as default.
 
 -------------------------------------------------
-Cumulus 2.7.x (Development based on X11/Qt-4.7.1)
+Cumulus 2.9.x (Development based on X11/Qt-4.7.1)
 -------------------------------------------------
 
 [+] 2010-11-10 AP: Setup of a style proxy to make some widget elements larger
@@ -33,7 +40,7 @@ Cumulus 2.7.x (Development based on X11/Qt-4.7.1)
                    GPS basic data and that is sometimes to less.
 [+] 2010-11-03 AP: GPS sentence filter added to daemon process, to ensure that
                    only well known NMEA sentences are processed and forwarded
-                   to the Cumulus GUI processs.
+                   to the Cumulus GUI process.
 [o] 2010-10-18 AP: Welt2000 has changed the file name. The date part was
                    removed and the name is now WELT2000.TXT.
 [o] 2010-10-15 AP: Several dialog windows changed to a tool window because
@@ -244,8 +251,8 @@ Cumulus 2.7.x (Development based on X11/Qt-4.7.1)
                    no proxy has been defined by the user in Cumulus. If the
                    variable is defined it is taken as default proxy in
                    the related widgets.
-[o] 2010-03-16 AP: Nokia has replaced in Maemo5 the traditional GPS daemon by
-                   other internal processes. The location services must be taken
+[o] 2010-03-16 AP: Nokia has replaced in Maemo5 the traditional GPSD daemon by
+                   another internal processes. The location services must be taken
                    now to get the GPS data. Therefore a new client process with
                    the name gpsMaemoClient has been added to Cumulus to handle
                    that.
@@ -295,6 +302,7 @@ Cumulus 2.7.x (Development based on X11/Qt-4.7.1)
 -------------------------------------------------
 Cumulus 2.6.x (Development based on X11/Qt-4.6.2)
 -------------------------------------------------
+
 [+] 2010-02-18 AP: New option Extended Logging added under the menu point Pre-flight
                    Settings tabulator Common. If this option is enabled the IGC
                    logger is logging additional parameters by using the K-Record.
@@ -375,6 +383,7 @@ Cumulus 2.6.x (Development based on X11/Qt-4.6.2)
 -------------------------------------------------
 Cumulus 2.5.x (Development based on X11/Qt-4.5.3)
 -------------------------------------------------
+
 [-] 2009-08-29 AP: BUGFIX: Wrong handling of eastern time zones in sunrise fixed. 
 [-] 2009-09-28 AP: Drawing options of topographical items now considered.
 [-] 2009-09-27 AP: The turquoise course line of a flight task is not good to
@@ -433,6 +442,7 @@ Cumulus 2.5.x (Development based on X11/Qt-4.5.3)
 -------------------------------------------------
 Cumulus 2.4.x (Development based on X11/Qt-4.5.2)
 -------------------------------------------------
+
 [o] 2009-07-16 AP: Switch to new ground and terrain file format to use the
                    new maps provided by Hendrik Hoeth. Thanks to him for
                    his contribution.
@@ -444,6 +454,7 @@ Cumulus 2.4.x (Development based on X11/Qt-4.5.2)
 -------------------------------------------------
 Cumulus 2.3.x (Development based on X11/Qt-4.5.1)
 -------------------------------------------------
+
 [o] 2009-06-17 AP: Default sound player at desktop is set to /usr/bin/aplay now.
 [o] 2009-06-17 AP: Default map directories on desktop under $HOME/cumulus/maps/...
                    will be created now at startup, if they do not exist.
@@ -485,6 +496,7 @@ Cumulus 2.3.x (Development based on X11/Qt-4.5.1)
 -------------------------------------------------
 Cumulus 2.2.x (Development based on X11/Qt-4.5.0)
 -------------------------------------------------
+
 [o] 2009-04-22 AP: Activating of external links in online help. Clicking on it will
                    start default browser of OS.
 [o] 2009-04-22 AP: Widget PreFlightGliderPage pilots name and units in spin boxes
@@ -811,7 +823,7 @@ Cumulus 2.0.x (Development based on X11/Qt-4.4.1)
 [o] 2008-02-12 AP: Ground, Map and Terrain files moved to the new subdirectory landscape under maps
 [o] 2008-02-12 AP: Subdirectory maps/airspace renamed to maps/airspaces
 [o] 2008-02-12 AP: Maps are searched now under $INSTALL_DIR/maps and $HOME/maps
-[-] 2008-02-12 AP: Support for KFLog airspace files has been removed. Only open air files
+[-] 2008-02-12 AP: Support for KFLog airspace files has been removed. Only openair files
                    are read in up to now.
 [-] 2008-02-09 AP: Bugfix: Left and right key where bound in manual mode to
                    map zoom and position move. Map zoom was removed to fix it.
