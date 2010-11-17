@@ -6,10 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2009 Axel Pauli
+**   Copyright (c): 2009-2010 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -19,21 +19,16 @@
  * This class represents the personal style settings.
  */
 
-#include <QLabel>
-#include <QGridLayout>
-#include <QPushButton>
-#include <QToolTip>
-#include <QStyleFactory>
-#include <QStringList>
-#include <QApplication>
-#include <QFontDialog>
-#include <QColorDialog>
+#include <QtGui>
 
 #include "generalconfig.h"
 #include "settingspagelooknfeel.h"
 
 SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
-  QWidget(parent), loadConfig(true), currentFont(""), currentMenuFont("")
+  QWidget(parent),
+  loadConfig(true),
+  currentFont(""),
+  currentMenuFont("")
 {
   setObjectName("SettingsPageLookNFeel");
 
@@ -55,9 +50,9 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   QString style;
 
   foreach( style, styles )
-  {
-    styleBox->addItem(style);
-  }
+    {
+      styleBox->addItem(style);
+    }
 
   lbl = new QLabel(tr("GUI Font:"), this);
   topLayout->addWidget(lbl, row, 0);
@@ -109,7 +104,8 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
 }
 
 SettingsPageLookNFeel::~SettingsPageLookNFeel()
-{}
+{
+}
 
 /** Called to initiate loading of the configuration items. */
 void SettingsPageLookNFeel::slot_load()

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007, 2008 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2007-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -29,7 +29,7 @@
 #include "altitude.h"
 
 /**
- * @short Configuration settings for flight tasks
+ * @short Configuration settings for flight tasks.
  *
  * @author Axel Pauli
  */

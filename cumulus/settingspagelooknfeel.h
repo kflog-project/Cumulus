@@ -6,10 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2009 Axel Pauli
+**   Copyright (c):  2008-2010 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -28,32 +28,41 @@
 #include "speed.h"
 
 /**
- * This class represents the personal style settings.
+ * \author Axel Pauli
+ *
+ * \brief Look and Feel settings of GUI
+ *
+ * This class represents the personal look and feel settings.
  */
 
 class SettingsPageLookNFeel : public QWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
+private:
 
-    SettingsPageLookNFeel(QWidget *parent=0);
-    ~SettingsPageLookNFeel();
+  Q_DISABLE_COPY ( SettingsPageLookNFeel )
 
-  public slots: // Public slots
+public:
 
-    /** called to initiate saving to the configuration file */
-    void slot_save();
+  SettingsPageLookNFeel(QWidget *parent=0);
 
-    /** Called to initiate loading of the configuration file. */
-    void slot_load();
+  virtual ~SettingsPageLookNFeel();
 
-    /**
-     * Called to ask is confirmation on close is needed.
-     */
-    void slot_query_close(bool& warn, QStringList& warnings);
+public slots:
 
-  private slots:
+  /** called to initiate saving to the configuration file */
+  void slot_save();
+
+  /** Called to initiate loading of the configuration file. */
+  void slot_load();
+
+  /**
+   * Called to ask is confirmation on close is needed.
+   */
+  void slot_query_close(bool& warn, QStringList& warnings);
+
+private slots:
 
   /** Called to open the font dialog */
   void slot_openFontDialog();
@@ -64,24 +73,25 @@ class SettingsPageLookNFeel : public QWidget
   /** Called to open the color dialog */
   void slot_openColorDialog();
 
-  private:
+private:
 
-    bool loadConfig; // control loading of configuration data
-    QString currentFont; // current selected font is saved here
-    QString currentMenuFont; // current selected menu font is saved here
-    QColor  currentMapFrameColor; // current color of map frame
+  bool    loadConfig; // control loading of configuration data
+  QString currentFont; // current selected font is saved here
+  QString currentMenuFont; // current selected menu font is saved here
+  QColor  currentMapFrameColor; // current color of map frame
 
-    QComboBox      *styleBox;
-    QPushButton    *fontDialog;
-    QPushButton    *menuFontDialog;
-    QPushButton    *editMapFrameColor;
-    QDoubleSpinBox *screenSaverSpeedLimit;
-    QCheckBox      *virtualKeybord;
+  QComboBox      *styleBox;
+  QPushButton    *fontDialog;
+  QPushButton    *menuFontDialog;
+  QPushButton    *editMapFrameColor;
+  QDoubleSpinBox *screenSaverSpeedLimit;
+  QCheckBox      *virtualKeybord;
 
-    /** saves horizontal speed unit during construction of object */
-    Speed::speedUnit unit;
-    /** loaded speed for change control */
-    double loadedSpeed;
-  };
+  /** saves horizontal speed unit during construction of object */
+  Speed::speedUnit unit;
+
+  /** loaded speed for change control */
+  double loadedSpeed;
+};
 
 #endif

@@ -21,12 +21,16 @@
 #include "generalconfig.h"
 #include "gliderlistwidget.h"
 
-GliderListWidget::GliderListWidget(QWidget *parent) : QTreeWidget(parent)
+GliderListWidget::GliderListWidget(QWidget *parent) :
+  QTreeWidget(parent),
+  _added(0),
+  _changed(false)
 {
   setObjectName("GliderListWidget");
 
   setRootIsDecorated(false);
-  setItemsExpandable(false);
+  setAlternatingRowColors ( true );
+  //setItemsExpandable(false);
   setUniformRowHeights(true);
   setSortingEnabled(true);
   setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -37,18 +41,21 @@ GliderListWidget::GliderListWidget(QWidget *parent) : QTreeWidget(parent)
   QStringList sl;
   sl << tr("Type") << tr("Registration") << tr("Callsign");
   setHeaderLabels(sl);
-
-  _added=0;
-  _changed=false;
 }
-
 
 GliderListWidget::~GliderListWidget()
 {
-  // qDebug("GliderListWidget::~GliderListWidget() is called");
   qDeleteAll(Gliders);
 }
 
+void GliderListWidget::showEvent( QShowEvent* event )
+{
+  qDebug() << "GliderListWidget::showEvent";
+
+  Q_UNUSED( event )
+
+  resizeListColumns();
+}
 
 /** Retrieves the gliders from the configuration file, and fills the list. */
 void GliderListWidget::fillList()
@@ -71,7 +78,9 @@ void GliderListWidget::fillList()
           Gliders.append( glider );
 
           QStringList rowList;
-          rowList << glider->type() << glider->registration() << glider->callSign()
+          rowList << glider->type()
+                  << glider->registration()
+                  << glider->callSign()
                   << QString::number( glider->lastSafeID() );
 
           addTopLevelItem( new QTreeWidgetItem( rowList, 0 ) );
@@ -80,17 +89,18 @@ void GliderListWidget::fillList()
         {
           delete glider; //loading failed!
         }
+
       i++;
     }
 
   if( i > 1 )
     {
-      resizeListColumns();
       sortItems( 0, Qt::AscendingOrder );
     }
 
   config.endGroup();
-  // qDebug("GliderListWidget::fillList(): gliders=%d", Gliders.count());
+
+  resizeListColumns();
   _changed = false;
 }
 
@@ -104,6 +114,7 @@ void GliderListWidget::save()
   config.remove(""); // remove all old entries
 
   uint u=1;
+
   /* check for duplicate registrations
      This method is quite expensive if the list is very long. This is not to be expected however. Most
      people will only have a couple of gliders. The number of iterations is N*(N-1)/2.
@@ -135,24 +146,24 @@ void GliderListWidget::save()
     }
 
   config.endGroup();
-  _changed=false;
+  _changed = false;
 }
 
-
-/** Returns a pointer to the currently high lighted glider. If take is
-    true, the glider object is taken from the list too. */
+/**
+ * Returns a pointer to the currently high lighted glider. If take is
+ * true, the glider object is taken from the list too.
+ */
 Glider *GliderListWidget::getSelectedGlider(bool take)
 {
-  int i, n;
-  n = Gliders.count();
+  Glider* glider = static_cast<Glider *> (0);
 
   if( selectedItems().size() > 0 )
     {
-
       QTreeWidgetItem* selectedItem = selectedItems().at( 0 );
-      Glider* glider;
 
-      for( i = 0; i < n; i++ )
+      int n = Gliders.count();
+
+      for( int i = 0; i < n; i++ )
         {
           glider = Gliders.at( i );
 
@@ -170,7 +181,7 @@ Glider *GliderListWidget::getSelectedGlider(bool take)
         }
     }
 
-  return 0;
+  return glider;
 }
 
 
@@ -201,7 +212,9 @@ void GliderListWidget::slot_Added(Glider *glider)
     {
       _added++;
       QStringList rowList;
-      rowList << glider->type() << glider->registration() << glider->callSign()
+      rowList << glider->type()
+              << glider->registration()
+              << glider->callSign()
               << QString::number( -_added );
 
       addTopLevelItem( new QTreeWidgetItem( this, rowList, 0 ) );
@@ -225,7 +238,6 @@ void GliderListWidget::slot_Deleted(Glider *glider)
 
       sortItems( 0, Qt::AscendingOrder );
       setCurrentItem( 0 );
-      resizeColumnToContents( 0 );
       resizeListColumns();
 
       // remove glider from glider list
@@ -284,7 +296,7 @@ Glider* GliderListWidget::getStoredSelection()
 
 
 /* save last selected glider */
-void GliderListWidget::setStoredSelection(Glider* glider)
+void GliderListWidget::setStoredSelection(const Glider* glider)
 {
   QSettings config( QSettings::UserScope, "Cumulus" );
   config.beginGroup("Glider Selection");

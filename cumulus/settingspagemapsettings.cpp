@@ -22,7 +22,6 @@
 **
 ***********************************************************************/
 
-#include <QtCore>
 #include <QtGui>
 
 #include "settingspagemapsettings.h"

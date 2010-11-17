@@ -146,7 +146,7 @@ void SettingsPageGlider::slot_query_close(bool& warn, QStringList& warnings)
 {
   /* set warn to 'true' if the data has changed. Note that we can NOT just set warn equal to
     _changed, because that way we might erase a warning flag set by another page! */
-  if( list->has_changed() )
+  if( list->hasChanged() )
     {
       warn = true;
       warnings.append( tr( "The Glider list" ) );

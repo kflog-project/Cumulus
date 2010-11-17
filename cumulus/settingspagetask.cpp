@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2010 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2007-2010 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,14 +24,7 @@
 
 extern MapContents  *_globalMapContents;
 
-/**
- * @short Configuration settings for start, turn and end points of a
- * task
- *
- * @author Axel Pauli
- */
 
-// Constructor of class
 SettingsPageTask::SettingsPageTask( QWidget *parent) :
   QWidget( parent ),
   loadedCylinderRadius(0),

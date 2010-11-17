@@ -22,13 +22,6 @@
 #include "settingspageterraincolors.h"
 #include "elevationcolorimage.h"
 
-/**
- * @author Axel Pauli
- *
- * This configuration widget shows the terrain colors used for drawing of contour areas.
- * The user can modify the assigned color via a color chooser dialog, if he wants that.
- * The widget shows the altitudes in the user selected unit (meter/feed).
- */
 
 SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   QWidget(parent)

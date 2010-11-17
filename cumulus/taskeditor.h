@@ -57,7 +57,7 @@ public:
               FlightTask* task=0 );
 
   /** Destructor */
-  ~TaskEditor();
+  virtual ~TaskEditor();
 
 private:
   /**

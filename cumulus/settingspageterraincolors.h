@@ -15,8 +15,8 @@
 **
 ***********************************************************************/
 
-#ifndef SETTINGSPAGE_TERRAIN_COLOR_H
-#define SETTINGSPAGE_TERRAIN_COLOR_H
+#ifndef SETTINGS_PAGE_TERRAIN_COLOR_H
+#define SETTINGS_PAGE_TERRAIN_COLOR_H
 
 #include <QWidget>
 #include <QComboBox>
@@ -27,7 +27,9 @@
 #include "elevationcolorimage.h"
 
 /**
- * @author Axel Pauli
+ * \author Axel Pauli
+ *
+ * \brief Configuration settings for terrain colors.
  *
  * This configuration widget shows the terrain colors used for drawing of contour areas.
  * The user can modify the assigned color via a color chooser dialog, if he wants that.
@@ -38,16 +40,17 @@ class SettingsPageTerrainColors : public QWidget
 {
   Q_OBJECT
 
-  private:
+private:
 
   Q_DISABLE_COPY ( SettingsPageTerrainColors )
 
-  public:
+public:
 
   SettingsPageTerrainColors(QWidget *parent=0);
-  ~SettingsPageTerrainColors();
 
-  public slots:
+  virtual ~SettingsPageTerrainColors();
+
+public slots:
 
   /**
    * Called to initiate saving to the configuration file.
@@ -80,7 +83,7 @@ class SettingsPageTerrainColors : public QWidget
    */
   void slot_setColorDefaults();
 
-  private:
+private:
 
   // size of the color pixmaps used in icons
   QSize pixmapSize;

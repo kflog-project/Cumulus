@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,17 +24,24 @@
 #include <QStringList>
 
 /**
- * This class represents the Units settings page
- * @author André Somers
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Configuration settings for personal units.
+ *
  */
 class SettingsPageUnits : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
+
+private:
+
+  Q_DISABLE_COPY ( SettingsPageUnits )
 
 public:
 
   SettingsPageUnits(QWidget *parent=0);
-  ~SettingsPageUnits();
+
+  virtual ~SettingsPageUnits();
 
 public slots:
 

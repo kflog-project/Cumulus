@@ -6,17 +6,18 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-#ifndef SETTINGSPAGEGLIDER_H
-#define SETTINGSPAGEGLIDER_H
+#ifndef SETTINGS_PAGE_GLIDER_H
+#define SETTINGS_PAGE_GLIDER_H
 
 #include <QWidget>
 #include <QBoxLayout>
@@ -25,62 +26,72 @@
 #include "gliderlistwidget.h"
 
 /**
- * This widget provides an interface to add, edit and delete gliders
- * from the gliderlist.
+ * \author André Somers, Axel Pauli
  *
- * @author André Somers
+ * \brief Configuration settings for gliders.
+ *
+ * This widget provides an interface to add, edit and delete gliders
+ * from the glider list.
+ *
  */
 
 class SettingsPageGlider : public QWidget
 {
   Q_OBJECT
 
+private:
+
+  Q_DISABLE_COPY ( SettingsPageGlider )
+
 public:
 
-    SettingsPageGlider(QWidget *parent=0);
-    ~SettingsPageGlider();
+  SettingsPageGlider(QWidget *parent=0);
 
-public slots: // Public slots
-    /**
-     * called to initiate saving to the configurationfile
-     */
-    void slot_save();
+  virtual ~SettingsPageGlider();
 
-    /**
-     * Called to initiate loading of the configurationfile.
-     */
-    void slot_load();
+public slots:
 
-    /**
-     * Called to ask is confirmation on the close is needed.
-     */
-    void slot_query_close(bool& warn, QStringList& warnings);
+  /**
+   * called to initiate saving to the configuration file
+   */
+  void slot_save();
+
+  /**
+   * Called to initiate loading of the configuration file.
+   */
+  void slot_load();
+
+  /**
+   * Called to ask is confirmation on the close is needed.
+   */
+  void slot_query_close(bool& warn, QStringList& warnings);
 
 protected:
 
-    void showEvent(QShowEvent *);
+  void showEvent( QShowEvent* event );
 
-private slots: // Private slots
-    /**
-     * Called when the selected glider should be deleted from the list
-     */
-    void slot_delete();
+private slots:
 
-    /**
-     * Called when the selected glider needs must be opened in the editor
-     */
-    void slot_edit();
+  /**
+   * Called when the selected glider should be deleted from the list
+   */
+  void slot_delete();
 
-    /**
-     * Called when a new glider needs to be made.
-     */
-    void slot_new();
+  /**
+   * Called when the selected glider needs must be opened in the editor
+   */
+  void slot_edit();
+
+  /**
+   * Called when a new glider needs to be made.
+   */
+  void slot_new();
 
 private:
-    GliderListWidget* list;
-    QBoxLayout *buttonrow;
-    int _added;
 
+  GliderListWidget* list;
+  QBoxLayout *buttonrow;
+  int _added;
 };
 
 #endif

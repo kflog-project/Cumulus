@@ -29,64 +29,68 @@
 #include "coordedit.h"
 
 /**
- * This class represents the personal settings page
+ * \author André Somers, Axel Pauli
+ *
+ * \brief This class represents the personal settings page.
+ *
  */
 
 class SettingsPagePersonal : public QWidget
 {
   Q_OBJECT
 
-  private:
+private:
 
   Q_DISABLE_COPY ( SettingsPagePersonal )
 
-  public:
+public:
 
-    SettingsPagePersonal(QWidget *parent=0);
-    ~SettingsPagePersonal();
+  SettingsPagePersonal(QWidget *parent=0);
 
-    /** Checks if the home position has been changed */
-    bool checkIsHomePositionChanged();
+  virtual ~SettingsPagePersonal();
 
-    /** Checks if the home latitude has been changed */
-    bool checkIsHomeLatitudeChanged();
+  /** Checks if the home position has been changed */
+  bool checkIsHomePositionChanged();
 
-    /** Checks if the home longitude has been changed */
-    bool checkIsHomeLongitudeChanged();
+  /** Checks if the home latitude has been changed */
+  bool checkIsHomeLatitudeChanged();
 
-  public slots:
+  /** Checks if the home longitude has been changed */
+  bool checkIsHomeLongitudeChanged();
 
-    /** called to initiate saving to the configuration file */
-    void slot_save();
+public slots:
 
-    /** Called to initiate loading of the configuration file. */
-    void slot_load();
+  /** called to initiate saving to the configuration file */
+  void slot_save();
 
-    /** Called to ask is confirmation on the close is needed. */
-    void slot_query_close(bool& warn, QStringList& warnings);
+  /** Called to initiate loading of the configuration file. */
+  void slot_load();
 
-  private slots:
+  /** Called to ask is confirmation on the close is needed. */
+  void slot_query_close(bool& warn, QStringList& warnings);
 
-    /** called to open the directory selection dialog */
-    void slot_openDirectoryDialog();
+private slots:
 
-  private:
+  /** called to open the directory selection dialog */
+  void slot_openDirectoryDialog();
 
-    bool loadConfig; // control loading of configuration data
+private:
 
-    QLineEdit *edtName;
-    QComboBox *langBox;
-    LatEdit   *edtHomeLat;
-    LongEdit  *edtHomeLong;
-    QSpinBox  *spinHomeElevation;
-    QLineEdit *userDataDir;
+  bool loadConfig; // control loading of configuration data
 
-    int spinHomeElevationValue;
+  QLineEdit *edtName;
+  QComboBox *langBox;
+  LatEdit   *edtHomeLat;
+  LongEdit  *edtHomeLong;
+  QSpinBox  *spinHomeElevation;
+  QLineEdit *userDataDir;
 
-    /**
-     * saves current altitude unit during construction of object
-     */
-    Altitude::altitudeUnit altUnit;
+  int spinHomeElevationValue;
+
+  /**
+   * saves current altitude unit during construction of object
+   */
+  Altitude::altitudeUnit altUnit;
 };
 
 #endif

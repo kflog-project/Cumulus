@@ -6,19 +6,19 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2002 by André Somers
-**                   2009 by Axel Pauli
+**   Copyright (c):  2002      by André Somers
+**                   2009-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 *************************************************************************
 **
-** The widget provides all options related to load and draw map items.
+** \brief The widget provides all options related to load and draw map items.
 **
-** @author André Somers, Axel Pauli
+** \author André Somers, Axel Pauli
 **
 ************************************************************************/
 
@@ -29,17 +29,23 @@
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QSpinBox>
+#include <QStringList>
 
 class SettingsPageMapObjects : public QWidget
 {
   Q_OBJECT
 
-  public:
+private:
+
+  Q_DISABLE_COPY ( SettingsPageMapObjects )
+
+public:
 
   SettingsPageMapObjects(QWidget *parent=0);
+
   virtual ~SettingsPageMapObjects();
 
-  protected:
+protected:
 
   /**
    * Called before widget is displayed. The content of the option table
@@ -47,7 +53,7 @@ class SettingsPageMapObjects : public QWidget
    */
   void showEvent(QShowEvent *);
 
-  public slots: // Public slots
+public slots:
   /**
    * Called to initiate saving to the configuration file.
    */

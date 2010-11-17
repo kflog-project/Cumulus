@@ -7,26 +7,16 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
-*************************************************************************
-**
-** The widget provides all options related to load and draw map items.
-**
-** @author André Somers, Axel Pauli
-**
 ************************************************************************/
 
-#include <QGridLayout>
-#include <QHeaderView>
-#include <QGroupBox>
-#include <QHBoxLayout>
-#include <QLabel>
+#include <QtGui>
 
 #include "settingspagemapobjects.h"
 #include "generalconfig.h"
