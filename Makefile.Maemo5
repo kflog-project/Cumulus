@@ -16,7 +16,8 @@ VERSION=$(shell cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2)
 CUMULUS_REL=cumulus-$(VERSION)
 
 # Debian package build directory
-CUMULUS_DEB=dpkg/n900/$(CUMULUS_REL)
+CUMULUS_DEB_ROOT=dpkg/n900
+CUMULUS_DEB=$(CUMULUS_DEB_ROOT)/$(CUMULUS_REL)
 
 # Reset language environment because the date can be formatted according
 # to local rules. That does not like dpkg-buildpackage.
@@ -153,7 +154,7 @@ dpkg:
 # due to the VERSION macro. The special letters apostroph and quotation mark
 # cause problems in other shell commands, if they not expanded before.
 dpkg_make:
-	rm -fr $(CUMULUS_DEB) $(CUMULUS_DEB)/../*$(VERSION)*
+	rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
 	mkdir -p $(CUMULUS_DEB)
 	cd $(CUMULUS_DEB); \
 	svn export --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk .; \
