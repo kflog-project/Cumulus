@@ -18,12 +18,6 @@ CUMULUS_REL=cumulus-$(VERSION)
 # Debian package build directory
 CUMULUS_DEB=dpkg/n900/$(CUMULUS_REL)
 
-# current Qt version
-# QT_VERSION=4.6.2
-
-# installation directory of Qt libraries
-# QT_LIBDIR=/usr/lib
-
 # Reset language environment because the date can be formatted according
 # to local rules. That does not like dpkg-buildpackage.
 LANG=
@@ -154,7 +148,7 @@ deinstall:
 dpkg:
 	@echo "===== Building Fremantle Maemo5 package for Cumulus $(VERSION) ====="
 	$(MAKE) -f Makefile.Maemo5 VERSION=$(VERSION) dpkg_make
-
+	
 # This target will build the debian package. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation mark
 # cause problems in other shell commands, if they not expanded before.
@@ -162,20 +156,20 @@ dpkg_make:
 	rm -fr $(CUMULUS_DEB)
 	mkdir -p $(CUMULUS_DEB)
 	cd $(CUMULUS_DEB); \
-	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -e axel@kflog.org -s -n
-	cp dpkg/Maemo5/control/makefile $(CUMULUS_DEB)
-	sed -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/copyright > $(CUMULUS_DEB)/debian/copyright
+	svn export https://svn.kflog.org/svn/repos/cumulus/qt4/trunk; \
+	export DEBEMAIL='axel@kflog.org'; \
+	export DEBFULLNAME='Axel Pauli'; \
+	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -e axel@kflog.org -s --createorig
 	cp dpkg/Maemo5/control/control $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo5/control/rules $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo5/control/postinst $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo5/control/prerm $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo5/control/postrm $(CUMULUS_DEB)/debian/
-	sed -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/README > $(CUMULUS_DEB)/debian/README
-	cp $(CUMULUS_DEB)/debian/README $(CUMULUS_DEB)/debian/README.Debian
+  sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/copyright > $(CUMULUS_DEB)/debian/copyright
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/changelog > $(CUMULUS_DEB)/debian/changelog
 	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage -rfakeroot
-	rm -f $(CUMULUS_DEB)/../cumulus_$(VERSION).dsc $(CUMULUS_DEB)/../cumulus_$(VERSION).tar.gz
+	#rm -f $(CUMULUS_DEB)/../cumulus_$(VERSION).dsc $(CUMULUS_DEB)/../cumulus_$(VERSION).tar.gz
 
 # copies all files of cumulus into the debian package area
 .PHONY : dpkg_install
