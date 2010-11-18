@@ -1,18 +1,18 @@
 Source: cumulus
-Section: user/other
+Section: user/navigation
 Priority: optional
 Maintainer: Axel Pauli <axel@kflog.org>
-Build-Depends: debhelper (>= 5)
+Build-Depends: debhelper (>= 5), libbluetooth3-dev (>= 4.60), libqt4-dev (>= 4.7.0~git20100909)
 Standards-Version: 3.7.2
 
 Package: cumulus
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, libbluetooth3 (>= 4.60), libqt4-core (>= 4.7.0~git20100909), libqt4-gui (>= 4.7.0~git20100909), libqt4-network (>= 4.7.0~git20100909)
 Description: Cumulus is a flight computer for glider pilots.
- Cumulus features a full-colored moving map display with elevations,
- airspace, terrain and airfields information. It can use
- waypoints, supports flight tasks and log flights according to the
- IGC format standard.
+ Cumulus features a full colored moving map display with elevations,
+ airspaces, terrain and airfields information. It can use
+ waypoints, supports flight tasks and logs flights according to the
+ IGC requirements.
  .
  Cumulus can be used with or without a GPS receiver (either serial or BT).
 XB-Maemo-Icon-26:

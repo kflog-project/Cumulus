@@ -9,7 +9,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-CFLAGS = -Wall -g
+CFLAGS = -Wall
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -31,9 +31,7 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	# $(MAKE)
-	#docbook-to-man debian/cumulus.sgml > cumulus.1
-
+	$(MAKE) -f Makefile.Maemo5 all
 	touch $@
 
 clean:
@@ -42,7 +40,7 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	#-$(MAKE) clean
+	$(MAKE) -f Makefile.Maemo5 clean
 
 	dh_clean 
 
@@ -53,7 +51,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/cumulus.
-	$(MAKE) DESTDIR=$(CURDIR)/debian/cumulus install
+	$(MAKE) -f Makefile.Maemo5 DESTDIR=$(CURDIR)/debian/cumulus dpkg_install
 
 # Build architecture-independent files here.
 binary-indep: build install

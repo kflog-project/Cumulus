@@ -1,5 +1,6 @@
 cumulus (__VERSION__) stable; urgency=low
 
-  * Cumulus Release __VERSION__ for Maemo5 OS2009 Fremantle with Qt4/X11
+  * Cumulus Release __VERSION__ for N900, running Maemo5, OS2010 Fremantle with Qt4/X11
+  * See also https://svn.kflog.org/svn/repos/cumulus/qt4/trunk/ChangeLog 
 
  -- Axel Pauli <axel@kflog.org>  __DATE__
