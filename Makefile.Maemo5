@@ -153,10 +153,10 @@ dpkg:
 # due to the VERSION macro. The special letters apostroph and quotation mark
 # cause problems in other shell commands, if they not expanded before.
 dpkg_make:
-	rm -fr $(CUMULUS_DEB)
+	rm -fr $(CUMULUS_DEB) $(CUMULUS_DEB)/../cumulus-$(VERSION).orig
 	mkdir -p $(CUMULUS_DEB)
 	cd $(CUMULUS_DEB); \
-	svn export https://svn.kflog.org/svn/repos/cumulus/qt4/trunk; \
+	svn export --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk .; \
 	export DEBEMAIL='axel@kflog.org'; \
 	export DEBFULLNAME='Axel Pauli'; \
 	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -e axel@kflog.org -s --createorig
@@ -165,11 +165,10 @@ dpkg_make:
 	cp dpkg/Maemo5/control/postinst $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo5/control/prerm $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo5/control/postrm $(CUMULUS_DEB)/debian/
-  sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/copyright > $(CUMULUS_DEB)/debian/copyright
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/copyright > $(CUMULUS_DEB)/debian/copyright
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/changelog > $(CUMULUS_DEB)/debian/changelog
 	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage -rfakeroot
-	#rm -f $(CUMULUS_DEB)/../cumulus_$(VERSION).dsc $(CUMULUS_DEB)/../cumulus_$(VERSION).tar.gz
 
 # copies all files of cumulus into the debian package area
 .PHONY : dpkg_install
