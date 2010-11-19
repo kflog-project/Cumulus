@@ -11,8 +11,8 @@ Depends:
 Description: Cumulus is a flight computer for glider pilots.
  Cumulus features a full-colored moving map display with elevations,
  airspace, terrain and airfields information. It can use
- waypoints, supports flight tasks and log flights according to the
- IGC format standard.
+ waypoints, supports flight tasks and logs flights according to the
+ IGC standard.
  .
  Cumulus can be used with or without a GPS receiver (either serial or BT).
 XB-Maemo-Icon-26:
