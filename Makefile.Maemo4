@@ -18,7 +18,8 @@ CUMULUS_REL=cumulus-$(VERSION)
 CUMULUS_LANG_REL=cumuluslanguages-$(VERSION)
 
 # Debian package build directories
-CUMULUS_DEB=dpkg/n8x0/$(CUMULUS_REL)
+CUMULUS_DEB_ROOT=dpkg/n8x0
+CUMULUS_DEB=$(CUMULUS_DEB_ROOT)/$(CUMULUS_REL)
 
 CUMULUS_LANG_DEB=dpkg/Languages/$(CUMULUS_LANG_REL)
 
@@ -163,23 +164,22 @@ dpkg:
 # cause problems in ohter shell commands, if they not expanded before.
 
 dpkg_make:
-	rm -fr $(CUMULUS_DEB)
+	rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
 	mkdir -p $(CUMULUS_DEB)
 	cd $(CUMULUS_DEB); \
-	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -e axel@kflog.org -s -n
-	cp dpkg/Maemo4/control/makefile $(CUMULUS_DEB)
-	sed -e "s/__DATE__/$(DATE)/g" dpkg/Maemo4/control/copyright > $(CUMULUS_DEB)/debian/copyright
+	svn export --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk .; \
+	export DEBEMAIL='axel@kflog.org'; \
+	export DEBFULLNAME='Axel Pauli'; \
+	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -e axel@kflog.org -s --native
 	cp dpkg/Maemo4/control/control $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo4/control/rules $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo4/control/postinst $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo4/control/prerm $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo4/control/postrm $(CUMULUS_DEB)/debian/
-	sed -e "s/__DATE__/$(DATE)/g" dpkg/Maemo4/control/README > $(CUMULUS_DEB)/debian/README
-	cp $(CUMULUS_DEB)/debian/README $(CUMULUS_DEB)/debian/README.Debian
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/Maemo4/control/copyright > $(CUMULUS_DEB)/debian/copyright
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/Maemo4/control/changelog > $(CUMULUS_DEB)/debian/changelog
 	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage -rfakeroot
-	rm -f $(CUMULUS_DEB)/../cumulus_$(VERSION).dsc $(CUMULUS_DEB)/../cumulus_$(VERSION).tar.gz
 
 # copies all files of cumulus into the debian package area
 .PHONY : dpkg_install
