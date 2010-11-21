@@ -156,8 +156,8 @@ dpkg:
 dpkg_make:
 	rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
 	mkdir -p $(CUMULUS_DEB)
+	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
 	cd $(CUMULUS_DEB); \
-	svn export --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk .; \
 	export DEBEMAIL='axel@kflog.org'; \
 	export DEBFULLNAME='Axel Pauli'; \
 	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -e axel@kflog.org -s --createorig
