@@ -19,6 +19,8 @@ CUMULUS_REL=cumulus-$(VERSION)
 CUMULUS_DEB_ROOT=dpkg/n900
 CUMULUS_DEB=$(CUMULUS_DEB_ROOT)/$(CUMULUS_REL)
 
+SRC_PACK=-sa -S
+
 # Reset language environment because the date can be formatted according
 # to local rules. That does not like dpkg-buildpackage.
 LANG=
@@ -169,7 +171,7 @@ dpkg_make:
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/copyright > $(CUMULUS_DEB)/debian/copyright
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" dpkg/Maemo5/control/changelog > $(CUMULUS_DEB)/debian/changelog
 	cd $(CUMULUS_DEB); \
-	dpkg-buildpackage -rfakeroot
+	dpkg-buildpackage -rfakeroot $(DPKG_OPT)
 
 # copies all files of cumulus into the debian package area
 .PHONY : dpkg_install
