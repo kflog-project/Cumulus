@@ -9,12 +9,13 @@ Package: cumulus
 Architecture: any
 Depends: ${shlibs:Depends}, libbluetooth2 (>= 3.28-0osso1), libstdc++6 (>= 3.4.4cs2005q3.2-5.osso8)
 Description: Cumulus is a flight computer for glider pilots.
- Cumulus features a full-colored moving map display with elevations,
- airspace, terrain and airfields information. It can use
- waypoints, supports flight tasks and logs flights according to the
- IGC standard.
+ Cumulus features a full colored moving map display with elevations, airspace,
+ terrain and airfields information. It can use waypoints, supports flight tasks
+ and logs flights according to the IGC standard.
  .
  Cumulus can be used with or without a GPS receiver (either serial or BT).
+ .
+ Cumulus home page: http://www.kflog.org/cumulus/
 XB-Maemo-Icon-26:
  iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/
  AP+gvaeTAAAACXBIWXMAAAsRAAALEQF/ZF+RAAAAB3RJTUUH0gkWCSoCZfTr
