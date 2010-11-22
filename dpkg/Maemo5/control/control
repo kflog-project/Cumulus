@@ -2,7 +2,11 @@ Source: cumulus
 Section: user/navigation
 Priority: optional
 Maintainer: Axel Pauli <axel@kflog.org>
-Build-Depends: debhelper (>= 5), libbluetooth3-dev (>= 4.60), libqt4-dev (>= 4.7.0~git20100909), libosso-dev (>= 2.32-1+0m5), libglib2.0-dev (>= 2.20.3-1maemo5+0m5), libstdc++6-4.2-dev (>= 4.2.1-4maemo13+0m5)
+Build-Depends: debhelper (>= 5), libbluetooth3-dev (>= 4.60), \
+               libqt4-dev (>= 4.7.0~git20100909), libosso-dev (>= 2.32-1+0m5), \
+               libglib2.0-dev (>= 2.20.3-1maemo5+0m5), \
+               libstdc++6-4.2-dev (>= 4.2.1-4maemo13+0m5), \
+               liblocation-dev (>= 0.102-1+0m5), libc6-dev (>= 2.5.1-1eglibc27+0m5)
 Standards-Version: 3.7.2
 
 Package: cumulus
