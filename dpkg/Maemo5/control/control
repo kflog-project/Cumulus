@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: cumulus
 Architecture: any
-Depends: ${shlibs:Depends}, libbluetooth3 (>= 4.60), libqt4-core (>= 4.7.0~git20100909), libqt4-gui (>= 4.7.0~git20100909), libqt4-network (>= 4.7.0~git20100909)
+Depends: ${shlibs:Depends}, libbluetooth3 (>= 4.60), libqt4-core (>= 4.7.0~git20100909), libqt4-gui (>= 4.7.0~git20100909), libqt4-network (>= 4.7.0~git20100909), alsa-utils (>= 1.0.20-0maemo1+0m5)
 Description: Cumulus is a flight computer for glider pilots.
  Cumulus features a full colored moving map display with elevations, airspace,
  terrain and airfields information. It can use waypoints, supports flight tasks

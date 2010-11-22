@@ -350,7 +350,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Information");
-#ifdef MAEMO
+#ifdef MAEMO4
   _soundPlayer           = value( "SoundPlayer", "/opt/cumulus/bin/aplay" ).toString();
 #else
   _soundPlayer           = value( "SoundPlayer", "/usr/bin/aplay" ).toString();
