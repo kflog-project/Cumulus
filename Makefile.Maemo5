@@ -146,11 +146,17 @@ deinstall:
 # call dpkg target to build a debian Cumulus Maemo package
 ##########################################################
 
-.PHONY : dpkg dpkg_make
+.PHONY : dpkg dpkg_src dpkg_make
 
 dpkg:
 	@echo "===== Building Fremantle Maemo5 package for Cumulus $(VERSION) ====="
 	$(MAKE) -f Makefile.Maemo5 VERSION=$(VERSION) dpkg_make
+
+# This target builds a so called source package. That is needed for upload
+# to the Maemo5 extra repository
+dpkg_src:
+	@echo "===== Building Fremantle Maemo5 source package for Cumulus $(VERSION) ====="
+	$(MAKE) -f Makefile.Maemo5 VERSION=$(VERSION) DPKG_OPT=$(SRC_PACK) dpkg_make
 	
 # This target will build the debian package. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation mark
@@ -200,7 +206,6 @@ dpkg_install:
 	install --mode=755 gpsClient/gpsClient $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 gpsMaemoClient/gpsMaemoClient $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(DESTDIR)/$(INSTALL_ROOT)/bin
-	#install --mode=755 dpkg/Maemo5/maemo/aplay $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=644 etc/glider.pol $(DESTDIR)/$(INSTALL_ROOT)/etc
 	install --mode=644 icons/*.xpm $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 icons/*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
