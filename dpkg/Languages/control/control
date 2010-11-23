@@ -1,7 +1,7 @@
 Source: cumuluslanguages
 Section: user/other
 Priority: optional
-Maintainer: Axel Pauli <axel@kflog.org>
+Maintainer: Axel Pauli <kflog.cumulus@googlemail.com>
 Build-Depends: debhelper (>= 5)
 Standards-Version: 3.7.2
 Homepage: http://www.kflog.org/cumulus/
