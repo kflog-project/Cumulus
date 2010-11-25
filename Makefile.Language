@@ -125,8 +125,6 @@ dpkg_make:
 	sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/copyright > $(CUMULUS_DEB)/debian/copyright
 	sed -e "s/__VERSION__/$(VERSION)/g" dpkg/Languages/control/control > $(CUMULUS_DEB)/debian/control
 	cp dpkg/Languages/control/postrm $(CUMULUS_DEB)/debian/
-	sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/README > $(CUMULUS_DEB)/debian/README
-	cp $(CUMULUS_DEB)/debian/README $(CUMULUS_DEB)/debian/README.Debian
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" \
             dpkg/Languages/control/changelog > $(CUMULUS_DEB)/debian/changelog
 	cd $(CUMULUS_DEB); \
