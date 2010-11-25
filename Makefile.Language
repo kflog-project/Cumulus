@@ -101,13 +101,13 @@ check_file:
 
 dpkg:  check_file langpacks
 	@echo "===== Building Maemo Languages binary-only package for Cumulus $(VERSION) ====="
-	@$(MAKE) -f Makefile.Language -s VERSION=$(VERSION) \
-	         DPKG_OPT=$(BIN_PACK) DH_MAKE_OPT="-s --native" dpkg_make
+	$(MAKE) -f Makefile.Language -s VERSION=$(VERSION) \
+	        DPKG_OPT=$(BIN_PACK) DH_MAKE_OPT="-s --native" dpkg_make
 
 dpkg_src:  langpacks
 	@echo "===== Building Maemo Languages source-only package for Cumulus $(VERSION) ====="
-	@$(MAKE) -f Makefile.Language -s VERSION=$(VERSION) \
-	         DPKG_OPT=$(SRC_PACK) DH_MAKE_OPT="-s --createorig" dpkg_make
+	$(MAKE) -f Makefile.Language -s VERSION=$(VERSION) \
+	        DPKG_OPT=$(SRC_PACK) DH_MAKE_OPT="-s --createorig" dpkg_make
 
 # This target will build the debian package. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation mark
@@ -121,14 +121,13 @@ dpkg_make:
 	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
 	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL $(DH_MAKE_OPT)
-	@cp dpkg/Languages/control/makefile $(CUMULUS_DEB)
-	@cp dpkg/Languages/control/rules $(CUMULUS_DEB)/debian/
-	@sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/copyright > $(CUMULUS_DEB)/debian/copyright
-	@sed -e "s/__VERSION__/$(VERSION)/g" dpkg/Languages/control/control > $(CUMULUS_DEB)/debian/control
-	@cp dpkg/Languages/control/postrm $(CUMULUS_DEB)/debian/
-	@sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/README > $(CUMULUS_DEB)/debian/README
-	@cp $(CUMULUS_DEB)/debian/README $(CUMULUS_DEB)/debian/README.Debian
-	@sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" \
+	cp dpkg/Languages/control/rules $(CUMULUS_DEB)/debian/
+	sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/copyright > $(CUMULUS_DEB)/debian/copyright
+	sed -e "s/__VERSION__/$(VERSION)/g" dpkg/Languages/control/control > $(CUMULUS_DEB)/debian/control
+	cp dpkg/Languages/control/postrm $(CUMULUS_DEB)/debian/
+	sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/README > $(CUMULUS_DEB)/debian/README
+	cp $(CUMULUS_DEB)/debian/README $(CUMULUS_DEB)/debian/README.Debian
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" \
             dpkg/Languages/control/changelog > $(CUMULUS_DEB)/debian/changelog
 	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage -rfakeroot $(DPKG_OPT)
