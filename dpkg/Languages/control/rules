@@ -31,7 +31,7 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	$(MAKE) -f Makefile.Languages all
+	$(MAKE) -f Makefile.Language all
 	touch $@
 
 clean:
@@ -40,7 +40,7 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	$(MAKE) -f Makefile.Languages clean
+	$(MAKE) -f Makefile.Language clean
 	dh_clean 
 
 install: build
@@ -50,7 +50,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/cumuluslanguages.
-	$(MAKE) -f Makefile.Languages DESTDIR=$(CURDIR)/debian/cumuluslanguages install
+	$(MAKE) -f Makefile.Language DESTDIR=$(CURDIR)/debian/cumuluslanguages install
 
 # Build architecture-independent files here.
 binary-indep: build install
