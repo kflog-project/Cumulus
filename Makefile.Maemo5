@@ -20,6 +20,7 @@ CUMULUS_DEB_ROOT=dpkg/n900
 CUMULUS_DEB=$(CUMULUS_DEB_ROOT)/$(CUMULUS_REL)
 
 SRC_PACK=-sa -S
+BIN_PACK=-b
 
 # Reset language environment because the date can be formatted according
 # to local rules. That does not like dpkg-buildpackage.
@@ -45,7 +46,8 @@ usage:
 	@echo "  clean        - Removes all build results"
 	@echo "  install      - Installs Cumulus under $(INSTALL_ROOT)"
 	@echo "  deinstall    - Deinstalls Cumulus under $(INSTALL_ROOT)"
-	@echo "  dpkg         - Builds a Debian package file"
+	@echo "  dpkg         - Builds a Debian binary-only package file"
+	@echo "  dpkg_src     - Builds a Debian source-only package file"
 	@echo "  dpkg_lang    - Builds a Debian language package"
 	@echo "  copy2web     - Copies Cumulus application package to web page"
 	@echo "  copylang2web - Copies Cumulus language package to web page"
@@ -149,14 +151,16 @@ deinstall:
 .PHONY : dpkg dpkg_src dpkg_make
 
 dpkg:
-	@echo "===== Building Fremantle Maemo5 package for Cumulus $(VERSION) ====="
-	$(MAKE) -f Makefile.Maemo5 VERSION=$(VERSION) dpkg_make
+	@echo "===== Building Fremantle Maemo5 binary-only package for Cumulus $(VERSION) ====="
+	$(MAKE) -f Makefile.Maemo5 VERSION=$(VERSION) \
+	        DPKG_OPT=$(BIN_PACK) DH_MAKE_OPT="-s --native" dpkg_make
 
 # This target builds a so called source package. That is needed for upload
 # to the Maemo5 extra repository
 dpkg_src:
-	@echo "===== Building Fremantle Maemo5 source package for Cumulus $(VERSION) ====="
-	$(MAKE) -f Makefile.Maemo5 VERSION=$(VERSION) DPKG_OPT=$(SRC_PACK) dpkg_make
+	@echo "===== Building Fremantle Maemo5 source-only package for Cumulus $(VERSION) ====="
+	$(MAKE) -f Makefile.Maemo5 VERSION=$(VERSION) \
+	        DPKG_OPT=$(SRC_PACK) DH_MAKE_OPT="-s --createorig" dpkg_make
 	
 # This target will build the debian package. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation mark
@@ -166,9 +170,9 @@ dpkg_make:
 	mkdir -p $(CUMULUS_DEB)
 	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
 	cd $(CUMULUS_DEB); \
-	export DEBEMAIL='axel@kflog.org'; \
+	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
-	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -e axel@kflog.org -s --createorig
+	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL $(DH_MAKE_OPT)
 	cp dpkg/Maemo5/control/control $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo5/control/rules $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo5/control/postinst $(CUMULUS_DEB)/debian/
@@ -194,7 +198,6 @@ dpkg_install:
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons/small
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
-	install -d $(DESTDIR)/$(INSTALL_ROOT)/lib
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install -d $(DESTDIR)/usr/share/applications/hildon
 	install -d $(DESTDIR)/usr/share/dbus-1/services
@@ -262,4 +265,3 @@ gpsMaemoClient/Makefile: gpsMaemoClient/gpsMaemoClient.pro
 
 nmeaSimulator/Makefile: nmeaSimulator/simuX11.pro
 	cd nmeaSimulator; $(QMAKE) simuX11.pro -o Makefile
-

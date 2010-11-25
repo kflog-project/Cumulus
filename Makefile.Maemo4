@@ -29,9 +29,6 @@ QT_VERSION=4.7.1
 # installation directory of Qt libraries
 QT_LIBDIR=/opt/qt$(QT_VERSION)/lib
 
-# installation directory of Qt translations
-QT_TRANSLATIONS=/opt/qt$(QT_VERSION)/translations
-
 # Reset language environment because the date can be formatted according
 # to local rules. That does not like dpkg-buildpackage.
 LANG=
@@ -156,7 +153,7 @@ deinstall:
 .PHONY : dpkg dpkg_make
 
 dpkg:
-	@echo "===== Building Diablo Maemo4 package for Cumulus $(VERSION) ====="
+	@echo "===== Building Diablo Maemo4 binary-only package for Cumulus $(VERSION) ====="
 	@$(MAKE) -f Makefile.Maemo4 VERSION=$(VERSION) dpkg_make
 
 # This target will build the debian packge. It is called via another makefile
@@ -169,8 +166,8 @@ dpkg_make:
 	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
 	cd $(CUMULUS_DEB); \
 	export DEBEMAIL='axel@kflog.org'; \
-	export DEBFULLNAME='Axel Pauli'; \
-	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -e axel@kflog.org -s --native
+	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
+	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -s --native
 	cp dpkg/Maemo4/control/control $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo4/control/rules $(CUMULUS_DEB)/debian/
 	cp dpkg/Maemo4/control/postinst $(CUMULUS_DEB)/debian/

@@ -2,14 +2,12 @@ Source: cumulus
 Section: user/navigation
 Priority: optional
 Maintainer: Axel Pauli <kflog.cumulus@googlemail.com>
-Build-Depends: debhelper (>= 5), libbluetooth3-dev (>= 4.60), libqt4-dev (>= 4.7.0~git20100909), libosso-dev (>= 2.32-1+0m5), libglib2.0-dev (>= 2.20.3-1maemo5+0m5), libstdc++6-4.2-dev (>= 4.2.1-4maemo13+0m5), liblocation-dev (>= 0.102-1+0m5), libc6-dev (>= 2.5.1-1eglibc27+0m5)
+Build-Depends: debhelper (>= 5), libbluetooth3-dev (>= 4.60), libqt4-dev (>= 4.7.0~git20100909), libosso-dev (>= 2.32), libglib2.0-dev (>= 2.20.3), libstdc++6-4.2-dev (>= 4.2.1), liblocation-dev (>= 0.102), libc6-dev (>= 2.5.1)
 Standards-Version: 3.7.2
-
-XSBC-Bugtracker: mailto:kflog.cumulus@googlemail.com
 
 Package: cumulus
 Architecture: any
-Depends: ${shlibs:Depends}, libbluetooth3 (>= 4.60), libqt4-core (>= 4.7.0~git20100909), libqt4-gui (>= 4.7.0~git20100909), libqt4-network (>= 4.7.0~git20100909), alsa-utils (>= 1.0.20-0maemo1+0m5)
+Depends: ${shlibs:Depends}, alsa-utils (>= 1.0.20)
 Description: Cumulus is a flight computer for glider pilots.
  Cumulus features a full colored moving map display with elevations, airspace,
  terrain and airfields information. It can use waypoints, supports flight tasks
@@ -18,6 +16,9 @@ Description: Cumulus is a flight computer for glider pilots.
  Cumulus can be used with or without a GPS receiver (either serial or BT).
  .
  Cumulus home page: http://www.kflog.org/cumulus/
+XSBC-Bugtracker: mailto:kflog.cumulus@googlemail.com
+XB-Maemo-Upgrade-Description: Fulfilling Maemo 5 requirements.
+XB-Maemo-Upgrade-Description-de_DE: Erfuellen der Maemo 5 Anforderungen.
 XB-Maemo-Icon-26:
  iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c
  6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAAlgAAAJYABbFUIBwAAAAd0

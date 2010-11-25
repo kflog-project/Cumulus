@@ -1,16 +1,25 @@
 Source: cumuluslanguages
-Section: user/other
+Section: user/navigation
 Priority: optional
 Maintainer: Axel Pauli <kflog.cumulus@googlemail.com>
-Build-Depends: debhelper (>= 5)
+Build-Depends: debhelper (>= 5), libqt4-dev (>= 4.7.0~git20100909), libqt4-translations (>= 4.7.0~git20100909)
 Standards-Version: 3.7.2
 Homepage: http://www.kflog.org/cumulus/
 
 Package: cumuluslanguages
 Architecture: any
-Pre-Depends: cumulus (>=__VERSION__)
+Depends: cumulus (>= __VERSION__)
 Description: Cumulus is a flight computer for glider pilots.
- This package provides additional languages for Cumulus.
+ This package provides additional languages for Cumulus. Tt contains the
+ following translations:
+ .
+ German
+XB-Description-de_DE: Cumulus ist ein Flugcomputer fuer Segelflieger.
+ Diese Paket enthaelt Sprachuebersetzungen fuer Cumulus. Im Moment wird nur
+ Deutsch unterstuetzt.
+XB-Maemo-Upgrade-Description: First translation package for German.
+XB-Maemo-Upgrade-Description-de_DE: Erstes Uebersetzungspaket fuer Deutsch.
+XSBC-Bugtracker: mailto:kflog.cumulus@googlemail.com
 XB-Maemo-Icon-26:
  iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/
  AP+gvaeTAAAACXBIWXMAAAsRAAALEQF/ZF+RAAAAB3RJTUUH0gkWCSoCZfTr

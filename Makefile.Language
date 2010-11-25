@@ -13,10 +13,14 @@
 # Version is determined from the header file target.h
 VERSION=$(shell cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2)
 
-CUMULUS_LANG_REL=cumuluslanguages-$(VERSION)
+CUMULUS_REL=cumuluslanguages-$(VERSION)
 
 # Debian package build directories
-CUMULUS_LANG_DEB=dpkg/Languages/$(CUMULUS_LANG_REL)
+CUMULUS_DEB_ROOT=dpkg/Languages
+CUMULUS_DEB=$(CUMULUS_DEB_ROOT)/$(CUMULUS_REL)
+
+SRC_PACK=-sa -S
+BIN_PACK=-b
 
 # current Qt version
 QT_VERSION=4.7.1
@@ -44,22 +48,21 @@ LRELEASE = lrelease
 usage:
 	@echo ""
 	@echo "usage: make -f Makefile.Language <target> ..."
-	@echo "  all     - Builds the Qt language translation file"
-	@echo "  clean   - Removes all build results"
-	@echo "  install - Installs the language parts under $(INSTALL_ROOT)"
-	@echo "  dpkg    - Builds a Debian package file"
+	@echo "  all      - Builds the Qt language translation file"
+	@echo "  clean    - Removes all build results"
+	@echo "  install  - Installs the language parts under $(INSTALL_ROOT)"
+	@echo "  dpkg     - Builds a Debian binary-only package file"
+	@echo "  dpkg_src - Builds a Debian source-only package file"
 	
 all:	langpacks
 
 install:	install_lang
-	
-dpkg:	check_file dpkg_lang
 
 .PHONY : clean
 
 clean:
 	@cd cumulus; rm -f cumulus_de.qm
-	@rm -fr $(CUMULUS_LANG_DEB)
+	@rm -fr $(CUMULUS_DEB)
 	@echo "Build area cleaned"
 
 .PHONY : check_dir
@@ -93,41 +96,48 @@ check_file:
 # DPKG Language Package Build
 ################################################################################
 
-# call dpkg_lang target to build a debian Maemo language package
-.PHONY : dpkg_lang dpkg_make_lang
+# call dpkg target to build a debian Maemo language package
+.PHONY : dpkg dpkg_make
 
-dpkg_lang:  langpacks
-	@echo "===== Building Maemo Languages package for Cumulus $(VERSION) ====="
-	@$(MAKE) -f Makefile.Language -s VERSION=$(VERSION) dpkg_make_lang
+dpkg:  check_file langpacks
+	@echo "===== Building Maemo Languages binary-only package for Cumulus $(VERSION) ====="
+	@$(MAKE) -f Makefile.Language -s VERSION=$(VERSION) \
+	         DPKG_OPT=$(BIN_PACK) DH_MAKE_OPT="-s --native" dpkg_make
+
+dpkg_src:  langpacks
+	@echo "===== Building Maemo Languages source-only package for Cumulus $(VERSION) ====="
+	@$(MAKE) -f Makefile.Language -s VERSION=$(VERSION) \
+	         DPKG_OPT=$(SRC_PACK) DH_MAKE_OPT="-s --createorig" dpkg_make
 
 # This target will build the debian package. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation mark
 # cause problems in ohter shell commands, if they not expanded before.
 
-dpkg_make_lang:
-	@rm -fr $(CUMULUS_LANG_DEB)
-	@mkdir -p $(CUMULUS_LANG_DEB)
-	@cd $(CUMULUS_LANG_DEB); \
-	echo '\n' | dh_make --packagename $(CUMULUS_LANG_REL) -c GPL -e axel@kflog.org -s -n
-	@cp dpkg/Languages/control/makefile $(CUMULUS_LANG_DEB)
-	@cp dpkg/Languages/control/rules $(CUMULUS_LANG_DEB)/debian/
-	@sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/copyright > $(CUMULUS_LANG_DEB)/debian/copyright
-	@sed -e "s/__VERSION__/$(VERSION)/g" dpkg/Languages/control/control > $(CUMULUS_LANG_DEB)/debian/control
-	@cp dpkg/Languages/control/postrm $(CUMULUS_LANG_DEB)/debian/
-	@sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/README > $(CUMULUS_LANG_DEB)/debian/README
-	@cp $(CUMULUS_LANG_DEB)/debian/README $(CUMULUS_LANG_DEB)/debian/README.Debian
+dpkg_make:
+	rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
+	mkdir -p $(CUMULUS_DEB)
+	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
+	cd $(CUMULUS_DEB); \
+	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
+	export DEBFULLNAME='Axel Pauli'; \
+	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL $(DH_MAKE_OPT)
+	@cp dpkg/Languages/control/makefile $(CUMULUS_DEB)
+	@cp dpkg/Languages/control/rules $(CUMULUS_DEB)/debian/
+	@sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/copyright > $(CUMULUS_DEB)/debian/copyright
+	@sed -e "s/__VERSION__/$(VERSION)/g" dpkg/Languages/control/control > $(CUMULUS_DEB)/debian/control
+	@cp dpkg/Languages/control/postrm $(CUMULUS_DEB)/debian/
+	@sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/README > $(CUMULUS_DEB)/debian/README
+	@cp $(CUMULUS_DEB)/debian/README $(CUMULUS_DEB)/debian/README.Debian
 	@sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" \
-            dpkg/Languages/control/changelog > $(CUMULUS_LANG_DEB)/debian/changelog
-	cd $(CUMULUS_LANG_DEB); \
-	dpkg-buildpackage -b -rfakeroot
-	@cd $(CUMULUS_LANG_DEB)/..; \
-	rm -f cumuluslanguages_$(VERSION).dsc cumuluslanguages_$(VERSION).tar.gz
+            dpkg/Languages/control/changelog > $(CUMULUS_DEB)/debian/changelog
+	cd $(CUMULUS_DEB); \
+	dpkg-buildpackage -rfakeroot $(DPKG_OPT)
 
 # copies all language files of Cumulus into the debian package area
 
-.PHONY : dpkg_install_lang
+.PHONY : dpkg_install
 
-dpkg_install_lang:
+dpkg_install:
 	@echo '===== Installing Cumulus Languages $(VERSION) under $(DESTDIR)$(INSTALL_ROOT) ====='
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/locale/de
@@ -141,9 +151,9 @@ dpkg_install_lang:
 	fi
 
 # installs all language dependend parts
-.PHONY : install_lang
+.PHONY : install
 
-install_lang:	langpacks
+install:	langpacks
 	@echo '===== Installing Cumulus Languages $(VERSION) under $(INSTALL_ROOT) ====='
 	install -d $(INSTALL_ROOT)/help/de
 	install -d $(INSTALL_ROOT)/locale/de
