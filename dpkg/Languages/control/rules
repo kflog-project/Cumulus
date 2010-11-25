@@ -50,7 +50,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/cumuluslanguages.
-	$(MAKE) -f Makefile.Language DESTDIR=$(CURDIR)/debian/cumuluslanguages install
+	$(MAKE) -f Makefile.Language DESTDIR=$(CURDIR)/debian/cumuluslanguages dpkg_install
 
 # Build architecture-independent files here.
 binary-indep: build install
