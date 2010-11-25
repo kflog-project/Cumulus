@@ -56,8 +56,6 @@ usage:
 	
 all:	langpacks
 
-install:	install_lang
-
 .PHONY : clean
 
 clean:
