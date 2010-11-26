@@ -1,5 +1,5 @@
 Source: cumuluslanguages
-Section: user/other
+Section: user/navigation
 Priority: optional
 Maintainer: Axel Pauli <kflog.cumulus@googlemail.com>
 Build-Depends: debhelper (>= 5)
