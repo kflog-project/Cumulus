@@ -859,17 +859,7 @@ void Map::setDrawing(bool isEnable)
 
 void Map::resizeEvent(QResizeEvent* event)
 {
-//   qDebug("Map::resizeEvent(): w=%d, h=%d, pbw=%d, pbh=%d",
-//          event->size().width(), event->size().height(),
-//          m_pixPaintBuffer.width(), m_pixPaintBuffer.height() );
-
-  if( event->size().width()  == m_pixPaintBuffer.width() &&
-      event->size().height() < m_pixPaintBuffer.height() &&
-      (m_pixPaintBuffer.height() - event->size().height()) <= 35 )
-    {
-      // qDebug("Map::resizeEvent(): EventSize.height <= PaintBufferSize.height-35 ->ignore Event");
-      return; // we assume, that the menu bar has been opened and ignore this event
-    }
+  Q_UNUSED( event )
 
   // set resize flag
   _isResizeEvent = true;
@@ -1239,7 +1229,7 @@ void Map::__drawInformationLayer()
 
     }
 
-  // Draw an X at the map, if no GPS fix is available or if user has seleted
+  // Draw an X at the map, if no GPS fix is available or if user has selected
   // the manual mode.
   if( ShowGlider == false || calculator->isManualInFlight() )
     {
@@ -1528,7 +1518,7 @@ void Map::__drawLabel( QPainter* painter,
     }
   else
     {
-      // draw selected waypoint label invers
+      // draw selected waypoint label inverse
       painter->setPen(QPen(Qt::white, 4, Qt::SolidLine));
       painter->setBrush( Qt::black );
     }
