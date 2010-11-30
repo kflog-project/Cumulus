@@ -1,5 +1,6 @@
 cumuluslanguages (__VERSION__) stable; urgency=low
 
+  * Section entry in control file changed to user/navigation
   * Cumulus Languages Release __VERSION__ for X11/Qt and Maemo/Qt
 
  -- Axel Pauli <kflog.cumulus@googlemail.com>  __DATE__

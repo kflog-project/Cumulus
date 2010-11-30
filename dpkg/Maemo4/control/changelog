@@ -1,5 +1,6 @@
 cumulus (__VERSION__) stable; urgency=low
 
+  * Section entry in control file changed to user/navigation
   * Cumulus Release __VERSION__ for N8x0, running Maemo4, OS2008 Diablo with Qt4/X11
   * See also https://svn.kflog.org/svn/repos/cumulus/qt4/trunk/ChangeLog
   
