@@ -14,6 +14,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-11-30 AP: BUGFIX: Map redraw was partly blocked during a resize event.
+                   That was a leftover from the Zaurus time. Did remove the
+                   block. That ensures that the map is always updated after
+                   a resize event. Thanks to Robin King for his hint.
 [o] 2010-11-17 AP: All language build actions extracted from Makefile.Maemo4
                    and put into a new file with name Makefile.Language. The
                    Language build process does not depends on a single
