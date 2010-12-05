@@ -1751,7 +1751,7 @@ void MainWindow::slotVersion()
             "Josua Dietze, Michael Enke<br>"
             "Hendrik M&uuml;ller, Florian Ehinger<br>"
             "Heiner Lamprecht<br>"
-            "<a href=\"http://www.kflog.org/cumulus\">http://www.kflog.org/cumulus</a><br>"
+            "<a href=\"http://www.kflog.org/cumulus/\">www.kflog.org/cumulus/</a><br>"
             "Published under the GPL<br>"
             "</html>" ).arg( QString(CU_VERSION) ).arg( QString( __DATE__ )).arg( QString(QT_VERSION_STR) ) );
 
