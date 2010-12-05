@@ -507,17 +507,17 @@
 <context>
     <name>GliderListWidget</name>
     <message>
-        <location filename="gliderlistwidget.cpp" line="38"/>
+        <location filename="gliderlistwidget.cpp" line="42"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="gliderlistwidget.cpp" line="38"/>
+        <location filename="gliderlistwidget.cpp" line="42"/>
         <source>Registration</source>
         <translation>Kennzeichen</translation>
     </message>
     <message>
-        <location filename="gliderlistwidget.cpp" line="38"/>
+        <location filename="gliderlistwidget.cpp" line="42"/>
         <source>Callsign</source>
         <translation>Rufzeichen</translation>
     </message>
@@ -1042,8 +1042,9 @@
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1744"/>
-        <source>&lt;html&gt;Cumulus %1&lt;br&gt;&lt;font size=-1&gt;(compiled at %2 with QT %3)&lt;/font&gt;&lt;br&gt;&amp;copy; 2002-2010 by&lt;br&gt;Andr&amp;eacute; Somers, Eggert Ehmke&lt;br&gt;Axel Pauli, Eckhard V&amp;ouml;llm&lt;br&gt;Josua Dietze, Michael Enke&lt;br&gt;Hendrik M&amp;uuml;ller, Florian Ehinger&lt;br&gt;Heiner Lamprecht&lt;br&gt;&lt;a href=&quot;http://www.kflog.org/cumulus&quot;&gt;http://www.kflog.org/cumulus&lt;/a&gt;&lt;br&gt;Published under the GPL&lt;br&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Cumulus %1&lt;br&gt;&lt;font size=-1&gt;(Kompiliert am %2 mit QT %3)&lt;/font&gt;&lt;br&gt;&amp;copy; 2002-2010 durch&lt;br&gt;Andr&amp;eacute; Somers, Eggert Ehmke&lt;br&gt;Axel Pauli, Eckhard V&amp;ouml;llm&lt;br&gt;Josua Dietze, Michael Enke&lt;br&gt;Hendrik M&amp;uuml;ller, Florian Ehinger&lt;br&gt;Heiner Lamprecht&lt;br&gt;&lt;a href=&quot;http://www.kflog.org/cumulus&quot;&gt;http://www.kflog.org/cumulus&lt;/a&gt;&lt;br&gt;Veröffentlicht unter der GPL&lt;br&gt;&lt;/html&gt;</translation>
+        <source>&lt;html&gt;Cumulus %1&lt;br&gt;&lt;font size=-1&gt;(compiled at %2 with QT %3)&lt;/font&gt;&lt;br&gt;&amp;copy; 2002-2010 by&lt;br&gt;Andr&amp;eacute; Somers, Eggert Ehmke&lt;br&gt;Axel Pauli, Eckhard V&amp;ouml;llm&lt;br&gt;Josua Dietze, Michael Enke&lt;br&gt;Hendrik M&amp;uuml;ller, Florian Ehinger&lt;br&gt;Heiner Lamprecht&lt;br&gt;&lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;Published under the GPL&lt;br&gt;&lt;/html&gt;</source>
+        <oldsource>&lt;html&gt;Cumulus %1&lt;br&gt;&lt;font size=-1&gt;(compiled at %2 with QT %3)&lt;/font&gt;&lt;br&gt;&amp;copy; 2002-2010 by&lt;br&gt;Andr&amp;eacute; Somers, Eggert Ehmke&lt;br&gt;Axel Pauli, Eckhard V&amp;ouml;llm&lt;br&gt;Josua Dietze, Michael Enke&lt;br&gt;Hendrik M&amp;uuml;ller, Florian Ehinger&lt;br&gt;Heiner Lamprecht&lt;br&gt;&lt;a href=&quot;http://www.kflog.org/cumulus&quot;&gt;http://www.kflog.org/cumulus&lt;/a&gt;&lt;br&gt;Published under the GPL&lt;br&gt;&lt;/html&gt;</oldsource>
+        <translation>&lt;html&gt;Cumulus %1&lt;br&gt;&lt;font size=-1&gt;(Kompiliert am %2 mit QT %3)&lt;/font&gt;&lt;br&gt;&amp;copy; 2002-2010 durch&lt;br&gt;Andr&amp;eacute; Somers, Eggert Ehmke&lt;br&gt;Axel Pauli, Eckhard V&amp;ouml;llm&lt;br&gt;Josua Dietze, Michael Enke&lt;br&gt;Hendrik M&amp;uuml;ller, Florian Ehinger&lt;br&gt;Heiner Lamprecht&lt;br&gt;&lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;Veröffentlicht unter der GPL&lt;br&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;Cumulus X11 version %1&lt;br&gt;&lt;font size=-1&gt;(compiled at %2 with QT %3)&lt;/font&gt;&lt;br&gt;&amp;copy; 2002-2010 by&lt;br&gt;Andr&amp;eacute; Somers, Eggert Ehmke&lt;br&gt;Axel Pauli, Eckhard V&amp;ouml;llm&lt;br&gt;Josua Dietze, Michael Enke&lt;br&gt;Hendrik M&amp;uuml;ller, Florian Ehinger&lt;br&gt;Heiner Lamprecht&lt;br&gt;&lt;a href=&quot;http://www.kflog.org/cumulus&quot;&gt;http://www.kflog.org/cumulus&lt;/a&gt;&lt;br&gt;Published under the GPL&lt;br&gt;&lt;/html&gt;</source>
@@ -1098,38 +1099,38 @@
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2343"/>
+        <location filename="map.cpp" line="2333"/>
         <source>Map zoom in by factor %1</source>
         <translation>Kartenzoom rein Faktor %1</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2389"/>
+        <location filename="map.cpp" line="2379"/>
         <source>Map zoom out by factor %1</source>
         <translation>Kartenzoom raus Faktor %1</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2650"/>
+        <location filename="map.cpp" line="2640"/>
         <source>Airspace&amp;nbsp;Warning</source>
         <translation>Luftraum&amp;nbsp;Warnung</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2663"/>
-        <location filename="map.cpp" line="2697"/>
-        <location filename="map.cpp" line="2839"/>
+        <location filename="map.cpp" line="2653"/>
+        <location filename="map.cpp" line="2687"/>
+        <location filename="map.cpp" line="2829"/>
         <source>Inside</source>
         <translation>Innerhalb</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2720"/>
-        <location filename="map.cpp" line="2755"/>
-        <location filename="map.cpp" line="2876"/>
+        <location filename="map.cpp" line="2710"/>
+        <location filename="map.cpp" line="2745"/>
+        <location filename="map.cpp" line="2866"/>
         <source>Very Near</source>
         <translation>Dicht</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2778"/>
-        <location filename="map.cpp" line="2812"/>
-        <location filename="map.cpp" line="2912"/>
+        <location filename="map.cpp" line="2768"/>
+        <location filename="map.cpp" line="2802"/>
+        <location filename="map.cpp" line="2902"/>
         <source>Near</source>
         <translation>Nahe</translation>
     </message>
@@ -2714,53 +2715,53 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageLookNFeel</name>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="47"/>
+        <location filename="settingspagelooknfeel.cpp" line="42"/>
         <source>GUI Style:</source>
         <translation>GUI Stil:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="62"/>
+        <location filename="settingspagelooknfeel.cpp" line="57"/>
         <source>GUI Font:</source>
         <translation>GUI Schrift:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="64"/>
-        <location filename="settingspagelooknfeel.cpp" line="73"/>
+        <location filename="settingspagelooknfeel.cpp" line="59"/>
+        <location filename="settingspagelooknfeel.cpp" line="68"/>
         <source>Select Font</source>
         <translation>Wähle Schrift</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="71"/>
+        <location filename="settingspagelooknfeel.cpp" line="66"/>
         <source>GUI Menu Font:</source>
         <translation>GUI Menü Schrift:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="80"/>
+        <location filename="settingspagelooknfeel.cpp" line="75"/>
         <source>Map sidebar color:</source>
         <translation>Karte Randleistenfarbe:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="82"/>
+        <location filename="settingspagelooknfeel.cpp" line="77"/>
         <source>Select Color</source>
         <translation>Wähle Farbe</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="87"/>
+        <location filename="settingspagelooknfeel.cpp" line="82"/>
         <source>Screensaver on:</source>
         <translation>Screensaver ein:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="100"/>
+        <location filename="settingspagelooknfeel.cpp" line="95"/>
         <source>Virtual Keyboard</source>
         <translation>Virtuelle Tastatur</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="202"/>
+        <location filename="settingspagelooknfeel.cpp" line="198"/>
         <source>The Look&amp;Feel settings</source>
         <translation>Die Look&amp;Feel Optionen</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="286"/>
+        <location filename="settingspagelooknfeel.cpp" line="282"/>
         <source>Map sidebar color</source>
         <translation>Karte Randleistenfarbe</translation>
     </message>
@@ -2768,103 +2769,103 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageMapObjects</name>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="44"/>
+        <location filename="settingspagemapobjects.cpp" line="34"/>
         <source>Draw Waypoints until this scale</source>
         <translation>Zeichne Wegpunkte bis zu dieser Skala</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="50"/>
+        <location filename="settingspagemapobjects.cpp" line="40"/>
         <source>Low:</source>
         <translation>Gering:</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="63"/>
+        <location filename="settingspagemapobjects.cpp" line="53"/>
         <source>Normal:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="76"/>
+        <location filename="settingspagemapobjects.cpp" line="66"/>
         <source>High:</source>
         <translation>Hoch:</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="101"/>
+        <location filename="settingspagemapobjects.cpp" line="91"/>
         <source>Load/Draw map objects</source>
         <translation>Lade/Zeichne Kartenobjekte</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="241"/>
+        <location filename="settingspagemapobjects.cpp" line="231"/>
         <source>Cities</source>
         <translation>Städte</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="245"/>
+        <location filename="settingspagemapobjects.cpp" line="235"/>
         <source>Forests</source>
         <translation>Wald</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="249"/>
+        <location filename="settingspagemapobjects.cpp" line="239"/>
         <source>Highways</source>
         <translation>Autobahnen</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="253"/>
+        <location filename="settingspagemapobjects.cpp" line="243"/>
         <source>Isolines</source>
         <translation>Isolinien</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="257"/>
+        <location filename="settingspagemapobjects.cpp" line="247"/>
         <source>Isoline borders</source>
         <translation>Isolinienumrandung</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="261"/>
+        <location filename="settingspagemapobjects.cpp" line="251"/>
         <source>Target line</source>
         <oldsource>Line to selected target</oldsource>
         <translation>Ziellinie</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="265"/>
+        <location filename="settingspagemapobjects.cpp" line="255"/>
         <source>Railways</source>
         <translation>Eisenbahnen</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="273"/>
+        <location filename="settingspagemapobjects.cpp" line="263"/>
         <source>Roads</source>
         <translation>Straßen</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="277"/>
+        <location filename="settingspagemapobjects.cpp" line="267"/>
         <source>Rivers &amp; Canals</source>
         <translation>Flüsse &amp; Kanäle</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="281"/>
+        <location filename="settingspagemapobjects.cpp" line="271"/>
         <source>Airfield labels</source>
         <translation>Flugplatz Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="285"/>
+        <location filename="settingspagemapobjects.cpp" line="275"/>
         <source>Taskpoint labels</source>
         <translation>Aufgabenpunkt Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="289"/>
+        <location filename="settingspagemapobjects.cpp" line="279"/>
         <source>Outlanding labels</source>
         <translation>Landefelder Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="293"/>
+        <location filename="settingspagemapobjects.cpp" line="283"/>
         <source>Waypoint labels</source>
         <translation>Wegpunkt Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="297"/>
+        <location filename="settingspagemapobjects.cpp" line="287"/>
         <source>Labels - Extra info</source>
         <translation>Zusatzinfo Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="350"/>
+        <location filename="settingspagemapobjects.cpp" line="340"/>
         <source>The Map Objects</source>
         <translation>Die Karten Objekte</translation>
     </message>
@@ -2872,113 +2873,113 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageMapSettings</name>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="56"/>
+        <location filename="settingspagemapsettings.cpp" line="55"/>
         <source>Maps</source>
         <translation>Karten</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="57"/>
+        <location filename="settingspagemapsettings.cpp" line="56"/>
         <source>Select your personal map directory</source>
         <translation>Auswahl vom persönlichen Kartenverzeichnis</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="65"/>
+        <location filename="settingspagemapsettings.cpp" line="64"/>
         <source>Projection:</source>
         <translation>Projektion:</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="68"/>
+        <location filename="settingspagemapsettings.cpp" line="67"/>
         <source>Lambert</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="69"/>
+        <location filename="settingspagemapsettings.cpp" line="68"/>
         <source>Plate Carrée</source>
         <oldsource>Plate CarrÃ©e</oldsource>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="74"/>
+        <location filename="settingspagemapsettings.cpp" line="73"/>
         <source>1. St. Parallel:</source>
         <translation>1. St. Parallele:</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="78"/>
+        <location filename="settingspagemapsettings.cpp" line="77"/>
         <source>2. St. Parallel:</source>
         <translation>2. St. Parallele:</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="83"/>
+        <location filename="settingspagemapsettings.cpp" line="82"/>
         <source>Origin Longitude:</source>
         <translation>Originallänge:</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="92"/>
+        <location filename="settingspagemapsettings.cpp" line="91"/>
         <source>Projection follows Home Position</source>
         <translation>Projektierung folgt Heimatposition</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="96"/>
+        <location filename="settingspagemapsettings.cpp" line="95"/>
         <source>Unload unused maps from RAM</source>
         <translation>Lösche unbenutze Karten</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="104"/>
+        <location filename="settingspagemapsettings.cpp" line="103"/>
         <source>Set Proxy</source>
         <translation>Setze Proxy</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="105"/>
+        <location filename="settingspagemapsettings.cpp" line="104"/>
         <source>Enter Proxy data if needed</source>
         <translation>Definiere Proxy bei Bedarf</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="114"/>
+        <location filename="settingspagemapsettings.cpp" line="113"/>
         <source>Center Latitude:</source>
         <translation>Mittelpunkt Breite:</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="119"/>
+        <location filename="settingspagemapsettings.cpp" line="118"/>
         <source>Center Longitude:</source>
         <translation>Mittelpunkt Länge:</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="124"/>
+        <location filename="settingspagemapsettings.cpp" line="123"/>
         <source>Install Maps</source>
         <translation>Installiere Karten</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="125"/>
+        <location filename="settingspagemapsettings.cpp" line="124"/>
         <source>Install maps around center point</source>
         <translation>Installiere Karten um Mittelpunkt herum</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="131"/>
+        <location filename="settingspagemapsettings.cpp" line="130"/>
         <source>Radius around center point</source>
         <translation>Radius um Mittelpunkt herum</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="268"/>
+        <location filename="settingspagemapsettings.cpp" line="267"/>
         <source>Download Maps?</source>
         <translation>Karten Download?</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="269"/>
+        <location filename="settingspagemapsettings.cpp" line="268"/>
         <source>Active Internet connection is needed!</source>
         <translation>Aktive Internetverbindung ist erforderlich!</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="270"/>
+        <location filename="settingspagemapsettings.cpp" line="269"/>
         <source>Start download now?</source>
         <translation>Start Download?</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="307"/>
+        <location filename="settingspagemapsettings.cpp" line="306"/>
         <source>Please select your map directory</source>
         <translation>Wählen Sie ein Kartenverzeichnis aus</translation>
     </message>
     <message>
-        <location filename="settingspagemapsettings.cpp" line="378"/>
+        <location filename="settingspagemapsettings.cpp" line="377"/>
         <source>The Map Settings</source>
         <translation>Die Karten Optionen</translation>
     </message>
@@ -3034,89 +3035,89 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageTask</name>
     <message>
-        <location filename="settingspagetask.cpp" line="53"/>
+        <location filename="settingspagetask.cpp" line="46"/>
         <source>TP Scheme</source>
         <translation>AP-Schema</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="56"/>
-        <location filename="settingspagetask.cpp" line="135"/>
+        <location filename="settingspagetask.cpp" line="49"/>
+        <location filename="settingspagetask.cpp" line="128"/>
         <source>Cylinder</source>
         <translation>Zylinder</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="57"/>
-        <location filename="settingspagetask.cpp" line="175"/>
+        <location filename="settingspagetask.cpp" line="50"/>
+        <location filename="settingspagetask.cpp" line="168"/>
         <source>Sector</source>
         <translation>Sektor</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="84"/>
+        <location filename="settingspagetask.cpp" line="77"/>
         <source>Switch Scheme</source>
         <translation>Schaltschema</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="89"/>
+        <location filename="settingspagetask.cpp" line="82"/>
         <source>Minimum</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="90"/>
+        <location filename="settingspagetask.cpp" line="83"/>
         <source>Touched</source>
         <translation>Berührt</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="115"/>
+        <location filename="settingspagetask.cpp" line="108"/>
         <source>Shape</source>
         <translation>Umriss</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="119"/>
+        <location filename="settingspagetask.cpp" line="112"/>
         <source>Draw Shape</source>
         <translation>Zeichne Umriss</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="120"/>
+        <location filename="settingspagetask.cpp" line="113"/>
         <source>Fill Shape</source>
         <translation>Fülle Umriss</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="140"/>
+        <location filename="settingspagetask.cpp" line="133"/>
         <source>Radius:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="184"/>
+        <location filename="settingspagetask.cpp" line="177"/>
         <source>Inner Radius:</source>
         <translation>Innerer Radius:</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="195"/>
+        <location filename="settingspagetask.cpp" line="188"/>
         <source>Outer Radius:</source>
         <translation>Äußerer Radius:</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="205"/>
+        <location filename="settingspagetask.cpp" line="198"/>
         <source>Angle:</source>
         <translation>Winkel:</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="220"/>
+        <location filename="settingspagetask.cpp" line="213"/>
         <source>Course Line</source>
         <translation>Kurslinie</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="227"/>
+        <location filename="settingspagetask.cpp" line="220"/>
         <source>Width:</source>
         <translation>Breite:</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="237"/>
+        <location filename="settingspagetask.cpp" line="230"/>
         <source>Color:</source>
         <translation>Farbe:</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="307"/>
+        <location filename="settingspagetask.cpp" line="300"/>
         <source>Course Line Color</source>
         <translation>Kurslinienfarbe</translation>
     </message>
@@ -3124,34 +3125,34 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageTerrainColors</name>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="120"/>
+        <location filename="settingspageterraincolors.cpp" line="113"/>
         <source>Color Selection</source>
         <translation>Farbenauswahl</translation>
     </message>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="133"/>
-        <location filename="settingspageterraincolors.cpp" line="235"/>
+        <location filename="settingspageterraincolors.cpp" line="126"/>
+        <location filename="settingspageterraincolors.cpp" line="228"/>
         <source>Terrain Level</source>
         <translation>Geländehöhe</translation>
     </message>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="180"/>
+        <location filename="settingspageterraincolors.cpp" line="173"/>
         <source>Terrain Color</source>
         <translation>Geländefarbe</translation>
     </message>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="189"/>
-        <location filename="settingspageterraincolors.cpp" line="258"/>
+        <location filename="settingspageterraincolors.cpp" line="182"/>
+        <location filename="settingspageterraincolors.cpp" line="251"/>
         <source>Ground Color</source>
         <translation>Bodenfarbe</translation>
     </message>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="203"/>
+        <location filename="settingspageterraincolors.cpp" line="196"/>
         <source>Color Defaults</source>
         <translation>Standardfarben</translation>
     </message>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="387"/>
+        <location filename="settingspageterraincolors.cpp" line="380"/>
         <source>The Terrain color settings</source>
         <translation>Die Geländefarben Optionen</translation>
     </message>
@@ -3159,108 +3160,108 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageUnits</name>
     <message>
-        <location filename="settingspageunits.cpp" line="38"/>
+        <location filename="settingspageunits.cpp" line="37"/>
         <source>Altitude:</source>
         <translation>Höhe:</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="44"/>
+        <location filename="settingspageunits.cpp" line="43"/>
         <source>meters</source>
         <translation>Meter</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="45"/>
+        <location filename="settingspageunits.cpp" line="44"/>
         <source>feet</source>
         <translation>Fuß</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="49"/>
+        <location filename="settingspageunits.cpp" line="48"/>
         <source>Speed:</source>
         <translation>Geschwindigkeit:</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="55"/>
-        <location filename="settingspageunits.cpp" line="83"/>
-        <location filename="settingspageunits.cpp" line="96"/>
+        <location filename="settingspageunits.cpp" line="54"/>
+        <location filename="settingspageunits.cpp" line="82"/>
+        <location filename="settingspageunits.cpp" line="95"/>
         <source>meters per second</source>
         <translation>Meter pro Sekunde</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="56"/>
-        <location filename="settingspageunits.cpp" line="97"/>
+        <location filename="settingspageunits.cpp" line="55"/>
+        <location filename="settingspageunits.cpp" line="96"/>
         <source>kilometers per hour</source>
         <translation>Kilometer pro Stunde</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="57"/>
-        <location filename="settingspageunits.cpp" line="85"/>
-        <location filename="settingspageunits.cpp" line="98"/>
+        <location filename="settingspageunits.cpp" line="56"/>
+        <location filename="settingspageunits.cpp" line="84"/>
+        <location filename="settingspageunits.cpp" line="97"/>
         <source>knots</source>
         <translation>Knoten</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="58"/>
-        <location filename="settingspageunits.cpp" line="99"/>
+        <location filename="settingspageunits.cpp" line="57"/>
+        <location filename="settingspageunits.cpp" line="98"/>
         <source>miles per hour</source>
         <translation>Meilen pro Stunde</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="64"/>
+        <location filename="settingspageunits.cpp" line="63"/>
         <source>Distance:</source>
         <translation>Entfernung:</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="70"/>
+        <location filename="settingspageunits.cpp" line="69"/>
         <source>kilometers</source>
         <translation>Kilometer</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="71"/>
+        <location filename="settingspageunits.cpp" line="70"/>
         <source>statute miles</source>
         <translation>Statut Meilen</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="72"/>
+        <location filename="settingspageunits.cpp" line="71"/>
         <source>nautical miles</source>
         <translation>Nautische Meilen</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="77"/>
+        <location filename="settingspageunits.cpp" line="76"/>
         <source>Vario:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="84"/>
+        <location filename="settingspageunits.cpp" line="83"/>
         <source>feet per minute</source>
         <translation>Fuß pro Minute</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="90"/>
+        <location filename="settingspageunits.cpp" line="89"/>
         <source>Wind:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="105"/>
+        <location filename="settingspageunits.cpp" line="104"/>
         <source>Position:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="118"/>
+        <location filename="settingspageunits.cpp" line="117"/>
         <source>Time:</source>
         <translation>Zeit:</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="124"/>
+        <location filename="settingspageunits.cpp" line="123"/>
         <source>UTC</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="125"/>
+        <location filename="settingspageunits.cpp" line="124"/>
         <source>Local</source>
         <translation>Lokal</translation>
     </message>
     <message>
-        <location filename="settingspageunits.cpp" line="208"/>
+        <location filename="settingspageunits.cpp" line="207"/>
         <source>The Unit settings</source>
         <translation>Die Einheiten Optionen</translation>
     </message>
