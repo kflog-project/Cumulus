@@ -21,55 +21,54 @@
 
 <h3 align="center">Flarm</h3>
 
-Cumulus can be connected with a Flarm device and is able to process the
-the proprietary sentences emitted by that device. It displays the most important
-and one selected object at the map. Furthermore a radar view display is provided
-with all received Flarm contacts.
+Cumulus can be connected to a Flarm device, and is able to process 
+the proprietary sentences emitted by that device. On the map display it shows the positions of 
+the most important (collision-threatening) aircraft or ground obstacles, as well as one selected object. Furthermore, as an alternative to the map view, a radar view display is provided showing all received Flarm contacts.
 
 <font color="#CC0000">
 <h4>Warning</h4>
 
-<b>Please note, that Cumulus does not warn you of dangerous objects as Flarm it does.
-Cumulus is not a replacement of Flarm, it is only an addition to it!
+<b>Please note: Cumulus does not warn you of dangerous objects: that is Flarm's job!
+Cumulus is not a replacement for Flarm, it is only an addition to it!
 </b></font>
 
 <h4>Flarm connection</h4>
 
-Flarm devices have only a bidirectional serial RS232 interface.
-Cumulus can be connected with a Flarm device via this interface or by means of
-a RS232-USB gadget. That all depends on the available hardware of your PDA.
-The use of an USB connection requires that the USB port supports the OTG
-(On-the-go) mode. That is ensured for the Nokia Internet Tablets N8x0 but not
+Flarm devices only have a bidirectional serial RS232 interface.
+Cumulus can be connected to a Flarm device via this interface or by means of
+a RS232-USB gadget. Which you use all depends on your available PDA hardware.
+The use of a USB connection requires the USB port to support the OTG
+(On-the-go) mode. This is the case for the Nokia Internet Tablets N8x0, but not
 for the N900 model.
 
 <h4>Flarm configuration</h4>
 
 To get the specific Flarm data, you have to enable the NMEAOUT option in the
-FLARM setup menu. Activate the sending of GPRMC, GPGGA, GPPSA, PGRMZ plus FLARM
-proprietary sentences. As transfer speed you should select 57.6 kBaud. Cumulus
-sends no initialization data to Flarm. Therefore you must setup the Flarm device
-by using an initialization file <i>flarmcfg.txt</i>, contained on a micro SD card
-and put into your Flarm device before power on or by using the Flarm Tool on a
-PC. See <i>FLARM DATA PORT SPECIFICATIONS</i> for
-more information, to find at <a href="http://www.flarm.org">www.flarm.org</a>.
+FLARM setup menu. Activate the sending of GPRMC, GPGGA, GPPSA, PGRMZ plus the FLARM
+proprietary sentences. As transfer speed, you should select 57.6 kBaud. Cumulus
+sends no initialization data to Flarm, so you must set up the Flarm device
+by using an initialization file <i>flarmcfg.txt</i>. This is contained on a micro SD card
+and put into your Flarm device before power-up, or can be set using the Flarm Tool on a
+PC. For more information, see <i>FLARM DATA PORT SPECIFICATIONS</i>, found at <a href="http://www.flarm.org">www.flarm.org</a>.
 
 <h4>Cumulus GPS settings</h4>
 
-Select in the <a href="cumulus-settings-gps.html">Settings/GPS</a> menu a
+In the <a href="cumulus-settings-gps.html">Setup/General/GPS</a> menu select a
 serial, bluetooth or USB device according to your available hardware and
-set the transfer speed to 57600. Futhermore use as <i>Altitude Reference</i>
-the entry <i>Pressure</i>. That ensures, that the data of the pressure sensor
-are taken as altitude. Calibrate the delivered altitude to the expected altitude
-by using the altitude dialog. It can be opened by tipping on the altitude
+set the transfer speed to 57600. Futhermore, as <i>Altitude Reference</i>
+select the entry <i>Pressure</i>. This ensures that the data of the Flarm pressure sensor
+are used as altitude. Calibrate the altitude shown to the expected altitude
+by using the altitude dialog (Leveling). This can be opened by tapping on the altitude
 display in the map view.
 
 <h4>Flarm radar view</h4>
 
-You can open the Flarm radar view by tipping on the Track (Trk) display in the map
-view. The view consist of an inner and outer circle and a cross in the center.
-The upper end of the vertical line points to 12 o'clock. In the left upper corner you
-can see the current selected display scale and at the right side of the window
-you have the following buttons for operation from top down:
+You can open the Flarm radar view by tapping on the Track (Trk) display in the map
+view. The view consist of an inner and outer circle with a cross in the centre.
+The upper end of the vertical line points to 12 o'clock (straight ahead as seen from 
+the cockpit). In the upper left corner you can see the current selected display scale, 
+while at the right side of the window you have, from top to bottom, the following 
+operational buttons:
 
 <p></p>
 <blockquote>
@@ -77,8 +76,8 @@ you have the following buttons for operation from top down:
   <tr>
     <td><b>Scale:</b></td>
     <td>
-    Pressing the zoom button toggles between three different
-    scales (0.5, 1.0, 6.0 Km), displayed in the left upper corner.
+    Pressing the zoom button toggles through three different
+    scales (0.5, 1.0, 6.0 Km), displayed in the upper left corner.
     </td>
   </tr>
 
@@ -86,16 +85,16 @@ you have the following buttons for operation from top down:
     <td><a href="#ListView"><b>List:</b></a></td>
     <td>
     Pressing the list button opens a new window with a list
-    overview about all just received Flarm contacts.
+    of all the just-received Flarm contacts.
     </td>
   </tr>
 
   <tr>
     <td><b>Time:</b></td>
     <td>
-    Pressing the time button toggles the refresh of the radar
-    view between 1, 2 and 3 seconds. Default is 2 seconds.
-    The refresh rate has also influence on the processor
+    Pressing the time button toggles the refresh interval of the 
+    radar view through 1, 2 and 3 seconds. Default is 2 seconds.
+    The refresh rate also has an influence on the processor
     load and the object selection.
     </td>
   </tr>
@@ -104,21 +103,21 @@ you have the following buttons for operation from top down:
     <td><a href="#AliasList"><b>Aliases:</b></a></td>
     <td>
     Pressing the monkey button opens a new window with a table
-    overview about your defined Flarm alias names.
+    of your defined Flarm alias names.
     </td>
   </tr>
   
   <tr>
     <td><b>Close:</b></td>
     <td>
-    Pressing the close button returns to the map view.
+    Pressing the cancel button (red with white X) returns to the map view.
     </td>
   </tr>
 </table>
 </blockquote>
 
-Flarm objects are displayed at the radar view in different shapes according to
-their delivered information.
+ In the radar view, Flarm objects are displayed with different shapes according 
+to the information they contain:
 
 <p></p>
 <blockquote>
@@ -126,22 +125,21 @@ their delivered information.
   <tr>
     <td><b>Square:</b></td>
     <td>
-    If no track information is available the Flarm object is drawn as square.
-    </td>
+    If no track information is available, the Flarm object is drawn as a square. The square is also used to indicate a ground obstacle contained in your Flarm's database.
+   </td>
   </tr>
 
   <tr>
     <td><b>Arrowhead:</b></td>
     <td>
-    If track information is available the Flarm object is drawn as arrowhead,
-    where the tip points into the move direction.
+    If track information is available, the Flarm object is drawn as an arrowhead 
+    pointing in the direction of movement.
     </td>
   </tr>
 </table>
 </blockquote>
 
-Objects are drawn in different colors according to their assigned alarm level
-and depending on their selection. The used colors are:
+Objects are drawn in different colours according to their assigned alarm level, or to indicate selection. The colours used are:
 
 <p></p>
 <blockquote>
@@ -149,24 +147,26 @@ and depending on their selection. The used colors are:
   <tr>
     <td><b>Black:</b></td>
     <td>
-    The alarm level of the object is <i>no</i>.
+    The alarm level of the object is <i>low</i>. This includes both the "no alarm" 
+    and "low-level alarm" levels described in the Flarm Dataport Manual.
     </td>
   </tr>
 
   <tr>
     <td><b>Orange:</b></td>
     <td>
-    The alarm level of the object is <i>important</i>.
+    The alarm level of the object is <i>important</i>. This means that there is less 
+    than 13 seconds to go to a predicted collision.
     </td>
   </tr>
   
     <tr>
     <td><b>Red:</b></td>
     <td>
-    The alarm level of the object is <i>urgent</i>.
+    The alarm level of the object is <i>urgent</i>, i.e., less than 8 seconds to a predicted collision.
     </td>
   </tr>
-
+ 
   <tr>
     <td><b>Magenta:</b></td>
     <td>
@@ -177,19 +177,20 @@ and depending on their selection. The used colors are:
 </table>
 </blockquote>
 
-If you tip on a Flarm object in the radar view, you can get displayed additional
-information, if they are available. All information are drawn in the color
-magenta. These are:
+<p> <b>Note!</b> The Flarm Operating Manual v4.06 uses different (English) terms for the above-mentioned alarm levels.</p>
 
-<p></p>
+<p>If you tap on a Flarm object in the radar view, you will get additional
+information displayed, if available. The information, drawn in
+magenta, is as follows:</p>
+
 <blockquote>
 <table>
   <tr>
     <td><b>Flarm identifier:</b></td>
     <td>
     The identifier of the selected Flarm object is displayed in the lower left
-    corner as 6-digit hex value. If an alias name has been defined for the
-    Flarm identifier, that name is taken in place of.
+    corner as a 6-digit hex value. If an alias name has been defined for the
+    Flarm identifier, this name replaces it.
     </td>
   </tr>
 
@@ -204,7 +205,7 @@ magenta. These are:
   <tr>
   <td><b>Vertical separation and climb rate:</b></td>
   <td>
-  The vertical separation to and the climb rate of the selected Flarm object
+  The vertical separation and the climb rate of the selected Flarm object
   are displayed in the upper right corner of the window.
   </td>
 </tr>
@@ -213,9 +214,9 @@ magenta. These are:
 
 <h4><a name="ListView"></a>Flarm list view</h4>
 
-Pressing the list button in the radar view opens a new window with a list
-overview about all just received Flarm contacts. The following information
-can be displayed:
+Pressing the list button in the radar view opens a new window giving a list
+of all just-received Flarm contacts. The following information
+may be displayed:
 
 <p></p>
 <blockquote>
@@ -224,28 +225,28 @@ can be displayed:
     <td><b>Flarm identifier:</b></td>
     <td>
     The identifier of the Flarm object as 6-digit hex value. If an alias name
-    has been defined for the Flarm identifier, that name is taken in place of.
+    has been defined for the Flarm identifier, this name replaces it.
     </td>
   </tr>
 
   <tr>
     <td><b>Distance:</b></td>
     <td>
-    The distance to the Flarm object from the own position.
+    The distance of the Flarm object from one's own position.
     </td>
   </tr>
 
   <tr>
   <td><b>Vertical separation:</b></td>
   <td>
-  The vertical separation to the Flarm object above or below the own position.
-  Can be positive or negative.
+  The vertical separation of the Flarm object above (positive value) 
+  or below (negative value) one's own position.
   </td>
     
   <tr>
   <td><b>Relative bearing:</b></td>
   <td>
-  The relative bearing to the Flarm object as arrowhead.
+  The relative bearing to the Flarm object as an arrowhead.
   </td>
   
   <tr>
@@ -263,36 +264,36 @@ can be displayed:
 </table>
 </blockquote>
 
-A certain entry in the list can be selected by tipping on it. If you press then
+Any entry in the list can be selected by tapping on it. If you then press
 the <i>Select</i> button, the window is closed and you will return to the radar
-view. The additional data of your selected entry are displayed now here. A made
+view. The additional data of your selected entry are now displayed there. A
 selection can be reset by pressing the <i>Unselect</i> button followed by the
 <i>Close</i> button.
 
 <h4><a name="AliasList"></a>Flarm alias list</h4>
 
-Pressing the monkey button opens a new window with a table overview about your
-defined Flarm alias names. An 6-digit Flarm hex identifier can be replaced by
-a more speaking name. The length of an alias name is limited to 15 characters.
-To add a new alias name, press the <i>Plus</i> button. That appends a new row
-with two columns at the end of the table. Enter in the left column the Flarm
+Pressing the monkey button opens a new window giving a table view of your
+defined Flarm alias names. A 6-digit Flarm hex identifier can be replaced by
+a more easily-remembered name. The length of an alias name is limited to 15 characters.
+To add a new alias name, press the <i>Plus</i> button. This appends a new row
+with two columns at the end of the table. In the left column enter the Flarm
 identifier to be translated and in the right column your desired alias name.
 An existing entry can be changed by clicking on the cell to be modified.
-<b>Note!</b> If you add several times the same Flarm identifier in the table,
+<b>Note!</b> If you add the same Flarm identifier to the table more than once,
 only the last entry is saved.
 If you want to remove one or more entries, select them and press the
-<i>Trash</i> button.
+<i>Trash-bin</i> button.
 
 <p>
-Leave the window with the <i>Ok</i> button to store your made changes or with
-the <i>Cancel</i> button to discard all.
+Leave the window with the <i>Ok</i> button to store the changes you made, or with
+the <i>Cancel</i> button to discard all changes.
 </p>
 
 <p>
-You have the possibility to select one row in the table and to leave the window
-with the <i>Ok</i> button. The selected Flarm object will become your new
-selection in the radar view. To make a deselection of a selected object in
-the radar view, go into the alias window, do nothing select and return via
+If you select a row in the table and leave the window
+with the <i>Ok</i> button, the selected Flarm object will become your new
+selection in the map and radar views. To make a deselection of a selected object in
+the radar view, go into the alias window, do not select anything and return via
 <i>Ok</i> to the radar view.
 </p>
 
@@ -300,14 +301,14 @@ the radar view, go into the alias window, do nothing select and return via
 
 The content of the Flarm alias table is stored in a file with the name
 <a href="cumulus-file-locations.html">cumulus-flarm.txt</a>.
-The file name is hard coded and the file is stored in the user's
+This file name is hard-coded and the file is stored in the user's
 <a href="cumulus-settings-personal.html#DataDirectory">
 Data Directory</a>.
 
 <p>
 The file format of the Flarm alias list is very simple. A comment line
-starts with a hash mark or a dollar sign at the most left position and ends
-with the new line sign. A valid entry has the following format:
+starts with a hash mark or a dollar sign in the leftmost position and ends
+with a new line. A valid entry has the following format:
 </p>
 
 <blockquote>
@@ -324,19 +325,19 @@ ABCDEF=My best friend
 
 </blockquote>
 
-Note, that white spaces are not allowed on both sides of the equal sign!
+Note that no white spaces are allowed on either side of the equals sign!
 
 <h4><a name="DataUpdate"></a>Flarm data up-to-dateness</h4>
 
-Flarm data olden very fast, especially if the objects do circle.
-Flarm normally sends every second data about the objects in view. But if a Flarm
-contact leaves the receiver range, never new data about it will arrive Cumulus.
-To clean the collected data, all Flarm contacts are removed regularly, which
-were not updated within three seconds.
+Flarm data age very fast, especially if the objects are circling.
+Flarm normally sends data every second about the objects in view. If a Flarm
+contact moves out of the receiver range, Cumulus will no longer get new data about it.
+To clean up such old collected data, all Flarm contacts that
+are not updated within three seconds are automatically removed.
 
 <p>
-The data in the Flarm list view are updated only every three seconds to reduce
-the processor load.
+In order to reduce the processor load, the data in the Flarm list views are only 
+updated every three seconds. 
 </p>
 
 <table width="100%">
