@@ -16,7 +16,7 @@ VERSION=$(shell cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2)
 CUMULUS_REL=cumuluslanguage$(LANGUAGE)-$(VERSION)
 
 # Debian package build directories
-CUMULUS_DEB_ROOT=dpkg/Language
+CUMULUS_DEB_ROOT=dpkg/Language-$(LANGUAGE)
 CUMULUS_DEB=$(CUMULUS_DEB_ROOT)/$(CUMULUS_REL)
 
 SRC_PACK=-sa -S
