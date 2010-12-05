@@ -160,7 +160,7 @@ dpkg:
 dpkg_src:
 	@echo "===== Building Fremantle Maemo5 source-only package for Cumulus $(VERSION) ====="
 	$(MAKE) -f Makefile.Maemo5 VERSION=$(VERSION) \
-	        DPKG_OPT=$(SRC_PACK) DH_MAKE_OPT="-s --createorig" dpkg_make
+	        DPKG_OPT="$(SRC_PACK)" DH_MAKE_OPT="-s --createorig" dpkg_make
 	
 # This target will build the debian package. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation mark
