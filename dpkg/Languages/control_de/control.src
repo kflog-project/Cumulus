@@ -8,10 +8,12 @@ Homepage: http://www.kflog.org/cumulus/
 
 Package: cumuluslanguagede
 Architecture: any
-Depends: cumulus (>= 2.9.1)
+Depends: cumulus (>= __VERSION__)
 Description: Cumulus is a flight computer for glider pilots.
  This package provides the German GUI translations and German
  help pages for Cumulus.
+XB-Description-de_DE: Cumulus ist ein Flugcomputer fuer Segelflieger.
+ Dieses Paket enthaelt alle Deutschen Sprachuebersetzungen fuer Cumulus.
 XB-Maemo-Upgrade-Description: First translation package for German.
 XB-Maemo-Upgrade-Description-de_DE: Erstes Uebersetzungspaket fuer Deutsch.
 XSBC-Bugtracker: mailto:kflog.cumulus@googlemail.com
