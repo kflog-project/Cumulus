@@ -13,7 +13,8 @@ Description: Cumulus is a flight computer for glider pilots.
  terrain and airfields information. It can use waypoints, supports flight tasks
  and logs flights according to the IGC standard.
  .
- Cumulus can be used with or without a GPS receiver (either serial or BT).
+ Cumulus can be used with different GPS receivers either with the built in
+ or an external GPS device connected via serial, USB or BT.
  .
  Cumulus home page: http://www.kflog.org/cumulus/
 XSBC-Bugtracker: mailto:kflog.cumulus@googlemail.com
