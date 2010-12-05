@@ -13,10 +13,10 @@
 # Version is determined from the header file target.h
 VERSION=$(shell cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2)
 
-CUMULUS_REL=cumuluslanguages-$(VERSION)
+CUMULUS_REL=cumuluslanguage$(LANGUAGE)-$(VERSION)
 
 # Debian package build directories
-CUMULUS_DEB_ROOT=dpkg/Languages
+CUMULUS_DEB_ROOT=dpkg/Language
 CUMULUS_DEB=$(CUMULUS_DEB_ROOT)/$(CUMULUS_REL)
 
 SRC_PACK=-sa -S
@@ -48,11 +48,11 @@ LRELEASE = lrelease
 usage:
 	@echo ""
 	@echo "usage: make -f Makefile.Language <target> ..."
-	@echo "  all      - Builds the Qt language translation file"
-	@echo "  clean    - Removes all build results"
-	@echo "  install  - Installs the language parts under $(INSTALL_ROOT)"
-	@echo "  dpkg     - Builds a Debian binary-only package file"
-	@echo "  dpkg_src - Builds a Debian source-only package file"
+	@echo "  all         - Builds the Qt language translation file"
+	@echo "  clean       - Removes all build results"
+	@echo "  install     - Installs the language parts under $(INSTALL_ROOT)"
+	@echo "  dpkg_de     - Builds a German Debian binary-only package file"
+	@echo "  dpkg_src_de - Builds a German Debian source-only package file"
 	
 all:	langpacks
 
@@ -95,17 +95,17 @@ check_file:
 ################################################################################
 
 # call dpkg target to build a debian Maemo language package
-.PHONY : dpkg_src dpkg_make
+.PHONY : dpkg_src_de dpkg_make
 
-dpkg:  check_file
-	@echo "===== Building Maemo Languages binary-only package for Cumulus $(VERSION) ====="
-	$(MAKE) -f Makefile.Language -s VERSION=$(VERSION) \
-	        DPKG_OPT=$(BIN_PACK) DH_MAKE_OPT="-s --native" PACK=bin dpkg_make
+dpkg_de:  check_file
+	@echo "===== Building Maemo German Language binary-only package for Cumulus $(VERSION) ====="
+	$(MAKE) -f Makefile.Language -s VERSION=$(VERSION) LANGUAGE=de \
+	        DPKG_OPT="$(BIN_PACK)" DH_MAKE_OPT="-s --native" PACK=bin dpkg_make
 
-dpkg_src:
-	@echo "===== Building Maemo Languages source-only package for Cumulus $(VERSION) ====="
-	$(MAKE) -f Makefile.Language -s VERSION=$(VERSION) \
-	        DPKG_OPT=$(SRC_PACK) DH_MAKE_OPT="-s --createorig" PACK=src dpkg_make
+dpkg_src_de:
+	@echo "===== Building Maemo German Language source-only package for Cumulus $(VERSION) ====="
+	$(MAKE) -f Makefile.Language -s VERSION=$(VERSION) LANGUAGE=de \
+	        DPKG_OPT="$(SRC_PACK)" DH_MAKE_OPT="-s --createorig" PACK=src dpkg_make
 
 # This target will build the debian package. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation mark
@@ -119,20 +119,20 @@ dpkg_make:
 	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
 	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL $(DH_MAKE_OPT)
-	cp dpkg/Languages/control/rules $(CUMULUS_DEB)/debian/
-	sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control/copyright > $(CUMULUS_DEB)/debian/copyright
-	sed -e "s/__VERSION__/$(VERSION)/g" dpkg/Languages/control/control.$(PACK) > $(CUMULUS_DEB)/debian/control
-	cp dpkg/Languages/control/postrm $(CUMULUS_DEB)/debian/
+	cp dpkg/Languages/control_$(LANGUAGE)/rules $(CUMULUS_DEB)/debian/
+	sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control_$(LANGUAGE)/copyright > $(CUMULUS_DEB)/debian/copyright
+	sed -e "s/__VERSION__/$(VERSION)/g" dpkg/Languages/control_$(LANGUAGE)/control.$(PACK) > $(CUMULUS_DEB)/debian/control
+	cp dpkg/Languages/control_$(LANGUAGE)/postrm $(CUMULUS_DEB)/debian/
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" \
-            dpkg/Languages/control/changelog > $(CUMULUS_DEB)/debian/changelog
+      dpkg/Languages/control_$(LANGUAGE)/changelog > $(CUMULUS_DEB)/debian/changelog
 	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage -rfakeroot $(DPKG_OPT)
 
 # copies all language files of Cumulus into the debian package area
 
-.PHONY : dpkg_install
+.PHONY : dpkg_install_de
 
-dpkg_install:
+dpkg_install_de:
 	@echo '===== Installing Cumulus Languages $(VERSION) under $(DESTDIR)$(INSTALL_ROOT) ====='
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/locale/de
@@ -176,5 +176,5 @@ langpack_de:
 .PHONY : copylang2web
 
 copylang2web:
-	scp -C dpkg/Languages/cumuluslanguages_$(VERSION)_armel.deb \
+	scp -C dpkg/Languages/cumuluslanguagede_$(VERSION)_armel.deb \
       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
