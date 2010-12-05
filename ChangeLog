@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2010-12-05 AP: English help pages (Flarm) reviewed by Robin King checked in.
+                   Thanks to him for his good work.
 [o] 2010-11-30 AP: BUGFIX: Map redraw was partly blocked during a resize event.
                    That was a leftover from the Zaurus time. Did remove the
                    block. That ensures that the map is always updated after
