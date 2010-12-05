@@ -1,6 +1,7 @@
 cumulus (__VERSION__) stable; urgency=low
 
   * Cumulus Release __VERSION__ for N900, running Maemo5, OS2010 Fremantle with Qt4/X11
+  * Inserting bug tracker link to debian control file
   * See also https://svn.kflog.org/svn/repos/cumulus/qt4/trunk/ChangeLog 
 
  -- Axel Pauli <kflog.cumulus@googlemail.com>  __DATE__
