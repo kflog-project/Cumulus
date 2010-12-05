@@ -59,8 +59,7 @@ all:	langpacks
 .PHONY : clean
 
 clean:
-	@cd cumulus; rm -f cumulus_de.qm
-	@rm -fr $(CUMULUS_DEB)
+	cd cumulus; rm -f cumulus_de.qm
 	@echo "Build area cleaned"
 
 .PHONY : check_dir
