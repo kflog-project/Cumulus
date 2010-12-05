@@ -8,7 +8,7 @@ Homepage: http://www.kflog.org/cumulus/
 
 Package: cumuluslanguagede
 Architecture: any
-Depends: cumulus (>= __VERSION__)
+Depends: cumulus (>= 2.9.1)
 Description: Cumulus is a flight computer for glider pilots.
  This package provides the German GUI translations and German
  help pages for Cumulus.
