@@ -109,16 +109,19 @@
   Andernfalls werden weder H&ouml;he noch Variometer Daten angezeigt!</b>
   </p>
   <p>
-  Von folgenden Ger&auml;ten werden Zusatzinformationen von Cumulus verarbeitet:
+  Von nachfolgend aufgef&uuml;hrten Ger&auml;ten werden Zusatzinformationen
+  von Cumulus verarbeitet. Zusatzinformationen wie QNH oder McCready k&ouml;nnen
+  die Benutzereinstellungen in Cumulus &uuml;berschreiben, da sie stets eine
+  h&ouml;here Priorit&auml;t gegen&uuml;ber den internen Einstellungen haben!
   </p>
 
-  <table border="1">
+  <table border="1" cellpadding="5">
   <tr><th>Ger&auml;t</th><th>verarbeitete Daten</th></tr>
 
   <tr>
   <th>Cambrigde</th>
     <td>Es liefert H&ouml;hendaten (MSL und STD), die von einer
-        Drucksonde stammen.</td>
+        Drucksonde stammen, QNH, Wind und Variometer Daten.</td>
   </tr>
 
   <tr>
@@ -131,8 +134,9 @@
   </tr>
 
   <th>LX Navigation</th>
-  <td>Es liefert H&ouml;hendaten bezogen auf MSL, die von einer
-      Drucksonde stammen. Dazu muss das Senden der LXWP Datens&auml;tze im
+  <td>Es liefert H&ouml;hendaten bezogen auf MSL, die von einer Drucksonde
+      stammen und Wind Daten. Manche Ger&auml;te liefern auch noch McCready und
+      Variometer Daten. Dazu muss das Senden der LXWP Datens&auml;tze im
       Einstellmen&uuml; des Ger&auml;tes aktiviert werden. Bei einem LX20 m&uuml;ssen Sie
       in das Passwort Men&uuml; gehen, das aktuelle Passwort (Standard ist 96990)
       eingeben und ins NMEA Men&uuml; dann wechseln. Hier setzen Sie den Eintrag
@@ -165,7 +169,7 @@
 
   Cumulus verarbeitet die folgenden NMEA and propriet&auml;ren Datens&auml;tze:
   <p>
-  <table border="1">
+  <table border="1" cellpadding="5">
     <tr><th>NMEA Id</th> <th>Beschreibung</th></tr>
     <tr><td>$GPRMC</td> <td>Recommended Minimum Specific GNSS Data</td></tr>
     <tr><td>$GPGLL</td> <td>Geographic Position - Latitude and Longitude</td></tr>
