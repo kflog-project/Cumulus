@@ -28,6 +28,7 @@ CONFIG +=internet
 CONFIG += bluetooth
 
 HEADERS = \
+    aboutwidget.h \
     airfieldlistview.h \
     airfieldlistwidget.h \
     airfield.h \
@@ -140,6 +141,7 @@ HEADERS = \
     listwidgetparent.h
 
 SOURCES = \
+    aboutwidget.cpp \
     airfieldlistview.cpp \
     airfieldlistwidget.cpp \
     airfield.cpp \
@@ -303,8 +305,4 @@ LIBS += -lstdc++ \
     -losso \
     -llocation
     
-TRANSLATIONS = cumulus_de.ts \
-    cumulus_nl.ts \
-    cumulus_it.ts \
-    cumulus_sp.ts \
-    cumulus_fr.ts
+TRANSLATIONS = cumulus_de.ts
