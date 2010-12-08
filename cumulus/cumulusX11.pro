@@ -27,6 +27,7 @@ CONFIG += internet
 CONFIG += bluetooth
 
 HEADERS = \
+    aboutwidget.h \
     airfieldlistview.h \
     airfieldlistwidget.h \
     airfield.h \
@@ -138,6 +139,7 @@ HEADERS = \
     wpinfowidget.h
     
 SOURCES = \
+    aboutwidget.cpp \
     airfieldlistview.cpp \
     airfieldlistwidget.cpp \
     airfield.cpp \
