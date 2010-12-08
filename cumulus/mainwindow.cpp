@@ -1789,7 +1789,7 @@ void MainWindow::slotVersion()
           "Heiner Lamprecht &lt;<a href=\"mailto:heiner&#64;kflog.org\">heiner&#64;kflog.org</a>&gt;"
           "</blockquote>"
           "Thanks to all, who have made available this software!"
-          "</html>" ));
+          "<br></html>" ));
 
   aw->setTeamText( team );
   aw->resize( size() );
