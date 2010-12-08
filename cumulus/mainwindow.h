@@ -169,7 +169,7 @@ class MainWindow : public QMainWindow
     /** Opens the pre flight dialog */
     void slotPreFlightGlider();
     void slotPreFlightTask();
-    /** shows resp. signals a notifiation */
+    /** shows resp. signals a notification */
     void slotNotification (const QString&, const bool sound=true);
     /** shows resp. signals an alarm */
     void slotAlarm (const QString&, const bool sound=true);
@@ -181,7 +181,7 @@ class MainWindow : public QMainWindow
     void slotMapDrawEvent(bool);
     /** closes the config or pre-flight "dialog" */
     void slotCloseConfig();
-    /** set menubar font size to a reasonable and useable value */
+    /** set menubar font size to a reasonable and usable value */
     void slotSetMenuBarFontSize();
 
   protected: //methods
@@ -224,7 +224,7 @@ class MainWindow : public QMainWindow
 
 
   protected: //members
-    /** contains the currently selected viewmode */
+    /** contains the currently selected view mode */
     appView view;
 
   private slots: // Private slots
@@ -235,8 +235,8 @@ class MainWindow : public QMainWindow
     void slotCenterToWaypoint();
 
     /**
-     * Called if the user pressed V in mapview. Adjusts the
-     * zoomfactor so that the currently selected waypoint is displayed
+     * Called if the user pressed V in map view. Adjusts the
+     * zoom factor so that the currently selected waypoint is displayed
      * as good as possible.
      */
     void slotEnsureVisible();
@@ -248,7 +248,7 @@ class MainWindow : public QMainWindow
     /**
      * Called if the logging is actually toggled
      */
-    void slot_Logging (bool logging);
+    void slotLogging (bool logging);
 
     /**
      * Called if the label displaying is actually toggled
@@ -284,7 +284,7 @@ class MainWindow : public QMainWindow
      * Called if the user clicks on a tab to select a different
      * list-type view
      */
-    void slot_tabChanged( int index );
+    void slotTabChanged( int index );
 
     /** shows version and copyright. */
     void slotVersion();

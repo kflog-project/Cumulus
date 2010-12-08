@@ -33,6 +33,7 @@
 
 #include <QtGui>
 
+#include "aboutwidget.h"
 #include "generalconfig.h"
 #include "mainwindow.h"
 #include "mapconfig.h"
@@ -243,7 +244,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
   this->installEventFilter( this );
 
-  setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus.png")) );
+  setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus-desktop26x26.png")) );
   setWindowTitle( "Cumulus" );
 
 #ifdef MAEMO
@@ -512,7 +513,7 @@ void MainWindow::slotCreateApplicationWidgets()
            calculator, SLOT( slot_changePositionHome() ) );
 
   connect( listViewTabs, SIGNAL( currentChanged( int ) ),
-           this, SLOT( slot_tabChanged( int ) ) );
+           this, SLOT( slotTabChanged( int ) ) );
 
   connect( calculator, SIGNAL( newWaypoint( const wayPoint* ) ),
            viewMap, SLOT( slot_Waypoint( const wayPoint* ) ) );
@@ -570,7 +571,7 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( logger, SIGNAL( logging( bool ) ),
            viewMap, SLOT( slot_setLoggerStatus() ) );
   connect( logger, SIGNAL( logging( bool ) ),
-           this, SLOT( slot_Logging( bool ) ) );
+           this, SLOT( slotLogging( bool ) ) );
   connect( logger, SIGNAL( madeEntry() ),
            viewMap, SLOT( slot_LogEntry() ) );
 
@@ -1317,7 +1318,7 @@ void MainWindow::slotViewStatusBar( bool toggle )
 }
 
 /** Called if the logging is actually toggled */
-void MainWindow::slot_Logging ( bool logging )
+void MainWindow::slotLogging ( bool logging )
 {
   actionToggleLogging->blockSignals( true );
   actionToggleLogging->setChecked( logging );
@@ -1331,9 +1332,9 @@ MainWindow::appView MainWindow::getView()
 }
 
 /** Called if the user clicks on a tabulator of the list view */
-void MainWindow::slot_tabChanged( int index )
+void MainWindow::slotTabChanged( int index )
 {
-  // qDebug("MainWindow::slot_tabChanged(): NewIndex=%d", index );
+  // qDebug("MainWindow::slotTabChanged(): NewIndex=%d", index );
 
   //switch to the correct view
   if ( index == listViewTabs->indexOf(viewWP) )
@@ -1649,13 +1650,11 @@ void MainWindow::slotSwitchToReachListView()
   setView( rpView );
 }
 
-
 /** Switches to the WaypointList View */
 void MainWindow::slotSwitchToTaskListView()
 {
   setView( tpView );
 }
-
 
 /** This slot is called to switch to the info view. */
 void MainWindow::slotSwitchToInfoView()
@@ -1687,7 +1686,6 @@ void MainWindow::slotSwitchToInfoView()
     }
 }
 
-
 /** @ee This slot is called to switch to the info view with selected waypoint. */
 void MainWindow::slotSwitchToInfoView( wayPoint* wp )
 {
@@ -1696,7 +1694,6 @@ void MainWindow::slotSwitchToInfoView( wayPoint* wp )
       setView( infoView, wp );
     }
 }
-
 
 /** Opens the configuration widget */
 void MainWindow::slotConfig()
@@ -1720,46 +1717,84 @@ void MainWindow::slotConfig()
   cDlg->setVisible( true );
 }
 
-
 /** Closes the configuration or pre-flight widget */
 void MainWindow::slotCloseConfig()
 {
   setView( mapView );
-//  qDebug("* closing configView:  %s", calculator->gliderType().toLatin1().data() );
+
   if ( !calculator->gliderType().isEmpty() )
-    setWindowTitle ( "Cumulus - " + calculator->gliderType() );
+    {
+      setWindowTitle ( "Cumulus - " + calculator->gliderType() );
+    }
   else
-    setWindowTitle( "Cumulus" );
+    {
+      setWindowTitle( "Cumulus" );
+    }
 }
 
-/** Shows version and copyright information */
+/** Shows version, copyright, license and team information */
 void MainWindow::slotVersion()
 {
-  QMessageBox msgBox( QMessageBox::NoIcon,
-                      QObject::tr("About Cumulus"),
-                      QString(tr("Cumulus version %1")).arg( CU_VERSION),
-                      QMessageBox::Ok,
-                      this );
+  AboutWidget *aw = new AboutWidget( this );
 
-  QString infoText(tr(
-            "<html>"
-            "Cumulus %1<br>"
-            "<font size=-1>(compiled at %2 with QT %3)</font><br>"
-            "&copy; 2002-2010 by<br>"
-            "Andr&eacute; Somers, Eggert Ehmke<br>"
-            "Axel Pauli, Eckhard V&ouml;llm<br>"
-            "Josua Dietze, Michael Enke<br>"
-            "Hendrik M&uuml;ller, Florian Ehinger<br>"
-            "Heiner Lamprecht<br>"
-            "<a href=\"http://www.kflog.org/cumulus/\">www.kflog.org/cumulus/</a><br>"
-            "Published under the GPL<br>"
-            "</html>" ).arg( QString(CU_VERSION) ).arg( QString( __DATE__ )).arg( QString(QT_VERSION_STR) ) );
+  aw->setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus-desktop26x26.png")) );
+  aw->setWindowTitle( tr( "About Cumulus") );
+  aw->setHeaderIcon( GeneralConfig::instance()->loadPixmap("cumulus-desktop48x48.png") );
 
+  QString header( tr("<html>Cumulus %1, &copy; 2002-2010, The Cumulus-Team</html>").arg( CU_VERSION ) );
 
-  msgBox.setInformativeText( infoText );
-  msgBox.exec();
+  aw->setHeaderText( header );
+
+  QString about( tr(
+          "<hml>"
+          "Cumulus %1<br><br>"
+          "compiled at %2 with QT %3<br><br>"
+          "Homepage: \"<a href=\"http://www.kflog.org/cumulus/\">www.kflog.org/cumulus/</a><br><br>"
+          "Report bugs to: <a href=\"mailto:kflog.cumulus&#64;googlemail.com\">kflog.cumulus&#64;googlemail.com</a><br><br>"
+          "Published under the <a href=\"http://www.gnu.org/licenses/licenses.html#GPL\">GPL</a>"
+          "</html>" ).arg(CU_VERSION).arg(__DATE__).arg(QT_VERSION_STR) );
+
+  aw->setAboutText( about );
+
+  QString team( tr(
+          "<hml>"
+          "<b>Project Leader</b>"
+          "<blockquote>"
+          "Axel Pauli &lt;<a href=\"mailto:axel&#64;kflog.org\">axel&#64;kflog.org</a>&gt;"
+          "</blockquote>"
+          "<b>Developers</b>"
+          "<blockquote>"
+          "Axel Pauli (Developer, Maintainer)<br>"
+          "Andr&eacute; Somers (Core-developer)<br>"
+          "Eggert Ehmke (Core-developer)<br>"
+          "Eckhard V&ouml;llm (Developer, NMEA Simulator)<br>"
+          "Josua Dietze (Developer)<br>"
+          "Michael Enke (Developer)<br>"
+          "Hendrik Hoeth (Developer)<br>"
+          "Florian Ehinger (KFLog-developer)<br>"
+          "Harald Maier (KFLog-developer)<br>"
+          "Heiner Lamprecht (KFLog-developer)<br>"
+          "Thomas Nielsen (KFLog-developer)"
+          "</blockquote>"
+          "<b>Contributors</b>"
+          "<blockquote>"
+          "Robin King (Help pages)<br>"
+          "Peter Turczak (Code Optimizations)<br>"
+          "Hendrik M&uuml;ller<br>"
+          "Stephan Danner<br>"
+          "Derrick Steed"
+          "</blockquote>"
+          "<b>Server Sponsor</b>"
+          "<blockquote>"
+          "Heiner Lamprecht &lt;<a href=\"mailto:heiner&#64;kflog.org\">heiner&#64;kflog.org</a>&gt;"
+          "</blockquote>"
+          "Thanks to all, who have made available this software!"
+          "</html>" ));
+
+  aw->setTeamText( team );
+  aw->resize( size() );
+  aw->setVisible( true );
 }
-
 
 /** opens help documentation in browser. */
 void MainWindow::slotHelp()
@@ -1923,7 +1958,6 @@ void MainWindow::slotReadconfig()
 
   viewMap->_theMap->scheduleRedraw();
 }
-
 
 /** Called if the status of the GPS changes, and controls the availability of manual navigation. */
 void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )
