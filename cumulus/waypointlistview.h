@@ -16,6 +16,16 @@
 **
 ***********************************************************************/
 
+/**
+ * \class WaypointListView
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief This widget provides a list of waypoints and a means to select one.
+ *
+ * \date 2002-2010
+ */
+
 #ifndef WAYPOINT_LISTVIEW_H
 #define WAYPOINT_LISTVIEW_H
 
@@ -28,11 +38,6 @@
 
 class WaypointCatalog;
 
-/**
- * This widget provides a list of waypoints and a means to select one.
- *
- * @author André Somers
- */
 class WaypointListView : public QWidget
 {
     Q_OBJECT

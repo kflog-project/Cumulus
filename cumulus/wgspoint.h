@@ -16,14 +16,18 @@
 ***********************************************************************/
 
 /**
+ * \class WGSPoint
+ *
  * \author André Somers, Axel Pauli
  *
- * \short Class to handle WGS84 coordinates
+ * \short Class to handle WGS84 coordinates.
  *
  * This class is used to handle WGS84 coordinates. It inherits QPoint. The only
  * difference is, that the methods to access the coordinates are called "lat"
  * and "lon". Furthermore it controls the unit to be used for position
  * representation.
+ *
+ * \date 2008-2010
  */
 
 #ifndef WGS_Point_H

@@ -16,6 +16,17 @@
 **
 ***********************************************************************/
 
+/**
+ * \class SettingsPagePersonal
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Configuration settings for personal settings.
+ *
+ * \date 2002-2010
+ *
+ */
+
 #ifndef SETTINGS_PAGE_PERSONAL_H
 #define SETTINGS_PAGE_PERSONAL_H
 
@@ -27,13 +38,6 @@
 
 #include "altitude.h"
 #include "coordedit.h"
-
-/**
- * \author André Somers, Axel Pauli
- *
- * \brief This class represents the personal settings page.
- *
- */
 
 class SettingsPagePersonal : public QWidget
 {

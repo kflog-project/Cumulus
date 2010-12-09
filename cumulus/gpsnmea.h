@@ -18,6 +18,8 @@
  ***************************************************************************/
 
 /**
+ * \class GpsNmea
+ *
  * \author André Somers, Axel Pauli
  *
  * \brief NMEA parser, decoder and GPS connection handler.
@@ -25,6 +27,8 @@
  * This class parses and decodes the NMEA sentences and provides access
  * to the last know data. Furthermore it is managing the connection to a GPS
  * receiver connected by RS232, USB or to a Maemo GPS daemon process.
+ *
+ * \date 2002-2010
  */
 
 #ifndef GPS_NMEA_H
@@ -164,7 +168,7 @@ class GpsNmea : public QObject
     void readDataFromGps();
 
     /**
-     * @Returns the current GPS connection status.
+     * @return the current GPS connection status.
      */
     GpsNmea::GpsStatus getGpsStatus() const
       {
@@ -172,7 +176,7 @@ class GpsNmea : public QObject
       }
 
     /**
-     * @Returns the current GPS connection status. True if connected, false if not.
+     * @return the current GPS connection status. True if connected, false if not.
      */
     bool getConnected() const
       {
@@ -180,7 +184,7 @@ class GpsNmea : public QObject
       }
 
     /**
-     * @Returns the last known speed.
+     * @return the last known speed.
      */
     Speed getLastSpeed() const
       {
@@ -188,7 +192,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the last known TAS.
+     * @return the last known TAS.
      */
     Speed getLastTas() const
       {
@@ -196,7 +200,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the date of the last fix.
+     * @return the date of the last fix.
      */
     QDate getLastDate() const
       {
@@ -204,7 +208,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the time of the last fix.
+     * @return the time of the last fix.
      */
     QTime getLastTime() const
       {
@@ -212,7 +216,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the date time as UTC of the last fix.
+     * @return the date time as UTC of the last fix.
      */
     QDateTime getLastUtc() const
       {
@@ -220,7 +224,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the last known coordinate in KFLog format (x=lat, y=lon).
+     * @return the last known coordinate in KFLog format (x=lat, y=lon).
      */
     QPoint getLastCoord() const
       {
@@ -228,7 +232,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the last know heading.
+     * @return the last know heading.
      */
     double getLastHeading() const
       {
@@ -236,7 +240,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the last know standard pressure altitude
+     * @return the last know standard pressure altitude
      */
     Altitude getLastStdAltitude() const
       {
@@ -244,7 +248,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the last know pressure altitude above sea level
+     * @return the last know pressure altitude above sea level
      */
     Altitude getLastPressureAltitude() const
       {
@@ -252,13 +256,13 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the last know gps altitude depending on user
+     * @return the last know gps altitude depending on user
      * selection MSL or Pressure
      */
     Altitude getLastAltitude() const;
 
     /**
-     * @Returns the last know altitude above the WGS84 ellipsoid
+     * @return the last know altitude above the WGS84 ellipsoid
      */
     Altitude getLastGNSSAltitude() const
       {
@@ -266,7 +270,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the last known wind speed.
+     * @return the last known wind speed.
      */
     Speed getLastWindSpeed() const
       {
@@ -274,7 +278,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the last known wind direction.
+     * @return the last known wind direction.
      */
     short getLastWindDirection() const
       {
@@ -282,7 +286,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the last known wind age in seconds.
+     * @return the last known wind age in seconds.
      */
     int getLastWindAge() const
       {
@@ -290,7 +294,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the last known variometer speed.
+     * @return the last known variometer speed.
      */
     Speed getLastVariometer() const
       {
@@ -298,7 +302,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the last know satellite constellation string.
+     * @return the last know satellite constellation string.
      */
     SatInfo& getLastSatInfo()
       {
@@ -336,7 +340,7 @@ class GpsNmea : public QObject
     };
 
     /**
-     * @Returns selected altitude reference delivered by the GPS unit
+     * @return selected altitude reference delivered by the GPS unit
      */
     GpsNmea::DeliveredAltitude getDeliveredAltitude() const
       {
@@ -344,7 +348,7 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @Returns the satellites in view.
+     * @return the satellites in view.
      */
     QList<SIVInfo>& getSivInfo()
     {
@@ -352,7 +356,7 @@ class GpsNmea : public QObject
     };
 
     /**
-     * @Returns the map datum of the GPS receiver.
+     * @return the map datum of the GPS receiver.
      */
     QString getMapDatum() const
       {
@@ -537,11 +541,11 @@ class GpsNmea : public QObject
     void __ExtractPflau( const QStringList& slst );
 #endif
 
-    /** This function returns a QTime from the time encoded in a MNEA sentence. */
+    /** This function return a QTime from the time encoded in a MNEA sentence. */
     QTime __ExtractTime(const QString& timestring);
-    /** This function returns a QDate from the date encoded in a MNEA sentence. */
+    /** This function return a QDate from the date encoded in a MNEA sentence. */
     QDate __ExtractDate(const QString& datestring);
-    /** This function returns a Speed from the speed encoded in knots */
+    /** This function return a Speed from the speed encoded in knots */
     Speed __ExtractKnotSpeed(const QString& speedstring);
     /** This function converts the coordinate data from the NMEA sentence to the internal QPoint coordinate format. */
     QPoint __ExtractCoord(const QString& slat, const QString& slatNS, const QString& slon, const QString& slonEW);
@@ -592,7 +596,7 @@ class GpsNmea : public QObject
     /** This function calculates the checksum in the sentence. */
     static uint calcCheckSum (int pos, const QString& sentence);
     /** This function checks if the checksum in the sentence matches the sentence.
-     *  It returns true if it matches, and false otherwise. */
+     *  It return true if it matches, and false otherwise. */
     static bool checkCheckSum(int pos, const QString& sentence);
 
     /** This function calculates the STD altitude from the passed MSL altitude. */

@@ -25,9 +25,17 @@
 #define IPC_IP "127.0.0.1"
 
 /**
+ * \class Ipc
+ *
+ * \author Axel pauli
+ *
+ * \brief Interprocess communication class via sockets.
+ *
  * This class manages the low layer interfaces for the interprocess
  * communication via sockets. The server part can handle up to two client
  * connections. All io is done in blocking mode.
+ *
+ * \date 2004-2010
  */
 class Ipc
 {
@@ -59,6 +67,13 @@ public:
     // Server class definition
     //----------------------------------------------------------------------
 
+    /**
+     * \class Server
+     *
+     * \author Axel Pauli
+     *
+     * \brief Server part of interprocess communication class.
+     */
     class Server
     {
     private:
@@ -83,44 +98,44 @@ public:
         ~Server();
 
         /**
-         * initialize server
+         * Initialize server connection.
          *
-         * @param ipAddress: ip address used in bind call, if empty or null
-         *                   INADDR_ANY is used.
-         * @param port:      port number to be used in bind call, if 0, kernel
-         *                   will assign a free number.
-         * @returns:         true on success otherwise false
+         * @param ipAddress IP address used in bind call. If it is empty or null
+         *                  INADDR_ANY is used.
+         * @param port      Port number to be used in bind call. If 0, kernel
+         *                  will assign a free number.
+         * @return          true on success otherwise false
          */
         bool init( const char *ipAddress=0,
                    const unsigned short port=0 );
 
         /**
-         * @returns the socket descriptor of the next available client connection
+         * @return the socket descriptor of the next available client connection
          * or -1 in error case.
          */
         int connect2Client(uint index);
 
         /**
          * Closes the client connection.
-         * @returns -1 in error case otherwise 0
+         * @return -1 in error case otherwise 0
          */
         int closeClientSock(uint index);
 
         /**
          * Closes the listen socket.
-         * @returns -1 in error case otherwise 0
+         * @return -1 in error case otherwise 0
          */
         int closeListenSock();
 
         /**
          * Reads once data from the connected client socket and returns.
-         * @returns -1 in error case or number of read bytes
+         * @return -1 in error case or number of read bytes
          */
         int readMsg( uint index, void *data, int length );
 
         /**
          * Writes the passed data to the connected client socket
-         * @returns -1 in error case or number of written bytes
+         * @return -1 in error case or number of written bytes
          */
         int writeMsg( uint index, void *data, int length );
 
@@ -155,6 +170,13 @@ public:
 
 public:
 
+    /**
+     * \class Client
+     *
+     * \author Axel Pauli
+     *
+     * \brief Client part of interprocess communication class.
+     */
     class Client
     {
     private:
@@ -177,32 +199,33 @@ public:
         ~Client();
 
         /**
-         * establishes a connection to the server
+         * Establishes a connection to the server.
          *
-         * @param ipAddress  ip address used in connect call, if empty or null
-         *                   address of local host (IP_IPC) is used.
-         * @param port       port number to be used in connect call
+         * @param ipAddress IP address for call connection. If is empty or null
+         *                  address of local host (IP_IPC) is used.
          *
-         * @returns         -1 in error case otherwise 0
+         * @param port      port number to be used in connect call
+         *
+         * @return          -1 in error case otherwise 0
          */
-        int connect2Server( const char *ipAddressIn,
-                            const unsigned short portIn );
+        int connect2Server( const char *ipAddress,
+                            const unsigned short port );
 
         /**
          * Reads one time data from the connected client socket and returns.
-         * @returns -1 in error case or number of read bytes
+         * @return -1 in error case or number of read bytes
          */
         int readMsg( void *data, int length );
 
         /**
          * Writes the passed data to the connected client socket
-         * @returns -1 in error case or number of written bytes
+         * @return -1 in error case or number of written bytes
          */
         int writeMsg( void *data, int length );
 
         /**
          * Closes the socket of the server connection
-         * @returns -1 in error case otherwise 0
+         * @return -1 in error case otherwise 0
          */
         int closeSock();
 
@@ -223,11 +246,11 @@ public:
 
         /**
          * Returns the number of the readable bytes in the read queue.
-         * @returns 0 if nothing is to read or in error case.
+         * @return 0 if nothing is to read or in error case.
          */
         int numberOfReadableBytes();
     };
 
 };
 
-#endif  // #ifndef _Ipc_hh_
+#endif

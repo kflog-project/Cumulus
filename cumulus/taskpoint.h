@@ -16,8 +16,16 @@
  ***********************************************************************/
 
 /**
+ * \class TaskPoint
+ *
+ * \author Axel Pauli
+ *
+ * \brief Contains all data attributes of a task point.
+ *
  * This class is an extension of the waypoint class. It handles all data
  * items concerning a flight task.
+ *
+ * \date 2010
  */
 
 #ifndef TASK_POINT_H_
@@ -34,7 +42,9 @@ class TaskPoint : public wayPoint
   TaskPoint( const TaskPoint& inst );
   virtual ~TaskPoint();
 
-  /** Returns the type of a task point in a string format. */
+  /**
+   * \return The type of a task point in a string format.
+   */
   QString getTaskPointTypeString() const;
 
   /** The angle of the sector in radian */

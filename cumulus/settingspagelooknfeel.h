@@ -15,6 +15,17 @@
 **
 ***********************************************************************/
 
+/**
+ * \class SettingsPageLookNFeel
+ *
+ * \author Axel Pauli
+ *
+ * \brief Configuration settings for personal look and feel.
+ *
+ * \date 2008-2010
+ *
+ */
+
 #ifndef SETTINGS_PAGE_LOOKNFEEL_H
 #define SETTINGS_PAGE_LOOKNFEEL_H
 
@@ -26,14 +37,6 @@
 #include <QDoubleSpinBox>
 
 #include "speed.h"
-
-/**
- * \author Axel Pauli
- *
- * \brief Look and Feel settings of GUI
- *
- * This class represents the personal look and feel settings.
- */
 
 class SettingsPageLookNFeel : public QWidget
 {

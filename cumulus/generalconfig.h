@@ -17,15 +17,18 @@
 ***********************************************************************/
 
 /**
+ * \class GeneralConfig
+ *
  * \author André Somers, Axel Pauli
  *
- * \brief Configuration encapsulation class
+ * \brief Configuration manager class
  *
  * This class is used to store and retrieve all kinds of
  * configuration options. This class is a singleton class. Use the
  * static instance method to get a reference to the instance.
  *
-*/
+ * \date 2004-2010
+ */
 
 #ifndef GENERAL_CONFIG_H
 #define GENERAL_CONFIG_H
@@ -92,6 +95,7 @@ class GeneralConfig : protected QSettings
   };
 
  private:
+
   /**
    * Constructor is private because this is a singleton class.
    * The relevant settings are loaded on construction.
@@ -174,12 +178,13 @@ class GeneralConfig : protected QSettings
   void setOurGuiStyle();
 
   /**
-   * @returns requested pixmap
+   * @param pixmapName The pixmap to be loaded.
+   * @return The requested pixmap.
    */
   QPixmap loadPixmap( const QString& pixmapName );
 
   /**
-   * @removes a pixmap from the global cache
+   * @param pixmapName Removes the pixmap from the global cache.
    */
   void removePixmap( const QString& pixmapName );
 
@@ -531,12 +536,15 @@ class GeneralConfig : protected QSettings
 
   /**
    * @return True if drawing is enabled for the given base map type.
-   * @param objectType The type of object (defined in @ref BaseMapElement) to query
+   * @param type The type of object (defined in @ref BaseMapElement) to query.
    */
   bool getAirspaceDrawingEnabled (BaseMapElement::objectType type) const;
 
   /**
    * Enables or disables the airspace drawing for this type of airspace
+   *
+   * \param type The type of object (defined in @ref BaseMapElement) to set.
+   * \param enable A flag to enable/disable drawing of airspace element.
    */
   void setAirspaceDrawingEnabled (BaseMapElement::objectType type, bool enable=true)
   {

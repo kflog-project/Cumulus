@@ -1,22 +1,36 @@
-/************************************************************************
- **
- **   Copyright (c): 2007-2009 by Axel Pauli, axel@kflog.org
- **
- **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
- **
- **   $Id$
- **
- *************************************************************************
- **
- **   sonne.h
- **
- **   This class is part of Cumulus. It provides calculation of sun
- **   rise and sun set times. Algorithmus was taken from a Swiss
- **   german webpage. Thanks to the author Roland Brodbeck for his
- **   publication. Explanations are all in german.
- **
- ***********************************************************************/
+/***********************************************************************
+**
+**   sonne.h
+**
+**   This file is part of Cumulus.
+**
+************************************************************************
+**
+**   Copyright (c): 2007-2009 by Axel Pauli, axel@kflog.org
+**
+**   This file is distributed under the terms of the General Public
+**   License. See the file COPYING for more information.
+**
+**   $Id$
+**
+************************************************************************/
+
+/**
+ * \class Sonne
+ *
+ * \author Axel Pauli
+ *
+ * \brief Calculation of sun rise and sun set times.
+ *
+ * This class is part of Cumulus. It provides calculation of sun
+ * rise and sun set times. Algorithmus was taken from a Swiss
+ * german webpage. Thanks to the author Roland Brodbeck for his
+ * publication. Explanations are all in german.
+ *
+ * \date 2007-2009
+ */
+
+/***********************************************************************/
 //
 // Sonnenaufgangs- und untergangsberechnung nach
 // http://lexikon.astronomie.info/zeitgleichung/neu.html

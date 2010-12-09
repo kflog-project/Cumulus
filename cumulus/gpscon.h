@@ -18,9 +18,11 @@
  ***********************************************************************/
 
 /**
+ * \class GpsCon
+ *
  * \author Axel Pauli
  *
- * \brief GPS connection handler.
+ * \brief GPS connection manager.
  *
  * This module manages the startup and supervision of the GPS client process
  * and the communication between this client process and the Cumulus
@@ -28,6 +30,8 @@
  * socket interface. The path name, used during startup of Cumulus must be
  * passed in the constructor, that the gpsClient resp. gpsMaemoClient binary
  * can be found. It lays in the same directory as Cumulus.
+ *
+ * \date 2004-2010
  */
 
 #ifndef GPS_CON_H

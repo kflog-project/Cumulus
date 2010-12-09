@@ -16,6 +16,8 @@
 ***********************************************************************/
 
 /**
+ * \class FlarmWidget
+ *
  * \author Axel Pauli
  *
  * \brief Flarm widget to handle different views.
@@ -24,6 +26,7 @@
  * radar view. From the radar view the user can open the list view. All open
  * and close widget requests are handled by this widget.
  *
+ * \date 2010
  */
 
 #ifndef FLARM_WIDGET_H

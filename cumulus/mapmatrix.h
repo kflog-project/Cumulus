@@ -33,6 +33,8 @@ typedef int32_t fp8p24_t;
 #include "waypoint.h"
 
 /**
+ * \class MapMatrix
+ *
  * \author Heiner Lamprecht, Florian Ehinger, Axel Pauli
  *
  * \brief Map projection control class.
@@ -41,6 +43,8 @@ typedef int32_t fp8p24_t;
  * several coordinate-systems. It takes control over the map scale
  * and the projection-type. To avoid problems, there should be only
  * one element per application.
+ *
+ * \date 2001-2010
  */
 
 class MapMatrix : public QObject
@@ -87,21 +91,23 @@ public:
   /**
    * Converts the given geographic-data into the current map-projection.
    *
-   * @param  lat  The latitude of the point to be converted. The point must
-   *              be in the internal format of 1/10.000 minutes.
-   * @param  lon  The longitude of the point to be converted. The point must
-   *              be in the internal format of 1/10.000 minutes.
+   * @param  latIn  The latitude of the point to be converted. The point must
+   *                be in the internal format of 1/10.000 minutes.
+   * @param  lonIn  The longitude of the point to be converted. The point must
+   *                be in the internal format of 1/10.000 minutes.
    *
-   * @return the projected point as doubles
+   * @param  latOut The latitude as projected point.
+   *
+   * @param  lonOut The longitude as projected point.
+   *
    */
-
   void wgsToMap(int latIn, int lonIn, double& latOut, double& lonOut);
 
   /**
    * Converts the given geographic-data into the current map-projection.
    *
    * @param  rect  The rectangle to be converted. The points must
-   *              be in the internal format of 1/10.000 minutes.
+   *               be in the internal format of 1/10.000 minutes.
    *
    * @return the projected rectangle
    */
@@ -114,13 +120,13 @@ public:
    *
    * @return the mapped polygon
    */
-
-  QPolygon map(const QPolygon &a) const;
-/*  QPolygon map(const QPolygon& pPolygon) const
+  QPolygon map(const QPolygon &pPolygon) const;
+#if 0
   {
     return worldMatrix.map(pPolygon);
   };
-*/
+#endif
+
   /**
    * Maps the given projected point into the current map-matrix.
    *
@@ -128,13 +134,12 @@ public:
    *
    * @return the mapped point
    */
-
-  QPoint map(const QPoint &p) const;
-/*  QPoint map(const QPoint& point) const
+  QPoint map(const QPoint &point) const;
+#if 0
   {
     return worldMatrix.map(point);
   };
-*/
+#endif
 
   /**
    * Maps the given projected rectangle into the current map-matrix.
@@ -143,13 +148,10 @@ public:
    *
    * @return the mapped rectangle
    */
-
-/*  QRect map(const QRect& rect) const;*/
   QRect map(const QRect& rect) const
   {
     return worldMatrix.mapRect(rect);
   };
-
 
   /**
    * Maps the given bearing into the current map-matrix.
@@ -158,12 +160,10 @@ public:
    *
    * @return the mapped bearing
    */
-
   double map(double bearing) const
   {
     return (bearing + rotationArc);
   };
-
 
   /**
    * @param  type  The type of scale to be returned.
@@ -173,12 +173,10 @@ public:
   double getScale(unsigned int type = MapMatrix::CurrentScale);
 
   /**
-   * @param  type  The ration of MaxScale to the current scale
-   *               is returned as int.
+   * The ration of MaxScale to the current scale is returned as integer.
    *
-   * @return the selected scale
+   * @return The wanted scale ratio.
    */
-
   int getScaleRatio()
   {
     return _MaxScaleToCScaleRatio;
@@ -186,8 +184,10 @@ public:
 
   /**
    * Note, the returned map uses the x-axis for longitude and the y-axis
-   * for latitude. That is revers to getMapBorder.
-   * @return the lon/lat-border of the current map in KFLog coordinates.
+   * for latitude. That is reverse to getMapBorder.
+   *
+   * @return The lon/lat-border of the current map in KFLog coordinates.
+   *
    * @see getMapBorder()
    */
   QRect getViewBorder() const
@@ -196,7 +196,8 @@ public:
   };
 
   /**
-   * @return the lat/lon-border of the current map in projected coordinates.
+   * @return The lat/lon-border of the current map in projected coordinates.
+   *
    * @see getViewBorder()
    */
   QRect getMapBorder() const
@@ -343,8 +344,9 @@ public:
   void slotInitMatrix();
 
   /**
-   * Sets the scale to the indicated scale
-   * @param scale scale in meters per pixel
+   * Sets the scale to the indicated scale.
+   *
+   * @param scale The scale as meters per pixel
    */
   void slotSetScale(const double& scale);
 

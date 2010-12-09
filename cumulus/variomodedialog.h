@@ -16,11 +16,15 @@
 ***********************************************************************/
 
 /**
+ * \class VarioModeDialog
+ *
  * \author Axel Pauli
  *
  * \brief Dialog for variometer user interaction.
  *
  * This dialog is the user interface for the variometer settings.
+ *
+ * \date 2004-2010
  *
  */
 

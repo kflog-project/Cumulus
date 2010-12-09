@@ -23,7 +23,13 @@
  ***************************************************************************/
 
 /**
- * This class handles the time unit to be used for display.
+ * \class Time
+ *
+ * \author Axel Pauli
+ *
+ * \brief This class handles the time unit to be used for display.
+ *
+ * \date 2009
  */
 
 #ifndef TIME_H

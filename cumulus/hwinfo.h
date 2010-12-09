@@ -17,14 +17,17 @@
  ***********************************************************************/
 
 /**
- * @author Eckhard Völlm, Axel Pauli
+ * \class HwInfo
  *
- * @short Returns information on the underlying hardware
+ * \author Eckhard Völlm, Axel Pauli
+ *
+ * \brief Delivers information on the underlying hardware
  *
  * This class is used for all hardware depending functions. It can
  * return things like the type of a device and other useful hardware
  * information.
  *
+ * \date 2004-2010
  */
 
 #ifndef CLASS_HWINFO

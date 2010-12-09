@@ -16,6 +16,20 @@
 **
 ***********************************************************************/
 
+/**
+ * \class GliderListWidget
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Glider management widget.
+ *
+ * This widget manages a list of gliders and provides some additional editor
+ * functions.
+ *
+ * \date 2002-2010
+ *
+ */
+
 #ifndef GLIDER_LIST_WIDGET_H
 #define GLIDER_LIST_WIDGET_H
 
@@ -25,16 +39,6 @@
 #include <QList>
 
 #include "glider.h"
-
-
-/**
- * \author André Somers, Axel Pauli
- *
- * \brief Glider management widget.
- *
- * This widget manages a list of gliders and provides some additional editor
- * functions.
- */
 
 class GliderListWidget : public QTreeWidget
 {

@@ -18,13 +18,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef DISTANCE_H
-#define DISTANCE_H
-
-#include <QString>
-
 /**
- *  \author Heiner Lamprecht, Axel Pauli
+ * \class Distance
+ *
+ * \author Heiner Lamprecht, Axel Pauli
  *
  * \brief This class handles different distance units and arithmetics.
  *
@@ -33,8 +30,13 @@
  * It also features a couple of static methods to convert from the set
  * unit to meters or to display a distance in the currently selected unit.
  *
- *
+ * \date 2002-2007
  */
+
+#ifndef DISTANCE_H
+#define DISTANCE_H
+
+#include <QString>
 
 class Distance
 {
@@ -181,7 +183,7 @@ class Distance
    * </pre>
    * with the distance unit set to feet would return "3.2 ft".
    *
-   * @param meter The distance expressed in meters
+   * @param meters The distance expressed in meters
    * @param withUnit determines if the unit-string is included in the output
    * @param precision number of digits after the decimal separator
    */
@@ -216,7 +218,7 @@ class Distance
   };
 
   /**
-   * sets the distance in Nauticle miles
+   * sets the distance in Nautical miles
    */
   void setNautMiles(double value)
   {

@@ -16,11 +16,14 @@
 ***********************************************************************/
 
 /**
+ * \class AirspaceDownloadDialog
+ *
  * \author Axel Pauli
  *
  * \brief This dialog manages the download of an airspace file via HTTP.
  *
-*/
+ * \date 2010
+ */
 
 #ifndef AIRSPACE_DOWNLOAD_DIALOG_H
 #define AIRSPACE_DOWNLOAD_DIALOG_H

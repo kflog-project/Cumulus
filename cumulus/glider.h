@@ -17,14 +17,18 @@
 ***********************************************************************/
 
 /**
- * \author André Somers
+ * \class Glider
+ *
+ * \author André Somers, Axel Pauli
  *
  * \brief Class to handle different glider attributes.
  *
  * An instance of a Glider object contains all the information available
- * on a glider: it's type, it's registration, call sign, polar,
+ * on a glider, it's type, it's registration, call sign, polar,
  * single or double seater, maximum water capacity, etc.
-*/
+ *
+ * \date 2003-2010
+ */
 
 #ifndef GLIDER_H
 #define GLIDER_H

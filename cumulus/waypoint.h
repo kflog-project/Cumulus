@@ -25,10 +25,17 @@
 
 #include "wgspoint.h"
 
-
 /**
+ * \class TaskPointTypes
+ *
+ * \author Heiner Lamprecht, Florian Ehinger, André Somers, Axel Pauli
+ *
+ * \brief Kinds of a task point.
+ *
  * Definitions of possible task point types. Must be done here to avoid
  * recursive include loop.
+ *
+ * \date 1999-2010
  */
 class TaskPointTypes
 {
@@ -41,7 +48,13 @@ class TaskPointTypes
 };
 
 /**
- * This class contains the data items of a waypoint.
+ * \class wayPoint
+ *
+ * \author Heiner Lamprecht, Florian Ehinger, André Somers, Axel Pauli
+ *
+ * \brief This class contains all data items of a waypoint.
+ *
+ * \date 1999-2010
  */
 
 class wayPoint

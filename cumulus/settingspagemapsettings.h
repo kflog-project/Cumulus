@@ -14,13 +14,18 @@
 **
 **   $Id$
 **
-************************************************************************
-**
-** Contains the map projection related settings
-**
-** @author André Somers
-**
-***********************************************************************/
+************************************************************************/
+
+/**
+ * \class SettingsPageMapSettings
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Configuration settings for map projection.
+ *
+ * \date 2002-2010
+ *
+ */
 
 #ifndef SettingsPageMapSettings_H
 #define SettingsPageMapSettings_H

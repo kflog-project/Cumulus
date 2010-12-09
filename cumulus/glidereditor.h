@@ -17,10 +17,13 @@
 ***********************************************************************/
 
 /**
+ * \class GilderEditor
+ *
  * \author Eggert Ehmke, Axel Pauli
  *
- * \brief This class provides a glider editor dialog.
+ * \brief This widget provides a glider editor dialog.
  *
+ * \date 2002-2010
  */
 
 #ifndef SETTINGS_PAGE_GLIDER_EDITOR_H
@@ -40,110 +43,112 @@
 
 class GilderEditor : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
-  private:
+private:
 
-    Q_DISABLE_COPY ( GilderEditor )
+  Q_DISABLE_COPY ( GilderEditor )
 
-  public:
+public:
 
-    GilderEditor(QWidget* parent=0, Glider* glider=0);
+  GilderEditor(QWidget* parent=0, Glider* glider=0);
 
-    virtual ~GilderEditor();
+  virtual ~GilderEditor();
 
-    /**
-     * @return The currently selected polar is returned.
-     */
-    Polar* getPolar();
+  /**
+   * @return The currently selected polar is returned.
+   */
+  Polar* getPolar();
 
-  private:
+private:
 
-    /**
-     * Reads in the data from the Cumulus polar file.
-     */
-    void readPolarData ();
+  /**
+   * Reads in the data from the Cumulus polar file.
+   */
+  void readPolarData ();
 
-    /**
-      * Called to initiate saving to the configuration file.
-      */
-    void save();
+  /**
+    * Called to initiate saving to the configuration file.
+    */
+  void save();
 
-    /**
-      * Called to initiate loading of the configuration file.
-      */
-    void load();
+  /**
+    * Called to initiate loading of the configuration file.
+    */
+  void load();
 
-  public slots:
-    /**
-      * Called when a glider type has been selected in the combo box.
-      */
-    void slotActivated(const QString&);
+public slots:
 
-    /**
-      * Called when the show button was pressed to draw the polar.
-      */
-    void slotButtonShow();
+  /**
+    * Called when a glider type has been selected in the combo box.
+    */
+  void slotActivated(const QString&);
 
-  private slots:
+  /**
+    * Called when the show button was pressed to draw the polar.
+    */
+  void slotButtonShow();
 
-    /** Called when Ok button is pressed */
-    void accept();
+private slots:
 
-    /** Called when Cancel button is pressed */
-    void reject();
+  /** Called when Ok button is pressed */
+  void accept();
 
-  signals:
-    /**
-      * Send if a glider has been edited.
-      */
-    void editedGlider(Glider*);
+  /** Called when Cancel button is pressed */
+  void reject();
 
-    /**
-      * Send if a new glider has been made.
-      */
-    void newGlider(Glider*);
+signals:
 
-  private:
+  /**
+    * Send if a glider has been edited.
+    */
+  void editedGlider(Glider*);
 
-    QComboBox* comboType;
-    QDoubleSpinBox* spinV1;
-    QDoubleSpinBox* spinW1;
-    QDoubleSpinBox* spinV2;
-    QDoubleSpinBox* spinW2;
-    QDoubleSpinBox* spinV3;
-    QDoubleSpinBox* spinW3;
-    QLineEdit* edtGType;
-    QLineEdit* edtGReg;
-    QLineEdit* edtGCall;
-    QPushButton* buttonShow;
-    QSpinBox* emptyWeight;
-    QSpinBox* addedLoad;
-    QSpinBox* spinWater;
-    QComboBox* comboSeats;
+  /**
+    * Send if a new glider has been made.
+    */
+  void newGlider(Glider*);
 
-    QList<Polar> _polars;
-    Glider * _glider;
-    Polar  * _polar;
-    bool isNew;
-    /** Flag to indicate if a glider object was created by this class */
-    bool gliderCreated;
+private:
 
-    /**
-     * saves current horizontal/vertical speed unit during construction of object
-     */
-    Speed::speedUnit currHSpeedUnit;
-    Speed::speedUnit currVSpeedUnit;
+  QComboBox* comboType;
+  QDoubleSpinBox* spinV1;
+  QDoubleSpinBox* spinW1;
+  QDoubleSpinBox* spinV2;
+  QDoubleSpinBox* spinW2;
+  QDoubleSpinBox* spinV3;
+  QDoubleSpinBox* spinW3;
+  QLineEdit* edtGType;
+  QLineEdit* edtGReg;
+  QLineEdit* edtGCall;
+  QPushButton* buttonShow;
+  QSpinBox* emptyWeight;
+  QSpinBox* addedLoad;
+  QSpinBox* spinWater;
+  QComboBox* comboSeats;
 
-    /**
-     * Loaded values in spin boxes.
-     */
-    double currV1;
-    double currV2;
-    double currV3;
-    double currW1;
-    double currW2;
-    double currW3;
+  QList<Polar> _polars;
+  Glider * _glider;
+  Polar  * _polar;
+  bool isNew;
+  /** Flag to indicate if a glider object was created by this class */
+  bool gliderCreated;
+
+  /**
+   * saves current horizontal/vertical speed unit during construction of object
+   */
+  Speed::speedUnit currHSpeedUnit;
+  Speed::speedUnit currVSpeedUnit;
+
+  /**
+   * Loaded values in spin boxes.
+   */
+  double currV1;
+  double currV2;
+  double currV3;
+  double currW1;
+  double currW2;
+  double currW3;
 };
 
 #endif

@@ -35,7 +35,9 @@ const double toKnot=1.9438;
 const double toFpm=196.8504;
 
 /**
- *  \author Andre Somers, Axel Pauli
+ * \class Speed
+ *
+ * \author Andre Somers, Axel Pauli
  *
  * \brief This class handles different speed units and arithmetics.
  *
@@ -46,6 +48,7 @@ const double toFpm=196.8504;
  * etc. There are convenience functions to access the value using both
  * appropriate units.
  *
+ * \date 2002-2010
  */
 class Speed
 {
@@ -56,11 +59,11 @@ public:
      */
     enum speedUnit
     {
-      metersPerSecond=0,   /**< meters per second */
-      kilometersPerHour=1, /**< kilometers per hour */
-      knots=2,             /**< knots (nautical miles per hour) */
-      milesPerHour=3,      /**< statute miles per hour */
-      feetPerMinute=4        /**< feet per minute */
+      metersPerSecond=0,   /** meters per second */
+      kilometersPerHour=1, /** kilometers per hour */
+      knots=2,             /** knots (nautical miles per hour) */
+      milesPerHour=3,      /** statute miles per hour */
+      feetPerMinute=4      /** feet per minute */
     };
 
     /**
@@ -275,9 +278,8 @@ public:
     static QString getUnitText(speedUnit unit);
 
     /**
-     * @returns a string for the horizontal unit requested. This string only represents
-     *    the unit, not the value.
-     * @param unit the type of unit you want the string for.
+     * @returns a string for the horizontal unit requested. This string only
+     * represents the unit, not the value.
      */
     static QString getHorizontalUnitText()
     {

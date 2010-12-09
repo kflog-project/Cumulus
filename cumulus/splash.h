@@ -9,14 +9,23 @@
 **   Copyright (c):  2009 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-/** This widget loads a pixmap as background picture and
- *  is used as splash screen during startup of cumulus.
+/**
+ * \class Splash
+ *
+ * \author Axel Pauli
+ *
+ * \brief A splash screen for Cumulus.
+ *
+ * This widget loads a pixmap as background picture and
+ * is used as splash screen during startup of Cumulus.
+ *
+ * \date 2009
  */
 
 #ifndef Splash_h

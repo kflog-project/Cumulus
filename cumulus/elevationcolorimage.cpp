@@ -6,30 +6,20 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2009-2010 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-#include <QString>
-#include <QFont>
-#include <QPen>
-#include <QPainter>
-#include <QPoint>
+#include <QtGui>
 
 #include "elevationcolorimage.h"
 #include "mapdefaults.h"
 #include "altitude.h"
-
-/**
- * This class shows the used elevation colors of the map in a vertical bar.
- * The right side of the bar is labeled with elevation numbers according
- * to the current altitude unit (meters or feed).
- */
 
 /** A reference to the terrain color array has to be passed. The colors
  *  from the array are taken for the elevation color bars. Update first

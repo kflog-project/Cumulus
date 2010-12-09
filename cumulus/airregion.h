@@ -16,21 +16,16 @@
 **
 ***********************************************************************/
 
-
-#ifndef AirRegion_h
-#define AirRegion_h
-
-#include <QPainterPath>
-#include <QPoint>
-
-#include "airspace.h"
-
 /**
- * @short Container for @ref Airspace objects with a QPainterPath
+ * \class AirRegion
  *
- * @author André Somers
+ * \author André Somers, Axel Pauli
  *
- * Contains the projected region of an airspace onto the map.
+ * \brief Container for \ref Airspace objects in a QPainterPath.
+ *
+ * \see Airspace
+ *
+ * Contains the projected region of an \ref airspace onto the map.
  * The Map class maintains a list to find the airspace data when
  * the users selects an airspace in the map or to check the nearness
  * to an airspace during the drawing and after a position change.
@@ -41,7 +36,17 @@
  * Due to the cross pointer reference to the airspace this class do not
  * allow copies and assignments of an existing instance.
  *
+ * \date 2004-2010
+ *
  */
+
+#ifndef AirRegion_h
+#define AirRegion_h
+
+#include <QPainterPath>
+#include <QPoint>
+
+#include "airspace.h"
 
 class AirRegion
 {

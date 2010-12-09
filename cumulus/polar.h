@@ -20,6 +20,18 @@
  *                                                                         *
  ***************************************************************************/
 
+/**
+ * \class Polar
+ *
+ * \author Eggert Ehmke, Axel Pauli
+ *
+ * \brief Class for glider polar calculations and drawing.
+ *
+ * \date 2002-2010
+ *
+ */
+
+
 #ifndef POLAR_H
 #define POLAR_H
 
@@ -28,12 +40,6 @@
 
 #include "speed.h"
 
-/**
- * \author Eggert Ehmke
- *
- * \brief Class for glider polar calculations and drawing.
- *
- */
 class Polar
 {
 public:

@@ -6,10 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2009-2010 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -23,14 +23,26 @@
 #include <QSize>
 
 /**
+ * \class ElevationColorImage
+ *
+ * \author Axel Pauli
+ *
+ * \brief Elevation color bar widget.
+ *
  * This class shows the used elevation colors of the map in a vertical bar.
  * The right side of the bar is labeled with elevation numbers according
  * to the current altitude unit (meters or feed).
+ *
+ * \date 2009-2010
  */
 
 class ElevationColorImage : public QWidget
 {
   Q_OBJECT
+
+ private:
+
+  Q_DISABLE_COPY ( ElevationColorImage )
 
  public:
 

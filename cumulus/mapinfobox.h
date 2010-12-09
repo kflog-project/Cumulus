@@ -7,9 +7,9 @@
                                2008-2010 by Axel Pauli
 
     email                : axel@kflog.org
-    
+
     $Id$
-    
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -31,19 +31,24 @@
 #include <QEvent>
 
 /**
- * \author André Somers
+ * \class CuLabel
+ *
+ * \author André Somers, Axel Pauli
  *
  * \brief Slight modification of a QLabel.
  *
  * This is a slight modification of a QLabel. It adds a mousePress event.
+ *
+ * \date 2002-2010
+ *
  */
 class CuLabel : public QLabel
 {
-    Q_OBJECT
+  Q_OBJECT
 
 private:
 
- Q_DISABLE_COPY ( CuLabel )
+  Q_DISABLE_COPY ( CuLabel )
 
 public:
 
@@ -62,13 +67,19 @@ private:
 };
 
 /**
+ * \class MapInfoBox
+ *
  * \author Andre Somers, Josua Dietze, Axel Pauli
  *
  * \brief Specialized widget for text or icon display.
  *
+ * \see MapView
+ *
  * This is a specialized widget that can display either a label with a
  * pre-text or a pixmap. Optionally it can be clicked and connected to
- * a slot. Used on the MapView.
+ * a slot. Used on the \ref MapView.
+ *
+ * \date 2002-2010
  *
  */
 class MapInfoBox : public QFrame

@@ -16,9 +16,13 @@
 ***********************************************************************/
 
 /**
+ * \class SettingsPageAirfields
+ *
  * \author Axel Pauli
  *
- * \brief Contains the airfield data settings.
+ * \brief Configuration settings for airfield loading from Welt2000.
+ *
+ * \date 2008-2010
  *
  */
 

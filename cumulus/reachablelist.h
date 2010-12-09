@@ -9,11 +9,31 @@
  **   Copyright (c):  2004 by Eckhard Völlm, 2008 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
  ***********************************************************************/
+
+/**
+ * \class ReachableList
+ *
+ * \author Eckhard Völlm, Axel Pauli
+ *
+ * \brief A list of reachable points.
+ *
+ * \see ReachablePoint
+ *
+ * The value based list of reachable points maintains the distance, bearings
+ * and arrival altitude for points in the range of the current position.
+ * If no glider is defined only the nearest reachables in a radius of
+ * 75 km are computed.
+ *
+ * It is assumed, that this class is a singleton.
+ *
+ * \date 2004-2008
+ *
+ */
 
 #ifndef REACHABLE_LIST_H
 #define REACHABLE_LIST_H
@@ -32,22 +52,16 @@
 #include "speed.h"
 #include "reachablepoint.h"
 
-/************************************************************************
- * @short A list of reachable points
- *
- * @author Eckhard Völlm
- *
- * The value based list of reachable points maintains the distance, bearings
- * and arrival altitude for points in the range of the current position.
- * If no glider is defined only the nearest reachables in a radius of
- * 75 km are computed.
- *
- * It is assumed, that this class is a singleton.
- ***********************************************************************/
-
-class ReachableList: public QObject, QList<ReachablePoint>
+class ReachableList : public QObject, QList<ReachablePoint>
 {
   Q_OBJECT
+
+  private:
+
+  /**
+   * That macro forbids the copy constructor and the assignment operator.
+   */
+  Q_DISABLE_COPY( ReachableList )
 
   public:
 

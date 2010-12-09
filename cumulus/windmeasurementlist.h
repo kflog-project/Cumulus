@@ -26,7 +26,13 @@
 #include "vector.h"
 
 /**
- * Contains a single wind measurement
+ * \class WindMeasurement
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Data container for a single wind measurement.
+ *
+ * \date 2002-2010
  */
 class WindMeasurement
 {
@@ -48,42 +54,51 @@ public:
 };
 
 /**
- * The WindMeasurementList is a list that can contain and
- * process wind measurements.
- * @author André Somers
+ * \class WindMeasurementList
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief A list containing single wind measurements.
+ *
+ * \see LimitedList
+ *
+ * The WindMeasurementList is a list that contains and
+ * processes wind measurements.
+ *
+ * \date 2002-2010
  */
 class WindMeasurementList : public LimitedList<WindMeasurement>
 {
 
 public:
 
-    WindMeasurementList();
+  WindMeasurementList();
 
-    virtual ~WindMeasurementList();
+  virtual ~WindMeasurementList();
 
-    /**
-     * Returns the weighted mean wind vector over the stored values, or 0
-     * if no valid vector could be calculated (for instance: too little or
-     * too low quality data).
-     *
-     * \param alt Altitude where wind is requested
-     *
-     * \param timeWindow Time window in seconds for wind search
-     *
-     * \return Vector containing found wind. Is set to invalid, if no wind was
-     *         found.
-     */
-    Vector getWind( const Altitude& alt, const int timeWindow=0 );
+  /**
+   * Returns the weighted mean wind vector over the stored values, or 0
+   * if no valid vector could be calculated (for instance: too little or
+   * too low quality data).
+   *
+   * \param alt Altitude where wind is requested
+   *
+   * \param timeWindow Time window in seconds for wind search
+   *
+   * \return Vector containing found wind. Is set to invalid, if no wind was
+   *         found.
+   */
+  Vector getWind( const Altitude& alt, const int timeWindow=0 );
 
-    /** Adds the wind vector vector with quality quality to the list. */
-    void addMeasurement( const Vector& vector, const Altitude& alt, int quality );
+  /** Adds the wind vector vector with quality quality to the list. */
+  void addMeasurement( const Vector& vector, const Altitude& alt, int quality );
 
 protected:
-    /**
-     * getLeastImportantItem is called to identify the item that should be
-     * removed if the list is too full. Reimplemented from LimitedList.
-     */
-    virtual int getLeastImportantItemIndex() const;
+  /**
+   * getLeastImportantItem is called to identify the item that should be
+   * removed if the list is too full. Reimplemented from \ref LimitedList.
+   */
+  virtual int getLeastImportantItemIndex() const;
 };
 
 #endif

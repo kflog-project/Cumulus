@@ -16,17 +16,21 @@
 ***********************************************************************/
 
 /**
+ * \class AboutWidget
+ *
  * \author Axel Pauli
  *
- * \brief A widget to display the about application data
+ * \brief A widget to display the about application data.
  *
  * This widget displays the about application data in a tabbed window
- * decorated this a headline and an icon.
+ * decorated this a headline and an icon on top.
+ *
+ * \date 2010
  *
 */
 
-#ifndef ABOUT_WIDGET_H_
-#define ABOUT_WIDGET_H_
+#ifndef ABOUT_WIDGET_H
+#define ABOUT_WIDGET_H
 
 #include <QWidget>
 #include <QLabel>
@@ -49,21 +53,41 @@ class AboutWidget : public QWidget
 
   virtual ~AboutWidget() {};
 
+  /**
+  * Sets the passed pixmap at the left side of the headline.
+  *
+  * \param pixmap The pixmap to be set in the headline.
+  */
   void setHeaderIcon( const QPixmap pixmap )
   {
     headerIcon->setPixmap( pixmap );
   };
 
+  /**
+  * Sets the passed text in the headline. The text can be HTML formatted.
+  *
+  * \param text The text to be set in the headline.
+  */
   void setHeaderText( const QString& text )
   {
     headerText->setText( text );
   };
 
+  /**
+  * Sets the passed text on the about page. The text can be HTML formatted.
+  *
+  * \param text The text to be set on the about page.
+  */
   void setAboutText( const QString& text )
   {
     about->setHtml( text );
   };
 
+  /**
+  * Sets the passed text on the team page. The text can be HTML formatted.
+  *
+  * \param text The text to be set on the team page.
+  */
   void setTeamText( const QString& text )
   {
     team->setHtml( text );
@@ -71,10 +95,17 @@ class AboutWidget : public QWidget
 
  private:
 
-  QLabel       *headerText;
+  /** The header icon widget. */
   QLabel       *headerIcon;
+
+  /** The header text widget. */
+  QLabel       *headerText;
+
+  /** The about text browser page widget. */
   QTextBrowser *about;
+
+  /** The team text browser page widget. */
   QTextBrowser *team;
 };
 
-#endif /* ABOUT_WIDGET_H_ */
+#endif /* ABOUT_WIDGET_H */

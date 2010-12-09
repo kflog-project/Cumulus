@@ -10,20 +10,20 @@
  **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
  ***********************************************************************/
 
-#ifndef SINGLE_POINT_H
-#define SINGLE_POINT_H
-
-#include "basemapelement.h"
-#include "wgspoint.h"
-
 /**
- * Map element used for small objects. The object can be one of:
+ * \class SinglePoint
+ *
+ * \author Heiner Lamprecht, Florian Ehinger, Axel Pauli
+ *
+ * \brief Map element used for small point objects.
+ *
+ * Map element used for small point objects. The object can be one of:
  * UltraLight, HangGlider, Parachute, Balloon, Village
  * or Landmark. Consists only of a name and a position.
  *
@@ -32,7 +32,14 @@
  * @see GliderSite
  * @see RadioPoint
  *
+ * \date 2000-2010
  */
+
+#ifndef SINGLE_POINT_H
+#define SINGLE_POINT_H
+
+#include "basemapelement.h"
+#include "wgspoint.h"
 
 class SinglePoint : public BaseMapElement
 {
@@ -45,8 +52,8 @@ class SinglePoint : public BaseMapElement
    * @param  typeID  The typeid
    * @param  pos  The projected position
    * @param  wgsPos  The original WGS-position
-   * @param elevation The elevation of the point when avaible
-   * @param secID  The mapsection ID
+   * @param elevation The elevation of the point when available
+   * @param secID  The map section ID
    */
   SinglePoint(const QString& name,
               const QString& shortName,
@@ -63,7 +70,7 @@ class SinglePoint : public BaseMapElement
 
   /**
    * Draws the element into the given painter. Reimplemented from
-   * BaseMapElement.
+   * \ref BaseMapElement.
    *
    * @param  targetP  The painter to draw the element into.
    * @return true, if element was drawn otherwise false.

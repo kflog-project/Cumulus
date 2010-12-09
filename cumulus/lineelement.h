@@ -10,7 +10,7 @@
 **                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -22,9 +22,15 @@
 #include "basemapelement.h"
 
 /**
- * Class used for all elements, which consist of a point array.
+ * \class LineElement
  *
- * @see BaseMapElement#objectType
+ * \author Heiner Lamprecht, Florian Ehinger, Axel Pauli
+ *
+ * \brief Class used for all elements, which consist of a point array.
+ *
+ * \see BaseMapElement#objectType
+ *
+ * \date 2000-2009
  *
  */
 
@@ -32,14 +38,16 @@ class LineElement : public BaseMapElement
 {
 public:
     /**
-     * Creates a new map element.
+     * Creates a new line map element.
      *
-     * @param  name  The name
-     * @param  pA  The point array containing the positions
-     * @param  isVal  "true", if the element is a "valley".
+     * @param  name  The element name.
+     * @param  type  The object type, \ref BaseMapElement#objectType.
+     * @param  pP    The point array containing the positions
+     * @param  isVal True, if the element is a "valley".
+     * @param  secID The number of the map segment.
      */
     LineElement( const QString& name,
-                 const BaseMapElement::objectType t,
+                 const BaseMapElement::objectType type,
                  const QPolygon& pP,
                  const bool isVal = false,
                  const unsigned short secID=0 );
@@ -81,12 +89,12 @@ public:
 
 protected:
     /**
-     * Contains the projected positions of the item.
+     * Contains the projected positions of the line element.
      */
     QPolygon projPolygon;
 
     /**
-     * The bounding-box of the element.
+     * The bounding-box of the line element.
      */
     QRect bBox;
 

@@ -27,6 +27,8 @@
 #include <QPixmap>
 
 /**
+ * \class WaitScreen
+ *
  * \author André Somers, Axel Pauli
  *
  * \brief Widget to signal progress of actions.
@@ -34,6 +36,7 @@
  * This class represents a widget to indicate what is happening
  * to the program. It is used while loading maps for instance.
  *
+ * \date 2002-2010
  */
 class WaitScreen : public QDialog
 {

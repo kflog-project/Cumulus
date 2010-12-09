@@ -3,7 +3,7 @@
  **   Copyright (c):  2006-2009 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -140,11 +140,16 @@
 #include "basemapelement.h"
 
 /**
- * @short Class to read welt2000 files
- * @author Axel Pauli
+ * \class Welt2000
  *
- * This class can read and filter Welt2000 files, and store them again
+ * \author Axel Pauli
+ *
+ * \brief Class to read, parse and filter a Welt2000 file.
+ *
+ * This class can read, parse and filter a Welt2000 file and store its content
  * in a binary format.
+ *
+ * \date 2006-2009
  */
 
 class Welt2000
@@ -167,9 +172,9 @@ public:
      * results are put in the passed lists.
      *
      * @param airfieldList All airports have to be stored in this list
-     * @param glidertList All gilder fields have to be stored in this list
+     * @param gliderList All gilder fields have to be stored in this list
      * @param outlandingList All outlanding fields have to be stored in this list
-     * @returns true (success) or false (error occurred)
+     * @return true (success) or false (error occurred)
      */
     bool load( QList<Airfield>& airfieldList,
                QList<Airfield>& gliderList,
@@ -183,11 +188,11 @@ private:
      *
      * @param path Full name with path of welt2000 file
      * @param airfieldList All airports have to be stored in this list
-     * @param glidertList All gilder fields have to be stored in this list
+     * @param gliderList All gilder fields have to be stored in this list
      * @param outlandingList All outlanding fields have to be stored in this list
      * @param doCompile create a binary file of the parser results,
      *                  if flag is set to true. Default is false
-     * @returns true (success) or false (error occurred)
+     * @return true (success) or false (error occurred)
      */
     bool parse( QString& path,
                 QList<Airfield>& airfieldList,
@@ -202,7 +207,7 @@ private:
      * filtered results to save disk space.
      *
      * @param path Full name with path of welt2000 file
-     * @returns true (success) or false (error occurred)
+     * @return true (success) or false (error occurred)
      */
     bool filter( QString &path );
 
@@ -210,7 +215,7 @@ private:
      * Read all entries from the configuration file related to welt2000.
      *
      * @param path Full name with path of welt2000 configuration file
-     * @returns true (success) or false (error occurred)
+     * @return true (success) or false (error occurred)
      */
     bool readConfigEntries( QString &path );
 
@@ -220,9 +225,9 @@ private:
      *
      * @param path Full name with path of welt2000 binary file
      * @param airfieldList All airports have to be stored in this list
-     * @param glidertList All gilder fields have to be stored in this list
+     * @param gliderList All gilder fields have to be stored in this list
      * @param outlandingList All outlanding fields have to be stored in this list
-     * @returns true (success) or false (error occurred)
+     * @return true (success) or false (error occurred)
      */
     bool readCompiledFile( QString &path,
                            QList<Airfield>& airfieldList,
@@ -234,7 +239,7 @@ private:
      * variables.
      *
      * @param path Full name with path of welt2000 binary file
-     * @returns true (success) or false (error occurred)
+     * @return true (success) or false (error occurred)
      */
     bool setHeaderData( QString &path );
 
@@ -242,7 +247,7 @@ private:
      * Get the distance back according to the set unit by the user.
      *
      * @param distance as number
-     * @returns distance as double in the correct unit
+     * @return distance as double in the correct unit
      */
     double getDistanceInKm( const int distance );
 

@@ -16,6 +16,19 @@
  **
  ***********************************************************************/
 
+/**
+ * \class MapContents
+ *
+ * \author Heiner Lamprecht, Florian Ehinger, Axel Pauli
+ *
+ * \brief Map content management class.
+ *
+ * This class provides methods for accessing the contents of the map.
+ * It takes control over loading all needed map-files as value lists.
+ *
+ * \date 2000-2010
+ */
+
 #ifndef MAP_CONTENTS_H
 #define MAP_CONTENTS_H
 
@@ -47,11 +60,6 @@ class SinglePoint;
 
 // number of isoline levels
 #define ISO_LINE_LEVELS 51
-
-/**
- * This class provides functions for accessing the contents of the map.
- * It takes control over loading all needed map-files as value lists.
- */
 
 class MapContents : public QObject
   {
@@ -122,7 +130,7 @@ class MapContents : public QObject
     Airspace* getAirspace(unsigned int index);
 
     /**
-     * @returns a pointer to the given glider site
+     * @return a pointer to the given glider site
      *
      * @param  index  the list-index of the glider site
      */
@@ -155,7 +163,7 @@ class MapContents : public QObject
      *
      * @param  targetP  The painter to draw the elements into
      * @param  listID   The index of the list to be drawn
-     * @param  drawnAf  Add all drawn objects to this list
+     * @param  drawnAfList Add all drawn objects to this list
      */
     void drawList( QPainter* targetP,
                    unsigned int listID,
@@ -176,7 +184,7 @@ class MapContents : public QObject
     void drawIsoList(QPainter* targetP);
 
     /**
-     * @returns the waypoint list
+     * @return the waypoint list
      */
     QList<wayPoint>& getWaypointList()
     {
@@ -184,7 +192,7 @@ class MapContents : public QObject
     };
 
     /**
-     * @saves the current waypoint list
+     * Saves the current waypoint list into a file.
      */
     void saveWaypointList();
 
@@ -199,19 +207,19 @@ class MapContents : public QObject
     FlightTask *getCurrentTask();
 
     /**
-     * @Returns true if the coordinates of the waypoint in the argument
+     * @return true if the coordinates of the waypoint in the argument
      * matches one of the waypoints in the list.
      */
     bool isInWaypointList( const QPoint& wgsCoord );
 
     /**
-     * @Returns true if the name of the waypoint in the argument
+     * @return true if the name of the waypoint in the argument
      * matches one of the waypoints in the list.
      */
     bool isInWaypointList( const QString& name );
 
     /**
-     * @Returns how often the name of the waypoint in the argument
+     * @return how often the name of the waypoint in the argument
      * matches one of the waypoints in the list.
      */
     unsigned short countNameInWaypointList( const QString& name );
@@ -284,8 +292,9 @@ class MapContents : public QObject
     static QDateTime getDateFromMapFile( const QString& path );
 
     /**
-     * @AP: Compares two projection objects for equality.
-     * @returns true if equal; otherwise false
+     * Compares two projection objects for equality.
+     *
+     * @return true if equal; otherwise false
      */
     static bool compareProjections(ProjectionBase* p1, ProjectionBase* p2);
 

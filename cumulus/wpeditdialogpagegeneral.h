@@ -10,16 +10,20 @@
 **                   2008-2009 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
 /**
- * This is the general page for the waypoint editor dialog
+ * \class WpEditDialogPageGeneral
  *
- * @author André Somers
+ * \author André Somers, Axel Pauli
+ *
+ * \brief This is the general page for the waypoint editor dialog
+ *
+ * \date 2002-2009
  */
 
 #ifndef WPEDIT_DIALOG_PAGE_GENERAL_H
@@ -32,46 +36,51 @@
 #include "waypoint.h"
 
 class WpEditDialogPageGeneral : public QWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    WpEditDialogPageGeneral(QWidget *parent=0 );
+private:
 
-    virtual ~WpEditDialogPageGeneral();
+  Q_DISABLE_COPY ( WpEditDialogPageGeneral )
 
-  public slots:
+public:
 
-    /**
-     * called if data needs to be saved
-     */
-    void slot_save(wayPoint *wp);
+  WpEditDialogPageGeneral(QWidget *parent=0 );
 
-    /**
-     * called if data needs to be loaded
-     */
-    void slot_load(wayPoint *wp);
+  virtual ~WpEditDialogPageGeneral();
 
-  private:
+public slots:
 
-    QLineEdit *edtName;
-    QLineEdit *edtDescription;
+  /**
+   * called if data needs to be saved
+   */
+  void slot_save(wayPoint *wp);
 
-    LatEdit   *edtLat;
-    LongEdit  *edtLong;
-    QLineEdit *edtElev;
+  /**
+   * called if data needs to be loaded
+   */
+  void slot_load(wayPoint *wp);
 
-    QComboBox *cmbType;
-    QComboBox *cmbImportance;
+private:
 
-    // Store loaded values and reuse them, if no coordinates
-    // have been changed to avoid rounding errors caused by conversions.
-    int loadedLat;
-    int loadedLon;
+  QLineEdit *edtName;
+  QLineEdit *edtDescription;
 
-    int getWaypointType();
-    void setWaypointType(int type);
+  LatEdit   *edtLat;
+  LongEdit  *edtLong;
+  QLineEdit *edtElev;
 
-  };
+  QComboBox *cmbType;
+  QComboBox *cmbImportance;
+
+  // Store loaded values and reuse them, if no coordinates
+  // have been changed to avoid rounding errors caused by conversions.
+  int loadedLat;
+  int loadedLon;
+
+  int getWaypointType();
+  void setWaypointType(int type);
+
+};
 
 #endif

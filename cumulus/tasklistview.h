@@ -16,6 +16,20 @@
 **
 ***********************************************************************/
 
+/**
+ * \class TaskListView
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Presents a view that holds a list of the task points of a flight task.
+ *
+ * Displays all points of a task as list with different buttons for
+ * actions. Can be used in two modes, as display only, buttons for
+ * actions are not visible or with command buttons.
+ *
+ * \date 2004-2010
+ */
+
 #ifndef TASK_LIST_VIEW_H
 #define TASK_LIST_VIEW_H
 
@@ -32,17 +46,6 @@
 
 class MainWindow;
 
-/**
- * \author André Somers, Axel Pauli
- *
- * \brief Presents a view that holds a list of the task points of a flight task.
- *
- * Displays all points of a task as list with different buttons for
- * actions. Can be used in two modes, as display only, buttons for
- * actions are not visible or with command buttons.
- *
- */
-
 class TaskListView : public QWidget
 {
   Q_OBJECT
@@ -58,7 +61,7 @@ public:
   ~TaskListView();
 
   /**
-   * @Returns a pointer to the currently high lighted waypoint.
+   * @return A pointer to the currently high lighted waypoint.
    */
   wayPoint *getSelectedWaypoint();
 
@@ -92,7 +95,7 @@ public slots:
   void slot_Info();
 
   /**
-   * Called when the listview should be closed without selection
+   * Called when the list view should be closed without selection.
    */
   void slot_Close ();
 

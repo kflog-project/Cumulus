@@ -9,11 +9,21 @@
 **   Copyright (c): 2008 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
+
+/**
+ * \class Sound
+ *
+ * \author Axel Pauli
+ *
+ * \brief A class for playing of sound files in a separate thread.
+ *
+ * \date 2008
+ */
 
 #ifndef Sound_H
 #define Sound_H
@@ -21,14 +31,6 @@
 #include <QThread>
 #include <QMutex>
 #include <QString>
-
-/**
- * A class for playing of sound files in a separate thread.
- */
-
-/**
- * @author Axel Pauli
- */
 
 class Sound : public QThread
 {

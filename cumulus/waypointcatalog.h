@@ -11,11 +11,23 @@
 **          modified 2008 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
+
+/**
+ * \class WaypointCatalog
+ *
+ * \author Harald Maier, André Somers, Axel Pauli
+ *
+ * \brief Waypoint catalog file handling.
+ *
+ * This class reads or writes the waypoint catalog into a file.
+ *
+ * \date 2002-2008
+ */
 
 #ifndef WAYPOINT_CATALOG_H
 #define WAYPOINT_CATALOG_H
@@ -24,7 +36,6 @@
 #include <QList>
 
 #include "waypoint.h"
-
 
 class WaypointCatalog
 {

@@ -23,6 +23,8 @@
  ***************************************************************************/
 
 /**
+ * \class IgcLogger
+ *
  * \author André Somers, Axel Pauli
  *
  * \brief IGC logger
@@ -30,6 +32,7 @@
  * This class provides the IGC logging facilities, using the
  * parsed data from the GPS NMEA object.
  *
+ * \date 2002-2010
  */
 
 #ifndef IGC_LOGGER_H

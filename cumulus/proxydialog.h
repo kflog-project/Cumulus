@@ -15,9 +15,17 @@
 **
 ***********************************************************************/
 
-/*
+/**
+ * \class ProxyDialog
+ *
+ * \author Axel Pauli
+ *
+ * \brief Dialog for entering proxy name and port.
+ *
  * This widget asks for a proxy name and port. On accept the settings are checked
  * for correctness and stored in the GeneralConfig data.
+ *
+ * \date 2010
  */
 
 #ifndef PROXY_DIALOG_H

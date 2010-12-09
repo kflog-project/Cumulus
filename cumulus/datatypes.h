@@ -22,6 +22,8 @@
  *
  *  A class defining QT user data types usable in queued connections of
  *  threads.
+ *
+ *  \date 2010
  */
 
 #ifndef DATA_TYPES_H_

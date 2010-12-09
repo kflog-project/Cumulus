@@ -6,28 +6,33 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2009 Axel Pauli
+**   Copyright (c): André Somers, 2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
+/**
+ * \class AirspaceWarningDistance
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Collection of distances to airspaces.
+ *
+ * This class holds a set of six distances to airspaces, used to warn the user
+ * if he's getting too close to an airspace.
+ *
+ * \date 2009-2010
+ *
+ */
+
 #ifndef AIRSPACE_WARNING_DISTANCE_H
 #define AIRSPACE_WARNING_DISTANCE_H
 
 #include "distance.h"
-
-/**
-  * @short Collection of distances to airspaces
-  *
-  * This class holds a set of six distances to airspaces, used to warn the user if he's getting
-  * (too) close to an airspace.
-  *
-  * @author André Somers
-  */
 
 class AirspaceWarningDistance
 {

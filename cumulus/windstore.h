@@ -16,6 +16,20 @@
  **
  ***********************************************************************/
 
+/**
+ * \class WindStore
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Stores single wind measurements and provides mean wind result.
+ *
+ * WindStore receives single wind measurements and stores these. It uses
+ * single measurements to provide a mean value, differentiated for altitude,
+ * quality and time range.
+ *
+ * \date 2002-2010
+ */
+
 #ifndef WIND_STORE_H
 #define WIND_STORE_H
 
@@ -24,16 +38,6 @@
 #include "vector.h"
 #include "windmeasurementlist.h"
 
-/**
- *  \author André Somers
- *
- *  \brief Stores single wind measurements and provides mean wind result.
- *
- * WindStore receives single wind measurements and stores these. It uses
- * single measurements to provide a mean value, differentiated for altitude,
- * quality and time range.
- *
- */
 class WindStore : public QObject
 {
   Q_OBJECT

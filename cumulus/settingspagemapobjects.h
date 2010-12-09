@@ -14,13 +14,18 @@
 **
 **   $Id$
 **
-*************************************************************************
-**
-** \brief The widget provides all options related to load and draw map items.
-**
-** \author André Somers, Axel Pauli
-**
-************************************************************************/
+*************************************************************************/
+
+/**
+ * \class SettingsPageMapObjects
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Configuration settings for map loading and drawing..
+ *
+ * \date 2002-2010
+ *
+ */
 
 #ifndef SettingsPageMapObjects_H
 #define SettingsPageMapObjects_H

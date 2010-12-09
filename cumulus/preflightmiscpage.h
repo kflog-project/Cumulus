@@ -16,6 +16,17 @@
 **
 ***********************************************************************/
 
+/**
+ * \class PreFlightMiscPage
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief A widget for pre-flight miscellaneous settings.
+ *
+ * \date 2004-2010
+ *
+ */
+
 #ifndef PREFLIGHT_MISCPAGE_H
 #define PREFLIGHT_MISCPAGE_H
 
@@ -25,10 +36,6 @@
 
 #include "altitude.h"
 
-/**
- * @short Miscelanious pre-flight settings
- * @author André Somers, Axel Pauli
- */
 class PreFlightMiscPage : public QWidget
 {
     Q_OBJECT

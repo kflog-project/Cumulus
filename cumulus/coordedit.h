@@ -1,15 +1,15 @@
 /***********************************************************************
 **
-**   coordedit.h - Editor for WGS84 coordinates, supports three formats.
+**   coordedit.h
 **
 **   This file is part of Cumulus
 **
 ************************************************************************
 **
-**   Copyright (c):  2001 by Harald Maier
-**                   2009 by Axel Pauli complete redesign done
+**   Copyright (c):  2001      by Harald Maier
+**                   2009-2010 by Axel Pauli complete redesign done
 **
-**   Email:           axel@kflog.org
+**   Email: axel@kflog.org
 **
 ************************************************************************
 **
@@ -21,18 +21,20 @@
 ***********************************************************************/
 
 /**
-  * \author Harald Maier, Axel Pauli
-  *
-  * \brief Editor widget for WGS84 coordinates.
-  *
-  * This class is used to edit WGS84 coordinates. It is subclassed by
-  * two extensions to handle latitude and longitude coordinates. Three
-  * different coordinate formats are supported.
-  *
-  * -degrees, minutes, seconds
-  * -degrees and decimal minutes
-  * -decimal degrees
-  */
+ * \author Harald Maier, Axel Pauli
+ *
+ * \brief Editor widget for WGS84 coordinates.
+ *
+ * This class is used to edit WGS84 coordinates. It is subclassed by
+ * two extensions to handle latitude and longitude coordinates. Three
+ * different coordinate formats are supported.
+ *
+ * -degrees, minutes, seconds
+ * -degrees and decimal minutes
+ * -decimal degrees
+ *
+ * \date 2001-2010
+*/
 
 #ifndef COOR_DEDIT_H
 #define COOR_DEDIT_H
@@ -43,8 +45,23 @@
 #include <QString>
 
 /**
- * @author Harald Maier, Axel Pauli
+ * \class CoordEdit
+ *
+ * \author Harald Maier, Axel Pauli
+ *
+ * \brief Editor widget for WGS84 coordinates.
+ *
+ * This class is used to edit WGS84 coordinates. It is subclassed by
+ * two extensions to handle latitude and longitude coordinates. Three
+ * different coordinate formats are supported.
+ *
+ * -degrees, minutes, seconds
+ * -degrees and decimal minutes
+ * -decimal degrees
+ *
+ * \date 2001-2010
  */
+
 class CoordEdit : public QWidget
 {
     Q_OBJECT
@@ -105,46 +122,76 @@ class CoordEdit : public QWidget
     QString iniDirection;
 };
 
-/** Class extension for latitude coordinates. */
+/**
+ * \class LatEdit
+ *
+ * \author Harald Maier, Axel Pauli
+ *
+ * \brief Editor widget for WGS84 latitude coordinates.
+ *
+ * This class is used to edit WGS84 latitude coordinates. It is derived
+ * from \ref CoordEdit. Three different coordinate formats are supported.
+ *
+ * -degrees, minutes, seconds
+ * -degrees and decimal minutes
+ * -decimal degrees
+ *
+ * \date 2001-2010
+ */
 class LatEdit : public CoordEdit
 {
-    Q_OBJECT
+  Q_OBJECT
 
-  private:
+private:
 
-    Q_DISABLE_COPY ( LatEdit )
+  Q_DISABLE_COPY ( LatEdit )
 
-  public:
+public:
 
-    LatEdit( QWidget *parent=0, const int base=1 );
+  LatEdit( QWidget *parent=0, const int base=1 );
 
-    virtual ~LatEdit() {};
+  virtual ~LatEdit() {};
 
-    /**
-     * overloaded function
-     */
-    void setKFLogDegree(const int coord);
+  /**
+   * overloaded function
+   */
+  void setKFLogDegree(const int coord);
 };
 
-/** Class extension for longitude coordinates. */
+/**
+ * \class LongEdit
+ *
+ * \author Harald Maier, Axel Pauli
+ *
+ * \brief Editor widget for WGS84 longitude coordinates.
+ *
+ * This class is used to edit WGS84 longitude coordinates. It is derived
+ * from \ref CoordEdit. Three different coordinate formats are supported.
+ *
+ * -degrees, minutes, seconds
+ * -degrees and decimal minutes
+ * -decimal degrees
+ *
+ * \date 2001-2010
+ */
 class LongEdit : public CoordEdit
 {
-    Q_OBJECT
+  Q_OBJECT
 
-  private:
+private:
 
-    Q_DISABLE_COPY ( LongEdit )
+  Q_DISABLE_COPY ( LongEdit )
 
-  public:
+public:
 
-    LongEdit( QWidget *parent=0, const int base=1 );
+  LongEdit( QWidget *parent=0, const int base=1 );
 
-    virtual ~LongEdit() {};
+  virtual ~LongEdit() {};
 
-    /**
-     * Overloaded function
-     */
-    void setKFLogDegree(const int coord);
+  /**
+   * Overloaded function
+   */
+  void setKFLogDegree(const int coord);
 };
 
 #endif

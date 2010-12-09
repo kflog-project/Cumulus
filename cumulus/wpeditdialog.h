@@ -16,6 +16,19 @@
 **
 ***********************************************************************/
 
+/**
+ * \class WpEditDialog
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief A waypoint editor widget.
+ *
+ * The WpEditDialog widget allows the creation of a new waypoint or the
+ * modification of an existing waypoint. It is a modal window.
+ *
+ * \date 2002-2010
+ */
+
 #ifndef WP_EDIT_DIALOG_H
 #define WP_EDIT_DIALOG_H
 
@@ -24,14 +37,6 @@
 #include <QTextEdit>
 
 #include "waypoint.h"
-
-/**
- * \author André Somers, Axel Pauli
- *
- * \brief The WpEditDialog widget allows the creation of a new waypoint or the
- * modification of an existing waypoint. It is a modal window.
- *
- */
 
 class WpEditDialog : public QWidget
 {
@@ -45,17 +50,17 @@ private:
   Q_DISABLE_COPY( WpEditDialog )
 
 public:
+
     /**
-     * Constructor
-     * @param parent The parent widget
-     * @param name A name for this QObject
-     * @param wp A waypoint to show the dialog for
+     * @param parent The parent widget.
+     * @param wp A waypoint to be edited.
      */
-    WpEditDialog(QWidget *parent=0, wayPoint * wp=0);
+    WpEditDialog(QWidget *parent=0, wayPoint *wp=0);
 
     virtual ~WpEditDialog();
 
 private:
+
     /**
      * This method is called just before showing the dialog,
      * and loads the current waypoint data.
@@ -84,13 +89,15 @@ private:
      */
     bool countWaypointNameInList( QString& wpName );
   
-private slots: // Private slots
+private slots:
+
     /**
      * Called if OK button is pressed
      */
     void accept();
 
-signals: // Signals
+signals:
+
     /**
      * Signal emitted to indicate the settings should be saved
      * to the configuration file
@@ -112,7 +119,7 @@ signals: // Signals
 private:
 
     wayPoint * _wp;
-    QString oldName; // old name of waypoint before modification
+    QString oldName; // old name of waypoint before rename
     QTextEdit * comment;
 };
 

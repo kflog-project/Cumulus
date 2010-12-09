@@ -10,11 +10,30 @@
  **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
  ***********************************************************************/
+
+/**
+ * \class Airfield
+ *
+ * \author Heiner Lamprecht, Florian Ehinger, Axel Pauli
+ *
+ * \brief Class to handle different types of airfields.
+ *
+ * This class is used for handling of airfields. The object can be one of
+ * Airport, MilAirport, CivMilAirport, Airfield, ClosedAirfield,
+ * CivHeliport, MilHeliport, AmbHeliport, UltraLight, GliderSite
+ *
+ * \see BaseMapElement#objectType
+ *
+ * This class is derived from \ref SinglePoint
+ *
+ * \date 2000-2010
+ *
+ */
 
 #ifndef AIRFIELD_H
 #define AIRFIELD_H
@@ -24,33 +43,26 @@
 #include "singlepoint.h"
 #include "runway.h"
 
-/**
- * @short Class to handle different types of airfields.
- *
- * This class is used for handling of airfields. The object can be one of
- * Airport, MilAirport, CivMilAirport, Airfield, ClosedAirfield,
- * CivHeliport, MilHeliport, AmbHeliport, UltraLight, GliderSite
- *
- * @see BaseMapElement#objectType
- */
-
 class Airfield : public SinglePoint
 {
  public:
 
   /**
    * Creates a new Airfield-object.
-   * @param  name  The name
-   * @param  icao  The icao-name
+   *
+   * @param  name  The name of the airfield
+   * @param  icao  The ICAO-name
    * @param  shortName  The abbreviation, used for the gps-logger
-   * @param  typeID  The typeid
+   * @param  typeId  The map element type identifier
+   * @param  wgsPos The position as WGS84 datum
    * @param  pos  The position
+   * @param  rw The runway object
    * @param  elevation  The elevation
    * @param  frequency  The frequency
-   * @param  winch  "true", if winch-launch is available
+   * @param  comment An additional comment related to the airfield
+   * @param  winch  "true", if winch launch is available
    * @param  towing "true", if aero towing is available
    * @param  landable "true", if airfield is landable
-   * @param  comment An additional comment related to the airfield
    */
   Airfield( const QString& name,
             const QString& icao,

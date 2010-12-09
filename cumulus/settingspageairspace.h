@@ -16,17 +16,6 @@
 **
 ***********************************************************************/
 
-/**
- * \author Eggert Ehmke, Axel Pauli
- *
- * \brief Widget for Airspace configurations.
- *
- * The three widgets SettingsPageAirspace, SettingsPageAirspaceFilling and
- * SettingsPageAirspaceWarnings in this file provide all options for airspace
- * configuration.
- *
- */
-
 #ifndef SettingsPageAirSpace_H
 #define SettingsPageAirSpace_H
 
@@ -45,6 +34,16 @@
 class SettingsPageAirspaceWarnings;
 class SettingsPageAirspaceFilling;
 
+/**
+ * \class SettingsPageAirspace
+ *
+ * \author Eggert Ehmke, Axel Pauli
+ *
+ * \brief Configuration settings for airspace colors and drawing.
+ *
+ * \date 2002-2010
+ *
+ */
 class SettingsPageAirspace : public QWidget
 {
   Q_OBJECT
@@ -198,6 +197,16 @@ class SettingsPageAirspace : public QWidget
 
 //----------------------------SettingsPageAirspaceFilling-----------------------
 
+/**
+ * \class SettingsPageAirspaceFilling
+ *
+ * \author Eggert Ehmke, Axel Pauli
+ *
+ * \brief Configuration settings for airspace fillings.
+ *
+ * \date 2002-2010
+ *
+ */
 class SettingsPageAirspaceFilling: public QDialog
 {
   Q_OBJECT
@@ -279,6 +288,16 @@ class SettingsPageAirspaceFilling: public QDialog
 
 //-------------------SettingsPageAirspaceWarnings-------------------------------
 
+/**
+ * \class SettingsPageAirspaceWarnings
+ *
+ * \author Eggert Ehmke, Axel Pauli
+ *
+ * \brief Configuration settings for airspace awrnings.
+ *
+ * \date 2002-2010
+ *
+ */
 class SettingsPageAirspaceWarnings : public QDialog
   {
     Q_OBJECT

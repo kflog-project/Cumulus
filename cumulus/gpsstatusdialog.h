@@ -17,14 +17,17 @@
 ***********************************************************************/
 
 /**
+  * \class GpsStatusDialog
+  *
   * \author André Somers, Axel Pauli
   *
-  * \brief Dialog displaying GPS satellites and NMEA data stream.
+  * \brief Widget displaying GPS satellites and NMEA raw data stream.
   *
   * This dialog provides information about the current GPS status, including
   * satellites tracked, elevation, azimuth, signal strengths and the NMEA
   * data stream. NMEA data stream can be save into a file on user request.
   *
+  * \date 2003-2010
   */
 
 #ifndef GPS_STATUS_DIALOG_H
@@ -51,15 +54,17 @@ class GpsStatusDialog : public QWidget
   Q_OBJECT
 
 private:
+
   /**
    * That macro forbids the copy constructor and the assignment operator.
    */
   Q_DISABLE_COPY( GpsStatusDialog )
 
 public:
+
   /**
    * Constructor
-   * @argument parent Pointer to parent widget
+   * @param parent Pointer to parent widget
    */
   GpsStatusDialog( QWidget *parent );
 
@@ -127,15 +132,17 @@ class GpsElevationAzimuthDisplay: public QFrame
   Q_OBJECT
 
 private:
+
   /**
    * That macro forbids the copy constructor and the assignment operator.
    */
   Q_DISABLE_COPY( GpsElevationAzimuthDisplay )
 
 public:
+
   /**
    * Constructor
-   * @argument parent Pointer to parent widget
+   * @param parent Pointer to parent widget
    */
   GpsElevationAzimuthDisplay(QWidget * parent);
   virtual ~GpsElevationAzimuthDisplay();
@@ -163,15 +170,17 @@ class GpsSnrDisplay: public QFrame
   Q_OBJECT
 
 private:
+
   /**
    * That macro forbids the copy constructor and the assignment operator.
    */
   Q_DISABLE_COPY( GpsSnrDisplay )
 
 public:
+
   /**
    * Constructor
-   * @argument parent Pointer to parent widget
+   * @param parent Pointer to parent widget
    */
   GpsSnrDisplay(QWidget * parent);
   virtual ~GpsSnrDisplay();

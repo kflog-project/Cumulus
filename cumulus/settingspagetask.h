@@ -15,6 +15,17 @@
 **
 ***********************************************************************/
 
+/**
+ * \class SettingsPageTask
+ *
+ * \author Axel Pauli
+ *
+ * \brief Configuration settings for flight tasks.
+ *
+ * \date 2007-2010
+ *
+ */
+
 #ifndef __SettingsPageTask__h
 #define __SettingsPageTask__h
 
@@ -27,12 +38,6 @@
 #include <QDoubleSpinBox>
 
 #include "altitude.h"
-
-/**
- * @short Configuration settings for flight tasks.
- *
- * @author Axel Pauli
- */
 
 class SettingsPageTask : public QWidget
 {

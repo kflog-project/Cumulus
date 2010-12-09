@@ -9,7 +9,7 @@
  **   Copyright (c):  2008 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -22,14 +22,18 @@
 #include <QList>
 
 /**
- * @short Entry in the isolist
+ * \class IsoListEntry
  *
- * This class contains a @ref QPainterPath and a height. A list of entries
+ * \author Axel Pauli
+ *
+ * \brief An object to be put into the \ref IsoList.
+ *
+ * This class contains a QPainterPath and a height. A list of entries
  * like this is created when the map is drawn and is used to detect the
  * elevation at a given position, for instance under the mouse cursor.
  *
+ * \date 2008
  */
-
 class IsoListEntry
 {
  public:
@@ -105,6 +109,19 @@ class IsoListEntry
     return height > other.height;
   };
 };
+
+/**
+ * \class IsoList
+ *
+ * \author Axel Pauli
+ *
+ * \brief A list of objects from type \ref IsoListEntry.
+ *
+ * This class is a list of objects from type \ref IsoListEntry which an
+ * additional sort method.
+ *
+ * \date 2008
+ */
 
 class IsoList : public QList<IsoListEntry>
 {

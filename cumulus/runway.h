@@ -9,11 +9,25 @@
 **   Copyright (c): 2008-2009 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
+
+/**
+ * \class Runway
+ *
+ * \author Axel Pauli
+ *
+ * \brief Runway data class.
+ *
+ * This class is used for defining a runway together with its surface and the
+ * translation types.
+ *
+ * \date 2008-2010
+ *
+ */
 
 #ifndef RUNWAY_H
 #define RUNWAY_H
@@ -21,11 +35,6 @@
 #include <QString>
 #include <QHash>
 #include <QStringList>
-
-/**
- * This class is used for defining a runway together with its surface and the
- * translation types.
- */
 
 class Runway
 {

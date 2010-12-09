@@ -10,11 +10,27 @@
  **                   2008-2009 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
  ***********************************************************************/
+
+/**
+ * \class ReachablePoint
+ *
+ * \author Eckhard Völlm, Axel Pauli
+ *
+ * \brief Data container for a single reachable point.
+ *
+ * \see ReachableList
+ *
+ * Class for one entry in the \ref ReachableList class. It covers all belonging
+ * to a reachable point element.
+ *
+ * \date 2004-2010
+ *
+ */
 
 #ifndef REACHABLE_POINT_H
 #define REACHABLE_POINT_H
@@ -26,10 +42,6 @@
 #include "altitude.h"
 #include "wgspoint.h"
 #include "waypoint.h"
-
-/** Class for one entry in the ReachableList class. It covers all belonging
- * to a reachable point element.
- */
 
 class ReachablePoint
 {

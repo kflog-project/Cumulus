@@ -16,6 +16,19 @@
 **
 ***********************************************************************/
 
+/**
+ * \class ReachpointListView
+ *
+ * \author André Somers, Eckhard Völlm, Axel Pauli
+ *
+ * \brief Reachable point list.
+ *
+ * This widget provides a list of reachable points and a means to select one.
+ *
+ * \date 2004-2010
+ *
+ */
+
 #ifndef REACH_POINT_LISTVIEW_H
 #define REACH_POINT_LISTVIEW_H
 
@@ -31,14 +44,13 @@
 
 class MainWindow;
 
-/**
- * This widget provides a list of reachable points and a means to select one.
- *
- * @author Eckhard Völlm
- */
 class ReachpointListView : public QWidget
 {
   Q_OBJECT
+
+  private:
+
+  Q_DISABLE_COPY ( ReachpointListView )
 
 public:
 

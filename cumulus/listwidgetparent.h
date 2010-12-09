@@ -16,6 +16,24 @@
 **
 ***********************************************************************/
 
+/**
+ * \class ListWidgetParent
+ *
+ * \author Josua Dietze, Axel Pauli
+ *
+ * \brief Base class for airfield, waypoint and outlanding widget.
+ *
+ * This widget provides a new widget base class to remove double code in
+ * the airfield and waypoint list view and the task editor.
+ * Contains standard airfield list and attached filters (filter button row on
+ * demand).
+ *
+ * Subclassed by \ref AirfieldListWidget and \ref WaypointListWidget.
+ *
+ * \date 2002-2010
+ *
+ */
+
 #ifndef LISTWIDGET_PARENT_H
 #define LISTWIDGET_PARENT_H
 
@@ -27,20 +45,6 @@
 #include "waypoint.h"
 #include "listviewfilter.h"
 #include "rowdelegate.h"
-
-/**
- * \author Josua Dietze, Axel Pauli
- *
- * \brief Base class for airfield, waypoint and outlanding widget.
- *
- * This widget provides a new widget base class to remove double code in
- * the airfield and waypoint list view and the task editor.
- * Contains standard airfield list and attached filters (filter button row on
- * demand).
- *
- * Subclassed by AirfieldListWidget and WaypointListWidget.
- *
- */
 
 class ListWidgetParent : public QWidget
 {

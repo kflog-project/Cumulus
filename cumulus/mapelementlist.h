@@ -6,10 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2002 by Eggert Ehmke, 2008 Axel Pauli
+ **   Copyright (c):  2002 by Eggert Ehmke, 2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -26,9 +26,15 @@
 #include "airfield.h"
 
 /**
- * @author Eggert Ehmke
+ * \class MapElementList
  *
- * This class is an extension of an Airfield QList. It checks in the
+ * \author Eggert Ehmke, Axel Pauli
+ *
+ * \brief This class is an extension of an \ref Airfield list.
+ *
+ * \see Airfield
+ *
+ * This class is an extension of an \ref Airfield list. It checks in the
  * append method, if the item to be appended is already known with its name.
  * If that is true, no item will be appended. Furthermore a timer is fired.
  * The timer expires after 10s the last append has been done. The expire method
@@ -36,13 +42,18 @@
  * entries. The assumption is that after timeout no items will be more added
  * to the list.
  *
+ * \date 2002-2010
+ *
  */
-
 class MapElementList : public QObject, public QList<Airfield>
 {
   Q_OBJECT
 
-    public:
+  private:
+
+  Q_DISABLE_COPY ( MapElementList )
+
+  public:
   /**
    * Constructor
    */

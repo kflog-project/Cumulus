@@ -25,6 +25,21 @@
 #include <QPushButton>
 #include <QString>
 
+/**
+ * \class ListViewFilterItem
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Filter item of a QTreeWidget list.
+ *
+ * \see ListViewFilter
+ *
+ * Creates a filter item as subset of a bigger list. This class is used by the
+ * \ref ListViewFilter class.
+ *
+ * \date 2004-2010
+ */
+
 class ListViewFilterItem : QObject
 {
   Q_OBJECT
@@ -45,8 +60,9 @@ public:
   /**
    * Tries to divide the list belonging to this filter into smaller
    * lists, and creates the appropriate ListViewFilterItem instances.
-   * these instances are initialized and added to @ref subfilters for
-   * future reference. @ref _split is set. */
+   * These instances are initialized and added to @ref subfilters for
+   * future reference.
+   */
   void divide( int partcount, QList<ListViewFilterItem *> &subFilters );
 
   /** Returns the number of items in the list tree assigned to this filter item.*/
@@ -87,7 +103,7 @@ public:
   /** End index of this filter item in the tree widget. */
   int endIdx;
 
-  /** set of filters that further subdivides the result of this filter. */
+  /** Set of filters that further subdivides the result of this filter. */
   QList<ListViewFilterItem *> subfilters;
 
 private:
@@ -96,12 +112,17 @@ private:
 };
 
 /**
+ * \class ListViewFilter
+ *
  * \author André Somers, Axel Pauli
  *
  * \brief Creates a filter bar for a QTreeWidget
  *
+ * \see ListViewFilterItem
+ *
  * Creates a filter bar for a QTreeWidget in order to quickly filter the list view.
  *
+ * \date 2004-2010
  */
 class ListViewFilter : public QWidget
 {
@@ -121,14 +142,18 @@ private:
 public:
 
   /**
-   * Constructor.
-   * @arg tw Pointer to the listview this filter works on.
+   * \param tw A pointer to the list view this filter works on.
+   *
+   * \param parent A pointer to the parent widget.
    */
   ListViewFilter( QTreeWidget* tw, QWidget* parent=static_cast<QWidget *>(0) );
 
   virtual ~ListViewFilter();
 
+  /** Adds a item to the list. */
   void addListItem(QTreeWidgetItem* it);
+
+  /** Removes an item from the list. */
   void removeListItem(QTreeWidgetItem* it);
 
   /**
@@ -167,7 +192,7 @@ private:
   void activateFilter( ListViewFilterItem* filter, int shrink=0 );
 
   /** Pinter to display table view */
-  QTreeWidget*     _tw;
+  QTreeWidget* _tw;
 
   /** List of filter buttons. */
   QList<QPushButton *> _buttonList;

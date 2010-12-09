@@ -30,19 +30,22 @@
 #include "distance.h"
 
 /**
+ * \class Altitude
+ *
  * \author André Somers, Axel Pauli
  *
  * \brief Class to calculate altitudes in different units.
  *
  * This class handles different altitude units and arithmetics.
  *
+ * \date 2002-2010
  */
 
 class Altitude : public Distance
 {
 public:
     /*
-     * Altitude units
+     * Supported altitude units
      */
     enum altitudeUnit{ meters=0, feet=1, flightlevel=2 };
 
@@ -225,7 +228,10 @@ protected:
 
 
 /**
+ * \struct AltitudeCollection
+ *
  * @short Collection of the different expressions for the current altitude
+ *
  * @author André Somers
  *
  * This structure contains different representations for the current altitude.
@@ -254,13 +260,9 @@ struct AltitudeCollection
     Altitude pressureAltitude;
 
     /**
-     * Average altitude above terrain (GND). Based on pressure atitude.
+     * Average altitude above terrain (GND). Based on pressure altitude.
      * Because our terrain data does not return the exact terrain height for a given point, but
-     * only a minimum and a maximum, we return the average as the gndAltitude. The @ref
-     * gndMinAltitude and @ref gndMaxAltitude are used for purposed like checking airspace
-     * violations.
-     *
-     * @see gndMinAltitude, @see gndMaxAltitude
+     * only a minimum and a maximum, we return the average as the gndAltitude.
      */
     Altitude gndAltitude;
 
@@ -273,7 +275,7 @@ struct AltitudeCollection
     Distance gndAltitudeError;
 
     /**
-     * The estimation for the error in the gps measurement for the altitude. This data is taken from
+     * The estimation for the error in the GPS measurement for the altitude. This data is taken from
      * the GPS if available.
      *
      * @see gndAltitude, @see gndAltitudeError

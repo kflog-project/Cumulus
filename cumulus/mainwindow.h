@@ -14,14 +14,18 @@
    $Id$
 
  ***************************************************************************/
+
 /**
+ * \class MainWindow
+ *
  * \author André Somers, Axel Pauli
  *
  * \brief This class provides the main window of Cumulus.
  *
  * This class provides the main window of Cumulus. All needed other stuff
- * is initialized and handled here:
+ * is initialized and handled here.
  *
+ * \date 2002-2010
  */
 
 #ifndef _MainWindow_h
@@ -156,7 +160,7 @@ class MainWindow : public QMainWindow
     void slotSwitchToMapView();
     /** This slot is called to switch to the info view. */
     void slotSwitchToInfoView();
-    /** @ee This slot is called to switch to the info view with selected waypoint. */
+    /** This slot is called to switch to the info view with selected waypoint. */
     void slotSwitchToInfoView(wayPoint*);
     /** Opens the config "dialog". */
     void slotConfig();

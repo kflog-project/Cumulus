@@ -9,28 +9,34 @@
  **   Copyright (c):  2002 by Heiner Lamprecht, 2007 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
  ***********************************************************************/
 
-#ifndef PROJECTIONBASE_H
-#define PROJECTIONBASE_H
+#ifndef PROJECTION_BASE_H
+#define PROJECTION_BASE_H
 
 #include <QDataStream>
 
 /**
- * This class is used as a base-class for the map-projection. It will
- * be inherited by all classes, which implement one type of map-projection.
+ * \class ProjectionBase
  *
+ * \author Heiner Lamprecht, Axel Pauli
+ *
+ * \brief This class is used as a base class for the map projection.
+ *
+ * This class is used as a base class for the map projection. It will
+ * be inherited by all classes, which implement one type of map projection.
+ *
+ * \date 2002-2009
  */
-
 class ProjectionBase
 {
- public: //types
+ public:
   /**
-   * List of possible projection-types.
+   * List of possible projection types.
    */
   enum ProjectionType {Unknown = 0, Lambert=1, Cylindric=2};
 

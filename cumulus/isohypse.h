@@ -10,7 +10,7 @@
  **                   2007-2009 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -25,14 +25,18 @@
 #include "lineelement.h"
 
 /**
- * This class is used for isohypses.
+ * \class Isohypse
  *
- * @author Heiner Lamprecht, Florian Ehinger
+ * \author Heiner Lamprecht, Florian Ehinger, Axel Pauli
+ *
+ * \brief This class is used for isohypse handling.
+ *
+ * \date 2000-2009
  */
 class Isohypse : public LineElement
   {
   public:
-        /**
+    /**
      * Creates a new isohypse.
      *
      * @param  elevationCoordinates  The polygon containing the projected points of the isoline.
@@ -52,12 +56,18 @@ class Isohypse : public LineElement
     virtual ~Isohypse();
 
     /**
-     * Draws the iso region into the given painter.
+     * Draws the isoline region into the given painter.
      *
-     * @param  targetP  The painter to draw the element into.
+     * @param targetP The painter to draw the element into.
+     * @param viewRect The bounding rectangle of the draw region.
+     * @param really_draw Switches region drawing on/off.
+     * @param isolines Switches outline drawing on/off
+     *
+     * @return The projected region polygon as QPainterPath object usable
+     *         for later elevation finding.
      */
     QPainterPath* drawRegion( QPainter* targetP, const QRect &viewRect,
-                         bool really_draw, bool isolines=false );
+                              bool really_draw, bool isolines=false );
 
     /**
      * @return the elevation of the line

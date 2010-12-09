@@ -20,10 +20,13 @@
 ***********************************************************************/
 
 /**
+ * \class FlightTask
+ *
  * \author Heiner Lamprecht, Axel Pauli
  *
  * \brief Class to handle all things of a flight task.
  *
+ * \date 2002-2010
  */
 
 #ifndef FLIGHT_TASK_H
@@ -66,12 +69,14 @@ class FlightTask : public BaseMapElement
   /**
    * Creates a task with the given points.
    *
-   * @param tpList the list of task points. Object ownership will be
-   *        taken over by this class
+   * @param tpList The list of task points. Object ownership will be
+   *        taken over by this class.
    *
-   * @param  fai if true, drawing according of FAI rules, otherwise not
+   * @param  fai If true, drawing is done according to FAI rules, otherwise not.
    *
-   * @param  tas the planned true airspeed
+   * @param taskName The name of the task.
+   *
+   * @param  tas The planned true airspeed.
    *
    */
   FlightTask( QList<TaskPoint*> *tpList=0, bool fai=true,
@@ -108,6 +113,8 @@ class FlightTask : public BaseMapElement
    * @param  d1  first side
    * @param  d2  second side
    * @param  d3  third side
+   *
+   * \return True or false depending on the check result.
    */
   static bool isFAI(double d_wp, double d1, double d2, double d3);
 
@@ -163,9 +170,9 @@ class FlightTask : public BaseMapElement
 
   /**
    * Draws the flight and the task into the given painter.
-   * @param targetP  The painter to draw the element into.
-   * @param drawnWp List of drawn waypoints, if taskpoint label drawing
-   *       option is set.
+   * @param painter  The painter to be used for the drawing.
+   * @param drawnTp List of drawn task points, if taskpoint label drawing
+   *        option is set.
    */
   void drawTask(QPainter* painter, QList<wayPoint *> &drawnTp );
 
@@ -175,11 +182,12 @@ class FlightTask : public BaseMapElement
    * Not implemented in this class.
    *
    * The function must be implemented in the child-classes.
-   * @param  targetP  The painter to draw the element into.
+   * @param  painter  The painter to be used for the drawing.
    * @return true, if element was drawn otherwise false.
    */
-  bool drawMapElement(QPainter* )
+  bool drawMapElement(QPainter* painter)
     {
+      Q_UNUSED(painter)
       return false;
     };
 

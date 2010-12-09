@@ -17,6 +17,8 @@
 ***********************************************************************/
 
 /**
+ * \class TaskEditor
+ *
  * \author Heiner Lampbrecht, Axel Pauli
  *
  * \brief Flight Task Editor
@@ -24,6 +26,7 @@
  * This class handles creation and modification of flight tasks in a
  * simple editor. The editor is realized as an own modal window.
  *
+ * \date 2002-2010
  */
 
 #ifndef TaskEditor_H

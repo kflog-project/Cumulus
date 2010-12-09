@@ -16,6 +16,19 @@
  **
  ***********************************************************************/
 
+/**
+ * \class WindAnalyser
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief wind analyzer
+ *
+ * The wind analyzer processes the list of flight samples looking
+ * for wind speed and direction.
+ *
+ * \date 2002-2010
+ */
+
 #ifndef WINDANALYSER_H
 #define WINDANALYSER_H
 
@@ -23,15 +36,6 @@
 
 #include "vector.h"
 #include "calculator.h"
-
-/**
- * \author André Somers
- *
- * \brief wind analyzer
- *
- * The wind analyzer analyzes the list of flight samples looking
- * for wind speed and direction.
- */
 
 class WindAnalyser : public QObject
 {

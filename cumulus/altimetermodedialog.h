@@ -16,6 +16,19 @@
 **
 ***********************************************************************/
 
+/**
+ * \class AltimeterModeDialog
+ *
+ * \author Eckhard Völlm, Axel Pauli
+ *
+ * \brief Dialog for altimeter user interaction.
+ *
+ * This dialog is the user interface for the altimeter settings.
+ *
+ * \date 2004-2010
+ *
+ */
+
 #ifndef ALTIMETER_MODE_DIALOG_H
 #define ALTIMETER_MODE_DIALOG_H
 
@@ -27,20 +40,11 @@
 
 class Altitude;
 
-/**
-  * \author Eckhard Völlm, Axel Pauli
-  *
-  * \brief Dialog for altimeter user interaction.
-  *
-  * This dialog is the user interface for the altimeter settings.
-  *
-  */
-
 class AltimeterModeDialog : public QDialog
 {
   Q_OBJECT
 
-  private:
+private:
 
   Q_DISABLE_COPY ( AltimeterModeDialog )
 

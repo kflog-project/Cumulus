@@ -16,12 +16,15 @@
 ***********************************************************************/
 
 /**
+ * \class FlarmDisplay
+ *
  * \author Axel Pauli
  *
  * \brief Flarm display view.
  *
  * This widget shows the Flarm display view.
  *
+ * \date 2010
  */
 
 #ifndef FLARM_DISPLAY_H

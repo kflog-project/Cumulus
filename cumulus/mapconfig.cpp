@@ -602,9 +602,9 @@ QPixmap MapConfig::getPixmap(unsigned int typeID, bool isWinch, bool smallIcon)
     }
 }
 
-QPixmap MapConfig::getPixmap(unsigned int typeID, bool isWinch, QColor color)
+QPixmap MapConfig::getPixmap(unsigned int typeID, bool isWinch)
 {
-  QString iconName(getPixmapName(typeID, isWinch, false, color));
+  QString iconName(getPixmapName(typeID, isWinch, false));
 
   // qDebug("getPixmapName,Winch,Color: %d %s",typeID, iconName.latin1() );
 
@@ -647,7 +647,7 @@ bool MapConfig::isRotatable( unsigned int typeID ) const
       }
   }
 
-QString MapConfig::getPixmapName(unsigned int typeID, bool isWinch, bool rotatable, QColor /*color*/ )
+QString MapConfig::getPixmapName(unsigned int typeID, bool isWinch, bool rotatable )
 {
   QString iconName;
 

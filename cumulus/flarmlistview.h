@@ -16,12 +16,15 @@
 ***********************************************************************/
 
 /**
+ * \class FlarmListView
+ *
  * \author Axel Pauli
  *
  * \brief Flarm list view display.
  *
  * This widget shows the Flarm object data in a list.
  *
+ * \date 2010
  */
 
 #ifndef FLARM_LIST_VIEW_H

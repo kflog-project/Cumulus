@@ -10,11 +10,21 @@
 **                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
+
+/**
+ * \class WpEditDialogPageAero
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief This is the general page for the waypoint editor dialog
+ *
+ * \date 2002-2009
+ */
 
 #ifndef WPEDIT_DIALOG_PAGE_AERO_H
 #define WPEDIT_DIALOG_PAGE_AERO_H
@@ -26,41 +36,40 @@
 
 #include "waypoint.h"
 
-/**
- * Provides the WpEditDialog page with aeronautical information
- * @author André Somers
- */
 class WpEditDialogPageAero : public QWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    WpEditDialogPageAero(QWidget *parent=0);
+public:
 
-    virtual ~WpEditDialogPageAero();
+  WpEditDialogPageAero(QWidget *parent=0);
 
-  public slots: // Public slots
-    /**
-     * Called if the data needs to be saved.
-     */
-    void slot_save(wayPoint * wp);
+  virtual ~WpEditDialogPageAero();
 
-    /**
-     * Called if the page needs to load data from the waypoint
-     */
-    void slot_load(wayPoint * wp);
+public slots:
 
-  private:
-    QLineEdit *edtICAO;
-    QLineEdit *edtFrequency;
-    QComboBox *edtRunway1;
-    QComboBox *edtRunway2;
-    QLineEdit *edtLength;
-    QCheckBox *chkLandable;
-    QComboBox *cmbSurface;
+  /**
+   * Called if the data needs to be saved.
+   */
+  void slot_save(wayPoint * wp);
 
-    int getSurface();
-    void setSurface(int s);
-  };
+  /**
+   * Called if the page needs to load data from the waypoint
+   */
+  void slot_load(wayPoint * wp);
+
+private:
+
+  QLineEdit *edtICAO;
+  QLineEdit *edtFrequency;
+  QComboBox *edtRunway1;
+  QComboBox *edtRunway2;
+  QLineEdit *edtLength;
+  QCheckBox *chkLandable;
+  QComboBox *cmbSurface;
+
+  int getSurface();
+  void setSurface(int s);
+};
 
 #endif

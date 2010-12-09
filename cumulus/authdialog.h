@@ -16,6 +16,8 @@
 ***********************************************************************/
 
 /**
+ * \class AuthDialog
+ *
  * \author Axel Pauli
  *
  * \brief User and password query dialog.
@@ -23,7 +25,8 @@
  * This widget ask for a user name and a password. It is used to get these
  * data on request.
  *
-*/
+ * \date 2010
+ */
 
 #ifndef AUTH_DIALOG_H
 #define AUTH_DIALOG_H

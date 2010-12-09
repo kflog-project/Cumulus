@@ -16,6 +16,18 @@
 **
 ***********************************************************************/
 
+/**
+ * \class ConfigWidget
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Configuration widget of Cumulus
+ *
+ * This is the general configuration widget for Cumulus.
+ *
+ * \date 2002-2010
+ */
+
 #ifndef _ConfigWidget_h
 #define _ConfigWidget_h
 
@@ -34,114 +46,110 @@
 #include "settingspagelooknfeel.h"
 #include "settingspageterraincolors.h"
 
-/**
-  * \brief Configuration widget of Cumulus
-  *
-  * This is the general configuration widget for Cumulus.
-  *
-  * \author André Somers, Axel Pauli
-  *
-  */
 class ConfigWidget : public QWidget
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  private:
+private:
 
-    Q_DISABLE_COPY ( ConfigWidget )
+  Q_DISABLE_COPY ( ConfigWidget )
 
-  public:
-    /**
-     * Constructor
-     */
-    ConfigWidget(QWidget *parent=0);
+public:
 
-    /**
-     * Destructor
-     */
-    virtual ~ConfigWidget();
+  /**
+   * Constructor
+   */
+  ConfigWidget(QWidget *parent=0);
 
-  public slots:
-    /**
-     * Called if OK button is pressed
-     */
-    void accept();
+  /**
+   * Destructor
+   */
+  virtual ~ConfigWidget();
 
-    /**
-     * Called if Cancel button is pressed
-     */
-    void reject();
+public slots:
 
-  private slots: // Private slots
-    /**
-     * This slot is called just before showing the dialog, and loads the current settings.
-     */
-    void slot_LoadCurrent();
+  /**
+   * Called if OK button is pressed
+   */
+  void accept();
 
-  signals: // Signals
-    /**
-     * Signal emitted to indicate the settings should be saved to the configuration file
-     */
-    void save();
+  /**
+   * Called if Cancel button is pressed
+   */
+  void reject();
 
-    /**
-     * Emitted to indicate that the settings should be (re-) loaded from the configuration file.
-     */
-    void load();
+private slots:
 
-    /**
-     * This signal is emitted after a save procedure has occurred.
-     * It gives connected objects the chance to adjust to new settings.
-     */
-    void settingsChanged();
+  /**
+   * This slot is called just before showing the dialog, and loads the current settings.
+   */
+  void slot_LoadCurrent();
 
-    /**
-     * This signal is emitted after a save procedure has occurred and
-     * the configuration of Welt2000 has been changed.
-     */
-    void welt2000ConfigChanged();
+signals:
 
-    /**
-     * This signal is emitted when the dialog is canceled. It gives connected objects
-     * the chance to restore to old settings.
-     */
-    void reload();
+  /**
+   * Signal emitted to indicate the settings should be saved to the configuration file
+   */
+  void save();
 
-    /**
-     * This signal is emitted when the "dialog" should close. MainWindow will subsequently
-     * delete it
-     */
-    void closeConfig();
-    /**
-     * This signal is emitted to the settings pages to ask them if they want to display a
-     * warning when closing without saving. If so, the boolean flag warn must be set by in the
-     * slot. In response, the configuration dialog object will display a dialog box to confirm
-     * the closing and offering to save the changes instead.
-     */
-    void query_close(bool& warn, QStringList& warnings);
+  /**
+   * Emitted to indicate that the settings should be (re-) loaded from the configuration file.
+   */
+  void load();
 
-    /**
-     * Requests a move to the home position.
-     */
-    void gotoHomePosition();
+  /**
+   * This signal is emitted after a save procedure has occurred.
+   * It gives connected objects the chance to adjust to new settings.
+   */
+  void settingsChanged();
 
-  private:
+  /**
+   * This signal is emitted after a save procedure has occurred and
+   * the configuration of Welt2000 has been changed.
+   */
+  void welt2000ConfigChanged();
 
-    // Single configuration widgets
-    SettingsPagePersonal*      spp;
-    SettingsPageGlider*        spgl;
-    SettingsPageTask*          spt;
-    SettingsPageGPS*           spg;
-    SettingsPageMapSettings*   spms;
-    SettingsPageTerrainColors* sptc;
-    SettingsPageMapObjects*    spmo;
-    SettingsPageAirfields*     spaf;
-    SettingsPageAirspace*      spa;
-    SettingsPageUnits*         spu;
-    SettingsPageInformation*   spi;
-    SettingsPageLookNFeel*     splnf;
+  /**
+   * This signal is emitted when the dialog is canceled. It gives connected objects
+   * the chance to restore to old settings.
+   */
+  void reload();
 
-    bool loadConfig; // controls loading of configuration data
-  };
+  /**
+   * This signal is emitted when the "dialog" should close. MainWindow will subsequently
+   * delete it
+   */
+  void closeConfig();
+  /**
+   * This signal is emitted to the settings pages to ask them if they want to display a
+   * warning when closing without saving. If so, the boolean flag warn must be set by in the
+   * slot. In response, the configuration dialog object will display a dialog box to confirm
+   * the closing and offering to save the changes instead.
+   */
+  void query_close(bool& warn, QStringList& warnings);
+
+  /**
+   * Requests a move to the home position.
+   */
+  void gotoHomePosition();
+
+private:
+
+  // Single configuration widgets
+  SettingsPagePersonal*      spp;
+  SettingsPageGlider*        spgl;
+  SettingsPageTask*          spt;
+  SettingsPageGPS*           spg;
+  SettingsPageMapSettings*   spms;
+  SettingsPageTerrainColors* sptc;
+  SettingsPageMapObjects*    spmo;
+  SettingsPageAirfields*     spaf;
+  SettingsPageAirspace*      spa;
+  SettingsPageUnits*         spu;
+  SettingsPageInformation*   spi;
+  SettingsPageLookNFeel*     splnf;
+
+  bool loadConfig; // controls loading of configuration data
+};
 
 #endif

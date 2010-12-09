@@ -16,6 +16,8 @@
 ***********************************************************************/
 
 /**
+ * \class BluetoothDevices
+ *
  * \author Axel Pauli
  *
  * \brief A class for retrieving of reachable bluetooth devices
@@ -25,6 +27,8 @@
  * are emitted via a signal to the caller. This class is realized as a thread
  * because scanning of bluetooth devices can take some time and shall not block
  * other GUI activities.
+ *
+ * \date 2010
  */
 
 #ifndef BLUETOOTH_DEVICES_H

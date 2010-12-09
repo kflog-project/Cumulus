@@ -32,7 +32,11 @@
 #include "mapconfig.h"
 
 /**
- * @author Heiner Lamprecht, Florian Ehinger, Axel Pauli
+ * \class MapConfig
+ *
+ * \author Heiner Lamprecht, Florian Ehinger, Axel Pauli
+ *
+ * \brief Map configuration class.
  *
  * This class takes care of the configuration data for displaying
  * map elements. To avoid problems, there should be only
@@ -41,21 +45,22 @@
  * All printing related code has been removed for Cumulus, because printing
  * will not be supported on the PDA. (André Somers)
  *
- * @AP: Different load options have been removed from this class to reduce
+ * Different load options have been removed from this class to reduce
  * calling overhead. Furthermore all pointer classes have been replaced
  * by value classes.
  *
+ * \date 2001-2010
  */
 
 class MapConfig : public QObject
 {
   Q_OBJECT
 
-  private:
+ private:
 
-    Q_DISABLE_COPY ( MapConfig )
+   Q_DISABLE_COPY ( MapConfig )
 
-public:
+ public:
     /**
      * Creates a new MapConfig object.
      */
@@ -67,15 +72,15 @@ public:
     virtual ~MapConfig();
 
     /**
-     * @param  type  The typeID of the element.
+     * @param  typeID  The type identifier of the element.
      *
      * @return "true", if the current scale is smaller than the switch-scale,
      *         so that small icons should be used for displaying.
      */
-    bool isBorder(unsigned int type);
+    bool isBorder(unsigned int typeID);
 
     /**
-     * @param  type  The typeID of the element.
+     * @param  typeID  The type identifier of the element.
      *
      * @return the pen for drawing a map element.
      */
@@ -85,7 +90,7 @@ public:
     };
 
     /**
-     * @param  type  The typeID of the element.
+     * @param  typeID  The type identifier of the element.
      *
      * @return the brush for drawing an area element.
      */
@@ -101,7 +106,7 @@ public:
     QPixmap getPixmap(QString iconName);
 
     /**
-     * @param  type  The typeID of the element.
+     * @param  typeID   The type identifier of the element.
      * @param  isWinch  Used only for glider sites to determine, if the
      *                  icon should indicate that only winch launch is
      *                  available.
@@ -111,29 +116,30 @@ public:
     QPixmap getPixmapRotatable(unsigned int typeID, bool isWinch);
 
     /**
-     * @param  type  The typeID of the element.
-     *
+     * @param  typeID  The type identifier of the element.
+     * @param  isWinch  Used only for glider sites to determine, if the
+     *                  icon should indicate that only winch launch is
+     *                  available.
      * @returns the rotatable icon-pixmap of the element.
      */
-
-    QPixmap getPixmap(unsigned int typeID, bool isWinch = true, QColor color=Qt::black);
+    QPixmap getPixmap(unsigned int typeID, bool isWinch = true);
 
     /**
-     * @param  type  The typeID of the element.
+     * @param  typeID   The type identifier of the element.
      * @param  isWinch  Used only for glider sites to determine, if the
      *                  icon should indicate that only winch launch is
      *                  available.
      * @param  smallIcon  Used to select the size of the returned pixmap.
      *                  if true, a small pixmap is returned, otherwise the larger
      *                  version is returned.
-     * @returns the icon-pixmap of the element.
+     * @returns The icon-pixmap of the element.
      */
     QPixmap getPixmap(unsigned int typeID, bool isWinch, bool smallIcon);
 
     /**
-     * @param  type  The typeID of the element.
+     * @param typeID The type identifier of the element.
      *
-     * @returns an icon for use in an airfield list.
+     * @returns An icon for use in an airfield list.
      */
     const QIcon& getListIcon(unsigned int typeID)
       {
@@ -141,18 +147,21 @@ public:
       };
 
     /**
-     * @param  type  The typeID of the element.
+     * @param  type  The type identifier of the element.
      * @param  isWinch  Used only for glider sites to determine, if the
      *                  icon should indicate that only winch launch is
      *                  available.
+     * @param rotatable The rotation flag.
+     *
+     *
      *
      * @return the name of the pixmap of the element.
      */
     QString getPixmapName(unsigned int type, bool isWinch = true,
-                          bool rotatable = false, QColor color=Qt::black);
+                          bool rotatable = false);
 
     /**
-     * @Returns true if small icons are used, else returns false.
+     * @return True if small icons are used, else returns false.
      */
     bool useSmallIcons() const
     {
@@ -275,7 +284,7 @@ private:
      *
      * @return the pen
      */
-    const QPen& __getPen(unsigned int typeID, int sIndex);
+    const QPen& __getPen(unsigned int typeID, int scaleIndex);
 
     // Pen and brush lists of different map items stored in arrays
     QPen airAPenList[4];

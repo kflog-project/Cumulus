@@ -7,17 +7,21 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2008-2009 by Axel Pauli
+**                   2008-2010 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
 /**
- * @short Base class for all map elements
+ * \class BaseMapElement
+ *
+ * \author Heiner Lamprecht, Florian Ehinger, Axel Pauli
+ *
+ * \brief Base class for all map elements
  *
  * This is the base class for all map elements. The class will be inherited
  * by all classes implementing the map-elements. The class provides several
@@ -25,6 +29,7 @@
  * the class provides two enumerations for the element-type and the type of
  * elevation-values.
  *
+ * \date 2000-2010
  */
 
 #ifndef BASE_MAP_ELEMENT_H
@@ -74,8 +79,10 @@ public:
 
   /**
    * Creates a new (virtual) map element.
+   *
    * @param  name  The name of the element.
    * @param  typeID  The type id of the element.
+   * @param  secID The number of the map segment.
    */
   BaseMapElement( const QString& name,
                   const objectType typeID = NotSelected,
@@ -93,7 +100,7 @@ public:
    * @param  targetP  The painter to draw the element into.
    * @return true, if element was drawn otherwise false.
    */
-  virtual bool drawMapElement(QPainter* ) = 0;
+  virtual bool drawMapElement(QPainter* targetP) = 0;
 
   /**
    * Virtual function for printing the element.
@@ -101,8 +108,7 @@ public:
    * The function must be implemented in the child-classes.
    * @param  printP  The painter to draw the element into.
    *
-   * @param  isText  Shows, if the text of some map elements should
-   *                 be printed.
+   * @param  isText  Shows, if the text of some map elements should be printed.
    */
   virtual void printMapElement(QPainter* printP, bool isText);
 

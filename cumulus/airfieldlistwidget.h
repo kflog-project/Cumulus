@@ -17,9 +17,13 @@
 ***********************************************************************/
 
 /**
+ * \class AirfieldListWidget
+ *
  * \author André Somers, Axel Pauli
  *
  * \brief This widget provides a list of airfields and a means to select one.
+ *
+ * \date 2002-2010
  *
  */
 
@@ -35,7 +39,7 @@
 
 class AirfieldListWidget : public ListWidgetParent
 {
-    Q_OBJECT
+  Q_OBJECT
 
 private:
   /**

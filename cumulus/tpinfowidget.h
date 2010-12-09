@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2007-2010 by Axel Pauli, axel@kflog.org
+ **   Copyright (c): 2007-2010 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -16,6 +16,8 @@
  ************************************************************************/
 
 /**
+ * \class TPInfoWidget
+ *
  * \author Axel Pauli
  *
  * \brief This widget shows the details of a task point.
@@ -25,6 +27,7 @@
  * The widget will be closed automatically after a configurable time period,
  * if user do nothing. The user can stop the automatic close.
  *
+ * \date 2007-2010
  */
 
 #ifndef TP_INFO_WIDGET_H

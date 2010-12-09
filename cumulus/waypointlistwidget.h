@@ -17,10 +17,13 @@
 ***********************************************************************/
 
 /**
+ * \class WaypointListWidget
+ *
  * \author André Somers, Axel Pauli
  *
  * \brief This widget provides a list of waypoints and a means to select one.
  *
+ * \date 2002-2010
  */
 
 #ifndef WAYPOINT_LIST_WIDGET_H
@@ -46,24 +49,24 @@ public:
   virtual ~WaypointListWidget();
 
   /**
-   * @returns a pointer to the currently highlighted waypoint.
+   * @return A pointer to the currently high lighted waypoint.
    */
   wayPoint *getSelectedWaypoint();
 
   /**
-   * @updates the currently highlighted waypoint after editing.
+   * @param wp Updates the currently high lighted waypoint after editing.
    */
-  void updateSelectedWaypoint(wayPoint &);
+  void updateSelectedWaypoint(wayPoint &wp);
 
   /**
-   * @removes the currently highlighted waypoint.
+   * Removes the currently highlighted waypoint.
    */
   void deleteSelectedWaypoint();
 
   /**
-   * @adds a waypoint.
+   * @param wp Adds a waypoint to the list.
    */
-  void addWaypoint(wayPoint &);
+  void addWaypoint(wayPoint &wp);
 
   /**
    * Clears and fills the waypoint item list with the current waypoints.
@@ -71,6 +74,16 @@ public:
   void fillItemList();
 
 private:
+
+  /**
+   * \class _WaypointItem
+   *
+   * \author André Somers, Axel Pauli
+   *
+   * \brief A user waypoint item element used by the \ref WaypointListWidget.
+   *
+   * \date 2002-2010
+   */
 
   class _WaypointItem : public QTreeWidgetItem
     {

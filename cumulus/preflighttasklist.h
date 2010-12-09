@@ -16,6 +16,17 @@
 **
 ***********************************************************************/
 
+/**
+ * \class PreFlightTaskList
+ *
+ * \author Heiner Lamprecht, Axel Pauli
+ *
+ * \brief A widget for pre-flight task settings.
+ *
+ * \date 2002-2010
+ *
+ */
+
 #ifndef PRE_FLIGHT_TASK_LIST_H
 #define PRE_FLIGHT_TASK_LIST_H
 

@@ -22,20 +22,24 @@
 #include <QList>
 
 /**
-  * @author André Somers, Axel Pauli
-  *
-  * @short Template for a list which limits the number of items it contains.
-  *
-  * 2008-02-22 AP: This class was modified from a pointer based list
-  * to a value based list during Qt2 -> Qt4 portage.
-  *
-  * The LimitedList template class implements a QList based value list
-  * with a limited number of items. If more items are added, the least
-  * important item will be deleted automatically. The item to delete
-  * it determined by the getLeastImportantItemIndex() member function,
-  * which may be overridden by child classes if needed. The default
-  * implementation removes the oldest item from the list.
-  */
+ * \class LimitedList
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Template for a list which limits the number of items it contains.
+ *
+ * 2008-02-22 AP: This class was modified from a pointer based list
+ * to a value based list during Qt2 -> Qt4 portage.
+ *
+ * The LimitedList template class implements a QList based value list
+ * with a limited number of items. If more items are added, the least
+ * important item will be deleted automatically. The item to delete
+ * it determined by the getLeastImportantItemIndex() member function,
+ * which may be overridden by child classes if needed. The default
+ * implementation removes the oldest item from the list.
+ *
+ * \date 2002-2010
+ */
 
 template <class type>
 class LimitedList : public QList<type>
@@ -45,7 +49,7 @@ public:
 
   /**
    * Constructor
-   * @param limit the maximum number of elements in this list. Defaults to 10
+   * @param limit the maximum number of elements in this list. Defaults to 10.
    */
   LimitedList(int limit=10);
 
@@ -55,8 +59,10 @@ public:
   virtual ~LimitedList();
 
   /**
-   * add should be used to add items to the list. It automatically checks if
+   * Add should be used to add items to the list. It automatically checks if
    * it needs to delete an item afterwards.
+   *
+   * @param d Parameter to be added to the list.
    */
   void add( const type &d );
 
@@ -64,7 +70,7 @@ public:
    * Sets the new limit for the number of items in the list. If the new list
    * is shorter then the last, the excess items are deleted.
    *
-   * @param limit the new limit
+   * @param limit The new limit of the list.
    */
   void setLimit( const int limit );
 
@@ -75,12 +81,14 @@ public:
    * should be removed if the list is too full. It may be overridden
    * if you need another criteria than simply deleting the oldest item
    * in the list.
+   *
+   * @return Index of least important item.
    */
   virtual int getLeastImportantItemIndex() const;
 
-
  private:
 
+  /** Defines the maximum number of list elements. */
   int _limit;
 };
 

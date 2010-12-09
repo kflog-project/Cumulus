@@ -16,6 +16,8 @@
 ***********************************************************************/
 
 /**
+ * \class FlarmAliasList
+ *
  * \author Axel Pauli
  *
  * \brief Flarm alias list display and editor.
@@ -24,6 +26,7 @@
  * identifiers. The names are displayed in a two column table. The content of
  * the table is stored in a text file in the user's data directory.
  *
+ * \date 2010
  */
 
 #ifndef FLARM_ALIAS_LIST_H_

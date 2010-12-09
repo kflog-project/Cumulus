@@ -16,10 +16,15 @@
 ***********************************************************************/
 
 /**
+ * \class Flarm
+ *
  * \author Axel Pauli
  *
- * \brief This class parses Flarm sentences and provides the results to the caller.
+ * \brief Flarm data parser and manager class.
  *
+ * This class parses Flarm sentences and provides the results to the caller.
+ *
+ * \date 2010
  */
 
 #ifndef FLARM_H
@@ -71,8 +76,15 @@ public:
   };
 
   /**
-   * FLARM status structure. It contains the last data of the sentence
-   * PFLAU.
+   * \struct FlarmStatus
+   *
+   * \author Axel Pauli
+   *
+   * \brief FLARM status structure.
+   *
+   * FLARM status structure. It contains the last data of the PFLAU sentence.
+   *
+   * \date 2010
    */
   struct FlarmStatus
   {
@@ -90,8 +102,15 @@ public:
   };
 
   /**
-   * FLARM aircraft data structure. It contains the data of the
-   * sentence PFLAA.
+   * \struct FlarmAcft
+   *
+   * \author Axel Pauli
+   *
+   * \brief FLARM aircraft data structure.
+   *
+   * FLARM aircraft data structure. It contains the data of a PFLAA sentence.
+   *
+   * \date 2010
    */
   struct FlarmAcft
   {
@@ -112,7 +131,7 @@ public:
   virtual ~Flarm();
 
   /**
-   * @returns the single instance of the class.
+   * @return the single instance of the class.
    */
   static Flarm* instance()
   {
@@ -138,7 +157,7 @@ public:
   };
 
   /**
-   * @Returns the Flarm status structure with the last parsed data
+   * @return the Flarm status structure with the last parsed data
    */
   static const FlarmStatus& getFlarmStatus()
   {
@@ -186,8 +205,9 @@ public:
   /**
    * Creates a hash key by using the passed parameters.
    *
-   * @param idType <ID-Type> tag of Flarm sentence $PFLAA
-   * @param id <ID> 6-digit hex value of Flarm sentence $PFLAA
+   * @param idType 'ID-Type' tag of Flarm sentence $PFLAA
+   * @param id 6-digit 'ID' hex value of Flarm sentence $PFLAA
+   * @return A hash key generated from the input.
    */
   static QString createHashKey( int idType, const QString& id )
   {
@@ -249,8 +269,10 @@ private:
   /** Flag to switch on the collecting of PFLAA data. */
   static bool collectPflaa;
 
-  /** Hash map with collected PFLAA records. The key is a concatenation of
-   *  the Flarm tags <ID-Type> and <ID>.*/
+  /**
+   * Hash map with collected PFLAA records. The key is a concatenation of
+   * the Flarm tags 'ID-Type' and 'ID'.
+   */
   static QHash<QString, FlarmAcft> pflaaHash;
 
   /** Timer for data clearing. */

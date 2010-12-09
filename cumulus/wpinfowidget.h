@@ -16,6 +16,16 @@
 **
 ***********************************************************************/
 
+/**
+ * \class WPInfoWidget
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief This widget shows the details of a waypoint.
+ *
+ *\date 2002-2010
+ */
+
 #ifndef WP_INFO_WIDGET_H
 #define WP_INFO_WIDGET_H
 
@@ -29,13 +39,6 @@
 
 #include "waypoint.h"
 #include "tpinfowidget.h"
-
-/**
- * \author André Somers, Axel Pauli
- *
- * \brief This widget shows the details of a waypoint.
- *
- */
 
 class MainWindow;
 

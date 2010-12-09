@@ -16,9 +16,13 @@
 ***********************************************************************/
 
 /**
+ * \class SettingsPageInformation
+ *
  * \author Axel Pauli
  *
- * \brief The class manages the popup window display times and the alarm sound.
+ * \brief Configuration settings for popup window display times and alarm sound.
+ *
+ * \date 2003-2010
  *
  */
 

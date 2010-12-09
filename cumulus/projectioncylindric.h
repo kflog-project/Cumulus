@@ -9,7 +9,7 @@
 **   Copyright (c):  2002 by Heiner Lamprecht, 2007 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -21,10 +21,16 @@
 #include "projectionbase.h"
 
 /**
+ * \class ProjectionCylindric
+ *
+ * \author Heiner Lamprecht, Axel Pauli
+ *
+ * \brief Cylindric map projection class.
+ *
  * This class provides a cylindrical projection.
  *
+ * \date 2002-2009
  */
-
 class ProjectionCylindric : public ProjectionBase
 {
 
@@ -46,11 +52,12 @@ class ProjectionCylindric : public ProjectionBase
   /**
    * returns the x-position.
    *
-   * @param  latitude  The latitude of the position, given in radiant.
-   * @param  longitude  The longitude of the position, given in radiant.
+   * @param  latitude  This argument is unused.
+   * @param  longitude The longitude of the position, given in radiant.
    */
-  virtual double projectX(const double& , const double& longitude)
+  virtual double projectX(const double& latitude, const double& longitude)
   {
+    Q_UNUSED( latitude )
     return longitude * cos_v1;
   };
 
@@ -58,26 +65,35 @@ class ProjectionCylindric : public ProjectionBase
    * Returns the y-position.
    *
    * @param  latitude  The latitude of the position, given in radiant.
-   * @param  longitude  The longitude of the position, given in radiant.
+   * @param  longitude This argument is unused.
    */
-  virtual double projectY(const double& latitude, const double& )
+  virtual double projectY(const double& latitude, const double& longitude)
   {
+    Q_UNUSED( longitude )
     return -latitude;
   };
 
   /**
    * Returns the latitude of a given projected position in radiant.
+   *
+   * @param  x  This argument is unused.
+   * @param  y  The longitude of the position, given in radiant.
    */
-  virtual double invertLat(const double& , const double& y) const
+  virtual double invertLat(const double& x, const double& y) const
   {
+    Q_UNUSED( x )
     return -y;
   };
 
   /**
    * Returns the longitude of a given projected position in radiant.
+   *
+   * @param  x  The latitude of the position, given in radiant.
+   * @param  y  This argument is unused.
    */
-  virtual double invertLon(const double& x, const double& ) const
+  virtual double invertLon(const double& x, const double& y) const
   {
+    Q_UNUSED( y )
     return x / cos_v1;
   };
 
@@ -101,7 +117,7 @@ class ProjectionCylindric : public ProjectionBase
 
   /**
    * Sets the standard parallel. If it is too large,
-   * the default value (45°N) is used.
+   * the default value (45Â°N) is used.
    */
   bool initProjection(int v1);
 
@@ -116,7 +132,7 @@ class ProjectionCylindric : public ProjectionBase
   virtual void loadParameters(QDataStream &);
 
   /**
-   * @AP: Returns the standard parallel as integer
+   * @return The standard parallel value as integer.
    */
   int getStandardParallel() const
   {
@@ -131,8 +147,6 @@ class ProjectionCylindric : public ProjectionBase
   double v1;
   int i_v1;
   double cos_v1;
-
-
 };
 
 #endif

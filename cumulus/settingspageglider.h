@@ -16,6 +16,20 @@
 **
 ***********************************************************************/
 
+/**
+ * \class SettingsPageGlider
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Configuration settings for gliders.
+ *
+ * This widget provides an interface to add, edit and delete gliders
+ * from the glider list.
+ *
+ * \date 2002-2010
+ *
+ */
+
 #ifndef SETTINGS_PAGE_GLIDER_H
 #define SETTINGS_PAGE_GLIDER_H
 
@@ -24,16 +38,6 @@
 #include <QStringList>
 
 #include "gliderlistwidget.h"
-
-/**
- * \author André Somers, Axel Pauli
- *
- * \brief Configuration settings for gliders.
- *
- * This widget provides an interface to add, edit and delete gliders
- * from the glider list.
- *
- */
 
 class SettingsPageGlider : public QWidget
 {

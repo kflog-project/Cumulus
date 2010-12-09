@@ -16,6 +16,17 @@
 **
 ***********************************************************************/
 
+/**
+ * \class PolarDialog
+ *
+ * \author Eggert Ehmke, Axel Pauli
+ *
+ * \brief Class to handle glider polar settings.
+ *
+ * \date 2002-2010
+ *
+ */
+
 #ifndef POLAR_DIALOG_H
 #define POLAR_DIALOG_H
 
@@ -24,11 +35,6 @@
 #include "speed.h"
 #include "polar.h"
 
-/**
- * \author Eggert Ehmke
- *
- * \brief Class to handle glider polar changes done by the user.
- */
 class PolarDialog : public QWidget
 {
   Q_OBJECT

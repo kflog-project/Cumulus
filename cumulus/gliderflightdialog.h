@@ -15,13 +15,18 @@
 **   $Id$
 **
 ***********************************************************************/
+
 /**
+ * \class GliderFlightDialog
+ *
  * \author Eggert Ehmke, Axel Pauli
  *
  * \brief This dialog is the user interface for the in flight settings.
  *
  * This dialog handles the Mc, load balance and bug settings. It shall
  * enable a simple change also during flight.
+ *
+ * \date 2002-2010
  */
 
 #ifndef GLIDER_FLIGHT_DIALOG_H

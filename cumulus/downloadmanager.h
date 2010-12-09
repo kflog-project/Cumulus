@@ -16,12 +16,16 @@
 ***********************************************************************/
 
 /**
+ * \class DownloadManager
+ *
  * \author Axel Pauli
  *
  * \brief Manager for HTTP download handling
  *
  * This class handles the HTTP download requests in Cumulus. Downloads
  * of different map files can be requested.
+ *
+ * \date 2010
  */
 
 #ifndef DOWNLOAD_MANAGER_H

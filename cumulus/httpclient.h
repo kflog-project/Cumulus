@@ -16,10 +16,13 @@
 ***********************************************************************/
 
 /**
+ * \class HttpClient
+ *
  * \author Axel Pauli
  *
  * \brief This class is a simple HTTP download client.
  *
+ * \date 2010
  */
 
 #ifndef HTTP_CLIENT_H

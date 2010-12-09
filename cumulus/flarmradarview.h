@@ -16,12 +16,15 @@
 ***********************************************************************/
 
 /**
+ * \class FlarmRadarView
+ *
  * \author Axel Pauli
  *
  * \brief Flarm Radar and Operation view.
  *
  * This widget shows the Flarm radar view with the operation buttons.
  *
+ * \date 2010
  */
 
 #ifndef FLARM_RADAR_VIEW_H

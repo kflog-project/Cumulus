@@ -22,17 +22,21 @@
 #include "speed.h"
 
 /**
- * @short A vector represents a speed in a certain (2d) direction.
+ * \class Vector
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief A vector represents a speed in a certain (2d) direction.
  *
  * A vector represents a speed in a certain (2d) direction.
  * It is a subclass from the @ref Speed class, meaning you can use it as a
  * normal Speed object. The values returned or set in that way are the
  * values in the given direction. You can read or set that direction using
- * the @ref getAngle and @ref setAngle member function (or their variants).
+ * the getAngle... and setAngle member functions (or their variants).
  * You can also access the components of the speed in the X and Y directions.
  * Note that X counts latitudinal, Y count longitudinal.
  *
- * @author André Somers
+ * \date 2002-2010
  */
 class Vector
 {

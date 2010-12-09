@@ -16,6 +16,18 @@
 **
 ***********************************************************************/
 
+/**
+ * \class Vario
+ *
+ * \author Eggert Ehmke, Axel Pauli
+ *
+ * \brief Variometer calculations.
+ *
+ * This class executes the variometer calculations.
+ *
+ *\date 2002-2010
+ */
+
 #ifndef VARIO_H
 #define VARIO_H
 
@@ -23,15 +35,6 @@
 #include <QTimer>
 
 #include "speed.h"
-
-/**
- * \author Eggert Ehmke, Axel Pauli
- *
- * \brief Variometer calculations.
- *
- * This class realizes the variometer calculations.
- *
- */
 
 /** Default integration time in s for variometer calculation. */
 #define INT_TIME 5

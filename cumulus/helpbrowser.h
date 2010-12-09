@@ -24,6 +24,8 @@
 #include <QTextBrowser>
 
 /**
+ * \class HelpBrowser
+ *
  * \author Axel Pauli
  *
  * \brief This class provides a widget usable as help browser.
@@ -33,6 +35,7 @@
  * language. The user can navigate through the text, zoom in and out,
  * maximize/normalize the window display size.
  *
+ * \date 2008-2010
  */
 
 class HelpBrowser : public QWidget

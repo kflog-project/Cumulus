@@ -15,6 +15,17 @@
 **
 ***********************************************************************/
 
+/**
+ * \class RowDelegate
+ *
+ * \author Josua Dietze
+ *
+ * \brief Changes look of list items.
+ *
+ * \date 2008
+ *
+ */
+
 #ifndef ROWDELEGATE_H
 #define ROWDELEGATE_H
 
@@ -22,31 +33,32 @@
 
 class RowDelegate : public QItemDelegate
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
 
-    /**
-     *  Overwritten to add verticalRowMargin above and below the row
-     */
-    RowDelegate(QWidget *parent = 0, int verticalRowMargin = 0 ) : QItemDelegate(parent)
-    {
-      vMargin = verticalRowMargin;
-    };
+  /**
+   *  Overwritten to add verticalRowMargin above and below the row.
+   */
+  RowDelegate(QWidget *parent = 0, int verticalRowMargin = 0 ) : QItemDelegate(parent)
+  {
+    vMargin = verticalRowMargin;
+  };
 
-    /**
-     *  Set a new vertical margin value
-     */
-    void setVerticalMargin(int newValue) { vMargin = newValue; };   
+  /**
+   *  Set a new vertical margin value
+   */
+  void setVerticalMargin(int newValue) { vMargin = newValue; };
 
-    /**
-     *  Overwrite QItemDelegate::sizeHint to make row height variable
-     */
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+  /**
+   *  Overwrite QItemDelegate::sizeHint to make row height variable.
+   */
+  QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 private:
-    /** This stores the given height margin */
-    int vMargin;
+
+  /** This stores the given height margin */
+  int vMargin;
 };
 
 #endif

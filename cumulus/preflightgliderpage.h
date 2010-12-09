@@ -6,14 +6,25 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008 Axel Pauli
+**   Copyright (c):  2003 by André Somers, 2008-2010 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
+
+/**
+ * \class PreFlightGliderPage
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief A widget for pre-flight glider settings.
+ *
+ * \date 2003-2010
+ *
+ */
 
 #ifndef PREFLIGHT_GLIDER_PAGE_H
 #define PREFLIGHT_GLIDER_PAGE_H
@@ -24,39 +35,38 @@
 
 #include "gliderlistwidget.h"
 
-/**
- * This widget represents the glider-selection page for the PreFlight dialog.
- *
- * @author André Somers
- */
 class PreFlightGliderPage : public QWidget
-  {
-    Q_OBJECT
-
-  public:
-
-    PreFlightGliderPage(QWidget *parent=0);
-    ~PreFlightGliderPage();
-    void save();
-
-  protected:
-
-    void showEvent(QShowEvent *);
+{
+  Q_OBJECT
 
   private:
 
-    GliderListWidget *list;
-    QLineEdit        *edtCoPilot;
-    QSpinBox         *spinLoad;
-    QSpinBox         *spinWater;
-    Glider           *lastGlider;
+  Q_DISABLE_COPY ( PreFlightGliderPage )
 
-    void getCurrent();
+public:
 
-  private slots:
+  PreFlightGliderPage(QWidget *parent=0);
+  ~PreFlightGliderPage();
+  void save();
 
-    void slot_gliderChanged();
-    void slot_gliderDeselected();
-  };
+protected:
+
+  void showEvent(QShowEvent *);
+
+private:
+
+  GliderListWidget *list;
+  QLineEdit        *edtCoPilot;
+  QSpinBox         *spinLoad;
+  QSpinBox         *spinWater;
+  Glider           *lastGlider;
+
+  void getCurrent();
+
+private slots:
+
+  void slot_gliderChanged();
+  void slot_gliderDeselected();
+};
 
 #endif

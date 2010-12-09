@@ -28,6 +28,8 @@ class PreFlightTaskList;
 class wayPoint;
 
 /**
+ * \class PreFlightWidget
+ *
  * \author André Somers, Axel Pauli
  *
  * \brief Widget for pre-flight settings.
@@ -35,6 +37,7 @@ class wayPoint;
  * This widget provides an interface to set all the pre-flight settings like
  * glider type, copilot, task, amount of water taken on, etc.
  *
+ * \date 2003-2010
  */
 class PreFlightWidget : public QWidget
 {
@@ -51,9 +54,9 @@ public:
 
   /**
    * Constructor
-   * @argument parent Pointer to parent widget
-   * @argument name Name of the page to be displayed. Current options: "taskselection".
-   *                Any other string will select glider page.
+   * @param parent Pointer to parent widget
+   * @param name Name of the page to be displayed. Current options: "taskselection".
+   *             Any other string will select the glider page.
    */
   PreFlightWidget(QWidget *parent, const char* name);
 

@@ -16,6 +16,17 @@
 **
 ***********************************************************************/
 
+/**
+ * \class SettingsPageUnits
+ *
+ * \author André Somers, Axel Pauli
+ *
+ * \brief Configuration settings for personal units.
+ *
+ * \date 2002-2010
+ *
+ */
+
 #ifndef SETTINGS_PAGE_UNITS_H
 #define SETTINGS_PAGE_UNITS_H
 
@@ -23,12 +34,6 @@
 #include <QComboBox>
 #include <QStringList>
 
-/**
- * \author André Somers, Axel Pauli
- *
- * \brief Configuration settings for personal units.
- *
- */
 class SettingsPageUnits : public QWidget
 {
   Q_OBJECT

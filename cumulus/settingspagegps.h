@@ -17,9 +17,14 @@
 ***********************************************************************/
 
 /**
+ * \class SettingsPageGPS
+ *
  * \author André Somers, Axel Pauli
  *
- * \brief This class represents the GPS device configuration page.
+ * \brief Configuration settings for the GPS device.
+ *
+ * \date 2002-2010
+ *
  */
 
 #ifndef SETTINGS_PAGE_GPS_H

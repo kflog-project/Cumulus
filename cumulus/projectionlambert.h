@@ -9,7 +9,7 @@
 **   Copyright (c):  2002 by Heiner Lamprecht, 2007 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -21,10 +21,16 @@
 #include "projectionbase.h"
 
 /**
+ * \class ProjectionLambert
+ *
+ * \author Heiner Lamprecht, Axel Pauli
+ *
+ * \brief Lambert map projection class.
+ *
  * This class provides a conical orthomorphic projection ("Lambert-projection").
  *
+ * \date 2002-2007
  */
-
 class ProjectionLambert : public ProjectionBase
 {
 
@@ -40,7 +46,7 @@ public:
   virtual ~ProjectionLambert();
 
   /**
-   * @Returns the initial value
+   * @return the initial value
    */
   int getStandardParallel1() const
   {
@@ -48,7 +54,7 @@ public:
   };
 
   /**
-   * @Returns the initial value
+   * @return the initial value
    */
   int getStandardParallel2() const
   {
@@ -56,7 +62,7 @@ public:
   };
 
   /**
-   * @Returns the initial value
+   * @return the initial value
    */
   int getOrigin() const
   {
@@ -106,7 +112,7 @@ public:
 
   /**
    * Sets the two standard parallels. If one of the parallels is
-   * too large, the default values (54°N and 50°N) are used for both
+   * too large, the default values (54Â°N and 50Â°N) are used for both
    * of them.
    */
   bool initProjection(int  v1, int v2, int origin);

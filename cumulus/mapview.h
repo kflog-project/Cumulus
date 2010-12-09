@@ -43,13 +43,16 @@
 #endif
 
 /**
- * \author André Somers
+ * \class MapView
+ *
+ * \author André Somers, Axel Pauli
  *
  * \brief Main view of the application.
  *
  * This is the main view of the application, providing the map and
  * other useful in flight information.
  *
+ * \date 2002-2010
  */
 
 class CuLabel;
@@ -77,7 +80,7 @@ class MapView : public QWidget
     virtual ~MapView();
 
     /**
-     * @returns the status bar object
+     * @return the status bar object
      */
     QStatusBar* statusBar () const
       {
@@ -85,13 +88,17 @@ class MapView : public QWidget
       };
 
     /**
-     * @writes a message into the status bar for the given time. Default
-     * is 5s. If the time is zero, , the message will never disappear.
+     * Writes a message into the status bar for the given time. Default
+     * is 5s. If the time is zero, the message will never disappear.
+     *
+     * \param message The message to be displayed
+     *
+     * \param ms The display time in milli seconds.
      */
     void message( const QString &message, int ms=5000 );
 
     /**
-     * @returns the altitude widget
+     * @return the altitude widget
      */
     MapInfoBox* getAltitudeWidget () const
       {
@@ -99,7 +106,7 @@ class MapView : public QWidget
       };
 
     /**
-     * @returns the Variometer widget
+     * @return the Variometer widget
      */
     MapInfoBox* getVarioWidget () const
       {
