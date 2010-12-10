@@ -140,16 +140,28 @@ class GeneralConfig : protected QSettings
   // properties get/set methods
   //---------------------------
 
-  /** gets the installation root of cumulus */
+  /** gets the installation root of Cumulus */
   QString &getInstallRoot()
     {
       return _installRoot;
     };
 
-  /** sets the installation root of cumulus */
+  /** sets the installation root of Cumulus */
   void setInstallRoot( QString &newRoot )
   {
     _installRoot = newRoot;
+  };
+
+  /** gets the built date of Cumulus */
+  QString &getBuiltDate()
+    {
+      return _builtDate;
+    };
+
+  /** sets the built date of Cumulus */
+  void setBuiltDate( QString newBuiltDate )
+  {
+    _builtDate = newBuiltDate;
   };
 
   /** gets the user data directory where waypoint file, task file,
@@ -1865,6 +1877,9 @@ class GeneralConfig : protected QSettings
 
   // Root path of cumulus installation
   QString _installRoot;
+
+  // Date of built
+  QString _builtDate;
 
   // Main window size
   QSize _windowSize;

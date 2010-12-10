@@ -74,6 +74,7 @@ void GeneralConfig::load()
   // cumulus main data
   beginGroup("Main");
   _installRoot = value("InstallRoot", "./").toString();
+  _builtDate = value("BuiltDate", __DATE__).toString();
   endGroup();
 
   // Main window properties
@@ -440,6 +441,7 @@ void GeneralConfig::save()
   // cumulus main data
   beginGroup("Main");
   setValue("InstallRoot", _installRoot );
+  setValue("BuiltDate", _builtDate);
   endGroup();
 
   // Main window properties
