@@ -67,6 +67,9 @@ int main(int argc, char *argv[])
   QCoreApplication::setOrganizationName( "KFLog" );
   QCoreApplication::setOrganizationDomain( "www.kflog.org" );
 
+  // Make sure the application uses utf8 encoding for translated widgets
+  QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
+
   // @AP: to make trace output available, if process is started via
   // QT/X11, we can redirect all output into a file, if configuration option
   // Log2File is set to true.

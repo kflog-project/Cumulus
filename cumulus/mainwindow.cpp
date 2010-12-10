@@ -120,9 +120,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   helpMenu = 0;
   logger = static_cast<IgcLogger *> (0);
 
-  // Eggert: make sure the app uses utf8 encoding for translated widgets
-  QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
-
   // Get application font for user manipulations
   QFont appFt = QApplication::font();
 
