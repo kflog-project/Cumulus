@@ -252,7 +252,7 @@ qmake: cumulus/Makefile gpsClient/Makefile gpsMaemoClient/Makefile nmeaSimulator
 .PHONY : resetdate
 
 resetdate:
-	rm -rf cumulus/mainwindow.o
+	rm -rf cumulus/main.o
 
 cumulus/Makefile: cumulus/cumulusMaemo5.pro
 	cd cumulus; $(QMAKE) cumulusMaemo5.pro -o Makefile

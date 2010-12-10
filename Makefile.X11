@@ -99,7 +99,7 @@ qmake: cumulus/Makefile gpsClient/Makefile nmeaSimulator/Makefile
 
 .PHONY : resetdate
 resetdate:
-	rm -rf cumulus/mainwindow.o
+	rm -rf cumulus/main.o
 
 cumulus/Makefile: cumulus/cumulusX11.pro
 	cd cumulus; $(QMAKE) cumulusX11.pro -o Makefile
