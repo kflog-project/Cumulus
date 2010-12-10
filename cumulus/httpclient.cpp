@@ -124,7 +124,8 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
     }
 
   QNetworkRequest request;
-  QString appl = QString("Cumulus/") + CU_VERSION + " (Qt/X11)";
+  QString appl = QCoreApplication::applicationName() + "/" +
+                 QCoreApplication::applicationVersion() + " (Qt/X11)";
 
   request.setUrl( QUrl( _url, QUrl::TolerantMode ));
   request.setRawHeader( "User-Agent", appl.toAscii() );

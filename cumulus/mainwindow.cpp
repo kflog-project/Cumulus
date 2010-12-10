@@ -199,8 +199,12 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // get last saved window geometric from GeneralConfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
 
-  qDebug( "Cumulus, Release: %s, Build date:  %s based on Qt/X11 Version %s",
-           CU_VERSION, __DATE__, QT_VERSION_STR );
+  qDebug() << "Cumulus Release:"
+           << QCoreApplication::applicationVersion()
+           << "Build date:"
+           << GeneralConfig::instance()->getBuiltDate()
+           << "based on Qt/X11 Version"
+           << QT_VERSION_STR;
 
   qDebug( "Desktop size is %dx%d, width=%d, height=%d",
           QApplication::desktop()->screenGeometry().width(),
@@ -281,7 +285,10 @@ void MainWindow::slotCreateApplicationWidgets()
 
 #ifdef MAEMO
 
-  ossoContext = osso_initialize( "org.kflog.Cumulus", CU_VERSION, false, 0 );
+  ossoContext = osso_initialize( "org.kflog.Cumulus",
+                                 QCoreApplication::applicationVersion().toAscii().data(),
+                                 false,
+                                 0 );
 
   if( ! ossoContext )
     {
@@ -1741,18 +1748,19 @@ void MainWindow::slotVersion()
   aw->setWindowTitle( tr( "About Cumulus") );
   aw->setHeaderIcon( GeneralConfig::instance()->loadPixmap("cumulus-desktop48x48.png") );
 
-  QString header( tr("<html>Cumulus %1, &copy; 2002-2010, The Cumulus-Team</html>").arg( CU_VERSION ) );
+  QString header( tr("<html>Cumulus %1, &copy; 2002-2010, The Cumulus-Team</html>").arg( QCoreApplication::applicationVersion() ) );
 
   aw->setHeaderText( header );
 
   QString about( tr(
           "<hml>"
-          "Cumulus %1<br><br>"
-          "compiled at %2 with QT %3<br><br>"
-          "Homepage: \"<a href=\"http://www.kflog.org/cumulus/\">www.kflog.org/cumulus/</a><br><br>"
+          "Cumulus %1, compiled at %2 with QT %3<br><br>"
+          "Homepage: <a href=\"http://www.kflog.org/cumulus/\">www.kflog.org/cumulus/</a><br><br>"
           "Report bugs to: <a href=\"mailto:kflog.cumulus&#64;googlemail.com\">kflog.cumulus&#64;googlemail.com</a><br><br>"
           "Published under the <a href=\"http://www.gnu.org/licenses/licenses.html#GPL\">GPL</a>"
-          "</html>" ).arg(CU_VERSION).arg(__DATE__).arg(QT_VERSION_STR) );
+          "</html>" ).arg( QCoreApplication::applicationVersion() )
+                     .arg( GeneralConfig::instance()->getBuiltDate() )
+                     .arg( QT_VERSION_STR ) );
 
   aw->setAboutText( about );
 

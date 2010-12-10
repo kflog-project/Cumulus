@@ -25,6 +25,7 @@
 #include <stdlib.h>
 
 #include <QtGlobal>
+#include <QCoreApplication>
 #include <QMessageBox>
 #include <QDir>
 
@@ -457,9 +458,10 @@ void IgcLogger::writeHeader()
   _stream << "HFGTYGLIDERTYPE: " << gliderType << "\r\n";
   _stream << "HFGIDGLIDERID: " << gliderRegistration << "\r\n";
   _stream << "HFDTM100GPSDATUM: WSG-1984\r\n";
-  _stream << "HFRFWFIRMWAREVERION: " << CU_VERSION << "\r\n";
+  _stream << "HFRFWFIRMWAREVERION: " << QCoreApplication::applicationVersion() << "\r\n";
   _stream << "HFRHWHARDWAREVERSION: " << HwInfo::instance()->getTypeString() << "\r\n" ;
-  _stream << "HFFTYFRTYPE: Cumulus Version: " << CU_VERSION << ", Qt/X11 Version: " << qVersion() << "\r\n";
+  _stream << "HFFTYFRTYPE: Cumulus Version: " << QCoreApplication::applicationVersion()
+          << ", Qt/X11 Version: " << qVersion() << "\r\n";
   _stream << "HFGPS: UNKNOWN\r\n";
   _stream << "HFPRSPRESSALTSENSOR: UNKNOWN\r\n";
   _stream << "HSCIDCOMPETITIONID: " << gliderCallSign << "\r\n";

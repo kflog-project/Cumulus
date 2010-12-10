@@ -602,7 +602,8 @@ bool PreFlightTaskList::saveTaskList()
   QString dtStr = dt.toString(Qt::ISODate);
 
   stream << "# KFLog/Cumulus-Task-File created at "
-  << dtStr << " by Cumulus " << CU_VERSION << endl;
+         << dtStr << " by Cumulus "
+         << QCoreApplication::applicationVersion() << endl;
 
   for ( int i=0; i < taskList.count(); i++ )
     {

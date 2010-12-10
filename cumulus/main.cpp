@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
   qInstallMsgHandler(messageHandler);
 
   // @AP: Reset the locale that is used for number formatting to "C" locale.
-  setlocale(LC_NUMERIC,"C");
+  setlocale(LC_NUMERIC, "C");
 
   QCoreApplication::setApplicationName( "Cumulus" );
   QCoreApplication::setApplicationVersion( CU_VERSION );
@@ -68,9 +68,11 @@ int main(int argc, char *argv[])
   QCoreApplication::setOrganizationDomain( "www.kflog.org" );
 
   // @AP: to make trace output available, if process is started via
-  // QT/X11, we can redirect all output into a file, if config option
+  // QT/X11, we can redirect all output into a file, if configuration option
   // Log2File is set to true.
   GeneralConfig *conf = GeneralConfig::instance();
+
+  conf->setBuiltDate( __DATE__ );
 
   // @AP: make install root of Cumulus available for other modules via
   // GeneralConfig. The assumption is that Cumulus is installed at

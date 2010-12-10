@@ -405,7 +405,9 @@ bool FlarmAliasList::saveAliasData()
   QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
 
   stream << "# Cumulus Flarm alias file created at "
-         << dtStr << " by Cumulus " << CU_VERSION << endl;
+         << dtStr
+         << " by Cumulus "
+         << QCoreApplication::applicationVersion() << endl;
 
   QMutableHashIterator<QString, QString> it(aliasHash);
 
