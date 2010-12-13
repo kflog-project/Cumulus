@@ -24,7 +24,6 @@
 #include "httpclient.h"
 #include "authdialog.h"
 #include "generalconfig.h"
-#include "target.h"
 
 HttpClient::HttpClient( QObject *parent, const bool showProgressDialog ) :
   QObject(parent),
