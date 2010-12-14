@@ -199,7 +199,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
               // Fetch data from airport list
               site = _globalMapContents->getAirport(i);
             }
-          else if( item == MapContents::GliderSiteList )
+          else if( item == MapContents::GliderfieldList )
             {
               // fetch data from glider site list
               site = _globalMapContents->getGlidersite(i);
@@ -481,7 +481,7 @@ void ReachableList::calculateNewList()
 
   // Now add items of different type to the list
   addItemsToList(MapContents::AirfieldList);
-  addItemsToList(MapContents::GliderSiteList);
+  addItemsToList(MapContents::GliderfieldList);
   addItemsToList(MapContents::OutLandingList);
   addItemsToList(MapContents::WaypointList);
   modeAltitude = false;

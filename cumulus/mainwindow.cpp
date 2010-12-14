@@ -354,7 +354,7 @@ void MainWindow::slotCreateApplicationWidgets()
   viewWP = new WaypointListView( this );
 
   QVector<enum MapContents::MapContentsListID> itemList;
-  itemList << MapContents::AirfieldList << MapContents::GliderSiteList;
+  itemList << MapContents::AirfieldList << MapContents::GliderfieldList;
   viewAF = new AirfieldListView( itemList, this ); // airfields
 
   itemList.clear();

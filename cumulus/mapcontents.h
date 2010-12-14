@@ -74,7 +74,7 @@ class MapContents : public QObject
     /**
      * The identifiers for the map element types.
      */
-    enum MapContentsListID {NotSet = 0, AirfieldList, GliderSiteList,
+    enum MapContentsListID {NotSet = 0, AirfieldList, GliderfieldList,
                             AddSitesList, OutLandingList, RadioList, AirspaceList,
                             ObstacleList, ReportList, CityList, VillageList,
                             LandmarkList, HighwayList,

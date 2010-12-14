@@ -262,7 +262,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
   int searchList[] =
     {
       MapContents::AirfieldList,
-      MapContents::GliderSiteList,
+      MapContents::GliderfieldList,
       MapContents::OutLandingList
     };
 
@@ -314,7 +314,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
               // Fetch data from airport list
               site = _globalMapContents->getAirport(loop);
             }
-          else if( searchList[l] == MapContents::GliderSiteList )
+          else if( searchList[l] == MapContents::GliderfieldList )
             {
               // fetch data from glider site list
               site = _globalMapContents->getGlidersite(loop);
@@ -1125,7 +1125,7 @@ void Map::__drawNavigationLayer()
   navP.begin(&m_pixNavigationMap);
 
   _globalMapContents->drawList(&navP, MapContents::OutLandingList, drawnAf);
-  _globalMapContents->drawList(&navP, MapContents::GliderSiteList, drawnAf);
+  _globalMapContents->drawList(&navP, MapContents::GliderfieldList, drawnAf);
   _globalMapContents->drawList(&navP, MapContents::AirfieldList, drawnAf);
   __drawWaypoints(&navP, drawnWp);
   __drawPlannedTask(&navP, drawnWp);

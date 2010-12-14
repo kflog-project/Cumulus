@@ -166,7 +166,7 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   // Airfield list
   QVector<enum MapContents::MapContentsListID> itemList;
-  itemList << MapContents::AirfieldList << MapContents::GliderSiteList;
+  itemList << MapContents::AirfieldList << MapContents::GliderfieldList;
   waypointList[1] = new AirfieldListWidget( itemList, this, false );
 
   // outlanding list

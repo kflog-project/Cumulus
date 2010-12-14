@@ -2035,7 +2035,7 @@ void MapContents::clearList(const int listIndex)
     case AirfieldList:
       airfieldList.clear();
       break;
-    case GliderSiteList:
+    case GliderfieldList:
       gliderSiteList.clear();
       break;
     case OutLandingList:
@@ -2093,7 +2093,7 @@ unsigned int MapContents::getListLength( const int listIndex ) const
     {
     case AirfieldList:
       return airfieldList.count();
-    case GliderSiteList:
+    case GliderfieldList:
       return gliderSiteList.count();
     case OutLandingList:
       return outLandingList.count();
@@ -2154,7 +2154,7 @@ BaseMapElement* MapContents::getElement(int listType, unsigned int index)
     {
     case AirfieldList:
       return &airfieldList[index];
-    case GliderSiteList:
+    case GliderfieldList:
       return &gliderSiteList[index];
     case OutLandingList:
       return &outLandingList[index];
@@ -2197,7 +2197,7 @@ SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
     {
     case AirfieldList:
       return static_cast<SinglePoint *> (&airfieldList[index]);
-    case GliderSiteList:
+    case GliderfieldList:
       return static_cast<SinglePoint *> (&gliderSiteList[index]);
     case OutLandingList:
       return static_cast<SinglePoint *> (&outLandingList[index]);
@@ -2442,7 +2442,7 @@ void MapContents::drawList( QPainter* targetP,
 
       break;
 
-    case GliderSiteList:
+    case GliderfieldList:
       //list="GliderList";
       //len=gliderSiteList.count();
       showProgress2WaitScreen( tr("Drawing glider sites") );
@@ -2504,7 +2504,7 @@ void MapContents::drawList(QPainter* targetP, unsigned int listID)
 
       break;
 
-    case GliderSiteList:
+    case GliderfieldList:
       //list="GliderList";
       //len=gliderSiteList.count();
       showProgress2WaitScreen( tr("Drawing glider sites") );
