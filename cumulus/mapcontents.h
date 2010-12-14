@@ -134,7 +134,7 @@ class MapContents : public QObject
      *
      * @param  index  the list-index of the glider site
      */
-    Airfield* getGlidersite(unsigned int index);
+    Airfield* getGliderfield(unsigned int index);
 
     /**
      * @return a pointer to the given airport
@@ -421,9 +421,9 @@ class MapContents : public QObject
     QList<Airfield> airfieldList;
 
     /**
-     * gliderSiteList contains all glider sites.
+     * gliderfieldList contains all glider sites.
      */
-    QList<Airfield> gliderSiteList;
+    QList<Airfield> gliderfieldList;
 
     /**
      * addSitesList contains all, ultralight sites,

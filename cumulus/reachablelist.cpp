@@ -202,7 +202,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
           else if( item == MapContents::GliderfieldList )
             {
               // fetch data from glider site list
-              site = _globalMapContents->getGlidersite(i);
+              site = _globalMapContents->getGliderfield(i);
             }
           else if( item == MapContents::OutLandingList )
             {

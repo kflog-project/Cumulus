@@ -1630,7 +1630,7 @@ void MapContents::proofeSection()
       // @AP: Look for and if available load a welt2000 airfield file
       Welt2000 welt2000;
 
-      if( ! welt2000.load( airfieldList, gliderSiteList, outLandingList ) )
+      if( ! welt2000.load( airfieldList, gliderfieldList, outLandingList ) )
         {
 
 #ifdef INTERNET
@@ -2036,7 +2036,7 @@ void MapContents::clearList(const int listIndex)
       airfieldList.clear();
       break;
     case GliderfieldList:
-      gliderSiteList.clear();
+      gliderfieldList.clear();
       break;
     case OutLandingList:
       outLandingList.clear();
@@ -2094,7 +2094,7 @@ unsigned int MapContents::getListLength( const int listIndex ) const
     case AirfieldList:
       return airfieldList.count();
     case GliderfieldList:
-      return gliderSiteList.count();
+      return gliderfieldList.count();
     case OutLandingList:
       return outLandingList.count();
     case RadioList:
@@ -2138,9 +2138,9 @@ Airfield* MapContents::getAirport(unsigned int index)
   return &airfieldList[index];
 }
 
-Airfield* MapContents::getGlidersite(unsigned int index)
+Airfield* MapContents::getGliderfield(unsigned int index)
 {
-  return &gliderSiteList[index];
+  return &gliderfieldList[index];
 }
 
 Airfield* MapContents::getOutlanding(unsigned int index)
@@ -2155,7 +2155,7 @@ BaseMapElement* MapContents::getElement(int listType, unsigned int index)
     case AirfieldList:
       return &airfieldList[index];
     case GliderfieldList:
-      return &gliderSiteList[index];
+      return &gliderfieldList[index];
     case OutLandingList:
       return &outLandingList[index];
     case RadioList:
@@ -2198,7 +2198,7 @@ SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
     case AirfieldList:
       return static_cast<SinglePoint *> (&airfieldList[index]);
     case GliderfieldList:
-      return static_cast<SinglePoint *> (&gliderSiteList[index]);
+      return static_cast<SinglePoint *> (&gliderfieldList[index]);
     case OutLandingList:
       return static_cast<SinglePoint *> (&outLandingList[index]);
     case RadioList:
@@ -2258,12 +2258,12 @@ void MapContents::slotReloadMapData()
   villageList.clear();
 
   airfieldList.clear();
-  gliderSiteList.clear();
+  gliderfieldList.clear();
   outLandingList.clear();
 
   // free internal allocated memory in QList
   airfieldList   = QList<Airfield>();
-  gliderSiteList = QList<Airfield>();
+  gliderfieldList = QList<Airfield>();
   outLandingList = QList<Airfield>();
 
   // all isolines are cleared
@@ -2342,13 +2342,13 @@ void MapContents::slotReloadWelt2000Data()
   GpsNmea::gps->enableReceiving( false );
 
   airfieldList.clear();
-  gliderSiteList.clear();
+  gliderfieldList.clear();
   outLandingList.clear();
 
   _globalMapView->message( tr("Reloading Welt2000 started") );
 
   Welt2000 welt2000;
-  welt2000.load( airfieldList, gliderSiteList, outLandingList );
+  welt2000.load( airfieldList, gliderfieldList, outLandingList );
 
   _globalMapView->message( tr("Reloading Welt2000 finished") );
 
@@ -2444,15 +2444,15 @@ void MapContents::drawList( QPainter* targetP,
 
     case GliderfieldList:
       //list="GliderList";
-      //len=gliderSiteList.count();
+      //len=gliderfieldList.count();
       showProgress2WaitScreen( tr("Drawing glider sites") );
 
-      for (int i = 0; i < gliderSiteList.size(); i++)
+      for (int i = 0; i < gliderfieldList.size(); i++)
         {
-          if( gliderSiteList[i].drawMapElement(targetP) && showAfLabels )
+          if( gliderfieldList[i].drawMapElement(targetP) && showAfLabels )
             {
               // required and draw object is appended to the list
-              drawnAfList.append( &gliderSiteList[i] );
+              drawnAfList.append( &gliderfieldList[i] );
             }
         }
 
@@ -2506,12 +2506,12 @@ void MapContents::drawList(QPainter* targetP, unsigned int listID)
 
     case GliderfieldList:
       //list="GliderList";
-      //len=gliderSiteList.count();
+      //len=gliderfieldList.count();
       showProgress2WaitScreen( tr("Drawing glider sites") );
 
-      for (int i = 0; i < gliderSiteList.size(); i++)
+      for (int i = 0; i < gliderfieldList.size(); i++)
         {
-          gliderSiteList[i].drawMapElement(targetP);
+          gliderfieldList[i].drawMapElement(targetP);
         }
 
       break;

@@ -317,7 +317,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
           else if( searchList[l] == MapContents::GliderfieldList )
             {
               // fetch data from glider site list
-              site = _globalMapContents->getGlidersite(loop);
+              site = _globalMapContents->getGliderfield(loop);
             }
           else if( searchList[l] == MapContents::OutLandingList )
             {
