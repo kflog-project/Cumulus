@@ -79,7 +79,7 @@ public:
    * Returns all currently used read file descriptors as mask, usable by the
    * select call.
    *
-   * \param fd_set A file descriptor set to be checked for read events.
+   * \return A file descriptor set to be checked for read events.
    */
   fd_set *getReadFdMask();
 
