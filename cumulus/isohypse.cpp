@@ -22,7 +22,6 @@
 #include <QSize>
 
 #include "isohypse.h"
-#include "generalconfig.h"
 #include "mapmatrix.h"
 
 extern MapMatrix* _globalMapMatrix;
