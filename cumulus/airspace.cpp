@@ -22,27 +22,26 @@
 #include "generalconfig.h"
 #include "calculator.h"
 
-Airspace::Airspace(QString n, BaseMapElement::objectType t, QPolygon pG,
-                   int u, BaseMapElement::elevationType uType,
-                   int l, BaseMapElement::elevationType lType)
-  : LineElement(n, t, pG), lLimitType(lType), uLimitType(uType),
+Airspace::Airspace(QString name, BaseMapElement::objectType oType, QPolygon pP,
+                   int upper, BaseMapElement::elevationType uType,
+                   int lower, BaseMapElement::elevationType lType)
+  : LineElement(name, oType, pP), lLimitType(lType), uLimitType(uType),
     _airRegion(0)
 {
-  type = t;
-
   // All Airspaces are closed regions ...
   closed = true;
 
   // Normalize values
   double lLim=0.0;
-  switch( lLimitType ) {
+  switch( lLimitType )
+  {
   case GND:
   case MSL:
   case STD:
-    lLim = Distance::mFromFeet*l;
+    lLim = Distance::mFromFeet*lower;
     break;
   case FL:
-    lLim = Distance::mFromFeet*100.0*l;
+    lLim = Distance::mFromFeet*100.0*lower;
     break;
   case UNLTD:
     lLim=99999.0;
@@ -56,14 +55,15 @@ Airspace::Airspace(QString n, BaseMapElement::objectType t, QPolygon pG,
 
   lLimit.setMeters( lLim );
   double uLim=0.0;
-  switch( uLimitType ) {
+  switch( uLimitType )
+  {
   case GND:
   case MSL:
   case STD:
-    uLim = Distance::mFromFeet*u;
+    uLim = Distance::mFromFeet*upper;
     break;
   case FL:
-    uLim = Distance::mFromFeet*100.0*u;
+    uLim = Distance::mFromFeet*100.0*upper;
     break;
   case UNLTD:
     lLim=99999.0;

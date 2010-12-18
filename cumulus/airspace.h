@@ -67,12 +67,17 @@ public:
   enum ConflictType { none=0, near=1, veryNear=2, inside=3 };
 
   /**
-   * Creates a new Airspace-object. n is the name, t the typeID. length
-   * is the number of coordinates. upper and upperType give the upper limit
-   * of the airspace and the type of value (MSL, GND, FL); lower and
-   * lowerType give the value for the lower limit.
+   * Creates a new Airspace object.
+   *
+   * \param name The name of the airspace
+   * \param oType The object type identifier.
+   * \param The projected coordinates of the airspace as polygon.
+   * \param upper The upper altitude limit of the airspace
+   * \param upperType The upper altitude reference
+   * \param lower The lower altitude limit of the airspace
+   * \param lowerType The lower altitude reference
    */
-  Airspace( QString n, BaseMapElement::objectType t, QPolygon pP,
+  Airspace( QString name, BaseMapElement::objectType oType, QPolygon pP,
             int upper, BaseMapElement::elevationType upperType,
             int lower, BaseMapElement::elevationType lowerType);
 
@@ -254,8 +259,6 @@ private:
    * @see #getUpperT
    */
   BaseMapElement::elevationType uLimitType;
-
-  BaseMapElement::objectType type;
 
   mutable ConflictType _lastVConflict;
 
