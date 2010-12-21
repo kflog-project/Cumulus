@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2009 by Axel Pauli
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -27,12 +27,14 @@
  * UltraLight, HangGlider, Parachute, Balloon, Village
  * or Landmark. Consists only of a name and a position.
  *
- * @see BaseMapElement#objectType
- * @see Airfield
- * @see GliderSite
- * @see RadioPoint
+ * \see BaseMapElement#objectType
+ * \see Airfield
+ * \see GliderSite
+ * \see RadioPoint
  *
  * \date 2000-2010
+ *
+ * \version $Id$
  */
 
 #ifndef SINGLE_POINT_H

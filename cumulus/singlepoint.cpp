@@ -7,10 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2009 by Axel Pauli
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -18,16 +18,21 @@
 
 #include "singlepoint.h"
 
+extern MapMatrix * _globalMapMatrix;
+
 SinglePoint::SinglePoint( const QString& n,
                           const QString& shortName,
                           const BaseMapElement::objectType t,
                           const WGSPoint& wgsP,
                           const QPoint& pos,
                           const unsigned int elev,
-                          const unsigned short secID)
-  : BaseMapElement(n, t, secID), wgsPosition(wgsP),
-    position(pos), shortName(shortName), curPos(pos),
-    elevation(elev)
+                          const unsigned short secID ) :
+  BaseMapElement(n, t, secID),
+  wgsPosition(wgsP),
+  position(pos),
+  shortName(shortName),
+  curPos(pos),
+  elevation(elev)
 {
 }
 
@@ -35,41 +40,38 @@ SinglePoint::~SinglePoint()
 {
 }
 
-bool SinglePoint::drawMapElement(QPainter* targetP)
+bool SinglePoint::drawMapElement( QPainter* targetP )
 {
-  if(! isVisible() )
+  if( ! isVisible() )
     {
-      curPos = QPoint(-5000, -5000);
+      curPos = QPoint( -5000, -5000 );
       return false;
     }
 
-  extern MapMatrix * _globalMapMatrix;
-  int scale = _globalMapMatrix->getScaleRatio()/50;
+  curPos = glMapMatrix->map( position );
+
+  int scale = _globalMapMatrix->getScaleRatio() / 50;
   // qDebug("scale: %d %d",scale,_globalMapMatrix->getScaleRatio()  );
-  targetP->setPen(QPen(Qt::black, 2));
-  int iconSize = 8;
+  targetP->setPen( QPen( Qt::black, 2 ) );
 
-  if(typeID == BaseMapElement::Village)
+  if( typeID == BaseMapElement::Village )
     {
-      targetP->setBrush(Qt::NoBrush);
-      targetP->drawEllipse(curPos.x() - 5, curPos.y() - 5, 10, 10);
+      targetP->setBrush( Qt::NoBrush );
+      targetP->drawEllipse( curPos.x() - 5, curPos.y() - 5, 10, 10 );
       return true;
-    }
-
-  curPos = glMapMatrix->map(position);
-
-  if(glMapMatrix->isSwitchScale())
-    {
-      iconSize = 16;
     }
 
   if( !glMapMatrix->isSwitchScale2() )
     {
-      targetP->drawEllipse(curPos.x(), curPos.y(), scale, scale );
+      targetP->drawEllipse(curPos.x() - scale/2, curPos.y() - scale/2, scale, scale );
     }
   else
     {
-      targetP->drawPixmap(curPos.x() - iconSize, curPos.y() - iconSize, glConfig->getPixmap(typeID));
+       QPixmap pixmap = glConfig->getPixmap(typeID);
+
+       targetP->drawPixmap( curPos.x() - pixmap.size().width() / 2,
+                            curPos.y() - pixmap.size().height() / 2,
+                            pixmap );
     }
 
   return true;
