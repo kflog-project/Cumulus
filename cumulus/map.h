@@ -294,7 +294,7 @@ private:
    * redraw is already in progress, a new redraw is scheduled so the
    * redraw can take place on a later time.
    */
-  void __redrawMap(mapLayer fromLayer, bool queueRequest=true);
+  void __redrawMap(mapLayer fromLayer=baseLayer, bool queueRequest=true);
 
   /**
    * Draws the base layer of the map.

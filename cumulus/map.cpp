@@ -79,7 +79,7 @@ Map::Map(QWidget* parent) : QWidget(parent)
   heading = 0;
   bearing = 0;
   mode = northUp;
-  m_scheduledFromLayer = topLayer;
+  m_scheduledFromLayer = baseLayer;
   ShowGlider = false;
   setMutex(false);
 
@@ -93,16 +93,7 @@ Map::Map(QWidget* parent) : QWidget(parent)
     }
 
   // Set pixmaps first to the size of the parent
-  m_pixBaseMap        = QPixmap( parent->size() );
-  m_pixAeroMap        = QPixmap( parent->size() );
-  m_pixNavigationMap  = QPixmap( parent->size() );
-  m_pixInformationMap = QPixmap( parent->size() );
-  m_pixPaintBuffer    = QPixmap( parent->size() );
-
-  m_pixBaseMap.fill(Qt::white);
-  m_pixAeroMap.fill(Qt::white);
-  m_pixNavigationMap.fill(Qt::white);
-  m_pixInformationMap.fill(Qt::white);
+  m_pixPaintBuffer = QPixmap( parent->size() );
   m_pixPaintBuffer.fill(Qt::white);
 
   QPalette palette;
@@ -871,6 +862,8 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
 {
   static bool first = true; // mark first calling of method
 
+  static QSize lastSize; // Save the last used window size
+
   // qDebug("Map::__redrawMap from layer=%d", fromLayer);
 
   // First call after creation of object can pass
@@ -942,8 +935,13 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
 
       _globalMapMatrix->createMatrix(this->size());
 
-      // initialize the base pixmap
-      m_pixBaseMap = QPixmap( size() );
+      if( lastSize.isValid() == false || lastSize != size() )
+        {
+          // save the last used size
+          lastSize = size();
+          // reinitialize the base pixmap
+          m_pixBaseMap = QPixmap( size() );
+        }
 
       //actually start doing our drawing
       __drawBaseLayer();
