@@ -14,6 +14,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2011-01-06 AP: BUGFIX: Do only provide the languages in settings personal,
+                   which are really installed. The English language is always
+                   the default language.
 [-] 2010-12-21 AP: BUGFIX: Class SinglePoint placed drawn icons not in the
                    center of its middle point.
 [o] 2010-12-09 AP: Doxygen error complains in source code fixed. For most of

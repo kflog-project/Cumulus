@@ -23,8 +23,11 @@
  *
  * \brief Configuration settings for personal settings.
  *
- * \date 2002-2010
+ * Configuration settings for personal settings.
  *
+ * \date 2002-2011
+ *
+ * \version $Id$
  */
 
 #ifndef SETTINGS_PAGE_PERSONAL_H

@@ -44,9 +44,6 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   lbl = new QLabel(tr("Language:"), this);
   topLayout->addWidget(lbl, row, 0);
   langBox = new QComboBox(this);
-  // langBox->setMaximumWidth(30);
-  langBox->addItem("de");
-  langBox->addItem("en");
   topLayout->addWidget(langBox, row, 1, 1, 1);
   row++;
 
@@ -116,8 +113,21 @@ void SettingsPagePersonal::slot_load()
 
   userDataDir->setText( conf->getUserDataDirectory() );
 
+  // Determine user's wanted language
+  QString langPath = conf->getInstallRoot() + "/locale";
+
+  // Check for installed languages
+  QDir dir( langPath );
+  QStringList langs = dir.entryList( QDir::AllDirs | QDir::NoDot | QDir::NoDotDot );
+
+  // Add default language English to the list.
+  langs << "en";
+  langs.sort();
+
+  langBox->addItems(langs);
+
   // search item to be selected
-  int idx = langBox->findText(conf->getLanguage());
+  int idx = langBox->findText( conf->getLanguage() );
 
   if( idx != -1 )
     {
