@@ -1668,7 +1668,7 @@ void MapContents::proofeSection()
           if ( (secID >= 0) && (secID <= MAX_TILE_NUMBER) )
             {
               // a valid tile (2x2 degree area) must be in the range 0 ... 16200
-              if (!tileSectionSet.contains(secID))
+              if (! tileSectionSet.contains(secID))
                 {
                   // qDebug(" Tile %d is missing", secID );
                   // Tile is missing
