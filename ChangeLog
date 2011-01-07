@@ -14,6 +14,13 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2011-01-07 AP: Altitude method of openair parser extended. The terms GROUND
+                   and the unit extension ALT are added. These items were
+                   contained in an openair file of South Africa. 
+                   ALT is the altitude in feet with local QNH set, i.e. height
+                   above MSL. Thanks to Hendrik Stheeman for his explanation.
+                   The openair file is to find here:
+                   http://soaringweb.org/TP/Magalies/gautng10.txt
 [-] 2011-01-06 AP: BUGFIX: Do only provide the languages in settings personal,
                    which are really installed. The English language is always
                    the default language.
