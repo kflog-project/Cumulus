@@ -78,7 +78,7 @@ MapConfig::MapConfig(QObject* parent) :
                                     BaseMapElement::CivHeliport,
                                     BaseMapElement::MilHeliport,
                                     BaseMapElement::AmbHeliport,
-                                    BaseMapElement::Glidersite,
+                                    BaseMapElement::Gliderfield,
                                     BaseMapElement::UltraLight,
                                     BaseMapElement::HangGlider,
                                     BaseMapElement::Outlanding
@@ -640,7 +640,7 @@ bool MapConfig::isRotatable( unsigned int typeID ) const
       case BaseMapElement::IntAirport:
       case BaseMapElement::CivMilAirport:
       case BaseMapElement::Airfield:
-      case BaseMapElement::Glidersite:
+      case BaseMapElement::Gliderfield:
         return true;
       default:
         return false;
@@ -678,7 +678,7 @@ QString MapConfig::getPixmapName(unsigned int typeID, bool isWinch, bool rotatab
     case BaseMapElement::AmbHeliport:
       iconName = "ambheliport";
       break;
-    case BaseMapElement::Glidersite:
+    case BaseMapElement::Gliderfield:
       if (isWinch)
         iconName = "glider_winch";
       else

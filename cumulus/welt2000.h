@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **   Copyright (c):  2006-2009 by Axel Pauli, axel@kflog.org
+ **   Copyright (c):  2006-2011 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -113,7 +113,7 @@
  **   The supported cumulus map elements are:
  **
  **   [IntAirport|Airport|MilAirport|CivMilAirport|Airfield|ClosedAirfield|
- **    CivHeliport|MilHeliport|AmbHeliport|Glidersite|UltraLight|HangGlider]
+ **    CivHeliport|MilHeliport|AmbHeliport|Gliderfield|UltraLight|HangGlider]
  **
  **   Against the original compiled version of an cumulus airfield
  **   file, the elements of a compiled welt2000 file were further
@@ -149,7 +149,7 @@
  * This class can read, parse and filter a Welt2000 file and store its content
  * in a binary format.
  *
- * \date 2006-2009
+ * \date 2006-2011
  */
 
 class Welt2000
@@ -172,12 +172,12 @@ public:
      * results are put in the passed lists.
      *
      * @param airfieldList All airports have to be stored in this list
-     * @param gliderList All gilder fields have to be stored in this list
+     * @param gliderfieldList All gilder fields have to be stored in this list
      * @param outlandingList All outlanding fields have to be stored in this list
      * @return true (success) or false (error occurred)
      */
     bool load( QList<Airfield>& airfieldList,
-               QList<Airfield>& gliderList,
+               QList<Airfield>& gliderfieldList,
                QList<Airfield>& outlandingList );
 
 private:
@@ -188,7 +188,7 @@ private:
      *
      * @param path Full name with path of welt2000 file
      * @param airfieldList All airports have to be stored in this list
-     * @param gliderList All gilder fields have to be stored in this list
+     * @param gliderfieldList All gilder fields have to be stored in this list
      * @param outlandingList All outlanding fields have to be stored in this list
      * @param doCompile create a binary file of the parser results,
      *                  if flag is set to true. Default is false
@@ -196,7 +196,7 @@ private:
      */
     bool parse( QString& path,
                 QList<Airfield>& airfieldList,
-                QList<Airfield>& gliderList,
+                QList<Airfield>& gliderfieldList,
                 QList<Airfield>& outlandingList,
                 bool doCompile=false );
 
@@ -225,13 +225,13 @@ private:
      *
      * @param path Full name with path of welt2000 binary file
      * @param airfieldList All airports have to be stored in this list
-     * @param gliderList All gilder fields have to be stored in this list
+     * @param gliderfieldList All gilder fields have to be stored in this list
      * @param outlandingList All outlanding fields have to be stored in this list
      * @return true (success) or false (error occurred)
      */
     bool readCompiledFile( QString &path,
                            QList<Airfield>& airfieldList,
-                           QList<Airfield>& gliderList,
+                           QList<Airfield>& gliderfieldList,
                            QList<Airfield>& outlandingList );
 
     /**

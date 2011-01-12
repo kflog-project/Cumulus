@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2006-2010 by Axel Pauli, axel@kflog.org
+ **   Copyright (c):  2006-2011 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -65,7 +65,7 @@ Welt2000::Welt2000()
   c_baseTypeMap.insert( "CivHeliport", BaseMapElement::CivHeliport );
   c_baseTypeMap.insert( "MilHeliport", BaseMapElement::MilHeliport );
   c_baseTypeMap.insert( "AmbHeliport", BaseMapElement::AmbHeliport );
-  c_baseTypeMap.insert( "Glidersite", BaseMapElement::Glidersite );
+  c_baseTypeMap.insert( "Glidersite", BaseMapElement::Gliderfield );
   c_baseTypeMap.insert( "UltraLight", BaseMapElement::UltraLight );
   c_baseTypeMap.insert( "HangGlider", BaseMapElement::HangGlider );
 }
@@ -84,7 +84,7 @@ Welt2000::~Welt2000()
  * are put in the passed lists
  */
 bool Welt2000::load( QList<Airfield>& airfieldList,
-                     QList<Airfield>& gliderList,
+                     QList<Airfield>& gliderfieldList,
                      QList<Airfield>& outlandingList )
 {
   // Rename WELT2000.TXT -> welt2000.txt.
@@ -125,7 +125,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
           // Compiled file format is not the expected one, remove
           // wrong file and start a reparsing of source file.
           unlink( w2PathTxc.toLatin1().data() );
-          return parse( w2PathTxt, airfieldList, gliderList, outlandingList, true );
+          return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
       // Do a date-time check, if a compiled file was localized and a
@@ -144,7 +144,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
               // compiled file. Therefore we do start a reparsing of source
               // file.
               unlink( w2PathTxc.toLatin1().data() );
-              return parse( w2PathTxt, airfieldList, gliderList, outlandingList, true );
+              return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
             }
         }
 
@@ -162,7 +162,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
           // in the assumption that a configuration file will not be changed
           // every minute.
           unlink( w2PathTxc.toLatin1().data() );
-          return parse( w2PathTxt, airfieldList, gliderList, outlandingList, true );
+          return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
       // We do check, if the user has countries defined. If yes, we
@@ -177,7 +177,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
           // There is a difference in the country lists. Therefore we
           // start a reparsing of the source file.
           unlink( w2PathTxc.toLatin1().data() );
-          return parse( w2PathTxt, airfieldList, gliderList, outlandingList, true );
+          return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
       if( h_countryList.count() > 0 )
@@ -204,7 +204,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
               // The configured country list is not identical to the
               // compiled country list. Therefore we start a reparsing.
               unlink( w2PathTxc.toLatin1().data() );
-              return parse( w2PathTxt, airfieldList, gliderList, outlandingList, true );
+              return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
             }
         }
       else
@@ -221,7 +221,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
               // Home coordinates have been changed, make a reparsing of
               // source file
               unlink( w2PathTxc.toLatin1().data() );
-              return parse( w2PathTxt, airfieldList, gliderList, outlandingList, true );
+              return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
             }
 
           // Furthermore we do check, if the home radius has been
@@ -250,7 +250,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
               // Home radius has been changed, make a reparsing of
               // source file
               unlink( w2PathTxc.toLatin1().data() );
-              return parse( w2PathTxt, airfieldList, gliderList, outlandingList, true );
+              return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
             }
         }
 
@@ -268,22 +268,22 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
             }
 
           unlink( w2PathTxc.toLatin1().data() );
-          return parse( w2PathTxt, airfieldList, gliderList, outlandingList, true );
+          return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
       // Nothing has been changed, read in compiled file
-      if( ! readCompiledFile( w2PathTxc, airfieldList, gliderList, outlandingList ) )
+      if( ! readCompiledFile( w2PathTxc, airfieldList, gliderfieldList, outlandingList ) )
         {
           // reading of compiled file failed, let's parse the source
           unlink( w2PathTxc.toLatin1().data() );
-          return parse( w2PathTxt, airfieldList, gliderList, outlandingList, true );
+          return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
       return true;
     } // End of if( resTxc )
 
   // parse source file
-  return parse( w2PathTxt, airfieldList, gliderList, outlandingList, true );
+  return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
 }
 
 
@@ -403,8 +403,8 @@ bool Welt2000::filter( QString& path )
  * File syntax: [#$] These 2 signs starts a comment line, it ends with the newline
  *              FILTER countries=<country_1>,<country_2>,...<country_n>'\nl'
  *              FILTER countries=....
- *              MAP_ICAO <name>=[IntAirport|Airport|MilAirport|CivMilAirport|Airfield|ClosedAirfield|CivHeliport|MilHeliport|AmbHeliport|Glidersite|UltraLight|HangGlider]
- *              MAP_SHORT_NAME <name>=[IntAirport|Airport|MilAirport|CivMilAirport|Airfield|ClosedAirfield|CivHeliport|MilHeliport|AmbHeliport|Glidersite|UltraLight|HangGlider]
+ *              MAP_ICAO <name>=[IntAirport|Airport|MilAirport|CivMilAirport|Airfield|ClosedAirfield|CivHeliport|MilHeliport|AmbHeliport|Gliderfield|UltraLight|HangGlider]
+ *              MAP_SHORT_NAME <name>=[IntAirport|Airport|MilAirport|CivMilAirport|Airfield|ClosedAirfield|CivHeliport|MilHeliport|AmbHeliport|Gliderfield|UltraLight|HangGlider]
  *
  * You can define several filter lines, all will be processed.
  *
@@ -521,7 +521,7 @@ bool Welt2000::readConfigEntries( QString &path )
  */
 bool Welt2000::parse( QString& path,
                       QList<Airfield>& airfieldList,
-                      QList<Airfield>& gliderList,
+                      QList<Airfield>& gliderfieldList,
                       QList<Airfield>& outlandingList,
                       bool doCompile )
 {
@@ -827,7 +827,7 @@ bool Welt2000::parse( QString& path,
         }
       else if( glField == true )
         {
-          afType = BaseMapElement::Glidersite;
+          afType = BaseMapElement::Gliderfield;
         }
       else if( olField == true )
         {
@@ -1233,10 +1233,10 @@ bool Welt2000::parse( QString& path,
           // Add an outlanding site to the list.
           outlandingList.append( af );
         }
-      else if( afType == BaseMapElement::Glidersite )
+      else if( afType == BaseMapElement::Gliderfield )
         {
           // Add a glider site to the related list.
-          gliderList.append( af );
+          gliderfieldList.append( af );
         }
       else
         {
@@ -1341,7 +1341,7 @@ bool Welt2000::parse( QString& path,
  */
 bool Welt2000::readCompiledFile( QString &path,
                                  QList<Airfield>& airfieldList,
-                                 QList<Airfield>& gliderList,
+                                 QList<Airfield>& gliderfieldList,
                                  QList<Airfield>& outlandingList )
 {
   QTime t;
@@ -1505,10 +1505,10 @@ bool Welt2000::readCompiledFile( QString &path,
       Airfield af( afName, icao, gpsName, (BaseMapElement::objectType) afType,
                    wgsPos, position, rw, (uint) elevation, frequency, comment );
 
-      if( afType == BaseMapElement::Glidersite )
+      if( afType == BaseMapElement::Gliderfield )
         {
         // Add a glider site to the list.
-          gliderList.append( af );
+          gliderfieldList.append( af );
         }
       else if( afType == BaseMapElement::Outlanding )
         {

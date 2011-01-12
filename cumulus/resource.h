@@ -75,7 +75,7 @@
 #define CIV_HELIPORT      7
 #define MIL_HELIPORT      8
 #define AMB_HELIPORT      9
-#define GLIDERSITE       10
+#define GLIDERFIELD       10
 #define ULTRALIGHT       11
 #define HANGGLIDER       12
 #define PARACHUTE        13

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -29,7 +29,9 @@
  * the class provides two enumerations for the element-type and the type of
  * elevation-values.
  *
- * \date 2000-2010
+ * \date 2000-2011
+ *
+ * \version $Id$
  */
 
 #ifndef BASE_MAP_ELEMENT_H
@@ -56,7 +58,7 @@ public:
     NotSelected = NOT_SELECTED,
     IntAirport = INT_AIRPORT, Airport = AIRPORT, MilAirport = MIL_AIRPORT, CivMilAirport = CIVMIL_AIRPORT,
     Airfield = AIRFIELD, ClosedAirfield = CLOSED_AIRFIELD, CivHeliport = CIV_HELIPORT,
-    MilHeliport = MIL_HELIPORT, AmbHeliport = AMB_HELIPORT, Glidersite = GLIDERSITE, UltraLight = ULTRALIGHT,
+    MilHeliport = MIL_HELIPORT, AmbHeliport = AMB_HELIPORT, Gliderfield = GLIDERFIELD, UltraLight = ULTRALIGHT,
     HangGlider = HANGGLIDER, Parachute = PARACHUTE, Balloon = BALLOON, Outlanding = OUTLANDING, Vor = VOR,
     VorDme = VORDME, VorTac = VORTAC, Ndb = NDB, CompPoint = COMPPOINT,
     AirA = AIR_A, AirB = AIR_B, AirC = AIR_C, AirD = AIR_D, AirE = AIR_E, WaveWindow = WAVE_WINDOW,

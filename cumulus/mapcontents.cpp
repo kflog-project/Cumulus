@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2010 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -2133,7 +2133,7 @@ Airspace* MapContents::getAirspace(unsigned int index)
   return static_cast<Airspace *> (airspaceList[index]);
 }
 
-Airfield* MapContents::getAirport(unsigned int index)
+Airfield* MapContents::getAirfield(unsigned int index)
 {
   return &airfieldList[index];
 }

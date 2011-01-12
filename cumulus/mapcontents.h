@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008-2010 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -26,7 +26,9 @@
  * This class provides methods for accessing the contents of the map.
  * It takes control over loading all needed map-files as value lists.
  *
- * \date 2000-2010
+ * \date 2000-2011
+ *
+ * \version $Id$
  */
 
 #ifndef MAP_CONTENTS_H
@@ -137,11 +139,11 @@ class MapContents : public QObject
     Airfield* getGliderfield(unsigned int index);
 
     /**
-     * @return a pointer to the given airport
+     * @return a pointer to the given airfield
      *
-     * @param  index  the list-index of the airport
+     * @param  index  the list-index of the airfield
      */
-    Airfield* getAirport(unsigned int index);
+    Airfield* getAirfield(unsigned int index);
 
     /**
      * @return a pointer to the given outlanding
@@ -416,7 +418,7 @@ class MapContents : public QObject
     void showProgress2WaitScreen( QString message );
 
     /**
-     * airfieldList contains airports, airfields, ultralight sites
+     * airfieldList contains airfields, airfields, ultralight sites
      */
     QList<Airfield> airfieldList;
 

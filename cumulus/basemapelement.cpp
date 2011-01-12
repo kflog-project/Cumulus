@@ -10,7 +10,7 @@
 **                   2008-2009 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -88,7 +88,7 @@ void BaseMapElement::loadTranslations()
   objectTranslations.insert( BaseMapElement::MilAirport, QObject::tr( "Mil. Airport" ) );
   objectTranslations.insert( BaseMapElement::CivMilAirport, QObject::tr( "Civil/Mil. Airport" ) );
   objectTranslations.insert( BaseMapElement::ClosedAirfield, QObject::tr( "Closed Airfield" ) );
-  objectTranslations.insert( BaseMapElement::Glidersite, QObject::tr( "Glider site" ) );
+  objectTranslations.insert( BaseMapElement::Gliderfield, QObject::tr( "Gliderfield" ) );
   objectTranslations.insert( BaseMapElement::HangGlider, QObject::tr( "Hang glider" ) );
   objectTranslations.insert( BaseMapElement::Landmark, QObject::tr( "Landmark" ) );
   objectTranslations.insert( BaseMapElement::MilHeliport, QObject::tr( "Mil. Heliport" ) );
