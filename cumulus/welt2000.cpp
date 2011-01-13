@@ -46,7 +46,7 @@
 #define FILE_TYPE_AIRFIELD_C 0x63
 
 // version used for files created from welt2000 data
-#define FILE_VERSION_AIRFIELD_C 202
+#define FILE_VERSION_AIRFIELD_C 203
 
 extern MapContents*  _globalMapContents;
 extern MapMatrix*    _globalMapMatrix;
@@ -602,8 +602,9 @@ bool Welt2000::parse( QString& path,
       c_homeRadius = getDistanceInKm( radius );
     }
 
-  qDebug( "W2000: File welt2000.conf contains %d country entries", c_countryList.count() );
-  qDebug( "W2000: File welt2000 defines the home radius to %.1f Km", c_homeRadius );
+  qDebug( "W2000: %d country entries are to be extracted", c_countryList.count() );
+  qDebug() << "W2000: load outlangings?" << outlandings;
+  qDebug( "W2000: Home radius is set to %.1f Km", c_homeRadius );
 
   // put all entries of country list into a dictionary for faster
   // access
@@ -779,7 +780,7 @@ bool Welt2000::parse( QString& path,
                 }
             }
         }
-      else if( line.mid( 23, 3 ) == "# S" )
+      else if( line.mid( 23, 4 ) == "#GLD" )
         {
           // Glider field
           glField = true;

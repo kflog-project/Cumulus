@@ -303,7 +303,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
           if( searchList[l] == MapContents::AirfieldList )
             {
               // Fetch data from airport list
-              site = _globalMapContents->getAirport(loop);
+              site = _globalMapContents->getAirfield(loop);
             }
           else if( searchList[l] == MapContents::GliderfieldList )
             {

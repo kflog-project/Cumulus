@@ -13,7 +13,8 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
-
+[-] 2011-01-13 AP: BUGFIX: Welt2000 has changed the identifier for gliderfields.
+                   Parser modified to the new identifier.
 [o] 2011-01-07 AP: Altitude method of openair parser extended. The terms GROUND
                    and the unit extension ALT are added. These items were
                    contained in an openair file of South Africa. 

@@ -197,7 +197,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
           if( item == MapContents::AirfieldList )
             {
               // Fetch data from airport list
-              site = _globalMapContents->getAirport(i);
+              site = _globalMapContents->getAirfield(i);
             }
           else if( item == MapContents::GliderfieldList )
             {
