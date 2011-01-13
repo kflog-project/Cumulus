@@ -603,7 +603,7 @@ bool Welt2000::parse( QString& path,
     }
 
   qDebug( "W2000: %d country entries are to be extracted", c_countryList.count() );
-  qDebug() << "W2000: load outlangings?" << outlandings;
+  qDebug() << "W2000: load outlandings?" << outlandings;
   qDebug( "W2000: Home radius is set to %.1f Km", c_homeRadius );
 
   // put all entries of country list into a dictionary for faster
