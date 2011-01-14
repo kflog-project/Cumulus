@@ -175,5 +175,5 @@ langpack_de:
 .PHONY : copylang2web
 
 copylang2web:
-	scp -C dpkg/Languages/cumuluslanguagede_$(VERSION)_armel.deb \
+	scp -C dpkg/Language-de/cumuluslanguagede_$(VERSION)_armel.deb \
       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
