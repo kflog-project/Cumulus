@@ -6,7 +6,7 @@
                              -------------------
     begin                : Mon Jul 22 2002
     copyright            : (C) 2002 by André Somers
-                         :     2010 by Axel Pauli
+                         :     2011 by Axel Pauli
 
     Email of maintainer  : axel@kflog.org
 
@@ -26,6 +26,6 @@
 #ifndef target_h
 #define target_h
 
-#define CU_VERSION "2.9.2"
+#define CU_VERSION "2.9.3"
 
 #endif

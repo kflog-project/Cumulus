@@ -13,6 +13,8 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+
+[o] 2011-01-14 AP: Airfield drawing method made more generic.
 [-] 2011-01-13 AP: BUGFIX: Welt2000 has changed the identifier for gliderfields.
                    Parser modified to the new identifier.
 [o] 2011-01-07 AP: Altitude method of openair parser extended. The terms GROUND
