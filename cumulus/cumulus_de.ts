@@ -1052,8 +1052,9 @@
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1748"/>
-        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2010, The Cumulus-Team&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2010, Das Cumulus-Team&lt;/html&gt;</translation>
+        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2011, The Cumulus-Team&lt;/html&gt;</source>
+        <oldsource>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2010, The Cumulus-Team&lt;/html&gt;</oldsource>
+        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2011, Das Cumulus-Team&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1752"/>
@@ -1837,7 +1838,8 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="basemapelement.cpp" line="91"/>
-        <source>Glider site</source>
+        <source>Gliderfield</source>
+        <oldsource>Glider site</oldsource>
         <translation>Segelfluggelände</translation>
     </message>
     <message>
@@ -2147,8 +2149,8 @@ Alle Downloads verworfen!</translation>
         <translation>Landung</translation>
     </message>
     <message>
-        <location filename="welt2000.cpp" line="777"/>
-        <location filename="welt2000.cpp" line="1495"/>
+        <location filename="welt2000.cpp" line="778"/>
+        <location filename="welt2000.cpp" line="1496"/>
         <source>Emergency Field No: </source>
         <translation>Notlandefeld Nr:</translation>
     </message>
