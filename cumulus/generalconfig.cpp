@@ -1297,35 +1297,43 @@ void GeneralConfig::setAirspaceFillingLateral(Airspace::ConflictType nearness, i
 /* Load a pixmap from the cache. If not contained there, insert it. */
 QPixmap GeneralConfig::loadPixmap( const QString& pixmapName )
 {
+  static bool firstCall = true;
+  static QPixmap smallEmptyPixmap( 16, 16 );
+  static QPixmap emptyPixmap( 32, 32 );
+
+  if( firstCall )
+    {
+      firstCall = false;
+      smallEmptyPixmap.fill( Qt::transparent );
+      emptyPixmap.fill( Qt::transparent );
+    }
+
   // determine absolute path to pixmap directory
   QString path( _installRoot + "/icons/" + pixmapName );
-  QString emptyPath( _installRoot + "/icons/empty.xpm" );
 
   QPixmap pm;
 
-  if( !QPixmapCache::find( path, pm ) )
+  if( QPixmapCache::find( path, pm ) )
     {
-      if( ! pm.load( path ) )
-        {
-          qWarning( "Could not load Pixmap file '%s'. Maybe it was not installed?",
-                    path.toLatin1().data() );
-        }
-
-      QPixmapCache::insert( path, pm );
-    }
-  else if( !QPixmapCache::find( emptyPath, pm ) )
-    {
-      if( ! pm.load( path ) )
-        {
-          qWarning( "Could not load fallback Pixmap file '%s'. Maybe it was not installed?",
-                    emptyPath.toLatin1().data() );
-        }
-
-      QPixmapCache::insert( path, pm );
+      return pm;
     }
 
+  if( pm.load( path ) )
+    {
+      QPixmapCache::insert( path, pm );
+      return pm;
+    }
 
-  return pm;
+  qWarning( "Could not load Pixmap file '%s'. Maybe it was not installed?",
+             path.toLatin1().data() );
+
+  // Return an empty transparent pixmap as default
+  if( pixmapName.startsWith( "small/") )
+    {
+      return smallEmptyPixmap;
+    }
+
+  return emptyPixmap;
 }
 
 /**

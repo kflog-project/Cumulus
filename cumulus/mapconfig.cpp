@@ -572,49 +572,49 @@ const QBrush& MapConfig::__getBrush(unsigned int typeID, int sIndex)
 
 QPixmap MapConfig::getPixmapRotatable(unsigned int typeID, bool isWinch)
 {
-  QString iconName(getPixmapName(typeID, isWinch, true));
+  QString iconName( getPixmapName( typeID, isWinch, true ) );
 
   // qDebug("PixmapNameRot: %d %s",typeID, iconName.latin1() );
 
-  if (isSwitch)
+  if( isSwitch )
     {
-      return GeneralConfig::instance()->loadPixmap(iconName);
+      return GeneralConfig::instance()->loadPixmap( iconName );
     }
   else
     {
-      return GeneralConfig::instance()->loadPixmap("small/" + iconName);
+      return GeneralConfig::instance()->loadPixmap( "small/" + iconName );
     }
 }
 
 QPixmap MapConfig::getPixmap(unsigned int typeID, bool isWinch, bool smallIcon)
 {
-  QString iconName(getPixmapName(typeID, isWinch));
+  QString iconName( getPixmapName( typeID, isWinch ) );
 
   // qDebug("getPixmapName,Winch,SmallIcon: %d %s",typeID, iconName.latin1() );
 
-  if (smallIcon)
+  if( smallIcon )
     {
-      return GeneralConfig::instance()->loadPixmap("small/" + iconName);
+      return GeneralConfig::instance()->loadPixmap( "small/" + iconName );
     }
   else
     {
-      return GeneralConfig::instance()->loadPixmap(iconName);
+      return GeneralConfig::instance()->loadPixmap( iconName );
     }
 }
 
 QPixmap MapConfig::getPixmap(unsigned int typeID, bool isWinch)
 {
-  QString iconName(getPixmapName(typeID, isWinch, false));
+  QString iconName( getPixmapName( typeID, isWinch, false ) );
 
   // qDebug("getPixmapName,Winch,Color: %d %s",typeID, iconName.latin1() );
 
-  if (isSwitch)
+  if( isSwitch )
     {
-      return GeneralConfig::instance()->loadPixmap(iconName);
+      return GeneralConfig::instance()->loadPixmap( iconName );
     }
   else
     {
-      return GeneralConfig::instance()->loadPixmap("small/" + iconName);
+      return GeneralConfig::instance()->loadPixmap( "small/" + iconName );
     }
 }
 
@@ -622,13 +622,13 @@ QPixmap MapConfig::getPixmap(QString iconName)
 {
   // qDebug("getPixmapName: %s", iconName.latin1() );
 
-  if (isSwitch)
+  if( isSwitch )
     {
-      return GeneralConfig::instance()->loadPixmap(iconName);
+      return GeneralConfig::instance()->loadPixmap( iconName );
     }
   else
     {
-      return GeneralConfig::instance()->loadPixmap("small/" + iconName);
+      return GeneralConfig::instance()->loadPixmap( "small/" + iconName );
     }
 }
 
@@ -752,6 +752,8 @@ QString MapConfig::getPixmapName(unsigned int typeID, bool isWinch, bool rotatab
       break;
 
     default:
+      qWarning() << "MapConfig::getPixmapName: No pixmap mapping found for typeId"
+                 << typeID;
       iconName = "empty";
       break;
     }
