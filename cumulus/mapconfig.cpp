@@ -423,6 +423,7 @@ const QPen& MapConfig::__getPen(unsigned int typeID, int sIndex)
     case BaseMapElement::ControlD:
       return ctrDPenList[sIndex];
     case BaseMapElement::Danger:
+    case BaseMapElement::Prohibited:
       return dangerPenList[sIndex];
     case BaseMapElement::LowFlight:
       return lowFPenList[sIndex];
@@ -489,6 +490,7 @@ bool MapConfig::isBorder(unsigned int typeID)
     case BaseMapElement::ControlD:
       return ctrDBorder[scaleIndex];
     case BaseMapElement::Danger:
+    case BaseMapElement::Prohibited:
       return dangerBorder[scaleIndex];
     case BaseMapElement::LowFlight:
       return lowFBorder[scaleIndex];
@@ -547,6 +549,7 @@ const QBrush& MapConfig::__getBrush(unsigned int typeID, int sIndex)
     case BaseMapElement::ControlD:
       return ctrDBrushList[sIndex];
     case BaseMapElement::Danger:
+    case BaseMapElement::Prohibited:
       return dangerBrushList[sIndex];
     case BaseMapElement::LowFlight:
       return lowFBrushList[sIndex];
