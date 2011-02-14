@@ -1278,7 +1278,7 @@ void MainWindow::slotToggleAfLabels( bool toggle )
   // save configuration change
   GeneralConfig::instance()->setMapShowAirfieldLabels( toggle );
   GeneralConfig::instance()->save();
-  viewMap->_theMap->scheduleRedraw(Map::airports);
+  viewMap->_theMap->scheduleRedraw(Map::airfields);
 }
 
 void MainWindow::slotToggleOlLabels( bool toggle )
@@ -1286,7 +1286,7 @@ void MainWindow::slotToggleOlLabels( bool toggle )
   // save configuration change
   GeneralConfig::instance()->setMapShowOutLandingLabels( toggle );
   GeneralConfig::instance()->save();
-  viewMap->_theMap->scheduleRedraw(Map::outlandingSites);
+  viewMap->_theMap->scheduleRedraw(Map::outlandings);
 }
 
 void MainWindow::slotToggleTpLabels( bool toggle )
@@ -1310,7 +1310,7 @@ void MainWindow::slotToggleLabelsInfo( bool toggle )
   // save configuration change
   GeneralConfig::instance()->setMapShowLabelsExtraInfo( toggle );
   GeneralConfig::instance()->save();
-  viewMap->_theMap->scheduleRedraw(Map::airports);
+  viewMap->_theMap->scheduleRedraw(Map::airfields);
 }
 
 void MainWindow::slotViewStatusBar( bool toggle )
@@ -1956,7 +1956,7 @@ void MainWindow::slotReadconfig()
           listViewTabs->removeTab( listViewTabs->indexOf(viewOL) );
           listViewTabs->blockSignals( false );
           viewRP->clearList();  // this clears the outlanding list in the view
-          viewMap->_theMap->scheduleRedraw(Map::outlandingSites);
+          viewMap->_theMap->scheduleRedraw(Map::outlandings);
           _outlandingListVisible = false;
         }
     }

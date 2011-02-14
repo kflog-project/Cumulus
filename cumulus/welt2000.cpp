@@ -65,7 +65,7 @@ Welt2000::Welt2000()
   c_baseTypeMap.insert( "CivHeliport", BaseMapElement::CivHeliport );
   c_baseTypeMap.insert( "MilHeliport", BaseMapElement::MilHeliport );
   c_baseTypeMap.insert( "AmbHeliport", BaseMapElement::AmbHeliport );
-  c_baseTypeMap.insert( "Glidersite", BaseMapElement::Gliderfield );
+  c_baseTypeMap.insert( "Gliderfield", BaseMapElement::Gliderfield );
   c_baseTypeMap.insert( "UltraLight", BaseMapElement::UltraLight );
   c_baseTypeMap.insert( "HangGlider", BaseMapElement::HangGlider );
 }
@@ -80,7 +80,7 @@ Welt2000::~Welt2000()
 
 /**
  * search on default places a welt2000 file and load it. A source can
- * be the original ascii file or a compiled version of it. The results
+ * be the original ASCII file or a compiled version of it. The results
  * are put in the passed lists
  */
 bool Welt2000::load( QList<Airfield>& airfieldList,
@@ -310,6 +310,9 @@ bool Welt2000::filter( QString& path )
   QTextStream ins(&in);
   QTextStream outs;
 
+  ins.setCodec( "ISO 8859-15" );
+  outs.setCodec( "ISO 8859-15" );
+
   uint outLines = 0; // counter for written lines
 
   while( ! ins.atEnd() )
@@ -511,7 +514,7 @@ bool Welt2000::readConfigEntries( QString &path )
  * entries in the related lists.
  *
  * arg1 path: Full name with path of welt2000 file
- * arg2 airfieldList: All airports have to be stored in this list
+ * arg2 airfieldList: All airfields have to be stored in this list
  * arg3 glidertList: All gilder fields have to be stored in this list
  * arg4 glidertList: All outlanding fields have to be stored in this list, when
  *                   the outlanding option is set in the user configuration

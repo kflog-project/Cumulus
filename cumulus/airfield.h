@@ -25,7 +25,7 @@
  *
  * This class is used for handling of airfields. The object can be one of
  * Airport, MilAirport, CivMilAirport, Airfield, ClosedAirfield,
- * CivHeliport, MilHeliport, AmbHeliport, UltraLight, GliderSite
+ * CivHeliport, MilHeliport, AmbHeliport, UltraLight, Gliderfield
  *
  * \see BaseMapElement#objectType
  *

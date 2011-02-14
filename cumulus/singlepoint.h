@@ -29,7 +29,7 @@
  *
  * \see BaseMapElement#objectType
  * \see Airfield
- * \see GliderSite
+ * \see Gliderfield
  * \see RadioPoint
  *
  * \date 2000-2010
