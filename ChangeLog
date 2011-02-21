@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2011-02-21 AP: Two new Czech glider polars added to glider.pol on request by
+                   Radek Pospisil.
 [o] 2011-02-14 AP: File codec in open air parser and Welt2000 set to
                    "ISO 8859-15". That ensures, that German umlauts are
                    interpreted right during read in.
