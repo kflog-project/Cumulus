@@ -26,7 +26,7 @@
  * The supported waypoint formats are the Seeyou cup format and the KFLog
  * XML waypoint format.
  *
- * \date 2004-2011
+ * \date 2011
  *
  * \version $Id$
  *
