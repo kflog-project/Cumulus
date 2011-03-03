@@ -369,7 +369,7 @@ void ReachpointListView::slot_HideOl()
 /** This slot is called to indicate that a selection has been made. */
 void ReachpointListView::slot_Select()
 {
-  wayPoint* wp = getSelectedWaypoint();
+  Waypoint* wp = getSelectedWaypoint();
 
   if( wp )
     {
@@ -381,7 +381,7 @@ void ReachpointListView::slot_Select()
 /** This slot is called if the info button has been clicked */
 void ReachpointListView::slot_Info()
 {
-  wayPoint* airfieldInfo = getSelectedWaypoint();
+  Waypoint* airfieldInfo = getSelectedWaypoint();
 
   if ( airfieldInfo )
     {
@@ -407,7 +407,7 @@ void ReachpointListView::slot_Selected()
 {
   // @AP: this slot is also called, if the list is cleared and a selection
   // does exist. In such a case the returned waypoint is a Null pointer!
-  if( getSelectedWaypoint() == static_cast<wayPoint *>(0) )
+  if( getSelectedWaypoint() == static_cast<Waypoint *>(0) )
     {
       return;
     }
@@ -423,7 +423,7 @@ void ReachpointListView::slot_Selected()
 }
 
 /** Returns a pointer to the currently high lighted reachpoint. */
-wayPoint* ReachpointListView::getSelectedWaypoint()
+Waypoint* ReachpointListView::getSelectedWaypoint()
 {
   int n =  calculator->getReachList()->getNumberSites();
   QTreeWidgetItem* li = list->currentItem();
@@ -437,13 +437,13 @@ wayPoint* ReachpointListView::getSelectedWaypoint()
           if (rp.getName() == li->text(0))
             {
               selectedWp = *(rp.getWaypoint());
-              selectedWp.importance = wayPoint::Normal;  // set importance to normal
+              selectedWp.importance = Waypoint::Normal;  // set importance to normal
               return &selectedWp;
             }
         }
     }
 
-  return static_cast<wayPoint *>(0);
+  return static_cast<Waypoint *>(0);
 }
 
 void ReachpointListView::slot_newList()
@@ -467,9 +467,9 @@ void ReachpointListView::slot_newList()
  */
 void ReachpointListView::slot_Home()
 {
-  wayPoint* _wp = getSelectedWaypoint();
+  Waypoint* _wp = getSelectedWaypoint();
 
-  if( _wp == static_cast<wayPoint *> ( 0 ) )
+  if( _wp == static_cast<Waypoint *> ( 0 ) )
     {
       return;
     }

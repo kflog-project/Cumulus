@@ -185,7 +185,7 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   // first selection is WPList if wp's are defined
   // set index in combo box to selected list
-  QList<wayPoint>& wpList = _globalMapContents->getWaypointList();
+  QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
 
   listSelectCB->setCurrentIndex( wpList.count() ? 0 : 1 );
 
@@ -294,7 +294,7 @@ void TaskEditor::resizeTaskListColumns()
 
 void TaskEditor::slotAddWaypoint()
 {
-  wayPoint *wp = waypointList[listSelectCB->currentIndex()]->getSelectedWaypoint();
+  Waypoint *wp = waypointList[listSelectCB->currentIndex()]->getSelectedWaypoint();
 
   if ( wp == 0 )
     {

@@ -69,7 +69,7 @@ Calculator::Calculator(QObject* parent) :
   _calculateETA = false;
   _calculateVario = true;
   _calculateWind = true;
-  selectedWp = static_cast<wayPoint *> (0);
+  selectedWp = static_cast<Waypoint *> (0);
   lastMc.setInvalid();
   lastBestSpeed.setInvalid();
   lastTas = 0.0;
@@ -232,7 +232,7 @@ void Calculator::slot_Position( QPoint& newPositionValue )
 
 /** Called if a new waypoint has been selected. If user action is
     true, change was done by an user interaction.*/
-void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
+void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
 {
   // qDebug( "Calculator::slot_WaypointChange(): NewWp=%x", newWp );
 
@@ -335,7 +335,7 @@ void Calculator::slot_WaypointChange(wayPoint *newWp, bool userAction)
 /**
  * Called if a waypoint has to be deleted.
  */
-void Calculator::slot_WaypointDelete(wayPoint* newWp)
+void Calculator::slot_WaypointDelete(Waypoint* newWp)
 {
   // @AP: check, if waypoint to be deleted is selected. In this case a
   // deselection must be done
@@ -481,9 +481,9 @@ void Calculator::calcDistance( bool autoWpSwitch )
       if ( tpList.count() > selectedWpInList + 1 )
         {
           // this loop excludes the last WP
-          wayPoint *lastWp = tpList.at(selectedWpInList);
+          Waypoint *lastWp = tpList.at(selectedWpInList);
           selectedWpInList++;
-          wayPoint *nextWp = tpList.at(selectedWpInList);
+          Waypoint *nextWp = tpList.at(selectedWpInList);
 
           // calculate distance to new waypoint
           Distance dist2Next( dist(double(lastPosition.x()), double(lastPosition.y()),
@@ -1477,7 +1477,7 @@ bool Calculator::matchesFlightMode(GeneralConfig::UseInMode mode)
  * Sets a new selected waypoint. The old waypoint instance is
  * deleted and a new one allocated.
  */
-void Calculator::setSelectedWp( const wayPoint* newWp )
+void Calculator::setSelectedWp( const Waypoint* newWp )
 {
   // delete old waypoint selection
   if ( selectedWp != 0 )
@@ -1489,7 +1489,7 @@ void Calculator::setSelectedWp( const wayPoint* newWp )
   // make a deep copy of new waypoint to be set
   if ( newWp != 0 )
     {
-      selectedWp = new wayPoint( *newWp );
+      selectedWp = new Waypoint( *newWp );
     }
 
   // inform mapView about the change
@@ -1519,7 +1519,7 @@ void Calculator::slot_CheckHomeSiteSelection()
   if( selectedWp && selectedWp->name == tr("Home") &&
       selectedWp->origP != conf->getHomeCoord() )
     {
-      wayPoint wp;
+      Waypoint wp;
 
       wp.name = tr("Home");
       wp.description = tr("Home Site");

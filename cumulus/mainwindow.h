@@ -92,7 +92,7 @@ class MainWindow : public QMainWindow
     /**
      * Sets the view type
      */
-    void setView (const appView& _newVal, const wayPoint* wp = 0);
+    void setView (const appView& _newVal, const Waypoint* wp = 0);
 
     /**
      * @returns the view type
@@ -161,7 +161,7 @@ class MainWindow : public QMainWindow
     /** This slot is called to switch to the info view. */
     void slotSwitchToInfoView();
     /** This slot is called to switch to the info view with selected waypoint. */
-    void slotSwitchToInfoView(wayPoint*);
+    void slotSwitchToInfoView(Waypoint*);
     /** Opens the config "dialog". */
     void slotConfig();
     /** Opens the pre-flight "dialog". */

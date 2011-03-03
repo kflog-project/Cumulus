@@ -68,7 +68,7 @@ class ReachablePoint
                  bool rwOpen );
 
 
-  ReachablePoint(wayPoint& wp,
+  ReachablePoint(Waypoint& wp,
                  bool orignAfl,
                  Distance& distance,
                  short bearing,
@@ -141,7 +141,7 @@ class ReachablePoint
     return _wp.origP;
   };
 
-  const wayPoint *getWaypoint() const
+  const Waypoint *getWaypoint() const
   {
     return &_wp;
   };
@@ -160,7 +160,7 @@ class ReachablePoint
 
  private:
   bool         _orignAfl; // Origin is taken from airfield list
-  wayPoint     _wp;
+  Waypoint     _wp;
   Distance     _distance;
   short        _bearing;
   Altitude     _arrivalAlt;

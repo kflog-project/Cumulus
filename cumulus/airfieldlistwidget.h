@@ -57,7 +57,7 @@ public:
     /**
      * @returns a pointer to the currently high lighted waypoint.
      */
-    wayPoint *getSelectedWaypoint();
+    Waypoint *getSelectedWaypoint();
 
     /**
      * Clears and fills the airfield item list.
@@ -66,7 +66,7 @@ public:
 
 private:
 
-    wayPoint wp;
+    Waypoint wp;
     QVector<enum MapContents::MapContentsListID> itemList;
 
 class _AirfieldItem : public QTreeWidgetItem

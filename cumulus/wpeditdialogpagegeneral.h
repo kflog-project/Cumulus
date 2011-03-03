@@ -54,12 +54,12 @@ public slots:
   /**
    * called if data needs to be saved
    */
-  void slot_save(wayPoint *wp);
+  void slot_save(Waypoint *wp);
 
   /**
    * called if data needs to be loaded
    */
-  void slot_load(wayPoint *wp);
+  void slot_load(Waypoint *wp);
 
 private:
 

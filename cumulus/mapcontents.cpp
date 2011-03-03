@@ -133,7 +133,7 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
 
   // read in waypoint list
   WaypointCatalog wpCat;
-  wpCat.read( 0, wpList );
+  wpCat.readBinary( "", wpList );
 
   currentTask=0;
 
@@ -160,7 +160,7 @@ MapContents::~MapContents()
 void MapContents::saveWaypointList()
 {
   WaypointCatalog wpCat;
-  wpCat.write( 0, wpList );
+  wpCat.writeBinary( "", wpList );
 }
 
 /**
@@ -2285,7 +2285,7 @@ void MapContents::slotReloadMapData()
   extern MapMatrix   *_globalMapMatrix;
 
   // Update the global selected waypoint
-  wayPoint *wp = (wayPoint *) calculator->getselectedWp();
+  Waypoint *wp = (Waypoint *) calculator->getselectedWp();
 
   if ( wp )
     {
@@ -2897,7 +2897,7 @@ bool MapContents::isInWaypointList(const QPoint& wgsCoord)
 {
   for (int i=0; i < wpList.count(); i++)
     {
-      const wayPoint& wpItem = wpList.at(i);
+      const Waypoint& wpItem = wpList.at(i);
 
       if ( wgsCoord == wpItem.origP )
         {
@@ -2916,7 +2916,7 @@ bool MapContents::isInWaypointList(const QString& name )
 {
   for (int i=0; i < wpList.count(); i++)
     {
-      const wayPoint& wpItem = wpList.at(i);
+      const Waypoint& wpItem = wpList.at(i);
 
       if ( name == wpItem.name )
         {
@@ -2937,7 +2937,7 @@ unsigned short MapContents::countNameInWaypointList( const QString& name )
 
   for (int i=0; i < wpList.count(); i++)
     {
-      const wayPoint& wpItem = wpList.at(i);
+      const Waypoint& wpItem = wpList.at(i);
 
       if ( name == wpItem.name )
         {

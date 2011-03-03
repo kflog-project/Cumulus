@@ -105,7 +105,7 @@ double dist(QPoint* p1, QPoint* p2)
 }
 
 
-double dist(wayPoint* wp1, wayPoint* wp2)
+double dist(Waypoint* wp1, Waypoint* wp2)
 {
     return ( dist( wp1->origP.lat(), wp1->origP.lon(),
                    wp2->origP.lat(), wp2->origP.lon() ) );

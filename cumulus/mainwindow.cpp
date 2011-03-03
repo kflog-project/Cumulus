@@ -444,73 +444,73 @@ void MainWindow::slotCreateApplicationWidgets()
            viewMap, SLOT( slot_FlarmCount(int) ) );
 #endif
 
-  connect( viewWP, SIGNAL( newWaypoint( wayPoint*, bool ) ),
-           calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
-  connect( viewWP, SIGNAL( deleteWaypoint( wayPoint* ) ),
-           calculator, SLOT( slot_WaypointDelete( wayPoint* ) ) );
+  connect( viewWP, SIGNAL( newWaypoint( Waypoint*, bool ) ),
+           calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
+  connect( viewWP, SIGNAL( deleteWaypoint( Waypoint* ) ),
+           calculator, SLOT( slot_WaypointDelete( Waypoint* ) ) );
   connect( viewWP, SIGNAL( done() ),
            this, SLOT( slotSwitchToMapView() ) );
-  connect( viewWP, SIGNAL( info( wayPoint* ) ),
-           this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
+  connect( viewWP, SIGNAL( info( Waypoint* ) ),
+           this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
   connect( viewWP, SIGNAL( newHomePosition( const QPoint& ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
   connect( viewWP, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
-  connect( viewAF, SIGNAL( newWaypoint( wayPoint*, bool ) ),
-           calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
+  connect( viewAF, SIGNAL( newWaypoint( Waypoint*, bool ) ),
+           calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
   connect( viewAF, SIGNAL( done() ),
            this, SLOT( slotSwitchToMapView() ) );
-  connect( viewAF, SIGNAL( info( wayPoint* ) ),
-           this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
+  connect( viewAF, SIGNAL( info( Waypoint* ) ),
+           this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
   connect( viewAF, SIGNAL( newHomePosition( const QPoint& ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
   connect( viewAF, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
-  connect( viewOL, SIGNAL( newWaypoint( wayPoint*, bool ) ),
-           calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
+  connect( viewOL, SIGNAL( newWaypoint( Waypoint*, bool ) ),
+           calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
   connect( viewOL, SIGNAL( done() ),
            this, SLOT( slotSwitchToMapView() ) );
-  connect( viewOL, SIGNAL( info( wayPoint* ) ),
-           this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
+  connect( viewOL, SIGNAL( info( Waypoint* ) ),
+           this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
   connect( viewOL, SIGNAL( newHomePosition( const QPoint& ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
   connect( viewOL, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
-  connect( viewRP, SIGNAL( newWaypoint( wayPoint*, bool ) ),
-           calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
+  connect( viewRP, SIGNAL( newWaypoint( Waypoint*, bool ) ),
+           calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
   connect( viewRP, SIGNAL( done() ),
            this, SLOT( slotSwitchToMapView() ) );
-  connect( viewRP, SIGNAL( info( wayPoint* ) ),
-           this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
+  connect( viewRP, SIGNAL( info( Waypoint* ) ),
+           this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
   connect( viewRP, SIGNAL( newHomePosition( const QPoint& ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
   connect( viewRP, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
-  connect( viewTP, SIGNAL( newWaypoint( wayPoint*, bool ) ),
-           calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
+  connect( viewTP, SIGNAL( newWaypoint( Waypoint*, bool ) ),
+           calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
   connect( viewTP, SIGNAL( done() ),
            this, SLOT( slotSwitchToMapView() ) );
-  connect( viewTP, SIGNAL( info( wayPoint* ) ),
-           this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
+  connect( viewTP, SIGNAL( info( Waypoint* ) ),
+           this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
 
   connect( viewMap->_theMap, SIGNAL( isRedrawing( bool ) ),
            this, SLOT( slotMapDrawEvent( bool ) ) );
-  connect( viewMap->_theMap, SIGNAL( waypointSelected( wayPoint* ) ),
-           this, SLOT( slotSwitchToInfoView( wayPoint* ) ) );
+  connect( viewMap->_theMap, SIGNAL( waypointSelected( Waypoint* ) ),
+           this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
   connect( viewMap->_theMap, SIGNAL( airspaceWarning( const QString&, const bool ) ),
            this, SLOT( slotAlarm( const QString&, const bool ) ) );
   connect( viewMap, SIGNAL( toggleLDCalculation( const bool ) ),
            calculator, SLOT( slot_toggleLDCalculation(const bool) ) );
   connect( viewMap, SIGNAL( toggleMenu() ), this, SLOT( slotToggleMenu() ) );
 
-  connect( viewInfo, SIGNAL( waypointAdded( wayPoint& ) ),
-           viewWP, SLOT( slot_wpAdded( wayPoint& ) ) );
-  connect( viewInfo, SIGNAL( waypointSelected( wayPoint*, bool ) ),
-           calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
+  connect( viewInfo, SIGNAL( waypointAdded( Waypoint& ) ),
+           viewWP, SLOT( slot_wpAdded( Waypoint& ) ) );
+  connect( viewInfo, SIGNAL( waypointSelected( Waypoint*, bool ) ),
+           calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
   connect( viewInfo, SIGNAL( newHomePosition( const QPoint& ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
   connect( viewInfo, SIGNAL( gotoHomePosition() ),
@@ -519,8 +519,8 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( listViewTabs, SIGNAL( currentChanged( int ) ),
            this, SLOT( slotTabChanged( int ) ) );
 
-  connect( calculator, SIGNAL( newWaypoint( const wayPoint* ) ),
-           viewMap, SLOT( slot_Waypoint( const wayPoint* ) ) );
+  connect( calculator, SIGNAL( newWaypoint( const Waypoint* ) ),
+           viewMap, SLOT( slot_Waypoint( const Waypoint* ) ) );
   connect( calculator, SIGNAL( newBearing( int ) ),
            viewMap, SLOT( slot_Bearing( int ) ) );
   connect( calculator, SIGNAL( newRelBearing( int ) ),
@@ -1369,7 +1369,7 @@ void MainWindow::slotTabChanged( int index )
 
 
 /** Write property of internal view. */
-void MainWindow::setView( const appView& newVal, const wayPoint* wp )
+void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 {
   // qDebug("MainWindow::setView called with argument %d", newVal);
 
@@ -1691,7 +1691,7 @@ void MainWindow::slotSwitchToInfoView()
 }
 
 /** @ee This slot is called to switch to the info view with selected waypoint. */
-void MainWindow::slotSwitchToInfoView( wayPoint* wp )
+void MainWindow::slotSwitchToInfoView( Waypoint* wp )
 {
   if( wp )
     {
@@ -1823,11 +1823,11 @@ void MainWindow::slotRememberWaypoint()
 
   QPoint pos = calculator->getlastPosition();
 
-  QList<wayPoint>& wpList = _globalMapContents->getWaypointList();
+  QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
 
   for ( int i = 0; i < wpList.count(); i++ )
     {
-      const wayPoint &wpItem = wpList.at(i);
+      const Waypoint &wpItem = wpList.at(i);
 
       if ( wpItem.origP == pos )
         {
@@ -1837,7 +1837,7 @@ void MainWindow::slotRememberWaypoint()
 
   count++;
 
-  wayPoint wp;
+  Waypoint wp;
 
   wp.name = name;
   wp.origP = calculator->getlastPosition();
@@ -1845,7 +1845,7 @@ void MainWindow::slotRememberWaypoint()
   wp.description = tr( "user created" );
   wp.comment = tr("created by remember action at ") +
   QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-  wp.importance = wayPoint::High; // high to make sure it is visible
+  wp.importance = Waypoint::High; // high to make sure it is visible
   wp.frequency = 0.0;
   wp.runway = 0;
   wp.length = 0;
@@ -2058,8 +2058,8 @@ void MainWindow::slotPreFlight(const char *tabName)
   connect( cDlg, SIGNAL( newTaskSelected() ),
            IgcLogger::instance(), SLOT( slotNewTaskSelected() ) );
 
-  connect( cDlg, SIGNAL( newWaypoint( wayPoint*, bool ) ),
-           calculator, SLOT( slot_WaypointChange( wayPoint*, bool ) ) );
+  connect( cDlg, SIGNAL( newWaypoint( Waypoint*, bool ) ),
+           calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
 
   connect( cDlg, SIGNAL( closeConfig() ),
            this, SLOT( slotCloseConfig() ) );
@@ -2129,7 +2129,7 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
 /** Called to select the home site position */
 void MainWindow::slotNavigate2Home()
 {
-  wayPoint wp;
+  Waypoint wp;
 
   wp.name = tr("Home");
   wp.description = tr("Home Site");

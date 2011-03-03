@@ -99,7 +99,7 @@ void AirfieldListView::showEvent(QShowEvent *)
 /** This signal is called to indicate that a selection has been made. */
 void AirfieldListView::slot_Select()
 {
-  wayPoint *_wp = listw->getSelectedWaypoint();
+  Waypoint *_wp = listw->getSelectedWaypoint();
 
   if ( _wp )
     {
@@ -113,7 +113,7 @@ void AirfieldListView::slot_Info()
 {
   // qDebug("AirfieldListView::slot_Info");
 
-  wayPoint *_wp = listw->getSelectedWaypoint();
+  Waypoint *_wp = listw->getSelectedWaypoint();
 
   if( _wp )
     {
@@ -140,7 +140,7 @@ void AirfieldListView::slot_Close ()
 void AirfieldListView::slot_Selected()
 {
   cmdSelect->setEnabled(true);
-  wayPoint* _wp = listw->getSelectedWaypoint();
+  Waypoint* _wp = listw->getSelectedWaypoint();
 
   if (_wp)
     {
@@ -157,9 +157,9 @@ void AirfieldListView::slot_Selected()
  */
 void AirfieldListView::slot_Home()
 {
-  wayPoint* _wp = listw->getSelectedWaypoint();
+  Waypoint* _wp = listw->getSelectedWaypoint();
 
-  if( _wp == static_cast<wayPoint *> ( 0 ) )
+  if( _wp == static_cast<Waypoint *> ( 0 ) )
     {
       return;
     }

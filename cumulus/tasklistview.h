@@ -63,7 +63,7 @@ public:
   /**
    * @return A pointer to the currently high lighted waypoint.
    */
-  wayPoint *getSelectedWaypoint();
+  Waypoint *getSelectedWaypoint();
 
   /** clears all data of the list */
   void clear();
@@ -115,7 +115,7 @@ signals:
   /**
    * This signal is emitted if a new waypoint is selected.
    */
-  void newWaypoint(wayPoint*, bool);
+  void newWaypoint(Waypoint*, bool);
 
   /**
    * This signal is send if the selection is done, and the
@@ -126,7 +126,7 @@ signals:
   /**
    * Emitted if the user clicks the Info button.
    */
-  void info(wayPoint*);
+  void info(Waypoint*);
 
 protected:
 

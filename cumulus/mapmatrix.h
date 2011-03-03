@@ -293,7 +293,7 @@ public:
    * @returns an indication, if a waypoint can be drawn according to the current
    * scale setting.
    */
-  bool isWaypoint2Draw( wayPoint::Importance importance ) const;
+  bool isWaypoint2Draw( Waypoint::Importance importance ) const;
 
   /**
    * @returns the coordinates of the home site

@@ -8,26 +8,24 @@
  **
  **   Copyright (c):  2001      by Harald Maier
  **                   2002      by André Somers,
- **                   2008-2009 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
  ***********************************************************************/
 
-#include <QObject>
-#include <QDataStream>
-#include <QFile>
-#include <QRegExp>
-#include <QString>
+#include <QtGui>
 
 #include "waypointcatalog.h"
+#include "mainwindow.h"
 #include "mapmatrix.h"
 #include "generalconfig.h"
 
-extern MapMatrix *_globalMapMatrix;
+extern MapMatrix*  _globalMapMatrix;
+extern MainWindow* _globalMainWindow;
 
 #define KFLOG_FILE_MAGIC 0x404b464c
 #define FILE_TYPE_WAYPOINTS 0x50
@@ -36,19 +34,20 @@ extern MapMatrix *_globalMapMatrix;
 #define WP_FILE_FORMAT_ID_1 101
 #define WP_FILE_FORMAT_ID_2 102 // runway direction handling modified
 
-WaypointCatalog::WaypointCatalog()
+WaypointCatalog::WaypointCatalog() : radius(-1)
 {
 }
 
 WaypointCatalog::~WaypointCatalog()
-{}
+{
+}
 
 /** read a catalog from file */
-bool WaypointCatalog::read( QString *catalog, QList<wayPoint>& wpList )
+bool WaypointCatalog::readBinary( QString catalog, QList<Waypoint>& wpList )
 {
   QString fName;
 
-  if( !catalog )
+  if( catalog.isEmpty() )
     {
       // use default file name
       fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
@@ -56,7 +55,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint>& wpList )
     }
   else
     {
-      fName = *catalog;
+      fName = catalog;
     }
 
   if( _globalMapMatrix == 0 )
@@ -150,7 +149,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint>& wpList )
                 }
               else
                 {
-                  wpImportance = wayPoint::Normal;
+                  wpImportance = Waypoint::Normal;
                 }
 
               if( fileFormat < WP_FILE_FORMAT_ID_2 )
@@ -165,7 +164,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint>& wpList )
                 }
 
               // create waypoint object and set the correct properties
-              wayPoint wp;
+              Waypoint wp;
 
               wp.name = wpName;
               wp.description = wpDescription;
@@ -181,7 +180,7 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint>& wpList )
               wp.length = wpLength;
               wp.surface = wpSurface;
               wp.comment = wpComment;
-              wp.importance = ( enum wayPoint::Importance ) wpImportance;
+              wp.importance = ( enum Waypoint::Importance ) wpImportance;
               // qDebug("Waypoint read: %s (%s - %s)",wp.name.toLatin1().data(),wp.description.latin1(),wp.icao.latin1());
 
               wpList.append(wp);
@@ -203,11 +202,11 @@ bool WaypointCatalog::read( QString *catalog, QList<wayPoint>& wpList )
 }
 
 /** write a catalog to file */
-bool WaypointCatalog::write( QString *catalog, QList<wayPoint>& wpList )
+bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
 {
   QString fName;
 
-  if( !catalog )
+  if( catalog.isEmpty() )
     {
       // use default file name
       fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
@@ -215,7 +214,7 @@ bool WaypointCatalog::write( QString *catalog, QList<wayPoint>& wpList )
     }
   else
     {
-      fName = *catalog;
+      fName = catalog;
     }
 
   bool ok = true;
@@ -252,7 +251,7 @@ bool WaypointCatalog::write( QString *catalog, QList<wayPoint>& wpList )
 
       for (int i = 0; i < wpList.count(); i++)
         {
-          wayPoint &wp = wpList[i];
+          Waypoint &wp = wpList[i];
           wpName=wp.name;
           wpDescription=wp.description;
           wpICAO=wp.icao;
@@ -296,4 +295,396 @@ bool WaypointCatalog::write( QString *catalog, QList<wayPoint>& wpList )
          wpList.count(), fName.toLatin1().data() );
 
   return ok;
+}
+
+/** read a waypoint catalog from a SeeYou cup file, only waypoint part */
+// WaypointTreeView::fillWaypoints()
+bool WaypointCatalog::readCup( QString catalog, QList<Waypoint>& wpList )
+{
+  qDebug() << "WaypointCatalog::readCupFile" << catalog;
+
+  QFile file(catalog);
+
+  if(!file.exists())
+    {
+      QMessageBox::warning( _globalMainWindow,
+                             QObject::tr("Error occurred!"),
+                             "<html>" + QObject::tr("The selected file<BR><B>%1</B><BR>does not exist!").arg(catalog) + "</html>",
+                             QMessageBox::Ok );
+      return false;
+    }
+
+  if(file.size() == 0)
+    {
+      QMessageBox::warning( _globalMainWindow,
+                            QObject::tr("Error occurred!"),
+                            "<html>" + QObject::tr("The selected file<BR><B>%1</B><BR>is empty!").arg(catalog) + "</html>",
+                            QMessageBox::Ok );
+      return false;
+    }
+
+  if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      return false;
+    }
+
+  QSet<QString> names;
+
+  for( int i = 0; i < wpList.size(); i++ )
+    {
+      // Store all used names of the waypoint list in a set.
+      names.insert( wpList.at(i).name );
+    }
+
+  int lineNo = 0;
+
+  QTextStream in(&file);
+  in.setCodec( "ISO 8859-15" );
+
+  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+
+  while (!in.atEnd())
+    {
+      QString line = in.readLine();
+
+      lineNo++;
+
+      if( line.size() == 0 )
+        {
+          continue;
+        }
+
+      bool ok;
+
+      QList<QString> list = splitCupLine( line, ok );
+
+      if( list[0] == "-----Related Tasks-----" )
+        {
+          // Task part starts, we will ignore it and break up reading
+          break;
+        }
+
+      // 10 elements are mandatory, element 11 description is optional
+      if( list.count() < 10 ||
+          list[0].toLower() == "name" ||
+          list[1].toLower() == "code" ||
+          list[2].toLower() == "country" )
+        {
+          // too less elements or a description line, ignore this
+          continue;
+        }
+
+      // A cup line consists of the following elements:
+      //
+      // Name,Code,Country,Latitude,Longitude,Elevation,Style,Direction,Length,Frequency,Description
+      //
+      // See here for more info: http://download.naviter.com/docs/cup_format.pdf
+      Waypoint wp;
+
+      wp.isLandable = false;
+      wp.importance = Waypoint::Low;
+
+      if( list[0].length() ) // long name of waypoint
+        {
+          wp.description = list[0].replace( QRegExp("\""), "" );
+        }
+      else
+        {
+          wp.description = "";
+        }
+
+      wp.name = list[1].replace( QRegExp("\""), "" ); // short name of waypoint
+      wp.comment = list[2] + ": ";
+      wp.icao = "";
+      wp.surface = Runway::Unknown;
+
+      // waypoint type
+      uint wpType = list[6].toUInt(&ok);
+
+      if( ! ok )
+        {
+          qWarning("CUP Read (%d): Invalid waypoint type '%s'. Ignoring it.",
+                   lineNo, list[6].toAscii().data() );
+          continue;
+        }
+
+      switch( wpType )
+        {
+        case 0:
+          wp.type = BaseMapElement::NotSelected;
+          break;
+        case 1:
+          wp.type = BaseMapElement::Landmark;
+          break;
+        case 2:
+          wp.type = BaseMapElement::Airfield;
+          wp.surface = Runway::Grass;
+          wp.isLandable = true;
+          wp.importance = Waypoint::Normal;
+          break;
+        case 3:
+          wp.type = BaseMapElement::Outlanding;
+          wp.importance = Waypoint::Normal;
+          break;
+        case 4:
+          wp.type = BaseMapElement::Gliderfield;
+          wp.isLandable = true;
+          wp.importance = Waypoint::Normal;
+          break;
+        case 5:
+          wp.type = BaseMapElement::Airfield;
+          wp.surface = Runway::Concrete;
+          wp.isLandable = true;
+          wp.importance = Waypoint::Normal;
+          break;
+        case 6:
+          wp.type = BaseMapElement::Landmark;
+          break;
+        case 7:
+          wp.type = BaseMapElement::Landmark;
+          break;
+        default:
+          wp.type = BaseMapElement::NotSelected;
+          break;
+        }
+
+      // latitude as ddmm.mmm(N|S)
+      double degree = list[3].left(2).toDouble(&ok);
+
+      if( ! ok )
+        {
+          qWarning("CUP Read (%d): Error reading coordinate (N/S) (1)", lineNo);
+          continue;
+        }
+
+      double minutes = list[3].mid(2,6).toDouble(&ok);
+
+      if( ! ok )
+        {
+          qWarning("CUP Read (%d): Error reading coordinate (N/S) (2)", lineNo);
+          continue;
+        }
+
+      double latTmp = (degree * 600000.) + (minutes * 10000.0);
+
+      if( list[3].right(1).toUpper() == "S" )
+        {
+          latTmp = -latTmp;
+        }
+
+      // longitude dddmm.mmm(E|W)
+      degree = list[4].left(3).toDouble(&ok);
+
+      if( ! ok )
+        {
+          qWarning("CUP Read (%d): Error reading coordinate (E/W) (1)", lineNo);
+          continue;
+        }
+
+      minutes = list[4].mid(3,6).toDouble(&ok);
+
+      if( ! ok )
+        {
+          qWarning("CUP Read (%d): Error reading coordinate (E/W) (2)", lineNo);
+          continue;
+        }
+
+      double lonTmp = (degree * 600000.) + (minutes * 10000.0);
+
+
+      if( list[4].right(1).toUpper() == "W" )
+        {
+          lonTmp = -lonTmp;
+        }
+
+      wp.origP.setLat((int) rint(latTmp));
+      wp.origP.setLon((int) rint(lonTmp));
+
+      if( list[5].length() > 1 ) // elevation in meter or feet
+        {
+          double tmpElev = (int) rint((list[5].left(list[5].length()-1)).toDouble(&ok));
+
+          if( ! ok )
+            {
+              qWarning("CUP Read (%d): Error reading elevation '%s'.", lineNo,
+                       list[5].left(list[5].length()-1).toLatin1().data());
+              continue;
+            }
+
+          if( list[5].right( 1 ).toLower() == "f" )
+            {
+              wp.elevation = (int) rint( tmpElev * 0.3048 );
+            }
+          else
+            {
+              wp.elevation = (int) rint( tmpElev );
+            }
+        }
+
+      if( list[9].trimmed().length() ) // airport frequency
+        {
+          double frequency = list[9].replace( QRegExp("\""), "" ).toDouble(&ok);
+
+          if( ok )
+            {
+              wp.frequency = frequency;
+            }
+        }
+
+      if( list[7].trimmed().length() ) // runway direction 010...360
+        {
+          uint rdir = list[7].toInt(&ok);
+
+          if( ok )
+            {
+              // Runway has only one direction entry 0...360.
+              // We split it into two parts.
+              int rwh1 = rdir <= 180 ? rdir+180 : rdir-180;
+              int rwh2 = rwh1 <= 180 ? rwh1+180 : rwh1-180;
+
+              // put both directions into one variable, each in a byte
+              wp.runway = (rwh1/10) * 256 + (rwh2/10);
+            }
+        }
+
+      if( list[8].trimmed().length() ) // runway length in meters
+        {
+          // three units are possible:
+          // o meter: m
+          // o nautical mile: nm
+          // o statute mile: ml
+          QString unit;
+          int uStart = list[8].indexOf( QRegExp("[lmn]") );
+
+          if( uStart != -1 )
+            {
+              unit = list[8].mid( uStart ).toLower();
+              double length = list[8].left( list[8].length()-unit.length() ).toDouble(&ok);
+
+              if( ok )
+                {
+                  if( unit == "nm" ) // nautical miles
+                    {
+                      length *= 1852;
+                    }
+                  else if( unit == "ml" ) // statute miles
+                    {
+                      length *= 1609.34;
+                    }
+
+                  wp.length = (int) rint( length );
+                }
+            }
+        }
+
+      if( list.count() == 11 && list[10].trimmed().length() ) // description, optional
+        {
+          wp.comment += list[10].replace( QRegExp("\""), "" );
+        }
+
+      // We do check, if the waypoint name is already in use because cup
+      // short names are not always unique.
+      if( names.contains( wp.name ) )
+        {
+          for( int i = 0; i < 100; i++ )
+            {
+              // Hope that not more as 100 same names will be exist.
+              QString number = QString::number(i);
+               wp.name = wp.name.left(wp.name.size() - number.size()) + number;
+
+              if( names.contains( wp.name ) == false )
+                {
+                  break;
+                }
+            }
+        }
+
+      // Add waypoint to list
+      wpList.append( wp );
+
+      // Store used waypoint name in set.
+      names.insert( wp.name );
+    }
+
+  file.close();
+  QApplication::restoreOverrideCursor();
+  return true;
+}
+
+QList<QString> WaypointCatalog::splitCupLine( QString& line, bool &ok )
+{
+  // A cup line consists of elements separated by commas. String elements
+  // are enclosed in quotation marks. Inside such a string element, a
+  // comma is allowed and is not to interpret as separator!
+  QList<QString> list;
+
+  int start, pos, len, idx;
+  start = pos = len = idx = 0;
+
+  line = line.trimmed();
+
+  len = line.size();
+
+  while( true )
+    {
+      if( line[pos] == QChar('"') )
+        {
+          // Handle quoted string
+          pos++;
+
+          if( pos >= len )
+            {
+              ok = false;
+              return list;
+            }
+
+          // Search the end quote
+          idx = line.indexOf( QChar('"'), pos );
+
+          if( idx == -1 )
+            {
+              // Syntax error, abort split
+              ok = false;
+              return list;
+            }
+
+          pos = idx; // set current position to index of quote sign
+        }
+
+      idx = line.indexOf( QChar(','), pos );
+
+      if( idx == -1 )
+        {
+          // No comma found, maybe we are at the end
+          if( start < len )
+            {
+              list.append( line.mid( start, len-start ) );
+            }
+          else
+            {
+              list.append( QString("") );
+            }
+
+          ok = true;
+          return list;
+        }
+
+      if( start < idx )
+        {
+          list.append( line.mid( start, idx-start ) );
+        }
+      else
+        {
+          list.append( QString("") );
+        }
+
+      if( (idx + 1) >= len )
+        {
+          // No more data available
+          ok = true;
+          return list;
+        }
+
+      pos = start = idx + 1;
+    }
 }

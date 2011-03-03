@@ -150,7 +150,7 @@ class MapView : public QWidget
     /**
      * called if the waypoint is changed in the calculator
      */
-    void slot_Waypoint(const wayPoint *wp);
+    void slot_Waypoint(const Waypoint *wp);
 
     /**
      * This slot is called by calculator if a new ETA

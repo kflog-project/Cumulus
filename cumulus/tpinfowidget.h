@@ -76,10 +76,10 @@ class TPInfoWidget : public QWidget
    * This method fills the widget with the arrival info. The info is
    * taken from the passed waypoint.
    *
-   * wayPoint: pointer to waypoint object
+   * Waypoint: pointer to waypoint object
    *
    */
-  void prepareArrivalInfoText( wayPoint *wp );
+  void prepareArrivalInfoText( Waypoint *wp );
 
  signals:
 

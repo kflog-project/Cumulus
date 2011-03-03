@@ -188,7 +188,7 @@ class MapContents : public QObject
     /**
      * @return the waypoint list
      */
-    QList<wayPoint>& getWaypointList()
+    QList<Waypoint>& getWaypointList()
     {
       return wpList;
     };
@@ -582,7 +582,7 @@ class MapContents : public QObject
     /*
      * This list is reset every time the current WaypointCatalog is changed.
      */
-    QList<wayPoint> wpList;
+    QList<Waypoint> wpList;
 
 #ifdef INTERNET
 

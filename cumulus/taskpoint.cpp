@@ -39,7 +39,7 @@ TaskPoint::TaskPoint()
 }
 
 /** Construct object from waypoint reference */
-TaskPoint::TaskPoint( const wayPoint& wp ) : wayPoint( wp )
+TaskPoint::TaskPoint( const Waypoint& wp ) : Waypoint( wp )
 {
   bearing = -1;
   angle = 0.;
@@ -54,7 +54,7 @@ TaskPoint::TaskPoint( const wayPoint& wp ) : wayPoint( wp )
 }
 
 /** Copy constructor */
-TaskPoint::TaskPoint( const TaskPoint& inst ) : wayPoint( inst )
+TaskPoint::TaskPoint( const TaskPoint& inst ) : Waypoint( inst )
 {
   bearing = inst.bearing;
   angle = inst.angle;

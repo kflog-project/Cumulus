@@ -472,7 +472,7 @@ void MapView::slot_Speed(const Speed& speed)
 
 
 /** called if the waypoint is changed in the calculator */
-void MapView::slot_Waypoint(const wayPoint *wp)
+void MapView::slot_Waypoint(const Waypoint *wp)
 {
   // qDebug("MapView::slot_Waypoint");
   QString dest = "";

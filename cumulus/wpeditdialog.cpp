@@ -38,7 +38,7 @@ extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 extern MainWindow  *_globalMainWindow;
 
-WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ) :
+WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   QWidget( parent )
 {
   setWindowFlags( Qt::Tool );
@@ -91,17 +91,17 @@ WpEditDialog::WpEditDialog(QWidget *parent, wayPoint *wp ) :
   pcArea->setWidget( comment );
   tabWidget->addTab( pcArea, tr("Comment") );
 
-  connect(this, SIGNAL(load(wayPoint *)),
-          pageG, SLOT(slot_load(wayPoint *)));
+  connect(this, SIGNAL(load(Waypoint *)),
+          pageG, SLOT(slot_load(Waypoint *)));
 
-  connect(this, SIGNAL(load(wayPoint *)),
-          pageA, SLOT(slot_load(wayPoint *)));
+  connect(this, SIGNAL(load(Waypoint *)),
+          pageA, SLOT(slot_load(Waypoint *)));
 
-  connect(this, SIGNAL(save(wayPoint *)),
-          pageG, SLOT(slot_save(wayPoint *)));
+  connect(this, SIGNAL(save(Waypoint *)),
+          pageG, SLOT(slot_save(Waypoint *)));
 
-  connect(this, SIGNAL(save(wayPoint *)),
-          pageA, SLOT(slot_save(wayPoint *)));
+  connect(this, SIGNAL(save(Waypoint *)),
+          pageA, SLOT(slot_save(Waypoint *)));
 
   // Add ok and cancel buttons
   QPushButton *cancel = new QPushButton;
@@ -157,7 +157,7 @@ void WpEditDialog::accept()
   // qDebug ("WpEditDialog::accept");
 
   // get waypoint data from the tab widgets and save them in a new object
-  wayPoint newWp;
+  Waypoint newWp;
   emit save( &newWp );
   newWp.projP = _globalMapMatrix->wgsToMap( newWp.origP );
   newWp.comment = comment->toPlainText();
@@ -209,7 +209,7 @@ void WpEditDialog::accept()
  * This method checks, if all mandatory waypoint data have been defined.
  * Returns true on ok otherwise false.
  */
-bool WpEditDialog::checkWaypointData( wayPoint& wp )
+bool WpEditDialog::checkWaypointData( Waypoint& wp )
 {
   if( wp.name.isEmpty() )
     {

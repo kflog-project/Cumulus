@@ -59,14 +59,14 @@ public:
   /**
    * @return a pointer to the currently high lighted waypoint.
    */
-  wayPoint *getSelectedAirfield(QTreeWidget *list=0);
+  Waypoint *getSelectedAirfield(QTreeWidget *list=0);
 
   AirfieldListWidget* listWidget()
     {
       return listw;
     };
 
-  wayPoint* getSelectedWaypoint()
+  Waypoint* getSelectedWaypoint()
     {
       return listw->getSelectedWaypoint();
     };
@@ -116,7 +116,7 @@ signals:
   /**
    * This signal is emitted if a new waypoint is selected.
    */
-  void newWaypoint(wayPoint*, bool);
+  void newWaypoint(Waypoint*, bool);
 
   /**
    * This signal is send if the selection is done, and the screen can be closed.
@@ -126,7 +126,7 @@ signals:
   /**
    * Emitted if the user clicks the Info button.
    */
-  void info(wayPoint*);
+  void info(Waypoint*);
 
   /**
    * Emitted if a new home position is selected

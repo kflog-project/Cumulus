@@ -17,7 +17,7 @@
 
 #include "waypoint.h"
 
-wayPoint::wayPoint()
+Waypoint::Waypoint()
 {
   name           = "";
   type           = 0;
@@ -30,7 +30,7 @@ wayPoint::wayPoint()
   elevation      = 0;
   frequency      = 0.;
   isLandable     = false;
-  importance     = wayPoint::Low;
+  importance     = Waypoint::Low;
   taskPointIndex = -1;
   taskPointType  = TaskPointTypes::NotSet;
 
@@ -40,9 +40,9 @@ wayPoint::wayPoint()
 }
 
 // Copy constructor
-wayPoint::wayPoint(const wayPoint& inst)
+Waypoint::Waypoint(const Waypoint& inst)
 {
-  //   qDebug("wayPoint::wayPoint(const wayPoint& inst) name=%s, idx=%d",
+  //   qDebug("Waypoint::Waypoint(const Waypoint& inst) name=%s, idx=%d",
   //          inst.name.toLatin1().data(), inst.taskPointIndex );
   name           = inst.name;
   type           = inst.type;
@@ -62,12 +62,12 @@ wayPoint::wayPoint(const wayPoint& inst)
   taskPointType  = inst.taskPointType;
 }
 
-wayPoint::~wayPoint()
+Waypoint::~Waypoint()
 {
-  // qDebug("wayPoint::~wayPoint(): name=%s, %X", name.toLatin1().data(), (uint) this);
+  // qDebug("Waypoint::~Waypoint(): name=%s, %X", name.toLatin1().data(), (uint) this);
 }
 
-bool wayPoint::equals( const wayPoint *second ) const
+bool Waypoint::equals( const Waypoint *second ) const
 {
   if( second == 0 )
     {
@@ -83,7 +83,7 @@ bool wayPoint::equals( const wayPoint *second ) const
   return false;
 }
 
-bool wayPoint::operator==( const wayPoint& second ) const
+bool Waypoint::operator==( const Waypoint& second ) const
 {
   if( name == second.name && description == second.description && origP
       == second.origP )

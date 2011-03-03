@@ -44,7 +44,7 @@ ReachablePoint::ReachablePoint(QString name,
   _wp.frequency = frequency;
   _wp.elevation = elevation;
   _wp.comment = comment;
-  _wp.importance = wayPoint::High; // high to make sure it is visible
+  _wp.importance = Waypoint::High; // high to make sure it is visible
   _wp.isLandable = rwOpen;
   _wp.surface = rwSurf;
   _wp.runway = rwDir;
@@ -60,7 +60,7 @@ ReachablePoint::ReachablePoint(QString name,
 };
 
 // Construction from another WP
-ReachablePoint::ReachablePoint(wayPoint& wp,
+ReachablePoint::ReachablePoint(Waypoint& wp,
                                bool orignAfl,
                                Distance& distance,
                                short bearing,

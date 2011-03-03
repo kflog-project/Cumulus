@@ -116,7 +116,7 @@ WpEditDialogPageAero::~WpEditDialogPageAero()
 
 
 /** Called if the page needs to load data from the waypoint */
-void WpEditDialogPageAero::slot_load(wayPoint *wp)
+void WpEditDialogPageAero::slot_load(Waypoint *wp)
 {
   if ( wp )
     {
@@ -132,7 +132,7 @@ void WpEditDialogPageAero::slot_load(wayPoint *wp)
 
 
 /** Called if the data needs to be saved. */
-void WpEditDialogPageAero::slot_save(wayPoint *wp)
+void WpEditDialogPageAero::slot_save(Waypoint *wp)
 {
   if ( wp )
     {

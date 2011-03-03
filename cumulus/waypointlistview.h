@@ -53,7 +53,7 @@ public:
       return listw;
     };
 
-    wayPoint* getSelectedWaypoint()
+    Waypoint* getSelectedWaypoint()
     {
       return listw->getSelectedWaypoint();
     };
@@ -95,12 +95,12 @@ public slots: // Public slots
     /**
      * Called if a waypoint has been edited.
      */
-    void slot_wpEdited(wayPoint& wp);
+    void slot_wpEdited(Waypoint& wp);
 
     /**
      * Called if a waypoint has been added.
      */
-    void slot_wpAdded(wayPoint& wp);
+    void slot_wpAdded(Waypoint& wp);
 
     /**
      * Called to set a waypoint as homesite
@@ -119,12 +119,12 @@ signals: // Signals
     /**
      * This signal is emitted if a new waypoint is selected.
      */
-    void newWaypoint(wayPoint*, bool);
+    void newWaypoint(Waypoint*, bool);
 
     /**
      * This signal is emitted if a waypoint is deleted.
      */
-    void deleteWaypoint(wayPoint*);
+    void deleteWaypoint(Waypoint*);
 
     /**
      * This signal is send if the selection is done, and
@@ -135,7 +135,7 @@ signals: // Signals
     /**
      * Emitted if the user clicks the Info button.
      */
-    void info(wayPoint*);
+    void info(Waypoint*);
 
     /**
      * Emitted if a new home position is selected

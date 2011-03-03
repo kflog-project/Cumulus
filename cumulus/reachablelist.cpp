@@ -139,7 +139,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
   if( item == MapContents::WaypointList )
     {
       // Waypoints have different structure treat them here
-      QList<wayPoint> &wpList = _globalMapContents->getWaypointList();
+      QList<Waypoint> &wpList = _globalMapContents->getWaypointList();
       // qDebug("Nr of Waypoints: %d", wpList.count() );
 
       for ( int i=0; i < wpList.count(); i++ )

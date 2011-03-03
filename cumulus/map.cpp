@@ -257,7 +257,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
       MapContents::OutLandingList
     };
 
-  wayPoint *w = static_cast<wayPoint *> (0);
+  Waypoint *w = static_cast<Waypoint *> (0);
 
   // scale uses unit meter/pixel
   double cs = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
@@ -386,7 +386,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
   // let's show waypoints
   // @AP: On map scale higher as 1024 we don't evolute anything
 
-  QList<wayPoint>& wpList = _globalMapContents->getWaypointList();
+  QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
 
   for (int i = 0; i < wpList.count(); i++)
     {
@@ -395,7 +395,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
           break;
         }
 
-      wayPoint& wp = wpList[i];
+      Waypoint& wp = wpList[i];
 
       // consider only points, which are to drawn on the map
       if( _globalMapMatrix->isWaypoint2Draw( wp.importance  ) )
@@ -785,7 +785,7 @@ void Map::__drawGrid()
   gridP.end();
 }
 
-void Map::__drawPlannedTask( QPainter *taskP, QList<wayPoint*> &drawnWp )
+void Map::__drawPlannedTask( QPainter *taskP, QList<Waypoint*> &drawnWp )
 {
   FlightTask* task = (FlightTask*) _globalMapContents->getCurrentTask();
 
@@ -1116,7 +1116,7 @@ void Map::__drawNavigationLayer()
   // Collect all drawn airfield and waypoint objects as reference
   // for later label drawing:
   QList<Airfield*> drawnAf;
-  QList<wayPoint*> drawnWp;
+  QList<Waypoint*> drawnWp;
 
   QPainter navP;
 
@@ -1284,7 +1284,7 @@ void Map::slotRedrawMap()
 }
 
 /** Draws the waypoints of the waypoint catalog on the map */
-void Map::__drawWaypoints(QPainter* painter, QList<wayPoint*> &drawnWp)
+void Map::__drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
 {
   extern MapConfig* _globalMapConfig;
 
@@ -1297,7 +1297,7 @@ void Map::__drawWaypoints(QPainter* painter, QList<wayPoint*> &drawnWp)
   Altitude alt;
   Distance dist;
 
-  QList<wayPoint>& wpList = _globalMapContents->getWaypointList();
+  QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
 
   // load all configuration items once
   const bool showWpLabels   = GeneralConfig::instance()->getMapShowWaypointLabels();
@@ -1307,7 +1307,7 @@ void Map::__drawWaypoints(QPainter* painter, QList<wayPoint*> &drawnWp)
   // now step trough the waypoint list
   for( int i=0; i < wpList.count(); i++ )
     {
-      wayPoint& wp = wpList[i];
+      Waypoint& wp = wpList[i];
 
       // qDebug("wp=%s", wp.name.toLatin1().data());
 

@@ -55,7 +55,7 @@ public:
      * @param parent The parent widget.
      * @param wp A waypoint to be edited.
      */
-    WpEditDialog(QWidget *parent=0, wayPoint *wp=0);
+    WpEditDialog(QWidget *parent=0, Waypoint *wp=0);
 
     virtual ~WpEditDialog();
 
@@ -71,7 +71,7 @@ private:
      * This method checks, if all mandatory waypoint data have been defined.
      * Returns true on ok otherwise false.
      */
-    bool checkWaypointData( wayPoint& wp );
+    bool checkWaypointData( Waypoint& wp );
 
     /**
      * This method checks, if the passed waypoint name is already to find
@@ -102,23 +102,23 @@ signals:
      * Signal emitted to indicate the settings should be saved
      * to the configuration file
      */
-    void save(wayPoint *);
+    void save(Waypoint *);
 
     /**
      * Emitted to indicate that the settings should be
      * re-) loaded from the configuration file.
      */
-    void load(wayPoint *);
+    void load(Waypoint *);
 
     /**
      * This signal is emitted after a edited waypoint has been saved.
      * It is used to re-fill the waypoint list.
      */
-    void wpListChanged(wayPoint &);
+    void wpListChanged(Waypoint &);
 
 private:
 
-    wayPoint * _wp;
+    Waypoint * _wp;
     QString oldName; // old name of waypoint before rename
     QTextEdit * comment;
 };

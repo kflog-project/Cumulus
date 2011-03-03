@@ -79,7 +79,7 @@ void AirfieldListWidget::fillItemList()
 }
 
 /** Returns a pointer to the currently highlighted airfield. */
-wayPoint* AirfieldListWidget::getSelectedWaypoint()
+Waypoint* AirfieldListWidget::getSelectedWaypoint()
 {
   // qDebug("AirfieldListWidget::getSelectedWaypoint()");
   QTreeWidgetItem* li = list->currentItem();
@@ -95,7 +95,7 @@ wayPoint* AirfieldListWidget::getSelectedWaypoint()
   // @ee may be null if the cast failed.
   if ( afItem == static_cast<_AirfieldItem *> (0) )
     {
-      return static_cast<wayPoint *> (0);
+      return static_cast<Waypoint *> (0);
     }
 
   Airfield* site = afItem->airfield;

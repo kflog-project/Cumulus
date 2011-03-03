@@ -1582,6 +1582,17 @@ class GeneralConfig : protected QSettings
   /** Sets the waypoint file name with path */
   void setWaypointFile( const QString newValue );
 
+  /** Gets the waypoint file format */
+  int getWaypointFileFormat() const
+  {
+    return _waypointFileFormat;
+  };
+  /** Sets the waypoint file format */
+  void setWaypointFileFormat(const int newValue)
+  {
+    _waypointFileFormat = newValue;
+  };
+
   /** Gets the unit for altitude*/
   int getUnitAlt() const;
   /** Sets the unit for altitude */
@@ -1858,10 +1869,10 @@ class GeneralConfig : protected QSettings
   };
 
   /** Gets waypoint scale border. */
-  int getWaypointScaleBorder( const wayPoint::Importance importance) const;
+  int getWaypointScaleBorder( const Waypoint::Importance importance) const;
 
   /** Sets waypoint scale border. */
-  void setWaypointScaleBorder( const wayPoint::Importance importance,
+  void setWaypointScaleBorder( const Waypoint::Importance importance,
                                const int newScale );
 
   /** Gets the Flarm alias file name. */
@@ -2181,6 +2192,9 @@ class GeneralConfig : protected QSettings
 
   // Waypoint data file name
   QString _waypointFile;
+
+  /** Waypoint file format. 0=binary, 1=xml */
+  int _waypointFileFormat;
 
   /** Flarm alias file name. */
   QString _flarmAliasFileName;

@@ -60,7 +60,7 @@ public:
    * This method is called by MainWindow to set the view to which
    * there must be returned and the waypoint to view.
    */
-  bool showWP(int lastView, const wayPoint& wp);
+  bool showWP(int lastView, const Waypoint& wp);
 
 public slots:
 
@@ -81,12 +81,12 @@ signals:
   /**
    * Emitted if a waypoint has been added to the list.
    */
-  void waypointAdded(wayPoint& wp);
+  void waypointAdded(Waypoint& wp);
 
   /**
    * Emitted if a waypoint has been selected.
    */
-  void waypointSelected(wayPoint*, bool);
+  void waypointSelected(Waypoint*, bool);
 
   /**
    * Emitted if a new home position is selected
@@ -189,10 +189,10 @@ private: // Private attributes
   int _timerCount;
 
   /** Reference to the waypoint who's details to be displayed. */
-  wayPoint _wp;
+  Waypoint _wp;
 
   /** last selected waypoint  */
-  wayPoint myWp;
+  Waypoint myWp;
 
   /** contains the ID of the last view (the view that called this one) */
   int _lastView;

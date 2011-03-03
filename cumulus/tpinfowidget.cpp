@@ -173,8 +173,8 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       return;
     }
 
-  wayPoint *currentTP = tpList.at( currentTpIndex );
-  wayPoint *nextTP    = tpList.at( currentTpIndex+1 );
+  Waypoint *currentTP = tpList.at( currentTpIndex );
+  Waypoint *nextTP    = tpList.at( currentTpIndex+1 );
 
   QString display;
   QString no1, no2;
@@ -450,10 +450,10 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
  * This method fills the widget with the arrival info. The info is
  * taken from the passed waypoint.
  *
- * wayPoint: pointer to waypoint object
+ * Waypoint: pointer to waypoint object
  *
  */
-void TPInfoWidget::prepareArrivalInfoText( wayPoint *wp )
+void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
 {
   if( ! wp )
     {

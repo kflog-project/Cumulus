@@ -595,7 +595,7 @@ bool FlightTask::isFAI(double d_wp, double d1, double d2, double d3)
  * Draws course lines and turn point sectors/circles according to the
  * user configuration.
  */
-void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
+void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
 {
   // qDebug ("FlightTask::drawTask");
 
@@ -774,7 +774,7 @@ void FlightTask::drawTask( QPainter* painter, QList<wayPoint*> &drawnTp )
  * FAI rules does not play a role for drawing.
  *
  */
-void FlightTask::circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawnTp )
+void FlightTask::circleSchemeDrawing( QPainter* painter, QList<Waypoint*> &drawnTp )
 {
   extern MapConfig* _globalMapConfig;
 

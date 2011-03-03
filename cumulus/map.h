@@ -244,7 +244,7 @@ signals:
   /**
    * is emitted when left button click on the map
    */
-  void waypointSelected(wayPoint *);
+  void waypointSelected(Waypoint *);
 
   /**
    * is emitted when an airspace is entered or left behind
@@ -337,7 +337,7 @@ private:
    * @arg drawnWp List of drawn waypoints, if taskpoint label drawing
    *      option is set.
    */
-  void __drawPlannedTask(QPainter *taskP, QList<wayPoint*> &drawnWp);
+  void __drawPlannedTask(QPainter *taskP, QList<Waypoint*> &drawnWp);
 
   /**
    * Draws the grid on the map.
@@ -359,7 +359,7 @@ private:
    * @arg drawnWp List of drawn waypoints, if waypoint label drawing
    *      option is set.
    */
-  void __drawWaypoints(QPainter *wpPainter, QList<wayPoint*> &drawnWp);
+  void __drawWaypoints(QPainter *wpPainter, QList<Waypoint*> &drawnWp);
 
   /**
    * Draws a trail indicating the flight path taken, if that feature
@@ -517,7 +517,7 @@ private: //members
   int mapRot;
   int curMapRot;
 
-  wayPoint wp;  // currently selected waypoint
+  Waypoint wp;  // currently selected waypoint
 
   /**
    * Contains the regions of all visible airspaces. The list is needed to

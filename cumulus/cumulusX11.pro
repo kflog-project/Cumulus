@@ -83,6 +83,7 @@ HEADERS = \
     preflightwidget.h \
     preflightgliderpage.h \
     preflightmiscpage.h \
+    preflightwaypointpage.h \
     preflighttasklist.h \
     projectionbase.h \
     projectioncylindric.h \
@@ -189,6 +190,7 @@ SOURCES = \
     preflightwidget.cpp \
     preflightgliderpage.cpp \
     preflightmiscpage.cpp \
+    preflightwaypointpage.cpp \
     preflighttasklist.cpp \
     projectionbase.cpp \
     projectioncylindric.cpp \

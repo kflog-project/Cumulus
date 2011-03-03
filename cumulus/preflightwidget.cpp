@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2003      by André Somers
- **                   2008-2010 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -23,6 +23,8 @@
 #include "preflightgliderpage.h"
 #include "preflighttasklist.h"
 #include "preflightmiscpage.h"
+#include "preflightwaypointpage.h"
+
 #include "calculator.h"
 #include "layout.h"
 
@@ -44,6 +46,9 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
 
   taskpage = new PreFlightTaskList(this);
   tabWidget->addTab(taskpage, "");
+
+  wppage = new PreFlightWaypointPage(this);
+  tabWidget->addTab(wppage, "");
 
   miscpage = new PreFlightMiscPage(this);
   tabWidget->addTab(miscpage, "");
@@ -87,6 +92,7 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   setLayout(contentLayout);
 
   miscpage->load();
+  wppage->load();
 
   // check to see which tabulator to bring forward
   if (QString(name) == "taskselection")
@@ -112,10 +118,12 @@ void PreFlightWidget::setLabels()
 {
   tabWidget->setTabText( 0, tr("Glider") );
   tabWidget->setTabText( 1, tr("Task") );
-  tabWidget->setTabText( 2, tr("Common") );
+  tabWidget->setTabText( 2, tr("Waypoints") );
+  tabWidget->setTabText( 3, tr("Common") );
 
   gliderpage->setToolTip(tr("Select a glider to be used"));
   taskpage->setToolTip(tr("Flight task management"));
+  wppage->setToolTip(tr("Waypoint management"));
   miscpage->setToolTip(tr("Define common flight parameters"));
 }
 
@@ -179,12 +187,12 @@ void PreFlightWidget::slot_accept()
       // exists and this waypoint belongs to a task. In this case we
       // will reset the selection.
       extern Calculator* calculator;
-      const wayPoint *calcWp = calculator->getselectedWp();
+      const Waypoint *calcWp = calculator->getselectedWp();
 
       if (calcWp && calcWp->taskPointIndex != -1)
         {
           // reset taskpoint selection
-          emit newWaypoint(static_cast<wayPoint *> (0), true);
+          emit newWaypoint(static_cast<Waypoint *> (0), true);
         }
     }
   else
@@ -196,7 +204,7 @@ void PreFlightWidget::slot_accept()
       if( calculator->getselectedWp() )
         {
           // Reset taskpoint selection in calculator to prevent user query.
-          emit newWaypoint(static_cast<wayPoint *> (0), true);
+          emit newWaypoint(static_cast<Waypoint *> (0), true);
 
           // Select the start point of the new task.
           calculator->slot_startTask();
@@ -208,8 +216,9 @@ void PreFlightWidget::slot_accept()
 
   gliderpage->save();
   miscpage->save();
+  wppage->save();
 
-  hide();
+  setVisible( false );
   emit settingsChanged();
   emit closeConfig();
   QWidget::close();
@@ -218,7 +227,7 @@ void PreFlightWidget::slot_accept()
 void PreFlightWidget::slot_reject()
 {
   // qDebug("PreFlightWidget::slot_reject()");
-  hide();
+  setVisible( false );
   emit closeConfig();
   QWidget::close();
 }
@@ -233,6 +242,10 @@ void PreFlightWidget::slot_keyRight()
     {
       tabWidget->setCurrentIndex(tabWidget->indexOf(miscpage));
     }
+  else if (tabWidget->currentWidget() == wppage)
+    {
+      tabWidget->setCurrentIndex(tabWidget->indexOf(miscpage));
+    }
   else if (tabWidget->currentWidget() == miscpage)
     {
       tabWidget->setCurrentIndex(tabWidget->indexOf(gliderpage));
@@ -242,6 +255,10 @@ void PreFlightWidget::slot_keyRight()
 void PreFlightWidget::slot_keyLeft()
 {
   if (tabWidget->currentWidget() == miscpage)
+    {
+      tabWidget->setCurrentIndex(tabWidget->indexOf(wppage));
+    }
+  else if (tabWidget->currentWidget() == wppage)
     {
       tabWidget->setCurrentIndex(tabWidget->indexOf(taskpage));
     }

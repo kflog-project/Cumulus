@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,8 @@
 class PreFlightGliderPage;
 class PreFlightMiscPage;
 class PreFlightTaskList;
-class wayPoint;
+class PreFlightWaypointPage;
+class Waypoint;
 
 /**
  * \class PreFlightWidget
@@ -37,7 +38,7 @@ class wayPoint;
  * This widget provides an interface to set all the pre-flight settings like
  * glider type, copilot, task, amount of water taken on, etc.
  *
- * \date 2003-2010
+ * \date 2003-2011
  */
 class PreFlightWidget : public QWidget
 {
@@ -85,7 +86,7 @@ signals:
   /**
    * This signal is emitted if a new waypoint is selected.
    */
-  void newWaypoint(wayPoint *, bool);
+  void newWaypoint(Waypoint *, bool);
 
   /**
    * This signal is emitted before the widget is closed.
@@ -122,6 +123,8 @@ private:
   PreFlightTaskList *taskpage;
   PreFlightGliderPage *gliderpage;
   PreFlightMiscPage *miscpage;
+  PreFlightWaypointPage *wppage;
+
   QTabWidget* tabWidget;
 };
 

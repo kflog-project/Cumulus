@@ -52,7 +52,7 @@ double dist(QPoint* p1, QPoint* p2);
 /**
  * Calculates the distance between two given points in km.
  */
-double dist(wayPoint* wp1, wayPoint* wp2);
+double dist(Waypoint* wp1, Waypoint* wp2);
 
 /**
  * Calculates the bearing to the next point

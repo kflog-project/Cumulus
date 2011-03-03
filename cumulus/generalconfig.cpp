@@ -267,9 +267,9 @@ void GeneralConfig::load()
   _mapShowWaypointLabels          = value( "ShowWaypointLabels", false ).toBool();
   _mapShowLabelsExtraInfo         = value( "ShowLabelsExtraInfo", false ).toBool();
 
-  _wayPointScaleBorders[wayPoint::Low]    = value( "WpScaleBorderLow", 125 ).toInt();
-  _wayPointScaleBorders[wayPoint::Normal] = value( "WpScaleBorderNormal", 250 ).toInt();
-  _wayPointScaleBorders[wayPoint::High]   = value( "WpScaleBorderHigh", 500 ).toInt();
+  _wayPointScaleBorders[Waypoint::Low]    = value( "WpScaleBorderLow", 125 ).toInt();
+  _wayPointScaleBorders[Waypoint::Normal] = value( "WpScaleBorderNormal", 250 ).toInt();
+  _wayPointScaleBorders[Waypoint::High]   = value( "WpScaleBorderHigh", 500 ).toInt();
   endGroup();
 
   beginGroup("Map Data");
@@ -326,6 +326,7 @@ void GeneralConfig::load()
 
   beginGroup("Waypoint Data");
   _waypointFile = value( "WaypointFile", "cumulus.kwp" ).toString();
+  _waypointFileFormat = value( "WaypointFileFormat", 0 ).toInt();
   endGroup();
 
   beginGroup("Variometer");
@@ -604,9 +605,9 @@ void GeneralConfig::save()
   setValue( "ShowAirfieldLabels", _mapShowAirfieldLabels );
   setValue( "ShowTaskPointLabels", _mapShowTaskPointLabels );
   setValue( "ShowOutLandingLabels", _mapShowOutLandingLabels );
-  setValue( "WpScaleBorderLow", _wayPointScaleBorders[wayPoint::Low] );
-  setValue( "WpScaleBorderNormal", _wayPointScaleBorders[wayPoint::Normal] );
-  setValue( "WpScaleBorderHigh", _wayPointScaleBorders[wayPoint::High] );
+  setValue( "WpScaleBorderLow", _wayPointScaleBorders[Waypoint::Low] );
+  setValue( "WpScaleBorderNormal", _wayPointScaleBorders[Waypoint::Normal] );
+  setValue( "WpScaleBorderHigh", _wayPointScaleBorders[Waypoint::High] );
   endGroup();
 
   beginGroup("Map Data");
@@ -660,8 +661,9 @@ void GeneralConfig::save()
   endGroup();
 
   beginGroup("Waypoint Data");
-  endGroup();
   setValue( "WaypointFile", _waypointFile );
+  setValue( "WaypointFileFormat", _waypointFileFormat );
+  endGroup();
 
   beginGroup("Variometer");
   setValue( "IntegrationTime", _varioIntegrationTime );
@@ -1720,13 +1722,13 @@ void GeneralConfig::printIsoColorDefinitions()
 #endif
 
 /** Gets waypoint scale border. */
-int GeneralConfig::getWaypointScaleBorder( const wayPoint::Importance importance) const
+int GeneralConfig::getWaypointScaleBorder( const Waypoint::Importance importance) const
 {
   switch( importance )
   {
-    case wayPoint::Low:
-    case wayPoint::Normal:
-    case wayPoint::High:
+    case Waypoint::Low:
+    case Waypoint::Normal:
+    case Waypoint::High:
 
       // qDebug("Importance=%d, value=%d", importance, _wayPointScaleBorders[importance] );
 
@@ -1740,14 +1742,14 @@ int GeneralConfig::getWaypointScaleBorder( const wayPoint::Importance importance
 }
 
 /** Sets waypoint scale border. */
-void GeneralConfig::setWaypointScaleBorder( const wayPoint::Importance importance,
+void GeneralConfig::setWaypointScaleBorder( const Waypoint::Importance importance,
                                             const int newScale )
 {
   switch( importance )
   {
-    case wayPoint::Low:
-    case wayPoint::Normal:
-    case wayPoint::High:
+    case Waypoint::Low:
+    case Waypoint::Normal:
+    case Waypoint::High:
       _wayPointScaleBorders[importance] = newScale;
       break;
 

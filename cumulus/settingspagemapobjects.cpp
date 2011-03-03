@@ -188,9 +188,9 @@ void SettingsPageMapObjects::slot_load()
 
   // Load scale values for spin boxes. Note! The load order is important because a value change
   // of the spin box will generate a signal.
-  wpHighScaleLimitSpinBox->setValue( conf->getWaypointScaleBorder( wayPoint::High ));
-  wpNormalScaleLimitSpinBox->setValue( conf->getWaypointScaleBorder( wayPoint::Normal ));
-  wpLowScaleLimitSpinBox->setValue( conf->getWaypointScaleBorder( wayPoint::Low ));
+  wpHighScaleLimitSpinBox->setValue( conf->getWaypointScaleBorder( Waypoint::High ));
+  wpNormalScaleLimitSpinBox->setValue( conf->getWaypointScaleBorder( Waypoint::Normal ));
+  wpLowScaleLimitSpinBox->setValue( conf->getWaypointScaleBorder( Waypoint::Low ));
 
   // set maximums
   wpLowScaleLimitSpinBox->setMaximum( wpNormalScaleLimitSpinBox->value() );
@@ -217,9 +217,9 @@ void SettingsPageMapObjects::slot_save()
 
   conf->setMapShowWaypointLabels(liWpLabels->checkState() == Qt::Checked ? true : false);
   conf->setMapShowLabelsExtraInfo(liLabelsInfo->checkState() == Qt::Checked ? true : false);
-  conf->setWaypointScaleBorder( wayPoint::Low, wpLowScaleLimitSpinBox->value() );
-  conf->setWaypointScaleBorder( wayPoint::Normal, wpNormalScaleLimitSpinBox->value() );
-  conf->setWaypointScaleBorder( wayPoint::High, wpHighScaleLimitSpinBox->value() );
+  conf->setWaypointScaleBorder( Waypoint::Low, wpLowScaleLimitSpinBox->value() );
+  conf->setWaypointScaleBorder( Waypoint::Normal, wpNormalScaleLimitSpinBox->value() );
+  conf->setWaypointScaleBorder( Waypoint::High, wpHighScaleLimitSpinBox->value() );
 }
 
 /** Fills the list with load options */
@@ -330,9 +330,9 @@ void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
   changed |= ( conf->getMapShowTaskPointLabels()? Qt::Checked : Qt::Unchecked ) != liTpLabels->checkState();
   changed |= ( conf->getMapShowOutLandingLabels()? Qt::Checked : Qt::Unchecked ) != liOlLabels->checkState();
 
-  changed |= ( conf->getWaypointScaleBorder( wayPoint::Low )    != wpLowScaleLimitSpinBox->value() );
-  changed |= ( conf->getWaypointScaleBorder( wayPoint::Normal ) != wpNormalScaleLimitSpinBox->value() );
-  changed |= ( conf->getWaypointScaleBorder( wayPoint::High )   != wpHighScaleLimitSpinBox->value() );
+  changed |= ( conf->getWaypointScaleBorder( Waypoint::Low )    != wpLowScaleLimitSpinBox->value() );
+  changed |= ( conf->getWaypointScaleBorder( Waypoint::Normal ) != wpNormalScaleLimitSpinBox->value() );
+  changed |= ( conf->getWaypointScaleBorder( Waypoint::High )   != wpHighScaleLimitSpinBox->value() );
 
   if (changed)
     {

@@ -142,7 +142,7 @@ void WPInfoWidget::slot_timeout()
 
 /** This method is called by MainWindow to set the view to
  * which there must be returned and the waypoint to view. */
-bool WPInfoWidget::showWP(int lastView, const wayPoint& wp)
+bool WPInfoWidget::showWP(int lastView, const Waypoint& wp)
 {
   extern MapContents* _globalMapContents;
 
@@ -182,7 +182,7 @@ bool WPInfoWidget::showWP(int lastView, const wayPoint& wp)
     }
 
   // Check if Waypoint is not selected, so make sure we can select it.
-  const wayPoint *calcWp = calculator->getselectedWp();
+  const Waypoint *calcWp = calculator->getselectedWp();
 
   if( calcWp )
     {
@@ -461,7 +461,7 @@ void WPInfoWidget::slot_selectWaypoint()
 /** This slot is called if the Add Waypoint button is clicked. */
 void WPInfoWidget::slot_addAsWaypoint()
 {
-  _wp.importance = wayPoint::High; //importance is high
+  _wp.importance = Waypoint::High; //importance is high
   emit waypointAdded(_wp);
 
   cmdAddWaypoint->setVisible( false );

@@ -129,7 +129,7 @@ WpEditDialogPageGeneral::~WpEditDialogPageGeneral()
 
 
 /** called if data needs to be loaded */
-void WpEditDialogPageGeneral::slot_load(wayPoint *wp)
+void WpEditDialogPageGeneral::slot_load(Waypoint *wp)
 {
   if ( wp )
     { //we don't need to load if the waypoint is not there
@@ -149,7 +149,7 @@ void WpEditDialogPageGeneral::slot_load(wayPoint *wp)
 
 
 /** called if data needs to be saved */
-void WpEditDialogPageGeneral::slot_save(wayPoint *wp)
+void WpEditDialogPageGeneral::slot_save(Waypoint *wp)
 {
   if ( wp )
     {
@@ -177,7 +177,7 @@ void WpEditDialogPageGeneral::slot_save(wayPoint *wp)
 
       wp->elevation=static_cast<int> (rint(Altitude::convertToMeters(edtElev->text().toDouble())));
       wp->type=getWaypointType();
-      wp->importance=( enum wayPoint::Importance ) cmbImportance->currentIndex();
+      wp->importance=( enum Waypoint::Importance ) cmbImportance->currentIndex();
     }
 }
 

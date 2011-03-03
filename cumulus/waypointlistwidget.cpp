@@ -48,11 +48,11 @@ void WaypointListWidget::fillItemList()
 
   configRowHeight();
 
-  QList<wayPoint> &wpList = _globalMapContents->getWaypointList();
+  QList<Waypoint> &wpList = _globalMapContents->getWaypointList();
 
   for (int i=0; i < wpList.count(); i++)
     {
-      wayPoint& wp = wpList[i];
+      Waypoint& wp = wpList[i];
       list->addTopLevelItem( new _WaypointItem(wp) );
     }
 
@@ -69,13 +69,13 @@ void WaypointListWidget::fillItemList()
 }
 
 /** Returns a pointer to the currently selected item. */
-wayPoint* WaypointListWidget::getSelectedWaypoint()
+Waypoint* WaypointListWidget::getSelectedWaypoint()
 {
   QTreeWidgetItem* li = list->currentItem();
 
   if ( li == static_cast<QTreeWidgetItem *>(0) )
     {
-      return static_cast<wayPoint *>(0);
+      return static_cast<Waypoint *>(0);
     }
 
   // Now we're left with the real waypoints
@@ -83,7 +83,7 @@ wayPoint* WaypointListWidget::getSelectedWaypoint()
 
   if ( !wpi )
     {
-      return static_cast<wayPoint *>(0);
+      return static_cast<Waypoint *>(0);
     }
 
   return &wpi->wp;
@@ -102,7 +102,7 @@ void WaypointListWidget::deleteSelectedWaypoint()
       return;
     }
 
-  wayPoint *wp = getSelectedWaypoint();
+  Waypoint *wp = getSelectedWaypoint();
 
   if( !wp )
     {
@@ -126,7 +126,7 @@ void WaypointListWidget::deleteSelectedWaypoint()
 }
 
 /** Called if a waypoint has been edited. */
-void WaypointListWidget::updateSelectedWaypoint(wayPoint& wp)
+void WaypointListWidget::updateSelectedWaypoint(Waypoint& wp)
 {
   QTreeWidgetItem* li = list->currentItem();
 
@@ -162,17 +162,17 @@ void WaypointListWidget::updateSelectedWaypoint(wayPoint& wp)
 }
 
 /** Called if a waypoint has been added. */
-void WaypointListWidget::addWaypoint(wayPoint& newWp)
+void WaypointListWidget::addWaypoint(Waypoint& newWp)
 {
   // put new waypoint into the global waypoint list
-  QList<wayPoint> &wpList = _globalMapContents->getWaypointList();
+  QList<Waypoint> &wpList = _globalMapContents->getWaypointList();
   wpList.append( newWp );
 
   // save the modified waypoint catalog
   _globalMapContents->saveWaypointList();
 
   // retrieve the reference of the appended waypoint from the global list
-  wayPoint& wp = wpList.last();
+  Waypoint& wp = wpList.last();
 
   filter->addListItem( new _WaypointItem(wp) );
 
@@ -186,7 +186,7 @@ void WaypointListWidget::addWaypoint(wayPoint& newWp)
   // qDebug("WaypointListWidget::addWaypoint: name=%s", wp.name.toLatin1().data() );
 }
 
-WaypointListWidget::_WaypointItem::_WaypointItem( wayPoint& waypoint ) :
+WaypointListWidget::_WaypointItem::_WaypointItem( Waypoint& waypoint ) :
   QTreeWidgetItem(),  wp(waypoint)
 {
   QPainter pnt;

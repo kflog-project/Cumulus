@@ -51,12 +51,12 @@ public slots:
   /**
    * Called if the data needs to be saved.
    */
-  void slot_save(wayPoint * wp);
+  void slot_save(Waypoint * wp);
 
   /**
    * Called if the page needs to load data from the waypoint
    */
-  void slot_load(wayPoint * wp);
+  void slot_load(Waypoint * wp);
 
 private:
 

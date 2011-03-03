@@ -120,7 +120,7 @@ signals:
   void __showTask();
 
   /** creates a deep copy of the waypoint list */
-  QList<wayPoint*> *copyWpList();
+  QList<Waypoint*> *copyWpList();
 
   /** list containing defined tasks */
   QTreeWidget* taskList;

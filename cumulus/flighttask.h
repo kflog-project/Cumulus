@@ -174,7 +174,7 @@ class FlightTask : public BaseMapElement
    * @param drawnTp List of drawn task points, if taskpoint label drawing
    *        option is set.
    */
-  void drawTask(QPainter* painter, QList<wayPoint *> &drawnTp );
+  void drawTask(QPainter* painter, QList<Waypoint *> &drawnTp );
 
   /**
    * function for drawing the element into the given painter.
@@ -379,7 +379,7 @@ class FlightTask : public BaseMapElement
    * Does all map drawing actions for task points using cylinder scheme
    *
    */
-  void circleSchemeDrawing( QPainter* painter, QList<wayPoint*> &drawnTp );
+  void circleSchemeDrawing( QPainter* painter, QList<Waypoint*> &drawnTp );
 
   /**
    * Reimplemented from BaseMapElement.

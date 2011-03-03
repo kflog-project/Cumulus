@@ -17,8 +17,8 @@
  **
  ***********************************************************************/
 
-#ifndef __wayPoint__
-#define __wayPoint__
+#ifndef __Waypoint__
+#define __Waypoint__
 
 #include <QPoint>
 #include <QString>
@@ -48,7 +48,7 @@ class TaskPointTypes
 };
 
 /**
- * \class wayPoint
+ * \class Waypoint
  *
  * \author Heiner Lamprecht, Florian Ehinger, André Somers, Axel Pauli
  *
@@ -57,7 +57,7 @@ class TaskPointTypes
  * \date 1999-2010
  */
 
-class wayPoint
+class Waypoint
 {
  public:
   /**
@@ -65,13 +65,13 @@ class wayPoint
    */
   enum Importance { Low=0, Normal=1, High=2 };
 
-  wayPoint();
-  wayPoint(const wayPoint& inst);
-  ~wayPoint();
+  Waypoint();
+  Waypoint(const Waypoint& inst);
+  ~Waypoint();
 
   /** Compare current instance with another */
-  bool equals( const wayPoint *second ) const;
-  bool operator==( const wayPoint& second ) const;
+  bool equals( const Waypoint *second ) const;
+  bool operator==( const Waypoint& second ) const;
 
   /** The name of the waypoint. */
   QString name;

@@ -51,12 +51,12 @@ public:
   /**
    * @return A pointer to the currently high lighted waypoint.
    */
-  wayPoint *getSelectedWaypoint();
+  Waypoint *getSelectedWaypoint();
 
   /**
    * @param wp Updates the currently high lighted waypoint after editing.
    */
-  void updateSelectedWaypoint(wayPoint &wp);
+  void updateSelectedWaypoint(Waypoint &wp);
 
   /**
    * Removes the currently highlighted waypoint.
@@ -66,7 +66,7 @@ public:
   /**
    * @param wp Adds a waypoint to the list.
    */
-  void addWaypoint(wayPoint &wp);
+  void addWaypoint(Waypoint &wp);
 
   /**
    * Clears and fills the waypoint item list with the current waypoints.
@@ -88,8 +88,8 @@ private:
   class _WaypointItem : public QTreeWidgetItem
     {
       public:
-          _WaypointItem(wayPoint&);
-          wayPoint &wp;
+          _WaypointItem(Waypoint&);
+          Waypoint &wp;
     };
 };
 

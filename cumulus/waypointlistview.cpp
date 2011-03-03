@@ -128,7 +128,7 @@ void WaypointListView::showEvent(QShowEvent *)
 /** This signal is called to indicate that a selection has been made. */
 void WaypointListView::slot_Select()
 {
-  wayPoint *w = listw->getSelectedWaypoint();
+  Waypoint *w = listw->getSelectedWaypoint();
 
   if ( w )
     {
@@ -141,7 +141,7 @@ void WaypointListView::slot_Select()
 /** This slot is called if the info button has been clicked */
 void WaypointListView::slot_Info()
 {
-  wayPoint *w = listw->getSelectedWaypoint();
+  Waypoint *w = listw->getSelectedWaypoint();
 
   if( w )
     {
@@ -169,7 +169,7 @@ void WaypointListView::slot_Selected()
 {
   cmdSelect->setEnabled( true );
 
-  wayPoint *w = listw->getSelectedWaypoint();
+  Waypoint *w = listw->getSelectedWaypoint();
 
   if( w )
     {
@@ -185,8 +185,8 @@ void WaypointListView::slot_newWP()
 {
   WpEditDialog *dlg = new WpEditDialog( this, 0 );
 
-  connect( dlg, SIGNAL(wpListChanged(wayPoint &)), this,
-           SLOT(slot_wpAdded(wayPoint &)) );
+  connect( dlg, SIGNAL(wpListChanged(Waypoint &)), this,
+           SLOT(slot_wpAdded(Waypoint &)) );
 
   dlg->setVisible( true );
 }
@@ -194,14 +194,14 @@ void WaypointListView::slot_newWP()
 /** Called when the selected waypoint needs to be opened in the editor */
 void WaypointListView::slot_editWP()
 {
-  wayPoint *wp = getSelectedWaypoint();
+  Waypoint *wp = getSelectedWaypoint();
 
   if( wp )
     {
       WpEditDialog *dlg = new WpEditDialog( this, wp );
 
-      connect( dlg, SIGNAL(wpListChanged(wayPoint &)), this,
-               SLOT(slot_wpEdited(wayPoint &)) );
+      connect( dlg, SIGNAL(wpListChanged(Waypoint &)), this,
+               SLOT(slot_wpEdited(Waypoint &)) );
 
       dlg->setVisible( true );
     }
@@ -210,9 +210,9 @@ void WaypointListView::slot_editWP()
 /** Called when the selected waypoint should be deleted from the catalog */
 void WaypointListView::slot_deleteWP()
 {
-  wayPoint* wp = listw->getSelectedWaypoint();
+  Waypoint* wp = listw->getSelectedWaypoint();
 
-  if ( wp == static_cast<wayPoint *>(0) )
+  if ( wp == static_cast<Waypoint *>(0) )
     {
       return;
     }
@@ -238,7 +238,7 @@ void WaypointListView::slot_deleteWP()
 }
 
 /** Called if a waypoint has been edited. */
-void WaypointListView::slot_wpEdited(wayPoint& wp)
+void WaypointListView::slot_wpEdited(Waypoint& wp)
 {
   //  qDebug("WaypointListView::slot_wpEdited");
   listw->updateSelectedWaypoint( wp );
@@ -250,7 +250,7 @@ void WaypointListView::slot_wpEdited(wayPoint& wp)
 }
 
 /** Called if a waypoint has been added. */
-void WaypointListView::slot_wpAdded(wayPoint& wp)
+void WaypointListView::slot_wpAdded(Waypoint& wp)
 {
   // qDebug("WaypointListView::slot_wpAdded(): name=%s", wp->name.toLatin1().data());
   listw->addWaypoint( wp );
@@ -264,9 +264,9 @@ void WaypointListView::slot_wpAdded(wayPoint& wp)
 /** Called to set a new home position */
 void WaypointListView::slot_setHome()
 {
-  wayPoint *_wp = listw->getSelectedWaypoint();
+  Waypoint *_wp = listw->getSelectedWaypoint();
 
-  if( _wp == static_cast<wayPoint *> ( 0 ) )
+  if( _wp == static_cast<Waypoint *> ( 0 ) )
     {
       return;
     }

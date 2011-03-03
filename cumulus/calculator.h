@@ -162,9 +162,9 @@ public:
   const Distance& getlastDistance() const { return lastDistance; };
 
   /**
-   * Read property of wayPoint* selectedWp.
+   * Read property of Waypoint* selectedWp.
    */
-  const wayPoint* getselectedWp() const { return selectedWp; };
+  const Waypoint* getselectedWp() const { return selectedWp; };
 
   /**
    * Read property of Altitude lastAltitude.
@@ -422,12 +422,12 @@ public slots:
   /**
    * Called if a new waypoint has been selected.
    */
-  void slot_WaypointChange(wayPoint *, bool);
+  void slot_WaypointChange(Waypoint *, bool);
 
   /**
    * Called if a waypoint has to be deleted.
    */
-  void slot_WaypointDelete(wayPoint *);
+  void slot_WaypointDelete(Waypoint *);
 
   /**
    * called if a new position-fix has been established.
@@ -560,7 +560,7 @@ signals: // Signals
   /**
    * Sent if a new waypoint has been selected.
    */
-  void newWaypoint(const wayPoint *);
+  void newWaypoint(const Waypoint *);
 
   /**
    * Sent if a new distance has been calculated. Negative if invalid.
@@ -677,7 +677,7 @@ private: // Private methods
    * Sets a new selected waypoint. The old waypoint instance is
    * deleted and a new one allocated.
    */
-  void setSelectedWp( const wayPoint* newWp );
+  void setSelectedWp( const Waypoint* newWp );
 
   /**
    * Calculates the distance to the currently selected waypoint and
@@ -722,7 +722,7 @@ private: // Private attributes
   /** Contains the last calculated distance to the waypoint */
   Distance lastDistance;
   /** Reference to the selected waypoint */
-  wayPoint* selectedWp;
+  Waypoint* selectedWp;
   /** Contains the last calculated ETA */
   QTime lastETA;
   /** contains the current state of ETA calculation */

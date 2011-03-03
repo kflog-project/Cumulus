@@ -240,7 +240,7 @@ void TaskListView::showEvent(QShowEvent *)
       return;
     }
 
-  const wayPoint *calcWp = calculator->getselectedWp();
+  const Waypoint *calcWp = calculator->getselectedWp();
   bool foundWp = false;
 
   for( int i = 0; i < list->topLevelItemCount(); i++ )
@@ -367,7 +367,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
 
   // Check if a waypoint is selected in calculator. In this case set
   // it in task list as selected too.
-  const wayPoint *calcWp = calculator->getselectedWp();
+  const Waypoint *calcWp = calculator->getselectedWp();
 
   QList<TaskPoint *> tmpList = _task->getTpList();
 
@@ -423,7 +423,7 @@ void TaskListView::slot_updateTask()
 }
 
 /** Returns a pointer to the currently highlighted task point. */
-wayPoint *TaskListView::getSelectedWaypoint()
+Waypoint *TaskListView::getSelectedWaypoint()
 {
   return _selectedTp;
 }

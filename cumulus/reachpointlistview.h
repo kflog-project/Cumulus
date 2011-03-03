@@ -58,7 +58,7 @@ public:
   virtual ~ReachpointListView();
 
   /** Returns a pointer to the currently highlighted waypoint. */
-  wayPoint* getSelectedWaypoint();
+  Waypoint* getSelectedWaypoint();
 
   /**
    * Retrieves the waypoints from the map contents and fills the list.
@@ -115,7 +115,7 @@ signals:
   /**
    * This signal is emitted if a new waypoint is selected.
    */
-  void newWaypoint(wayPoint*, bool);
+  void newWaypoint(Waypoint*, bool);
 
   /**
    * This signal is emitted if the selection is done and the
@@ -126,7 +126,7 @@ signals:
   /**
    * This signal is emitted when the user clicks the Info button.
    */
-  void info(wayPoint *);
+  void info(Waypoint *);
 
   /**
    * This signal is emitted when a new home position is selected
@@ -144,7 +144,7 @@ private:
   MainWindow * par;
   RowDelegate* rowDelegate;
   QBoxLayout * buttonrow;
-  wayPoint     selectedWp;
+  Waypoint     selectedWp;
   bool         _outlandShow;
   QPixmap      _arrows;
   bool         _newList;

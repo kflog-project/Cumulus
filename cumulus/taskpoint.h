@@ -33,12 +33,12 @@
 
 #include "waypoint.h"
 
-class TaskPoint : public wayPoint
+class TaskPoint : public Waypoint
 {
  public:
 
   TaskPoint();
-  TaskPoint( const wayPoint& wp );
+  TaskPoint( const Waypoint& wp );
   TaskPoint( const TaskPoint& inst );
   virtual ~TaskPoint();
 
