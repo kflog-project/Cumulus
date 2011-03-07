@@ -37,7 +37,6 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   wpTypesBox->addItem( tr("Airfields"), WaypointCatalog::Airfields );
   wpTypesBox->addItem( tr("Gliderfields"), WaypointCatalog::Gliderfields );
   wpTypesBox->addItem( tr("Outlandings"), WaypointCatalog::Outlandings );
-  wpTypesBox->addItem( tr("UL-Fields"), WaypointCatalog::UlFlields );
   wpTypesBox->addItem( tr("Other Points"), WaypointCatalog::OtherPoints );
 
   wpRadiusBox = new QComboBox;
@@ -226,51 +225,86 @@ void PreFlightWaypointPage::slotImportFile()
                                                 tr("Open waypoint catalog"),
                                                 wayPointDir,
                                                 filter );
-  if( ! fName.isEmpty() )
+  if( fName.isEmpty() )
     {
-      QList<Waypoint> wpList;
-      WaypointCatalog catalog;
-
-      if( filterToggle->isChecked() )
-        {
-          // We have to use the filter values for the catalog read.
-          enum WaypointCatalog::wpType type = (enum WaypointCatalog::wpType)
-              wpTypesBox->itemData(wpTypesBox->currentIndex()).toInt();
-
-          int radius = wpRadiusBox->currentText().toInt();
-
-          WGSPoint wgsPoint;
-
-          if( positionRB->isChecked() )
-            {
-              wgsPoint = WGSPoint( centerLat->KFLogDegree(), centerLon->KFLogDegree() );
-            }
-          else if( homeRB->isChecked() )
-            {
-              GeneralConfig *conf = GeneralConfig::instance();
-              wgsPoint = WGSPoint( conf->getHomeLat(), conf->getHomeLon() );
-            }
-          else if( airfieldRB->isChecked() )
-            {
-              QString s = airfieldBox->currentText();
-
-              if( airfieldDict.contains(s) )
-                {
-                  SinglePoint *sp = airfieldDict.value(s);
-                  wgsPoint = sp->getWGSPosition();
-                }
-            }
-
-          catalog.setFilter( type, radius, wgsPoint );
-        }
-
-      bool ok = catalog.readCup( fName, wpList );
-
-      if( ok )
-        {
-          qDebug() << wpList.size() << "Cup items loaded.";
-        }
+      return;
     }
+
+  QList<Waypoint> wpList;
+  WaypointCatalog catalog;
+
+  if( filterToggle->isChecked() )
+    {
+      // We have to use the filter values for the catalog read.
+      enum WaypointCatalog::wpType type = (enum WaypointCatalog::wpType)
+          wpTypesBox->itemData(wpTypesBox->currentIndex()).toInt();
+
+      int radius = wpRadiusBox->currentText().toInt();
+
+      WGSPoint wgsPoint;
+
+      if( positionRB->isChecked() )
+        {
+          wgsPoint = WGSPoint( centerLat->KFLogDegree(), centerLon->KFLogDegree() );
+        }
+      else if( homeRB->isChecked() )
+        {
+          GeneralConfig *conf = GeneralConfig::instance();
+          wgsPoint = WGSPoint( conf->getHomeLat(), conf->getHomeLon() );
+        }
+      else if( airfieldRB->isChecked() )
+        {
+          QString s = airfieldBox->currentText();
+
+          if( airfieldDict.contains(s) )
+            {
+              SinglePoint *sp = airfieldDict.value(s);
+              wgsPoint = sp->getWGSPosition();
+            }
+        }
+
+      catalog.setFilter( type, radius, wgsPoint );
+    }
+
+  // First make a test run to get the real items count.
+  int wpCount = catalog.readCup( fName, 0 );
+
+  if( wpCount == -1 )
+    {
+      // Error occurred, return only.
+      return;
+    }
+
+  if( wpCount == 0 )
+    {
+      QMessageBox::information( this,
+                                tr("No entries read"),
+                                QString("<html>") +
+                                tr("No waypoints read from file!") +
+                                "<br>" +
+                                tr("Maybe you should change the filter values?") +
+                                "</html>" );
+      return;
+    }
+
+  int answer =
+      QMessageBox::question( this,
+                             tr("Continue?"),
+                             QString("<html>") +
+                             QString(tr("%1 waypoints would be read.")).arg(wpCount) +
+                             "<br><br>" +
+                             tr("Continue loading?") +
+                             "</html>",
+                             QMessageBox::Ok|QMessageBox::No,
+                             QMessageBox::No );
+
+  if( answer == QMessageBox::No )
+    {
+      return;
+    }
+
+  wpCount = catalog.readCup( fName, &wpList );
+
 }
 
 void PreFlightWaypointPage::loadAirfieldComboBox()

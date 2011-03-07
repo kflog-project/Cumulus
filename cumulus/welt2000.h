@@ -156,127 +156,119 @@ class Welt2000
 {
 public:
 
-    /**
-     * Constructor
-     */
-    Welt2000();
+  /**
+   * Constructor
+   */
+  Welt2000();
 
-    /**
-     * Destructor
-     */
-    virtual ~Welt2000();
+  /**
+   * Destructor
+   */
+  virtual ~Welt2000();
 
-    /**
-     * search on default places a welt2000 file and load it. A source
-     * can be the original ASCII file or a compiled version of it. The
-     * results are put in the passed lists.
-     *
-     * @param airfieldList All airports have to be stored in this list
-     * @param gliderfieldList All gilder fields have to be stored in this list
-     * @param outlandingList All outlanding fields have to be stored in this list
-     * @return true (success) or false (error occurred)
-     */
-    bool load( QList<Airfield>& airfieldList,
-               QList<Airfield>& gliderfieldList,
-               QList<Airfield>& outlandingList );
-
-private:
-
-    /**
-     * Parses the passed file in welt2000 format and put the appropriate
-     * entries in the related lists.
-     *
-     * @param path Full name with path of welt2000 file
-     * @param airfieldList All airports have to be stored in this list
-     * @param gliderfieldList All gilder fields have to be stored in this list
-     * @param outlandingList All outlanding fields have to be stored in this list
-     * @param doCompile create a binary file of the parser results,
-     *                  if flag is set to true. Default is false
-     * @return true (success) or false (error occurred)
-     */
-    bool parse( QString& path,
-                QList<Airfield>& airfieldList,
-                QList<Airfield>& gliderfieldList,
-                QList<Airfield>& outlandingList,
-                bool doCompile=false );
-
-    /**
-     * The passed file has to be fulfill a welt2000 file format. All
-     * not relevant entries, like turn points, will be filtered
-     * out. The content of the old file is overwritten with the
-     * filtered results to save disk space.
-     *
-     * @param path Full name with path of welt2000 file
-     * @return true (success) or false (error occurred)
-     */
-    bool filter( QString &path );
-
-    /**
-     * Read all entries from the configuration file related to welt2000.
-     *
-     * @param path Full name with path of welt2000 configuration file
-     * @return true (success) or false (error occurred)
-     */
-    bool readConfigEntries( QString &path );
-
-    /**
-     * Read the content of a compiled file and put it into the related
-     * lists.
-     *
-     * @param path Full name with path of welt2000 binary file
-     * @param airfieldList All airports have to be stored in this list
-     * @param gliderfieldList All gilder fields have to be stored in this list
-     * @param outlandingList All outlanding fields have to be stored in this list
-     * @return true (success) or false (error occurred)
-     */
-    bool readCompiledFile( QString &path,
-                           QList<Airfield>& airfieldList,
-                           QList<Airfield>& gliderfieldList,
-                           QList<Airfield>& outlandingList );
-
-    /**
-     * Get the header data of a compiled file and put it in the class
-     * variables.
-     *
-     * @param path Full name with path of welt2000 binary file
-     * @return true (success) or false (error occurred)
-     */
-    bool setHeaderData( QString &path );
-
-    /**
-     * Get the distance back according to the set unit by the user.
-     *
-     * @param distance as number
-     * @return distance as double in the correct unit
-     */
-    double getDistanceInKm( const int distance );
+  /**
+   * search on default places a welt2000 file and load it. A source
+   * can be the original ASCII file or a compiled version of it. The
+   * results are put in the passed lists.
+   *
+   * @param airfieldList All airports have to be stored in this list
+   * @param gliderfieldList All gilder fields have to be stored in this list
+   * @param outlandingList All outlanding fields have to be stored in this list
+   * @return true (success) or false (error occurred)
+   */
+  bool load( QList<Airfield>& airfieldList,
+             QList<Airfield>& gliderfieldList,
+             QList<Airfield>& outlandingList );
 
 private:
 
-    QMap<QString, BaseMapElement::objectType> c_baseTypeMap;
+  /**
+   * Parses the passed file in welt2000 format and put the appropriate
+   * entries in the related lists.
+   *
+   * @param path Full name with path of welt2000 file
+   * @param airfieldList All airports have to be stored in this list
+   * @param gliderfieldList All gilder fields have to be stored in this list
+   * @param outlandingList All outlanding fields have to be stored in this list
+   * @param doCompile create a binary file of the parser results,
+   *                  if flag is set to true. Default is false
+   * @return true (success) or false (error occurred)
+   */
+  bool parse( QString& path,
+              QList<Airfield>& airfieldList,
+              QList<Airfield>& gliderfieldList,
+              QList<Airfield>& outlandingList,
+              bool doCompile=false );
 
-    // Maps used for remapping of airfield types, will be populated
-    // with content from configuration file
-    QMap<QString, QString> c_icaoMap;  // remapping by icao identifiers
-    QMap<QString, QString> c_shortMap; // remapping by short names
+  /**
+   * The passed file has to be fulfill a welt2000 file format. All
+   * not relevant entries, like turn points, will be filtered
+   * out. The content of the old file is overwritten with the
+   * filtered results to save disk space.
+   *
+   * @param path Full name with path of welt2000 file
+   * @return true (success) or false (error occurred)
+   */
+  bool filter( QString &path );
 
-    // country filter list from configuration file
-    QStringList c_countryList;
-    // radius around home position
-    double c_homeRadius;
+  /**
+   * Read all entries from the configuration file related to welt2000.
+   *
+   * @param path Full name with path of welt2000 configuration file
+   * @return true (success) or false (error occurred)
+   */
+  bool readConfigEntries( QString &path );
 
-    // header data members of compiled file
-    quint32 h_magic;
-    qint8 h_fileType;
-    quint16 h_fileVersion;
-    QDateTime h_creationDateTime;
-    QStringList h_countryList;
-    double h_homeRadius;
-    QPoint h_homeCoord;
-    QRect h_boundingBox;
-    bool h_outlandings; // Flag to indicate outlandings contained or not
-    ProjectionBase *h_projection;
-    bool h_headerIsValid;
+  /**
+   * Read the content of a compiled file and put it into the related
+   * lists.
+   *
+   * @param path Full name with path of welt2000 binary file
+   * @param airfieldList All airports have to be stored in this list
+   * @param gliderfieldList All gilder fields have to be stored in this list
+   * @param outlandingList All outlanding fields have to be stored in this list
+   * @return true (success) or false (error occurred)
+   */
+  bool readCompiledFile( QString &path,
+                         QList<Airfield>& airfieldList,
+                         QList<Airfield>& gliderfieldList,
+                         QList<Airfield>& outlandingList );
+
+  /**
+   * Get the header data of a compiled file and put it in the class
+   * variables.
+   *
+   * @param path Full name with path of welt2000 binary file
+   * @return true (success) or false (error occurred)
+   */
+  bool setHeaderData( QString &path );
+
+private:
+
+  QMap<QString, BaseMapElement::objectType> c_baseTypeMap;
+
+  // Maps used for remapping of airfield types, will be populated
+  // with content from configuration file
+  QMap<QString, QString> c_icaoMap;  // remapping by icao identifiers
+  QMap<QString, QString> c_shortMap; // remapping by short names
+
+  // country filter list from configuration file
+  QStringList c_countryList;
+  // radius around home position
+  double c_homeRadius;
+
+  // header data members of compiled file
+  quint32 h_magic;
+  qint8 h_fileType;
+  quint16 h_fileVersion;
+  QDateTime h_creationDateTime;
+  QStringList h_countryList;
+  double h_homeRadius;
+  QPoint h_homeCoord;
+  QRect h_boundingBox;
+  bool h_outlandings; // Flag to indicate outlandings contained or not
+  ProjectionBase *h_projection;
+  bool h_headerIsValid;
 };
 
 #endif

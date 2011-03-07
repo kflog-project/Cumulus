@@ -42,7 +42,7 @@ class WaypointCatalog
 {
  public:
 
-  enum wpType { All, Airfields, Gliderfields, Outlandings, UlFlields, OtherPoints };
+  enum wpType { All, Airfields, Gliderfields, Outlandings, OtherPoints };
 
   WaypointCatalog();
 
@@ -60,8 +60,17 @@ class WaypointCatalog
   /** write out KFLog xml data catalog to file name */
   bool writeXml( QString catalog, QList<Waypoint>& wpList );
 
-  /** read SeeYou cup file, only waypoint part */
-  bool readCup( QString catalog, QList<Waypoint>& wpList );
+  /**
+   * Reads a SeeYou cup file, only the waypoint part.
+   *
+   * \param catalog Catalog file name with directory path.
+   *
+   * \param wpList Waypoint list where the read waypoints are stored. If the
+   *               wpList is NULL, waypoints are counted only.
+   *
+   * \return Number of read waypoints. In error case -1.
+   */
+  int readCup( QString catalog, QList<Waypoint>* wpList );
 
   /**
    * Sets a filter used during read.

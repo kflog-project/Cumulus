@@ -241,7 +241,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
             {
               // we must look, what unit the user has chosen. This unit must
               // be considered during load of airfield data.
-              dRadius = getDistanceInKm( iRadius );
+              dRadius = Distance::convertToMeters( iRadius ) / 1000.;
             }
 
           if( fabs( dRadius - h_homeRadius ) > 0.5 )
@@ -603,15 +603,14 @@ bool Welt2000::parse( QString& path,
     {
       // we must look, what unit the user has chosen. This unit must
       // be considered during load of airfield data.
-      c_homeRadius = getDistanceInKm( radius );
+      c_homeRadius = Distance::convertToMeters( radius ) / 1000.;
     }
 
   qDebug( "W2000: %d country entries are to be extracted", c_countryList.count() );
   qDebug() << "W2000: load outlandings?" << outlandings;
   qDebug( "W2000: Home radius is set to %.1f Km", c_homeRadius );
 
-  // put all entries of country list into a dictionary for faster
-  // access
+  // put all entries of country list into a dictionary for faster access
   QHash<QString, QString> countryDict;
 
   for( int i = 0; i < c_countryList.count(); i++ )
@@ -1613,37 +1612,4 @@ bool Welt2000::setHeaderData( QString &path )
   inFile.close();
   h_headerIsValid = true; // save read result here too
   return true;
-}
-
-/**
- * Get the distance back in kilometers according to the set unit by
- * the user.
- *
- * @param distance as number
- * @returns distance as double in kilometers
- */
-double Welt2000::getDistanceInKm( const int distance )
-{
-  // we must look, what unit the user has chosen.
-  Distance::distanceUnit distUnit = Distance::getUnit();
-  Distance dist;
-  double unit = 0.0;
-
-  if( distUnit == Distance::kilometers )
-    {
-      dist.setKilometers( distance );
-      unit = dist.getKilometers();
-    }
-  else if( distUnit == Distance::miles )
-    {
-      dist.setMiles( distance );
-      unit = dist.getKilometers();
-    }
-  else // if( distUnit == Distance::nautmiles )
-    {
-      dist.setNautMiles( distance );
-      unit = dist.getKilometers();
-    }
-
-  return unit;
 }

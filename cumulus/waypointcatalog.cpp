@@ -20,7 +20,9 @@
 #include <QtGui>
 
 #include "waypointcatalog.h"
+#include "distance.h"
 #include "mainwindow.h"
+#include "mapcalc.h"
 #include "mapmatrix.h"
 #include "generalconfig.h"
 
@@ -298,52 +300,45 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
 }
 
 /** read a waypoint catalog from a SeeYou cup file, only waypoint part */
-// WaypointTreeView::fillWaypoints()
-bool WaypointCatalog::readCup( QString catalog, QList<Waypoint>& wpList )
+int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 {
-  qDebug() << "WaypointCatalog::readCupFile" << catalog;
-
   QFile file(catalog);
 
-  if(!file.exists())
+  if( !file.exists() )
     {
       QMessageBox::warning( _globalMainWindow,
                              QObject::tr("Error occurred!"),
                              "<html>" + QObject::tr("The selected file<BR><B>%1</B><BR>does not exist!").arg(catalog) + "</html>",
                              QMessageBox::Ok );
-      return false;
+      return -1;
     }
 
-  if(file.size() == 0)
+  if( file.size() == 0 )
     {
       QMessageBox::warning( _globalMainWindow,
                             QObject::tr("Error occurred!"),
                             "<html>" + QObject::tr("The selected file<BR><B>%1</B><BR>is empty!").arg(catalog) + "</html>",
                             QMessageBox::Ok );
-      return false;
+      return -1;
     }
 
   if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-      return false;
+      return -1;
     }
 
   QSet<QString> names;
-
-  for( int i = 0; i < wpList.size(); i++ )
-    {
-      // Store all used names of the waypoint list in a set.
-      names.insert( wpList.at(i).name );
-    }
 
   int lineNo = 0;
 
   QTextStream in(&file);
   in.setCodec( "ISO 8859-15" );
 
+  int wpCount = 0;
+
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
-  while (!in.atEnd())
+  while( !in.atEnd() )
     {
       QString line = in.readLine();
 
@@ -448,6 +443,55 @@ bool WaypointCatalog::readCup( QString catalog, QList<Waypoint>& wpList )
           break;
         }
 
+      // Check filter, if type should be taken
+      if( radius != -1 && type != All )
+        {
+          switch( type )
+            {
+              // Airfields, Gliderfields, Outlandings, UlFlields, OtherPoints };
+              case Airfields:
+
+                if( wp.type != BaseMapElement::Airfield )
+                  {
+                    continue;
+                  }
+
+                break;
+
+              case Gliderfields:
+
+                if( wp.type != BaseMapElement::Gliderfield )
+                  {
+                    continue;
+                  }
+
+                break;
+
+              case Outlandings:
+
+                if( wp.type != BaseMapElement::Outlanding )
+                  {
+                    continue;
+                  }
+
+                break;
+
+              case OtherPoints:
+
+                if( wp.type == BaseMapElement::Airfield ||
+                    wp.type == BaseMapElement::Gliderfield ||
+                    wp.type == BaseMapElement::Outlanding )
+                  {
+                    continue;
+                  }
+
+                break;
+
+              default:
+                continue;
+            }
+        }
+
       // latitude as ddmm.mmm(N|S)
       double degree = list[3].left(2).toDouble(&ok);
 
@@ -499,6 +543,20 @@ bool WaypointCatalog::readCup( QString catalog, QList<Waypoint>& wpList )
 
       wp.origP.setLat((int) rint(latTmp));
       wp.origP.setLon((int) rint(lonTmp));
+
+      // Check radius filter
+      if( radius != -1 )
+        {
+          double radiusInKm = Distance::convertToMeters( radius ) / 1000.;
+
+          double d = dist( &centerPoint, &wp.origP );
+
+          if( d > radiusInKm )
+            {
+              // Distance is greater than the defined radius around the center point.
+              continue;
+            }
+        }
 
       if( list[5].length() > 1 ) // elevation in meter or feet
         {
@@ -599,8 +657,13 @@ bool WaypointCatalog::readCup( QString catalog, QList<Waypoint>& wpList )
             }
         }
 
-      // Add waypoint to list
-      wpList.append( wp );
+      if( wpList )
+        {
+          // Add waypoint to list
+          wpList->append( wp );
+        }
+
+      wpCount++;
 
       // Store used waypoint name in set.
       names.insert( wp.name );
@@ -608,7 +671,7 @@ bool WaypointCatalog::readCup( QString catalog, QList<Waypoint>& wpList )
 
   file.close();
   QApplication::restoreOverrideCursor();
-  return true;
+  return wpCount;
 }
 
 QList<QString> WaypointCatalog::splitCupLine( QString& line, bool &ok )

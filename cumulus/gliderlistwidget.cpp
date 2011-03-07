@@ -50,14 +50,12 @@ GliderListWidget::~GliderListWidget()
 
 void GliderListWidget::showEvent( QShowEvent* event )
 {
-  qDebug() << "GliderListWidget::showEvent";
-
   Q_UNUSED( event )
 
   resizeListColumns();
 }
 
-/** Retrieves the gliders from the configuration file, and fills the list. */
+/** Retrieves the gliders from the configuration file and fills the list. */
 void GliderListWidget::fillList()
 {
   qDeleteAll( Gliders );

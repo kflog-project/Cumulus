@@ -252,7 +252,7 @@ class Distance
   };
 
   /**
-   * Returns the distance in Nautical Miles
+   * \return The distance in Nautical Miles.
    */
   double getNautMiles() const
   {
@@ -260,7 +260,7 @@ class Distance
   };
 
   /**
-   * returns the distance in miles
+   * \return The distance in miles:
    */
   double getMiles() const
   {
@@ -268,7 +268,7 @@ class Distance
   };
 
   /**
-   * returns the distance in kilometers
+   * \return The distance in kilometers.
    */
   double getKilometers() const
   {
