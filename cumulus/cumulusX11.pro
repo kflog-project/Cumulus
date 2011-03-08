@@ -11,6 +11,8 @@
 
 TEMPLATE = app
 
+QT += xml
+
 # CONFIG = qt warn_on release
 
 CONFIG = debug \

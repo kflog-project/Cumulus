@@ -1593,6 +1593,28 @@ class GeneralConfig : protected QSettings
     _waypointFileFormat = newValue;
   };
 
+  /** Gets the waypoint import center reference. */
+  int getWaypointCenterReference() const
+  {
+    return _waypointCenterReference;
+  };
+  /** Sets the waypoint import center reference. */
+  void setWaypointCenterReference(const int newValue)
+  {
+    _waypointCenterReference = newValue;
+  };
+
+  /** Gets the waypoint import airfield reference. */
+  QString &getWaypointAirfieldReference()
+  {
+    return _waypointAirfieldReference;
+  };
+  /** Sets the waypoint import airfield reference. */
+  void setWaypointAirfieldReference( const QString newValue )
+  {
+    _waypointAirfieldReference = newValue;
+  };
+
   /** Gets the unit for altitude*/
   int getUnitAlt() const;
   /** Sets the unit for altitude */
@@ -2195,6 +2217,12 @@ class GeneralConfig : protected QSettings
 
   /** Waypoint file format. 0=binary, 1=xml */
   int _waypointFileFormat;
+
+  /** Waypoint import center reference */
+  int _waypointCenterReference;
+
+  /** Waypoint import airfield reference. */
+  QString _waypointAirfieldReference;
 
   /** Flarm alias file name. */
   QString _flarmAliasFileName;

@@ -19,6 +19,7 @@
 #include <QtGui>
 
 #include "preflightwidget.h"
+#include "map.h"
 #include "mapcontents.h"
 #include "preflightgliderpage.h"
 #include "preflighttasklist.h"
@@ -50,16 +51,17 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   wppage = new PreFlightWaypointPage(this);
   tabWidget->addTab(wppage, "");
 
+  connect( wppage, SIGNAL(waypointsAdded()),
+           Map::getInstance(), SLOT(slotRedraw()) );
+
   miscpage = new PreFlightMiscPage(this);
   tabWidget->addTab(miscpage, "");
 
   QShortcut* scLeft = new QShortcut(Qt::Key_Left, this);
   QShortcut* scRight = new QShortcut(Qt::Key_Right, this);
-  QShortcut* scReturn = new QShortcut(Qt::Key_Return, this);
 
   connect(scLeft, SIGNAL(activated()), this, SLOT(slot_keyLeft()));
   connect(scRight, SIGNAL(activated()), this, SLOT(slot_keyRight()));
-  connect(scReturn, SIGNAL(activated()), this, SLOT(slot_accept()));
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));

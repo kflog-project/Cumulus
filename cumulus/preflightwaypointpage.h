@@ -68,9 +68,9 @@ public:
 private slots:
 
   /**
-   * Sets the radius option to be used for waypoint data import.
+   * Sets the center reference to be used for waypoint data import.
    */
-  void slotSelectRadius( int radius );
+  void slotSelectCenterReference( int reference );
 
   /**
    * Called to toggle the filter.
@@ -81,6 +81,13 @@ private slots:
    * Imports a new waypoint file.
    */
   void slotImportFile();
+
+signals:
+
+  /**
+   * Signal is emitted, when new waypoints have been added to the global list.
+   */
+  void waypointsAdded();
 
 private:
 

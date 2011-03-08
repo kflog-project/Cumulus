@@ -18,13 +18,15 @@
  ***********************************************************************/
 
 #include <QtGui>
+#include <QtXml>
 
 #include "waypointcatalog.h"
 #include "distance.h"
+#include "generalconfig.h"
 #include "mainwindow.h"
 #include "mapcalc.h"
 #include "mapmatrix.h"
-#include "generalconfig.h"
+#include "waitscreen.h"
 
 extern MapMatrix*  _globalMapMatrix;
 extern MainWindow* _globalMainWindow;
@@ -36,7 +38,10 @@ extern MainWindow* _globalMainWindow;
 #define WP_FILE_FORMAT_ID_1 101
 #define WP_FILE_FORMAT_ID_2 102 // runway direction handling modified
 
-WaypointCatalog::WaypointCatalog() : radius(-1)
+WaypointCatalog::WaypointCatalog() :
+  _type(All),
+  _radius(-1),
+  _showProgress(false)
 {
 }
 
@@ -45,7 +50,7 @@ WaypointCatalog::~WaypointCatalog()
 }
 
 /** read a catalog from file */
-bool WaypointCatalog::readBinary( QString catalog, QList<Waypoint>& wpList )
+int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
 {
   QString fName;
 
@@ -62,11 +67,10 @@ bool WaypointCatalog::readBinary( QString catalog, QList<Waypoint>& wpList )
 
   if( _globalMapMatrix == 0 )
     {
-      qWarning("WaypointCatalog::read: Global pointer '_globalMapMatrix' is Null!");
-      return false;
+      qWarning("WaypointCatalog::readBinary: Global pointer '_globalMapMatrix' is Null!");
+      return -1;
     }
 
-  bool ok = false;
   QString wpName="";
   QString wpDescription="";
   QString wpICAO="";
@@ -86,121 +90,171 @@ bool WaypointCatalog::readBinary( QString catalog, QList<Waypoint>& wpList )
   qint8 fileType;
   quint16 fileFormat;
 
-  // qDebug("Read waypoint catalog from %s", fName.toLatin1().data() );
+  int wpCount = 0;
 
-  // default file location: $HOME/cumulus/cumulus.kwp
+  QFile file(fName);
 
-  QFile f(fName);
-
-  if (f.exists())
+  if( ! file.exists() )
     {
-      if (f.open(QIODevice::ReadOnly))
+      qWarning( "WaypointCatalog::readBinary(): Waypoint catalog not found." );
+      return -1;
+    }
+
+  if( file.open( QIODevice::ReadOnly ) == false )
+    {
+      qWarning( "WaypointCatalog::readBinary(): Cannot open waypoint catalog." );
+      return -1;
+    }
+
+  WaitScreen *ws = static_cast<WaitScreen *>(0);
+
+  if( _showProgress )
+    {
+      ws = new WaitScreen( MainWindow::mainWindow() );
+      ws->slot_SetText1( QObject::tr("Reading file") );
+      ws->slot_SetText2( QFileInfo(catalog).fileName() );
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+                                       QEventLoop::ExcludeSocketNotifiers );
+    }
+
+  // Estimate the number of entries in the file. The basic assumption is, that
+  // a single record contains approximately 50 bytes. Only 20 animations
+  // should be done because the animation is a performance blocker.
+  int wsCycles = (file.size() / 50) / 20;
+
+  QDataStream in( &file );
+  in.setVersion(2);
+
+  //check if the file has the correct format
+  in >> fileMagic;
+
+  if (fileMagic != KFLOG_FILE_MAGIC)
+    {
+      qWarning("Waypoint file not recognized as KFLog file type.");
+      return -1;
+    }
+
+  in >> fileType;
+
+  if (fileType != FILE_TYPE_WAYPOINTS)
+    {
+      qWarning("Waypoint file is a KFLog file, but not for waypoints.");
+      return -1;
+    }
+
+  in >> fileFormat;
+
+  if ( fileFormat != WP_FILE_FORMAT_ID &&
+       fileFormat != WP_FILE_FORMAT_ID_1 &&
+       fileFormat != WP_FILE_FORMAT_ID_2 )
+    {
+      qWarning("Waypoint file does not have the correct format. It returned %d, where %d was expected.", fileFormat, WP_FILE_FORMAT_ID);
+      return -1;
+    }
+
+  // from here on, we assume that the file has the correct format.
+  while( ! in.atEnd() )
+    {
+      if( _showProgress && (wpCount % wsCycles) == 0 )
         {
+          ws->slot_Progress( 2 );
+          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+                                           QEventLoop::ExcludeSocketNotifiers );
+        }
 
-          QDataStream in(&f);
-          in.setVersion(2);
+      // read values from file
+      in >> wpName;
+      in >> wpDescription;
+      in >> wpICAO;
+      in >> wpType;
+      in >> wpLatitude;
+      in >> wpLongitude;
+      in >> wpElevation;
+      in >> wpFrequency;
+      in >> wpLandable;
+      in >> wpRunway;
+      in >> wpLength;
+      in >> wpSurface;
+      in >> wpComment;
 
-          //check if the file has the correct format
-          in >> fileMagic;
+      // Check filter, if type should be taken
+      if( ! takeType( (enum BaseMapElement::objectType) wpType ) )
+        {
+          continue;
+        }
 
-          if (fileMagic != KFLOG_FILE_MAGIC)
+      WGSPoint wgsp(wpLatitude, wpLongitude);
+
+      // Check radius filter
+      if( ! takePoint( wgsp ) )
+        {
+          // Distance is greater than the defined radius around the center point.
+          continue;
+        }
+
+      if( fileFormat>=WP_FILE_FORMAT_ID_1 )
+        {
+          in >> wpImportance;
+        }
+      else
+        {
+          wpImportance = Waypoint::Normal;
+        }
+
+      if( fileFormat < WP_FILE_FORMAT_ID_2 )
+        {
+          // Runway has only one direction entry 0...360.
+          // We split it into two parts.
+          int rwh1 = wpRunway <= 180 ? wpRunway+180 : wpRunway-180;
+          int rwh2 = rwh1 <= 180 ? rwh1+180 : rwh1-180;
+
+          // put both directions into one variable, each in a byte
+          wpRunway = (rwh1/10) * 256 + (rwh2/10);
+        }
+
+      wpCount++;
+
+      if( wpList )
+        {
+          // create waypoint object and set the correct properties
+          Waypoint wp;
+
+          wp.name = wpName;
+          wp.description = wpDescription;
+          wp.icao = wpICAO;
+          wp.type = wpType;
+          wp.origP.setLat(wpLatitude);
+          wp.origP.setLon(wpLongitude);
+          wp.projP = _globalMapMatrix->wgsToMap(wp.origP);
+          wp.elevation = wpElevation;
+          wp.frequency = wpFrequency;
+          wp.isLandable = wpLandable;
+          wp.runway = wpRunway;
+          wp.length = wpLength;
+          wp.surface = wpSurface;
+          wp.comment = wpComment;
+          wp.importance = ( enum Waypoint::Importance ) wpImportance;
+
+          if( wpList )
             {
-              qWarning("Waypoint file not recognized as KFLog file type.");
-              return false;
+              wpList->append(wp);
             }
 
-          in >> fileType;
-
-          if (fileType != FILE_TYPE_WAYPOINTS)
-            {
-              qWarning("Waypoint file is a KFLog file, but not for waypoints.");
-              return false;
-            }
-
-          in >> fileFormat;
-
-          if ( fileFormat != WP_FILE_FORMAT_ID &&
-               fileFormat != WP_FILE_FORMAT_ID_1 &&
-               fileFormat != WP_FILE_FORMAT_ID_2 )
-            {
-              qWarning("Waypoint file does not have the correct format. It returned %d, where %d was expected.", fileFormat, WP_FILE_FORMAT_ID);
-              return false;
-            }
-
-          // from here on, we assume that the file has the correct format.
-          while( !in.atEnd() )
-            {
-              // read values from file
-              in >> wpName;
-              in >> wpDescription;
-              in >> wpICAO;
-              in >> wpType;
-              in >> wpLatitude;
-              in >> wpLongitude;
-              in >> wpElevation;
-              in >> wpFrequency;
-              in >> wpLandable;
-              in >> wpRunway;
-              in >> wpLength;
-              in >> wpSurface;
-              in >> wpComment;
-
-              if( fileFormat>=WP_FILE_FORMAT_ID_1 )
-                {
-                  in >> wpImportance;
-                }
-              else
-                {
-                  wpImportance = Waypoint::Normal;
-                }
-
-              if( fileFormat < WP_FILE_FORMAT_ID_2 )
-                {
-                  // Runway has only one direction entry 0...360.
-                  // We split it into two parts.
-                  int rwh1 = wpRunway <= 180 ? wpRunway+180 : wpRunway-180;
-                  int rwh2 = rwh1 <= 180 ? rwh1+180 : rwh1-180;
-
-                  // put both directions into one variable, each in a byte
-                  wpRunway = (rwh1/10) * 256 + (rwh2/10);
-                }
-
-              // create waypoint object and set the correct properties
-              Waypoint wp;
-
-              wp.name = wpName;
-              wp.description = wpDescription;
-              wp.icao = wpICAO;
-              wp.type = wpType;
-              wp.origP.setLat(wpLatitude);
-              wp.origP.setLon(wpLongitude);
-              wp.projP = _globalMapMatrix->wgsToMap(wp.origP);
-              wp.elevation = wpElevation;
-              wp.frequency = wpFrequency;
-              wp.isLandable = wpLandable;
-              wp.runway = wpRunway;
-              wp.length = wpLength;
-              wp.surface = wpSurface;
-              wp.comment = wpComment;
-              wp.importance = ( enum Waypoint::Importance ) wpImportance;
-              // qDebug("Waypoint read: %s (%s - %s)",wp.name.toLatin1().data(),wp.description.latin1(),wp.icao.latin1());
-
-              wpList.append(wp);
-            }
-
-          ok = true;
+          wpCount++;
         }
     }
-  else
+
+  file.close();
+
+  if( _showProgress )
     {
-      qWarning("WaypointCatalog::read(): Waypoint catalog not found.");
-      return false;
+      ws->setVisible( false );
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+                                       QEventLoop::ExcludeSocketNotifiers );
+      delete ws;
     }
 
-  qDebug("WaypointCatalog::read(): %d items read from %s",
-         wpList.count(), fName.toLatin1().data() );
-
-  return ok;
+  return wpCount;
 }
 
 /** write a catalog to file */
@@ -299,50 +353,154 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
   return ok;
 }
 
-/** read a waypoint catalog from a SeeYou cup file, only waypoint part */
-int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
+
+/** read in KFLog xml data catalog from file name */
+int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList )
 {
   QFile file(catalog);
 
-  if( !file.exists() )
+  if( ! file.exists() )
     {
-      QMessageBox::warning( _globalMainWindow,
-                             QObject::tr("Error occurred!"),
-                             "<html>" + QObject::tr("The selected file<BR><B>%1</B><BR>does not exist!").arg(catalog) + "</html>",
-                             QMessageBox::Ok );
       return -1;
     }
 
   if( file.size() == 0 )
     {
-      QMessageBox::warning( _globalMainWindow,
-                            QObject::tr("Error occurred!"),
-                            "<html>" + QObject::tr("The selected file<BR><B>%1</B><BR>is empty!").arg(catalog) + "</html>",
-                            QMessageBox::Ok );
-      return -1;
+      return 0;
     }
 
-  if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  if( ! file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
       return -1;
     }
 
-  QSet<QString> names;
+  QDomDocument doc;
+  doc.setContent( &file );
 
+  if( doc.doctype().name() != "KFLogWaypoint" )
+    {
+      qWarning() << "WaypointCatalog::readXml: Wrong XML format of file"
+                 << catalog;
+      return -1;
+    }
+
+  QDomNodeList nl = doc.elementsByTagName("Waypoint");
+
+  if( ! wpList )
+    {
+      file.close();
+      return nl.count();
+    }
+
+  for( int i = 0; i < nl.count(); i++ )
+    {
+      QDomNamedNodeMap nm =  nl.item(i).attributes();
+      Waypoint w;
+
+      w.name = nm.namedItem("Name").toAttr().value().left(6).toUpper();
+      w.description = nm.namedItem("Description").toAttr().value();
+      w.icao = nm.namedItem("ICAO").toAttr().value().toUpper();
+      w.type = nm.namedItem("Type").toAttr().value().toInt();
+      w.origP.setLat(nm.namedItem("Latitude").toAttr().value().toInt());
+      w.origP.setLon(nm.namedItem("Longitude").toAttr().value().toInt());
+      w.elevation = nm.namedItem("Elevation").toAttr().value().toInt();
+      w.frequency = nm.namedItem("Frequency").toAttr().value().toDouble();
+      w.isLandable = nm.namedItem("Landable").toAttr().value().toInt();
+
+      int rdir = nm.namedItem("Runway").toAttr().value().toInt();
+      int rwh1 = rdir <= 18 ? rdir+18 : rdir-18;
+      int rwh2 = rwh1 <= 18 ? rwh1+18 : rwh1-18;
+
+      // put both directions into one variable, each in a byte
+      w.runway = (rwh1) * 256 + (rwh2);
+
+      w.length = nm.namedItem("Length").toAttr().value().toInt();
+      w.surface = (enum Runway::SurfaceType)nm.namedItem("Surface").toAttr().value().toInt();
+      w.comment = nm.namedItem("Comment").toAttr().value();
+      w.importance = (enum Waypoint::Importance) nm.namedItem("Importance").toAttr().value().toInt();
+
+      // Check filter, if type should be taken
+      if( ! takeType( (enum BaseMapElement::objectType) w.type ) )
+        {
+          continue;
+        }
+
+      // Check radius filter
+      if( ! takePoint( w.origP ) )
+        {
+          // Distance is greater than the defined radius around the center point.
+          continue;
+        }
+
+      wpList->append( w );
+    }
+
+  file.close();
+
+  return nl.count();
+}
+
+/** write out KFLog xml data catalog to file name */
+bool WaypointCatalog::writeXml( QString catalog, QList<Waypoint>& wpList )
+{
+  return true;
+}
+
+/** read a waypoint catalog from a SeeYou cup file, only waypoint part */
+int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
+{
+  QFile file(catalog);
+
+  if( ! file.exists() )
+    {
+      return -1;
+    }
+
+  if( file.size() == 0 )
+    {
+      return 0;
+    }
+
+  if( ! file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      return -1;
+    }
+
+  QSet<QString> namesInUse;
   int lineNo = 0;
+  int wpCount = 0;
+
+  WaitScreen *ws = static_cast<WaitScreen *>(0);
+
+  if( _showProgress )
+    {
+      ws = new WaitScreen( MainWindow::mainWindow() );
+      ws->slot_SetText1( QObject::tr("Reading file") );
+      ws->slot_SetText2( QFileInfo(catalog).fileName() );
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+                                       QEventLoop::ExcludeSocketNotifiers );
+    }
+
+  // Estimate the number of entries in the file. The basic assumption is, that
+  // a single line is approximately 70 characters long. Only 20 animations
+  // should be done because the animation is a performance blocker.
+  int wsCycles = (file.size() / 70) / 20;
 
   QTextStream in(&file);
   in.setCodec( "ISO 8859-15" );
-
-  int wpCount = 0;
-
-  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
   while( !in.atEnd() )
     {
       QString line = in.readLine();
 
       lineNo++;
+
+      if( _showProgress && (lineNo % wsCycles) == 0 )
+        {
+          ws->slot_Progress( 2 );
+          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+                                           QEventLoop::ExcludeSocketNotifiers );
+        }
 
       if( line.size() == 0 )
         {
@@ -444,52 +602,9 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
         }
 
       // Check filter, if type should be taken
-      if( radius != -1 && type != All )
+      if( ! takeType( (enum BaseMapElement::objectType) wp.type ) )
         {
-          switch( type )
-            {
-              // Airfields, Gliderfields, Outlandings, UlFlields, OtherPoints };
-              case Airfields:
-
-                if( wp.type != BaseMapElement::Airfield )
-                  {
-                    continue;
-                  }
-
-                break;
-
-              case Gliderfields:
-
-                if( wp.type != BaseMapElement::Gliderfield )
-                  {
-                    continue;
-                  }
-
-                break;
-
-              case Outlandings:
-
-                if( wp.type != BaseMapElement::Outlanding )
-                  {
-                    continue;
-                  }
-
-                break;
-
-              case OtherPoints:
-
-                if( wp.type == BaseMapElement::Airfield ||
-                    wp.type == BaseMapElement::Gliderfield ||
-                    wp.type == BaseMapElement::Outlanding )
-                  {
-                    continue;
-                  }
-
-                break;
-
-              default:
-                continue;
-            }
+          continue;
         }
 
       // latitude as ddmm.mmm(N|S)
@@ -545,17 +660,10 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
       wp.origP.setLon((int) rint(lonTmp));
 
       // Check radius filter
-      if( radius != -1 )
+      if( ! takePoint( wp.origP ) )
         {
-          double radiusInKm = Distance::convertToMeters( radius ) / 1000.;
-
-          double d = dist( &centerPoint, &wp.origP );
-
-          if( d > radiusInKm )
-            {
-              // Distance is greater than the defined radius around the center point.
-              continue;
-            }
+          // Distance is greater than the defined radius around the center point.
+          continue;
         }
 
       if( list[5].length() > 1 ) // elevation in meter or feet
@@ -642,7 +750,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 
       // We do check, if the waypoint name is already in use because cup
       // short names are not always unique.
-      if( names.contains( wp.name ) )
+      if( namesInUse.contains( wp.name ) )
         {
           for( int i = 0; i < 100; i++ )
             {
@@ -650,7 +758,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
               QString number = QString::number(i);
                wp.name = wp.name.left(wp.name.size() - number.size()) + number;
 
-              if( names.contains( wp.name ) == false )
+              if( namesInUse.contains( wp.name ) == false )
                 {
                   break;
                 }
@@ -666,11 +774,19 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
       wpCount++;
 
       // Store used waypoint name in set.
-      names.insert( wp.name );
+      namesInUse.insert( wp.name );
     }
 
   file.close();
-  QApplication::restoreOverrideCursor();
+
+  if( _showProgress )
+    {
+      ws->setVisible( false );
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+                                       QEventLoop::ExcludeSocketNotifiers );
+      delete ws;
+    }
+
   return wpCount;
 }
 
@@ -750,4 +866,78 @@ QList<QString> WaypointCatalog::splitCupLine( QString& line, bool &ok )
 
       pos = start = idx + 1;
     }
+}
+
+bool WaypointCatalog::takeType( enum BaseMapElement::objectType type )
+{
+  // Check filter, if waypoint type should be taken
+  if( _radius != -1 && _type != All )
+    {
+      switch( _type )
+        {
+          // Airfields, Gliderfields, Outlandings, UlFlields, OtherPoints };
+          case Airfields:
+
+            if( type != BaseMapElement::Airfield )
+              {
+                return false;
+              }
+
+            break;
+
+          case Gliderfields:
+
+            if( type != BaseMapElement::Gliderfield )
+              {
+                return false;
+              }
+
+            break;
+
+          case Outlandings:
+
+            if( type != BaseMapElement::Outlanding )
+              {
+                return false;
+              }
+
+            break;
+
+          case OtherPoints:
+
+            if( type == BaseMapElement::Airfield ||
+                type == BaseMapElement::Gliderfield ||
+                type == BaseMapElement::Outlanding )
+              {
+                return false;
+              }
+
+            break;
+
+          default:
+
+            return false;
+        }
+    }
+
+  return true;
+}
+
+bool WaypointCatalog::takePoint( WGSPoint& point )
+{
+  // Check radius filter
+  if( _radius != -1 )
+    {
+      double radiusInKm = Distance::convertToMeters( _radius ) / 1000.;
+
+      double d = dist( &centerPoint, &point );
+
+      if( d > radiusInKm )
+        {
+          // Distance is greater than the defined radius around the center point.
+          return false;
+        }
+    }
+
+  return true;
 }

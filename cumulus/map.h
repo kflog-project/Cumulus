@@ -46,7 +46,6 @@
 #include "airspace.h"
 #include "airregion.h"
 #include "flighttask.h"
-#include "waypointcatalog.h"
 
 #ifdef FLARM
 #include "flarm.h"

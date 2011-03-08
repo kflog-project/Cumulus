@@ -35,6 +35,7 @@
 #include <QString>
 #include <QList>
 
+#include "basemapelement.h"
 #include "waypoint.h"
 #include "wgspoint.h"
 
@@ -49,13 +50,13 @@ class WaypointCatalog
   ~WaypointCatalog();
 
   /** read in binary data catalog from file name */
-  bool readBinary( QString catalog, QList<Waypoint>& wpList );
+  int readBinary( QString catalog, QList<Waypoint>* wpList );
 
   /** write out binary data catalog to file name */
   bool writeBinary( QString catalog, QList<Waypoint>& wpList );
 
   /** read in KFLog xml data catalog from file name */
-  bool readXml( QString catalog, QList<Waypoint>& wpList );
+  int readXml( QString catalog, QList<Waypoint>* wpList );
 
   /** write out KFLog xml data catalog to file name */
   bool writeXml( QString catalog, QList<Waypoint>& wpList );
@@ -85,8 +86,8 @@ class WaypointCatalog
                   const int radiusIn,
                   const WGSPoint& centerPointIn )
     {
-      type = typeIn;
-      radius = radiusIn;
+      _type = typeIn;
+      _radius = radiusIn;
       centerPoint = centerPointIn;
     };
 
@@ -95,10 +96,31 @@ class WaypointCatalog
    */
   void resetFilter()
     {
-      radius = -1;
+      _radius = -1;
     }
 
+  /**
+   * Toggles the wait screen display during file read/write.
+   *
+   * \param flag True switch wait screen usage on, false switch it off.
+   */
+  void showProgress( const bool flag )
+  {
+    _showProgress = flag;
+  };
+
  private:
+
+  /**
+   * \return True, if waypoint type has passed the filter otherwise false.
+   */
+  bool takeType( enum BaseMapElement::objectType type );
+
+  /**
+   * \return True, if waypoint coordinates have passed the filter otherwise false.
+   */
+  bool takePoint( WGSPoint& point );
+
   /**
    * Splits a cup file line into its single elements.
    *
@@ -112,8 +134,9 @@ class WaypointCatalog
 
  private:
 
-  enum wpType type;
-  int radius;
+  enum wpType _type;
+  int _radius;
+  bool _showProgress;
   WGSPoint centerPoint;
 };
 

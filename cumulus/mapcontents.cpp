@@ -133,7 +133,7 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
 
   // read in waypoint list
   WaypointCatalog wpCat;
-  wpCat.readBinary( "", wpList );
+  wpCat.readBinary( "", &wpList );
 
   currentTask=0;
 

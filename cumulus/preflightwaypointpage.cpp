@@ -76,16 +76,17 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   radiusButtonGroup->addButton( airfieldRB, Airfield );
 
   connect( radiusButtonGroup, SIGNAL( buttonClicked(int)),
-           this, SLOT(slotSelectRadius(int)));
+           this, SLOT(slotSelectCenterReference(int)));
 
   centerLat = new LatEdit;
   centerLon = new LongEdit;
 
   QGridLayout* latLonGrid = new QGridLayout;
-  latLonGrid->setSpacing( 5 );
+  latLonGrid->setSpacing( 10 );
   latLonGrid->addWidget( new QLabel(tr("Lat:")), 0 , 0 );
   latLonGrid->addWidget( centerLat, 0, 1 );
   latLonGrid->addWidget( new QLabel(tr("Lon:")), 1 , 0 );
+  latLonGrid->addWidget( centerLon, 1, 1 );
   latLonGrid->setColumnStretch( 2, 5 );
 
   homeLabel   = new QLabel;
@@ -164,8 +165,18 @@ void PreFlightWaypointPage::load()
                       " - " +
                       WGSPoint::printPos(conf->getHomeLon(), false) );
 
-  slotSelectRadius( Home );
+  slotSelectCenterReference( conf->getWaypointCenterReference() );
+
   loadAirfieldComboBox();
+
+  int idx = airfieldBox->findText( conf->getWaypointAirfieldReference() );
+
+  if( idx == -1 )
+    {
+      idx = 1;
+    }
+
+  airfieldBox->setCurrentIndex( idx );
 }
 
 void PreFlightWaypointPage::save()
@@ -173,27 +184,32 @@ void PreFlightWaypointPage::save()
   GeneralConfig *conf = GeneralConfig::instance();
 
   conf->setWaypointFileFormat( wpFileFormatBox->itemData(wpFileFormatBox->currentIndex()).toInt() );
+  conf->setWaypointCenterReference( centerRef );
+  conf->setWaypointAirfieldReference( airfieldBox->currentText() );
 }
 
 /** Stores the new selected radius */
-void PreFlightWaypointPage::slotSelectRadius( int radius )
+void PreFlightWaypointPage::slotSelectCenterReference( int reference )
 {
-  centerRef = static_cast<enum PreFlightWaypointPage::CenterReference>(radius);
+  centerRef = static_cast<enum PreFlightWaypointPage::CenterReference>(reference);
 
   switch( centerRef )
   {
     case PreFlightWaypointPage::Home:
+      homeRB->setChecked( true );
       centerLat->setEnabled(false);
       centerLon->setEnabled(false);
       airfieldBox->setEnabled(false);
       break;
     case PreFlightWaypointPage::Airfield:
+      airfieldRB->setChecked( true );
       centerLat->setEnabled(false);
       centerLon->setEnabled(false);
       airfieldBox->setEnabled(true);
       break;
     case PreFlightWaypointPage::Position:
     default:
+      positionRB->setChecked( true );
       centerRef = PreFlightWaypointPage::Position;
       centerLat->setEnabled(true);
       centerLon->setEnabled(true);
@@ -230,8 +246,11 @@ void PreFlightWaypointPage::slotImportFile()
       return;
     }
 
+  QString fSuffix = QFileInfo( fName ).suffix().toLower();
   QList<Waypoint> wpList;
   WaypointCatalog catalog;
+
+  catalog.showProgress( true );
 
   if( filterToggle->isChecked() )
     {
@@ -305,6 +324,63 @@ void PreFlightWaypointPage::slotImportFile()
 
   wpCount = catalog.readCup( fName, &wpList );
 
+  // We have to check, if a waypoint with the same name do exist. In this case
+  // we check the coordinates. If they are the same, we ignore it.
+  QHash<QString, QString> nameCoordDict;
+
+  QList<Waypoint>& wpGlobalList = _globalMapContents->getWaypointList();
+
+  for( int i = 0; i < wpGlobalList.size(); i++ )
+    {
+      nameCoordDict.insert( wpGlobalList.at(i).name,
+                     WGSPoint::coordinateString( wpGlobalList.at(i).origP ) );
+    }
+
+  int added = 0;
+  int ignored = 0;
+
+  for( int i = 0; i < wpList.size(); i++ )
+    {
+      // Look, if name is known and fetch coordinate string
+      QString dcString = nameCoordDict.value( wpList.at(i).name, "" );
+
+      QString wpcString = WGSPoint::coordinateString( wpList.at(i).origP );
+
+      if( dcString != "" && dcString == wpcString )
+        {
+          // Name and coordinates are identical, waypoint is ignored.
+          ignored++;
+          continue;
+        }
+
+      // Add new waypoint to dictionary
+      nameCoordDict.insert( wpList.at(i).name, wpcString );
+
+      // Add new waypoint to global list.
+      wpGlobalList.append( wpList.at(i) );
+      added++;
+    }
+
+  if( added )
+    {
+      _globalMapContents->saveWaypointList();
+      // Trigger a redraw of the map.
+      emit waypointsAdded();
+    }
+
+  QString result = QString("<html>") +
+                   QString(tr("%1 waypoints added.")).arg(added);
+
+  if( ignored )
+    {
+      result += "<br>" + QString(tr("%1 waypoints ignored.")).arg(ignored);
+    }
+
+  result += "</html>";
+
+  QMessageBox::information( this,
+                            tr("Import Results"),
+                            result );
 }
 
 void PreFlightWaypointPage::loadAirfieldComboBox()

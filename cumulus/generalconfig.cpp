@@ -31,6 +31,7 @@ using namespace std;
 #include "altitude.h"
 #include "distance.h"
 #include "time_cu.h"
+#include "preflightwaypointpage.h"
 
 #ifdef MAEMO
 #include "maemostyle.h"
@@ -325,8 +326,10 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Waypoint Data");
-  _waypointFile = value( "WaypointFile", "cumulus.kwp" ).toString();
-  _waypointFileFormat = value( "WaypointFileFormat", 0 ).toInt();
+  _waypointFile              = value( "DefaultFile", "cumulus.kwp" ).toString();
+  _waypointFileFormat        = value( "FileFormat", 0 ).toInt();
+  _waypointCenterReference   = value( "CenterReference", PreFlightWaypointPage::Home ).toInt();
+  _waypointAirfieldReference = value( "AirfieldReference", "" ).toString();
   endGroup();
 
   beginGroup("Variometer");
@@ -661,8 +664,10 @@ void GeneralConfig::save()
   endGroup();
 
   beginGroup("Waypoint Data");
-  setValue( "WaypointFile", _waypointFile );
-  setValue( "WaypointFileFormat", _waypointFileFormat );
+  setValue( "DefaultFile", _waypointFile );
+  setValue( "FileFormat", _waypointFileFormat );
+  setValue( "CenterReference", _waypointCenterReference );
+  setValue( "AirfieldReference", _waypointAirfieldReference );
   endGroup();
 
   beginGroup("Variometer");
