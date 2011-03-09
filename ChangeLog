@@ -14,15 +14,15 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2011-03-09 AP: BUGFIX: Coding error in GeneralConig class fixed. Waypoint
-                   configuration items were not stored correctly.
-                   More than one waypoint can be removed in the waypoint list
+[+] 2011-03-09 AP: More than one waypoint can be removed in the waypoint list
                    view now.
                    Preflight widget expanded by a waypoint page. This page
                    allows to import waypoints from different formats. Supported
                    formats are XML and binary formats of KFLog and SeeYou cup
                    formats. Cumulus can store now waypoints in the KFLog binary
                    or XML format.
+[-] 2011-03-09 AP: BUGFIX: Coding error in GeneralConig class fixed. Waypoint
+                   configuration items were not stored correctly.
 [o] 2011-02-21 AP: Two new Czech glider polars added to glider.pol on request by
                    Radek Pospisil.
 [o] 2011-02-14 AP: File codec in open air parser and Welt2000 set to
