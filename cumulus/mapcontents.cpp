@@ -131,17 +131,27 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
   _isoLevelReset=true;
   _lastIsoEntry=0;
 
-  // read in waypoint list
+  // read in waypoint list from catalog
   WaypointCatalog wpCat;
-  wpCat.readBinary( "", &wpList );
+  int ok;
+
+  if( GeneralConfig::instance()->getWaypointFileFormat() == GeneralConfig::Binary )
+    {
+      ok = wpCat.readBinary( "", &wpList );
+    }
+  else
+    {
+      ok = wpCat.readXml( "", &wpList );
+    }
+
+  qDebug() << "MapContents():" << ok << "waypoints read from default catalog.";
 
   currentTask=0;
 
-  connect( this, SIGNAL(progress(int)),
-          ws, SLOT(slot_Progress(int)) );
+  connect( this, SIGNAL(progress(int)), ws, SLOT(slot_Progress(int)) );
 
   connect( this, SIGNAL(loadingFile(const QString&)),
-          ws, SLOT(slot_SetText2(const QString&)) );
+           ws, SLOT(slot_SetText2(const QString&)) );
 
   // qDebug("MapContents initialized");
 }
@@ -160,7 +170,15 @@ MapContents::~MapContents()
 void MapContents::saveWaypointList()
 {
   WaypointCatalog wpCat;
-  wpCat.writeBinary( "", wpList );
+
+  if( GeneralConfig::instance()->getWaypointFileFormat() == GeneralConfig::Binary )
+    {
+      wpCat.writeBinary( "", wpList );
+    }
+  else
+    {
+      wpCat.writeXml( "", wpList );
+    }
 }
 
 /**

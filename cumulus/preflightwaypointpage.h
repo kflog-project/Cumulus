@@ -98,6 +98,9 @@ private:
 
 public:
 
+  /**
+   * Possible center references.
+   */
   enum CenterReference { Position, Home, Airfield };
 
 private:
@@ -123,6 +126,9 @@ private:
   QCheckBox* filterToggle;
   QGroupBox* selectGroup;
   QGroupBox* centerPointGroup;
+
+  /** Saved waypoint file format after load. */
+  int _waypointFileFormat;
 };
 
 #endif

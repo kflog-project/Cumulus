@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2010 by Axel Pauli
+**                   2009-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,9 +21,12 @@
  *
  * \author André Somers, Axel Pauli
  *
- * \brief This widget provides a list of waypoints and a means to select one.
+ * \brief This widget displays a list of waypoints and provides some management
+ *        methods.
  *
- * \date 2002-2010
+ * This widget displays a list of waypoints and provides some management methods.
+ *
+ * \date 2002-2011
  */
 
 #ifndef WAYPOINT_LIST_WIDGET_H
@@ -51,17 +54,27 @@ public:
   /**
    * @return A pointer to the currently high lighted waypoint.
    */
-  Waypoint *getSelectedWaypoint();
+  Waypoint *getCurrentWaypoint();
+
+  /**
+   * @return A list containing all currently selected waypoints.
+   */
+  QList<Waypoint *> getSelectedWaypoints();
+
+  /**
+   * Removes all currently selected waypoints.
+   */
+  void deleteSelectedWaypoints();
 
   /**
    * @param wp Updates the currently high lighted waypoint after editing.
    */
-  void updateSelectedWaypoint(Waypoint &wp);
+  void updateCurrentWaypoint(Waypoint &wp);
 
   /**
    * Removes the currently highlighted waypoint.
    */
-  void deleteSelectedWaypoint();
+  void deleteCurrentWaypoint();
 
   /**
    * @param wp Adds a waypoint to the list.

@@ -5,7 +5,7 @@
 
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2010 by Axel Pauli
+                               2008-2011 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -50,10 +50,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   resize(parent->size());
   setContentsMargins(-9,-9,-9,-9);
-
-  qDebug( "MapView window size is width=%d x height=%d",
-          parent->size().width(),
-          parent->size().height() );
 
   _mainWindow = (MainWindow *)parent;
 

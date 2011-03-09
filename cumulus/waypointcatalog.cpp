@@ -58,7 +58,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
     {
       // use default file name
       fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
-              GeneralConfig::instance()->getWaypointFile();
+              GeneralConfig::instance()->getBinaryWaypointFileName();
     }
   else
     {
@@ -96,13 +96,16 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
 
   if( ! file.exists() )
     {
-      qWarning( "WaypointCatalog::readBinary(): Waypoint catalog not found." );
+      qWarning() << "WaypointCatalog::readBinary: Catalog"
+                 << catalog
+                 << "not found!";
       return -1;
     }
 
   if( file.open( QIODevice::ReadOnly ) == false )
     {
-      qWarning( "WaypointCatalog::readBinary(): Cannot open waypoint catalog." );
+      qWarning() << "WaypointCatalog::readBinary(): Cannot open catalog"
+                 << catalog;
       return -1;
     }
 
@@ -235,12 +238,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
           wp.comment = wpComment;
           wp.importance = ( enum Waypoint::Importance ) wpImportance;
 
-          if( wpList )
-            {
-              wpList->append(wp);
-            }
-
-          wpCount++;
+          wpList->append(wp);
         }
     }
 
@@ -266,7 +264,7 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
     {
       // use default file name
       fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
-              GeneralConfig::instance()->getWaypointFile();
+              GeneralConfig::instance()->getBinaryWaypointFileName();
     }
   else
     {
@@ -289,14 +287,13 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
   QString wpComment="";
   quint8 wpImportance;
 
-  QFile f;
+  QFile file( fName );
 
-  f.setFileName(fName);
+  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
-  if (f.open(QIODevice::WriteOnly))
+  if( file.open( QIODevice::WriteOnly ) )
     {
-      // qDebug("WaypointCatalog::write(): fileName=%s", fName.toLatin1().data() );
-      QDataStream out(& f);
+      QDataStream out( &file );
 
       // write file header
       out << quint32(KFLOG_FILE_MAGIC);
@@ -308,20 +305,21 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
       for (int i = 0; i < wpList.count(); i++)
         {
           Waypoint &wp = wpList[i];
-          wpName=wp.name;
-          wpDescription=wp.description;
-          wpICAO=wp.icao;
-          wpType=wp.type;
-          wpLatitude=wp.origP.lat();
-          wpLongitude=wp.origP.lon();
-          wpElevation=wp.elevation;
-          wpFrequency=wp.frequency;
-          wpLandable=wp.isLandable;
-          wpRunway=wp.runway;
-          wpLength=wp.length;
-          wpSurface=wp.surface;
-          wpComment=wp.comment;
-          wpImportance=wp.importance;
+          wpName = wp.name;
+          wpDescription = wp.description;
+          wpICAO = wp.icao;
+          wpType = wp.type;
+          wpLatitude = wp.origP.lat();
+          wpLongitude = wp.origP.lon();
+          wpElevation = wp.elevation;
+          wpFrequency = wp.frequency;
+          wpLandable = wp.isLandable;
+
+          wpRunway = wp.runway;
+          wpLength = wp.length;
+          wpSurface = wp.surface;
+          wpComment = wp.comment;
+          wpImportance = wp.importance;
 
           out << wpName;
           out << wpDescription;
@@ -339,17 +337,19 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
           out << wpImportance;
         }
 
-      f.close();
+      file.close();
     }
   else
     {
-      qWarning("WaypointCatalog::write(): File Open Error");
-      return false;
+      qWarning("WaypointCatalog::writeBinary(): Open File Error");
+      ok = false;
     }
 
-  qDebug("WaypointCatalog::write(): %d items written to %s",
-         wpList.count(), fName.toLatin1().data() );
+  qDebug() << "WaypointCatalog::writeBinary():"
+           << wpList.count() << "entries written to"
+           << fName;
 
+  QApplication::restoreOverrideCursor();
   return ok;
 }
 
@@ -357,10 +357,32 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
 /** read in KFLog xml data catalog from file name */
 int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList )
 {
-  QFile file(catalog);
+  QString fName;
+
+  if( catalog.isEmpty() )
+    {
+      // use default file name
+      fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
+              GeneralConfig::instance()->getXmlWaypointFileName();
+    }
+  else
+    {
+      fName = catalog;
+    }
+
+  if( _globalMapMatrix == 0 )
+    {
+      qWarning( "WaypointCatalog::readXml: Global pointer '_globalMapMatrix' is Null!" );
+      return -1;
+    }
+
+  QFile file( fName );
 
   if( ! file.exists() )
     {
+      qWarning() << "WaypointCatalog::readXml: Catalog"
+                 << catalog
+                 << "not found!";
       return -1;
     }
 
@@ -371,26 +393,37 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList )
 
   if( ! file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
+      qWarning() << "WaypointCatalog::readXml(): Cannot open catalog"
+                 << catalog;
       return -1;
     }
 
+  QString errorMsg;
+  int errorLine;
+  int errorColumn;
   QDomDocument doc;
-  doc.setContent( &file );
+
+  bool ok = doc.setContent( &file, false, &errorMsg, &errorLine, &errorColumn );
+
+  if( ! ok )
+    {
+      qWarning() << "WaypointCatalog::readXml(): XML parse error in File=" << catalog
+                 << "Error=" << errorMsg
+                 << "Line=" << errorLine
+                 << "Column=" << errorColumn;
+      return -1;
+    }
 
   if( doc.doctype().name() != "KFLogWaypoint" )
     {
-      qWarning() << "WaypointCatalog::readXml: Wrong XML format of file"
+      qWarning() << "WaypointCatalog::readXml(): Wrong XML format of file"
                  << catalog;
       return -1;
     }
 
   QDomNodeList nl = doc.elementsByTagName("Waypoint");
 
-  if( ! wpList )
-    {
-      file.close();
-      return nl.count();
-    }
+  int wpCount = 0;
 
   for( int i = 0; i < nl.count(); i++ )
     {
@@ -403,6 +436,7 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList )
       w.type = nm.namedItem("Type").toAttr().value().toInt();
       w.origP.setLat(nm.namedItem("Latitude").toAttr().value().toInt());
       w.origP.setLon(nm.namedItem("Longitude").toAttr().value().toInt());
+      w.projP = _globalMapMatrix->wgsToMap(w.origP);
       w.elevation = nm.namedItem("Elevation").toAttr().value().toInt();
       w.frequency = nm.namedItem("Frequency").toAttr().value().toDouble();
       w.isLandable = nm.namedItem("Landable").toAttr().value().toInt();
@@ -432,18 +466,100 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList )
           continue;
         }
 
-      wpList->append( w );
+      if( wpList )
+        {
+          wpList->append( w );
+        }
+
+      wpCount++;
     }
 
   file.close();
 
-  return nl.count();
+  return wpCount;
 }
 
 /** write out KFLog xml data catalog to file name */
 bool WaypointCatalog::writeXml( QString catalog, QList<Waypoint>& wpList )
 {
-  return true;
+  QString fName;
+
+  if( catalog.isEmpty() )
+    {
+      // use default file name
+      fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
+              GeneralConfig::instance()->getXmlWaypointFileName();
+    }
+  else
+    {
+      fName = catalog;
+    }
+
+  bool ok = true;
+
+  QDomDocument doc( "KFLogWaypoint" );
+  QDomElement root = doc.createElement( "KFLogWaypoint" );
+  QDomElement child;
+
+  root.setAttribute( "Application", "Cumulus" );
+  root.setAttribute( "Creator", getlogin() );
+  root.setAttribute( "Time", QTime::currentTime().toString( "HH:mm:mm" ) );
+  root.setAttribute( "Date", QDate::currentDate().toString( Qt::ISODate ) );
+  root.setAttribute( "Version", "1.0" );
+  root.setAttribute( "Entries", wpList.size() );
+
+  doc.appendChild(root);
+
+  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+
+  for( int i = 0; i < wpList.size(); i++ )
+    {
+      Waypoint& w = wpList[i];
+
+      child = doc.createElement( "Waypoint" );
+
+      child.setAttribute( "Name", w.name );
+      child.setAttribute( "Description", w.description );
+      child.setAttribute( "ICAO", w.icao );
+      child.setAttribute( "Type", w.type );
+      child.setAttribute( "Latitude", w.origP.lat() );
+      child.setAttribute( "Longitude", w.origP.lon() );
+      child.setAttribute( "Elevation", w.elevation );
+      child.setAttribute( "Frequency", w.frequency );
+      child.setAttribute( "Landable", w.isLandable );
+
+      // Only the main runway heading is stored as 10...36
+      child.setAttribute( "Runway", w.runway/256 );
+      child.setAttribute( "Length", w.length );
+      child.setAttribute( "Surface", w.surface );
+      child.setAttribute( "Comment", w.comment );
+      child.setAttribute( "Importance", w.importance );
+
+      root.appendChild( child );
+    }
+
+  QFile file(fName);
+
+  if( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+      const int IndentSize = 4;
+
+      QTextStream out( &file );
+      doc.save( out, IndentSize );
+      file.close();
+
+      qDebug() << "WaypointCatalog::writeXml():"
+               << wpList.count() << "entries written to"
+               << fName;
+    }
+  else
+    {
+      qWarning("WaypointCatalog::writeXml(): Open File Error");
+      ok = false;
+    }
+
+  QApplication::restoreOverrideCursor();
+  return ok;
 }
 
 /** read a waypoint catalog from a SeeYou cup file, only waypoint part */
@@ -658,6 +774,9 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 
       wp.origP.setLat((int) rint(latTmp));
       wp.origP.setLon((int) rint(lonTmp));
+
+      // Sets the projected coordinates
+      wp.projP = _globalMapMatrix->wgsToMap( wp.origP );
 
       // Check radius filter
       if( ! takePoint( wp.origP ) )

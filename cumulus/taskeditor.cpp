@@ -294,7 +294,7 @@ void TaskEditor::resizeTaskListColumns()
 
 void TaskEditor::slotAddWaypoint()
 {
-  Waypoint *wp = waypointList[listSelectCB->currentIndex()]->getSelectedWaypoint();
+  Waypoint *wp = waypointList[listSelectCB->currentIndex()]->getCurrentWaypoint();
 
   if ( wp == 0 )
     {

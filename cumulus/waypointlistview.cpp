@@ -36,6 +36,7 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
 
   // set the list widget on top
   listw = new WaypointListWidget( this );
+  listw->listWidget()->setSelectionMode(QAbstractItemView::ExtendedSelection);
   topLayout->addWidget( listw, 0, 0 );
 
   // create a vertical command button row and put it at the right widget side
@@ -128,7 +129,7 @@ void WaypointListView::showEvent(QShowEvent *)
 /** This signal is called to indicate that a selection has been made. */
 void WaypointListView::slot_Select()
 {
-  Waypoint *w = listw->getSelectedWaypoint();
+  Waypoint *w = listw->getCurrentWaypoint();
 
   if ( w )
     {
@@ -141,7 +142,7 @@ void WaypointListView::slot_Select()
 /** This slot is called if the info button has been clicked */
 void WaypointListView::slot_Info()
 {
-  Waypoint *w = listw->getSelectedWaypoint();
+  Waypoint *w = listw->getCurrentWaypoint();
 
   if( w )
     {
@@ -169,7 +170,7 @@ void WaypointListView::slot_Selected()
 {
   cmdSelect->setEnabled( true );
 
-  Waypoint *w = listw->getSelectedWaypoint();
+  Waypoint *w = listw->getCurrentWaypoint();
 
   if( w )
     {
@@ -210,25 +211,28 @@ void WaypointListView::slot_editWP()
 /** Called when the selected waypoint should be deleted from the catalog */
 void WaypointListView::slot_deleteWP()
 {
-  Waypoint* wp = listw->getSelectedWaypoint();
+  QList<Waypoint *> wpList = listw->getSelectedWaypoints();
 
-  if ( wp == static_cast<Waypoint *>(0) )
+  if( wpList.size() == 0 )
     {
       return;
     }
 
   int answer= QMessageBox::question(this, tr("Delete"),
-                                   tr("Delete selected waypoint?"),
+                                   tr("Delete selected waypoints?"),
                                    QMessageBox::No, QMessageBox::Yes);
 
   if( answer == QMessageBox::Yes )
     {
       // @AP: Important! First announce deletion of waypoint for cancel
       //      to have a valid instance.
-      emit deleteWaypoint( wp );
+      for( int i = 0; i < wpList.size(); i++ )
+        {
+          emit deleteWaypoint( wpList.at(i) );
+        }
 
-      // Second delete selected waypoint
-      listw->deleteSelectedWaypoint();
+      // Second delete all selected waypoints
+      listw->deleteSelectedWaypoints();
 
       if( par )
         {
@@ -241,7 +245,7 @@ void WaypointListView::slot_deleteWP()
 void WaypointListView::slot_wpEdited(Waypoint& wp)
 {
   //  qDebug("WaypointListView::slot_wpEdited");
-  listw->updateSelectedWaypoint( wp );
+  listw->updateCurrentWaypoint( wp );
 
   if( par )
     {
@@ -264,7 +268,7 @@ void WaypointListView::slot_wpAdded(Waypoint& wp)
 /** Called to set a new home position */
 void WaypointListView::slot_setHome()
 {
-  Waypoint *_wp = listw->getSelectedWaypoint();
+  Waypoint *_wp = listw->getCurrentWaypoint();
 
   if( _wp == static_cast<Waypoint *> ( 0 ) )
     {

@@ -43,7 +43,7 @@ class WaypointCatalog
 {
  public:
 
-  enum wpType { All, Airfields, Gliderfields, Outlandings, OtherPoints };
+  enum WpType { All, Airfields, Gliderfields, Outlandings, OtherPoints };
 
   WaypointCatalog();
 
@@ -82,7 +82,7 @@ class WaypointCatalog
    *
    * \param centerPointIn the Coordinates of the center point in KFLog format.
    */
-  void setFilter( enum wpType typeIn,
+  void setFilter( enum WpType typeIn,
                   const int radiusIn,
                   const WGSPoint& centerPointIn )
     {
@@ -134,7 +134,7 @@ class WaypointCatalog
 
  private:
 
-  enum wpType _type;
+  enum WpType _type;
   int _radius;
   bool _showProgress;
   WGSPoint centerPoint;

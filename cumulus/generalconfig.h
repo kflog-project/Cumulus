@@ -75,25 +75,27 @@ class GeneralConfig : protected QSettings
 {
  public:
 
-  enum UseInMode {
-    never,
-    standstill,
-    circling,
-    cruising,
-    wave,
-    always
+  enum UseInMode
+  {
+    never, standstill, circling, cruising, wave, always
   };
 
   // CS Task scheme data
-  enum ActiveCSTaskScheme {
-    Cylinder=0,
-    Sector=1
+  enum ActiveCSTaskScheme
+  {
+    Cylinder = 0, Sector = 1
   };
 
   // CS Task scheme data
-  enum ActiveNTTaskScheme {
-    Nearst=0,
-    Touched=1
+  enum ActiveNTTaskScheme
+  {
+    Nearst = 0, Touched = 1
+  };
+
+  /** Waypoint file storage formats. */
+  enum WpFileFormat
+  {
+    Binary = 0, XML = 1
   };
 
  private:
@@ -1577,18 +1579,35 @@ class GeneralConfig : protected QSettings
   /** sets manual navigation mode altitude */
   void setManualNavModeAltitude(const int newValue);
 
-  /** Gets the waypoint file name with path */
-  QString &getWaypointFile();
-  /** Sets the waypoint file name with path */
-  void setWaypointFile( const QString newValue );
+  /** Gets the default binary waypoint file name with path. */
+  QString &getBinaryWaypointFileName()
+  {
+    return _waypointBinaryFileName;
+  };
+  /** Sets the default binary waypoint file name with path. */
+  void setBinaryWaypointFileName( const QString newValue )
+  {
+    _waypointBinaryFileName = newValue;
+  };
+
+  /** Gets the default XML waypoint file name with path. */
+  QString &getXmlWaypointFileName()
+  {
+    return _waypointXmlFileName;
+  };
+  /** Sets the default XML waypoint file name with path. */
+  void setXmlWaypointFileName( const QString newValue )
+  {
+    _waypointXmlFileName = newValue;
+  };
 
   /** Gets the waypoint file format */
-  int getWaypointFileFormat() const
+  enum WpFileFormat getWaypointFileFormat() const
   {
     return _waypointFileFormat;
   };
   /** Sets the waypoint file format */
-  void setWaypointFileFormat(const int newValue)
+  void setWaypointFileFormat(const enum WpFileFormat newValue)
   {
     _waypointFileFormat = newValue;
   };
@@ -2212,11 +2231,14 @@ class GeneralConfig : protected QSettings
   // manual navigation mode altitude
   int _manualNavModeAltitude;
 
-  // Waypoint data file name
-  QString _waypointFile;
+  // Default binary waypoint file name
+  QString _waypointBinaryFileName;
+
+  // Default XML waypoint file name
+  QString _waypointXmlFileName;
 
   /** Waypoint file format. 0=binary, 1=xml */
-  int _waypointFileFormat;
+  enum WpFileFormat _waypointFileFormat;
 
   /** Waypoint import center reference */
   int _waypointCenterReference;

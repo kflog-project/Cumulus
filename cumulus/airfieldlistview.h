@@ -68,7 +68,7 @@ public:
 
   Waypoint* getSelectedWaypoint()
     {
-      return listw->getSelectedWaypoint();
+      return listw->getCurrentWaypoint();
     };
 
 private:

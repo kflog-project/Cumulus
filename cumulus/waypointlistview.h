@@ -55,7 +55,7 @@ public:
 
     Waypoint* getSelectedWaypoint()
     {
-      return listw->getSelectedWaypoint();
+      return listw->getCurrentWaypoint();
     };
 
 public slots: // Public slots

@@ -326,8 +326,9 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Waypoint Data");
-  _waypointFile              = value( "DefaultFile", "cumulus.kwp" ).toString();
-  _waypointFileFormat        = value( "FileFormat", 0 ).toInt();
+  _waypointBinaryFileName    = value( "BinaryDefaultFileName", "cumulus.kwp" ).toString();
+  _waypointXmlFileName       = value( "XmlDefaultFileName", "cumulus.kflogwp" ).toString();
+  _waypointFileFormat        = (enum WpFileFormat) value( "FileFormat", Binary ).toInt();
   _waypointCenterReference   = value( "CenterReference", PreFlightWaypointPage::Home ).toInt();
   _waypointAirfieldReference = value( "AirfieldReference", "" ).toString();
   endGroup();
@@ -664,7 +665,8 @@ void GeneralConfig::save()
   endGroup();
 
   beginGroup("Waypoint Data");
-  setValue( "DefaultFile", _waypointFile );
+  setValue( "BinaryDefaultFileName", _waypointBinaryFileName );
+  setValue( "XmlDefaultFileName", _waypointXmlFileName );
   setValue( "FileFormat", _waypointFileFormat );
   setValue( "CenterReference", _waypointCenterReference );
   setValue( "AirfieldReference", _waypointAirfieldReference );
@@ -1168,20 +1170,6 @@ int GeneralConfig::getManualNavModeAltitude() const
 void GeneralConfig::setManualNavModeAltitude(const int newValue)
 {
   _manualNavModeAltitude = newValue;
-}
-
-
-/** Gets the waypoint file name with path */
-QString &GeneralConfig::getWaypointFile()
-{
-  return _waypointFile;
-}
-
-
-/** Sets the waypoint file name with path */
-void GeneralConfig::setWaypointFile( const QString newValue )
-{
-  _waypointFile = newValue;
 }
 
 

@@ -71,7 +71,7 @@ class ListWidgetParent : public QWidget
      * @returns a pointer to the currently high lighted waypoint.
      * The user must implement this method in his subclass.
      */
-    virtual Waypoint* getSelectedWaypoint() = 0;
+    virtual Waypoint* getCurrentWaypoint() = 0;
 
     /**
      * Retrieves the locations from the map contents and fills

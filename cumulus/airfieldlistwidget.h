@@ -57,7 +57,7 @@ public:
     /**
      * @returns a pointer to the currently high lighted waypoint.
      */
-    Waypoint *getSelectedWaypoint();
+    Waypoint *getCurrentWaypoint();
 
     /**
      * Clears and fills the airfield item list.

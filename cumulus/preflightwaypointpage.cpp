@@ -28,7 +28,8 @@ extern MapContents* _globalMapContents;
 
 PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   QWidget(parent),
-  centerRef(Position)
+  centerRef(Position),
+  _waypointFileFormat(GeneralConfig::Binary)
 {
   setObjectName("PreFlightWaypointPage");
 
@@ -83,9 +84,9 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
 
   QGridLayout* latLonGrid = new QGridLayout;
   latLonGrid->setSpacing( 10 );
-  latLonGrid->addWidget( new QLabel(tr("Lat:")), 0 , 0 );
+  latLonGrid->addWidget( new QLabel(tr("Latitude:")), 0 , 0 );
   latLonGrid->addWidget( centerLat, 0, 1 );
-  latLonGrid->addWidget( new QLabel(tr("Lon:")), 1 , 0 );
+  latLonGrid->addWidget( new QLabel(tr("Longitude:")), 1 , 0 );
   latLonGrid->addWidget( centerLon, 1, 1 );
   latLonGrid->setColumnStretch( 2, 5 );
 
@@ -159,7 +160,9 @@ void PreFlightWaypointPage::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  wpFileFormatBox->setCurrentIndex( conf->getWaypointFileFormat() );
+  _waypointFileFormat = conf->getWaypointFileFormat();
+
+  wpFileFormatBox->setCurrentIndex( _waypointFileFormat );
 
   homeLabel->setText( WGSPoint::printPos(conf->getHomeLat(), true) +
                       " - " +
@@ -183,9 +186,16 @@ void PreFlightWaypointPage::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  conf->setWaypointFileFormat( wpFileFormatBox->itemData(wpFileFormatBox->currentIndex()).toInt() );
+  conf->setWaypointFileFormat( (GeneralConfig::WpFileFormat) wpFileFormatBox->itemData(wpFileFormatBox->currentIndex()).toInt() );
   conf->setWaypointCenterReference( centerRef );
   conf->setWaypointAirfieldReference( airfieldBox->currentText() );
+
+  if( _waypointFileFormat != wpFileFormatBox->currentIndex() )
+    {
+      // Waypoint storage format has been changed, store all waypoints
+      // in the new format.
+      _globalMapContents->saveWaypointList();
+    }
 }
 
 /** Stores the new selected radius */
@@ -232,9 +242,9 @@ void PreFlightWaypointPage::slotImportFile()
   QString wayPointDir = GeneralConfig::instance()->getUserDataDirectory();
 
   QString filter;
-  filter.append(tr("All formats") + " (*.cup *.CUP *.kflogwp *.KFLOGWP *.kwp *.KWP);;");
-  filter.append(tr("KFLog") + " (*.kflogwp *.KFLOGWP);;");
-  filter.append(tr("Cumulus") + " (*.kwp *.KWP);;");
+  filter.append(tr("Formats") + " (*.kflogwp *.KFLOGWP *.kwp *.KWP *.cup *.CUP );;");
+  filter.append(tr("XML") + " (*.kflogwp *.KFLOGWP);;");
+  filter.append(tr("Binary") + " (*.kwp *.KWP);;");
   filter.append(tr("SeeYou") + " (*.cup *.CUP)");
 
   QString fName = QFileDialog::getOpenFileName( 0,
@@ -255,7 +265,7 @@ void PreFlightWaypointPage::slotImportFile()
   if( filterToggle->isChecked() )
     {
       // We have to use the filter values for the catalog read.
-      enum WaypointCatalog::wpType type = (enum WaypointCatalog::wpType)
+      enum WaypointCatalog::WpType type = (enum WaypointCatalog::WpType)
           wpTypesBox->itemData(wpTypesBox->currentIndex()).toInt();
 
       int radius = wpRadiusBox->currentText().toInt();
@@ -285,12 +295,25 @@ void PreFlightWaypointPage::slotImportFile()
       catalog.setFilter( type, radius, wgsPoint );
     }
 
-  // First make a test run to get the real items count.
-  int wpCount = catalog.readCup( fName, 0 );
+  // First make a test run to get the real items count which would be read.
+  int wpCount = -1;
+
+  if( fSuffix == "kwp")
+    {
+      wpCount = catalog.readBinary( fName, 0 );
+    }
+  else if( fSuffix == "kflogwp")
+    {
+      wpCount = catalog.readXml( fName, 0 );
+    }
+  else if( fSuffix == "cup")
+    {
+      wpCount = catalog.readCup( fName, 0 );
+    }
 
   if( wpCount == -1 )
     {
-      // Error occurred, return only.
+      // Should normally not happens. Error occurred, return only.
       return;
     }
 
@@ -322,7 +345,18 @@ void PreFlightWaypointPage::slotImportFile()
       return;
     }
 
-  wpCount = catalog.readCup( fName, &wpList );
+  if( fSuffix == "kwp")
+    {
+      wpCount = catalog.readBinary( fName, &wpList );
+    }
+  else if( fSuffix == "kflogwp")
+    {
+      wpCount = catalog.readXml( fName, &wpList );
+    }
+  else if( fSuffix == "cup")
+    {
+      wpCount = catalog.readCup( fName, &wpList );
+    }
 
   // We have to check, if a waypoint with the same name do exist. In this case
   // we check the coordinates. If they are the same, we ignore it.
@@ -353,10 +387,10 @@ void PreFlightWaypointPage::slotImportFile()
           continue;
         }
 
-      // Add new waypoint to dictionary
+      // Add new waypoint to the dictionary
       nameCoordDict.insert( wpList.at(i).name, wpcString );
 
-      // Add new waypoint to global list.
+      // Add new waypoint to the global list.
       wpGlobalList.append( wpList.at(i) );
       added++;
     }

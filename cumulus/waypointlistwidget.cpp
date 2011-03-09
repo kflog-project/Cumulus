@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -69,40 +69,106 @@ void WaypointListWidget::fillItemList()
 }
 
 /** Returns a pointer to the currently selected item. */
-Waypoint* WaypointListWidget::getSelectedWaypoint()
+Waypoint* WaypointListWidget::getCurrentWaypoint()
 {
   QTreeWidgetItem* li = list->currentItem();
 
-  if ( li == static_cast<QTreeWidgetItem *>(0) )
+  if( li == static_cast<QTreeWidgetItem *> ( 0 ) )
     {
-      return static_cast<Waypoint *>(0);
+      return static_cast<Waypoint *> ( 0 );
     }
 
   // Now we're left with the real waypoints
-  _WaypointItem* wpi = static_cast<_WaypointItem *> (li);
+  _WaypointItem* wpi = dynamic_cast<_WaypointItem *> ( li );
 
-  if ( !wpi )
+  if( !wpi )
     {
-      return static_cast<Waypoint *>(0);
+      return static_cast<Waypoint *> ( 0 );
     }
 
   return &wpi->wp;
+}
+
+/**
+ * @return A list containing all currently selected waypoints.
+ */
+QList<Waypoint *> WaypointListWidget::getSelectedWaypoints()
+{
+  QList<Waypoint *> wpList;
+
+  QList<QTreeWidgetItem *> itemList = list->selectedItems();
+
+  if( itemList.size() )
+    {
+      for( int i = 0; i < itemList.size(); i++ )
+        {
+          _WaypointItem* wpi = dynamic_cast<_WaypointItem *> (itemList.at(i));
+
+            if ( ! wpi )
+              {
+                continue;
+              }
+
+            wpList.append( &wpi->wp );
+        }
+    }
+
+  return wpList;
+}
+
+/**
+ * Removes all currently selected waypoints.
+ */
+void WaypointListWidget::deleteSelectedWaypoints()
+{
+  QList<Waypoint *> wpList;
+
+  QList<QTreeWidgetItem *> itemList = list->selectedItems();
+
+  if( itemList.size() )
+    {
+      list->setUpdatesEnabled(false);
+
+      for( int i = 0; i < itemList.size(); i++ )
+        {
+          _WaypointItem* wpi = dynamic_cast<_WaypointItem *> (itemList.at(i));
+
+          if( ! wpi )
+            {
+              continue;
+            }
+
+          // At first remove waypoint from filter because there is a reference
+          // to the global waypoint list.
+          filter->removeListItem( itemList.at(i) );
+
+          // At last remove waypoint from global list in MapContents
+          _globalMapContents->getWaypointList().removeAll( *(&wpi->wp) );
+        }
+
+      // save the modified catalog
+      _globalMapContents->saveWaypointList();
+
+      filter->reset();
+      resizeListColumns();
+      list->setUpdatesEnabled(true);
+    }
 }
 
 // JD: after adding, deleting or name-changing a waypoint the filter
 // and the view must always be reset to regain consistency
 
 /** Called when the selected waypoint should be deleted from the catalog */
-void WaypointListWidget::deleteSelectedWaypoint()
+void WaypointListWidget::deleteCurrentWaypoint()
 {
   QTreeWidgetItem* li = list->currentItem();
 
-  if ( li== 0 )
+  if( li == 0 )
     {
       return;
     }
 
-  Waypoint *wp = getSelectedWaypoint();
+  Waypoint *wp = getCurrentWaypoint();
 
   if( !wp )
     {
@@ -115,22 +181,19 @@ void WaypointListWidget::deleteSelectedWaypoint()
   _globalMapContents->saveWaypointList();
 
   // update the filter and reset the view
-
   list->setUpdatesEnabled(false);
-
   filter->removeListItem(li);
   filter->reset();
-
   resizeListColumns();
   list->setUpdatesEnabled(true);
 }
 
 /** Called if a waypoint has been edited. */
-void WaypointListWidget::updateSelectedWaypoint(Waypoint& wp)
+void WaypointListWidget::updateCurrentWaypoint(Waypoint& wp)
 {
   QTreeWidgetItem* li = list->currentItem();
 
-  if ( li == 0 )
+  if( li == 0 )
     {
       return;
     }
