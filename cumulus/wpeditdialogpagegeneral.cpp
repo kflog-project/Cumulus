@@ -24,9 +24,7 @@
 
 #include <math.h>
 
-#include <QLabel>
-#include <QGridLayout>
-#include <QFontMetrics>
+#include <QtGui>
 
 #include "wpeditdialogpagegeneral.h"
 #include "generalconfig.h"
@@ -35,7 +33,7 @@
 #include "wgspoint.h"
 
 WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
- QWidget(parent)
+  QWidget(parent)
 {
   setObjectName("WpEditDialogPageGeneral");
   loadedLat = 0;
@@ -54,13 +52,16 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
 
   GeneralConfig *conf = GeneralConfig::instance();
 
-  QLabel * lblName = new QLabel(tr("Name(9):"), this);
+  QLabel * lblName = new QLabel(tr("Name(8):"), this);
   topLayout->addWidget(lblName, row, 0);
   edtName = new QLineEdit(this);
-  edtName->setMaxLength(9); // limit name to 9 characters
+  edtName->setMaxLength(8); // limit name to 8 characters
   edtName->setMinimumWidth( 27*charWidth );
   edtName->setMaximumWidth( 27*charWidth );
   topLayout->addWidget(edtName, row++, 1, 1, 2);
+
+  connect( edtName, SIGNAL(textEdited( const QString& )),
+           this, SLOT(slot_textEdited( const QString& )) );
 
   QLabel * lblDescription = new QLabel(tr("Description:"), this);
   topLayout->addWidget(lblDescription, row, 0);
@@ -125,7 +126,8 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
 
 
 WpEditDialogPageGeneral::~WpEditDialogPageGeneral()
-{}
+{
+}
 
 
 /** called if data needs to be loaded */
@@ -133,7 +135,7 @@ void WpEditDialogPageGeneral::slot_load(Waypoint *wp)
 {
   if ( wp )
     { //we don't need to load if the waypoint is not there
-      edtName->setText(wp->name);
+      edtName->setText(wp->name.left(8).toUpper());
       edtDescription->setText(wp->description);
       edtLat->setKFLogDegree(wp->origP.lat());
       edtLong->setKFLogDegree(wp->origP.lon());
@@ -153,8 +155,8 @@ void WpEditDialogPageGeneral::slot_save(Waypoint *wp)
 {
   if ( wp )
     {
-      wp->name = edtName->text().trimmed();
-      // qDebug("WpEditDialogPageGeneral::slot_save %x %s",wp,(const char *)wp->name );
+      wp->name = edtName->text().trimmed().toUpper();
+
       wp->description = edtDescription->text().trimmed();
 
       if( edtLat->isInputChanged() )
@@ -181,6 +183,11 @@ void WpEditDialogPageGeneral::slot_save(Waypoint *wp)
     }
 }
 
+void WpEditDialogPageGeneral::slot_textEdited( const QString& text )
+{
+  // Change edited text to upper cases
+  edtName->setText( text.toUpper() );
+}
 
 /** return internal type of waypoint */
 int WpEditDialogPageGeneral::getWaypointType()

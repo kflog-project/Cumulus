@@ -264,7 +264,7 @@ void PreFlightWaypointPage::slotImportFile()
 
   if( filterToggle->isChecked() )
     {
-      // We have to use the filter values for the catalog read.
+      // We have to set the filter values before catalog reading.
       enum WaypointCatalog::WpType type = (enum WaypointCatalog::WpType)
           wpTypesBox->itemData(wpTypesBox->currentIndex()).toInt();
 

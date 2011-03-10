@@ -37,6 +37,7 @@ extern MainWindow* _globalMainWindow;
 #define WP_FILE_FORMAT_ID 100
 #define WP_FILE_FORMAT_ID_1 101
 #define WP_FILE_FORMAT_ID_2 102 // runway direction handling modified
+#define WP_FILE_FORMAT_ID_3 103 // waypoint list size added
 
 WaypointCatalog::WaypointCatalog() :
   _type(All),
@@ -89,6 +90,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
   quint32 fileMagic;
   qint8 fileType;
   quint16 fileFormat;
+  qint32 wpListSize = 0;
 
   int wpCount = 0;
 
@@ -120,13 +122,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
                                        QEventLoop::ExcludeSocketNotifiers );
     }
 
-  // Estimate the number of entries in the file. The basic assumption is, that
-  // a single record contains approximately 50 bytes. Only 20 animations
-  // should be done because the animation is a performance blocker.
-  int wsCycles = (file.size() / 50) / 20;
-
   QDataStream in( &file );
-  in.setVersion(2);
 
   //check if the file has the correct format
   in >> fileMagic;
@@ -141,24 +137,46 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
 
   if (fileType != FILE_TYPE_WAYPOINTS)
     {
-      qWarning("Waypoint file is a KFLog file, but not for waypoints.");
+      qWarning("Waypoint file is a KFLog file, but not for waypoints!");
       return -1;
     }
 
   in >> fileFormat;
 
-  if ( fileFormat != WP_FILE_FORMAT_ID &&
-       fileFormat != WP_FILE_FORMAT_ID_1 &&
-       fileFormat != WP_FILE_FORMAT_ID_2 )
+  if( fileFormat < WP_FILE_FORMAT_ID_2 )
     {
-      qWarning("Waypoint file does not have the correct format. It returned %d, where %d was expected.", fileFormat, WP_FILE_FORMAT_ID);
+      qWarning() << "Wrong waypoint file format! Read format Id"
+                 << fileFormat
+                 << ". Expecting" << WP_FILE_FORMAT_ID_3 << ".";
+
       return -1;
+    }
+
+  // from here on, we assume that the file has the correct format.
+  if( fileFormat == WP_FILE_FORMAT_ID_2 )
+    {
+      in.setVersion( QDataStream::Qt_2_0 );
+    }
+  else
+    {
+      in.setVersion( QDataStream::Qt_4_7 );
+      in >> wpListSize;
+    }
+
+  // Only 20 animations should be done because the animation is a performance
+  // blocker.
+  qint64 wsCycles = wpListSize / 20;
+
+  if( wsCycles == 0 )
+    {
+      // avoid division by zero!
+      wsCycles++;
     }
 
   // from here on, we assume that the file has the correct format.
   while( ! in.atEnd() )
     {
-      if( _showProgress && (wpCount % wsCycles) == 0 )
+      if( _showProgress == true && (wpCount % wsCycles) == 0 )
         {
           ws->slot_Progress( 2 );
           QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
@@ -179,6 +197,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
       in >> wpLength;
       in >> wpSurface;
       in >> wpComment;
+      in >> wpImportance;
 
       // Check filter, if type should be taken
       if( ! takeType( (enum BaseMapElement::objectType) wpType ) )
@@ -195,26 +214,6 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
           continue;
         }
 
-      if( fileFormat>=WP_FILE_FORMAT_ID_1 )
-        {
-          in >> wpImportance;
-        }
-      else
-        {
-          wpImportance = Waypoint::Normal;
-        }
-
-      if( fileFormat < WP_FILE_FORMAT_ID_2 )
-        {
-          // Runway has only one direction entry 0...360.
-          // We split it into two parts.
-          int rwh1 = wpRunway <= 180 ? wpRunway+180 : wpRunway-180;
-          int rwh2 = rwh1 <= 180 ? rwh1+180 : rwh1-180;
-
-          // put both directions into one variable, each in a byte
-          wpRunway = (rwh1/10) * 256 + (rwh2/10);
-        }
-
       wpCount++;
 
       if( wpList )
@@ -222,7 +221,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
           // create waypoint object and set the correct properties
           Waypoint wp;
 
-          wp.name = wpName;
+          wp.name = wpName.left(8).toUpper();
           wp.description = wpDescription;
           wp.icao = wpICAO;
           wp.type = wpType;
@@ -294,18 +293,18 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
   if( file.open( QIODevice::WriteOnly ) )
     {
       QDataStream out( &file );
+      out.setVersion( QDataStream::Qt_4_7 );
 
       // write file header
-      out << quint32(KFLOG_FILE_MAGIC);
-      out << qint8(FILE_TYPE_WAYPOINTS);
+      out << quint32( KFLOG_FILE_MAGIC );
+      out << qint8( FILE_TYPE_WAYPOINTS );
+      out << quint16( WP_FILE_FORMAT_ID_3 );
+      out << qint32( wpList.size() );
 
-      // Use the new format with importance field and two runway directions.
-      out << quint16(WP_FILE_FORMAT_ID_2);
-
-      for (int i = 0; i < wpList.count(); i++)
+      for (int i = 0; i < wpList.size(); i++)
         {
           Waypoint &wp = wpList[i];
-          wpName = wp.name;
+          wpName = wp.name.left(8).toUpper();
           wpDescription = wp.description;
           wpICAO = wp.icao;
           wpType = wp.type;
@@ -430,7 +429,7 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList )
       QDomNamedNodeMap nm =  nl.item(i).attributes();
       Waypoint w;
 
-      w.name = nm.namedItem("Name").toAttr().value().left(6).toUpper();
+      w.name = nm.namedItem("Name").toAttr().value().left(8).toUpper();
       w.description = nm.namedItem("Description").toAttr().value();
       w.icao = nm.namedItem("ICAO").toAttr().value().toUpper();
       w.type = nm.namedItem("Type").toAttr().value().toInt();
@@ -442,11 +441,15 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList )
       w.isLandable = nm.namedItem("Landable").toAttr().value().toInt();
 
       int rdir = nm.namedItem("Runway").toAttr().value().toInt();
-      int rwh1 = rdir <= 18 ? rdir+18 : rdir-18;
-      int rwh2 = rwh1 <= 18 ? rwh1+18 : rwh1-18;
 
-      // put both directions into one variable, each in a byte
-      w.runway = (rwh1) * 256 + (rwh2);
+      if( rdir > 0 )
+        {
+          int rwh1 = rdir <= 18 ? rdir+18 : rdir-18;
+          int rwh2 = rwh1 <= 18 ? rwh1+18 : rwh1-18;
+
+          // put both directions into one variable, each in a byte
+          w.runway = (rwh1) * 256 + (rwh2);
+        }
 
       w.length = nm.namedItem("Length").toAttr().value().toInt();
       w.surface = (enum Runway::SurfaceType)nm.namedItem("Surface").toAttr().value().toInt();
@@ -518,7 +521,7 @@ bool WaypointCatalog::writeXml( QString catalog, QList<Waypoint>& wpList )
 
       child = doc.createElement( "Waypoint" );
 
-      child.setAttribute( "Name", w.name );
+      child.setAttribute( "Name", w.name.left(8).toUpper() );
       child.setAttribute( "Description", w.description );
       child.setAttribute( "ICAO", w.icao );
       child.setAttribute( "Type", w.type );
@@ -602,6 +605,12 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
   // should be done because the animation is a performance blocker.
   int wsCycles = (file.size() / 70) / 20;
 
+  if( wsCycles == 0 )
+    {
+      // avoid division by zero!
+      wsCycles++;
+    }
+
   QTextStream in(&file);
   in.setCodec( "ISO 8859-15" );
 
@@ -662,7 +671,8 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           wp.description = "";
         }
 
-      wp.name = list[1].replace( QRegExp("\""), "" ); // short name of waypoint
+      // short name of a waypoint limited to 8 characters
+      wp.name = list[1].replace( QRegExp("\""), "" ).left(8).toUpper();
       wp.comment = list[2] + ": ";
       wp.icao = "";
       wp.surface = Runway::Unknown;
@@ -822,7 +832,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 
           if( ok )
             {
-              // Runway has only one direction entry 0...360.
+              // Runway has only one direction entry 010...360.
               // We split it into two parts.
               int rwh1 = rdir <= 180 ? rdir+180 : rdir-180;
               int rwh2 = rwh1 <= 180 ? rwh1+180 : rwh1-180;

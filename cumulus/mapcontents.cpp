@@ -134,17 +134,21 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
   // read in waypoint list from catalog
   WaypointCatalog wpCat;
   int ok;
+  const char* format;
 
   if( GeneralConfig::instance()->getWaypointFileFormat() == GeneralConfig::Binary )
     {
       ok = wpCat.readBinary( "", &wpList );
+      format = "binary";
     }
   else
     {
       ok = wpCat.readXml( "", &wpList );
+      format = "xml";
     }
 
-  qDebug() << "MapContents():" << ok << "waypoints read from default catalog.";
+  qDebug() << "MapContents():" << ok << "waypoints read from default"
+           << format << "catalog.";
 
   currentTask=0;
 

@@ -14,6 +14,15 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2011-03-10 AP: Waypoint names limited to 8 characters and they consists
+                   only of upper cases. Waypoint editor adapted to this new
+                   requirements. Runway headings are limited to the range
+                   10...36. Bug fixing in waypoint catalog methods.
+                   
+-------------------------------------------------
+Cumulus 2.10.x (Development based on X11/Qt-4.7.2)
+-------------------------------------------------
+                   
 [+] 2011-03-09 AP: More than one waypoint can be removed in the waypoint list
                    view now.
                    Preflight widget expanded by a waypoint page. This page

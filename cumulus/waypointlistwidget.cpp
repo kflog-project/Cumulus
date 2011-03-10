@@ -229,6 +229,10 @@ void WaypointListWidget::addWaypoint(Waypoint& newWp)
 {
   // put new waypoint into the global waypoint list
   QList<Waypoint> &wpList = _globalMapContents->getWaypointList();
+
+  // A waypoint name is limited to 8 characters and has only upper cases.
+  newWp.name = newWp.name.left(8).toUpper();
+
   wpList.append( newWp );
 
   // save the modified waypoint catalog
@@ -267,10 +271,10 @@ WaypointListWidget::_WaypointItem::_WaypointItem( Waypoint& waypoint ) :
   selectIcon = QPixmap( 18, 18 );
   pnt.begin(&selectIcon);
   selectIcon.fill( Qt::white );
-  pnt.drawPixmap(1, 1, _globalMapConfig->getPixmap(wp.type,false,true) );
+  pnt.drawPixmap(1, 1, _globalMapConfig->getPixmap(wp.type, false, true) );
   pnt.end();
   QIcon icon;
-  icon.addPixmap( _globalMapConfig->getPixmap(wp.type,false,true) );
+  icon.addPixmap( _globalMapConfig->getPixmap(wp.type, false, true) );
   icon.addPixmap( selectIcon, QIcon::Selected );
   setIcon( 0, icon );
 }

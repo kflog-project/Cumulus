@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2009 by Axel Pauli (axel@kflog.org)
+**                   2008-2011 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * \brief This is the general page for the waypoint editor dialog
  *
- * \date 2002-2009
+ * \date 2002-2011
  */
 
 #ifndef WPEDIT_DIALOG_PAGE_GENERAL_H
@@ -32,6 +32,8 @@
 #include <QWidget>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QString>
+
 #include "coordedit.h"
 #include "waypoint.h"
 
@@ -60,6 +62,11 @@ public slots:
    * called if data needs to be loaded
    */
   void slot_load(Waypoint *wp);
+
+  /**
+   * Called to make all text to upper cases.
+   */
+  void slot_textEdited( const QString& text );
 
 private:
 
