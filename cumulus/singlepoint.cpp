@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2010 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -16,23 +16,28 @@
  **
  ***********************************************************************/
 
+#include <QtGui>
 #include "singlepoint.h"
 
-extern MapMatrix * _globalMapMatrix;
+extern MapMatrix* _globalMapMatrix;
 
 SinglePoint::SinglePoint( const QString& n,
                           const QString& shortName,
                           const BaseMapElement::objectType t,
                           const WGSPoint& wgsP,
                           const QPoint& pos,
-                          const unsigned int elev,
+                          const float elevation,
+                          const QString country,
+                          const QString comment,
                           const unsigned short secID ) :
   BaseMapElement(n, t, secID),
   wgsPosition(wgsP),
   position(pos),
   shortName(shortName),
   curPos(pos),
-  elevation(elev)
+  elevation(elevation),
+  country(country.toUpper()),
+  comment(comment)
 {
 }
 

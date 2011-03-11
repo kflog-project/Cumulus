@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm
- **                   2008-2010 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -23,24 +23,26 @@
 ReachablePoint::ReachablePoint(QString name,
                                QString icao,
                                QString description,
+                               QString country,
                                bool orignAfl,
                                short type,
-                               double frequency,
+                               float frequency,
                                WGSPoint pos,
                                QPoint   ppos,
-                               unsigned int elevation,
+                               float elevation,
                                QString comment,
                                Distance distance,
                                short bearing,
                                Altitude arrivAlt,
                                short rwDir,
-                               short rwLen,
+                               float rwLen,
                                short rwSurf,
                                bool rwOpen )
 {
   _wp.name = name;
   _wp.icao = icao;
   _wp.description = description;
+  _wp.country = country;
   _wp.frequency = frequency;
   _wp.elevation = elevation;
   _wp.comment = comment;
@@ -104,4 +106,3 @@ bool ReachablePoint::operator < (const ReachablePoint& other) const
       return (_distance.getKilometers() > other._distance.getKilometers());
     }
 }
-

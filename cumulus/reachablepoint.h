@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm,
- **                   2008-2009 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -28,8 +28,9 @@
  * Class for one entry in the \ref ReachableList class. It covers all belonging
  * to a reachable point element.
  *
- * \date 2004-2010
+ * \date 2004-2011
  *
+ * \version $Id$
  */
 
 #ifndef REACHABLE_POINT_H
@@ -47,23 +48,24 @@ class ReachablePoint
 {
  public:
 
-   enum reachable{no, belowSafety, yes};
+  enum reachable{ no, belowSafety, yes };
 
   ReachablePoint(QString name,
                  QString icao,
                  QString description,
+                 QString country,
                  bool orignAfl,
                  short type,
-                 double frequency,
+                 float frequency,
                  WGSPoint pos,
                  QPoint ppos,
-                 unsigned int elevation,
+                 float elevation,
                  QString comment,
                  Distance distance,
                  short bearing,
                  Altitude arrivAlt,
                  short rwDir,
-                 short rwLen,
+                 float rwLen,
                  short rwSurf,
                  bool rwOpen );
 
@@ -99,6 +101,11 @@ class ReachablePoint
   QString getComment() const
   {
     return _wp.comment;
+  };
+
+  QString getCountry() const
+  {
+    return _wp.country;
   };
 
   void setOrignAfl(const bool orign)
@@ -159,6 +166,7 @@ class ReachablePoint
   bool operator < (const ReachablePoint& other) const;
 
  private:
+
   bool         _orignAfl; // Origin is taken from airfield list
   Waypoint     _wp;
   Distance     _distance;

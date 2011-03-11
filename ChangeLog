@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2011-03-11 AP: Country code added to all kinds of single points. Different
+                   internal format changes done for elevation and frequency.
 [o] 2011-03-10 AP: Waypoint names limited to 8 characters and they consists
                    only of upper cases. Waypoint editor adapted to this new
                    requirements. Runway headings are limited to the range

@@ -6,8 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008 Axel Pauli
+ **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -26,12 +26,12 @@
  *
  * \brief This structure contains the data of one frequency;
  *
- * \date 2000-2008
+ * \date 2000-2011
  */
 struct radioContact
 {
-  /** Frequency as string. */
-  QString frequency;
+  /** Frequency as decimal. */
+  float frequency;
 
   /** Call sign as string. */
   QString callSign;
@@ -42,7 +42,7 @@ struct radioContact
 /**
  * \class RadioPoint
  *
- * \author Heiner Lamprecht, Florian Ehinger
+ * \author Heiner Lamprecht, Florian Ehinger, Axel Pauli
  *
  * \brief This class provides a map element for radio-navigation-facilities.
  *
@@ -52,7 +52,7 @@ struct radioContact
  *
  * @see BaseMapElement#objectType
  *
- * \date 2000-2010
+ * \date 2000-2011
  */
 
 class RadioPoint : public SinglePoint
@@ -69,6 +69,7 @@ class RadioPoint : public SinglePoint
    * @param  pos    The projected position.
    * @param  frequency  The frequency.
    * @param  elevation The elevation.
+   * @param  country The country location.
    */
   RadioPoint( const QString& name,
               const QString& icao,
@@ -76,8 +77,9 @@ class RadioPoint : public SinglePoint
               BaseMapElement::objectType typeID,
               const WGSPoint& wgsPos,
               const QPoint& pos,
-              const QString& frequency,
-              int elevation = 0);
+              const float frequency,
+              float elevation = 0.0,
+              const QString country = "" );
 
   /**
    * Destructor
@@ -89,7 +91,7 @@ class RadioPoint : public SinglePoint
    */
   virtual QString getFrequency() const
     {
-      return frequency;
+      return QString("%1").arg(frequency, 0, 'f', 3);
     };
 
   /**
@@ -104,7 +106,7 @@ class RadioPoint : public SinglePoint
   /**
    * The frequency
    */
-  QString frequency;
+  float frequency;
 
   /**
    * The icao name

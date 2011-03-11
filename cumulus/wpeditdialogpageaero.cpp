@@ -45,6 +45,9 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   topLayout->addWidget(lblFrequency, row, 0);
   edtFrequency = new QLineEdit(this);
   edtFrequency->setMaxLength(7); // limit name to 7 characters
+  edtFrequency->setInputMask("999.999");
+  edtFrequency->setText("000.000");
+
   topLayout->addWidget(edtFrequency, row++, 1);
 
   topLayout->setRowMinimumHeight(row++,  10);
@@ -54,7 +57,11 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   QBoxLayout *elevLayout = new QHBoxLayout();
   topLayout->addLayout(elevLayout, row++, 1);
   edtLength = new QLineEdit(this);
+  QRegExp rx("[0-9]*");
+  edtLength->setValidator( new QRegExpValidator(rx, this) );
+
   elevLayout->addWidget(edtLength);
+
   // Note! We take as runway length unit the altitude unit (m/ft)
   QLabel *lblLenUnit = new QLabel(Altitude::getUnitText(),  this);
   elevLayout->addWidget(lblLenUnit);
@@ -121,10 +128,10 @@ void WpEditDialogPageAero::slot_load(Waypoint *wp)
   if ( wp )
     {
       edtICAO->setText(wp->icao);
-      edtFrequency->setText(QString::number(wp->frequency));
+      edtFrequency->setText(QString("%1").arg(wp->frequency, 0, 'f', 3));
       edtRunway1->setCurrentIndex(wp->runway / 256);
       edtRunway2->setCurrentIndex(wp->runway % 256);
-      edtLength->setText(Altitude::getText((wp->length),  false, -1));
+      edtLength->setText(Altitude::getText((wp->length), false, -1));
       setSurface(wp->surface);
       chkLandable->setChecked(wp->isLandable);
     }
@@ -134,14 +141,14 @@ void WpEditDialogPageAero::slot_load(Waypoint *wp)
 /** Called if the data needs to be saved. */
 void WpEditDialogPageAero::slot_save(Waypoint *wp)
 {
-  if ( wp )
+  if (wp)
     {
-      wp->icao=edtICAO->text();
-      wp->frequency=edtFrequency->text().toDouble();
-      wp->runway=(edtRunway1->currentIndex() * 256) + edtRunway2->currentIndex();
-      wp->length=static_cast<int> (rint(Altitude::convertToMeters(edtLength->text().toDouble())));
-      wp->surface=getSurface();
-      wp->isLandable=chkLandable->isChecked();
+      wp->icao = edtICAO->text();
+      wp->frequency = edtFrequency->text().toFloat();
+      wp->runway = (edtRunway1->currentIndex() * 256) + edtRunway2->currentIndex();
+      wp->length = static_cast<float> (Altitude::convertToMeters(edtLength->text().toDouble()));
+      wp->surface = getSurface();
+      wp->isLandable = chkLandable->isChecked();
     }
 }
 

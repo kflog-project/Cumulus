@@ -265,7 +265,12 @@ void WPInfoWidget::writeText()
 
       if (!_wp.icao.isEmpty())
         {
-          itxt += ",&nbsp;"+ _wp.icao;
+          itxt += ",&nbsp;" + _wp.icao;
+        }
+
+      if (!_wp.country.isEmpty())
+        {
+          itxt += ",&nbsp;" + _wp.country;
         }
 
       itxt+= ")<p>" + BaseMapElement::item2Text(_wp.type, tr("(unknown)"));
@@ -330,7 +335,7 @@ void WPInfoWidget::writeText()
 
       if (_wp.frequency >= 108.0 && _wp.frequency <= 137.0 )
         {
-          tmp = QString("<tr><td>" + tr("Frequency:") + "</td><td><b>%1 MHz</b></td>").arg(_wp.frequency,0,'f',3);
+          tmp = QString("<tr><td>" + tr("Frequency:") + "</td><td><b>%1 MHz</b></td>").arg(_wp.frequency, 0, 'f', 3);
           itxt += tmp;
         }
       else

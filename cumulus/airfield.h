@@ -60,6 +60,7 @@ class Airfield : public SinglePoint
    * @param  elevation  The elevation
    * @param  frequency  The frequency
    * @param  comment An additional comment related to the airfield
+   * @param  country The country of the airfield as two letter code
    * @param  winch  "true", if winch launch is available
    * @param  towing "true", if aero towing is available
    * @param  landable "true", if airfield is landable
@@ -71,8 +72,9 @@ class Airfield : public SinglePoint
             const WGSPoint& wgsPos,
             const QPoint& pos,
             const Runway& rw,
-            const unsigned int elevation,
+            const float elevation,
             const QString& frequency,
+            const QString country = "",
             const QString comment = "",
             bool winch = false,
             bool towing = false,
@@ -132,14 +134,6 @@ class Airfield : public SinglePoint
     };
 
   /**
-   * @return the comment text of the airfield
-   */
-  QString getComment() const
-    {
-      return comment;
-    };
-
-  /**
    * Return a short html-info-string about the airport, containing the
    * name, the alias, the elevation and the frequency as well as a small
    * icon of the airport type.
@@ -163,11 +157,6 @@ class Airfield : public SinglePoint
     * The frequency
     */
    QString frequency;
-
-   /**
-    * Comment related to the airfield.
-    */
-   QString comment;
 
   /**
    * Contains the runway data.

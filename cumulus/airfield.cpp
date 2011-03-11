@@ -10,7 +10,7 @@
  **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -28,16 +28,16 @@ Airfield::Airfield( const QString& name,
                     const WGSPoint& wgsPos,
                     const QPoint& pos,
                     const Runway& rw,
-                    const unsigned int elevation,
+                    const float elevation,
                     const QString& frequency,
+                    const QString country,
                     const QString comment,
                     bool winch,
                     bool towing,
                     bool landable ) :
-  SinglePoint(name, shortName, typeId, wgsPos, pos, elevation),
+  SinglePoint(name, shortName, typeId, wgsPos, pos, elevation, country, comment),
   icao(icao),
   frequency(frequency),
-  comment(comment),
   rwData(rw),
   winch(winch),
   towing(towing),
@@ -62,7 +62,7 @@ QString Airfield::getInfoString() const
     QString text, elev;
     QString path = "cumulus/";
 
-    elev = Altitude::getText(elevation,true,0).replace(QRegExp("\\s"),"&nbsp;");
+    elev = Altitude::getText(elevation, true, 0).replace(QRegExp("\\s"),"&nbsp;");
 
     text = "<HTML><TABLE BORDER=0><TR><TD>"
            "<IMG SRC=" + path + "/" + glConfig->getPixmapName(typeID) + "></TD>"

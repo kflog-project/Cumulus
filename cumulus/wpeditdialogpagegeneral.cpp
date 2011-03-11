@@ -16,12 +16,6 @@
 **
 ***********************************************************************/
 
-/**
- * \brief This is the general page of the waypoint editor
- *
- * \author André Somers
- */
-
 #include <math.h>
 
 #include <QtGui>
@@ -61,7 +55,7 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   topLayout->addWidget(edtName, row++, 1, 1, 2);
 
   connect( edtName, SIGNAL(textEdited( const QString& )),
-           this, SLOT(slot_textEdited( const QString& )) );
+           this, SLOT(slot_textEditedName( const QString& )) );
 
   QLabel * lblDescription = new QLabel(tr("Description:"), this);
   topLayout->addWidget(lblDescription, row, 0);
@@ -70,6 +64,21 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   edtDescription->setMinimumWidth( 27*charWidth );
   edtDescription->setMaximumWidth( 27*charWidth );
   topLayout->addWidget(edtDescription, row++, 1, 1, 2);
+
+  QLabel * lblCountry = new QLabel(tr("Country(2):"), this);
+  topLayout->addWidget(lblCountry, row, 0);
+  edtCountry = new QLineEdit(this);
+  edtCountry->setMaxLength(2); // limit name to 2 characters
+  edtCountry->setMinimumWidth( 3*charWidth );
+  edtCountry->setMaximumWidth( 3*charWidth );
+
+  QRegExp rx("[A-Za-z]{2}");
+  edtCountry->setValidator( new QRegExpValidator(rx, this) );
+
+  connect( edtCountry, SIGNAL(textEdited( const QString& )),
+           this, SLOT(slot_textEditedCountry( const QString& )) );
+
+  topLayout->addWidget(edtCountry, row++, 1, 1, 2);
 
   topLayout->setRowMinimumHeight(row++, 10);
 
@@ -124,31 +133,29 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   topLayout->setColumnStretch(3, 10);
 }
 
-
 WpEditDialogPageGeneral::~WpEditDialogPageGeneral()
 {
 }
 
-
 /** called if data needs to be loaded */
 void WpEditDialogPageGeneral::slot_load(Waypoint *wp)
 {
-  if ( wp )
+  if( wp )
     { //we don't need to load if the waypoint is not there
-      edtName->setText(wp->name.left(8).toUpper());
-      edtDescription->setText(wp->description);
-      edtLat->setKFLogDegree(wp->origP.lat());
-      edtLong->setKFLogDegree(wp->origP.lon());
-      edtElev->setText(Altitude::getText((wp->elevation),false,-1));
-      setWaypointType(wp->type);
-      cmbImportance->setCurrentIndex(wp->importance);
+      edtName->setText( wp->name.left( 8 ).toUpper() );
+      edtDescription->setText( wp->description );
+      edtCountry->setText( wp->country );
+      edtLat->setKFLogDegree( wp->origP.lat() );
+      edtLong->setKFLogDegree( wp->origP.lon() );
+      edtElev->setText( Altitude::getText( (wp->elevation), false, -1 ) );
+      setWaypointType( wp->type );
+      cmbImportance->setCurrentIndex( wp->importance );
 
       // save loaded values
       loadedLat = wp->origP.lat();
       loadedLon = wp->origP.lon();
     }
 }
-
 
 /** called if data needs to be saved */
 void WpEditDialogPageGeneral::slot_save(Waypoint *wp)
@@ -158,6 +165,8 @@ void WpEditDialogPageGeneral::slot_save(Waypoint *wp)
       wp->name = edtName->text().trimmed().toUpper();
 
       wp->description = edtDescription->text().trimmed();
+
+      wp->country = edtCountry->text().toUpper();
 
       if( edtLat->isInputChanged() )
         {
@@ -183,10 +192,16 @@ void WpEditDialogPageGeneral::slot_save(Waypoint *wp)
     }
 }
 
-void WpEditDialogPageGeneral::slot_textEdited( const QString& text )
+void WpEditDialogPageGeneral::slot_textEditedName( const QString& text )
 {
   // Change edited text to upper cases
   edtName->setText( text.toUpper() );
+}
+
+void WpEditDialogPageGeneral::slot_textEditedCountry( const QString& text )
+{
+  // Change edited text to upper cases
+  edtCountry->setText( text.toUpper() );
 }
 
 /** return internal type of waypoint */

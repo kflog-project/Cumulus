@@ -664,7 +664,7 @@ bool Welt2000::parse( QString& path,
   uint ul, gl, af, ol;
   ul = gl = af = ol = 0;
 
-  // Input file was taken from Michael Meiers Welt2000 data dase
+  // Input file was taken from Michael Meiers Welt2000 data base.
   //
   // 0         1         2         3         4         5         6
   // 0123456789012345678901234567890123456789012345678901234567890123
@@ -1230,7 +1230,8 @@ bool Welt2000::parse( QString& path,
       Runway rw( rwLen, rwDir, rwSurface, true );
 
       Airfield af( afName, icao.trimmed(), gpsName, afType,
-                   wgsPos, position, rw, elevation, frequency, commentLong );
+                   wgsPos, position, rw, elevation, frequency,
+                   country, commentLong );
 
       if( afType == BaseMapElement::Outlanding )
         {
@@ -1250,12 +1251,6 @@ bool Welt2000::parse( QString& path,
 
       if( doCompile )
         {
-          // This was the order used by earlier cumulus
-          // implementations. Because welt2000 does not support these
-          // all a subset from the original implementation is only
-          // used to spare memory and to get a better performance. All
-          // unused values are commented out.
-
           counter++;
           // airfield type
           outbuf << quint8( afType );
@@ -1288,6 +1283,8 @@ bool Welt2000::parse( QString& path,
           outbuf << quint8(rwSurface);
           // comment
           ShortSave(outbuf, commentShort.toUtf8());
+          // country
+          ShortSave(outbuf, country.toUtf8());
         }
 
     } // End of while( ! in.atEnd() )
@@ -1398,6 +1395,7 @@ bool Welt2000::readCompiledFile( QString &path,
   QByteArray utf8_temp;
   QString frequency;
   QString comment;
+  QString country;
 
   in >> magic;
 
@@ -1500,6 +1498,10 @@ bool Welt2000::readCompiledFile( QString &path,
                     comment.mid( 2, 2 );
         }
 
+      // read the 2 letter country code
+      ShortLoad(in, utf8_temp);
+      country = QString::fromUtf8(utf8_temp);
+
       if( loadOls == false && afType == BaseMapElement::Outlanding )
         {
           // do not load outlandings
@@ -1507,7 +1509,7 @@ bool Welt2000::readCompiledFile( QString &path,
         }
 
       Airfield af( afName, icao, gpsName, (BaseMapElement::objectType) afType,
-                   wgsPos, position, rw, (uint) elevation, frequency, comment );
+                   wgsPos, position, rw, elevation, frequency, country, comment );
 
       if( afType == BaseMapElement::Gliderfield )
         {
@@ -1522,8 +1524,6 @@ bool Welt2000::readCompiledFile( QString &path,
       else
         {
           // Add an airfield site to the list.
-          Airfield af( afName, icao, gpsName, (BaseMapElement::objectType) afType,
-                       wgsPos, position, rw, (uint) elevation, frequency, comment );
           airfieldList.append( af );
         }
     }

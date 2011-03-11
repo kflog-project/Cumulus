@@ -24,6 +24,8 @@
  * \brief This is the general page for the waypoint editor dialog
  *
  * \date 2002-2011
+ *
+ * \version $Id$
  */
 
 #ifndef WPEDIT_DIALOG_PAGE_GENERAL_H
@@ -63,15 +65,23 @@ public slots:
    */
   void slot_load(Waypoint *wp);
 
+private slots:
+
   /**
    * Called to make all text to upper cases.
    */
-  void slot_textEdited( const QString& text );
+  void slot_textEditedName( const QString& text );
+
+  /**
+   * Called to make all text to upper cases.
+   */
+  void slot_textEditedCountry( const QString& text );
 
 private:
 
   QLineEdit *edtName;
   QLineEdit *edtDescription;
+  QLineEdit *edtCountry;
 
   LatEdit   *edtLat;
   LongEdit  *edtLong;

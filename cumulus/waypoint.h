@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                         2002 adjusted by André Somers for Cumulus
- **                         2008-2010 by Axel Pauli
+ **                         2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -35,7 +35,9 @@
  * Definitions of possible task point types. Must be done here to avoid
  * recursive include loop.
  *
- * \date 1999-2010
+ * \date 1999-2011
+ *
+ * \version $Id$
  */
 class TaskPointTypes
 {
@@ -54,7 +56,9 @@ class TaskPointTypes
  *
  * \brief This class contains all data items of a waypoint.
  *
- * \date 1999-2010
+ * \date 1999-2011
+ *
+ * \version $Id$
  */
 
 class Waypoint
@@ -73,11 +77,11 @@ class Waypoint
   bool equals( const Waypoint *second ) const;
   bool operator==( const Waypoint& second ) const;
 
-  /** The name of the waypoint. */
+  /** The short name of the waypoint limited to 8 characters and upper cases. */
   QString name;
   /** The type of the waypoint */
   short type;
-  /** The original lat/lon position (WGS84) of the waypoint. */
+  /** The original lat/lon position (WGS84) of the waypoint in KFLOG's internal format. */
   WGSPoint origP;
   /** The projected map position of the waypoint. */
   QPoint projP;
@@ -89,14 +93,14 @@ class Waypoint
   QString comment;
   /** internal surface id */
   short surface;
-  /** direction of runway. Range 0-36 inclusive */
+  /** Heading of runway. Range 0-36 inclusive. 0 stands for an undefined runway. */
   short runway;
   /** length of runway, in meters */
-  short length;
+  float length;
   /** elevation of runway, in meters */
-  int elevation;
+  float elevation;
   /** frequency of contact for waypoint, in MHz */
-  double frequency;
+  float frequency;
   /** flag for landable*/
   bool isLandable;
   /** contains an importance indication for the waypoint
@@ -113,6 +117,8 @@ class Waypoint
   short taskPointIndex;
   /** The type of the task point, if waypoint is used as a task point*/
   enum TaskPointTypes::TaskPointType taskPointType;
+  /** Country as two letter code, where the waypoint is to find. */
+  QString country;
 };
 
 #endif

@@ -293,12 +293,13 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
           QString siteIcao;
           QString siteDescription;
           short siteType;
-          double siteFrequency;
+          float siteFrequency;
           WGSPoint siteWgsPosition;
           QPoint sitePosition;
-          uint siteElevation;
+          float siteElevation;
           QPoint curPos;
           QString siteComment;
+          QString siteCountry;
 
           if( searchList[l] == MapContents::AirfieldList )
             {
@@ -350,12 +351,13 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
               siteIcao = site->getICAO();
               siteDescription = site->getName();
               siteType = site->getTypeID();
-              siteFrequency = site->getFrequency().toDouble();
+              siteFrequency = site->getFrequency().toFloat();
               siteWgsPosition = site->getWGSPosition();
               sitePosition = site->getPosition();
               siteElevation = site->getElevation();
               const Runway &siteRunway = site->getRunway();
               siteComment = site->getComment();
+              siteCountry = site->getCountry();
 
               w = &wp;
               w->name = siteName;
@@ -371,6 +373,9 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
               w->runway = siteRunway.direction;
               w->length = siteRunway.length;
               w->comment = siteComment;
+              w->country = siteCountry;
+
+              qDebug() << "Found: Name" << siteName << "CC" << siteCountry;
 
               found = true;
               lastDist = dX+dY;
@@ -523,8 +528,7 @@ void Map::paintEvent(QPaintEvent* event)
       qDebug("Map::paintEvent(): mutex is locked");
     }
 
-  // We copy always the content from the m_pixPaintBuffer to the paint
-  // device.
+  // We copy always the content from the m_pixPaintBuffer to the paint device.
   QPainter p(this);
   p.drawPixmap( event->rect().left(), event->rect().top(), m_pixPaintBuffer,
                 0, 0, event->rect().width(), event->rect().height() );

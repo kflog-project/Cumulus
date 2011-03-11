@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2011 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,6 +23,7 @@ Waypoint::Waypoint()
   type           = 0;
   description    = "";
   comment        = "";
+  country        = "";
   icao           = "";
   surface        = 0;
   runway         = 0;
@@ -51,6 +52,7 @@ Waypoint::Waypoint(const Waypoint& inst)
   description    = inst.description;
   icao           = inst.icao;
   comment        = inst.comment;
+  country        = inst.country;
   surface        = inst.surface;
   runway         = inst.runway;
   length         = inst.length;
@@ -74,8 +76,9 @@ bool Waypoint::equals( const Waypoint *second ) const
       return false;
     }
 
-  if( this->name == second->name && this->description == second->description
-      && this->origP == second->origP )
+  if( this->name == second->name &&
+      this->description == second->description &&
+      this->origP == second->origP )
     {
       return true;
     }
@@ -85,12 +88,12 @@ bool Waypoint::equals( const Waypoint *second ) const
 
 bool Waypoint::operator==( const Waypoint& second ) const
 {
-  if( name == second.name && description == second.description && origP
-      == second.origP )
+  if( name == second.name &&
+      description == second.description &&
+      origP == second.origP )
     {
       return true;
     }
 
   return false;
 }
-

@@ -7,10 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm,
- **                   2008-2009 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -31,12 +31,7 @@
 
 #include <math.h>
 
-#include <QString>
-#include <Qt>
-#include <QList>
-#include <QColor>
-#include <QtAlgorithms>
-#include <QDateTime>
+#include <QtCore>
 
 #include "reachablelist.h"
 #include "calculator.h"
@@ -219,11 +214,12 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
           QString siteName = site->getWPName();
           QString siteIcao = site->getICAO();
           QString siteDescription = site->getName();
+          QString siteCountry = site->getCountry();
           short siteType = site->getTypeID();
-          double siteFrequency = site->getFrequency().toDouble();
+          float siteFrequency = site->getFrequency().toFloat();
           WGSPoint siteWgsPosition = site->getWGSPosition();
           QPoint sitePosition = site->getPosition();
-          uint siteElevation = site->getElevation();
+          float siteElevation = site->getElevation();
           QString siteComment = site->getComment();
           Runway siteRunway = site->getRunway();
 
@@ -255,6 +251,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
           ReachablePoint rp( siteName,
                              siteIcao,
                              siteDescription,
+                             siteCountry,
                              true,
                              siteType,
                              siteFrequency,

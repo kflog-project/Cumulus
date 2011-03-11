@@ -49,12 +49,14 @@ class SinglePoint : public BaseMapElement
   /**
    * Creates a new "SinglePoint".
    *
-   * @param  name  The name
-   * @param  shortName An alias-name, used for the gps-logger
-   * @param  typeID  The typeid
-   * @param  pos  The projected position
-   * @param  wgsPos  The original WGS-position
+   * @param name  The name
+   * @param shortName An alias-name, used for the gps-logger
+   * @param typeID  The typeid
+   * @param wgsPos  The original WGS-position
+   * @param pos     The projected position
    * @param elevation The elevation of the point when available
+   * @param country The country of the point as two letter code
+   * @param comment An additional comment related to the point
    * @param secID  The map section ID
    */
   SinglePoint(const QString& name,
@@ -62,9 +64,10 @@ class SinglePoint : public BaseMapElement
               const BaseMapElement::objectType typeID,
               const WGSPoint& wgsPos,
               const QPoint& pos,
-              const unsigned int elevation = 0,
+              const float elevation = 0,
+              const QString country = "",
+              const QString comment = "",
               const unsigned short secID=0 );
-
   /**
    * Destructor
    */
@@ -122,7 +125,7 @@ class SinglePoint : public BaseMapElement
   /**
    * @return the elevation of the element.
    */
-  virtual unsigned int getElevation() const
+  virtual float getElevation() const
     {
       return elevation;
     };
@@ -137,6 +140,42 @@ class SinglePoint : public BaseMapElement
   virtual bool isVisible() const
     {
       return glMapMatrix->isVisible(position);
+    };
+
+  /**
+   * @return The comment text of the element.
+   */
+  virtual QString& getComment()
+    {
+      return comment;
+    };
+
+  /**
+   * Sets the comment text of the single point.
+   *
+   * @param newValue New country code of the element.
+   */
+  virtual void setComment( QString newValue )
+    {
+      comment = newValue;
+    };
+
+  /**
+   * @return the country of the element.
+   */
+  virtual QString& getCountry()
+    {
+      return country;
+    };
+
+  /**
+   * Sets the country code of the element.
+   *
+   * @param newValue New country code of the point.
+   */
+  virtual void setCountry( QString newValue )
+    {
+      country = newValue;
     };
 
  protected:
@@ -162,7 +201,18 @@ class SinglePoint : public BaseMapElement
   /**
    * The elevation.
    */
-  unsigned int elevation;
+  float elevation;
+
+  /**
+   * Country as two letter code, where the single point is located.
+   */
+  QString country;
+
+  /**
+   * A comment related to the point.
+   */
+  QString comment;
+
 };
 
 #endif

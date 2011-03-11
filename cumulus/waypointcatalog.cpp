@@ -86,11 +86,17 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
   qint8 wpSurface;
   QString wpComment="";
   quint8 wpImportance;
+  QString wpCountry="";
 
   quint32 fileMagic;
   qint8 fileType;
   quint16 fileFormat;
   qint32 wpListSize = 0;
+
+  // new variables from format version 3
+  float wpFrequency3;
+  float wpElevation3;
+  float wpLength3;
 
   int wpCount = 0;
 
@@ -190,14 +196,38 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
       in >> wpType;
       in >> wpLatitude;
       in >> wpLongitude;
-      in >> wpElevation;
-      in >> wpFrequency;
+
+      if( fileFormat < WP_FILE_FORMAT_ID_3 )
+        {
+          in >> wpElevation;
+          in >> wpFrequency;
+        }
+      else
+        {
+          in >> wpElevation3;
+          in >> wpFrequency3;
+        }
+
       in >> wpLandable;
       in >> wpRunway;
-      in >> wpLength;
+
+      if( fileFormat < WP_FILE_FORMAT_ID_3 )
+        {
+          in >> wpLength;
+        }
+      else
+        {
+          in >> wpLength3;
+        }
+
       in >> wpSurface;
       in >> wpComment;
       in >> wpImportance;
+
+      if( fileFormat >= WP_FILE_FORMAT_ID_3 )
+        {
+          in >> wpCountry;
+        }
 
       // Check filter, if type should be taken
       if( ! takeType( (enum BaseMapElement::objectType) wpType ) )
@@ -228,14 +258,25 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
           wp.origP.setLat(wpLatitude);
           wp.origP.setLon(wpLongitude);
           wp.projP = _globalMapMatrix->wgsToMap(wp.origP);
-          wp.elevation = wpElevation;
-          wp.frequency = wpFrequency;
           wp.isLandable = wpLandable;
           wp.runway = wpRunway;
-          wp.length = wpLength;
           wp.surface = wpSurface;
           wp.comment = wpComment;
           wp.importance = ( enum Waypoint::Importance ) wpImportance;
+          wp.country = wpCountry;
+
+          if( fileFormat < WP_FILE_FORMAT_ID_3 )
+            {
+              wp.elevation = wpElevation;
+              wp.frequency = wpFrequency;
+              wp.length = wpLength;
+            }
+          else
+            {
+              wp.elevation = wpElevation3;
+              wp.frequency = wpFrequency3;
+              wp.length = wpLength3;
+            }
 
           wpList->append(wp);
         }
@@ -277,11 +318,11 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
   qint8 wpType;
   qint32 wpLatitude;
   qint32 wpLongitude;
-  qint16 wpElevation;
-  double wpFrequency;
+  float wpElevation;
+  float wpFrequency;
   qint8 wpLandable;
   qint16 wpRunway;
-  qint16 wpLength;
+  float wpLength;
   qint8 wpSurface;
   QString wpComment="";
   quint8 wpImportance;
@@ -313,7 +354,6 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
           wpElevation = wp.elevation;
           wpFrequency = wp.frequency;
           wpLandable = wp.isLandable;
-
           wpRunway = wp.runway;
           wpLength = wp.length;
           wpSurface = wp.surface;
@@ -334,6 +374,7 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
           out << wpSurface;
           out << wpComment;
           out << wpImportance;
+          out << wp.country;
         }
 
       file.close();
@@ -436,8 +477,8 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList )
       w.origP.setLat(nm.namedItem("Latitude").toAttr().value().toInt());
       w.origP.setLon(nm.namedItem("Longitude").toAttr().value().toInt());
       w.projP = _globalMapMatrix->wgsToMap(w.origP);
-      w.elevation = nm.namedItem("Elevation").toAttr().value().toInt();
-      w.frequency = nm.namedItem("Frequency").toAttr().value().toDouble();
+      w.elevation = nm.namedItem("Elevation").toAttr().value().toFloat();
+      w.frequency = nm.namedItem("Frequency").toAttr().value().toFloat();
       w.isLandable = nm.namedItem("Landable").toAttr().value().toInt();
 
       int rdir = nm.namedItem("Runway").toAttr().value().toInt();
@@ -451,10 +492,15 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList )
           w.runway = (rwh1) * 256 + (rwh2);
         }
 
-      w.length = nm.namedItem("Length").toAttr().value().toInt();
+      w.length = nm.namedItem("Length").toAttr().value().toFloat();
       w.surface = (enum Runway::SurfaceType)nm.namedItem("Surface").toAttr().value().toInt();
       w.comment = nm.namedItem("Comment").toAttr().value();
       w.importance = (enum Waypoint::Importance) nm.namedItem("Importance").toAttr().value().toInt();
+
+      if( nm.contains("Country") )
+        {
+          w.country = nm.namedItem("Country").toAttr().value();
+        }
 
       // Check filter, if type should be taken
       if( ! takeType( (enum BaseMapElement::objectType) w.type ) )
@@ -537,6 +583,7 @@ bool WaypointCatalog::writeXml( QString catalog, QList<Waypoint>& wpList )
       child.setAttribute( "Surface", w.surface );
       child.setAttribute( "Comment", w.comment );
       child.setAttribute( "Importance", w.importance );
+      child.setAttribute( "Country", w.country );
 
       root.appendChild( child );
     }
@@ -673,7 +720,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 
       // short name of a waypoint limited to 8 characters
       wp.name = list[1].replace( QRegExp("\""), "" ).left(8).toUpper();
-      wp.comment = list[2] + ": ";
+      wp.country = list[2].left(2).toUpper();
       wp.icao = "";
       wp.surface = Runway::Unknown;
 
