@@ -89,9 +89,14 @@ class RadioPoint : public SinglePoint
   /**
    * @return The frequency
    */
-  virtual QString getFrequency() const
+  QString frequencyAsString() const
     {
-      return QString("%1").arg(frequency, 0, 'f', 3);
+      return (frequency > 0) ? QString("%1").arg(frequency, 0, 'f', 3) : QString("");
+    };
+
+  float getFrequency() const
+    {
+      return frequency;
     };
 
   /**

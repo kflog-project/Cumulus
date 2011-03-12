@@ -216,7 +216,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
           QString siteDescription = site->getName();
           QString siteCountry = site->getCountry();
           short siteType = site->getTypeID();
-          float siteFrequency = site->getFrequency().toFloat();
+          float siteFrequency = site->getFrequency();
           WGSPoint siteWgsPosition = site->getWGSPosition();
           QPoint sitePosition = site->getPosition();
           float siteElevation = site->getElevation();

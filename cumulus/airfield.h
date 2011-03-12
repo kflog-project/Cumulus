@@ -73,7 +73,7 @@ class Airfield : public SinglePoint
             const QPoint& pos,
             const Runway& rw,
             const float elevation,
-            const QString& frequency,
+            const float frequency,
             const QString country = "",
             const QString comment = "",
             bool winch = false,
@@ -86,9 +86,17 @@ class Airfield : public SinglePoint
   virtual ~Airfield();
 
   /**
-   * @return the frequency of the airport.
+   * @return the frequency of the airfield as String.
    */
-  QString getFrequency() const
+  QString frequencyAsString() const
+    {
+      return (frequency > 0) ? QString("%1").arg(frequency, 0, 'f', 3) : QString("");
+    };
+
+  /**
+   * @return the frequency of the airfield as ffloat.
+   */
+  float getFrequency() const
     {
       return frequency;
     };
@@ -156,7 +164,7 @@ class Airfield : public SinglePoint
    /**
     * The frequency
     */
-   QString frequency;
+   float frequency;
 
   /**
    * Contains the runway data.

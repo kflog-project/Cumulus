@@ -108,7 +108,7 @@ Waypoint* AirfieldListWidget::getCurrentWaypoint()
   wp.type = site->getTypeID();
   wp.elevation = site->getElevation();
   wp.icao = site->getICAO();
-  wp.frequency = site->getFrequency().toDouble();
+  wp.frequency = site->getFrequency();
   wp.runway = site->getRunway().direction;
   wp.length = site->getRunway().length;
   wp.surface = site->getRunway().surface;

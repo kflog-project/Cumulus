@@ -29,7 +29,7 @@ Airfield::Airfield( const QString& name,
                     const QPoint& pos,
                     const Runway& rw,
                     const float elevation,
-                    const QString& frequency,
+                    const float frequency,
                     const QString country,
                     const QString comment,
                     bool winch,
@@ -58,28 +58,32 @@ Airfield::~Airfield()
 }
 
 QString Airfield::getInfoString() const
-  {
-    QString text, elev;
-    QString path = "cumulus/";
+{
+  QString text, elev;
+  QString path = "cumulus/";
 
-    elev = Altitude::getText(elevation, true, 0).replace(QRegExp("\\s"),"&nbsp;");
+  elev = Altitude::getText(elevation, true, 0).replace(QRegExp("\\s"),"&nbsp;");
 
-    text = "<HTML><TABLE BORDER=0><TR><TD>"
-           "<IMG SRC=" + path + "/" + glConfig->getPixmapName(typeID) + "></TD>"
-           "<TD>" + name;
+  text = "<HTML><TABLE BORDER=0><TR><TD>"
+         "<IMG SRC=" + path + "/" + glConfig->getPixmapName(typeID) + "></TD>"
+         "<TD>" + name;
 
-    if (!icao.isEmpty())
+  if (!icao.isEmpty())
+    {
       text += " (" + icao + ")";
+    }
 
-    text += "<FONT SIZE=-1><BR><BR>" + elev;
+  text += "<FONT SIZE=-1><BR><BR>" + elev;
 
-    if (!frequency.isEmpty())
-      text += "&nbsp;/&nbsp;" + frequency + "&nbsp;Mhz.";
+  if (frequency > 0)
+    {
+      text += "&nbsp;/&nbsp;" + frequencyAsString() + "&nbsp;Mhz.";
+    }
 
-    text += "&nbsp;&nbsp;</FONT></TD></TR></TABLE></HTML>";
+  text += "&nbsp;&nbsp;</FONT></TD></TR></TABLE></HTML>";
 
-    return text;
-  }
+  return text;
+}
 
 bool Airfield::drawMapElement( QPainter* targetP )
 {

@@ -351,7 +351,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
               siteIcao = site->getICAO();
               siteDescription = site->getName();
               siteType = site->getTypeID();
-              siteFrequency = site->getFrequency().toFloat();
+              siteFrequency = site->getFrequency();
               siteWgsPosition = site->getWGSPosition();
               sitePosition = site->getPosition();
               siteElevation = site->getElevation();

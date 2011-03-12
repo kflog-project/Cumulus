@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -117,10 +117,8 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
 
 }
 
-
 WpEditDialogPageAero::~WpEditDialogPageAero()
 {}
-
 
 /** Called if the page needs to load data from the waypoint */
 void WpEditDialogPageAero::slot_load(Waypoint *wp)
@@ -137,21 +135,26 @@ void WpEditDialogPageAero::slot_load(Waypoint *wp)
     }
 }
 
-
 /** Called if the data needs to be saved. */
 void WpEditDialogPageAero::slot_save(Waypoint *wp)
 {
   if (wp)
     {
       wp->icao = edtICAO->text();
-      wp->frequency = edtFrequency->text().toFloat();
       wp->runway = (edtRunway1->currentIndex() * 256) + edtRunway2->currentIndex();
       wp->length = static_cast<float> (Altitude::convertToMeters(edtLength->text().toDouble()));
       wp->surface = getSurface();
       wp->isLandable = chkLandable->isChecked();
+
+      bool ok;
+      wp->frequency = edtFrequency->text().toFloat(&ok);
+
+      if( ! ok )
+        {
+          wp->frequency = 0.0;
+        }
     }
 }
-
 
 /** return internal type of surface */
 int WpEditDialogPageAero::getSurface()
@@ -171,7 +174,6 @@ int WpEditDialogPageAero::getSurface()
 
   return s;
 }
-
 
 /** set surface type in combo box
 translate internal id to index */

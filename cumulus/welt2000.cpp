@@ -1089,9 +1089,9 @@ bool Welt2000::parse( QString& path,
       // frequency
       QString frequency = line.mid(36,3) + "." + line.mid(39,2).trimmed();
 
-      double f = frequency.toDouble(&ok);
+      float fFrequency = frequency.toFloat(&ok);
 
-      if( ( !ok || f < 117.97 || f > 137.0 ) )
+      if( ( !ok || fFrequency < 108 || fFrequency > 137.0 ) )
         {
           if( olField == false )
             {
@@ -1100,18 +1100,14 @@ bool Welt2000::parse( QString& path,
                         lineNo, afName.toLatin1().data(), country.toLatin1().data() );
             }
 
-          frequency = "000.000"; // reset frequency to unknown
+          fFrequency = 0.0; // reset frequency to unknown
         }
       else
         {
           // check, what has to be appended as last digit
           if( line[40] == '2' || line[40] == '7' )
             {
-              frequency += "5";
-            }
-          else
-            {
-              frequency += "0";
+              fFrequency += 0.005;
             }
         }
 
@@ -1230,7 +1226,7 @@ bool Welt2000::parse( QString& path,
       Runway rw( rwLen, rwDir, rwSurface, true );
 
       Airfield af( afName, icao.trimmed(), gpsName, afType,
-                   wgsPos, position, rw, elevation, frequency,
+                   wgsPos, position, rw, elevation, fFrequency,
                    country, commentLong );
 
       if( afType == BaseMapElement::Outlanding )
@@ -1266,15 +1262,16 @@ bool Welt2000::parse( QString& path,
           outbuf << position;
           // elevation in meters
           outbuf << qint16( elevation);
-          // frequency written as e.g. 126.500, must be put into 16 bits
-          if( frequency == "000.000" )
+          // frequency written as e.g. 126.575, is reduced to 16 bits
+          if( fFrequency == 0.0 )
             {
               outbuf << quint16(0);
             }
           else
             {
-              outbuf << quint16(frequency.left(3).toInt()*1000+frequency.right(3).toInt()-100000);
+              outbuf << quint16( rint((fFrequency - 100.0) * 1000.0 ));
             }
+
           // two runway directions packed in a word
           outbuf << quint16(rwDir);
           // runway length in meters
@@ -1393,9 +1390,9 @@ bool Welt2000::readCompiledFile( QString &path,
   quint16 rwLen;
   quint8 rwSurface;
   QByteArray utf8_temp;
-  QString frequency;
   QString comment;
   QString country;
+  float frequency;
 
   in >> magic;
 
@@ -1475,11 +1472,11 @@ bool Welt2000::readCompiledFile( QString &path,
 
       if( inFrequency == 0 )
         {
-          frequency = "000.000";
+          frequency = 0.0;
         }
       else
         {
-          frequency.sprintf("%3d.%03d",(inFrequency+100000)/1000,(inFrequency)%1000);
+          frequency = (((float) inFrequency) / 1000.0) + 100.;
         }
 
       in >> rwDir;
