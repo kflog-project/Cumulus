@@ -1,7 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt4.7.x for Linux/Unix
 
-Last update: 2009-11-17 by Axel Pauli
+Last update: 2011-03-14 by Axel Pauli
 
 SVN info: $Id$
 ===============================================================================
@@ -28,7 +28,7 @@ that. For Xubuntu 10.10 you have to execute the following command to get them:
 
   sudo apt-get install g++ subversion
   sudo apt-get install qt4-qmake qt4-dev-tools libqtcore4 libqtgui4 \
-                       libqt4-dev libqt4-network
+                       libqt4-dev libqt4-network libqt4-xml
   sudo apt-get install libbluetooth-dev bluez-utils bluez
 
 You can build too Qt from the sources but that is not recommend, if you not
@@ -39,7 +39,7 @@ If all Qt stuff is already available you can continue with step 2)
 To build your own Qt from scratch download a X11/Qt release from
 ftp.qt.nokia.com/qt/source. I recommend the release:
 
-ftp://ftp.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.7.1.tar.gz
+ftp://ftp.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.7.2.tar.gz
 
 I did the development with this release. For Cumulus you need the standard
 Qt4 libraries libQtCore, libQtGui and libQtNetwork. If you want to debug Cumulus
@@ -49,13 +49,13 @@ configure script.
 Copy the Qt tar ball in a local directory of your Linux desktop and extract it
 with:
   
-  tar zxf qt-everywhere-opensource-src-4.7.1.tar.gz
+  tar zxf qt-everywhere-opensource-src-4.7.2.tar.gz
 
 Call the configure script in the root directory of your Qt source tree with the
 following options:
               
   ./configure -prefix /opt/qt4.7.1 -opensource -no-largefile -no-qt3support\
-              -no-xmlpatterns -no-multimedia -no-audio-backend -no-phonon\
+              -no-multimedia -no-audio-backend -no-phonon\
               -no-phonon-backend -no-webkit -no-javascript-jit -no-script\
               -no-scripttools -no-declarative -no-declarative-debug\
               -nomake examples -nomake demos -no-nis -no-cups -no-opengl\
@@ -85,10 +85,10 @@ To use your own Qt version, you have to add the
 
 e.g. BASH example
 
-  PATH=/opt/qt4.7.0/bin:$PATH
+  PATH=/opt/qt4.7.2/bin:$PATH
   export PATH
 	
-  in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.7.1'.
+  in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.7.2'.
 
 The PATH variable can be displayed by calling 'echo $PATH' on a shell
 command line.
@@ -104,12 +104,12 @@ Check if you can call 'qmake -v' from a shell command line. You should
 see some output like this:
 
   QMake version 2.01a
-  Using Qt version 4.7.1 in /usr/lib
+  Using Qt version 4.7.2 in /usr/lib
    
 Check if you can call 'moc -v' from a shell command line. You should
 see some output like this:
 
-  Qt Meta Object Compiler version 62 (Qt 4.7.1)
+  Qt Meta Object Compiler version 62 (Qt 4.7.2)
    
 If both checks are successfully Qt is right installed. If a call fails or you
 see a version less than 4.7 check the PATH variable for containing the right
