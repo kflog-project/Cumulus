@@ -844,7 +844,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 
       if( list[5].length() > 1 ) // elevation in meter or feet
         {
-          double tmpElev = (int) rint((list[5].left(list[5].length()-1)).toDouble(&ok));
+          float tmpElev = (list[5].left(list[5].length()-1)).toFloat(&ok);
 
           if( ! ok )
             {
@@ -855,21 +855,25 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 
           if( list[5].right( 1 ).toLower() == "f" )
             {
-              wp.elevation = (int) rint( tmpElev * 0.3048 );
+              wp.elevation = tmpElev * 0.3048;
             }
           else
             {
-              wp.elevation = (int) rint( tmpElev );
+              wp.elevation = tmpElev;
             }
         }
 
       if( list[9].trimmed().length() ) // airport frequency
         {
-          double frequency = list[9].replace( QRegExp("\""), "" ).toDouble(&ok);
+          float frequency = list[9].replace( QRegExp("\""), "" ).toFloat(&ok);
 
           if( ok )
             {
               wp.frequency = frequency;
+            }
+          else
+            {
+              wp.frequency = 0.0;
             }
         }
 
@@ -901,7 +905,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           if( uStart != -1 )
             {
               unit = list[8].mid( uStart ).toLower();
-              double length = list[8].left( list[8].length()-unit.length() ).toDouble(&ok);
+              float length = list[8].left( list[8].length()-unit.length() ).toFloat(&ok);
 
               if( ok )
                 {
@@ -914,7 +918,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
                       length *= 1609.34;
                     }
 
-                  wp.length = (int) rint( length );
+                  wp.length = length;
                 }
             }
         }
