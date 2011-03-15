@@ -20,6 +20,19 @@ INSTALL_ROOT = /opt/cumulus
 QMAKE    = qmake
 LRELEASE = lrelease
 
+.PHONY : usage
+
+usage:
+	@echo ""
+	@echo "Cumulus build environment for Linux/X11 and Qt4.7"
+	@echo ""
+	@echo "usage: make -f Makefile.X11 <target> ..."
+	@echo "  all          - Builds the whole Cumulus application"
+	@echo "  clean        - Removes all build results"
+	@echo "  install      - Installs Cumulus under $(INSTALL_ROOT)"
+	@echo "  deinstall    - Deinstalls Cumulus under $(INSTALL_ROOT)"
+	@echo "  release      - Cleans the build area before build"
+
 all:	qmake resetdate
 	cd cumulus; make
 	cd gpsClient; make
@@ -72,28 +85,21 @@ install: check_dir deinstall install_lang
 	install --mode=644 sounds/*.wav $(INSTALL_ROOT)/sounds
 
 .PHONY : install_lang
-install_lang:	langpacks
+install_lang:
 	@echo "===== Installing Cumulus $(VERSION) languages under $(INSTALL_ROOT) ====="
 	install -d $(INSTALL_ROOT)/locale/de
 	install -d $(INSTALL_ROOT)/help/de
-	install --mode=644 cumulus/cumulus_de.qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
 	install --mode=644 help/de/* icons/cumulus.png $(INSTALL_ROOT)/help/de
+	cd cumulus; \
+		$(LRELEASE) -silent -removeidentical -nounfinished cumulus_de.ts -qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
+	chmod 644 $(INSTALL_ROOT)/locale/de/cumulus_de.qm
 
 .PHONY : deinstall
 deinstall:
 	rm -rf $(INSTALL_ROOT)/*
 
-.PHONY : langpacks
-langpacks: langpack_de
-	@echo 'Language packages are created'
-
-.PHONY : langpack_de
-langpack_de:
-	cd cumulus; \
-	$(LRELEASE) -silent -removeidentical -nounfinished cumulus_de.ts -qm cumulus_de.qm
-
 .PHONY : release
-release: clean all langpacks
+release: clean all
 
 qmake: cumulus/Makefile gpsClient/Makefile nmeaSimulator/Makefile
 
