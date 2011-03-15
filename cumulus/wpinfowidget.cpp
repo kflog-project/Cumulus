@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2009 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -263,19 +263,19 @@ void WPInfoWidget::writeText()
 
       itxt+= "<html><!--big--><center><b>" + _wp.description + " (" + _wp.name;
 
-      if (!_wp.icao.isEmpty())
+      if( !_wp.icao.isEmpty() )
         {
           itxt += ",&nbsp;" + _wp.icao;
         }
 
-      if (!_wp.country.isEmpty())
+      if( !_wp.country.isEmpty() )
         {
           itxt += ",&nbsp;" + _wp.country;
         }
 
       itxt+= ")<p>" + BaseMapElement::item2Text(_wp.type, tr("(unknown)"));
 
-      if (_wp.isLandable)
+      if( _wp.isLandable )
         {
           itxt += "</b></center>";
 
@@ -333,7 +333,7 @@ void WPInfoWidget::writeText()
           start = true;
         }
 
-      if (_wp.frequency >= 108.0 && _wp.frequency <= 137.0 )
+      if( _wp.frequency > 0.0 )
         {
           tmp = QString("<tr><td>" + tr("Frequency:") + "</td><td><b>%1 MHz</b></td>").arg(_wp.frequency, 0, 'f', 3);
           itxt += tmp;
@@ -357,13 +357,13 @@ void WPInfoWidget::writeText()
 
        if( currentUnit == Altitude::meters )
          {
-           itxt += "<td>"+tr("Elevation:") +
+           itxt += "<td>" + tr( "Elevation:" ) +
              "</td><td><b>" + meters + " / " + feet +
              "</b></td></tr>";
          }
        else
          {
-           itxt += "<td>"+tr("Elevation:") +
+           itxt += "<td>" + tr( "Elevation:" ) +
              "</td><td><b>" + feet + " / " + meters +
              "</b></td></tr>";
          }
