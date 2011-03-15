@@ -86,7 +86,7 @@ class Airfield : public SinglePoint
   virtual ~Airfield();
 
   /**
-   * @return the frequency of the airfield as String.
+   * @return The frequency of the airfield as String.
    */
   QString frequencyAsString() const
     {
@@ -94,7 +94,7 @@ class Airfield : public SinglePoint
     };
 
   /**
-   * @return the frequency of the airfield as ffloat.
+   * @return The frequency of the airfield as float value.
    */
   float getFrequency() const
     {
