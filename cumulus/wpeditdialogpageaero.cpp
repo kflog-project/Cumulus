@@ -27,7 +27,7 @@
 #include "airfield.h"
 
 WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
-  QWidget(parent,  Qt::WindowStaysOnTopHint)
+  QWidget(parent, Qt::WindowStaysOnTopHint)
 {
   setObjectName("WpEditDialogPageAero");
 
@@ -126,12 +126,22 @@ void WpEditDialogPageAero::slot_load(Waypoint *wp)
   if ( wp )
     {
       edtICAO->setText(wp->icao);
-      edtFrequency->setText(QString("%1").arg(wp->frequency, 0, 'f', 3));
       edtRunway1->setCurrentIndex(wp->runway / 256);
       edtRunway2->setCurrentIndex(wp->runway % 256);
       edtLength->setText(Altitude::getText((wp->length), false, -1));
       setSurface(wp->surface);
       chkLandable->setChecked(wp->isLandable);
+
+      QString tmp = QString("%1").arg(wp->frequency, 0, 'f', 3);
+
+      while( tmp.size() < 7 )
+        {
+          // Add leading zeros, that is not supported by floating point
+          // formatting.
+          tmp.insert(0, "0");
+        }
+
+      edtFrequency->setText(tmp);
     }
 }
 
