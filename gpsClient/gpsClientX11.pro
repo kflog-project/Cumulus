@@ -1,7 +1,7 @@
 ################################################################################
 # X11 Cumulus-GpsClient project file for qmake
 #
-# (c) 2008-2010 Axel Pauli
+# (c) 2008-2011 Axel Pauli
 #
 # This template generate a makefile for the gpsClient binary.
 #
@@ -14,6 +14,12 @@ CONFIG     = qt warn_on
 #CONFIG     = qt warn_on debug
 
 QT -= gui # Only the core module is used.
+
+#version check for Qt 4.7
+! contains(QT_VERSION, ^4\\.[7]\\..*) {
+  message("Cannot build Cumulus with Qt version $${QT_VERSION}.")
+  error("Use at least Qt 4.7. or higher!")
+}
 
 # Enable bluetooth feature, if not wanted comment out the next line with a hash
 CONFIG += bluetooth
