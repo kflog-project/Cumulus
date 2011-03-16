@@ -190,10 +190,28 @@ void PreFlightWaypointPage::save()
   conf->setWaypointCenterReference( centerRef );
   conf->setWaypointAirfieldReference( airfieldBox->currentText() );
 
-  if( _waypointFileFormat != wpFileFormatBox->currentIndex() )
+  if( _waypointFileFormat != wpFileFormatBox->currentIndex() &&
+      _globalMapContents->getWaypointList().size() > 0 )
     {
       // Waypoint storage format has been changed, store all waypoints
-      // in the new format.
+      // in the new format, if the waypoint list is not empty and the user agrees.
+      int answer =
+          QMessageBox::question( this,
+                                 tr("Continue?"),
+                                 QString("<html>") +
+                                 tr("The waypoint storage format was changed. "
+                                    "Storing data in new format can overwrite existing data!") +
+                                 "<br><br>" +
+                                 tr("Continue storing?") +
+                                 "</html>",
+                                 QMessageBox::Ok|QMessageBox::No,
+                                 QMessageBox::No );
+
+      if( answer == QMessageBox::No )
+        {
+          return;
+        }
+
       _globalMapContents->saveWaypointList();
     }
 }

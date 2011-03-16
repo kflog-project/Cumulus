@@ -1,7 +1,7 @@
 ##################################################################
 # Cumulus Qt4/X11 project file for qmake
 #
-# Copyright (c): 2008-2010 Axel Pauli
+# Copyright (c): 2008-2011 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -27,6 +27,12 @@ CONFIG += internet
 
 # Enable bluetooth feature, if not wanted comment out the next line with a hash
 CONFIG += bluetooth
+
+#version check for Qt 4.7
+! contains(QT_VERSION, ^4\\.[7]\\..*) {
+  message("Cannot build Cumulus with Qt version $${QT_VERSION}.")
+  error("Use at least Qt 4.7. or higher!")
+}
 
 HEADERS = \
     aboutwidget.h \

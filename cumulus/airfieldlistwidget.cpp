@@ -42,7 +42,7 @@ AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsLis
   if( itemList.at(0) == MapContents::OutLandingList )
     {
       QTreeWidgetItem *headerItem = list->headerItem();
-      headerItem->setText( 2, tr("Comment") );
+      headerItem->setText( 3, tr("Comment") );
     }
 }
 
@@ -123,20 +123,19 @@ AirfieldListWidget::_AirfieldItem::_AirfieldItem(Airfield* site) :
   QTreeWidgetItem(), airfield(site)
 {
   QString name = site->getWPName();
-  // QRegExp blank("[ ]");
-  // name.replace(blank, QString::null);
-  // Limitation is set in Welt2000 to 9 characters
-  // name = name.left(8);
+  // Limitation for name is set in Welt2000 to 8 characters
   setText(0, name);
   setText(1, site->getName());
+  setText(2, site->getCountry());
+  setTextAlignment(2, Qt::AlignCenter);
 
   if( site->getTypeID() != BaseMapElement::Outlanding )
     {
-      setText(2, site->getICAO());
+      setText(3, site->getICAO());
     }
   else
     {
-      setText(2, site->getComment());
+      setText(3, site->getComment());
     }
 
   // create landing site type icon

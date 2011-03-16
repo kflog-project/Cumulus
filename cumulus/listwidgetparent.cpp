@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2008      by Josua Dietze
-**                   2009-2010 by Axel Pauli
+**                   2009-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,6 +24,8 @@
 ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
   QWidget(parent)
 {
+  setObjectName("ListWidgetParent");
+
   QVBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setContentsMargins( 0, 0, 0, 0  );
 
@@ -33,14 +35,14 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
   list->setItemsExpandable(false);
   list->setUniformRowHeights(true);
   list->setAlternatingRowColors(true);
-  list->setColumnCount(3);
+  list->setColumnCount(4);
   list->setAllColumnsShowFocus(true);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
   list->setFocusPolicy( Qt::StrongFocus );
 
   QStringList sl;
-  sl << tr("Name") << tr("Description") << tr("ICAO");
+  sl << tr("Name") << tr("Description") << tr("Country") << tr("ICAO");
   list->setHeaderLabels(sl);
   list->setFocus();
 

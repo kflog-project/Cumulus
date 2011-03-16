@@ -375,8 +375,6 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
               w->comment = siteComment;
               w->country = siteCountry;
 
-              qDebug() << "Found: Name" << siteName << "CC" << siteCountry;
-
               found = true;
               lastDist = dX+dY;
 

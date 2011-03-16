@@ -201,7 +201,8 @@ void WaypointListWidget::updateCurrentWaypoint(Waypoint& wp)
   list->setUpdatesEnabled(false);
 
   li->setText(1, wp.description);
-  li->setText(2, wp.icao);
+  li->setText(2, wp.country);
+  li->setText(3, wp.icao);
   li->setIcon(0, QIcon(_globalMapConfig->getPixmap(wp.type,false,true)));
 
   // JD: if the WP name was not changed we just update the item; otherwise
@@ -259,14 +260,11 @@ WaypointListWidget::_WaypointItem::_WaypointItem( Waypoint& waypoint ) :
   QPainter pnt;
   QPixmap selectIcon;
 
-  //QString name = wp.name;
-  //QRegExp blank("[ ]");
-  //name.replace(blank, QString::null);
-  //name = name.left(10);
-
   setText(0, wp.name);
   setText(1, wp.description);
-  setText(2, wp.icao);
+  setText(2, wp.country);
+  setTextAlignment(2, Qt::AlignCenter);
+  setText(3, wp.icao);
 
   selectIcon = QPixmap( 18, 18 );
   pnt.begin(&selectIcon);

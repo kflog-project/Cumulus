@@ -55,8 +55,8 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   lbl = new QLabel(tr("Home Radius:"), weltGroup);
   weltLayout->addWidget(lbl, grow, 0);
   homeRadius = new QSpinBox(weltGroup);
-  homeRadius->setRange(0, 10000);
-  homeRadius->setSingleStep(10);
+  homeRadius->setRange(1, 10000);
+  homeRadius->setSingleStep(50);
   homeRadius->setButtonSymbols(QSpinBox::PlusMinus);
   homeRadius->setSuffix( " " + Distance::getUnitText() );
   weltLayout->addWidget(homeRadius, grow, 1 );
@@ -229,16 +229,7 @@ void SettingsPageAirfields::slot_save()
  */
 void SettingsPageAirfields::slot_filterChanged(const QString& text)
 {
-  if (text.isEmpty())
-    {
-      // make widget home radius accessible, if filter string is empty
-      homeRadius->setEnabled(true);
-    }
-  else
-    {
-      // make widget home radius not accessible, if filter string is defined
-      homeRadius->setEnabled(false);
-    }
+  Q_UNUSED( text )
 }
 
 /* Called to ask is confirmation on the close is needed. */

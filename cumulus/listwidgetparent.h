@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2008      by Josua Dietze
-**                   2009-2010 by Axel Pauli
+**                   2009-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -30,8 +30,9 @@
  *
  * Subclassed by \ref AirfieldListWidget and \ref WaypointListWidget.
  *
- * \date 2002-2010
+ * \date 2002-2011
  *
+ * \version $Id$
  */
 
 #ifndef LISTWIDGET_PARENT_H
@@ -102,6 +103,7 @@ class ListWidgetParent : public QWidget
       list->resizeColumnToContents(0);
       list->resizeColumnToContents(1);
       list->resizeColumnToContents(2);
+      list->resizeColumnToContents(3);
     };
 
   public slots:

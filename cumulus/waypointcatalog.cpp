@@ -305,6 +305,16 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
       // use default file name
       fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
               GeneralConfig::instance()->getBinaryWaypointFileName();
+
+      // Make a backup of an existing file
+      if( QFile::exists( fName ) )
+        {
+          QString oldFn = GeneralConfig::instance()->getUserDataDirectory() +
+                          "/Cumulus_backup.kwp";
+
+          QFile::remove( oldFn );
+          QFile::rename( fName, oldFn );
+        }
     }
   else
     {
@@ -538,6 +548,16 @@ bool WaypointCatalog::writeXml( QString catalog, QList<Waypoint>& wpList )
       // use default file name
       fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
               GeneralConfig::instance()->getXmlWaypointFileName();
+
+      // Make a backup of an existing file
+      if( QFile::exists( fName ) )
+        {
+          QString oldFn = GeneralConfig::instance()->getUserDataDirectory() +
+                          "/Cumulus_backup.kflogwp";
+
+          QFile::remove( oldFn );
+          QFile::rename( fName, oldFn );
+        }
     }
   else
     {

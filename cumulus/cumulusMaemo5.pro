@@ -1,7 +1,7 @@
 ##################################################################
 # Cumulus Maemo 5.x project file for qmake
 #
-# Copyright (c): 2010 Axel Pauli
+# Copyright (c): 2010-2011 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -11,6 +11,8 @@
 ##################################################################
 
 TEMPLATE = app
+
+QT += xml
 
 CONFIG = qt \
     warn_on \
@@ -84,6 +86,7 @@ HEADERS = \
     preflightwidget.h \
     preflightgliderpage.h \
     preflightmiscpage.h \
+    preflightwaypointpage.h \
     preflighttasklist.h \
     projectionbase.h \
     projectioncylindric.h \
@@ -191,6 +194,7 @@ SOURCES = \
     preflightwidget.cpp \
     preflightgliderpage.cpp \
     preflightmiscpage.cpp \
+    preflightwaypointpage.cpp \
     preflighttasklist.cpp \
     projectionbase.cpp \
     projectioncylindric.cpp \
