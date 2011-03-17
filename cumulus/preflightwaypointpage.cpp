@@ -21,10 +21,15 @@
 
 #include "preflightwaypointpage.h"
 #include "generalconfig.h"
+#include "hwinfo.h"
 #include "mapcontents.h"
 #include "waypointcatalog.h"
 
 extern MapContents* _globalMapContents;
+
+// Minimum amount of required free memory to start import of a waypoint file.
+// Do not under run this limit, OS can freeze is such a case.
+#define MINIMUM_FREE_MEMORY 1024*25
 
 PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   QWidget(parent),
@@ -374,6 +379,19 @@ void PreFlightWaypointPage::slotImportFile()
   else if( fSuffix == "cup")
     {
       wpCount = catalog.readCup( fName, &wpList );
+    }
+
+  //check free memory
+  int memFree = HwInfo::instance()->getFreeMemory();
+
+  if( memFree < MINIMUM_FREE_MEMORY )
+    {
+      QMessageBox::warning( this,
+                            tr("Low on memory!"),
+                            QString("<html>") +
+                            tr("Waypoint import failed due to low on memory!") +
+                            "</html>" );
+      return;
     }
 
   // We have to check, if a waypoint with the same name do exist. In this case

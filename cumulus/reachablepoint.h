@@ -36,6 +36,8 @@
 #ifndef REACHABLE_POINT_H
 #define REACHABLE_POINT_H
 
+#include <cmath>
+
 #include <QString>
 #include <QPoint>
 
@@ -120,7 +122,7 @@ class ReachablePoint
 
   int getElevation() const
   {
-    return _wp.elevation;
+    return static_cast<int> (rint(_wp.elevation));
   };
 
   short getType() const
