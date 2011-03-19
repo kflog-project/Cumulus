@@ -231,7 +231,7 @@ dpkg_install:
 
 dpkg_lang:
 	@echo "===== Building Maemo Languages package for Cumulus $(VERSION) ====="
-	@$(MAKE) -f Makefile.Language -s clean dpkg
+	@$(MAKE) -f Makefile.Language -s clean dpkg_de
 
 # copies change log and debian package to web page
 .PHONY : copy2web
