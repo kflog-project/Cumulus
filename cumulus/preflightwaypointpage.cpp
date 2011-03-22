@@ -57,7 +57,7 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   selectLayout1->addRow( tr("Type:"), wpTypesBox );
 
   QFormLayout* selectLayout2 = new QFormLayout;
-  selectLayout2->addRow( tr("Radius") + "(" + Distance::getUnitText() + "):",
+  selectLayout2->addRow( tr("Radius") + " (" + Distance::getUnitText() + "):",
                          wpRadiusBox );
 
   QHBoxLayout* selectLayout = new QHBoxLayout;
