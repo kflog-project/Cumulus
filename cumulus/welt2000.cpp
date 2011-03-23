@@ -15,7 +15,7 @@
  **
  ***********************************************************************/
 
-#include <math.h>
+#include <cmath>
 #include <unistd.h>
 
 #include <QtCore>
@@ -531,9 +531,9 @@ bool Welt2000::parse( QString& path,
   QTime t;
   t.start();
 
-#if 0
-  // Filter out the needed extract for us from the Welt2000
-  // file. That will reduce the file size over the half.
+#ifdef MAEMO
+  // Filter out the needed extract for MAEMO from the Welt2000 file. That will
+  // reduce the file size over the half and shorten later reads.
   if( filter( path ) == false )
     {
       // It seems, that no Welt2000 file has been passed
