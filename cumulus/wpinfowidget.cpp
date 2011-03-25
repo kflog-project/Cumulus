@@ -258,10 +258,9 @@ void WPInfoWidget::writeText()
       // display info from waypoint
       QString itxt;
       QString tmp;
-      bool start = false;
       QString table = "<p><table cellpadding=5 width=100%>";
 
-      itxt+= "<html><!--big--><center><b>" + _wp.description + " (" + _wp.name;
+      itxt+= "<html><center><b>" + _wp.description + " (" + _wp.name;
 
       if( !_wp.icao.isEmpty() )
         {
@@ -328,19 +327,7 @@ void WPInfoWidget::writeText()
         }
       else
         {
-          itxt+=" - <font color=\"#FF0000\">" + tr("NOT LANDABLE") + "</font>" +
-                "</b></center>" + table;
-          start = true;
-        }
-
-      if( _wp.frequency > 0.0 )
-        {
-          tmp = QString("<tr><td>" + tr("Frequency:") + "</td><td><b>%1 MHz</b></td>").arg(_wp.frequency, 0, 'f', 3);
-          itxt += tmp;
-        }
-      else
-        {
-          itxt+="<tr><td>" + tr("Frequency:") + "</td><td><b>" + tr("Unknown") + "</b></td>";
+          itxt += table;
         }
 
       // save current unit
@@ -357,15 +344,25 @@ void WPInfoWidget::writeText()
 
        if( currentUnit == Altitude::meters )
          {
-           itxt += "<td>" + tr( "Elevation:" ) +
-             "</td><td><b>" + meters + " / " + feet +
-             "</b></td></tr>";
+           itxt += "<tr><td>" + tr( "Elevation:" ) +
+             "</td><td><b>" + meters + "&nbsp;/&nbsp;" + feet +
+             "</b></td>";
          }
        else
          {
-           itxt += "<td>" + tr( "Elevation:" ) +
-             "</td><td><b>" + feet + " / " + meters +
-             "</b></td></tr>";
+           itxt += "<tr><td>" + tr( "Elevation:" ) +
+             "</td><td><b>" + feet + "&nbsp;/&nbsp;" + meters +
+             "</b></td>";
+         }
+
+       if( _wp.frequency > 0.0 )
+         {
+           tmp = QString("<td>" + tr("Frequency:") + "</td><td><b>%1&nbsp;MHz</b></td></tr>").arg(_wp.frequency, 0, 'f', 3);
+           itxt += tmp;
+         }
+       else
+         {
+           itxt+="<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
          }
 
       QString sr, ss, tz;
@@ -385,20 +382,25 @@ void WPInfoWidget::writeText()
                            " " + tz + "</b></td></tr>" );
         }
 
-      itxt += "<tr><td>" + tr("Latitude:") + "</td><td><b>" +
-        WGSPoint::printPos(_wp.origP.x(),true) + "</b></td>" +
-        "<td>" + tr("Longitude:") + "</td><td><b>" +
-        WGSPoint::printPos(_wp.origP.y(),false) +
-        "</b></td></tr>" +
-        "</table>";
+      QString lat = WGSPoint::printPos(_wp.origP.x(),true);
+      QString lon = WGSPoint::printPos(_wp.origP.y(),false);
 
-      if ((_wp.comment!=QString::null) && (_wp.comment!=""))
+      lat = lat.replace(QRegExp(" "), "&nbsp;");
+      lon = lon.replace(QRegExp(" "), "&nbsp;");
+
+      itxt += "<tr><td>" + tr("Latitude:") + "</td><td><b>" +
+              lat + "</b></td>" +
+              "<td>" + tr("Longitude:") + "</td><td><b>" +
+              lon +
+              "</b></td></tr>";
+
+      if( _wp.comment.isEmpty() == false )
         {
-          itxt += "<table cellpadding=5><tr><th align=left>" + tr("Comment") +
-            "</th></tr><tr><td>" + _wp.comment + "</td></tr></table>";
+          itxt += "<tr><td>" + tr("Comment") + ":</td>"
+                  "<td colspan=3>" + _wp.comment + "</td></tr>";
         }
 
-      itxt+="<!--/big--></html>";
+      itxt+="</table></html>";
 
       text->setHtml(itxt);
     }
