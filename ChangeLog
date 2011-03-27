@@ -14,7 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2011-03-27 AP: Waypoint page of preflight widget enhanced by a combo box
+[+] 2011-03-27 AP: Runway length added to reachable list view.
+[+] 2011-03-27 AP: Waypoint page of preflight widget enhanced by a combo box
                    to change the priority of imported waypoints. That make it
                    easier to adapt the import handling to the personal desires.
 [o] 2011-03-16 AP: Country and radius filter options of airfield configuration

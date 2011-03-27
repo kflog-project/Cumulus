@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -53,18 +53,19 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
   list->setAlternatingRowColors(true);
   list->setSortingEnabled(false);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
-  list->setColumnCount(7);
-  list->hideColumn(6);
+  list->setColumnCount(8);
+  list->hideColumn(7);
   list->setFocusPolicy(Qt::StrongFocus);
 
   QStringList sl;
 
   sl << tr(" Name")
-  << tr("Dist.")
-  << tr("Course")
-  << tr("R")
-  << tr("Arrvial")
-  << tr(" SS");
+     << tr("Dist.")
+     << tr("Course")
+     << tr("R")
+     << tr("Arrvial")
+     << tr("Length")
+     << tr(" SS");
 
   list->setHeaderLabels(sl);
 
@@ -226,12 +227,20 @@ void ReachpointListView::fillRpList()
       // hidden column for default sorting
       key = QString("%1").arg(num, 3, 10, QLatin1Char('0') );
 
+      QString rLen("");
+
+      if( rp.getRunwayLength() > 0.0 )
+        {
+          rLen = QString("%1").arg( rp.getRunwayLength(), 0, 'f', 0 ) + "m";
+        }
+
       QStringList sl;
       sl << rp.getName()
       << rp.getDistance().getText(false,1)
       << bearing
       << RB
       << arrival
+      << rLen
       <<  " " + ss + " " + tz
       << key;
 
@@ -239,6 +248,7 @@ void ReachpointListView::fillRpList()
       li->setTextAlignment( 1, Qt::AlignRight|Qt::AlignVCenter );
       li->setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
       li->setTextAlignment( 4, Qt::AlignRight|Qt::AlignVCenter );
+      li->setTextAlignment( 5, Qt::AlignRight|Qt::AlignVCenter );
 
       list->addTopLevelItem( li );
 
@@ -303,11 +313,13 @@ void ReachpointListView::fillRpList()
     }
 
   // sort list
-  list->sortItems( 6, Qt::DescendingOrder );
+  list->sortItems( 7, Qt::DescendingOrder );
   list->resizeColumnToContents(0);
   list->resizeColumnToContents(1);
   list->resizeColumnToContents(2);
   list->resizeColumnToContents(4);
+  list->resizeColumnToContents(5);
+  list->resizeColumnToContents(6);
 
   if ( selectedItem == 0 )
     {

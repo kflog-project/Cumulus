@@ -130,6 +130,11 @@ class ReachablePoint
     return _wp.type;
   };
 
+  float getRunwayLength() const
+  {
+    return _wp.length;
+  }
+
   Altitude getArrivalAlt() const
   {
     return _arrivalAlt;
