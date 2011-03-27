@@ -86,7 +86,25 @@ public:
    */
   void fillItemList();
 
+  /**
+   * Gets the current set waypoint priority.
+   */
+  enum Waypoint::Priority getWaypointPriority()
+  {
+    return priority;
+  };
+
+  /**
+   * Sets the current set waypoint priority.
+   */
+  void setWaypointPriority( enum Waypoint::Priority newValue )
+  {
+    priority = newValue;
+  };
+
 private:
+
+  enum Waypoint::Priority priority;
 
   /**
    * \class _WaypointItem

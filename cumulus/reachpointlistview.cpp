@@ -437,7 +437,7 @@ Waypoint* ReachpointListView::getSelectedWaypoint()
           if (rp.getName() == li->text(0))
             {
               selectedWp = *(rp.getWaypoint());
-              selectedWp.importance = Waypoint::Normal;  // set importance to normal
+              selectedWp.priority = Waypoint::Normal;  // set priority to normal
               return &selectedWp;
             }
         }

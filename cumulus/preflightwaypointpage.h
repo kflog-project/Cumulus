@@ -115,6 +115,7 @@ private:
   QComboBox* wpTypesBox;
   QComboBox* wpRadiusBox;
   QComboBox* airfieldBox;
+  QComboBox* wpPriorityBox;
   QComboBox* wpFileFormatBox;
 
   QRadioButton* positionRB;

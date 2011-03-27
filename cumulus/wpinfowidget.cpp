@@ -468,7 +468,7 @@ void WPInfoWidget::slot_selectWaypoint()
 /** This slot is called if the Add Waypoint button is clicked. */
 void WPInfoWidget::slot_addAsWaypoint()
 {
-  _wp.importance = Waypoint::High; //importance is high
+  _wp.priority = Waypoint::High; //priority is high
   emit waypointAdded(_wp);
 
   cmdAddWaypoint->setVisible( false );

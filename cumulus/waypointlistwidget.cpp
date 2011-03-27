@@ -28,7 +28,8 @@ extern MapContents* _globalMapContents;
 extern MapConfig*   _globalMapConfig;
 
 WaypointListWidget::WaypointListWidget( QWidget *parent, bool showMovePage ) :
-  ListWidgetParent( parent, showMovePage )
+  ListWidgetParent( parent, showMovePage ),
+  priority( Waypoint::Top )
 {
   setObjectName("WaypointListWidget");
   list->setObjectName("WpTreeWidget");
@@ -41,8 +42,6 @@ WaypointListWidget::~WaypointListWidget()
 /** Clears and refills the waypoint item list. */
 void WaypointListWidget::fillItemList()
 {
-  // qDebug() << "WaypointListWidget::fillItemList()";
-
   list->setUpdatesEnabled(false);
   list->clear();
 
@@ -53,7 +52,17 @@ void WaypointListWidget::fillItemList()
   for (int i=0; i < wpList.count(); i++)
     {
       Waypoint& wp = wpList[i];
-      list->addTopLevelItem( new _WaypointItem(wp) );
+
+      if( priority > Waypoint::High )
+        {
+          // Show all waypoints.
+          list->addTopLevelItem( new _WaypointItem(wp) );
+        }
+      else if( priority == wp.priority )
+        {
+          // Show only desired waypoints.
+          list->addTopLevelItem( new _WaypointItem(wp) );
+        }
     }
 
   resizeListColumns();

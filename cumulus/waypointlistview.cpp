@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Andre Somers
-**                   2007-2010 by Axel Pauli
+**                   2007-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,7 +27,8 @@
 
 WaypointListView::WaypointListView( QMainWindow *parent ) :
   QWidget(parent),
-  homeChanged( false )
+  homeChanged( false ),
+  priorityOfEditedWp( Waypoint::Top )
 {
   setObjectName("WaypointListView");
   par = parent;
@@ -83,6 +84,9 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
   cmdSelect = new QPushButton( tr( "Select" ), this );
   buttonRow->addWidget( cmdSelect );
 
+  cmdPriority = new QPushButton( tr( "Show all" ), this );
+  buttonRow->addWidget( cmdPriority );
+
   topLayout->addLayout( buttonRow, 1, 0, 1, 2 );
 
   connect( cmdNew, SIGNAL(clicked()), this, SLOT(slot_newWP()) );
@@ -90,6 +94,7 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
   connect( cmdDel, SIGNAL(clicked()), this, SLOT(slot_deleteWP()) );
   connect( cmdHome, SIGNAL(clicked()), this, SLOT(slot_setHome()) );
   connect( cmdSelect, SIGNAL(clicked()), this, SLOT(slot_Select()) );
+  connect( cmdPriority, SIGNAL(clicked()), this, SLOT(slot_changeDataDisplay()) );
   connect( cmdInfo, SIGNAL(clicked()), this, SLOT(slot_Info()) );
   connect( cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()) );
   connect( listw, SIGNAL(wpSelectionChanged()), this, SLOT(slot_Selected()) );
@@ -101,11 +106,9 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
   connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ) );
 }
 
-
 WaypointListView::~WaypointListView()
 {
 }
-
 
 void WaypointListView::showEvent(QShowEvent *)
 {
@@ -125,7 +128,6 @@ void WaypointListView::showEvent(QShowEvent *)
   homeChanged = false;
 }
 
-
 /** This signal is called to indicate that a selection has been made. */
 void WaypointListView::slot_Select()
 {
@@ -137,7 +139,6 @@ void WaypointListView::slot_Select()
       slot_Close();
     }
 }
-
 
 /** This slot is called if the info button has been clicked */
 void WaypointListView::slot_Info()
@@ -199,6 +200,9 @@ void WaypointListView::slot_editWP()
 
   if( wp )
     {
+      // Save old priority for later check.
+      priorityOfEditedWp = wp->priority;
+
       WpEditDialog *dlg = new WpEditDialog( this, wp );
 
       connect( dlg, SIGNAL(wpListChanged(Waypoint &)), this,
@@ -246,6 +250,14 @@ void WaypointListView::slot_wpEdited(Waypoint& wp)
 {
   //  qDebug("WaypointListView::slot_wpEdited");
   listw->updateCurrentWaypoint( wp );
+
+  if( listw->getWaypointPriority() != Waypoint::Top &&
+      priorityOfEditedWp != wp.priority )
+    {
+      // We must update the list view because the waypoint priority has been
+      // changed.
+      listw->fillItemList();
+    }
 
   if( par )
     {
@@ -299,4 +311,33 @@ void WaypointListView::slot_setHome()
       emit newHomePosition( _wp->origP );
       homeChanged = true;
     }
+}
+
+/**
+ * Called to change the displayed data according their priority.
+ */
+void WaypointListView::slot_changeDataDisplay()
+{
+  switch( listw->getWaypointPriority() )
+    {
+      case Waypoint::Low:
+        listw->setWaypointPriority( Waypoint::Normal );
+        cmdPriority->setText( tr("Show Normal") );
+        break;
+      case Waypoint::Normal:
+        listw->setWaypointPriority( Waypoint::High );
+        cmdPriority->setText( tr("Show High") );
+        break;
+      case Waypoint::High:
+        listw->setWaypointPriority( Waypoint::Top );
+        cmdPriority->setText( tr("Show All") );
+        break;
+      case Waypoint::Top:
+      default:
+        listw->setWaypointPriority( Waypoint::Low );
+        cmdPriority->setText( tr("Show Low") );
+        break;
+    }
+
+  listw->fillItemList();
 }

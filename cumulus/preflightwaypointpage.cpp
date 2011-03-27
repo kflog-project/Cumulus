@@ -147,14 +147,30 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   wpFileFormatBox->addItem( tr("Binary"), 0 );
   wpFileFormatBox->addItem( tr("XML"), 1 );
 
-  QFormLayout* bottomLayout = new QFormLayout;
-  bottomLayout->addRow( tr("Storage Format:"), wpFileFormatBox );
+  wpPriorityBox = new QComboBox;
+  wpPriorityBox->addItem( tr("Source"), 3 );
+  wpPriorityBox->addItem( tr("Low"), 0 );
+  wpPriorityBox->addItem( tr("Normal"), 1 );
+  wpPriorityBox->addItem( tr("High"), 2 );
+
+  QFormLayout* storageLayout = new QFormLayout;
+  storageLayout->addRow( tr("Storage Format:"), wpFileFormatBox );
+
+  QFormLayout* priorityLayout = new QFormLayout;
+  priorityLayout->addRow( tr("Priority:"), wpPriorityBox );
+
+  QHBoxLayout* buttomLayout = new QHBoxLayout;
+  buttomLayout->setSpacing( 5 );
+  buttomLayout->addLayout( storageLayout );
+  buttomLayout->addLayout( priorityLayout );
 
   //---------------------------------------------------------------------------
   QVBoxLayout* widgetLayout = new QVBoxLayout( this );
   widgetLayout->setSpacing( 10 );
   widgetLayout->addWidget( wpiGroup );
-  widgetLayout->addLayout( bottomLayout );
+  widgetLayout->addSpacing( 20 );
+  widgetLayout->addLayout( buttomLayout );
+  widgetLayout->addStretch( 10 );
 }
 
 PreFlightWaypointPage::~PreFlightWaypointPage()
@@ -168,6 +184,8 @@ void PreFlightWaypointPage::load()
   _waypointFileFormat = conf->getWaypointFileFormat();
 
   wpFileFormatBox->setCurrentIndex( _waypointFileFormat );
+
+  wpPriorityBox->setCurrentIndex( conf->getWaypointPriority() );
 
   homeLabel->setText( WGSPoint::printPos(conf->getHomeLat(), true) +
                       " - " +
@@ -192,6 +210,7 @@ void PreFlightWaypointPage::save()
   GeneralConfig *conf = GeneralConfig::instance();
 
   conf->setWaypointFileFormat( (GeneralConfig::WpFileFormat) wpFileFormatBox->itemData(wpFileFormatBox->currentIndex()).toInt() );
+  conf->setWaypointPriority( wpPriorityBox->itemData(wpPriorityBox->currentIndex()).toInt() );
   conf->setWaypointCenterReference( centerRef );
   conf->setWaypointAirfieldReference( airfieldBox->currentText() );
 
@@ -425,6 +444,14 @@ void PreFlightWaypointPage::slotImportFile()
 
       // Add new waypoint to the dictionary
       nameCoordDict.insert( wpList.at(i).name, wpcString );
+
+      // Look, which waypoint priority has to be used for the import.
+      int priority = wpPriorityBox->itemData(wpPriorityBox->currentIndex()).toInt();
+
+      if( priority != 3 )
+        {
+          wpList[i].priority = static_cast<Waypoint::Priority>( priority );
+        }
 
       // Add new waypoint to the global list.
       wpGlobalList.append( wpList.at(i) );

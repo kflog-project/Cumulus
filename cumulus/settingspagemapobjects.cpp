@@ -108,7 +108,7 @@ void SettingsPageMapObjects::slot_wpLowScaleLimitChanged( int newValue )
 {
   if( newValue > wpNormalScaleLimitSpinBox->value() )
     {
-      // Check new value to ensure that current value of normal importance
+      // Check new value to ensure that current value of normal priority
       // is not exceeded. In such a case a reset is done.
       wpLowScaleLimitSpinBox->setValue( wpNormalScaleLimitSpinBox->value() );
     }
@@ -123,14 +123,14 @@ void SettingsPageMapObjects::slot_wpNormalScaleLimitChanged( int newValue )
 {
   if( newValue > wpHighScaleLimitSpinBox->value() )
     {
-      // Check new value to ensure that current value of high importance
+      // Check new value to ensure that current value of high priority
       // is not exceeded. In such a case a reset is done.
       wpNormalScaleLimitSpinBox->setValue( wpHighScaleLimitSpinBox->value() );
     }
 
   if( wpLowScaleLimitSpinBox->value() > wpNormalScaleLimitSpinBox->value() )
     {
-      // Check normal value to ensure that current value of low importance
+      // Check normal value to ensure that current value of low priority
       // is not exceeded. In such a case a reset is done.
       wpLowScaleLimitSpinBox->setValue( wpNormalScaleLimitSpinBox->value() );
     }
@@ -147,14 +147,14 @@ void SettingsPageMapObjects::slot_wpHighScaleLimitChanged( int newValue )
 {
   if( newValue < wpNormalScaleLimitSpinBox->value() )
     {
-      // Check new value to ensure that current value of normal importance
+      // Check new value to ensure that current value of normal priority
       // is not exceeded. In such a case a reset is done.
       wpNormalScaleLimitSpinBox->setValue( newValue );
     }
 
   if( wpLowScaleLimitSpinBox->value() > wpNormalScaleLimitSpinBox->value() )
     {
-      // Check low value to ensure that current value of normal importance
+      // Check low value to ensure that current value of normal priority
       // is not exceeded. In such a case a reset is done.
       wpLowScaleLimitSpinBox->setValue( wpNormalScaleLimitSpinBox->value() );
     }

@@ -543,10 +543,10 @@ void ReachableList::removeDoubles()
               //qDebug("  points are the same");
               // ok, the points are the same. Now we choose which one to remove
 
-              if ( p2.getWaypoint()->importance != p1.getWaypoint()->importance )
+              if ( p2.getWaypoint()->priority != p1.getWaypoint()->priority )
                 {
-                  // the waypoint with the lower importance will be removed
-                  if ( p2.getWaypoint()->importance > p1.getWaypoint()->importance )
+                  // the waypoint with the lower priority will be removed
+                  if ( p2.getWaypoint()->priority > p1.getWaypoint()->priority )
                     {
                       removeList.append(i);
                     }

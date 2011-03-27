@@ -401,7 +401,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
       Waypoint& wp = wpList[i];
 
       // consider only points, which are to drawn on the map
-      if( _globalMapMatrix->isWaypoint2Draw( wp.importance  ) )
+      if( _globalMapMatrix->isWaypoint2Draw( wp.priority  ) )
         {
           continue;
         }
@@ -1332,7 +1332,7 @@ void Map::__drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
         }
 
       // Check if the waypoint is important enough for the current map scale.
-      if( _globalMapMatrix->isWaypoint2Draw( wp.importance ) && isSelected == false )
+      if( _globalMapMatrix->isWaypoint2Draw( wp.priority ) && isSelected == false )
         {
           // qDebug("Not important wp=%s", wp.name.toLatin1().data());
           continue;

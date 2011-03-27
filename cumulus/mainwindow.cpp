@@ -1846,7 +1846,7 @@ void MainWindow::slotRememberWaypoint()
   wp.description = tr( "user created" );
   wp.comment = tr("created by remember action at ") +
   QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-  wp.importance = Waypoint::High; // high to make sure it is visible
+  wp.priority = Waypoint::High; // high to make sure it is visible
   wp.frequency = 0.0;
   wp.runway = 0;
   wp.length = 0;

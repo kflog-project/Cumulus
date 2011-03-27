@@ -262,7 +262,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
           wp.runway = wpRunway;
           wp.surface = wpSurface;
           wp.comment = wpComment;
-          wp.importance = ( enum Waypoint::Importance ) wpImportance;
+          wp.priority = ( enum Waypoint::Priority ) wpImportance;
           wp.country = wpCountry;
 
           if( fileFormat < WP_FILE_FORMAT_ID_3 )
@@ -368,7 +368,7 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
           wpLength = wp.length;
           wpSurface = wp.surface;
           wpComment = wp.comment;
-          wpImportance = wp.importance;
+          wpImportance = wp.priority;
 
           out << wpName;
           out << wpDescription;
@@ -505,7 +505,7 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList )
       w.length = nm.namedItem("Length").toAttr().value().toFloat();
       w.surface = (enum Runway::SurfaceType)nm.namedItem("Surface").toAttr().value().toInt();
       w.comment = nm.namedItem("Comment").toAttr().value();
-      w.importance = (enum Waypoint::Importance) nm.namedItem("Importance").toAttr().value().toInt();
+      w.priority = (enum Waypoint::Priority) nm.namedItem("Importance").toAttr().value().toInt();
 
       if( nm.contains("Country") )
         {
@@ -602,7 +602,7 @@ bool WaypointCatalog::writeXml( QString catalog, QList<Waypoint>& wpList )
       child.setAttribute( "Length", w.length );
       child.setAttribute( "Surface", w.surface );
       child.setAttribute( "Comment", w.comment );
-      child.setAttribute( "Importance", w.importance );
+      child.setAttribute( "Importance", w.priority );
       child.setAttribute( "Country", w.country );
 
       root.appendChild( child );
@@ -727,7 +727,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
       Waypoint wp;
 
       wp.isLandable = false;
-      wp.importance = Waypoint::Low;
+      wp.priority = Waypoint::Low;
 
       if( list[0].length() ) // long name of waypoint
         {
@@ -766,22 +766,22 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           wp.type = BaseMapElement::Airfield;
           wp.surface = Runway::Grass;
           wp.isLandable = true;
-          wp.importance = Waypoint::Normal;
+          wp.priority = Waypoint::Normal;
           break;
         case 3:
           wp.type = BaseMapElement::Outlanding;
-          wp.importance = Waypoint::Normal;
+          wp.priority = Waypoint::Normal;
           break;
         case 4:
           wp.type = BaseMapElement::Gliderfield;
           wp.isLandable = true;
-          wp.importance = Waypoint::Normal;
+          wp.priority = Waypoint::Normal;
           break;
         case 5:
           wp.type = BaseMapElement::Airfield;
           wp.surface = Runway::Concrete;
           wp.isLandable = true;
-          wp.importance = Waypoint::Normal;
+          wp.priority = Waypoint::Normal;
           break;
         case 6:
           wp.type = BaseMapElement::Landmark;

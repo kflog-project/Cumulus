@@ -149,7 +149,7 @@ void WpEditDialogPageGeneral::slot_load(Waypoint *wp)
       edtLong->setKFLogDegree( wp->origP.lon() );
       edtElev->setText( Altitude::getText( (wp->elevation), false, -1 ) );
       setWaypointType( wp->type );
-      cmbImportance->setCurrentIndex( wp->importance );
+      cmbImportance->setCurrentIndex( wp->priority );
 
       // save loaded values
       loadedLat = wp->origP.lat();
@@ -188,7 +188,7 @@ void WpEditDialogPageGeneral::slot_save(Waypoint *wp)
 
       wp->elevation=static_cast<int> (rint(Altitude::convertToMeters(edtElev->text().toDouble())));
       wp->type=getWaypointType();
-      wp->importance=( enum Waypoint::Importance ) cmbImportance->currentIndex();
+      wp->priority=( enum Waypoint::Priority ) cmbImportance->currentIndex();
     }
 }
 

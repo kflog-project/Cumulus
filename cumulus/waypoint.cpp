@@ -31,7 +31,7 @@ Waypoint::Waypoint()
   elevation      = 0;
   frequency      = 0.;
   isLandable     = false;
-  importance     = Waypoint::Low;
+  priority     = Waypoint::Low;
   taskPointIndex = -1;
   taskPointType  = TaskPointTypes::NotSet;
 
@@ -59,7 +59,7 @@ Waypoint::Waypoint(const Waypoint& inst)
   elevation      = inst.elevation;
   frequency      = inst.frequency;
   isLandable     = inst.isLandable;
-  importance     = inst.importance;
+  priority     = inst.priority;
   taskPointIndex = inst.taskPointIndex;
   taskPointType  = inst.taskPointType;
 }

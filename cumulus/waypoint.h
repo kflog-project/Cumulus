@@ -65,9 +65,9 @@ class Waypoint
 {
  public:
   /**
-   * contains an importance indication for a waypoint
+   * contains an priority indication for a waypoint
    */
-  enum Importance { Low=0, Normal=1, High=2 };
+  enum Priority { Low=0, Normal=1, High=2, Top=3 };
 
   Waypoint();
   Waypoint(const Waypoint& inst);
@@ -103,11 +103,11 @@ class Waypoint
   float frequency;
   /** flag for landable*/
   bool isLandable;
-  /** contains an importance indication for the waypoint
+  /** contains an priority indication for the waypoint
    * 0=low
    * 1=normal
    * 2=high  */
-  enum Importance importance;
+  enum Priority priority;
   /** The index of the waypoint in the flight task list. A valid index is a
    *  positive number and is set, when the waypoint is added to a flight task
    *  list. The index is used in the automatic task point switch handling in the

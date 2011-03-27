@@ -46,7 +46,7 @@ ReachablePoint::ReachablePoint(QString name,
   _wp.frequency = frequency;
   _wp.elevation = elevation;
   _wp.comment = comment;
-  _wp.importance = Waypoint::High; // high to make sure it is visible
+  _wp.priority = Waypoint::High; // high to make sure it is visible
   _wp.isLandable = rwOpen;
   _wp.surface = rwSurf;
   _wp.runway = rwDir;

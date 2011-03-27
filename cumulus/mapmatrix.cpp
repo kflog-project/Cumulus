@@ -579,7 +579,7 @@ unsigned int MapMatrix::currentDrawScale() const
  * @returns an indication, if a waypoint can be drawn on the map according to the current
  * scale setting.
  */
-bool MapMatrix::isWaypoint2Draw( Waypoint::Importance importance ) const
+bool MapMatrix::isWaypoint2Draw( Waypoint::Priority importance ) const
 {
   int wpScaleLimit = GeneralConfig::instance()->getWaypointScaleBorder( importance );
 

@@ -1612,6 +1612,17 @@ class GeneralConfig : protected QSettings
     _waypointFileFormat = newValue;
   };
 
+  /** Gets the waypoint priority */
+  int getWaypointPriority() const
+  {
+    return _waypointPriority;
+  };
+  /** Sets the waypoint priority */
+  void setWaypointPriority(const int newValue)
+  {
+    _waypointPriority = newValue;
+  };
+
   /** Gets the waypoint import center reference. */
   int getWaypointCenterReference() const
   {
@@ -1910,10 +1921,10 @@ class GeneralConfig : protected QSettings
   };
 
   /** Gets waypoint scale border. */
-  int getWaypointScaleBorder( const Waypoint::Importance importance) const;
+  int getWaypointScaleBorder( const Waypoint::Priority importance) const;
 
   /** Sets waypoint scale border. */
-  void setWaypointScaleBorder( const Waypoint::Importance importance,
+  void setWaypointScaleBorder( const Waypoint::Priority importance,
                                const int newScale );
 
   /** Gets the Flarm alias file name. */
@@ -2240,6 +2251,9 @@ class GeneralConfig : protected QSettings
   /** Waypoint file format. 0=binary, 1=xml */
   enum WpFileFormat _waypointFileFormat;
 
+  /** Waypoint import storage priority. */
+  int _waypointPriority;
+
   /** Waypoint import center reference */
   int _waypointCenterReference;
 
@@ -2286,7 +2300,7 @@ class GeneralConfig : protected QSettings
   bool _taskDrawShape;
   bool _taskFillShape;
 
-  /** Waypoint drawing scale borders. Addressed by waypoint importance
+  /** Waypoint drawing scale borders. Addressed by waypoint priority
    *  (Low=0, Normal=1, High=2). It contains the scale borders defined
    *  user.
    */

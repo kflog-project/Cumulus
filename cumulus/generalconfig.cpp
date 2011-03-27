@@ -329,6 +329,7 @@ void GeneralConfig::load()
   _waypointBinaryFileName    = value( "BinaryDefaultFileName", "cumulus.kwp" ).toString();
   _waypointXmlFileName       = value( "XmlDefaultFileName", "cumulus.kflogwp" ).toString();
   _waypointFileFormat        = (enum WpFileFormat) value( "FileFormat", Binary ).toInt();
+  _waypointPriority          = value( "StoragePriority", 0 ).toInt();
   _waypointCenterReference   = value( "CenterReference", PreFlightWaypointPage::Home ).toInt();
   _waypointAirfieldReference = value( "AirfieldReference", "" ).toString();
   endGroup();
@@ -668,6 +669,7 @@ void GeneralConfig::save()
   setValue( "BinaryDefaultFileName", _waypointBinaryFileName );
   setValue( "XmlDefaultFileName", _waypointXmlFileName );
   setValue( "FileFormat", _waypointFileFormat );
+  setValue( "StoragePriority", _waypointPriority );
   setValue( "CenterReference", _waypointCenterReference );
   setValue( "AirfieldReference", _waypointAirfieldReference );
   endGroup();
@@ -1715,7 +1717,7 @@ void GeneralConfig::printIsoColorDefinitions()
 #endif
 
 /** Gets waypoint scale border. */
-int GeneralConfig::getWaypointScaleBorder( const Waypoint::Importance importance) const
+int GeneralConfig::getWaypointScaleBorder( const Waypoint::Priority importance) const
 {
   switch( importance )
   {
@@ -1723,7 +1725,7 @@ int GeneralConfig::getWaypointScaleBorder( const Waypoint::Importance importance
     case Waypoint::Normal:
     case Waypoint::High:
 
-      // qDebug("Importance=%d, value=%d", importance, _wayPointScaleBorders[importance] );
+      // qDebug("Priority=%d, value=%d", priority, _wayPointScaleBorders[priority] );
 
       return _wayPointScaleBorders[importance];
       break;
@@ -1735,7 +1737,7 @@ int GeneralConfig::getWaypointScaleBorder( const Waypoint::Importance importance
 }
 
 /** Sets waypoint scale border. */
-void GeneralConfig::setWaypointScaleBorder( const Waypoint::Importance importance,
+void GeneralConfig::setWaypointScaleBorder( const Waypoint::Priority importance,
                                             const int newScale )
 {
   switch( importance )
