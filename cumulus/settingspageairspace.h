@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2009-2010 by Axel Pauli
+**                   2009-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -33,6 +33,7 @@
 
 class SettingsPageAirspaceWarnings;
 class SettingsPageAirspaceFilling;
+class SettingsPageAirspaceLoading;
 
 /**
  * \class SettingsPageAirspace
@@ -41,7 +42,9 @@ class SettingsPageAirspaceFilling;
  *
  * \brief Configuration settings for airspace colors and drawing.
  *
- * \date 2002-2010
+ * \date 2002-2011
+ *
+ * \version $Id$
  *
  */
 class SettingsPageAirspace : public QWidget
@@ -94,6 +97,11 @@ class SettingsPageAirspace : public QWidget
      */
     void slot_setColorDefaults();
 
+    /**
+     * Called to open the airspace loading dialog.
+     */
+    void slot_openLoadDialog();
+
 #ifdef INTERNET
 
     /**
@@ -129,6 +137,7 @@ class SettingsPageAirspace : public QWidget
     QTableWidget* drawOptions;
     QPushButton* cmdWarning;
     QPushButton* cmdFilling;
+    QPushButton* cmdLoading;
     QPushButton* cmdColorDefaults;
 
 #ifdef INTERNET
@@ -218,7 +227,8 @@ class SettingsPageAirspaceFilling: public QDialog
   public:
 
     SettingsPageAirspaceFilling( QWidget *parent=0 );
-    ~SettingsPageAirspaceFilling();
+
+    virtual ~SettingsPageAirspaceFilling();
 
   public slots: // Public slots
     /**
@@ -293,9 +303,11 @@ class SettingsPageAirspaceFilling: public QDialog
  *
  * \author Eggert Ehmke, Axel Pauli
  *
- * \brief Configuration settings for airspace awrnings.
+ * \brief Configuration settings for airspace warnings.
  *
  * \date 2002-2010
+ *
+ * \version $Id$
  *
  */
 class SettingsPageAirspaceWarnings : public QDialog
@@ -309,7 +321,8 @@ class SettingsPageAirspaceWarnings : public QDialog
   public:
 
     SettingsPageAirspaceWarnings( QWidget *parent=0 );
-    ~SettingsPageAirspaceWarnings();
+
+    virtual ~SettingsPageAirspaceWarnings();
 
   public slots: // Public slots
     /**
@@ -382,5 +395,52 @@ class SettingsPageAirspaceWarnings : public QDialog
     int belowWarnDistValue;
     int belowWarnDistVNValue;
   };
+
+//-------------------SettingsPageAirspaceLoading-------------------------------
+
+/**
+ * \class SettingsPageAirspaceLoading
+ *
+ * \author Axel Pauli
+ *
+ * \brief Configuration settings for airspace loading.
+ *
+ * \date 2011
+ *
+ * \version $Id$
+ *
+ */
+class SettingsPageAirspaceLoading : public QWidget
+{
+  Q_OBJECT
+
+private:
+
+  Q_DISABLE_COPY ( SettingsPageAirspaceLoading )
+
+public:
+
+  SettingsPageAirspaceLoading( QWidget *parent=0 );
+
+  virtual ~SettingsPageAirspaceLoading();
+
+private slots:
+
+  /**
+   * Called to save data to the configuration file.
+   */
+  void slot_save();
+
+  /**
+   * Called to toggle the check box of the clicked table cell.
+   */
+  void slot_toggleCheckBox( int row, int column );
+
+private:
+
+  /** Table containing loadable airspace files. */
+  QTableWidget* fileTable;
+
+};
 
 #endif

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2009-2010 by Axel Pauli
+ **                   2009-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -25,6 +25,7 @@
 #include "distance.h"
 #include "generalconfig.h"
 #include "settingspageairspace.h"
+#include "mainwindow.h"
 #include "mapdefaults.h"
 #include "mapview.h"
 
@@ -123,27 +124,36 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   topLayout->setRowMinimumHeight( row++, 20 );
 
+  // All buttons are put into a hbox.
+  hbox = new QHBoxLayout;
+
 #ifdef INTERNET
 
-  cmdInstall = new QPushButton(tr("Install Airspace"), this);
-  topLayout->addWidget(cmdInstall, row, 0, Qt::AlignLeft);
+  cmdInstall = new QPushButton(tr("Download"), this);
+  hbox->addWidget(cmdInstall);
   connect (cmdInstall, SIGNAL(clicked()), this, SLOT(slot_installAirspace()));
 
-  cmdWarning = new QPushButton(tr("Airspace Warnings"), this);
-  topLayout->addWidget(cmdWarning, row, 1, Qt::AlignCenter);
-  connect (cmdWarning, SIGNAL(clicked()), m_warningsDlg, SLOT(show()));
-
-#else
-
-  cmdWarning = new QPushButton(tr("Airspace Warnings"), this);
-  topLayout->addWidget(cmdWarning, row, 0, Qt::AlignLeft);
-  connect (cmdWarning, SIGNAL(clicked()), m_warningsDlg, SLOT(show()));
+  hbox->addSpacing( 10 );
 
 #endif
 
-  cmdFilling = new QPushButton(tr("Airspace filling"), this);
-  topLayout->addWidget(cmdFilling, row, 2, Qt::AlignRight);
+  cmdLoading = new QPushButton(tr("Load"), this);
+  hbox->addWidget(cmdLoading);
+  connect (cmdLoading, SIGNAL(clicked()), this, SLOT(slot_openLoadDialog()));
+
+  hbox->addSpacing( 10 );
+
+  cmdWarning = new QPushButton(tr("Warnings"), this);
+  hbox->addWidget(cmdWarning);
+  connect (cmdWarning, SIGNAL(clicked()), m_warningsDlg, SLOT(show()));
+
+  hbox->addSpacing( 10 );
+
+  cmdFilling = new QPushButton(tr("Filling"), this);
+  hbox->addWidget(cmdFilling);
   connect (cmdFilling, SIGNAL(clicked()), m_fillingDlg, SLOT(show()));
+
+  topLayout->addLayout( hbox, row, 0, 1, 3 );
 
   row = 0;
   int col = 0;
@@ -651,6 +661,13 @@ void SettingsPageAirspace::slot_startDownload( QString &url )
 }
 
 #endif
+
+/* Called to open the airspace loading dialog. */
+void SettingsPageAirspace::slot_openLoadDialog()
+{
+  SettingsPageAirspaceLoading* dlg = new SettingsPageAirspaceLoading(this);
+  dlg->setVisible( true );
+}
 
 /* Called to ask is confirmation on the close is needed. */
 void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
@@ -1340,4 +1357,190 @@ void SettingsPageAirspaceWarnings::reject()
 void SettingsPageAirspaceWarnings::slot_enabledToggled( bool enabled )
 {
   separations->setEnabled( enabled );
+}
+
+/*
+ * Because Maemo 5 is using a special dialog design this window is declared
+ * as a tool window.
+ */
+SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
+  QWidget( parent )
+{
+  setObjectName("SettingsPageAirspaceLoading");
+  setAttribute( Qt::WA_DeleteOnClose );
+  setWindowFlags( Qt::Tool );
+  setWindowTitle(tr("Airspace loading settings"));
+  setWindowModality( Qt::WindowModal );
+
+  if( _globalMainWindow )
+    {
+      // Resize the window to the same size as the main window has. That will
+      // completely hide the parent window.
+      resize( _globalMainWindow->size() );
+    }
+
+  QVBoxLayout *topLayout = new QVBoxLayout( this );
+  topLayout->setSpacing(10);
+
+  fileTable = new QTableWidget( 0, 1, this );
+  fileTable->setSelectionBehavior( QAbstractItemView::SelectRows );
+  fileTable->setShowGrid( true );
+
+  connect( fileTable, SIGNAL(cellClicked ( int, int )),
+           SLOT(slot_toggleCheckBox( int, int )) );
+
+  QHeaderView* hHeader = fileTable->horizontalHeader();
+  hHeader->setStretchLastSection( true );
+
+  QTableWidgetItem *item = new QTableWidgetItem( tr("Airspace Files") );
+  fileTable->setHorizontalHeaderItem( 0, item );
+
+  topLayout->addWidget( fileTable, 10 );
+
+  QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok |
+                                                      QDialogButtonBox::Cancel );
+
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(slot_save()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
+
+  topLayout->addWidget( buttonBox );
+
+  //---------------------------------------------------------------------------
+  // Load table with openair files
+  QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
+  QStringList preselect;
+
+  for ( int i = 0; i < mapDirs.size(); ++i )
+    {
+      MapContents::addDir(preselect, mapDirs.at(i) + "/airspaces", "*.txt");
+      MapContents::addDir(preselect, mapDirs.at(i) + "/airspaces", "*.TXT");
+    }
+
+  preselect.sort();
+
+  int row = 0;
+  fileTable->setRowCount( row + 1 );
+
+  item = new QTableWidgetItem( tr("All"), 0 );
+  item->setFlags( Qt::ItemIsEnabled );
+  item->setCheckState( Qt::Unchecked );
+  fileTable->setItem( row, 0, item );
+  row++;
+
+  for( int i = 0; i < preselect.size(); i++ )
+    {
+      if ( preselect.at(i).endsWith( ".TXT" ) )
+        {
+          // Upper case file names are converted to lower case and renamed.
+          QFileInfo fInfo = preselect.at(i);
+          QString path    = fInfo.absolutePath();
+          QString fn      = fInfo.fileName().toLower();
+          QString newFn   = path + "/" + fn;
+          QFile::rename( preselect.at(i), newFn );
+          preselect[i] = newFn;
+        }
+
+      fileTable->setRowCount( row + 1 );
+
+      QString file = QFileInfo( preselect.at(i) ).fileName();
+      item = new QTableWidgetItem( file, row );
+      item->setFlags( Qt::ItemIsEnabled );
+      item->setCheckState( Qt::Unchecked );
+      fileTable->setItem( row, 0, item );
+      row++;
+    }
+
+  QStringList& files = GeneralConfig::instance()->getAirspaceFileList();
+
+  if( files.at(0) == "All" )
+    {
+      // Set all items to checked, if All is contained in the list at the first
+      // position.
+      for( int i = 0; i < fileTable->rowCount(); i++ )
+        {
+          fileTable->item( i, 0 )->setCheckState( Qt::Checked );
+        }
+    }
+  else
+    {
+      // Set the All item to unchecked.
+      fileTable->item( 0, 0 )->setCheckState( Qt::Unchecked );
+
+      for( int i = 1; i < fileTable->rowCount(); i++ )
+        {
+          QTableWidgetItem* item = fileTable->item( i, 0 );
+
+          if( files.contains( item->text()) )
+            {
+              fileTable->item( i, 0 )->setCheckState( Qt::Checked );
+            }
+          else
+            {
+              fileTable->item( i, 0 )->setCheckState( Qt::Unchecked );
+            }
+        }
+    }
+}
+
+SettingsPageAirspaceLoading::~SettingsPageAirspaceLoading()
+{
+}
+
+/* Called to toggle the check box of the clicked table cell. */
+void SettingsPageAirspaceLoading::slot_toggleCheckBox( int row, int column )
+{
+  QTableWidgetItem* item = fileTable->item( row, column );
+
+  if( row > 0 && fileTable->item( 0, 0 )->checkState() == Qt::Checked )
+    {
+      // All is checked, do not changed other items
+      return;
+    }
+
+  item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
+
+  if( row == 0 && column == 0 )
+    {
+      // First entry was clicked. Change related check items.
+      if( item->checkState() == Qt::Checked )
+        {
+          // All other items are checked too
+          for( int i = fileTable->rowCount() - 1; i > 0; i-- )
+            {
+              fileTable->item( i, 0 )->setCheckState( Qt::Checked );
+            }
+        }
+    }
+}
+
+/* Called to save data to the configuration file. */
+void SettingsPageAirspaceLoading::slot_save()
+{
+  qDebug() << "SettingsPageAirspaceLoading::slot_save()";
+
+  QStringList files;
+
+  if( fileTable->item( 0, 0 )->checkState() == Qt::Checked )
+    {
+      // All files are selected.
+      files << "All";
+    }
+  else
+    {
+      // Store only checked file items.
+      for( int i = 1; i < fileTable->rowCount(); i++ )
+        {
+          QTableWidgetItem* item = fileTable->item( i, 0 );
+
+          if( item->checkState() == Qt::Checked )
+            {
+              files << item->text();
+            }
+        }
+    }
+
+  // save file list
+  GeneralConfig::instance()->setAirspaceFileList( files );
+
+  close();
 }
