@@ -140,7 +140,7 @@ void ReachpointListView::fillRpList()
   QPixmap iconImage;
   QBitmap iconMask;
   QPainter pnt;
-  icon = QPixmap(18,18);
+  icon = QPixmap(18, 18);
 
   if ( si )
     {
@@ -193,9 +193,6 @@ void ReachpointListView::fillRpList()
           relbearing += 360;
         }
 
-      // This string is only used for sorting and is eclipsed by next field
-      QString RB = QString("  %1").arg(relbearing);
-
       // Show arrival altitude or estimated time of arrival. It depends on
       // the glider selection.
       QString arrival = "---";
@@ -231,14 +228,14 @@ void ReachpointListView::fillRpList()
 
       if( rp.getRunwayLength() > 0.0 )
         {
-          rLen = QString("%1").arg( rp.getRunwayLength(), 0, 'f', 0 ) + "m";
+          rLen = QString("%1").arg( rp.getRunwayLength(), 0, 'f', 0 ) + " m";
         }
 
       QStringList sl;
       sl << rp.getName()
       << rp.getDistance().getText(false,1)
       << bearing
-      << RB
+      << ""
       << arrival
       << rLen
       <<  " " + ss + " " + tz
