@@ -59,7 +59,6 @@ OpenAirParser::OpenAirParser()
   initializeBaseMapping();
 }
 
-
 OpenAirParser::~OpenAirParser()
 {
   if ( h_projection )
@@ -118,7 +117,23 @@ uint OpenAirParser::load( QList<Airspace*>& list )
   // source files follows compiled files
   preselect.sort();
 
-  while (!preselect.isEmpty())
+  // Check, which files shall be loaded.
+  QStringList& files = GeneralConfig::instance()->getAirspaceFileList();
+
+  if( files.first() != "All" )
+    {
+      for( int i = preselect.size() - 1; i >= 0; i-- )
+        {
+          QString file = QFileInfo(preselect.at(i)).completeBaseName() + ".txt";
+
+          if( files.contains( file ) == false )
+            {
+              preselect.removeAt(i);
+            }
+        }
+    }
+
+  while( !preselect.isEmpty() )
     {
       QString txtName, txcName;
       _doCompile = false;
