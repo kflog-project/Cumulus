@@ -424,6 +424,13 @@ public:
 
   virtual ~SettingsPageAirspaceLoading();
 
+signals:
+
+  /**
+   * Emitted, if the airspace file list has been changed.
+   */
+  void airspaceFileListChanged();
+
 private slots:
 
   /**

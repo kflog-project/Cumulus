@@ -113,6 +113,7 @@ void GeneralConfig::load()
   _lastAirspaceUrl      = value("LastAirspaceUrl", "").toString();
   _forceDrawing         = value("forceLowAirspaceDrawing", true ).toBool();
   _forceDrawingDistance = value("forceLowAirspaceDrawingDistance", 150.0).toDouble();
+  _airspaceFileList     = value("FileList", QStringList(QString("All"))).toStringList();
 
 #ifndef MAEMO
   _airspaceLineWidth = value( "AirSpaceLineWidth", 5 ).toInt();
@@ -473,7 +474,8 @@ void GeneralConfig::save()
   setValue("LastAirspaceUrl", _lastAirspaceUrl);
   setValue("forceLowAirspaceDrawing", _forceDrawing);
   setValue("forceLowAirspaceDrawingDistance", _forceDrawingDistance.getMeters());
-  setValue( "AirSpaceLineWidth", _airspaceLineWidth );
+  setValue("AirSpaceLineWidth", _airspaceLineWidth);
+  setValue("FileList", _airspaceFileList);
 
   // Airspace warning types
   setValue("checkAirspaceA", _airspaceDrawingEnabled[BaseMapElement::AirA]);

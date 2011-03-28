@@ -1697,6 +1697,18 @@ class GeneralConfig : protected QSettings
     _airspaceLineWidth = newValue;
   };
 
+  /** Gets the airspace file list to be loaded. */
+  QStringList& getAirspaceFileList()
+  {
+    return _airspaceFileList;
+  };
+
+  /** Sets the airspace file list to be loaded. */
+  void setAirspaceFileList( const QStringList& newValue )
+  {
+    _airspaceFileList = newValue;
+  };
+
   /**
    * Get whether airspace filling is enabled at all
    */
@@ -2027,6 +2039,9 @@ class GeneralConfig : protected QSettings
 
   // last used airspace url
   QString _lastAirspaceUrl;
+
+  // Airspace files to be loaded
+  QStringList _airspaceFileList;
 
   // disclaimer version
   int _disclaimerVersion;

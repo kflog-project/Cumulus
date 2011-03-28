@@ -14,10 +14,17 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2011-03-28 AP: Added an airspace file selection window to settings airspace.
+                   That allows to define the airspace files to be loaded from
+                   the airspace file directory. So is the airspace load management
+                   easier to handle.
 [+] 2011-03-27 AP: Runway length added to reachable list view.
 [+] 2011-03-27 AP: Waypoint page of preflight widget enhanced by a combo box
                    to change the priority of imported waypoints. That make it
                    easier to adapt the import handling to the personal desires.
+[+] 2011-03-27 AP: Waypoint list view enhanced by a toggle button to display
+                   all or only a subset of waypoints. The subset is defined
+                   by the waypoint priority, which can be low, normal or high.
 [o] 2011-03-16 AP: Country and radius filter options of airfield configuration
                    page are both active now. That makes country filtering
                    more sensitive.

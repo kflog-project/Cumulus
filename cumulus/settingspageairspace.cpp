@@ -1539,8 +1539,27 @@ void SettingsPageAirspaceLoading::slot_save()
         }
     }
 
-  // save file list
+  QStringList oldFiles = GeneralConfig::instance()->getAirspaceFileList();
+
+  // save the new file list
   GeneralConfig::instance()->setAirspaceFileList( files );
+
+  // Check, if file list has been modified
+  if( oldFiles.size() != files.size() )
+    {
+      // Size id different.
+      emit airspaceFileListChanged();
+    }
+
+  // The lists are always sorted
+  for( int i = 0; i < files.size(); i++ )
+    {
+      if( files.at(i) != oldFiles.at(i) )
+        {
+          emit airspaceFileListChanged();
+          break;
+        }
+    }
 
   close();
 }
