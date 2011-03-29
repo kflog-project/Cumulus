@@ -2328,9 +2328,9 @@ void MapContents::slotReloadMapData()
   outLandingList.clear();
 
   // free internal allocated memory in QList
-  airfieldList   = QList<Airfield>();
+  airfieldList    = QList<Airfield>();
   gliderfieldList = QList<Airfield>();
-  outLandingList = QList<Airfield>();
+  outLandingList  = QList<Airfield>();
 
   // all isolines are cleared
   groundMap.clear();
