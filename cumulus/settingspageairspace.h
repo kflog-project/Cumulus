@@ -40,7 +40,12 @@ class SettingsPageAirspaceLoading;
  *
  * \author Eggert Ehmke, Axel Pauli
  *
- * \brief Configuration settings for airspace colors and drawing.
+ * \brief Configuration settings for airspace drawing, colors, filling, warnings
+ * and loading.
+ *
+ * Configuration settings for airspace drawing, colors, filling, warnings and
+ * loading. Filling, warnings and loading configuration are realized as separate
+ * widgets, callable via buttons.
  *
  * \date 2002-2011
  *
@@ -65,7 +70,7 @@ class SettingsPageAirspace : public QWidget
 
     void showEvent(QShowEvent *);
 
-  public slots: // Public slots
+  public slots:
     /**
      * Called to initiate saving to the configuration file.
      */
@@ -98,7 +103,17 @@ class SettingsPageAirspace : public QWidget
     void slot_setColorDefaults();
 
     /**
-     * Called to open the airspace loading dialog.
+     * Called to open the airspace fill dialog.
+     */
+    void slot_openFillDialog();
+
+    /**
+     * Called to open the airspace warning dialog.
+     */
+    void slot_openWarningDialog();
+
+    /**
+     * Called to open the airspace load selection dialog.
      */
     void slot_openLoadDialog();
 
@@ -201,7 +216,6 @@ class SettingsPageAirspace : public QWidget
     int spinAsLineWidthValue;
 
     SettingsPageAirspaceFilling*  m_fillingDlg;
-    SettingsPageAirspaceWarnings* m_warningsDlg;
   };
 
 //----------------------------SettingsPageAirspaceFilling-----------------------
@@ -213,88 +227,78 @@ class SettingsPageAirspace : public QWidget
  *
  * \brief Configuration settings for airspace fillings.
  *
- * \date 2002-2010
+ * \date 2002-2011
  *
  */
 class SettingsPageAirspaceFilling: public QDialog
 {
   Q_OBJECT
 
-  private:
+ private:
 
   Q_DISABLE_COPY ( SettingsPageAirspaceFilling )
 
-  public:
+ public:
 
-    SettingsPageAirspaceFilling( QWidget *parent=0 );
+  SettingsPageAirspaceFilling( QWidget *parent=0 );
 
-    virtual ~SettingsPageAirspaceFilling();
+  virtual ~SettingsPageAirspaceFilling();
 
-  public slots: // Public slots
-    /**
-     * Called to initiate saving to the configuration file.
-     */
-    void slot_save();
+ public slots:
 
-    /**
-     * Called to initiate loading of the configuration file
-     */
-    void slot_load();
+  /**
+   * Called to initiate saving to the configuration file.
+   */
+  void slot_save();
 
-    /**
-     * Called to set all spinboxes to the default value
-     */
-    void slot_defaults();
+  /**
+   * Called to initiate loading of the configuration file
+   */
+  void slot_load();
 
-    /**
-     * Called to reset all spinboxes to zero
-     */
-    void slot_reset();
+  /**
+   * Called to set all spinboxes to the default value
+   */
+  void slot_defaults();
 
-    /**
-     * Called to ask is confirmation on the close is needed.
-     */
-    void slot_query_close(bool& warn, QStringList& warnings);
+  /**
+   * Called to reset all spinboxes to zero
+   */
+  void slot_reset();
 
-  private slots:
+ private slots:
 
-    /**
-     * Invoked if enableFilling changes value
-     * @param enabled true if filling is enabled
-     */
-    void slot_enabledToggled(bool enabled);
+  /**
+   * Invoked if enableFilling changes value
+   * @param enabled true if filling is enabled
+   */
+  void slot_enabledToggled(bool enabled);
 
-    /**
-     * Called to change the step width of the spin boxes
-     */
-    void slot_change(int newStep);
+  /**
+   * Called to change the step width of the spin boxes
+   */
+  void slot_change(int newStep);
 
-  protected:
-    /**
-     * Reimplemented from QDialog
-     * Reload settings from configuration file so that changes won't
-     * be written to the configuration.
-     */
-    void reject();
+ private:
 
-    QCheckBox* enableFilling;
+  QCheckBox* enableFilling;
 
-    QRadioButton* s1;
-    QRadioButton* s2;
-    QRadioButton* s3;
-    QRadioButton* s4;
+  QRadioButton* s1;
+  QRadioButton* s2;
+  QRadioButton* s3;
+  QRadioButton* s4;
 
-    QWidget*   separations;
+  QWidget*   separations;
 
-    QSpinBox*  verticalNotNear;
-    QSpinBox*  verticalNear;
-    QSpinBox*  verticalVeryNear;
-    QSpinBox*  verticalInside;
-    QSpinBox*  lateralNotNear;
-    QSpinBox*  lateralNear;
-    QSpinBox*  lateralVeryNear;
-    QSpinBox*  lateralInside;
-  };
+  QSpinBox*  verticalNotNear;
+  QSpinBox*  verticalNear;
+  QSpinBox*  verticalVeryNear;
+  QSpinBox*  verticalInside;
+  QSpinBox*  lateralNotNear;
+  QSpinBox*  lateralNear;
+  QSpinBox*  lateralVeryNear;
+  QSpinBox*  lateralInside;
+};
 
 //-------------------SettingsPageAirspaceWarnings-------------------------------
 
@@ -305,96 +309,87 @@ class SettingsPageAirspaceFilling: public QDialog
  *
  * \brief Configuration settings for airspace warnings.
  *
- * \date 2002-2010
+ * \date 2002-2011
  *
  * \version $Id$
  *
  */
 class SettingsPageAirspaceWarnings : public QDialog
-  {
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  private:
+private:
 
-    Q_DISABLE_COPY ( SettingsPageAirspaceWarnings )
+  Q_DISABLE_COPY ( SettingsPageAirspaceWarnings )
 
-  public:
+public:
 
-    SettingsPageAirspaceWarnings( QWidget *parent=0 );
+  SettingsPageAirspaceWarnings( QWidget *parent=0 );
 
-    virtual ~SettingsPageAirspaceWarnings();
+  virtual ~SettingsPageAirspaceWarnings();
 
-  public slots: // Public slots
-    /**
-     * Called to initiate saving to the configuration file.
-     */
-    void slot_save();
+ public slots:
+  /**
+   * Called to initiate saving to the configuration file.
+   */
+  void slot_save();
 
-    /**
-     * Called to initiate loading of the configuration file
-     */
-    void slot_load();
+  /**
+   * Called to initiate loading of the configuration file
+   */
+  void slot_load();
 
-    /**
-     * Called to set all spinboxes to the default value
-     */
-    void slot_defaults();
+  /**
+   * Called to set all spin boxes to the default value
+   */
+  void slot_defaults();
 
-    /**
-     * Called to ask is confirmation on the close is needed.
-     */
-    void slot_query_close(bool& warn, QStringList& warnings);
+ private slots:
+  /**
+   * Invoked if enableWarning changes value
+   * @param enabled true if warning is enabled
+   */
+  void slot_enabledToggled(bool enabled);
 
-  private slots:
-    /**
-     * Invoked if enableWarning changes value
-     * @param enabled true if warning is enabled
-     */
-    void slot_enabledToggled(bool enabled);
+  /**
+   * Called to change the step width of the spin boxes
+   *
+   * \param newStep The new value to be used.
+   */
+  void slot_change(int newStep);
 
-    /**
-     * Called to change the step width of the spin boxes
-     */
-    void slot_change(int newStep);
+ private:
 
-  protected:
-    /**
-     * Reimplemented from QDialog
-     * Reload settings from configuration file so that changes won't
-     * be written to the configuration.
-     */
-    void reject();
+  /**
+   * saves current altitude unit during construction of object
+   */
+  Altitude::altitudeUnit altUnit;
 
-    /**
-     * saves current altitude unit during construction of object
-     */
-    Altitude::altitudeUnit altUnit;
+  QCheckBox* enableWarning;
 
-    QCheckBox* enableWarning;
+  QRadioButton* s1;
+  QRadioButton* s2;
+  QRadioButton* s3;
+  QRadioButton* s4;
 
-    QRadioButton* s1;
-    QRadioButton* s2;
-    QRadioButton* s3;
-    QRadioButton* s4;
+  QWidget*   separations;
 
-    QWidget*   separations;
+  QSpinBox*  horiWarnDist;
+  QSpinBox*  horiWarnDistVN;
+  QSpinBox*  aboveWarnDist;
+  QSpinBox*  aboveWarnDistVN;
+  QSpinBox*  belowWarnDist;
+  QSpinBox*  belowWarnDistVN;
 
-    QSpinBox*  horiWarnDist;
-    QSpinBox*  horiWarnDistVN;
-    QSpinBox*  aboveWarnDist;
-    QSpinBox*  aboveWarnDistVN;
-    QSpinBox*  belowWarnDist;
-    QSpinBox*  belowWarnDistVN;
-
-    // here are the fetched configuration items stored to have control about
-    // changes done by the user
-    int horiWarnDistValue;
-    int horiWarnDistVNValue;
-    int aboveWarnDistValue;
-    int aboveWarnDistVNValue;
-    int belowWarnDistValue;
-    int belowWarnDistVNValue;
-  };
+  // here are the fetched configuration items stored to have control about
+  // changes done by the user
+  int horiWarnDistValue;
+  int horiWarnDistVNValue;
+  int aboveWarnDistValue;
+  int aboveWarnDistVNValue;
+  int belowWarnDistValue;
+  int belowWarnDistVNValue;
+};
 
 //-------------------SettingsPageAirspaceLoading-------------------------------
 
@@ -404,6 +399,9 @@ class SettingsPageAirspaceWarnings : public QDialog
  * \author Axel Pauli
  *
  * \brief Configuration settings for airspace loading.
+ *
+ * This widget provides an airspace file selection table, where the user can
+ * choose, which available airspace files shall be loaded or not loaded.
  *
  * \date 2011
  *

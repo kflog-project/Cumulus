@@ -265,9 +265,14 @@ void ConfigWidget::accept()
       QMessageBox::warning( this, "Cumulus",
                             tr( "<html>"
                                 "<b>Configuration settings have been changed!</b><p>"
-                                "Update of system can take a few seconds!"
+                                "Update of system can take a few seconds and more!"
                                 "</html>" ) );
     }
+
+  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+
+  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
+                                   QEventLoop::ExcludeSocketNotifiers );
 
   emit settingsChanged();
 
@@ -292,6 +297,8 @@ void ConfigWidget::accept()
     {
       emit gotoHomePosition();
     }
+
+  QApplication::restoreOverrideCursor();
 
   emit closeConfig();
   QWidget::close();

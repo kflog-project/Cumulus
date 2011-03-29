@@ -43,7 +43,7 @@
 #define FILE_TYPE_AIRSPACE_C 0x61
 
 // version used for files created from OpenAir data
-#define FILE_VERSION_AIRSPACE_C 201
+#define FILE_VERSION_AIRSPACE_C 202
 
 extern MapContents*  _globalMapContents;
 extern MapMatrix*    _globalMapMatrix;
@@ -85,31 +85,31 @@ uint OpenAirParser::load( QList<Airspace*>& list )
   QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
   QStringList preselect;
 
-  for ( int i = 0; i < mapDirs.size(); ++i )
+  for( int i = 0; i < mapDirs.size(); ++i )
     {
-      MapContents::addDir(preselect, mapDirs.at(i) + "/airspaces", "*.txt");
-      MapContents::addDir(preselect, mapDirs.at(i) + "/airspaces", "*.TXT");
-      MapContents::addDir(preselect, mapDirs.at(i) + "/airspaces", "*.txc");
+      MapContents::addDir( preselect, mapDirs.at( i ) + "/airspaces", "*.txt" );
+      MapContents::addDir( preselect, mapDirs.at( i ) + "/airspaces", "*.TXT" );
+      MapContents::addDir( preselect, mapDirs.at( i ) + "/airspaces", "*.txc" );
     }
 
-  if (preselect.count() == 0)
+  if( preselect.count() == 0 )
     {
-      qWarning( "OpenAirParser: No Open Air files could be found in the map directories" );
+      qWarning( "OpenAirParser: No Open Air files found in the map directories!" );
       return loadCounter;
     }
 
   // First check, if we have found a file name in upper letters. May
-  // be true, if a file was downloaded from the internet. We will convert
+  // be true, if a file was downloaded from the Internet. We will convert
   // such a file name to lower cases and replace it in the file list.
-  for ( int i = 0; i < preselect.size(); ++i )
+  for( int i = 0; i < preselect.size(); ++i )
     {
-      if ( preselect.at(i).endsWith( ".TXT" ) )
+      if( preselect.at( i ).endsWith( ".TXT" ) )
         {
-          QFileInfo fInfo = preselect.at(i);
-          QString path    = fInfo.absolutePath();
-          QString fn      = fInfo.fileName().toLower();
-          QString newFn   = path + "/" + fn;
-          QFile::rename( preselect.at(i), newFn );
+          QFileInfo fInfo = preselect.at( i );
+          QString path = fInfo.absolutePath();
+          QString fn = fInfo.fileName().toLower();
+          QString newFn = path + "/" + fn;
+          QFile::rename( preselect.at( i ), newFn );
           preselect[i] = newFn;
         }
     }
@@ -119,6 +119,13 @@ uint OpenAirParser::load( QList<Airspace*>& list )
 
   // Check, which files shall be loaded.
   QStringList& files = GeneralConfig::instance()->getAirspaceFileList();
+
+  if( files.isEmpty() )
+    {
+      // No files shall be loaded
+      qWarning() << "OpenAirParser: No Open Air files defined for loading!";
+      return loadCounter;
+    }
 
   if( files.first() != "All" )
     {
@@ -138,14 +145,14 @@ uint OpenAirParser::load( QList<Airspace*>& list )
       QString txtName, txcName;
       _doCompile = false;
 
-      if (preselect.first().endsWith(QString(".txt")))
+      if( preselect.first().endsWith( QString( ".txt" ) ) )
         {
           // there can't be the same name txc after this txt
           // parse found txt file
           txtName = preselect.first();
           _doCompile = true;
 
-          if (parse(txtName, list))
+          if( parse( txtName, list ) )
             {
               loadCounter++;
             }
@@ -178,8 +185,10 @@ uint OpenAirParser::load( QList<Airspace*>& list )
               unlink( txcName.toLatin1().data() );
               _doCompile = true;
 
-              if ( parse( txtName, list ) )
-                loadCounter++;
+              if( parse( txtName, list ) )
+                {
+                  loadCounter++;
+                }
 
               preselect.removeAt( 0 );
               continue;
@@ -199,8 +208,12 @@ uint OpenAirParser::load( QList<Airspace*>& list )
               // source file.
               unlink( txcName.toLatin1().data() );
               _doCompile = true;
-              if ( parse( txtName, list ) )
-                loadCounter++;
+
+              if( parse( txtName, list ) )
+                {
+                  loadCounter++;
+                }
+
               continue;
             }
 
@@ -208,8 +221,8 @@ uint OpenAirParser::load( QList<Airspace*>& list )
           QString confName = fi.path() + "/" + fi.baseName() + "_mappings.conf";
           QFileInfo fiConf( confName );
 
-          if ( fiConf.exists() && fi.isReadable() &&
-               h_creationDateTime < fiConf.lastModified() )
+          if( fiConf.exists() && fi.isReadable() &&
+              h_creationDateTime < fiConf.lastModified() )
             {
               // Conf file was modified, make a new compilation. It is not
               // deeper checked, what was modified due to the effort and
@@ -217,8 +230,12 @@ uint OpenAirParser::load( QList<Airspace*>& list )
               // every minute.
               unlink( txcName.toLatin1().data() );
               _doCompile = true;
+
               if ( parse( txtName, list ) )
-                loadCounter++;
+                {
+                  loadCounter++;
+                }
+
               continue;
             }
 
@@ -236,16 +253,22 @@ uint OpenAirParser::load( QList<Airspace*>& list )
 
               unlink( txcName.toLatin1().data() );
               _doCompile = true;
-              if ( parse( txtName, list ) )
-                loadCounter++;
+
+              if( parse( txtName, list ) )
+                {
+                  loadCounter++;
+                }
+
               continue;
             }
         }
 
       // we will read the compiled file, because a source file is not to
       // find after it or all checks were successfully passed
-      if ( readCompiledFile( txcName, list ) )
-        loadCounter++;
+      if( readCompiledFile( txcName, list ) )
+        {
+          loadCounter++;
+        }
 
     } // End of While
 
@@ -264,6 +287,8 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
       qWarning("OpenAirParser: Cannot open airspace file %s!", path.toLatin1().data());
       return false;
     }
+
+  qDebug() << "OpenAirParser: Reading" << path;
 
   resetState();
   initializeStringMapping( path );
@@ -1311,6 +1336,8 @@ bool OpenAirParser::readCompiledFile( QString &path, QList<Airspace*>& list )
       return false;
     }
 
+  qDebug() << "OpenAirParser: Reading" << path;
+
   QDataStream in(&inFile);
 
   // This was the order used by ealier cumulus
@@ -1372,10 +1399,12 @@ bool OpenAirParser::readCompiledFile( QString &path, QList<Airspace*>& list )
   in >> boundingBox;
 #endif
 
-  // because we're used a buffer during output, the buffer length will
-  // be written too. Now we have to read it but don't need it because
-  // we access directly to the opened file.
+  // Because we're used a buffer during output, the buffer length will
+  // be written too. We have to read it and make a preallocation in the
+  // airspace list.
   in >> buflen;
+
+  list.reserve( list.size() + buflen );
 
   uint counter = 0;
 

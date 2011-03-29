@@ -933,7 +933,7 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
 
       zoomFactor = _globalMapMatrix->getScale(); //read back from matrix!
 
-      qDebug("MapMatrixSize: w=%d, h=%d", size().width(), size().height());
+      // qDebug("MapMatrixSize: w=%d, h=%d", size().width(), size().height());
 
       _globalMapMatrix->createMatrix(this->size());
 

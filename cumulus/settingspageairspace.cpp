@@ -26,12 +26,15 @@
 #include "generalconfig.h"
 #include "settingspageairspace.h"
 #include "mainwindow.h"
+#include "map.h"
 #include "mapdefaults.h"
-#include "mapview.h"
+#include "mapcontents.h"
 
 #ifdef INTERNET
 #include "airspacedownloaddialog.h"
 #endif
+
+extern MapContents *_globalMapContents;
 
 SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   QWidget(parent)
@@ -44,9 +47,6 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   altUnit = Altitude::getUnit();
   QString unit = (altUnit == Altitude::meters) ? " m" : " ft";
-
-  m_warningsDlg = new SettingsPageAirspaceWarnings(this);
-  m_fillingDlg  = new SettingsPageAirspaceFilling(this);
 
   QGridLayout *topLayout = new QGridLayout(this);
   topLayout->setMargin(3);
@@ -145,13 +145,13 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   cmdWarning = new QPushButton(tr("Warnings"), this);
   hbox->addWidget(cmdWarning);
-  connect (cmdWarning, SIGNAL(clicked()), m_warningsDlg, SLOT(show()));
+  connect (cmdWarning, SIGNAL(clicked()), this, SLOT(slot_openWarningDialog()));
 
   hbox->addSpacing( 10 );
 
   cmdFilling = new QPushButton(tr("Filling"), this);
   hbox->addWidget(cmdFilling);
-  connect (cmdFilling, SIGNAL(clicked()), m_fillingDlg, SLOT(show()));
+  connect (cmdFilling, SIGNAL(clicked()), this, SLOT(slot_openFillDialog()));
 
   topLayout->addLayout( hbox, row, 0, 1, 3 );
 
@@ -378,7 +378,8 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 }
 
 SettingsPageAirspace::~SettingsPageAirspace()
-{}
+{
+}
 
 void SettingsPageAirspace::showEvent(QShowEvent *)
 {
@@ -457,9 +458,6 @@ void SettingsPageAirspace::slot_load()
   fillColorTMZ->setPalette( QPalette(conf->getFillColorTMZ()));
   fillColorLowFlight->setPalette( QPalette(conf->getFillColorLowFlight()));
   fillColorGliderSector->setPalette( QPalette(conf->getFillColorGliderSector()));
-
-  m_fillingDlg->slot_load();
-  m_warningsDlg->slot_load();
 }
 
 void SettingsPageAirspace::slot_save()
@@ -535,11 +533,7 @@ void SettingsPageAirspace::slot_save()
 
   // @AP: initiate a redraw of airspaces on the map due to color modifications.
   //      Not the best solution but it is working ;-)
-  extern MapView *_globalMapView;
-  _globalMapView->_theMap->scheduleRedraw(Map::airspaces);
-
-  m_fillingDlg->slot_save();
-  m_warningsDlg->slot_save();
+  Map::getInstance()->scheduleRedraw(Map::airspaces);
 }
 
 /**
@@ -649,7 +643,7 @@ void SettingsPageAirspace::slot_installAirspace()
   connect( dlg, SIGNAL(downloadAirspace( QString& )),
            this, SLOT(slot_startDownload( QString& )));
 
-  dlg->show();
+  dlg->setVisible( true );
 }
 
 /**
@@ -662,10 +656,28 @@ void SettingsPageAirspace::slot_startDownload( QString &url )
 
 #endif
 
-/* Called to open the airspace loading dialog. */
+/* Called to open the airspace warning dialog. */
+void SettingsPageAirspace::slot_openFillDialog()
+{
+  SettingsPageAirspaceFilling* dlg = new SettingsPageAirspaceFilling(this);
+  dlg->setVisible( true );
+}
+
+/* Called to open the airspace warning dialog. */
+void SettingsPageAirspace::slot_openWarningDialog()
+{
+  SettingsPageAirspaceWarnings* dlg = new SettingsPageAirspaceWarnings(this);
+  dlg->setVisible( true );
+}
+
+/* Called to open the airspace loading selection dialog. */
 void SettingsPageAirspace::slot_openLoadDialog()
 {
   SettingsPageAirspaceLoading* dlg = new SettingsPageAirspaceLoading(this);
+
+  connect( dlg, SIGNAL(airspaceFileListChanged()),
+           _globalMapContents, SLOT(slotReloadAirspaceData()) );
+
   dlg->setVisible( true );
 }
 
@@ -729,10 +741,6 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
     warn=true;
     warnings.append(tr("The Airspace drawing settings"));
   }
-
-  /*forward request to filling page */
-  m_fillingDlg->slot_query_close(warn, warnings);
-  m_warningsDlg->slot_query_close(warn, warnings);
 }
 
 void SettingsPageAirspace::slot_enabledToggled(bool enabled)
@@ -748,6 +756,7 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   QDialog(parent, Qt::WindowStaysOnTopHint)
 {
   setObjectName("SettingsPageAirspaceFilling");
+  setAttribute( Qt::WA_DeleteOnClose );
   setModal(true);
   setSizeGripEnabled(true);
   setWindowTitle(tr("Airspace fill settings"));
@@ -901,11 +910,13 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   signalMapper->setMapping(s4, 20);
 
   connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(slot_change(int)));
+
+  slot_load();
 }
 
-
 SettingsPageAirspaceFilling::~SettingsPageAirspaceFilling()
-{}
+{
+}
 
 /**
  * Called to change the step width of the spin boxes.
@@ -964,7 +975,6 @@ void SettingsPageAirspaceFilling::slot_defaults()
   lateralInside->setValue(AS_FILL_INSIDE);
 }
 
-
 /**
  * Called to reset all spinboxes to zero
  */
@@ -1001,55 +1011,16 @@ void SettingsPageAirspaceFilling::slot_save()
   conf->setAirspaceFillingLateral(Airspace::near,      lateralNear->value());
   conf->setAirspaceFillingLateral(Airspace::veryNear,  lateralVeryNear->value());
   conf->setAirspaceFillingLateral(Airspace::inside,    lateralInside->value());
+
+  // @AP: initiate a redraw of airspaces on the map due to color modifications.
+  //      Not the best solution but it is working ;-)
+  Map::getInstance()->scheduleRedraw(Map::airspaces);
 }
-
-
-void SettingsPageAirspaceFilling::slot_query_close(bool& warn, QStringList& warnings)
-{
-  /*set warn to 'true' if the data has changed. Note that we can NOT
-    just set warn equal to _changed, because that way we might erase
-    a warning flag set by another page! */
-  GeneralConfig * conf = GeneralConfig::instance();
-  bool changed=false;
-
-  changed |= conf->getAirspaceFillingEnabled() != enableFilling->isChecked();
-  changed |= conf->getAirspaceFillingVertical(Airspace::none)
-             != verticalNotNear->value();
-  changed |= conf->getAirspaceFillingVertical(Airspace::near)
-             != verticalNear->value();
-  changed |= conf->getAirspaceFillingVertical(Airspace::veryNear)
-             != verticalVeryNear->value();
-  changed |= conf->getAirspaceFillingVertical(Airspace::inside)
-             != verticalInside->value();
-  changed |= conf->getAirspaceFillingLateral(Airspace::none)
-             != lateralNotNear->value();
-  changed |= conf->getAirspaceFillingLateral(Airspace::near)
-             != lateralNear->value();
-  changed |= conf->getAirspaceFillingLateral(Airspace::veryNear)
-             != lateralVeryNear->value();
-  changed |= conf->getAirspaceFillingLateral(Airspace::inside)
-             != lateralInside->value();
-
-  if (changed)
-    {
-      warn=true;
-      warnings.append(tr("The Airspace filling settings"));
-    }
-}
-
-
-void SettingsPageAirspaceFilling::reject()
-{
-  slot_load();
-  QDialog::reject();
-}
-
 
 void SettingsPageAirspaceFilling::slot_enabledToggled(bool enabled)
 {
   separations->setEnabled(enabled);
 }
-
 
 /******************************************************************************/
 /*            Airspace Warning page                                           */
@@ -1059,13 +1030,13 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   QDialog(parent, Qt::WindowStaysOnTopHint)
 {
   setObjectName("SettingsPageAirspaceWarnings");
+  setAttribute( Qt::WA_DeleteOnClose );
   setModal(true);
   setSizeGripEnabled(true);
   setWindowTitle(tr("Airspace warning settings"));
 
   // save current altitude unit. This unit must be considered during
   // storage. The internal storage is always in meters.
-
   altUnit = Altitude::getUnit();
   QString unit = (altUnit == Altitude::meters) ? " m" : " ft";
 
@@ -1198,11 +1169,14 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   signalMapper->setMapping(s4, 1000);
 
   connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(slot_change(int)));
+
+  slot_load();
 }
 
 
 SettingsPageAirspaceWarnings::~SettingsPageAirspaceWarnings()
-{}
+{
+}
 
 /**
  * Called to change the step width of the spin boxes.
@@ -1251,7 +1225,7 @@ void SettingsPageAirspaceWarnings::slot_load()
       belowWarnDistVN->setValue((int) rint(awd.verBelowVeryClose.getFeet()));
     }
 
-  // save loaded values for chamge control
+  // save loaded values for change control
   horiWarnDistValue = horiWarnDist->value();
   horiWarnDistVNValue = horiWarnDistVN->value();
 
@@ -1293,7 +1267,6 @@ void SettingsPageAirspaceWarnings::slot_defaults()
     }
 }
 
-
 void SettingsPageAirspaceWarnings::slot_save()
 {
   GeneralConfig * conf = GeneralConfig::instance();
@@ -1321,43 +1294,17 @@ void SettingsPageAirspaceWarnings::slot_save()
       awd.verBelowVeryClose.setFeet( belowWarnDistVN->value() );
     }
 
-  conf->setAirspaceWarningDistances(awd);
-}
-
-
-void SettingsPageAirspaceWarnings::slot_query_close( bool& warn, QStringList& warnings )
-{
-  /* set warn to 'true' if the data has changed. Note that we can NOT
-     just set warn equal to _changed, because that way we might erase
-     a warning flag set by another page! */
-  GeneralConfig * conf = GeneralConfig::instance();
-  bool changed=false;
-
-  changed |= conf->getAirspaceWarningEnabled() != enableWarning->isChecked();
-  changed |=  horiWarnDistValue != horiWarnDist->value();
-  changed |= horiWarnDistVNValue != horiWarnDistVN->value();
-  changed |= aboveWarnDistValue != aboveWarnDist->value();
-  changed |= aboveWarnDistVNValue != aboveWarnDistVN->value();
-  changed |= belowWarnDistValue != belowWarnDist->value();
-  changed |= belowWarnDistVNValue != belowWarnDistVN->value();
-
-  if (changed)
-    {
-      warn=true;
-      warnings.append(tr("The Airspace warning settings"));
-    }
-}
-
-void SettingsPageAirspaceWarnings::reject()
-{
-  slot_load();
-  QDialog::reject();
+  conf->setAirspaceWarningDistances( awd );
 }
 
 void SettingsPageAirspaceWarnings::slot_enabledToggled( bool enabled )
 {
   separations->setEnabled( enabled );
 }
+
+/******************************************************************************/
+/*            Airspace Loading page                                           */
+/******************************************************************************/
 
 /*
  * Because Maemo 5 is using a special dialog design this window is declared
@@ -1383,6 +1330,7 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
   topLayout->setSpacing(10);
 
   fileTable = new QTableWidget( 0, 1, this );
+  fileTable->setToolTip( tr("Use check boxes to activate or deactivate file loading.") );
   fileTable->setSelectionBehavior( QAbstractItemView::SelectRows );
   fileTable->setShowGrid( true );
 
@@ -1421,7 +1369,7 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
   int row = 0;
   fileTable->setRowCount( row + 1 );
 
-  item = new QTableWidgetItem( tr("All"), 0 );
+  item = new QTableWidgetItem( tr("Select all"), 0 );
   item->setFlags( Qt::ItemIsEnabled );
   item->setCheckState( Qt::Unchecked );
   fileTable->setItem( row, 0, item );
@@ -1451,6 +1399,11 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
     }
 
   QStringList& files = GeneralConfig::instance()->getAirspaceFileList();
+
+  if( files.isEmpty() )
+    {
+      return;
+    }
 
   if( files.at(0) == "All" )
     {
@@ -1516,8 +1469,6 @@ void SettingsPageAirspaceLoading::slot_toggleCheckBox( int row, int column )
 /* Called to save data to the configuration file. */
 void SettingsPageAirspaceLoading::slot_save()
 {
-  qDebug() << "SettingsPageAirspaceLoading::slot_save()";
-
   QStringList files;
 
   if( fileTable->item( 0, 0 )->checkState() == Qt::Checked )
@@ -1547,17 +1498,21 @@ void SettingsPageAirspaceLoading::slot_save()
   // Check, if file list has been modified
   if( oldFiles.size() != files.size() )
     {
-      // Size id different.
+      // List size is different, emit signal.
       emit airspaceFileListChanged();
     }
-
-  // The lists are always sorted
-  for( int i = 0; i < files.size(); i++ )
+  else
     {
-      if( files.at(i) != oldFiles.at(i) )
+      // The list size is equal, we have to check every single list element.
+      // Note that the lists are always sorted.
+      for( int i = 0; i < files.size(); i++ )
         {
-          emit airspaceFileListChanged();
-          break;
+          if( files.at(i) != oldFiles.at(i) )
+            {
+              // File names are different, emit signal.
+              emit airspaceFileListChanged();
+              break;
+            }
         }
     }
 

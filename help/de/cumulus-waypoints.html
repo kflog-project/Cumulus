@@ -27,18 +27,33 @@
   <dt><b>Wegpunktdatei</b></dt>
 
   <dd>
-    Cumulus &uuml;nterst&uuml;tzt im Moment nur eine Wegpunktdatei.
-    Diese ist im
+    Cumulus arbeitet mit nur einer globalen Wegpunktdatei in zwei verschiedenen
+    Formaten. Diese ist im
     <a href="cumulus-settings-personal.html#DataDirectory">
-    Benutzer Datenverzeichnis</a> zu finden bzw. muss dort abgelegt
-    werden. Als Dateiname muss <i>cumulus.kwp</i> benutzt werden. Dieser
-    Name ist im Moment hart kodiert.
+    Benutzer Datenverzeichnis</a> zu finden bzw. muss dort immer abgelegt
+    werden. Der Wegpunktdateiname ist hart kodiert und seine Endung h&auml;ngt vom
+    verwendeten Format ab. Das Format wird in
+    <a href="cumulus-preflight-settings-waypoint.html#StorageFormat">
+    Vorflug Einstellungen - Wegpunkt Import</a> definiert. Bei bin&auml;rer
+    Speicherung wird der Name <i>cumulus.kwp</i> benutzt, bei XML Speicherung
+    <i>cumulus.kflogwp</i>.
   </dd>
+
+  <dt><b>Wegpunkt Import</b></dt>
+
+  <DD>
+    Unter <a href="cumulus-preflight-settings-waypoint.html">
+    Vorflug Einstellungen - Wegpunkt Import</a> haben Sie die M&ouml;glichkeit,
+    Wegpunktdaten aus anderen Dateien in Cumulus zu importieren. Das ist die
+    beste Art und Weise f&uuml;r Ihre Wegpunktverwaltung. Alternativ k&ouml;nnen Sie
+    nat&uuml;rlich auch KFLog benutzen, um eine globale Cumulus Wegpunktdatei zu
+    erzeugen und diese dann zu Cumulus &uuml;bertragen.
+  </DD>
 
   <br><dt><b>Wegpunkt Dateitransfer</b></dt>
 
   <dd>
-    Sie k&ouml;nnen die Wegpunktdatei zwischen PC und PDA hin und her
+    Sie k&ouml;nnen die globale Wegpunktdatei zwischen PC und PDA hin und her
     &uuml;bertragen. Beachten Sie aber, dass Culumus zu dieser Zeit
     <b>nicht l&auml;uft</b>, andernfalls kann dadurch die Datei besch&auml;digt,
     ungewollt &uuml;berschrieben oder auch zerst&ouml;rt werden.
@@ -70,6 +85,11 @@
           Wegpunkt zu Ihrem neuen Ziel zu machen. Anschlie&szlig;end k&ouml;nnen Sie
           die <b>V</b> Taste benutzen, um den Wegpunkt auf der Karte
           sichtbar zu machen.</li>
+      <li>Dr&uuml;cken Sie den Knopf <b>Zeige ...</b>, um die Anzeige der
+          Wekpunkte auf eine bestimmte Priorit&auml;t zu beschr&auml;nken. Der Knopf
+          arbeitet als Umschalter zwischen den Priorit&auml;ten niedrig, normal und
+          hoch oder alles anzeigen.</li>
+
 		</ul></p>
   </dd>
 
@@ -105,22 +125,22 @@
     Fenster mit den Wegpunktdaten, in dem Sie Ihre &Auml;nderungen vornehmen k&ouml;nnen.
   </dd>
 
-  <br><dt><b>Wegpunkt Wertigkeit</b></dt>
+  <br><dt><b>Wegpunkt Priorit&auml;t</b></dt>
 
   <dd>
-    Die <b>Wertigkeit</b> eines Wegpunktes bedarf einiger Erkl&auml;rungen. Um das
+    Die <b>Priorit&auml;t</b> eines Wegpunktes bedarf einiger Erkl&auml;rungen. Um das
     &Uuml;berquellen der Karte mit Wegpunkten bei gro&szlig;en Ma&szlig;st&auml;ben zu verhindern,
-    wurde das Wertigkeitsattribut eingef&uuml;hrt. Entsprechend der zugeordneten
-    Wertigkeit werden Wegpunkte nur bis zu einem bestimmten Ma&szlig;stab gezeichnet.
-    Wegpunkte mit der Wertigkeit <b>hoch</b> werden immer gezeichnet. Dieses
+    wurde das Priorit&auml;tsattribut eingef&uuml;hrt. Entsprechend der zugeordneten
+    Priorit&auml;t werden Wegpunkte nur bis zu einem bestimmten Ma&szlig;stab gezeichnet.
+    Wegpunkte mit der Priorit&auml;t <b>hoch</b> werden immer gezeichnet. Dieses
     Attribut sollten Sie z.B. f&uuml;r wichtige Orte wie Ihren Heimatplatz anwenden.
-    Die Wertigkeit <b>normal</b> wird nur bis zu mittleren Ma&szlig;st&auml;ben gezeichet,
-    w&auml;hrend die Wertigkeit <b>gering</b> nur bei ganz kleinen Ma&szlig;st&auml;ben zu sehen
-    ist. Der gerade selektierte Wegpunkt wird unabh&auml;ngig von seiner Wertigkeit
+    Die Priorit&auml;t <b>normal</b> wird nur bis zu mittleren Ma&szlig;st&auml;ben gezeichet,
+    w&auml;hrend die Priorit&auml;t <b>gering</b> nur bei ganz kleinen Ma&szlig;st&auml;ben zu sehen
+    ist. Der gerade selektierte Wegpunkt wird unabh&auml;ngig von seiner Priorit&auml;t
     immer gezeichnet. Unter
     <a href="cumulus-settings-map-objects.html#WaypointImportance">
     Einstellungen/Karten-Objekte</a> k&ouml;nnen Sie die Skalengrenzen setzen,
-    bis zu denen Wegpunkte entsprechend Ihrer zugeordneten Wertigkeit
+    bis zu denen Wegpunkte entsprechend Ihrer zugeordneten Priorit&auml;t
     gezeichnet werden.
   </dd>
 

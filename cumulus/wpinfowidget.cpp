@@ -488,10 +488,15 @@ void WPInfoWidget::slot_setNewHome()
   int answer= QMessageBox::question(this,
                                    tr("Set home site"),
                                    tr("Use point<br><b>%1</b><br>as your home site?").arg(_wp.name) +
-                                   tr("<br>Change can take<br>a few seconds."),
+                                   tr("<br>Change can take<br>a few seconds and more."),
                                    QMessageBox::No, QMessageBox::Yes );
   if( answer == QMessageBox::Yes )
     {
+      QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
+                                       QEventLoop::ExcludeSocketNotifiers );
+
       // save new home position and elevation
       GeneralConfig *conf = GeneralConfig::instance();
       conf->setHomeCoord( _wp.origP );
@@ -500,6 +505,8 @@ void WPInfoWidget::slot_setNewHome()
       emit newHomePosition( _wp.origP );
       homeChanged = true;
       cmdHome->setVisible( false );
+
+      QApplication::restoreOverrideCursor();
     }
 }
 

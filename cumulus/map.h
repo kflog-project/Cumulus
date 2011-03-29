@@ -193,6 +193,7 @@ public:
     {
       qDeleteAll(airspaceRegionList);
       airspaceRegionList.clear();
+      airspaceRegionList = QList<AirRegion *>();
     };
 
 public slots:

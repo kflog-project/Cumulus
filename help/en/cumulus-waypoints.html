@@ -29,19 +29,33 @@ easily maintain the waypoint list.
   <dt><b>Waypoint file remarks</b></dt>
 
   <dd>
-		At the moment Cumulus supports only one waypoint file. This file is
-		installed under your selected
+		Cumulus works with only one global waypoint file in two different formats.
+    This file is installed under your selected
     <a href="cumulus-settings-personal.html#DataDirectory">
     Data Directory</a>.
-    As waypoint file name must be used <i>cumulus.kwp</i>.
-    This is a hardcoded name.
+    The global waypoint file name is hardcoded and its extension depends on
+    the used format. The format is defined in
+    <a href="cumulus-preflight-settings-waypoint.html#StorageFormat">
+    Pre-Fight Settings - Waypoints Import</a>.
+    The name for binary storage is <i>cumulus.kwp</i>, for XML storage
+    <i>cumulus.kflogwp</i> is used.
   </dd>
+
+  <dt><b>Waypoint import</b></dt>
+
+  <DD>
+    Under <a href="cumulus-preflight-settings-waypoint.html">
+    Pre-Fight Settings - Waypoints</a> you have the possibility to import
+    waypoint data from other data files into Cumulus. That is the best way
+    for your waypoint management. Alternatively you can use KFLog to prepare
+    a global Cumulus waypoint file.
+  </DD>
 
   <dt><b>Waypoint file transfer</b></dt>
 
   <dd>
-		You can transfer the waypoint file between your desktop PC and your PDA but
-		notice,	that Cumulus is <b>not running</b> during the file transfer.
+		You can transfer the global Cumlus waypoint file between your desktop PC and
+    your PDA but notice, that Cumulus is <b>not running</b> during the file transfer.
 		That can cause a corrupted file.
   </dd>
 
@@ -64,13 +78,16 @@ easily maintain the waypoint list.
 		      new home position.</li>
 		  <li>Press the <b><i>Info</i></b> button to get displayed the details
 		      of the selected waypoint. The info screen for a waypoint will close
-          automatically after some seconds. Press the <i>Stop</i> button to
-          prevent this. The <b><i>Home</i></b> button sets this waypoint
+          automatically after some seconds. Press the <b><i>Stop</i></b>
+          button to prevent this. The <b><i>Home</i></b> button sets this waypoint
           as your new home position.</li>
 		  <li>Press the <b><i>Select</i></b> button to make the selected waypoint
-          to your new target. The hardware keys Return or Select do the same.
+          to your new target.
 		      You may want to use <b><i>V</i></b> after selecting a
           waypoint to ensure it is visible on the map.</li>
+      <li>Press the <b><i>Show ...</i></b> button to toggle the waypoint
+          display according to the waypoint priorities low, normal and high
+          or to display all.</li>
 		</ul>
     </p>
   </dd>
@@ -105,20 +122,20 @@ easily maintain the waypoint list.
     with entry fields for the waypoint properties.
   </dd>
 
-  <dt><b>Waypoint importance</b></dt>
+  <dt><b>Waypoint priority</b></dt>
 
   <dd>
-    The <i>importance</i> property deserves some explanation. To prevent
+    The <i>priority</i> property deserves some explanation. To prevent
     overcrowding the map with waypoints if you zoom out far, not all waypoints
-    are drawn at all zoom factors. You can control which waypoints is to draw by
-    selecting the importance.
+    are drawn at all zoom factors. You can control which waypoints are to draw by
+    selecting the priority.
     If you select <i>high</i> the waypoint will always be drawn. This would
     be appropriate for your home site and other important sites.
     If you select <i>normal</i> the waypoint will be drawn in normal zoom
-    modes but not if you zoom out too much and the <i>low</i> importance
+    modes but not if you zoom out too much and the <i>low</i> prioritized
     waypoints are only drawn if you zoom in far enough. The currently
     selected waypoint is always visible. In the configuration setup of Map
-    Objects you can the define the scale borders for every <i>importance</i>
+    Objects you can the define the scale borders for every <i>priority</i>
     property.
     See <a href="cumulus-settings-map-objects.html#WaypointImportance">here</a>
     for more information.

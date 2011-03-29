@@ -74,9 +74,9 @@ extern MapView* _globalMapView;
 #define FILE_VERSION_MAP      101
 
 // compiled version
-#define FILE_VERSION_GROUND_C   103
-#define FILE_VERSION_TERRAIN_C  103
-#define FILE_VERSION_MAP_C      102
+#define FILE_VERSION_GROUND_C   104
+#define FILE_VERSION_TERRAIN_C  104
+#define FILE_VERSION_MAP_C      103
 
 
 #define READ_POINT_LIST\
@@ -341,7 +341,15 @@ bool MapContents::__readTerrainFile( const int fileSecID,
   emit loadingFile(pathName);
 
   QDataStream in(&mapfile);
-  in.setVersion(QDataStream::Qt_3_3);
+
+  if( compiling )
+    {
+      in.setVersion(QDataStream::Qt_3_3);
+    }
+  else
+    {
+      in.setVersion(QDataStream::Qt_4_7);
+    }
 
   // qDebug("reading file %s", pathName.toLatin1().data());
 
@@ -521,10 +529,10 @@ bool MapContents::__readTerrainFile( const int fileSecID,
   QFile ausgabe(kfcPathName);
   QDataStream out(&ausgabe);
 
-  if ( compiling )
+  if( compiling )
     {
       out.setDevice(&ausgabe);
-      out.setVersion(QDataStream::Qt_3_3);
+      out.setVersion(QDataStream::Qt_4_7);
 
       if (!ausgabe.open(QIODevice::WriteOnly))
         {
@@ -797,7 +805,15 @@ bool MapContents::__readBinaryFile(const int fileSecID,
   emit loadingFile(pathName);
 
   QDataStream in(&mapfile);
-  in.setVersion(QDataStream::Qt_2_0);
+
+  if( compiling )
+    {
+      in.setVersion( QDataStream::Qt_2_0 );
+    }
+  else
+    {
+      in.setVersion( QDataStream::Qt_4_7 );
+    }
 
   // qDebug("reading file %s", pathName.toLatin1().data());
 
@@ -992,8 +1008,9 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
   if ( compiling )
     {
-      out.setDevice(&ausgabe);
-      out.setVersion(QDataStream::Qt_2_0);
+      out.setDevice( &ausgabe );
+      out.setVersion( QDataStream::Qt_4_7 );
+
       if (!ausgabe.open(QIODevice::WriteOnly))
         {
           qWarning("Cumulus: Can't open compiled map file %s for writing!"
@@ -2436,6 +2453,9 @@ void MapContents::slotReloadAirspaceData()
 
   qDeleteAll(airspaceList);
   airspaceList.clear();
+
+  // free all internal allocated memory in QList
+  airspaceList = SortableAirspaceList();
 
   _globalMapView->message( tr("Reloading Airspaces started") );
 

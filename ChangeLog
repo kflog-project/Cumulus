@@ -14,10 +14,17 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2011-03-28 AP: Configuration dialogs airspace filling and warnings are
+                   not more preloaded, if configuration settings widget is
+                   opened.
+[o] 2011-03-28 AP: Reading of compiled Welt2000 and airspace files tuned by
+                   preallocation of list elements. That reduces the processing
+                   time a little bit.
 [+] 2011-03-28 AP: Added an airspace file selection window to settings airspace.
                    That allows to define the airspace files to be loaded from
-                   the airspace file directory. So is the airspace load management
-                   easier to handle.
+                   the airspace file directory. That makes the airspace file load
+                   management easier because you can select now your needed files
+                   from a pool of airspace files.
 [+] 2011-03-27 AP: Runway length added to reachable list view.
 [+] 2011-03-27 AP: Waypoint page of preflight widget enhanced by a combo box
                    to change the priority of imported waypoints. That make it

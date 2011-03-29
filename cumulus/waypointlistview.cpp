@@ -84,7 +84,7 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
   cmdSelect = new QPushButton( tr( "Select" ), this );
   buttonRow->addWidget( cmdSelect );
 
-  cmdPriority = new QPushButton( tr( "Show all" ), this );
+  cmdPriority = new QPushButton( tr( "Show All" ), this );
   buttonRow->addWidget( cmdPriority );
 
   topLayout->addLayout( buttonRow, 1, 0, 1, 2 );
@@ -99,11 +99,6 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
   connect( cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()) );
   connect( listw, SIGNAL(wpSelectionChanged()), this, SLOT(slot_Selected()) );
   connect( this, SIGNAL(done()), listw, SLOT(slot_Done()) );
-
-  // activate keyboard shortcut Return as select
-  QShortcut* scSelect = new QShortcut( this );
-  scSelect->setKey( Qt::Key_Return );
-  connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ) );
 }
 
 WaypointListView::~WaypointListView()

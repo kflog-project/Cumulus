@@ -46,7 +46,7 @@
 #define FILE_TYPE_AIRFIELD_C 0x63
 
 // version used for files created from welt2000 data
-#define FILE_VERSION_AIRFIELD_C 204
+#define FILE_VERSION_AIRFIELD_C 205
 
 extern MapContents*  _globalMapContents;
 extern MapMatrix*    _globalMapMatrix;
@@ -1314,7 +1314,14 @@ bool Welt2000::parse( QString& path,
 #endif
 
           SaveProjection( out, _globalMapMatrix->getProjection() );
-          // write data on airfields from buffer
+
+          // write data counters to file
+          out << quint32( af );
+          out << quint32( gl );
+          out << quint32( ul );
+          out << quint32( ol );
+
+          // write data on airfields from buffer into the file
           out << bufdata;
           compFile.close();
         }
@@ -1331,7 +1338,6 @@ bool Welt2000::parse( QString& path,
 
   return true;
 }
-
 
 /**
  * Read the content of a compiled file and put it into the related
@@ -1358,10 +1364,6 @@ bool Welt2000::readCompiledFile( QString &path,
 
   QDataStream in(&inFile);
 
-  // This was the order used by earlier cumulus
-  // implementations. Because welt2000 does not support these all a
-  // subset from the original implementation is only used to spare
-  // memory and to get a better performance.
   quint32 magic;
   qint8 fileType;
   quint16 fileVersion;
@@ -1376,6 +1378,13 @@ bool Welt2000::readCompiledFile( QString &path,
 #endif
 
   ProjectionBase *projectionFromFile;
+
+  // Data counter
+  quint32 af;
+  quint32 gl;
+  quint32 ul;
+  quint32 ol;
+
   qint32 buflen;
 
   quint8 afType;
@@ -1447,7 +1456,29 @@ bool Welt2000::readCompiledFile( QString &path,
   delete projectionFromFile;
   projectionFromFile = 0;
 
-  // because we're used a buffer during output, the buffer length will
+  // read element counters
+  in >> af;
+  in >> gl;
+  in >> ul;
+  in >> ol;
+
+  // Preallocate list memory
+  if( af || ul )
+    {
+      airfieldList.reserve( airfieldList.size() + af + ul );
+    }
+
+  if( gl )
+    {
+      gliderfieldList.reserve( gliderfieldList.size() + gl );
+    }
+
+  if( ol )
+    {
+      outlandingList.reserve( gliderfieldList.size() + ol );
+    }
+
+  // Because we're used a buffer during output, the buffer length will
   // be written too. Now we have to read it but don't need it because
   // we access directly to the opened file.
   in >> buflen;
