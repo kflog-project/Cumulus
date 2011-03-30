@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c): 2010-2011 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,11 +23,15 @@
  *  A class defining QT user data types usable in queued connections of
  *  threads.
  *
- *  \date 2010
+ *  \date 2010-2011
+ *
+ *  \version $Id$
  */
 
 #ifndef DATA_TYPES_H_
 #define DATA_TYPES_H_
+
+//------------------------------------------------------------------------------
 
 #ifdef BLUEZ
 
@@ -46,5 +50,27 @@ typedef QMap<QString, QString> BtDeviceMap;
 Q_DECLARE_METATYPE(BtDeviceMap)
 
 #endif
+
+//------------------------------------------------------------------------------
+
+#ifdef WELT2000_THREAD
+
+#include "airfield.h"
+
+/**
+ * Special data type to return the loaded airfield data lists of Welt2000 to
+ * another thread.
+ */
+typedef QList<Airfield> AirfieldList;
+
+Q_DECLARE_METATYPE(AirfieldList)
+
+typedef QList<Airfield>* AirfieldListPtr;
+
+Q_DECLARE_METATYPE(AirfieldListPtr)
+
+#endif
+
+//------------------------------------------------------------------------------
 
 #endif // DATA_TYPES_H_

@@ -28,6 +28,10 @@ CONFIG += internet
 # Enable bluetooth feature, if not wanted comment out the next line with a hash
 CONFIG += bluetooth
 
+# Enable Welt2000 reloading via an extra thread, if not wanted comment out the
+# next line with a hash
+CONFIG += welt2000thread
+
 #version check for Qt 4.7
 ! contains(QT_VERSION, ^4\\.[7]\\..*) {
   message("Cannot build Cumulus with Qt version $${QT_VERSION}.")
@@ -293,6 +297,10 @@ bluetooth {
     SOURCES += bluetoothdevices.cpp
     
     LIBS += -lbluetooth
+}
+
+welt2000thread {
+    DEFINES += WELT2000_THREAD
 }
 
 TARGET = cumulus

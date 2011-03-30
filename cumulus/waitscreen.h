@@ -83,19 +83,20 @@ public slots:
 
 private:
 
+  QLabel* Text1;
+  QLabel* Text2;
+
+  QLabel* Glider;
+
+  QPixmap _gliders;
+  QPixmap _glider;
+
   /**
    * Holds the current progress-value. Used to draw the
    * glider icon in the correct rotation.
    */
   int progress;
 
-  QLabel * Text1;
-  QLabel * Text2;
-
-  QLabel * Glider;
-
-  QPixmap _gliders;
-  QPixmap _glider;
   int lastRot;
   bool _screenUsage;
 };

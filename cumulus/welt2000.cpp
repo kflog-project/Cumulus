@@ -51,6 +51,9 @@
 extern MapContents*  _globalMapContents;
 extern MapMatrix*    _globalMapMatrix;
 
+// set static member variable
+QMutex Welt2000::mutex;
+
 Welt2000::Welt2000()
 {
   h_projection = (ProjectionBase *) 0;
@@ -87,6 +90,9 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
                      QList<Airfield>& gliderfieldList,
                      QList<Airfield>& outlandingList )
 {
+  // Set a global lock during execution to avoid calls in parallel.
+  QMutexLocker locker( &mutex );
+
   // Rename WELT2000.TXT -> welt2000.txt.
   QString wl = "welt2000.txt";
   QString wu = "WELT2000.TXT";
@@ -423,9 +429,10 @@ bool Welt2000::readConfigEntries( QString &path )
 
   if( !in.open(QIODevice::ReadOnly) )
     {
-      qWarning("W2000: User has not provided a configuration file %s!", path.toLatin1().data());
       return false;
     }
+
+  qDebug() << "W2000: Reading configuration file" << path;
 
   QTextStream ins(&in);
 
@@ -545,7 +552,7 @@ bool Welt2000::parse( QString& path,
 
   if( !in.open(QIODevice::ReadOnly) )
     {
-      qWarning("W2000: Cannot open airfield file %s!", path.toLatin1().data());
+      qWarning("W2000: Cannot open file %s!", path.toLatin1().data());
       return false;
     }
 
@@ -606,9 +613,10 @@ bool Welt2000::parse( QString& path,
       c_homeRadius = Distance::convertToMeters( radius ) / 1000.;
     }
 
-  qDebug( "W2000: %d country entries are to be extracted", c_countryList.count() );
-  qDebug() << "W2000: load outlandings?" << outlandings;
-  qDebug( "W2000: Home radius is set to %.1f Km", c_homeRadius );
+
+  qDebug() << "W2000: Country Filter:" << c_countryList;
+  qDebug() << "W2000: Load Outlandings?" << outlandings;
+  qDebug( "W2000: Home Radius: %.1f Km", c_homeRadius );
 
   // put all entries of country list into a dictionary for faster access
   QHash<QString, QString> countryDict;
@@ -950,8 +958,10 @@ bool Welt2000::parse( QString& path,
 
       if( ! ok )
         {
+#ifndef MAEMO
           qWarning( "W2000, Line %d: %s (%s) wrong latitude degree value, ignoring entry!",
                     lineNo, afName.toLatin1().data(), country.toLatin1().data() );
+#endif
           continue;
         }
 
@@ -959,8 +969,10 @@ bool Welt2000::parse( QString& path,
 
       if( ! ok )
         {
+#ifndef MAEMO
           qWarning( "W2000, Line %d: %s (%s) wrong latitude minute value, ignoring entry!",
                     lineNo, afName.toLatin1().data(), country.toLatin1().data() );
+#endif
           continue;
         }
 
@@ -968,8 +980,10 @@ bool Welt2000::parse( QString& path,
 
       if( ! ok )
         {
+#ifndef MAEMO
           qWarning( "W2000, Line %d: %s (%s) wrong latitude second value, ignoring entry!",
                     lineNo, afName.toLatin1().data(), country.toLatin1().data() );
+#endif
           continue;
         }
 
@@ -991,8 +1005,10 @@ bool Welt2000::parse( QString& path,
 
       if( ! ok )
         {
+#ifndef MAEMO
           qWarning( "W2000, Line %d: %s (%s) wrong longitude degree value, ignoring entry!",
                     lineNo, afName.toLatin1().data(), country.toLatin1().data() );
+#endif
           continue;
         }
 
@@ -1000,8 +1016,10 @@ bool Welt2000::parse( QString& path,
 
       if( ! ok )
         {
+#ifndef MAEMO
           qWarning( "W2000, Line %d: %s (%s) wrong longitude minute value, ignoring entry!",
                     lineNo, afName.toLatin1().data(), country.toLatin1().data() );
+#endif
           continue;
         }
 
@@ -1009,8 +1027,10 @@ bool Welt2000::parse( QString& path,
 
       if( ! ok )
         {
+#ifndef MAEMO
           qWarning( "W2000, Line %d: %s (%s) wrong longitude second value, ignoring entry!",
                     lineNo, afName.toLatin1().data(), country.toLatin1().data() );
+#endif
           continue;
         }
 
@@ -1081,8 +1101,10 @@ bool Welt2000::parse( QString& path,
 
       if( ! ok )
         {
+#ifndef MAEMO
           qWarning( "W2000, Line %d: %s (%s) missing or wrong elevation, set value to 0!",
                     lineNo, afName.toLatin1().data(), country.toLatin1().data() );
+#endif
           elevation = 0;
         }
 
@@ -1095,10 +1117,12 @@ bool Welt2000::parse( QString& path,
         {
           if( olField == false )
             {
-                  // Don't display warnings for outlandings
+              // Don't display warnings for outlandings
+#ifndef MAEMO
               qWarning( "W2000, Line %d: %s (%s) missing or wrong frequency, set value to 0!",
                         lineNo, afName.toLatin1().data(), country.toLatin1().data() );
-            }
+#endif
+             }
 
           fFrequency = 0.0; // reset frequency to unknown
         }
@@ -1144,8 +1168,10 @@ bool Welt2000::parse( QString& path,
 
       if( ! ok || ! ok1 || rwDir < 1 || rwDir > 36 || rwDir1 < 1 || rwDir1 > 36 )
         {
+#ifndef MAEMO
           qWarning( "W2000, Line %d: %s (%s) missing or wrong runway direction, set value to 0!",
                     lineNo, afName.toLatin1().data(), country.toLatin1().data() );
+#endif
           rwDir = rwDir1 = 0;
         }
 
@@ -1166,8 +1192,10 @@ bool Welt2000::parse( QString& path,
 
       if( ! ok )
         {
+#ifndef MAEMO
           qWarning( "W2000, Line %d: %s (%s) missing or wrong runway length, set value to 0!",
                     lineNo, afName.toLatin1().data(), country.toLatin1().data() );
+#endif
           rwLen = 0;
         }
       else
@@ -1641,3 +1669,65 @@ bool Welt2000::setHeaderData( QString &path )
   h_headerIsValid = true; // save read result here too
   return true;
 }
+
+/*-------------------------Welt2000Thread-------------------------------------*/
+
+#ifdef WELT2000_THREAD
+
+#include <signal.h>
+
+Welt2000Thread::Welt2000Thread( QObject *parent ) : QThread( parent )
+{
+  setObjectName( "Welt2000Thread" );
+
+  // Activate self destroy after finish signal has been caught.
+  connect( this, SIGNAL(finished()), this, SLOT(slot_Destroy()) );
+}
+
+Welt2000Thread::~Welt2000Thread()
+{
+}
+
+void Welt2000Thread::run()
+{
+  sigset_t sigset;
+  sigfillset( &sigset );
+
+  // deactivate all signals in this thread
+  pthread_sigmask( SIG_SETMASK, &sigset, 0 );
+
+  QList<Airfield>* airfieldList    = new QList<Airfield>;
+  QList<Airfield>* gliderfieldList = new QList<Airfield>;
+  QList<Airfield>* outlandingList  = new QList<Airfield>;
+
+  Welt2000 welt2000;
+
+  bool ok = welt2000.load( *airfieldList, *gliderfieldList, *outlandingList );
+
+  /* It is expected that a receiver slot is connected to this signal. The
+   * receiver is responsible to delete the passed lists. Otherwise a big
+   * memory leak will occur.
+   */
+  emit loadedLists( ok, airfieldList, gliderfieldList, outlandingList );
+
+  // Check is signal is connected to a slot.
+  if( receivers( SIGNAL( loadedLists( bool,
+                                      QList<Airfield>*,
+                                      QList<Airfield>*,
+                                      QList<Airfield>*  )) ) == 0 )
+    {
+      qWarning() << "Welt2000Thread: No Slot connection to Signal loadedLists";
+
+      delete airfieldList;
+      delete gliderfieldList;
+      delete outlandingList;
+    }
+}
+
+void Welt2000Thread::slot_Destroy()
+{
+  // deletes the thread object after execution is finished
+  delete this;
+}
+
+#endif

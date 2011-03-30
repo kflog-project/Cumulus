@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,11 +22,13 @@
 #include "generalconfig.h"
 
 WaitScreen::WaitScreen(QWidget *parent ) :
-  QDialog( parent, Qt::FramelessWindowHint )
+  QDialog( parent, Qt::FramelessWindowHint ),
+  progress( 0 ),
+  lastRot( 0 ),
+  _screenUsage( true )
 {
   setObjectName("WaitScreen");
   //setModal(true);
-  _screenUsage = true;
 
   QGridLayout * backLayout = new QGridLayout(this);
   QGridLayout * topLayout  = new QGridLayout();
@@ -62,9 +64,6 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   Text2->setMinimumHeight(22);
   topLayout->addWidget(Text2, 2, 1);
 
-  progress=0;
-  lastRot=0;
-
   _gliders = GeneralConfig::instance()->loadPixmap("gliders.png");
   _glider = QPixmap(40,40);
   _glider.fill( Glider->palette().color(QPalette::Window) );
@@ -90,6 +89,10 @@ void WaitScreen::slot_SetText1(const QString& text)
   if( screenUsage() )
     {
       slot_Progress(1);
+    }
+  else
+    {
+      QCoreApplication::flush();
     }
 }
 
@@ -121,6 +124,10 @@ void WaitScreen::slot_SetText2(const QString& text)
     {
       slot_Progress(1);
     }
+  else
+    {
+      QCoreApplication::flush();
+    }
 }
 
 /**
@@ -146,6 +153,7 @@ void WaitScreen::slot_Progress( int stepsize )
           lastRot = rot;
           setVisible( true );
           repaint();
+          QCoreApplication::flush();
         }
-    }
+     }
 }

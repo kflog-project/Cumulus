@@ -124,8 +124,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
       ws = new WaitScreen( MainWindow::mainWindow() );
       ws->slot_SetText1( QObject::tr("Reading file") );
       ws->slot_SetText2( QFileInfo(catalog).fileName() );
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
-                                       QEventLoop::ExcludeSocketNotifiers );
+      QCoreApplication::flush();
     }
 
   QDataStream in( &file );
@@ -185,8 +184,8 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
       if( _showProgress == true && (wpCount % wsCycles) == 0 )
         {
           ws->slot_Progress( 2 );
-          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
-                                           QEventLoop::ExcludeSocketNotifiers );
+          //QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+          //                                 QEventLoop::ExcludeSocketNotifiers );
         }
 
       // read values from file
@@ -287,8 +286,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
   if( _showProgress )
     {
       ws->setVisible( false );
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
-                                       QEventLoop::ExcludeSocketNotifiers );
+      QCoreApplication::flush();
       delete ws;
     }
 

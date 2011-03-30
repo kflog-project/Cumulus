@@ -12,30 +12,30 @@
  **   welt2000.h
  **
  **   This class is part of Cumulus. It provides an interface to be
- **   able to read data from a welt2000.txt ascii file, craeted by
+ **   able to read data from a welt2000.txt ASCII file, created by
  **   Michael Meier and maintained by Howard Mills and Mike Köster
  **
  **   http:http://www.segelflug.de/vereine/welt2000/download/WELT2000.TXT
  **
- **   The file source contains data about airports, airfields,
+ **   The file source contains data about airfields, glider fields,
  **   outlandings and turn points in a proprietary ASCII format. Only
- **   the information about airfields, gliding fields and ultralight
+ **   the information about airfields, gliderfields, ultralight
  **   fields and outlandings are extracted by this class from the source
- *    and put into the related lists (airport, gliding or outlanding list)
- **   of cumulus. Furthermore an compiled binary version of the extracted
- **   data is created during parsing, usable at a next run of cumulus
- **   for a faster startup. Because welt2000 supports only three kinds
- **   of airfields (airfield, glider field, ul field) but cumulus some
+ *    and put into the related lists (airfield, glider or outlanding list)
+ **   of Cumulus. Furthermore a compiled binary version of the extracted
+ **   data is created during parsing, usable at a next run of Cumulus
+ **   for a faster startup. Because Welt2000 supports only three kinds
+ **   of airfields (airfield, gliderfield, ul-field) but Cumulus some
  **   more, a configuration file has been introduced, which allows an
- **   additional mapping to other map elements of cumulus. Furthermore
- **   it provides an country filter mechanism. See later on for more
+ **   additional mapping to other map elements of Cumulus. Furthermore
+ **   it provides a country filter mechanism. See later on for more
  **   information about the configuration file possibilities.
  **
- **   To start the load of welt2000 data, the method load has to be
+ **   To start the load of Welt2000 data, the method load has to be
  **   called. It will put all extracted data into the passed lists. The
  **   load method will search for a source file with name welt2000.txt
  **   resp. a compiled file with the name welt2000.txc in the default
- **   map directories of cumulus. The first found file is always
+ **   map directories of Cumulus. The first found file is always
  **   taken. If a compiled file exists, different checks will be
  **   executed, if it is usable for reloading:
  **
@@ -58,15 +58,15 @@
  **   contains more as we need, a lot of turn points and out commented
  **   lines. If true then an extracted version will be created from it
  **   and written back under the same file name with a specific header
- **   for cumulus. That will reduce the file size over 50% (3MB to
+ **   for Cumulus. That will reduce the file size over 50% (3MB to
  **   1.4MB). This compressed file is then the base for all parsing
  **   calls so long no new source is installed. Because all data for
  **   the whole world is contained in one file, we need a mechanism to
- **   extract only a subset from it and to protect cumulus for
+ **   extract only a subset from it and to protect Cumulus for
  **   overloads (e.g. memory overflow). There are foreseen different
  **   possibilities for filtering:
  **
- **   a) In the configuration area of cumulus the user can define either
+ **   a) In the configuration area of Cumulus the user can define either
  **      a country filter or a radius around his home position. These
  **      items do overwrite the items in the configuration file.
  **
@@ -75,7 +75,7 @@
  **
  **   c) If no country filter rule is defined, then all data are used
  **      inside 500Km radius around the home position. I hope that is an
- *       useful compromise and protects cumulus for memory overflows.
+ *       useful compromise and protects Cumulus for memory overflows.
  **
  **   Now some remarks about the configuration file and its
  **   content. Its name is welt2000.conf. The expected location is the
@@ -110,18 +110,18 @@
  **
  **      MAP_ICAO <icao-sign>=<new-map-element-of-cumulus>
  **
- **   The supported cumulus map elements are:
+ **   The supported Cumulus map elements are:
  **
  **   [IntAirport|Airport|MilAirport|CivMilAirport|Airfield|ClosedAirfield|
  **    CivHeliport|MilHeliport|AmbHeliport|Gliderfield|UltraLight|HangGlider]
  **
- **   Against the original compiled version of an cumulus airfield
- **   file, the elements of a compiled welt2000 file were further
+ **   Against the original compiled version of a Cumulus airfield
+ **   file, the elements of a compiled Welt2000 file were further
  **   reduced. All redundant entries with no information were removed
  **   from the output. Therefore the compiled file is incompatible
  **   with the kfc files but slimmer. To avoid confusion with the
  **   existing kfc files, which are derived from kfl, the extension
- **   .txc was choosen to show that this file is derived from a .txt
+ **   .txc was chosen to show that this file is derived from a .txt
  **   file.
  **
  ***********************************************************************/
@@ -129,12 +129,14 @@
 #ifndef _welt2000_h
 #define _welt2000_h
 
-#include <QMap>
+#include <QDateTime>
 #include <QList>
+#include <QMap>
+#include <QMutex>
+#include <QPoint>
+#include <QRect>
 #include <QString>
 #include <QStringList>
-#include <QRect>
-#include <QPoint>
 
 #include "airfield.h"
 #include "basemapelement.h"
@@ -154,7 +156,7 @@
 
 class Welt2000
 {
-public:
+ public:
 
   /**
    * Constructor
@@ -167,12 +169,12 @@ public:
   virtual ~Welt2000();
 
   /**
-   * search on default places a welt2000 file and load it. A source
+   * Searches on default places a Welt2000 file and load it. A source
    * can be the original ASCII file or a compiled version of it. The
    * results are put in the passed lists.
    *
-   * @param airfieldList All airports have to be stored in this list
-   * @param gliderfieldList All gilder fields have to be stored in this list
+   * @param airfieldList All airfields have to be stored in this list
+   * @param gliderfieldList All glider fields have to be stored in this list
    * @param outlandingList All outlanding fields have to be stored in this list
    * @return true (success) or false (error occurred)
    */
@@ -180,18 +182,18 @@ public:
              QList<Airfield>& gliderfieldList,
              QList<Airfield>& outlandingList );
 
-private:
+ private:
 
   /**
-   * Parses the passed file in welt2000 format and put the appropriate
+   * Parses the passed file in Welt2000 format and put the appropriate
    * entries in the related lists.
    *
-   * @param path Full name with path of welt2000 file
-   * @param airfieldList All airports have to be stored in this list
-   * @param gliderfieldList All gilder fields have to be stored in this list
+   * @param path Full name with path of Welt2000 file
+   * @param airfieldList All airfields have to be stored in this list
+   * @param gliderfieldList All glider fields have to be stored in this list
    * @param outlandingList All outlanding fields have to be stored in this list
-   * @param doCompile create a binary file of the parser results,
-   *                  if flag is set to true. Default is false
+   * @param doCompile Creates a binary file of the parser results,
+   *                  if the flag is set to true. Default is false.
    * @return true (success) or false (error occurred)
    */
   bool parse( QString& path,
@@ -201,20 +203,20 @@ private:
               bool doCompile=false );
 
   /**
-   * The passed file has to be fulfill a welt2000 file format. All
+   * The passed file has to be fulfill a Welt2000 file format. All
    * not relevant entries, like turn points, will be filtered
    * out. The content of the old file is overwritten with the
    * filtered results to save disk space.
    *
-   * @param path Full name with path of welt2000 file
+   * @param path Full name with path of Welt2000 file
    * @return true (success) or false (error occurred)
    */
   bool filter( QString &path );
 
   /**
-   * Read all entries from the configuration file related to welt2000.
+   * Read all entries from the configuration file related to Welt2000.
    *
-   * @param path Full name with path of welt2000 configuration file
+   * @param path Full name with path of Welt2000 configuration file
    * @return true (success) or false (error occurred)
    */
   bool readConfigEntries( QString &path );
@@ -223,7 +225,7 @@ private:
    * Read the content of a compiled file and put it into the related
    * lists.
    *
-   * @param path Full name with path of welt2000 binary file
+   * @param path Full name with path of Welt2000 binary file
    * @param airfieldList All airports have to be stored in this list
    * @param gliderfieldList All gilder fields have to be stored in this list
    * @param outlandingList All outlanding fields have to be stored in this list
@@ -235,15 +237,15 @@ private:
                          QList<Airfield>& outlandingList );
 
   /**
-   * Get the header data of a compiled file and put it in the class
+   * Gets the header data of a compiled file and put it in the class
    * variables.
    *
-   * @param path Full name with path of welt2000 binary file
+   * @param path Full name with path of Welt2000 binary file
    * @return true (success) or false (error occurred)
    */
   bool setHeaderData( QString &path );
 
-private:
+ private:
 
   QMap<QString, BaseMapElement::objectType> c_baseTypeMap;
 
@@ -269,6 +271,70 @@ private:
   bool h_outlandings; // Flag to indicate outlandings contained or not
   ProjectionBase *h_projection;
   bool h_headerIsValid;
+
+  /** Mutex to ensure thread safety. */
+  static QMutex mutex;
 };
 
-#endif
+/******************************************************************************/
+
+#ifdef WELT2000_THREAD
+
+#include <QThread>
+
+/**
+* \class Welt2000Thread
+*
+* \author Axel Pauli
+*
+* \brief Class to read a Welt2000 file in an extra thread.
+*
+* This class can read, parse and filter a Welt2000 file and store its content
+* in a binary format. All work is done in an extra thread.
+*
+* \date 2006-2011
+*/
+
+class Welt2000Thread : public QThread
+{
+  Q_OBJECT
+
+ public:
+
+  Welt2000Thread( QObject *parent = 0 );
+
+  virtual ~Welt2000Thread();
+
+ protected:
+
+  /**
+   * That is the main method of the thread.
+   */
+  void run();
+
+ private slots:
+
+  /** Called to delete the thread. */
+  void slot_Destroy();
+
+ signals:
+
+  /**
+  * This signal emits the results of the Welt2000 load.
+  *
+  * \param ok           The result of the load action.
+  * \param airfieldList The list with the airfield data
+  * \param airfieldList The list with the gliderfield data
+  * \param airfieldList The list with the outlanding data
+  *
+  */
+  void loadedLists( bool ok,
+                    QList<Airfield>* airfieldList,
+                    QList<Airfield>* gliderfieldList,
+                    QList<Airfield>* outlandingList );
+
+};
+
+#endif // WELT2000_THREAD
+
+#endif // _welt2000_h

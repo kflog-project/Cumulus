@@ -42,6 +42,7 @@
 #include <QDateTime>
 #include <QHash>
 #include <QMap>
+#include <QMutex>
 #include <QString>
 
 #include "airfield.h"
@@ -351,6 +352,15 @@ class MapContents : public QObject
 
 #endif
 
+    /**
+     * This slot is called by the Welt2000 load thread to signal, that the
+     * requested airfield data have been loaded.
+     */
+    void slotWelt2000LoadFinished( bool ok,
+                                   QList<Airfield>* airfieldListIn,
+                                   QList<Airfield>* gliderfieldListIn,
+                                   QList<Airfield>* outlandingListIn );
+
   signals:
 
     /**
@@ -392,6 +402,12 @@ class MapContents : public QObject
      */
     bool __readTerrainFile( const int fileSecID,
                             const int fileTypeID );
+
+    /**
+     * Starts a thread, which is loading the requested Welt2000 data.
+     */
+    void loadWelt2000DataViaThread();
+
 #ifdef INTERNET
 
     /**
@@ -547,6 +563,11 @@ class MapContents : public QObject
      */
     bool isFirst;
 
+    /**
+     * Flag to signal a reloading of map data
+     */
+    bool isReload;
+
     QPointer<WaitScreen> ws;
 
     /**
@@ -597,6 +618,8 @@ class MapContents : public QObject
 
 #endif
 
+    /** Mutex to protect Welt2000 actions. */
+    QMutex welt2000Mutex;
   };
 
 #endif

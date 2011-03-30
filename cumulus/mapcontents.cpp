@@ -108,7 +108,8 @@ const short MapContents::isoLevels[] =
 
 MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
     QObject(parent),
-    isFirst(true)
+    isFirst(true),
+    isReload(false)
 #ifdef INTERNET
 
     , downloadManger(0),
@@ -1651,7 +1652,7 @@ void MapContents::proofeSection()
   // calling of this method
   static bool mutex = false;
 
-  if ( mutex )
+  if( mutex )
     {
       // qDebug("MapContents::proofeSection(): is recursive called, returning");
       return; // return immediately, if reenter in method is not possible
@@ -1681,68 +1682,46 @@ void MapContents::proofeSection()
   // qDebug( "MapBorderCorners: l=%d, r=%d, t=%d, b=%d",
   //          westCorner, eastCorner, northCorner, southCorner );
 
-  if (isFirst)
-    {
-      ws->slot_SetText1(tr("Loading maps..."));
-      ws->slot_SetText2(tr("Reading OpenAir Files"));
-
-      OpenAirParser oap;
-      oap.load( airspaceList );
-
-      // finally, sort the airspaces
-      airspaceList.sort();
-
-      ws->slot_SetText2(tr("Reading Welt2000 File"));
-      // @AP: Look for and if available load a welt2000 airfield file
-      Welt2000 welt2000;
-
-      if( ! welt2000.load( airfieldList, gliderfieldList, outLandingList ) )
-        {
-
-#ifdef INTERNET
-
-          if( __askUserForDownload() == true )
-            {
-              // Welt2000 load failed, try to download a new Welt2000 File.
-              slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
-            }
-
-#endif
-
-        }
-    }
-
   unloadDone = false;
   memoryFull = false;
-  char step, hasstep; //used as small integers
+  char step, hasstep; // used as small integers
   TilePartMap::Iterator it;
 
-  for ( int row = northCorner; row <= southCorner; row++ )
+  if( isReload )
     {
-      for (int col = westCorner; col <= eastCorner; col++)
+      ws->setScreenUsage( true );
+      ws->setVisible( true );
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
+                                       QEventLoop::ExcludeSocketNotifiers );
+    }
+
+  if( isFirst )
+    {
+      ws->slot_SetText1( tr( "Loading maps..." ) );
+    }
+
+  for( int row = northCorner; row <= southCorner; row++ )
+    {
+      for( int col = westCorner; col <= eastCorner; col++ )
         {
           int secID = row + (col + (row * 179));
           // qDebug( "Needed BoxSecID=%d", secID );
 
-          if (isFirst)
+          if( isFirst )
             {
               // Animate a little bit during first load. Later on in flight,
               // we need the time for GPS processing.
-              emit progress(2);
+              emit progress( 2 );
             }
 
-          if ( (secID >= 0) && (secID <= MAX_TILE_NUMBER) )
+          if( secID >= 0 && secID <= MAX_TILE_NUMBER )
             {
               // a valid tile (2x2 degree area) must be in the range 0 ... 16200
-              if (! tileSectionSet.contains(secID))
+              if( ! tileSectionSet.contains( secID ) )
                 {
                   // qDebug(" Tile %d is missing", secID );
                   // Tile is missing
-                  if (isFirst)
-                    {
-                      ws->slot_SetText1(tr("Loading maps..."));
-                    }
-                  else
+                  if( ! isFirst)
                     {
                       // @AP: remove of all unused maps to get place
                       // in heap. That can be disabled here because
@@ -1751,7 +1730,7 @@ void MapContents::proofeSection()
                       // method is necessary. But the disadvantage
                       // is in that case that the freeing needs a
                       // lot of time (several seconds).
-                      if ( GeneralConfig::instance()->getMapUnload() )
+                      if( GeneralConfig::instance()->getMapUnload() )
                         {
                           unloadMaps(0);
                         }
@@ -1809,13 +1788,64 @@ void MapContents::proofeSection()
         }
     }
 
-  if ( isFirst )
+  if( isFirst )
     {
+      ws->slot_SetText2( tr( "Reading OpenAir Files" ) );
+
+      OpenAirParser oap;
+      oap.load( airspaceList );
+
+      // finally, sort the airspaces
+      airspaceList.sort();
+
+      ws->slot_SetText2( tr( "Reading Welt2000 File" ) );
+
+      if( isReload == false )
+        {
+          // Load airfield data not in an extra thread
+          Welt2000 welt2000;
+
+          if( ! welt2000.load( airfieldList, gliderfieldList, outLandingList ) )
+            {
+
+#ifdef INTERNET
+
+              if( __askUserForDownload() == true )
+                {
+                  // Welt2000 load failed, try to download a new Welt2000 File.
+                  slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
+                }
+#endif
+            }
+        }
+      else
+        {
+
+#ifdef WELT2000_THREAD
+          // In case of an reload we assume, a Welt2000 file is available.
+          // Therefore the reload is done in an extra thread because it can
+          // take a while and the GUI shall not be blocked by this action.
+          loadWelt2000DataViaThread();
+#else
+          // Old solution. Should be used, if not enough RAM is available
+          // because thread loading needs temporary more memory for parallel load.
+          Welt2000 welt2000;
+          welt2000.load( airfieldList, gliderfieldList, outLandingList );
+#endif
+        }
+
       ws->slot_SetText1(tr("Loading maps done"));
     }
 
-  isFirst = false;
-  mutex = false; // unlock mutex
+  if( isReload )
+    {
+      ws->setScreenUsage( false );
+      ws->setVisible( false );
+    }
+
+  isFirst  = false;
+  isReload = false;
+  mutex    = false; // unlock mutex
 }
 
 // Distance unit is expected as meters. The bounding map rectangle will be
@@ -1824,9 +1854,9 @@ void MapContents::unloadMaps(unsigned int distance)
 {
   // qDebug("MapContents::unloadMaps() is called");
 
-  if (unloadDone)
+  if( unloadDone )
     {
-      return;  //we only unload map data once (per map redrawing round)
+      return; // we only unload map data once (per map redrawing round)
     }
 
   extern MapMatrix* _globalMapMatrix;
@@ -2323,6 +2353,8 @@ void MapContents::slotReloadMapData()
   topoList.clear();
   villageList.clear();
 
+  welt2000Mutex.lock();
+
   airfieldList.clear();
   gliderfieldList.clear();
   outLandingList.clear();
@@ -2332,6 +2364,8 @@ void MapContents::slotReloadMapData()
   gliderfieldList = QList<Airfield>();
   outLandingList  = QList<Airfield>();
 
+  welt2000Mutex.unlock();
+
   // all isolines are cleared
   groundMap.clear();
   terrainMap.clear();
@@ -2340,9 +2374,10 @@ void MapContents::slotReloadMapData()
   tileSectionSet.clear();
   tilePartMap.clear();
 
-  isFirst = true;
+  isFirst  = true;
+  isReload = true;
 
-  // @AP: Reload all data, that must be always done after a projection data change
+  // Reload all data, that must be always done after a projection data change
   proofeSection();
 
   // Check for a selected waypoint, this one must be also new projected.
@@ -2388,10 +2423,81 @@ void MapContents::slotReloadMapData()
 }
 
 /**
+ * Starts a thread, which is loading the requested Welt2000 data.
+ */
+void MapContents::loadWelt2000DataViaThread()
+{
+  QMutexLocker locker( &welt2000Mutex );
+
+  _globalMapView->slot_info( tr("loading Welt2000") );
+
+  Welt2000Thread *w2000Thread = new Welt2000Thread( this );
+
+  // Register a special data type for return results. That must be
+  // done to transfer the results between different threads.
+  qRegisterMetaType<AirfieldListPtr>("AirfieldListPtr");
+
+  // Connect the receiver of the results. It is located in this
+  // thread and not in the new opened thread.
+  connect( w2000Thread,
+           SIGNAL(loadedLists( bool,
+                               QList<Airfield>*,
+                               QList<Airfield>*,
+                               QList<Airfield>*  )),
+           this,
+           SLOT(slotWelt2000LoadFinished( bool,
+                                          QList<Airfield>*,
+                                          QList<Airfield>*,
+                                          QList<Airfield>* )) );
+  w2000Thread->start();
+}
+
+/**
+ * This slot is called by the Welt2000 load thread to signal, that the
+ * requested airfield data have been loaded. The passed lists must be
+ * deleted in this method.
+ */
+void MapContents::slotWelt2000LoadFinished( bool ok,
+                                            QList<Airfield>* airfieldListIn,
+                                            QList<Airfield>* gliderfieldListIn,
+                                            QList<Airfield>* outlandingListIn )
+{
+  QMutexLocker locker( &welt2000Mutex );
+
+  if( ok == false )
+    {
+      qDebug() << "slotWelt2000LoadFinished: Welt2000 loading failed!";
+
+      _globalMapView->slot_info( tr("Welt2000 load failed") );
+
+      delete airfieldListIn;
+      delete gliderfieldListIn;
+      delete outlandingListIn;
+      return;
+    }
+
+  // Take over the new loaded lists. The passed lists must be deleted!
+  airfieldList = *airfieldListIn;
+  delete airfieldListIn;
+
+  gliderfieldList = *gliderfieldListIn;
+  delete gliderfieldListIn;
+
+  outLandingList = *outlandingListIn;
+  delete outlandingListIn;
+
+  _globalMapView->slot_info( tr("Welt2000 loaded") );
+
+  emit mapDataReloaded();
+}
+
+/**
  * Reload Welt2000 data file. Can be called after a configuration change.
  */
 void MapContents::slotReloadWelt2000Data()
 {
+#ifndef WELT2000_THREAD
+
   // @AP: defined a static mutex variable, to prevent the recursive
   // calling of this method
   static bool mutex = false;
@@ -2411,12 +2517,12 @@ void MapContents::slotReloadWelt2000Data()
   gliderfieldList.clear();
   outLandingList.clear();
 
-  _globalMapView->message( tr("Reloading Welt2000 started") );
+  _globalMapView->slot_info( tr("loading Welt2000") );
 
   Welt2000 welt2000;
   welt2000.load( airfieldList, gliderfieldList, outLandingList );
 
-  _globalMapView->message( tr("Reloading Welt2000 finished") );
+  _globalMapView->slot_info( tr("Welt2000 loaded") );
 
   emit mapDataReloaded();
 
@@ -2425,6 +2531,13 @@ void MapContents::slotReloadWelt2000Data()
   GpsNmea::gps->enableReceiving( true );
 
   mutex = false; // unlock mutex
+
+#else
+
+  // Reload Welt2000 data in an extra thread.
+  loadWelt2000DataViaThread();
+
+#endif
 }
 
 /**
@@ -2457,7 +2570,7 @@ void MapContents::slotReloadAirspaceData()
   // free all internal allocated memory in QList
   airspaceList = SortableAirspaceList();
 
-  _globalMapView->message( tr("Reloading Airspaces started") );
+  _globalMapView->slot_info( tr("loading Airspaces") );
 
   OpenAirParser oap;
   oap.load( airspaceList );
@@ -2465,7 +2578,7 @@ void MapContents::slotReloadAirspaceData()
   // finally, sort the airspaces
   airspaceList.sort();
 
-  _globalMapView->message( tr("Reloading Airspaces finished") );
+  _globalMapView->slot_info( tr("Airspaces loaded") );
 
   emit mapDataReloaded();
 
