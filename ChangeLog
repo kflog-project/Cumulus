@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2011-03-30 AP: A thread is introduced for reload of Welt2000 to avoid a
+                   longer GUI blocking during reload.
 [o] 2011-03-28 AP: Configuration dialogs airspace filling and warnings are
                    not more preloaded, if configuration settings widget is
                    opened.

@@ -307,12 +307,12 @@
         <translation>&lt;html&gt;&lt;b&gt;Die Konfiguration wurde geändert!&lt;/b&gt;&lt;p&gt;Ein System Update kann etwas dauern!&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="configwidget.cpp" line="324"/>
+        <location filename="configwidget.cpp" line="326"/>
         <source>Close without saving!</source>
         <translation>Schließen ohne speichern!</translation>
     </message>
     <message>
-        <location filename="configwidget.cpp" line="325"/>
+        <location filename="configwidget.cpp" line="327"/>
         <source>&lt;html&gt;You have changed:&lt;b&gt;&lt;ul&gt;%1&lt;/ul&gt;&lt;/b&gt;Discard changes?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Sie änderten:&lt;b&gt;&lt;ul&gt;%1&lt;/ul&gt;&lt;/b&gt;Änderungen verwerfen?&lt;/html&gt;</translation>
     </message>
@@ -1162,178 +1162,184 @@
 <context>
     <name>MapContents</name>
     <message>
-        <location filename="mapcontents.cpp" line="225"/>
-        <location filename="mapcontents.cpp" line="242"/>
-        <location filename="mapcontents.cpp" line="250"/>
-        <location filename="mapcontents.cpp" line="687"/>
-        <location filename="mapcontents.cpp" line="704"/>
-        <location filename="mapcontents.cpp" line="712"/>
+        <location filename="mapcontents.cpp" line="226"/>
+        <location filename="mapcontents.cpp" line="243"/>
+        <location filename="mapcontents.cpp" line="251"/>
+        <location filename="mapcontents.cpp" line="688"/>
+        <location filename="mapcontents.cpp" line="705"/>
+        <location filename="mapcontents.cpp" line="713"/>
         <source>Out of memory! Map not loaded.</source>
         <translation>Speicher alle! Karte nicht geladen.</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1586"/>
+        <location filename="mapcontents.cpp" line="1587"/>
         <source>%1 download(s) with %2 error(s) done.</source>
         <translation>%1 download(s) mit %2 Fehler(n) getan.</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1589"/>
+        <location filename="mapcontents.cpp" line="1590"/>
         <source>Downloads finished</source>
         <translation>Downloads fertig</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1604"/>
+        <location filename="mapcontents.cpp" line="1605"/>
         <source>Network error occurred.
 All downloads are canceled!</source>
         <translation>Netzwerkfehler.
 Alle Downloads verworfen!</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1607"/>
+        <location filename="mapcontents.cpp" line="1608"/>
         <source>Network Error</source>
         <translation>Netzwerk Fehler</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1626"/>
+        <location filename="mapcontents.cpp" line="1627"/>
         <source>Download missing Data?</source>
         <translation>Fehlende Daten holen?</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1627"/>
+        <location filename="mapcontents.cpp" line="1628"/>
         <source>Download missing Data from the Internet?</source>
         <translation>Fehlende Daten aus dem Internet holen?</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1629"/>
+        <location filename="mapcontents.cpp" line="1630"/>
         <source>Active Internet connection is needed!</source>
         <translation>Aktive Internetverbindung ist erforderlich!</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1686"/>
-        <location filename="mapcontents.cpp" line="1743"/>
+        <location filename="mapcontents.cpp" line="1700"/>
         <source>Loading maps...</source>
         <translation>Lade Karten...</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1687"/>
+        <location filename="mapcontents.cpp" line="1793"/>
         <source>Reading OpenAir Files</source>
         <translation>Lese OpenAir Dateien</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1695"/>
+        <location filename="mapcontents.cpp" line="1801"/>
         <source>Reading Welt2000 File</source>
         <translation>Lese Welt2000 Datei</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1814"/>
+        <location filename="mapcontents.cpp" line="1837"/>
         <source>Loading maps done</source>
         <translation>Karten geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2414"/>
-        <source>Reloading Welt2000 started</source>
-        <translation>Neuladen Welt2000 gestartet</translation>
+        <location filename="mapcontents.cpp" line="2432"/>
+        <location filename="mapcontents.cpp" line="2520"/>
+        <source>loading Welt2000</source>
+        <translation>lade Welt2000</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2419"/>
-        <source>Reloading Welt2000 finished</source>
-        <translation>Neuladen Welt2000 beendet</translation>
+        <location filename="mapcontents.cpp" line="2471"/>
+        <source>Welt2000 load failed</source>
+        <translation>Welt2000 Ladefehler</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2460"/>
-        <source>Reloading Airspaces started</source>
-        <translation>Neuladen Lufträume gestartet</translation>
+        <location filename="mapcontents.cpp" line="2489"/>
+        <location filename="mapcontents.cpp" line="2525"/>
+        <source>Welt2000 loaded</source>
+        <translation>Welt2000 geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2468"/>
-        <source>Reloading Airspaces finished</source>
-        <translation>Neuladen Lufträume beendet</translation>
+        <location filename="mapcontents.cpp" line="2573"/>
+        <source>loading Airspaces</source>
+        <translation>lade Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2501"/>
-        <location filename="mapcontents.cpp" line="2567"/>
+        <location filename="mapcontents.cpp" line="2581"/>
+        <source>Airspaces loaded</source>
+        <translation>Lufträume geladen</translation>
+    </message>
+    <message>
+        <location filename="mapcontents.cpp" line="2614"/>
+        <location filename="mapcontents.cpp" line="2680"/>
         <source>Drawing airports</source>
         <translation>Zeichne Flugplätze</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2517"/>
-        <location filename="mapcontents.cpp" line="2579"/>
+        <location filename="mapcontents.cpp" line="2630"/>
+        <location filename="mapcontents.cpp" line="2692"/>
         <source>Drawing glider sites</source>
         <translation>Zeichne Segelfluggelände</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2533"/>
-        <location filename="mapcontents.cpp" line="2591"/>
+        <location filename="mapcontents.cpp" line="2646"/>
+        <location filename="mapcontents.cpp" line="2704"/>
         <source>Drawing outlanding sites</source>
         <translation>Zeichne Landefelder</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2603"/>
+        <location filename="mapcontents.cpp" line="2716"/>
         <source>Drawing radio points</source>
         <translation>Zeichne Funkanlagen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2611"/>
+        <location filename="mapcontents.cpp" line="2724"/>
         <source>Drawing airspaces</source>
         <translation>Zeichne Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2619"/>
+        <location filename="mapcontents.cpp" line="2732"/>
         <source>Drawing obstacles</source>
         <translation>Zeichne Hindernisse</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2627"/>
+        <location filename="mapcontents.cpp" line="2740"/>
         <source>Drawing reporting points</source>
         <translation>Zeichne Meldepunkte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2635"/>
+        <location filename="mapcontents.cpp" line="2748"/>
         <source>Drawing cities</source>
         <translation>Zeichne Städte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2643"/>
+        <location filename="mapcontents.cpp" line="2756"/>
         <source>Drawing villages</source>
         <translation>Zeichne Dörfer</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2651"/>
+        <location filename="mapcontents.cpp" line="2764"/>
         <source>Drawing landmarks</source>
         <translation>Zeichne Landmarken</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2659"/>
+        <location filename="mapcontents.cpp" line="2772"/>
         <source>Drawing highways</source>
         <translation>Zeichne Autobahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2667"/>
+        <location filename="mapcontents.cpp" line="2780"/>
         <source>Drawing roads</source>
         <translation>Zeichne Straßen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2675"/>
+        <location filename="mapcontents.cpp" line="2788"/>
         <source>Drawing railroads</source>
         <translation>Zeichne Eisenbahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2683"/>
+        <location filename="mapcontents.cpp" line="2796"/>
         <source>Drawing hydro</source>
         <translation>Zeichne Hydro</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2691"/>
+        <location filename="mapcontents.cpp" line="2804"/>
         <source>Drawing lakes</source>
         <translation>Zeichne Seen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2699"/>
+        <location filename="mapcontents.cpp" line="2812"/>
         <source>Drawing topography</source>
         <translation>Zeichne Topographie</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2750"/>
+        <location filename="mapcontents.cpp" line="2863"/>
         <source>Drawing surface contours</source>
         <translation>Zeichne Oberfläche</translation>
     </message>
@@ -2376,8 +2382,8 @@ Alle Downloads verworfen!</translation>
         <translation>Landung</translation>
     </message>
     <message>
-        <location filename="welt2000.cpp" line="781"/>
-        <location filename="welt2000.cpp" line="1525"/>
+        <location filename="welt2000.cpp" line="789"/>
+        <location filename="welt2000.cpp" line="1553"/>
         <source>Emergency Field No: </source>
         <translation>Notlandefeld Nr:</translation>
     </message>
@@ -2420,7 +2426,7 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="waypointcatalog.cpp" line="125"/>
-        <location filename="waypointcatalog.cpp" line="664"/>
+        <location filename="waypointcatalog.cpp" line="662"/>
         <source>Reading file</source>
         <translation>Lese Datei</translation>
     </message>
@@ -4000,7 +4006,7 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>WaitScreen</name>
     <message>
-        <location filename="waitscreen.cpp" line="53"/>
+        <location filename="waitscreen.cpp" line="55"/>
         <source>Cumulus is working, please wait!</source>
         <translation>Cumulus arbeitet, bitte warten!</translation>
     </message>
