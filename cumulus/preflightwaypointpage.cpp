@@ -87,11 +87,14 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   centerLat = new LatEdit;
   centerLon = new LongEdit;
 
+  centerLatLabel = new QLabel(tr("Latitude:"));
+  centerLonLabel = new QLabel(tr("Longitude:"));
+
   QGridLayout* latLonGrid = new QGridLayout;
   latLonGrid->setSpacing( 10 );
-  latLonGrid->addWidget( new QLabel(tr("Latitude:")), 0 , 0 );
+  latLonGrid->addWidget( centerLatLabel, 0 , 0 );
   latLonGrid->addWidget( centerLat, 0, 1 );
-  latLonGrid->addWidget( new QLabel(tr("Longitude:")), 1 , 0 );
+  latLonGrid->addWidget( centerLonLabel, 1 , 0 );
   latLonGrid->addWidget( centerLon, 1, 1 );
   latLonGrid->setColumnStretch( 2, 5 );
 
@@ -104,11 +107,15 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   centerPointGrid->addWidget( homeRB, 1, 0 );
   centerPointGrid->addWidget( airfieldRB, 2, 0 );
 
-  centerPointGrid->addLayout( latLonGrid, 0, 1 );
-  centerPointGrid->addWidget( homeLabel, 1, 1 );
-  centerPointGrid->addWidget( airfieldBox, 2, 1 );
+  QVBoxLayout* centerPointVBox = new QVBoxLayout;
 
-  centerPointGrid->setColumnStretch( 2, 5 );
+  centerPointVBox->setMargin( 0 );
+  centerPointVBox->addLayout( latLonGrid );
+  centerPointVBox->addWidget( homeLabel );
+  centerPointVBox->addWidget( airfieldBox );
+
+  centerPointGrid->addLayout( centerPointVBox, 0, 2, 3, 1 );
+  centerPointGrid->setColumnStretch( 1, 5 );
 
   centerPointGroup = new QGroupBox( tr("Center Point") );
   centerPointGroup->setLayout( centerPointGrid );
@@ -249,23 +256,32 @@ void PreFlightWaypointPage::slotSelectCenterReference( int reference )
   {
     case PreFlightWaypointPage::Home:
       homeRB->setChecked( true );
-      centerLat->setEnabled(false);
-      centerLon->setEnabled(false);
-      airfieldBox->setEnabled(false);
+      centerLat->setVisible(false);
+      centerLon->setVisible(false);
+      centerLatLabel->setVisible(false);
+      centerLonLabel->setVisible(false);
+      airfieldBox->setVisible(false);
+      homeLabel->setVisible(true);
       break;
     case PreFlightWaypointPage::Airfield:
       airfieldRB->setChecked( true );
-      centerLat->setEnabled(false);
-      centerLon->setEnabled(false);
-      airfieldBox->setEnabled(true);
+      centerLat->setVisible(false);
+      centerLon->setVisible(false);
+      centerLatLabel->setVisible(false);
+      centerLonLabel->setVisible(false);
+      airfieldBox->setVisible(true);
+      homeLabel->setVisible(false);
       break;
     case PreFlightWaypointPage::Position:
     default:
       positionRB->setChecked( true );
       centerRef = PreFlightWaypointPage::Position;
-      centerLat->setEnabled(true);
-      centerLon->setEnabled(true);
-      airfieldBox->setEnabled(false);
+      centerLat->setVisible(true);
+      centerLon->setVisible(true);
+      centerLatLabel->setVisible(true);
+      centerLonLabel->setVisible(true);
+      airfieldBox->setVisible(false);
+      homeLabel->setVisible(false);
       break;
     }
 }

@@ -122,6 +122,8 @@ private:
   QRadioButton* homeRB;
   QRadioButton* airfieldRB;
 
+  QLabel* centerLatLabel;
+  QLabel* centerLonLabel;
   QLabel* homeLabel;
 
   QCheckBox* filterToggle;
