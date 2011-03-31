@@ -71,7 +71,7 @@ public:
    *
    * \param name The name of the airspace
    * \param oType The object type identifier.
-   * \param The projected coordinates of the airspace as polygon.
+   * \param pP The projected coordinates of the airspace as polygon.
    * \param upper The upper altitude limit of the airspace
    * \param upperType The upper altitude reference
    * \param lower The lower altitude limit of the airspace

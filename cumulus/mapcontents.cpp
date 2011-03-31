@@ -2422,6 +2422,8 @@ void MapContents::slotReloadMapData()
   mutex = false; // unlock mutex
 }
 
+#ifdef WELT2000_THREAD
+
 /**
  * Starts a thread, which is loading the requested Welt2000 data.
  */
@@ -2491,8 +2493,11 @@ void MapContents::slotWelt2000LoadFinished( bool ok,
   emit mapDataReloaded();
 }
 
+#endif
+
 /**
- * Reload Welt2000 data file. Can be called after a configuration change.
+ * Reload the Welt2000 data file. Can be called after a configuration change or
+ * a file download.
  */
 void MapContents::slotReloadWelt2000Data()
 {

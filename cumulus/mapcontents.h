@@ -309,7 +309,10 @@ class MapContents : public QObject
      */
     void slotReloadMapData();
 
-    /** Reload Welt2000 data file */
+    /**
+     * Reloads the Welt2000 data file. Can be called after a configuration
+     * change or a file download.
+     */
     void slotReloadWelt2000Data();
 
     /**
@@ -352,6 +355,8 @@ class MapContents : public QObject
 
 #endif
 
+#ifdef WELT2000_THREAD
+
     /**
      * This slot is called by the Welt2000 load thread to signal, that the
      * requested airfield data have been loaded.
@@ -360,6 +365,7 @@ class MapContents : public QObject
                                    QList<Airfield>* airfieldListIn,
                                    QList<Airfield>* gliderfieldListIn,
                                    QList<Airfield>* outlandingListIn );
+#endif
 
   signals:
 

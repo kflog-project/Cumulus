@@ -290,9 +290,12 @@ class Welt2000
 * \brief Class to read a Welt2000 file in an extra thread.
 *
 * This class can read, parse and filter a Welt2000 file and store its content
-* in a binary format. All work is done in an extra thread.
+* in a binary format. All work is done in an extra thread. The results are
+* returned via the signal \ref loadedLists.
 *
-* \date 2006-2011
+* \date 2011
+*
+* \version $Id$
 */
 
 class Welt2000Thread : public QThread
@@ -320,12 +323,13 @@ class Welt2000Thread : public QThread
  signals:
 
   /**
-  * This signal emits the results of the Welt2000 load.
+  * This signal emits the results of the Welt2000 load. The receiver slot is
+  * responsible to delete the dynamic allocated lists in every case.
   *
-  * \param ok           The result of the load action.
-  * \param airfieldList The list with the airfield data
-  * \param airfieldList The list with the gliderfield data
-  * \param airfieldList The list with the outlanding data
+  * \param ok              The result of the load action.
+  * \param airfieldList    The list with the airfield data
+  * \param gliderfieldList The list with the gliderfield data
+  * \param outlandingList  The list with the outlanding data
   *
   */
   void loadedLists( bool ok,

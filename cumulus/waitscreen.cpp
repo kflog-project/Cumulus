@@ -22,7 +22,8 @@
 #include "generalconfig.h"
 
 WaitScreen::WaitScreen(QWidget *parent ) :
-  QDialog( parent, Qt::FramelessWindowHint ),
+  QDialog( parent, Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint |
+                   Qt::X11BypassWindowManagerHint ),
   progress( 0 ),
   lastRot( 0 ),
   _screenUsage( true )
