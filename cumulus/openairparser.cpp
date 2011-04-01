@@ -293,7 +293,7 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
   resetState();
   initializeStringMapping( path );
 
-  if ( _doCompile )
+  if( _doCompile )
     {
       // we open a buffer for temporary storage of extracted airspace
       // elements
@@ -313,43 +313,38 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
   QTextStream in(&source);
   in.setCodec( "ISO 8859-15" );
 
-  //start parsing
-  QString line=in.readLine();
-  _lineNumber++;
-
-  while (!line.isNull())
+  while( ! in.atEnd() )
     {
+      QString line = in.readLine();
+      _lineNumber++;
+
       // qDebug("reading line %d: '%s'", _lineNumber, line.toLatin1().data());
       line = line.simplified();
 
-      if (line.startsWith("*") || line.startsWith("#"))
+      if( line.startsWith( "*" ) || line.startsWith( "#" ) || line.isEmpty() )
         {
-          //comment, ignore
+          continue;
         }
-      else if (line.isEmpty())
-        {
-          //empty line, ignore
-        }
-      else
-        {
-          // delete comments at the end of the line before parsing it
-          line = line.split('*')[0];
-          line = line.split('#')[0];
-          parseLine(line);
-        }
-      line=in.readLine();
-      _lineNumber++;
+
+      // delete comments at the end of the line before parsing it
+      line = line.split( '*' )[0];
+      line = line.split( '#' )[0];
+
+      parseLine( line );
     }
 
-  if (_isCurrentAirspace)
-    finishAirspace();
-
-  for (int i  = 0; i < _airlist.count(); i++)
+  if( _isCurrentAirspace )
     {
-      list.append(_airlist.at(i));
+      finishAirspace();
+    }
+
+  for( int i = 0; i < _airlist.count(); i++ )
+    {
+      list.append( _airlist.at( i ) );
     }
 
   QFileInfo fi( path );
+
   qDebug( "OpenAirParser: %d airspace objects read from file %s in %dms",
           _objCounter, fi.fileName().toLatin1().data(), t.elapsed() );
 
@@ -429,33 +424,44 @@ void OpenAirParser::resetState()
   _lineNumber = 0;
   _objCounter = 0;
   _isCurrentAirspace = false;
+  _acRead = false;
+  _anRead = false;
 }
 
 
 void OpenAirParser::parseLine(QString& line)
 {
+  if( (line.startsWith( "AC " ) || line.startsWith( "AN " )) &&
+       _acRead == true && _anRead == true )
+    {
+      // This indicates we're starting a new object and have to save the
+      // the previous one.
+      if( _isCurrentAirspace )
+        {
+          finishAirspace();
+        }
+
+      newAirspace();
+    }
+
   if (line.startsWith("AC "))
     {
-      //type of record. This also indicates we're starting a new object
-      if (_isCurrentAirspace)
-        finishAirspace();
-      newAirspace();
+      // airspace class
+      _acRead = true;
       parseType(line);
       return;
     }
 
-  //the rest of the records don't make sense if we're not parsing an object
-  int lat, lon;
-  double radius;
-  bool ok;
-
-  if (!_isCurrentAirspace)
-    return;
-
   if (line.startsWith("AN "))
     {
-      //name
+      // airspace name
+      _anRead = true;
       asName = line.mid(3);
+      return;
+    }
+
+  if (!_isCurrentAirspace)
+    {
       return;
     }
 
@@ -477,18 +483,23 @@ void OpenAirParser::parseLine(QString& line)
 
   if (line.startsWith("DP "))
     {
+      int lat, lon;
+
       //polygon coordinate
       QString coord = line.mid(3);
       parseCoordinate(coord, lat, lon);
-      asPA.append( QPoint(lat, lon) );
+      asPA.append(QPoint(lat, lon));
       // qDebug( "addDP: lat=%d, lon=%d", lat, lon );
       return;
     }
 
   if (line.startsWith("DC "))
     {
+      bool ok;
+
       //circle
-      radius=line.mid(3).toDouble(&ok);
+      double radius = line.mid(3).toDouble(&ok);
+
       if (ok)
         {
           addCircle(radius);
@@ -559,14 +570,15 @@ void OpenAirParser::newAirspace()
 {
   asName = "(unnamed)";
   asType = BaseMapElement::NotSelected;
-  //asTypeLetter = "";
   asPA.clear();
   asUpper = BaseMapElement::NotSet;
   asUpperType = BaseMapElement::NotSet;
   asLower = BaseMapElement::NotSet;
   asLowerType = BaseMapElement::NotSet;
   _isCurrentAirspace = true;
-  _direction = 1; //must be reset according to specifications
+  _acRead = false;
+  _anRead = false;
+  _direction = 1; // must be reset according to specifications
 }
 
 
@@ -579,6 +591,19 @@ void OpenAirParser::newPA()
 void OpenAirParser::finishAirspace()
 {
   extern MapMatrix * _globalMapMatrix;
+
+  _isCurrentAirspace = false;
+  _acRead = false;
+  _anRead = false;
+
+  if( asPA.count() < 2 )
+    {
+      qWarning() << "OpenAirParser: Line" << _lineNumber
+                 << "Object" << asName
+                 << "contains to less coordinates! Ignoring it.";
+
+      return;
+    }
 
   // @AP: Airspaces are stored as polygons and should not contain the start point
   // twice as done in OpenAir description.
@@ -603,7 +628,7 @@ void OpenAirParser::finishAirspace()
                                asLower, asLowerType );
   _airlist.append(as);
   _objCounter++;
-  _isCurrentAirspace = false;
+
   // qDebug("finalized airspace %s. %d points in airspace", asName.toLatin1().data(), cnt);
 
   if ( _doCompile )
@@ -685,7 +710,8 @@ void OpenAirParser::initializeStringMapping(const QString& mapFilePath)
       QFile f(path);
       if (!f.open(QIODevice::ReadOnly))
         {
-          qWarning("OpenAirParser: Cannot open airspace mapping file %s!", path.toLatin1().data());
+          qWarning("OpenAirParser: Cannot open airspace mapping file %s!",
+                   path.toLatin1().data());
           return;
         }
 

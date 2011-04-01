@@ -142,6 +142,11 @@ private:
   uint _lineNumber;
   uint _objCounter; // counter for allocated objects
   bool _isCurrentAirspace;
+
+  // Read condition flags
+  bool _acRead;
+  bool _anRead;
+
   QString asName;
   //QString asTypeLetter;
   BaseMapElement::objectType asType;
