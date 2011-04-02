@@ -1816,7 +1816,7 @@ void MainWindow::slotRememberWaypoint()
   static uint count = 1;
   QString name;
 
-  name = tr( "WP%1-%2" ).arg( count ).arg( QTime::currentTime().toString("HH:mm") );
+  name = QString( tr("W%1-%2") ).arg( count ).arg( QTime::currentTime().toString("HH:mm") );
 
   // @AP: let us check, if the user waypoint is already known from its
   // position. In this case we will reject the insertion to avoid senseless
