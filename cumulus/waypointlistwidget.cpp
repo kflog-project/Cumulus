@@ -138,6 +138,8 @@ void WaypointListWidget::deleteSelectedWaypoints()
     {
       list->setUpdatesEnabled(false);
 
+      QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
+
       for( int i = 0; i < itemList.size(); i++ )
         {
           _WaypointItem* wpi = dynamic_cast<_WaypointItem *> (itemList.at(i));
@@ -152,7 +154,7 @@ void WaypointListWidget::deleteSelectedWaypoints()
           filter->removeListItem( itemList.at(i) );
 
           // At last remove waypoint from global list in MapContents
-          _globalMapContents->getWaypointList().removeAll( *(&wpi->wp) );
+          wpList.removeAll( *(&wpi->wp) );
         }
 
       // save the modified catalog

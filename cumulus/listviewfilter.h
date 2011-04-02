@@ -191,7 +191,7 @@ private:
    */
   void activateFilter( ListViewFilterItem* filter, int shrink=0 );
 
-  /** Pinter to display table view */
+  /** Pointer to display table view */
   QTreeWidget* _tw;
 
   /** List of filter buttons. */
