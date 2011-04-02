@@ -500,6 +500,7 @@ void ReachpointListView::slot_Home()
   if( answer == QMessageBox::Yes )
     {
       // save new home position and elevation
+      conf->setHomeCountryCode( _wp->country );
       conf->setHomeCoord( _wp->origP );
       conf->setHomeElevation( Distance(_wp->elevation) );
 

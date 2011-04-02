@@ -1816,7 +1816,7 @@ void MainWindow::slotRememberWaypoint()
   static uint count = 1;
   QString name;
 
-  name = tr( "WP%1-%2" ).arg( count ).arg( QTime::currentTime().toString().left( 5 ) );
+  name = tr( "WP%1-%2" ).arg( count ).arg( QTime::currentTime().toString("HH:mm") );
 
   // @AP: let us check, if the user waypoint is already known from its
   // position. In this case we will reject the insertion to avoid senseless
@@ -1854,6 +1854,7 @@ void MainWindow::slotRememberWaypoint()
   wp.elevation = int ( ( alt.gpsAltitude - alt.gndAltitude ).getMeters() );
   wp.type = BaseMapElement::Turnpoint;
   wp.isLandable = false;
+  wp.country = GeneralConfig::instance()->getHomeCountryCode();
 
   viewWP->slot_wpAdded( wp );
 

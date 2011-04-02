@@ -44,10 +44,23 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   lbl = new QLabel(tr("Language:"), this);
   topLayout->addWidget(lbl, row, 0);
   langBox = new QComboBox(this);
-  topLayout->addWidget(langBox, row, 1, 1, 1);
+  topLayout->addWidget(langBox, row, 1);
   row++;
 
   topLayout->setRowMinimumHeight(row++, 10);
+
+  lbl = new QLabel(tr("Home site Country:"), this);
+  topLayout->addWidget(lbl, row, 0);
+  edtHomeCountry = new QLineEdit(this);
+  edtHomeCountry->setMaxLength(2);
+  QRegExp rx("[A-Za-z]{2}");
+  edtHomeCountry->setValidator( new QRegExpValidator(rx, this) );
+
+  connect( edtHomeCountry, SIGNAL(textEdited( const QString& )),
+           this, SLOT(slot_textEditedCountry( const QString& )) );
+
+  topLayout->addWidget(edtHomeCountry, row, 1);
+  row++;
 
   lbl = new QLabel(tr("Home site latitude:"), this);
   topLayout->addWidget(lbl, row, 0);
@@ -96,6 +109,7 @@ void SettingsPagePersonal::slot_load()
   GeneralConfig *conf = GeneralConfig::instance();
 
   edtName->setText( conf->getSurname() );
+  edtHomeCountry->setText( conf->getHomeCountryCode() );
   edtHomeLat->setKFLogDegree(conf->getHomeLat());
   edtHomeLong->setKFLogDegree(conf->getHomeLon());
 
@@ -141,6 +155,7 @@ void SettingsPagePersonal::slot_save()
   GeneralConfig *conf = GeneralConfig::instance();
 
   conf->setSurname( edtName->text() );
+  conf->setHomeCountryCode( edtHomeCountry->text() );
   conf->setLanguage( langBox->currentText() );
 
   Distance homeElevation;
@@ -249,4 +264,10 @@ void SettingsPagePersonal::slot_openDirectoryDialog()
     }
 
   userDataDir->setText( dataDir );
+}
+
+void SettingsPagePersonal::slot_textEditedCountry( const QString& text )
+{
+  // Change edited text to upper cases
+  edtHomeCountry->setText( text.toUpper() );
 }

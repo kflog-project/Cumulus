@@ -854,6 +854,17 @@ class GeneralConfig : protected QSettings
     _currentTask = newValue;
   };
 
+  /** Gets the homesite country code */
+  QString &getHomeCountryCode()
+    {
+      return _homeCountryCode;
+    };
+  /** Sets the homesite country code */
+  void setHomeCountryCode( const QString newValue )
+  {
+    _homeCountryCode = newValue;
+  };
+
   /** gets homesite Latitude */
   int getHomeLat() const
   {
@@ -2079,6 +2090,8 @@ class GeneralConfig : protected QSettings
   // current selected task
   QString _currentTask;
 
+  // Homesite country code
+  QString _homeCountryCode;
   // Homesite elevation
   Distance _homeElevation;
   // Homesite coordinates

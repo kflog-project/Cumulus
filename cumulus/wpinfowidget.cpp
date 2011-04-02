@@ -502,6 +502,7 @@ void WPInfoWidget::slot_setNewHome()
 
       // save new home position and elevation
       GeneralConfig *conf = GeneralConfig::instance();
+      conf->setHomeCountryCode( _wp.country );
       conf->setHomeCoord( _wp.origP );
       conf->setHomeElevation( Distance(_wp.elevation) );
 

@@ -81,12 +81,16 @@ private slots:
   /** called to open the directory selection dialog */
   void slot_openDirectoryDialog();
 
+  /** called, if something has entered in edtHomeCountry. */
+  void slot_textEditedCountry( const QString& input );
+
 private:
 
   bool loadConfig; // control loading of configuration data
 
   QLineEdit *edtName;
   QComboBox *langBox;
+  QLineEdit *edtHomeCountry;
   LatEdit   *edtHomeLat;
   LongEdit  *edtHomeLong;
   QSpinBox  *spinHomeElevation;

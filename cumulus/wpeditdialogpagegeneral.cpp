@@ -71,7 +71,7 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   edtCountry->setMaxLength(2); // limit name to 2 characters
   edtCountry->setMinimumWidth( 3*charWidth );
   edtCountry->setMaximumWidth( 3*charWidth );
-
+  edtCountry->setText( conf->getHomeCountryCode() );
   QRegExp rx("[A-Za-z]{2}");
   edtCountry->setValidator( new QRegExpValidator(rx, this) );
 

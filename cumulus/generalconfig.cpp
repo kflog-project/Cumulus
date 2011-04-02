@@ -202,6 +202,7 @@ void GeneralConfig::load()
   _disclaimerVersion = value( "Disclaimer", 0).toInt();
   _surname           = value("SurName", "").toString();
   _language          = value("Language", "en").toString();
+  _homeCountryCode   = value("HomeCountryCode", "").toString();
   _userDataDirectory = value("UserDataDir", "").toString();
   endGroup();
 
@@ -551,6 +552,7 @@ void GeneralConfig::save()
   setValue("Disclaimer", _disclaimerVersion);
   setValue("SurName", _surname);
   setValue("Language", _language);
+  setValue("HomeCountryCode", _homeCountryCode);
   setValue( "UserDataDir", _userDataDirectory);
   setValue("Proxy", _proxy);
   endGroup();
