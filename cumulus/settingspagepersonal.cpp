@@ -49,7 +49,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 
   topLayout->setRowMinimumHeight(row++, 10);
 
-  lbl = new QLabel(tr("Home site Country:"), this);
+  lbl = new QLabel(tr("Home site country:"), this);
   topLayout->addWidget(lbl, row, 0);
   edtHomeCountry = new QLineEdit(this);
   edtHomeCountry->setMaxLength(2);
@@ -62,18 +62,6 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   topLayout->addWidget(edtHomeCountry, row, 1);
   row++;
 
-  lbl = new QLabel(tr("Home site latitude:"), this);
-  topLayout->addWidget(lbl, row, 0);
-  edtHomeLat = new LatEdit(this, conf->getHomeLat());
-  topLayout->addWidget(edtHomeLat, row, 1, 1, 2);
-  row++;
-
-  lbl = new QLabel(tr("Home site longitude:"), this);
-  topLayout->addWidget(lbl, row, 0);
-  edtHomeLong = new LongEdit(this, conf->getHomeLon());
-  topLayout->addWidget(edtHomeLong, row, 1, 1, 2);
-  row++;
-
   lbl = new QLabel(tr("Home site elevation:"), this);
   topLayout->addWidget(lbl, row, 0);
   spinHomeElevation = new QSpinBox(this);
@@ -84,6 +72,18 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   spinHomeElevation->setSuffix( " " + Altitude::getUnitText() );
 
   topLayout->addWidget(spinHomeElevation, row, 1);
+  row++;
+
+  lbl = new QLabel(tr("Home site latitude:"), this);
+  topLayout->addWidget(lbl, row, 0);
+  edtHomeLat = new LatEdit(this, conf->getHomeLat());
+  topLayout->addWidget(edtHomeLat, row, 1, 1, 2);
+  row++;
+
+  lbl = new QLabel(tr("Home site longitude:"), this);
+  topLayout->addWidget(lbl, row, 0);
+  edtHomeLong = new LongEdit(this, conf->getHomeLon());
+  topLayout->addWidget(edtHomeLong, row, 1, 1, 2);
   row++;
 
   QPushButton* userDirSelection = new QPushButton( tr("Data Directory"), this );
