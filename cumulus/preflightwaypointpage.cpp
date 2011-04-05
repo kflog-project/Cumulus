@@ -52,7 +52,10 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   itemList << "10" << "50" << "100" << "300" << "500" << "1000" << "2000";
   wpRadiusBox->addItems( itemList );
   wpRadiusBox->setCurrentIndex( 4 );
-
+#ifdef MAEMO5  
+  wpRadiusBox->setMinimumWidth( wpRadiusBox->sizeHint().width() );
+#endif
+  
   QFormLayout* selectLayout1 = new QFormLayout;
   selectLayout1->addRow( tr("Type:"), wpTypesBox );
 
