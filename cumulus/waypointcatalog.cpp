@@ -692,7 +692,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
                                            QEventLoop::ExcludeSocketNotifiers );
         }
 
-      if( line.size() == 0 )
+      if( line.size() == 0 || line.startsWith("#") )
         {
           continue;
         }
@@ -736,6 +736,12 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           wp.description = "";
         }
 
+      if( list[1].isEmpty() )
+        {
+          // If no code is set, we assign the long name as code to have a workaround.
+          list[1] = list[0];
+        }
+
       // short name of a waypoint limited to 8 characters
       wp.name = list[1].replace( QRegExp("\""), "" ).left(8).toUpper();
       wp.country = list[2].left(2).toUpper();
@@ -768,6 +774,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           break;
         case 3:
           wp.type = BaseMapElement::Outlanding;
+          wp.isLandable = true;
           wp.priority = Waypoint::Normal;
           break;
         case 4:

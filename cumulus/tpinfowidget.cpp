@@ -191,7 +191,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     tr("Taskpoint switch") + " " + no1 + "->" + no2 +
     "</b></center>";
 
-  display += "<table width=100% cellpadding=2 cellspacing=0 border=1><tr><th colspan=2 align=left>" +
+  display += "<table width=100% cellpadding=4 cellspacing=0 border=1><tr><th colspan=2 align=left>" +
     tr("Reached target") + " " + no1 + "</th>" +
     "<th colspan=2 align=left>" + currentTP->name + "&nbsp;(" + currentTpDes + ")" +
     "</th></tr>";

@@ -217,7 +217,7 @@ void PreFlightWaypointPage::save()
   GeneralConfig *conf = GeneralConfig::instance();
 
   conf->setWaypointFileFormat( (GeneralConfig::WpFileFormat) wpFileFormatBox->itemData(wpFileFormatBox->currentIndex()).toInt() );
-  conf->setWaypointPriority( wpPriorityBox->itemData(wpPriorityBox->currentIndex()).toInt() );
+  conf->setWaypointPriority( wpPriorityBox->currentIndex() );
   conf->setWaypointCenterReference( centerRef );
   conf->setWaypointAirfieldReference( airfieldBox->currentText() );
 
