@@ -76,16 +76,18 @@ TaskEditor::TaskEditor( QWidget* parent,
   taskList->setRootIsDecorated(false);
   taskList->setItemsExpandable(false);
   taskList->setUniformRowHeights(true);
-  // taskList->setSortingEnabled(true);
+  taskList->setAlternatingRowColors(true);
   taskList->setSelectionBehavior(QAbstractItemView::SelectRows);
   taskList->setSelectionMode(QAbstractItemView::SingleSelection);
   taskList->setColumnCount(4);
+
+  taskList->hideColumn( 0 );
 
   QStringList sl;
   sl << tr("ID")
      << tr("Type")
      << tr("Waypoint")
-     << tr("Distance");
+     << tr("Length");
 
   taskList->setHeaderLabels(sl);
 
@@ -252,17 +254,22 @@ void TaskEditor::__showTask()
 
   taskList->clear();
 
+  QStringList rowList;
   QString typeName, distance, idString;
 
-  for ( int loop = 0; loop < tmpList.count(); loop++ )
+  double distTotal = 0.0;
+
+  for( int loop = 0; loop < tmpList.count(); loop++ )
     {
       TaskPoint* tp = tmpList.at( loop );
       typeName = tp->getTaskPointTypeString();
 
+      distTotal += tp->distance;
+
       distance = Distance::getText(tp->distance*1000, true, 1);
       idString = QString( "%1").arg( loop, 2, 10, QLatin1Char('0') );
 
-      QStringList rowList;
+      rowList.clear();
       rowList << idString << typeName << tp->name << distance;
       taskList->addTopLevelItem( new QTreeWidgetItem(rowList, 0) );
 
@@ -274,9 +281,21 @@ void TaskEditor::__showTask()
         }
     }
 
-  taskList->setSortingEnabled(true);
-  taskList->sortByColumn(0, Qt::AscendingOrder);
-  taskList->setSortingEnabled(false);
+  if( distTotal > 0.0 )
+    {
+      distance = Distance::getText( distTotal*1000, true, 1 );
+
+      rowList.clear();
+      rowList << "Total" << tr("Total") << "" << distance;
+
+      QTreeWidgetItem* item = new QTreeWidgetItem(rowList, 0);
+
+      QFont font = item->font(1);
+      font.setBold( true );
+      item->setFont( 1, font );
+      item->setFont( 3, font );
+      taskList->addTopLevelItem( item );
+    }
 
   resizeTaskListColumns();
 }
@@ -309,14 +328,15 @@ void TaskEditor::slotAddWaypoint()
 void TaskEditor::slotRemoveWaypoint()
 {
   QTreeWidgetItem* selected = taskList->currentItem();
-  if ( selected == 0 )
+
+  if ( selected == 0 || selected->text(0) == "Total" )
     {
       return;
     }
 
-  int id = selected->text(0).toInt();
-  delete tpList.takeAt( id );
+  int id = taskList->indexOfTopLevelItem( taskList->currentItem() );
 
+  delete tpList.takeAt( id );
   delete taskList->takeTopLevelItem( taskList->currentIndex().row() );
 
   __showTask();
@@ -421,30 +441,46 @@ void TaskEditor::slotReject()
 
 void TaskEditor::slotMoveWaypointUp()
 {
-  if ( taskList->selectedItems().size() == 0 || taskList->topLevelItemCount() <= 2 )
-    return;
+  if( taskList->selectedItems().size() == 0 ||
+      taskList->topLevelItemCount() <= 2 ||
+      taskList->currentItem()->text( 0 ) == "Total" )
+    {
+      return;
+    }
 
-  int id = taskList->currentItem()->text(0).toInt();
+  int id = taskList->indexOfTopLevelItem( taskList->currentItem() );
+
   // we can't move the first item up
-  if ( id == 0 )
-    return;
+  if( id <= 0 )
+    {
+      return;
+    }
 
   lastSelectedItem = id - 1;
 
-  tpList.move(id, id-1);
+  tpList.move( id, id - 1 );
 
   __showTask();
 }
 
 void TaskEditor::slotMoveWaypointDown()
 {
-  if ( taskList->selectedItems().size() == 0 || taskList->topLevelItemCount() <= 2 )
-    return;
+  if( taskList->selectedItems().size() == 0 ||
+      taskList->topLevelItemCount() <= 2 ||
+      taskList->currentItem()->text(0) == "Total" )
+    {
+      return;
+    }
 
-  int id = taskList->currentItem()->text(0).toInt();
+  int id = taskList->indexOfTopLevelItem( taskList->currentItem() );
+
   // we can't move the last item down
-  if ( id == taskList->topLevelItemCount() - 1 )
-    return;
+  if( id == -1 || id == taskList->topLevelItemCount() - 1 ||
+      ( id == taskList->topLevelItemCount() - 2 &&
+        taskList->topLevelItem( taskList->topLevelItemCount() - 1)->text( 0 ) == "Total" ) )
+    {
+      return;
+    }
 
   lastSelectedItem = id + 1;
 
@@ -456,9 +492,9 @@ void TaskEditor::slotMoveWaypointDown()
 /** Toggle between WP/AF/... list on user request */
 void TaskEditor::slotToggleList(int index)
 {
-  for ( int i=0; i<NUM_LISTS; i++ )
+  for( int i = 0; i < NUM_LISTS; i++ )
     {
-      if (i != index)
+      if( i != index )
         {
           waypointList[i]->hide();
         }

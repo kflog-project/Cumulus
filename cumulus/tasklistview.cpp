@@ -142,15 +142,19 @@ void TaskListView::setHeader()
   if( _task && _task->getWtCalcFlag() == true )
     {
       course = tr("TH"); // true heading
+      list->showColumn( 3 );
+      list->showColumn( 4 );
     }
   else
     {
       course = tr("TC"); // true course
+      list->hideColumn( 3 );
+      list->hideColumn( 4 );
     }
 
   sl << tr("Type")
      << tr("Name")
-     << tr("Dist.")
+     << tr("Way")
      << tr("GS")
      << tr("WCA")
      << course
@@ -399,6 +403,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
     }
   else
     {
+      // TAS is not zero
       timeTotal->setText( "T=" + _task->getTotalDistanceTimeString() + "h" );
     }
 

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * \brief A widget for pre-flight task settings.
  *
- * \date 2002-2010
+ * \date 2002-2011
  *
  */
 
@@ -77,6 +77,9 @@ private:
 
   /** load tasks from the file */
   bool loadTaskList();
+
+  /** Creates a task definition file in Flarm format. */
+  bool createFlarmTaskList( FlightTask* flightTask );
 
 private slots:
   /** show the details of a task */

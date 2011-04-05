@@ -1520,109 +1520,109 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>PreFlightTaskList</name>
     <message>
-        <location filename="preflighttasklist.cpp" line="46"/>
+        <location filename="preflighttasklist.cpp" line="47"/>
         <source>TAS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="50"/>
+        <location filename="preflighttasklist.cpp" line="51"/>
         <source>True Air Speed</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="58"/>
+        <location filename="preflighttasklist.cpp" line="59"/>
         <source>WD</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="62"/>
+        <location filename="preflighttasklist.cpp" line="63"/>
         <source>Wind Direction</source>
         <translation>Wind Richtung</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="71"/>
+        <location filename="preflighttasklist.cpp" line="72"/>
         <source>WS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="75"/>
+        <location filename="preflighttasklist.cpp" line="76"/>
         <source>Wind Speed</source>
         <translation>Wind Geschwindigkeit</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="93"/>
+        <location filename="preflighttasklist.cpp" line="94"/>
         <source>Define a new task</source>
         <translation>Neue Aufgabe definieren</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="100"/>
+        <location filename="preflighttasklist.cpp" line="101"/>
         <source>Edit selected task</source>
         <translation>Editiere ausgewählte Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="107"/>
+        <location filename="preflighttasklist.cpp" line="108"/>
         <source>Remove selected task</source>
         <translation>Lösche ausgewählte Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="116"/>
+        <location filename="preflighttasklist.cpp" line="117"/>
         <source>Select a flight task</source>
         <translation>Flugaufgabe auswählen</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="126"/>
+        <location filename="preflighttasklist.cpp" line="127"/>
         <source>No.</source>
         <translation>Nr.</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="127"/>
+        <location filename="preflighttasklist.cpp" line="128"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="128"/>
+        <location filename="preflighttasklist.cpp" line="129"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="129"/>
+        <location filename="preflighttasklist.cpp" line="130"/>
         <source>Distance</source>
-        <translation>Entfernung</translation>
+        <translation>Strecke</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="185"/>
-        <location filename="preflighttasklist.cpp" line="316"/>
-        <location filename="preflighttasklist.cpp" line="430"/>
+        <location filename="preflighttasklist.cpp" line="186"/>
+        <location filename="preflighttasklist.cpp" line="322"/>
+        <location filename="preflighttasklist.cpp" line="436"/>
         <source>(No tasks defined)</source>
         <translation>(Keine Aufgaben definiert)</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="188"/>
+        <location filename="preflighttasklist.cpp" line="189"/>
         <source>Create New Task</source>
         <translation>Erzeuge neue Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="189"/>
+        <location filename="preflighttasklist.cpp" line="190"/>
         <source>Push &lt;b&gt;Plus&lt;/b&gt; button to add a task</source>
         <translation>Drücke&lt;b&gt;Plus&lt;/b&gt; Knopf für neue Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="437"/>
+        <location filename="preflighttasklist.cpp" line="443"/>
         <source>(Reset selection)</source>
         <translation>(Reset Auswahl)</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="437"/>
+        <location filename="preflighttasklist.cpp" line="443"/>
         <source>none</source>
         <translation>keiner</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="558"/>
+        <location filename="preflighttasklist.cpp" line="564"/>
         <source>Delete Task</source>
         <translation>Lösche Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="559"/>
+        <location filename="preflighttasklist.cpp" line="565"/>
         <source>Delete the selected task?</source>
         <translation>Markierte Aufgabe löschen?</translation>
     </message>
@@ -3276,6 +3276,11 @@ Alle Downloads verworfen!</translation>
         <translation>Heimat Höhe:</translation>
     </message>
     <message>
+        <location filename="settingspagepersonal.cpp" line="52"/>
+        <source>Home site country:</source>
+        <translation>Heimatland:</translation>
+    </message>
+    <message>
         <location filename="settingspagepersonal.cpp" line="89"/>
         <source>Data Directory</source>
         <translation>Datenverzeichnis</translation>
@@ -3662,114 +3667,119 @@ Alle Downloads verworfen!</translation>
     <name>TaskEditor</name>
     <message>
         <location filename="taskeditor.cpp" line="67"/>
-        <location filename="taskeditor.cpp" line="240"/>
+        <location filename="taskeditor.cpp" line="242"/>
         <source>New Task</source>
         <translation>Neue Aufgabe</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="85"/>
+        <location filename="taskeditor.cpp" line="87"/>
         <source>ID</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="86"/>
+        <location filename="taskeditor.cpp" line="88"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="87"/>
+        <location filename="taskeditor.cpp" line="89"/>
         <source>Waypoint</source>
         <translation>Wegpunkt</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="88"/>
-        <source>Distance</source>
-        <translation>Entfernung</translation>
+        <location filename="taskeditor.cpp" line="90"/>
+        <source>Length</source>
+        <translation>Länge</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="97"/>
+        <location filename="taskeditor.cpp" line="99"/>
         <source>move selected waypoint up</source>
         <translation>markierten Wegpunkt hoch schieben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="102"/>
+        <location filename="taskeditor.cpp" line="104"/>
         <source>move selected waypoint down</source>
         <translation>markierten Wegpunkt runter schieben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="107"/>
+        <location filename="taskeditor.cpp" line="109"/>
         <source>reverse waypoint order</source>
         <translation>Wegpunktreihenfolge umkehren</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="112"/>
+        <location filename="taskeditor.cpp" line="114"/>
         <source>add waypoint</source>
         <translation>Wegpunkt hinzufügen</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="117"/>
+        <location filename="taskeditor.cpp" line="119"/>
         <source>remove waypoint</source>
         <translation>Wegpunkt löschen</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="122"/>
+        <location filename="taskeditor.cpp" line="124"/>
         <source>save task</source>
         <translation>speichere Aufgabe</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="127"/>
+        <location filename="taskeditor.cpp" line="129"/>
         <source>cancel task</source>
         <translation>verwerfe Aufgabe</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="137"/>
+        <location filename="taskeditor.cpp" line="139"/>
         <source>Name:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="160"/>
+        <location filename="taskeditor.cpp" line="162"/>
         <source>Waypoints</source>
         <translation>Wegpunkte</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="161"/>
+        <location filename="taskeditor.cpp" line="163"/>
         <source>Airfields</source>
         <translation>Flugplätze</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="162"/>
+        <location filename="taskeditor.cpp" line="164"/>
         <source>Outlandings</source>
         <translation>Landefelder</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="352"/>
+        <location filename="taskeditor.cpp" line="289"/>
+        <source>Total</source>
+        <translation>Summe</translation>
+    </message>
+    <message>
+        <location filename="taskeditor.cpp" line="372"/>
         <source>Task Incomplete</source>
         <translation>Aufgabe unvollständig</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="353"/>
+        <location filename="taskeditor.cpp" line="373"/>
         <source>Task needs at least four waypoints</source>
         <translation>Eine Aufgabe hat mindestens 4 Wegpunkte</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="363"/>
+        <location filename="taskeditor.cpp" line="383"/>
         <source>Name Missing</source>
         <translation>Vermisse Name</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="364"/>
+        <location filename="taskeditor.cpp" line="384"/>
         <source>Enter a name for the task to save it</source>
         <translation>Bitte Tasknamen eingeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="376"/>
-        <location filename="taskeditor.cpp" line="389"/>
+        <location filename="taskeditor.cpp" line="396"/>
+        <location filename="taskeditor.cpp" line="409"/>
         <source>Name in Use</source>
         <translation>Name schon vergeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="377"/>
-        <location filename="taskeditor.cpp" line="390"/>
+        <location filename="taskeditor.cpp" line="397"/>
+        <location filename="taskeditor.cpp" line="410"/>
         <source>Please enter a different name</source>
         <translation>Bitte anderen Namen eingeben</translation>
     </message>
@@ -3807,52 +3817,52 @@ Alle Downloads verworfen!</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="148"/>
+        <location filename="tasklistview.cpp" line="150"/>
         <source>TC</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="151"/>
+        <location filename="tasklistview.cpp" line="155"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="152"/>
+        <location filename="tasklistview.cpp" line="156"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="153"/>
-        <source>Dist.</source>
-        <translation>Entf.</translation>
+        <location filename="tasklistview.cpp" line="157"/>
+        <source>Way</source>
+        <translation>Weg</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="154"/>
+        <location filename="tasklistview.cpp" line="158"/>
         <source>GS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="155"/>
+        <location filename="tasklistview.cpp" line="159"/>
         <source>WCA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="157"/>
+        <location filename="tasklistview.cpp" line="161"/>
         <source>Time</source>
         <translation>Zeit</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="158"/>
+        <location filename="tasklistview.cpp" line="162"/>
         <source>SS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="159"/>
+        <location filename="tasklistview.cpp" line="163"/>
         <source>Description</source>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="398"/>
+        <location filename="tasklistview.cpp" line="402"/>
         <source>none</source>
         <translation>keine</translation>
     </message>

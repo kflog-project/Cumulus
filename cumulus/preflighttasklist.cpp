@@ -29,6 +29,7 @@
 #include "distance.h"
 #include "speed.h"
 #include "layout.h"
+#include "wgspoint.h"
 
 PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   QWidget( parent ),
@@ -289,7 +290,12 @@ FlightTask* PreFlightTaskList::takeSelectedTask()
   // destruction of list is called.
   int index = id.toInt() - 1;
 
-  return taskList.takeAt( index );
+  FlightTask* task = taskList.takeAt( index );
+
+  // Save the task declaration in Flarm format as file.
+  createFlarmTaskList( task );
+
+  return task;
 }
 
 /** load tasks from file*/
@@ -599,7 +605,7 @@ bool PreFlightTaskList::saveTaskList()
 
   // writing file-header
   QDateTime dt = QDateTime::currentDateTime();
-  QString dtStr = dt.toString(Qt::ISODate);
+  QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
 
   stream << "# KFLog/Cumulus-Task-File created at "
          << dtStr << " by Cumulus "
@@ -626,6 +632,88 @@ bool PreFlightTaskList::saveTaskList()
       stream << "TE" << endl;
     }
 
+  f.close();
+
+  return true;
+}
+
+/** Creates a task definition file in Flarm format. */
+bool PreFlightTaskList::createFlarmTaskList( FlightTask* flightTask )
+{
+  if( ! flightTask )
+    {
+      return false;
+    }
+
+  QList<TaskPoint *>& tpList = flightTask->getTpList();
+
+  if( tpList.isEmpty() )
+    {
+      return false;
+    }
+
+  QString fn = GeneralConfig::instance()->getUserDataDirectory() + "/cumulus-flarm.tsk";
+
+  // Save one backup copy.
+  QFile::rename( fn, fn + ".bak" );
+
+  QFile f(fn);
+
+  if( !f.open( QIODevice::WriteOnly ) )
+    {
+      qWarning( "Could not write to task-file %s", f.fileName().toLatin1().data() );
+      return false;
+    }
+
+  QTextStream stream( &f );
+  stream.setCodec( "ISO 8859-15" );
+
+  // writing file-header
+  QDateTime dt = QDateTime::currentDateTime();
+  QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
+
+  stream << "// Flarm task declaration created at "
+         << dtStr
+         << " by Cumulus "
+         << QCoreApplication::applicationVersion() << endl;
+
+  stream << "$PFLAC,S,NEWTASK," << flightTask->getTaskName() << endl;
+
+  for( int i = 0; i < tpList.count(); i++ )
+    {
+      // $PFLAC,S,ADDWP,4647900N,01252700E,Lienz Ni
+      TaskPoint* tp = tpList.at(i);
+
+      int degree, intMin;
+      double min;
+
+      WGSPoint::calcPos( tp->origP.x(), degree, min );
+
+      // Minute is expected as 1/1000
+      intMin = static_cast<int> (rint(min * 1000));
+
+      QString lat = QString("%1%2%3").
+                    arg( (degree < 0) ? -degree : degree, 2, 10, QChar('0') ).
+                    arg( (intMin < 0) ? -intMin : intMin, 5, 10, QChar('0') ).
+                    arg( (degree < 0) ? QString("S") : QString("N") );
+
+      WGSPoint::calcPos( tp->origP.y(), degree, min );
+
+      intMin = static_cast<int> (rint(min * 1000));
+
+      QString lon = QString("%1%2%3").
+                    arg( (degree < 0) ? -degree : degree, 3, 10, QChar('0') ).
+                    arg( (intMin < 0) ? -intMin : intMin, 5, 10, QChar('0') ).
+                    arg( (degree < 0) ? QString("W") : QString("E") );
+
+      stream << "$PFLAC,S,ADDWP,"
+             << lat
+             << "," << lon << ","
+             << tp->name << " - " << tp->description
+             << endl;
+    }
+
+  stream << endl;
   f.close();
 
   return true;

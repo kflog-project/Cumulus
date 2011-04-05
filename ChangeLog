@@ -14,7 +14,13 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[-] 2011-04-02 AP: Bugfix: readCup method of WaypointCatalog set never the
+[o] 2011-04-05 AP: Task management widgets a little bit optimized in their
+                   layout.
+[+] 2011-04-05 AP: If a flight task is selected, a file with the name
+                   cumulus-flarm.tsk is saved in the user's data directory.
+                   The content of this file can be used as input for the
+                   flarm.cfg file on the Micro SD card.
+[-] 2011-04-04 AP: Bugfix: readCup method of WaypointCatalog set never the
                    landing flags for outlandings.
 [o] 2011-04-02 AP: Home site country field added to settings personal page.
 [o] 2011-04-01 AP: Found an Italian OpenAir file where the single records

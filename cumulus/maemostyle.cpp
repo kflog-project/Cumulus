@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2010 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2008-2011 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -64,6 +64,11 @@ int MaemoProxyStyle::pixelMetric( PixelMetric metric,
     {
       // increase width of tab bar buttons
       return TB_SB_WIDTH;
+    }
+  else if( metric == PM_ComboBoxFrameWidth )
+    {
+      // increase width of a combo box
+      return SB_SIZE + PM_DefaultFrameWidth;
     }
   else
     {
