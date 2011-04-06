@@ -3,7 +3,7 @@
  -----------------------------------------
  begin                : Sun Jul 21 2002
  copyright            : (C) 2002      by André Somers
- ported to Qt4.x/X11  : (C) 2007-2010 by Axel Pauli
+ ported to Qt4.x/X11  : (C) 2007-2011 by Axel Pauli
  maintainer           : axel@kflog.org
 
  $Id$
@@ -390,8 +390,8 @@ void MainWindow::slotCreateApplicationWidgets()
   GpsNmea::gps->blockSignals( true );
   logger = IgcLogger::instance();
 
-  initActions();
-  initMenuBar();
+  createActions();
+  createMenuBar();
 
   ws->slot_SetText1( tr( "Setting up connections..." ) );
 
@@ -766,7 +766,7 @@ void MainWindow::slotAlarm( const QString& msg, const bool sound )
   viewMap->slot_info( msg );
 }
 
-void MainWindow::initMenuBar()
+void MainWindow::createMenuBar()
 {
   fileMenu = menuBar()->addMenu(tr("File"));
   fileMenu->addAction( actionFileQuit );
@@ -791,6 +791,8 @@ void MainWindow::initMenuBar()
   labelMenu->addSeparator();
   labelMenu->addAction( actionToggleLogging );
   labelMenu->addAction( actionToggleManualInFlight );
+  labelMenu->addSeparator();
+  labelMenu->addAction( actionToggleWindowSize );
   labelMenu->addAction( actionToggleStatusbar );
 
   mapMenu = menuBar()->addMenu(tr("Map"));
@@ -846,7 +848,7 @@ void MainWindow::slotSetMenuBarFontSize()
 }
 
 /** initializes all QActions of the application */
-void MainWindow::initActions()
+void MainWindow::createActions()
 {
   ws->slot_SetText1( tr( "Setting up key shortcuts ..." ) );
 
@@ -950,6 +952,20 @@ void MainWindow::initActions()
   addAction( actionMenuBarToggle );
   connect( actionMenuBarToggle, SIGNAL( triggered() ),
            this, SLOT( slotToggleMenu() ) );
+
+  // Toggle window size
+  actionToggleWindowSize = new QAction( tr( "Window size" ), this );
+
+  // Hardware Key F6 for maximize/normalize screen under Maemo 4.
+  // Maemo 5 has no keys. Therefore the space key is activated for that.
+  QList<QKeySequence> wskList;
+  wskList << Qt::Key_Space << Qt::Key_F6;
+  actionToggleWindowSize->setShortcuts( wskList );
+  actionToggleWindowSize->setCheckable( true );
+  actionToggleWindowSize->setChecked( false );
+  addAction( actionToggleWindowSize );
+  connect( actionToggleWindowSize, SIGNAL( triggered() ),
+           this, SLOT( slotToggleWindowSize() ) );
 
   actionFileQuit = new QAction( tr( "&Exit" ), this );
   actionFileQuit->setShortcut( QKeySequence("Shift+E") );
@@ -1149,6 +1165,7 @@ void  MainWindow::toggleActions( const bool toggle )
   actionToggleTpLabels->setEnabled( toggle );
   actionToggleWpLabels->setEnabled( toggle );
   actionToggleLabelsInfo->setEnabled( toggle );
+  actionToggleWindowSize->setEnabled( toggle );
   actionEnsureVisible->setEnabled( toggle );
   actionSelectTask->setEnabled( toggle );
   actionStartFlightTask->setEnabled( toggle );
@@ -1311,6 +1328,12 @@ void MainWindow::slotToggleLabelsInfo( bool toggle )
   GeneralConfig::instance()->setMapShowLabelsExtraInfo( toggle );
   GeneralConfig::instance()->save();
   viewMap->_theMap->scheduleRedraw(Map::airfields);
+}
+
+
+void MainWindow::slotToggleWindowSize()
+{
+  setWindowState( windowState() ^ Qt::WindowFullScreen );
 }
 
 void MainWindow::slotViewStatusBar( bool toggle )
@@ -2115,14 +2138,6 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
       QKeyEvent *k = ( QKeyEvent* ) e;
 
       qDebug( "Keycode of pressed key: %d, %X", k->key(), k->key() );
-
-      if( k->key() == Qt::Key_F6 || k->key() == Qt::Key_Space )
-        {
-          // Hardware Key F6 for maximize/normalize screen under Maemo 4.
-          // Maemo 5 has no keys. Therefore the space key is activated for that.
-          setWindowState(windowState() ^ Qt::WindowFullScreen);
-          return true;
-        }
     }
 
   return QWidget::eventFilter( o, e ); // standard event processing;

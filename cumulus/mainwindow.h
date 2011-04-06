@@ -22,10 +22,12 @@
  *
  * \brief This class provides the main window of Cumulus.
  *
- * This class provides the main window of Cumulus. All needed other stuff
+ * This class provides the main window of Cumulus. All needed stuff
  * is initialized and handled here.
  *
  * \date 2002-2011
+ *
+ * \version $Id$
  */
 
 #ifndef _MainWindow_h
@@ -213,7 +215,7 @@ protected:
   /**
    * No descriptions
    */
-  void initActions();
+  void createActions();
 
   /**
    * Toggle on/off all actions which have a key accelerator defined.
@@ -229,7 +231,7 @@ protected:
   /**
    * No descriptions
    */
-  void initMenuBar();
+  void createMenuBar();
 
   /**
    * Make sure the user really wants to quit by asking
@@ -257,8 +259,19 @@ private slots:
    */
   void slotEnsureVisible();
 
+  /**
+   * Called to toggle the menu bar.
+   */
   void slotToggleMenu();
 
+  /**
+   * Called to toggle the window size.
+   */
+  void slotToggleWindowSize();
+
+  /**
+   * Called to show or hide the status bar.
+   */
   void slotViewStatusBar(bool toggle);
 
   /**
@@ -353,6 +366,7 @@ private:
   QAction* actionZoomInZ;
   QAction* actionZoomOutZ;
 
+  QAction* actionToggleWindowSize;
   QAction* actionToggleAfLabels;
   QAction* actionToggleOlLabels;
   QAction* actionToggleTpLabels;

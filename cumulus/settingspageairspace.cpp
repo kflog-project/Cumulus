@@ -1499,7 +1499,9 @@ void SettingsPageAirspaceLoading::slot_save()
   if( oldFiles.size() != files.size() )
     {
       // List size is different, emit signal.
+      QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
       emit airspaceFileListChanged();
+      QApplication::restoreOverrideCursor();
     }
   else
     {
@@ -1510,7 +1512,9 @@ void SettingsPageAirspaceLoading::slot_save()
           if( files.at(i) != oldFiles.at(i) )
             {
               // File names are different, emit signal.
+              QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
               emit airspaceFileListChanged();
+              QApplication::restoreOverrideCursor();
               break;
             }
         }

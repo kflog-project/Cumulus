@@ -14,6 +14,16 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2011-04-06 AP: New menu item added under toggles for changing window size
+                   between normal size and maximized. The same can be done
+                   with the key SPACE.
+[+] 2011-04-06 AP: If the speed to fly box is unused, normally if no target
+                   is selected, the whole box is labeled with the text string
+                   Menu. That make it easier to find the toggle for the menu
+                   bar.
+[-] 2011-04-06 AP: Did some bug fixing in class MapInfo. The frame of the
+                   arrival info box was always drawn in a wrong color. I fixed
+                   that.
 [o] 2011-04-05 AP: Task management widgets a little bit optimized in their
                    layout.
 [+] 2011-04-05 AP: If a flight task is selected, a file with the name

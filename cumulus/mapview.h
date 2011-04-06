@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2010 by Axel Pauli
+                               2008-2011 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -52,7 +52,7 @@
  * This is the main view of the application, providing the map and
  * other useful in flight information.
  *
- * \date 2002-2010
+ * \date 2002-2011
  */
 
 class CuLabel;
@@ -329,6 +329,8 @@ class MapView : public QWidget
     MapInfoBox* _altitude;
     /** reference to the glide path label */
     MapInfoBox* _glidepath;
+    /** reference to the menu label */
+    MapInfoBox* _menuToggle;
     /** reference to status bar */
     QStatusBar* _statusbar;
     /** reference to GPS status */

@@ -261,10 +261,19 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   //add Best Speed widget
   _speed2fly = new MapInfoBox( this, "#a6a6a6", true );
   _speed2fly->setPreText("S2f");
-  _speed2fly->setValue("-");
+  _speed2fly->setValue(tr("Menu"));
   _speed2fly->setPreUnit( "MU" );
+  _speed2fly->setVisible( false );
   MSLayout->addWidget( _speed2fly );
   connect(_speed2fly, SIGNAL(mousePress()), this, SLOT(slot_toggleMenu()));
+
+   //add menu toggle widget
+  _menuToggle = new MapInfoBox( this, QColor(Qt::gray).name(), false, false, 32 );
+  _menuToggle->setPreTextVisible( false );
+  _menuToggle->setTextLabelBGColor( "lightGray" );
+  _menuToggle->setValue(tr("Menu"));
+  MSLayout->addWidget( _menuToggle );
+  connect(_menuToggle, SIGNAL(mousePress()), this, SLOT(slot_toggleMenu()));
 
   sideLayout->addWidget( mcBar, 1 );
 
@@ -368,7 +377,7 @@ void MapView::showEvent( QShowEvent* event )
   Q_UNUSED( event )
 
   // Used map info box widgets
-  MapInfoBox *boxWidgets[14] = { _heading,
+  MapInfoBox *boxWidgets[15] = { _heading,
                                  _bearing,
                                  _rel_bearing,
                                  _distance,
@@ -381,13 +390,14 @@ void MapView::showEvent( QShowEvent* event )
                                  _waypoint,
                                  _eta,
                                  _altitude,
-                                 _glidepath };
+                                 _glidepath,
+                                 _menuToggle };
 
   int gtWidth = 0;
   QFontMetrics fm( font() );
 
   // Determine the greatest pretext width of the used map info boxes.
-  for( int i = 0; i < 14; i++ )
+  for( int i = 0; i < 15; i++ )
     {
       MapInfoBox *ptr = boxWidgets[i];
 
@@ -404,7 +414,7 @@ void MapView::showEvent( QShowEvent* event )
 
   // qDebug() << "maxWidth=" << gtWidth;
 
-  for( int i = 0; i < 14; i++ )
+  for( int i = 0; i < 15; i++ )
     {
       // Set uniform width for pretext of all map info boxes.
       MapInfoBox *ptr = boxWidgets[i];
@@ -507,14 +517,11 @@ void MapView::slot_Waypoint(const Waypoint *wp)
       // @AP: No waypoint is selected, reset waypoint and glidepath display
       _waypoint->setValue("");
       _glidepath->setValue("-");
-      _glidepath->setAutoFillBackground(true);
-      _glidepath->setBackgroundRole(QPalette::Window);
-      _glidepath->setPalette( QPalette(_glidepathBGColor) );
+      _glidepath->setPreWidgetsBGColor(_glidepathBGColor);
       // @JD: reset distance too
       _distance->setValue("-");
       QPixmap arrow = _arrows.copy(24 * 60 + 3, 3, 54, 54);
       _rel_bearing->setPixmap(arrow);
-      // qDebug("Rel. bearing icon reset" );
     }
 
   _theMap->scheduleRedraw(Map::informationLayer); // this is not really helpful -> it is: the bearingline won't change otherwise!
@@ -563,9 +570,8 @@ void MapView::slot_Bearing(int bearing)
 void MapView::slot_toggleBearing()
 {
   // display inverse bearing
-  _bearing->setAutoFillBackground(true);
-  _bearing->setBackgroundRole(QPalette::Window);
-  _bearing->setPalette( QPalette(QColor(Qt::red)) );
+  _bearing->setPreWidgetsBGColor( QColor(Qt::red) );
+
   _bearingMode = 0;
   slot_Bearing( _lastBearing );
 
@@ -576,7 +582,7 @@ void MapView::slot_toggleBearing()
 /** Called to toggle the menu of the main window. */
 void MapView::slot_toggleMenu()
 {
-  if( _theMap->isVisible() == true )
+  if( Map::getInstance()->isVisible() == true )
     {
       // Toggle menu only, if map widget is visible
       emit toggleMenu();
@@ -589,9 +595,7 @@ void MapView::slot_toggleMenu()
 void MapView::slot_resetInversBearing()
 {
   // display bearing in normal mode
-  _bearing->setAutoFillBackground(true);
-  _bearing->setBackgroundRole(QPalette::Window);
-  _bearing->setPalette( QPalette( _bearingBGColor ));
+  _bearing->setPreWidgetsBGColor( _bearingBGColor );
   _bearingMode = 1;
   slot_Bearing( _lastBearing );
 }
@@ -794,33 +798,33 @@ void MapView::slot_GlidePath (const Altitude& above)
   if( above.getMeters() < 0.0 && lastColor != QColor(Qt::red) )
     {
       // display red background if arrival is under zero
-      _glidepath->setAutoFillBackground(true);
-      _glidepath->setBackgroundRole(QPalette::Window);
-      _glidepath->setPalette( QPalette(QColor(Qt::red)) );
+      _glidepath->setPreWidgetsBGColor( QColor(Qt::red) );
       lastColor = QColor(Qt::red);
     }
   else if( above.getMeters() >= 0.0 && lastColor != _glidepathBGColor )
     {
-      _glidepath->setAutoFillBackground(true);
-      _glidepath->setBackgroundRole(QPalette::Window);
-      _glidepath->setPalette( QPalette(_glidepathBGColor) );
-      lastColor = _glidepathBGColor;
+      _glidepath->setPreWidgetsBGColor( _glidepathBGColor );
+     lastColor = _glidepathBGColor;
     }
 }
 
-/** This slot is called when the best speed value has changed */
+/** This slot is called when the best speed value has changed. */
 void MapView::slot_bestSpeed (const Speed& speed)
 {
   if( speed.isValid() )
     {
       _speed2fly->setValue(speed.getHorizontalText(false, 0));
+      _speed2fly->setVisible( true );
+      _menuToggle->setVisible( false );
     }
   else
     {
       _speed2fly->setValue("-");
+      _menuToggle->setValue( tr("Menu") );
+      _speed2fly->setVisible( false );
+      _menuToggle->setVisible( true );
     }
 }
-
 
 /** This slot is called if a new McCready value has been set */
 void MapView::slot_Mc (const Speed& mc)
@@ -834,7 +838,6 @@ void MapView::slot_Mc (const Speed& mc)
       _mc->setValue("-");
     }
 }
-
 
 /** This slot is called if a new variometer value has been set */
 void MapView::slot_Vario (const Speed& vario)

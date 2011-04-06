@@ -50,7 +50,8 @@ MapInfoBox::MapInfoBox( QWidget *parent,
                         bool unitInPretext,
                         bool minusInPretext,
                         int fontDotsize ) :
-  QFrame( parent )
+  QFrame( parent ),
+  _textBGColor( "white" )
 {
   basics( borderColor );
   QHBoxLayout* topLayout = (QHBoxLayout*) this->layout();
@@ -60,14 +61,16 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   QFont f;
   f.setPixelSize(16);
 
-  QVBoxLayout* preLayout = new QVBoxLayout;
+  _preWidget = new QWidget( this );
+
+  QVBoxLayout* preLayout = new QVBoxLayout( _preWidget );
   preLayout->setMargin(0);
   preLayout->setSpacing(3);
 
   _ptext = new QLabel(this);
 
   QPalette p = _ptext->palette();
-  p.setColor( QPalette::Foreground, Qt::black );
+  p.setColor( QPalette::WindowText, Qt::black );
   _ptext->setPalette(p);
   _ptext->setFont(f);
   _ptext->setAlignment( Qt::AlignRight );
@@ -76,12 +79,12 @@ MapInfoBox::MapInfoBox( QWidget *parent,
 
   if( minusInPretext )
     {
-      _minus = new QLabel( this );
-      _minus->setPixmap( GeneralConfig::instance()->loadPixmap( "minus.png" ) );
-      _minus->setFixedWidth( 25 );
-      preLayout->addWidget( _minus );
+      _pminus = new QLabel( this );
+      _pminus->setPixmap( GeneralConfig::instance()->loadPixmap( "minus.png" ) );
+      _pminus->setFixedWidth( 25 );
+      preLayout->addWidget( _pminus );
       preLayout->addStretch( 5 );
-      _minus->setVisible(false);
+      _pminus->setVisible(false);
     }
 
   if( unitInPretext )
@@ -90,7 +93,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
       _punit = new QLabel(this);
 
       p = _punit->palette();
-      p.setColor( QPalette::Foreground, Qt::black );
+      p.setColor( QPalette::WindowText, Qt::black );
 
       _punit->setPalette(p);
       _punit->setFont(f);
@@ -101,7 +104,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
       preLayout->addWidget(_punit, 0, Qt::AlignRight|Qt::AlignBottom);
     }
 
-  topLayout->addLayout(preLayout, 0);
+  topLayout->addWidget( _preWidget, 0 );
 
   _text = new QLabel(this);
   _text->setIndent(0);
@@ -112,19 +115,18 @@ MapInfoBox::MapInfoBox( QWidget *parent,
 
   _text->setStyleSheet( QString( "border-style: none;"
                                  "border-width: 0px;"
-                                 "background-color: white;"
+                                 "background-color: %1;"
                                  "padding-left: 1px;"
                                  "padding-right: 1px;"
                                  "margin: 0px;"
-                                 "font-size: %1px;"
-                                 "text-align: left;" ).arg(fontDotsize) );
+                                 "font-size: %2px;"
+                                 "text-align: left;" )
+                                 .arg(_textBGColor)
+                                 .arg(fontDotsize) );
 
   setValue("-");
   setPreText("");
   setPreUnit("");
-
-  _text->installEventFilter(this);
-  _ptext->installEventFilter(this);
 }
 
 MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor, const QPixmap& pixmap ) :
@@ -144,7 +146,7 @@ void MapInfoBox::basics( const QString& borderColor )
   topLayout->setSpacing(0);
 
   QPalette p = palette();
-  p.setColor( QPalette::Foreground, QColor(borderColor) );
+  p.setColor( QPalette::WindowText, QColor(borderColor) );
   setPalette(p);
   setFrameStyle( QFrame::Box | QFrame::Plain );
   setLineWidth(3);
@@ -154,9 +156,9 @@ void MapInfoBox::basics( const QString& borderColor )
   _preUnit = QString("");
   _value =  QString("");
   _ptext = 0; // can be unused
-  _minus = 0; // can be unused
+  _pminus = 0; // can be unused
   _punit = 0; // can be unused
-
+  _preWidget = 0;  // can be unused
 }
 
 /** Write property of QString _preText. */
@@ -206,20 +208,20 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
 
   _value = newVal;
 
-  if( _minus && showEvent == false )
+  if( _pminus && showEvent == false )
     {
       if( _value.startsWith( '-' ) && _value.size() > 1 )
         {
           _value = _value.remove( 0, 1 );
-          _minus->setVisible(true);
+          _pminus->setVisible(true);
         }
       else
         {
-          _minus->setVisible(false);
+          _pminus->setVisible(false);
         }
     }
 
-  _text->setText(_value);
+  _text->setText( _value );
 
   if( _value.isEmpty() )
     {
@@ -244,12 +246,14 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
       // Do only setup a new style, if it is really necessary.
       _text->setStyleSheet( QString( "border-style: none;"
                                      "border-width: 0px;"
-                                     "background-color: white;"
+                                     "background-color: %1;"
                                      "padding-left: 1px;"
                                      "padding-right: 1px;"
                                      "margin: 0px;"
-                                     "font-size: %1px;"
-                                     "text-align: left;" ).arg(fontDotsize) );
+                                     "font-size: %2px;"
+                                     "text-align: left;" )
+                                     .arg(_textBGColor)
+                                     .arg(fontDotsize) );
     }
 
   //@JD: set font size dynamically depending on size hint after
@@ -276,12 +280,14 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
 
       _text->setStyleSheet( QString( "border-style: none;"
                                      "border-width: 0px;"
-                                     "background-color: white;"
+                                     "background-color: %1;"
                                      "padding-left: 1px;"
                                      "padding-right: 1px;"
                                      "margin: 0px;"
-                                     "font-size: %1px;"
-                                     "text-align: left;" ).arg( fontDotsize ) );
+                                     "font-size: %2px;"
+                                     "text-align: left;" )
+                                     .arg(_textBGColor)
+                                     .arg( fontDotsize ) );
 
       diff = minimumSizeHint().width() - width();
 
@@ -292,6 +298,33 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
                << "FoSize=" << fontDotsize;
 #endif
 
+    }
+}
+
+void MapInfoBox::setTextLabelBGColor( const QString& newValue )
+{
+  _textBGColor = newValue;
+
+  _text->setStyleSheet( QString( "border-style: none;"
+                                 "border-width: 0px;"
+                                 "background-color: %1;"
+                                 "padding-left: 1px;"
+                                 "padding-right: 1px;"
+                                 "margin: 0px;"
+                                 "font-size: %2px;"
+                                 "text-align: left;" )
+                                 .arg(_textBGColor)
+                                 .arg( _maxFontDotsize ) );
+  setValue( _value );
+};
+
+void MapInfoBox::setPreWidgetsBGColor( const QColor& newValue )
+{
+  if( _preWidget )
+    {
+      _preWidget->setAutoFillBackground( true );
+      _preWidget->setBackgroundRole( QPalette::Window );
+      _preWidget->setPalette( QPalette( newValue ) );
     }
 }
 
@@ -307,24 +340,9 @@ void MapInfoBox::showEvent(QShowEvent *event)
   QFrame::showEvent( event );
 }
 
-bool MapInfoBox::event( QEvent* event )
+void MapInfoBox::mousePressEvent( QMouseEvent* event )
 {
-  if( event->type() == QEvent::MouseButtonPress )
-    {
-      emit mousePress();
-      return true;
-    }
+  Q_UNUSED( event )
 
-  return QFrame::event( event );
-}
-
-bool MapInfoBox::eventFilter(QObject* o, QEvent* e)
-{
-  if( e->type() == QEvent::MouseButtonPress )
-    {
-      emit mousePress();
-      return true;
-    }
-
-  return QFrame::eventFilter( o, e );
+  emit mousePress();
 }
