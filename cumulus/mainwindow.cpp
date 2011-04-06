@@ -248,7 +248,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus-desktop26x26.png")) );
   setWindowTitle( "Cumulus" );
 
-#ifdef MAEMO4
+#ifdef MAEMO
   setWindowState(Qt::WindowFullScreen);
 #endif
 
