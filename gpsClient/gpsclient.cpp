@@ -133,6 +133,16 @@ fd_set *GpsClient::getReadFdMask()
 // from the Gps device.
 void GpsClient::processEvent( fd_set *fdMask )
 {
+  if( ipcPort )
+    {
+      int sfd = clientData.getSock();
+
+      if( sfd != -1 && FD_ISSET( sfd, fdMask ) )
+        {
+          readServerMsg();
+        }
+    }
+
   if( fd != -1 && FD_ISSET( fd, fdMask ) )
     {
       if( readGpsData() == false )
@@ -147,22 +157,13 @@ void GpsClient::processEvent( fd_set *fdMask )
               // BT devices can reject a connection try. If we don't return here
               // we run in an endless loop.
               setShutdownFlag(true);
-              return;
             }
-
-          sleep(3);
-          // reopen connection
-          openGps( device.data(), ioSpeedDevice );
-        }
-    }
-
-  if( ipcPort )
-    {
-      int sfd = clientData.getSock();
-
-      if( sfd != -1 && FD_ISSET( sfd, fdMask ) )
-        {
-          readServerMsg();
+          else
+            {
+              sleep(3);
+              // reopen connection
+              openGps( device.data(), ioSpeedDevice );
+            }
         }
     }
 }
