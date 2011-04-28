@@ -733,36 +733,47 @@ bool Calculator::glidePath(int aLastBearing, Distance aDistance,
   return true;
 }
 
-
 void Calculator::calcGlidePath()
 {
-  // qDebug ("Calculator::calcGlidePath");
+  qDebug ("Calculator::calcGlidePath");
   Speed speed;
-  Altitude above;
+  Altitude arrivalAlt;
 
-  // Calculate new glide path, if a waypoint is selected and
-  // a glider is defined.
+  // Calculate new glide path, if a waypoint is selected and a glider is defined.
   if ( ! selectedWp || ! _glider )
     {
       lastRequiredLD = -1;
       return;
     }
 
-  glidePath(lastBearing, lastDistance, selectedWp->elevation, above, speed );
+  int tpIdx = selectedWp->taskPointIndex;
+  FlightTask *task = _globalMapContents->getCurrentTask();
 
-  if (speed != lastBestSpeed)
+  if( tpIdx != -1 && // selected waypoint is a task point
+      task != 0 &&   // a flight task is defined
+      GeneralConfig::instance()->getArrivalAltitudeDisplay() == GeneralConfig::landingTarget )
+    {
+      // Calculates arrival altitude above landing target.
+      task->calculateFinalGlidePath( tpIdx, arrivalAlt, speed );
+    }
+  else
+    {
+      // Calculates arrival altitude above selected target.
+      glidePath( lastBearing, lastDistance, selectedWp->elevation, arrivalAlt, speed );
+    }
+
+  if( speed != lastBestSpeed )
     {
       lastBestSpeed = speed;
-      emit bestSpeed (speed);
+      emit bestSpeed( speed );
     }
 
-  if (above != lastGlidePath)
+  if( arrivalAlt != lastGlidePath )
     {
-      lastGlidePath = above;
-      emit glidePath (above);
+      lastGlidePath = arrivalAlt;
+      emit glidePath( arrivalAlt );
     }
 }
-
 
 /** Calculates the bearing to the currently selected waypoint, and emits signal newBearing if the bearing has changed. */
 void Calculator::calcBearing()

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004 by André Somers
-**                   2008-2010 Axel Pauli
+**                   2008-2011 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * \brief A widget for pre-flight miscellaneous settings.
  *
- * \date 2004-2010
+ * \date 2004-2011
  *
  */
 
@@ -32,19 +32,20 @@
 
 #include <QWidget>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QSpinBox>
 
 #include "altitude.h"
 
 class PreFlightMiscPage : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
-  private:
+ private:
 
   Q_DISABLE_COPY ( PreFlightMiscPage )
 
-public:
+ public:
 
     PreFlightMiscPage(QWidget *parent=0);
 
@@ -54,13 +55,14 @@ public:
 
     void save();
 
-private:
+ private:
 
     QCheckBox* chkLogAutoStart;
-    QSpinBox* edtMinimalArrival;
-    QSpinBox* edtQNH;
-    QSpinBox* bRecordInterval; // B-Record logging interval in seconds
-    QSpinBox* kRecordInterval; // K-Record logging interval in seconds
+    QSpinBox*  edtMinimalArrival;
+    QComboBox* edtArrivalAltitude;
+    QSpinBox*  edtQNH;
+    QSpinBox*  bRecordInterval; // B-Record logging interval in seconds
+    QSpinBox*  kRecordInterval; // K-Record logging interval in seconds
 
     /** saves altitude unit set during construction of object */
     Altitude::altitudeUnit altUnit;

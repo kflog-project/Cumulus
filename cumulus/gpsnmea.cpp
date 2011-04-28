@@ -70,13 +70,13 @@ QHash<QString, short> GpsNmea::gpsHash;
 
 GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
 {
-  if ( ++instances > 1 )
+  if( instances > 0 )
     {
       // There exists already a class instance as singleton.
       return;
     }
 
-  ++instances;
+  instances++;
 
   resetDataObjects();
 
@@ -120,10 +120,7 @@ GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
 GpsNmea::~GpsNmea()
 {
   // decrement instance counter
-  if ( --instances )
-    {
-      return;
-    }
+  instances--;
 
   // stop GPS client process
   if ( serial )

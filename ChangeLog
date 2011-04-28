@@ -14,6 +14,18 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2011-04-28 AP: A new configuration option, arrival altitude display, was
+                   added to the pre-flight common page. This option defines,
+                   for which task point the arrival altitude is calculated.
+                   Possible selections are next task point or landing task
+                   point. The default setting is the landing task point.
+                   This was a request from Hendrik Hoeth.
+[o] 2011-04-28 AP: If Cumulus had more than 5 Flarm devices in view the GUI
+                   was nearly blocked for user interactions. The problem was
+                   a bottleneck in the communication between the GPS client and
+                   the Cumulus process due to to much handshake actions. This
+                   fix should improve in general the GUI reaction time for
+                   user interactions.
 [+] 2011-04-06 AP: New menu item added under toggles for changing window size
                    between normal size and maximized. The same can be done
                    with the key SPACE.

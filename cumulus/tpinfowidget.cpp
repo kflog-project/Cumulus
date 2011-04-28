@@ -206,7 +206,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   distance.replace(  QRegExp(" "), "&nbsp;" );
 
   display += "<tr><td>&nbsp;&nbsp;" + tr("Distance") + "</td><td align=\"left\"><b>" +
-    distance + "</b></td>";
+             distance + "</b></td>";
 
   Altitude arrivalAlt;
   Speed bestSpeed;
@@ -353,7 +353,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     distance.replace(  QRegExp(" "), "&nbsp;" );
 
     display += "<tr><td>&nbsp;&nbsp;" + tr("Distance") + "</td><td align=\"left\"><b>" +
-      distance + "</b></td>";
+               distance + "</b></td>";
 
     // calculation of the final arrival altitude
     reach = (ReachablePoint::reachable) task->calculateFinalGlidePath( currentTpIndex, arrivalAlt, bestSpeed );
@@ -387,13 +387,13 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     // If speed is to less we do not display any time values
     if( gs > 0.3 )
       {
-	int time2Final = (int) rint( finalDistance*1000. / gs );
+        int time2Final = (int) rint( finalDistance*1000. / gs );
 
-	QTime qtime(0,0);
-	qtime = qtime.addSecs(time2Final);
+        QTime qtime(0,0);
+        qtime = qtime.addSecs(time2Final);
 
-	display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
-	  qtime.toString() + "</b></td></tr>";
+        display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
+                    qtime.toString() + "</b></td></tr>";
 
         QDateTime eta( QDateTime::currentDateTime() );
 
@@ -411,7 +411,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
             }
 
           display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
-	  etaString + "</b></td>";
+                     etaString + "</b></td>";
       }
     else
       {
@@ -486,7 +486,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
   distance.replace(  QRegExp(" "), "&nbsp;" );
 
   display += "<tr><td>&nbsp;&nbsp;" + tr("Distance") + "</td><td align=\"left\"><b>" +
-    distance + "</b></td></tr>";
+             distance + "</b></td></tr>";
 
   Altitude arrivalAlt;
   Speed bestSpeed;
@@ -580,9 +580,8 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
     }
 
   //----------------------------------------------------------------------------
-  // Check, if waypoint is part of a flight task.In this case we will
+  // Check, if waypoint is part of a flight task. In this case we will
   // also display the final flight target data.
-
   int tpIdx = wp->taskPointIndex;
   FlightTask *task = _globalMapContents->getCurrentTask();
 
@@ -631,13 +630,13 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
       finalDistance += tpList.at(loop)->distance;
     }
 
-    // to avoid wrapping in the table we have to code spaces as forced
-    // spaces in html
-    distance = Distance::getText( finalDistance*1000., true, 1);
-    distance.replace(  QRegExp(" "), "&nbsp;" );
+  // to avoid wrapping in the table we have to code spaces as forced
+  // spaces in html
+  distance = Distance::getText( finalDistance*1000., true, 1);
+  distance.replace(  QRegExp(" "), "&nbsp;" );
 
-    display += "<tr><td>&nbsp;&nbsp;" + tr("Distance") + "</td><td align=\"left\"><b>" +
-      distance + "</b></td></tr>";
+  display += "<tr><td>&nbsp;&nbsp;" + tr("Distance") + "</td><td align=\"left\"><b>" +
+              distance + "</b></td></tr>";
 
     // calculation of the final arrival altitude
   reach = (ReachablePoint::reachable) task->calculateFinalGlidePath( tpIdx, arrivalAlt, bestSpeed );
@@ -666,31 +665,31 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
     // If speed is to less we do not display any time values
     if( gs > 0.3 )
       {
-	int time2Final = (int) rint( finalDistance*1000. / gs );
+        int time2Final = (int) rint( finalDistance*1000. / gs );
 
-	QTime qtime(0,0);
-	qtime = qtime.addSecs(time2Final);
+        QTime qtime(0,0);
+        qtime = qtime.addSecs(time2Final);
 
-	display += "<tr><td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
-	  qtime.toString() + "</b></td></tr>";
+        display += "<tr><td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
+                    qtime.toString() + "</b></td></tr>";
 
-	QDateTime eta( QDateTime::currentDateTime() );
+        QDateTime eta( QDateTime::currentDateTime() );
 
-	QString etaString;
+        QString etaString;
 
-	eta = eta.addSecs( time2Final );
+        eta = eta.addSecs( time2Final );
 
-	  if( Time::getTimeUnit() == Time::local )
-	    {
-              etaString = eta.toLocalTime().toString("hh:mm:ss");
-	    }
-	  else
-	    {
-              etaString = eta.toTimeSpec(Qt::UTC).toString("hh:mm:ss") + " UTC";
-	    }
+        if( Time::getTimeUnit() == Time::local )
+          {
+            etaString = eta.toLocalTime().toString( "hh:mm:ss" );
+          }
+        else
+          {
+            etaString = eta.toTimeSpec( Qt::UTC ).toString( "hh:mm:ss" ) + " UTC";
+          }
 
-	display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
-	  etaString + "</b></td></tr>";
+        display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
+                    etaString + "</b></td></tr>";
       }
 
     // calculate sunset for the landing destination
@@ -698,11 +697,11 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
 
     if( res )
       {
-	// In some areas no results available. In this case we skip
-	// this output.
-	display += "<tr><td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
-	  ss + " " + "</b></td></tr>";
-      }
+        // In some areas no results available. In this case we skip
+        // this output.
+        display += "<tr><td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
+                    ss + " " + "</b></td></tr>";
+       }
 
     display += "</table></big></html>";
     text->setHtml( display );

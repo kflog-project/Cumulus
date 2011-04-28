@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2011 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 ***********************************************************************/
 
 /**
- * This file contains the messages used during interprocess communication
+ * This file contains the message keys used during interprocess communication
  * between the Cumulus and the GPS client process.
  */
 
@@ -27,7 +27,7 @@
 
 // Message key word definitions
 
-#define MSG_PROTOCOL   "Cumulus-GPS_Client_IPC_V1.2_Axel@kflog.org"
+#define MSG_PROTOCOL   "Cumulus-GPS_Client_IPC_V1.3_Axel@kflog.org"
 
 #define MSG_MAGIC      "\\Magic\\"
 
@@ -47,17 +47,21 @@
 
 #define MSG_CLOSE	     "\\Close\\"
 
-// get next available message from queue
+// get all available messages from the queue
 
-#define MSG_GM		     "\\Get_Message\\"
+#define MSG_GM		     "\\Get_Msg\\"
 
-// reply to get next available message from queue
+// reply the next available message from the queue
 
-#define MSG_RM		     "\\Reply_Message\\"
+#define MSG_RM		     "\\Reply_Msg\\"
+
+// reply the available messages count of the queue
+
+#define MSG_RMC        "\\Reply_Msg_Cnt\\"
 
 // send message to GPS device
 
-#define MSG_SM		     "\\Send_Message\\"
+#define MSG_SM		     "\\Send_Msg\\"
 
 // notify request
 

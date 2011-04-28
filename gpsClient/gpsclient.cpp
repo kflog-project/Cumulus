@@ -741,7 +741,6 @@ void GpsClient::readServerMsg()
       QByteArray res = QByteArray(MSG_RM) + " " + msg;
 
       writeServerMsg( res.data() );
-      msg=0;
     }
   else if( MSG_MAGIC == args[0] )
     {

@@ -209,14 +209,16 @@ void GeneralConfig::load()
   // Preflight settings
   beginGroup("Preflight Data");
   _safetyAltitude.setMeters(  value( "Arrival Altitude", 200.0 ).toDouble() );
-  _qnh                 = value( "QNH", 1013 ).toInt();
-  _bRecordInterval     = value( "B-RecordLoggerInterval", 10 ).toInt();
-  _kRecordInterval     = value( "K-RecordLoggerInterval", 0 ).toInt();
-  _loggerAutostartMode = value( "LoggerAutostartMode", false ).toBool();
-  _tas                 = value( "TAS", 100 ).toInt();
-  _windDirection       = value( "WindDirection", 0 ).toInt();
-  _windSpeed           = value( "WindSpeed", 0 ).toInt();
-  _currentTask         = value( "CurrentTask", "").toString();
+  _arrivalAltitudeDisplay = (enum ArrivalAltitudeDisplay) value( "ArrivalAltitudeDisplay",
+                                    GeneralConfig::landingTarget ).toInt();
+  _qnh                    = value( "QNH", 1013 ).toInt();
+  _bRecordInterval        = value( "B-RecordLoggerInterval", 10 ).toInt();
+  _kRecordInterval        = value( "K-RecordLoggerInterval", 0 ).toInt();
+  _loggerAutostartMode    = value( "LoggerAutostartMode", false ).toBool();
+  _tas                    = value( "TAS", 100 ).toInt();
+  _windDirection          = value( "WindDirection", 0 ).toInt();
+  _windSpeed              = value( "WindSpeed", 0 ).toInt();
+  _currentTask            = value( "CurrentTask", "").toString();
   endGroup();
 
   // Task scheme settings for cylinder-sector and nearest-touched
@@ -560,6 +562,7 @@ void GeneralConfig::save()
   // Preflight data
   beginGroup("Preflight Data");
   setValue( "Arrival Altitude", _safetyAltitude.getMeters() );
+  setValue( "ArrivalAltitudeDisplay",  _arrivalAltitudeDisplay );
   setValue( "QNH", _qnh );
   setValue( "B-RecordLoggerInterval", _bRecordInterval );
   setValue( "K-RecordLoggerInterval", _kRecordInterval );

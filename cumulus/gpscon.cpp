@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2004-2010 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2004-2011 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -812,51 +812,75 @@ void GpsCon::queryClient()
     }
 
   QString msg;
-  int loops = 250; // limit loops to avoid a dead lock
 
-  // Now get all messages from the GPS client
-  while( loops-- )
+  QTime t;
+  t.start();
+  writeClientMessage( 0, MSG_GM );
+  readClientMessage( 0, msg );
+
+  qDebug() << "MSG_GM:" << msg << t.elapsed();
+
+  if( server.getClientSock( 0 ) == -1 )
     {
-      writeClientMessage(0, MSG_GM );
-      readClientMessage(0, msg);
+      // socket will be closed in case of any problems, e.g. client has
+      // crashed. we check that to avoid a dead lock here.
+      return;
+    }
 
-      if (server.getClientSock(0) == -1)
+  if( msg.startsWith( MSG_RMC ) )
+    {
+      t.start();
+
+      // Reply messages are available. At first the message count is read.
+      msg = msg.right(msg.length() - strlen(MSG_RMC) - 1);
+
+      int msgCount = msg.toInt();
+
+      // As next we read all available messages
+      for( int i = 0; i < msgCount; i++ )
         {
-          // socket will be closed in case of any problems, e.g. client
-          // crash. we check that to avoid a dead lock here
-          return;
-        }
+          readClientMessage(0, msg);
 
-      if (msg.indexOf(MSG_RM) == 0)
-        {
-          // reply message received, 3 kinds are possible. remove message key
-          // and space separator before further processing
-          msg = msg.right(msg.length() - strlen(MSG_RM) - 1);
-
-          if (msg == MSG_CON_OFF) // GPS connection has gone off
+          if( server.getClientSock( 0 ) == -1 )
             {
-              emit gpsConnectionOff();
-              qDebug(MSG_CON_OFF);
-            }
-          else if ( msg == MSG_CON_ON ) // GPS connection has gone on
-            {
-              emit gpsConnectionOn();
-              qDebug(MSG_CON_ON);
-            }
-          else // GPS NMEA record
-            {
-              emit newSentence(msg);
+              // socket will be closed in case of any problems, e.g. client has
+              // crashed. we check that to avoid a dead lock here.
+              return;
             }
 
-          continue;
+          if( msg.startsWith( MSG_RM ) )
+            {
+              // A reply message was received, 3 kinds are possible.
+              // Message key and space separator are removed before further
+              // processing.
+              msg = msg.right(msg.length() - strlen(MSG_RM) - 1);
+
+              if (msg == MSG_CON_OFF) // GPS connection has gone off
+                {
+                  emit gpsConnectionOff();
+                  qDebug(MSG_CON_OFF);
+                }
+              else if ( msg == MSG_CON_ON ) // GPS connection has gone on
+                {
+                  emit gpsConnectionOn();
+                  qDebug(MSG_CON_ON);
+                }
+              else // GPS NMEA record
+                {
+                  emit newSentence(msg);
+                }
+            }
         }
 
-      // no more messages are available on client
-      if (msg.indexOf(MSG_NEG) == 0)
-        {
-          // no more data available
-          break;
-        }
+      qDebug() << "MSG_RM ALL" << t.elapsed();
+    }
+  else if( msg.startsWith( MSG_NEG ) )
+    {
+      // No messages are available on client.
+    }
+  else
+    {
+      qWarning() << "GpsCon::queryClient(): Protocol Error!" << msg;
     }
 
   // renew notification subscription

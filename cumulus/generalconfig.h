@@ -98,6 +98,12 @@ class GeneralConfig : protected QSettings
     Binary = 0, XML = 1
   };
 
+  /** Arrival altitude display selection, if a flight task is active. */
+  enum ArrivalAltitudeDisplay
+  {
+    landingTarget = 0, nextTarget = 1
+  };
+
  private:
 
   /**
@@ -1787,6 +1793,18 @@ class GeneralConfig : protected QSettings
    */
   void setDrawTrail(UseInMode draw) {_drawTrail = draw;};
 
+  /** Gets the arrival altitude display selection. */
+  enum ArrivalAltitudeDisplay getArrivalAltitudeDisplay() const
+  {
+    return _arrivalAltitudeDisplay;
+  };
+
+  /** Sets the arrival altitude display selection. */
+  void setArrivalAltitudeDisplay( const enum ArrivalAltitudeDisplay newValue )
+  {
+    _arrivalAltitudeDisplay = newValue;
+  };
+
   /** Gets the active cs task scheme */
   enum ActiveCSTaskScheme getActiveCSTaskScheme() const
   {
@@ -2312,6 +2330,9 @@ class GeneralConfig : protected QSettings
   // aktive cs task scheme
   enum ActiveCSTaskScheme _taskActiveCSScheme;
   enum ActiveNTTaskScheme _taskActiveNTScheme;
+
+  // arrival altitude display selection
+  enum ArrivalAltitudeDisplay _arrivalAltitudeDisplay;
 
   // Task shape alpha transparency
   int _taskShapeAlpha;

@@ -1233,7 +1233,7 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
 
   bool res = calculator->glidePath( bearing, Distance(distance * 1000.0),
                                     tpList->at( taskPointIndex )->elevation,
-                                    arrAlt, speed );
+                                    arrAlt, bestSpeed );
 
   if( ! res )
     {

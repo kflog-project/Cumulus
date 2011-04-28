@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2008-2010 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -24,8 +24,7 @@
 #include "igclogger.h"
 #include "generalconfig.h"
 
-PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
-  QWidget(parent)
+PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) : QWidget(parent)
 {
   setObjectName("PreFlightMiscPage");
 
@@ -42,7 +41,6 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   // Input accept only feet and meters all other make no sense. Therefore all
   // other (FL) is treated as feet.
   edtMinimalArrival = new QSpinBox(this);
-  edtMinimalArrival->setObjectName("MinArr");
 
   if (altUnit == Altitude::meters)
     {
@@ -57,6 +55,14 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   edtMinimalArrival->setSuffix(" " + Altitude::getUnitText());
   topLayout->addWidget(edtMinimalArrival, row, 1);
   topLayout->setColumnStretch(2, 2);
+  row++;
+
+  lbl = new QLabel(tr("Arrival altitude display:"), this);
+  topLayout->addWidget(lbl, row, 0);
+  edtArrivalAltitude = new QComboBox;
+  edtArrivalAltitude->addItem( tr("Landing Target"), GeneralConfig::landingTarget );
+  edtArrivalAltitude->addItem( tr("Next Target"), GeneralConfig::nextTarget );
+  topLayout->addWidget(edtArrivalAltitude, row, 1);
   row++;
 
   lbl = new QLabel(tr("QNH:"), this);
@@ -125,6 +131,8 @@ void PreFlightMiscPage::load()
       edtMinimalArrival->setSingleStep(100);
     }
 
+  edtArrivalAltitude->setCurrentIndex( conf->getArrivalAltitudeDisplay() );
+
   edtQNH->setValue( conf->getQNH() );
   bRecordInterval->setValue( conf->getBRecordInterval() );
   kRecordInterval->setValue( conf->getKRecordInterval() );
@@ -169,6 +177,7 @@ void PreFlightMiscPage::save()
       conf->setSafetyAltitude(currentAlt);
     }
 
+  conf->setArrivalAltitudeDisplay( (GeneralConfig::ArrivalAltitudeDisplay) edtArrivalAltitude->itemData(edtArrivalAltitude->currentIndex()).toInt() );
   conf->setQNH(edtQNH->value());
   conf->setBRecordInterval(bRecordInterval->value());
   conf->setKRecordInterval(kRecordInterval->value());
