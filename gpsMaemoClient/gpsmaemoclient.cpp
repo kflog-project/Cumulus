@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-** Copyright (c): 2010 by Axel Pauli (axel@kflog.org)
+** Copyright (c): 2010-2011 by Axel Pauli (axel@kflog.org)
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -1039,19 +1039,30 @@ void GpsMaemoClient::readServerMsg()
   // look, what server is requesting
   if( MSG_GM == args[0] )
     {
-      // Get message is requested. We take the oldest element out of the
-      // queue, if there is any.
-      if( queue.count() == 0 ) // queue empty
+      // Get message is requested. We take all messages out of the
+      // queue, if there are any.
+      if( queue.count() == 0 )
         {
-          writeServerMsg( MSG_NEG );
+          writeServerMsg( MSG_NEG ); // queue is empty
           return;
         }
 
-      QByteArray msg = queue.dequeue();
-      QByteArray res = QByteArray(MSG_RM) + " " + msg;
+      // At first we sent the number of available messages in the queue
+      QByteArray res = QByteArray(MSG_RMC) + " " +
+                       QByteArray::number(queue.count());
 
       writeServerMsg( res.data() );
-      msg=0;
+
+      // It follow all messages from the queue in order. That is done to improve
+      // the transfer performance. The former single handshake method was to slow,
+      // if the message number was greater than 5.
+      while( queue.count() )
+        {
+          QByteArray msg = queue.dequeue();
+          QByteArray res = QByteArray(MSG_RM) + " " + msg;
+
+          writeServerMsg( res.data() );
+        }
     }
   else if( MSG_MAGIC == args[0] )
     {
