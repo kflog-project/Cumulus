@@ -884,9 +884,6 @@ bool GpsMaemoClient::startGpsReceiving()
 
 #endif
 
-  // remove all old queued messages
-  queue.clear();
-
   // setup alive check, that guarantees a restart after an unsuccessful start
   startTimer(RETRY_TO);
 
