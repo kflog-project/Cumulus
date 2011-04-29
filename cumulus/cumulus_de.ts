@@ -212,23 +212,23 @@
         <translation>Automatische Wendepunktschaltung</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1519"/>
-        <location filename="calculator.cpp" line="1524"/>
+        <location filename="calculator.cpp" line="1529"/>
+        <location filename="calculator.cpp" line="1534"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1525"/>
+        <location filename="calculator.cpp" line="1535"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1587"/>
+        <location filename="calculator.cpp" line="1597"/>
         <source>Restart current task?</source>
         <translation>Akt. Aufgabe neu starten?</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1588"/>
+        <location filename="calculator.cpp" line="1598"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
     </message>
@@ -579,7 +579,7 @@
 <context>
     <name>GpsNmea</name>
     <message>
-        <location filename="gpsnmea.cpp" line="2253"/>
+        <location filename="gpsnmea.cpp" line="2250"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -1499,32 +1499,47 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>PreFlightMiscPage</name>
     <message>
-        <location filename="preflightmiscpage.cpp" line="35"/>
+        <location filename="preflightmiscpage.cpp" line="34"/>
         <source>Minimal arrival altitude:</source>
         <translation>Minimale Ankunftshöhe:</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="62"/>
+        <location filename="preflightmiscpage.cpp" line="60"/>
+        <source>Arrival altitude display:</source>
+        <translation>Ankunftshöhenanzeige:</translation>
+    </message>
+    <message>
+        <location filename="preflightmiscpage.cpp" line="63"/>
+        <source>Landing Target</source>
+        <translation>Landeziel</translation>
+    </message>
+    <message>
+        <location filename="preflightmiscpage.cpp" line="64"/>
+        <source>Next Target</source>
+        <translation>Nächstes Ziel</translation>
+    </message>
+    <message>
+        <location filename="preflightmiscpage.cpp" line="68"/>
         <source>QNH:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="75"/>
+        <location filename="preflightmiscpage.cpp" line="81"/>
         <source>Autostart IGC logger</source>
         <translation>Autostart IGC Logger</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="79"/>
+        <location filename="preflightmiscpage.cpp" line="85"/>
         <source>B-Record Interval:</source>
         <translation>B-Record Intervall:</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="89"/>
+        <location filename="preflightmiscpage.cpp" line="95"/>
         <source>K-Record Interval:</source>
         <translation>K-Record Intervall:</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="95"/>
+        <location filename="preflightmiscpage.cpp" line="101"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
@@ -1667,185 +1682,185 @@ Alle Downloads verworfen!</translation>
         <translation>Andere Punkte</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="57"/>
+        <location filename="preflightwaypointpage.cpp" line="60"/>
         <source>Type:</source>
         <translation>Typ:</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="60"/>
+        <location filename="preflightwaypointpage.cpp" line="63"/>
         <source>Radius</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="68"/>
+        <location filename="preflightwaypointpage.cpp" line="71"/>
         <source>Select</source>
         <translation>Wählen</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="72"/>
+        <location filename="preflightwaypointpage.cpp" line="75"/>
         <source>Position</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="73"/>
+        <location filename="preflightwaypointpage.cpp" line="76"/>
         <source>Homesite</source>
         <translation>Heimatplatz</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="74"/>
+        <location filename="preflightwaypointpage.cpp" line="77"/>
         <source>Airfield</source>
         <translation>Flugplatz</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="90"/>
+        <location filename="preflightwaypointpage.cpp" line="93"/>
         <source>Latitude:</source>
         <translation>Breite:</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="91"/>
+        <location filename="preflightwaypointpage.cpp" line="94"/>
         <source>Longitude:</source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="120"/>
+        <location filename="preflightwaypointpage.cpp" line="123"/>
         <source>Center Point</source>
         <translation>Mittelpunkt</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="124"/>
+        <location filename="preflightwaypointpage.cpp" line="127"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="129"/>
+        <location filename="preflightwaypointpage.cpp" line="132"/>
         <source>Filter</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="150"/>
+        <location filename="preflightwaypointpage.cpp" line="153"/>
         <source>Waypoint Import</source>
         <translation>Wegpunkt Import</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="154"/>
-        <location filename="preflightwaypointpage.cpp" line="305"/>
+        <location filename="preflightwaypointpage.cpp" line="157"/>
+        <location filename="preflightwaypointpage.cpp" line="308"/>
         <source>Binary</source>
         <translation>Binär</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="155"/>
-        <location filename="preflightwaypointpage.cpp" line="304"/>
+        <location filename="preflightwaypointpage.cpp" line="158"/>
+        <location filename="preflightwaypointpage.cpp" line="307"/>
         <source>XML</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="158"/>
+        <location filename="preflightwaypointpage.cpp" line="161"/>
         <source>Source</source>
         <translation>Quelle</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="159"/>
+        <location filename="preflightwaypointpage.cpp" line="162"/>
         <source>Low</source>
         <translation>Gering</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="160"/>
+        <location filename="preflightwaypointpage.cpp" line="163"/>
         <source>Normal</source>
         <translation>Normal</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="161"/>
+        <location filename="preflightwaypointpage.cpp" line="164"/>
         <source>High</source>
         <translation>Hoch</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="164"/>
+        <location filename="preflightwaypointpage.cpp" line="167"/>
         <source>Storage Format:</source>
         <translation>Speicherformat:</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="167"/>
+        <location filename="preflightwaypointpage.cpp" line="170"/>
         <source>Priority:</source>
         <translation>Priorität:</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="233"/>
+        <location filename="preflightwaypointpage.cpp" line="236"/>
         <source>The waypoint storage format was changed. Storing data in new format can overwrite existing data!</source>
         <translation>Das Wegpunkt Speicherformat wurde geändert. Speichern im neuen Format kann alte Daten überschreiben!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="236"/>
+        <location filename="preflightwaypointpage.cpp" line="239"/>
         <source>Continue storing?</source>
         <translation>Speichern fortsetzen?</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="303"/>
+        <location filename="preflightwaypointpage.cpp" line="306"/>
         <source>Formats</source>
         <translation>Formate</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="306"/>
+        <location filename="preflightwaypointpage.cpp" line="309"/>
         <source>SeeYou</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="309"/>
+        <location filename="preflightwaypointpage.cpp" line="312"/>
         <source>Open waypoint catalog</source>
         <translation>Öffne Wegpunkt Katalog</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="381"/>
+        <location filename="preflightwaypointpage.cpp" line="384"/>
         <source>No entries read</source>
         <translation>Keine Einträge gelesen</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="383"/>
+        <location filename="preflightwaypointpage.cpp" line="386"/>
         <source>No waypoints read from file!</source>
         <translation>Datei enthielt keine Wegpunkte!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="385"/>
+        <location filename="preflightwaypointpage.cpp" line="388"/>
         <source>Maybe you should change the filter values?</source>
         <translation>Vielleicht sollten Sie das Filter ändern?</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="231"/>
-        <location filename="preflightwaypointpage.cpp" line="392"/>
+        <location filename="preflightwaypointpage.cpp" line="234"/>
+        <location filename="preflightwaypointpage.cpp" line="395"/>
         <source>Continue?</source>
         <translation>Fortfahren?</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="394"/>
+        <location filename="preflightwaypointpage.cpp" line="397"/>
         <source>%1 waypoints would be read.</source>
         <translation>%1 Wegpunkte würden gelesen.</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="396"/>
+        <location filename="preflightwaypointpage.cpp" line="399"/>
         <source>Continue loading?</source>
         <translation>Laden fortsetzen?</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="425"/>
+        <location filename="preflightwaypointpage.cpp" line="428"/>
         <source>Low on memory!</source>
         <translation>Speicher Problem!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="427"/>
+        <location filename="preflightwaypointpage.cpp" line="430"/>
         <source>Waypoint import failed due to low on memory!</source>
         <translation>Wegpunkt Import fehlgeschlagen wegen zu wenig freien Speicher!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="485"/>
+        <location filename="preflightwaypointpage.cpp" line="488"/>
         <source>%1 waypoints added.</source>
         <translation>%1 Wegpunkte zugefügt.</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="489"/>
+        <location filename="preflightwaypointpage.cpp" line="492"/>
         <source>%1 waypoints ignored.</source>
         <translation>%1 Wegpunkte ignoriert.</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="495"/>
+        <location filename="preflightwaypointpage.cpp" line="498"/>
         <source>Import Results</source>
         <translation>Import Resultate</translation>
     </message>
@@ -3552,7 +3567,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="tpinfowidget.cpp" line="64"/>
         <location filename="tpinfowidget.cpp" line="135"/>
-        <location filename="tpinfowidget.cpp" line="715"/>
+        <location filename="tpinfowidget.cpp" line="714"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -3586,7 +3601,7 @@ Alle Downloads verworfen!</translation>
         <location filename="tpinfowidget.cpp" line="208"/>
         <location filename="tpinfowidget.cpp" line="355"/>
         <location filename="tpinfowidget.cpp" line="488"/>
-        <location filename="tpinfowidget.cpp" line="639"/>
+        <location filename="tpinfowidget.cpp" line="638"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
@@ -3602,9 +3617,9 @@ Alle Downloads verworfen!</translation>
         <location filename="tpinfowidget.cpp" line="507"/>
         <location filename="tpinfowidget.cpp" line="512"/>
         <location filename="tpinfowidget.cpp" line="517"/>
-        <location filename="tpinfowidget.cpp" line="650"/>
-        <location filename="tpinfowidget.cpp" line="654"/>
-        <location filename="tpinfowidget.cpp" line="658"/>
+        <location filename="tpinfowidget.cpp" line="649"/>
+        <location filename="tpinfowidget.cpp" line="653"/>
+        <location filename="tpinfowidget.cpp" line="657"/>
         <source>Arrival Alt</source>
         <translation>Ankunftshöhe</translation>
     </message>
@@ -3624,7 +3639,7 @@ Alle Downloads verworfen!</translation>
         <location filename="tpinfowidget.cpp" line="261"/>
         <location filename="tpinfowidget.cpp" line="384"/>
         <location filename="tpinfowidget.cpp" line="533"/>
-        <location filename="tpinfowidget.cpp" line="663"/>
+        <location filename="tpinfowidget.cpp" line="662"/>
         <source>Vg</source>
         <translation></translation>
     </message>
@@ -3634,7 +3649,7 @@ Alle Downloads verworfen!</translation>
         <location filename="tpinfowidget.cpp" line="395"/>
         <location filename="tpinfowidget.cpp" line="418"/>
         <location filename="tpinfowidget.cpp" line="546"/>
-        <location filename="tpinfowidget.cpp" line="674"/>
+        <location filename="tpinfowidget.cpp" line="673"/>
         <source>Duration</source>
         <translation>Dauer</translation>
     </message>
@@ -3644,7 +3659,7 @@ Alle Downloads verworfen!</translation>
         <location filename="tpinfowidget.cpp" line="413"/>
         <location filename="tpinfowidget.cpp" line="421"/>
         <location filename="tpinfowidget.cpp" line="564"/>
-        <location filename="tpinfowidget.cpp" line="692"/>
+        <location filename="tpinfowidget.cpp" line="691"/>
         <source>ETA</source>
         <translation></translation>
     </message>
@@ -3654,13 +3669,13 @@ Alle Downloads verworfen!</translation>
         <location filename="tpinfowidget.cpp" line="435"/>
         <location filename="tpinfowidget.cpp" line="440"/>
         <location filename="tpinfowidget.cpp" line="578"/>
-        <location filename="tpinfowidget.cpp" line="703"/>
+        <location filename="tpinfowidget.cpp" line="702"/>
         <source>Sunset</source>
         <translation>SU</translation>
     </message>
     <message>
         <location filename="tpinfowidget.cpp" line="337"/>
-        <location filename="tpinfowidget.cpp" line="621"/>
+        <location filename="tpinfowidget.cpp" line="620"/>
         <source>Landing target</source>
         <translation>Landeziel</translation>
     </message>
