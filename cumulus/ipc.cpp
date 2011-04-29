@@ -155,7 +155,6 @@ bool Ipc::Server::init( const char *ipAddress,
   int opt = 1;
 
   setsockopt(listenSock, SOL_SOCKET, SO_KEEPALIVE, (int *)&opt, sizeof(opt));
-
   setsockopt(listenSock, SOL_SOCKET, SO_REUSEADDR, (int *)&opt, sizeof(opt));
 
   struct sockaddr_in myAddr;
@@ -300,7 +299,6 @@ int Ipc::Server::connect2Client(uint index)
   return clientSocks[index];
 }
 
-
 /**
  * Reads once data from the connected client socket and returns.
  * @returns -1 in error case or number of read bytes
@@ -380,7 +378,7 @@ int Ipc::Server::writeMsg( uint index, void *data, int length )
             }
 
           cerr << method.toLatin1().data()
-               << "read() returns with ERROR: errno="
+               << "write() returns with ERROR: errno="
                << errno
                << ", " << strerror(errno) << endl;
           return -1;
@@ -498,7 +496,7 @@ Ipc::Client::~Client()
  * @returns         -1 in error case otherwise 0
  */
 int Ipc::Client::connect2Server( const char *ipAddressIn,
-                                       const unsigned short portIn )
+                                 const unsigned short portIn )
 {
   static const char* method = ( "Ipc::Client::connect2Server(): " );
 
@@ -681,7 +679,7 @@ int Ipc::Client::writeMsg( void *data, int length )
             }
 
           cerr << method
-               << "read() returns with ERROR: errno="
+               << "write() returns with ERROR: errno="
                << errno
                << ", " << strerror(errno) << endl;
           return -1;

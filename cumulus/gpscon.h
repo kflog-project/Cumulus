@@ -182,10 +182,10 @@ class GpsCon : public QObject
     void writeClientMessage( uint index, const char *msg  );
 
     /**
-     * Query the client, if NMEA records are available. If true, the data will
+     * Gets the GPS or status data from the client. The retrieved data will
      * be hand over to the Cumulus process.
      */
-    void queryClient();
+    void getDataFromClient();
 
     /**
      * Triggers a connection retry in case of error.

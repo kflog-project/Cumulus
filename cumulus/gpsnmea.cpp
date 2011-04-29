@@ -303,13 +303,13 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
     {
       // PFLAA receiving starts
       pflaaIsReceiving = true;
-      //qDebug() << "PFLAA receiving started";
+      // qDebug() << "PFLAA receiving started";
     }
   else if( pflaaIsReceiving == true )
     {
       // PFLAA receiving is finished
       pflaaIsReceiving = false;
-      //qDebug() << "PFLAA receiving finished";
+      // qDebug() << "PFLAA receiving finished";
       Flarm::instance()->collectPflaaFinished();
     }
 

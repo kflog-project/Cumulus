@@ -735,7 +735,6 @@ bool Calculator::glidePath(int aLastBearing, Distance aDistance,
 
 void Calculator::calcGlidePath()
 {
-  qDebug ("Calculator::calcGlidePath");
   Speed speed;
   Altitude arrivalAlt;
 

@@ -27,7 +27,9 @@
 
 // Message key word definitions
 
-#define MSG_PROTOCOL   "Cumulus-GPS_Client_IPC_V1.3_Axel@kflog.org"
+//------- Used by Command/Response channel -------//
+
+#define MSG_PROTOCOL   "Cumulus-GPS_Client_IPC_V1.4_Axel@kflog.org"
 
 #define MSG_MAGIC      "\\Magic\\"
 
@@ -35,47 +37,31 @@
 
 #define MSG_NEG		     "\\Negative\\"
 
-// data available notification
-
-#define MSG_DA		     "\\Data_Available\\"
-
 // open connection to the GPS device "Open" <device> <speed>
-
 #define MSG_OPEN	     "\\Open\\"
 
 // close connection to the GPS device
-
 #define MSG_CLOSE	     "\\Close\\"
 
-// get all available messages from the queue
-
-#define MSG_GM		     "\\Get_Msg\\"
-
-// reply the next available message from the queue
-
-#define MSG_RM		     "\\Reply_Msg\\"
-
-// reply the available messages count of the queue
-
-#define MSG_RMC        "\\Reply_Msg_Cnt\\"
-
 // send message to GPS device
-
 #define MSG_SM		     "\\Send_Msg\\"
 
-// notify request
+// Switch on forwarding of GPS data
+#define MSG_FGPS_ON		 "\\Gps_Data_On\\"
 
-#define MSG_NTY		     "\\Notify\\"
+// Switch off forwarding of GPS data
+#define MSG_FGPS_OFF   "\\Gps_Data_Off\\"
 
 // shutdown request
-
 #define MSG_SHD	       "\\Shutdown\\"
 
 // GPS message keys to be processed.
+#define MSG_GPS_KEYS   "\\Gps_Msg_Keys\\"
 
-#define MSG_GPS_KEYS   "\\GPS_Msg_Keys\\"
+//------- Used by Forward data channel -------//
 
-//------- Other message strings-------//
+// GPS data message
+#define MSG_GPS_DATA  "\\Gps_Data\\"
 
 #define MSG_CON_OFF     "#GPS_Connection_off#"
 

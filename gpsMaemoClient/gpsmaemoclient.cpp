@@ -251,7 +251,7 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
 
   ipcPort         = portIn;
   gpsIsRunning    = false;
-  notify          = false;
+  forwardGpsData  = true;
   connectionLost  = true;
   shutdown        = false;
   timeSpan        = 0;
@@ -289,7 +289,7 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
           return;
         }
 
-      if( clientNotif.connect2Server( IPC_IP, ipcPort ) == -1 )
+      if( clientForward.connect2Server( IPC_IP, ipcPort ) == -1 )
         {
           qWarning() << "Notification channel Connection to Cumulus Server failed!"
                      << "Fatal error, terminate process!";
@@ -297,6 +297,10 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
           setShutdownFlag(true);
           return;
         }
+
+      // Set forward channel to non blocking IO
+      int fc = clientForward.getSock();
+      fcntl( fc, F_SETFL, O_NONBLOCK );
     }
 
   // Get the GPSD control object from the location service.
@@ -403,7 +407,7 @@ void GpsMaemoClient::handleGpsdRunning()
 
   // Sends a message to Cumulus to signal that the GPS connection is established.
   // LibLocation reports not any data before a GPS fix.
-  queueMsg( MSG_CON_ON );
+  writeForwardMsg( MSG_CON_ON );
 
 #ifdef MAEMO4
 
@@ -562,7 +566,7 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
 
   if( ! device )
     {
-      queueMsg( MSG_CON_OFF );
+      writeForwardMsg( MSG_CON_OFF );
       // Device is lost, set retry timeout to make a restart.
       startTimer(RETRY_TO);
       return;
@@ -579,6 +583,12 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
   startTimer(ALIVE_TO);
 
   connectionLost = false;
+
+  if( forwardGpsData == false )
+    {
+      // GPS data forwarding is switched off
+      return;
+    }
 
   /**
    * Definition of two proprietary sentences to transmit MAEMO GPS data.
@@ -728,10 +738,10 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
             << climb
             << epc;
 
-      QString sentence0 = list0.join( ",") + "\r\n";
+      QString sentence0 = QString( MSG_GPS_DATA ) + " " + list0.join( ",") + "\n";
 
       // store the new sentence in the queue
-      queueMsg( sentence0.toAscii().data() );
+      writeForwardMsg( sentence0.toAscii().data() );
    }
 
    QString satellitesInView = "0";
@@ -774,10 +784,10 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
          }
      }
 
-   QString sentence1 = list1.join( ",") + "\r\n";
+   QString sentence1 = QString( MSG_GPS_DATA ) + " " + list1.join( ",") + "\n";
 
-   // store the new sentence in the queue
-   queueMsg( sentence1.toAscii().data() );
+   // write the new sentence in the forward channel
+   writeForwardMsg( sentence1.toAscii().data() );
 }
 #endif
 
@@ -960,7 +970,7 @@ void GpsMaemoClient::toController()
         {
           // connection is lost, send only one message to the server
           connectionLost = true;
-          queueMsg( MSG_CON_OFF );
+          writeForwardMsg( MSG_CON_OFF );
         }
 
       if( gpsIsRunning == false )
@@ -988,8 +998,10 @@ void GpsMaemoClient::toController()
  */
 void GpsMaemoClient::readServerMsg()
 {
+  static const char* method = "GpsMaemoClient::readServerMsg():";
+
 #ifdef DEBUG
-  qDebug() << "GpsMaemoClient::readServerMsg()";
+  qDebug() << method;
 #endif
 
   uint msgLen = 0;
@@ -998,7 +1010,7 @@ void GpsMaemoClient::readServerMsg()
 
   if( done < sizeof(msgLen) )
     {
-      qWarning() << "GpsMaemoClient::readServerMsg(): MSG length" << done << "too short";
+      qWarning() << method << "MSG length" << done << "too short";
       clientData.closeSock();
       exit(-1); // Error occurred
     }
@@ -1006,7 +1018,7 @@ void GpsMaemoClient::readServerMsg()
   if( msgLen > 256 )
     {
       // such messages length are not defined. we will ignore that.
-      qWarning() << "GpsMaemoClient::readServerMsg():"
+      qWarning() << method
                  << "message" << msgLen << "too large, ignoring it!";
       exit(-1); // Error occurred
     }
@@ -1026,7 +1038,7 @@ void GpsMaemoClient::readServerMsg()
     }
 
 #ifdef DEBUG
-   qDebug() << "GpsMaemoClient::readServerMsg(): Received Message:" << buf;
+   qDebug() << method << "Received Message:" << buf;
 #endif
 
   // Split the received message into its single parts. Space is used
@@ -1037,39 +1049,12 @@ void GpsMaemoClient::readServerMsg()
   buf = 0;
 
   // look, what server is requesting
-  if( MSG_GM == args[0] )
-    {
-      // Get message is requested. We take all messages out of the
-      // queue, if there are any.
-      if( queue.count() == 0 )
-        {
-          writeServerMsg( MSG_NEG ); // queue is empty
-          return;
-        }
-
-      // At first we sent the number of available messages in the queue
-      QByteArray res = QByteArray(MSG_RMC) + " " +
-                       QByteArray::number(queue.count());
-
-      writeServerMsg( res.data() );
-
-      // It follow all messages from the queue in order. That is done to improve
-      // the transfer performance. The former single handshake method was to slow,
-      // if the message number was greater than 5.
-      while( queue.count() )
-        {
-          QByteArray msg = queue.dequeue();
-          QByteArray res = QByteArray(MSG_RM) + " " + msg;
-
-          writeServerMsg( res.data() );
-        }
-    }
-  else if( MSG_MAGIC == args[0] )
+  if( MSG_MAGIC == args[0] )
     {
       // check protocol versions, reply with pos or neg
       if( MSG_PROTOCOL != args[1] )
         {
-          qCritical() << "GpsMaemoClient::readServerMsg():"
+          qCritical() << method
                       << "Client-Server protocol mismatch!"
                       << "Client:" << MSG_PROTOCOL
                       << "Server:" << args[1];
@@ -1101,12 +1086,16 @@ void GpsMaemoClient::readServerMsg()
       stopGpsReceiving();
       writeServerMsg( MSG_POS );
     }
-  else if( MSG_NTY == args[0] )
+  else if( MSG_FGPS_ON == args[0] )
     {
-      // A notification shall be sent, if new data are available. This is only
-      // valid for one notification. After notification is sent, the server
-      // must renew its request.
-      notify = true;
+      // Switches on GPS data forwarding to the server.
+      forwardGpsData = true;
+      writeServerMsg( MSG_POS );
+    }
+  else if( MSG_FGPS_OFF == args[0] )
+    {
+      // Switches off GPS data forwarding to the server.
+      forwardGpsData = false;
       writeServerMsg( MSG_POS );
     }
   else if( MSG_SM == args[0] && args.count() == 2 )
@@ -1123,13 +1112,12 @@ void GpsMaemoClient::readServerMsg()
     {
       // Shutdown is requested by the server. This message will not be acked!
       clientData.closeSock();
-      clientNotif.closeSock();
+      clientForward.closeSock();
       setShutdownFlag(true);
     }
   else
     {
-      qWarning() << "GpsMaemoClient::readServerMsg():"
-                 << "Unknown message received:" << buf;
+      qWarning() << method << "Unknown message received:" << buf;
       writeServerMsg( MSG_NEG );
     }
 
@@ -1164,24 +1152,39 @@ void GpsMaemoClient::writeServerMsg( const char *msg )
 }
 
 /**
- * Sent a message via notification socket to the server. The protocol consists
+ * Sends a data message via the forward channel to the server. The protocol consists
  * of two parts. First the message length is transmitted as unsigned integer,
  * after that the actual message as 8 bit character string.
  */
-void GpsMaemoClient::writeNotifMsg( const char *msg )
+void GpsMaemoClient::writeForwardMsg( const char *msg )
 {
-  static QString method = "GpsMaemoClient::writeNotifMsg():";
+  static QString method = "GpsMaemoClient::writeForwardMsg():";
 
+  // The message to be transfered starts with the message length.
   uint msgLen = strlen( msg );
 
-  int done = clientNotif.writeMsg( (char *) &msgLen, sizeof(msgLen) );
+  QByteArray ba = QByteArray::fromRawData( (const char *) &msgLen, sizeof(msgLen) );
+  ba.append( msg );
 
-  done = clientNotif.writeMsg( (char *) msg, msgLen );
+  // We use non blocking IO for the transfer. Therefore we have to consider some
+  // special return codes.
+  int done = clientForward.writeMsg( (char *) ba.data(), ba.size() );
 
   if( done < 0 )
     {
-      // Error occurred, close socket
-      clientNotif.closeSock();
+      if( errno == EAGAIN || errno == EWOULDBLOCK )
+        {
+          // The write call would block because the transfer queue is full.
+          // In this case we discard the message.
+          qWarning() << method
+                     << "Queue is blocked, drop Message! Errno="
+                     << errno;
+        }
+      else
+        {
+          // Fatal error occurred, make shutdown of process.
+          setShutdownFlag(true);
+        }
     }
 
 #ifdef DEBUG
@@ -1189,37 +1192,6 @@ void GpsMaemoClient::writeNotifMsg( const char *msg )
 #endif
 
   return;
-}
-
-/**
- *  put a new message into the process queue and sent a notification to
- *  the server, if option notify is true. The notification is sent
- *  only once to avoid a flood of them, if server is busy.
- */
-void GpsMaemoClient::queueMsg( const char* msg )
-{
-#ifdef DEBUG
-  qDebug() << "GpsMaemoClient::queueMsg():" << msg;
-#endif
-
-  queue.enqueue( msg );
-
-  if( queue.count() > QUEUE_SIZE )
-    {
-      // start dequeuing, to avoid memory overflows
-      queue.dequeue ();
-
-      qWarning() << "GpsMaemoClient::queueMsg: Max. queue size of" << QUEUE_SIZE
-                 << "reached, remove oldest element!" << endl;
-    }
-
-  if( notify )
-    {
-      // inform server about new messages available, if not already
-      // done.
-      writeNotifMsg( MSG_DA );
-      notify = false;
-    }
 }
 
 #ifdef MAEMO4
@@ -1449,11 +1421,15 @@ void GpsMaemoClient::readSentenceFromBuffer()
                ! qRecord.startsWith( "$GPGLL,") &&
                ! qRecord.startsWith( "$GPGST,") )
         {
-          if( verifyCheckSum( record ) == true )
+          if( verifyCheckSum( record ) == true && forwardGpsData == true )
             {
-              // Store sentence in the receiver queue, if checksum is ok.
+              // Write sentence in the forward channel, if checksum is ok.
               // qDebug( "GpsMaemo: Extracted NMEA Record: %s", record );
-              queueMsg( record );
+              QByteArray ba;
+              ba.append( MSG_GPS_DATA );
+              ba.append( ' ' );
+              ba.append( record );
+              writeForwardMsg( ba.data() );
             }
         }
 

@@ -165,17 +165,9 @@ public:
 
   void writeServerMsg( const char *msg );
 
-  void writeNotifMsg( const char *msg );
+  void writeForwardMsg( const char *msg );
 
   uint getBaudrate( int rate );
-
-  /**
-   * Puts a new message into the GPS sentence queue and sends a notification
-   * to the server, if option notify is true.
-   *
-   * \param msg A GPS NMEA message to be queued
-   */
-  void queueMsg( const char* msg );
 
   void readSentenceFromBuffer();
 
@@ -214,19 +206,14 @@ public:
   // IPC instance to server process as data channel
   Ipc::Client clientData;
 
-  // IPC instance to server process as notification channel
-  Ipc::Client clientNotif;
+  // IPC instance to server process as message forward channel
+  Ipc::Client clientForward;
 
   // used as timeout control supervision for the GPS device connection
   QTime last;
 
-  // Queue used for intermediate storing of GPS sentences
-  QQueue<QByteArray> queue;
-
-  // If true, a notification is sent to the server, when new data are
-  // available in the queue. After that the flag is reset and the server must
-  // renew the request.
-  bool notify;
+  // Flag to indicate forwarding of GPS data to the server process.
+  bool forwardGpsData;
 
   // Flag to indicate GPS connection lost
   bool connectionLost;

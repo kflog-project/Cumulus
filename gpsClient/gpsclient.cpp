@@ -51,9 +51,6 @@
 #undef ERROR_LOG
 #endif
 
-// Size of internal message queue.
-#define QUEUE_SIZE 500
-
 // define connection lost timeout in milli seconds
 #define TO_CONLOST  10000
 
@@ -65,7 +62,7 @@ GpsClient::GpsClient( const ushort portIn )
   ioSpeedDevice    = 0;
   ipcPort          = portIn;
   fd               = -1;
-  notify           = false;
+  forwardGpsData   = true;
   connectionLost   = true;
   shutdown         = false;
   datapointer      = databuffer;
@@ -84,14 +81,18 @@ GpsClient::GpsClient( const ushort portIn )
           return;
         }
 
-      if( clientNotif.connect2Server( IPC_IP, ipcPort ) == -1 )
+      if( clientForward.connect2Server( IPC_IP, ipcPort ) == -1 )
         {
-          qCritical() << "Notification channel Connection to Cumulus Server failed!"
+          qCritical() << "Forward channel Connection to Cumulus Server failed!"
                       << "Fatal error, terminate process!";
 
           setShutdownFlag(true);
           return;
         }
+
+      // Set forward channel to non blocking IO
+      int fc = clientForward.getSock();
+      fcntl( fc, F_SETFL, O_NONBLOCK );
     }
 }
 
@@ -99,7 +100,7 @@ GpsClient::~GpsClient()
 {
   closeGps();
   clientData.closeSock();
-  clientNotif.closeSock();
+  clientForward.closeSock();
 }
 
 /**
@@ -116,7 +117,7 @@ fd_set *GpsClient::getReadFdMask()
       FD_SET( fd, &fdMask );
     }
 
-  if( ipcPort ) // data channel to server
+  if( ipcPort ) // command data channel to server
     {
       int sfd = clientData.getSock();
 
@@ -271,9 +272,6 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       // no valid device has been passed
       return false;
     }
-
-  // remove all old queued messages
-  queue.clear();
 
   // reset buffer pointer
   datapointer = databuffer;
@@ -454,11 +452,15 @@ void GpsClient::readSentenceFromBuffer()
 
       if( verifyCheckSum( record ) == true )
         {
-          // Store sentence in the receiver queue, if checksum is ok and
+          // Forward sentence to the server, if checksum is ok and
           // processing is desired.
-          if( checkGpsMessageFilter( record ) == true )
+          if( checkGpsMessageFilter( record ) == true && forwardGpsData == true )
             {
-              queueMsg( record );
+              QByteArray ba;
+              ba.append( MSG_GPS_DATA );
+              ba.append( ' ' );
+              ba.append( record );
+              writeForwardMsg( ba.data() );
             }
         }
 
@@ -505,8 +507,6 @@ void GpsClient::closeGps()
       fd = -1;
     }
 
-  // remove all queued messages
-  queue.clear();
   connectionLost = true;
   badSentences   = 0;
   last = QTime();
@@ -640,7 +640,7 @@ void GpsClient::toController()
         {
           // connection is lost, send only one message to the server
           connectionLost = true;
-          queueMsg( MSG_CON_OFF );
+          writeForwardMsg( MSG_CON_OFF );
         }
 
 #ifdef ERROR_LOG
@@ -723,34 +723,7 @@ void GpsClient::readServerMsg()
   buf = 0;
 
   // look, what server is requesting
-  if( MSG_GM == args[0] )
-    {
-      // Get message is requested. We take all messages out of the
-      // queue, if there are any.
-      if( queue.count() == 0 )
-        {
-          writeServerMsg( MSG_NEG ); // queue is empty
-          return;
-        }
-
-      // At first we sent the number of available messages in the queue
-      QByteArray res = QByteArray(MSG_RMC) + " " +
-                       QByteArray::number(queue.count());
-
-      writeServerMsg( res.data() );
-
-      // It follow all messages from the queue in order. That is done to improve
-      // the transfer performance. The former single handshake method was to slow,
-      // if the message number was greater than 5.
-      while( queue.count() )
-        {
-          QByteArray msg = queue.dequeue();
-          QByteArray res = QByteArray(MSG_RM) + " " + msg;
-
-          writeServerMsg( res.data() );
-        }
-    }
-  else if( MSG_MAGIC == args[0] )
+ if( MSG_MAGIC == args[0] )
     {
       // check protocol versions, reply with pos or neg
       if( MSG_PROTOCOL != args[1] )
@@ -791,12 +764,16 @@ void GpsClient::readServerMsg()
       closeGps();
       writeServerMsg( MSG_POS );
     }
-  else if( MSG_NTY == args[0] )
+  else if( MSG_FGPS_ON == args[0] )
     {
-      // A notification shall be sent, if new data are available. This is only
-      // valid for one notification. After notification is sent, the server
-      // must renew its request.
-      notify = true;
+      // Switches on GPS data forwarding to the server.
+      forwardGpsData = true;
+      writeServerMsg( MSG_POS );
+    }
+  else if( MSG_FGPS_OFF == args[0] )
+    {
+      // Switches off GPS data forwarding to the server.
+      forwardGpsData = false;
       writeServerMsg( MSG_POS );
     }
   else if( MSG_SM == args[0] && args.count() == 2 )
@@ -846,10 +823,11 @@ void GpsClient::readServerMsg()
   return;
 }
 
-// Send a message via data socket to the server. The protocol consists of two
-// parts. First the message length is transmitted as unsigned integer, after
-// that the actual message as 8 bit character string.
-
+/**
+ * Send a message via data socket to the server. The protocol consists of two
+ * parts. First the message length is transmitted as unsigned integer, after
+ * that the actual message as 8 bit character string.
+ */
 void GpsClient::writeServerMsg( const char *msg )
 {
   uint msgLen = strlen( msg );
@@ -867,25 +845,42 @@ void GpsClient::writeServerMsg( const char *msg )
   return;
 }
 
-// Sent a message via notification socket to the server. The protocol consists
-// of two parts. First the message length is transmitted as unsigned integer,
-// after that the actual message as 8 bit character string.
-void GpsClient::writeNotifMsg( const char *msg )
+/**
+ * Sends a data message via the forward channel to the server. The protocol consists
+ * of two parts. First the message length is transmitted as unsigned integer,
+ * after that the actual message as 8 bit character string.
+ */
+void GpsClient::writeForwardMsg( const char *msg )
 {
-#ifdef DEBUG
-  static QString method = "GpsClient::writeNotifMsg():";
-#endif
+  static QString method = "GpsClient::writeForwardMsg():";
 
+  // The message to be transfered starts with the message length.
   uint msgLen = strlen( msg );
 
-  int done = clientNotif.writeMsg( (char *) &msgLen, sizeof(msgLen) );
+  QByteArray ba = QByteArray::fromRawData( (const char *) &msgLen, sizeof(msgLen) );
+  ba.append( msg );
 
-  done = clientNotif.writeMsg( (char *) msg, msgLen );
+  // We use non blocking IO for the transfer. Therefore we have to consider some
+  // special return codes.
+  int done = clientForward.writeMsg( (char *) ba.data(), ba.size() );
+
+  printf("CF=%d\n", done);
 
   if( done < 0 )
     {
-      // Error occurred, make shutdown of process
-      setShutdownFlag(true);
+      if( errno == EAGAIN || errno == EWOULDBLOCK )
+        {
+          // The write call would block because the transfer queue is full.
+          // In this case we discard the message.
+          qWarning() << method
+                     << "Queue is blocked, drop Message! Errno="
+                     << errno;
+        }
+      else
+        {
+          // Fatal error occurred, make shutdown of process.
+          setShutdownFlag(true);
+        }
     }
 
 #ifdef DEBUG
@@ -895,8 +890,9 @@ void GpsClient::writeNotifMsg( const char *msg )
   return;
 }
 
-
-// Translate baud rate to terminal speed definition.
+/**
+ * Translates the baud rate to a terminal speed definition.
+ */
 uint GpsClient::getBaudrate(int rate)
 {
   switch (rate)
@@ -923,29 +919,5 @@ uint GpsClient::getBaudrate(int rate)
       return B230400;
     default:
       return B4800;
-    }
-}
-
-// put a new message into the process queue and sent a notification to
-// the server, if option notify is true. The notification is sent
-// only once to avoid a flood of them, if server is busy.
-void GpsClient::queueMsg( const char* msg )
-{
-  queue.enqueue( msg );
-
-  if( queue.count() > QUEUE_SIZE )
-    {
-      // start dequeuing, to avoid memory overflows
-      queue.dequeue ();
-
-      qWarning() << "GpsClient: Max. queue size of" << QUEUE_SIZE
-                 << "is reached, remove oldest element!";
-    }
-
-  if( notify )
-    {
-      // inform server about new messages available, if not already done.
-      writeNotifMsg( MSG_DA );
-      notify = false;
     }
 }

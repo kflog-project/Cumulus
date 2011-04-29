@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c): 2010-2011 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -59,8 +59,6 @@ extern "C" {
 
 #include "ipc.h"
 
-#define _POSIX_SOURCE 1 /* POSIX compliant source */
-
 //++++++++++++++++++++++ CLASS GpsMaemoClient +++++++++++++++++++++++++++
 
 class GpsMaemoClient
@@ -70,7 +68,7 @@ public:
 
   /**
    * Constructor requires a socket port of the server (listening end
-   * point) useable for interprocess communication. As related host is
+   * point) usable for interprocess communication. As related host is
    * always localhost used.
    */
   GpsMaemoClient( const ushort portIn );
@@ -175,13 +173,7 @@ private:
 
   void writeServerMsg( const char *msg );
 
-  void writeNotifMsg( const char *msg );
-
-  /**
-   * put a new message into the process queue and sent a notification
-   * to the server, if option notify is true.
-   */
-  void queueMsg( const char* msg );
+  void writeForwardMsg( const char *msg );
 
   /** Setup timeout controller. */
   void startTimer( uint milliSec );
@@ -210,8 +202,8 @@ private:
   // IPC instance to server process as data channel
   Ipc::Client clientData;
 
-  // IPC instance to server process as notification channel
-  Ipc::Client clientNotif;
+  // IPC instance to server process as message forward channel
+  Ipc::Client clientForward;
 
   // used as timeout control for fix and connection
   QTime last;
@@ -220,16 +212,11 @@ private:
   // zero Timeout handler do nothing.
   long timeSpan;
 
-  // Queue used for intermediate storing
-  QQueue<QByteArray> queue;
-
   // GPS running flag.
   bool gpsIsRunning;
 
-  // If true, a notification is sent to the server, when new data are
-  // available in the queue. After that the flag is reset and the server must
-  // renew the request.
-  bool notify;
+  // Flag to indicate forwarding of GPS data to the server process.
+  bool forwardGpsData;
 
   // flag to indicate GPS connection lost
   bool connectionLost;

@@ -263,8 +263,8 @@ bool GpsCon::startGpsReceiving()
 #endif
         }
 
-      // we want to get a notification, if data are available on client side.
-      writeClientMessage(0, MSG_NTY );
+      // We switch on the data forwarding on the client side.
+      writeClientMessage(0, MSG_FGPS_ON );
       readClientMessage(0, msg);
 
       // remember last start time
@@ -356,8 +356,8 @@ void GpsCon::slot_StartGpsBtReceiving( bool ok,
 #endif
     }
 
-  // we want to get a notification, if data are available on client side.
-  writeClientMessage(0, MSG_NTY );
+  // We switch on the data forwarding on the client side.
+  writeClientMessage(0, MSG_FGPS_ON );
   readClientMessage(0, msg);
 
   // remember last start time
@@ -689,7 +689,7 @@ void GpsCon::slot_Timeout()
     {
       // more as 15s no new data notification came in. We send a query to the
       // client to be sure, that the notification has not gone lost.
-      queryClient();
+      getDataFromClient();
     }
 }
 
@@ -734,10 +734,10 @@ void GpsCon::slot_ListenEvent( int socket )
 
       clientNotifier = new QSocketNotifier( server.getClientSock(1),
                                             QSocketNotifier::Read, this );
-
+#if 0
       clientNotifier->connect( clientNotifier, SIGNAL(activated(int)), this,
                                SLOT(slot_NotificationEvent(int)) );
-
+#endif
       // After the second client connect we send the initialization to the
       // client. That must be done at this point and not earlier, to avoid a
       // deadlock in the communication
@@ -766,126 +766,95 @@ void GpsCon::slot_ListenEvent( int socket )
 }
 
 /**
- * This slot is triggered by the QT main loop and is used to handle the
- * notification events from the client.
+ * This slot is triggered by the QT main loop and is used to get the
+ * GPS or status data from the client.
  */
 void GpsCon::slot_NotificationEvent( int socket )
 {
-  static QString method = QString("GPSCon::slot_NotificationEvent(%1):").arg(socket);
+  QString method = QString("GPSCon::slot_NotificationEvent(%1):").arg(socket);
 
   // Disable client notifier if socket shall be read. Advised by Qt.
   clientNotifier->setEnabled( false );
-
-  QString msg = "";
-
-  // reads the notification message from the socket.
-  readClientMessage( 1, msg );
 
 #ifdef DEBUG
   qDebug("%s %s, got notification", method.toLatin1().data(), msg.toLatin1().data());
 #endif
 
-  if( msg != MSG_DA )
-    {
-      qWarning("%s unexpected notification message code %s",
-               method.toLatin1().data(), msg.toLatin1().data() );
-    }
-  else
-    {
-      queryClient();
-    }
+  getDataFromClient();
 
   // Enable client notifier after read.
   clientNotifier->setEnabled( true );
 }
 
 /**
- * Query the client, if NMEA records are available. If true, the data will
- * be hand over to the Cumulus process.
+ * Gets the GPS or status data from the client.
  */
-void GpsCon::queryClient()
+void GpsCon::getDataFromClient()
 {
-  if (server.getClientSock(0) == -1)
+  if( server.getClientSock( 1 ) == -1 )
     {
       // No connection to the client established.
       return;
     }
 
-  QString msg;
-
   QTime t;
   t.start();
-  writeClientMessage( 0, MSG_GM );
-  readClientMessage( 0, msg );
 
-  qDebug() << "MSG_GM:" << msg << t.elapsed();
+  int loops = 0;
 
-  if( server.getClientSock( 0 ) == -1 )
+  while( loops++ < 250 )
     {
-      // socket will be closed in case of any problems, e.g. client has
-      // crashed. we check that to avoid a dead lock here.
-      return;
-    }
+      QString msg;
 
-  if( msg.startsWith( MSG_RMC ) )
-    {
-      t.start();
+      readClientMessage( 1, msg );
 
-      // Reply messages are available. At first the message count is read.
-      msg = msg.right(msg.length() - strlen(MSG_RMC) - 1);
-
-      int msgCount = msg.toInt();
-
-      // As next we read all available messages
-      for( int i = 0; i < msgCount; i++ )
+      if( server.getClientSock( 1 ) == -1 )
         {
-          readClientMessage(0, msg);
-
-          if( server.getClientSock( 0 ) == -1 )
-            {
-              // socket will be closed in case of any problems, e.g. client has
-              // crashed. we check that to avoid a dead lock here.
-              return;
-            }
-
-          if( msg.startsWith( MSG_RM ) )
-            {
-              // A reply message was received, 3 kinds are possible.
-              // Message key and space separator are removed before further
-              // processing.
-              msg = msg.right(msg.length() - strlen(MSG_RM) - 1);
-
-              if (msg == MSG_CON_OFF) // GPS connection has gone off
-                {
-                  emit gpsConnectionOff();
-                  qDebug(MSG_CON_OFF);
-                }
-              else if ( msg == MSG_CON_ON ) // GPS connection has gone on
-                {
-                  emit gpsConnectionOn();
-                  qDebug(MSG_CON_ON);
-                }
-              else // GPS NMEA record
-                {
-                  emit newSentence(msg);
-                }
-            }
+          // socket will be closed in case of any problems, e.g. client has
+          // crashed. we check that to avoid a dead lock here.
+          return;
         }
 
-      qDebug() << "MSG_RM ALL" << t.elapsed();
-    }
-  else if( msg.startsWith( MSG_NEG ) )
-    {
-      // No messages are available on client.
-    }
-  else
-    {
-      qWarning() << "GpsCon::queryClient(): Protocol Error!" << msg;
+      if( msg.startsWith( MSG_GPS_DATA ) )
+        {
+          msg = msg.right(msg.length() - strlen(MSG_GPS_DATA) - 1);
+          emit newSentence(msg);
+        }
+      else if (msg == MSG_CON_OFF) // GPS connection has gone off
+        {
+          emit gpsConnectionOff();
+          qDebug(MSG_CON_OFF);
+        }
+      else if ( msg == MSG_CON_ON ) // GPS connection has gone on
+        {
+          emit gpsConnectionOn();
+          qDebug(MSG_CON_ON);
+        }
+      else
+        {
+          qWarning() << "GpsCon::getDataFromClient(): Protocol Error!" << msg;
+        }
+
+      // Check, if more bytes are available in the receiver buffer.
+      int bytes = 0;
+
+      // Number of bytes currently in the socket receiver buffer.
+      if( ioctl( server.getClientSock( 1 ), FIONREAD, &bytes) == -1 )
+        {
+          qWarning() << "GpsCon::getDataFromClient():"
+                     << "ioctl() returns with ERROR: errno="
+                     << errno
+                     << "," << strerror(errno);
+          break;
+        }
+
+      if( bytes <= 0 )
+        {
+          break;
+        }
     }
 
-  // renew notification subscription
-  writeClientMessage(0, MSG_NTY );
-  readClientMessage(0, msg);
+  qDebug() << "MSG_GPS_DATA Loops" << loops << t.elapsed();
 
   // remember last start time
   lastQuery.start();
