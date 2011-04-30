@@ -33,21 +33,21 @@
 
 #define MSG_MAGIC      "\\Magic\\"
 
-#define MSG_POS		     "\\Positive\\"
+#define MSG_POS	       "\\Positive\\"
 
-#define MSG_NEG		     "\\Negative\\"
+#define MSG_NEG        "\\Negative\\"
 
 // open connection to the GPS device "Open" <device> <speed>
-#define MSG_OPEN	     "\\Open\\"
+#define MSG_OPEN       "\\Open\\"
 
 // close connection to the GPS device
-#define MSG_CLOSE	     "\\Close\\"
+#define MSG_CLOSE      "\\Close\\"
 
 // send message to GPS device
-#define MSG_SM		     "\\Send_Msg\\"
+#define MSG_SM	       "\\Send_Msg\\"
 
 // Switch on forwarding of GPS data
-#define MSG_FGPS_ON		 "\\Gps_Data_On\\"
+#define MSG_FGPS_ON    "\\Gps_Data_On\\"
 
 // Switch off forwarding of GPS data
 #define MSG_FGPS_OFF   "\\Gps_Data_Off\\"

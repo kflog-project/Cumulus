@@ -683,14 +683,6 @@ void GpsCon::slot_Timeout()
       // client not alive or start not desired
       return;
     }
-
-  if( GeneralConfig::instance()->getGpsDevice() != NMEASIM_DEVICE &&
-      lastQuery.elapsed () > ALIVE_TO )
-    {
-      // more as 15s no new data notification came in. We send a query to the
-      // client to be sure, that the notification has not gone lost.
-      getDataFromClient();
-    }
 }
 
 /**
@@ -804,6 +796,25 @@ void GpsCon::getDataFromClient()
 
   while( loops++ < 250 )
     {
+      // Check, if bytes are available in the receiver buffer because we
+      // use blocking IO.
+      int bytes = 0;
+
+      // Number of bytes currently in the socket receiver buffer.
+      if( ioctl( server.getClientSock( 1 ), FIONREAD, &bytes) == -1 )
+        {
+          qWarning() << "GpsCon::getDataFromClient():"
+                     << "ioctl() returns with ERROR: errno="
+                     << errno
+                     << "," << strerror(errno);
+          break;
+        }
+
+      if( bytes <= 0 )
+        {
+          break;
+        }
+
       QString msg;
 
       readClientMessage( 1, msg );
@@ -833,24 +844,6 @@ void GpsCon::getDataFromClient()
       else
         {
           qWarning() << "GpsCon::getDataFromClient(): Protocol Error!" << msg;
-        }
-
-      // Check, if more bytes are available in the receiver buffer.
-      int bytes = 0;
-
-      // Number of bytes currently in the socket receiver buffer.
-      if( ioctl( server.getClientSock( 1 ), FIONREAD, &bytes) == -1 )
-        {
-          qWarning() << "GpsCon::getDataFromClient():"
-                     << "ioctl() returns with ERROR: errno="
-                     << errno
-                     << "," << strerror(errno);
-          break;
-        }
-
-      if( bytes <= 0 )
-        {
-          break;
         }
     }
 
