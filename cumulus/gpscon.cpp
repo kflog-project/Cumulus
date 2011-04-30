@@ -734,10 +734,10 @@ void GpsCon::slot_ListenEvent( int socket )
 
       clientNotifier = new QSocketNotifier( server.getClientSock(1),
                                             QSocketNotifier::Read, this );
-#if 0
+
       clientNotifier->connect( clientNotifier, SIGNAL(activated(int)), this,
                                SLOT(slot_NotificationEvent(int)) );
-#endif
+
       // After the second client connect we send the initialization to the
       // client. That must be done at this point and not earlier, to avoid a
       // deadlock in the communication
