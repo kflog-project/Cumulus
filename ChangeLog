@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2011-04-30 AP: BUGFIX: Changes in airspace filling and airspace warning
+                   dialogs are never saved.
 [+] 2011-04-28 AP: A new configuration option, arrival altitude display, was
                    added to the pre-flight common page. This option defines,
                    for which task point the arrival altitude is calculated.
