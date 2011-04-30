@@ -326,7 +326,7 @@ int main(int argc, char **argv)
     {
       char *prog = basename(argv[0]);
 
-      cout << "NMEA GPS Simulator 1.3.6 for Cumulus, 2003-2008 E. Voellm, 2009-2010 A. Pauli (GPL)" << endl << endl
+      cout << "NMEA GPS Simulator 1.3.7 for Cumulus, 2003-2008 E. Voellm, 2009-2011 A. Pauli (GPL)" << endl << endl
            << "Usage: " << prog << " str|cir|pos|gpos [params]" << endl << endl
            << "Parameters: str:  Straight Flight "<< endl
            << "            cir:  Circling "<< endl
@@ -356,7 +356,9 @@ int main(int argc, char **argv)
   mode = Argv[0];
 
   // @AP: Reset the locale that is used for number formatting to "C" locale.
-  setlocale( LC_NUMERIC,"C" );
+  setlocale( LC_ALL, "" );
+  setlocale( LC_NUMERIC, "C" );
+  setenv( "LC_NUMERIC", "C", 1 );
 
   // First of all read command configuration from file.
   // Determine configuration file position. It is normally stored in the home
