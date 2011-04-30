@@ -335,8 +335,6 @@ bool Flarm::getFlarmRelativeDistance( int &relativeDistance )
  */
 void Flarm::collectPflaaFinished()
 {
-  QTime t; t.start();
-
   // Check the hash dictionary for expired data. This old data items have to
   // be removed. Seems to be the best place, to do it after the end trigger as
   // to trust that following methods will do that.
@@ -358,8 +356,6 @@ void Flarm::collectPflaaFinished()
         }
     }
 
-  qDebug() << "TidyUpHash=" << t.elapsed();
-
   // Start Flarm PFLAA data clearing supervision. There is no other way
   // of solution because the PFLAA sentences are only sent if other
   // aircrafts are in view of the FLARM receiver.
@@ -370,9 +366,6 @@ void Flarm::collectPflaaFinished()
     {
       emit newFlarmPflaaData();
     }
-
-  qDebug() << "TidyUpRet=" << t.elapsed();
-
 }
 
 /** Called if timer has expired. Used for Flarm PFLAA data clearing. */
