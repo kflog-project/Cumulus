@@ -864,8 +864,6 @@ void GpsClient::writeForwardMsg( const char *msg )
   // special return codes.
   int done = clientForward.writeMsg( (char *) ba.data(), ba.size() );
 
-  printf("CF=%d\n", done);
-
   if( done < 0 )
     {
       if( errno == EAGAIN || errno == EWOULDBLOCK )
@@ -873,8 +871,7 @@ void GpsClient::writeForwardMsg( const char *msg )
           // The write call would block because the transfer queue is full.
           // In this case we discard the message.
           qWarning() << method
-                     << "Queue is blocked, drop Message! Errno="
-                     << errno;
+                     << "Write would block, drop Message!";
         }
       else
         {
