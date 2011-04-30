@@ -895,7 +895,7 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   connect(reset,    SIGNAL(clicked()), this, SLOT(slot_reset()));
   connect(defaults, SIGNAL(clicked()), this, SLOT(slot_defaults()));
 
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(slot_save()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
   QSignalMapper* signalMapper = new QSignalMapper(this);
@@ -1015,6 +1015,8 @@ void SettingsPageAirspaceFilling::slot_save()
   // @AP: initiate a redraw of airspaces on the map due to color modifications.
   //      Not the best solution but it is working ;-)
   Map::getInstance()->scheduleRedraw(Map::airspaces);
+
+  accept();
 }
 
 void SettingsPageAirspaceFilling::slot_enabledToggled(bool enabled)
@@ -1154,7 +1156,7 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
 
   connect(defaults, SIGNAL(clicked()), this, SLOT(slot_defaults()));
 
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(slot_save()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
   QSignalMapper* signalMapper = new QSignalMapper(this);
@@ -1295,6 +1297,8 @@ void SettingsPageAirspaceWarnings::slot_save()
     }
 
   conf->setAirspaceWarningDistances( awd );
+
+  accept();
 }
 
 void SettingsPageAirspaceWarnings::slot_enabledToggled( bool enabled )

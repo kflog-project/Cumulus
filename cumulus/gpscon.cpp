@@ -789,8 +789,7 @@ void GpsCon::getDataFromClient()
       return;
     }
 
-  QTime t;
-  t.start();
+  // QTime t; t.start();
 
   int loops = 0;
 
@@ -847,7 +846,7 @@ void GpsCon::getDataFromClient()
         }
     }
 
-  qDebug() << "MSG_GPS_DATA Loops" << loops << t.elapsed();
+  // qDebug() << "MSG_GPS_DATA Loops" << loops << t.elapsed();
 
   // remember last start time
   lastQuery.start();
