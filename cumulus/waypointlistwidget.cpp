@@ -149,12 +149,15 @@ void WaypointListWidget::deleteSelectedWaypoints()
               continue;
             }
 
+          // Get waypoint reference from item.
+          Waypoint& wp = wpi->wp;
+
           // At first remove waypoint from filter because there is a reference
           // to the global waypoint list.
           filter->removeListItem( itemList.at(i) );
 
           // At last remove waypoint from global list in MapContents
-          wpList.removeAll( *(&wpi->wp) );
+          wpList.removeOne( wp );
         }
 
       // save the modified catalog

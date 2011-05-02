@@ -223,11 +223,23 @@ void WaypointListView::slot_deleteWP()
 
   if( answer == QMessageBox::Yes )
     {
-      // @AP: Important! First announce deletion of waypoint for cancel
-      //      to have a valid instance.
-      for( int i = 0; i < wpList.size(); i++ )
+      // The calculator owns the selected waypoint. Important! First
+      // announce deletion of waypoint for cancel to have a valid instance.
+      const Waypoint* wpc = calculator->getselectedWp();
+
+      if( wpc )
         {
-          emit deleteWaypoint( wpList.at(i) );
+          for( int i = 0; i < wpList.size(); i++ )
+            {
+              Waypoint* wpl = wpList.at(i);
+
+              if( wpc->name == wpl->name &&
+                  wpc->origP == wpl->origP &&
+                  wpc->taskPointIndex == wpl->taskPointIndex )
+                {
+                  emit deleteWaypoint( wpl );
+                }
+            }
         }
 
       // Second delete all selected waypoints
