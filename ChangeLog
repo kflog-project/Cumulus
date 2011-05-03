@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2011-05-03 AP: Modified the waypoint delete method to become faster, if
+                   many waypoints shall be removed.
 [-] 2011-04-30 AP: BUGFIX: Changes in airspace filling and airspace warning
                    dialogs are never saved.
 [+] 2011-04-28 AP: A new configuration option, arrival altitude display, was
@@ -22,7 +24,7 @@ Cumulus changelog
                    Possible selections are next task point or landing task
                    point. The default setting is the landing task point.
                    This was a request from Hendrik Hoeth.
-[o] 2011-04-28 AP: If Cumulus had more than 5 Flarm devices in view the GUI
+[o] 2011-04-28 AP: If Cumulus had more than 5 Flarm devices in sight the GUI
                    was nearly blocked for user interactions. The problem was
                    a bottleneck in the communication between the GPS client and
                    the Cumulus process due to to much handshake actions. This

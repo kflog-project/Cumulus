@@ -1,7 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt4.7.x for Linux/Unix
 
-Last update: 2011-03-17 by Axel Pauli
+Last update: 2011-05-03 by Axel Pauli
 
 SVN info: $Id$
 ===============================================================================
@@ -24,7 +24,7 @@ following components are mandatory:
 At least a Qt Release 4.7.0 or higher has to be used.
 
 The different Linux distributions do provide normally installable packages for
-that. For Xubuntu 10.10 you have to execute the following command to get them:
+that. For XUbuntu 11.04 you have to execute the following command to get them:
 
   sudo apt-get install g++ subversion
   sudo apt-get install qt4-qmake qt4-dev-tools libqtcore4 libqtgui4 \
@@ -98,7 +98,7 @@ Step 2)
 Check if you can call 'g++ --version' from a shell command line. You should
 see some output like this:
 
-  gcc version 4.4.5 (Ubuntu/Linaro 4.4.4-14ubuntu5)
+  gcc version 4.5.2 (Ubuntu/Linaro 4.5.2-8ubuntu4)
   
 Check if you can call 'qmake -v' from a shell command line. You should
 see some output like this:
@@ -138,7 +138,7 @@ To checkout a certain release you have to use a url which starts with:
 
   https://svn.kflog.org/svn/repos/cumulus/qt4/tags/
   
-followed by a release tag e.g. Release_2.9.0. You can browse through the
+followed by a release tag e.g. Release_2.10.1. You can browse through the
 Cumulus subversion archive with your Internet browser to see the release tags.
 Type in the following url:
 
@@ -175,13 +175,14 @@ command:
   install  Installs Cumulus under $(INSTALL_ROOT), normally /opt/cumulus
   
 If you want to build a smaller release you can switch off the features
-Flarm, Internet download or Bluetooth in the related qmake project file. Change
-into the subdirectory cumulus and edit the file cumulusX11.pro. Comment out
-one or more of the lines:
+Flarm, Internet download, Bluetooth or Welt2000 thread in the related qmake
+project file. Go into the subdirectory cumulus and edit the file cumulusX11.pro.
+Comment out one or more of the lines:
 
 CONFIG += flarm
 CONFIG += internet
 CONFIG += bluetooth
+CONFIG += welt2000thread
 
 with a hash mark. That disables the related feature. The bluetooth feature must
 be disabled too in the project file gpsClient/gpsClientX11.pro.
@@ -276,8 +277,7 @@ Issue the following make comand for Maemo4 (N8x0)
 
 Issue the following make comand for Maemo5 (N900)
 
-  make -f Makefile.Maemo5 all dpkg
-  make -f Makefile.Maemo4 dpkg_lang
+  make -f Makefile.Maemo5 all dpkg dpkg_lang
 
 in the right Maemo SDK envrironment to get a dpkg package of Cumulus. Maemo 4
 and Maemo 5 uses different SDK installations. The make target dpkg_lang provides

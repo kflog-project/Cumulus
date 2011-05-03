@@ -233,9 +233,7 @@ void WaypointListView::slot_deleteWP()
             {
               Waypoint* wpl = wpList.at(i);
 
-              if( wpc->name == wpl->name &&
-                  wpc->origP == wpl->origP &&
-                  wpc->taskPointIndex == wpl->taskPointIndex )
+              if( wpc == wpl )
                 {
                   emit deleteWaypoint( wpl );
                 }

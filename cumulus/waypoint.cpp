@@ -59,7 +59,7 @@ Waypoint::Waypoint(const Waypoint& inst)
   elevation      = inst.elevation;
   frequency      = inst.frequency;
   isLandable     = inst.isLandable;
-  priority     = inst.priority;
+  priority       = inst.priority;
   taskPointIndex = inst.taskPointIndex;
   taskPointType  = inst.taskPointType;
 }
@@ -71,14 +71,16 @@ Waypoint::~Waypoint()
 
 bool Waypoint::equals( const Waypoint *second ) const
 {
-  if( second == 0 )
+  if( second == static_cast<Waypoint *>(0) )
     {
       return false;
     }
 
   if( this->name == second->name &&
+      this->type == second->type &&
       this->description == second->description &&
-      this->origP == second->origP )
+      this->origP == second->origP &&
+      this->taskPointIndex == second->taskPointIndex )
     {
       return true;
     }
