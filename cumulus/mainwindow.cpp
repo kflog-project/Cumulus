@@ -224,6 +224,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   char *ldpath = getenv( "LD_LIBRARY_PATH" );
   char *display = getenv( "DISPLAY" );
   char *proxy = getenv( "http_proxy" );
+  char *Proxy = getenv( "HTTP_PROXY" );
 
   qDebug( "PWD=%s", pwd ? pwd : "NULL" );
   qDebug( "USER=%s", user ? user : "NULL" );
@@ -232,7 +233,8 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   qDebug( "LD_LIBRARY_PATH=%s", ldpath ? ldpath : "NULL" );
   qDebug( "QDir::homePath()=%s", QDir::homePath().toLatin1().data() );
   qDebug( "DISPLAY=%s", display ? display : "NULL" );
-  qDebug( "HTTP_PROXY=%s", proxy ? proxy : "NULL" );
+  qDebug( "http_proxy=%s", proxy ? proxy : "NULL" );
+  qDebug( "HTTP_PROXY=%s", Proxy ? Proxy : "NULL" );
 
   qDebug( "UserDataDir=%s",
           GeneralConfig::instance()->getUserDataDirectory().toLatin1().data() );

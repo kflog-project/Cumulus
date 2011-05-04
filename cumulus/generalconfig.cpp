@@ -1562,6 +1562,11 @@ QString GeneralConfig::getDefaultProxy()
 {
   char* proxy = getenv("http_proxy");
 
+  if( proxy == 0 )
+    {
+      proxy = getenv("HTTP_PROXY");
+    }
+
   if( proxy )
     {
       QString qProxy(proxy);
