@@ -291,7 +291,7 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
 
       if( clientForward.connect2Server( IPC_IP, ipcPort ) == -1 )
         {
-          qWarning() << "Notification channel Connection to Cumulus Server failed!"
+          qWarning() << "Forward channel Connection to Cumulus Server failed!"
                      << "Fatal error, terminate process!";
 
           setShutdownFlag(true);
@@ -800,7 +800,7 @@ fd_set *GpsMaemoClient::getReadFdMask()
   // Reset file descriptor mask bits
   FD_ZERO( &fdMask );
 
-  if( ipcPort ) // data channel to Cumulus
+  if( ipcPort ) // Command channel from Cumulus
     {
       int sfd = clientData.getSock();
 
@@ -812,7 +812,7 @@ fd_set *GpsMaemoClient::getReadFdMask()
 
 #ifdef MAEMO4
 
-  // Channel to GPSD
+  // Read channel to GPSD
   if( gpsDaemon.getSock() != -1 )
     {
       FD_SET( gpsDaemon.getSock(), &fdMask );
@@ -824,7 +824,7 @@ fd_set *GpsMaemoClient::getReadFdMask()
 }
 
 /**
- * Processes incoming read events. They can come from Cumulus or the GPSD.
+ * Processes incoming read events. They can come from Cumulus or from the GPSD.
  */
 void GpsMaemoClient::processEvent( fd_set *fdMask )
 {

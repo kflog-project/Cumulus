@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c): 2010-2011 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ void usage( char * progName )
  * Main of GPS Maemo client program. The program has three options
  *
  * a) -help shows the usage to the caller
- * b) -port Port number of listening end point of cumulus process
+ * b) -port Port number of listening end point of Cumulus process
  * c) -slave if this option is set, process will terminate, if parent
  *           has gone down (zombie protection).
  *
@@ -141,10 +141,10 @@ int main( int argc, char* argv[] )
   g_type_init();
 
   // Initialize the GLib thread system
-  g_thread_init( NULL );
+  g_thread_init( 0 );
 
   // Setup GLib main loop for signal handling of libLocation.
-  GMainLoop *gloop = g_main_loop_new(NULL, FALSE);
+  GMainLoop *gloop = g_main_loop_new( 0, FALSE );
 
   // GPS client module, manages the connection between the libLocation and Cumulus.
   GpsMaemoClient *client = new GpsMaemoClient( ipcPort );
@@ -155,7 +155,7 @@ int main( int argc, char* argv[] )
   // main loop of Gps Client process
   // ==========================================================================
 
-  while (1) // process event loop
+  while( true ) // process event loop
     {
       // check, if GpsClient instance has set shutdown flag or if
       // signal handler was called for shutdown
@@ -175,33 +175,63 @@ int main( int argc, char* argv[] )
           break;
         }
 
-      int maxFds = getdtablesize();  // getdtablehi() better but not provided
-
-      // get all session file descriptors
+      // Get read file descriptors to Cumulus and to GPSD (only Maemo 4).
       fd_set *readFds = client->getReadFdMask();
 
-      // main loop timeout set to 500 milliseconds
-      timerInterval.tv_sec  =  0;
-      timerInterval.tv_usec =  500000;
+      fd_set writeFds;
 
-#ifdef MAEMO4
-      // main loop timeout 1s sufficient for MAEMO4
-      timerInterval.tv_usec =  1000000;
-#endif
+      FD_ZERO( &writeFds );
+
+      // Get all G-Lib main loop file descriptors.
+      gint max_priority = G_PRIORITY_DEFAULT;
+      gint timeout;
+      gint n_fds = 16;
+      GPollFD fds[n_fds];
+
+      // Returns the number of current file descriptors in use by g_main_loop.
+      // Can be greater as n_fds!
+      gint c_fds = g_main_context_query( g_main_context_default(),
+                                         max_priority,
+                                         &timeout,
+                                         &fds[0],
+                                         n_fds );
+
+      for( int i = 0; i < c_fds && i < n_fds; i++ )
+        {
+          // Add returned file descriptors to select masks.
+          if( fds[i].events & G_IO_IN )
+            {
+              FD_SET( fds[i].fd, readFds );
+              // qDebug() << "FDR=" << fds[i].fd;
+            }
+
+          if( fds[i].events & G_IO_OUT )
+            {
+              FD_SET( fds[i].fd, &writeFds );
+              // qDebug() << "FDW=" << fds[i].fd;
+            }
+        }
+
+      // main loop timeout set to 1 second
+      timerInterval.tv_sec  =  1;
+      timerInterval.tv_usec =  0;
+
+      int maxFds = getdtablesize();  // getdtablehi() better but not provided
 
       // Wait for read events or timeout
-      int result = select( maxFds, readFds, (fd_set *) 0,
+      int result = select( maxFds, readFds, &writeFds,
                           (fd_set *) 0, &timerInterval );
 
-      if ( result == -1 ) // Select returned with error
+      if( result == -1 ) // Select returned with error
         {
           if ( errno == EINTR )
             {
-              continue; // interrupted select call, ignore it
+              // Interrupted select call, ignore error.
+              continue;
             }
           else
             {
-              // other error occurred, report it
+              // Other error occurred, report it.
               cerr << "Fatal Error of select call, errno=" << errno
                    << ", " << strerror(errno)
                    << "\n +++ TERMINATE PROCESS +++" << endl;
@@ -209,17 +239,24 @@ int main( int argc, char* argv[] )
             }
         }
 
-      // Check G-main loop if events are pending. Found no other way
-      // as to poll it periodically.
-      if( g_main_context_pending( g_main_context_default() ) )
+      if( result > 0 ) // read/write event occurred
         {
-          // process all pending events
-          g_main_context_dispatch( g_main_context_default() );
-        }
+          // Check G-main loop if events are pending. Because the function
+          // g_main_context_dispatch do not dispatch all pending events at once
+          // it must called recursive in a limited loop. In my tests I saw 6
+          // loops as maximum. I hope that 50 loops are sufficient.
+          int loops = 50;
 
-      if ( result > 0 ) // read event occurred
-        {
-          // call Gps Maemo client for event processing
+          while( loops && g_main_context_pending( g_main_context_default() ) )
+            {
+              // process all pending events
+              g_main_context_dispatch( g_main_context_default() );
+              loops--;
+            }
+
+          // qDebug() << "G-Main-Loops=" << 50-loops;
+
+          // Call Gps Maemo client for event processing
           client->processEvent( readFds );
         }
       else if ( result == 0 ) // timeout, do low prioritized things
@@ -236,5 +273,5 @@ int main( int argc, char* argv[] )
 
   delete client; // shutdown clients activities
 
-  exit(0);
-} // End of main
+  return(0);
+}

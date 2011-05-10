@@ -14,6 +14,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2011-05-10 AP: BUGFIX: The G-Lib main loop of the gpsMaemoClient did not
+                   work as expected by me. A Cumulus user reported to me, that
+                   messages from the internal N900 GPS device were delayed
+                   processed. I modified some details to get it right working
+                   now.
 [o] 2011-05-03 AP: Modified the waypoint delete method to become faster, if
                    many waypoints shall be removed.
 [-] 2011-04-30 AP: BUGFIX: Changes in airspace filling and airspace warning
