@@ -216,8 +216,7 @@ static void LocationCb::gpsdError( LocationGPSDControl *control,
 #ifdef MAEMO5
 /**
  * Is called from location service when new GPS data are available. Under MAEMO4
- * altitude information is not reported continuous by this method. Do not know
- * what is going on under MAEMO5.
+ * altitude information is not reported continuously by this method.
  */
 static void LocationCb::gpsdLocationchanged( LocationGPSDevice *device,
                                              gpointer user_data )
@@ -233,7 +232,7 @@ static void LocationCb::gpsdLocationchanged( LocationGPSDevice *device,
 
 /**
  * Constructor requires a socket port of the server (listening end point)
- * useable for interprocess communication. As related host is always localhost
+ * usable for interprocess communication. As related host is always localhost
  * used. It will be opened two sockets to the server, one for data transfer,
  * the other only as notification channel.
  */
@@ -298,9 +297,9 @@ GpsMaemoClient::GpsMaemoClient( const ushort portIn )
           return;
         }
 
-      // Set forward channel to non blocking IO
-      int fc = clientForward.getSock();
-      fcntl( fc, F_SETFL, O_NONBLOCK );
+      // Set forward channel to non blocking IO. Only device status and GPS
+      // messages are transfered via this socket channel to Cumulus.
+      fcntl( clientForward.getSock(), F_SETFL, O_NONBLOCK );
     }
 
   // Get the GPSD control object from the location service.
@@ -644,12 +643,12 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
         {
           if( ! isnan(device->fix->altitude) )
             {
-              altitude = QString("%1").arg(device->fix->altitude, 0, 'f');
+              altitude = QString("%1").arg(device->fix->altitude, 0, 'f', 1);
             }
 
           if( ! isnan(device->fix->epv) )
             {
-              epv = QString("%1").arg(device->fix->epv, 0, 'f');
+              epv = QString("%1").arg(device->fix->epv, 0, 'f', 2);
             }
         }
 
@@ -657,12 +656,12 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
         {
           if( ! isnan(device->fix->speed) )
             {
-              speed = QString("%1").arg(device->fix->speed, 0, 'f');
+              speed = QString("%1").arg(device->fix->speed, 0, 'f', 1);
             }
 
           if( ! isnan(device->fix->eps) )
             {
-              eps = QString("%1").arg(device->fix->eps, 0, 'f');
+              eps = QString("%1").arg(device->fix->eps, 0, 'f', 2);
             }
         }
 
@@ -670,12 +669,12 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
         {
           if( ! isnan(device->fix->track) )
             {
-              track = QString("%1").arg(device->fix->track, 0, 'f');
+              track = QString("%1").arg(device->fix->track, 0, 'f', 1);
             }
 
           if( ! isnan(device->fix->epd) )
             {
-              epd   = QString("%1").arg(device->fix->epd, 0, 'f');
+              epd   = QString("%1").arg(device->fix->epd, 0, 'f', 2);
             }
         }
 
@@ -683,12 +682,12 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
         {
           if( ! isnan(device->fix->climb) )
             {
-              climb = QString("%1").arg(device->fix->climb, 0, 'f');
+              climb = QString("%1").arg(device->fix->climb, 0, 'f', 1);
             }
 
           if( ! isnan(device->fix->epc) )
             {
-              epc = QString("%1").arg(device->fix->epc, 0, 'f');
+              epc = QString("%1").arg(device->fix->epc, 0, 'f', 2);
             }
         }
 
@@ -703,7 +702,7 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
 
           if( ! isnan(device->fix->eph) )
             {
-              eph = QString("%1").arg(device->fix->eph / 100., 0, 'f'); // conversion to meter
+              eph = QString("%1").arg(device->fix->eph / 100., 0, 'f', 2); // conversion to meter
             }
         }
 
@@ -717,7 +716,7 @@ void GpsMaemoClient::handleGpsdLocationChanged( LocationGPSDevice *device )
 
           if( ! isnan(device->fix->ept) )
             {
-              ept  = QString("%1").arg(device->fix->ept, 0, 'f');
+              ept  = QString("%1").arg(device->fix->ept, 0, 'f', 2);
             }
         }
 
@@ -1184,9 +1183,9 @@ void GpsMaemoClient::writeForwardMsg( const char *msg )
         }
     }
 
-#ifdef DEBUG
+//#ifdef DEBUG
   qDebug() << method << msg;
-#endif
+//#endif
 
   return;
 }

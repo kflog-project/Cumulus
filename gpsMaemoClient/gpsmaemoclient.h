@@ -53,11 +53,9 @@ extern "C" {
 
 }
 
-#include <qdatetime.h>
-#include <QByteArray>
-#include <QQueue>
-
 #include "ipc.h"
+
+class QTime;
 
 //++++++++++++++++++++++ CLASS GpsMaemoClient +++++++++++++++++++++++++++
 

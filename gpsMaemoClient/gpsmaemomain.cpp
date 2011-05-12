@@ -39,12 +39,12 @@ using namespace std;
 #include "gpsmaemoclient.h"
 
 //----------------------------------------------------
-// import global sutdown flag, set by SignalHandler
+// import global shutdown flag, set by SignalHandler
 //----------------------------------------------------
 extern bool shutdownState;
 
 // ===========================================================================
-// Usage of programm
+// Usage of program
 // ===========================================================================
 void usage( char * progName )
 {
@@ -102,7 +102,7 @@ int main( int argc, char* argv[] )
             {
               res = sscanf( argv[i+1], "%hu", &ipcPort );
 
-              if ( res != 1 ) // conversion error ocurred
+              if ( res != 1 ) // conversion error occurred
                 {
                   cerr << basename(argv[0])
                        << ": wrong -port argument passed!"
@@ -151,8 +151,11 @@ int main( int argc, char* argv[] )
 
   struct timeval timerInterval;
 
+  fd_set *readFds;
+  fd_set writeFds;
+
   // ==========================================================================
-  // main loop of Gps Client process
+  // Main loop of Gps Client process
   // ==========================================================================
 
   while( true ) // process event loop
@@ -176,25 +179,33 @@ int main( int argc, char* argv[] )
         }
 
       // Get read file descriptors to Cumulus and to GPSD (only Maemo 4).
-      fd_set *readFds = client->getReadFdMask();
-
-      fd_set writeFds;
+      readFds = client->getReadFdMask();
 
       FD_ZERO( &writeFds );
 
       // Get all G-Lib main loop file descriptors.
       gint max_priority = G_PRIORITY_DEFAULT;
-      gint timeout;
-      gint n_fds = 16;
+      gint gTimeout = 0;  // desired timeout in ms
+      gint n_fds = 32;
       GPollFD fds[n_fds];
 
+#ifdef MAEMO5
+      // Maemo 4 complains with error to this function call.
+      g_main_context_prepare( g_main_context_default(), &max_priority );
+#endif
+
       // Returns the number of current file descriptors in use by g_main_loop.
-      // Can be greater as n_fds!
+      // Can be greater as n_fds but 32 should be sufficient!
       gint c_fds = g_main_context_query( g_main_context_default(),
                                          max_priority,
-                                         &timeout,
+                                         &gTimeout,
                                          &fds[0],
                                          n_fds );
+      if( c_fds > n_fds )
+        {
+          cerr << "GpsMaemoClient: G-MainLoop needs more FDs as are reserved! "
+               << c_fds << " > " << n_fds << endl;
+        }
 
       for( int i = 0; i < c_fds && i < n_fds; i++ )
         {
@@ -202,19 +213,24 @@ int main( int argc, char* argv[] )
           if( fds[i].events & G_IO_IN )
             {
               FD_SET( fds[i].fd, readFds );
-              // qDebug() << "FDR=" << fds[i].fd;
             }
 
           if( fds[i].events & G_IO_OUT )
             {
               FD_SET( fds[i].fd, &writeFds );
-              // qDebug() << "FDW=" << fds[i].fd;
             }
         }
 
-      // main loop timeout set to 1 second
+      // main loop timeout set to 1 second as default
       timerInterval.tv_sec  =  1;
       timerInterval.tv_usec =  0;
+
+      if( gTimeout > 0 )
+        {
+          // G-Main loop has provided a timeout value in milliseconds.
+          timerInterval.tv_sec  =  gTimeout / 1000;
+          timerInterval.tv_usec =  (gTimeout % 1000) * 1000;
+        }
 
       int maxFds = getdtablesize();  // getdtablehi() better but not provided
 
@@ -241,16 +257,15 @@ int main( int argc, char* argv[] )
 
       if( result > 0 ) // read/write event occurred
         {
-          // Check G-main loop if events are pending. Because the function
-          // g_main_context_dispatch do not dispatch all pending events at once
-          // it must called recursive in a limited loop. In my tests I saw 6
+          // Process pending G-main loop events. Because the function
+          // g_main_context_iteration do not dispatch all pending events at once
+          // it must be called recursive in a limited loop. In my tests I saw 6
           // loops as maximum. I hope that 50 loops are sufficient.
           int loops = 50;
 
-          while( loops && g_main_context_pending( g_main_context_default() ) )
+          while( loops &&
+                 g_main_context_iteration( g_main_context_default(), FALSE ) )
             {
-              // process all pending events
-              g_main_context_dispatch( g_main_context_default() );
               loops--;
             }
 
@@ -261,6 +276,8 @@ int main( int argc, char* argv[] )
         }
       else if ( result == 0 ) // timeout, do low prioritized things
         {
+          // Call G-Main loop to handle its expired timers.
+          g_main_context_iteration( g_main_context_default(), FALSE );
         }
 
       // call timeout control at last after all events have been
