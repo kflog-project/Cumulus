@@ -187,7 +187,6 @@ void GpsStatusDialog::slot_SaveNmeaData()
 void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
 {
   // close the dialog on key press
-  // qDebug("GpsStatusDialog::keyPressEvent");
   switch(e->key())
     {
       case Qt::Key_Escape:
@@ -247,7 +246,6 @@ void GpsElevationAzimuthDisplay::resizeEvent( QResizeEvent *event )
 
 void GpsElevationAzimuthDisplay::paintEvent( QPaintEvent *event )
 {
-  QTime time; time.start();
   // Call paint method from QFrame otherwise the frame is not drawn.
   QFrame::paintEvent( event );
 
@@ -289,8 +287,6 @@ void GpsElevationAzimuthDisplay::paintEvent( QPaintEvent *event )
                   Qt::AlignCenter,
                   text );
     }
-
-  qDebug() << "ADisplay::paintEvent: pt=" << time.elapsed();
 }
 
 void GpsElevationAzimuthDisplay::setSatInfo( QList<SIVInfo>& list )
@@ -395,7 +391,6 @@ void GpsSnrDisplay::resizeEvent( QResizeEvent *event )
 
 void GpsSnrDisplay::paintEvent( QPaintEvent *event )
 {
-  QTime time; time.start();
   // Call paint method from QFrame otherwise the frame is not drawn.
   QFrame::paintEvent( event );
 
@@ -427,8 +422,6 @@ void GpsSnrDisplay::paintEvent( QPaintEvent *event )
 
       pw.drawText( center.x() - w / 2, center.y() + h / 2, text );
     }
-
-  qDebug() << "SDisplay::paintEvent: pt=" << time.elapsed();
 }
 
 void GpsSnrDisplay::setSatInfo(QList<SIVInfo>& list)
