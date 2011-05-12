@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2003      by André Somers
-**                  2008-2010 by Axel Pauli
+**                  2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -190,11 +190,9 @@ void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
   // qDebug("GpsStatusDialog::keyPressEvent");
   switch(e->key())
     {
-    case Qt::Key_Enter:
-    case Qt::Key_Return:
-    case Qt::Key_Escape:
-      close();
-      break;
+      case Qt::Key_Escape:
+        close();
+        break;
     }
 }
 
@@ -208,20 +206,17 @@ GpsElevationAzimuthDisplay::GpsElevationAzimuthDisplay(QWidget *parent) :
   setFrameStyle(StyledPanel | QFrame::Plain);
   setLineWidth(2);
   setMidLineWidth(2);
-
-  background = new QPixmap();
 }
 
 GpsElevationAzimuthDisplay::~GpsElevationAzimuthDisplay()
 {
-  delete background;
 }
 
 void GpsElevationAzimuthDisplay::resizeEvent( QResizeEvent *event )
 {
   QFrame::resizeEvent( event );
 
-  width = contentsRect().width();
+  width  = contentsRect().width();
   height = contentsRect().height();
 
   if (width > height)
@@ -233,12 +228,12 @@ void GpsElevationAzimuthDisplay::resizeEvent( QResizeEvent *event )
   height -= ( MARGIN * 2 );
   center  = QPoint(contentsRect().width()/2, contentsRect().height()/2);
 
-  delete background;
-  background = new QPixmap( contentsRect().width(), contentsRect().height() );
+  background = QPixmap( contentsRect().width(), contentsRect().height() );
 
-  background->fill( palette().color(QPalette::Window) );
+  background.fill( palette().color(QPalette::Window) );
 
-  QPainter p(background);
+  QPainter p( &background );
+
   p.setPen( QPen( Qt::black, 2, Qt::SolidLine ) );
   //outer circle
   p.drawEllipse(center.x() - ( width / 2 ), center.y() - ( width / 2 ), width, width);
@@ -252,6 +247,7 @@ void GpsElevationAzimuthDisplay::resizeEvent( QResizeEvent *event )
 
 void GpsElevationAzimuthDisplay::paintEvent( QPaintEvent *event )
 {
+  QTime time; time.start();
   // Call paint method from QFrame otherwise the frame is not drawn.
   QFrame::paintEvent( event );
 
@@ -261,15 +257,15 @@ void GpsElevationAzimuthDisplay::paintEvent( QPaintEvent *event )
   p.setFont(f);
 
   // copy background to widget
-  p.drawPixmap ( contentsRect().left(), contentsRect().top(), *background,
-                 0, 0, background->width(), background->height() );
+  p.drawPixmap ( contentsRect().left(), contentsRect().top(), background,
+                 0, 0, background.width(), background.height() );
 
   // draw satellites
-  if (sats.count())
+  if( sats.count() )
     {
-      for (int i=0; i < sats.count(); i++)
+      for( int i = 0; i < sats.count(); i++ )
         {
-          drawSat(&p, sats.at(i));
+          drawSat( &p, sats.at( i ) );
         }
     }
   else
@@ -293,13 +289,20 @@ void GpsElevationAzimuthDisplay::paintEvent( QPaintEvent *event )
                   Qt::AlignCenter,
                   text );
     }
+
+  qDebug() << "ADisplay::paintEvent: pt=" << time.elapsed();
 }
 
 void GpsElevationAzimuthDisplay::setSatInfo( QList<SIVInfo>& list )
 {
-  sats = list;
-  // update();
-  repaint();
+  static uint counter = 1;
+
+  if( ++counter % 2 )
+    {
+      sats = list;
+      update();
+      // repaint();
+    }
 }
 
 void GpsElevationAzimuthDisplay::drawSat( QPainter *p, const SIVInfo& sivi )
@@ -311,9 +314,9 @@ void GpsElevationAzimuthDisplay::drawSat( QPainter *p, const SIVInfo& sivi )
 
   double a = (double(( sivi.azimuth - 180 )/ -180.0) * M_PI);
   double r = (90 - sivi.elevation) / 90.0;
+
   int x = int(center.x() + (width / 2) * r * sin (a));
   int y = int(center.y() + (width / 2) * r * cos (a));
-  //qDebug("%f", a);
 
   int R, G;
   int db = qMin(sivi.db * 2, 99);
@@ -334,7 +337,6 @@ void GpsElevationAzimuthDisplay::drawSat( QPainter *p, const SIVInfo& sivi )
   p->setFont(f);
 
   p->setBrush(QColor(R,G,0));
-  p->fillRect(x - 9, y - 7, 18 , 14 , p->brush());
   p->drawRect(x - 9, y - 7, 18 , 14 );
   p->drawText(x - 9, y - 5, 18 , 14 , Qt::AlignCenter, QString::number(sivi.id) );
 }
@@ -346,17 +348,10 @@ GpsSnrDisplay::GpsSnrDisplay(QWidget *parent) : QFrame(parent)
   setFrameStyle(StyledPanel | QFrame::Plain);
   setLineWidth(2);
   setMidLineWidth(2);
-
-  background = new QPixmap();
-  canvas = new QPixmap();
-  mask = new QBitmap();
 }
 
 GpsSnrDisplay::~GpsSnrDisplay()
 {
-  delete background;
-  delete canvas;
-  delete mask;
 }
 
 void GpsSnrDisplay::resizeEvent( QResizeEvent *event )
@@ -365,78 +360,63 @@ void GpsSnrDisplay::resizeEvent( QResizeEvent *event )
 
   width  = contentsRect().width();
   height = contentsRect().height();
+  xoff   = (QWidget::width() - width) / 2;
+  yoff   = (QWidget::height() - height) / 2;
   center = QPoint(contentsRect().width()/2, contentsRect().height()/2);
 
-  delete background;
-  background = new QPixmap( width, height );
-  background->fill();
-  delete canvas;
-  canvas = new QPixmap( width, height );
+  background = QPixmap( width, height );
 
-  delete mask;
-  mask = new QBitmap( width, height );
-  mask->fill();
+  QPainter p( &background );
 
-  QPainter p(background);
-
+  // Draws the background
   int R, G;
   double dbfactor = 100.0 / height;
   double db;
 
-  for (int i=0;i<=height;i++)
+  for( int i = 0; i <= height; i++ )
     {
       db = i * dbfactor;
-      if (db < 50)
+
+      if( db < 50 )
         {
           R = 255;
-          G = int( 255/50 * db );
+          G = int( 255 / 50 * db );
         }
       else
         {
-          R = int( 255 - (255/50 * (db - 50)) );
+          R = int( 255 - (255 / 50 * (db - 50)) );
           G = 255;
         }
 
-      p.setPen( QPen( QColor(R, G, 0), 1, Qt::SolidLine ) );
-      p.drawLine(0, height-i, width, height-i);
+      p.setPen( QPen( QColor( R, G, 0 ), 1, Qt::SolidLine ) );
+      p.drawLine( 0, height - i, width, height - i );
     }
 }
 
 void GpsSnrDisplay::paintEvent( QPaintEvent *event )
 {
+  QTime time; time.start();
   // Call paint method from QFrame otherwise the frame is not drawn.
   QFrame::paintEvent( event );
 
-  QPainter p;
-  p.begin(canvas);
-  p.drawPixmap( 0, 0, *background, 0, 0, background->width(), background->height() );
+  QPainter pw(this);
+
+  pw.fillRect( xoff, yoff, width, height, palette().color(QPalette::Window) );
 
   // draw satellites
   if( sats.count() )
     {
-      QPainter pm(mask);
-      pm.fillRect(0, 0, width, height, Qt::color0);
-
       for (int i=0; i < sats.count(); i++)
         {
-          drawSat(&p, &pm, i, sats.count(), sats.at(i));
+          drawSat(&pw, i, sats.count(), sats.at(i));
         }
-
-      p.end();
-
-      //copy canvas to widget, masked by the mask
-      canvas->setMask(*mask);
-
-      QPainter pw(this);
-      pw.drawPixmap( 0, 0, *canvas, 0, 0, canvas->width(), canvas->height() );
     }
   else
     {
-      QPainter pd(this);
       QFont f = font();
       f.setPixelSize(12);
-      pd.setFont(f);
-      pd.fillRect( center.x()-23, center.y()-7, 46, 14, palette().color(QPalette::Window) );
+      pw.setFont(f);
+      pw.fillRect( center.x()-23, center.y()-7, 46, 14, palette().color(QPalette::Window) );
 
       QString text = tr("No Data");
 
@@ -445,36 +425,47 @@ void GpsSnrDisplay::paintEvent( QPaintEvent *event )
       int w = fm.width( text );
       int h = fm.height();
 
-      pd.drawText(center.x()-w/2, center.y()+h/2, text );
+      pw.drawText( center.x() - w / 2, center.y() + h / 2, text );
     }
+
+  qDebug() << "SDisplay::paintEvent: pt=" << time.elapsed();
 }
 
 void GpsSnrDisplay::setSatInfo(QList<SIVInfo>& list)
 {
-  sats = list;
-  // update();
-  repaint();
+  static uint counter = 0;
+
+  if( ++counter % 2 )
+    {
+      sats = list;
+      update();
+      // repaint();
+    }
 }
 
-void GpsSnrDisplay::drawSat(QPainter * p, QPainter * pm, int i, int cnt, const SIVInfo& sivi)
+void GpsSnrDisplay::drawSat( QPainter *p, int i, int cnt, const SIVInfo& sivi )
 {
   int bwidth = width / cnt;
   int left = bwidth * i + 2;
   int db = sivi.db * 2;
   db = qMin(db, 100);
-  int bheight = qMax(int((double(height) / 99.0) * db), 14);
-  //qDebug("id: %d, db: %d, bheight: %d (height: %d)", sivi->id, sivi->db, bheight, height);
-  pm->fillRect(left, height, bwidth - 2, -bheight, Qt::color1);
+  int bheight = qMax(int((double(height-5) / 99.0) * db), 14);
 
-  if (sivi.db < 0)
+  // Copy the needed part from the background picture.
+  p->drawPixmap( left, height-bheight, bwidth - 2, bheight,
+                 background,
+                 left, height-bheight, bwidth - 2, bheight );
+
+  if( sivi.db < 0 )
     {
-      p->fillRect(left, height, bwidth - 2, -bheight, Qt::white);
+      p->fillRect( left, height-bheight, bwidth - 2, bheight, Qt::white );
     }
 
   QFont f = font();
-  f.setPixelSize(12);
-  p->setFont(f);
-  p->setPen(Qt::black);
-  p->drawRect(left, height, bwidth - 2, -bheight);
+  f.setPixelSize( 12 );
+  p->setFont( f );
+  p->setPen( Qt::black );
+  p->setBrush( Qt::NoBrush );
+  p->drawRect( left, height, bwidth - 2, -bheight );
   p->drawText(left+1, height-13, bwidth-4, 12, Qt::AlignCenter, QString::number(sivi.id));
 }
