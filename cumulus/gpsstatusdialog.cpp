@@ -46,6 +46,12 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
       resize( _globalMainWindow->size() );
     }
 
+  uTimer = new QTimer( this );
+  uTimer->setSingleShot( true );
+
+  connect( uTimer, SIGNAL(timeout()), this,
+           SLOT(slot_updateGpsMessageDisplay()) );
+
   elevAziDisplay = new GpsElevationAzimuthDisplay(this);
   snrDisplay     = new GpsSnrDisplay(this);
 
@@ -57,7 +63,13 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   nmeaBox->setMargin(5);
 
   QFont f = font();
+
+#ifndef MAEMO  
   f.setPixelSize(14);
+#else
+  f.setPixelSize(16);
+#endif
+
   nmeaBox->setFont(f);
 
   QScrollArea *nmeaScrollArea = new QScrollArea;
@@ -122,13 +134,13 @@ void GpsStatusDialog::slot_SIV( QList<SIVInfo>& siv )
 
 void GpsStatusDialog::slot_Sentence(const QString& sentence)
 {
-  QTime t; t.start();
+  int maxLines = 100;
 
   if( showNmeaData )
     {
       nmeaLines++;
 
-      if( nmeaLines > 100 )
+      if( nmeaLines > maxLines )
         {
           // Note! To display to many lines can become a performance issue
           // because the window update effort is huge.
@@ -154,8 +166,21 @@ void GpsStatusDialog::slot_Sentence(const QString& sentence)
           nmeaList.removeFirst();
         }
 
-      nmeaBox->setText(nmeaData);
+      // To reduce the load the messages are displayed only if the timer
+      // has expired. The time expires after 750ms. That was the breakdown!!!
+      if( ! uTimer->isActive() )
+        {
+          uTimer->start( 750 );
+        }
     }
+}
+
+/**
+ * Called to update the GPS message display.
+ */
+void GpsStatusDialog::slot_updateGpsMessageDisplay()
+{
+  nmeaBox->setText(nmeaData);
 }
 
 /**

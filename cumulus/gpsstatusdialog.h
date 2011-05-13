@@ -44,6 +44,7 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QStringList>
+#include <QTimer>
 
 #include "gpsnmea.h"
 
@@ -113,33 +114,40 @@ private slots:
    */
   void slot_ToggleWindowSize();
 
+  /**
+   * Called to update the GPS message display.
+   */
+  void slot_updateGpsMessageDisplay();
+
 protected:
 
-    GpsElevationAzimuthDisplay *elevAziDisplay;
-    GpsSnrDisplay              *snrDisplay;
-    QLabel                     *nmeaBox;
-    QPushButton                *startStop;
-    QPushButton                *save;
+  GpsElevationAzimuthDisplay *elevAziDisplay;
+  GpsSnrDisplay              *snrDisplay;
+  QLabel                     *nmeaBox;
+  QPushButton                *startStop;
+  QPushButton                *save;
 
-    /** Display flag for NMEA data. */
-    bool                        showNmeaData;
+  /** Display flag for NMEA data. */
+  bool                        showNmeaData;
 
-    /** NMEA data string displayed in nmeaBox. */
-    QString                     nmeaData;
+  /** NMEA data string displayed in nmeaBox. */
+  QString                     nmeaData;
 
-    /** Number of NMEA records in nmeaData string. */
-    int                         nmeaLines;
+  /** Number of NMEA records in nmeaData string. */
+  int                         nmeaLines;
 
-    /**
-     * List with NMEA entries to be saved.
-     * The list is limited to 250 elements.
-     */
-    QStringList                 nmeaList;
+  /**
+   * List with NMEA entries to be saved.
+   * The list is limited to 250 elements.
+   */
+  QStringList                 nmeaList;
 
-    /** contains the current number of class instances */
-    static int noOfInstances;
+  /** GPS message display update timer. */
+  QTimer                      *uTimer;
+
+  /** contains the current number of class instances */
+  static int noOfInstances;
 };
-
 
 class GpsElevationAzimuthDisplay: public QFrame
 {
