@@ -24,12 +24,13 @@
 #include "gpsnmea.h"
 #include "mainwindow.h"
 
-// set static member variable
+// initialize static member variable
 int GpsStatusDialog::noOfInstances = 0;
 
 GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   QWidget( parent ),
-  showNmeaData( true )
+  showNmeaData( true ),
+  nmeaLines( 0 )
 {
   noOfInstances++;
 
@@ -48,14 +49,24 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   elevAziDisplay = new GpsElevationAzimuthDisplay(this);
   snrDisplay     = new GpsSnrDisplay(this);
 
-  nmeaBox = new QTextEdit(this);
+  nmeaBox = new QLabel;
   nmeaBox->setObjectName("NmeaBox");
-  nmeaBox->setReadOnly(true);
-  nmeaBox->document()->setMaximumBlockCount(250);
-  nmeaBox->setLineWrapMode(QTextEdit::NoWrap);
+  nmeaBox->setTextFormat(Qt::PlainText);
+  nmeaBox->setBackgroundRole( QPalette::Light );
+  nmeaBox->setAutoFillBackground( true );
+  nmeaBox->setMargin(5);
+
   QFont f = font();
   f.setPixelSize(14);
   nmeaBox->setFont(f);
+
+  QScrollArea *nmeaScrollArea = new QScrollArea;
+  nmeaScrollArea->setWidgetResizable( true );
+  nmeaScrollArea->setWidget(nmeaBox);
+
+  QVBoxLayout* nmeaBoxLayout = new QVBoxLayout;
+  nmeaBoxLayout->setSpacing( 0 );
+  nmeaBoxLayout->addWidget( nmeaScrollArea );
 
   startStop = new QPushButton( tr("Stop"), this );
   save      = new QPushButton( tr("Save"), this );
@@ -78,7 +89,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
 
   QVBoxLayout* topLayout = new QVBoxLayout( this );
   topLayout->addLayout( hBox );
-  topLayout->addWidget( nmeaBox );
+  topLayout->addLayout( nmeaBoxLayout );
 
   QShortcut* keySpace = new QShortcut( QKeySequence(Qt::Key_Space), this);
 
@@ -109,12 +120,41 @@ void GpsStatusDialog::slot_SIV( QList<SIVInfo>& siv )
   snrDisplay->setSatInfo( siv );
 }
 
-
 void GpsStatusDialog::slot_Sentence(const QString& sentence)
 {
+  QTime t; t.start();
+
   if( showNmeaData )
     {
-      nmeaBox->insertPlainText(sentence.trimmed().append("\n"));
+      nmeaLines++;
+
+      if( nmeaLines > 100 )
+        {
+          // Note! To display to many lines can become a performance issue
+          // because the window update effort is huge.
+          int idx = nmeaData.indexOf( QChar('\n') );
+
+          if( idx != -1 && nmeaData.size() > idx + 1 )
+            {
+              nmeaData.remove( 0, idx + 1 );
+              nmeaLines--;
+            }
+        }
+
+      QString string = sentence.trimmed().append("\n");
+
+      // NMEA data string to be displayed in QLabel
+      nmeaData.append( string );
+
+      // NMEA data to be saved into a file on user request.
+      nmeaList.append( string );
+
+      if( nmeaList.size() > 250 )
+        {
+          nmeaList.removeFirst();
+        }
+
+      nmeaBox->setText(nmeaData);
     }
 }
 
@@ -148,9 +188,7 @@ void GpsStatusDialog::slot_ToggleWindowSize()
  */
 void GpsStatusDialog::slot_SaveNmeaData()
 {
-  QString text = nmeaBox->toPlainText();
-
-  if( text.isEmpty() )
+  if( nmeaList.isEmpty() )
     {
       // nothing to save
       return;
@@ -179,8 +217,12 @@ void GpsStatusDialog::slot_SaveNmeaData()
           return;
         }
 
-      file.write( text.toAscii() );
+      QString str = nmeaList.join( "" );
+      file.write( str.toAscii() );
       file.close();
+
+      // The stored data is cleared from the list.
+      nmeaList.clear();
     }
 }
 

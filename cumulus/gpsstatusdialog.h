@@ -35,13 +35,15 @@
 
 #include <QWidget>
 #include <QFrame>
+#include <QLabel>
 #include <QList>
 #include <QPoint>
-#include <QTextEdit>
 #include <QPixmap>
 #include <QPainter>
 #include <QKeyEvent>
 #include <QPushButton>
+#include <QScrollArea>
+#include <QStringList>
 
 #include "gpsnmea.h"
 
@@ -115,11 +117,24 @@ protected:
 
     GpsElevationAzimuthDisplay *elevAziDisplay;
     GpsSnrDisplay              *snrDisplay;
-    QTextEdit                  *nmeaBox;
+    QLabel                     *nmeaBox;
     QPushButton                *startStop;
     QPushButton                *save;
 
+    /** Display flag for NMEA data. */
     bool                        showNmeaData;
+
+    /** NMEA data string displayed in nmeaBox. */
+    QString                     nmeaData;
+
+    /** Number of NMEA records in nmeaData string. */
+    int                         nmeaLines;
+
+    /**
+     * List with NMEA entries to be saved.
+     * The list is limited to 250 elements.
+     */
+    QStringList                 nmeaList;
 
     /** contains the current number of class instances */
     static int noOfInstances;

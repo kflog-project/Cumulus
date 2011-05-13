@@ -1183,9 +1183,9 @@ void GpsMaemoClient::writeForwardMsg( const char *msg )
         }
     }
 
-//#ifdef DEBUG
+#ifdef DEBUG
   qDebug() << method << msg;
-//#endif
+#endif
 
   return;
 }
