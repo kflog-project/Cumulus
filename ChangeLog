@@ -23,6 +23,7 @@ Cumulus changelog
                    message rotate causes an huge processor load. I limited
                    the message display to 100 messages and used a simple
                    QLabel to display them instead of a QTextEdit widget.
+                   That has helped together with a timer controlled update.
 [-] 2011-05-10 AP: BUGFIX: The G-Lib main loop of the gpsMaemoClient did not
                    work as expected by me. A Cumulus user reported to me, that
                    messages from the internal N900 GPS device were delayed
