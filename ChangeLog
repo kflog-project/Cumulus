@@ -14,16 +14,22 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2011-05-14 AP: If a flight task was imported from another source and the
+                   flight points were not contained in the Cumulus waypoint
+                   list, only a course line was drawn at the map but no points.
+                   I added small black squares to the drawing method of the
+                   flight task to show the flight task points in every case.                   
 [-] 2011-05-13 AP: Robin King reported me, that the GPS status window is blocking
                    the Cumulus GUI on its N810. I investigated that and found
                    out, that the drawing performance of the satellite status
                    views was bad. I could tune it over 70%. An other issue
-                   is the GPS message display. If the programmed range of
+                   was the GPS message display. If the programmed range of
                    displayed messages is to high (250 at the moment), the
                    message rotate causes an huge processor load. I limited
                    the message display to 100 messages and used a simple
                    QLabel to display them instead of a QTextEdit widget.
-                   That has helped together with a timer controlled update.
+                   That has helped together with a timer controlled update
+                   to reduce the processor load from 80% to 20% on a N810.
 [-] 2011-05-10 AP: BUGFIX: The G-Lib main loop of the gpsMaemoClient did not
                    work as expected by me. A Cumulus user reported to me, that
                    messages from the internal N900 GPS device were delayed
