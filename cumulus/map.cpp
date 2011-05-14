@@ -1316,10 +1316,9 @@ void Map::__drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
       // isSelected is used for the currently selected target point
       bool isSelected = false;
 
-      if (calculator && calculator->getselectedWp() )
+      if( calculator && calculator->getselectedWp() )
         {
-          if (calculator->getselectedWp()->name == wp.name &&
-              calculator->getselectedWp()->origP == wp.origP)
+          if( *calculator->getselectedWp() == wp )
             {
               isSelected = true;
             }

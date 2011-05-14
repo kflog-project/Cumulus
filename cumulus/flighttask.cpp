@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2010 by Axel Pauli
+**                   2007-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -645,6 +645,18 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
           drawnTp.append( tpList->at(loop) );
         }
 
+      // map projected point to map
+      QPoint mPoint(glMapMatrix->map(tpList->at(loop)->projP));
+
+      bool mPointIsContained = viewport.contains(mPoint);
+
+      if( mPointIsContained )
+        {
+          painter->setPen(QPen(Qt::black));
+          painter->setBrush( QBrush( Qt::black, Qt::SolidPattern ) );
+          painter->drawRect( mPoint.x()-5, mPoint.y()-5, 10, 10 );
+        }
+
       if( flightType == Unknown )
         {
           if( loop )
@@ -652,12 +664,9 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
               painter->setPen(QPen(courseLineColor, courseLineWidth));
               // Draws the course line
               painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-               glMapMatrix->map(tpList->at(loop)->projP) );
+                                 glMapMatrix->map(tpList->at(loop)->projP) );
             }
         }
-
-      // map projected point to map
-      QPoint mPoint(glMapMatrix->map(tpList->at(loop)->projP));
 
       // convert biangle (90...180) from radian to degrees
       int biangle = (int) rint( ((tpList->at(loop)->angle) / M_PI ) * 180.0 );
@@ -666,7 +675,7 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
       {
       case TaskPointTypes::RouteP:
 
-        if( viewport.contains(mPoint) )
+        if( mPointIsContained )
           {
             QColor c;
 
@@ -689,14 +698,14 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
           {
             painter->setPen(QPen(courseLineColor, courseLineWidth));
             painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-             glMapMatrix->map(tpList->at(loop)->projP) );
+                               glMapMatrix->map(tpList->at(loop)->projP) );
           }
 
         break;
 
       case TaskPointTypes::Begin:
 
-        if( viewport.contains(mPoint) )
+        if( mPointIsContained )
           {
             QColor c;
 
@@ -721,14 +730,14 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
           {
             painter->setPen(QPen(courseLineColor, courseLineWidth));
             painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-             glMapMatrix->map(tpList->at(loop)->projP) );
+                               glMapMatrix->map(tpList->at(loop)->projP) );
           }
 
         break;
 
       case TaskPointTypes::End:
 
-        if( viewport.contains(mPoint) )
+        if( mPointIsContained )
           {
             QColor c;
 
@@ -761,7 +770,7 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
           {
             painter->setPen(QPen(courseLineColor, courseLineWidth));
             painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-             glMapMatrix->map(tpList->at(loop)->projP ) );
+                               glMapMatrix->map(tpList->at(loop)->projP ) );
           }
 
         break;
@@ -819,6 +828,17 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<Waypoint*> &drawn
           drawnTp.append( tpList->at(loop) );
         }
 
+      QPoint mPoint (glMapMatrix->map(tpList->at(loop)->projP));
+
+      bool mPointIsContained = viewport.contains(mPoint);
+
+      if( mPointIsContained )
+        {
+          painter->setPen(QPen(Qt::black));
+          painter->setBrush( QBrush( Qt::black, Qt::SolidPattern ) );
+          painter->drawRect( mPoint.x()-5, mPoint.y()-5, 10, 10 );
+        }
+
       if( loop )
         {
           // Draws the course line
@@ -834,11 +854,9 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<Waypoint*> &drawn
           continue;
         }
 
-      QPoint mPoint (glMapMatrix->map(tpList->at(loop)->projP));
-
       // qDebug("MappedPoint: x=%d, y=%d", mPoint.x(), mPoint.y() );
 
-      if( ! viewport.contains(mPoint) )
+      if( ! mPointIsContained )
         {
           // ignore not visible points
           continue;
