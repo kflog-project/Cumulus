@@ -1,7 +1,11 @@
 cumulus (__VERSION__) stable; urgency=low
 
+  * Performance issues in GPS status display and GPS data transfer fixed.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com> Sun, 15 May 2011 16:26:54 +0200
+
   * Section entry in control file changed to user/navigation
   * Cumulus Release __VERSION__ for N8x0, running Maemo4, OS2008 Diablo with Qt4/X11
   * See also https://svn.kflog.org/svn/repos/cumulus/qt4/trunk/ChangeLog
   
- -- Axel Pauli <kflog.cumulus@googlemail.com>  __DATE__
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Sat, 30 Apr 2011 17:31:02 +0200

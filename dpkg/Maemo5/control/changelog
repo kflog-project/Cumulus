@@ -1,5 +1,9 @@
 cumulus (__VERSION__) stable; urgency=low
 
+  * Performance issues in GPS status display and GPS data transfer fixed.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com> Sun, 15 May 2011 16:26:54 +0200
+
   * Communication data transfer between the GPS client and Cumulus process
     optimized. It was to slow, if more than five Flarm devices were received.
     That caused a blocking of the GUI. No reactions more on user requests.
