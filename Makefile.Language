@@ -23,7 +23,7 @@ SRC_PACK=-sa -S
 BIN_PACK=-b
 
 # current Qt version
-QT_VERSION=4.7.1
+QT_VERSION=4.7.2
 
 # my installation directory of Qt translations
 MY_QT_TRANSLATIONS=/opt/qt$(QT_VERSION)/translations
