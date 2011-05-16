@@ -173,7 +173,7 @@ dpkg_make:
 	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
 	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL $(DH_MAKE_OPT)
-	cd dpkg/Maemo5/control; \
+	cd $(CUMULUS_DEB)/dpkg/Maemo5/control; \
 	cp control rules postinst prerm postrm ../../../debian/; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > ../../../debian/copyright; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" changelog > ../../../debian/changelog
