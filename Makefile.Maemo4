@@ -169,9 +169,9 @@ dpkg_make:
 	export DEBFULLNAME='Axel Pauli'; \
 	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -s --native
 	cd $(CUMULUS_DEB)/dpkg/Maemo4/control; \
-	cp control rules postinst prerm postrm $(CUMULUS_DEB)/debian/; \
-	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > $(CUMULUS_DEB)/debian/copyright; \
-	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" changelog > $(CUMULUS_DEB)/debian/changelog
+	cp control rules postinst prerm postrm ../../../debian/; \
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > ../../../debian/copyright; \
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" changelog > ../../../debian/changelog
 	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage -rfakeroot -b
 
