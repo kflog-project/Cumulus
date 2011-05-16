@@ -14,8 +14,8 @@ Description: Cumulus is a flight computer for glider pilots.
  help pages for Cumulus.
 XB-Description-de_DE: Cumulus ist ein Flugcomputer fuer Segelflieger.
  Dieses Paket enthaelt alle Deutschen Sprachuebersetzungen fuer Cumulus.
-XB-Maemo-Upgrade-Description: First translation package for German.
-XB-Maemo-Upgrade-Description-de_DE: Erstes Uebersetzungspaket fuer Deutsch.
+XB-Maemo-Upgrade-Description: Translation package for German.
+XB-Maemo-Upgrade-Description-de_DE: Uebersetzungspaket fuer Deutsch.
 XSBC-Bugtracker: mailto:kflog.cumulus@googlemail.com
 XB-Maemo-Icon-26:
  iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c

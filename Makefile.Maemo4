@@ -165,16 +165,13 @@ dpkg_make:
 	mkdir -p $(CUMULUS_DEB)
 	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
 	cd $(CUMULUS_DEB); \
-	export DEBEMAIL='axel@kflog.org'; \
 	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
+	export DEBFULLNAME='Axel Pauli'; \
 	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -s --native
-	cp $(CUMULUS_DEB)/dpkg/Maemo4/control/control $(CUMULUS_DEB)/debian/
-	cp $(CUMULUS_DEB)/dpkg/Maemo4/control/rules $(CUMULUS_DEB)/debian/
-	cp $(CUMULUS_DEB)/dpkg/Maemo4/control/postinst $(CUMULUS_DEB)/debian/
-	cp $(CUMULUS_DEB)/dpkg/Maemo4/control/prerm $(CUMULUS_DEB)/debian/
-	cp $(CUMULUS_DEB)/dpkg/Maemo4/control/postrm $(CUMULUS_DEB)/debian/
-	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" $(CUMULUS_DEB)/dpkg/Maemo4/control/copyright > $(CUMULUS_DEB)/debian/copyright
-	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" $(CUMULUS_DEB)/dpkg/Maemo4/control/changelog > $(CUMULUS_DEB)/debian/changelog
+	cd $(CUMULUS_DEB)/dpkg/Maemo4/control; \
+	cp control rules postinst prerm postrm $(CUMULUS_DEB)/debian/; \
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > $(CUMULUS_DEB)/debian/copyright; \
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" changelog > $(CUMULUS_DEB)/debian/changelog
 	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage -rfakeroot -b
 

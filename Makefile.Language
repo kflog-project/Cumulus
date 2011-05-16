@@ -1,7 +1,7 @@
 ################################################################################
 # Makefile to build a Cumulus Language release for Maemo
 #
-# Copyright (c): 2010 by Axel Pauli (axel@kflog.org)
+# Copyright (c): 2010-2011 by Axel Pauli (axel@kflog.org)
 # 
 # $Id$
 #
@@ -118,12 +118,11 @@ dpkg_make:
 	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
 	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL $(DH_MAKE_OPT)
-	cp dpkg/Languages/control_$(LANGUAGE)/rules $(CUMULUS_DEB)/debian/
-	sed -e "s/__DATE__/$(DATE)/g" dpkg/Languages/control_$(LANGUAGE)/copyright > $(CUMULUS_DEB)/debian/copyright
-	sed -e "s/__VERSION__/$(VERSION)/g" dpkg/Languages/control_$(LANGUAGE)/control.$(PACK) > $(CUMULUS_DEB)/debian/control
-	cp dpkg/Languages/control_$(LANGUAGE)/postrm $(CUMULUS_DEB)/debian/
-	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" \
-      dpkg/Languages/control_$(LANGUAGE)/changelog > $(CUMULUS_DEB)/debian/changelog
+	cd $(CUMULUS_DEB)/dpkg/Languages/control_$(LANGUAGE); \
+	cp rules postrm $(CUMULUS_DEB)/debian/; \
+	sed -e "s/__DATE__/$(DATE)/g" copyright > $(CUMULUS_DEB)/debian/copyright; \
+	sed -e "s/__VERSION__/$(VERSION)/g" control.$(PACK) > $(CUMULUS_DEB)/debian/control; \
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" changelog > $(CUMULUS_DEB)/debian/changelog
 	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage -rfakeroot $(DPKG_OPT)
 

@@ -1,6 +1,6 @@
 cumuluslanguagede (__VERSION__) stable; urgency=low
 
-  * Language German put in extra package.
+  * Language German put in an extra package.
   * Cumulus German Language Release __VERSION__ for X11/Qt and Maemo/Qt
 
  -- Axel Pauli <kflog.cumulus@googlemail.com>  __DATE__

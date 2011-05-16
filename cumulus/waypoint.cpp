@@ -91,8 +91,10 @@ bool Waypoint::equals( const Waypoint *second ) const
 bool Waypoint::operator==( const Waypoint& second ) const
 {
   if( name == second.name &&
+      type == second.type &&
       description == second.description &&
-      origP == second.origP )
+      origP == second.origP &&
+      taskPointIndex == second.taskPointIndex )
     {
       return true;
     }

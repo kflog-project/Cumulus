@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 modified by Josua Dietze
- **                   2008-2010 modified by Axel Pauli
+ **                   2008-2011 modified by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -121,7 +121,6 @@ Map::Map(QWidget* parent) : QWidget(parent)
   _glider = GeneralConfig::instance()->loadPixmap("gliders80pix-15.png");
 }
 
-
 Map::~Map()
 {
   qDeleteAll(airspaceRegionList);
@@ -130,7 +129,6 @@ Map::~Map()
 /**
  * Display Info about Airspace items
 */
-
 void Map::__displayAirspaceInfo(const QPoint& current)
 {
   if( mutex() || !isVisible() )
@@ -235,7 +233,6 @@ bool Map::__zoomButtonPress(const QPoint& point)
 /**
  * Display detailed Info about an airfield, a glider site or a waypoint.
 */
-
 void Map::__displayDetailedItemInfo(const QPoint& current)
 {
   if( mutex() )
@@ -247,7 +244,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
   bool found = false;
 
   // Radius for Mouse Snapping
-  int delta=0, dX=0, dY=0;
+  int delta = 0, dX = 0, dY = 0;
 
   // define lists to be used for searching
   int searchList[] =
@@ -269,17 +266,17 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
   delta = 25;
 #endif
 
-  // Manhattan-distance to found point.
-  int lastDist=2*delta+1;
+  // Manhattan distance is used to found the point.
+  int lastDist = 2 * delta + 1;
 
   // snapRect about the touched position
-  QRect snapRect( current.x()-delta, current.y()-delta, 2*delta, 2*delta );
+  QRect snapRect( current.x() - delta, current.y() - delta, 2 * delta, 2 * delta );
 
   //qDebug( "SnapRect %dx%d, delta=%d, w=%d, h=%d",
   //        current.x()-delta, current.y()-delta, delta, 2*delta, 2*delta );
 
-  // @AP: On map scale higher as 1024 we don't evolute anything
-  for (int l = 0; l < 3 && cs < 1024.0; l++)
+  // @AP: On map scale higher as 1024 we don't evaluate anything
+  for( int l = 0; l < 3 && cs < 1024.0; l++ )
     {
       for(unsigned int loop = 0;
           loop < _globalMapContents->getListLength(searchList[l]); loop++)
@@ -387,17 +384,11 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
     }
 
   // let's show waypoints
-  // @AP: On map scale higher as 1024 we don't evolute anything
-
+  // @AP: On map scale higher as 1024 we don't evaluate anything
   QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
 
-  for (int i = 0; i < wpList.count(); i++)
+  for( int i = 0; i < wpList.count() && cs < 1024.0; i++ )
     {
-      if (cs > 1024.0)
-        {
-          break;
-        }
-
       Waypoint& wp = wpList[i];
 
       // consider only points, which are to drawn on the map
@@ -406,7 +397,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
           continue;
         }
 
-      QPoint sitePos (_globalMapMatrix->map(wp.projP));
+      QPoint sitePos( _globalMapMatrix->map( wp.projP ) );
 
       if( ! snapRect.contains(sitePos) )
         {
@@ -418,9 +409,9 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
       dY = abs(sitePos.y() - current.y());
 
       // Abstand entspricht der Icon-Groesse
-      if (dX < delta && dY < delta)
+      if( dX < delta && dY < delta )
         {
-          if (found && ((dX+dY) > lastDist))
+          if( found && ((dX + dY) > lastDist) )
             { // subtle difference with airfields: replace already
               // found waypoint if we find a waypoint at the same
               // distance.
@@ -434,27 +425,74 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
 
           lastDist = dX+dY;
 
-          if (lastDist< (delta/3)) //if we're very near, stop searching the list
+          if( lastDist < (delta / 3) )
             {
+              // if we're very near, stop searching the list
               break;
             }
         }
     }
 
-  if (found)
+  // Search in the current task, if waypoints can be found. This waypoints have
+  // the most important display priority.
+  FlightTask* task = (FlightTask*) _globalMapContents->getCurrentTask();
+
+  if( task != static_cast<FlightTask *> (0) && cs < 1024.0 )
+    {
+      QList<TaskPoint*>& tpList = task->getTpList();
+
+      for( int i = 0; i < tpList.size(); i++ )
+        {
+          TaskPoint* tp = tpList[i];
+
+          QPoint sitePos( _globalMapMatrix->map( tp->projP ) );
+
+          if( ! snapRect.contains(sitePos) )
+            {
+              // @AP: Point lays outside of snap rectangle, we ignore it
+              continue;
+            }
+
+          dX = abs(sitePos.x() - current.x());
+          dY = abs(sitePos.y() - current.y());
+
+          if( dX < delta && dY < delta )
+            {
+              if( found && ((dX + dY) > lastDist) )
+                { // subtle difference with airfields: replace already
+                  // found waypoint if we find a waypoint at the same
+                  // distance.
+                  continue; // the point we found earlier was closer
+                }
+
+              found = true;
+              w = tp;
+
+              qDebug ("Taskpoint: %s", w->name.toLatin1().data() );
+
+              lastDist = dX+dY;
+
+              if( lastDist < (delta / 3) )
+                {
+                  break;
+                }
+            }
+        }
+    }
+
+  if( found )
     {
       // qDebug ("Waypoint: %s", w->name.toLatin1().data() );
-      emit waypointSelected(w);
+      emit waypointSelected( w );
       return;
     }
 
   // @ee maybe we can show airspace info
-  if (!found)
+  if( !found )
     {
-      __displayAirspaceInfo(current);
+      __displayAirspaceInfo( current );
     }
 }
-
 
 void Map::mousePressEvent(QMouseEvent* event)
 {
