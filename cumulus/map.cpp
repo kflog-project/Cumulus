@@ -467,9 +467,6 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
 
               found = true;
               w = tp;
-
-              qDebug ("Taskpoint: %s", w->name.toLatin1().data() );
-
               lastDist = dX+dY;
 
               if( lastDist < (delta / 3) )
