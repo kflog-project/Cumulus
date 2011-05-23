@@ -1186,8 +1186,15 @@ void MapView::slot_newAltimeterMode()
   _altitude->setPreUnit( Altitude::getUnitText() );
   _glidepath->setPreUnit( Altitude::getUnitText() );
 
-  // Mode change needs always an altitude display update.
+  // Altimeter unit change needs always an altitude display update.
   slot_Altitude( calculator->getAltimeterAltitude() );
+
+  if( _glidepath->getValue() != "-" )
+    {
+      // Altimeter unit change needs always an arrival display update,
+      // if display shows a real value.
+      slot_GlidePath( calculator->getlastGlidePath() );
+    }
 }
 
 /** Opens the Variometer settings dialog. */
