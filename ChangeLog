@@ -14,7 +14,15 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[+] 2011-05-16 AP: Tipping on a taskpoint of an imported task shows now
+[-] 2011-05-23 AP: BUGFIX: If the altitude unit was changed, the arrival display
+                   was forgotten to update immediately. Until to the next real
+                   change of the glide path a wrong value was displayed.
+[+] 2011-05-23 AP: Task editor modified. Only allowed command buttons are enabled
+                   to see better the possible actions. Inserting of a new task
+                   point is done now after the current selected position and
+                   not always at the end of the list. That prevents senseless
+                   move up actions.
+[+] 2011-05-16 AP: Tipping on a task point of an imported task shows now
                    the detailed information of the task point.
 [+] 2011-05-14 AP: If a flight task was imported from another source and the
                    flight points were not contained in the Cumulus waypoint

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
  * This class handles creation and modification of flight tasks in a
  * simple editor. The editor is realized as an own modal window.
  *
- * \date 2002-2010
+ * \date 2002-2011
  */
 
 #ifndef TaskEditor_H
@@ -39,6 +39,7 @@
 #include <QWidget>
 #include <QStringList>
 #include <QComboBox>
+#include <QPushButton>
 
 #include "flighttask.h"
 #include "waypoint.h"
@@ -56,8 +57,7 @@ private:
 public:
 
   /** Constructor */
-  TaskEditor( QWidget* parent, QStringList &taskNamesInUse,
-              FlightTask* task=0 );
+  TaskEditor( QWidget* parent, QStringList &taskNamesInUse, FlightTask* task=0 );
 
   /** Destructor */
   virtual ~TaskEditor();
@@ -67,6 +67,12 @@ private:
    * aligns the task list columns to their contents
    */
   void resizeTaskListColumns();
+
+  /**
+   * Enables/disables the command buttons of the editor in dependency
+   * of contained task points.
+   */
+  void enableCommandButtons();
 
 signals:
 
@@ -95,6 +101,12 @@ signals:
 
   /** Toggle between WP or AF list on user request */
   void slotToggleList( int );
+
+  /**
+   * Called to check the item selection. If item Total is called, the selection
+   * is reset to the previous row.
+   */
+  void slotItemClicked( QTreeWidgetItem* item, int column );
 
   /** Handles button press ok. */
   void slotAccept();
@@ -160,6 +172,13 @@ signals:
 
   /** The text for the combo box */
   QString listSelectText[NUM_LISTS];
+
+  /** Editor command buttons. */
+  QPushButton* upButton;
+  QPushButton* downButton;
+  QPushButton* invertButton;
+  QPushButton* addButton;
+  QPushButton* delButton;
 };
 
 #endif // TaskEditor_H

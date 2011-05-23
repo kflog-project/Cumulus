@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -37,7 +37,8 @@ TaskEditor::TaskEditor( QWidget* parent,
                         QStringList &taskNamesInUse,
                         FlightTask* task ) :
   QWidget( parent ),
-  taskNamesInUse( taskNamesInUse )
+  taskNamesInUse( taskNamesInUse ),
+  lastSelectedItem(0)
 {
   setObjectName("TaskEditor");
   setWindowFlags( Qt::Tool );
@@ -51,20 +52,18 @@ TaskEditor::TaskEditor( QWidget* parent,
       resize( _globalMainWindow->size() );
     }
 
-  lastSelectedItem = -1;
-
   if ( task )
     {
       planTask = task;
       editState = TaskEditor::edit;
-      this->setWindowTitle(planTask->getTaskTypeString());
+      setWindowTitle(planTask->getTaskTypeString());
       editedTaskName = task->getTaskName();
     }
   else
     {
       planTask = new FlightTask( 0, false, "" );
       editState = TaskEditor::create;
-      this->setWindowTitle(tr("New Task"));
+      setWindowTitle(tr("New Task"));
     }
 
   taskName = new QLineEdit( this );
@@ -93,27 +92,27 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   taskList->header()->setResizeMode( QHeaderView::ResizeToContents );
 
-  QPushButton* upButton = new QPushButton( this );
+  upButton = new QPushButton( this );
   upButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
   upButton->setIconSize(QSize(IconSize, IconSize));
   upButton->setToolTip( tr("move selected waypoint up") );
 
-  QPushButton* downButton = new QPushButton( this );
+  downButton = new QPushButton( this );
   downButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png")) );
   downButton->setIconSize(QSize(IconSize, IconSize));
   downButton->setToolTip( tr("move selected waypoint down") );
 
-  QPushButton* invertButton = new QPushButton( this );
+  invertButton = new QPushButton( this );
   invertButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "resort.png")) );
   invertButton->setIconSize(QSize(IconSize, IconSize));
   invertButton->setToolTip( tr("reverse waypoint order") );
 
-  QPushButton* addButton = new QPushButton( this );
+  addButton = new QPushButton( this );
   addButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "left.png")) );
   addButton->setIconSize(QSize(IconSize, IconSize));
   addButton->setToolTip( tr("add waypoint") );
 
-  QPushButton* delButton = new QPushButton( this );
+  delButton = new QPushButton( this );
   delButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "right.png")) );
   delButton->setIconSize(QSize(IconSize, IconSize));
   delButton->setToolTip( tr("remove waypoint") );
@@ -205,9 +204,9 @@ TaskEditor::TaskEditor( QWidget* parent,
         {
           tpList.append( new TaskPoint( *tmpList.at(i)) );
         }
-
-      __showTask();
     }
+
+  __showTask();
 
   connect( addButton,    SIGNAL( clicked() ),
            this, SLOT( slotAddWaypoint() ) );
@@ -227,6 +226,9 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   connect( listSelectCB, SIGNAL(activated(int)),
            this, SLOT(slotToggleList(int)));
+
+  connect( taskList, SIGNAL( itemClicked( QTreeWidgetItem*, int)),
+           this, SLOT(slotItemClicked( QTreeWidgetItem*, int)) );
 }
 
 TaskEditor::~TaskEditor()
@@ -239,7 +241,7 @@ void TaskEditor::__showTask()
 {
   if ( tpList.count() == 0 )
     {
-      this->setWindowTitle(tr("New Task"));
+      enableCommandButtons();
       return;
     }
 
@@ -248,7 +250,7 @@ void TaskEditor::__showTask()
   QString txt = planTask->getTaskTypeString() +
                 " / " + planTask->getTaskDistanceString();
 
-  this->setWindowTitle(txt);
+  setWindowTitle(txt);
 
   QList<TaskPoint *> tmpList = planTask->getTpList();
 
@@ -274,12 +276,14 @@ void TaskEditor::__showTask()
       taskList->addTopLevelItem( new QTreeWidgetItem(rowList, 0) );
 
       // reselect last selected item
-      if ( lastSelectedItem == (int) loop )
+      if( lastSelectedItem == loop )
         {
           taskList->setCurrentItem( taskList->topLevelItem(loop) );
-          lastSelectedItem = -1;
         }
     }
+
+  enableCommandButtons();
+  lastSelectedItem = -1;
 
   if( distTotal > 0.0 )
     {
@@ -315,12 +319,30 @@ void TaskEditor::slotAddWaypoint()
 {
   Waypoint *wp = waypointList[listSelectCB->currentIndex()]->getCurrentWaypoint();
 
-  if ( wp == 0 )
+  if( wp == 0 )
     {
       return;
     }
 
-  tpList.append( new TaskPoint(*wp) );
+  QTreeWidgetItem *item = taskList->currentItem();
+
+  if( item == 0 )
+    {
+      // empty list
+      tpList.append( new TaskPoint(*wp) );
+
+      // Remember last position.
+      lastSelectedItem = 0;
+    }
+  else
+    {
+      int id = taskList->indexOfTopLevelItem( item );
+      id++;
+      tpList.insert( id, new TaskPoint(*wp) );
+
+      // Remember last position.
+      lastSelectedItem = id;
+    }
 
   __showTask();
 }
@@ -329,15 +351,25 @@ void TaskEditor::slotRemoveWaypoint()
 {
   QTreeWidgetItem* selected = taskList->currentItem();
 
-  if ( selected == 0 || selected->text(0) == "Total" )
+  if( selected == 0 || selected->text( 0 ) == "Total" )
     {
       return;
     }
 
   int id = taskList->indexOfTopLevelItem( taskList->currentItem() );
 
-  delete tpList.takeAt( id );
   delete taskList->takeTopLevelItem( taskList->currentIndex().row() );
+  delete tpList.takeAt( id );
+
+  // Remember last position.
+  if( id >= tpList.size() )
+    {
+      lastSelectedItem = tpList.size() - 1;
+    }
+  else
+    {
+      lastSelectedItem = id;
+    }
 
   __showTask();
 }
@@ -358,13 +390,14 @@ void TaskEditor::slotInvertWaypoints()
       tpList.append( tp );
     }
 
+  // After an invert the first task item is selected.
+  lastSelectedItem = 0;
+
   __showTask();
 }
 
 void TaskEditor::slotAccept()
 {
-  // qDebug("TaskEditor::accept()");
-
   // Check, if a valid task has been defined. Tasks with less than
   // four task points are incomplete
   if ( tpList.count() < 4 )
@@ -501,6 +534,76 @@ void TaskEditor::slotToggleList(int index)
       else
         {
           waypointList[i]->show();
+        }
+    }
+}
+
+void TaskEditor::slotItemClicked( QTreeWidgetItem* item, int column )
+{
+  Q_UNUSED( column )
+
+  if( item && item->text(0) == "Total" )
+    {
+      // It is not allowed to select the last row. We move the selection
+      // one row up.
+      taskList->setCurrentItem( taskList->itemAbove( item ) );
+    }
+
+  enableCommandButtons();
+}
+
+void TaskEditor::enableCommandButtons()
+{
+  if( tpList.size() == 0 )
+    {
+      upButton->setEnabled( false );
+      downButton->setEnabled( false );
+      invertButton->setEnabled( false );
+      addButton->setEnabled( true );
+      delButton->setEnabled( false );
+    }
+  else if( tpList.size() == 1 )
+    {
+      upButton->setEnabled( false );
+      downButton->setEnabled( false );
+      invertButton->setEnabled( false );
+      addButton->setEnabled( true );
+      delButton->setEnabled( true );
+    }
+  else
+    {
+      invertButton->setEnabled( true );
+      addButton->setEnabled( true );
+      delButton->setEnabled( true );
+
+      if( taskList->topLevelItemCount() && taskList->currentItem() == 0 )
+        {
+          // If no item is selected we select the first one.
+          taskList->setCurrentItem(taskList->topLevelItem(taskList->indexOfTopLevelItem(0)));
+        }
+
+      if( taskList->indexOfTopLevelItem(taskList->currentItem()) > 0 )
+        {
+          upButton->setEnabled( true );
+        }
+      else
+        {
+          // At the first position, no up allowed
+          upButton->setEnabled( false );
+        }
+
+      int id = taskList->indexOfTopLevelItem( taskList->currentItem() );
+
+      if( id == -1 || id == taskList->topLevelItemCount() - 1 ||
+          ( id == taskList->topLevelItemCount() - 2 &&
+            taskList->topLevelItem( taskList->topLevelItemCount() - 1)->text( 0 ) == "Total" ) )
+        {
+          // At the last allowed down position. No further down allowed.
+          downButton->setEnabled( false );
+        }
+      else
+        {
+          downButton->setEnabled( true );
         }
     }
 }
