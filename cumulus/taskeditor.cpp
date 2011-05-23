@@ -294,6 +294,8 @@ void TaskEditor::__showTask()
 
       QTreeWidgetItem* item = new QTreeWidgetItem(rowList, 0);
 
+      item->setFlags( Qt::ItemIsEnabled );
+
       QFont font = item->font(1);
       font.setBold( true );
       item->setFont( 1, font );
