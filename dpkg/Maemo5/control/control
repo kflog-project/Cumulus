@@ -18,8 +18,8 @@ Description: Cumulus is a flight computer for glider pilots.
  .
  Cumulus home page: http://www.kflog.org/cumulus/
 XSBC-Bugtracker: mailto:kflog.cumulus@googlemail.com
-XB-Maemo-Upgrade-Description: Performance issues in GPS data processing fixed.
-XB-Maemo-Upgrade-Description-de_DE: Klemmstellen in GPS Datenverarbeitung beseitigt.
+XB-Maemo-Upgrade-Description: Minor problems fixed.
+XB-Maemo-Upgrade-Description-de_DE: Kleinere Probleme beseitigt.
 XB-Maemo-Icon-26:
  iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c
  6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAAlgAAAJYABbFUIBwAAAAd0
