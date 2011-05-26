@@ -2,7 +2,7 @@ cumulus (__VERSION__) stable; urgency=low
 
   * Different minor bug fixes.
 
- -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu May 26 19:34:53 UTC 2011
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 26 May 2011 21:43:15 +0200
 
   * Performance issues in GPS status display and GPS data transfer fixed.
 
