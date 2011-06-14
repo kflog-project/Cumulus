@@ -1994,7 +1994,7 @@ void MainWindow::slotReadconfig()
 /** Called if the status of the GPS changes, and controls the availability of manual navigation. */
 void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )
 {
-  playSound("notify");
+  bool onePlay = false;
 
   if ( ( status != GpsNmea::validFix || calculator->isManualInFlight()) && ( view == mapView ) )
     {  // no GPS data
@@ -2003,6 +2003,12 @@ void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )
     }
   else
     {  // GPS data valid
+      if( onePlay == false )
+        {
+          playSound("notify");
+          onePlay = true;
+        }
+
       toggleManualNavActions( false );
       toggleGpsNavActions( true );
     }
