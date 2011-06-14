@@ -14,6 +14,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2011-06-14 AP: BUGFIX: Unknow waypoint types read in by Seeyou import
+                   method are set now to type landmark and not more to not
+                   selected.
+[-] 2011-06-14 AP: BUGFIX: Integer validators in coordinate input boxes makes
+                   trouble on some values. Leading zeros were removed. I
+                   replaced them by QRegExpValidators.
 [-] 2011-05-23 AP: BUGFIX: If the altitude unit was changed, the arrival display
                    was forgotten to update immediately. Until to the next real
                    change of the glide path a wrong value was displayed.

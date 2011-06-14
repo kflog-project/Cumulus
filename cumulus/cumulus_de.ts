@@ -3778,34 +3778,34 @@ Alle Downloads verworfen!</translation>
         <translation>Summe</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="405"/>
+        <location filename="taskeditor.cpp" line="407"/>
         <source>Task Incomplete</source>
         <translation>Aufgabe unvollständig</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="406"/>
+        <location filename="taskeditor.cpp" line="408"/>
         <source>Task needs at least four waypoints</source>
         <translation>Eine Aufgabe hat mindestens 4 Wegpunkte</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="416"/>
+        <location filename="taskeditor.cpp" line="418"/>
         <source>Name Missing</source>
         <translation>Vermisse Name</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="417"/>
+        <location filename="taskeditor.cpp" line="419"/>
         <source>Enter a name for the task to save it</source>
         <translation>Bitte Tasknamen eingeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="429"/>
-        <location filename="taskeditor.cpp" line="442"/>
+        <location filename="taskeditor.cpp" line="431"/>
+        <location filename="taskeditor.cpp" line="444"/>
         <source>Name in Use</source>
         <translation>Name schon vergeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="430"/>
-        <location filename="taskeditor.cpp" line="443"/>
+        <location filename="taskeditor.cpp" line="432"/>
+        <location filename="taskeditor.cpp" line="445"/>
         <source>Please enter a different name</source>
         <translation>Bitte anderen Namen eingeben</translation>
     </message>
