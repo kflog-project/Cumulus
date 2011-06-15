@@ -760,9 +760,6 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 
       switch( wpType )
         {
-        case 0:
-          wp.type = BaseMapElement::NotSelected;
-          break;
         case 1:
           wp.type = BaseMapElement::Landmark;
           break;

@@ -47,7 +47,7 @@ class WaypointCatalog
 
   WaypointCatalog();
 
-  ~WaypointCatalog();
+  virtual ~WaypointCatalog();
 
   /** read in binary data catalog from file name */
   int readBinary( QString catalog, QList<Waypoint>* wpList );
@@ -128,7 +128,7 @@ class WaypointCatalog
    *
    * \param ok True if split was ok otherwise false
    *
-   * \return A list with the splt elements.
+   * \return A list with the split elements.
    */
   QList<QString> splitCupLine( QString& line, bool &ok );
 
