@@ -14,8 +14,15 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2011-06-15 AP: Different new glider added to the polar file.
+[o] 2011-06-15 AP: Only the first GPS fix after startup is reported additionally
+                   by a sound. All other status changes are signaled by changing
+                   the background color of the GPS status display. That prevents
+                   annoying sounds, if the GPS receiver plays ping pong in its
+                   fix reporting. I had often that case, e.g. during the journey
+                   by train or by aircraft.
 [-] 2011-06-14 AP: BUGFIX: Unknow waypoint types read in by Seeyou import
-                   method are set now to type landmark and not more to not
+                   method are set to type landmark now and not more to not
                    selected.
 [-] 2011-06-14 AP: BUGFIX: Integer validators in coordinate input boxes makes
                    trouble on some values. Leading zeros were removed. I

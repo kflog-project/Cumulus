@@ -1994,7 +1994,7 @@ void MainWindow::slotReadconfig()
 /** Called if the status of the GPS changes, and controls the availability of manual navigation. */
 void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )
 {
-  bool onePlay = false;
+  static bool onePlay = false;
 
   if ( ( status != GpsNmea::validFix || calculator->isManualInFlight()) && ( view == mapView ) )
     {  // no GPS data
@@ -2005,6 +2005,10 @@ void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )
     {  // GPS data valid
       if( onePlay == false )
         {
+          // Only the first connect is reported via sound after the startup.
+          // That shall prevent multiple notifications if the GPS receiver
+          // plays ping pong (have a fix, have not a fix...) That can be very
+          // annoying. The current GPS state is signaled optical now.
           playSound("notify");
           onePlay = true;
         }
@@ -2035,7 +2039,6 @@ void MainWindow::slotCenterToWaypoint()
 
     }
 }
-
 
 /** Called if the user pressed V in mapview.
   * Adjusts the zoom factor so that the currently selected waypoint

@@ -745,29 +745,39 @@ void MapView::slot_Position(const QPoint& position, const int source)
 /** This slot is called if the status of the GPS changes. */
 void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
 {
+  QColor color;
+
   switch ( status )
     {
     case GpsNmea::validFix:
       slot_info( tr( "GPS new fix" ) );
+      color = Qt::green;
       break;
     case GpsNmea::noFix:
       slot_info(tr( "GPS fix lost" ) );
+      color = Qt::yellow;
       break;
     default:
       slot_info( tr( "GPS lost" ) );
+      color = Qt::red;
     }
 
-  if(status>GpsNmea::notConnected)
+  if( status != GpsNmea::notConnected )
     {
-      _statusGps->setText(tr("GPS"));
+      _statusGps->setText( tr( "GPS" ) );
     }
   else
     {
-      _statusGps->setText(tr("Man"));
-      _heading->setValue("-");
-      _speed->setValue("-");
-      _altitude->setValue("-");
+      _statusGps->setText( tr( "Man" ) );
+      _heading->setValue( "-" );
+      _speed->setValue( "-" );
+      _altitude->setValue( "-" );
     }
+
+  // Set the color background according to the current GPS status.
+  _statusGps->setAutoFillBackground( true );
+  _statusGps->setBackgroundRole( QPalette::Window );
+  _statusGps->setPalette( QPalette( color ) );
 
   // Only show glider symbol if the GPS is connected.
   _theMap->setShowGlider( status == GpsNmea::validFix );
