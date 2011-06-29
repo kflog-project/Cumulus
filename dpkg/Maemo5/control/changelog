@@ -1,12 +1,30 @@
-cumulus (__VERSION__) stable; urgency=low
+cumulus (2.10.5) stable; urgency=low
+
+  * Polar data file extended by glider type Foka 5
+  
+  * Problems fixed in coordinate editor.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 29 Jun 2011 21:23:15 +0200
+
+cumulus (2.10.4) stable; urgency=low
+
+  * Polar data file extended by new glider types.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 16 Jun 2011 21:43:15 +0200
+
+cumulus (2.10.3) stable; urgency=low
 
   * Different minor bug fixes.
 
  -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 26 May 2011 21:43:15 +0200
 
+cumulus (2.10.2) stable; urgency=low
+
   * Performance issues in GPS status display and GPS data transfer fixed.
 
  -- Axel Pauli <kflog.cumulus@googlemail.com>  Sun, 15 May 2011 16:26:54 +0200
+
+cumulus (2.10.1) stable; urgency=low
 
   * Communication data transfer between the GPS client and Cumulus process
     optimized. It was to slow, if more than five Flarm devices were received.
@@ -14,15 +32,21 @@ cumulus (__VERSION__) stable; urgency=low
 
  -- Axel Pauli <kflog.cumulus@googlemail.com>  Sat, 30 Apr 2011 17:31:02 +0200
 
+cumulus (2.10.0) stable; urgency=low
+
   * Two new features added, waypoint import handling and airspace load
     management.
   * Different bug fixing and optimizations done.
   
  -- Axel Pauli <kflog.cumulus@googlemail.com>  Tue, 05 Apr 2011 21:53:59 +0200
 
+cumulus (2.9.3) stable; urgency=low
+
   * Bugfix: Welt2000 parser modified to recognize gliderfields correctly.
 
  -- Axel Pauli <kflog.cumulus@googlemail.com>  Fri, 14 Jan 2011 18:49:10 +0100
+
+cumulus (2.9.2) stable; urgency=low
 
   * Cumulus Release 2.9.2 for N900, running Maemo5, OS2010 Fremantle with Qt4/X11
   * Inserting bug tracker link to debian control file

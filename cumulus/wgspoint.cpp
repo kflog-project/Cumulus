@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2008-2011 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -28,7 +28,8 @@
 
 #include <stdlib.h>
 #include <cmath>
-#include <QRegExp>
+
+#include <QtCore>
 
 #include "wgspoint.h"
 #include "mapcalc.h"
@@ -328,9 +329,9 @@ int WGSPoint::degreeToNum(QString inDegree)
   QString degreeString( degreeChar );
   QString input = inDegree;
 
-  QRegExp degreeDMS("^[0-1]?[0-9][0-9]" + degreeString + "[ ]*[0-5][0-9]'[ ]*[0-5][0-9]\"");
-  QRegExp degreeDDM("^[0-1]?[0-9][0-9]" + degreeString + "[ ]*[0-5][0-9].[0-9][0-9][0-9]'");
-  QRegExp degreeDDD("^[0-1]?[0-9][0-9].[0-9][0-9][0-9][0-9][0-9]" + degreeString);
+  QRegExp degreeDMS("^[0-1]?[0-9]?[0-9]" + degreeString + "[ ]*[0-5]?[0-9]'[ ]*[0-5]?[0-9]\"$");
+  QRegExp degreeDDM("^[0-1]?[0-9]?[0-9]" + degreeString + "[ ]*[0-5]?[0-9].[0-9][0-9]?[0-9]?'$");
+  QRegExp degreeDDD("^[0-1]?[0-9]?[0-9].[0-9][0-9]?[0-9]?[0-9]?[0-9]?" + degreeString + "$");
   QRegExp number("^-?[0-9]+$");
 
   if (number.indexIn(inDegree) != -1)

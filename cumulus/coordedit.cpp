@@ -203,7 +203,7 @@ LatEdit::LatEdit(QWidget *parent, const int base) : CoordEdit(parent)
   else if ( WGSPoint::getFormat() == WGSPoint::DDM )
     {
       degreeBox->setInputMask( "99" );
-      eValidator = new QRegExpValidator( QRegExp( "([0-8][0-9])|(90)" ), this );
+      eValidator = new QRegExpValidator( QRegExp( "([0-8][0-9])|90" ), this );
       degreeBox->setValidator( eValidator );
 
       minuteBox->setInputMask( "99.999" );
@@ -213,7 +213,7 @@ LatEdit::LatEdit(QWidget *parent, const int base) : CoordEdit(parent)
   else if ( WGSPoint::getFormat() == WGSPoint::DMS )
     {
       degreeBox->setInputMask( "99");
-      eValidator = new QRegExpValidator( QRegExp( "([0-8][0-9])|(90)" ), this );
+      eValidator = new QRegExpValidator( QRegExp( "([0-8][0-9])|90" ), this );
       degreeBox->setValidator( eValidator );
 
       minuteBox->setInputMask( "99");
@@ -255,13 +255,13 @@ LongEdit::LongEdit(QWidget *parent, const int base) : CoordEdit(parent)
   if ( WGSPoint::getFormat() == WGSPoint::DDD )
     {
       degreeBox->setInputMask( "999.99999" );
-      eValidator = new QRegExpValidator( QRegExp( "([0-1][0-7][0-9]\\.[0-9]{5})|(180\\.00000)" ), this );
+      eValidator = new QRegExpValidator( QRegExp( "(0[0-9][0-9]\\.[0-9]{5})|([0-1][0-7][0-9]\\.[0-9]{5})|(180\\.00000)" ), this );
       degreeBox->setValidator( eValidator );
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DDM )
     {
       degreeBox->setInputMask( "999" );
-      eValidator = new QRegExpValidator( QRegExp( "([0-1][0-7][0-9])|(180)" ), this );
+      eValidator = new QRegExpValidator( QRegExp( "(0[0-9][0-9])|(1[0-7][0-9])|180" ), this );
       degreeBox->setValidator( eValidator );
 
       minuteBox->setInputMask( "99.999" );
@@ -271,7 +271,7 @@ LongEdit::LongEdit(QWidget *parent, const int base) : CoordEdit(parent)
   else if ( WGSPoint::getFormat() == WGSPoint::DMS )
     {
       degreeBox->setInputMask( "999");
-      eValidator = new QRegExpValidator( QRegExp( "([0-1][0-7][0-9])|(180)" ), this );
+      eValidator = new QRegExpValidator( QRegExp( "(0[0-9][0-9])|(1[0-7][0-9])|180" ), this );
       degreeBox->setValidator( eValidator );
 
       minuteBox->setInputMask( "99");

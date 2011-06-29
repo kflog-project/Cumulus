@@ -940,7 +940,7 @@
     </message>
     <message>
         <location filename="mainwindow.cpp" line="994"/>
-        <location filename="mainwindow.cpp" line="2115"/>
+        <location filename="mainwindow.cpp" line="2124"/>
         <source>Task</source>
         <translation>Aufgabe</translation>
     </message>
@@ -1101,22 +1101,22 @@
         <translation>Landefelder</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2048"/>
+        <location filename="mainwindow.cpp" line="2057"/>
         <source>Waypoint out of map range.</source>
         <translation>Wegpunkt außerhalb der Karte.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2071"/>
+        <location filename="mainwindow.cpp" line="2080"/>
         <source>Pre-Flight Settings</source>
         <translation>Vorflug Einstellungen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2153"/>
+        <location filename="mainwindow.cpp" line="2162"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2154"/>
+        <location filename="mainwindow.cpp" line="2163"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
@@ -1360,19 +1360,19 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="mapview.cpp" line="264"/>
         <location filename="mapview.cpp" line="274"/>
-        <location filename="mapview.cpp" line="823"/>
+        <location filename="mapview.cpp" line="833"/>
         <source>Menu</source>
         <translation>Menü</translation>
     </message>
     <message>
         <location filename="mapview.cpp" line="320"/>
-        <location filename="mapview.cpp" line="766"/>
+        <location filename="mapview.cpp" line="771"/>
         <source>Man</source>
         <translation></translation>
     </message>
     <message>
         <location filename="mapview.cpp" line="327"/>
-        <location filename="mapview.cpp" line="1051"/>
+        <location filename="mapview.cpp" line="1061"/>
         <source>?</source>
         <comment>Unknown</comment>
         <translation></translation>
@@ -1393,63 +1393,63 @@ Alle Downloads verworfen!</translation>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="751"/>
+        <location filename="mapview.cpp" line="753"/>
         <source>GPS new fix</source>
         <translation>GPS neuer Fix</translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="754"/>
+        <location filename="mapview.cpp" line="757"/>
         <source>GPS fix lost</source>
         <translation>GPS Fix verloren</translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="757"/>
+        <location filename="mapview.cpp" line="761"/>
         <source>GPS lost</source>
         <translation>GPS verloren</translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="762"/>
+        <location filename="mapview.cpp" line="767"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1054"/>
+        <location filename="mapview.cpp" line="1064"/>
         <source>S</source>
         <comment>Standstill</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1057"/>
+        <location filename="mapview.cpp" line="1067"/>
         <source>C</source>
         <comment>Cruising</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1060"/>
+        <location filename="mapview.cpp" line="1070"/>
         <source>L</source>
         <comment>Circling Left</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1063"/>
+        <location filename="mapview.cpp" line="1073"/>
         <source>R</source>
         <comment>Circling Right</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1066"/>
+        <location filename="mapview.cpp" line="1076"/>
         <source>W</source>
         <comment>Wave</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1094"/>
+        <location filename="mapview.cpp" line="1104"/>
         <source>L</source>
         <comment>Logging</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1104"/>
+        <location filename="mapview.cpp" line="1114"/>
         <source>Ls</source>
         <comment>LoggingStandby</comment>
         <translation></translation>
