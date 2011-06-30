@@ -864,24 +864,68 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           continue;
         }
 
-      if( list[5].length() > 1 ) // elevation in meter or feet
-        {
-          float tmpElev = (list[5].left(list[5].length()-1)).toFloat(&ok);
+      QString unit;
+      int uStart = list[8].indexOf( QRegExp("[lmn]") );
 
-          if( ! ok )
+      if( uStart != -1 )
+        {
+          unit = list[8].mid( uStart ).toLower();
+          float length = list[8].left( list[8].length()-unit.length() ).toFloat(&ok);
+
+          if( ok )
             {
-              qWarning("CUP Read (%d): Error reading elevation '%s'.", lineNo,
-                       list[5].left(list[5].length()-1).toLatin1().data());
+              if( unit == "nm" ) // nautical miles
+                {
+                  length *= 1852;
+                }
+              else if( unit == "ml" ) // statute miles
+                {
+                  length *= 1609.34;
+                }
+
+              wp.length = length;
+            }
+        }
+
+      // two units are possible:
+      // o meter: m
+      // o feet:  ft
+      if( list[5].length() ) // elevation in meter or feet
+        {
+          QString unit;
+          int uStart = list[5].indexOf( QRegExp("[mf]") );
+
+          if( uStart == -1 )
+            {
+              qWarning("CUP Read (%d): Error reading elevation unit '%s'.", lineNo,
+                       list[5].toLatin1().data());
               continue;
             }
 
-          if( list[5].right( 1 ).toLower() == "f" )
+          unit = list[5].mid( uStart ).toLower();
+
+          float tmpElev = (list[5].left(list[5].length() - unit.length())).toFloat(&ok);
+
+          if( ! ok )
+            {
+              qWarning("CUP Read (%d): Error reading elevation value '%s'.", lineNo,
+                       list[5].left(list[5].length() - unit.length()).toLatin1().data());
+              continue;
+            }
+
+          if( unit == "m" )
+            {
+              wp.elevation = tmpElev;
+            }
+          else if( unit == "ft" )
             {
               wp.elevation = tmpElev * 0.3048;
             }
           else
             {
-              wp.elevation = tmpElev;
+              qWarning("CUP Read (%d): Unknown elevation value '%s'.", lineNo,
+                       unit.toLatin1().data());
+              continue;
             }
         }
 
