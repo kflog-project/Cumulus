@@ -2,7 +2,7 @@
 **
 **   coordedit.cpp - Editor for WGS84 coordinates, supports three formats.
 **
-**   This file is part of KFLog4
+**   This file is part of Cumulus
 **
 ************************************************************************
 **
