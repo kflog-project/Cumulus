@@ -136,6 +136,7 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
   WaypointCatalog wpCat;
   int ok;
   const char* format;
+  QString error;
 
   if( GeneralConfig::instance()->getWaypointFileFormat() == GeneralConfig::Binary )
     {
@@ -144,7 +145,7 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
     }
   else
     {
-      ok = wpCat.readXml( "", &wpList );
+      ok = wpCat.readXml( "", &wpList, error );
       format = "xml";
     }
 

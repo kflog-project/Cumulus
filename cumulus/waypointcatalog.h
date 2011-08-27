@@ -56,7 +56,7 @@ class WaypointCatalog
   bool writeBinary( QString catalog, QList<Waypoint>& wpList );
 
   /** read in KFLog xml data catalog from file name */
-  int readXml( QString catalog, QList<Waypoint>* wpList );
+  int readXml( QString catalog, QList<Waypoint>* wpList, QString& errorMsg );
 
   /** write out KFLog xml data catalog to file name */
   bool writeXml( QString catalog, QList<Waypoint>& wpList );

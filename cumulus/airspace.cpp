@@ -8,10 +8,10 @@
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
  **   Modified:       2008      by Josua Dietze
- **                   2008-2010 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
- **   Licence. See the file COPYING for more information.
+ **   License. See the file COPYING for more information.
  **
  **   $Id$
  **
@@ -51,6 +51,7 @@ Airspace::Airspace(QString name, BaseMapElement::objectType oType, QPolygon pP,
     break;
   default:
     lLim=0.0;
+    break;
   };
 
   lLimit.setMeters( lLim );
@@ -73,6 +74,7 @@ Airspace::Airspace(QString name, BaseMapElement::objectType oType, QPolygon pP,
     break;
   default:
     uLim=0.0;
+    break;
   };
 
   uLimit.setMeters( uLim );
@@ -240,8 +242,9 @@ QString Airspace::getInfoString() const
     break;
   case UNLTD:
     tempL = QObject::tr("Unlimited");
+    break;
   default:
-    ;
+    break;
   }
 
   switch(uLimitType) {
@@ -262,8 +265,9 @@ QString Airspace::getInfoString() const
     break;
   case UNLTD:
     tempU = QObject::tr("Unlimited");
+    break;
   default:
-    ;
+    break;
   }
 
   text = getTypeName(typeID);
@@ -291,43 +295,46 @@ Airspace::ConflictType Airspace::conflicts (const AltitudeCollection& alt,
   //and apply uncertainty margins
 
   //#warning FIXME: we should take our GPS error into account
-  switch (lLimitType) {
-  case NotSet:
-    break;
-  case MSL:
-    lowerAlt=alt.gpsAltitude;
-    break;
-  case GND:
-    lowerAlt=alt.gndAltitude + alt.gndAltitudeError;  // we need to use a conservative estimate
-    if (lLimit==0)
-      lowerAlt.setMeters(1); // we're always above ground
-    break;
-  case FL:
-  case STD:
-    lowerAlt=alt.stdAltitude; // flight levels are always at pressure altitude!
-    break;
-  case UNLTD:
-    _lastVConflict=none;
-    return none;
-  }
+  switch (lLimitType)
+    {
+      case NotSet:
+        break;
+      case MSL:
+        lowerAlt = alt.gpsAltitude;
+        break;
+      case GND:
+        lowerAlt = alt.gndAltitude + alt.gndAltitudeError; // we need to use a conservative estimate
+        if (lLimit == 0)
+          lowerAlt.setMeters(1); // we're always above ground
+        break;
+      case FL:
+      case STD:
+        lowerAlt = alt.stdAltitude; // flight levels are always at pressure altitude!
+        break;
+      case UNLTD:
+        _lastVConflict = none;
+        return none;
+    }
 
-  switch (uLimitType) {
-  case NotSet:
-    upperAlt.setMeters(100000);
-    break;
-  case MSL:
-    upperAlt=alt.gpsAltitude;
-    break;
-  case GND:
-    upperAlt=alt.gndAltitude - alt.gndAltitudeError;  //we need to use a conservative estimate
-    break;
-  case FL:
-  case STD:
-    upperAlt=alt.stdAltitude;
-    break;
-  case UNLTD:
-    upperAlt=uLimit-1; //we are always below the upper border of an Unlimited airspace
-  }
+  switch (uLimitType)
+    {
+      case NotSet:
+        upperAlt.setMeters(100000);
+        break;
+      case MSL:
+        upperAlt = alt.gpsAltitude;
+        break;
+      case GND:
+        upperAlt = alt.gndAltitude - alt.gndAltitudeError; //we need to use a conservative estimate
+        break;
+      case FL:
+      case STD:
+        upperAlt = alt.stdAltitude;
+        break;
+      case UNLTD:
+        upperAlt = uLimit - 1; //we are always below the upper border of an Unlimited airspace
+        break;
+    }
 
   //check to see if we're inside the airspace
   if ((lowerAlt.getMeters() >= lLimit.getMeters()) &&

@@ -308,7 +308,7 @@ void PreFlightWaypointPage::slotImportFile()
   filter.append(tr("Binary") + " (*.kwp *.KWP);;");
   filter.append(tr("SeeYou") + " (*.cup *.CUP)");
 
-  QString fName = QFileDialog::getOpenFileName( 0,
+  QString fName = QFileDialog::getOpenFileName( this,
                                                 tr("Open waypoint catalog"),
                                                 wayPointDir,
                                                 filter );
@@ -320,6 +320,7 @@ void PreFlightWaypointPage::slotImportFile()
   QString fSuffix = QFileInfo( fName ).suffix().toLower();
   QList<Waypoint> wpList;
   WaypointCatalog catalog;
+  QString errorMsg;
 
   catalog.showProgress( true );
 
@@ -365,7 +366,7 @@ void PreFlightWaypointPage::slotImportFile()
     }
   else if( fSuffix == "kflogwp")
     {
-      wpCount = catalog.readXml( fName, 0 );
+      wpCount = catalog.readXml( fName, 0, errorMsg );
     }
   else if( fSuffix == "cup")
     {
@@ -380,13 +381,24 @@ void PreFlightWaypointPage::slotImportFile()
 
   if( wpCount == 0 )
     {
-      QMessageBox::information( this,
-                                tr("No entries read"),
-                                QString("<html>") +
-                                tr("No waypoints read from file!") +
-                                "<br>" +
-                                tr("Maybe you should change the filter values?") +
-                                "</html>" );
+      if( errorMsg.isEmpty() )
+        {
+          QMessageBox::information( this,
+                                    tr("No entries read"),
+                                    QString("<html>") +
+                                    tr("No waypoints read from file!") +
+                                    "<br>" +
+                                    tr("Maybe you should change the filter values?") +
+                                    "</html>" );
+        }
+      else
+        {
+          QMessageBox::critical( this,
+                                 tr("Error in file ") + QFileInfo( fName ).fileName(),
+                                 errorMsg,
+                                 QMessageBox::Ok );
+        }
+
       return;
     }
 
@@ -412,7 +424,7 @@ void PreFlightWaypointPage::slotImportFile()
     }
   else if( fSuffix == "kflogwp")
     {
-      wpCount = catalog.readXml( fName, &wpList );
+      wpCount = catalog.readXml( fName, &wpList, errorMsg );
     }
   else if( fSuffix == "cup")
     {

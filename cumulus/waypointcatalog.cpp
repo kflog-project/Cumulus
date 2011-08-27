@@ -29,7 +29,6 @@
 #include "waitscreen.h"
 
 extern MapMatrix*  _globalMapMatrix;
-extern MainWindow* _globalMainWindow;
 
 #define KFLOG_FILE_MAGIC 0x404b464c
 #define FILE_TYPE_WAYPOINTS 0x50
@@ -403,7 +402,7 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
 
 
 /** read in KFLog xml data catalog from file name */
-int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList )
+int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList, QString& errorMsg )
 {
   QString fName;
 
@@ -446,17 +445,21 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList )
       return -1;
     }
 
-  QString errorMsg;
+  QString errorText;
   int errorLine;
   int errorColumn;
   QDomDocument doc;
 
-  bool ok = doc.setContent( &file, false, &errorMsg, &errorLine, &errorColumn );
+  bool ok = doc.setContent( &file, false, &errorText, &errorLine, &errorColumn );
 
   if( ! ok )
     {
-      qWarning() << "WaypointCatalog::readXml(): XML parse error in File=" << catalog
-                 << "Error=" << errorMsg
+      errorMsg = QString("<html>XML Error at line %1 column %2:<br><br>%3</html>")
+                 .arg(errorLine).arg(errorColumn).arg(errorText);
+
+      qWarning() << "WaypointCatalog::readXml(): XML parse error in File="
+                 << catalog
+                 << "Error=" << errorText
                  << "Line=" << errorLine
                  << "Column=" << errorColumn;
       return -1;
@@ -1112,6 +1115,8 @@ QList<QString> WaypointCatalog::splitCupLine( QString& line, bool &ok )
 
       pos = start = idx + 1;
     }
+
+  return list;
 }
 
 bool WaypointCatalog::takeType( enum BaseMapElement::objectType type )
