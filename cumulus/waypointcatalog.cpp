@@ -633,6 +633,373 @@ bool WaypointCatalog::writeXml( QString catalog, QList<Waypoint>& wpList )
   return ok;
 }
 
+/**
+ * Reads a Cambridge Aero Instruments or a Winpilot turnpoint file.
+ *
+ * \param catalog Catalog file name with directory path.
+ *
+ * \param wpList Waypoint list where the read waypoints are stored. If the
+ *               wpList is NULL, waypoints are counted only.
+ *
+ * \return Number of read waypoints. In error case -1.
+ */
+int WaypointCatalog::readDat( QString catalog, QList<Waypoint>* wpList )
+{
+  // Found a file format description here:
+  // http://www.gregorie.org/gliding/pna/cai_format.html
+  qDebug() << "WaypointCatalog::readDat" << catalog;
+
+  QFile file(catalog);
+
+  if(!file.exists())
+    {
+      return -1;
+    }
+
+  if(file.size() == 0)
+    {
+      return 0;
+    }
+
+  if (! file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+      return -1;
+    }
+
+  QSet<QString> namesInUse;
+  int lineNo = 0;
+  int wpCount = 0;
+
+  WaitScreen *ws = static_cast<WaitScreen *>(0);
+
+  if( _showProgress )
+    {
+      ws = new WaitScreen( MainWindow::mainWindow() );
+      ws->slot_SetText1( QObject::tr("Reading file") );
+      ws->slot_SetText2( QFileInfo(catalog).fileName() );
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+                                       QEventLoop::ExcludeSocketNotifiers );
+    }
+
+  // Estimate the number of entries in the file. The basic assumption is, that
+  // a single line is approximately 60 characters long. Only 20 animations
+  // should be done because the animation is a performance blocker.
+  int wsCycles = (file.size() / 60) / 20;
+
+  if( wsCycles == 0 )
+    {
+      // avoid division by zero!
+      wsCycles++;
+    }
+
+  QTextStream in(&file);
+  in.setCodec( "ISO 8859-15" );
+
+  while (!in.atEnd())
+    {
+      QString line = in.readLine().trimmed();
+
+      lineNo++;
+
+      if( _showProgress && (lineNo % wsCycles) == 0 )
+        {
+          ws->slot_Progress( 2 );
+          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+                                           QEventLoop::ExcludeSocketNotifiers );
+        }
+
+      if( line.size() == 0 || line.startsWith("*") )
+        {
+          // Filter out empty and comment lines
+          continue;
+        }
+
+      bool ok;
+      QStringList list = line.split( "," );
+
+      /*
+      Example turnpoints, two possible coordinate formats seems to be in use.
+      0 ,1         ,2          ,3   ,4,5           ,6
+      31,57:04.213N,002:47.239W,450F,T,AB1 AboynBrg,RdBroverRDee
+
+      0,1        ,2         ,3  ,4  ,5           ,6
+      1,52:08:39N,012:40:06E,66M,HAS,SP1 LUESSE  ,EDOJ
+      */
+
+      // Lines defining a turnpoint contain 7 fields, separated by commas.
+      // The final field is terminated by the newline. Field 7 is optional.
+      if( list.size() < 6 )
+        {
+          qWarning( "DAT Read (%d): Line contains too less elements! Ignoring it.",
+                    lineNo );
+          continue;
+        }
+
+      Waypoint wp;
+
+      wp.isLandable = false;
+      wp.priority = Waypoint::Low;
+      wp.country = GeneralConfig::instance()->getHomeCountryCode();
+
+      if( list[1].size() < 9 )
+        {
+          qWarning("DAT Read (%d): Format error latitude", lineNo);
+          continue;
+        }
+
+      // latitude as 57:04.213N|S or 52:08:39N|S
+      double degree = list[1].left(2).toDouble(&ok);
+
+      if( ! ok )
+        {
+          qWarning("DAT Read (%d): Format error latitude degree", lineNo);
+          continue;
+        }
+
+      double minutes = 0.0;
+      double seconds = 0.0;
+
+      if( list[1][5] == QChar('.') )
+        {
+          minutes = list[1].mid(3, 6).toDouble(&ok);
+        }
+      else if( list[1][5] == QChar(':') )
+        {
+          minutes = list[1].mid(3, 2).toDouble(&ok);
+
+          if( ok )
+            {
+              seconds = list[1].mid(6, 2).toDouble(&ok);
+            }
+        }
+
+      if( ! ok )
+        {
+          qWarning("DAT Read (%d): Format error latitude minutes/seconds", lineNo);
+          continue;
+        }
+
+      double latTmp = (degree * 600000.) + (10000. * (minutes + seconds / 60. ));
+
+      if( list[1].right(1).toUpper() == "S" )
+        {
+          latTmp = -latTmp;
+        }
+
+      // longitude as 002:47.239E|W or 012:40:06E|W
+      if( list[2].size() < 10 )
+        {
+          qWarning("DAT Read (%d): Format error longitude", lineNo);
+          continue;
+        }
+
+      degree = list[2].left(3).toDouble(&ok);
+
+      if( ! ok )
+        {
+          qWarning("DAT Read (%d): Format error longitude degree", lineNo);
+          continue;
+        }
+
+      minutes = 0.0;
+      seconds = 0.0;
+
+      if( list[2][6] == QChar('.') )
+        {
+          minutes = list[2].mid(4, 6).toDouble(&ok);
+        }
+      else if( list[2][6] == QChar(':') )
+        {
+          minutes = list[2].mid(4, 2).toDouble(&ok);
+
+          if( ok )
+            {
+              seconds = list[2].mid(7, 2).toDouble(&ok);
+            }
+        }
+
+      if( ! ok )
+        {
+          qWarning("DAT Read (%d): Format error longitude minutes/seconds", lineNo);
+          continue;
+        }
+
+      double lonTmp = (degree * 600000.) + (10000. * (minutes + seconds / 60. ));
+
+
+      if( list[2].right(1).toUpper() == "W" )
+        {
+          lonTmp = -lonTmp;
+        }
+
+      wp.origP.setLat((int) rint(latTmp));
+      wp.origP.setLon((int) rint(lonTmp));
+
+      // Sets the projected coordinates
+      wp.projP = _globalMapMatrix->wgsToMap( wp.origP );
+
+      // Check radius filter
+      if( ! takePoint( wp.origP ) )
+        {
+          // Distance is greater than the defined radius around the center point.
+          continue;
+        }
+
+      // Height AMSL 9{1,5}[FM] 9=height, F=feet, M=metres.
+      // two units are possible:
+      // o meter: m
+      // o feet:  ft
+      if( list[3].size() ) // elevation in meter or feet
+        {
+          QString unit = list[3].right(1).toUpper();
+
+          if( unit != "F" && unit != "M" )
+            {
+              qWarning("DAT Read (%d): Error reading elevation unit '%s'.",
+                       lineNo, list[3].toLatin1().data());
+              continue;
+            }
+
+          float tmpElev = list[3].left(list[3].size() - 1).toFloat(&ok);
+
+          if( ! ok )
+            {
+              qWarning("DAT Read (%d): Error reading elevation value '%s'.",
+                        lineNo,
+                        list[3].left(list[3].size() - 1).toLatin1().data());
+              continue;
+            }
+
+          if( unit == "M" )
+            {
+              wp.elevation = tmpElev;
+            }
+          else if( unit == "F" )
+            {
+              // Convert feet to meters
+              wp.elevation = tmpElev * 0.3048;
+            }
+          else
+            {
+              qWarning("DAT Read (%d): Unknown elevation value '%s'.", lineNo,
+                       unit.toLatin1().data());
+              continue;
+            }
+        }
+
+      /*
+      Turnpoint attributes
+
+      Cambridge documentation defines the following:
+      Code    Meaning
+      A       Airfield (not necessarily landable). All turnpoints marked 'A' in the UK are landable.
+      L       Landable Point. Not necessarily an airfield.
+      S       Start Point
+      F       Finish Point
+      H       Home Point
+      M       Markpoint
+      R       Restricted Point
+      T       Turnpoint
+      W       Waypoint
+      */
+
+      if( list[4].isEmpty() )
+        {
+          qWarning("DAT Read (%d): Missing turnpoint attributes", lineNo );
+          continue;
+        }
+
+      // That is the default
+      wp.type = BaseMapElement::Landmark;
+
+      list[4] = list[4].toUpper();
+
+      if( list[4].contains("T") )
+        {
+          wp.type = BaseMapElement::Turnpoint;
+        }
+
+      if( list[4].contains("A") )
+        {
+          wp.type = BaseMapElement::Airfield;
+        }
+
+      if( list[4].contains("L") )
+        {
+          wp.isLandable = true;
+        }
+
+      if( list[5].isEmpty() )
+        {
+          qWarning("DAT Read (%d): Missing turnpoint name", lineNo );
+          continue;
+        }
+
+      // Short name of a waypoint has only 8 characters and upper cases in Cumulus.
+      // That is handled in another way by Cambridge.
+      wp.name = list[5].left(8).toUpper().trimmed();
+      wp.description = list[5].trimmed();
+
+      if( list.size() >= 7 )
+        {
+          QString comment = list[6].trimmed();
+
+          if( ! comment.isEmpty() )
+            {
+              // A description is optional by Cambridge.
+              wp.comment += comment;
+            }
+        }
+
+      if( ! wp.comment.isEmpty() )
+        {
+          wp.comment.append("; ");
+        }
+
+      wp.comment.append( "TP attributes: ").append(list[4]);
+
+      // We do check, if the waypoint name is already in use because DAT
+      // short names are not always unique.
+      if( wpList && namesInUse.contains( wp.name ) )
+        {
+          for( int i = 0; i < 100; i++ )
+            {
+              // Hope that not more as 100 same names will be exist.
+              QString number = QString::number(i);
+               wp.name = wp.name.left(wp.name.size() - number.size()) + number;
+
+              if( namesInUse.contains( wp.name ) == false )
+                {
+                  break;
+                }
+            }
+        }
+
+      if( wpList )
+        {
+          // Add waypoint to list
+          wpList->append( wp );
+        }
+
+      wpCount++;
+
+      // Store used waypoint name in set.
+      namesInUse.insert( wp.name );
+    }
+
+  file.close();
+
+  if( _showProgress )
+    {
+      ws->setVisible( false );
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+                                       QEventLoop::ExcludeSocketNotifiers );
+      delete ws;
+    }
+
+  return wpCount;
+}
+
 /** read a waypoint catalog from a SeeYou cup file, only waypoint part */
 int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 {
@@ -684,7 +1051,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 
   while( !in.atEnd() )
     {
-      QString line = in.readLine();
+      QString line = in.readLine().trimmed();
 
       lineNo++;
 
@@ -999,7 +1366,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 
       // We do check, if the waypoint name is already in use because cup
       // short names are not always unique.
-      if( namesInUse.contains( wp.name ) )
+      if( wpList && namesInUse.contains( wp.name ) )
         {
           for( int i = 0; i < 100; i++ )
             {
@@ -1126,7 +1493,6 @@ bool WaypointCatalog::takeType( enum BaseMapElement::objectType type )
     {
       switch( _type )
         {
-          // Airfields, Gliderfields, Outlandings, UlFlields, OtherPoints };
           case Airfields:
 
             if( type != BaseMapElement::Airfield )

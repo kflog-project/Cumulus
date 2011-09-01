@@ -306,7 +306,8 @@ void PreFlightWaypointPage::slotImportFile()
   filter.append(tr("Formats") + " (*.kflogwp *.KFLOGWP *.kwp *.KWP *.cup *.CUP );;");
   filter.append(tr("XML") + " (*.kflogwp *.KFLOGWP);;");
   filter.append(tr("Binary") + " (*.kwp *.KWP);;");
-  filter.append(tr("SeeYou") + " (*.cup *.CUP)");
+  filter.append(tr("SeeYou") + " (*.cup *.CUP);;");
+  filter.append(tr("CAI") + " (*.dat *.DAT)");
 
   QString fName = QFileDialog::getOpenFileName( this,
                                                 tr("Open waypoint catalog"),
@@ -372,6 +373,10 @@ void PreFlightWaypointPage::slotImportFile()
     {
       wpCount = catalog.readCup( fName, 0 );
     }
+  else if( fSuffix == "dat")
+    {
+      wpCount = catalog.readDat( fName, 0 );
+    }
 
   if( wpCount == -1 )
     {
@@ -429,6 +434,10 @@ void PreFlightWaypointPage::slotImportFile()
   else if( fSuffix == "cup")
     {
       wpCount = catalog.readCup( fName, &wpList );
+    }
+  else if( fSuffix == "dat")
+    {
+      wpCount = catalog.readDat( fName, &wpList );
     }
 
   //check free memory

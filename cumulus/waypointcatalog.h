@@ -74,6 +74,18 @@ class WaypointCatalog
   int readCup( QString catalog, QList<Waypoint>* wpList );
 
   /**
+   * Reads a Cambridge Aero Instruments or a Winpilot turnpoint file.
+   *
+   * \param catalog Catalog file name with directory path.
+   *
+   * \param wpList Waypoint list where the read waypoints are stored. If the
+   *               wpList is NULL, waypoints are counted only.
+   *
+   * \return Number of read waypoints. In error case -1.
+   */
+  int readDat( QString catalog, QList<Waypoint>* wpList );
+
+  /**
    * Sets a filter used during read.
    *
    * \param typeIn The waypoint type to be read in.
