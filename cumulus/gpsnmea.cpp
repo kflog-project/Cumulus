@@ -114,6 +114,13 @@ GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
   gpsDevice = GeneralConfig::instance()->getGpsDevice();
   serial    = static_cast<GpsCon *> (0);
 
+  nmeaLogFile = static_cast<QFile *> (0);
+
+  if( GeneralConfig::instance()->getGpsNmeaLogState() == true )
+    {
+      slot_openNmeaLogFile();
+    }
+
   createGpsConnection();
 }
 
@@ -127,6 +134,16 @@ GpsNmea::~GpsNmea()
     {
       delete serial;
       writeConfig();
+    }
+
+  if( nmeaLogFile )
+    {
+      if( nmeaLogFile->isOpen() )
+        {
+          nmeaLogFile->close();
+        }
+
+      delete nmeaLogFile;
     }
 }
 
@@ -275,6 +292,12 @@ void GpsNmea::startGpsReceiver()
 void GpsNmea::slot_sentence(const QString& sentenceIn)
 {
   // qDebug("GpsNmea::slot_sentence: %s", sentenceIn.toLatin1().data());
+
+  if( nmeaLogFile && nmeaLogFile->isOpen() )
+    {
+      // Write sentence into log file
+      nmeaLogFile->write(sentenceIn.toAscii().data());
+    }
 
   if ( QObject::signalsBlocked() )
     {
@@ -2341,4 +2364,50 @@ void GpsNmea::__ExtractSatsInView(const QString& id, const QString& elev,
 
   sivInfoInternal.append( sivi );
   //qDebug("new sivi info (snr: %d", sivi->db);
+}
+
+/**
+ * called to open the NMEA log file.
+ */
+void GpsNmea::slot_openNmeaLogFile()
+{
+  QString fname = GeneralConfig::instance()->getUserDataDirectory() + "/GpsNmea.log";
+
+  if( nmeaLogFile == 0 )
+    {
+      if( QFileInfo(fname).exists() )
+        {
+          QFile::remove( fname + ".old" );
+          QFile::rename ( fname, fname + ".old" );
+        }
+
+      nmeaLogFile = new QFile(fname);
+    }
+
+  if( !nmeaLogFile->isOpen() )
+    {
+      bool ok = nmeaLogFile->open( QIODevice::WriteOnly | QIODevice::Text );
+
+      if( ! ok )
+        {
+          qWarning() << "Cannot open file" << fname;
+        }
+    }
+}
+
+/**
+ * called to close the NMEA log file.
+ */
+void GpsNmea::slot_closeNmeaLogFile()
+{
+  if( nmeaLogFile )
+    {
+      if( nmeaLogFile->isOpen() )
+        {
+          nmeaLogFile->close();
+        }
+
+      delete nmeaLogFile;
+      nmeaLogFile = 0;
+    }
 }

@@ -14,6 +14,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2011-06-30 AP: New configuration option "Save NMEA Data" added to GPS
+                   settings page. If the checkbox is enabled, all GPS NMEA
+                   records are logged into a file. The file is located in
+                   the user's data directory. The file name is GpsNmea.log.
+                   One backup with the name GpsNmea.log.old is created from a
+                   previous log file, when a new log file is opened.
 [-] 2011-06-30 AP: BUGFIX: Waypoint import failed for Seeyou cup data file,
                    if elevation unit was given in feet. Fixed now.
 [-] 2011-06-29 AP: BUGFIX: Problems fixed in coordinate editor.

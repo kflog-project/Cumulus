@@ -186,6 +186,12 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   connect(spa, SIGNAL(airspaceColorsUpdated()),
           _globalMapConfig, SLOT(slotReloadAirspaceColors()));
 
+  connect(spg, SIGNAL(startNmeaLog()),
+          GpsNmea::gps, SLOT(slot_openNmeaLogFile()));
+
+  connect(spg, SIGNAL(endNmeaLog()),
+          GpsNmea::gps, SLOT(slot_closeNmeaLogFile()));
+
 #ifdef INTERNET
 
   connect(spa, SIGNAL(downloadAirspace( QString& )),

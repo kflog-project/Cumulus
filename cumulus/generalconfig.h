@@ -1543,6 +1543,17 @@ class GeneralConfig : protected QSettings
   /** sets Gps sync system clock */
   void setGpsSyncSystemClock(const bool newValue);
 
+  /** gets Gps NMEA log state */
+  bool getGpsNmeaLogState() const
+  {
+    return _gpsNmeaLogState;
+  }
+  /** sets Gps NMEA log state */
+  void setGpsNmeaLogState(const bool newValue)
+  {
+    _gpsNmeaLogState = newValue;
+  }
+
   /** gets Gps Ipc port */
   ushort getGpsIpcPort() const;
   /** sets Gps Ipc port */
@@ -2266,6 +2277,8 @@ class GeneralConfig : protected QSettings
   bool _gpsHardStart;
   // Gps synchronize system clock
   bool _gpsSyncSystemClock;
+  // Gps NMEA log state
+  bool _gpsNmeaLogState;
   // Gps IPC port
   ushort _gpsIpcPort;
   // Gps client start option

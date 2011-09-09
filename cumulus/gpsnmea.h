@@ -41,6 +41,7 @@
 #include <QPoint>
 #include <QTimer>
 #include <QHash>
+#include <QFile>
 
 #include "speed.h"
 #include "altitude.h"
@@ -383,6 +384,16 @@ class GpsNmea : public QObject
      */
     void slot_reset();
 
+    /**
+     * called to open the NMEA log file.
+     */
+    void slot_openNmeaLogFile();
+
+    /**
+     * called to close the NMEA log file.
+     */
+    void slot_closeNmeaLogFile();
+
 #if 0
     /**
      * This slot is called to reset the gps device to factory
@@ -683,6 +694,8 @@ class GpsNmea : public QObject
     QString gpsDevice;
     /** reference to the normal serial connection */
     GpsCon* serial;
+    /** NMEA log file */
+    QFile* nmeaLogFile;
 
 #ifdef FLARM
 

@@ -391,6 +391,7 @@ void GeneralConfig::load()
   _gpsSoftStart       = value( "SoftStart", false ).toBool();
   _gpsHardStart       = value( "HardStart", false ).toBool();
   _gpsSyncSystemClock = value( "SyncSystemClock", false ).toBool();
+  _gpsNmeaLogState    = value( "NmeaLogState", false ).toBool();
   _gpsIpcPort         = value( "IpcPort", 0 ).toInt();
   _gpsStartClient     = value( "StartClient", true ).toBool();
   _gpsLastFixLat      = value( "LastFixLat", 0 ).toInt();
@@ -723,6 +724,7 @@ void GeneralConfig::save()
   setValue( "HardStart", _gpsHardStart );
   setValue( "SoftStart", _gpsSoftStart );
   setValue( "SyncSystemClock", _gpsSyncSystemClock );
+  setValue( "NmeaLogState", _gpsNmeaLogState );
   setValue( "IpcPort", _gpsIpcPort );
   setValue( "StartClient", _gpsStartClient );
   setValue( "LastFixLat", _gpsLastFixLat );

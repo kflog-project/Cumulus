@@ -53,6 +53,7 @@ class SettingsPageGPS : public QWidget
     QComboBox*   GpsSpeed;
     QComboBox*   GpsAltitude;
     QCheckBox*   checkSyncSystemClock;
+    QCheckBox*   saveNmeaData;
 
   public slots:
 
@@ -72,6 +73,18 @@ class SettingsPageGPS : public QWidget
    * Called when the GPS device is changed.
    */
   void slot_gpsDeviceChanged( const QString& text );
+
+  signals:
+
+  /**
+   * Emitted when the NMEA logging into a file shall be started.
+   */
+  void startNmeaLog();
+
+  /**
+   * Emitted when the NMEA logging into a file shall be ended.
+   */
+  void endNmeaLog();
 };
 
 #endif

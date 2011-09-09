@@ -112,6 +112,10 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   row++;
 #endif
 
+  saveNmeaData = new QCheckBox (tr("Save NMEA Data"), this);
+  topLayout->addWidget(saveNmeaData, row, 0 );
+  row++;
+
   topLayout->setRowStretch(row++, 10);
   topLayout->setColumnStretch(2,10);
 
@@ -187,6 +191,8 @@ void SettingsPageGPS::slot_load()
 #ifndef MAEMO
   checkSyncSystemClock->setChecked( conf->getGpsSyncSystemClock() );
 #endif
+
+  saveNmeaData->setChecked( conf->getGpsNmeaLogState() );
 }
 
 /** Called to initiate saving to the configuration file. */
@@ -201,6 +207,22 @@ void SettingsPageGPS::slot_save()
 #ifndef MAEMO
   conf->setGpsSyncSystemClock( checkSyncSystemClock->isChecked() );
 #endif
+
+  bool oldNmeaLogState = conf->getGpsNmeaLogState();
+
+  conf->setGpsNmeaLogState( saveNmeaData->isChecked() );
+
+  if( oldNmeaLogState != saveNmeaData->isChecked() )
+    {
+      if( saveNmeaData->isChecked() )
+        {
+          emit startNmeaLog();
+        }
+      else
+        {
+          emit endNmeaLog();
+        }
+    }
 }
 
 /**
