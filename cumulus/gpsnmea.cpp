@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2010 by Axel Pauli
+                               2008-2011 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -2371,7 +2371,7 @@ void GpsNmea::__ExtractSatsInView(const QString& id, const QString& elev,
  */
 void GpsNmea::slot_openNmeaLogFile()
 {
-  QString fname = GeneralConfig::instance()->getUserDataDirectory() + "/GpsNmea.log";
+  QString fname = GeneralConfig::instance()->getUserDataDirectory() + "/CumulusNmea.log";
 
   if( nmeaLogFile == 0 )
     {
