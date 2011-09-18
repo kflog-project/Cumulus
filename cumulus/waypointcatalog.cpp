@@ -956,7 +956,7 @@ int WaypointCatalog::readDat( QString catalog, QList<Waypoint>* wpList )
           wp.comment.append("; ");
         }
 
-      wp.comment.append( "TP attributes: ").append(list[4]);
+      wp.comment.append( "DAT: ").append(list[4]);
 
       // We do check, if the waypoint name is already in use because DAT
       // short names are not always unique.
