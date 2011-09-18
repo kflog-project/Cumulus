@@ -273,6 +273,11 @@ protected:
   virtual void mousePressEvent(QMouseEvent* event);
 
   /**
+   * Redefinition of mouseMoveEvent.
+   */
+  virtual void mouseMoveEvent( QMouseEvent* event );
+
+  /**
    * Redefinition of mouseReleaseEvent.
    */
   virtual void mouseReleaseEvent(QMouseEvent* event);
@@ -480,6 +485,16 @@ private: //members
    * queued resize event is available
    */
   bool _isResizeEvent;
+
+  /**
+   * set is mouse move is active.
+   */
+  bool _mouseMoveIsActive;
+
+  /**
+   * Begin point of map move.
+   */
+  QPoint _beginMapMove;
 
   /**
    * queued size of resize event

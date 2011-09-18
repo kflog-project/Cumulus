@@ -785,16 +785,6 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
  */
 void FlightTask::circleSchemeDrawing( QPainter* painter, QList<Waypoint*> &drawnTp )
 {
-  extern MapConfig* _globalMapConfig;
-
-  // determine icon size to be used
-  int iconSize = 32;
-
-  if ( _globalMapConfig->useSmallIcons() )
-    {
-      iconSize = 16;
-    }
-
   // get user defined scheme items
   GeneralConfig *conf = GeneralConfig::instance();
 

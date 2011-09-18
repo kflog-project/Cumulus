@@ -74,6 +74,7 @@ Map::Map(QWidget* parent) : QWidget(parent)
   _isEnable = false;  // Disable map redrawing at startup
   _isResizeEvent = false;
   _isRedrawEvent = false;
+  _mouseMoveIsActive = false;
   mapRot = 0;
   curMapRot = 0;
   heading = 0;
@@ -493,7 +494,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
 
 void Map::mousePressEvent(QMouseEvent* event)
 {
-  // qDebug("Map::mousePressEvent():");
+  // qDebug() << "Map::mousePressEvent(): Pos=" << event->pos();
 
   if( mutex() )
     {
@@ -505,19 +506,15 @@ void Map::mousePressEvent(QMouseEvent* event)
   switch (event->button())
     {
     case Qt::RightButton: // press and hold generates mouse RightButton
-      // qDebug("RightButton");
+      qDebug("RightButton");
       break;
     case Qt::LeftButton: // press generates mouse LeftButton immediately
-      // qDebug("LeftButton");
-      if( __zoomButtonPress( event->pos() ) )
-          {
-            break;
-          }
+      qDebug("LeftButton");
 
-      __displayDetailedItemInfo( event->pos() );
+      _beginMapMove = event->pos();
       break;
     case Qt::MidButton:
-      // qDebug("MidButton");
+      qDebug("MidButton");
       break;
 
     default:
@@ -525,10 +522,55 @@ void Map::mousePressEvent(QMouseEvent* event)
     }
 }
 
-void
-Map::mouseReleaseEvent( QMouseEvent* event )
+void Map::mouseMoveEvent( QMouseEvent* event )
 {
-  // qDebug("Map::mouseReleaseEvent():");
+  Q_UNUSED( event )
+
+  if( _mouseMoveIsActive == false &&
+      ( GpsNmea::gps->getConnected() == false || calculator->isManualInFlight() ) )
+    {
+      _mouseMoveIsActive = true;
+      QApplication::setOverrideCursor(QCursor(Qt::SizeAllCursor));
+    }
+}
+
+void Map::mouseReleaseEvent( QMouseEvent* event )
+{
+  if( _mouseMoveIsActive )
+    {
+      // User has released the mouse button after a mouse move. We move
+      // the map to the new position if we are in manual mode or the GPS
+      // is not connected
+      _mouseMoveIsActive = false;
+
+      QApplication::restoreOverrideCursor();
+
+      QPoint dist = _beginMapMove - event->pos();
+
+      if( dist.manhattanLength() > 10 )
+        {
+          QPoint center( width()/2, height()/2 );
+
+          center += dist;
+
+          qDebug() << "Begin" << _beginMapMove
+                   << "Center" << center
+                   << "Dist" << dist;
+
+
+          // Center Map to new center point
+          _globalMapMatrix->centerToPoint( center );
+          QPoint newPos = _globalMapMatrix->mapToWgs( center );
+
+          // Coordinates are toggled, don't know why
+          curMANPos = QPoint(newPos.y(), newPos.x());
+          scheduleRedraw();
+        }
+
+      event->accept();
+      return;
+    }
+
   if( mutex() )
     {
       // qDebug("Map::mouseReleaseEvent(): mutex is locked, returning");
@@ -537,13 +579,31 @@ Map::mouseReleaseEvent( QMouseEvent* event )
 
   switch( event->button() )
     {
-    case Qt::LeftButton:
-      // __displayAirspaceInfo(event->pos());
-      break;
+      case Qt::RightButton: // press and hold generates mouse RightButton
+        qDebug("RightButton");
+        break;
 
-    default:
-      break;
+      case Qt::LeftButton: // press generates mouse LeftButton immediately
+        qDebug("LeftButton");
+
+        if( __zoomButtonPress( event->pos() ) )
+          {
+            break;
+          }
+
+        __displayDetailedItemInfo( event->pos() );
+        break;
+
+      case Qt::MidButton:
+
+        qDebug("MidButton");
+        break;
+
+      default:
+        break;
     }
+
+  event->accept();
 }
 
 void Map::paintEvent(QPaintEvent* event)
@@ -1859,7 +1919,7 @@ void Map::__drawScale(QPainter& scaleP)
  */
 void Map::slotPosition(const QPoint& newPos, const int source)
 {
-  // qDebug("Map::slot_position x=%d y=%d", newPos.x(), newPos.y() );
+  //qDebug("Map::slot_position x=%d y=%d", newPos.x(), newPos.y() );
 
   if( !_isEnable )
     {
