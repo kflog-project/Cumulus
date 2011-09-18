@@ -494,52 +494,57 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
 
 void Map::mousePressEvent(QMouseEvent* event)
 {
-  qDebug() << "Map::mousePressEvent(): Pos=" << event->pos();
-
+  // qDebug() << "Map::mousePressEvent(): Pos=" << event->pos();
   if( mutex() )
     {
       // qDebug("Map::mousePressEvent(): mutex is locked, returning");
       return;
     }
 
-  // qDebug("Map::mousePressEvent");
   switch (event->button())
     {
-    case Qt::RightButton: // press and hold generates mouse RightButton
-      qDebug("RightButton");
-      break;
-    case Qt::LeftButton: // press generates mouse LeftButton immediately
-      qDebug("LeftButton");
+      case Qt::RightButton: // press and hold generates mouse RightButton
+        //qDebug("MP-RightButton");
+        break;
 
-      _beginMapMove = event->pos();
-      break;
-    case Qt::MidButton:
-      qDebug("MidButton");
-      break;
+      case Qt::LeftButton: // press generates mouse LeftButton immediately
+        //qDebug("MP-LeftButton");
+        _beginMapMove = event->pos();
+        event->accept();
+        break;
 
-    default:
-      break;
+      case Qt::MidButton:
+        //qDebug("MP-MidButton");
+        break;
+
+      default:
+        break;
     }
 }
 
 void Map::mouseMoveEvent( QMouseEvent* event )
 {
-  qDebug() << "Map::mouseReleaseEvent()";
-
-  Q_UNUSED( event )
-
+  // qDebug() << "Map::mouseMoveEvent() Pos=" << event->pos();
   if( _mouseMoveIsActive == false &&
-      ( GpsNmea::gps->getConnected() == false || calculator->isManualInFlight() ) )
+     ( GpsNmea::gps->getConnected() == false || calculator->isManualInFlight() ) )
     {
-      _mouseMoveIsActive = true;
-      QApplication::setOverrideCursor(QCursor(Qt::SizeAllCursor));
+      QPoint dist = _beginMapMove - event->pos();
+
+      if( dist.manhattanLength() > 10 )
+        {
+          // On the N810/N900 we get a lot of move events also on a single
+          // mouse press and release action. If we do not filter that,
+          // all other mouse actions bound on release mouse are blocked.
+          _mouseMoveIsActive = true;
+          QApplication::setOverrideCursor(QCursor(Qt::SizeAllCursor));
+          event->accept();
+        }
     }
 }
 
 void Map::mouseReleaseEvent( QMouseEvent* event )
 {
-  qDebug() << "Map::mouseReleaseEvent(): Pos=" << event->pos();
-
+  // qDebug() << "Map::mouseReleaseEvent(): Pos=" << event->pos();
   if( _mouseMoveIsActive )
     {
       // User has released the mouse button after a mouse move. We move
@@ -548,47 +553,36 @@ void Map::mouseReleaseEvent( QMouseEvent* event )
       _mouseMoveIsActive = false;
 
       QApplication::restoreOverrideCursor();
-
       QPoint dist = _beginMapMove - event->pos();
+      QPoint center( width()/2, height()/2 );
 
-      if( dist.manhattanLength() > 10 )
-        {
-          QPoint center( width()/2, height()/2 );
+      center += dist;
 
-          center += dist;
+      // Center Map to new center point
+      _globalMapMatrix->centerToPoint( center );
+      QPoint newPos = _globalMapMatrix->mapToWgs( center );
 
-          qDebug() << "Begin" << _beginMapMove
-                   << "Center" << center
-                   << "Dist" << dist;
-
-
-          // Center Map to new center point
-          _globalMapMatrix->centerToPoint( center );
-          QPoint newPos = _globalMapMatrix->mapToWgs( center );
-
-          // Coordinates are toggled, don't know why
-          curMANPos = QPoint(newPos.y(), newPos.x());
-          scheduleRedraw();
-        }
-
+      // Coordinates are toggled, don't know why
+      curMANPos = QPoint(newPos.y(), newPos.x());
+      scheduleRedraw();
       event->accept();
       return;
     }
 
   if( mutex() )
     {
-      // qDebug("Map::mouseReleaseEvent(): mutex is locked, returning");
+      //qDebug("Map::mouseReleaseEvent(): mutex is locked, returning");
       return;
     }
 
   switch( event->button() )
     {
       case Qt::RightButton: // press and hold generates mouse RightButton
-        qDebug("RightButton");
+        //qDebug("MR-RightButton");
         break;
 
       case Qt::LeftButton: // press generates mouse LeftButton immediately
-        qDebug("LeftButton");
+        //qDebug("MR-LeftButton");
 
         if( __zoomButtonPress( event->pos() ) )
           {
@@ -600,7 +594,7 @@ void Map::mouseReleaseEvent( QMouseEvent* event )
 
       case Qt::MidButton:
 
-        qDebug("MidButton");
+        // qDebug("MR-MidButton");
         break;
 
       default:
