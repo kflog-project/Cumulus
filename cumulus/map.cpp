@@ -494,7 +494,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
 
 void Map::mousePressEvent(QMouseEvent* event)
 {
-  // qDebug() << "Map::mousePressEvent(): Pos=" << event->pos();
+  qDebug() << "Map::mousePressEvent(): Pos=" << event->pos();
 
   if( mutex() )
     {
@@ -524,6 +524,8 @@ void Map::mousePressEvent(QMouseEvent* event)
 
 void Map::mouseMoveEvent( QMouseEvent* event )
 {
+  qDebug() << "Map::mouseReleaseEvent()";
+
   Q_UNUSED( event )
 
   if( _mouseMoveIsActive == false &&
@@ -536,6 +538,8 @@ void Map::mouseMoveEvent( QMouseEvent* event )
 
 void Map::mouseReleaseEvent( QMouseEvent* event )
 {
+  qDebug() << "Map::mouseReleaseEvent(): Pos=" << event->pos();
+
   if( _mouseMoveIsActive )
     {
       // User has released the mouse button after a mouse move. We move
