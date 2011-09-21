@@ -301,18 +301,18 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="configwidget.cpp" line="266"/>
+        <location filename="configwidget.cpp" line="272"/>
         <source>&lt;html&gt;&lt;b&gt;Configuration settings have been changed!&lt;/b&gt;&lt;p&gt;Update of system can take a few seconds and more!&lt;/html&gt;</source>
         <oldsource>&lt;html&gt;&lt;b&gt;Configuration settings have been changed!&lt;/b&gt;&lt;p&gt;Update of system can take a few seconds!&lt;/html&gt;</oldsource>
         <translation>&lt;html&gt;&lt;b&gt;Die Konfiguration wurde geändert!&lt;/b&gt;&lt;p&gt;Ein System Update kann etwas dauern!&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="configwidget.cpp" line="326"/>
+        <location filename="configwidget.cpp" line="332"/>
         <source>Close without saving!</source>
         <translation>Schließen ohne speichern!</translation>
     </message>
     <message>
-        <location filename="configwidget.cpp" line="327"/>
+        <location filename="configwidget.cpp" line="333"/>
         <source>&lt;html&gt;You have changed:&lt;b&gt;&lt;ul&gt;%1&lt;/ul&gt;&lt;/b&gt;Discard changes?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Sie änderten:&lt;b&gt;&lt;ul&gt;%1&lt;/ul&gt;&lt;/b&gt;Änderungen verwerfen?&lt;/html&gt;</translation>
     </message>
@@ -579,7 +579,7 @@
 <context>
     <name>GpsNmea</name>
     <message>
-        <location filename="gpsnmea.cpp" line="2250"/>
+        <location filename="gpsnmea.cpp" line="2273"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -1124,43 +1124,43 @@
 <context>
     <name>Map</name>
     <message>
-        <location filename="map.cpp" line="147"/>
+        <location filename="map.cpp" line="148"/>
         <source>Airspace&amp;nbsp;Structure</source>
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2367"/>
+        <location filename="map.cpp" line="2425"/>
         <source>Map zoom in by factor %1</source>
         <translation>Kartenzoom rein Faktor %1</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2413"/>
+        <location filename="map.cpp" line="2471"/>
         <source>Map zoom out by factor %1</source>
         <translation>Kartenzoom raus Faktor %1</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2674"/>
+        <location filename="map.cpp" line="2732"/>
         <source>Airspace&amp;nbsp;Warning</source>
         <translation>Luftraum&amp;nbsp;Warnung</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2687"/>
-        <location filename="map.cpp" line="2721"/>
-        <location filename="map.cpp" line="2863"/>
+        <location filename="map.cpp" line="2745"/>
+        <location filename="map.cpp" line="2779"/>
+        <location filename="map.cpp" line="2921"/>
         <source>Inside</source>
         <translation>Innerhalb</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2744"/>
-        <location filename="map.cpp" line="2779"/>
-        <location filename="map.cpp" line="2900"/>
+        <location filename="map.cpp" line="2802"/>
+        <location filename="map.cpp" line="2837"/>
+        <location filename="map.cpp" line="2958"/>
         <source>Very Near</source>
         <translation>Dicht</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2802"/>
-        <location filename="map.cpp" line="2836"/>
-        <location filename="map.cpp" line="2936"/>
+        <location filename="map.cpp" line="2860"/>
+        <location filename="map.cpp" line="2894"/>
+        <location filename="map.cpp" line="2994"/>
         <source>Near</source>
         <translation>Nahe</translation>
     </message>
@@ -1168,184 +1168,184 @@
 <context>
     <name>MapContents</name>
     <message>
-        <location filename="mapcontents.cpp" line="226"/>
-        <location filename="mapcontents.cpp" line="243"/>
-        <location filename="mapcontents.cpp" line="251"/>
-        <location filename="mapcontents.cpp" line="688"/>
-        <location filename="mapcontents.cpp" line="705"/>
-        <location filename="mapcontents.cpp" line="713"/>
+        <location filename="mapcontents.cpp" line="227"/>
+        <location filename="mapcontents.cpp" line="244"/>
+        <location filename="mapcontents.cpp" line="252"/>
+        <location filename="mapcontents.cpp" line="689"/>
+        <location filename="mapcontents.cpp" line="706"/>
+        <location filename="mapcontents.cpp" line="714"/>
         <source>Out of memory! Map not loaded.</source>
         <translation>Speicher alle! Karte nicht geladen.</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1587"/>
+        <location filename="mapcontents.cpp" line="1588"/>
         <source>%1 download(s) with %2 error(s) done.</source>
         <translation>%1 download(s) mit %2 Fehler(n) getan.</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1590"/>
+        <location filename="mapcontents.cpp" line="1591"/>
         <source>Downloads finished</source>
         <translation>Downloads fertig</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1605"/>
+        <location filename="mapcontents.cpp" line="1606"/>
         <source>Network error occurred.
 All downloads are canceled!</source>
         <translation>Netzwerkfehler.
 Alle Downloads verworfen!</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1608"/>
+        <location filename="mapcontents.cpp" line="1609"/>
         <source>Network Error</source>
         <translation>Netzwerk Fehler</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1627"/>
+        <location filename="mapcontents.cpp" line="1628"/>
         <source>Download missing Data?</source>
         <translation>Fehlende Daten holen?</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1628"/>
+        <location filename="mapcontents.cpp" line="1629"/>
         <source>Download missing Data from the Internet?</source>
         <translation>Fehlende Daten aus dem Internet holen?</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1630"/>
+        <location filename="mapcontents.cpp" line="1631"/>
         <source>Active Internet connection is needed!</source>
         <translation>Aktive Internetverbindung ist erforderlich!</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1700"/>
+        <location filename="mapcontents.cpp" line="1701"/>
         <source>Loading maps...</source>
         <translation>Lade Karten...</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1793"/>
+        <location filename="mapcontents.cpp" line="1794"/>
         <source>Reading OpenAir Files</source>
         <translation>Lese OpenAir Dateien</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1801"/>
+        <location filename="mapcontents.cpp" line="1802"/>
         <source>Reading Welt2000 File</source>
         <translation>Lese Welt2000 Datei</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1837"/>
+        <location filename="mapcontents.cpp" line="1838"/>
         <source>Loading maps done</source>
         <translation>Karten geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2434"/>
-        <location filename="mapcontents.cpp" line="2525"/>
+        <location filename="mapcontents.cpp" line="2435"/>
+        <location filename="mapcontents.cpp" line="2526"/>
         <source>loading Welt2000</source>
         <translation>lade Welt2000</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2473"/>
+        <location filename="mapcontents.cpp" line="2474"/>
         <source>Welt2000 load failed</source>
         <translation>Welt2000 Ladefehler</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2491"/>
-        <location filename="mapcontents.cpp" line="2530"/>
+        <location filename="mapcontents.cpp" line="2492"/>
+        <location filename="mapcontents.cpp" line="2531"/>
         <source>Welt2000 loaded</source>
         <translation>Welt2000 geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2578"/>
+        <location filename="mapcontents.cpp" line="2579"/>
         <source>loading Airspaces</source>
         <translation>lade Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2586"/>
+        <location filename="mapcontents.cpp" line="2587"/>
         <source>Airspaces loaded</source>
         <translation>Lufträume geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2619"/>
-        <location filename="mapcontents.cpp" line="2685"/>
+        <location filename="mapcontents.cpp" line="2620"/>
+        <location filename="mapcontents.cpp" line="2686"/>
         <source>Drawing airports</source>
         <translation>Zeichne Flugplätze</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2635"/>
-        <location filename="mapcontents.cpp" line="2697"/>
+        <location filename="mapcontents.cpp" line="2636"/>
+        <location filename="mapcontents.cpp" line="2698"/>
         <source>Drawing glider sites</source>
         <translation>Zeichne Segelfluggelände</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2651"/>
-        <location filename="mapcontents.cpp" line="2709"/>
+        <location filename="mapcontents.cpp" line="2652"/>
+        <location filename="mapcontents.cpp" line="2710"/>
         <source>Drawing outlanding sites</source>
         <translation>Zeichne Landefelder</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2721"/>
+        <location filename="mapcontents.cpp" line="2722"/>
         <source>Drawing radio points</source>
         <translation>Zeichne Funkanlagen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2729"/>
+        <location filename="mapcontents.cpp" line="2730"/>
         <source>Drawing airspaces</source>
         <translation>Zeichne Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2737"/>
+        <location filename="mapcontents.cpp" line="2738"/>
         <source>Drawing obstacles</source>
         <translation>Zeichne Hindernisse</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2745"/>
+        <location filename="mapcontents.cpp" line="2746"/>
         <source>Drawing reporting points</source>
         <translation>Zeichne Meldepunkte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2753"/>
+        <location filename="mapcontents.cpp" line="2754"/>
         <source>Drawing cities</source>
         <translation>Zeichne Städte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2761"/>
+        <location filename="mapcontents.cpp" line="2762"/>
         <source>Drawing villages</source>
         <translation>Zeichne Dörfer</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2769"/>
+        <location filename="mapcontents.cpp" line="2770"/>
         <source>Drawing landmarks</source>
         <translation>Zeichne Landmarken</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2777"/>
+        <location filename="mapcontents.cpp" line="2778"/>
         <source>Drawing highways</source>
         <translation>Zeichne Autobahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2785"/>
+        <location filename="mapcontents.cpp" line="2786"/>
         <source>Drawing roads</source>
         <translation>Zeichne Straßen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2793"/>
+        <location filename="mapcontents.cpp" line="2794"/>
         <source>Drawing railroads</source>
         <translation>Zeichne Eisenbahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2801"/>
+        <location filename="mapcontents.cpp" line="2802"/>
         <source>Drawing hydro</source>
         <translation>Zeichne Hydro</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2809"/>
+        <location filename="mapcontents.cpp" line="2810"/>
         <source>Drawing lakes</source>
         <translation>Zeichne Seen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2817"/>
+        <location filename="mapcontents.cpp" line="2818"/>
         <source>Drawing topography</source>
         <translation>Zeichne Topographie</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2868"/>
+        <location filename="mapcontents.cpp" line="2869"/>
         <source>Drawing surface contours</source>
         <translation>Zeichne Oberfläche</translation>
     </message>
@@ -1658,6 +1658,7 @@ Alle Downloads verworfen!</translation>
     <name>PreFlightWaypointPage</name>
     <message>
         <location filename="preflightwaypointpage.cpp" line="42"/>
+        <location filename="preflightwaypointpage.cpp" line="306"/>
         <source>All</source>
         <translation>Alle</translation>
     </message>
@@ -1794,9 +1795,8 @@ Alle Downloads verworfen!</translation>
         <translation>Speichern fortsetzen?</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="306"/>
         <source>Formats</source>
-        <translation>Formate</translation>
+        <translation type="obsolete">Formate</translation>
     </message>
     <message>
         <location filename="preflightwaypointpage.cpp" line="309"/>
@@ -1804,63 +1804,73 @@ Alle Downloads verworfen!</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="312"/>
+        <location filename="preflightwaypointpage.cpp" line="313"/>
         <source>Open waypoint catalog</source>
         <translation>Öffne Wegpunkt Katalog</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="384"/>
+        <location filename="preflightwaypointpage.cpp" line="392"/>
         <source>No entries read</source>
         <translation>Keine Einträge gelesen</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="386"/>
+        <location filename="preflightwaypointpage.cpp" line="394"/>
         <source>No waypoints read from file!</source>
         <translation>Datei enthielt keine Wegpunkte!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="388"/>
+        <location filename="preflightwaypointpage.cpp" line="396"/>
         <source>Maybe you should change the filter values?</source>
         <translation>Vielleicht sollten Sie das Filter ändern?</translation>
     </message>
     <message>
         <location filename="preflightwaypointpage.cpp" line="234"/>
-        <location filename="preflightwaypointpage.cpp" line="395"/>
+        <location filename="preflightwaypointpage.cpp" line="412"/>
         <source>Continue?</source>
         <translation>Fortfahren?</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="397"/>
+        <location filename="preflightwaypointpage.cpp" line="310"/>
+        <source>CAI</source>
+        <translation>CAI</translation>
+    </message>
+    <message>
+        <location filename="preflightwaypointpage.cpp" line="402"/>
+        <source>Error in file </source>
+        <translation>Fehler in Datei</translation>
+    </message>
+    <message>
+        <location filename="preflightwaypointpage.cpp" line="414"/>
         <source>%1 waypoints would be read.</source>
         <translation>%1 Wegpunkte würden gelesen.</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="399"/>
+        <location filename="preflightwaypointpage.cpp" line="416"/>
         <source>Continue loading?</source>
         <translation>Laden fortsetzen?</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="428"/>
+        <location filename="preflightwaypointpage.cpp" line="449"/>
         <source>Low on memory!</source>
         <translation>Speicher Problem!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="430"/>
+        <location filename="preflightwaypointpage.cpp" line="451"/>
         <source>Waypoint import failed due to low on memory!</source>
         <translation>Wegpunkt Import fehlgeschlagen wegen zu wenig freien Speicher!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="488"/>
+        <location filename="preflightwaypointpage.cpp" line="509"/>
         <source>%1 waypoints added.</source>
         <translation>%1 Wegpunkte zugefügt.</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="492"/>
+        <location filename="preflightwaypointpage.cpp" line="513"/>
         <source>%1 waypoints ignored.</source>
         <translation>%1 Wegpunkte ignoriert.</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="498"/>
+        <location filename="preflightwaypointpage.cpp" line="519"/>
         <source>Import Results</source>
         <translation>Import Resultate</translation>
     </message>
@@ -1954,91 +1964,91 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="airspace.cpp" line="184"/>
+        <location filename="airspace.cpp" line="186"/>
         <source>AS-A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="186"/>
+        <location filename="airspace.cpp" line="188"/>
         <source>AS-B</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="188"/>
+        <location filename="airspace.cpp" line="190"/>
         <source>AS-C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="190"/>
+        <location filename="airspace.cpp" line="192"/>
         <source>AS-D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="192"/>
+        <location filename="airspace.cpp" line="194"/>
         <source>AS-E</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="194"/>
+        <location filename="airspace.cpp" line="196"/>
         <source>Wave Window</source>
         <translation>Wellenfenster</translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="196"/>
+        <location filename="airspace.cpp" line="198"/>
         <source>AS-F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="198"/>
+        <location filename="airspace.cpp" line="200"/>
         <source>Restricted</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="200"/>
+        <location filename="airspace.cpp" line="202"/>
         <source>Danger</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="202"/>
+        <location filename="airspace.cpp" line="204"/>
         <source>Prohibited</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="204"/>
+        <location filename="airspace.cpp" line="206"/>
         <source>CTR-C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="206"/>
+        <location filename="airspace.cpp" line="208"/>
         <source>CTR-D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="208"/>
+        <location filename="airspace.cpp" line="210"/>
         <source>Low Flight</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="210"/>
+        <location filename="airspace.cpp" line="212"/>
         <source>TMZ</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="212"/>
+        <location filename="airspace.cpp" line="214"/>
         <source>Glider Sector</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="214"/>
+        <location filename="airspace.cpp" line="216"/>
         <location filename="flighttask.cpp" line="64"/>
         <location filename="flighttask.h" line="83"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="242"/>
-        <location filename="airspace.cpp" line="250"/>
-        <location filename="airspace.cpp" line="264"/>
+        <location filename="airspace.cpp" line="244"/>
+        <location filename="airspace.cpp" line="253"/>
+        <location filename="airspace.cpp" line="267"/>
         <source>Unlimited</source>
         <translation>Unbegrenzt</translation>
     </message>
@@ -2257,13 +2267,13 @@ Alle Downloads verworfen!</translation>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="1382"/>
-        <location filename="flighttask.cpp" line="1397"/>
+        <location filename="flighttask.cpp" line="1372"/>
+        <location filename="flighttask.cpp" line="1387"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="1402"/>
+        <location filename="flighttask.cpp" line="1392"/>
         <source>too strong!</source>
         <translation>zu stark!</translation>
     </message>
@@ -2402,7 +2412,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="taskpoint.cpp" line="90"/>
         <source>Free</source>
-        <translation type="unfinished">Frei</translation>
+        <translation>Frei</translation>
     </message>
     <message>
         <location filename="taskpoint.cpp" line="92"/>
@@ -2453,8 +2463,9 @@ Alle Downloads verworfen!</translation>
         <translation>Bitte schalten Sie Ihr BT GPS ein!</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="125"/>
-        <location filename="waypointcatalog.cpp" line="662"/>
+        <location filename="waypointcatalog.cpp" line="124"/>
+        <location filename="waypointcatalog.cpp" line="678"/>
+        <location filename="waypointcatalog.cpp" line="1032"/>
         <source>Reading file</source>
         <translation>Lese Datei</translation>
     </message>
@@ -2920,6 +2931,11 @@ Alle Downloads verworfen!</translation>
         <location filename="settingspagegps.cpp" line="110"/>
         <source>Sync Clock</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="settingspagegps.cpp" line="115"/>
+        <source>Save NMEA Data</source>
+        <translation>Speichere NMEA Daten</translation>
     </message>
 </context>
 <context>
