@@ -24,8 +24,8 @@
  *  and to initiate the load of the map and all other data.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <unistd.h>
 #include <string.h>
 #include <signal.h>
@@ -505,6 +505,9 @@ void MainWindow::slotCreateApplicationWidgets()
            this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
   connect( viewMap->_theMap, SIGNAL( airspaceWarning( const QString&, const bool ) ),
            this, SLOT( slotAlarm( const QString&, const bool ) ) );
+  connect( viewMap->_theMap, SIGNAL( newPosition( QPoint& ) ),
+           calculator, SLOT( slot_changePosition( QPoint& ) ) );
+
   connect( viewMap, SIGNAL( toggleLDCalculation( const bool ) ),
            calculator, SLOT( slot_toggleLDCalculation(const bool) ) );
   connect( viewMap, SIGNAL( toggleMenu() ), this, SLOT( slotToggleMenu() ) );

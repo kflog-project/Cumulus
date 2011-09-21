@@ -475,6 +475,10 @@ public slots:
    */
   void slot_changePositionWp();
   /**
+   * Change position to the new coordinate point. Called by move map with mouse.
+   */
+  void slot_changePosition(QPoint& newPosition);
+  /**
    * set McCready value
    */
   void slot_Mc(const Speed&);

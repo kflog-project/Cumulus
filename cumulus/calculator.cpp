@@ -844,6 +844,9 @@ void Calculator::slot_changePosition(int direction)
           lastPosition = selectedWp->origP;
         }
       break;
+    case MapMatrix::Position:
+      // Nothing to do, new position was already set.
+      break;
     }
 
   // Check new position that it lays inside the earth coordinates +-90, +-180 degrees
@@ -894,6 +897,7 @@ void Calculator::slot_changePosition(int direction)
   calcDistance();
   calcBearing();
   calcGlidePath();
+
   // calculate always when moving manually (big delta !)
   _reachablelist->calculate(true);
   //qDebug("Elevation: %d m",_globalMapContents->findElevation(lastPosition) );
@@ -939,6 +943,14 @@ void Calculator::slot_changePositionHome()
 void Calculator::slot_changePositionWp()
 {
   slot_changePosition(MapMatrix::Waypoint);
+}
+
+
+/** Called if position was moved by using mouse. */
+void Calculator::slot_changePosition(QPoint& newPosition)
+{
+  lastPosition = newPosition;
+  slot_changePosition(MapMatrix::Position);
 }
 
 

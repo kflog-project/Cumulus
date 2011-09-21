@@ -242,19 +242,24 @@ private slots:
 signals:
 
   /**
-   * is emitted when left button click on the map
+   * Is emitted when left button click on the map
    */
   void waypointSelected(Waypoint *);
 
   /**
-   * is emitted when an airspace is entered or left behind
+   * Is emitted when an airspace is entered or left behind
    */
   void airspaceWarning(const QString&, const bool sound=true);
 
   /**
-   * is emitted when the map starts and ends a redrawing sequence
+   * Is emitted when the map starts and ends a redrawing sequence
    */
   void isRedrawing(bool);
+
+  /**
+   * Is emitted, when the map was moved to a new position by using the mouse.
+   */
+  void newPosition( QPoint& newPosition );
 
 protected:
   /**

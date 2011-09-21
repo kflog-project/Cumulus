@@ -564,6 +564,7 @@ void Map::mouseReleaseEvent( QMouseEvent* event )
 
       // Coordinates are toggled, don't know why
       curMANPos = QPoint(newPos.y(), newPos.x());
+      emit newPosition( curMANPos );
       scheduleRedraw();
       event->accept();
       return;

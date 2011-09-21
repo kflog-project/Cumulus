@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c): 2001      by Heiner Lamprecht, Florian Ehinger
- **                  2008-2010 by Axel Pauli
+ **                  2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -225,7 +225,7 @@ public:
 
   /** */
   enum MoveDirection {NotSet = 0, North = 1, West = 2, East = 4,
-                      South = 8, Home = 16, Waypoint = 32};
+                      South = 8, Home = 16, Waypoint = 32, Position = 64};
   /**
    * CurrentScale muss immer die groesste Zahl sein!
    */
