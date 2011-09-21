@@ -14,6 +14,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+-------------------------------------------------
+Cumulus 2.11.x (Development based on X11/Qt-4.7.4)
+-------------------------------------------------
+
+[+] 2011-09-21 AP: New waypoint import filter added for WinPilot or CAI waypoint
+                   files with extension '.dat'.
 [+] 2011-09-09 AP: New configuration option "Save NMEA Data" added to GPS
                    settings page. If the checkbox is enabled, all GPS NMEA
                    records are logged into a file. The file is located in
