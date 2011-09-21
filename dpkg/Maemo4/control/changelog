@@ -6,6 +6,9 @@ cumulus (2.11.0) stable; urgency=low
     files with extension .dat.
     
   * New configuration option Save NMEA Data added to GPS settings page.
+  
+  * Map can be moved now by left mouse press and mouse move to a new position
+    in manual mode.
 
  -- Axel Pauli <kflog.cumulus@googlemail.com>  Wed, 21 Sep 2011 11:54:37 +0200
 

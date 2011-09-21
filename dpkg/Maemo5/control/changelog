@@ -1,3 +1,13 @@
+cumulus (2.11.0) stable; urgency=low
+
+  * New waypoint import filter added for import of WinPilot and CAI waypoint
+    files with extension .dat.
+    
+  * New configuration option Save NMEA Data added to GPS settings page.
+  
+  * Map can be moved now by left mouse press and mouse move to a new position
+    in manual mode.
+
 cumulus (2.10.5) stable; urgency=low
 
   * Polar data file extended by glider type Foka 5

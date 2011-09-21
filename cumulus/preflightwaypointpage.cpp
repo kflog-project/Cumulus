@@ -303,7 +303,7 @@ void PreFlightWaypointPage::slotImportFile()
   QString wayPointDir = GeneralConfig::instance()->getUserDataDirectory();
 
   QString filter;
-  filter.append(tr("Formats") + " (*.kflogwp *.KFLOGWP *.kwp *.KWP *.cup *.CUP );;");
+  filter.append(tr("All") + " (*.kflogwp *.KFLOGWP *.kwp *.KWP *.cup *.CUP *.dat *.DAT);;");
   filter.append(tr("XML") + " (*.kflogwp *.KFLOGWP);;");
   filter.append(tr("Binary") + " (*.kwp *.KWP);;");
   filter.append(tr("SeeYou") + " (*.cup *.CUP);;");
