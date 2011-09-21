@@ -1,3 +1,14 @@
+cumulus (2.11.0) stable; urgency=low
+
+  * Build is done now with Qt4.7.4
+  
+  * New waypoint import filter added for import of WinPilot and CAI waypoint
+    files with extension .dat.
+    
+  * New configuration option Save NMEA Data added to GPS settings page.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Wed, 21 Sep 2011 11:54:37 +0200
+
 cumulus (2.10.5) stable; urgency=low
 
   * Polar data file extended by glider type Foka 5
