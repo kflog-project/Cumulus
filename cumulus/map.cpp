@@ -495,6 +495,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
 void Map::mousePressEvent(QMouseEvent* event)
 {
   // qDebug() << "Map::mousePressEvent(): Pos=" << event->pos();
+
   if( mutex() )
     {
       // qDebug("Map::mousePressEvent(): mutex is locked, returning");
@@ -504,17 +505,17 @@ void Map::mousePressEvent(QMouseEvent* event)
   switch (event->button())
     {
       case Qt::RightButton: // press and hold generates mouse RightButton
-        //qDebug("MP-RightButton");
+        // qDebug("MP-RightButton");
         break;
 
       case Qt::LeftButton: // press generates mouse LeftButton immediately
-        //qDebug("MP-LeftButton");
+        // qDebug("MP-LeftButton");
         _beginMapMove = event->pos();
         event->accept();
         break;
 
       case Qt::MidButton:
-        //qDebug("MP-MidButton");
+        // qDebug("MP-MidButton");
         break;
 
       default:
@@ -524,9 +525,8 @@ void Map::mousePressEvent(QMouseEvent* event)
 
 void Map::mouseMoveEvent( QMouseEvent* event )
 {
-  // qDebug() << "Map::mouseMoveEvent() Pos=" << event->pos();
   if( _mouseMoveIsActive == false &&
-     ( GpsNmea::gps->getConnected() == false || calculator->isManualInFlight() ) )
+     ( GpsNmea::gps->getGpsStatus() != GpsNmea::validFix || calculator->isManualInFlight() ) )
     {
       QPoint dist = _beginMapMove - event->pos();
 
@@ -545,6 +545,7 @@ void Map::mouseMoveEvent( QMouseEvent* event )
 void Map::mouseReleaseEvent( QMouseEvent* event )
 {
   // qDebug() << "Map::mouseReleaseEvent(): Pos=" << event->pos();
+
   if( _mouseMoveIsActive )
     {
       // User has released the mouse button after a mouse move. We move
