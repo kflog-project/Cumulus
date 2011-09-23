@@ -7,6 +7,8 @@ cumulus (2.11.0) stable; urgency=low
   
   * Map can be moved now by left mouse press and mouse move to a new position
     in manual mode.
+    
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Fri, 23 Sep 2011 16:48:40 +0200    
 
 cumulus (2.10.5) stable; urgency=low
 
