@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+ *  2011-09-29 AP: Cumulus 2.11.0 released      
+
 -------------------------------------------------
 Cumulus 2.11.x (Development based on X11/Qt-4.7.4)
 -------------------------------------------------
@@ -29,6 +31,9 @@ Cumulus 2.11.x (Development based on X11/Qt-4.7.4)
                    the user's data directory. The file name is CumulusNmea.log.
                    One backup with the name CumulusNmea.log.old is created from
                    a previous log file, when a new log file is opened.
+                   
+ *  2011-06-30 AP: Cumulus 2.10.5 released      
+                   
 [-] 2011-06-30 AP: BUGFIX: Waypoint import failed for Seeyou cup data file,
                    if elevation unit was given in feet. Fixed now.
 [-] 2011-06-29 AP: BUGFIX: Problems fixed in coordinate editor.
