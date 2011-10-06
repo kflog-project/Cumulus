@@ -1112,7 +1112,13 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
  */
 void Map::__drawBaseLayer()
 {
-  if( !_isEnable ) return;
+  if( !_isEnable )
+    {
+      return;
+    }
+
+  m_drawnCityList.clear();
+  QList<BaseMapElement *> drawnElements;
 
   // Erase the base layer and fill it with the subterrain color. If there
   // are no terrain map data available, this is the default map ground color.
@@ -1145,37 +1151,43 @@ void Map::__drawBaseLayer()
   GpsNmea::gps->readDataFromGps();
 
   // next, draw the topographical elements and the cities
-  _globalMapContents->drawList(&baseMapP, MapContents::TopoList);
-  _globalMapContents->drawList(&baseMapP, MapContents::CityList);
-  _globalMapContents->drawList(&baseMapP, MapContents::LakeList);
+  _globalMapContents->drawList(&baseMapP, MapContents::TopoList, drawnElements);
+  _globalMapContents->drawList(&baseMapP, MapContents::CityList, m_drawnCityList);
+  _globalMapContents->drawList(&baseMapP, MapContents::LakeList, drawnElements);
 
   // draw the roads and the railroads
   if( cs <= 200.0 )
     {
-      _globalMapContents->drawList(&baseMapP, MapContents::RoadList);
-      _globalMapContents->drawList(&baseMapP, MapContents::RailList);
+      _globalMapContents->drawList(&baseMapP, MapContents::RoadList, drawnElements);
+      _globalMapContents->drawList(&baseMapP, MapContents::RailList, drawnElements);
     }
 
   // draw the hydro
   if( cs <= 500.0 )
-  {
-    _globalMapContents->drawList(&baseMapP, MapContents::HydroList);
- }
+    {
+      _globalMapContents->drawList(&baseMapP, MapContents::HydroList, drawnElements);
+    }
 
   // draw the landmarks and the obstacles
   if( cs < 1024.0 )
     {
-      _globalMapContents->drawList(&baseMapP, MapContents::LandmarkList);
-      _globalMapContents->drawList(&baseMapP, MapContents::ObstacleList);
-      _globalMapContents->drawList(&baseMapP, MapContents::ReportList);
+      _globalMapContents->drawList(&baseMapP, MapContents::LandmarkList, drawnElements);
+      _globalMapContents->drawList(&baseMapP, MapContents::ObstacleList, drawnElements);
+      _globalMapContents->drawList(&baseMapP, MapContents::ReportList, drawnElements);
     }
 
   // draw the highways
-  _globalMapContents->drawList(&baseMapP, MapContents::HighwayList);
-  _globalMapContents->drawList(&baseMapP, MapContents::RadioList);
+  _globalMapContents->drawList(&baseMapP, MapContents::HighwayList, drawnElements);
+  _globalMapContents->drawList(&baseMapP, MapContents::RadioList, drawnElements);
 
   // end the painter
   baseMapP.end();
+
+  // draw the city labels if scale is not to high
+  if( cs <= 100.0 )
+    {
+      _drawCityLabels( m_pixBaseMap );
+    }
 }
 
 /**
@@ -1670,6 +1682,48 @@ void Map::__drawLabel( QPainter* painter,
 
   painter->drawText( textBox, Qt::AlignCenter, labelText );
   painter->restore();
+}
+
+void Map::_drawCityLabels( QPixmap& pixmap )
+{
+  if( m_drawnCityList.size() == 0 )
+    {
+      return;
+    }
+
+  QString labelText;
+
+  QPainter painter(&pixmap);
+  QFont font = painter.font();
+#ifdef MAEMO
+  font.setPointSize( 10 );
+#else
+  font.setPointSize( 6 );
+#endif
+  painter.setFont( font );
+  painter.setBrush(Qt::NoBrush);
+  painter.setPen(QPen(Qt::black, 2, Qt::SolidLine));
+
+  QSet<QString> set;
+
+  for( int i = 0; i < m_drawnCityList.size(); i++ )
+    {
+      LineElement* city = static_cast<LineElement *> (m_drawnCityList.at(i));
+
+      // Get the screen bounding box of the city
+      QRect sbRect = city->getScreenBoundingBox();
+
+      // A city can consist of several segments at a border edge but we want to
+      // draw the name only once.
+      if( sbRect.isValid() && set.contains( city->getName() ) == false )
+        {
+          painter.drawText( sbRect.x() + sbRect.width() / 2,
+                            sbRect.y() + sbRect.height() / 2 + 3,
+                            city->getName() );
+
+          set.insert( city->getName() );
+        }
+    }
 }
 
 /** This function sets the map rotation and redraws the map if the

@@ -176,8 +176,11 @@ class MapContents : public QObject
      *
      * @param  targetP  The painter to draw the elements into
      * @param  listID  The index of the list to be drawn
+     * @param  drawnElements A list of drawn elements
      */
-    void drawList(QPainter* targetP, unsigned int listID);
+    void drawList( QPainter* targetP,
+                   unsigned int listID,
+                   QList<BaseMapElement *>& drawnElements );
 
     /**
      * Draws all isohypses into the given painter

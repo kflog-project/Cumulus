@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2009 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -43,9 +43,11 @@ LineElement::~LineElement()
 
 bool LineElement::drawMapElement(QPainter* targetP)
 {
+  // Reset screen bounding box
+  sbBox = QRect();
+
   // If the element-type should not be drawn in the actual scale, or if the
   // element is not visible, return.
-
   if( ! glConfig->isBorder(typeID) || ! isVisible())
     {
       return false;
@@ -116,6 +118,9 @@ bool LineElement::drawMapElement(QPainter* targetP)
     }
 
   QPolygon mP( glMapMatrix->map(projPolygon) );
+
+  // Save screen bounding box
+  sbBox = mP.boundingRect();
 
   if(typeID == BaseMapElement::City)
     {

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2008-2009 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -30,7 +30,9 @@
  *
  * \see BaseMapElement#objectType
  *
- * \date 2000-2009
+ * \date 2000-2011
+ *
+ * \version $Id$
  *
  */
 
@@ -87,6 +89,14 @@ public:
         return glMapMatrix->isVisible(bBox, getTypeID());
       };
 
+    /**
+     * Returns the bounding box of the line element on the screen.
+     */
+    QRect getScreenBoundingBox()
+    {
+      return sbBox;
+    };
+
 protected:
     /**
      * Contains the projected positions of the line element.
@@ -97,6 +107,11 @@ protected:
      * The bounding-box of the line element.
      */
     QRect bBox;
+
+    /**
+     * The bounding box of the line element on the screen.
+     */
+    QRect sbBox;
 
     /**
      * "true", if the element is a valley. Valleys are used for Isohypsen

@@ -17,7 +17,7 @@
  ***********************************************************************/
 
 #include <cmath>
-#include <stdlib.h>
+#include <cstdlib>
 #include <unistd.h>
 
 #include <QtGui>
@@ -33,7 +33,6 @@
 #include "hwinfo.h"
 #include "isohypse.h"
 #include "lineelement.h"
-#include "map.h"
 #include "mapcalc.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"
@@ -169,7 +168,7 @@ MapContents::~MapContents()
       delete currentTask;
     }
 
-  qDeleteAll (airspaceList);
+  qDeleteAll(airspaceList);
 }
 
 // save the current waypoint list
@@ -2670,8 +2669,10 @@ void MapContents::drawList( QPainter* targetP,
   // qDebug( "List=%s, Length=%d, drawTime=%dms", list, len, t.elapsed() );
 }
 
-void MapContents::drawList(QPainter* targetP, unsigned int listID)
-  {
+void MapContents::drawList( QPainter* targetP,
+                            unsigned int listID,
+                            QList<BaseMapElement *>& drawnElements )
+{
   //const char *list="";
   //uint len = 0;
 
@@ -2753,7 +2754,13 @@ void MapContents::drawList(QPainter* targetP, unsigned int listID)
       //len=cityList.count();
       showProgress2WaitScreen( tr("Drawing cities") );
       for (int i = 0; i < cityList.size(); i++)
-        cityList[i].drawMapElement(targetP);
+        {
+          if( cityList[i].drawMapElement(targetP) )
+            {
+              drawnElements.append( &cityList[i] );
+            }
+        }
+
       break;
 
     case VillageList:

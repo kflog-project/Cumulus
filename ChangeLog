@@ -5,6 +5,7 @@ Cumulus changelog
 [+] Added feature
 [-] Removed
 [o] Modified
+[*] Remark, comment
 
 #===============================================================================#
 # Please add your changes always on top according to the following format rule: #
@@ -14,7 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
- *  2011-09-29 AP: Cumulus 2.11.0 released      
+[+] 2011-10-06 AP: City labels are drawn at the map now, if the scale is less
+                   than 100. But some of the city labels are wrong. That seems
+                   to be a problem in the KFLog data base.
+
+[*] 2011-09-29 AP: Cumulus 2.11.0 released      
 
 -------------------------------------------------
 Cumulus 2.11.x (Development based on X11/Qt-4.7.4)

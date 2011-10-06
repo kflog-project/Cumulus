@@ -25,6 +25,8 @@
  *
  * \date 1999-2011
  *
+ * \version $Id$
+ *
  */
 
 #ifndef MAP_H
@@ -388,6 +390,11 @@ private:
                     const bool isLandable );    // is landable?
 
   /**
+   * Draws the city labels at the map.
+   */
+  void _drawCityLabels( QPixmap& pixmap );
+
+  /**
    * Display Info about Airspace items
    */
   void __displayAirspaceInfo(const QPoint& current);
@@ -609,6 +616,9 @@ protected:
   QTime _lastNearTime;
   QTime _lastVeryNearTime;
   QTime _lastInsideTime;
+
+  /** List of drawn cities. */
+  QList<BaseMapElement *> m_drawnCityList;
 
 public:
 
