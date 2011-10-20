@@ -114,13 +114,13 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
 
   vbox->setSpacing(0);
   vbox->addWidget( zoomButton );
-  vbox->addSpacing(32);
+  vbox->addSpacing(10);
   vbox->addWidget( listButton );
-  vbox->addSpacing(32);
+  vbox->addSpacing(10);
   vbox->addWidget( updateButton );
-  vbox->addSpacing(32);
+  vbox->addSpacing(10);
   vbox->addWidget( aliasButton );
-  vbox->addSpacing(32);
+  vbox->addSpacing(10);
   vbox->addWidget( addButton );
   vbox->addStretch(2);
   vbox->addWidget( closeButton );
