@@ -150,20 +150,24 @@ deinstall:
 # call dpkg target to build a debian Cumulus Maemo package
 ##########################################################
 
-.PHONY : dpkg dpkg_make
+.PHONY : dpkg dpkg_prepare dpkg_make dpkg_build
 
 dpkg:
 	@echo "===== Building Diablo Maemo4 binary-only package for Cumulus $(VERSION) ====="
-	@$(MAKE) -f Makefile.Maemo4 VERSION=$(VERSION) dpkg_make
+	@$(MAKE) -f Makefile.Maemo4 VERSION=$(VERSION) dpkg_prepare dpkg_make dpkg_build
+
+# This target prepares the Debian build. A fresh copy of Cumulus is cheched out
+# from subversion. Therefore you need subversion access!
+dpkg_prepare:
+	rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
+	mkdir -p $(CUMULUS_DEB)
+	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
 
 # This target will build the debian packge. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation makrk
 # cause problems in ohter shell commands, if they not expanded before.
 
 dpkg_make:
-	rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
-	mkdir -p $(CUMULUS_DEB)
-	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
 	cd $(CUMULUS_DEB); \
 	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
@@ -171,6 +175,9 @@ dpkg_make:
 	cd $(CUMULUS_DEB)/dpkg/Maemo4/control; \
 	cp changelog control rules postinst prerm postrm ../../../debian/; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > ../../../debian/copyright;
+
+# This target builds the debian package, if all is prepared before.
+dpkg_build:
 	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage -rfakeroot -b
 
