@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2011 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,10 +23,9 @@
 #include "flarmdisplay.h"
 #include "layout.h"
 
-// The alias name length is limited to 15 characters
-#define MaxAliasLength 15
-
 QHash<QString, QString> FlarmAliasList::aliasHash;
+
+QMutex FlarmAliasList::mutex;
 
 /**
  * Constructor
@@ -321,6 +320,8 @@ void FlarmAliasList::slot_CellChanged( int row, int column )
 /** Loads the Flarm alias data from the related file into the alias hash. */
 bool FlarmAliasList::loadAliasData()
 {
+  mutex.lock();
+
   QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/" +
            GeneralConfig::instance()->getFlarmAliasFileName() );
 
@@ -328,6 +329,7 @@ bool FlarmAliasList::loadAliasData()
     {
       // could not open file ...
       qDebug() << "Cannot open file: " << f.fileName();
+      mutex.unlock();
       return false;
     }
 
@@ -365,7 +367,8 @@ bool FlarmAliasList::loadAliasData()
 
       if( sl.size() != 2 || key.isEmpty() || val.isEmpty() )
         {
-          qWarning() << "Wrong entry at line" << lineNo << "of cumulus-flarm.txt";
+          qWarning() << "Wrong entry at line" << lineNo << "of"
+                     << GeneralConfig::instance()->getFlarmAliasFileName();
           continue;
         }
 
@@ -377,6 +380,7 @@ bool FlarmAliasList::loadAliasData()
 
   qDebug() << aliasHash.size() << "entries read from" << f.fileName();
 
+  mutex.unlock();
   return true;
 }
 
@@ -388,6 +392,8 @@ bool FlarmAliasList::saveAliasData()
       return false;
     }
 
+  mutex.lock();
+
   QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/" +
            GeneralConfig::instance()->getFlarmAliasFileName() );
 
@@ -395,6 +401,7 @@ bool FlarmAliasList::saveAliasData()
     {
       // could not open file ...
       qWarning() << "Cannot open file: " << f.fileName();
+      mutex.unlock();
       return false;
     }
 
@@ -419,5 +426,6 @@ bool FlarmAliasList::saveAliasData()
 
   f.close();
 
+  mutex.unlock();
   return true;
 }

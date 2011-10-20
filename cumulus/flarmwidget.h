@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2011 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,9 @@
  * radar view. From the radar view the user can open the list view. All open
  * and close widget requests are handled by this widget.
  *
- * \date 2010
+ * \date 2010-2011
+ *
+ * \version $Id$
  */
 
 #ifndef FLARM_WIDGET_H

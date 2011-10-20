@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2011 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,7 +24,9 @@
  *
  * This widget shows the Flarm radar view with the operation buttons.
  *
- * \date 2010
+ * \date 2010-2011
+ *
+ * \version $Id$
  */
 
 #ifndef FLARM_RADAR_VIEW_H
@@ -36,6 +38,8 @@
 
 class QGroupBox;
 class QPushButton;
+class QString;
+
 class FlarmDisplay;
 
 class FlarmRadarView : public QWidget
@@ -66,6 +70,11 @@ public:
       return display;
     };
 
+public slots:
+
+  /** Called to change the visibility of the add Flarm Id button. */
+  void slotShowAddButton( QString selectedObject );
+
 private slots:
 
   /** Called if close button was pressed. */
@@ -82,6 +91,9 @@ private slots:
 
   /** Called if alias list button was pressed. */
   void slotOpenAliasList();
+
+  /** Called to add an object to the Flarm alias list. */
+  void slotAddFlarmId();
 
 signals:
 
@@ -101,6 +113,9 @@ private:
 
   /** Update interval button. */
   QPushButton* updateButton;
+
+  /** Add Flarm Id button. */
+  QPushButton *addButton;
 };
 
 #endif /* FLARM_RADAR_VIEW_H */

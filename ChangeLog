@@ -15,6 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2011-10-20 AP: Added a new button to the FLARM radar view to make it easier
+                   to add alias names for hexadecimal Flarm Identifiers. A
+                   selected Flarm object can be assigned an alias name now by
+                   using the plus button.
+
 [+] 2011-10-06 AP: City labels are drawn at the map now, if the scale is less
                    than 100. But some of the city labels are wrong. That seems
                    to be a problem in the KFLog data base.

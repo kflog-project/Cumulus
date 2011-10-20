@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2011 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -74,8 +74,14 @@ void FlarmWidget::showEvent( QShowEvent *event )
       connect( listView, SIGNAL(newObjectSelection(QString)),
                display, SLOT(slot_SetSelectedObject(QString)) );
 
+      connect( listView, SIGNAL(newObjectSelection(QString)),
+               radarView, SLOT(slotShowAddButton(QString)) );
+
       connect( display, SIGNAL(newObjectSelection(QString)),
                listView, SLOT(slot_SetSelectedObject(QString)) );
+
+      connect( display, SIGNAL(newObjectSelection(QString)),
+               radarView, SLOT(slotShowAddButton(QString)) );
     }
 }
 
@@ -112,6 +118,9 @@ void FlarmWidget::slotOpenAliasList()
 
   connect( aliasList, SIGNAL(newObjectSelection(QString)),
            listView, SLOT(slot_SetSelectedObject(QString)) );
+
+  connect( aliasList, SIGNAL(newObjectSelection(QString)),
+           radarView, SLOT(slotShowAddButton(QString)) );
 
   connect( aliasList, SIGNAL(closed() ), this, SLOT(slotAliasListClosed()) );
 

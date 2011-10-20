@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2011 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,9 @@
  * identifiers. The names are displayed in a two column table. The content of
  * the table is stored in a text file in the user's data directory.
  *
- * \date 2010
+ * \date 2010-2011
+ *
+ * \version $Id$
  */
 
 #ifndef FLARM_ALIAS_LIST_H_
@@ -34,10 +36,10 @@
 
 #include <QWidget>
 #include <QHash>
-#include <QString>
 
-class QTableWidget;
+class QMutex;
 class QString;
+class QTableWidget;
 
 class FlarmAliasList : public QWidget
 {
@@ -48,6 +50,9 @@ private:
   Q_DISABLE_COPY ( FlarmAliasList )
 
 public:
+
+  // The alias name length is limited to 15 characters
+  static const int MaxAliasLength = 15;
 
   /**
    * Constructor
@@ -62,7 +67,7 @@ public:
   /**
    * @return the aliasHash to the caller.
    */
-  static const QHash<QString, QString>& getAliasHash()
+  static QHash<QString, QString>& getAliasHash()
   {
     return aliasHash;
   };
@@ -118,8 +123,11 @@ private:
   /**
    * Flarm alias hash dictionary. The key is the Flarm Id and the value the
    * assigned alias name.
-   * */
+   */
   static QHash<QString, QString> aliasHash;
+
+  /** Mutex used for alias file load and save. */
+  static QMutex mutex;
 };
 
 #endif /* FLARM_ALIAS_LIST_H_ */

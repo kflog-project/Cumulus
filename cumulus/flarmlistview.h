@@ -25,6 +25,8 @@
  * This widget shows the Flarm object data in a list.
  *
  * \date 2010
+ *
+ * \version $Id$
  */
 
 #ifndef FLARM_LIST_VIEW_H

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2011 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,6 +18,7 @@
 #include <QtGui>
 
 #include "flarm.h"
+#include "flarmaliaslist.h"
 #include "flarmdisplay.h"
 #include "flarmradarview.h"
 #include "generalconfig.h"
@@ -88,11 +89,25 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   closeButton->setMinimumSize(size, size);
   closeButton->setMaximumSize(size, size);
 
+  addButton = new QPushButton;
+  addButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("add.png")));
+  addButton->setIconSize(QSize(IconSize, IconSize));
+  addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  addButton->setMinimumSize(size, size);
+  addButton->setMaximumSize(size, size);
+
+  if( FlarmDisplay::getSelectedObject().isEmpty() )
+    {
+      // The add button is invisible, if no selection is made.
+      addButton->setVisible( false );
+    }
+
   connect( zoomButton, SIGNAL(clicked() ), this, SLOT(slotZoom()) );
   connect( listButton, SIGNAL(clicked() ), this, SLOT(slotOpenListView()) );
   connect( updateButton, SIGNAL(clicked() ), this, SLOT(slotUpdateInterval()) );
   connect( aliasButton, SIGNAL(clicked() ), this, SLOT(slotOpenAliasList()) );
   connect( closeButton, SIGNAL(clicked() ), this, SLOT(slotClose()) );
+  connect( addButton, SIGNAL(clicked() ), this, SLOT(slotAddFlarmId()) );
 
   // vertical box with operator buttons
   QVBoxLayout *vbox = new QVBoxLayout;
@@ -105,6 +120,8 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   vbox->addWidget( updateButton );
   vbox->addSpacing(32);
   vbox->addWidget( aliasButton );
+  vbox->addSpacing(32);
+  vbox->addWidget( addButton );
   vbox->addStretch(2);
   vbox->addWidget( closeButton );
   buttonBox->setLayout( vbox );
@@ -183,4 +200,63 @@ void FlarmRadarView::slotUpdateInterval()
 void FlarmRadarView::slotOpenAliasList()
 {
   emit openAliasList();
+}
+
+/** Called to change the visibility of the add Flarm Id button. */
+void FlarmRadarView::slotShowAddButton( QString selectedObject )
+{
+  if( selectedObject.isEmpty() == true )
+    {
+      // The add button is invisible, if no selection is made.
+      addButton->setVisible( false );
+    }
+  else
+    {
+      addButton->setVisible( true );
+    }
+}
+
+/** Called to add an object to the Flarm alias list. */
+void FlarmRadarView::slotAddFlarmId()
+{
+  QString& selectedObject = FlarmDisplay::getSelectedObject();
+
+  if( selectedObject.isEmpty() )
+    {
+      // There is nothing selected, ignore call.
+      return;
+    }
+
+  QHash<QString, QString>& aliasHash = FlarmAliasList::getAliasHash();
+
+  if( aliasHash.isEmpty() )
+    {
+      // try to load it
+      FlarmAliasList::loadAliasData();
+    }
+
+  aliasHash = FlarmAliasList::getAliasHash();
+
+  // Look for an existing alias name
+  QString alias = aliasHash.value( selectedObject, "" );
+
+  // Add the selected Flarm Id to the alias list.
+  bool ok;
+  alias = QInputDialog::getText( this,
+                                 tr("Add alias name"),
+                                 tr("Alias name (15) for ") + selectedObject + ":",
+                                 QLineEdit::Normal,
+                                 alias,
+                                 &ok );
+
+  if( !ok || alias.isEmpty() )
+    {
+      return;
+    }
+
+  // Add an alias name to the alias list. An existing alias name will be updated.
+  aliasHash.insert( selectedObject, alias.trimmed().left(FlarmAliasList::MaxAliasLength) );
+  FlarmAliasList::saveAliasData();
+  display->createBackground();
+  display->update();
 }

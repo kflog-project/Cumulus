@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2011 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -105,6 +105,7 @@ void FlarmDisplay::createBackground()
         break;
       default:
         radius = 500;
+        break;
     }
 
   QPainter painter( &background );
@@ -351,7 +352,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           alpha = atan2( ((double) north), (double) east );
         }
 
-      double heading2Object = ((double) (360 - calculator->getlastHeading()) * M_PI / 180.) + (M_PI_2 - alpha);
+      double heading2Object = ((double) (360. - calculator->getlastHeading()) * M_PI / 180.) + (M_PI_2 - alpha);
 
       /*
       qDebug() << "North=" << north

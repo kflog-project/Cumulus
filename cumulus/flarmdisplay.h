@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2011 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,7 +24,9 @@
  *
  * This widget shows the Flarm display view.
  *
- * \date 2010
+ * \date 2010-2011
+ *
+ * \version $Id$
  */
 
 #ifndef FLARM_DISPLAY_H
@@ -117,7 +119,7 @@ public slots:
   /** Set object to be selected. It is the hash key. */
   void slot_SetSelectedObject( QString newObject );
 
-private:
+public:
 
   /** Creates the background picture with the radar screen. */
   void createBackground();
