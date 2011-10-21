@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2011 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,9 @@
  * This widget displays the about application data in a tabbed window
  * decorated this a headline and an icon on top.
  *
- * \date 2010
+ * \date 2010-2011
+ *
+ * \version $Id$
  *
 */
 
@@ -93,6 +95,16 @@ class AboutWidget : public QWidget
     team->setHtml( text );
   };
 
+  /**
+  * Sets the passed text on the disclaimer page. The text can be HTML formatted.
+  *
+  * \param text The text to be set on the disclaimer page.
+  */
+  void setDisclaimerText( const QString& text )
+  {
+    disclaimer->setHtml( text );
+  };
+
  private:
 
   /** The header icon widget. */
@@ -106,6 +118,10 @@ class AboutWidget : public QWidget
 
   /** The team text browser page widget. */
   QTextBrowser *team;
+
+  /** The disclaimer text browser page widget. */
+  QTextBrowser *disclaimer;
+
 };
 
 #endif /* ABOUT_WIDGET_H */

@@ -27,7 +27,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
-#include <string.h>
+#include <cstring>
 #include <signal.h>
 #include <sys/ioctl.h>
 
@@ -1826,6 +1826,22 @@ void MainWindow::slotVersion()
           "<br></html>" ));
 
   aw->setTeamText( team );
+
+  QString disclaimer( tr(
+            "<hml>"
+            "This program comes with"
+            "<p><b>ABSOLUTELY NO WARRANTY!</b></p>"
+            "Do not rely on this software program as your "
+            "primary source of navigation. You as user are "
+            "responsible for using official aeronautical "
+            "charts and proper methods for safe navigation. "
+            "The information presented in this software "
+            "program may be outdated or incorrect."
+            "<p><b>Don't use this program if you don't agree!</b></p>"
+            "</html>" ));
+
+  aw->setDisclaimerText( disclaimer );
+
   aw->resize( size() );
   aw->setVisible( true );
 }
