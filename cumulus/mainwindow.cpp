@@ -1835,9 +1835,9 @@ void MainWindow::slotVersion()
             "primary source of navigation. You as user are "
             "responsible for using official aeronautical "
             "charts and proper methods for safe navigation. "
-            "The information presented in this software "
-            "program may be outdated or incorrect."
-            "<p><b>Don't use this program if you don't agree!</b></p>"
+            "The information presented by this application "
+            "may be outdated or incorrect."
+            "<p><b>Don't use this program if you cannot accept the disclaimer!</b></p>"
             "</html>" ));
 
   aw->setDisclaimerText( disclaimer );
