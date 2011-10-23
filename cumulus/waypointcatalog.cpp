@@ -1155,11 +1155,11 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           wp.isLandable = true;
           wp.priority = Waypoint::Normal;
           break;
-        case 6:
-          wp.type = BaseMapElement::Landmark;
+        case 9:
+          wp.type = BaseMapElement::Ndb;
           break;
-        case 7:
-          wp.type = BaseMapElement::Landmark;
+        case 10:
+          wp.type = BaseMapElement::Vor;
           break;
         default:
           wp.type = BaseMapElement::Landmark;
