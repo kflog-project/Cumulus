@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2011-10-24 AP: The first airspace of an airspace file was never loaded. It
+                   is fixed now.
+
 [o] 2011-10-23 AP: SeeYou waypoint import filter modified.
 
 [+] 2011-10-21 AP: Disclaimer tabulator added to AboutWidget.
