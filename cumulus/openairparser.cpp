@@ -313,6 +313,10 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
   QTextStream in(&source);
   in.setCodec( "ISO 8859-15" );
 
+  // Set these values to true to get loaded the first airspace.
+  _acRead = true;
+  _anRead = true;
+
   while( ! in.atEnd() )
     {
       QString line = in.readLine();
@@ -601,7 +605,6 @@ void OpenAirParser::finishAirspace()
       qWarning() << "OpenAirParser: Line" << _lineNumber
                  << "Object" << asName
                  << "contains to less coordinates! Ignoring it.";
-
       return;
     }
 
@@ -629,7 +632,7 @@ void OpenAirParser::finishAirspace()
   _airlist.append(as);
   _objCounter++;
 
-  // qDebug("finalized airspace %s. %d points in airspace", asName.toLatin1().data(), cnt);
+  // qDebug("finalized airspace %s. %d points in airspace", asName.toLatin1().data(), asPA.count());
 
   if ( _doCompile )
     {
