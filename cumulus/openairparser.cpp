@@ -461,6 +461,16 @@ void OpenAirParser::parseLine(QString& line)
       // airspace name
       _anRead = true;
       asName = line.mid(3);
+
+      if( asName == "COLORENTRY" )
+        {
+          // This name is used by Strepla for color definitions.
+          // We ignore that and make a resynchronization
+          _isCurrentAirspace = false;
+          _acRead = true;
+          _anRead = true;
+        }
+
       return;
     }
 
