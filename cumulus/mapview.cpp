@@ -760,6 +760,7 @@ void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
     default:
       slot_info( tr( "GPS lost" ) );
       color = Qt::red;
+      break;
     }
 
   if( status != GpsNmea::notConnected )

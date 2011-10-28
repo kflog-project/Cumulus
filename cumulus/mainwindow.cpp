@@ -1896,7 +1896,7 @@ void MainWindow::slotRememberWaypoint()
   wp.length = 0;
   AltitudeCollection alt = calculator->getAltitudeCollection();
   wp.elevation = int ( ( alt.gpsAltitude - alt.gndAltitude ).getMeters() );
-  wp.type = BaseMapElement::Turnpoint;
+  wp.type = BaseMapElement::Landmark;
   wp.isLandable = false;
   wp.country = GeneralConfig::instance()->getHomeCountryCode();
 

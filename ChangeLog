@@ -15,6 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2011-10-28 AP: The type of an user added waypoint by pressing the bearing
+                   icon was changed from turnpoint to landmark. The middle
+                   position of a square is better to see at the map as a lot of
+                   flags.
+
 [-] 2011-10-24 AP: The first airspace of an airspace file was never loaded. It
                    is fixed now.
 
