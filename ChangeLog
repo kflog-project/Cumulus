@@ -15,6 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2011-11-16 AP: Waypoint import routine for cup files enhanced, that also
+                   can be handled runway length values using unit feet. That is
+                   not conform to the SeeYou specification but I saw that in
+                   a south African waypoint file.
+
 [o] 2011-10-28 AP: The type of an user added waypoint by pressing the bearing
                    icon was changed from turnpoint to landmark. The middle
                    position of a square is better to see at the map as a lot of
