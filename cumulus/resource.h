@@ -7,10 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
-**                   2009 modified by Axel Pauli
+**                   2009-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -110,7 +110,7 @@
 #define CITY             42
 #define VILLAGE          43
 #define LANDMARK         44
-#define HIGHWAY          45
+#define MOTORWAY         45
 #define ROAD             46
 #define RAILWAY          47
 #define AERIAL_CABLE     48

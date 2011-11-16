@@ -1060,10 +1060,10 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
       switch (typeIn)
         {
-        case BaseMapElement::Highway:
+        case BaseMapElement::Motorway:
           READ_POINT_LIST
 
-          if ( !GeneralConfig::instance()->getMapLoadHighways() ) break;
+          if ( !GeneralConfig::instance()->getMapLoadMotorways() ) break;
 
           highwayList.append( LineElement("", typeIn, all, false, fileSecID) );
           break;
@@ -1321,7 +1321,8 @@ bool MapContents::__readBinaryFile(const int fileSecID,
           // qDebug("added landmark '%s'", name.toLatin1().data());
           break;
         default:
-          qWarning ("MapContents::__readBinaryFile; type not handled in switch: %d", typeIn);
+          qWarning("MapContents::__readBinaryFile; type not handled in switch: %d", typeIn);
+          break;
         }
 
       // @AP: Performance brake! emit progress calls waitscreen and

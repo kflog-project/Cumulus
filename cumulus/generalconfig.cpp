@@ -260,7 +260,7 @@ void GeneralConfig::load()
   _mapLoadIsoLines                = value( "LoadIsoLines", true ).toBool();
   _mapShowIsoLineBorders          = value( "ShowIsoLineBorders", false ).toBool();
   _mapLoadRoads                   = value( "LoadRoads", true ).toBool();
-  _mapLoadHighways                = value( "LoadHighways", true ).toBool();
+  _mapLoadMotorways                = value( "LoadMotorways", true ).toBool();
   _mapLoadRailways                = value( "LoadRailways", true ).toBool();
   _mapLoadCities                  = value( "LoadCities", true ).toBool();
   _mapLoadWaterways               = value( "LoadWaterways", true ).toBool();
@@ -609,7 +609,7 @@ void GeneralConfig::save()
   setValue( "ShowWaypointLabels", _mapShowWaypointLabels );
   setValue( "ShowLabelsExtraInfo", _mapShowLabelsExtraInfo );
   setValue( "LoadRoads", _mapLoadRoads );
-  setValue( "LoadHighways", _mapLoadHighways );
+  setValue( "LoadMotorways", _mapLoadMotorways );
   setValue( "LoadRailways", _mapLoadRailways );
   setValue( "LoadCities", _mapLoadCities   );
   setValue( "LoadWaterways", _mapLoadWaterways );

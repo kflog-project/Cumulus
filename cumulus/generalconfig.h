@@ -1146,14 +1146,14 @@ class GeneralConfig : protected QSettings
   };
 
   /** gets Map LoadHighways */
-  bool getMapLoadHighways() const
+  bool getMapLoadMotorways() const
   {
-    return _mapLoadHighways;
+    return _mapLoadMotorways;
   };
   /** sets Map LoadHighways */
-  void setMapLoadHighways(const bool newValue)
+  void setMapLoadMotorways(const bool newValue)
   {
-    _mapLoadHighways = newValue;
+    _mapLoadMotorways = newValue;
   };
 
   /** gets Map LoadRailways */
@@ -2186,7 +2186,7 @@ class GeneralConfig : protected QSettings
   // Map LoadRoads
   bool _mapLoadRoads;
   // Map LoadHighways
-  bool _mapLoadHighways;
+  bool _mapLoadMotorways;
   // Map LoadRailways
   bool _mapLoadRailways;
   // Map LoadCities

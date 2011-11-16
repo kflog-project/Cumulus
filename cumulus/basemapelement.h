@@ -66,7 +66,7 @@ public:
     LowFlight = LOW_FLIGHT, Restricted = RESTRICTED, Prohibited = PROHIBITED, Tmz = TMZ, GliderSector = GLIDER_SECTOR, Obstacle = OBSTACLE,
     LightObstacle = LIGHT_OBSTACLE, ObstacleGroup = OBSTACLE_GROUP, LightObstacleGroup = LIGHT_OBSTACLE_GROUP,
     Spot = SPOT, Isohypse = ISOHYPSE, Glacier = GLACIER, PackIce = PACK_ICE, Border = BORDER, City = CITY,
-    Village = VILLAGE, Landmark = LANDMARK, Highway = HIGHWAY, Road = ROAD, Railway = RAILWAY,
+    Village = VILLAGE, Landmark = LANDMARK, Motorway = MOTORWAY, Road = ROAD, Railway = RAILWAY,
     AerialRailway = AERIAL_CABLE, Lake = LAKE, River = RIVER, Canal = CANAL, Flight = FLIGHT, Task = FLIGHT_TASK,
     Trail = TRAIL, Railway_D = RAILWAY_D, Aerial_Cable = AERIAL_CABLE, River_T = RIVER_T, Lake_T = LAKE_T,
     Forest = FOREST, Turnpoint = TURNPOINT, Thermal = THERMAL,

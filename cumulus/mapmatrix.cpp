@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2001      by Heiner Lamprecht
- **                   2008-2010 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -181,7 +181,7 @@ bool MapMatrix::isVisible( const QRect& itemBorder, int typeID) const
   // ! check for < 10000 is a workaround for a bug other where
   //   that came out after fixing the scale criteria that was always true
   //   before
-  if( typeID == BaseMapElement::Highway ||
+  if( typeID == BaseMapElement::Motorway ||
       typeID == BaseMapElement::Road ||
       typeID == BaseMapElement::Trail ||
       typeID == BaseMapElement::Railway ||
@@ -334,6 +334,7 @@ void MapMatrix::__moveMap(int dir)
   case Home:
     mapCenterLat = homeLat;
     mapCenterLon = homeLon;
+    break;
   }
 }
 

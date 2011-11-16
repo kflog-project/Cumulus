@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -176,7 +176,7 @@ void SettingsPageMapObjects::slot_load()
   liWpLabels->setCheckState( conf->getMapShowWaypointLabels() ? Qt::Checked : Qt::Unchecked );
   liLabelsInfo->setCheckState( conf->getMapShowLabelsExtraInfo() ? Qt::Checked : Qt::Unchecked );
   liRoads->setCheckState( conf->getMapLoadRoads() ? Qt::Checked : Qt::Unchecked );
-  liHighways->setCheckState( conf->getMapLoadHighways() ? Qt::Checked : Qt::Unchecked );
+  liMotorways->setCheckState( conf->getMapLoadMotorways() ? Qt::Checked : Qt::Unchecked );
   liRailways->setCheckState( conf->getMapLoadRailways() ? Qt::Checked : Qt::Unchecked );
   liCities->setCheckState( conf->getMapLoadCities() ? Qt::Checked : Qt::Unchecked );
   liWaterways->setCheckState( conf->getMapLoadWaterways() ? Qt::Checked : Qt::Unchecked );
@@ -205,7 +205,7 @@ void SettingsPageMapObjects::slot_save()
   conf->setMapLoadIsoLines( liIsolines->checkState() == Qt::Checked ? true : false );
   conf->setMapShowIsoLineBorders(liIsolineBorders->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadRoads(liRoads->checkState() == Qt::Checked ? true : false);
-  conf->setMapLoadHighways(liHighways->checkState() == Qt::Checked ? true : false);
+  conf->setMapLoadMotorways(liMotorways->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadRailways(liRailways->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadCities(liCities->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadWaterways(liWaterways->checkState() == Qt::Checked ? true : false);
@@ -236,9 +236,9 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liForests->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liForests );
 
-  liHighways = new QTableWidgetItem( tr("Highways") );
-  liHighways->setFlags( Qt::ItemIsEnabled );
-  loadOptions->setItem( row++, col, liHighways );
+  liMotorways = new QTableWidgetItem( tr("Motorways") );
+  liMotorways->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, col, liMotorways );
 
   liIsolines = new QTableWidgetItem( tr("Isolines") );
   liIsolines->setFlags( Qt::ItemIsEnabled );
@@ -320,7 +320,7 @@ void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
   changed |= ( conf->getMapShowWaypointLabels() ? Qt::Checked : Qt::Unchecked ) != liWpLabels->checkState();
   changed |= ( conf->getMapShowLabelsExtraInfo() ? Qt::Checked : Qt::Unchecked ) != liLabelsInfo->checkState();
   changed |= ( conf->getMapLoadRoads() ? Qt::Checked : Qt::Unchecked ) != liRoads->checkState();
-  changed |= ( conf->getMapLoadHighways() ? Qt::Checked : Qt::Unchecked ) != liHighways->checkState();
+  changed |= ( conf->getMapLoadMotorways() ? Qt::Checked : Qt::Unchecked ) != liMotorways->checkState();
   changed |= ( conf->getMapLoadRailways() ? Qt::Checked : Qt::Unchecked ) != liRailways->checkState();
   changed |= ( conf->getMapLoadCities() ? Qt::Checked : Qt::Unchecked ) != liCities->checkState();
   changed |= ( conf->getMapLoadWaterways() ? Qt::Checked : Qt::Unchecked ) != liWaterways->checkState();

@@ -385,7 +385,7 @@ const QPen& MapConfig::__getPen(unsigned int typeID, int sIndex)
       return trailPenList[sIndex];
     case BaseMapElement::Road:
       return roadPenList[sIndex];
-    case BaseMapElement::Highway:
+    case BaseMapElement::Motorway:
       return highwayPenList[sIndex];
     case BaseMapElement::Railway:
       return railPenList[sIndex];
@@ -453,7 +453,7 @@ bool MapConfig::isBorder(unsigned int typeID)
       return trailBorder[scaleIndex];
     case BaseMapElement::Road:
       return roadBorder[scaleIndex];
-    case BaseMapElement::Highway:
+    case BaseMapElement::Motorway:
       return highwayBorder[scaleIndex];
     case BaseMapElement::Railway:
       return railBorder[scaleIndex];

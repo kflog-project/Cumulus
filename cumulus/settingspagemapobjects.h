@@ -104,7 +104,7 @@ private:
   QTableWidgetItem *liIsolines;
   QTableWidgetItem *liIsolineBorders;
   QTableWidgetItem *liRoads;
-  QTableWidgetItem *liHighways;
+  QTableWidgetItem *liMotorways;
   QTableWidgetItem *liRailways;
   QTableWidgetItem *liCities;
   QTableWidgetItem *liWaterways;
