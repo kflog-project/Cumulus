@@ -260,7 +260,7 @@ void GeneralConfig::load()
   _mapLoadIsoLines                = value( "LoadIsoLines", true ).toBool();
   _mapShowIsoLineBorders          = value( "ShowIsoLineBorders", false ).toBool();
   _mapLoadRoads                   = value( "LoadRoads", true ).toBool();
-  _mapLoadMotorways                = value( "LoadMotorways", true ).toBool();
+  _mapLoadMotorways               = value( "LoadMotorways", true ).toBool();
   _mapLoadRailways                = value( "LoadRailways", true ).toBool();
   _mapLoadCities                  = value( "LoadCities", true ).toBool();
   _mapLoadWaterways               = value( "LoadWaterways", true ).toBool();

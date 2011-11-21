@@ -1065,7 +1065,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
           if ( !GeneralConfig::instance()->getMapLoadMotorways() ) break;
 
-          highwayList.append( LineElement("", typeIn, all, false, fileSecID) );
+          motorwayList.append( LineElement("", typeIn, all, false, fileSecID) );
           break;
 
         case BaseMapElement::Road:
@@ -1321,7 +1321,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
           // qDebug("added landmark '%s'", name.toLatin1().data());
           break;
         default:
-          qWarning("MapContents::__readBinaryFile; type not handled in switch: %d", typeIn);
+          qWarning ("MapContents::__readBinaryFile; type not handled in switch: %d", typeIn);
           break;
         }
 
@@ -1999,11 +1999,11 @@ void MapContents::unloadMaps(unsigned int distance)
   qDebug("Unload reportList(%d), elapsed=%d", reportList.count(), t.restart());
 #endif
 
-  unloadMapObjects( highwayList );
+  unloadMapObjects( motorwayList );
 
 #ifdef DEBUG_UNLOAD
   sum += t.elapsed();
-  qDebug("Unload highwayList(%d), elapsed=%d", highwayList.count(), t.restart());
+  qDebug("Unload motorwayList(%d), elapsed=%d", motorwayList.count(), t.restart());
 #endif
 
   unloadMapObjects( roadList );
@@ -2159,8 +2159,8 @@ void MapContents::clearList(const int listIndex)
     case LandmarkList:
       landmarkList.clear();
       break;
-    case HighwayList:
-      highwayList.clear();
+    case MotorwayList:
+      motorwayList.clear();
       break;
     case RoadList:
       roadList.clear();
@@ -2208,8 +2208,8 @@ unsigned int MapContents::getListLength( const int listIndex ) const
       return villageList.count();
     case LandmarkList:
       return landmarkList.count();
-    case HighwayList:
-      return highwayList.count();
+    case MotorwayList:
+      return motorwayList.count();
     case RoadList:
       return roadList.count();
     case RailList:
@@ -2269,8 +2269,8 @@ BaseMapElement* MapContents::getElement(int listType, unsigned int index)
       return &villageList[index];
     case LandmarkList:
       return &landmarkList[index];
-    case HighwayList:
-      return &highwayList[index];
+    case MotorwayList:
+      return &motorwayList[index];
     case RoadList:
       return &roadList[index];
     case RailList:
@@ -2349,7 +2349,7 @@ void MapContents::slotReloadMapData()
   obstacleList.clear();
   railList.clear();
   reportList.clear();
-  highwayList.clear();
+  motorwayList.clear();
   roadList.clear();
   topoList.clear();
   villageList.clear();
@@ -2780,12 +2780,12 @@ void MapContents::drawList( QPainter* targetP,
         landmarkList[i].drawMapElement(targetP);
       break;
 
-    case HighwayList:
-      //list="HighwayList";
-      //len=highwayList.count();
-      showProgress2WaitScreen( tr("Drawing highways") );
-      for (int i = 0; i < highwayList.size(); i++)
-        highwayList[i].drawMapElement(targetP);
+    case MotorwayList:
+      //list="MotorwayList";
+      //len=MotorwayList.count();
+      showProgress2WaitScreen( tr("Drawing motorways") );
+      for (int i = 0; i < motorwayList.size(); i++)
+        motorwayList[i].drawMapElement(targetP);
       break;
 
     case RoadList:

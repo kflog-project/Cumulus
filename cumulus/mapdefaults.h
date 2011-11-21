@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2001      by Heiner Lamprecht
-**                   2009-2010 by Axel Pauli
+**                   2009-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -139,21 +139,21 @@
 #define ROAD_PEN_STYLE_3 Qt::SolidLine
 #define ROAD_PEN_STYLE_4 Qt::SolidLine
 
-// [Highway] color red
-#define HIGH_COLOR_1  QColor(255,000,000)
-#define HIGH_COLOR_2  QColor(255,000,000)
-#define HIGH_COLOR_3  QColor(255,000,000)
-#define HIGH_COLOR_4  QColor(255,000,000)
+// [motorway] color red
+#define MOTORWAY_COLOR_1  QColor(255,000,000)
+#define MOTORWAY_COLOR_2  QColor(255,000,000)
+#define MOTORWAY_COLOR_3  QColor(255,000,000)
+#define MOTORWAY_COLOR_4  QColor(255,000,000)
 
-#define HIGH_PEN_WIDTH_1 6
-#define HIGH_PEN_WIDTH_2 5
-#define HIGH_PEN_WIDTH_3 4
-#define HIGH_PEN_WIDTH_4 3
+#define MOTORWAY_PEN_WIDTH_1 6
+#define MOTORWAY_PEN_WIDTH_2 5
+#define MOTORWAY_PEN_WIDTH_3 4
+#define MOTORWAY_PEN_WIDTH_4 3
 
-#define HIGH_PEN_STYLE_1 Qt::SolidLine
-#define HIGH_PEN_STYLE_2 Qt::SolidLine
-#define HIGH_PEN_STYLE_3 Qt::SolidLine
-#define HIGH_PEN_STYLE_4 Qt::SolidLine
+#define MOTORWAY_PEN_STYLE_1 Qt::SolidLine
+#define MOTORWAY_PEN_STYLE_2 Qt::SolidLine
+#define MOTORWAY_PEN_STYLE_3 Qt::SolidLine
+#define MOTORWAY_PEN_STYLE_4 Qt::SolidLine
 
 // [Railway] color black
 #define RAIL_COLOR_1  QColor(000,000,000)

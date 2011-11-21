@@ -1148,7 +1148,7 @@
 <context>
     <name>Map</name>
     <message>
-        <location filename="map.cpp" line="148"/>
+        <location filename="map.cpp" line="147"/>
         <source>Airspace&amp;nbsp;Structure</source>
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
@@ -1340,7 +1340,8 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="mapcontents.cpp" line="2786"/>
-        <source>Drawing highways</source>
+        <source>Drawing motorways</source>
+        <oldsource>Drawing highways</oldsource>
         <translation>Zeichne Autobahnen</translation>
     </message>
     <message>

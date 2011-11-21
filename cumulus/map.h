@@ -86,7 +86,7 @@ public:
                  landmarks,
                  obstacles,
                  hydro,
-                 highways,
+                 motorways,
                  lakes,
                  aeroLayer,
                  airspaces,

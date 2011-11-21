@@ -151,10 +151,10 @@ void MapConfig::slotReadConfig()
            AERIAL_CABLE_PEN_WIDTH_1, AERIAL_CABLE_PEN_WIDTH_2, AERIAL_CABLE_PEN_WIDTH_3, AERIAL_CABLE_PEN_WIDTH_4,
            AERIAL_CABLE_PEN_STYLE_1, AERIAL_CABLE_PEN_STYLE_2, AERIAL_CABLE_PEN_STYLE_3, AERIAL_CABLE_PEN_STYLE_4)
 
-  READ_PEN("Highway", highwayPenList, highwayBorder,
-           HIGH_COLOR_1, HIGH_COLOR_2, HIGH_COLOR_3, HIGH_COLOR_4,
-           HIGH_PEN_WIDTH_1, HIGH_PEN_WIDTH_2, HIGH_PEN_WIDTH_3, HIGH_PEN_WIDTH_4,
-           HIGH_PEN_STYLE_1, HIGH_PEN_STYLE_2, HIGH_PEN_STYLE_3, HIGH_PEN_STYLE_4)
+  READ_PEN("Motorway", motorwayPenList, motorwayBorder,
+           MOTORWAY_COLOR_1, MOTORWAY_COLOR_2, MOTORWAY_COLOR_3, MOTORWAY_COLOR_4,
+           MOTORWAY_PEN_WIDTH_1, MOTORWAY_PEN_WIDTH_2, MOTORWAY_PEN_WIDTH_3, MOTORWAY_PEN_WIDTH_4,
+           MOTORWAY_PEN_STYLE_1, MOTORWAY_PEN_STYLE_2, MOTORWAY_PEN_STYLE_3, MOTORWAY_PEN_STYLE_4)
 
   READ_PEN_BRUSH("Lake", lakePenList, lakeBorder, lakeBrushList,
                  LAKE_COLOR_1, LAKE_COLOR_2, LAKE_COLOR_3, LAKE_COLOR_4,
@@ -210,7 +210,7 @@ void MapConfig::slotReadConfig()
                  RIVER_T_BRUSH_STYLE_1, RIVER_T_BRUSH_STYLE_2,
                  RIVER_T_BRUSH_STYLE_3, RIVER_T_BRUSH_STYLE_4)
 
-  /* That loads all airspace ren and brush data. */
+  /* That loads all airspace colors and brush data. */
   slotReloadAirspaceColors();
 }
 
@@ -386,7 +386,7 @@ const QPen& MapConfig::__getPen(unsigned int typeID, int sIndex)
     case BaseMapElement::Road:
       return roadPenList[sIndex];
     case BaseMapElement::Motorway:
-      return highwayPenList[sIndex];
+      return motorwayPenList[sIndex];
     case BaseMapElement::Railway:
       return railPenList[sIndex];
     case BaseMapElement::Railway_D:
@@ -454,7 +454,7 @@ bool MapConfig::isBorder(unsigned int typeID)
     case BaseMapElement::Road:
       return roadBorder[scaleIndex];
     case BaseMapElement::Motorway:
-      return highwayBorder[scaleIndex];
+      return motorwayBorder[scaleIndex];
     case BaseMapElement::Railway:
       return railBorder[scaleIndex];
     case BaseMapElement::Railway_D:

@@ -317,7 +317,7 @@ private:
     QBrush tmzBrushList[4];
     QPen gliderSectorPenList[4];
     QBrush gliderSectorBrushList[4];
-    QPen highwayPenList[4];
+    QPen motorwayPenList[4];
     QPen roadPenList[4];
     QPen trailPenList[4];
     QPen railPenList[4];
@@ -361,7 +361,7 @@ private:
     bool gliderSectorBorder[4];
     bool trailBorder[4];
     bool roadBorder[4];
-    bool highwayBorder[4];
+    bool motorwayBorder[4];
     bool railBorder[4];
     bool rail_dBorder[4];
     bool aerialcableBorder[4];

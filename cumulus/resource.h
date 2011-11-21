@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
+**   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
 **                   2009-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public

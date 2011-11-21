@@ -52,7 +52,6 @@
 #include "flarmdisplay.h"
 #endif
 
-extern MainWindow  *_globalMainWindow;
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 extern MapConfig   *_globalMapConfig;
@@ -804,6 +803,7 @@ void Map::__drawGrid()
       break;
     default:
       gridStep = 4;
+      break;
     }
 
   QPoint cP, cP2;
@@ -1176,8 +1176,8 @@ void Map::__drawBaseLayer()
       _globalMapContents->drawList(&baseMapP, MapContents::ReportList, drawnElements);
     }
 
-  // draw the highways
-  _globalMapContents->drawList(&baseMapP, MapContents::HighwayList, drawnElements);
+  // draw the motorways
+  _globalMapContents->drawList(&baseMapP, MapContents::MotorwayList, drawnElements);
   _globalMapContents->drawList(&baseMapP, MapContents::RadioList, drawnElements);
 
   // end the painter

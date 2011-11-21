@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2001      by Heiner Lamprecht
- **                   2008-2011 by Axel Pauli
+ **                   2008-2010 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -334,7 +334,6 @@ void MapMatrix::__moveMap(int dir)
   case Home:
     mapCenterLat = homeLat;
     mapCenterLon = homeLon;
-    break;
   }
 }
 

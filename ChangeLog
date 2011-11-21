@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2011-11-18 AP: Map type highway renamed to motorway according to OSM
+                   usage.
+
 [o] 2011-11-16 AP: Waypoint import routine for cup files enhanced, that also
                    can be handled runway length values using unit feet. That is
                    not conform to the SeeYou specification but I saw that in

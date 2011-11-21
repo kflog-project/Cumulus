@@ -80,7 +80,7 @@ class MapContents : public QObject
     enum MapContentsListID {NotSet = 0, AirfieldList, GliderfieldList,
                             AddSitesList, OutLandingList, RadioList, AirspaceList,
                             ObstacleList, ReportList, CityList, VillageList,
-                            LandmarkList, HighwayList,
+                            LandmarkList, MotorwayList,
                             RoadList, RailList, HydroList,
                             LakeList, TopoList, IsohypseList,
                             WaypointList, FlightList
@@ -506,9 +506,9 @@ class MapContents : public QObject
     QList<SinglePoint> landmarkList;
 
     /**
-     * highwayList contains all highways.
+     * motorwayList contains all motorways.
      */
-    QList<LineElement> highwayList;
+    QList<LineElement> motorwayList;
 
     /**
      * roadList contains all roads.
