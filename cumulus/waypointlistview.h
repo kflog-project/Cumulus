@@ -80,10 +80,15 @@ public slots:
   void slot_Close ();
 
   /**
-   * Called when the selected waypoint should be deleted from the
+   * Called when the selected waypoints should be deleted from the
    * catalog
    */
-  void slot_deleteWP();
+  void slot_deleteWPs();
+
+  /**
+   * Called to remove all waypoints of the catalog.
+   */
+  void slot_deleteAllWPs();
 
   /**
    * Called when the selected waypoint needs must be opened in

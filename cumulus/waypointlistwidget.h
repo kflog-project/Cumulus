@@ -27,6 +27,9 @@
  * This widget displays a list of waypoints and provides some management methods.
  *
  * \date 2002-2011
+ *
+ * \version $Id$
+ *
  */
 
 #ifndef WAYPOINT_LIST_WIDGET_H
@@ -65,6 +68,11 @@ public:
    * Removes all currently selected waypoints.
    */
   void deleteSelectedWaypoints();
+
+  /**
+   * Removes all waypoints from the list.
+   */
+  void deleteAllWaypoints();
 
   /**
    * @param wp Updates the currently high lighted waypoint after editing.

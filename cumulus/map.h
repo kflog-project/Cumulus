@@ -43,6 +43,7 @@
 #include <QLabel>
 #include <QEvent>
 #include <QResizeEvent>
+#include <QWheelEvent>
 
 #include "waypoint.h"
 #include "airspace.h"
@@ -288,6 +289,12 @@ protected:
    * Redefinition of mouseReleaseEvent.
    */
   virtual void mouseReleaseEvent(QMouseEvent* event);
+
+  /**
+   * Used for zoom action.
+   */
+  virtual void wheelEvent(QWheelEvent *event);
+
 
 private:
   /**

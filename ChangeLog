@@ -15,6 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2011-11-25 AP: New cross button added to waypoint list view. Pressing the
+                   button will remove all waypoint entries of the list after
+                   confirmation. That make it easier and faster to clear the
+                   whole list as using the select all and remove feature.
+                   
+[+] 2011-11-25 AP: On the Linux desktop the mouse wheel can be used now for
+                   zoom actions.
+
 [o] 2011-11-18 AP: Map type highway renamed to motorway according to OSM
                    usage.
 

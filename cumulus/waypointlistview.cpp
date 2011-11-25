@@ -25,6 +25,8 @@
 #include "mainwindow.h"
 #include "layout.h"
 
+extern MapContents* _globalMapContents;
+
 WaypointListView::WaypointListView( QMainWindow *parent ) :
   QWidget(parent),
   homeChanged( false ),
@@ -59,8 +61,14 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
   QPushButton *cmdDel = new QPushButton( this );
   cmdDel->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "delete.png" ) ) );
   cmdDel->setIconSize( QSize( IconSize, IconSize ) );
-  cmdDel->setToolTip( tr( "Delete selected waypoint" ) );
+  cmdDel->setToolTip( tr( "Delete selected waypoints" ) );
   editRow->addWidget( cmdDel );
+
+  QPushButton *cmdDelAll = new QPushButton( this );
+  cmdDelAll->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "clear.png" ) ) );
+  cmdDelAll->setIconSize( QSize( IconSize, IconSize ) );
+  cmdDelAll->setToolTip( tr( "Delete all waypoints" ) );
+  editRow->addWidget( cmdDelAll );
 
   editRow->addSpacing( 10 );
 
@@ -91,7 +99,8 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
 
   connect( cmdNew, SIGNAL(clicked()), this, SLOT(slot_newWP()) );
   connect( cmdEdit, SIGNAL(clicked()), this, SLOT(slot_editWP()) );
-  connect( cmdDel, SIGNAL(clicked()), this, SLOT(slot_deleteWP()) );
+  connect( cmdDel, SIGNAL(clicked()), this, SLOT(slot_deleteWPs()) );
+  connect( cmdDelAll, SIGNAL(clicked()), this, SLOT(slot_deleteAllWPs()) );
   connect( cmdHome, SIGNAL(clicked()), this, SLOT(slot_setHome()) );
   connect( cmdSelect, SIGNAL(clicked()), this, SLOT(slot_Select()) );
   connect( cmdPriority, SIGNAL(clicked()), this, SLOT(slot_changeDataDisplay()) );
@@ -207,8 +216,8 @@ void WaypointListView::slot_editWP()
     }
 }
 
-/** Called when the selected waypoint should be deleted from the catalog */
-void WaypointListView::slot_deleteWP()
+/** Called when the selected waypoints should be deleted from the catalog */
+void WaypointListView::slot_deleteWPs()
 {
   QList<Waypoint *> wpList = listw->getSelectedWaypoints();
 
@@ -223,7 +232,7 @@ void WaypointListView::slot_deleteWP()
 
   if( answer == QMessageBox::Yes )
     {
-      // The calculator owns the selected waypoint. Important! First
+      // The calculator can own a selected waypoint. Important! First
       // announce deletion of waypoint for cancel to have a valid instance.
       const Waypoint* wpc = calculator->getselectedWp();
 
@@ -242,6 +251,49 @@ void WaypointListView::slot_deleteWP()
 
       // Second delete all selected waypoints
       listw->deleteSelectedWaypoints();
+
+      if( par )
+        {
+          ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw( Map::waypoints );
+        }
+    }
+}
+
+/** Called to remove all waypoints of the catalog. */
+void WaypointListView::slot_deleteAllWPs()
+{
+  QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
+
+  if( wpList.size() == 0 )
+    {
+      return;
+    }
+
+  int answer= QMessageBox::question(this, tr("Delete All"),
+                                   tr("Delete all waypoints?"),
+                                   QMessageBox::No, QMessageBox::Yes);
+
+  if( answer == QMessageBox::Yes )
+    {
+      // The calculator can own a waypoint. Important! First
+      // announce deletion of waypoint for cancel to have a valid instance.
+      const Waypoint* wpc = calculator->getselectedWp();
+
+      if( wpc )
+        {
+          for( int i = 0; i < wpList.size(); i++ )
+            {
+              Waypoint& wpl = wpList[i];
+
+              if( *wpc == wpl )
+                {
+                  emit deleteWaypoint( &wpl );
+                }
+            }
+        }
+
+      // Second delete all waypoints
+      listw->deleteAllWaypoints();
 
       if( par )
         {

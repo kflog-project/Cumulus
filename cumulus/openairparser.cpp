@@ -1478,8 +1478,10 @@ bool OpenAirParser::readCompiledFile( QString &path, QList<Airspace*>& list )
 
   inFile.close();
 
-  //qDebug( "OpenAirParser: %d airspace objects read from file %s in %dms",
-  //       counter, basename(path.toLatin1().data()), t.elapsed() );
+  QFileInfo fi( path );
+
+  qDebug( "OpenAirParser: %d airspace objects read from file %s in %dms",
+          counter, fi.fileName().toLatin1().data(), t.elapsed() );
 
   return true;
 }

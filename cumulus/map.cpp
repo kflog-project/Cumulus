@@ -491,6 +491,29 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
     }
 }
 
+void Map::wheelEvent(QWheelEvent *event)
+{
+  int numDegrees = event->delta() / 8;
+  int numSteps = numDegrees / 15;
+
+  if( abs(numSteps) > 10 || numSteps == 0 )
+    {
+      event->ignore();
+      return;
+    }
+
+  if( numSteps > 0 )
+    {
+      slotZoomIn();
+    }
+  else
+    {
+      slotZoomOut();
+    }
+
+  event->accept();
+}
+
 void Map::mousePressEvent(QMouseEvent* event)
 {
   // qDebug() << "Map::mousePressEvent(): Pos=" << event->pos();
@@ -2446,7 +2469,7 @@ void Map::__drawX()
 }
 
 
-/** Used to zoom in on the map. Will schedule a redraw. */
+/** Used to zoom into the map. Will schedule a redraw. */
 void Map::slotZoomIn()
 {
   // @AP: block zoom events, if map is redrawn
@@ -2477,8 +2500,13 @@ void Map::slotZoomIn()
 
   zoomFactor /= zoomProgressiveVal[zoomProgressive];
 
+  if( zoomFactor < GeneralConfig::instance()->getMapLowerLimit() )
+    {
+      zoomFactor = GeneralConfig::instance()->getMapLowerLimit();
+    }
+
   scheduleRedraw();
-  QString msg = QString(tr("Map zoom in by factor %1")).arg(zoomFactor, 0, 'f', 1);
+  QString msg = QString(tr("Zoom scale 1:%1")).arg(zoomFactor, 0, 'f', 0);
   _globalMapView->message( msg );
 }
 
@@ -2523,8 +2551,13 @@ void Map::slotZoomOut()
 
   zoomFactor *= zoomProgressiveVal[zoomProgressive];
 
+  if( zoomFactor > GeneralConfig::instance()->getMapUpperLimit() )
+    {
+      zoomFactor = GeneralConfig::instance()->getMapUpperLimit();
+    }
+
   scheduleRedraw();
-  QString msg = QString(tr("Map zoom out by factor %1")).arg(zoomFactor, 0, 'f', 1);
+  QString msg = QString(tr("Zoom scale 1:%1")).arg(zoomFactor, 0, 'f', 0);
   _globalMapView->message( msg );
 }
 

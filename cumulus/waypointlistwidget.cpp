@@ -169,6 +169,22 @@ void WaypointListWidget::deleteSelectedWaypoints()
     }
 }
 
+/**
+ * Removes all waypoints from the list.
+ */
+void WaypointListWidget::deleteAllWaypoints()
+{
+  // remove all waypoints in the catalog
+  _globalMapContents->getWaypointList().clear();
+
+  // save the modified catalog
+  _globalMapContents->saveWaypointList();
+
+  list->clear();
+  filter->reset();
+  resizeListColumns();
+}
+
 // JD: after adding, deleting or name-changing a waypoint the filter
 // and the view must always be reset to regain consistency
 
