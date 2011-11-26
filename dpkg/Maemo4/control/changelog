@@ -1,3 +1,44 @@
+cumulus (2.12.0) stable; urgency=low
+
+  * New cross button added to waypoint list view. Pressing the
+    button will remove all waypoint entries of the list after
+    confirmation. That make it easier and faster to clear the
+    whole list as using the select all and remove feature.
+    
+  * On the Linux desktop the mouse wheel can be used now for
+    zoom actions.
+    
+  * Map type highway renamed to motorway according to OSM
+    usage.
+    
+  * Waypoint import routine for cup files enhanced, that also
+    can be handled runway length values using unit feet. That is
+    not conform to the SeeYou specification but I saw that in
+    a south African waypoint file.
+    
+  * The type of an user added waypoint by pressing the bearing
+    icon was changed from turnpoint to landmark. The middle
+    position of a square is better to see at the map as a lot of
+    flags.
+    
+  * The first airspace of an airspace file was never loaded. It
+    is fixed now.
+    
+  * SeeYou waypoint import filter modified.
+    
+  * Disclaimer tabulator added to AboutWidget.
+    
+  * Added a new button to the FLARM radar view to make it easier
+    to add alias names for hexadecimal Flarm Identifiers. A
+    selected Flarm object can be assigned an alias name now by
+    using the plus button.
+    
+  * City labels are drawn at the map now, if the scale is less
+    than 100. But some of the city labels are wrong. That seems
+    to be a problem in the KFLog data base.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Sat, 26 Nov 2011 16:39:06 +0100
+
 cumulus (2.11.0) stable; urgency=low
 
   * Build is done now with Qt4.7.4
