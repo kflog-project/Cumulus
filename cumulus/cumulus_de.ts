@@ -1153,38 +1153,42 @@
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2481"/>
         <source>Map zoom in by factor %1</source>
-        <translation>Kartenzoom rein Faktor %1</translation>
+        <translation type="obsolete">Kartenzoom rein Faktor %1</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2527"/>
         <source>Map zoom out by factor %1</source>
-        <translation>Kartenzoom raus Faktor %1</translation>
+        <translation type="obsolete">Kartenzoom raus Faktor %1</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2788"/>
+        <location filename="map.cpp" line="2509"/>
+        <location filename="map.cpp" line="2560"/>
+        <source>Zoom scale 1:%1</source>
+        <translation>Zoom Maßstab 1:%1</translation>
+    </message>
+    <message>
+        <location filename="map.cpp" line="2821"/>
         <source>Airspace&amp;nbsp;Warning</source>
         <translation>Luftraum&amp;nbsp;Warnung</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2801"/>
-        <location filename="map.cpp" line="2835"/>
-        <location filename="map.cpp" line="2977"/>
+        <location filename="map.cpp" line="2834"/>
+        <location filename="map.cpp" line="2868"/>
+        <location filename="map.cpp" line="3010"/>
         <source>Inside</source>
         <translation>Innerhalb</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2858"/>
-        <location filename="map.cpp" line="2893"/>
-        <location filename="map.cpp" line="3014"/>
+        <location filename="map.cpp" line="2891"/>
+        <location filename="map.cpp" line="2926"/>
+        <location filename="map.cpp" line="3047"/>
         <source>Very Near</source>
         <translation>Dicht</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2916"/>
-        <location filename="map.cpp" line="2950"/>
-        <location filename="map.cpp" line="3050"/>
+        <location filename="map.cpp" line="2949"/>
+        <location filename="map.cpp" line="2983"/>
+        <location filename="map.cpp" line="3083"/>
         <source>Near</source>
         <translation>Nahe</translation>
     </message>
@@ -4093,84 +4097,98 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>WaypointListView</name>
     <message>
-        <location filename="waypointlistview.cpp" line="50"/>
+        <location filename="waypointlistview.cpp" line="52"/>
         <source>Add a new waypoint</source>
         <translation>Neuen Wegpunkt hinzufügen</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="56"/>
+        <location filename="waypointlistview.cpp" line="58"/>
         <source>Edit selected waypoint</source>
         <translation>Editiere markierten Wegpunkt</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="62"/>
         <source>Delete selected waypoint</source>
-        <translation>Lösche markierten Wegpunkt</translation>
+        <translation type="obsolete">Lösche markierten Wegpunkt</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="70"/>
+        <location filename="waypointlistview.cpp" line="78"/>
         <source>Set home site to selected waypoint</source>
         <translation>Setze Heimat auf markierten Wegpunkt</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="78"/>
+        <location filename="waypointlistview.cpp" line="86"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="81"/>
+        <location filename="waypointlistview.cpp" line="89"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="84"/>
+        <location filename="waypointlistview.cpp" line="92"/>
         <source>Select</source>
         <translation>Wählen</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="87"/>
-        <location filename="waypointlistview.cpp" line="339"/>
+        <location filename="waypointlistview.cpp" line="95"/>
+        <location filename="waypointlistview.cpp" line="391"/>
         <source>Show All</source>
         <oldsource>Show all</oldsource>
         <translation>Zeige Alle</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="220"/>
+        <location filename="waypointlistview.cpp" line="229"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="221"/>
+        <location filename="waypointlistview.cpp" line="230"/>
         <source>Delete selected waypoints?</source>
-        <translation>Löschen der markierten Wegpunkte?</translation>
+        <translation>Markierte Wegpunkte löschen?</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="331"/>
+        <location filename="waypointlistview.cpp" line="272"/>
+        <source>Delete All</source>
+        <translation>Alles löschen</translation>
+    </message>
+    <message>
+        <location filename="waypointlistview.cpp" line="273"/>
+        <source>Delete all waypoints?</source>
+        <translation>Alle Wegpunkte löschen?</translation>
+    </message>
+    <message>
+        <location filename="waypointlistview.cpp" line="383"/>
         <source>Show Normal</source>
         <translation>Zeige Normal</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="335"/>
+        <location filename="waypointlistview.cpp" line="387"/>
         <source>Show High</source>
         <translation>Zeige Hoch</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="344"/>
+        <location filename="waypointlistview.cpp" line="396"/>
         <source>Show Low</source>
         <translation>Zeige Niedrig</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="305"/>
+        <location filename="waypointlistview.cpp" line="357"/>
         <source>Set home site</source>
         <translation>Neue Heimat</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="306"/>
+        <location filename="waypointlistview.cpp" line="64"/>
+        <source>Delete selected waypoints</source>
+        <translation>Lösche makierte Wegpunkte</translation>
+    </message>
+    <message>
+        <location filename="waypointlistview.cpp" line="358"/>
         <source>Use point&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;as your home site?</source>
         <translation>Benutze Punkt&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;als Heimat?</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="307"/>
+        <location filename="waypointlistview.cpp" line="359"/>
         <source>&lt;br&gt;Change can take&lt;br&gt;a few seconds.</source>
         <translation>&lt;br&gt;Wechsel kann einige Sekunden dauern.</translation>
     </message>
