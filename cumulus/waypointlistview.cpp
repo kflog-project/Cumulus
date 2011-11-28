@@ -200,6 +200,14 @@ void WaypointListView::slot_newWP()
 /** Called when the selected waypoint needs to be opened in the editor */
 void WaypointListView::slot_editWP()
 {
+  QList<Waypoint *> wpList = listw->getSelectedWaypoints();
+
+  if( wpList.size() > 1 )
+    {
+      // Multiple waypoints are selected, edit allows only one selection.
+      return;
+    }
+
   Waypoint *wp = getSelectedWaypoint();
 
   if( wp )
