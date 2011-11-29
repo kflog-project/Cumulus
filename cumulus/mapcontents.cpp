@@ -148,10 +148,10 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
       format = "xml";
     }
 
-  qDebug() << "MapContents():" << ok << "waypoints read from default"
+  qDebug() << "MapContents():" << wpList.size() << "waypoints read from"
            << format << "catalog.";
 
-  currentTask=0;
+  currentTask = 0;
 
   connect( this, SIGNAL(progress(int)), ws, SLOT(slot_Progress(int)) );
 
