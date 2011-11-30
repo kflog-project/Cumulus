@@ -27,7 +27,7 @@ Cumulus changelog
                    usage.
 
 [o] 2011-11-16 AP: Waypoint import routine for cup files enhanced, that also
-                   can be handled runway length values using unit feet. That is
+                   runway length values can be handled using unit feet. That is
                    not conform to the SeeYou specification but I saw that in
                    a south African waypoint file.
 
