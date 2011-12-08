@@ -15,6 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2011-12-08 AP: If a target is selected, the drawing of a track line can be
+                   activated now in the task setup configuration menu. The track
+                   line shows the current movement direction. So you can easier
+                   see, if you are on the bearing line to your selected target
+                   or not.
+
 [o] 2011-11-25 AP: New cross button added to waypoint list view. Pressing the
                    button will remove all waypoint entries of the list after
                    confirmation. That make it easier and faster to clear the

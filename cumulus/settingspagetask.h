@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2010 by Axel Pauli
+**   Copyright (c):  2007-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,9 @@
  *
  * \brief Configuration settings for flight tasks.
  *
- * \date 2007-2010
+ * \date 2007-2011
+ *
+ * \version $Id$
  *
  */
 
@@ -69,8 +71,11 @@ private slots:
   // value inner spin box changed
   void slot_outerSBChanged( double value );
 
-  /** Opens the color chooser dialog for the course line */
-  void slot_editClColor();
+  /** Opens the color chooser dialog for the target line */
+  void slot_editTlColor();
+
+  /** Opens the color chooser dialog for the track line */
+  void slot_editTrColor();
 
 private:
 
@@ -93,17 +98,31 @@ private:
   QCheckBox* drawShape;
   QCheckBox* fillShape;
 
-  // course line options
-  QGroupBox*   clGroup;
-  QSpinBox*    clWidth;
-  QPushButton* clColorButton;
+  // target line options
+  QGroupBox*   tlGroup;
+  QSpinBox*    tlWidth;
+  QPushButton* tlColorButton;
+  QCheckBox*   tlCheckBox;
 
-  // temporary storage of course line color
-  QColor clColor;
-  QColor selectedClColor;
+  // temporary storage of target line color
+  QColor tlColor;
+  QColor selectedTlColor;
 
-  // store selected task course line width
-  int seletedClWidth;
+  // store selected target line width
+  int seletedTlWidth;
+
+  // track line options
+  QGroupBox*   trGroup;
+  QSpinBox*    trWidth;
+  QPushButton* trColorButton;
+  QCheckBox*   trCheckBox;
+
+  // temporary storage of track line color
+  QColor trColor;
+  QColor selectedTrColor;
+
+  // store selected track line width
+  int seletedTrWidth;
 
   /** saves distance unit set during construction of object */
   Distance::distanceUnit distUnit;

@@ -206,6 +206,26 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
 
   editBox->setLayout(editLayout);
 
+  //--------------------------------------------------------------------------
+  // add spin box for moving elevation zero line
+  QGroupBox *setOffsetBox = new QGroupBox( tr("Elevation Offset"), this );
+
+  // put group box in an extra VBox layout to center it vertically
+  QVBoxLayout *offsetLayout = new QVBoxLayout;
+  offsetLayout->addStretch( 10 );
+  offsetLayout->addWidget( setOffsetBox );
+  offsetLayout->addStretch( 10 );
+
+  QVBoxLayout *spinboxLayout = new QVBoxLayout;
+  elevationOffset = new QSpinBox;
+  elevationOffset->setButtonSymbols(QAbstractSpinBox::PlusMinus);
+  elevationOffset->setSingleStep(1);
+  elevationOffset->setRange(-50, 50);
+
+  spinboxLayout->addWidget(elevationOffset);
+  setOffsetBox->setLayout(spinboxLayout);
+
+  topLayout->addLayout( offsetLayout );
   topLayout->insertSpacing(1, 60 );
   topLayout->addStretch( 10 );
 }
@@ -345,20 +365,19 @@ void SettingsPageTerrainColors::slot_setColorDefaults()
  */
 void SettingsPageTerrainColors::slot_save()
 {
-  if( ! colorsChanged )
+  if( colorsChanged )
     {
-      // nothing to save
-      return;
+      for( ushort i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
+        {
+          // save new terrain colors permanently
+          GeneralConfig::instance()->setTerrainColor( terrainColor[i], i );
+        }
+
+      // save ground color
+      GeneralConfig::instance()->setGroundColor( groundColor );
     }
 
-  for( ushort i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
-    {
-      // save new terrain colors permanently
-      GeneralConfig::instance()->setTerrainColor( terrainColor[i], i );
-    }
-
-  // save ground color
-  GeneralConfig::instance()->setGroundColor( groundColor );
+  GeneralConfig::instance()->setElevationColorOffset( elevationOffset->value() );
 }
 
 /**
@@ -366,7 +385,7 @@ void SettingsPageTerrainColors::slot_save()
  */
 void SettingsPageTerrainColors::slot_load()
 {
-  // nothing to do atm
+  elevationOffset->setValue( GeneralConfig::instance()->getElevationColorOffset() );
 }
 
 /**
@@ -374,7 +393,8 @@ void SettingsPageTerrainColors::slot_load()
  */
 void SettingsPageTerrainColors::slot_query_close(bool& warn, QStringList& warnings)
 {
-  if( colorsChanged )
+  if( colorsChanged ||
+      GeneralConfig::instance()->getElevationColorOffset() != elevationOffset->value() )
     {
       warn = true;
       warnings.append(tr("The Terrain color settings"));

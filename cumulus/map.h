@@ -449,6 +449,7 @@ private:
    * Draws the Xsymbol on the pixmap
    */
   void __drawX();
+
   /**
    * This function draws a "direction line" on the map if a waypoint
    * has been selected. The QPoint is the projected & mapped
@@ -456,6 +457,12 @@ private:
    * have to calculate that all over again.
    */
   void __drawDirectionLine(const QPoint& from);
+
+  /**
+   * This function draws a "track line" beginning from the current position in
+   * the moving direction.
+   */
+  void __drawTrackLine(const QPoint& from);
 
 #ifdef FLARM
 

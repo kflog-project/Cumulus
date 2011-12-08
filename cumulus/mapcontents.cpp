@@ -2886,6 +2886,8 @@ void MapContents::drawIsoList(QPainter* targetP)
       count++; // yes
     }
 
+  int elevationIndexOffest = GeneralConfig::instance()->getElevationColorOffset();
+
   QMap< int, QList<Isohypse> >* isoMaps[2] = { &groundMap, &terrainMap };
 
   for( int i = 0; i < count; i++ )
@@ -2911,9 +2913,9 @@ void MapContents::drawIsoList(QPainter* targetP)
 
           const QList<Isohypse> &isoList = it.value();
 
-          for (int i = 0; i < isoList.size(); i++)
+         for (int j = 0; j < isoList.size(); j++)
             {
-              Isohypse isoLine = isoList.at(i);
+              Isohypse isoLine = isoList.at(j);
 
               if( drawTerrain )
                 {
@@ -2921,6 +2923,27 @@ void MapContents::drawIsoList(QPainter* targetP)
                   // The index of the isoList has a fixed relation to the isocolor list
                   // normally with an offset of one.
                   int colorIdx = isoLine.getElevationIndex();
+
+                  // We can move the color index by a user configuration option
+                  // to get a better color schema.
+                  if( elevationIndexOffest != 0 && i == 1 )
+                    {
+                      int newIndex = colorIdx + elevationIndexOffest;
+
+                      if( newIndex >= 0 && newIndex <= SIZEOF_TERRAIN_COLORS )
+                        {
+                          // Move color index to the new position
+                          colorIdx = newIndex;
+                        }
+                      else if( newIndex < 0 )
+                        {
+                          colorIdx = 0;
+                        }
+                      else if( newIndex >=  SIZEOF_TERRAIN_COLORS )
+                        {
+                          colorIdx = SIZEOF_TERRAIN_COLORS - 1;
+                        }
+                    }
 
                   targetP->setBrush( QBrush(conf->getTerrainColor(colorIdx),
                                      Qt::SolidPattern));

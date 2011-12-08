@@ -1046,17 +1046,6 @@ class GeneralConfig : protected QSettings
     _mapSwitchScale = newValue;
   };
 
-  /** gets Map BearLine */
-  bool getMapBearLine() const
-  {
-    return _mapBearLine;
-  };
-  /** sets Map BearLine */
-  void setMapBearLine(const bool newValue)
-  {
-    _mapBearLine = newValue;
-  };
-
   /** gets Map LoadIsoLines */
   bool getMapLoadIsoLines() const
   {
@@ -1928,6 +1917,28 @@ class GeneralConfig : protected QSettings
     _taskSectorAngle = newValue;
   };
 
+  /** gets the target line draw state */
+  bool getTargetLineDrawState() const
+  {
+    return _targetLineDrawState;
+  };
+  /** sets the target line draw state */
+  void setTargetLineDrawState(const bool newValue)
+  {
+    _targetLineDrawState = newValue;
+  };
+
+  /** gets the track line draw state */
+  bool getTrackLineDrawState() const
+  {
+    return _trackLineDrawState;
+  };
+  /** sets the track line draw state */
+  void setTrackLineDrawState(const bool newValue)
+  {
+    _trackLineDrawState = newValue;
+  };
+
   /** Gets the GPS default device depending on the hardware type */
   QString getGpsDefaultDevice();
 
@@ -1949,27 +1960,64 @@ class GeneralConfig : protected QSettings
     return _groundColor;
   };
 
-  /** Sets the task course line color */
-  void setTaskCourseLineColor( const QColor& newValue )
+  /** Gets the elevation color offset index. */
+  int getElevationColorOffset()
   {
-    _taskCourseLineColor = newValue;
+    return _elevationColorOffset;
   };
 
-  /** Gets the task course line color */
-  QColor& getTaskCourseLineColor()
+  /** Sets the elevation color offset index. */
+  void setElevationColorOffset( const int newValue )
   {
-    return _taskCourseLineColor;
+    _elevationColorOffset = newValue;
   };
 
-  /** gets task course line width */
-  int getTaskCourseLineWidth() const
+  /** Sets the target line color */
+  void setTargetLineColor( const QColor& newValue )
   {
-    return _taskCourseLineWidth;
+    _targetLineColor = newValue;
   };
-  /** sets task course line width */
-  void setTaskCourseLineWidth(const int newValue)
+
+  /** Gets the target line color */
+  QColor& getTargetLineColor()
   {
-    _taskCourseLineWidth = newValue;
+    return _targetLineColor;
+  };
+
+  /** gets target line width */
+  int getTargetLineWidth() const
+  {
+    return _targetLineWidth;
+  };
+
+  /** sets target line width */
+  void setTargetLineWidth(const int newValue)
+  {
+    _targetLineWidth = newValue;
+  };
+
+  /** Sets the track line color */
+  void setTrackLineColor( const QColor& newValue )
+  {
+    _trackLineColor = newValue;
+  };
+
+  /** Gets the track line color */
+  QColor& getTrackLineColor()
+  {
+    return _trackLineColor;
+  };
+
+  /** gets track line width */
+  int getTrackLineWidth() const
+  {
+    return _trackLineWidth;
+  };
+
+  /** sets track line width */
+  void setTrackLineWidth(const int newValue)
+  {
+    _trackLineWidth = newValue;
   };
 
   /** Gets waypoint scale border. */
@@ -2007,11 +2055,17 @@ class GeneralConfig : protected QSettings
   // Internet proxy
   QString _proxy;
 
-  // Task course line color
-  QColor _taskCourseLineColor;
+  // Task target line color
+  QColor _targetLineColor;
 
-  // Task course line width
-  int _taskCourseLineWidth;
+  // Task target line width
+  int _targetLineWidth;
+
+  // Task track line color
+  QColor _trackLineColor;
+
+  // Task track line width
+  int _trackLineWidth;
 
   // terrain colors
   QColor _terrainColors[SIZEOF_TERRAIN_COLORS];
@@ -2021,6 +2075,10 @@ class GeneralConfig : protected QSettings
 
   // terrain ground color, used when the iso line drawing is disabled
   QColor _groundColor;
+
+  // Offset value to be added or subtracted to current elevation
+  // color index value.
+  int _elevationColorOffset;
 
   //properties
   //used to store the distances for airspace warnings
@@ -2166,9 +2224,6 @@ class GeneralConfig : protected QSettings
   int _listDisplayAFMargin;
   // Reachable points list row height increase (px)
   int _listDisplayRPMargin;
-
-  // Map BearLine
-  bool _mapBearLine;
   // Map LoadIsoLines
   bool _mapLoadIsoLines;
   // Map ShowIsoLineBorders
@@ -2361,6 +2416,11 @@ class GeneralConfig : protected QSettings
   // Cylinder/Sector draw options
   bool _taskDrawShape;
   bool _taskFillShape;
+
+  // Target line draw state
+  bool _targetLineDrawState;
+  // Track line draw state
+  bool _trackLineDrawState;
 
   /** Waypoint drawing scale borders. Addressed by waypoint priority
    *  (Low=0, Normal=1, High=2). It contains the scale borders defined

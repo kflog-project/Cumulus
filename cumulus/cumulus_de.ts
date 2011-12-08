@@ -1161,34 +1161,34 @@
         <translation type="obsolete">Kartenzoom raus Faktor %1</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2509"/>
-        <location filename="map.cpp" line="2560"/>
+        <location filename="map.cpp" line="2512"/>
+        <location filename="map.cpp" line="2563"/>
         <source>Zoom scale 1:%1</source>
         <translation>Zoom Maßstab 1:%1</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2821"/>
+        <location filename="map.cpp" line="2867"/>
         <source>Airspace&amp;nbsp;Warning</source>
         <translation>Luftraum&amp;nbsp;Warnung</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2834"/>
-        <location filename="map.cpp" line="2868"/>
-        <location filename="map.cpp" line="3010"/>
+        <location filename="map.cpp" line="2880"/>
+        <location filename="map.cpp" line="2914"/>
+        <location filename="map.cpp" line="3056"/>
         <source>Inside</source>
         <translation>Innerhalb</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2891"/>
-        <location filename="map.cpp" line="2926"/>
-        <location filename="map.cpp" line="3047"/>
+        <location filename="map.cpp" line="2937"/>
+        <location filename="map.cpp" line="2972"/>
+        <location filename="map.cpp" line="3093"/>
         <source>Very Near</source>
         <translation>Dicht</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2949"/>
-        <location filename="map.cpp" line="2983"/>
-        <location filename="map.cpp" line="3083"/>
+        <location filename="map.cpp" line="2995"/>
+        <location filename="map.cpp" line="3029"/>
+        <location filename="map.cpp" line="3129"/>
         <source>Near</source>
         <translation>Nahe</translation>
     </message>
@@ -3126,83 +3126,83 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="settingspagemapobjects.cpp" line="91"/>
-        <source>Load/Draw map objects</source>
-        <translation>Lade/Zeichne Kartenobjekte</translation>
+        <source>Load/Draw objects</source>
+        <oldsource>Load/Draw map objects</oldsource>
+        <translation>Lade/Zeichne Objekte</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="231"/>
+        <location filename="settingspagemapobjects.cpp" line="229"/>
         <source>Cities</source>
         <translation>Städte</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="235"/>
+        <location filename="settingspagemapobjects.cpp" line="233"/>
         <source>Forests</source>
         <translation>Wald</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="239"/>
+        <location filename="settingspagemapobjects.cpp" line="245"/>
         <source>Motorways</source>
         <oldsource>Highways</oldsource>
         <translation>Autobahnen</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="243"/>
+        <location filename="settingspagemapobjects.cpp" line="237"/>
         <source>Isolines</source>
         <translation>Isolinien</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="247"/>
+        <location filename="settingspagemapobjects.cpp" line="241"/>
         <source>Isoline borders</source>
         <translation>Isolinienumrandung</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="251"/>
         <source>Target line</source>
         <oldsource>Line to selected target</oldsource>
-        <translation>Ziellinie</translation>
+        <translation type="obsolete">Ziellinie</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="255"/>
+        <location filename="settingspagemapobjects.cpp" line="249"/>
         <source>Railways</source>
         <translation>Eisenbahnen</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="263"/>
+        <location filename="settingspagemapobjects.cpp" line="253"/>
         <source>Roads</source>
         <translation>Straßen</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="267"/>
+        <location filename="settingspagemapobjects.cpp" line="257"/>
         <source>Rivers &amp; Canals</source>
         <translation>Flüsse &amp; Kanäle</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="271"/>
+        <location filename="settingspagemapobjects.cpp" line="265"/>
         <source>Airfield labels</source>
         <translation>Flugplatz Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="275"/>
+        <location filename="settingspagemapobjects.cpp" line="269"/>
         <source>Taskpoint labels</source>
         <translation>Aufgabenpunkt Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="279"/>
+        <location filename="settingspagemapobjects.cpp" line="273"/>
         <source>Outlanding labels</source>
         <translation>Landefelder Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="283"/>
+        <location filename="settingspagemapobjects.cpp" line="277"/>
         <source>Waypoint labels</source>
         <translation>Wegpunkt Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="287"/>
+        <location filename="settingspagemapobjects.cpp" line="281"/>
         <source>Labels - Extra info</source>
         <translation>Zusatzinfo Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="340"/>
+        <location filename="settingspagemapobjects.cpp" line="352"/>
         <source>The Map Objects</source>
         <translation>Die Karten Objekte</translation>
     </message>
@@ -3377,91 +3377,117 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageTask</name>
     <message>
-        <location filename="settingspagetask.cpp" line="46"/>
+        <location filename="settingspagetask.cpp" line="45"/>
         <source>TP Scheme</source>
         <translation>AP-Schema</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="49"/>
-        <location filename="settingspagetask.cpp" line="128"/>
+        <location filename="settingspagetask.cpp" line="48"/>
+        <location filename="settingspagetask.cpp" line="127"/>
         <source>Cylinder</source>
         <translation>Zylinder</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="50"/>
-        <location filename="settingspagetask.cpp" line="168"/>
+        <location filename="settingspagetask.cpp" line="49"/>
+        <location filename="settingspagetask.cpp" line="167"/>
         <source>Sector</source>
         <translation>Sektor</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="77"/>
+        <location filename="settingspagetask.cpp" line="76"/>
         <source>Switch Scheme</source>
         <translation>Schaltschema</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="82"/>
+        <location filename="settingspagetask.cpp" line="81"/>
         <source>Minimum</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="83"/>
+        <location filename="settingspagetask.cpp" line="82"/>
         <source>Touched</source>
         <translation>Berührt</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="108"/>
+        <location filename="settingspagetask.cpp" line="107"/>
         <source>Shape</source>
         <translation>Umriss</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="112"/>
+        <location filename="settingspagetask.cpp" line="111"/>
         <source>Draw Shape</source>
         <translation>Zeichne Umriss</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="113"/>
+        <location filename="settingspagetask.cpp" line="112"/>
         <source>Fill Shape</source>
         <translation>Fülle Umriss</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="133"/>
+        <location filename="settingspagetask.cpp" line="132"/>
         <source>Radius:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="177"/>
+        <location filename="settingspagetask.cpp" line="176"/>
         <source>Inner Radius:</source>
         <translation>Innerer Radius:</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="188"/>
+        <location filename="settingspagetask.cpp" line="187"/>
         <source>Outer Radius:</source>
         <translation>Äußerer Radius:</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="198"/>
+        <location filename="settingspagetask.cpp" line="197"/>
         <source>Angle:</source>
         <translation>Winkel:</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="213"/>
-        <source>Course Line</source>
+        <location filename="settingspagetask.cpp" line="212"/>
+        <source>Target Line</source>
+        <translation>Ziellinie</translation>
+    </message>
+    <message>
+        <location filename="settingspagetask.cpp" line="236"/>
+        <location filename="settingspagetask.cpp" line="268"/>
+        <source>Draw</source>
+        <translation>Zeichne</translation>
+    </message>
+    <message>
+        <location filename="settingspagetask.cpp" line="244"/>
+        <source>Track Line</source>
         <translation>Kurslinie</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="220"/>
+        <location filename="settingspagetask.cpp" line="335"/>
+        <source>Target Line Color</source>
+        <translation>Ziellinien Farbe</translation>
+    </message>
+    <message>
+        <location filename="settingspagetask.cpp" line="353"/>
+        <source>Track Line Color</source>
+        <translation>Fluglinien Farbe</translation>
+    </message>
+    <message>
+        <source>Course Line</source>
+        <translation type="obsolete">Kurslinie</translation>
+    </message>
+    <message>
+        <location filename="settingspagetask.cpp" line="219"/>
+        <location filename="settingspagetask.cpp" line="251"/>
         <source>Width:</source>
         <translation>Breite:</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="230"/>
+        <location filename="settingspagetask.cpp" line="229"/>
+        <location filename="settingspagetask.cpp" line="261"/>
         <source>Color:</source>
         <translation>Farbe:</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="300"/>
         <source>Course Line Color</source>
-        <translation>Kurslinienfarbe</translation>
+        <translation type="obsolete">Kurslinienfarbe</translation>
     </message>
 </context>
 <context>
@@ -3473,7 +3499,7 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="settingspageterraincolors.cpp" line="126"/>
-        <location filename="settingspageterraincolors.cpp" line="228"/>
+        <location filename="settingspageterraincolors.cpp" line="248"/>
         <source>Terrain Level</source>
         <translation>Geländehöhe</translation>
     </message>
@@ -3484,7 +3510,7 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="settingspageterraincolors.cpp" line="182"/>
-        <location filename="settingspageterraincolors.cpp" line="251"/>
+        <location filename="settingspageterraincolors.cpp" line="271"/>
         <source>Ground Color</source>
         <translation>Bodenfarbe</translation>
     </message>
@@ -3494,7 +3520,12 @@ Alle Downloads verworfen!</translation>
         <translation>Standardfarben</translation>
     </message>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="380"/>
+        <location filename="settingspageterraincolors.cpp" line="211"/>
+        <source>Elevation Offset</source>
+        <translation>Höhenanpassung</translation>
+    </message>
+    <message>
+        <location filename="settingspageterraincolors.cpp" line="400"/>
         <source>The Terrain color settings</source>
         <translation>Die Geländefarben Optionen</translation>
     </message>
@@ -4132,48 +4163,48 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="waypointlistview.cpp" line="95"/>
-        <location filename="waypointlistview.cpp" line="391"/>
+        <location filename="waypointlistview.cpp" line="399"/>
         <source>Show All</source>
         <oldsource>Show all</oldsource>
         <translation>Zeige Alle</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="229"/>
+        <location filename="waypointlistview.cpp" line="237"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="230"/>
+        <location filename="waypointlistview.cpp" line="238"/>
         <source>Delete selected waypoints?</source>
         <translation>Markierte Wegpunkte löschen?</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="272"/>
+        <location filename="waypointlistview.cpp" line="280"/>
         <source>Delete All</source>
         <translation>Alles löschen</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="273"/>
+        <location filename="waypointlistview.cpp" line="281"/>
         <source>Delete all waypoints?</source>
         <translation>Alle Wegpunkte löschen?</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="383"/>
+        <location filename="waypointlistview.cpp" line="391"/>
         <source>Show Normal</source>
         <translation>Zeige Normal</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="387"/>
+        <location filename="waypointlistview.cpp" line="395"/>
         <source>Show High</source>
         <translation>Zeige Hoch</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="396"/>
+        <location filename="waypointlistview.cpp" line="404"/>
         <source>Show Low</source>
         <translation>Zeige Niedrig</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="357"/>
+        <location filename="waypointlistview.cpp" line="365"/>
         <source>Set home site</source>
         <translation>Neue Heimat</translation>
     </message>
@@ -4183,12 +4214,17 @@ Alle Downloads verworfen!</translation>
         <translation>Lösche makierte Wegpunkte</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="358"/>
+        <location filename="waypointlistview.cpp" line="70"/>
+        <source>Delete all waypoints</source>
+        <translation>Löschen aller Wegpunkte</translation>
+    </message>
+    <message>
+        <location filename="waypointlistview.cpp" line="366"/>
         <source>Use point&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;as your home site?</source>
         <translation>Benutze Punkt&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;als Heimat?</translation>
     </message>
     <message>
-        <location filename="waypointlistview.cpp" line="359"/>
+        <location filename="waypointlistview.cpp" line="367"/>
         <source>&lt;br&gt;Change can take&lt;br&gt;a few seconds.</source>
         <translation>&lt;br&gt;Wechsel kann einige Sekunden dauern.</translation>
     </message>

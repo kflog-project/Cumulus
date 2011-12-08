@@ -244,11 +244,16 @@ void GeneralConfig::load()
 
   beginGroup("Task");
 #ifndef MAEMO
-  _taskCourseLineWidth = value( "CourseLineWidth", 5 ).toInt();
+  _targetLineWidth = value( "TargetLineWidth", 5 ).toInt();
 #else
-  _taskCourseLineWidth = value( "CourseLineWidth", 7 ).toInt();
+  _targetLineWidth = value( "TargetLineWidth", 7 ).toInt();
 #endif
-  _taskCourseLineColor = QColor( value("CourseLineColor", QColor(Qt::darkMagenta).name()).toString() );
+  _targetLineColor = QColor( value("TargetLineColor", QColor(Qt::darkMagenta).name()).toString() );
+  _targetLineDrawState = value( "TargetLineDrawing", true ).toBool();
+
+  _trackLineWidth = value( "TrackLineWidth", 2 ).toInt();
+  _trackLineColor = QColor( value("TrackLineColor", QColor(Qt::gray).name()).toString() );
+  _trackLineDrawState = value( "TrackLineDrawing", true ).toBool();
   endGroup();
 
   beginGroup("Map");
@@ -256,7 +261,6 @@ void GeneralConfig::load()
   _mapUnload                      = value( "UnloadUnneededMap", true ).toBool();
   _downloadMissingMaps            = value( "DownloadMissingMaps", false ).toBool();
   _mapInstallRadius               = value( "MapInstallRadius", 500 ).toInt();
-  _mapBearLine                    = value( "BearLine", true ).toBool();
   _mapLoadIsoLines                = value( "LoadIsoLines", true ).toBool();
   _mapShowIsoLineBorders          = value( "ShowIsoLineBorders", false ).toBool();
   _mapLoadRoads                   = value( "LoadRoads", true ).toBool();
@@ -301,6 +305,7 @@ void GeneralConfig::load()
     }
 
   _groundColor = QColor( value("GroundColor", COLOR_LEVEL_GROUND.name()).toString() );
+  _elevationColorOffset = value("ElevationColorOffset", 0).toInt();
 
   endGroup();
 
@@ -594,8 +599,12 @@ void GeneralConfig::save()
   endGroup();
 
   beginGroup("Task");
-  setValue( "CourseLineWidth", _taskCourseLineWidth );
-  setValue( "CourseLineColor", _taskCourseLineColor.name() );
+  setValue( "TargetLineWidth", _targetLineWidth );
+  setValue( "TargetLineColor", _targetLineColor.name() );
+  setValue( "TargetLineDrawing", _targetLineDrawState );
+  setValue( "TrackLineWidth", _trackLineWidth );
+  setValue( "TrackLineColor", _trackLineColor.name() );
+  setValue( "TrackLineDrawing", _trackLineDrawState );
   endGroup();
 
   beginGroup("Map");
@@ -603,7 +612,6 @@ void GeneralConfig::save()
   setValue( "UnloadUnneededMap", _mapUnload );
   setValue( "DownloadMissingMaps", _downloadMissingMaps );
   setValue( "MapInstallRadius", _mapInstallRadius );
-  setValue( "BearLine", _mapBearLine );
   setValue( "LoadIsoLines", _mapLoadIsoLines );
   setValue( "ShowIsoLineBorders", _mapShowIsoLineBorders );
   setValue( "ShowWaypointLabels", _mapShowWaypointLabels );
@@ -645,6 +653,7 @@ void GeneralConfig::save()
     }
 
   setValue("GroundColor", _groundColor.name());
+  setValue("ElevationColorOffset", _elevationColorOffset);
 
   endGroup();
 

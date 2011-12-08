@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2010 Axel Pauli
+**   Copyright (c):  2007-2011 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,6 @@
 #include "mapcontents.h"
 
 extern MapContents  *_globalMapContents;
-
 
 SettingsPageTask::SettingsPageTask( QWidget *parent) :
   QWidget( parent ),
@@ -209,38 +208,75 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   sectorLayout->setColumnStretch(2, 10);
 
   //--------------------------------------------------------------
-  // as next course line group is added
-  clGroup = new QGroupBox( tr("Course Line"), this );
+  // as next the target line group is added
+  tlGroup = new QGroupBox( tr("Target Line"), this );
 
-  QGridLayout *clLayout = new QGridLayout( clGroup );
-  clLayout->setMargin(10);
-  clLayout->setSpacing(3);
+  QGridLayout *tlLayout = new QGridLayout( tlGroup );
+  tlLayout->setMargin(10);
+  tlLayout->setSpacing(3);
   row1 = 0;
 
-  lbl = new QLabel( tr("Width:"), clGroup );
-  clLayout->addWidget( lbl, row1, 0 );
+  lbl = new QLabel( tr("Width:"), tlGroup );
+  tlLayout->addWidget( lbl, row1, 0 );
 
-  clWidth = new QSpinBox( clGroup );
-  clWidth->setRange( 3, 10 );
-  clWidth->setSingleStep( 1 );
-  clWidth->setButtonSymbols( QSpinBox::PlusMinus );
-  clLayout->addWidget( clWidth, row1, 1 );
+  tlWidth = new QSpinBox( tlGroup );
+  tlWidth->setRange( 1, 10 );
+  tlWidth->setSingleStep( 1 );
+  tlWidth->setButtonSymbols( QSpinBox::PlusMinus );
+  tlLayout->addWidget( tlWidth, row1, 1 );
 
   row1++;
-  lbl = new QLabel( tr("Color:"), clGroup );
-  clLayout->addWidget( lbl, row1, 0 );
+  lbl = new QLabel( tr("Color:"), tlGroup );
+  tlLayout->addWidget( lbl, row1, 0 );
 
-  clColorButton = new QPushButton( clGroup );
-  clLayout->addWidget( clColorButton, row1, 1 );
+  tlColorButton = new QPushButton( tlGroup );
+  tlLayout->addWidget( tlColorButton, row1, 1 );
+
+  row1++;
+  tlCheckBox = new QCheckBox( tr("Draw") );
+  tlLayout->addWidget( tlCheckBox, row1, 0, 1, 2 );
 
   // on click the color chooser dialog will be opened
-  connect( clColorButton, SIGNAL(clicked()), this, SLOT(slot_editClColor()) );
+  connect( tlColorButton, SIGNAL(clicked()), this, SLOT(slot_editTlColor()) );
+
+  //--------------------------------------------------------------
+  // as next the track line group is added
+  trGroup = new QGroupBox( tr("Track Line"), this );
+
+  QGridLayout *trLayout = new QGridLayout( trGroup );
+  trLayout->setMargin(10);
+  trLayout->setSpacing(3);
+  row1 = 0;
+
+  lbl = new QLabel( tr("Width:"), trGroup );
+  trLayout->addWidget( lbl, row1, 0 );
+
+  trWidth = new QSpinBox( trGroup );
+  trWidth->setRange( 1, 10 );
+  trWidth->setSingleStep( 1 );
+  trWidth->setButtonSymbols( QSpinBox::PlusMinus );
+  trLayout->addWidget( trWidth, row1, 1 );
+
+  row1++;
+  lbl = new QLabel( tr("Color:"), trGroup );
+  trLayout->addWidget( lbl, row1, 0 );
+
+  trColorButton = new QPushButton( trGroup );
+  trLayout->addWidget( trColorButton, row1, 1 );
+
+  row1++;
+  trCheckBox = new QCheckBox( tr("Draw") );
+  trLayout->addWidget( trCheckBox, row1, 0, 1, 2 );
+
+  // on click the color chooser dialog will be opened
+  connect( trColorButton, SIGNAL(clicked()), this, SLOT(slot_editTrColor()) );
 
   //--------------------------------------------------------------
   hbox = new QHBoxLayout;
   hbox->addWidget( cylinderGroup );
   hbox->addWidget( sectorGroup );
-  hbox->addWidget( clGroup );
+  hbox->addWidget( tlGroup );
+  hbox->addWidget( trGroup );
   hbox->addStretch( 10 );
 
   topLayout->addLayout( hbox, row++, 0, 1, 3 );
@@ -293,22 +329,39 @@ void SettingsPageTask::slot_buttonPressedNT( int newScheme )
   selectedNTScheme = newScheme;
 }
 
-/** Opens the color chooser dialog for the course line */
-void SettingsPageTask::slot_editClColor()
+void SettingsPageTask::slot_editTlColor()
 {
-  // Open color chooser dialog to edit course line color
-  QString title = tr("Course Line Color");
-  QColor newColor = QColorDialog::getColor( clColor, this, title );
+  // Open color chooser dialog to edit the target line color
+  QString title = tr("Target Line Color");
+  QColor newColor = QColorDialog::getColor( tlColor, this, title );
 
-  if( newColor.isValid() && clColor != newColor )
+  if( newColor.isValid() && tlColor != newColor )
     {
-      clColor = newColor;
+      tlColor = newColor;
       // determine pixmap size to be used for icons in dependency of the used font
       int size = font().pointSize() - 2;
       QSize pixmapSize = QSize( size, size );
       QPixmap pixmap(pixmapSize);
       pixmap.fill( newColor );
-      clColorButton->setIcon( QIcon(pixmap) );
+      tlColorButton->setIcon( QIcon(pixmap) );
+    }
+}
+
+void SettingsPageTask::slot_editTrColor()
+{
+  // Open color chooser dialog to edit the track line color
+  QString title = tr("Track Line Color");
+  QColor newColor = QColorDialog::getColor( trColor, this, title );
+
+  if( newColor.isValid() && trColor != newColor )
+    {
+      trColor = newColor;
+      // determine pixmap size to be used for icons in dependency of the used font
+      int size = font().pointSize() - 2;
+      QSize pixmapSize = QSize( size, size );
+      QPixmap pixmap(pixmapSize);
+      pixmap.fill( newColor );
+      trColorButton->setIcon( QIcon(pixmap) );
     }
 }
 
@@ -350,19 +403,30 @@ void SettingsPageTask::slot_load()
   drawShape->setChecked( conf->getTaskDrawShape() );
   fillShape->setChecked( conf->getTaskFillShape() );
 
-  // load task course line color
-  clColor = conf->getTaskCourseLineColor();
-  selectedClColor = clColor;
+  // load the target line color
+  tlColor = conf->getTargetLineColor();
+  selectedTlColor = tlColor;
 
   // determine pixmap size to be used for icons in dependency of the used font
   int size = font().pointSize() - 2;
   QSize pixmapSize = QSize( size, size );
   QPixmap pixmap(pixmapSize);
-  pixmap.fill( clColor );
-  clColorButton->setIcon( QIcon(pixmap) );
+  pixmap.fill( tlColor );
+  tlColorButton->setIcon( QIcon(pixmap) );
 
-  seletedClWidth = conf->getTaskCourseLineWidth();
-  clWidth->setValue( seletedClWidth );
+  seletedTlWidth = conf->getTargetLineWidth();
+  tlWidth->setValue( seletedTlWidth );
+  tlCheckBox->setChecked( conf->getTargetLineDrawState() );
+
+  // load the track line color
+  trColor = conf->getTrackLineColor();
+  selectedTrColor = trColor;
+  pixmap.fill( trColor );
+  trColorButton->setIcon( QIcon(pixmap) );
+
+  seletedTrWidth = conf->getTrackLineWidth();
+  trWidth->setValue( seletedTrWidth );
+  trCheckBox->setChecked( conf->getTrackLineDrawState() );
 }
 
 void SettingsPageTask::slot_save()
@@ -445,14 +509,29 @@ void SettingsPageTask::slot_save()
        task->updateTask();
      }
 
-   // save task course line items
-   if( selectedClColor != clColor )
+   // save task target line items
+   if( selectedTlColor != tlColor )
      {
-       conf->setTaskCourseLineColor( clColor );
+       conf->setTargetLineColor( tlColor );
      }
 
-   if( seletedClWidth != clWidth->value() )
+   if( seletedTlWidth != tlWidth->value() )
      {
-       conf->setTaskCourseLineWidth( clWidth->value() );
+       conf->setTargetLineWidth( tlWidth->value() );
      }
+
+   conf->setTargetLineDrawState( tlCheckBox->isChecked() );
+
+   // save task track line items
+   if( selectedTrColor != trColor )
+     {
+       conf->setTrackLineColor( trColor );
+     }
+
+   if( seletedTrWidth != trWidth->value() )
+     {
+       conf->setTrackLineWidth( trWidth->value() );
+     }
+
+   conf->setTrackLineDrawState( trCheckBox->isChecked() );
 }

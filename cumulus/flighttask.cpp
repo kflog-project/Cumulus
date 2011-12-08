@@ -628,8 +628,8 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
   const int h = Map::getInstance()->size().height();
 
   // Set pen color and width for the course line
-  QColor courseLineColor = conf->getTaskCourseLineColor();
-  qreal courseLineWidth  = conf->getTaskCourseLineWidth();
+  QColor courseLineColor = conf->getTargetLineColor();
+  qreal courseLineWidth  = conf->getTargetLineWidth();
 
   // qDebug("QDesktop: w=%d, h=%d, ora=%d", w, h, ora );
 
@@ -805,8 +805,8 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<Waypoint*> &drawn
   const int h = Map::getInstance()->size().height();
 
   // Set pen color and width for the course line
-  QColor courseLineColor = conf->getTaskCourseLineColor();
-  qreal courseLineWidth  = conf->getTaskCourseLineWidth();
+  QColor courseLineColor = conf->getTargetLineColor();
+  qreal courseLineWidth  = conf->getTargetLineWidth();
 
   QRect viewport( -10-r, -10-r, w+2*r, h+2*r );
 

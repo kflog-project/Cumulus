@@ -2432,6 +2432,9 @@ void Map::__drawGlider()
   // now, draw the line from the glider symbol to the waypoint
   __drawDirectionLine(QPoint(Rx,Ry));
 
+  // draws a line from the current position into the movement direction.
+  __drawTrackLine( QPoint(Rx,Ry) );
+
   // @ee the glider pixmap contains all rotated glider symbols.
   QPainter p(&m_pixInformationMap);
   p.drawPixmap( Rx-40, Ry-40, _glider, rot*80, 0, 80, 80 );
@@ -2632,7 +2635,7 @@ void Map::slotSetScale(const double& newScale)
  */
 void Map::__drawDirectionLine(const QPoint& from)
 {
-  if ( ! GeneralConfig::instance()->getMapBearLine() )
+  if ( ! GeneralConfig::instance()->getTargetLineDrawState() )
     {
       return;
     }
@@ -2650,7 +2653,7 @@ void Map::__drawDirectionLine(const QPoint& from)
       QColor col = ReachableList::getReachColor(calculator->getselectedWp()->origP);
 
       // we do take the task course line width
-      qreal penWidth = GeneralConfig::instance()->getTaskCourseLineWidth();
+      qreal penWidth = GeneralConfig::instance()->getTargetLineWidth();
 
       QPainter lineP;
       lineP.begin(&m_pixInformationMap);
@@ -2659,6 +2662,49 @@ void Map::__drawDirectionLine(const QPoint& from)
       lineP.drawLine(from, to);
       lineP.end();
     }
+}
+
+/**
+ * This function draws a "track line" beginning from the current position in
+ * the moving direction.
+ */
+void Map::__drawTrackLine(const QPoint& from)
+{
+  if( ! GeneralConfig::instance()->getTrackLineDrawState() ||
+      ! calculator || ! calculator->getselectedWp() )
+    {
+      return;
+    }
+
+  // define a radius length
+  int radius = qMax( width(), height() );
+
+  static const double rad = M_PI / 180.;
+
+  // correct angle because the different coordinate systems.
+  int heading = (360 - calculator->getlastHeading()) + 90;
+
+  // Note, that the Cartesian coordinate system must be mirrored at the
+  // the X-axis to get the painter's coordinate system. That means all
+  // angles must be multiplied by -1.
+  double angle = -rad * normalize(heading);
+
+  // Calculate the second point by using polar coordinates.
+  int toX = static_cast<int> (rint(cos(angle) * radius)) + from.x();
+  int toY = static_cast<int> (rint(sin(angle) * radius)) + from.y();
+
+  QPoint to( toX, toY );
+
+  // we do take the task course line width
+  qreal penWidth = GeneralConfig::instance()->getTrackLineWidth();
+  QColor color = GeneralConfig::instance()->getTrackLineColor();
+
+  QPainter lineP;
+  lineP.begin(&m_pixInformationMap);
+  lineP.setClipping(true);
+  lineP.setPen(QPen(color, penWidth, Qt::SolidLine));
+  lineP.drawLine(from, to);
+  lineP.end();
 }
 
 /**

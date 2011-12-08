@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009-2010 by Axel Pauli
+**   Copyright (c):  2009-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,10 @@
  * The user can modify the assigned color via a color chooser dialog, if he wants that.
  * The widget shows the altitudes in the user selected unit (meter/feed).
  *
- * \date 2002-2010
+ * \date 2002-2011
+ *
+ * \version $Id$
+ *
  */
 
 #ifndef SETTINGS_PAGE_TERRAIN_COLOR_H
@@ -37,6 +40,7 @@
 #include <QPushButton>
 #include <QColor>
 #include <QSize>
+#include <QSpinBox>
 
 #include "elevationcolorimage.h"
 
@@ -116,6 +120,9 @@ private:
 
   // Selects the elevation level to be modified
   QComboBox* elevationBox;
+
+  // provides an positive or negative elevation offset index.
+  QSpinBox* elevationOffset;
 };
 
 #endif

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2010 by Axel Pauli
+**                   2009-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,9 @@
  *
  * \brief Configuration settings for map loading and drawing..
  *
- * \date 2002-2010
+ * \date 2002-2011
+ *
+ * \version $Id$
  *
  */
 
@@ -109,7 +111,6 @@ private:
   QTableWidgetItem *liCities;
   QTableWidgetItem *liWaterways;
   QTableWidgetItem *liForests;
-  QTableWidgetItem *liTargetLine;
   QTableWidgetItem *liWpLabels;
   QTableWidgetItem *liAfLabels;
   QTableWidgetItem *liTpLabels;
@@ -125,7 +126,6 @@ private:
    * Fills the list with load options
    */
   void fillLoadOptionList();
-
 };
 
 #endif

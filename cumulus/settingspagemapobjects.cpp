@@ -77,8 +77,8 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   hBox->addStretch( 10 );
 
   //---------------------------------------------------------------------------
-  // table with 7 rows and 2 columns
-  loadOptions = new QTableWidget(7, 2, this);
+  // table with 8 rows and 2 columns
+  loadOptions = new QTableWidget(8, 2, this);
   loadOptions->setShowGrid( true );
 
   connect( loadOptions, SIGNAL(cellClicked ( int, int )),
@@ -88,7 +88,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   QHeaderView *vHeader = loadOptions->verticalHeader();
   vHeader->setVisible(false);
 
-  QString header = tr("Load/Draw map objects");
+  QString header = tr("Load/Draw objects");
   QTableWidgetItem *item = new QTableWidgetItem( header );
   loadOptions->setHorizontalHeaderItem( 0, item );
 
@@ -181,7 +181,6 @@ void SettingsPageMapObjects::slot_load()
   liCities->setCheckState( conf->getMapLoadCities() ? Qt::Checked : Qt::Unchecked );
   liWaterways->setCheckState( conf->getMapLoadWaterways() ? Qt::Checked : Qt::Unchecked );
   liForests->setCheckState( conf->getMapLoadForests() ? Qt::Checked : Qt::Unchecked );
-  liTargetLine->setCheckState( conf->getMapBearLine()? Qt::Checked : Qt::Unchecked );
   liAfLabels->setCheckState( conf->getMapShowAirfieldLabels() ? Qt::Checked : Qt::Unchecked );
   liTpLabels->setCheckState( conf->getMapShowTaskPointLabels() ? Qt::Checked : Qt::Unchecked );
   liOlLabels->setCheckState( conf->getMapShowOutLandingLabels() ? Qt::Checked : Qt::Unchecked );
@@ -210,7 +209,6 @@ void SettingsPageMapObjects::slot_save()
   conf->setMapLoadCities(liCities->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadWaterways(liWaterways->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadForests(liForests->checkState() == Qt::Checked ? true : false);
-  conf->setMapBearLine(liTargetLine->checkState() == Qt::Checked ? true : false);
   conf->setMapShowAirfieldLabels(liAfLabels->checkState() == Qt::Checked ? true : false);
   conf->setMapShowTaskPointLabels(liTpLabels->checkState() == Qt::Checked ? true : false);
   conf->setMapShowOutLandingLabels(liOlLabels->checkState() == Qt::Checked ? true : false);
@@ -236,10 +234,6 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liForests->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liForests );
 
-  liMotorways = new QTableWidgetItem( tr("Motorways") );
-  liMotorways->setFlags( Qt::ItemIsEnabled );
-  loadOptions->setItem( row++, col, liMotorways );
-
   liIsolines = new QTableWidgetItem( tr("Isolines") );
   liIsolines->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liIsolines );
@@ -248,17 +242,13 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liIsolineBorders->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liIsolineBorders );
 
-  liTargetLine = new QTableWidgetItem( tr("Target line") );
-  liTargetLine->setFlags( Qt::ItemIsEnabled );
-  loadOptions->setItem( row++, col, liTargetLine );
+  liMotorways = new QTableWidgetItem( tr("Motorways") );
+  liMotorways->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, col, liMotorways );
 
   liRailways = new QTableWidgetItem( tr("Railways") );
   liRailways->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liRailways );
-
-  // next column is one
-  row = 0;
-  col = 1;
 
   liRoads = new QTableWidgetItem( tr("Roads") );
   liRoads->setFlags( Qt::ItemIsEnabled );
@@ -267,6 +257,10 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liWaterways = new QTableWidgetItem( tr("Rivers & Canals") );
   liWaterways->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liWaterways );
+
+  // next column is one
+  row = 0;
+  col = 1;
 
   liAfLabels = new QTableWidgetItem( tr("Airfield labels") );
   liAfLabels->setFlags( Qt::ItemIsEnabled );
@@ -287,6 +281,19 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liLabelsInfo = new QTableWidgetItem( tr("Labels - Extra info") );
   liLabelsInfo->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liLabelsInfo );
+
+  // Set a dummy into the unused cells
+  QTableWidgetItem *liDummy = new QTableWidgetItem;
+  liDummy->setFlags( Qt::NoItemFlags );
+  loadOptions->setItem( row++, col, liDummy );
+
+  liDummy = new QTableWidgetItem;
+  liDummy->setFlags( Qt::NoItemFlags );
+  loadOptions->setItem( row++, col, liDummy );
+
+  liDummy = new QTableWidgetItem;
+  liDummy->setFlags( Qt::NoItemFlags );
+  loadOptions->setItem( row++, col, liDummy );
 }
 
 void SettingsPageMapObjects::showEvent(QShowEvent *)
@@ -301,6 +308,12 @@ void SettingsPageMapObjects::showEvent(QShowEvent *)
  */
 void SettingsPageMapObjects::slot_toggleCheckBox( int row, int column )
 {
+  if( column == 1 && row > 4 )
+    {
+      // Dummy cell was clicked
+      return;
+    }
+
   QTableWidgetItem *item = loadOptions->item( row, column );
   item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
 }
@@ -325,7 +338,6 @@ void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
   changed |= ( conf->getMapLoadCities() ? Qt::Checked : Qt::Unchecked ) != liCities->checkState();
   changed |= ( conf->getMapLoadWaterways() ? Qt::Checked : Qt::Unchecked ) != liWaterways->checkState();
   changed |= ( conf->getMapLoadForests() ? Qt::Checked : Qt::Unchecked ) != liForests->checkState();
-  changed |= ( conf->getMapBearLine()? Qt::Checked : Qt::Unchecked ) != liTargetLine->checkState();
   changed |= ( conf->getMapShowAirfieldLabels()? Qt::Checked : Qt::Unchecked ) != liAfLabels->checkState();
   changed |= ( conf->getMapShowTaskPointLabels()? Qt::Checked : Qt::Unchecked ) != liTpLabels->checkState();
   changed |= ( conf->getMapShowOutLandingLabels()? Qt::Checked : Qt::Unchecked ) != liOlLabels->checkState();
