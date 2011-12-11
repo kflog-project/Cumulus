@@ -15,6 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2011-12-11 AP: The navigate to home button function did not set the
+                   home elevation. That caused a wrong arrival altitude display.
+                   The problem was difficult to recognize, if the home site
+                   elevation is low. But in Gariep Dam in South Africa I
+                   detected the issue because it lays ca. 1300m above MSL.
+
 [+] 2011-12-08 AP: If a target is selected, the drawing of a track line can be
                    activated now in the task setup configuration menu. The track
                    line shows the current movement direction. So you can easier

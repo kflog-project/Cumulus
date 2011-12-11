@@ -2181,6 +2181,8 @@ void MainWindow::slotNavigate2Home()
   wp.name = tr("Home");
   wp.description = tr("Home Site");
   wp.origP.setPos( GeneralConfig::instance()->getHomeCoord() );
+  wp.elevation = GeneralConfig::instance()->getHomeElevation().getMeters();
+  wp.country = GeneralConfig::instance()->getHomeCountryCode();
 
   calculator->slot_WaypointChange( &wp, true );
 }
