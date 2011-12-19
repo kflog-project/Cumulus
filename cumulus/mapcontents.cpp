@@ -148,8 +148,11 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
       format = "xml";
     }
 
-  qDebug() << "MapContents():" << wpList.size() << "waypoints read from"
-           << format << "catalog.";
+  if( ok )
+    {
+      qDebug() << "MapContents():" << wpList.size() << "waypoints read from"
+               << format << "catalog.";
+    }
 
   currentTask = 0;
 

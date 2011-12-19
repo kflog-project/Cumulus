@@ -3,7 +3,7 @@
                              -------------------
     begin                : Okt 18 2002
     copyright            : (C) 2002      by Eggert Ehmke
-                               2008-2010 by Axel Pauli
+                               2008-2011 by Axel Pauli
 
     email                : eggert.ehmke@berlin.de, axel@kflog.org
 
@@ -44,6 +44,7 @@ Polar::Polar() :
   _bugs(0),
   _emptyWeight(0),
   _grossWeight(0),
+  _wingArea(0),
   _seats(0),
   _maxWater(0)
 {
@@ -52,7 +53,7 @@ Polar::Polar() :
 Polar::Polar(const QString& name,const Speed& v1, const Speed& w1,
              const Speed& v2, const Speed& w2,
              const Speed& v3, const Speed& w3,
-             double /*wingLoad*/, double /*wingArea*/,
+             double /*wingLoad*/, double wingArea,
              double emptyWeight, double grossWeight) :
     _name(name),
     _v1(v1),
@@ -65,6 +66,7 @@ Polar::Polar(const QString& name,const Speed& v1, const Speed& w1,
     _bugs(0),
     _emptyWeight(emptyWeight),
     _grossWeight(grossWeight),
+    _wingArea(wingArea),
     _seats(1),
     _maxWater(0)
 {
@@ -118,6 +120,7 @@ Polar::Polar (const Polar& polar) :
   _bugs (polar._bugs),
   _emptyWeight (polar._emptyWeight),
   _grossWeight (polar._grossWeight),
+  _wingArea(polar._wingArea),
   _seats (polar._seats),
   _maxWater (polar._maxWater)
 {}
@@ -335,7 +338,7 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
           minspeed = 0;
           maxspeed = 0;
           stepspeed = 0;
-          qWarning("invalid horizontal speed: %d", Speed::getHorizontalUnit());
+          break;
     }
 
     Speed sink;
@@ -372,6 +375,7 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
           maxsink = 0;
           stepsink = 0;
           qWarning ("invalid vertical speed: %d", Speed::getVerticalUnit());
+          break;
     }
 
     Speed speed;
@@ -573,6 +577,28 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
     p.drawText(0, y+=font.pixelSize()+2, msg);
 
     msg = QString(QObject::tr("Best L/D: %1")).arg( bestld, 0, 'f', 1 );
+
+    if( _wingArea )
+      {
+        double wload = 0.0;
+
+        if( _grossWeight > 0.0 )
+          {
+            wload = (_grossWeight + _water) / _wingArea;
+          }
+        else if( _emptyWeight )
+          {
+            wload = (_emptyWeight + _water) / _wingArea;
+          }
+
+        if( wload )
+          {
+            msg += ", " + QString(QObject::tr("Wing load:")) +
+                   QString(" %1 Kg/m").arg( wload, 0, 'f', 1 ) +
+                   QChar(Qt::Key_twosuperior);
+          }
+      }
+
     p.drawText(0, y+=font.pixelSize()+2, msg);
 
     y = (int)(sink*Y)+5;
@@ -587,4 +613,3 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
     msg = QObject::tr("Use <Shift> up/down to adjust sinking");
     p.drawText(x, y+=font.pixelSize()+2, msg);
 }
-

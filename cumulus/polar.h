@@ -3,7 +3,7 @@
                              -------------------
     begin                : Okt 18 2002
     copyright            : (C) 2002      by Eggert Ehmke
-                               2008-2010 by Axel Pauli
+                               2008-2011 by Axel Pauli
 
     email                : eggert.ehmke@berlin.de, axel@kflog.org
 
@@ -27,10 +27,11 @@
  *
  * \brief Class for glider polar calculations and drawing.
  *
- * \date 2002-2010
+ * \date 2002-2011
+ *
+ * \version $Id$
  *
  */
-
 
 #ifndef POLAR_H
 #define POLAR_H
@@ -46,13 +47,14 @@ public:
 
     Polar();
 
-    Polar(const QString& name,const Speed& v1, const Speed& w1,
+    Polar(const QString& name,
+          const Speed& v1, const Speed& w1,
           const Speed& v2, const Speed& w2,
           const Speed& v3, const Speed& w3,
           double wingload, double wingarea,
           double emptyWeight, double grossWeight);
 
-    Polar (const Polar&);
+    Polar(const Polar&);
 
     virtual ~Polar();
 
@@ -129,6 +131,16 @@ public:
         _grossWeight = newValue;
     };
 
+    double wingArea()const
+    {
+        return _wingArea;
+    };
+
+    void setWingArea(double newValue)
+    {
+        _wingArea = newValue;
+    };
+
     int water()const
     {
         return _water;
@@ -187,6 +199,7 @@ private:
     int    _bugs;
     double _emptyWeight;
     double _grossWeight;
+    double _wingArea;
     int    _seats;
     int    _maxWater;
 };

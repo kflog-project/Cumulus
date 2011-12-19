@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,6 +24,8 @@
  * \brief This widget provides a glider editor dialog.
  *
  * \date 2002-2010
+ *
+ * \version $Id$
  */
 
 #ifndef SETTINGS_PAGE_GLIDER_EDITOR_H
@@ -118,6 +120,7 @@ private:
   QDoubleSpinBox* spinW2;
   QDoubleSpinBox* spinV3;
   QDoubleSpinBox* spinW3;
+  QDoubleSpinBox* spinWingArea;
   QLineEdit* edtGType;
   QLineEdit* edtGReg;
   QLineEdit* edtGCall;

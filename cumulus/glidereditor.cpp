@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2008-2010 by Axel Pauli
+ **                   2008-2011 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -92,6 +92,16 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   itemsLayout->addWidget(new QLabel(tr("Callsign:"), this), row, 2);
   edtGCall = new QLineEdit(this);
   itemsLayout->addWidget(edtGCall, row, 3);
+  row++;
+
+  itemsLayout->addWidget(new QLabel(tr("Wing Area:"), this), row, 0);
+  spinWingArea = new QDoubleSpinBox(this);
+  spinWingArea->setRange(0.0, 100.0);
+  spinWingArea->setSingleStep(1.0);
+  spinWingArea->setButtonSymbols(QSpinBox::PlusMinus);
+  QChar tsChar(Qt::Key_twosuperior);
+  spinWingArea->setSuffix( QString(" m") + tsChar );
+  itemsLayout->addWidget(spinWingArea, row, 1);
   row++;
 
   itemsLayout->setRowMinimumHeight(row++, 10);
@@ -298,7 +308,7 @@ void GilderEditor::load()
       comboType->setEditText(_glider->type());
       edtGReg->setText(_glider->registration());
       edtGCall->setText(_glider->callSign());
-
+      spinWingArea->setValue( _glider->polar()->wingArea() );
       spinWater->setValue(_glider->maxWater());
 
       if (_glider->seats() == Glider::doubleSeater)
@@ -428,8 +438,12 @@ void GilderEditor::save()
 
   // qDebug("_polar->emptyWeight() %f  _polar->grossWeight() %f",
   //         (float)_glider->polar()->emptyWeight(),  (float)_glider->polar()->grossWeight() );
-  Polar polar( _glider->type(), V1, W1, V2, W2, V3, W3, 0.0, 0.0,
-               emptyWeight->value(), emptyWeight->value() + addedLoad->value() );
+  Polar polar( _glider->type(),
+               V1, W1, V2, W2, V3, W3,
+               0.0,
+               spinWingArea->value(),
+               emptyWeight->value(),
+               emptyWeight->value() + addedLoad->value() );
 
   _glider->setPolar( polar );
 
@@ -502,8 +516,10 @@ void GilderEditor::readPolarData()
           double wingarea = list[9].toDouble();
           double emptyMass = list[10].toDouble();
 
-          Polar polar = Polar( glidertype, v1, w1, v2, w2, v3, w3,
-                               wingload, wingarea, emptyMass, emptyMass );
+          Polar polar = Polar( glidertype,
+                               v1, w1, v2, w2, v3, w3,
+                               wingload, wingarea,
+                               emptyMass, emptyMass );
 
           if (list.count() >= 12)
             {
@@ -525,6 +541,8 @@ void GilderEditor::readPolarData()
 
           _polars.append( polar );
         }
+
+      file.close();
 
       if( _polars.size() )
         {
@@ -599,8 +617,6 @@ void GilderEditor::readPolarData()
 /** called when a glider type has been selected */
 void GilderEditor::slotActivated(const QString& type)
 {
-  // qDebug ("GilderEditor::slotActivated(%s)", type.toLatin1().data());
-
   if( !_glider )
     {
       _glider = new Glider();
@@ -615,6 +631,7 @@ void GilderEditor::slotActivated(const QString& type)
     {
       _glider->setPolar( *_polar );
 
+      spinWingArea->setValue( _polar->wingArea() );
       spinV1->setValue( _polar->v1().getHorizontalValue() );
       spinW1->setValue( _polar->w1().getVerticalValue() );
       spinV2->setValue( _polar->v2().getHorizontalValue() );
@@ -652,7 +669,8 @@ void GilderEditor::slotButtonShow()
   W3.setVerticalValue(spinW3->value());
 
   Polar polar( comboType->currentText(),
-               V1, W1, V2, W2, V3, W3, 0.0, 0.0,
+               V1, W1, V2, W2, V3, W3, 0.0,
+               spinWingArea->value(),
                emptyWeight->value(),
                emptyWeight->value() + addedLoad->value() );
 

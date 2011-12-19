@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -118,9 +118,9 @@ void Glider::safe(QSettings *config, int id)
   data.append( QString::number( _polar.v3().getKph() ) );
   data.append( QString::number( _polar.w3().getMps() ) );
   data.append( QString::number( 0.0 ) ); // wing load not used
-  data.append( QString::number( 0.0 ) ); // wing area not used
-  data.append( QString::number( _polar.emptyWeight() ) ); // empty weight now used
-  data.append( QString::number( _polar.grossWeight() ) ); // gross weight now used
+  data.append( QString::number( _polar.wingArea() ) );
+  data.append( QString::number( _polar.emptyWeight() ) );
+  data.append( QString::number( _polar.grossWeight() ) );
 
   QString keyname = "Glider%1";
   config->setValue( keyname.arg( id ), data.join( ";" ) );

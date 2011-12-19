@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2011-12-19 AP: Wing load value added to pre-flight glider page and to
+                   glider polar drawing.
+
 [-] 2011-12-11 AP: The navigate to home button function did not set the
                    home elevation. That caused a wrong arrival altitude display.
                    The problem was difficult to recognize, if the home site

@@ -7,10 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2009 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
@@ -68,6 +68,12 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) : QWidget(parent)
   spinWater->setSuffix(" l");
   row++;
 
+  QLabel* lblWLoad = new QLabel(tr("Wing load:"), this);
+  topLayout->addWidget(lblWLoad, row, 2);
+  wingLoad=new QLabel(this);
+  topLayout->addWidget(wingLoad, row, 3);
+  row++;
+
   topLayout->setRowMinimumHeight ( row, 10 );
   row++;
 
@@ -88,6 +94,12 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) : QWidget(parent)
 
   connect(list, SIGNAL(itemSelectionChanged()),
           this, SLOT(slot_gliderChanged()));
+
+  connect( spinLoad, SIGNAL(valueChanged(int)),
+           this, SLOT(slot_updateWingLoad(int)) );
+
+  connect( spinWater, SIGNAL(valueChanged(int)),
+           this, SLOT(slot_updateWingLoad(int)) );
 }
 
 PreFlightGliderPage::~PreFlightGliderPage()
@@ -122,6 +134,8 @@ void PreFlightGliderPage::slot_gliderChanged()
       spinWater->setMaximum(glider->maxWater());
       spinWater->setEnabled(glider->maxWater()!=0);
     }
+
+  slot_updateWingLoad( 0 );
 }
 
 void PreFlightGliderPage::slot_gliderDeselected()
@@ -130,6 +144,8 @@ void PreFlightGliderPage::slot_gliderDeselected()
   lastGlider = static_cast<Glider *> (0);
   // clear list selection
   list->clearSelection();
+  // clear wing load
+  wingLoad->setText("");
 }
 
 void PreFlightGliderPage::getCurrent()
@@ -188,6 +204,39 @@ void PreFlightGliderPage::save()
       calculator->setGlider( static_cast<Glider *> (0) );
       list->setStoredSelection( static_cast<Glider *> (0) );
     }
+}
+
+void PreFlightGliderPage::slot_updateWingLoad( int value )
+{
+  Q_UNUSED(value)
+
+  Glider* glider = list->getSelectedGlider();
+
+  if( glider == 0 || glider->polar() == 0 || glider->polar()->wingArea() == 0.0 )
+    {
+      // Clear label
+      wingLoad->setText("");
+      return;
+    }
+
+  Polar* polar = glider->polar();
+
+  double wload = 0.0;
+
+  if( polar->emptyWeight() )
+    {
+      wload = (polar->emptyWeight() + spinLoad->value() + spinWater->value()) / polar->wingArea();
+    }
+
+  QString msg = "";
+
+  if( wload )
+    {
+      msg = QString("%1 Kg/m").arg( wload, 0, 'f', 1 ) +
+            QChar(Qt::Key_twosuperior);
+    }
+
+  wingLoad->setText(msg);
 }
 
 void PreFlightGliderPage::showEvent(QShowEvent *)

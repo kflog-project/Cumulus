@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008-2010 Axel Pauli
+**   Copyright (c):  2003 by André Somers, 2008-2011 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,9 @@
  *
  * \brief A widget for pre-flight glider settings.
  *
- * \date 2003-2010
+ * \date 2003-2011
+ *
+ * \version $Id$
  *
  */
 
@@ -30,6 +32,7 @@
 #define PREFLIGHT_GLIDER_PAGE_H
 
 #include <QWidget>
+#include <QLabel>
 #include <QLineEdit>
 #include <QSpinBox>
 
@@ -60,6 +63,7 @@ private:
   QSpinBox         *spinLoad;
   QSpinBox         *spinWater;
   Glider           *lastGlider;
+  QLabel           *wingLoad;
 
   void getCurrent();
 
@@ -67,6 +71,7 @@ private slots:
 
   void slot_gliderChanged();
   void slot_gliderDeselected();
+  void slot_updateWingLoad( int value );
 };
 
 #endif
