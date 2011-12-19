@@ -92,6 +92,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   QTableWidgetItem *item = new QTableWidgetItem( header );
   loadOptions->setHorizontalHeaderItem( 0, item );
 
+  header = tr("Draw objects");
   item = new QTableWidgetItem( header );
   loadOptions->setHorizontalHeaderItem( 1, item );
 
