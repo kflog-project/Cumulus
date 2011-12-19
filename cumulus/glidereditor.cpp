@@ -450,13 +450,11 @@ void GilderEditor::save()
   // emit glider object to GliderListWidget
   if (isNew)
     {
-      emit
-      newGlider(_glider);
+      emit newGlider(_glider);
     }
   else
     {
-      emit
-      editedGlider(_glider);
+      emit editedGlider(_glider);
     }
 
   isNew = false;
