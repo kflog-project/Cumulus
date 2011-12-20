@@ -464,6 +464,12 @@ private:
    */
   void __drawTrackLine(const QPoint& from);
 
+  /**
+   * Draws a relative bearing indicator in the upper map area, if the flight
+   * state is cruising or wave.
+   */
+  void __drawRelBearingInfo();
+
 #ifdef FLARM
 
   /**
@@ -552,13 +558,17 @@ private: //members
   // new data are are requested by the window system.
   QPixmap m_pixPaintBuffer;
 
+  // Pixmap containing relative bearing display.
+  QPixmap m_pixRelBearingDisplay;
+
   //contains a strip with wind arrows in different directions
   QPixmap windArrow;
 
   int mapRot;
   int curMapRot;
 
-  Waypoint wp;  // currently selected waypoint
+  // currently selected waypoint
+  Waypoint wp;
 
   /**
    * Contains the regions of all visible airspaces. The list is needed to
@@ -597,6 +607,11 @@ protected:
    * (0=due north, 90 east, etc.)
    */
   int bearing;
+
+  /**
+   * Contains the last calculated relative bearing.
+   */
+  int lastRelBearing;
 
   /**
    * Contains the map mode.

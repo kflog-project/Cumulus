@@ -78,6 +78,7 @@ Map::Map(QWidget* parent) : QWidget(parent)
   curMapRot = 0;
   heading = 0;
   bearing = 0;
+  lastRelBearing = -999;
   mode = northUp;
   m_scheduledFromLayer = baseLayer;
   ShowGlider = false;
@@ -2435,6 +2436,8 @@ void Map::__drawGlider()
   // draws a line from the current position into the movement direction.
   __drawTrackLine( QPoint(Rx,Ry) );
 
+  __drawRelBearingInfo();
+
   // @ee the glider pixmap contains all rotated glider symbols.
   QPainter p(&m_pixInformationMap);
   p.drawPixmap( Rx-40, Ry-40, _glider, rot*80, 0, 80, 80 );
@@ -2705,6 +2708,96 @@ void Map::__drawTrackLine(const QPoint& from)
   lineP.setPen(QPen(color, penWidth, Qt::SolidLine));
   lineP.drawLine(from, to);
   lineP.end();
+}
+
+/**
+ * Draws a relative bearing indicator in the upper map area, if the flight
+ * state is cruising or wave.
+ */
+void Map::__drawRelBearingInfo()
+{
+  if( ! GeneralConfig::instance()->getMapShowRelBearingInfo() ||
+      ! calculator || ! calculator->getselectedWp() ||
+      (calculator->currentFlightMode() != Calculator::cruising &&
+       calculator->currentFlightMode() != Calculator::wave) )
+    {
+      return;
+    }
+
+  int heading = calculator->getlastHeading();
+  int bearing = calculator->getlastBearing();
+
+  int relBearing = bearing - heading;
+
+  if( relBearing < -180 )
+    {
+      relBearing += 360;
+    }
+  else if( relBearing > 180 )
+    {
+      relBearing -= 360;
+    }
+
+  if( lastRelBearing != relBearing )
+    {
+      lastRelBearing = relBearing;
+
+      QFont font = this->font();
+
+      int pointSize = 16;
+
+    #ifdef MAEMO
+      pointSize += 2;
+    #endif
+
+      font.setPointSize(pointSize);
+      font.setBold(true);
+
+      QString text = "";
+
+      if( relBearing == 0 )
+        {
+          text = QString("0") + QChar(Qt::Key_degree);
+        }
+      else if( relBearing > 0 )
+        {
+          text = QString("%1").arg(relBearing) + QChar(Qt::Key_degree) + ">>";
+        }
+      else if( relBearing < 0 )
+        {
+          text = QString("<<%1").arg(-relBearing) + QChar(Qt::Key_degree);
+        }
+
+      QFontMetrics fm(font);
+
+      // calculate text bounding box
+      QRect textBox = fm.boundingRect( text );
+
+      m_pixRelBearingDisplay = QPixmap( textBox.width(), textBox.height() );
+      m_pixRelBearingDisplay.fill( Qt::black );
+
+      QPainter painter;
+      painter.begin(&m_pixRelBearingDisplay);
+      painter.setFont(font);
+      painter.setPen(QPen(Qt::white));
+      painter.drawText( 0, 0,
+                        textBox.width(), textBox.height(),
+                        Qt::AlignCenter,
+                        text );
+      painter.end();
+    }
+
+  if( m_pixRelBearingDisplay.isNull() )
+    {
+      return;
+    }
+
+  QPainter painter;
+  painter.begin(&m_pixInformationMap);
+  painter.drawPixmap( width() / 2 - m_pixRelBearingDisplay.width() / 2,
+                      0,
+                      m_pixRelBearingDisplay );
+  painter.end();
 }
 
 /**

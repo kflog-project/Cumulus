@@ -185,6 +185,7 @@ void SettingsPageMapObjects::slot_load()
   liAfLabels->setCheckState( conf->getMapShowAirfieldLabels() ? Qt::Checked : Qt::Unchecked );
   liTpLabels->setCheckState( conf->getMapShowTaskPointLabels() ? Qt::Checked : Qt::Unchecked );
   liOlLabels->setCheckState( conf->getMapShowOutLandingLabels() ? Qt::Checked : Qt::Unchecked );
+  liRelBearingInfo->setCheckState( conf->getMapShowRelBearingInfo() ? Qt::Checked : Qt::Unchecked );
 
   // Load scale values for spin boxes. Note! The load order is important because a value change
   // of the spin box will generate a signal.
@@ -213,9 +214,10 @@ void SettingsPageMapObjects::slot_save()
   conf->setMapShowAirfieldLabels(liAfLabels->checkState() == Qt::Checked ? true : false);
   conf->setMapShowTaskPointLabels(liTpLabels->checkState() == Qt::Checked ? true : false);
   conf->setMapShowOutLandingLabels(liOlLabels->checkState() == Qt::Checked ? true : false);
-
   conf->setMapShowWaypointLabels(liWpLabels->checkState() == Qt::Checked ? true : false);
   conf->setMapShowLabelsExtraInfo(liLabelsInfo->checkState() == Qt::Checked ? true : false);
+  conf->setMapShowRelBearingInfo(liRelBearingInfo->checkState() == Qt::Checked ? true : false);
+
   conf->setWaypointScaleBorder( Waypoint::Low, wpLowScaleLimitSpinBox->value() );
   conf->setWaypointScaleBorder( Waypoint::Normal, wpNormalScaleLimitSpinBox->value() );
   conf->setWaypointScaleBorder( Waypoint::High, wpHighScaleLimitSpinBox->value() );
@@ -283,12 +285,12 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liLabelsInfo->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liLabelsInfo );
 
+  liRelBearingInfo = new QTableWidgetItem( tr("Relative bearing info") );
+  liRelBearingInfo->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, col, liRelBearingInfo );
+
   // Set a dummy into the unused cells
   QTableWidgetItem *liDummy = new QTableWidgetItem;
-  liDummy->setFlags( Qt::NoItemFlags );
-  loadOptions->setItem( row++, col, liDummy );
-
-  liDummy = new QTableWidgetItem;
   liDummy->setFlags( Qt::NoItemFlags );
   loadOptions->setItem( row++, col, liDummy );
 
@@ -309,7 +311,7 @@ void SettingsPageMapObjects::showEvent(QShowEvent *)
  */
 void SettingsPageMapObjects::slot_toggleCheckBox( int row, int column )
 {
-  if( column == 1 && row > 4 )
+  if( column == 1 && row > 5 )
     {
       // Dummy cell was clicked
       return;
@@ -339,9 +341,10 @@ void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
   changed |= ( conf->getMapLoadCities() ? Qt::Checked : Qt::Unchecked ) != liCities->checkState();
   changed |= ( conf->getMapLoadWaterways() ? Qt::Checked : Qt::Unchecked ) != liWaterways->checkState();
   changed |= ( conf->getMapLoadForests() ? Qt::Checked : Qt::Unchecked ) != liForests->checkState();
-  changed |= ( conf->getMapShowAirfieldLabels()? Qt::Checked : Qt::Unchecked ) != liAfLabels->checkState();
-  changed |= ( conf->getMapShowTaskPointLabels()? Qt::Checked : Qt::Unchecked ) != liTpLabels->checkState();
-  changed |= ( conf->getMapShowOutLandingLabels()? Qt::Checked : Qt::Unchecked ) != liOlLabels->checkState();
+  changed |= ( conf->getMapShowAirfieldLabels() ? Qt::Checked : Qt::Unchecked ) != liAfLabels->checkState();
+  changed |= ( conf->getMapShowTaskPointLabels() ? Qt::Checked : Qt::Unchecked ) != liTpLabels->checkState();
+  changed |= ( conf->getMapShowOutLandingLabels() ? Qt::Checked : Qt::Unchecked ) != liOlLabels->checkState();
+  changed |= ( conf->getMapShowRelBearingInfo() ? Qt::Checked : Qt::Unchecked ) != liRelBearingInfo->checkState();
 
   changed |= ( conf->getWaypointScaleBorder( Waypoint::Low )    != wpLowScaleLimitSpinBox->value() );
   changed |= ( conf->getWaypointScaleBorder( Waypoint::Normal ) != wpNormalScaleLimitSpinBox->value() );

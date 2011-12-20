@@ -116,6 +116,7 @@ private:
   QTableWidgetItem *liTpLabels;
   QTableWidgetItem *liOlLabels;
   QTableWidgetItem *liLabelsInfo;
+  QTableWidgetItem *liRelBearingInfo;
 
   // Spin boxes with scale limits according to their priority.
   QSpinBox *wpLowScaleLimitSpinBox;

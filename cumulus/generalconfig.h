@@ -1112,6 +1112,17 @@ class GeneralConfig : protected QSettings
     _mapShowOutLandingLabels = newValue;
   };
 
+  /** gets Map ShowRelBearingInfo */
+  bool getMapShowRelBearingInfo() const
+  {
+    return _mapShowRelBearingInfo;
+  };
+  /** sets Map ShowRelBearingInfo */
+  void setMapShowRelBearingInfo(const bool newValue)
+  {
+    _mapShowRelBearingInfo = newValue;
+  };
+
   /** gets Map ShowLabelsExtraInfo */
   bool getMapShowLabelsExtraInfo() const
   {
@@ -2238,6 +2249,8 @@ class GeneralConfig : protected QSettings
   bool _mapShowTaskPointLabels;
   // Map ShowOutLandingLabels
   bool _mapShowOutLandingLabels;
+  // relative bearing info
+  bool _mapShowRelBearingInfo;
   // Map LoadRoads
   bool _mapLoadRoads;
   // Map LoadMotorways
