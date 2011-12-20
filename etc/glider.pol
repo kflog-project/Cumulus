@@ -1,7 +1,7 @@
 # Cumulus  glider data
 # $Id$
 #
-# Glider name             v1     w1       v2        w2      v3      w3     V Best L/D   Wing Load     Area   EmptyMass (Kg) MBallast(l) Seats*/
+# Glider name             v1     w1       v2        w2      v3      w3     V Best L/D  WingLoad(kg/qm) Area(qm) EmptyMass(Kg) Water(l)  Seats
 1-26A,                    75,   .94,     107,    1.721,    143,    3.425,      0,           0,          0,       161,            0,       1
 1-26E,                    82,  1.036,    118,    1.882,    157,    3.765,      0,           0,          0,       206,            0,       1
 1-34,                     90,   .80,     144,    2.10,     180,    3.84,       0,           0,          0,       240,            0,       1
@@ -80,6 +80,7 @@ Nimbus 2/20.3,           120,   .75,     180,    2.14,     220,    3.769,      0
 Nimbus 3/24.6,           116,   .665,    174,    1.806,    232,    3.821,      0,           0,          0,       410,          159,       1
 Nimbus 3D,                87,   .433,    164,    1.381,    204,    2.302,      0,           0,          0,       508,          168,       2
 Nimbus 3DM,              104,   .510,    157,    1.04,     218,    2.646,      0,           0,          0,       636,          168,       2
+Nimbus 3DT,              100,   .510,    120,     .68,     150,    1.06,       0,           0,         17.02,    530,          110,       2
 Nimbus 3T,               142,   .985,    182,    1.89,     243,    4.0,        0,           0,          0,       460,          310,       1
 Nimbus 4D,                99,   .46,     134,     .779,    170,    1.45,       0,           0,          0,       538,          303,       2
 Nimbus 4DM,               94,   .455,    141,     .825,    180,    1.533,      0,           0,          0,       616,          168,       2
@@ -115,6 +116,6 @@ Ventus 2cxT 18m,       100.0,   .56,   150.0,    1.13,    200.0,   2.28,       0
 VSO-10 Gradient,          90,   .78,     130,    1.41,     160,    2.44,       0,           0,          9.3,     347,            0,       1
 Zugvogel IIIb,            93,   .68,     130,    1.21,     165,    2.38,      89,        25.2,         14.48,    245,            0,       1
 #                                                                  
-# Glider name             v1     w1       v2       w2       v3       w3    V Best L/D    Wing Load     Area  EmptyMass       MBallast   Seats*/
+# Glider name             v1     w1       v2        w2      v3      w3     V Best L/D  WingLoad(kg/qm) Area(qm) EmptyMass(Kg) Water(l)  Seats
 #
-#much data is taken from www.winpilot.com/polar.asp and http://git.xcsoar.org/cgit/master/xcsoar.git/tree/src/Polar/PolarStore.cpp
+# Much data is taken from www.winpilot.com/polar.asp and http://git.xcsoar.org/cgit/master/xcsoar.git/tree/src/Polar/PolarStore.cpp
