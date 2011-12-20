@@ -29,8 +29,7 @@
 
 extern MapView *_globalMapView;
 
-GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
-  QWidget(parent)
+GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
 {
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
@@ -487,18 +486,31 @@ void GilderEditor::readPolarData()
 
   QTextStream stream(&file);
 
+  int lineNo = 0;
+
   if (file.open(QIODevice::ReadOnly))
     {
       while (!stream.atEnd())
         {
           QString line = stream.readLine().trimmed();
-          // ignore comments
-          if (line[0] == '#')
+
+          lineNo++;
+
+          // ignore comments and empty lines
+          if(line[0] == '#' || line[0] == '*' || line.size() == 0 )
             {
               continue;
             }
 
           QStringList list = line.split(",", QString::KeepEmptyParts);
+
+          if( list.size() < 13 )
+            {
+              // Too less elements
+              qWarning() << "File glider.pol: Format error at line" << lineNo;
+              continue;
+            }
+
           QString glidertype = list[0];
 
           // the sink values are positive in this file; we need them negative
@@ -519,23 +531,8 @@ void GilderEditor::readPolarData()
                                wingload, wingarea,
                                emptyMass, emptyMass );
 
-          if (list.count() >= 12)
-            {
-              polar.setMaxWater(list[11].toInt());
-            }
-          else
-            {
-              polar.setMaxWater(0);
-            }
-
-          if (list.count() >= 13)
-            {
-              polar.setSeats(list[12].toInt());
-            }
-          else
-            {
-              polar.setSeats(1);
-            }
+          polar.setMaxWater(list[11].toInt());
+          polar.setSeats(list[12].toInt());
 
           _polars.append( polar );
         }
