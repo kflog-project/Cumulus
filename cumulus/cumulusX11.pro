@@ -33,7 +33,7 @@ CONFIG += bluetooth
 CONFIG += welt2000thread
 
 #version check for Qt 4.7
-! contains(QT_VERSION, ^4\\.[7]\\..*) {
+! contains(QT_VERSION, ^4\\.[78]\\..*) {
   message("Cannot build Cumulus with Qt version $${QT_VERSION}.")
   error("Use at least Qt 4.7. or higher!")
 }
