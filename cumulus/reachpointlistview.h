@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004 by André Somers, Eckhard Völlm,
-**                   2008-2009 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,8 +25,9 @@
  *
  * This widget provides a list of reachable points and a means to select one.
  *
- * \date 2004-2010
+ * \date 2004-2011
  *
+ * \$Id$
  */
 
 #ifndef REACH_POINT_LISTVIEW_H
@@ -73,6 +74,11 @@ public:
     list->clear();
   }
 
+protected:
+
+  /** This slot is called when the widget is displayed. */
+  void showEvent(QShowEvent *);
+
 public slots:
 
   /**
@@ -110,6 +116,23 @@ public slots:
    */
   void slot_newList ();
 
+private slots:
+
+  /**
+   * A selection was made.
+   */
+  void slot_Selected();
+
+  /**
+   * Move page up.
+   */
+  void slot_PageUp();
+
+  /**
+   * Move page down.
+   */
+  void slot_PageDown();
+
 signals:
 
   /**
@@ -142,31 +165,25 @@ private:
 
   QTreeWidget* list;
   MainWindow * par;
+
+  /** that stores a home position change */
+  bool _homeChanged;
+  bool _newList;
+  bool _outlandShow;
+
   RowDelegate* rowDelegate;
   QBoxLayout * buttonrow;
   Waypoint     selectedWp;
-  bool         _outlandShow;
   QPixmap      _arrows;
-  bool         _newList;
 
   QPushButton* cmdShowOl;
   QPushButton* cmdHideOl;
   QPushButton* cmdHome;
   QPushButton* cmdSelect;
 
-private slots:
-
-  void slot_Selected();
-
-protected:
-
-  /** This slot is called when the widget is displayed. */
-  void showEvent(QShowEvent *);
-
-private:
-
-  /** that stores a home position change */
-  bool homeChanged;
+  /** Up and down buttons for page moving */
+  QPushButton* cmdPageUp;
+  QPushButton* cmdPageDown;
 };
 
 #endif

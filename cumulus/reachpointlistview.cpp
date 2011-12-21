@@ -30,21 +30,22 @@
 #include "sonne.h"
 
 extern Calculator* calculator;
+extern MapConfig* _globalMapConfig;
 
 ReachpointListView::ReachpointListView( MainWindow* parent ) :
   QWidget(parent),
-  homeChanged( false )
+  par(parent),
+  _homeChanged( false ),
+  _newList(true),
+  _outlandShow(true),
+  rowDelegate(0)
 {
   setObjectName("ReachpointListView");
+
   // load pixmap of arrows for relative bearing
   _arrows = GeneralConfig::instance()->loadPixmap("arrows-15.png");
-  _newList=true; //make sure we fill our list the first time it is shown
 
-  par=parent;
-  _outlandShow = true;  // Show out landings by default;
-  QBoxLayout *topLayout = new QVBoxLayout( this );
-
-  list = new QTreeWidget( this );
+  list = new QTreeWidget;
   list->setObjectName("ReachpointView");
 
   list->setRootIsDecorated(false);
@@ -73,14 +74,10 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
   list->setColumnWidth( 1, 74 );
   list->setColumnWidth( 3, 24 ); // the bearing icon
 
-  rowDelegate = 0;
   fillRpList();
 
-  topLayout->addWidget(list,10);
-  QBoxLayout *buttonrow=new QHBoxLayout;
-  topLayout->addLayout(buttonrow);
+  QBoxLayout *buttonrow = new QHBoxLayout;
 
-  /** @ee add a close button */
   QPushButton *cmdClose = new QPushButton(tr("Close"), this);
   buttonrow->addWidget(cmdClose);
 
@@ -99,6 +96,32 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
   cmdSelect = new QPushButton(tr("Select"), this);
   buttonrow->addWidget(cmdSelect);
 
+  cmdPageUp = new QPushButton( this );
+  cmdPageUp->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
+  cmdPageUp->setIconSize( QSize(26, 26) );
+  cmdPageUp->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
+  cmdPageUp->setToolTip( tr("move page up") );
+
+  cmdPageDown = new QPushButton( this );
+  cmdPageDown->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png")) );
+  cmdPageDown->setIconSize( QSize(26, 26) );
+  cmdPageDown->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
+  cmdPageDown->setToolTip( tr("move page down") );
+
+  QVBoxLayout* movePageBox = new QVBoxLayout;
+  movePageBox->setSpacing( 0 );
+  movePageBox->addWidget( cmdPageUp, 10 );
+  movePageBox->addSpacing( 10 );
+  movePageBox->addWidget( cmdPageDown, 10 );
+
+  QHBoxLayout *listBox = new QHBoxLayout;
+  listBox->addWidget( list );
+  listBox->addLayout( movePageBox );
+
+  QVBoxLayout *topLayout = new QVBoxLayout( this );
+  topLayout->addLayout(listBox, 10);
+  topLayout->addLayout(buttonrow);
+
   connect(cmdSelect, SIGNAL(clicked()), this, SLOT(slot_Select()));
   connect(cmdInfo, SIGNAL(clicked()), this, SLOT(slot_Info()));
   connect(cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()));
@@ -106,6 +129,8 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
   connect(cmdShowOl, SIGNAL(clicked()), this, SLOT(slot_ShowOl()));
   connect(cmdHome, SIGNAL(clicked()), this, SLOT(slot_Home()));
   connect(list, SIGNAL(itemSelectionChanged()), this, SLOT(slot_Selected()));
+  connect(cmdPageUp, SIGNAL(clicked()), this, SLOT(slot_PageUp()));
+  connect(cmdPageDown, SIGNAL(clicked()), this, SLOT(slot_PageDown()));
 
   cmdShowOl->hide();
   cmdHideOl->show();
@@ -122,18 +147,18 @@ ReachpointListView::~ReachpointListView()
 /** Retrieves the reachable points from the map contents, and fills the list. */
 void ReachpointListView::fillRpList()
 {
-  // qDebug( "ReachpointListView::fillRpList() is called" );
-
-  int safetyAlt = (int)GeneralConfig::instance()->getSafetyAltitude().getMeters();
+  //qDebug() << "ReachpointListView::fillRpList() vvalue=" << list->verticalScrollBar()->value();
 
   if ( calculator == static_cast<Calculator *>(0) )
     {
       return;
     }
 
-  // int n = calculator->getReachList()->getNumberSites();
-  extern MapConfig* _globalMapConfig;
-  QTreeWidgetItem* si = list->currentItem();
+  int safetyAlt = (int)GeneralConfig::instance()->getSafetyAltitude().getMeters();
+
+  // Save the vertical scrollbar position. It returns the number of hidden rows.
+  int vvalue = list->verticalScrollBar()->value();
+
   QTreeWidgetItem* selectedItem = 0;
   QString sname = "";
   QPixmap icon;
@@ -142,9 +167,12 @@ void ReachpointListView::fillRpList()
   QPainter pnt;
   icon = QPixmap(18, 18);
 
-  if ( si )
+  // Check, if an item selection has been made.
+  QList<QTreeWidgetItem *> il = list->selectedItems();
+
+  if ( il.size() > 0 )
     {
-      sname = si->text(0);
+      sname = il.at(0)->text(0);
     }
 
   // set row height at each list fill - has probably changed.
@@ -318,6 +346,7 @@ void ReachpointListView::fillRpList()
   list->resizeColumnToContents(5);
   list->resizeColumnToContents(6);
 
+#if 0
   if ( selectedItem == 0 )
     {
       list->scrollToTop();
@@ -325,11 +354,23 @@ void ReachpointListView::fillRpList()
     }
   else
     {
-      list->scrollToItem( selectedItem );
-      list->setCurrentItem( selectedItem );
+       list->scrollToItem( selectedItem );
+       list->setCurrentItem( selectedItem );
+    }
+#endif
+
+  if ( selectedItem  )
+    {
+       list->setCurrentItem( selectedItem );
+
+       QTreeWidgetItem* item = list->topLevelItem ( vvalue );
+
+       if( item )
+         {
+           list->scrollToItem( item, QAbstractItemView::PositionAtTop );
+         }
     }
 
-  list->setFocus();
   list->setUpdatesEnabled(true);
 }
 
@@ -354,7 +395,7 @@ void ReachpointListView::showEvent(QShowEvent *)
     }
 
   // Reset home changed
-  homeChanged = false;
+  _homeChanged = false;
 }
 
 /** This slot is called to indicate that a selection has been made. */
@@ -405,10 +446,10 @@ void ReachpointListView::slot_Close ()
 
   // Check, if we have not a valid GPS fix. In this case we do move the map
   // to the new home position.
-  if( homeChanged == true && GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
+  if( _homeChanged == true && GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
     {
       emit gotoHomePosition();
-      homeChanged = false;
+      _homeChanged = false;
     }
 }
 
@@ -505,6 +546,72 @@ void ReachpointListView::slot_Home()
       conf->setHomeElevation( Distance(_wp->elevation) );
 
       emit newHomePosition( _wp->origP );
-      homeChanged = true;
+      _homeChanged = true;
+    }
+}
+
+void ReachpointListView::slot_PageUp()
+{
+  if( list->topLevelItemCount() == 0 )
+    {
+      return;
+    }
+
+  qDebug() << "Rect0=" << list->visualItemRect(list->topLevelItem(0));
+
+  // Get the vertical scrollbar position. It returns the number of hidden rows.
+  // int vvalue = list->verticalScrollBar()->value();
+
+  QRect rect = list->visualItemRect(list->topLevelItem(0));
+
+  // Calculate rows per page. Headline must be subtracted.
+  int pageRows = ( list->height() / rect.height() ) - 1;
+
+  int newIdx = list->verticalScrollBar()->value() - pageRows;
+
+  qDebug() << "Rows=" << list->topLevelItemCount()
+           << "sbPos=" << list->verticalScrollBar()->value()
+           << "rect=" << rect
+           << "pageRows=" << pageRows
+           << "newIdx=" << newIdx;
+
+  if( newIdx >= 0 )
+    {
+      list->scrollToItem( list->topLevelItem(newIdx), QAbstractItemView::PositionAtTop );
+    }
+  else
+    {
+      list->scrollToItem( list->topLevelItem(0), QAbstractItemView::PositionAtTop );
+    }
+}
+
+void ReachpointListView::slot_PageDown()
+{
+  if( list->topLevelItemCount() == 0 )
+    {
+      return;
+    }
+
+  qDebug() << "Rect0=" << list->visualItemRect(list->topLevelItem(0));
+
+  // Get the vertical scrollbar position. It returns the number of hidden rows.
+  // int vvalue = list->verticalScrollBar()->value();
+
+  QRect rect = list->visualItemRect(list->topLevelItem(0));
+
+  // Calculate rows per page. Headline must be subtracted.
+  int pageRows = ( list->height() / rect.height() ) - 1;
+
+  int newIdx = list->verticalScrollBar()->value() + pageRows;
+
+  qDebug() << "Rows=" << list->topLevelItemCount()
+           << "sbPos=" << list->verticalScrollBar()->value()
+           << "rect=" << rect
+           << "pageRows=" << pageRows
+           << "newIdx=" << newIdx;
+
+  if( newIdx < list->topLevelItemCount() )
+    {
+      list->scrollToItem( list->topLevelItem(newIdx), QAbstractItemView::PositionAtTop );
     }
 }

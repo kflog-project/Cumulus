@@ -50,7 +50,7 @@ QMap<QString, Distance> ReachableList::distanceMap;
 bool ReachableList::modeAltitude = false;
 
 // Radius of reachables to be taken into account in kilometers
-#define RANGE_RADIUS 75.0;
+#define RANGE_RADIUS 100.0;
 
 // number of created class instances
 short ReachableList::instances = 0;
