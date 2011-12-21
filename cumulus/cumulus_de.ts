@@ -1158,14 +1158,6 @@
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
     <message>
-        <source>Map zoom in by factor %1</source>
-        <translation type="obsolete">Kartenzoom rein Faktor %1</translation>
-    </message>
-    <message>
-        <source>Map zoom out by factor %1</source>
-        <translation type="obsolete">Kartenzoom raus Faktor %1</translation>
-    </message>
-    <message>
         <location filename="map.cpp" line="2515"/>
         <location filename="map.cpp" line="2566"/>
         <source>Zoom scale 1:%1</source>
@@ -1832,10 +1824,6 @@ Alle Downloads verworfen!</translation>
         <location filename="preflightwaypointpage.cpp" line="239"/>
         <source>Continue storing?</source>
         <translation>Speichern fortsetzen?</translation>
-    </message>
-    <message>
-        <source>Formats</source>
-        <translation type="obsolete">Formate</translation>
     </message>
     <message>
         <location filename="preflightwaypointpage.cpp" line="309"/>
@@ -2517,82 +2505,92 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>ReachpointListView</name>
     <message>
-        <location filename="reachpointlistview.cpp" line="62"/>
+        <location filename="reachpointlistview.cpp" line="63"/>
         <source> Name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="63"/>
+        <location filename="reachpointlistview.cpp" line="64"/>
         <source>Dist.</source>
         <translation>Entf.</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="64"/>
+        <location filename="reachpointlistview.cpp" line="65"/>
         <source>Course</source>
         <translation>Kurs</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="65"/>
+        <location filename="reachpointlistview.cpp" line="66"/>
         <source>R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="66"/>
+        <location filename="reachpointlistview.cpp" line="67"/>
         <source>Arrvial</source>
         <translation>Ankunft</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="67"/>
+        <location filename="reachpointlistview.cpp" line="68"/>
         <source>Length</source>
         <translation>Länge</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="68"/>
+        <location filename="reachpointlistview.cpp" line="69"/>
         <source> SS</source>
         <translation>SU</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="84"/>
+        <location filename="reachpointlistview.cpp" line="81"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="87"/>
+        <location filename="reachpointlistview.cpp" line="84"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="90"/>
+        <location filename="reachpointlistview.cpp" line="87"/>
         <source>Hide Outland</source>
         <translation>Keine Felder</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="93"/>
+        <location filename="reachpointlistview.cpp" line="90"/>
         <source>Show Outland</source>
         <translation>Zeige Felder</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="96"/>
+        <location filename="reachpointlistview.cpp" line="93"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="99"/>
+        <location filename="reachpointlistview.cpp" line="96"/>
         <source>Select</source>
         <translation>Wählen</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="495"/>
+        <location filename="reachpointlistview.cpp" line="103"/>
+        <source>move page up</source>
+        <translation>Seite hoch</translation>
+    </message>
+    <message>
+        <location filename="reachpointlistview.cpp" line="109"/>
+        <source>move page down</source>
+        <translation>Seite runter</translation>
+    </message>
+    <message>
+        <location filename="reachpointlistview.cpp" line="562"/>
         <source>Set home site</source>
         <translation>Neue Heimat</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="496"/>
+        <location filename="reachpointlistview.cpp" line="563"/>
         <source>Use point&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;as your home site?</source>
         <translation>Benutze Punkt&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;als Heimat?</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="497"/>
+        <location filename="reachpointlistview.cpp" line="564"/>
         <source>&lt;br&gt;Change can take&lt;br&gt;a few seconds.</source>
         <translation>&lt;br&gt;Wechsel kann einige Sekunden dauern.</translation>
     </message>
@@ -3177,11 +3175,6 @@ Alle Downloads verworfen!</translation>
         <translation>Isolinienumrandung</translation>
     </message>
     <message>
-        <source>Target line</source>
-        <oldsource>Line to selected target</oldsource>
-        <translation type="obsolete">Ziellinie</translation>
-    </message>
-    <message>
         <location filename="settingspagemapobjects.cpp" line="252"/>
         <source>Railways</source>
         <translation>Eisenbahnen</translation>
@@ -3495,10 +3488,6 @@ Alle Downloads verworfen!</translation>
         <translation>Fluglinien Farbe</translation>
     </message>
     <message>
-        <source>Course Line</source>
-        <translation type="obsolete">Kurslinie</translation>
-    </message>
-    <message>
         <location filename="settingspagetask.cpp" line="219"/>
         <location filename="settingspagetask.cpp" line="251"/>
         <source>Width:</source>
@@ -3509,10 +3498,6 @@ Alle Downloads verworfen!</translation>
         <location filename="settingspagetask.cpp" line="261"/>
         <source>Color:</source>
         <translation>Farbe:</translation>
-    </message>
-    <message>
-        <source>Course Line Color</source>
-        <translation type="obsolete">Kurslinienfarbe</translation>
     </message>
 </context>
 <context>
@@ -4161,10 +4146,6 @@ Alle Downloads verworfen!</translation>
         <location filename="waypointlistview.cpp" line="58"/>
         <source>Edit selected waypoint</source>
         <translation>Editiere markierten Wegpunkt</translation>
-    </message>
-    <message>
-        <source>Delete selected waypoint</source>
-        <translation type="obsolete">Lösche markierten Wegpunkt</translation>
     </message>
     <message>
         <location filename="waypointlistview.cpp" line="78"/>
