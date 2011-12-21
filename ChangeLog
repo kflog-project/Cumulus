@@ -15,6 +15,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2011-12-21 AP: Wrong entry in file glider.pol fixed.
+
 [+] 2011-12-21 AP: Reachable list overworked. Two buttons added for page
                    scrolling. If an entry is selected and the list is scrolled
                    no jump more to the selected position. That makes the
