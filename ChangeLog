@@ -15,6 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2011-12-21 AP: Reachable list overworked. Two buttons added for page
+                   scrolling. If an entry is selected and the list is scrolled
+                   no jump more to the selected position. That makes the
+                   viewing of the list easier.
+
 [+] 2011-12-20 AP: If the flight state is cruising and a target is selected,
                    a relative bearing information is displayed at the top of the
                    map, if this option is activated in the map object menu.

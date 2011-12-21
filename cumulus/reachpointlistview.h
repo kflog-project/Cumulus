@@ -62,7 +62,7 @@ public:
   Waypoint* getSelectedWaypoint();
 
   /**
-   * Retrieves the waypoints from the map contents and fills the list.
+   * Retrieves the waypoints from the map and fills the list.
    */
   void fillRpList();
 
@@ -77,7 +77,7 @@ public:
 protected:
 
   /** This slot is called when the widget is displayed. */
-  void showEvent(QShowEvent *);
+  void showEvent(QShowEvent *event);
 
 public slots:
 

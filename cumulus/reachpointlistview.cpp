@@ -376,10 +376,22 @@ void ReachpointListView::fillRpList()
 
 void ReachpointListView::showEvent(QShowEvent *)
 {
+  // clear an old selection
+  list->clearSelection();
+
+  cmdSelect->setEnabled(false);
+  cmdHome->setEnabled(false);
+
   if (_newList)
     {
       fillRpList();
       _newList = false;
+    }
+
+  if( list->topLevelItemCount() )
+    {
+      // set list to the top.
+      list->scrollToItem( list->topLevelItem(0), QAbstractItemView::PositionAtTop );
     }
 
   // Show the home button only if we are not to fast in move to avoid
@@ -455,11 +467,25 @@ void ReachpointListView::slot_Close ()
 
 void ReachpointListView::slot_Selected()
 {
+  cmdHome->setEnabled(true);
+
   // @AP: this slot is also called, if the list is cleared and a selection
   // does exist. In such a case the returned waypoint is a Null pointer!
-  if( getSelectedWaypoint() == static_cast<Waypoint *>(0) )
+  Waypoint* wp = getSelectedWaypoint();
+
+  if( wp == static_cast<Waypoint *>(0) )
     {
       return;
+    }
+
+  if( GeneralConfig::instance()->getHomeCoord() == wp->origP )
+    {
+      // no new coordinates, ignore request
+      cmdHome->setEnabled(false);
+    }
+  else
+    {
+      cmdHome->setEnabled(true);
     }
 
   if( ReachpointListView::getSelectedWaypoint()->equals(calculator->getselectedWp()) )
@@ -557,23 +583,21 @@ void ReachpointListView::slot_PageUp()
       return;
     }
 
-  qDebug() << "Rect0=" << list->visualItemRect(list->topLevelItem(0));
-
   // Get the vertical scrollbar position. It returns the number of hidden rows.
-  // int vvalue = list->verticalScrollBar()->value();
+  int sbValue = list->verticalScrollBar()->value();
+
+  if( sbValue == 0 )
+    {
+      // No rows are hidden
+      return;
+    }
 
   QRect rect = list->visualItemRect(list->topLevelItem(0));
 
   // Calculate rows per page. Headline must be subtracted.
   int pageRows = ( list->height() / rect.height() ) - 1;
 
-  int newIdx = list->verticalScrollBar()->value() - pageRows;
-
-  qDebug() << "Rows=" << list->topLevelItemCount()
-           << "sbPos=" << list->verticalScrollBar()->value()
-           << "rect=" << rect
-           << "pageRows=" << pageRows
-           << "newIdx=" << newIdx;
+  int newIdx = sbValue - pageRows;
 
   if( newIdx >= 0 )
     {
@@ -592,23 +616,12 @@ void ReachpointListView::slot_PageDown()
       return;
     }
 
-  qDebug() << "Rect0=" << list->visualItemRect(list->topLevelItem(0));
-
-  // Get the vertical scrollbar position. It returns the number of hidden rows.
-  // int vvalue = list->verticalScrollBar()->value();
-
   QRect rect = list->visualItemRect(list->topLevelItem(0));
 
   // Calculate rows per page. Headline must be subtracted.
   int pageRows = ( list->height() / rect.height() ) - 1;
 
   int newIdx = list->verticalScrollBar()->value() + pageRows;
-
-  qDebug() << "Rows=" << list->topLevelItemCount()
-           << "sbPos=" << list->verticalScrollBar()->value()
-           << "rect=" << rect
-           << "pageRows=" << pageRows
-           << "newIdx=" << newIdx;
 
   if( newIdx < list->topLevelItemCount() )
     {
