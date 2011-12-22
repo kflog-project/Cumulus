@@ -2747,7 +2747,7 @@ void Map::__drawRelBearingInfo()
       int pointSize = 16;
 
     #ifdef MAEMO
-      pointSize += 2;
+      pointSize += 4;
     #endif
 
       font.setPointSize(pointSize);
@@ -2768,12 +2768,14 @@ void Map::__drawRelBearingInfo()
           text = QString("<<%1").arg(-relBearing) + QChar(Qt::Key_degree);
         }
 
-      QFontMetrics fm(font);
+      // calculate text bounding box, if necessary
+      if( relBearingTextBox.isNull() )
+        {
+          QFontMetrics fm(font);
+          relBearingTextBox = fm.boundingRect( "<000°>" );
+        }
 
-      // calculate text bounding box
-      QRect textBox = fm.boundingRect( text );
-
-      m_pixRelBearingDisplay = QPixmap( textBox.width(), textBox.height() );
+      m_pixRelBearingDisplay = QPixmap( relBearingTextBox.width() + 2, relBearingTextBox.height() );
       m_pixRelBearingDisplay.fill( Qt::black );
 
       QPainter painter;
@@ -2781,7 +2783,7 @@ void Map::__drawRelBearingInfo()
       painter.setFont(font);
       painter.setPen(QPen(Qt::white));
       painter.drawText( 0, 0,
-                        textBox.width(), textBox.height(),
+                        relBearingTextBox.width(), relBearingTextBox.height(),
                         Qt::AlignCenter,
                         text );
       painter.end();

@@ -43,6 +43,7 @@
 #include <QLabel>
 #include <QEvent>
 #include <QResizeEvent>
+#include <QRect>
 #include <QWheelEvent>
 
 #include "waypoint.h"
@@ -592,6 +593,8 @@ private: //members
 
   unsigned int zoomProgressive;
   float zoomProgressiveVal[8];
+
+  QRect relBearingTextBox;
 
 protected:
   /**

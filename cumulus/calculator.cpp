@@ -1196,11 +1196,11 @@ void Calculator::determineFlightStatus()
 
   flightmode newFlightMode = unknown;
 
-  //get headings from the last two samples
+  // get headings from the last two samples
   int lastHead = samplelist[0].vector.getAngleDeg();
   int prevHead = samplelist[1].vector.getAngleDeg();
 
-  //get the time difference between these samples
+  // get the time difference between these samples
   int timediff = samplelist[1].time.secsTo(samplelist[0].time);
 
   if (timediff == 0)
@@ -1644,3 +1644,32 @@ void Calculator::slot_startTask()
 
     slot_WaypointChange( tp2Taken, true );
 }
+
+/**
+ * @returns true if we are faster in move as or equal 5km/h.
+ */
+bool Calculator::moving()
+{
+  const double Limit = 5000.0 / 3600.0; // 5Km/h as m/s
+
+  if( samplelist.count() < 5 )
+    {
+      // We need to have some samples in order to be able to analyze speed.
+      return false;
+    }
+
+  double speed = 0.0;
+
+  for( int i = 0; i < 5; i++ )
+    {
+      // average speed about 5s
+      speed += samplelist[i].vector.getSpeed().getMps();
+    }
+
+  if( (speed / 5.0) >= Limit )
+    {
+      return true;
+    }
+
+  return false;
+};

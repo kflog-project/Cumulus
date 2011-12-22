@@ -400,15 +400,7 @@ public:
   /**
    * @returns true if we are faster in move as or equal 5km/h.
    */
-  bool moving()
-  {
-    if( lastSpeed.getKph() >= 5 )
-      {
-        return true;
-      }
-
-    return false;
-  };
+  bool moving();
 
 public slots:
 
