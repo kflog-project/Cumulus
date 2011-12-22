@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -53,7 +53,7 @@ class WindAnalyser;
  *
  * This class represents a single sample of flight data obtained.
  *
- * \date 2002-2010
+ * \date 2002-2011
  */
 class FlightSample
 {
@@ -398,11 +398,11 @@ public:
     };
 
   /**
-   * @returns true if we are faster in move as 5km/h.
+   * @returns true if we are faster in move as or equal 5km/h.
    */
   bool moving()
   {
-    if( lastSpeed.getKph() > 5 )
+    if( lastSpeed.getKph() >= 5 )
       {
         return true;
       }
@@ -653,7 +653,7 @@ signals: // Signals
   void newGlider(const QString&);
 
   /**
-   * Sent if the flight mode changes
+   * Sent if the flight mode has changed.
    */
   void flightModeChanged(Calculator::flightmode);
 

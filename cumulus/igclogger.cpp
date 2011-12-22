@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2010 by Axel Pauli
+                               2008-2011 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -44,8 +44,9 @@ IgcLogger* IgcLogger::_theInstance = static_cast<IgcLogger *> (0);
 
 IgcLogger::IgcLogger(QObject* parent) :
   QObject(parent),
+  closeTimer(0),
   _kRecordLogging(false),
-  _backtrack( LimitedList<QStringList> (15) )
+  _backtrack( LimitedList<QStringList>(20) )
 {
   if ( GeneralConfig::instance()->getLoggerAutostartMode() )
     {
@@ -104,7 +105,6 @@ IgcLogger* IgcLogger::instance()
 void IgcLogger::slotReadConfig()
 {
   // qDebug( "IgcLogger::slotReadConfig()" );
-
   if( _logMode != on )
     {
       // Don't change mode, if logger is switch on
@@ -139,7 +139,6 @@ void IgcLogger::slotResetLoggingTime()
 void IgcLogger::slotMakeFixEntry()
 {
   // qDebug("IgcLogger::slotMakeFixEntry()");
-
   if ( _logMode == off || calculator->samplelist.count() == 0 )
     {
       // make sure logger is not off and and entries are in the sample list
@@ -749,4 +748,47 @@ QString IgcLogger::createFileName(const QString& path)
   flightNumber=i; //store the resulting number so we can use it in the logfile itself
 
   return path + "/" + result.toUpper() + ".IGC";
+}
+
+void IgcLogger::slotFlightModeChanged( Calculator::flightmode newFlightMode )
+{
+  if( GeneralConfig::instance()->getLoggerAutostartMode() == false )
+    {
+      // Logger auto start mode not active.
+      return;
+    }
+
+  if( newFlightMode == Calculator::standstill || newFlightMode == Calculator::unknown )
+    {
+      if( closeTimer == 0 )
+        {
+          // activate close timer
+          closeTimer = new QTimer(this);
+          closeTimer->setSingleShot( true );
+          connect( closeTimer, SIGNAL(timeout()), this, SLOT(slotCloseLogFile()) );
+
+          // Close logfile after 60s still stand or unknowm mode.
+          closeTimer->start(60000);
+        }
+    }
+  else
+    {
+      if( closeTimer != 0 )
+        {
+          closeTimer->stop();
+          delete closeTimer;
+          closeTimer = 0;
+        }
+    }
+}
+
+void IgcLogger::slotCloseLogFile()
+{
+  if( GeneralConfig::instance()->getLoggerAutostartMode() )
+    {
+      Standby();
+    }
+
+  delete closeTimer;
+  closeTimer = 0;
 }

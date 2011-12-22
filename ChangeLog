@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2011-12-22 AP: If the IGC logger operates in auto start mode and the flight
+                   mode changes to unknown or still stand, the logfile is
+                   automatically closed after 60s now.
+
 -------------------------------------------------
 Cumulus 2.12.x (Development based on X11/Qt-4.8.0)
 -------------------------------------------------

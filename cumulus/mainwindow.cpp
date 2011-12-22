@@ -573,6 +573,8 @@ void MainWindow::slotCreateApplicationWidgets()
            this, SLOT( slotNotification( const QString&, const bool ) ) );
   connect( calculator, SIGNAL( newSample() ),
            logger, SLOT( slotMakeFixEntry() ) );
+  connect( calculator, SIGNAL( flightModeChanged(Calculator::flightmode) ),
+           logger, SLOT( slotFlightModeChanged(Calculator::flightmode) ) );
 
   connect( ( QObject* ) calculator->getReachList(), SIGNAL( newReachList() ),
            this, SLOT( slotNewReachList() ) );

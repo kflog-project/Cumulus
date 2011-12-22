@@ -1188,60 +1188,71 @@ void Calculator::determineFlightStatus()
   */
 #define TIMEFRAME 10
 
-  if (samplelist.count() < 5)
-    return; //we need to have some samples in order to be able to analyze anything.
+  if( samplelist.count() < TIMEFRAME )
+    {
+      // We need to have some samples in order to be able to analyze anything.
+      return;
+    }
 
-  flightmode newFlightMode=unknown;
+  flightmode newFlightMode = unknown;
 
   //get headings from the last two samples
-  int lastHead=samplelist[0].vector.getAngleDeg();
-  int prevHead=samplelist[1].vector.getAngleDeg();
+  int lastHead = samplelist[0].vector.getAngleDeg();
+  int prevHead = samplelist[1].vector.getAngleDeg();
 
   //get the time difference between these samples
-  int timediff=samplelist[1].time.secsTo(samplelist[0].time);
+  int timediff = samplelist[1].time.secsTo(samplelist[0].time);
 
-  if (timediff==0)
-    return; //if the time difference is 0, return (just to be sure). This will only cause problems...
+  if (timediff == 0)
+    {
+      // If the time difference is 0, return (just to be sure). This will only cause problems...
+      return;
+    }
 
-
-  //we are not doing a full analysis if we already have a flight mode. It suffices to check some
-  //basic criteria.
-  //lastFlightMode=unknown; //force complete evaluation for now.
-  //qDebug("Anglediff: %d",angleDiff(lastHead, prevHead));
-
+  // we are not doing a full analysis if we already have a flight mode. It suffices to check some
+  // basic criteria.
+  // lastFlightMode=unknown; //force complete evaluation for now.
+  // qDebug("Anglediff: %d",angleDiff(lastHead, prevHead));
   switch (lastFlightMode)
     {
-    case standstill: //we are not moving at all!
-      if (samplelist[0].position == samplelist[1].position)    //may be too ridged, GPS errors could cause problems here
+    case standstill: // we are not moving at all!
+
+      if ( ( dist(&samplelist[0].position, &samplelist[1].position) / double(timediff) ) < 0.005 &&
+           lastSpeed.getMps() < 0.5 &&
+           getlastAGLAltitude().getMeters() < 50.0 )
         {
+          // may be too ridged, GPS errors could cause problems here
           return; //no change in flight mode
         }
       else
         {
-          newFlightMode=unknown;
+          newFlightMode = unknown;
         }
       break;
 
-    case wave: //we are not moving at all, except vertically!  Needs lots of tweaking and testing...
-      if (samplelist[0].position == samplelist[1].position)    //may be too ridged, GPS errors could cause problems here
+    case wave: // we are not moving at all, except vertically!  Needs lots of tweaking and testing...
+      if ( ( dist(&samplelist[0].position, &samplelist[1].position) / double(timediff) ) < 0.005 &&
+           lastSpeed.getMps() < 2.5 &&
+           fabs(getlastAGLAltitude().getMeters() ) > 50.0 )
         {
+          //may be too ridged, GPS errors could cause problems here
           return; //no change in flight mslot_flightModeChangedode
         }
       else
         {
-          newFlightMode=unknown;
+          newFlightMode = unknown;
         }
       break;
 
-    case cruising: //we are flying from point A to point B
+    case cruising: // we are flying from point A to point B
       if (abs(angleDiff(lastHead, _cruiseDirection)) <  MAXCRUISEANGDIFF &&
-          samplelist[0].vector.getSpeed().getMps()>5)
+          samplelist[0].vector.getSpeed().getMps() > 2.5 )
         {
           return; //no change in flight mode
         }
       else
         {
-          newFlightMode=unknown;
+          newFlightMode = unknown;
           break;
         }
 
@@ -1249,7 +1260,7 @@ void Calculator::determineFlightStatus()
       //turning left means: the heading is decreasing
       if (angleDiff(prevHead, lastHead) > (-MINTURNANGDIFF * timediff))
         {
-          newFlightMode=unknown;
+          newFlightMode = unknown;
           break;
         }
       else
@@ -1257,12 +1268,11 @@ void Calculator::determineFlightStatus()
           return; //no change in flight mode
         }
 
-
     case circlingR:
       //turning right means: the heading is increasing
       if (angleDiff(prevHead, lastHead) < (MINTURNANGDIFF * timediff))
         {
-          newFlightMode=unknown;
+          newFlightMode = unknown;
           break;
         }
       else
@@ -1271,43 +1281,46 @@ void Calculator::determineFlightStatus()
         }
 
     default:
-      newFlightMode=unknown;
+      newFlightMode = unknown;
+      break;
     }
 
   if (newFlightMode==unknown)
     {
       //we need some real analysis
-      QTime tmp= samplelist[0].time.addSecs(-TIMEFRAME); //reference time
-      int ls=1;
+      QTime tmp = samplelist[0].time.addSecs(-TIMEFRAME); //reference time
+      int ls = 1;
 
       while ((samplelist[ls].time > tmp) && ( ls < samplelist.count()-1) )
-        ls++;
+        {
+          ls++;
+        }
+
       //ls now contains the index of the oldest sample we will use for this analysis.
       //Newer samples have lower indices!
 
       //initialize some values we will be needing...
-      bool mayBeL=true;     //this may be a left turn (that is, no big dir change to the right)
-      bool mayBeR=true;     //this may be a right turn (that is, no big dir change to the left)
-      int totalDirChange=0;  //total heading change. If cruising, this will be low, if turning, it will be high
-      int maxSpeed=0;        //maximum speed obtained in this set of samples
-      int aDiff=0;                 //difference in heading between two samples
-      int totalAltChange=0;  //total change in altitude (absolute)
-      int maxAltChange=0;  //maximum change of altitude between samples.
-      int altChange=0;
-      bool break_analysis=false; //flag to indicate we can stop further analysis.
-
+      bool mayBeL = true;     //this may be a left turn (that is, no big dir change to the right)
+      bool mayBeR = true;     //this may be a right turn (that is, no big dir change to the left)
+      int totalDirChange = 0; //total heading change. If cruising, this will be low, if turning, it will be high
+      int maxSpeed = 0;       //maximum speed obtained in this set of samples
+      int aDiff = 0;          //difference in heading between two samples
+      int totalAltChange = 0; //total change in altitude (absolute)
+      int maxAltChange = 0;   //maximum change of altitude between samples.
+      int altChange = 0;
+      bool break_analysis = false; //flag to indicate we can stop further analysis.
 
       //loop through the samples to get some basic data we can use to distinguish flight modes
-      for (int i=ls-1;i>=0;i--)
+      for (int i = ls-1; i >= 0; i--)
         {
           aDiff = angleDiff( samplelist[i+1].vector.getAngleDeg(), samplelist[i].vector.getAngleDeg() );
           //qDebug("analysis: angle1=%d, angle2=%d, diff=%d",int(samplelist->at(i+1)->vector.getAngleDeg()),int(samplelist->at(i)->vector.getAngleDeg()), aDiff);
           //qDebug("analysis: position=(%d, %d)", samplelist->at(i)->position.x(),samplelist->at(i)->position.y() );
           totalDirChange += abs(aDiff);
-          maxSpeed = qMax( maxSpeed, (int) rint(samplelist[i].vector.getSpeed().getKph()));
+          maxSpeed = qMax( maxSpeed, (int) rint(samplelist[i].vector.getSpeed().getMps()));
           altChange = int(samplelist[i].altitude.getMeters() - samplelist[i+1].altitude.getMeters());
           totalAltChange += altChange;
-          maxAltChange = int(qMax(abs(altChange), maxAltChange));
+          maxAltChange = qMax(abs(altChange), maxAltChange);
 
           if (aDiff >  MINTURNANGDIFF)
             mayBeL=false;
@@ -1322,17 +1335,21 @@ void Calculator::determineFlightStatus()
         The detection of stand stills may be extended further by checking if the altitude matches the terrain altitude. If not
         (or no where near), we can not assume a standstill. This is probably wave flying.
       */
-      if (maxSpeed<10)   // if we get under 10 kph for maximum speed, we may be standing still
+      if ( maxSpeed < 2.5 )  // if we get under 2.5m/s for maximum speed, we may be standing still
         {
-          if (abs(totalAltChange) * 2 <= MAXALTDRIFT && maxAltChange <= MAXALTDRIFT)    //check if we had any significant altitude changes
+          //check if we had any significant altitude changes
+          if ( abs(totalAltChange) * 2 <= MAXALTDRIFT &&
+               maxAltChange <= MAXALTDRIFT &&
+               maxSpeed < 0.5 &&
+               getlastAGLAltitude().getMeters() < 50.0 )
             {
-              newFlightMode=standstill;
-              break_analysis=true;
+              newFlightMode = standstill;
+              break_analysis = true;
             }
           else
             {
-              newFlightMode=wave;
-              break_analysis=true;
+              newFlightMode = wave;
+              break_analysis = true;
             }
         }
 
@@ -1342,14 +1359,14 @@ void Calculator::determineFlightStatus()
           timediff= samplelist[ls-1].time.secsTo(samplelist[0].time);
 
           //see if we might be cruising...
-          if (mayBeL && mayBeR)   //basicly, we have been going (almost) strait it seems...
+          if (mayBeL && mayBeR)   // basically, we have been going (almost) strait it seems...
             {
               if (totalDirChange < 2 * timediff)
                 {
                   //qDebug("analysis: distance=%f m, time difference=%d s",dist(&samplelist->at(ls-1)->position,&samplelist[0].position)*1000,timediff);
                   if (dist(&samplelist[ls-1].position, &samplelist[0].position)*1000 > 5*timediff) //our average speed should be at least 5 m/s to qualify for cruising
-                    newFlightMode=cruising;
-                  _cruiseDirection=samplelist[0].vector.getAngleDeg();
+                    newFlightMode = cruising;
+                  _cruiseDirection = samplelist[0].vector.getAngleDeg();
                   // qDebug("Cruise direction: %d.",_cruiseDirection);
                 }
               break_analysis=true;
@@ -1371,10 +1388,10 @@ void Calculator::determineFlightStatus()
         }
     }
 
-  if (newFlightMode!=lastFlightMode)
+  if (newFlightMode != lastFlightMode)
     {
-      lastFlightMode=newFlightMode;
-      samplelist[0].marker=++_marker;
+      lastFlightMode = newFlightMode;
+      samplelist[0].marker = ++_marker;
       // qDebug("new flightmode: %d",lastFlightMode);
       slot_flightModeChanged(newFlightMode);
     }
@@ -1404,7 +1421,6 @@ void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
       _pastFirstFix = false;
     }
 }
-
 
 /** This slot is used internally to re-emit the flight mode signal with the marker value */
 void Calculator::slot_flightModeChanged(Calculator::flightmode fm)

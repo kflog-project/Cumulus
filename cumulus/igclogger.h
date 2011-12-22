@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2010 by Axel Pauli
+                               2008-2011 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -32,7 +32,9 @@
  * This class provides the IGC logging facilities, using the
  * parsed data from the GPS NMEA object.
  *
- * \date 2002-2010
+ * \date 2002-2011
+ *
+ * \version $Id$
  */
 
 #ifndef IGC_LOGGER_H
@@ -155,12 +157,22 @@ public slots:
    */
   void slotReadConfig();
 
+  /**
+   * This slot is called, if the flight mode has been changed.
+   */
+  void slotFlightModeChanged( Calculator::flightmode newFlightMode );
+
 private slots:
 
   /**
    * This slot is called to reset the logger interval after a modification.
    */
   void slotResetLoggingTime();
+
+  /**
+   * This slot is called to close a logfile after a timeout.
+   */
+  void slotCloseLogFile();
 
 signals: // Signals
   /**
@@ -195,6 +207,9 @@ private:
 
   /** A timer to reset the logger interval to the default value after a modification. */
   QTimer* resetTimer;
+
+  /** A timer for closing the logfile after a certain timeout.*/
+  QTimer* closeTimer;
 
   /** The text stream object to write our data to. */
   QTextStream _stream;
