@@ -15,12 +15,16 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+-------------------------------------------------
+Cumulus 2.12.x (Development based on X11/Qt-4.8.0)
+-------------------------------------------------
+
 [-] 2011-12-21 AP: Wrong entry in file glider.pol fixed.
 
 [+] 2011-12-21 AP: Reachable list overworked. Two buttons added for page
                    scrolling. If an entry is selected and the list is scrolled
-                   no jump more to the selected position. That makes the
-                   viewing of the list easier.
+                   no jump more to the selected position after a list update.
+                   That makes the viewing of the list easier for the user.
 
 [+] 2011-12-20 AP: If the flight state is cruising and a target is selected,
                    a relative bearing information is displayed at the top of the

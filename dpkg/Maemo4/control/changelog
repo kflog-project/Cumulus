@@ -1,15 +1,42 @@
 cumulus (2.12.0) stable; urgency=low
 
+  * Build is done now with Qt4.8.0
+
+  * Wrong entry in file glider.pol fixed.
+   
+  * Reachable list overworked. Two buttons added for page scrolling. If an entry
+    is selected and the list is scrolled no jump more to the selected position
+    after a list update. That makes the viewing of the list easier for the user.
+   
+  * If the flight state is cruising and a target is selected,
+    a relative bearing information is displayed at the top of the
+    map, if this option is activated in the map object menu.
+    The relative bearing information shows the necessary direction
+    and the degrees of correction to be made to fly directly to
+    the target.
+    
+  * Wing load value added to pre-flight glider page and to glider polar drawing.
+   
+  * The navigate to home button function did not set the
+    home elevation. That caused a wrong arrival altitude display.
+    The problem was difficult to recognize, if the home site
+    elevation is low. But in Gariep Dam in South Africa I
+    detected the issue because it lays ca. 1300m above MSL.
+
+  * If a target is selected, the drawing of a track line can be
+    activated now in the task setup configuration menu. The track
+    line shows the current movement direction. So you can easier
+    see, if you are on the bearing line to your selected target
+    or not.
+
   * New cross button added to waypoint list view. Pressing the
     button will remove all waypoint entries of the list after
     confirmation. That make it easier and faster to clear the
     whole list as using the select all and remove feature.
     
-  * On the Linux desktop the mouse wheel can be used now for
-    zoom actions.
+  * On the Linux desktop the mouse wheel can be used now for zoom actions.
     
-  * Map type highway renamed to motorway according to OSM
-    usage.
+  * Map type highway renamed to motorway according to OSM usage.
     
   * Waypoint import routine for cup files enhanced, that also
     runway length values can be handled using unit feet. That is
@@ -21,8 +48,7 @@ cumulus (2.12.0) stable; urgency=low
     position of a square is better to see at the map as a lot of
     flags.
     
-  * The first airspace of an airspace file was never loaded. It
-    is fixed now.
+  * The first airspace of an airspace file was never loaded. It is fixed now.
     
   * SeeYou waypoint import filter modified.
     
@@ -37,7 +63,7 @@ cumulus (2.12.0) stable; urgency=low
     than 100. But some of the city labels are wrong. That seems
     to be a problem in the KFLog data base.
 
- -- Axel Pauli <kflog.cumulus@googlemail.com>  Sat, 26 Nov 2011 16:39:06 +0100
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 22 Dec 2011 20:00:00 +0100
 
 cumulus (2.11.0) stable; urgency=low
 
