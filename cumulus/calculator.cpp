@@ -1385,8 +1385,6 @@ void Calculator::determineFlightStatus()
         }
     }
 
-  qDebug() << "OldFM=" << lastFlightMode << "NewFM=" << newFlightMode;
-
   if (newFlightMode != lastFlightMode)
     {
       lastFlightMode = newFlightMode;
