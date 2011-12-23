@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,13 +26,16 @@
  * This dialog handles the Mc, load balance and bug settings. It shall
  * enable a simple change also during flight.
  *
- * \date 2002-2010
+ * \date 2002-2011
+ *
+ * \version $Id$
  */
 
 #ifndef GLIDER_FLIGHT_DIALOG_H
 #define GLIDER_FLIGHT_DIALOG_H
 
 #include <QDialog>
+#include <QLabel>
 #include <QPushButton>
 #include <QTimer>
 #include <QSpinBox>
@@ -109,6 +112,9 @@ class GliderFlightDialog : public QDialog
    */
   void slotSpinValueChanged( const QString& text );
 
+  /** Shows the flight time. */
+  void slotShowFlightTime();
+
  signals:
 
   /**
@@ -143,6 +149,10 @@ class GliderFlightDialog : public QDialog
   QPushButton* buttonDump;
   QTimer* timer;
   int _time;
+
+  // Flight time display
+  QLabel* ftLabel;
+  QLabel* ftText;
 
   QPushButton *plus;
   QPushButton *pplus;

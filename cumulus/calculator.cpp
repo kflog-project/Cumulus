@@ -139,10 +139,11 @@ const Altitude& Calculator::getAltimeterAltitude()
       return lastAGLAltitude; // AGL
       break;
     case 3:
-    default:
       return lastAHLAltitude; // AHL
       break;
     }
+
+  return lastAltitude;
 }
 
 const AltitudeCollection& Calculator::getAltitudeCollection()
@@ -1285,10 +1286,10 @@ void Calculator::determineFlightStatus()
       break;
     }
 
-  if (newFlightMode==unknown)
+  if (newFlightMode == unknown)
     {
       //we need some real analysis
-      QTime tmp = samplelist[0].time.addSecs(-TIMEFRAME); //reference time
+      QTime tmp = samplelist[0].time.addSecs(-TIMEFRAME); // reference time
       int ls = 1;
 
       while ((samplelist[ls].time > tmp) && ( ls < samplelist.count()-1) )
@@ -1328,6 +1329,7 @@ void Calculator::determineFlightStatus()
             mayBeR=false;
           //qDebug("  analysis: sample: %d, speed: %f",i,samplelist->at(i)->vector.getKph());
         }
+
       //qDebug ("analysis: aDiff=%d, totalDirChange=%d, maxSpeed=%d, totalAltChange=%d, maxAltChange=%d, maybeLeft=%d, maybeRight=%d",aDiff, totalDirChange, maxSpeed, totalAltChange, maxAltChange, int(mayBeL), int(mayBeR));
 
       //try standstill. We are using a value > 0 because of possible GPS errors.
@@ -1335,7 +1337,7 @@ void Calculator::determineFlightStatus()
         The detection of stand stills may be extended further by checking if the altitude matches the terrain altitude. If not
         (or no where near), we can not assume a standstill. This is probably wave flying.
       */
-      if ( maxSpeed < 2.5 )  // if we get under 2.5m/s for maximum speed, we may be standing still
+      if ( maxSpeed < 2.5 ) // if we get under 2.5m/s for maximum speed, we may be standing still
         {
           //check if we had any significant altitude changes
           if ( abs(totalAltChange) * 2 <= MAXALTDRIFT &&
@@ -1396,7 +1398,6 @@ void Calculator::determineFlightStatus()
       slot_flightModeChanged(newFlightMode);
     }
 }
-
 
 /** Called if the status of the GPS changes. */
 void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)

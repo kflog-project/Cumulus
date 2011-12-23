@@ -54,14 +54,14 @@
 #define GPS_CHAN UNKNOWN
 #define GPS_MAXALT UNKNOWN
 
+#include <QDateTime>
+#include <QFile>
 #include <QObject>
 #include <QString>
-#include <QFile>
-#include <QTextStream>
-#include <QTimer>
-#include <QTime>
-#include <QDateTime>
 #include <QStringList>
+#include <QTextStream>
+#include <QTime>
+#include <QTimer>
 
 #include "altitude.h"
 #include "calculator.h"
@@ -107,7 +107,7 @@ public:
   void Standby();
 
   /**
-   * @returns true if we are currently logging
+   * @return true if we are currently logging
    */
   bool getIsLogging() const
   {
@@ -115,12 +115,22 @@ public:
   };
 
   /**
-   * @returns true if we are currently standby
+   * @return true if we are currently standby
    */
   bool getIsStandby() const
   {
     return ( _logMode == standby );
   };
+
+  /**
+   * @return Date and time object containing logger start time, if the logger
+   *         works in auto start mode. If the logger is not running or the
+   *         auto start mode is disabled, the returned object is invalid.
+   */
+  QDateTime& loggerStart()
+  {
+    return startLogging;
+  }
 
 public slots:
   /**
@@ -170,7 +180,7 @@ private slots:
   void slotResetLoggingTime();
 
   /**
-   * This slot is called to close a logfile after a timeout.
+   * This slot is called to close the logfile after a certain timeout.
    */
   void slotCloseLogFile();
 
@@ -199,55 +209,6 @@ private:
    * Writes a K-Record, if all conditions are true.
    */
   void writeKRecord( const QTime& timeFix );
-
-  /**
-   * A pointer to the singleton existing instance.
-   */
-  static IgcLogger* _theInstance;
-
-  /** A timer to reset the logger interval to the default value after a modification. */
-  QTimer* resetTimer;
-
-  /** A timer for closing the logfile after a certain timeout.*/
-  QTimer* closeTimer;
-
-  /** The text stream object to write our data to. */
-  QTextStream _stream;
-
-  /** This is our log file. It is being used via the _stream object. */
-  QFile _logfile;
-
-  /** Contains the current active logging mode. */
-  LogMode _logMode;
-
-  /** B-Record logger time interval in seconds. */
-  int _bRecordInterval;
-
-  /** K-Record logger time interval in seconds. */
-  int _kRecordInterval;
-
-  /** Enable K-Record logging. */
-  bool _kRecordLogging;
-
-  /** Time stamp of the last logged B record */
-  QTime* lastLoggedBRecord;
-
-  /** Time stamp of the last logged F record */
-  QTime* lastLoggedFRecord;
-
-  /** Time stamp of the last logged K record */
-  QTime* lastLoggedKRecord;
-
-  /** List of last would-be log entries.
-    * This list is filled when in standby mode with strings that would be
-    * in the log were logging enabled. When a change in flight mode is detected
-    * and logging is triggered, the list is used to write out some older events
-    * to the log. This way, we can be sure that the complete start sequence is
-    * available in the log. */
-  LimitedList<QStringList> _backtrack;
-
-  /** Holds the flight number for this day */
-  int flightNumber;
 
   /**
    * Creates a log file, if it not yet already exists and writes the header items
@@ -307,8 +268,61 @@ private:
    * standards (IGC GNSS FR Specification, may 2002, Section 2.5)
    */
   QString createFileName(const QString& path);
+
+  /**
+   * A pointer to the singleton existing instance.
+   */
+  static IgcLogger* _theInstance;
+
+  /** A timer to reset the logger interval to the default value after a modification. */
+  QTimer* resetTimer;
+
+  /** A timer for closing the logfile after a certain timeout.*/
+  QTimer* closeTimer;
+
+  /** The text stream object to write our data to. */
+  QTextStream _stream;
+
+  /** This is our log file. It is being used via the _stream object. */
+  QFile _logfile;
+
+  /** Contains the current active logging mode. */
+  LogMode _logMode;
+
+  /** B-Record logger time interval in seconds. */
+  int _bRecordInterval;
+
+  /** K-Record logger time interval in seconds. */
+  int _kRecordInterval;
+
+  /** Enable K-Record logging. */
+  bool _kRecordLogging;
+
+  /** Time stamp of the last logged B record */
+  QTime* lastLoggedBRecord;
+
+  /** Time stamp of the last logged F record */
+  QTime* lastLoggedFRecord;
+
+  /** Time stamp of the last logged K record */
+  QTime* lastLoggedKRecord;
+
+  /** Date and time start of logging. */
+  QDateTime startLogging;
+
+  /** List of last would-be log entries.
+    * This list is filled when in standby mode with strings that would be
+    * in the log were logging enabled. When a change in flight mode is detected
+    * and logging is triggered, the list is used to write out some older events
+    * to the log. This way, we can be sure that the complete start sequence is
+    * available in the log. */
+  LimitedList<QStringList> _backtrack;
+
+  /** Holds the flight number for this day */
+  int flightNumber;
+
+  /** Holds the last known flight mode. */
+  Calculator::flightmode _flightMode;
 };
 
 #endif
-
-

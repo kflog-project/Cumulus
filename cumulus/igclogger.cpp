@@ -46,7 +46,8 @@ IgcLogger::IgcLogger(QObject* parent) :
   QObject(parent),
   closeTimer(0),
   _kRecordLogging(false),
-  _backtrack( LimitedList<QStringList>(20) )
+  _backtrack( LimitedList<QStringList>(30) ),
+  _flightMode( Calculator::unknown)
 {
   if ( GeneralConfig::instance()->getLoggerAutostartMode() )
     {
@@ -68,8 +69,11 @@ IgcLogger::IgcLogger(QObject* parent) :
   lastLoggedKRecord = new QTime();
 
   resetTimer = new QTimer( this );
-
   connect( resetTimer, SIGNAL(timeout()), this, SLOT(slotResetLoggingTime()) );
+
+  closeTimer = new QTimer(this);
+  closeTimer->setSingleShot( true );
+  connect( closeTimer, SIGNAL(timeout()), this, SLOT(slotCloseLogFile()) );
 }
 
 IgcLogger::~IgcLogger()
@@ -163,7 +167,10 @@ void IgcLogger::slotMakeFixEntry()
                    QString("%1").arg(GpsNmea::gps->getLastSatInfo().fixAccuracy, 3, 10, QChar('0')) +
                    QString("%1").arg(GpsNmea::gps->getLastSatInfo().satsInUse, 2, 10, QChar('0')) );
 
-  if ( _logMode == standby && calculator->moving() == false )
+  if ( _logMode == standby &&
+       ( calculator->moving() == false ||
+         _flightMode == Calculator::unknown ||
+         _flightMode == Calculator::standstill ) )
     {
       // save B and F record and time in backtrack, if we are not in move
       QString fRecord = "F" +
@@ -189,6 +196,9 @@ void IgcLogger::slotMakeFixEntry()
           // entries. Such entries must be written out in the new opened log file
           // before start with normal logging. Otherwise the first B record is missing.
           _logMode = on;
+
+          // set start date and time of logging
+          startLogging = QDateTime::currentDateTime();
 
           // If log mode was before in standby we have to write out the backtrack entries.
           if( _backtrack.size() > 0 )
@@ -412,6 +422,9 @@ void IgcLogger::CloseFile()
     {
       _logfile.close();
     }
+
+  // reset logger start time
+  startLogging = QDateTime();
 }
 
 /** This function writes the header of the IGC file into the logfile. */
@@ -731,27 +744,29 @@ QString IgcLogger::createFileName(const QString& path)
 {
   int year=QDate::currentDate().year();
   year=year % 10;
-  int month=QDate::currentDate().month();
-  int day=QDate::currentDate().day();
-  QString name=QString::number(year,10) + QString::number(month,13) + QString::number(day,32);
-  name+="X000"; // @AP: one X has to be added for unknown manufacture
+  int month = QDate::currentDate().month();
+  int day = QDate::currentDate().day();
+  QString name = QString::number(year, 10) + QString::number(month, 13) + QString::number(day, 32);
+  name += "X000"; // @AP: one X has to be added for unknown manufacture
 
   int i=1;
-  QString result=name + QString::number(i,36);
+  QString result=name + QString::number(i, 36);
 
-  while (QFile(path + "/" + result.toUpper() + ".IGC").exists())
+  while ( QFile(path + "/" + result.toUpper() + ".IGC").exists() )
     {
       i++;
-      result=name + QString::number(i,36);
+      result = name + QString::number(i, 36);
     }
 
-  flightNumber=i; //store the resulting number so we can use it in the logfile itself
+  flightNumber = i; //store the resulting number so we can use it in the logfile itself
 
   return path + "/" + result.toUpper() + ".IGC";
 }
 
 void IgcLogger::slotFlightModeChanged( Calculator::flightmode newFlightMode )
 {
+  _flightMode = newFlightMode;
+
   if( GeneralConfig::instance()->getLoggerAutostartMode() == false )
     {
       // Logger auto start mode not active.
@@ -760,25 +775,12 @@ void IgcLogger::slotFlightModeChanged( Calculator::flightmode newFlightMode )
 
   if( newFlightMode == Calculator::standstill || newFlightMode == Calculator::unknown )
     {
-      if( closeTimer == 0 )
-        {
-          // activate close timer
-          closeTimer = new QTimer(this);
-          closeTimer->setSingleShot( true );
-          connect( closeTimer, SIGNAL(timeout()), this, SLOT(slotCloseLogFile()) );
-
-          // Close logfile after 60s still stand or unknowm mode.
-          closeTimer->start(60000);
-        }
+      // Close logfile after 90s still stand or unknown mode.
+      closeTimer->start(90000);
     }
   else
     {
-      if( closeTimer != 0 )
-        {
-          closeTimer->stop();
-          delete closeTimer;
-          closeTimer = 0;
-        }
+      closeTimer->stop();
     }
 }
 
@@ -788,7 +790,4 @@ void IgcLogger::slotCloseLogFile()
     {
       Standby();
     }
-
-  delete closeTimer;
-  closeTimer = 0;
 }

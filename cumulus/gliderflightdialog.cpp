@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2010 by Axel Pauli
+**                   2008-2011 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,10 +21,9 @@
 #include "gliderflightdialog.h"
 #include "calculator.h"
 #include "glider.h"
+#include "igclogger.h"
 #include "mapconfig.h"
 #include "generalconfig.h"
-
-extern MapConfig* _globalMapConfig;
 
 // set static member variable
 int GliderFlightDialog::noOfInstances = 0;
@@ -36,7 +35,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   setObjectName("GliderFlightDialog");
   setAttribute(Qt::WA_DeleteOnClose);
   setModal(true);
-  setWindowTitle (tr("Set Flight Parameters"));
+  setWindowTitle (tr("Flight Parameters"));
 
   // Mc step widths
   mcSmallStep = 0.5;
@@ -76,9 +75,16 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   gridLayout->setSpacing(15);
   int row = 0;
 
-  QLabel* lbl = new QLabel(tr("McCready:"), this);
+  ftLabel = new QLabel(tr("Flight time:"));
+  ftText  = new QLabel;
+  gridLayout->addWidget(ftLabel, row, 0);
+  gridLayout->addWidget(ftText, row++, 1);
+
+  //---------------------------------------------------------------------
+
+  QLabel* lbl = new QLabel(tr("McCready:"));
   gridLayout->addWidget(lbl, row, 0);
-  spinMcCready = new QDoubleSpinBox(this);
+  spinMcCready = new QDoubleSpinBox;
   spinMcCready->setRange(0.0, 20.0);
   spinMcCready->setSingleStep(0.5);
   spinMcCready->setSuffix( QString(" ") + Speed::getUnitText(Speed::getVerticalUnit()));
@@ -188,7 +194,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   butLayout->addStretch(10);
   butLayout->addWidget( ok );
 
-  gridLayout->addLayout(butLayout, 0, 3, row, 1);
+  gridLayout->addLayout(butLayout, 1, 3, row, 1);
   gridLayout->setColumnStretch( 2, 10 );
 
   // @AP: let us take the user's defined info display time
@@ -248,6 +254,7 @@ void GliderFlightDialog::showEvent( QShowEvent *event )
       mcMax = 20.0;
       mcSmallStep = 0.5;
       mcBigStep = 1.0;
+      break;
     }
 
   spinMcCready->setMaximum(mcMax);
@@ -255,6 +262,9 @@ void GliderFlightDialog::showEvent( QShowEvent *event )
 
   spinMcCready->setFocus();
   startTimer();
+
+  slotShowFlightTime();
+
 }
 
 void GliderFlightDialog::load()
@@ -436,6 +446,33 @@ void GliderFlightDialog::slotDump()
 {
   spinWater->setValue(0);
   spinWater->setFocus();
+}
+
+/** Shows the flight time. */
+void GliderFlightDialog::slotShowFlightTime()
+{
+  QDateTime takeoff = IgcLogger::instance()->loggerStart();
+
+  if( takeoff.isValid() )
+    {
+      ftLabel->setVisible(true);
+      ftText->setVisible(true);
+
+      int seconds = takeoff.secsTo( QDateTime::currentDateTime() );
+
+      QTime time;
+      time = time.addSecs( seconds );
+
+      ftText->setText( time.toString("hh:mm:ss") );
+
+      // Fire an update timer after 5 seconds.
+      QTimer::singleShot(5000, this, SLOT(slotShowFlightTime()));
+    }
+  else
+    {
+      ftLabel->setVisible(false);
+      ftText->setVisible(false);
+    }
 }
 
 void GliderFlightDialog::accept()

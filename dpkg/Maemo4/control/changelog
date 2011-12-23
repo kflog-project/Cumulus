@@ -2,8 +2,12 @@ cumulus (2.12.0) stable; urgency=low
 
   * Build is done now with Qt4.8.0
   
+  * If the IGC logger operates in auto start mode the current flight time is
+    displayed now in the flight parameters dialog. This dialog is opened by
+    pressing the Mc display box.
+  
   * If the IGC logger operates in auto start mode and the flight mode changes
-    to unknown or still stand, the logfile is automatically closed after 60s now.
+    to unknown or still stand, the logfile is automatically closed after 90s now.
   
   * Wrong entry in file glider.pol fixed.
    
