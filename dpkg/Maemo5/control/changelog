@@ -1,5 +1,8 @@
 cumulus (2.12.0) stable; urgency=low
 
+  * Flight mode wave removed. It is not clearly to decide, when a glider is
+    flying in the wave.
+
   * If the IGC logger operates in auto start mode the current flight time is
     displayed now in the flight parameters dialog. This dialog is opened by
     pressing the Mc display box.

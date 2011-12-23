@@ -143,7 +143,7 @@ void WindAnalyser::slot_newSample()
 }
 
 /** Called if the flight mode changes */
-void WindAnalyser::slot_newFlightMode( Calculator::flightmode newFlightMode )
+void WindAnalyser::slot_newFlightMode( Calculator::FlightMode newFlightMode )
 {
   // Reset the circle counter for each flight mode change. The important thing
   // to measure is the number of turns in a thermal per turn direction.

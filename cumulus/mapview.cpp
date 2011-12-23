@@ -1051,12 +1051,12 @@ void MapView::slot_OpenMapView()
 
 /** This slot updates the FlightStatus status bar-widget with the
     current logging and flight mode status */
-void MapView::slot_setFlightStatus()
+void MapView::slot_setFlightStatus( Calculator::FlightMode fm )
 {
   QString status="";
 
   // flight mode status
-  switch (calculator->currentFlightMode())
+  switch (fm)
     {
     case Calculator::unknown:
       status += (tr("?","Unknown"));
@@ -1072,9 +1072,6 @@ void MapView::slot_setFlightStatus()
       break;
     case Calculator::circlingR:
       status += (tr("R","Circling Right"));
-      break;
-    case Calculator::wave:
-      status += (tr("W","Wave"));
       break;
     }
 

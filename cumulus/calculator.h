@@ -128,12 +128,12 @@ public:
   /**
    * Different possible flight modes
    */
-  enum flightmode{unknown=0, standstill, cruising, circlingL, circlingR, wave};
+  enum FlightMode {unknown=0, standstill, cruising, circlingL, circlingR};
 
   /**
    * Different sources for position data
    */
-  enum positionFrom{GPS=0, MAN};
+  enum positionFrom {GPS=0, MAN};
 
 public:
   /**
@@ -307,7 +307,7 @@ public:
   /**
    * Returns the current flight mode
    */
-  flightmode currentFlightMode()
+  FlightMode currentFlightMode()
     {
       return lastFlightMode;
     };
@@ -514,7 +514,7 @@ public slots:
   /**
    * Connected to the signal flightModeChanged and used to re-emit with marker value
    */
-  void slot_flightModeChanged(Calculator::flightmode);
+  void slot_flightModeChanged(Calculator::FlightMode);
   /**
    * Called to switch on/off LD calculation
    */
@@ -647,7 +647,7 @@ signals: // Signals
   /**
    * Sent if the flight mode has changed.
    */
-  void flightModeChanged(Calculator::flightmode);
+  void flightModeChanged(Calculator::FlightMode);
 
   /**
    * Sent if a new sample has been added to the sample list
@@ -774,7 +774,7 @@ private: // Private attributes
   /** contains the current state of vario calculation */
   bool _calculateVario;
   /** Contains the last known flight mode */
-  flightmode lastFlightMode;
+  FlightMode lastFlightMode;
   /** Last marker value used */
   int _marker;
   /** contains the current state of wind calculation */

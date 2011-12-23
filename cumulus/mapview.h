@@ -31,12 +31,12 @@
 #include <QBoxLayout>
 #include <QColor>
 
-#include "distance.h"
-#include "speed.h"
 #include "altitude.h"
-#include "gpsnmea.h"
 #include "calculator.h"
+#include "distance.h"
+#include "gpsnmea.h"
 #include "map.h"
+#include "speed.h"
 
 #ifdef FLARM
 #include "flarmwidget.h"
@@ -53,6 +53,9 @@
  * other useful in flight information.
  *
  * \date 2002-2011
+ *
+ * \version: $Id$
+ *
  */
 
 class CuLabel;
@@ -253,7 +256,7 @@ class MapView : public QWidget
     /**
      * Format and set the FlightStatus string
      */
-    void slot_setFlightStatus();
+    void slot_setFlightStatus( Calculator::FlightMode fm );
 
     /*
      * Sets the logger status in the status bar.

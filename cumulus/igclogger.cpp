@@ -763,7 +763,7 @@ QString IgcLogger::createFileName(const QString& path)
   return path + "/" + result.toUpper() + ".IGC";
 }
 
-void IgcLogger::slotFlightModeChanged( Calculator::flightmode newFlightMode )
+void IgcLogger::slotFlightModeChanged( Calculator::FlightMode newFlightMode )
 {
   _flightMode = newFlightMode;
 

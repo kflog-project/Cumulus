@@ -170,7 +170,7 @@ public slots:
   /**
    * This slot is called, if the flight mode has been changed.
    */
-  void slotFlightModeChanged( Calculator::flightmode newFlightMode );
+  void slotFlightModeChanged( Calculator::FlightMode newFlightMode );
 
 private slots:
 
@@ -322,7 +322,7 @@ private:
   int flightNumber;
 
   /** Holds the last known flight mode. */
-  Calculator::flightmode _flightMode;
+  Calculator::FlightMode _flightMode;
 };
 
 #endif

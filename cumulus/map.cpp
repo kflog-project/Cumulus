@@ -2718,8 +2718,7 @@ void Map::__drawRelBearingInfo()
 {
   if( ! GeneralConfig::instance()->getMapShowRelBearingInfo() ||
       ! calculator || ! calculator->getselectedWp() ||
-      (calculator->currentFlightMode() != Calculator::cruising &&
-       calculator->currentFlightMode() != Calculator::wave) )
+        calculator->currentFlightMode() != Calculator::cruising )
     {
       return;
     }

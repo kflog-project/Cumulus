@@ -564,8 +564,8 @@ void MainWindow::slotCreateApplicationWidgets()
            viewMap, SLOT( slot_LD( const double&, const double&) ) );
   connect( calculator, SIGNAL( newGlider( const QString&) ),
            viewMap, SLOT( slot_glider( const QString&) ) );
-  connect( calculator, SIGNAL( flightModeChanged( Calculator::flightmode ) ),
-           viewMap, SLOT( slot_setFlightStatus() ) );
+  connect( calculator, SIGNAL( flightModeChanged(Calculator::FlightMode) ),
+           viewMap, SLOT( slot_setFlightStatus(Calculator::FlightMode) ) );
 
   connect( calculator, SIGNAL( taskpointSectorTouched() ),
            logger, SLOT( slotTaskSectorTouched() ) );
@@ -573,8 +573,8 @@ void MainWindow::slotCreateApplicationWidgets()
            this, SLOT( slotNotification( const QString&, const bool ) ) );
   connect( calculator, SIGNAL( newSample() ),
            logger, SLOT( slotMakeFixEntry() ) );
-  connect( calculator, SIGNAL( flightModeChanged(Calculator::flightmode) ),
-           logger, SLOT( slotFlightModeChanged(Calculator::flightmode) ) );
+  connect( calculator, SIGNAL( flightModeChanged(Calculator::FlightMode) ),
+           logger, SLOT( slotFlightModeChanged(Calculator::FlightMode) ) );
 
   connect( ( QObject* ) calculator->getReachList(), SIGNAL( newReachList() ),
            this, SLOT( slotNewReachList() ) );

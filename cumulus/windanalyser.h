@@ -63,7 +63,7 @@ public slots:
   /**
    * Called if the flight mode changes
    */
-  void slot_newFlightMode( Calculator::flightmode newMode );
+  void slot_newFlightMode( Calculator::FlightMode newMode );
 
   /**
    * Called if a new sample is available in the sample list.

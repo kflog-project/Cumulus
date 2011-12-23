@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2011-12-23 AP: Flight mode wave removed. It is not clearly to decide, when
+                   a glider is flying in the wave.
+
 [+] 2011-12-23 AP: If the IGC logger operates in auto start mode the current
                    flight time is displayed now in the flight parameters
                    dialog. This dialog is opened by pressing the Mc display box.
