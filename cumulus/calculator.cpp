@@ -1,5 +1,5 @@
 /***********************************************************************
- **
+ **F
  **   calculator.cpp
  **
  **   This file is part of Cumulus.
@@ -406,7 +406,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
   // considered in manual mode to make testing possible.
   bool inside = false;
 
-  if ( lastSpeed.getKph() > 35 || GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
+  if ( moving() || GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
     {
       inside = task->checkSector( curDistance, lastPosition, selectedWp->taskPointIndex );
     }
@@ -1219,8 +1219,7 @@ void Calculator::determineFlightStatus()
     case standstill: // we are not moving at all!
 
       if ( ( dist(&samplelist[0].position, &samplelist[1].position) / double(timediff) ) < 0.005 &&
-           lastSpeed.getMps() <= 0.5 &&
-           getlastAGLAltitude().getMeters() < 50.0 )
+           lastSpeed.getMps() <= 0.5 )
         {
           // may be too ridged, GPS errors could cause problems here
           return;
@@ -1302,7 +1301,7 @@ void Calculator::determineFlightStatus()
         {
           // aDiff can be positive or negative according to the turn direction
           aDiff = angleDiff( samplelist[i+1].vector.getAngleDeg(), samplelist[i].vector.getAngleDeg() );
-          qDebug("analysis: angle1=%d, angle2=%d, aDiff=%d",int(samplelist[i+1].vector.getAngleDeg()),int(samplelist[i].vector.getAngleDeg()), aDiff);
+          // qDebug("analysis: angle1=%d, angle2=%d, aDiff=%d",int(samplelist[i+1].vector.getAngleDeg()),int(samplelist[i].vector.getAngleDeg()), aDiff);
           //qDebug("analysis: position=(%d, %d)", samplelist->at(i)->position.x(),samplelist->at(i)->position.y() );
 
           // That is the average value of the direction change in degree.
@@ -1326,7 +1325,7 @@ void Calculator::determineFlightStatus()
           // qDebug("  analysis: sample: %d, speed: %f",i,samplelist->at(i)->vector.getKph());
         }
 
-      qDebug ("analysis: aDiff=%d, absADiff=%d, totalDirChange=%d, maxSpeed=%d, totalAltChange=%d, maxAltChange=%d, maybeLeft=%d, maybeRight=%d", aDiff, abs(aDiff), totalDirChange, maxSpeed, totalAltChange, maxAltChange, int(mayBeL), int(mayBeR));
+      // qDebug ("analysis: aDiff=%d, absADiff=%d, totalDirChange=%d, maxSpeed=%d, totalAltChange=%d, maxAltChange=%d, maybeLeft=%d, maybeRight=%d", aDiff, abs(aDiff), totalDirChange, maxSpeed, totalAltChange, maxAltChange, int(mayBeL), int(mayBeR));
 
       // try standstill. We are using a value > 0 because of possible GPS errors.
       /*
@@ -1336,8 +1335,7 @@ void Calculator::determineFlightStatus()
       if ( maxSpeed < 0.5 ) // if we get under 0.5m/s for maximum speed, we may be standing still
         {
           // check if we had any significant altitude changes
-          if ( (abs(totalAltChange) / ls) <= MAXALTDRIFTAVG &&
-               getlastAGLAltitude().getMeters() < 50.0 )
+          if ( (abs(totalAltChange) / ls) <= MAXALTDRIFTAVG )
             {
               newFlightMode = standstill;
               break_analysis = true;
@@ -1643,11 +1641,11 @@ void Calculator::slot_startTask()
 }
 
 /**
- * @returns true if we are faster in move as or equal 5km/h.
+ * @returns true if we are faster in move as or equal 20km/h.
  */
 bool Calculator::moving()
 {
-  const double Limit = 5000.0 / 3600.0; // 5Km/h as m/s
+  const double Limit = 35000.0 / 3600.0; //35Km/h as m/s
 
   if( samplelist.count() < 5 )
     {
