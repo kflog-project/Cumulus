@@ -217,23 +217,23 @@
         <translation>Automatische Wendepunktschaltung</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1560"/>
-        <location filename="calculator.cpp" line="1565"/>
+        <location filename="calculator.cpp" line="1553"/>
+        <location filename="calculator.cpp" line="1558"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1566"/>
+        <location filename="calculator.cpp" line="1559"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1628"/>
+        <location filename="calculator.cpp" line="1621"/>
         <source>Restart current task?</source>
         <translation>Akt. Aufgabe neu starten?</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1629"/>
+        <location filename="calculator.cpp" line="1622"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
     </message>
@@ -1169,28 +1169,28 @@
         <translation>Zoom Maßstab 1:%1</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2962"/>
+        <location filename="map.cpp" line="2961"/>
         <source>Airspace&amp;nbsp;Warning</source>
         <translation>Luftraum&amp;nbsp;Warnung</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2975"/>
-        <location filename="map.cpp" line="3009"/>
-        <location filename="map.cpp" line="3151"/>
+        <location filename="map.cpp" line="2974"/>
+        <location filename="map.cpp" line="3008"/>
+        <location filename="map.cpp" line="3150"/>
         <source>Inside</source>
         <translation>Innerhalb</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3032"/>
-        <location filename="map.cpp" line="3067"/>
-        <location filename="map.cpp" line="3188"/>
+        <location filename="map.cpp" line="3031"/>
+        <location filename="map.cpp" line="3066"/>
+        <location filename="map.cpp" line="3187"/>
         <source>Very Near</source>
         <translation>Dicht</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3090"/>
-        <location filename="map.cpp" line="3124"/>
-        <location filename="map.cpp" line="3224"/>
+        <location filename="map.cpp" line="3089"/>
+        <location filename="map.cpp" line="3123"/>
+        <location filename="map.cpp" line="3223"/>
         <source>Near</source>
         <translation>Nahe</translation>
     </message>
@@ -1468,19 +1468,13 @@ Alle Downloads verworfen!</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1077"/>
-        <source>W</source>
-        <comment>Wave</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="mapview.cpp" line="1105"/>
+        <location filename="mapview.cpp" line="1102"/>
         <source>L</source>
         <comment>Logging</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1115"/>
+        <location filename="mapview.cpp" line="1112"/>
         <source>Ls</source>
         <comment>LoggingStandby</comment>
         <translation></translation>

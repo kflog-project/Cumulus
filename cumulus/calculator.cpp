@@ -1218,7 +1218,8 @@ void Calculator::determineFlightStatus()
     {
     case standstill: // we are not moving at all!
 
-      if ( ( dist(&samplelist[0].position, &samplelist[1].position) / double(timediff) ) < 0.005 &&
+      if ( (samplelist[0].position == samplelist[1].position ||
+          ( dist(&samplelist[0].position, &samplelist[1].position) / double(timediff) ) < 0.005) &&
            lastSpeed.getMps() <= 0.5 )
         {
           // may be too ridged, GPS errors could cause problems here
@@ -1389,8 +1390,8 @@ void Calculator::determineFlightStatus()
     {
       lastFlightMode = newFlightMode;
       samplelist[0].marker = ++_marker;
-      qDebug("new FlightMode: %d",lastFlightMode);
-      slot_flightModeChanged( newFlightMode );
+      // qDebug("new FlightMode: %d",lastFlightMode);
+      flightModeChanged( newFlightMode );
     }
 }
 
@@ -1405,7 +1406,7 @@ void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
       lastFlightMode = newFlightMode;
       samplelist[0].marker=++_marker;
       // qDebug("new FlightMode: %d",lastFlightMode);
-      slot_flightModeChanged(newFlightMode);
+      flightModeChanged(newFlightMode);
     }
 
   if ( newState == GpsNmea::noFix )
@@ -1417,8 +1418,8 @@ void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
     }
 }
 
-/** This slot is used internally to re-emit the flight mode signal with the marker value */
-void Calculator::slot_flightModeChanged(Calculator::FlightMode fm)
+/** This function is used internally to emit the flight mode signal with the marker value */
+void Calculator::flightModeChanded(Calculator::FlightMode fm)
 {
   if ( _calculateWind )
     {
@@ -1639,11 +1640,11 @@ void Calculator::slot_startTask()
 }
 
 /**
- * @returns true if we are faster in move as or equal 20km/h.
+ * @returns true if we are faster in move as or equal 35km/h.
  */
 bool Calculator::moving()
 {
-  const double Limit = 35000.0 / 3600.0; //35Km/h as m/s
+  const double Limit = 35000.0 / 3600.0; // 35Km/h as m/s
 
   if( samplelist.count() < 5 )
     {

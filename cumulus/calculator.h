@@ -398,7 +398,7 @@ public:
     };
 
   /**
-   * @returns true if we are faster in move as or equal 5km/h.
+   * @returns true if we are faster in move as or equal 35km/h.
    */
   bool moving();
 
@@ -511,10 +511,6 @@ public slots:
    * Called if the status of the GPS changes.
    */
   void slot_GpsStatus(GpsNmea::GpsStatus);
-  /**
-   * Connected to the signal flightModeChanged and used to re-emit with marker value
-   */
-  void slot_flightModeChanged(Calculator::FlightMode);
   /**
    * Called to switch on/off LD calculation
    */
@@ -709,6 +705,10 @@ private: // Private methods
    */
   void determineFlightStatus();
 
+  /**
+   * Distributes a flight mode change.
+   */
+  void flightModeChanded(Calculator::FlightMode);
 
 private: // Private attributes
   /** Contains the last flight sample */
