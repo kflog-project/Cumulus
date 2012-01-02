@@ -6,7 +6,7 @@
                              -------------------
     begin                : Mon Jul 22 2002
     copyright            : (C) 2002 by André Somers
-                         :     2011 by Axel Pauli
+                         :     2012 by Axel Pauli
 
     Email of maintainer  : axel@kflog.org
 
