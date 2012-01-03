@@ -1091,9 +1091,9 @@
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1778"/>
-        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2011, The Cumulus-Team&lt;/html&gt;</source>
-        <oldsource>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2010, The Cumulus-Team&lt;/html&gt;</oldsource>
-        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2011, Das Cumulus-Team&lt;/html&gt;</translation>
+        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2012, The Cumulus-Team&lt;/html&gt;</source>
+        <oldsource>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2011, The Cumulus-Team&lt;/html&gt;</oldsource>
+        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2012, Das Cumulus-Team&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1782"/>
@@ -1491,39 +1491,54 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>PreFlightGliderPage</name>
     <message>
-        <location filename="preflightgliderpage.cpp" line="38"/>
+        <location filename="preflightgliderpage.cpp" line="37"/>
         <source>Pilot:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightgliderpage.cpp" line="44"/>
+        <location filename="preflightgliderpage.cpp" line="43"/>
         <source>Added load:</source>
         <translation>Zuladung:</translation>
     </message>
     <message>
-        <location filename="preflightgliderpage.cpp" line="55"/>
+        <location filename="preflightgliderpage.cpp" line="56"/>
         <source>Copilot:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightgliderpage.cpp" line="60"/>
+        <location filename="preflightgliderpage.cpp" line="61"/>
         <source>Water ballast:</source>
         <translation>Wasserballast:</translation>
     </message>
     <message>
-        <location filename="preflightgliderpage.cpp" line="71"/>
+        <location filename="preflightgliderpage.cpp" line="73"/>
         <source>Wing load:</source>
         <translation>Flächenlast:</translation>
     </message>
     <message>
         <location filename="preflightgliderpage.cpp" line="84"/>
+        <source>Select a glider to be used</source>
+        <translation>Wähle zu benutzendes Flugzeug aus</translation>
+    </message>
+    <message>
+        <location filename="preflightgliderpage.cpp" line="89"/>
         <source>Deselect</source>
         <translation>Abwählen</translation>
     </message>
     <message>
-        <location filename="preflightgliderpage.cpp" line="85"/>
+        <location filename="preflightgliderpage.cpp" line="90"/>
         <source>Clear glider selection</source>
         <translation>Lösche Flugzeug Auswahl</translation>
+    </message>
+    <message>
+        <location filename="preflightgliderpage.cpp" line="102"/>
+        <source>Increase spinbox value</source>
+        <translation>Erhöhe Drehbox Wert</translation>
+    </message>
+    <message>
+        <location filename="preflightgliderpage.cpp" line="103"/>
+        <source>Decrease spinbox value</source>
+        <translation>Reduziere Drehbox Wert</translation>
     </message>
 </context>
 <context>
@@ -1647,39 +1662,44 @@ Alle Downloads verworfen!</translation>
         <translation>Strecke</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="186"/>
-        <location filename="preflighttasklist.cpp" line="322"/>
-        <location filename="preflighttasklist.cpp" line="436"/>
+        <location filename="preflighttasklist.cpp" line="136"/>
+        <source>Task display</source>
+        <translation>Aufgabenanzeige</translation>
+    </message>
+    <message>
+        <location filename="preflighttasklist.cpp" line="187"/>
+        <location filename="preflighttasklist.cpp" line="323"/>
+        <location filename="preflighttasklist.cpp" line="437"/>
         <source>(No tasks defined)</source>
         <translation>(Keine Aufgaben definiert)</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="189"/>
+        <location filename="preflighttasklist.cpp" line="190"/>
         <source>Create New Task</source>
         <translation>Erzeuge neue Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="190"/>
+        <location filename="preflighttasklist.cpp" line="191"/>
         <source>Push &lt;b&gt;Plus&lt;/b&gt; button to add a task</source>
         <translation>Drücke&lt;b&gt;Plus&lt;/b&gt; Knopf für neue Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="443"/>
+        <location filename="preflighttasklist.cpp" line="444"/>
         <source>(Reset selection)</source>
         <translation>(Reset Auswahl)</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="443"/>
+        <location filename="preflighttasklist.cpp" line="444"/>
         <source>none</source>
         <translation>keiner</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="564"/>
+        <location filename="preflighttasklist.cpp" line="565"/>
         <source>Delete Task</source>
         <translation>Lösche Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="565"/>
+        <location filename="preflighttasklist.cpp" line="566"/>
         <source>Delete the selected task?</source>
         <translation>Markierte Aufgabe löschen?</translation>
     </message>
@@ -1909,11 +1929,6 @@ Alle Downloads verworfen!</translation>
         <translation>Vorflug Einstellungen</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="126"/>
-        <source>Select a glider to be used</source>
-        <translation>Wähle zu benutzendes Flugzeug aus</translation>
-    </message>
-    <message>
         <location filename="preflightwidget.cpp" line="121"/>
         <source>Glider</source>
         <translation>Flugzeug</translation>
@@ -1929,32 +1944,17 @@ Alle Downloads verworfen!</translation>
         <translation>Wegpunkte</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="127"/>
-        <source>Flight task management</source>
-        <translation>Flugaufgaben Verwaltung</translation>
-    </message>
-    <message>
-        <location filename="preflightwidget.cpp" line="128"/>
-        <source>Waypoint management</source>
-        <translation>Wegpunkt Management</translation>
-    </message>
-    <message>
-        <location filename="preflightwidget.cpp" line="129"/>
-        <source>Define common flight parameters</source>
-        <translation>Allgemeine Flugparameter festlegen</translation>
-    </message>
-    <message>
         <location filename="preflightwidget.cpp" line="124"/>
         <source>Common</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="162"/>
+        <location filename="preflightwidget.cpp" line="157"/>
         <source>Replace previous task?</source>
         <translation>Alte Aufgabe ersetzen?</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="163"/>
+        <location filename="preflightwidget.cpp" line="158"/>
         <source>&lt;html&gt;Do you want to replace the previous task?&lt;br&gt;A selected target is reset at task start.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Alte Aufgabe ersetzen?&lt;br&gt;Das gerade markierte Ziel wird auf Aufgabenbeginn gesetzt.&lt;/html&gt;</translation>
     </message>
