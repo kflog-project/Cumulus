@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2009-2010 by Axel Pauli
+**                   2009-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -133,6 +133,7 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   taskListWidget->setFocus();
 
   taskContent = new TaskListView( splitter, false );
+  taskContent->setToolTip( tr("Task display") );
 
   taskLayout->addWidget( splitter );
 

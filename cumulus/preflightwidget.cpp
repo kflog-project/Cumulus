@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2003      by André Somers
- **                   2008-2011 by Axel Pauli
+ **                   2008-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -122,11 +122,6 @@ void PreFlightWidget::setLabels()
   tabWidget->setTabText( 1, tr("Task") );
   tabWidget->setTabText( 2, tr("Waypoints") );
   tabWidget->setTabText( 3, tr("Common") );
-
-  gliderpage->setToolTip(tr("Select a glider to be used"));
-  taskpage->setToolTip(tr("Flight task management"));
-  wppage->setToolTip(tr("Waypoint management"));
-  miscpage->setToolTip(tr("Define common flight parameters"));
 }
 
 /** Used to handle language change events */
