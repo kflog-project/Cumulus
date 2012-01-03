@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,7 +27,10 @@
  * on a glider, it's type, it's registration, call sign, polar,
  * single or double seater, maximum water capacity, etc.
  *
- * \date 2003-2010
+ * \date 2003-2012
+ *
+ * \version $Id$
+ *
  */
 
 #ifndef GLIDER_H
@@ -46,8 +49,6 @@ public:
     enum seat{ singleSeater=1, doubleSeater=2 };
 
     Glider();
-
-    ~Glider();
 
     /**
      * @returns the type of the Glider, such as for instance 'ASK 21' or 'Duo Discus', etc.
@@ -78,7 +79,7 @@ public:
      */
     void setRegistration(QString newValue)
     {
-        _registration=newValue;
+        _registration = newValue;
     };
 
     /**
@@ -110,7 +111,7 @@ public:
      */
     void setSeats(Glider::seat newValue)
     {
-        _seats=newValue;
+        _seats = newValue;
     };
 
     /**
@@ -126,7 +127,7 @@ public:
      */
     void setMaxWater(int newValue)
     {
-      _maxWater=newValue;
+      _maxWater = newValue;
     };
 
     /**
@@ -146,10 +147,10 @@ public:
     };
 
     /**
-     * This funtion loads the glider-data from the config-object.
-     * The config object needs to be initialized to the correct
+     * This function loads the glider data from the configuration object.
+     * The configuration object needs to be initialized to the correct
      * section beforehand! It tries to load the glider with id id,
-     * and returns true if it succeeds, and false otherwise.
+     * and returns true if it succeeds, otherwise false.
      */
     bool load(QSettings *config, int id);
 
@@ -171,7 +172,7 @@ public:
      */
      void setID(int newID)
     {
-        _lastSafeID=newID;
+        _lastSafeID = newID;
     };
 
     /**
@@ -187,7 +188,7 @@ public:
      */
      void setCoPilot(QString newValue)
     {
-        _coPilot=newValue;
+        _coPilot = newValue;
     };
 
 private:

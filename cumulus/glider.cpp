@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,32 +18,22 @@
 
 #include "glider.h"
 
-#include <QStringList>
+#include <QtCore>
 
-#warning FIXME: the unit for water should not be an integer representing liters, but a separate unit that can also represent gallons.
-
-Glider::Glider()
+Glider::Glider() :
+  _seats(singleSeater),
+  _maxWater(9),
+  _lastSafeID(-1)
 {
 }
 
-Glider::~Glider()
-{
-}
-
-/**
- * This function loads the glider-data from the configuration file.
- * The configuration object needs to be initialized to the correct
- * section before hand! It tries to load the glider with id
- * and returns true if it succeeds, and false otherwise.
- */
 bool Glider::load(QSettings *config, int id)
 {
   QString keyname = "Glider%1";
 
-  //check if entry exists
+  //check if an entry exists
   if( config->contains( keyname.arg( id ) ) )
     {
-
       QStringList data = config->value( keyname.arg( id ), "" ).toString().split(';', QString::KeepEmptyParts);
 
       // qDebug("Glider::load(): No of fetched glider items is %d", data.count());
@@ -83,7 +73,15 @@ bool Glider::load(QSettings *config, int id)
                       V3, W3, // v/w pair 3
                       data[11].toDouble(), data[12].toDouble(), // wingload, wingarea
                       data[13].toDouble(), data[14].toDouble() ); // empty weight, gross weight
+
       _lastSafeID = id;
+
+      if( data.count() == 17 )
+        {
+          _polar.setWater( data[15].toInt(), 0 );
+          _coPilot = data[16];
+        }
+
       return true;
     }
 
@@ -121,9 +119,10 @@ void Glider::safe(QSettings *config, int id)
   data.append( QString::number( _polar.wingArea() ) );
   data.append( QString::number( _polar.emptyWeight() ) );
   data.append( QString::number( _polar.grossWeight() ) );
+  data.append( QString::number( _polar.water() ) );
+  data.append( _coPilot );
 
   QString keyname = "Glider%1";
   config->setValue( keyname.arg( id ), data.join( ";" ) );
   _lastSafeID = id;
 }
-
