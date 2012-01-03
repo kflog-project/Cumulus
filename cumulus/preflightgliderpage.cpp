@@ -50,7 +50,6 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   spinLoad->setSingleStep(5);
   spinLoad->setSuffix(" kg");
   spinLoad->setEnabled(false);
-
   row++;
 
   QLabel* lblCoPilot = new QLabel(tr("Copilot:"), this);
@@ -91,6 +90,10 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
 
   // button size
   int size = 40;
+
+#ifdef MAEMO
+  size = 80;
+#endif
 
   // take a bold font for the plus and minus sign
   QFont bFont = font();
