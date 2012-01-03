@@ -49,6 +49,8 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   spinLoad->setRange(0, 1000);
   spinLoad->setSingleStep(5);
   spinLoad->setSuffix(" kg");
+  spinLoad->setEnabled(false);
+
   row++;
 
   QLabel* lblCoPilot = new QLabel(tr("Copilot:"), this);
@@ -65,6 +67,7 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   spinWater->setRange(0, 500);
   spinWater->setSingleStep(5);
   spinWater->setSuffix(" l");
+  spinWater->setEnabled(false);
   row++;
 
   QLabel* lblWLoad = new QLabel(tr("Wing load:"), this);
@@ -169,6 +172,7 @@ void PreFlightGliderPage::slotGliderChanged()
       edtCoPilot->setText(glider->coPilot());
 
       spinLoad->setValue( (int) rint(glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
+      spinLoad->setEnabled(true);
 
       spinWater->setMaximum(glider->maxWater() );
       spinWater->setEnabled(glider->maxWater() != 0 );
@@ -182,9 +186,18 @@ void PreFlightGliderPage::slotGliderDeselected()
 {
   // clear last stored glider
   lastGlider = static_cast<Glider *> (0);
+
   // clear list selection
   list->clearSelection();
-  // clear wing load label
+
+  // clear spinboxes
+  spinLoad->setValue(0);
+  spinWater->setValue(0);
+
+  spinLoad->setEnabled(false);
+  spinWater->setEnabled(false);
+
+// clear wing load label
   wingLoad->setText("");
 }
 
@@ -198,13 +211,14 @@ void PreFlightGliderPage::getCurrent()
     {
       return;
     }
-//  qDebug("## c2 ## reg %s", glider->registration().toLatin1().data() );
+
   list->selectItemFromReg( glider->registration() );
 
   edtCoPilot->setEnabled(glider->seats() == Glider::doubleSeater);
   edtCoPilot->setText(glider->coPilot());
 
   spinLoad->setValue( (int) (glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
+  spinLoad->setEnabled(true);
 
   spinWater->setMaximum(glider->maxWater());
   spinWater->setEnabled(glider->maxWater() != 0);
@@ -296,7 +310,6 @@ void PreFlightGliderPage::slotIncrementBox()
     }
   else
     {
-      qDebug() << "PreFlightGliderPage::slotIncrementBox(): Nix focus";
       return;
     }
 
