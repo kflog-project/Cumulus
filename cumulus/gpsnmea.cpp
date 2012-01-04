@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2011 by Axel Pauli
+                               2008-2012 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -57,7 +57,6 @@
 #define FIX_TO 25000
 
 extern MapView   *_globalMapView;
-extern MapMatrix *_globalMapMatrix;
 
 // global GPS object pointer
 GpsNmea *GpsNmea::gps = static_cast<GpsNmea *> (0);
