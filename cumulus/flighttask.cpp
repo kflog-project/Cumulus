@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2011 by Axel Pauli
+**                   2007-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -256,9 +256,11 @@ void FlightTask::__determineTaskType()
               flightType = FlightTask::FAI_S3;
               distance_task = distance_task_d;
             }
+          break;
 
         default:
           flightType = FlightTask::Unknown;
+          break;
         }
     }
   else
