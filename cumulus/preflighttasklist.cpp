@@ -53,7 +53,7 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   tas->setToolTip( tr("True Air Speed") );
   tas->setButtonSymbols(QSpinBox::NoButtons);
   tas->setFocusPolicy(Qt::StrongFocus);
-  tas->setRange( 0, 1000);
+  tas->setRange( 0, 900);
   tas->setSingleStep( 5 );
   tas->setValue( GeneralConfig::instance()->getTas() );
   tas->setSuffix( Speed::getHorizontalUnitText() );
@@ -66,7 +66,7 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   windDirection->setToolTip( tr("Wind Direction") );
   windDirection->setButtonSymbols(QSpinBox::NoButtons);
   windDirection->setFocusPolicy(Qt::StrongFocus);
-  windDirection->setRange( 0, 359 );
+  windDirection->setRange( 0, 360 );
   windDirection->setWrapping(true);
   windDirection->setSingleStep( 10 );
   windDirection->setValue( GeneralConfig::instance()->getWindDirection() );
@@ -80,7 +80,7 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   windSpeed->setToolTip( tr("Wind Speed") );
   windSpeed->setButtonSymbols(QSpinBox::NoButtons);
   windSpeed->setFocusPolicy(Qt::StrongFocus);
-  windSpeed->setRange( 0, 1000 );
+  windSpeed->setRange( 0, 900 );
   windSpeed->setValue( GeneralConfig::instance()->getWindSpeed() );
   windSpeed->setSuffix( Speed::getWindUnitText() );
 
@@ -108,36 +108,38 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   plus->setFocusPolicy(Qt::NoFocus);
   minus->setFocusPolicy(Qt::NoFocus);
 
-  editrow->addSpacing(20);
+  editrow->addSpacing(10);
   editrow->addWidget(plus);
-  editrow->addSpacing(20);
+  editrow->addSpacing(10);
   editrow->addWidget(minus);
   editrow->addStretch(10);
 
-  QPushButton * cmdNew = new QPushButton(this);
+  QPushButton * cmdNew = new QPushButton;
   cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
   cmdNew->setIconSize(QSize(IconSize, IconSize));
   cmdNew->setToolTip(tr("Define a new task"));
   editrow->addWidget(cmdNew);
 
   editrow->addSpacing(10);
-  QPushButton * cmdEdit = new QPushButton(this);
+  QPushButton * cmdEdit = new QPushButton;
   cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
   cmdEdit->setIconSize(QSize(IconSize, IconSize));
   cmdEdit->setToolTip(tr("Edit selected task"));
   editrow->addWidget(cmdEdit);
 
   editrow->addSpacing(10);
-  QPushButton * cmdDel = new QPushButton(this);
+  QPushButton * cmdDel = new QPushButton;
   cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png")) );
   cmdDel->setIconSize(QSize(IconSize, IconSize));
   cmdDel->setToolTip(tr("Remove selected task"));
   editrow->addWidget(cmdDel);
 
-  plus->setMinimumSize(cmdDel->sizeHint());
-  plus->setMaximumSize(cmdDel->sizeHint());
-  minus->setMinimumSize(cmdDel->sizeHint());
-  minus->setMaximumSize(cmdDel->sizeHint());
+  int size = cmdDel->sizeHint().height();
+
+  plus->setMinimumSize(size, size);
+  plus->setMaximumSize(size, size);
+  minus->setMinimumSize(size, size);
+  minus->setMaximumSize(size, size);
 
   splitter = new QSplitter( Qt::Vertical, this );
   splitter->setOpaqueResize( true );
@@ -306,7 +308,7 @@ void PreFlightTaskList::slotTaskDetails()
   task->setSpeed( tas->value() );
 
   // update wind parameters, can be changed in the meantime by the user
-  task->setWindDirection( windDirection->value() );
+  task->setWindDirection( windDirection->value() % 360 );
   task->setWindSpeed( windSpeed->value() );
 
   taskContent->slot_setTask( task );
