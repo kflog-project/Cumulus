@@ -90,7 +90,7 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   deselect->setToolTip( tr("Clear glider selection") );
 
   // button size
-  int size = IconSize;
+  int size = IconSize + 10;
 
   // take a bold font for the plus and minus sign
   QFont bFont = font();
