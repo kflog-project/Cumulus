@@ -33,9 +33,11 @@
 
 PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   QWidget( parent ),
-  editTask(0)
+  editTask(0),
+  lastFocusWidget(0)
 {
   setObjectName("TaskList");
+
   QVBoxLayout* taskLayout = new QVBoxLayout( this );
   taskLayout->setSpacing(5);
   taskLayout->setMargin(5);
@@ -49,7 +51,8 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
 
   tas = new QSpinBox( this );
   tas->setToolTip( tr("True Air Speed") );
-  tas->setButtonSymbols(QSpinBox::PlusMinus);
+  tas->setButtonSymbols(QSpinBox::NoButtons);
+  tas->setFocusPolicy(Qt::StrongFocus);
   tas->setRange( 0, 1000);
   tas->setSingleStep( 5 );
   tas->setValue( GeneralConfig::instance()->getTas() );
@@ -61,7 +64,8 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
 
   windDirection = new QSpinBox( this );
   windDirection->setToolTip( tr("Wind Direction") );
-  windDirection->setButtonSymbols(QSpinBox::PlusMinus);
+  windDirection->setButtonSymbols(QSpinBox::NoButtons);
+  windDirection->setFocusPolicy(Qt::StrongFocus);
   windDirection->setRange( 0, 359 );
   windDirection->setWrapping(true);
   windDirection->setSingleStep( 10 );
@@ -74,7 +78,8 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
 
   windSpeed = new QSpinBox( this );
   windSpeed->setToolTip( tr("Wind Speed") );
-  windSpeed->setButtonSymbols(QSpinBox::PlusMinus);
+  windSpeed->setButtonSymbols(QSpinBox::NoButtons);
+  windSpeed->setFocusPolicy(Qt::StrongFocus);
   windSpeed->setRange( 0, 1000 );
   windSpeed->setValue( GeneralConfig::instance()->getWindSpeed() );
   windSpeed->setSuffix( Speed::getWindUnitText() );
@@ -86,6 +91,27 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
 
   editrow->addWidget(windSpeed);
 
+  // take a bold font for the plus and minus sign
+  QFont bFont = font();
+  bFont.setBold(true);
+
+  plus  = new QPushButton("+");
+  minus = new QPushButton("-");
+
+  plus->setToolTip( tr("Increase number value") );
+  minus->setToolTip( tr("Decrease number value") );
+
+  plus->setFont(bFont);
+  minus->setFont(bFont);
+
+  // The buttons have no focus policy to avoid a focus change during click of them.
+  plus->setFocusPolicy(Qt::NoFocus);
+  minus->setFocusPolicy(Qt::NoFocus);
+
+  editrow->addSpacing(20);
+  editrow->addWidget(plus);
+  editrow->addSpacing(20);
+  editrow->addWidget(minus);
   editrow->addStretch(10);
 
   QPushButton * cmdNew = new QPushButton(this);
@@ -107,6 +133,11 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   cmdDel->setIconSize(QSize(IconSize, IconSize));
   cmdDel->setToolTip(tr("Remove selected task"));
   editrow->addWidget(cmdDel);
+
+  plus->setMinimumSize(cmdDel->sizeHint());
+  plus->setMaximumSize(cmdDel->sizeHint());
+  minus->setMinimumSize(cmdDel->sizeHint());
+  minus->setMaximumSize(cmdDel->sizeHint());
 
   splitter = new QSplitter( Qt::Vertical, this );
   splitter->setOpaqueResize( true );
@@ -140,9 +171,16 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   connect(cmdNew, SIGNAL(clicked()), this, SLOT(slotNewTask()));
   connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slotEditTask()));
   connect(cmdDel, SIGNAL(clicked()), this, SLOT(slotDeleteTask()));
-  connect(tas, SIGNAL(valueChanged(int)), this, SLOT(slotTasChanged(int)));
-  connect(windDirection, SIGNAL(valueChanged(int)), this, SLOT(slotWDChanged(int)));
-  connect(windSpeed, SIGNAL(valueChanged(int)), this, SLOT(slotWSChanged(int)));
+  connect(plus, SIGNAL(clicked()), this, SLOT(slotIncrementBox()));
+  connect(minus, SIGNAL(clicked()), this, SLOT(slotDecrementBox()));
+
+  /**
+   * If the plus or minus button is clicked, the focus is changed to the main
+   * window. I don't know why. Therefore the previous focused widget must be
+   * saved, to have an indication, if a spinbox entry should be modified.
+   */
+  connect( QCoreApplication::instance(), SIGNAL(focusChanged( QWidget*, QWidget*)),
+           this, SLOT( slotFocusChanged( QWidget*, QWidget*)) );
 
   connect( taskListWidget, SIGNAL( itemSelectionChanged() ),
            this, SLOT( slotTaskDetails() ) );
@@ -197,31 +235,50 @@ void PreFlightTaskList::showEvent(QShowEvent *)
   taskListWidget->resizeColumnToContents(2);
 }
 
-/** new value set in TAS spin box */
-void PreFlightTaskList::slotTasChanged( int /* value */ )
+void PreFlightTaskList::slotIncrementBox()
 {
-  // The user has changed the value in the TAS spin box. We
-  // have to initiate an update of the task details.
-  slotTaskDetails();
-  return;
+  // Look which spin box has the focus. Note, focus can be changed by clicking
+  // the connected button. Therefore take old focus widget under account and
+  // set the focus back to the spinbox.
+  QSpinBox* spinBoxList[3] = {tas, windDirection, windSpeed};
+
+  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
+    {
+      if( QApplication::focusWidget() == spinBoxList[i] || lastFocusWidget == spinBoxList[i] )
+        {
+          spinBoxList[i]->setValue( spinBoxList[i]->value() + spinBoxList[i]->singleStep() );
+          spinBoxList[i]->setFocus();
+          slotTaskDetails();
+          return;
+        }
+    }
 }
 
-/** value in wind direction spin box has been changed, do update of task list. */
-void PreFlightTaskList::slotWDChanged( int /* value */ )
+void PreFlightTaskList::slotDecrementBox()
 {
-  // The user has changed the value in the wind direction spin box. We
-  // have to initiate an update of the task details.
-  slotTaskDetails();
-  return;
+  // Look which spin box has the focus. Note, focus can be changed by clicking
+  // the connected button. Therefore take old focus widget under account and
+  // set the focus back to the spinbox.
+  QSpinBox* spinBoxList[3] = {tas, windDirection, windSpeed};
+
+  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
+    {
+      if( QApplication::focusWidget() == spinBoxList[i] || lastFocusWidget == spinBoxList[i] )
+        {
+          spinBoxList[i]->setValue( spinBoxList[i]->value() - spinBoxList[i]->singleStep() );
+          spinBoxList[i]->setFocus();
+          slotTaskDetails();
+          return;
+        }
+    }
 }
 
-/** value in wind speed spin box has been changed, do update of task list. */
-void PreFlightTaskList::slotWSChanged( int /* value */ )
+void PreFlightTaskList::slotFocusChanged( QWidget* oldWidget, QWidget* newWidget)
 {
-  // The user has changed the value in the wind speed spin box. We
-  // have to initiate an update of the task details.
-  slotTaskDetails();
-  return;
+  Q_UNUSED(newWidget)
+
+  // We save the old widget, which has just lost the focus.
+  lastFocusWidget = oldWidget;
 }
 
 void PreFlightTaskList::slotTaskDetails()
@@ -312,7 +369,7 @@ bool PreFlightTaskList::loadTaskList()
 
   taskNames.clear();
 
-#warning task list file 'tasks.tsk' is stored at User Data Directory
+#warning "task list file 'tasks.tsk' is stored at User Data Directory"
 
   // currently hard coded file name
   QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/tasks.tsk" );

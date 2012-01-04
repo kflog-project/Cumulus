@@ -83,7 +83,7 @@ private:
   QPushButton      *plus;
   QPushButton      *minus;
 
-  // Widget, that hold the last focus.
+  // Widget, that held the last focus.
   QWidget          *lastFocusWidget;
 
 private slots:

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,6 +24,7 @@
 #include "igclogger.h"
 #include "mapconfig.h"
 #include "generalconfig.h"
+#include "layout.h"
 
 // set static member variable
 int GliderFlightDialog::noOfInstances = 0;
@@ -41,32 +42,15 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   mcSmallStep = 0.5;
   mcBigStep   = 1.0;
 
-  int minFontSize = 14;
-
-#ifdef MAEMO4
-  minFontSize = 20;
-#endif
-
-#ifdef MAEMO5
-  minFontSize = 22;
-#endif
-
-  // button size
-  int size = 40;
-
-#ifdef MAEMO
-  size = 80;
-#endif
-
   QFont b = font();
   b.setBold(true);
   setFont(b);
 
   // set font size to a reasonable and usable value
-  if( font().pointSize() < minFontSize )
+  if( font().pointSize() < MinFontSize )
     {
       QFont cf = font();
-      cf.setPointSize( minFontSize );
+      cf.setPointSize( MinFontSize );
       this->setFont(cf);
     }
 
@@ -112,7 +96,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   gridLayout->addWidget(spinWater, row, 1);
 
   buttonDump = new QPushButton (tr("Dump"), this);
-  buttonDump->setMinimumHeight( size );
+  buttonDump->setMinimumHeight( ButtonSize );
   buttonDump->setFocusPolicy(Qt::NoFocus);
 
   QHBoxLayout *waterLayout = new QHBoxLayout;
@@ -143,15 +127,15 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   mminus = new QPushButton("--", this);
   minus  = new QPushButton("-", this);
 
-  pplus->setMinimumSize(size, size);
-  plus->setMinimumSize(size, size);
-  minus->setMinimumSize(size, size);
-  mminus->setMinimumSize(size, size);
+  pplus->setMinimumSize(ButtonSize, ButtonSize);
+  plus->setMinimumSize(ButtonSize, ButtonSize);
+  minus->setMinimumSize(ButtonSize, ButtonSize);
+  mminus->setMinimumSize(ButtonSize, ButtonSize);
 
-  pplus->setMaximumSize(size, size);
-  plus->setMaximumSize(size, size);
-  minus->setMaximumSize(size, size);
-  mminus->setMaximumSize(size, size);
+  pplus->setMaximumSize(ButtonSize, ButtonSize);
+  plus->setMaximumSize(ButtonSize, ButtonSize);
+  minus->setMaximumSize(ButtonSize, ButtonSize);
+  mminus->setMaximumSize(ButtonSize, ButtonSize);
 
   pplus->setFocusPolicy(Qt::NoFocus);
   plus->setFocusPolicy(Qt::NoFocus);
@@ -177,16 +161,16 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancel->setIconSize(QSize(32, 32));
-  cancel->setMinimumSize(size, size);
-  cancel->setMaximumSize(size, size);
+  cancel->setMinimumSize(ButtonSize, ButtonSize);
+  cancel->setMaximumSize(ButtonSize, ButtonSize);
 
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
   ok->setIconSize(QSize(32, 32));
-  ok->setMinimumSize(size, size);
-  ok->setMaximumSize(size, size);
+  ok->setMinimumSize(ButtonSize, ButtonSize);
+  ok->setMaximumSize(ButtonSize, ButtonSize);
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QVBoxLayout *butLayout = new QVBoxLayout;

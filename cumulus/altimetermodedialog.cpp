@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2010 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -42,21 +42,15 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   setWindowTitle( tr( "Altimeter Settings" ) );
   setAttribute( Qt::WA_DeleteOnClose );
 
-#ifndef MAEMO
-  int minFontSize = 14;
-#else
-  int minFontSize = 20;
-#endif
-
   QFont b = font();
   b.setBold( true );
   setFont( b );
 
   // set font size to a reasonable and usable value
-  if( font().pointSize() < minFontSize )
+  if( font().pointSize() < MinFontSize )
     {
       QFont cf = font();
-      cf.setPointSize( minFontSize );
+      cf.setPointSize( MinFontSize );
       this->setFont( cf );
     }
 
@@ -149,11 +143,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   mminus = new QPushButton( "--", this );
   minus  = new QPushButton( "-", this );
 
-  int size = 40;
-
-#ifdef MAEMO
-  size = 80;
-#endif
+  int size = ButtonSize;
 
   pplus->setMinimumSize( size, size );
   plus->setMinimumSize( size, size );
@@ -299,6 +289,7 @@ void AltimeterModeDialog::load()
       break;
     default:
       qWarning("AltimeterModeDialog::load(): invalid mode: %d", _mode);
+      break;
   }
 
   saveMode = _mode;

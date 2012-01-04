@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,9 +21,11 @@
  *
  * \author Heiner Lamprecht, Axel Pauli
  *
- * \brief A widget for pre-flight task settings.
+ * \brief A widget for preflight task settings.
  *
- * \date 2002-2011
+ * \date 2002-2012
+ *
+ * \version $Id$
  *
  */
 
@@ -100,14 +102,21 @@ private slots:
   /** overtake a edited task item from the editor */
   void slotEditTaskList( FlightTask* );
 
-  /** value in TAS spin box has been changed, do update of task list. */
-  void slotTasChanged( int value );
+  /**
+  * This slot increments the value in the spin box which has the current focus.
+  */
+  void slotIncrementBox();
 
-  /** value in wind direction spin box has been changed, do update of task list. */
-  void slotWDChanged( int value );
+  /**
+  * This slot decrements the value in the spin box which has the current focus.
+  */
+  void slotDecrementBox();
 
-  /** value in wind speed spin box has been changed, do update of task list. */
-  void slotWSChanged( int value );
+  /**
+   * This slot is called, when the focus changes to another widget. The old
+   * focus widget is saved.
+   */
+  void slotFocusChanged( QWidget* oldWidget, QWidget* newWidget);
 
 private:
 
@@ -129,6 +138,13 @@ private:
   FlightTask* editTask;
   /** names of flight tasks */
   QStringList taskNames;
+  /** Button to increase spinbox value. */
+  QPushButton *plus;
+  /** Button to decrease spinbox value. */
+  QPushButton *minus;
+  /** Widget, that held the last focus. */
+  QWidget *lastFocusWidget;
+
 };
 
 #endif
