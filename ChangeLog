@@ -15,9 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2012-01-03 AP: Spinbox operation of preflight glider page changed to extra
-                   plus and minus button. That makes the operation possible by
-                   using fingers.
+[o] 2012-01-04 AP: Spinbox operation of preflight glider, task and common pages
+                   changed to extra plus and minus button. That makes the
+                   operation possible by using fingers.
 
 [o] 2012-01-03 AP: Co-pilot name and current water ballast are saved now, if the
                    pre-flight dialog is left with the OK button.
