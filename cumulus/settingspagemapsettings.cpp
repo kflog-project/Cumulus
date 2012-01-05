@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -28,6 +28,7 @@
 #include "generalconfig.h"
 #include "mapcontents.h"
 #include "distance.h"
+#include "hspinbox.h"
 
 #ifdef INTERNET
 
@@ -126,16 +127,16 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   connect(installMaps, SIGNAL( clicked()), this, SLOT(slot_installMaps()) );
 
-  installRadius = new QSpinBox( this );
+  HSpinBox* hspin = new HSpinBox;
+  installRadius = hspin->spinBox();
   installRadius->setToolTip( tr("Radius around center point") );
-  installRadius->setButtonSymbols(QSpinBox::PlusMinus);
   installRadius->setRange( 0, 20000 );
   installRadius->setWrapping(true);
   installRadius->setSingleStep( 100 );
   installRadius->setValue( GeneralConfig::instance()->getMapInstallRadius() );
   installRadius->setSuffix( " " + Distance::getUnitText() );
 
-  topLayout->addWidget(installRadius, row++, 1 );
+  topLayout->addWidget(hspin, row++, 1, 1, 2 );
 
 #endif
 

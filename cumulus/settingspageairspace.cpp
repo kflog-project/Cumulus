@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2009-2011 by Axel Pauli
+ **                   2009-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -29,6 +29,7 @@
 #include "map.h"
 #include "mapdefaults.h"
 #include "mapcontents.h"
+#include "hspinbox.h"
 
 #ifdef INTERNET
 #include "airspacedownloaddialog.h"
@@ -85,18 +86,19 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   QHBoxLayout *hbox = new QHBoxLayout;
 
-  enableForceDrawing = new QCheckBox(tr("Draw all Airspaces <"), this);
+  enableForceDrawing = new QCheckBox(tr("Draw all Airspaces"), this);
   enableForceDrawing->setChecked(true);
   hbox->addWidget( enableForceDrawing );
   connect( enableForceDrawing, SIGNAL(toggled(bool)), SLOT(slot_enabledToggled(bool)));
 
-  spinForceMargin = new QSpinBox(this);
+  HSpinBox* hspin = new HSpinBox;
+  spinForceMargin = hspin->spinBox();
+  spinForceMargin->setPrefix("< ");
   spinForceMargin->setRange( 0, 99999 );
   spinForceMargin->setSingleStep( 10 );
-  spinForceMargin->setButtonSymbols(QSpinBox::PlusMinus);
   spinForceMargin->setSuffix( unit );
 
-  hbox->addWidget( spinForceMargin );
+  hbox->addWidget( hspin );
   hbox->addWidget( new QLabel(tr("above me."), this ));
   hbox->addStretch( 10 );
 
@@ -110,12 +112,12 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   hbox = new QHBoxLayout;
   hbox->addWidget( new QLabel(tr("Line Width:"), this ));
 
-  spinAsLineWidth = new QSpinBox(this);
+  hspin = new HSpinBox;
+  spinAsLineWidth = hspin->spinBox();
   spinAsLineWidth->setRange( 3, 15 );
   spinAsLineWidth->setSingleStep( 1 );
-  spinAsLineWidth->setButtonSymbols(QSpinBox::PlusMinus);
 
-  hbox->addWidget( spinAsLineWidth );
+  hbox->addWidget( hspin );
   hbox->addStretch( 10 );
   hbox->setEnabled( false );
 

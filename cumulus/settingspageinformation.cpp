@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003-2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2003-2012 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,6 +20,7 @@
 #include "generalconfig.h"
 #include "mapdefaults.h"
 #include "settingspageinformation.h"
+#include "hspinbox.h"
 
 SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   QWidget(parent), loadConfig(true)
@@ -44,58 +45,60 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
 
   topLayout->setRowMinimumHeight ( row++, 10 );
 
+  HSpinBox* hspin;
+
   topLayout->addWidget(new QLabel(tr("Airfield display time:"), this),row,0);
-  spinAirfield = new QSpinBox(this);
+  hspin = new HSpinBox;
+  spinAirfield = hspin->spinBox();
   spinAirfield->setObjectName("spinAirfield");
   spinAirfield->setMaximum(60);
-  spinAirfield->setButtonSymbols(QSpinBox::PlusMinus);
   spinAirfield->setSuffix( " s" );
-  topLayout->addWidget( spinAirfield, row, 1 );
+  topLayout->addWidget( hspin, row, 1 );
   row++;
 
   topLayout->addWidget(new QLabel(tr("Airspace display time:"), this),row,0);
-  spinAirspace = new QSpinBox(this);
+  hspin = new HSpinBox;
+  spinAirspace = hspin->spinBox();
   spinAirspace->setObjectName("spinAirspace");
   spinAirspace->setMaximum(60);
-  spinAirspace->setButtonSymbols(QSpinBox::PlusMinus);
   spinAirspace->setSuffix( " s" );
-  topLayout->addWidget( spinAirspace, row, 1 );
+  topLayout->addWidget( hspin, row, 1 );
   row++;
 
   topLayout->addWidget(new QLabel(tr("Info display time:"), this),row,0);
-  spinInfo = new QSpinBox(this);
+  hspin = new HSpinBox;
+  spinInfo = hspin->spinBox();
   spinInfo->setObjectName("spinInfo");
   spinInfo->setMaximum(60);
-  spinInfo->setButtonSymbols(QSpinBox::PlusMinus);
   spinInfo->setSuffix( " s" );
-  topLayout->addWidget( spinInfo, row, 1 );
+  topLayout->addWidget( hspin, row, 1 );
   row++;
 
   topLayout->addWidget(new QLabel(tr("Waypoint display time:"), this),row,0);
-  spinWaypoint = new QSpinBox(this);
+  hspin = new HSpinBox;
+  spinWaypoint = hspin->spinBox();
   spinWaypoint->setObjectName("spinWaypoint");
   spinWaypoint->setMaximum(60);
-  spinWaypoint->setButtonSymbols(QSpinBox::PlusMinus);
   spinWaypoint->setSuffix( " s" );
-  topLayout->addWidget( spinWaypoint, row, 1 );
+  topLayout->addWidget( hspin, row, 1 );
   row++;
 
   topLayout->addWidget(new QLabel(tr("Warning display time:"), this),row,0);
-  spinWarning = new QSpinBox(this);
+  hspin = new HSpinBox;
+  spinWarning = hspin->spinBox();
   spinWarning->setObjectName("spinWarning");
   spinWarning->setMaximum(60);
-  spinWarning->setButtonSymbols(QSpinBox::PlusMinus);
   spinWarning->setSuffix( " s" );
-  topLayout->addWidget( spinWarning, row, 1 );
+  topLayout->addWidget( hspin, row, 1 );
   row++;
 
   topLayout->addWidget(new QLabel(tr("Warning suppress time:"), this),row,0);
-  spinSuppress = new QSpinBox(this);
+  hspin = new HSpinBox;
+  spinSuppress = hspin->spinBox();
   spinSuppress->setObjectName("spinSuppress");
   spinSuppress->setMaximum(600);
-  spinSuppress->setButtonSymbols(QSpinBox::PlusMinus);
   spinSuppress->setSuffix( " min" );
-  topLayout->addWidget( spinSuppress, row, 1 );
+  topLayout->addWidget( hspin, row, 1 );
 
   buttonReset = new QPushButton (tr("Defaults"), this);
   topLayout->addWidget( buttonReset, row, 2, Qt::AlignRight );

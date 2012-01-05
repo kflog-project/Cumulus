@@ -36,12 +36,12 @@ HSpinBox::HSpinBox( QWidget* parent ) : QWidget( parent )
   plus  = new QPushButton("+");
   plus->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Fixed);
   plus->setFont(bFont);
-  connect(plus, SIGNAL(clicked()), this, SLOT(slotPlus()));
+  connect(plus, SIGNAL(pressed()), this, SLOT(slotPlusPressed()));
 
   minus = new QPushButton("-");
   minus->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Fixed);
   minus->setFont(bFont);
-  connect(minus, SIGNAL(clicked()), this, SLOT(slotMinus()));
+  connect(minus, SIGNAL(pressed()), this, SLOT(slotMinusPressed()));
 
   hbox->addWidget(plus);
   hbox->addWidget(_spinBox);
@@ -69,12 +69,24 @@ void HSpinBox::showEvent( QShowEvent *event )
   minus->setMinimumSize( height, height );
 }
 
-void HSpinBox::slotPlus()
+void HSpinBox::slotPlusPressed()
 {
-  _spinBox->setValue( _spinBox->value() + _spinBox->singleStep() );
+  if( plus->isDown() )
+    {
+      _spinBox->stepUp();
+
+      // Start repetition timer, to check, if button is longer pressed.
+      QTimer::singleShot(300, this, SLOT(slotPlusPressed()));
+    }
 }
 
-void HSpinBox::slotMinus()
+void HSpinBox::slotMinusPressed()
 {
-  _spinBox->setValue( _spinBox->value() - _spinBox->singleStep() );
+  if( minus->isDown() )
+    {
+      _spinBox->stepDown();
+
+      // Start repetition timer, to check, if button is longer pressed.
+      QTimer::singleShot(300, this, SLOT(slotMinusPressed()));
+    }
 }

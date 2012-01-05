@@ -20,6 +20,7 @@
 
 #include "generalconfig.h"
 #include "settingspagepersonal.h"
+#include "hspinbox.h"
 
 SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   QWidget(parent), loadConfig(true)
@@ -64,14 +65,15 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 
   lbl = new QLabel(tr("Home site elevation:"), this);
   topLayout->addWidget(lbl, row, 0);
-  spinHomeElevation = new QSpinBox(this);
+
+  HSpinBox* hspin = new HSpinBox;
+  spinHomeElevation = hspin->spinBox();
   spinHomeElevation->setSingleStep( 10 );
   spinHomeElevation->setMaximum( 9999 );
   spinHomeElevation->setMinimum( -9999 );
-  spinHomeElevation->setButtonSymbols(QSpinBox::PlusMinus);
   spinHomeElevation->setSuffix( " " + Altitude::getUnitText() );
 
-  topLayout->addWidget(spinHomeElevation, row, 1);
+  topLayout->addWidget(hspin, row, 1);
   row++;
 
   lbl = new QLabel(tr("Home site latitude:"), this);

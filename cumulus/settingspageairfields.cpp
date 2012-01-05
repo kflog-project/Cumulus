@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2010 Axel Pauli
+ **   Copyright (c): 2008-2012 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -20,12 +20,16 @@
  *
  * \brief Contains the airfield data settings.
  *
+ * \date 2008-2012
+ *
+ * \version $Id$
  */
 
 #include <QtGui>
 
 #include "generalconfig.h"
 #include "settingspageairfields.h"
+#include "hspinbox.h"
 
 #ifdef INTERNET
 #include "proxydialog.h"
@@ -54,12 +58,13 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   lbl = new QLabel(tr("Home Radius:"), weltGroup);
   weltLayout->addWidget(lbl, grow, 0);
-  homeRadius = new QSpinBox(weltGroup);
+
+  HSpinBox* hspin = new HSpinBox;
+  homeRadius = hspin->spinBox();
   homeRadius->setRange(1, 10000);
   homeRadius->setSingleStep(50);
-  homeRadius->setButtonSymbols(QSpinBox::PlusMinus);
   homeRadius->setSuffix( " " + Distance::getUnitText() );
-  weltLayout->addWidget(homeRadius, grow, 1 );
+  weltLayout->addWidget(hspin, grow, 1 );
 
   loadOutlandings = new QCheckBox( tr("Load Outlandings"), weltGroup );
   weltLayout->addWidget(loadOutlandings, grow, 2, Qt::AlignRight );
@@ -95,7 +100,6 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   //----------------------------------------------------------------------------
   // JD: adding group box for diverse list display settings
-
   grow = 0;
   QGroupBox* listGroup = new QGroupBox(tr("List Display"), this);
   topLayout->addWidget(listGroup);
@@ -104,22 +108,22 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   lbl = new QLabel(tr( "Increase row height in AF/WP/OL Lists at:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
-  afMargin = new QSpinBox(listGroup);
+  hspin = new HSpinBox;
+  afMargin = hspin->spinBox();
   afMargin->setRange(0, 60);
   afMargin->setSingleStep(2);
-  afMargin->setButtonSymbols(QSpinBox::PlusMinus);
   afMargin->setSuffix( tr(" Pixels") );
-  listLayout->addWidget(afMargin, grow, 1);
+  listLayout->addWidget(hspin, grow, 1);
 
   grow++;
   lbl = new QLabel(tr( "Increase row height in Emergency List at:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
-  rpMargin = new QSpinBox(listGroup);
+  hspin = new HSpinBox;
+  rpMargin = hspin->spinBox();
   rpMargin->setRange(0, 60);
   rpMargin->setSingleStep(2);
-  rpMargin->setButtonSymbols(QSpinBox::PlusMinus);
   rpMargin->setSuffix( tr(" Pixels") );
-  listLayout->addWidget(rpMargin, grow, 1);
+  listLayout->addWidget(hspin, grow, 1);
 
   grow++;
   listLayout->setRowStretch(grow, 10);

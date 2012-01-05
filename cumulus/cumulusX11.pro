@@ -67,6 +67,7 @@ HEADERS = \
     gpsstatusdialog.h \
     coordedit.h \
     helpbrowser.h \
+    hspinbox.h \
     hwinfo.h \
     igclogger.h \
     interfaceelements.h \
@@ -178,6 +179,7 @@ SOURCES = \
     gpsstatusdialog.cpp \
     coordedit.cpp \
     helpbrowser.cpp \
+    hspinbox.cpp \
     hwinfo.cpp \
     igclogger.cpp \
     ipc.cpp \

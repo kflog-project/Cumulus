@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009-2010 by Axel Pauli
+**   Copyright (c):  2009-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,7 +21,7 @@
 #include "generalconfig.h"
 #include "settingspageterraincolors.h"
 #include "elevationcolorimage.h"
-
+#include "hspinbox.h"
 
 SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   QWidget(parent)
@@ -217,12 +217,13 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   offsetLayout->addStretch( 10 );
 
   QVBoxLayout *spinboxLayout = new QVBoxLayout;
-  elevationOffset = new QSpinBox;
-  elevationOffset->setButtonSymbols(QAbstractSpinBox::PlusMinus);
+
+  HSpinBox* hspin = new HSpinBox;
+  elevationOffset = hspin->spinBox();
   elevationOffset->setSingleStep(1);
   elevationOffset->setRange(-50, 50);
 
-  spinboxLayout->addWidget(elevationOffset);
+  spinboxLayout->addWidget(hspin);
   setOffsetBox->setLayout(spinboxLayout);
 
   topLayout->addLayout( offsetLayout );

@@ -66,10 +66,10 @@ class HSpinBox : public QWidget
  private slots:
 
   /** Called if the increase button is pressed. */
-  void slotPlus();
+  void slotPlusPressed();
 
   /** Called if the decrease button is pressed. */
-  void slotMinus();
+  void slotMinusPressed();
 
  private:
 

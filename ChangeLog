@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2012-01-05 AP: New class HSpinBox added. This class contains a spinbox
+                   which has the buttons at the left and right side arranged
+                   to make it possible, to use the fingers for the operation.
+
 [o] 2012-01-04 AP: Spinbox operation of preflight glider, task and common pages
                    changed to extra plus and minus button. That makes the
                    operation possible by using fingers.
