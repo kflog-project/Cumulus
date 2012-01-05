@@ -8,7 +8,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2008-2010 by Axel Pauli
+ **   Copyright (c):  2008-2012 by Axel Pauli
  **
  **   Email of maintainer: axel@kflog.org
  **
@@ -30,7 +30,7 @@
  *
  * http://qt.nokia.com
  *
- * Cumulus is built with the release 4.7.x.
+ * Cumulus is built with the release 4.8.x.
  *
  */
 
