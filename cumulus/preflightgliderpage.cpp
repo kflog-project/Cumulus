@@ -23,11 +23,11 @@
 #include "generalconfig.h"
 #include "layout.h"
 #include "preflightgliderpage.h"
+#include "hspinbox.h"
 
 PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   QWidget(parent),
-  lastGlider(0),
-  lastFocusWidget(0)
+  lastGlider(0)
 {
   setObjectName("PreFlightGliderPage");
   int row = 0;
@@ -44,13 +44,12 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   QLabel* lblLoad = new QLabel(tr("Added load:"), this);
   topLayout->addWidget(lblLoad, row, 2);
   spinLoad = new QSpinBox(this);
-  topLayout->addWidget(spinLoad, row, 3);
-  spinLoad->setButtonSymbols(QSpinBox::NoButtons);
-  spinLoad->setFocusPolicy(Qt::StrongFocus);
   spinLoad->setRange(0, 1000);
   spinLoad->setSingleStep(5);
   spinLoad->setSuffix(" kg");
-  spinLoad->setEnabled(false);
+  hspinLoad = new HSpinBox(spinLoad);
+  hspinLoad->setEnabled(false);
+  topLayout->addWidget(hspinLoad, row, 3);
   row++;
 
   QLabel* lblCoPilot = new QLabel(tr("Copilot:"), this);
@@ -61,13 +60,12 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   QLabel* lblWater = new QLabel(tr("Water ballast:"), this);
   topLayout->addWidget(lblWater, row, 2);
   spinWater = new QSpinBox(this);
-  topLayout->addWidget(spinWater, row, 3);
-  spinWater->setButtonSymbols(QSpinBox::NoButtons);
-  spinWater->setFocusPolicy(Qt::StrongFocus);
   spinWater->setRange(0, 500);
   spinWater->setSingleStep(5);
   spinWater->setSuffix(" l");
-  spinWater->setEnabled(false);
+  hspinWater = new HSpinBox(spinWater);
+  hspinWater->setEnabled(false);
+  topLayout->addWidget(hspinWater, row, 3);
   row++;
 
   QLabel* lblWLoad = new QLabel(tr("Wing load:"), this);
@@ -88,59 +86,15 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   //---------------------------------------------------------------------
   QPushButton* deselect = new QPushButton( tr("Deselect"), this );
   deselect->setToolTip( tr("Clear glider selection") );
-
-  // button size
-  int size = IconSize + 10;
-
-  // take a bold font for the plus and minus sign
-  QFont bFont = font();
-  bFont.setBold(true);
-
-  plus   = new QPushButton("+");
-  minus  = new QPushButton("-");
-
-  plus->setToolTip( tr("Increase number value") );
-  minus->setToolTip( tr("Decrease number value") );
-
-  plus->setFont(bFont);
-  minus->setFont(bFont);
-
-  plus->setMinimumSize(size, size);
-  minus->setMinimumSize(size, size);
-
-  plus->setMaximumSize(size, size);
-  minus->setMaximumSize(size, size);
-
-  // The buttons have no focus policy to avoid a focus change during click of them.
-  plus->setFocusPolicy(Qt::NoFocus);
-  minus->setFocusPolicy(Qt::NoFocus);
-
-  QHBoxLayout* buttonLayout = new QHBoxLayout;
-  buttonLayout->addWidget( deselect );
-  buttonLayout->addStretch( 10 );
-  buttonLayout->addWidget( plus );
-  buttonLayout->addSpacing(20);
-  buttonLayout->addWidget( minus );
-
-  topLayout->addLayout( buttonLayout, row, 0, 1, 4 );
+  topLayout->addWidget( deselect, row, 0 );
 
   //---------------------------------------------------------------------
   list->fillList();
   list->clearSelection();
   getCurrent();
 
-  connect( deselect, SIGNAL(clicked()), this, SLOT(slotGliderDeselected()) );
-  connect( list, SIGNAL(itemSelectionChanged()), this, SLOT(slotGliderChanged()) );
-  connect( plus, SIGNAL(clicked()),  this, SLOT(slotIncrementBox()));
-  connect( minus, SIGNAL(clicked()), this, SLOT(slotDecrementBox()));
-
-  /**
-   * If the plus or minus button is clicked, the focus is changed to the main
-   * window. I don't know why. Therefore the previous focused widget must be
-   * saved, to have an indication, if a spinbox entry should be modified.
-   */
-  connect( QCoreApplication::instance(), SIGNAL(focusChanged( QWidget*, QWidget*)),
-           this, SLOT( slotFocusChanged( QWidget*, QWidget*)) );
+  connect(deselect, SIGNAL(clicked()), this, SLOT(slotGliderDeselected()) );
+  connect(list, SIGNAL(itemSelectionChanged()), this, SLOT(slotGliderChanged()));
 }
 
 PreFlightGliderPage::~PreFlightGliderPage()
@@ -172,10 +126,10 @@ void PreFlightGliderPage::slotGliderChanged()
       edtCoPilot->setText(glider->coPilot());
 
       spinLoad->setValue( (int) rint(glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
-      spinLoad->setEnabled(true);
+      hspinLoad->setEnabled(true);
 
       spinWater->setMaximum(glider->maxWater() );
-      spinWater->setEnabled(glider->maxWater() != 0 );
+      hspinWater->setEnabled(glider->maxWater() != 0 );
       spinWater->setValue(glider->polar()->water() );
     }
 
@@ -194,8 +148,8 @@ void PreFlightGliderPage::slotGliderDeselected()
   spinLoad->setValue(0);
   spinWater->setValue(0);
 
-  spinLoad->setEnabled(false);
-  spinWater->setEnabled(false);
+  hspinLoad->setEnabled(false);
+  hspinWater->setEnabled(false);
 
 // clear wing load label
   wingLoad->setText("");
@@ -218,10 +172,10 @@ void PreFlightGliderPage::getCurrent()
   edtCoPilot->setText(glider->coPilot());
 
   spinLoad->setValue( (int) (glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
-  spinLoad->setEnabled(true);
+  hspinLoad->setEnabled(true);
 
   spinWater->setMaximum(glider->maxWater());
-  spinWater->setEnabled(glider->maxWater() != 0);
+  hspinWater->setEnabled(glider->maxWater() != 0);
   spinWater->setValue(glider->polar()->water());
 
   lastGlider = list->getSelectedGlider();
@@ -291,52 +245,6 @@ void PreFlightGliderPage::updateWingLoad()
     }
 
   wingLoad->setText(msg);
-}
-
-void PreFlightGliderPage::slotIncrementBox()
-{
-  // Look which spin box has the focus. Note, focus can be changed by clicking
-  // the connected button. Therefore take old focus widget under account and
-  // set the focus back to the spinbox.
-  QSpinBox* spinBoxList[2] = {spinLoad, spinWater};
-
-  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
-    {
-      if( QApplication::focusWidget() == spinBoxList[i] || lastFocusWidget == spinBoxList[i] )
-        {
-          spinBoxList[i]->setValue( spinBoxList[i]->value() + spinBoxList[i]->singleStep() );
-          spinBoxList[i]->setFocus();
-          updateWingLoad();
-          return;
-        }
-    }
-}
-
-void PreFlightGliderPage::slotDecrementBox()
-{
-  // Look which spin box has the focus. Note, focus can be changed by clicking
-  // the connected button. Therefore take old focus widget under account and
-  // set the focus back to the spinbox.
-  QSpinBox* spinBoxList[2] = {spinLoad, spinWater};
-
-  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
-    {
-      if( QApplication::focusWidget() == spinBoxList[i] || lastFocusWidget == spinBoxList[i] )
-        {
-          spinBoxList[i]->setValue( spinBoxList[i]->value() - spinBoxList[i]->singleStep() );
-          spinBoxList[i]->setFocus();
-          updateWingLoad();
-          return;
-        }
-    }
-}
-
-void PreFlightGliderPage::slotFocusChanged( QWidget* oldWidget, QWidget* newWidget)
-{
-  Q_UNUSED(newWidget)
-
-  // We save the old widget, which has just lost the focus.
-  lastFocusWidget = oldWidget;
 }
 
 void PreFlightGliderPage::showEvent(QShowEvent *)

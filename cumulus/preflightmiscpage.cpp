@@ -24,10 +24,10 @@
 #include "igclogger.h"
 #include "generalconfig.h"
 #include "layout.h"
+#include "hspinbox.h"
 
 PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
-  QWidget(parent),
-  lastFocusWidget(0)
+  QWidget(parent)
 {
   setObjectName("PreFlightMiscPage");
 
@@ -40,6 +40,8 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   // get current set altitude unit. This unit must be considered during
   // storage. The internal storage is always in meters.
   altUnit = Altitude::getUnit();
+
+  HSpinBox* hspin;
 
   // Input accept only feet and meters all other make no sense. Therefore all
   // other (FL) is treated as feet.
@@ -56,10 +58,9 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
       edtMinimalArrival->setSingleStep(100);
     }
 
-  edtMinimalArrival->setButtonSymbols(QSpinBox::NoButtons);
-  edtMinimalArrival->setFocusPolicy(Qt::StrongFocus);
   edtMinimalArrival->setSuffix(" " + Altitude::getUnitText());
-  topLayout->addWidget(edtMinimalArrival, row, 1);
+  hspin = new HSpinBox(edtMinimalArrival);
+  topLayout->addWidget(hspin, row, 1);
   topLayout->setColumnStretch(2, 2);
   row++;
 
@@ -76,10 +77,9 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   edtQNH = new QSpinBox(this);
   edtQNH->setObjectName("QNH");
   edtQNH->setMaximum(1999);
-  edtQNH->setButtonSymbols(QSpinBox::NoButtons);
-  edtQNH->setFocusPolicy(Qt::StrongFocus);
   edtQNH->setSuffix(" hPa");
-  topLayout->addWidget(edtQNH, row, 1);
+  hspin = new HSpinBox(edtQNH);
+  topLayout->addWidget(hspin, row, 1);
   row++;
 
   topLayout->setRowMinimumHeight(row, 25);
@@ -94,10 +94,9 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   bRecordInterval = new QSpinBox(this);
   bRecordInterval->setMinimum(1);
   bRecordInterval->setMaximum(60);
-  bRecordInterval->setButtonSymbols(QSpinBox::NoButtons);
-  bRecordInterval->setFocusPolicy(Qt::StrongFocus);
   bRecordInterval->setSuffix(" s");
-  topLayout->addWidget(bRecordInterval, row, 1);
+  hspin = new HSpinBox(bRecordInterval);
+  topLayout->addWidget(hspin, row, 1);
   row++;
 
   lbl = new QLabel(tr("K-Record Interval:"));
@@ -105,60 +104,13 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   kRecordInterval = new QSpinBox(this);
   kRecordInterval->setMinimum(0);
   kRecordInterval->setMaximum(300);
-  kRecordInterval->setButtonSymbols(QSpinBox::NoButtons);
-  kRecordInterval->setFocusPolicy(Qt::StrongFocus);
   kRecordInterval->setSpecialValueText(tr("Off"));
   kRecordInterval->setSuffix(" s");
-  topLayout->addWidget(kRecordInterval, row, 1);
+  hspin = new HSpinBox(kRecordInterval);
+  topLayout->addWidget(hspin, row, 1);
   row++;
 
   topLayout->setRowStretch(row, 10);
-  row++;
-
-  // button size
-  int size = IconSize + 10;
-
-  // take a bold font for the plus and minus sign
-  QFont bFont = font();
-  bFont.setBold(true);
-
-  plus   = new QPushButton("+");
-  minus  = new QPushButton("-");
-
-  plus->setToolTip( tr("Increase number value") );
-  minus->setToolTip( tr("Decrease number value") );
-
-  plus->setFont(bFont);
-  minus->setFont(bFont);
-
-  plus->setMinimumSize(size, size);
-  minus->setMinimumSize(size, size);
-
-  plus->setMaximumSize(size, size);
-  minus->setMaximumSize(size, size);
-
-  // The buttons have no focus policy to avoid a focus change during click of them.
-  plus->setFocusPolicy(Qt::NoFocus);
-  minus->setFocusPolicy(Qt::NoFocus);
-
-  QHBoxLayout* buttonLayout = new QHBoxLayout;
-  buttonLayout->addStretch( 10 );
-  buttonLayout->addWidget( plus );
-  buttonLayout->addSpacing(20);
-  buttonLayout->addWidget( minus );
-
-  topLayout->addLayout(buttonLayout, row, 0, 1, 2);
-
-  connect( plus, SIGNAL(clicked()),  this, SLOT(slotIncrementBox()));
-  connect( minus, SIGNAL(clicked()), this, SLOT(slotDecrementBox()));
-
-  /**
-   * If the plus or minus button is clicked, the focus is changed to the main
-   * window. I don't know why. Therefore the previous focused widget must be
-   * saved, to have an indication, if a spinbox entry should be modified.
-   */
-  connect( QCoreApplication::instance(), SIGNAL(focusChanged( QWidget*, QWidget*)),
-           this, SLOT( slotFocusChanged( QWidget*, QWidget*)) );
 }
 
 PreFlightMiscPage::~PreFlightMiscPage()
@@ -232,48 +184,4 @@ void PreFlightMiscPage::save()
   conf->setQNH(edtQNH->value());
   conf->setBRecordInterval(bRecordInterval->value());
   conf->setKRecordInterval(kRecordInterval->value());
-}
-
-void PreFlightMiscPage::slotFocusChanged( QWidget* oldWidget, QWidget* newWidget)
-{
-  Q_UNUSED(newWidget)
-
-  // We save the old widget, which has just lost the focus.
-  lastFocusWidget = oldWidget;
-}
-
-void PreFlightMiscPage::slotIncrementBox()
-{
-  // Look which spin box has the focus. Note, focus can be changed by clicking
-  // the connected button. Therefore take old focus widget under account and
-  // set the focus back to the spinbox.
-  QSpinBox* spinBoxList[] = {edtMinimalArrival, edtQNH, bRecordInterval, kRecordInterval};
-
-  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
-    {
-      if( QApplication::focusWidget() == spinBoxList[i] || lastFocusWidget == spinBoxList[i] )
-        {
-          spinBoxList[i]->setValue( spinBoxList[i]->value() + spinBoxList[i]->singleStep() );
-          spinBoxList[i]->setFocus();
-          return;
-        }
-    }
-}
-
-void PreFlightMiscPage::slotDecrementBox()
-{
-  // Look which spin box has the focus. Note, focus can be changed by clicking
-  // the connected button. Therefore take old focus widget under account and
-  // set the focus back to the spinbox.
-  QSpinBox* spinBoxList[] = {edtMinimalArrival, edtQNH, bRecordInterval, kRecordInterval};
-
-  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
-    {
-      if( QApplication::focusWidget() == spinBoxList[i] || lastFocusWidget == spinBoxList[i] )
-        {
-          spinBoxList[i]->setValue( spinBoxList[i]->value() - spinBoxList[i]->singleStep() );
-          spinBoxList[i]->setFocus();
-          return;
-        }
-    }
 }

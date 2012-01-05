@@ -54,7 +54,7 @@ HSpinBox::HSpinBox( QAbstractSpinBox* spinBox, QWidget* parent ) :
   hbox->addWidget(plus);
   hbox->addWidget(_spinBox);
   hbox->addWidget(minus);
-  hbox->addStretch(10);
+  //hbox->addStretch(10);
 
   setLayout( hbox );
 }

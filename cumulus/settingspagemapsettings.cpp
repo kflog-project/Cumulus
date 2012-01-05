@@ -135,7 +135,7 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   installRadius->setValue( GeneralConfig::instance()->getMapInstallRadius() );
   installRadius->setSuffix( " " + Distance::getUnitText() );
   HSpinBox* hspin = new HSpinBox(installRadius);
-  topLayout->addWidget(hspin, row++, 1, 1, 2 );
+  topLayout->addWidget(hspin, row++, 1 );
 
 #endif
 

@@ -58,24 +58,6 @@ class PreFlightMiscPage : public QWidget
 
     void save();
 
- private slots:
-
-    /**
-    * This slot increments the value in the spin box which has the current focus.
-    */
-    void slotIncrementBox();
-
-    /**
-    * This slot decrements the value in the spin box which has the current focus.
-    */
-    void slotDecrementBox();
-
-    /**
-     * This slot is called, when the focus changes to another widget. The old
-     * focus widget is saved.
-     */
-    void slotFocusChanged( QWidget* oldWidget, QWidget* newWidget);
-
  private:
 
     QCheckBox*   chkLogAutoStart;
@@ -84,11 +66,6 @@ class PreFlightMiscPage : public QWidget
     QSpinBox*    edtQNH;
     QSpinBox*    bRecordInterval; // B-Record logging interval in seconds
     QSpinBox*    kRecordInterval; // K-Record logging interval in seconds
-    QPushButton* plus;
-    QPushButton* minus;
-
-    // Widget, that held the last focus.
-    QWidget*     lastFocusWidget;
 
     /** saves altitude unit set during construction of object */
     Altitude::altitudeUnit altUnit;

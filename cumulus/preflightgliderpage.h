@@ -39,6 +39,8 @@
 
 #include "gliderlistwidget.h"
 
+class HSpinBox;
+
 class PreFlightGliderPage : public QWidget
 {
   Q_OBJECT
@@ -80,32 +82,14 @@ private:
   QSpinBox         *spinWater;
   Glider           *lastGlider;
   QLabel           *wingLoad;
-  QPushButton      *plus;
-  QPushButton      *minus;
 
-  // Widget, that held the last focus.
-  QWidget          *lastFocusWidget;
+  HSpinBox         *hspinLoad;
+  HSpinBox         *hspinWater;
 
 private slots:
 
   void slotGliderChanged();
   void slotGliderDeselected();
-
-  /**
-  * This slot increments the value in the spin box which has the current focus.
-  */
-  void slotIncrementBox();
-
-  /**
-  * This slot decrements the value in the spin box which has the current focus.
-  */
-  void slotDecrementBox();
-
-  /**
-   * This slot is called, when the focus changes to another widget. The old
-   * focus widget is saved.
-   */
-  void slotFocusChanged( QWidget* oldWidget, QWidget* newWidget);
 };
 
 #endif
