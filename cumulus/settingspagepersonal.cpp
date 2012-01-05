@@ -66,13 +66,12 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   lbl = new QLabel(tr("Home site elevation:"), this);
   topLayout->addWidget(lbl, row, 0);
 
-  HSpinBox* hspin = new HSpinBox;
-  spinHomeElevation = hspin->spinBox();
+  spinHomeElevation = new QSpinBox;
   spinHomeElevation->setSingleStep( 10 );
   spinHomeElevation->setMaximum( 9999 );
-  spinHomeElevation->setMinimum( -9999 );
+  spinHomeElevation->setMinimum( -999 );
   spinHomeElevation->setSuffix( " " + Altitude::getUnitText() );
-
+  HSpinBox* hspin = new HSpinBox( spinHomeElevation );
   topLayout->addWidget(hspin, row, 1);
   row++;
 

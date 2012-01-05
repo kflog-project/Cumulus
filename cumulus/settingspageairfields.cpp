@@ -59,11 +59,11 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   lbl = new QLabel(tr("Home Radius:"), weltGroup);
   weltLayout->addWidget(lbl, grow, 0);
 
-  HSpinBox* hspin = new HSpinBox;
-  homeRadius = hspin->spinBox();
+  homeRadius = new QSpinBox;
   homeRadius->setRange(1, 10000);
   homeRadius->setSingleStep(50);
   homeRadius->setSuffix( " " + Distance::getUnitText() );
+  HSpinBox* hspin = new HSpinBox(homeRadius);
   weltLayout->addWidget(hspin, grow, 1 );
 
   loadOutlandings = new QCheckBox( tr("Load Outlandings"), weltGroup );
@@ -108,21 +108,21 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   lbl = new QLabel(tr( "Increase row height in AF/WP/OL Lists at:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
-  hspin = new HSpinBox;
-  afMargin = hspin->spinBox();
+  afMargin = new QSpinBox;
   afMargin->setRange(0, 60);
   afMargin->setSingleStep(2);
   afMargin->setSuffix( tr(" Pixels") );
+  hspin = new HSpinBox(afMargin);
   listLayout->addWidget(hspin, grow, 1);
 
   grow++;
   lbl = new QLabel(tr( "Increase row height in Emergency List at:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
-  hspin = new HSpinBox;
-  rpMargin = hspin->spinBox();
+  rpMargin = new QSpinBox;
   rpMargin->setRange(0, 60);
   rpMargin->setSingleStep(2);
   rpMargin->setSuffix( tr(" Pixels") );
+  hspin = new HSpinBox(rpMargin);
   listLayout->addWidget(hspin, grow, 1);
 
   grow++;

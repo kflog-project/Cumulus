@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2009-2010 Axel Pauli
+**   Copyright (c): 2009-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,6 +23,7 @@
 
 #include "generalconfig.h"
 #include "settingspagelooknfeel.h"
+#include "hspinbox.h"
 
 SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   QWidget(parent),
@@ -88,7 +89,8 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   screenSaverSpeedLimit->setPrefix( "< " );
   screenSaverSpeedLimit->setDecimals( 1 );
   screenSaverSpeedLimit->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
-  topLayout->addWidget( screenSaverSpeedLimit, row, 1 );
+  HSpinBox* hspin = new HSpinBox( screenSaverSpeedLimit );
+  topLayout->addWidget( hspin, row, 1 );
   row++;
 
 #if 0

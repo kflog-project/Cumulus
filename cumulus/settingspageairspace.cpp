@@ -91,13 +91,12 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   hbox->addWidget( enableForceDrawing );
   connect( enableForceDrawing, SIGNAL(toggled(bool)), SLOT(slot_enabledToggled(bool)));
 
-  HSpinBox* hspin = new HSpinBox;
-  spinForceMargin = hspin->spinBox();
+  spinForceMargin = new QSpinBox;
   spinForceMargin->setPrefix("< ");
   spinForceMargin->setRange( 0, 99999 );
   spinForceMargin->setSingleStep( 10 );
   spinForceMargin->setSuffix( unit );
-
+  HSpinBox* hspin = new HSpinBox( spinForceMargin );
   hbox->addWidget( hspin );
   hbox->addWidget( new QLabel(tr("above me."), this ));
   hbox->addStretch( 10 );
@@ -112,11 +111,10 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   hbox = new QHBoxLayout;
   hbox->addWidget( new QLabel(tr("Line Width:"), this ));
 
-  hspin = new HSpinBox;
-  spinAsLineWidth = hspin->spinBox();
+  spinAsLineWidth = new QSpinBox;
   spinAsLineWidth->setRange( 3, 15 );
   spinAsLineWidth->setSingleStep( 1 );
-
+  hspin = new HSpinBox( spinAsLineWidth );
   hbox->addWidget( hspin );
   hbox->addStretch( 10 );
   hbox->setEnabled( false );

@@ -34,7 +34,7 @@
 #ifndef H_SPINBOX_H_
 #define H_SPINBOX_H_
 
-#include <QSpinBox>
+#include <QAbstractSpinBox>
 #include <QWidget>
 
 class QPushButton;
@@ -49,12 +49,17 @@ class HSpinBox : public QWidget
 
  public:
 
-  HSpinBox( QWidget* parent=0 );
+  /**
+   * \param spinBox The instance of a spinbox, derived from QAbstractSpinBox.
+   *
+   * \param parent The parent widget.
+   */
+  HSpinBox( QAbstractSpinBox* spinBox, QWidget* parent=0 );
 
   virtual ~HSpinBox();
 
   /** @return The spinbox instance of this widget. */
-  QSpinBox* spinBox()
+  QAbstractSpinBox* spinBox()
   {
     return _spinBox;
   }
@@ -74,7 +79,7 @@ class HSpinBox : public QWidget
  private:
 
   /** The included spinbox. */
-  QSpinBox*    _spinBox;
+  QAbstractSpinBox* _spinBox;
 
   /** Increase button. */
   QPushButton* plus;

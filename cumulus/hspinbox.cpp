@@ -19,11 +19,18 @@
 
 #include "hspinbox.h"
 
-HSpinBox::HSpinBox( QWidget* parent ) : QWidget( parent )
+HSpinBox::HSpinBox( QAbstractSpinBox* spinBox, QWidget* parent ) :
+  QWidget( parent ),
+  _spinBox( spinBox )
 {
   setObjectName("HSpinBox");
 
-  _spinBox = new QSpinBox;
+  if( spinBox == 0 )
+    {
+      qWarning() << "HSpinBox::HSpinBox(): no spinbox instance passed!";
+      return;
+    }
+
   _spinBox->setButtonSymbols(QSpinBox::NoButtons);
 
   QHBoxLayout* hbox = new QHBoxLayout;

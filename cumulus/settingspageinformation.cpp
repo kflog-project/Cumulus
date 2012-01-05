@@ -29,6 +29,8 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
 
   int row=0;
   QGridLayout *topLayout = new QGridLayout( this );
+  topLayout->setHorizontalSpacing(10);
+  topLayout->setVerticalSpacing(5);
 
   QHBoxLayout *hBox = new QHBoxLayout();
 
@@ -40,64 +42,62 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
 
   soundTool = new QLineEdit( this );
   hBox->addWidget(soundTool);
-
   topLayout->addLayout( hBox, row++, 0, 1, 3 );
-
-  topLayout->setRowMinimumHeight ( row++, 10 );
+  topLayout->setRowMinimumHeight( row++, 10 );
 
   HSpinBox* hspin;
 
-  topLayout->addWidget(new QLabel(tr("Airfield display time:"), this),row,0);
-  hspin = new HSpinBox;
-  spinAirfield = hspin->spinBox();
+  topLayout->addWidget(new QLabel(tr("Airfield display time:"), this), row, 0);
+  spinAirfield = new QSpinBox;
   spinAirfield->setObjectName("spinAirfield");
   spinAirfield->setMaximum(60);
   spinAirfield->setSuffix( " s" );
+  hspin = new HSpinBox(spinAirfield);
   topLayout->addWidget( hspin, row, 1 );
   row++;
 
-  topLayout->addWidget(new QLabel(tr("Airspace display time:"), this),row,0);
-  hspin = new HSpinBox;
-  spinAirspace = hspin->spinBox();
+  topLayout->addWidget(new QLabel(tr("Airspace display time:"), this), row, 0);
+  spinAirspace = new QSpinBox;
   spinAirspace->setObjectName("spinAirspace");
   spinAirspace->setMaximum(60);
   spinAirspace->setSuffix( " s" );
+  hspin = new HSpinBox(spinAirspace);
   topLayout->addWidget( hspin, row, 1 );
   row++;
 
-  topLayout->addWidget(new QLabel(tr("Info display time:"), this),row,0);
-  hspin = new HSpinBox;
-  spinInfo = hspin->spinBox();
+  topLayout->addWidget(new QLabel(tr("Info display time:"), this), row, 0);
+  spinInfo = new QSpinBox;
   spinInfo->setObjectName("spinInfo");
   spinInfo->setMaximum(60);
   spinInfo->setSuffix( " s" );
+  hspin = new HSpinBox(spinInfo);
   topLayout->addWidget( hspin, row, 1 );
   row++;
 
-  topLayout->addWidget(new QLabel(tr("Waypoint display time:"), this),row,0);
-  hspin = new HSpinBox;
-  spinWaypoint = hspin->spinBox();
+  topLayout->addWidget(new QLabel(tr("Waypoint display time:"), this), row, 0);
+  spinWaypoint = new QSpinBox;
   spinWaypoint->setObjectName("spinWaypoint");
   spinWaypoint->setMaximum(60);
   spinWaypoint->setSuffix( " s" );
+  hspin = new HSpinBox(spinWaypoint);
   topLayout->addWidget( hspin, row, 1 );
   row++;
 
-  topLayout->addWidget(new QLabel(tr("Warning display time:"), this),row,0);
-  hspin = new HSpinBox;
-  spinWarning = hspin->spinBox();
+  topLayout->addWidget(new QLabel(tr("Warning display time:"), this), row, 0);
+  spinWarning = new QSpinBox;
   spinWarning->setObjectName("spinWarning");
   spinWarning->setMaximum(60);
   spinWarning->setSuffix( " s" );
+  hspin = new HSpinBox(spinWarning);
   topLayout->addWidget( hspin, row, 1 );
   row++;
 
-  topLayout->addWidget(new QLabel(tr("Warning suppress time:"), this),row,0);
-  hspin = new HSpinBox;
-  spinSuppress = hspin->spinBox();
+  topLayout->addWidget(new QLabel(tr("Warning suppress time:"), this), row, 0);
+  spinSuppress = new QSpinBox;
   spinSuppress->setObjectName("spinSuppress");
   spinSuppress->setMaximum(600);
   spinSuppress->setSuffix( " min" );
+  hspin = new HSpinBox(spinSuppress);
   topLayout->addWidget( hspin, row, 1 );
 
   buttonReset = new QPushButton (tr("Defaults"), this);
@@ -110,7 +110,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   topLayout->addWidget( checkAlarmSound, row, 0 );
   row++;
 
-  calculateNearestSites = new QCheckBox(tr("Nearest Site Calculator"),this);
+  calculateNearestSites = new QCheckBox(tr("Nearest Site Calculator"), this);
   calculateNearestSites->setObjectName("calcNearest");
   calculateNearestSites->setChecked(true);
   topLayout->addWidget( calculateNearestSites, row, 0 );

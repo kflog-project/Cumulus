@@ -127,15 +127,14 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   connect(installMaps, SIGNAL( clicked()), this, SLOT(slot_installMaps()) );
 
-  HSpinBox* hspin = new HSpinBox;
-  installRadius = hspin->spinBox();
+  installRadius = new QSpinBox;
   installRadius->setToolTip( tr("Radius around center point") );
   installRadius->setRange( 0, 20000 );
   installRadius->setWrapping(true);
   installRadius->setSingleStep( 100 );
   installRadius->setValue( GeneralConfig::instance()->getMapInstallRadius() );
   installRadius->setSuffix( " " + Distance::getUnitText() );
-
+  HSpinBox* hspin = new HSpinBox(installRadius);
   topLayout->addWidget(hspin, row++, 1, 1, 2 );
 
 #endif

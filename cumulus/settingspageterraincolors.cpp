@@ -218,11 +218,10 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
 
   QVBoxLayout *spinboxLayout = new QVBoxLayout;
 
-  HSpinBox* hspin = new HSpinBox;
-  elevationOffset = hspin->spinBox();
+  elevationOffset = new QSpinBox;
   elevationOffset->setSingleStep(1);
   elevationOffset->setRange(-50, 50);
-
+  HSpinBox* hspin = new HSpinBox( elevationOffset );
   spinboxLayout->addWidget(hspin);
   setOffsetBox->setLayout(spinboxLayout);
 

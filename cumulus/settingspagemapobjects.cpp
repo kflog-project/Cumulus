@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,6 +20,7 @@
 
 #include "settingspagemapobjects.h"
 #include "generalconfig.h"
+#include "hspinbox.h"
 
 SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent)
 {
@@ -35,7 +36,9 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   topLayout->addWidget( wpGroup, row++, 0 );
 
   QHBoxLayout *hBox = new QHBoxLayout( wpGroup );
-  hBox->setSpacing( 5 );
+  hBox->setSpacing( 0 );
+
+  HSpinBox* hspin;
 
   QLabel *label = new QLabel( tr("Low:"), wpGroup );
   hBox->addWidget( label );
@@ -43,8 +46,9 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   wpLowScaleLimitSpinBox->setPrefix( "< ");
   wpLowScaleLimitSpinBox->setRange(0, 1200);
   wpLowScaleLimitSpinBox->setSingleStep(10);
-  wpLowScaleLimitSpinBox->setButtonSymbols(QSpinBox::PlusMinus);
-  hBox->addWidget( wpLowScaleLimitSpinBox );
+
+  hspin = new HSpinBox(wpLowScaleLimitSpinBox);
+  hBox->addWidget( hspin );
   connect( wpLowScaleLimitSpinBox, SIGNAL(valueChanged(int)),
            this, SLOT(slot_wpLowScaleLimitChanged(int)) );
 
@@ -56,8 +60,9 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   wpNormalScaleLimitSpinBox->setPrefix( "< ");
   wpNormalScaleLimitSpinBox->setRange(0, 1200);
   wpNormalScaleLimitSpinBox->setSingleStep(10);
-  wpNormalScaleLimitSpinBox->setButtonSymbols(QSpinBox::PlusMinus);
-  hBox->addWidget( wpNormalScaleLimitSpinBox );
+
+  hspin = new HSpinBox(wpNormalScaleLimitSpinBox);
+  hBox->addWidget( hspin );
   connect( wpNormalScaleLimitSpinBox, SIGNAL(valueChanged(int)),
            this, SLOT(slot_wpNormalScaleLimitChanged(int)) );
 
@@ -69,8 +74,9 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   wpHighScaleLimitSpinBox->setPrefix( "< ");
   wpHighScaleLimitSpinBox->setRange(0, 1200);
   wpHighScaleLimitSpinBox->setSingleStep(10);
-  wpHighScaleLimitSpinBox->setButtonSymbols(QSpinBox::PlusMinus);
-  hBox->addWidget( wpHighScaleLimitSpinBox );
+
+  hspin = new HSpinBox(wpHighScaleLimitSpinBox);
+  hBox->addWidget( hspin );
   connect( wpHighScaleLimitSpinBox, SIGNAL(valueChanged(int)),
            this, SLOT(slot_wpHighScaleLimitChanged(int)) );
 
