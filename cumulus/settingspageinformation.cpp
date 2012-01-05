@@ -30,7 +30,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   int row=0;
   QGridLayout *topLayout = new QGridLayout( this );
   topLayout->setHorizontalSpacing(10);
-  topLayout->setVerticalSpacing(5);
+  topLayout->setVerticalSpacing(10);
 
   QHBoxLayout *hBox = new QHBoxLayout();
 

@@ -36,7 +36,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   topLayout->addWidget( wpGroup, row++, 0 );
 
   QHBoxLayout *hBox = new QHBoxLayout( wpGroup );
-  hBox->setSpacing( 0 );
+  hBox->setSpacing( 5 );
 
   HSpinBox* hspin;
 

@@ -35,6 +35,7 @@ HSpinBox::HSpinBox( QAbstractSpinBox* spinBox, QWidget* parent ) :
 
   QHBoxLayout* hbox = new QHBoxLayout;
   hbox->setSpacing(0);
+  hbox->setContentsMargins( 0, 0, 0, 0 );
 
   // take a bold font for the plus and minus sign
   QFont bFont = font();
