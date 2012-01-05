@@ -1,7 +1,7 @@
 ##################################################################
 # Cumulus Maemo 5.x project file for qmake
 #
-# Copyright (c): 2010-2011 Axel Pauli
+# Copyright (c): 2010-2012 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -62,6 +62,7 @@ HEADERS = \
     gpsstatusdialog.h \
     coordedit.h \
     helpbrowser.h \
+    hspinbox.h \
     hwinfo.h \
     igclogger.h \
     interfaceelements.h \
@@ -174,6 +175,7 @@ SOURCES = \
     gpsstatusdialog.cpp \
     coordedit.cpp \
     helpbrowser.cpp \
+    hspinbox.h \
     hwinfo.cpp \
     igclogger.cpp \
     ipc.cpp \
