@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2008-2011 by Axel Pauli
+ **                   2008-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -26,6 +26,7 @@
 #include "generalconfig.h"
 #include "mainwindow.h"
 #include "layout.h"
+#include "hspinbox.h"
 
 extern MapView *_globalMapView;
 
@@ -97,10 +98,10 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
   spinWingArea = new QDoubleSpinBox(this);
   spinWingArea->setRange(0.0, 100.0);
   spinWingArea->setSingleStep(1.0);
-  spinWingArea->setButtonSymbols(QSpinBox::PlusMinus);
   QChar tsChar(Qt::Key_twosuperior);
   spinWingArea->setSuffix( QString(" m") + tsChar );
-  itemsLayout->addWidget(spinWingArea, row, 1);
+  HSpinBox* hspin = new HSpinBox(spinWingArea);
+  itemsLayout->addWidget(hspin, row, 1);
   row++;
 
   itemsLayout->setRowMinimumHeight(row++, 10);
