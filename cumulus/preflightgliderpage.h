@@ -39,7 +39,7 @@
 
 #include "gliderlistwidget.h"
 
-class HSpinBox;
+class VarSpinBox;
 
 class PreFlightGliderPage : public QWidget
 {
@@ -83,8 +83,8 @@ private:
   Glider           *lastGlider;
   QLabel           *wingLoad;
 
-  HSpinBox         *hspinLoad;
-  HSpinBox         *hspinWater;
+  VarSpinBox       *hspinLoad;
+  VarSpinBox       *hspinWater;
 
 private slots:
 

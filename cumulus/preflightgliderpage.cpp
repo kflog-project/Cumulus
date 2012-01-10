@@ -23,7 +23,7 @@
 #include "generalconfig.h"
 #include "layout.h"
 #include "preflightgliderpage.h"
-#include "hspinbox.h"
+#include "varspinbox.h"
 
 PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   QWidget(parent),
@@ -47,7 +47,7 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   spinLoad->setRange(0, 1000);
   spinLoad->setSingleStep(5);
   spinLoad->setSuffix(" kg");
-  hspinLoad = new HSpinBox(spinLoad);
+  hspinLoad = new VarSpinBox(spinLoad);
   hspinLoad->setEnabled(false);
   topLayout->addWidget(hspinLoad, row, 3);
   row++;
@@ -63,7 +63,7 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   spinWater->setRange(0, 500);
   spinWater->setSingleStep(5);
   spinWater->setSuffix(" l");
-  hspinWater = new HSpinBox(spinWater);
+  hspinWater = new VarSpinBox(spinWater);
   hspinWater->setEnabled(false);
   topLayout->addWidget(hspinWater, row, 3);
   row++;

@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   hspinbox.cpp
+**   varspinbox.cpp
 **
 **   This file is part of Cumulus.
 **
@@ -17,9 +17,9 @@
 
 #include <QtGui>
 
-#include "hspinbox.h"
+#include "varspinbox.h"
 
-HSpinBox::HSpinBox( QAbstractSpinBox* spinBox, QWidget* parent, enum ButtonOrder buttonOrder ) :
+VarSpinBox::VarSpinBox( QAbstractSpinBox* spinBox, QWidget* parent, enum ButtonOrder buttonOrder ) :
   QWidget( parent ),
   m_spinBox( spinBox ),
   m_buttonOrder( buttonOrder )
@@ -33,6 +33,7 @@ HSpinBox::HSpinBox( QAbstractSpinBox* spinBox, QWidget* parent, enum ButtonOrder
     }
 
   m_spinBox->setButtonSymbols(QSpinBox::NoButtons);
+  m_spinBox->setAlignment( Qt::AlignHCenter );
 
   QBoxLayout* lbox = 0;
 
@@ -80,11 +81,11 @@ HSpinBox::HSpinBox( QAbstractSpinBox* spinBox, QWidget* parent, enum ButtonOrder
   setLayout( lbox );
 }
 
-HSpinBox::~HSpinBox()
+VarSpinBox::~VarSpinBox()
 {
 }
 
-void HSpinBox::showEvent( QShowEvent *event )
+void VarSpinBox::showEvent( QShowEvent *event )
 {
   Q_UNUSED(event)
 
@@ -109,7 +110,7 @@ void HSpinBox::showEvent( QShowEvent *event )
     }
 }
 
-void HSpinBox::slotPlusPressed()
+void VarSpinBox::slotPlusPressed()
 {
   if( m_plus->isDown() )
     {
@@ -120,7 +121,7 @@ void HSpinBox::slotPlusPressed()
     }
 }
 
-void HSpinBox::slotMinusPressed()
+void VarSpinBox::slotMinusPressed()
 {
   if( m_minus->isDown() )
     {

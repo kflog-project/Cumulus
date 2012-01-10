@@ -26,7 +26,7 @@
 #include "generalconfig.h"
 #include "mainwindow.h"
 #include "layout.h"
-#include "hspinbox.h"
+#include "varspinbox.h"
 
 extern MapView *_globalMapView;
 
@@ -101,7 +101,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   spinWingArea->setSingleStep(1.0);
   QChar tsChar(Qt::Key_twosuperior);
   spinWingArea->setSuffix( QString(" m") + tsChar );
-  HSpinBox* hspin = new HSpinBox(spinWingArea);
+  VarSpinBox* hspin = new VarSpinBox(spinWingArea);
   itemsLayout->addWidget(hspin, row, 1);
   row++;
 

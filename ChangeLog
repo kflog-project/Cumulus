@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-01-10 AP: Class HSpinBox renamed to VarSpinBox. The new class can
+                   arrange the buttons vertical or horizontal. That is controlled
+                   by an enumeration parameter.
+
 [+] 2012-01-05 AP: New class HSpinBox added. This class contains a spinbox
                    which has the buttons at the left and right side arranged
                    to make it possible, to use the fingers for the operation.

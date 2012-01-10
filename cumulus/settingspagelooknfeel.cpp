@@ -23,7 +23,7 @@
 
 #include "generalconfig.h"
 #include "settingspagelooknfeel.h"
-#include "hspinbox.h"
+#include "varspinbox.h"
 
 SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   QWidget(parent),
@@ -89,7 +89,7 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   screenSaverSpeedLimit->setPrefix( "< " );
   screenSaverSpeedLimit->setDecimals( 1 );
   screenSaverSpeedLimit->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
-  HSpinBox* hspin = new HSpinBox( screenSaverSpeedLimit );
+  VarSpinBox* hspin = new VarSpinBox( screenSaverSpeedLimit );
   topLayout->addWidget( hspin, row, 1 );
   row++;
 

@@ -29,7 +29,7 @@
 #include "map.h"
 #include "mapdefaults.h"
 #include "mapcontents.h"
-#include "hspinbox.h"
+#include "varspinbox.h"
 
 #ifdef INTERNET
 #include "airspacedownloaddialog.h"
@@ -96,7 +96,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   spinForceMargin->setRange( 0, 99999 );
   spinForceMargin->setSingleStep( 10 );
   spinForceMargin->setSuffix( unit );
-  HSpinBox* hspin = new HSpinBox( spinForceMargin );
+  VarSpinBox* hspin = new VarSpinBox( spinForceMargin );
   hbox->addWidget( hspin );
   hbox->addWidget( new QLabel(tr("above me."), this ));
   hbox->addStretch( 10 );
@@ -114,7 +114,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   spinAsLineWidth = new QSpinBox;
   spinAsLineWidth->setRange( 3, 15 );
   spinAsLineWidth->setSingleStep( 1 );
-  hspin = new HSpinBox( spinAsLineWidth );
+  hspin = new VarSpinBox( spinAsLineWidth );
   hbox->addWidget( hspin );
   hbox->addStretch( 10 );
   hbox->setEnabled( false );

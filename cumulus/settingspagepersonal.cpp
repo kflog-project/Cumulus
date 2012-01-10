@@ -20,7 +20,7 @@
 
 #include "generalconfig.h"
 #include "settingspagepersonal.h"
-#include "hspinbox.h"
+#include "varspinbox.h"
 
 SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   QWidget(parent), loadConfig(true)
@@ -71,7 +71,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   spinHomeElevation->setMaximum( 9999 );
   spinHomeElevation->setMinimum( -999 );
   spinHomeElevation->setSuffix( " " + Altitude::getUnitText() );
-  HSpinBox* hspin = new HSpinBox( spinHomeElevation );
+  VarSpinBox* hspin = new VarSpinBox( spinHomeElevation );
   topLayout->addWidget(hspin, row, 1);
   row++;
 

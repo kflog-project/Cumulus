@@ -62,7 +62,6 @@ HEADERS = \
     gpsstatusdialog.h \
     coordedit.h \
     helpbrowser.h \
-    hspinbox.h \
     hwinfo.h \
     igclogger.h \
     interfaceelements.h \
@@ -130,6 +129,7 @@ HEADERS = \
     tpinfowidget.h \
     vario.h \
     variomodedialog.h \
+    varspinbox.h \    
     vector.h \
     waitscreen.h \
     waypointcatalog.h \
@@ -175,7 +175,6 @@ SOURCES = \
     gpsstatusdialog.cpp \
     coordedit.cpp \
     helpbrowser.cpp \
-    hspinbox.h \
     hwinfo.cpp \
     igclogger.cpp \
     ipc.cpp \
@@ -237,6 +236,7 @@ SOURCES = \
     tpinfowidget.cpp \
     vario.cpp \
     variomodedialog.cpp \
+    varspinbox.cpp \
     vector.cpp \
     waitscreen.cpp \
     waypointcatalog.cpp \

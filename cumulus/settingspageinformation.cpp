@@ -20,7 +20,7 @@
 #include "generalconfig.h"
 #include "mapdefaults.h"
 #include "settingspageinformation.h"
-#include "hspinbox.h"
+#include "varspinbox.h"
 
 SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   QWidget(parent), loadConfig(true)
@@ -45,14 +45,14 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   topLayout->addLayout( hBox, row++, 0, 1, 3 );
   topLayout->setRowMinimumHeight( row++, 10 );
 
-  HSpinBox* hspin;
+  VarSpinBox* hspin;
 
   topLayout->addWidget(new QLabel(tr("Airfield display time:"), this), row, 0);
   spinAirfield = new QSpinBox;
   spinAirfield->setObjectName("spinAirfield");
   spinAirfield->setMaximum(60);
   spinAirfield->setSuffix( " s" );
-  hspin = new HSpinBox(spinAirfield);
+  hspin = new VarSpinBox(spinAirfield);
   topLayout->addWidget( hspin, row, 1 );
   row++;
 
@@ -61,7 +61,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinAirspace->setObjectName("spinAirspace");
   spinAirspace->setMaximum(60);
   spinAirspace->setSuffix( " s" );
-  hspin = new HSpinBox(spinAirspace);
+  hspin = new VarSpinBox(spinAirspace);
   topLayout->addWidget( hspin, row, 1 );
   row++;
 
@@ -70,7 +70,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinInfo->setObjectName("spinInfo");
   spinInfo->setMaximum(60);
   spinInfo->setSuffix( " s" );
-  hspin = new HSpinBox(spinInfo);
+  hspin = new VarSpinBox(spinInfo);
   topLayout->addWidget( hspin, row, 1 );
   row++;
 
@@ -79,7 +79,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinWaypoint->setObjectName("spinWaypoint");
   spinWaypoint->setMaximum(60);
   spinWaypoint->setSuffix( " s" );
-  hspin = new HSpinBox(spinWaypoint);
+  hspin = new VarSpinBox(spinWaypoint);
   topLayout->addWidget( hspin, row, 1 );
   row++;
 
@@ -88,7 +88,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinWarning->setObjectName("spinWarning");
   spinWarning->setMaximum(60);
   spinWarning->setSuffix( " s" );
-  hspin = new HSpinBox(spinWarning);
+  hspin = new VarSpinBox(spinWarning);
   topLayout->addWidget( hspin, row, 1 );
   row++;
 
@@ -97,7 +97,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinSuppress->setObjectName("spinSuppress");
   spinSuppress->setMaximum(600);
   spinSuppress->setSuffix( " min" );
-  hspin = new HSpinBox(spinSuppress);
+  hspin = new VarSpinBox(spinSuppress);
   topLayout->addWidget( hspin, row, 1 );
 
   buttonReset = new QPushButton (tr("Defaults"), this);

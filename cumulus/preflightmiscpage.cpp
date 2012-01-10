@@ -24,7 +24,7 @@
 #include "igclogger.h"
 #include "generalconfig.h"
 #include "layout.h"
-#include "hspinbox.h"
+#include "varspinbox.h"
 
 PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   QWidget(parent)
@@ -41,7 +41,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   // storage. The internal storage is always in meters.
   altUnit = Altitude::getUnit();
 
-  HSpinBox* hspin;
+  VarSpinBox* hspin;
 
   // Input accept only feet and meters all other make no sense. Therefore all
   // other (FL) is treated as feet.
@@ -59,7 +59,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
     }
 
   edtMinimalArrival->setSuffix(" " + Altitude::getUnitText());
-  hspin = new HSpinBox(edtMinimalArrival);
+  hspin = new VarSpinBox(edtMinimalArrival);
   topLayout->addWidget(hspin, row, 1);
   topLayout->setColumnStretch(2, 2);
   row++;
@@ -78,7 +78,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   edtQNH->setObjectName("QNH");
   edtQNH->setMaximum(1999);
   edtQNH->setSuffix(" hPa");
-  hspin = new HSpinBox(edtQNH);
+  hspin = new VarSpinBox(edtQNH);
   topLayout->addWidget(hspin, row, 1);
   row++;
 
@@ -95,7 +95,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   bRecordInterval->setMinimum(1);
   bRecordInterval->setMaximum(60);
   bRecordInterval->setSuffix(" s");
-  hspin = new HSpinBox(bRecordInterval);
+  hspin = new VarSpinBox(bRecordInterval);
   topLayout->addWidget(hspin, row, 1);
   row++;
 
@@ -106,7 +106,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   kRecordInterval->setMaximum(300);
   kRecordInterval->setSpecialValueText(tr("Off"));
   kRecordInterval->setSuffix(" s");
-  hspin = new HSpinBox(kRecordInterval);
+  hspin = new VarSpinBox(kRecordInterval);
   topLayout->addWidget(hspin, row, 1);
   row++;
 

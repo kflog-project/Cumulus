@@ -29,7 +29,7 @@
 
 #include "generalconfig.h"
 #include "settingspageairfields.h"
-#include "hspinbox.h"
+#include "varspinbox.h"
 
 #ifdef INTERNET
 #include "proxydialog.h"
@@ -63,7 +63,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   homeRadius->setRange(1, 10000);
   homeRadius->setSingleStep(50);
   homeRadius->setSuffix( " " + Distance::getUnitText() );
-  HSpinBox* hspin = new HSpinBox(homeRadius);
+  VarSpinBox* hspin = new VarSpinBox(homeRadius);
   weltLayout->addWidget(hspin, grow, 1 );
 
   loadOutlandings = new QCheckBox( tr("Load Outlandings"), weltGroup );
@@ -112,7 +112,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   afMargin->setRange(0, 60);
   afMargin->setSingleStep(2);
   afMargin->setSuffix( tr(" Pixels") );
-  hspin = new HSpinBox(afMargin);
+  hspin = new VarSpinBox(afMargin);
   listLayout->addWidget(hspin, grow, 1);
 
   grow++;
@@ -122,7 +122,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   rpMargin->setRange(0, 60);
   rpMargin->setSingleStep(2);
   rpMargin->setSuffix( tr(" Pixels") );
-  hspin = new HSpinBox(rpMargin);
+  hspin = new VarSpinBox(rpMargin);
   listLayout->addWidget(hspin, grow, 1);
 
   grow++;

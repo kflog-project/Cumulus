@@ -20,7 +20,7 @@
 
 #include "settingspagemapobjects.h"
 #include "generalconfig.h"
-#include "hspinbox.h"
+#include "varspinbox.h"
 
 SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent)
 {
@@ -38,7 +38,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   QHBoxLayout *hBox = new QHBoxLayout( wpGroup );
   hBox->setSpacing( 5 );
 
-  HSpinBox* hspin;
+  VarSpinBox* hspin;
 
   QLabel *label = new QLabel( tr("Low:"), wpGroup );
   hBox->addWidget( label );
@@ -47,7 +47,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   wpLowScaleLimitSpinBox->setRange(0, 1200);
   wpLowScaleLimitSpinBox->setSingleStep(10);
 
-  hspin = new HSpinBox(wpLowScaleLimitSpinBox);
+  hspin = new VarSpinBox(wpLowScaleLimitSpinBox);
   hBox->addWidget( hspin );
   connect( wpLowScaleLimitSpinBox, SIGNAL(valueChanged(int)),
            this, SLOT(slot_wpLowScaleLimitChanged(int)) );
@@ -61,7 +61,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   wpNormalScaleLimitSpinBox->setRange(0, 1200);
   wpNormalScaleLimitSpinBox->setSingleStep(10);
 
-  hspin = new HSpinBox(wpNormalScaleLimitSpinBox);
+  hspin = new VarSpinBox(wpNormalScaleLimitSpinBox);
   hBox->addWidget( hspin );
   connect( wpNormalScaleLimitSpinBox, SIGNAL(valueChanged(int)),
            this, SLOT(slot_wpNormalScaleLimitChanged(int)) );
@@ -75,7 +75,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   wpHighScaleLimitSpinBox->setRange(0, 1200);
   wpHighScaleLimitSpinBox->setSingleStep(10);
 
-  hspin = new HSpinBox(wpHighScaleLimitSpinBox);
+  hspin = new VarSpinBox(wpHighScaleLimitSpinBox);
   hBox->addWidget( hspin );
   connect( wpHighScaleLimitSpinBox, SIGNAL(valueChanged(int)),
            this, SLOT(slot_wpHighScaleLimitChanged(int)) );

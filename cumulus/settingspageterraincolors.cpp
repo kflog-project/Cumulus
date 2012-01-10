@@ -21,7 +21,7 @@
 #include "generalconfig.h"
 #include "settingspageterraincolors.h"
 #include "elevationcolorimage.h"
-#include "hspinbox.h"
+#include "varspinbox.h"
 
 SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   QWidget(parent)
@@ -221,7 +221,7 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   elevationOffset = new QSpinBox;
   elevationOffset->setSingleStep(1);
   elevationOffset->setRange(-50, 50);
-  HSpinBox* hspin = new HSpinBox( elevationOffset );
+  VarSpinBox* hspin = new VarSpinBox( elevationOffset );
   spinboxLayout->addWidget(hspin);
   setOffsetBox->setLayout(spinboxLayout);
 

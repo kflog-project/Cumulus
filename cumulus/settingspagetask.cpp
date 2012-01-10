@@ -21,7 +21,7 @@
 #include "generalconfig.h"
 #include "flighttask.h"
 #include "mapcontents.h"
-#include "hspinbox.h"
+#include "varspinbox.h"
 
 extern MapContents  *_globalMapContents;
 
@@ -38,7 +38,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
   int row = 0;
-  HSpinBox* vspin = 0;
+  VarSpinBox* vspin = 0;
 
   QGridLayout *topLayout = new QGridLayout( this );
   topLayout->setMargin(3);
@@ -158,8 +158,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   cylinderRadius->setRange(0.1, 1000.0);
   cylinderRadius->setSingleStep(0.1);
   cylinderRadius->setSuffix( unit );
-  cylinderRadius->setAlignment( Qt::AlignHCenter );
-  vspin = new HSpinBox( cylinderRadius, this, HSpinBox::Vertical );
+  vspin = new VarSpinBox( cylinderRadius, this, VarSpinBox::Vertical );
   hbox->addWidget( vspin );
   hbox->addStretch(10);
 
@@ -182,9 +181,8 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   innerSectorRadius = new QDoubleSpinBox( sectorGroup );
   innerSectorRadius->setRange(0.0, 10.0);
   innerSectorRadius->setSingleStep(0.1);
-  innerSectorRadius->setAlignment( Qt::AlignHCenter );
   innerSectorRadius->setSuffix( unit );
-  vspin = new HSpinBox( innerSectorRadius );
+  vspin = new VarSpinBox( innerSectorRadius );
   sectorLayout->addWidget( vspin, row1, 1 );
 
   row1++;
@@ -193,9 +191,8 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   outerSectorRadius = new QDoubleSpinBox( sectorGroup );
   outerSectorRadius->setRange(0.1, 1000.0);
   outerSectorRadius->setSingleStep(0.1);
-  outerSectorRadius->setAlignment( Qt::AlignHCenter );
   outerSectorRadius->setSuffix( unit );
-  vspin = new HSpinBox( outerSectorRadius );
+  vspin = new VarSpinBox( outerSectorRadius );
   sectorLayout->addWidget( vspin, row1, 1 );
 
   row1++;
@@ -204,11 +201,10 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   sectorAngle = new QSpinBox( sectorGroup );
   sectorAngle->setRange( 90, 180 );
   sectorAngle->setSingleStep( 5 );
-  sectorAngle->setAlignment( Qt::AlignHCenter );
   sectorAngle->setSuffix( QString(Qt::Key_degree) );
   sectorAngle->setWrapping( true );
   sectorAngle->setValue( conf->getTaskSectorAngle() );
-  vspin = new HSpinBox( sectorAngle );
+  vspin = new VarSpinBox( sectorAngle );
   sectorLayout->addWidget( vspin, row1, 1 );
 
   sectorLayout->setColumnStretch(2, 10);
@@ -228,8 +224,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   tlWidth = new QSpinBox( tlGroup );
   tlWidth->setRange( 1, 10 );
   tlWidth->setSingleStep( 1 );
-  tlWidth->setAlignment( Qt::AlignHCenter );
-  vspin = new HSpinBox( tlWidth, this, HSpinBox::Vertical );
+  vspin = new VarSpinBox( tlWidth, this, VarSpinBox::Vertical );
   tlLayout->addWidget( vspin, row1, 1 );
 
   row1++;
@@ -261,8 +256,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   trWidth = new QSpinBox( trGroup );
   trWidth->setRange( 1, 10 );
   trWidth->setSingleStep( 1 );
-  trWidth->setAlignment( Qt::AlignHCenter );
-  vspin = new HSpinBox( trWidth, this, HSpinBox::Vertical );
+  vspin = new VarSpinBox( trWidth, this, VarSpinBox::Vertical );
   trLayout->addWidget( vspin, row1, 1 );
 
   row1++;

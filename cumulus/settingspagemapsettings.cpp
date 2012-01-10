@@ -28,7 +28,7 @@
 #include "generalconfig.h"
 #include "mapcontents.h"
 #include "distance.h"
-#include "hspinbox.h"
+#include "varspinbox.h"
 
 #ifdef INTERNET
 
@@ -134,7 +134,7 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   installRadius->setSingleStep( 100 );
   installRadius->setValue( GeneralConfig::instance()->getMapInstallRadius() );
   installRadius->setSuffix( " " + Distance::getUnitText() );
-  HSpinBox* hspin = new HSpinBox(installRadius);
+  VarSpinBox* hspin = new VarSpinBox(installRadius);
   topLayout->addWidget(hspin, row++, 1 );
 
 #endif
