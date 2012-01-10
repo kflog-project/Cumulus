@@ -32,7 +32,6 @@ extern MapView *_globalMapView;
 
 GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   QWidget(parent),
-  lastFocusWidget(0),
   gliderCreated(false)
 {
   setWindowFlags( Qt::Tool );
@@ -65,11 +64,6 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   _glider = glider;
 
   QHBoxLayout* topLayout = new QHBoxLayout(this);
-
-  // QScrollArea* itemArea  = new QScrollArea(this);
-  // QWidget* itemWidget = new QWidget;
-  // QGridLayout* itemsLayout = new QGridLayout(itemWidget);
-
   QGridLayout* itemsLayout = new QGridLayout;
   itemsLayout->setHorizontalSpacing(10);
   itemsLayout->setVerticalSpacing(10);
@@ -116,6 +110,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
 
   spinboxLayout->addWidget(new QLabel("v1:", this), srow, 0);
   spinV1 = new QDoubleSpinBox(this);
+  spinV1->setObjectName("v1");
   spinV1->setRange(0.0, 250.0);
   spinV1->setSingleStep(1.0);
   spinV1->setButtonSymbols(QSpinBox::NoButtons);
@@ -124,6 +119,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
 
   spinboxLayout->addWidget(new QLabel("w1:", this), srow, 2);
   spinW1 = new QDoubleSpinBox(this);
+  spinW1->setObjectName("w1");
 
   if( Speed::getVerticalUnit() !=  Speed::feetPerMinute )
     {
@@ -261,18 +257,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
 
   connect(plus, SIGNAL(pressed()), this, SLOT(slotIncrementBox()));
   connect(minus, SIGNAL(pressed()), this, SLOT(slotDecrementBox()));
-
-  /**
-   * If the plus or minus button is clicked, the focus is changed to the main
-   * window. I don't know why. Therefore the previous focused widget must be
-   * saved, to have an indication, if a spinbox entry should be modified.
-   */
-  connect( QCoreApplication::instance(), SIGNAL(focusChanged( QWidget*, QWidget*)),
-           this, SLOT( slotFocusChanged( QWidget*, QWidget*)) );
-
   connect(buttonShow, SIGNAL(clicked()), this, SLOT(slotButtonShow()));
-
-  // itemArea->setWidget(itemWidget);
 
   // Add ok and cancel buttons
   QPushButton *cancel = new QPushButton(this);
@@ -295,7 +280,6 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   buttonBox->addWidget(ok, 2);
   buttonBox->addStretch(2);
 
-  // topLayout->addWidget(itemArea);
   topLayout->addLayout(itemsLayout);
   topLayout->addLayout(buttonBox);
 
@@ -771,15 +755,13 @@ void GilderEditor::slotIncrementBox()
       return;
     }
 
-  // Look which spin box has the focus. Note, focus can be changed by clicking
-  // the connected button. Therefore take old focus widget under account and
-  // set the focus back to the spinbox.
+  // Look which spin box has the focus.
   QAbstractSpinBox* spinBoxList[] = { spinV1, spinV2, spinV3, spinW1, spinW2, spinW3,
                                       emptyWeight, addedLoad, spinWater };
 
   for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
     {
-      if( QApplication::focusWidget() == spinBoxList[i] || lastFocusWidget == spinBoxList[i] )
+      if( QApplication::focusWidget() == spinBoxList[i] )
         {
           spinBoxList[i]->stepUp();
           spinBoxList[i]->setFocus();
@@ -798,15 +780,13 @@ void GilderEditor::slotDecrementBox()
       return;
     }
 
-  // Look which spin box has the focus. Note, focus can be changed by clicking
-  // the connected button. Therefore take old focus widget under account and
-  // set the focus back to the spinbox.
+  // Look which spin box has the focus.
   QAbstractSpinBox* spinBoxList[] = { spinV1, spinV2, spinV3, spinW1, spinW2, spinW3,
                                       emptyWeight, addedLoad, spinWater };
 
   for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
     {
-      if( QApplication::focusWidget() == spinBoxList[i] || lastFocusWidget == spinBoxList[i] )
+      if( QApplication::focusWidget() == spinBoxList[i] )
         {
           spinBoxList[i]->stepDown();
           spinBoxList[i]->setFocus();
@@ -816,12 +796,4 @@ void GilderEditor::slotDecrementBox()
           return;
         }
     }
-}
-
-void GilderEditor::slotFocusChanged( QWidget* oldWidget, QWidget* newWidget)
-{
-  Q_UNUSED(newWidget)
-
-  // We save the old widget, which has just lost the focus.
-  lastFocusWidget = oldWidget;
 }

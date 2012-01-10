@@ -113,12 +113,6 @@ private slots:
   */
   void slotDecrementBox();
 
-  /**
-   * This slot is called, when the focus changes to another widget. The old
-   * focus widget is saved.
-   */
-  void slotFocusChanged( QWidget* oldWidget, QWidget* newWidget);
-
 signals:
 
   /**
@@ -154,9 +148,6 @@ private:
   QPushButton *plus;
   /** Button to decrease spinbox value. */
   QPushButton *minus;
-
-  /** Widget, that held the last focus. */
-  QWidget *lastFocusWidget;
 
   QList<Polar> _polars;
   Glider * _glider;
