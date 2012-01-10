@@ -65,10 +65,12 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   _glider = glider;
 
   QHBoxLayout* topLayout = new QHBoxLayout(this);
-  QScrollArea* itemArea  = new QScrollArea(this);
 
-  QWidget* itemWidget = new QWidget;
-  QGridLayout* itemsLayout = new QGridLayout(itemWidget);
+  // QScrollArea* itemArea  = new QScrollArea(this);
+  // QWidget* itemWidget = new QWidget;
+  // QGridLayout* itemsLayout = new QGridLayout(itemWidget);
+
+  QGridLayout* itemsLayout = new QGridLayout;
   itemsLayout->setHorizontalSpacing(10);
   itemsLayout->setVerticalSpacing(10);
   int row = 0;
@@ -90,19 +92,19 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   edtGReg = new QLineEdit(this);
   itemsLayout->addWidget(edtGReg, row, 1);
 
-  itemsLayout->addWidget(new QLabel(tr("Callsign:"), this), row, 2);
-  edtGCall = new QLineEdit(this);
-  itemsLayout->addWidget(edtGCall, row, 3);
-  row++;
-
-  itemsLayout->addWidget(new QLabel(tr("Wing Area:"), this), row, 0);
+  itemsLayout->addWidget(new QLabel(tr("Wing Area:"), this), row, 2);
   spinWingArea = new QDoubleSpinBox(this);
   spinWingArea->setRange(0.0, 100.0);
   spinWingArea->setSingleStep(1.0);
   QChar tsChar(Qt::Key_twosuperior);
   spinWingArea->setSuffix( QString(" m") + tsChar );
   VarSpinBox* hspin = new VarSpinBox(spinWingArea);
-  itemsLayout->addWidget(hspin, row, 1);
+  itemsLayout->addWidget(hspin, row, 3);
+  row++;
+
+  itemsLayout->addWidget(new QLabel(tr("Callsign:"), this), row, 0);
+  edtGCall = new QLineEdit(this);
+  itemsLayout->addWidget(edtGCall, row, 1);
   row++;
 
   itemsLayout->setRowMinimumHeight(row++, 10);
@@ -249,8 +251,10 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   buttonRow->addWidget( buttonShow );
 
   spinboxLayout->addLayout(buttonRow, srow++, 0, 1, 6);
-  itemsLayout->addLayout(spinboxLayout, row, 0, 1, 4);
-  row++;
+  spinboxLayout->setRowStretch( srow++, 10 );
+
+  itemsLayout->addLayout(spinboxLayout, row++, 0, 1, 4);
+  itemsLayout->setColumnStretch( 1, 10 );
 
   connect (comboType, SIGNAL(activated(const QString&)),
            this, SLOT(slotActivated(const QString&)));
@@ -268,7 +272,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
 
   connect(buttonShow, SIGNAL(clicked()), this, SLOT(slotButtonShow()));
 
-  itemArea->setWidget(itemWidget);
+  // itemArea->setWidget(itemWidget);
 
   // Add ok and cancel buttons
   QPushButton *cancel = new QPushButton(this);
@@ -291,7 +295,8 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   buttonBox->addWidget(ok, 2);
   buttonBox->addStretch(2);
 
-  topLayout->addWidget(itemArea);
+  // topLayout->addWidget(itemArea);
+  topLayout->addLayout(itemsLayout);
   topLayout->addLayout(buttonBox);
 
   if (isNew)
