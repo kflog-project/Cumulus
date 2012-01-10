@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * \brief This widget provides a glider editor dialog.
  *
- * \date 2002-2010
+ * \date 2002-2012
  *
  * \version $Id$
  */
@@ -62,6 +62,10 @@ public:
    */
   Polar* getPolar();
 
+protected:
+
+  void showEvent( QShowEvent *event );
+
 private:
 
   /**
@@ -99,6 +103,22 @@ private slots:
   /** Called when Cancel button is pressed */
   void reject();
 
+  /**
+  * This slot increments the value in the spin box which has the current focus.
+  */
+  void slotIncrementBox();
+
+  /**
+  * This slot decrements the value in the spin box which has the current focus.
+  */
+  void slotDecrementBox();
+
+  /**
+   * This slot is called, when the focus changes to another widget. The old
+   * focus widget is saved.
+   */
+  void slotFocusChanged( QWidget* oldWidget, QWidget* newWidget);
+
 signals:
 
   /**
@@ -129,6 +149,14 @@ private:
   QSpinBox* addedLoad;
   QSpinBox* spinWater;
   QComboBox* comboSeats;
+
+  /** Button to increase spinbox value. */
+  QPushButton *plus;
+  /** Button to decrease spinbox value. */
+  QPushButton *minus;
+
+  /** Widget, that held the last focus. */
+  QWidget *lastFocusWidget;
 
   QList<Polar> _polars;
   Glider * _glider;

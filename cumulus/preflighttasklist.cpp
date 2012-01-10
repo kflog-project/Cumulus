@@ -173,8 +173,8 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   connect(cmdNew, SIGNAL(clicked()), this, SLOT(slotNewTask()));
   connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slotEditTask()));
   connect(cmdDel, SIGNAL(clicked()), this, SLOT(slotDeleteTask()));
-  connect(plus, SIGNAL(clicked()), this, SLOT(slotIncrementBox()));
-  connect(minus, SIGNAL(clicked()), this, SLOT(slotDecrementBox()));
+  connect(plus, SIGNAL(pressed()), this, SLOT(slotIncrementBox()));
+  connect(minus, SIGNAL(pressed()), this, SLOT(slotDecrementBox()));
 
   /**
    * If the plus or minus button is clicked, the focus is changed to the main
@@ -239,18 +239,26 @@ void PreFlightTaskList::showEvent(QShowEvent *)
 
 void PreFlightTaskList::slotIncrementBox()
 {
+  if( ! plus->isDown() )
+    {
+      return;
+    }
+
   // Look which spin box has the focus. Note, focus can be changed by clicking
   // the connected button. Therefore take old focus widget under account and
   // set the focus back to the spinbox.
-  QSpinBox* spinBoxList[3] = {tas, windDirection, windSpeed};
+  QAbstractSpinBox* spinBoxList[3] = {tas, windDirection, windSpeed};
 
   for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
     {
       if( QApplication::focusWidget() == spinBoxList[i] || lastFocusWidget == spinBoxList[i] )
         {
-          spinBoxList[i]->setValue( spinBoxList[i]->value() + spinBoxList[i]->singleStep() );
+          spinBoxList[i]->stepUp();
           spinBoxList[i]->setFocus();
           slotTaskDetails();
+
+          // Start repetition timer, to check, if button is longer pressed.
+           QTimer::singleShot(250, this, SLOT(slotIncrementBox()));
           return;
         }
     }
@@ -258,18 +266,26 @@ void PreFlightTaskList::slotIncrementBox()
 
 void PreFlightTaskList::slotDecrementBox()
 {
+  if( ! minus->isDown() )
+    {
+      return;
+    }
+
   // Look which spin box has the focus. Note, focus can be changed by clicking
   // the connected button. Therefore take old focus widget under account and
   // set the focus back to the spinbox.
-  QSpinBox* spinBoxList[3] = {tas, windDirection, windSpeed};
+  QAbstractSpinBox* spinBoxList[3] = {tas, windDirection, windSpeed};
 
   for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
     {
       if( QApplication::focusWidget() == spinBoxList[i] || lastFocusWidget == spinBoxList[i] )
         {
-          spinBoxList[i]->setValue( spinBoxList[i]->value() - spinBoxList[i]->singleStep() );
+          spinBoxList[i]->stepDown();
           spinBoxList[i]->setFocus();
           slotTaskDetails();
+
+          // Start repetition timer, to check, if button is longer pressed.
+          QTimer::singleShot(250, this, SLOT(slotDecrementBox()));
           return;
         }
     }

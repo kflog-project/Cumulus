@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2011 Axel Pauli
+**   Copyright (c):  2007-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,6 +21,7 @@
 #include "generalconfig.h"
 #include "flighttask.h"
 #include "mapcontents.h"
+#include "hspinbox.h"
 
 extern MapContents  *_globalMapContents;
 
@@ -37,6 +38,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
   int row = 0;
+  HSpinBox* vspin = 0;
 
   QGridLayout *topLayout = new QGridLayout( this );
   topLayout->setMargin(3);
@@ -155,9 +157,10 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   cylinderRadius = new QDoubleSpinBox( this );
   cylinderRadius->setRange(0.1, 1000.0);
   cylinderRadius->setSingleStep(0.1);
-  cylinderRadius->setButtonSymbols(QSpinBox::PlusMinus);
   cylinderRadius->setSuffix( unit );
-  hbox->addWidget( cylinderRadius );
+  cylinderRadius->setAlignment( Qt::AlignHCenter );
+  vspin = new HSpinBox( cylinderRadius, this, HSpinBox::Vertical );
+  hbox->addWidget( vspin );
   hbox->addStretch(10);
 
   cylinderGroup->setLayout(hbox);
@@ -179,9 +182,10 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   innerSectorRadius = new QDoubleSpinBox( sectorGroup );
   innerSectorRadius->setRange(0.0, 10.0);
   innerSectorRadius->setSingleStep(0.1);
-  innerSectorRadius->setButtonSymbols(QSpinBox::PlusMinus);
+  innerSectorRadius->setAlignment( Qt::AlignHCenter );
   innerSectorRadius->setSuffix( unit );
-  sectorLayout->addWidget( innerSectorRadius, row1, 1 );
+  vspin = new HSpinBox( innerSectorRadius );
+  sectorLayout->addWidget( vspin, row1, 1 );
 
   row1++;
   lbl = new QLabel( tr("Outer Radius:"), sectorGroup );
@@ -189,9 +193,10 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   outerSectorRadius = new QDoubleSpinBox( sectorGroup );
   outerSectorRadius->setRange(0.1, 1000.0);
   outerSectorRadius->setSingleStep(0.1);
-  outerSectorRadius->setButtonSymbols(QSpinBox::PlusMinus);
+  outerSectorRadius->setAlignment( Qt::AlignHCenter );
   outerSectorRadius->setSuffix( unit );
-  sectorLayout->addWidget( outerSectorRadius, row1, 1 );
+  vspin = new HSpinBox( outerSectorRadius );
+  sectorLayout->addWidget( vspin, row1, 1 );
 
   row1++;
   lbl = new QLabel( tr("Angle:"), sectorGroup );
@@ -199,11 +204,12 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   sectorAngle = new QSpinBox( sectorGroup );
   sectorAngle->setRange( 90, 180 );
   sectorAngle->setSingleStep( 5 );
-  sectorAngle->setButtonSymbols(QSpinBox::PlusMinus);
+  sectorAngle->setAlignment( Qt::AlignHCenter );
   sectorAngle->setSuffix( QString(Qt::Key_degree) );
   sectorAngle->setWrapping( true );
   sectorAngle->setValue( conf->getTaskSectorAngle() );
-  sectorLayout->addWidget( sectorAngle, row1, 1 );
+  vspin = new HSpinBox( sectorAngle );
+  sectorLayout->addWidget( vspin, row1, 1 );
 
   sectorLayout->setColumnStretch(2, 10);
 
@@ -213,7 +219,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
 
   QGridLayout *tlLayout = new QGridLayout( tlGroup );
   tlLayout->setMargin(10);
-  tlLayout->setSpacing(3);
+  tlLayout->setSpacing(10);
   row1 = 0;
 
   lbl = new QLabel( tr("Width:"), tlGroup );
@@ -222,8 +228,9 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   tlWidth = new QSpinBox( tlGroup );
   tlWidth->setRange( 1, 10 );
   tlWidth->setSingleStep( 1 );
-  tlWidth->setButtonSymbols( QSpinBox::PlusMinus );
-  tlLayout->addWidget( tlWidth, row1, 1 );
+  tlWidth->setAlignment( Qt::AlignHCenter );
+  vspin = new HSpinBox( tlWidth, this, HSpinBox::Vertical );
+  tlLayout->addWidget( vspin, row1, 1 );
 
   row1++;
   lbl = new QLabel( tr("Color:"), tlGroup );
@@ -245,7 +252,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
 
   QGridLayout *trLayout = new QGridLayout( trGroup );
   trLayout->setMargin(10);
-  trLayout->setSpacing(3);
+  trLayout->setSpacing(10);
   row1 = 0;
 
   lbl = new QLabel( tr("Width:"), trGroup );
@@ -254,8 +261,9 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   trWidth = new QSpinBox( trGroup );
   trWidth->setRange( 1, 10 );
   trWidth->setSingleStep( 1 );
-  trWidth->setButtonSymbols( QSpinBox::PlusMinus );
-  trLayout->addWidget( trWidth, row1, 1 );
+  trWidth->setAlignment( Qt::AlignHCenter );
+  vspin = new HSpinBox( trWidth, this, HSpinBox::Vertical );
+  trLayout->addWidget( vspin, row1, 1 );
 
   row1++;
   lbl = new QLabel( tr("Color:"), trGroup );

@@ -30,7 +30,10 @@
 
 extern MapView *_globalMapView;
 
-GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
+GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
+  QWidget(parent),
+  lastFocusWidget(0),
+  gliderCreated(false)
 {
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
@@ -59,14 +62,12 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
       isNew = false;
     }
 
-  gliderCreated = false;
-
   _glider = glider;
 
   QHBoxLayout* topLayout = new QHBoxLayout(this);
   QScrollArea* itemArea  = new QScrollArea(this);
 
-  QWidget* itemWidget = new QWidget();
+  QWidget* itemWidget = new QWidget;
   QGridLayout* itemsLayout = new QGridLayout(itemWidget);
   itemsLayout->setHorizontalSpacing(10);
   itemsLayout->setVerticalSpacing(10);
@@ -115,7 +116,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
   spinV1 = new QDoubleSpinBox(this);
   spinV1->setRange(0.0, 250.0);
   spinV1->setSingleStep(1.0);
-  spinV1->setButtonSymbols(QSpinBox::PlusMinus);
+  spinV1->setButtonSymbols(QSpinBox::NoButtons);
   spinV1->setSuffix( " " + Speed::getHorizontalUnitText() );
   spinboxLayout->addWidget(spinV1, srow, 1);
 
@@ -133,7 +134,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
       spinW1->setSingleStep(2.0);
     }
 
-  spinW1->setButtonSymbols(QSpinBox::PlusMinus);
+  spinW1->setButtonSymbols(QSpinBox::NoButtons);
   spinW1->setSuffix( " " + Speed::getVerticalUnitText() );
   spinboxLayout->addWidget(spinW1, srow, 3);
 
@@ -142,7 +143,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
   emptyWeight->setObjectName("emptyWeight");
   emptyWeight->setRange(0, 1000);
   emptyWeight->setSingleStep(5);
-  emptyWeight->setButtonSymbols(QSpinBox::PlusMinus);
+  emptyWeight->setButtonSymbols(QSpinBox::NoButtons);
   emptyWeight->setSuffix(" kg");
   spinboxLayout->addWidget(emptyWeight, srow, 5);
   srow++;
@@ -151,7 +152,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
   spinV2 = new QDoubleSpinBox(this);
   spinV2->setRange(0.0, 250.0);
   spinV2->setSingleStep(1.0);
-  spinV2->setButtonSymbols(QSpinBox::PlusMinus);
+  spinV2->setButtonSymbols(QSpinBox::NoButtons);
   spinV2->setSuffix( " " + Speed::getHorizontalUnitText() );
   spinboxLayout->addWidget(spinV2, srow, 1);
 
@@ -169,7 +170,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
       spinW2->setSingleStep(2.0);
     }
 
-  spinW2->setButtonSymbols(QSpinBox::PlusMinus);
+  spinW2->setButtonSymbols(QSpinBox::NoButtons);
   spinW2->setSuffix( " " + Speed::getVerticalUnitText() );
   spinboxLayout->addWidget(spinW2, srow, 3);
 
@@ -178,7 +179,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
   addedLoad->setObjectName("addedLoad");
   addedLoad->setRange(0, 1000);
   addedLoad->setSingleStep(5);
-  addedLoad->setButtonSymbols(QSpinBox::PlusMinus);
+  addedLoad->setButtonSymbols(QSpinBox::NoButtons);
   addedLoad->setSuffix(" kg");
   spinboxLayout->addWidget(addedLoad, srow, 5);
   srow++;
@@ -187,7 +188,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
   spinV3 = new QDoubleSpinBox(this);
   spinV3->setRange(0.0, 250.0);
   spinV3->setSingleStep(1.0);
-  spinV3->setButtonSymbols(QSpinBox::PlusMinus);
+  spinV3->setButtonSymbols(QSpinBox::NoButtons);
   spinV3->setSuffix( " " + Speed::getHorizontalUnitText() );
   spinboxLayout->addWidget(spinV3, srow, 1);
 
@@ -205,7 +206,7 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
       spinW3->setSingleStep(2.0);
     }
 
-  spinW3->setButtonSymbols(QSpinBox::PlusMinus);
+  spinW3->setButtonSymbols(QSpinBox::NoButtons);
   spinW3->setSuffix( " " + Speed::getVerticalUnitText() );
   spinboxLayout->addWidget(spinW3, srow, 3);
 
@@ -214,21 +215,56 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
   spinWater->setObjectName("spinWater");
   spinWater->setRange(0, 1000);
   spinWater->setSingleStep(5);
-  spinWater->setButtonSymbols(QSpinBox::PlusMinus);
+  spinWater->setButtonSymbols(QSpinBox::NoButtons);
   spinWater->setSuffix(" l");
-  spinboxLayout->addWidget(spinWater, srow, 5);
+  spinboxLayout->addWidget(spinWater, srow++, 5);
+  spinboxLayout->setColumnStretch(6, 10);
+  spinboxLayout->setRowMinimumHeight(srow++, 20);
 
+  // take a bold font for the plus and minus sign
+  QFont bFont = font();
+  bFont.setBold(true);
+
+  plus  = new QPushButton("+");
+  minus = new QPushButton("-");
+
+  plus->setToolTip( tr("Increase number value") );
+  minus->setToolTip( tr("Decrease number value") );
+
+  plus->setFont(bFont);
+  minus->setFont(bFont);
+
+  // The buttons have no focus policy to avoid a focus change during click of them.
+  plus->setFocusPolicy(Qt::NoFocus);
+  minus->setFocusPolicy(Qt::NoFocus);
+
+  buttonShow = new QPushButton(tr("Show Polar"));
+
+  QHBoxLayout* buttonRow = new QHBoxLayout;
+  buttonRow->setSpacing(0);
+  buttonRow->addWidget( plus );
+  buttonRow->addSpacing( 20 );
+  buttonRow->addWidget( minus );
+  buttonRow->addStretch( 10 );
+  buttonRow->addWidget( buttonShow );
+
+  spinboxLayout->addLayout(buttonRow, srow++, 0, 1, 6);
   itemsLayout->addLayout(spinboxLayout, row, 0, 1, 4);
   row++;
 
-  itemsLayout->setRowMinimumHeight(row++, 10);
-  itemsLayout->setColumnStretch(1, 10);
-
-  buttonShow = new QPushButton(tr("Show Polar"), this);
-  itemsLayout->addWidget(buttonShow, row, 3);
-
   connect (comboType, SIGNAL(activated(const QString&)),
            this, SLOT(slotActivated(const QString&)));
+
+  connect(plus, SIGNAL(pressed()), this, SLOT(slotIncrementBox()));
+  connect(minus, SIGNAL(pressed()), this, SLOT(slotDecrementBox()));
+
+  /**
+   * If the plus or minus button is clicked, the focus is changed to the main
+   * window. I don't know why. Therefore the previous focused widget must be
+   * saved, to have an indication, if a spinbox entry should be modified.
+   */
+  connect( QCoreApplication::instance(), SIGNAL(focusChanged( QWidget*, QWidget*)),
+           this, SLOT( slotFocusChanged( QWidget*, QWidget*)) );
 
   connect(buttonShow, SIGNAL(clicked()), this, SLOT(slotButtonShow()));
 
@@ -272,6 +308,20 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) : QWidget(parent)
 
 GilderEditor::~GilderEditor()
 {
+}
+
+void GilderEditor::showEvent( QShowEvent *event )
+{
+  Q_UNUSED(event)
+
+  int height = buttonShow->height();
+
+  // Take the current height of the widget to make the buttons symmetrically.
+  plus->setMaximumSize( height, height );
+  plus->setMinimumSize( height, height );
+
+  minus->setMaximumSize( height, height );
+  minus->setMinimumSize( height, height );
 }
 
 Polar* GilderEditor::getPolar()
@@ -707,4 +757,66 @@ void GilderEditor::reject()
     }
 
   QWidget::close();
+}
+
+void GilderEditor::slotIncrementBox()
+{
+  if( ! plus->isDown() )
+    {
+      return;
+    }
+
+  // Look which spin box has the focus. Note, focus can be changed by clicking
+  // the connected button. Therefore take old focus widget under account and
+  // set the focus back to the spinbox.
+  QAbstractSpinBox* spinBoxList[] = { spinV1, spinV2, spinV3, spinW1, spinW2, spinW3,
+                                      emptyWeight, addedLoad, spinWater };
+
+  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
+    {
+      if( QApplication::focusWidget() == spinBoxList[i] || lastFocusWidget == spinBoxList[i] )
+        {
+          spinBoxList[i]->stepUp();
+          spinBoxList[i]->setFocus();
+
+          // Start repetition timer, to check, if button is longer pressed.
+           QTimer::singleShot(250, this, SLOT(slotIncrementBox()));
+          return;
+        }
+    }
+}
+
+void GilderEditor::slotDecrementBox()
+{
+  if( ! minus->isDown() )
+    {
+      return;
+    }
+
+  // Look which spin box has the focus. Note, focus can be changed by clicking
+  // the connected button. Therefore take old focus widget under account and
+  // set the focus back to the spinbox.
+  QAbstractSpinBox* spinBoxList[] = { spinV1, spinV2, spinV3, spinW1, spinW2, spinW3,
+                                      emptyWeight, addedLoad, spinWater };
+
+  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
+    {
+      if( QApplication::focusWidget() == spinBoxList[i] || lastFocusWidget == spinBoxList[i] )
+        {
+          spinBoxList[i]->stepDown();
+          spinBoxList[i]->setFocus();
+
+          // Start repetition timer, to check, if button is longer pressed.
+          QTimer::singleShot(250, this, SLOT(slotDecrementBox()));
+          return;
+        }
+    }
+}
+
+void GilderEditor::slotFocusChanged( QWidget* oldWidget, QWidget* newWidget)
+{
+  Q_UNUSED(newWidget)
+
+  // We save the old widget, which has just lost the focus.
+  lastFocusWidget = oldWidget;
 }

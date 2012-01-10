@@ -50,18 +50,23 @@ class HSpinBox : public QWidget
  public:
 
   /**
+   * The button order for the spinbox. Can be left and right or above and below.
+   */
+  enum ButtonOrder { Horizontal, Vertical };
+
+  /**
    * \param spinBox The instance of a spinbox, derived from QAbstractSpinBox.
    *
    * \param parent The parent widget.
    */
-  HSpinBox( QAbstractSpinBox* spinBox, QWidget* parent=0 );
+  HSpinBox( QAbstractSpinBox* spinBox, QWidget* parent=0, enum ButtonOrder=Horizontal );
 
   virtual ~HSpinBox();
 
   /** @return The spinbox instance of this widget. */
   QAbstractSpinBox* spinBox()
   {
-    return _spinBox;
+    return m_spinBox;
   }
 
  protected:
@@ -79,13 +84,16 @@ class HSpinBox : public QWidget
  private:
 
   /** The included spinbox. */
-  QAbstractSpinBox* _spinBox;
+  QAbstractSpinBox* m_spinBox;
 
   /** Increase button. */
-  QPushButton* plus;
+  QPushButton* m_plus;
 
   /** Decrease button. */
-  QPushButton* minus;
+  QPushButton* m_minus;
+
+  /** The button order. */
+  enum ButtonOrder m_buttonOrder;
 };
 
 #endif
