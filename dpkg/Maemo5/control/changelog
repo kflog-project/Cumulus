@@ -1,3 +1,13 @@
+cumulus (2.12.1) stable; urgency=low
+
+  * All Qt default spinboxes are replaced by own improved solutions.
+    That should make the operation more user friendly now.
+
+  * Co-pilot name and current water ballast are saved now, if the
+    pre-flight dialog is left with the OK button.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Wed, 11 Jan 2012 20:14:19 +0100
+
 cumulus (2.12.0) stable; urgency=low
 
   * Flight mode wave removed. It is not clearly to decide, when a glider is
