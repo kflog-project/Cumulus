@@ -73,6 +73,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   spinMcCready->setSingleStep(0.5);
   spinMcCready->setSuffix( QString(" ") + Speed::getUnitText(Speed::getVerticalUnit()));
   spinMcCready->setButtonSymbols(QSpinBox::NoButtons);
+  spinMcCready->setAlignment( Qt::AlignHCenter );
   spinMcCready->setFocus();
 
   connect( spinMcCready, SIGNAL(valueChanged(const QString&)),
@@ -89,6 +90,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   spinWater->setSingleStep(5);
   spinWater->setSuffix( " l" );
   spinWater->setButtonSymbols(QSpinBox::NoButtons);
+  spinWater->setAlignment( Qt::AlignHCenter );
 
   connect( spinWater, SIGNAL(valueChanged(const QString&)),
            this, SLOT(slotSpinValueChanged(const QString&)));
@@ -114,6 +116,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   spinBugs->setSingleStep(1);
   spinBugs->setSuffix( " %" );
   spinBugs->setButtonSymbols(QSpinBox::NoButtons);
+  spinBugs->setAlignment( Qt::AlignHCenter );
 
   connect( spinBugs, SIGNAL(valueChanged(const QString&)),
            this, SLOT(slotSpinValueChanged(const QString&)));
@@ -193,13 +196,13 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   connect (cancel, SIGNAL(clicked()), this, SLOT(reject()));
 
   QSignalMapper* signalMapper = new QSignalMapper(this);
-  connect(pplus, SIGNAL(clicked()), signalMapper, SLOT(map()));
+  connect(pplus, SIGNAL(pressed()), signalMapper, SLOT(map()));
   signalMapper->setMapping(pplus, 0);
-  connect(plus, SIGNAL(clicked()), signalMapper, SLOT(map()));
+  connect(plus, SIGNAL(pressed()), signalMapper, SLOT(map()));
   signalMapper->setMapping(plus, 1);
-  connect(minus, SIGNAL(clicked()), signalMapper, SLOT(map()));
+  connect(minus, SIGNAL(pressed()), signalMapper, SLOT(map()));
   signalMapper->setMapping(minus, 2);
-  connect(mminus, SIGNAL(clicked()), signalMapper, SLOT(map()));
+  connect(mminus, SIGNAL(pressed()), signalMapper, SLOT(map()));
   signalMapper->setMapping(mminus, 3);
   connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(slotChange(int)));
 }
@@ -304,32 +307,68 @@ void GliderFlightDialog::save()
 
 void GliderFlightDialog::slotMcPlus()
 {
-  spinMcCready->setValue( spinMcCready->value() + spinMcCready->singleStep() );
+  if( plus->isDown() || pplus->isDown() )
+    {
+      spinMcCready->stepUp();
+
+      // Start repetition timer, to check, if button is longer pressed.
+      QTimer::singleShot(300, this, SLOT(slotMcPlus()));
+    }
 }
 
 void GliderFlightDialog::slotMcMinus()
 {
-  spinMcCready->setValue( spinMcCready->value() - spinMcCready->singleStep() );
+  if( minus->isDown() || mminus->isDown() )
+    {
+      spinMcCready->stepDown();
+
+      // Start repetition timer, to check, if button is longer pressed.
+       QTimer::singleShot(300, this, SLOT(slotMcMinus()));
+     }
 }
 
 void GliderFlightDialog::slotWaterPlus()
 {
-  spinWater->setValue( spinWater->value() + spinWater->singleStep() );
+  if( plus->isDown() || pplus->isDown() )
+    {
+      spinWater->stepUp();
+
+      // Start repetition timer, to check, if button is longer pressed.
+       QTimer::singleShot(300, this, SLOT(slotWaterPlus()));
+     }
 }
 
 void GliderFlightDialog::slotWaterMinus()
 {
-  spinWater->setValue( spinWater->value() - spinWater->singleStep() );
+  if( minus->isDown() || mminus->isDown() )
+    {
+      spinWater->stepDown();
+
+      // Start repetition timer, to check, if button is longer pressed.
+       QTimer::singleShot(300, this, SLOT(slotWaterMinus()));
+     }
 }
 
 void GliderFlightDialog::slotBugsPlus()
 {
-  spinBugs->setValue( spinBugs->value() + spinBugs->singleStep() );
+  if( plus->isDown() || pplus->isDown() )
+    {
+      spinBugs->stepUp();
+
+      // Start repetition timer, to check, if button is longer pressed.
+       QTimer::singleShot(300, this, SLOT(slotBugsPlus()));
+     }
 }
 
 void GliderFlightDialog::slotBugsMinus()
 {
-  spinBugs->setValue( spinBugs->value() - spinBugs->singleStep() );
+  if( minus->isDown() || mminus->isDown() )
+    {
+      spinBugs->stepDown();
+
+      // Start repetition timer, to check, if button is longer pressed.
+       QTimer::singleShot(300, this, SLOT(slotBugsMinus()));
+     }
 }
 
 /**

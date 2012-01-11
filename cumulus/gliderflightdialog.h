@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
  * This dialog handles the Mc, load balance and bug settings. It shall
  * enable a simple change also during flight.
  *
- * \date 2002-2011
+ * \date 2002-2012
  *
  * \version $Id$
  */
