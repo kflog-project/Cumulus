@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2004-2010 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2004-2012 by Axel Pauli (axel@kflog.org)
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -70,6 +70,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   spinTime->setRange(3, 150);
   spinTime->setSuffix( " s" );
   spinTime->setButtonSymbols(QSpinBox::NoButtons);
+  spinTime->setAlignment( Qt::AlignHCenter );
   spinTime->setFocus();
 
   gridLayout->addWidget(spinTime, row++, 1);
@@ -92,8 +93,8 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   spinTEK->setRange( -100, 100 );
   spinTEK->setSingleStep( 1 );
   spinTEK->setSuffix( " %" );
-
   spinTEK->setButtonSymbols(QSpinBox::NoButtons);
+  spinTEK->setAlignment( Qt::AlignHCenter );
   gridLayout->addWidget(spinTEK, row++, 1);
 
   //---------------------------------------------------------------------
