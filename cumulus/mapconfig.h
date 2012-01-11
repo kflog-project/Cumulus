@@ -172,8 +172,6 @@ class MapConfig : public QObject
 
     /**
      * The possible data types, that could be drawn.
-     *
-     * @see #slotSetFlightDataType
      */
     bool isRotatable( unsigned int typeID ) const;
 
