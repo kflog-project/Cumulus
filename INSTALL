@@ -1,7 +1,7 @@
 ===============================================================================
-Building and installing Cumulus under X11 and Qt4.7.x for Linux/Unix
+Building and installing Cumulus under X11 and Qt4.8.x for Linux/Unix
 
-Last update: 2011-05-03 by Axel Pauli
+Last update: 2012-01-11 by Axel Pauli
 
 SVN info: $Id$
 ===============================================================================
@@ -24,7 +24,7 @@ following components are mandatory:
 At least a Qt Release 4.7.0 or higher has to be used.
 
 The different Linux distributions do provide normally installable packages for
-that. For XUbuntu 11.04 you have to execute the following command to get them:
+that. For XUbuntu 11.10 you have to execute the following command to get them:
 
   sudo apt-get install g++ subversion
   sudo apt-get install qt4-qmake qt4-dev-tools libqtcore4 libqtgui4 \
@@ -39,7 +39,7 @@ If all Qt stuff is already available you can continue with step 2)
 To build your own Qt from scratch download a X11/Qt release from
 ftp.qt.nokia.com/qt/source. I recommend the release:
 
-ftp://ftp.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.7.2.tar.gz
+ftp://ftp.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.8.0.tar.gz
 
 I did the development with this release. For Cumulus you need the standard
 Qt4 libraries libQtCore, libQtGui, libQtNetwork and libQtXml. If you want to
@@ -49,12 +49,12 @@ during run of the configure script.
 Copy the Qt tar ball in a local directory of your Linux desktop and extract it
 with:
   
-  tar zxf qt-everywhere-opensource-src-4.7.2.tar.gz
+  tar zxf qt-everywhere-opensource-src-4.8.0.tar.gz
 
 Call the configure script in the root directory of your Qt source tree with the
 following options:
               
-  ./configure -prefix /opt/qt4.7.2 -opensource -no-largefile -no-qt3support\
+  ./configure -prefix /opt/qt4.8.0 -opensource -no-largefile -no-qt3support\
               -no-multimedia -no-audio-backend -no-phonon\
               -no-phonon-backend -no-webkit -no-javascript-jit -no-script\
               -no-scripttools -no-declarative -no-declarative-debug\
@@ -85,10 +85,10 @@ To use your own Qt version, you have to add the
 
 e.g. BASH example
 
-  PATH=/opt/qt4.7.2/bin:$PATH
+  PATH=/opt/qt4.8.0/bin:$PATH
   export PATH
 	
-  in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.7.2'.
+  in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.8.0'.
 
 The PATH variable can be displayed by calling 'echo $PATH' on a shell
 command line.
@@ -98,18 +98,18 @@ Step 2)
 Check if you can call 'g++ --version' from a shell command line. You should
 see some output like this:
 
-  gcc version 4.5.2 (Ubuntu/Linaro 4.5.2-8ubuntu4)
+  g++ (Ubuntu/Linaro 4.6.1-9ubuntu3) 4.6.1
   
 Check if you can call 'qmake -v' from a shell command line. You should
 see some output like this:
 
   QMake version 2.01a
-  Using Qt version 4.7.2 in /opt/qt4.7.2/lib
+  Using Qt version 4.8.0 in /opt/qt4.8.0/lib
    
 Check if you can call 'moc -v' from a shell command line. You should
 see some output like this:
 
-  Qt Meta Object Compiler version 62 (Qt 4.7.2)
+  Qt Meta Object Compiler version 63 (Qt 4.8.0)
    
 If both checks are successfully Qt is right installed. If a call fails or you
 see a version less than 4.7.0 check the PATH variable for containing the right
@@ -138,7 +138,7 @@ To checkout a certain release you have to use a url which starts with:
 
   https://svn.kflog.org/svn/repos/cumulus/qt4/tags/
   
-followed by a release tag e.g. Release_2.10.1. You can browse through the
+followed by a release tag e.g. Release_2.12.0. You can browse through the
 Cumulus subversion archive with your Internet browser to see the release tags.
 Type in the following url:
 
