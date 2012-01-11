@@ -29,8 +29,6 @@
 // set static member variable
 int AltimeterModeDialog::noOfInstances = 0;
 
-extern MapConfig *_globalMapConfig;
-
 AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   QDialog( parent, Qt::WindowStaysOnTopHint ),
   _mode( 0 ),
@@ -108,6 +106,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   spinLeveling->setMinimum( -1000 );
   spinLeveling->setMaximum( 1000 );
   spinLeveling->setButtonSymbols( QSpinBox::NoButtons );
+  spinLeveling->setAlignment( Qt::AlignHCenter );
 
   connect( spinLeveling, SIGNAL(valueChanged(const QString&)),
            this, SLOT(slotSpinValueChanged(const QString&)));
@@ -126,6 +125,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   spinQnh->setSingleStep( 1 );
   spinQnh->setSuffix( " hPa" );
   spinQnh->setButtonSymbols( QSpinBox::NoButtons );
+  spinQnh->setAlignment( Qt::AlignHCenter );
 
   connect( spinQnh, SIGNAL(valueChanged(const QString&)),
            this, SLOT(slotSpinValueChanged(const QString&)));
@@ -221,19 +221,13 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   signalMapperUnit->setMapping( _feet, 1 );
 
   // Map altitude QNH and leveling buttons
-  QSignalMapper* signalMapperButtons = new QSignalMapper( this );
-  connect( pplus, SIGNAL(clicked()), signalMapperButtons, SLOT(map()) );
-  signalMapperButtons->setMapping( pplus, 0 );
-  connect( plus, SIGNAL(clicked()), signalMapperButtons, SLOT(map()) );
-  signalMapperButtons->setMapping( plus, 1 );
-  connect( minus, SIGNAL(clicked()), signalMapperButtons, SLOT(map()) );
-  signalMapperButtons->setMapping( minus, 2 );
-  connect( mminus, SIGNAL(clicked()), signalMapperButtons, SLOT(map()) );
-  signalMapperButtons->setMapping( mminus, 3 );
+  connect( pplus, SIGNAL(pressed()), this, SLOT(slotChangeSpinValue()) );
+  connect( plus, SIGNAL(pressed()), this, SLOT(slotChangeSpinValue()) );
+  connect( minus, SIGNAL(pressed()), this, SLOT(slotChangeSpinValue()) );
+  connect( mminus, SIGNAL(pressed()), this, SLOT(slotChangeSpinValue()) );
 
   connect( signalMapper, SIGNAL(mapped(int)), this, SLOT(slotModeChanged(int)) );
   connect( signalMapperUnit, SIGNAL(mapped(int)), this, SLOT(slotUnitChanged(int)) );
-  connect( signalMapperButtons, SIGNAL(mapped(int)), this, SLOT(slotChangeSpinValue(int)) );
 
   connect( timeout, SIGNAL(timeout()), this, SLOT(reject()) );
   connect( ok, SIGNAL(clicked()), this, SLOT(accept()) );
@@ -343,60 +337,75 @@ void AltimeterModeDialog::slotAltitudeChanged(const Altitude& altitude )
   _altitudeDisplay->setText( altitude.getText( true, 0 ) );
 }
 
-void AltimeterModeDialog::slotChangeSpinValue( int button )
+void AltimeterModeDialog::slotChangeSpinValue()
 {
   // Look which spin box has the focus
   if( QApplication::focusWidget() == spinQnh )
     {
-      // qDebug() << "spinQnh has focus";
-      switch( button )
+      if( plus->isDown() || minus->isDown() )
         {
-        case 0: // ++ was pressed
-          spinQnh->setValue( spinQnh->value() + 5 );
-          break;
-        case 1: // + was pressed
-          spinQnh->setValue( spinQnh->value() + 1 );
-          break;
-        case 2: // - was pressed
-          spinQnh->setValue( spinQnh->value() - 1 );
-          break;
-        case 3: // -- was pressed
-          spinQnh->setValue( spinQnh->value() - 5 );
-          break;
+          // + or - is pressed
+          spinQnh->setSingleStep( 1 );
+        }
+      else if( pplus->isDown() || mminus->isDown() )
+        {
+          // ++ or -- is pressed
+          spinQnh->setSingleStep( 5 );
+        }
+      else
+        {
+          return;
         }
 
+      if( plus->isDown() || pplus->isDown() )
+        {
+          spinQnh->stepUp();
+        }
+      else
+        {
+          spinQnh->stepDown();
+        }
+
+      // Start repetition timer, to check, if button is longer pressed.
+       QTimer::singleShot(300, this, SLOT(slotChangeSpinValue()));
       return;
     }
 
   if( QApplication::focusWidget() == spinLeveling )
     {
+      int steps = 1;
 
-      int steps;
-
-      if( (Altitude::altitudeUnit) _unit == Altitude::meters )
-        {
-          steps = 1;
-        }
-      else
+      if( (Altitude::altitudeUnit) _unit != Altitude::meters )
         {
           steps = 3;
         }
 
-      switch( button )
+      if( plus->isDown() || minus->isDown() )
         {
-        case 0: // ++ was pressed
-          spinLeveling->setValue( spinLeveling->value() + steps*5 );
-          break;
-        case 1: // + was pressed
-          spinLeveling->setValue( spinLeveling->value() + steps );
-          break;
-        case 2: // - was pressed
-          spinLeveling->setValue( spinLeveling->value() - steps );
-          break;
-        case 3: // -- was pressed
-          spinLeveling->setValue( spinLeveling->value() - steps*5 );
-          break;
+          // + or - is pressed
+          spinLeveling->setSingleStep( steps );
         }
+      else if( pplus->isDown() || mminus->isDown() )
+        {
+          // ++ or -- is pressed
+          spinLeveling->setSingleStep( steps * 5 );
+        }
+      else
+        {
+          return;
+        }
+
+      if( plus->isDown() || pplus->isDown() )
+        {
+          spinLeveling->stepUp();
+        }
+      else
+        {
+          spinLeveling->stepDown();
+        }
+
+      // Start repetition timer, to check, if button is longer pressed.
+       QTimer::singleShot(300, this, SLOT(slotChangeSpinValue()));
 
       Altitude::setUnit( (Altitude::altitudeUnit) _unit );
 

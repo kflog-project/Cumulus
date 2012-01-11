@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Voellm
-**                   2008-2010 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,9 @@
  *
  * This dialog is the user interface for the altimeter settings.
  *
- * \date 2004-2010
+ * \date 2004-2012
+ *
+ * \version $Id$
  *
  */
 
@@ -153,7 +155,7 @@ private slots:
    * This slot is called if a button is pressed to change the content of the
    * related spin box which has the current focus.
    */
-  void slotChangeSpinValue( int button );
+  void slotChangeSpinValue();
 
 signals:
 
