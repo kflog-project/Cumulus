@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2009-2011 by Axel Pauli
+**                   2009-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -47,7 +47,7 @@ class SettingsPageAirspaceLoading;
  * loading. Filling, warnings and loading configuration are realized as separate
  * widgets, callable via buttons.
  *
- * \date 2002-2011
+ * \date 2002-2012
  *
  * \version $Id$
  *
@@ -227,7 +227,9 @@ class SettingsPageAirspace : public QWidget
  *
  * \brief Configuration settings for airspace fillings.
  *
- * \date 2002-2011
+ * \date 2002-2012
+ *
+ * \version $Id$
  *
  */
 class SettingsPageAirspaceFilling: public QDialog
@@ -279,6 +281,16 @@ class SettingsPageAirspaceFilling: public QDialog
    */
   void slot_change(int newStep);
 
+  /**
+  * This slot increments the value in the spin box which has the current focus.
+  */
+  void slotIncrementBox();
+
+  /**
+  * This slot decrements the value in the spin box which has the current focus.
+  */
+  void slotDecrementBox();
+
  private:
 
   QCheckBox* enableFilling;
@@ -288,7 +300,7 @@ class SettingsPageAirspaceFilling: public QDialog
   QRadioButton* s3;
   QRadioButton* s4;
 
-  QWidget*   separations;
+  QGroupBox*   separations;
 
   QSpinBox*  verticalNotNear;
   QSpinBox*  verticalNear;
@@ -298,6 +310,11 @@ class SettingsPageAirspaceFilling: public QDialog
   QSpinBox*  lateralNear;
   QSpinBox*  lateralVeryNear;
   QSpinBox*  lateralInside;
+
+  QPushButton *plus;
+  QPushButton *minus;
+  QPushButton *reset;
+  QPushButton *defaults;
 };
 
 //-------------------SettingsPageAirspaceWarnings-------------------------------
@@ -309,7 +326,7 @@ class SettingsPageAirspaceFilling: public QDialog
  *
  * \brief Configuration settings for airspace warnings.
  *
- * \date 2002-2011
+ * \date 2002-2012
  *
  * \version $Id$
  *
@@ -358,6 +375,16 @@ public:
    */
   void slot_change(int newStep);
 
+  /**
+  * This slot increments the value in the spin box which has the current focus.
+  */
+  void slotIncrementBox();
+
+  /**
+  * This slot decrements the value in the spin box which has the current focus.
+  */
+  void slotDecrementBox();
+
  private:
 
   /**
@@ -372,7 +399,7 @@ public:
   QRadioButton* s3;
   QRadioButton* s4;
 
-  QWidget*   separations;
+  QGroupBox* separations;
 
   QSpinBox*  horiWarnDist;
   QSpinBox*  horiWarnDistVN;
@@ -380,6 +407,10 @@ public:
   QSpinBox*  aboveWarnDistVN;
   QSpinBox*  belowWarnDist;
   QSpinBox*  belowWarnDistVN;
+
+  QPushButton *defaults;
+  QPushButton *plus;
+  QPushButton *minus;
 
   // here are the fetched configuration items stored to have control about
   // changes done by the user

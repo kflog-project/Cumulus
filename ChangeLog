@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-01-11 AP: All Qt default spinboxes are replaced by own improved solutions.
+                   That should make the operation more user friendly now.
+
 [o] 2012-01-10 AP: Class HSpinBox renamed to VarSpinBox. The new class can
                    arrange the buttons vertical or horizontal. That is controlled
                    by an enumeration parameter.

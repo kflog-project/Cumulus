@@ -771,12 +771,16 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
 
   // make the step width of the spin boxes configurable in fixed steps
   QGroupBox* stepGroup = new QGroupBox(tr("Spin step width"), this);
-  s1  = new QRadioButton(tr("1"), stepGroup);
+  s1 = new QRadioButton(tr("1"), stepGroup);
   s2 = new QRadioButton(tr("5"), stepGroup);
-  s3  = new QRadioButton(tr("10"), stepGroup);
-  s4  = new QRadioButton(tr("20"), stepGroup);
+  s3 = new QRadioButton(tr("10"), stepGroup);
+  s4 = new QRadioButton(tr("20"), stepGroup);
 
   s1->setChecked(true);
+  s1->setFocusPolicy(Qt::NoFocus);
+  s2->setFocusPolicy(Qt::NoFocus);
+  s3->setFocusPolicy(Qt::NoFocus);
+  s4->setFocusPolicy(Qt::NoFocus);
 
   QHBoxLayout* radioLayout = new QHBoxLayout(stepGroup);
   radioLayout->addWidget(s1);
@@ -786,23 +790,19 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
 
   topLayout->addWidget(stepGroup);
 
-  separations = new QWidget(this);
+  separations = new QGroupBox(tr("Distances"), this);
   topLayout->addWidget(separations);
 
-  QGridLayout * mVGroupLayout = new QGridLayout(separations);
   int row=0;
-  mVGroupLayout->setRowMinimumHeight ( row, 8 );
-  row++;
+  QGridLayout * mVGroupLayout = new QGridLayout(separations);
+  // mVGroupLayout->setContentsMargins(0, 0, 0, 0);
+  mVGroupLayout->setRowMinimumHeight ( row++, 8 );
 
   // suffix % appended in spin boxes as unit
   QString spinboxSuffix = " %";
 
-  //header
-  QLabel* lbl;
-
   // row 0
-  lbl = new QLabel(tr("Distance"), separations);
-  mVGroupLayout->addWidget(lbl, row, 0);
+  QLabel* lbl;
   lbl = new QLabel(tr("Not near"), separations);
   mVGroupLayout->addWidget(lbl, row, 1);
   lbl = new QLabel(tr("Near"), separations);
@@ -813,37 +813,57 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   mVGroupLayout->addWidget(lbl, row, 4);
   row++;
 
+  // take a bold font for the plus and minus sign
+  QFont bFont = font();
+  bFont.setBold(true);
+
+  // Create a plus and a minus button for spinbox operation
+  plus  = new QPushButton("+");
+  minus = new QPushButton("-");
+
+  plus->setToolTip( tr("Increase number value") );
+  minus->setToolTip( tr("Decrease number value") );
+
+  plus->setFont(bFont);
+  minus->setFont(bFont);
+
+  // The buttons have no focus policy to avoid a focus change during click of them.
+  plus->setFocusPolicy(Qt::NoFocus);
+  minus->setFocusPolicy(Qt::NoFocus);
+
   // row 1
   lbl = new QLabel(tr("Vertical"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
 
   verticalNotNear = new QSpinBox(separations);
   verticalNotNear->setRange( 0, 100 );
-  verticalNotNear->setButtonSymbols(QSpinBox::PlusMinus);
+  verticalNotNear->setButtonSymbols(QSpinBox::NoButtons);
   verticalNotNear->setSuffix( spinboxSuffix );
   verticalNotNear->setWrapping(true);
   mVGroupLayout->addWidget(verticalNotNear, row, 1);
 
   verticalNear = new QSpinBox(separations);
   verticalNear->setRange( 0, 100 );
-  verticalNear->setButtonSymbols(QSpinBox::PlusMinus);
+  verticalNear->setButtonSymbols(QSpinBox::NoButtons);
   verticalNear->setSuffix( spinboxSuffix );
   verticalNear->setWrapping(true);
   mVGroupLayout->addWidget(verticalNear, row, 2);
 
   verticalVeryNear = new QSpinBox(separations);
   verticalVeryNear->setRange( 0, 100 );
-  verticalVeryNear->setButtonSymbols(QSpinBox::PlusMinus);
+  verticalVeryNear->setButtonSymbols(QSpinBox::NoButtons);
   verticalVeryNear->setSuffix( spinboxSuffix );
   verticalVeryNear->setWrapping(true);
   mVGroupLayout->addWidget(verticalVeryNear, row, 3);
 
   verticalInside = new QSpinBox(separations);
   verticalInside->setRange( 0, 100 );
-  verticalInside->setButtonSymbols(QSpinBox::PlusMinus);
+  verticalInside->setButtonSymbols(QSpinBox::NoButtons);
   verticalInside->setSuffix( spinboxSuffix );
   verticalInside->setWrapping(true);
   mVGroupLayout->addWidget(verticalInside, row, 4);
+  mVGroupLayout->setColumnMinimumWidth( 5, 20 );
+  mVGroupLayout->addWidget(plus, row, 6);
   row++;
 
   // row 2
@@ -852,37 +872,39 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
 
   lateralNotNear = new QSpinBox(separations);
   lateralNotNear->setRange( 0, 100 );
-  lateralNotNear->setButtonSymbols(QSpinBox::PlusMinus);
+  lateralNotNear->setButtonSymbols(QSpinBox::NoButtons);
   lateralNotNear->setSuffix( spinboxSuffix );
   lateralNotNear->setWrapping(true);
   mVGroupLayout->addWidget(lateralNotNear, row, 1);
 
   lateralNear = new QSpinBox(separations);
   lateralNear->setRange( 0, 100 );
-  lateralNear->setButtonSymbols(QSpinBox::PlusMinus);
+  lateralNear->setButtonSymbols(QSpinBox::NoButtons);
   lateralNear->setSuffix( spinboxSuffix );
   lateralNear->setWrapping(true);
   mVGroupLayout->addWidget(lateralNear, row, 2);
 
   lateralVeryNear = new QSpinBox(separations);
   lateralVeryNear->setRange( 0, 100 );
-  lateralVeryNear->setButtonSymbols(QSpinBox::PlusMinus);
+  lateralVeryNear->setButtonSymbols(QSpinBox::NoButtons);
   lateralVeryNear->setSuffix( spinboxSuffix );
   lateralVeryNear->setWrapping(true);
   mVGroupLayout->addWidget(lateralVeryNear, row, 3);
 
   lateralInside = new QSpinBox(separations);
   lateralInside->setRange( 0, 100 );
-  lateralInside->setButtonSymbols(QSpinBox::PlusMinus);
+  lateralInside->setButtonSymbols(QSpinBox::NoButtons);
   lateralInside->setSuffix( spinboxSuffix );
   lateralInside->setWrapping(true);
   mVGroupLayout->addWidget(lateralInside, row, 4);
+  mVGroupLayout->addWidget(minus, row, 6);
   row++;
 
+  topLayout->addSpacing(20);
   topLayout->addStretch(10);
 
-  QPushButton* reset   = new QPushButton(tr("Reset"));
-  QPushButton* defaults = new QPushButton(tr("Default"));
+  reset    = new QPushButton(tr("Reset"));
+  defaults = new QPushButton(tr("Default"));
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox( Qt::Horizontal );
 
@@ -908,14 +930,82 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   signalMapper->setMapping(s3, 10);
   connect(s4, SIGNAL(clicked()), signalMapper, SLOT(map()));
   signalMapper->setMapping(s4, 20);
-
   connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(slot_change(int)));
+
+  connect(plus, SIGNAL(pressed()), this, SLOT(slotIncrementBox()));
+  connect(minus, SIGNAL(pressed()), this, SLOT(slotDecrementBox()));
 
   slot_load();
 }
 
 SettingsPageAirspaceFilling::~SettingsPageAirspaceFilling()
 {
+}
+
+void SettingsPageAirspaceFilling::slotIncrementBox()
+{
+  if( ! plus->isDown() )
+    {
+      return;
+    }
+
+  // Look which spin box has the focus.
+  QAbstractSpinBox* spinBoxList[] = {
+     verticalNotNear,
+     verticalNear,
+     verticalVeryNear,
+     verticalInside,
+     lateralNotNear,
+     lateralNear,
+     lateralVeryNear,
+     lateralInside
+  };
+
+  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
+    {
+      if( QApplication::focusWidget() == spinBoxList[i] )
+        {
+          spinBoxList[i]->stepUp();
+          spinBoxList[i]->setFocus();
+
+          // Start repetition timer, to check, if button is longer pressed.
+           QTimer::singleShot(250, this, SLOT(slotIncrementBox()));
+          return;
+        }
+    }
+}
+
+void SettingsPageAirspaceFilling::slotDecrementBox()
+{
+  if( ! minus->isDown() )
+    {
+      return;
+    }
+
+  // Look which spin box has the focus.
+  QAbstractSpinBox* spinBoxList[] = {
+     verticalNotNear,
+     verticalNear,
+     verticalVeryNear,
+     verticalInside,
+     lateralNotNear,
+     lateralNear,
+     lateralVeryNear,
+     lateralInside
+  };
+
+  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
+    {
+      if( QApplication::focusWidget() == spinBoxList[i] )
+        {
+          spinBoxList[i]->stepDown();
+          spinBoxList[i]->setFocus();
+
+          // Start repetition timer, to check, if button is longer pressed.
+          QTimer::singleShot(250, this, SLOT(slotDecrementBox()));
+          return;
+        }
+    }
 }
 
 /**
@@ -1022,6 +1112,8 @@ void SettingsPageAirspaceFilling::slot_save()
 void SettingsPageAirspaceFilling::slot_enabledToggled(bool enabled)
 {
   separations->setEnabled(enabled);
+  reset->setEnabled(enabled);
+  defaults->setEnabled(enabled);
 }
 
 /******************************************************************************/
@@ -1060,6 +1152,10 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   s4 = new QRadioButton("1000", stepGroup);
 
   s1->setChecked(true);
+  s1->setFocusPolicy(Qt::NoFocus);
+  s2->setFocusPolicy(Qt::NoFocus);
+  s3->setFocusPolicy(Qt::NoFocus);
+  s4->setFocusPolicy(Qt::NoFocus);
 
   QHBoxLayout* radioLayout = new QHBoxLayout(stepGroup);
   radioLayout->addWidget(s1);
@@ -1069,20 +1165,17 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
 
   topLayout->addWidget(stepGroup);
 
-  separations = new QWidget(this);
+  separations = new QGroupBox(tr("Distances"), this);
   topLayout->addWidget(separations);
 
-  QGridLayout* mVGroupLayout = new QGridLayout(separations);
-  int row=0;
-  mVGroupLayout->setRowMinimumHeight ( row, 8 );
-  row++;
+  int row = 0;
 
-  //header
-  QLabel* lbl;
+  QGridLayout* mVGroupLayout = new QGridLayout(separations);
+  mVGroupLayout->setRowMinimumHeight ( row++, 8 );
+
 
   // row 0
-  lbl = new QLabel(tr("Distance"), separations);
-  mVGroupLayout->addWidget(lbl, row, 0);
+  QLabel* lbl;
   lbl = new QLabel(tr("Lateral"), separations);
   mVGroupLayout->addWidget(lbl, row, 1 );
   lbl = new QLabel(tr("Above"), separations);
@@ -1091,13 +1184,31 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   mVGroupLayout->addWidget(lbl, row, 3 );
   row++;
 
+  // take a bold font for the plus and minus sign
+  QFont bFont = font();
+  bFont.setBold(true);
+
+  // Create a plus and a minus button for spinbox operation
+  plus  = new QPushButton("+");
+  minus = new QPushButton("-");
+
+  plus->setToolTip( tr("Increase number value") );
+  minus->setToolTip( tr("Decrease number value") );
+
+  plus->setFont(bFont);
+  minus->setFont(bFont);
+
+  // The buttons have no focus policy to avoid a focus change during click of them.
+  plus->setFocusPolicy(Qt::NoFocus);
+  minus->setFocusPolicy(Qt::NoFocus);
+
   //row 1
   lbl = new QLabel(tr("Near"), separations);
   mVGroupLayout->addWidget(lbl, row, 0);
 
   horiWarnDist = new QSpinBox(separations);
   horiWarnDist->setRange(0, 99999);
-  horiWarnDist->setButtonSymbols(QSpinBox::PlusMinus);
+  horiWarnDist->setButtonSymbols(QSpinBox::NoButtons);
   horiWarnDist->setSuffix( unit );
   horiWarnDist->setWrapping(true);
 
@@ -1105,17 +1216,19 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
 
   aboveWarnDist = new QSpinBox(separations);
   aboveWarnDist->setRange(0, 99999);
-  aboveWarnDist->setButtonSymbols(QSpinBox::PlusMinus);
+  aboveWarnDist->setButtonSymbols(QSpinBox::NoButtons);
   aboveWarnDist->setSuffix( unit );
   aboveWarnDist->setWrapping(true);
   mVGroupLayout->addWidget(aboveWarnDist, row, 2);
 
   belowWarnDist = new QSpinBox(separations);
   belowWarnDist->setRange(0, 99999);
-  belowWarnDist->setButtonSymbols(QSpinBox::PlusMinus);
+  belowWarnDist->setButtonSymbols(QSpinBox::NoButtons);
   belowWarnDist->setSuffix( unit );
   belowWarnDist->setWrapping(true);
   mVGroupLayout->addWidget(belowWarnDist, row, 3);
+  mVGroupLayout->setColumnMinimumWidth( 4, 20 );
+  mVGroupLayout->addWidget(plus, row, 5);
   row++;
 
   // row 2
@@ -1124,29 +1237,31 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
 
   horiWarnDistVN = new QSpinBox(separations);
   horiWarnDistVN->setRange(0, 99999);
-  horiWarnDistVN->setButtonSymbols(QSpinBox::PlusMinus);
+  horiWarnDistVN->setButtonSymbols(QSpinBox::NoButtons);
   horiWarnDistVN->setSuffix( unit );
   horiWarnDistVN->setWrapping(true);
   mVGroupLayout->addWidget(horiWarnDistVN, row, 1);
 
   aboveWarnDistVN = new QSpinBox(separations);
   aboveWarnDistVN->setRange(0, 99999);
-  aboveWarnDistVN->setButtonSymbols(QSpinBox::PlusMinus);
+  aboveWarnDistVN->setButtonSymbols(QSpinBox::NoButtons);
   aboveWarnDistVN->setSuffix( unit );
   aboveWarnDistVN->setWrapping(true);
   mVGroupLayout->addWidget(aboveWarnDistVN, row, 2);
 
   belowWarnDistVN = new QSpinBox(separations);
   belowWarnDistVN->setRange(0, 99999);
-  belowWarnDistVN->setButtonSymbols(QSpinBox::PlusMinus);
+  belowWarnDistVN->setButtonSymbols(QSpinBox::NoButtons);
   belowWarnDistVN->setSuffix( unit );
   belowWarnDistVN->setWrapping(true);
   mVGroupLayout->addWidget(belowWarnDistVN, row, 3);
+  mVGroupLayout->addWidget(minus, row, 5);
   row++;
 
+  topLayout->addSpacing(20);
   topLayout->addStretch(10);
 
-  QPushButton* defaults = new QPushButton(tr("Default"));
+  defaults = new QPushButton(tr("Default"));
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox( Qt::Horizontal );
   buttonBox->addButton( defaults, QDialogButtonBox::ActionRole );
@@ -1169,15 +1284,78 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   signalMapper->setMapping(s3, 100);
   connect(s4, SIGNAL(clicked()), signalMapper, SLOT(map()));
   signalMapper->setMapping(s4, 1000);
-
   connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(slot_change(int)));
+
+  connect(plus, SIGNAL(pressed()), this, SLOT(slotIncrementBox()));
+  connect(minus, SIGNAL(pressed()), this, SLOT(slotDecrementBox()));
 
   slot_load();
 }
 
-
 SettingsPageAirspaceWarnings::~SettingsPageAirspaceWarnings()
 {
+}
+
+void SettingsPageAirspaceWarnings::slotIncrementBox()
+{
+  if( ! plus->isDown() )
+    {
+      return;
+    }
+
+  QAbstractSpinBox* spinBoxList[] = {
+      horiWarnDist,
+      horiWarnDistVN,
+      aboveWarnDist,
+      aboveWarnDistVN,
+      belowWarnDist,
+      belowWarnDistVN
+  };
+
+  // Look which spin box has the focus.
+  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
+    {
+      if( QApplication::focusWidget() == spinBoxList[i] )
+        {
+          spinBoxList[i]->stepUp();
+          spinBoxList[i]->setFocus();
+
+          // Start repetition timer, to check, if button is longer pressed.
+           QTimer::singleShot(250, this, SLOT(slotIncrementBox()));
+          return;
+        }
+    }
+}
+
+void SettingsPageAirspaceWarnings::slotDecrementBox()
+{
+  if( ! minus->isDown() )
+    {
+      return;
+    }
+
+  QAbstractSpinBox* spinBoxList[] = {
+      horiWarnDist,
+      horiWarnDistVN,
+      aboveWarnDist,
+      aboveWarnDistVN,
+      belowWarnDist,
+      belowWarnDistVN
+  };
+
+  // Look which spin box has the focus.
+  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
+    {
+      if( QApplication::focusWidget() == spinBoxList[i] )
+        {
+          spinBoxList[i]->stepDown();
+          spinBoxList[i]->setFocus();
+
+          // Start repetition timer, to check, if button is longer pressed.
+          QTimer::singleShot(250, this, SLOT(slotDecrementBox()));
+          return;
+        }
+    }
 }
 
 /**
@@ -1304,6 +1482,7 @@ void SettingsPageAirspaceWarnings::slot_save()
 void SettingsPageAirspaceWarnings::slot_enabledToggled( bool enabled )
 {
   separations->setEnabled( enabled );
+  defaults->setEnabled( enabled );
 }
 
 /******************************************************************************/
