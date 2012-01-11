@@ -2,7 +2,9 @@
                           play.h - description
                              -------------------
     begin                : 11.01.2012
-    copyright            : (C) 2010 by Axel Pauli
+
+    copyright            : (C) 2012 by Axel Pauli
+
     email                : axel@kflog.org
 
     $Id$
