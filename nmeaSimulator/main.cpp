@@ -10,6 +10,7 @@
                                2010 Axel Pauli Reset language environment
                                                variables to prevent wrong floating
                                                point formatting.
+                               2012 Axel Pauli Play option added
 
     email                : axel@kflog.org
 
@@ -55,6 +56,7 @@
 #include "vector.h"
 #include "glider.h"
 #include "gpgsa.h"
+#include "play.h"
 #include "sentence.h"
 
 using namespace std;
@@ -70,8 +72,9 @@ static    float  radius=120.0;    // default circle radius
 static    float  altitude=1000.0; // default altitude
 static    float  climb=0.0;       // default climb rate zero
 static    int    Time=3600;       // lets fly one hour per default
-static    int    Pause=1000;       // default pause is 1000ms
+static    int    Pause=1000;      // default pause is 1000ms
 static    bool   gotAltitude = false;
+static    QString playFile;   // file to be played
 static    QString confFile;   // configuration file name
 
 static    QString sentences[10];
@@ -145,9 +148,7 @@ void scanConfig( QString cfg )
 
           if (NS=='S')
             lat = -lat;
-          else if(NS=='N')
-            ;
-          else
+          else if(NS!='N')
             cerr << "Invalid Latitude Coordinate N|S possible not: " << NS << endl;
         }
       else
@@ -169,9 +170,7 @@ void scanConfig( QString cfg )
 
           if (EW=='W')
             lon = -lon;
-          else if(EW=='E')
-            ;
-          else
+          else if(EW!='E')
             cerr << "Invalid Longitude Coordinate E|S possible not: " << EW << endl;
         }
       else
@@ -236,6 +235,10 @@ void scanConfig( QString cfg )
           sentences[i] = cfg.mid(10).trimmed();
         }
     }
+  else if( cfg.left(5) == "file=" )
+    {
+      playFile = cfg.mid(5);
+    }
   else
     {
       cerr << "Unknown parameter: '"
@@ -246,8 +249,7 @@ void scanConfig( QString cfg )
 
 void safeConfig()
 {
-  FILE* file;
-  file = fopen(confFile.toLatin1().data(), "w");
+  FILE* file = fopen(confFile.toLatin1().data(), "w");
 
   fprintf(file,"lat=%f\n", (float)lat );
   fprintf(file,"lon=%f\n", (float)lon );
@@ -262,6 +264,7 @@ void safeConfig()
   fprintf(file,"dir=%s\n", direction.toLatin1().data() );
   fprintf(file,"device=%s\n", device.toLatin1().data() );
   fprintf(file,"pause=%d\n", (int)Pause );
+  fprintf(file,"file=%s\n", playFile.toLatin1().data() );
 
   for( int i = 0; i < 10; i++ )
     {
@@ -283,7 +286,7 @@ void readConfig()
        << confFile.toLatin1().data() << endl;
 
   FILE* file;
-  char line[128];
+  char line[256];
   file = fopen(confFile.toLatin1().data(), "r");
 
   if (file )
@@ -326,12 +329,13 @@ int main(int argc, char **argv)
     {
       char *prog = basename(argv[0]);
 
-      cout << "NMEA GPS Simulator 1.3.7 for Cumulus, 2003-2008 E. Voellm, 2009-2011 A. Pauli (GPL)" << endl << endl
+      cout << "NMEA GPS Simulator 1.4.0 for Cumulus, 2003-2008 E. Voellm, 2009-2012 A. Pauli (GPL)" << endl << endl
            << "Usage: " << prog << " str|cir|pos|gpos [params]" << endl << endl
            << "Parameters: str:  Straight Flight "<< endl
            << "            cir:  Circling "<< endl
            << "            pos:  Fixed Position e.g. standstill in a wave (climb works)"<< endl
            << "            gpos: Fixed Position on ground "<< endl
+           << "            play: Plays a recorded NMEA file. GPRMC is required to be contained!" << endl
            << "            params:"<< endl
            << "              lat=dd:mm:ss[N|S]  or lat=dd.mmmm  Initial Latitude" << endl
            << "              lon=ddd:mm:ss[E|W] or lon=dd.mmmm  Initial Longitude" << endl
@@ -345,6 +349,7 @@ int main(int argc, char **argv)
            << "              time=[s]: duration of operation" << endl
            << "              pause=[ms]: pause between to send periods" << endl
            << "              device=[path to named pipe]: write into this pipe, default is /tmp/nmeasim" << endl
+           << "              file=[path to file]: to be played" << endl
            << "            Note: all values can also be specified as float, like 110.5 " << endl << endl
            << "Example: " << prog << " str lat=48:31:48N lon=009:24:00E speed=125 winddir=270" << endl << endl
            << "NMEA output is written into named pipe '" << device.toLatin1().data() << "'." << endl
@@ -410,6 +415,31 @@ int main(int argc, char **argv)
       cout << "Mode:      Fixed Position in Flight (Standstill in a wave) " << endl;
     }
 
+  const int fifo = init_io();
+
+  if( fifo < 0 )
+    {
+      return -1; // device error
+    }
+
+  if( mode == "play" )
+    {
+      cout << "Mode:      Play a recorded file" << endl;
+      cout << "File:      " << playFile.toLatin1().data() << endl;
+      cout << "Pause:     " << Pause << " ms" << endl;
+      cout << "Device:    " << device.toLatin1().data() << endl;
+
+      Play play( playFile, fifo );
+
+      play.startPlaying(Pause);
+
+      close( fifo );
+
+      // safe current parameters to file
+      safeConfig();
+      return 0;
+    }
+
   cout << "Latitude:  " << lat << endl;
   cout << "Longitude: " << lon << endl;
   cout << "Speed:     " << speed << " km/h" << endl;
@@ -436,15 +466,8 @@ int main(int argc, char **argv)
         }
     }
 
-  const int fd = init_io();
-
-  if( fd < 0 )
-    {
-      return -1; // device error
-    }
-
   glider myGl( lat, lon, speed, heading, wind, winddirTrue, altitude, climb );
-  myGl.setFd( fd );
+  myGl.setFd( fifo );
   myGl.setCircle( radius, direction );
 
   // @AP: This is used for the GSA output simulation
@@ -527,23 +550,20 @@ int main(int argc, char **argv)
         }
 
       GPGSA myGPGSA;
-      myGPGSA.send( satIds, pdop, hdop, vdop, fd );
+      myGPGSA.send( satIds, pdop, hdop, vdop, fifo );
 
       for( int i = 0; i < 10; i++ )
         {
           if( ! sentences[i].isEmpty() )
             {
               Sentence mySentence;
-              mySentence.send( sentences[i], fd );
+              mySentence.send( sentences[i], fifo );
             }
         }
     }
 
   // safe current parameters to file
   safeConfig();
-
-  close( fd );
-  fifoExit(-1);
-
+  close( fifo );
   return 0;
 }
