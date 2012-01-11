@@ -20,12 +20,12 @@
  *
  * \author Axel Pauli
  *
- * \brief A spinbox layout with buttons at the left and right side or on
- *        Bottom and top of the display.
+ * \brief A variable spinbox layout with buttons at the left and right side or on
+ *        bottom and top of the display.
  *
- * A spinbox layout with buttons at the left-right side or bottom-top of the
- * display. The included spinbox can be retrieved by using the \ref spinBox
- * method.
+ * A variable spinbox layout with buttons at the left-right side or bottom-top
+ *  of the display. The included spinbox can be retrieved by using the \ref spinBox
+ * method. The text of the spinbox is aligned as AlignHCenter.
  *
  * \date 2012
  *
@@ -60,8 +60,11 @@ class VarSpinBox : public QWidget
    * \param spinBox The instance of a spinbox, derived from QAbstractSpinBox.
    *
    * \param parent The parent widget.
+   *
+   * \param buttonOrder The arrangements of the spinbox buttons. The default
+   *                    value is horizontal.
    */
-  VarSpinBox( QAbstractSpinBox* spinBox, QWidget* parent=0, enum ButtonOrder=Horizontal );
+  VarSpinBox( QAbstractSpinBox* spinBox, QWidget* parent=0, enum ButtonOrder buttonOrder=Horizontal);
 
   virtual ~VarSpinBox();
 

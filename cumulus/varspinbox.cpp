@@ -28,7 +28,7 @@ VarSpinBox::VarSpinBox( QAbstractSpinBox* spinBox, QWidget* parent, enum ButtonO
 
   if( spinBox == 0 )
     {
-      qWarning() << "HSpinBox::HSpinBox(): no spinbox instance passed!";
+      qWarning() << "HSpinBox::HSpinBox(): No spinbox instance passed!";
       return;
     }
 
@@ -39,6 +39,7 @@ VarSpinBox::VarSpinBox( QAbstractSpinBox* spinBox, QWidget* parent, enum ButtonO
 
   if( buttonOrder == Vertical )
     {
+      // Arrange the buttons vertically.
       lbox = new QVBoxLayout;
     }
   else
@@ -47,6 +48,7 @@ VarSpinBox::VarSpinBox( QAbstractSpinBox* spinBox, QWidget* parent, enum ButtonO
       lbox = new QHBoxLayout;
     }
 
+  // Reset all spacing used by the layout
   lbox->setSpacing(0);
   lbox->setContentsMargins( 0, 0, 0, 0 );
 
@@ -93,6 +95,7 @@ void VarSpinBox::showEvent( QShowEvent *event )
 
   if( m_buttonOrder == Vertical )
     {
+      // The buttons should have the same size as the spinbox.
       m_plus->setMaximumSize( m_spinBox->size() );
       m_plus->setMaximumSize( m_spinBox->size() );
 
