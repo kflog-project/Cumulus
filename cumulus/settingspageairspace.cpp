@@ -790,7 +790,13 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
 
   topLayout->addWidget(stepGroup);
 
+#ifndef MAEMO5
   separations = new QGroupBox(tr("Distances"), this);
+#else
+  // The dialog widget is too small in MAEMO 5 for a group box.
+  separations = new QWidget(this);
+#endif
+
   topLayout->addWidget(separations);
 
   int row=0;
@@ -1165,14 +1171,19 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
 
   topLayout->addWidget(stepGroup);
 
+#ifndef MAEMO5
   separations = new QGroupBox(tr("Distances"), this);
+#else
+  // The dialog widget is too small in MAEMO 5 for a group box.
+  separations = new QWidget(this);
+#endif
+
   topLayout->addWidget(separations);
 
   int row = 0;
 
   QGridLayout* mVGroupLayout = new QGridLayout(separations);
   mVGroupLayout->setRowMinimumHeight ( row++, 8 );
-
 
   // row 0
   QLabel* lbl;

@@ -300,7 +300,11 @@ class SettingsPageAirspaceFilling: public QDialog
   QRadioButton* s3;
   QRadioButton* s4;
 
-  QGroupBox*   separations;
+#ifndef MAEMO5
+  QGroupBox* separations;
+#else
+  QWidget* separations;
+#endif
 
   QSpinBox*  verticalNotNear;
   QSpinBox*  verticalNear;
@@ -399,7 +403,11 @@ public:
   QRadioButton* s3;
   QRadioButton* s4;
 
+#ifndef MAEMO5
   QGroupBox* separations;
+#else
+  QWidget* separations;
+#endif
 
   QSpinBox*  horiWarnDist;
   QSpinBox*  horiWarnDistVN;
