@@ -26,10 +26,34 @@
 #include <QFile>
 #include <QString>
 
+/**
+ * \class Play
+ *
+ * \author Axel Pauli
+ *
+ * \brief A class to play GPS data from a file.
+ *
+ * This class reads GPS sentence data from a file and writes it into
+ * a fifo. After every written $GPRMC sentence a pause is made. The read
+ * data file must contain such $GPRMC sentences!
+ *
+ * \date 2012
+ *
+ * \version $Id$
+ *
+*/
+
 class Play
 {
   public:
 
+    /**
+     * Constructor of class.
+     *
+     * \param fileName Path to file to be read in
+     *
+     * \fifo Fifo file descriptor, used to write the GPS data out.
+     */
     Play( QString& fileName, int fifo ) :
       m_pause(0),
       m_fifo(fifo),
@@ -37,6 +61,11 @@ class Play
       {
       }
 
+    /**
+     * Starts the playing of the GPS data.
+     *
+     * \param pause Pause after each $GPRMC sentence in ms. Default is 1000ms.
+     */
     int startPlaying( const int pause=1000 );
 
     void setFileName( QString& newFileName )
@@ -55,7 +84,6 @@ class Play
     int m_fifo;  // fifo descriptor
 
     QString m_fileName; // path to NMEA file
-
 };
 
 #endif /* PLAY_H_ */
