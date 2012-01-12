@@ -64,6 +64,11 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   _agl->setEnabled( true );
   _ahl->setEnabled( true );
 
+  _msl->setFocusPolicy( Qt::NoFocus );
+  _std->setFocusPolicy( Qt::NoFocus );
+  _agl->setFocusPolicy( Qt::NoFocus );
+  _ahl->setFocusPolicy( Qt::NoFocus );
+
   QHBoxLayout* mainLayout = new QHBoxLayout( this );
 
   QVBoxLayout* controlLayout = new QVBoxLayout;
@@ -79,11 +84,13 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
 
   QGroupBox* altUnit = new QGroupBox( this );
   _meter = new QRadioButton( tr( "Meters" ), altUnit );
-  _feet  = new QRadioButton( tr( "Feet" ), altUnit );
-
   _meter->setChecked( true );
   _meter->setEnabled( true );
+  _meter->setFocusPolicy( Qt::NoFocus );
+
+  _feet  = new QRadioButton( tr( "Feet" ), altUnit );
   _feet->setEnabled( true );
+  _feet->setFocusPolicy( Qt::NoFocus );
 
   QHBoxLayout* radioLayout1 = new QHBoxLayout( altUnit );
   radioLayout1->addWidget( _meter );
