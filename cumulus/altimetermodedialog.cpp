@@ -434,15 +434,10 @@ void AltimeterModeDialog::slotSpinValueChanged( const QString& text )
 
 bool AltimeterModeDialog::changesDone()
 {
-  if( _unit != saveUnit ||
-      _mode != saveMode ||
-      saveLeveling != spinLeveling->value() ||
-      saveQnh != spinQnh->value() )
-    {
-      return true;
-    }
-
-  return false;
+  return( _unit != saveUnit ||
+          _mode != saveMode ||
+          saveLeveling != spinLeveling->value() ||
+          saveQnh != spinQnh->value() );
 }
 
 void AltimeterModeDialog::accept()
