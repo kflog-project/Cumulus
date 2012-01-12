@@ -108,6 +108,7 @@ QString Distance::getUnitText()
       break;
     default:
       unit = "m";
+      break;
     }
 
   return unit;
@@ -194,6 +195,7 @@ QString Distance::getText(double meters, bool withUnit, int precision)
     default:
       dist = meters;
       defprec = 0;
+      break;
     }
 
   if( precision < 0 )
@@ -252,6 +254,7 @@ double Distance::convertToMeters(double dist)
         break;
       default:
         res = dist;
+        break;
     }
 
   return res;

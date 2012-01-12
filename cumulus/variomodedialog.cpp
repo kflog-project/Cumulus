@@ -24,8 +24,6 @@
 #include "generalconfig.h"
 #include "layout.h"
 
-extern MapConfig *_globalMapConfig;
-
 // set static member variable
 int VarioModeDialog::noOfInstances = 0;
 

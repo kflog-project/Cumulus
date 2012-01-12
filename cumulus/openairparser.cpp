@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2005      by André Somers
- **                   2009-2011 by Axel Pauli
+ **                   2009-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -45,7 +45,6 @@
 // version used for files created from OpenAir data
 #define FILE_VERSION_AIRSPACE_C 202
 
-extern MapContents*  _globalMapContents;
 extern MapMatrix*    _globalMapMatrix;
 
 OpenAirParser::OpenAirParser()

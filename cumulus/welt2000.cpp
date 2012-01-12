@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2006-2011 by Axel Pauli, axel@kflog.org
+ **   Copyright (c):  2006-2012 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -48,7 +48,10 @@
 // version used for files created from welt2000 data
 #define FILE_VERSION_AIRFIELD_C 205
 
+#ifdef BOUNDING_BOX
 extern MapContents*  _globalMapContents;
+#endif
+
 extern MapMatrix*    _globalMapMatrix;
 
 // set static member variable

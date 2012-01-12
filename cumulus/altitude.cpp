@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002 by André Somers
-                               2010 by Axel Pauli
+                               2010-2012 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -39,13 +39,11 @@ Altitude::Altitude(double meters) : Distance(meters)
 {}
 
 /** copy constructor */
-Altitude::Altitude (const Altitude& alt) : Distance()
+Altitude::Altitude (const Altitude& alt) : Distance(alt)
 {
-  _dist    = alt._dist;
-  _isValid = alt._isValid;
 }
 
-Altitude::Altitude (const Distance& dst): Distance (dst)
+Altitude::Altitude (const Distance& dst) : Distance (dst)
 {}
 
 Altitude::~Altitude()
@@ -75,6 +73,7 @@ QString Altitude::getText(double meter, bool withUnit, int precision)
     default:
       dist=meter;
       defprec=0;
+      break;
   }
 
   if( precision < 0 )
@@ -115,18 +114,20 @@ double Altitude::convertToMeters(double dist)
   double res;
 
   switch (_altitudeUnit)
-  {
+    {
     case meters:
-      res=dist;
+      res = dist;
       break;
     case feet:
-      res=dist*mFromFeet;
+      res = dist * mFromFeet;
       break;
     case flightlevel:
-      res=dist*(mFromFeet/100.0);
+      res = dist * (mFromFeet / 100.0);
+      break;
     default:
-      res=dist;
-  }
+      res = dist;
+      break;
+      }
 
   return res;
 }
@@ -136,19 +137,20 @@ QString Altitude::getUnitText()
   QString unit;
 
   switch (_altitudeUnit)
-  {
-    case meters:
-      unit="m";
-      break;
-    case feet:
-      unit="ft";
-      break;
-    case flightlevel:
-      unit="FL";
-      break;
-    default:
-      unit="m";
-  }
+    {
+      case meters:
+        unit = "m";
+        break;
+      case feet:
+        unit = "ft";
+        break;
+      case flightlevel:
+        unit = "FL";
+        break;
+      default:
+        unit = "m";
+        break;
+    }
 
   return unit;
 }
