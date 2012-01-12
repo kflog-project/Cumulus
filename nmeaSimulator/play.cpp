@@ -49,7 +49,13 @@ int Play::startPlaying( const int pause )
 
   while( ! inStream.atEnd() )
     {
-      QString line = inStream.readLine();
+      QString line = inStream.readLine().trimmed();
+
+      if( line.isEmpty() )
+        {
+          continue;
+        }
+
       line += "\r\n";
 
       int size = write( m_fifo, line.toAscii().data(), line.length() );
