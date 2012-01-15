@@ -64,9 +64,12 @@ class Play
     /**
      * Starts the playing of the GPS data.
      *
+     * \param skip Lines to be skipped in the file to be played.
+     *
      * \param pause Pause after each $GPRMC sentence in ms. Default is 1000ms.
+     *
      */
-    int startPlaying( const int pause=1000 );
+    int startPlaying( const int skip=0, const int pause=1000 );
 
     void setFileName( QString& newFileName )
     {

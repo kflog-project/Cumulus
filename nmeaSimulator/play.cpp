@@ -27,8 +27,9 @@
 
 #include "play.h"
 
-int Play::startPlaying( const int pause )
+int Play::startPlaying( const int skip, const int pause )
 {
+  int m_skip = skip;
   m_pause = pause;
 
   if( m_fileName.isEmpty() )
@@ -50,6 +51,12 @@ int Play::startPlaying( const int pause )
   while( ! inStream.atEnd() )
     {
       QString line = inStream.readLine().trimmed();
+
+      if( m_skip > 0 )
+        {
+          m_skip--;
+          continue;
+        }
 
       if( line.isEmpty() )
         {

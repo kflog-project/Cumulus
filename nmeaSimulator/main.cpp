@@ -75,6 +75,7 @@ static    int    Time=3600;       // lets fly one hour per default
 static    int    Pause=1000;      // default pause is 1000ms
 static    bool   gotAltitude = false;
 static    QString playFile;   // file to be played
+static    int    skip=0;      // lines to be skipped in the file
 static    QString confFile;   // configuration file name
 
 static    QString sentences[10];
@@ -239,6 +240,16 @@ void scanConfig( QString cfg )
     {
       playFile = cfg.mid(5);
     }
+  else if( cfg.left(5) == "skip=" )
+    {
+      bool ok;
+      skip = cfg.mid(5).toInt(&ok);
+
+      if( ! ok )
+        {
+          skip = 0;
+        }
+    }
   else
     {
       cerr << "Unknown parameter: '"
@@ -265,6 +276,7 @@ void safeConfig()
   fprintf(file,"device=%s\n", device.toLatin1().data() );
   fprintf(file,"pause=%d\n", (int)Pause );
   fprintf(file,"file=%s\n", playFile.toLatin1().data() );
+  fprintf(file,"skip=%d\n", skip );
 
   for( int i = 0; i < 10; i++ )
     {
@@ -350,6 +362,7 @@ int main(int argc, char **argv)
            << "              pause=[ms]: pause between to send periods" << endl
            << "              device=[path to named pipe]: write into this pipe, default is /tmp/nmeasim" << endl
            << "              file=[path to file]: to be played" << endl
+           << "              skip=[number]: lines to be skipped in the play file" << endl
            << "            Note: all values can also be specified as float, like 110.5 " << endl << endl
            << "Example: " << prog << " str lat=48:31:48N lon=009:24:00E speed=125 winddir=270" << endl << endl
            << "NMEA output is written into named pipe '" << device.toLatin1().data() << "'." << endl
@@ -426,12 +439,13 @@ int main(int argc, char **argv)
     {
       cout << "Mode:      Play a recorded file" << endl;
       cout << "File:      " << playFile.toLatin1().data() << endl;
+      cout << "Skip:      " << skip << endl;
       cout << "Pause:     " << Pause << " ms" << endl;
       cout << "Device:    " << device.toLatin1().data() << endl;
 
       Play play( playFile, fifo );
 
-      play.startPlaying(Pause);
+      play.startPlaying(skip, Pause);
 
       close( fifo );
 
