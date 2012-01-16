@@ -31,12 +31,12 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/time.h>
-#include <time.h>
+#include <ctime>
 #include <cmath>
 
 #include <QtCore>
@@ -186,6 +186,7 @@ void GpsNmea::resetDataObjects()
   _lastUtc = QDateTime();
 
   _ignoreConnectionLost = false;
+  _gprmcSeen = false;
 
 #ifdef FLARM
   pflaaIsReceiving = false;
@@ -545,6 +546,8 @@ void GpsNmea::__ExtractGprmc( const QStringList& slst )
       return;
     }
 
+  _gprmcSeen = true;
+
   //qDebug("%s",slst[2].toLatin1().data());
   if( slst[2] == "A" )
     { /* Data status A=OK, V=warning */
@@ -683,8 +686,15 @@ void GpsNmea::__ExtractGpgga( const QStringList& slst )
     }
 
   if ( slst[6] != "0" && ! slst[6].isEmpty() )
-    { /*a value of 0 means invalid fix and we don't need that one */
-      fixOK( "GGA" );
+    {
+      /*a value of 0 means invalid fix and we don't need that one */
+      if( _gprmcSeen == false )
+        {
+          // Report fix info only, if GPRMC was not received. I saw
+          // sometimes different reportings. GGA said OK, RMC said NOK.
+          fixOK( "GGA" );
+        }
+
       __ExtractTime(slst[1]);
       __ExtractCoord(slst[2],slst[3],slst[4],slst[5]);
       __ExtractAltitude(slst[9],slst[10]);
@@ -692,7 +702,12 @@ void GpsNmea::__ExtractGpgga( const QStringList& slst )
     }
   else if( slst[6] == "0" )
     {
-      fixNOK( "GGA" );
+      if( _gprmcSeen == false )
+        {
+          // Report fix info only, if GPRMC was not received. I saw
+          // sometimes different reportings. GGA said OK, RMC said NOK.
+          fixNOK( "GGA" );
+        }
     }
 }
 

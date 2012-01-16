@@ -3,7 +3,7 @@
                             -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2010 by Axel Pauli
+                               2008-2012 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -28,7 +28,9 @@
  * to the last know data. Furthermore it is managing the connection to a GPS
  * receiver connected by RS232, USB or to a Maemo GPS daemon process.
  *
- * \date 2002-2010
+ * \date 2002-2012
+ *
+ * \version $Id$
  */
 
 #ifndef GPS_NMEA_H
@@ -696,6 +698,8 @@ class GpsNmea : public QObject
     GpsCon* serial;
     /** NMEA log file */
     QFile* nmeaLogFile;
+    /** Flag to indicate receive of GPRMC. */
+    bool _gprmcSeen;
 
 #ifdef FLARM
 
