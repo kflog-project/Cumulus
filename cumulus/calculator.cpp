@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c): 2002      by André Somers
- **                  2008-2011 by Axel Pauli
+ **                  2008-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -1141,7 +1141,7 @@ void Calculator::determineFlightStatus()
   /*
     WARNING: THIS CODE IS HIGHLY EXPERIMENTAL AND UNTESTED IN FLIGHT!
 
-    In principle, we are determining the flight status from the last 20
+    In principle, we are determining the flight status from the last 6
     seconds of flight. We may need to adjust this, as this is highly
     experimental code. However, if we already have a flight status, we
     only need to check if it has changed. If that is the case, we set
@@ -1157,12 +1157,10 @@ void Calculator::determineFlightStatus()
   */
 
   /*
-    We define a maximum turn rate of 10 degrees per second. This should
-    allow for course-corrections.  This can be a bit more advanced to
-    allow for temporary changes in circling speed in order to better
-    center a thermal.
+    We define a maximum deviation of 15 degrees from the cruising course.
+    This should be allowed for course corrections.
   */
-#define MAXCRUISEANGDIFF 8 //see above
+#define MAXCRUISEANGDIFF 15 //see above
 
   /*
     We define a minimum turn rate of 4 degrees per second (that is,
@@ -1187,7 +1185,7 @@ void Calculator::determineFlightStatus()
     analysis. Note that the actual time difference between the first
     and the last sample used may differ from this time frame.
   */
-#define TIMEFRAME 10
+#define TIMEFRAME 6
 
   if( samplelist.count() < TIMEFRAME )
     {
@@ -1210,10 +1208,8 @@ void Calculator::determineFlightStatus()
       return;
     }
 
-  // we are not doing a full analysis if we already have a flight mode. It suffices to check some
-  // basic criteria.
-  // lastFlightMode=unknown; //force complete evaluation for now.
-  // qDebug("Anglediff: %d",angleDiff(lastHead, prevHead));
+  // We are not doing a full analysis if we already have a flight mode.
+  // It suffices to check some basic criteria.
   switch (lastFlightMode)
     {
     case standstill: // we are not moving at all!
@@ -1232,18 +1228,19 @@ void Calculator::determineFlightStatus()
       break;
 
     case cruising: // we are flying from point A to point B
-      if (abs(angleDiff(lastHead, _cruiseDirection)) <  MAXCRUISEANGDIFF &&
+      if (abs(angleDiff(lastHead, _cruiseDirection)) <=  MAXCRUISEANGDIFF &&
           samplelist[0].vector.getSpeed().getMps() > 0.5 )
         {
           return;
         }
       else
         {
+          // We left the cruising corridor. A new analysis has to be started.
           newFlightMode = unknown;
           break;
         }
 
-    case circlingL:
+    case circlingR:
       //turning left means: the heading is decreasing
       if (angleDiff(prevHead, lastHead) > (-MINTURNANGDIFF * timediff))
         {
@@ -1255,7 +1252,7 @@ void Calculator::determineFlightStatus()
           return; //no change in flight mode
         }
 
-    case circlingR:
+    case circlingL:
       //turning right means: the heading is increasing
       if (angleDiff(prevHead, lastHead) < (MINTURNANGDIFF * timediff))
         {
@@ -1274,59 +1271,86 @@ void Calculator::determineFlightStatus()
 
   if ( newFlightMode == unknown )
     {
-      //we need some real analysis
-      QTime tmp = samplelist[0].time.addSecs(-TIMEFRAME); // reference time
-      int ls = 1;
+      // qDebug() << "Flight mode unknown --> Start Analysis";
 
-      while ((samplelist[ls].time > tmp) && ( ls < samplelist.count()-1) )
+      // we need some real analysis
+      QTime refTime = samplelist[0].time.addSecs(-TIMEFRAME);
+      int samples = 1;
+
+      while ((samplelist[samples].time > refTime) && ( samples < samplelist.count() - 1) )
         {
-          ls++;
+          samples++;
         }
 
-      //ls now contains the index of the oldest sample we will use for this analysis.
-      //Newer samples have lower indices!
+      if( samples < 2 )
+        {
+          // At least we need 2 samples in our time window.
+          return;
+        }
+
+      // samples now contains the index of the oldest sample we will use for this analysis.
+      // Newer samples have lower indices!
 
       //initialize some values we will be needing...
       bool mayBeL = true;     //this may be a left turn (that is, no big dir change to the right)
       bool mayBeR = true;     //this may be a right turn (that is, no big dir change to the left)
       int totalDirChange = 0; //total heading change. If cruising, this will be low, if turning, it will be high
-      int maxSpeed = 0;       //maximum speed obtained in this set of samples
-      int aDiff = 0;          //difference in heading between two samples
+      double maxSpeed = 0.0;  //maximum speed obtained in this set of samples
+      int angDiff = 0;        //difference in heading between two samples
       int totalAltChange = 0; //total change in altitude (absolute)
       int maxAltChange = 0;   //maximum change of altitude between samples.
       int altChange = 0;
       bool break_analysis = false; //flag to indicate we can stop further analysis.
 
-      //loop through the samples to get some basic data we can use to distinguish flight modes
-      for (int i = ls-1; i >= 0; i--)
+      // loop through the samples to get some basic data we can use to distinguish flight modes
+      for (int i = 0; i < samples; i++)
         {
-          // aDiff can be positive or negative according to the turn direction
-          aDiff = angleDiff( samplelist[i+1].vector.getAngleDeg(), samplelist[i].vector.getAngleDeg() );
-          // qDebug("analysis: angle1=%d, angle2=%d, aDiff=%d",int(samplelist[i+1].vector.getAngleDeg()),int(samplelist[i].vector.getAngleDeg()), aDiff);
-          //qDebug("analysis: position=(%d, %d)", samplelist->at(i)->position.x(),samplelist->at(i)->position.y() );
+          if( i < (samples - 1) )
+            {
+              // angDiff can be positive or negative according to the turn direction
+              angDiff = (int) rint(angleDiff( samplelist[i].vector.getAngleDeg(), samplelist[i+1].vector.getAngleDeg() ));
+
+              altChange = int( samplelist[i].altitude.getMeters() - samplelist[i+1].altitude.getMeters() );
+              //qDebug("analysis: position=(%d, %d)", samplelist->at(i)->position.x(),samplelist->at(i)->position.y() );
+            }
+          else
+            {
+              angDiff = 0;
+              altChange = 0;
+            }
 
           // That is the average value of the direction change in degree.
-          // can be positive or negation.
-          totalDirChange += aDiff;
+          // Can be positive or negation.
+          totalDirChange += angDiff;
 
-          maxSpeed = qMax( maxSpeed, (int) rint(samplelist[i].vector.getSpeed().getMps()));
-          altChange = int(samplelist[i].altitude.getMeters() - samplelist[i+1].altitude.getMeters());
+          maxSpeed = qMax( maxSpeed, samplelist[i].vector.getSpeed().getMps() );
           totalAltChange += altChange;
           maxAltChange = qMax(abs(altChange), maxAltChange);
 
-          if ( aDiff > MINTURNANGDIFF )
-            {
-              mayBeL = false;
-            }
-          else if ( aDiff < -MINTURNANGDIFF )
+          if ( angDiff > MINTURNANGDIFF )
             {
               mayBeR = false;
             }
+          else if ( angDiff < -MINTURNANGDIFF )
+            {
+              mayBeL = false;
+            }
 
-          // qDebug("  analysis: sample: %d, speed: %f",i,samplelist->at(i)->vector.getKph());
+#if 0
+          qDebug("#Analysis(%d): angle1=%d, angle2=%d, angDiff=%d, speed=%f, alt1=%f, alt2=%f, altDiff=%d, tac=%d, tdc=%d, Vmax=%f",
+                 i,
+                 samplelist[i].vector.getAngleDeg(),
+                 (i < samples - 1) ? samplelist[i+1].vector.getAngleDeg() : 0,
+                 angDiff,
+                 samplelist[i].vector.getSpeed().getMps(),
+                 samplelist[i].altitude.getMeters(),
+                 (i < samples - 1) ? samplelist[i+1].altitude.getMeters() : 0,
+                 altChange,
+                 totalAltChange,
+                 totalDirChange,
+                 maxSpeed);
+#endif
         }
-
-      // qDebug ("analysis: aDiff=%d, absADiff=%d, totalDirChange=%d, maxSpeed=%d, totalAltChange=%d, maxAltChange=%d, maybeLeft=%d, maybeRight=%d", aDiff, abs(aDiff), totalDirChange, maxSpeed, totalAltChange, maxAltChange, int(mayBeL), int(mayBeR));
 
       // try standstill. We are using a value > 0 because of possible GPS errors.
       /*
@@ -1336,53 +1360,53 @@ void Calculator::determineFlightStatus()
       if ( maxSpeed < 0.5 ) // if we get under 0.5m/s for maximum speed, we may be standing still
         {
           // check if we had any significant altitude changes
-          if ( (abs(totalAltChange) / ls) <= MAXALTDRIFTAVG )
+          if ( (abs(totalAltChange) / (samples-1)) <= MAXALTDRIFTAVG )
             {
               newFlightMode = standstill;
               break_analysis = true;
-            }
-        }
-
-      if ( !break_analysis )
-        {
-          // Get the time difference between the first and the last sample.
-          // This might not be the 20 secs we were planning to use at all!
-          timediff = samplelist[ls-1].time.secsTo(samplelist[0].time);
-
-          // see if we might be cruising...
-          if (mayBeL && mayBeR)
-            {
-              if (abs(totalDirChange) < 2 * timediff)
-                {
-                  // our average speed should be at least 5 m/s to qualify for cruising
-                  newFlightMode = cruising;
-                  break_analysis = true;
-                  _cruiseDirection = samplelist[0].vector.getAngleDeg();
-                  // qDebug("Cruise direction: %d.",_cruiseDirection);
-                }
+              // qDebug() << "-->StandStill";
             }
         }
 
       if (!break_analysis)
         {
+          // Get the time difference between the first and the last sample.
+          // This might not be the 20 secs we were planning to use at all!
+          timediff = samplelist[samples-1].time.secsTo(samplelist[0].time);
+
           // So, we are not standing still, nor are we cruising. Circling then maybe?
           if ( abs(totalDirChange) > (MINTURNANGDIFF * timediff) )
             {
-              // if circling, we should have a minimum average turnrate of
+              // if circling, we should have a minimum average turn rate of
               // MINTURNANGDIFF degrees per second
               if (mayBeL && !mayBeR)
                 {
                   newFlightMode = circlingL;
+                  break_analysis = true;
+                  // qDebug() << "-->circlingL";
                 }
 
               if (mayBeR && !mayBeL)
                 {
                   newFlightMode = circlingR;
+                  break_analysis = true;
+                  // qDebug() << "-->circlingR";
                 }
 
               // we have a new mode: we are circling! If neither of the above are true, we are doing something
               // funny, and the flight mode 'unknown' still applies, so we may also quit analyzing...
             }
+        }
+
+      if ( !break_analysis )
+        {
+          // If all other modes are not true we assume the cruise mode.
+          newFlightMode = cruising;
+          break_analysis = true;
+
+          // save current heading for cruise check.
+          _cruiseDirection = samplelist[0].vector.getAngleDeg();
+          // qDebug("-->Cruise direction: %d.", _cruiseDirection);
         }
     }
 
@@ -1390,8 +1414,8 @@ void Calculator::determineFlightStatus()
     {
       lastFlightMode = newFlightMode;
       samplelist[0].marker = ++_marker;
-      // qDebug("new FlightMode: %d",lastFlightMode);
       flightModeChanged( newFlightMode );
+      // qDebug( "new FlightMode: %d", lastFlightMode );
     }
 }
 
