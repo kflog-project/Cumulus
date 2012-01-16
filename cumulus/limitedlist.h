@@ -34,7 +34,7 @@
  * The LimitedList template class implements a QList based value list
  * with a limited number of items. If more items are added, the least
  * important item will be deleted automatically. The item to delete
- * it determined by the getLeastImportantItemIndex() member function,
+ * is determined by the getLeastImportantItemIndex() member function,
  * which may be overridden by child classes if needed. The default
  * implementation removes the oldest item from the list.
  *
