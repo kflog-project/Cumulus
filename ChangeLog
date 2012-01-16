@@ -15,6 +15,15 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-01-16 AP: Method determineFlightStatus of Calculator class modified.
+                   The flight status detection should now work safer and faster
+                   as before.
+
+[+] 2012-01-15 AP: New option skip added to NMEA simulator. This option allows
+                   to skip a number of lines in a file to be played.
+
+[*] 2012-01-11 AP: Cumulus 2.12.1 released     
+
 [+] 2012-01-11 AP: New option play added to NMEA simulator. This option allows
                    to use a NMEA data file as data source.
 
