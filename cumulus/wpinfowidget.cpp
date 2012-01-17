@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2011 by Axel Pauli
+ **                   2008-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -33,8 +33,6 @@
 #include "sonne.h"
 #include "gpsnmea.h"
 
-extern MapConfig    *_globalMapConfig;
-extern MapContents  *_globalMapContents;
 extern Calculator   *calculator;
 
 WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
@@ -94,7 +92,13 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
 
   // Activate keyboard shortcut cancel to close the window too
   scClose = new QShortcut( this );
+
+#ifndef ANDROID
   scClose->setKey( Qt::Key_Escape );
+#else
+  scClose->setKey( Qt::Key_Close );
+#endif
+
   connect( scClose, SIGNAL(activated()),
            this, SLOT( slot_SwitchBack() ));
 
