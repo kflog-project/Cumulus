@@ -646,8 +646,15 @@ void Map::paintEvent(QPaintEvent* event)
 
   // We copy always the content from the m_pixPaintBuffer to the paint device.
   QPainter p(this);
+
+#ifdef ANDROID
+  // dumb painting, otherwise dragging won't work
+  Q_UNUSED( event )
+  p.drawPixmap( 0,0, m_pixPaintBuffer);
+#else
   p.drawPixmap( event->rect().left(), event->rect().top(), m_pixPaintBuffer,
                 0, 0, event->rect().width(), event->rect().height() );
+#endif
 
   // qDebug("Map.paintEvent(): return");
 }
@@ -1019,7 +1026,6 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
     }
 
   // set mutex to block recursive entries and unwanted data modifications.
-
   setMutex(true);
 
   // Check, if a resize event is queued. In this case it must be
@@ -1089,9 +1095,10 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
   // unlock mutex
   setMutex(false);
 
-  // Repaints the widget directly by calling paintEvent() immediately,
-  // unless updates are disabled or the widget is hidden.
-  // @AP: Qt 4.3 complains about it, when paintEvent is called directly
+#ifdef ANDROID
+  // Overshoot animation was stopped, reset it
+  _globalMapView->resetScrolling();
+#endif
 
   //QDateTime dt = QDateTime::currentDateTime();
   //QString dtStr = dt.toString(Qt::ISODate);
