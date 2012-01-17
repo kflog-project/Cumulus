@@ -5,7 +5,7 @@
 
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2011 by Axel Pauli
+                               2008-2012 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -278,12 +278,41 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   sideLayout->addWidget( mcBar, 1 );
 
   //--------------------------------------------------------------------
-  //layout for the map
+#ifdef ANDROID
+  // scroll area for the map, used by Android
+  mapArea = new QScrollArea(this);
+  mapArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  mapArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  mapArea->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
+  mapArea->setFrameStyle( QFrame::NoFrame );
+
+  centerLayout->addWidget(mapArea, 10);
+  _theMap = new Map(mapArea);
+  mapArea->setWidget(_theMap);
+  mapScroller = QScroller::scroller(mapArea);
+  QScrollerProperties sp = mapScroller->scrollerProperties();
+  sp.setScrollMetric(QScrollerProperties::OvershootDragDistanceFactor, 0.5);
+  sp.setScrollMetric(QScrollerProperties::MaximumVelocity, QPointF(0.0, 0.0));
+  sp.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy, QScrollerProperties::OvershootAlwaysOn);
+  sp.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy, QScrollerProperties::OvershootAlwaysOn);
+  mapScroller->setScrollerProperties(sp);
+
+  connect( mapScroller, SIGNAL(stateChanged(QScroller::State)),
+            this, SLOT( slot_scrollerStateChanged(QScroller::State) ) );
+
+  QScroller::grabGesture(mapArea, QScroller::LeftMouseButtonGesture);
+
+#else
+
+  // normal layout for the map
   QBoxLayout *MapLayout = new QHBoxLayout;
   centerLayout->addLayout(MapLayout);
   centerLayout->setStretchFactor( MapLayout, 1 );
   _theMap = new Map(this);
   MapLayout->addWidget(_theMap, 10);
+
+#endif
+
   _theMap->setMode(Map::headUp);
 
 #ifdef FLARM
@@ -766,6 +795,10 @@ void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
   if( status != GpsNmea::notConnected )
     {
       _statusGps->setText( tr( "GPS" ) );
+#ifdef ANDROID
+      QScroller::ungrabGesture(mapArea);
+      mapArea->ensureVisible(0,0);
+#endif
     }
   else
     {
@@ -773,6 +806,10 @@ void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
       _heading->setValue( "-" );
       _speed->setValue( "-" );
       _altitude->setValue( "-" );
+
+#ifdef ANDROID
+      QScroller::grabGesture(mapArea, QScroller::LeftMouseButtonGesture);
+#endif
     }
 
   // Set the color background according to the current GPS status.
@@ -1185,6 +1222,10 @@ void MapView::slot_AltimeterDialog()
            amDlg, SLOT( slotAltitudeChanged( const Altitude& ) ) );
 
   amDlg->setVisible(true);
+
+#ifdef ANDROID
+  MainWindow::mainWindow()->forceFocus();
+#endif
 }
 
 /** Called, if altimeter mode has been changed. */
@@ -1226,6 +1267,10 @@ void MapView::slot_VarioDialog()
            calculator->getVario(), SLOT( slotNewTEKAdjust( int ) ) );
 
   vmDlg->setVisible(true);
+
+#ifdef ANDROID
+  MainWindow::mainWindow()->forceFocus();
+#endif
 }
 
 /** Opens the GPS status dialog */
@@ -1263,6 +1308,10 @@ void MapView::slot_gliderFlightDialog()
            calculator, SLOT(slot_WaterAndBugs(const int, const int)) );
 
   gfDlg->setVisible(true);
+
+#ifdef ANDROID
+  MainWindow::mainWindow()->forceFocus();
+#endif
 }
 
 /**
@@ -1273,3 +1322,33 @@ void MapView::message( const QString& message, int ms )
 {
   _statusbar->showMessage( message, ms );
 }
+
+#ifdef ANDROID
+
+void MapView::slot_scrollerStateChanged(QScroller::State new_s)
+{
+  if (new_s != QScroller::Scrolling)
+    {
+      return;
+    }
+
+  extern MapMatrix* _globalMapMatrix;
+
+  QPointF statePoint = mapScroller->overshootPosition();
+  qDebug( "mapScroller: calling pause()" );
+  mapScroller->pause();
+  QPoint delta = QPoint( (int)statePoint.x(), (int)statePoint.y() );
+  QPoint mapCenter = QPoint( _theMap->width()/2, _theMap->height()/2);
+  mapCenter += delta;
+  QPoint newWgs = _globalMapMatrix->mapToWgs(mapCenter);
+  newWgs = QPoint(newWgs.y(),newWgs.x());
+  calculator->slot_Position( newWgs );
+}
+
+/** Reset the QScroller after pausing and map redraw */
+void MapView::resetScrolling()
+{
+  mapScroller->stop();
+}
+
+#endif
