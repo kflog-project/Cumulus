@@ -260,4 +260,4 @@ DEFINES += ANDROID
 
 LIBS += -lstdc++
 
-TRANSLATIONS = cumulus_de.ts cumulus_it.ts
+TRANSLATIONS = cumulus_de.ts
