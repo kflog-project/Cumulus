@@ -31,6 +31,14 @@
 #include "gpsnmea.h"
 #include "layout.h"
 
+#ifdef ANDROID
+
+#include "androidevents.h"
+
+extern int _root_window;
+
+#endif
+
 extern MapContents *_globalMapContents;
 
 ConfigWidget::ConfigWidget(QWidget *parent) :
@@ -40,6 +48,10 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   setAttribute( Qt::WA_DeleteOnClose );
   setWindowTitle( tr("General Settings") );
 
+#ifdef ANDROID
+  fullSize = parent->size();
+#endif
+
   QTabWidget* tabWidget = new QTabWidget( this );
 
   QScrollArea* sppArea = new QScrollArea( tabWidget );
@@ -47,10 +59,15 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   sppArea->setFrameStyle( QFrame::NoFrame );
   spp = new SettingsPagePersonal( this );
   sppArea->setWidget( spp );
+#ifdef ANDROID
+  QScroller::grabGesture(sppArea, QScroller::LeftMouseButtonGesture);
+#endif
   tabWidget->addTab( sppArea, tr( "Personal" ) );
 
+#ifndef ANDROID
   spg = new SettingsPageGPS( this );
   tabWidget->addTab( spg, tr( "GPS" ) );
+#endif
 
   spgl = new SettingsPageGlider( this );
   tabWidget->addTab( spgl, tr( "Gliders" ) );
@@ -126,9 +143,18 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
   connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
 
+#ifdef ANDROID
+  QShortcut* scCancel = new QShortcut ( this );
+  scCancel->setKey( Qt::Key_Close );
+  scCancel->setKey(Qt::Key_Close);
+  connect( scCancel, SIGNAL( activated() ), this, SLOT( reject() ) );
+#endif
+
   connect(this, SIGNAL(load()), spp, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spgl, SLOT(slot_load()));
+#ifndef ANDROID
   connect(this, SIGNAL(load()), spg, SLOT(slot_load()));
+#endif
   connect(this, SIGNAL(load()), spt, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spms, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spmo, SLOT(slot_load()));
@@ -143,7 +169,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
 
   connect(this, SIGNAL(save()), spp, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spgl, SLOT(slot_save()));
+#ifndef ANDROID
   connect(this, SIGNAL(save()), spg, SLOT(slot_save()));
+#endif
   connect(this, SIGNAL(save()), spt, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spms, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spmo, SLOT(slot_save()));
@@ -186,11 +214,13 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   connect(spa, SIGNAL(airspaceColorsUpdated()),
           _globalMapConfig, SLOT(slotReloadAirspaceColors()));
 
+#ifndef ANDROID
   connect(spg, SIGNAL(startNmeaLog()),
           GpsNmea::gps, SLOT(slot_openNmeaLogFile()));
 
   connect(spg, SIGNAL(endNmeaLog()),
           GpsNmea::gps, SLOT(slot_closeNmeaLogFile()));
+#endif
 
 #ifdef INTERNET
 
@@ -213,6 +243,12 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
 
   slot_LoadCurrent();
   tabWidget->setCurrentWidget( spp );
+
+#ifdef ANDROID
+  resize(fullSize);
+  MainWindow::mainWindow()->forceFocus();
+  _root_window = 0;
+#endif
 }
 
 ConfigWidget::~ConfigWidget()
@@ -310,6 +346,10 @@ void ConfigWidget::accept()
 
   emit closeConfig();
   QWidget::close();
+
+#ifdef ANDROID
+  _root_window = 1;
+#endif
 }
 
 /** Called if the Cancel button is pressed */
@@ -345,4 +385,43 @@ void ConfigWidget::reject()
   emit reload();
   emit closeConfig();
   QWidget::close();
+
+#ifdef ANDROID
+  _root_window = 1;
+#endif
 }
+
+#ifdef ANDROID
+
+bool ConfigWidget::eventFilter( QObject *o , QEvent *e )
+{
+  // qDebug("ConfigWidget::eventFilter() is called with event type %d", e->type());
+  if( o == _globalMainWindow )
+    {
+      if (e->type() == QEvent::User+2)
+        {
+          KeyboardActionEvent *keyboardActionEvent = static_cast<KeyboardActionEvent *>(e);
+
+          if (keyboardActionEvent->action() == 1)
+            {
+              resize( fullSize.width(), fullSize.height()/2 ); // crude estimation of soft keyboard size
+              ((QScrollArea*)tabWidget->currentWidget())->ensureWidgetVisible( QApplication::focusWidget() );
+            }
+          else
+            {
+              resize( fullSize );
+            }
+
+          return true;
+        }
+      else
+        {
+          return false;
+        }
+    }
+  else
+    {
+      return QWidget::eventFilter(o, e);
+    }
+  }
+#endif
