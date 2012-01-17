@@ -156,6 +156,10 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   taskListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
   taskListWidget->setColumnCount(4);
 
+#ifdef ANDROID
+  QScroller::grabGesture(taskListWidget, QScroller::LeftMouseButtonGesture);
+#endif
+
   QStringList sl;
   sl << tr("No.")
      << tr("Name")
