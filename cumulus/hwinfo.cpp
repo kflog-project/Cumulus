@@ -224,6 +224,10 @@ bool HwInfo::isMounted( const QString& mountPoint )
     ...
   */
 
+#ifdef ANDROID
+  // Availability of data directory was checked initially
+  return true;
+#else
   bool result = false;
 
   struct mntent *fs;
@@ -243,4 +247,5 @@ bool HwInfo::isMounted( const QString& mountPoint )
   endmntent( fp );
 
   return result;
+#endif
 }
