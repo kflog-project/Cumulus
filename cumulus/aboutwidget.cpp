@@ -47,6 +47,11 @@ AboutWidget::AboutWidget( QWidget *parent ) :
   tabWidget->addTab( team, tr("Team") );
   tabWidget->addTab( disclaimer, tr("Disclaimer") );
 
+#ifdef ANDROID
+  QScroller::grabGesture(team, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(disclaimer, QScroller::LeftMouseButtonGesture);
+#endif
+
   QPushButton *close = new QPushButton( tr("Ok"), this );
 
   QHBoxLayout *hbox = new QHBoxLayout;
