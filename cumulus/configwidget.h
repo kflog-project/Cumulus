@@ -33,6 +33,7 @@
 #ifndef _ConfigWidget_h
 #define _ConfigWidget_h
 
+#include <QWidget>
 #include <QStringList>
 
 #include "settingspagepersonal.h"
@@ -51,6 +52,8 @@
 #include "settingspageglider.h"
 #include "settingspagelooknfeel.h"
 #include "settingspageterraincolors.h"
+
+class QSize;
 
 class ConfigWidget : public QWidget
 {
@@ -71,6 +74,12 @@ public:
    * Destructor
    */
   virtual ~ConfigWidget();
+
+protected:
+
+#ifdef ANDROID
+  bool eventFilter( QObject *o , QEvent *e );
+#endif
 
 public slots:
 
@@ -160,6 +169,11 @@ private:
   SettingsPageLookNFeel*     splnf;
 
   bool loadConfig; // controls loading of configuration data
+
+#ifndef ANDROID
+  QSize fullSize;
+#endif
+
 };
 
 #endif
