@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -72,6 +72,14 @@ AirfieldListView::AirfieldListView( QVector<enum MapContents::MapContentsListID>
   QShortcut* scSelect = new QShortcut( this );
   scSelect->setKey( Qt::Key_Return );
   connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
+
+#ifdef ANDROID
+  // Activate keyboard shortcut Close
+  QShortcut* scClose = new QShortcut( this );
+  scClose->setKey( Qt::Key_Close );
+  connect( scClose, SIGNAL(activated()), this, SLOT( slot_Close() ));
+#endif
+
 }
 
 AirfieldListView::~AirfieldListView()
