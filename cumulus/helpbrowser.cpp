@@ -31,6 +31,9 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
   setAttribute(Qt::WA_DeleteOnClose);
 
   browser = new QTextBrowser(this);
+#ifdef ANDROID
+  QScroller::grabGesture(browser, QScroller::LeftMouseButtonGesture);
+#endif
   browser->setOpenLinks( true );
   browser->setOpenExternalLinks( true );
 
