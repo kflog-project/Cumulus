@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2008      by Josua Dietze
-**                   2009-2011 by Axel Pauli
+**                   2009-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -48,6 +48,10 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
 
   filter = new ListViewFilter( list, this );
   filter->setObjectName( "ListViewFilter" );
+#ifdef ANDROID
+  list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+  QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+#endif
 
   up = new QPushButton( this );
   up->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
