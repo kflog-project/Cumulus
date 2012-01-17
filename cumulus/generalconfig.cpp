@@ -37,6 +37,10 @@ using namespace std;
 #include "maemostyle.h"
 #endif
 
+#ifdef ANDROID
+#include "androidstyle.h"
+#endif
+
 // define NULL static instance
 GeneralConfig* GeneralConfig::_theInstance = 0;
 
@@ -89,10 +93,14 @@ void GeneralConfig::load()
 
   _mapSideFrameColor     = QColor( value("MapSideFrameColor", "#687ec6").toString() );
 
-#ifndef MAEMO
+#ifdef MAEMO
   _guiStyle              = value("Style", "Plastique").toString();
 #else
+#ifdef ANDROID
+  _guiStyle              = value("Style", "Android").toString();
+#else
   _guiStyle              = value("Style", "Plastique").toString();
+#endif
 #endif
 
   _guiFont               = value("Font", "").toString();
@@ -115,7 +123,7 @@ void GeneralConfig::load()
   _forceDrawingDistance = value("forceLowAirspaceDrawingDistance", 150.0).toDouble();
   _airspaceFileList     = value("FileList", QStringList(QString("All"))).toStringList();
 
-#ifndef MAEMO
+#if ! defined (MAEMO) && ! defined (ANDROID)
   _airspaceLineWidth = value( "AirSpaceLineWidth", 5 ).toInt();
 #else
   _airspaceLineWidth = value( "AirSpaceLineWidth", 7 ).toInt();
@@ -243,7 +251,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Task");
-#ifndef MAEMO
+#if ! defined (MAEMO) && ! defined (ANDROID)
   _targetLineWidth = value( "TargetLineWidth", 5 ).toInt();
 #else
   _targetLineWidth = value( "TargetLineWidth", 7 ).toInt();
@@ -1430,6 +1438,10 @@ QString GeneralConfig::getUserDefaultRootDir()
 {
   QString root = QDir::homePath();
 
+#ifdef ANDROID
+  root = "/sdcard";
+#endif
+
 #ifdef MAEMO
 
   QStringList paths;
@@ -1600,6 +1612,12 @@ void GeneralConfig::setOurGuiStyle()
 {
   qDebug() << "Setting GuiStyle:" << _guiStyle;
 
+#ifdef ANDROID
+
+  QStyle* style = QApplication::setStyle( _guiStyle );
+  QApplication::setStyle( new AndroidProxyStyle( style ) );
+
+#else
 #ifdef MAEMO
 
   QStyle* style = QApplication::setStyle( _guiStyle );
@@ -1609,6 +1627,7 @@ void GeneralConfig::setOurGuiStyle()
 
   QApplication::setStyle( _guiStyle );
 
+#endif
 #endif
 }
 
