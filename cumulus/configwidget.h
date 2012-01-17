@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2007-2010 by Axel Pauli
+**                   2007-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,9 @@
  *
  * This is the general configuration widget for Cumulus.
  *
- * \date 2002-2010
+ * \date 2002-2012
+ *
+ * \version $Id$
  */
 
 #ifndef _ConfigWidget_h
@@ -34,7 +36,11 @@
 #include <QStringList>
 
 #include "settingspagepersonal.h"
+
+#ifndef ANDROID
 #include "settingspagegps.h"
+#endif
+
 #include "settingspageunits.h"
 #include "settingspagemapobjects.h"
 #include "settingspagemapsettings.h"
@@ -139,7 +145,11 @@ private:
   SettingsPagePersonal*      spp;
   SettingsPageGlider*        spgl;
   SettingsPageTask*          spt;
+
+#ifndef ANDROID
   SettingsPageGPS*           spg;
+#endif
+
   SettingsPageMapSettings*   spms;
   SettingsPageTerrainColors* sptc;
   SettingsPageMapObjects*    spmo;
