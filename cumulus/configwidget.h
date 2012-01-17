@@ -54,6 +54,7 @@
 #include "settingspageterraincolors.h"
 
 class QSize;
+class QTabWidget;
 
 class ConfigWidget : public QWidget
 {
@@ -150,6 +151,9 @@ signals:
 
 private:
 
+  // Overall widget
+  QTabWidget* m_tabWidget;
+
   // Single configuration widgets
   SettingsPagePersonal*      spp;
   SettingsPageGlider*        spgl;
@@ -170,7 +174,7 @@ private:
 
   bool loadConfig; // controls loading of configuration data
 
-#ifndef ANDROID
+#ifdef ANDROID
   QSize fullSize;
 #endif
 

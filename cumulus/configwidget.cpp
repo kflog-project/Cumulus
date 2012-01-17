@@ -34,8 +34,9 @@
 #ifdef ANDROID
 
 #include "androidevents.h"
+#include "mainwindow.h"
 
-extern int _root_window;
+extern int         _root_window;
 
 #endif
 
@@ -52,9 +53,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   fullSize = parent->size();
 #endif
 
-  QTabWidget* tabWidget = new QTabWidget( this );
+  m_tabWidget = new QTabWidget( this );
 
-  QScrollArea* sppArea = new QScrollArea( tabWidget );
+  QScrollArea* sppArea = new QScrollArea( m_tabWidget );
   sppArea->setWidgetResizable( true );
   sppArea->setFrameStyle( QFrame::NoFrame );
   spp = new SettingsPagePersonal( this );
@@ -62,62 +63,62 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
 #ifdef ANDROID
   QScroller::grabGesture(sppArea, QScroller::LeftMouseButtonGesture);
 #endif
-  tabWidget->addTab( sppArea, tr( "Personal" ) );
+  m_tabWidget->addTab( sppArea, tr( "Personal" ) );
 
 #ifndef ANDROID
   spg = new SettingsPageGPS( this );
-  tabWidget->addTab( spg, tr( "GPS" ) );
+  m_tabWidget->addTab( spg, tr( "GPS" ) );
 #endif
 
   spgl = new SettingsPageGlider( this );
-  tabWidget->addTab( spgl, tr( "Gliders" ) );
+  m_tabWidget->addTab( spgl, tr( "Gliders" ) );
 
   spms = new SettingsPageMapSettings( this );
-  tabWidget->addTab( spms, tr( "Map Settings" ) );
+  m_tabWidget->addTab( spms, tr( "Map Settings" ) );
 
   spmo = new SettingsPageMapObjects( this );
-  tabWidget->addTab( spmo, tr( "Map Objects" ) );
+  m_tabWidget->addTab( spmo, tr( "Map Objects" ) );
 
-  QScrollArea* sptcArea = new QScrollArea( tabWidget );
+  QScrollArea* sptcArea = new QScrollArea( m_tabWidget );
   sptcArea->setWidgetResizable( true );
   sptcArea->setFrameStyle( QFrame::NoFrame );
   sptc = new SettingsPageTerrainColors( this );
   sptcArea->setWidget( sptc );
-  tabWidget->addTab( sptcArea, tr( "Terrain Colors" ) );
+  m_tabWidget->addTab( sptcArea, tr( "Terrain Colors" ) );
 
-  QScrollArea* spsArea = new QScrollArea( tabWidget );
+  QScrollArea* spsArea = new QScrollArea( m_tabWidget );
   spsArea->setWidgetResizable( true );
   spsArea->setFrameStyle( QFrame::NoFrame );
   spt = new SettingsPageTask( this );
   spsArea->setWidget( spt );
-  tabWidget->addTab( spsArea, tr( "Task" ) );
+  m_tabWidget->addTab( spsArea, tr( "Task" ) );
 
-  QScrollArea* spafArea = new QScrollArea( tabWidget );
+  QScrollArea* spafArea = new QScrollArea( m_tabWidget );
   spafArea->setWidgetResizable( true );
   spafArea->setFrameStyle( QFrame::NoFrame );
   spaf = new SettingsPageAirfields( this );
   spafArea->setWidget( spaf );
-  tabWidget->addTab( spafArea, tr( "Airfields" ) );
+  m_tabWidget->addTab( spafArea, tr( "Airfields" ) );
 
-  QScrollArea* asArea = new QScrollArea( tabWidget );
+  QScrollArea* asArea = new QScrollArea( m_tabWidget );
   asArea->setWidgetResizable( true );
   asArea->setFrameStyle( QFrame::NoFrame );
   spa = new SettingsPageAirspace( this );
   asArea->setWidget( spa );
-  tabWidget->addTab( asArea, tr( "Airspaces" ) );
+  m_tabWidget->addTab( asArea, tr( "Airspaces" ) );
 
   spu = new SettingsPageUnits( this );
-  tabWidget->addTab( spu, tr( "Units" ) );
+  m_tabWidget->addTab( spu, tr( "Units" ) );
 
-  QScrollArea* infoArea = new QScrollArea( tabWidget );
+  QScrollArea* infoArea = new QScrollArea( m_tabWidget );
   infoArea->setWidgetResizable( true );
   infoArea->setFrameStyle( QFrame::NoFrame );
   spi = new SettingsPageInformation( this );
   infoArea->setWidget( spi );
-  tabWidget->addTab( infoArea, tr( "Information" ) );
+  m_tabWidget->addTab( infoArea, tr( "Information" ) );
 
   splnf = new SettingsPageLookNFeel( this );
-  tabWidget->addTab( splnf, tr( "Look&&Feel" ) );
+  m_tabWidget->addTab( splnf, tr( "Look&&Feel" ) );
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
@@ -236,13 +237,13 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
 #endif
 
   QHBoxLayout *contentLayout = new QHBoxLayout;
-  contentLayout->addWidget( tabWidget );
+  contentLayout->addWidget( m_tabWidget );
   contentLayout->addLayout( buttonBox );
 
   setLayout( contentLayout );
 
   slot_LoadCurrent();
-  tabWidget->setCurrentWidget( spp );
+  m_tabWidget->setCurrentWidget( spp );
 
 #ifdef ANDROID
   resize(fullSize);
@@ -405,7 +406,7 @@ bool ConfigWidget::eventFilter( QObject *o , QEvent *e )
           if (keyboardActionEvent->action() == 1)
             {
               resize( fullSize.width(), fullSize.height()/2 ); // crude estimation of soft keyboard size
-              ((QScrollArea*)tabWidget->currentWidget())->ensureWidgetVisible( QApplication::focusWidget() );
+              ((QScrollArea*)m_tabWidget->currentWidget())->ensureWidgetVisible( QApplication::focusWidget() );
             }
           else
             {
