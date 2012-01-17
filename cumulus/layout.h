@@ -31,14 +31,14 @@
 #ifndef LAYOUT_H_
 #define LAYOUT_H_
 
-#ifndef MAEMO
-#define IconSize 26
-#define ButtonSize 40
-#define MinFontSize 14
-#else
+#if defined (MAEMO) || defined (ANDROID)
 #define IconSize 32
 #define ButtonSize 80
 #define MinFontSize 20
+#else
+#define IconSize 26
+#define ButtonSize 40
+#define MinFontSize 14
 #endif
 
 #endif /* LAYOUT_H_ */
