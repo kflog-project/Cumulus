@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2010 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2007-2012 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,7 +16,7 @@
 ************************************************************************/
 
 #include <cmath>
-#include <time.h>
+#include <ctime>
 
 #include <QtGui>
 
@@ -31,15 +31,12 @@
 #include "sonne.h"
 #include "time_cu.h"
 
-extern MapConfig    *_globalMapConfig;
-extern MapContents  *_globalMapContents;
-extern Calculator       *calculator;
+extern MapContents*  _globalMapContents;
+extern Calculator*   calculator;
 
 TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   QWidget( parent )
 {
-  // qDebug("TPInfoWidget::TPInfoWidget");
-
   setObjectName("TPInfoWidget");
   setAttribute( Qt::WA_DeleteOnClose );
   this->parent = parent;
@@ -76,7 +73,11 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
 
   // activate keyboard shortcut cancel for close of widget
   QShortcut* scClose = new QShortcut( this );
+#ifndef ANDROID
   scClose->setKey( Qt::Key_Escape );
+#else
+  scClose->setKey( Qt::Key_Close );
+#endif
   connect( scClose, SIGNAL(activated()), this, SLOT( slot_Close() ));
 }
 
@@ -373,6 +374,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
           case ReachablePoint::belowSafety:
             display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b><font color=\"#FF00FF\">" +
               arrivalAlt.getText(true,0) + "</font></b></td></tr>";
+            break;
           }
       }
     else
@@ -656,6 +658,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
           case ReachablePoint::belowSafety:
             display += "<tr><td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b><font color=\"#FF00FF\">" +
               arrivalAlt.getText(true,0) + "</font></b></td><tr>";
+            break;
           }
       }
 
