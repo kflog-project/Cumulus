@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004 by      Eckhard Völlm
- **                   2008-2010 by Axel Pauli
+ **                   2008-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
