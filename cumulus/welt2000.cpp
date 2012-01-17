@@ -17,6 +17,7 @@
 
 #include <cmath>
 #include <unistd.h>
+#include <libgen.h>
 
 #include <QtCore>
 
