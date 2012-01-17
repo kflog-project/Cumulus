@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli (axel@kflog.org)
+**                   2008-2012 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,7 +16,7 @@
 **
 ***********************************************************************/
 
-#include <math.h>
+#include <cmath>
 
 #include <QtGui>
 
@@ -50,8 +50,13 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   topLayout->addWidget(lblName, row, 0);
   edtName = new QLineEdit(this);
   edtName->setMaxLength(8); // limit name to 8 characters
+#ifndef ANDROID
   edtName->setMinimumWidth( 27*charWidth );
   edtName->setMaximumWidth( 27*charWidth );
+#else
+  edtName->setMinimumWidth( 22*charWidth );
+  edtName->setMaximumWidth( 22*charWidth );
+#endif
   topLayout->addWidget(edtName, row++, 1, 1, 2);
 
   connect( edtName, SIGNAL(textEdited( const QString& )),
@@ -61,8 +66,13 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   topLayout->addWidget(lblDescription, row, 0);
   edtDescription = new QLineEdit(this);
   edtDescription->setMaxLength(25); // limit name to 25 characters
+#ifndef ANDROID
   edtDescription->setMinimumWidth( 27*charWidth );
   edtDescription->setMaximumWidth( 27*charWidth );
+#else
+  edtDescription->setMinimumWidth( 22*charWidth );
+  edtDescription->setMaximumWidth( 22*charWidth );
+#endif
   topLayout->addWidget(edtDescription, row++, 1, 1, 2);
 
   QLabel * lblCountry = new QLabel(tr("Country(2):"), this);
