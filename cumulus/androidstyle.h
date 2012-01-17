@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2010 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2012 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,7 @@
  * GUI adations for Android for a better user handling. The size of some
  * GUI elements will be increased by using a style proxy.
  *
- * \date 2010
+ * \date 2012
  *
  * \version $Id$
  */
