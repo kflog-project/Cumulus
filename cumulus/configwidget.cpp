@@ -312,7 +312,7 @@ void ConfigWidget::accept()
                                 "</html>" ) );
     }
 
-  //QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
   QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
                                    QEventLoop::ExcludeSocketNotifiers );
@@ -343,7 +343,7 @@ void ConfigWidget::accept()
       emit gotoHomePosition();
     }
 
-  //QApplication::restoreOverrideCursor();
+  QApplication::restoreOverrideCursor();
 
   emit closeConfig();
   QWidget::close();
