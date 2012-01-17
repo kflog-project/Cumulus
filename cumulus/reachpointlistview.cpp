@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -57,6 +57,11 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
   list->setColumnCount(8);
   list->hideColumn(7);
   list->setFocusPolicy(Qt::StrongFocus);
+
+#ifdef ANDROID
+  list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+  QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+#endif
 
   QStringList sl;
 
@@ -139,6 +144,13 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
   QShortcut* scSelect = new QShortcut( this );
   scSelect->setKey( Qt::Key_Return );
   connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
+
+#ifdef ANDROID
+  // Activate keyboard shortcut close
+  QShortcut* scClose = new QShortcut( this );
+  scClose->setKey( Qt::Key_Close );
+  connect( scClose, SIGNAL(activated()), this, SLOT( slot_Close() ));
+#endif
 }
 
 ReachpointListView::~ReachpointListView()
