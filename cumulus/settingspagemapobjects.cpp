@@ -85,6 +85,11 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent
   //---------------------------------------------------------------------------
   // table with 8 rows and 2 columns
   loadOptions = new QTableWidget(8, 2, this);
+
+#ifdef ANDROID
+  QScroller::grabGesture(loadOptions, QScroller::LeftMouseButtonGesture);
+#endif
+
   loadOptions->setShowGrid( true );
 
   connect( loadOptions, SIGNAL(cellClicked ( int, int )),
