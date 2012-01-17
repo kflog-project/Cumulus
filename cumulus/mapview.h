@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2011 by Axel Pauli
+                               2008-2012 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -31,6 +31,11 @@
 #include <QBoxLayout>
 #include <QColor>
 
+#ifdef ANDROID
+#include <QScrollArea>
+#include <QScroller>
+#endif
+
 #include "altitude.h"
 #include "calculator.h"
 #include "distance.h"
@@ -52,7 +57,7 @@
  * This is the main view of the application, providing the map and
  * other useful in flight information.
  *
- * \date 2002-2011
+ * \date 2002-2012
  *
  * \version: $Id$
  *
@@ -64,8 +69,8 @@ class MapInfoBox;
 class MainWindow;
 
 class MapView : public QWidget
-  {
-    Q_OBJECT
+{
+   Q_OBJECT
 
   private:
 
@@ -115,6 +120,13 @@ class MapView : public QWidget
       {
         return _vario;
       };
+
+#ifdef ANDROID
+    /**
+     * Reset the QScroller
+     */
+    void resetScrolling();
+#endif
 
 #ifdef FLARM
 
@@ -339,6 +351,13 @@ class MapView : public QWidget
     /** reference to GPS status */
     CuLabel* _statusGps;
 
+#ifdef ANDROID
+    /** reference to map container */
+    QScrollArea* mapArea;
+    /** reference to map scroller */
+    QScroller* mapScroller;
+#endif
+
 #ifdef FLARM
     /** reference to Flarm status */
     CuLabel* _statusFlarm;
@@ -406,6 +425,12 @@ class MapView : public QWidget
 
     /** Called to toggle the menu of the main window. */
     void slot_toggleMenu();
-  };
+
+#ifdef ANDROID
+    /** Process status changes during map drag and release. */
+    void slot_scrollerStateChanged(QScroller::State new_s);
+#endif
+
+};
 
 #endif
