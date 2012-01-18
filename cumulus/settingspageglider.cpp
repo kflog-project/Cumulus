@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -83,7 +83,7 @@ void SettingsPageGlider::showEvent(QShowEvent *)
 /** Called when a new glider needs to be made. */
 void SettingsPageGlider::slot_new()
 {
-  GilderEditor *editor = new GilderEditor(this, 0);
+  GliderEditor *editor = new GliderEditor(this, 0);
   connect(editor, SIGNAL(newGlider(Glider*)), list, SLOT(slot_Added(Glider *)));
 
   editor->setVisible( true );
@@ -101,7 +101,7 @@ void SettingsPageGlider::slot_edit()
       return;
     }
 
-  GilderEditor *editor = new GilderEditor(this, selectedGlider );
+  GliderEditor *editor = new GliderEditor(this, selectedGlider );
   connect(editor, SIGNAL(editedGlider(Glider *)), list, SLOT(slot_Edited(Glider *)));
 
   editor->setVisible( true );

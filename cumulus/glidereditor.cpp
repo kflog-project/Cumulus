@@ -18,8 +18,8 @@
 
 #include <QtGui>
 
-#include "polardialog.h"
 #include "glidereditor.h"
+#include "polardialog.h"
 #include "polar.h"
 #include "speed.h"
 #include "mapview.h"
@@ -30,11 +30,14 @@
 
 extern MapView *_globalMapView;
 
-GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
-  QWidget(parent),
+GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
+#ifdef MAEMO5
+  QWidget(parent, Qt::Tool),
+#else
+  QDialog(parent, Qt::WindowStaysOnTopHint),
+#endif
   gliderCreated(false)
 {
-  setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
 
@@ -295,11 +298,11 @@ GilderEditor::GilderEditor(QWidget *parent, Glider *glider ) :
   show();
 }
 
-GilderEditor::~GilderEditor()
+GliderEditor::~GliderEditor()
 {
 }
 
-void GilderEditor::showEvent( QShowEvent *event )
+void GliderEditor::showEvent( QShowEvent *event )
 {
   Q_UNUSED(event)
 
@@ -313,7 +316,7 @@ void GilderEditor::showEvent( QShowEvent *event )
   minus->setMinimumSize( height, height );
 }
 
-Polar* GilderEditor::getPolar()
+Polar* GliderEditor::getPolar()
 {
   int pos = comboType->currentIndex();
 
@@ -339,7 +342,7 @@ void setCurrentText(QComboBox* combo, const QString& text)
 }
 
 /** Called to initiate loading of the configuration file. */
-void GilderEditor::load()
+void GliderEditor::load()
 {
   if (_glider)
     {
@@ -385,7 +388,7 @@ void GilderEditor::load()
 }
 
 /** called to initiate saving to the configuration file */
-void GilderEditor::save()
+void GliderEditor::save()
 {
   if( !_glider )
     {
@@ -501,9 +504,9 @@ void GilderEditor::save()
   gliderCreated = false;
 }
 
-void GilderEditor::readPolarData()
+void GliderEditor::readPolarData()
 {
-  // qDebug ("GilderEditor::readPolarData ");
+  // qDebug ("GliderEditor::readPolarData ");
 
 #warning "location of glider.pol file is CUMULUS_ROOT/etc"
 
@@ -650,7 +653,7 @@ void GilderEditor::readPolarData()
 }
 
 /** called when a glider type has been selected */
-void GilderEditor::slotActivated(const QString& type)
+void GliderEditor::slotActivated(const QString& type)
 {
   if( !_glider )
     {
@@ -691,7 +694,7 @@ void GilderEditor::slotActivated(const QString& type)
     }
 }
 
-void GilderEditor::slotButtonShow()
+void GliderEditor::slotButtonShow()
 {
   // we create a polar object on the fly to allow test of changed polar values without saving
   Speed V1, V2, V3, W1, W2, W3;
@@ -714,7 +717,7 @@ void GilderEditor::slotButtonShow()
   dlg->setVisible(true);
 }
 
-void GilderEditor::accept()
+void GliderEditor::accept()
 {
   edtGReg->setText(edtGReg->text().trimmed()); //remove spaces
 
@@ -735,7 +738,7 @@ void GilderEditor::accept()
     }
 }
 
-void GilderEditor::reject()
+void GliderEditor::reject()
 {
   // @AP: delete glider, if it was allocated in this class and not
   // emitted in accept method to avoid a memory leak.
@@ -748,7 +751,7 @@ void GilderEditor::reject()
   QWidget::close();
 }
 
-void GilderEditor::slotIncrementBox()
+void GliderEditor::slotIncrementBox()
 {
   if( ! plus->isDown() )
     {
@@ -773,7 +776,7 @@ void GilderEditor::slotIncrementBox()
     }
 }
 
-void GilderEditor::slotDecrementBox()
+void GliderEditor::slotDecrementBox()
 {
   if( ! minus->isDown() )
     {

@@ -17,7 +17,7 @@
 ***********************************************************************/
 
 /**
- * \class GilderEditor
+ * \class GliderEditor
  *
  * \author Eggert Ehmke, Axel Pauli
  *
@@ -28,10 +28,15 @@
  * \version $Id$
  */
 
-#ifndef SETTINGS_PAGE_GLIDER_EDITOR_H
-#define SETTINGS_PAGE_GLIDER_EDITOR_H
+#ifndef GLIDER_EDITOR_H
+#define GLIDER_EDITOR_H
 
+#ifdef MAEMO5
 #include <QWidget>
+#else
+#include <QDialog>
+#endif
+
 #include <QLineEdit>
 #include <QComboBox>
 #include <QPushButton>
@@ -43,19 +48,23 @@
 #include "polar.h"
 #include "glider.h"
 
-class GilderEditor : public QWidget
+#ifdef MAEMO5
+class GliderEditor : public QWidget
+#else
+class GliderEditor : public QDialog
+#endif
 {
   Q_OBJECT
 
 private:
 
-  Q_DISABLE_COPY ( GilderEditor )
+  Q_DISABLE_COPY ( GliderEditor )
 
 public:
 
-  GilderEditor(QWidget* parent=0, Glider* glider=0);
+  GliderEditor(QWidget* parent=0, Glider* glider=0);
 
-  virtual ~GilderEditor();
+  virtual ~GliderEditor();
 
   /**
    * @return The currently selected polar is returned.
