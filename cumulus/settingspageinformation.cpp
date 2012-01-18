@@ -32,6 +32,8 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   topLayout->setHorizontalSpacing(10);
   topLayout->setVerticalSpacing(10);
 
+#ifndef ANDROID
+
   QHBoxLayout *hBox = new QHBoxLayout();
 
   QPushButton *soundSelection = new QPushButton( tr("Sound Player"), this );
@@ -44,6 +46,8 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   hBox->addWidget(soundTool);
   topLayout->addLayout( hBox, row++, 0, 1, 3 );
   topLayout->setRowMinimumHeight( row++, 10 );
+
+#endif
 
   VarSpinBox* hspin;
 
@@ -142,7 +146,10 @@ void SettingsPageInformation::slot_load()
 
   GeneralConfig *conf = GeneralConfig::instance();
 
+#ifndef ANDROID
   soundTool->setText( conf->getSoundPlayer() );
+#endif
+
   spinAirfield->setValue( conf->getAirfieldDisplayTime() );
   spinAirspace->setValue( conf->getAirspaceDisplayTime() );
   spinInfo->setValue( conf->getInfoDisplayTime() );
@@ -157,7 +164,10 @@ void SettingsPageInformation::slot_save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
+#ifndef ANDROID
   conf->setSoundPlayer( soundTool->text() );
+#endif
+
   conf->setAirfieldDisplayTime( spinAirfield->value() );
   conf->setAirspaceDisplayTime( spinAirspace->value() );
   conf->setInfoDisplayTime( spinInfo->value() );
@@ -170,7 +180,10 @@ void SettingsPageInformation::slot_save()
 
 void SettingsPageInformation::slot_setFactoryDefault()
 {
+#ifndef ANDROID
   soundTool->setText("");
+#endif
+
   spinAirfield->setValue(AIRFIELD_DISPLAY_TIME_DEFAULT);
   spinAirspace->setValue(AIRSPACE_DISPLAY_TIME_DEFAULT);
   spinInfo->setValue(INFO_DISPLAY_TIME_DEFAULT);
@@ -180,6 +193,8 @@ void SettingsPageInformation::slot_setFactoryDefault()
   checkAlarmSound->setChecked(ALARM_SOUND_DEFAULT);
   calculateNearestSites->setChecked(NEAREST_SITE_CALCULATOR_DEFAULT);
 }
+
+#ifndef ANDROID
 
 void SettingsPageInformation::slot_openToolDialog()
 {
@@ -200,3 +215,5 @@ void SettingsPageInformation::slot_openToolDialog()
 
   soundTool->setText( file );
 }
+
+#endif

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003-2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2003-2012 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,9 @@
  *
  * \brief Configuration settings for popup window display times and alarm sound.
  *
- * \date 2003-2010
+ * \date 2003-2012
+ *
+ * \version $Id$
  *
  */
 
@@ -67,14 +69,21 @@ class SettingsPageInformation : public QWidget
    */
   void slot_setFactoryDefault();
 
+#ifndef ANDROID
+
   /**
    * Called to open a selection file dialog for the sound tool
    */
   void slot_openToolDialog();
 
+#endif
+
  private:
 
+#ifndef ANDROID
   QLineEdit*   soundTool;
+#endif
+
   QSpinBox*    spinAirfield;
   QSpinBox*    spinAirspace;
   QSpinBox*    spinWaypoint;
