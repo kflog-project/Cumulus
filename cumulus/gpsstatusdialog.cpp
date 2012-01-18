@@ -265,7 +265,7 @@ void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
         close();
 
 #ifdef ANDROID
-extern _root_window = 1;
+        _root_window = 1;
 #endif
 
         break;
