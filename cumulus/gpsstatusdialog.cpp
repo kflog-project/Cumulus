@@ -27,6 +27,10 @@
 // initialize static member variable
 int GpsStatusDialog::noOfInstances = 0;
 
+#ifdef ANDROID
+extern int _root_window;
+#endif
+
 GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   QWidget( parent ),
   showNmeaData( true ),
@@ -256,8 +260,14 @@ void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
   // close the dialog on key press
   switch(e->key())
     {
+      case Qt::Key_Close:
       case Qt::Key_Escape:
         close();
+
+#ifdef ANDROID
+extern _root_window = 1;
+#endif
+
         break;
     }
 }
