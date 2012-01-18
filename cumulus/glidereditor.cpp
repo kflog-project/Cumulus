@@ -31,13 +31,10 @@
 extern MapView *_globalMapView;
 
 GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
-#ifdef MAEMO5
   QWidget(parent, Qt::Tool),
-#else
-  QDialog(parent, Qt::WindowStaysOnTopHint),
-#endif
   gliderCreated(false)
 {
+  setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
 

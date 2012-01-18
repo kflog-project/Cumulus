@@ -31,11 +31,7 @@
 #ifndef GLIDER_EDITOR_H
 #define GLIDER_EDITOR_H
 
-#ifdef MAEMO5
 #include <QWidget>
-#else
-#include <QDialog>
-#endif
 
 #include <QLineEdit>
 #include <QComboBox>
@@ -48,11 +44,7 @@
 #include "polar.h"
 #include "glider.h"
 
-#ifdef MAEMO5
 class GliderEditor : public QWidget
-#else
-class GliderEditor : public QDialog
-#endif
 {
   Q_OBJECT
 
