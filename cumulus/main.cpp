@@ -58,6 +58,8 @@
 /////////////////////
 int main(int argc, char *argv[])
 {
+  GeneralConfig *conf = GeneralConfig::instance();
+
 #ifdef ANDROID
 
   jniRegister();
@@ -71,6 +73,8 @@ int main(int argc, char *argv[])
       sleep(1);
       appDir = jniGetAppDataDir();
     }
+
+  conf->setAppRoot( appDir );
 
   // Gets the additional data dir from our app
   QString addDir = jniGetAddDataDir();
@@ -92,7 +96,6 @@ int main(int argc, char *argv[])
 
 #endif /* ANDROID */
 
-
   QApplication app(argc, argv);
 
   // @AP: we installing our own message handler
@@ -109,12 +112,12 @@ int main(int argc, char *argv[])
   // Make sure the application uses utf8 encoding for translated widgets
   QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
 
+  // Store Build date
+  conf->setBuiltDate( __DATE__ );
+
   // @AP: to make trace output available, if process is started via
   // QT/X11, we can redirect all output into a file, if configuration option
   // Log2File is set to true.
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  conf->setBuiltDate( __DATE__ );
 
 #ifndef ANDROID
   // @AP: make install root of Cumulus available for other modules via
@@ -131,11 +134,6 @@ int main(int argc, char *argv[])
   chdir( startDir );
   free( callDir );
   free( startDir );
-
-#else
-
-  conf->setAppRoot( homeDir );
-
 #endif
 
   bool isLog2File = conf->getLog2FileMode();
