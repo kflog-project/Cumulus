@@ -1,0 +1,76 @@
+################################################################################
+# Makefile to build Android parts used by Cumulus
+#
+# Copyright (c): 2012 by Axel Pauli (axel@kflog.org)
+# 
+# $Id$
+#
+# This file is distributed under the terms of the General Public License.
+# See the file COPYING for more information.
+#
+################################################################################
+
+# adapt install path to your needs if necessary
+INSTALL_ROOT  = .Android
+APP_DATA_ROOT = $(INSTALL_ROOT)/.appData
+ADD_DATA_ROOT = $(INSTALL_ROOT)/.addData
+
+APP_DATA = appData.zip
+ADD_DATA = addData.zip
+
+QTVERSION=$(shell qmake -query QT_VERSION)
+
+.PHONY : usage
+
+usage:
+	@echo ""
+	@echo "Build Android parts for Cumulus"
+	@echo ""
+	@echo "Installed Qt version $(QTVERSION)"
+	@echo ""
+	@echo "usage: make -f Makefile.Android <target> ..."
+	@echo "  all          - Builds all parts for the Cumulus application"
+	@echo "  clean        - Removes all build results"
+	@echo "  appData      - Creates a appData file under $(INSTALL_ROOT)"
+	@echo "  addData      - Creates a addData file under $(INSTALL_ROOT)"
+
+all:	appData addData
+
+.PHONY : clean
+clean:
+	@cd $(INSTALL_ROOT); rm -f $(APP_DATA) $(ADD_DATA)
+	@rm -rf $(APP_DATA_ROOT) $(ADD_DATA_ROOT)
+	@echo "Build area cleaned"
+
+appData:
+	@echo "===== Creating $(APP_DATA) under $(INSTALL_ROOT) ====="
+	rm -rf $(APP_DATA_ROOT)
+	install -d $(APP_DATA_ROOT)/etc
+	install -d $(APP_DATA_ROOT)/icons
+	install -d $(APP_DATA_ROOT)/icons/small
+	install -d $(APP_DATA_ROOT)/icons/windarrows
+	install -d $(APP_DATA_ROOT)/sounds
+	install --mode=644 etc/glider.pol $(APP_DATA_ROOT)/etc
+	install --mode=644 icons/*.xpm $(APP_DATA_ROOT)/icons
+	install --mode=644 icons/*.png $(APP_DATA_ROOT)/icons
+	install --mode=644 icons/small/* $(APP_DATA_ROOT)/icons/small
+	install --mode=644 icons/windarrows/* $(APP_DATA_ROOT)/icons/windarrows
+	install --mode=644 sounds/AlarmShort.wav $(APP_DATA_ROOT)/sounds
+	install --mode=644 sounds/Notify.wav $(APP_DATA_ROOT)/sounds
+	cd $(APP_DATA_ROOT); zip -r -o $(APP_DATA) *
+	mv $(APP_DATA_ROOT)/$(APP_DATA) $(INSTALL_ROOT)
+
+addData:
+	@echo "===== Creating $(ADD_DATA) under $(INSTALL_ROOT) ====="
+	rm -rf $(ADD_DATA_ROOT)
+	install -d $(ADD_DATA_ROOT)/help/en
+	install -d $(ADD_DATA_ROOT)/help/de
+	install -d $(ADD_DATA_ROOT)/locale/de
+	install --mode=644 help/en/* icons/cumulus.png $(ADD_DATA_ROOT)/help/en
+	install --mode=644 icons/cumulus.png $(ADD_DATA_ROOT)/help/de
+	cd $(ADD_DATA_ROOT); zip -r -o $(ADD_DATA) *
+	mv $(ADD_DATA_ROOT)/$(ADD_DATA) $(INSTALL_ROOT)
+	
+.PHONY : check_dir
+check_dir:
+	@test ! -d $(INSTALL_ROOT) || mkdir -p $(INSTALL_ROOT)
