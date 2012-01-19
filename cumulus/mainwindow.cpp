@@ -826,7 +826,7 @@ void MainWindow::createMenuBar()
 /** set menubar font size to a reasonable and usable value */
 void MainWindow::slotSetMenuBarFontSize()
 {
-  int minFontSize = 8;
+  int minFontSize = 10;
 
   // sets the user's selected menu font, if defined
   QString fontString = GeneralConfig::instance()->getGuiMenuFont();
@@ -836,6 +836,7 @@ void MainWindow::slotSetMenuBarFontSize()
     {
       // take current font as alternative
       userFont = font();
+      minFontSize = 18;
     }
 
   if( userFont.pointSize() < minFontSize )
