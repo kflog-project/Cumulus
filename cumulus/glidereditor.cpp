@@ -509,7 +509,8 @@ void GliderEditor::readPolarData()
 
   QStringList dirs;
 
-  dirs << GeneralConfig::instance()->getInstallRoot() + "/etc/glider.pol"
+  dirs << GeneralConfig::instance()->getAppRoot() + "/etc/glider.pol"
+       << GeneralConfig::instance()->getDataRoot() + "/etc/glider.pol"
        << GeneralConfig::instance()->getUserDataDirectory() + "/glider.pol";
 
   QFile file;
