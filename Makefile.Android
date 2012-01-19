@@ -68,7 +68,8 @@ addData:
 	install -d $(ADD_DATA_ROOT)/help/en
 	install -d $(ADD_DATA_ROOT)/help/de
 	install -d $(ADD_DATA_ROOT)/locale/de
-	install --mode=644 help/en/* icons/cumulus.png $(ADD_DATA_ROOT)/help/en
+	install --mode=644 help/en/*.html icons/cumulus.png $(ADD_DATA_ROOT)/help/en
+	install --mode=644 help/en/text.css $(ADD_DATA_ROOT)/help/en
 	install --mode=644 icons/cumulus.png $(ADD_DATA_ROOT)/help/de
 	cd $(ADD_DATA_ROOT); zip -r -o $(ADD_DATA) *
 	mv $(ADD_DATA_ROOT)/$(ADD_DATA) $(INSTALL_ROOT)
