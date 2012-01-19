@@ -110,6 +110,7 @@ HEADERS = \
     sonne.h \
     sound.h \
     speed.h \
+    splash.h \
     target.h \
     taskeditor.h \
     tasklistview.h \
@@ -216,6 +217,7 @@ SOURCES = \
     sonne.cpp \
     sound.cpp \
     speed.cpp \
+    splash.cpp \
     target.h \
     taskeditor.cpp \
     tasklistview.cpp \
