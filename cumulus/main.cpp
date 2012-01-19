@@ -55,26 +55,15 @@
 #include "jnitools.h"
 #endif
 
+/** Define the disclaimer version */
+#define DISCLAIMER_VERSION 1
+
 /////////////////////
 int main(int argc, char *argv[])
 {
-  GeneralConfig *conf = GeneralConfig::instance();
-
 #ifdef ANDROID
 
   jniRegister();
-
-  // Gets the internal data dir from out app
-  QString appDir = jniGetAppDataDir();
-
-  while (appDir.isEmpty())
-    {
-      qDebug() << " Waiting for Cumulus appDir ...";
-      sleep(1);
-      appDir = jniGetAppDataDir();
-    }
-
-  conf->setAppRoot( appDir );
 
   // Gets the additional data dir from our app
   QString addDir = jniGetAddDataDir();
@@ -86,15 +75,33 @@ int main(int argc, char *argv[])
       addDir = jniGetAddDataDir();
     }
 
-  conf->setDataRoot( addDir );
-
   // Nice trick to overwrite the HOME directory under Android ;-)
   qputenv ( "HOME", addDir.toLatin1().data() );
+
+  // Note, that first $HOME is overwritten otherwise the setting file
+  // is created in the internal data area!
+  GeneralConfig::instance()->setDataRoot( addDir );
+
+  // Gets the internal data dir from out app
+  QString appDir = jniGetAppDataDir();
+
+  while (appDir.isEmpty())
+    {
+      qDebug() << " Waiting for Cumulus appDir ...";
+      sleep(1);
+      appDir = jniGetAppDataDir();
+    }
+
+  GeneralConfig::instance()->setAppRoot( appDir );
 
   qDebug() << "Cumulus addDir and Qt Home set to" << addDir;
   qDebug() << "Cumulus appDir set to" << appDir;
 
 #endif /* ANDROID */
+
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  QApplication::setGraphicsSystem( "raster" );
 
   QApplication app(argc, argv);
 
@@ -217,8 +224,7 @@ int main(int argc, char *argv[])
   // Load language translations for Cumulus.
   conf->setLanguage( conf->getLanguage() );
 
-#define DISCLAIMERVERSION 1
-
+#ifdef ANDROID
 
   QFontDatabase database;
 
@@ -235,8 +241,36 @@ int main(int argc, char *argv[])
         }
     }
 
-  if( conf->getDisclaimerVersion() != DISCLAIMERVERSION )
+  QDir fontDir( appDir + "/fonts" );
+
+  if( fontDir.exists() )
     {
+      QStringList fontList = fontDir.entryList ( QDir::Files|QDir::Readable );
+
+      for( int i = 0; i < fontList.size(); i++ )
+        {
+          int res = QFontDatabase::addApplicationFont( fontList.at(i) );
+          qDebug() << "Adding font" << fontList.at(i) << "to data base with ID=" << res;
+        }
+    }
+
+#endif
+
+  if( conf->getDisclaimerVersion() != DISCLAIMER_VERSION )
+    {
+
+#ifdef ANDROID
+
+      // The assumption is, that the Application is started the first time.
+      QFont appFont( "Droid Sans" );
+      appFont.setStyle( QFont::StyleNormal );
+      appFont.setPixelSize( 16 );
+      appFont.setPointSize( 16 );
+
+      QApplication::setFont( appFont );
+
+#endif
+
       QApplication::beep();
 
       // upon changing the text, you should also increase the value of DISCLAIMERVERSION with 1
@@ -258,7 +292,7 @@ int main(int argc, char *argv[])
 
       QMessageBox msgBox;
 
-      QFont font = msgBox.font();
+      QFont font = QApplication::font();
 
       int size = 16;
 
@@ -270,6 +304,7 @@ int main(int argc, char *argv[])
         {
           // adapt font size to a readable one
           font.setPixelSize( size );
+          font.setPointSize( size );
           msgBox.setFont( font );
         }
 
@@ -284,7 +319,7 @@ int main(int argc, char *argv[])
 
       if( button == QMessageBox::Yes )
         {
-          conf->setDisclaimerVersion( DISCLAIMERVERSION );
+          conf->setDisclaimerVersion( DISCLAIMER_VERSION );
           conf->save();
         }
       else
