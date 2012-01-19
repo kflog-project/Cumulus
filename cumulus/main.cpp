@@ -62,19 +62,33 @@ int main(int argc, char *argv[])
 
   jniRegister();
 
-  QString homeDir = jniGetDataDir();
+  // Gets the internal data dir from out app
+  QString appDir = jniGetAppDataDir();
 
-  while (homeDir.isEmpty())
+  while (appDir.isEmpty())
     {
-      qDebug() << " Waiting for Cumulus data dir ...";
+      qDebug() << " Waiting for Cumulus appDir ...";
       sleep(1);
-      homeDir = jniGetDataDir();
+      appDir = jniGetAppDataDir();
     }
 
-  // Nice trick to overwrite the HOME directory under Android ;-)
-  qputenv ( "HOME", homeDir.toLatin1().data() );
+  // Gets the additional data dir from our app
+  QString addDir = jniGetAddDataDir();
 
-  qDebug() << " Cumulus data dir and Qt Home set to" << homeDir;
+  while (addDir.isEmpty())
+    {
+      qDebug() << " Waiting for Cumulus addDir ...";
+      sleep(1);
+      addDir = jniGetAddDataDir();
+    }
+
+  conf->setDataRoot( addDir );
+
+  // Nice trick to overwrite the HOME directory under Android ;-)
+  qputenv ( "HOME", appDir.toLatin1().data() );
+
+  qDebug() << "Cumulus appDir and Qt Home set to" << appDir;
+  qDebug() << "Cumulus addDir set to" << addDir;
 
 #endif /* ANDROID */
 
@@ -111,7 +125,8 @@ int main(int argc, char *argv[])
   chdir( callPath );
   char *callDir = getcwd(0,0);
   QString root = QString(dirname(callDir));
-  conf->setInstallRoot( root );
+  conf->setAppRoot( root );
+  conf->setDataRoot( root );
   // change back to start directory
   chdir( startDir );
   free( callDir );
@@ -119,7 +134,7 @@ int main(int argc, char *argv[])
 
 #else
 
-  conf->setInstallRoot( homeDir );
+  conf->setAppRoot( homeDir );
 
 #endif
 
