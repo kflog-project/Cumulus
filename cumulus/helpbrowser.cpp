@@ -116,7 +116,7 @@ void HelpBrowser::showEvent( QShowEvent * )
 
   QString lang = GeneralConfig::instance()->getLanguage();
 
-  QString helpFile = GeneralConfig::instance()->getInstallRoot() +
+  QString helpFile = GeneralConfig::instance()->getDataRoot() +
     "/help/" + lang + "/cumulus.html";
 
   // We do check, if the help file does exists
@@ -126,7 +126,7 @@ void HelpBrowser::showEvent( QShowEvent * )
     {
       // fall back to English as default
       lang = "en";
-      helpFile = GeneralConfig::instance()->getInstallRoot() +
+      helpFile = GeneralConfig::instance()->getDataRoot() +
         "/help/" + lang + "/cumulus.html";
       info.setFile(helpFile);
     }
