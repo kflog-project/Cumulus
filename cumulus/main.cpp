@@ -89,10 +89,10 @@ int main(int argc, char *argv[])
   conf->setDataRoot( addDir );
 
   // Nice trick to overwrite the HOME directory under Android ;-)
-  qputenv ( "HOME", appDir.toLatin1().data() );
+  qputenv ( "HOME", addDir.toLatin1().data() );
 
-  qDebug() << "Cumulus appDir and Qt Home set to" << appDir;
-  qDebug() << "Cumulus addDir set to" << addDir;
+  qDebug() << "Cumulus addDir and Qt Home set to" << addDir;
+  qDebug() << "Cumulus appDir set to" << appDir;
 
 #endif /* ANDROID */
 
@@ -138,12 +138,15 @@ int main(int argc, char *argv[])
 
   bool isLog2File = conf->getLog2FileMode();
 
-#ifndef ANDROID
   QString logDir = "/tmp";
-#else
+
+#ifdef ANDROID
+
   // always log on Android for now
   isLog2File = true;
-  QString logDir = QDir::homePath();
+  logDir = QDir::homePath();
+  qDebug() << "Android LogDir=" << logDir;
+
 #endif
 
   if( isLog2File )
@@ -215,6 +218,22 @@ int main(int argc, char *argv[])
   conf->setLanguage( conf->getLanguage() );
 
 #define DISCLAIMERVERSION 1
+
+
+  QFontDatabase database;
+
+  foreach (const QString &family, database.families())
+    {
+      foreach (const QString &style, database.styles(family))
+        {
+          QString sizes;
+
+          foreach (int points, database.smoothSizes(family, style))
+            sizes += QString::number(points) + " ";
+
+          qDebug() << "Font:" << family << style << sizes.trimmed();
+        }
+    }
 
   if( conf->getDisclaimerVersion() != DISCLAIMERVERSION )
     {
