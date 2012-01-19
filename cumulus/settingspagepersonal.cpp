@@ -129,7 +129,7 @@ void SettingsPagePersonal::slot_load()
   userDataDir->setText( conf->getUserDataDirectory() );
 
   // Determine user's wanted language
-  QString langPath = conf->getInstallRoot() + "/locale";
+  QString langPath = conf->getDataRoot() + "/locale";
 
   // Check for installed languages
   QDir dir( langPath );
