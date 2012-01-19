@@ -51,9 +51,34 @@
 #include "messagehandler.h"
 #include "hwinfo.h"
 
+#ifdef ANDROID
+#include "jnitools.h"
+#endif
+
 /////////////////////
 int main(int argc, char *argv[])
 {
+#ifdef ANDROID
+
+  jniRegister();
+
+  QString homeDir = jniGetDataDir();
+
+  while (homeDir.isEmpty())
+    {
+      qDebug() << " Waiting for Cumulus data dir ..." );
+      sleep(1);
+      homeDir = jniGetDataDir();
+    }
+
+  // Nice trick to overwrite the HOME directory under Android ;-)
+  qputenv ( "HOME", homeDir.toLatin1().data() );
+
+  qDebug() << " Cumulus data dir and Qt Home set to" << homeDir;
+
+#endif /* ANDROID */
+
+
   QApplication app(argc, argv);
 
   // @AP: we installing our own message handler
@@ -77,6 +102,7 @@ int main(int argc, char *argv[])
 
   conf->setBuiltDate( __DATE__ );
 
+#ifndef ANDROID
   // @AP: make install root of Cumulus available for other modules via
   // GeneralConfig. The assumption is that Cumulus is installed at
   // <root>/bin/cumulus. The <root> path will be passed to GeneralConfig.
@@ -91,9 +117,21 @@ int main(int argc, char *argv[])
   free( callDir );
   free( startDir );
 
+#else
+
+  conf->setInstallRoot( QDir::homePath() );
+
+#endif
+
   bool isLog2File = conf->getLog2FileMode();
 
+#ifndef ANDROID
   QString logDir = "/tmp";
+#else
+  // always log on Android for now
+  isLog2File = true;
+  QString logDir = QDir::homePath();
+#endif
 
   if( isLog2File )
     {
@@ -192,7 +230,7 @@ int main(int argc, char *argv[])
 
       int size = 16;
 
-#ifdef MAEMO
+#if defined (MAEMO) || defined (ANDROID)
       size = 20;
 #endif
 
