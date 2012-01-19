@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
   while (homeDir.isEmpty())
     {
-      qDebug() << " Waiting for Cumulus data dir ..." );
+      qDebug() << " Waiting for Cumulus data dir ...";
       sleep(1);
       homeDir = jniGetDataDir();
     }
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
 
 #else
 
-  conf->setInstallRoot( QDir::homePath() );
+  conf->setInstallRoot( homeDir );
 
 #endif
 
