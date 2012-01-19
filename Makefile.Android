@@ -46,16 +46,18 @@ appData:
 	@echo "===== Creating $(APP_DATA) under $(INSTALL_ROOT) ====="
 	rm -rf $(APP_DATA_ROOT)
 	install -d $(APP_DATA_ROOT)/etc
+	install -d $(APP_DATA_ROOT)/fonts
 	install -d $(APP_DATA_ROOT)/icons
 	install -d $(APP_DATA_ROOT)/icons/small
 	install -d $(APP_DATA_ROOT)/icons/windarrows
 	install -d $(APP_DATA_ROOT)/sounds
 	install --mode=644 etc/glider.pol $(APP_DATA_ROOT)/etc
+	install --mode=644 fonts/* $(APP_DATA_ROOT)/fonts
 	install --mode=644 icons/*.xpm $(APP_DATA_ROOT)/icons
 	install --mode=644 icons/*.png $(APP_DATA_ROOT)/icons
 	install --mode=644 icons/small/* $(APP_DATA_ROOT)/icons/small
 	install --mode=644 icons/windarrows/* $(APP_DATA_ROOT)/icons/windarrows
-	install --mode=644 sounds/AlarmShort.wav $(APP_DATA_ROOT)/sounds
+	install --mode=644 sounds/AlarmShort.wav $(APP_DATA_ROOT)/sounds/Alarm.wav
 	install --mode=644 sounds/Notify.wav $(APP_DATA_ROOT)/sounds
 	cd $(APP_DATA_ROOT); zip -r -o $(APP_DATA) *
 	mv $(APP_DATA_ROOT)/$(APP_DATA) $(INSTALL_ROOT)
