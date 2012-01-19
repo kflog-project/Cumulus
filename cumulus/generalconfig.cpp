@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2011 by Axel Pauli
+ **                   2007-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -78,7 +78,7 @@ void GeneralConfig::load()
 {
   // cumulus main data
   beginGroup("Main");
-  _installRoot = value("InstallRoot", "./").toString();
+  _appRoot = value("InstallRoot", "./").toString();
   _builtDate = value("BuiltDate", __DATE__).toString();
   endGroup();
 
@@ -465,7 +465,7 @@ void GeneralConfig::save()
 {
   // cumulus main data
   beginGroup("Main");
-  setValue("InstallRoot", _installRoot );
+  setValue("InstallRoot", _appRoot );
   setValue("BuiltDate", _builtDate);
   endGroup();
 
@@ -1088,7 +1088,7 @@ void GeneralConfig::setGpsStartClientOption(const bool newValue)
 /** Gets the Gps Client path */
 QString GeneralConfig::getGpsClientPath()
 {
-  return _installRoot + "/bin/";
+  return _appRoot + "/bin/";
 }
 
 
@@ -1335,7 +1335,7 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName )
     }
 
   // determine absolute path to pixmap directory
-  QString path( _installRoot + "/icons/" + pixmapName );
+  QString path( _appRoot + "/icons/" + pixmapName );
 
   QPixmap pm;
 
@@ -1368,7 +1368,7 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName )
 void GeneralConfig::removePixmap( const QString& pixmapName )
 {
   // determine absolute path to pixmap directory and remove pixmap
-  QPixmapCache::remove( _installRoot + "/icons/" + pixmapName );
+  QPixmapCache::remove( _appRoot + "/icons/" + pixmapName );
 }
 
 /**
@@ -1438,10 +1438,6 @@ QString GeneralConfig::getUserDefaultRootDir()
 {
   QString root = QDir::homePath();
 
-#ifdef ANDROID
-  root = "/sdcard";
-#endif
-
 #ifdef MAEMO
 
   QStringList paths;
@@ -1474,7 +1470,10 @@ QString GeneralConfig::getUserDefaultRootDir()
 
 #endif
 
-  root += "/Cumulus"; // Cumulus default root directory
+  // Note under Android $HOME is set to the root of user's external storage directory
+#ifndef ANDROID
+  root += "/Cumulus"; // Cumulus default user root directory
+#endif
 
   return root;
 }
@@ -1844,7 +1843,7 @@ void GeneralConfig::setLanguage( const QString& newValue )
   if( ! _language.isEmpty() )
     {
       QString langFile = "cumulus_" + _language + ".qm";
-      QString langDir = _installRoot + "/locale/" + _language;
+      QString langDir = _appRoot + "/locale/" + _language;
 
       // Load GUI translation file
       if( ! cumulusTranslator )

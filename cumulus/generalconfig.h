@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2011 by Axel Pauli
+**                   2007-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,7 +27,7 @@
  * configuration options. This class is a singleton class. Use the
  * static instance method to get a reference to the instance.
  *
- * \date 2004-2011
+ * \date 2004-2012
  *
  * \version $Id$
  */
@@ -150,16 +150,28 @@ class GeneralConfig : protected QSettings
   // properties get/set methods
   //---------------------------
 
-  /** gets the installation root of Cumulus */
-  QString &getInstallRoot()
+  /** gets the application root path of Cumulus */
+  QString &getAppRoot()
     {
-      return _installRoot;
+      return _appRoot;
     };
 
-  /** sets the installation root of Cumulus */
-  void setInstallRoot( QString &newRoot )
+  /** sets the application root path of Cumulus */
+  void setAppRoot( QString &newRoot )
   {
-    _installRoot = newRoot;
+    _appRoot = newRoot;
+  };
+
+  /** gets the application root path of Cumulus */
+  QString &getDataRoot()
+    {
+      return _dataRoot;
+    };
+
+  /** sets the application root path of Cumulus */
+  void setDataRoot( QString &newRoot )
+  {
+    _dataRoot = newRoot;
   };
 
   /** gets the built date of Cumulus */
@@ -2051,8 +2063,11 @@ class GeneralConfig : protected QSettings
 
   static GeneralConfig *_theInstance;
 
-  // Root path of cumulus installation
-  QString _installRoot;
+  // Application root path of Cumulus
+  QString _appRoot;
+
+  // Application data path of Cumulus
+  QString _dataRoot;
 
   // Date of built
   QString _builtDate;
