@@ -53,7 +53,7 @@
 
 #ifdef ANDROID
 
-//#include <QWindowSystemInterface>
+#include <QWindowSystemInterface>
 
 #include "androidevents.h"
 #include "jnitools.h"
