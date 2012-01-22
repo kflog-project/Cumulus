@@ -250,6 +250,8 @@ void GpsNmea::enableReceiving( bool enable )
 
   _enableGpsDataProcessing = enable;
 
+#ifndef ANDROID
+
   if ( serial )
     {
       QSocketNotifier* notifier = static_cast<QSocketNotifier *> (0);
@@ -261,6 +263,8 @@ void GpsNmea::enableReceiving( bool enable )
           notifier->setEnabled( enable );
         }
     }
+
+#endif
 }
 
 /**
@@ -268,10 +272,14 @@ void GpsNmea::enableReceiving( bool enable )
  */
 void GpsNmea::startGpsReceiver()
 {
+#ifndef ANDROID
+
   if ( serial )
     {
       serial->startClientProcess();
     }
+
+#endif
 }
 
 /**
@@ -1988,6 +1996,8 @@ void GpsNmea::slot_reset()
   _userAltitudeCorrection = conf->getGpsUserAltitudeCorrection();
   _reportAltitude = true;
 
+#ifndef ANDROID
+
   QString oldDevice = gpsDevice;
 
   if ( gpsDevice != conf->getGpsDevice() )
@@ -2027,6 +2037,9 @@ void GpsNmea::slot_reset()
       // bool soft = conf->getGpsSoftStart();
       // sendLastFix (hard, soft);
     }
+
+#endif
+
 }
 
 #if 0
@@ -2114,12 +2127,17 @@ void GpsNmea::forceReset()
 {
   qDebug("GpsNmea::forceReset()");
 
+#ifndef ANDROID
+
   if ( serial )
     {
       serial->stopGpsReceiving();
       serial->startGpsReceiving();
       slot_reset();
     }
+
+#endif
+
 }
 
 
