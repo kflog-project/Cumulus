@@ -47,9 +47,13 @@
 
 #include "speed.h"
 #include "altitude.h"
-#include "gpscon.h"
 #include "wgspoint.h"
 
+#ifndef ANDROID
+#include "gpscon.h"
+#else
+#include <QEvent>
+#endif
 
 struct SatInfo
   {
@@ -162,13 +166,6 @@ class GpsNmea : public QObject
      * Starts the GPS client process and activates the GPS receiver.
      */
     void startGpsReceiver();
-
-    /**
-     * This method can be used to read data from the connected GPS. It is provided
-     * to empty the receiver queue during long running other actions to avoid a
-     * buffer overflow.
-     */
-    void readDataFromGps();
 
     /**
      * @return the current GPS connection status.
@@ -410,6 +407,15 @@ class GpsNmea : public QObject
 
     /** This function sends the data of last valid fix to the gps receiver. */
     void sendLastFix (bool hard, bool soft);
+#endif
+
+#ifdef ANDROID
+
+  protected:
+
+    /** Add a event receiver, used by Android only. */
+    bool event(QEvent *event);
+
 #endif
 
   private slots: // Private slots
@@ -694,8 +700,17 @@ class GpsNmea : public QObject
     QString _mapDatum;
     /** selected GPS device */
     QString gpsDevice;
-    /** reference to the normal serial connection */
+
+#ifndef ANDROID
+    /** The reference to the used serial connection */
     GpsCon* serial;
+#else
+    QObject* serial;
+#endif
+
+    /** Flag to enable/disable the GPS data processing. */
+    bool _enableGpsDataProcessing;
+
     /** NMEA log file */
     QFile* nmeaLogFile;
     /** Flag to indicate receive of GPRMC. */
