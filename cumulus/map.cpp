@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 modified by Josua Dietze
- **                   2008-2011 modified by Axel Pauli
+ **                   2008-2012 modified by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -1155,17 +1155,8 @@ void Map::__drawBaseLayer()
   // are no terrain map data available, this is the default map ground color.
   m_pixBaseMap.fill( GeneralConfig::instance()->getTerrainColor(0) );
 
-  // Maps could be loaded before. We do empty the receiver GPS buffer.
-  GpsNmea::gps->readDataFromGps();
-
   // make sure we have all the map files we need loaded
   _globalMapContents->proofeSection();
-
-  // To avoid an overflow in the GPS receiver buffer, we do empty the receiver
-  // buffer after a long action.
-  GpsNmea::gps->readDataFromGps();
-
-  // qDebug("Map::__drawBaseLayer(): zoomFactor=%f", zoomFactor );
 
   double cs = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
@@ -1176,10 +1167,6 @@ void Map::__drawBaseLayer()
 
   // first, draw the iso lines
   _globalMapContents->drawIsoList(&baseMapP);
-
-  // To avoid an overflow in the GPS receiver buffer, we do empty the receiver
-  // buffer after a long action.
-  GpsNmea::gps->readDataFromGps();
 
   // next, draw the topographical elements and the cities
   _globalMapContents->drawList(&baseMapP, MapContents::TopoList, drawnElements);
