@@ -51,6 +51,15 @@
 #include "sound.h"
 #include "time_cu.h"
 
+#ifdef ANDROID
+
+//#include <QWindowSystemInterface>
+
+#include "androidevents.h"
+#include "jnitools.h"
+
+#endif
+
 #ifdef MAEMO
 
 extern "C" {
@@ -93,6 +102,7 @@ MapConfig *_globalMapConfig = static_cast<MapConfig *> (0);
  */
 MapView *_globalMapView = static_cast<MapView *> (0);
 
+int _root_window = 1;
 
 // A signal SIGCONT has been catched. It is send out
 // when the cumulus process was stopped and then reactivated.
@@ -110,6 +120,7 @@ static void resumeGpsConnection( int sig )
 MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 {
   _globalMainWindow = this;
+  int _root_window = 1;
   menuBarVisible = false;
   listViewTabs = 0;
   configView = 0;
@@ -123,8 +134,10 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // Get application font for user manipulations
   QFont appFt = QApplication::font();
 
-//  qDebug("QAppFont family %s, pointSize=%d pixelSize=%d",
-//         appFt.family().toLatin1().data(), appFt.pointSize(), appFt.pixelSize() );
+  qDebug( "QAppFont family %s, pointSize=%d pixelSize=%d",
+          appFt.family().toLatin1().data(),
+          appFt.pointSize(),
+          appFt.pixelSize() );
 
   // For Maemo it's really better to adapt the size of some common widget
   // elements. That is done with the help of the class MaemoStyle.
@@ -173,7 +186,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
   if( fontString != "" && userFont.fromString( fontString ) )
     {
-      // take the user font
+      // take the user's defined font
       QApplication::setFont( userFont );
     }
   else
@@ -193,8 +206,12 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 #endif
     }
 
+#if defined (MAEMO) || defined (ANDROID)
+  resize( QApplication::desktop()->screenGeometry().size() );
+#else
   // get last saved window geometric from GeneralConfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
+#endif
 
   qDebug() << "Cumulus Release:"
            << QCoreApplication::applicationVersion()
@@ -245,12 +262,16 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   setFocusPolicy( Qt::StrongFocus );
   setFocus();
 
+#ifdef ANDROID
+  forceFocusPoint = QPoint( size().width()-2, size().height()-2 );
+#endif
+
   this->installEventFilter( this );
 
   setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus-desktop26x26.png")) );
   setWindowTitle( "Cumulus" );
 
-#ifdef MAEMO
+#if defined (MAEMO) || defined (ANDROID)
   setWindowState(Qt::WindowFullScreen);
 #endif
 
@@ -599,6 +620,7 @@ void MainWindow::slotCreateApplicationWidgets()
       setWindowTitle ( "Cumulus - " + gt );
     }
 
+// TODO That must be done in another way for bigger or smaller screen sizes
   // @AP: That's a trick here! We call resize and make the drawing
   viewMap->_theMap->setDrawing( true );
   viewMap->_theMap->resize( 584, 460 );
@@ -658,7 +680,10 @@ void MainWindow::slotCreateApplicationWidgets()
 
   // Startup GPS client process now for data receiving
   GpsNmea::gps->blockSignals( false );
+
+#ifndef ANDROID
   GpsNmea::gps->startGpsReceiver();
+#endif
 
   if( GeneralConfig::instance()->getLoggerAutostartMode() == true )
     {
@@ -682,6 +707,10 @@ void MainWindow::slotCreateApplicationWidgets()
 
   // Make the status bar visible. Maemo do hide it per default.
   slotViewStatusBar( true );
+
+#ifdef ANDROID
+  forceFocus();
+#endif
 
   qDebug( "End startup CmulusApp" );
 }
@@ -731,21 +760,37 @@ void MainWindow::playSound( const char *name )
 
   if( name && QString(name) == "notify" )
     {
-      sound = GeneralConfig::instance()->getInstallRoot() + "/sounds/Notify.wav";
+      sound = GeneralConfig::instance()->getAppRoot() + "/sounds/Notify.wav";
     }
   else if( name && QString(name) == "alarm" )
     {
-      sound = GeneralConfig::instance()->getInstallRoot() + "/sounds/Alarm.wav";
+      sound = GeneralConfig::instance()->getAppRoot() + "/sounds/Alarm.wav";
     }
   else if( name )
     {
       sound = *name;
     }
 
+#ifdef ANDROID
+
+  // Native method used to play sound via Android service
+  int stream = 0;
+
+  if( name && QString(name) == "alarm" )
+    {
+      stream = 1;
+    }
+
+  jniPlaySound(stream, sound);
+
+#else
+
   // The sound is played in an extra thread
   Sound *player = new Sound( sound );
 
   player->start( QThread::HighestPriority );
+
+#endif
 }
 
 void MainWindow::slotNotification( const QString& msg, const bool sound )
@@ -1409,6 +1454,8 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case mapView:
 
+      _root_window = 1;
+
       // @AP: set focus to MainWindow widget, otherwise F-Key events will
       // not routed to it
       setFocus();
@@ -1457,11 +1504,16 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case wpView:
 
+      _root_window = 0;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewWP );
       listViewTabs->setVisible( true );
+
+#ifdef ANDROID
+      forceFocus();
+#endif
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
@@ -1472,6 +1524,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case rpView:
       {
+        _root_window = 0;
         menuBar()->setVisible( false );
         viewMap->setVisible( false );
         viewInfo->setVisible( false );
@@ -1480,6 +1533,10 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
         listViewTabs->setCurrentWidget( viewRP );
         listViewTabs->setVisible( true );
+
+#ifdef ANDROID
+      forceFocus();
+#endif
 
         toggleManualNavActions( false );
         toggleGpsNavActions( false );
@@ -1491,11 +1548,16 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case afView:
 
+      _root_window = 0;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewAF );
       listViewTabs->setVisible( true );
+
+      #ifdef ANDROID
+      forceFocus();
+#endif
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
@@ -1506,11 +1568,16 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case olView:
 
+      _root_window = 0;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewOL );
       listViewTabs->setVisible( true );
+
+#ifdef ANDROID
+      forceFocus();
+#endif
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
@@ -1527,11 +1594,16 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
           return;
         }
 
+      _root_window = 0;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewTP );
       listViewTabs->setVisible( true );
+
+#ifdef ANDROID
+      forceFocus();
+#endif
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
@@ -1547,10 +1619,15 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
           return;
         }
 
+      _root_window = 0;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       listViewTabs->setVisible( false );
       viewInfo->showWP( view, *wp );
+
+#ifdef ANDROID
+      forceFocus();
+#endif
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
@@ -1561,9 +1638,14 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case tpSwitchView:
 
+      _root_window = 0;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       listViewTabs->setVisible( false );
+
+#ifdef ANDROID
+      forceFocus();
+#endif
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
@@ -1574,6 +1656,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case cfView:
       // called if configuration or preflight widget was created
+      _root_window = 0;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       listViewTabs->setVisible( false );
@@ -1582,16 +1665,19 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
       toggleActions( false );
+
       break;
 
     case flarmView:
       // called if Flarm view is created
+      _root_window = 0;
       menuBar()->setVisible( false );
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
       toggleActions( false );
+
       break;
 
     default:
@@ -1738,6 +1824,10 @@ void MainWindow::slotConfig()
   cDlg->resize( size() );
   configView = static_cast<QWidget *> (cDlg);
 
+#ifdef ANDROID
+  this->installEventFilter( cDlg );
+#endif
+
   setView( cfView );
 
   connect( cDlg, SIGNAL( settingsChanged() ),
@@ -1750,6 +1840,10 @@ void MainWindow::slotConfig()
            calculator, SLOT( slot_changePositionHome() ) );
 
   cDlg->setVisible( true );
+
+#ifdef ANDROID
+  forceFocus();
+#endif
 }
 
 /** Closes the configuration or pre-flight widget */
@@ -2099,11 +2193,16 @@ void MainWindow::slotPreFlightTask()
 /** Opens the pre-flight widget and brings the selected tabulator to the front */
 void MainWindow::slotPreFlight(const char *tabName)
 {
+  _root_window = 0;
   setWindowTitle( tr("Pre-Flight Settings") );
   PreFlightWidget* cDlg = new PreFlightWidget( this, tabName );
   cDlg->setObjectName("PreFlightDialog");
   cDlg->resize( size() );
   configView = static_cast<QWidget *> (cDlg);
+
+#ifdef ANDROID
+  this->installEventFilter( cDlg );
+#endif
 
   setView( cfView );
 
@@ -2123,6 +2222,10 @@ void MainWindow::slotPreFlight(const char *tabName)
            this, SLOT( slotCloseConfig() ) );
 
   cDlg->setVisible( true );
+
+#ifdef ANDROID
+  forceFocus();
+#endif
 }
 
 
@@ -2171,6 +2274,46 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
       QKeyEvent *k = ( QKeyEvent* ) e;
 
       qDebug( "Keycode of pressed key: %d, %X", k->key(), k->key() );
+
+#ifdef ANDROID
+      // Sent by native method "nativeKeypress"
+      if( k->key() == Qt::Key_F11 )
+        {
+          // Open setup from Android menu
+          if (_root_window == 0)
+            {
+              return true;
+            }
+
+          slotConfig();
+          return true;
+        }
+
+      if( k->key() == Qt::Key_F12 )
+        {
+          // Open pre-flight setup from Android menu
+          if (_root_window == 0)
+            {
+              return true;
+            }
+
+          slotPreFlightGlider();
+          return true;
+        }
+
+      if( k->key() == Qt::Key_F13 )
+        {
+          // Open GPS status window from Android menu
+          if (_root_window == 0)
+            {
+              return true;
+            }
+
+          actionViewGPSStatus->activate(QAction::Trigger);
+          return true;
+        }
+#endif
+
     }
 
   return QWidget::eventFilter( o, e ); // standard event processing;
@@ -2273,4 +2416,20 @@ void MainWindow::slotOssoDisplayTrigger()
   ossoDisplayTrigger->start( 10000 );
 }
 
+#endif
+
+#ifdef ANDROID
+void MainWindow::forceFocus()
+{
+  QWindowSystemInterface::handleMouseEvent(0, QEvent::MouseButtonPress,
+                                           forceFocusPoint,
+                                           forceFocusPoint,
+                                           Qt::MouseButtons(Qt::LeftButton));
+  //qDebug("send fake mouse press");
+  QWindowSystemInterface::handleMouseEvent(0, QEvent::MouseButtonRelease,
+                                           forceFocusPoint,
+                                           forceFocusPoint,
+                                           Qt::MouseButtons(Qt::NoButton));
+  //qDebug("send fake mouse release");
+}
 #endif

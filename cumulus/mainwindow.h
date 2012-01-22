@@ -3,7 +3,7 @@
                              -------------------
    begin                : Sun Jul 21 2002
    copyright            : (C) 2002      by André Somers
-   ported to Qt4.x/X11  : (C) 2007-2011 by Axel Pauli
+   ported to Qt4.x/X11  : (C) 2007-2012 by Axel Pauli
    email                : axel@kflog.org
 
    This program is free software; you can redistribute it and/or modify
@@ -25,7 +25,7 @@
  * This class provides the main window of Cumulus. All needed stuff
  * is initialized and handled here.
  *
- * \date 2002-2011
+ * \date 2002-2012
  *
  * \version $Id$
  */
@@ -115,6 +115,10 @@ public:
   {
     return _globalMainWindow;
   };
+
+#ifdef ANDROID
+  void forceFocus();
+#endif
 
 public:
   /**
@@ -428,6 +432,10 @@ private slots:
 
 #endif
 
+#ifdef ANDROID
+private:
+  QPoint forceFocusPoint;
+#endif
 };
 
 #endif
