@@ -1560,6 +1560,8 @@ void GeneralConfig::setUserDataDirectory( QString newDir )
 /** Get the GPS default device depending on the hardware type. */
 QString GeneralConfig::getGpsDefaultDevice()
 {
+#ifdef MAEMO
+
   if( HwInfo::instance()->getSubType() == HwInfo::n800 )
     {
       return MAEMO_LOCATION_SERVICE;
@@ -1574,6 +1576,7 @@ QString GeneralConfig::getGpsDefaultDevice()
     {
       return MAEMO_LOCATION_SERVICE;
     }
+#endif
 
   // Default in unknown case is the serial device
   return "/dev/ttyS0";
