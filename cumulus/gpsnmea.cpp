@@ -202,7 +202,7 @@ void GpsNmea::createGpsConnection()
 
   // We create only a GpsCon instance. The GPS daemon process will be started
   // later. This is also valid hence Maemo5.
-  QString callPath = GeneralConfig::instance()->getInstallRoot() + "/bin";
+  QString callPath = GeneralConfig::instance()->getAppRoot() + "/bin";
 
   serial = new GpsCon(this, callPath.toAscii().data());
 
