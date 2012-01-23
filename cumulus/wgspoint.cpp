@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2011 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2008-2012 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
  * representation.
  */
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <cmath>
 
 #include <QtCore>
@@ -124,8 +124,8 @@ bool WGSPoint::calcFlarmPos( QPoint& own, int north, int east,
       return false;
     }
 
-  const double rad = M_PIl/180;
-  const double degree = 180/M_PIl;
+  const double rad = M_PI/180;
+  const double degree = 180/M_PI;
 
   const double northD = (double) north;
   const double eastD  = (double) east;
@@ -176,8 +176,8 @@ bool WGSPoint::calcFlarmPos( QPoint& own, int north, int east,
  */
 bool WGSPoint::calcFlarmPos( int radius, int bearing, QPoint& own, QPoint& other )
 {
-  const double rad    = M_PIl/180;
-  const double degree = 180/M_PIl;
+  const double rad    = M_PI/180;
+  const double degree = 180/M_PI;
 
   // Convert own position from KFLog degree into decimal degree
   double ownLat = own.x() / 600000.;
