@@ -27,10 +27,6 @@
 // initialize static member variable
 int GpsStatusDialog::noOfInstances = 0;
 
-#ifdef ANDROID
-extern int _root_window;
-#endif
-
 GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   QWidget( parent ),
   showNmeaData( true ),
@@ -121,7 +117,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
 
   connect( save, SIGNAL(clicked()), this, SLOT(slot_SaveNmeaData()) );
 
-  connect( close, SIGNAL(clicked()), this, SLOT(close()) );
+  connect( close, SIGNAL(clicked()), this, SLOT(slot_Close()) );
 }
 
 GpsStatusDialog::~GpsStatusDialog()
@@ -255,6 +251,12 @@ void GpsStatusDialog::slot_SaveNmeaData()
     }
 }
 
+void GpsStatusDialog::slot_Close()
+{
+  emit closingWidget();
+  close();
+}
+
 void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
 {
   // close the dialog on key press
@@ -262,12 +264,8 @@ void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
     {
       case Qt::Key_Close:
       case Qt::Key_Escape:
+        emit closingWidget();
         close();
-
-#ifdef ANDROID
-        _root_window = 1;
-#endif
-
         break;
     }
 }

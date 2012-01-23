@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2003 by André Somers
-**                  2008-2011 Axel Pauli
+**                  2008-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,7 +27,9 @@
   * satellites tracked, elevation, azimuth, signal strengths and the NMEA
   * data stream. NMEA data stream can be save into a file on user request.
   *
-  * \date 2003-2011
+  * \date 2003-2012
+  *
+  * \version $Id$
   */
 
 #ifndef GPS_STATUS_DIALOG_H
@@ -118,6 +120,18 @@ private slots:
    * Called to update the GPS message display.
    */
   void slot_updateGpsMessageDisplay();
+
+  /**
+   * Called if close button is pressed.
+   */
+  void slot_Close();
+
+signals:
+
+  /**
+   * This signal is emitted, when the dialog is closed
+   */
+  void closingWidget();
 
 protected:
 
