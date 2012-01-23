@@ -102,8 +102,6 @@ MapConfig *_globalMapConfig = static_cast<MapConfig *> (0);
  */
 MapView *_globalMapView = static_cast<MapView *> (0);
 
-int _root_window = 1;
-
 // A signal SIGCONT has been catched. It is send out
 // when the cumulus process was stopped and then reactivated.
 // We have to renew the connection to our GPS Receiver.
@@ -120,7 +118,7 @@ static void resumeGpsConnection( int sig )
 MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 {
   _globalMainWindow = this;
-  int _root_window = 1;
+  _rootWindow = true;
   menuBarVisible = false;
   listViewTabs = 0;
   configView = 0;
@@ -1504,7 +1502,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case wpView:
 
-      _root_window = 0;
+      _rootWindow = false;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       viewInfo->setVisible( false );
@@ -1524,7 +1522,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case rpView:
       {
-        _root_window = 0;
+        _rootWindow = false;
         menuBar()->setVisible( false );
         viewMap->setVisible( false );
         viewInfo->setVisible( false );
@@ -1548,7 +1546,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case afView:
 
-      _root_window = 0;
+      _rootWindow = false;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       viewInfo->setVisible( false );
@@ -1568,7 +1566,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case olView:
 
-      _root_window = 0;
+      _rootWindow = false;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       viewInfo->setVisible( false );
@@ -1594,7 +1592,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
           return;
         }
 
-      _root_window = 0;
+      _rootWindow = false;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       viewInfo->setVisible( false );
@@ -1619,7 +1617,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
           return;
         }
 
-      _root_window = 0;
+      _rootWindow = false;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       listViewTabs->setVisible( false );
@@ -1638,7 +1636,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case tpSwitchView:
 
-      _root_window = 0;
+      _rootWindow = false;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       listViewTabs->setVisible( false );
@@ -1656,7 +1654,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case cfView:
       // called if configuration or preflight widget was created
-      _root_window = 0;
+      _rootWindow = false;
       menuBar()->setVisible( false );
       viewMap->setVisible( false );
       listViewTabs->setVisible( false );
@@ -1670,7 +1668,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case flarmView:
       // called if Flarm view is created
-      _root_window = 0;
+      _rootWindow = false;
       menuBar()->setVisible( false );
 
       toggleManualNavActions( false );
@@ -2193,7 +2191,7 @@ void MainWindow::slotPreFlightTask()
 /** Opens the pre-flight widget and brings the selected tabulator to the front */
 void MainWindow::slotPreFlight(const char *tabName)
 {
-  _root_window = 0;
+  _rootWindow = false;
   setWindowTitle( tr("Pre-Flight Settings") );
   PreFlightWidget* cDlg = new PreFlightWidget( this, tabName );
   cDlg->setObjectName("PreFlightDialog");
@@ -2218,8 +2216,9 @@ void MainWindow::slotPreFlight(const char *tabName)
   connect( cDlg, SIGNAL( newWaypoint( Waypoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
 
-  connect( cDlg, SIGNAL( closeConfig() ),
-           this, SLOT( slotCloseConfig() ) );
+  connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotCloseConfig() ) );
+
+  connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( subWidgetClosed() ) );
 
   cDlg->setVisible( true );
 
@@ -2370,6 +2369,15 @@ void MainWindow::slotMapDrawEvent( bool drawEvent )
                                 !calculator->isManualInFlight() );
          }
      }
+}
+
+/**
+ * Called if an opened subwidget is closed.
+ */
+void MainWindow::subWidgetClosed()
+{
+  // Set the root window flag
+  _rootWindow = true;
 }
 
 // resize the list view tabs, if requested
