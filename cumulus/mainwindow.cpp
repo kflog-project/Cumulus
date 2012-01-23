@@ -1452,7 +1452,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case mapView:
 
-      _root_window = 1;
+      _rootWindow = true;
 
       // @AP: set focus to MainWindow widget, otherwise F-Key events will
       // not routed to it
