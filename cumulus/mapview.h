@@ -294,7 +294,7 @@ class MapView : public QWidget
 
 #endif
 
-  signals: // Signals --------------------------------------------------
+  signals:
     /**
      * toggle LD calculation on/off
      */
