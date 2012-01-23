@@ -67,11 +67,6 @@ class GliderFlightDialog : public QDialog
 
  protected:
 
-  /**
-   * This method is called, if the user has pressed the ok button.
-   */
-  void accept();
-
   void showEvent(QShowEvent *);
 
  private slots:
@@ -115,6 +110,16 @@ class GliderFlightDialog : public QDialog
   /** Shows the flight time. */
   void slotShowFlightTime();
 
+  /**
+   * This slot is called, if the user has pressed the ok button.
+   */
+  void slotAccept();
+
+  /**
+   * This slot is called, if the user has pressed the cancel button.
+   */
+  void slotReject();
+
  signals:
 
   /**
@@ -122,10 +127,15 @@ class GliderFlightDialog : public QDialog
    */
   void newWaterAndBugs( const int water, const int bugs );
 
- /**
-  * This signal is emitted, if the Mc value has been changed.
-  */
+  /**
+   * This signal is emitted, if the Mc value has been changed.
+   */
   void newMc( const Speed& mc );
+
+  /**
+   * This signal is emitted, when the dialog is closed
+   */
+  void closingWidget();
 
  private:
 
