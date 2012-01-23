@@ -23,9 +23,8 @@
 #include "gpsnmea.h"
 #include "mainwindow.h"
 
-
-JavaVM *jvm = NULL;
-JNIEnv *jniEnvironment = NULL;
+JavaVM *jvm = 0;
+JNIEnv *jniEnvironment = 0;
 jobject jniProxyObject;
 jclass jniProxyClass;
 jmethodID javaMethodID;
@@ -76,21 +75,27 @@ static void nativeNmeaString(JNIEnv *env /*jniEnvironment*/, jobject /*myproxyob
 
 static void nativeKeypress(JNIEnv *env /*jniEnvironment*/, jobject /*myproxyobject*/, jchar code)
 {
-	unsigned int qtCode;
-	qDebug("nativeKeypress: code is %d", (unsigned int)code);
-	switch ((unsigned int)code) {
-		case 25:
-			qtCode = Qt::Key_F11; break;
-		case 26:
-			qtCode = Qt::Key_F12; break;
-		case 27:
-			qtCode = Qt::Key_F13; break;
-		default:
-			qDebug("nativeKeypress: code is %d",code);
-			return;
-	}
-	QKeyEvent *ke = new QKeyEvent( QEvent::KeyPress, qtCode, 0 );
-	QCoreApplication::postEvent(_globalMainWindow, ke);
+  unsigned int qtCode;
+  qDebug("nativeKeypress: code is %d", (unsigned int) code);
+
+  switch ((unsigned int) code)
+    {
+  case 25:
+    qtCode = Qt::Key_F11;
+    break;
+  case 26:
+    qtCode = Qt::Key_F12;
+    break;
+  case 27:
+    qtCode = Qt::Key_F13;
+    break;
+  default:
+    qDebug("nativeKeypress: code is %d", code);
+    return;
+    }
+
+  QKeyEvent *ke = new QKeyEvent( QEvent::KeyPress, qtCode, 0 );
+  QCoreApplication::postEvent(_globalMainWindow, ke);
 }
 
 #if 0
@@ -103,7 +108,8 @@ static void nativePreflight()
 
 static bool isRootWindow()
 {
-	return MainWindow::isRootWindow;
+  qDebug() << "JNI isRootWindow()" << MainWindow::isRootWindow();
+  return MainWindow::isRootWindow();
 }
 
 static void keyboardAction(JNIEnv * /*jniEnvironment*/, jobject /*myproxyobject*/, jint action)
