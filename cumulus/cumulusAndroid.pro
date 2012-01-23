@@ -58,7 +58,7 @@ HEADERS = \
     interfaceelements.h \
     isohypse.h \
     isolist.h \
-    jnitools.h \
+    jnisupport.h \
     layout.h \
     limitedlist.h \
     lineelement.h \
@@ -170,7 +170,7 @@ SOURCES = \
     igclogger.cpp \
     isohypse.cpp \
     isolist.cpp \
-    jnitools.cpp \
+    jnisupport.cpp \
     lineelement.cpp \
     listviewfilter.cpp \
     main.cpp \
