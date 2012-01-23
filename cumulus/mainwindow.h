@@ -330,6 +330,11 @@ private slots:
    */
   void slotCreateApplicationWidgets();
 
+  /**
+   * Called if an opened subwidget is closed.
+   */
+  void subWidgetClosed();
+
 private:
 
   /**
@@ -417,6 +422,9 @@ private:
   bool _taskListVisible;
   bool _reachpointListVisible;
   bool _outlandingListVisible;
+
+  // Flag to store the root window state
+  bool _rootWindow;
 
 #ifdef MAEMO
 
