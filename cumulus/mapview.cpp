@@ -278,7 +278,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   sideLayout->addWidget( mcBar, 1 );
 
   //--------------------------------------------------------------------
-#ifdef ANDROID
+#ifdef QSCROLLER
   // scroll area for the map, used by Android
   mapArea = new QScrollArea(this);
   mapArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -795,7 +795,7 @@ void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
   if( status != GpsNmea::notConnected )
     {
       _statusGps->setText( tr( "GPS" ) );
-#ifdef ANDROID
+#ifdef QSCROLLER
       QScroller::ungrabGesture(mapArea);
       mapArea->ensureVisible(0,0);
 #endif
@@ -807,7 +807,7 @@ void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
       _speed->setValue( "-" );
       _altitude->setValue( "-" );
 
-#ifdef ANDROID
+#ifdef QSCROLLER
       QScroller::grabGesture(mapArea, QScroller::LeftMouseButtonGesture);
 #endif
     }
@@ -1323,7 +1323,7 @@ void MapView::message( const QString& message, int ms )
   _statusbar->showMessage( message, ms );
 }
 
-#ifdef ANDROID
+#ifdef QSCROLLER
 
 void MapView::slot_scrollerStateChanged(QScroller::State new_s)
 {
