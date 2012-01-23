@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 modified by Josua Dietze
- **                   2008-2012 modified by Axel Pauli
+ **                   2008-2011 modified by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -978,7 +978,9 @@ void Map::setDrawing(bool isEnable)
 
 void Map::resizeEvent(QResizeEvent* event)
 {
-  Q_UNUSED( event )
+  // Q_UNUSED( event )
+
+  qDebug() << "Map::resizeEvent: NS=" << event->size() << "OS=" << event->oldSize();
 
   // set resize flag
   _isResizeEvent = true;
@@ -1095,7 +1097,7 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
   // unlock mutex
   setMutex(false);
 
-#ifdef ANDROID
+#ifdef QSCROLLER
   // Overshoot animation was stopped, reset it
   _globalMapView->resetScrolling();
 #endif
