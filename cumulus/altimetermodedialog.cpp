@@ -458,6 +458,7 @@ void AltimeterModeDialog::accept()
       emit newAltimeterSettings(); // informs GpsNmea
     }
 
+  emit closingWidget();
   QDialog::accept();
 }
 
@@ -479,6 +480,7 @@ void AltimeterModeDialog::reject()
       emit newAltimeterSettings(); // informs GpsNmea
     }
 
+  emit closingWidget();
   QDialog::reject();
 }
 

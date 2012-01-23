@@ -164,6 +164,12 @@ signals:
 
   /** Emitted, if the altimeter QNH resp. leveling have been changed. */
   void newAltimeterSettings();
+
+  /**
+   * This signal is emitted, when the dialog is closed
+   */
+  void closingWidget();
+
 };
 
 #endif

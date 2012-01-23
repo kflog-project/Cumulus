@@ -36,8 +36,6 @@
 #include "androidevents.h"
 #include "mainwindow.h"
 
-extern int         _root_window;
-
 #endif
 
 extern MapContents *_globalMapContents;
@@ -246,9 +244,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   m_tabWidget->setCurrentWidget( spp );
 
 #ifdef ANDROID
-  resize(fullSize);
   MainWindow::mainWindow()->forceFocus();
-  _root_window = 0;
 #endif
 }
 
@@ -347,10 +343,6 @@ void ConfigWidget::accept()
 
   emit closeConfig();
   QWidget::close();
-
-#ifdef ANDROID
-  _root_window = 1;
-#endif
 }
 
 /** Called if the Cancel button is pressed */
@@ -386,10 +378,6 @@ void ConfigWidget::reject()
   emit reload();
   emit closeConfig();
   QWidget::close();
-
-#ifdef ANDROID
-  _root_window = 1;
-#endif
 }
 
 #ifdef ANDROID
