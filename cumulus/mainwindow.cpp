@@ -265,7 +265,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   forceFocusPoint = QPoint( size().width()-2, size().height()-2 );
 #endif
 
-  this->installEventFilter( this );
+  installEventFilter( this );
 
   setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus-desktop26x26.png")) );
   setWindowTitle( "Cumulus" );
@@ -1170,7 +1170,7 @@ void MainWindow::createActions()
   actionSetupConfig->setShortcut(Qt::Key_S + Qt::SHIFT);
   addAction( actionSetupConfig );
   connect ( actionSetupConfig, SIGNAL( triggered() ),
-            this, SLOT( slotConfig() ) );
+            this, SLOT( slotOpenConfig() ) );
 
   actionSetupInFlight = new QAction( tr ( "In flight" ), this );
   actionSetupInFlight->setShortcut(Qt::Key_F);
@@ -1810,8 +1810,9 @@ void MainWindow::slotSwitchToInfoView( Waypoint* wp )
 }
 
 /** Opens the configuration widget */
-void MainWindow::slotConfig()
+void MainWindow::slotOpenConfig()
 {
+  _rootWindow = false;
   setWindowTitle( tr("Cumulus Settings") );
   ConfigWidget *cDlg = new ConfigWidget( this );
   cDlg->resize( size() );
@@ -1823,20 +1824,15 @@ void MainWindow::slotConfig()
 
   setView( cfView );
 
-  connect( cDlg, SIGNAL( settingsChanged() ),
-           this, SLOT( slotReadconfig() ) );
-  connect( cDlg, SIGNAL( closeConfig() ),
-           this, SLOT( slotCloseConfig() ) );
+  connect( cDlg, SIGNAL( settingsChanged() ), this, SLOT( slotReadconfig() ) );
+  connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotCloseConfig() ) );
+  connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotSubWidgetClosed() ) );
   connect( cDlg,  SIGNAL( welt2000ConfigChanged() ),
            _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
   connect( cDlg, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
   cDlg->setVisible( true );
-
-#ifdef ANDROID
-  forceFocus();
-#endif
 }
 
 /** Closes the configuration or pre-flight widget */
@@ -2172,19 +2168,19 @@ void MainWindow::slotEnsureVisible()
 /** Opens the preflight dialog and brings the selected tabulator in foreground */
 void MainWindow::slotPreFlightGlider()
 {
-  slotPreFlight("gliderselection");
+  slotOpenPreFlight("gliderselection");
 }
 
 
 /** Opens the preflight dialog and brings the selected tabulator in foreground */
 void MainWindow::slotPreFlightTask()
 {
-  slotPreFlight("taskselection");
+  slotOpenPreFlight("taskselection");
 }
 
 
 /** Opens the pre-flight widget and brings the selected tabulator to the front */
-void MainWindow::slotPreFlight(const char *tabName)
+void MainWindow::slotOpenPreFlight(const char *tabName)
 {
   _rootWindow = false;
   setWindowTitle( tr("Pre-Flight Settings") );
@@ -2213,7 +2209,7 @@ void MainWindow::slotPreFlight(const char *tabName)
 
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotCloseConfig() ) );
 
-  connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( subWidgetClosed() ) );
+  connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotSubWidgetClosed() ) );
 
   cDlg->setVisible( true );
 
@@ -2221,7 +2217,6 @@ void MainWindow::slotPreFlight(const char *tabName)
   forceFocus();
 #endif
 }
-
 
 void MainWindow::slotPreFlightDataChanged()
 {
@@ -2274,36 +2269,33 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
       if( k->key() == Qt::Key_F11 )
         {
           // Open setup from Android menu
-          if (_rootWindow == 0)
+          if (_rootWindow )
             {
-              return true;
+              slotOpenConfig();
             }
 
-          slotConfig();
           return true;
         }
 
       if( k->key() == Qt::Key_F12 )
         {
           // Open pre-flight setup from Android menu
-          if (_rootWindow == 0)
+          if (_rootWindow == false)
             {
-              return true;
+              slotPreFlightGlider();
             }
 
-          slotPreFlightGlider();
           return true;
         }
 
       if( k->key() == Qt::Key_F13 )
         {
           // Open GPS status window from Android menu
-          if (_rootWindow == 0)
+          if (_rootWindow )
             {
-              return true;
+              actionViewGPSStatus->activate(QAction::Trigger);
             }
 
-          actionViewGPSStatus->activate(QAction::Trigger);
           return true;
         }
 #endif
@@ -2367,9 +2359,18 @@ void MainWindow::slotMapDrawEvent( bool drawEvent )
 }
 
 /**
+ * Called if a subwidget is opened.
+ */
+void MainWindow::slotSubWidgetOpened()
+{
+  // Set the root window flag
+  _rootWindow = false;
+}
+
+/**
  * Called if an opened subwidget is closed.
  */
-void MainWindow::subWidgetClosed()
+void MainWindow::slotSubWidgetClosed()
 {
   // Set the root window flag
   _rootWindow = true;

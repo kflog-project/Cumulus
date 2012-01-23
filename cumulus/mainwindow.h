@@ -124,6 +124,11 @@ public:
     return _rootWindow;
   };
 
+  static void setRootWindow( bool value)
+  {
+    _rootWindow = value;
+  };
+
 #ifdef ANDROID
   void forceFocus();
 #endif
@@ -188,9 +193,9 @@ public slots:
   /** This slot is called to switch to the info view with selected waypoint. */
   void slotSwitchToInfoView(Waypoint*);
   /** Opens the config "dialog". */
-  void slotConfig();
+  void slotOpenConfig();
   /** Opens the pre-flight "dialog". */
-  void slotPreFlight(const char *tabName);
+  void slotOpenPreFlight(const char *tabName);
   /** This slot is called if the configuration has changed and at the start of the program to read the initial configuration. */
   void slotReadconfig();
   /** Called if the status of the GPS changes, and controls the availability of manual navigation. */
@@ -212,6 +217,14 @@ public slots:
   void slotCloseConfig();
   /** set menubar font size to a reasonable and usable value */
   void slotSetMenuBarFontSize();
+  /**
+   * Called if a subwidget is opened.
+   */
+  void slotSubWidgetOpened();
+  /**
+   * Called if an opened subwidget is closed.
+   */
+  void slotSubWidgetClosed();
 
 protected:
   /**
@@ -337,11 +350,6 @@ private slots:
    *  of the core application window.
    */
   void slotCreateApplicationWidgets();
-
-  /**
-   * Called if an opened subwidget is closed.
-   */
-  void subWidgetClosed();
 
 private:
 
