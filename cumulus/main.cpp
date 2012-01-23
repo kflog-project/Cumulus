@@ -52,7 +52,7 @@
 #include "hwinfo.h"
 
 #ifdef ANDROID
-#include "jnitools.h"
+#include "jnisupport.h"
 #endif
 
 /** Define the disclaimer version */

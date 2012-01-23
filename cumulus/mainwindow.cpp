@@ -56,7 +56,7 @@
 #include <QWindowSystemInterface>
 
 #include "androidevents.h"
-#include "jnitools.h"
+#include "jnisupport.h"
 
 #endif
 
@@ -102,6 +102,8 @@ MapConfig *_globalMapConfig = static_cast<MapConfig *> (0);
  */
 MapView *_globalMapView = static_cast<MapView *> (0);
 
+bool MainWindow::_rootWindow = true;
+
 // A signal SIGCONT has been catched. It is send out
 // when the cumulus process was stopped and then reactivated.
 // We have to renew the connection to our GPS Receiver.
@@ -118,7 +120,6 @@ static void resumeGpsConnection( int sig )
 MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 {
   _globalMainWindow = this;
-  _rootWindow = true;
   menuBarVisible = false;
   listViewTabs = 0;
   configView = 0;
@@ -1403,12 +1404,6 @@ void MainWindow::slotLogging ( bool logging )
   actionToggleLogging->blockSignals( false );
 }
 
-/** Read property of enum view. */
-MainWindow::appView MainWindow::getView()
-{
-  return view;
-}
-
 /** Called if the user clicks on a tabulator of the list view */
 void MainWindow::slotTabChanged( int index )
 {
@@ -2279,7 +2274,7 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
       if( k->key() == Qt::Key_F11 )
         {
           // Open setup from Android menu
-          if (_root_window == 0)
+          if (_rootWindow == 0)
             {
               return true;
             }
@@ -2291,7 +2286,7 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
       if( k->key() == Qt::Key_F12 )
         {
           // Open pre-flight setup from Android menu
-          if (_root_window == 0)
+          if (_rootWindow == 0)
             {
               return true;
             }
@@ -2303,7 +2298,7 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
       if( k->key() == Qt::Key_F13 )
         {
           // Open GPS status window from Android menu
-          if (_root_window == 0)
+          if (_rootWindow == 0)
             {
               return true;
             }

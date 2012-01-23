@@ -94,12 +94,15 @@ public:
   /**
    * Sets the view type
    */
-  void setView (const appView& _newVal, const Waypoint* wp = 0);
+  void setView(const appView& _newVal, const Waypoint* wp = 0);
 
   /**
    * @returns the view type
    */
-  appView getView();
+  appView getView() const
+  {
+    return view;
+  }
 
   /**
    * plays some sound.
@@ -114,6 +117,11 @@ public:
   static MainWindow* mainWindow()
   {
     return _globalMainWindow;
+  };
+
+  static bool isRootWindow()
+  {
+    return _rootWindow;
   };
 
 #ifdef ANDROID
@@ -424,7 +432,7 @@ private:
   bool _outlandingListVisible;
 
   // Flag to store the root window state
-  bool _rootWindow;
+  static bool _rootWindow;
 
 #ifdef MAEMO
 
