@@ -61,11 +61,15 @@
 /////////////////////
 int main(int argc, char *argv[])
 {
+  // Workaround to start browser from QTextView
+  qputenv ( "BROWSER", "browser --url" );
+
 #ifdef ANDROID
 
   jniRegister();
 
-  // Gets the additional data dir from our app
+  // Gets the additional data dir from our app. That is normally the storage
+  // path to the SDCard.
   QString addDir = jniGetAddDataDir();
 
   while (addDir.isEmpty())
