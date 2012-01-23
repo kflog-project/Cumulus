@@ -222,6 +222,7 @@ void PreFlightWidget::slot_accept()
   gliderpage->save();
   miscpage->save();
   wppage->save();
+  GeneralConfig::instance()->save();
 
   setVisible( false );
   emit settingsChanged();
