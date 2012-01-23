@@ -36,11 +36,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   setModal(true);
   setWindowTitle( tr("Set Variometer") );
 
-#ifndef MAEMO
-  int minFontSize = 14;
-#else
-  int minFontSize = 20;
-#endif
+  int minFontSize = MinFontSize;
 
   QFont b = font();
   b.setBold(true);
@@ -102,11 +98,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   mminus  = new QPushButton("--", this);
   minus   = new QPushButton("-", this);
 
-  int size = 40;
-
-#ifdef MAEMO
-  size = 80;
-#endif
+  int size = ButtonSize;
 
   pplus->setMinimumSize(size, size);
   plus->setMinimumSize(size, size);
@@ -169,7 +161,14 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   connect(TEK,   SIGNAL(toggled(bool)), this, SLOT(slot_tekChanged(bool)));
 
   connect (ok,     SIGNAL(clicked()), this, SLOT(slot_accept()));
-  connect (cancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect (cancel, SIGNAL(clicked()), this, SLOT(slot_reject()));
+
+  // Activate keyboard shortcuts for close
+  QShortcut* scClose = new QShortcut( this );
+  scClose->setKey( Qt::Key_Escape );
+  scClose->setKey( Qt::Key_Close );
+
+  connect( scClose, SIGNAL(activated()), this, SLOT( reject() ));
 
   QSignalMapper* signalMapper = new QSignalMapper(this);
   connect(pplus, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -350,7 +349,14 @@ void VarioModeDialog::slot_tekMinus()
 void VarioModeDialog::slot_accept()
 {
   save();
+  emit closingWidget();
   QDialog::accept();
+}
+
+void VarioModeDialog::slot_reject()
+{
+  emit closingWidget();
+  QDialog::reject();
 }
 
 void VarioModeDialog::slot_setTimer()

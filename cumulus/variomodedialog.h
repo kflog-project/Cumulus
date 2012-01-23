@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2004-2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c): 2004-2012 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,7 +24,9 @@
  *
  * This dialog is the user interface for the variometer settings.
  *
- * \date 2004-2010
+ * \date 2004-2012
+ *
+ * \version $Id$
  *
  */
 
@@ -71,6 +73,7 @@ private slots:
    */
   void slot_setTimer();
   void slot_accept();
+  void slot_reject();
 
   /**
    * This method changes the value in the spin box which has the current focus.
@@ -120,6 +123,11 @@ signals:
    * @param newAdjust new adjust value in percent
    */
   void newTEKAdjust(int newAdjust);
+
+  /**
+   * This signal is emitted, when the dialog is closed
+   */
+  void closingWidget();
 
 private:
 
