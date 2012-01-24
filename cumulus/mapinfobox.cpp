@@ -53,38 +53,45 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   QFrame( parent ),
   _textBGColor( "white" )
 {
+  QFont f = font();
+  f.setPixelSize(17);
+  setFont(f);
+  QFontMetrics fm(f);
+
   basics( borderColor );
   QHBoxLayout* topLayout = (QHBoxLayout*) this->layout();
 
   _maxFontDotsize = fontDotsize;
 
-  QFont f;
-  f.setPixelSize(17);
-
   _preWidget = new QWidget( this );
-  _preWidget->setFixedWidth( 32 );
+  _preWidget->setFixedWidth( fm.boundingRect("Brg").width() + 5 );
 
   QVBoxLayout* preLayout = new QVBoxLayout( _preWidget );
   preLayout->setContentsMargins(3,0,3,0);
   preLayout->setSpacing(3);
 
-  _ptext = new QLabel(this);
-  _ptext->setContentsMargins(0,0,0,0);
+  _ptext = new QLabel;
+  _ptext->setMargin(0);
   _ptext->setIndent(0);
+  _ptext->setTextFormat(Qt::PlainText);
+  _ptext->setScaledContents(true);
 
   QPalette p = _ptext->palette();
   p.setColor( QPalette::WindowText, Qt::black );
   _ptext->setPalette(p);
-  _ptext->setFont(f);
-  // _ptext->setAlignment( Qt::AlignRight );
-  preLayout->addWidget(_ptext, 0, Qt::AlignRight|Qt::AlignTop);
+
+  _ptext->setFixedWidth( fm.boundingRect("MM").width() );
+
+  preLayout->addWidget(_ptext, 0, Qt::AlignLeft|Qt::AlignTop);
+  preLayout->addWidget(_ptext );
 
   if( minusInPretext )
     {
       _pminus = new QLabel( this );
-      _pminus->setContentsMargins(0,0,0,0);
+      _pminus->setMargin(0);
       _pminus->setPixmap( GeneralConfig::instance()->loadPixmap( "minus.png" ) );
-      //_pminus->setFixedWidth( 25 );
+      _pminus->setFixedWidth( 25 );
+      _pminus->setScaledContents(true);
       preLayout->addStretch( 1 );
       preLayout->addWidget( _pminus, 0, Qt::AlignRight );
      _pminus->setVisible(false);
@@ -95,27 +102,26 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   if( unitInPretext )
     {
       // A unit shall be displayed in the pre-text box.
-      _punit = new QLabel(this);
-      _punit->setContentsMargins(0, 0, 0, 0);
+      _punit = new QLabel;
+      _punit->setMargin(0);
       _punit->setIndent(0);
+      _punit->setTextFormat(Qt::PlainText);
+      _punit->setScaledContents(true);
 
       p = _punit->palette();
       p.setColor( QPalette::WindowText, Qt::black );
 
       _punit->setPalette(p);
-      _punit->setFont(f);
 
+      //_punit->setFixedWidth( fm.boundingRect("MM").width() );
       preLayout->addWidget(_punit, 0, Qt::AlignRight|Qt::AlignBottom);
     }
 
   topLayout->addWidget( _preWidget, 0 );
 
-  _text = new QLabel(this);
-  _text->setIndent(0);
-  f.setPixelSize(fontDotsize);
-  _text->setFont(f);
+  _text = new QLabel;
 
-  topLayout->addWidget(_text, 20);
+  topLayout->addWidget(_text, 10);
 
   _text->setStyleSheet( QString( "border-style: none;"
                                  "border-width: 0px;"
@@ -129,8 +135,8 @@ MapInfoBox::MapInfoBox( QWidget *parent,
                                  .arg(fontDotsize) );
 
   setValue("-");
-  setPreText("");
-  setPreUnit("");
+  setPreText("MMM");
+  setPreUnit("MM");
 }
 
 MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor, const QPixmap& pixmap ) :
@@ -146,7 +152,7 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor, const QPixm
 void MapInfoBox::basics( const QString& borderColor )
 {
   QHBoxLayout* topLayout = new QHBoxLayout(this);
-  topLayout->setMargin(0);
+  topLayout->setContentsMargins(0,0,0,0);
   topLayout->setSpacing(0);
 
   QPalette p = palette();
