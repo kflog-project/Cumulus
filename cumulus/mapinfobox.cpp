@@ -59,13 +59,13 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   _maxFontDotsize = fontDotsize;
 
   QFont f;
-  f.setPixelSize(18);
+  f.setPixelSize(17);
 
   _preWidget = new QWidget( this );
-  _preWidget->setFixedWidth( 30 );
+  //_preWidget->setFixedWidth( 32 );
 
   QVBoxLayout* preLayout = new QVBoxLayout( _preWidget );
-  preLayout->setContentsMargins(0,0,0,0);
+  preLayout->setContentsMargins(3,0,3,0);
   preLayout->setSpacing(3);
 
   _ptext = new QLabel(this);
@@ -84,7 +84,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
       _pminus = new QLabel( this );
       _pminus->setContentsMargins(0,0,0,0);
       _pminus->setPixmap( GeneralConfig::instance()->loadPixmap( "minus.png" ) );
-      _pminus->setFixedWidth( 25 );
+      //_pminus->setFixedWidth( 25 );
       preLayout->addStretch( 1 );
       preLayout->addWidget( _pminus, 0, Qt::AlignRight );
      _pminus->setVisible(false);
