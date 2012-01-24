@@ -275,7 +275,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // of some widgets is undefined.
 
   // when the timer expires the cumulus startup is continued
-  QTimer::singleShot(5000, this, SLOT(slotCreateApplicationWidgets()));
+  QTimer::singleShot(2000, this, SLOT(slotCreateApplicationWidgets()));
  }
 
 /**
