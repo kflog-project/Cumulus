@@ -4,7 +4,7 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2010 by Axel Pauli
+                               2008-2012 by Axel Pauli
 
     email                : axel@kflog.org
     
@@ -59,48 +59,52 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   _maxFontDotsize = fontDotsize;
 
   QFont f;
-  f.setPixelSize(16);
+  f.setPixelSize(18);
 
   _preWidget = new QWidget( this );
+  _preWidget->setFixedWidth( 30 );
 
   QVBoxLayout* preLayout = new QVBoxLayout( _preWidget );
-  preLayout->setMargin(0);
+  preLayout->setContentsMargins(0,0,0,0);
   preLayout->setSpacing(3);
 
   _ptext = new QLabel(this);
+  _ptext->setContentsMargins(0,0,0,0);
+  _ptext->setIndent(0);
 
   QPalette p = _ptext->palette();
   p.setColor( QPalette::WindowText, Qt::black );
   _ptext->setPalette(p);
   _ptext->setFont(f);
-  _ptext->setAlignment( Qt::AlignRight );
-  _ptext->setFixedWidth( 27 );
+  // _ptext->setAlignment( Qt::AlignRight );
   preLayout->addWidget(_ptext, 0, Qt::AlignRight|Qt::AlignTop);
 
   if( minusInPretext )
     {
       _pminus = new QLabel( this );
+      _pminus->setContentsMargins(0,0,0,0);
       _pminus->setPixmap( GeneralConfig::instance()->loadPixmap( "minus.png" ) );
       _pminus->setFixedWidth( 25 );
-      preLayout->addWidget( _pminus );
-      preLayout->addStretch( 5 );
-      _pminus->setVisible(false);
+      preLayout->addStretch( 1 );
+      preLayout->addWidget( _pminus, 0, Qt::AlignRight );
+     _pminus->setVisible(false);
     }
+
+  preLayout->addStretch( 10 );
 
   if( unitInPretext )
     {
       // A unit shall be displayed in the pre-text box.
       _punit = new QLabel(this);
+      _punit->setContentsMargins(0, 0, 0, 0);
+      _punit->setIndent(0);
 
       p = _punit->palette();
       p.setColor( QPalette::WindowText, Qt::black );
 
       _punit->setPalette(p);
       _punit->setFont(f);
-      _punit->setAlignment( Qt::AlignRight );
-      _punit->setFixedWidth( 27 );
 
-      preLayout->addStretch( 5 );
       preLayout->addWidget(_punit, 0, Qt::AlignRight|Qt::AlignBottom);
     }
 
@@ -111,7 +115,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   f.setPixelSize(fontDotsize);
   _text->setFont(f);
 
-  topLayout->addWidget(_text,10);
+  topLayout->addWidget(_text, 20);
 
   _text->setStyleSheet( QString( "border-style: none;"
                                  "border-width: 0px;"
