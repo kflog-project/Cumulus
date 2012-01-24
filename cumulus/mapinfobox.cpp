@@ -62,7 +62,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   f.setPixelSize(17);
 
   _preWidget = new QWidget( this );
-  //_preWidget->setFixedWidth( 32 );
+  _preWidget->setFixedWidth( 32 );
 
   QVBoxLayout* preLayout = new QVBoxLayout( _preWidget );
   preLayout->setContentsMargins(3,0,3,0);

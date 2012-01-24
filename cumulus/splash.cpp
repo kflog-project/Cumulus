@@ -6,16 +6,16 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2009-2012 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-#include <QPixmap>
+#include <QtGui>
 
 #include "generalconfig.h"
 #include "splash.h"
@@ -55,4 +55,3 @@ void Splash::paintEvent(QPaintEvent * /* event */ )
   // draws the background picture
   painter.drawPixmap( rect(), pixmap, pixmap.rect() );
 }
-

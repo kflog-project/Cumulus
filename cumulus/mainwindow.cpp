@@ -145,19 +145,19 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // Set GUI style and style proxy.
   GeneralConfig::instance()->setOurGuiStyle();
 
-#ifdef MAEMO
-
-  // That we do need for the location service. This service emits signals, which
-  // are bound to a g_object. This call initializes the g_object handling.
-  g_type_init();
-
-  // Show available input methods
+  // Display available input methods
   QStringList inputMethods = QInputContextFactory::keys();
 
   foreach( QString inputMethod, inputMethods )
     {
       qDebug() << "InputMethod: " << inputMethod;
     }
+
+#ifdef MAEMO
+
+  // That we do need for the location service. This service emits signals, which
+  // are bound to a g_object. This call initializes the g_object handling.
+  g_type_init();
 
   // Check, if virtual keyboard support is enabled
   if( GeneralConfig::instance()->getVirtualKeyboard() )
@@ -187,22 +187,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
     {
       // take the user's defined font
       QApplication::setFont( userFont );
-    }
-  else
-    {
-#ifdef MAEMO
-      // If there is not defined a user font, we try to set some useful defaults for MAEMO
-      // The Nokia font has excellent readability and less width than others
-      appFt.setFamily("Nokia Sans");
-
-      if( appFt.pointSize() < 14 )
-        {
-          // the system font size is too small, we are setting a bigger default
-          appFt.setPointSize( 22 );
-        }
-
-      QApplication::setFont( appFt );
-#endif
     }
 
 #if defined (MAEMO) || defined (ANDROID)
@@ -291,7 +275,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // of some widgets is undefined.
 
   // when the timer expires the cumulus startup is continued
-  QTimer::singleShot(2000, this, SLOT(slotCreateApplicationWidgets()));
+  QTimer::singleShot(5000, this, SLOT(slotCreateApplicationWidgets()));
  }
 
 /**
@@ -300,7 +284,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
  */
 void MainWindow::slotCreateApplicationWidgets()
 {
-  // qDebug( "MainWindow::slotCreateApplicationWidgets()" );
+  qDebug( "MainWindow::slotCreateApplicationWidgets()" );
 
 #ifdef MAEMO
 
@@ -757,6 +741,8 @@ void MainWindow::playSound( const char *name )
 
   QString sound;
 
+#ifndef ANDROID
+
   if( name && QString(name) == "notify" )
     {
       sound = GeneralConfig::instance()->getAppRoot() + "/sounds/Notify.wav";
@@ -770,24 +756,33 @@ void MainWindow::playSound( const char *name )
       sound = *name;
     }
 
-#ifdef ANDROID
-
-  // Native method used to play sound via Android service
-  int stream = 0;
-
-  if( name && QString(name) == "alarm" )
-    {
-      stream = 1;
-    }
-
-  jniPlaySound(stream, sound);
-
-#else
-
   // The sound is played in an extra thread
   Sound *player = new Sound( sound );
 
   player->start( QThread::HighestPriority );
+
+#else
+
+  // Native method used to play sound via Android service
+  int stream = 0;
+
+  if( name && QString(name) == "notify" )
+    {
+      sound = "Notify.wav";
+      stream = 0;
+    }
+  else if( name && QString(name) == "alarm" )
+    {
+      sound = "Alarm.wav";
+      stream = 1;
+    }
+  else
+    {
+      // All other is unsupported
+      return;
+    }
+
+  jniPlaySound(stream, sound);
 
 #endif
 }

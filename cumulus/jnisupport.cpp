@@ -6,7 +6,8 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2010 by Josua Dietze
+ **   Copyright (c):  2010-2012 by Josua Dietze
+ **                   2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -147,86 +148,123 @@ static JNINativeMethod methods[] = {
 //Exception checking
 inline bool isJavaExceptionOccured()
 {
-	if (!jniEnvironment)
-		return false;
-	if (jniEnvironment->ExceptionOccurred()) {
-		jniEnvironment->ExceptionDescribe();
-		jniEnvironment->ExceptionClear();
-		return true;
-	}
-	return false;
+  if (!jniEnvironment)
+    {
+      return false;
+    }
+
+  if (jniEnvironment->ExceptionOccurred())
+    {
+      jniEnvironment->ExceptionDescribe();
+      jniEnvironment->ExceptionClear();
+      return true;
+    }
+
+  return false;
 }
 
 //JNI initialization
 bool jniEnv()
 {
-qDebug("C++ jniEnv: started");
-	jniEnvironment = NULL;
-	if (jvm == NULL)
-		jvm = QtAndroidBridge::javaVM();
-	if (jvm != NULL) {
-		JavaVMAttachArgs args;
-		args.name = NULL;
-		args.group = NULL;
-		args.version = JNI_VERSION_1_4;
-		jvm->AttachCurrentThread(&jniEnvironment, &args);
-		if (isJavaExceptionOccured()) {
-			qDebug("jniEnv: exception when attaching Java thread");
-			return false;
-		}
-		if (!jniEnvironment) {
-			qDebug("jniEnv: could not get Java environment");
-			return false;
-		}
-	} else {
-		qDebug("jniEnv: could not get Java VM");
-		return false;
-	}
-	jniProxyObject = QtAndroidBridge::jniProxyObject();
-	jniProxyClass = jniEnvironment->GetObjectClass(jniProxyObject);
-	if (!jniProxyClass) {
-		qDebug("jniEnv: retrieving the class failed");
-		return false;
-	}
-	return true; 
-}
+  // qDebug("C++ jniEnv: started");
 
-// The public functions
+  jniEnvironment = 0;
+
+  if (jvm == 0)
+    {
+      jvm = QtAndroidBridge::javaVM();
+    }
+
+  if (jvm != 0)
+    {
+      JavaVMAttachArgs args;
+      args.name = 0;
+      args.group = 0;
+      args.version = JNI_VERSION_1_4;
+      jvm->AttachCurrentThread(&jniEnvironment, &args);
+
+      if (isJavaExceptionOccured())
+        {
+          qWarning("jniEnv: exception when attaching Java thread");
+          return false;
+        }
+
+      if (!jniEnvironment)
+        {
+          qWarning("jniEnv: could not get Java environment");
+          return false;
+        }
+    }
+  else
+    {
+      qWarning("jniEnv: could not get Java VM");
+      return false;
+    }
+
+  jniProxyObject = QtAndroidBridge::jniProxyObject();
+  jniProxyClass  = jniEnvironment->GetObjectClass(jniProxyObject);
+
+  if (!jniProxyClass)
+    {
+      qWarning("jniEnv: retrieving the class failed");
+      return false;
+    }
+
+  return true;
+}
 
 bool jniRegister()
 {
-qDebug("C++ jniRegister: started");
-	if (! jniEnv()) {
-		qDebug("jniRegister: jniEnv failed, can't register native methods");
-		return false;
-	}
-	if ( jniEnvironment->RegisterNatives (jniProxyClass, methods, sizeof(methods) / sizeof(methods[0])) < 0) {
-		qDebug("jniRegister: registering of custom natives failed");
-		return false;
-	}
+  // qDebug("C++ jniRegister: started");
 
-	qDebug("jniRegister: native methods registered successfully");
-	return true;
+  if (!jniEnv())
+    {
+      qWarning("jniRegister: jniEnv failed, can't register native methods");
+      return false;
+    }
+
+  if (jniEnvironment->RegisterNatives(jniProxyClass, methods,
+      sizeof(methods) / sizeof(methods[0])) < 0)
+    {
+      qWarning("jniRegister: registering of custom natives failed");
+      return false;
+    }
+
+  qDebug("jniRegister: native methods registered successfully");
+  return true;
 }
 
 bool jniPlaySound(int stream, QString soundName)
 {
-	if (! jniEnv()) {
-		qDebug("jniPlaySound: jniEnv failed, can't call Java method jniPlaySound");
-		return false;
-	}
-	javaMethodID = jniEnvironment->GetMethodID(jniProxyClass,"playSound","(ILjava/lang/String;)V"); 
-	if (isJavaExceptionOccured()) {
-		qDebug("jniPlaySound: could not get ID of \"playSound\"");
-		return false;
-	}
-	jstring jSoundName = jniEnvironment->NewString((jchar*)soundName.constData(), (jsize)soundName.length() );
-	jniEnvironment->CallObjectMethod( jniProxyObject, javaMethodID, (jint)stream, jSoundName );
-	if (isJavaExceptionOccured()) {
-		qDebug("jniPlaySound: exception when calling Java method \"playSound\"");
-		return false;
-	}
-	return true;
+  if (!jniEnv())
+    {
+      qWarning( "jniPlaySound: jniEnv failed!");
+      return false;
+    }
+
+  javaMethodID = jniEnvironment->GetMethodID( jniProxyClass,
+                                              "playSound",
+                                              "(ILjava/lang/String;)V");
+  if (isJavaExceptionOccured())
+    {
+      qWarning("jniPlaySound: could not get ID of \"playSound\"");
+      return false;
+    }
+
+  jstring jSoundName = jniEnvironment->NewString((jchar*) soundName.constData(),
+                                                 (jsize) soundName.length());
+
+  jniEnvironment->CallObjectMethod(jniProxyObject,
+                                   javaMethodID,
+                                   (jint) stream,
+                                   jSoundName);
+  if (isJavaExceptionOccured())
+    {
+      qWarning("jniPlaySound: exception when calling Java method \"playSound\"");
+      return false;
+    }
+
+  return true;
 }
 
 QString jniGetAppDataDir()

@@ -34,14 +34,13 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <clocale>
+#include <cstdlib>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <libgen.h>
-#include <locale.h>
 
 #include <QtGui>
 
@@ -260,21 +259,33 @@ int main(int argc, char *argv[])
 
 #endif
 
-  if( conf->getDisclaimerVersion() != DISCLAIMER_VERSION )
+  if( conf->getGuiFont() == "" )
     {
+      // No Gui menu font is defined, we try to define a sensefull default.
+      QFont appFont;
+      int   appFSize = 16;
 
 #ifdef ANDROID
-
-      // The assumption is, that the Application is started the first time.
-      QFont appFont( "Droid Sans" );
-      appFont.setStyle( QFont::StyleNormal );
-      appFont.setPixelSize( 16 );
-      appFont.setPointSize( 16 );
-
-      QApplication::setFont( appFont );
-
+      appFont.setFamily( "Droid Sans" );
+      appFSize = 20;
+#else
+#ifdef MAEMO
+      appFont.setFamily("Nokia Sans");
+      appFSize = 20;
+#else
+      appFont.setFamily("Sans Serif");
+#endif
 #endif
 
+      appFont.setStyle( QFont::StyleNormal );
+      appFont.setPixelSize( appFSize );
+      appFont.setPointSize( appFSize );
+
+      QApplication::setFont( appFont );
+    }
+
+  if( conf->getDisclaimerVersion() != DISCLAIMER_VERSION )
+    {
       QApplication::beep();
 
       // upon changing the text, you should also increase the value of DISCLAIMERVERSION with 1
@@ -296,22 +307,18 @@ int main(int argc, char *argv[])
 
       QMessageBox msgBox;
 
-      QFont font = QApplication::font();
-
       int size = 16;
 
 #if defined (MAEMO) || defined (ANDROID)
       size = 20;
 #endif
 
-      if( font.pixelSize() < size )
-        {
-          // adapt font size to a readable one
-          font.setPixelSize( size );
-          font.setPointSize( size );
-          msgBox.setFont( font );
-        }
+      QFont font = QApplication::font();
 
+      // adapt font size to a readable one for the screen
+      font.setPixelSize( size );
+      font.setPointSize( size );
+      msgBox.setFont( font );
       msgBox.setWindowTitle( QObject::tr("Cumulus Disclaimer") );
       msgBox.setIcon ( QMessageBox::Warning );
       msgBox.setText( disclaimer );
