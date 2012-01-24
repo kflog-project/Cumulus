@@ -66,12 +66,12 @@ addData:
 	@install -d $(ADD_DATA_ROOT)/help/en
 	@install -d $(ADD_DATA_ROOT)/help/de
 	@install -d $(ADD_DATA_ROOT)/locale/de
-	@install -d $(APP_DATA_ROOT)/sounds
+	@install -d $(ADD_DATA_ROOT)/sounds
 	@install --mode=644 help/en/*.html icons/cumulus.png $(ADD_DATA_ROOT)/help/en
 	@install --mode=644 help/en/text.css $(ADD_DATA_ROOT)/help/en
 	@install --mode=644 icons/cumulus.png $(ADD_DATA_ROOT)/help/de
-	@install --mode=644 sounds/AlarmShort.wav $(APP_DATA_ROOT)/sounds/Alarm.wav
-	@install --mode=644 sounds/Notify.wav $(APP_DATA_ROOT)/sounds
+	@install --mode=644 sounds/AlarmShort.wav $(ADD_DATA_ROOT)/sounds/Alarm.wav
+	@install --mode=644 sounds/Notify.wav $(ADD_DATA_ROOT)/sounds
 	@cd $(ADD_DATA_ROOT); zip -q -r -o $(ADD_DATA) *
 	@mv $(ADD_DATA_ROOT)/$(ADD_DATA) $(INSTALL_ROOT)
 	@echo "  $(ADD_DATA) created under $(INSTALL_ROOT)"
