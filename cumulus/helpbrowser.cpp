@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2010 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2008-2012 by Axel Pauli (axel@kflog.org)
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -31,9 +31,11 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
   setAttribute(Qt::WA_DeleteOnClose);
 
   browser = new QTextBrowser(this);
+
 #ifdef ANDROID
   QScroller::grabGesture(browser, QScroller::LeftMouseButtonGesture);
 #endif
+
   browser->setOpenLinks( true );
   browser->setOpenExternalLinks( true );
 
@@ -55,13 +57,13 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
   // forward->setFlat(true);
   forward->setToolTip( tr("Forward") );
 
-  QPushButton *zoomIn = new QPushButton();
+  zoomIn = new QPushButton();
   zoomIn->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomin.png") ) );
   zoomIn->setIconSize(QSize(IconSize, IconSize));
   // forward->setFlat(true);
   zoomIn->setToolTip( tr("Zoom in") );
 
-  QPushButton *zoomOut = new QPushButton();
+  zoomOut = new QPushButton();
   zoomOut->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomout.png") ) );
   zoomOut->setIconSize(QSize(IconSize, IconSize));
   // forward->setFlat(true);
@@ -90,8 +92,8 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
   connect( home, SIGNAL(clicked()),    browser, SLOT(home()));
   connect( back, SIGNAL(clicked()),    browser, SLOT(backward()));
   connect( forward, SIGNAL(clicked()), browser, SLOT(forward()));
-  connect( zoomIn, SIGNAL(clicked()),  this, SLOT( slotZoomIn()));
-  connect( zoomOut, SIGNAL(clicked()), this, SLOT( slotZoomOut()));
+  connect( zoomIn, SIGNAL(pressed()),  this, SLOT( slotZoomIn()));
+  connect( zoomOut, SIGNAL(pressed()), this, SLOT( slotZoomOut()));
   connect( close, SIGNAL(clicked()),   this, SLOT( close()));
 }
 
@@ -150,26 +152,38 @@ void HelpBrowser::showEvent( QShowEvent * )
 /** User request, to zoom into the document. */
 void HelpBrowser::slotZoomIn()
 {
-  QFont curFt = font();
-
-  if( curFt.pointSize() < 24 )
+  if( zoomIn->isDown() )
     {
-      curFt.setPointSize( curFt.pointSize() + 1 );
-      setFont( curFt );
-      update();
+      QFont curFt = font();
+
+      if( curFt.pointSize() < 24 )
+        {
+          curFt.setPointSize( curFt.pointSize() + 1 );
+          setFont( curFt );
+          update();
+        }
+
+      // Start repetition timer, to check, if button is longer pressed.
+      QTimer::singleShot(300, this, SLOT(slotZoomIn()));
     }
 }
 
 /** User request, to zoom out the document. */
 void HelpBrowser::slotZoomOut()
 {
-  QFont curFt = font();
-
-  if( curFt.pointSize() > 10 )
+  if( zoomOut->isDown() )
     {
-      curFt.setPointSize( curFt.pointSize() - 1 );
-      setFont( curFt );
-      update();
+      QFont curFt = font();
+
+      if( curFt.pointSize() > 10 )
+        {
+          curFt.setPointSize( curFt.pointSize() - 1 );
+          setFont( curFt );
+          update();
+        }
+
+      // Start repetition timer, to check, if button is longer pressed.
+      QTimer::singleShot(300, this, SLOT(slotZoomOut()));
     }
 }
 
@@ -195,6 +209,13 @@ void HelpBrowser::keyPressEvent( QKeyEvent *event )
   if( event->key() == Qt::Key_F8 || event->key() == QKeySequence::ZoomOut )
     {
       slotZoomOut();
+      return;
+    }
+
+  // Check for exit keys.
+  if( event->key() == Qt::Key_Close || event->key() == Qt::Key_Escape )
+    {
+      close();
       return;
     }
 }

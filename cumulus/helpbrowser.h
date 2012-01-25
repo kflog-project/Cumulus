@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008-2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c): 2008-2012 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,6 +21,7 @@
 #define HelpBrowser_H
 
 #include <QWidget>
+#include <QPushButton>
 #include <QTextBrowser>
 
 /**
@@ -35,7 +36,9 @@
  * language. The user can navigate through the text, zoom in and out,
  * maximize/normalize the window display size.
  *
- * \date 2008-2010
+ * \date 2008-2012
+ *
+ * \version $Id$
  */
 
 class HelpBrowser : public QWidget
@@ -68,7 +71,9 @@ private:
  private:
 
   bool firstCall;
-  QTextBrowser *browser;
+  QTextBrowser* browser;
+  QPushButton*  zoomIn;
+  QPushButton*  zoomOut;
 };
 
 #endif
