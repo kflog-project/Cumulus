@@ -1382,8 +1382,8 @@ void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& len
 
   // Calculate length in degree along the latitude and the longitude.
   // For the calculation the circle formula  is used.
-  double deltaLat = 180/M_PIl * radius/RADIUS;
-  double deltaLon = 180/M_PIl * radius/(RADIUS * cos ( M_PIl / 180.0 * centerLat ));
+  double deltaLat = 180/M_PI * radius/RADIUS;
+  double deltaLon = 180/M_PI * radius/(RADIUS * cos ( M_PI / 180.0 * centerLat ));
 
   // Calculate the sky boarders of the square.
   int north = (int) ceil(centerLat + deltaLat);

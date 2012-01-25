@@ -1846,7 +1846,7 @@ void GeneralConfig::setLanguage( const QString& newValue )
   if( ! _language.isEmpty() )
     {
       QString langFile = "cumulus_" + _language + ".qm";
-      QString langDir = _appRoot + "/locale/" + _language;
+      QString langDir = _dataRoot + "/locale/" + _language;
 
       // Load GUI translation file
       if( ! cumulusTranslator )

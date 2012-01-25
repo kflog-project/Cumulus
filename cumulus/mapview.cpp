@@ -332,7 +332,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   QFont font = _statusbar->font();
   font.setBold(true);
-  font.setPointSize(10);
+  font.setPointSize(12);
 
   _statusbar->setFont(font);
 

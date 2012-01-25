@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,7 +20,7 @@
  * in their incoming order one after another, not in parallel.
  */
 
-#include <sys/statvfs.h>
+#include <sys/vfs.h>
 
 #include <QtCore>
 #include <QtNetwork>
@@ -248,10 +248,10 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
  */
 ulong DownloadManager::getFreeUserSpace( QString& path )
 {
-  struct statvfs buf;
+  struct statfs buf;
   int res;
 
-  res = statvfs( path.toLatin1().data(), &buf );
+  res = statfs( path.toLatin1().data(), &buf );
 
   if( res )
     {

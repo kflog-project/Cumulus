@@ -11,6 +11,7 @@
 ##################################################################
 
 TEMPLATE = lib
+
 QT       += xml
 
 CONFIG = qt \
@@ -21,7 +22,18 @@ CONFIG = qt \
 #ANDROID_PLATFORM = android-10
 ANDROID_PLATFORM = android-8
 
-# CONFIG = debug qt warn_on
+# Enable Flarm feature, if not wanted comment out the next line with a hash
+# CONFIG += flarm
+
+# Enable Internet features, if not wanted comment out the next line with a hash
+CONFIG += internet
+
+# Enable bluetooth feature, if not wanted comment out the next line with a hash
+# CONFIG += bluetooth
+
+# Enable Welt2000 reloading via an extra thread, if not wanted comment out the
+# next line with a hash
+# CONFIG += welt2000thread
 
 HEADERS = \
     aboutwidget.h \
@@ -246,6 +258,54 @@ SOURCES = \
     listwidgetparent.cpp \
     qtandroidbridge.cpp \
     qtmain_android.cpp
+
+flarm {
+    HEADERS += flarm.h \
+               flarmaliaslist.h \
+               flarmdisplay.h \
+               flarmlistview.h \
+               flarmradarview.h \
+               flarmwidget.h
+               
+    SOURCES += flarm.cpp \
+               flarmaliaslist.cpp \
+               flarmdisplay.cpp \
+               flarmlistview.cpp \
+               flarmradarview.cpp \
+               flarmwidget.cpp
+               
+    DEFINES += FLARM
+}
+
+internet {
+    QT += network
+    
+    HEADERS += airspacedownloaddialog.h \
+               downloadmanager.h \
+               httpclient.h \
+               proxydialog.h
+                              
+    SOURCES += airspacedownloaddialog.cpp \
+               downloadmanager.cpp \
+               httpclient.cpp \
+               proxydialog.cpp
+               
+    DEFINES += INTERNET
+}
+
+bluetooth {
+    DEFINES += BLUEZ
+  
+    HEADERS += bluetoothdevices.h
+    
+    SOURCES += bluetoothdevices.cpp
+    
+    LIBS += -lbluetooth
+}
+
+welt2000thread {
+    DEFINES += WELT2000_THREAD
+}
 
 TARGET = cumulus
 
