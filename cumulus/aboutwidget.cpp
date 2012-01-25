@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2011 Axel Pauli
+**   Copyright (c): 2010-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -48,6 +48,7 @@ AboutWidget::AboutWidget( QWidget *parent ) :
   tabWidget->addTab( disclaimer, tr("Disclaimer") );
 
 #ifdef ANDROID
+  QScroller::grabGesture(about, QScroller::LeftMouseButtonGesture);
   QScroller::grabGesture(team, QScroller::LeftMouseButtonGesture);
   QScroller::grabGesture(disclaimer, QScroller::LeftMouseButtonGesture);
 #endif
