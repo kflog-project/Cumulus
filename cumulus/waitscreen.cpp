@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -92,7 +92,7 @@ void WaitScreen::slot_SetText1(const QString& text)
     }
   else
     {
-      QCoreApplication::flush();
+      flush();
     }
 }
 
@@ -126,7 +126,7 @@ void WaitScreen::slot_SetText2(const QString& text)
     }
   else
     {
-      QCoreApplication::flush();
+      flush();
     }
 }
 
@@ -153,7 +153,17 @@ void WaitScreen::slot_Progress( int stepsize )
           lastRot = rot;
           setVisible( true );
           repaint();
-          QCoreApplication::flush();
+          flush();
         }
      }
+}
+
+void WaitScreen::flush()
+{
+  QCoreApplication::flush();
+
+#ifdef ANDROID
+  QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents|QEventLoop::ExcludeSocketNotifiers);
+#endif
+
 }

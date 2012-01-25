@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2011 by Axel Pauli
+ **                   2007-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -71,17 +71,34 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spgl = new SettingsPageGlider( this );
   m_tabWidget->addTab( spgl, tr( "Gliders" ) );
 
+  QScrollArea* spmsArea = new QScrollArea( m_tabWidget );
+  spmsArea->setWidgetResizable( true );
+  spmsArea->setFrameStyle( QFrame::NoFrame );
   spms = new SettingsPageMapSettings( this );
-  m_tabWidget->addTab( spms, tr( "Map Settings" ) );
+  spmsArea->setWidget( spms );
+#ifdef ANDROID
+  QScroller::grabGesture(spmsArea, QScroller::LeftMouseButtonGesture);
+#endif
+  m_tabWidget->addTab( spmsArea, tr( "Map Settings" ) );
 
+  QScrollArea* spmoArea = new QScrollArea( m_tabWidget );
+  spmoArea->setWidgetResizable( true );
+  spmoArea->setFrameStyle( QFrame::NoFrame );
   spmo = new SettingsPageMapObjects( this );
-  m_tabWidget->addTab( spmo, tr( "Map Objects" ) );
+  spmoArea->setWidget( spmo );
+#ifdef ANDROID
+  QScroller::grabGesture(spmoArea, QScroller::LeftMouseButtonGesture);
+#endif
+  m_tabWidget->addTab( spmoArea, tr( "Map Objects" ) );
 
   QScrollArea* sptcArea = new QScrollArea( m_tabWidget );
   sptcArea->setWidgetResizable( true );
   sptcArea->setFrameStyle( QFrame::NoFrame );
   sptc = new SettingsPageTerrainColors( this );
   sptcArea->setWidget( sptc );
+#ifdef ANDROID
+  QScroller::grabGesture(sptcArea, QScroller::LeftMouseButtonGesture);
+#endif
   m_tabWidget->addTab( sptcArea, tr( "Terrain Colors" ) );
 
   QScrollArea* spsArea = new QScrollArea( m_tabWidget );
@@ -89,6 +106,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spsArea->setFrameStyle( QFrame::NoFrame );
   spt = new SettingsPageTask( this );
   spsArea->setWidget( spt );
+#ifdef ANDROID
+  QScroller::grabGesture(spsArea, QScroller::LeftMouseButtonGesture);
+#endif
   m_tabWidget->addTab( spsArea, tr( "Task" ) );
 
   QScrollArea* spafArea = new QScrollArea( m_tabWidget );
@@ -96,6 +116,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spafArea->setFrameStyle( QFrame::NoFrame );
   spaf = new SettingsPageAirfields( this );
   spafArea->setWidget( spaf );
+#ifdef ANDROID
+  QScroller::grabGesture(spafArea, QScroller::LeftMouseButtonGesture);
+#endif
   m_tabWidget->addTab( spafArea, tr( "Airfields" ) );
 
   QScrollArea* asArea = new QScrollArea( m_tabWidget );
@@ -103,6 +126,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   asArea->setFrameStyle( QFrame::NoFrame );
   spa = new SettingsPageAirspace( this );
   asArea->setWidget( spa );
+#ifdef ANDROID
+  QScroller::grabGesture(asArea, QScroller::LeftMouseButtonGesture);
+#endif
   m_tabWidget->addTab( asArea, tr( "Airspaces" ) );
 
   spu = new SettingsPageUnits( this );
@@ -113,10 +139,20 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   infoArea->setFrameStyle( QFrame::NoFrame );
   spi = new SettingsPageInformation( this );
   infoArea->setWidget( spi );
+#ifdef ANDROID
+  QScroller::grabGesture(infoArea, QScroller::LeftMouseButtonGesture);
+#endif
   m_tabWidget->addTab( infoArea, tr( "Information" ) );
 
+  QScrollArea* splnfArea = new QScrollArea( m_tabWidget );
+  splnfArea->setWidgetResizable( true );
+  splnfArea->setFrameStyle( QFrame::NoFrame );
   splnf = new SettingsPageLookNFeel( this );
-  m_tabWidget->addTab( splnf, tr( "Look&&Feel" ) );
+  splnfArea->setWidget( splnf );
+#ifdef ANDROID
+  QScroller::grabGesture(splnfArea, QScroller::LeftMouseButtonGesture);
+#endif
+  m_tabWidget->addTab( splnfArea, tr( "Look&&Feel" ) );
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
