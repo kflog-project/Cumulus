@@ -54,7 +54,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   _textBGColor( "white" )
 {
   QFont f = font();
-  f.setPixelSize(17);
+  f.setPointSize(12);
   setFont(f);
   QFontMetrics fm(f);
 
@@ -129,7 +129,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
                                  "padding-left: 1px;"
                                  "padding-right: 1px;"
                                  "margin: 0px;"
-                                 "font-size: %2px;"
+                                 "font-size: %2pt;"
                                  "text-align: left;" )
                                  .arg(_textBGColor)
                                  .arg(fontDotsize) );
@@ -260,7 +260,7 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
                                      "padding-left: 1px;"
                                      "padding-right: 1px;"
                                      "margin: 0px;"
-                                     "font-size: %2px;"
+                                     "font-size: %2pt;"
                                      "text-align: left;" )
                                      .arg(_textBGColor)
                                      .arg(fontDotsize) );
@@ -294,7 +294,7 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
                                      "padding-left: 1px;"
                                      "padding-right: 1px;"
                                      "margin: 0px;"
-                                     "font-size: %2px;"
+                                     "font-size: %2pt;"
                                      "text-align: left;" )
                                      .arg(_textBGColor)
                                      .arg( fontDotsize ) );
@@ -321,7 +321,7 @@ void MapInfoBox::setTextLabelBGColor( const QString& newValue )
                                  "padding-left: 1px;"
                                  "padding-right: 1px;"
                                  "margin: 0px;"
-                                 "font-size: %2px;"
+                                 "font-size: %2pt;"
                                  "text-align: left;" )
                                  .arg(_textBGColor)
                                  .arg( _maxFontDotsize ) );

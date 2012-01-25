@@ -603,15 +603,6 @@ void MainWindow::slotCreateApplicationWidgets()
       setWindowTitle ( "Cumulus - " + gt );
     }
 
-// TODO That must be done in another way for bigger or smaller screen sizes
-  // @AP: That's a trick here! We call resize and make the drawing
-  viewMap->_theMap->setDrawing( true );
-  viewMap->_theMap->resize( 584, 460 );
-
-  // This actions initiates the map loading procedures
-  viewMap->_theMap->slotDraw();
-  viewMap->_theMap->setDrawing( false );
-
   calculator->newSites();  // New sites have been loaded in map draw
   // this call is responsible for setting correct AGL/STD for manual mode,
   // must be called after viewMap->_theMap->draw(), there the AGL info is loaded
@@ -630,7 +621,7 @@ void MainWindow::slotCreateApplicationWidgets()
           GeneralConfig::instance()->setAirspaceWarningEnabled(true);
         }
 
-      QCoreApplication::processEvents();
+      QCoreApplication::flush();
       sleep(1);
     }
 
@@ -659,7 +650,7 @@ void MainWindow::slotCreateApplicationWidgets()
   ws->slot_SetText1( tr( "Initializing GPS" ) );
   ws->setVisible( true );
 
-  QCoreApplication::processEvents();
+  QCoreApplication::flush();
 
   // Startup GPS client process now for data receiving
   GpsNmea::gps->blockSignals( false );
@@ -681,6 +672,8 @@ void MainWindow::slotCreateApplicationWidgets()
   splash->close();
 
   viewMap->_theMap->setDrawing( true );
+  viewMap->resize( size() );
+  viewMap->setVisible( true );
 
   // set viewMap as central widget
   setCentralWidget( viewMap );
@@ -875,7 +868,7 @@ void MainWindow::slotSetMenuBarFontSize()
     {
       // take current font as alternative
       userFont = font();
-      minFontSize = 18;
+      minFontSize = 16;
     }
 
   if( userFont.pointSize() < minFontSize )
@@ -1990,8 +1983,6 @@ void MainWindow::slotRememberWaypoint()
     start of the program to read the initial configuration. */
 void MainWindow::slotReadconfig()
 {
-  // qDebug("MainWindow::slotReadconfig()");
-
   // other configuration changes
   _globalMapMatrix->slotInitMatrix();
   viewMap->slot_settingsChange();

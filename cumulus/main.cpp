@@ -267,18 +267,17 @@ int main(int argc, char *argv[])
 
 #ifdef ANDROID
       appFont.setFamily( "Droid Sans" );
-      appFSize = 20;
+      appFSize = 18;
 #else
 #ifdef MAEMO
       appFont.setFamily("Nokia Sans");
-      appFSize = 20;
+      appFSize = 18;
 #else
       appFont.setFamily("Sans Serif");
 #endif
 #endif
 
       appFont.setStyle( QFont::StyleNormal );
-      appFont.setPixelSize( appFSize );
       appFont.setPointSize( appFSize );
 
       QApplication::setFont( appFont );
@@ -307,16 +306,15 @@ int main(int argc, char *argv[])
 
       QMessageBox msgBox;
 
-      int size = 16;
+      int size = 14;
 
 #if defined (MAEMO) || defined (ANDROID)
-      size = 20;
+      size = 18;
 #endif
 
       QFont font = QApplication::font();
 
       // adapt font size to a readable one for the screen
-      font.setPixelSize( size );
       font.setPointSize( size );
       msgBox.setFont( font );
       msgBox.setWindowTitle( QObject::tr("Cumulus Disclaimer") );

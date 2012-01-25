@@ -79,7 +79,9 @@ protected:
  * pre-text or a pixmap. Optionally it can be clicked and connected to
  * a slot. Used on the \ref MapView.
  *
- * \date 2002-2011
+ * \date 2002-2012
+ *
+ * \version $Id$
  *
  */
 class MapInfoBox : public QFrame
@@ -96,7 +98,7 @@ public:
               const QString& borderColor,
               bool unitInPretext=false,
               bool minusInPretext=false,
-              int fontDotsize=38 );
+              int fontDotsize=36 );
 
   MapInfoBox( QWidget* parent, const QString& borderColor, const QPixmap& pixmap );
 
@@ -116,6 +118,14 @@ public:
 
     if( _punit ) _punit->setVisible( visible );
     if( _pminus ) _pminus->setVisible( visible );
+  };
+
+  /**
+   * Show resp. hide the whole pretext widget.
+   */
+  void setPreTextWidgetVisible( bool visible )
+  {
+    _preWidget->setVisible( visible );
   };
 
   /**

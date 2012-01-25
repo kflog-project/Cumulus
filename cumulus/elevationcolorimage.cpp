@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009-2010 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2009-2012 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -75,7 +75,7 @@ void ElevationColorImage::paintEvent( QPaintEvent * /* event */ )
 
   // set font size used for text painting
   QFont newFont = painter.font();
-  newFont.setPixelSize( 11 );
+  newFont.setPointSize( 10 );
   painter.setFont( newFont) ;
 
   QPen pen;

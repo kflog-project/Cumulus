@@ -994,7 +994,8 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
 
   static QSize lastSize; // Save the last used window size
 
-  // qDebug("Map::__redrawMap from layer=%d", fromLayer);
+  qDebug("Map::__redrawMap from layer=%d, first=%d, isVisible=%d, isEnable=%d, mutex=%d",
+          fromLayer, first, isVisible(), _isEnable, mutex());
 
   // First call after creation of object can pass
   if( ! isVisible() && ! first )
@@ -1110,7 +1111,7 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
   if( ! first )
     {
       // suppress the first call otherwise splash screen will disappear
-      repaint( this->rect() );
+      repaint( m_pixPaintBuffer.rect() );
     }
   else
     {

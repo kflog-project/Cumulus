@@ -103,7 +103,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   GRLayout->setSpacing(2);
 
   //add Glide Path widget
-  _glidepath = new MapInfoBox( this, conf->getMapFrameColor().name(), true, false, 42 );
+  _glidepath = new MapInfoBox( this, conf->getMapFrameColor().name(), true, false, 40 );
   _glidepathBGColor = wayBar->palette().color(QPalette::Window);
   _glidepath->setValue("-");
   _glidepath->setPreText("Arr");
@@ -268,8 +268,8 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   connect(_speed2fly, SIGNAL(mousePress()), this, SLOT(slot_toggleMenu()));
 
    //add menu toggle widget
-  _menuToggle = new MapInfoBox( this, QColor(Qt::gray).name(), false, false, 32 );
-  _menuToggle->setPreTextVisible( false );
+  _menuToggle = new MapInfoBox( this, QColor(Qt::gray).name(), false, false, 30 );
+  _menuToggle->setPreTextWidgetVisible( false );
   _menuToggle->setTextLabelBGColor( "lightGray" );
   _menuToggle->setValue(tr("Menu"));
   MSLayout->addWidget( _menuToggle );
@@ -330,21 +330,14 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusbar->setObjectName("status");
   _statusbar->setSizeGripEnabled(false);
 
-#ifndef MAEMO
-  _statusbar->setFixedHeight(20);
-#else
-  _statusbar->setFixedHeight(25);
-#endif
-
   QFont font = _statusbar->font();
   font.setBold(true);
+  font.setPointSize(10);
 
-#ifndef MAEMO
-  font.setPixelSize(13);
-#else
-  font.setPixelSize(17);
-#endif
   _statusbar->setFont(font);
+
+  QFontMetrics fm(font);
+  _statusbar->setFixedHeight(fm.boundingRect("W°").height() + 5 );
 
   _statusGps = new CuLabel(tr("Man"),_statusbar);
   _statusGps->setLineWidth(0);
