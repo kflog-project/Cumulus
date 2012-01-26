@@ -275,7 +275,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // of some widgets is undefined.
 
   // when the timer expires the cumulus startup is continued
-  QTimer::singleShot(2000, this, SLOT(slotCreateApplicationWidgets()));
+  QTimer::singleShot(1000, this, SLOT(slotCreateApplicationWidgets()));
  }
 
 /**
@@ -331,8 +331,6 @@ void MainWindow::slotCreateApplicationWidgets()
 
   connect( _globalMapMatrix, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
-
-  _globalMapMatrix->slotInitMatrix();
 
   ws->slot_SetText1( tr( "Creating views..." ) );
 
@@ -651,6 +649,7 @@ void MainWindow::slotCreateApplicationWidgets()
   ws->setVisible( true );
 
   QCoreApplication::flush();
+  QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents|QEventLoop::ExcludeSocketNotifiers);
 
   // Startup GPS client process now for data receiving
   GpsNmea::gps->blockSignals( false );

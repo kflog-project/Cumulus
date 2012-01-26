@@ -47,8 +47,6 @@
 MapView::MapView(QWidget *parent) : QWidget(parent)
 {
   setObjectName("MapView");
-
-  resize(parent->size());
   setContentsMargins(-9,-9,-9,-9);
 
   _mainWindow = (MainWindow *)parent;
@@ -387,6 +385,8 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   topLayout->addWidget(_statusbar);
 
   lastPositionChangeSource = Calculator::MAN;
+
+  resize(parent->size());
 }
 
 MapView::~MapView()

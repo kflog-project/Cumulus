@@ -16,6 +16,7 @@
 **
 ***********************************************************************/
 
+#include <unistd.h>
 #include <QtGui>
 
 #include "waitscreen.h"
@@ -136,7 +137,7 @@ void WaitScreen::slot_SetText2(const QString& text)
  */
 void WaitScreen::slot_Progress( int stepsize )
 {
-  if( screenUsage() )
+  if( screenUsage() && isVisible() )
     {
       progress += stepsize;
 
@@ -153,7 +154,7 @@ void WaitScreen::slot_Progress( int stepsize )
           lastRot = rot;
           setVisible( true );
           repaint();
-          flush();
+          QCoreApplication::flush();
         }
      }
 }
@@ -166,4 +167,5 @@ void WaitScreen::flush()
   QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents|QEventLoop::ExcludeSocketNotifiers);
 #endif
 
+  //usleep(250000);
 }
