@@ -50,7 +50,9 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   editrow->addWidget(label);
 
   tas = new QSpinBox( this );
+#ifndef ANDROID
   tas->setToolTip( tr("True Air Speed") );
+#endif
   tas->setButtonSymbols(QSpinBox::NoButtons);
   tas->setFocusPolicy(Qt::StrongFocus);
   tas->setRange( 0, 900);
@@ -63,7 +65,9 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   editrow->addWidget(label);
 
   windDirection = new QSpinBox( this );
+#ifndef ANDROID
   windDirection->setToolTip( tr("Wind Direction") );
+#endif
   windDirection->setButtonSymbols(QSpinBox::NoButtons);
   windDirection->setFocusPolicy(Qt::StrongFocus);
   windDirection->setRange( 0, 360 );
@@ -77,7 +81,9 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   editrow->addWidget(label);
 
   windSpeed = new QSpinBox( this );
+#ifndef ANDROID
   windSpeed->setToolTip( tr("Wind Speed") );
+#endif
   windSpeed->setButtonSymbols(QSpinBox::NoButtons);
   windSpeed->setFocusPolicy(Qt::StrongFocus);
   windSpeed->setRange( 0, 900 );
@@ -98,8 +104,10 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   plus  = new QPushButton("+");
   minus = new QPushButton("-");
 
+#ifndef ANDROID
   plus->setToolTip( tr("Increase number value") );
   minus->setToolTip( tr("Decrease number value") );
+#endif
 
   plus->setFont(bFont);
   minus->setFont(bFont);
@@ -117,21 +125,27 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   QPushButton * cmdNew = new QPushButton;
   cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
   cmdNew->setIconSize(QSize(IconSize, IconSize));
+#ifndef ANDROID
   cmdNew->setToolTip(tr("Define a new task"));
+#endif
   editrow->addWidget(cmdNew);
 
   editrow->addSpacing(10);
   QPushButton * cmdEdit = new QPushButton;
   cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
   cmdEdit->setIconSize(QSize(IconSize, IconSize));
+#ifndef ANDROID
   cmdEdit->setToolTip(tr("Edit selected task"));
+#endif
   editrow->addWidget(cmdEdit);
 
   editrow->addSpacing(10);
   QPushButton * cmdDel = new QPushButton;
   cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png")) );
   cmdDel->setIconSize(QSize(IconSize, IconSize));
+#ifndef ANDROID
   cmdDel->setToolTip(tr("Remove selected task"));
+#endif
   editrow->addWidget(cmdDel);
 
   int size = cmdDel->sizeHint().height();
@@ -147,7 +161,9 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
 
   taskListWidget = new QTreeWidget( splitter );
 
+#ifndef ANDROID
   taskListWidget->setToolTip( tr("Select a flight task") );
+#endif
   taskListWidget->setRootIsDecorated(false);
   taskListWidget->setItemsExpandable(false);
   taskListWidget->setUniformRowHeights(true);
@@ -170,7 +186,10 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   taskListWidget->setFocus();
 
   taskContent = new TaskListView( splitter, false );
+
+#ifndef ANDROID
   taskContent->setToolTip( tr("Task display") );
+#endif
 
   taskLayout->addWidget( splitter );
 

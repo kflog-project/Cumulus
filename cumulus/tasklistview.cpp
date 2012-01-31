@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2009-2010 by Axel Pauli
+**                   2009-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -76,9 +76,11 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
   list->setSortingEnabled(false);
   list->setSelectionMode(QAbstractItemView::NoSelection);
   list->setFocusPolicy(Qt::NoFocus);
-//  list->setEnabled(false);
-
   setHeader();
+
+#ifdef ANDROID
+  QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+#endif
 
   topLayout->addWidget(list, 10);
 
@@ -172,7 +174,6 @@ void TaskListView::slot_Start()
   calculator->slot_startTask();
   emit done();
 }
-
 
 void TaskListView::slot_Selected()
 {

@@ -228,8 +228,8 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   tlLayout->addWidget( vspin, row1, 1 );
 
   row1++;
-  lbl = new QLabel( tr("Color:"), tlGroup );
-  tlLayout->addWidget( lbl, row1, 0 );
+  tlColorLabel = new QLabel( tr("Color:"), tlGroup );
+  tlLayout->addWidget( tlColorLabel, row1, 0 );
 
   tlColorButton = new QPushButton( tlGroup );
   tlLayout->addWidget( tlColorButton, row1, 1 );
@@ -260,8 +260,8 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   trLayout->addWidget( vspin, row1, 1 );
 
   row1++;
-  lbl = new QLabel( tr("Color:"), trGroup );
-  trLayout->addWidget( lbl, row1, 0 );
+  trColorLabel = new QLabel( tr("Color:"), trGroup );
+  trLayout->addWidget( trColorLabel, row1, 0 );
 
   trColorButton = new QPushButton( trGroup );
   trLayout->addWidget( trColorButton, row1, 1 );
@@ -410,11 +410,12 @@ void SettingsPageTask::slot_load()
   selectedTlColor = tlColor;
 
   // determine pixmap size to be used for icons in dependency of the used font
-  int size = font().pointSize() - 2;
+  int size = font().pointSize();
   QSize pixmapSize = QSize( size, size );
   QPixmap pixmap(pixmapSize);
   pixmap.fill( tlColor );
   tlColorButton->setIcon( QIcon(pixmap) );
+  tlColorButton->setMinimumHeight( tlColorLabel->size().height() );
 
   seletedTlWidth = conf->getTargetLineWidth();
   tlWidth->setValue( seletedTlWidth );
@@ -425,6 +426,7 @@ void SettingsPageTask::slot_load()
   selectedTrColor = trColor;
   pixmap.fill( trColor );
   trColorButton->setIcon( QIcon(pixmap) );
+  trColorButton->setMinimumHeight( trColorLabel->size().height() );
 
   seletedTrWidth = conf->getTrackLineWidth();
   trWidth->setValue( seletedTrWidth );

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2011 by Axel Pauli
+**   Copyright (c):  2007-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,7 @@
  *
  * \brief Configuration settings for flight tasks.
  *
- * \date 2007-2011
+ * \date 2007-2012
  *
  * \version $Id$
  *
@@ -33,6 +33,7 @@
 
 #include <QWidget>
 #include <QCheckBox>
+#include <QLabel>
 #include <QSpinBox>
 #include <QButtonGroup>
 #include <QGroupBox>
@@ -103,6 +104,7 @@ private:
   QSpinBox*    tlWidth;
   QPushButton* tlColorButton;
   QCheckBox*   tlCheckBox;
+  QLabel*      tlColorLabel;
 
   // temporary storage of target line color
   QColor tlColor;
@@ -116,6 +118,7 @@ private:
   QSpinBox*    trWidth;
   QPushButton* trColorButton;
   QCheckBox*   trCheckBox;
+  QLabel*      trColorLabel;
 
   // temporary storage of track line color
   QColor trColor;

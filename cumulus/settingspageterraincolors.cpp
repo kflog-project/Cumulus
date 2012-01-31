@@ -88,7 +88,7 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   };
 
   // determine pixmap size to be used for icons in dependency of the used font
-  int size = font().pointSize() - 2;
+  int size = font().pointSize();
   pixmapSize = QSize( size, size );
   QPixmap pixmap(pixmapSize);
 

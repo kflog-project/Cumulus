@@ -24,11 +24,11 @@ VarSpinBox::VarSpinBox( QAbstractSpinBox* spinBox, QWidget* parent, enum ButtonO
   m_spinBox( spinBox ),
   m_buttonOrder( buttonOrder )
 {
-  setObjectName("HSpinBox");
+  setObjectName("VarSpinBox");
 
   if( spinBox == 0 )
     {
-      qWarning() << "HSpinBox::HSpinBox(): No spinbox instance passed!";
+      qWarning() << "VarSpinBox::VarSpinBox(): No spinbox instance passed!";
       return;
     }
 

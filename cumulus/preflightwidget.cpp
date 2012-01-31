@@ -55,7 +55,16 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
            Map::getInstance(), SLOT(slotRedraw()) );
 
   miscpage = new PreFlightMiscPage(this);
-  tabWidget->addTab(miscpage, "");
+
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( miscpage );
+#ifdef ANDROID
+  QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
+#endif
+
+  tabWidget->addTab(sa, "");
 
   QShortcut* scLeft = new QShortcut(Qt::Key_Left, this);
   QShortcut* scRight = new QShortcut(Qt::Key_Right, this);
