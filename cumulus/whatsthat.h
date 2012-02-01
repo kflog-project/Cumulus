@@ -25,6 +25,8 @@
 #include <QTextDocument>
 
 /**
+ * \class WhatsThat
+ *
  * \author André Somers, Axel Pauli
  *
  * \brief Popup window to display user information.
@@ -32,6 +34,10 @@
  * This class is used to display user information e.g. about airspaces.
  * It is realized as a frame less popup window and is closed by tipping on
  * it or automatically after a certain time. It can display play or html text.
+ *
+ * \date 2002-2012
+ *
+ * \version $Id$
  *
  */
 class WhatsThat : public QWidget
@@ -62,6 +68,7 @@ class WhatsThat : public QWidget
  protected:
 
   void mousePressEvent( QMouseEvent* );
+  void mouseReleaseEvent( QMouseEvent* );
   void keyPressEvent( QKeyEvent* );
   void paintEvent( QPaintEvent* );
 
@@ -81,6 +88,5 @@ class WhatsThat : public QWidget
   static uint instance;
 
 };
-
 
 #endif
