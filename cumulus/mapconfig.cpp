@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2001      by Heiner Lamprecht,
  **                   2002      by André Somers
- **                   2008-2011 by Axel Pauli
+ **                   2008-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -22,6 +22,7 @@
 #include <QtGui>
 
 #include "basemapelement.h"
+#include "layout.h"
 #include "mapdefaults.h"
 #include "generalconfig.h"
 #include "mapcalc.h"
@@ -950,12 +951,7 @@ QPixmap& MapConfig::getPlusButton()
   if( first )
     {
       first = false;
-
-#ifndef MAEMO
-      int size = 50;
-#else
-      int size = 70;
-#endif
+      int size = MapPMButtonSize;
 
       plusButton = QPixmap( size+6, size+6 );
       plusButton.fill(Qt::transparent);
@@ -984,12 +980,8 @@ QPixmap& MapConfig::getMinusButton()
   if( first )
     {
       first = false;
+      int size = MapPMButtonSize;
 
-#ifndef MAEMO
-      int size = 50;
-#else
-      int size = 70;
-#endif
       minusButton = QPixmap( size+6, size+6 );
       minusButton.fill(Qt::transparent);
       QPainter painter(&minusButton);

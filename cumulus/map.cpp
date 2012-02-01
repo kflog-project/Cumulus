@@ -30,6 +30,7 @@
 #include "distance.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
+#include "layout.h"
 #include "hwinfo.h"
 #include "map.h"
 #include "mapcalc.h"
@@ -260,12 +261,8 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
   // scale uses unit meter/pixel
   double cs = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
-  // snap distance are 15 pixel
-  delta = 15;
-
-#ifdef MAEMO
-  delta = 25;
-#endif
+  // snap distance
+  delta = SnapRadius;
 
   // Manhattan distance is used to found the point.
   int lastDist = 2 * delta + 1;

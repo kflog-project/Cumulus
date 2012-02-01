@@ -699,7 +699,7 @@ void MainWindow::slotFinishStartUp()
   forceFocus();
 #endif
 
-  qDebug( "End startup Cmulus" );
+  qDebug( "End startup Cumulus" );
 }
 
 MainWindow::~MainWindow()

@@ -34,11 +34,21 @@
 #if defined (MAEMO) || defined (ANDROID)
 #define IconSize 32
 #define ButtonSize 80
-#define MinFontSize 20
+#define DialogMinFontSize 20
+
+// Snap radius size on the map
+#define SnapRadius 25
+
+// Plus and minus button size at the map
+#define MapPMButtonSize 70
+
 #else
+
 #define IconSize 26
 #define ButtonSize 40
-#define MinFontSize 14
+#define DialogMinFontSize 14
+#define SnapRadius 15
+#define MapPMButtonSize 50
 #endif
 
 #endif /* LAYOUT_H_ */

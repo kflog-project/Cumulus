@@ -45,10 +45,10 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   setFont( b );
 
   // set font size to a reasonable and usable value
-  if( font().pointSize() < MinFontSize )
+  if( font().pointSize() < DialogMinFontSize )
     {
       QFont cf = font();
-      cf.setPointSize( MinFontSize );
+      cf.setPointSize( DialogMinFontSize );
       this->setFont( cf );
     }
 
