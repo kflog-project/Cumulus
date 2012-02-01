@@ -112,7 +112,7 @@ public:
    * creates the icon used as a cursor in the map.
    * It is private because map is a singleton class.
    */
-  Map(QWidget *parent);
+  Map( QWidget *parent );
 
   /**
    * Destroys the Map object.

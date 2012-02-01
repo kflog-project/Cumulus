@@ -44,6 +44,7 @@
 #include <QTimer>
 #include <QHash>
 #include <QFile>
+#include <QSet>
 
 #include "speed.h"
 #include "altitude.h"
@@ -728,6 +729,9 @@ class GpsNmea : public QObject
 
     // Dictionary with known sentence keywords
     static QHash<QString, short> gpsHash;
+
+    // Set with reported unknown GPS keys
+    QSet<QString> reportedUnknownKeys;
 
   public:
 

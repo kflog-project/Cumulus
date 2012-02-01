@@ -200,6 +200,8 @@ void GpsNmea::resetDataObjects()
   _ignoreConnectionLost = false;
   _gprmcSeen = false;
 
+  reportedUnknownKeys.clear();
+
 #ifdef FLARM
   pflaaIsReceiving = false;
   Flarm::reset();
@@ -313,6 +315,11 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       nmeaLogFile->write(sentenceIn.toAscii().data());
     }
 
+  if( sentenceIn.isEmpty() )
+    {
+      return;
+    }
+
   if ( QObject::signalsBlocked() )
     {
       // @AP: If the emitting of signals is blocked, we will ignore
@@ -328,7 +335,12 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   if( ! gpsHash.contains(slst[0]) )
     {
-      qDebug() << "GpsNmea::slot_sentence: No Id found for" << slst[0];
+      if( ! reportedUnknownKeys.contains(slst[0]) )
+        {
+          qWarning() << "GpsNmea::slot_sentence: No Id found for" << slst[0];
+          reportedUnknownKeys.insert(slst[0]);
+        }
+
       return;
     }
 
@@ -518,7 +530,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
     default:
 
-      qDebug() << "Unknown GPS sentence:" << sentenceIn;
+      qWarning() << "Unknown GPS sentence:" << sentenceIn;
       return;
   }
 
@@ -1537,13 +1549,18 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
         {
           _lastSatInfo.fixValidity = fix;
 
-          if( fix == 1 )
+          if( _gprmcSeen == false )
             {
-              fixNOK( "GSA" );
-            }
-          else
-            {
-              fixOK( "GSA" );
+              // Report fix info only, if GPRMC was not received. I saw
+              // sometimes different reportings. GSA said OK, RMC said NOK.
+              if( fix == 1 )
+                {
+                  fixNOK( "GSA" );
+                }
+              else
+                {
+                  fixOK( "GSA" );
+                }
             }
         }
     }

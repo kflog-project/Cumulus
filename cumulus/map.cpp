@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 modified by Josua Dietze
- **                   2008-2011 modified by Axel Pauli
+ **                   2008-2012 modified by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -62,7 +62,7 @@ Map *Map::instance = static_cast<Map *>(0);
 
 Map::Map(QWidget* parent) : QWidget(parent)
 {
-//  qDebug( "Map creation window size is %dx%d, width=%d, height=%d",
+//  qDebug( "Map::Map parent window size is %dx%d, width=%d, height=%d",
 //          size().width(),
 //          size().height(),
 //          size().width(),
@@ -545,12 +545,14 @@ void Map::mousePressEvent(QMouseEvent* event)
 
 void Map::mouseMoveEvent( QMouseEvent* event )
 {
+  // qDebug() << "Map::mouseMoveEvent(): Pos=" << event->pos();
+
   if( _mouseMoveIsActive == false &&
      ( GpsNmea::gps->getGpsStatus() != GpsNmea::validFix || calculator->isManualInFlight() ) )
     {
       QPoint dist = _beginMapMove - event->pos();
 
-      if( dist.manhattanLength() > 10 )
+      if( dist.manhattanLength() > 20 )
         {
           // On the N810/N900 we get a lot of move events also on a single
           // mouse press and release action. If we do not filter that,
@@ -644,14 +646,8 @@ void Map::paintEvent(QPaintEvent* event)
   // We copy always the content from the m_pixPaintBuffer to the paint device.
   QPainter p(this);
 
-#ifdef ANDROID
-  // dumb painting, otherwise dragging won't work
-  Q_UNUSED( event )
-  p.drawPixmap( 0,0, m_pixPaintBuffer);
-#else
   p.drawPixmap( event->rect().left(), event->rect().top(), m_pixPaintBuffer,
                 0, 0, event->rect().width(), event->rect().height() );
-#endif
 
   // qDebug("Map.paintEvent(): return");
 }
@@ -975,12 +971,13 @@ void Map::setDrawing(bool isEnable)
 
 void Map::resizeEvent(QResizeEvent* event)
 {
-  // Q_UNUSED( event )
+  Q_UNUSED( event )
 
-  qDebug() << "Map::resizeEvent: NS=" << event->size() << "OS=" << event->oldSize();
+  // qDebug() << "Map::resizeEvent: NS=" << event->size() << "OS=" << event->oldSize();
 
   // set resize flag
   _isResizeEvent = true;
+
   // start redrawing of map
   slotDraw();
 }
@@ -991,8 +988,8 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
 
   static QSize lastSize; // Save the last used window size
 
-  qDebug("Map::__redrawMap from layer=%d, first=%d, isVisible=%d, isEnable=%d, mutex=%d",
-          fromLayer, first, isVisible(), _isEnable, mutex());
+//  qDebug( "Map::__redrawMap from layer=%d, first=%d, isVisible=%d, isEnable=%d, mutex=%d",
+//          fromLayer, first, isVisible(), _isEnable, mutex());
 
   // First call after creation of object can pass
   if( ! isVisible() && ! first )
@@ -1105,15 +1102,17 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
   // qDebug("%s: Map::__redrawMap: repaint(%dx%d) is called",
   //       dtStr.toAscii().data(), this->rect().width(),this->rect().height() );
 
-  if( ! first )
+  if( first )
     {
-      // suppress the first call otherwise splash screen will disappear
-      repaint( m_pixPaintBuffer.rect() );
+      // suppress the first repaint call otherwise splash screen will disappear
+      first = false;
+
+      // Inform MainWindow about first drawing
+      emit firstDrawingFinished();
     }
   else
     {
-      first = false;
-      emit firstDrawingFinished();
+      repaint( m_pixPaintBuffer.rect() );
     }
 
   // @AP: check, if a pending redraw request is active. In this case

@@ -47,9 +47,14 @@
 MapView::MapView(QWidget *parent) : QWidget(parent)
 {
   setObjectName("MapView");
-  setContentsMargins(-9,-9,-9,-9);
+  setContentsMargins(-9, -9, -9, -9);
 
   _mainWindow = (MainWindow *)parent;
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
 
   // Later on the Pretext can change depending on Mode
   GeneralConfig *conf = GeneralConfig::instance();
@@ -285,9 +290,11 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   mapArea->setFrameStyle( QFrame::NoFrame );
 
   centerLayout->addWidget(mapArea, 10);
-  _theMap = new Map(mapArea);
-  mapArea->setWidget(_theMap);
+
+  _theMap = new Map( mapArea );
+  mapArea->setWidget( _theMap );
   mapScroller = QScroller::scroller(mapArea);
+
   QScrollerProperties sp = mapScroller->scrollerProperties();
   sp.setScrollMetric(QScrollerProperties::OvershootDragDistanceFactor, 0.5);
   sp.setScrollMetric(QScrollerProperties::MaximumVelocity, QPointF(0.0, 0.0));
@@ -296,7 +303,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   mapScroller->setScrollerProperties(sp);
 
   connect( mapScroller, SIGNAL(stateChanged(QScroller::State)),
-            this, SLOT( slot_scrollerStateChanged(QScroller::State) ) );
+           this, SLOT( slot_scrollerStateChanged(QScroller::State) ) );
 
   QScroller::grabGesture(mapArea, QScroller::LeftMouseButtonGesture);
 
@@ -385,8 +392,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   topLayout->addWidget(_statusbar);
 
   lastPositionChangeSource = Calculator::MAN;
-
-  resize(parent->size());
 }
 
 MapView::~MapView()
@@ -788,9 +793,10 @@ void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
   if( status != GpsNmea::notConnected )
     {
       _statusGps->setText( tr( "GPS" ) );
+
 #ifdef QSCROLLER
       QScroller::ungrabGesture(mapArea);
-      mapArea->ensureVisible(0,0);
+      mapArea->ensureVisible( 0, 0 );
 #endif
     }
   else
@@ -801,7 +807,7 @@ void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
       _altitude->setValue( "-" );
 
 #ifdef QSCROLLER
-      QScroller::grabGesture(mapArea, QScroller::LeftMouseButtonGesture);
+      QScroller::grabGesture( mapArea, QScroller::LeftMouseButtonGesture );
 #endif
     }
 
@@ -1328,7 +1334,9 @@ void MapView::message( const QString& message, int ms )
 
 void MapView::slot_scrollerStateChanged(QScroller::State new_s)
 {
-  if (new_s != QScroller::Scrolling)
+  // qDebug() << "MapView::slot_scrollerStateChanged: State=" << new_s;
+
+  if( new_s != QScroller::Scrolling )
     {
       return;
     }
@@ -1336,8 +1344,10 @@ void MapView::slot_scrollerStateChanged(QScroller::State new_s)
   extern MapMatrix* _globalMapMatrix;
 
   QPointF statePoint = mapScroller->overshootPosition();
-  qDebug( "mapScroller: calling pause()" );
+
+  // qDebug() << "mapScroller: calling pause(), StatePoint=" << statePoint;
   mapScroller->pause();
+
   QPoint delta = QPoint( (int)statePoint.x(), (int)statePoint.y() );
   QPoint mapCenter = QPoint( _theMap->width()/2, _theMap->height()/2);
   mapCenter += delta;
