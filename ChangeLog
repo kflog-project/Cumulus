@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-02-01 AP: Missing time zone item UTC added to sunset in the arrival
+                   display.
+
 [o] 2012-01-16 AP: Method determineFlightStatus of Calculator class modified.
                    The flight status detection should now work safer and faster
                    as before.
