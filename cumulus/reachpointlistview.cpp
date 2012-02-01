@@ -18,16 +18,17 @@
 
 #include <QtGui>
 
-#include "reachpointlistview.h"
-#include "mainwindow.h"
-#include "waypointlistview.h"
+#include "layout.h"
 #include "generalconfig.h"
-#include "mapcontents.h"
+#include "mainwindow.h"
 #include "mapconfig.h"
+#include "mapcontents.h"
+#include "reachablelist.h"
+#include "reachpointlistview.h"
+#include "sonne.h"
 #include "wpeditdialog.h"
 #include "waypointcatalog.h"
-#include "reachablelist.h"
-#include "sonne.h"
+#include "waypointlistview.h"
 
 extern Calculator* calculator;
 extern MapConfig* _globalMapConfig;
@@ -103,13 +104,13 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
 
   cmdPageUp = new QPushButton( this );
   cmdPageUp->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
-  cmdPageUp->setIconSize( QSize(26, 26) );
+  cmdPageUp->setIconSize( QSize(IconSize, IconSize) );
   cmdPageUp->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
   cmdPageUp->setToolTip( tr("move page up") );
 
   cmdPageDown = new QPushButton( this );
   cmdPageDown->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png")) );
-  cmdPageDown->setIconSize( QSize(26, 26) );
+  cmdPageDown->setIconSize( QSize(IconSize, IconSize) );
   cmdPageDown->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
   cmdPageDown->setToolTip( tr("move page down") );
 
@@ -127,15 +128,15 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
   topLayout->addLayout(listBox, 10);
   topLayout->addLayout(buttonrow);
 
-  connect(cmdSelect, SIGNAL(clicked()), this, SLOT(slot_Select()));
-  connect(cmdInfo, SIGNAL(clicked()), this, SLOT(slot_Info()));
-  connect(cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()));
-  connect(cmdHideOl, SIGNAL(clicked()), this, SLOT(slot_HideOl()));
-  connect(cmdShowOl, SIGNAL(clicked()), this, SLOT(slot_ShowOl()));
-  connect(cmdHome, SIGNAL(clicked()), this, SLOT(slot_Home()));
+  connect(cmdSelect, SIGNAL(pressed()), this, SLOT(slot_Select()));
+  connect(cmdInfo, SIGNAL(pressed()), this, SLOT(slot_Info()));
+  connect(cmdClose, SIGNAL(pressed()), this, SLOT(slot_Close()));
+  connect(cmdHideOl, SIGNAL(pressed()), this, SLOT(slot_HideOl()));
+  connect(cmdShowOl, SIGNAL(pressed()), this, SLOT(slot_ShowOl()));
+  connect(cmdHome, SIGNAL(pressed()), this, SLOT(slot_Home()));
   connect(list, SIGNAL(itemSelectionChanged()), this, SLOT(slot_Selected()));
-  connect(cmdPageUp, SIGNAL(clicked()), this, SLOT(slot_PageUp()));
-  connect(cmdPageDown, SIGNAL(clicked()), this, SLOT(slot_PageDown()));
+  connect(cmdPageUp, SIGNAL(pressed()), this, SLOT(slot_PageUp()));
+  connect(cmdPageDown, SIGNAL(pressed()), this, SLOT(slot_PageDown()));
 
   cmdShowOl->hide();
   cmdHideOl->show();
@@ -452,7 +453,7 @@ void ReachpointListView::slot_Select()
     }
 }
 
-/** This slot is called if the info button has been clicked */
+/** This slot is called if the info button has been pressed */
 void ReachpointListView::slot_Info()
 {
   Waypoint* airfieldInfo = getSelectedWaypoint();

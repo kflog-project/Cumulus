@@ -18,6 +18,7 @@
 
 #include <QtGui>
 
+#include "layout.h"
 #include "listviewfilter.h"
 #include "generalconfig.h"
 
@@ -45,7 +46,7 @@ ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(paren
       layout->addWidget(cmd);
       _buttonList.append(cmd);
       smap->setMapping(cmd, i);
-      connect(cmd, SIGNAL(clicked()), smap, SLOT(map()));
+      connect(cmd, SIGNAL(pressed()), smap, SLOT(map()));
     }
 
   if( tw->topLevelItemCount() < 8 )
@@ -285,7 +286,7 @@ void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
       _buttonList.at( 0 )->show();
       _buttonList.at( 0 )->setText( "" ); // first button switches to the filter above this one
       _buttonList.at( 0 )->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "up.png" ) ) ); // icon is more clear than text.
-      _buttonList.at( 0 )->setIconSize( QSize( 26, 26 ) );
+      _buttonList.at( 0 )->setIconSize( QSize( IconSize, IconSize ) );
       _buttonList.at( 0 )->setMinimumSize( 1, _buttonList.at( 1 )->height() );
     }
   else

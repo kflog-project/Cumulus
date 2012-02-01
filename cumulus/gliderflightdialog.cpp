@@ -163,7 +163,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   // button pressing in turbulent air.
   cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(32, 32));
+  cancel->setIconSize(QSize(IconSize, IconSize));
   cancel->setMinimumSize(ButtonSize, ButtonSize);
   cancel->setMaximumSize(ButtonSize, ButtonSize);
 
@@ -171,7 +171,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
 
   ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(32, 32));
+  ok->setIconSize(QSize(IconSize, IconSize));
   ok->setMinimumSize(ButtonSize, ButtonSize);
   ok->setMaximumSize(ButtonSize, ButtonSize);
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
@@ -191,9 +191,9 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   _time = conf->getInfoDisplayTime();
 
   connect (timer, SIGNAL(timeout()), this, SLOT(slotReject()));
-  connect (buttonDump, SIGNAL(clicked()), this, SLOT(slotDump()));
-  connect (ok, SIGNAL(clicked()), this, SLOT(slotAccept()));
-  connect (cancel, SIGNAL(clicked()), this, SLOT(slotReject()));
+  connect (buttonDump, SIGNAL(pressed()), this, SLOT(slotDump()));
+  connect (ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect (cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QSignalMapper* signalMapper = new QSignalMapper(this);
   connect(pplus, SIGNAL(pressed()), signalMapper, SLOT(map()));

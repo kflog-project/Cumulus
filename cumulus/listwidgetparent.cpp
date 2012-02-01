@@ -18,6 +18,7 @@
 
 #include <QtGui>
 
+#include "layout.h"
 #include "listwidgetparent.h"
 #include "generalconfig.h"
 
@@ -55,13 +56,13 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
 
   up = new QPushButton( this );
   up->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
-  up->setIconSize( QSize(26, 26) );
+  up->setIconSize( QSize(IconSize, IconSize) );
   up->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
   up->setToolTip( tr("move page up") );
 
   down = new QPushButton( this );
   down->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png")) );
-  down->setIconSize( QSize(26, 26) );
+  down->setIconSize( QSize(IconSize, IconSize) );
   down->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
   down->setToolTip( tr("move page down") );
 
@@ -88,8 +89,8 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
   connect( list, SIGNAL( itemClicked(QTreeWidgetItem*,int) ),
            this, SLOT( slot_listItemClicked(QTreeWidgetItem*,int) ) );
 
-  connect( up, SIGNAL(clicked()), this, SLOT(slot_PageUp()) );
-  connect( down, SIGNAL(clicked()), this, SLOT(slot_PageDown()) );
+  connect( up, SIGNAL(pressed()), this, SLOT(slot_PageUp()) );
+  connect( down, SIGNAL(pressed()), this, SLOT(slot_PageDown()) );
 
   rowDelegate   = 0;
   firstLoadDone = false;
