@@ -71,14 +71,12 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()));
 
-  // activate keyboard shortcut cancel for close of widget
-  QShortcut* scClose = new QShortcut( this );
-#ifndef ANDROID
-  scClose->setKey( Qt::Key_Escape );
-#else
-  scClose->setKey( Qt::Key_Close );
-#endif
-  connect( scClose, SIGNAL(activated()), this, SLOT( slot_Close() ));
+  // activate keyboard shortcuts for closing of widget
+  connect( new QShortcut( Qt::Key_Escape, this ), SIGNAL(activated()),
+           this, SLOT( slot_Close() ));
+
+  connect( new QShortcut( Qt::Key_Close, this ), SIGNAL(activated()),
+           this, SLOT( slot_Close() ));
 }
 
 TPInfoWidget::~TPInfoWidget()
@@ -578,7 +576,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
       // In some areas no results available. In this case we skip
       // this output.
       display += "<tr><td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
-        ss + " " + "</b></td></tr>";
+        ss + " " + tz + "</b></td></tr>";
     }
 
   //----------------------------------------------------------------------------
@@ -703,7 +701,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
         // In some areas no results available. In this case we skip
         // this output.
         display += "<tr><td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
-                    ss + " " + "</b></td></tr>";
+                    ss + " " + tz + "</b></td></tr>";
        }
 
     display += "</table></big></html>";
