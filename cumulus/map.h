@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * \brief This class provides the basic functions for the map display.
  *
- * \date 1999-2011
+ * \date 1999-2012
  *
  * \version $Id$
  *
@@ -261,6 +261,11 @@ signals:
   void isRedrawing(bool);
 
   /**
+   * Is emitted if the first drawing of the map is finished.
+   */
+  void firstDrawingFinished();
+
+  /**
    * Is emitted, when the map was moved to a new position by using the mouse.
    */
   void newPosition( QPoint& newPosition );
@@ -295,7 +300,6 @@ protected:
    * Used for zoom action.
    */
   virtual void wheelEvent(QWheelEvent *event);
-
 
 private:
   /**

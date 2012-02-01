@@ -1116,6 +1116,7 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
   else
     {
       first = false;
+      emit firstDrawingFinished();
     }
 
   // @AP: check, if a pending redraw request is active. In this case

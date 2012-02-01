@@ -346,10 +346,16 @@ private slots:
   /** opens help documentation in browser. */
   void slotHelp();
 
-  /** creates the application widgets after the base initialization
-   *  of the core application window.
+  /**
+   * Creates the application widgets after the base initialization
+   * of the core application window.
    */
   void slotCreateApplicationWidgets();
+
+  /**
+   * Finishs the startup after the map drawing.
+   */
+  void slotFinishStartUp();
 
 private:
 

@@ -31,19 +31,17 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   setObjectName("WaitScreen");
   //setModal(true);
 
-  QGridLayout * backLayout = new QGridLayout(this);
-  QGridLayout * topLayout  = new QGridLayout();
-  backLayout->setMargin(0);
+  QGridLayout * topLayout  = new QGridLayout;
   topLayout->setMargin(5);
+  topLayout->setColumnMinimumWidth(0, 45);
 
-  backLayout->addLayout(topLayout, 1, 1);
-
+  QGridLayout * backLayout = new QGridLayout(this);
+  backLayout->setMargin(0);
+  backLayout->addLayout(topLayout, 1, Qt::AlignLeft);
   backLayout->setRowMinimumHeight(0, 3);
   backLayout->setRowMinimumHeight(2, 3);
   backLayout->setColumnMinimumWidth(0, 3);
   backLayout->setColumnMinimumWidth(2, 3);
-
-  topLayout->setColumnMinimumWidth(0, 45);
 
   QFrame* frm = new QFrame(this);
   frm->setFrameStyle(QFrame::Box | QFrame::Plain);
@@ -55,15 +53,15 @@ WaitScreen::WaitScreen(QWidget *parent ) :
 
   QLabel* txt = new QLabel(tr("Cumulus is working, please wait!"), this);
   txt->setMinimumHeight(22);
-  topLayout->addWidget(txt, 0, 1);
+  topLayout->addWidget(txt, 0, Qt::AlignLeft);
 
   Text1 = new QLabel(this);
   Text1->setMinimumHeight(22);
-  topLayout->addWidget(Text1, 1, 1);
+  topLayout->addWidget(Text1, 1, Qt::AlignLeft);
 
   Text2 = new QLabel(this);
   Text2->setMinimumHeight(22);
-  topLayout->addWidget(Text2, 2, 1);
+  topLayout->addWidget(Text2, 2, Qt::AlignLeft);
 
   _gliders = GeneralConfig::instance()->loadPixmap("gliders.png");
   _glider = QPixmap(40,40);

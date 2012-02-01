@@ -269,7 +269,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
   QCoreApplication::flush();
 
-  // Here we do finish the base initialization and start a timer
+  // Here we finish the base initialization and start a timer
   // to continue startup in another method. This is done, to get
   // running the window's manager event loop. Otherwise the behavior
   // of some widgets is undefined.
@@ -404,7 +404,7 @@ void MainWindow::slotCreateApplicationWidgets()
            _globalMapContents, SLOT( slotReloadMapData() ) );
 
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
-           viewMap->_theMap, SLOT( slotRedraw() ) );
+           Map::instance, SLOT( slotRedraw() ) );
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewAF, SLOT( slot_reloadList() ) );
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
@@ -501,18 +501,21 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( viewTP, SIGNAL( info( Waypoint* ) ),
            this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
 
-  connect( viewMap->_theMap, SIGNAL( isRedrawing( bool ) ),
+  connect( Map::instance, SIGNAL( isRedrawing( bool ) ),
            this, SLOT( slotMapDrawEvent( bool ) ) );
-  connect( viewMap->_theMap, SIGNAL( waypointSelected( Waypoint* ) ),
+  connect( Map::instance, SIGNAL( firstDrawingFinished() ),
+           this, SLOT( slotFinishStartUp() ) );
+  connect( Map::instance, SIGNAL( waypointSelected( Waypoint* ) ),
            this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
-  connect( viewMap->_theMap, SIGNAL( airspaceWarning( const QString&, const bool ) ),
+  connect( Map::instance, SIGNAL( airspaceWarning( const QString&, const bool ) ),
            this, SLOT( slotAlarm( const QString&, const bool ) ) );
-  connect( viewMap->_theMap, SIGNAL( newPosition( QPoint& ) ),
+  connect( Map::instance, SIGNAL( newPosition( QPoint& ) ),
            calculator, SLOT( slot_changePosition( QPoint& ) ) );
 
   connect( viewMap, SIGNAL( toggleLDCalculation( const bool ) ),
            calculator, SLOT( slot_toggleLDCalculation(const bool) ) );
-  connect( viewMap, SIGNAL( toggleMenu() ), this, SLOT( slotToggleMenu() ) );
+  connect( viewMap, SIGNAL( toggleMenu() ),
+           this, SLOT( slotToggleMenu() ) );
 
   connect( viewInfo, SIGNAL( waypointAdded( Waypoint& ) ),
            viewWP, SLOT( slot_wpAdded( Waypoint& ) ) );
@@ -603,7 +606,7 @@ void MainWindow::slotCreateApplicationWidgets()
 
   calculator->newSites();  // New sites have been loaded in map draw
   // this call is responsible for setting correct AGL/STD for manual mode,
-  // must be called after viewMap->_theMap->draw(), there the AGL info is loaded
+  // must be called after Map::instance->draw(), there the AGL info is loaded
   // I do not connect since it is never emitted, only called once here
   calculator->slot_changePosition(MapMatrix::NotSet);
 
@@ -622,8 +625,6 @@ void MainWindow::slotCreateApplicationWidgets()
       QCoreApplication::flush();
       sleep(1);
     }
-
-  setNearestOrReachableHeaders();
 
 #ifdef MAEMO
 
@@ -645,11 +646,47 @@ void MainWindow::slotCreateApplicationWidgets()
 #endif
 
   splash->setVisible( true );
-  ws->slot_SetText1( tr( "Initializing GPS" ) );
   ws->setVisible( true );
 
   QCoreApplication::flush();
   QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents|QEventLoop::ExcludeSocketNotifiers);
+
+  Map::instance->setDrawing( true );
+  viewMap->resize( size() );
+  viewMap->setVisible( true );
+
+  // set viewMap as central widget
+  setCentralWidget( viewMap );
+
+  // set map view as the central widget
+  setView( mapView );
+
+  // Make the status bar visible. Maemo do hide it per default.
+  slotViewStatusBar( true );
+}
+
+/**
+ * This slot is called by the map drawing method Map::__redrawMap, if the map
+ * drawing has been done the first time. After that all map data should be
+ * loaded.
+ */
+void MainWindow::slotFinishStartUp()
+{
+  qDebug() << "MainWindow::slotFinishStartUp()";
+
+  if( GeneralConfig::instance()->getLoggerAutostartMode() == true )
+    {
+      // set logger in standby mode
+      logger->Standby();
+    }
+  setNearestOrReachableHeaders();
+
+  // close wait screen
+  ws->setScreenUsage( false );
+  ws->setVisible( false );
+
+  // closes and removes the splash screen
+  splash->close();
 
   // Startup GPS client process now for data receiving
   GpsNmea::gps->blockSignals( false );
@@ -658,36 +695,11 @@ void MainWindow::slotCreateApplicationWidgets()
   GpsNmea::gps->startGpsReceiver();
 #endif
 
-  if( GeneralConfig::instance()->getLoggerAutostartMode() == true )
-    {
-      // set logger in standby mode
-      logger->Standby();
-    }
-
-  // close wait screen
-  ws->setScreenUsage( false );
-  ws->setVisible( false );
-  // closes and removes the splash screen
-  splash->close();
-
-  viewMap->_theMap->setDrawing( true );
-  viewMap->resize( size() );
-  viewMap->setVisible( true );
-
-  // set viewMap as central widget
-  setCentralWidget( viewMap );
-
-  // show map view as the central widget
-  setView( mapView );
-
-  // Make the status bar visible. Maemo do hide it per default.
-  slotViewStatusBar( true );
-
 #ifdef ANDROID
   forceFocus();
 #endif
 
-  qDebug( "End startup CmulusApp" );
+  qDebug( "End startup Cmulus" );
 }
 
 MainWindow::~MainWindow()
@@ -973,14 +985,14 @@ void MainWindow::createActions()
 
   addAction( actionGpsNavZoomIn );
   connect( actionGpsNavZoomIn, SIGNAL( triggered() ),
-           viewMap->_theMap, SLOT( slotZoomIn() ) );
+           Map::instance, SLOT( slotZoomIn() ) );
 
   // Zoom out map
   actionGpsNavZoomOut = new QAction( tr( "Zoom out" ), this );
   actionGpsNavZoomOut->setShortcut( QKeySequence("Left") );
   addAction( actionGpsNavZoomOut );
   connect( actionGpsNavZoomOut, SIGNAL( triggered() ),
-           viewMap->_theMap, SLOT( slotZoomOut() ) );
+           Map::instance, SLOT( slotZoomOut() ) );
 
   // Toggle menu bar
   actionMenuBarToggle = new QAction( tr( "Toggle menu" ), this );
@@ -1062,7 +1074,7 @@ void MainWindow::createActions()
 
   addAction( actionZoomInZ );
   connect ( actionZoomInZ, SIGNAL( triggered() ),
-            viewMap->_theMap , SLOT( slotZoomIn() ) );
+            Map::instance , SLOT( slotZoomIn() ) );
 
   // F8 is a Maemo hardware key for Zoom out
   actionZoomOutZ = new QAction ( tr( "Zoom out" ), this );
@@ -1072,7 +1084,7 @@ void MainWindow::createActions()
 
   addAction( actionZoomOutZ );
   connect ( actionZoomOutZ, SIGNAL( triggered() ),
-            viewMap->_theMap , SLOT( slotZoomOut() ) );
+            Map::instance , SLOT( slotZoomOut() ) );
 
   actionToggleAfLabels = new QAction ( tr( "&Airfield labels" ), this);
   actionToggleAfLabels->setShortcut(Qt::Key_A);
@@ -1334,7 +1346,7 @@ void MainWindow::slotToggleAfLabels( bool toggle )
   // save configuration change
   GeneralConfig::instance()->setMapShowAirfieldLabels( toggle );
   GeneralConfig::instance()->save();
-  viewMap->_theMap->scheduleRedraw(Map::airfields);
+  Map::instance->scheduleRedraw(Map::airfields);
 }
 
 void MainWindow::slotToggleOlLabels( bool toggle )
@@ -1342,7 +1354,7 @@ void MainWindow::slotToggleOlLabels( bool toggle )
   // save configuration change
   GeneralConfig::instance()->setMapShowOutLandingLabels( toggle );
   GeneralConfig::instance()->save();
-  viewMap->_theMap->scheduleRedraw(Map::outlandings);
+  Map::instance->scheduleRedraw(Map::outlandings);
 }
 
 void MainWindow::slotToggleTpLabels( bool toggle )
@@ -1350,7 +1362,7 @@ void MainWindow::slotToggleTpLabels( bool toggle )
   // save configuration change
   GeneralConfig::instance()->setMapShowTaskPointLabels( toggle );
   GeneralConfig::instance()->save();
-  viewMap->_theMap->scheduleRedraw(Map::task);
+  Map::instance->scheduleRedraw(Map::task);
 }
 
 void MainWindow::slotToggleWpLabels( bool toggle )
@@ -1358,7 +1370,7 @@ void MainWindow::slotToggleWpLabels( bool toggle )
   // save configuration change
   GeneralConfig::instance()->setMapShowWaypointLabels( toggle );
   GeneralConfig::instance()->save();
-  viewMap->_theMap->scheduleRedraw(Map::waypoints);
+  Map::instance->scheduleRedraw(Map::waypoints);
 }
 
 void MainWindow::slotToggleLabelsInfo( bool toggle )
@@ -1366,7 +1378,7 @@ void MainWindow::slotToggleLabelsInfo( bool toggle )
   // save configuration change
   GeneralConfig::instance()->setMapShowLabelsExtraInfo( toggle );
   GeneralConfig::instance()->save();
-  viewMap->_theMap->scheduleRedraw(Map::airfields);
+  Map::instance->scheduleRedraw(Map::airfields);
 }
 
 
@@ -1478,7 +1490,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       // air spaces and the navigation layer. Map is not drawn, when invisible
       // and airspace filling, edited waypoints or tasks can be outdated in the
       // meantime.
-      viewMap->_theMap->scheduleRedraw( Map::aeroLayer );
+      Map::instance->scheduleRedraw( Map::aeroLayer );
 
       break;
 
@@ -2050,7 +2062,7 @@ void MainWindow::slotReadconfig()
 
           calculator->clearReachable();
           viewRP->clearList(); // this clears the reachable list in the view
-          viewMap->_theMap->scheduleRedraw(Map::waypoints);
+          Map::instance->scheduleRedraw(Map::waypoints);
           _reachpointListVisible = false;
         }
     }
@@ -2073,12 +2085,12 @@ void MainWindow::slotReadconfig()
           listViewTabs->removeTab( listViewTabs->indexOf(viewOL) );
           listViewTabs->blockSignals( false );
           viewRP->clearList();  // this clears the outlanding list in the view
-          viewMap->_theMap->scheduleRedraw(Map::outlandings);
+          Map::instance->scheduleRedraw(Map::outlandings);
           _outlandingListVisible = false;
         }
     }
 
-  viewMap->_theMap->scheduleRedraw();
+  Map::instance->scheduleRedraw();
 }
 
 /** Called if the status of the GPS changes, and controls the availability of manual navigation. */
@@ -2125,7 +2137,7 @@ void MainWindow::slotCenterToWaypoint()
   if ( calculator->getselectedWp() )
     {
       _globalMapMatrix->centerToLatLon( calculator->getselectedWp()->origP );
-      viewMap->_theMap->scheduleRedraw();
+      Map::instance->scheduleRedraw();
 
     }
 }
@@ -2140,7 +2152,7 @@ void MainWindow::slotEnsureVisible()
       double newScale = _globalMapMatrix->ensureVisible( calculator->getselectedWp() ->origP );
       if ( newScale > 0 )
         {
-          viewMap->_theMap->slotSetScale( newScale );
+          Map::instance->slotSetScale( newScale );
         }
       else
         {
@@ -2227,7 +2239,7 @@ void MainWindow::slotPreFlightDataChanged()
 
   // set the task list view at the current task
   viewTP->slot_setTask( _globalMapContents->getCurrentTask() );
-  viewMap->_theMap->scheduleRedraw(Map::task);
+  Map::instance->scheduleRedraw(Map::task);
 }
 
 /** Dynamically updates view for reachable list */
@@ -2236,7 +2248,7 @@ void MainWindow::slotNewReachList()
   // qDebug( "MainWindow::slotNewReachList() is called" );
 
   viewRP->slot_newList(); //let the view know we have a new list
-  viewMap->_theMap->scheduleRedraw(Map::waypoints);
+  Map::instance->scheduleRedraw(Map::waypoints);
 }
 
 bool MainWindow::eventFilter( QObject *o , QEvent *e )
