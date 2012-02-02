@@ -178,12 +178,12 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
   connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
 
-#ifdef ANDROID
-  QShortcut* scCancel = new QShortcut ( this );
-  scCancel->setKey( Qt::Key_Close );
-  scCancel->setKey(Qt::Key_Close);
-  connect( scCancel, SIGNAL( activated() ), this, SLOT( reject() ) );
-#endif
+  QShortcut* sc = new QShortcut( this );
+  sc->setKey( Qt::Key_Close );
+  connect( sc, SIGNAL( activated() ), this, SLOT( reject() ) );
+  sc = new QShortcut( this );
+  sc->setKey(Qt::Key_Escape);
+  connect( sc, SIGNAL( activated() ), this, SLOT( reject() ) );
 
   connect(this, SIGNAL(load()), spp, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spgl, SLOT(slot_load()));
