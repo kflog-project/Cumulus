@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-02-01 AP: The waypoint default type is set to landmark now, if the
+                   waypoint editor is opened for waypoint creation.
+
 [-] 2012-02-01 AP: Missing time zone item UTC added to sunset in the arrival
                    display.
 
