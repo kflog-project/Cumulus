@@ -128,6 +128,9 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
       cmbType->addItem( tlist.at(i) );
     }
 
+  // The default waypoint type is landmark.
+  setWaypointType(BaseMapElement::Landmark );
+
   QLabel * lblGCall = new QLabel(tr("Importance:"), this);
   topLayout->addWidget(lblGCall, row, 0);
   cmbImportance = new QComboBox(this);
@@ -232,15 +235,19 @@ int WpEditDialogPageGeneral::getWaypointType()
 /** set waypoint type in combo box translate internal id to index */
 void WpEditDialogPageGeneral::setWaypointType(int type)
 {
+  int index = -1;
+
   if (type != -1)
     {
-      type = BaseMapElement::getSortedTranslationList().indexOf(BaseMapElement::item2Text(type));
+      index = BaseMapElement::getSortedTranslationList().indexOf(BaseMapElement::item2Text(type));
     }
   else
     {
-      type = BaseMapElement::getSortedTranslationList().indexOf(BaseMapElement::item2Text(0));
+      index = BaseMapElement::getSortedTranslationList().indexOf(BaseMapElement::item2Text(0));
     }
 
-  cmbType->setCurrentIndex(type);
+  qDebug() << "setWaypointType: type=" << type << "Index=" << index;
+
+  cmbType->setCurrentIndex(index);
 }
 
