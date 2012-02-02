@@ -57,7 +57,7 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   edtName->setMinimumWidth( 22*charWidth );
   edtName->setMaximumWidth( 22*charWidth );
 #endif
-  topLayout->addWidget(edtName, row++, 1, 1, 2);
+  topLayout->addWidget(edtName, row++, 1, 1, 3);
 
   connect( edtName, SIGNAL(textEdited( const QString& )),
            this, SLOT(slot_textEditedName( const QString& )) );
@@ -73,7 +73,7 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   edtDescription->setMinimumWidth( 22*charWidth );
   edtDescription->setMaximumWidth( 22*charWidth );
 #endif
-  topLayout->addWidget(edtDescription, row++, 1, 1, 2);
+  topLayout->addWidget(edtDescription, row++, 1, 1, 3);
 
   QLabel * lblCountry = new QLabel(tr("Country(2):"), this);
   topLayout->addWidget(lblCountry, row, 0);
@@ -95,17 +95,18 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   QLabel * lblLat = new QLabel(tr("Latitude:"), this);
   topLayout->addWidget(lblLat, row, 0);
   edtLat = new LatEdit(this, conf->getHomeLat());
-  topLayout->addWidget(edtLat, row++, 1);
+  topLayout->addWidget(edtLat, row++, 1, 1, 2);
 
   QLabel * lblLon = new QLabel(tr("Longitude:"), this);
   topLayout->addWidget(lblLon, row, 0);
   edtLong = new LongEdit(this, conf->getHomeLon());
-  topLayout->addWidget(edtLong, row++, 1);
+  topLayout->addWidget(edtLong, row++, 1, 1, 2);
 
   QLabel * lblElev = new QLabel(tr("Elevation:"), this);
   topLayout->addWidget(lblElev, row, 0);
   QBoxLayout * elevLayout = new QHBoxLayout();
   topLayout->addLayout(elevLayout, row++, 1);
+
   edtElev = new QLineEdit(this);
   elevLayout->addWidget(edtElev);
   QLabel * lblElevUnit = new QLabel(Altitude::getUnitText(), this);
@@ -143,7 +144,7 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
 
   topLayout->setRowStretch(row++, 10);
   topLayout->setColumnStretch(2, 10);
-  topLayout->setColumnStretch(3, 10);
+  topLayout->setColumnStretch(4, 10);
 }
 
 WpEditDialogPageGeneral::~WpEditDialogPageGeneral()

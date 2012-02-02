@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2010 by Axel Pauli
+ **                   2008-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -15,13 +15,6 @@
  **   $Id$
  **
  ***********************************************************************/
-
-/**
- * The WpEditDialog allows the creation of a new waypoint or the modification
- * of an existing waypoint.
- *
- * @author André Somers
- */
 
 #include <QtGui>
 
@@ -75,6 +68,9 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   WpEditDialogPageGeneral *pageG = new WpEditDialogPageGeneral(this);
   pgArea->setWidget( pageG );
   tabWidget->addTab( pgArea, tr("General") );
+#ifdef ANDROID
+  QScroller::grabGesture(pgArea, QScroller::LeftMouseButtonGesture);
+#endif
 
   QScrollArea* paArea = new QScrollArea( tabWidget );
   paArea->setWidgetResizable( true );
@@ -82,6 +78,9 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   WpEditDialogPageAero *pageA = new WpEditDialogPageAero(this);
   paArea->setWidget( pageA );
   tabWidget->addTab( paArea, tr("Aero") );
+#ifdef ANDROID
+  QScroller::grabGesture(paArea, QScroller::LeftMouseButtonGesture);
+#endif
 
   QScrollArea* pcArea = new QScrollArea( tabWidget );
   pcArea->setWidgetResizable( true );
@@ -90,6 +89,9 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   comment->setWordWrapMode(QTextOption::WordWrap);
   pcArea->setWidget( comment );
   tabWidget->addTab( pcArea, tr("Comment") );
+#ifdef ANDROID
+  QScroller::grabGesture(pcArea, QScroller::LeftMouseButtonGesture);
+#endif
 
   connect(this, SIGNAL(load(Waypoint *)),
           pageG, SLOT(slot_load(Waypoint *)));
