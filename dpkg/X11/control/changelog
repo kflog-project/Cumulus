@@ -1,0 +1,6 @@
+cumulus (__VERSION__) stable; urgency=low
+
+  * Ubuntu Linux Desktop Release for X11/Qt. For changelog see here:
+    https://svn.kflog.org/svn/repos/cumulus/qt4/trunk/ChangeLog
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  __DATE__

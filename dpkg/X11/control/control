@@ -1,0 +1,29 @@
+# $Id$
+Source: cumulus
+Section: other
+Priority: optional
+Maintainer: Axel Pauli <kflog.cumulus@googlemail.com>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.2
+Homepage: http://www.kflog.org/cumulus/
+#Vcs-Git: git://git.debian.org/collab-maint/cumulus-2.12.2.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/cumulus-2.12.2.git;a=summary
+
+Package: cumulus
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Cumulus is a flight computer for glider pilots.
+ Cumulus features a full colored moving map display with elevations, airspace,
+ terrain and airfields information. It can use waypoints, supports flight tasks
+ and logs flights according to the IGC standard.
+ .
+ Cumulus can be used with different GPS receivers either with the built in
+ or an external GPS device connected via serial, USB or BT.
+ .
+ Cumulus can also process and display FLARM data, if it is connected with
+ such a device.
+ .
+ For more information about Cumulus please take a look at its home page at
+ http://www.kflog.org/cumulus/
+ 
+ 
