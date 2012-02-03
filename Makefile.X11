@@ -36,6 +36,9 @@ ifeq "$(shell dh_make -v | grep -c 'version 0\.58')" "1"
 	DH_MAKE_OPT=-r old
 endif
 
+# date in debian package format
+DATE=`date +'%a, %d %b %Y %H:%M:%S %z'`
+
 # Reset language environment because the date can be formatted according
 # to local rules. That does not like dpkg-buildpackage.
 LANG=
