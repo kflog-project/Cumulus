@@ -1,4 +1,4 @@
-# $Id: copyright 1211 2011-06-18 19:17:54Z axel $
+# $Id$
 Format: http://dep.debian.net/deps/dep5
 Upstream-Name: cumulus-__VERSION__
 Source: https://svn.kflog.org/svn/repos/cumulus/qt4

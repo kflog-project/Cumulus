@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 #
-# $Id: rules 1223 2011-06-19 10:36:41Z axel $
+# $Id$
 #
 # Sample debian/rules that uses debhelper.
 # This file was originally written by Joey Hess and Craig Small.
