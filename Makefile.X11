@@ -108,7 +108,7 @@ install: check_dir deinstall install_lang
 	install --mode=644 icons/*.png $(INSTALL_ROOT)/icons
 	install --mode=644 icons/small/* $(INSTALL_ROOT)/icons/small
 	install --mode=644 icons/windarrows/* $(INSTALL_ROOT)/icons/windarrows
-	install --mode=644 help/en/* icons/cumulus.png $(INSTALL_ROOT)/help/en
+	install --mode=644 help/en/* $(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(INSTALL_ROOT)/sounds
 
 .PHONY : install_lang
@@ -116,7 +116,7 @@ install_lang:
 	@echo "===== Installing Cumulus $(VERSION) languages under $(INSTALL_ROOT) ====="
 	install -d $(INSTALL_ROOT)/locale/de
 	install -d $(INSTALL_ROOT)/help/de
-	install --mode=644 help/de/* icons/cumulus.png $(INSTALL_ROOT)/help/de
+	install --mode=644 help/de/* $(INSTALL_ROOT)/help/de
 	cd cumulus; \
 		$(LRELEASE) -silent -removeidentical -nounfinished cumulus_de.ts -qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
 	chmod 644 $(INSTALL_ROOT)/locale/de/cumulus_de.qm
@@ -210,8 +210,8 @@ dpkg_install:
 	install --mode=644 icons/windarrows/* $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
 	install --mode=644 help/en/*.html help/en/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 help/de/*.html help/de/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/de
-	install --mode=644 icons/cumulus-desktop48x48.png $(DESTDIR)/$(INSTALL_ROOT)/help/en/cumulus.png
-	install --mode=644 icons/cumulus-desktop48x48.png $(DESTDIR)/$(INSTALL_ROOT)/help/de/cumulus.png
+	install --mode=644 help/en/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en/cumulus.png
+	install --mode=644 help/de/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de/cumulus.png
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/X11/other/cumulus.desktop $(DESTDIR)/usr/share/applications
 	# add German translations to package
