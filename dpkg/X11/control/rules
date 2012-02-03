@@ -16,34 +16,34 @@ CFLAGS = -Wall
 
 configure: configure-stamp
 configure-stamp:
-  dh_testdir
-  # Add here commands to configure the package.
-  touch configure-stamp
+	dh_testdir
+	# Add here commands to configure the package.
+	touch configure-stamp
 
 build: build-stamp
 
 build-stamp: configure-stamp  
-  dh_testdir
-  # Add here commands to compile the package.
-  $(MAKE) -f Makefile.X11 all
-  touch $@
+	dh_testdir
+	# Add here commands to compile the package.
+	$(MAKE) -f Makefile.X11 all
+	touch $@
 
 clean: 
-  dh_testdir
-  dh_testroot
-  rm -f build-stamp configure-stamp
-  # Add here commands to clean up after the build process.
-  $(MAKE) -f Makefile.X11 clean
-  dh_clean 
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp configure-stamp
+	# Add here commands to clean up after the build process.
+	$(MAKE) -f Makefile.X11 clean
+	dh_clean 
 
 install: build
-  dh_testdir
-  dh_testroot
-  dh_prep  
-  dh_installdirs
-  # Add here commands to install the package into debian/cumulus...
-  # $(MAKE) DESTDIR=$(CURDIR)/debian/cumulus-<version> install
-  $(MAKE) -f Makefile.X11 DESTDIR=$(CURDIR)/debian/cumulus dpkg_install
+	dh_testdir
+	dh_testroot
+	dh_prep  
+	dh_installdirs
+	# Add here commands to install the package into debian/cumulus...
+	# $(MAKE) DESTDIR=$(CURDIR)/debian/cumulus-<version> install
+	$(MAKE) -f Makefile.X11 DESTDIR=$(CURDIR)/debian/cumulus dpkg_install
 
 # Build architecture-independent files here.
 binary-indep: install
@@ -51,9 +51,9 @@ binary-indep: install
 
 # Build architecture-dependent files here.
 binary-arch: install
-  dh_testdir
-  dh_testroot
-  dh_installchangelogs 
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs 
 # dh_installdocs
 # dh_installexamples
 # dh_install
@@ -67,18 +67,18 @@ binary-arch: install
 # dh_installinit
 # dh_installcron
 # dh_installinfo
-  dh_installman
-  dh_link
-  dh_strip
-  dh_compress
-  dh_fixperms
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
 # dh_perl
 # dh_makeshlibs
-  dh_installdeb
-  dh_shlibdeps -Xlibkfr -Xlibopengl_igc
-  dh_gencontrol
-  dh_md5sums
-  dh_builddeb
+	dh_installdeb
+	dh_shlibdeps -Xlibkfr -Xlibopengl_igc
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install configure
