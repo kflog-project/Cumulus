@@ -212,7 +212,7 @@ dpkg_install:
 	install --mode=644 icons/windarrows/* $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
 	install --mode=644 icons/cumulus-desktop26x26.png $(DESTDIR)/usr/share/icons/hicolor/26x26/apps/cumulus.png
 	install --mode=644 icons/cumulus-desktop64x64.png $(DESTDIR)/usr/share/icons/hicolor/scalable/apps/cumulus.png
-	install --mode=644 help/en/*.html help/en/text.css icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
+	install --mode=644 help/en/*.html help/en/text.css help/en/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/Maemo5/maemo/cumulus.desktop $(DESTDIR)/usr/share/applications/hildon/cumulus.desktop
 	install --mode=644 dpkg/Maemo5/maemo/cumulus.service $(DESTDIR)/usr/share/dbus-1/services/cumulus.service

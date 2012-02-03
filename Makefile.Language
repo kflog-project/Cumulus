@@ -150,7 +150,7 @@ install:	langpacks
 	@echo '===== Installing Cumulus Languages $(VERSION) under $(INSTALL_ROOT) ====='
 	install -d $(INSTALL_ROOT)/help/de
 	install -d $(INSTALL_ROOT)/locale/de
-	install --mode=644 help/de/*.html help/de/text.css icons/cumulus.png $(INSTALL_ROOT)/help/de
+	install --mode=644 help/de/*.html help/de/text.css help/de/cumulus.png $(INSTALL_ROOT)/help/de
 	install --mode=644 cumulus/cumulus_de.qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
 	install --mode=644 $(QT_TRANSLATIONS)/qt_de.qm $(INSTALL_ROOT)/locale/de/qt_de.qm
 

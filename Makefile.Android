@@ -67,7 +67,7 @@ addData:
 	@install -d $(ADD_DATA_ROOT)/help/de
 	@install -d $(ADD_DATA_ROOT)/locale/de
 	@install -d $(ADD_DATA_ROOT)/sounds
-	@install --mode=644 help/en/*.html icons/cumulus.png $(ADD_DATA_ROOT)/help/en
+	@install --mode=644 help/en/*.html help/en/cumulus.png $(ADD_DATA_ROOT)/help/en
 	@install --mode=644 help/en/text.css $(ADD_DATA_ROOT)/help/en
 	@install --mode=644 icons/cumulus.png $(ADD_DATA_ROOT)/help/de
 	@install --mode=644 sounds/AlarmShort.wav $(ADD_DATA_ROOT)/sounds/Alarm.wav
