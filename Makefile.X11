@@ -19,14 +19,32 @@ VERSION=$(shell cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2)
 
 QTVERSION=$(shell $(QMAKE) -query QT_VERSION)
 
+# Qt's translation directory
+QT_TRANSLATIONS=/usr/share/qt4/translations
+
+CUMULUS_REL=cumulus-$(VERSION)
+
+# Debian package build directories
+CUMULUS_DEB_ROOT=dpkg/X11
+CUMULUS_DEB=$(CUMULUS_DEB_ROOT)/$(CUMULUS_REL)
+
 # adapt install path to your needs if necessary
 INSTALL_ROOT = /opt/cumulus
+
+# dh_make tool version 0.58 requires option '-r old' to get working right
+ifeq "$(shell dh_make -v | grep -c 'version 0\.58')" "1"
+	DH_MAKE_OPT=-r old
+endif
+
+# Reset language environment because the date can be formatted according
+# to local rules. That does not like dpkg-buildpackage.
+LANG=
 
 .PHONY : usage
 
 usage:
 	@echo ""
-	@echo "Cumulus build environment for Linux/X11 and Qt4.7"
+	@echo "Cumulus build environment for Linux/X11 and Qt4.8"
 	@echo ""
 	@echo "Installed Qt version $(QTVERSION)"
 	@echo ""
@@ -36,7 +54,8 @@ usage:
 	@echo "  install      - Installs Cumulus under $(INSTALL_ROOT)"
 	@echo "  deinstall    - Deinstalls Cumulus under $(INSTALL_ROOT)"
 	@echo "  release      - Cleans the build area before build"
-
+	@echo "  dpkg         - Builds a Debian package file under the directory dpkg"
+	
 all:	qmake resetdate
 	@echo "Using Qt version $(QTVERSION)"
 	cd cumulus; make
@@ -98,6 +117,8 @@ install_lang:
 	cd cumulus; \
 		$(LRELEASE) -silent -removeidentical -nounfinished cumulus_de.ts -qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
 	chmod 644 $(INSTALL_ROOT)/locale/de/cumulus_de.qm
+	install --mode=644 $(QT_TRANSLATIONS)/qt_de.qm $(INSTALL_ROOT)/locale/de/qt_de.qm;
+	
 
 .PHONY : deinstall
 deinstall:
@@ -120,3 +141,87 @@ gpsClient/Makefile: gpsClient/gpsClientX11.pro
 
 nmeaSimulator/Makefile: nmeaSimulator/simuX11.pro
 	cd nmeaSimulator; $(QMAKE) simuX11.pro -o Makefile
+	
+####################################################
+# call target dpkg to build a debian Cumulus package
+####################################################
+
+.PHONY : dpkg dpkg_prepare dpkg_make dpkg_build
+
+dpkg:
+	@echo "===== Building a Debian package for Cumulus $(VERSION) ====="
+	@$(MAKE) -f Makefile.X11 VERSION=$(VERSION) dpkg_prepare dpkg_make dpkg_build
+
+# This target prepares the Debian build. A fresh copy of Cumulus is cheched out
+# from subversion. Therefore you need subversion access!
+dpkg_prepare:
+	@rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
+	@mkdir -p $(CUMULUS_DEB)
+	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
+
+# This target creates the debian package files. It is called via another makefile
+# due to the VERSION macro. The special letters apostroph and quotation mark
+# cause problems in other shell commands, if they not expanded before.
+dpkg_make:
+	@rm -rf $(CUMULUS_DEB)/debian
+	cd $(CUMULUS_DEB); \
+	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
+	export DEBFULLNAME='Axel Pauli'; \
+	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -s --native $(DH_MAKE_OPT)
+	cd $(CUMULUS_DEB)/dpkg/X11/control; \
+	cp control rules ../../../debian/; \
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > ../../../debian/copyright; \
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" changelog > ../../../debian/changelog
+	
+# This target builds the debian package, if all is prepared before.
+dpkg_build:
+	cd $(CUMULUS_DEB); \
+	dpkg-buildpackage -rfakeroot -b
+
+# Copies all files of KFLog into the debian package area. It is called by the
+# Debian rule file.
+.PHONY : dpkg_install
+
+dpkg_install:
+	@echo '===== Installing Cumulus $(VERSION) under $(DESTDIR)$(INSTALL_ROOT) ====='
+	strip cumulus/cumulus
+	strip gpsClient/gpsClient
+	strip nmeaSimulator/nmeaSimu
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/etc
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/en
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/de
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons/small
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/locale/de
+	install -d $(DESTDIR)/$(INSTALL_ROOT)/sounds
+	install -d $(DESTDIR)/usr/share/applications
+	install --mode=755 cumulus/cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install --mode=755 gpsClient/gpsClient $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install --mode=755 nmeaSimulator/nmeaSimu $(DESTDIR)/$(INSTALL_ROOT)/bin
+	install --mode=644 etc/glider.pol $(DESTDIR)/$(INSTALL_ROOT)/etc
+	install --mode=644 icons/*.xpm $(DESTDIR)/$(INSTALL_ROOT)/icons
+	install --mode=644 icons/*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
+	install --mode=644 icons/small/* $(DESTDIR)/$(INSTALL_ROOT)/icons/small
+	install --mode=644 icons/windarrows/* $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
+	install --mode=644 help/en/*.html help/en/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/en
+	install --mode=644 help/de/*.html help/de/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/de
+	install --mode=644 icons/cumulus-desktop48x48.png $(DESTDIR)/$(INSTALL_ROOT)/help/en/cumulus.png
+	install --mode=644 icons/cumulus-desktop48x48.png $(DESTDIR)/$(INSTALL_ROOT)/help/de/cumulus.png
+	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
+	install --mode=644 dpkg/X11/other/cumulus.desktop $(DESTDIR)/usr/share/applications
+	# add German translations to package
+	install --mode=644 $(QT_TRANSLATIONS)/qt_de.qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/qt_de.qm
+	$(LRELEASE) -silent -removeidentical -nounfinished cumulus/cumulus_de.ts -qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/cumulus_de.qm
+	chmod 644 $(DESTDIR)/$(INSTALL_ROOT)/locale/de/cumulus_de.qm
+
+# copies change log and debian package to kflog web page
+.PHONY : copy2web
+
+copy2web:
+	#scp -C ChangeLog web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/ChangeLog_$(VERSION)_`date '+%F'`
+	scp -C dpkg/X11/cumulus_$(VERSION)_armel.changes \
+	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
+	scp -C dpkg/X11/cumulus_$(VERSION)_armel.deb \
+	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_armel_n8x0.deb
