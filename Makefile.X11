@@ -224,7 +224,7 @@ dpkg_install:
 
 copy2web:
 	#scp -C ChangeLog web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/ChangeLog_$(VERSION)_`date '+%F'`
-	scp -C dpkg/X11/cumulus_$(VERSION)_armel.changes \
-	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
-	scp -C dpkg/X11/cumulus_$(VERSION)_armel.deb \
-	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_armel_n8x0.deb
+	scp -C dpkg/X11/cumulus_$(VERSION)_i386.changes \
+	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_ubuntu_i386.changes
+	scp -C dpkg/X11/cumulus_$(VERSION)_i386.deb \
+	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_ubuntu_i386.deb
