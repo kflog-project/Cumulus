@@ -26,6 +26,7 @@
 #include "airspace.h"
 #include "basemapelement.h"
 #include "calculator.h"
+#include "datatypes.h"
 #include "filetools.h"
 #include "flighttask.h"
 #include "generalconfig.h"
