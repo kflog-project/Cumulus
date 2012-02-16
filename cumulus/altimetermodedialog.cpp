@@ -44,6 +44,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   b.setBold( true );
   setFont( b );
 
+#ifdef USE_POINT_SIZE_FONT
   // set font size to a reasonable and usable value
   if( font().pointSize() < DialogMinFontSize )
     {
@@ -51,6 +52,15 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
       cf.setPointSize( DialogMinFontSize );
       this->setFont( cf );
     }
+#else
+  // set font size to a reasonable and usable value
+  if( font().pixelSize() < DialogMinFontSize )
+    {
+      QFont cf = font();
+      cf.setPixelSize( DialogMinFontSize );
+      this->setFont( cf );
+    }
+#endif
 
   QGroupBox* altMode = new QGroupBox( this );
   _msl = new QRadioButton( tr( "MSL" ), altMode );

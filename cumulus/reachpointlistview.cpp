@@ -59,7 +59,7 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
   list->hideColumn(7);
   list->setFocusPolicy(Qt::StrongFocus);
 
-#ifdef ANDROID
+#ifdef QSCROLLER
   list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
   QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
 #endif

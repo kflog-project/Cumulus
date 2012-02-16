@@ -76,7 +76,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   nmeaScrollArea->setWidgetResizable( true );
   nmeaScrollArea->setWidget(nmeaBox);
 
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(nmeaScrollArea, QScroller::LeftMouseButtonGesture);
 #endif
 

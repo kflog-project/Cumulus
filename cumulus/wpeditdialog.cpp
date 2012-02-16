@@ -68,7 +68,7 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   WpEditDialogPageGeneral *pageG = new WpEditDialogPageGeneral(this);
   pgArea->setWidget( pageG );
   tabWidget->addTab( pgArea, tr("General") );
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(pgArea, QScroller::LeftMouseButtonGesture);
 #endif
 
@@ -78,7 +78,7 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   WpEditDialogPageAero *pageA = new WpEditDialogPageAero(this);
   paArea->setWidget( pageA );
   tabWidget->addTab( paArea, tr("Aero") );
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(paArea, QScroller::LeftMouseButtonGesture);
 #endif
 
@@ -89,7 +89,7 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   comment->setWordWrapMode(QTextOption::WordWrap);
   pcArea->setWidget( comment );
   tabWidget->addTab( pcArea, tr("Comment") );
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(pcArea, QScroller::LeftMouseButtonGesture);
 #endif
 

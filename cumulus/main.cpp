@@ -65,8 +65,6 @@ int main(int argc, char *argv[])
 
 #ifdef ANDROID
 
-  jniRegister();
-
   // Gets the additional data dir from our app. That is normally the storage
   // path to the SDCard.
   QString addDir = jniGetAddDataDir();
@@ -97,7 +95,7 @@ int main(int argc, char *argv[])
 
   GeneralConfig::instance()->setAppRoot( appDir );
 
-  qDebug() << "Cumulus addDir and Qt Home set to" << addDir;
+  qDebug() << "Cumulus addDir and QtHome set to" << addDir;
   qDebug() << "Cumulus appDir set to" << appDir;
 
 #endif /* ANDROID */
@@ -253,7 +251,7 @@ int main(int argc, char *argv[])
       for( int i = 0; i < fontList.size(); i++ )
         {
           int res = QFontDatabase::addApplicationFont( fontList.at(i) );
-          qDebug() << "Adding font" << fontList.at(i) << "to data base with ID=" << res;
+          qDebug() << "Try to add font" << fontList.at(i) << "to data base with ID=" << res;
         }
     }
 
@@ -277,8 +275,11 @@ int main(int argc, char *argv[])
 #endif
 #endif
 
-      appFont.setStyle( QFont::StyleNormal );
+#ifdef USE_POINT_SIZE_FONT
       appFont.setPointSize( appFSize );
+#else
+      appFont.setPixelSize( appFSize );
+#endif
 
       QApplication::setFont( appFont );
     }
@@ -315,7 +316,11 @@ int main(int argc, char *argv[])
       QFont font = QApplication::font();
 
       // adapt font size to a readable one for the screen
+#ifdef USE_POINT_SIZE_FONT
       font.setPointSize( size );
+#else
+      font.setPixelSize( size );
+#endif
       msgBox.setFont( font );
       msgBox.setWindowTitle( QObject::tr("Cumulus Disclaimer") );
       msgBox.setIcon ( QMessageBox::Warning );

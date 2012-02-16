@@ -54,7 +54,13 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   _textBGColor( "white" )
 {
   QFont f = font();
+
+#ifdef USE_POINT_SIZE_FONT
   f.setPointSize(12);
+#else
+  f.setPixelSize(12);
+#endif
+
   setFont(f);
   QFontMetrics fm(f);
 

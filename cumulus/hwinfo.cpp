@@ -226,6 +226,8 @@ bool HwInfo::isMounted( const QString& mountPoint )
 
 #ifdef ANDROID
   // Availability of data directory was checked initially
+  Q_UNUSED(mountPoint)
+
   return true;
 #else
   bool result = false;

@@ -172,7 +172,7 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   taskListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
   taskListWidget->setColumnCount(4);
 
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(taskListWidget, QScroller::LeftMouseButtonGesture);
 #endif
 

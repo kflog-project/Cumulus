@@ -78,7 +78,7 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
   list->setFocusPolicy(Qt::NoFocus);
   setHeader();
 
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
 #endif
 

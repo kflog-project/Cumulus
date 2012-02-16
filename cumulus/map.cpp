@@ -1092,7 +1092,7 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
   // unlock mutex
   setMutex(false);
 
-#ifdef QSCROLLER
+#ifdef QSCROLLER1
   // Overshoot animation was stopped, reset it
   _globalMapView->resetScrolling();
 #endif
@@ -1581,10 +1581,16 @@ void Map::__drawLabel( QPainter* painter,
   // the labels are good to see at the map.
   QFont font = painter->font();
 
-#ifdef MAEMO
-  font.setPointSize( 24 );
+#if defined ANDROID || defined MAEMO
+  const int fs = 24;
 #else
-  font.setPointSize( 20 );
+  const int fs = 20;
+#endif
+
+#ifdef USE_POINT_SIZE_FONT
+  font.setPointSize( fs );
+#else
+  font.setPixelSize( fs );
 #endif
 
   QString labelText = name;
@@ -1713,11 +1719,19 @@ void Map::_drawCityLabels( QPixmap& pixmap )
 
   QPainter painter(&pixmap);
   QFont font = painter.font();
-#ifdef MAEMO
-  font.setPointSize( 10 );
+
+#if defined ANDROID || defined MAEMO
+  const int fs = 10;
 #else
-  font.setPointSize( 6 );
+  const int fs = 6;
 #endif
+
+#ifdef USE_POINT_SIZE_FONT
+  font.setPointSize( fs );
+#else
+  font.setPixelSize( fs );
+#endif
+
   painter.setFont( font );
   painter.setBrush(Qt::NoBrush);
   painter.setPen(QPen(Qt::black, 2, Qt::SolidLine));
@@ -1861,15 +1875,21 @@ void Map::__drawScale(QPainter& scaleP)
   pen.setWidth(3);
   pen.setCapStyle(Qt::RoundCap);
   scaleP.setPen(pen);
-  QFont f = scaleP.font();
+  QFont font = scaleP.font();
 
-#ifndef MAEMO
-  f.setPointSize(12);
+#if defined ANDROID || defined MAEMO
+  const int fs = 14;
 #else
-  f.setPointSize(14);
+  const int fs = 12;
 #endif
 
-  scaleP.setFont(f);
+#ifdef USE_POINT_SIZE_FONT
+  font.setPointSize( fs );
+#else
+  font.setPixelSize( fs );
+#endif
+
+  scaleP.setFont(font);
 
   double scale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
   Distance barLen;
@@ -2160,12 +2180,12 @@ void Map::__drawOtherAircraft()
 void Map::__drawMostRelevantObject( const Flarm::FlarmStatus& status )
 {
 
-#ifndef MAEMO
-  const int diameter = 22;
-  const int fontPointSize = 18;
-#else
+#if defined ANDROID || defined MAEMO
   const int diameter = 30;
-  const int fontPointSize = 24;
+  const int fontSize = 24;
+#else
+  const int diameter = 22;
+  const int fontSize = 18;
 #endif
 
   if( status.RelativeBearing.isEmpty() ||
@@ -2235,7 +2255,12 @@ void Map::__drawMostRelevantObject( const Flarm::FlarmStatus& status )
   // Set font size used for text painting a little bit bigger, that
   // the labels are good to see at the map.
   QFont font = painter.font();
-  font.setPointSize( fontPointSize );
+
+#ifdef USE_POINT_SIZE_FONT
+  font.setPointSize( fontSize );
+#else
+  font.setPixelSize( fontSize );
+#endif
 
   QString text = Distance::getText( relDistance, false, -1 ) + "/";
 
@@ -2281,14 +2306,14 @@ void Map::__drawMostRelevantObject( const Flarm::FlarmStatus& status )
 void Map::__drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
 {
 
-#ifndef MAEMO
-  const int diameter = 22;
-  const int fontPointSize = 18;
-  const int triangle = 26;
-#else
+#if defined ANDROID || defined MAEMO
   const int diameter = 30;
   const int fontPointSize = 24;
   const int triangle = 34;
+#else
+  const int diameter = 22;
+  const int fontPointSize = 18;
+  const int triangle = 26;
 #endif
 
   QPoint other;
@@ -2353,7 +2378,12 @@ void Map::__drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
   // Set font size used for text painting a little bit bigger, that
   // the labels are good to see at the map.
   QFont font = painter.font();
+
+#ifdef USE_POINT_SIZE_FONT
   font.setPointSize( fontPointSize );
+#else
+  font.setPixelSize( fontPointSize );
+#endif
 
   QString text = Distance::getText( distance, false, -1 );
 
@@ -2739,11 +2769,16 @@ void Map::__drawRelBearingInfo()
 
       int pointSize = 16;
 
-    #ifdef MAEMO
+    #if defined ANDROID || defined MAEMO
       pointSize += 4;
     #endif
 
+#ifdef USE_POINT_SIZE_FONT
       font.setPointSize(pointSize);
+#else
+      font.setPixelSize(pointSize);
+#endif
+
       font.setBold(true);
 
       QString text = "";

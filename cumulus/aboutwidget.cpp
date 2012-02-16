@@ -47,7 +47,7 @@ AboutWidget::AboutWidget( QWidget *parent ) :
   tabWidget->addTab( team, tr("Team") );
   tabWidget->addTab( disclaimer, tr("Disclaimer") );
 
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(about, QScroller::LeftMouseButtonGesture);
   QScroller::grabGesture(team, QScroller::LeftMouseButtonGesture);
   QScroller::grabGesture(disclaimer, QScroller::LeftMouseButtonGesture);

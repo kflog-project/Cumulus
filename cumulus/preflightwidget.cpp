@@ -60,7 +60,7 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   sa->setWidgetResizable( true );
   sa->setFrameStyle( QFrame::NoFrame );
   sa->setWidget( miscpage );
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
 #endif
 

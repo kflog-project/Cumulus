@@ -75,9 +75,14 @@ void ElevationColorImage::paintEvent( QPaintEvent * /* event */ )
 
   // set font size used for text painting
   QFont newFont = painter.font();
-  newFont.setPointSize( 10 );
-  painter.setFont( newFont) ;
 
+#ifdef USE_POINT_SIZE_FONT
+  newFont.setPointSize( 10 );
+#else
+  newFont.setPixelSize( 10 );
+#endif
+
+  painter.setFont( newFont) ;
   QPen pen;
   pen.setWidth(3);
   painter.setPen(pen);

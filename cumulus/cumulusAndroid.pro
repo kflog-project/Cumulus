@@ -8,22 +8,38 @@
 # License. See the file COPYING for more information.
 #
 # $Id$
+#
+# Note, that the SDK Necessitas is used for the build!
+#
 ##################################################################
 
-TEMPLATE = lib
+QT += core gui xml
 
-QT       += xml
+TARGET   = Cumulus
+TEMPLATE = app
 
-CONFIG = qt \
-    warn_on \
-    release \
-    dll
+# it seems the next two lines are important for Necessitas
+CONFIG += mobility
+MOBILITY = 
+
+CONFIG += qt \
+          warn_on \
+          release
+
+# Cumulus uses this define for Android specific code parts.
+DEFINES += ANDROID
+
+# Activate this define, if QtClass QScroller is available.
+# DEFINES += QSCROLLER
+
+# Activate this define, if font point size should be used instead of pixel size.
+# DEFINES += USE_POINT_SIZE_FONT
 
 #ANDROID_PLATFORM = android-10
-ANDROID_PLATFORM = android-8
+#ANDROID_PLATFORM = android-8
 
 # Enable Flarm feature, if not wanted comment out the next line with a hash
-# CONFIG += flarm
+CONFIG += flarm
 
 # Enable Internet features, if not wanted comment out the next line with a hash
 CONFIG += internet
@@ -33,7 +49,7 @@ CONFIG += internet
 
 # Enable Welt2000 reloading via an extra thread, if not wanted comment out the
 # next line with a hash
-# CONFIG += welt2000thread
+CONFIG += welt2000thread
 
 HEADERS = \
     aboutwidget.h \
@@ -75,6 +91,7 @@ HEADERS = \
     limitedlist.h \
     lineelement.h \
     listviewfilter.h \
+    listwidgetparent.h \
     mainwindow.h \
     mapcalc.h \
     mapconfig.h \
@@ -147,9 +164,7 @@ HEADERS = \
     wpeditdialogpageaero.h \
     wpeditdialogpagegeneral.h \
     waypoint.h \
-    wpinfowidget.h \
-    listwidgetparent.h \
-    qtandroidbridge.h
+    wpinfowidget.h
 
 SOURCES = \
     aboutwidget.cpp \
@@ -185,6 +200,7 @@ SOURCES = \
     jnisupport.cpp \
     lineelement.cpp \
     listviewfilter.cpp \
+    listwidgetparent.cpp \
     main.cpp \
     mainwindow.cpp \
     mapcalc.cpp \
@@ -254,10 +270,7 @@ SOURCES = \
     wpeditdialog.cpp \
     wpeditdialogpageaero.cpp \
     wpeditdialogpagegeneral.cpp \
-    wpinfowidget.cpp \
-    listwidgetparent.cpp \
-    qtandroidbridge.cpp \
-    qtmain_android.cpp
+    wpinfowidget.cpp
 
 flarm {
     HEADERS += flarm.h \
@@ -307,18 +320,44 @@ welt2000thread {
     DEFINES += WELT2000_THREAD
 }
 
-TARGET = cumulus
-
-DESTDIR = .
-
-INCLUDEPATH += ../ \
-    /usr/lib/glib-2.0/include \
-    /usr/include/glib-2.0 \
-    /usr/include/dbus-1.0 \
-    /usr/lib/dbus-1.0/include \
-    ../include/QtAndroidBridge
-
-DEFINES += ANDROID
+# Files managed and needed by Necessitas
+OTHER_FILES += \
+    android/res/drawable-ldpi/icon.png \
+    android/res/values-pt-rBR/strings.xml \
+    android/res/drawable/icon.png \
+    android/res/drawable/logo.png \
+    android/res/values-ms/strings.xml \
+    android/res/values-de/strings.xml \
+    android/res/values-zh-rCN/strings.xml \
+    android/res/values-id/strings.xml \
+    android/res/values-fa/strings.xml \
+    android/res/values-ro/strings.xml \
+    android/res/values-nb/strings.xml \
+    android/res/values-nl/strings.xml \
+    android/res/values-pl/strings.xml \
+    android/res/values-rs/strings.xml \
+    android/res/values-et/strings.xml \
+    android/res/layout/splash.xml \
+    android/res/values/strings.xml \
+    android/res/values/libs.xml \
+    android/res/drawable-mdpi/icon.png \
+    android/res/values-es/strings.xml \
+    android/res/values-ru/strings.xml \
+    android/res/values-ja/strings.xml \
+    android/res/values-it/strings.xml \
+    android/res/values-zh-rTW/strings.xml \
+    android/res/values-fr/strings.xml \
+    android/res/values-el/strings.xml \
+    android/res/drawable-hdpi/icon.png \
+    android/AndroidManifest.xml \
+    android/src/org/kde/necessitas/ministro/IMinistro.aidl \
+    android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
+    android/src/org/kde/necessitas/origo/QtActivity.java \
+    android/src/org/kde/necessitas/origo/QtApplication.java \
+    android/assets/appData.zip \
+    android/assets/addData.zip \
+    android/src/org/kflog/cumulus8/GPSReceiver.java \
+    android/src/org/kflog/cumulus8/CumulusActivity.java
 
 LIBS += -lstdc++
 

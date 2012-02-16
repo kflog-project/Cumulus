@@ -130,7 +130,13 @@ void FlarmDisplay::createBackground()
   painter.drawEllipse( centerX - width/2, centerY - height/2, width, height );
 
   QFont f = font();
+
+#ifdef USE_POINT_SIZE_FONT
   f.setPointSize(FontSize);
+#else
+  f.setPixelSize(FontSize);
+#endif
+
   f.setBold( true );
   painter.setFont(f);
 
@@ -447,7 +453,12 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
         {
           // If a Flarm object is selected, we draw some additional information
           QFont f = font();
+
+#ifdef USE_POINT_SIZE_FONT
           f.setPointSize(FontSize);
+#else
+          f.setPixelSize(FontSize);
+#endif
           f.setBold( true );
           painter.setFont(f);
 

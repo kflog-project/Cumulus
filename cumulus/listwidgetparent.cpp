@@ -49,7 +49,7 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
 
   filter = new ListViewFilter( list, this );
   filter->setObjectName( "ListViewFilter" );
-#ifdef ANDROID
+#ifdef QSCROLLER
   list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
   QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
 #endif

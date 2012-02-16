@@ -58,7 +58,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   sppArea->setFrameStyle( QFrame::NoFrame );
   spp = new SettingsPagePersonal( this );
   sppArea->setWidget( spp );
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(sppArea, QScroller::LeftMouseButtonGesture);
 #endif
   m_tabWidget->addTab( sppArea, tr( "Personal" ) );
@@ -76,7 +76,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spmsArea->setFrameStyle( QFrame::NoFrame );
   spms = new SettingsPageMapSettings( this );
   spmsArea->setWidget( spms );
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(spmsArea, QScroller::LeftMouseButtonGesture);
 #endif
   m_tabWidget->addTab( spmsArea, tr( "Map Settings" ) );
@@ -86,7 +86,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spmoArea->setFrameStyle( QFrame::NoFrame );
   spmo = new SettingsPageMapObjects( this );
   spmoArea->setWidget( spmo );
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(spmoArea, QScroller::LeftMouseButtonGesture);
 #endif
   m_tabWidget->addTab( spmoArea, tr( "Map Objects" ) );
@@ -96,7 +96,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   sptcArea->setFrameStyle( QFrame::NoFrame );
   sptc = new SettingsPageTerrainColors( this );
   sptcArea->setWidget( sptc );
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(sptcArea, QScroller::LeftMouseButtonGesture);
 #endif
   m_tabWidget->addTab( sptcArea, tr( "Terrain Colors" ) );
@@ -106,7 +106,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spsArea->setFrameStyle( QFrame::NoFrame );
   spt = new SettingsPageTask( this );
   spsArea->setWidget( spt );
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(spsArea, QScroller::LeftMouseButtonGesture);
 #endif
   m_tabWidget->addTab( spsArea, tr( "Task" ) );
@@ -116,7 +116,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spafArea->setFrameStyle( QFrame::NoFrame );
   spaf = new SettingsPageAirfields( this );
   spafArea->setWidget( spaf );
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(spafArea, QScroller::LeftMouseButtonGesture);
 #endif
   m_tabWidget->addTab( spafArea, tr( "Airfields" ) );
@@ -126,7 +126,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   asArea->setFrameStyle( QFrame::NoFrame );
   spa = new SettingsPageAirspace( this );
   asArea->setWidget( spa );
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(asArea, QScroller::LeftMouseButtonGesture);
 #endif
   m_tabWidget->addTab( asArea, tr( "Airspaces" ) );
@@ -139,7 +139,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   infoArea->setFrameStyle( QFrame::NoFrame );
   spi = new SettingsPageInformation( this );
   infoArea->setWidget( spi );
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(infoArea, QScroller::LeftMouseButtonGesture);
 #endif
   m_tabWidget->addTab( infoArea, tr( "Information" ) );
@@ -149,7 +149,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   splnfArea->setFrameStyle( QFrame::NoFrame );
   splnf = new SettingsPageLookNFeel( this );
   splnfArea->setWidget( splnf );
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(splnfArea, QScroller::LeftMouseButtonGesture);
 #endif
   m_tabWidget->addTab( splnfArea, tr( "Look&&Feel" ) );

@@ -22,9 +22,10 @@
 #include <QString>
 
 /**
- * JNI native method registration
+ * Returns true if the java native methods could be registered successfully
+ * otherwise false.
  */
-bool jniRegister();
+bool initJni();
 
 /**
  * Make Android OS play a sound. stream=0 will set STREAM_NOTIFICATION as
@@ -43,5 +44,3 @@ QString jniGetAppDataDir();
  * the path to the sdcard.
  */
 QString jniGetAddDataDir();
-
-bool jniGetDir( const char* method, QString& directory );

@@ -882,10 +882,17 @@ void MainWindow::slotSetMenuBarFontSize()
       minFontSize = 16;
     }
 
+#ifdef USE_POINT_SIZE_FONT
   if( userFont.pointSize() < minFontSize )
     {
       userFont.setPointSize( minFontSize );
     }
+#else
+  if( userFont.pixelSize() < minFontSize )
+    {
+      userFont.setPixelSize( minFontSize );
+    }
+#endif
 
   menuBar()->setFont( userFont );
 

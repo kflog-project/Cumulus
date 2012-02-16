@@ -31,7 +31,7 @@
 #include <QBoxLayout>
 #include <QColor>
 
-#ifdef QSCROLLER
+#ifdef QSCROLLER1
 #include <QScrollArea>
 #include <QScroller>
 #endif
@@ -121,7 +121,7 @@ class MapView : public QWidget
         return _vario;
       };
 
-#ifdef QSCROLLER
+#ifdef QSCROLLER1
     /**
      * Reset the QScroller
      */
@@ -351,7 +351,7 @@ class MapView : public QWidget
     /** reference to GPS status */
     CuLabel* _statusGps;
 
-#ifdef QSCROLLER
+#ifdef QSCROLLER1
     /** reference to map container */
     QScrollArea* mapArea;
     /** reference to map scroller */
@@ -426,7 +426,7 @@ class MapView : public QWidget
     /** Called to toggle the menu of the main window. */
     void slot_toggleMenu();
 
-#ifdef QSCROLLER
+#ifdef QSCROLLER1
     /** Process status changes during map drag and release. */
     void slot_scrollerStateChanged(QScroller::State new_s);
 #endif

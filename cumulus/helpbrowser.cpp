@@ -32,7 +32,7 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
 
   browser = new QTextBrowser(this);
 
-#ifdef ANDROID
+#ifdef QSCROLLER
   QScroller::grabGesture(browser, QScroller::LeftMouseButtonGesture);
 #endif
 
@@ -156,12 +156,21 @@ void HelpBrowser::slotZoomIn()
     {
       QFont curFt = font();
 
+#ifdef USE_POINT_SIZE_FONT
       if( curFt.pointSize() < 24 )
         {
           curFt.setPointSize( curFt.pointSize() + 1 );
           setFont( curFt );
           update();
         }
+#else
+      if( curFt.pixelSize() < 24 )
+        {
+          curFt.setPixelSize( curFt.pointSize() + 1 );
+          setFont( curFt );
+          update();
+        }
+#endif
 
       // Start repetition timer, to check, if button is longer pressed.
       QTimer::singleShot(300, this, SLOT(slotZoomIn()));
@@ -175,12 +184,22 @@ void HelpBrowser::slotZoomOut()
     {
       QFont curFt = font();
 
+#ifdef USE_POINT_SIZE_FONT
       if( curFt.pointSize() > 10 )
         {
           curFt.setPointSize( curFt.pointSize() - 1 );
           setFont( curFt );
           update();
         }
+#else
+      if( curFt.pixelSize() > 10 )
+        {
+          curFt.setPixelSize( curFt.pointSize() - 1 );
+          setFont( curFt );
+          update();
+        }
+
+#endif
 
       // Start repetition timer, to check, if button is longer pressed.
       QTimer::singleShot(300, this, SLOT(slotZoomOut()));

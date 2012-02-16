@@ -50,7 +50,12 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   if( font().pointSize() < DialogMinFontSize )
     {
       QFont cf = font();
+
+#ifdef USE_POINT_SIZE_FONT
       cf.setPointSize( DialogMinFontSize );
+#else
+      cf.setPixelSize( DialogMinFontSize );
+#endif
       this->setFont(cf);
     }
 
