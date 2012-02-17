@@ -1,9 +1,14 @@
+/**
+ * 
+ * $Id$
+ * 
+ */
+
 package org.kflog.cumulus8;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,7 +40,6 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 
 import org.kde.necessitas.origo.QtActivity;
-import org.kde.necessitas.origo.QtApplication;
 
 public class CumulusActivity extends QtActivity
 {
@@ -49,8 +53,8 @@ public class CumulusActivity extends QtActivity
   static final int               SOFTKEY_CLOSED   = 0;
 
   private PowerManager.WakeLock  wl               = null;
-  private AsyncPlayer            apl, npl;
-  private LocationManager        lm;
+  private AsyncPlayer            apl, npl         = null;
+  private LocationManager        locMgr           = null;
   private String                 bestProvider;
   private LocationListener       ll               = null;
   private GpsStatus.Listener     gl               = null;
@@ -81,191 +85,221 @@ public class CumulusActivity extends QtActivity
   public static native boolean isRootWindow();
 
   /**
-   * Called via jni to get the class instance.
+   * Called via JNI to get the class instance for callbacks.
    */
   private static Object getObjectRef()
     {
-      Log.d("Java#CumulusActivity", "getObjectRef is called" );
-      return objectRef;
+      // Log.d("Java#CumulusActivity", "getObjectRef is called" );
+    	synchronized(objectRef)
+      {
+        return objectRef;
+      }
     }
 
-  @Override
-  public void onCreate(Bundle savedInstanceState)
+	@Override
+	public void onCreate(Bundle savedInstanceState)
 	{
-       Log.d("Java#CumulusActivity", "onCreate Entry" );
+		Log.d("Java#CumulusActivity", "onCreate Entry");
 
-        objectRef = this;
+		synchronized (objectRef)
+		{
+			// Set object reference of this activity
+			objectRef = this;
+		}
 
-        super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);
 
 		boolean dataFolderAvailable = false;
-		
+
 		String state = Environment.getExternalStorageState();
+
+		if (! Environment.MEDIA_MOUNTED.equals(state) )
+		{
+			Log.d("Java#CumulusActivity", "Exiting, SDCard is not mounted!");
+
+			showDialog(DIALOG_CANCEL_ID);
+			return;
+		}
+
+		// We can read and write the media
+		dataFolderAvailable = true;
+
+		File addDataDir = new File(Environment.getExternalStorageDirectory(), "Cumulus");
+
+		String tmpString = addDataDir.getAbsolutePath();
+
+		if (!addDataDir.exists())
+		{
+			dataFolderAvailable = addDataDir.mkdir();
+		}
+
+		if (dataFolderAvailable)
+		{
+			// check existence of help files
+			File helpFile = new File(addDataDir.getAbsolutePath()
+			    + "/Cumulus/help/en/cumulus.html");
+			File notifyFile = new File(addDataDir.getAbsolutePath()
+			    + "/Cumulus/sounds/Notity.wav");
+			File alarmFile = new File(addDataDir.getAbsolutePath()
+			    + "/Cumulus/sounds/Alarm.wav");
+
+			if (!helpFile.exists() || !notifyFile.exists() || !alarmFile.exists())
+			{
+				// It seems some needed files are not installed, do it again.
+				boolean res = installAddData(addDataDir.getAbsolutePath(), getAssets());
+			}
+		}
+
+		// another thread is waiting for this info
+		synchronized (addDataPath)
+		{
+			addDataPath = tmpString;
+		}
+
+		// Get the internal data directory for our App.
+		String appDataDir = getDir("Cumulus", MODE_PRIVATE).getAbsolutePath();
+
+		// Check, if the internal data are already installed
+		int pvc = getPackageVersionCode();
+
+		File pvcFile = new File(appDataDir + "/pvc_" + String.valueOf(pvc));
+
+		Log.d("PVC", pvcFile.getAbsolutePath());
+
+		if (!pvcFile.exists())
+		{
+			// It seems that our App data are not installed. Do that job now.
+			boolean res = installAppData(appDataDir, getAssets());
+
+			if (res == false)
+			{
+				// TODO add user error message
+				showDialog(DIALOG_CANCEL_ID);
+				return;
+			}
+
+			try
+			{
+				// Set an install marker file
+				OutputStream out = new FileOutputStream(pvcFile);
+				out.close();
+			}
+			catch (Exception e)
+			{
+				Log.e("AssetNotice", e.getMessage());
+			}
+		}
+
+		// another thread is waiting for this info
+		synchronized (appDataPath)
+		{
+			appDataPath = appDataDir;
+		}
+
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		
-		String tmpString = "";
+		wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CumulusScreenAlwaysOn");
+		wl.acquire();
 
-        if (! Environment.MEDIA_MOUNTED.equals(state))
-          {
-            Log.d("Java#CumulusActivity", "Exiting, SdCard is not mounted!" );
+		apl = new AsyncPlayer("alarm_player");
+		npl = new AsyncPlayer("notification_player");
 
-            // TODO add an error text for the user
-            showDialog(DIALOG_CANCEL_ID);
-            return;
-          }
+		receiver = new GPSReceiver();
+		IntentFilter filter = new IntentFilter("android.location.GPS_ENABLED_CHANGE");
+		filter.addAction("android.location.GPS_FIX_CHANGE");
+		registerReceiver(receiver, filter);
 
-        // We can read and write the media
-        dataFolderAvailable = true;
+		// Criteria criteria = new Criteria();
+		// criteria.setAccuracy(Criteria.ACCURACY_FINE);
 
-        File addDataDir = new File(Environment.getExternalStorageDirectory(), "Cumulus");
+		locMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        tmpString = addDataDir.getAbsolutePath();
+		if (locMgr != null)
+		{
+			nl = new GpsStatus.NmeaListener()
+			{
+				public void onNmeaReceived(long timestamp, String nmea)
+				{
+					nativeNmeaString(nmea);
+				}
+			};
 
-        if ( ! addDataDir.exists() )
-        {
-          dataFolderAvailable = addDataDir.mkdir();
-        }
+			locMgr.addNmeaListener(nl);
+		}
+		else
+		{
+			Log.e("Java#CumulusActivity", "No LOCATION_SERVICE available");
+		}
 
-        if( dataFolderAvailable )
-        {
-          // check existence of help files
-          File helpFile   = new File( addDataDir.getAbsolutePath() + "/Cumulus/help/en/cumulus.html" );
-          File notifyFile = new File( addDataDir.getAbsolutePath() + "/Cumulus/sounds/Notity.wav" );
-          File alarmFile  = new File( addDataDir.getAbsolutePath() + "/Cumulus/sounds/Alarm.wav" );
+		Log.d("Java#CumulusActivity", "onCreate exit");
+	}
 
-          if( ! helpFile.exists() || ! notifyFile.exists() || ! alarmFile.exists() )
-          {
-            // It seems the some needed files are not installed, do it again.
-            boolean res = installAddData( addDataDir.getAbsolutePath(), getAssets() );
-          }
-        }
-    
-    // another thread is waiting for this info
-    synchronized(addDataPath)
-    {
-      addDataPath = tmpString;
-    }
-
-    // Get the internal data directory for our App.
-	String appDataDir = getDir("Cumulus", MODE_PRIVATE ).getAbsolutePath();
-		
-	// Check, if the internal data are already installed
-    int pvc =  getPackageVersionCode();
-    
-    File pvcFile = new File( appDataDir + "/pvc_" + String.valueOf(pvc) );
-    
-    Log.d("PVC", pvcFile.getAbsolutePath());
-    
-    if (! pvcFile.exists() )
-    {
-      // It seems that our App data are not installed. Do that job now.
-      boolean res = installAppData( appDataDir, getAssets() );
-      
-      if( res == false )
-      {
-        // TODO add user error message
-        showDialog(DIALOG_CANCEL_ID);      
-        return;
-      }
-      
-      try
-      {
-        // Set an install marker file
-        OutputStream out = new FileOutputStream( pvcFile );
-        out.close();
-      }
-      catch (Exception e)
-      {
-        Log.e("AssetNotice", e.getMessage()); 
-      }
-    }
-	
-    // another thread is waiting for this info
-    synchronized(appDataPath)
-    {
-      appDataPath = appDataDir;
-    }
-
-    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
-    PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
-    wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CumulusScreenAlwaysOn");
-    wl.acquire();
-
-    apl = new AsyncPlayer("alarm_player");
-    npl = new AsyncPlayer("notification_player");
-
-    receiver = new GPSReceiver();
-    IntentFilter filter = new IntentFilter("android.location.GPS_ENABLED_CHANGE");
-    filter.addAction("android.location.GPS_FIX_CHANGE");
-    registerReceiver(receiver, filter);
-
-//	Criteria criteria = new Criteria();
-//	criteria.setAccuracy(Criteria.ACCURACY_FINE);
-    lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		
-    nl = new GpsStatus.NmeaListener()
-    {
-      public void onNmeaReceived(long timestamp, String nmea)
-      {
-        nativeNmeaString(nmea);
-      }
-    };
-
-		lm.addNmeaListener(nl);
-
-        Log.d("Java#CumulusActivity", "onCreate exit" );
-  }
-
-
-    @Override
-    protected void onDestroy()
+	@Override
+	protected void onDestroy()
 	{
-      if( wl != null )
-        {
-          wl.release();
-        }
+		if (wl != null)
+		{
+			wl.release();
+		}
 
-      if( receiver != null )
-        {
-          unregisterReceiver(receiver);
-        }
+		if (receiver != null)
+		{
+			unregisterReceiver(receiver);
+		}
 
-      // call super class
-      super.onDestroy();
+		// call super class
+		super.onDestroy();
 	}
 	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
-        System.out.println("QtMain.onKeyDown, key pressed: "+event.toString());
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (isRootWindow()) {
+		System.out.println("QtMain.onKeyDown, key pressed: " + event.toString());
+		
+		if (keyCode == KeyEvent.KEYCODE_BACK)
+		{
+			if (isRootWindow())
+			{
 				// If the visible Qt window is the main view, make BACK key close the app
 				showDialog(DIALOG_CLOSE_ID);
 				playSound(0, "Notify.wav");
-			} else {
+			}
+			else
+			{
 				// If the visible Qt window is not the main view, forward BACK key to QtApp,
 				// but "tunnel" it as "hangup" key to prevent special handling
-				KeyEvent chg_key = new KeyEvent(event.getAction(),KeyEvent.KEYCODE_ENDCALL);
+				KeyEvent chg_key = new KeyEvent(event.getAction(), KeyEvent.KEYCODE_ENDCALL);
 				super.onKeyDown(KeyEvent.KEYCODE_ENDCALL, chg_key);
 			}
-		} else if (keyCode == KeyEvent.KEYCODE_MENU) {
+		}
+		else if (keyCode == KeyEvent.KEYCODE_MENU)
+		{
 			showDialog(DIALOG_MENU_ID);
-		} else {
+		}
+		else
+		{
 			super.onKeyDown(keyCode, event);
 		}
 		return true;
 	};
 	
+	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event)
 	{
-        System.out.println("QtMain.onKeyUp, key released: "+event.toString());
-		if ( keyCode == KeyEvent.KEYCODE_BACK && !isRootWindow() ) {
-			KeyEvent chg_key = new KeyEvent(event.getAction(),KeyEvent.KEYCODE_ENDCALL);
+		System.out.println("QtMain.onKeyUp, key released: " + event.toString());
+		
+		if (keyCode == KeyEvent.KEYCODE_BACK && !isRootWindow())
+		{
+			KeyEvent chg_key = new KeyEvent(event.getAction(), KeyEvent.KEYCODE_ENDCALL);
 			super.onKeyUp(KeyEvent.KEYCODE_ENDCALL, chg_key);
-		} else {
+		}
+		else
+		{
 			super.onKeyUp(keyCode, event);
 		}
+		
 		return true;
 	};
 	
@@ -344,28 +378,34 @@ public class CumulusActivity extends QtActivity
 			
 			builder = new AlertDialog.Builder(this);
 			builder.setTitle("Main Menu");
-			builder.setItems(items, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int item) {
-					switch(item) {
-					case 0:
-						nativeKeypress((char)25);
-						break;
-					case 1:
-						nativeKeypress((char)26);
-						break;
-					case 2:
-						toggleGps();
-						break;
-					case 3:
-						nativeKeypress((char)27);
-						break;
-					case 4:
-						showDialog(DIALOG_CLOSE_ID);
-						playSound(0, "Notify.wav");
-						break;
-					}
-				}
-			});
+			builder.setItems(items, new DialogInterface.OnClickListener()
+                            			{
+                            				public void onClick(DialogInterface dialog, int item)
+                            				{
+                            					switch(item)
+                            					{
+                            							case 0:
+                            								nativeKeypress((char) 25);
+                            								break;
+                            							case 1:
+                            								nativeKeypress((char) 26);
+                            								break;
+                            							case 2:
+                            								if (locMgr != null)
+                            								{
+                            									toggleGps();
+                            								}
+                            								break;
+                            							case 3:
+                            								nativeKeypress((char) 27);
+                            								break;
+                            							case 4:
+                            								showDialog(DIALOG_CLOSE_ID);
+                            								playSound(0, "Notify.wav");
+                            								break;
+                            					}
+                            				}
+			                            } );
 			alert = builder.create();
 			break;
 			
@@ -390,18 +430,29 @@ public class CumulusActivity extends QtActivity
 		return alert;
 	}
 	
-	private void toggleGps() {
+	private void toggleGps()
+	{
 		removeDialog(DIALOG_MENU_ID);
-		if (gpsEnabled) {
+		
+		if( locMgr == null )
+		{
+			return;
+		}
+		
+		if (gpsEnabled)
+		{
 			Log.i("Cumulus#Java", "disable LocationListener, set GPS status to OFF");
-			lm.removeUpdates(ll);
+			locMgr.removeUpdates(ll);
 			nativeGpsStatus(0, 0);
-		} else {
+		}
+		else
+		{
 			Log.i("Cumulus#Java", "activating LocationListener, set GPS status to NO_FIX");
-			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, ll);
+			locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, ll);
 			nativeGpsStatus(1, 0);
 		}
-		gpsEnabled = ! gpsEnabled;
+		
+		gpsEnabled = !gpsEnabled;
 	}
 	
 	/**
@@ -429,6 +480,13 @@ public class CumulusActivity extends QtActivity
     return version;
   }
   
+  /**
+   * Installs the application data in the requested directory.
+   * 
+   * @param appDir directory to extract application data
+   * @param am AssetManager
+   * @return true on success otherwise false
+   */
   private boolean installAppData( String appDir, AssetManager am )
   {
     InputStream stream = null;
