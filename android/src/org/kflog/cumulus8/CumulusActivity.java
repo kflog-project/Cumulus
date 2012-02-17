@@ -1,8 +1,20 @@
-/**
- * 
- * $Id$
- * 
- */
+/***********************************************************************
+ **
+ **   CumulusActivity.java
+ **
+ **   This file is part of Cumulus4Android
+ **
+ ************************************************************************
+ **
+ **   Copyright (c):  2010-2012 by Josua Dietze
+ **                   2012 by Axel Pauli
+ **
+ **   This file is distributed under the terms of the General Public
+ **   License. See the file COPYING for more information.
+ **
+ **   $Id$
+ **
+ ***********************************************************************/
 
 package org.kflog.cumulus8;
 
@@ -26,7 +38,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.location.GpsStatus;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AsyncPlayer;
