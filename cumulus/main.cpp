@@ -259,9 +259,9 @@ int main(int argc, char *argv[])
 
   if( conf->getGuiFont() == "" )
     {
-      // No Gui menu font is defined, we try to define a sensefull default.
+      // No Gui font is defined, we try to define a sensefull default.
       QFont appFont;
-      int   appFSize = 16;
+      int   appFSize = 14;
 
 #ifdef ANDROID
       appFont.setFamily( "Droid Sans" );
