@@ -101,10 +101,7 @@ public class CumulusActivity extends QtActivity
   private static Object getObjectRef()
     {
       // Log.d("Java#CumulusActivity", "getObjectRef is called" );
-    	synchronized(objectRef)
-      {
-        return objectRef;
-      }
+      return objectRef;
     }
 
 	@Override
@@ -112,11 +109,8 @@ public class CumulusActivity extends QtActivity
 	{
 		Log.d("Java#CumulusActivity", "onCreate Entry");
 
-		synchronized (objectRef)
-		{
-			// Set object reference of this activity
-			objectRef = this;
-		}
+                // Set object reference of this activity
+                objectRef = this;
 
 		super.onCreate(savedInstanceState);
 
