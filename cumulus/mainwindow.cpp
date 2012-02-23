@@ -859,7 +859,10 @@ void MainWindow::createMenuBar()
   helpMenu = menuBar()->addMenu(tr("Help"));
   helpMenu->addAction( actionHelpCumulus );
   helpMenu->addAction( actionHelpAboutApp );
+
+#if ! defined ANDROID && ! defined MAEMO
   helpMenu->addAction( actionHelpAboutQt );
+#endif
 
   menuBar()->setVisible( false );
 
@@ -1195,10 +1198,14 @@ void MainWindow::createActions()
   connect( actionHelpAboutApp, SIGNAL( triggered() ),
            this, SLOT( slotVersion() ) );
 
+#if ! defined ANDROID && ! defined MAEMO
+  // The Qt about is too big for small screens. Therefore it is undefined for
+  // Android and Maemo
   actionHelpAboutQt = new QAction( tr( "About Qt" ), this );
   actionHelpAboutQt->setShortcut(Qt::Key_Q + Qt::SHIFT);
   addAction( actionHelpAboutQt );
   connect( actionHelpAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()) );
+#endif
 
   // Cumulus can be closed by using Escape key. This key is also as
   // hardware key available under Maemo.
@@ -1232,7 +1239,11 @@ void  MainWindow::toggleActions( const bool toggle )
   actionSetupInFlight->setEnabled( toggle );
   actionHelpCumulus->setEnabled( toggle );
   actionHelpAboutApp->setEnabled( toggle );
+
+#if ! defined ANDROID && ! defined MAEMO
   actionHelpAboutQt->setEnabled( toggle );
+#endif
+
   actionToggleLogging->setEnabled( toggle );
   actionNav2Home->setEnabled( toggle );
   scExit->setEnabled( toggle );
