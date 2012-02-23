@@ -11,7 +11,11 @@
 
 TEMPLATE = app
 
-QT += xml
+# Put all generated objects into an extra directory
+OBJECTS_DIR = .obj
+MOC_DIR     = .obj
+
+QT += gui xml
 
 # CONFIG = qt warn_on release
 
