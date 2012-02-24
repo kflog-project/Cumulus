@@ -45,6 +45,12 @@ void CuLabel::mousePressEvent ( QMouseEvent* event )
 
 //------------------------------------------------------------------------------
 
+#ifdef USE_POINT_SIZE_FONT
+#define FONT_UNIT "pt"
+#else
+#define FONT_UNIT "px"
+#endif
+
 MapInfoBox::MapInfoBox( QWidget *parent,
                         const QString& borderColor,
                         bool unitInPretext,
@@ -135,10 +141,11 @@ MapInfoBox::MapInfoBox( QWidget *parent,
                                  "padding-left: 1px;"
                                  "padding-right: 1px;"
                                  "margin: 0px;"
-                                 "font-size: %2pt;"
+                                 "font-size: %2%3;"
                                  "text-align: left;" )
                                  .arg(_textBGColor)
-                                 .arg(fontDotsize) );
+                                 .arg(fontDotsize)
+                                 .arg(FONT_UNIT) );
 
   setValue("-");
   setPreText("MMM");
@@ -266,10 +273,11 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
                                      "padding-left: 1px;"
                                      "padding-right: 1px;"
                                      "margin: 0px;"
-                                     "font-size: %2pt;"
+                                     "font-size: %2%3;"
                                      "text-align: left;" )
                                      .arg(_textBGColor)
-                                     .arg(fontDotsize) );
+                                     .arg(fontDotsize)
+                                     .arg(FONT_UNIT) );
     }
 
   //@JD: set font size dynamically depending on size hint after
@@ -300,10 +308,11 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
                                      "padding-left: 1px;"
                                      "padding-right: 1px;"
                                      "margin: 0px;"
-                                     "font-size: %2pt;"
+                                     "font-size: %2%3;"
                                      "text-align: left;" )
                                      .arg(_textBGColor)
-                                     .arg( fontDotsize ) );
+                                     .arg( fontDotsize )
+                                     .arg(FONT_UNIT) );
 
       diff = minimumSizeHint().width() - width();
 
@@ -327,10 +336,11 @@ void MapInfoBox::setTextLabelBGColor( const QString& newValue )
                                  "padding-left: 1px;"
                                  "padding-right: 1px;"
                                  "margin: 0px;"
-                                 "font-size: %2pt;"
+                                 "font-size: %2%3;"
                                  "text-align: left;" )
                                  .arg(_textBGColor)
-                                 .arg( _maxFontDotsize ) );
+                                 .arg( _maxFontDotsize )
+                                 .arg(FONT_UNIT) );
   setValue( _value );
 };
 

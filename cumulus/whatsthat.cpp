@@ -39,9 +39,9 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
   doc = new QTextDocument( this );
 
 #if defined MAEMO || defined ANDROID
-  doc->setDefaultFont( QFont ("Helvetica", 18 ) );
+  doc->setDefaultFont( QFont ("Helvetica", 14 ) );
 #else
-  doc->setDefaultFont( QFont ("Helvetica", 16 ) );
+  doc->setDefaultFont( QFont ("Helvetica", 12 ) );
 #endif
 
   // check, what kind of text has been passed

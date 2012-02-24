@@ -254,7 +254,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus-desktop26x26.png")) );
   setWindowTitle( "Cumulus" );
 
-#if defined (MAEMO) || defined (ANDROID)
+#ifdef MAEMO
   setWindowState(Qt::WindowFullScreen);
 #endif
 
@@ -878,6 +878,8 @@ void MainWindow::slotSetMenuBarFontSize()
   QString fontString = GeneralConfig::instance()->getGuiMenuFont();
   QFont userFont;
 
+  qDebug() << "MainWindow::slotSetMenuBarFontSize(): font=" << fontString;
+
   if( fontString == "" || userFont.fromString( fontString ) == false )
     {
       // take current font as alternative
@@ -885,17 +887,15 @@ void MainWindow::slotSetMenuBarFontSize()
       minFontSize = 16;
     }
 
-#ifdef USE_POINT_SIZE_FONT
-  if( userFont.pointSize() < minFontSize )
+  if( userFont.pointSize() != -1 && userFont.pointSize() < minFontSize )
     {
       userFont.setPointSize( minFontSize );
     }
-#else
-  if( userFont.pixelSize() < minFontSize )
+
+  if( userFont.pixelSize() != -1 && userFont.pixelSize() < minFontSize )
     {
       userFont.setPixelSize( minFontSize );
     }
-#endif
 
   menuBar()->setFont( userFont );
 

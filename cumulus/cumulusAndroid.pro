@@ -27,7 +27,7 @@ CONFIG += qt \
           release
 
 # Cumulus uses this define for Android specific code parts.
-DEFINES += ANDROID
+DEFINES += CUMULUS ANDROID
 
 # Activate this define, if QtClass QScroller is available.
 # DEFINES += QSCROLLER

@@ -341,7 +341,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 #ifdef USE_POINT_SIZE_FONT
   font.setPointSize(12);
 #else
-  font.setPixelSize(12);
+  font.setPixelSize(14);
 #endif
 
   _statusbar->setFont(font);

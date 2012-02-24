@@ -220,7 +220,7 @@ void SettingsPageLookNFeel::slot_openFontDialog()
     }
   else
     {
-      newFont = QFontDialog::getFont( &ok, this );
+      newFont = QFontDialog::getFont( &ok, font(), this );
     }
 
   if( ok )
@@ -259,7 +259,7 @@ void SettingsPageLookNFeel::slot_openMenuFontDialog()
     }
   else
     {
-      newFont = QFontDialog::getFont( &ok, this );
+      newFont = QFontDialog::getFont( &ok, font(), this );
     }
 
   if( ok )
