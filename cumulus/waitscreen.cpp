@@ -152,7 +152,7 @@ void WaitScreen::slot_Progress( int stepsize )
           lastRot = rot;
           setVisible( true );
           repaint();
-          QCoreApplication::flush();
+          flush();
         }
      }
 }
