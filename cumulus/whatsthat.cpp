@@ -18,6 +18,7 @@
 
 #include <QtGui>
 
+#include "mainwindow.h"
 #include "whatsthat.h"
 
 uint WhatsThat::instance = 0;
@@ -41,7 +42,7 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
   QFont font = doc->defaultFont();
 
 #if defined MAEMO || defined ANDROID
-  int size = 16;
+  int size = 18;
 #else
   int size = 16;
 #endif
@@ -65,6 +66,21 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
     {
       //qDebug("PLAIN=%s", txt.latin1());
       doc->setPlainText( txt );
+    }
+
+  while( (doc->size().toSize().height() + 30 ) > MainWindow::mainWindow()->height() &&
+          size >= 10 )
+    {
+      size--;
+      qDebug() << "WhatsThat: lower height";
+
+#ifdef USE_POINT_SIZE_FONT
+      font.setPointSize( size );
+#else
+      font.setPixelSize( size );
+#endif
+
+      doc->setDefaultFont( font );
     }
 
   // get current document size
