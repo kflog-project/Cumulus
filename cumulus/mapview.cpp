@@ -339,7 +339,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   font.setBold(true);
 
 #ifdef USE_POINT_SIZE_FONT
-  font.setPointSize(12);
+  font.setPointSize(10);
 #else
   font.setPixelSize(14);
 #endif

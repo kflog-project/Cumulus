@@ -42,7 +42,7 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
   QFont font = doc->defaultFont();
 
 #if defined MAEMO || defined ANDROID
-  int size = 18;
+  int size = 16;
 #else
   int size = 16;
 #endif
@@ -68,11 +68,11 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
       doc->setPlainText( txt );
     }
 
+  // Automatic adaption of the text height to the window height
   while( (doc->size().toSize().height() + 30 ) > MainWindow::mainWindow()->height() &&
-          size >= 10 )
+          size >= 8 )
     {
       size--;
-      qDebug() << "WhatsThat: lower height";
 
 #ifdef USE_POINT_SIZE_FONT
       font.setPointSize( size );

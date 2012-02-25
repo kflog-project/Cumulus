@@ -62,7 +62,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   QFont f = font();
 
 #ifdef USE_POINT_SIZE_FONT
-  f.setPointSize(12);
+  f.setPointSize(10);
 #else
   f.setPixelSize(12);
 #endif

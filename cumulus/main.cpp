@@ -265,7 +265,7 @@ int main(int argc, char *argv[])
 
 #ifdef ANDROID
       appFont.setFamily( "Droid Sans" );
-      appFSize = 18;
+      appFSize = 14;
 #else
 #ifdef MAEMO
       appFont.setFamily("Nokia Sans");
@@ -307,12 +307,7 @@ int main(int argc, char *argv[])
 
       QMessageBox msgBox;
 
-      int size = 14;
-
-#if defined (MAEMO) || defined (ANDROID)
-      size = 18;
-#endif
-
+      int size = 12;
       QFont font = QApplication::font();
 
       // adapt font size to a readable one for the screen

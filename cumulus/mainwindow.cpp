@@ -265,6 +265,13 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   setVisible( true );
 
   ws = new WaitScreen(this);
+
+#ifdef ANDROID
+  // The waitscreen is not centered over the parent and not limited in
+  // its size under Android. Therefore this must be done by our self.
+  ws->setGeometry ( width() / 2 - 250, height() / 2 - 75,  500, 150 );
+#endif
+
   ws->slot_SetText1( tr( "Starting Cumulus..." ) );
 
   QCoreApplication::flush();
@@ -885,20 +892,13 @@ void MainWindow::slotSetMenuBarFontSize()
       minFontSize = 16;
     }
 
-  qDebug() << "MainWindow::slotSetMenuBarFontSize(): font="
-           << fontString
-           << "PixelSize=" << userFont.pixelSize()
-           << "PointSize=" << userFont.pointSize();
-
   if( userFont.pointSize() != -1 && userFont.pointSize() < minFontSize )
     {
-      qDebug() << "pointSize is defined";
       userFont.setPointSize( minFontSize );
     }
 
   if( userFont.pixelSize() != -1 && userFont.pixelSize() < minFontSize )
     {
-      qDebug() << "pixelSize is defined";
       userFont.setPixelSize( minFontSize );
     }
 
