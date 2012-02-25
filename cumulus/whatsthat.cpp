@@ -38,11 +38,21 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
 
   doc = new QTextDocument( this );
 
+  QFont font = doc->defaultFont();
+
 #if defined MAEMO || defined ANDROID
-  doc->setDefaultFont( QFont ("Helvetica", 14 ) );
+  int size = 16;
 #else
-  doc->setDefaultFont( QFont ("Helvetica", 12 ) );
+  int size = 16;
 #endif
+
+#ifdef USE_POINT_SIZE_FONT
+  font.setPointSize( size );
+#else
+  font.setPixelSize( size );
+#endif
+
+  doc->setDefaultFont( font );
 
   // check, what kind of text has been passed
   if( txt.contains("<html>", Qt::CaseInsensitive ) ||

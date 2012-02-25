@@ -878,8 +878,6 @@ void MainWindow::slotSetMenuBarFontSize()
   QString fontString = GeneralConfig::instance()->getGuiMenuFont();
   QFont userFont;
 
-  qDebug() << "MainWindow::slotSetMenuBarFontSize(): font=" << fontString;
-
   if( fontString == "" || userFont.fromString( fontString ) == false )
     {
       // take current font as alternative
@@ -887,13 +885,20 @@ void MainWindow::slotSetMenuBarFontSize()
       minFontSize = 16;
     }
 
+  qDebug() << "MainWindow::slotSetMenuBarFontSize(): font="
+           << fontString
+           << "PixelSize=" << userFont.pixelSize()
+           << "PointSize=" << userFont.pointSize();
+
   if( userFont.pointSize() != -1 && userFont.pointSize() < minFontSize )
     {
+      qDebug() << "pointSize is defined";
       userFont.setPointSize( minFontSize );
     }
 
   if( userFont.pixelSize() != -1 && userFont.pixelSize() < minFontSize )
     {
+      qDebug() << "pixelSize is defined";
       userFont.setPixelSize( minFontSize );
     }
 
