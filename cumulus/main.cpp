@@ -323,6 +323,17 @@ int main(int argc, char *argv[])
       msgBox.setInformativeText( question );
       msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
       msgBox.setDefaultButton( QMessageBox::Yes );
+      msgBox.setVisible(true);
+
+#ifdef ANDROID
+
+      // Under Android the box must be moved into the center of the desktop screen.
+      int dtw = QApplication::desktop()->screenGeometry().width();
+      int dth = QApplication::desktop()->screenGeometry().height();
+
+      msgbox.move( dtw / 2 - msgBox->width() / 2, dth / 2 - msgBox->height() / 2 );
+
+#endif
 
       int button = msgBox.exec();
 
