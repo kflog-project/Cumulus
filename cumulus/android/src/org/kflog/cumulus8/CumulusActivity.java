@@ -1,3 +1,21 @@
+/***********************************************************************
+ **
+ **   CumulusActivity.java
+ **
+ **   This file is part of Cumulus4Android
+ **
+ ************************************************************************
+ **
+ **   Copyright (c):  2010-2012 by Josua Dietze
+ **                   2012 by Axel Pauli
+ **
+ **   This file is distributed under the terms of the General Public
+ **   License. See the file COPYING for more information.
+ **
+ **   $Id$
+ **
+ ***********************************************************************/
+
 package org.kflog.cumulus8;
 
 import java.io.BufferedInputStream;
@@ -235,12 +253,15 @@ public class CumulusActivity extends QtActivity
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
-        System.out.println("QtMain.onKeyDown, key pressed: "+event.toString());
+    System.out.println("QtMain.onKeyDown, key pressed: "+event.toString());
+
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (isRootWindow()) {
 				// If the visible Qt window is the main view, make BACK key close the app
-				showDialog(DIALOG_CLOSE_ID);
-                playSound(0, "Notify.wav");
+        // Send a quit call to the QtApplication, to make a sure shutdown.
+        nativeKeypress((char)28);
+        //showDialog(DIALOG_CLOSE_ID);
+        //playSound(0, "Notify.wav");
 			} else {
 				// If the visible Qt window is not the main view, forward BACK key to QtApp,
 				// but "tunnel" it as "hangup" key to prevent special handling
@@ -253,34 +274,42 @@ public class CumulusActivity extends QtActivity
 			super.onKeyDown(keyCode, event);
 		}
 		return true;
-	};
+  }
 	
 	public boolean onKeyUp(int keyCode, KeyEvent event)
 	{
-        System.out.println("QtMain.onKeyUp, key released: "+event.toString());
-		if ( keyCode == KeyEvent.KEYCODE_BACK && !isRootWindow() ) {
-			KeyEvent chg_key = new KeyEvent(event.getAction(),KeyEvent.KEYCODE_ENDCALL);
-			super.onKeyUp(KeyEvent.KEYCODE_ENDCALL, chg_key);
-		} else {
-			super.onKeyUp(keyCode, event);
-		}
-		return true;
-	};
+    System.out.println("QtMain.onKeyUp, key released: "+event.toString());
+
+    if ( keyCode == KeyEvent.KEYCODE_BACK )
+    {
+      if( !isRootWindow() )
+        {
+          KeyEvent chg_key = new KeyEvent(event.getAction(),KeyEvent.KEYCODE_ENDCALL);
+          super.onKeyUp(KeyEvent.KEYCODE_ENDCALL, chg_key);
+        }
+      else
+        {
+          return true;
+        }
+     }
+
+    return super.onKeyUp(keyCode, event);
+  }
 	
-    void playSound(int stream, String soundName)
-	{
-		Uri sf = Uri.parse("file://" + getAddDataDir() + File.separatorChar + "sounds" + File.separatorChar + soundName);
+  void playSound(int stream, String soundName)
+    {
+      Uri sf = Uri.parse("file://" + getAddDataDir() + File.separatorChar + "sounds" + File.separatorChar + soundName);
 		
-        if (stream == 0)
-          {
-            stream = AudioManager.STREAM_NOTIFICATION;
-            npl.play(this.getApplicationContext(), sf, false, stream);
-          }
-          else if (stream == 1)
-          {
-            stream = AudioManager.STREAM_ALARM;
-            apl.play(this.getApplicationContext(), sf, false, stream);
-          }
+      if (stream == 0)
+        {
+          stream = AudioManager.STREAM_NOTIFICATION;
+          npl.play(this.getApplicationContext(), sf, false, stream);
+        }
+      else if (stream == 1)
+        {
+          stream = AudioManager.STREAM_ALARM;
+          apl.play(this.getApplicationContext(), sf, false, stream);
+        }
      }
 
   String getAppDataDir()
@@ -342,10 +371,8 @@ public class CumulusActivity extends QtActivity
 						nativeKeypress((char)27);
 						break;
 					case 4:
-                        // Send a quit call to the QtApp
-                        nativeKeypress((char)28);
-                        //showDialog(DIALOG_CLOSE_ID);
-                        //playSound(0, "Notify.wav");
+            // Send a quit call to the QtApplication, to make a sure shutdown.
+            nativeKeypress((char)28);
 						break;
 					}
 				}

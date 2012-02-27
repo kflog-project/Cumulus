@@ -1312,8 +1312,6 @@ void MainWindow::slotFileQuit()
  */
 void MainWindow::closeEvent( QCloseEvent* evt )
 {
-  qDebug() << "MainWindow::closeEvent() is called";
-
   // @AP: All close events will be ignored, if we are not in the map
   // view to avoid any possibility of confusion with the two close buttons.
   if( view != mapView )
@@ -2290,7 +2288,7 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
     {
       QKeyEvent *k = ( QKeyEvent* ) e;
 
-      qDebug( "Keycode of pressed key: %d, %X", k->key(), k->key() );
+      qDebug( "Keycode of pressed key: %d, 0x%X", k->key(), k->key() );
 
 #ifdef ANDROID
 
@@ -2330,7 +2328,7 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
 
       if( k->key() == Qt::Key_End )
         {
-          // Quit application from Android menu
+          // Quit application from Android menu to ensure a safe shutdown
           if ( _rootWindow )
             {
               close();

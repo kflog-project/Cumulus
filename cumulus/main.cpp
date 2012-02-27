@@ -238,7 +238,7 @@ int main(int argc, char *argv[])
           foreach (int points, database.smoothSizes(family, style))
             sizes += QString::number(points) + " ";
 
-          qDebug() << "Font:" << family << style << sizes.trimmed();
+          qDebug() << "Installed Font:" << family << style << sizes.trimmed();
         }
     }
 
@@ -316,22 +316,30 @@ int main(int argc, char *argv[])
 #else
       font.setPixelSize( size );
 #endif
+
       msgBox.setFont( font );
       msgBox.setWindowTitle( QObject::tr("Cumulus Disclaimer") );
       msgBox.setIcon ( QMessageBox::Warning );
       msgBox.setText( disclaimer );
       msgBox.setInformativeText( question );
       msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
-      msgBox.setDefaultButton( QMessageBox::Yes );
-      msgBox.setVisible(true);
+      msgBox.setDefaultButton( QMessageBox::Yes );      
 
 #ifdef ANDROID
+
+      QTextDocument td;
+      td.setDefaultFont(font);
+      td.setHtml(disclaimer);
+
+      msgBox.setVisible(true);
 
       // Under Android the box must be moved into the center of the desktop screen.
       int dtw = QApplication::desktop()->screenGeometry().width();
       int dth = QApplication::desktop()->screenGeometry().height();
 
-      msgBox.move( dtw / 2 - msgBox.width() / 2, dth / 2 - msgBox.height() / 2 );
+      QSize ts = td.size().toSize();
+
+      msgBox.move( (dtw-ts.width()) / 2 - 20, (dth-ts.height()) / 2 - 50);
 
 #endif
 

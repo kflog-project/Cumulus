@@ -127,17 +127,9 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
   QCoreApplication::postEvent(_globalMainWindow, ke);
 }
 
-#if 0
-static void nativePreflight()
-{
-	QKeyEvent *ke = new QKeyEvent( QEvent::KeyPress, Qt::Key_F12, 0 );
-	QCoreApplication::postEvent(_globalMainWindow, ke);
-}
-#endif
-
 static bool isRootWindow()
 {
-  qDebug() << "JNI isRootWindow()" << MainWindow::isRootWindow();
+  // qDebug() << "JNI isRootWindow()" << MainWindow::isRootWindow();
   return MainWindow::isRootWindow();
 }
 
@@ -160,8 +152,6 @@ static JNINativeMethod methods[] = {
 	{"nativeGpsStatus", "(II)V", (void *)nativeGpsStatus},
 	{"nativeNmeaString","(Ljava/lang/String;)V", (void *)nativeNmeaString},
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
-//	{"nativeSetup", "()V", (void *)nativeSetup},
-//	{"nativePreflight", "()V", (void *)nativePreflight},
 	{"isRootWindow", "()Z", (bool *)isRootWindow},
 	{"keyboardAction", "(I)V", (void *)keyboardAction}
 };

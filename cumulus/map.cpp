@@ -1573,6 +1573,10 @@ void Map::__drawLabel( QPainter* painter,
                        const bool isLandable ) // is landable?
 {
   // qDebug("LabelName=%s, xShift=%d", name.toLatin1().data(), xShift );
+  if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) >= 120.0 )
+    {
+      return;
+    }
 
   // save the current painter, must be restored before return!!!
   painter->save();
@@ -1582,7 +1586,7 @@ void Map::__drawLabel( QPainter* painter,
   QFont font = painter->font();
 
 #if defined ANDROID || defined MAEMO
-  const int fs = 24;
+  const int fs = 20;
 #else
   const int fs = 20;
 #endif
