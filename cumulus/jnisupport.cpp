@@ -115,6 +115,9 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
   case 27:
     qtCode = Qt::Key_F13;
     break;
+  case 28:
+    qtCode = Qt::Key_End;
+    break;
   default:
     qDebug("nativeKeypress: code is %d", code);
     return;

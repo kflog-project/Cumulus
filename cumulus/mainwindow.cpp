@@ -1312,9 +1312,10 @@ void MainWindow::slotFileQuit()
  */
 void MainWindow::closeEvent( QCloseEvent* evt )
 {
+  qDebug() << "MainWindow::closeEvent() is called";
+
   // @AP: All close events will be ignored, if we are not in the map
-  // view to avoid any possibility of confusion with the two close
-  // buttons.
+  // view to avoid any possibility of confusion with the two close buttons.
   if( view != mapView )
     {
       evt->ignore();
@@ -1332,6 +1333,14 @@ void MainWindow::closeEvent( QCloseEvent* evt )
 
   mb.setDefaultButton( QMessageBox::No );
 
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
   switch ( mb.exec() )
     {
     case QMessageBox::Yes:
@@ -1348,7 +1357,6 @@ void MainWindow::closeEvent( QCloseEvent* evt )
       break;
     }
 }
-
 
 void MainWindow::slotToggleMenu()
 {
@@ -2276,7 +2284,7 @@ void MainWindow::slotNewReachList()
 
 bool MainWindow::eventFilter( QObject *o , QEvent *e )
 {
-  // qDebug("MainWindow::eventFilter() is called with event type %d", e->type());
+ // qDebug("MainWindow::eventFilter() is called with event type %d", e->type());
 
   if ( e->type() == QEvent::KeyPress )
     {
@@ -2285,11 +2293,12 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
       qDebug( "Keycode of pressed key: %d, %X", k->key(), k->key() );
 
 #ifdef ANDROID
+
       // Sent by native method "nativeKeypress"
       if( k->key() == Qt::Key_F11 )
         {
           // Open setup from Android menu
-          if (_rootWindow )
+          if ( _rootWindow )
             {
               slotOpenConfig();
             }
@@ -2300,7 +2309,7 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
       if( k->key() == Qt::Key_F12 )
         {
           // Open pre-flight setup from Android menu
-          if (_rootWindow == false)
+          if ( _rootWindow )
             {
               slotPreFlightGlider();
             }
@@ -2311,13 +2320,25 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
       if( k->key() == Qt::Key_F13 )
         {
           // Open GPS status window from Android menu
-          if (_rootWindow )
+          if ( _rootWindow )
             {
               actionViewGPSStatus->activate(QAction::Trigger);
             }
 
           return true;
         }
+
+      if( k->key() == Qt::Key_End )
+        {
+          // Quit application from Android menu
+          if ( _rootWindow )
+            {
+              close();
+            }
+
+          return true;
+        }
+
 #endif
 
     }

@@ -331,7 +331,7 @@ int main(int argc, char *argv[])
       int dtw = QApplication::desktop()->screenGeometry().width();
       int dth = QApplication::desktop()->screenGeometry().height();
 
-      msgbox.move( dtw / 2 - msgBox->width() / 2, dth / 2 - msgBox->height() / 2 );
+      msgBox.move( dtw / 2 - msgBox.width() / 2, dth / 2 - msgBox.height() / 2 );
 
 #endif
 
