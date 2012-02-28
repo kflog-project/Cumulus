@@ -389,9 +389,12 @@ OTHER_FILES += \
     android/src/org/kde/necessitas/ministro/IMinistroCallback.aidl \
     android/src/org/kde/necessitas/ministro/IMinistro.aidl \
     android/src/org/kde/necessitas/origo/QtApplication.java \
-    android/src/org/kde/necessitas/origo/QtActivity.java
+    android/src/org/kde/necessitas/origo/QtActivity.java \
+    android/src/org/kflog/cumulus/GPSReceiver.java \
+    android/src/org/kflog/cumulus/CumulusActivity.java
 
 LIBS += -lstdc++
 
 TRANSLATIONS = cumulus_de.ts
+
 

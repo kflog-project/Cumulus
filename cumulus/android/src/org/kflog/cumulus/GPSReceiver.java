@@ -16,7 +16,7 @@
  **
  ***********************************************************************/
 
-package org.kflog.cumulus8;
+package org.kflog.cumulus;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

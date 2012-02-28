@@ -29,7 +29,7 @@
  * Adapt this define to the full Java CumulusActivity class name including
  * the package name.
  */
-#define CumulusActivityClassName "org/kflog/cumulus8/CumulusActivity"
+#define CumulusActivityClassName "org/kflog/cumulus/CumulusActivity"
 
 static JavaVM*   m_jvm            = 0;
 static JNIEnv*   m_jniEnv         = 0;

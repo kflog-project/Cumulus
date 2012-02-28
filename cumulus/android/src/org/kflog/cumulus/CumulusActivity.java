@@ -16,7 +16,7 @@
  **
  ***********************************************************************/
 
-package org.kflog.cumulus8;
+package org.kflog.cumulus;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
