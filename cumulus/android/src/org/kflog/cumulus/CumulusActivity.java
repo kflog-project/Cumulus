@@ -444,7 +444,7 @@ public class CumulusActivity extends QtActivity
   {
     InputStream stream = null;
 
-    String appDataFile = getString(R.string.appDataFile);
+    String appDataFile = getString(R.cumulus.appDataFile);
 
     try
     {
@@ -479,7 +479,7 @@ public class CumulusActivity extends QtActivity
   
   private boolean installAddData( String addDir, AssetManager am )
   {
-    String addDataFile = getString(R.string.addDataFile);
+    String addDataFile = getString(R.cumulus.addDataFile);
 
     InputStream stream = null;
 

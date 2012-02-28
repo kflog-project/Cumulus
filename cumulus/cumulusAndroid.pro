@@ -35,9 +35,6 @@ DEFINES += USE_POINT_SIZE_FONT
 # Activate this define, if QtClass QScroller is available.
 # DEFINES += QSCROLLER
 
-#ANDROID_PLATFORM = android-10
-#ANDROID_PLATFORM = android-8
-
 # Enable Flarm feature, if not wanted comment out the next line with a hash
 CONFIG += flarm
 
@@ -391,10 +388,11 @@ OTHER_FILES += \
     android/src/org/kde/necessitas/origo/QtApplication.java \
     android/src/org/kde/necessitas/origo/QtActivity.java \
     android/src/org/kflog/cumulus/GPSReceiver.java \
-    android/src/org/kflog/cumulus/CumulusActivity.java
+    android/src/org/kflog/cumulus/CumulusActivity.java \
+    android/version.xml \
+    android/res/values/cumulus.xml
 
 LIBS += -lstdc++
 
 TRANSLATIONS = cumulus_de.ts
-
 

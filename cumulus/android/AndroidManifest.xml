@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="8"/>
-    <application android:name="org.kde.necessitas.origo.QtApplication" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:icon="@drawable/icon" android:description="@string/description" android:label="@string/app_name" android:debuggable="true">
-        <activity android:name=".CumulusActivity" android:configChanges="locale|fontScale|keyboard|keyboardHidden" android:screenOrientation="landscape" android:label="@string/app_name">
+    <application android:name="org.kde.necessitas.origo.QtApplication" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:icon="@drawable/icon" android:description="@cumulus/description" android:label="@cumulus/app_name" android:debuggable="true">
+        <activity android:name=".CumulusActivity" android:configChanges="locale|fontScale|keyboard|keyboardHidden" android:screenOrientation="landscape" android:label="@cumulus/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
