@@ -23,14 +23,14 @@
 #ifdef SCROLLER
 #define SB_SIZE 10 // scrollbar size, now only an indicator, thanks to kinetic scrolling
 #else
-#define SB_SIZE 30
+#define SB_SIZE 40
 #endif
 
 #define CB_SIZE 20 // checkbox size
 #define RB_SIZE 20 // radio button size
 #define BM_SIZE 4  // margin around button label, default 0
 #define TAB_HEIGHT 30 // extra vertical px for tabs
-#define TAB_SB_WIDTH 60 // tab horiz. scroll button width
+#define TAB_SB_WIDTH 40 // tab horiz. scroll button width
 
 AndroidProxyStyle::AndroidProxyStyle( QStyle* style ) : QProxyStyle( style )
 {

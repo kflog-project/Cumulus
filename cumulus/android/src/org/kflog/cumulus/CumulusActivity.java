@@ -253,45 +253,39 @@ public class CumulusActivity extends QtActivity
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
-    System.out.println("QtMain.onKeyDown, key pressed: "+event.toString());
+    // System.out.println("QtMain.onKeyDown, key pressed: "+event.toString());
 
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (isRootWindow()) {
-				// If the visible Qt window is the main view, make BACK key close the app
-        // Send a quit call to the QtApplication, to make a sure shutdown.
-        nativeKeypress((char)28);
-        //showDialog(DIALOG_CLOSE_ID);
-        //playSound(0, "Notify.wav");
-			} else {
-				// If the visible Qt window is not the main view, forward BACK key to QtApp,
-				// but "tunnel" it as "hangup" key to prevent special handling
-				KeyEvent chg_key = new KeyEvent(event.getAction(),KeyEvent.KEYCODE_ENDCALL);
-				super.onKeyDown(KeyEvent.KEYCODE_ENDCALL, chg_key);
-			}
-		} else if (keyCode == KeyEvent.KEYCODE_MENU) {
-			showDialog(DIALOG_MENU_ID);
-		} else {
-			super.onKeyDown(keyCode, event);
-		}
-		return true;
+    if( keyCode == KeyEvent.KEYCODE_BACK )
+      {
+         if(isRootWindow() )
+           {
+            // If the visible Qt window is the main view, BACK key may close the app.
+            // Send a quit call to the QtApplication, to have a sure shutdown.
+            // Otherwise ignore this key to prevent an unwanted shutdown.
+            nativeKeypress((char) 28);
+           }
+
+          return true;
+       }
+
+    if( keyCode == KeyEvent.KEYCODE_MENU )
+      {
+        showDialog(DIALOG_MENU_ID);
+        return true;
+      }
+
+    return super.onKeyDown(keyCode, event);
   }
 	
+  @Override
 	public boolean onKeyUp(int keyCode, KeyEvent event)
 	{
-    System.out.println("QtMain.onKeyUp, key released: "+event.toString());
+    // System.out.println("QtMain.onKeyUp, key released: "+event.toString());
 
-    if ( keyCode == KeyEvent.KEYCODE_BACK )
-    {
-      if( !isRootWindow() )
-        {
-          KeyEvent chg_key = new KeyEvent(event.getAction(),KeyEvent.KEYCODE_ENDCALL);
-          super.onKeyUp(KeyEvent.KEYCODE_ENDCALL, chg_key);
-        }
-      else
-        {
-          return true;
-        }
-     }
+    if( keyCode == KeyEvent.KEYCODE_BACK )
+      {
+        return true;
+      }
 
     return super.onKeyUp(keyCode, event);
   }
@@ -526,7 +520,6 @@ public class CumulusActivity extends QtActivity
       {
         // System.out.println("Unzipping: " + entry.getName() + ", Directory: "
         // + entry.isDirectory() );
-
         String file = destPath + File.separator + entry.getName();
 
         if (entry.isDirectory())

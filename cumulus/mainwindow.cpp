@@ -2286,7 +2286,7 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
 
   if ( e->type() == QEvent::KeyPress )
     {
-      QKeyEvent *k = ( QKeyEvent* ) e;
+      QKeyEvent *k = static_cast<QKeyEvent *>(e);
 
       qDebug( "Keycode of pressed key: %d, 0x%X", k->key(), k->key() );
 

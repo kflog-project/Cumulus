@@ -34,7 +34,7 @@
 #if defined (MAEMO) || defined (ANDROID)
 #define IconSize 32
 #define ButtonSize 80
-#define DialogMinFontSize 20
+#define DialogMinFontSize 12
 
 // Snap radius size on the map
 #define SnapRadius 25

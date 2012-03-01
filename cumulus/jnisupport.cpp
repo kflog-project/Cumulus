@@ -70,7 +70,7 @@ static void nativeGpsFix( JNIEnv * /*jniEnvironment*/,
 	ge->bear = bear;
 	ge->accu = accu;
 	ge->time = time;
-	QCoreApplication::postEvent(GpsNmea::gps, ge);
+  QCoreApplication::postEvent( GpsNmea::gps, ge, Qt::HighEventPriority );
 }
 
 /**
@@ -86,7 +86,7 @@ static void nativeGpsStatus( JNIEnv * /*jniEnvironment*/,
 	GpsStatusEvent *ge = new GpsStatusEvent();
 	ge->stat = status;
 	ge->nsats = numsats;
-	QCoreApplication::postEvent(GpsNmea::gps, ge);
+  QCoreApplication::postEvent( GpsNmea::gps, ge );
 }
 
 static void nativeNmeaString(JNIEnv* env, jobject /*myobject*/, jstring jnmea)
@@ -96,13 +96,14 @@ static void nativeNmeaString(JNIEnv* env, jobject /*myobject*/, jstring jnmea)
 	env->ReleaseStringUTFChars(jnmea, nativeString);
 	GpsNmeaEvent *ne = new GpsNmeaEvent();
 	ne->nmea_sentence = qnmea;
-	QCoreApplication::postEvent(GpsNmea::gps, ne);
+  QCoreApplication::postEvent( GpsNmea::gps, ne, Qt::HighEventPriority );
 }
 
 static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
 {
+  qDebug("JNI nativeKeypress: code is %d", (unsigned int) code);
+
   unsigned int qtCode;
-  qDebug("nativeKeypress: code is %d", (unsigned int) code);
 
   switch ((unsigned int) code)
     {
@@ -123,8 +124,8 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
     return;
     }
 
-  QKeyEvent *ke = new QKeyEvent( QEvent::KeyPress, qtCode, 0 );
-  QCoreApplication::postEvent(_globalMainWindow, ke);
+  QKeyEvent *ke = new QKeyEvent( QEvent::KeyPress, qtCode, Qt::NoModifier );
+  QCoreApplication::postEvent( _globalMainWindow, ke, Qt::NormalEventPriority );
 }
 
 static bool isRootWindow()

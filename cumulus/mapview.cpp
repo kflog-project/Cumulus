@@ -1232,7 +1232,14 @@ void MapView::slot_AltimeterDialog()
 
 #ifdef ANDROID
 
-  qDebug() << "MapView::slot_AltimeterDialog() minSize=" << amDlg->minimumSizeHint();
+  QSize ms = amDlg->minimumSizeHint();
+
+  ms += QSize(10, 10);
+
+  // A dialog is not centered over the parent and not limited in
+  // its size under Android. Therefore this must be done by our self.
+  amDlg->setGeometry( (width() - ms.width()) / 2, (height() - ms.height()) / 2,
+                       ms.width(), ms.height() );
 
 #endif
 
@@ -1282,6 +1289,19 @@ void MapView::slot_VarioDialog()
 
   vmDlg->setVisible(true);
 
+#ifdef ANDROID
+
+  QSize ms = vmDlg->minimumSizeHint();
+
+  ms += QSize(10, 10);
+
+  // A dialog is not centered over the parent and not limited in
+  // its size under Android. Therefore this must be done by our self.
+  vmDlg->setGeometry( (width() - ms.width()) / 2, (height() - ms.height()) / 2,
+                       ms.width(), ms.height() );
+
+#endif
+
   MainWindow::setRootWindow( false );
 }
 
@@ -1328,6 +1348,19 @@ void MapView::slot_gliderFlightDialog()
            MainWindow::mainWindow(), SLOT( slotSubWidgetClosed() ) );
 
   gfDlg->setVisible(true);
+
+#ifdef ANDROID
+
+  QSize ms = gfDlg->minimumSizeHint();
+
+  ms += QSize(10, 10);
+
+  // A dialog is not centered over the parent and not limited in
+  // its size under Android. Therefore this must be done by our self.
+  gfDlg->setGeometry( (width() - ms.width()) / 2, (height() - ms.height()) / 2,
+                       ms.width(), ms.height() );
+
+#endif
 
   MainWindow::setRootWindow( false );
 }
