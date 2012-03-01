@@ -20,7 +20,12 @@
 #include "androidstyle.h"
 
 // new size values to be assigned
+#ifdef SCROLLER
 #define SB_SIZE 10 // scrollbar size, now only an indicator, thanks to kinetic scrolling
+#else
+#define SB_SIZE 30
+#endif
+
 #define CB_SIZE 20 // checkbox size
 #define RB_SIZE 20 // radio button size
 #define BM_SIZE 4  // margin around button label, default 0
@@ -81,11 +86,6 @@ int AndroidProxyStyle::pixelMetric( PixelMetric metric,
       // increase buttons
       return 16;
     }
-/*  else if( metric == QStyle::PM_ButtonMargin )
-    {
-      // increase buttons
-      return 16;
-    }*/
   else
     {
       // call default style handler

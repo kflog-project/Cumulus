@@ -22,7 +22,7 @@
  *
  * \brief Class to adapt some Qt style settings better to Android.
  *
- * GUI adations for Android for a better user handling. The size of some
+ * GUI adaptions for Android for a better user handling. The size of some
  * GUI elements will be increased by using a style proxy.
  *
  * \date 2012
@@ -56,7 +56,6 @@ public:
   virtual int pixelMetric( PixelMetric metric,
                            const QStyleOption *option = 0,
                            const QWidget *widget = 0 ) const;
-
 };
 
 #endif
