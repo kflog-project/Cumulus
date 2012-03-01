@@ -1230,6 +1230,12 @@ void MapView::slot_AltimeterDialog()
 
   amDlg->setVisible(true);
 
+#ifdef ANDROID
+
+  qDebug() << "MapView::slot_AltimeterDialog() minSize=" << amDlg.minimumSizeHint();
+
+#endif
+
   MainWindow::setRootWindow( false );
 }
 
