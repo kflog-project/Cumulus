@@ -321,10 +321,10 @@ bool jniPlaySound(int stream, QString soundName)
   jstring jSoundName = m_jniEnv->NewString((jchar*) soundName.constData(),
                                            (jsize) soundName.length());
 
-  m_jniEnv->CallObjectMethod( m_jniProxyObject,
-                              m_playSoundID,
-                              (jint) stream,
-                              jSoundName );
+  m_jniEnv->CallVoidMethod( m_jniProxyObject,
+                            m_playSoundID,
+                            (jint) stream,
+                            jSoundName );
 
   if (isJavaExceptionOccured())
     {

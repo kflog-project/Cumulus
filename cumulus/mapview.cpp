@@ -1232,7 +1232,7 @@ void MapView::slot_AltimeterDialog()
 
 #ifdef ANDROID
 
-  qDebug() << "MapView::slot_AltimeterDialog() minSize=" << amDlg.minimumSizeHint();
+  qDebug() << "MapView::slot_AltimeterDialog() minSize=" << amDlg->minimumSizeHint();
 
 #endif
 
