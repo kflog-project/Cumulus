@@ -2,7 +2,6 @@
 <!-- Cumulus string definitions -->
 <!-- $Id$ -->
 <resources>
-    <string name="app_name">Cumulus4A</string>
     <string name="description">Air navigation aid for glider pilots and others</string>
     <string name="appDataFile">appData.zip</string>
     <string name="addDataFile">addData.zip</string>
