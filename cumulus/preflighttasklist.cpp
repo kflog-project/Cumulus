@@ -245,14 +245,6 @@ void PreFlightTaskList::showEvent(QShowEvent *)
 
       // Notice user how to add a new task
       QTreeWidgetItem* selected = taskListWidget->selectedItems().at(0);
-
-      if ( selected->text( 0 ) == " " &&
-           selected->text( 1 ) == tr("(No tasks defined)") )
-        {
-          QMessageBox::information( this,
-                                    tr("Create New Task"),
-                                    tr("Push <b>Plus</b> button to add a task") );
-        }
     }
 
   taskListWidget->resizeColumnToContents(0);
