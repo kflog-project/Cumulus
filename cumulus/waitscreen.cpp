@@ -65,7 +65,7 @@ WaitScreen::WaitScreen(QWidget *parent ) :
 
   _gliders = GeneralConfig::instance()->loadPixmap("gliders.png");
   _glider = QPixmap(40,40);
-  _glider.fill( Glider->palette().color(QPalette::Window) );
+  _glider.fill( palette().color(backgroundRole()) );
 
   QPainter p(&_glider);
   p.drawPixmap( 0, 0, _gliders );

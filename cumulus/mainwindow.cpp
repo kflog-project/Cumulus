@@ -146,8 +146,8 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   GeneralConfig::instance()->setOurGuiStyle();
 
 #ifdef ANDROID
-  //QString style("QDialog { background-color: #ECEEED }");
-  QString style("QDialog { background-color: #ECEEED }");
+
+  QString style("QDialog { background-color: #D8D8D8 }");
 
   qApp->setStyleSheet( style );
 
