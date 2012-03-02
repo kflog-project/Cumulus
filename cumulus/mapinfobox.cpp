@@ -62,7 +62,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   QFont f = font();
 
 #ifdef USE_POINT_SIZE_FONT
-  f.setPointSize(10);
+  f.setPointSize(12);
 #else
   f.setPixelSize(12);
 #endif
@@ -82,7 +82,8 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   preLayout->setContentsMargins(3,0,3,0);
   preLayout->setSpacing(3);
 
-  _ptext = new QLabel;
+  _ptext = new QLabel( this );
+  _ptext->setFont(f);
   _ptext->setMargin(0);
   _ptext->setIndent(0);
   _ptext->setTextFormat(Qt::PlainText);
@@ -91,21 +92,21 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   QPalette p = _ptext->palette();
   p.setColor( QPalette::WindowText, Qt::black );
   _ptext->setPalette(p);
-
   _ptext->setFixedWidth( fm.boundingRect("MM").width() );
 
-  preLayout->addWidget(_ptext, 0, Qt::AlignLeft|Qt::AlignTop);
+  preLayout->addWidget(_ptext );
   preLayout->addWidget(_ptext );
 
   if( minusInPretext )
     {
       _pminus = new QLabel( this );
+      _pminus->setFont(f);
       _pminus->setMargin(0);
       _pminus->setPixmap( GeneralConfig::instance()->loadPixmap( "minus.png" ) );
       _pminus->setFixedWidth( 25 );
       _pminus->setScaledContents(true);
       preLayout->addStretch( 1 );
-      preLayout->addWidget( _pminus, 0, Qt::AlignRight );
+      preLayout->addWidget( _pminus );
      _pminus->setVisible(false);
     }
 
@@ -114,7 +115,8 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   if( unitInPretext )
     {
       // A unit shall be displayed in the pre-text box.
-      _punit = new QLabel;
+      _punit = new QLabel( this );
+      _punit->setFont(f);
       _punit->setMargin(0);
       _punit->setIndent(0);
       _punit->setTextFormat(Qt::PlainText);
@@ -126,12 +128,12 @@ MapInfoBox::MapInfoBox( QWidget *parent,
       _punit->setPalette(p);
 
       //_punit->setFixedWidth( fm.boundingRect("MM").width() );
-      preLayout->addWidget(_punit, 0, Qt::AlignRight|Qt::AlignBottom);
+      preLayout->addWidget(_punit, 0, Qt::AlignRight);
     }
 
   topLayout->addWidget( _preWidget, 0 );
 
-  _text = new QLabel;
+  _text = new QLabel( this );
 
   topLayout->addWidget(_text, 10);
 
