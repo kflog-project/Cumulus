@@ -71,11 +71,6 @@ int AndroidProxyStyle::pixelMetric( PixelMetric metric,
       // increase width of tab bar buttons
       return TAB_SB_WIDTH;
     }
-  else if( metric == PM_ComboBoxFrameWidth )
-    {
-      // increase width of a combo box
-      return SB_SIZE + PM_DefaultFrameWidth;
-    }
   else if( metric == PM_ButtonMargin )
     {
       // increase buttons

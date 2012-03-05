@@ -65,11 +65,6 @@ int MaemoProxyStyle::pixelMetric( PixelMetric metric,
       // increase width of tab bar buttons
       return TB_SB_WIDTH;
     }
-  else if( metric == PM_ComboBoxFrameWidth )
-    {
-      // increase width of a combo box
-      return SB_SIZE + PM_DefaultFrameWidth;
-    }
   else
     {
       // call default style handler

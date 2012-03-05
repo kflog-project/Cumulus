@@ -151,9 +151,9 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
   qApp->setStyleSheet( style );
 
-  style = "QComboBox::drop-down { width: 60px; height: 60px; }";
+  style = "QComboBox::drop-down { subcontrol-origin: padding; subcontrol-position: top right; width: 40px; height: 40px}";
 
-  // qApp->setStyleSheet( style );
+  qApp->setStyleSheet( style );
 #endif
 
   // Display available input methods
