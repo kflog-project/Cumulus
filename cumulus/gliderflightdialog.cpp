@@ -196,9 +196,9 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   _time = conf->getInfoDisplayTime();
 
   connect (timer, SIGNAL(timeout()), this, SLOT(slotReject()));
-  connect (buttonDump, SIGNAL(pressed()), this, SLOT(slotDump()));
-  connect (ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
-  connect (cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+  connect (buttonDump, SIGNAL(released()), this, SLOT(slotDump()));
+  connect (ok, SIGNAL(released()), this, SLOT(slotAccept()));
+  connect (cancel, SIGNAL(released()), this, SLOT(slotReject()));
 
   QSignalMapper* signalMapper = new QSignalMapper(this);
   connect(pplus, SIGNAL(pressed()), signalMapper, SLOT(map()));

@@ -169,8 +169,8 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   connect(timer, SIGNAL(timeout()), this, SLOT(reject()));
   connect(TEK,   SIGNAL(toggled(bool)), this, SLOT(slot_tekChanged(bool)));
 
-  connect (ok,     SIGNAL(clicked()), this, SLOT(slot_accept()));
-  connect (cancel, SIGNAL(clicked()), this, SLOT(slot_reject()));
+  connect (ok,     SIGNAL(released()), this, SLOT(slot_accept()));
+  connect (cancel, SIGNAL(released()), this, SLOT(slot_reject()));
 
   // Activate keyboard shortcuts for close
   QShortcut* scClose = new QShortcut( this );
@@ -220,6 +220,8 @@ void VarioModeDialog::slot_tekChanged( bool newState )
     {
       spinTime->setFocus();
     }
+
+  slot_setTimer();
 }
 
 void VarioModeDialog::load()

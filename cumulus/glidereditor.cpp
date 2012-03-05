@@ -257,7 +257,7 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
 
   connect(plus, SIGNAL(pressed()), this, SLOT(slotIncrementBox()));
   connect(minus, SIGNAL(pressed()), this, SLOT(slotDecrementBox()));
-  connect(buttonShow, SIGNAL(clicked()), this, SLOT(slotButtonShow()));
+  connect(buttonShow, SIGNAL(pressed()), this, SLOT(slotButtonShow()));
 
   // Add ok and cancel buttons
   QPushButton *cancel = new QPushButton(this);
@@ -270,14 +270,15 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
   ok->setIconSize(QSize(IconSize, IconSize));
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
-  connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
-  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(ok, SIGNAL(pressed()), this, SLOT(accept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(reject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
-  buttonBox->addWidget(cancel, 2);
-  buttonBox->addSpacing(20);
-  buttonBox->addWidget(ok, 2);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
   buttonBox->addStretch(2);
 
   topLayout->addLayout(itemsLayout);

@@ -157,26 +157,27 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
   cancel->setIconSize(QSize(IconSize, IconSize));
-  cancel->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::QSizePolicy::Preferred);
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QPushButton *ok = new QPushButton(this);
   ok->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("ok.png")) );
   ok->setIconSize(QSize(IconSize, IconSize));
-  ok->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::QSizePolicy::Preferred);
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QLabel *titlePix = new QLabel(this);
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png") );
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
   buttonBox->addWidget( cancel, 2 );
-  buttonBox->addSpacing(20);
+  buttonBox->addSpacing(30);
   buttonBox->addWidget( ok, 2 );
   buttonBox->addStretch(2);
   buttonBox->addWidget( titlePix, 1 );
 
-  connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
-  connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(ok, SIGNAL(released()), this, SLOT(accept()));
+  connect(cancel, SIGNAL(released()), this, SLOT(reject()));
 
   QShortcut* sc = new QShortcut( this );
   sc->setKey( Qt::Key_Close );

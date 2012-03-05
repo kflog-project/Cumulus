@@ -247,8 +247,8 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   connect( signalMapperUnit, SIGNAL(mapped(int)), this, SLOT(slotUnitChanged(int)) );
 
   connect( timeout, SIGNAL(timeout()), this, SLOT(reject()) );
-  connect( ok, SIGNAL(clicked()), this, SLOT(accept()) );
-  connect( cancel, SIGNAL(clicked()), this, SLOT(reject()) );
+  connect( ok, SIGNAL(released()), this, SLOT(accept()) );
+  connect( cancel, SIGNAL(released()), this, SLOT(reject()) );
 
   load();
 }

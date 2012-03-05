@@ -85,16 +85,17 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   QLabel *titlePix = new QLabel(this);
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png"));
 
-  connect(ok, SIGNAL(clicked()), this, SLOT(slot_accept()));
-  connect(cancel, SIGNAL(clicked()), this, SLOT(slot_reject()));
+  connect(ok, SIGNAL(released()), this, SLOT(slot_accept()));
+  connect(cancel, SIGNAL(released()), this, SLOT(slot_reject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
-  buttonBox->addWidget(cancel, 2);
-  buttonBox->addSpacing(20);
-  buttonBox->addWidget(ok, 2);
   buttonBox->addStretch(2);
-  buttonBox->addWidget(titlePix, 1);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
 
   QHBoxLayout *contentLayout = new QHBoxLayout;
   contentLayout->addWidget(tabWidget);
