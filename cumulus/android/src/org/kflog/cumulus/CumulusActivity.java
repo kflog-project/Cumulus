@@ -365,8 +365,12 @@ public class CumulusActivity extends QtActivity
 						nativeKeypress((char)27);
 						break;
 					case 4:
-            // Send a quit call to the QtApplication, to make a sure shutdown.
-            nativeKeypress((char)28);
+                        // Send a quit call to the QtApplication, to make a sure shutdown.
+                        if( isRootWindow() )
+                          {
+                            // Only root window will get a quit
+                            nativeKeypress((char)28);
+                          }
 						break;
 					}
 				}
