@@ -630,12 +630,24 @@ void MainWindow::slotCreateApplicationWidgets()
 
   if( ! GeneralConfig::instance()->getAirspaceWarningEnabled() )
     {
-      int answer= QMessageBox::warning( this,tr("Airspace Warnings"),
-                                        tr("<html><b>Airspace warnings are disabled!<br>"
-                                           "Enable now?</b></html>"),
-                                        QMessageBox::Yes | QMessageBox::No );
+      QMessageBox mb(this);
 
-      if( answer == QMessageBox::Yes )
+      mb.setWindowTitle( tr("Airspace Warnings") );
+      mb.setIcon( QMessageBox::Warning );
+      mb.setText( tr("<html><b>Airspace warnings are disabled!<br>"
+                     "Enable now?</b></html>") );
+      mb.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+      mb.setDefaultButton( QMessageBox::Yes );
+
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+
+      if( mb.exec() == QMessageBox::Yes )
         {
           GeneralConfig::instance()->setAirspaceWarningEnabled(true);
         }
@@ -1337,8 +1349,7 @@ void MainWindow::closeEvent( QCloseEvent* evt )
                   tr( "Terminating?" ),
                   tr( "Terminating Cumulus<br><b>Are you sure?</b>" ),
                   QMessageBox::Yes | QMessageBox::No,
-                  this,
-                  Qt::Dialog );
+                  this );
 
   mb.setDefaultButton( QMessageBox::No );
 

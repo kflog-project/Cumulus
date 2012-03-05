@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -112,9 +112,20 @@ void AirspaceDownloadDialog::accept()
       url.host().isEmpty() || url.path().isEmpty() )
     {
       // No valid entry, ignore button press
-      QMessageBox::information ( this,
-                                 tr("Settings invalid!"),
-                                 tr("Please correct your URL settings!") );
+      QMessageBox mb( QMessageBox::Information,
+                      tr("Settings invalid!"),
+                      tr("Please correct your URL settings!"),
+                      QMessageBox::Ok,
+                      this );
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+
+      mb.exec();
       return;
     }
 
@@ -146,4 +157,3 @@ void AirspaceDownloadDialog::slot_editProxy()
       proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
     }
 }
-
