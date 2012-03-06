@@ -720,21 +720,40 @@ void GliderEditor::accept()
 {
   edtGReg->setText(edtGReg->text().trimmed()); //remove spaces
 
+  QString title;
+  QString text;
+
   if (edtGReg->text().isEmpty())
     {
-      QMessageBox::critical(this, tr("Missing registration!"),
-          tr("Please enter a valid registration."));
+      title = tr( "Missing registration!" );
+      text  = tr( "Please enter a valid registration." );
     }
-  else if (comboType->currentText().trimmed().isEmpty())
+  else if (comboType->currentText().trimmed().isEmpty() )
     {
-      QMessageBox::critical(this, tr("Missing glider type!"),
-          tr("Please enter a valid glider type."));
+      title = tr("Missing glider type!");
+      text  = tr("Please enter a valid glider type.");
     }
   else
     {
       save();
       QWidget::close();
     }
+
+  QMessageBox mb( QMessageBox::Critical,
+                  title,
+                  text,
+                  QMessageBox::Ok,
+                  this );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  mb.exec();
 }
 
 void GliderEditor::reject()

@@ -145,16 +145,17 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // Set GUI style and style proxy.
   GeneralConfig::instance()->setOurGuiStyle();
 
-#ifdef ANDROID
+//#ifdef ANDROID
 
   QString style("QDialog { background-color: #D8D8D8 }");
 
   qApp->setStyleSheet( style );
 
-  style = "QComboBox::drop-down { subcontrol-origin: padding; subcontrol-position: top right; width: 40px; height: 40px}";
+  style = "QComboBox::drop-down { subcontrol-origin: padding; subcontrol-position: top right; border-radius: 4px; min-width: 40px; max-width: 40px; padding: 1x}";
 
   qApp->setStyleSheet( style );
-#endif
+
+//#endif
 
   // Display available input methods
   QStringList inputMethods = QInputContextFactory::keys();
@@ -1356,7 +1357,8 @@ void MainWindow::closeEvent( QCloseEvent* evt )
 #ifdef ANDROID
 
   mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
   mb.move( pos );
 
 #endif

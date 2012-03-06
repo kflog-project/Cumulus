@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2003      by André Somers
-**                  2008-2011 by Axel Pauli
+**                  2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -242,7 +242,20 @@ void GpsStatusDialog::slot_SaveNmeaData()
 
       if( ! file.open( QIODevice::Append | QIODevice::Text ) )
         {
-          QMessageBox::warning( this, tr("Save failed"), tr("Cannot open file!") );
+          QMessageBox mb( QMessageBox::Critical,
+                          tr( "Save failed" ),
+                          tr( "Cannot open file!" ),
+                          QMessageBox::Ok,
+                          this );
+#ifdef ANDROID
+
+          mb.show();
+          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                           height()/2 - mb.height()/2 ));
+          mb.move( pos );
+
+#endif
+          mb.exec();
           return;
         }
 

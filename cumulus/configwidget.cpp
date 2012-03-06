@@ -338,31 +338,26 @@ void ConfigWidget::accept()
 
   if( projectionChange == true || welt2000Change == true )
     {
-      QMessageBox msgBox( this );
-      msgBox.setWindowTitle( "Cumulus" );
-      msgBox.setIcon ( QMessageBox::Information );
-      msgBox.setText( tr( "<html>"
-                          "<b>Configuration settings have been changed!</b><p>"
-                          "Update of system can take a few seconds and more!"
-                          "</html>" ));
-      msgBox.setStandardButtons( QMessageBox::Ok );
-      msgBox.setDefaultButton( QMessageBox::Ok );
+      QMessageBox mb( QMessageBox::Information,
+                      "Cumulus",
+                      tr( "<html>"
+                      "<b>Configuration settings have been changed!</b><p>"
+                      "Update of system can take a few seconds and more!"
+                      "</html>" ),
+                      QMessageBox::Ok,
+                      this );
 
 #ifdef ANDROID
 
       // Under Android the box must be moved into the center of the desktop screen.
       // Note the box must be set as first to visible otherwise move will not work.
-      msgBox.setVisible(true);
-      int dtw = QApplication::desktop()->screenGeometry().width();
-      int dth = QApplication::desktop()->screenGeometry().height();
-      int mbw = msgBox.width();
-      int mbh = msgBox.height();
-
-      msgBox.move( (dtw-mbw) / 2, (dth-mbh) / 2 );
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
+      mb.move( pos );
 
 #endif
 
-      msgBox.exec();
+      mb.exec();
     }
 
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
@@ -418,28 +413,25 @@ void ConfigWidget::reject()
           pagelist += QString("<li>%1</li>").arg(changed_pages[i]);
         }
 
-      QMessageBox msgBox( this );
-      msgBox.setWindowTitle( tr("Close without saving!") );
-      msgBox.setIcon ( QMessageBox::Warning );
-      msgBox.setText( tr("<html>You have changed:<b><ul>%1</ul></b>Discard changes?</html>").arg(pagelist) );
-      msgBox.setStandardButtons( QMessageBox::Save | QMessageBox::Discard );
-      msgBox.setDefaultButton( QMessageBox::Save );
+      QMessageBox mb( QMessageBox::Warning,
+                      "Close without saving!",
+                      tr("<html>You have changed:<b><ul>%1</ul></b>Discard changes?</html>").arg(pagelist),
+                      QMessageBox::QMessageBox::Save | QMessageBox::Discard,
+                      this );
+
+      mb.setDefaultButton( QMessageBox::Save );
 
 #ifdef ANDROID
 
       // Under Android the box must be moved into the center of the desktop screen.
       // Note the box must be set as first to visible otherwise move will not work.
-      msgBox.setVisible(true);
-      int dtw = QApplication::desktop()->screenGeometry().width();
-      int dth = QApplication::desktop()->screenGeometry().height();
-      int mbw = msgBox.width();
-      int mbh = msgBox.height();
-
-      msgBox.move( (dtw-mbw) / 2, (dth-mbh) / 2 );
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
+      mb.move( pos );
 
 #endif
 
-      if( msgBox.exec() == QMessageBox::Save )
+      if( mb.exec() == QMessageBox::Save )
         { // the user pressed save
           accept();
           return;

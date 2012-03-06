@@ -247,22 +247,30 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
        selectedWp->taskPointIndex != -1 && newWp->taskPointIndex == -1 )
     {
       // A user action will overwrite a task point. That will stop the
-      // automatic task point switch. We will notice the user about
-      // that fact.
+      // automatic task point switch. We will notice the user about that fact.
+      QMessageBox mb( QMessageBox::Question,
+                      tr( "Replace current task point?" ),
+                      tr( "<html>"
+                          "A flight task is activated!<br>"
+                          "This selection will stop the automatic task point switch."
+                          "To avoid that make a selection from task menu."
+                          "<br>Do You really want to replace?"
+                          "</html>" ),
+                      QMessageBox::Yes | QMessageBox::No,
+                      QApplication::activeWindow() );
 
-      int answer=
-        QMessageBox::question( QApplication::activeWindow(),
-                               tr("Replace current task point?"),
-                               tr("<html>"
-                                  "A flight task is activated!<br>"
-                                  "This selection will stop the automatic task point switch."
-                                  "To avoid that make a selection from task menu."
-                                  "<br>Do You really want to replace?"
-                                  "</html>"),
-                               QMessageBox::Yes,
-                               QMessageBox::No | QMessageBox::Escape );
+      mb.setDefaultButton( QMessageBox::Yes );
 
-      if ( answer != QMessageBox::Yes )
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal( QPoint( QApplication::activeWindow()->width()/2 - mb.width()/2,
+                                        QApplication::activeWindow()->height()/2 - mb.height()/2 ) );
+      mb.move( pos );
+
+#endif
+
+      if ( mb.exec() != QMessageBox::Yes )
         {
           // do nothing change
           return;
@@ -1640,19 +1648,29 @@ void Calculator::slot_startTask()
         if( selectedWp->taskPointIndex != -1 &&
             selectedWp->taskPointIndex != tp2Taken->taskPointIndex )
           {
-            int answer =
-              QMessageBox::question( QApplication::activeWindow(),
-                                     tr("Restart current task?"),
-                                     tr("<html>"
-                                        "A flight task is running!<br>"
-                                        "This command will start the<br>"
-                                        "task again at the beginning."
-                                        "<br>Do You really want to restart?"
-                                        "</html>"),
-                                     QMessageBox::Yes,
-                                     QMessageBox::No | QMessageBox::Escape );
+            QMessageBox mb( QMessageBox::Question,
+                            tr( "Restart current task?" ),
+                            tr( "<html>"
+                                "A flight task is running!<br>"
+                                "This command will start the<br>"
+                                "task again at the beginning."
+                                "<br>Do You really want to restart?"
+                                "</html>" ),
+                            QMessageBox::Yes | QMessageBox::No,
+                            QApplication::activeWindow() );
 
-            if ( answer != QMessageBox::Yes )
+            mb.setDefaultButton( QMessageBox::Yes );
+
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal( QPoint( QApplication::activeWindow()->width()/2 - mb.width()/2,
+                                        QApplication::activeWindow()->height()/2 - mb.height()/2 ) );
+      mb.move( pos );
+
+#endif
+
+            if ( mb.exec() != QMessageBox::Yes )
               {
                 // do ignore the request
                 return;

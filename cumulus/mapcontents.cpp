@@ -1588,12 +1588,24 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
   // initiate a map redraw
   Map::instance->scheduleRedraw( Map::baseLayer );
 
-  QString msg;
-  msg = QString(tr("%1 download(s) with %2 error(s) done.")).arg(requests).arg(errors);
+  QString msg = QString(tr("%1 download(s) with %2 error(s) done.")).arg(requests).arg(errors);
 
-  QMessageBox::information( Map::instance,
-                            tr("Downloads finished"),
-                            msg );
+  QMessageBox mb( QMessageBox::Information,
+                  tr("Downloads finished"),
+                  msg,
+                  QMessageBox::Ok,
+                  Map::instance );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( Map::instance->width()/2 - mb.width()/2,
+                                   Map::instance->height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  mb.exec();
 }
 
 /** Called, if a network error occurred during the downloads. */
@@ -1606,12 +1618,24 @@ void MapContents::slotNetworkError()
   // Reset user decision flag
   shallDownloadData = false;
 
-  QString msg;
-  msg = QString(tr("Network error occurred.\nAll downloads are canceled!"));
+  QString msg = QString(tr("Network error occurred.\nAll downloads are canceled!"));
 
-  QMessageBox::information( Map::instance,
-                            tr("Network Error"),
-                            msg );
+  QMessageBox mb( QMessageBox::Warning,
+                  tr("Network Error"),
+                  msg,
+                  QMessageBox::Ok,
+                  Map::instance );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( Map::instance->width()/2 - mb.width()/2,
+                                   Map::instance->height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  mb.exec();
 }
 
 /**
@@ -1628,14 +1652,25 @@ bool MapContents::__askUserForDownload()
 
   hasAskForDownload = true;
 
-  int answer = QMessageBox::question( Map::instance,
-                  tr("Download missing Data?"),
-                  tr("Download missing Data from the Internet?") +
-                  QString("<p>") +
-                  tr("Active Internet connection is needed!"),
-                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+  QMessageBox mb( QMessageBox::Question,
+                  tr( "Download missing Data?" ),
+                  tr( "Download missing Data from the Internet?" ) +
+                  QString("<p>") + tr("Active Internet connection is needed!"),
+                  QMessageBox::Yes | QMessageBox::No,
+                  Map::instance );
 
-  if( answer == QMessageBox::Yes )
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( Map::instance->width()/2 - mb.width()/2,
+                                   Map::instance->height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  if( mb.exec() == QMessageBox::Yes )
     {
       shallDownloadData = true;
     }
