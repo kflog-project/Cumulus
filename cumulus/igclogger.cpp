@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2011 by Axel Pauli
+                               2008-2012 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -552,13 +552,24 @@ void IgcLogger::slotToggleLogging()
   // qDebug("toggle logging!");
   if ( _logMode == on )
     {
-      int answer = QMessageBox::question( QApplication::activeWindow(),
-                                          tr("Stop Logging?"),
-                                          tr("<html>Are you sure you want<br>stop logging?</html>"),
-                                          QMessageBox::No|QMessageBox::Yes,
-                                          QMessageBox::No );
+      QMessageBox mb( QMessageBox::Question,
+                      tr( "Stop Logging?" ),
+                      tr("<html>Are you sure you want<br>stop logging?</html>"),
+                      QMessageBox::Yes | QMessageBox::No,
+                      QApplication::activeWindow() );
 
-      if (answer == QMessageBox::Yes)
+      mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal( QPoint( QApplication::activeWindow()->width()/2 - mb.width()/2,
+                                        QApplication::activeWindow()->height()/2 - mb.height()/2 ) );
+      mb.move( pos );
+
+#endif
+
+      if( mb.exec() == QMessageBox::Yes )
         {
           // qDebug("Stopping logging...");
           Stop();
@@ -571,11 +582,24 @@ void IgcLogger::slotToggleLogging()
 
       if( ! calculator->glider() )
         {
-          answer = QMessageBox::warning( QApplication::activeWindow(),
-                     tr("Start Logging?"),
-                     tr("<html>You should select a glider<br>before start logging.<br>Continue start logging?</html>"),
-                     QMessageBox::No|QMessageBox::Yes,
-                     QMessageBox::No );
+          QMessageBox mb( QMessageBox::Warning,
+                          tr( "Start Logging?" ),
+                          tr("<html>You should select a glider<br>before start logging.<br>Continue start logging?</html>"),
+                          QMessageBox::Yes | QMessageBox::No,
+                          QApplication::activeWindow() );
+
+          mb.setDefaultButton( QMessageBox::No );
+
+    #ifdef ANDROID
+
+          mb.show();
+          QPoint pos = mapToGlobal( QPoint( QApplication::activeWindow()->width()/2 - mb.width()/2,
+                                            QApplication::activeWindow()->height()/2 - mb.height()/2 ) );
+          mb.move( pos );
+
+    #endif
+
+          answer = mb.exec();
         }
 
       if( answer == QMessageBox::Yes )
@@ -599,13 +623,24 @@ void IgcLogger::slotNewTaskSelected()
       return;
     }
 
-  int answer = QMessageBox::question( QApplication::activeWindow(),
-                                      tr("Restart Logging?"),
-                                      tr("<html>A new flight task was selected.<br>Restart logging?</html>"),
-                                      QMessageBox::No|QMessageBox::Yes,
-                                      QMessageBox::No );
+  QMessageBox mb( QMessageBox::Warning,
+                  tr( "Restart Logging?" ),
+                  tr("<html>A new flight task was selected.<br>Restart logging?</html>"),
+                  QMessageBox::Yes | QMessageBox::No,
+                  QApplication::activeWindow() );
 
-  if( answer == QMessageBox::Yes )
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal( QPoint( QApplication::activeWindow()->width()/2 - mb.width()/2,
+                                    QApplication::activeWindow()->height()/2 - mb.height()/2 ) );
+  mb.move( pos );
+
+#endif
+
+  if( mb.exec() == QMessageBox::Yes )
     {
       // qDebug("Restarting logging...");
       Stop();
