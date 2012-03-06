@@ -172,14 +172,28 @@ void PreFlightWidget::slot_accept()
 
   if (curTask && newTask && newTaskPassed)
     {
-      int answer = QMessageBox::question(this, tr("Replace previous task?"),
-          tr( "<html>"
-              "Do you want to replace the previous task?<br>"
-              "A selected target is reset at task start."
-              "</html>"), QMessageBox::Yes,
-          QMessageBox::No | QMessageBox::Escape);
+      QMessageBox mb( QMessageBox::Question,
+                      tr( "Replace current task?" ),
+                      tr( "<html>"
+                          "Do you want to replace the current task?<br>"
+                          "A selected target is reset to task start."
+                          "</html>" ),
+                      QMessageBox::Yes | QMessageBox::No,
+                      this );
 
-      if (answer != QMessageBox::Yes)
+      mb.setDefaultButton( QMessageBox::No );
+
+    #ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+    #endif
+
+
+      if( mb.exec() != QMessageBox::Yes )
         {
           // do nothing change
           delete newTask;
