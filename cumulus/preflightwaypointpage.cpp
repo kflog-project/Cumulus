@@ -241,7 +241,28 @@ void PreFlightWaypointPage::save()
                                  QMessageBox::Ok|QMessageBox::No,
                                  QMessageBox::No );
 
-      if( answer == QMessageBox::No )
+      QMessageBox mb( QMessageBox::Question,
+                      tr( "Continue?" ),
+                      tr("The waypoint storage format was changed. "
+                      "Storing data in new format can overwrite existing data!") +
+                      "<br><br>" +
+                      tr("Continue storing?") +
+                      "</html>",
+                      QMessageBox::Yes | QMessageBox::No,
+                      this );
+
+      mb.setDefaultButton( QMessageBox::No );
+
+    #ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+    #endif
+
+      if( mb.exec() == QMessageBox::No )
         {
           return;
         }
@@ -388,37 +409,71 @@ void PreFlightWaypointPage::slotImportFile()
     {
       if( errorMsg.isEmpty() )
         {
-          QMessageBox::information( this,
-                                    tr("No entries read"),
-                                    QString("<html>") +
-                                    tr("No waypoints read from file!") +
-                                    "<br>" +
-                                    tr("Maybe you should change the filter values?") +
-                                    "</html>" );
+          QMessageBox mb( QMessageBox::Information,
+                          tr( "No entries read" ),
+                          tr("No waypoints read from file!") +
+                          "<br>" +
+                          tr("Maybe you should change the filter values?") +
+                          "</html>",
+                          QMessageBox::Ok,
+                          this );
+
+#ifdef ANDROID
+
+          mb.show();
+          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                           height()/2 - mb.height()/2 ));
+          mb.move( pos );
+
+#endif
+
+          mb.exec();
         }
       else
         {
-          QMessageBox::critical( this,
-                                 tr("Error in file ") + QFileInfo( fName ).fileName(),
-                                 errorMsg,
-                                 QMessageBox::Ok );
+          QMessageBox mb( QMessageBox::Critical,
+                          tr("Error in file ") + QFileInfo( fName ).fileName(),
+                          errorMsg,
+                          QMessageBox::Ok,
+                          this );
+
+#ifdef ANDROID
+
+          mb.show();
+          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                           height()/2 - mb.height()/2 ));
+          mb.move( pos );
+
+#endif
+          mb.exec();
         }
 
       return;
     }
 
-  int answer =
-      QMessageBox::question( this,
-                             tr("Continue?"),
-                             QString("<html>") +
-                             QString(tr("%1 waypoints would be read.")).arg(wpCount) +
-                             "<br><br>" +
-                             tr("Continue loading?") +
-                             "</html>",
-                             QMessageBox::Ok|QMessageBox::No,
-                             QMessageBox::No );
+  QMessageBox mb( QMessageBox::Question,
+                  tr( "Continue?" ),
+                  QString("<html>") +
+                  QString(tr("%1 waypoints would be read.")).arg(wpCount) +
+                  "<br><br>" +
+                  tr("Continue loading?") +
+                  "</html>",
+                  QMessageBox::Yes | QMessageBox::No,
+                  this );
 
-  if( answer == QMessageBox::No )
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+
+  if( mb.exec() == QMessageBox::No )
     {
       return;
     }
@@ -445,11 +500,24 @@ void PreFlightWaypointPage::slotImportFile()
 
   if( memFree < MINIMUM_FREE_MEMORY )
     {
-      QMessageBox::warning( this,
-                            tr("Low on memory!"),
-                            QString("<html>") +
-                            tr("Waypoint import failed due to low on memory!") +
-                            "</html>" );
+      QMessageBox mb( QMessageBox::Warning,
+                      tr( "Low on memory!" ),
+                      QString("<html>") +
+                      tr("Waypoint import failed due to low on memory!") +
+                      "</html>",
+                      QMessageBox::Ok,
+                      this );
+
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+
+      mb.exec();
       return;
     }
 
@@ -515,9 +583,22 @@ void PreFlightWaypointPage::slotImportFile()
 
   result += "</html>";
 
-  QMessageBox::information( this,
-                            tr("Import Results"),
-                            result );
+  QMessageBox mb1( QMessageBox::Information,
+                   tr("Import Results"),
+                   result,
+                   QMessageBox::Ok,
+                   this );
+
+#ifdef ANDROID
+
+  mb1.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb1.width()/2,
+                                   height()/2 - mb1.height()/2 ));
+  mb1.move( pos );
+
+#endif
+
+  mb1.exec();
 }
 
 void PreFlightWaypointPage::loadAirfieldComboBox()

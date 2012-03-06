@@ -242,9 +242,6 @@ void PreFlightTaskList::showEvent(QShowEvent *)
           // set the splitter line to a new place
           splitter->setSizes(sizeList);
         }
-
-      // Notice user how to add a new task
-      QTreeWidgetItem* selected = taskListWidget->selectedItems().at(0);
     }
 
   taskListWidget->resizeColumnToContents(0);
