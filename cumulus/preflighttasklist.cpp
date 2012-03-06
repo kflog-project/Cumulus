@@ -652,11 +652,24 @@ void PreFlightTaskList::slotDeleteTask()
       return;
     }
 
-  int answer= QMessageBox::question(this,tr("Delete Task"),
-                                    tr("Delete the selected task?"),
-                                    QMessageBox::No, QMessageBox::Yes );
+  QMessageBox mb( QMessageBox::Question,
+                  tr( "Delete Task?" ),
+                  tr( "Delete the selected task?" ),
+                  QMessageBox::Yes | QMessageBox::No,
+                  this );
 
-  if ( answer != QMessageBox::Yes )
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  if ( mb.exec() != QMessageBox::Yes )
     {
       return;
     }
