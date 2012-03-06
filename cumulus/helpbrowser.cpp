@@ -42,37 +42,31 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
   QPushButton *home = new QPushButton();
   home->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home_new.png") ) );
   home->setIconSize(QSize(IconSize, IconSize));
-  // home->setFlat(true);
   home->setToolTip( tr("Begin") );
 
   QPushButton *back = new QPushButton();
   back->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "left.png") ) );
   back->setIconSize(QSize(IconSize, IconSize));
-  //back->setFlat(true);
   back->setToolTip( tr("Backward") );
 
   QPushButton *forward = new QPushButton();
   forward->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "right.png") ) );
   forward->setIconSize(QSize(IconSize, IconSize));
-  // forward->setFlat(true);
   forward->setToolTip( tr("Forward") );
 
   zoomIn = new QPushButton();
   zoomIn->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomin.png") ) );
   zoomIn->setIconSize(QSize(IconSize, IconSize));
-  // forward->setFlat(true);
   zoomIn->setToolTip( tr("Zoom in") );
 
   zoomOut = new QPushButton();
   zoomOut->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomout.png") ) );
   zoomOut->setIconSize(QSize(IconSize, IconSize));
-  // forward->setFlat(true);
   zoomOut->setToolTip( tr("Zoom out") );
 
   QPushButton *close = new QPushButton();
   close->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "cancel.png") ) );
   close->setIconSize(QSize(IconSize, IconSize));
-  // close->setFlat(true);
   close->setToolTip( tr("Close") );
 
   QHBoxLayout *butLayout = new QHBoxLayout;
@@ -89,12 +83,12 @@ HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
   mainLayout->addWidget( browser );
   setLayout( mainLayout );
 
-  connect( home, SIGNAL(clicked()),    browser, SLOT(home()));
-  connect( back, SIGNAL(clicked()),    browser, SLOT(backward()));
-  connect( forward, SIGNAL(clicked()), browser, SLOT(forward()));
+  connect( home, SIGNAL(released()),    browser, SLOT(home()));
+  connect( back, SIGNAL(released()),    browser, SLOT(backward()));
+  connect( forward, SIGNAL(released()), browser, SLOT(forward()));
   connect( zoomIn, SIGNAL(pressed()),  this, SLOT( slotZoomIn()));
   connect( zoomOut, SIGNAL(pressed()), this, SLOT( slotZoomOut()));
-  connect( close, SIGNAL(clicked()),   this, SLOT( close()));
+  connect( close, SIGNAL(released()),   this, SLOT( close()));
 }
 
 HelpBrowser::~HelpBrowser()
@@ -137,9 +131,22 @@ void HelpBrowser::showEvent( QShowEvent * )
     {
       hide();
 
-      QMessageBox::warning( this, "Missing help file",
-                            tr("<html><b>The help file was not found.<br>"
-                               "Maybe it is not installed?</b></html>"));
+      QMessageBox mb( QMessageBox::Warning,
+                      tr( "Missing help file" ),
+                      tr("<html><b>The help file was not found.<br>"
+                         "Maybe it is not installed?</b></html>"),
+                      QMessageBox::Ok,
+                      this );
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+
+      mb.exec();
       QWidget::close();
       return;
     }
@@ -154,23 +161,13 @@ void HelpBrowser::slotZoomIn()
 {
   if( zoomIn->isDown() )
     {
-      QFont curFt = font();
+      QFont curFt = browser->currentFont();
 
-#ifdef USE_POINT_SIZE_FONT
-      if( curFt.pointSize() < 24 )
+      if( (curFt.pointSize() != -1 && curFt.pointSize() < 24) ||
+          (curFt.pixelSize() != -1 && curFt.pixelSize() < 24) )
         {
-          curFt.setPointSize( curFt.pointSize() + 1 );
-          setFont( curFt );
-          update();
+          browser->zoomIn();
         }
-#else
-      if( curFt.pixelSize() < 24 )
-        {
-          curFt.setPixelSize( curFt.pointSize() + 1 );
-          setFont( curFt );
-          update();
-        }
-#endif
 
       // Start repetition timer, to check, if button is longer pressed.
       QTimer::singleShot(300, this, SLOT(slotZoomIn()));
@@ -182,24 +179,13 @@ void HelpBrowser::slotZoomOut()
 {
   if( zoomOut->isDown() )
     {
-      QFont curFt = font();
+      QFont curFt = browser->currentFont();
 
-#ifdef USE_POINT_SIZE_FONT
-      if( curFt.pointSize() > 10 )
+      if( (curFt.pointSize() != -1 && curFt.pointSize() > 8) ||
+          (curFt.pixelSize() != -1 && curFt.pixelSize() > 8))
         {
-          curFt.setPointSize( curFt.pointSize() - 1 );
-          setFont( curFt );
-          update();
+          browser->zoomOut();
         }
-#else
-      if( curFt.pixelSize() > 10 )
-        {
-          curFt.setPixelSize( curFt.pointSize() - 1 );
-          setFont( curFt );
-          update();
-        }
-
-#endif
 
       // Start repetition timer, to check, if button is longer pressed.
       QTimer::singleShot(300, this, SLOT(slotZoomOut()));
