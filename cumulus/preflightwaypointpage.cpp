@@ -580,9 +580,9 @@ void PreFlightWaypointPage::slotImportFile()
 #ifdef ANDROID
 
   mb1.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb1.width()/2,
-                                   height()/2 - mb1.height()/2 ));
-  mb1.move( pos );
+  QPoint pos1 = mapToGlobal(QPoint( width()/2  - mb1.width()/2,
+                                    height()/2 - mb1.height()/2 ));
+  mb1.move( pos1 );
 
 #endif
 

@@ -1594,13 +1594,13 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
                   tr("Downloads finished"),
                   msg,
                   QMessageBox::Ok,
-                  Map::instance );
+                  QApplication::desktop() );
 
 #ifdef ANDROID
 
   mb.show();
-  QPoint pos = mapToGlobal(QPoint( Map::instance->width()/2 - mb.width()/2,
-                                   Map::instance->height()/2 - mb.height()/2 ));
+  QPoint pos = QApplication::desktop()->mapToGlobal(QPoint( QApplication::desktop()->width()/2  - mb.width()/2,
+                                                            QApplication::desktop()->height()/2 - mb.height()/2 ));
   mb.move( pos );
 
 #endif
@@ -1624,13 +1624,13 @@ void MapContents::slotNetworkError()
                   tr("Network Error"),
                   msg,
                   QMessageBox::Ok,
-                  Map::instance );
+                  QApplication::desktop() );
 
 #ifdef ANDROID
 
   mb.show();
-  QPoint pos = mapToGlobal(QPoint( Map::instance->width()/2 - mb.width()/2,
-                                   Map::instance->height()/2 - mb.height()/2 ));
+  QPoint pos = QApplication::desktop()->mapToGlobal(QPoint( QApplication::desktop()->width()/2  - mb.width()/2,
+                                                            QApplication::desktop()->height()/2 - mb.height()/2 ));
   mb.move( pos );
 
 #endif
@@ -1657,15 +1657,15 @@ bool MapContents::__askUserForDownload()
                   tr( "Download missing Data from the Internet?" ) +
                   QString("<p>") + tr("Active Internet connection is needed!"),
                   QMessageBox::Yes | QMessageBox::No,
-                  Map::instance );
+                  QApplication::desktop() );
 
   mb.setDefaultButton( QMessageBox::No );
 
 #ifdef ANDROID
 
   mb.show();
-  QPoint pos = mapToGlobal(QPoint( Map::instance->width()/2 - mb.width()/2,
-                                   Map::instance->height()/2 - mb.height()/2 ));
+  QPoint pos = QApplication::desktop()->mapToGlobal(QPoint( QApplication::desktop()->width()/2  - mb.width()/2,
+                                                            QApplication::desktop()->height()/2 - mb.height()/2 ));
   mb.move( pos );
 
 #endif

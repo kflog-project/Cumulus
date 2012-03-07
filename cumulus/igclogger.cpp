@@ -22,12 +22,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <stdlib.h>
+#include <cstdlib>
 
-#include <QtGlobal>
-#include <QCoreApplication>
-#include <QMessageBox>
-#include <QDir>
+#include <QtGui>
 
 #include "igclogger.h"
 #include "gpsnmea.h"
@@ -556,15 +553,15 @@ void IgcLogger::slotToggleLogging()
                       tr( "Stop Logging?" ),
                       tr("<html>Are you sure you want<br>stop logging?</html>"),
                       QMessageBox::Yes | QMessageBox::No,
-                      QApplication::activeWindow() );
+                      QApplication::desktop() );
 
       mb.setDefaultButton( QMessageBox::No );
 
 #ifdef ANDROID
 
       mb.show();
-      QPoint pos = mapToGlobal( QPoint( QApplication::activeWindow()->width()/2 - mb.width()/2,
-                                        QApplication::activeWindow()->height()/2 - mb.height()/2 ) );
+      QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - mb.width()/2,
+                                                                 QApplication::desktop()->height()/2 - mb.height()/2 ) );
       mb.move( pos );
 
 #endif
@@ -586,15 +583,15 @@ void IgcLogger::slotToggleLogging()
                           tr( "Start Logging?" ),
                           tr("<html>You should select a glider<br>before start logging.<br>Continue start logging?</html>"),
                           QMessageBox::Yes | QMessageBox::No,
-                          QApplication::activeWindow() );
+                          QApplication::desktop() );
 
           mb.setDefaultButton( QMessageBox::No );
 
     #ifdef ANDROID
 
           mb.show();
-          QPoint pos = mapToGlobal( QPoint( QApplication::activeWindow()->width()/2 - mb.width()/2,
-                                            QApplication::activeWindow()->height()/2 - mb.height()/2 ) );
+          QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - mb.width()/2,
+                                                                     QApplication::desktop()->height()/2 - mb.height()/2 ) );
           mb.move( pos );
 
     #endif
@@ -627,15 +624,15 @@ void IgcLogger::slotNewTaskSelected()
                   tr( "Restart Logging?" ),
                   tr("<html>A new flight task was selected.<br>Restart logging?</html>"),
                   QMessageBox::Yes | QMessageBox::No,
-                  QApplication::activeWindow() );
+                  QApplication::desktop() );
 
   mb.setDefaultButton( QMessageBox::No );
 
 #ifdef ANDROID
 
   mb.show();
-  QPoint pos = mapToGlobal( QPoint( QApplication::activeWindow()->width()/2 - mb.width()/2,
-                                    QApplication::activeWindow()->height()/2 - mb.height()/2 ) );
+  QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - mb.width()/2,
+                                                             QApplication::desktop()->height()/2 - mb.height()/2 ) );
   mb.move( pos );
 
 #endif

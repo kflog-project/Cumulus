@@ -258,15 +258,15 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
                           "<br>Do You really want to replace?"
                           "</html>" ),
                       QMessageBox::Yes | QMessageBox::No,
-                      QApplication::activeWindow() );
+                      QApplication::desktop() );
 
       mb.setDefaultButton( QMessageBox::Yes );
 
 #ifdef ANDROID
 
       mb.show();
-      QPoint pos = mapToGlobal( QPoint( QApplication::activeWindow()->width()/2 - mb.width()/2,
-                                        QApplication::activeWindow()->height()/2 - mb.height()/2 ) );
+      QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - mb.width()/2,
+                                                                 QApplication::desktop()->height()/2 - mb.height()/2 ) );
       mb.move( pos );
 
 #endif
@@ -1658,15 +1658,15 @@ void Calculator::slot_startTask()
                                 "<br>Do You really want to restart?"
                                 "</html>" ),
                             QMessageBox::Yes | QMessageBox::No,
-                            QApplication::activeWindow() );
+                            QApplication::desktop() );
 
             mb.setDefaultButton( QMessageBox::Yes );
 
 #ifdef ANDROID
 
             mb.show();
-            QPoint pos = mapToGlobal( QPoint( QApplication::activeWindow()->width()/2 - mb.width()/2,
-                                              QApplication::activeWindow()->height()/2 - mb.height()/2 ) );
+            QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - mb.width()/2,
+                                                                            QApplication::desktop()->height()/2 - mb.height()/2 ) );
             mb.move( pos );
 
 #endif
