@@ -29,7 +29,7 @@
 #include "distance.h"
 #include "mapconfig.h"
 
-#ifdef MAEMO
+#if defined MAEMO || defined ANDROID
 #define FontSize 22
 #else
 #define FontSize 18

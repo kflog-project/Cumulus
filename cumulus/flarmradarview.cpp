@@ -51,7 +51,7 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
 
   int size = 40;
 
-#ifdef MAEMO
+#if defined MAEMO || defined ANDROID
   size = 60;
 #endif
 
