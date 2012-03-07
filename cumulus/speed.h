@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : 2002      by Andre Somers
-                         : 2007-2010 by Axel Pauli
+                         : 2007-2012 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -221,7 +221,7 @@ public:
      */
     static speedUnit getHorizontalUnit()
     {
-      return _horizontalUnit;;
+      return _horizontalUnit;
     };
 
     /**
