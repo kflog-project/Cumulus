@@ -282,6 +282,7 @@ void SettingsPageLookNFeel::slot_openColorDialog()
 
   // Open color chooser dialog to edit selected color
   QString title = tr("Map sidebar color");
+
   QColor newColor = QColorDialog::getColor( color, this, title );
 
   if( newColor.isValid() && color != newColor )

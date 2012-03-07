@@ -180,13 +180,25 @@ void AirfieldListView::slot_Home()
       return;
     }
 
-  int answer= QMessageBox::question(this,
-                                   tr("Set home site"),
-                                   tr("Use point<br><b>%1</b><br>as your home site?").arg(_wp->name) +
-                                   tr("<br>Change can take<br>a few seconds."),
-                                   QMessageBox::No, QMessageBox::Yes );
+  QMessageBox mb( QMessageBox::Question,
+                  tr( "Set home site" ),
+                  tr( "Use point<br><b>%1</b><br>as your home site?").arg(_wp->name) +
+                  tr("<br>Change can take<br>a few seconds and more."),
+                  QMessageBox::Yes | QMessageBox::No,
+                  this );
 
-  if( answer == QMessageBox::Yes )
+  mb.setDefaultButton( QMessageBox::Yes );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  if( mb.exec() == QMessageBox::Yes )
     {
       // save new home position and elevation
       conf->setHomeCountryCode( _wp->country );

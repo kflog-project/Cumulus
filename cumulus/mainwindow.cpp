@@ -758,9 +758,6 @@ MainWindow::~MainWindow()
 
 }
 
-/** As the name tells ...
-  *
-  */
 void MainWindow::playSound( const char *name )
 {
   if ( ! GeneralConfig::instance()->getAlarmSoundOn() )

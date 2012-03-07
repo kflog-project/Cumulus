@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Andre Somers
-**                   2007-2011 by Axel Pauli
+**                   2007-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -234,11 +234,24 @@ void WaypointListView::slot_deleteWPs()
       return;
     }
 
-  int answer= QMessageBox::question(this, tr("Delete"),
-                                   tr("Delete selected waypoints?"),
-                                   QMessageBox::No, QMessageBox::Yes);
+  QMessageBox mb( QMessageBox::Question,
+                  tr( "Delete?" ),
+                  tr( "Delete selected waypoints?" ),
+                  QMessageBox::Yes | QMessageBox::No,
+                  this );
 
-  if( answer == QMessageBox::Yes )
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  if( mb.exec() == QMessageBox::Yes )
     {
       // The calculator can own a selected waypoint. Important! First
       // announce deletion of waypoint for cancel to have a valid instance.
@@ -277,11 +290,24 @@ void WaypointListView::slot_deleteAllWPs()
       return;
     }
 
-  int answer= QMessageBox::question(this, tr("Delete All"),
-                                   tr("Delete all waypoints?"),
-                                   QMessageBox::No, QMessageBox::Yes);
+  QMessageBox mb( QMessageBox::Question,
+                  tr( "Delete All?" ),
+                  tr( "Delete all waypoints?" ),
+                  QMessageBox::Yes | QMessageBox::No,
+                  this );
 
-  if( answer == QMessageBox::Yes )
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  if( mb.exec() == QMessageBox::Yes )
     {
       // The calculator can own a waypoint. Important! First
       // announce deletion of waypoint for cancel to have a valid instance.
@@ -361,13 +387,25 @@ void WaypointListView::slot_setHome()
       return;
     }
 
-  int answer= QMessageBox::question(this,
-                                   tr("Set home site"),
-                                   tr("Use point<br><b>%1</b><br>as your home site?").arg(_wp->name) +
-                                   tr("<br>Change can take<br>a few seconds."),
-                                   QMessageBox::No, QMessageBox::Yes );
+  QMessageBox mb( QMessageBox::Question,
+                  tr( "Set home site"),
+                  tr("Use point<br><b>%1</b><br>as your home site?").arg(_wp->name) +
+                  tr("<br>Change can take<br>a few seconds."),
+                  QMessageBox::Yes | QMessageBox::No,
+                  this );
 
-  if( answer == QMessageBox::Yes )
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  if( mb.exec() == QMessageBox::Yes )
     {
       // save new home position and elevation
       conf->setHomeCountryCode( _wp->country );

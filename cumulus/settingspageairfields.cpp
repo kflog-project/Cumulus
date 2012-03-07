@@ -203,11 +203,21 @@ void SettingsPageAirfields::slot_save()
 
       if (s.length() != 2 || s.contains(QRegExp("[A-Za-z]")) != 2)
         {
-          QMessageBox::warning(
-              this,
-              tr("Please check entries"),
-              tr("Every Welt2000 county sign must consist of two letters!<br>Allowed separators are space and comma.<br>Your modification will not be saved!"),
-              QMessageBox::Ok, QMessageBox::NoButton);
+          QMessageBox mb( QMessageBox::Warning,
+                          tr( "Please check entries" ),
+                          tr("Every Welt2000 county sign must consist of two letters!<br>Allowed separators are space and comma.<br>Your modification will not be saved!"),
+                          QMessageBox::Ok,
+                          this );
+
+#ifdef ANDROID
+
+          mb.show();
+          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                           height()/2 - mb.height()/2 ));
+          mb.move( pos );
+
+#endif
+          mb.exec();
           return;
         }
     }
@@ -266,18 +276,45 @@ void SettingsPageAirfields::slot_installWelt2000()
 
   if( wfn.isEmpty() )
     {
-      QMessageBox::information ( this,
-                                 tr("Welt2000 settings invalid!"),
-                                 tr("Please add a valid Welt2000 filename!") );
+      QMessageBox mb( QMessageBox::Information,
+                      tr( "Welt2000 settings invalid!" ),
+                      tr( "Please add a valid Welt2000 filename!"),
+                      QMessageBox::Ok,
+                      this );
+
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+
+      mb.exec();
       return;
     }
 
-  int answer = QMessageBox::question( this, tr("Download Welt2000?"),
-      tr("Active Internet connection is needed!") +
-      QString("<p>") + tr("Start download now?"),
-      QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+  QMessageBox mb( QMessageBox::Question,
+                  tr( "Download Welt2000?"),
+                  tr( "Active Internet connection is needed!") +
+                  QString("<p>") + tr("Start download now?"),
+                  QMessageBox::Yes | QMessageBox::No,
+                  this );
 
-  if( answer == QMessageBox::No )
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+
+  if( mb.exec() == QMessageBox::No )
     {
       return;
     }

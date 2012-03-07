@@ -18,8 +18,8 @@
  **
  ***********************************************************************/
 
-#include <stdlib.h>
 #include <cmath>
+#include <cstdlib>
 
 #include <QtGui>
 
@@ -48,6 +48,7 @@ Calculator::Calculator(QObject* parent) :
   QObject(parent),
   samplelist( LimitedList<FlightSample>( MAX_SAMPLECOUNT ) )
 {
+  setObjectName( "Calculator" );
   GeneralConfig *conf = GeneralConfig::instance();
 
   manualAltitude.setMeters( conf->getManualNavModeAltitude() );
@@ -1663,16 +1664,14 @@ void Calculator::slot_startTask()
 
 #ifdef ANDROID
 
-      mb.show();
-      QPoint pos = mapToGlobal( QPoint( QApplication::activeWindow()->width()/2 - mb.width()/2,
-                                        QApplication::activeWindow()->height()/2 - mb.height()/2 ) );
-      mb.move( pos );
+            mb.show();
+            QPoint pos = mapToGlobal( QPoint( QApplication::activeWindow()->width()/2 - mb.width()/2,
+                                              QApplication::activeWindow()->height()/2 - mb.height()/2 ) );
+            mb.move( pos );
 
 #endif
-
-            if ( mb.exec() != QMessageBox::Yes )
+            if ( mb.exec() == QMessageBox::No )
               {
-                // do ignore the request
                 return;
               }
           }
@@ -1708,4 +1707,4 @@ bool Calculator::moving()
     }
 
   return false;
-};
+}

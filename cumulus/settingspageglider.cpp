@@ -16,13 +16,6 @@
 **
 ***********************************************************************/
 
-/**
- * This widget provides an interface to add, edit and delete gliders
- * from the glider list.
- *
- * @author André Somers
- */
-
 #include <QtGui>
 
 #include "generalconfig.h"
@@ -67,18 +60,15 @@ SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
   connect(cmdDel,  SIGNAL(clicked()), this, SLOT(slot_delete()));
 }
 
-
 SettingsPageGlider::~SettingsPageGlider()
 {
   // qDebug("SettingsPageGlider::~SettingsPageGlider() is called");
 }
 
-
 void SettingsPageGlider::showEvent(QShowEvent *)
 {
   list->setFocus();
 }
-
 
 /** Called when a new glider needs to be made. */
 void SettingsPageGlider::slot_new()
@@ -107,7 +97,6 @@ void SettingsPageGlider::slot_edit()
   editor->setVisible( true );
 }
 
-
 /** Called when the selected glider should be deleted from the catalog */
 void SettingsPageGlider::slot_delete()
 {
@@ -118,11 +107,24 @@ void SettingsPageGlider::slot_delete()
       return;
     }
 
-  int answer= QMessageBox::question(this,tr("Delete?"),tr("Delete selected glider?"),
-                                   QMessageBox::Yes,
-                                   QMessageBox::No | QMessageBox::Escape);
+  QMessageBox mb( QMessageBox::Question,
+                  tr( "Delete?" ),
+                  tr( "Delete selected glider?" ),
+                  QMessageBox::Yes | QMessageBox::No,
+                  this );
 
-  if( answer == QMessageBox::Yes )
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  if( mb.exec() == QMessageBox::Yes )
     {
       list->slot_Deleted( glider );
     }
@@ -134,12 +136,10 @@ void SettingsPageGlider::slot_load()
   list->fillList();
 }
 
-
 void SettingsPageGlider::slot_save()
 {
   list->save();
 }
-
 
 /* Called to ask is confirmation on the close is needed. */
 void SettingsPageGlider::slot_query_close(bool& warn, QStringList& warnings)
@@ -152,4 +152,3 @@ void SettingsPageGlider::slot_query_close(bool& warn, QStringList& warnings)
       warnings.append( tr( "The Glider list" ) );
     }
 }
-

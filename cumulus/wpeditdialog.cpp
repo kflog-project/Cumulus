@@ -215,27 +215,68 @@ bool WpEditDialog::checkWaypointData( Waypoint& wp )
 {
   if( wp.name.isEmpty() )
     {
-      QMessageBox::critical( this,tr("Name?"),
-                             tr("Please add\na waypoint\nname"),
-                             QMessageBox::Close );
+      QMessageBox mb( QMessageBox::Critical,
+                      tr( "Name?" ),
+                      tr( "Please add\na waypoint\nname" ),
+                      QMessageBox::Ok,
+                      this );
+
+    #ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+    #endif
+
+      mb.exec();
       return false;
     }
 
   if( wp.description.isEmpty() )
     {
-      QMessageBox::critical( this,tr("Description?"),
-                             tr("Please add\na waypoint\ndescription"),
-                             QMessageBox::Close );
+      QMessageBox mb( QMessageBox::Critical,
+                      tr( "Description?" ),
+                      tr( "Please add\na waypoint\ndescription" ),
+                      QMessageBox::Ok,
+                      this );
+
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+
+      mb.exec();
       return false;
     }
 
   if( wp.origP == QPoint(0,0) )
       {
-        int answer = QMessageBox::warning(this,tr("Coordinates?"),
-                                          tr("Waypoint coordinates not set, continue?"),
-                                          QMessageBox::No, QMessageBox::Yes );
-        if( answer == QMessageBox::Yes )
-          { // yes was chosen, ignore warning
+        QMessageBox mb( QMessageBox::Warning,
+                        tr( "Coordinates?" ),
+                        tr( "Waypoint coordinates not set, continue?" ),
+                        QMessageBox::Yes | QMessageBox::No,
+                        this );
+
+        mb.setDefaultButton( QMessageBox::No );
+
+  #ifdef ANDROID
+
+        mb.show();
+        QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                         height()/2 - mb.height()/2 ));
+        mb.move( pos );
+
+  #endif
+
+        if( mb.exec() == QMessageBox::Yes )
+          {
+            // yes was chosen, ignore warning
             return true;
           }
         else
@@ -258,29 +299,22 @@ bool WpEditDialog::isWaypointNameInList( QString& wpName )
   if( _globalMapContents->isInWaypointList( wpName ) )
     {
       // The waypoint name is already in use
-      QMessageBox::critical( this,tr("Name Conflict"),
-                             tr("Please use another name\nfor your new waypoint"),
-                             QMessageBox::Close );
-      return true;
-    }
+      QMessageBox mb( QMessageBox::Critical,
+                      tr( "Name Conflict" ),
+                      tr( "Please use another name\nfor your new waypoint" ),
+                      QMessageBox::Ok,
+                      this );
 
-  return false;
-}
+#ifdef ANDROID
 
-/**
-  * This method checks, if the passed waypoint name is multiple to find
-  * in the global waypoint list. If yes the user is informed with a
-  * message box about this fact.
-  * Returns true if yes otherwise false.
-  */
-bool WpEditDialog::countWaypointNameInList( QString& wpName )
-{
-  if( _globalMapContents->countNameInWaypointList( wpName ) > 1 )
-    {
-        // The waypoint name is more than one to find in the list
-      QMessageBox::critical( this,tr("Name Conflict"),
-                            tr("Please use another name\nfor your new waypoint"),
-                            QMessageBox::Close );
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+
+      mb.exec();
       return true;
     }
 

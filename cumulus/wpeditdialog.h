@@ -82,14 +82,6 @@ private:
      * Returns true if yes otherwise false.
      */
     bool isWaypointNameInList( QString& wpName );
-
-    /**
-     * This method checks, if the passed waypoint name is multiple to find
-     * in the global waypoint list. If yes the user is informed with a
-     * message box about this fact.
-     * Returns true if yes otherwise false.
-     */
-    bool countWaypointNameInList( QString& wpName );
   
 private slots:
 

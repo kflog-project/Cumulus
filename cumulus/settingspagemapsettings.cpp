@@ -14,13 +14,7 @@
 **
 **   $Id$
 **
-************************************************************************
-**
-** Contains the map projection related settings
-**
-** @author André Somers
-**
-***********************************************************************/
+************************************************************************/
 
 #include <QtGui>
 
@@ -264,12 +258,26 @@ void SettingsPageMapSettings::slot_installMaps()
       return;
     }
 
-  int answer = QMessageBox::question( this, tr("Download Maps?"),
-      tr("Active Internet connection is needed!") +
-      QString("<p>") + tr("Start download now?"),
-      QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+  QMessageBox mb( QMessageBox::Question,
+                  tr( "Download Maps?"),
+                  tr( "Active Internet connection is needed!") +
+                  QString("<p>") + tr("Start download now?"),
+                  QMessageBox::Yes | QMessageBox::No,
+                  this );
 
-  if( answer == QMessageBox::No )
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+
+  if( mb.exec() == QMessageBox::No )
     {
       return;
     }

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -404,9 +404,22 @@ void TaskEditor::slotAccept()
   // four task points are incomplete
   if ( tpList.count() < 4 )
     {
-      QMessageBox::critical(this,tr("Task Incomplete"),
-                           tr("Task needs at least four waypoints"),
-                           QMessageBox::Ok );
+      QMessageBox mb( QMessageBox::Critical,
+                      tr( "Task Incomplete" ),
+                      tr( "Task needs at least four waypoints" ),
+                      QMessageBox::Ok,
+                      this );
+
+    #ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+    #endif
+
+      mb.exec();
       return;
     }
 
@@ -415,37 +428,47 @@ void TaskEditor::slotAccept()
   // Check if the user has entered a task name
   if ( txt.length() == 0 )
     {
-      QMessageBox::critical(this,tr("Name Missing"),
-                           tr("Enter a name for the task to save it"),
-                           QMessageBox::Ok );
+      QMessageBox mb( QMessageBox::Critical,
+                      tr("Name Missing"),
+                      tr("Enter a name for the task to save it"),
+                      QMessageBox::Ok,
+                      this );
+
+    #ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+    #endif
+
+      mb.exec();
       return;
     }
 
-  if ( editState == TaskEditor::create )
+  if ( ( editState == TaskEditor::create && taskNamesInUse.contains( txt ) > 0 ) ||
+       ( editState != TaskEditor::create && txt != editedTaskName &&
+         taskNamesInUse.contains( txt ) > 0 ) )
     {
       // Check if the task name does not conflict with existing onces.
       // The name must be unique in the task name space
+      QMessageBox mb( QMessageBox::Critical,
+                      tr( "Name in Use"),
+                      tr( "Please enter a different name" ),
+                      QMessageBox::Ok,
+                      this );
 
-      if ( taskNamesInUse.contains( txt ) > 0 )
-        {
-          QMessageBox::critical(this,tr("Name in Use"),
-                               tr("Please enter a different name"),
-                               QMessageBox::Ok );
-          return;
-        }
-    }
-  else
-    {
-      // Check if the name of the edited task has been changed. In
-      // that case we have to check if the new name is unique
+#ifdef ANDROID
 
-      if ( txt != editedTaskName && taskNamesInUse.contains( txt ) > 0 )
-        {
-          QMessageBox::critical(this,tr("Name in Use"),
-                               tr("Please enter a different name"),
-                               QMessageBox::Ok );
-          return;
-        }
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+      mb.exec();
+      return;
     }
 
   // Take over changed task data and publish it
