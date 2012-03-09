@@ -275,16 +275,20 @@ int main(int argc, char *argv[])
 #endif
 #endif
 
-#ifdef USE_POINT_SIZE_FONT
-      appFont.setPointSize( appFSize );
-#else
-      appFont.setPixelSize( appFSize );
-#endif
+      // Check, what kind of font size is used by Qt.
+      if( QApplication::font().pointSize() != -1 )
+        {
+          appFont.setPointSize( appFSize );
+        }
+      else
+        {
+          appFont.setPixelSize( appFSize );
+        }
 
       QApplication::setFont( appFont );
     }
 
-  if( conf->getDisclaimerVersion() != DISCLAIMER_VERSION )
+  if( conf->getDisclaimerVersion() != 5 ) //DISCLAIMER_VERSION )
     {
       QApplication::beep();
 
@@ -300,10 +304,9 @@ int main(int argc, char *argv[])
             "responsible for using official aeronautical<br>"
             "charts and proper methods for safe navigation.<br>"
             "The information presented in this software<br>"
-            "program may be outdated or incorrect."
+            "program may be outdated or incorrect.<br>"
+            "<br><b>Do You accept these terms?</b>"
             "</html>");
-
-      QString question = QObject::tr( "<b>Do You accept these terms?</b>" );
 
       QMessageBox msgBox;
 
@@ -311,19 +314,21 @@ int main(int argc, char *argv[])
       QFont font = QApplication::font();
 
       // adapt font size to a readable one for the screen
-#ifdef USE_POINT_SIZE_FONT
-      font.setPointSize( size );
-#else
-      font.setPixelSize( size );
-#endif
+      if( font.pointSize() != -1 )
+        {
+          font.setPointSize( size );
+        }
+      else
+        {
+          font.setPixelSize( size );
+        }
 
       msgBox.setFont( font );
       msgBox.setWindowTitle( QObject::tr("Cumulus Disclaimer") );
       msgBox.setIcon ( QMessageBox::Warning );
       msgBox.setText( disclaimer );
-      msgBox.setInformativeText( question );
       msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
-      msgBox.setDefaultButton( QMessageBox::Yes );      
+      msgBox.setDefaultButton( QMessageBox::No );
 
 #ifdef ANDROID
 
@@ -334,8 +339,8 @@ int main(int argc, char *argv[])
       msgBox.setVisible(true);
 
       // Under Android the box must be moved into the center of the desktop screen.
-      int dtw = QApplication::desktop()->screenGeometry().width();
-      int dth = QApplication::desktop()->screenGeometry().height();
+      int dtw = QApplication::desktop()->availableGeometry().width();
+      int dth = QApplication::desktop()->availableGeometry().height();
 
       QSize ts = td.size().toSize();
 
