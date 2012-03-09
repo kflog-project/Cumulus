@@ -21,7 +21,6 @@ package org.kflog.cumulus;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -53,22 +52,22 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 
 import org.kde.necessitas.origo.QtActivity;
-import org.kde.necessitas.origo.QtApplication;
 
 public class CumulusActivity extends QtActivity
 {
   static final int               DIALOG_CLOSE_ID  = 0;
   static final int               DIALOG_MENU_ID   = 1;
   static final int               DIALOG_CANCEL_ID = 2;
+  static final int               DIALOG_NO_SDCARD = 3;
+  static final int               DIALOG_ZIP_ERR   = 4;
+  
   static final int               MENU_SETUP       = 0;
   static final int               MENU_PREFLIGHT   = 1;
   static final int               MENU_QUIT        = 2;
-  static final int               SOFTKEY_OPENED   = 1;
-  static final int               SOFTKEY_CLOSED   = 0;
 
   private PowerManager.WakeLock  wl               = null;
   private AsyncPlayer            apl, npl;
-  private LocationManager        lm;
+  private LocationManager        lm               = null;
   private String                 bestProvider;
   private LocationListener       ll               = null;
   private GpsStatus.Listener     gl               = null;
@@ -97,7 +96,7 @@ public class CumulusActivity extends QtActivity
   public static native boolean isRootWindow();
 
   /**
-   * Called via jni to get the class instance.
+   * Called from jni to get the class instance.
    */
   private static Object getObjectRef()
     {
@@ -108,11 +107,11 @@ public class CumulusActivity extends QtActivity
   @Override
   public void onCreate(Bundle savedInstanceState)
 	{
-       Log.d("Java#CumulusActivity", "onCreate Entry" );
+    Log.d("Java#CumulusActivity", "onCreate Entry" );
 
-        objectRef = this;
+    objectRef = this;
 
-        super.onCreate(savedInstanceState);
+    super.onCreate(savedInstanceState);
 
 		boolean dataFolderAvailable = false;
 		
@@ -123,9 +122,7 @@ public class CumulusActivity extends QtActivity
         if (! Environment.MEDIA_MOUNTED.equals(state))
           {
             Log.d("Java#CumulusActivity", "Exiting, SdCard is not mounted!" );
-
-            // TODO add an error text for the user
-            showDialog(DIALOG_CANCEL_ID);
+            showDialog(DIALOG_NO_SDCARD);
             return;
           }
 
@@ -152,6 +149,12 @@ public class CumulusActivity extends QtActivity
           {
             // It seems the some needed files are not installed, do it again.
             boolean res = installAddData( addDataDir.getAbsolutePath(), getAssets() );
+            
+            if( res == false )
+            {
+              showDialog(DIALOG_ZIP_ERR);      
+              return;
+            }
           }
         }
     
@@ -178,8 +181,7 @@ public class CumulusActivity extends QtActivity
       
       if( res == false )
       {
-        // TODO add user error message
-        showDialog(DIALOG_CANCEL_ID);      
+        showDialog(DIALOG_ZIP_ERR);      
         return;
       }
       
@@ -217,24 +219,70 @@ public class CumulusActivity extends QtActivity
 
 //	Criteria criteria = new Criteria();
 //	criteria.setAccuracy(Criteria.ACCURACY_FINE);
-    lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		
-    nl = new GpsStatus.NmeaListener()
+    lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    
+    if( lm == null )
     {
-      public void onNmeaReceived(long timestamp, String nmea)
+    	Log.d("Java#CumulusActivity", "System said: LOCATION_SERVICE is null!" );
+    }
+    else
+    {	
+      nl = new GpsStatus.NmeaListener()
       {
-        nativeNmeaString(nmea);
-      }
-    };
+        public void onNmeaReceived(long timestamp, String nmea)
+        {
+          nativeNmeaString(nmea);
+        }
+      };
+  
+  		lm.addNmeaListener(nl);
+    }
+    
+    // TODO Check what must be done here!
+    ll =  new LocationListener()
+    {       
+            @Override
+            public void onLocationChanged(Location l) {
+/*//                            Log.i("Cumulus#Java", "location has changed, transfer values to native Cumulus");
+                    nativeGpsFix(l.getLatitude(), l.getLongitude(), l.getAltitude(), l.getSpeed(),
+                                    l.getBearing(), l.getAccuracy(), l.getTime());
+                    locationUpdated = true; 
+/*                              if (receiver.gpsFix()) 
+                            nativeGpsStatus(2, 0);
+                    else    
+                            nativeGpsStatus(1, 0); * / 
+*///
+            }       
 
-		lm.addNmeaListener(nl);
+            @Override
+            public void onProviderDisabled(String provider) {
+            }       
 
-        Log.d("Java#CumulusActivity", "onCreate exit" );
+            @Override
+            public void onProviderEnabled(String provider) {
+            }       
+
+            @Override
+            public void onStatusChanged(String provider, int status, 
+                            Bundle extras) {
+/*                              int numsats = 0;
+                    if ( extras.containsKey("satellites") ) {
+                            numsats = extras.getInt("satellites");
+                    }       
+                    Log.i("Cumulus#Java", "GPS status has changed - status: " + status + ", sats: " + numsats 
+                                    + ", provider: " + provider + "\n send status and sats to native Cumulus");
+                    nativeGpsStatus(status, numsats);
+                    */      
+            }
+    };      
+
+
+    Log.d("Java#CumulusActivity", "onCreate exit" );
   }
 
 
-    @Override
-    protected void onDestroy()
+  @Override
+  protected void onDestroy()
 	{
       if( wl != null )
         {
@@ -254,7 +302,6 @@ public class CumulusActivity extends QtActivity
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
     // System.out.println("QtMain.onKeyDown, key pressed: "+event.toString());
-
     if( keyCode == KeyEvent.KEYCODE_BACK )
       {
          if(isRootWindow() )
@@ -281,7 +328,6 @@ public class CumulusActivity extends QtActivity
 	public boolean onKeyUp(int keyCode, KeyEvent event)
 	{
     // System.out.println("QtMain.onKeyUp, key released: "+event.toString());
-
     if( keyCode == KeyEvent.KEYCODE_BACK )
       {
         return true;
@@ -322,30 +368,38 @@ public class CumulusActivity extends QtActivity
 	    }
 	}
 
-	protected AlertDialog onCreateDialog(int id) {
+	protected AlertDialog onCreateDialog(int id)
+	{
 		AlertDialog alert;
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		switch(id) {
-		case DIALOG_CLOSE_ID:
-			builder.setMessage("Do you really want to close Cumulus?")
-			.setCancelable(false)
-			.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-                    CumulusActivity.this.finish();
-				}
-			})
-			.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
-			alert = builder.create();
-			break;
+		
+		switch(id)
+		{
+  		case DIALOG_CLOSE_ID:
+  			builder.setMessage("Do you really want to close Cumulus?")
+  			       .setCancelable(false)
+  			       .setPositiveButton( "Ok", new DialogInterface.OnClickListener() {
+                            				public void onClick(DialogInterface dialog, int id) {
+                                                CumulusActivity.this.finish();
+                            				}
+                            			})
+  			       .setNegativeButton(" Cancel", new DialogInterface.OnClickListener() {
+                            				public void onClick(DialogInterface dialog, int id) {
+                            					dialog.cancel();
+                            				}
+                            			});
+  			
+  			alert = builder.create();
+  			break;
 			
 		case DIALOG_MENU_ID:
 			CharSequence[] items = {"General Setup", "Preflight Setup", "Enable GPS", "GPS Status", "Quit"};
+			
 			if (gpsEnabled)
+			{
 				items[2] = "Disable GPS";
+			}
 			
 			builder = new AlertDialog.Builder(this);
 			builder.setTitle("Main Menu");
@@ -365,12 +419,12 @@ public class CumulusActivity extends QtActivity
 						nativeKeypress((char)27);
 						break;
 					case 4:
-                        // Send a quit call to the QtApplication, to make a sure shutdown.
-                        if( isRootWindow() )
-                          {
-                            // Only root window will get a quit
-                            nativeKeypress((char)28);
-                          }
+            // Send a quit call to the QtApplication, to make a sure shutdown.
+            if( isRootWindow() )
+              {
+                // Only root window will get a quit
+                nativeKeypress((char)28);
+              }
 						break;
 					}
 				}
@@ -392,25 +446,62 @@ public class CumulusActivity extends QtActivity
 			alert = builder.create();
 			break;
 			
+		case DIALOG_NO_SDCARD:
+			builder.setMessage("Cumulus needs a sdcard for data storing!\n" +
+		                     "Please insert a sdcard and mount it.")
+					.setCancelable(false)
+					.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+                     CumulusActivity.this.finish();
+				}
+			});
+			alert = builder.create();
+			break;
+			
+		case DIALOG_ZIP_ERR:
+			builder.setMessage("Cumulus cannot unzip its data on the sdcard!")
+					.setCancelable(false)
+					.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+                     CumulusActivity.this.finish();
+				}
+			});
+			alert = builder.create();
+			break;
+			
+			
 		default:
 			alert = null;
 			break;
 		}
+		
 		return alert;
 	}
 	
-	private void toggleGps() {
+	private void toggleGps()
+	{
 		removeDialog(DIALOG_MENU_ID);
-		if (gpsEnabled) {
+		
+		if( lm == null )
+		{
+			// No location service available. Do nothing otherwise an exception is raised.
+			return;
+		}
+		
+		if (gpsEnabled)
+		{
 			Log.i("Cumulus#Java", "disable LocationListener, set GPS status to OFF");
 			lm.removeUpdates(ll);
 			nativeGpsStatus(0, 0);
-		} else {
+		}
+		else
+		{
 			Log.i("Cumulus#Java", "activating LocationListener, set GPS status to NO_FIX");
 			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, ll);
 			nativeGpsStatus(1, 0);
 		}
-		gpsEnabled = ! gpsEnabled;
+		
+		gpsEnabled = !gpsEnabled;
 	}
 	
 	/**
