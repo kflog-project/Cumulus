@@ -1,12 +1,12 @@
 /***********************************************************************
 **
-**   flarmdislay.cpp
+**   flarmdisplay.cpp
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2011 Axel Pauli
+**   Copyright (c): 2010-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -30,9 +30,9 @@
 #include "mapconfig.h"
 
 #if defined MAEMO || defined ANDROID
-#define FontSize 22
-#else
 #define FontSize 18
+#else
+#define FontSize 14
 #endif
 
 // Initialize static variables
@@ -40,9 +40,6 @@ enum FlarmDisplay::Zoom FlarmDisplay::zoomLevel = FlarmDisplay::Low;
 
 QString FlarmDisplay::selectedObject = "";
 
-/**
- * Constructor
- */
 FlarmDisplay::FlarmDisplay( QWidget *parent ) :
   QWidget( parent ),
   centerX(0),
@@ -55,9 +52,6 @@ FlarmDisplay::FlarmDisplay( QWidget *parent ) :
 {
 }
 
-/**
- * Destructor
- */
 FlarmDisplay::~FlarmDisplay()
 {
 }
@@ -131,11 +125,14 @@ void FlarmDisplay::createBackground()
 
   QFont f = font();
 
-#ifdef USE_POINT_SIZE_FONT
-  f.setPointSize(FontSize);
-#else
-  f.setPixelSize(FontSize);
-#endif
+  if( f.pointSize() != -1 )
+    {
+      f.setPointSize(FontSize);
+    }
+  else
+    {
+      f.setPixelSize(FontSize);
+    }
 
   f.setBold( true );
   painter.setFont(f);
@@ -144,8 +141,9 @@ void FlarmDisplay::createBackground()
 
   // Draw scale unit in the upper left corner
   QString unitText = QString("%1 Km").arg(distance.getKilometers(), 0, 'f', 1);
-  painter.drawText( 10, f.pointSize() + 10, unitText );
+  QFontMetrics fm = QFontMetrics( font() );
 
+  painter.drawText( 10, fm.boundingRect(unitText).height() / 2 + 10, unitText );
   pen.setWidth(0);
   painter.setPen( pen );
 
