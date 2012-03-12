@@ -143,7 +143,7 @@ void FlarmDisplay::createBackground()
   QString unitText = QString("%1 Km").arg(distance.getKilometers(), 0, 'f', 1);
   QFontMetrics fm = QFontMetrics( font() );
 
-  painter.drawText( 10, fm.boundingRect(unitText).height() / 2 + 10, unitText );
+  painter.drawText( 10, fm.boundingRect(unitText).height() + 10, unitText );
   pen.setWidth(0);
   painter.setPen( pen );
 
