@@ -33,6 +33,7 @@ import java.util.zip.ZipInputStream;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -41,6 +42,7 @@ import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.media.AsyncPlayer;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -50,6 +52,7 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import org.kde.necessitas.origo.QtActivity;
 
@@ -238,48 +241,65 @@ public class CumulusActivity extends QtActivity
   		lm.addNmeaListener(nl);
     }
     
-    // TODO Check what must be done here!
-    ll =  new LocationListener()
-    {       
-            @Override
-            public void onLocationChanged(Location l) {
-/*//                            Log.i("Cumulus#Java", "location has changed, transfer values to native Cumulus");
-                    nativeGpsFix(l.getLatitude(), l.getLongitude(), l.getAltitude(), l.getSpeed(),
-                                    l.getBearing(), l.getAccuracy(), l.getTime());
-                    locationUpdated = true; 
-/*                              if (receiver.gpsFix()) 
-                            nativeGpsStatus(2, 0);
-                    else    
-                            nativeGpsStatus(1, 0); * / 
-*///
-            }       
+		ll = new LocationListener()
+		{
+			@Override
+			public void onLocationChanged(Location l)
+			{
+				// Log.d("Java#CumulusActivity", "onLocationChanged" );
+				/*
+				 * // Log.i("Cumulus#Java",
+				 * "location has changed, transfer values to native Cumulus");
+				 * nativeGpsFix(l.getLatitude(), l.getLongitude(), l.getAltitude(),
+				 * l.getSpeed(), l.getBearing(), l.getAccuracy(), l.getTime());
+				 * locationUpdated = true; /* if (receiver.gpsFix()) nativeGpsStatus(2,
+				 * 0); else nativeGpsStatus(1, 0); * /
+				 *///
+			}
 
-            @Override
-            public void onProviderDisabled(String provider) {
-            }       
+			@Override
+			public void onProviderDisabled(String provider)
+			{
+		    Log.d("Java#CumulusActivity", "onProviderDisabled: Provider=" + provider);
 
-            @Override
-            public void onProviderEnabled(String provider) {
-            }       
+		    if( provider == "GPS_PROVIDER" )
+		    {
+		    	nativeGpsStatus(0, 0);
+		    }
+			}
 
-            @Override
-            public void onStatusChanged(String provider, int status, 
-                            Bundle extras) {
-/*                              int numsats = 0;
-                    if ( extras.containsKey("satellites") ) {
-                            numsats = extras.getInt("satellites");
-                    }       
-                    Log.i("Cumulus#Java", "GPS status has changed - status: " + status + ", sats: " + numsats 
-                                    + ", provider: " + provider + "\n send status and sats to native Cumulus");
-                    nativeGpsStatus(status, numsats);
-                    */      
-            }
-    };      
+			@Override
+			public void onProviderEnabled(String provider)
+			{
+		    Log.d("Java#CumulusActivity", "onProviderEnabled: Provider=" + provider);
+		    
+		    if( provider == "GPS_PROVIDER" )
+		    {		    
+		    	nativeGpsStatus(1, 0);
+		    }
+			}
 
+			@Override
+			public void onStatusChanged(String provider, int status, Bundle extras)
+			{
+		    Log.d("Java#CumulusActivity", "onStatusChanged: Provider=" + provider);
+		    
+		    if( provider == "GPS_PROVIDER" )
+		    {
+		    	if( status == LocationProvider.AVAILABLE )
+  		    	{
+  		    		nativeGpsStatus(1, 0);
+  		    	}
+		    	else
+  		    	{
+		    			nativeGpsStatus(0, 0);
+  		    	}
+		    }
+			}
+		};
 
     Log.d("Java#CumulusActivity", "onCreate exit" );
   }
-
 
   @Override
   protected void onDestroy()
@@ -335,38 +355,6 @@ public class CumulusActivity extends QtActivity
 
     return super.onKeyUp(keyCode, event);
   }
-	
-  void playSound(int stream, String soundName)
-    {
-      Uri sf = Uri.parse("file://" + getAddDataDir() + File.separatorChar + "sounds" + File.separatorChar + soundName);
-		
-      if (stream == 0)
-        {
-          stream = AudioManager.STREAM_NOTIFICATION;
-          npl.play(this.getApplicationContext(), sf, false, stream);
-        }
-      else if (stream == 1)
-        {
-          stream = AudioManager.STREAM_ALARM;
-          apl.play(this.getApplicationContext(), sf, false, stream);
-        }
-     }
-
-  String getAppDataDir()
-	{
-	  synchronized(appDataPath)
-	    {
-		    return appDataPath;
-	    }
-	}
-
-  String getAddDataDir()
-	{
-	    synchronized(addDataPath)
-	    {	  
-	      return addDataPath;
-	    }
-	}
 
 	protected AlertDialog onCreateDialog(int id)
 	{
@@ -478,32 +466,104 @@ public class CumulusActivity extends QtActivity
 		return alert;
 	}
 	
+  void playSound(int stream, String soundName)
+  {
+    Uri sf = Uri.parse("file://" + getAddDataDir() + File.separatorChar + "sounds" + File.separatorChar + soundName);
+	
+    if (stream == 0)
+      {
+        stream = AudioManager.STREAM_NOTIFICATION;
+        npl.play(this.getApplicationContext(), sf, false, stream);
+      }
+    else if (stream == 1)
+      {
+        stream = AudioManager.STREAM_ALARM;
+        apl.play(this.getApplicationContext(), sf, false, stream);
+      }
+   }
+
+  String getAppDataDir()
+  {
+    synchronized(appDataPath)
+      {
+  	    return appDataPath;
+      }
+  }
+  
+  String getAddDataDir()
+  {
+      synchronized(addDataPath)
+      {	  
+        return addDataPath;
+      }
+  }
+
 	private void toggleGps()
 	{
 		removeDialog(DIALOG_MENU_ID);
 		
 		if( lm == null )
-		{
-			// No location service available. Do nothing otherwise an exception is raised.
-			return;
-		}
+  		{
+  			// No location service available. Do nothing otherwise an exception is raised.
+  			Toast.makeText(this, "No GPS receiver available", Toast.LENGTH_SHORT).show();
+  			return;
+  		}
 		
-		if (gpsEnabled)
-		{
-			Log.i("Cumulus#Java", "disable LocationListener, set GPS status to OFF");
-			lm.removeUpdates(ll);
-			nativeGpsStatus(0, 0);
-		}
+		if( gpsEnabled == true )
+  		{
+  			Log.i("Cumulus#Java", "disable LocationListener, set GPS status to OFF");
+  			// lm.removeUpdates(ll);
+  			lm.removeNmeaListener(nl);
+  			nativeGpsStatus(0, 0);
+  		}
 		else
-		{
-			Log.i("Cumulus#Java", "activating LocationListener, set GPS status to NO_FIX");
-			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, ll);
-			nativeGpsStatus(1, 0);
-		}
+  		{
+  			Log.i("Cumulus#Java", "activating LocationListener, set GPS status to NO_FIX");
+  			// lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, ll);
+  			if( lm.isProviderEnabled(LocationManager.GPS_PROVIDER) == false )
+    			{
+    				showGPSDisabledAlertToUser();
+    			}
+
+  			nativeGpsStatus(1, 0);
+  			lm.addNmeaListener(nl);
+  		}
 		
 		gpsEnabled = !gpsEnabled;
 	}
 	
+	private void showGPSDisabledAlertToUser()
+  	{
+  		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+  		
+  		alertDialogBuilder
+    		.setMessage("GPS is disabled in your device. Would you like to enable it?")
+    		.setCancelable(false)
+    		.setPositiveButton( "Goto Settings Page To Enable GPS",
+                        		new DialogInterface.OnClickListener()
+                          		{
+                            		public void onClick( DialogInterface dialog, int id )
+                            		  {
+                                		Intent callGPSSettingIntent =	new Intent( android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                		startActivity( callGPSSettingIntent );
+                                	}
+                            	}
+    		                  );
+  		
+  		alertDialogBuilder.setNegativeButton( "Cancel",
+                                        		new DialogInterface.OnClickListener()
+                                        		  {
+                                            		public void onClick(DialogInterface dialog, int id)
+                                              		{
+                                              		  dialog.cancel();
+                                              		}
+                                            	}
+  		                                   );
+  		
+  		AlertDialog alert = alertDialogBuilder.create();
+  		alert.show();
+  	}
+
 	/**
 	 * Retrieves the package version code from the manifest.
 	 * 
