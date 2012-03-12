@@ -262,9 +262,16 @@ public class CumulusActivity extends QtActivity
 			{
 		    Log.d("Java#CumulusActivity", "onProviderDisabled: Provider=" + provider);
 
-		    if( provider == "GPS_PROVIDER" )
-		    {
-		    	nativeGpsStatus(0, 0);
+        if( provider == LocationManager.GPS_PROVIDER )
+		    {	
+        		if( lm != null )
+		    		{
+			  			lm.removeUpdates(ll);
+			  			lm.removeNmeaListener(nl);
+		    		}
+		    
+	  			nativeGpsStatus(0, 0);
+	  			gpsEnabled = false; 
 		    }
 			}
 
@@ -273,9 +280,16 @@ public class CumulusActivity extends QtActivity
 			{
 		    Log.d("Java#CumulusActivity", "onProviderEnabled: Provider=" + provider);
 		    
-		    if( provider == "GPS_PROVIDER" )
-		    {		    
-		    	nativeGpsStatus(1, 0);
+        if( provider == LocationManager.GPS_PROVIDER )
+		    {
+	    		if( lm != null )
+		    		{
+				        lm.addNmeaListener(nl);
+			  			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, ll);
+		    		}
+	    		
+		        nativeGpsStatus(1, 0);
+		        gpsEnabled = true;
 		    }
 			}
 
@@ -284,7 +298,7 @@ public class CumulusActivity extends QtActivity
 			{
 		    Log.d("Java#CumulusActivity", "onStatusChanged: Provider=" + provider);
 		    
-		    if( provider == "GPS_PROVIDER" )
+        if( provider == LocationManager.GPS_PROVIDER )
 		    {
 		    	if( status == LocationProvider.AVAILABLE )
   		    	{
@@ -512,24 +526,27 @@ public class CumulusActivity extends QtActivity
 		if( gpsEnabled == true )
   		{
   			Log.i("Cumulus#Java", "disable LocationListener, set GPS status to OFF");
-  			// lm.removeUpdates(ll);
+  			lm.removeUpdates(ll);
   			lm.removeNmeaListener(nl);
   			nativeGpsStatus(0, 0);
+  			gpsEnabled = false; 
   		}
 		else
   		{
   			Log.i("Cumulus#Java", "activating LocationListener, set GPS status to NO_FIX");
-  			// lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, ll);
-  			if( lm.isProviderEnabled(LocationManager.GPS_PROVIDER) == false )
-    			{
-    				showGPSDisabledAlertToUser();
-    			}
 
-  			nativeGpsStatus(1, 0);
-  			lm.addNmeaListener(nl);
+  			if( lm.isProviderEnabled(LocationManager.GPS_PROVIDER) == false )
+				{
+					showGPSDisabledAlertToUser();
+				}
+  			else
+	  			{
+			        lm.addNmeaListener(nl);
+		  			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, ll);
+			        nativeGpsStatus(1, 0);
+			        gpsEnabled = true; 
+	  			}
   		}
-		
-		gpsEnabled = !gpsEnabled;
 	}
 	
 	private void showGPSDisabledAlertToUser()
@@ -544,7 +561,7 @@ public class CumulusActivity extends QtActivity
                           		{
                             		public void onClick( DialogInterface dialog, int id )
                             		  {
-                                		Intent callGPSSettingIntent =	new Intent( android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                		Intent callGPSSettingIntent =	new Intent( android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS );
                                 		startActivity( callGPSSettingIntent );
                                 	}
                             	}
