@@ -288,7 +288,7 @@ int main(int argc, char *argv[])
       QApplication::setFont( appFont );
     }
 
-  if( conf->getDisclaimerVersion() != 5 ) //DISCLAIMER_VERSION )
+  if( conf->getDisclaimerVersion() != DISCLAIMER_VERSION )
     {
       QApplication::beep();
 
@@ -310,7 +310,7 @@ int main(int argc, char *argv[])
 
       QMessageBox msgBox;
 
-      int size = 12;
+      int size = 8;
       QFont font = QApplication::font();
 
       // adapt font size to a readable one for the screen
