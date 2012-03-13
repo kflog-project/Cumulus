@@ -77,7 +77,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
 
   QLabel* lbl = new QLabel(tr("McCready:"), this);
   gridLayout->addWidget(lbl, row, 0);
-  spinMcCready = new QDoubleSpinBox;
+  spinMcCready = new QDoubleSpinBox(this);
   spinMcCready->setRange(0.0, 20.0);
   spinMcCready->setSingleStep(0.5);
   spinMcCready->setSuffix( QString(" ") + Speed::getUnitText(Speed::getVerticalUnit()));
