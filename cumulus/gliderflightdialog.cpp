@@ -51,27 +51,31 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
     {
       QFont cf = font();
 
-#ifdef USE_POINT_SIZE_FONT
-      cf.setPointSize( DialogMinFontSize );
-#else
-      cf.setPixelSize( DialogMinFontSize );
-#endif
+      if( cf.pointSize() != -1 )
+        {
+          cf.setPointSize( DialogMinFontSize );
+        }
+      else
+        {
+          cf.setPixelSize( DialogMinFontSize );
+        }
+
       this->setFont(cf);
     }
 
   QGridLayout* gridLayout = new QGridLayout(this);
-  gridLayout->setMargin(5);
+  gridLayout->setMargin(10);
   gridLayout->setSpacing(15);
   int row = 0;
 
-  ftLabel = new QLabel(tr("Flight time:"));
+  ftLabel = new QLabel(tr("Flight time:"), this);
   ftText  = new QLabel;
   gridLayout->addWidget(ftLabel, row, 0);
   gridLayout->addWidget(ftText, row++, 1);
 
   //---------------------------------------------------------------------
 
-  QLabel* lbl = new QLabel(tr("McCready:"));
+  QLabel* lbl = new QLabel(tr("McCready:"), this);
   gridLayout->addWidget(lbl, row, 0);
   spinMcCready = new QDoubleSpinBox;
   spinMcCready->setRange(0.0, 20.0);

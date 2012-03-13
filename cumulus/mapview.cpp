@@ -265,7 +265,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _speed2fly = new MapInfoBox( this, "#a6a6a6", true );
   _speed2fly->setPreText("S2f");
   _speed2fly->setValue(tr("Menu"));
-  _speed2fly->setPreUnit( "MU" );
+  _speed2fly->setPreUnit( "|=|" );
   _speed2fly->setVisible( false );
   MSLayout->addWidget( _speed2fly );
   connect(_speed2fly, SIGNAL(mousePress()), this, SLOT(slot_toggleMenu()));

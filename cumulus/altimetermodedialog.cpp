@@ -44,29 +44,33 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   b.setBold( true );
   setFont( b );
 
-#ifdef USE_POINT_SIZE_FONT
   // set font size to a reasonable and usable value
   if( font().pointSize() < DialogMinFontSize )
     {
       QFont cf = font();
-      cf.setPointSize( DialogMinFontSize );
-      this->setFont( cf );
+
+      if( cf.pointSize() != -1 )
+        {
+          cf.setPointSize( DialogMinFontSize );
+        }
+      else
+        {
+          cf.setPixelSize( DialogMinFontSize );
+        }
+
+      setFont(cf);
     }
-#else
-  // set font size to a reasonable and usable value
-  if( font().pixelSize() < DialogMinFontSize )
-    {
-      QFont cf = font();
-      cf.setPixelSize( DialogMinFontSize );
-      this->setFont( cf );
-    }
-#endif
 
   QGroupBox* altMode = new QGroupBox( this );
   _msl = new QRadioButton( tr( "MSL" ), altMode );
   _std = new QRadioButton( tr( "STD" ), altMode );
   _agl = new QRadioButton( tr( "AGL" ), altMode );
   _ahl = new QRadioButton( tr( "AHL" ), altMode );
+
+  _msl->setFont( font() );
+  _std->setFont( font() );
+  _agl->setFont( font() );
+  _ahl->setFont( font() );
 
   _msl->setChecked( true );
   _msl->setEnabled( true );
@@ -94,11 +98,13 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
 
   QGroupBox* altUnit = new QGroupBox( this );
   _meter = new QRadioButton( tr( "Meters" ), altUnit );
+  _meter->setFont( font() );
   _meter->setChecked( true );
   _meter->setEnabled( true );
   _meter->setFocusPolicy( Qt::NoFocus );
 
   _feet  = new QRadioButton( tr( "Feet" ), altUnit );
+  _feet->setFont( font() );
   _feet->setEnabled( true );
   _feet->setFocusPolicy( Qt::NoFocus );
 
