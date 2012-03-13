@@ -2568,9 +2568,9 @@ bool GpsNmea::event(QEvent *event)
       {
         GpsStatusEvent *gpsStatusEvent = static_cast<GpsStatusEvent *>(event);
 
-        _status = static_cast<GpsNmea::GpsStatus>(gpsStatusEvent->status());
+        GpsStatus status = static_cast<GpsNmea::GpsStatus>(gpsStatusEvent->status());
 
-        if( _status == notConnected )
+        if( status == notConnected )
           {
             _slotGpsConnectionOff();
           }
