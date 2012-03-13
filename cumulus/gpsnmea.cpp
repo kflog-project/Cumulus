@@ -457,7 +457,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 #endif
 
-  // Call the decode methods for the know sentences
+  // Call the decode methods for the known sentences
   switch( gpsHash.value( slst[0] ) )
   {
     case 0: // GPRMC
@@ -532,7 +532,6 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       qWarning() << "Unknown GPS sentence:" << sentenceIn;
       return;
   }
-
 }
 
 /**
