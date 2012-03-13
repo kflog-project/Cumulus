@@ -77,6 +77,7 @@ public class CumulusActivity extends QtActivity
   private boolean                gpsEnabled       = false;
   private boolean                locationUpdated  = false;
   GPSReceiver                    receiver         = null;
+  private int                    lastGpsStatus    = -1;
 
   static private String          appDataPath      = "";
   static private String          addDataPath      = "";
@@ -102,7 +103,7 @@ public class CumulusActivity extends QtActivity
    */
   private static Object getObjectRef()
     {
-      Log.d("Java#CumulusActivity", "getObjectRef is called" );
+      // Log.d("Java#CumulusActivity", "getObjectRef is called" );
       return objectRef;
     }
 
@@ -121,45 +122,45 @@ public class CumulusActivity extends QtActivity
 		
 		String tmpString = "";
 
-        if (! Environment.MEDIA_MOUNTED.equals(state))
-          {
-            Log.d("Java#CumulusActivity", "Exiting, SdCard is not mounted!" );
-            showDialog(DIALOG_NO_SDCARD);
-            return;
-          }
+    if (! Environment.MEDIA_MOUNTED.equals(state))
+      {
+        Log.d("Java#CumulusActivity", "Exiting, SdCard is not mounted!" );
+        showDialog(DIALOG_NO_SDCARD);
+        return;
+      }
 
-        // We can read and write the media
-        dataFolderAvailable = true;
+    // We can read and write the media
+    dataFolderAvailable = true;
 
-        File addDataDir = new File(Environment.getExternalStorageDirectory(), "Cumulus");
+    File addDataDir = new File(Environment.getExternalStorageDirectory(), "Cumulus");
 
-        tmpString = addDataDir.getAbsolutePath();
+    tmpString = addDataDir.getAbsolutePath();
 
-        if ( ! addDataDir.exists() )
-        {
-          dataFolderAvailable = addDataDir.mkdir();
-        }
+    if( ! addDataDir.exists() )
+      {
+        dataFolderAvailable = addDataDir.mkdir();
+      }
 
-        if( dataFolderAvailable )
-        {
-          // check existence of help files
-          File helpFile   = new File( addDataDir.getAbsolutePath() + "/Cumulus/help/en/cumulus.html" );
-          File notifyFile = new File( addDataDir.getAbsolutePath() + "/Cumulus/sounds/Notity.wav" );
-          File alarmFile  = new File( addDataDir.getAbsolutePath() + "/Cumulus/sounds/Alarm.wav" );
+    if( dataFolderAvailable )
+      {
+        // check existence of help files
+        File helpFile   = new File( addDataDir.getAbsolutePath() + "/Cumulus/help/en/cumulus.html" );
+        File notifyFile = new File( addDataDir.getAbsolutePath() + "/Cumulus/sounds/Notity.wav" );
+        File alarmFile  = new File( addDataDir.getAbsolutePath() + "/Cumulus/sounds/Alarm.wav" );
 
-          if( ! helpFile.exists() || ! notifyFile.exists() || ! alarmFile.exists() )
+        if( ! helpFile.exists() || ! notifyFile.exists() || ! alarmFile.exists() )
           {
             // It seems the some needed files are not installed, do it again.
             boolean res = installAddData( addDataDir.getAbsolutePath(), getAssets() );
-            
+
             if( res == false )
-            {
-              showDialog(DIALOG_ZIP_ERR);      
-              return;
-            }
+              {
+                showDialog(DIALOG_ZIP_ERR);      
+                return;
+              }
           }
-        }
-    
+      }
+  
     // another thread is waiting for this info
     synchronized(addDataPath)
     {
@@ -177,27 +178,27 @@ public class CumulusActivity extends QtActivity
     Log.d("PVC", pvcFile.getAbsolutePath());
     
     if (! pvcFile.exists() )
-    {
-      // It seems that our App data are not installed. Do that job now.
-      boolean res = installAppData( appDataDir, getAssets() );
-      
-      if( res == false )
       {
-        showDialog(DIALOG_ZIP_ERR);      
-        return;
+        // It seems that our App data are not installed. Do that job now.
+        boolean res = installAppData( appDataDir, getAssets() );
+
+        if( res == false )
+          {
+            showDialog(DIALOG_ZIP_ERR);      
+            return;
+          }
+
+        try
+          {
+            // Set an install marker file
+            OutputStream out = new FileOutputStream( pvcFile );
+            out.close();
+          }
+        catch (Exception e)
+          {
+            Log.e("AssetNotice", e.getMessage()); 
+          }
       }
-      
-      try
-      {
-        // Set an install marker file
-        OutputStream out = new FileOutputStream( pvcFile );
-        out.close();
-      }
-      catch (Exception e)
-      {
-        Log.e("AssetNotice", e.getMessage()); 
-      }
-    }
 	
     // another thread is waiting for this info
     synchronized(appDataPath)
@@ -274,6 +275,7 @@ public class CumulusActivity extends QtActivity
         		    		}
       		    
               	// GPS receiver is disconnected
+                Log.d("Java#CumulusActivity", "onProviderDisabled: GPS=False");
       	  			nativeGpsStatus(0);
       	  			gpsEnabled = false;
       		    }
@@ -284,9 +286,11 @@ public class CumulusActivity extends QtActivity
       			{
       		    Log.d("Java#CumulusActivity", "onProviderEnabled: Provider=" + provider);
       		    
-              if( provider == LocationManager.GPS_PROVIDER )
+              if( provider.equals(LocationManager.GPS_PROVIDER) )
         		    {
-              	 // GPS receiver is connected
+              	  // GPS receiver is connected
+                  Log.d("Java#CumulusActivity", "onProviderEnabled: GPS=True");
+
       		        nativeGpsStatus(1);
       		        gpsEnabled = true;
         		    }
@@ -295,26 +299,38 @@ public class CumulusActivity extends QtActivity
       			@Override
       			public void onStatusChanged(String provider, int status, Bundle extras)
         			{
-        		    Log.d("Java#CumulusActivity", "onStatusChanged: Provider=" + provider);
+                // If the number of satellites changes, this method is always called.
+        			  // Therefore we report only right status changes.
+        		    Log.d("Java#CumulusActivity", "onStatusChanged: Provider=" + provider +
+        		           ", Status=" + status);
         		    
-                if( provider == LocationManager.GPS_PROVIDER )
+                if( provider.equals(LocationManager.GPS_PROVIDER) && gpsEnabled )
         		    {
         		    	if( status == LocationProvider.AVAILABLE )
           		    	{
-                	    // GPS receiver is connected
-          		    		nativeGpsStatus(1);
+          		    	  if( lastGpsStatus != status )
+          		    	    {
+                    	    // GPS receiver is connected
+              		    		nativeGpsStatus(1);
+          		    	    }
           		    	}
         		    	else
           		    	{
-                  	  // GPS receiver is disconnected
-        		    			nativeGpsStatus(0);
+                      if( lastGpsStatus != status )
+                        {          		    	  
+                      	  // GPS receiver is disconnected
+            		    			nativeGpsStatus(0);
+                        }
           		    	}
+        		    	
+        		    	// save the last reported status
+                  lastGpsStatus = status;        		    	
         		    }
         			}
       		};
       		
       	lm.addNmeaListener(nl);	 
-    		lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 1, 1, ll );
+    		lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 15, 1, ll );
       }
 
     Log.d("Java#CumulusActivity", "onCreate exit" );
