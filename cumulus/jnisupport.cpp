@@ -79,23 +79,18 @@ static void nativeGpsFix( JNIEnv * /*jniEnvironment*/,
 
 static void nativeGpsStatus( JNIEnv * /*jniEnvironment*/,
                              jobject /*myproxyobject*/,
-                             jint status,
-                             jint numsats )
+                             jint status )
 {
-//	qDebug("*** nativeGpsStatus: st %d , ns %d", status, numsats);
-	GpsStatusEvent *ge = new GpsStatusEvent();
-	ge->stat = status;
-	ge->nsats = numsats;
+  GpsStatusEvent *ge = new GpsStatusEvent( status );
   QCoreApplication::postEvent( GpsNmea::gps, ge );
 }
 
 static void nativeNmeaString(JNIEnv* env, jobject /*myobject*/, jstring jnmea)
 {
-	const char * nativeString = env->GetStringUTFChars(jnmea, 0);
-	QString qnmea(nativeString);
-	env->ReleaseStringUTFChars(jnmea, nativeString);
-	GpsNmeaEvent *ne = new GpsNmeaEvent();
-	ne->nmea_sentence = qnmea;
+  const char * nativeString = env->GetStringUTFChars(jnmea, 0);
+  QString qnmea(nativeString);
+  env->ReleaseStringUTFChars(jnmea, nativeString);
+  GpsNmeaEvent *ne = new GpsNmeaEvent(qnmea);
   QCoreApplication::postEvent( GpsNmea::gps, ne, Qt::HighEventPriority );
 }
 
@@ -130,16 +125,13 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
 
 static bool isRootWindow()
 {
-  // qDebug() << "JNI isRootWindow()" << MainWindow::isRootWindow();
   return MainWindow::isRootWindow();
 }
 
 static void keyboardAction(JNIEnv * /*jniEnvironment*/, jobject /*myproxyobject*/, jint action)
 {
-//qDebug("Native keyboardAction: started");
-	KeyboardActionEvent* ke = new KeyboardActionEvent();
-	ke->keyboardAction = action;
-	QCoreApplication::postEvent(_globalMainWindow, ke);
+  KeyboardActionEvent* ke = new KeyboardActionEvent(action);
+  QCoreApplication::postEvent(_globalMainWindow, ke);
 }
 
 /* The array of native methods to register.
@@ -150,7 +142,7 @@ static void keyboardAction(JNIEnv * /*jniEnvironment*/, jobject /*myproxyobject*
 
 static JNINativeMethod methods[] = {
 	{"nativeGpsFix", "(DDDFFFJ)V", (void *)nativeGpsFix},
-	{"nativeGpsStatus", "(II)V", (void *)nativeGpsStatus},
+	{"nativeGpsStatus", "(I)V", (void *)nativeGpsStatus},
 	{"nativeNmeaString","(Ljava/lang/String;)V", (void *)nativeNmeaString},
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
 	{"isRootWindow", "()Z", (bool *)isRootWindow},

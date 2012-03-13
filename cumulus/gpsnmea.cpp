@@ -308,7 +308,6 @@ void GpsNmea::startGpsReceiver()
 void GpsNmea::slot_sentence(const QString& sentenceIn)
 {
   // qDebug("GpsNmea::slot_sentence: %s", sentenceIn.toLatin1().data());
-
   if( nmeaLogFile && nmeaLogFile->isOpen() )
     {
       // Write sentence into log file
@@ -2469,127 +2468,123 @@ void GpsNmea::slot_closeNmeaLogFile()
 
 #ifdef ANDROID
 
-/** Handler for custom QEvents posted by native JNI functions
- *  in "jnitools.cpp".
- *  GPS data handling duplicated from other NMEA functions */
-
+/**
+ * Handler for custom QEvents posted by the native JNI functions in
+ * jnisupport.cpp. GPS data handling duplicated from other NMEA functions.
+ */
 bool GpsNmea::event(QEvent *event)
-{
-        if (event->type() == QEvent::User) {
+  {
+    if( ! _enableGpsDataProcessing )
+      {
+        return true;
+      }
 
-                if (! _enableGpsDataProcessing)
-                        return false;
+    // Handles NMEA sentences forwarded by the Android system
+    if( event->type() == QEvent::User + 2 )
+      {
+        GpsNmeaEvent *gpsNmeaEvent = static_cast<GpsNmeaEvent *>(event);
+        slot_sentence( gpsNmeaEvent->sentence() );
+        emit newSentence( gpsNmeaEvent->sentence() );
+        return true;
+      }
 
-//              qDebug("GpsNmea: gpsFixEvent received");
-                GpsFixEvent *gpsFixEvent = static_cast<GpsFixEvent *>(event);
+    if( event->type() == QEvent::User )
+      {
+        GpsFixEvent *gpsFixEvent = static_cast<GpsFixEvent *>(event);
 
-                // Handle altitude
+        // Handle altitude
+        Altitude myalt(0);
+        double alt = gpsFixEvent->altitude();
 
-                Altitude myalt(0);
-                double alt = gpsFixEvent->altitude();
+        // Consider user's altitude correction
+        myalt.setMeters( alt + _userAltitudeCorrection.getMeters() );
 
-                // Consider user's altitude correction
-                myalt.setMeters( alt + _userAltitudeCorrection.getMeters() );
+        _lastGNSSAltitude = myalt;
 
-                _lastGNSSAltitude = myalt;
+        if ( _lastMslAltitude != myalt )
+          {
+            _lastMslAltitude = myalt;
+            calcStdAltitude( myalt );
+            emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+          }
 
-                if ( _lastMslAltitude != myalt ) {
-                        _lastMslAltitude = myalt;
-                        calcStdAltitude( myalt );
-                        emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
-                }
+        // Handle position
+        int lat = (int)gpsFixEvent->latitude();
+        int lon = (int)gpsFixEvent->longitude();
+        float fLat = (float)gpsFixEvent->latitude() - lat;
+        float fLon = (float)gpsFixEvent->longitude() - lon;
+        fLat *= 60;
+        fLon *= 60;
+        int latMin = (int) rint(fLat * 10000);
+        int lonMin = (int) rint(fLon * 10000);
 
-                // Handle position
+        // convert to internal KFLog format
+        int latTemp = lat * 600000 + latMin;
+        int lonTemp = lon * 600000 + lonMin;
 
-                int lat = (int)gpsFixEvent->latitude();
-                int lon = (int)gpsFixEvent->longitude();
-                float fLat = (float)gpsFixEvent->latitude() - lat;
-                float fLon = (float)gpsFixEvent->longitude() - lon;
-                fLat *= 60;
-                fLon *= 60;
-                int latMin = (int) rint(fLat * 10000);
-                int lonMin = (int) rint(fLon * 10000);
+        QPoint mypoint (latTemp, lonTemp);
 
-                // convert to internal KFLog format
-                int latTemp = lat * 600000 + latMin;
-                int lonTemp = lon * 600000 + lonMin;
+        if ( _lastCoord != mypoint )
+          {
+            _lastCoord = mypoint;
+            emit newPosition( _lastCoord );
+          }
 
-                QPoint mypoint (latTemp, lonTemp);
+        // Handle speed
+        Speed myspd;
+        myspd.setMps( (double)gpsFixEvent->speed() );
 
-                if ( _lastCoord != mypoint ) {
-                        _lastCoord = mypoint;
-                        emit newPosition( _lastCoord );
-                }
+        if ( myspd != _lastSpeed && fabs((myspd - _lastSpeed).getMps()) > 0.3 )
+          {
+            // report speed change only if the difference is greater than 0.3m/s, 1.08Km/h
+            _lastSpeed = myspd;
+            emit newSpeed( _lastSpeed );
+          }
 
-                // Handle speed
+        // Handle bearing
+        double heading = gpsFixEvent->bearing();
 
-                Speed myspd;
-                myspd.setMps( (double)gpsFixEvent->speed() );
+        if ( heading != _lastHeading )
+          {
+            _lastHeading = heading;
+            emit newHeading( _lastHeading );
+          }
 
-                if ( myspd != _lastSpeed && fabs((myspd - _lastSpeed).getMps()) > 0.3 ) {
-                // report speed change only if the difference is greater than 0.3m/s, 1.08Km/h
-                        _lastSpeed = myspd;
-                        emit newSpeed( _lastSpeed );
-                }
+        // Handle time
+        QDateTime fix_utc;
+        fix_utc.setMSecsSinceEpoch( gpsFixEvent->gpstime() );
 
-                // Handle bearing
+        if( fix_utc.time() != _lastRmcTime )
+          {
+            _lastRmcTime = fix_utc.time();
+            emit newFix( _lastRmcTime );
+          }
 
-                double heading = gpsFixEvent->bearing();
+        // Handle accuracy
+        return true;
+      }
 
-                if ( heading != _lastHeading ) {
-                        _lastHeading = heading;
-                        emit newHeading( _lastHeading );
-                }
+    // Handles reported status changes of the Android GPS receiver
+    if( event->type() == QEvent::User + 1 )
+      {
+        GpsStatusEvent *gpsStatusEvent = static_cast<GpsStatusEvent *>(event);
 
-                // Handle time
+        _status = static_cast<GpsNmea::GpsStatus>(gpsStatusEvent->status());
 
-                QDateTime fix_utc;
-                fix_utc.setMSecsSinceEpoch( gpsFixEvent->gpstime() );
+        if( _status == notConnected )
+          {
+            _slotGpsConnectionOff();
+          }
+        else
+          {
+            _slotGpsConnectionOn();
+          }
 
-                if( fix_utc.time() != _lastRmcTime ) {
-                        _lastRmcTime = fix_utc.time();
-                        emit newFix( _lastRmcTime );
-                }
+        return true;
+      }
 
-                // Handle accuracy
-
-                return false;
-
-        } else if (event->type() == QEvent::User+1) {
-
-                if (! _enableGpsDataProcessing)
-                        return false;
-
-//              qDebug("GpsNmea: gpsStatusEvent received");
-                GpsStatusEvent *gpsStatusEvent = static_cast<GpsStatusEvent *>(event);
-
-/*              _lastSatInfo.satsInView = gpsStatusEvent->numsats();
-                if( gpsStatusEvent->numsats() != _lastSatInfo.satsInUse )
-                {
-                        _lastSatInfo.satsInUse = gpsStatusEvent->numsats();
-                        emit newSatCount( _lastSatInfo );
-                }
-*/
-                if ((GpsNmea::GpsStatus)gpsStatusEvent->status() != _status)
-                {
-                        _status = (GpsNmea::GpsStatus)gpsStatusEvent->status();
-                        emit statusChange(_status);
-
-//              qDebug("GpsNmea: gpsStatusEvent received");
-                        emit connectedChange( _status != notConnected );
-                }
-
-                return false;
-        } else if (event->type() == QEvent::User+2) {
-                GpsNmeaEvent *gpsNmeaEvent = static_cast<GpsNmeaEvent *>(event);
-//              qDebug("GpsNmea: gpsNmeaEvent received");
-                slot_sentence( gpsNmeaEvent->sentence() );
-                emit newSentence( gpsNmeaEvent->sentence() );
-
-                return false;
-        } else {
-                // standard event processing
-                return QObject::event(event);
-        }
+  // call the default event processing
+  return QObject::event(event);
 }
+
 #endif /* ANDROID */

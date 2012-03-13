@@ -414,7 +414,7 @@ class GpsNmea : public QObject
 
   protected:
 
-    /** Add a event receiver, used by Android only. */
+    /** Add an event receiver, used by Android only. */
     bool event(QEvent *event);
 
 #endif
