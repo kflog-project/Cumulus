@@ -36,8 +36,6 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   setModal(true);
   setWindowTitle( tr("Set Variometer") );
 
-  int minFontSize = DialogMinFontSize;
-
   QFont b = font();
   b.setBold(true);
   setFont(b);
