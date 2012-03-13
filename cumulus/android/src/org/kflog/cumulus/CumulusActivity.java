@@ -34,7 +34,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
@@ -92,14 +91,14 @@ public class CumulusActivity extends QtActivity
                                           long time );
 
   public static native void nativeNmeaString(String nmea);
-  public static native void nativeGpsStatus(int status, int numsats);
+  public static native void nativeGpsStatus(int status);
   public static native void keyboardAction(int action);
 
   public static native void nativeKeypress(char code);
   public static native boolean isRootWindow();
 
   /**
-   * Called from jni to get the class instance.
+   * Called from JNI to get the class instance.
    */
   private static Object getObjectRef()
     {
@@ -215,145 +214,164 @@ public class CumulusActivity extends QtActivity
     apl = new AsyncPlayer("alarm_player");
     npl = new AsyncPlayer("notification_player");
 
+/*  
     receiver = new GPSReceiver();
     IntentFilter filter = new IntentFilter("android.location.GPS_ENABLED_CHANGE");
     filter.addAction("android.location.GPS_FIX_CHANGE");
     registerReceiver(receiver, filter);
-
-//	Criteria criteria = new Criteria();
-//	criteria.setAccuracy(Criteria.ACCURACY_FINE);
+*/
+  	// Criteria criteria = new Criteria();
+  	// criteria.setAccuracy(Criteria.ACCURACY_FINE);
+    
     lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     
     if( lm == null )
-    {
-    	Log.d("Java#CumulusActivity", "System said: LOCATION_SERVICE is null!" );
-    }
-    else
-    {	
-      nl = new GpsStatus.NmeaListener()
       {
-        public void onNmeaReceived(long timestamp, String nmea)
-        {
-          nativeNmeaString(nmea);
-        }
-      };
-  
-  		lm.addNmeaListener(nl);
-    }
-    
-		ll = new LocationListener()
-		{
-			@Override
-			public void onLocationChanged(Location l)
-			{
-				// Log.d("Java#CumulusActivity", "onLocationChanged" );
-				/*
-				 * // Log.i("Cumulus#Java",
-				 * "location has changed, transfer values to native Cumulus");
-				 * nativeGpsFix(l.getLatitude(), l.getLongitude(), l.getAltitude(),
-				 * l.getSpeed(), l.getBearing(), l.getAccuracy(), l.getTime());
-				 * locationUpdated = true; /* if (receiver.gpsFix()) nativeGpsStatus(2,
-				 * 0); else nativeGpsStatus(1, 0); * /
-				 *///
-			}
-
-			@Override
-			public void onProviderDisabled(String provider)
-			{
-		    Log.d("Java#CumulusActivity", "onProviderDisabled: Provider=" + provider);
-
-        if( provider == LocationManager.GPS_PROVIDER )
-		    {	
-        		if( lm != null )
-		    		{
-			  			lm.removeUpdates(ll);
-			  			lm.removeNmeaListener(nl);
-		    		}
-		    
-	  			nativeGpsStatus(0, 0);
-	  			gpsEnabled = false; 
-		    }
-			}
-
-			@Override
-			public void onProviderEnabled(String provider)
-			{
-		    Log.d("Java#CumulusActivity", "onProviderEnabled: Provider=" + provider);
-		    
-        if( provider == LocationManager.GPS_PROVIDER )
-		    {
-	    		if( lm != null )
-		    		{
-				        lm.addNmeaListener(nl);
-			  			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, ll);
-		    		}
-	    		
-		        nativeGpsStatus(1, 0);
-		        gpsEnabled = true;
-		    }
-			}
-
-			@Override
-			public void onStatusChanged(String provider, int status, Bundle extras)
-			{
-		    Log.d("Java#CumulusActivity", "onStatusChanged: Provider=" + provider);
-		    
-        if( provider == LocationManager.GPS_PROVIDER )
-		    {
-		    	if( status == LocationProvider.AVAILABLE )
-  		    	{
-  		    		nativeGpsStatus(1, 0);
-  		    	}
-		    	else
-  		    	{
-		    			nativeGpsStatus(0, 0);
-  		    	}
-		    }
-			}
-		};
+      	Log.d("Java#CumulusActivity", "System said: LOCATION_SERVICE is null!" );
+      }
+    else
+      {	
+        nl = new GpsStatus.NmeaListener()
+          {
+            public void onNmeaReceived( long timestamp, String nmea )
+              {
+              	if( gpsEnabled )
+              		{
+              			// Forward GPS data only, if user has enabled that.
+              			nativeNmeaString(nmea);
+              		}
+              }
+          };
+      
+    		ll = new LocationListener()
+      		{
+      			@Override
+      			public void onLocationChanged(Location location)
+      			{
+      				// We prefer to use the NMEA raw data...
+      				
+      				/* Log.d("Java#CumulusActivity", "onLocationChanged" );
+      				   nativeGpsFix(l.getLatitude(), l.getLongitude(), l.getAltitude(),
+      				                l.getSpeed(), l.getBearing(), l.getAccuracy(), l.getTime());
+      				   locationUpdated = true;
+      				   if (receiver.gpsFix())
+      				     nativeGpsStatus(2);
+      				   else
+      				     nativeGpsStatus(1);
+      				 */
+      			}
+      
+      			@Override
+      			public void onProviderDisabled(String provider)
+      			{
+      		    Log.d("Java#CumulusActivity", "onProviderDisabled: Provider=" + provider);
+      
+              if( provider == LocationManager.GPS_PROVIDER )
+      		    {	
+              		if( lm != null )
+      		    		{
+        			  			lm.removeNmeaListener(nl);
+        		    		}
+      		    
+              	// GPS receiver is disconnected
+      	  			nativeGpsStatus(0);
+      	  			gpsEnabled = false;
+      		    }
+      			}
+      
+      			@Override
+      			public void onProviderEnabled(String provider)
+      			{
+      		    Log.d("Java#CumulusActivity", "onProviderEnabled: Provider=" + provider);
+      		    
+              if( provider == LocationManager.GPS_PROVIDER )
+        		    {
+              	 // GPS receiver is connected
+      		        nativeGpsStatus(1);
+      		        gpsEnabled = true;
+        		    }
+      			}
+      
+      			@Override
+      			public void onStatusChanged(String provider, int status, Bundle extras)
+        			{
+        		    Log.d("Java#CumulusActivity", "onStatusChanged: Provider=" + provider);
+        		    
+                if( provider == LocationManager.GPS_PROVIDER )
+        		    {
+        		    	if( status == LocationProvider.AVAILABLE )
+          		    	{
+                	    // GPS receiver is connected
+          		    		nativeGpsStatus(1);
+          		    	}
+        		    	else
+          		    	{
+                  	  // GPS receiver is disconnected
+        		    			nativeGpsStatus(0);
+          		    	}
+        		    }
+        			}
+      		};
+      		
+      	lm.addNmeaListener(nl);	 
+    		lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 1, 1, ll );
+      }
 
     Log.d("Java#CumulusActivity", "onCreate exit" );
   }
 
   @Override
   protected void onDestroy()
-	{
-      if( wl != null )
-        {
-          wl.release();
-        }
+  	{
+  		Log.d("Java#CumulusActivity", "onDestroy" );
+  		
+  		if( wl != null )
+  			{
+  				wl.release();
+  			}
 
-      if( receiver != null )
-        {
-          unregisterReceiver(receiver);
-        }
+  		if( lm != null )
+  			{
+  				lm.removeNmeaListener(nl);
+  				lm.removeUpdates(ll);
+  			}
 
-      // call super class
-      super.onDestroy();
-	}
+  		if( receiver != null )
+  			{
+  				unregisterReceiver(receiver);
+  			}
+
+  		// call super class
+  		super.onDestroy();
+  	}
 	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
     // System.out.println("QtMain.onKeyDown, key pressed: "+event.toString());
     if( keyCode == KeyEvent.KEYCODE_BACK )
-      {
-         if(isRootWindow() )
-           {
-            // If the visible Qt window is the main view, BACK key may close the app.
-            // Send a quit call to the QtApplication, to have a sure shutdown.
-            // Otherwise ignore this key to prevent an unwanted shutdown.
-            nativeKeypress((char) 28);
-           }
+    	{
+    		if(isRootWindow() )
+    			{
+    				// If the visible Qt window is the main view, BACK key may close the app.
+    				// Send a quit call to the QtApplication, to have a sure shutdown.
+    				// Otherwise ignore this key to prevent an unwanted shutdown.
+    				nativeKeypress((char) 28);
+    			}
 
-          return true;
-       }
+    		return true;
+    	}
 
     if( keyCode == KeyEvent.KEYCODE_MENU )
-      {
-        showDialog(DIALOG_MENU_ID);
-        return true;
-      }
+    	{
+    		if(isRootWindow() )
+    			{
+    				// Only the root window can show this dialog.
+    				showDialog(DIALOG_MENU_ID);
+    			}
+
+    		return true;
+    	}
 
     return super.onKeyDown(keyCode, event);
   }
@@ -462,16 +480,17 @@ public class CumulusActivity extends QtActivity
 			
 		case DIALOG_ZIP_ERR:
 			builder.setMessage("Cumulus cannot unzip its data on the sdcard!")
-					.setCancelable(false)
-					.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-                     CumulusActivity.this.finish();
-				}
-			});
+      			 .setCancelable(false)
+      			 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+      				 {
+      					 public void onClick(DialogInterface dialog, int id)
+      						 {
+      							 CumulusActivity.this.finish();
+      						} 
+      				 } );
 			alert = builder.create();
 			break;
-			
-			
+
 		default:
 			alert = null;
 			break;
@@ -520,31 +539,28 @@ public class CumulusActivity extends QtActivity
   		{
   			// No location service available. Do nothing otherwise an exception is raised.
   			Toast.makeText(this, "No GPS receiver available", Toast.LENGTH_SHORT).show();
+  			gpsEnabled = false;
   			return;
   		}
 		
 		if( gpsEnabled == true )
   		{
-  			Log.i("Cumulus#Java", "disable LocationListener, set GPS status to OFF");
-  			lm.removeUpdates(ll);
-  			lm.removeNmeaListener(nl);
-  			nativeGpsStatus(0, 0);
-  			gpsEnabled = false; 
+  			Log.i("Cumulus#Java", "Disable GPS");
+  			nativeGpsStatus(0);
+  			gpsEnabled = false;
   		}
 		else
   		{
-  			Log.i("Cumulus#Java", "activating LocationListener, set GPS status to NO_FIX");
+  			Log.i("Cumulus#Java", "Enable GPS");
 
   			if( lm.isProviderEnabled(LocationManager.GPS_PROVIDER) == false )
-				{
-					showGPSDisabledAlertToUser();
-				}
+  				{
+  					showGPSDisabledAlertToUser();
+  				}
   			else
 	  			{
-			        lm.addNmeaListener(nl);
-		  			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 1, ll);
-			        nativeGpsStatus(1, 0);
-			        gpsEnabled = true; 
+			      nativeGpsStatus(1);
+			      gpsEnabled = true; 
 	  			}
   		}
 	}
@@ -742,9 +758,9 @@ public class CumulusActivity extends QtActivity
 
     }
     catch (IOException e)
-    {
-      e.printStackTrace();
-    }
+    	{
+    		e.printStackTrace();
+    	}
 
     return true;
   }
