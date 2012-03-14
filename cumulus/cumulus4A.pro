@@ -20,7 +20,7 @@ TEMPLATE = app
 
 # it seems the next two lines are important for Necessitas
 CONFIG += mobility
-MOBILITY = 
+MOBILITY =
 
 CONFIG += qt \
           warn_on \
@@ -276,40 +276,40 @@ flarm {
                flarmlistview.h \
                flarmradarview.h \
                flarmwidget.h
-               
+
     SOURCES += flarm.cpp \
                flarmaliaslist.cpp \
                flarmdisplay.cpp \
                flarmlistview.cpp \
                flarmradarview.cpp \
                flarmwidget.cpp
-               
+
     DEFINES += FLARM
 }
 
 internet {
     QT += network
-    
+
     HEADERS += airspacedownloaddialog.h \
                downloadmanager.h \
                httpclient.h \
                proxydialog.h
-                              
+
     SOURCES += airspacedownloaddialog.cpp \
                downloadmanager.cpp \
                httpclient.cpp \
                proxydialog.cpp
-               
+
     DEFINES += INTERNET
 }
 
 bluetooth {
     DEFINES += BLUEZ
-  
+
     HEADERS += bluetoothdevices.h
-    
+
     SOURCES += bluetoothdevices.cpp
-    
+
     LIBS += -lbluetooth
 }
 
@@ -387,7 +387,6 @@ OTHER_FILES += \
     android/src/org/kde/necessitas/ministro/IMinistro.aidl \
     android/src/org/kde/necessitas/origo/QtApplication.java \
     android/src/org/kde/necessitas/origo/QtActivity.java \
-    android/src/org/kflog/cumulus/GPSReceiver.java \
     android/src/org/kflog/cumulus/CumulusActivity.java \
     android/version.xml \
     android/res/values/cumulus.xml

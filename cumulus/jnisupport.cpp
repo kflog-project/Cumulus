@@ -71,7 +71,7 @@ static void nativeGpsFix( JNIEnv * /*jniEnvironment*/,
 	ge->bear = bear;
 	ge->accu = accu;
 	ge->time = time;
-  QCoreApplication::postEvent( GpsNmea::gps, ge, Qt::HighEventPriority );
+	QCoreApplication::postEvent( GpsNmea::gps, ge, Qt::HighEventPriority );
 }
 
 /**
@@ -88,12 +88,22 @@ static void nativeGpsStatus( JNIEnv * /*jniEnvironment*/,
 
 static void nativeNmeaString(JNIEnv* env, jobject /*myobject*/, jstring jnmea)
 {
-  static QHash<QString, short> gpsKeys = GpsNmea::getGpsMessageKeys( gpsKeys );
-  static GeneralConfig* gci = GeneralConfig::instance();
+  static QHash<QString, short> gpsKeys;
+  static GeneralConfig* gci = 0;
+  static bool init = false;
+
+  if( init == false )
+    {
+      GpsNmea::getGpsMessageKeys( gpsKeys );
+      gci = GeneralConfig::instance();
+      init = true;
+    }
 
   const char * nativeString = env->GetStringUTFChars(jnmea, 0);
   QString qnmea(nativeString);
   env->ReleaseStringUTFChars(jnmea, nativeString);
+
+  qDebug() << "nativeNmeaString NMEA_Sentence=" << qnmea;
 
   if( gci->getGpsNmeaLogState() == false )
     {

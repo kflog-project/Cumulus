@@ -265,7 +265,7 @@ int main(int argc, char *argv[])
 
 #ifdef ANDROID
       appFont.setFamily( "Droid Sans" );
-      appFSize = 14;
+      appFSize = 6; // 14;
 #else
 #ifdef MAEMO
       appFont.setFamily("Nokia Sans");
@@ -310,7 +310,7 @@ int main(int argc, char *argv[])
 
       QMessageBox msgBox;
 
-      int size = 8;
+      int size = 6;
       QFont font = QApplication::font();
 
       // adapt font size to a readable one for the screen
@@ -326,6 +326,7 @@ int main(int argc, char *argv[])
       msgBox.setFont( font );
       msgBox.setWindowTitle( QObject::tr("Cumulus Disclaimer") );
       msgBox.setIcon ( QMessageBox::Warning );
+      msgBox.setTextFormat( Qt::RichText );
       msgBox.setText( disclaimer );
       msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
       msgBox.setDefaultButton( QMessageBox::No );
@@ -344,6 +345,7 @@ int main(int argc, char *argv[])
 
       QSize ts = td.size().toSize();
 
+      // msgBox.setGeometry( 0, 0, dtw, dth );
       msgBox.move( (dtw-ts.width()) / 2 - 20, (dth-ts.height()) / 2 - 50);
 
 #endif

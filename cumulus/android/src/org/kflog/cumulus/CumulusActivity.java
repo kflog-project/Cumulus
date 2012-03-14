@@ -50,6 +50,7 @@ import android.os.Environment;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -76,7 +77,6 @@ public class CumulusActivity extends QtActivity
   private GpsStatus.NmeaListener nl               = null;
   private boolean                gpsEnabled       = false;
   private boolean                locationUpdated  = false;
-  GPSReceiver                    receiver         = null;
   private int                    lastGpsStatus    = -1;
 
   static private String          appDataPath      = "";
@@ -108,13 +108,13 @@ public class CumulusActivity extends QtActivity
     }
 
   @Override
-  public void onCreate(Bundle savedInstanceState)
+  public void onCreate( Bundle savedInstanceState )
 	{
     Log.d("Java#CumulusActivity", "onCreate Entry" );
 
     objectRef = this;
 
-    super.onCreate(savedInstanceState);
+    super.onCreate( savedInstanceState );
 
 		boolean dataFolderAvailable = false;
 		
@@ -206,23 +206,16 @@ public class CumulusActivity extends QtActivity
       appDataPath = appDataDir;
     }
 
-    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+    Window w = getWindow();
+    w.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+    w.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-    PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
-    wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CumulusScreenAlwaysOn");
-    wl.acquire();
+//    PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+//    wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CumulusScreenAlwaysOn");
+//    wl.acquire();
 
     apl = new AsyncPlayer("alarm_player");
     npl = new AsyncPlayer("notification_player");
-
-/*  
-    receiver = new GPSReceiver();
-    IntentFilter filter = new IntentFilter("android.location.GPS_ENABLED_CHANGE");
-    filter.addAction("android.location.GPS_FIX_CHANGE");
-    registerReceiver(receiver, filter);
-*/
-  	// Criteria criteria = new Criteria();
-  	// criteria.setAccuracy(Criteria.ACCURACY_FINE);
     
     lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     
@@ -254,11 +247,6 @@ public class CumulusActivity extends QtActivity
       				/* Log.d("Java#CumulusActivity", "onLocationChanged" );
       				   nativeGpsFix(l.getLatitude(), l.getLongitude(), l.getAltitude(),
       				                l.getSpeed(), l.getBearing(), l.getAccuracy(), l.getTime());
-      				   locationUpdated = true;
-      				   if (receiver.gpsFix())
-      				     nativeGpsStatus(2);
-      				   else
-      				     nativeGpsStatus(1);
       				 */
       			}
       
@@ -340,21 +328,11 @@ public class CumulusActivity extends QtActivity
   protected void onDestroy()
   	{
   		Log.d("Java#CumulusActivity", "onDestroy" );
-  		
-  		if( wl != null )
-  			{
-  				wl.release();
-  			}
 
   		if( lm != null )
   			{
   				lm.removeNmeaListener(nl);
   				lm.removeUpdates(ll);
-  			}
-
-  		if( receiver != null )
-  			{
-  				unregisterReceiver(receiver);
   			}
 
   		// call super class

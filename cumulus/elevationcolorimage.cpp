@@ -21,6 +21,10 @@
 #include "mapdefaults.h"
 #include "altitude.h"
 
+// Definition of different font sizes
+#define PixelSize 10
+#define PointSize  8
+
 /** A reference to the terrain color array has to be passed. The colors
  *  from the array are taken for the elevation color bars. Update first
  *  colors in the array before a new paintEvent is fired.
@@ -37,14 +41,30 @@ ElevationColorImage::~ElevationColorImage()
 
 QSize ElevationColorImage::sizeHint() const
 {
-  return QSize(140, 480);
+  return QSize(160, 480);
 }
 
 QSize ElevationColorImage::minimumSizeHint() const
 {
   // Minimum height of one color bar should be 8 pixels plus
   // 10 pixels as reserve.
-  return QSize(140, 51*8 + 10);
+
+  QFont myFont = font();
+
+  if( myFont.pointSize() != -1 )
+    {
+      myFont.setPointSize( PointSize );
+    }
+  else
+    {
+      myFont.setPixelSize( PixelSize );
+    }
+
+  QFontMetrics fm( myFont );
+
+  int tw = fm.width( "10000ft" );
+
+  return QSize( 70 + tw + 10, 51*8 + 10 );
 }
 
 void ElevationColorImage::paintEvent( QPaintEvent * /* event */ )
@@ -74,15 +94,18 @@ void ElevationColorImage::paintEvent( QPaintEvent * /* event */ )
   painter.translate( QPoint(x, y) );
 
   // set font size used for text painting
-  QFont newFont = painter.font();
+  QFont newFont = font();
 
-#ifdef USE_POINT_SIZE_FONT
-  newFont.setPointSize( 10 );
-#else
-  newFont.setPixelSize( 10 );
-#endif
+  if( newFont.pointSize() != -1 )
+    {
+      newFont.setPointSize( PointSize );
+    }
+  else
+    {
+      newFont.setPixelSize( PixelSize );
+    }
 
-  painter.setFont( newFont) ;
+  painter.setFont( newFont );
   QPen pen;
   pen.setWidth(3);
   painter.setPen(pen);
