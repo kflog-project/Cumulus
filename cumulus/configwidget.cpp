@@ -32,10 +32,8 @@
 #include "layout.h"
 
 #ifdef ANDROID
-
 #include "androidevents.h"
 #include "mainwindow.h"
-
 #endif
 
 extern MapContents *_globalMapContents;
@@ -63,10 +61,13 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
 #endif
   m_tabWidget->addTab( sppArea, tr( "Personal" ) );
 
-#ifndef ANDROID
+#ifdef ANDROID
+  spg = new SettingsPageGPS4A( this );
+#else
   spg = new SettingsPageGPS( this );
-  m_tabWidget->addTab( spg, tr( "GPS" ) );
 #endif
+
+  m_tabWidget->addTab( spg, tr( "GPS" ) );
 
   spgl = new SettingsPageGlider( this );
   m_tabWidget->addTab( spgl, tr( "Gliders" ) );
@@ -188,9 +189,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
 
   connect(this, SIGNAL(load()), spp, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spgl, SLOT(slot_load()));
-#ifndef ANDROID
   connect(this, SIGNAL(load()), spg, SLOT(slot_load()));
-#endif
   connect(this, SIGNAL(load()), spt, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spms, SLOT(slot_load()));
   connect(this, SIGNAL(load()), spmo, SLOT(slot_load()));
@@ -205,9 +204,7 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
 
   connect(this, SIGNAL(save()), spp, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spgl, SLOT(slot_save()));
-#ifndef ANDROID
   connect(this, SIGNAL(save()), spg, SLOT(slot_save()));
-#endif
   connect(this, SIGNAL(save()), spt, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spms, SLOT(slot_save()));
   connect(this, SIGNAL(save()), spmo, SLOT(slot_save()));
@@ -250,13 +247,11 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   connect(spa, SIGNAL(airspaceColorsUpdated()),
           _globalMapConfig, SLOT(slotReloadAirspaceColors()));
 
-#ifndef ANDROID
   connect(spg, SIGNAL(startNmeaLog()),
           GpsNmea::gps, SLOT(slot_openNmeaLogFile()));
 
   connect(spg, SIGNAL(endNmeaLog()),
           GpsNmea::gps, SLOT(slot_closeNmeaLogFile()));
-#endif
 
 #ifdef INTERNET
 
@@ -448,7 +443,8 @@ void ConfigWidget::reject()
 
 bool ConfigWidget::eventFilter( QObject *o , QEvent *e )
 {
-  // qDebug("ConfigWidget::eventFilter() is called with event type %d", e->type());
+  qDebug("ConfigWidget::eventFilter() is called with event type %d", e->type());
+
   if( o == _globalMainWindow )
     {
       if (e->type() == QEvent::User+2)

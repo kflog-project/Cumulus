@@ -38,7 +38,9 @@
 
 #include "settingspagepersonal.h"
 
-#ifndef ANDROID
+#ifdef ANDROID
+#include "settingspagegps4a.h"
+#else
 #include "settingspagegps.h"
 #endif
 
@@ -159,7 +161,9 @@ private:
   SettingsPageGlider*        spgl;
   SettingsPageTask*          spt;
 
-#ifndef ANDROID
+#ifdef ANDROID
+  SettingsPageGPS4A*         spg;
+#else
   SettingsPageGPS*           spg;
 #endif
 
