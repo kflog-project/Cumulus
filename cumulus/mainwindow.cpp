@@ -147,11 +147,12 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
 //#ifdef ANDROID
 
-  QString style("QDialog { background-color: #D8D8D8 }");
+  QString style("QDialog { background: lightgray }");
 
   qApp->setStyleSheet( style );
 
-  style = "QComboBox::drop-down { subcontrol-origin: padding; subcontrol-position: top right; border-radius: 4px; min-width: 40px; max-width: 40px; padding: 1x}";
+  //style = "QComboBox::drop-down { subcontrol-origin: padding; subcontrol-position: top right; border-radius: 4px; min-width: 40px; max-width: 40px; padding: 1x}";
+  style = "QComboBox::down-arrow { width: 60px }";
 
   qApp->setStyleSheet( style );
 
