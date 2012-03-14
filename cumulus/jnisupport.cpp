@@ -23,6 +23,7 @@
 #include "jnisupport.h"
 #include "androidevents.h"
 #include "gpsnmea.h"
+#include "generalconfig.h"
 #include "mainwindow.h"
 
 /**
@@ -87,9 +88,28 @@ static void nativeGpsStatus( JNIEnv * /*jniEnvironment*/,
 
 static void nativeNmeaString(JNIEnv* env, jobject /*myobject*/, jstring jnmea)
 {
+  static QHash<QString, short> gpsKeys = GpsNmea::getGpsMessageKeys( gpsKeys );
+  static GeneralConfig* gci = GeneralConfig::instance();
+
   const char * nativeString = env->GetStringUTFChars(jnmea, 0);
   QString qnmea(nativeString);
   env->ReleaseStringUTFChars(jnmea, nativeString);
+
+  if( gci->getGpsNmeaLogState() == false )
+    {
+      // Check, if sentence is of interest for us.
+      QString item = qnmea.mid( 0, qnmea.indexOf( QChar(',') ) );
+
+      qDebug() << "nativeNmeaString() item=" << item;
+
+      if( gpsKeys.contains(item) == false )
+        {
+          // Ignore undesired sentences for performance reasons. They are
+          // only forwarded, if data file logging is switched on.
+          return;
+        }
+    }
+
   GpsNmeaEvent *ne = new GpsNmeaEvent(qnmea);
   QCoreApplication::postEvent( GpsNmea::gps, ne, Qt::HighEventPriority );
 }

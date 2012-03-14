@@ -45,6 +45,7 @@
 #include <QHash>
 #include <QFile>
 #include <QSet>
+#include <QMutex>
 
 #include "speed.h"
 #include "altitude.h"
@@ -364,10 +365,14 @@ class GpsNmea : public QObject
         return _mapDatum;
       };
 
-    static const QHash<QString, short>& getGpsMessageKeys()
-    {
-      return gpsHash;
-    };
+    /**
+     * Puts all desired GPS message keys into the passed hash. This method is
+     * thread safe.
+     *
+     * @param gpsKeys hash table where the results are stored.
+     *
+     */
+    static void getGpsMessageKeys( QHash<QString, short>& gpsKeys );
 
   public slots: // Public slots
     /**
@@ -732,6 +737,9 @@ class GpsNmea : public QObject
 
     // Set with reported unknown GPS keys
     QSet<QString> reportedUnknownKeys;
+
+    /** Mutex for thread synchronization. */
+    static QMutex mutex;
 
   public:
 

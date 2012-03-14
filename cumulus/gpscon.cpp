@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2004-2011 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2004-2012 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -958,7 +958,9 @@ void GpsCon::sendGpsKeys()
 {
   QString method = "GPSCon::sendGpsKeys():";
 
-  const QHash<QString, short>& gpsHash = GpsNmea::getGpsMessageKeys();
+  QHash<QString, short> gpsHash;
+
+  GpsNmea::getGpsMessageKeys( gpsHash );
 
   if( gpsHash.isEmpty() )
     {

@@ -72,6 +72,9 @@ short GpsNmea::instances = 0;
 // Dictionary with known sentence keywords
 QHash<QString, short> GpsNmea::gpsHash;
 
+// Mutex for thread synchronization
+QMutex GpsNmea::mutex;
+
 GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
 {
   if( instances > 0 )
@@ -86,31 +89,8 @@ GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
 
   resetDataObjects();
 
-  // Load known GPS sentence identifier.
-  gpsHash.insert( "$GPRMC", 0);
-  gpsHash.insert( "$GPGLL", 1);
-  gpsHash.insert( "$GPGGA", 2);
-  gpsHash.insert( "$GPGSA", 3);
-  gpsHash.insert( "$GPGSV", 4);
-  gpsHash.insert( "$PGRMZ", 5);
-  gpsHash.insert( "$PCAID", 6);
-  gpsHash.insert( "!w",     7);
-  gpsHash.insert( "$PGCS",  8);
-  gpsHash.insert( "$LXWP0", 9);
-  gpsHash.insert( "$LXWP2", 10);
-  gpsHash.insert( "$GPDTM", 11);
-
-#ifdef FLARM
-  gpsHash.insert( "$PFLAA", 12);
-  gpsHash.insert( "$PFLAU", 13);
-#endif
-
-#ifdef MAEMO5
-  gpsHash.insert( "$MAEMO0", 14);
-  gpsHash.insert( "$MAEMO1", 15);
-#endif
-
-  gpsHash.squeeze();
+  // Load desired GPS sentence identifier into the hash filter.
+  getGpsMessageKeys(gpsHash);
 
   // GPS fix supervision, is started after the first fix was received
   timeOutFix = new QTimer(this);
@@ -156,6 +136,39 @@ GpsNmea::~GpsNmea()
 
       delete nmeaLogFile;
     }
+}
+
+void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
+{
+  mutex.lock();
+  gpsKeys.clear();
+
+  // Load all desired GPS sentence identifier into the hash table
+  gpsKeys.insert( "$GPRMC", 0);
+  gpsKeys.insert( "$GPGLL", 1);
+  gpsKeys.insert( "$GPGGA", 2);
+  gpsKeys.insert( "$GPGSA", 3);
+  gpsKeys.insert( "$GPGSV", 4);
+  gpsKeys.insert( "$PGRMZ", 5);
+  gpsKeys.insert( "$PCAID", 6);
+  gpsKeys.insert( "!w",     7);
+  gpsKeys.insert( "$PGCS",  8);
+  gpsKeys.insert( "$LXWP0", 9);
+  gpsKeys.insert( "$LXWP2", 10);
+  gpsKeys.insert( "$GPDTM", 11);
+
+#ifdef FLARM
+  gpsKeys.insert( "$PFLAA", 12);
+  gpsKeys.insert( "$PFLAU", 13);
+#endif
+
+#ifdef MAEMO5
+  gpsKeys.insert( "$MAEMO0", 14);
+  gpsKeys.insert( "$MAEMO1", 15);
+#endif
+
+  gpsKeys.squeeze();
+  mutex.unlock();
 }
 
 /** Resets all data objects to their initial values. This is called
