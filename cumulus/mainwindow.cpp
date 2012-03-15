@@ -145,13 +145,13 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // Set GUI style and style proxy.
   GeneralConfig::instance()->setOurGuiStyle();
 
-//#ifdef ANDROID
+#ifdef ANDROID
 
-  QString style = "QDialog, QDialog * { background: lightgray } QComboBox::down-arrow { width: 60px }";
+  QString style = "QDialog { background: lightgray } QComboBox::drop-down { width: 30px }";
 
   qApp->setStyleSheet( style );
 
-//#endif
+#endif
 
   // Display available input methods
   QStringList inputMethods = QInputContextFactory::keys();
