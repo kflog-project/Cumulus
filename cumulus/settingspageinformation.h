@@ -51,6 +51,11 @@ class SettingsPageInformation : public QWidget
 
   virtual ~SettingsPageInformation();
 
+  protected:
+
+  virtual void showEvent( QShowEvent *event );
+
+  virtual void hideEvent( QHideEvent *event );
 
   public slots: // Public slots
   /**

@@ -214,11 +214,14 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   connect(mminus, SIGNAL(pressed()), signalMapper, SLOT(map()));
   signalMapper->setMapping(mminus, 3);
   connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(slotChange(int)));
+
+  qApp->setAutoSipEnabled( false );
 }
 
 GliderFlightDialog::~GliderFlightDialog()
 {
   noOfInstances--;
+  qApp->setAutoSipEnabled( true );
 }
 
 void GliderFlightDialog::showEvent( QShowEvent *event )

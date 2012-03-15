@@ -257,11 +257,13 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   connect( cancel, SIGNAL(released()), this, SLOT(reject()) );
 
   load();
+  qApp->setAutoSipEnabled( false );
 }
 
 AltimeterModeDialog::~AltimeterModeDialog()
 {
   noOfInstances--;
+  qApp->setAutoSipEnabled( true );
 }
 
 QString AltimeterModeDialog::mode2String()

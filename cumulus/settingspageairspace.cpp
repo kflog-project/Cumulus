@@ -942,10 +942,12 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   connect(minus, SIGNAL(pressed()), this, SLOT(slotDecrementBox()));
 
   slot_load();
+  qApp->setAutoSipEnabled( false );
 }
 
 SettingsPageAirspaceFilling::~SettingsPageAirspaceFilling()
 {
+  qApp->setAutoSipEnabled( true );
 }
 
 void SettingsPageAirspaceFilling::slotIncrementBox()
@@ -1301,10 +1303,12 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   connect(minus, SIGNAL(pressed()), this, SLOT(slotDecrementBox()));
 
   slot_load();
+  qApp->setAutoSipEnabled( false );
 }
 
 SettingsPageAirspaceWarnings::~SettingsPageAirspaceWarnings()
 {
+  qApp->setAutoSipEnabled( true );
 }
 
 void SettingsPageAirspaceWarnings::slotIncrementBox()

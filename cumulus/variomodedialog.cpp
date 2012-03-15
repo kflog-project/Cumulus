@@ -193,11 +193,13 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   connect(spinTEK,  SIGNAL(valueChanged(int)), this, SLOT(slot_setTimer()));
 
   load();
+  qApp->setAutoSipEnabled( false );
 }
 
 VarioModeDialog::~VarioModeDialog()
 {
   noOfInstances--;
+  qApp->setAutoSipEnabled( true );
 }
 
 void VarioModeDialog::showEvent(QShowEvent *)

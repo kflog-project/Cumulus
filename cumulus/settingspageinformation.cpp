@@ -128,7 +128,22 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
 }
 
 SettingsPageInformation::~SettingsPageInformation()
-{}
+{
+}
+
+void SettingsPageInformation::showEvent( QShowEvent *event )
+{
+  Q_UNUSED(event)
+
+  qApp->setAutoSipEnabled( false );
+}
+
+void SettingsPageInformation::hideEvent( QHideEvent *event )
+{
+  Q_UNUSED(event)
+
+  qApp->setAutoSipEnabled( true );
+}
 
 void SettingsPageInformation::slot_load()
 {
