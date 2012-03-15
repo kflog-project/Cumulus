@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 
   QApplication::setGraphicsSystem( "raster" );
 
-  QApplication app(argc, argv);
+  QApplication app(argc, argv, true);
 
   // @AP: we installing our own message handler
   qInstallMsgHandler(messageHandler);

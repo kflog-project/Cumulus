@@ -133,10 +133,27 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // Get application font for user manipulations
   QFont appFt = QApplication::font();
 
-  qDebug( "QAppFont family %s, pointSize=%d pixelSize=%d",
+  qDebug( "Default QAppFont: Family %s, pointSize=%d pixelSize=%d",
           appFt.family().toLatin1().data(),
           appFt.pointSize(),
           appFt.pixelSize() );
+
+  // sets the user's selected font, if defined
+  QString fontString = GeneralConfig::instance()->getGuiFont();
+  QFont userFont;
+
+  if( fontString != "" && userFont.fromString( fontString ) )
+    {
+      // take the user's defined font
+      // QApplication::setFont( userFont );
+      qApp->setFont( userFont );
+      appFt = QApplication::font();
+
+      qDebug( "Setting QAppFont: Family %s, pointSize=%d pixelSize=%d",
+              appFt.family().toLatin1().data(),
+              appFt.pointSize(),
+              appFt.pixelSize() );
+    }
 
   // For Maemo it's really better to adapt the size of some common widget
   // elements. That is done with the help of the class MaemoStyle.
@@ -147,8 +164,8 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
 #ifdef ANDROID
 
+  // Overwrite some style items.
   QString style = "QDialog { background: lightgray } QComboBox::drop-down { width: 30px }";
-
   qApp->setStyleSheet( style );
 
 #endif
@@ -161,17 +178,13 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
       qDebug() << "InputMethod: " << inputMethod;
     }
 
+  qDebug() << "AutoSipEnabled:" << qApp->autoSipEnabled();
+
 #ifdef MAEMO
 
   // That we do need for the location service. This service emits signals, which
   // are bound to a g_object. This call initializes the g_object handling.
   g_type_init();
-
-  // Check, if virtual keyboard support is enabled
-  if( GeneralConfig::instance()->getVirtualKeyboard() )
-    {
-      // qApp->setInputContext(hildonInputContext);
-    }
 
 #ifdef MAEMO4
   // N8x0 display has bad contrast for light shades, so make the (dialog)
@@ -187,18 +200,8 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
 #endif
 
-  // sets the user's selected font, if defined
-  QString fontString = GeneralConfig::instance()->getGuiFont();
-  QFont userFont;
-
-  if( fontString != "" && userFont.fromString( fontString ) )
-    {
-      // take the user's defined font
-      QApplication::setFont( userFont );
-    }
-
 #if defined (MAEMO) || defined (ANDROID)
-  resize( QApplication::desktop()->screenGeometry().size() );
+  resize( QApplication::desktop()->availableGeometry().size() );
 #else
   // get last saved window geometric from GeneralConfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
