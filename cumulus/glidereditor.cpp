@@ -69,11 +69,19 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
   itemsLayout->setVerticalSpacing(10);
   int row = 0;
 
-  itemsLayout->addWidget(new QLabel(tr("Glider type:"), this), row, 0);
-  comboType = new QComboBox(this);
-  comboType->setEditable(true);
-  comboType->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
-  itemsLayout->addWidget(comboType, row, 1);
+  if( isNew )
+    {
+      itemsLayout->addWidget(new QLabel(tr("Glider Pool:"), this), row, 0);
+      comboType = new QComboBox(this);
+      comboType->setEditable(false);
+      comboType->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
+      itemsLayout->addWidget(comboType, row, 1);
+      row++;
+    }
+
+  itemsLayout->addWidget(new QLabel(tr("Glider Type:"), this), row, 0);
+  edtGType = new QLineEdit(this);
+  itemsLayout->addWidget(edtGType, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Seats:"), this), row, 2);
   comboSeats = new QComboBox(this);
@@ -252,8 +260,11 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
   itemsLayout->addLayout(spinboxLayout, row++, 0, 1, 4);
   itemsLayout->setColumnStretch( 1, 10 );
 
-  connect (comboType, SIGNAL(activated(const QString&)),
-           this, SLOT(slotActivated(const QString&)));
+  if( isNew )
+    {
+      connect (comboType, SIGNAL(activated(const QString&)),
+               this, SLOT(slotActivated(const QString&)));
+    }
 
   connect(plus, SIGNAL(pressed()), this, SLOT(slotIncrementBox()));
   connect(minus, SIGNAL(pressed()), this, SLOT(slotDecrementBox()));
@@ -344,8 +355,7 @@ void GliderEditor::load()
 {
   if (_glider)
     {
-      setCurrentText(comboType, _glider->type());
-      comboType->setEditText(_glider->type());
+      edtGType->setText(_glider->type());
       edtGReg->setText(_glider->registration());
       edtGCall->setText(_glider->callSign());
       spinWingArea->setValue( _glider->polar()->wingArea() );
@@ -393,7 +403,7 @@ void GliderEditor::save()
       _glider = new Glider;
     }
 
-  _glider->setType(comboType->currentText().trimmed());
+  _glider->setType(edtGType->text().trimmed());
   _glider->setRegistration(edtGReg->text().trimmed());
   _glider->setCallSign(edtGCall->text().trimmed());
   _glider->setMaxWater(spinWater->value());
@@ -660,6 +670,7 @@ void GliderEditor::slotActivated(const QString& type)
       gliderCreated = true;
     }
 
+  edtGType->setText( type );
   _glider->setType( type );
 
   _polar = getPolar();
@@ -705,7 +716,7 @@ void GliderEditor::slotButtonShow()
   W2.setVerticalValue(spinW2->value());
   W3.setVerticalValue(spinW3->value());
 
-  Polar polar( comboType->currentText(),
+  Polar polar( edtGType->text(),
                V1, W1, V2, W2, V3, W3, 0.0,
                spinWingArea->value(),
                emptyWeight->value(),
@@ -718,20 +729,21 @@ void GliderEditor::slotButtonShow()
 
 void GliderEditor::accept()
 {
+  edtGType->setText(edtGType->text().trimmed()); //remove spaces
   edtGReg->setText(edtGReg->text().trimmed()); //remove spaces
 
   QString title;
   QString text;
 
-  if (edtGReg->text().isEmpty())
-    {
-      title = tr( "Missing registration!" );
-      text  = tr( "Please enter a valid registration." );
-    }
-  else if (comboType->currentText().trimmed().isEmpty() )
+  if (edtGType->text().isEmpty() )
     {
       title = tr("Missing glider type!");
       text  = tr("Please enter a valid glider type.");
+    }
+  else if (edtGReg->text().isEmpty())
+    {
+      title = tr( "Missing registration!" );
+      text  = tr( "Please enter a valid registration." );
     }
   else
     {
