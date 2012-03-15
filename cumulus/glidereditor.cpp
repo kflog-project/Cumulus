@@ -737,6 +737,7 @@ void GliderEditor::accept()
     {
       save();
       QWidget::close();
+      return;
     }
 
   QMessageBox mb( QMessageBox::Critical,

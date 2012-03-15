@@ -103,14 +103,10 @@ static void nativeNmeaString(JNIEnv* env, jobject /*myobject*/, jstring jnmea)
   QString qnmea(nativeString);
   env->ReleaseStringUTFChars(jnmea, nativeString);
 
-  qDebug() << "nativeNmeaString NMEA_Sentence=" << qnmea;
-
   if( gci->getGpsNmeaLogState() == false )
     {
       // Check, if sentence is of interest for us.
       QString item = qnmea.mid( 0, qnmea.indexOf( QChar(',') ) );
-
-      qDebug() << "nativeNmeaString() item=" << item;
 
       if( gpsKeys.contains(item) == false )
         {
