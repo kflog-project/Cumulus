@@ -2353,9 +2353,8 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
           if ( _rootWindow )
             {
               close();
+              return true;
             }
-
-          return true;
         }
 
 #endif
