@@ -62,6 +62,9 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   connect( list, SIGNAL(cellChanged( int, int )),
            this, SLOT(slot_CellChanged( int, int )) );
 
+  connect( list, SIGNAL(cellClicked( int, int )),
+           this, SLOT(slot_CellClicked( int, int )) );
+
   topLayout->addWidget( list, 2 );
 
   QGroupBox* buttonBox = new QGroupBox( this );
@@ -156,11 +159,11 @@ void FlarmAliasList::slot_AddRow( QString col0, QString col1 )
   QTableWidgetItem* item;
 
   item = new QTableWidgetItem( col0 );
-  item->setFlags( Qt::ItemIsSelectable| Qt::ItemIsEditable | Qt::ItemIsEnabled );
+  item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
   list->setItem( row, 0, item );
 
   item = new QTableWidgetItem( col1 );
-  item->setFlags( Qt::ItemIsSelectable| Qt::ItemIsEditable | Qt::ItemIsEnabled );
+  item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
   list->setItem( row, 1, item );
 
   if( ! col0.isEmpty() && col0 == FlarmDisplay::getSelectedObject() )
@@ -336,6 +339,42 @@ void FlarmAliasList::slot_CellChanged( int row, int column )
     }
 }
 
+void FlarmAliasList::slot_CellClicked( int row, int column )
+{
+  QTableWidgetItem* item = list->item ( row, column );
+
+  if( item == static_cast<QTableWidgetItem *>(0) || row < 0 || column < 0 )
+    {
+      // Item can be a Null pointer, if a row has been removed.
+      return;
+    }
+
+  QString title, label;
+
+  if( column == 0 )
+    {
+      title = tr("Enter Flarm ID");
+      label = tr("Flarm ID:");
+    }
+  else
+    {
+      title = tr("Enter Alias");
+      label = tr("Alias (15):");
+    }
+
+  bool ok;
+  QString text = QInputDialog::getText( this,
+                                        title,
+                                        label,
+                                        QLineEdit::Normal,
+                                        item->text(),
+                                        &ok );
+  if( ok  )
+    {
+      item->setText( text );
+    }
+}
+
 #warning "FLARM alias file 'cumulus-flarm.txt' is stored at User Data Directory"
 
 /** Loads the Flarm alias data from the related file into the alias hash. */
@@ -349,7 +388,7 @@ bool FlarmAliasList::loadAliasData()
   if ( ! f.open( QIODevice::ReadOnly ) )
     {
       // could not open file ...
-      qDebug() << "Cannot open file: " << f.fileName();
+      qWarning() << "Cannot open file: " << f.fileName();
       mutex.unlock();
       return false;
     }

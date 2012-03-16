@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2011 Axel Pauli
+**   Copyright (c): 2010-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
  * identifiers. The names are displayed in a two column table. The content of
  * the table is stored in a text file in the user's data directory.
  *
- * \date 2010-2011
+ * \date 2010-2012
  *
  * \version $Id$
  */
@@ -98,6 +98,9 @@ private slots:
 
   /** Cell content change is handled here. */
   void slot_CellChanged( int row, int column );
+
+  /** Called, when a cell is clicked to open an extra editor. */
+  void slot_CellClicked ( int row, int column );
 
   /**
    * Header click is handled here. It sorts the clicked column in ascending
