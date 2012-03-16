@@ -32,7 +32,8 @@ int AltimeterModeDialog::noOfInstances = 0;
 AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   QDialog( parent, Qt::WindowStaysOnTopHint ),
   _mode( 0 ),
-  _unit( 0 )
+  _unit( 0 ),
+  m_autoSip(true)
 {
   noOfInstances++;
   setObjectName( "AltimeterModeDialog" );
@@ -257,13 +258,16 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   connect( cancel, SIGNAL(released()), this, SLOT(reject()) );
 
   load();
+
+  // Switch off automatic software input panel popup
+  m_autoSip = qApp->autoSipEnabled();
   qApp->setAutoSipEnabled( false );
 }
 
 AltimeterModeDialog::~AltimeterModeDialog()
 {
   noOfInstances--;
-  qApp->setAutoSipEnabled( true );
+  qApp->setAutoSipEnabled( m_autoSip );
 }
 
 QString AltimeterModeDialog::mode2String()
@@ -311,13 +315,13 @@ void AltimeterModeDialog::load()
       break;
   }
 
-  saveMode = _mode;
+  m_saveMode = _mode;
 
   GeneralConfig *conf = GeneralConfig::instance();
 
-  saveUnit = Altitude::getUnit();
+  m_saveUnit = Altitude::getUnit();
 
-  switch( saveUnit )
+  switch( m_saveUnit )
   {
     case Altitude::meters:
       _meter->setChecked(true);
@@ -335,11 +339,11 @@ void AltimeterModeDialog::load()
       break;
   }
 
-  saveLeveling = spinLeveling->value();
+  m_saveLeveling = spinLeveling->value();
 
-  saveQnh = conf->getQNH();
+  m_saveQnh = conf->getQNH();
 
-  spinQnh->setValue( saveQnh );
+  spinQnh->setValue( m_saveQnh );
 
   startTimer();
 }
@@ -452,10 +456,10 @@ void AltimeterModeDialog::slotSpinValueChanged( const QString& text )
 
 bool AltimeterModeDialog::changesDone()
 {
-  return( _unit != saveUnit ||
-          _mode != saveMode ||
-          saveLeveling != spinLeveling->value() ||
-          saveQnh != spinQnh->value() );
+  return( _unit != m_saveUnit ||
+          _mode != m_saveMode ||
+          m_saveLeveling != spinLeveling->value() ||
+          m_saveQnh != spinQnh->value() );
 }
 
 void AltimeterModeDialog::accept()
@@ -484,14 +488,14 @@ void AltimeterModeDialog::reject()
 {
   if( changesDone() )
     {
-      Altitude::setUnit( (Altitude::altitudeUnit) saveUnit );
+      Altitude::setUnit( (Altitude::altitudeUnit) m_saveUnit );
 
       GeneralConfig *conf = GeneralConfig::instance();
 
-      conf->setUnitAlt( saveUnit );
-      conf->setAltimeterMode( saveMode );
-      conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters(saveLeveling) );
-      conf->setQNH( saveQnh );
+      conf->setUnitAlt( m_saveUnit );
+      conf->setAltimeterMode( m_saveMode );
+      conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters(m_saveLeveling) );
+      conf->setQNH( m_saveQnh );
       conf->save();
 
       emit newAltimeterMode();     // informs MapView

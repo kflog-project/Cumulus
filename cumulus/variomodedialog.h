@@ -83,7 +83,7 @@ private slots:
   void slot_change( int newStep );
 
   /**
-   * This method switches on/off the TEK adjustment of the variometer.
+   * This method switches on/off the tek adjustment of the variometer.
    *
    * @param newState activity state of TEL adjustment.
    */
@@ -111,14 +111,14 @@ signals:
   void newVarioTime(int newTime);
 
   /**
-   * This signal is emitted, if the TEK Mode has been changed.
+   * This signal is emitted, if the tek Mode has been changed.
    *
-   * @param newMode switches on/off the TEK adjustment
+   * @param newMode switches on/off the tek adjustment
    */
   void newTEKMode( bool newMode );
 
   /**
-   * This signal is emitted, if the TEK Mode has been changed.
+   * This signal is emitted, if the tek Mode has been changed.
    *
    * @param newAdjust new adjust value in percent
    */
@@ -139,7 +139,7 @@ private:
 
   QSpinBox*    spinTime;
   QSpinBox*    spinTEK;
-  QCheckBox*   TEK;
+  QCheckBox*   tek;
   QLabel*      TekAdj;
 
   QPushButton *plus;
@@ -151,10 +151,13 @@ private:
   QPushButton *cancel;
 
   QTimer* timer;
-  int     _timeout;
-  int     _intTime;
-  bool    _TEKComp;
-  int     _TEKAdjust;
+  int     m_timeout;
+  int     m_intTime;
+  bool    m_TEKComp;
+  int     m_TEKAdjust;
+
+  /** Auto sip flag storage. */
+  bool m_autoSip;
 
   /** contains the current number of class instances */
   static int noOfInstances;

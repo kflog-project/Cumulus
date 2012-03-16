@@ -29,7 +29,8 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   QWidget( parent ),
   loadedCylinderRadius(0),
   loadedInnerSectorRadius(0),
-  loadedOuterSectorRadius(0)
+  loadedOuterSectorRadius(0),
+  m_autoSip(true)
 {
   setObjectName("SettingsPageTask");
 
@@ -293,6 +294,18 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
 // Destructor of class
 SettingsPageTask::~SettingsPageTask()
 {
+}
+
+void SettingsPageTask::showEvent(QShowEvent *)
+{
+  // Switch off automatic software input panel popup
+  m_autoSip = qApp->autoSipEnabled();
+  qApp->setAutoSipEnabled( false );
+}
+
+void SettingsPageTask::hideEvent( QHideEvent *)
+{
+  qApp->setAutoSipEnabled( m_autoSip );
 }
 
 // value of outer spin box changed

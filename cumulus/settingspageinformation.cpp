@@ -23,7 +23,7 @@
 #include "varspinbox.h"
 
 SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
-  QWidget(parent), loadConfig(true)
+  QWidget(parent), m_loadConfig(true)
 {
   setObjectName("SettingsPageInformation");
 
@@ -131,18 +131,16 @@ SettingsPageInformation::~SettingsPageInformation()
 {
 }
 
-void SettingsPageInformation::showEvent( QShowEvent *event )
+void SettingsPageInformation::showEvent( QShowEvent* )
 {
-  Q_UNUSED(event)
-
+  // Switch off automatic software input panel popup
+  m_autoSip = qApp->autoSipEnabled();
   qApp->setAutoSipEnabled( false );
 }
 
-void SettingsPageInformation::hideEvent( QHideEvent *event )
+void SettingsPageInformation::hideEvent( QHideEvent* )
 {
-  Q_UNUSED(event)
-
-  qApp->setAutoSipEnabled( true );
+  qApp->setAutoSipEnabled( m_autoSip );
 }
 
 void SettingsPageInformation::slot_load()
@@ -150,9 +148,9 @@ void SettingsPageInformation::slot_load()
   // block multiple loads to avoid reset of changed values in the spin
   // boxes
 
-  if( loadConfig )
+  if( m_loadConfig )
     {
-      loadConfig = false;
+      m_loadConfig = false;
     }
   else
     {

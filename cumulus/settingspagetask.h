@@ -56,6 +56,12 @@ public:
 
   virtual ~SettingsPageTask();
 
+protected:
+
+  virtual void showEvent(QShowEvent *);
+
+  virtual void hideEvent(QHideEvent *);
+
 public slots:
 
   void slot_load();
@@ -140,6 +146,9 @@ private:
   double loadedInnerSectorRadius;
   // store outer sector radius after load
   double loadedOuterSectorRadius;
+
+  /** Auto sip flag storage. */
+  bool m_autoSip;
 };
 
 #endif

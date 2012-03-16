@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2011 by Axel Pauli
+**                   2009-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -58,7 +58,9 @@ protected:
    * Called before widget is displayed. The content of the option table
    * is aligned to the window size.
    */
-  void showEvent(QShowEvent *);
+  virtual void showEvent(QShowEvent *);
+
+  virtual void hideEvent(QHideEvent *);
 
 public slots:
   /**
@@ -100,6 +102,11 @@ private slots:
 
 private:
 
+  /**
+   * Fills the list with load options
+   */
+  void fillLoadOptionList();
+
   QTableWidget *loadOptions;
 
   // list items in listview
@@ -123,10 +130,8 @@ private:
   QSpinBox *wpNormalScaleLimitSpinBox;
   QSpinBox *wpHighScaleLimitSpinBox;
 
-  /**
-   * Fills the list with load options
-   */
-  void fillLoadOptionList();
+  /** Auto sip flag storage. */
+  bool m_autoSip;
 };
 
 #endif

@@ -24,7 +24,8 @@
 #include "varspinbox.h"
 
 SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
-  QWidget(parent)
+  QWidget(parent),
+  m_autoSip( true )
 {
   setObjectName("SettingsPageTerrainColors");
 
@@ -232,6 +233,18 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
 
 SettingsPageTerrainColors::~SettingsPageTerrainColors()
 {
+}
+
+void SettingsPageTerrainColors::showEvent(QShowEvent *)
+{
+  // Switch off automatic software input panel popup
+  m_autoSip = qApp->autoSipEnabled();
+  qApp->setAutoSipEnabled( false );
+}
+
+void SettingsPageTerrainColors::hideEvent( QHideEvent *)
+{
+  qApp->setAutoSipEnabled( m_autoSip );
 }
 
 /**

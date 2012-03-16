@@ -99,7 +99,10 @@ class SettingsPageInformation : public QWidget
   QCheckBox*   calculateNearestSites;
   QPushButton* buttonReset;
 
-  bool loadConfig; // control loading of config data
+  bool m_loadConfig; // control loading of config data
+
+  /** Auto sip flag storage. */
+  bool m_autoSip;
 };
 
 #endif // SettingsPageInformation_h

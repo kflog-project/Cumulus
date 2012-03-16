@@ -118,10 +118,13 @@ private:
   QPushButton *mminus;
 
   /** Save the initial values here. They are needed in the reject case. */
-  int saveMode;
-  int saveUnit;
-  int saveQnh;
-  int saveLeveling;
+  int m_saveMode;
+  int m_saveUnit;
+  int m_saveQnh;
+  int m_saveLeveling;
+
+  /** Auto sip flag storage. */
+  bool m_autoSip;
 
   /** contains the current number of class instances */
   static int noOfInstances;

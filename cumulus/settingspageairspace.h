@@ -68,7 +68,9 @@ class SettingsPageAirspace : public QWidget
 
   protected:
 
-    void showEvent(QShowEvent *);
+    virtual void showEvent(QShowEvent *);
+
+    virtual void hideEvent(QHideEvent *);
 
   public slots:
     /**
@@ -216,6 +218,9 @@ class SettingsPageAirspace : public QWidget
     int spinAsLineWidthValue;
 
     SettingsPageAirspaceFilling*  m_fillingDlg;
+
+    /** Auto sip flag storage. */
+    bool m_autoSip;
   };
 
 //----------------------------SettingsPageAirspaceFilling-----------------------
@@ -319,6 +324,9 @@ class SettingsPageAirspaceFilling: public QDialog
   QPushButton *minus;
   QPushButton *reset;
   QPushButton *defaults;
+
+  /** Auto sip flag storage. */
+  bool m_autoSip;
 };
 
 //-------------------SettingsPageAirspaceWarnings-------------------------------
@@ -428,6 +436,9 @@ public:
   int aboveWarnDistVNValue;
   int belowWarnDistValue;
   int belowWarnDistVNValue;
+
+  /** Auto sip flag storage. */
+  bool m_autoSip;
 };
 
 //-------------------SettingsPageAirspaceLoading-------------------------------

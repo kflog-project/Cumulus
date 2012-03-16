@@ -22,7 +22,9 @@
 #include "generalconfig.h"
 #include "varspinbox.h"
 
-SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) : QWidget(parent)
+SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
+  QWidget(parent),
+  m_autoSip( true )
 {
   setObjectName("SettingsPageMapObjects");
 
@@ -315,6 +317,15 @@ void SettingsPageMapObjects::showEvent(QShowEvent *)
   // align all columns to contents before showing
   loadOptions->resizeColumnsToContents();
   loadOptions->setFocus();
+
+  // Switch off automatic software input panel popup
+  m_autoSip = qApp->autoSipEnabled();
+  qApp->setAutoSipEnabled( false );
+}
+
+void SettingsPageMapObjects::hideEvent( QHideEvent *)
+{
+  qApp->setAutoSipEnabled( m_autoSip );
 }
 
 /**

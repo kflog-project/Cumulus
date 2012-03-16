@@ -38,7 +38,8 @@
 extern MapContents *_globalMapContents;
 
 SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
-  QWidget(parent)
+  QWidget( parent ),
+  m_autoSip( true )
 {
   setObjectName("SettingsPageAirspace");
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -386,6 +387,15 @@ void SettingsPageAirspace::showEvent(QShowEvent *)
   // align all columns to contents before showing
   drawOptions->resizeColumnsToContents();
   drawOptions->setFocus();
+
+  // Switch off automatic software input panel popup
+  m_autoSip = qApp->autoSipEnabled();
+  qApp->setAutoSipEnabled( false );
+}
+
+void SettingsPageAirspace::hideEvent( QHideEvent *)
+{
+  qApp->setAutoSipEnabled( m_autoSip );
 }
 
 void SettingsPageAirspace::slot_load()
@@ -668,6 +678,19 @@ void SettingsPageAirspace::slot_openWarningDialog()
 {
   SettingsPageAirspaceWarnings* dlg = new SettingsPageAirspaceWarnings(this);
   dlg->setVisible( true );
+
+#ifdef ANDROID
+
+  QSize ms = dlg->minimumSizeHint();
+
+  ms += QSize(10, 10);
+
+  // A dialog is not centered over the parent and not limited in
+  // its size under Android. Therefore this must be done by our self.
+  dlg->setGeometry( (width() - ms.width()) / 2, (height() - ms.height()) / 2,
+                     ms.width(), ms.height() );
+
+#endif
 }
 
 /* Called to open the airspace loading selection dialog. */
@@ -679,6 +702,19 @@ void SettingsPageAirspace::slot_openLoadDialog()
            _globalMapContents, SLOT(slotReloadAirspaceData()) );
 
   dlg->setVisible( true );
+
+#ifdef ANDROID
+
+  QSize ms = dlg->minimumSizeHint();
+
+  ms += QSize(10, 10);
+
+  // A dialog is not centered over the parent and not limited in
+  // its size under Android. Therefore this must be done by our self.
+  dlg->setGeometry( (width() - ms.width()) / 2, (height() - ms.height()) / 2,
+                     ms.width(), ms.height() );
+
+#endif
 }
 
 /* Called to ask is confirmation on the close is needed. */
@@ -753,7 +789,8 @@ void SettingsPageAirspace::slot_enabledToggled(bool enabled)
 /******************************************************************************/
 
 SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
-  QDialog(parent, Qt::WindowStaysOnTopHint)
+  QDialog(parent, Qt::WindowStaysOnTopHint),
+  m_autoSip(true)
 {
   setObjectName("SettingsPageAirspaceFilling");
   setAttribute( Qt::WA_DeleteOnClose );
@@ -942,12 +979,15 @@ SettingsPageAirspaceFilling::SettingsPageAirspaceFilling(QWidget *parent) :
   connect(minus, SIGNAL(pressed()), this, SLOT(slotDecrementBox()));
 
   slot_load();
+
+  // Switch off automatic software input panel popup
+  m_autoSip = qApp->autoSipEnabled();
   qApp->setAutoSipEnabled( false );
 }
 
 SettingsPageAirspaceFilling::~SettingsPageAirspaceFilling()
 {
-  qApp->setAutoSipEnabled( true );
+  qApp->setAutoSipEnabled( m_autoSip );
 }
 
 void SettingsPageAirspaceFilling::slotIncrementBox()
@@ -1129,7 +1169,8 @@ void SettingsPageAirspaceFilling::slot_enabledToggled(bool enabled)
 /******************************************************************************/
 
 SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
-  QDialog(parent, Qt::WindowStaysOnTopHint)
+  QDialog(parent, Qt::WindowStaysOnTopHint),
+  m_autoSip( true )
 {
   setObjectName("SettingsPageAirspaceWarnings");
   setAttribute( Qt::WA_DeleteOnClose );
@@ -1303,12 +1344,15 @@ SettingsPageAirspaceWarnings::SettingsPageAirspaceWarnings(QWidget *parent) :
   connect(minus, SIGNAL(pressed()), this, SLOT(slotDecrementBox()));
 
   slot_load();
+
+  // Switch off automatic software input panel popup
+  m_autoSip = qApp->autoSipEnabled();
   qApp->setAutoSipEnabled( false );
 }
 
 SettingsPageAirspaceWarnings::~SettingsPageAirspaceWarnings()
 {
-  qApp->setAutoSipEnabled( true );
+  qApp->setAutoSipEnabled( m_autoSip );
 }
 
 void SettingsPageAirspaceWarnings::slotIncrementBox()

@@ -28,7 +28,8 @@
 int VarioModeDialog::noOfInstances = 0;
 
 VarioModeDialog::VarioModeDialog(QWidget *parent) :
-  QDialog( parent, Qt::WindowStaysOnTopHint )
+  QDialog( parent, Qt::WindowStaysOnTopHint ),
+  m_autoSip(true)
 {
   noOfInstances++;
   setObjectName("VarioModeDialog");
@@ -78,12 +79,9 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
 
   //---------------------------------------------------------------------
 
-  QLabel* TekLbl = new QLabel(tr("TEK Mode:"), this);
-  gridLayout->addWidget(TekLbl, row, 0);
-
-  TEK = new QCheckBox (tr(""), this);
-  TEK->setFocusPolicy(Qt::NoFocus);
-  gridLayout->addWidget(TEK, row++, 1);
+  tek = new QCheckBox (tr("TEK Mode"), this);
+  tek->setFocusPolicy(Qt::NoFocus);
+  gridLayout->addWidget(tek, row++, 0, 1, 2);
 
   //---------------------------------------------------------------------
 
@@ -165,7 +163,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   timer->setSingleShot(true);
 
   connect(timer, SIGNAL(timeout()), this, SLOT(reject()));
-  connect(TEK,   SIGNAL(toggled(bool)), this, SLOT(slot_tekChanged(bool)));
+  connect(tek,   SIGNAL(toggled(bool)), this, SLOT(slot_tekChanged(bool)));
 
   connect (ok,     SIGNAL(released()), this, SLOT(slot_accept()));
   connect (cancel, SIGNAL(released()), this, SLOT(slot_reject()));
@@ -193,7 +191,11 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   connect(spinTEK,  SIGNAL(valueChanged(int)), this, SLOT(slot_setTimer()));
 
   load();
-  qApp->setAutoSipEnabled( false );
+
+  // Switch off automatic software input panel popup
+  m_autoSip = qApp->autoSipEnabled();
+  qApp->setAutoSipEnabled( m_autoSip );
+
 }
 
 VarioModeDialog::~VarioModeDialog()
@@ -213,7 +215,7 @@ void VarioModeDialog::slot_tekChanged( bool newState )
 
   if( newState == true )
     {
-      // set focus to TEK if it is enabled
+      // set focus to tek if it is enabled
       spinTEK->setFocus();
     }
   else
@@ -229,29 +231,29 @@ void VarioModeDialog::load()
   // qDebug ("VarioModeDialog::load()");
   GeneralConfig *conf = GeneralConfig::instance();
 
-  _intTime = conf->getVarioIntegrationTime();
+  m_intTime = conf->getVarioIntegrationTime();
 
-  if( _intTime < 3 ) // check configuration value
+  if( m_intTime < 3 ) // check configuration value
     {
-      _intTime = INT_TIME; // reset to default
-      conf->setVarioIntegrationTime(_intTime);
+      m_intTime = INT_TIME; // reset to default
+      conf->setVarioIntegrationTime(m_intTime);
     }
 
-  _TEKComp = conf->getVarioTekCompensation();
-  emit newTEKMode( _TEKComp );
+  m_TEKComp = conf->getVarioTekCompensation();
+  emit newTEKMode( m_TEKComp );
 
-  _TEKAdjust = conf->getVarioTekAdjust();
-  emit newTEKAdjust( _TEKAdjust );
+  m_TEKAdjust = conf->getVarioTekAdjust();
+  emit newTEKAdjust( m_TEKAdjust );
 
   // let us take the user's defined info display time
-  _timeout = conf->getInfoDisplayTime();
+  m_timeout = conf->getInfoDisplayTime();
 
-  spinTEK->setEnabled(_TEKComp);
-  spinTime->setValue( _intTime );
-  spinTEK->setValue( _TEKAdjust );
-  TEK->setChecked( _TEKComp );
+  spinTEK->setEnabled(m_TEKComp);
+  spinTime->setValue( m_intTime );
+  spinTEK->setValue( m_TEKAdjust );
+  tek->setChecked( m_TEKComp );
 
-  slot_tekChanged( _TEKComp );
+  slot_tekChanged( m_TEKComp );
 
   spinTime->setFocus();
   slot_setTimer();
@@ -263,18 +265,18 @@ void VarioModeDialog::save()
 
   conf->setVarioIntegrationTime( spinTime->value() );
 
-  if( TEK->isChecked() != _TEKComp )
+  if( tek->isChecked() != m_TEKComp )
     {
-      _TEKComp = TEK->isChecked();
-      conf->setVarioTekCompensation( _TEKComp );
-      emit newTEKMode( _TEKComp );
+      m_TEKComp = tek->isChecked();
+      conf->setVarioTekCompensation( m_TEKComp );
+      emit newTEKMode( m_TEKComp );
     }
 
-  if( spinTEK->value() != _TEKAdjust )
+  if( spinTEK->value() != m_TEKAdjust )
     {
-      _TEKAdjust = spinTEK->value();
-      conf->setVarioTekAdjust( _TEKAdjust );
-      emit newTEKAdjust( _TEKAdjust );
+      m_TEKAdjust = spinTEK->value();
+      conf->setVarioTekAdjust( m_TEKAdjust );
+      emit newTEKAdjust( m_TEKAdjust );
     }
 
   emit newVarioTime( spinTime->value() );
@@ -372,8 +374,8 @@ void VarioModeDialog::slot_reject()
 
 void VarioModeDialog::slot_setTimer()
 {
-  if (_timeout > 0)
+  if (m_timeout > 0)
     {
-      timer->start( _timeout * 1000 );
+      timer->start( m_timeout * 1000 );
     }
 }

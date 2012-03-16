@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2010 Axel Pauli
+**   Copyright (c):  2008-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -52,6 +52,12 @@ public:
 
   virtual ~SettingsPageLookNFeel();
 
+protected:
+
+  virtual void showEvent( QShowEvent *event );
+
+  virtual void hideEvent( QHideEvent *event );
+
 public slots:
 
   /** called to initiate saving to the configuration file */
@@ -78,10 +84,10 @@ private slots:
 
 private:
 
-  bool    loadConfig; // control loading of configuration data
-  QString currentFont; // current selected font is saved here
-  QString currentMenuFont; // current selected menu font is saved here
-  QColor  currentMapFrameColor; // current color of map frame
+  bool    m_loadConfig; // control loading of configuration data
+  QString m_currentFont; // current selected font is saved here
+  QString m_currentMenuFont; // current selected menu font is saved here
+  QColor  m_currentMapFrameColor; // current color of map frame
 
   QComboBox      *styleBox;
   QPushButton    *fontDialog;
@@ -90,11 +96,14 @@ private:
   QDoubleSpinBox *screenSaverSpeedLimit;
   QCheckBox      *virtualKeybord;
 
-  /** saves horizontal speed unit during construction of object */
-  Speed::speedUnit unit;
+  /** saves horizontal speed m_unit during construction of object */
+  Speed::speedUnit m_unit;
 
   /** loaded speed for change control */
-  double loadedSpeed;
+  double m_loadedSpeed;
+
+  /** Auto sip flag storage. */
+  bool m_autoSip;
 };
 
 #endif

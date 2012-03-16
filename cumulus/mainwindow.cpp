@@ -2346,8 +2346,9 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
           return true;
         }
 
-      if( k->key() == Qt::Key_End )
+      if( k->key() == Qt::Key_Escape )
         {
+          qDebug() << "Qt::Key_Escape is received, RW=" << isRootWindow();
           // Quit application from Android menu to ensure a safe shutdown
           if ( _rootWindow )
             {

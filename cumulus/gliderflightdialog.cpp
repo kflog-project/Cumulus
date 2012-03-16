@@ -30,7 +30,8 @@
 int GliderFlightDialog::noOfInstances = 0;
 
 GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
-  QDialog(parent, Qt::WindowStaysOnTopHint)
+  QDialog(parent, Qt::WindowStaysOnTopHint),
+  m_autoSip(true)
 {
   noOfInstances++;
   setObjectName("GliderFlightDialog");
@@ -197,7 +198,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   GeneralConfig *conf = GeneralConfig::instance();
   timer = new QTimer(this);
   timer->setSingleShot(true);
-  _time = conf->getInfoDisplayTime();
+  m_time = conf->getInfoDisplayTime();
 
   connect (timer, SIGNAL(timeout()), this, SLOT(slotReject()));
   connect (buttonDump, SIGNAL(released()), this, SLOT(slotDump()));
@@ -215,13 +216,15 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   signalMapper->setMapping(mminus, 3);
   connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(slotChange(int)));
 
+  // Switch off automatic software input panel popup
+  m_autoSip = qApp->autoSipEnabled();
   qApp->setAutoSipEnabled( false );
 }
 
 GliderFlightDialog::~GliderFlightDialog()
 {
   noOfInstances--;
-  qApp->setAutoSipEnabled( true );
+  qApp->setAutoSipEnabled( m_autoSip );
 }
 
 void GliderFlightDialog::showEvent( QShowEvent *event )
@@ -526,8 +529,8 @@ void GliderFlightDialog::slotReject()
 
 void GliderFlightDialog::startTimer()
 {
-  if ( _time > 0 )
+  if ( m_time > 0 )
     {
-      timer->start(_time * 1000);
+      timer->start(m_time * 1000);
     }
 }

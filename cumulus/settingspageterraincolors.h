@@ -58,6 +58,12 @@ public:
 
   virtual ~SettingsPageTerrainColors();
 
+protected:
+
+  virtual void showEvent(QShowEvent *);
+
+  virtual void hideEvent(QHideEvent *);
+
 public slots:
 
   /**
@@ -123,6 +129,9 @@ private:
 
   // provides an positive or negative elevation offset index.
   QSpinBox* elevationOffset;
+
+  /** Auto sip flag storage. */
+  bool m_autoSip;
 };
 
 #endif

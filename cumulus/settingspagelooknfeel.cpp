@@ -22,20 +22,22 @@
 #include <QtGui>
 
 #include "generalconfig.h"
+#include "mainwindow.h"
 #include "settingspagelooknfeel.h"
 #include "varspinbox.h"
 
 SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   QWidget(parent),
-  loadConfig(true),
-  currentFont(""),
-  currentMenuFont("")
+  m_loadConfig(true),
+  m_currentFont(""),
+  m_currentMenuFont(""),
+  m_autoSip(true)
 {
   setObjectName("SettingsPageLookNFeel");
 
-  // get current used horizontal speed unit. This unit must be considered
+  // get current used horizontal speed m_unit. This m_unit must be considered
   // during storage.
-  unit = Speed::getHorizontalUnit();
+  m_unit = Speed::getHorizontalUnit();
 
   QGridLayout* topLayout = new QGridLayout(this);
   int row=0;
@@ -109,12 +111,24 @@ SettingsPageLookNFeel::~SettingsPageLookNFeel()
 {
 }
 
+void SettingsPageLookNFeel::showEvent( QShowEvent* )
+{
+  // Switch off automatic software input panel popup
+  m_autoSip = qApp->autoSipEnabled();
+  qApp->setAutoSipEnabled( false );
+}
+
+void SettingsPageLookNFeel::hideEvent( QHideEvent* )
+{
+  qApp->setAutoSipEnabled( m_autoSip );
+}
+
 /** Called to initiate loading of the configuration items. */
 void SettingsPageLookNFeel::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
-  currentFont         = conf->getGuiFont();
-  currentMenuFont     = conf->getGuiMenuFont();
+  m_currentFont         = conf->getGuiFont();
+  m_currentMenuFont     = conf->getGuiMenuFont();
 
   // search item to be selected
   int idx = styleBox->findText( conf->getGuiStyle() );
@@ -124,14 +138,14 @@ void SettingsPageLookNFeel::slot_load()
       styleBox->setCurrentIndex(idx);
     }
 
-  currentMapFrameColor = conf->getMapFrameColor();
+  m_currentMapFrameColor = conf->getMapFrameColor();
 
   Speed speed;
   // speed is stored in Km/h
   speed.setKph( GeneralConfig::instance()->getScreenSaverSpeedLimit() );
-  screenSaverSpeedLimit->setValue( speed.getValueInUnit( unit ) );
+  screenSaverSpeedLimit->setValue( speed.getValueInUnit( m_unit ) );
   // save loaded value for change control
-  loadedSpeed = screenSaverSpeedLimit->value();
+  m_loadedSpeed = screenSaverSpeedLimit->value();
 
   // virtualKeybord->setChecked( conf->getVirtualKeyboard() );
 }
@@ -141,14 +155,14 @@ void SettingsPageLookNFeel::slot_save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  if( conf->getGuiFont() != currentFont )
+  if( conf->getGuiFont() != m_currentFont )
     {
-      conf->setGuiFont( currentFont );
+      conf->setGuiFont( m_currentFont );
     }
 
-  if( conf->getGuiMenuFont() != currentMenuFont )
+  if( conf->getGuiMenuFont() != m_currentMenuFont )
     {
-      conf->setGuiMenuFont( currentMenuFont );
+      conf->setGuiMenuFont( m_currentMenuFont );
     }
 
   if( conf->getGuiStyle() != styleBox->currentText() )
@@ -157,15 +171,15 @@ void SettingsPageLookNFeel::slot_save()
       conf->setOurGuiStyle();
     }
 
-  if( conf->getMapFrameColor() != currentMapFrameColor )
+  if( conf->getMapFrameColor() != m_currentMapFrameColor )
     {
-      conf->setMapFrameColor( currentMapFrameColor );
+      conf->setMapFrameColor( m_currentMapFrameColor );
     }
 
-  if( loadedSpeed != screenSaverSpeedLimit->value() )
+  if( m_loadedSpeed != screenSaverSpeedLimit->value() )
     {
       Speed speed;
-      speed.setValueInUnit( screenSaverSpeedLimit->value(), unit );
+      speed.setValueInUnit( screenSaverSpeedLimit->value(), m_unit );
 
       // store speed in Km/h
       GeneralConfig::instance()->setScreenSaverSpeedLimit( speed.getKph() );
@@ -187,12 +201,12 @@ void SettingsPageLookNFeel::slot_query_close( bool& warn, QStringList& warnings 
   GeneralConfig * conf = GeneralConfig::instance();
   bool changed=false;
 
-  changed |= conf->getGuiFont() != currentFont;
-  changed |= conf->getGuiMenuFont() != currentMenuFont;
+  changed |= conf->getGuiFont() != m_currentFont;
+  changed |= conf->getGuiMenuFont() != m_currentMenuFont;
   changed |= conf->getGuiStyle() != styleBox->currentText();
   // changed |= conf->getVirtualKeyboard() != virtualKeybord->isChecked();
-  changed |= conf->getMapFrameColor() != currentMapFrameColor;
-  changed |= loadedSpeed != screenSaverSpeedLimit->value() ;
+  changed |= conf->getMapFrameColor() != m_currentMapFrameColor;
+  changed |= m_loadedSpeed != screenSaverSpeedLimit->value() ;
 
   if (changed)
     {
@@ -206,37 +220,45 @@ void SettingsPageLookNFeel::slot_openFontDialog()
 {
   bool ok = false;
 
-  QFont currFont, newFont;
+  QFont currFont;
 
-  if( ! currentFont.isEmpty() )
+  if( ! m_currentFont.isEmpty() )
     {
-      ok = currFont.fromString( currentFont );
+      ok = currFont.fromString( m_currentFont );
     }
+
+  QFontDialog fd( this );
+  fd.setWindowTitle(tr("GUI Font"));
 
   if( ok )
     {
       // preselect current active font
-      newFont = QFontDialog::getFont( &ok, currFont, this );
+      fd.setCurrentFont( currFont );
     }
   else
     {
-      newFont = QFontDialog::getFont( &ok, font(), this );
+      fd.setCurrentFont( font() );
     }
 
-  if( ok )
+#ifdef ANDROID
+  fd.setVisible(true);
+  fd.resize( MainWindow::mainWindow()->size() );
+#endif
+
+  if( fd.exec() == QDialog::Accepted )
     {
      // the user clicked OK and font is set to the font the user selected
-      currentFont = newFont.toString();
+      m_currentFont = fd.selectedFont().toString();
 
      // Set the new GUI font for all widgets. Note this new font
      // is only set temporary. The user must save it for permanent
      // usage.
-     QApplication::setFont( newFont );
+     QApplication::setFont( m_currentFont );
     }
   else
     {
-      // the user clicked cancel, reset currentFont variable
-      currentFont = GeneralConfig::instance()->getGuiFont();
+      // the user clicked cancel, reset m_currentFont variable
+      m_currentFont = GeneralConfig::instance()->getGuiFont();
     }
 }
 
@@ -245,32 +267,40 @@ void SettingsPageLookNFeel::slot_openMenuFontDialog()
 {
   bool ok = false;
 
-  QFont currFont, newFont;
+  QFont currFont;
 
-  if( ! currentMenuFont.isEmpty() )
+  if( ! m_currentMenuFont.isEmpty() )
     {
-      ok = currFont.fromString( currentMenuFont );
+      ok = currFont.fromString( m_currentMenuFont );
     }
+
+  QFontDialog fd( this );
 
   if( ok )
     {
       // preselect current active font
-      newFont = QFontDialog::getFont( &ok, currFont, this );
+      fd.setCurrentFont( currFont );
+      fd.setWindowTitle(tr("GUI Menu Font"));
     }
   else
     {
-      newFont = QFontDialog::getFont( &ok, font(), this );
+      fd.setCurrentFont( font() );
     }
 
-  if( ok )
+#ifdef ANDROID
+  fd.setVisible(true);
+  fd.resize( MainWindow::mainWindow()->size() );
+#endif
+
+  if( fd.exec() == QDialog::Accepted )
     {
      // the user clicked OK and menu font is set to the font the user selected
-      currentMenuFont = newFont.toString();
+      m_currentMenuFont = fd.selectedFont().toString();
     }
   else
     {
-      // the user clicked cancel, reset currentMenuFont variable
-      currentMenuFont = GeneralConfig::instance()->getGuiMenuFont();
+      // the user clicked cancel, reset m_currentMenuFont variable
+      m_currentMenuFont = GeneralConfig::instance()->getGuiMenuFont();
     }
 }
 
@@ -288,7 +318,6 @@ void SettingsPageLookNFeel::slot_openColorDialog()
   if( newColor.isValid() && color != newColor )
     {
       // save color into temporary buffer
-      currentMapFrameColor = newColor;
+      m_currentMapFrameColor = newColor;
     }
 }
-

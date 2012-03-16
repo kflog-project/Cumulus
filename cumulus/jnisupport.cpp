@@ -138,7 +138,9 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
     qtCode = Qt::Key_F13;
     break;
   case 28:
-    qtCode = Qt::Key_End;
+    // The close key at the Android device is pressed. It is forwarded as
+    // escape key to close the current opened widget.
+    qtCode = Qt::Key_Escape;
     break;
   default:
     qDebug("nativeKeypress: code is %d", code);

@@ -158,7 +158,10 @@ class GliderFlightDialog : public QDialog
   QSpinBox* spinBugs;
   QPushButton* buttonDump;
   QTimer* timer;
-  int _time;
+  int m_time;
+
+  /** Auto sip flag storage. */
+  bool m_autoSip;
 
   // Flight time display
   QLabel* ftLabel;
