@@ -1,6 +1,28 @@
+cumulus (2.12.2) stable; urgency=low
+
+  * Operation of Flarm alias list modified. A double click on a table column was
+    not so easy to execute. Now if a cell is clicked an extra dialog is opened
+    to handle the input for that cell. Rows can be selected by clicking the left
+    row number button.
+
+  * Zoom issue fixed in help browser.
+
+  * The waypoint default type is set to landmark now, if the waypoint editor is
+    opened for waypoint creation.
+
+  * Missing time zone item UTC added to sunset in the arrival display.
+
+  * Method determineFlightStatus of Calculator class modified. The flight status
+    detection should now work safer and faster as before.
+
+  * New option skip added to NMEA simulator. This option allows to skip a number
+    of lines in a file to be played.
+    
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Tue, 20 Mar 2012 22:12:38 +0100
+
 cumulus (2.12.1) stable; urgency=low
 
-  * All Qt default spinboxes are replaced by own improved solutions.
+  * All Qt default spinboxes are replaced by an own improved solutions.
     That should make the operation more user friendly now.
 
   * Co-pilot name and current water ballast are saved now, if the
