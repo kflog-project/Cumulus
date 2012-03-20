@@ -31,13 +31,14 @@
  * \version $Id$
  */
 
-#ifndef FLARM_ALIAS_LIST_H_
-#define FLARM_ALIAS_LIST_H_
+#ifndef FLARM_ALIAS_LIST_H
+#define FLARM_ALIAS_LIST_H
 
 #include <QWidget>
 #include <QHash>
 
 class QMutex;
+class QPushButton;
 class QString;
 class QTableWidget;
 
@@ -108,6 +109,9 @@ private slots:
    */
   void slot_HeaderClicked( int section );
 
+  /** Called, if the item selection is changed. */
+  void slot_ItemSelectionChanged();
+
 signals:
 
   /**
@@ -122,6 +126,9 @@ private:
 
   /** Table widget with two columns for alias entries. */
   QTableWidget* list;
+
+  /** Delete button. */
+  QPushButton *deleteButton;
 
   /**
    * Flarm alias hash dictionary. The key is the Flarm Id and the value the

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2011 Axel Pauli
+**   Copyright (c): 2010-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -40,7 +40,7 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   topLayout->setSpacing(5);
 
   list = new QTableWidget( 0, 2, this );
-  list->setSelectionBehavior( QAbstractItemView::SelectRows );
+  list->setSelectionBehavior( QAbstractItemView::SelectItems );
 
   // hide vertical headers
   // QHeaderView *vHeader = list->verticalHeader();
@@ -65,6 +65,9 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   connect( list, SIGNAL(cellClicked( int, int )),
            this, SLOT(slot_CellClicked( int, int )) );
 
+  connect( list, SIGNAL(itemSelectionChanged()),
+           this, SLOT(slot_ItemSelectionChanged()) );
+
   topLayout->addWidget( list, 2 );
 
   QGroupBox* buttonBox = new QGroupBox( this );
@@ -82,12 +85,13 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   addButton->setMinimumSize(size, size);
   addButton->setMaximumSize(size, size);
 
-  QPushButton *deleteButton  = new QPushButton;
+  deleteButton  = new QPushButton;
   deleteButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "delete.png" ) ) );
   deleteButton->setIconSize(QSize(IconSize, IconSize));
   deleteButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
   deleteButton->setMinimumSize(size, size);
   deleteButton->setMaximumSize(size, size);
+  deleteButton->setEnabled(false);
 
   QPushButton *okButton = new QPushButton;
   okButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
@@ -140,7 +144,6 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
 
 FlarmAliasList::~FlarmAliasList()
 {
-  // qDebug() << "FlarmAliasList::~FlarmAliasList()";
 }
 
 void FlarmAliasList::showEvent( QShowEvent *event )
@@ -148,6 +151,15 @@ void FlarmAliasList::showEvent( QShowEvent *event )
   Q_UNUSED( event )
 
   list->resizeColumnToContents( 0 );
+
+  QString style = "QTableView QTableCornerButton::section { background: gray }";
+  list->setStyleSheet( style );
+
+  QHeaderView *vHeader = list->verticalHeader();
+
+  style = "QHeaderView::section { width: 2em }";
+
+  vHeader->setStyleSheet( style );
 }
 
 void FlarmAliasList::slot_AddRow( QString col0, QString col1 )
@@ -373,6 +385,36 @@ void FlarmAliasList::slot_CellClicked( int row, int column )
     {
       item->setText( text );
     }
+}
+
+void FlarmAliasList::slot_ItemSelectionChanged()
+{
+  bool enabled = false;
+
+  for( int i = 0; i < list->rowCount(); i++ )
+    {
+      QTableWidgetItem *item0 = list->item( i, 0 );
+      QTableWidgetItem *item1 = list->item( i, 1 );
+
+      if( item0 && item1 )
+        {
+          if( item0->isSelected() && item1->isSelected() )
+            {
+              enabled = true;
+              continue;
+            }
+
+          if( ! item0->isSelected() && ! item1->isSelected() )
+            {
+              continue;
+            }
+
+          enabled = false;
+          break;
+        }
+    }
+
+  deleteButton->setEnabled(enabled);
 }
 
 #warning "FLARM alias file 'cumulus-flarm.txt' is stored at User Data Directory"

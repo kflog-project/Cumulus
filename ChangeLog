@@ -15,6 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-03-20 AP: Operation of Flarm alias list modified. A double click on a
+                   table column was not so easy to execute. Now if a cell is
+                   clicked an extra dialog is opened to handle the input for
+                   that cell. Rows can be selected by clicking the left row
+                   number button.
+
 [-] 2012-03-06 AP: Zoom issue fixed in help browser.
 
 [o] 2012-02-01 AP: The waypoint default type is set to landmark now, if the
