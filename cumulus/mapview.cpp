@@ -338,13 +338,19 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   QFont font = _statusbar->font();
   font.setBold(true);
 
+  int size = 10;
+
+#ifdef MAEMO
+  size = 12;
+#endif
+
   if( font.pointSize() != -1 )
     {
-      font.setPointSize(10);
+      font.setPointSize(size);
     }
   else
     {
-      font.setPixelSize(14);
+      font.setPixelSize(size+4);
     }
 
   _statusbar->setFont(font);

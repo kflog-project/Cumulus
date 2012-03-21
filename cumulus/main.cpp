@@ -275,6 +275,10 @@ int main(int argc, char *argv[])
 #endif
 #endif
 
+      appFont.setWeight( QFont::Normal );
+      appFont.setStyle( QFont::StyleNormal );
+      appFont.setStyleHint( QFont::SansSerif );
+      
       // Check, what kind of font size is used by Qt.
       if( QApplication::font().pointSize() != -1 )
         {
@@ -311,6 +315,11 @@ int main(int argc, char *argv[])
       QMessageBox msgBox;
 
       int size = 6;
+
+#ifdef MAEMO
+      size = 10;
+#endif
+
       QFont font = QApplication::font();
 
       // adapt font size to a readable one for the screen

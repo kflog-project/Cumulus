@@ -253,7 +253,7 @@ void SettingsPageLookNFeel::slot_openFontDialog()
      // Set the new GUI font for all widgets. Note this new font
      // is only set temporary. The user must save it for permanent
      // usage.
-     QApplication::setFont( m_currentFont );
+     QApplication::setFont( fd.selectedFont() );
     }
   else
     {
