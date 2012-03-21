@@ -338,11 +338,14 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   QFont font = _statusbar->font();
   font.setBold(true);
 
-#ifdef USE_POINT_SIZE_FONT
-  font.setPointSize(10);
-#else
-  font.setPixelSize(14);
-#endif
+  if( font.pointSize() != -1 )
+    {
+      font.setPointSize(10);
+    }
+  else
+    {
+      font.setPixelSize(14);
+    }
 
   _statusbar->setFont(font);
 

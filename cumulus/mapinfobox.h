@@ -230,6 +230,8 @@ private:
   QWidget* _preWidget;
   /** The maximum font size */
   int _maxFontDotsize;
+  /** The font unit to be used in style sheet definition. */
+  QString _fontUnit;
 };
 
 #endif

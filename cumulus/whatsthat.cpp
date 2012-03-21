@@ -47,11 +47,14 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
   int size = 16;
 #endif
 
-#ifdef USE_POINT_SIZE_FONT
-  font.setPointSize( size );
-#else
-  font.setPixelSize( size );
-#endif
+  if( font.pointSize() != -1 )
+    {
+      font.setPointSize( size );
+    }
+  else
+    {
+      font.setPixelSize( size );
+    }
 
   doc->setDefaultFont( font );
 
@@ -74,11 +77,14 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
     {
       size--;
 
-#ifdef USE_POINT_SIZE_FONT
-      font.setPointSize( size );
-#else
-      font.setPixelSize( size );
-#endif
+      if( font.pointSize() != -1 )
+        {
+          font.setPointSize( size );
+        }
+      else
+        {
+          font.setPixelSize( size );
+        }
 
       doc->setDefaultFont( font );
     }

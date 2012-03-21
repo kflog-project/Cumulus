@@ -22,9 +22,6 @@ QT += gui xml
 CONFIG = debug \
          qt \
          warn_on
-
-# Activate this define, if font point size should be used instead of pixel size.
-DEFINES += USE_POINT_SIZE_FONT
          
 # Enable Flarm feature, if not wanted comment out the next line with a hash
 CONFIG += flarm

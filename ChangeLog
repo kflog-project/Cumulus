@@ -15,6 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-03-21 AP: GUI surface partly reworked. OK and Cancel button of some
+                   widgets moved to a new position where an unwanted press
+                   should not happen during normal operation.
+
+[o] 2012-03-21 AP: Fonts can use point size or pixel size. Both in parallel is
+                   not possible. Tried to make more generic the setting of a
+                   own font size according to the used default (points or pixels).
+
 [o] 2012-03-20 AP: Operation of Flarm alias list modified. A double click on a
                    table column was not so easy to execute. Now if a cell is
                    clicked an extra dialog is opened to handle the input for

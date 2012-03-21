@@ -26,9 +26,6 @@ CONFIG += qt \
           warn_on \
           release
 
-# Cumulus uses this define for Android specific code parts.
-DEFINES += CUMULUS ANDROID
-
 # Activate this define, if font point size should be used instead of pixel size.
 DEFINES += USE_POINT_SIZE_FONT
 

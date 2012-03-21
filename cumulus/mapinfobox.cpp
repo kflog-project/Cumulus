@@ -45,12 +45,6 @@ void CuLabel::mousePressEvent ( QMouseEvent* event )
 
 //------------------------------------------------------------------------------
 
-#ifdef USE_POINT_SIZE_FONT
-#define FONT_UNIT "pt"
-#else
-#define FONT_UNIT "px"
-#endif
-
 MapInfoBox::MapInfoBox( QWidget *parent,
                         const QString& borderColor,
                         bool unitInPretext,
@@ -70,10 +64,12 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   if( f.pointSize() != -1 )
     {
       f.setPointSize( size );
+      _fontUnit = "pt";
     }
   else
     {
       f.setPixelSize( size );
+      _fontUnit = "px";
     }
 
   setFont(f);
@@ -156,7 +152,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
                                  "text-align: left;" )
                                  .arg(_textBGColor)
                                  .arg(fontDotsize)
-                                 .arg(FONT_UNIT) );
+                                 .arg(_fontUnit) );
 
   setValue("-");
   setPreText("MMM");
@@ -288,7 +284,7 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
                                      "text-align: left;" )
                                      .arg(_textBGColor)
                                      .arg(fontDotsize)
-                                     .arg(FONT_UNIT) );
+                                     .arg(_fontUnit) );
     }
 
   //@JD: set font size dynamically depending on size hint after
@@ -323,7 +319,7 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
                                      "text-align: left;" )
                                      .arg(_textBGColor)
                                      .arg( fontDotsize )
-                                     .arg(FONT_UNIT) );
+                                     .arg(_fontUnit) );
 
       diff = minimumSizeHint().width() - width();
 
@@ -351,7 +347,7 @@ void MapInfoBox::setTextLabelBGColor( const QString& newValue )
                                  "text-align: left;" )
                                  .arg(_textBGColor)
                                  .arg( _maxFontDotsize )
-                                 .arg(FONT_UNIT) );
+                                 .arg(_fontUnit) );
   setValue( _value );
 };
 

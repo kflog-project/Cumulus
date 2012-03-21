@@ -452,11 +452,15 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           // If a Flarm object is selected, we draw some additional information
           QFont f = font();
 
-#ifdef USE_POINT_SIZE_FONT
-          f.setPointSize(FontSize);
-#else
-          f.setPixelSize(FontSize);
-#endif
+          if( f.pointSize() != -1 )
+            {
+              f.setPointSize(FontSize);
+            }
+          else
+            {
+              f.setPixelSize(FontSize);
+            }
+
           f.setBold( true );
           painter.setFont(f);
 

@@ -1591,11 +1591,7 @@ void Map::__drawLabel( QPainter* painter,
   const int fs = 20;
 #endif
 
-#ifdef USE_POINT_SIZE_FONT
-  font.setPointSize( fs );
-#else
-  font.setPixelSize( fs );
-#endif
+  ( font.pointSize() != -1 ) ? font.setPointSize( fs ) : font.setPixelSize( fs );
 
   QString labelText = name;
   Altitude alt = ReachableList::getArrivalAltitude( origP );
@@ -1730,11 +1726,7 @@ void Map::_drawCityLabels( QPixmap& pixmap )
   const int fs = 6;
 #endif
 
-#ifdef USE_POINT_SIZE_FONT
-  font.setPointSize( fs );
-#else
-  font.setPixelSize( fs );
-#endif
+  ( font.pointSize() != -1 ) ? font.setPointSize( fs ) : font.setPixelSize( fs );
 
   painter.setFont( font );
   painter.setBrush(Qt::NoBrush);
@@ -1887,11 +1879,7 @@ void Map::__drawScale(QPainter& scaleP)
   const int fs = 12;
 #endif
 
-#ifdef USE_POINT_SIZE_FONT
-  font.setPointSize( fs );
-#else
-  font.setPixelSize( fs );
-#endif
+  ( font.pointSize() != -1 ) ? font.setPointSize( fs ) : font.setPixelSize( fs );
 
   scaleP.setFont(font);
 
@@ -2260,11 +2248,7 @@ void Map::__drawMostRelevantObject( const Flarm::FlarmStatus& status )
   // the labels are good to see at the map.
   QFont font = painter.font();
 
-#ifdef USE_POINT_SIZE_FONT
-  font.setPointSize( fontSize );
-#else
-  font.setPixelSize( fontSize );
-#endif
+  ( font.pointSize() != -1 ) ? font.setPointSize( fontSize ) : font.setPixelSize( fontSize );
 
   QString text = Distance::getText( relDistance, false, -1 ) + "/";
 
@@ -2383,11 +2367,7 @@ void Map::__drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
   // the labels are good to see at the map.
   QFont font = painter.font();
 
-#ifdef USE_POINT_SIZE_FONT
-  font.setPointSize( fontPointSize );
-#else
-  font.setPixelSize( fontPointSize );
-#endif
+  ( font.pointSize() != -1 ) ? font.setPointSize( fontPointSize ) : font.setPixelSize( fontPointSize );
 
   QString text = Distance::getText( distance, false, -1 );
 
@@ -2777,11 +2757,7 @@ void Map::__drawRelBearingInfo()
       pointSize += 4;
     #endif
 
-#ifdef USE_POINT_SIZE_FONT
-      font.setPointSize(pointSize);
-#else
-      font.setPixelSize(pointSize);
-#endif
+      ( font.pointSize() != -1 ) ? font.setPointSize( pointSize ) : font.setPixelSize( pointSize );
 
       font.setBold(true);
 
