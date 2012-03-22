@@ -147,8 +147,19 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
     return;
     }
 
-  QKeyEvent *ke = new QKeyEvent( QEvent::KeyPress, qtCode, Qt::NoModifier );
-  QCoreApplication::postEvent( _globalMainWindow, ke, Qt::NormalEventPriority );
+  QObject *receiver = MainWindow::mainWindow();
+
+  if( QApplication::activeWindow() )
+    {
+      // Forward key event to the current active window.
+      receiver = QApplication::activeWindow();
+    }
+
+  QKeyEvent *kpe = new QKeyEvent( QEvent::KeyPress, qtCode, Qt::NoModifier );
+  QCoreApplication::postEvent( receiver, kpe, Qt::NormalEventPriority );
+
+  QKeyEvent *kre = new QKeyEvent( QEvent::KeyRelease, qtCode, Qt::NoModifier );
+  QCoreApplication::postEvent( receiver, kre, Qt::NormalEventPriority );
 }
 
 static bool isRootWindow()

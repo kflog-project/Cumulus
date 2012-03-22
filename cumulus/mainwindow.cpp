@@ -133,10 +133,11 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // Get application font for user manipulations
   QFont appFt = QApplication::font();
 
-  qDebug( "Default QAppFont: Family %s, pointSize=%d pixelSize=%d",
+  qDebug( "Default QAppFont: Family %s, pointSize=%d, pixelSize=%d, weight=%d",
           appFt.family().toLatin1().data(),
           appFt.pointSize(),
-          appFt.pixelSize() );
+          appFt.pixelSize(),
+          appFt.weight() );
 
   // sets the user's selected font, if defined
   QString fontString = GeneralConfig::instance()->getGuiFont();
@@ -149,10 +150,11 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
       qApp->setFont( userFont );
       appFt = QApplication::font();
 
-      qDebug( "Setting QAppFont: Family %s, pointSize=%d pixelSize=%d",
+      qDebug( "Setting QAppFont: Family %s, pointSize=%d, pixelSize=%d, weight=%d",
               appFt.family().toLatin1().data(),
               appFt.pointSize(),
-              appFt.pixelSize() );
+              appFt.pixelSize(),
+              appFt.weight() );
     }
 
   // For Maemo it's really better to adapt the size of some common widget
@@ -165,7 +167,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 #ifdef ANDROID
 
   // Overwrite some style items.
-  QString style = "QDialog { background: lightgray } QComboBox::drop-down { width: 30px }";
+  QString style = "QDialog { background: lightgray }";
   qApp->setStyleSheet( style );
 
 #endif
