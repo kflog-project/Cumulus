@@ -12,6 +12,10 @@
 
 TEMPLATE = app
 
+# Put all generated objects into an extra directory
+OBJECTS_DIR = .obj
+MOC_DIR     = .obj
+
 QT += xml
 
 CONFIG = qt \
