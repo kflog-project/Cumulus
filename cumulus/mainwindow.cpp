@@ -262,14 +262,14 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   forceFocusPoint = QPoint( size().width()-2, size().height()-2 );
 #endif
 
-  installEventFilter( this );
-
   setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus-desktop26x26.png")) );
   setWindowTitle( "Cumulus" );
 
 #ifdef MAEMO
   setWindowState(Qt::WindowFullScreen);
 #endif
+
+  installEventFilter( this );
 
   splash = new Splash( this );
 
@@ -1336,7 +1336,7 @@ void MainWindow::closeEvent( QCloseEvent* evt )
 {
   // @AP: All close events will be ignored, if we are not in the map
   // view to avoid any possibility of confusion with the two close buttons.
-  if( view != mapView )
+  if( view != mapView || ! isRootWindow() )
     {
       evt->ignore();
       return;
@@ -2310,7 +2310,7 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
     {
       QKeyEvent *k = static_cast<QKeyEvent *>(e);
 
-      qDebug( "Keycode of pressed key: %d, 0x%X", k->key(), k->key() );
+      qDebug( "MW: Key press code: %d, 0x%X", k->key(), k->key() );
 
 #ifdef ANDROID
 
@@ -2350,8 +2350,7 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
 
       if( k->key() == Qt::Key_Escape )
         {
-          qDebug() << "Qt::Key_Escape is received, RW=" << isRootWindow();
-          // Quit application from Android menu to ensure a safe shutdown
+          // Quit application is requested from Android menu to ensure a safe shutdown.
           if ( _rootWindow )
             {
               close();
@@ -2363,7 +2362,7 @@ bool MainWindow::eventFilter( QObject *o , QEvent *e )
 
     }
 
-  return QWidget::eventFilter( o, e ); // standard event processing;
+  return QMainWindow::eventFilter( o, e ); // standard event processing;
 }
 
 /** Called to select the home site position */

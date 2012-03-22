@@ -80,9 +80,7 @@ public:
 
 protected:
 
-#ifdef ANDROID
   bool eventFilter( QObject *o , QEvent *e );
-#endif
 
 public slots:
 

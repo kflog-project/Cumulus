@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -70,6 +70,8 @@ protected:
 
   /** Used to handle language change events */
   virtual void changeEvent( QEvent* event );
+
+  virtual bool eventFilter( QObject *o , QEvent *e );
 
 private:
 

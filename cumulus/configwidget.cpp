@@ -439,38 +439,19 @@ void ConfigWidget::reject()
   QWidget::close();
 }
 
-#ifdef ANDROID
-
 bool ConfigWidget::eventFilter( QObject *o , QEvent *e )
 {
-  qDebug("ConfigWidget::eventFilter() is called with event type %d", e->type());
-
-  if( o == _globalMainWindow )
+  if( e->type() == QEvent::KeyPress )
     {
-      if (e->type() == QEvent::User+2)
+      QKeyEvent *k = static_cast<QKeyEvent *>(e);
+
+      if( k->key() == Qt::Key_Escape )
         {
-          KeyboardActionEvent *keyboardActionEvent = static_cast<KeyboardActionEvent *>(e);
-
-          if (keyboardActionEvent->action() == 1)
-            {
-              resize( fullSize.width(), fullSize.height()/2 ); // crude estimation of soft keyboard size
-              ((QScrollArea*)m_tabWidget->currentWidget())->ensureWidgetVisible( QApplication::focusWidget() );
-            }
-          else
-            {
-              resize( fullSize );
-            }
-
+          // Call reject, if ESC was received.
+          reject();
           return true;
         }
-      else
-        {
-          return false;
-        }
     }
-  else
-    {
-      return QWidget::eventFilter(o, e);
-    }
-  }
-#endif
+
+  return QWidget::eventFilter(o, e);
+}

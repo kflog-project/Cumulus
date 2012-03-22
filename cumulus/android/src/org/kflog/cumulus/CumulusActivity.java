@@ -63,7 +63,7 @@ public class CumulusActivity extends QtActivity
   static final int               DIALOG_CANCEL_ID = 2;
   static final int               DIALOG_NO_SDCARD = 3;
   static final int               DIALOG_ZIP_ERR   = 4;
-  
+
   static final int               MENU_SETUP       = 0;
   static final int               MENU_PREFLIGHT   = 1;
   static final int               MENU_QUIT        = 2;
@@ -109,18 +109,18 @@ public class CumulusActivity extends QtActivity
 
   @Override
   public void onCreate( Bundle savedInstanceState )
-	{
+  {
     Log.d("Java#CumulusActivity", "onCreate Entry" );
 
     objectRef = this;
 
     super.onCreate( savedInstanceState );
 
-		boolean dataFolderAvailable = false;
-		
-		String state = Environment.getExternalStorageState();
-		
-		String tmpString = "";
+    boolean dataFolderAvailable = false;
+
+    String state = Environment.getExternalStorageState();
+
+    String tmpString = "";
 
     if (! Environment.MEDIA_MOUNTED.equals(state))
       {
@@ -155,28 +155,28 @@ public class CumulusActivity extends QtActivity
 
             if( res == false )
               {
-                showDialog(DIALOG_ZIP_ERR);      
+                showDialog(DIALOG_ZIP_ERR);
                 return;
               }
           }
       }
-  
+
     // another thread is waiting for this info
     synchronized(addDataPath)
     {
       addDataPath = tmpString;
     }
 
-    // Get the internal data directory for our App.
+		// Get the internal data directory for our App.
 	String appDataDir = getDir("Cumulus", MODE_PRIVATE ).getAbsolutePath();
-		
-	// Check, if the internal data are already installed
+
+  // Check, if the internal data are already installed
     int pvc =  getPackageVersionCode();
-    
+
     File pvcFile = new File( appDataDir + "/pvc_" + String.valueOf(pvc) );
-    
+
     Log.d("PVC", pvcFile.getAbsolutePath());
-    
+
     if (! pvcFile.exists() )
       {
         // It seems that our App data are not installed. Do that job now.
@@ -184,7 +184,7 @@ public class CumulusActivity extends QtActivity
 
         if( res == false )
           {
-            showDialog(DIALOG_ZIP_ERR);      
+            showDialog(DIALOG_ZIP_ERR);
             return;
           }
 
@@ -196,10 +196,10 @@ public class CumulusActivity extends QtActivity
           }
         catch (Exception e)
           {
-            Log.e("AssetNotice", e.getMessage()); 
+            Log.e("AssetNotice", e.getMessage());
           }
       }
-	
+
     // another thread is waiting for this info
     synchronized(appDataPath)
     {
@@ -216,109 +216,109 @@ public class CumulusActivity extends QtActivity
 
     apl = new AsyncPlayer("alarm_player");
     npl = new AsyncPlayer("notification_player");
-    
+
     lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-    
+
     if( lm == null )
       {
-      	Log.d("Java#CumulusActivity", "System said: LOCATION_SERVICE is null!" );
+        Log.d("Java#CumulusActivity", "System said: LOCATION_SERVICE is null!" );
       }
     else
-      {	
+      {
         nl = new GpsStatus.NmeaListener()
           {
             public void onNmeaReceived( long timestamp, String nmea )
               {
-              	if( gpsEnabled )
-              		{
-              			// Forward GPS data only, if user has enabled that.
-              			nativeNmeaString(nmea);
-              		}
+                if( gpsEnabled )
+                  {
+                    // Forward GPS data only, if user has enabled that.
+                    nativeNmeaString(nmea);
+                  }
               }
           };
-      
-    		ll = new LocationListener()
-      		{
-      			@Override
-      			public void onLocationChanged(Location location)
-      			{
-      				// We prefer to use the NMEA raw data...
-      				
-      				/* Log.d("Java#CumulusActivity", "onLocationChanged" );
-      				   nativeGpsFix(l.getLatitude(), l.getLongitude(), l.getAltitude(),
-      				                l.getSpeed(), l.getBearing(), l.getAccuracy(), l.getTime());
-      				 */
-      			}
-      
-      			@Override
-      			public void onProviderDisabled(String provider)
-      			{
-      		    Log.d("Java#CumulusActivity", "onProviderDisabled: Provider=" + provider);
-      
+
+        ll = new LocationListener()
+          {
+            @Override
+            public void onLocationChanged(Location location)
+            {
+              // We prefer to use the NMEA raw data...
+
+              /* Log.d("Java#CumulusActivity", "onLocationChanged" );
+                 nativeGpsFix(l.getLatitude(), l.getLongitude(), l.getAltitude(),
+                              l.getSpeed(), l.getBearing(), l.getAccuracy(), l.getTime());
+               */
+            }
+
+            @Override
+            public void onProviderDisabled(String provider)
+            {
+              Log.d("Java#CumulusActivity", "onProviderDisabled: Provider=" + provider);
+
               if( provider == LocationManager.GPS_PROVIDER )
-      		    {	
-              		if( lm != null )
-      		    		{
-        			  			lm.removeNmeaListener(nl);
-        		    		}
-      		    
-              	// GPS receiver is disconnected
+              {
+                  if( lm != null )
+                  {
+                      lm.removeNmeaListener(nl);
+                    }
+
+                // GPS receiver is disconnected
                 Log.d("Java#CumulusActivity", "onProviderDisabled: GPS=False");
-      	  			nativeGpsStatus(0);
-      	  			gpsEnabled = false;
-      		    }
-      			}
-      
-      			@Override
-      			public void onProviderEnabled(String provider)
-      			{
-      		    Log.d("Java#CumulusActivity", "onProviderEnabled: Provider=" + provider);
-      		    
+                nativeGpsStatus(0);
+                gpsEnabled = false;
+              }
+            }
+
+            @Override
+            public void onProviderEnabled(String provider)
+            {
+              Log.d("Java#CumulusActivity", "onProviderEnabled: Provider=" + provider);
+
               if( provider.equals(LocationManager.GPS_PROVIDER) )
-        		    {
-              	  // GPS receiver is connected
+                {
+                  // GPS receiver is connected
                   Log.d("Java#CumulusActivity", "onProviderEnabled: GPS=True");
 
-      		        nativeGpsStatus(1);
-      		        gpsEnabled = true;
-        		    }
-      			}
-      
-      			@Override
-      			public void onStatusChanged(String provider, int status, Bundle extras)
-        			{
+                  nativeGpsStatus(1);
+                  gpsEnabled = true;
+                }
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras)
+              {
                 // If the number of satellites changes, this method is always called.
-        			  // Therefore we report only right status changes.
-        		    Log.d("Java#CumulusActivity", "onStatusChanged: Provider=" + provider +
-        		           ", Status=" + status);
-        		    
+                // Therefore we report only right status changes.
+                Log.d("Java#CumulusActivity", "onStatusChanged: Provider=" + provider +
+                       ", Status=" + status);
+
                 if( provider.equals(LocationManager.GPS_PROVIDER) && gpsEnabled )
-        		    {
-        		    	if( status == LocationProvider.AVAILABLE )
-          		    	{
-          		    	  if( lastGpsStatus != status )
-          		    	    {
-                    	    // GPS receiver is connected
-              		    		nativeGpsStatus(1);
-          		    	    }
-          		    	}
-        		    	else
-          		    	{
+                {
+                  if( status == LocationProvider.AVAILABLE )
+                    {
                       if( lastGpsStatus != status )
-                        {          		    	  
-                      	  // GPS receiver is disconnected
-            		    			nativeGpsStatus(0);
+                        {
+                          // GPS receiver is connected
+                          nativeGpsStatus(1);
                         }
-          		    	}
-        		    	
-        		    	// save the last reported status
-                  lastGpsStatus = status;        		    	
-        		    }
-        			}
-      		};
-      		
-      	lm.addNmeaListener(nl);	 
-    		lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 15, 1, ll );
+                    }
+                  else
+                    {
+                      if( lastGpsStatus != status )
+                        {
+                          // GPS receiver is disconnected
+                          nativeGpsStatus(0);
+                        }
+                    }
+
+                  // save the last reported status
+                  lastGpsStatus = status;
+                }
+              }
+          };
+
+        lm.addNmeaListener(nl);
+        lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 15, 1, ll );
       }
 
     Log.d("Java#CumulusActivity", "onCreate exit" );
@@ -326,58 +326,53 @@ public class CumulusActivity extends QtActivity
 
   @Override
   protected void onDestroy()
-  	{
-  		Log.d("Java#CumulusActivity", "onDestroy" );
+    {
+      Log.d("Java#CumulusActivity", "onDestroy" );
 
-  		if( lm != null )
-  			{
-  				lm.removeNmeaListener(nl);
-  				lm.removeUpdates(ll);
-  			}
+      if( lm != null )
+        {
+          lm.removeNmeaListener(nl);
+          lm.removeUpdates(ll);
+        }
 
-  		// call super class
-  		super.onDestroy();
-  	}
-	
+      // call super class
+      super.onDestroy();
+    }
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
-    // System.out.println("QtMain.onKeyDown, key pressed: "+event.toString());
-    if( keyCode == KeyEvent.KEYCODE_BACK )
-    	{
-    		if(isRootWindow() )
-    			{
-    				// If the visible Qt window is the main view, BACK key may close the app.
-    				// Send a quit call to the QtApplication, to have a sure shutdown.
-    				// Otherwise ignore this key to prevent an unwanted shutdown.
-    				nativeKeypress((char) 28);
-    			}
-
-    		return true;
-    	}
+		// System.out.println("QtMain.onKeyDown, key pressed: "+event.toString());
+		if( keyCode == KeyEvent.KEYCODE_BACK )
+			{
+				// Send close key to QtApp. It can be used to close a widget or the whole
+				// application.
+				nativeKeypress((char) 28);
+				return true;
+			}
 
     if( keyCode == KeyEvent.KEYCODE_MENU )
-    	{
-    		if(isRootWindow() )
-    			{
-    				// Only the root window can show this dialog.
-    				showDialog(DIALOG_MENU_ID);
-    			}
+      {
+        if(isRootWindow() )
+          {
+            // Only the root window can show this dialog.
+            showDialog(DIALOG_MENU_ID);
+          }
 
-    		return true;
-    	}
+        return true;
+      }
 
     return super.onKeyDown(keyCode, event);
   }
-	
-  @Override
+
+	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event)
 	{
-    // System.out.println("QtMain.onKeyUp, key released: "+event.toString());
-    if( keyCode == KeyEvent.KEYCODE_BACK )
-      {
-        return true;
-      }
+		// System.out.println("QtMain.onKeyUp, key released: "+event.toString());
+		if( keyCode == KeyEvent.KEYCODE_BACK )
+			{
+				return true;
+			}
 
     return super.onKeyUp(keyCode, event);
   }
@@ -385,36 +380,36 @@ public class CumulusActivity extends QtActivity
 	protected AlertDialog onCreateDialog(int id)
 	{
 		AlertDialog alert;
-		
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		
+
 		switch(id)
 		{
-  		case DIALOG_CLOSE_ID:
-  			builder.setMessage("Do you really want to close Cumulus?")
-  			       .setCancelable(false)
-  			       .setPositiveButton( "Ok", new DialogInterface.OnClickListener() {
-                            				public void onClick(DialogInterface dialog, int id) {
-                                                CumulusActivity.this.finish();
-                            				}
-                            			})
-  			       .setNegativeButton(" Cancel", new DialogInterface.OnClickListener() {
-                            				public void onClick(DialogInterface dialog, int id) {
-                            					dialog.cancel();
-                            				}
-                            			});
-  			
-  			alert = builder.create();
-  			break;
-			
+			case DIALOG_CLOSE_ID:
+				builder.setMessage("Do you really want to close Cumulus?")
+							 .setCancelable(false)
+							 .setPositiveButton( "Ok", new DialogInterface.OnClickListener() {
+																		public void onClick(DialogInterface dialog, int id) {
+																								CumulusActivity.this.finish();
+																		}
+																	})
+							 .setNegativeButton(" Cancel", new DialogInterface.OnClickListener() {
+																		public void onClick(DialogInterface dialog, int id) {
+																			dialog.cancel();
+																		}
+																	});
+
+        alert = builder.create();
+        break;
+
 		case DIALOG_MENU_ID:
 			CharSequence[] items = {"General Setup", "Preflight Setup", "Enable GPS", "GPS Status", "Quit"};
-			
+
 			if (gpsEnabled)
 			{
 				items[2] = "Disable GPS";
 			}
-			
+
 			builder = new AlertDialog.Builder(this);
 			builder.setTitle("Main Menu");
 			builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -433,19 +428,15 @@ public class CumulusActivity extends QtActivity
 						nativeKeypress((char)27);
 						break;
 					case 4:
-            // Send a quit call to the QtApplication, to make a sure shutdown.
-            if( isRootWindow() )
-              {
-                // Only root window will get a quit
-                nativeKeypress((char)28);
-              }
+						// Current window will get a quit
+						nativeKeypress((char)28);
 						break;
 					}
 				}
 			});
 			alert = builder.create();
 			break;
-			
+
 		case DIALOG_CANCEL_ID:
 			builder.setMessage("The Cumulus data directory on the storage card " +
 					"seems to be missing.\nCheck if the storage is mounted or if you " +
@@ -454,34 +445,34 @@ public class CumulusActivity extends QtActivity
 					.setCancelable(false)
 					.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-                     CumulusActivity.this.finish();
+										 CumulusActivity.this.finish();
 				}
 			});
 			alert = builder.create();
 			break;
-			
+
 		case DIALOG_NO_SDCARD:
 			builder.setMessage("Cumulus needs a sdcard for data storing!\n" +
-		                     "Please insert a sdcard and mount it.")
+												 "Please insert a sdcard and mount it.")
 					.setCancelable(false)
 					.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-                     CumulusActivity.this.finish();
+										 CumulusActivity.this.finish();
 				}
 			});
 			alert = builder.create();
 			break;
-			
+
 		case DIALOG_ZIP_ERR:
 			builder.setMessage("Cumulus cannot unzip its data on the sdcard!")
-      			 .setCancelable(false)
-      			 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
-      				 {
-      					 public void onClick(DialogInterface dialog, int id)
-      						 {
-      							 CumulusActivity.this.finish();
-      						} 
-      				 } );
+						 .setCancelable(false)
+						 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+							 {
+								 public void onClick(DialogInterface dialog, int id)
+									 {
+										 CumulusActivity.this.finish();
+									}
+							 } );
 			alert = builder.create();
 			break;
 
@@ -489,14 +480,14 @@ public class CumulusActivity extends QtActivity
 			alert = null;
 			break;
 		}
-		
+
 		return alert;
 	}
-	
+
   void playSound(int stream, String soundName)
   {
     Uri sf = Uri.parse("file://" + getAddDataDir() + File.separatorChar + "sounds" + File.separatorChar + soundName);
-	
+
     if (stream == 0)
       {
         stream = AudioManager.STREAM_NOTIFICATION;
@@ -513,14 +504,14 @@ public class CumulusActivity extends QtActivity
   {
     synchronized(appDataPath)
       {
-  	    return appDataPath;
+        return appDataPath;
       }
   }
-  
+
   String getAddDataDir()
   {
       synchronized(addDataPath)
-      {	  
+      {
         return addDataPath;
       }
   }
@@ -528,84 +519,84 @@ public class CumulusActivity extends QtActivity
 	private void toggleGps()
 	{
 		removeDialog(DIALOG_MENU_ID);
-		
-		if( lm == null )
-  		{
-  			// No location service available. Do nothing otherwise an exception is raised.
-  			Toast.makeText(this, "No GPS receiver available", Toast.LENGTH_SHORT).show();
-  			gpsEnabled = false;
-  			return;
-  		}
-		
-		if( gpsEnabled == true )
-  		{
-  			Log.i("Cumulus#Java", "Disable GPS");
-  			nativeGpsStatus(0);
-  			gpsEnabled = false;
-  		}
-		else
-  		{
-  			Log.i("Cumulus#Java", "Enable GPS");
 
-  			if( lm.isProviderEnabled(LocationManager.GPS_PROVIDER) == false )
-  				{
-  					showGPSDisabledAlertToUser();
-  				}
-  			else
-	  			{
-			      nativeGpsStatus(1);
-			      gpsEnabled = true; 
-	  			}
-  		}
-	}
-	
-	private void showGPSDisabledAlertToUser()
-  	{
-  		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-  		
-  		alertDialogBuilder
-    		.setMessage("GPS is disabled in your device. Would you like to enable it?")
-    		.setCancelable(false)
-    		.setPositiveButton( "Goto Settings Page To Enable GPS",
-                        		new DialogInterface.OnClickListener()
-                          		{
-                            		public void onClick( DialogInterface dialog, int id )
-                            		  {
-                                		Intent callGPSSettingIntent =	new Intent( android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS );
-                                		startActivity( callGPSSettingIntent );
-                                	}
-                            	}
-    		                  );
-  		
-  		alertDialogBuilder.setNegativeButton( "Cancel",
-                                        		new DialogInterface.OnClickListener()
-                                        		  {
-                                            		public void onClick(DialogInterface dialog, int id)
-                                              		{
-                                              		  dialog.cancel();
-                                              		}
-                                            	}
-  		                                   );
-  		
-  		AlertDialog alert = alertDialogBuilder.create();
-  		alert.show();
-  	}
+    if( lm == null )
+      {
+        // No location service available. Do nothing otherwise an exception is raised.
+        Toast.makeText(this, "No GPS receiver available", Toast.LENGTH_SHORT).show();
+        gpsEnabled = false;
+        return;
+      }
+
+    if( gpsEnabled == true )
+      {
+        Log.i("Cumulus#Java", "Disable GPS");
+        nativeGpsStatus(0);
+        gpsEnabled = false;
+      }
+    else
+      {
+        Log.i("Cumulus#Java", "Enable GPS");
+
+        if( lm.isProviderEnabled(LocationManager.GPS_PROVIDER) == false )
+          {
+            showGPSDisabledAlertToUser();
+          }
+        else
+          {
+            nativeGpsStatus(1);
+            gpsEnabled = true;
+          }
+      }
+  }
+
+  private void showGPSDisabledAlertToUser()
+    {
+      AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+      alertDialogBuilder
+        .setMessage("GPS is disabled in your device. Would you like to enable it?")
+        .setCancelable(false)
+        .setPositiveButton( "Goto Settings Page To Enable GPS",
+                            new DialogInterface.OnClickListener()
+                              {
+                                public void onClick( DialogInterface dialog, int id )
+                                  {
+                                    Intent callGPSSettingIntent =	new Intent( android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS );
+                                    startActivity( callGPSSettingIntent );
+                                  }
+                              }
+                          );
+
+      alertDialogBuilder.setNegativeButton( "Cancel",
+                                            new DialogInterface.OnClickListener()
+                                              {
+                                                public void onClick(DialogInterface dialog, int id)
+                                                  {
+                                                    dialog.cancel();
+                                                  }
+                                              }
+                                         );
+
+      AlertDialog alert = alertDialogBuilder.create();
+      alert.show();
+    }
 
 	/**
 	 * Retrieves the package version code from the manifest.
-	 * 
+	 *
 	 * @return The package version code
 	 */
-  private int getPackageVersionCode()
-  {
-    PackageInfo packageInfo;
-    
-    int version = -1;
+	private int getPackageVersionCode()
+	{
+		PackageInfo packageInfo;
+
+		int version = -1;
 
     try
     {
       packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-      
+
       version = packageInfo.versionCode;
     }
     catch (NameNotFoundException e)
@@ -615,7 +606,7 @@ public class CumulusActivity extends QtActivity
 
     return version;
   }
-  
+
   private boolean installAppData( String appDir, AssetManager am )
   {
     InputStream stream = null;
@@ -647,12 +638,12 @@ public class CumulusActivity extends QtActivity
     {
       Log.e("AppDataInstall", "Data install failed!");
     }
-    
+
     Log.d("AppDataInstall", "AppData install succeeded!");
 
     return res;
   }
-  
+
   private boolean installAddData( String addDir, AssetManager am )
   {
     String addDataFile = getString(R.string.addDataFile);
@@ -683,9 +674,9 @@ public class CumulusActivity extends QtActivity
     {
       Log.e("AddDataInstall", "Data install failed!");
     }
-    
+
     Log.d("AddDataInstall", "AddData install succeeded!");
-    
+
     return res;
   }
 
@@ -752,11 +743,11 @@ public class CumulusActivity extends QtActivity
 
     }
     catch (IOException e)
-    	{
-    		e.printStackTrace();
-    	}
+      {
+        e.printStackTrace();
+      }
 
     return true;
   }
-	
+
 } // End of Class

@@ -149,11 +149,27 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
 
   QObject *receiver = MainWindow::mainWindow();
 
-  if( QApplication::activeWindow() )
+  if( QApplication::activeModalWidget() )
+    {
+      receiver = QApplication::activeModalWidget();
+    }
+  else if( QApplication::focusWidget() )
+    {
+      receiver = QApplication::focusWidget();
+    }
+  else if( QApplication::activeWindow() )
     {
       // Forward key event to the current active window.
       receiver = QApplication::activeWindow();
     }
+
+#if 0
+  qDebug() << "ESC Receiver:" << receiver
+           << "ActiveWindow:" << QApplication::activeWindow()
+           << "MainWindow:" << MainWindow::mainWindow()
+           << "FocusWindow:" << QApplication::focusWidget()
+           << "ActiveModalWidget:" << QApplication::activeModalWidget();
+#endif
 
   QKeyEvent *kpe = new QKeyEvent( QEvent::KeyPress, qtCode, Qt::NoModifier );
   QCoreApplication::postEvent( receiver, kpe, Qt::NormalEventPriority );

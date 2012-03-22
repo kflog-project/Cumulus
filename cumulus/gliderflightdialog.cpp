@@ -219,6 +219,8 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   // Switch off automatic software input panel popup
   m_autoSip = qApp->autoSipEnabled();
   qApp->setAutoSipEnabled( false );
+
+  installEventFilter( this );
 }
 
 GliderFlightDialog::~GliderFlightDialog()
@@ -266,7 +268,24 @@ void GliderFlightDialog::showEvent( QShowEvent *event )
   startTimer();
 
   slotShowFlightTime();
+}
 
+bool GliderFlightDialog::eventFilter( QObject *o , QEvent *e )
+{
+  qDebug() << "GliderFlightDialog::eventFilter" << e->type();
+
+  if ( e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease )
+    {
+      QKeyEvent *k = static_cast<QKeyEvent *>(e);
+
+      if( k->key() == Qt::Key_Escape )
+        {
+           slotReject();
+           return true;
+        }
+    }
+
+  return QDialog::eventFilter(o, e);
 }
 
 void GliderFlightDialog::load()

@@ -35,6 +35,7 @@
 #define GLIDER_FLIGHT_DIALOG_H
 
 #include <QDialog>
+#include <QEvent>
 #include <QLabel>
 #include <QPushButton>
 #include <QTimer>
@@ -67,7 +68,9 @@ class GliderFlightDialog : public QDialog
 
  protected:
 
-  void showEvent(QShowEvent *);
+  virtual void showEvent(QShowEvent *);
+
+  virtual bool eventFilter( QObject *o , QEvent *e );
 
  private slots:
 

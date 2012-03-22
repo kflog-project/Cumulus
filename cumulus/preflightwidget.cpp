@@ -103,14 +103,6 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
 
   setLayout(contentLayout);
 
-  // Activate keyboard shortcuts as close button
-  QShortcut* scCancel = new QShortcut( this );
-
-  scCancel->setKey( Qt::Key_Escape );
-  scCancel->setKey( Qt::Key_Close );
-
-  connect( scCancel, SIGNAL( activated() ), this, SLOT( slot_reject() ) );
-
   miscpage->load();
   wppage->load();
 
@@ -153,6 +145,22 @@ void PreFlightWidget::changeEvent( QEvent* event )
     {
       QWidget::changeEvent( event );
     }
+}
+
+bool PreFlightWidget::eventFilter( QObject *o , QEvent *e )
+{
+  if ( e->type() == QEvent::KeyPress )
+    {
+      QKeyEvent *k = static_cast<QKeyEvent *>(e);
+
+      if( k->key() == Qt::Key_Escape )
+        {
+           slot_reject();
+           return true;
+        }
+    }
+
+  return QWidget::eventFilter(o, e);
 }
 
 void PreFlightWidget::slot_accept()
