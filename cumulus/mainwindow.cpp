@@ -272,7 +272,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   installEventFilter( this );
 
   splash = new Splash( this );
-
   setCentralWidget( splash );
   splash->setVisible( true );
   setVisible( true );
@@ -1332,13 +1331,13 @@ void MainWindow::slotFileQuit()
 /**
  * Make sure the user really wants to quit
  */
-void MainWindow::closeEvent( QCloseEvent* evt )
+void MainWindow::closeEvent( QCloseEvent* event )
 {
   // @AP: All close events will be ignored, if we are not in the map
   // view to avoid any possibility of confusion with the two close buttons.
   if( view != mapView || ! isRootWindow() )
     {
-      evt->ignore();
+      event->ignore();
       return;
     }
 
@@ -1365,15 +1364,16 @@ void MainWindow::closeEvent( QCloseEvent* evt )
     {
     case QMessageBox::Yes:
       // save and exit
-      evt->accept();
+      event->accept();
+      QMainWindow::closeEvent(event);
       break;
     case QMessageBox::No:
       // exit without saving
-      evt->ignore();
+      event->ignore();
       break;
     case QMessageBox::Cancel:
       // don't save and don't exit
-      evt->ignore();
+      event->ignore();
       break;
     }
 }
@@ -2441,7 +2441,6 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 {
   qDebug("MainWindow::resizeEvent(): w=%d, h=%d", event->size().width(), event->size().height() );
   // resize list view tabs, if current widget was modified
-
   if( listViewTabs )
     {
       listViewTabs->resize( event->size() );
@@ -2451,6 +2450,8 @@ void MainWindow::resizeEvent(QResizeEvent* event)
     {
       configView->resize( event->size() );
     }
+
+  QMainWindow::resizeEvent(event);
 }
 
 #ifdef MAEMO
