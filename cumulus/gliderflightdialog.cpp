@@ -272,8 +272,6 @@ void GliderFlightDialog::showEvent( QShowEvent *event )
 
 bool GliderFlightDialog::eventFilter( QObject *o , QEvent *e )
 {
-  qDebug() << "GliderFlightDialog::eventFilter" << e->type();
-
   if ( e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease )
     {
       QKeyEvent *k = static_cast<QKeyEvent *>(e);
