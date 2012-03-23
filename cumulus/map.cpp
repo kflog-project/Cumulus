@@ -2765,7 +2765,8 @@ void Map::__drawRelBearingInfo()
 
       if( relBearing == 0 )
         {
-          text = QString("0") + QChar(Qt::Key_degree);
+          //text = QString("0") + QChar(Qt::Key_degree);
+          text = QString("A");
         }
       else if( relBearing > 0 )
         {
