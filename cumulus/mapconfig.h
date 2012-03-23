@@ -29,8 +29,6 @@
 #include <QIcon>
 #include <QColor>
 
-#include "mapconfig.h"
-
 /**
  * \class MapConfig
  *

@@ -22,10 +22,11 @@
 #include <QtGui>
 
 #include "basemapelement.h"
-#include "layout.h"
-#include "mapdefaults.h"
 #include "generalconfig.h"
+#include "layout.h"
 #include "mapcalc.h"
+#include "mapconfig.h"
+#include "mapdefaults.h"
 
 // Different macros used by read method for configuration data
 #define READ_BORDER(a) \
