@@ -77,6 +77,9 @@ static osso_context_t *ossoContext = static_cast<osso_context_t *> (0);
 
 #endif
 
+/** Define the disclaimer version */
+#define DISCLAIMER_VERSION 1
+
 /**
  * Global available instance of this class
  */
@@ -307,7 +310,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   // As next setup a timer and return. That will start the QtMainLoop.
   // If that is not done in this way, some functionality of the GUI seems
   // not to be stable resp. not usable.
-  if( true ) // GeneralConfig::instance()->getDisclaimerVersion() != DISCLAIMER_VERSION )
+  if( GeneralConfig::instance()->getDisclaimerVersion() != DISCLAIMER_VERSION )
     {
       QTimer::singleShot(100, this, SLOT(slotCreateDisclaimer()));
     }
@@ -376,8 +379,8 @@ void MainWindow::slotCreateSplash()
   QCoreApplication::flush();
 
   // Here we finish the base initialization and start a timer
-  // to continue startup in another method. This is done, to get
-  // running the window's manager event loop. Otherwise the behavior
+  // to continue startup in another method. This is done, to return
+  // to the window's manager event loop. Otherwise the behavior
   // of some widgets is undefined.
 
   // when the timer expires the cumulus startup is continued

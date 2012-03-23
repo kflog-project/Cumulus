@@ -54,9 +54,6 @@
 #include "jnisupport.h"
 #endif
 
-/** Define the disclaimer version */
-#define DISCLAIMER_VERSION 1
-
 /////////////////////
 int main(int argc, char *argv[])
 {
