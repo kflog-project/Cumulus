@@ -41,7 +41,9 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
 
   QFont font = doc->defaultFont();
 
-#if defined MAEMO || defined ANDROID
+#ifdef MAEMO
+  int size = 18;
+#elif ANDROID
   int size = 16;
 #else
   int size = 16;
@@ -59,8 +61,7 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
   doc->setDefaultFont( font );
 
   // check, what kind of text has been passed
-  if( txt.contains("<html>", Qt::CaseInsensitive ) ||
-      txt.contains("<qt>", Qt::CaseInsensitive ) )
+  if( txt.contains("<html>", Qt::CaseInsensitive ) )
     {
       // qDebug("HTML=%s", txt.latin1());
       doc->setHtml( txt );
