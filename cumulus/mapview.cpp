@@ -341,7 +341,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   int size = 10;
 
 #ifdef MAEMO
-  size = 14;
+  size = 16;
 #endif
 
   if( font.pointSize() != -1 )
