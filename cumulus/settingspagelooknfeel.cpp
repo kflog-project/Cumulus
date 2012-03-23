@@ -229,6 +229,9 @@ void SettingsPageLookNFeel::slot_openFontDialog()
 
   QFontDialog fd( this );
   fd.setWindowTitle(tr("GUI Font"));
+  QFont ft = font();
+  ft.setPointSize(10);
+  fd.setFont(ft);
 
   if( ok )
     {
@@ -275,12 +278,15 @@ void SettingsPageLookNFeel::slot_openMenuFontDialog()
     }
 
   QFontDialog fd( this );
+  fd.setWindowTitle(tr("GUI Menu Font"));
+  QFont ft = font();
+  ft.setPointSize(10);
+  fd.setFont(ft);
 
   if( ok )
     {
       // preselect current active font
       fd.setCurrentFont( currFont );
-      fd.setWindowTitle(tr("GUI Menu Font"));
     }
   else
     {
