@@ -150,17 +150,18 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
     {
       // No Gui font is defined, we try to define a sensefull default.
       QFont appFont;
-      int   appFSize = 14;
+      int   appFSize;
 
 #ifdef ANDROID
       appFont.setFamily( "Droid Sans" );
-      appFSize = 6; // 14;
+      appFSize = 8;
 #else
 #ifdef MAEMO
       appFont.setFamily("Nokia Sans");
       appFSize = 18;
 #else
       appFont.setFamily("Sans Serif");
+      appFSize = 14;
 #endif
 #endif
 
@@ -361,6 +362,11 @@ void MainWindow::slotCreateDisclaimer()
 void MainWindow::slotCreateSplash()
 {
   setWindowTitle( "Cumulus" );
+
+  GeneralConfig *conf = GeneralConfig::instance();
+  conf->setDisclaimerVersion( DISCLAIMER_VERSION );
+  conf->save();
+
   splash = new Splash( this );
   setCentralWidget( splash );
   splash->setVisible( true );
@@ -1012,6 +1018,8 @@ void MainWindow::slotSetMenuBarFontSize()
     {
       userFont.setPixelSize( minFontSize );
     }
+
+  GeneralConfig::instance()->setGuiMenuFont( userFont.toString() );
 
   menuBar()->setFont( userFont );
 
