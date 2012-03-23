@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-03-23 AP: To overcome the hidden restrictions of a QMessageBox an
+                   own solution was programmed for the disclaimer display at
+                   program start.
+
 [o] 2012-03-21 AP: GUI surface partly reworked. OK and Cancel button of some
                    widgets moved to a new position where an unwanted press
                    should not happen during normal operation.

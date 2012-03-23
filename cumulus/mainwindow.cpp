@@ -34,22 +34,23 @@
 #include <QtGui>
 
 #include "aboutwidget.h"
+#include "calculator.h"
+#include "configwidget.h"
 #include "generalconfig.h"
+#include "helpbrowser.h"
 #include "mainwindow.h"
 #include "mapconfig.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"
-#include "calculator.h"
-#include "windanalyser.h"
-#include "configwidget.h"
-#include "wpeditdialog.h"
+#include "messagewidget.h"
 #include "preflightwidget.h"
+#include "sound.h"
+#include "target.h"
+#include "time_cu.h"
+#include "windanalyser.h"
+#include "wpeditdialog.h"
 #include "wgspoint.h"
 #include "waypoint.h"
-#include "target.h"
-#include "helpbrowser.h"
-#include "sound.h"
-#include "time_cu.h"
 
 #ifdef ANDROID
 
@@ -130,7 +131,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   helpMenu = 0;
   logger = static_cast<IgcLogger *> (0);
 
-  // Get application font for user manipulations
+  // Get application font for user adaptions.
   QFont appFt = QApplication::font();
 
   qDebug( "Default QAppFont: Family %s, pointSize=%d, pixelSize=%d, weight=%d",
@@ -139,23 +140,56 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
           appFt.pixelSize(),
           appFt.weight() );
 
-  // sets the user's selected font, if defined
   QString fontString = GeneralConfig::instance()->getGuiFont();
   QFont userFont;
 
-  if( fontString != "" && userFont.fromString( fontString ) )
+  if( fontString.isEmpty() )
+    {
+      // No Gui font is defined, we try to define a sensefull default.
+      QFont appFont;
+      int   appFSize = 14;
+
+#ifdef ANDROID
+      appFont.setFamily( "Droid Sans" );
+      appFSize = 6; // 14;
+#else
+#ifdef MAEMO
+      appFont.setFamily("Nokia Sans");
+      appFSize = 18;
+#else
+      appFont.setFamily("Sans Serif");
+#endif
+#endif
+
+      appFont.setWeight( QFont::Normal );
+      appFont.setStyle( QFont::StyleNormal );
+      appFont.setStyleHint( QFont::SansSerif );
+
+      // Check, what kind of font size is used by Qt.
+      if( QApplication::font().pointSize() != -1 )
+        {
+          appFont.setPointSize( appFSize );
+        }
+      else
+        {
+          appFont.setPixelSize( appFSize );
+        }
+
+      QApplication::setFont( appFont );
+    }
+  else if( userFont.fromString( fontString ) )
     {
       // take the user's defined font
-      // QApplication::setFont( userFont );
-      qApp->setFont( userFont );
-      appFt = QApplication::font();
-
-      qDebug( "Setting QAppFont: Family %s, pointSize=%d, pixelSize=%d, weight=%d",
-              appFt.family().toLatin1().data(),
-              appFt.pointSize(),
-              appFt.pixelSize(),
-              appFt.weight() );
+      QApplication::setFont( userFont );
     }
+
+  appFt = QApplication::font();
+
+  qDebug( "Used QAppFont: Family %s, pointSize=%d, pixelSize=%d, weight=%d",
+          appFt.family().toLatin1().data(),
+          appFt.pointSize(),
+          appFt.pixelSize(),
+          appFt.weight() );
 
   // For Maemo it's really better to adapt the size of some common widget
   // elements. That is done with the help of the class MaemoStyle.
@@ -263,7 +297,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 #endif
 
   setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus-desktop26x26.png")) );
-  setWindowTitle( "Cumulus" );
 
 #ifdef MAEMO
   setWindowState(Qt::WindowFullScreen);
@@ -271,6 +304,60 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
   installEventFilter( this );
 
+  // As next setup a timer and return. That will start the QtMainLoop.
+  // If that is not done in this way, some functionality of the GUI seems
+  // not to be stable resp. not usable.
+  if( true ) // GeneralConfig::instance()->getDisclaimerVersion() != DISCLAIMER_VERSION )
+    {
+      QTimer::singleShot(100, this, SLOT(slotCreateDisclaimer()));
+    }
+  else
+    {
+      QTimer::singleShot(100, this, SLOT(slotCreateSplash()));
+    }
+}
+
+/**
+ * Creates the disclaimer query widget.
+ */
+void MainWindow::slotCreateDisclaimer()
+{
+  setWindowTitle( tr("Disclaimer") );
+
+  QString disclaimer =
+      QObject::tr(
+        "<html>"
+        "This program comes with"
+        "<div align=\"center\">"
+        "<p><b>ABSOLUTELY NO WARRANTY!</b></p>"
+        "</div>"
+        "Do not rely on this software program as your "
+        "primary source of navigation. You as user are "
+        "responsible for using official aeronautical "
+        "charts and proper methods for safe navigation. "
+        "The information presented in this software "
+        "program may be outdated or incorrect.<br><br>"
+        "<div align=\"center\">"
+        "<b>Do You accept these terms?</b>"
+        "</div>"
+        "</html>");
+
+  QApplication::beep();
+
+  MessageWidget *mw = new MessageWidget( disclaimer, this );
+  connect( mw, SIGNAL(yesClicked()), SLOT(slotCreateSplash()) );
+  connect( mw, SIGNAL(noClicked()), SLOT(close()) );
+
+  setCentralWidget( mw );
+  setVisible( true );
+}
+
+/**
+ * Creates the splash screen.
+ */
+void MainWindow::slotCreateSplash()
+{
+  setWindowTitle( "Cumulus" );
   splash = new Splash( this );
   setCentralWidget( splash );
   splash->setVisible( true );
@@ -295,7 +382,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
   // when the timer expires the cumulus startup is continued
   QTimer::singleShot(1000, this, SLOT(slotCreateApplicationWidgets()));
- }
+}
 
 /**
  * Creates the application widgets after the base initialization
@@ -1333,6 +1420,12 @@ void MainWindow::slotFileQuit()
  */
 void MainWindow::closeEvent( QCloseEvent* event )
 {
+  if( _globalMapView == 0 )
+    {
+      event->accept();
+      return QMainWindow::closeEvent(event);
+    }
+
   // @AP: All close events will be ignored, if we are not in the map
   // view to avoid any possibility of confusion with the two close buttons.
   if( view != mapView || ! isRootWindow() )

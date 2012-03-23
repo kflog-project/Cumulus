@@ -103,7 +103,6 @@ int main(int argc, char *argv[])
   GeneralConfig *conf = GeneralConfig::instance();
 
   QApplication::setGraphicsSystem( "raster" );
-
   QApplication app(argc, argv, true);
 
   // @AP: we installing our own message handler
@@ -138,6 +137,7 @@ int main(int argc, char *argv[])
   QString root = QString(dirname(callDir));
   conf->setAppRoot( root );
   conf->setDataRoot( root );
+
   // change back to start directory
   chdir( startDir );
   free( callDir );
@@ -256,122 +256,6 @@ int main(int argc, char *argv[])
     }
 
 #endif
-
-  if( conf->getGuiFont() == "" )
-    {
-      // No Gui font is defined, we try to define a sensefull default.
-      QFont appFont;
-      int   appFSize = 14;
-
-#ifdef ANDROID
-      appFont.setFamily( "Droid Sans" );
-      appFSize = 6; // 14;
-#else
-#ifdef MAEMO
-      appFont.setFamily("Nokia Sans");
-      appFSize = 18;
-#else
-      appFont.setFamily("Sans Serif");
-#endif
-#endif
-
-      appFont.setWeight( QFont::Normal );
-      appFont.setStyle( QFont::StyleNormal );
-      appFont.setStyleHint( QFont::SansSerif );
-      
-      // Check, what kind of font size is used by Qt.
-      if( QApplication::font().pointSize() != -1 )
-        {
-          appFont.setPointSize( appFSize );
-        }
-      else
-        {
-          appFont.setPixelSize( appFSize );
-        }
-
-      QApplication::setFont( appFont );
-    }
-
-  if( conf->getDisclaimerVersion() != DISCLAIMER_VERSION )
-    {
-      QApplication::beep();
-
-      // upon changing the text, you should also increase the value of DISCLAIMERVERSION with 1
-
-      QString disclaimer =
-          QObject::tr(
-            "<html>"
-            "This program comes with"
-            "<p><b>ABSOLUTELY NO WARRANTY!</b></p>"
-            "Do not rely on this software program as your<br>"
-            "primary source of navigation. You as user are<br>"
-            "responsible for using official aeronautical<br>"
-            "charts and proper methods for safe navigation.<br>"
-            "The information presented in this software<br>"
-            "program may be outdated or incorrect.<br>"
-            "<br><b>Do You accept these terms?</b>"
-            "</html>");
-
-      QMessageBox msgBox;
-
-      int size = 6;
-
-#ifdef MAEMO
-      size = 10;
-#endif
-
-      QFont font = QApplication::font();
-
-      // adapt font size to a readable one for the screen
-      if( font.pointSize() != -1 )
-        {
-          font.setPointSize( size );
-        }
-      else
-        {
-          font.setPixelSize( size );
-        }
-
-      msgBox.setFont( font );
-      msgBox.setWindowTitle( QObject::tr("Cumulus Disclaimer") );
-      msgBox.setIcon ( QMessageBox::Warning );
-      msgBox.setTextFormat( Qt::RichText );
-      msgBox.setText( disclaimer );
-      msgBox.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
-      msgBox.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-      QTextDocument td;
-      td.setDefaultFont(font);
-      td.setHtml(disclaimer);
-
-      msgBox.setVisible(true);
-
-      // Under Android the box must be moved into the center of the desktop screen.
-      int dtw = QApplication::desktop()->availableGeometry().width();
-      int dth = QApplication::desktop()->availableGeometry().height();
-
-      QSize ts = td.size().toSize();
-
-      // msgBox.setGeometry( 0, 0, dtw, dth );
-      msgBox.move( (dtw-ts.width()) / 2 - 20, (dth-ts.height()) / 2 - 50);
-
-#endif
-
-      int button = msgBox.exec();
-
-      if( button == QMessageBox::Yes )
-        {
-          conf->setDisclaimerVersion( DISCLAIMER_VERSION );
-          conf->save();
-        }
-      else
-        {
-          qWarning("Closing application, user does not accept conditions!");
-          return 0;
-        }
-    }
 
   // create the Cumulus application window
   MainWindow *cumulus = new MainWindow( Qt::WindowContextHelpButtonHint );

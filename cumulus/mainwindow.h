@@ -353,7 +353,17 @@ private slots:
   void slotCreateApplicationWidgets();
 
   /**
-   * Finishs the startup after the map drawing.
+   * Creates the disclaimer query widget.
+   */
+  void slotCreateDisclaimer();
+
+  /**
+   * Creates the splash screen.
+   */
+  void slotCreateSplash();
+
+  /**
+   * Finishes the startup after the map drawing.
    */
   void slotFinishStartUp();
 
