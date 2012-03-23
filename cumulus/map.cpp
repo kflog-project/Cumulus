@@ -1873,8 +1873,10 @@ void Map::__drawScale(QPainter& scaleP)
   scaleP.setPen(pen);
   QFont font = scaleP.font();
 
-#if defined ANDROID || defined MAEMO
+#ifdef ANDROID
   const int fs = 12;
+#elif MAEMO
+  const int fs = 14;
 #else
   const int fs = 12;
 #endif
