@@ -671,6 +671,19 @@ void SettingsPageAirspace::slot_openFillDialog()
 {
   SettingsPageAirspaceFilling* dlg = new SettingsPageAirspaceFilling(this);
   dlg->setVisible( true );
+
+#ifdef ANDROID
+
+  QSize ms = dlg->minimumSizeHint();
+
+  ms += QSize(10, 10);
+
+  // A dialog is not centered over the parent and not limited in
+  // its size under Android. Therefore this must be done by our self.
+  dlg->setGeometry( (width() - ms.width()) / 2, (height() - ms.height()) / 2,
+                     ms.width(), ms.height() );
+
+#endif
 }
 
 /* Called to open the airspace warning dialog. */
@@ -702,19 +715,6 @@ void SettingsPageAirspace::slot_openLoadDialog()
            _globalMapContents, SLOT(slotReloadAirspaceData()) );
 
   dlg->setVisible( true );
-
-#ifdef ANDROID
-
-  QSize ms = dlg->minimumSizeHint();
-
-  ms += QSize(10, 10);
-
-  // A dialog is not centered over the parent and not limited in
-  // its size under Android. Therefore this must be done by our self.
-  dlg->setGeometry( (width() - ms.width()) / 2, (height() - ms.height()) / 2,
-                     ms.width(), ms.height() );
-
-#endif
 }
 
 /* Called to ask is confirmation on the close is needed. */

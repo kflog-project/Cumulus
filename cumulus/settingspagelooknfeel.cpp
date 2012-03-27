@@ -246,6 +246,24 @@ void SettingsPageLookNFeel::slot_openFontDialog()
 #ifdef ANDROID
   fd.setVisible(true);
   fd.resize( MainWindow::mainWindow()->size() );
+
+  // That is a bad workaround to make visible the dialog buttons, if the dialog
+  // window is to big. Found no other way to make it better :-((
+  int x = 0;
+  int y = 0;
+
+  if( fd.height() > MainWindow::mainWindow()->size().height() )
+    {
+      y = MainWindow::mainWindow()->size().height() - fd.height();
+    }
+
+  if( fd.width() > MainWindow::mainWindow()->size().width() )
+    {
+      y = MainWindow::mainWindow()->size().width() - fd.width();
+    }
+
+  fd.move( x, y );
+
 #endif
 
   if( fd.exec() == QDialog::Accepted )
@@ -296,6 +314,24 @@ void SettingsPageLookNFeel::slot_openMenuFontDialog()
 #ifdef ANDROID
   fd.setVisible(true);
   fd.resize( MainWindow::mainWindow()->size() );
+
+  // That is a bad workaround to make visible the dialog buttons, if the dialog
+  // window is to big. Found no other way to make it better :-((
+  int x = 0;
+  int y = 0;
+
+  if( fd.height() > MainWindow::mainWindow()->size().height() )
+    {
+      y = MainWindow::mainWindow()->size().height() - fd.height();
+    }
+
+  if( fd.width() > MainWindow::mainWindow()->size().width() )
+    {
+      y = MainWindow::mainWindow()->size().width() - fd.width();
+    }
+
+  fd.move( x, y );
+
 #endif
 
   if( fd.exec() == QDialog::Accepted )

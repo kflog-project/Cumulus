@@ -154,7 +154,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
 #ifdef ANDROID
       appFont.setFamily( "Droid Sans" );
-      appFSize = 10;
+      appFSize = 12;
 #else
 #ifdef MAEMO
       appFont.setFamily("Nokia Sans");
