@@ -152,10 +152,16 @@ TaskEditor::TaskEditor( QWidget* parent,
   // Combo box for toggling between waypoint, airfield, outlanding lists
   listSelectCB = new QComboBox(this);
   listSelectCB->setEditable(false);
-
   totalLayout->addWidget( listSelectCB, 0, 3 );
-  totalLayout->addWidget( okButton,     0, 5, Qt::AlignCenter  );
-  totalLayout->addWidget( cancelButton, 0, 6, Qt::AlignCenter  );
+
+  QHBoxLayout *hbBox = new QHBoxLayout;
+  hbBox->setSpacing(0);
+  hbBox->addWidget(okButton);
+
+  // add some space between the two buttons to prevent unwanted pressing
+  hbBox->addSpacing(25);
+  hbBox->addWidget(cancelButton);
+  totalLayout->addLayout( hbBox, 0, 5, 1, 2 );
 
   // descriptions of combo box selection elements
   listSelectText[0] = tr("Waypoints");
