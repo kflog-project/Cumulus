@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012 by Axel Pauli
+ **                   2012      by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -81,7 +81,8 @@ public class CumulusActivity extends QtActivity
 
   static private String          appDataPath      = "";
   static private String          addDataPath      = "";
-  static private Object          objectRef        = null;
+  static private Object          m_objectRef      = null;
+  static private Object          m_ActivityMutex  = new Object();
 
   public static native void nativeGpsFix( double latitude,
                                           double longitude,
@@ -104,7 +105,10 @@ public class CumulusActivity extends QtActivity
   private static Object getObjectRef()
     {
       // Log.d("Java#CumulusActivity", "getObjectRef is called" );
-      return objectRef;
+    	synchronized (m_ActivityMutex)
+      	{
+      		return m_objectRef;
+      	}
     }
 
   @Override
@@ -112,7 +116,10 @@ public class CumulusActivity extends QtActivity
   {
     Log.d("Java#CumulusActivity", "onCreate Entry" );
 
-    objectRef = this;
+  	synchronized (m_ActivityMutex)
+    	{
+    		m_objectRef = this;
+    	}
 
     super.onCreate( savedInstanceState );
 

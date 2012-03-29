@@ -19,6 +19,7 @@
 #include <jni.h>
 
 #include <QtGui>
+#include <QWindowSystemInterface>
 
 #include "jnisupport.h"
 #include "androidevents.h"
@@ -147,6 +148,7 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
     return;
     }
 
+#if 0
   QObject *receiver = MainWindow::mainWindow();
 
   if( QApplication::activeModalWidget() )
@@ -163,19 +165,26 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
       receiver = QApplication::activeWindow();
     }
 
-#if 0
   qDebug() << "ESC Receiver:" << receiver
            << "ActiveWindow:" << QApplication::activeWindow()
            << "MainWindow:" << MainWindow::mainWindow()
            << "FocusWindow:" << QApplication::focusWidget()
            << "ActiveModalWidget:" << QApplication::activeModalWidget();
-#endif
 
   QKeyEvent *kpe = new QKeyEvent( QEvent::KeyPress, qtCode, Qt::NoModifier );
   QCoreApplication::postEvent( receiver, kpe, Qt::NormalEventPriority );
 
   QKeyEvent *kre = new QKeyEvent( QEvent::KeyRelease, qtCode, Qt::NoModifier );
   QCoreApplication::postEvent( receiver, kre, Qt::NormalEventPriority );
+
+  QWindowSystemInterface::handleKeyEvent(0, QEvent::KeyRelease, mapAndroidKey(key), modifiers, QChar(unicode), true);
+#endif
+
+  // Callback functions for plugins found in gui/kernel/qwindowsysteminterface_qpa.cpp
+  // Necessitas use that in plugins/platforms/android/src/androidjnimain.cpp
+  QWidget *w = 0; // QApplication::activeWindow();
+  QWindowSystemInterface::handleKeyEvent(w, QEvent::KeyPress,   qtCode, Qt::NoModifier);
+  QWindowSystemInterface::handleKeyEvent(w, QEvent::KeyRelease, qtCode, Qt::NoModifier);
 }
 
 static bool isRootWindow()
