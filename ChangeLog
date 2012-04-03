@@ -15,6 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2012-04-03 AP: Different adaptions added to the source code in the last
+                   two months for the Android Qt port. Could not overcome
+                   all Android Qt issues with workarounds.
+
+-------------------------------------------------
+Cumulus 2.12.x (Development based on X11/Qt-4.8.1)
+-------------------------------------------------
+
 [o] 2012-03-23 AP: To overcome the hidden restrictions of a QMessageBox an
                    own solution was programmed for the disclaimer display at
                    program start.
@@ -24,7 +32,7 @@ Cumulus changelog
                    should not happen during normal operation.
 
 [o] 2012-03-21 AP: Fonts can use point size or pixel size. Both in parallel is
-                   not possible. Tried to make more generic the setting of a
+                   not possible. Tried to make more generic the setting of an
                    own font size according to the used default (points or pixels).
 
 [o] 2012-03-20 AP: Operation of Flarm alias list modified. A double click on a
