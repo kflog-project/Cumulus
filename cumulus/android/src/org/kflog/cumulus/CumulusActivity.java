@@ -659,8 +659,7 @@ public class CumulusActivity extends QtActivity
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 		{
-			if( data.getAction() == BluetoothAdapter.ACTION_REQUEST_ENABLE &&
-					requestCode == REQUEST_ENABLE_BT )
+			if( requestCode == REQUEST_ENABLE_BT )
 				{
 					if( resultCode == RESULT_OK )
 						{
