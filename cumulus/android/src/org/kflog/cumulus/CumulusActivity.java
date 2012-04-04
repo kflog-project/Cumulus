@@ -27,10 +27,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.Object;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -63,10 +66,13 @@ public class CumulusActivity extends QtActivity
   static final int               DIALOG_CANCEL_ID = 2;
   static final int               DIALOG_NO_SDCARD = 3;
   static final int               DIALOG_ZIP_ERR   = 4;
+  static final int               DIALOG_GPS_ID    = 5;
 
   static final int               MENU_SETUP       = 0;
   static final int               MENU_PREFLIGHT   = 1;
   static final int               MENU_QUIT        = 2;
+  
+  static final int               REQUEST_ENABLE_BT = 99;
 
   private PowerManager.WakeLock  wl               = null;
   private AsyncPlayer            apl, npl;
@@ -423,15 +429,15 @@ public class CumulusActivity extends QtActivity
         break;
 
 		case DIALOG_MENU_ID:
-			CharSequence[] items = {"General Setup", "Preflight Setup", "Enable GPS", "GPS Status", "Quit"};
+			CharSequence[] m_items = {"General Setup", "Preflight Setup", "Enable GPS", "GPS Status", "Quit"};
 
 			if (gpsEnabled)
 			{
-				items[2] = "Disable GPS";
+				m_items[2] = "Disable GPS";
 			}
 
 			builder.setTitle("Main Menu");
-			builder.setItems(items, new DialogInterface.OnClickListener() {
+			builder.setItems(m_items, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
 					switch(item) {
 					case 0:
@@ -495,6 +501,28 @@ public class CumulusActivity extends QtActivity
 			alert = builder.create();
 			break;
 
+		case DIALOG_GPS_ID:
+			CharSequence[] l_gitems = {"Internal GPS", "Bluetooth GPS"};
+
+			builder.setTitle("GPS Menu");
+			builder.setItems(l_gitems, new DialogInterface.OnClickListener()
+				{
+  				public void onClick(DialogInterface dialog, int item)
+  					{
+    					switch(item)
+    					{
+      					case 0:
+      						enableInternalGps( true );
+      						break;
+      					case 1:
+      						enableBtGps( true );
+      						break;
+  					  }
+				    }
+			  });
+			alert = builder.create();
+			break;
+
 		default:
 			alert = null;
 			break;
@@ -538,8 +566,12 @@ public class CumulusActivity extends QtActivity
 	private void toggleGps()
 	{
 		removeDialog(DIALOG_MENU_ID);
-
-    if( lm == null )
+		
+		BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
+		
+		// As next ask which GPS device shall be used. Possibilities are the internal GPS
+		// device or connected BT devices.
+    if( lm == null || mBtAdapter == null )
       {
         // No location service available. Do nothing otherwise an exception is raised.
         Toast.makeText(this, "No GPS receiver available", Toast.LENGTH_SHORT).show();
@@ -556,18 +588,90 @@ public class CumulusActivity extends QtActivity
     else
       {
         Log.i("Cumulus#Java", "Enable GPS");
-
-        if( lm.isProviderEnabled(LocationManager.GPS_PROVIDER) == false )
-          {
-            showGPSDisabledAlertToUser();
-          }
-        else
-          {
-            nativeGpsStatus(1);
-            gpsEnabled = true;
-          }
+        
+        if( lm != null && mBtAdapter != null )
+        	{
+        		showDialog(DIALOG_GPS_ID);
+        	}
+        else if( lm != null )
+        	{
+        		enableInternalGps( false );
+        	}
+        else if( mBtAdapter != null )
+        	{
+        		enableBtGps( false );
+        	}
       }
   }
+
+	private void enableInternalGps( boolean clearDialog )
+		{
+			if( clearDialog )
+				{
+					removeDialog(DIALOG_GPS_ID);
+				}
+			
+      if( lm.isProviderEnabled(LocationManager.GPS_PROVIDER) == false )
+        {
+          showGPSDisabledAlertToUser();
+        }
+      else
+        {
+          nativeGpsStatus(1);
+          gpsEnabled = true;
+        }
+		}
+
+	private void enableBtGps( boolean clearDialog )
+		{
+			if( clearDialog )
+				{
+					removeDialog(DIALOG_GPS_ID);
+				}
+			
+			if (! BluetoothAdapter.getDefaultAdapter().isEnabled())
+				{
+					Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+					startActivityForResult( enableBtIntent, REQUEST_ENABLE_BT );
+				}
+			else
+				{
+					chooseBtGps();
+				}
+		}
+
+	private void chooseBtGps()
+		{
+			Set<BluetoothDevice> pairedDevices = BluetoothAdapter.getDefaultAdapter().getBondedDevices();
+			
+		// If there are paired devices
+		if (pairedDevices.size() > 0)
+			{
+		    // Loop through paired devices
+		    for (BluetoothDevice device : pairedDevices)
+		    	{
+		    		Log.v("Cumulus#Java", "chooseBtGps(): " + device.getName() + "=" + device.getAddress());
+		        // Add the name and address to an array adapter to show in a ListView
+		        // mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+		      }
+			}
+		}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+		{
+			if( data.getAction() == BluetoothAdapter.ACTION_REQUEST_ENABLE &&
+					requestCode == REQUEST_ENABLE_BT )
+				{
+					if( resultCode == RESULT_OK )
+						{
+							chooseBtGps();
+						}
+					
+					return;
+				}
+
+			super.onActivityResult(requestCode, resultCode, data);
+		}
 
   private void showGPSDisabledAlertToUser()
     {
