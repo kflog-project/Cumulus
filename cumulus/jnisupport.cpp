@@ -52,27 +52,26 @@ bool jniGetDir( const char* method, jmethodID mId, QString& directory );
 /**
  * Called from the Java code on every location update by LocationListener ll
  */
-
 static void nativeGpsFix( JNIEnv * /*jniEnvironment*/,
                           jobject /*myproxyobject*/,
-                          jdouble lati,
-                          jdouble longi,
-                          jdouble alt,
+                          jdouble latitude,
+                          jdouble longitude,
+                          jdouble altitude,
                           jfloat speed,
-                          jfloat bear,
-                          jfloat accu,
+                          jfloat heading,
+                          jfloat accuracy,
                           jlong time )
 {
-//	qDebug("*** nativeGpsFix: lat %f, lon %f", lati, longi);
-	GpsFixEvent *ge = new GpsFixEvent();
-	ge->lati = lati;
-	ge->longi = longi;
-	ge->alt = alt;
-	ge->spd = speed;
-	ge->bear = bear;
-	ge->accu = accu;
-	ge->time = time;
-	QCoreApplication::postEvent( GpsNmea::gps, ge, Qt::HighEventPriority );
+  // qDebug("*** nativeGpsFix: lat %f, lon %f", lati, longi);
+  GpsFixEvent *ge = new GpsFixEvent( latitude,
+                                     longitude,
+                                     altitude,
+                                     speed,
+                                     heading,
+                                     accuracy,
+                                     time );
+
+  QCoreApplication::postEvent( GpsNmea::gps, ge, Qt::HighEventPriority );
 }
 
 /**

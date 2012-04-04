@@ -2505,66 +2505,56 @@ bool GpsNmea::event(QEvent *event)
         GpsFixEvent *gpsFixEvent = static_cast<GpsFixEvent *>(event);
 
         // Handle altitude
-        Altitude myalt(0);
+        Altitude newAlt(0);
         double alt = gpsFixEvent->altitude();
 
         // Consider user's altitude correction
-        myalt.setMeters( alt + _userAltitudeCorrection.getMeters() );
+        newAlt.setMeters( alt + _userAltitudeCorrection.getMeters() );
 
-        _lastGNSSAltitude = myalt;
+        _lastGNSSAltitude = newAlt;
 
-        if ( _lastMslAltitude != myalt )
+        if ( _lastMslAltitude != newAlt )
           {
-            _lastMslAltitude = myalt;
-            calcStdAltitude( myalt );
+            _lastMslAltitude = newAlt;
+            calcStdAltitude( newAlt );
             emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
           }
 
         // Handle position
-        int lat = (int)gpsFixEvent->latitude();
-        int lon = (int)gpsFixEvent->longitude();
-        float fLat = (float)gpsFixEvent->latitude() - lat;
-        float fLon = (float)gpsFixEvent->longitude() - lon;
-        fLat *= 60;
-        fLon *= 60;
-        int latMin = (int) rint(fLat * 10000);
-        int lonMin = (int) rint(fLon * 10000);
+        int lat = (int) rint(gpsFixEvent->latitude()  * 600000.0);
+        int lon = (int) rint(gpsFixEvent->longitude() * 600000.0);
 
-        // convert to internal KFLog format
-        int latTemp = lat * 600000 + latMin;
-        int lonTemp = lon * 600000 + lonMin;
+        QPoint newPoint (lat, lon);
 
-        QPoint mypoint (latTemp, lonTemp);
-
-        if ( _lastCoord != mypoint )
+        if ( _lastCoord != newPoint )
           {
-            _lastCoord = mypoint;
+            _lastCoord = newPoint;
             emit newPosition( _lastCoord );
           }
 
         // Handle speed
-        Speed myspd;
-        myspd.setMps( (double)gpsFixEvent->speed() );
+        Speed newSpeedFix;
+        newSpeedFix.setMps( (double) gpsFixEvent->speed() );
 
-        if ( myspd != _lastSpeed && fabs((myspd - _lastSpeed).getMps()) > 0.3 )
+        if ( newSpeedFix != _lastSpeed && fabs((newSpeedFix - _lastSpeed).getMps()) > 0.3 )
           {
             // report speed change only if the difference is greater than 0.3m/s, 1.08Km/h
-            _lastSpeed = myspd;
+            _lastSpeed = newSpeedFix;
             emit newSpeed( _lastSpeed );
           }
 
-        // Handle bearing
-        double heading = gpsFixEvent->bearing();
+        // Handle heading
+        double newHeadingFix = gpsFixEvent->heading();
 
-        if ( heading != _lastHeading )
+        if ( newHeadingFix != _lastHeading )
           {
-            _lastHeading = heading;
+            _lastHeading = newHeadingFix;
             emit newHeading( _lastHeading );
           }
 
         // Handle time
         QDateTime fix_utc;
-        fix_utc.setMSecsSinceEpoch( gpsFixEvent->gpstime() );
+        fix_utc.setMSecsSinceEpoch( gpsFixEvent->time() );
 
         if( fix_utc.time() != _lastRmcTime )
           {

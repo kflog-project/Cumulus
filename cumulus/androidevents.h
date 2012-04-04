@@ -19,6 +19,7 @@
  ***********************************************************************/
 
 /**
+ *
  * \author Josua Dietze
  *
  * \brief Custom events for using Android Location service
@@ -43,37 +44,57 @@ class GpsFixEvent : public QEvent
 {
   public:
 
-    GpsFixEvent() : QEvent((QEvent::Type) QEvent::User) {};
-    ~GpsFixEvent(){};
-    double lati;
-    double longi;
-    double alt;
-    float spd;
-    float bear;
-    float accu;
-    long long time;
+    GpsFixEvent( double latitude,
+                 double longitude,
+                 double altitude,
+                 float speed,
+                 float heading,
+                 float accuracy,
+                 long long time ) :
+      QEvent((QEvent::Type) QEvent::User),
+      m_latitude(latitude),
+      m_longitude(longitude),
+      m_altitude(altitude),
+      m_speed(speed),
+      m_heading(heading),
+      m_accuracy(accuracy),
+      m_time(time)
+        {
+        };
+
+    virtual ~GpsFixEvent(){};
 
     double latitude() {
-            return lati;
+      return m_latitude;
     };
     double longitude() {
-            return longi;
+      return m_longitude;
     };
     double altitude() {
-            return alt;
+      return m_altitude;
     };
     float speed() {
-            return spd;
+      return m_speed;
     };
-    float bearing() {
-            return bear;
+    float heading() {
+      return m_heading;
     };
     float accuracy() {
-            return accu;
+      return m_accuracy;
     };
-    long long gpstime() {
-            return time;
+    long long time() {
+      return m_time;
     };
+
+  private:
+
+    double m_latitude;
+    double m_longitude;
+    double m_altitude;
+    float m_speed;
+    float m_heading;
+    float m_accuracy;
+    long long m_time;
 };
 
 /* Posted by the native method "gpsStatus" which is called from Java object
@@ -88,7 +109,7 @@ class GpsStatusEvent : public QEvent
       m_status(status)
     {};
 
-    ~GpsStatusEvent() {};
+    virtual ~GpsStatusEvent() {};
 
     int status() const
     {
@@ -113,7 +134,7 @@ class GpsNmeaEvent : public QEvent
       m_nmeaSentence(nmeaSentence)
     {};
 
-    ~GpsNmeaEvent() {};
+    virtual ~GpsNmeaEvent() {};
 
     QString& sentence()
       {
@@ -137,7 +158,7 @@ class KeyboardActionEvent : public QEvent
       m_keyboardAction(keyboardAction)
     {};
 
-    ~KeyboardActionEvent() {};
+    virtual ~KeyboardActionEvent() {};
 
     int action() const
       {

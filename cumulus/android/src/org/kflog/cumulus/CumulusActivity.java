@@ -76,6 +76,7 @@ public class CumulusActivity extends QtActivity
   private GpsStatus.Listener     gl               = null;
   private GpsStatus.NmeaListener nl               = null;
   private boolean                gpsEnabled       = false;
+  private boolean                nmeaIsReceived   = false;
   private boolean                locationUpdated  = false;
   private int                    lastGpsStatus    = -1;
 
@@ -236,6 +237,8 @@ public class CumulusActivity extends QtActivity
           {
             public void onNmeaReceived( long timestamp, String nmea )
               {
+            	nmeaIsReceived = true;
+            	
                 if( gpsEnabled )
                   {
                     // Forward GPS data only, if user has enabled that.
@@ -247,14 +250,22 @@ public class CumulusActivity extends QtActivity
         ll = new LocationListener()
           {
             @Override
-            public void onLocationChanged(Location location)
+            public void onLocationChanged(Location loc)
             {
-              // We prefer to use the NMEA raw data...
-
-              /* Log.d("Java#CumulusActivity", "onLocationChanged" );
-                 nativeGpsFix(l.getLatitude(), l.getLongitude(), l.getAltitude(),
-                              l.getSpeed(), l.getBearing(), l.getAccuracy(), l.getTime());
-               */
+              Log.d("Java#CumulusActivity",
+            		"onLocationChanged: Provider=" +
+                    ((loc.getProvider() != null ) ? loc.getProvider() : "null") );
+              
+              if( gpsEnabled == true && nmeaIsReceived == false )
+              {
+            	 // If the GPS device do not deliver raw NMEA sentences, we
+            	 // forward these GPS data which is provided here. Otherwise
+            	 // our application gets no GPS data.
+                 nativeGpsFix( loc.getLatitude(), loc.getLongitude(),
+                		       loc.getAltitude(),
+                               loc.getSpeed(), loc.getBearing(),
+                               loc.getAccuracy(), loc.getTime());
+              }
             }
 
             @Override
@@ -273,6 +284,7 @@ public class CumulusActivity extends QtActivity
                 Log.d("Java#CumulusActivity", "onProviderDisabled: GPS=False");
                 nativeGpsStatus(0);
                 gpsEnabled = false;
+                nmeaIsReceived = false;
               }
             }
 
@@ -288,6 +300,7 @@ public class CumulusActivity extends QtActivity
 
                   nativeGpsStatus(1);
                   gpsEnabled = true;
+                  nmeaIsReceived = false;
                 }
             }
 
@@ -417,7 +430,6 @@ public class CumulusActivity extends QtActivity
 				items[2] = "Disable GPS";
 			}
 
-			builder = new AlertDialog.Builder(this);
 			builder.setTitle("Main Menu");
 			builder.setItems(items, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
