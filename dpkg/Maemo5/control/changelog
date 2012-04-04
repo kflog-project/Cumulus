@@ -1,3 +1,36 @@
+cumulus (2.12.2) stable; urgency=low
+
+  * To overcome the hidden restrictions of a QMessageBox an own solution was
+    programmed for the disclaimer display at program start.
+
+  * GUI surface partly reworked. OK and Cancel button of some widgets moved to
+    a new position where an unwanted press should not happen during normal
+    operation.
+
+  * Fonts can use point size or pixel size. Both in parallel is not possible.
+    Tried to make more generic the setting of an own font size according to the
+    used default (points or pixels).
+
+  * Operation of Flarm alias list modified. A double click on a table column was
+    not so easy to execute. Now if a cell is clicked an extra dialog is opened
+    to handle the input for that cell. Rows can be selected by clicking the left
+    row number button.
+
+  * Zoom issue fixed in help browser.
+
+  * The waypoint default type is set to landmark now, if the waypoint editor is
+    opened for waypoint creation.
+
+  * Missing time zone item UTC added to sunset in the arrival display.
+
+  * Method determineFlightStatus of Calculator class modified. The flight status
+    detection should now work safer and faster as before.
+
+  * New option skip added to NMEA simulator. This option allows to skip a number
+    of lines in a file to be played.
+    
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Tue, 03 Apr 2012 22:35:11 +0200
+
 cumulus (2.12.1) stable; urgency=low
 
   * All Qt default spinboxes are replaced by own improved solutions.
