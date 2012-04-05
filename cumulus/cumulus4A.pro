@@ -387,6 +387,7 @@ OTHER_FILES += \
     android/src/org/kde/necessitas/origo/QtApplication.java \
     android/src/org/kde/necessitas/origo/QtActivity.java \
     android/src/org/kflog/cumulus/CumulusActivity.java \
+    android/src/org/kflog/cumulus/BluetoothService.java \
     android/version.xml \
     android/res/values/cumulus.xml
 
