@@ -32,6 +32,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -50,6 +51,8 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -59,14 +62,18 @@ import android.widget.Toast;
 
 import org.kde.necessitas.origo.QtActivity;
 
+import org.kflog.cumulus.BluetoothService;
+
 public class CumulusActivity extends QtActivity
 {
+  static final String                        TAG  = "Java#CumulusActivity";
   static final int               DIALOG_CLOSE_ID  = 0;
   static final int               DIALOG_MENU_ID   = 1;
   static final int               DIALOG_CANCEL_ID = 2;
   static final int               DIALOG_NO_SDCARD = 3;
   static final int               DIALOG_ZIP_ERR   = 4;
   static final int               DIALOG_GPS_ID    = 5;
+  static final int               DIALOG_BT_ID     = 6;
 
   static final int               MENU_SETUP       = 0;
   static final int               MENU_PREFLIGHT   = 1;
@@ -90,7 +97,71 @@ public class CumulusActivity extends QtActivity
   static private String          addDataPath      = "";
   static private Object          m_objectRef      = null;
   static private Object          m_ActivityMutex  = new Object();
+  
+  // Used by the Bluetooth Service Handling
+  private Set<BluetoothDevice>   m_pairedBtDevices = null;
+  private String                 m_btMacArray[]    = null;
+  private BluetoothService       m_btService       = null;
+  
+  /**
+   *  The Handler that gets information back from the BluetoothService
+   */
+	private final Handler m_btHandler =
+    new Handler()
+     {
+       @Override
+       public void handleMessage( Message msg )
+         {
+           switch (msg.what)
+             {
+						 		case BluetoothService.MESSAGE_STATE_CHANGE:
+							 
+  								 Log.i( TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1 );
 
+    							 switch (msg.arg1)
+    								 {
+      								 case BluetoothService.STATE_CONNECTED:
+      									 nativeGpsStatus(1);
+      									 break;
+      									 
+      								 case BluetoothService.STATE_CONNECTING:
+      									 break;
+      									 
+      								 case BluetoothService.STATE_LISTEN:
+      									 break;
+      									 
+      								 case BluetoothService.STATE_NONE:
+      									 nativeGpsStatus(0);
+       									 break;
+    								 }
+							 break;
+							 
+						 case BluetoothService.MESSAGE_WRITE:
+							 break;
+							 
+						 case BluetoothService.MESSAGE_READ:
+							 break;
+							 
+						 case BluetoothService.MESSAGE_DEVICE_NAME:
+							 // shows the connected device's name
+							 Toast.makeText( getApplicationContext(),
+							                 "Connected to " +
+							                 msg.getData().getString(BluetoothService.DEVICE_NAME),
+							                 Toast.LENGTH_SHORT )
+							     .show();
+							 break;
+							 
+						 case BluetoothService.MESSAGE_TOAST:
+							 Toast.makeText( getApplicationContext(),
+							                 msg.getData().getString(BluetoothService.TOAST),
+							                 Toast.LENGTH_SHORT )
+							      .show();
+							 break;
+						 }
+				 }
+     };
+
+  // Native C++ functions
   public static native void nativeGpsFix( double latitude,
                                           double longitude,
                                           double altitude,
@@ -102,7 +173,6 @@ public class CumulusActivity extends QtActivity
   public static native void nativeNmeaString(String nmea);
   public static native void nativeGpsStatus(int status);
   public static native void keyboardAction(int action);
-
   public static native void nativeKeypress(char code);
   public static native boolean isRootWindow();
 
@@ -111,7 +181,7 @@ public class CumulusActivity extends QtActivity
    */
   private static Object getObjectRef()
     {
-      // Log.d("Java#CumulusActivity", "getObjectRef is called" );
+      // Log.d(TAG, "getObjectRef is called" );
     	synchronized (m_ActivityMutex)
       	{
       		return m_objectRef;
@@ -121,7 +191,7 @@ public class CumulusActivity extends QtActivity
   @Override
   public void onCreate( Bundle savedInstanceState )
   {
-    Log.d("Java#CumulusActivity", "onCreate Entry" );
+    Log.d(TAG, "onCreate Entry" );
 
   	synchronized (m_ActivityMutex)
     	{
@@ -138,7 +208,7 @@ public class CumulusActivity extends QtActivity
 
     if (! Environment.MEDIA_MOUNTED.equals(state))
       {
-        Log.d("Java#CumulusActivity", "Exiting, SdCard is not mounted!" );
+        Log.d(TAG, "Exiting, SdCard is not mounted!" );
         showDialog(DIALOG_NO_SDCARD);
         return;
       }
@@ -235,7 +305,7 @@ public class CumulusActivity extends QtActivity
 
     if( lm == null )
       {
-        Log.d("Java#CumulusActivity", "System said: LOCATION_SERVICE is null!" );
+        Log.d(TAG, "System said: LOCATION_SERVICE is null!" );
       }
     else
       {
@@ -257,18 +327,14 @@ public class CumulusActivity extends QtActivity
           {
             @Override
             public void onLocationChanged(Location loc)
-            {
-              Log.d("Java#CumulusActivity",
-            		"onLocationChanged: Provider=" +
-                    ((loc.getProvider() != null ) ? loc.getProvider() : "null") );
-              
+            {              
               if( gpsEnabled == true && nmeaIsReceived == false )
               {
             	 // If the GPS device do not deliver raw NMEA sentences, we
             	 // forward these GPS data which is provided here. Otherwise
             	 // our application gets no GPS data.
                  nativeGpsFix( loc.getLatitude(), loc.getLongitude(),
-                		       loc.getAltitude(),
+                		           loc.getAltitude(),
                                loc.getSpeed(), loc.getBearing(),
                                loc.getAccuracy(), loc.getTime());
               }
@@ -277,7 +343,7 @@ public class CumulusActivity extends QtActivity
             @Override
             public void onProviderDisabled(String provider)
             {
-              Log.d("Java#CumulusActivity", "onProviderDisabled: Provider=" + provider);
+              Log.d(TAG, "onProviderDisabled: Provider=" + provider);
 
               if( provider == LocationManager.GPS_PROVIDER )
               {
@@ -287,7 +353,7 @@ public class CumulusActivity extends QtActivity
                     }
 
                 // GPS receiver is disconnected
-                Log.d("Java#CumulusActivity", "onProviderDisabled: GPS=False");
+                Log.d(TAG, "onProviderDisabled: GPS=False");
                 nativeGpsStatus(0);
                 gpsEnabled = false;
                 nmeaIsReceived = false;
@@ -297,12 +363,12 @@ public class CumulusActivity extends QtActivity
             @Override
             public void onProviderEnabled(String provider)
             {
-              Log.d("Java#CumulusActivity", "onProviderEnabled: Provider=" + provider);
+              Log.d(TAG, "onProviderEnabled: Provider=" + provider);
 
               if( provider.equals(LocationManager.GPS_PROVIDER) )
                 {
                   // GPS receiver is connected
-                  Log.d("Java#CumulusActivity", "onProviderEnabled: GPS=True");
+                  Log.d(TAG, "onProviderEnabled: GPS=True");
 
                   nativeGpsStatus(1);
                   gpsEnabled = true;
@@ -315,7 +381,7 @@ public class CumulusActivity extends QtActivity
               {
                 // If the number of satellites changes, this method is always called.
                 // Therefore we report only right status changes.
-                Log.d("Java#CumulusActivity", "onStatusChanged: Provider=" + provider +
+                Log.d(TAG, "onStatusChanged: Provider=" + provider +
                        ", Status=" + status);
 
                 if( provider.equals(LocationManager.GPS_PROVIDER) && gpsEnabled )
@@ -347,19 +413,25 @@ public class CumulusActivity extends QtActivity
         lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 15, 1, ll );
       }
 
-    Log.d("Java#CumulusActivity", "onCreate exit" );
+    Log.d(TAG, "onCreate exit" );
   }
 
   @Override
   protected void onDestroy()
     {
-      Log.d("Java#CumulusActivity", "onDestroy" );
+      Log.d(TAG, "onDestroy" );
 
       if( lm != null )
         {
           lm.removeNmeaListener(nl);
           lm.removeUpdates(ll);
         }
+      
+      if( m_btService != null )
+      	{
+      		// terminate all BT threads
+      		m_btService.stop();
+      	}
 
       // call super class
       super.onDestroy();
@@ -403,7 +475,7 @@ public class CumulusActivity extends QtActivity
     return super.onKeyUp(keyCode, event);
   }
 
-	protected AlertDialog onCreateDialog(int id)
+	protected Dialog onCreateDialog(int id)
 	{
 		AlertDialog alert;
 
@@ -523,9 +595,49 @@ public class CumulusActivity extends QtActivity
 			alert = builder.create();
 			break;
 
-		default:
-			alert = null;
+		case DIALOG_BT_ID:
+			
+			if( m_pairedBtDevices == null || m_pairedBtDevices.size() == 0 )
+				{
+					return null;
+				}
+			
+			builder.setTitle("GPS BT Menu");
+			
+			CharSequence[] l_bt_items = new CharSequence[m_pairedBtDevices.size()];
+			m_btMacArray = new String[m_pairedBtDevices.size()];
+			
+			int idx = 0;
+			
+			// Loop through paired devices
+			for( BluetoothDevice device : m_pairedBtDevices )
+				{
+					Log.v("Cumulus#Java", "chooseBtGps(): " + device.getName() + "="
+					      + device.getAddress());
+					
+					l_bt_items[idx] = device.getName();
+					m_btMacArray[idx] = device.getAddress();
+					idx++;
+				}
+
+			builder.setItems(l_bt_items, new DialogInterface.OnClickListener()
+				{
+  				public void onClick(DialogInterface dialog, int item)
+  					{
+  						removeDialog(DIALOG_BT_ID);
+  						
+  						// Fetch MAC address of clicked item
+  						if( m_btMacArray != null )
+  							{
+  								connect2BtDevice( m_btMacArray[item] );
+  							}
+  					}
+			  });
+			alert = builder.create();
 			break;
+			
+		default:
+			return super.onCreateDialog(id);
 		}
 
 		return alert;
@@ -584,6 +696,13 @@ public class CumulusActivity extends QtActivity
         Log.i("Cumulus#Java", "Disable GPS");
         nativeGpsStatus(0);
         gpsEnabled = false;
+        
+        // Lock, if Bt Service is used. It will be terminated then.
+        if( m_btService != null )
+        	{
+        		m_btService.stop();
+        		m_btService = null;
+        	}
       }
     else
       {
@@ -636,25 +755,49 @@ public class CumulusActivity extends QtActivity
 				}
 			else
 				{
-					chooseBtGps();
+					createBtGpsDeviceDialog();
 				}
 		}
 
-	private void chooseBtGps()
+	private void createBtGpsDeviceDialog()
 		{
-			Set<BluetoothDevice> pairedDevices = BluetoothAdapter.getDefaultAdapter().getBondedDevices();
+			m_btMacArray = null;
+			m_pairedBtDevices = BluetoothAdapter.getDefaultAdapter().getBondedDevices();
+
+			// If there are paired devices?
+			if( m_pairedBtDevices.size() > 0 )
+				{
+					showDialog(DIALOG_BT_ID);
+				}
+			else
+				{
+					m_pairedBtDevices = null;
+				}
+		}
+	
+	private void connect2BtDevice( String macAddress )
+		{
+			Log.i( "Cumulus#Java", "connectBtDevice " + macAddress );
 			
-		// If there are paired devices
-		if (pairedDevices.size() > 0)
-			{
-		    // Loop through paired devices
-		    for (BluetoothDevice device : pairedDevices)
-		    	{
-		    		Log.v("Cumulus#Java", "chooseBtGps(): " + device.getName() + "=" + device.getAddress());
-		        // Add the name and address to an array adapter to show in a ListView
-		        // mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-		      }
-			}
+			if( m_btService == null )
+				{
+					m_btService = new BluetoothService( this, m_btHandler );
+				}
+			
+      BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(macAddress);
+      
+      // Only if the state is STATE_NONE, do we know that we haven't started already
+      if( m_btService.getState() == BluetoothService.STATE_NONE )
+      	{
+          // Start the Bluetooth service
+        	m_btService.start();
+        }
+
+      // Attempt to connect to the device
+      m_btService.connect( device, true );
+      
+      // set the GPS status to enabled
+      gpsEnabled = true;
 		}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -663,7 +806,7 @@ public class CumulusActivity extends QtActivity
 				{
 					if( resultCode == RESULT_OK )
 						{
-							chooseBtGps();
+							createBtGpsDeviceDialog();
 						}
 					
 					return;
