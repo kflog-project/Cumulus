@@ -27,7 +27,7 @@ CONFIG += qt \
           release
 
 # Activate this define for Android specific code parts
-DEFINES += ANDROID
+DEFINES += ANDROID CUMULUS
 
 # Activate this define, if QtClass QScroller is available.
 # DEFINES += QSCROLLER
