@@ -26,8 +26,8 @@ CONFIG += qt \
           warn_on \
           release
 
-# Activate this define, if font point size should be used instead of pixel size.
-DEFINES += USE_POINT_SIZE_FONT
+# Activate this define for Android specific code parts
+DEFINES += ANDROID
 
 # Activate this define, if QtClass QScroller is available.
 # DEFINES += QSCROLLER
@@ -394,4 +394,3 @@ OTHER_FILES += \
 LIBS += -lstdc++
 
 TRANSLATIONS = cumulus_de.ts
-
