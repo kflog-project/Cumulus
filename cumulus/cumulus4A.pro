@@ -26,7 +26,7 @@ CONFIG += qt \
           warn_on \
           release
 
-# Activate this define for Android specific code parts
+# These defines must be set for Android to enable/disable specific code parts
 DEFINES += ANDROID CUMULUS
 
 # Activate this define, if QtClass QScroller is available.
@@ -37,9 +37,6 @@ CONFIG += flarm
 
 # Enable Internet features, if not wanted comment out the next line with a hash
 CONFIG += internet
-
-# Enable bluetooth feature, if not wanted comment out the next line with a hash
-# CONFIG += bluetooth
 
 # Enable Welt2000 reloading via an extra thread, if not wanted comment out the
 # next line with a hash
@@ -300,16 +297,6 @@ internet {
                proxydialog.cpp
 
     DEFINES += INTERNET
-}
-
-bluetooth {
-    DEFINES += BLUEZ
-
-    HEADERS += bluetoothdevices.h
-
-    SOURCES += bluetoothdevices.cpp
-
-    LIBS += -lbluetooth
 }
 
 welt2000thread {

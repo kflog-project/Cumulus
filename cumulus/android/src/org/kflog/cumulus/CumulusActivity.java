@@ -147,14 +147,14 @@ public class CumulusActivity extends QtActivity
 							 Toast.makeText( getApplicationContext(),
 							                 "Connected to " +
 							                 msg.getData().getString(BluetoothService.DEVICE_NAME),
-							                 Toast.LENGTH_SHORT )
+							                 Toast.LENGTH_LONG )
 							     .show();
 							 break;
 							 
 						 case BluetoothService.MESSAGE_TOAST:
 							 Toast.makeText( getApplicationContext(),
 							                 msg.getData().getString(BluetoothService.TOAST),
-							                 Toast.LENGTH_SHORT )
+							                 Toast.LENGTH_LONG )
 							      .show();
 							 break;
 						 }
@@ -615,7 +615,7 @@ public class CumulusActivity extends QtActivity
 					Log.v("Cumulus#Java", "chooseBtGps(): " + device.getName() + "="
 					      + device.getAddress());
 					
-					l_bt_items[idx] = device.getName();
+					l_bt_items[idx]   = device.getName() + " (" + device.getAddress() + ")";
 					m_btMacArray[idx] = device.getAddress();
 					idx++;
 				}
@@ -784,17 +784,10 @@ public class CumulusActivity extends QtActivity
 					m_btService = new BluetoothService( this, m_btHandler );
 				}
 			
-      BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(macAddress);
+      final BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(macAddress);
       
-      // Only if the state is STATE_NONE, do we know that we haven't started already
-      if( m_btService.getState() == BluetoothService.STATE_NONE )
-      	{
-          // Start the Bluetooth service
-        	m_btService.start();
-        }
-
-      // Attempt to connect to the device
-      m_btService.connect( device, true );
+      /* Opens a connection to the selected BT device. */
+      m_btService.connect( device );
       
       // set the GPS status to enabled
       gpsEnabled = true;
