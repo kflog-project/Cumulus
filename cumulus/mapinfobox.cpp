@@ -54,7 +54,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   _textBGColor( "white" )
 {
   // Maximum pretext width in pixels. That value is a hard coded limit now!
-  const int ptw = 52;
+  const int ptw = 35;
 
   // start font size
   int start = 14;
@@ -72,14 +72,12 @@ MapInfoBox::MapInfoBox( QWidget *parent,
       f.setPixelSize( start );
     }
 
-  QFontMetrics fm(f);
-
-  // minimum font size is 7
-  while( start >=7 )
+  // Adapt the font to the predefined limit width. The minimum font size is 6.
+  while( start >= 6 )
     {
-      QFontMetrics fm(f);
+      QFontMetrics qfm(f);
 
-      if( (fm.boundingRect("Brg").width() + 5) > ptw )
+      if( (qfm.boundingRect("Brg").width() + 5) >= ptw )
         {
           start--;
 
@@ -98,9 +96,8 @@ MapInfoBox::MapInfoBox( QWidget *parent,
         }
     }
 
+  // Set the calculated font.
   setFont(f);
-
-  qDebug() << "Using font" << f.toString();
 
   basics( borderColor );
   QHBoxLayout* topLayout = (QHBoxLayout*) this->layout();
@@ -108,7 +105,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   _maxFontDotsize = fontDotsize;
 
   _preWidget = new QWidget( this );
-  _preWidget->setFixedWidth( fm.boundingRect("Brg").width() + 5 );
+  //_preWidget->setFixedWidth( ptw );
 
   QVBoxLayout* preLayout = new QVBoxLayout( _preWidget );
   preLayout->setContentsMargins(3,0,3,0);
@@ -124,7 +121,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   QPalette p = _ptext->palette();
   p.setColor( QPalette::WindowText, Qt::black );
   _ptext->setPalette(p);
-  _ptext->setFixedWidth( fm.boundingRect("MM").width() );
+  _ptext->setFixedWidth( QFontMetrics(f).boundingRect("MM").width() );
 
   preLayout->addWidget(_ptext );
   preLayout->addWidget(_ptext );
@@ -163,7 +160,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
       preLayout->addWidget(_punit, 0, Qt::AlignRight);
     }
 
-  topLayout->addWidget( _preWidget, 0 );
+  topLayout->addWidget( _preWidget );
 
   _text = new QLabel( this );
 
@@ -182,8 +179,8 @@ MapInfoBox::MapInfoBox( QWidget *parent,
                                  .arg(_fontUnit) );
 
   setValue("-");
-  setPreText("MMM");
-  setPreUnit("MM");
+  setPreText("");
+  setPreUnit("");
 }
 
 MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor, const QPixmap& pixmap ) :

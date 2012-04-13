@@ -159,7 +159,7 @@ public:
   /**
    * Read property of QString _value.
    */
-  const QString& getValue()
+  const QString& getValue() const
   {
     return _value;
   };
@@ -167,15 +167,20 @@ public:
   /**
    * Returns the pretext label widget.
    */
-  QLabel* getPreTextLabelWidget()
+  QLabel* getPreTextLabelWidget() const
   {
     return _ptext;
+  };
+
+  QWidget* getPreWidget() const
+  {
+    return _preWidget;
   };
 
   /**
    * Returns the text label widget.
    */
-  QLabel* getTextLabelWidget()
+  QLabel* getTextLabelWidget() const
   {
     return _text;
   };

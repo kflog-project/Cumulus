@@ -418,7 +418,7 @@ void MapView::showEvent( QShowEvent* event )
   Q_UNUSED( event )
 
   // Used map info box widgets
-  MapInfoBox *boxWidgets[15] = { _heading,
+  MapInfoBox *boxWidgets[14] = { _heading,
                                  _bearing,
                                  _rel_bearing,
                                  _distance,
@@ -431,42 +431,33 @@ void MapView::showEvent( QShowEvent* event )
                                  _waypoint,
                                  _eta,
                                  _altitude,
-                                 _glidepath,
-                                 _menuToggle };
+                                 _glidepath };
 
   int gtWidth = 0;
-  QFontMetrics fm( font() );
 
-  // Determine the greatest pretext width of the used map info boxes.
-  for( int i = 0; i < 15; i++ )
+  // Adapt the pretext display width to the text size.
+  for( int i = 0; i < 14; i++ )
     {
       MapInfoBox *ptr = boxWidgets[i];
 
       if( ptr->isVisible() )
         {
+          QFontMetrics fm( ptr->font() );
+
           int w = fm.width( ptr->getPreText() );
+
+          // qDebug() << "Text=" << ptr->getPreText() << "Width=" << w;
+
+          if( ! ptr->getPreText().isEmpty() )
+            {
+              ptr->getPreTextLabelWidget()->setFixedWidth( w );
+            }
 
           if( w > gtWidth )
             {
               gtWidth = w;
             }
         }
-    }
-
-  qDebug() << "MapInfoBox maxPreTextWidth=" << gtWidth;
-
-  for( int i = 0; i < 15; i++ )
-    {
-      // Set uniform width for pretext of all map info boxes.
-      MapInfoBox *ptr = boxWidgets[i];
-
-      if( ptr->getPreText().isEmpty() )
-        {
-          // No text box, do nothing.
-          continue;
-        }
-
-      ptr->getPreTextLabelWidget()->setFixedWidth( gtWidth );
     }
 }
 
