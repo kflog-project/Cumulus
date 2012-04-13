@@ -154,7 +154,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
 #ifdef ANDROID
       appFont.setFamily( "Droid Sans" );
-      appFSize = 12;
+      appFSize = 10;
 #else
 #ifdef MAEMO
       appFont.setFamily("Nokia Sans");
@@ -1006,7 +1006,7 @@ void MainWindow::slotSetMenuBarFontSize()
     {
       // take current font as alternative
       userFont = font();
-      minFontSize = 16;
+      minFontSize = 14;
     }
 
   if( userFont.pointSize() != -1 && userFont.pointSize() < minFontSize )
