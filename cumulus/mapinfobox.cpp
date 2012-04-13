@@ -53,27 +53,54 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   QFrame( parent ),
   _textBGColor( "white" )
 {
-  QFont f = font();
+  // Maximum pretext width in pixels. That value is a hard coded limit now!
+  const int ptw = 52;
 
-#ifdef ANDROID
-  int size = 9;
-#else
-  int size = 12;
-#endif
+  // start font size
+  int start = 14;
+
+  QFont f = font();
 
   if( f.pointSize() != -1 )
     {
-      f.setPointSize( size );
       _fontUnit = "pt";
+      f.setPointSize( start );
     }
   else
     {
-      f.setPixelSize( size );
       _fontUnit = "px";
+      f.setPixelSize( start );
+    }
+
+  QFontMetrics fm(f);
+
+  // minimum font size is 7
+  while( start >=7 )
+    {
+      QFontMetrics fm(f);
+
+      if( (fm.boundingRect("Brg").width() + 5) > ptw )
+        {
+          start--;
+
+          if( f.pointSize() != -1 )
+            {
+              f.setPointSize( start );
+            }
+          else
+            {
+              f.setPixelSize( start );
+            }
+        }
+      else
+        {
+          break;
+        }
     }
 
   setFont(f);
-  QFontMetrics fm(f);
+
+  qDebug() << "Using font" << f.toString();
 
   basics( borderColor );
   QHBoxLayout* topLayout = (QHBoxLayout*) this->layout();

@@ -453,7 +453,7 @@ void MapView::showEvent( QShowEvent* event )
         }
     }
 
-  // qDebug() << "maxWidth=" << gtWidth;
+  qDebug() << "MapInfoBox maxPreTextWidth=" << gtWidth;
 
   for( int i = 0; i < 15; i++ )
     {
