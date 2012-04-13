@@ -271,7 +271,7 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
            << "Visible" << isVisible();
 #endif
 
-  if( minimumSizeHint().width() > width() || lastValueSize != _value.size() )
+  if( (minimumSizeHint().width() - 5) > width() || lastValueSize != _value.size() )
     {
       // Do only setup a new style, if it is really necessary.
       _text->setStyleSheet( QString( "border-style: none;"
@@ -288,13 +288,13 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
     }
 
   //@JD: set font size dynamically depending on size hint after
-  //     displaying the new value
-  int diff = minimumSizeHint().width() - width();
+  //     displaying the new value.
+  int diff = minimumSizeHint().width() - 5 - width();
 
   /** @AP: Check font size too, to avoid running under zero. Had this
    * behavior during my tests. Can cause a very long loop time.
    */
-  while( diff > 0 && fontDotsize > 10 )
+  while( diff > 0 && fontDotsize >= 7 )
     {
       diff /= 5;
 
@@ -321,7 +321,7 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
                                      .arg( fontDotsize )
                                      .arg(_fontUnit) );
 
-      diff = minimumSizeHint().width() - width();
+      diff = minimumSizeHint().width() - 5 - width();
 
 #ifdef DEBUG
       qDebug() << "Loop MSH=" <<  minimumSizeHint().width()
