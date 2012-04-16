@@ -1202,7 +1202,7 @@ void Calculator::determineFlightStatus()
       return;
     }
 
-  FlightMode newFlightMode = unknown;
+  FlightMode flightMode = unknown;
 
   // get headings from the last two samples
   int lastHead = samplelist[0].vector.getAngleDeg();
@@ -1232,7 +1232,7 @@ void Calculator::determineFlightStatus()
         }
       else
         {
-          newFlightMode = unknown;
+          flightMode = unknown;
         }
       break;
 
@@ -1245,7 +1245,7 @@ void Calculator::determineFlightStatus()
       else
         {
           // We left the cruising corridor. A new analysis has to be started.
-          newFlightMode = unknown;
+          flightMode = unknown;
           break;
         }
 
@@ -1253,7 +1253,7 @@ void Calculator::determineFlightStatus()
       //turning left means: the heading is decreasing
       if (angleDiff(prevHead, lastHead) > (-MINTURNANGDIFF * timediff))
         {
-          newFlightMode = unknown;
+          flightMode = unknown;
           break;
         }
       else
@@ -1265,7 +1265,7 @@ void Calculator::determineFlightStatus()
       //turning right means: the heading is increasing
       if (angleDiff(prevHead, lastHead) < (MINTURNANGDIFF * timediff))
         {
-          newFlightMode = unknown;
+          flightMode = unknown;
           break;
         }
       else
@@ -1274,11 +1274,11 @@ void Calculator::determineFlightStatus()
         }
 
     default:
-      newFlightMode = unknown;
+      flightMode = unknown;
       break;
     }
 
-  if ( newFlightMode == unknown )
+  if ( flightMode == unknown )
     {
       // qDebug() << "Flight mode unknown --> Start Analysis";
 
@@ -1371,7 +1371,7 @@ void Calculator::determineFlightStatus()
           // check if we had any significant altitude changes
           if ( (abs(totalAltChange) / (samples-1)) <= MAXALTDRIFTAVG )
             {
-              newFlightMode = standstill;
+              flightMode = standstill;
               break_analysis = true;
               // qDebug() << "-->StandStill";
             }
@@ -1390,14 +1390,14 @@ void Calculator::determineFlightStatus()
               // MINTURNANGDIFF degrees per second
               if (mayBeL && !mayBeR)
                 {
-                  newFlightMode = circlingL;
+                  flightMode = circlingL;
                   break_analysis = true;
                   // qDebug() << "-->circlingL";
                 }
 
               if (mayBeR && !mayBeL)
                 {
-                  newFlightMode = circlingR;
+                  flightMode = circlingR;
                   break_analysis = true;
                   // qDebug() << "-->circlingR";
                 }
@@ -1410,7 +1410,7 @@ void Calculator::determineFlightStatus()
       if ( !break_analysis )
         {
           // If all other modes are not true we assume the cruise mode.
-          newFlightMode = cruising;
+          flightMode = cruising;
           break_analysis = true;
 
           // save current heading for cruise check.
@@ -1419,11 +1419,11 @@ void Calculator::determineFlightStatus()
         }
     }
 
-  if (newFlightMode != lastFlightMode)
+  if (flightMode != lastFlightMode)
     {
-      lastFlightMode = newFlightMode;
+      lastFlightMode = flightMode;
       samplelist[0].marker = ++_marker;
-      flightModeChanged( newFlightMode );
+      newFlightMode( flightMode );
       // qDebug( "new FlightMode: %d", lastFlightMode );
     }
 }
@@ -1432,14 +1432,14 @@ void Calculator::determineFlightStatus()
 void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
 {
   // qDebug("connection status changed...");
-  FlightMode newFlightMode = unknown;
+  FlightMode flightMode = unknown;
 
-  if (newFlightMode != lastFlightMode)
+  if (flightMode != lastFlightMode)
     {
-      lastFlightMode = newFlightMode;
-      samplelist[0].marker=++_marker;
+      lastFlightMode       = flightMode;
+      samplelist[0].marker = ++_marker;
       // qDebug("new FlightMode: %d",lastFlightMode);
-      flightModeChanged(newFlightMode);
+      newFlightMode(flightMode);
     }
 
   if ( newState == GpsNmea::noFix )
@@ -1452,8 +1452,10 @@ void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
 }
 
 /** This function is used internally to emit the flight mode signal with the marker value */
-void Calculator::flightModeChanded(Calculator::FlightMode fm)
+void Calculator::newFlightMode(Calculator::FlightMode fm)
 {
+  qDebug() << "Calculator::flightModeChanded, newFm=" << fm << "CalcWind=" << _calculateWind;
+
   if ( _calculateWind )
     {
       // Wind calculation can be disabled when the Logger device

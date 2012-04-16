@@ -708,7 +708,7 @@ private: // Private methods
   /**
    * Distributes a flight mode change.
    */
-  void flightModeChanded(Calculator::FlightMode);
+  void newFlightMode(Calculator::FlightMode);
 
 private: // Private attributes
   /** Contains the last flight sample */

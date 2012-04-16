@@ -15,6 +15,15 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-04-16 AP: BUGFIX: Due to a programming error the wind calculation
+                   did not work as expected. I notice that on my first cross
+                   country flight in this year. This bug is fixed now.
+
+[+] 2012-04-13 AP: A Java Bluetooth service class added for Android to make it
+                   possible to connect external Bluetooth GPS devices.
+
+[*] 2012-04-04 AP: Cumulus 2.12.2 released
+
 [+] 2012-04-03 AP: Different adaptions added to the source code in the last
                    two months for the Android Qt port. Could not overcome
                    all Android Qt issues with workarounds.
@@ -56,7 +65,7 @@ Cumulus 2.12.x (Development based on X11/Qt-4.8.1)
 [+] 2012-01-15 AP: New option skip added to NMEA simulator. This option allows
                    to skip a number of lines in a file to be played.
 
-[*] 2012-01-11 AP: Cumulus 2.12.1 released     
+[*] 2012-01-11 AP: Cumulus 2.12.1 released
 
 [+] 2012-01-11 AP: New option play added to NMEA simulator. This option allows
                    to use a NMEA data file as data source.
@@ -79,7 +88,7 @@ Cumulus 2.12.x (Development based on X11/Qt-4.8.1)
 [o] 2012-01-03 AP: Co-pilot name and current water ballast are saved now, if the
                    pre-flight dialog is left with the OK button.
 
-[*] 2011-12-24 AP: Cumulus 2.12.0 released      
+[*] 2011-12-24 AP: Cumulus 2.12.0 released
 
 [o] 2011-12-23 AP: Flight mode wave removed. It is not clearly to decide, when
                    a glider is flying in the wave.
