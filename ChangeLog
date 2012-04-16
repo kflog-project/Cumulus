@@ -20,7 +20,8 @@ Cumulus changelog
                    country flight in this year. This bug is fixed now.
 
 [+] 2012-04-13 AP: A Java Bluetooth service class added for Android to make it
-                   possible to connect external Bluetooth GPS devices.
+                   possible to connect external Bluetooth GPS devices and to get
+                   NMEA raw data.
 
 [*] 2012-04-04 AP: Cumulus 2.12.2 released
 

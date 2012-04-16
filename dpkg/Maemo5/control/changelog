@@ -1,3 +1,11 @@
+cumulus (2.12.3) stable; urgency=low
+
+  * BUGFIX: Due to a programming error the wind calculation did not work as
+    expected. I notice that on my first cross country flight in this year.
+    This bug is fixed now.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Tue, 16 Apr 2012 20:00:00 +0200
+ 
 cumulus (2.12.2) stable; urgency=low
 
   * To overcome the hidden restrictions of a QMessageBox an own solution was
