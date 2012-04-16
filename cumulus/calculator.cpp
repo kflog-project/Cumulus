@@ -1454,8 +1454,6 @@ void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
 /** This function is used internally to emit the flight mode signal with the marker value */
 void Calculator::newFlightMode(Calculator::FlightMode fm)
 {
-  qDebug() << "Calculator::flightModeChanded, newFm=" << fm << "CalcWind=" << _calculateWind;
-
   if ( _calculateWind )
     {
       // Wind calculation can be disabled when the Logger device
