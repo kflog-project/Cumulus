@@ -59,7 +59,7 @@ MessageWidget::MessageWidget( QString text, QWidget *parent ) :
     }
   else
     {
-      resize( QSize(800, 400) );
+      resize( QSize(800, 480) );
     }
 
   setVisible( true );

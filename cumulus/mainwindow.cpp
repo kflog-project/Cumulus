@@ -195,6 +195,11 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
           appFt.pixelSize(),
           appFt.weight() );
 
+  // report font height in pixels
+  QFontMetrics fm(appFt);
+
+  qDebug() << "QAppFontHeight=" << fm.boundingRect("XM").height() << "px";
+
   // For Maemo it's really better to adapt the size of some common widget
   // elements. That is done with the help of the class MaemoStyle.
   qDebug() << "GuiStyles:" << QStyleFactory::keys();
