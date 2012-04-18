@@ -1585,13 +1585,8 @@ void Map::__drawLabel( QPainter* painter,
   // the labels are good to see at the map.
   QFont font = painter->font();
 
-#if defined ANDROID || defined MAEMO
-  const int fs = 20;
-#else
-  const int fs = 20;
-#endif
-
-  ( font.pointSize() != -1 ) ? font.setPointSize( fs ) : font.setPixelSize( fs );
+  // We use always the same point size independently from the screen size
+  font.setPointSize( MapLabelFontPointSize );
 
   QString labelText = name;
   Altitude alt = ReachableList::getArrivalAltitude( origP );
@@ -1720,13 +1715,8 @@ void Map::_drawCityLabels( QPixmap& pixmap )
   QPainter painter(&pixmap);
   QFont font = painter.font();
 
-#if defined ANDROID || defined MAEMO
-  const int fs = 10;
-#else
-  const int fs = 6;
-#endif
-
-  ( font.pointSize() != -1 ) ? font.setPointSize( fs ) : font.setPixelSize( fs );
+  // Uses on all screens the same font point size
+  font.setPointSize( MapCityLabelFontPointSize );
 
   painter.setFont( font );
   painter.setBrush(Qt::NoBrush);
@@ -1871,18 +1861,9 @@ void Map::__drawScale(QPainter& scaleP)
   pen.setWidth(3);
   pen.setCapStyle(Qt::RoundCap);
   scaleP.setPen(pen);
+
   QFont font = scaleP.font();
-
-#ifdef ANDROID
-  const int fs = 12;
-#elif MAEMO
-  const int fs = 14;
-#else
-  const int fs = 12;
-#endif
-
-  ( font.pointSize() != -1 ) ? font.setPointSize( fs ) : font.setPixelSize( fs );
-
+  Layout::adaptFont( font, MapScalebarFontHeight );
   scaleP.setFont(font);
 
   double scale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
@@ -1966,23 +1947,47 @@ void Map::__drawScale(QPainter& scaleP)
 
   //determine how long the bar should be in pixels
   int drawLength = (int)rint(barLen.getMeters()/scale);
+
   //...and where to start drawing. Now at the left lower side ...
-  scaleP.translate( QPoint( -this->width()+drawLength+10, 0) );
+  scaleP.translate( QPoint( -this->width() + drawLength + 10, 0) );
 
   int leftXPos=this->width()-drawLength-5;
 
-  //Now, draw the bar
+  // Now, draw the bar
   scaleP.drawLine(leftXPos, this->height()-5, this->width()-5, this->height()-5); //main bar
   pen.setWidth(3);
   scaleP.setPen(pen);
   scaleP.drawLine(leftXPos, this->height()-9,leftXPos,this->height()-1);              //left endbar
   scaleP.drawLine(this->width()-5,this->height()-9,this->width()-5,this->height()-1);//right endbar
 
-  //get the string to draw
-  QString scaleText=barLen.getText(true,0);
-  //get some metrics for this string
-  QRect txtRect=scaleP.fontMetrics().boundingRect(scaleText);
-  int leftTPos=this->width()+int((drawLength-txtRect.width())/2)-drawLength-5;
+  // get the string to draw
+  QString scaleText = barLen.getText(true, 0);
+
+  // get the metrics for this string
+  QRect txtRect = scaleP.fontMetrics().boundingRect(scaleText);
+
+  // Adapt the text length to the bar length
+  if( (txtRect.width() + 4) > drawLength )
+    {
+      QFont pf = scaleP.font();
+
+      // The text font size must be narrowed
+      while( pf.pointSize() > 6 )
+        {
+          pf.setPointSize( pf.pointSize() - 1 );
+          scaleP.setFont( pf );
+          txtRect = scaleP.fontMetrics().boundingRect(scaleText);
+
+          if( (txtRect.width() + 4) > drawLength )
+            {
+              continue;
+            }
+
+          break;
+        }
+    }
+
+  int leftTPos = this->width()+int((drawLength-txtRect.width())/2)-drawLength-5;
 
   //draw white box to draw text on
   scaleP.setBrush(brush);
@@ -2176,10 +2181,8 @@ void Map::__drawMostRelevantObject( const Flarm::FlarmStatus& status )
 
 #if defined ANDROID || defined MAEMO
   const int diameter = 30;
-  const int fontSize = 24;
 #else
   const int diameter = 22;
-  const int fontSize = 18;
 #endif
 
   if( status.RelativeBearing.isEmpty() ||
@@ -2249,8 +2252,7 @@ void Map::__drawMostRelevantObject( const Flarm::FlarmStatus& status )
   // Set font size used for text painting a little bit bigger, that
   // the labels are good to see at the map.
   QFont font = painter.font();
-
-  ( font.pointSize() != -1 ) ? font.setPointSize( fontSize ) : font.setPixelSize( fontSize );
+  font.setPixelSize( MapFlarmPainterFontHeight );
 
   QString text = Distance::getText( relDistance, false, -1 ) + "/";
 
@@ -2295,14 +2297,11 @@ void Map::__drawMostRelevantObject( const Flarm::FlarmStatus& status )
  */
 void Map::__drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
 {
-
 #if defined ANDROID || defined MAEMO
   const int diameter = 30;
-  const int fontPointSize = 24;
   const int triangle = 34;
 #else
   const int diameter = 22;
-  const int fontPointSize = 18;
   const int triangle = 26;
 #endif
 
@@ -2368,8 +2367,7 @@ void Map::__drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
   // Set font size used for text painting a little bit bigger, that
   // the labels are good to see at the map.
   QFont font = painter.font();
-
-  ( font.pointSize() != -1 ) ? font.setPointSize( fontPointSize ) : font.setPixelSize( fontPointSize );
+  font.setPixelSize( MapFlarmPainterFontHeight );
 
   QString text = Distance::getText( distance, false, -1 );
 
@@ -2753,14 +2751,7 @@ void Map::__drawRelBearingInfo()
 
       QFont font = this->font();
 
-      int pointSize = 16;
-
-    #if defined ANDROID || defined MAEMO
-      pointSize += 4;
-    #endif
-
-      ( font.pointSize() != -1 ) ? font.setPointSize( pointSize ) : font.setPixelSize( pointSize );
-
+      font.setPointSize( MapBearingIndicatorFontPointSize );
       font.setBold(true);
 
       QString text = "";

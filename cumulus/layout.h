@@ -20,7 +20,7 @@
  *
  * \brief GUI layout definitions
  *
- * This class defines common GUI parameters.
+ * This class defines common GUI layout parameters.
  *
  * \date 2010-2012
  *
@@ -45,7 +45,34 @@
 #define MapPMButtonSize 70
 
 // Statusbar font height in pixels
-#define StatusbarFontHeight 16
+#define StatusbarFontHeight 20
+
+// GUI font height in pixels
+#define GuiFontHeight 24
+
+// GUI menu font height in pixels
+#define GuiMenuFontHeight 32
+
+// Map scale bar font height in pixels
+#define MapScalebarFontHeight 20
+
+// Map label font point size
+#define MapLabelFontPointSize 14
+
+// Map city label font point size
+#define MapCityLabelFontPointSize 8
+
+// Map bearing indicator font point size
+#define MapBearingIndicatorFontPointSize 14
+
+// Map Flarm painter font height in pixels
+#define MapFlarmPainterFontHeight 24
+
+// Flarm display painter font height in pixels
+#define FlarmDisplayPainterFontPixelSize 24
+
+// WhatsThat font point size
+#define WhatsThatFontPointSize 18
 
 #else
 
@@ -56,7 +83,34 @@
 #define MapPMButtonSize 50
 
 // Statusbar font height in pixels
-#define StatusbarFontHeight 16
+#define StatusbarFontHeight 20
+
+// GUI font height in pixels
+#define GuiFontHeight 24
+
+// GUI menu font height in pixels
+#define GuiMenuFontHeight 32
+
+// map scale bar font height in pixels
+#define MapScalebarFontHeight 20
+
+// Map label font point size
+#define MapLabelFontPointSize 14
+
+// Map city label font point size
+#define MapCityLabelFontPointSize 8
+
+// Map bearing indicator font point size
+#define MapBearingIndicatorFontPointSize 14
+
+// Map Flarm painter font height in pixels
+#define MapFlarmPainterFontHeight 24
+
+// Flarm display painter font height in pixels
+#define FlarmDisplayPainterFontPixelSize 24
+
+// WhatsThat font point size
+#define WhatsThatFontPointSize 18
 
 #endif
 

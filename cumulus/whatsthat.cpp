@@ -18,6 +18,7 @@
 
 #include <QtGui>
 
+#include "layout.h"
 #include "mainwindow.h"
 #include "whatsthat.h"
 
@@ -41,23 +42,9 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
 
   QFont font = doc->defaultFont();
 
-#ifdef MAEMO
-  int size = 18;
-#elif ANDROID
-  int size = 16;
-#else
-  int size = 16;
-#endif
+  int size = WhatsThatFontPointSize;
 
-  if( font.pointSize() != -1 )
-    {
-      font.setPointSize( size );
-    }
-  else
-    {
-      font.setPixelSize( size );
-    }
-
+  font.setPointSize( size );
   doc->setDefaultFont( font );
 
   // check, what kind of text has been passed
@@ -77,16 +64,7 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
           size >= 8 )
     {
       size--;
-
-      if( font.pointSize() != -1 )
-        {
-          font.setPointSize( size );
-        }
-      else
-        {
-          font.setPixelSize( size );
-        }
-
+      font.setPointSize( size );
       doc->setDefaultFont( font );
     }
 

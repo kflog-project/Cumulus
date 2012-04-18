@@ -28,12 +28,7 @@
 #include "calculator.h"
 #include "distance.h"
 #include "mapconfig.h"
-
-#if defined MAEMO || defined ANDROID
-#define FontSize 18
-#else
-#define FontSize 14
-#endif
+#include "layout.h"
 
 // Initialize static variables
 enum FlarmDisplay::Zoom FlarmDisplay::zoomLevel = FlarmDisplay::Low;
@@ -123,17 +118,8 @@ void FlarmDisplay::createBackground()
   // draw outer radius
   painter.drawEllipse( centerX - width/2, centerY - height/2, width, height );
 
-  QFont f = font();
-
-  if( f.pointSize() != -1 )
-    {
-      f.setPointSize(FontSize);
-    }
-  else
-    {
-      f.setPixelSize(FontSize);
-    }
-
+  QFont f = painter.font();
+  f.setPixelSize(FlarmDisplayPainterFontPixelSize);
   f.setBold( true );
   painter.setFont(f);
 
@@ -450,17 +436,10 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       if( it.key() == selectedObject )
         {
           // If a Flarm object is selected, we draw some additional information
-          QFont f = font();
+          QFont f = painter.font();
 
-          if( f.pointSize() != -1 )
-            {
-              f.setPointSize(FontSize);
-            }
-          else
-            {
-              f.setPixelSize(FontSize);
-            }
-
+          // Note that we set the font's pixel size!
+          f.setPixelSize(FlarmDisplayPainterFontPixelSize);
           f.setBold( true );
           painter.setFont(f);
 
@@ -490,7 +469,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           textRect = painter.fontMetrics().boundingRect( text );
 
           painter.drawText( size().width() - 5 - textRect.width(),
-                            5 + f.pointSize(), text );
+                            5 + f.pixelSize(), text );
 
           text = "";
 
@@ -510,7 +489,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
               textRect = painter.fontMetrics().boundingRect( text );
 
               painter.drawText( size().width() - 5 - textRect.width(),
-                                10 + 2 * f.pointSize(), text );
+                                10 + 2 * f.pixelSize(), text );
             }
         }
 

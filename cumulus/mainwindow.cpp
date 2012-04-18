@@ -145,7 +145,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
           appFt.weight(),
           QFontMetrics(appFt).boundingRect("XM").height() );
 
-  QString fontString = ""; // GeneralConfig::instance()->getGuiFont();
+  QString fontString = GeneralConfig::instance()->getGuiFont();
   QFont userFont;
 
   if( fontString.isEmpty() )
@@ -167,9 +167,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
       appFont.setStyle( QFont::StyleNormal );
       appFont.setStyleHint( QFont::SansSerif );
 
-      const int fhpx = 23; // font height in pixel
-
-      Layout::adaptFont( appFont, fhpx );
+      Layout::adaptFont( appFont, GuiFontHeight );
       QApplication::setFont( appFont );
     }
   else if( userFont.fromString( fontString ) )
@@ -989,22 +987,21 @@ void MainWindow::createMenuBar()
 void MainWindow::slotSetMenuBarFontSize()
 {
   // sets the user's selected menu font, if defined
-  QString fontString = ""; // GeneralConfig::instance()->getGuiMenuFont();
+  QString fontString = GeneralConfig::instance()->getGuiMenuFont();
   QFont userFont;
 
   if( fontString.isEmpty() || userFont.fromString( fontString ) == false )
     {
-      // take current font as alternative
+      // take current font as alternative and adapt it.
       userFont = font();
-
-      const int fhpx = 29; // font height in pixel
-
-      Layout::adaptFont( userFont, fhpx );
+      Layout::adaptFont( userFont, GuiMenuFontHeight );
     }
 
-  qDebug() << "GUI MenuFontHeight=" << QFontMetrics(userFont).boundingRect("XM").height();
+  qDebug() << "MenuFont PointSize=" << userFont.pointSize()
+           << "FontHeight=" << QFontMetrics(userFont).boundingRect("XM").height();
 
   GeneralConfig::instance()->setGuiMenuFont( userFont.toString() );
+  GeneralConfig::instance()->save();
 
   menuBar()->setFont( userFont );
 
