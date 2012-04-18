@@ -327,7 +327,7 @@ public class CumulusActivity extends QtActivity
           {
             @Override
             public void onLocationChanged(Location loc)
-            {              
+            {             
               if( gpsEnabled == true && nmeaIsReceived == false )
               {
             	 // If the GPS device do not deliver raw NMEA sentences, we
@@ -410,7 +410,7 @@ public class CumulusActivity extends QtActivity
           };
 
         lm.addNmeaListener(nl);
-        lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 15, 1, ll );
+        lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 1000, 0, ll );
       }
 
     Log.d(TAG, "onCreate exit" );

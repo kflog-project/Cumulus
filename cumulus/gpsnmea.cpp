@@ -2502,6 +2502,10 @@ bool GpsNmea::event(QEvent *event)
 
     if( event->type() == QEvent::User )
       {
+        // Report status change otherwise the glider symbol is not activated on the map.
+        dataOK();
+        fixOK( "ALC");
+
         GpsFixEvent *gpsFixEvent = static_cast<GpsFixEvent *>(event);
 
         // Handle altitude
