@@ -189,6 +189,7 @@ SOURCES = \
     ipc.cpp \
     isohypse.cpp \
     isolist.cpp \
+    layout.cpp \
     lineelement.cpp \
     listviewfilter.cpp \
     listwidgetparent.cpp \

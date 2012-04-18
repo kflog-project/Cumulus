@@ -15,6 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-04-16 AP: If the glider load or water ballast was modified, the wing
+                   load was never updated on the preflight glider page. I fixed
+                   that.
+
+[*] 2012-04-16 AP: Cumulus 2.12.3 released
+
 [-] 2012-04-16 AP: BUGFIX: Due to a programming error the wind calculation
                    did not work as expected. I notice that on my first cross
                    country flight in this year. This bug is fixed now.

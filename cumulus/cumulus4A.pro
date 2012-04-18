@@ -190,6 +190,7 @@ SOURCES = \
     isohypse.cpp \
     isolist.cpp \
     jnisupport.cpp \
+    layout.cpp \
     lineelement.cpp \
     listviewfilter.cpp \
     listwidgetparent.cpp \

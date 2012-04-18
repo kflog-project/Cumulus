@@ -38,6 +38,7 @@
 #include "configwidget.h"
 #include "generalconfig.h"
 #include "helpbrowser.h"
+#include "layout.h"
 #include "mainwindow.h"
 #include "mapconfig.h"
 #include "mapcontents.h"
@@ -151,49 +152,24 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
     {
       // No Gui font is defined, we try to define a sensefull default.
       QFont appFont = QApplication::font();
-      int   appFSize;
 
 #ifdef ANDROID
       appFont.setFamily( "Droid Sans" );
-      appFSize = 10;
 #else
 #ifdef MAEMO
       appFont.setFamily("Nokia Sans");
-      appFSize = 18;
 #else
       appFont.setFamily("Sans Serif");
-      appFSize = 14;
 #endif
 #endif
-
-      appFSize = 20;
 
       appFont.setWeight( QFont::Normal );
       appFont.setStyle( QFont::StyleNormal );
       appFont.setStyleHint( QFont::SansSerif );
-      appFont.setPointSize(appFSize);
 
       const int fhpx = 23; // font height in pixel
 
-      // set start font point size
-      int start = appFSize;
-      appFont.setPointSize( start );
-
-      // Adapt the font to the predefined limit width. The minimum font size is 6.
-      while( start >= 6 )
-        {
-          QFontMetrics qfm(appFont);
-
-          if( (qfm.boundingRect("XM").height() ) > fhpx )
-            {
-              appFont.setPointSize( --start );
-            }
-          else
-            {
-              break;
-            }
-         }
-
+      Layout::adaptFont( appFont, fhpx );
       QApplication::setFont( appFont );
     }
   else if( userFont.fromString( fontString ) )
@@ -1023,25 +999,7 @@ void MainWindow::slotSetMenuBarFontSize()
 
       const int fhpx = 29; // font height in pixel
 
-      // set start font point size
-      int start = 25;
-      userFont.setPointSize( start );
-
-      // Adapt the font to the predefined limit width. The minimum font size is 6.
-      while( start >= 6 )
-        {
-          QFontMetrics qfm(userFont);
-
-          if( qfm.boundingRect("XM").height() > fhpx )
-            {
-              qDebug() << "start=" << start;
-              userFont.setPointSize( --start );
-            }
-          else
-            {
-              break;
-            }
-         }
+      Layout::adaptFont( userFont, fhpx );
     }
 
   qDebug() << "GUI MenuFontHeight=" << QFontMetrics(userFont).boundingRect("XM").height();

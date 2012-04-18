@@ -31,6 +31,8 @@
 #ifndef LAYOUT_H_
 #define LAYOUT_H_
 
+#include <QtGui>
+
 #if defined (MAEMO) || defined (ANDROID)
 #define IconSize 32
 #define ButtonSize 80
@@ -42,6 +44,9 @@
 // Plus and minus button size at the map
 #define MapPMButtonSize 70
 
+// Statusbar font height in pixels
+#define StatusbarFontHeight 16
+
 #else
 
 #define IconSize 26
@@ -49,6 +54,29 @@
 #define DialogMinFontSize 14
 #define SnapRadius 15
 #define MapPMButtonSize 50
+
+// Statusbar font height in pixels
+#define StatusbarFontHeight 16
+
 #endif
+
+class Layout
+{
+  public:
+
+  /**
+   * Adapt the font point size to the given height in pixels.
+   *
+   * \param fontRef        Reference to a font object
+   * \param pxHeight       maximum font height in pixels
+   * \param startPointSize start optimization with this point size
+   * \param minPointSize   minimum font point size
+   */
+  static void adaptFont( QFont& fontRef,
+                         const int pxHeight,
+                         const int startPointSize=30,
+                         const int minPointSize=6 );
+
+};
 
 #endif /* LAYOUT_H_ */

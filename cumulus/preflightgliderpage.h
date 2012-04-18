@@ -71,10 +71,6 @@ private:
    */
   void getCurrent();
 
-  /**
-   * Updates the wingload label, if it is called.
-   */
-  void updateWingLoad();
 
   GliderListWidget *list;
   QLineEdit        *edtCoPilot;
@@ -90,6 +86,12 @@ private slots:
 
   void slotGliderChanged();
   void slotGliderDeselected();
+
+  /**
+   * Updates the wingload label, if it is available.
+   */
+  void slotUpdateWingLoad(int value);
+
 };
 
 #endif

@@ -95,6 +95,8 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
 
   connect(deselect, SIGNAL(clicked()), this, SLOT(slotGliderDeselected()) );
   connect(list, SIGNAL(itemSelectionChanged()), this, SLOT(slotGliderChanged()));
+  connect(spinLoad, SIGNAL(valueChanged(int)), this, SLOT(slotUpdateWingLoad(int)));
+  connect(spinWater, SIGNAL(valueChanged(int)), this, SLOT(slotUpdateWingLoad(int)));
 }
 
 PreFlightGliderPage::~PreFlightGliderPage()
@@ -133,7 +135,7 @@ void PreFlightGliderPage::slotGliderChanged()
       spinWater->setValue(glider->polar()->water() );
     }
 
-  updateWingLoad();
+  slotUpdateWingLoad(0);
 }
 
 void PreFlightGliderPage::slotGliderDeselected()
@@ -216,8 +218,10 @@ void PreFlightGliderPage::save()
     }
 }
 
-void PreFlightGliderPage::updateWingLoad()
+void PreFlightGliderPage::slotUpdateWingLoad( int value )
 {
+  Q_UNUSED(value)
+
   Glider* glider = list->getSelectedGlider();
 
   if( glider == 0 || glider->polar() == 0 || glider->polar()->wingArea() == 0.0 )

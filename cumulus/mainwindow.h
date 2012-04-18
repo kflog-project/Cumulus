@@ -119,6 +119,9 @@ public:
     return _globalMainWindow;
   };
 
+  /**
+   * \return The state of the root window flag.
+   */
   static bool isRootWindow()
   {
     return _rootWindow;

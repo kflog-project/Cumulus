@@ -24,25 +24,26 @@
 
 #include <QtGui>
 
-#include "mapview.h"
-#include "gpsnmea.h"
-#include "mainwindow.h"
-#include "waypointcatalog.h"
-#include "mapmatrix.h"
-#include "wgspoint.h"
-#include "mapcalc.h"
-#include "waypoint.h"
-#include "speed.h"
-#include "igclogger.h"
-#include "mapinfobox.h"
-#include "map.h"
-#include "generalconfig.h"
-#include "interfaceelements.h"
-#include "filetools.h"
 #include "altimetermodedialog.h"
+#include "filetools.h"
+#include "generalconfig.h"
 #include "gliderflightdialog.h"
+#include "gpsnmea.h"
 #include "gpsstatusdialog.h"
+#include "igclogger.h"
+#include "interfaceelements.h"
+#include "layout.h"
+#include "mainwindow.h"
+#include "mapcalc.h"
+#include "map.h"
+#include "mapinfobox.h"
+#include "mapmatrix.h"
+#include "mapview.h"
+#include "speed.h"
 #include "variomodedialog.h"
+#include "waypointcatalog.h"
+#include "waypoint.h"
+#include "wgspoint.h"
 
 MapView::MapView(QWidget *parent) : QWidget(parent)
 {
@@ -338,20 +339,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   QFont font = _statusbar->font();
   font.setBold(true);
 
-  int size = 10;
-
-#ifdef MAEMO
-  size = 16;
-#endif
-
-  if( font.pointSize() != -1 )
-    {
-      font.setPointSize(size);
-    }
-  else
-    {
-      font.setPixelSize(size+4);
-    }
+  Layout::adaptFont( font, StatusbarFontHeight );
 
   _statusbar->setFont(font);
 
