@@ -15,6 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-04-19 AP: Font handling optimized for different hardware devices.
+
+[o] 2012-04-19 AP: Landmark pixmap enlarged from 8x8 pixels to 10x10 pixels
+                   to make it better visible at the map.
+
 [-] 2012-04-16 AP: If the glider load or water ballast was modified, the wing
                    load was never updated on the preflight glider page. I fixed
                    that.
