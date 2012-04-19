@@ -2,7 +2,7 @@
                           sentence.cpp - description
                              -------------------
     begin                : 17.08.2010
-    copyright            : (C) 2010 by Axel Pauli
+    copyright            : (C) 2010-2012 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -39,7 +39,7 @@ int Sentence::send( QString& sentence, int fd )
 {
   QString string;
 
-  if( ! sentence.startsWith('$') )
+  if( ! sentence.startsWith('$') && ! sentence.startsWith('!') )
     {
       string = "$";
     }

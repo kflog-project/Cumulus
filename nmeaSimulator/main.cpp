@@ -357,7 +357,7 @@ int main(int argc, char **argv)
            << "              dir=[right|left]: Direction of Circle" << endl
            << "              alt=[m]: Altitude of Glider" << endl
            << "              climb=[m/s]: Climbrate" << endl
-           << "              sentence0...9='KEYWORD,...,': free sentence format" << endl
+           << "              sentence0...9='NMEA sentence without checksum': $ and * can be omitted" << endl
            << "              time=[s]: duration of operation" << endl
            << "              pause=[ms]: pause between to send periods" << endl
            << "              device=[path to named pipe]: write into this pipe, default is /tmp/nmeasim" << endl
