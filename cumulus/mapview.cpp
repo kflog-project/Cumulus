@@ -338,22 +338,21 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   QFont font = _statusbar->font();
   font.setBold(true);
-
   Layout::adaptFont( font, StatusbarFontHeight );
-
   _statusbar->setFont(font);
 
-  QFontMetrics fm(font);
-  _statusbar->setFixedHeight(fm.boundingRect("W°").height() + 5 );
+  // Fixing the height caused some times problems on larger screens
+  // QFontMetrics fm(font);
+  // _statusbar->setFixedHeight(fm.boundingRect("WE°'?\"").height() + 6 );
 
-  _statusGps = new CuLabel(tr("Man"),_statusbar);
+  _statusGps = new CuLabel(tr("Man"), _statusbar);
   _statusGps->setLineWidth(0);
   _statusGps->setAlignment(Qt::AlignCenter);
   _statusGps->setMargin(0);
   _statusbar->addWidget(_statusGps);
   connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
 
-  _statusFlightstatus = new QLabel(tr("?","Unknown"),_statusbar);
+  _statusFlightstatus = new QLabel(tr("?","Unknown"), _statusbar);
   _statusFlightstatus->setLineWidth(0);
   _statusFlightstatus->setAlignment(Qt::AlignCenter);
   _statusFlightstatus->setMargin(0);
