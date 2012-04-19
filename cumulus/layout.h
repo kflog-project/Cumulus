@@ -74,7 +74,7 @@
 #define FlarmDisplayPainterFontPixelSize 24
 
 // WhatsThat font point size
-#define WhatsThatFontPointSize 18
+#define WhatsThatFontPointSize 16
 
 #else
 
@@ -114,7 +114,7 @@
 #define FlarmDisplayPainterFontPixelSize 24
 
 // WhatsThat font point size
-#define WhatsThatFontPointSize 18
+#define WhatsThatFontPointSize 16
 
 #endif
 

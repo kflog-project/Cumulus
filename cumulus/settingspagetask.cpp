@@ -354,7 +354,7 @@ void SettingsPageTask::slot_editTlColor()
     {
       tlColor = newColor;
       // determine pixmap size to be used for icons in dependency of the used font
-      int size = font().pointSize() - 2;
+      int size = QFontMetrics(font()).boundingRect("XM").height() - 2;
       QSize pixmapSize = QSize( size, size );
       QPixmap pixmap(pixmapSize);
       pixmap.fill( newColor );
@@ -372,7 +372,7 @@ void SettingsPageTask::slot_editTrColor()
     {
       trColor = newColor;
       // determine pixmap size to be used for icons in dependency of the used font
-      int size = font().pointSize() - 2;
+      int size = QFontMetrics(font()).boundingRect("XM").height() - 2;
       QSize pixmapSize = QSize( size, size );
       QPixmap pixmap(pixmapSize);
       pixmap.fill( newColor );
@@ -423,7 +423,7 @@ void SettingsPageTask::slot_load()
   selectedTlColor = tlColor;
 
   // determine pixmap size to be used for icons in dependency of the used font
-  int size = font().pointSize();
+  int size = QFontMetrics(font()).boundingRect("XM").height() - 2;
   QSize pixmapSize = QSize( size, size );
   QPixmap pixmap(pixmapSize);
   pixmap.fill( tlColor );
