@@ -80,7 +80,7 @@ addData:
 
 copyData:	appData addData
 	@echo "===== Copy data files to cumulus/android/assets ====="
-	cp $(INSTALL_ROOT)/$(APP_DATA) $(INSTALL_ROOT)/$(ADD_DATA) \
+	@cp $(INSTALL_ROOT)/$(APP_DATA) $(INSTALL_ROOT)/$(ADD_DATA) \
 	    cumulus/android/assets
 	
 .PHONY : check_dir
