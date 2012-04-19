@@ -44,7 +44,7 @@
 #define MapPMButtonSize 70
 
 // Dialog font size in pixels
-#define DialogMinFontSize 20
+#define DialogMinFontSize 22
 
 // Statusbar font height in pixels
 #define StatusbarFontHeight 20
@@ -79,12 +79,12 @@
 #else
 
 #define IconSize 26
-#define ButtonSize 40
+#define ButtonSize 42
 #define SnapRadius 15
 #define MapPMButtonSize 50
 
 // Dialog font size in pixels
-#define DialogMinFontSize 20
+#define DialogMinFontSize 22
 
 // Statusbar font height in pixels
 #define StatusbarFontHeight 20

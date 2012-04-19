@@ -48,13 +48,13 @@
 #include "waypoint.h"
 #include "mapdefaults.h"
 
-// default window display times
+// default window display times in seconds
 #define MIN_POPUP_DISPLAY_TIME 3
-#define AIRFIELD_DISPLAY_TIME_DEFAULT 10
-#define AIRSPACE_DISPLAY_TIME_DEFAULT 10
-#define INFO_DISPLAY_TIME_DEFAULT     10
-#define WAYPOINT_DISPLAY_TIME_DEFAULT 10
-#define WARNING_DISPLAY_TIME_DEFAULT  10
+#define AIRFIELD_DISPLAY_TIME_DEFAULT 20
+#define AIRSPACE_DISPLAY_TIME_DEFAULT 20
+#define INFO_DISPLAY_TIME_DEFAULT     20
+#define WAYPOINT_DISPLAY_TIME_DEFAULT 20
+#define WARNING_DISPLAY_TIME_DEFAULT  20
 #define WARNING_SUPPRESS_TIME_DEFAULT 0 // time in minutes
 
 // default for audible alarm switch
