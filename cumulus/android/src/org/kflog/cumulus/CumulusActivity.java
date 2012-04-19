@@ -313,7 +313,7 @@ public class CumulusActivity extends QtActivity
           {
             public void onNmeaReceived( long timestamp, String nmea )
               {
-            	nmeaIsReceived = true;
+              	nmeaIsReceived = true;
             	
                 if( gpsEnabled )
                   {
@@ -337,7 +337,7 @@ public class CumulusActivity extends QtActivity
                 		           loc.getAltitude(),
                                loc.getSpeed(), loc.getBearing(),
                                loc.getAccuracy(), loc.getTime());
-              }
+               }
             }
 
             @Override
