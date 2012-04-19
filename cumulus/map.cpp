@@ -1638,13 +1638,13 @@ void Map::__drawLabel( QPainter* painter,
 
   if( ! isSelected )
     {
-      painter->setPen(QPen(Qt::black, 4, Qt::SolidLine));
+      painter->setPen(QPen(Qt::black, 3, Qt::SolidLine));
       painter->setBrush( Qt::white );
     }
   else
     {
       // draw selected waypoint label inverse
-      painter->setPen(QPen(Qt::white, 4, Qt::SolidLine));
+      painter->setPen(QPen(Qt::white, 3, Qt::SolidLine));
       painter->setBrush( Qt::black );
     }
 
