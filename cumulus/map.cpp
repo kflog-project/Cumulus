@@ -1660,8 +1660,8 @@ void Map::__drawLabel( QPainter* painter,
           textBox.width(),
           textBox.height() ); */
 
-  // add a little bit more space in the width
-  textBox.setRect( 0, 0, textBox.width() + 8, textBox.height() );
+  // add a little bit more space in the width and in the height
+  textBox.setRect( 0, 0, textBox.width() + 8, textBox.height() + 4 );
 
   int xOffset = xShift;
   int yOffset = 0;

@@ -21,9 +21,8 @@
 #include "mapdefaults.h"
 #include "altitude.h"
 
-// Definition of different font sizes
+// Definition of the font size to be used for text in pixels
 #define PixelSize 10
-#define PointSize  8
 
 /** A reference to the terrain color array has to be passed. The colors
  *  from the array are taken for the elevation color bars. Update first
@@ -51,14 +50,7 @@ QSize ElevationColorImage::minimumSizeHint() const
 
   QFont myFont = font();
 
-  if( myFont.pointSize() != -1 )
-    {
-      myFont.setPointSize( PointSize );
-    }
-  else
-    {
-      myFont.setPixelSize( PixelSize );
-    }
+  myFont.setPixelSize( PixelSize );
 
   QFontMetrics fm( myFont );
 
@@ -94,18 +86,10 @@ void ElevationColorImage::paintEvent( QPaintEvent * /* event */ )
   painter.translate( QPoint(x, y) );
 
   // set font size used for text painting
-  QFont newFont = font();
+  QFont myFont = painter.font();
+  myFont.setPixelSize( PixelSize );
 
-  if( newFont.pointSize() != -1 )
-    {
-      newFont.setPointSize( PointSize );
-    }
-  else
-    {
-      newFont.setPixelSize( PixelSize );
-    }
-
-  painter.setFont( newFont );
+  painter.setFont( myFont );
   QPen pen;
   pen.setWidth(3);
   painter.setPen(pen);

@@ -286,7 +286,7 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
   if( ! isVisible() )
     {
       // We make no style actions if the widget is hidden.
-      return;
+      // return;
     }
 
 #ifdef DEBUG

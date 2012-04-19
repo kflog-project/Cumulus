@@ -43,26 +43,11 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   mcSmallStep = 0.5;
   mcBigStep   = 1.0;
 
-  QFont b = font();
-  b.setBold(true);
-  setFont(b);
-
   // set font size to a reasonable and usable value
-  if( font().pointSize() < DialogMinFontSize )
-    {
-      QFont cf = font();
-
-      if( cf.pointSize() != -1 )
-        {
-          cf.setPointSize( DialogMinFontSize );
-        }
-      else
-        {
-          cf.setPixelSize( DialogMinFontSize );
-        }
-
-      this->setFont(cf);
-    }
+  QFont cf = font();
+  cf.setPixelSize( DialogMinFontSize );
+  cf.setBold( true );
+  setFont(cf);
 
   QGridLayout* gridLayout = new QGridLayout(this);
   gridLayout->setMargin(10);

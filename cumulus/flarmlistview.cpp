@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -30,7 +30,7 @@
 #include "distance.h"
 #include "mapconfig.h"
 
-QString FlarmListView::selectedListObject = "";
+QString FlarmListView::selectedListObject  = "";
 QString FlarmListView::selectedFlarmObject = "";
 
 /**
@@ -224,11 +224,15 @@ void FlarmListView::fillItemList( QString& object2Select )
 
       QPixmap pixmap;
 
+      int pixSize = QFontMetrics(font()).boundingRect("XM").height() - 2;
+
       if( north == 0 && east == 0 )
         {
           // Special case Flarm object is above or below us. We draw a circle.
-          MapConfig::createCircle( pixmap, this->font().pointSize(),
-                                   QColor(Qt::black), 1.0 );
+          MapConfig::createCircle( pixmap,
+                                   pixSize,
+                                   QColor(Qt::black),
+                                   1.0 );
         }
       else
         {
@@ -238,9 +242,12 @@ void FlarmListView::fillItemList( QString& object2Select )
           int heading2Object = (360 - calculator->getlastHeading()) + (90 - alpha);
 
           // qDebug() << "ID=" << it.key() << "Alpha" << alpha << "H2O=" << heading2Object;
-
-          MapConfig::createTriangle( pixmap, this->font().pointSize() + 10,
-                                     QColor(Qt::black), heading2Object, 1.0, QColor(Qt::cyan) );
+          MapConfig::createTriangle( pixmap,
+                                     pixSize,
+                                     QColor(Qt::black),
+                                     heading2Object,
+                                     1.0,
+                                     QColor(Qt::cyan) );
         }
 
       QIcon qi;

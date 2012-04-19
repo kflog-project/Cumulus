@@ -36,13 +36,15 @@
 #if defined (MAEMO) || defined (ANDROID)
 #define IconSize 32
 #define ButtonSize 80
-#define DialogMinFontSize 12
 
 // Snap radius size on the map
 #define SnapRadius 25
 
 // Plus and minus button size at the map
 #define MapPMButtonSize 70
+
+// Dialog font size in pixels
+#define DialogMinFontSize 20
 
 // Statusbar font height in pixels
 #define StatusbarFontHeight 20
@@ -63,7 +65,7 @@
 #define MapCityLabelFontPointSize 8
 
 // Map bearing indicator font point size
-#define MapBearingIndicatorFontPointSize 14
+#define MapBearingIndicatorFontPointSize 12
 
 // Map Flarm painter font height in pixels
 #define MapFlarmPainterFontHeight 24
@@ -78,9 +80,11 @@
 
 #define IconSize 26
 #define ButtonSize 40
-#define DialogMinFontSize 14
 #define SnapRadius 15
 #define MapPMButtonSize 50
+
+// Dialog font size in pixels
+#define DialogMinFontSize 20
 
 // Statusbar font height in pixels
 #define StatusbarFontHeight 20
@@ -101,7 +105,7 @@
 #define MapCityLabelFontPointSize 8
 
 // Map bearing indicator font point size
-#define MapBearingIndicatorFontPointSize 14
+#define MapBearingIndicatorFontPointSize 12
 
 // Map Flarm painter font height in pixels
 #define MapFlarmPainterFontHeight 24

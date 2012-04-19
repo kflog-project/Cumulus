@@ -41,26 +41,11 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   setWindowTitle( tr( "Altimeter Settings" ) );
   setAttribute( Qt::WA_DeleteOnClose );
 
-  QFont b = font();
-  b.setBold( true );
-  setFont( b );
-
   // set font size to a reasonable and usable value
-  if( font().pointSize() < DialogMinFontSize )
-    {
-      QFont cf = font();
-
-      if( cf.pointSize() != -1 )
-        {
-          cf.setPointSize( DialogMinFontSize );
-        }
-      else
-        {
-          cf.setPixelSize( DialogMinFontSize );
-        }
-
-      setFont(cf);
-    }
+  QFont cf = font();
+  cf.setPixelSize( DialogMinFontSize );
+  cf.setBold( true );
+  setFont(cf);
 
   QGroupBox* altMode = new QGroupBox( this );
   _msl = new QRadioButton( tr( "MSL" ), altMode );
