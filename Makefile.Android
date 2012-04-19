@@ -33,6 +33,7 @@ usage:
 	@echo "  clean        - Removes all build results"
 	@echo "  appData      - Creates a appData file under $(INSTALL_ROOT)"
 	@echo "  addData      - Creates a addData file under $(INSTALL_ROOT)"
+	@echo "  copyData     - Copies the zip files to cumulus/android/assets"
 
 all:	appData addData
 
@@ -69,12 +70,18 @@ addData:
 	@install -d $(ADD_DATA_ROOT)/sounds
 	@install --mode=644 help/en/*.html help/en/cumulus.png $(ADD_DATA_ROOT)/help/en
 	@install --mode=644 help/en/text.css $(ADD_DATA_ROOT)/help/en
-	@install --mode=644 icons/cumulus.png $(ADD_DATA_ROOT)/help/de
+	@install --mode=644 help/de/*.html help/de/cumulus.png $(ADD_DATA_ROOT)/help/de
+	@install --mode=644 help/de/text.css $(ADD_DATA_ROOT)/help/de
 	@install --mode=644 sounds/AlarmShort.wav $(ADD_DATA_ROOT)/sounds/Alarm.wav
 	@install --mode=644 sounds/Notify.wav $(ADD_DATA_ROOT)/sounds
 	@cd $(ADD_DATA_ROOT); zip -q -r -o $(ADD_DATA) *
 	@mv $(ADD_DATA_ROOT)/$(ADD_DATA) $(INSTALL_ROOT)
 	@echo "  $(ADD_DATA) created under $(INSTALL_ROOT)"
+
+copyData:	appData addData
+	@echo "===== Copy data files to cumulus/android/assets ====="
+	cp $(INSTALL_ROOT)/$(APP_DATA) $(INSTALL_ROOT)/$(ADD_DATA) \
+	    cumulus/android/assets
 	
 .PHONY : check_dir
 check_dir:
