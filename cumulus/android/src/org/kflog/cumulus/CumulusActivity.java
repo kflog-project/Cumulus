@@ -81,7 +81,9 @@ public class CumulusActivity extends QtActivity
   
   static final int               REQUEST_ENABLE_BT = 99;
 
-  private PowerManager.WakeLock  wl               = null;
+  private PowerManager           m_pm             = null;
+  private PowerManager.WakeLock  m_wl             = null;
+  private boolean                m_screenDimmState= false;
   private AsyncPlayer            apl, npl;
   private LocationManager        lm               = null;
   private String                 bestProvider;
@@ -292,11 +294,11 @@ public class CumulusActivity extends QtActivity
 
     Window w = getWindow();
     w.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-    w.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    // w.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-//    PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
-//    wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CumulusScreenAlwaysOn");
-//    wl.acquire();
+    m_pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+    m_wl = m_pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CumulusScreenAlwaysOn");
+    m_screenDimmState = false;
 
     apl = new AsyncPlayer("alarm_player");
     npl = new AsyncPlayer("notification_player");
@@ -417,6 +419,33 @@ public class CumulusActivity extends QtActivity
   }
 
   @Override
+  protected void onPause()
+  	{
+  		Log.d(TAG, "onPause()" );
+  		
+      super.onPause();
+      
+      if( m_wl != null && m_wl.isHeld() )
+      	{
+      		m_wl.release();
+        }
+  	}
+
+  @Override
+  protected void onResume()
+  	{
+  		Log.d(TAG, "onResume()" );
+
+      super.onResume();
+      
+      if( m_wl != null && m_wl.isHeld() == false )
+      	{
+      		Log.d(TAG, "onResume(): aquire wake lock" );
+      		m_wl.acquire();
+        }
+    }
+
+  @Override
   protected void onDestroy()
     {
       Log.d(TAG, "onDestroy" );
@@ -431,6 +460,11 @@ public class CumulusActivity extends QtActivity
       	{
       		// terminate all BT threads
       		m_btService.stop();
+      	}
+      
+      if( m_wl != null && m_wl.isHeld() )
+      	{
+      		m_wl.release();
       	}
 
       // call super class
@@ -658,6 +692,40 @@ public class CumulusActivity extends QtActivity
         apl.play(this.getApplicationContext(), sf, false, stream);
       }
    }
+  
+  /**
+   * This method switches on/off the screen saver.
+   * 
+   * @param newState true means dimm the screen, false means bright the screen
+   */
+  void dimmScreen( boolean newState )
+  	{
+  		Log.v("Cumulus#Java", "dimmScreen(" + newState  + ")");
+  		
+  		if( m_screenDimmState == newState )
+  			{
+  				// No state change, ignore request
+  				return;
+  			}
+  		
+  		if( m_wl != null  && m_wl.isHeld() )
+  			{
+  				m_wl.release();
+  			}
+  		
+  		m_screenDimmState = newState;
+  		
+  		if( newState == false )
+  			{
+  				m_wl = m_pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CumulusBrightScreen");
+  			}
+  		else
+  			{
+  				m_wl = m_pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CumulusDimmScreen");
+  			}
+  		
+      m_wl.acquire();
+  	}
 
   String getAppDataDir()
   {
