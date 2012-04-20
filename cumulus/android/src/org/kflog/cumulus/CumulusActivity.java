@@ -700,7 +700,7 @@ public class CumulusActivity extends QtActivity
    */
   void dimmScreen( boolean newState )
   	{
-  		Log.v("Cumulus#Java", "dimmScreen(" + newState  + ")");
+  		// Log.v("Cumulus#Java", "dimmScreen(" + newState  + ")");
   		
   		if( m_screenDimmState == newState )
   			{
