@@ -707,7 +707,7 @@ public class CumulusActivity extends QtActivity
   				// No state change, ignore request
   				return;
   			}
-  		
+/*  		
   		if( m_wl != null  && m_wl.isHeld() )
   			{
   				m_wl.release();
@@ -717,14 +717,15 @@ public class CumulusActivity extends QtActivity
   		
   		if( newState == false )
   			{
-  				m_wl = m_pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CumulusBrightScreen");
+  				//m_wl = m_pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CumulusBrightScreen");
   			}
   		else
   			{
-  				m_wl = m_pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CumulusDimmScreen");
+  				//m_wl = m_pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CumulusDimmScreen");
   			}
   		
       m_wl.acquire();
+*/
   	}
 
   String getAppDataDir()
