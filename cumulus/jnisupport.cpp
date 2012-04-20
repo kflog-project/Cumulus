@@ -39,6 +39,7 @@ static jobject   m_jniProxyObject = 0; // Java instance of CumulusActivity
 static jmethodID m_AddDataDirID   = 0;
 static jmethodID m_AppDataDirID   = 0;
 static jmethodID m_playSoundID    = 0;
+static jmethodID m_dimmScreenID   = 0;
 
 extern MainWindow *_globalMainWindow;
 
@@ -306,6 +307,16 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       return false;
     }
 
+  m_dimmScreenID = m_jniEnv->GetMethodID( clazz,
+                                          "dimmScreen",
+                                          "(Z)V");
+
+  if (isJavaExceptionOccured())
+    {
+      qDebug() << "initJni: could not get ID of playSound";
+      return false;
+    }
+
   return true;
 }
 
@@ -390,6 +401,26 @@ bool jniPlaySound(int stream, QString soundName)
     }
 
   return true;
+}
+
+void jniDimmScreen( bool newState )
+{
+  if (!jniEnv())
+    {
+      return;
+    }
+
+  m_jniEnv->CallVoidMethod( m_jniProxyObject,
+                            m_dimmScreenID,
+                            (jboolean) newState );
+
+  if (isJavaExceptionOccured())
+    {
+      qWarning("jniDimmScreen: exception when calling Java method \"dimmScreen\"");
+      return;
+    }
+
+  return;
 }
 
 QString jniGetAppDataDir()

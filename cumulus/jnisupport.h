@@ -44,3 +44,11 @@ QString jniGetAppDataDir();
  * the path to the sdcard.
  */
 QString jniGetAddDataDir();
+
+
+/**
+ * Tells the android activity to switch on/off the dimming of the screen.
+ *
+ * @snewState true activates the screen dimm, false deactivates it.
+ */
+void jniDimmScreen( bool newState );

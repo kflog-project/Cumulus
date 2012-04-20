@@ -743,25 +743,6 @@ void MainWindow::slotCreateApplicationWidgets()
       sleep(1);
     }
 
-#ifdef MAEMO
-
-  if( ossoContext )
-    {
-      osso_display_blanking_pause( ossoContext );
-
-      // setup timer to prevent screen blank
-      ossoDisplayTrigger = new QTimer(this);
-      ossoDisplayTrigger->setSingleShot(true);
-
-      connect( ossoDisplayTrigger, SIGNAL(timeout()),
-               this, SLOT(slotOssoDisplayTrigger()) );
-
-      // start timer with 10s
-      ossoDisplayTrigger->start( 10000 );
-    }
-
-#endif
-
   splash->setVisible( true );
   ws->setVisible( true );
 
@@ -796,6 +777,7 @@ void MainWindow::slotFinishStartUp()
       // set logger in standby mode
       logger->Standby();
     }
+
   setNearestOrReachableHeaders();
 
   // close wait screen
@@ -810,6 +792,37 @@ void MainWindow::slotFinishStartUp()
 
 #ifndef ANDROID
   GpsNmea::gps->startGpsReceiver();
+#endif
+
+#ifdef MAEMO
+
+  if( ossoContext )
+    {
+      osso_display_blanking_pause( ossoContext );
+
+      // setup timer to prevent screen blank
+      displayTrigger = new QTimer(this);
+      displayTrigger->setSingleShot(true);
+
+      connect( displayTrigger, SIGNAL(timeout()),
+               this, SLOT(slotDisplayTrigger()) );
+
+      // start timer with 10s
+      displayTrigger->start( 10000 );
+    }
+
+#elif ANDROID
+
+  // setup timer to prevent screen blank
+  displayTrigger = new QTimer(this);
+  displayTrigger->setSingleShot(true);
+
+  connect( displayTrigger, SIGNAL(timeout()),
+           this, SLOT(slotDisplayTrigger()) );
+
+  // start timer with 10s
+  displayTrigger->start( 10000 );
+
 #endif
 
 #ifdef ANDROID
@@ -836,9 +849,13 @@ MainWindow::~MainWindow()
   // stop Maemo screen saver off triggering
   if( ossoContext )
     {
-      ossoDisplayTrigger->stop();
+      displayTrigger->stop();
       osso_deinitialize( ossoContext );
     }
+
+#elif ANDROID
+
+  displayTrigger->stop();
 
 #endif
 
@@ -2543,11 +2560,10 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 #ifdef MAEMO
 
 /** Called to prevent the switch off of the screen display */
-void MainWindow::slotOssoDisplayTrigger()
+void MainWindow::slotDisplayTrigger()
 {
-  // If the speed is greater or equal 10 km/h and we have a connected
-  // gps we switch off the screen saver. Otherwise we let all as it
-  // is.
+  // If the speed is greater or equal as the limit and we have a connected
+  // GPS we switch off the screen saver. Otherwise we let all as it is.
   double speedLimit = GeneralConfig::instance()->getScreenSaverSpeedLimit();
 
   if( calculator->getLastSpeed().getKph() >= speedLimit &&
@@ -2564,12 +2580,37 @@ void MainWindow::slotOssoDisplayTrigger()
 
   // Restart the timer because we use a single shot timer to avoid
   // multiple triggering in case of delays. Next trigger is in 10s.
-  ossoDisplayTrigger->start( 10000 );
+  displayTrigger->start( 10000 );
 }
 
 #endif
 
 #ifdef ANDROID
+
+/** Called to control the brightness of the the screen display */
+void MainWindow::slotDisplayTrigger()
+{
+  // If the speed is greater or equal as the limit and we have a connected
+  // GPS we switch off the screen saver. Otherwise we let all as it is.
+  double speedLimit = GeneralConfig::instance()->getScreenSaverSpeedLimit();
+
+  if( calculator->getLastSpeed().getKph() >= speedLimit &&
+      GpsNmea::gps->getConnected() )
+    {
+      // tells Android to brighten the screen
+      jniDimmScreen( false );
+    }
+  else
+    {
+      // tells Android to dimm the screen
+      jniDimmScreen( true );
+    }
+
+  // Restart the timer because we use a single shot timer to avoid
+  // multiple triggering in case of delays. Next trigger is in 10s.
+  displayTrigger->start( 10000 );
+}
+
 void MainWindow::forceFocus()
 {
   QWindowSystemInterface::handleMouseEvent(0, QEvent::MouseButtonPress,

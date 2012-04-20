@@ -461,17 +461,17 @@ private:
   // Flag to store the root window state
   static bool _rootWindow;
 
-#ifdef MAEMO
+#if defined ANDROID || defined MAEMO
 
 private:
 
   /** Timer for triggering display on. */
-  QTimer *ossoDisplayTrigger;
+  QTimer *displayTrigger;
 
 private slots:
 
   /** Called to prevent the switch off of the display */
-  void slotOssoDisplayTrigger();
+  void slotDisplayTrigger();
 
 #endif
 
