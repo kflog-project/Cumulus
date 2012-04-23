@@ -2566,8 +2566,9 @@ void MainWindow::slotDisplayTrigger()
   // GPS we switch off the screen saver. Otherwise we let all as it is.
   double speedLimit = GeneralConfig::instance()->getScreenSaverSpeedLimit();
 
-  if( calculator->getLastSpeed().getKph() >= speedLimit &&
-      GpsNmea::gps->getConnected() )
+  if( speedLimit == 0.0 ||
+      ( calculator->getLastSpeed().getKph() >= speedLimit &&
+      GpsNmea::gps->getConnected() ) )
     {
       // tells Maemo that we are in move enough to switch off or avoid blank screen
       osso_return_t ret = osso_display_blanking_pause( ossoContext );
@@ -2594,15 +2595,16 @@ void MainWindow::slotDisplayTrigger()
   // GPS we switch off the screen saver. Otherwise we let all as it is.
   double speedLimit = GeneralConfig::instance()->getScreenSaverSpeedLimit();
 
-  if( calculator->getLastSpeed().getKph() >= speedLimit &&
-      GpsNmea::gps->getConnected() )
+  if( speedLimit == 0.0 ||
+      ( calculator->getLastSpeed().getKph() >= speedLimit &&
+      GpsNmea::gps->getConnected() ) )
     {
-      // tells Android to brighten the screen
+      // tells Android CumulusActivity to brighten the screen
       jniDimmScreen( false );
     }
   else
     {
-      // tells Android to dimm the screen
+      // tells Android CumulusActivity to dimm the screen
       jniDimmScreen( true );
     }
 

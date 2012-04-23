@@ -86,7 +86,8 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   topLayout->addWidget(lbl, row, 0);
   screenSaverSpeedLimit = new QDoubleSpinBox( this );
   screenSaverSpeedLimit->setButtonSymbols(QSpinBox::PlusMinus);
-  screenSaverSpeedLimit->setRange( 1.0, 99.0);
+  screenSaverSpeedLimit->setRange( 0.0, 99.0);
+  screenSaverSpeedLimit->setSpecialValueText(tr("Off"));
   screenSaverSpeedLimit->setSingleStep( 1 );
   screenSaverSpeedLimit->setPrefix( "< " );
   screenSaverSpeedLimit->setDecimals( 1 );
