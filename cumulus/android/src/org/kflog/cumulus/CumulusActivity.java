@@ -28,6 +28,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.Object;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -56,6 +58,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -80,10 +83,23 @@ public class CumulusActivity extends QtActivity
   static final int               MENU_QUIT        = 2;
   
   static final int               REQUEST_ENABLE_BT = 99;
+  
+  // After this time and no user activity or movement the screen is dimmed.
+  static final long              DIMM_SCREEN_TO      = 60000;
+  
+  // Screen dimm value
+  static final float              DIMM_SCREEN_VALUE  = 0.10f;
 
-  private PowerManager           m_pm             = null;
-  private PowerManager.WakeLock  m_wl             = null;
-  private boolean                m_screenDimmState= false;
+  // Flags used to handle screen dimming
+  private boolean                m_currentDimmState   = false;
+  private boolean                m_requestedDimmState = false;
+  
+  // System time of last user action in ms
+  private long                   m_lastUserAction = 0;
+  
+  // Timer to handle screen dimming
+  private Timer screenDimmTimer                   = null;
+
   private AsyncPlayer            apl, npl;
   private LocationManager        lm               = null;
   private String                 bestProvider;
@@ -294,12 +310,10 @@ public class CumulusActivity extends QtActivity
 
     Window w = getWindow();
     w.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-    // w.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-    m_pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-    m_wl = m_pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CumulusScreenAlwaysOn");
-    m_screenDimmState = false;
-
+    
+    // Switch the screen permanently on
+    w.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    
     apl = new AsyncPlayer("alarm_player");
     npl = new AsyncPlayer("notification_player");
 
@@ -419,31 +433,40 @@ public class CumulusActivity extends QtActivity
   }
 
   @Override
-  protected void onPause()
+  protected void onStart()
   	{
-  		Log.d(TAG, "onPause()" );
-  		
-      super.onPause();
-      
-      if( m_wl != null && m_wl.isHeld() )
-      	{
-      		m_wl.release();
-        }
+  		Log.d(TAG, "onStart()" );
+      super.onStart();
   	}
-
+  
   @Override
   protected void onResume()
   	{
   		Log.d(TAG, "onResume()" );
-
       super.onResume();
       
-      if( m_wl != null && m_wl.isHeld() == false )
+      // Switch user screen brightness on
+      switchOffScreenDimming();
+      
+      if( screenDimmTimer == null )
       	{
-      		Log.d(TAG, "onResume(): aquire wake lock" );
-      		m_wl.acquire();
-        }
-    }
+      		Log.d(TAG, "onResume(): new screenDimmTimer is activated" );
+      		screenDimmTimer = new Timer();
+          TimerTask dimmTask = new ScreenDimmerTimerTask();
+          screenDimmTimer.scheduleAtFixedRate(dimmTask, 10000, 10000);
+      	}
+     }
+
+  @Override
+  protected void onPause()
+  	{
+  		Log.d(TAG, "onPause()" );
+      super.onPause();
+      
+  		Log.d(TAG, "onPause(): cancel screenDimmTimer" );
+  		screenDimmTimer.cancel();
+  		screenDimmTimer = null;
+  	}
 
   @Override
   protected void onDestroy()
@@ -460,11 +483,6 @@ public class CumulusActivity extends QtActivity
       	{
       		// terminate all BT threads
       		m_btService.stop();
-      	}
-      
-      if( m_wl != null && m_wl.isHeld() )
-      	{
-      		m_wl.release();
       	}
 
       // call super class
@@ -500,6 +518,7 @@ public class CumulusActivity extends QtActivity
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event)
 	{
+		
 		// System.out.println("QtMain.onKeyUp, key released: "+event.toString());
 		if( keyCode == KeyEvent.KEYCODE_BACK )
 			{
@@ -507,6 +526,15 @@ public class CumulusActivity extends QtActivity
 			}
 
     return super.onKeyUp(keyCode, event);
+  }
+	
+  @Override
+  public void onUserInteraction()
+  {
+  	Log.v("Cumulus#Java", "onUserInteraction()");
+  	
+  	switchOffScreenDimming();
+  	super.onUserInteraction();
   }
 
 	protected Dialog onCreateDialog(int id)
@@ -545,6 +573,7 @@ public class CumulusActivity extends QtActivity
 			builder.setTitle("Main Menu");
 			builder.setItems(m_items, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
+					
 					switch(item) {
 					case 0:
 						nativeKeypress((char)25);
@@ -677,7 +706,7 @@ public class CumulusActivity extends QtActivity
 		return alert;
 	}
 
-  void playSound(int stream, String soundName)
+	synchronized void playSound(int stream, String soundName)
   {
     Uri sf = Uri.parse("file://" + getAddDataDir() + File.separatorChar + "sounds" + File.separatorChar + soundName);
 
@@ -693,39 +722,27 @@ public class CumulusActivity extends QtActivity
       }
    }
   
+  synchronized private void dimmScreen( float value )
+  	{
+  		WindowManager.LayoutParams lp = getWindow().getAttributes();
+  		lp.screenBrightness = value;
+		  getWindow().setAttributes(lp);
+  	}
+
   /**
-   * This method switches on/off the screen saver.
+   * This method is called by native code to handle the screen dimming.
    * 
    * @param newState true means dimm the screen, false means bright the screen
    */
   void dimmScreen( boolean newState )
   	{
-  		// Log.v("Cumulus#Java", "dimmScreen(" + newState  + ")");
+  		Log.v("Cumulus#Java", "dimmScreen(" + newState  + ")");
   		
-  		if( m_screenDimmState == newState )
+  		synchronized( CumulusActivity.this )
   			{
-  				// No state change, ignore request
-  				return;
+  				// save requested dimm state from C++ API side.
+  				m_requestedDimmState = newState;
   			}
-/*  		
-  		if( m_wl != null  && m_wl.isHeld() )
-  			{
-  				m_wl.release();
-  			}
-  		
-  		m_screenDimmState = newState;
-  		
-  		if( newState == false )
-  			{
-  				//m_wl = m_pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "CumulusBrightScreen");
-  			}
-  		else
-  			{
-  				//m_wl = m_pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "CumulusDimmScreen");
-  			}
-  		
-      m_wl.acquire();
-*/
   	}
 
   String getAppDataDir()
@@ -1076,5 +1093,102 @@ public class CumulusActivity extends QtActivity
 
     return true;
   }
+
+  private void switchOffScreenDimming()
+  	{
+      // Switch user screen brightness on
+      dimmScreen( -1.0f );
+      setCurrentDimmState( false );
+      setLastUserAction( System.currentTimeMillis() );
+  	}
+  
+	synchronized private boolean currentDimmState()
+  	{
+  		return m_currentDimmState;
+  	}
+
+	synchronized private void setCurrentDimmState(boolean currentDimmState)
+  	{
+  		this.m_currentDimmState = currentDimmState;
+  	}
+
+	synchronized private boolean requestedDimmState()
+  	{
+  		return m_requestedDimmState;
+  	}
+
+	synchronized private void setRequestedDimmState(boolean requestedDimmState)
+  	{
+  		this.m_requestedDimmState = requestedDimmState;
+  	}
+
+	synchronized private long lastUserAction()
+  	{
+  		return m_lastUserAction;
+  	}
+
+	synchronized private void setLastUserAction(long lastUserAction)
+  	{
+  		this.m_lastUserAction = lastUserAction;
+  	}
+
+  private class ScreenDimmerTimerTask extends TimerTask
+  {
+    private Handler mHandler;
+
+    public ScreenDimmerTimerTask()
+    	{
+        // Creates a handler in the calling thread in which the timer action is
+    		// later executed. Only the Activity thread can execute GUI actions!
+    		mHandler = new Handler();
+      }
+
+    @Override
+    public void run()
+    	{
+    		// This thread uses the Handler of the creating thread to execute the
+    		// necessary GUI actions there.
+    		boolean rds = requestedDimmState();
+    		boolean cds = currentDimmState();
+    		long    lua = lastUserAction();
+
+    		Log.v(TAG, "ScreenDimmerTimerTask: rds=" + rds + ", cds=" + cds + ", lus=" + (System.currentTimeMillis() - lua));
+    		
+    		if( rds == cds )
+    			{
+    				// No new dimm request, do nothing more.
+    				return;
+    			}
+    		
+    		if( rds == false )
+    			{
+    				setCurrentDimmState( rds );
+    				setLastUserAction( System.currentTimeMillis() );
+    				
+    				// Switch user screen brightness on
+            mHandler.post(new Runnable() {
+              @Override
+              public void run() {
+              	  dimmScreen( -1.0f );
+                }
+              });
+            return;
+    			}
+    		
+    		if( rds == true && (System.currentTimeMillis() - lua) >= DIMM_SCREEN_TO )
+    			{
+    				setCurrentDimmState( rds );
+    				
+    				// Dimm the user screen
+            mHandler.post(new Runnable() {
+              @Override
+              public void run() {
+              	  dimmScreen( DIMM_SCREEN_VALUE );
+                }
+              });
+            return;
+    			}
+    	}
+   } // End of inner Class ScreenDimmerTimerTask
 
 } // End of Class
