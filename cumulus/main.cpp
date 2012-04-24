@@ -76,11 +76,11 @@ int main(int argc, char *argv[])
   // Nice trick to overwrite the HOME directory under Android ;-)
   qputenv ( "HOME", addDir.toLatin1().data() );
 
-  // Note, that first $HOME is overwritten otherwise the setting file
+  // Note, that first $HOME must be overwritten otherwise the setting file
   // is created in the internal data area!
   GeneralConfig::instance()->setDataRoot( addDir );
 
-  // Gets the internal data dir from out app
+  // Gets the internal data dir from our app
   QString appDir = jniGetAppDataDir();
 
   while (appDir.isEmpty())
