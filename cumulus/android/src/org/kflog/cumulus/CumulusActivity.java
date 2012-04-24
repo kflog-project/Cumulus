@@ -33,6 +33,7 @@ import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+//import android.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -64,37 +65,48 @@ import android.widget.Toast;
 import org.kde.necessitas.origo.QtActivity;
 
 import org.kflog.cumulus.BluetoothService;
+import org.kflog.cumulus.R;
 
 public class CumulusActivity extends QtActivity
 {
   static final String                        TAG  = "Java#CumulusActivity";
   static final int               DIALOG_CLOSE_ID  = 0;
   static final int               DIALOG_MENU_ID   = 1;
-  static final int               DIALOG_CANCEL_ID = 2;
-  static final int               DIALOG_NO_SDCARD = 3;
-  static final int               DIALOG_ZIP_ERR   = 4;
-  static final int               DIALOG_GPS_ID    = 5;
-  static final int               DIALOG_BT_ID     = 6;
+  static final int               DIALOG_NO_SDCARD = 2;
+  static final int               DIALOG_ZIP_ERR   = 3;
+  static final int               DIALOG_GPS_ID    = 4;
+  static final int               DIALOG_BT_ID     = 5;
 
   static final int               MENU_SETUP       = 0;
   static final int               MENU_PREFLIGHT   = 1;
   static final int               MENU_QUIT        = 2;
-  
+
   static final int               REQUEST_ENABLE_BT = 99;
-  
+
   // After this time and no user activity or movement the screen is dimmed.
-  static final long              DIMM_SCREEN_TO      = 60000;
-  
-  // Screen dimm value
-  static final float              DIMM_SCREEN_VALUE  = 0.10f;
+  static final long              DIMM1_SCREEN_TO    = 120000;
+  static final long              DIMM2_SCREEN_TO    = 300000;
+
+  // Screen dimm values. Don't define a dimm value as zero. The application is
+  // destroyed then observed on Motorola Defy.
+  //
+  // The help describes the brightness values in the following way:
+  // This can be used to override the user's preferred brightness of the screen.
+  // A value of less than 0, the default, means to use the preferred screen
+  // brightness. 0 to 1 adjusts the brightness from dark to full bright.
+  static final float             DIMM1_SCREEN_VALUE = 0.10f;
+  static final float             DIMM2_SCREEN_VALUE = 0.01f;
+
+  // current screen brightness value
+  private float                  m_curScreenBrightness = -1.0f;
 
   // Flags used to handle screen dimming
   private boolean                m_currentDimmState   = false;
   private boolean                m_requestedDimmState = false;
-  
+
   // System time of last user action in ms
   private long                   m_lastUserAction = 0;
-  
+
   // Timer to handle screen dimming
   private Timer screenDimmTimer                   = null;
 
@@ -113,16 +125,16 @@ public class CumulusActivity extends QtActivity
   static private String          addDataPath      = "";
   static private Object          m_objectRef      = null;
   static private Object          m_ActivityMutex  = new Object();
-  
+
   // Used by the Bluetooth Service Handling
   private Set<BluetoothDevice>   m_pairedBtDevices = null;
   private String                 m_btMacArray[]    = null;
   private BluetoothService       m_btService       = null;
-  
+
   /**
    *  The Handler that gets information back from the BluetoothService
    */
-	private final Handler m_btHandler =
+  private final Handler m_btHandler =
     new Handler()
      {
        @Override
@@ -130,52 +142,52 @@ public class CumulusActivity extends QtActivity
          {
            switch (msg.what)
              {
-						 		case BluetoothService.MESSAGE_STATE_CHANGE:
-							 
-  								 Log.i( TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1 );
+                case BluetoothService.MESSAGE_STATE_CHANGE:
 
-    							 switch (msg.arg1)
-    								 {
-      								 case BluetoothService.STATE_CONNECTED:
-      									 nativeGpsStatus(1);
-      									 break;
-      									 
-      								 case BluetoothService.STATE_CONNECTING:
-      									 break;
-      									 
-      								 case BluetoothService.STATE_LISTEN:
-      									 break;
-      									 
-      								 case BluetoothService.STATE_NONE:
-      									 nativeGpsStatus(0);
-       									 break;
-    								 }
-							 break;
-							 
+                   Log.i( TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1 );
+
+                   switch (msg.arg1)
+                     {
+                       case BluetoothService.STATE_CONNECTED:
+                         nativeGpsStatus(1);
+                         break;
+
+                       case BluetoothService.STATE_CONNECTING:
+                         break;
+
+                       case BluetoothService.STATE_LISTEN:
+                         break;
+
+                       case BluetoothService.STATE_NONE:
+                         nativeGpsStatus(0);
+                         break;
+                     }
+               break;
+
 						 case BluetoothService.MESSAGE_WRITE:
 							 break;
-							 
+
 						 case BluetoothService.MESSAGE_READ:
 							 break;
-							 
+
 						 case BluetoothService.MESSAGE_DEVICE_NAME:
 							 // shows the connected device's name
 							 Toast.makeText( getApplicationContext(),
-							                 "Connected to " +
-							                 msg.getData().getString(BluetoothService.DEVICE_NAME),
-							                 Toast.LENGTH_LONG )
-							     .show();
+															 getString(R.string.connected2) +
+															 msg.getData().getString(BluetoothService.DEVICE_NAME),
+															 Toast.LENGTH_LONG )
+									 .show();
 							 break;
-							 
+
 						 case BluetoothService.MESSAGE_TOAST:
 							 Toast.makeText( getApplicationContext(),
-							                 msg.getData().getString(BluetoothService.TOAST),
-							                 Toast.LENGTH_LONG )
-							      .show();
+															 msg.getData().getString(BluetoothService.TOAST),
+															 Toast.LENGTH_LONG )
+										.show();
 							 break;
 						 }
 				 }
-     };
+		 };
 
   // Native C++ functions
   public static native void nativeGpsFix( double latitude,
@@ -198,10 +210,10 @@ public class CumulusActivity extends QtActivity
   private static Object getObjectRef()
     {
       // Log.d(TAG, "getObjectRef is called" );
-    	synchronized (m_ActivityMutex)
-      	{
-      		return m_objectRef;
-      	}
+      synchronized (m_ActivityMutex)
+        {
+          return m_objectRef;
+        }
     }
 
   @Override
@@ -209,10 +221,10 @@ public class CumulusActivity extends QtActivity
   {
     Log.d(TAG, "onCreate Entry" );
 
-  	synchronized (m_ActivityMutex)
-    	{
-    		m_objectRef = this;
-    	}
+    synchronized (m_ActivityMutex)
+      {
+        m_objectRef = this;
+      }
 
     super.onCreate( savedInstanceState );
 
@@ -308,10 +320,10 @@ public class CumulusActivity extends QtActivity
 
     Window w = getWindow();
     w.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-    
+
     // Switch the screen permanently on
     w.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    
+
     apl = new AsyncPlayer("alarm_player");
     npl = new AsyncPlayer("notification_player");
 
@@ -327,8 +339,8 @@ public class CumulusActivity extends QtActivity
           {
             public void onNmeaReceived( long timestamp, String nmea )
               {
-              	nmeaIsReceived = true;
-            	
+                nmeaIsReceived = true;
+
                 if( gpsEnabled )
                   {
                     // Forward GPS data only, if user has enabled that.
@@ -341,14 +353,14 @@ public class CumulusActivity extends QtActivity
           {
             @Override
             public void onLocationChanged(Location loc)
-            {             
+            {
               if( gpsEnabled == true && nmeaIsReceived == false )
               {
-            	 // If the GPS device do not deliver raw NMEA sentences, we
-            	 // forward these GPS data which is provided here. Otherwise
-            	 // our application gets no GPS data.
+               // If the GPS device do not deliver raw NMEA sentences, we
+               // forward these GPS data which is provided here. Otherwise
+               // our application gets no GPS data.
                  nativeGpsFix( loc.getLatitude(), loc.getLongitude(),
-                		           loc.getAltitude(),
+                               loc.getAltitude(),
                                loc.getSpeed(), loc.getBearing(),
                                loc.getAccuracy(), loc.getTime());
                }
@@ -432,39 +444,38 @@ public class CumulusActivity extends QtActivity
 
   @Override
   protected void onStart()
-  	{
-  		Log.d(TAG, "onStart()" );
+    {
+      Log.d(TAG, "onStart()" );
       super.onStart();
-  	}
-  
+    }
+
   @Override
   protected void onResume()
-  	{
-  		Log.d(TAG, "onResume()" );
+    {
+      Log.d(TAG, "onResume()" );
       super.onResume();
-      
+
       // Switch user screen brightness on
       switchOffScreenDimming();
-      
+
       if( screenDimmTimer == null )
-      	{
-      		Log.d(TAG, "onResume(): new screenDimmTimer is activated" );
-      		screenDimmTimer = new Timer();
+        {
+          // Log.d(TAG, "onResume(): new screenDimmTimer is activated" );
+          screenDimmTimer = new Timer();
           TimerTask dimmTask = new ScreenDimmerTimerTask();
           screenDimmTimer.scheduleAtFixedRate(dimmTask, 10000, 10000);
-      	}
+        }
      }
 
   @Override
   protected void onPause()
-  	{
-  		Log.d(TAG, "onPause()" );
+    {
+      Log.d(TAG, "onPause()" );
       super.onPause();
-      
-  		Log.d(TAG, "onPause(): cancel screenDimmTimer" );
-  		screenDimmTimer.cancel();
-  		screenDimmTimer = null;
-  	}
+
+      screenDimmTimer.cancel();
+      screenDimmTimer = null;
+    }
 
   @Override
   protected void onDestroy()
@@ -476,12 +487,12 @@ public class CumulusActivity extends QtActivity
           lm.removeNmeaListener(nl);
           lm.removeUpdates(ll);
         }
-      
+
       if( m_btService != null )
-      	{
-      		// terminate all BT threads
-      		m_btService.stop();
-      	}
+        {
+          // terminate all BT threads
+          m_btService.stop();
+        }
 
       // call super class
       super.onDestroy();
@@ -516,7 +527,7 @@ public class CumulusActivity extends QtActivity
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event)
 	{
-		
+
 		// System.out.println("QtMain.onKeyUp, key released: "+event.toString());
 		if( keyCode == KeyEvent.KEYCODE_BACK )
 			{
@@ -525,14 +536,14 @@ public class CumulusActivity extends QtActivity
 
     return super.onKeyUp(keyCode, event);
   }
-	
+
   @Override
   public void onUserInteraction()
   {
-  	Log.v("Cumulus#Java", "onUserInteraction()");
-  	
-  	switchOffScreenDimming();
-  	super.onUserInteraction();
+    // Log.v(TAG, "onUserInteraction()");
+
+    switchOffScreenDimming();
+    super.onUserInteraction();
   }
 
 	protected Dialog onCreateDialog(int id)
@@ -544,14 +555,14 @@ public class CumulusActivity extends QtActivity
 		switch(id)
 		{
 			case DIALOG_CLOSE_ID:
-				builder.setMessage("Do you really want to close Cumulus?")
+				builder.setMessage(getString(R.string.reallyClose))
 							 .setCancelable(false)
-							 .setPositiveButton( "Ok", new DialogInterface.OnClickListener() {
+							 .setPositiveButton( getString(android.R.string.yes), new DialogInterface.OnClickListener() {
 																		public void onClick(DialogInterface dialog, int id) {
 																								CumulusActivity.this.finish();
 																		}
 																	})
-							 .setNegativeButton(" Cancel", new DialogInterface.OnClickListener() {
+							 .setNegativeButton( getString(android.R.string.no), new DialogInterface.OnClickListener() {
 																		public void onClick(DialogInterface dialog, int id) {
 																			dialog.cancel();
 																		}
@@ -561,17 +572,21 @@ public class CumulusActivity extends QtActivity
         break;
 
 		case DIALOG_MENU_ID:
-			CharSequence[] m_items = {"General Setup", "Preflight Setup", "Enable GPS", "GPS Status", "Quit"};
+			CharSequence[] m_items = { getString(R.string.setupGeneral),
+																 getString(R.string.setupPreFlight),
+																 getString(R.string.gpsOn),
+																 getString(R.string.gpsStatus),
+																 getString(R.string.quit) };
 
 			if (gpsEnabled)
 			{
-				m_items[2] = "Disable GPS";
+				m_items[2] = getString(R.string.gpsOff);
 			}
 
-			builder.setTitle("Main Menu");
+			builder.setTitle(getString(R.string.mainMenu));
 			builder.setItems(m_items, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
-					
+
 					switch(item) {
 					case 0:
 						nativeKeypress((char)25);
@@ -595,25 +610,10 @@ public class CumulusActivity extends QtActivity
 			alert = builder.create();
 			break;
 
-		case DIALOG_CANCEL_ID:
-			builder.setMessage("The Cumulus data directory on the storage card " +
-					"seems to be missing.\nCheck if the storage is mounted or if you " +
-					"have the minimum data package installed.\n\nFor more information " +
-					"visit\ndraisberghof.de/android/cumulus\n\nThe program will now close.")
-					.setCancelable(false)
-					.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-										 CumulusActivity.this.finish();
-				}
-			});
-			alert = builder.create();
-			break;
-
 		case DIALOG_NO_SDCARD:
-			builder.setMessage("Cumulus needs a sdcard for data storing!\n" +
-												 "Please insert a sdcard and mount it.")
+			builder.setMessage( getString(R.string.sdcardNeeded) )
 					.setCancelable(false)
-					.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 										 CumulusActivity.this.finish();
 				}
@@ -622,9 +622,9 @@ public class CumulusActivity extends QtActivity
 			break;
 
 		case DIALOG_ZIP_ERR:
-			builder.setMessage("Cumulus cannot unzip its data on the sdcard!")
+			builder.setMessage( getString(R.string.errorUnzip) )
 						 .setCancelable(false)
-						 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+						 .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener()
 							 {
 								 public void onClick(DialogInterface dialog, int id)
 									 {
@@ -635,47 +635,47 @@ public class CumulusActivity extends QtActivity
 			break;
 
 		case DIALOG_GPS_ID:
-			CharSequence[] l_gitems = {"Internal GPS", "Bluetooth GPS"};
+			CharSequence[] l_gitems = {getString(R.string.gpsInternal), getString(R.string.gpsBluetooth)};
 
-			builder.setTitle("GPS Menu");
+			builder.setTitle(getString(R.string.gpsMenu));
 			builder.setItems(l_gitems, new DialogInterface.OnClickListener()
 				{
-  				public void onClick(DialogInterface dialog, int item)
-  					{
-    					switch(item)
-    					{
-      					case 0:
-      						enableInternalGps( true );
-      						break;
-      					case 1:
-      						enableBtGps( true );
-      						break;
-  					  }
-				    }
-			  });
+					public void onClick(DialogInterface dialog, int item)
+						{
+							switch(item)
+							{
+								case 0:
+									enableInternalGps( true );
+									break;
+								case 1:
+									enableBtGps( true );
+									break;
+							}
+						}
+				});
 			alert = builder.create();
 			break;
 
 		case DIALOG_BT_ID:
-			
+
 			if( m_pairedBtDevices == null || m_pairedBtDevices.size() == 0 )
 				{
 					return null;
 				}
-			
-			builder.setTitle("GPS BT Menu");
-			
+
+			builder.setTitle(getString(R.string.gpsBtMenu));
+
 			CharSequence[] l_bt_items = new CharSequence[m_pairedBtDevices.size()];
 			m_btMacArray = new String[m_pairedBtDevices.size()];
-			
+
 			int idx = 0;
-			
+
 			// Loop through paired devices
 			for( BluetoothDevice device : m_pairedBtDevices )
 				{
-					Log.v("Cumulus#Java", "chooseBtGps(): " + device.getName() + "="
-					      + device.getAddress());
-					
+					Log.v(TAG, "chooseBtGps(): " + device.getName() + "="
+								+ device.getAddress());
+
 					l_bt_items[idx]   = device.getName() + " (" + device.getAddress() + ")";
 					m_btMacArray[idx] = device.getAddress();
 					idx++;
@@ -683,20 +683,20 @@ public class CumulusActivity extends QtActivity
 
 			builder.setItems(l_bt_items, new DialogInterface.OnClickListener()
 				{
-  				public void onClick(DialogInterface dialog, int item)
-  					{
-  						removeDialog(DIALOG_BT_ID);
-  						
-  						// Fetch MAC address of clicked item
-  						if( m_btMacArray != null )
-  							{
-  								connect2BtDevice( m_btMacArray[item] );
-  							}
-  					}
-			  });
-			alert = builder.create();
-			break;
-			
+					public void onClick(DialogInterface dialog, int item)
+						{
+							removeDialog(DIALOG_BT_ID);
+
+              // Fetch MAC address of clicked item
+              if( m_btMacArray != null )
+                {
+                  connect2BtDevice( m_btMacArray[item] );
+                }
+            }
+        });
+      alert = builder.create();
+      break;
+
 		default:
 			return super.onCreateDialog(id);
 		}
@@ -704,7 +704,7 @@ public class CumulusActivity extends QtActivity
 		return alert;
 	}
 
-	synchronized void playSound(int stream, String soundName)
+  void playSound(int stream, String soundName)
   {
     Uri sf = Uri.parse("file://" + getAddDataDir() + File.separatorChar + "sounds" + File.separatorChar + soundName);
 
@@ -719,29 +719,34 @@ public class CumulusActivity extends QtActivity
         apl.play(this.getApplicationContext(), sf, false, stream);
       }
    }
-  
+
   synchronized private void dimmScreen( float value )
-  	{
-  		WindowManager.LayoutParams lp = getWindow().getAttributes();
-  		lp.screenBrightness = value;
-		  getWindow().setAttributes(lp);
-  	}
+    {
+      // Log.v(TAG, "dimmScreen(" + value  + ")");
+
+      WindowManager.LayoutParams lp = getWindow().getAttributes();
+
+      if( lp.screenBrightness != value )
+        {
+          lp.screenBrightness = value;
+          getWindow().setAttributes( lp );
+        }
+
+      setCurScreenBrightness( value );
+    }
 
   /**
-   * This method is called by native code to handle the screen dimming.
-   * 
+   * This method is called by the native code to handle the screen dimming.
+   *
    * @param newState true means dimm the screen, false means bright the screen
    */
   void dimmScreen( boolean newState )
-  	{
-  		Log.v("Cumulus#Java", "dimmScreen(" + newState  + ")");
-  		
-  		synchronized( CumulusActivity.this )
-  			{
-  				// save requested dimm state from C++ API side.
-  				m_requestedDimmState = newState;
-  			}
-  	}
+    {
+      // Log.v(TAG, "dimmScreen(" + newState  + ")");
+
+			// save requested dimm state from C++ API side.
+			setRequestedDimmState( newState );
+		}
 
   String getAppDataDir()
   {
@@ -762,48 +767,48 @@ public class CumulusActivity extends QtActivity
 	private void toggleGps()
 	{
 		removeDialog(DIALOG_MENU_ID);
-		
+
 		BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-		
+
 		// As next ask which GPS device shall be used. Possibilities are the internal GPS
 		// device or connected BT devices.
-    if( lm == null || mBtAdapter == null )
-      {
-        // No location service available. Do nothing otherwise an exception is raised.
-        Toast.makeText(this, "No GPS receiver available", Toast.LENGTH_SHORT).show();
-        gpsEnabled = false;
-        return;
-      }
+		if( lm == null || mBtAdapter == null )
+			{
+				// No location service available. Do nothing otherwise an exception is raised.
+				Toast.makeText(this, getString(R.string.gpsDeviceNo), Toast.LENGTH_SHORT).show();
+				gpsEnabled = false;
+				return;
+			}
 
     if( gpsEnabled == true )
       {
-        Log.i("Cumulus#Java", "Disable GPS");
+        Log.i(TAG, "Disable GPS");
         nativeGpsStatus(0);
         gpsEnabled = false;
-        
+
         // Lock, if Bt Service is used. It will be terminated then.
         if( m_btService != null )
-        	{
-        		m_btService.stop();
-        		m_btService = null;
-        	}
+          {
+            m_btService.stop();
+            m_btService = null;
+          }
       }
     else
       {
-        Log.i("Cumulus#Java", "Enable GPS");
-        
+        Log.i(TAG, "Enable GPS");
+
         if( lm != null && mBtAdapter != null )
-        	{
-        		showDialog(DIALOG_GPS_ID);
-        	}
+          {
+            showDialog(DIALOG_GPS_ID);
+          }
         else if( lm != null )
-        	{
-        		enableInternalGps( false );
-        	}
+          {
+            enableInternalGps( false );
+          }
         else if( mBtAdapter != null )
-        	{
-        		enableBtGps( false );
-        	}
+          {
+            enableBtGps( false );
+          }
       }
   }
 
@@ -813,7 +818,7 @@ public class CumulusActivity extends QtActivity
 				{
 					removeDialog(DIALOG_GPS_ID);
 				}
-			
+
       if( lm.isProviderEnabled(LocationManager.GPS_PROVIDER) == false )
         {
           showGPSDisabledAlertToUser();
@@ -823,7 +828,7 @@ public class CumulusActivity extends QtActivity
           nativeGpsStatus(1);
           gpsEnabled = true;
         }
-		}
+    }
 
 	private void enableBtGps( boolean clearDialog )
 		{
@@ -831,7 +836,7 @@ public class CumulusActivity extends QtActivity
 				{
 					removeDialog(DIALOG_GPS_ID);
 				}
-			
+
 			if (! BluetoothAdapter.getDefaultAdapter().isEnabled())
 				{
 					Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -858,25 +863,25 @@ public class CumulusActivity extends QtActivity
 					m_pairedBtDevices = null;
 				}
 		}
-	
+
 	private void connect2BtDevice( String macAddress )
 		{
-			Log.i( "Cumulus#Java", "connectBtDevice " + macAddress );
-			
+			Log.i( TAG, "connectBtDevice " + macAddress );
+
 			if( m_btService == null )
 				{
 					m_btService = new BluetoothService( this, m_btHandler );
 				}
-			
-      final BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(macAddress);
-      
+
+			final BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(macAddress);
+
       /* Opens a connection to the selected BT device. */
       m_btService.connect( device );
-      
+
       // set the GPS status to enabled
       gpsEnabled = true;
-		}
-	
+    }
+
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 		{
 			if( requestCode == REQUEST_ENABLE_BT )
@@ -885,7 +890,7 @@ public class CumulusActivity extends QtActivity
 						{
 							createBtGpsDeviceDialog();
 						}
-					
+
 					return;
 				}
 
@@ -897,9 +902,9 @@ public class CumulusActivity extends QtActivity
       AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
       alertDialogBuilder
-        .setMessage("GPS is disabled in your device. Would you like to enable it?")
+        .setMessage(getString(R.string.gpsQueryEnable))
         .setCancelable(false)
-        .setPositiveButton( "Goto Settings Page To Enable GPS",
+        .setPositiveButton( getString(R.string.gpsGoto),
                             new DialogInterface.OnClickListener()
                               {
                                 public void onClick( DialogInterface dialog, int id )
@@ -910,7 +915,7 @@ public class CumulusActivity extends QtActivity
                               }
                           );
 
-      alertDialogBuilder.setNegativeButton( "Cancel",
+      alertDialogBuilder.setNegativeButton( getString(android.R.string.cancel),
                                             new DialogInterface.OnClickListener()
                                               {
                                                 public void onClick(DialogInterface dialog, int id)
@@ -1093,100 +1098,124 @@ public class CumulusActivity extends QtActivity
   }
 
   private void switchOffScreenDimming()
-  	{
+    {
       // Switch user screen brightness on
       dimmScreen( -1.0f );
       setCurrentDimmState( false );
       setLastUserAction( System.currentTimeMillis() );
-  	}
-  
-	synchronized private boolean currentDimmState()
-  	{
-  		return m_currentDimmState;
-  	}
+    }
 
-	synchronized private void setCurrentDimmState(boolean currentDimmState)
-  	{
-  		this.m_currentDimmState = currentDimmState;
-  	}
+  synchronized private boolean currentDimmState()
+    {
+      return m_currentDimmState;
+    }
 
-	synchronized private boolean requestedDimmState()
-  	{
-  		return m_requestedDimmState;
-  	}
+  synchronized private void setCurrentDimmState(boolean currentDimmState)
+    {
+      this.m_currentDimmState = currentDimmState;
+    }
 
-	synchronized private void setRequestedDimmState(boolean requestedDimmState)
-  	{
-  		this.m_requestedDimmState = requestedDimmState;
-  	}
+  synchronized private boolean requestedDimmState()
+    {
+      return m_requestedDimmState;
+    }
 
-	synchronized private long lastUserAction()
-  	{
-  		return m_lastUserAction;
-  	}
+  synchronized private void setRequestedDimmState(boolean requestedDimmState)
+    {
+      this.m_requestedDimmState = requestedDimmState;
+    }
 
-	synchronized private void setLastUserAction(long lastUserAction)
-  	{
-  		this.m_lastUserAction = lastUserAction;
-  	}
+  synchronized private long lastUserAction()
+    {
+      return m_lastUserAction;
+    }
+
+  synchronized private void setLastUserAction(long lastUserAction)
+    {
+      this.m_lastUserAction = lastUserAction;
+    }
+
+  private synchronized float curScreenBrightness()
+    {
+      return m_curScreenBrightness;
+    }
+
+  private synchronized void setCurScreenBrightness(float screenBrightness)
+    {
+      this.m_curScreenBrightness = screenBrightness;
+    }
 
   private class ScreenDimmerTimerTask extends TimerTask
   {
     private Handler mHandler;
 
     public ScreenDimmerTimerTask()
-    	{
+      {
         // Creates a handler in the calling thread in which the timer action is
-    		// later executed. Only the Activity thread can execute GUI actions!
-    		mHandler = new Handler();
+        // later executed. Only the Activity thread can execute GUI actions!
+        mHandler = new Handler();
       }
 
     @Override
     public void run()
-    	{
-    		// This thread uses the Handler of the creating thread to execute the
-    		// necessary GUI actions there.
-    		boolean rds = requestedDimmState();
-    		boolean cds = currentDimmState();
-    		long    lua = lastUserAction();
+      {
+        // This thread uses the Handler of the creating thread to execute the
+        // necessary GUI actions there.
+        boolean rds = requestedDimmState();
+        boolean cds = currentDimmState();
+        long    lua = lastUserAction();
 
-    		Log.v(TAG, "ScreenDimmerTimerTask: rds=" + rds + ", cds=" + cds + ", lus=" + (System.currentTimeMillis() - lua));
-    		
-    		if( rds == cds )
-    			{
-    				// No new dimm request, do nothing more.
-    				return;
-    			}
-    		
-    		if( rds == false )
-    			{
-    				setCurrentDimmState( rds );
-    				setLastUserAction( System.currentTimeMillis() );
-    				
-    				// Switch user screen brightness on
+        // Log.v(TAG, "ScreenDimmerTimerTask: rds=" + rds + ", cds=" + cds + ", lus=" + (System.currentTimeMillis() - lua));
+
+        if( cds == true && curScreenBrightness() == DIMM1_SCREEN_VALUE &&
+            (System.currentTimeMillis() - lua) >= DIMM2_SCREEN_TO )
+          {
+            // Activate second dimm state of screen.
+             mHandler.post(new Runnable() {
+              @Override
+              public void run() {
+                  dimmScreen( DIMM2_SCREEN_VALUE );
+                }
+              });
+
+            return;
+          }
+
+        if( rds == cds )
+          {
+            // No new dimm request, do nothing more.
+            return;
+          }
+
+        if( rds == false )
+          {
+            setCurrentDimmState( rds );
+            setLastUserAction( System.currentTimeMillis() );
+
+            // Switch user screen brightness on
             mHandler.post(new Runnable() {
               @Override
               public void run() {
-              	  dimmScreen( -1.0f );
+                  dimmScreen( -1.0f );
                 }
               });
             return;
-    			}
-    		
-    		if( rds == true && (System.currentTimeMillis() - lua) >= DIMM_SCREEN_TO )
-    			{
-    				setCurrentDimmState( rds );
-    				
-    				// Dimm the user screen
+          }
+
+        if( rds == true && (System.currentTimeMillis() - lua) >= DIMM1_SCREEN_TO )
+          {
+            setCurrentDimmState( rds );
+
+            // Activate first dimm state of screen.
             mHandler.post(new Runnable() {
               @Override
               public void run() {
-              	  dimmScreen( DIMM_SCREEN_VALUE );
+                  dimmScreen( DIMM1_SCREEN_VALUE );
                 }
               });
             return;
-    			}
-    	}
+          }
+      }
    } // End of inner Class ScreenDimmerTimerTask
 
 } // End of Class

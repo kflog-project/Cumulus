@@ -1,8 +1,29 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- Cumulus string definitions -->
+<!-- Cumulus common string definitions -->
 <!-- $Id$ -->
+<!-- For translation handling see here: http://developer.android.com/resources/tutorials/localization/index.html -->
 <resources>
-    <string name="description">Air navigation aid for glider pilots and others</string>
     <string name="appDataFile">appData.zip</string>
-    <string name="addDataFile">addData.zip</string>
+    <string name="addDataFile">addData.zip</string>   
+    <string name="btError1">Unable to connect to BT device</string>
+    <string name="btError2">Connection to BT device was lost!</string>  
+    <string name="connected2">connected to </string>
+    <string name="description">An air navigation aid for glider pilots and others</string>
+    <string name="errorUnzip">Cumulus cannot unzip its data on the sdcard!</string>
+    <string name="gpsDeviceNo">No GPS receiver available!</string>
+    <string name="gpsGoto">Goto Settings Page to enable GPS receiver</string>
+    <string name="gpsBluetooth">Bluetooth GPS</string>
+    <string name="gpsInternal">Internal GPS</string>
+    <string name="gpsBtMenu">GPS BT Menu</string>
+    <string name="gpsMenu">GPS Menu</string>
+    <string name="gpsOff">GPS off</string>
+    <string name="gpsOn">GPS on</string>
+    <string name="gpsQueryEnable">The GPS is disabled in your device. Would you like to enable it?</string>
+    <string name="gpsStatus">GPS Status</string>
+    <string name="mainMenu">Main Menu</string>
+    <string name="quit">Quit</string>
+    <string name="reallyClose">Do you really want to close Cumulus?</string>
+    <string name="sdcardNeeded">Cumulus needs a sdcard for data storing!\nPlease insert a sdcard and mount it.</string>
+    <string name="setupGeneral">General Setup</string>
+    <string name="setupPreFlight">Preflight Setup</string>        
 </resources>

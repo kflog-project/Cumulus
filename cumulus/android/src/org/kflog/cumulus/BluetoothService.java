@@ -56,6 +56,7 @@ import android.os.Message;
 import android.util.Log;
 
 import org.kflog.cumulus.CumulusActivity;
+import org.kflog.cumulus.R;
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -87,6 +88,7 @@ public class BluetoothService
   public static final String TOAST = "toast";
 
   // Member fields
+  private final Context mContext;
   private final BluetoothAdapter mAdapter;
   private final Handler mHandler;
   private AcceptThread mAcceptThread             = null;
@@ -115,6 +117,7 @@ public class BluetoothService
    */
   public BluetoothService(Context context, Handler handler)
 		{
+			mContext = context;
 			mAdapter = BluetoothAdapter.getDefaultAdapter();
 			mState = STATE_NONE;
 			mHandler = handler;
@@ -354,7 +357,7 @@ public class BluetoothService
 			// Send a failure message back to the Activity
 			Message msg = mHandler.obtainMessage(BluetoothService.MESSAGE_TOAST);
 			Bundle bundle = new Bundle();
-			bundle.putString(BluetoothService.TOAST, "Unable to connect to BT device");
+			bundle.putString(BluetoothService.TOAST, mContext.getString(R.string.btError1));
 			msg.setData(bundle);
 			mHandler.sendMessage(msg);
 
@@ -370,7 +373,7 @@ public class BluetoothService
 			// Send a failure message back to the Activity
 			Message msg = mHandler.obtainMessage(BluetoothService.MESSAGE_TOAST);
 			Bundle bundle = new Bundle();
-			bundle.putString(BluetoothService.TOAST, "Device connection was lost");
+			bundle.putString(BluetoothService.TOAST, mContext.getString(R.string.btError2));
 			msg.setData(bundle);
 			mHandler.sendMessage(msg);
 
