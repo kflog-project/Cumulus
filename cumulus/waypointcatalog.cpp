@@ -1161,6 +1161,10 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
         case 10:
           wp.type = BaseMapElement::Vor;
           break;
+        case 11:
+          // Mapped to thermal hotspot defined by http://glidinghotspots.eu/
+          wp.type = BaseMapElement::Thermal;
+          break;
         default:
           wp.type = BaseMapElement::Landmark;
           break;
