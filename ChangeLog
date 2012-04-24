@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2012-04-24 AP: German translation of Java part added for Android.
+
+[+] 2012-04-24 AP: Screen saver control added for Android.
+
 [o] 2012-04-19 AP: Font handling optimized for different hardware devices.
 
 [o] 2012-04-19 AP: Landmark pixmap enlarged from 8x8 pixels to 10x10 pixels
