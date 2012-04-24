@@ -340,8 +340,6 @@ OTHER_FILES += \
     android/src/org/kde/necessitas/origo/QtApplication.java \
     android/assets/appData.zip \
     android/assets/addData.zip \
-    android/src/org/kflog/cumulus8/GPSReceiver.java \
-    android/src/org/kflog/cumulus8/CumulusActivity.java \
     android/AndroidManifest.xml \
     android/res/drawable-hdpi/icon.png \
     android/res/values-ro/strings.xml \
@@ -377,7 +375,8 @@ OTHER_FILES += \
     android/src/org/kflog/cumulus/CumulusActivity.java \
     android/src/org/kflog/cumulus/BluetoothService.java \
     android/version.xml \
-    android/res/values/cumulus.xml
+    android/res/values/cumulus.xml \
+    android/res/values-de/cumulus.xml
 
 LIBS += -lstdc++
 
