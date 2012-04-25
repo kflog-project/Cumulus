@@ -60,7 +60,7 @@
         <location filename="airfieldlistview.cpp" line="186"/>
         <source>&lt;br&gt;Change can take&lt;br&gt;a few seconds and more.</source>
         <oldsource>&lt;br&gt;Change can take&lt;br&gt;a few seconds.</oldsource>
-        <translation>&lt;br&gt;Wechsel kann einige&lt;br&gt;Sekunden und mehr dauern.</translation>
+        <translation>&lt;br&gt;Wechsel kann einige Sekunden und mehr dauern.</translation>
     </message>
 </context>
 <context>
@@ -536,12 +536,12 @@
     <message>
         <location filename="glidereditor.cpp" line="74"/>
         <source>Glider Pool:</source>
-        <translation>Flieger Pool:</translation>
+        <translation>Flugzeug Pool:</translation>
     </message>
     <message>
         <location filename="glidereditor.cpp" line="82"/>
         <source>Glider Type:</source>
-        <translation>Flieger Type:</translation>
+        <translation>Flugzeug Typ:</translation>
     </message>
     <message>
         <location filename="glidereditor.cpp" line="741"/>
@@ -742,7 +742,7 @@
     <message>
         <location filename="helpbrowser.cpp" line="135"/>
         <source>Missing help file</source>
-        <translation>Hilfe Datei fehlt</translation>
+        <translation>Keine Hilfedaten</translation>
     </message>
     <message>
         <location filename="helpbrowser.cpp" line="136"/>
@@ -860,7 +860,7 @@
         <location filename="mainwindow.cpp" line="489"/>
         <location filename="mainwindow.cpp" line="1160"/>
         <source>Waypoints</source>
-        <translation>Wegpunkt</translation>
+        <translation>Wegpunkte</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="490"/>
@@ -974,18 +974,18 @@
         <location filename="mainwindow.cpp" line="1116"/>
         <location filename="mainwindow.cpp" line="1203"/>
         <source>Zoom in</source>
-        <translation></translation>
+        <translation>Vergrößern</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1124"/>
         <location filename="mainwindow.cpp" line="1213"/>
         <source>Zoom out</source>
-        <translation></translation>
+        <translation>Verkleinern</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1131"/>
         <source>Toggle menu</source>
-        <translation></translation>
+        <translation>Menüschalter</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1141"/>
@@ -1147,7 +1147,7 @@
         <location filename="mainwindow.cpp" line="2069"/>
         <source>&lt;hml&gt;This program comes with&lt;p&gt;&lt;b&gt;ABSOLUTELY NO WARRANTY!&lt;/b&gt;&lt;/p&gt;Do not rely on this software program as your primary source of navigation. You as user are responsible for using official aeronautical charts and proper methods for safe navigation. The information presented by this application may be outdated or incorrect.&lt;p&gt;&lt;b&gt;Don&apos;t use this program if you cannot accept the disclaimer!&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <oldsource>&lt;hml&gt;This program comes with&lt;p&gt;&lt;b&gt;ABSOLUTELY NO WARRANTY!&lt;/b&gt;&lt;/p&gt;Do not rely on this software program as your primary source of navigation. You as user are responsible for using official aeronautical charts and proper methods for safe navigation. The information presented in this software program may be outdated or incorrect.&lt;p&gt;&lt;b&gt;Don&apos;t use this program if you don&apos;t agree!&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</oldsource>
-        <translation>&lt;html&gt;Für dieses Programm wird&lt;p&gt;&lt;b&gt;keinerlei Garantie übernommen!&lt;/b&gt;&lt;/p&gt;Benutzen Sie diese Software nicht als Grundlage Ihrer primären Navigation. Als Benutzer sind Sie verpflichtet, behördlich zugelassene Luftfahrtkarten und zuverlässige Navigationsmethoden zu benutzen. Beachten Sie! Die durch dieses Programm dargestellten Informationen können veraltet oder auch falsch sein.&lt;p&gt;&lt;b&gt;Durch Benutzung dieses Programms, akzeptieren Sie die zuvor genannten Einschränkungen!&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;Für dieses Programm wird&lt;p&gt;&lt;b&gt;keinerlei Garantie übernommen!&lt;/b&gt;&lt;/p&gt;Benutzen Sie diese Software nicht als die Grundlage Ihrer primären Navigation. Als Benutzer sind Sie verpflichtet, behördlich zugelassene Luftfahrtkarten und zuverlässige Navigationsmethoden zu benutzen. Beachten Sie! Die durch dieses Programm dargestellten Informationen können veraltet oder auch falsch sein.&lt;p&gt;&lt;b&gt;Durch Benutzung dieses Programms, akzeptieren Sie die zuvor genannten Einschränkungen!&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="2102"/>
@@ -1163,7 +1163,7 @@
     <message>
         <location filename="mainwindow.cpp" line="2130"/>
         <source>created by remember action at </source>
-        <translation>Erzeugt durch Erinnerungsaktion am</translation>
+        <translation>Erzeugt durch Benutzer am</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="2230"/>
@@ -1989,12 +1989,12 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightwidget.cpp" line="184"/>
         <source>Replace current task?</source>
-        <translation>akt. Aufgabe ersetzen?</translation>
+        <translation>Akt. Aufgabe ersetzen?</translation>
     </message>
     <message>
         <location filename="preflightwidget.cpp" line="185"/>
         <source>&lt;html&gt;Do you want to replace the current task?&lt;br&gt;A selected target is reset to task start.&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Wollen Sie die akt. Aufgabe ersetzen?&lt;br&gt;Das akt. Ziel wird auf Beginn zurück gesetzt.&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;Akt. Aufgabe ersetzen?&lt;br&gt;Das markierte Ziel wird auf Aufgabenbeginn rückgesetzt.&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2526,7 +2526,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="mainwindow.cpp" line="322"/>
         <source>&lt;html&gt;This program comes with&lt;div align=&quot;center&quot;&gt;&lt;p&gt;&lt;b&gt;ABSOLUTELY NO WARRANTY!&lt;/b&gt;&lt;/p&gt;&lt;/div&gt;Do not rely on this software program as your primary source of navigation. You as user are responsible for using official aeronautical charts and proper methods for safe navigation. The information presented in this software program may be outdated or incorrect.&lt;br&gt;&lt;br&gt;&lt;div align=&quot;center&quot;&gt;&lt;b&gt;Do You accept these terms?&lt;/b&gt;&lt;/div&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Für dieses Programm wird&lt;div align=&quot;center&quot;&gt;&lt;p&gt;&lt;b&gt;keinerlei GARANTIE übernommen!&lt;/b&gt;&lt;/p&gt;&lt;/div&gt;Benutzen Sie diese Software nicht als Grundlage Ihrer primären Navigation. Als Benutzer sind Sie verpflichtet, behördlich zugelassene Luftfahrtkarten und zuverlässige Navigationsmethoden zu benutzen. Beachten Sie! Die durch dieses Programm dargestellten Informationen können veraltet oder auch falsch sein.&lt;br&gt;&lt;br&gt;&lt;div align=&quot;center&quot;&gt;&lt;b&gt;Akzeptieren Sie diese Bedingungen?&lt;/b&gt;&lt;/div&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;Für dieses Programm wird&lt;p&gt;&lt;b&gt;keinerlei Garantie übernommen!&lt;/b&gt;&lt;/p&gt;Benutzen Sie diese Software nicht als Grundlage Ihrer primären Navigation. Als Benutzer sind Sie verpflichtet, behördlich zugelassene Luftfahrtkarten und zuverlässige Navigationsmethoden zu benutzen. Beachten Sie! Die durch dieses Programm dargestellten Informationen können veraltet oder auch falsch sein.&lt;p&gt;&lt;b&gt;Akzeptieren Sie die zuvor genannten Einschränkungen?&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3312,7 +3312,6 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="settingspagemapsettings.cpp" line="63"/>
         <source>Plate Carrée</source>
-        <oldsource>Plate CarrÃ©e</oldsource>
         <translation></translation>
     </message>
     <message>
