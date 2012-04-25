@@ -10,6 +10,14 @@
 #
 ################################################################################
 
+# current Qt version
+QT_VERSION=4.8.1
+
+# directory of Qt translations
+QT_TL_DIR=/opt/qt$(QT_VERSION)/translations
+
+LRELEASE=/opt/qt$(QT_VERSION)/bin/lrelease
+
 # adapt install path to your needs if necessary
 INSTALL_ROOT  = .Android
 APP_DATA_ROOT = $(INSTALL_ROOT)/.appData
@@ -68,6 +76,10 @@ addData:
 	@install -d $(ADD_DATA_ROOT)/help/de
 	@install -d $(ADD_DATA_ROOT)/locale/de
 	@install -d $(ADD_DATA_ROOT)/sounds
+	@$(LRELEASE) -compress -nounfinished -removeidentical cumulus/cumulus_android_de.ts \
+	          -qm $(ADD_DATA_ROOT)/locale/de/cumulus_de.qm
+	@chmod 644 $(ADD_DATA_ROOT)/locale/de/cumulus_de.qm
+	@install --mode=644 $(QT_TL_DIR)/qt_de.qm $(ADD_DATA_ROOT)/locale/de/qt_de.qm
 	@install --mode=644 help/en/*.html help/en/cumulus.png $(ADD_DATA_ROOT)/help/en
 	@install --mode=644 help/en/text.css $(ADD_DATA_ROOT)/help/en
 	@install --mode=644 help/de/*.html help/de/cumulus.png $(ADD_DATA_ROOT)/help/de
