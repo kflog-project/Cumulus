@@ -450,6 +450,13 @@ public class CumulusActivity extends QtActivity
     }
 
   @Override
+  protected void onRestart()
+    {
+      Log.d(TAG, "onRestart()" );
+      super.onRestart();
+    }
+
+  @Override
   protected void onResume()
     {
       Log.d(TAG, "onResume()" );
@@ -475,6 +482,13 @@ public class CumulusActivity extends QtActivity
 
       screenDimmTimer.cancel();
       screenDimmTimer = null;
+    }
+
+  @Override
+  protected void onStop()
+    {
+      Log.d(TAG, "onStop()" );
+      super.onStop();
     }
 
   @Override
