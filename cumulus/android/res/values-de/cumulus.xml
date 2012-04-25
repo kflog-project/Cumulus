@@ -20,6 +20,7 @@
     <string name="gpsQueryEnable">Das GPS ist deaktiviert in deinem Gerät. Möchtest du es aktivieren?</string>
     <string name="gpsStatus">GPS Status</string>
     <string name="mainMenu">Hauptmenü</string>
+    <string name="noDataFolder">Kann kein Datenverzeichnis für Cumulus auf der SD Karte anlegen!</string>
     <string name="quit">Beenden</string>
     <string name="reallyClose">Willst du Cumulus wirklich beenden?</string>
     <string name="sdcardNeeded">Cumulus benötigt eine SD-Karte zum Daten speichern!\nBitte lege eine SD-Karte ein und mounte sie.</string>

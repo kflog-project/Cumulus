@@ -21,6 +21,7 @@
     <string name="gpsQueryEnable">The GPS is disabled in your device. Would you like to enable it?</string>
     <string name="gpsStatus">GPS Status</string>
     <string name="mainMenu">Main Menu</string>
+    <string name="noDataFolder">Cannnot create data folder for Cumulus on the SD card!</string> 
     <string name="quit">Quit</string>
     <string name="reallyClose">Do you really want to close Cumulus?</string>
     <string name="sdcardNeeded">Cumulus needs a sdcard for data storing!\nPlease insert a sdcard and mount it.</string>

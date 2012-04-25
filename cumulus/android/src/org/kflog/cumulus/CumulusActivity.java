@@ -69,13 +69,14 @@ import org.kflog.cumulus.R;
 
 public class CumulusActivity extends QtActivity
 {
-  static final String                        TAG  = "Java#CumulusActivity";
-  static final int               DIALOG_CLOSE_ID  = 0;
-  static final int               DIALOG_MENU_ID   = 1;
-  static final int               DIALOG_NO_SDCARD = 2;
-  static final int               DIALOG_ZIP_ERR   = 3;
-  static final int               DIALOG_GPS_ID    = 4;
-  static final int               DIALOG_BT_ID     = 5;
+  static final String                        TAG       = "Java#CumulusActivity";
+  static final int               DIALOG_CLOSE_ID       = 0;
+  static final int               DIALOG_MENU_ID        = 1;
+  static final int               DIALOG_NO_SDCARD      = 2;
+  static final int               DIALOG_ZIP_ERR        = 3;
+  static final int               DIALOG_GPS_ID         = 4;
+  static final int               DIALOG_BT_ID          = 5;
+  static final int               DIALOG_NO_DATA_FOLDER = 6;
 
   static final int               MENU_SETUP       = 0;
   static final int               MENU_PREFLIGHT   = 1;
@@ -244,6 +245,7 @@ public class CumulusActivity extends QtActivity
     // We can read and write the media
     dataFolderAvailable = true;
 
+    // We check, if our external data folder is available
     File addDataDir = new File(Environment.getExternalStorageDirectory(), "Cumulus");
 
     tmpString = addDataDir.getAbsolutePath();
@@ -252,42 +254,48 @@ public class CumulusActivity extends QtActivity
       {
         dataFolderAvailable = addDataDir.mkdir();
       }
+    
+    if( ! dataFolderAvailable )
+    	{
+        Log.d(TAG, "Cannot create folder Cumulus on the SD card!" );
+        showDialog(DIALOG_NO_DATA_FOLDER);
+        return;    		
+    	}
+ 
+    // We check the existence of different files
+    File helpFile   = new File( addDataDir.getAbsolutePath() + "/Cumulus/help/en/cumulus.html" );
+    File deFile     = new File( addDataDir.getAbsolutePath() + "/Cumulus/locate/de/cumulus_de.qm" );
+    File notifyFile = new File( addDataDir.getAbsolutePath() + "/Cumulus/sounds/Notity.wav" );
+    File alarmFile  = new File( addDataDir.getAbsolutePath() + "/Cumulus/sounds/Alarm.wav" );
 
-    if( dataFolderAvailable )
+    if( ! helpFile.exists()   || ! deFile.exists() ||
+    		! notifyFile.exists() || ! alarmFile.exists() )
       {
-        // check existence of help files
-        File helpFile   = new File( addDataDir.getAbsolutePath() + "/Cumulus/help/en/cumulus.html" );
-        File notifyFile = new File( addDataDir.getAbsolutePath() + "/Cumulus/sounds/Notity.wav" );
-        File alarmFile  = new File( addDataDir.getAbsolutePath() + "/Cumulus/sounds/Alarm.wav" );
+        // It seems there are some needed files not installed, do it again
+        boolean res = installAddData( addDataDir.getAbsolutePath(), getAssets() );
 
-        if( ! helpFile.exists() || ! notifyFile.exists() || ! alarmFile.exists() )
+        if( res == false )
           {
-            // It seems the some needed files are not installed, do it again.
-            boolean res = installAddData( addDataDir.getAbsolutePath(), getAssets() );
-
-            if( res == false )
-              {
-                showDialog(DIALOG_ZIP_ERR);
-                return;
-              }
+            showDialog(DIALOG_ZIP_ERR);
+            return;
           }
       }
 
-    // another thread is waiting for this info
+    // another thread on C++ side is waiting for this info
     synchronized(addDataPath)
     {
       addDataPath = tmpString;
     }
 
 		// Get the internal data directory for our App.
-	String appDataDir = getDir("Cumulus", MODE_PRIVATE ).getAbsolutePath();
+	  String appDataDir = getDir("Cumulus", MODE_PRIVATE ).getAbsolutePath();
 
-  // Check, if the internal data are already installed
-    int pvc =  getPackageVersionCode();
+    // Check, if the internal data are already installed
+    int pvc = getPackageVersionCode();
 
     File pvcFile = new File( appDataDir + "/pvc_" + String.valueOf(pvc) );
 
-    Log.d("PVC", pvcFile.getAbsolutePath());
+    Log.d(TAG, "PVC=" + pvcFile.getAbsolutePath());
 
     if (! pvcFile.exists() )
       {
@@ -302,15 +310,15 @@ public class CumulusActivity extends QtActivity
 
         try
           {
-            // Set an install marker file
+            // Store an install marker file
             OutputStream out = new FileOutputStream( pvcFile );
             out.close();
           }
         catch (Exception e)
           {
-            Log.e("AssetNotice", e.getMessage());
+            Log.e(TAG, "PVC file error: " + e.getMessage());
           }
-      }
+        }
 
     // another thread is waiting for this info
     synchronized(appDataPath)
@@ -331,7 +339,7 @@ public class CumulusActivity extends QtActivity
 
     if( lm == null )
       {
-        Log.d(TAG, "System said: LOCATION_SERVICE is null!" );
+        Log.w(TAG, "System said: LOCATION_SERVICE is null!" );
       }
     else
       {
@@ -634,6 +642,17 @@ public class CumulusActivity extends QtActivity
 			});
 			alert = builder.create();
 			break;
+			
+		case DIALOG_NO_DATA_FOLDER:
+			builder.setMessage( getString(R.string.noDataFolder) )
+					.setCancelable(false)
+					.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+										 CumulusActivity.this.finish();
+				}
+			});
+			alert = builder.create();
+			break;
 
 		case DIALOG_ZIP_ERR:
 			builder.setMessage( getString(R.string.errorUnzip) )
@@ -687,7 +706,7 @@ public class CumulusActivity extends QtActivity
 			// Loop through paired devices
 			for( BluetoothDevice device : m_pairedBtDevices )
 				{
-					Log.v(TAG, "chooseBtGps(): " + device.getName() + "="
+					Log.d(TAG, "chooseBtGps(): " + device.getName() + "="
 								+ device.getAddress());
 
 					l_bt_items[idx]   = device.getName() + " (" + device.getAddress() + ")";
