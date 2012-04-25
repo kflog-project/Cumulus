@@ -380,4 +380,4 @@ OTHER_FILES += \
 
 LIBS += -lstdc++
 
-TRANSLATIONS = cumulus_de.ts
+TRANSLATIONS = cumulus_android_de.ts
