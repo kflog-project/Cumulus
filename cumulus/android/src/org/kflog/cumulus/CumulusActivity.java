@@ -67,6 +67,22 @@ import org.kde.necessitas.origo.QtActivity;
 import org.kflog.cumulus.BluetoothService;
 import org.kflog.cumulus.R;
 
+/**
+ * @class CumulusActivity
+ * 
+ * @author Axel Pauli
+ * 
+ * @date 2012
+ * 
+ * @version $Id$
+ * 
+ * @short This class handles the Cumulus activity live cycle.
+ * 
+ * This class handles the Cumulus activity live cycle. It communicates via JNI with
+ * the Qt application part. The Qt application part is a C++ GUI based on the Qt
+ * SDK.
+ *
+ */
 public class CumulusActivity extends QtActivity
 {
   static final String                        TAG       = "Java#CumulusActivity";
@@ -262,16 +278,35 @@ public class CumulusActivity extends QtActivity
         return;    		
     	}
  
-    // We check the existence of different files
-    File helpFile   = new File( addDataDir.getAbsolutePath() + "/Cumulus/help/en/cumulus.html" );
-    File deFile     = new File( addDataDir.getAbsolutePath() + "/Cumulus/locate/de/cumulus_de.qm" );
-    File notifyFile = new File( addDataDir.getAbsolutePath() + "/Cumulus/sounds/Notity.wav" );
-    File alarmFile  = new File( addDataDir.getAbsolutePath() + "/Cumulus/sounds/Alarm.wav" );
+    // Check, if the external data are already installed. To check that, a special
+	  // file name is checked, which is created after data installation. The file name
+    // includes the package version, to ensure that with every new version the data
+    // are reinstalled.
+    File pvcAddFile = new File( addDataDir + "/pvc_" + String.valueOf(getPackageVersionCode()) );
 
-    if( ! helpFile.exists()   || ! deFile.exists() ||
-    		! notifyFile.exists() || ! alarmFile.exists() )
+    Log.d(TAG, "pvcAdd=" + pvcAddFile.getAbsolutePath());
+    
+    boolean doInstall = ! pvcAddFile.exists();
+    
+    if( doInstall == false )
+    	{
+        // We check the existence of different files
+        File helpFile   = new File( addDataDir.getAbsolutePath() + "/help/en/cumulus.html" );
+        File deFile     = new File( addDataDir.getAbsolutePath() + "/locale/de/cumulus_de.qm" );
+        File notifyFile = new File( addDataDir.getAbsolutePath() + "/sounds/Notify.wav" );
+        File alarmFile  = new File( addDataDir.getAbsolutePath() + "/sounds/Alarm.wav" );
+       
+				if( ! helpFile.exists()   || ! deFile.exists() ||
+						! notifyFile.exists() || ! alarmFile.exists() )
+					{
+						// There are missing files, require a new installation.
+						doInstall = true;
+					}
+   	  }
+    
+    if( doInstall == true )
       {
-        // It seems there are some needed files not installed, do it again
+        // It seems there are some needed files not installed, do it again.
         boolean res = installAddData( addDataDir.getAbsolutePath(), getAssets() );
 
         if( res == false )
@@ -279,6 +314,17 @@ public class CumulusActivity extends QtActivity
             showDialog(DIALOG_ZIP_ERR);
             return;
           }
+        
+        try
+          {
+            // Store an install marker file
+            OutputStream out = new FileOutputStream( pvcAddFile );
+            out.close();
+          }
+        catch (Exception e)
+          {
+            Log.e(TAG, "PVC add file error: " + e.getMessage());
+          }        
       }
 
     // another thread on C++ side is waiting for this info
@@ -290,14 +336,15 @@ public class CumulusActivity extends QtActivity
 		// Get the internal data directory for our App.
 	  String appDataDir = getDir("Cumulus", MODE_PRIVATE ).getAbsolutePath();
 
-    // Check, if the internal data are already installed
-    int pvc = getPackageVersionCode();
+    // Check, if the internal data are already installed. To check that, a special
+	  // file name is checked, which is created after data installation. The file name
+    // includes the package version, to ensure that with every new version the data
+    // are reinstalled.
+    File pvcAppFile = new File( appDataDir + "/pvc_" + String.valueOf(getPackageVersionCode()) );
 
-    File pvcFile = new File( appDataDir + "/pvc_" + String.valueOf(pvc) );
+    Log.d(TAG, "pvcApp=" + pvcAppFile.getAbsolutePath());
 
-    Log.d(TAG, "PVC=" + pvcFile.getAbsolutePath());
-
-    if (! pvcFile.exists() )
+    if (! pvcAppFile.exists() )
       {
         // It seems that our App data are not installed. Do that job now.
         boolean res = installAppData( appDataDir, getAssets() );
@@ -311,12 +358,12 @@ public class CumulusActivity extends QtActivity
         try
           {
             // Store an install marker file
-            OutputStream out = new FileOutputStream( pvcFile );
+            OutputStream out = new FileOutputStream( pvcAppFile );
             out.close();
           }
         catch (Exception e)
           {
-            Log.e(TAG, "PVC file error: " + e.getMessage());
+            Log.e(TAG, "PVC app file error: " + e.getMessage());
           }
         }
 
