@@ -15,10 +15,6 @@
 **
 ***********************************************************************/
 
-/**
- * This dialog manages the download of an airspace file via HTTP.
-**/
-
 #include <QtGui>
 
 #include "airspacedownloaddialog.h"
@@ -26,13 +22,20 @@
 #include "proxydialog.h"
 
 AirspaceDownloadDialog::AirspaceDownloadDialog( QWidget *parent ) :
-  QDialog(parent)
+  QDialog(parent),
+  m_autoSip(true)
 {
   setObjectName( "AirspaceDownloadDialog" );
   setWindowTitle( tr("Download Airspace") );
   setAttribute( Qt::WA_DeleteOnClose );
   setModal(true);
   setSizeGripEnabled( true );
+
+  // Save the current state of the software input panel
+  m_autoSip = qApp->autoSipEnabled();
+
+  // Set the SIP to true for this dialog. We need the SIP for the input of the URL.
+  qApp->setAutoSipEnabled( true );
 
   QGridLayout* gridLayout = new QGridLayout;
   int row=0;
@@ -133,6 +136,9 @@ void AirspaceDownloadDialog::accept()
   GeneralConfig::instance()->setLastAirspaceUrl( urlString );
   emit downloadAirspace( urlString );
 
+  // restore sip state
+  qApp->setAutoSipEnabled( m_autoSip );
+
   // close and destroy dialog
   QDialog::done(QDialog::Accepted);
 }
@@ -140,6 +146,9 @@ void AirspaceDownloadDialog::accept()
 /** User has pressed Cancel button */
 void AirspaceDownloadDialog::reject()
 {
+  // restore sip state
+  qApp->setAutoSipEnabled( m_autoSip );
+
   // close and destroy dialog
   QDialog::done(QDialog::Rejected);
 }

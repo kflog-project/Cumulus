@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,10 @@
  *
  * \brief This dialog manages the download of an airspace file via HTTP.
  *
- * \date 2010
+ * \date 2010-2012
+ *
+ * \version $Id$
+ *
  */
 
 #ifndef AIRSPACE_DOWNLOAD_DIALOG_H
@@ -78,6 +81,9 @@ class AirspaceDownloadDialog : public QDialog
 
   /** The dialog button box */
   QDialogButtonBox *buttonBox;
+
+  /** The state of the SIP */
+  bool m_autoSip;
 };
 
 #endif /* AIRSPACE_DOWNLOAD_DIALOG_H */
