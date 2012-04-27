@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-04-27 AP: BUGFIX: Software Input Panel was disabled for airspace
+                   download in settings airspace. Is fixed now.
+
 [+] 2012-04-24 AP: German translation of Java part added for Android.
 
 [+] 2012-04-24 AP: Screen saver control added for Android.
