@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2010 by Axel Pauli
+**                   2007-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -192,13 +192,13 @@ class FlightTask : public BaseMapElement
     };
 
   /** */
-  QString getTotalDistanceString() const;
+  QString getTotalDistanceString( bool unit=true ) const;
+
+  /** Total distance without unit */
+  QString getTotalDistance() const;
 
   /** */
-  QString getTaskDistanceString() const;
-
-  /** Returns wind direction and speed in string format "Degree/Speed". */
-  QString getWindString() const;
+  QString getTaskDistanceString( bool unit=true ) const;
 
   /** Returns the name of the task. */
   QString getTaskName() const
@@ -256,6 +256,9 @@ class FlightTask : public BaseMapElement
     windDirection = newDirection;
     updateTask();
   };
+
+  /** Returns wind direction and speed in string format "Degree/Speed". */
+  QString getWindString() const;
 
   /** sets wind triangle calculation flag of this task */
   void setWtCalcFlag( const bool newValue )

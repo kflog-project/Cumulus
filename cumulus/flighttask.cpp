@@ -1305,25 +1305,25 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
   return ReachablePoint::no;
 }
 
-QString FlightTask::getTotalDistanceString() const
+QString FlightTask::getTotalDistanceString( bool unit ) const
   {
     if(flightType == FlightTask::NotSet)
       {
         return "--";
       }
 
-    return Distance::getText(distance_total*1000, true, 1);
+    return Distance::getText(distance_total*1000, unit, 1);
   }
 
 
-QString FlightTask::getTaskDistanceString() const
+QString FlightTask::getTaskDistanceString( bool unit ) const
   {
     if(flightType == FlightTask::NotSet)
       {
         return "--";
       }
 
-    return Distance::getText(distance_task*1000,true,1);
+    return Distance::getText( distance_task*1000, unit, 1 );
   }
 
 /**

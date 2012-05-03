@@ -38,7 +38,6 @@
 #include <QStringList>
 #include <QSpinBox>
 #include <QCheckBox>
-#include <QSplitter>
 
 #include "flighttask.h"
 #include "tasklistview.h"
@@ -124,10 +123,23 @@ private slots:
    */
   void slotFocusChanged( QWidget* oldWidget, QWidget* newWidget);
 
+  /**
+   * Makes the task list widget visible.
+   */
+  void slotShowTaskListWidget();
+
+  /**
+   * Makes the task view widget visible.
+   */
+  void slotShowTaskViewWidget();
+
 private:
 
-  /** splitter widget */
-  QSplitter* splitter;
+  /** task list widget */
+  QWidget *taskListWidget;
+  /** task view widget */
+  QWidget *taskViewWidget;
+
   /** spin box for TAS entry */
   QSpinBox* tas;
   /** spin box for wind direction entry*/
@@ -135,11 +147,11 @@ private:
   /** spin box for wind speed entry */
   QSpinBox* windSpeed;
   /** task list overview */
-  QTreeWidget* taskListWidget;
+  QTreeWidget* taskList;
   /** widget with task content in detail */
   TaskListView* taskContent;
   /** list with all defined flight tasks */
-  QList<FlightTask*> taskList;
+  QList<FlightTask*> flightTaskList;
   /** flight task being edited */
   FlightTask* editTask;
   /** names of flight tasks */

@@ -155,25 +155,27 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   minus->setMinimumSize(size, size);
   minus->setMaximumSize(size, size);
 
-  splitter = new QSplitter( Qt::Vertical, this );
-  splitter->setOpaqueResize( true );
-  splitter->setHandleWidth(20);
+  //----------------------------------------------------------------------------
 
-  taskListWidget = new QTreeWidget( splitter );
+  taskListWidget = new QWidget( this );
+  QVBoxLayout *tlLayout = new QVBoxLayout( taskListWidget );
+
+  taskList = new QTreeWidget;
 
 #ifndef ANDROID
-  taskListWidget->setToolTip( tr("Select a flight task") );
+  taskList->setToolTip( tr("Select a flight task") );
 #endif
-  taskListWidget->setRootIsDecorated(false);
-  taskListWidget->setItemsExpandable(false);
-  taskListWidget->setUniformRowHeights(true);
-  taskListWidget->setSortingEnabled(true);
-  taskListWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
-  taskListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-  taskListWidget->setColumnCount(6);
+  taskList->setRootIsDecorated(false);
+  taskList->setItemsExpandable(false);
+  taskList->setUniformRowHeights(true);
+  taskList->setSortingEnabled(true);
+  taskList->setSelectionBehavior(QAbstractItemView::SelectRows);
+  taskList->setSelectionMode(QAbstractItemView::SingleSelection);
+  taskList->setColumnCount(5);
+  taskList->setFocus();
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(taskListWidget, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(taskList, QScroller::LeftMouseButtonGesture);
 #endif
 
   QStringList sl;
@@ -181,27 +183,42 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
      << tr("Name")
      << tr("Type")
      << tr("Distance")
-     << tr("Time")
-     << "";
+     << tr("Time");
 
-  taskListWidget->setHeaderLabels(sl);
+  taskList->setHeaderLabels(sl);
 
-  QTreeWidgetItem* headerItem = taskListWidget->headerItem();
+  QTreeWidgetItem* headerItem = taskList->headerItem();
   headerItem->setTextAlignment( 0, Qt::AlignCenter );
   headerItem->setTextAlignment( 1, Qt::AlignCenter );
   headerItem->setTextAlignment( 2, Qt::AlignCenter );
   headerItem->setTextAlignment( 3, Qt::AlignCenter );
   headerItem->setTextAlignment( 4, Qt::AlignCenter );
 
-  taskListWidget->setFocus();
+  tlLayout->addWidget( taskList, 10 );
 
-  taskContent = new TaskListView( splitter, false );
+  QPushButton *tlShowButton = new QPushButton( tr("Show") );
+  tlLayout->addWidget( tlShowButton, 0, Qt::AlignRight );
+
+  taskLayout->addWidget( taskListWidget );
+
+  //----------------------------------------------------------------------------
+
+  taskViewWidget = new QWidget( this );
+  QVBoxLayout *tvLayout = new QVBoxLayout( taskViewWidget );
+
+  taskContent = new TaskListView( this, false );
+  taskContent->setHeadlineVisible( false );
 
 #ifndef ANDROID
   taskContent->setToolTip( tr("Task display") );
 #endif
 
-  taskLayout->addWidget( splitter );
+  tvLayout->addWidget( taskContent, 10 );
+
+  QPushButton *tvCloseButton = new QPushButton( tr("Close") );
+  tvLayout->addWidget( tvCloseButton, 0, Qt::AlignRight );
+  taskLayout->addWidget( taskViewWidget );
+  taskViewWidget->setVisible( false );
 
   connect(cmdNew, SIGNAL(clicked()), this, SLOT(slotNewTask()));
   connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slotEditTask()));
@@ -215,10 +232,16 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
    * saved, to have an indication, if a spinbox entry should be modified.
    */
   connect( QCoreApplication::instance(), SIGNAL(focusChanged( QWidget*, QWidget*)),
-           this, SLOT( slotFocusChanged( QWidget*, QWidget*)) );
+            this, SLOT( slotFocusChanged( QWidget*, QWidget*)) );
 
-  connect( taskListWidget, SIGNAL( itemSelectionChanged() ),
-           this, SLOT( slotTaskDetails() ) );
+  connect( taskList, SIGNAL( itemSelectionChanged() ),
+            this, SLOT( slotTaskDetails() ) );
+
+  connect( tlShowButton, SIGNAL(pressed()),
+            this, SLOT( slotShowTaskViewWidget() ) );
+
+  connect( tvCloseButton, SIGNAL(pressed()),
+            this, SLOT( slotShowTaskListWidget() ) );
 
   loadTaskList();
 }
@@ -226,39 +249,44 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
 PreFlightTaskList::~PreFlightTaskList()
 {
   // qDebug("PreFlightTaskList::~PreFlightTaskList()");
-  qDeleteAll(taskList);
+  qDeleteAll(flightTaskList);
 }
 
 void PreFlightTaskList::showEvent(QShowEvent *)
 {
-  static bool first = true;
+  taskList->resizeColumnToContents(0);
+  taskList->resizeColumnToContents(1);
+  taskList->resizeColumnToContents(2);
+  taskList->resizeColumnToContents(3);
+  taskList->resizeColumnToContents(4);
+}
 
-  // @AP: With the first show event we set the splitter line to our
-  // desired place. Found no other way to do it better.
-  if ( first )
+void PreFlightTaskList::slotShowTaskListWidget()
+{
+  taskViewWidget->setVisible( false );
+  taskListWidget->setVisible( true );
+}
+
+void PreFlightTaskList::slotShowTaskViewWidget()
+{
+  QList<QTreeWidgetItem*> selectList = taskList->selectedItems();
+
+  if ( selectList.size() == 0 )
     {
-      first = false;
-
-      // get the heights of the two widgets in the splitter
-      QList<int> sizeList = splitter->sizes();
-
-      int sum = sizeList[0] + sizeList[1];
-
-      if ( sum >= 200 )
-        {
-          sizeList[0] = 150;
-          sizeList[1] = sum-150;
-
-          // set the splitter line to a new place
-          splitter->setSizes(sizeList);
-        }
+      // Nothing is selected
+      return;
     }
 
-  taskListWidget->resizeColumnToContents(0);
-  taskListWidget->resizeColumnToContents(1);
-  taskListWidget->resizeColumnToContents(2);
-  taskListWidget->resizeColumnToContents(3);
-  taskListWidget->resizeColumnToContents(4);
+  QTreeWidgetItem* selected = taskList->selectedItems().at(0);
+
+  if ( selected->text( 0 ) == " " )
+    {
+      // Help text is selected
+      return;
+    }
+
+  taskViewWidget->setVisible( true );
+  taskListWidget->setVisible( false );
 }
 
 void PreFlightTaskList::slotIncrementBox()
@@ -327,14 +355,14 @@ void PreFlightTaskList::slotFocusChanged( QWidget* oldWidget, QWidget* newWidget
 
 void PreFlightTaskList::slotTaskDetails()
 {
-  QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
+  QList<QTreeWidgetItem*> selectList = taskList->selectedItems();
 
   if ( selectList.size() == 0 )
     {
       return;
     }
 
-  QTreeWidgetItem* selected = taskListWidget->selectedItems().at(0);
+  QTreeWidgetItem* selected = taskList->selectedItems().at(0);
 
   if ( selected->text( 0 ) == " " )
     {
@@ -344,7 +372,7 @@ void PreFlightTaskList::slotTaskDetails()
 
   int id = selected->text( 0 ).toInt() - 1;
 
-  FlightTask *task = taskList.at( id );
+  FlightTask *task = flightTaskList.at( id );
 
   // update TAS, can be changed in the meantime by the user
   task->setSpeed( tas->value() );
@@ -358,15 +386,15 @@ void PreFlightTaskList::slotTaskDetails()
 
 void PreFlightTaskList::updateWayTime()
 {
-  if( taskListWidget->topLevelItemCount() < 2 )
+  if( taskList->topLevelItemCount() < 2 )
     {
       // There are no tasks defined.
       return;
     }
 
-  for( int i = 0; i < taskListWidget->topLevelItemCount(); i++ )
+  for( int i = 0; i < taskList->topLevelItemCount(); i++ )
     {
-      QTreeWidgetItem* item = taskListWidget->topLevelItem( i );
+      QTreeWidgetItem* item = taskList->topLevelItem( i );
 
       if( item == 0 || item->text( 0 ) == " " )
         {
@@ -375,7 +403,7 @@ void PreFlightTaskList::updateWayTime()
 
       int id = item->text( 0 ).toInt() - 1;
 
-      FlightTask *task = taskList.at( id );
+      FlightTask *task = flightTaskList.at( id );
 
       // update TAS, can be changed in the meantime by the user
       task->setSpeed( tas->value() );
@@ -410,14 +438,14 @@ FlightTask* PreFlightTaskList::takeSelectedTask()
   GeneralConfig::instance()->setWindDirection( windDirection->value() );
   GeneralConfig::instance()->setWindSpeed( windSpeed->value() );
 
-  QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
+  QList<QTreeWidgetItem*> selectList = taskList->selectedItems();
 
   if ( selectList.size() == 0 )
     {
       return static_cast<FlightTask *> (0);
     }
 
-  QString id( taskListWidget->selectedItems().at(0)->text(0) );
+  QString id( taskList->selectedItems().at(0)->text(0) );
 
   // Special handling for entries with no number, they are system specific.
   if( id == " " )
@@ -427,13 +455,13 @@ FlightTask* PreFlightTaskList::takeSelectedTask()
     }
 
   // qDebug("selected Item=%s",id.toLatin1().data());
-  GeneralConfig::instance()->setCurrentTask( taskListWidget->selectedItems().at(0)->text(1) );
+  GeneralConfig::instance()->setCurrentTask( taskList->selectedItems().at(0)->text(1) );
 
   // Nice trick, take selected element from list to prevent deletion of it, if
   // destruction of list is called.
   int index = id.toInt() - 1;
 
-  FlightTask* task = taskList.takeAt( index );
+  FlightTask* task = flightTaskList.takeAt( index );
 
   // Save the task declaration in Flarm format as file.
   createFlarmTaskList( task );
@@ -447,9 +475,9 @@ bool PreFlightTaskList::loadTaskList()
   extern MapMatrix *_globalMapMatrix;
   QStringList rowList;
 
-  while ( !taskList.isEmpty() )
+  while ( !flightTaskList.isEmpty() )
     {
-      delete taskList.takeFirst();
+      delete flightTaskList.takeFirst();
     }
 
   taskNames.clear();
@@ -463,18 +491,18 @@ bool PreFlightTaskList::loadTaskList()
     {
       // could not read file ...
       rowList << " " << tr("(No tasks defined)");
-      taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
-      taskListWidget->setCurrentItem( taskListWidget->itemAt(0,taskListWidget->topLevelItemCount()-1) );
-      taskListWidget->sortItems( 0, Qt::AscendingOrder );
+      taskList->addTopLevelItem( new QTreeWidgetItem(taskList, rowList, 0) );
+      taskList->setCurrentItem( taskList->itemAt(0,taskList->topLevelItemCount()-1) );
+      taskList->sortItems( 0, Qt::AscendingOrder );
 
       // reset current task
       GeneralConfig::instance()->setCurrentTask( "" );
 
-      taskListWidget->resizeColumnToContents(0);
-      taskListWidget->resizeColumnToContents(1);
-      taskListWidget->resizeColumnToContents(2);
-      taskListWidget->resizeColumnToContents(3);
-      taskListWidget->resizeColumnToContents(4);
+      taskList->resizeColumnToContents(0);
+      taskList->resizeColumnToContents(1);
+      taskList->resizeColumnToContents(2);
+      taskList->resizeColumnToContents(3);
+      taskList->resizeColumnToContents(4);
 
       return false;
     }
@@ -547,24 +575,23 @@ bool PreFlightTaskList::loadTaskList()
                   isTask = false;
                   FlightTask* task = new FlightTask( tpList, true,
                                                      taskName, tas->value() );
-                  taskList.append( task );
+                  flightTaskList.append( task );
 
                   tpList = 0; // ownership was overtaken by FlighTask
-                  numTask.sprintf( "%02d", taskList.count() );
+                  numTask.sprintf( "%02d", flightTaskList.count() );
 
                   rowList << numTask
                           << taskName
                           << task->getTaskTypeString()
                           << task->getTaskDistanceString()
-                          << ""
                           << "";
 
-                  QTreeWidgetItem *item = new QTreeWidgetItem( taskListWidget, rowList, 0 );
+                  QTreeWidgetItem *item = new QTreeWidgetItem( taskList, rowList, 0 );
                   item->setTextAlignment( 0, Qt::AlignCenter);
                   item->setTextAlignment( 3, Qt::AlignRight);
                   item->setTextAlignment( 4, Qt::AlignRight);
 
-                  taskListWidget->addTopLevelItem( item );
+                  taskList->addTopLevelItem( item );
                   rowList.clear();
 
                   // save task name
@@ -583,7 +610,7 @@ bool PreFlightTaskList::loadTaskList()
       delete tpList;
     }
 
-  if ( taskList.count() == 0 )
+  if ( flightTaskList.count() == 0 )
     {
       rowList << " " << tr("(No tasks defined)");
 
@@ -595,17 +622,17 @@ bool PreFlightTaskList::loadTaskList()
       rowList << " " << tr("(Reset selection)") << tr("none");
     }
 
-  taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
-  taskListWidget->sortByColumn(0, Qt::AscendingOrder);
+  taskList->addTopLevelItem( new QTreeWidgetItem(taskList, rowList, 0) );
+  taskList->sortByColumn(0, Qt::AscendingOrder);
 
   updateWayTime();
   selectLastTask();
 
-  taskListWidget->resizeColumnToContents(0);
-  taskListWidget->resizeColumnToContents(1);
-  taskListWidget->resizeColumnToContents(2);
-  taskListWidget->resizeColumnToContents(3);
-  taskListWidget->resizeColumnToContents(4);
+  taskList->resizeColumnToContents(0);
+  taskList->resizeColumnToContents(1);
+  taskList->resizeColumnToContents(2);
+  taskList->resizeColumnToContents(3);
+  taskList->resizeColumnToContents(4);
 
   return true;
 }
@@ -625,10 +652,10 @@ void PreFlightTaskList::slotNewTask()
  */
 void PreFlightTaskList::slotUpdateTaskList( FlightTask *newTask)
 {
-  taskList.append( newTask );
+  flightTaskList.append( newTask );
   saveTaskList();
   taskContent->clear();
-  taskListWidget->clear();
+  taskList->clear();
   loadTaskList();
 }
 
@@ -638,21 +665,21 @@ void PreFlightTaskList::slotUpdateTaskList( FlightTask *newTask)
 void PreFlightTaskList::slotEditTask()
 {
   // fetch selected task item
-  QList<QTreeWidgetItem*> selectList = taskListWidget->selectedItems();
+  QList<QTreeWidgetItem*> selectList = taskList->selectedItems();
 
   if ( selectList.size() == 0 )
     {
       return;
     }
 
-  QString id( taskListWidget->selectedItems().at(0)->text(0) );
+  QString id( taskList->selectedItems().at(0)->text(0) );
 
   if ( id == " ")
     {
       return;
     }
 
-  editTask = taskList.at(id.toInt() - 1);
+  editTask = flightTaskList.at(id.toInt() - 1);
 
   // make a deep copy of fetched task item
   FlightTask* modTask = new FlightTask( editTask->getCopiedTpList(),
@@ -675,24 +702,24 @@ void PreFlightTaskList::slotEditTaskList( FlightTask *editedTask)
   // qDebug("PreFlightTaskList::slotEditTaskList()");
 
   // search task item being edited
-  int index = taskList.indexOf( editTask );
+  int index = flightTaskList.indexOf( editTask );
 
   if ( index != -1 )
     {
       // remove old item
-      delete taskList.takeAt( index );
+      delete flightTaskList.takeAt( index );
       // put new item on old position
-      taskList.insert( index, editedTask );
+      flightTaskList.insert( index, editedTask );
     }
   else
     {
       // no old position available, append it at end of list
-      taskList.append( editedTask );
+      flightTaskList.append( editedTask );
     }
 
   saveTaskList();
   taskContent->clear();
-  taskListWidget->clear();
+  taskList->clear();
   loadTaskList();
 }
 
@@ -701,7 +728,7 @@ void PreFlightTaskList::slotEditTaskList( FlightTask *editedTask)
  */
 void PreFlightTaskList::slotDeleteTask()
 {
-  QTreeWidgetItem* selected = taskListWidget->currentItem();
+  QTreeWidgetItem* selected = taskList->currentItem();
 
   if ( selected == 0 )
     {
@@ -738,10 +765,10 @@ void PreFlightTaskList::slotDeleteTask()
       return;
     }
 
-  delete taskListWidget->takeTopLevelItem( taskListWidget->currentIndex().row() );
+  delete taskList->takeTopLevelItem( taskList->currentIndex().row() );
 
-  taskListWidget->sortItems( 0, Qt::AscendingOrder );
-  taskListWidget->setCurrentItem( taskListWidget->topLevelItem(0) );
+  taskList->sortItems( 0, Qt::AscendingOrder );
+  taskList->setCurrentItem( taskList->topLevelItem(0) );
 
   // reset last stored selected task
   GeneralConfig::instance()->setCurrentTask( "" );
@@ -751,10 +778,10 @@ void PreFlightTaskList::slotDeleteTask()
   _globalMapContents->setCurrentTask(0);
 
   uint no = id.toUInt() - 1;
-  delete taskList.takeAt( no );
+  delete flightTaskList.takeAt( no );
   saveTaskList();
   taskContent->clear();
-  taskListWidget->clear();
+  taskList->clear();
   loadTaskList();
 }
 
@@ -779,9 +806,9 @@ bool PreFlightTaskList::saveTaskList()
          << dtStr << " by Cumulus "
          << QCoreApplication::applicationVersion() << endl;
 
-  for ( int i=0; i < taskList.count(); i++ )
+  for ( int i=0; i < flightTaskList.count(); i++ )
     {
-      FlightTask *task = taskList.at(i);
+      FlightTask *task = flightTaskList.at(i);
       QList<TaskPoint *> tpList = task->getTpList();
 
       stream << "TS," << task->getTaskName() << "," << tpList.count() << endl;
@@ -891,21 +918,21 @@ void PreFlightTaskList::selectLastTask()
 {
   QString lastTask = GeneralConfig::instance()->getCurrentTask();
 
-  int rows = taskListWidget->topLevelItemCount();
+  int rows = taskList->topLevelItemCount();
 
   for( int i = 0; i < rows; i++ )
     {
-      QString taskName = taskListWidget->topLevelItem(i)->text(1);
+      QString taskName = taskList->topLevelItem(i)->text(1);
       // qDebug( "taskName(%d)=%s", i, taskName.toLatin1().data() );
 
       if( taskName == lastTask )
         {
           // last selected task found
-          taskListWidget->setCurrentItem( taskListWidget->topLevelItem(i) );
+          taskList->setCurrentItem( taskList->topLevelItem(i) );
           return;
         }
     }
 
   // select first entry in the list, if last selection could not be found
-  taskListWidget->setCurrentItem( taskListWidget->topLevelItem(0) );
+  taskList->setCurrentItem( taskList->topLevelItem(0) );
 }

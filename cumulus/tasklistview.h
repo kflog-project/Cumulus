@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,13 +21,13 @@
  *
  * \author André Somers, Axel Pauli
  *
- * \brief Presents a view that holds a list of the task points of a flight task.
+ * \brief Presents a view that shows a list of the flight task points.
  *
  * Displays all points of a task as list with different buttons for
  * actions. Can be used in two modes, as display only, buttons for
  * actions are not visible or with command buttons.
  *
- * \date 2004-2010
+ * \date 2004-2012
  */
 
 #ifndef TASK_LIST_VIEW_H
@@ -70,6 +70,24 @@ public:
 
   /** sets the header of the list */
   void setHeader();
+
+  /**
+   * Change the visibility of the headline according to the passed flag.
+   *
+   * \param flag The visibility attribute of the headline.
+   */
+  void setHeadlineVisible( bool flag )
+  {
+    headline->setVisible( flag );
+  };
+
+  /**
+   * \return The visibility of the headline.
+   */
+  bool headlineIsVisible() const
+  {
+    return headline->isVisible();
+  };
 
 private:
 
@@ -134,6 +152,12 @@ protected:
 
 private:
 
+  RowDelegate* rowDelegate;
+
+  // flag for showing buttons or not
+  bool _showButtons;
+
+  QWidget         *headline;
   QTreeWidget     *list;
   MainWindow      *par;
   QBoxLayout      *buttonrow;
@@ -152,11 +176,6 @@ private:
   QTreeWidgetItem * _newSelectedTp;
   QString         _selectText;
   QString         _unselectText;
-
-  // flag for showing buttons or not
-  bool _showButtons;
-
-  RowDelegate* rowDelegate;
 
 private slots:
   /**

@@ -34,11 +34,11 @@ extern Calculator* calculator;
 
 TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
   QWidget(parent),
-  rowDelegate(0)
+  rowDelegate(0),
+  _showButtons(showButtons)
 {
   setObjectName("TaskListView");
 
-  _showButtons = showButtons;
   _task = 0;
   _selectedTp = 0;
   _currSelectedTp = 0;
@@ -54,7 +54,6 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
     }
 
   QHBoxLayout *total = new QHBoxLayout;
-  topLayout->addLayout( total );
 
   speedTotal = new QLabel("", this );
   wind       = new QLabel("", this );
@@ -65,6 +64,10 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
   total->addWidget( wind );
   total->addWidget( distTotal );
   total->addWidget( timeTotal );
+
+  headline = new QWidget( this );
+  headline->setLayout( total );
+  topLayout->addWidget( headline );
 
   list = new QTreeWidget( this );
   list->setObjectName("TaskListView");
@@ -174,6 +177,7 @@ void TaskListView::setHeader()
   headerItem->setTextAlignment( 5, Qt::AlignCenter );
   headerItem->setTextAlignment( 6, Qt::AlignCenter );
   headerItem->setTextAlignment( 7, Qt::AlignCenter );
+  headerItem->setTextAlignment( 8, Qt::AlignCenter );
 
   resizeTaskList();
 }
@@ -396,6 +400,23 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
           _currSelectedTp = _tp;
           _selectedTp = tp;
         }
+    }
+
+  if ( _showButtons == false )
+    {
+      QTreeWidgetItem *item = new QTreeWidgetItem( list );
+
+      item->setText( 0, tr("Total") );
+      item->setText( 2, _task->getTotalDistanceString( false ) );
+      item->setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
+
+      if( _task->getSpeed() != 0 )
+        {
+          item->setText( 6, _task->getTotalDistanceTimeString() );
+          item->setTextAlignment( 6, Qt::AlignRight|Qt::AlignVCenter );
+        }
+
+      list->addTopLevelItem( item );
     }
 
   // set the total values in the header of this view
