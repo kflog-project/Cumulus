@@ -157,7 +157,7 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
 
   splitter = new QSplitter( Qt::Vertical, this );
   splitter->setOpaqueResize( true );
-  splitter->setHandleWidth(10);
+  splitter->setHandleWidth(20);
 
   taskListWidget = new QTreeWidget( splitter );
 
@@ -170,7 +170,7 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   taskListWidget->setSortingEnabled(true);
   taskListWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
   taskListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-  taskListWidget->setColumnCount(4);
+  taskListWidget->setColumnCount(6);
 
 #ifdef QSCROLLER
   QScroller::grabGesture(taskListWidget, QScroller::LeftMouseButtonGesture);
@@ -180,9 +180,19 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   sl << tr("No.")
      << tr("Name")
      << tr("Type")
-     << tr("Distance");
+     << tr("Distance")
+     << tr("Time")
+     << "";
 
   taskListWidget->setHeaderLabels(sl);
+
+  QTreeWidgetItem* headerItem = taskListWidget->headerItem();
+  headerItem->setTextAlignment( 0, Qt::AlignCenter );
+  headerItem->setTextAlignment( 1, Qt::AlignCenter );
+  headerItem->setTextAlignment( 2, Qt::AlignCenter );
+  headerItem->setTextAlignment( 3, Qt::AlignCenter );
+  headerItem->setTextAlignment( 4, Qt::AlignCenter );
+
   taskListWidget->setFocus();
 
   taskContent = new TaskListView( splitter, false );
@@ -247,6 +257,8 @@ void PreFlightTaskList::showEvent(QShowEvent *)
   taskListWidget->resizeColumnToContents(0);
   taskListWidget->resizeColumnToContents(1);
   taskListWidget->resizeColumnToContents(2);
+  taskListWidget->resizeColumnToContents(3);
+  taskListWidget->resizeColumnToContents(4);
 }
 
 void PreFlightTaskList::slotIncrementBox()
@@ -267,6 +279,7 @@ void PreFlightTaskList::slotIncrementBox()
         {
           spinBoxList[i]->stepUp();
           spinBoxList[i]->setFocus();
+          updateWayTime();
           slotTaskDetails();
 
           // Start repetition timer, to check, if button is longer pressed.
@@ -294,6 +307,7 @@ void PreFlightTaskList::slotDecrementBox()
         {
           spinBoxList[i]->stepDown();
           spinBoxList[i]->setFocus();
+          updateWayTime();
           slotTaskDetails();
 
           // Start repetition timer, to check, if button is longer pressed.
@@ -340,6 +354,47 @@ void PreFlightTaskList::slotTaskDetails()
   task->setWindSpeed( windSpeed->value() );
 
   taskContent->slot_setTask( task );
+}
+
+void PreFlightTaskList::updateWayTime()
+{
+  if( taskListWidget->topLevelItemCount() < 2 )
+    {
+      // There are no tasks defined.
+      return;
+    }
+
+  for( int i = 0; i < taskListWidget->topLevelItemCount(); i++ )
+    {
+      QTreeWidgetItem* item = taskListWidget->topLevelItem( i );
+
+      if( item == 0 || item->text( 0 ) == " " )
+        {
+          continue;
+        }
+
+      int id = item->text( 0 ).toInt() - 1;
+
+      FlightTask *task = taskList.at( id );
+
+      // update TAS, can be changed in the meantime by the user
+      task->setSpeed( tas->value() );
+
+      // update wind parameters, can be changed in the meantime by the user
+      task->setWindDirection( windDirection->value() % 360 );
+      task->setWindSpeed( windSpeed->value() );
+
+      if( task->getSpeed() == 0 )
+        {
+          // TAS is zero, show nothing
+          item->setText(4, "");
+        }
+      else
+        {
+          // TAS is not zero, show time total
+          item->setText( 4, task->getTotalDistanceTimeString() + "h" );
+        }
+    }
 }
 
 // This method is called from PreFlightWidget::accept(), to take out
@@ -418,6 +473,8 @@ bool PreFlightTaskList::loadTaskList()
       taskListWidget->resizeColumnToContents(0);
       taskListWidget->resizeColumnToContents(1);
       taskListWidget->resizeColumnToContents(2);
+      taskListWidget->resizeColumnToContents(3);
+      taskListWidget->resizeColumnToContents(4);
 
       return false;
     }
@@ -496,11 +553,18 @@ bool PreFlightTaskList::loadTaskList()
                   numTask.sprintf( "%02d", taskList.count() );
 
                   rowList << numTask
-                  << taskName
-                  << task->getTaskTypeString()
-                  << task->getTaskDistanceString();
+                          << taskName
+                          << task->getTaskTypeString()
+                          << task->getTaskDistanceString()
+                          << ""
+                          << "";
 
-                  taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
+                  QTreeWidgetItem *item = new QTreeWidgetItem( taskListWidget, rowList, 0 );
+                  item->setTextAlignment( 0, Qt::AlignCenter);
+                  item->setTextAlignment( 3, Qt::AlignRight);
+                  item->setTextAlignment( 4, Qt::AlignRight);
+
+                  taskListWidget->addTopLevelItem( item );
                   rowList.clear();
 
                   // save task name
@@ -534,11 +598,14 @@ bool PreFlightTaskList::loadTaskList()
   taskListWidget->addTopLevelItem( new QTreeWidgetItem(taskListWidget, rowList, 0) );
   taskListWidget->sortByColumn(0, Qt::AscendingOrder);
 
+  updateWayTime();
   selectLastTask();
 
   taskListWidget->resizeColumnToContents(0);
   taskListWidget->resizeColumnToContents(1);
   taskListWidget->resizeColumnToContents(2);
+  taskListWidget->resizeColumnToContents(3);
+  taskListWidget->resizeColumnToContents(4);
 
   return true;
 }
@@ -548,7 +615,7 @@ void PreFlightTaskList::slotNewTask()
   TaskEditor *te = new TaskEditor(this, taskNames);
 
   connect( te, SIGNAL(newTask( FlightTask * )), this,
-           SLOT(slotUpdateTaskList( FlightTask * )));
+            SLOT(slotUpdateTaskList( FlightTask * )));
 
   te->setVisible( true );
 }
@@ -734,7 +801,6 @@ bool PreFlightTaskList::saveTaskList()
     }
 
   f.close();
-
   return true;
 }
 

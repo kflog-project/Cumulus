@@ -166,6 +166,15 @@ void TaskListView::setHeader()
 
   list->setHeaderLabels(sl);
 
+  QTreeWidgetItem* headerItem = list->headerItem();
+  headerItem->setTextAlignment( 0, Qt::AlignCenter );
+  headerItem->setTextAlignment( 1, Qt::AlignCenter );
+  headerItem->setTextAlignment( 2, Qt::AlignCenter );
+  headerItem->setTextAlignment( 3, Qt::AlignCenter );
+  headerItem->setTextAlignment( 5, Qt::AlignCenter );
+  headerItem->setTextAlignment( 6, Qt::AlignCenter );
+  headerItem->setTextAlignment( 7, Qt::AlignCenter );
+
   resizeTaskList();
 }
 

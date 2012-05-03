@@ -83,6 +83,12 @@ private:
   /** Creates a task definition file in Flarm format. */
   bool createFlarmTaskList( FlightTask* flightTask );
 
+  /**
+   * This slot is called to update the the way time in the task overview list,
+   * if wind or tas have been changed by the user.
+   */
+  void updateWayTime();
+
 private slots:
   /** show the details of a task */
   void slotTaskDetails();
