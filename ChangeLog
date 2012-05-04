@@ -15,6 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-05-04 AP: Under Android a Qt window splitter is not operable with
+                   fingers. Therefore I changed the window layout of the preflight
+                   task page. Now only the listed task are to see, if you enter
+                   the page. If a task is selected and you press the show button,
+                   the task content is displayed on the task page instead of the
+                   task list. I think that is a better solution as before.
+                   For both widgets is now more space available.
+
 [-] 2012-04-27 AP: BUGFIX: Software Input Panel was disabled for airspace
                    download in settings airspace. Is fixed now.
 
