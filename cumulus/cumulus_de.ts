@@ -74,42 +74,42 @@
 <context>
     <name>AirspaceDownloadDialog</name>
     <message>
-        <location filename="airspacedownloaddialog.cpp" line="32"/>
+        <location filename="airspacedownloaddialog.cpp" line="29"/>
         <source>Download Airspace</source>
         <translation>Luftraum Download</translation>
     </message>
     <message>
-        <location filename="airspacedownloaddialog.cpp" line="40"/>
+        <location filename="airspacedownloaddialog.cpp" line="43"/>
         <source>Set Proxy</source>
         <translation>Setze Proxy</translation>
     </message>
     <message>
-        <location filename="airspacedownloaddialog.cpp" line="41"/>
+        <location filename="airspacedownloaddialog.cpp" line="44"/>
         <source>Enter Proxy data if needed</source>
         <translation>Definiere Proxy bei Bedarf</translation>
     </message>
     <message>
-        <location filename="airspacedownloaddialog.cpp" line="50"/>
+        <location filename="airspacedownloaddialog.cpp" line="53"/>
         <source>Airspace Url:</source>
         <translation>Luftraum URL:</translation>
     </message>
     <message>
-        <location filename="airspacedownloaddialog.cpp" line="54"/>
+        <location filename="airspacedownloaddialog.cpp" line="57"/>
         <source>Enter URL of airspace filename to be installed</source>
         <translation>URL Eingabe von Luftraumdatei</translation>
     </message>
     <message>
-        <location filename="airspacedownloaddialog.cpp" line="63"/>
+        <location filename="airspacedownloaddialog.cpp" line="66"/>
         <source>Install</source>
         <translation>Installieren</translation>
     </message>
     <message>
-        <location filename="airspacedownloaddialog.cpp" line="116"/>
+        <location filename="airspacedownloaddialog.cpp" line="119"/>
         <source>Settings invalid!</source>
         <translation>Werte ungültig!</translation>
     </message>
     <message>
-        <location filename="airspacedownloaddialog.cpp" line="117"/>
+        <location filename="airspacedownloaddialog.cpp" line="120"/>
         <source>Please correct your URL settings!</source>
         <translation>Korregieren Sie die URL Eingabe!</translation>
     </message>
@@ -1686,58 +1686,73 @@ Alle Downloads verworfen!</translation>
         <translation>Lösche ausgewählte Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="165"/>
+        <location filename="preflighttasklist.cpp" line="166"/>
         <source>Select a flight task</source>
         <translation>Flugaufgabe auswählen</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="180"/>
+        <location filename="preflighttasklist.cpp" line="182"/>
         <source>No.</source>
         <translation>Nr.</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="181"/>
+        <location filename="preflighttasklist.cpp" line="183"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="182"/>
+        <location filename="preflighttasklist.cpp" line="184"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="183"/>
+        <location filename="preflighttasklist.cpp" line="185"/>
         <source>Distance</source>
         <translation>Strecke</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="191"/>
+        <location filename="preflighttasklist.cpp" line="186"/>
+        <source>Time</source>
+        <translation>Zeit</translation>
+    </message>
+    <message>
+        <location filename="preflighttasklist.cpp" line="199"/>
+        <source>Show</source>
+        <translation>Zeige</translation>
+    </message>
+    <message>
+        <location filename="preflighttasklist.cpp" line="213"/>
         <source>Task display</source>
         <translation>Aufgabenanzeige</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="410"/>
-        <location filename="preflighttasklist.cpp" line="524"/>
+        <location filename="preflighttasklist.cpp" line="218"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
+    </message>
+    <message>
+        <location filename="preflighttasklist.cpp" line="493"/>
+        <location filename="preflighttasklist.cpp" line="615"/>
         <source>(No tasks defined)</source>
         <translation>(Keine Aufgaben definiert)</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="653"/>
+        <location filename="preflighttasklist.cpp" line="747"/>
         <source>Delete Task?</source>
         <translation>Aufgabe löschen?</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="531"/>
+        <location filename="preflighttasklist.cpp" line="622"/>
         <source>(Reset selection)</source>
         <translation>(Reset Auswahl)</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="531"/>
+        <location filename="preflighttasklist.cpp" line="622"/>
         <source>none</source>
         <translation>keiner</translation>
     </message>
     <message>
-        <location filename="preflighttasklist.cpp" line="654"/>
+        <location filename="preflighttasklist.cpp" line="748"/>
         <source>Delete the selected task?</source>
         <translation>Markierte Aufgabe löschen?</translation>
     </message>
@@ -3969,72 +3984,77 @@ Alle Downloads verworfen!</translation>
         <translation>Abwählen</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="99"/>
+        <location filename="tasklistview.cpp" line="102"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="102"/>
+        <location filename="tasklistview.cpp" line="105"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="108"/>
+        <location filename="tasklistview.cpp" line="111"/>
         <source>Start</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="146"/>
+        <location filename="tasklistview.cpp" line="149"/>
         <source>TH</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="152"/>
+        <location filename="tasklistview.cpp" line="155"/>
         <source>TC</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="157"/>
+        <location filename="tasklistview.cpp" line="160"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="158"/>
+        <location filename="tasklistview.cpp" line="161"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="159"/>
+        <location filename="tasklistview.cpp" line="162"/>
         <source>Way</source>
         <translation>Weg</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="160"/>
+        <location filename="tasklistview.cpp" line="163"/>
         <source>GS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="161"/>
+        <location filename="tasklistview.cpp" line="164"/>
         <source>WCA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="163"/>
+        <location filename="tasklistview.cpp" line="166"/>
         <source>Time</source>
         <translation>Zeit</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="164"/>
+        <location filename="tasklistview.cpp" line="167"/>
         <source>SS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="165"/>
+        <location filename="tasklistview.cpp" line="168"/>
         <source>Description</source>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="403"/>
+        <location filename="tasklistview.cpp" line="409"/>
+        <source>Total</source>
+        <translation>Summe</translation>
+    </message>
+    <message>
+        <location filename="tasklistview.cpp" line="433"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
