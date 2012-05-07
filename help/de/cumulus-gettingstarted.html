@@ -20,10 +20,10 @@
 
 Um Cumulus sinnvoll nutzen zu k&ouml;nnen, sind ein PDA, ein GPS-Empf&auml;nger,
 die entsprechenden Karten und weitere flugnavigatorische Daten erforderlich.
-Im Augenblick unterst&uuml;tzt Cumulus nur die PDAs Nokia Internet Tablet
-N800/N810 mit Maemo 4 OS2008 und das N900 mit Maemo5 OS2009. Cumulus kann
-ebenfalls auf einem PC mit einer Linux Installtion z.B. Ubuntu unter
-X11/Qt4 laufen.
+Im Augenblick unterst&uuml;tzt Cumulus die PDAs Nokia Internet Tablet
+N800/N810 mit Maemo 4 OS2008, das N900 mit Maemo5 OS2009 und Android Ger&auml;te
+ab Release Level 2.2.x (Froyo). Cumulus kann ebenfalls auf einem PC mit einer
+Linux Installtion z.B. Ubuntu laufen.
 
 <P>Wenn Cumulus gestartet wird, werden alle erforderlichen Daten
 Verzeichnisse auf Ihrem Computer automatisch angelegt, sofern sie noch nicht
@@ -78,8 +78,7 @@ Internetverbindung zur Verf&uuml;gung haben!</P>
     <li><i>/dev/ttyUSB0</i> - USB Ger&auml;t</li>
   </ul>
 
-  <p>Die NMEA Standard &Uuml;bertragungsrate betr&auml;gt 4800 bps. F&uuml;r
-  Bluetooth Ger&auml;te kann sie auch h&ouml;her liegen.</p>
+  <p>Die NMEA Standard &Uuml;bertragungsrate betr&auml;gt 4800 bps.</p>
 
   <p>
   Wenn Sie ein Nokia Internet Tablet N800, N810 oder N900 benutzen, ist es nicht
@@ -89,6 +88,19 @@ Internetverbindung zur Verf&uuml;gung haben!</P>
   eingebunden werden.
   </p>
 
+  <p>
+  Wenn Sie ein Android Ger&auml;t mit einem internen GPS Empf&auml;nger besitzen
+  m&uuml;ssen Sie nichts weiter einstellen. Externe GPS Empf&auml;nger sind
+  nur &uuml;ber Bluetooth Funk koppelbar.
+  <b>Beachten Sie die folgende Ausnahme!</b>
+  Nach jedem Cumulus Start unter Android m&uuml;ssen Sie den GPS Empfang <b>per
+  Hand selber aktivieren</b>. Dr&uuml;cken Sie dazu die Android Men&uuml;taste
+  und w&auml;hlen Sie den Eintrag <i>GPS ein</i> aus. Jetzt w&auml;hlen Sie das
+  gew&uuml;nschte Ger&auml;t aus (internes oder Bluetooth GPS). Beachten Sie,
+  ein Bluetooth GPS m&uuml;ssen Sie vor dem Cumulus Start mit Ihrem Ger&auml;t
+  gekoppelt haben, denn das wird nicht von Cumlus unterst&uuml;zt.
+  </p>
+  
   Nachdem alles verbunden und eingestellt ist, sollten Sie die Taste <b>G</b>
   dr&uuml;cken, um in den GPS Status Monitor zu wechseln. Bei korrektem Empfang
   sehen Sie hier die Satelliten Positionen und die NMEA-Datens&auml;tze im
