@@ -361,23 +361,20 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
       return;
     }
 
-  if ( _showButtons == true )
+  // set row height at each list fill - has probably changed.
+  // Note: rpMargin is a manifold of 2 to ensure symmetry
+  int rpMargin = GeneralConfig::instance()->getListDisplayRPMargin();
+
+  // qDebug( "rpMargin=%d", rpMargin );
+
+  if ( rowDelegate )
     {
-      // set row height at each list fill - has probably changed.
-      // Note: rpMargin is a manifold of 2 to ensure symmetry
-      int rpMargin = GeneralConfig::instance()->getListDisplayRPMargin();
-
-      // qDebug( "rpMargin=%d", rpMargin );
-
-      if ( rowDelegate )
-        {
-          rowDelegate->setVerticalMargin( rpMargin );
-        }
-      else
-        {
-          rowDelegate = new RowDelegate( list, rpMargin );
-          list->setItemDelegate( rowDelegate );
-        }
+      rowDelegate->setVerticalMargin( rpMargin );
+    }
+  else
+    {
+      rowDelegate = new RowDelegate( list, rpMargin );
+      list->setItemDelegate( rowDelegate );
     }
 
   // create a deep task copy
