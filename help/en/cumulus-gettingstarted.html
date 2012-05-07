@@ -25,7 +25,7 @@
   internal or an external GPS receiver and a set of map files.
   Currently Cumulus supports as hardware devices the Nokia Internet
   Tablets N800/N810 with Maemo OS2008, the N900 with Maemo OS2009 and Android
-  devices up release level 2.2. It can also run on a Linux desktop under X11/Qt4.
+  devices up release level 2.2.x. It can also run on a Linux desktop under X11/Qt4.
   </P>
 
   <P>When you start Cumulus, it will create all the necessary data
@@ -75,13 +75,24 @@
   </UL>
   </p>
   
-  The default NMEA connection speed is 4800 bps; for Bluetooth
-  devices it maybe higher. <BR><BR>If you have a Nokia Internet Tablet
+  The default NMEA connection speed is 4800 bps on a RS232 serial channel.
+  
+  <BR><BR>If you have a Nokia Internet Tablet
   N800/N810 or N900, it is not necessary to set up a special GPS
   device. Available devices will be recognized automatically during
   Cumulus start-up, unless you want to connect to a GPS device via
   USB. In this case you have to select the USB device from the GPS
-  configuration options. <BR><BR>Once your GPS device is set up, press
+  configuration options.
+  
+  <BR><BR>If you have an Android device with a built in GPS nothing has to be
+  setup. To external GPS devices is only a connection possible via Bluetooth
+  radio. <b>Note the following exception!</b> After every startup of Cumulus
+  under Android the GPS receiving <b>must be enabled by hand</b>. To do that
+  press the Android menu key, select the entry <i>GPS on</i> and choose the
+  desired device (internal or Bluetooth). Bluetooth devices must be paired
+  before Cumulus is started. Cumulus does not support BT pairing!
+  
+  <BR><BR>Once your GPS device is set up, press
   the key <I><B>G</B></I> or click on the GPS status indicator in the
   status bar to check the GPS status. You can remove the GPS status
   page with the Escape key or with the close button.
