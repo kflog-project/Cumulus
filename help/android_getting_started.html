@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- $Id$ -->
+
+<title>Getting started with Android</title>
+
+<style type="text/css">
+body { background-color:#CCF2FF; }
+</style>
+
+</head>
+<body background-color="#CCF2FF">
+
+	<H3 ALIGN=CENTER>Getting started with Android</H3>
+
+	<h4>Preconditions</h4>
+
+	<ul>
+		<li>The usage of Cumulus on an Android device is only useful with
+			a screen of at least 800 x 480 pixels in landscape mode. Furthermore
+			we recommend a screen diagonal greater than 4" otherwise you have
+			problems to use your fingers for the operation.
+		<li>The device must run Android Release 2.2.x (Froyo) or higher.
+		<li>The screen should be good readable in sunshine.
+		<li>An external storage medium (SD-Card) is needed for storing of
+			map and flight data.
+		<li>If no internal GPS receiver is available Bluetooth radio is a
+			must for connection to external BT GPS devices.
+		<li>Optional your device should have a Wireless Ethernet
+			connection to access the Internet for data downloads.
+		<li>During longer flights you need an external power supply.
+		<li>A device mount is recommended for usage in flight.
+	</ul>
+
+	<h4>Package download and installation</h4>
+
+	The last release package is to find
+
+	<a href="http://www.kflog.org/fileadmin/user_upload/cumulus_snapshots/Android/">here</a>.
+
+	Download the package
+
+	<a href="http://www.kflog.org/fileadmin/user_upload/cumulus_snapshots/Android/Cumulus4Android-release.apk">
+  Cumulus4Android-release.apk</a> and install it on your device. Because the
+	package is not provided on the Google market, you have to enable the
+	installation of non market applications before to get installed
+	Cumulus.
+	
+	<h4>Permissions required by Cumulus</h4>
+	
+	Cumulus requires the following system permissions:
+	
+	<ul>
+	  <li>Location service updates
+	  <li>Internet access
+	  <li>Bluetooth and Bluetooth administration
+	  <li>Wakelock
+	  <li>Read and write access for the SD-card
+	</ul>
+
+	<h4>First startup of Cumulus</h4>
+
+	On the first run of Cumulus you should have an Internet connection
+	running because Cumulus requires the installation of the
+	<i>Ministro</i> App. Ministro is the Qt library distributor. If you
+	cancel the installation, Cumulus is not runable. Furthermore the needed
+	maps and the Welt2000 data file are automatically dowloaded from the
+	KFLog server, if you allow that.
+
+	<h4>Configuration of Cumulus</h4>
+
+	<p>
+		If you set your home position and your flying radius you should have
+		an Internet connection running that all the required maps can be
+		downloaded automatically. The maps and all your other data are
+		installed at the SD-card under the root path <i>/sdcard/Cumulus</i>.
+	</p>
+	<p>
+		Airspace files have to be installed in <I>/sdcard/Cumulus/maps/airspaces</I>.
+		You can download them by using your Internet browser and as
+		destination that directory.
+	</p>
+
+	<h4>GPS activation</h4>
+
+	<p>
+		When Cumulus is ready with its startup, it will be in non-GPS mode. Do
+		all your flight planning work in this mode. To switch on the GPS,
+		press the Android menu button and select the entry <i>GPS on</i>. You
+		can choose then between the internal GPS or a Bluetooth GPS. A BT GPS
+		must be paired before it can be used by Cumulus. Only via Bluetooth
+		radio you can connect external GPS devices.
+	</p>
+
+	<h4>Usage note</h4>
+
+	<p>The ported Qt part has some restrictions in its usage. Therefore
+		some GUI elements are not optimal to operate.</p>
+
+	<h4>Remarks to Android</h4>
+
+	<p>A big problem is the variety of OS releases and that the
+		manufacturers can modify the Android OS provided by Google. That can
+		cause additional problems during run-time and makes a testing not more
+		possible by us on every device and for every OS release. Also the native Qt
+		library port for Android is not yet error free.</p>
+
+	<p>
+		If you step in problems with the GUI surface you can install the app <i>Ministro
+		configuration tool</i>. In that App you can change the used Qt library
+		source. Normally <i>stable</i> is used. Try out <i>testing</i> or <i>unstable</i>
+		and see if the observed issue is fixed.
+	</p>
+
+</body>
+</html>
