@@ -15,28 +15,47 @@ body { background-color:#CCF2FF; }
 
 	<H3 ALIGN=CENTER>Getting started with Android</H3>
 
+  <h4>Introduction</h4>
+
+	Cumulus is a well established Open Source flight navigation software
+	made for (but not limited to) soaring pilots written in C++. The
+	primary hardware targets were Sharp's Zaurus devices and later Nokia's
+	Internet tablets. Both are able to run Qt software with relatively
+	little adaptation efforts which made it possible to use large parts of
+	the desktop flight preparation software	<i>KFlog</i>, created for the KDE
+	framework. The Android Lighthouse	project provides a development kit, called
+	<i>Nessecitas</i> for porting native Qt C++ applications to the Android
+	environment with little or no changes, sneaking in as native libraries
+	controlled by the JNI API (Java Native Interface).
+
 	<h4>Preconditions</h4>
 
 	<ul>
 		<li>The usage of Cumulus on an Android device is only useful with
-			a screen of at least 800 x 480 pixels in landscape mode. Furthermore
-			we recommend a screen diagonal greater than 4" otherwise you have
-			problems to use your fingers for the operation.
+			a screen resolution of at least 800 x 480 pixels in landscape mode.
+			Furthermore we recommend a screen diagonal greater than 4" otherwise
+			you have problems to use your fingers for the operation.
 		<li>The device must run Android Release 2.2.x (Froyo) or higher.
+		
 		<li>The screen should be good readable in sunshine.
+		
 		<li>An external storage medium (SD-Card) is needed for storing of
 			map and flight data.
+			
 		<li>If no internal GPS receiver is available Bluetooth radio is a
 			must for connection to external BT GPS devices.
+			
 		<li>Optional your device should have a Wireless Ethernet
 			connection to access the Internet for data downloads.
+			
 		<li>During longer flights you need an external power supply.
+		
 		<li>A device mount is recommended for usage in flight.
 	</ul>
 
 	<h4>Package download and installation</h4>
 
-	The last release package is to find
+	The last release package is to find on the Cumulus home page
 
 	<a href="http://www.kflog.org/fileadmin/user_upload/cumulus_snapshots/Android/">here</a>.
 
@@ -50,10 +69,10 @@ body { background-color:#CCF2FF; }
 	
 	<h4>Permissions required by Cumulus</h4>
 	
-	Cumulus requires the following system permissions:
+	Cumulus requires the following Android system permissions:
 	
 	<ul>
-	  <li>Location service updates
+	  <li>Location service updates (GPS)
 	  <li>Internet access
 	  <li>Bluetooth and Bluetooth administration
 	  <li>Wakelock
@@ -62,25 +81,31 @@ body { background-color:#CCF2FF; }
 
 	<h4>First startup of Cumulus</h4>
 
-	On the first run of Cumulus you should have an Internet connection
-	running because Cumulus requires the installation of the
-	<i>Ministro</i> App. Ministro is the Qt library distributor. If you
-	cancel the installation, Cumulus is not runable. Furthermore the needed
-	maps and the Welt2000 data file are automatically dowloaded from the
-	KFLog server, if you allow that.
+	On the first run of Cumulus after the installation you should have an
+	Internet connection running because Cumulus requires the installation
+	of the <i>Ministro</i> App. Ministro is the native Qt GUI library provider and
+	distributor. If you cancel the installation, Cumulus is not runable. So long
+	Cumulus is installed at your device you should not remove the Ministro App.
+	Otherwise you will requested to reinstall it.
+	
+	<p>Furthermore the needed maps and the Welt2000 data file are
+	automatically dowloaded from the Internet, if you allow that.</p>
 
 	<h4>Configuration of Cumulus</h4>
 
 	<p>
 		If you set your home position and your flying radius you should have
 		an Internet connection running that all the required maps can be
-		downloaded automatically. The maps and all your other data are
-		installed at the SD-card under the root path <i>/sdcard/Cumulus</i>.
+		downloaded automatically. The maps and all other data as waypoint files,
+		IGC logger files, flight task file, a.s.o are	installed at the SD-card under
+		the root path <i>/sdcard/Cumulus</i>. You can access this directory also
+		from your PC, if you couple your device with it via USB.
 	</p>
 	<p>
 		Airspace files have to be installed in <I>/sdcard/Cumulus/maps/airspaces</I>.
 		You can download them by using your Internet browser and as
-		destination that directory.
+		destination that directory. On the airspace setting page you can determine
+		which airspace files should be loaded during run-time by Cumulus.
 	</p>
 
 	<h4>GPS activation</h4>
@@ -91,13 +116,19 @@ body { background-color:#CCF2FF; }
 		press the Android menu button and select the entry <i>GPS on</i>. You
 		can choose then between the internal GPS or a Bluetooth GPS. A BT GPS
 		must be paired before it can be used by Cumulus. Only via Bluetooth
-		radio you can connect external GPS devices.
+		radio you can connect to an external GPS devices.
 	</p>
 
 	<h4>Usage note</h4>
 
-	<p>The ported Qt part has some restrictions in its usage. Therefore
-		some GUI elements are not optimal to operate.</p>
+	<p>The native Qt GUI part has some restrictions in its usage. Therefore
+		some GUI elements, e.g. color or font dialogs, are not optimal to operate.</p>
+		
+  <p>Cumulus provides an online help. Please have a look into it, if you have
+  questions about the usage. The
+  <a href="http://www.kflog.org/cumulus/documentation/">Online Help</a>
+  is also to find on the Cumulus web page in two languages, in English and German.
+  </p>
 
 	<h4>Remarks to Android</h4>
 
@@ -105,13 +136,18 @@ body { background-color:#CCF2FF; }
 		manufacturers can modify the Android OS provided by Google. That can
 		cause additional problems during run-time and makes a testing not more
 		possible by us on every device and for every OS release. Also the native Qt
-		library port for Android is not yet error free.</p>
+		GUI library port for Android is not yet error free.</p>
 
 	<p>
 		If you step in problems with the GUI surface you can install the app <i>Ministro
 		configuration tool</i>. In that App you can change the used Qt library
 		source. Normally <i>stable</i> is used. Try out <i>testing</i> or <i>unstable</i>
 		and see if the observed issue is fixed.
+	</p>
+	
+	<hr>
+	<p>
+	<i>Author:</i> Axel Pauli, &nbsp;&nbsp;&nbsp;<i>Last update:</i> 09. May 2012
 	</p>
 
 </body>
