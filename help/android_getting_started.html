@@ -24,8 +24,8 @@ body { background-color:#CCF2FF; }
 	little adaptation efforts which made it possible to use large parts of
 	the desktop flight preparation software	<i>KFlog</i>, created for the KDE
 	framework. The Android Lighthouse	project provides a development kit, called
-	<i>Nessecitas</i> for porting native Qt C++ applications to the Android
-	environment with little or no changes, sneaking in as native libraries
+	<i>Necessitas</i>, for integrating Qt C++ applications into the Android
+	environment with little or no changes, embedded in as native libraries
 	controlled by the JNI API (Java Native Interface).
 
 	<h4>Preconditions</h4>
@@ -81,15 +81,22 @@ body { background-color:#CCF2FF; }
 
 	<h4>First startup of Cumulus</h4>
 
-	On the first run of Cumulus after the installation you should have an
-	Internet connection running because Cumulus requires the installation
-	of the <i>Ministro</i> App. Ministro is the native Qt GUI library provider and
-	distributor. If you cancel the installation, Cumulus is not runable. So long
-	Cumulus is installed at your device you should not remove the Ministro App.
-	Otherwise you will requested to reinstall it.
-	
+	<p>
+		On the first run of Cumulus after the installation you should have an
+		Internet connection running because Cumulus requires the installation
+		of the <i>Ministro</i> App.
+	</p>
+
+	<p>Ministro is a system wide Qt shared libraries installer and
+		provider service. It acts as a bridge between your App and the needed
+		Qt libraries.</p>
+
+	<p>If you cancel the installation, Cumulus is not runable. So long
+		Cumulus is installed at your device you should not remove the Ministro
+		App. Otherwise you will be requested to reinstall it.</p>
+
 	<p>Furthermore the needed maps and the Welt2000 data file are
-	automatically dowloaded from the Internet, if you allow that.</p>
+		automatically dowloaded from the Internet, if you allow that.</p>
 
 	<h4>Configuration of Cumulus</h4>
 
@@ -147,7 +154,7 @@ body { background-color:#CCF2FF; }
 	
 	<hr>
 	<p>
-	<i>Author:</i> Axel Pauli, &nbsp;&nbsp;&nbsp;<i>Last update:</i> 09. May 2012
+	<i>Author:</i> Axel Pauli, &nbsp;&nbsp;&nbsp;<i>Last update:</i> 10. May 2012
 	</p>
 
 </body>
