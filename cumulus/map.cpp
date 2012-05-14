@@ -552,7 +552,7 @@ void Map::mouseMoveEvent( QMouseEvent* event )
     {
       QPoint dist = _beginMapMove - event->pos();
 
-      if( dist.manhattanLength() > 20 )
+      if( dist.manhattanLength() > 25 )
         {
           // On the N810/N900 we get a lot of move events also on a single
           // mouse press and release action. If we do not filter that,

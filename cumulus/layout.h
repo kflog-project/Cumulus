@@ -33,7 +33,52 @@
 
 #include <QtGui>
 
-#if defined (MAEMO) || defined (ANDROID)
+#if defined MAEMO
+
+#define IconSize 32
+#define ButtonSize 80
+
+// Snap radius size on the map
+#define SnapRadius 25
+
+// Plus and minus button size at the map
+#define MapPMButtonSize 70
+
+// Dialog font size in pixels
+#define DialogMinFontSize 22
+
+// Statusbar font height in pixels
+#define StatusbarFontHeight 25
+
+// GUI font height in pixels
+#define GuiFontHeight 24
+
+// GUI menu font height in pixels
+#define GuiMenuFontHeight 32
+
+// Map scale bar font height in pixels
+#define MapScalebarFontHeight 20
+
+// Map label font point size
+#define MapLabelFontPointSize 20
+
+// Map city label font point size
+#define MapCityLabelFontPointSize 10
+
+// Map bearing indicator font point size
+#define MapBearingIndicatorFontPointSize 12
+
+// Map Flarm painter font height in pixels
+#define MapFlarmPainterFontHeight 24
+
+// Flarm display painter font height in pixels
+#define FlarmDisplayPainterFontPixelSize 24
+
+// WhatsThat font point size
+#define WhatsThatFontPointSize 20
+
+#elif defined ANDROID
+
 #define IconSize 32
 #define ButtonSize 80
 
