@@ -35,6 +35,8 @@
 
 #if defined MAEMO
 
+// @AP: It seems that under Maemo point size and pixel size to be identically
+
 #define IconSize 32
 #define ButtonSize 80
 
@@ -66,7 +68,7 @@
 #define MapCityLabelFontPointSize 10
 
 // Map bearing indicator font point size
-#define MapBearingIndicatorFontPointSize 12
+#define MapBearingIndicatorFontPointSize 20
 
 // Map Flarm painter font height in pixels
 #define MapFlarmPainterFontHeight 24
