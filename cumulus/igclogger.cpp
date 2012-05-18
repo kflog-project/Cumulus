@@ -44,7 +44,7 @@ IgcLogger::IgcLogger(QObject* parent) :
   QObject(parent),
   closeTimer(0),
   _kRecordLogging(false),
-  _backtrack( LimitedList<QStringList>(30) ),
+  _backtrack( LimitedList<QStringList>(60) ),
   _flightMode( Calculator::unknown)
 {
   if ( GeneralConfig::instance()->getLoggerAutostartMode() )
@@ -471,7 +471,7 @@ void IgcLogger::writeHeader()
   _stream << "HFRFWFIRMWAREVERION: " << QCoreApplication::applicationVersion() << "\r\n";
   _stream << "HFRHWHARDWAREVERSION: " << HwInfo::instance()->getTypeString() << "\r\n" ;
   _stream << "HFFTYFRTYPE: Cumulus Version: " << QCoreApplication::applicationVersion()
-          << ", Qt/X11 Version: " << qVersion() << "\r\n";
+          << ", Qt Version: " << qVersion() << "\r\n";
   _stream << "HFGPS: UNKNOWN\r\n";
   _stream << "HFPRSPRESSALTSENSOR: UNKNOWN\r\n";
   _stream << "HSCIDCOMPETITIONID: " << gliderCallSign << "\r\n";
