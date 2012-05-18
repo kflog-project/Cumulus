@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -38,7 +38,7 @@
  * which may be overridden by child classes if needed. The default
  * implementation removes the oldest item from the list.
  *
- * \date 2002-2010
+ * \date 2002-2012
  */
 
 template <class type>
@@ -73,6 +73,13 @@ public:
    * @param limit The new limit of the list.
    */
   void setLimit( const int limit );
+
+  /**
+   * Gets the set limit of the list.
+   *
+   * @return The set limit of the list.
+   */
+  int getLimit() const;
 
  protected:
 
@@ -142,7 +149,6 @@ int LimitedList<type>::getLeastImportantItemIndex() const
   return QList<type>::count() - 1;
 }
 
-
 template <class type>
 void LimitedList<type>::setLimit( const int limit )
 {
@@ -161,6 +167,12 @@ void LimitedList<type>::setLimit( const int limit )
       int idx = getLeastImportantItemIndex();
       QList<type>::removeAt( idx );
     }
+}
+
+template <class type>
+int LimitedList<type>::getLimit() const
+{
+  return _limit;
 }
 
 #endif
