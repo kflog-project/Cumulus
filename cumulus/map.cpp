@@ -927,7 +927,7 @@ void Map::__drawTrail()
 {
   static uint counter = 0;
 
-  QTime t; t.start();
+  // QTime t; t.start();
 
   int sampleCnt = m_tailPoints.size();
 
@@ -974,12 +974,6 @@ void Map::__drawTrail()
       return;
     }
 
-  QPainter p;
-  p.begin( &m_pixInformationMap );
-
-  QPen pen( Qt::black, 3 );
-  p.setPen(pen);
-
   // view port rectangle
   QRect rect( QPoint(0, 0), size() );
 
@@ -990,22 +984,36 @@ void Map::__drawTrail()
 
   counter++;
 
+  QPainterPath pp;
+  pp.moveTo( startPos.x(), startPos.y() );
+
   while( loop < sampleCnt )
     {
       QPoint pos = m_tailPoints.at(loop);
 
       if( rect.contains( startPos ) || rect.contains( pos ) )
         {
-          p.drawLine( startPos, pos );
+          //p.drawLine( startPos, pos );
+          pp.lineTo( pos.x(), pos.y() );
         }
 
       startPos = pos;
       loop += step;
     }
 
-  p.end();
+  if( pp.isEmpty() == false )
+    {
+      QPainter p;
+      p.begin( &m_pixInformationMap );
 
-  qDebug("Tail, drawTime=%d ms", t.elapsed());
+      QPen pen( Qt::black, 3 );
+      p.setPen(pen);
+
+      p.drawPath(pp);
+      p.end();
+    }
+
+  // qDebug("Tail, drawTime=%d ms", t.elapsed());
 }
 
 void Map::__calculateTrailPoints()
