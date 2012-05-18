@@ -1442,7 +1442,7 @@ void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
       newFlightMode(flightMode);
     }
 
-  if ( newState == GpsNmea::noFix )
+  if ( newState != GpsNmea::validFix )
     {
       // Reset LD display
       emit newLD( -1.0, -1.0 );

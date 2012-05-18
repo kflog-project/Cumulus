@@ -1807,14 +1807,20 @@ class GeneralConfig : protected QSettings
   }
 
   /**
-   * Draw a trail?
+   * Draw a trail
    */
-  UseInMode getDrawTrail() {return _drawTrail;};
+  bool getDrawTrail() const
+  {
+    return _drawTrail;
+  };
 
   /**
    * Sets whether to draw a trail or not.
    */
-  void setDrawTrail(UseInMode draw) {_drawTrail = draw;};
+  void setDrawTrail( bool draw )
+  {
+    _drawTrail = draw;
+  };
 
   /** Gets the arrival altitude display selection. */
   enum ArrivalAltitudeDisplay getArrivalAltitudeDisplay() const
@@ -2279,7 +2285,7 @@ class GeneralConfig : protected QSettings
   // Map LoadForests
   bool _mapLoadForests;
   // Map trail
-  UseInMode _drawTrail;
+  bool _drawTrail;
 
   // Map Lower Limit
   int _mapLowerLimit;

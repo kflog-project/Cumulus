@@ -50,7 +50,6 @@
 #include "airspace.h"
 #include "airregion.h"
 #include "flighttask.h"
-#include "limitedlist.h"
 
 #ifdef FLARM
 #include "flarm.h"
@@ -387,16 +386,15 @@ private:
   void __drawWaypoints(QPainter *wpPainter, QList<Waypoint*> &drawnWp);
 
   /**
-   * Draws a trail indicating the flight path taken, if that feature
-   * is turned on. (CURRENTLY TURNED OFF)
+   * Draws a trail indicating the flight path taken.
    */
   void __drawTrail();
 
   /**
-   * Calculates the tails points to be used for tail drawing. This method must
-   * be called after a projection change.
+   * Calculates the trails points to be used for trail drawing. This method must
+   * be always called after a projection change.
    */
-  void __calculateTailPoints();
+  void __calculateTrailPoints();
 
   /**
    * Draws a label with additional information on demand beside a map icon.
@@ -664,7 +662,10 @@ protected:
   QList<BaseMapElement *> m_drawnCityList;
 
   /** List of mapped positions for tail drawing */
-  LimitedList<QPoint> m_tailPoints;
+  QList<QPoint> m_tailPoints;
+
+  /** maximum length of tail list */
+  const int TailListLength;
 
 public:
 

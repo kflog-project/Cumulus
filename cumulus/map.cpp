@@ -61,7 +61,7 @@ extern MapView     *_globalMapView;
 Map *Map::instance = static_cast<Map *>(0);
 
 Map::Map(QWidget* parent) : QWidget(parent),
-  m_tailPoints( LimitedList<QPoint>(150) )
+  TailListLength( 240 )
 {
 //  qDebug( "Map::Map parent window size is %dx%d, width=%d, height=%d",
 //          size().width(),
@@ -925,18 +925,52 @@ void Map::__drawPlannedTask( QPainter *taskP, QList<Waypoint*> &drawnWp )
  */
 void Map::__drawTrail()
 {
-  qDebug() << "Map::__drawTrail(): m_tailPoints.size()=" << m_tailPoints.size();
+  static uint counter = 0;
 
-  if( GeneralConfig::instance()->getDrawTrail() == false ||
-      m_tailPoints.size() < 5 )
-    {
-      // return;
-    }
+  QTime t; t.start();
 
   int sampleCnt = m_tailPoints.size();
 
-  if( sampleCnt < 2 )
+  if( GeneralConfig::instance()->getDrawTrail() == false || sampleCnt < 10 )
     {
+      return;
+    }
+
+  int step = 2;
+
+  double scale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
+
+  if( scale < 12 )
+    {
+      step = 1;
+    }
+  else if( scale < 15 )
+    {
+      step = 2;
+    }
+  else if( scale < 20 )
+    {
+      step = 3;
+    }
+  else if( scale < 30 )
+    {
+      step = 5;
+    }
+  else if( scale < 40 )
+    {
+      step = 8;
+    }
+  else if( scale < 100 )
+    {
+      step = 10;
+    }
+  else if( scale < 200 )
+    {
+      step = 20;
+    }
+  else
+    {
+      // draw nothing up to this scale
       return;
     }
 
@@ -946,54 +980,61 @@ void Map::__drawTrail()
   QPen pen( Qt::black, 3 );
   p.setPen(pen);
 
-  QPoint startPos = m_tailPoints.at(0);
-  int loop = 1;
+  // view port rectangle
+  QRect rect( QPoint(0, 0), size() );
+
+  // define start conditions
+  QPoint startPos = m_tailPoints.at(counter % step);
+
+  int loop = (counter % step) + step;
+
+  counter++;
 
   while( loop < sampleCnt )
     {
       QPoint pos = m_tailPoints.at(loop);
-      p.drawLine( startPos, pos );
+
+      if( rect.contains( startPos ) || rect.contains( pos ) )
+        {
+          p.drawLine( startPos, pos );
+        }
+
       startPos = pos;
-      loop += 1;
+      loop += step;
     }
 
   p.end();
+
+  qDebug("Tail, drawTime=%d ms", t.elapsed());
 }
 
-
-void Map::__calculateTailPoints()
+void Map::__calculateTrailPoints()
 {
-  qDebug() << "Map::__calculateTailPoints(): m_tailPoints.getLimit()=" << m_tailPoints.getLimit();
-
   if( GeneralConfig::instance()->getDrawTrail() == false )
     {
-      // return;
+      return;
     }
 
   // clears the tail point list because map projection has been changed.
   m_tailPoints.clear();
 
-  QTime minTime = QDateTime::currentDateTimeUtc().time().addSecs(- m_tailPoints.getLimit() );
+  QTime minTime = QDateTime::currentDateTimeUtc().time().addSecs(- TailListLength );
 
   int loop = 0;
   int sampleCnt = calculator->samplelist.count();
-  int tailLimit = m_tailPoints.getLimit();
-
-  qDebug() << "sampleCnt=" << sampleCnt;
 
   while( loop < sampleCnt &&
-          loop < tailLimit &&
+          loop < TailListLength &&
           calculator->samplelist.at(loop).time >= minTime )
     {
       // Map WGS84 position to map projection
       const QPoint& pos = _globalMapMatrix->map(_globalMapMatrix->wgsToMap(calculator->samplelist.at(loop).position));
-      m_tailPoints.add( pos );
-      loop++;
 
-      qDebug() << "adding loop=" << loop-1 << "Time=" << calculator->samplelist.at(loop).position;
+      // newest positions at first, oldest at last
+      m_tailPoints.append( pos );
+      loop++;
     }
 }
-
 
 void Map::setDrawing(bool isEnable)
 {
@@ -1244,7 +1285,7 @@ void Map::__drawBaseLayer()
     }
 
   // calculate the tail points because projection has been changed
-  // __calculateTailPoints();
+  __calculateTrailPoints();
 }
 
 /**
@@ -2475,7 +2516,12 @@ void Map::__drawGlider()
   if( GeneralConfig::instance()->getDrawTrail() == true )
     {
       // Add the mapped point at the beginning of the tail point list.
-      m_tailPoints.add( mapPos );
+      m_tailPoints.prepend( mapPos );
+
+      if( m_tailPoints.length() > TailListLength )
+        {
+          m_tailPoints.removeLast();
+        }
     }
 
   int rot=calcGliderRotation();

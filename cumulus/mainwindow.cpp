@@ -964,14 +964,20 @@ void MainWindow::createMenuBar()
   viewMenu->addAction( actionViewGPSStatus );
 
   labelMenu = menuBar()->addMenu( tr("Toggles"));
-  labelMenu->addAction( actionToggleAfLabels );
-  labelMenu->addAction( actionToggleOlLabels );
-  labelMenu->addAction( actionToggleTpLabels );
-  labelMenu->addAction( actionToggleWpLabels );
-  labelMenu->addAction( actionToggleLabelsInfo );
+  labelSubMenu = labelMenu->addMenu( tr("Labels"));
+  labelSubMenu->addAction( actionToggleAfLabels );
+  labelSubMenu->addAction( actionToggleOlLabels );
+  labelSubMenu->addAction( actionToggleTpLabels );
+  labelSubMenu->addAction( actionToggleWpLabels );
+  labelSubMenu->addAction( actionToggleLabelsInfo );
   labelMenu->addSeparator();
+
+#ifndef ANDROID
+  labelMenu->addAction( actionToggleGps );
+#endif
+
   labelMenu->addAction( actionToggleLogging );
-  labelMenu->addAction( actionToggleManualInFlight );
+  labelMenu->addAction( actionToggleTrailDrawing );
   labelMenu->addSeparator();
   labelMenu->addAction( actionToggleWindowSize );
   labelMenu->addAction( actionToggleStatusbar );
@@ -1015,7 +1021,7 @@ void MainWindow::slotSetMenuBarFontSize()
     }
 
   qDebug() << "MenuFont PointSize=" << userFont.pointSize()
-           << "FontHeight=" << QFontMetrics(userFont).boundingRect("XM").height();
+            << "FontHeight=" << QFontMetrics(userFont).boundingRect("XM").height();
 
   GeneralConfig::instance()->setGuiMenuFont( userFont.toString() );
   GeneralConfig::instance()->save();
@@ -1029,6 +1035,7 @@ void MainWindow::slotSetMenuBarFontSize()
   if( setupMenu ) setupMenu->setFont( userFont );
   if( helpMenu ) helpMenu->setFont( userFont );
   if( labelMenu ) labelMenu->setFont( userFont );
+  if( labelSubMenu ) labelSubMenu->setFont( userFont );
 }
 
 /** initializes all QActions of the application */
@@ -1219,7 +1226,7 @@ void MainWindow::createActions()
   connect ( actionZoomOutZ, SIGNAL( triggered() ),
             Map::instance , SLOT( slotZoomOut() ) );
 
-  actionToggleAfLabels = new QAction ( tr( "&Airfield labels" ), this);
+  actionToggleAfLabels = new QAction ( tr( "&Airfield" ), this);
   actionToggleAfLabels->setShortcut(Qt::Key_A);
   actionToggleAfLabels->setCheckable(true);
   actionToggleAfLabels->setChecked( GeneralConfig::instance()->getMapShowAirfieldLabels() );
@@ -1227,7 +1234,7 @@ void MainWindow::createActions()
   connect( actionToggleAfLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleAfLabels( bool ) ) );
 
-  actionToggleOlLabels = new QAction ( tr( "&Outlanding labels" ), this);
+  actionToggleOlLabels = new QAction ( tr( "&Outlanding" ), this);
   actionToggleOlLabels->setShortcut(Qt::Key_O);
   actionToggleOlLabels->setCheckable(true);
   actionToggleOlLabels->setChecked( GeneralConfig::instance()->getMapShowOutLandingLabels() );
@@ -1235,7 +1242,7 @@ void MainWindow::createActions()
   connect( actionToggleOlLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleOlLabels( bool ) ) );
 
-  actionToggleTpLabels = new QAction ( tr( "&Taskpoint labels" ), this);
+  actionToggleTpLabels = new QAction ( tr( "&Taskpoint" ), this);
   actionToggleTpLabels->setShortcut(Qt::Key_T);
   actionToggleTpLabels->setCheckable(true);
   actionToggleTpLabels->setChecked( GeneralConfig::instance()->getMapShowTaskPointLabels() );
@@ -1243,7 +1250,7 @@ void MainWindow::createActions()
   connect( actionToggleTpLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleTpLabels( bool ) ) );
 
-  actionToggleWpLabels = new QAction ( tr( "&Waypoint labels" ), this);
+  actionToggleWpLabels = new QAction ( tr( "&Waypoint" ), this);
   actionToggleWpLabels->setShortcut(Qt::Key_W);
   actionToggleWpLabels->setCheckable(true);
   actionToggleWpLabels->setChecked( GeneralConfig::instance()->getMapShowWaypointLabels() );
@@ -1251,7 +1258,7 @@ void MainWindow::createActions()
   connect( actionToggleWpLabels, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleWpLabels( bool ) ) );
 
-  actionToggleLabelsInfo = new QAction (  tr( "&Extra labels info" ), this);
+  actionToggleLabelsInfo = new QAction (  tr( "&Extra Info" ), this);
   actionToggleLabelsInfo->setShortcut(Qt::Key_E);
   actionToggleLabelsInfo->setCheckable(true);
   actionToggleLabelsInfo->setChecked( GeneralConfig::instance()->getMapShowLabelsExtraInfo() );
@@ -1265,6 +1272,13 @@ void MainWindow::createActions()
   addAction( actionToggleLogging );
   connect ( actionToggleLogging, SIGNAL( triggered() ),
             logger, SLOT( slotToggleLogging() ) );
+
+  actionToggleTrailDrawing = new QAction( tr( "Trail" ), this );
+  actionToggleTrailDrawing->setCheckable(true);
+  actionToggleTrailDrawing->setChecked( GeneralConfig::instance()->getDrawTrail() );
+  addAction( actionToggleTrailDrawing );
+  connect ( actionToggleTrailDrawing, SIGNAL( toggled( bool ) ),
+             this, SLOT( slotToggleTrailDrawing(bool) ) );
 
   actionEnsureVisible = new QAction ( tr( "Visualize waypoint" ), this );
   actionEnsureVisible->setShortcut(Qt::Key_V);
@@ -1284,13 +1298,15 @@ void MainWindow::createActions()
   connect ( actionStartFlightTask, SIGNAL( triggered() ),
             calculator, SLOT( slot_startTask() ) );
 
-  actionToggleManualInFlight = new QAction( tr( "Manual Move" ), this );
-  actionToggleManualInFlight->setShortcut(Qt::Key_M + Qt::SHIFT);
-  actionToggleManualInFlight->setEnabled(false);
-  actionToggleManualInFlight->setCheckable(true);
-  addAction( actionToggleManualInFlight );
-  connect( actionToggleManualInFlight, SIGNAL( toggled( bool ) ),
-           this, SLOT( slotToggleManualInFlight( bool ) ) );
+#ifndef ANDROID
+  actionToggleGps = new QAction( tr( "GPS On/Off" ), this );
+  actionToggleGps->setShortcut(Qt::Key_G + Qt::SHIFT);
+  actionToggleGps->setEnabled(true);
+  actionToggleGps->setCheckable(true);
+  addAction( actionToggleGps );
+  connect( actionToggleGps, SIGNAL( toggled( bool ) ),
+           this, SLOT( slotToggleGps( bool ) ) );
+#endif
 
   actionPreFlight = new QAction( tr( "Pre-flight" ), this );
   actionPreFlight->setShortcut(Qt::Key_P);
@@ -1371,7 +1387,6 @@ void  MainWindow::toggleActions( const bool toggle )
   actionNav2Home->setEnabled( toggle );
   scExit->setEnabled( toggle );
 
-  // do not toggle actionToggleManualInFlight, status may not be changed
   if( toggle )
     {
       GeneralConfig * conf = GeneralConfig::instance();
@@ -1418,6 +1433,13 @@ void MainWindow::toggleGpsNavActions( const bool toggle )
   actionGpsNavWPList->setEnabled( toggle );
   actionGpsNavZoomIn->setEnabled( toggle );
   actionGpsNavZoomOut->setEnabled( toggle );
+}
+
+void MainWindow::slotToggleTrailDrawing( bool toggle )
+{
+  actionToggleTrailDrawing->setChecked( toggle );
+  GeneralConfig::instance()->setDrawTrail( toggle );
+  GeneralConfig::instance()->save();
 }
 
 void MainWindow::slotFileQuit()
@@ -2173,6 +2195,7 @@ void MainWindow::slotReadconfig()
   actionToggleTpLabels->setChecked( conf->getMapShowTaskPointLabels() );
   actionToggleWpLabels->setChecked( conf->getMapShowWaypointLabels() );
   actionToggleLabelsInfo->setChecked( conf->getMapShowLabelsExtraInfo() );
+  actionToggleTrailDrawing->setChecked( conf->getDrawTrail() );
 
   // configure reconnect of GPS receiver in case of process stop
   QString device = conf->getGpsDevice();
@@ -2271,15 +2294,6 @@ void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )
 
       toggleManualNavActions( false );
       toggleGpsNavActions( true );
-    }
-
-  if( status == GpsNmea::validFix )
-    {
-      actionToggleManualInFlight->setEnabled( true );
-    }
-  else
-    {
-       actionToggleManualInFlight->setEnabled( false );
     }
 }
 
@@ -2482,13 +2496,21 @@ void MainWindow::slotNavigate2Home()
   calculator->slot_WaypointChange( &wp, true );
 }
 
-void MainWindow::slotToggleManualInFlight(bool on)
+void MainWindow::slotToggleGps( bool on )
 {
-  // if we have lost the GPS fix, actionToggleManualInFlight is disabled from calculator
-  // so we only can switch off if GPS fix available
-  calculator->setManualInFlight(on);
-  toggleManualNavActions( on );
-  toggleGpsNavActions( !on );
+  if( on == false )
+    {
+      GpsNmea::gps->fixNOK( "User" );
+      GpsNmea::gps->blockSignals( true );
+    }
+  else
+    {
+      GpsNmea::gps->blockSignals( false );
+      GpsNmea::gps->fixOK( "User" );
+    }
+
+  toggleManualNavActions( !on );
+  toggleGpsNavActions( on );
 }
 
 /** Used to allow or disable user keys processing during map drawing. */

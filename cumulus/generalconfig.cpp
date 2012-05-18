@@ -277,7 +277,7 @@ void GeneralConfig::load()
   _mapLoadCities                  = value( "LoadCities", true ).toBool();
   _mapLoadWaterways               = value( "LoadWaterways", true ).toBool();
   _mapLoadForests                 = value( "LoadForests", false ).toBool();
-  _drawTrail                      = (UseInMode) value( "DrawTrail", 0 ).toInt();
+  _drawTrail                      = value( "DrawTrail", false ).toBool();
   _mapShowAirfieldLabels          = value( "ShowAirfieldLabels", false ).toBool();
   _mapShowTaskPointLabels         = value( "ShowTaskPointLabels", false ).toBool();
   _mapShowOutLandingLabels        = value( "ShowOutLandingLabels", false ).toBool();
@@ -633,7 +633,7 @@ void GeneralConfig::save()
   setValue( "LoadCities", _mapLoadCities   );
   setValue( "LoadWaterways", _mapLoadWaterways );
   setValue( "LoadForests", _mapLoadForests );
-  setValue( "DrawTrail", (int)_drawTrail );
+  setValue( "DrawTrail", _drawTrail );
   setValue( "ShowAirfieldLabels", _mapShowAirfieldLabels );
   setValue( "ShowTaskPointLabels", _mapShowTaskPointLabels );
   setValue( "ShowOutLandingLabels", _mapShowOutLandingLabels );

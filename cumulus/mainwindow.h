@@ -212,8 +212,8 @@ public slots:
   void slotAlarm (const QString&, const bool sound=true);
   /** updates the list of reachable points  */
   void slotNewReachList();
-  /** use manual navigation even if GPS signal received */
-  void slotToggleManualInFlight(bool);
+  /** switch on/off GPS data processing */
+  void slotToggleGps(bool);
   /** used to allow or disable user keys processing during map drawing */
   void slotMapDrawEvent(bool);
   /** closes the config or pre-flight "dialog" */
@@ -333,6 +333,11 @@ private slots:
   void slotToggleLabelsInfo (bool toggle);
 
   /**
+   * Called if the trail drawing is toggled
+   */
+  void slotToggleTrailDrawing( bool toggle );
+
+  /**
    * Called if new prefight data were set
    */
   void slotPreFlightDataChanged();
@@ -380,7 +385,7 @@ private:
 public:
 
   /** use manual navigation even if GPS signal received */
-  QAction* actionToggleManualInFlight;
+  QAction* actionToggleGps;
 
 private:
 
@@ -418,6 +423,7 @@ private:
   QAction* actionToggleLabelsInfo;
 
   QAction* actionToggleLogging;
+  QAction* actionToggleTrailDrawing;
   QAction* actionEnsureVisible;
   QAction* actionSelectTask;
   QAction* actionPreFlight;
@@ -437,8 +443,10 @@ private:
   QMenu *viewMenu;
   /** mapMenu contains all items of the menubar entry "Map" */
   QMenu *mapMenu;
-  /** labelMenu contains all items of the menubar subentry "Label" */
+  /** labelMenu is a main menu */
   QMenu *labelMenu;
+  /** labelSubMenu contains all items of the menubar entry "Label" */
+  QMenu* labelSubMenu;
   /** setupMenu contains all items of the menubar entry "Setup" */
   QMenu *setupMenu;
   /** view_menu contains all items of the menubar entry "Help" */
