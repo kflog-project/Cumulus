@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-05-18 AP: Logger backtrack storage changed from 30 to 60 entries. The
+                   backtrack storage saves the logger records before a take off
+                   is recognized in auto mode to have a good ground line.
+
 [o] 2012-05-04 AP: Under Android a Qt window splitter is not operable with
                    fingers. Therefore I changed the window layout of the preflight
                    task page. Now only the listed task are to see, if you enter

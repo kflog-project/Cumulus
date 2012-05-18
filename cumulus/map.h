@@ -50,6 +50,7 @@
 #include "airspace.h"
 #include "airregion.h"
 #include "flighttask.h"
+#include "limitedlist.h"
 
 #ifdef FLARM
 #include "flarm.h"
@@ -392,6 +393,12 @@ private:
   void __drawTrail();
 
   /**
+   * Calculates the tails points to be used for tail drawing. This method must
+   * be called after a projection change.
+   */
+  void __calculateTailPoints();
+
+  /**
    * Draws a label with additional information on demand beside a map icon.
    */
   void __drawLabel( QPainter* painter,          // painter to be used
@@ -451,7 +458,7 @@ private:
   void __drawScale(QPainter& scaleP);
 
   /**
-   * Draws the Xsymbol on the pixmap
+   * Draws the X symbol on the pixmap
    */
   void __drawX();
 
@@ -655,6 +662,9 @@ protected:
 
   /** List of drawn cities. */
   QList<BaseMapElement *> m_drawnCityList;
+
+  /** List of mapped positions for tail drawing */
+  LimitedList<QPoint> m_tailPoints;
 
 public:
 

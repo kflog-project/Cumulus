@@ -18,7 +18,7 @@
  ***********************************************************************/
 
 #include <ctype.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <cmath>
 
 #include <QtGui>
@@ -60,7 +60,8 @@ extern MapView     *_globalMapView;
 
 Map *Map::instance = static_cast<Map *>(0);
 
-Map::Map(QWidget* parent) : QWidget(parent)
+Map::Map(QWidget* parent) : QWidget(parent),
+  m_tailPoints( LimitedList<QPoint>(150) )
 {
 //  qDebug( "Map::Map parent window size is %dx%d, width=%d, height=%d",
 //          size().width(),
@@ -69,7 +70,6 @@ Map::Map(QWidget* parent) : QWidget(parent)
 //          size().height() );
 
   setObjectName("Map");
-
   instance = this;
   _isEnable = false;  // Disable map redrawing at startup
   _isResizeEvent = false;
@@ -920,44 +920,80 @@ void Map::__drawPlannedTask( QPainter *taskP, QList<Waypoint*> &drawnWp )
   task->drawTask( taskP, drawnWp );
 }
 
-
 /**
  * Draw a trail displaying the flight path if feature is turned on
  */
 void Map::__drawTrail()
 {
-  if (!calculator->matchesFlightMode(GeneralConfig::instance()->getDrawTrail()))
-    return;
+  qDebug() << "Map::__drawTrail(): m_tailPoints.size()=" << m_tailPoints.size();
 
-  if (calculator->samplelist.count() < 5)
+  if( GeneralConfig::instance()->getDrawTrail() == false ||
+      m_tailPoints.size() < 5 )
+    {
+      // return;
+    }
+
+  int sampleCnt = m_tailPoints.size();
+
+  if( sampleCnt < 2 )
     {
       return;
     }
 
   QPainter p;
-  p.begin(&m_pixInformationMap);
+  p.begin( &m_pixInformationMap );
 
-  QPen pen1(Qt::black, 3);
+  QPen pen( Qt::black, 3 );
+  p.setPen(pen);
 
-  QTime minTime=QTime::currentTime().addSecs(-150);
-  //minTime.addSecs(-maxSecs);
-  QPoint pos;
-  QPoint lastPos;
-  uint loop = 0;
-  uint sampleCnt = calculator->samplelist.count();
-  lastPos = _globalMapMatrix->map(_globalMapMatrix->wgsToMap(calculator->samplelist.at(0).position));
-  p.setPen(pen1);
+  QPoint startPos = m_tailPoints.at(0);
+  int loop = 1;
 
-  while (loop < sampleCnt && calculator->samplelist.at(loop).time >= minTime)
+  while( loop < sampleCnt )
     {
-      pos = _globalMapMatrix->map(_globalMapMatrix->wgsToMap(calculator->samplelist.at(loop).position));
-      p.drawLine(pos,lastPos);
-      lastPos=pos;
-
-      loop += 5;
+      QPoint pos = m_tailPoints.at(loop);
+      p.drawLine( startPos, pos );
+      startPos = pos;
+      loop += 1;
     }
+
   p.end();
 }
+
+
+void Map::__calculateTailPoints()
+{
+  qDebug() << "Map::__calculateTailPoints(): m_tailPoints.getLimit()=" << m_tailPoints.getLimit();
+
+  if( GeneralConfig::instance()->getDrawTrail() == false )
+    {
+      // return;
+    }
+
+  // clears the tail point list because map projection has been changed.
+  m_tailPoints.clear();
+
+  QTime minTime = QDateTime::currentDateTimeUtc().time().addSecs(- m_tailPoints.getLimit() );
+
+  int loop = 0;
+  int sampleCnt = calculator->samplelist.count();
+  int tailLimit = m_tailPoints.getLimit();
+
+  qDebug() << "sampleCnt=" << sampleCnt;
+
+  while( loop < sampleCnt &&
+          loop < tailLimit &&
+          calculator->samplelist.at(loop).time >= minTime )
+    {
+      // Map WGS84 position to map projection
+      const QPoint& pos = _globalMapMatrix->map(_globalMapMatrix->wgsToMap(calculator->samplelist.at(loop).position));
+      m_tailPoints.add( pos );
+      loop++;
+
+      qDebug() << "adding loop=" << loop-1 << "Time=" << calculator->samplelist.at(loop).position;
+    }
+}
+
 
 void Map::setDrawing(bool isEnable)
 {
@@ -1206,6 +1242,9 @@ void Map::__drawBaseLayer()
     {
       _drawCityLabels( m_pixBaseMap );
     }
+
+  // calculate the tail points because projection has been changed
+  // __calculateTailPoints();
 }
 
 /**
@@ -1332,21 +1371,12 @@ void Map::__drawInformationLayer()
 {
   m_pixInformationMap = m_pixNavigationMap;
 
-  // draw the trail (if enabled)
-  __drawTrail();
-
-  // draw the wind arrow, if pixmap was initialized by slot slotNewWind
-  if( ! windArrow.isNull() )
-    {
-      QPainter p(&m_pixInformationMap);
-      p.drawPixmap( 8, 8, windArrow );
-    }
-
   // Draw a glider symbol on the map if GPS has a fix and no manual mode
   // is selected by the user.
   if( ShowGlider && calculator->isManualInFlight() == false)
     {
       __drawGlider();
+      __drawTrail();
 
 #ifdef FLARM
       __drawOtherAircraft();
@@ -1359,6 +1389,13 @@ void Map::__drawInformationLayer()
   if( ShowGlider == false || calculator->isManualInFlight() )
     {
       __drawX();
+    }
+
+  // draw the wind arrow, if pixmap was initialized by slot slotNewWind
+  if( ! windArrow.isNull() )
+    {
+      QPainter p(&m_pixInformationMap);
+      p.drawPixmap( 8, 8, windArrow );
     }
 
   // Draw the zoom buttons at the map
@@ -2433,6 +2470,12 @@ void Map::__drawGlider()
   if( ! rect.contains( Rx, Ry, false ) )
     {
       return;
+    }
+
+  if( GeneralConfig::instance()->getDrawTrail() == true )
+    {
+      // Add the mapped point at the beginning of the tail point list.
+      m_tailPoints.add( mapPos );
     }
 
   int rot=calcGliderRotation();
