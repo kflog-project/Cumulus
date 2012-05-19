@@ -1639,7 +1639,11 @@ void MainWindow::slotToggleMenu()
 
 void MainWindow::slotShowContextMenu()
 {
+#if defined ANDROID || defined MAEMO
+  contextMenu->exec(QPoint(0,0));
+#else
   contextMenu->exec(mapToGlobal(QPoint(0,0)));
+#endif
 }
 
 void MainWindow::slotToggleAfLabels( bool toggle )
