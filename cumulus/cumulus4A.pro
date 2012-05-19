@@ -42,6 +42,9 @@ CONFIG += internet
 # next line with a hash
 CONFIG += welt2000thread
 
+# Enable classical menu bar, if define is set. Otherwise a context menu is used.
+# DEFINES += USE_MENUBAR
+
 HEADERS = \
     aboutwidget.h \
     airfieldlistview.h \

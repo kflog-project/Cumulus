@@ -257,9 +257,14 @@ protected:
   void toggleGpsNavActions( const bool toggle );
 
   /**
-   * No descriptions
+   * Creates the menu bar
    */
   void createMenuBar();
+
+  /**
+   * Creates the context menu
+   */
+  void createContextMenu();
 
   /**
    * Make sure the user really wants to quit by asking
@@ -291,6 +296,11 @@ private slots:
    * Called to toggle the menu bar.
    */
   void slotToggleMenu();
+
+  /**
+   * Called to show the context menu.
+   */
+  void slotShowContextMenu();
 
   /**
    * Called to toggle the window size.
@@ -403,7 +413,7 @@ private:
   QAction* actionGpsNavZoomIn;
   QAction* actionGpsNavZoomOut;
   QAction* actionMenuBarToggle;
-  QAction* actionToggleMenu;
+  QAction* actionShowContextMenu;
   QAction* actionFileQuit;
   QAction* actionViewInfo;
   QAction* actionViewWaypoints;
@@ -437,6 +447,9 @@ private:
   /* shortcut for exit application */
   QShortcut* scExit;
 
+  /** Context main menu */
+  QMenu *contextMenu;
+
   /** fileMenu contains all items of the menubar entry "File" */
   QMenu *fileMenu;
   /** viewMenu contains all items of the menubar entry "View" */
@@ -449,8 +462,9 @@ private:
   QMenu* labelSubMenu;
   /** setupMenu contains all items of the menubar entry "Setup" */
   QMenu *setupMenu;
-  /** view_menu contains all items of the menubar entry "Help" */
+  /** helpMemu contains all items of the menubar entry "Help" */
   QMenu *helpMenu;
+
   // Wait screen
   QPointer<WaitScreen> ws;
   // Holds temporary the config or pre-flight widgets

@@ -15,6 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2012-05-19 AP: Classical menubar replaced by a context popup menu. That
+                   prevents that the space of the map display is reduced when
+                   the menu is opened.
+
+[+] 2012-05-19 AP: Flight trail drawing introduced. The last 4 minutes are drawn
+                   as trail on the map. Trail drawing can switched on/off via
+                   the context menu.
+
 [o] 2012-05-18 AP: Logger backtrack storage changed from 30 to 60 entries. The
                    backtrack storage saves the logger records before a take off
                    is recognized in auto mode to have a good ground line.
