@@ -61,7 +61,7 @@ extern MapView     *_globalMapView;
 Map *Map::instance = static_cast<Map *>(0);
 
 Map::Map(QWidget* parent) : QWidget(parent),
-  TailListLength( 240 )
+  TrailListLength( 240 )
 {
 //  qDebug( "Map::Map parent window size is %dx%d, width=%d, height=%d",
 //          size().width(),
@@ -70,6 +70,7 @@ Map::Map(QWidget* parent) : QWidget(parent),
 //          size().height() );
 
   setObjectName("Map");
+
   instance = this;
   _isEnable = false;  // Disable map redrawing at startup
   _isResizeEvent = false;
@@ -929,17 +930,18 @@ void Map::__drawTrail()
 
   // QTime t; t.start();
 
-  int sampleCnt = m_tailPoints.size();
+  int pointCnt = m_trailPoints.size();
 
-  if( GeneralConfig::instance()->getDrawTrail() == false || sampleCnt < 10 )
+  if( GeneralConfig::instance()->getDrawTrail() == false || pointCnt < 15 )
     {
       return;
     }
 
   int step = 2;
 
-  double scale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
+  double scale = _globalMapMatrix->getScale( MapMatrix::CurrentScale );
 
+  // Set step width according to map scale. The values are nearly seconds.
   if( scale < 12 )
     {
       step = 1;
@@ -978,38 +980,48 @@ void Map::__drawTrail()
   QRect rect( QPoint(0, 0), size() );
 
   // define start conditions
-  QPoint startPos = m_tailPoints.at(counter % step);
+  int startIdx = counter % step;
+  QPoint startPos = m_trailPoints.at( startIdx );
 
-  int loop = (counter % step) + step;
+  int loop = startIdx + step;
 
   counter++;
 
-  QPainterPath pp;
-  pp.moveTo( startPos.x(), startPos.y() );
-
-  while( loop < sampleCnt )
+  if( startIdx == 0 || m_tpp.isEmpty() )
     {
-      QPoint pos = m_tailPoints.at(loop);
-
-      if( rect.contains( startPos ) || rect.contains( pos ) )
+      // Start a recalculation of the trail if start index is zero.
+      if( ! m_tpp.isEmpty() )
         {
-          //p.drawLine( startPos, pos );
-          pp.lineTo( pos.x(), pos.y() );
+          // reset painter path
+          m_tpp = QPainterPath();
         }
 
-      startPos = pos;
-      loop += step;
+      m_tpp.moveTo( startPos.x(), startPos.y() );
+
+      while( loop < pointCnt )
+        {
+          QPoint pos = m_trailPoints.at(loop);
+
+          if( rect.contains( startPos ) || rect.contains( pos ) )
+            {
+              m_tpp.lineTo( pos.x(), pos.y() );
+            }
+
+          startPos = pos;
+          loop += step;
+        }
     }
 
-  if( pp.isEmpty() == false )
+  if( m_tpp.isEmpty() == false )
     {
+      // draw the trail
       QPainter p;
       p.begin( &m_pixInformationMap );
 
       QPen pen( Qt::black, 3 );
       p.setPen(pen);
 
-      p.drawPath(pp);
+      p.drawPath(m_tpp);
       p.end();
     }
 
@@ -1018,28 +1030,34 @@ void Map::__drawTrail()
 
 void Map::__calculateTrailPoints()
 {
+  // clears the trail point list because map projection has been changed.
+  m_trailPoints.clear();
+
+  // reset trail point painter path
+  if( ! m_tpp.isEmpty() )
+    {
+      m_tpp = QPainterPath();
+    }
+
   if( GeneralConfig::instance()->getDrawTrail() == false )
     {
       return;
     }
 
-  // clears the tail point list because map projection has been changed.
-  m_tailPoints.clear();
-
-  QTime minTime = QDateTime::currentDateTimeUtc().time().addSecs(- TailListLength );
+  QTime minTime = QDateTime::currentDateTimeUtc().time().addSecs(- TrailListLength );
 
   int loop = 0;
   int sampleCnt = calculator->samplelist.count();
 
   while( loop < sampleCnt &&
-          loop < TailListLength &&
+          loop < TrailListLength &&
           calculator->samplelist.at(loop).time >= minTime )
     {
       // Map WGS84 position to map projection
       const QPoint& pos = _globalMapMatrix->map(_globalMapMatrix->wgsToMap(calculator->samplelist.at(loop).position));
 
       // newest positions at first, oldest at last
-      m_tailPoints.append( pos );
+      m_trailPoints.append( pos );
       loop++;
     }
 }
@@ -2524,11 +2542,11 @@ void Map::__drawGlider()
   if( GeneralConfig::instance()->getDrawTrail() == true )
     {
       // Add the mapped point at the beginning of the tail point list.
-      m_tailPoints.prepend( mapPos );
+      m_trailPoints.prepend( mapPos );
 
-      if( m_tailPoints.length() > TailListLength )
+      if( m_trailPoints.length() > TrailListLength )
         {
-          m_tailPoints.removeLast();
+          m_trailPoints.removeLast();
         }
     }
 

@@ -1301,8 +1301,9 @@ void MainWindow::createActions()
 #ifndef ANDROID
   actionToggleGps = new QAction( tr( "GPS On/Off" ), this );
   actionToggleGps->setShortcut(Qt::Key_G + Qt::SHIFT);
-  actionToggleGps->setEnabled(true);
   actionToggleGps->setCheckable(true);
+  actionToggleGps->setChecked(true);
+  actionToggleGps->setEnabled(true);
   addAction( actionToggleGps );
   connect( actionToggleGps, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleGps( bool ) ) );
@@ -1507,6 +1508,15 @@ void MainWindow::slotToggleMenu()
 {
   if ( !menuBar()->isVisible() )
     {
+      if( calculator->moving() )
+        {
+          actionToggleGps->setEnabled(false);
+        }
+      else
+        {
+          actionToggleGps->setEnabled(true);
+        }
+
       menuBarVisible = true;
       menuBar()->setVisible( true );
     }

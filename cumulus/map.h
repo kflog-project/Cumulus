@@ -37,6 +37,7 @@
 #include <QWidget>
 #include <QBitmap>
 #include <QTimer>
+#include <QPainterPath>
 #include <QPixmap>
 #include <QString>
 #include <QList>
@@ -661,11 +662,14 @@ protected:
   /** List of drawn cities. */
   QList<BaseMapElement *> m_drawnCityList;
 
-  /** List of mapped positions for tail drawing */
-  QList<QPoint> m_tailPoints;
+  /** List of mapped positions for trail drawing */
+  QList<QPoint> m_trailPoints;
 
-  /** maximum length of tail list */
-  const int TailListLength;
+  /** trail point painter path. */
+  QPainterPath m_tpp;
+
+  /** maximum length of trail list */
+  const int TrailListLength;
 
 public:
 
