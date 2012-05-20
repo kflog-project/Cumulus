@@ -61,7 +61,7 @@ extern MapView     *_globalMapView;
 Map *Map::instance = static_cast<Map *>(0);
 
 Map::Map(QWidget* parent) : QWidget(parent),
-  TrailListLength( 240 )
+  TrailListLength( 300 )
 {
 //  qDebug( "Map::Map parent window size is %dx%d, width=%d, height=%d",
 //          size().width(),
@@ -944,15 +944,15 @@ void Map::__drawTrail()
   // Set step width according to map scale. The values are nearly seconds.
   if( scale < 12 )
     {
-      step = 1;
+      step = 2;
     }
   else if( scale < 15 )
     {
-      step = 2;
+      step = 3;
     }
   else if( scale < 20 )
     {
-      step = 3;
+      step = 4;
     }
   else if( scale < 30 )
     {

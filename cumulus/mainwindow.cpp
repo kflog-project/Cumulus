@@ -1060,12 +1060,7 @@ void MainWindow::createContextMenu()
   labelMenu->addSeparator();
 
 #ifndef ANDROID
-
-  if( ! calculator->moving() )
-    {
-      labelMenu->addAction( actionToggleGps );
-    }
-
+  labelMenu->addAction( actionToggleGps );
 #endif
 
   labelMenu->addAction( actionToggleLogging );
@@ -1408,12 +1403,14 @@ void MainWindow::createActions()
   connect ( actionStartFlightTask, SIGNAL( triggered() ),
             calculator, SLOT( slot_startTask() ) );
 
-#ifndef ANDROID
   actionToggleGps = new QAction( tr( "GPS On/Off" ), this );
   actionToggleGps->setShortcut(Qt::Key_G + Qt::SHIFT);
   actionToggleGps->setCheckable(true);
   actionToggleGps->setChecked(true);
   actionToggleGps->setEnabled(true);
+
+#ifndef ANDROID
+
   addAction( actionToggleGps );
   connect( actionToggleGps, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleGps( bool ) ) );
@@ -1618,6 +1615,9 @@ void MainWindow::slotToggleMenu()
 {
   if ( !menuBar()->isVisible() )
     {
+
+#ifndef ANDROID
+
       if( calculator->moving() )
         {
           actionToggleGps->setEnabled(false);
@@ -1626,6 +1626,8 @@ void MainWindow::slotToggleMenu()
         {
           actionToggleGps->setEnabled(true);
         }
+
+#endif
 
       menuBarVisible = true;
       menuBar()->setVisible( true );
@@ -1639,11 +1641,21 @@ void MainWindow::slotToggleMenu()
 
 void MainWindow::slotShowContextMenu()
 {
-#if defined ANDROID || defined MAEMO
-  contextMenu->exec(QPoint(0,0));
-#else
-  contextMenu->exec(mapToGlobal(QPoint(0,0)));
+
+#ifndef ANDROID
+
+  if( calculator->moving() )
+    {
+      actionToggleGps->setEnabled(false);
+    }
+  else
+    {
+      actionToggleGps->setEnabled(true);
+    }
+
 #endif
+
+  contextMenu->exec(mapToGlobal(QPoint(0,0)));
 }
 
 void MainWindow::slotToggleAfLabels( bool toggle )
