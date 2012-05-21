@@ -1035,10 +1035,10 @@ void MainWindow::createContextMenu()
   contextMenu = new QMenu(this);
   contextMenu->setVisible(false);
 
-  fileMenu = contextMenu->addMenu(tr("File"));
+  fileMenu = contextMenu->addMenu(tr("File") + " ");
   fileMenu->addAction( actionFileQuit );
 
-  viewMenu = contextMenu->addMenu(tr("View"));
+  viewMenu = contextMenu->addMenu(tr("View") + " ");
   viewMenu->addAction( actionViewAirfields );
   viewMenu->addAction( actionViewReachpoints );
   viewMenu->addAction( actionViewInfo );
@@ -1049,8 +1049,8 @@ void MainWindow::createContextMenu()
   viewMenu->addSeparator();
   viewMenu->addAction( actionViewGPSStatus );
 
-  labelMenu = contextMenu->addMenu( tr("Toggles"));
-  labelSubMenu = labelMenu->addMenu( tr("Labels"));
+  labelMenu = contextMenu->addMenu( tr("Toggles") + " ");
+  labelSubMenu = labelMenu->addMenu( tr("Labels") + " ");
   labelSubMenu->addAction( actionToggleAfLabels );
   labelSubMenu->addAction( actionToggleOlLabels );
   labelSubMenu->addAction( actionToggleTpLabels );
@@ -1068,18 +1068,18 @@ void MainWindow::createContextMenu()
   labelMenu->addAction( actionToggleWindowSize );
   labelMenu->addAction( actionToggleStatusbar );
 
-  mapMenu = contextMenu->addMenu(tr("Map"));
+  mapMenu = contextMenu->addMenu(tr("Map") + " ");
   mapMenu->addAction( actionSelectTask );
   mapMenu->addAction( actionManualNavHome );
   mapMenu->addAction( actionNav2Home );
   mapMenu->addAction( actionEnsureVisible );
 
-  setupMenu = contextMenu->addMenu(tr("Setup"));
+  setupMenu = contextMenu->addMenu(tr("Setup") + " ");
   setupMenu->addAction( actionSetupConfig );
   setupMenu->addAction( actionPreFlight );
   setupMenu->addAction( actionSetupInFlight );
 
-  helpMenu = contextMenu->addMenu(tr("Help"));
+  helpMenu = contextMenu->addMenu(tr("Help") + " ");
   helpMenu->addAction( actionHelpCumulus );
   helpMenu->addAction( actionHelpAboutApp );
 
