@@ -17,6 +17,8 @@
  **
  ***********************************************************************/
 
+#include <QPainterPath>
+
 #include "airspace.h"
 #include "airregion.h"
 #include "generalconfig.h"
@@ -106,7 +108,7 @@ bool Airspace::isDrawable() const
 };
 
 void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
-                           qreal opacity )
+                              qreal opacity )
 {
   // qDebug("Airspace::drawRegion(): TypeId=%d, opacity=%f, Name=%s",
   //         typeID, opacity, getInfoString().toLatin1().data() );
@@ -120,6 +122,22 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
   // @JD: replaced clipping and filling with polygon drawing,
   //      regions not needed anymore
   QPolygon tP = glMapMatrix->map(projPolygon);
+
+  QPainterPath pp;
+
+  if( tP.size() < 3 )
+    {
+      return;
+    }
+
+  pp.moveTo( tP.at(0).x(), tP.at(0).y() );
+
+  for( int i = 1; i < tP.size(); i++ )
+    {
+      pp.lineTo( tP.at(i).x(), tP.at(i).y() );
+    }
+
+  pp.closeSubpath();
 
   QBrush drawB( glConfig->getDrawBrush(typeID) );
 
@@ -156,9 +174,7 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
     }
 
   // Draw the outline of the airspace with the selected brush
-  targetP->drawPolygon(tP);
-
-  return;
+  targetP->drawPath(pp);
 }
 
 /**

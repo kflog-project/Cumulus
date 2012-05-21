@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2007-2009 Axel Pauli
+ **                   2007-2012 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -31,7 +31,7 @@
  *
  * \brief This class is used for isohypse handling.
  *
- * \date 2000-2009
+ * \date 2000-2012
  */
 class Isohypse : public LineElement
   {
@@ -60,14 +60,14 @@ class Isohypse : public LineElement
      *
      * @param targetP The painter to draw the element into.
      * @param viewRect The bounding rectangle of the draw region.
-     * @param really_draw Switches region drawing on/off.
      * @param isolines Switches outline drawing on/off
      *
      * @return The projected region polygon as QPainterPath object usable
      *         for later elevation finding.
      */
-    QPainterPath* drawRegion( QPainter* targetP, const QRect &viewRect,
-                              bool really_draw, bool isolines=false );
+    QPainterPath* drawRegion( QPainter* targetP,
+                               const QRect &viewRect,
+                               bool isolines = false );
 
     /**
      * @return the elevation of the line

@@ -2903,12 +2903,11 @@ void MapContents::drawIsoList(QPainter* targetP)
 
   if( conf->getMapShowIsoLineBorders() )
     {
-      int scale = (int)rint(_globalMapMatrix->getScale(MapMatrix::CurrentScale));
+      int scale = (int) rint(_globalMapMatrix->getScale(MapMatrix::CurrentScale));
 
       if( scale < 160 )
         {
           // Draw outer isolines only at lower scales
-          targetP->setPen(QPen(Qt::black, 1, Qt::DotLine));
           isolines = true;
         }
     }
@@ -2998,9 +2997,8 @@ void MapContents::drawIsoList(QPainter* targetP)
 
               // draw the single isoline
               QPainterPath* Path = isoLine.drawRegion( targetP,
-                                                 _globalMapView->rect(),
-                                                 true,
-                                                 isolines);
+                                                       _globalMapView->rect(),
+                                                       isolines);
               if (Path)
                 {
                   // store drawn path in extra list for elevation finding

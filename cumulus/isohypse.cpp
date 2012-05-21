@@ -7,8 +7,9 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008 by Axel Pauli, Josua Dietze
- **                   2009-2010 by Axel Pauli, Peter Turczak
+ **                   2008 by Josua Dietze
+ **                   2009-2010 Peter Turczak
+ **                   2008-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -23,9 +24,6 @@
 
 #include "isohypse.h"
 #include "mapmatrix.h"
-
-extern MapMatrix* _globalMapMatrix;
-extern MapConfig* _globalMapConfig;
 
 Isohypse::Isohypse( QPolygon elevationCoordinates,
                     const short elevation,
@@ -42,44 +40,58 @@ Isohypse::Isohypse( QPolygon elevationCoordinates,
 Isohypse::~Isohypse()
 {}
 
-QPainterPath* Isohypse::drawRegion( QPainter* targetP, const QRect &viewRect,
-                                    bool really_draw, bool isolines )
+QPainterPath* Isohypse::drawRegion( QPainter* targetP,
+                                       const QRect &viewRect,
+                                       bool isolines )
 {
+  QPainterPath *ppath = static_cast<QPainterPath *> (0);
 
-  if( !glMapMatrix->isVisible(bBox, getTypeID()) )
+  if( !glMapMatrix->isVisible(bBox, getTypeID() ) || projPolygon.size() < 3 )
     {
-     return static_cast<QPainterPath *> (0);
+      return ppath;
     }
 
-  QPolygon tP = glMapMatrix->map(projPolygon);
+  QPolygon mP = glMapMatrix->map(projPolygon);
 
-  if (really_draw)
+  if (mP.boundingRect().isNull())
     {
-      if (tP.boundingRect().isNull())
-        {
-          // ignore null values and return also no region
-          return static_cast<QPainterPath *> (0);
-        }
+      // ignore null values and return also no region
+      return ppath;
+    }
 
-      targetP->setClipRegion(viewRect);
+  ppath = new QPainterPath;
 
-      targetP->drawPolygon(tP);
+  ppath->moveTo( mP.at(0).x(), mP.at(0).y() );
 
-      if (isolines)
-        {
-          targetP->drawPolyline(tP);
-        }
+  for( int i = 1; i < mP.size(); i++ )
+    {
+      ppath->lineTo( mP.at(i).x(), mP.at(i).y() );
+    }
+
+  ppath->closeSubpath();
+
+  targetP->drawPath( *ppath );
+
+  if (isolines)
+    {
+      QPen pen;
+      pen.setWidth(1);
+      pen.setBrush(Qt::NoBrush);
+      pen.setColor(Qt::black);
+      pen.setStyle(Qt::DotLine);
+      targetP->save();
+      targetP->setPen(pen);
+      targetP->drawPath( *ppath );
+      targetP->restore();
     }
 
   // The region is returned for the elevation finding in every
   // case, also when drawing was skipped.
   if( glMapMatrix->isInProjCenterArea(bBox) )
     {
-      QPainterPath *path = new QPainterPath;
-      path->addPolygon(tP);
-      path->closeSubpath();
-      return path;
+      return ppath;
     }
 
+  delete ppath;
   return static_cast<QPainterPath *> (0);
 }
