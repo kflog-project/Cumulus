@@ -1,3 +1,32 @@
+cumulus (2.13.0) stable; urgency=low
+
+  * Classical menubar replaced by a context popup menu. That prevents that the
+    space of the map display is reduced when the menu is opened.
+
+  * Flight trail drawing introduced. The last 5 minutes are drawn as trail on
+    the map. Trail drawing can be switched on/off via the context menu.
+
+  * Logger backtrack storage changed from 30 to 60 entries. The backtrack storage
+    saves the logger records before a take off is recognized in auto mode to have
+    a good ground line.
+
+  * Under Android a Qt window splitter is not operable with fingers. Therefore
+    I changed the window layout of the preflight task page. Now only the listed
+    tasks are to see, if you enter the page. If a task is selected and you press
+    the show button, the task content is displayed on the task page instead of
+    the task list. I think that is a better solution as before. For both widgets
+    is now more space available.
+
+  * Font handling optimized for different hardware devices.
+
+  * Landmark pixmap enlarged from 8x8 pixels to 10x10 pixels to make it better
+    visible at the map.
+
+  * BUGFIX: If the glider load or water ballast was modified, the wing load was
+    never updated on the preflight glider page. 
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Mon, 20 May 2012 20:36:37 +0200
+
 cumulus (2.12.3) stable; urgency=low
 
   * BUGFIX: Due to a programming error the wind calculation did not work as

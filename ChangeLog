@@ -20,7 +20,7 @@ Cumulus changelog
                    the menu is opened.
 
 [+] 2012-05-19 AP: Flight trail drawing introduced. The last 5 minutes are drawn
-                   as trail on the map. Trail drawing can BE switched on/off via
+                   as trail on the map. Trail drawing can be switched on/off via
                    the context menu.
 
 [o] 2012-05-18 AP: Logger backtrack storage changed from 30 to 60 entries. The
@@ -29,7 +29,7 @@ Cumulus changelog
 
 [o] 2012-05-04 AP: Under Android a Qt window splitter is not operable with
                    fingers. Therefore I changed the window layout of the preflight
-                   task page. Now only the listed task are to see, if you enter
+                   task page. Now only the listed tasks are to see, if you enter
                    the page. If a task is selected and you press the show button,
                    the task content is displayed on the task page instead of the
                    task list. I think that is a better solution as before.
