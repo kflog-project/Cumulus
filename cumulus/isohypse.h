@@ -59,14 +59,12 @@ class Isohypse : public LineElement
      * Draws the isoline region into the given painter.
      *
      * @param targetP The painter to draw the element into.
-     * @param viewRect The bounding rectangle of the draw region.
      * @param isolines Switches outline drawing on/off
      *
      * @return The projected region polygon as QPainterPath object usable
      *         for later elevation finding.
      */
     QPainterPath* drawRegion( QPainter* targetP,
-                               const QRect &viewRect,
                                bool isolines = false );
 
     /**

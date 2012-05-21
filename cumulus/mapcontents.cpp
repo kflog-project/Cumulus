@@ -2985,20 +2985,19 @@ void MapContents::drawIsoList(QPainter* targetP)
                     }
 
                   targetP->setBrush( QBrush(conf->getTerrainColor(colorIdx),
-                                     Qt::SolidPattern));
+                                      Qt::SolidPattern));
                 }
               else
                 {
                   // Only ground level will be drawn. We take the ground color
                   // when isoline drawing is switched off by the user.
                   targetP->setBrush( QBrush(conf->getGroundColor(),
-                                     Qt::SolidPattern));
+                                      Qt::SolidPattern));
                 }
 
               // draw the single isoline
-              QPainterPath* Path = isoLine.drawRegion( targetP,
-                                                       _globalMapView->rect(),
-                                                       isolines);
+              QPainterPath* Path = isoLine.drawRegion( targetP, isolines);
+
               if (Path)
                 {
                   // store drawn path in extra list for elevation finding

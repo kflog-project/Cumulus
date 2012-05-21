@@ -18,6 +18,8 @@
  **
  ***********************************************************************/
 
+#include <QtCore>
+
 #include <QPainterPath>
 #include <QString>
 #include <QSize>
@@ -41,7 +43,6 @@ Isohypse::~Isohypse()
 {}
 
 QPainterPath* Isohypse::drawRegion( QPainter* targetP,
-                                       const QRect &viewRect,
                                        bool isolines )
 {
   QPainterPath *ppath = static_cast<QPainterPath *> (0);
@@ -55,7 +56,7 @@ QPainterPath* Isohypse::drawRegion( QPainter* targetP,
 
   if (mP.boundingRect().isNull())
     {
-      // ignore null values and return also no region
+      // ignore null values
       return ppath;
     }
 
@@ -70,28 +71,19 @@ QPainterPath* Isohypse::drawRegion( QPainter* targetP,
 
   ppath->closeSubpath();
 
-  targetP->drawPath( *ppath );
+  targetP->save();
 
-  if (isolines)
+  if( isolines )
     {
-      QPen pen;
+      QPen pen = targetP->pen();
       pen.setWidth(1);
-      pen.setBrush(Qt::NoBrush);
       pen.setColor(Qt::black);
       pen.setStyle(Qt::DotLine);
-      targetP->save();
       targetP->setPen(pen);
-      targetP->drawPath( *ppath );
-      targetP->restore();
     }
 
-  // The region is returned for the elevation finding in every
-  // case, also when drawing was skipped.
-  if( glMapMatrix->isInProjCenterArea(bBox) )
-    {
-      return ppath;
-    }
+  targetP->drawPath( *ppath );
+  targetP->restore();
 
-  delete ppath;
-  return static_cast<QPainterPath *> (0);
+  return ppath;
 }

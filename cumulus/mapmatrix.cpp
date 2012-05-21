@@ -181,20 +181,44 @@ bool MapMatrix::isVisible( const QRect& itemBorder, int typeID) const
   // ! check for < 10000 is a workaround for a bug other where
   //   that came out after fixing the scale criteria that was always true
   //   before
+
+  if( itemBorder.width() >= 10000 || itemBorder.height() >= 10000 )
+    {
+      qCritical() << "MapMatrix::isVisible(): itemBorder to large" << itemBorder;
+    }
+
   if( typeID == BaseMapElement::Motorway ||
       typeID == BaseMapElement::Road ||
       typeID == BaseMapElement::Trail ||
       typeID == BaseMapElement::Railway ||
       typeID == BaseMapElement::Railway_D ||
-      typeID == BaseMapElement::Aerial_Cable ) {
-    return ( ( mapBorder.intersects(itemBorder) ) &&
-             (itemBorder.width() < 10000) && (itemBorder.height() < 10000) );
-  }
+      typeID == BaseMapElement::River ||
+      typeID == BaseMapElement::Canal ||
+      typeID == BaseMapElement::Aerial_Cable )
+    {
+      return ( mapBorder.intersects(itemBorder) );
+    }
 
-  return ( ( mapBorder.intersects(itemBorder) ) &&
-           (itemBorder.width() < 10000) && (itemBorder.height() < 10000) &&
-           (( itemBorder.width()*8  > ( cScale  ) ) ||
-            ( itemBorder.height()*8 > ( cScale  ) )) );
+  if( mapBorder.intersects( itemBorder ) == false )
+    {
+      return false;
+    }
+
+  int w = itemBorder.width();
+  int h = itemBorder.height();
+
+  if( typeID == BaseMapElement::Isohypse &&
+      ( w*4 < cScale || h*4 < cScale ) )
+    {
+      return false;
+    }
+
+  if( w*8 < cScale || h*8 < cScale )
+    {
+      return false;
+    }
+
+  return true;
 }
 
 int MapMatrix::getScaleRange()  const
