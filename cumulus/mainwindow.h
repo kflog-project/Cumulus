@@ -218,8 +218,8 @@ public slots:
   void slotMapDrawEvent(bool);
   /** closes the config or pre-flight "dialog" */
   void slotCloseConfig();
-  /** set menubar font size to a reasonable and usable value */
-  void slotSetMenuBarFontSize();
+  /** sets the menu fonts to a reasonable and usable value */
+  void slotSetMenuFontSize();
   /**
    * Called if a subwidget is opened.
    */
@@ -392,12 +392,10 @@ private:
    */
   void setNearestOrReachableHeaders();
 
-public:
-
-  /** use manual navigation even if GPS signal received */
-  QAction* actionToggleGps;
-
 private:
+
+  /** use manual navigation even if GPS signal is received */
+  QAction* actionToggleGps;
 
   QAction* actionManualNavUp;
   QAction* actionManualNavRight;
@@ -413,7 +411,7 @@ private:
   QAction* actionGpsNavZoomIn;
   QAction* actionGpsNavZoomOut;
   QAction* actionMenuBarToggle;
-  QAction* actionShowContextMenu;
+  QAction* actionOpenContextMenu;
   QAction* actionFileQuit;
   QAction* actionViewInfo;
   QAction* actionViewWaypoints;
@@ -450,31 +448,33 @@ private:
   /** Context main menu */
   QMenu *contextMenu;
 
-  /** fileMenu contains all items of the menubar entry "File" */
+  /** fileMenu contains all items of the menu entry "File" */
   QMenu *fileMenu;
-  /** viewMenu contains all items of the menubar entry "View" */
+  /** viewMenu contains all items of the menu entry "View" */
   QMenu *viewMenu;
-  /** mapMenu contains all items of the menubar entry "Map" */
+  /** mapMenu contains all items of the menu entry "Map" */
   QMenu *mapMenu;
   /** labelMenu is a main menu */
   QMenu *labelMenu;
-  /** labelSubMenu contains all items of the menubar entry "Label" */
+  /** labelSubMenu contains all items of the menu entry "Label" */
   QMenu* labelSubMenu;
-  /** setupMenu contains all items of the menubar entry "Setup" */
+  /** setupMenu contains all items of the menu entry "Setup" */
   QMenu *setupMenu;
-  /** helpMemu contains all items of the menubar entry "Help" */
+  /** helpMemu contains all items of the menu entry "Help" */
   QMenu *helpMenu;
 
   // Wait screen
   QPointer<WaitScreen> ws;
-  // Holds temporary the config or pre-flight widgets
-  QPointer<QWidget> configView;
-  // visibility of menu bar
-  bool menuBarVisible;
   // Splash screen
   QPointer<Splash> splash;
+  // Holds temporary the config or pre-flight widgets
+  QPointer<QWidget> configView;
+
+  // visibility of menu bar
+  bool menuBarVisible;
   // instance of IGC logger
   IgcLogger *logger;
+
   // Store here, if the lists are visible or not.
   bool _taskListVisible;
   bool _reachpointListVisible;

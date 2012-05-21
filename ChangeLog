@@ -19,8 +19,8 @@ Cumulus changelog
                    prevents that the space of the map display is reduced when
                    the menu is opened.
 
-[+] 2012-05-19 AP: Flight trail drawing introduced. The last 4 minutes are drawn
-                   as trail on the map. Trail drawing can switched on/off via
+[+] 2012-05-19 AP: Flight trail drawing introduced. The last 5 minutes are drawn
+                   as trail on the map. Trail drawing can BE switched on/off via
                    the context menu.
 
 [o] 2012-05-18 AP: Logger backtrack storage changed from 30 to 60 entries. The

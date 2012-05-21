@@ -967,7 +967,6 @@ void MainWindow::slotAlarm( const QString& msg, const bool sound )
 
 void MainWindow::createMenuBar()
 {
-
 #ifdef USE_MENUBAR
 
   fileMenu = menuBar()->addMenu(tr("File"));
@@ -1024,7 +1023,7 @@ void MainWindow::createMenuBar()
 
   menuBar()->setVisible( false );
 
-  slotSetMenuBarFontSize();
+  slotSetMenuFontSize();
 
 #endif
 }
@@ -1091,8 +1090,8 @@ void MainWindow::createContextMenu()
 #endif
 }
 
-/** set menubar font size to a reasonable and usable value */
-void MainWindow::slotSetMenuBarFontSize()
+/** sets the menu fonts to a reasonable and usable value */
+void MainWindow::slotSetMenuFontSize()
 {
   // sets the user's selected menu font, if defined
   QString fontString = GeneralConfig::instance()->getGuiMenuFont();
@@ -1230,7 +1229,7 @@ void MainWindow::createActions()
   actionMenuBarToggle = new QAction( tr( "Toggle menu" ), this );
 
   // Show context menu
-  actionShowContextMenu = new QAction( tr( "Show menu" ), this );
+  actionOpenContextMenu = new QAction( tr( "Open menu" ), this );
 
   QList<QKeySequence> mBTSCList;
   mBTSCList << Qt::Key_M << Qt::Key_F4;
@@ -1243,9 +1242,9 @@ void MainWindow::createActions()
            this, SLOT( slotToggleMenu() ) );
 #else
 
-  actionShowContextMenu->setShortcuts( mBTSCList );
-  addAction( actionShowContextMenu );
-  connect( actionShowContextMenu, SIGNAL( triggered() ),
+  actionOpenContextMenu->setShortcuts( mBTSCList );
+  addAction( actionOpenContextMenu );
+  connect( actionOpenContextMenu, SIGNAL( triggered() ),
            this, SLOT( slotShowContextMenu() ) );
 #endif
 
@@ -1413,7 +1412,7 @@ void MainWindow::createActions()
 
   addAction( actionToggleGps );
   connect( actionToggleGps, SIGNAL( toggled( bool ) ),
-           this, SLOT( slotToggleGps( bool ) ) );
+            this, SLOT( slotToggleGps( bool ) ) );
 #endif
 
   actionPreFlight = new QAction( tr( "Pre-flight" ), this );
@@ -1613,19 +1612,15 @@ void MainWindow::closeEvent( QCloseEvent* event )
 
 void MainWindow::slotToggleMenu()
 {
+#ifdef USE_MEMUBAR
+
   if ( !menuBar()->isVisible() )
     {
 
 #ifndef ANDROID
 
-      if( calculator->moving() )
-        {
-          actionToggleGps->setEnabled(false);
-        }
-      else
-        {
-          actionToggleGps->setEnabled(true);
-        }
+      actionToggleGps->setEnabled( ! calculator->moving() );
+      actionToggleGps->setVisible( ! calculator->moving() );
 
 #endif
 
@@ -1637,6 +1632,8 @@ void MainWindow::slotToggleMenu()
       menuBarVisible = false;
       menuBar()->setVisible( false );
     }
+
+#endif
 }
 
 void MainWindow::slotShowContextMenu()
@@ -1644,14 +1641,8 @@ void MainWindow::slotShowContextMenu()
 
 #ifndef ANDROID
 
-  if( calculator->moving() )
-    {
-      actionToggleGps->setEnabled(false);
-    }
-  else
-    {
-      actionToggleGps->setEnabled(true);
-    }
+  actionToggleGps->setEnabled( ! calculator->moving() );
+  actionToggleGps->setVisible( ! calculator->moving() );
 
 #endif
 
@@ -1769,6 +1760,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       // not routed to it
       setFocus();
 
+#ifdef USE_MENUBAR
       // @AP: We display the menu bar only in the map view widget,
       // if it is visible. In all other views we hide it to save
       // space for the other widgets.
@@ -1780,6 +1772,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
         {
           menuBar()->setVisible( false );
         }
+#endif
 
       fileMenu->setEnabled( true );
       mapMenu->setEnabled( true );
@@ -1798,7 +1791,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
                            !calculator->isManualInFlight() );
 
       actionMenuBarToggle->setEnabled( true );
-      actionShowContextMenu->setEnabled( true );
+      actionOpenContextMenu->setEnabled( true );
 
       // Switch on all action shortcuts in this view
       toggleActions( true );
@@ -1815,7 +1808,11 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
     case wpView:
 
       _rootWindow = false;
+
+#ifdef USE_MENUBAR
       menuBar()->setVisible( false );
+#endif
+
       viewMap->setVisible( false );
       viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewWP );
@@ -1828,7 +1825,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
-      actionShowContextMenu->setEnabled( false );
+      actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
 
       break;
@@ -1836,7 +1833,11 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
     case rpView:
       {
         _rootWindow = false;
-        menuBar()->setVisible( false );
+
+#ifdef USE_MENUBAR
+      menuBar()->setVisible( false );
+#endif
+
         viewMap->setVisible( false );
         viewInfo->setVisible( false );
 
@@ -1852,7 +1853,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
         toggleManualNavActions( false );
         toggleGpsNavActions( false );
         actionMenuBarToggle->setEnabled( false );
-        actionShowContextMenu->setEnabled( false );
+        actionOpenContextMenu->setEnabled( false );
         toggleActions( false );
       }
 
@@ -1861,7 +1862,11 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
     case afView:
 
       _rootWindow = false;
+
+#ifdef USE_MENUBAR
       menuBar()->setVisible( false );
+#endif
+
       viewMap->setVisible( false );
       viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewAF );
@@ -1874,7 +1879,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
-      actionShowContextMenu->setEnabled( false );
+      actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
 
       break;
@@ -1882,7 +1887,11 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
     case olView:
 
       _rootWindow = false;
+
+#ifdef USE_MENUBAR
       menuBar()->setVisible( false );
+#endif
+
       viewMap->setVisible( false );
       viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewOL );
@@ -1895,7 +1904,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
-      actionShowContextMenu->setEnabled( false );
+      actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
 
       break;
@@ -1909,7 +1918,11 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
         }
 
       _rootWindow = false;
+
+#ifdef USE_MENUBAR
       menuBar()->setVisible( false );
+#endif
+
       viewMap->setVisible( false );
       viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewTP );
@@ -1922,7 +1935,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
-      actionShowContextMenu->setEnabled( false );
+      actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
 
       break;
@@ -1935,7 +1948,11 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
         }
 
       _rootWindow = false;
+
+#ifdef USE_MENUBAR
       menuBar()->setVisible( false );
+#endif
+
       viewMap->setVisible( false );
       listViewTabs->setVisible( false );
       viewInfo->showWP( view, *wp );
@@ -1947,7 +1964,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
-      actionShowContextMenu->setEnabled( false );
+      actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
 
       break;
@@ -1955,7 +1972,11 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
     case tpSwitchView:
 
       _rootWindow = false;
+
+#ifdef USE_MENUBAR
       menuBar()->setVisible( false );
+#endif
+
       viewMap->setVisible( false );
       listViewTabs->setVisible( false );
 
@@ -1966,7 +1987,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
-      actionShowContextMenu->setEnabled( false );
+      actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
 
       break;
@@ -1974,14 +1995,18 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
     case cfView:
       // called if configuration or preflight widget was created
       _rootWindow = false;
+
+#ifdef USE_MENUBAR
       menuBar()->setVisible( false );
+#endif
+
       viewMap->setVisible( false );
       listViewTabs->setVisible( false );
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
-      actionShowContextMenu->setEnabled( false );
+      actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
 
       break;
@@ -1989,12 +2014,15 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
     case flarmView:
       // called if Flarm view is created
       _rootWindow = false;
+
+#ifdef USE_MENUBAR
       menuBar()->setVisible( false );
+#endif
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
-      actionShowContextMenu->setEnabled( false );
+      actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
 
       break;
@@ -2360,7 +2388,7 @@ void MainWindow::slotReadconfig()
   GpsNmea::gps->slot_reset();
 
   // update menubar font size
-  slotSetMenuBarFontSize();
+  slotSetMenuFontSize();
 
   actionViewReachpoints->setEnabled( conf->getNearestSiteCalculatorSwitch() );
 
@@ -2649,6 +2677,12 @@ void MainWindow::slotNavigate2Home()
 
 void MainWindow::slotToggleGps( bool on )
 {
+  if( calculator->moving() )
+    {
+      // Do not switch off GPS when we are in move.
+      return;
+    }
+
   if( on == false )
     {
       GpsNmea::gps->fixNOK( "User" );
@@ -2672,7 +2706,7 @@ void MainWindow::slotMapDrawEvent( bool drawEvent )
       // Disable menu shortcut during drawing to avoid
       // event avalanche, if the user holds the key down longer.
       actionMenuBarToggle->setEnabled( false );
-      actionShowContextMenu->setEnabled( false );
+      actionOpenContextMenu->setEnabled( false );
 
       if( view == mapView )
        {
@@ -2683,7 +2717,7 @@ void MainWindow::slotMapDrawEvent( bool drawEvent )
    else
      {
        actionMenuBarToggle->setEnabled( true );
-       actionShowContextMenu->setEnabled( true );
+       actionOpenContextMenu->setEnabled( true );
 
        if( view == mapView )
          {
