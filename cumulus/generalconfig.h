@@ -1807,17 +1807,17 @@ class GeneralConfig : protected QSettings
   }
 
   /**
-   * Draw a trail
+   * Gets map trail drawing.
    */
-  bool getDrawTrail() const
+  bool getMapDrawTrail() const
   {
     return _drawTrail;
   };
 
   /**
-   * Sets whether to draw a trail or not.
+   * Sets map trail drawing.
    */
-  void setDrawTrail( bool draw )
+  void setMapDrawTrail( bool draw )
   {
     _drawTrail = draw;
   };

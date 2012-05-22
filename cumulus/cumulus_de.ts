@@ -1082,8 +1082,9 @@
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1380"/>
-        <source>Trail</source>
-        <translation>Spur</translation>
+        <source>Flight trail</source>
+        <oldsource>Trail</oldsource>
+        <translation>Flugspur</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1387"/>
@@ -3248,78 +3249,83 @@ Alle Downloads verworfen!</translation>
         <translation>Zeichne Objekte</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="245"/>
+        <location filename="settingspagemapobjects.cpp" line="246"/>
         <source>Cities</source>
         <translation>Städte</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="249"/>
+        <location filename="settingspagemapobjects.cpp" line="250"/>
         <source>Forests</source>
         <translation>Wald</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="261"/>
+        <location filename="settingspagemapobjects.cpp" line="262"/>
         <source>Motorways</source>
         <oldsource>Highways</oldsource>
         <translation>Autobahnen</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="253"/>
+        <location filename="settingspagemapobjects.cpp" line="254"/>
         <source>Isolines</source>
         <translation>Isolinien</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="257"/>
+        <location filename="settingspagemapobjects.cpp" line="258"/>
         <source>Isoline borders</source>
         <translation>Isolinienumrandung</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="265"/>
+        <location filename="settingspagemapobjects.cpp" line="266"/>
         <source>Railways</source>
         <translation>Eisenbahnen</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="269"/>
+        <location filename="settingspagemapobjects.cpp" line="270"/>
         <source>Roads</source>
         <translation>Straßen</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="273"/>
+        <location filename="settingspagemapobjects.cpp" line="274"/>
         <source>Rivers &amp; Canals</source>
         <translation>Flüsse &amp; Kanäle</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="281"/>
+        <location filename="settingspagemapobjects.cpp" line="282"/>
         <source>Airfield labels</source>
         <translation>Flugplatz Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="285"/>
+        <location filename="settingspagemapobjects.cpp" line="286"/>
         <source>Taskpoint labels</source>
         <translation>Aufgabenpunkt Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="289"/>
+        <location filename="settingspagemapobjects.cpp" line="290"/>
         <source>Outlanding labels</source>
         <translation>Landefelder Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="293"/>
+        <location filename="settingspagemapobjects.cpp" line="294"/>
         <source>Waypoint labels</source>
         <translation>Wegpunkt Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="297"/>
+        <location filename="settingspagemapobjects.cpp" line="298"/>
         <source>Labels - Extra info</source>
         <translation>Zusatzinfo Marken</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="301"/>
+        <location filename="settingspagemapobjects.cpp" line="302"/>
         <source>Relative bearing info</source>
         <translation>Relative Peilungsinfo</translation>
     </message>
     <message>
-        <location filename="settingspagemapobjects.cpp" line="378"/>
+        <location filename="settingspagemapobjects.cpp" line="306"/>
+        <source>Flight Trail</source>
+        <translation>Flugspur</translation>
+    </message>
+    <message>
+        <location filename="settingspagemapobjects.cpp" line="380"/>
         <source>The Map Objects</source>
         <translation>Die Karten Objekte</translation>
     </message>

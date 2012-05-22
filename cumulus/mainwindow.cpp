@@ -1377,9 +1377,9 @@ void MainWindow::createActions()
   connect ( actionToggleLogging, SIGNAL( triggered() ),
             logger, SLOT( slotToggleLogging() ) );
 
-  actionToggleTrailDrawing = new QAction( tr( "Trail" ), this );
+  actionToggleTrailDrawing = new QAction( tr( "Flight trail" ), this );
   actionToggleTrailDrawing->setCheckable(true);
-  actionToggleTrailDrawing->setChecked( GeneralConfig::instance()->getDrawTrail() );
+  actionToggleTrailDrawing->setChecked( GeneralConfig::instance()->getMapDrawTrail() );
   addAction( actionToggleTrailDrawing );
   connect ( actionToggleTrailDrawing, SIGNAL( toggled( bool ) ),
              this, SLOT( slotToggleTrailDrawing(bool) ) );
@@ -1545,7 +1545,7 @@ void MainWindow::toggleGpsNavActions( const bool toggle )
 void MainWindow::slotToggleTrailDrawing( bool toggle )
 {
   actionToggleTrailDrawing->setChecked( toggle );
-  GeneralConfig::instance()->setDrawTrail( toggle );
+  GeneralConfig::instance()->setMapDrawTrail( toggle );
   GeneralConfig::instance()->save();
 }
 
@@ -2374,7 +2374,7 @@ void MainWindow::slotReadconfig()
   actionToggleTpLabels->setChecked( conf->getMapShowTaskPointLabels() );
   actionToggleWpLabels->setChecked( conf->getMapShowWaypointLabels() );
   actionToggleLabelsInfo->setChecked( conf->getMapShowLabelsExtraInfo() );
-  actionToggleTrailDrawing->setChecked( conf->getDrawTrail() );
+  actionToggleTrailDrawing->setChecked( conf->getMapDrawTrail() );
 
   // configure reconnect of GPS receiver in case of process stop
   QString device = conf->getGpsDevice();

@@ -932,7 +932,7 @@ void Map::__drawTrail()
 
   int pointCnt = m_trailPoints.size();
 
-  if( GeneralConfig::instance()->getDrawTrail() == false || pointCnt < 15 )
+  if( GeneralConfig::instance()->getMapDrawTrail() == false || pointCnt < 15 )
     {
       return;
     }
@@ -1039,7 +1039,7 @@ void Map::__calculateTrailPoints()
       m_tpp = QPainterPath();
     }
 
-  if( GeneralConfig::instance()->getDrawTrail() == false )
+  if( GeneralConfig::instance()->getMapDrawTrail() == false )
     {
       return;
     }
@@ -2539,7 +2539,7 @@ void Map::__drawGlider()
       return;
     }
 
-  if( GeneralConfig::instance()->getDrawTrail() == true )
+  if( GeneralConfig::instance()->getMapDrawTrail() == true )
     {
       // Add the mapped point at the beginning of the tail point list.
       m_trailPoints.prepend( mapPos );

@@ -199,7 +199,7 @@ void SettingsPageMapObjects::slot_load()
   liTpLabels->setCheckState( conf->getMapShowTaskPointLabels() ? Qt::Checked : Qt::Unchecked );
   liOlLabels->setCheckState( conf->getMapShowOutLandingLabels() ? Qt::Checked : Qt::Unchecked );
   liRelBearingInfo->setCheckState( conf->getMapShowRelBearingInfo() ? Qt::Checked : Qt::Unchecked );
-
+  liFlightTrail->setCheckState( conf->getMapDrawTrail() ? Qt::Checked : Qt::Unchecked );
   // Load scale values for spin boxes. Note! The load order is important because a value change
   // of the spin box will generate a signal.
   wpHighScaleLimitSpinBox->setValue( conf->getWaypointScaleBorder( Waypoint::High ));
@@ -230,6 +230,7 @@ void SettingsPageMapObjects::slot_save()
   conf->setMapShowWaypointLabels(liWpLabels->checkState() == Qt::Checked ? true : false);
   conf->setMapShowLabelsExtraInfo(liLabelsInfo->checkState() == Qt::Checked ? true : false);
   conf->setMapShowRelBearingInfo(liRelBearingInfo->checkState() == Qt::Checked ? true : false);
+  conf->setMapDrawTrail(liFlightTrail->checkState() == Qt::Checked ? true : false);
 
   conf->setWaypointScaleBorder( Waypoint::Low, wpLowScaleLimitSpinBox->value() );
   conf->setWaypointScaleBorder( Waypoint::Normal, wpNormalScaleLimitSpinBox->value() );
@@ -302,12 +303,12 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liRelBearingInfo->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liRelBearingInfo );
 
+  liFlightTrail = new QTableWidgetItem( tr("Flight Trail") );
+  liFlightTrail->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, col, liFlightTrail );
+
   // Set a dummy into the unused cells
   QTableWidgetItem *liDummy = new QTableWidgetItem;
-  liDummy->setFlags( Qt::NoItemFlags );
-  loadOptions->setItem( row++, col, liDummy );
-
-  liDummy = new QTableWidgetItem;
   liDummy->setFlags( Qt::NoItemFlags );
   loadOptions->setItem( row++, col, liDummy );
 }
@@ -367,6 +368,7 @@ void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
   changed |= ( conf->getMapShowTaskPointLabels() ? Qt::Checked : Qt::Unchecked ) != liTpLabels->checkState();
   changed |= ( conf->getMapShowOutLandingLabels() ? Qt::Checked : Qt::Unchecked ) != liOlLabels->checkState();
   changed |= ( conf->getMapShowRelBearingInfo() ? Qt::Checked : Qt::Unchecked ) != liRelBearingInfo->checkState();
+  changed |= ( conf->getMapDrawTrail() ? Qt::Checked : Qt::Unchecked ) != liFlightTrail->checkState();
 
   changed |= ( conf->getWaypointScaleBorder( Waypoint::Low )    != wpLowScaleLimitSpinBox->value() );
   changed |= ( conf->getWaypointScaleBorder( Waypoint::Normal ) != wpNormalScaleLimitSpinBox->value() );
