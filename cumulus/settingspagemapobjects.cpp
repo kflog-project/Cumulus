@@ -303,7 +303,7 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liRelBearingInfo->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liRelBearingInfo );
 
-  liFlightTrail = new QTableWidgetItem( tr("Flight Trail") );
+  liFlightTrail = new QTableWidgetItem( tr("Flight trail") );
   liFlightTrail->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liFlightTrail );
 

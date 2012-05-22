@@ -3321,7 +3321,8 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="settingspagemapobjects.cpp" line="306"/>
-        <source>Flight Trail</source>
+        <source>Flight trail</source>
+        <oldsource>Flight Trail</oldsource>
         <translation>Flugspur</translation>
     </message>
     <message>
