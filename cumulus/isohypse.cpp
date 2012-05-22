@@ -62,11 +62,11 @@ QPainterPath* Isohypse::drawRegion( QPainter* targetP,
 
   ppath = new QPainterPath;
 
-  ppath->moveTo( mP.at(0).x(), mP.at(0).y() );
+  ppath->moveTo( mP.at(0) );
 
   for( int i = 1; i < mP.size(); i++ )
     {
-      ppath->lineTo( mP.at(i).x(), mP.at(i).y() );
+      ppath->lineTo( mP.at(i) );
     }
 
   ppath->closeSubpath();

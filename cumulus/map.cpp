@@ -786,7 +786,7 @@ void Map::__drawAirspaces( bool reset )
             }
         }
 
-      currentAirS->drawRegion( &cuAeroMapP, this->rect(), airspaceOpacity );
+      currentAirS->drawRegion( &cuAeroMapP, airspaceOpacity );
     }
 
   cuAeroMapP.end();
@@ -996,15 +996,15 @@ void Map::__drawTrail()
           m_tpp = QPainterPath();
         }
 
-      m_tpp.moveTo( startPos.x(), startPos.y() );
+      m_tpp.moveTo( startPos );
 
       while( loop < pointCnt )
         {
-          QPoint pos = m_trailPoints.at(loop);
+          const QPoint& pos = m_trailPoints.at(loop);
 
           if( rect.contains( startPos ) || rect.contains( pos ) )
             {
-              m_tpp.lineTo( pos.x(), pos.y() );
+              m_tpp.lineTo( pos );
             }
 
           startPos = pos;
@@ -1018,7 +1018,7 @@ void Map::__drawTrail()
       QPainter p;
       p.begin( &m_pixInformationMap );
 
-      QPen pen( Qt::black, 3 );
+      QPen pen( Qt::black, 4 );
       p.setPen(pen);
 
       p.drawPath(m_tpp);

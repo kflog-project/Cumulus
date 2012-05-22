@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
  **   Modified:       2008      by Josua Dietze
- **                   2008-2011 by Axel Pauli
+ **                   2008-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -24,17 +24,24 @@
 #include "generalconfig.h"
 #include "calculator.h"
 
-Airspace::Airspace(QString name, BaseMapElement::objectType oType, QPolygon pP,
-                   int upper, BaseMapElement::elevationType uType,
-                   int lower, BaseMapElement::elevationType lType)
-  : LineElement(name, oType, pP), lLimitType(lType), uLimitType(uType),
-    _airRegion(0)
+Airspace::Airspace( QString name,
+                       BaseMapElement::objectType oType,
+                       QPolygon pP,
+                       int upper,
+                       BaseMapElement::elevationType uType,
+                       int lower,
+                       BaseMapElement::elevationType lType) :
+  LineElement(name, oType, pP),
+  lLimitType(lType),
+  uLimitType(uType),
+  _airRegion(0)
 {
   // All Airspaces are closed regions ...
   closed = true;
 
   // Normalize values
   double lLim=0.0;
+
   switch( lLimitType )
   {
   case GND:
@@ -58,6 +65,7 @@ Airspace::Airspace(QString name, BaseMapElement::objectType oType, QPolygon pP,
 
   lLimit.setMeters( lLim );
   double uLim=0.0;
+
   switch( uLimitType )
   {
   case GND:
@@ -83,7 +91,6 @@ Airspace::Airspace(QString name, BaseMapElement::objectType oType, QPolygon pP,
   _lastVConflict=none;
 }
 
-
 Airspace::~Airspace()
 {
   // @AP: Remove the class pointer in related AirRegion object. We
@@ -103,11 +110,11 @@ Airspace::~Airspace()
 bool Airspace::isDrawable() const
 {
   return ( GeneralConfig::instance()->getAirspaceDrawingEnabled(typeID) &&
-           glConfig->isBorder(typeID) &&
-           isVisible() );
+            glConfig->isBorder(typeID) &&
+            isVisible() );
 };
 
-void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
+void Airspace::drawRegion( QPainter* targetP,
                               qreal opacity )
 {
   // qDebug("Airspace::drawRegion(): TypeId=%d, opacity=%f, Name=%s",
@@ -119,22 +126,20 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
       return;
     }
 
-  // @JD: replaced clipping and filling with polygon drawing,
-  //      regions not needed anymore
-  QPolygon tP = glMapMatrix->map(projPolygon);
+  QPolygon mP = glMapMatrix->map(projPolygon);
 
   QPainterPath pp;
 
-  if( tP.size() < 3 )
+  if( mP.size() < 3 )
     {
       return;
     }
 
-  pp.moveTo( tP.at(0).x(), tP.at(0).y() );
+  pp.moveTo( mP.at(0) );
 
-  for( int i = 1; i < tP.size(); i++ )
+  for( int i = 1; i < mP.size(); i++ )
     {
-      pp.lineTo( tP.at(i).x(), tP.at(i).y() );
+      pp.lineTo( mP.at(i) );
     }
 
   pp.closeSubpath();
@@ -156,13 +161,11 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
   targetP->setPen(drawP);
   targetP->setBrush(drawB);
 
-  targetP->setClipRegion( viewRect );
-
   if( opacity < 100.0 && opacity > 0.0 )
     {
       // Draw airspace filled with opacity factor
       targetP->setOpacity( opacity/100.0 );
-      targetP->drawPolygon(tP);
+      targetP->drawPolygon(mP);
       targetP->setBrush(Qt::NoBrush);
       targetP->setOpacity( 1.0 );
     }
@@ -183,10 +186,10 @@ void Airspace::drawRegion( QPainter* targetP, const QRect &viewRect,
  */
 QPainterPath* Airspace::createRegion()
 {
-  QPolygon tP = glMapMatrix->map(projPolygon);
+  QPolygon mP = glMapMatrix->map(projPolygon);
 
   QPainterPath *path = new QPainterPath;
-  path->addPolygon(tP);
+  path->addPolygon(mP);
   path->closeSubpath();
   return path;
 }
@@ -294,15 +297,13 @@ QString Airspace::getInfoString() const
   return text;
 }
 
-
 /**
  * Returns true if the given altitude conflicts with the airspace
  * properties. Only the altitude is considered not the current
  * position.
  */
-//bool Airspace::conflicts (const Altitude& alt) const
-Airspace::ConflictType Airspace::conflicts (const AltitudeCollection& alt,
-                                            const AirspaceWarningDistance& dist) const
+Airspace::ConflictType Airspace::conflicts( const AltitudeCollection& alt,
+                                               const AirspaceWarningDistance& dist ) const
 {
   Altitude lowerAlt(0);
   Altitude upperAlt(0);
@@ -354,11 +355,12 @@ Airspace::ConflictType Airspace::conflicts (const AltitudeCollection& alt,
 
   //check to see if we're inside the airspace
   if ((lowerAlt.getMeters() >= lLimit.getMeters()) &&
-      (upperAlt.getMeters() <= uLimit.getMeters())) {
-    _lastVConflict=inside;
-    // qDebug("vertical conflict: %d, airspace: %s", _lastVConflict, getName().latin1());
-    return inside;
-  }
+      (upperAlt.getMeters() <= uLimit.getMeters()))
+    {
+      _lastVConflict = inside;
+      // qDebug("vertical conflict: %d, airspace: %s", _lastVConflict, getName().latin1());
+      return inside;
+    }
 
   // @AP: very near and near will not work, if you use the defined
   // operators. Changed it to the getMeters method, that will work
@@ -366,17 +368,19 @@ Airspace::ConflictType Airspace::conflicts (const AltitudeCollection& alt,
 
   //not inside. Check to see if we're very near to the airspace
   if ((lowerAlt.getMeters() >= (lLimit.getMeters() - dist.verBelowVeryClose.getMeters())) &&
-      (upperAlt.getMeters() <= (uLimit.getMeters() + dist.verAboveVeryClose.getMeters()))) {
-    _lastVConflict=veryNear;
-    return veryNear;
-  }
+      (upperAlt.getMeters() <= (uLimit.getMeters() + dist.verAboveVeryClose.getMeters())))
+    {
+      _lastVConflict = veryNear;
+      return veryNear;
+    }
 
   //not very near. Just near then?
   if ((lowerAlt.getMeters() >= (lLimit.getMeters() - dist.verBelowClose.getMeters())) &&
-      (upperAlt.getMeters() <= (uLimit.getMeters() + dist.verAboveClose.getMeters()))) {
-    _lastVConflict=near;
-    return near;
-  }
+      (upperAlt.getMeters() <= (uLimit.getMeters() + dist.verAboveClose.getMeters())))
+    {
+      _lastVConflict = near;
+      return near;
+    }
 
   //nope, we're not even near.
   _lastVConflict=none;
@@ -387,12 +391,17 @@ bool Airspace::operator < (const Airspace& other) const
 {
   int a1C = getUpperL(), a2C = other.getUpperL();
 
-  if (a1C > a2C) {
-    return false;
-  } else if (a1C < a2C) {
-    return true;
-  } else { //equal
-    int a1F = getLowerL(), a2F = other.getLowerL();
-    return (a1F < a2F);
-  }
+  if (a1C > a2C)
+    {
+      return false;
+    }
+  else if (a1C < a2C)
+    {
+      return true;
+    }
+  else
+    { //equal
+      int a1F = getLowerL(), a2F = other.getLowerL();
+      return (a1F < a2F);
+    }
 }
