@@ -35,7 +35,8 @@
 
 #if defined MAEMO
 
-// @AP: It seems that under Maemo point size and pixel size to be identically
+// @AP: It seems that under MAEMO point size and pixel size are to be identically.
+//      That is a big difference to Android!
 
 #define IconSize 32
 #define ButtonSize 80
@@ -53,19 +54,19 @@
 #define StatusbarFontHeight 25
 
 // GUI font height in pixels
-#define GuiFontHeight 24
+#define GuiFontHeight 27
 
 // GUI menu font height in pixels
-#define GuiMenuFontHeight 32
+#define GuiMenuFontHeight 44
 
 // Map scale bar font height in pixels
-#define MapScalebarFontHeight 20
+#define MapScalebarFontHeight 22
 
 // Map label font point size
 #define MapLabelFontPointSize 20
 
 // Map city label font point size
-#define MapCityLabelFontPointSize 10
+#define MapCityLabelFontPointSize 11
 
 // Map bearing indicator font point size
 #define MapBearingIndicatorFontPointSize 20
@@ -178,9 +179,9 @@ class Layout
    * \param minPointSize   minimum font point size
    */
   static void adaptFont( QFont& fontRef,
-                         const int pxHeight,
-                         const int startPointSize=30,
-                         const int minPointSize=6 );
+                           const int pxHeight,
+                           const int startPointSize=30,
+                           const int minPointSize=6 );
 
 };
 

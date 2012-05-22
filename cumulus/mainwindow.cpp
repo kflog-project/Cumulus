@@ -2328,7 +2328,7 @@ void MainWindow::slotRememberWaypoint()
   wp.origP = calculator->getlastPosition();
   wp.projP = _globalMapMatrix->wgsToMap( wp.origP );
   wp.description = tr( "user created" );
-  wp.comment = tr("created by remember action at ") +
+  wp.comment = tr("created by remember action at") + QString(" ") +
   QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
   wp.priority = Waypoint::High; // high to make sure it is visible
   wp.frequency = 0.0;
