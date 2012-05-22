@@ -1422,7 +1422,7 @@ void MainWindow::createActions()
             this, SLOT( slotPreFlightGlider() ) );
 
   actionSetupConfig = new QAction( tr ( "General" ), this );
-  actionSetupConfig->setShortcut(Qt::Key_S + Qt::SHIFT);
+  actionSetupConfig->setShortcut(Qt::Key_S);
   addAction( actionSetupConfig );
   connect ( actionSetupConfig, SIGNAL( triggered() ),
             this, SLOT( slotOpenConfig() ) );
@@ -1439,7 +1439,7 @@ void MainWindow::createActions()
   connect( actionHelpCumulus, SIGNAL(triggered()), this, SLOT(slotHelp()) );
 
   actionHelpAboutApp = new QAction( tr( "About Cumulus" ), this );
-  actionHelpAboutApp->setShortcut(Qt::Key_V + Qt::SHIFT);
+  actionHelpAboutApp->setShortcut(Qt::Key_V);
   addAction( actionHelpAboutApp );
   connect( actionHelpAboutApp, SIGNAL( triggered() ),
            this, SLOT( slotVersion() ) );
@@ -1448,7 +1448,7 @@ void MainWindow::createActions()
   // The Qt about is too big for small screens. Therefore it is undefined for
   // Android and Maemo
   actionHelpAboutQt = new QAction( tr( "About Qt" ), this );
-  actionHelpAboutQt->setShortcut(Qt::Key_Q + Qt::SHIFT);
+  actionHelpAboutQt->setShortcut(Qt::Key_Q);
   addAction( actionHelpAboutQt );
   connect( actionHelpAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()) );
 #endif
