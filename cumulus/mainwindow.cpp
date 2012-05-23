@@ -1147,66 +1147,81 @@ void MainWindow::createActions()
   actionManualNavRight->setShortcut( QKeySequence("Right") );
   addAction( actionManualNavRight );
   connect( actionManualNavRight, SIGNAL( triggered() ),
-           calculator, SLOT( slot_changePositionE() ) );
+            calculator, SLOT( slot_changePositionE() ) );
 
   actionManualNavDown = new QAction( tr( "Move down" ), this );
   actionManualNavDown->setShortcut( QKeySequence("Down") );
   addAction( actionManualNavDown );
   connect( actionManualNavDown, SIGNAL( triggered() ),
-           calculator, SLOT( slot_changePositionS() ) );
+            calculator, SLOT( slot_changePositionS() ) );
 
   actionManualNavLeft = new QAction( tr( "Move left" ), this );
   actionManualNavLeft->setShortcut( QKeySequence("Left") );
   addAction( actionManualNavLeft );
   connect( actionManualNavLeft, SIGNAL( triggered() ),
-           calculator, SLOT( slot_changePositionW() ) );
+            calculator, SLOT( slot_changePositionW() ) );
 
   actionManualNavMove2Home = new QAction( tr( "Goto home site" ), this );
+
+#ifndef ANDROID
   QList<QKeySequence> acGoHomeKeys;
   acGoHomeKeys << QKeySequence(Qt::SHIFT + Qt::Key_H) << QKeySequence::MoveToStartOfLine;
   actionManualNavMove2Home->setShortcuts( acGoHomeKeys );
+#endif
 
   addAction( actionManualNavMove2Home );
   connect( actionManualNavMove2Home, SIGNAL( triggered() ),
-           calculator, SLOT( slot_changePositionHome() ) );
+            calculator, SLOT( slot_changePositionHome() ) );
 
   actionManualNavMove2WP = new QAction( tr( "Move to waypoint" ), this );
   actionManualNavMove2WP->setShortcut( QKeySequence("C") );
   addAction( actionManualNavMove2WP );
   connect( actionManualNavMove2WP, SIGNAL( triggered() ),
-           calculator, SLOT( slot_changePositionWp() ) );
+            calculator, SLOT( slot_changePositionWp() ) );
 
   actionManualNavWPList = new QAction( tr( "Open waypoint list" ), this );
+
+#ifndef ANDROID
   actionManualNavWPList->setShortcut( QKeySequence("F9") );
+#endif
+
   addAction( actionManualNavWPList );
   connect( actionManualNavWPList, SIGNAL( triggered() ),
-           this, SLOT( slotSwitchToWPListView() ) );
+            this, SLOT( slotSwitchToWPListView() ) );
 
   // GPS navigation shortcuts. Only available with GPS connected
   actionGpsNavUp = new QAction( tr( "McCready up" ), this );
   actionGpsNavUp->setShortcut( QKeySequence("Up") );
   addAction( actionGpsNavUp );
   connect( actionGpsNavUp, SIGNAL( triggered() ),
-           calculator, SLOT( slot_McUp() ) );
+            calculator, SLOT( slot_McUp() ) );
 
   actionGpsNavDown = new QAction( tr( "McCready down" ), this );
   actionGpsNavDown->setShortcut( QKeySequence("Down") );
   addAction( actionGpsNavDown );
   connect( actionGpsNavDown, SIGNAL( triggered() ),
-           calculator, SLOT( slot_McDown() ) );
+            calculator, SLOT( slot_McDown() ) );
 
   actionGpsNavWPList = new QAction( tr( "Open waypoint list" ), this );
+
+#ifndef ANDROID
   actionGpsNavWPList->setShortcut( QKeySequence("F9") );
+#endif
+
   addAction( actionGpsNavWPList );
   connect( actionGpsNavWPList, SIGNAL( triggered() ),
-           this, SLOT( slotSwitchToWPListView() ) );
+            this, SLOT( slotSwitchToWPListView() ) );
 
-  // Select home site as target
-  actionNav2Home = new QAction( tr( "Select home site" ), this );
+  // Set home site as target
+  actionNav2Home = new QAction( tr( "Set home site" ), this );
+
+#ifndef ANDROID
   actionNav2Home->setShortcut( QKeySequence(Qt::Key_H) );
+#endif
+
   addAction( actionNav2Home );
   connect( actionNav2Home, SIGNAL( triggered() ),
-           this, SLOT( slotNavigate2Home() ) );
+            this, SLOT( slotNavigate2Home() ) );
 
   // Zoom in map
   actionGpsNavZoomIn = new QAction( tr( "Zoom in" ), this );
@@ -1214,14 +1229,14 @@ void MainWindow::createActions()
 
   addAction( actionGpsNavZoomIn );
   connect( actionGpsNavZoomIn, SIGNAL( triggered() ),
-           Map::instance, SLOT( slotZoomIn() ) );
+            Map::instance, SLOT( slotZoomIn() ) );
 
   // Zoom out map
   actionGpsNavZoomOut = new QAction( tr( "Zoom out" ), this );
   actionGpsNavZoomOut->setShortcut( QKeySequence("Left") );
   addAction( actionGpsNavZoomOut );
   connect( actionGpsNavZoomOut, SIGNAL( triggered() ),
-           Map::instance, SLOT( slotZoomOut() ) );
+            Map::instance, SLOT( slotZoomOut() ) );
 
   // Toggle menu bar
   actionMenuBarToggle = new QAction( tr( "Toggle menu" ), this );
@@ -1247,65 +1262,78 @@ void MainWindow::createActions()
 #endif
 
   // Toggle window size
-  actionToggleWindowSize = new QAction( tr( "Window size" ), this );
+  actionToggleWindowSize = new QAction( tr( "Window" ), this );
 
   // Hardware Key F6 for maximize/normalize screen under Maemo 4.
   // Maemo 5 has no keys. Therefore the space key is activated for that.
+#ifndef ANDROID
   QList<QKeySequence> wskList;
   wskList << Qt::Key_Space << Qt::Key_F6;
   actionToggleWindowSize->setShortcuts( wskList );
+#endif
+
   actionToggleWindowSize->setCheckable( true );
   actionToggleWindowSize->setChecked( false );
   addAction( actionToggleWindowSize );
   connect( actionToggleWindowSize, SIGNAL( triggered() ),
-           this, SLOT( slotToggleWindowSize() ) );
+            this, SLOT( slotToggleWindowSize() ) );
 
-  actionFileQuit = new QAction( tr( "&Exit" ), this );
+  actionFileQuit = new QAction( tr( "Exit" ), this );
+#ifndef ANDROID
   actionFileQuit->setShortcut( QKeySequence("Shift+E") );
+#endif
   addAction( actionFileQuit );
   connect( actionFileQuit, SIGNAL( triggered() ),
-           this, SLOT( slotFileQuit() ) );
+            this, SLOT( slotFileQuit() ) );
 
   actionViewWaypoints = new QAction ( tr( "Waypoints" ), this );
   addAction( actionViewWaypoints );
   connect( actionViewWaypoints, SIGNAL( triggered() ),
-           this, SLOT( slotSwitchToWPListView() ) );
+            this, SLOT( slotSwitchToWPListView() ) );
 
   actionViewAirfields = new QAction ( tr( "Airfields" ), this );
   addAction( actionViewAirfields );
   connect( actionViewAirfields, SIGNAL( triggered() ),
-           this, SLOT( slotSwitchToAFListView() ) );
+            this, SLOT( slotSwitchToAFListView() ) );
 
-  actionViewReachpoints = new QAction ( tr( "&Reachable" ), this );
+  actionViewReachpoints = new QAction ( tr( "Reachable" ), this );
+#ifndef ANDROID
   actionViewReachpoints->setShortcut(Qt::Key_R);
+#endif
   addAction( actionViewReachpoints );
   connect( actionViewReachpoints, SIGNAL( triggered() ),
-           this, SLOT( slotSwitchToReachListView() ) );
+            this, SLOT( slotSwitchToReachListView() ) );
 
   actionViewTaskpoints = new QAction ( tr( "Task" ), this );
   addAction( actionViewTaskpoints );
   connect( actionViewTaskpoints, SIGNAL( triggered() ),
-           this, SLOT( slotSwitchToTaskListView() ) );
+            this, SLOT( slotSwitchToTaskListView() ) );
 
   // Show info about selected target
   actionViewInfo = new QAction( tr( "Target Info" ), this );
+
+#ifndef ANDROID
   actionViewInfo->setShortcut(Qt::Key_I);
+#endif
+
   addAction( actionViewInfo );
   connect( actionViewInfo, SIGNAL( triggered() ),
-           this, SLOT( slotSwitchToInfoView() ) );
+            this, SLOT( slotSwitchToInfoView() ) );
 
-  actionToggleStatusbar = new QAction( "Statusbar", this );
+  actionToggleStatusbar = new QAction( tr( "Statusbar "), this );
   actionToggleStatusbar->setCheckable(true);
   actionToggleStatusbar->setChecked(true);
   addAction( actionToggleStatusbar );
   connect( actionToggleStatusbar, SIGNAL( toggled( bool ) ),
-           this, SLOT( slotViewStatusBar( bool ) ) );
+            this, SLOT( slotViewStatusBar( bool ) ) );
 
-  actionViewGPSStatus = new QAction( tr( "&GPS Status" ), this );
+  actionViewGPSStatus = new QAction( tr( "GPS Status" ), this );
+#ifndef ANDROID
   actionViewGPSStatus->setShortcut(Qt::Key_G);
+#endif
   addAction( actionViewGPSStatus );
   connect( actionViewGPSStatus, SIGNAL( triggered() ),
-           viewMap, SLOT( slot_gpsStatusDialog() ) );
+            viewMap, SLOT( slot_gpsStatusDialog() ) );
 
   // Consider qwertz keyboards y <-> z are interchanged
   // F7 is a Maemo hardware key for Zoom in
@@ -1316,7 +1344,7 @@ void MainWindow::createActions()
 
   addAction( actionZoomInZ );
   connect ( actionZoomInZ, SIGNAL( triggered() ),
-            Map::instance , SLOT( slotZoomIn() ) );
+             Map::instance , SLOT( slotZoomIn() ) );
 
   // F8 is a Maemo hardware key for Zoom out
   actionZoomOutZ = new QAction ( tr( "Zoom out" ), this );
@@ -1326,56 +1354,66 @@ void MainWindow::createActions()
 
   addAction( actionZoomOutZ );
   connect ( actionZoomOutZ, SIGNAL( triggered() ),
-            Map::instance , SLOT( slotZoomOut() ) );
+             Map::instance , SLOT( slotZoomOut() ) );
 
-  actionToggleAfLabels = new QAction ( tr( "&Airfield" ), this);
+  actionToggleAfLabels = new QAction ( tr( "Airfield" ), this);
+#ifndef ANDROID
   actionToggleAfLabels->setShortcut(Qt::Key_A);
+#endif
   actionToggleAfLabels->setCheckable(true);
   actionToggleAfLabels->setChecked( GeneralConfig::instance()->getMapShowAirfieldLabels() );
   addAction( actionToggleAfLabels );
   connect( actionToggleAfLabels, SIGNAL( toggled( bool ) ),
-           this, SLOT( slotToggleAfLabels( bool ) ) );
+            this, SLOT( slotToggleAfLabels( bool ) ) );
 
-  actionToggleOlLabels = new QAction ( tr( "&Outlanding" ), this);
+  actionToggleOlLabels = new QAction ( tr( "Outlanding" ), this);
+#ifndef ANDROID
   actionToggleOlLabels->setShortcut(Qt::Key_O);
+#endif
   actionToggleOlLabels->setCheckable(true);
   actionToggleOlLabels->setChecked( GeneralConfig::instance()->getMapShowOutLandingLabels() );
   addAction( actionToggleOlLabels );
   connect( actionToggleOlLabels, SIGNAL( toggled( bool ) ),
-           this, SLOT( slotToggleOlLabels( bool ) ) );
+            this, SLOT( slotToggleOlLabels( bool ) ) );
 
-  actionToggleTpLabels = new QAction ( tr( "&Taskpoint" ), this);
+  actionToggleTpLabels = new QAction ( tr( "Taskpoint" ), this);
+#ifndef ANDROID
   actionToggleTpLabels->setShortcut(Qt::Key_T);
+#endif
   actionToggleTpLabels->setCheckable(true);
   actionToggleTpLabels->setChecked( GeneralConfig::instance()->getMapShowTaskPointLabels() );
   addAction( actionToggleTpLabels );
   connect( actionToggleTpLabels, SIGNAL( toggled( bool ) ),
-           this, SLOT( slotToggleTpLabels( bool ) ) );
+            this, SLOT( slotToggleTpLabels( bool ) ) );
 
-  actionToggleWpLabels = new QAction ( tr( "&Waypoint" ), this);
+  actionToggleWpLabels = new QAction ( tr( "Waypoint" ), this);
+#ifndef ANDROID
   actionToggleWpLabels->setShortcut(Qt::Key_W);
+#endif
   actionToggleWpLabels->setCheckable(true);
   actionToggleWpLabels->setChecked( GeneralConfig::instance()->getMapShowWaypointLabels() );
   addAction( actionToggleWpLabels );
   connect( actionToggleWpLabels, SIGNAL( toggled( bool ) ),
-           this, SLOT( slotToggleWpLabels( bool ) ) );
+            this, SLOT( slotToggleWpLabels( bool ) ) );
 
-  actionToggleLabelsInfo = new QAction (  tr( "&Extra Info" ), this);
+  actionToggleLabelsInfo = new QAction (  tr( "Extra Info" ), this);
   actionToggleLabelsInfo->setShortcut(Qt::Key_E);
   actionToggleLabelsInfo->setCheckable(true);
   actionToggleLabelsInfo->setChecked( GeneralConfig::instance()->getMapShowLabelsExtraInfo() );
   addAction( actionToggleLabelsInfo );
   connect( actionToggleLabelsInfo, SIGNAL( toggled( bool ) ),
-           this, SLOT( slotToggleLabelsInfo( bool ) ) );
+            this, SLOT( slotToggleLabelsInfo( bool ) ) );
 
-  actionToggleLogging = new QAction( tr( "&Logging" ), this );
+  actionToggleLogging = new QAction( tr( "Logging" ), this );
+#ifndef ANDROID
   actionToggleLogging->setShortcut(Qt::Key_L);
+#endif
   actionToggleLogging->setCheckable(true);
   addAction( actionToggleLogging );
   connect ( actionToggleLogging, SIGNAL( triggered() ),
-            logger, SLOT( slotToggleLogging() ) );
+             logger, SLOT( slotToggleLogging() ) );
 
-  actionToggleTrailDrawing = new QAction( tr( "&Flight trail" ), this );
+  actionToggleTrailDrawing = new QAction( tr( "Flight trail" ), this );
   actionToggleTrailDrawing->setCheckable(true);
   actionToggleTrailDrawing->setChecked( GeneralConfig::instance()->getMapDrawTrail() );
   addAction( actionToggleTrailDrawing );
@@ -1383,25 +1421,31 @@ void MainWindow::createActions()
              this, SLOT( slotToggleTrailDrawing(bool) ) );
 
   actionEnsureVisible = new QAction ( tr( "Visualize waypoint" ), this );
+#ifndef ANDROID
   actionEnsureVisible->setShortcut(Qt::Key_V);
+#endif
   addAction( actionEnsureVisible );
   connect ( actionEnsureVisible, SIGNAL( triggered() ),
-            this, SLOT( slotEnsureVisible() ) );
+             this, SLOT( slotEnsureVisible() ) );
 
   actionSelectTask = new QAction( tr( "Select task" ), this );
+#ifndef ANDROID
   actionSelectTask->setShortcut(Qt::Key_T + Qt::SHIFT);
+#endif
   addAction( actionSelectTask );
   connect ( actionSelectTask, SIGNAL( triggered() ),
-            this, SLOT( slotPreFlightTask() ) );
+             this, SLOT( slotPreFlightTask() ) );
 
   actionStartFlightTask = new QAction( tr( "Start flight task" ), this );
   actionStartFlightTask->setShortcut(Qt::Key_B);
   addAction( actionStartFlightTask );
   connect ( actionStartFlightTask, SIGNAL( triggered() ),
-            calculator, SLOT( slot_startTask() ) );
+             calculator, SLOT( slot_startTask() ) );
 
   actionToggleGps = new QAction( tr( "GPS On/Off" ), this );
+#ifndef ANDROID
   actionToggleGps->setShortcut(Qt::Key_G + Qt::SHIFT);
+#endif
   actionToggleGps->setCheckable(true);
   actionToggleGps->setChecked(true);
   actionToggleGps->setEnabled(true);
@@ -1414,33 +1458,43 @@ void MainWindow::createActions()
 #endif
 
   actionPreFlight = new QAction( tr( "Pre-flight" ), this );
+#ifndef ANDROID
   actionPreFlight->setShortcut(Qt::Key_P);
+#endif
   addAction( actionPreFlight );
   connect ( actionPreFlight, SIGNAL( triggered() ),
             this, SLOT( slotPreFlightGlider() ) );
 
   actionSetupConfig = new QAction( tr ( "General" ), this );
+#ifndef ANDROID
   actionSetupConfig->setShortcut(Qt::Key_S);
+#endif
   addAction( actionSetupConfig );
   connect ( actionSetupConfig, SIGNAL( triggered() ),
             this, SLOT( slotOpenConfig() ) );
 
   actionSetupInFlight = new QAction( tr ( "In flight" ), this );
+#ifndef ANDROID
   actionSetupInFlight->setShortcut(Qt::Key_F);
+#endif
   addAction( actionSetupInFlight );
   connect ( actionSetupInFlight, SIGNAL( triggered() ),
-            viewMap, SLOT( slot_gliderFlightDialog() ) );
+             viewMap, SLOT( slot_gliderFlightDialog() ) );
 
   actionHelpCumulus = new QAction( tr("Help" ), this );
+#ifndef ANDROID
   actionHelpCumulus->setShortcut(Qt::Key_Question);
+#endif
   addAction( actionHelpCumulus );
   connect( actionHelpCumulus, SIGNAL(triggered()), this, SLOT(slotHelp()) );
 
   actionHelpAboutApp = new QAction( tr( "About Cumulus" ), this );
+#ifndef ANDROID
   actionHelpAboutApp->setShortcut(Qt::Key_V);
+#endif
   addAction( actionHelpAboutApp );
   connect( actionHelpAboutApp, SIGNAL( triggered() ),
-           this, SLOT( slotVersion() ) );
+            this, SLOT( slotVersion() ) );
 
 #if ! defined ANDROID && ! defined MAEMO
   // The Qt about is too big for small screens. Therefore it is undefined for
