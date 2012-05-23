@@ -401,8 +401,8 @@ private:
   QAction* actionManualNavRight;
   QAction* actionManualNavDown;
   QAction* actionManualNavLeft;
-  QAction* actionManualNavHome;
-  QAction* actionManualNavWP;
+  QAction* actionManualNavMove2Home;
+  QAction* actionManualNavMove2WP;
   QAction* actionManualNavWPList;
   QAction* actionGpsNavUp;
   QAction* actionGpsNavDown;
@@ -467,12 +467,13 @@ private:
   QPointer<WaitScreen> ws;
   // Splash screen
   QPointer<Splash> splash;
-  // Holds temporary the config or pre-flight widgets
+  // Holds temporary the configuration or pre-flight widgets
   QPointer<QWidget> configView;
 
   // visibility of menu bar
   bool menuBarVisible;
-  // instance of IGC logger
+
+  // instance of IGC logger class
   IgcLogger *logger;
 
   // Store here, if the lists are visible or not.
@@ -480,7 +481,9 @@ private:
   bool _reachpointListVisible;
   bool _outlandingListVisible;
 
-  // Flag to store the root window state
+  // Flag to store if the root window is visible or not. Used by Android for the
+  // menu display. Android popups only its menu if the main window is active and
+  // not covered by another widget.
   static bool _rootWindow;
 
 #if defined ANDROID || defined MAEMO

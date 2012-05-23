@@ -24,7 +24,6 @@
  *  and to initiate the load of the map and all other data.
  */
 
-
 // The define USE_MENUBAR can be used to get a classical menu bar. But enable
 // it in the related qmake project file only!
 
@@ -148,11 +147,11 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   QFont appFt = QApplication::font();
 
   qDebug( "Default QAppFont: Family %s, ptSize=%d, pxSize=%d, weight=%d, height=%dpx",
-          appFt.family().toLatin1().data(),
-          appFt.pointSize(),
-          appFt.pixelSize(),
-          appFt.weight(),
-          QFontMetrics(appFt).boundingRect("XM").height() );
+           appFt.family().toLatin1().data(),
+           appFt.pointSize(),
+           appFt.pixelSize(),
+           appFt.weight(),
+           QFontMetrics(appFt).boundingRect("XM").height() );
 
   QString fontString = GeneralConfig::instance()->getGuiFont();
   QFont userFont;
@@ -188,11 +187,11 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   appFt = QApplication::font();
 
   qDebug( "Used QAppFont: Family %s, ptSize=%d, pxSize=%d, weight=%d, height=%dpx",
-          appFt.family().toLatin1().data(),
-          appFt.pointSize(),
-          appFt.pixelSize(),
-          appFt.weight(),
-          QFontMetrics(appFt).boundingRect("XM").height() );
+           appFt.family().toLatin1().data(),
+           appFt.pointSize(),
+           appFt.pixelSize(),
+           appFt.weight(),
+           QFontMetrics(appFt).boundingRect("XM").height() );
 
   // For Maemo it's really better to adapt the size of some common widget
   // elements. That is done with the help of the class MaemoStyle.
@@ -203,7 +202,8 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
 #ifdef ANDROID
 
-  // Overwrite some style items.
+  // Overwrite some style items globally. Note the all new style items must be
+  // defined in one string!
   QString style = "QDialog { background: lightgray }";
   qApp->setStyleSheet( style );
 
@@ -246,24 +246,28 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   resize( GeneralConfig::instance()->getWindowSize() );
 #endif
 
+#ifdef MAEMO
+  setWindowState(Qt::WindowFullScreen);
+#endif
+
   qDebug() << "Cumulus Release:"
-           << QCoreApplication::applicationVersion()
-           << "Build date:"
-           << GeneralConfig::instance()->getBuiltDate()
-           << "based on Qt/X11 Version"
-           << QT_VERSION_STR;
+            << QCoreApplication::applicationVersion()
+            << "Build date:"
+            << GeneralConfig::instance()->getBuiltDate()
+            << "based on Qt Version"
+            << QT_VERSION_STR;
 
   qDebug( "Desktop size is %dx%d, width=%d, height=%d",
-          QApplication::desktop()->screenGeometry().width(),
-          QApplication::desktop()->screenGeometry().height(),
-          QApplication::desktop()->screenGeometry().width(),
-          QApplication::desktop()->screenGeometry().height() );
+           QApplication::desktop()->screenGeometry().width(),
+           QApplication::desktop()->screenGeometry().height(),
+           QApplication::desktop()->screenGeometry().width(),
+           QApplication::desktop()->screenGeometry().height() );
 
   qDebug( "Main window size is %dx%d, width=%d, height=%d",
-          size().width(),
-          size().height(),
-          size().width(),
-          size().height() );
+           size().width(),
+           size().height(),
+           size().width(),
+           size().height() );
 
   // @AP: Display some environment variables, to get more clearness
   // about their settings during process startup
@@ -287,10 +291,10 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   qDebug( "HTTP_PROXY=%s", Proxy ? Proxy : "NULL" );
 
   qDebug( "UserDataDir=%s",
-          GeneralConfig::instance()->getUserDataDirectory().toLatin1().data() );
+           GeneralConfig::instance()->getUserDataDirectory().toLatin1().data() );
 
   qDebug( "MapRootDir=%s",
-          GeneralConfig::instance()->getMapRootDir().toLatin1().data() );
+           GeneralConfig::instance()->getMapRootDir().toLatin1().data() );
 
   setFocusPolicy( Qt::StrongFocus );
   setFocus();
@@ -300,10 +304,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 #endif
 
   setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus-desktop26x26.png")) );
-
-#ifdef MAEMO
-  setWindowState(Qt::WindowFullScreen);
-#endif
 
   installEventFilter( this );
 
@@ -398,7 +398,7 @@ void MainWindow::slotCreateSplash()
  */
 void MainWindow::slotCreateApplicationWidgets()
 {
-  qDebug( "MainWindow::slotCreateApplicationWidgets()" );
+  // qDebug( "MainWindow::slotCreateApplicationWidgets()" );
 
 #ifdef MAEMO
 
@@ -447,12 +447,6 @@ void MainWindow::slotCreateApplicationWidgets()
            calculator, SLOT( slot_changePositionHome() ) );
 
   ws->slot_SetText1( tr( "Creating views..." ) );
-
-  qDebug( "Main window size is %dx%d, width=%d, height=%d",
-          size().width(),
-          size().height(),
-          size().width(),
-          size().height() );
 
   // This is the main widget of Cumulus
   viewMap = new MapView( this );
@@ -768,8 +762,8 @@ void MainWindow::slotCreateApplicationWidgets()
   QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents|QEventLoop::ExcludeSocketNotifiers);
 
   Map::instance->setDrawing( true );
-  viewMap->resize( size() );
   viewMap->setVisible( true );
+  viewMap->resize( size() );
 
   // set viewMap as central widget
   setCentralWidget( viewMap );
@@ -788,7 +782,7 @@ void MainWindow::slotCreateApplicationWidgets()
  */
 void MainWindow::slotFinishStartUp()
 {
-  qDebug() << "MainWindow::slotFinishStartUp()";
+  // qDebug() << "MainWindow::slotFinishStartUp()";
 
   if( GeneralConfig::instance()->getLoggerAutostartMode() == true )
     {
@@ -1004,7 +998,7 @@ void MainWindow::createMenuBar()
 
   mapMenu = menuBar()->addMenu(tr("Map"));
   mapMenu->addAction( actionSelectTask );
-  mapMenu->addAction( actionManualNavHome );
+  mapMenu->addAction( actionManualNavMove2Home );
   mapMenu->addAction( actionNav2Home );
   mapMenu->addAction( actionEnsureVisible );
 
@@ -1070,7 +1064,7 @@ void MainWindow::createContextMenu()
 
   mapMenu = contextMenu->addMenu(tr("Map") + " ");
   mapMenu->addAction( actionSelectTask );
-  mapMenu->addAction( actionManualNavHome );
+  mapMenu->addAction( actionManualNavMove2Home );
   mapMenu->addAction( actionNav2Home );
   mapMenu->addAction( actionEnsureVisible );
 
@@ -1138,6 +1132,10 @@ void MainWindow::createActions()
   // QAction, even when not in a menu
   // @JD done. Uff!
 
+  // Note: The ampersand in the QAction item's text "&File" sets Alt+F as a
+  //       shortcut for this menu. You can use "&&" to get a real ampersand
+  //       in the menu bar.
+
   // Manual navigation shortcuts. Only available if no GPS connection
   actionManualNavUp = new QAction( tr( "Move up" ), this );
   actionManualNavUp->setShortcut ( QKeySequence("Up") );
@@ -1163,19 +1161,19 @@ void MainWindow::createActions()
   connect( actionManualNavLeft, SIGNAL( triggered() ),
            calculator, SLOT( slot_changePositionW() ) );
 
-  actionManualNavHome = new QAction( tr( "Goto home site" ), this );
+  actionManualNavMove2Home = new QAction( tr( "Goto home site" ), this );
   QList<QKeySequence> acGoHomeKeys;
   acGoHomeKeys << QKeySequence(Qt::SHIFT + Qt::Key_H) << QKeySequence::MoveToStartOfLine;
-  actionManualNavHome->setShortcuts( acGoHomeKeys );
+  actionManualNavMove2Home->setShortcuts( acGoHomeKeys );
 
-  addAction( actionManualNavHome );
-  connect( actionManualNavHome, SIGNAL( triggered() ),
+  addAction( actionManualNavMove2Home );
+  connect( actionManualNavMove2Home, SIGNAL( triggered() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
-  actionManualNavWP = new QAction( tr( "Move to waypoint" ), this );
-  actionManualNavWP->setShortcut( QKeySequence("C") );
-  addAction( actionManualNavWP );
-  connect( actionManualNavWP, SIGNAL( triggered() ),
+  actionManualNavMove2WP = new QAction( tr( "Move to waypoint" ), this );
+  actionManualNavMove2WP->setShortcut( QKeySequence("C") );
+  addAction( actionManualNavMove2WP );
+  connect( actionManualNavMove2WP, SIGNAL( triggered() ),
            calculator, SLOT( slot_changePositionWp() ) );
 
   actionManualNavWPList = new QAction( tr( "Open waypoint list" ), this );
@@ -1296,7 +1294,7 @@ void MainWindow::createActions()
   connect( actionViewInfo, SIGNAL( triggered() ),
            this, SLOT( slotSwitchToInfoView() ) );
 
-  actionToggleStatusbar = new QAction( tr( "Status Bar" ), this );
+  actionToggleStatusbar = new QAction( "Statusbar", this );
   actionToggleStatusbar->setCheckable(true);
   actionToggleStatusbar->setChecked(true);
   addAction( actionToggleStatusbar );
@@ -1377,7 +1375,7 @@ void MainWindow::createActions()
   connect ( actionToggleLogging, SIGNAL( triggered() ),
             logger, SLOT( slotToggleLogging() ) );
 
-  actionToggleTrailDrawing = new QAction( tr( "Flight trail" ), this );
+  actionToggleTrailDrawing = new QAction( tr( "&Flight trail" ), this );
   actionToggleTrailDrawing->setCheckable(true);
   actionToggleTrailDrawing->setChecked( GeneralConfig::instance()->getMapDrawTrail() );
   addAction( actionToggleTrailDrawing );
@@ -1528,9 +1526,10 @@ void MainWindow::toggleManualNavActions( const bool toggle )
   actionManualNavRight->setEnabled( toggle );
   actionManualNavDown->setEnabled( toggle );
   actionManualNavLeft->setEnabled( toggle );
-  actionManualNavHome->setEnabled( toggle );
-  actionManualNavWP->setEnabled( toggle );
+  actionManualNavMove2Home->setEnabled( toggle );
+  actionManualNavMove2WP->setEnabled( toggle );
   actionManualNavWPList->setEnabled( toggle );
+  actionToggleGps->setEnabled( toggle );
 }
 
 void MainWindow::toggleGpsNavActions( const bool toggle )
@@ -1612,7 +1611,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
 
 void MainWindow::slotToggleMenu()
 {
-#ifdef USE_MEMUBAR
+#ifdef USE_MENUBAR
 
   if ( !menuBar()->isVisible() )
     {
