@@ -1397,7 +1397,9 @@ void MainWindow::createActions()
             this, SLOT( slotToggleWpLabels( bool ) ) );
 
   actionToggleLabelsInfo = new QAction (  tr( "Extra Info" ), this);
+#ifndef ANDROID
   actionToggleLabelsInfo->setShortcut(Qt::Key_E);
+#endif
   actionToggleLabelsInfo->setCheckable(true);
   actionToggleLabelsInfo->setChecked( GeneralConfig::instance()->getMapShowLabelsExtraInfo() );
   addAction( actionToggleLabelsInfo );
