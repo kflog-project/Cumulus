@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2001      by Harald Maier
  **                   2002      by André Somers,
- **                   2008-2011 by Axel Pauli
+ **                   2008-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -121,6 +121,15 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
   if( _showProgress )
     {
       ws = new WaitScreen( MainWindow::mainWindow() );
+
+#ifdef ANDROID
+      // The waitscreen is not centered over the parent and not limited in
+      // its size under Android. Therefore this must be done by our self.
+      ws->setGeometry ( MainWindow::mainWindow()->width() / 2 - 250,
+                        MainWindow::mainWindow()->height() / 2 - 75,
+                        500, 150 );
+#endif
+
       ws->slot_SetText1( QObject::tr("Reading file") );
       ws->slot_SetText2( QFileInfo(catalog).fileName() );
       QCoreApplication::flush();
@@ -675,6 +684,15 @@ int WaypointCatalog::readDat( QString catalog, QList<Waypoint>* wpList )
   if( _showProgress )
     {
       ws = new WaitScreen( MainWindow::mainWindow() );
+
+#ifdef ANDROID
+      // The waitscreen is not centered over the parent and not limited in
+      // its size under Android. Therefore this must be done by our self.
+      ws->setGeometry ( MainWindow::mainWindow()->width() / 2 - 250,
+                        MainWindow::mainWindow()->height() / 2 - 75,
+                        500, 150 );
+#endif
+
       ws->slot_SetText1( QObject::tr("Reading file") );
       ws->slot_SetText2( QFileInfo(catalog).fileName() );
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
@@ -1029,6 +1047,15 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
   if( _showProgress )
     {
       ws = new WaitScreen( MainWindow::mainWindow() );
+
+#ifdef ANDROID
+      // The waitscreen is not centered over the parent and not limited in
+      // its size under Android. Therefore this must be done by our self.
+      ws->setGeometry ( MainWindow::mainWindow()->width() / 2 - 250,
+                        MainWindow::mainWindow()->height() / 2 - 75,
+                        500, 150 );
+#endif
+
       ws->slot_SetText1( QObject::tr("Reading file") );
       ws->slot_SetText2( QFileInfo(catalog).fileName() );
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
