@@ -2110,7 +2110,7 @@ void MainWindow::setNearestOrReachableHeaders()
     }
 
   // update menu display
-  actionViewReachpoints->setText( QString("&") + header );
+  actionViewReachpoints->setText( header );
 
   // update list view tabulator header
   listViewTabs->setTabText( _taskListVisible ? 2 : 1, header );
