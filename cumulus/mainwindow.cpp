@@ -993,7 +993,11 @@ void MainWindow::createMenuBar()
   labelMenu->addAction( actionToggleLogging );
   labelMenu->addAction( actionToggleTrailDrawing );
   labelMenu->addSeparator();
+
+#ifndef ANDROID
   labelMenu->addAction( actionToggleWindowSize );
+#endif
+
   labelMenu->addAction( actionToggleStatusbar );
 
   mapMenu = menuBar()->addMenu(tr("Map"));
@@ -1059,7 +1063,11 @@ void MainWindow::createContextMenu()
   labelMenu->addAction( actionToggleLogging );
   labelMenu->addAction( actionToggleTrailDrawing );
   labelMenu->addSeparator();
+
+#ifndef ANDROID
   labelMenu->addAction( actionToggleWindowSize );
+#endif
+
   labelMenu->addAction( actionToggleStatusbar );
 
   mapMenu = contextMenu->addMenu(tr("Map") + " ");
@@ -1270,13 +1278,12 @@ void MainWindow::createActions()
   QList<QKeySequence> wskList;
   wskList << Qt::Key_Space << Qt::Key_F6;
   actionToggleWindowSize->setShortcuts( wskList );
-#endif
-
   actionToggleWindowSize->setCheckable( true );
   actionToggleWindowSize->setChecked( false );
   addAction( actionToggleWindowSize );
   connect( actionToggleWindowSize, SIGNAL( triggered() ),
             this, SLOT( slotToggleWindowSize() ) );
+#endif
 
   actionFileQuit = new QAction( tr( "Exit" ), this );
 #ifndef ANDROID
