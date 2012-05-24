@@ -64,7 +64,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
 
   QFont f = font();
 
-#ifndef MAEMO  
+#ifndef MAEMO
   f.setPixelSize(14);
 #else
   f.setPixelSize(16);
@@ -274,15 +274,18 @@ void GpsStatusDialog::slot_Close()
   close();
 }
 
-void GpsStatusDialog::keyPressEvent(QKeyEvent *e)
+void GpsStatusDialog::keyReleaseEvent(QKeyEvent *event)
 {
   // close the dialog on key press
-  switch(e->key())
+  switch(event->key())
     {
       case Qt::Key_Close:
       case Qt::Key_Escape:
         emit closingWidget();
         close();
+        break;
+      default:
+        QWidget::keyReleaseEvent( event );
         break;
     }
 }

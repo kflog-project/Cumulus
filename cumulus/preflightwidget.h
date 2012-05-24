@@ -71,7 +71,7 @@ protected:
   /** Used to handle language change events */
   virtual void changeEvent( QEvent* event );
 
-  virtual bool eventFilter( QObject *o , QEvent *e );
+  void keyReleaseEvent( QKeyEvent* event );
 
 private:
 

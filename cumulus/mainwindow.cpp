@@ -3,7 +3,7 @@
  -----------------------------------------
  begin                : Sun Jul 21 2002
  copyright            : (C) 2002      by André Somers
- ported to Qt4.x/X11  : (C) 2007-2012 by Axel Pauli
+ ported to Qt4.x      : (C) 2007-2012 by Axel Pauli
  maintainer           : axel@kflog.org
 
  $Id$
@@ -304,8 +304,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 #endif
 
   setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus-desktop26x26.png")) );
-
-  installEventFilter( this );
 
   // As next setup a timer and return. That will start the QtMainLoop.
   // If that is not done in this way, some functionality of the GUI seems
@@ -2234,10 +2232,6 @@ void MainWindow::slotOpenConfig()
   cDlg->resize( size() );
   configView = static_cast<QWidget *> (cDlg);
 
-#ifdef ANDROID
-  this->installEventFilter( cDlg );
-#endif
-
   setView( cfView );
 
   connect( cDlg, SIGNAL( settingsChanged() ), this, SLOT( slotReadconfig() ) );
@@ -2595,10 +2589,6 @@ void MainWindow::slotOpenPreFlight(const char *tabName)
   cDlg->resize( size() );
   configView = static_cast<QWidget *> (cDlg);
 
-#ifdef ANDROID
-  this->installEventFilter( cDlg );
-#endif
-
   setView( cfView );
 
   connect( cDlg, SIGNAL( settingsChanged() ),
@@ -2618,10 +2608,6 @@ void MainWindow::slotOpenPreFlight(const char *tabName)
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotSubWidgetClosed() ) );
 
   cDlg->setVisible( true );
-
-#ifdef ANDROID
-  forceFocus();
-#endif
 }
 
 void MainWindow::slotPreFlightDataChanged()
@@ -2660,67 +2646,70 @@ void MainWindow::slotNewReachList()
   Map::instance->scheduleRedraw(Map::waypoints);
 }
 
-bool MainWindow::eventFilter( QObject *o , QEvent *e )
+void MainWindow::keyPressEvent( QKeyEvent* event )
 {
- // qDebug("MainWindow::eventFilter() is called with event type %d", e->type());
-
-  if ( e->type() == QEvent::KeyPress )
-    {
-      QKeyEvent *k = static_cast<QKeyEvent *>(e);
-
-      qDebug( "MW: Key press code: %d, 0x%X", k->key(), k->key() );
-
 #ifdef ANDROID
 
-      // Sent by native method "nativeKeypress"
-      if( k->key() == Qt::Key_F11 )
-        {
-          // Open setup from Android menu
-          if ( _rootWindow )
-            {
-              slotOpenConfig();
-            }
+  // qDebug( "MW KeyPress Key=%x", event->key() );
 
-          return true;
+  // Sent by native method "nativeKeypress"
+  if( event->key() == Qt::Key_F11 )
+    {
+      // Open setup from Android menu
+      if ( _rootWindow )
+        {
+          slotOpenConfig();
         }
 
-      if( k->key() == Qt::Key_F12 )
-        {
-          // Open pre-flight setup from Android menu
-          if ( _rootWindow )
-            {
-              slotPreFlightGlider();
-            }
+      return;
+    }
 
-          return true;
+  if( event->key() == Qt::Key_F12 )
+    {
+      // Open pre-flight setup from Android menu
+      if ( _rootWindow )
+        {
+          slotPreFlightGlider();
         }
 
-      if( k->key() == Qt::Key_F13 )
-        {
-          // Open GPS status window from Android menu
-          if ( _rootWindow )
-            {
-              actionViewGPSStatus->activate(QAction::Trigger);
-            }
+      return;
+    }
 
-          return true;
+  if( event->key() == Qt::Key_F13 )
+    {
+      // Open GPS status window from Android menu
+      if ( _rootWindow )
+        {
+          actionViewGPSStatus->activate(QAction::Trigger);
         }
 
-      if( k->key() == Qt::Key_Escape )
-        {
-          // Quit application is requested from Android menu to ensure a safe shutdown.
-          if ( _rootWindow )
-            {
-              close();
-              return true;
-            }
-        }
+      return;
+    }
 
 #endif
 
+  QWidget::keyPressEvent( event );
+}
+
+void MainWindow::keyReleaseEvent( QKeyEvent* event )
+{
+#ifdef ANDROID
+
+  // qDebug( "MW KeyRelease Key=%x", event->key() );
+
+  if( event->key() == Qt::Key_Close )
+    {
+      // Quit application is requested from Android menu to ensure a safe shutdown.
+      if ( _rootWindow )
+        {
+          close();
+          return;
+        }
     }
 
-  return QMainWindow::eventFilter( o, e ); // standard event processing;
+#endif
+
+  QWidget::keyReleaseEvent( event );
 }
 
 /** Called to select the home site position */
@@ -2894,7 +2883,7 @@ void MainWindow::forceFocus()
   QWindowSystemInterface::handleMouseEvent(0, QEvent::MouseButtonRelease,
                                            forceFocusPoint,
                                            forceFocusPoint,
-                                           Qt::MouseButtons(Qt::NoButton));
+                                           Qt::MouseButtons(Qt::LeftButton));
   //qDebug("send fake mouse release");
 }
 #endif

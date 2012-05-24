@@ -147,20 +147,20 @@ void PreFlightWidget::changeEvent( QEvent* event )
     }
 }
 
-bool PreFlightWidget::eventFilter( QObject *o , QEvent *e )
+void PreFlightWidget::keyReleaseEvent( QKeyEvent* event )
 {
-  if ( e->type() == QEvent::KeyPress )
+  // close the dialog on key press
+  switch(event->key())
     {
-      QKeyEvent *k = static_cast<QKeyEvent *>(e);
+      case Qt::Key_Close:
+      case Qt::Key_Escape:
+        slot_reject();
+        break;
 
-      if( k->key() == Qt::Key_Escape )
-        {
-           slot_reject();
-           return true;
-        }
+      default:
+        QWidget::keyReleaseEvent( event );
+        break;
     }
-
-  return QWidget::eventFilter(o, e);
 }
 
 void PreFlightWidget::slot_accept()

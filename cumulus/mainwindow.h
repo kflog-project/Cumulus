@@ -230,10 +230,10 @@ public slots:
   void slotSubWidgetClosed();
 
 protected:
-  /**
-   * Reimplemented from QObject
-   */
-  bool eventFilter(QObject*, QEvent*);
+
+  virtual void keyPressEvent( QKeyEvent* event );
+
+  virtual void keyReleaseEvent( QKeyEvent* event );
 
   /**
    * Redefinition of the resizeEvent.

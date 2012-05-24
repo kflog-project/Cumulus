@@ -439,19 +439,18 @@ void ConfigWidget::reject()
   QWidget::close();
 }
 
-bool ConfigWidget::eventFilter( QObject *o , QEvent *e )
+void ConfigWidget::keyReleaseEvent( QKeyEvent* event )
 {
-  if( e->type() == QEvent::KeyPress )
+  // close the dialog on key press
+  switch(event->key())
     {
-      QKeyEvent *k = static_cast<QKeyEvent *>(e);
+      case Qt::Key_Close:
+      case Qt::Key_Escape:
+        reject();
+        break;
 
-      if( k->key() == Qt::Key_Escape )
-        {
-          // Call reject, if ESC was received.
-          reject();
-          return true;
-        }
+      default:
+        QWidget::keyReleaseEvent( event );
+        break;
     }
-
-  return QWidget::eventFilter(o, e);
 }

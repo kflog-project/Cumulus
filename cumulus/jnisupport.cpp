@@ -124,33 +124,49 @@ static void nativeNmeaString(JNIEnv* env, jobject /*myobject*/, jstring jnmea)
 
 static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
 {
-  qDebug("JNI nativeKeypress: code is %d", (unsigned int) code);
+  // qDebug("JNI nativeKeypress: code is %d", (unsigned int) code);
+
+  if( MainWindow::isRootWindow() == false )
+    {
+      // Forward keys only if the root window is active.
+      return;
+    }
 
   unsigned int qtCode;
 
-  switch ((unsigned int) code)
+  switch( code )
     {
   case 25:
     qtCode = Qt::Key_F11;
     break;
+
   case 26:
     qtCode = Qt::Key_F12;
     break;
+
   case 27:
     qtCode = Qt::Key_F13;
     break;
+
   case 28:
     // The close key at the Android device is pressed. It is forwarded as
-    // escape key to close the current opened widget.
-    qtCode = Qt::Key_Escape;
+    // close key to close the main window.
+    qtCode = Qt::Key_Close;
+    qDebug() << "JNI nativeKeypress: Close is sent";
     break;
+
   default:
-    qDebug("nativeKeypress: code is %d", code);
+    qWarning("JNI nativeKeypress: code %d is unknown!", code);
     return;
     }
 
+  // Only the main window shall receive key events. Especially the close key has
+  // made a lot of trouble, if it was sent to other widgets as the main window.
+  // Therefore I decided to forward the close key only once to the main window.
+  // All other widgets have a close button, which should be used instead.
   QObject *receiver = MainWindow::mainWindow();
 
+#if 0
   if( QApplication::activeModalWidget() )
     {
       receiver = QApplication::activeModalWidget();
@@ -165,8 +181,7 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
       receiver = QApplication::activeWindow();
     }
 
-#if 1
-  qDebug() << "ESC Receiver:" << receiver
+  qDebug() << "KeyReceiver:" << receiver
             << "ActiveWindow:" << QApplication::activeWindow()
             << "MainWindow:" << MainWindow::mainWindow()
             << "FocusWindow:" << QApplication::focusWidget()
@@ -176,8 +191,8 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
   QKeyEvent *kpe = new QKeyEvent( QEvent::KeyPress, qtCode, Qt::NoModifier );
   QCoreApplication::postEvent( receiver, kpe, Qt::NormalEventPriority );
 
-  // Make a short break
-  usleep( 200 * 1000 );
+  // Make a short break to simulate a key press
+  usleep( 100 * 1000 );
 
   QKeyEvent *kre = new QKeyEvent( QEvent::KeyRelease, qtCode, Qt::NoModifier );
   QCoreApplication::postEvent( receiver, kre, Qt::NormalEventPriority );

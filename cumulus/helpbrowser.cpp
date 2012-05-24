@@ -23,8 +23,9 @@
 #include "generalconfig.h"
 #include "layout.h"
 
-HelpBrowser::HelpBrowser( QWidget *parent ) : QWidget(parent, Qt::Window),
-                                              firstCall(true)
+HelpBrowser::HelpBrowser( QWidget *parent ) :
+  QWidget(parent, Qt::Window),
+  firstCall(true)
 {
   setWindowTitle(tr("Cumulus Help"));
   setWindowIcon( GeneralConfig::instance()->loadPixmap( "cumulus.png" ) );
@@ -217,10 +218,18 @@ void HelpBrowser::keyPressEvent( QKeyEvent *event )
       return;
     }
 
+  QWidget::keyPressEvent( event );
+}
+
+/** catch key release events */
+void HelpBrowser::keyReleaseEvent( QKeyEvent *event )
+{
   // Check for exit keys.
   if( event->key() == Qt::Key_Close || event->key() == Qt::Key_Escape )
     {
       close();
       return;
     }
+
+  QWidget::keyReleaseEvent( event );
 }

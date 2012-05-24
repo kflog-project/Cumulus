@@ -85,7 +85,7 @@ public:
     return noOfInstances;
   };
 
-  void keyPressEvent( QKeyEvent *event );
+  void keyReleaseEvent( QKeyEvent *event );
 
 public slots:
 

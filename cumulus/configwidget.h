@@ -80,7 +80,7 @@ public:
 
 protected:
 
-  bool eventFilter( QObject *o , QEvent *e );
+  void keyReleaseEvent( QKeyEvent* event );
 
 public slots:
 

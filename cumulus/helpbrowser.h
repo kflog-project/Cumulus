@@ -57,8 +57,11 @@ private:
   /** catch show events */
   void showEvent( QShowEvent *event );
 
-  /** catch key events */
+  /** catch key press events */
   void keyPressEvent( QKeyEvent *event );
+
+  /** catch key release events */
+  void keyReleaseEvent( QKeyEvent *event );
 
  private slots:
 
