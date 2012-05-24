@@ -16,6 +16,7 @@
  **
  ***********************************************************************/
 
+#include <unistd.h>
 #include <jni.h>
 
 #include <QtGui>
@@ -164,16 +165,19 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
       receiver = QApplication::activeWindow();
     }
 
-#if 0
+#if 1
   qDebug() << "ESC Receiver:" << receiver
-           << "ActiveWindow:" << QApplication::activeWindow()
-           << "MainWindow:" << MainWindow::mainWindow()
-           << "FocusWindow:" << QApplication::focusWidget()
-           << "ActiveModalWidget:" << QApplication::activeModalWidget();
+            << "ActiveWindow:" << QApplication::activeWindow()
+            << "MainWindow:" << MainWindow::mainWindow()
+            << "FocusWindow:" << QApplication::focusWidget()
+            << "ActiveModalWidget:" << QApplication::activeModalWidget();
 #endif
 
   QKeyEvent *kpe = new QKeyEvent( QEvent::KeyPress, qtCode, Qt::NoModifier );
   QCoreApplication::postEvent( receiver, kpe, Qt::NormalEventPriority );
+
+  // Make a short break
+  usleep( 200 * 1000 );
 
   QKeyEvent *kre = new QKeyEvent( QEvent::KeyRelease, qtCode, Qt::NoModifier );
   QCoreApplication::postEvent( receiver, kre, Qt::NormalEventPriority );
