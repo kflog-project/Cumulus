@@ -15,6 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-05-24 AP: A forwarded close event from Android's Java part caused often
+                   a core dump in the C++ part, when it was sent to other
+                   widgets as the main window. Therefore I decided to handle
+                   close events only in the main window. All other widgets have
+                   an integrated close button for that.
+
 [+] 2012-05-19 AP: Classical menubar replaced by a context popup menu. That
                    prevents that the space of the map display is reduced when
                    the menu is opened.
