@@ -150,7 +150,7 @@
 #define MapLabelFontPointSize 10
 
 // Map city label font point size
-#define MapCityLabelFontPointSize 8
+#define MapCityLabelFontPointSize 7
 
 // Map bearing indicator font point size
 #define MapBearingIndicatorFontPointSize 12

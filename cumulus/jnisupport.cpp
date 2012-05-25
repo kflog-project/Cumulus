@@ -39,6 +39,7 @@ static JNIEnv*   m_jniEnv         = 0;
 static jobject   m_jniProxyObject = 0; // Java instance of CumulusActivity
 static jmethodID m_AddDataDirID   = 0;
 static jmethodID m_AppDataDirID   = 0;
+static jmethodID m_languageID     = 0;
 static jmethodID m_playSoundID    = 0;
 static jmethodID m_dimmScreenID   = 0;
 
@@ -47,7 +48,7 @@ extern MainWindow *_globalMainWindow;
 // Function declarations
 bool jniEnv();
 bool isJavaExceptionOccured();
-bool jniGetDir( const char* method, jmethodID mId, QString& directory );
+bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult );
 
 // ---- The native methods ---
 
@@ -446,10 +447,9 @@ QString jniGetAppDataDir()
 {
   QString dir ="";
 
-  bool ok = jniGetDir( "getAppDataDir", m_AppDataDirID, dir );
+  bool ok = jniCallStringMethod( "getAppDataDir", m_AppDataDirID, dir );
 
   Q_UNUSED(ok)
-
   return dir;
 }
 
@@ -457,20 +457,29 @@ QString jniGetAddDataDir()
 {
   QString dir ="";
 
-  bool ok = jniGetDir( "getAddDataDir", m_AddDataDirID, dir );
+  bool ok = jniCallStringMethod( "getAddDataDir", m_AddDataDirID, dir );
 
   Q_UNUSED(ok)
-
   return dir;
 }
 
-bool jniGetDir( const char* method, jmethodID mId, QString& directory )
+QString jniGetLanguage()
 {
-  directory = "";
+  QString lang ="";
+
+  bool ok = jniCallStringMethod( "getLanguage", m_languageID, lang );
+
+  Q_UNUSED(ok)
+  return lang;
+}
+
+bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult )
+{
+  strResult = "";
 
   if (!jniEnv())
     {
-      qDebug() << "jniGetDir: jniEnv failed, can't call Java method" << method;
+      qDebug() << "jniCallStringMethod: jniEnv failed, can't call Java method" << method;
       return false;
     }
 
@@ -478,7 +487,7 @@ bool jniGetDir( const char* method, jmethodID mId, QString& directory )
 
   if (isJavaExceptionOccured())
     {
-      qDebug() << "jniGetDir: Exception when calling Java method" << method;
+      qDebug() << "jniCallStringMethod: Exception when calling Java method" << method;
       return false;
     }
 
@@ -489,7 +498,7 @@ bool jniGetDir( const char* method, jmethodID mId, QString& directory )
       return false;
     }
 
-  directory = QString(resultChars);
+  strResult = QString(resultChars);
 
   m_jniEnv->ReleaseStringUTFChars(result, resultChars);
 

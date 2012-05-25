@@ -92,8 +92,17 @@ int main(int argc, char *argv[])
 
   GeneralConfig::instance()->setAppRoot( appDir );
 
+  // Gets the default language from the Android device.
+  QString language = jniGetLanguage();
+
+  if( language == "Deutsch" )
+    {
+      GeneralConfig::instance()->setLanguage( "de" );
+    }
+
   qDebug() << "Cumulus addDir and QtHome set to" << addDir;
   qDebug() << "Cumulus appDir set to" << appDir;
+  qDebug() << "Cumulus language set to" << "de";
 
 #endif /* ANDROID */
 

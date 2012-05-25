@@ -45,6 +45,10 @@ QString jniGetAppDataDir();
  */
 QString jniGetAddDataDir();
 
+/**
+ * Gets the user's default language from Android.
+ */
+QString jniGetLanguage();
 
 /**
  * Tells the android activity to switch on/off the dimming of the screen.
