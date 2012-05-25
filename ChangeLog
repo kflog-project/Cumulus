@@ -15,6 +15,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2012-05-24 AP: Cumulus 2.13.0 released
+
 [-] 2012-05-24 AP: A forwarded close event from Android's Java part caused often
                    a core dump in the C++ part, when it was sent to other
                    widgets as the main window. Therefore I decided to handle
