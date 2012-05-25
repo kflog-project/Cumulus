@@ -60,8 +60,6 @@ int main(int argc, char *argv[])
   // Workaround to start browser from QTextView
   qputenv ( "BROWSER", "browser --url" );
 
-  GeneralConfig *conf = GeneralConfig::instance();
-
 #ifdef ANDROID
 
   // Gets the additional data dir from our app. That is normally the storage
@@ -75,11 +73,18 @@ int main(int argc, char *argv[])
       addDir = jniGetAddDataDir();
     }
 
-  // Nice trick to overwrite the HOME directory under Android ;-)
+  // Nice trick to overwrite the HOME directory under Android by us ;-)
   qputenv ( "HOME", addDir.toLatin1().data() );
 
-  // Note, that first $HOME must be overwritten otherwise the setting file
-  // is created in the internal data area!
+#endif
+
+  // Note, that first $HOME must be overwritten under Android otherwise the
+  // setting file is created/searched in the internal data area under:
+  // /data/data/org.kflog.cumulus/files. That is the $HOME, set by Necessitas.
+  GeneralConfig *conf = GeneralConfig::instance();
+
+#ifdef ANDROID
+
   conf->setDataRoot( addDir );
 
   // Gets the internal data dir from our app
@@ -219,26 +224,29 @@ int main(int argc, char *argv[])
   */
 
   char *env = getenv("LD_BIND_NOW");
+  qDebug( "LD_BIND_NOW=%s", env ? env : "NULL" );
 
-  if( env != 0 )
-    {
-      unsetenv("LD_BIND_NOW");
-    }
+//  if( env != 0 )
+//    {
+//      unsetenv("LD_BIND_NOW");
+//    }
 
-  // Load language translations for Cumulus.
+  // Load language translation file for Cumulus.
 
 #ifndef ANDROID
 
   conf->setLanguage( conf->getLanguage() );
 
 #else
+
   // Gets the default language from the Android device.
    QString language = jniGetLanguage();
 
-   qDebug() << "Android language set to" << language;
+   qDebug() << "Android sets language to" << language;
 
    if( language == "Deutsch" )
      {
+       // In case of German there is a translation available.
        conf->setLanguage( "de" );
      }
    else
