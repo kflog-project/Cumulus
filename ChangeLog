@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-05-25 AP: If the Android user has German Language selected, the native
+                   Cumulus part will also use the German surface now after startup.
+
 [*] 2012-05-24 AP: Cumulus 2.13.0 released
 
 [-] 2012-05-24 AP: A forwarded close event from Android's Java part caused often
