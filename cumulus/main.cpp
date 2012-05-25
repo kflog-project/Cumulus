@@ -60,6 +60,8 @@ int main(int argc, char *argv[])
   // Workaround to start browser from QTextView
   qputenv ( "BROWSER", "browser --url" );
 
+  GeneralConfig *conf = GeneralConfig::instance();
+
 #ifdef ANDROID
 
   // Gets the additional data dir from our app. That is normally the storage
@@ -78,7 +80,7 @@ int main(int argc, char *argv[])
 
   // Note, that first $HOME must be overwritten otherwise the setting file
   // is created in the internal data area!
-  GeneralConfig::instance()->setDataRoot( addDir );
+  conf->setDataRoot( addDir );
 
   // Gets the internal data dir from our app
   QString appDir = jniGetAppDataDir();
@@ -90,23 +92,12 @@ int main(int argc, char *argv[])
       appDir = jniGetAppDataDir();
     }
 
-  GeneralConfig::instance()->setAppRoot( appDir );
-
-  // Gets the default language from the Android device.
-  QString language = jniGetLanguage();
-
-  if( language == "Deutsch" )
-    {
-      GeneralConfig::instance()->setLanguage( "de" );
-    }
+  conf->setAppRoot( appDir );
 
   qDebug() << "Cumulus addDir and QtHome set to" << addDir;
   qDebug() << "Cumulus appDir set to" << appDir;
-  qDebug() << "Cumulus language set to" << "de";
 
 #endif /* ANDROID */
-
-  GeneralConfig *conf = GeneralConfig::instance();
 
   QApplication::setGraphicsSystem( "raster" );
   QApplication app(argc, argv, true);
@@ -159,7 +150,6 @@ int main(int argc, char *argv[])
   // always log on Android for now
   isLog2File = true;
   logDir = QDir::homePath();
-  qDebug() << "Android LogDir=" << logDir;
 
 #endif
 
@@ -197,9 +187,16 @@ int main(int argc, char *argv[])
       // dup2( i, fileno(stdin) );
       dup2( i, fileno(stdout) );
       dup2( i, fileno(stderr) );
-
       close(i);
     }
+
+#ifdef ANDROID
+
+  qDebug() << "Cumulus addDir and QtHome:" << addDir;
+  qDebug() << "Cumulus appDir:" << appDir;
+  qDebug() << "Cumulus LogDir:" << logDir;
+
+#endif
 
   /*
     @AP: check, if environment variable LD_BIND_NOW is set. In this case reset
@@ -229,9 +226,25 @@ int main(int argc, char *argv[])
     }
 
   // Load language translations for Cumulus.
+
+#ifndef ANDROID
+
   conf->setLanguage( conf->getLanguage() );
 
-#ifdef ANDROID
+#else
+  // Gets the default language from the Android device.
+   QString language = jniGetLanguage();
+
+   qDebug() << "Android language set to" << language;
+
+   if( language == "Deutsch" )
+     {
+       conf->setLanguage( "de" );
+     }
+   else
+     {
+       conf->setLanguage( conf->getLanguage() );
+     }
 
   QFontDatabase database;
 
@@ -262,6 +275,9 @@ int main(int argc, char *argv[])
     }
 
 #endif
+
+  // save done configuration settings
+  conf->save();
 
   // create the Cumulus application window
   MainWindow *cumulus = new MainWindow( Qt::WindowContextHelpButtonHint );

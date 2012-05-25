@@ -317,6 +317,15 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       return false;
     }
 
+  m_languageID = m_jniEnv->GetMethodID( clazz,
+                                        "getLanguage",
+                                        "()Ljava/lang/String;");
+  if (isJavaExceptionOccured())
+    {
+      qDebug() << "initJni: could not get ID of getLanguage";
+      return false;
+    }
+
   m_playSoundID = m_jniEnv->GetMethodID( clazz,
                                          "playSound",
                                          "(ILjava/lang/String;)V");
