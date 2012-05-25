@@ -44,6 +44,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -843,6 +844,14 @@ public class CumulusActivity extends QtActivity
         return addDataPath;
       }
   }
+  
+  synchronized String getLanguage()
+  	{
+      Configuration config = getResources().getConfiguration();
+      String lang = config.locale.getDisplayLanguage();
+      Log.d(TAG, "Language=" + lang );
+      return lang;
+  	}
 
 	private void toggleGps()
 	{
