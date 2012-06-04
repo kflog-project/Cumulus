@@ -845,12 +845,10 @@ public class CumulusActivity extends QtActivity
       }
   }
   
-  synchronized String getLanguage()
+  String getLanguage()
   	{
       Configuration config = getResources().getConfiguration();
-      String lang = config.locale.getDisplayLanguage();
-      Log.d(TAG, "Language=" + lang );
-      return lang;
+      return config.locale.getDisplayLanguage();
   	}
 
 	private void toggleGps()
