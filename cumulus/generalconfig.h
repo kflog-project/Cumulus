@@ -637,6 +637,42 @@ class GeneralConfig : protected QSettings
     _forceDrawingDistance = dist;
   };
 
+  /**
+   * @return True if airspace ignore border should be active.
+   */
+  bool getAirspaceDrawBorderEnabled() const
+  {
+    return _asNoDrawing;
+  };
+
+  /**
+   * Enables or disables the drawing of airspaces at a certain vertical border.
+   */
+  void setAirspaceDrawBorderEnabled(bool enable=false)
+  {
+    _asNoDrawing = enable;
+  };
+
+  /**
+   * Gets the lower vertical distance border for airspace drawing. The lower
+   * airspace border must lay under that limit otherwise the airspace is not
+   * drawn. The border is returned as Flight Level.
+   */
+  int getAirspaceDrawingBorder() const
+  {
+    return _asDrawingBorder;
+  };
+
+  /**
+   * Sets the lower vertical distance border for airspace drawing. The lower
+   * airspace border must lay under that limit otherwise the airspace is not
+   * drawn. The border is stored as Flight Level.
+   */
+  void setAirspaceDrawingBorder(const int alt)
+  {
+    _asDrawingBorder = alt;
+  };
+
   /** Gets the last airspace url */
   QString &getLastAirspaceUrl()
     {
@@ -2163,6 +2199,12 @@ class GeneralConfig : protected QSettings
   bool _forceDrawing;
   //vertical distance below airspace
   Distance _forceDrawingDistance;
+
+  // no airspace drawing flag.
+  bool _asNoDrawing;
+  // Vertical lower distance up to which the airspace drawing is ignored. The
+  // value is stored as flight level.
+  int _asDrawingBorder;
 
   // airspace line width
   int _airspaceLineWidth;

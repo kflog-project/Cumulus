@@ -123,6 +123,10 @@ void GeneralConfig::load()
   _forceDrawingDistance = value("forceLowAirspaceDrawingDistance", 150.0).toDouble();
   _airspaceFileList     = value("FileList", QStringList(QString("All"))).toStringList();
 
+  _asNoDrawing          = value("AirspaceNoDrawing", false ).toBool();;
+  _asDrawingBorder    = value("AirspaceNoDrawingBorder", 100).toInt();
+
+
 #if ! defined (MAEMO) && ! defined (ANDROID)
   _airspaceLineWidth = value( "AirSpaceLineWidth", 5 ).toInt();
 #else
@@ -492,6 +496,9 @@ void GeneralConfig::save()
   setValue("LastAirspaceUrl", _lastAirspaceUrl);
   setValue("forceLowAirspaceDrawing", _forceDrawing);
   setValue("forceLowAirspaceDrawingDistance", _forceDrawingDistance.getMeters());
+  setValue("AirspaceNoDrawing", _asNoDrawing);
+  setValue("AirspaceNoDrawingBorder", _asDrawingBorder);
+
   setValue("AirSpaceLineWidth", _airspaceLineWidth);
   setValue("FileList", _airspaceFileList);
 

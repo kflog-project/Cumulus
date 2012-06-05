@@ -695,7 +695,7 @@ void Map::__drawAirspaces( bool reset )
 
   GeneralConfig* settings     = GeneralConfig::instance();
   bool fillAirspace           = settings->getAirspaceFillingEnabled();
-  bool forcedDrawing          = settings->getForceAirspaceDrawingEnabled();
+  bool drawingBorder          = settings->getAirspaceDrawBorderEnabled();
   AirspaceWarningDistance awd = settings->getAirspaceWarningDistances();
   AltitudeCollection alt      = calculator->getAltitudeCollection();
   QPoint pos                  = calculator->getlastPosition();
@@ -718,8 +718,8 @@ void Map::__drawAirspaces( bool reset )
       airspaceOpacity = 100.0; // no transparency
     }
 
-  uint forcedMinimumCeil = (uint) rint(settings->getForceAirspaceDrawingDistance().getMeters() +
-                                   calculator->getlastAltitude().getMeters());
+  // The border is stored as FL
+  uint asBorder = (uint) rint(settings->getAirspaceDrawingBorder() * 100.0 * Distance::mFromFeet );
 
   for( uint loop = 0;
        loop < _globalMapContents->getListLength( MapContents::AirspaceList);
@@ -727,24 +727,20 @@ void Map::__drawAirspaces( bool reset )
     {
       currentAirS = (Airspace*) _globalMapContents->getElement(MapContents::AirspaceList, loop);
 
-      //airspaces we don't draw, we don't warn for either (and vice versa)
-      if( !settings->getAirspaceDrawingEnabled( currentAirS->getTypeID() ) )
-        {
-          //currentAirS->drawRegion(&cuAeroMapP, false);
-          if( forcedDrawing && currentAirS->getLowerL() <= forcedMinimumCeil )
-            {
-              //draw anyway, because it's getting close...
-            }
-          else
-            {
-              continue;
-            }
-        }
-
       if( ! currentAirS->isDrawable() )
         {
           // Not of interest, step away
           continue;
+        }
+
+      if( drawingBorder == true )
+        {
+          // Ignore airspaces which lays with its lower border to high.
+          if( currentAirS->getLowerL() > asBorder )
+            {
+              //qDebug() << "Ignoring AS:" << currentAirS->getName() << currentAirS->getLowerL() << "m";
+              continue;
+            }
         }
 
       if( reset == true )

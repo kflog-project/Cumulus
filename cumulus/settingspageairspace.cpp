@@ -87,19 +87,17 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   QHBoxLayout *hbox = new QHBoxLayout;
 
-  enableForceDrawing = new QCheckBox(tr("Draw all Airspaces"), this);
-  enableForceDrawing->setChecked(true);
-  hbox->addWidget( enableForceDrawing );
-  connect( enableForceDrawing, SIGNAL(toggled(bool)), SLOT(slot_enabledToggled(bool)));
+  enableBorderDrawing = new QCheckBox(tr("Ignore AS"), this);
+  enableBorderDrawing->setChecked(false);
+  hbox->addWidget( enableBorderDrawing );
+  connect( enableBorderDrawing, SIGNAL(toggled(bool)), SLOT(slot_enabledToggled(bool)));
 
-  spinForceMargin = new QSpinBox;
-  spinForceMargin->setPrefix("< ");
-  spinForceMargin->setRange( 0, 99999 );
-  spinForceMargin->setSingleStep( 10 );
-  spinForceMargin->setSuffix( unit );
-  VarSpinBox* hspin = new VarSpinBox( spinForceMargin );
+  spinBorderDrawing = new QSpinBox;
+  spinBorderDrawing->setPrefix(">FL ");
+  spinBorderDrawing->setRange( 50, 500 );
+  spinBorderDrawing->setSingleStep( 1 );
+  VarSpinBox* hspin = new VarSpinBox( spinBorderDrawing );
   hbox->addWidget( hspin );
-  hbox->addWidget( new QLabel(tr("above me."), this ));
   hbox->addStretch( 10 );
 
   cmdColorDefaults = new QPushButton(tr("Color Defaults"), this);
@@ -401,22 +399,15 @@ void SettingsPageAirspace::hideEvent( QHideEvent *)
 void SettingsPageAirspace::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
-  bool enabled = conf->getForceAirspaceDrawingEnabled();
+  bool enabled = conf->getAirspaceDrawBorderEnabled();
 
-  enableForceDrawing->setChecked(enabled);
+  enableBorderDrawing->setChecked(enabled);
   slot_enabledToggled(enabled);
 
-  if( altUnit == Altitude::meters )
-    { // user wants meters
-      spinForceMargin->setValue((int) rint(conf->getForceAirspaceDrawingDistance().getMeters()));
-    }
-  else
-    { // user get feet
-      spinForceMargin->setValue((int) rint(conf->getForceAirspaceDrawingDistance().getFeet()));
-    }
+  spinBorderDrawing->setValue( conf->getAirspaceDrawingBorder() );
 
   // save spinbox value for later change check
-  spinForceMarginValue = spinForceMargin->value();
+  spinBorderValue = spinBorderDrawing->value();
 
   // save spinbox value for later change check
   spinAsLineWidthValue = conf->getAirspaceLineWidth();
@@ -475,20 +466,8 @@ void SettingsPageAirspace::slot_save()
   GeneralConfig * conf = GeneralConfig::instance();
   AirspaceWarningDistance awd;
 
-  Distance forceDist;
-
-  // @AP: Store warning distances always as meters
-  if( altUnit == Altitude::meters )
-    {
-      forceDist.setMeters( spinForceMargin->value() );
-    }
-  else
-    {
-      forceDist.setFeet( spinForceMargin->value() );
-    }
-
-  conf->setForceAirspaceDrawingDistance(forceDist);
-  conf->setForceAirspaceDrawingEnabled(enableForceDrawing->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingBorder(spinBorderDrawing->value());
+  conf->setAirspaceDrawBorderEnabled(enableBorderDrawing->checkState() == Qt::Checked ? true : false);
 
   conf->setAirspaceLineWidth( spinAsLineWidth->value() );
 
@@ -723,10 +702,10 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   GeneralConfig * conf = GeneralConfig::instance();
   bool changed=false;
 
-  changed |= spinForceMarginValue != spinForceMargin->value();
+  changed |= spinBorderValue != spinBorderDrawing->value();
   changed |= spinAsLineWidthValue != spinAsLineWidth->value();
 
-  changed |= conf->getForceAirspaceDrawingEnabled() != enableForceDrawing->isChecked();
+  changed |= conf->getForceAirspaceDrawingEnabled() != enableBorderDrawing->isChecked();
   changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::AirA) != (drawAirspaceA->checkState() == Qt::Checked ? true : false);
   changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::AirB) != (drawAirspaceB->checkState() == Qt::Checked ? true : false);
   changed |= conf->getAirspaceDrawingEnabled(BaseMapElement::AirC) != (drawAirspaceC->checkState() == Qt::Checked ? true : false);
@@ -781,7 +760,7 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
 
 void SettingsPageAirspace::slot_enabledToggled(bool enabled)
 {
-  spinForceMargin->setEnabled(enabled);
+  spinBorderDrawing->setEnabled(enabled);
 }
 
 /******************************************************************************/

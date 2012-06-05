@@ -15,6 +15,16 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2012-06-05 AP: New option introduced in setup airspace, which allows to skip
+                   airspaces laying over a predefined vertical border. I found
+                   an airspace file with a lot of information in the upper
+                   airspace, which are not more of interest for glider pilots.
+                   With the help of this option you can filter out upper
+                   airspaces now.
+                   
+[-] 2012-06-05 AP: Option force drawing ... in setup airspace removed. It caused
+                   sometimes a lot of unwanted warnings.         
+
 [o] 2012-05-25 AP: If the Android user has German Language selected, the native
                    Cumulus part will also use the German surface now after startup.
 

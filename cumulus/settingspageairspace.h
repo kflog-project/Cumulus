@@ -209,12 +209,12 @@ class SettingsPageAirspace : public QWidget
     QWidget* fillColorWaveWindow;
     QWidget* fillColorGliderSector;
 
-    QCheckBox* enableForceDrawing;
-    QSpinBox*  spinForceMargin;
+    QCheckBox* enableBorderDrawing;
+    QSpinBox*  spinBorderDrawing;
     QSpinBox*  spinAsLineWidth;
 
     // values of spin boxes after load
-    int spinForceMarginValue;
+    int spinBorderValue;
     int spinAsLineWidthValue;
 
     SettingsPageAirspaceFilling*  m_fillingDlg;
