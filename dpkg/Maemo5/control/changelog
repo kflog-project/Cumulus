@@ -1,3 +1,16 @@
+cumulus (2.13.2) stable; urgency=low
+
+  * New option introduced in setup airspace, which allows to skip airspaces
+    laying over a predefined vertical border. I found an airspace file with a
+    lot of information in the upper airspace, which are not more of interest
+    for glider pilots. With the help of this option you can filter out upper
+    airspaces now.
+                   
+  * Option force drawing ... in setup airspace removed. It caused sometimes a
+    lot of unwanted warnings.  
+    
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Wed, 05 Jun 2012 20:30:53 +0200           
+
 cumulus (2.13.0) stable; urgency=low
 
   * Classical menubar replaced by a context popup menu. That prevents that the

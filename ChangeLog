@@ -25,6 +25,8 @@ Cumulus changelog
 [-] 2012-06-05 AP: Option force drawing ... in setup airspace removed. It caused
                    sometimes a lot of unwanted warnings.         
 
+[*] 2012-05-26 AP: Cumulus 2.13.1 released. It was only for Android made.
+
 [o] 2012-05-25 AP: If the Android user has German Language selected, the native
                    Cumulus part will also use the German surface now after startup.
 
