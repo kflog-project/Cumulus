@@ -111,7 +111,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   hbox->addWidget( new QLabel(tr("Line Width:"), this ));
 
   spinAsLineWidth = new QSpinBox;
-  spinAsLineWidth->setRange( 3, 15 );
+  spinAsLineWidth->setRange( 1, 5 );
   spinAsLineWidth->setSingleStep( 1 );
   hspin = new VarSpinBox( spinAsLineWidth );
   hbox->addWidget( hspin );
@@ -388,7 +388,7 @@ void SettingsPageAirspace::showEvent(QShowEvent *)
 
   // Switch off automatic software input panel popup
   m_autoSip = qApp->autoSipEnabled();
-  qApp->setAutoSipEnabled( false );
+  qApp->setAutoSipEnabled( true );
 }
 
 void SettingsPageAirspace::hideEvent( QHideEvent *)

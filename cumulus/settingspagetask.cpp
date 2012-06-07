@@ -346,6 +346,9 @@ void SettingsPageTask::slot_buttonPressedNT( int newScheme )
 
 void SettingsPageTask::slot_editTlColor()
 {
+  // Enable software input panel for color dialog
+  qApp->setAutoSipEnabled( true );
+
   // Open color chooser dialog to edit the target line color
   QString title = tr("Target Line Color");
   QColor newColor = QColorDialog::getColor( tlColor, this, title );
@@ -360,10 +363,15 @@ void SettingsPageTask::slot_editTlColor()
       pixmap.fill( newColor );
       tlColorButton->setIcon( QIcon(pixmap) );
     }
+
+  qApp->setAutoSipEnabled( m_autoSip );
 }
 
 void SettingsPageTask::slot_editTrColor()
 {
+  // Enable software input panel for color dialog
+  qApp->setAutoSipEnabled( true );
+
   // Open color chooser dialog to edit the track line color
   QString title = tr("Track Line Color");
   QColor newColor = QColorDialog::getColor( trColor, this, title );
@@ -378,6 +386,8 @@ void SettingsPageTask::slot_editTrColor()
       pixmap.fill( newColor );
       trColorButton->setIcon( QIcon(pixmap) );
     }
+
+  qApp->setAutoSipEnabled( m_autoSip );
 }
 
 void SettingsPageTask::slot_load()

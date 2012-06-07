@@ -350,6 +350,9 @@ void SettingsPageLookNFeel::slot_openMenuFontDialog()
 /** Called to open the color dialog */
 void SettingsPageLookNFeel::slot_openColorDialog()
 {
+  // Enable software input panel for color dialog
+  qApp->setAutoSipEnabled( true );
+
   // get current color
   QColor& color = GeneralConfig::instance()->getMapFrameColor();
 
@@ -363,4 +366,6 @@ void SettingsPageLookNFeel::slot_openColorDialog()
       // save color into temporary buffer
       m_currentMapFrameColor = newColor;
     }
+
+  qApp->setAutoSipEnabled( m_autoSip );
 }

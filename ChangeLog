@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-06-07 AP: Popup of software input panel reenabled for color dialogs in
+                   general setup. That is only valid for Android.
+
 [+] 2012-06-05 AP: New option introduced in setup airspace, which allows to skip
                    airspaces laying over a predefined vertical border. I found
                    an airspace file with a lot of information in the upper

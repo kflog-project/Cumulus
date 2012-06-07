@@ -257,6 +257,9 @@ void SettingsPageTerrainColors::slot_editColor()
   // get current selected color
   QColor& color = terrainColor[index];
 
+  // Enable software input panel for color dialog
+  qApp->setAutoSipEnabled( true );
+
   // Open color chooser dialog to edit selected color
   QString title = tr("Terrain Level") + " " + elevationBox->currentText();
   QColor newColor = QColorDialog::getColor( color, this, title );
@@ -273,6 +276,8 @@ void SettingsPageTerrainColors::slot_editColor()
       // update color in elevation image
       elevationImage->update();
     }
+
+  qApp->setAutoSipEnabled( m_autoSip );
 }
 
 /**
@@ -280,6 +285,9 @@ void SettingsPageTerrainColors::slot_editColor()
  */
 void SettingsPageTerrainColors::slot_editGroundColor()
 {
+  // Enable software input panel for color dialog
+  qApp->setAutoSipEnabled( true );
+
   // Open color chooser dialog to edit ground color
   QString title = tr("Ground Color");
   QColor newColor = QColorDialog::getColor( groundColor, this, title );
@@ -294,6 +302,8 @@ void SettingsPageTerrainColors::slot_editGroundColor()
       pixmap.fill( newColor );
       groundColorButton->setIcon( QIcon(pixmap) );
     }
+
+  qApp->setAutoSipEnabled( m_autoSip );
 }
 
 /**
