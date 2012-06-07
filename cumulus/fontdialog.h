@@ -84,14 +84,16 @@ class FontDialog : public QDialog
 
  private:
 
-   QLineEdit* fontLabel;
-   QLineEdit* styleLabel;
-   QLineEdit* sizeLabel;
-   QLineEdit* sampleText;
+  void selectItem( QListWidget* listWidget, QString text );
 
-   QListWidget* fontList;
-   QListWidget* styleList;
-   QListWidget* sizeList;
+  QLineEdit* fontLabel;
+  QLineEdit* styleLabel;
+  QLineEdit* sizeLabel;
+  QLineEdit* sampleText;
+
+  QListWidget* fontList;
+  QListWidget* styleList;
+  QListWidget* sizeList;
 
 };
 

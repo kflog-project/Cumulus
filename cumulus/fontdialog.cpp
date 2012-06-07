@@ -55,10 +55,13 @@ FontDialog::FontDialog (QWidget *parent) :
             this, SLOT(slotStyleListClicked(QListWidgetItem *)));
   connect( sizeList, SIGNAL(itemClicked(QListWidgetItem *)),
             this, SLOT(slotSizeListClicked(QListWidgetItem *)));
+  connect( sizeList, SIGNAL(itemActivated(QListWidgetItem *)),
+            this, SLOT(slotSizeListClicked(QListWidgetItem *)));
 
   QGridLayout* gl = new QGridLayout(this);
   gl->setMargin(10);
   gl->setSpacing(15);
+  // gl->setColumnStretch(0, 10);
 
   gl->addWidget( new QLabel(tr("Font")), 0, 0 );
   gl->addWidget( new QLabel(tr("Style")), 0, 1 );
@@ -80,7 +83,7 @@ FontDialog::FontDialog (QWidget *parent) :
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel |
                                                          QDialogButtonBox::Ok );
-  buttonBox->setCenterButtons( true );
+  //buttonBox->setCenterButtons( true );
   gl->addWidget( buttonBox, 4, 0, 1, 3 );
 
   QPushButton *ok = buttonBox->button( QDialogButtonBox::Ok );
@@ -94,8 +97,19 @@ FontDialog::FontDialog (QWidget *parent) :
 
   QFontDatabase fd;
   QStringList fdl = fd.families( QFontDatabase::Latin );
-
   fontList->addItems( fdl );
+
+  // select the default application font
+  QFont font = this->font();
+  QString family = font.family();
+  QString style = font.styleName();
+  QString pSize = QString::number( font.pointSize() );
+
+  qDebug() << family << style << pSize;
+
+  selectItem( fontList, family );
+  selectItem( styleList, style );
+  selectItem( sizeList, pSize );
 }
 
 /**
@@ -107,6 +121,8 @@ void FontDialog::slotFontListClicked( QListWidgetItem* item )
     {
       return;
     }
+
+  int sizeCurrentRow = sizeList->currentRow();
 
   fontLabel->setText(item->text());
   styleLabel->clear();
@@ -140,7 +156,15 @@ void FontDialog::slotFontListClicked( QListWidgetItem* item )
       sizeList->addItem( QString::number( fsl.at(i)));
     }
 
-  sizeLabel->setText( QString::number( fsl.at(0)));
+  sizeList->setCurrentRow( sizeCurrentRow );
+
+  QListWidgetItem *nItem = sizeList->currentItem();
+
+  if( nItem )
+    {
+      sizeLabel->setText( nItem->text() );
+    }
+
   slotUpdateSampleText();
 }
 
@@ -154,6 +178,7 @@ void FontDialog::slotStyleListClicked( QListWidgetItem* item )
       return;
     }
 
+  int sizeCurrentRow = sizeList->currentRow();
   styleLabel->setText(item->text());
   sizeLabel->clear();
   sizeList->clear();
@@ -173,7 +198,15 @@ void FontDialog::slotStyleListClicked( QListWidgetItem* item )
       sizeList->addItem( QString::number( fsl.at(i)));
     }
 
-  sizeLabel->setText( QString::number( fsl.at(0)));
+  sizeList->setCurrentRow( sizeCurrentRow );
+
+  QListWidgetItem *nItem = sizeList->currentItem();
+
+  if( nItem )
+    {
+      sizeLabel->setText( nItem->text() );
+    }
+
   slotUpdateSampleText();
 }
 
@@ -190,7 +223,6 @@ void FontDialog::slotSizeListClicked( QListWidgetItem* item )
   sizeLabel->setText( item->text() );
   slotUpdateSampleText();
 }
-
 
 void FontDialog::slotUpdateSampleText()
 {
@@ -211,7 +243,19 @@ void FontDialog::slotUpdateSampleText()
       sampleText->setFont(newFont);
     }
 
-  sampleText->setText(QLatin1String("AaBbYyZz"));
+  sampleText->setText("AaBbYyZz");
+}
+
+void FontDialog::selectItem( QListWidget* listWidget, QString text )
+{
+  for( int i=0; i < listWidget->count(); i++ )
+    {
+      if( listWidget->item(i)->text() == text )
+        {
+          listWidget->setCurrentRow( i );
+          return;
+        }
+    }
 }
 
 /**
