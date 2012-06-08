@@ -1,4 +1,10 @@
-cumulus (2.13.2) stable; urgency=low
+cumulus (2.13.3) stable; urgency=low
+
+  * BUGFIX: Flight trail option was not changeable in setup page map objects.
+
+  * QFontDialog replaced by an own programmed font dialog because the
+    QFontDialog widget is to large on Android. Found no way to make QFontDialog
+    smaller.
 
   * New option introduced in setup airspace, which allows to skip airspaces
     laying over a predefined vertical border. I found an airspace file with a
@@ -9,7 +15,7 @@ cumulus (2.13.2) stable; urgency=low
   * Option force drawing ... in setup airspace removed. It caused sometimes a
     lot of unwanted warnings.  
     
- -- Axel Pauli <kflog.cumulus@googlemail.com>  Wed, 05 Jun 2012 20:30:53 +0200           
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Wed, 08 Jun 2012 20:30:53 +0200           
 
 cumulus (2.13.0) stable; urgency=low
 
