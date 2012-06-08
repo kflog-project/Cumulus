@@ -15,12 +15,15 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-06-08 AP: BUGFIX: Flight trail option was not changeable in setup
+                   page map objects.
+
 [o] 2012-06-08 AP: QFontDialog replaced by an own programmed font dialog because
                    the QFontDialog widget is to large on Android. Found no way
                    to make QFontDialog smaller.
 
-[-] 2012-06-07 AP: Popup of software input panel reenabled for color dialogs in
-                   general setup. That is only valid for Android.
+[-] 2012-06-07 AP: BUGFIX: Popup of software input panel reenabled for color
+                   dialogs in general setup. That is only valid for Android.
 
 [+] 2012-06-05 AP: New option introduced in setup airspace, which allows to skip
                    airspaces laying over a predefined vertical border. I found

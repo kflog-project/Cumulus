@@ -238,23 +238,13 @@ void SettingsPageLookNFeel::slot_openFontDialog()
 
   QFont newFt = FontDialog::getFont( ok, currFont, this, tr("GUI Font"));
 
-#ifdef ANDROID
-
-  if( newFt.pointSize() > 10 )
-    {
-      newFt.setPointSize(10);
-    }
-
-#endif
-
   if( ok )
     {
      // the user clicked OK and font is set to the font the user selected
       m_currentFont = newFt.toString();
 
      // Set the new GUI font for all widgets. Note this new font
-     // is only set temporary. The user must save it for permanent
-     // usage.
+     // is only set temporary. The user must save it for permanent usage.
      QApplication::setFont( newFt );
     }
   else

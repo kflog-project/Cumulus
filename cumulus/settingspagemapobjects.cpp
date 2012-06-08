@@ -334,7 +334,7 @@ void SettingsPageMapObjects::hideEvent( QHideEvent *)
  */
 void SettingsPageMapObjects::slot_toggleCheckBox( int row, int column )
 {
-  if( column == 1 && row > 5 )
+  if( column == 1 && row > 6 )
     {
       // Dummy cell was clicked
       return;

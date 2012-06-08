@@ -29,6 +29,14 @@ FontDialog::FontDialog (QWidget *parent) :
   setModal(true);
   setWindowTitle(tr("Select Font"));
 
+  QFont cft = font();
+
+  if( cft.pointSize() > 10 )
+    {
+      cft.setPointSize( 10 );
+      setFont( cft );
+    }
+
   fontLabel = new QLineEdit;
   fontLabel->setReadOnly(true);
 
