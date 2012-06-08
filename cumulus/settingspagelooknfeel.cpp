@@ -238,6 +238,15 @@ void SettingsPageLookNFeel::slot_openFontDialog()
 
   QFont newFt = FontDialog::getFont( ok, currFont, this, tr("GUI Font"));
 
+#ifdef ANDROID
+
+  if( newFt.pointSize() > 10 )
+    {
+      newFt.setPointSize(10);
+    }
+
+#endif
+
   if( ok )
     {
      // the user clicked OK and font is set to the font the user selected
