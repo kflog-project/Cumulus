@@ -61,12 +61,14 @@ FontDialog::FontDialog (QWidget *parent) :
   connect( sizeList, SIGNAL(itemActivated(QListWidgetItem *)),
             this, SLOT(slotSizeListClicked(QListWidgetItem *)));
 
-  QGridLayout* gl = new QGridLayout(this);
-  gl->setMargin(10);
+  QVBoxLayout* ml = new QVBoxLayout( this );
+
+  QGridLayout* gl = new QGridLayout;
+  gl->setMargin(0);
   gl->setSpacing(10);
   gl->setColumnStretch(0, 30);
-  gl->setColumnStretch(1, 10);
-  gl->setColumnStretch(2, 5);
+  gl->setColumnStretch(1, 20);
+  gl->setColumnStretch(2, 10);
 
   gl->addWidget( new QLabel(tr("Font")), 0, 0 );
   gl->addWidget( new QLabel(tr("Style")), 0, 1 );
@@ -80,15 +82,20 @@ FontDialog::FontDialog (QWidget *parent) :
   gl->addWidget( styleList, 2, 1 );
   gl->addWidget( sizeList, 2, 2 );
 
+  ml->addLayout( gl );
+
   QGroupBox* gBox = new QGroupBox(tr("Sample"));
   QVBoxLayout *vbox = new QVBoxLayout;
   vbox->addWidget(sampleText);
   gBox->setLayout(vbox);
-  gl->addWidget( gBox, 3, 0, 1, 3 );
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel |
                                                          QDialogButtonBox::Ok );
-  gl->addWidget( buttonBox, 4, 0, 1, 3 );
+  QHBoxLayout *hBox = new QHBoxLayout;
+  hBox->addWidget(gBox, 10);
+  hBox->addSpacing( 20 );
+  hBox->addWidget( buttonBox, 1, Qt::AlignRight|Qt::AlignBottom );
+  ml->addLayout( hBox );
 
   QPushButton *ok = buttonBox->button( QDialogButtonBox::Ok );
   ok->setDefault( true );
@@ -110,8 +117,8 @@ FontDialog::FontDialog (QWidget *parent) :
   fdl.clear();
   fdl.append(tr("Size"));
   w = Layout::maxTextWidth( fdl, font() );
-  sizeLabel->setMaximumWidth( w + 60 );
-  sizeList->setMaximumWidth( w + 60 );
+  sizeLabel->setMaximumWidth( w + 70 );
+  sizeList->setMaximumWidth( w + 70 );
 
   // select the default application font
   selectFont(font());
