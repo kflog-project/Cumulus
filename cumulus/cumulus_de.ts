@@ -452,6 +452,36 @@
     </message>
 </context>
 <context>
+    <name>FontDialog</name>
+    <message>
+        <location filename="fontdialog.cpp" line="30"/>
+        <source>Select Font</source>
+        <translation>Wähle Schrift</translation>
+    </message>
+    <message>
+        <location filename="fontdialog.cpp" line="81"/>
+        <location filename="fontdialog.cpp" line="120"/>
+        <source>Font</source>
+        <translation>Schrift</translation>
+    </message>
+    <message>
+        <location filename="fontdialog.cpp" line="82"/>
+        <source>Style</source>
+        <translation>Stil</translation>
+    </message>
+    <message>
+        <location filename="fontdialog.cpp" line="83"/>
+        <location filename="fontdialog.cpp" line="126"/>
+        <source>Size</source>
+        <translation>Größe</translation>
+    </message>
+    <message>
+        <location filename="fontdialog.cpp" line="95"/>
+        <source>Sample</source>
+        <translation>Beispiel</translation>
+    </message>
+</context>
+<context>
     <name>GliderEditor</name>
     <message>
         <location filename="glidereditor.cpp" line="55"/>
@@ -3148,68 +3178,68 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageLookNFeel</name>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="45"/>
+        <location filename="settingspagelooknfeel.cpp" line="47"/>
         <source>GUI Style:</source>
         <translation>GUI Stil:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="60"/>
+        <location filename="settingspagelooknfeel.cpp" line="62"/>
         <source>GUI Font:</source>
         <translation>GUI Schrift:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="62"/>
-        <location filename="settingspagelooknfeel.cpp" line="71"/>
+        <location filename="settingspagelooknfeel.cpp" line="64"/>
+        <location filename="settingspagelooknfeel.cpp" line="73"/>
         <source>Select Font</source>
         <translation>Wähle Schrift</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="69"/>
+        <location filename="settingspagelooknfeel.cpp" line="71"/>
         <source>GUI Menu Font:</source>
         <translation>GUI Menü Schrift:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="78"/>
+        <location filename="settingspagelooknfeel.cpp" line="80"/>
         <source>Map sidebar color:</source>
         <translation>Karte Randleistenfarbe:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="80"/>
+        <location filename="settingspagelooknfeel.cpp" line="82"/>
         <source>Select Color</source>
         <translation>Wähle Farbe</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="85"/>
+        <location filename="settingspagelooknfeel.cpp" line="87"/>
         <source>Screensaver on:</source>
         <translation>Screensaver ein:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="90"/>
+        <location filename="settingspagelooknfeel.cpp" line="92"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="100"/>
+        <location filename="settingspagelooknfeel.cpp" line="102"/>
         <source>Virtual Keyboard</source>
         <translation>Virtuelle Tastatur</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="215"/>
+        <location filename="settingspagelooknfeel.cpp" line="217"/>
         <source>The Look&amp;Feel settings</source>
         <translation>Die Look&amp;Feel Optionen</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="232"/>
+        <location filename="settingspagelooknfeel.cpp" line="239"/>
         <source>GUI Font</source>
         <translation>GUI Schrift</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="300"/>
+        <location filename="settingspagelooknfeel.cpp" line="275"/>
         <source>GUI Menu Font</source>
         <translation>GUI Menü Schrift</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="357"/>
+        <location filename="settingspagelooknfeel.cpp" line="299"/>
         <source>Map sidebar color</source>
         <translation>Karte Randleistenfarbe</translation>
     </message>
@@ -3582,12 +3612,12 @@ Alle Downloads verworfen!</translation>
         <translation>Kurslinie</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="350"/>
+        <location filename="settingspagetask.cpp" line="353"/>
         <source>Target Line Color</source>
         <translation>Ziellinien Farbe</translation>
     </message>
     <message>
-        <location filename="settingspagetask.cpp" line="368"/>
+        <location filename="settingspagetask.cpp" line="376"/>
         <source>Track Line Color</source>
         <translation>Fluglinien Farbe</translation>
     </message>
@@ -3613,7 +3643,7 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="settingspageterraincolors.cpp" line="127"/>
-        <location filename="settingspageterraincolors.cpp" line="261"/>
+        <location filename="settingspageterraincolors.cpp" line="264"/>
         <source>Terrain Level</source>
         <translation>Geländehöhe</translation>
     </message>
@@ -3624,7 +3654,7 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="settingspageterraincolors.cpp" line="183"/>
-        <location filename="settingspageterraincolors.cpp" line="284"/>
+        <location filename="settingspageterraincolors.cpp" line="292"/>
         <source>Ground Color</source>
         <translation>Bodenfarbe</translation>
     </message>
@@ -3639,7 +3669,7 @@ Alle Downloads verworfen!</translation>
         <translation>Höhenanpassung</translation>
     </message>
     <message>
-        <location filename="settingspageterraincolors.cpp" line="413"/>
+        <location filename="settingspageterraincolors.cpp" line="423"/>
         <source>The Terrain color settings</source>
         <translation>Die Geländefarben Optionen</translation>
     </message>
