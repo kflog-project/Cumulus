@@ -26,6 +26,8 @@
 #include "settingspagelooknfeel.h"
 #include "varspinbox.h"
 
+#include "fontdialog.h"
+
 SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   QWidget(parent),
   m_loadConfig(true),
@@ -228,54 +230,23 @@ void SettingsPageLookNFeel::slot_openFontDialog()
       ok = currFont.fromString( m_currentFont );
     }
 
-  QFontDialog fd( this );
-  fd.setWindowTitle(tr("GUI Font"));
-  QFont ft = font();
-  ft.setPointSize(10);
-  fd.setFont(ft);
+  if( ! ok )
+    {
+      // fall back uses current default font
+      currFont = font();
+    }
+
+  QFont newFt = FontDialog::getFont( ok, currFont, this, tr("GUI Font"));
 
   if( ok )
     {
-      // preselect current active font
-      fd.setCurrentFont( currFont );
-    }
-  else
-    {
-      fd.setCurrentFont( font() );
-    }
-
-#ifdef ANDROID
-  fd.setVisible(true);
-  fd.resize( MainWindow::mainWindow()->size() );
-
-  // That is a bad workaround to make visible the dialog buttons, if the dialog
-  // window is to big. Found no other way to make it better :-((
-  int x = 0;
-  int y = 0;
-
-  if( fd.height() > MainWindow::mainWindow()->size().height() )
-    {
-      y = MainWindow::mainWindow()->size().height() - fd.height();
-    }
-
-  if( fd.width() > MainWindow::mainWindow()->size().width() )
-    {
-      y = MainWindow::mainWindow()->size().width() - fd.width();
-    }
-
-  fd.move( x, y );
-
-#endif
-
-  if( fd.exec() == QDialog::Accepted )
-    {
      // the user clicked OK and font is set to the font the user selected
-      m_currentFont = fd.selectedFont().toString();
+      m_currentFont = newFt.toString();
 
      // Set the new GUI font for all widgets. Note this new font
      // is only set temporary. The user must save it for permanent
      // usage.
-     QApplication::setFont( fd.selectedFont() );
+     QApplication::setFont( newFt );
     }
   else
     {
@@ -296,49 +267,18 @@ void SettingsPageLookNFeel::slot_openMenuFontDialog()
       ok = currFont.fromString( m_currentMenuFont );
     }
 
-  QFontDialog fd( this );
-  fd.setWindowTitle(tr("GUI Menu Font"));
-  QFont ft = font();
-  ft.setPointSize(10);
-  fd.setFont(ft);
+  if( ! ok )
+    {
+      // fall back uses current default font
+      currFont = font();
+    }
+
+  QFont newFt = FontDialog::getFont( ok, currFont, this, tr("GUI Menu Font"));
 
   if( ok )
     {
-      // preselect current active font
-      fd.setCurrentFont( currFont );
-    }
-  else
-    {
-      fd.setCurrentFont( font() );
-    }
-
-#ifdef ANDROID
-  fd.setVisible(true);
-  fd.resize( MainWindow::mainWindow()->size() );
-
-  // That is a bad workaround to make visible the dialog buttons, if the dialog
-  // window is to big. Found no other way to make it better :-((
-  int x = 0;
-  int y = 0;
-
-  if( fd.height() > MainWindow::mainWindow()->size().height() )
-    {
-      y = MainWindow::mainWindow()->size().height() - fd.height();
-    }
-
-  if( fd.width() > MainWindow::mainWindow()->size().width() )
-    {
-      y = MainWindow::mainWindow()->size().width() - fd.width();
-    }
-
-  fd.move( x, y );
-
-#endif
-
-  if( fd.exec() == QDialog::Accepted )
-    {
-     // the user clicked OK and menu font is set to the font the user selected
-      m_currentMenuFont = fd.selectedFont().toString();
+      // the user clicked OK and the menu font is set to the font the user selected
+      m_currentMenuFont = newFt.toString();
     }
   else
     {

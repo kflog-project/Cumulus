@@ -183,6 +183,16 @@ class Layout
                            const int startPointSize=30,
                            const int minPointSize=6 );
 
+  /**
+   * Calculates the maximum text width according to the passed font.
+   *
+   * \param list The strings to be evaluated
+   * \param font The font to be used
+   *
+   * \return The maximum text width
+   */
+  static int maxTextWidth( const QStringList& list, const QFont& font );
+
 };
 
 #endif /* LAYOUT_H_ */

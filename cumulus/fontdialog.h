@@ -33,6 +33,8 @@
 #define FONT_DIALOG_H_
 
 #include <QDialog>
+#include <QFont>
+#include <QFontDatabase>
 #include <QLineEdit>
 #include <QListWidget>
 #include <QPushButton>
@@ -45,22 +47,18 @@ class FontDialog : public QDialog
 
   Q_DISABLE_COPY ( FontDialog )
 
- public:
-
   FontDialog(QWidget *parent);
 
   virtual ~FontDialog() {};
 
- private slots:
-  /**
-   * This slot is called, if the user has pressed the ok button.
-   */
-  void slotAccept();
+ public:
 
   /**
-   * This slot is called, if the user has pressed the cancel button.
+   * Returns the selected font by the user.
    */
-  void slotReject();
+  static QFont getFont( bool& ok, const QFont &initial, QWidget *parent, QString title="" );
+
+ private slots:
 
   /**
    * This slot is called, if the user has selected a font entry in the list.
@@ -77,14 +75,35 @@ class FontDialog : public QDialog
    */
   void slotSizeListClicked( QListWidgetItem* item );
 
-  /**
-   * This slot is called if the font has been changed.
-   */
-  void slotUpdateSampleText();
-
  private:
 
-  void selectItem( QListWidget* listWidget, QString text );
+  /**
+   * Selects the item in the list which is identical to the passed text. The
+   * assumption is, that all list items are unique.
+   */
+  bool selectItem( QListWidget* listWidget, QString text );
+
+  /**
+   * Do select the passed font in the lists.
+   *
+   * \param font Font to be selected in the lists.
+   */
+  void selectFont( const QFont& font );
+
+  /**
+   * \return The current selected font.
+   */
+  QFont currentFont() const
+  {
+    return sampleText->font();
+  };
+
+  /**
+   * Updates the sample text.
+   */
+  void updateSampleText();
+
+  QFontDatabase fdb;
 
   QLineEdit* fontLabel;
   QLineEdit* styleLabel;
@@ -94,8 +113,6 @@ class FontDialog : public QDialog
   QListWidget* fontList;
   QListWidget* styleList;
   QListWidget* sizeList;
-
 };
-
 
 #endif /* FONT_DIALOG_H_ */

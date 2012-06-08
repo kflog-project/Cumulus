@@ -18,12 +18,12 @@
 #include <QtGui>
 
 #include "fontdialog.h"
+#include "layout.h"
+#include "mainwindow.h"
 
 FontDialog::FontDialog (QWidget *parent) :
   QDialog(parent, Qt::WindowStaysOnTopHint)
 {
-  qDebug() << "FontDialog::FontDialog";
-
   setObjectName("FontDialog");
   // setAttribute(Qt::WA_DeleteOnClose);
   setModal(true);
@@ -40,8 +40,7 @@ FontDialog::FontDialog (QWidget *parent) :
 
   sampleText = new QLineEdit;
   sampleText->setReadOnly(true);
-  sampleText->setMinimumHeight(100);
-  //sampleText->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored));
+  sampleText->setMinimumHeight(80);
   sampleText->setAlignment(Qt::AlignCenter);
   sampleText->setText(QLatin1String("AaBbYyZz"));
 
@@ -60,8 +59,10 @@ FontDialog::FontDialog (QWidget *parent) :
 
   QGridLayout* gl = new QGridLayout(this);
   gl->setMargin(10);
-  gl->setSpacing(15);
-  // gl->setColumnStretch(0, 10);
+  gl->setSpacing(10);
+  gl->setColumnStretch(0, 30);
+  gl->setColumnStretch(1, 10);
+  gl->setColumnStretch(2, 5);
 
   gl->addWidget( new QLabel(tr("Font")), 0, 0 );
   gl->addWidget( new QLabel(tr("Style")), 0, 1 );
@@ -83,7 +84,6 @@ FontDialog::FontDialog (QWidget *parent) :
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel |
                                                          QDialogButtonBox::Ok );
-  //buttonBox->setCenterButtons( true );
   gl->addWidget( buttonBox, 4, 0, 1, 3 );
 
   QPushButton *ok = buttonBox->button( QDialogButtonBox::Ok );
@@ -95,21 +95,22 @@ FontDialog::FontDialog (QWidget *parent) :
   connect( buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
   connect( buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
 
-  QFontDatabase fd;
-  QStringList fdl = fd.families( QFontDatabase::Latin );
+  QStringList fdl = fdb.families( QFontDatabase::Latin );
   fontList->addItems( fdl );
 
+  fdl.append(tr("Font"));
+  int w = Layout::maxTextWidth( fdl, font() );
+  fontLabel->setMaximumWidth( w + 30 );
+  fontList->setMaximumWidth( w + 30 );
+
+  fdl.clear();
+  fdl.append(tr("Size"));
+  w = Layout::maxTextWidth( fdl, font() );
+  sizeLabel->setMaximumWidth( w + 30 );
+  sizeList->setMaximumWidth( w + 30 );
+
   // select the default application font
-  QFont font = this->font();
-  QString family = font.family();
-  QString style = font.styleName();
-  QString pSize = QString::number( font.pointSize() );
-
-  qDebug() << family << style << pSize;
-
-  selectItem( fontList, family );
-  selectItem( styleList, style );
-  selectItem( sizeList, pSize );
+  selectFont(font());
 }
 
 /**
@@ -131,8 +132,7 @@ void FontDialog::slotFontListClicked( QListWidgetItem* item )
   sizeList->clear();
 
   // Update now the style and size lists.
-  QFontDatabase fd;
-  QStringList fstl = fd.styles ( item->text() );
+  QStringList fstl = fdb.styles( item->text() );
 
   if( fstl.isEmpty() )
     {
@@ -140,16 +140,15 @@ void FontDialog::slotFontListClicked( QListWidgetItem* item )
     }
 
   styleList->addItems(fstl);
+  styleList->setCurrentRow( 0 );
   styleLabel->setText( fstl.at(0) );
 
-  QList<int> fsl = fd.pointSizes ( item->text(), fstl.at(0) );
+  QList<int> fsl = fdb.pointSizes ( item->text(), fstl.at(0) );
 
   if( fsl.isEmpty() )
     {
       return;
     }
-
-  qDebug() << "Setting size list";
 
   for( int i = 0; i < fsl.size(); i++ )
     {
@@ -165,7 +164,7 @@ void FontDialog::slotFontListClicked( QListWidgetItem* item )
       sizeLabel->setText( nItem->text() );
     }
 
-  slotUpdateSampleText();
+  updateSampleText();
 }
 
 /**
@@ -183,15 +182,12 @@ void FontDialog::slotStyleListClicked( QListWidgetItem* item )
   sizeLabel->clear();
   sizeList->clear();
 
-  QFontDatabase fd;
-  QList<int> fsl = fd.pointSizes ( fontLabel->text(), item->text() );
+  QList<int> fsl = fdb.pointSizes ( fontLabel->text(), item->text() );
 
   if( fsl.isEmpty() )
     {
       return;
     }
-
-  qDebug() << "Setting size list";
 
   for( int i = 0; i < fsl.size(); i++ )
     {
@@ -207,7 +203,7 @@ void FontDialog::slotStyleListClicked( QListWidgetItem* item )
       sizeLabel->setText( nItem->text() );
     }
 
-  slotUpdateSampleText();
+  updateSampleText();
 }
 
 /**
@@ -221,10 +217,10 @@ void FontDialog::slotSizeListClicked( QListWidgetItem* item )
     }
 
   sizeLabel->setText( item->text() );
-  slotUpdateSampleText();
+  updateSampleText();
 }
 
-void FontDialog::slotUpdateSampleText()
+void FontDialog::updateSampleText()
 {
   if( fontLabel->text().isEmpty() || styleLabel->text().isEmpty() || sizeLabel->text().isEmpty() )
     {
@@ -235,7 +231,6 @@ void FontDialog::slotUpdateSampleText()
   // compute new font
   int pSize = sizeLabel->text().toInt();
 
-  QFontDatabase fdb;
   QFont newFont(fdb.font(fontLabel->text(), styleLabel->text(), pSize));
 
   if( newFont != sampleText->font() )
@@ -246,31 +241,83 @@ void FontDialog::slotUpdateSampleText()
   sampleText->setText("AaBbYyZz");
 }
 
-void FontDialog::selectItem( QListWidget* listWidget, QString text )
+void FontDialog::selectFont( const QFont& font )
+{
+  QString family = font.family();
+  QString style = fdb.styleString( font );
+  QString pSize = QString::number( font.pointSize() );
+
+  if( selectItem( fontList, family ) )
+    {
+      slotFontListClicked( fontList->currentItem() );
+    }
+  else
+    {
+      fontLabel->clear();
+    }
+
+  if( selectItem( styleList, style ) )
+    {
+      styleLabel->setText(style);
+    }
+  else
+    {
+      styleLabel->clear();
+    }
+
+  if( selectItem( sizeList, pSize ) )
+    {
+      sizeLabel->setText(pSize);
+    }
+  else
+    {
+      sizeLabel->clear();
+    }
+
+  updateSampleText();
+}
+
+bool FontDialog::selectItem( QListWidget* listWidget, QString text )
 {
   for( int i=0; i < listWidget->count(); i++ )
     {
       if( listWidget->item(i)->text() == text )
         {
           listWidget->setCurrentRow( i );
-          return;
+          return true;
         }
     }
+
+  return false;
 }
 
-/**
- * This slot is called, if the user has pressed the ok button.
- */
-void FontDialog::slotAccept()
+QFont FontDialog::getFont( bool& ok, const QFont &initial, QWidget *parent, QString title )
 {
+  FontDialog dlg(parent);
 
+  if( ! title.isEmpty() )
+    {
+      dlg.setWindowTitle( title );
+    }
+
+  dlg.selectFont(initial);
+
+#ifdef ANDROID
+  dlg.setVisible(true);
+  dlg.resize( MainWindow::mainWindow()->size() );
+#endif
+
+  int ret = dlg.exec();
+
+
+  if( ret == QDialog::Accepted )
+    {
+      ok = true;
+      return dlg.currentFont();
+    }
+  else
+    {
+      ok = false;
+      return initial;
+    }
 }
-
-/**
- * This slot is called, if the user has pressed the cancel button.
- */
-void FontDialog::slotReject()
-{
-
-}
-

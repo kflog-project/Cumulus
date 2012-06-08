@@ -66,6 +66,7 @@ HEADERS = \
     elevationcolorimage.h \
     filetools.h \
     flighttask.h \
+    fontdialog.h \
     generalconfig.h \
     glider.h \
     glidereditor.h \
@@ -179,6 +180,7 @@ SOURCES = \
     elevationcolorimage.cpp \
     filetools.cpp \
     flighttask.cpp \
+    fontdialog.cpp \
     generalconfig.cpp \
     glider.cpp \
     glidereditor.cpp \

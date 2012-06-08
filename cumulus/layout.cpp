@@ -18,9 +18,9 @@
 #include "layout.h"
 
 void Layout::adaptFont( QFont& fontRef,
-                        const int pxHeight,
-                        const int startPointSize,
-                        const int minPointSize )
+                           const int pxHeight,
+                           const int startPointSize,
+                           const int minPointSize )
 {
   fontRef.setPointSize( startPointSize );
 
@@ -41,4 +41,23 @@ void Layout::adaptFont( QFont& fontRef,
           return;
         }
      }
+}
+
+int Layout::maxTextWidth( const QStringList& list, const QFont& font )
+{
+  QFontMetrics qfm(font);
+
+  int width = 0;
+
+  for( int i=0; i < list.size(); i++ )
+    {
+      int w = qfm.boundingRect(list.at(i)).width();
+
+      if( w > width )
+        {
+          width = w;
+        }
+    }
+
+  return width;
 }
