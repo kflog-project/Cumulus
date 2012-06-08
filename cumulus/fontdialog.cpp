@@ -48,6 +48,10 @@ FontDialog::FontDialog (QWidget *parent) :
   styleList = new QListWidget;
   sizeList  = new QListWidget;
 
+  fontList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  styleList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  sizeList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
   connect( fontList, SIGNAL(itemClicked(QListWidgetItem *)),
             this, SLOT(slotFontListClicked(QListWidgetItem *)));
   connect( styleList, SIGNAL(itemClicked(QListWidgetItem *)),
@@ -100,14 +104,14 @@ FontDialog::FontDialog (QWidget *parent) :
 
   fdl.append(tr("Font"));
   int w = Layout::maxTextWidth( fdl, font() );
-  fontLabel->setMaximumWidth( w + 30 );
-  fontList->setMaximumWidth( w + 30 );
+  fontLabel->setMaximumWidth( w + 60 );
+  fontList->setMaximumWidth( w + 60 );
 
   fdl.clear();
   fdl.append(tr("Size"));
   w = Layout::maxTextWidth( fdl, font() );
-  sizeLabel->setMaximumWidth( w + 30 );
-  sizeList->setMaximumWidth( w + 30 );
+  sizeLabel->setMaximumWidth( w + 60 );
+  sizeList->setMaximumWidth( w + 60 );
 
   // select the default application font
   selectFont(font());
