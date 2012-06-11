@@ -355,6 +355,18 @@ class GeneralConfig : protected QSettings
   };
 
   /** Gets the airspace border color */
+  QColor &getBorderColorProhibited()
+    {
+      return _borderColorProhibited;
+    };
+
+  /** Sets the airspace border color */
+  void setBorderColorProhibited( const QColor& newValue )
+  {
+    _borderColorProhibited = newValue;
+  };
+
+  /** Gets the airspace border color */
   QColor &getBorderColorTMZ()
     {
       return _borderColorTMZ;
@@ -520,6 +532,18 @@ class GeneralConfig : protected QSettings
   void setFillColorDanger( const QColor& newValue )
   {
     _fillColorDanger = newValue;
+  };
+
+  /** Gets the airspace fill color */
+  QColor &getFillColorProhibited()
+    {
+      return _fillColorProhibited;
+    };
+
+  /** Sets the airspace fill color */
+  void setFillColorProhibited( const QColor& newValue )
+  {
+    _fillColorProhibited = newValue;
   };
 
   /** Gets the airspace fill color */
@@ -2166,6 +2190,7 @@ class GeneralConfig : protected QSettings
   QColor _borderColorControlD;
   QColor _borderColorRestricted;
   QColor _borderColorDanger;
+  QColor _borderColorProhibited;
   QColor _borderColorTMZ;
   QColor _borderColorLowFlight;
   QColor _borderColorGliderSector;
@@ -2182,6 +2207,7 @@ class GeneralConfig : protected QSettings
   QColor _fillColorControlD;
   QColor _fillColorRestricted;
   QColor _fillColorDanger;
+  QColor _fillColorProhibited;
   QColor _fillColorTMZ;
   QColor _fillColorLowFlight;
   QColor _fillColorGliderSector;

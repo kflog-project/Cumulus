@@ -72,7 +72,7 @@ public:
     Forest = FOREST, Turnpoint = TURNPOINT, Thermal = THERMAL,
     FlightGroup = FLIGHT_GROUP, FAIAreaLow500 = FAI_AREA_LOW, FAIAreaHigh500 = FAI_AREA_HIGH,
     EmptyPoint = EMPTY_POINT,  // new type for nothing to draw
-    objectTypeSize /* leave this at the end */};
+    objectTypeSize=LAST_ENTRY /* leave this at the end */};
 
   /**
    * The five types of elevation-data used in the maps.

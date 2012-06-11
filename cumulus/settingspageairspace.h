@@ -172,6 +172,7 @@ class SettingsPageAirspace : public QWidget
     QTableWidgetItem* drawAirspaceF;
     QTableWidgetItem* drawRestricted;
     QTableWidgetItem* drawDanger;
+    QTableWidgetItem* drawProhibited;
     QTableWidgetItem* drawLowFlight;
     QTableWidgetItem* drawTMZ;
     QTableWidgetItem* drawWaveWindow;
@@ -188,6 +189,7 @@ class SettingsPageAirspace : public QWidget
     QWidget* borderColorAirspaceF;
     QWidget* borderColorRestricted;
     QWidget* borderColorDanger;
+    QWidget* borderColorProhibited;
     QWidget* borderColorLowFlight;
     QWidget* borderColorTMZ;
     QWidget* borderColorWaveWindow;
@@ -204,6 +206,7 @@ class SettingsPageAirspace : public QWidget
     QWidget* fillColorAirspaceF;
     QWidget* fillColorRestricted;
     QWidget* fillColorDanger;
+    QWidget* fillColorProhibited;
     QWidget* fillColorLowFlight;
     QWidget* fillColorTMZ;
     QWidget* fillColorWaveWindow;
