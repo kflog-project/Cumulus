@@ -2992,7 +2992,7 @@ void Map::checkAirspace(const QPoint& pos)
           continue;
         }
 
-      if( ! GeneralConfig::instance()->getAirspaceDrawingEnabled(pSpace->getTypeID()) )
+      if( ! GeneralConfig::instance()->getItemDrawingEnabled(pSpace->getTypeID()) )
         {
            // warning for airspace type disabled by user
           continue;

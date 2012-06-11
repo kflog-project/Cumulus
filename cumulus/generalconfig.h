@@ -596,17 +596,17 @@ class GeneralConfig : protected QSettings
    * @return True if drawing is enabled for the given base map type.
    * @param type The type of object (defined in @ref BaseMapElement) to query.
    */
-  bool getAirspaceDrawingEnabled (BaseMapElement::objectType type) const;
+  bool getItemDrawingEnabled (BaseMapElement::objectType type) const;
 
   /**
-   * Enables or disables the airspace drawing for this type of airspace
+   * Enables or disables the map item drawing
    *
    * \param type The type of object (defined in @ref BaseMapElement) to set.
-   * \param enable A flag to enable/disable drawing of airspace element.
+   * \param enable A flag to enable/disable drawing of map item.
    */
-  void setAirspaceDrawingEnabled (BaseMapElement::objectType type, bool enable=true)
+  void setItemDrawingEnabled (BaseMapElement::objectType type, bool enable=true)
   {
-    _airspaceDrawingEnabled[type] = enable;
+    _mapDrawingEnabled[type] = enable;
   };
 
   /**
@@ -2172,11 +2172,11 @@ class GeneralConfig : protected QSettings
   // color index value.
   int _elevationColorOffset;
 
-  //properties
+  // draw map element
+  bool _mapDrawingEnabled[BaseMapElement::objectTypeSize];
+
   //used to store the distances for airspace warnings
   AirspaceWarningDistance _awd;
-  //draw airspace type and display a warning for this type
-  bool _airspaceDrawingEnabled[BaseMapElement::objectTypeSize];
 
   // border colors of airspaces
   QColor _borderColorAirspaceA;

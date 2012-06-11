@@ -136,24 +136,24 @@ void GeneralConfig::load()
   // Airspace drawing types, set all to true as default
   for( int i=0; i < BaseMapElement::objectTypeSize; i++ )
     {
-      _airspaceDrawingEnabled[i] = true;
+      _mapDrawingEnabled[i] = true;
     }
 
-  _airspaceDrawingEnabled[BaseMapElement::AirA]         = value("checkAirspaceA", true).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::AirB]         = value("checkAirspaceB", true).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::AirC]         = value("checkAirspaceC", true).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::ControlC]     = value("checkControlC", true).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::AirD]         = value("checkAirspaceD", true).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::ControlD]     = value("checkControlD", true).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::AirE]         = value("checkAirspaceE", false).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::WaveWindow]   = value("checkWaveWindow", false).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::AirF]         = value("checkAirspaceF", true).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::Restricted]   = value("checkRestricted", true).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::Danger]       = value("checkDanger", true).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::Prohibited]   = value("checkProhibited", true).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::Tmz]          = value("checkTMZ", true).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::LowFlight]    = value("checkLowFlight", true).toBool();
-  _airspaceDrawingEnabled[BaseMapElement::GliderSector] = value("checkGliderSector", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::AirA]         = value("checkAirspaceA", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::AirB]         = value("checkAirspaceB", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::AirC]         = value("checkAirspaceC", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::ControlC]     = value("checkControlC", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::AirD]         = value("checkAirspaceD", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::ControlD]     = value("checkControlD", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::AirE]         = value("checkAirspaceE", false).toBool();
+  _mapDrawingEnabled[BaseMapElement::WaveWindow]   = value("checkWaveWindow", false).toBool();
+  _mapDrawingEnabled[BaseMapElement::AirF]         = value("checkAirspaceF", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::Restricted]   = value("checkRestricted", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::Danger]       = value("checkDanger", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::Prohibited]   = value("checkProhibited", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::Tmz]          = value("checkTMZ", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::LowFlight]    = value("checkLowFlight", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::GliderSector] = value("checkGliderSector", true).toBool();
 
   // Airspace border draw color
   _borderColorAirspaceA    = QColor( value("borderColorAirspaceA", AIRA_COLOR).toString() );
@@ -511,21 +511,21 @@ void GeneralConfig::save()
   setValue("FileList", _airspaceFileList);
 
   // Airspace warning types
-  setValue("checkAirspaceA", _airspaceDrawingEnabled[BaseMapElement::AirA]);
-  setValue("checkAirspaceB", _airspaceDrawingEnabled[BaseMapElement::AirB]);
-  setValue("checkAirspaceC", _airspaceDrawingEnabled[BaseMapElement::AirC]);
-  setValue("checkControlC", _airspaceDrawingEnabled[BaseMapElement::ControlC]);
-  setValue("checkAirspaceD", _airspaceDrawingEnabled[BaseMapElement::AirD]);
-  setValue("checkControlD", _airspaceDrawingEnabled[BaseMapElement::ControlD]);
-  setValue("checkAirspaceE", _airspaceDrawingEnabled[BaseMapElement::AirE]);
-  setValue("checkWaveWindow", _airspaceDrawingEnabled[BaseMapElement::WaveWindow]);
-  setValue("checkAirspaceF", _airspaceDrawingEnabled[BaseMapElement::AirF]);
-  setValue("checkRestricted", _airspaceDrawingEnabled[BaseMapElement::Restricted]);
-  setValue("checkDanger", _airspaceDrawingEnabled[BaseMapElement::Danger]);
-  setValue("checkProhibited", _airspaceDrawingEnabled[BaseMapElement::Prohibited]);
-  setValue("checkTMZ", _airspaceDrawingEnabled[BaseMapElement::Tmz]);
-  setValue("checkLowFlight", _airspaceDrawingEnabled[BaseMapElement::LowFlight]);
-  setValue("checkGliderSector", _airspaceDrawingEnabled[BaseMapElement::GliderSector]);
+  setValue("checkAirspaceA", _mapDrawingEnabled[BaseMapElement::AirA]);
+  setValue("checkAirspaceB", _mapDrawingEnabled[BaseMapElement::AirB]);
+  setValue("checkAirspaceC", _mapDrawingEnabled[BaseMapElement::AirC]);
+  setValue("checkControlC", _mapDrawingEnabled[BaseMapElement::ControlC]);
+  setValue("checkAirspaceD", _mapDrawingEnabled[BaseMapElement::AirD]);
+  setValue("checkControlD", _mapDrawingEnabled[BaseMapElement::ControlD]);
+  setValue("checkAirspaceE", _mapDrawingEnabled[BaseMapElement::AirE]);
+  setValue("checkWaveWindow", _mapDrawingEnabled[BaseMapElement::WaveWindow]);
+  setValue("checkAirspaceF", _mapDrawingEnabled[BaseMapElement::AirF]);
+  setValue("checkRestricted", _mapDrawingEnabled[BaseMapElement::Restricted]);
+  setValue("checkDanger", _mapDrawingEnabled[BaseMapElement::Danger]);
+  setValue("checkProhibited", _mapDrawingEnabled[BaseMapElement::Prohibited]);
+  setValue("checkTMZ", _mapDrawingEnabled[BaseMapElement::Tmz]);
+  setValue("checkLowFlight", _mapDrawingEnabled[BaseMapElement::LowFlight]);
+  setValue("checkGliderSector", _mapDrawingEnabled[BaseMapElement::GliderSector]);
 
   // Airspace border draw color
   setValue("borderColorAirspaceA",    _borderColorAirspaceA.name());
@@ -1306,11 +1306,11 @@ void GeneralConfig::setUnitPos(const int newValue)
 }
 
 
-bool GeneralConfig::getAirspaceDrawingEnabled (BaseMapElement::objectType type) const
+bool GeneralConfig::getItemDrawingEnabled (BaseMapElement::objectType type) const
 {
   if (type > 0 && type < BaseMapElement::objectTypeSize)
     {
-      return _airspaceDrawingEnabled[type];
+      return _mapDrawingEnabled[type];
     }
   else
     {

@@ -109,7 +109,7 @@ Airspace::~Airspace()
  */
 bool Airspace::isDrawable() const
 {
-  return ( GeneralConfig::instance()->getAirspaceDrawingEnabled(typeID) &&
+  return ( GeneralConfig::instance()->getItemDrawingEnabled(typeID) &&
             glConfig->isBorder(typeID) &&
             isVisible() );
 };
@@ -120,7 +120,7 @@ void Airspace::drawRegion( QPainter* targetP,
   // qDebug("Airspace::drawRegion(): TypeId=%d, opacity=%f, Name=%s",
   //         typeID, opacity, getInfoString().toLatin1().data() );
 
-  if( !GeneralConfig::instance()->getAirspaceDrawingEnabled(typeID) ||
+  if( !GeneralConfig::instance()->getItemDrawingEnabled(typeID) ||
       ! glConfig->isBorder(typeID) || ! isVisible())
     {
       return;
