@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2009-2011 by Axel Pauli
+**                   2009-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -124,14 +124,15 @@
 #define PACK_ICE         56
 #define RAILWAY_D        57
 #define TRAIL            58
-#define FOREST           59
-#define TURNPOINT        60
-#define THERMAL          61
-#define FLIGHT_GROUP     62
-#define FAI_AREA_LOW     63
-#define FAI_AREA_HIGH    64
-#define GLIDER_SECTOR    65 // used for glider sectors
-#define EMPTY_POINT      66 // used for empty points
-#define PROHIBITED       67 // used for prohibited airspace
+#define FOREST           60
+#define TURNPOINT        61
+#define THERMAL          62
+#define FLIGHT_GROUP     63
+#define FAI_AREA_LOW     64
+#define FAI_AREA_HIGH    65
+#define GLIDER_SECTOR    66 // used for glider sectors
+#define EMPTY_POINT      67 // used for empty points
+#define PROHIBITED       68 // used for prohibited airspace
 #define LAST_ENTRY       69 // This must be always the last entry!!!
+
 #endif // RESOURCE_H
