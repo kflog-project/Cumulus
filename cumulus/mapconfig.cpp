@@ -72,19 +72,19 @@ MapConfig::MapConfig(QObject* parent) :
   // in airfield list; speeds up list display
 
   unsigned int airfieldType[13] = { BaseMapElement::IntAirport,
-                                    BaseMapElement::Airport,
-                                    BaseMapElement::MilAirport,
-                                    BaseMapElement::CivMilAirport,
-                                    BaseMapElement::Airfield,
-                                    BaseMapElement::ClosedAirfield,
-                                    BaseMapElement::CivHeliport,
-                                    BaseMapElement::MilHeliport,
-                                    BaseMapElement::AmbHeliport,
-                                    BaseMapElement::Gliderfield,
-                                    BaseMapElement::UltraLight,
-                                    BaseMapElement::HangGlider,
-                                    BaseMapElement::Outlanding
-                                  };
+                                      BaseMapElement::Airport,
+                                      BaseMapElement::MilAirport,
+                                      BaseMapElement::CivMilAirport,
+                                      BaseMapElement::Airfield,
+                                      BaseMapElement::ClosedAirfield,
+                                      BaseMapElement::CivHeliport,
+                                      BaseMapElement::MilHeliport,
+                                      BaseMapElement::AmbHeliport,
+                                      BaseMapElement::Gliderfield,
+                                      BaseMapElement::UltraLight,
+                                      BaseMapElement::HangGlider,
+                                      BaseMapElement::Outlanding
+                                    };
 
   QPixmap selectPixmap;
   QIcon afIcon;
@@ -326,6 +326,16 @@ void MapConfig::slotReloadAirspaceColors()
                  DNG_BRUSH_STYLE_1, DNG_BRUSH_STYLE_2,
                  DNG_BRUSH_STYLE_3, DNG_BRUSH_STYLE_4)
 
+   READ_PEN_BRUSH("Prohibited", prohibitedPenList, prohibitedBorder, prohibitedBrushList,
+                 conf->getBorderColorProhibited(), conf->getBorderColorProhibited(),
+                 conf->getBorderColorProhibited(), conf->getBorderColorProhibited(),
+                 PRO_PEN_WIDTH_1, PRO_PEN_WIDTH_2, PRO_PEN_WIDTH_3, PRO_PEN_WIDTH_4,
+                 PRO_PEN_STYLE_1, PRO_PEN_STYLE_2, PRO_PEN_STYLE_3, PRO_PEN_STYLE_4,
+                 conf->getFillColorProhibited(), conf->getFillColorProhibited(),
+                 conf->getFillColorProhibited(), conf->getFillColorProhibited(),
+                 PRO_BRUSH_STYLE_1, PRO_BRUSH_STYLE_2,
+                 PRO_BRUSH_STYLE_3, PRO_BRUSH_STYLE_4)
+
   READ_PEN_BRUSH("Low Flight", lowFPenList, lowFBorder,lowFBrushList,
                  conf->getBorderColorLowFlight(), conf->getBorderColorLowFlight(),
                  conf->getBorderColorLowFlight(), conf->getBorderColorLowFlight(),
@@ -425,8 +435,9 @@ const QPen& MapConfig::__getPen(unsigned int typeID, int sIndex)
     case BaseMapElement::ControlD:
       return ctrDPenList[sIndex];
     case BaseMapElement::Danger:
-    case BaseMapElement::Prohibited:
       return dangerPenList[sIndex];
+    case BaseMapElement::Prohibited:
+      return prohibitedPenList[sIndex];
     case BaseMapElement::LowFlight:
       return lowFPenList[sIndex];
     case BaseMapElement::Restricted:
@@ -492,8 +503,9 @@ bool MapConfig::isBorder(unsigned int typeID)
     case BaseMapElement::ControlD:
       return ctrDBorder[scaleIndex];
     case BaseMapElement::Danger:
-    case BaseMapElement::Prohibited:
       return dangerBorder[scaleIndex];
+    case BaseMapElement::Prohibited:
+      return prohibitedBorder[scaleIndex];
     case BaseMapElement::LowFlight:
       return lowFBorder[scaleIndex];
     case BaseMapElement::Restricted:
@@ -551,8 +563,9 @@ const QBrush& MapConfig::__getBrush(unsigned int typeID, int sIndex)
     case BaseMapElement::ControlD:
       return ctrDBrushList[sIndex];
     case BaseMapElement::Danger:
-    case BaseMapElement::Prohibited:
       return dangerBrushList[sIndex];
+    case BaseMapElement::Prohibited:
+      return prohibitedBrushList[sIndex];
     case BaseMapElement::LowFlight:
       return lowFBrushList[sIndex];
     case BaseMapElement::Restricted:

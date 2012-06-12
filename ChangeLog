@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-06-12 AP: BUGFIX: Airspace Prohibited was never draw at the map.
+                   A new checkbox added in the setup airspace page to enable
+                   or disable drawing.
+
 [-] 2012-06-08 AP: BUGFIX: Flight trail option was not changeable in setup
                    page map objects.
 

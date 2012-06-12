@@ -167,7 +167,7 @@ void GeneralConfig::load()
   _borderColorControlD     = QColor( value("borderColorControlD", CTRD_COLOR).toString() );
   _borderColorRestricted   = QColor( value("borderColorRestricted", RESTRICTED_COLOR).toString() );
   _borderColorDanger       = QColor( value("borderColorDanger", DANGER_COLOR).toString() );
-  _borderColorProhibited   = QColor( value("borderColorProhibited", DANGER_COLOR).toString() );
+  _borderColorProhibited   = QColor( value("borderColorProhibited", PROHIBITED_COLOR).toString() );
   _borderColorTMZ          = QColor( value("borderColorTMZ", TMZ_COLOR).toString() );
   _borderColorLowFlight    = QColor( value("borderColorLowFlight", LOWF_COLOR).toString() );
   _borderColorGliderSector = QColor( value("borderColorGliderSector", GLIDER_SECTOR_COLOR).toString() );
@@ -184,7 +184,7 @@ void GeneralConfig::load()
   _fillColorControlD     = QColor( value("fillColorControlD", CTRD_BRUSH_COLOR).toString() );
   _fillColorRestricted   = QColor( value("fillColorRestricted", RESTRICTED_BRUSH_COLOR).toString() );
   _fillColorDanger       = QColor( value("fillColorDanger", DANGER_BRUSH_COLOR).toString() );
-  _fillColorProhibited   = QColor( value("fillColorProhibited", DANGER_BRUSH_COLOR).toString() );
+  _fillColorProhibited   = QColor( value("fillColorProhibited", PROHIBITED_BRUSH_COLOR).toString() );
   _fillColorTMZ          = QColor( value("fillColorTMZ", TMZ_BRUSH_COLOR).toString() );
   _fillColorLowFlight    = QColor( value("fillColorLowFlight", LOWF_BRUSH_COLOR).toString() );
   _fillColorGliderSector = QColor( value("fillColorGliderSector", GLIDER_SECTOR_BRUSH_COLOR).toString() );
@@ -1314,7 +1314,7 @@ bool GeneralConfig::getItemDrawingEnabled (BaseMapElement::objectType type) cons
     }
   else
     {
-      qWarning() << "getAirspaceDrawingEnabled(): unknown object" << type;
+      qWarning() << "getItemDrawingEnabled(): unknown object" << type;
       return false;
     }
 }

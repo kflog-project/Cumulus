@@ -8,7 +8,7 @@
 **
 **   Copyright (c):  2001      by Heiner Lamprecht,
 **                   2002      by André Somers
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -47,7 +47,7 @@
  * calling overhead. Furthermore all pointer classes have been replaced
  * by value classes.
  *
- * \date 2001-2011
+ * \date 2001-2012
  *
  * \version $Id$
  */
@@ -307,6 +307,8 @@ private:
     QBrush lowFBrushList[4];
     QPen dangerPenList[4];
     QBrush dangerBrushList[4];
+    QPen prohibitedPenList[4];
+    QBrush prohibitedBrushList[4];
     QPen restrPenList[4];
     QBrush restrBrushList[4];
     QPen tmzPenList[4];
@@ -351,6 +353,7 @@ private:
     bool ctrCBorder[4];
     bool ctrDBorder[4];
     bool dangerBorder[4];
+    bool prohibitedBorder[4];
     bool lowFBorder[4];
     bool restrBorder[4];
     bool tmzBorder[4];

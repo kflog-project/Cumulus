@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2001      by Heiner Lamprecht
-**                   2009-2011 by Axel Pauli
+**                   2009-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -698,6 +698,34 @@
 #define DNG_BRUSH_STYLE_2 Qt::BDiagPattern
 #define DNG_BRUSH_STYLE_3 Qt::BDiagPattern
 #define DNG_BRUSH_STYLE_4 Qt::BDiagPattern
+
+// [Prohibited]
+#define PRO_PEN_WIDTH_1 4
+#define PRO_PEN_WIDTH_2 3
+#define PRO_PEN_WIDTH_3 3
+#define PRO_PEN_WIDTH_4 2
+
+#define PRO_PEN_STYLE_1 Qt::SolidLine
+#define PRO_PEN_STYLE_2 Qt::SolidLine
+#define PRO_PEN_STYLE_3 Qt::SolidLine
+#define PRO_PEN_STYLE_4 Qt::SolidLine
+
+#define PROHIBITED_COLOR QColor(255,0,0).name()
+#define PRO_COLOR_1 QColor(0,0,128)
+#define PRO_COLOR_2 QColor(0,0,128)
+#define PRO_COLOR_3 QColor(0,0,128)
+#define PRO_COLOR_4 QColor(0,0,128)
+
+#define PROHIBITED_BRUSH_COLOR QColor(255,51,51).name()
+#define PRO_BRUSH_COLOR_1 QColor(0,0,128)
+#define PRO_BRUSH_COLOR_2 QColor(0,0,128)
+#define PRO_BRUSH_COLOR_3 QColor(0,0,128)
+#define PRO_BRUSH_COLOR_4 QColor(0,0,128)
+
+#define PRO_BRUSH_STYLE_1 Qt::BDiagPattern
+#define PRO_BRUSH_STYLE_2 Qt::BDiagPattern
+#define PRO_BRUSH_STYLE_3 Qt::BDiagPattern
+#define PRO_BRUSH_STYLE_4 Qt::BDiagPattern
 
 // [Restricted]
 #define RES_PEN_WIDTH_1 4
