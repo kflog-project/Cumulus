@@ -1,5 +1,10 @@
 cumulus (2.13.3) stable; urgency=low
 
+  * Glider editor widget modified due to problems on Android device Motorola Defy.
+
+  * BUGFIX: Airspace Prohibited was never draw at the map. A new checkbox added
+    in the setup airspace page to enable or disable drawing.
+
   * BUGFIX: Flight trail option was not changeable in setup page map objects.
 
   * QFontDialog replaced by an own programmed font dialog because the
@@ -15,7 +20,7 @@ cumulus (2.13.3) stable; urgency=low
   * Option force drawing ... in setup airspace removed. It caused sometimes a
     lot of unwanted warnings.  
     
- -- Axel Pauli <kflog.cumulus@googlemail.com>  Wed, 08 Jun 2012 20:30:53 +0200           
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Wed, 12 Jun 2012 20:30:53 +0200           
 
 cumulus (2.13.0) stable; urgency=low
 
