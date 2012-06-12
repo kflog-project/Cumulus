@@ -31,11 +31,23 @@ FontDialog::FontDialog (QWidget *parent) :
 
   QFont cft = font();
 
-  if( cft.pointSize() > 10 )
+#ifdef ANDROID
+
+  if( cft.pointSize() > 9 )
     {
-      cft.setPointSize( 10 );
-      setFont( cft );
+      cft.setPointSize( 9 );
     }
+
+#elif MAEMO
+
+  if( cft.pointSize() > 14 )
+    {
+      cft.setPointSize( 14 );
+    }
+
+#endif
+
+  setFont( cft );
 
   fontLabel = new QLineEdit;
   fontLabel->setReadOnly(true);
