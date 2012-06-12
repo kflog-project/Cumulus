@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-06-12 AP: Glider editor widget modified due to problems on Android
+                   device Motorola Defy.
+
 [-] 2012-06-12 AP: BUGFIX: Airspace Prohibited was never draw at the map.
                    A new checkbox added in the setup airspace page to enable
                    or disable drawing.
