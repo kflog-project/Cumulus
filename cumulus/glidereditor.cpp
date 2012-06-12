@@ -31,19 +31,16 @@
 extern MapView *_globalMapView;
 
 GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
-  QWidget(parent, Qt::Tool),
+  QWidget(parent),
   gliderCreated(false)
 {
-  setWindowFlags( Qt::Tool );
+  setWindowFlags(Qt::Tool);
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
 
-  if( _globalMainWindow )
-    {
-      // Resize the window to the same size as the main window has. That will
-      // completely hide the parent window.
-      resize( _globalMainWindow->size() );
-    }
+  // Resize the window to the same size as the main window has. That will
+  // completely hide the parent window.
+  resize( MainWindow::mainWindow()->size() );
 
   // save current horizontal/vertical speed unit. This unit must be considered
   // during storage.
@@ -75,13 +72,18 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
       comboType = new QComboBox(this);
       comboType->setEditable(false);
       comboType->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
-      itemsLayout->addWidget(comboType, row, 1);
+      itemsLayout->addWidget(comboType, row, 1, 1, 3);
       row++;
     }
 
   itemsLayout->addWidget(new QLabel(tr("Glider Type:"), this), row, 0);
   edtGType = new QLineEdit(this);
-  itemsLayout->addWidget(edtGType, row, 1);
+  itemsLayout->addWidget(edtGType, row, 1, 1, 3);
+  row++;
+
+  itemsLayout->addWidget(new QLabel(tr("Registration:"), this), row, 0);
+  edtGReg = new QLineEdit(this);
+  itemsLayout->addWidget(edtGReg, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Seats:"), this), row, 2);
   comboSeats = new QComboBox(this);
@@ -90,9 +92,9 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
   itemsLayout->addWidget(comboSeats, row, 3);
   row++;
 
-  itemsLayout->addWidget(new QLabel(tr("Registration:"), this), row, 0);
-  edtGReg = new QLineEdit(this);
-  itemsLayout->addWidget(edtGReg, row, 1);
+  itemsLayout->addWidget(new QLabel(tr("Callsign:"), this), row, 0);
+  edtGCall = new QLineEdit(this);
+  itemsLayout->addWidget(edtGCall, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Wing Area:"), this), row, 2);
   spinWingArea = new QDoubleSpinBox(this);
@@ -102,11 +104,6 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
   spinWingArea->setSuffix( QString(" m") + tsChar );
   VarSpinBox* hspin = new VarSpinBox(spinWingArea);
   itemsLayout->addWidget(hspin, row, 3);
-  row++;
-
-  itemsLayout->addWidget(new QLabel(tr("Callsign:"), this), row, 0);
-  edtGCall = new QLineEdit(this);
-  itemsLayout->addWidget(edtGCall, row, 1);
   row++;
 
   itemsLayout->setRowMinimumHeight(row++, 10);
@@ -259,6 +256,7 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
 
   itemsLayout->addLayout(spinboxLayout, row++, 0, 1, 4);
   itemsLayout->setColumnStretch( 1, 10 );
+  itemsLayout->setColumnStretch( 4, 20 );
 
   if( isNew )
     {
