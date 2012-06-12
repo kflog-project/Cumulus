@@ -459,24 +459,24 @@
         <translation>Wähle Schrift</translation>
     </message>
     <message>
-        <location filename="fontdialog.cpp" line="81"/>
-        <location filename="fontdialog.cpp" line="120"/>
+        <location filename="fontdialog.cpp" line="93"/>
+        <location filename="fontdialog.cpp" line="132"/>
         <source>Font</source>
         <translation>Schrift</translation>
     </message>
     <message>
-        <location filename="fontdialog.cpp" line="82"/>
+        <location filename="fontdialog.cpp" line="94"/>
         <source>Style</source>
         <translation>Stil</translation>
     </message>
     <message>
-        <location filename="fontdialog.cpp" line="83"/>
-        <location filename="fontdialog.cpp" line="126"/>
+        <location filename="fontdialog.cpp" line="95"/>
+        <location filename="fontdialog.cpp" line="138"/>
         <source>Size</source>
         <translation>Größe</translation>
     </message>
     <message>
-        <location filename="fontdialog.cpp" line="95"/>
+        <location filename="fontdialog.cpp" line="107"/>
         <source>Sample</source>
         <translation>Beispiel</translation>
     </message>
@@ -484,97 +484,97 @@
 <context>
     <name>GliderEditor</name>
     <message>
-        <location filename="glidereditor.cpp" line="55"/>
+        <location filename="glidereditor.cpp" line="52"/>
         <source>New Glider</source>
         <translation>Neues Flugzeug</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="60"/>
+        <location filename="glidereditor.cpp" line="57"/>
         <source>Edit Glider</source>
         <translation>Editiere Flugzeug</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="86"/>
+        <location filename="glidereditor.cpp" line="88"/>
         <source>Seats:</source>
         <translation>Sitze:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="93"/>
+        <location filename="glidereditor.cpp" line="84"/>
         <source>Registration:</source>
         <translation>Kennzeichen:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="97"/>
+        <location filename="glidereditor.cpp" line="99"/>
         <source>Wing Area:</source>
         <translation>Flügelfläche:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="107"/>
+        <location filename="glidereditor.cpp" line="95"/>
         <source>Callsign:</source>
         <translation>Rufzeichen:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="147"/>
+        <location filename="glidereditor.cpp" line="144"/>
         <source>Empty weight:</source>
         <translation>Leergewicht:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="183"/>
+        <location filename="glidereditor.cpp" line="180"/>
         <source>Added load:</source>
         <translation>Zuladung:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="219"/>
+        <location filename="glidereditor.cpp" line="216"/>
         <source>Max. water:</source>
         <translation>Max. Wasser:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="237"/>
+        <location filename="glidereditor.cpp" line="234"/>
         <source>Increase number value</source>
         <translation>Erhöhe Zahlenwert</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="238"/>
+        <location filename="glidereditor.cpp" line="235"/>
         <source>Decrease number value</source>
         <translation>Reduziere Zahlenwert</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="247"/>
+        <location filename="glidereditor.cpp" line="244"/>
         <source>Show Polar</source>
         <translation>Zeige Polare</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="610"/>
+        <location filename="glidereditor.cpp" line="608"/>
         <source>Missing polar file</source>
         <translation>Vermisse Polarendatei</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="745"/>
+        <location filename="glidereditor.cpp" line="743"/>
         <source>Missing registration!</source>
         <translation>Vermisse Kennzeichen!</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="746"/>
+        <location filename="glidereditor.cpp" line="744"/>
         <source>Please enter a valid registration.</source>
         <translation>Geben Sie ein gültiges Kennzeichen ein..</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="740"/>
+        <location filename="glidereditor.cpp" line="738"/>
         <source>Missing glider type!</source>
         <translation>Vermisse Flugzeugtyp!</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="74"/>
+        <location filename="glidereditor.cpp" line="71"/>
         <source>Glider Pool:</source>
         <translation>Flugzeug Pool:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="82"/>
+        <location filename="glidereditor.cpp" line="79"/>
         <source>Glider Type:</source>
         <translation>Flugzeug Typ:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="741"/>
+        <location filename="glidereditor.cpp" line="739"/>
         <source>Please enter a valid glider type.</source>
         <translation>Geben Sie einen Flugzeugtyp ein.</translation>
     </message>
@@ -2787,7 +2787,7 @@ Alle Downloads verworfen!</translation>
         <translation>Füllung</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="757"/>
+        <location filename="settingspageairspace.cpp" line="802"/>
         <source>The Airspace drawing settings</source>
         <translation>Die Luftraum Zeichnen Optionen</translation>
     </message>
@@ -2795,98 +2795,98 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirspaceFilling</name>
     <message>
-        <location filename="settingspageairspace.cpp" line="778"/>
+        <location filename="settingspageairspace.cpp" line="823"/>
         <source>Airspace fill settings</source>
         <translation>Luftraum Füllung</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="782"/>
+        <location filename="settingspageairspace.cpp" line="827"/>
         <source>Enable filling</source>
         <oldsource>Enable airspace filling</oldsource>
         <translation>Aktiviere Füllung</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="783"/>
+        <location filename="settingspageairspace.cpp" line="828"/>
         <source>Switch on/off Airspace filling</source>
         <translation>Schalte Luftraum Füllung ein/aus</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="789"/>
+        <location filename="settingspageairspace.cpp" line="834"/>
         <source>Spin step width</source>
         <translation>Boxen Schrittweite</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="790"/>
+        <location filename="settingspageairspace.cpp" line="835"/>
         <source>1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="791"/>
+        <location filename="settingspageairspace.cpp" line="836"/>
         <source>5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="792"/>
+        <location filename="settingspageairspace.cpp" line="837"/>
         <source>10</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="793"/>
+        <location filename="settingspageairspace.cpp" line="838"/>
         <source>20</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="810"/>
+        <location filename="settingspageairspace.cpp" line="855"/>
         <source>Distances</source>
         <translation>Abstände</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="828"/>
+        <location filename="settingspageairspace.cpp" line="873"/>
         <source>Not near</source>
         <translation>weit</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="830"/>
+        <location filename="settingspageairspace.cpp" line="875"/>
         <source>Near</source>
         <translation>nah</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="832"/>
+        <location filename="settingspageairspace.cpp" line="877"/>
         <source>Very near</source>
         <translation>dicht</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="834"/>
+        <location filename="settingspageairspace.cpp" line="879"/>
         <source>Inside</source>
         <translation>innerhalb</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="846"/>
+        <location filename="settingspageairspace.cpp" line="891"/>
         <source>Increase number value</source>
         <translation>Erhöhe Zahlenwert</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="847"/>
+        <location filename="settingspageairspace.cpp" line="892"/>
         <source>Decrease number value</source>
         <translation>Reduziere Zahlenwert</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="857"/>
+        <location filename="settingspageairspace.cpp" line="902"/>
         <source>Vertical</source>
         <translation>vertikal</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="892"/>
+        <location filename="settingspageairspace.cpp" line="937"/>
         <source>Lateral</source>
         <translation>lateral</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="928"/>
+        <location filename="settingspageairspace.cpp" line="973"/>
         <source>Reset</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="929"/>
+        <location filename="settingspageairspace.cpp" line="974"/>
         <source>Default</source>
         <translation>Standard</translation>
     </message>
@@ -2894,22 +2894,22 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirspaceLoading</name>
     <message>
-        <location filename="settingspageairspace.cpp" line="1540"/>
+        <location filename="settingspageairspace.cpp" line="1585"/>
         <source>Airspace loading settings</source>
         <translation>Luftraum Lade Konfiguration</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1554"/>
+        <location filename="settingspageairspace.cpp" line="1599"/>
         <source>Use check boxes to activate or deactivate file loading.</source>
         <translation>Benutzen Sie die Checkboxen zum aktivieren oder deaktivieren des Datei ladens.</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1564"/>
+        <location filename="settingspageairspace.cpp" line="1609"/>
         <source>Airspace Files</source>
         <translation>Luftraum Dateien</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1593"/>
+        <location filename="settingspageairspace.cpp" line="1638"/>
         <source>Select all</source>
         <translation>Wähle alle</translation>
     </message>
@@ -2917,68 +2917,68 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirspaceWarnings</name>
     <message>
-        <location filename="settingspageairspace.cpp" line="1158"/>
+        <location filename="settingspageairspace.cpp" line="1203"/>
         <source>Airspace warning settings</source>
         <translation>Luftraum Warnung</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1167"/>
+        <location filename="settingspageairspace.cpp" line="1212"/>
         <source>Enable Warnings</source>
         <oldsource>Enable Airspace Warning</oldsource>
         <translation>Aktiviere Warnungen</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1170"/>
+        <location filename="settingspageairspace.cpp" line="1215"/>
         <source>Switch on/off Airspace Warnings</source>
         <translation>Luftraum Warnung ein/ausschalten</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1176"/>
+        <location filename="settingspageairspace.cpp" line="1221"/>
         <source>Spin step width</source>
         <translation>Boxen Schrittweite</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1197"/>
+        <location filename="settingspageairspace.cpp" line="1242"/>
         <source>Distances</source>
         <translation>Abstände</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1212"/>
+        <location filename="settingspageairspace.cpp" line="1257"/>
         <source>Lateral</source>
         <translation>lateral</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1214"/>
+        <location filename="settingspageairspace.cpp" line="1259"/>
         <source>Above</source>
         <translation>über</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1216"/>
+        <location filename="settingspageairspace.cpp" line="1261"/>
         <source>Below</source>
         <translation>unter</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1228"/>
+        <location filename="settingspageairspace.cpp" line="1273"/>
         <source>Increase number value</source>
         <translation>Erhöhe Zahlenwert</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1229"/>
+        <location filename="settingspageairspace.cpp" line="1274"/>
         <source>Decrease number value</source>
         <translation>Reduziere Zahlenwert</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1239"/>
+        <location filename="settingspageairspace.cpp" line="1284"/>
         <source>Near</source>
         <translation>nah</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1268"/>
+        <location filename="settingspageairspace.cpp" line="1313"/>
         <source>Very Near</source>
         <translation>dicht</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1297"/>
+        <location filename="settingspageairspace.cpp" line="1342"/>
         <source>Default</source>
         <translation>Standard</translation>
     </message>
