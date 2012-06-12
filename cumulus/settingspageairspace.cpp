@@ -702,7 +702,8 @@ void SettingsPageAirspace::slot_openFillDialog()
 
   // A dialog is not centered over the parent and not limited in
   // its size under Android. Therefore this must be done by our self.
-  dlg->setGeometry( (width() - ms.width()) / 2, (height() - ms.height()) / 2,
+  dlg->setGeometry( (MainWindow::mainWindow()->width() - ms.width()) / 2,
+                    (MainWindow::mainWindow()->height() - ms.height()) / 2,
                      ms.width(), ms.height() );
 
 #endif
@@ -722,7 +723,8 @@ void SettingsPageAirspace::slot_openWarningDialog()
 
   // A dialog is not centered over the parent and not limited in
   // its size under Android. Therefore this must be done by our self.
-  dlg->setGeometry( (width() - ms.width()) / 2, (height() - ms.height()) / 2,
+  dlg->setGeometry( (MainWindow::mainWindow()->width() - ms.width()) / 2,
+                    (MainWindow::mainWindow()->height() - ms.height()) / 2,
                      ms.width(), ms.height() );
 
 #endif
