@@ -390,7 +390,8 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   QFrame* filler = new QFrame(_statusbar);
   filler->setLineWidth(0);
   _statusbar->addWidget(filler);
-  topLayout->addWidget(_statusbar);
+
+  MainWindow::mainWindow()->setStatusBar(_statusbar);
 
   lastPositionChangeSource = Calculator::MAN;
 }
@@ -446,6 +447,14 @@ void MapView::showEvent( QShowEvent* event )
             }
         }
     }
+
+#if defined ANDROID || defined MAEMO
+
+  // Limit statusbar width under Android and Maemo otherwise the map can be
+  // resized to large.
+  _statusbar->setMaximumWidth( width() );
+
+#endif
 }
 
 /** called if heading has changed */
