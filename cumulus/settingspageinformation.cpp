@@ -99,8 +99,9 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   topLayout->addWidget(new QLabel(tr("Warning suppress time:"), this), row, 0);
   spinSuppress = new QSpinBox;
   spinSuppress->setObjectName("spinSuppress");
-  spinSuppress->setMaximum(600);
+  spinSuppress->setMaximum(900);
   spinSuppress->setSuffix( " min" );
+  spinSuppress->setSpecialValueText(tr("Off"));
   hspin = new VarSpinBox(spinSuppress);
   topLayout->addWidget( hspin, row, 1 );
 
