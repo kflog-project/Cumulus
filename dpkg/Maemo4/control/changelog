@@ -2,8 +2,8 @@ cumulus (2.13.3) stable; urgency=low
 
   * Glider editor widget modified due to problems on Android device Motorola Defy.
 
-  * BUGFIX: Airspace Prohibited was never draw at the map. A new checkbox added
-    in the setup airspace page to enable or disable drawing.
+  * BUGFIX: Airspace Prohibited was never drawn at the map. A new checkbox was
+    added in the setup airspace page to enable or disable drawing.
 
   * BUGFIX: Flight trail option was not changeable in setup page map objects.
 

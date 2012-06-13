@@ -1070,9 +1070,8 @@ void Map::setDrawing(bool isEnable)
 
 void Map::resizeEvent(QResizeEvent* event)
 {
-  Q_UNUSED( event )
-
-  // qDebug() << "Map::resizeEvent: NS=" << event->size() << "OS=" << event->oldSize();
+  // Q_UNUSED( event )
+  qDebug() << "Map::resizeEvent: old=" << event->oldSize() << "new=" << event->size();
 
   // set resize flag
   _isResizeEvent = true;
