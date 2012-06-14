@@ -17,7 +17,7 @@ Cumulus changelog
 
 [+] 2012-06-12 AP: New airspace status display added, that shows the user
                    an overview, if airspaces are violated or if he is in the
-                   near of an airspace. Pressing at the map for one second
+                   near of an airspace. Pressing at the map for 750ms
                    opens a popup widget with the airspace information.
                    Furthermore the display can be opened via the menu.
 
