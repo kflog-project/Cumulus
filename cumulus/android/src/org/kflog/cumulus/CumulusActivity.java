@@ -572,24 +572,36 @@ public class CumulusActivity extends QtActivity
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
 		// System.out.println("QtMain.onKeyDown, key pressed: "+event.toString());
-		if( keyCode == KeyEvent.KEYCODE_BACK )
-			{
-				// Send close key to QtApp. It can be used to close a widget or the whole
-				// application.
-				nativeKeypress((char) 28);
-				return true;
-			}
-
-    if( keyCode == KeyEvent.KEYCODE_MENU )
-      {
-        if(isRootWindow() )
+	  
+	  // There was a problem report on Google Developer, that a native function
+	  // was not found. Maybe it was not yet loaded.
+	  // java.lang.UnsatisfiedLinkError: isRootWindow
+	  try
+	    {
+    		if( keyCode == KeyEvent.KEYCODE_BACK )
+    			{
+    				// Send close key to QtApp. It can be used to close a widget or the whole
+    				// application.
+    				nativeKeypress((char) 28);
+    				return true;
+    			}
+    
+        if( keyCode == KeyEvent.KEYCODE_MENU )
           {
-            // Only the root window can show this dialog.
-            showDialog(DIALOG_MENU_ID);
+            if(isRootWindow() )
+              {
+                // Only the root window can show this dialog.
+                showDialog(DIALOG_MENU_ID);
+              }
+    
+            return true;
           }
-
-        return true;
-      }
+	    }
+	  catch(UnsatisfiedLinkError e)
+	    { 
+	      // ignore exception and consume event.
+	      return true;
+	    }
 
     return super.onKeyDown(keyCode, event);
   }
