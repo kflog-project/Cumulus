@@ -390,8 +390,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   QFrame* filler = new QFrame(_statusbar);
   filler->setLineWidth(0);
   _statusbar->addWidget(filler);
-
-  MainWindow::mainWindow()->setStatusBar(_statusbar);
+  topLayout->addWidget(_statusbar);
 
   lastPositionChangeSource = Calculator::MAN;
 }
