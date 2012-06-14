@@ -240,15 +240,15 @@ public slots:
   /** called to redraw on switch of manual mode */
   void slotSwitchManualInFlight();
 
-private slots:
-
-  /** Called by timer expiration. */
-  void slotRedrawMap();
-
   /**
    * Shows the current airspace status to the user.
    */
   void slotShowAirspaceStatus();
+
+private slots:
+
+  /** Called by timer expiration. */
+  void slotRedrawMap();
 
 signals:
 

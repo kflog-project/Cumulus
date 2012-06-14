@@ -419,6 +419,7 @@ private:
   QAction* actionViewReachpoints;
   QAction* actionViewTaskpoints;
   QAction* actionViewGPSStatus;
+  QAction* actionViewASStatus;
   QAction* actionToggleStatusbar;
   QAction* actionZoomInZ;
   QAction* actionZoomOutZ;

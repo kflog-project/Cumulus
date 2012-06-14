@@ -983,6 +983,7 @@ void MainWindow::createMenuBar()
   actionViewTaskpoints->setEnabled( false );
   viewMenu->addAction( actionViewWaypoints );
   viewMenu->addSeparator();
+  viewMenu->addAction( actionViewASStatus );
   viewMenu->addAction( actionViewGPSStatus );
 
   labelMenu = menuBar()->addMenu( tr("Toggles"));
@@ -1053,6 +1054,7 @@ void MainWindow::createContextMenu()
   actionViewTaskpoints->setEnabled( false );
   viewMenu->addAction( actionViewWaypoints );
   viewMenu->addSeparator();
+  viewMenu->addAction( actionViewASStatus );
   viewMenu->addAction( actionViewGPSStatus );
 
   labelMenu = contextMenu->addMenu( tr("Toggles") + " ");
@@ -1342,6 +1344,11 @@ void MainWindow::createActions()
   connect( actionToggleStatusbar, SIGNAL( toggled( bool ) ),
             this, SLOT( slotViewStatusBar( bool ) ) );
 
+  actionViewASStatus = new QAction( tr( "AS Status" ), this );
+  addAction( actionViewASStatus );
+  connect( actionViewASStatus, SIGNAL( triggered() ),
+            Map::instance, SLOT( slotShowAirspaceStatus() ) );
+
   actionViewGPSStatus = new QAction( tr( "GPS Status" ), this );
 #ifndef ANDROID
   actionViewGPSStatus->setShortcut(Qt::Key_G);
@@ -1537,6 +1544,7 @@ void  MainWindow::toggleActions( const bool toggle )
 {
   actionViewWaypoints->setEnabled( toggle );
   actionViewAirfields->setEnabled( toggle );
+  actionViewASStatus->setEnabled( toggle );
   actionViewGPSStatus->setEnabled( toggle );
   actionZoomInZ->setEnabled( toggle );
   actionZoomOutZ->setEnabled( toggle );
