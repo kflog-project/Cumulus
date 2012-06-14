@@ -181,6 +181,11 @@ void Map::__displayAirspaceInfo(const QPoint& current)
         }
     }
 
+  if( show == false )
+    {
+      return;
+    }
+
   text += "</table></html>";
 
   // @AP: replace long labels to small ones, otherwise the window is
