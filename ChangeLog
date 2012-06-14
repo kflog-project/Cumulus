@@ -15,6 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2012-06-12 AP: New airspace status display added, that shows the user
+                   an overview, if airspaces are violated or if he is in the
+                   near of an airspace. Pressing at the map for one second
+                   opens a popup widget with the airspace information.
+                   Furthermore the display can be opened via the menu.
+
+[*] 2012-05-26 AP: Cumulus 2.13.3 released. It was made only for Maemo4.
+
 [o] 2012-06-12 AP: Glider editor widget modified due to problems on Android
                    device Motorola Defy.
 

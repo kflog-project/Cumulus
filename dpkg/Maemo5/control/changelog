@@ -1,3 +1,12 @@
+cumulus (2.14.0) stable; urgency=low
+
+  * New airspace status display added, that shows the user an overview, if
+    airspaces are violated or if he is in the near of an airspace. Pressing at
+    the map for one second opens a popup widget with the airspace information.
+    Furthermore the display can be opened via the menu.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Wed, 14 Jun 2012 20:00:00 +0200
+
 cumulus (2.13.3) stable; urgency=low
 
   * Glider editor widget modified due to problems on Android device Motorola Defy.
