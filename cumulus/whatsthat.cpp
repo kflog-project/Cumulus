@@ -60,9 +60,9 @@ WhatsThat::WhatsThat( QWidget* parent, QString& txt, int timeout ) :
     }
 
   // Automatic adaption of the text height to the window height
-  while( ((doc->size().toSize().height() + 10 ) > parentWidget()->height() ||
-         (doc->size().toSize().width()  + 10 ) > parentWidget()->width()) &&
-          size >= 6 )
+  while( ((doc->size().toSize().height() + 5 ) > parentWidget()->height() ||
+         (doc->size().toSize().width()  + 5 ) > parentWidget()->width()) &&
+          size >= 7 )
     {
       size--;
       font.setPointSize( size );

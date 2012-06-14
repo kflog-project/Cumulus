@@ -250,6 +250,9 @@ private slots:
   /** Called by timer expiration. */
   void slotRedrawMap();
 
+  /** Called by timer expiration. */
+  void slotASSTimerExpired();
+
 signals:
 
   /**
@@ -679,6 +682,9 @@ protected:
 
   /** Timer which activates the airspace status display. */
   QTimer* m_showASSTimer;
+
+  /** Flag to ignore mouse release event. */
+  bool m_ignoreMouseRelease;
 
 public:
 

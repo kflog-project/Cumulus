@@ -76,6 +76,7 @@ Map::Map(QWidget* parent) : QWidget(parent),
   _isResizeEvent = false;
   _isRedrawEvent = false;
   _mouseMoveIsActive = false;
+  m_ignoreMouseRelease = false;
   mapRot = 0;
   curMapRot = 0;
   heading = 0;
@@ -119,7 +120,7 @@ Map::Map(QWidget* parent) : QWidget(parent),
   m_showASSTimer->setSingleShot(true);
 
   connect( m_showASSTimer, SIGNAL(timeout()),
-            this, SLOT(slotShowAirspaceStatus()));
+            this, SLOT(slotASSTimerExpired()));
 
   zoomFactor = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
   curMANPos  = _globalMapMatrix->getMapCenter();
@@ -140,7 +141,9 @@ Map::~Map()
 */
 void Map::__displayAirspaceInfo(const QPoint& current)
 {
-  if( mutex() || !isVisible() )
+  static QPointer<WhatsThat> box;
+
+  if( mutex() || ! isVisible() || ! box.isNull() )
     {
       //qDebug("Map::__displayAirspaceInfo: Map drawing in progress: return");
       return;
@@ -173,6 +176,7 @@ void Map::__displayAirspaceInfo(const QPoint& current)
               text += "<tr><td align=left>" + pSpace->getInfoString() + "</td></tr>";
               itemcount++;
             }
+
           show = true;
         }
     }
@@ -188,25 +192,9 @@ void Map::__displayAirspaceInfo(const QPoint& current)
   text.replace( QRegExp("AS-E low "), "AS-El " );
   text.replace( QRegExp("AS-E high "), "AS-Eh " );
 
-  if( show && WhatsThat::getInstance() == 0 )
-    {
-      // display text only, if no other display is active
-      GeneralConfig *conf = GeneralConfig::instance();
-      int airspaceTime = conf->getAirspaceDisplayTime();
-      int showTime = 0;
-
-      if( airspaceTime != 0 )
-        {
-          //qDebug("airspace item count=%d", itemcount);
-          showTime = qMax((itemcount * airspaceTime), MIN_POPUP_DISPLAY_TIME);
-          showTime *= 1000;
-        }
-
-      // qDebug("airspace timer %dms", showTime);
-
-      WhatsThat *box = new WhatsThat(this, text, showTime);
-      box->show();
-    }
+  int showTime = GeneralConfig::instance()->getAirspaceDisplayTime() * 1000;
+  box = new WhatsThat(this, text, showTime);
+  box->show();
 }
 
 /**
@@ -530,7 +518,7 @@ void Map::mousePressEvent(QMouseEvent* event)
     }
 
   // Start a timer to recognize a long press for the airspace status display.
-  m_showASSTimer->start(1000);
+  m_showASSTimer->start(750);
 
   switch (event->button())
     {
@@ -580,6 +568,12 @@ void Map::mouseReleaseEvent( QMouseEvent* event )
   // qDebug() << "Map::mouseReleaseEvent(): Pos=" << event->pos();
 
   m_showASSTimer->stop();
+
+  if( m_ignoreMouseRelease )
+    {
+      m_ignoreMouseRelease = false;
+      return;
+    }
 
   if( _mouseMoveIsActive )
     {
@@ -3424,6 +3418,14 @@ void Map::checkAirspace(const QPoint& pos)
     }
 }
 
+void Map::slotASSTimerExpired()
+{
+  // User has pressed long the mouse button. We show the airspace status and
+  // ignore the mouse release event.
+  m_ignoreMouseRelease = true;
+  slotShowAirspaceStatus();
+}
+
 void Map::slotShowAirspaceStatus()
 {
   static QPointer<WhatsThat> box;
@@ -3434,14 +3436,14 @@ void Map::slotShowAirspaceStatus()
       return;
     }
 
+  // fetch warning show time and compute it as milli seconds
+  int showTime = GeneralConfig::instance()->getAirspaceDisplayTime() * 1000;
+
   QString text = "<html><table border=1 cellpadding=\"2\"><tr><th align=center>" +
                  tr("Airspace") + "&nbsp;" + tr("Status") +
                  "</th></tr>";
 
   QString endTable = "</table></html>";
-
-  // fetch warning show time and compute it as milli seconds
-  int showTime = GeneralConfig::instance()->getWarningDisplayTime() * 1000;
 
   if( _insideAsMap.size() == 0 &&
        _veryNearAsMap.size() == 0 &&
