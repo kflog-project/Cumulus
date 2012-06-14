@@ -45,6 +45,7 @@
 #include <QEvent>
 #include <QResizeEvent>
 #include <QRect>
+#include <QTime>
 #include <QWheelEvent>
 
 #include "waypoint.h"
@@ -243,6 +244,11 @@ private slots:
 
   /** Called by timer expiration. */
   void slotRedrawMap();
+
+  /**
+   * Shows the current airspace status to the user.
+   */
+  void slotShowAirspaceStatus();
 
 signals:
 
@@ -670,6 +676,9 @@ protected:
 
   /** maximum length of trail list */
   const int TrailListLength;
+
+  /** Timer which activates the airspace status display. */
+  QTimer* m_showASSTimer;
 
 public:
 

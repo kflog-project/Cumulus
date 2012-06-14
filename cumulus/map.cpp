@@ -110,10 +110,16 @@ Map::Map(QWidget* parent) : QWidget(parent),
   redrawTimerLong->setSingleShot(true);
 
   connect( redrawTimerShort, SIGNAL(timeout()),
-           this, SLOT(slotRedrawMap()));
+            this, SLOT(slotRedrawMap()));
 
   connect( redrawTimerLong, SIGNAL(timeout()),
-           this, SLOT(slotRedrawMap()));
+            this, SLOT(slotRedrawMap()));
+
+  m_showASSTimer = new QTimer(this);
+  m_showASSTimer->setSingleShot(true);
+
+  connect( m_showASSTimer, SIGNAL(timeout()),
+            this, SLOT(slotShowAirspaceStatus()));
 
   zoomFactor = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
   curMANPos  = _globalMapMatrix->getMapCenter();
@@ -146,7 +152,7 @@ void Map::__displayAirspaceInfo(const QPoint& current)
 
   bool show = false;
 
-  text += "<html><table border=1><tr><th align=left>" +
+  text += "<html><table border=1 cellpadding=\"2\"><tr><th align=center>" +
           tr("Airspace&nbsp;Structure") +
           "</th></tr>";
 
@@ -523,6 +529,9 @@ void Map::mousePressEvent(QMouseEvent* event)
       return;
     }
 
+  // Start a timer to recognize a long press for the airspace status display.
+  m_showASSTimer->start(1000);
+
   switch (event->button())
     {
       case Qt::RightButton: // press and hold generates mouse RightButton
@@ -560,6 +569,7 @@ void Map::mouseMoveEvent( QMouseEvent* event )
           // all other mouse actions bound on release mouse are blocked.
           _mouseMoveIsActive = true;
           QApplication::setOverrideCursor(QCursor(Qt::SizeAllCursor));
+          m_showASSTimer->stop();
           event->accept();
         }
     }
@@ -568,6 +578,8 @@ void Map::mouseMoveEvent( QMouseEvent* event )
 void Map::mouseReleaseEvent( QMouseEvent* event )
 {
   // qDebug() << "Map::mouseReleaseEvent(): Pos=" << event->pos();
+
+  m_showASSTimer->stop();
 
   if( _mouseMoveIsActive )
     {
@@ -603,11 +615,11 @@ void Map::mouseReleaseEvent( QMouseEvent* event )
   switch( event->button() )
     {
       case Qt::RightButton: // press and hold generates mouse RightButton
-        //qDebug("MR-RightButton");
+        // qDebug("MR-RightButton");
         break;
 
       case Qt::LeftButton: // press generates mouse LeftButton immediately
-        //qDebug("MR-LeftButton");
+        // qDebug("MR-LeftButton");
 
         if( __zoomButtonPress( event->pos() ) )
           {
@@ -3069,17 +3081,22 @@ void Map::checkAirspace(const QPoint& pos)
       return;
     }
 
+  QString severity = tr("Warning");
+
+  if( ! newInsideAsMap.isEmpty() )
+    {
+      severity = tr("Alarm");
+    }
+
   // warning text, contains only conflict changes
-  QString text = "<html><table border=1><tr><th align=left>" +
-                 tr("Airspace&nbsp;Warning") +
+  QString text = "<html><table border=1 cellpadding=\"2\"><tr><th align=center>" +
+                 tr("Airspace") + "&nbsp;" + severity +
                  "</th></tr>";
 
   QString msg; // status message containing all conflicting airspaces
 
   // Only the airspace with the highest priority will be displayed and updated.
   // First we do look step by step for new results according to our predefined priority.
-  // If there are no new results to find, the current active warning will be shown
-  // in the status bar. If no warning is active the status bar display is reset.
 
   if ( ! newInsideAsMap.isEmpty() )
     {
@@ -3253,6 +3270,13 @@ void Map::checkAirspace(const QPoint& pos)
           _lastNearAsInfo = text;  // save last warning info text
         }
     }
+
+#if 0
+
+  /** Statusbar display deactivated. It can cause a resize of the statusbar widget
+   * if the text is too long.
+   */
+
   else if ( ! allInsideAsMap.isEmpty() &&
             _lastNearTime.elapsed() > showTime &&
             _lastVeryNearTime.elapsed() > showTime &&
@@ -3289,7 +3313,6 @@ void Map::checkAirspace(const QPoint& pos)
 
       return;
     }
-
   else if ( ! allVeryNearAsMap.isEmpty() &&
             _lastNearTime.elapsed() > showTime &&
             _lastVeryNearTime.elapsed() > showTime &&
@@ -3383,10 +3406,12 @@ void Map::checkAirspace(const QPoint& pos)
       return;
     }
 
+#endif
+
   // Pop up a warning window with all data to touched airspace
   if ( warn == true )
     {
-      text +="</table></html>";
+      text += "</table></html>";
 
       if( GeneralConfig::instance()->getPopupAirspaceWarnings() )
         {
@@ -3399,11 +3424,89 @@ void Map::checkAirspace(const QPoint& pos)
     }
 }
 
+void Map::slotShowAirspaceStatus()
+{
+  static QPointer<WhatsThat> box;
+
+  if( ! box.isNull() )
+    {
+      // A status display is yet active.
+      return;
+    }
+
+  QString text = "<html><table border=1 cellpadding=\"2\"><tr><th align=center>" +
+                 tr("Airspace") + "&nbsp;" + tr("Status") +
+                 "</th></tr>";
+
+  QString endTable = "</table></html>";
+
+  // fetch warning show time and compute it as milli seconds
+  int showTime = GeneralConfig::instance()->getWarningDisplayTime() * 1000;
+
+  if( _insideAsMap.size() == 0 &&
+       _veryNearAsMap.size() == 0 &&
+       _nearAsMap.size() == 0 )
+    {
+      text += "<tr><td align=center>" +
+              tr("No Airspace violation") + " " +
+              "</td></tr>" +
+              endTable;
+
+      box = new WhatsThat( this, text, showTime );
+      box->show();
+      return;
+    }
+
+  if( _insideAsMap.size() )
+    {
+      text += "<tr><td align=center><b>" +
+              tr("Inside") + "</b></td></tr>";
+
+      QMapIterator<QString, int> it(_insideAsMap);
+
+      while (it.hasNext())
+        {
+          it.next();
+          text += "<tr><td>" + it.key() + "</td></tr>";
+        }
+    }
+
+  if( _veryNearAsMap.size() )
+    {
+      text += "<tr><td align=center><b>" +
+              tr("Very Near") + "</b></td></tr>";
+
+      QMapIterator<QString, int> it(_veryNearAsMap);
+
+      while (it.hasNext())
+        {
+          it.next();
+          text += "<tr><td>" + it.key() + "</td></tr>";
+        }
+    }
+
+  if( _nearAsMap.size() )
+    {
+      text += "<tr><td align=center><b>" +
+              tr("Near") + "</b></td></tr>";
+
+      QMapIterator<QString, int> it(_nearAsMap);
+
+      while (it.hasNext())
+        {
+          it.next();
+          text += "<tr><td>" + it.key() + "</td></tr>";
+        }
+    }
+
+  box = new WhatsThat( this, text, showTime );
+  box->show();
+}
+
 bool Map::mutex()
 {
   return _mutex;
 }
-
 
 void Map::setMutex(bool m)
 {
