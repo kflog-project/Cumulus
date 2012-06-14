@@ -2916,7 +2916,8 @@ void Map::__drawRelBearingInfo()
 
 /**
  * Check if the new position is near to or inside of an airspace. A warning message
- * will be generated and shown as pop up window and in the status bar.
+ * will be generated and shown as pop up window. Due to resize problems caused
+ * by long texts, the message is not more displayed in the status bar.
  */
 void Map::checkAirspace(const QPoint& pos)
 {
@@ -2936,7 +2937,7 @@ void Map::checkAirspace(const QPoint& pos)
   // fetch warning show time and compute it as milli seconds
   int showTime = GeneralConfig::instance()->getWarningDisplayTime() * 1000;
 
-  // maps to collect all airspaces and the conflicting airspaces
+  // maps to collect the new and the old conflicting airspaces.
   QMap<QString, int> newInsideAsMap;
   QMap<QString, int> allInsideAsMap;
   QMap<QString, int> newVeryNearAsMap;
@@ -2947,10 +2948,9 @@ void Map::checkAirspace(const QPoint& pos)
   AltitudeCollection alt = calculator->getAltitudeCollection();
   AirspaceWarningDistance awd = GeneralConfig::instance()->getAirspaceWarningDistances();
 
-  Airspace::ConflictType hConflict=Airspace::none, lastHConflict=Airspace::none,
-                                   vConflict=Airspace::none, lastVConflict=Airspace::none,
-                                   conflict= Airspace::none, lastConflict= Airspace::none;
-
+  Airspace::ConflictType hConflict=Airspace::none, lastHConflict=Airspace::none;
+  Airspace::ConflictType vConflict=Airspace::none, lastVConflict=Airspace::none;
+  Airspace::ConflictType conflict= Airspace::none, lastConflict= Airspace::none;
 
   bool warn = false; // warning flag
 
@@ -3108,7 +3108,7 @@ void Map::checkAirspace(const QPoint& pos)
       {
           // show warning in status bar with alarm
         _lastAsType = msg;
-        emit airspaceWarning( msg, true );
+        // emit airspaceWarning( msg, true );
       }
 
       QMapIterator<QString, int> j(newInsideAsMap);
@@ -3166,7 +3166,7 @@ void Map::checkAirspace(const QPoint& pos)
         {
             // show warning in status bar
           _lastAsType = msg;
-          emit airspaceWarning( msg, true );
+          // emit airspaceWarning( msg, true );
         }
 
       QMapIterator<QString, int> j(newVeryNearAsMap);
@@ -3223,7 +3223,7 @@ void Map::checkAirspace(const QPoint& pos)
         {
           // show warning in status bar
           _lastAsType = msg;
-          emit airspaceWarning( msg, true );
+          // emit airspaceWarning( msg, true );
         }
 
       QMapIterator<QString, int> j(newNearAsMap);
@@ -3284,7 +3284,7 @@ void Map::checkAirspace(const QPoint& pos)
         {
             // show warning in status bar without alarm
           _lastAsType = msg;
-          emit airspaceWarning( msg, false );
+          // emit airspaceWarning( msg, false );
         }
 
       return;
@@ -3321,7 +3321,7 @@ void Map::checkAirspace(const QPoint& pos)
       {
          // show warning in status bar without alarm
         _lastAsType = msg;
-        emit airspaceWarning( msg, false );
+        // emit airspaceWarning( msg, false );
       }
 
       return;
@@ -3357,7 +3357,7 @@ void Map::checkAirspace(const QPoint& pos)
       {
          // show warning in status bar without alarm
         _lastAsType = msg;
-        emit airspaceWarning( msg, false );
+        // emit airspaceWarning( msg, false );
       }
 
       return;
