@@ -3414,8 +3414,7 @@ void Map::checkAirspace(const QPoint& pos)
 
       if( GeneralConfig::instance()->getPopupAirspaceWarnings() )
         {
-          // qDebug("airspace warning timer %dms, LoopLevel=%d",
-          // showTime, qApp->loopLevel() );
+          emit airspaceWarning( " ", true );
           WhatsThat *box = new WhatsThat(this, text, showTime);
           box->show();
           return;

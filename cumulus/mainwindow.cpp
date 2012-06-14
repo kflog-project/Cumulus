@@ -954,11 +954,6 @@ void MainWindow::slotNotification( const QString& msg, const bool sound )
 
 void MainWindow::slotAlarm( const QString& msg, const bool sound )
 {
-  if ( msg.isEmpty() )
-    {
-      return ;
-    }
-
   if ( sound )
     {
       playSound("alarm");
