@@ -239,13 +239,18 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
 #endif
 
-#if defined (MAEMO) || defined (ANDROID)
+#if defined MAEMO || defined ANDROID
 
   QSize dSize = QApplication::desktop()->availableGeometry().size();
 
   // Limit maximum size for Maemo and Android
   setMaximumSize( dSize );
-  resize( dSize() );
+
+#ifdef ANDROID
+  setMinimumSize( dSize );
+#endif
+
+  resize( dSize );
 #else
   // get last saved window geometric from GeneralConfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
