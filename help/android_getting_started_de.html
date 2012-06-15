@@ -7,7 +7,9 @@
 <title>Erste Schritte mit Android</title>
 
 <style type="text/css">
-body { background-color:#CCF2FF; }
+body {
+	background-color: #CCF2FF;
+}
 </style>
 
 </head>
@@ -15,99 +17,177 @@ body { background-color:#CCF2FF; }
 
 	<H3 ALIGN=CENTER>Erste Schritte mit Android</H3>
 
-  <h4>Einf&uuml;hrung</h4>
+	<h4>Einf&uuml;hrung</h4>
 
-	Cumulus ist eine gut etablierte Open Source Flug Navigations Software, geschrieben f&uuml;r Segelflieger und andere Flugenthusiasten. Diese App ist eine Portierung zu Android von der Qt C++ Applikation, wie sie auf den Nokia Internet Tablets N8x0 und N900 l&auml;uft. Das Android Lighthouse Projekt stellt einen SDK genannt <i>Necessitas</i> bereit, mit dem man Qt C++ Applikationen in eine Android Umgebung als native Bibliotheken integrieren kann. 
-  
+	Cumulus ist eine gut etablierte Open Source Flug Navigations Software,
+	geschrieben f&uuml;r Segelflieger und andere Flugenthusiasten. Diese
+	App ist eine Portierung zu Android von der Qt C++ Applikation, wie sie
+	auf den Nokia Internet Tablets N8x0 und N900 l&auml;uft. Das Android
+	Lighthouse Projekt stellt einen SDK genannt
+	<i>Necessitas</i> bereit, mit dem man Qt C++ Applikationen in eine
+	Android Umgebung als native Bibliotheken integrieren kann.
+
 	<h4>Vorbedingungen</h4>
 
 	<ul>
-		<li>
-    
-      Die Benutzung von Cumulus auf einem Android Ger&auml;t ist nur sinnvoll, wenn dieses eine Bildschirmaufl&ouml;sung von mindestens 800x480 Pixeln hat und es im Quermode benutzt werden kann. Weiterhin sollte die Bildschirmdiagonale nicht kleiner als 4" sein, da sich Cumulus sonst nur sehr schwer mit den Fingern bedienen l&auml;sst.
-
-		<li>Das Ger&auml;t muss mit Android Release 2.2.x (Froyo) oder h&ouml;her laufen.
-		
+		<li>Die Benutzung von Cumulus auf einem Android Ger&auml;t ist
+			nur sinnvoll, wenn dieses eine Bildschirmaufl&ouml;sung von
+			mindestens 800x480 Pixeln hat und es im Quermode benutzt werden kann.
+			Weiterhin sollte die Bildschirmdiagonale nicht kleiner als 4" sein,
+			da sich Cumulus sonst nur sehr schwer mit den Fingern bedienen
+			l&auml;sst.
+		<li>Auf dem Ger&auml;t muss ein Android Release 2.2.x (Froyo)
+			oder h&ouml;her installiert sein.
 		<li>Der Bildschirm sollte gut in der Sonne ablesbar sein.
-		
-		<li> Ein externes Speichermedium (SD-Karte) ist zum Speichern von Karten- und Flugdaten erforderlich.
-			
-		<li> Wenn kein interner GPS Empf&auml;nger vorhanden ist, sollte eine Bluetooth Schnittstelle vorhanden sein, um externe BT GPS Ger&auml;te benutzen zu k&ouml;nnen.
-			
-		<li>Optional sollte eine WLAN Schnittstelle vorhanden sein, um Daten aus dem Internet runter laden zu k&ouml;nnen.
-			
-		<li>Bei l&auml;ngeren Fl&uuml;gen ben&ouml;tigt man eine externe Stromversorgung.
-		
-		<li>Eine gute Ger&auml;tehalterung ist beim Fliegen sehr empfehlenswert.
+		<li>Ein externes Speichermedium (SD-Karte) ist zum Speichern von
+			Karten- und Flugdaten erforderlich.
+		<li>Wenn kein interner GPS Empf&auml;nger vorhanden ist, sollte
+			eine Bluetooth Schnittstelle vorhanden sein, um externe BT GPS
+			Ger&auml;te benutzen zu k&ouml;nnen.
+		<li>Optional sollte eine WLAN Schnittstelle vorhanden sein, um
+			Daten aus dem Internet runter laden zu k&ouml;nnen.
+		<li>Bei l&auml;ngeren Fl&uuml;gen ben&ouml;tigt man eine externe
+			Stromversorgung.
+		<li>Eine gute Ger&auml;tehalterung ist beim Fliegen sehr
+			empfehlenswert.
 	</ul>
 
 	<h4>App runter laden und installieren</h4>
 
 	Das aktuelle Paket ist immer unter Google Play als
 
-	<a href="https://play.google.com/store/search?q=cumulus+from+kflog.org&c=apps">Cumulus von kflog.org</a>, Autor Axel Pauli, zu finden. Achtung, es gibt auch noch andere Cumulus Versionen dort! Diese sind inkompatibel zu dieser App.
+	<a
+		href="https://play.google.com/store/search?q=cumulus+from+kflog.org&c=apps">Cumulus
+		von kflog.org</a>, Autor Axel Pauli, zu finden.
+	<b>Achtung</b>, es gibt auch noch andere Cumulus Versionen dort! Diese
+	sind inkompatibel zu dieser App. Das App Paket von Google Play runter
+	laden und installieren.
 
-	Das Paket von Google Play runter laden und installieren.
-	
 	<h4>Rechte die Cumulus ben&ouml;tigt</h4>
-	
+
 	Cumulus ben&ouml;tigt die folgenden Android Systemrechte:
-	
+
 	<ul>
-	  <li>GPS Zugriff
-	  <li>Internet Zugriff
-	  <li>Bluetooth und Bluetooth Administrationsrechte
-	  <li>Wach bleiben
-	  <li>Schreib- und Leserechte f&uuml;r die SD-Karte
+		<li>GPS Zugriff
+		<li>Internet Zugriff
+		<li>Bluetooth und Bluetooth Administrationsrechte
+		<li>Wach bleiben
+		<li>Schreib- und Leserechte f&uuml;r die SD-Karte
 	</ul>
 
-	<h4>Erster Start von Cumulus</h4>
+	<h4>Erster Start von Cumulus nach der Installation</h4>
 
 	<p>
-	  Beim ersten Aufruf von Cumulus nach der Installation, fordert Cumulus die Installation der App <i>Ministro</i> an. Die Ministro App ist ein systemweiter Installations- und Verwaltungsservice f&uuml;r die Qt C++ GUI Bibliotheken, die Cumulus zur Laufzeit ben&ouml;tigt. Bitte deinstallieren Sie die Ministro App nicht, solange Sie Cumulus benutzen wollen. Ansonsten fordert Cumulus die Installation erneut an.
+		Beim ersten Aufruf von Cumulus nach der Installation, fordert Cumulus
+		die Installation der App <i>Ministro</i> an. Die Ministro App ist ein
+		systemweiter Installations- und Verwaltungsservice f&uuml;r die Qt C++
+		GUI Bibliotheken, die Cumulus zur Laufzeit ben&ouml;tigt. Bitte
+		deinstallieren Sie die Ministro App nicht, solange Sie Cumulus
+		benutzen wollen. Ansonsten fordert Cumulus die Installation erneut an.
 	</p>
 
-	<p>
-    Weiterhin werden die ben&ouml;tigten Karten und die Welt2000 Datei automatisch aus dem Internet runter geladen, wenn Sie das erlauben.</p>
-		
-	<p>
-    Um den nativen Teil von Cumulus besser bedienen zu k&ouml;nnen, passen Sie sich die Schriftgr&ouml;&szlig;en an. Es sind zu viele Ger&auml;te auf dem Markt, um f&uuml;r alle einen vern&uuml;nftigen Standard anzubieten. Man kann das &uuml;ber den Men&uuml;eintrag Einstellungen->Allgemein und den Tabulator Look&Feel machen. Auf der Seite findet man 2 Kn&ouml;pfe &uuml;ber die man einen Auswahldialog aufrufen kann. Setzen Sie in diesem die Schriftgr&ouml;&szlig;e insbesondere f&uuml;r das GUI Men&uuml; auf einen Ihnen angenehmen Wert. &Auml;ndern Sie nur in kleinen Schritten und pr&uuml;fen Sie das Aussehen danach. Damit die &Auml;nderung voll wirksam wird, sollte man das Programm neu starten.</p>	
+	<p>Weiterhin werden die ben&ouml;tigten Karten und die Welt2000
+		Datei automatisch aus dem Internet runter geladen, wenn Sie das
+		erlauben.</p>
+
+	<p>Um den nativen Teil von Cumulus besser bedienen zu k&ouml;nnen,
+		passen Sie sich die Schriftgr&ouml;&szlig;en an. Es sind zu viele
+		Ger&auml;te auf dem Markt, um f&uuml;r alle einen vern&uuml;nftigen
+		Standard anzubieten. Man kann das &uuml;ber den Men&uuml;eintrag
+		Einstellungen->Allgemein und den Tabulator Look&Feel machen. Auf der
+		Seite findet man 2 Kn&ouml;pfe &uuml;ber die man einen Auswahldialog
+		aufrufen kann. Setzen Sie in diesem die Schriftgr&ouml;&szlig;e
+		insbesondere f&uuml;r das GUI Men&uuml; auf einen Ihnen angenehmen
+		Wert. &Auml;ndern Sie nur in kleinen Schritten und pr&uuml;fen Sie das
+		Aussehen danach. Damit die &Auml;nderung voll wirksam wird, sollte man
+		das Programm neu starten.</p>
 
 	<h4>Konfiguration von Cumulus</h4>
 
 	<p>
-Wenn Sie Ihre Heimatposition und Ihren Flugradius einstellen, sollten Sie Zugriff auf das Internet haben, damit Cumulus alle ben&ouml;tigten Kartendaten automatisch runter laden und installieren kann. Die Karten und andere Dateien wie Wegpunkt-, IGC Logger und Aufgabendateien usw. werden auf der SD-Karte unter dem Wurzelverzeichnis <i>/sdcard/Cumulus</i> abgelegt. Auf dieses Verzeichnis k&ouml;nnen Sie auch vom PC aus zugreifen, wenn Sie Ihr Ger&auml;t mittels USB koppeln. </p>
-	
+		Wenn Sie Ihre Heimatposition und Ihren Flugradius einstellen, sollten
+		Sie Zugriff auf das Internet haben, damit Cumulus alle ben&ouml;tigten
+		Kartendaten automatisch runter laden und installieren kann. Die Karten
+		und andere Dateien wie Wegpunkt-, IGC Logger und Aufgabendateien usw.
+		werden auf der SD-Karte unter dem Wurzelverzeichnis <i>/sdcard/Cumulus</i>
+		abgelegt. Auf dieses Verzeichnis k&ouml;nnen Sie auch vom PC aus
+		zugreifen, wenn Sie Ihr Ger&auml;t mittels USB koppeln.
+	</p>
+
 	<p>
-		Luftraum Dateien sind im Ordner <I>/sdcard/Cumulus/maps/airspaces</I> abzulegen. Diese k&ouml;nnen Sie mit Ihrem Internetbrowser runter laden und gleich in dem genannten Verzeichnis als Ziel ablegen. Auf der Luftraum Konfigurationsseite k&ouml;nnen Sie festlegen, welche Dateien zur Laufzeit von Cumulus geladen werden sollen. Cumulus kann nur das OpenAir Format verarbeiten. Entsprechende Dateien sind f&uuml;r Deutschland auf der <a href="http://www.daec.de/fachbereiche/luftraum-flugbetrieb/luftraumdaten/">DAeC Webseite</a> zu finden. Ansonsten schauen Sie <a href="http://soaringweb.org/Airspace/HomePage.html">hier</a> nach.
+		Luftraum Dateien sind im Ordner <I>/sdcard/Cumulus/maps/airspaces</I>
+		abzulegen. Diese k&ouml;nnen Sie mit Ihrem Internetbrowser runter
+		laden und gleich in dem genannten Verzeichnis als Ziel ablegen. Auf
+		der Luftraum Konfigurationsseite k&ouml;nnen Sie festlegen, welche
+		Dateien zur Laufzeit von Cumulus geladen werden sollen. Cumulus kann
+		nur das OpenAir Format verarbeiten. Entsprechende Dateien sind
+		f&uuml;r Deutschland auf der <a
+			href="http://www.daec.de/fachbereiche/luftraum-flugbetrieb/luftraumdaten/">DAeC
+			Webseite</a> zu finden. Ansonsten schauen Sie <a
+			href="http://soaringweb.org/Airspace/HomePage.html">hier</a> nach.
 
 	</p>
 
 	<h4>GPS Aktivierung</h4>
 
 	<p>
-	  Wenn Cumulus mit dem Starten fertig ist, befindet sich die App im <i>Nicht GPS Mode</i>. Machen Sie Ihre Flugvorbereitung und Planung in diesem Mode. Um den GPS Empf&auml;nger einzuschalten, dr&uuml;cken Sie die Android Men&uuml;taste. In dem sich &ouml;ffenden Men&uuml; w&auml;hlen Sie den Eintrag <i>GPS Ein</i> aus. Danach k&ouml;nnen Sie zwischen dem internen GPS oder einen Bluetooth GPS w&auml;hlen. Ein Bluetooth GPS muss vorher mit dem Android System gepaart worden sein, um es in Cumulus benutzen zu k&ouml;nnen. Nur &uuml;ber Bluetooth Funk kann Cumulus sich zu externen GPS Ger&auml;ten verbinden.</p>
+		Wenn Cumulus mit dem Starten fertig ist, befindet sich die App im <i>Nicht
+			GPS Mode</i>. Machen Sie Ihre Flugvorbereitung und Planung in diesem
+		Mode. Um den GPS Empf&auml;nger einzuschalten, dr&uuml;cken Sie die
+		Android Men&uuml;taste. In dem sich &ouml;ffenden Men&uuml;
+		w&auml;hlen Sie den Eintrag <i>GPS Ein</i> aus. Danach k&ouml;nnen Sie
+		zwischen dem internen GPS oder einen Bluetooth GPS w&auml;hlen. Ein
+		Bluetooth GPS muss vorher mit dem Android System gepaart worden sein,
+		um es in Cumulus benutzen zu k&ouml;nnen. Nur &uuml;ber Bluetooth Funk
+		kann Cumulus sich zu externen GPS Ger&auml;ten verbinden.
+	</p>
 
 	<h4>Benutzer Hinweis</h4>
 
-	<p>Der native Qt GUI Anteil hat einige Beschr&auml;nkungen in seiner Bedienung. Einige Dialoge sind leider nicht optimal mit Fingern zu bedienen.</p>
-		
-  <p>Cumulus verf&uuml;gt auch &uuml;ber eine <i>Online Hilfe</i>. Bitte schauen Sie in diese Hilfe, wenn Sie Fragen zur Bedienung haben. Die <a href="http://www.kflog.org/cumulus/documentation/">Online Hilfe</a> ist auch auf der Cumulus Webseite in den Sprachen Deutsch und Englisch zu finden.
-  </p>
+	<p>Der native Qt GUI Anteil hat einige Beschr&auml;nkungen in
+		seiner Bedienung. Einige Dialoge sind leider nicht optimal mit Fingern
+		zu bedienen.</p>
+
+	<p>
+		Cumulus verf&uuml;gt auch &uuml;ber eine <i>Online Hilfe</i>. Bitte
+		schauen Sie in diese Hilfe, wenn Sie Fragen zur Bedienung haben. Die <a
+			href="http://www.kflog.org/cumulus/documentation/">Online Hilfe</a>
+		ist auch auf der Cumulus Webseite in den Sprachen Deutsch und Englisch
+		zu finden.
+	</p>
 
 	<h4>Bemerkungen zu Android</h4>
 
-	<p>Ein gro&szlig;es Problem stellt die Variationsvielfalt der Ger&auml;te und Android Releases da. Zus&auml;tzlich modifizieren die Hersteller auch noch den Original Kode von Google. Das kann mitunter zu Laufzeit Problemen f&uuml;hren und macht auch ein testen duch uns f&uuml;r alle Ger&auml;te und Releases unm&ouml;glich. Der native QT GUI Anteil ist ebenfalls nicht v&ouml;llig fehlerfrei.
-</p>
+	<p>Ein gro&szlig;es Problem stellt die Variationsvielfalt der
+		Ger&auml;te und Android Releases da. Zus&auml;tzlich modifizieren die
+		Hersteller auch noch den Original Kode von Google. Das kann mitunter
+		zu Laufzeit Problemen f&uuml;hren und macht auch ein testen duch uns
+		f&uuml;r alle Ger&auml;te und Releases unm&ouml;glich. Der native QT
+		GUI Anteil ist ebenfalls nicht v&ouml;llig fehlerfrei.</p>
 
-	<p>Wenn Sie Probleme mit der Darstellung der Oberfl&auml;che haben, dann k&ouml;nnen Sie die App <i>Ministro Configuration Tool</i> noch installieren. In dieser App k&ouml;nnen Sie die Qt Bibliotheksquelle &auml;ndern. Als Standard ist <i>stable</i> eingestellt. Probieren Sie <i>testing</i> oder <i>unstable</i> aus, ob damit eine Besserung ein tritt. Bitte beachten Sie! Beide Einstellungen k&ouml;nnen neue Fehler hervor bringen.
+	<p>
+		Wenn Sie Probleme mit der Darstellung der Oberfl&auml;che haben, dann
+		k&ouml;nnen Sie die App <i>Ministro Configuration Tool</i> noch
+		installieren. In dieser App k&ouml;nnen Sie die Qt Bibliotheksquelle
+		&auml;ndern. Als Standard ist <i>stable</i> eingestellt. Probieren Sie
+		<i>testing</i> oder <i>unstable</i> aus, ob damit eine Besserung ein
+		tritt. Bitte beachten Sie! Beide Einstellungen k&ouml;nnen neue Fehler
+		hervor bringen.
 	</p>
-	
-	Viel Flugspa&szlig; mit Cumulus w&uuml;nscht euch allen Axel Pauli. Und noch eins, bitte das Voten auf Google Play nicht vergesen! 
-	
+
 	<hr>
 	<p>
-	<i>Autor:</i> Axel Pauli, &nbsp;&nbsp;&nbsp; <i>$LastChangedDate: 2012-05-25 10:19:01 +0200 (Fr, 25 Mai 2012) $</i>
+		Viel Flugspa&szlig; mit Cumulus w&uuml;nscht euch allen, <i>Axel
+			Pauli</i>, der Maintainer von Cumulus.
+	</p>
+
+	<b><i>Und noch eins, wenn euch die App gef&auml;llt, sagts bitte
+		weiter und auch das Voten auf Google Play nicht vergesen!</i></b>
+
+	<hr>
+	<p>
+		<i>Autor:</i> Axel Pauli, &nbsp;&nbsp;&nbsp; <i>$LastChangedDate:
+			2012-05-25 10:19:01 +0200 (Fr, 25 Mai 2012) $</i>
 	</p>
 
 </body>
