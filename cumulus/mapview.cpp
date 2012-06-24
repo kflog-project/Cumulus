@@ -74,8 +74,12 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   centerLayout->setSpacing(0);
 
   QBoxLayout *sideLayout = new QVBoxLayout;
-  centerLayout->addLayout(sideLayout);
   sideLayout->setSpacing(0);
+
+  _sideWidget = new QWidget(this);
+  _sideWidget->setContentsMargins(-9,-9,-9,-9);
+  _sideWidget->setLayout(sideLayout);
+  centerLayout->addWidget(_sideWidget);
 
   // three 'grouping' widgets with slightly differing
   // background color and fixed width (to avoid frequent resizing)

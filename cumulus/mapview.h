@@ -316,6 +316,8 @@ class MapView : public QWidget
 
   private:
 
+    /** Widget for info boxes */
+    QWidget* _sideWidget;
     /** reference to the heading label */
     MapInfoBox* _heading;
     /** reference to the bearing label */
