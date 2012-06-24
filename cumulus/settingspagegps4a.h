@@ -31,6 +31,7 @@
 
 #include <QWidget>
 #include <QCheckBox>
+#include <QComboBox>
 
 class SettingsPageGPS4A : public QWidget
 {
@@ -48,6 +49,7 @@ class SettingsPageGPS4A : public QWidget
 
   private:
 
+    QComboBox*   GpsAltitude;
     QCheckBox*   saveNmeaData;
 
   public slots:

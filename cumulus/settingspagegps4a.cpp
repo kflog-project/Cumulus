@@ -31,6 +31,15 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   QGridLayout* topLayout = new QGridLayout(this);
   int row=0;
 
+  // Defines from which device the altitude data shall be taken. Possible
+  // devices are the GPS or a pressure sonde.
+  topLayout->addWidget(new QLabel(tr("Altitude Reference:"), this),row,0);
+  GpsAltitude = new QComboBox(this);
+  GpsAltitude->setEditable(false);
+  topLayout->addWidget(GpsAltitude,row++,1);
+  GpsAltitude->addItem(tr("GPS"));
+  GpsAltitude->addItem(tr("Pressure"));
+  row++;
   saveNmeaData = new QCheckBox (tr("Save NMEA Data to file"), this);
   topLayout->addWidget(saveNmeaData, row, 0 );
   row++;
@@ -47,12 +56,15 @@ void SettingsPageGPS4A::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
+  GpsAltitude->setCurrentIndex( conf->getGpsAltitude() );
   saveNmeaData->setChecked( conf->getGpsNmeaLogState() );
 }
 
 void SettingsPageGPS4A::slot_save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
+
+  conf->setGpsAltitude( GpsNmea::DeliveredAltitude(GpsAltitude->currentIndex()) );
 
   bool oldNmeaLogState = conf->getGpsNmeaLogState();
 

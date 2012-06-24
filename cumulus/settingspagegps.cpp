@@ -102,8 +102,6 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsAltitude->addItem(tr("GPS"));
   GpsAltitude->addItem(tr("Pressure"));
 
-  topLayout->setColumnStretch(2,10);
-
 #ifndef MAEMO
   topLayout->setRowMinimumHeight( row++, 10);
 
