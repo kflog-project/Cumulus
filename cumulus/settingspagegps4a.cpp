@@ -22,6 +22,7 @@
 #include <QtGui>
 
 #include "generalconfig.h"
+#include "gpsnmea.h"
 #include "settingspagegps4a.h"
 
 SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)

@@ -2508,6 +2508,8 @@ bool GpsNmea::event(QEvent *event)
         dataOK();
         fixOK( "ALC");
 
+        QString msg = "$LOC,";
+
         GpsFixEvent *gpsFixEvent = static_cast<GpsFixEvent *>(event);
 
         // Handle altitude
@@ -2526,6 +2528,8 @@ bool GpsNmea::event(QEvent *event)
             emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
           }
 
+        msg += newAlt.getText( true, 0 );
+
         // Handle position
         int lat = (int) rint(gpsFixEvent->latitude()  * 600000.0);
         int lon = (int) rint(gpsFixEvent->longitude() * 600000.0);
@@ -2538,6 +2542,9 @@ bool GpsNmea::event(QEvent *event)
             emit newPosition( _lastCoord );
           }
 
+        msg += "," + QString::number( gpsFixEvent->latitude(), 'f' );
+        msg += "," + QString::number( gpsFixEvent->longitude(), 'f' );
+
         // Handle speed
         Speed newSpeedFix;
         newSpeedFix.setMps( (double) gpsFixEvent->speed() );
@@ -2549,6 +2556,8 @@ bool GpsNmea::event(QEvent *event)
             emit newSpeed( _lastSpeed );
           }
 
+        msg += "," + newSpeedFix.getHorizontalText( true, 1 );
+
         // Handle heading
         double newHeadingFix = gpsFixEvent->heading();
 
@@ -2557,6 +2566,8 @@ bool GpsNmea::event(QEvent *event)
             _lastHeading = newHeadingFix;
             emit newHeading( _lastHeading );
           }
+
+        msg += "," + QString::number( (int) rint(newHeadingFix) );
 
         // Handle time
         QDateTime fix_utc;
@@ -2567,6 +2578,11 @@ bool GpsNmea::event(QEvent *event)
             _lastRmcTime = fix_utc.time();
             emit newFix( _lastRmcTime );
           }
+
+        msg += "," + fix_utc.toString(Qt::ISODate);
+
+        // emits the new message that somethimng is to see in GPS Status widget
+        emit newSentence( msg );
 
         // Handle accuracy
         return true;
