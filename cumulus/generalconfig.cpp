@@ -234,7 +234,7 @@ void GeneralConfig::load()
   _qnh                    = value( "QNH", 1013 ).toInt();
   _bRecordInterval        = value( "B-RecordLoggerInterval", 10 ).toInt();
   _kRecordInterval        = value( "K-RecordLoggerInterval", 0 ).toInt();
-  _loggerAutostartMode    = value( "LoggerAutostartMode", false ).toBool();
+  _loggerAutostartMode    = value( "LoggerAutostartMode", true ).toBool();
   _tas                    = value( "TAS", 100 ).toInt();
   _windDirection          = value( "WindDirection", 0 ).toInt();
   _windSpeed              = value( "WindSpeed", 0 ).toInt();
