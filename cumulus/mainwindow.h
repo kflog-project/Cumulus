@@ -310,7 +310,7 @@ private slots:
   /**
    * Called to toggle the left map sidebar size.
    */
-  void slotActionToggleMapSidebar();
+  void slotToggleMapSidebar();
 
   /**
    * Called to show or hide the status bar.

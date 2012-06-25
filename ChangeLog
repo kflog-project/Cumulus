@@ -15,11 +15,18 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2012-06-25 AP: Altimeter dialog modified, that the altitude reference
-                   (GPS/Pressure) can also be changed in it.
+[-] 2012-06-25 AP: Wind calculation did not work under Android, if no NMEA
+                   raw data were available.
+                   
+[+] 2012-06-25 AP: Android location data are forwarded to GPS status dialog
+                   terminal window, if no NMEA raw data were available. That
+                   makes an analysis possible also in that case.                 
+
+[o] 2012-06-25 AP: Altimeter settings dialog modified, that the altitude
+                   reference (GPS/Pressure) can also be changed in it.
 
 [+] 2012-06-25 AP: The left map sidebar containing the info boxes can be
-                   now toggled in its visibility by using the shortcut
+                   toggled now in its visibility by using the shortcut
                    key D. That was a wish from different Android users.
 
 [*] 2012-06-14 AP: Cumulus 2.14.0 released.

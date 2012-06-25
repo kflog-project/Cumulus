@@ -82,8 +82,8 @@ static void nativeGpsFix( JNIEnv * /*jniEnvironment*/,
  */
 
 static void nativeGpsStatus( JNIEnv * /*jniEnvironment*/,
-                             jobject /*myproxyobject*/,
-                             jint status )
+                                jobject /*myproxyobject*/,
+                                jint status )
 {
   GpsStatusEvent *ge = new GpsStatusEvent( status );
   QCoreApplication::postEvent( GpsNmea::gps, ge );
@@ -213,6 +213,20 @@ static bool isRootWindow()
   return MainWindow::isRootWindow();
 }
 
+static void toggleMapInfoBoxes()
+{
+  QObject *receiver = MainWindow::mainWindow();
+
+  QKeyEvent *kpe = new QKeyEvent( QEvent::KeyPress, Qt::Key_D, Qt::NoModifier );
+  QCoreApplication::postEvent( receiver, kpe, Qt::NormalEventPriority );
+
+  // Make a short break to simulate a key press
+  usleep( 100 * 1000 );
+
+  QKeyEvent *kre = new QKeyEvent( QEvent::KeyRelease, Qt::Key_D, Qt::NoModifier );
+  QCoreApplication::postEvent( receiver, kre, Qt::NormalEventPriority );
+}
+
 static void keyboardAction(JNIEnv * /*jniEnvironment*/, jobject /*myproxyobject*/, jint action)
 {
   KeyboardActionEvent* ke = new KeyboardActionEvent(action);
@@ -224,20 +238,19 @@ static void keyboardAction(JNIEnv * /*jniEnvironment*/, jobject /*myproxyobject*
  * The parameter string must match the types in the "native" declaration
  * (I = integer, J = long, F = float, D = double, V = void etc. )
  */
-
 static JNINativeMethod methods[] = {
 	{"nativeGpsFix", "(DDDFFFJ)V", (void *)nativeGpsFix},
 	{"nativeGpsStatus", "(I)V", (void *)nativeGpsStatus},
 	{"nativeNmeaString","(Ljava/lang/String;)V", (void *)nativeNmeaString},
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
 	{"isRootWindow", "()Z", (bool *)isRootWindow},
-	{"keyboardAction", "(I)V", (void *)keyboardAction}
+	{"keyboardAction", "(I)V", (void *)keyboardAction},
+        {"toggleMapInfoBoxes", "()V", (void *)toggleMapInfoBoxes}
 };
 
 /**
   * Called by qtmain_android.cpp to initialize the Java native interface.
   */
-
 bool initJni( JavaVM* vm, JNIEnv* env )
 {
   qDebug() << "initJni() is called: vm=" << vm << "env=" << env;

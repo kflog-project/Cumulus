@@ -2504,11 +2504,23 @@ bool GpsNmea::event(QEvent *event)
 
     if( event->type() == QEvent::User )
       {
+        static ulong called = 0;
+
+        called++;
+
+        if( called == 10 )
+          {
+            // After 10 calls we assume, that no MNEA row data are delivered by
+            // Android. To enable wind calculation, we must reset the minimal
+            // sat count. That is a bad hack -:(
+            GeneralConfig::instance()->setMinSatCount( 0 );
+          }
+
         // Report status change otherwise the glider symbol is not activated on the map.
         dataOK();
         fixOK( "ALC");
 
-        QString msg = "$LOC,";
+        QString msg = "$ANDROID,";
 
         GpsFixEvent *gpsFixEvent = static_cast<GpsFixEvent *>(event);
 
@@ -2581,8 +2593,14 @@ bool GpsNmea::event(QEvent *event)
 
         msg += "," + fix_utc.toString(Qt::ISODate);
 
-        // emits the new message that somethimng is to see in GPS Status widget
+        // emits the new message that something is to see in GPS status widget
         emit newSentence( msg );
+
+        if( nmeaLogFile && nmeaLogFile->isOpen() )
+          {
+            // Write message into log file
+            nmeaLogFile->write(msg.toAscii().data());
+          }
 
         // Handle accuracy
         return true;

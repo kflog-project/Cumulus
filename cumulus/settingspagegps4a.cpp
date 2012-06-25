@@ -29,24 +29,22 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
 {
   setObjectName("SettingsPageGPS4A");
 
-  QGridLayout* topLayout = new QGridLayout(this);
-  int row=0;
+  QHBoxLayout* topLayout = new QHBoxLayout(this);
 
   // Defines from which device the altitude data shall be taken. Possible
   // devices are the GPS or a pressure sonde.
-  topLayout->addWidget(new QLabel(tr("Altitude Reference:"), this),row,0);
-  GpsAltitude = new QComboBox(this);
+  GpsAltitude = new QComboBox;
   GpsAltitude->setEditable(false);
-  topLayout->addWidget(GpsAltitude,row++,1);
   GpsAltitude->addItem(tr("GPS"));
   GpsAltitude->addItem(tr("Pressure"));
-  row++;
-  saveNmeaData = new QCheckBox (tr("Save NMEA Data to file"), this);
-  topLayout->addWidget(saveNmeaData, row, 0 );
-  row++;
 
-  topLayout->setRowStretch( row++, 10 );
-  topLayout->setColumnStretch( 2, 10 );
+  QFormLayout* fl = new QFormLayout;
+  fl->addRow( tr("Altitude Reference:"), GpsAltitude );
+  topLayout->addLayout( fl );
+
+  saveNmeaData = new QCheckBox (tr("Save NMEA Data to file"), this);
+  topLayout->addWidget( saveNmeaData );
+  topLayout->addStretch( 10 );
 }
 
 SettingsPageGPS4A::~SettingsPageGPS4A()

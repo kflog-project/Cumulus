@@ -1166,14 +1166,14 @@ void GeneralConfig::setGpsLastFixClk(const int newValue)
 }
 
 
-/** gets minimum sat cout for wind calculation */
+/** gets minimum sat count for wind calculation */
 int GeneralConfig::getWindMinSatCount() const
 {
   return _windMinSatCount;
 }
 
 
-/** sets minimum sat cout for wind calculation */
+/** sets minimum sat count for wind calculation */
 void GeneralConfig::setMinSatCount(const int newValue)
 {
   _windMinSatCount = newValue;
