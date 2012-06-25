@@ -198,6 +198,8 @@ void IgcLogger::slotMakeFixEntry()
           // set start date and time of logging
           startLogging = QDateTime::currentDateTime();
 
+          emit takeoffTime( startLogging );
+
           // If log mode was before in standby we have to write out the backtrack entries.
           if( _backtrack.size() > 0 )
             {
@@ -808,8 +810,8 @@ void IgcLogger::slotFlightModeChanged( Calculator::FlightMode newFlightMode )
 
   if( newFlightMode == Calculator::standstill || newFlightMode == Calculator::unknown )
     {
-      // Close logfile after 90s still stand or unknown mode.
-      closeTimer->start(90000);
+      // Close logfile after 120s still stand or unknown mode.
+      closeTimer->start(120000);
     }
   else
     {
@@ -821,6 +823,9 @@ void IgcLogger::slotCloseLogFile()
 {
   if( GeneralConfig::instance()->getLoggerAutostartMode() )
     {
+      // correct landing time by stand time on earth.
+      QDateTime lt = QDateTime::currentDateTime().addSecs( -120 );
+      emit landingTime( lt );
       Standby();
     }
 }

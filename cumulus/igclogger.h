@@ -198,6 +198,16 @@ signals: // Signals
    */
   void madeEntry();
 
+  /**
+   * Reports take off time, if auto logger mode is enabled.
+   */
+  void takeoffTime( QDateTime& dt );
+
+  /**
+   * Reports landing time, if auto logger mode is enabled.
+   */
+  void landingTime( QDateTime& dt );
+
 private:
 
   /**
