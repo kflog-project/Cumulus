@@ -102,6 +102,11 @@ private:
   QRadioButton* _meter;
   QRadioButton* _feet;
 
+  /** Altitude reference. */
+  int _ref; // 0: Gps, 1: Baro
+  QRadioButton* _gps;
+  QRadioButton* _baro;
+
   /** Altitude display */
   QLabel* _altitudeDisplay;
 
@@ -120,6 +125,7 @@ private:
   /** Save the initial values here. They are needed in the reject case. */
   int m_saveMode;
   int m_saveUnit;
+  int m_saveRef;
   int m_saveQnh;
   int m_saveLeveling;
 
@@ -149,6 +155,12 @@ private slots:
   void slotUnitChanged( int unit );
 
   /**
+   * This slot is called if the altitude reference has been changed. It
+   * restarts too the close timer.
+   */
+  void slotReferenceChanged( int reference );
+
+  /**
    * This slot is called if a value in a spin box has been changed
    * to restart the close timer.
    */
@@ -172,7 +184,6 @@ signals:
    * This signal is emitted, when the dialog is closed
    */
   void closingWidget();
-
 };
 
 #endif

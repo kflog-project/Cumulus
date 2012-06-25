@@ -33,6 +33,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   QDialog( parent, Qt::WindowStaysOnTopHint ),
   _mode( 0 ),
   _unit( 0 ),
+  _ref( 0 ),
   m_autoSip(true)
 {
   noOfInstances++;
@@ -99,7 +100,30 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   radioLayout1->addStretch( 5 );
   radioLayout1->addWidget( _feet );
 
-  controlLayout->addWidget( altUnit );
+  QGroupBox* altRef = new QGroupBox( this );
+  _gps = new QRadioButton( tr( "GPS" ), altRef );
+  _gps->setFont( font() );
+  _gps->setChecked( true );
+  _gps->setEnabled( true );
+  _gps->setFocusPolicy( Qt::NoFocus );
+
+  _baro  = new QRadioButton( tr( "Baro" ), altRef );
+  _baro->setFont( font() );
+  _baro->setEnabled( true );
+  _baro->setFocusPolicy( Qt::NoFocus );
+
+  QHBoxLayout* radioLayout2 = new QHBoxLayout( altRef );
+  radioLayout2->addWidget( _gps );
+  radioLayout2->addStretch( 5 );
+  radioLayout2->addWidget( _baro );
+
+  QHBoxLayout* urHBLayout = new QHBoxLayout;
+
+  urHBLayout->addWidget( altUnit );
+  urHBLayout->addStretch( 10 );
+  urHBLayout->addWidget( altRef );
+
+  controlLayout->addLayout( urHBLayout );
 
   //---------------------------------------------------------------------------
 
@@ -229,6 +253,13 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   connect( _feet, SIGNAL(clicked()), signalMapperUnit, SLOT(map()) );
   signalMapperUnit->setMapping( _feet, 1 );
 
+  // map altitude reference radio buttons
+  QSignalMapper* signalMapperReference = new QSignalMapper( this );
+  connect( _gps, SIGNAL(clicked()), signalMapperReference, SLOT(map()) );
+  signalMapperReference->setMapping( _gps, 0 );
+  connect( _baro, SIGNAL(clicked()), signalMapperReference, SLOT(map()) );
+  signalMapperReference->setMapping( _baro, 1 );
+
   // Map altitude QNH and leveling buttons
   connect( pplus, SIGNAL(pressed()), this, SLOT(slotChangeSpinValue()) );
   connect( plus, SIGNAL(pressed()), this, SLOT(slotChangeSpinValue()) );
@@ -237,6 +268,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
 
   connect( signalMapper, SIGNAL(mapped(int)), this, SLOT(slotModeChanged(int)) );
   connect( signalMapperUnit, SIGNAL(mapped(int)), this, SLOT(slotUnitChanged(int)) );
+  connect( signalMapperReference, SIGNAL(mapped(int)), this, SLOT(slotReferenceChanged(int)) );
 
   connect( timeout, SIGNAL(timeout()), this, SLOT(reject()) );
   connect( ok, SIGNAL(released()), this, SLOT(accept()) );
@@ -279,7 +311,10 @@ int AltimeterModeDialog::mode()
 
 void AltimeterModeDialog::load()
 {
-  _mode = GeneralConfig::instance()->getAltimeterMode();
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  _mode = conf->getAltimeterMode();
+  m_saveMode = _mode;
 
   switch( _mode )
   {
@@ -299,10 +334,6 @@ void AltimeterModeDialog::load()
       qWarning("AltimeterModeDialog::load(): invalid mode: %d", _mode);
       break;
   }
-
-  m_saveMode = _mode;
-
-  GeneralConfig *conf = GeneralConfig::instance();
 
   m_saveUnit = Altitude::getUnit();
 
@@ -324,6 +355,22 @@ void AltimeterModeDialog::load()
       break;
   }
 
+  _ref = conf->getGpsAltitude();
+  m_saveRef = _ref;
+
+  switch( _ref )
+  {
+    case 0:
+      _gps->setChecked(true);
+      break;
+    case 1:
+      _baro->setChecked(true);
+      break;
+    default:
+      _gps->setChecked(true);
+      break;
+  }
+
   m_saveLeveling = spinLeveling->value();
 
   m_saveQnh = conf->getQNH();
@@ -342,6 +389,12 @@ void AltimeterModeDialog::slotModeChanged( int mode )
 void AltimeterModeDialog::slotUnitChanged( int unit )
 {
   _unit = unit;
+  startTimer();
+}
+
+void AltimeterModeDialog::slotReferenceChanged( int ref )
+{
+  _ref = ref;
   startTimer();
 }
 
@@ -442,9 +495,10 @@ void AltimeterModeDialog::slotSpinValueChanged( const QString& text )
 bool AltimeterModeDialog::changesDone()
 {
   return( _unit != m_saveUnit ||
-          _mode != m_saveMode ||
-          m_saveLeveling != spinLeveling->value() ||
-          m_saveQnh != spinQnh->value() );
+           _mode != m_saveMode ||
+           _ref != m_saveRef ||
+           m_saveLeveling != spinLeveling->value() ||
+           m_saveQnh != spinQnh->value() );
 }
 
 void AltimeterModeDialog::accept()
@@ -457,6 +511,7 @@ void AltimeterModeDialog::accept()
 
       conf->setUnitAlt( _unit );
       conf->setAltimeterMode( _mode );
+      conf->setGpsAltitude( _ref );
       conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters(spinLeveling->value()) );
       conf->setQNH( spinQnh->value() );
       conf->save();
@@ -479,6 +534,7 @@ void AltimeterModeDialog::reject()
 
       conf->setUnitAlt( m_saveUnit );
       conf->setAltimeterMode( m_saveMode );
+      conf->setGpsAltitude( m_saveRef );
       conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters(m_saveLeveling) );
       conf->setQNH( m_saveQnh );
       conf->save();

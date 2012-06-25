@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-06-25 AP: Altimeter dialog modified, that the altitude reference
+                   (GPS/Pressure) can also be changed in it.
+
 [+] 2012-06-25 AP: The left map sidebar containing the info boxes can be
                    now toggled in its visibility by using the shortcut
                    key D. That was a wish from different Android users.
