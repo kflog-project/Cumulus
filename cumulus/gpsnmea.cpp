@@ -2405,8 +2405,10 @@ void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
 }
 
 /** Extract Satellites In View (SIV) info from a NMEA sentence. */
-void GpsNmea::__ExtractSatsInView(const QString& id, const QString& elev,
-                                  const QString& azimuth, const QString& snr)
+void GpsNmea::__ExtractSatsInView( const QString& id,
+                                       const QString& elev,
+                                       const QString& azimuth,
+                                       const QString& snr)
 {
   if( id.isEmpty() || elev.isEmpty() || azimuth.isEmpty() || snr.isEmpty() )
     {
