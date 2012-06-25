@@ -1524,6 +1524,11 @@ void MainWindow::createActions()
   connect( actionHelpAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()) );
 #endif
 
+  scToggleMapSidebar = new QShortcut( this );
+  scToggleMapSidebar->setKey(Qt::Key_D);
+  connect( scToggleMapSidebar, SIGNAL( activated() ),
+            this, SLOT( slotActionToggleMapSidebar() ) );
+
   // Cumulus can be closed by using Escape key. This key is also as
   // hardware key available under Maemo.
   scExit = new QShortcut( this );
@@ -1537,6 +1542,7 @@ void MainWindow::createActions()
 
 void  MainWindow::toggleActions( const bool toggle )
 {
+  qDebug() << "toggleActions" << toggle;
   actionViewWaypoints->setEnabled( toggle );
   actionViewAirfields->setEnabled( toggle );
   actionViewASStatus->setEnabled( toggle );
@@ -1564,6 +1570,7 @@ void  MainWindow::toggleActions( const bool toggle )
 
   actionToggleLogging->setEnabled( toggle );
   actionNav2Home->setEnabled( toggle );
+  scToggleMapSidebar->setEnabled( toggle );
   scExit->setEnabled( toggle );
 
   if( toggle )
@@ -1720,6 +1727,12 @@ void MainWindow::slotShowContextMenu()
 #endif
 
   contextMenu->exec(mapToGlobal(QPoint(0,0)));
+}
+
+void MainWindow::slotActionToggleMapSidebar()
+{
+  QWidget* w = viewMap->getSidebarWidget();
+  w->setVisible( ! w->isVisible() );
 }
 
 void MainWindow::slotToggleAfLabels( bool toggle )

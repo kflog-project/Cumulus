@@ -308,6 +308,11 @@ private slots:
   void slotToggleWindowSize();
 
   /**
+   * Called to toggle the left map sidebar size.
+   */
+  void slotActionToggleMapSidebar();
+
+  /**
    * Called to show or hide the status bar.
    */
   void slotViewStatusBar(bool toggle);
@@ -396,7 +401,6 @@ private:
 
   /** use manual navigation even if GPS signal is received */
   QAction* actionToggleGps;
-
   QAction* actionManualNavUp;
   QAction* actionManualNavRight;
   QAction* actionManualNavDown;
@@ -442,6 +446,9 @@ private:
   QAction* actionHelpAboutApp;
   QAction* actionHelpAboutQt;
   QAction* actionStartFlightTask;
+
+  /* shortcut to toggle the lft map sidebar. */
+  QShortcut* scToggleMapSidebar;
 
   /* shortcut for exit application */
   QShortcut* scExit;

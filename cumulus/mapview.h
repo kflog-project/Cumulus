@@ -121,6 +121,11 @@ class MapView : public QWidget
         return _vario;
       };
 
+    QWidget* getSidebarWidget()
+    {
+      return _sidebarWidget;
+    }
+
 #ifdef QSCROLLER1
     /**
      * Reset the QScroller
@@ -316,8 +321,8 @@ class MapView : public QWidget
 
   private:
 
-    /** Widget for info boxes */
-    QWidget* _sideWidget;
+    /** Widget for info boxes at the left side of the map.*/
+    QWidget* _sidebarWidget;
     /** reference to the heading label */
     MapInfoBox* _heading;
     /** reference to the bearing label */
