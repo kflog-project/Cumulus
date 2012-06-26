@@ -11,7 +11,7 @@
 ################################################################################
 
 # current Qt version
-QT_VERSION=4.8.0
+QT_VERSION=4.8.1
 
 # directory of Qt translations
 QT_TL_DIR=/opt/qt$(QT_VERSION)/translations
