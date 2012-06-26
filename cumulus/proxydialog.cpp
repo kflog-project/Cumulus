@@ -35,6 +35,9 @@ ProxyDialog::ProxyDialog( QWidget *parent ) :
 
   hostEdit = new QLineEdit;
   portEdit = new QLineEdit;
+  QIntValidator* iv = new QIntValidator(this);
+  iv->setRange(0, 65535);
+  portEdit->setValidator( iv );
 
   QFormLayout *formLayout = new QFormLayout;
   formLayout->addRow( new QLabel(tr("Host:")), hostEdit );
