@@ -24,6 +24,8 @@ Cumulus changelog
                     on GPS setting page. If an external GPS device delivers
                     altitude pressure data, e.g. a Flarm, these data can be
                     used now.
+                   -Android menu structure reworked. Hide/show of left map
+                    info boxes added.
                   
 [-] 2012-06-25 AP: Wind calculation did not work under Android, if no NMEA
                    raw data were available.
