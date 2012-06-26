@@ -15,6 +15,16 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-06-26 AP: Android Modification:
+                   -Tabulator page button enlarged in its width. Makes operation
+                    easier with it.
+                   -Deselect button moved from the left to the right side
+                    in preflight gilder page.
+                   -Combo selection box altitude reference made available
+                    on GPS setting page. If an external GPS device delivers
+                    altitude pressure data, e.g. a Flarm, these data can be
+                    used now.
+                  
 [-] 2012-06-25 AP: Wind calculation did not work under Android, if no NMEA
                    raw data were available.
                    
