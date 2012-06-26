@@ -314,10 +314,10 @@ void SettingsPagePersonal::slot_editProxy()
 
 #ifdef ANDROID
 
-  dialog.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - dialog.width()/2,
-                                   height()/2 - dialog.height()/2 ));
-  dialog.move( pos );
+  dialog->show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - dialog->width()/2,
+                                   height()/2 - dialog->height()/2 ));
+  //dialog->move( pos );
 
 #endif
 

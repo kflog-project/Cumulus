@@ -32,9 +32,7 @@
 #include "varspinbox.h"
 
 #ifdef INTERNET
-#ifndef ANDROID
 #include "airspacedownloaddialog.h"
-#endif
 #endif
 
 extern MapContents *_globalMapContents;
