@@ -56,14 +56,14 @@ bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult 
  * Called from the Java code on every location update by LocationListener ll
  */
 static void nativeGpsFix( JNIEnv * /*jniEnvironment*/,
-                          jobject /*myproxyobject*/,
-                          jdouble latitude,
-                          jdouble longitude,
-                          jdouble altitude,
-                          jfloat speed,
-                          jfloat heading,
-                          jfloat accuracy,
-                          jlong time )
+                             jobject /*myproxyobject*/,
+                             jdouble latitude,
+                             jdouble longitude,
+                             jdouble altitude,
+                             jfloat speed,
+                             jfloat heading,
+                             jfloat accuracy,
+                             jlong time )
 {
   // qDebug("*** nativeGpsFix: lat %f, lon %f", lati, longi);
   GpsFixEvent *ge = new GpsFixEvent( latitude,
@@ -137,28 +137,33 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
 
   switch( code )
     {
-  case 25:
-    qtCode = Qt::Key_F11;
-    break;
+      case 25:
+        qtCode = Qt::Key_F11;
+        break;
 
-  case 26:
-    qtCode = Qt::Key_F12;
-    break;
+      case 26:
+        qtCode = Qt::Key_F12;
+        break;
 
-  case 27:
-    qtCode = Qt::Key_F13;
-    break;
+      case 27:
+        qtCode = Qt::Key_F13;
+        break;
 
-  case 28:
-    // The close key at the Android device is pressed. It is forwarded as
-    // close key to close the main window.
-    qtCode = Qt::Key_Close;
-    qDebug() << "JNI nativeKeypress: Close is sent";
-    break;
+      case 28:
+        // The close key at the Android device is pressed. It is forwarded as
+        // close key to close the main window.
+        qtCode = Qt::Key_Close;
+        qDebug() << "JNI nativeKeypress: Close is sent";
+        break;
 
-  default:
-    qWarning("JNI nativeKeypress: code %d is unknown!", code);
-    return;
+      case 29:
+        // toggle visibility of map info boxes
+        qtCode = Qt::Key_D;
+        break;
+
+      default:
+        qWarning("JNI nativeKeypress: code %d is unknown!", code);
+        return;
     }
 
   // Only the main window shall receive key events. Especially the close key has
@@ -213,20 +218,6 @@ static bool isRootWindow()
   return MainWindow::isRootWindow();
 }
 
-static void toggleMapInfoBoxes()
-{
-  QObject *receiver = MainWindow::mainWindow();
-
-  QKeyEvent *kpe = new QKeyEvent( QEvent::KeyPress, Qt::Key_D, Qt::NoModifier );
-  QCoreApplication::postEvent( receiver, kpe, Qt::NormalEventPriority );
-
-  // Make a short break to simulate a key press
-  usleep( 100 * 1000 );
-
-  QKeyEvent *kre = new QKeyEvent( QEvent::KeyRelease, Qt::Key_D, Qt::NoModifier );
-  QCoreApplication::postEvent( receiver, kre, Qt::NormalEventPriority );
-}
-
 static void keyboardAction(JNIEnv * /*jniEnvironment*/, jobject /*myproxyobject*/, jint action)
 {
   KeyboardActionEvent* ke = new KeyboardActionEvent(action);
@@ -244,8 +235,7 @@ static JNINativeMethod methods[] = {
 	{"nativeNmeaString","(Ljava/lang/String;)V", (void *)nativeNmeaString},
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
 	{"isRootWindow", "()Z", (bool *)isRootWindow},
-	{"keyboardAction", "(I)V", (void *)keyboardAction},
-        {"toggleMapInfoBoxes", "()V", (void *)toggleMapInfoBoxes}
+	{"keyboardAction", "(I)V", (void *)keyboardAction}
 };
 
 /**

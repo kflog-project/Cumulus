@@ -36,6 +36,9 @@ import java.util.zip.ZipInputStream;
 //import android.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -53,6 +56,7 @@ import android.location.LocationProvider;
 import android.media.AsyncPlayer;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -143,6 +147,8 @@ public class CumulusActivity extends QtActivity
   static private String          addDataPath      = "";
   static private Object          m_objectRef      = null;
   static private Object          m_ActivityMutex  = new Object();
+  
+  private NotificationManager notificationManager  = null;
 
   // Used by the Bluetooth Service Handling
   private Set<BluetoothDevice>   m_pairedBtDevices = null;
@@ -238,6 +244,15 @@ public class CumulusActivity extends QtActivity
   public void onCreate( Bundle savedInstanceState )
   {
     Log.d(TAG, "onCreate Entry" );
+    Log.d(TAG, "CPU_ABI=" + Build.CPU_ABI);
+    Log.d(TAG, "BRAND=" + Build.BRAND);
+    Log.d(TAG, "PRODUCT=" + Build.PRODUCT);
+    Log.d(TAG, "MANUFACTURER=" + Build.MANUFACTURER);
+    Log.d(TAG, "HARDWARE="+ Build.HARDWARE);
+    Log.d(TAG, "MODEL=" + Build.MODEL);
+    Log.d(TAG, "DEVICE=" + Build.DEVICE);
+    Log.d(TAG, "BOARD=" + Build.BOARD);
+    Log.d(TAG, "FINGERPRINT=" + Build.FINGERPRINT);
 
     synchronized (m_ActivityMutex)
       {
@@ -494,7 +509,22 @@ public class CumulusActivity extends QtActivity
         lm.addNmeaListener(nl);
         lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 1000, 0, ll );
       }
+    
+    /* Add an icon to the notification area while Cumulus runs, to
+       remind the user that we're sucking his battery empty. */
+    notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    Notification notification = new Notification( R.drawable.icon, null,
+                                                  System.currentTimeMillis() );
+    Context context = getApplicationContext();
+    CharSequence contentTitle = "Cumulus";
+    CharSequence contentText = getString(R.string.running);
+    Intent notificationIntent = new Intent(this, CumulusActivity.class);
+    PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
+    notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+    notification.flags |= Notification.FLAG_ONGOING_EVENT;
+    notificationManager.notify(1, notification);
+    
     Log.d(TAG, "onCreate exit" );
   }
 
@@ -563,6 +593,11 @@ public class CumulusActivity extends QtActivity
           // terminate all BT threads
           m_btService.stop();
         }
+      
+      if( notificationManager != null )
+      	{
+      		notificationManager.cancel(1);
+      	}
 
       // call super class
       super.onDestroy();

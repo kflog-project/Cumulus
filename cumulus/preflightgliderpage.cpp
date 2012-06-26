@@ -86,7 +86,7 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   //---------------------------------------------------------------------
   QPushButton* deselect = new QPushButton( tr("Deselect"), this );
   deselect->setToolTip( tr("Clear glider selection") );
-  topLayout->addWidget( deselect, row, 0 );
+  topLayout->addWidget( deselect, row, 3 );
 
   //---------------------------------------------------------------------
   list->fillList();

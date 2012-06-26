@@ -83,6 +83,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   drawOptions->setHorizontalHeaderItem( 5, item );
 
   topLayout->addWidget(drawOptions, row, 0, 1, 3);
+  topLayout->setRowStretch( row, 5 );
   row++;
 
   QHBoxLayout *hbox = new QHBoxLayout;
@@ -90,7 +91,8 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   enableBorderDrawing = new QCheckBox(tr("Ignore AS"), this);
   enableBorderDrawing->setChecked(false);
   hbox->addWidget( enableBorderDrawing );
-  connect( enableBorderDrawing, SIGNAL(toggled(bool)), SLOT(slot_enabledToggled(bool)));
+  connect( enableBorderDrawing, SIGNAL(toggled(bool)),
+           SLOT(slot_enabledToggled(bool)));
 
   spinBorderDrawing = new QSpinBox;
   spinBorderDrawing->setPrefix(">FL ");
@@ -107,6 +109,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   topLayout->addLayout( hbox, row, 0, 1, 3 );
   row++;
 
+#if 0
   hbox = new QHBoxLayout;
   hbox->addWidget( new QLabel(tr("Line Width:"), this ));
 
@@ -120,8 +123,9 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   topLayout->addLayout( hbox, row, 0, 1, 2 );
   row++;
+#endif
 
-  topLayout->setRowMinimumHeight( row++, 20 );
+  topLayout->setRowMinimumHeight( row++, 10 );
 
   // All buttons are put into a hbox.
   hbox = new QHBoxLayout;
@@ -433,14 +437,16 @@ void SettingsPageAirspace::slot_load()
   enableBorderDrawing->setChecked(enabled);
   slot_enabledToggled(enabled);
 
+#if 0
   spinBorderDrawing->setValue( conf->getAirspaceDrawingBorder() );
 
   // save spinbox value for later change check
   spinBorderValue = spinBorderDrawing->value();
+#endif
 
   // save spinbox value for later change check
-  spinAsLineWidthValue = conf->getAirspaceLineWidth();
-  spinAsLineWidth->setValue( spinAsLineWidthValue );
+  // spinAsLineWidthValue = conf->getAirspaceLineWidth();
+  // spinAsLineWidth->setValue( spinAsLineWidthValue );
 
   drawAirspaceA->setCheckState (conf->getItemDrawingEnabled(BaseMapElement::AirA) ? Qt::Checked : Qt::Unchecked );
   drawAirspaceB->setCheckState (conf->getItemDrawingEnabled(BaseMapElement::AirB) ? Qt::Checked : Qt::Unchecked );
@@ -501,7 +507,7 @@ void SettingsPageAirspace::slot_save()
   conf->setAirspaceDrawingBorder(spinBorderDrawing->value());
   conf->setAirspaceDrawBorderEnabled(enableBorderDrawing->checkState() == Qt::Checked ? true : false);
 
-  conf->setAirspaceLineWidth( spinAsLineWidth->value() );
+  // conf->setAirspaceLineWidth( spinAsLineWidth->value() );
 
   conf->setItemDrawingEnabled(BaseMapElement::AirA,drawAirspaceA->checkState() == Qt::Checked ? true : false);
   conf->setItemDrawingEnabled(BaseMapElement::AirB,drawAirspaceB->checkState() == Qt::Checked ? true : false);
@@ -748,7 +754,7 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   bool changed=false;
 
   changed |= spinBorderValue != spinBorderDrawing->value();
-  changed |= spinAsLineWidthValue != spinAsLineWidth->value();
+  // changed |= spinAsLineWidthValue != spinAsLineWidth->value();
 
   changed |= conf->getForceAirspaceDrawingEnabled() != enableBorderDrawing->isChecked();
   changed |= conf->getItemDrawingEnabled(BaseMapElement::AirA) != (drawAirspaceA->checkState() == Qt::Checked ? true : false);

@@ -29,8 +29,9 @@
 #define CB_SIZE 20 // checkbox size
 #define RB_SIZE 20 // radio button size
 #define BM_SIZE 4  // margin around button label, default 0
-#define TAB_HEIGHT 30 // extra vertical px for tabs
-#define TAB_SB_WIDTH 40 // tab horiz. scroll button width
+#define TAB_HEIGHT_H 10 // extra horizontal px for tab buttons
+#define TAB_HEIGHT_V 25 // extra vertical px for tab buttons
+#define TAB_SB_WIDTH 55 // tab horiz. scroll button width
 
 AndroidProxyStyle::AndroidProxyStyle( QStyle* style ) : QProxyStyle( style )
 {
@@ -62,10 +63,14 @@ int AndroidProxyStyle::pixelMetric( PixelMetric metric,
       // increase height of radio button
       return RB_SIZE;
     }
-  else if( metric == PM_TabBarTabVSpace)
+  else if( metric == PM_TabBarTabVSpace )
     {
-      return TAB_HEIGHT;
+      return TAB_HEIGHT_V;
     }
+//  else if( metric == PM_TabBarTabHSpace )
+//    {
+//      return TAB_HEIGHT_H;
+//    }
   else if( metric == PM_TabBarScrollButtonWidth )
     {
       // increase width of tab bar buttons

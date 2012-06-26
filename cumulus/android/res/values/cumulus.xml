@@ -25,6 +25,7 @@
     <string name="noDataFolder">Cannnot create data folder for Cumulus on the SD card!</string> 
     <string name="quit">Quit</string>
     <string name="reallyClose">Do you really want to close Cumulus?</string>
+    <string name="running">Cumulus is running</string>
     <string name="sdcardNeeded">Cumulus needs a sdcard for data storing!\nPlease insert a sdcard and mount it.</string>
     <string name="setup">Setup</string>
     <string name="setupMenu">Menu Setup</string>

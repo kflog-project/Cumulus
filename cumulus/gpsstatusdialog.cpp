@@ -64,10 +64,10 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
 
   QFont f = font();
 
-#ifndef MAEMO
-  f.setPixelSize(14);
-#else
+#if defined MAEMO || defined ANDROID
   f.setPixelSize(16);
+#else
+  f.setPixelSize(14);
 #endif
 
   nmeaBox->setFont(f);
