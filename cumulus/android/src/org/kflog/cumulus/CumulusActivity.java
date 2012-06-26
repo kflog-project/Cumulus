@@ -91,13 +91,12 @@ public class CumulusActivity extends QtActivity
   static final int               DIALOG_MENU_ID        = 1;
   static final int               DIALOG_NO_SDCARD      = 2;
   static final int               DIALOG_ZIP_ERR        = 3;
-  static final int               DIALOG_GPS_ID         = 4;
-  static final int               DIALOG_BT_ID          = 5;
-  static final int               DIALOG_NO_DATA_FOLDER = 6;
-
-  static final int               MENU_SETUP       = 0;
-  static final int               MENU_PREFLIGHT   = 1;
-  static final int               MENU_QUIT        = 2;
+  static final int               DIALOG_GPS_MENU_ID    = 4;
+  static final int               DIALOG_GPS_ID         = 5;
+  static final int               DIALOG_BT_ID          = 6;
+  static final int               DIALOG_NO_DATA_FOLDER = 7;
+  static final int               DIALOG_TOGGELS_ID     = 8;
+  static final int               DIALOG_SETUP_ID       = 9;
 
   static final int               REQUEST_ENABLE_BT = 99;
 
@@ -134,10 +133,11 @@ public class CumulusActivity extends QtActivity
   private LocationListener       ll               = null;
   private GpsStatus.Listener     gl               = null;
   private GpsStatus.NmeaListener nl               = null;
-  private boolean                gpsEnabled       = false;
-  private boolean                nmeaIsReceived   = false;
-  private boolean                locationUpdated  = false;
-  private int                    lastGpsStatus    = -1;
+  private boolean               gpsEnabled       = false;
+  private boolean               nmeaIsReceived   = false;
+  private boolean               locationUpdated  = false;
+  private int                   lastGpsStatus     = -1;
+  private boolean               infoBoxesVisible = true;
 
   static private String          appDataPath      = "";
   static private String          addDataPath      = "";
@@ -623,7 +623,6 @@ public class CumulusActivity extends QtActivity
   public void onUserInteraction()
   {
     // Log.v(TAG, "onUserInteraction()");
-
     switchOffScreenDimming();
     super.onUserInteraction();
   }
@@ -653,44 +652,125 @@ public class CumulusActivity extends QtActivity
         alert = builder.create();
         break;
 
-		case DIALOG_MENU_ID:
-			CharSequence[] m_items = { getString(R.string.setupGeneral),
-																 getString(R.string.setupPreFlight),
-																 getString(R.string.gpsOn),
-																 getString(R.string.gpsStatus),
-																 getString(R.string.quit) };
+			case DIALOG_MENU_ID:
+				CharSequence[] m_items = { getString(R.string.setup),
+																	 getString(R.string.gps),
+																	 getString(R.string.toggles),
+																	 getString(R.string.quit) };
 
-			if (gpsEnabled)
-			{
-				m_items[2] = getString(R.string.gpsOff);
-			}
-
-			builder.setTitle(getString(R.string.mainMenu));
-			builder.setItems(m_items, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int item) {
-
-					switch(item) {
-					case 0:
-						nativeKeypress((char)25);
-						break;
-					case 1:
-						nativeKeypress((char)26);
-						break;
-					case 2:
-						toggleGps();
-						break;
-					case 3:
-						nativeKeypress((char)27);
-						break;
-					case 4:
-						// Current window will get a quit
-						nativeKeypress((char)28);
-						break;
+				builder.setTitle(getString(R.string.mainMenu));
+				builder.setItems( m_items, new DialogInterface.OnClickListener()
+					{
+    					public void onClick(DialogInterface dialog, int item) 
+    						{
+        						switch(item)
+        						{
+          						case 0:
+          							showDialog( DIALOG_SETUP_ID );
+          							break;
+          						case 1:
+          							showDialog( DIALOG_GPS_MENU_ID );
+          							break;
+          						case 2:
+          							showDialog( DIALOG_TOGGELS_ID );
+          							break;
+          						case 3:
+          							// Qt main window will get a quit
+          							nativeKeypress((char)28);
+          							break;
+        						}
+        					}
+        		} );
+				
+				alert = builder.create();
+				break;
+       
+			case DIALOG_SETUP_ID:
+				CharSequence[] s_items = { getString(R.string.setupGeneral),
+																	 getString(R.string.setupPreFlight) };
+        
+				builder.setTitle(getString(R.string.setupMenu));
+				builder.setItems( s_items, new DialogInterface.OnClickListener()
+					{
+    					public void onClick(DialogInterface dialog, int item) 
+    						{
+        						switch(item)
+        						{
+          						case 0:
+          							// open setup general dialog
+          							nativeKeypress((char)25);
+          							break;
+          						case 1:
+          							// open setup preflight dialog
+          							nativeKeypress((char)26);
+          							break;
+         						}
+        					}
+        		} );
+				
+				alert = builder.create();
+				break;
+				
+			case DIALOG_GPS_MENU_ID:
+				CharSequence[] g_items = { getString(R.string.gpsOn),
+						                       getString(R.string.gpsStatus) };
+        
+				if( gpsEnabled )
+					{
+						g_items[0] = getString(R.string.gpsOff);
 					}
-				}
-			});
-			alert = builder.create();
-			break;
+
+				builder.setTitle(getString(R.string.gpsMenu));
+				builder.setItems( g_items, new DialogInterface.OnClickListener()
+					{
+    					public void onClick(DialogInterface dialog, int item) 
+    						{
+        						switch(item)
+        						{
+          						case 0:
+          							toggleGps();
+          							removeDialog( DIALOG_GPS_MENU_ID );
+          							break;
+          						case 1:
+          							nativeKeypress((char)27);
+          							break;
+         						}
+        					}
+        		} );
+				
+				alert = builder.create();
+				break;
+
+			case DIALOG_TOGGELS_ID:
+				CharSequence[] t_items = { "" };
+			
+				if( infoBoxesVisible )
+					{
+						t_items[0] = getString(R.string.mapInfoBarHide);
+					}
+				else
+					{
+						t_items[0] = getString(R.string.mapInfoBarShow);
+					}
+        
+				builder.setTitle(getString(R.string.togglesMenu));
+				builder.setItems( t_items, new DialogInterface.OnClickListener()
+					{
+    					public void onClick(DialogInterface dialog, int item) 
+    						{
+        						switch(item)
+        						{
+          						case 0:
+          							nativeKeypress((char) 29);
+          							infoBoxesVisible = ! infoBoxesVisible;
+          							removeDialog( DIALOG_TOGGELS_ID );
+          							break;
+         						}
+        					}
+        		} );
+				
+				alert = builder.create();
+				break;
 
 		case DIALOG_NO_SDCARD:
 			builder.setMessage( getString(R.string.sdcardNeeded) )
