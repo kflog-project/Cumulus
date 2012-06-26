@@ -26,6 +26,11 @@ Cumulus changelog
                     used now.
                    -Android menu structure reworked. Hide/show of left map
                     info boxes added.
+                   -Different labels and widgets better adapted to Android.
+                   -Airspace download option removed.
+                   
+[-] 2012-06-26 AP: Proxy settings on different settings pages moved to personal
+                   page. Only on that page an Internet proxy can be defined now.                   
                   
 [-] 2012-06-25 AP: Wind calculation did not work under Android, if no NMEA
                    raw data were available.

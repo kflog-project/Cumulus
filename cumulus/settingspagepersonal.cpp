@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,6 +21,10 @@
 #include "generalconfig.h"
 #include "settingspagepersonal.h"
 #include "varspinbox.h"
+
+#ifdef INTERNET
+#include "proxydialog.h"
+#endif
 
 SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   QWidget(parent), loadConfig(true)
@@ -47,8 +51,6 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   langBox = new QComboBox(this);
   topLayout->addWidget(langBox, row, 1);
   row++;
-
-  topLayout->setRowMinimumHeight(row++, 10);
 
   lbl = new QLabel(tr("Home site country:"), this);
   topLayout->addWidget(lbl, row, 0);
@@ -96,6 +98,19 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   userDataDir = new QLineEdit(this);
   topLayout->addWidget(userDataDir, row, 1, 1, 2);
   row++;
+
+#ifdef INTERNET
+
+  QPushButton* editProxy = new QPushButton( tr("Set Proxy") );
+  editProxy->setToolTip(tr("Enter Proxy data if needed"));
+  topLayout->addWidget(editProxy, row, 0);
+
+  connect( editProxy, SIGNAL( clicked()), this, SLOT(slot_editProxy()) );
+
+  proxyDisplay = new QLabel;
+  topLayout->addWidget(proxyDisplay, row, 1, 1, 2);
+
+#endif
 
   topLayout->setRowStretch(row, 10);
   topLayout->setColumnStretch( 2, 10 );
@@ -148,6 +163,20 @@ void SettingsPagePersonal::slot_load()
     {
       langBox->setCurrentIndex(idx);
     }
+
+#ifdef INTERNET
+
+  if( conf->getProxy().isEmpty() )
+    {
+      proxyDisplay->setText( tr("No proxy defined") );
+    }
+  else
+    {
+      proxyDisplay->setText( conf->getProxy() );
+    }
+
+#endif
+
 }
 
 /** called to initiate saving to the configuration file */
@@ -255,10 +284,11 @@ void SettingsPagePersonal::slot_query_close( bool& warn, QStringList& warnings )
 /** Called to open the directory selection dialog */
 void SettingsPagePersonal::slot_openDirectoryDialog()
 {
-  QString dataDir = QFileDialog::getExistingDirectory( this,
-                                                      tr("Please select your data directory"),
-                                                      userDataDir->text(),
-                                                      QFileDialog::ShowDirsOnly );
+  QString dataDir =
+      QFileDialog::getExistingDirectory( this,
+                                            tr("Please select your data directory"),
+                                            userDataDir->text(),
+                                            QFileDialog::ShowDirsOnly );
   if( dataDir.isEmpty() )
     {
       return; // nothing was selected by the user
@@ -272,3 +302,37 @@ void SettingsPagePersonal::slot_textEditedCountry( const QString& text )
   // Change edited text to upper cases
   edtHomeCountry->setText( text.toUpper() );
 }
+
+#ifdef INTERNET
+
+/**
+ * Opens proxy dialog on user request.
+ */
+void SettingsPagePersonal::slot_editProxy()
+{
+  ProxyDialog *dialog = new ProxyDialog( this );
+
+#ifdef ANDROID
+
+  dialog.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - dialog.width()/2,
+                                   height()/2 - dialog.height()/2 ));
+  dialog.move( pos );
+
+#endif
+
+  if( dialog->exec() == QDialog::Accepted )
+    {
+      // update proxy display
+      if( GeneralConfig::instance()->getProxy().isEmpty() )
+        {
+          proxyDisplay->setText( tr("No proxy defined") );
+        }
+      else
+        {
+          proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
+        }
+    }
+}
+
+#endif

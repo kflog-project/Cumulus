@@ -332,8 +332,8 @@ void GeneralConfig::load()
 
   beginGroup("List Display");
   _listDisplayPageSize = value("List Page Entries", 30).toInt();
-  _listDisplayAFMargin = value("Airfield List Row Increase", 0).toInt();
-  _listDisplayRPMargin = value("Emergency List Row Increase", 20).toInt();
+  _listDisplayAFMargin = value("Airfield List Row Increase", 10).toInt();
+  _listDisplayRPMargin = value("Emergency List Row Increase", 10).toInt();
   endGroup();
 
   beginGroup("Scale");

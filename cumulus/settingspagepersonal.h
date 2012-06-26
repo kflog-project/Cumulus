@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,7 @@
  *
  * Configuration settings for personal settings.
  *
- * \date 2002-2011
+ * \date 2002-2012
  *
  * \version $Id$
  */
@@ -34,6 +34,7 @@
 #define SETTINGS_PAGE_PERSONAL_H
 
 #include <QWidget>
+#include <QLabel>
 #include <QLineEdit>
 #include <QComboBox>
 #include <QStringList>
@@ -67,7 +68,7 @@ public:
 
 public slots:
 
-  /** called to initiate saving to the configuration file */
+  /** Called to initiate saving to the configuration file */
   void slot_save();
 
   /** Called to initiate loading of the configuration file. */
@@ -78,11 +79,18 @@ public slots:
 
 private slots:
 
-  /** called to open the directory selection dialog */
+  /** Called to open the directory selection dialog */
   void slot_openDirectoryDialog();
 
-  /** called, if something has entered in edtHomeCountry. */
+  /** Called, if something has entered in edtHomeCountry. */
   void slot_textEditedCountry( const QString& input );
+
+#ifdef INTERNET
+
+  /** Called, if proxy button was pressed. */
+  void slot_editProxy();
+
+#endif
 
 private:
 
@@ -95,6 +103,10 @@ private:
   LongEdit  *edtHomeLong;
   QSpinBox  *spinHomeElevation;
   QLineEdit *userDataDir;
+
+#ifdef INTERNET
+  QLabel* proxyDisplay;
+#endif
 
   int spinHomeElevationValue;
 

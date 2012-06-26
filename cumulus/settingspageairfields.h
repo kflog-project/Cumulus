@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2010 Axel Pauli
+**   Copyright (c):  2008-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,7 @@
  *
  * \brief Configuration settings for airfield loading from Welt2000.
  *
- * \date 2008-2010
+ * \date 2008-2012
  *
  */
 
@@ -103,11 +103,6 @@ class SettingsPageAirfields : public QWidget
    */
   void slot_installWelt2000();
 
-  /**
-   * Opens proxy dialog on user request.
-   */
-  void slot_editProxy();
-
   signals:
 
   /**
@@ -144,12 +139,6 @@ class SettingsPageAirfields : public QWidget
   Distance::distanceUnit distUnit;
 
 #ifdef INTERNET
-
-  /** Dialog editor for proxy host and port input. */
-  QPushButton *editProxy;
-
-  /** Label to show the current proxy settings. */
-  QLabel *proxyDisplay;
 
   /** Download and install Welt2000 file. */
   QPushButton *installWelt2000;

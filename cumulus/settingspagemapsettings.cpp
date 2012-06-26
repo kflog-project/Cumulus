@@ -27,7 +27,6 @@
 #ifdef INTERNET
 
 #include "httpclient.h"
-#include "proxydialog.h"
 
 #endif
 
@@ -93,17 +92,7 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
 #ifdef INTERNET
 
-  topLayout->setRowMinimumHeight(row++,15);
-
-  editProxy = new QPushButton( tr("Set Proxy"), this );
-  editProxy->setToolTip(tr("Enter Proxy data if needed"));
-
-  connect( editProxy, SIGNAL( clicked()), this, SLOT(slot_editProxy()) );
-
-  topLayout->addWidget(editProxy, row, 0);
-  proxyDisplay = new QLabel(this);
-  topLayout->addWidget(proxyDisplay, row, 1, 1, 2);
-  row++;
+  topLayout->setRowMinimumHeight(row++,10);
 
   QLabel *label = new QLabel(tr("Center Latitude:"), this);
   topLayout->addWidget(label, row, 0);
@@ -141,19 +130,8 @@ SettingsPageMapSettings::~SettingsPageMapSettings()
 {
 }
 
-/**
- * Set proxy, if widget is shown. It could be changed in the meantime
- * in another tabulator.
- */
 void SettingsPageMapSettings::showEvent(QShowEvent *)
 {
-
-#ifdef INTERNET
-
-  proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
-
-#endif
-
 }
 
 void SettingsPageMapSettings::slot_load()
@@ -168,7 +146,6 @@ void SettingsPageMapSettings::slot_load()
 
 #ifdef INTERNET
 
-  proxyDisplay->setText( conf->getProxy() );
   edtCenterLat->setKFLogDegree(conf->getHomeLat());
   edtCenterLon->setKFLogDegree(conf->getHomeLon());
 
@@ -385,24 +362,6 @@ void SettingsPageMapSettings::slot_query_close(bool& warn, QStringList& warnings
       warnings.append(tr("The Map Settings"));
     }
 }
-
-#ifdef INTERNET
-
-/**
- * Opens proxy dialog on user request.
- */
-void SettingsPageMapSettings::slot_editProxy()
-{
-  ProxyDialog *dialog = new ProxyDialog( this );
-
-  if( dialog->exec() == QDialog::Accepted )
-    {
-      // update proxy display
-      proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
-    }
-}
-
-#endif
 
 /**
  * Checks, if the configuration of the projection has been changed

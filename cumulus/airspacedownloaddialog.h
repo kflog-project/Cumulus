@@ -34,7 +34,6 @@
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPushButton>
 #include <QDialogButtonBox>
 
 class AirspaceDownloadDialog : public QDialog
@@ -59,22 +58,11 @@ class AirspaceDownloadDialog : public QDialog
 
  private slots:
 
-  /**
-   * Opens proxy dialog on user request.
-   */
- void slot_editProxy();
-
   signals:
 
   void downloadAirspace( QString &url );
 
  private:
-
-  /** Dialog editor for proxy host and port input. */
-  QPushButton *editProxy;
-
-  /** Label to show the current proxy settings. */
-  QLabel *proxyDisplay;
 
   /** Editor for airspace url input */
   QLineEdit *editAirspaceUrl;

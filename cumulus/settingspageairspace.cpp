@@ -32,7 +32,9 @@
 #include "varspinbox.h"
 
 #ifdef INTERNET
+#ifndef ANDROID
 #include "airspacedownloaddialog.h"
+#endif
 #endif
 
 extern MapContents *_globalMapContents;
@@ -131,6 +133,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   hbox = new QHBoxLayout;
 
 #ifdef INTERNET
+#ifndef ANDROID
 
   cmdInstall = new QPushButton(tr("Download"), this);
   hbox->addWidget(cmdInstall);
@@ -138,6 +141,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   hbox->addSpacing( 10 );
 
+#endif
 #endif
 
   cmdLoading = new QPushButton(tr("Load"), this);
@@ -753,7 +757,7 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   GeneralConfig * conf = GeneralConfig::instance();
   bool changed=false;
 
-  changed |= spinBorderValue != spinBorderDrawing->value();
+  // changed |= spinBorderValue != spinBorderDrawing->value();
   // changed |= spinAsLineWidthValue != spinAsLineWidth->value();
 
   changed |= conf->getForceAirspaceDrawingEnabled() != enableBorderDrawing->isChecked();

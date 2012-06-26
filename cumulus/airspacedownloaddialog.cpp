@@ -40,16 +40,6 @@ AirspaceDownloadDialog::AirspaceDownloadDialog( QWidget *parent ) :
   QGridLayout* gridLayout = new QGridLayout;
   int row=0;
 
-  editProxy = new QPushButton( tr("Set Proxy"), this );
-  editProxy->setToolTip(tr("Enter Proxy data if needed"));
-
-  connect( editProxy, SIGNAL( clicked()), this, SLOT(slot_editProxy()) );
-
-  gridLayout->addWidget(editProxy, row, 0);
-  proxyDisplay = new QLabel(this);
-  gridLayout->addWidget(proxyDisplay, row, 1);
-  row++;
-
   QLabel *lbl = new QLabel( tr("Airspace Url:"), this );
   gridLayout->addWidget(lbl, row, 0 );
 
@@ -77,13 +67,6 @@ AirspaceDownloadDialog::AirspaceDownloadDialog( QWidget *parent ) :
 
   connect( buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
   connect( buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
-
-  QString proxyString = GeneralConfig::instance()->getProxy();
-
-  if( ! proxyString.isEmpty() )
-    {
-      proxyDisplay->setText( proxyString );
-    }
 
   // Set minimum size of input line
   QFontMetrics fm( font() );
@@ -151,18 +134,4 @@ void AirspaceDownloadDialog::reject()
 
   // close and destroy dialog
   QDialog::done(QDialog::Rejected);
-}
-
-/**
- * Opens proxy dialog on user request.
- */
-void AirspaceDownloadDialog::slot_editProxy()
-{
-  ProxyDialog *dialog = new ProxyDialog( this );
-
-  if( dialog->exec() == QDialog::Accepted )
-    {
-      // update proxy display
-      proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
-    }
 }

@@ -32,7 +32,6 @@
 #include "varspinbox.h"
 
 #ifdef INTERNET
-#include "proxydialog.h"
 #include "httpclient.h"
 #endif
 
@@ -72,20 +71,10 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
 #ifdef INTERNET
 
-  weltLayout->setRowMinimumHeight(grow++, 15);
+  weltLayout->setRowMinimumHeight(grow++, 10);
 
-  editProxy = new QPushButton( tr("Set Proxy"), weltGroup );
-  editProxy->setToolTip(tr("Enter Proxy data if needed"));
-
-  connect( editProxy, SIGNAL( clicked()), this, SLOT(slot_editProxy()) );
-
-  weltLayout->addWidget(editProxy, grow, 0);
-  proxyDisplay = new QLabel(weltGroup);
-  weltLayout->addWidget(proxyDisplay, grow, 1, 1, 3);
-  grow++;
-
-  installWelt2000 = new QPushButton( tr("Install Airfields"), weltGroup );
-  installWelt2000->setToolTip(tr("Install Welt2000 airfields"));
+  installWelt2000 = new QPushButton( tr("Install"), weltGroup );
+  installWelt2000->setToolTip(tr("Install Welt2000 data"));
   weltLayout->addWidget(installWelt2000, grow, 0 );
 
   connect( installWelt2000, SIGNAL( clicked()), this, SLOT(slot_installWelt2000()) );
@@ -103,10 +92,11 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   grow = 0;
   QGroupBox* listGroup = new QGroupBox(tr("List Display"), this);
   topLayout->addWidget(listGroup);
+  topLayout->addStretch(10);
 
   QGridLayout* listLayout = new QGridLayout(listGroup);
 
-  lbl = new QLabel(tr( "Increase row height in AF/WP/OL Lists at:"), listGroup);
+  lbl = new QLabel(tr( "More space in AF/WP/OL lists:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
   afMargin = new QSpinBox;
   afMargin->setRange(0, 60);
@@ -116,7 +106,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   listLayout->addWidget(hspin, grow, 1);
 
   grow++;
-  lbl = new QLabel(tr( "Increase row height in Emergency List at:"), listGroup);
+  lbl = new QLabel(tr( "More space in Emergency list:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
   rpMargin = new QSpinBox;
   rpMargin->setRange(0, 60);
@@ -137,17 +127,8 @@ SettingsPageAirfields::~SettingsPageAirfields()
 {
 }
 
-/**
- * Set proxy, if widget is shown. It could be changed in the meantime
- * in another tabulator.
- */
 void SettingsPageAirfields::showEvent(QShowEvent *)
 {
-
-#ifdef INTERNET
-  proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
-#endif
-
 }
 
 /**
@@ -172,7 +153,6 @@ void SettingsPageAirfields::slot_load()
 
 #ifdef INTERNET
 
-  proxyDisplay->setText( conf->getProxy() );
   welt2000FileName->setText( conf->getWelt2000FileName() );
 
 #endif
@@ -320,20 +300,6 @@ void SettingsPageAirfields::slot_installWelt2000()
     }
 
   emit downloadWelt2000( wfn );
-}
-
-/**
- * Opens proxy dialog on user request.
- */
-void SettingsPageAirfields::slot_editProxy()
-{
-  ProxyDialog *dialog = new ProxyDialog( this );
-
-  if( dialog->exec() == QDialog::Accepted )
-    {
-      // update proxy display
-      proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
-    }
 }
 
 #endif

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel pauli
+**                   2008-2012 by Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * \brief Configuration settings for map projection.
  *
- * \date 2002-2010
+ * \date 2002-2012
  *
  */
 
@@ -112,11 +112,6 @@ class SettingsPageMapSettings : public QWidget
    */
   void slot_installMaps();
 
-  /**
-   * Opens proxy dialog on user request.
-   */
-  void slot_editProxy();
-
 #endif
 
  private:
@@ -139,12 +134,6 @@ class SettingsPageMapSettings : public QWidget
   QSpinBox    *installRadius;
   LatEdit     *edtCenterLat;
   LongEdit    *edtCenterLon;
-
-  /** Dialog editor for proxy host and port input. */
-  QPushButton *editProxy;
-
-  /** Label to show the current proxy settings. */
-  QLabel *proxyDisplay;
 
 #endif
 
