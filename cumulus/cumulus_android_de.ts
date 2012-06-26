@@ -2128,8 +2128,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="airspace.cpp" line="215"/>
         <source>Wave Window</source>
-        <translation>
-</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="airspace.cpp" line="217"/>
@@ -2801,7 +2800,7 @@ Alle Downloads verworfen!</translation>
         <location filename="settingspageairspace.cpp" line="75"/>
         <location filename="settingspageairspace.cpp" line="84"/>
         <source>Area</source>
-        <translation>Fläche</translation>
+        <translation>Raum</translation>
     </message>
     <message>
         <location filename="settingspageairspace.cpp" line="93"/>
