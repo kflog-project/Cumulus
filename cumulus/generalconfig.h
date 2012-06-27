@@ -2122,6 +2122,12 @@ class GeneralConfig : protected QSettings
       return _flarmAliasFileName;
     };
 
+  /** Gets the flight logbook file name. */
+  const QString &getFlightLogbookFileName() const
+    {
+      return _flightLogbookFileName;
+    };
+
  private:
 
   /** loads the terrain default colors */
@@ -2478,6 +2484,9 @@ class GeneralConfig : protected QSettings
 
   /** Flarm alias file name. */
   QString _flarmAliasFileName;
+
+  /** Flight logbook file name */
+  QString _flightLogbookFileName;
 
   // In the unit items is stored the label index of the related combo box.
   // The indexes are used in the unit setting tabulator.

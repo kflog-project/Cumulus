@@ -40,6 +40,9 @@
 // initialize static variables
 IgcLogger* IgcLogger::_theInstance = static_cast<IgcLogger *> (0);
 
+// initialize logbook file access mutex
+QMutex IgcLogger::mutex;
+
 IgcLogger::IgcLogger(QObject* parent) :
   QObject(parent),
   closeTimer(0),
@@ -72,6 +75,9 @@ IgcLogger::IgcLogger(QObject* parent) :
   closeTimer = new QTimer(this);
   closeTimer->setSingleShot( true );
   connect( closeTimer, SIGNAL(timeout()), this, SLOT(slotCloseLogFile()) );
+
+  connect( this, SIGNAL(takeoffTime(TimeQDateTime&)), SLOT(slotTakeoff(QDateTime&)) );
+  connect( this, SIGNAL(landingTime(TimeQDateTime&)), SLOT(slotLanded(QDateTime&)) );
 }
 
 IgcLogger::~IgcLogger()
@@ -828,4 +834,173 @@ void IgcLogger::slotCloseLogFile()
       emit landingTime( lt );
       Standby();
     }
+}
+
+void IgcLogger::slotTakeoff( QDateTime& dt )
+{
+  // Takeoff has taken place, store all relevant flight data.
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  _flightData.takeoff = dt.toUTC();
+  _flightData.landing = QDateTime();
+  _flightData.flightTime = QTime();
+  _flightData.pilot1 = conf->getSurname();
+  _flightData.pilot2.clear();
+  _flightData.gliderType.clear();
+  _flightData.gliderReg.clear();
+
+  if( calculator->glider() )
+    {
+      // access glider items only if glider is defined
+      _flightData.pilot2     = calculator->glider()->coPilot();
+      _flightData.gliderType = calculator->glider()->type();
+      _flightData.gliderReg  = calculator->glider()->registration();
+    }
+}
+
+void IgcLogger::slotLanded( QDateTime& dt )
+{
+  // Landing is reported by the logger.
+  if( _flightData.takeoff.isValid() == false )
+    {
+      // No flight data available, ignore call.
+      return;
+    }
+
+  _flightData.landing = dt.toUTC();
+  _flightData.flightTime.addSecs( _flightData.takeoff.secsTo( _flightData.landing ));
+
+  writeLogbookEntry();
+
+  // Reset takeoff entry.
+  _flightData.takeoff = QDateTime();
+}
+
+QString IgcLogger::createLogbookHeader()
+{
+  QString header;
+
+  // write a header into the file
+  QDateTime dt = QDateTime::currentDateTime();
+  QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
+
+  header = "# Cumulus Flight logbook file created at "
+         + dtStr
+         + " by Cumulus "
+         + QCoreApplication::applicationVersion() + "\n"
+         + "# date; takeoff; landing; duration; pilot; co-pilot; type; registration"
+         + "\n";
+
+  return header;
+}
+
+bool IgcLogger::writeLogbookEntry()
+{
+  GeneralConfig *conf = GeneralConfig::instance();
+  QFile f( conf->getUserDataDirectory() + "/" + conf->getFlightLogbookFileName() );
+
+  mutex.lock();
+
+  if( !f.open( QIODevice::Append ) )
+    {
+      // could not open file ...
+      qWarning() << "Cannot open file: " << f.fileName();
+      mutex.unlock();
+      return false;
+    }
+
+  QTextStream stream( &f );
+
+  if( f.size() == 0 )
+    {
+      // write a header into the file
+      stream << createLogbookHeader();
+    }
+
+  stream << _flightData.takeoff.date().toString(Qt::ISODate) << ";"
+         << _flightData.takeoff.time().toString("HH:mm:ss") << ";"
+         << _flightData.flightTime.toString("HH:mm:ss") << ";"
+         << _flightData.pilot1 << ";"
+         << _flightData.pilot2 << ";"
+         << _flightData.gliderType << ";"
+         << _flightData.gliderReg << ";"
+         << endl;
+
+  f.close();
+  mutex.unlock();
+  return true;
+}
+
+QStringList IgcLogger::getLogbook()
+{
+  QStringList list;
+
+  GeneralConfig *conf = GeneralConfig::instance();
+  QFile f( conf->getUserDataDirectory() + "/" + conf->getFlightLogbookFileName() );
+
+  mutex.lock();
+
+  if( f.open( QIODevice::ReadOnly ) == false )
+    {
+      // could not open file ...
+      qWarning() << "Cannot open file: " << f.fileName();
+      mutex.unlock();
+      return list;
+    }
+
+  if( f.size() == 0 )
+    {
+      qWarning() << f.fileName() << "is empty";
+      mutex.unlock();
+      return list;
+    }
+
+  QTextStream stream( &f );
+
+  while ( !stream.atEnd() )
+    {
+      QString line = stream.readLine();
+
+      if( line.startsWith("#") || line.trimmed().isEmpty() )
+        {
+          // ignore comment and empty lines
+          continue;
+        }
+
+      list << line;
+    }
+
+  f.close();
+  mutex.unlock();
+  return list;
+}
+
+bool IgcLogger::writeLogbook( QStringList& logbook )
+{
+  GeneralConfig *conf = GeneralConfig::instance();
+  QFile f( conf->getUserDataDirectory() + "/" + conf->getFlightLogbookFileName() );
+
+  mutex.lock();
+
+  if( !f.open( QIODevice::WriteOnly ) )
+    {
+      // could not open file ...
+      qWarning() << "Cannot open file: " << f.fileName();
+      mutex.unlock();
+      return false;
+    }
+
+  QTextStream stream( &f );
+
+  // write a header into the file
+  stream << createLogbookHeader();
+
+  for( int i = 0; i < logbook.size(); i++ )
+    {
+      stream << logbook.at(i) << endl;
+    }
+
+  f.close();
+  mutex.unlock();
+  return true;
 }

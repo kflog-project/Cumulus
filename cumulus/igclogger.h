@@ -61,11 +61,12 @@
 #include <QStringList>
 #include <QTextStream>
 #include <QTime>
-#include <QTimer>
 
 #include "altitude.h"
 #include "calculator.h"
 #include "limitedlist.h"
+
+class QMutex;
 
 class IgcLogger : public QObject
 {
@@ -84,6 +85,20 @@ public:
     * -standby: logging will be turned on when the flight status changes
     */
   enum LogMode{ off=0, standby=1, on=2 };
+
+  /**
+   * Used to store the basic data of a flight.
+   */
+  struct FlightData
+  {
+      QDateTime takeoff;
+      QDateTime landing;
+      QTime flightTime;
+      QString pilot1;
+      QString pilot2;
+      QString gliderType;
+      QString gliderReg;
+  };
 
 public:
 
@@ -131,6 +146,16 @@ public:
   {
     return startLogging;
   }
+
+  /**
+   * Returns the content of the flight logbook as string list.
+   */
+  QStringList getLogbook();
+
+  /**
+   * Writes a flight logbook.
+   */
+  bool writeLogbook( QStringList& logbook );
 
 public slots:
   /**
@@ -183,6 +208,16 @@ private slots:
    * This slot is called to close the logfile after a certain timeout.
    */
   void slotCloseLogFile();
+
+  /**
+   * This slot is called when a takeoff is recognized in auto logger mode.
+   */
+  void slotTakeoff( QDateTime& dt );
+
+  /**
+   * This slot is called when a landing is recognized in auto logger mode.
+   */
+  void slotLanded( QDateTime& dt );
 
 signals: // Signals
   /**
@@ -280,6 +315,16 @@ private:
   QString createFileName(const QString& path);
 
   /**
+   * Writes a new entry into the flight logbook.
+   */
+  bool writeLogbookEntry();
+
+  /**
+   * Creates a new header entry for the flight logbook.
+   */
+  QString createLogbookHeader();
+
+  /**
    * A pointer to the singleton existing instance.
    */
   static IgcLogger* _theInstance;
@@ -333,6 +378,12 @@ private:
 
   /** Holds the last known flight mode. */
   Calculator::FlightMode _flightMode;
+
+  /** Holds the basic data of a flight. */
+  FlightData _flightData;
+
+  /** Mutex used for logbook file load and save. */
+  static QMutex mutex;
 };
 
 #endif
