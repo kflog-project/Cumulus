@@ -42,6 +42,7 @@ usage:
 	@echo "  appData      - Creates a appData file under $(INSTALL_ROOT)"
 	@echo "  addData      - Creates a addData file under $(INSTALL_ROOT)"
 	@echo "  copyData     - Copies the zip files to cumulus/android/assets"
+	@echo "  addDataCopy  - Creates addData and copies it to cumulus/android/assets"
 
 all:	appData addData
 
@@ -89,6 +90,10 @@ addData:
 	@cd $(ADD_DATA_ROOT); zip -q -r -o $(ADD_DATA) *
 	@mv $(ADD_DATA_ROOT)/$(ADD_DATA) $(INSTALL_ROOT)
 	@echo "  $(ADD_DATA) created under $(INSTALL_ROOT)"
+
+addDataCopy: addData
+	@echo "===== Copy d$(ADD_DATA) to cumulus/android/assets ====="
+	@cp $(INSTALL_ROOT)/$(ADD_DATA) cumulus/android/assets
 
 copyData:	appData addData
 	@echo "===== Copy data files to cumulus/android/assets ====="
