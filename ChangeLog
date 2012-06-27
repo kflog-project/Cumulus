@@ -28,6 +28,9 @@ Cumulus changelog
                     info boxes added.
                    -Different labels and widgets better adapted to Android.
                    -Airspace download option removed.
+                   -Icon added to notification bar, when Cumulus is running to
+                    remind the user, if he leaves the program via the home
+                    button.
                    
 [-] 2012-06-26 AP: Proxy settings on different settings pages moved to personal
                    page. Only on that page an Internet proxy can be defined now.                   
