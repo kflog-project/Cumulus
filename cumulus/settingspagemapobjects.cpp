@@ -29,7 +29,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   setObjectName("SettingsPageMapObjects");
 
   int row=0;
-  QGridLayout * topLayout = new QGridLayout(this);
+  QGridLayout* topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
 
   //---------------------------------------------------------------------------
@@ -42,7 +42,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
 
   VarSpinBox* hspin;
 
-  QLabel *label = new QLabel( tr("Low:"), wpGroup );
+  QLabel *label = new QLabel( tr("Low"), wpGroup );
   hBox->addWidget( label );
   wpLowScaleLimitSpinBox = new QSpinBox( wpGroup );
   wpLowScaleLimitSpinBox->setPrefix( "< ");
@@ -56,7 +56,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
 
   hBox->addSpacing( 5 );
 
-  label = new QLabel( tr("Normal:"), wpGroup );
+  label = new QLabel( tr("Normal"), wpGroup );
   hBox->addWidget( label );
   wpNormalScaleLimitSpinBox = new QSpinBox( wpGroup );
   wpNormalScaleLimitSpinBox->setPrefix( "< ");
@@ -70,7 +70,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
 
   hBox->addSpacing( 5 );
 
-  label = new QLabel( tr("High:"), wpGroup );
+  label = new QLabel( tr("High"), wpGroup );
   hBox->addWidget( label );
   wpHighScaleLimitSpinBox = new QSpinBox( wpGroup );
   wpHighScaleLimitSpinBox->setPrefix( "< ");
