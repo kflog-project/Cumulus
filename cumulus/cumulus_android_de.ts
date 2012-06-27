@@ -1923,7 +1923,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightwaypointpage.cpp" line="162"/>
         <source>Low</source>
-        <translation>Gering</translation>
+        <translation>Klein</translation>
     </message>
     <message>
         <location filename="preflightwaypointpage.cpp" line="163"/>
@@ -2078,22 +2078,22 @@ Alle Downloads verworfen!</translation>
         <translation>Proxy Konfiguration</translation>
     </message>
     <message>
-        <location filename="proxydialog.cpp" line="40"/>
+        <location filename="proxydialog.cpp" line="43"/>
         <source>Host:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="proxydialog.cpp" line="41"/>
+        <location filename="proxydialog.cpp" line="44"/>
         <source>Port:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="proxydialog.cpp" line="125"/>
+        <location filename="proxydialog.cpp" line="128"/>
         <source>Settings invalid!</source>
         <translation>Werte ungültig!</translation>
     </message>
     <message>
-        <location filename="proxydialog.cpp" line="126"/>
+        <location filename="proxydialog.cpp" line="129"/>
         <source>Please correct your Proxy settings!</source>
         <translation>Proxy Einstellungen bitte korregieren!</translation>
     </message>
@@ -2785,60 +2785,60 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirspace</name>
     <message>
-        <location filename="settingspageairspace.cpp" line="72"/>
-        <location filename="settingspageairspace.cpp" line="81"/>
+        <location filename="settingspageairspace.cpp" line="70"/>
+        <location filename="settingspageairspace.cpp" line="79"/>
         <source>Border</source>
         <translation>Grenze</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="69"/>
-        <location filename="settingspageairspace.cpp" line="78"/>
+        <location filename="settingspageairspace.cpp" line="67"/>
+        <location filename="settingspageairspace.cpp" line="76"/>
         <source>Airspace</source>
         <translation>Luftraum</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="75"/>
-        <location filename="settingspageairspace.cpp" line="84"/>
+        <location filename="settingspageairspace.cpp" line="73"/>
+        <location filename="settingspageairspace.cpp" line="82"/>
         <source>Area</source>
         <translation>Raum</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="93"/>
+        <location filename="settingspageairspace.cpp" line="91"/>
         <source>Ignore AS</source>
         <translation>Ignoriere LR</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="107"/>
+        <location filename="settingspageairspace.cpp" line="105"/>
         <source>Color Defaults</source>
         <translation>Standard Farben</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="116"/>
+        <location filename="settingspageairspace.cpp" line="114"/>
         <source>Line Width:</source>
         <translation>Linienbreite:</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="138"/>
+        <location filename="settingspageairspace.cpp" line="136"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="147"/>
+        <location filename="settingspageairspace.cpp" line="145"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="153"/>
+        <location filename="settingspageairspace.cpp" line="151"/>
         <source>Warnings</source>
         <translation>Warnungen</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="159"/>
+        <location filename="settingspageairspace.cpp" line="157"/>
         <source>Filling</source>
         <translation>Füllung</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="812"/>
+        <location filename="settingspageairspace.cpp" line="810"/>
         <source>The Airspace drawing settings</source>
         <translation>Die Luftraum Zeichnen Optionen</translation>
     </message>
@@ -2846,98 +2846,98 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirspaceFilling</name>
     <message>
-        <location filename="settingspageairspace.cpp" line="833"/>
+        <location filename="settingspageairspace.cpp" line="831"/>
         <source>Airspace fill settings</source>
         <translation>Luftraum Füllung</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="837"/>
+        <location filename="settingspageairspace.cpp" line="835"/>
         <source>Enable filling</source>
         <oldsource>Enable airspace filling</oldsource>
         <translation>Aktiviere Füllung</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="838"/>
+        <location filename="settingspageairspace.cpp" line="836"/>
         <source>Switch on/off Airspace filling</source>
         <translation>Schalte Luftraum Füllung ein/aus</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="844"/>
+        <location filename="settingspageairspace.cpp" line="842"/>
         <source>Spin step width</source>
         <translation>Boxen Schrittweite</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="845"/>
+        <location filename="settingspageairspace.cpp" line="843"/>
         <source>1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="846"/>
+        <location filename="settingspageairspace.cpp" line="844"/>
         <source>5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="847"/>
+        <location filename="settingspageairspace.cpp" line="845"/>
         <source>10</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="848"/>
+        <location filename="settingspageairspace.cpp" line="846"/>
         <source>20</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="865"/>
+        <location filename="settingspageairspace.cpp" line="863"/>
         <source>Distances</source>
         <translation>Abstände</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="883"/>
+        <location filename="settingspageairspace.cpp" line="881"/>
         <source>Not near</source>
         <translation>weit</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="885"/>
+        <location filename="settingspageairspace.cpp" line="883"/>
         <source>Near</source>
         <translation>nah</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="887"/>
+        <location filename="settingspageairspace.cpp" line="885"/>
         <source>Very near</source>
         <translation>dicht</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="889"/>
+        <location filename="settingspageairspace.cpp" line="887"/>
         <source>Inside</source>
         <translation>innerhalb</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="901"/>
+        <location filename="settingspageairspace.cpp" line="899"/>
         <source>Increase number value</source>
         <translation>Erhöhe Zahlenwert</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="902"/>
+        <location filename="settingspageairspace.cpp" line="900"/>
         <source>Decrease number value</source>
         <translation>Reduziere Zahlenwert</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="912"/>
+        <location filename="settingspageairspace.cpp" line="910"/>
         <source>Vertical</source>
         <translation>vertikal</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="947"/>
+        <location filename="settingspageairspace.cpp" line="945"/>
         <source>Lateral</source>
         <translation>lateral</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="983"/>
+        <location filename="settingspageairspace.cpp" line="981"/>
         <source>Reset</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="984"/>
+        <location filename="settingspageairspace.cpp" line="982"/>
         <source>Default</source>
         <translation>Standard</translation>
     </message>
@@ -2945,22 +2945,22 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirspaceLoading</name>
     <message>
-        <location filename="settingspageairspace.cpp" line="1595"/>
+        <location filename="settingspageairspace.cpp" line="1593"/>
         <source>Airspace loading settings</source>
         <translation>Luftraum Lade Konfiguration</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1609"/>
+        <location filename="settingspageairspace.cpp" line="1607"/>
         <source>Use check boxes to activate or deactivate file loading.</source>
         <translation>Benutzen Sie die Checkboxen zum aktivieren oder deaktivieren des Datei ladens.</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1619"/>
+        <location filename="settingspageairspace.cpp" line="1617"/>
         <source>Airspace Files</source>
         <translation>Luftraum Dateien</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1648"/>
+        <location filename="settingspageairspace.cpp" line="1646"/>
         <source>Select all</source>
         <translation>Wähle alle</translation>
     </message>
@@ -2968,68 +2968,68 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirspaceWarnings</name>
     <message>
-        <location filename="settingspageairspace.cpp" line="1213"/>
+        <location filename="settingspageairspace.cpp" line="1211"/>
         <source>Airspace warning settings</source>
         <translation>Luftraum Warnung</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1222"/>
+        <location filename="settingspageairspace.cpp" line="1220"/>
         <source>Enable Warnings</source>
         <oldsource>Enable Airspace Warning</oldsource>
         <translation>Aktiviere Warnungen</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1225"/>
+        <location filename="settingspageairspace.cpp" line="1223"/>
         <source>Switch on/off Airspace Warnings</source>
         <translation>Luftraum Warnung ein/ausschalten</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1231"/>
+        <location filename="settingspageairspace.cpp" line="1229"/>
         <source>Spin step width</source>
         <translation>Boxen Schrittweite</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1252"/>
+        <location filename="settingspageairspace.cpp" line="1250"/>
         <source>Distances</source>
         <translation>Abstände</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1267"/>
+        <location filename="settingspageairspace.cpp" line="1265"/>
         <source>Lateral</source>
         <translation>lateral</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1269"/>
+        <location filename="settingspageairspace.cpp" line="1267"/>
         <source>Above</source>
         <translation>über</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1271"/>
+        <location filename="settingspageairspace.cpp" line="1269"/>
         <source>Below</source>
         <translation>unter</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1283"/>
+        <location filename="settingspageairspace.cpp" line="1281"/>
         <source>Increase number value</source>
         <translation>Erhöhe Zahlenwert</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1284"/>
+        <location filename="settingspageairspace.cpp" line="1282"/>
         <source>Decrease number value</source>
         <translation>Reduziere Zahlenwert</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1294"/>
+        <location filename="settingspageairspace.cpp" line="1292"/>
         <source>Near</source>
         <translation>nah</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1323"/>
+        <location filename="settingspageairspace.cpp" line="1321"/>
         <source>Very Near</source>
         <translation>dicht</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="1352"/>
+        <location filename="settingspageairspace.cpp" line="1350"/>
         <source>Default</source>
         <translation>Standard</translation>
     </message>
@@ -3221,18 +3221,21 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="settingspagemapobjects.cpp" line="45"/>
-        <source>Low:</source>
-        <translation>Gering:</translation>
+        <source>Low</source>
+        <oldsource>Low:</oldsource>
+        <translation>Klein</translation>
     </message>
     <message>
         <location filename="settingspagemapobjects.cpp" line="59"/>
-        <source>Normal:</source>
-        <translation></translation>
+        <source>Normal</source>
+        <oldsource>Normal:</oldsource>
+        <translation>Normal</translation>
     </message>
     <message>
         <location filename="settingspagemapobjects.cpp" line="73"/>
-        <source>High:</source>
-        <translation>Hoch:</translation>
+        <source>High</source>
+        <oldsource>High:</oldsource>
+        <translation>Hoch</translation>
     </message>
     <message>
         <location filename="settingspagemapobjects.cpp" line="104"/>
