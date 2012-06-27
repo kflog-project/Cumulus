@@ -72,12 +72,13 @@ IgcLogger::IgcLogger(QObject* parent) :
   resetTimer = new QTimer( this );
   connect( resetTimer, SIGNAL(timeout()), this, SLOT(slotResetLoggingTime()) );
 
+  // Timer to close the log file after 120s still stand.
   closeTimer = new QTimer(this);
   closeTimer->setSingleShot( true );
   connect( closeTimer, SIGNAL(timeout()), this, SLOT(slotCloseLogFile()) );
 
-  connect( this, SIGNAL(takeoffTime(TimeQDateTime&)), SLOT(slotTakeoff(QDateTime&)) );
-  connect( this, SIGNAL(landingTime(TimeQDateTime&)), SLOT(slotLanded(QDateTime&)) );
+  connect( this, SIGNAL(takeoffTime(QDateTime&)), SLOT(slotTakeoff(QDateTime&)) );
+  connect( this, SIGNAL(landingTime(QDateTime&)), SLOT(slotLanded(QDateTime&)) );
 }
 
 IgcLogger::~IgcLogger()
@@ -868,8 +869,7 @@ void IgcLogger::slotLanded( QDateTime& dt )
     }
 
   _flightData.landing = dt.toUTC();
-  _flightData.flightTime.addSecs( _flightData.takeoff.secsTo( _flightData.landing ));
-
+  _flightData.flightTime = _flightData.flightTime.addSecs( _flightData.takeoff.secsTo( _flightData.landing ));
   writeLogbookEntry();
 
   // Reset takeoff entry.
@@ -884,7 +884,7 @@ QString IgcLogger::createLogbookHeader()
   QDateTime dt = QDateTime::currentDateTime();
   QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
 
-  header = "# Cumulus Flight logbook file created at "
+  header = "# Cumulus Flight logbook, created at "
          + dtStr
          + " by Cumulus "
          + QCoreApplication::applicationVersion() + "\n"
@@ -919,6 +919,7 @@ bool IgcLogger::writeLogbookEntry()
 
   stream << _flightData.takeoff.date().toString(Qt::ISODate) << ";"
          << _flightData.takeoff.time().toString("HH:mm:ss") << ";"
+         << _flightData.landing.time().toString("HH:mm:ss") << ";"
          << _flightData.flightTime.toString("HH:mm:ss") << ";"
          << _flightData.pilot1 << ";"
          << _flightData.pilot2 << ";"
@@ -978,9 +979,14 @@ QStringList IgcLogger::getLogbook()
 bool IgcLogger::writeLogbook( QStringList& logbook )
 {
   GeneralConfig *conf = GeneralConfig::instance();
-  QFile f( conf->getUserDataDirectory() + "/" + conf->getFlightLogbookFileName() );
+  QString fn = conf->getUserDataDirectory() + "/" + conf->getFlightLogbookFileName();
 
   mutex.lock();
+
+  // Save one backup copy.
+  QFile::rename( fn, fn + ".bak" );
+
+  QFile f( fn );
 
   if( !f.open( QIODevice::WriteOnly ) )
     {
