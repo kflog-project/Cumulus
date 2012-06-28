@@ -552,22 +552,22 @@
         <translation>Zeige Polare</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="608"/>
+        <location filename="glidereditor.cpp" line="610"/>
         <source>Missing polar file</source>
         <translation>Vermisse Polarendatei</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="743"/>
+        <location filename="glidereditor.cpp" line="745"/>
         <source>Missing registration!</source>
         <translation>Vermisse Kennzeichen!</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="744"/>
+        <location filename="glidereditor.cpp" line="746"/>
         <source>Please enter a valid registration.</source>
         <translation>Geben Sie ein gültiges Kennzeichen ein..</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="738"/>
+        <location filename="glidereditor.cpp" line="740"/>
         <source>Missing glider type!</source>
         <translation>Vermisse Flugzeugtyp!</translation>
     </message>
@@ -582,7 +582,7 @@
         <translation>Flugzeug Typ:</translation>
     </message>
     <message>
-        <location filename="glidereditor.cpp" line="739"/>
+        <location filename="glidereditor.cpp" line="741"/>
         <source>Please enter a valid glider type.</source>
         <translation>Geben Sie einen Flugzeugtyp ein.</translation>
     </message>
