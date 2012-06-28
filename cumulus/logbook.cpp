@@ -11,7 +11,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id:$
+**   $Id$
 **
 ***********************************************************************/
 
@@ -205,6 +205,12 @@ void Logbook::loadLogbookData()
 
           item = new QTableWidgetItem( line.at(col) );
           item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+
+          if( col >= 0 && col <= 3 )
+            {
+              item->setTextAlignment( Qt::AlignCenter );
+            }
+
           m_table->setItem( row, col, item );
         }
     }
