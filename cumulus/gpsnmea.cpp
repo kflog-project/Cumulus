@@ -2585,6 +2585,8 @@ bool GpsNmea::event(QEvent *event)
         QDateTime fix_utc;
         fix_utc.setMSecsSinceEpoch( gpsFixEvent->time() );
 
+        fix_utc = fix_utc.toUTC();
+
         if( fix_utc.time() != _lastRmcTime )
           {
             _lastRmcTime = fix_utc.time();

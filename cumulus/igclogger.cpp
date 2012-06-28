@@ -879,6 +879,13 @@ void IgcLogger::slotTakeoff( QDateTime& dt )
       _flightData.gliderType = calculator->glider()->type();
       _flightData.gliderReg  = calculator->glider()->registration();
     }
+
+  // Replace possible semicolon against comma because semicolon is used later
+  // on as separator.
+  _flightData.pilot1.replace(";", ",");
+  _flightData.pilot2.replace(";", ",");
+  _flightData.gliderType.replace(";", ",");
+  _flightData.gliderReg.replace(";", ",");
 }
 
 void IgcLogger::slotLanded( QDateTime& dt )
@@ -956,6 +963,7 @@ bool IgcLogger::writeLogbookEntry()
       stream << createLogbookHeader();
     }
 
+  // write data as CSV stream, used separator is semicolon
   stream << _flightData.takeoff.date().toString(Qt::ISODate) << ";"
          << _flightData.takeoff.time().toString("HH:mm") << ";"
          << _flightData.landing.time().toString("HH:mm") << ";"
