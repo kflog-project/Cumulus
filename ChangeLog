@@ -15,6 +15,13 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2012-06-28 AP: New functionality flight logbook added. It contains the basic
+                   data of a flight (date, takeoff, landing, flight time, pilot)
+                   A new button logbook added on the pre-flight common page to
+                   open it. A user can remove all or selected entries from the
+                   logbook, if he wants. This feature works only, if auto
+                   logging is enabled!
+
 [-] 2012-06-26 AP: Android Modification:
                    -Tabulator page button enlarged in its width. Makes operation
                     easier with it.
