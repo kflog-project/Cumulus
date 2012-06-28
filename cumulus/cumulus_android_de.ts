@@ -784,7 +784,7 @@
     <message>
         <location filename="igclogger.cpp" line="568"/>
         <source>Stop Logging?</source>
-        <translation></translation>
+        <translation>Stop Logger?</translation>
     </message>
     <message>
         <location filename="igclogger.cpp" line="569"/>
@@ -794,7 +794,7 @@
     <message>
         <location filename="igclogger.cpp" line="598"/>
         <source>Start Logging?</source>
-        <translation></translation>
+        <translation>Start Logger?</translation>
     </message>
     <message>
         <location filename="igclogger.cpp" line="599"/>
@@ -804,12 +804,12 @@
     <message>
         <location filename="igclogger.cpp" line="639"/>
         <source>Restart Logging?</source>
-        <translation>Neustart Logging?</translation>
+        <translation>Restart Logger?</translation>
     </message>
     <message>
         <location filename="igclogger.cpp" line="640"/>
         <source>&lt;html&gt;A new flight task was selected.&lt;br&gt;Restart logging?&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Eine neue Flugaufgabe wurde ausgewählt.&lt;br&gt;Logging neu starten?&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;Eine neue Flugaufgabe wurde ausgewählt.&lt;br&gt;Logger neu starten?&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -850,12 +850,12 @@
     <message>
         <location filename="logbook.cpp" line="34"/>
         <source>Logbook</source>
-        <translation></translation>
+        <translation>Logbuch</translation>
     </message>
     <message>
         <location filename="logbook.cpp" line="155"/>
         <source>Date</source>
-        <translation></translation>
+        <translation>Datum</translation>
     </message>
     <message>
         <location filename="logbook.cpp" line="158"/>
@@ -906,7 +906,7 @@
     <message>
         <location filename="logbook.cpp" line="300"/>
         <source>Delete all entries?</source>
-        <translation></translation>
+        <translation>Alles löschen?</translation>
     </message>
 </context>
 <context>
