@@ -80,6 +80,7 @@ HEADERS = \
     limitedlist.h \
     lineelement.h \
     listviewfilter.h \
+    logbook.h \
     maemostyle.h \
     mainwindow.h \
     mapcalc.h \
@@ -193,6 +194,7 @@ SOURCES = \
     layout.cpp \
     lineelement.cpp \
     listviewfilter.cpp \
+    logbook.cpp \
     maemostyle.cpp \
     main.cpp \
     mainwindow.cpp \
