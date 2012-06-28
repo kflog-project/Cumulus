@@ -1749,7 +1749,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightmiscpage.cpp" line="92"/>
         <source>Logbook</source>
-        <translation></translation>
+        <translation>Logbuch</translation>
     </message>
     <message>
         <location filename="preflightmiscpage.cpp" line="98"/>
