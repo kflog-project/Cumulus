@@ -72,11 +72,22 @@
   <br><dt><b>Autostart logging</b></dt>
 
   <dd> If you activate this check box, Cumulus automatically starts the IGC
-  logging when you start to move faster than 5 km/h. The current logger
+  logging when you start to move faster than 35 km/h. The current logger
   status is signaled by a variously-coloured field in the
-  <a href="cumulus-display.html#Status_Bar">status bar</a>. 
+  <a href="cumulus-display.html#Status_Bar">status bar</a>. After landing
+  the flight is closed, if 90s no moving could be detected. If the GPS signal
+  breaks down, the same condition is applied.
   </dd>
   
+  <br><dt><b>Logbook</b></dt>
+  
+  <dd> If Autostart logging is enabled, Cumulus records the basic data of your
+  flight into a logbook. Pressing the button <i>Logbook</i> opens a window,
+  where all flight logs are listed. If you want you can remove selected or all
+  entries. The Logbook is a pure ASCII data file in a CSV format. Semicolon
+  is used as separator.
+  </dd>
+
   <br><dt><b>B-Record Interval</b></dt>
 
   <dd>Interval for logging of the IGC B-Record. Default time is

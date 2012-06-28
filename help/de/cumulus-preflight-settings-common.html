@@ -71,10 +71,22 @@
     <dd>
     Wenn Sie diese Checkbox aktivieren, beginnt Cumulus automatisch
     mit dem Schreiben der IGC Logdatei, wenn Sie sich mit dem Flugzeug schneller
-    als 5 Km/h bewegen. Der aktuelle Loggerstatus wird duch verschiedene Farben
+    als 35 Km/h bewegen. Der aktuelle Loggerstatus wird duch verschiedene Farben
     in der unteren <a href="cumulus-display.html#Status_Bar">Statusleiste</a>
-    angezeigt.
+    angezeigt. Wenn 90s nach der Landung keine Bewegung mehr festgestellt wird,
+    wird die Flugdatei geschlossen. Das selbe passiert nach 90s GPS Signal
+    Ausfall.
     </dd>
+  
+	  <br><dt><b>Logbuch</b></dt>
+	  
+	  <dd> Wenn Autostart Logger aktiviert ist, zeichnet Cumulus die Basisdaten 
+	  von Ihren Flug im Logbuch auf. Wenn Sie den Knopf <i>Logbuch</i> dr&uuml;cken,
+	  wird ein neues Fenster ge&ouml;ffnet, in dem alle Ihre Fl&uuml;ge aufgelistet sind.
+	  Sie k&ouml;nnen nun einzelne oder alle Eintr&auml;ge l&ouml;schen, wenn Sie
+	  das wollen. Das Logbuch ist eine reine ASCII Datei im CSV Format. Semikolon
+	  dient als Elementtrenner.
+	  </dd>
 
     <br><dt><b>B-Record Intervall</b></dt>
 
