@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2011 by Axel Pauli
+                               2008-2012 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -32,7 +32,7 @@
  * This class provides the IGC logging facilities, using the
  * parsed data from the GPS NMEA object.
  *
- * \date 2002-2011
+ * \date 2002-2012
  *
  * \version $Id$
  */
@@ -148,12 +148,15 @@ public:
   }
 
   /**
-   * Returns the content of the flight logbook as string list.
+   * Returns the content of the flight logbook as string list. All entries are
+   * appended to the passed string list.
+   *
+   * \param logbook The current flight logbook as string list.
    */
-  QStringList getLogbook();
+  void getLogbook( QStringList& logbook );
 
   /**
-   * Writes a flight logbook.
+   * Writes a flight logbook as file.
    */
   bool writeLogbook( QStringList& logbook );
 
@@ -211,11 +214,17 @@ private slots:
 
   /**
    * This slot is called when a takeoff is recognized in auto logger mode.
+   * The reported date and time uses the local time zone.
+   *
+   * \param dt Date and time of local time zone
    */
   void slotTakeoff( QDateTime& dt );
 
   /**
    * This slot is called when a landing is recognized in auto logger mode.
+   * The reported date and time uses the local time zone.
+   *
+   * \param dt Date and time of local time zone.
    */
   void slotLanded( QDateTime& dt );
 
@@ -362,7 +371,7 @@ private:
   /** Time stamp of the last logged K record */
   QTime* lastLoggedKRecord;
 
-  /** Date and time start of logging. */
+  /** Date and time of logging start. */
   QDateTime startLogging;
 
   /** List of last would-be log entries.
@@ -373,16 +382,16 @@ private:
     * available in the log. */
   LimitedList<QStringList> _backtrack;
 
-  /** Holds the flight number for this day */
+  /** Stores the flight number for this day */
   int flightNumber;
 
-  /** Holds the last known flight mode. */
+  /** Stores the last known flight mode. */
   Calculator::FlightMode _flightMode;
 
-  /** Holds the basic data of a flight. */
+  /** Stores the basic data of a flight. */
   FlightData _flightData;
 
-  /** Mutex used for logbook file load and save. */
+  /** Mutex used for load and save of logbook file. */
   static QMutex mutex;
 };
 

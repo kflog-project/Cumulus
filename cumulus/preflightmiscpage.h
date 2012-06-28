@@ -50,25 +50,32 @@ class PreFlightMiscPage : public QWidget
 
  public:
 
-    PreFlightMiscPage(QWidget *parent=0);
+  PreFlightMiscPage(QWidget *parent=0);
 
-    virtual ~PreFlightMiscPage();
+  virtual ~PreFlightMiscPage();
 
-    void load();
+  void load();
 
-    void save();
+  void save();
+
+ private slots:
+
+  /**
+   * When called, the flight logbook dialog is opened.
+   */
+  void slotOpenLogbook();
 
  private:
 
-    QCheckBox*   chkLogAutoStart;
-    QSpinBox*    edtMinimalArrival;
-    QComboBox*   edtArrivalAltitude;
-    QSpinBox*    edtQNH;
-    QSpinBox*    bRecordInterval; // B-Record logging interval in seconds
-    QSpinBox*    kRecordInterval; // K-Record logging interval in seconds
+  QCheckBox*   chkLogAutoStart;
+  QSpinBox*    edtMinimalArrival;
+  QComboBox*   edtArrivalAltitude;
+  QSpinBox*    edtQNH;
+  QSpinBox*    bRecordInterval; // B-Record logging interval in seconds
+  QSpinBox*    kRecordInterval; // K-Record logging interval in seconds
 
-    /** saves altitude unit set during construction of object */
-    Altitude::altitudeUnit altUnit;
+  /** saves altitude unit set during construction of object */
+  Altitude::altitudeUnit altUnit;
 };
 
 #endif

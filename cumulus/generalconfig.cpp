@@ -239,7 +239,7 @@ void GeneralConfig::load()
   _windDirection          = value( "WindDirection", 0 ).toInt();
   _windSpeed              = value( "WindSpeed", 0 ).toInt();
   _currentTask            = value( "CurrentTask", "").toString();
-  _flightLogbookFileName  = value( "FlightLogbookFileName", "cumulus-flightLogbook.txt" ).toString();
+  _flightLogbookFileName  = value( "FlightLogbookFileName", "cumulus-logbook.txt" ).toString();
   endGroup();
 
   // Task scheme settings for cylinder-sector and nearest-touched

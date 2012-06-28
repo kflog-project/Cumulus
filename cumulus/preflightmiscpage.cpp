@@ -24,6 +24,7 @@
 #include "igclogger.h"
 #include "generalconfig.h"
 #include "layout.h"
+#include "logbook.h"
 #include "varspinbox.h"
 
 PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
@@ -86,8 +87,13 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   row++;
 
   chkLogAutoStart = new QCheckBox(tr("Autostart IGC logger"));
-  topLayout->addWidget(chkLogAutoStart, row, 0, 1, 3);
+  topLayout->addWidget(chkLogAutoStart, row, 0 );
+
+  QPushButton* button = new QPushButton( tr("Logbook") );
+  topLayout->addWidget(button, row, 1 );
   row++;
+
+  connect(button, SIGNAL(pressed()), SLOT(slotOpenLogbook()));
 
   lbl = new QLabel(tr("B-Record Interval:"));
   topLayout->addWidget(lbl, row, 0);
@@ -184,4 +190,10 @@ void PreFlightMiscPage::save()
   conf->setQNH(edtQNH->value());
   conf->setBRecordInterval(bRecordInterval->value());
   conf->setKRecordInterval(kRecordInterval->value());
+}
+
+void PreFlightMiscPage::slotOpenLogbook()
+{
+  QWidget* lbw = new Logbook( this );
+  lbw->setVisible( true );
 }

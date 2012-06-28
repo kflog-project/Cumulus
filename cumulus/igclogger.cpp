@@ -37,6 +37,11 @@
 #include "flighttask.h"
 #include "taskpoint.h"
 
+
+// Define a timeout after landing in seconds. If the timeout is reached
+// an open log file is automatically closed.
+#define TOAL 90
+
 // initialize static variables
 IgcLogger* IgcLogger::_theInstance = static_cast<IgcLogger *> (0);
 
@@ -817,8 +822,8 @@ void IgcLogger::slotFlightModeChanged( Calculator::FlightMode newFlightMode )
 
   if( newFlightMode == Calculator::standstill || newFlightMode == Calculator::unknown )
     {
-      // Close logfile after 120s still stand or unknown mode.
-      closeTimer->start(120000);
+      // Close logfile after a certain time of still stand or unknown mode.
+      closeTimer->start( TOAL * 1000);
     }
   else
     {
@@ -830,8 +835,8 @@ void IgcLogger::slotCloseLogFile()
 {
   if( GeneralConfig::instance()->getLoggerAutostartMode() )
     {
-      // correct landing time by stand time on earth.
-      QDateTime lt = QDateTime::currentDateTime().addSecs( -120 );
+      // Correct landing time by subtraction of stand time on earth.
+      QDateTime lt = QDateTime::currentDateTime().addSecs( -TOAL );
       emit landingTime( lt );
       Standby();
     }
@@ -884,7 +889,7 @@ QString IgcLogger::createLogbookHeader()
   QDateTime dt = QDateTime::currentDateTime();
   QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
 
-  header = "# Cumulus Flight logbook, created at "
+  header = "# Flight logbook, created at "
          + dtStr
          + " by Cumulus "
          + QCoreApplication::applicationVersion() + "\n"
@@ -932,10 +937,8 @@ bool IgcLogger::writeLogbookEntry()
   return true;
 }
 
-QStringList IgcLogger::getLogbook()
+void IgcLogger::getLogbook( QStringList& logbook )
 {
-  QStringList list;
-
   GeneralConfig *conf = GeneralConfig::instance();
   QFile f( conf->getUserDataDirectory() + "/" + conf->getFlightLogbookFileName() );
 
@@ -946,14 +949,14 @@ QStringList IgcLogger::getLogbook()
       // could not open file ...
       qWarning() << "Cannot open file: " << f.fileName();
       mutex.unlock();
-      return list;
+      return;
     }
 
   if( f.size() == 0 )
     {
       qWarning() << f.fileName() << "is empty";
       mutex.unlock();
-      return list;
+      return;
     }
 
   QTextStream stream( &f );
@@ -968,12 +971,11 @@ QStringList IgcLogger::getLogbook()
           continue;
         }
 
-      list << line;
+      logbook << line;
     }
 
   f.close();
   mutex.unlock();
-  return list;
 }
 
 bool IgcLogger::writeLogbook( QStringList& logbook )

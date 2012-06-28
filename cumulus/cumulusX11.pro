@@ -86,6 +86,7 @@ HEADERS = \
     lineelement.h \
     listviewfilter.h \
     listwidgetparent.h \
+    logbook.h \
     mainwindow.h \
     mapcalc.h \
     mapconfig.h \
@@ -198,6 +199,7 @@ SOURCES = \
     lineelement.cpp \
     listviewfilter.cpp \
     listwidgetparent.cpp \
+    logbook.cpp \
     main.cpp \
     mainwindow.cpp \
     mapcalc.cpp \
