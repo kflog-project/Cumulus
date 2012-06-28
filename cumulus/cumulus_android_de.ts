@@ -777,37 +777,37 @@
 <context>
     <name>IgcLogger</name>
     <message>
-        <location filename="igclogger.cpp" line="464"/>
+        <location filename="igclogger.cpp" line="476"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="556"/>
+        <location filename="igclogger.cpp" line="568"/>
         <source>Stop Logging?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="557"/>
+        <location filename="igclogger.cpp" line="569"/>
         <source>&lt;html&gt;Are you sure you want&lt;br&gt;stop logging?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Wollen Sie wirklich&lt;br&gt;den Logger stoppen?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="586"/>
+        <location filename="igclogger.cpp" line="598"/>
         <source>Start Logging?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="587"/>
+        <location filename="igclogger.cpp" line="599"/>
         <source>&lt;html&gt;You should select a glider&lt;br&gt;before start logging.&lt;br&gt;Continue start logging?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Vor Loggerstart&lt;br&gt;ein Flugzeug auswählen.&lt;br&gt;Logger wirklich starten?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="627"/>
+        <location filename="igclogger.cpp" line="639"/>
         <source>Restart Logging?</source>
         <translation>Neustart Logging?</translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="628"/>
+        <location filename="igclogger.cpp" line="640"/>
         <source>&lt;html&gt;A new flight task was selected.&lt;br&gt;Restart logging?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine neue Flugaufgabe wurde ausgewählt.&lt;br&gt;Logging neu starten?&lt;/html&gt;</translation>
     </message>
@@ -843,6 +843,70 @@
         <location filename="listwidgetparent.cpp" line="67"/>
         <source>move page down</source>
         <translation>Seite runter</translation>
+    </message>
+</context>
+<context>
+    <name>Logbook</name>
+    <message>
+        <location filename="logbook.cpp" line="34"/>
+        <source>Logbook</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="logbook.cpp" line="155"/>
+        <source>Date</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="logbook.cpp" line="158"/>
+        <source>Takeoff</source>
+        <translation>Start</translation>
+    </message>
+    <message>
+        <location filename="logbook.cpp" line="161"/>
+        <source>Landing</source>
+        <translation>Landung</translation>
+    </message>
+    <message>
+        <location filename="logbook.cpp" line="164"/>
+        <source>Duration</source>
+        <translation>Dauer</translation>
+    </message>
+    <message>
+        <location filename="logbook.cpp" line="167"/>
+        <source>Pilot</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="logbook.cpp" line="170"/>
+        <source>Co</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="logbook.cpp" line="173"/>
+        <source>Type</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="logbook.cpp" line="176"/>
+        <source>Reg</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="logbook.cpp" line="231"/>
+        <location filename="logbook.cpp" line="299"/>
+        <source>Delete?</source>
+        <translation>Löschen?</translation>
+    </message>
+    <message>
+        <location filename="logbook.cpp" line="232"/>
+        <source>Delete selected entries?</source>
+        <translation>Auswahl löschen?</translation>
+    </message>
+    <message>
+        <location filename="logbook.cpp" line="300"/>
+        <source>Delete all entries?</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1641,47 +1705,52 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>PreFlightMiscPage</name>
     <message>
-        <location filename="preflightmiscpage.cpp" line="37"/>
+        <location filename="preflightmiscpage.cpp" line="38"/>
         <source>Minimal arrival altitude:</source>
         <translation>Minimale Ankunftshöhe:</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="67"/>
+        <location filename="preflightmiscpage.cpp" line="68"/>
         <source>Arrival altitude display:</source>
         <translation>Ankunftshöhenanzeige:</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="70"/>
+        <location filename="preflightmiscpage.cpp" line="71"/>
         <source>Landing Target</source>
         <translation>Landeziel</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="71"/>
+        <location filename="preflightmiscpage.cpp" line="72"/>
         <source>Next Target</source>
         <translation>Nächstes Ziel</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="75"/>
+        <location filename="preflightmiscpage.cpp" line="76"/>
         <source>QNH:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="88"/>
+        <location filename="preflightmiscpage.cpp" line="89"/>
         <source>Autostart IGC logger</source>
         <translation>Autostart IGC Logger</translation>
     </message>
     <message>
         <location filename="preflightmiscpage.cpp" line="92"/>
+        <source>Logbook</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="preflightmiscpage.cpp" line="98"/>
         <source>B-Record Interval:</source>
         <translation>B-Record Intervall:</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="102"/>
+        <location filename="preflightmiscpage.cpp" line="108"/>
         <source>K-Record Interval:</source>
         <translation>K-Record Intervall:</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="107"/>
+        <location filename="preflightmiscpage.cpp" line="113"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
