@@ -401,9 +401,11 @@ void GliderEditor::save()
       _glider = new Glider;
     }
 
-  _glider->setType(edtGType->text().trimmed());
-  _glider->setRegistration(edtGReg->text().trimmed());
-  _glider->setCallSign(edtGCall->text().trimmed());
+  // Note: If the following strings contains a semicolon it must be replaced
+  // by another character. Otherwise storing will fail.
+  _glider->setType(edtGType->text().trimmed().replace(";", ","));
+  _glider->setRegistration(edtGReg->text().trimmed().replace(";", ","));
+  _glider->setCallSign(edtGCall->text().trimmed().replace(";", ","));
   _glider->setMaxWater(spinWater->value());
 
   if (comboSeats->currentIndex() == 1)
