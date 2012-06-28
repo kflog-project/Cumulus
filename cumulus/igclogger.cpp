@@ -847,7 +847,12 @@ void IgcLogger::slotTakeoff( QDateTime& dt )
   // Takeoff has taken place, store all relevant flight data.
   GeneralConfig *conf = GeneralConfig::instance();
 
-  _flightData.takeoff = dt.toUTC();
+  QDateTime ndt = dt.toUTC();
+  // reset ms to avoid rounding errors
+  QTime tms0( ndt.time().hour(), ndt.time().minute(), ndt.time().second(), 0 );
+  ndt.setTime( tms0 );
+
+  _flightData.takeoff = ndt;
   _flightData.landing = QDateTime();
   _flightData.flightTime = QTime();
   _flightData.pilot1 = conf->getSurname();
@@ -873,7 +878,12 @@ void IgcLogger::slotLanded( QDateTime& dt )
       return;
     }
 
-  _flightData.landing = dt.toUTC();
+  QDateTime ndt = dt.toUTC();
+  // reset ms to avoid rounding errors
+  QTime tms0( ndt.time().hour(), ndt.time().minute(), ndt.time().second(), 0 );
+  ndt.setTime( tms0 );
+
+  _flightData.landing = ndt;
   _flightData.flightTime = _flightData.flightTime.addSecs( _flightData.takeoff.secsTo( _flightData.landing ));
   writeLogbookEntry();
 
