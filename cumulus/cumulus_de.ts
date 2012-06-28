@@ -885,19 +885,31 @@
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="logbook.cpp" line="158"/>
         <source>Takeoff</source>
-        <translation>Start</translation>
+        <translation type="obsolete">Start</translation>
+    </message>
+    <message>
+        <source>Landing</source>
+        <translation type="obsolete">Landung</translation>
+    </message>
+    <message>
+        <source>Duration</source>
+        <translation type="obsolete">Dauer</translation>
+    </message>
+    <message>
+        <location filename="logbook.cpp" line="158"/>
+        <source>TO</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="logbook.cpp" line="161"/>
-        <source>Landing</source>
-        <translation>Landung</translation>
+        <source>LG</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="logbook.cpp" line="164"/>
-        <source>Duration</source>
-        <translation>Dauer</translation>
+        <source>FT</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="logbook.cpp" line="167"/>
@@ -920,18 +932,18 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="logbook.cpp" line="231"/>
-        <location filename="logbook.cpp" line="299"/>
+        <location filename="logbook.cpp" line="237"/>
+        <location filename="logbook.cpp" line="305"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="logbook.cpp" line="232"/>
+        <location filename="logbook.cpp" line="238"/>
         <source>Delete selected entries?</source>
         <translation>Auswahl löschen?</translation>
     </message>
     <message>
-        <location filename="logbook.cpp" line="300"/>
+        <location filename="logbook.cpp" line="306"/>
         <source>Delete all entries?</source>
         <translation>Alles löschen?</translation>
     </message>

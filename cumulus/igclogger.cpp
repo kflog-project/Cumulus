@@ -848,8 +848,20 @@ void IgcLogger::slotTakeoff( QDateTime& dt )
   GeneralConfig *conf = GeneralConfig::instance();
 
   QDateTime ndt = dt.toUTC();
+
   // reset ms to avoid rounding errors
   QTime tms0( ndt.time().hour(), ndt.time().minute(), ndt.time().second(), 0 );
+
+  // round up to minutes
+  if( tms0.second() > 30 )
+    {
+      tms0 = tms0.addSecs( 60 - tms0.second() );
+    }
+  else
+    {
+      tms0 = tms0.addSecs( -tms0.second() );
+    }
+
   ndt.setTime( tms0 );
 
   _flightData.takeoff = ndt;
@@ -879,8 +891,20 @@ void IgcLogger::slotLanded( QDateTime& dt )
     }
 
   QDateTime ndt = dt.toUTC();
+
   // reset ms to avoid rounding errors
   QTime tms0( ndt.time().hour(), ndt.time().minute(), ndt.time().second(), 0 );
+
+  // round up to minutes
+  if( tms0.second() > 30 )
+    {
+      tms0 = tms0.addSecs( 60 - tms0.second() );
+    }
+  else
+    {
+      tms0 = tms0.addSecs( -tms0.second() );
+    }
+
   ndt.setTime( tms0 );
 
   _flightData.landing = ndt;
@@ -933,9 +957,9 @@ bool IgcLogger::writeLogbookEntry()
     }
 
   stream << _flightData.takeoff.date().toString(Qt::ISODate) << ";"
-         << _flightData.takeoff.time().toString("HH:mm:ss") << ";"
-         << _flightData.landing.time().toString("HH:mm:ss") << ";"
-         << _flightData.flightTime.toString("HH:mm:ss") << ";"
+         << _flightData.takeoff.time().toString("HH:mm") << ";"
+         << _flightData.landing.time().toString("HH:mm") << ";"
+         << _flightData.flightTime.toString("HH:mm") << ";"
          << _flightData.pilot1 << ";"
          << _flightData.pilot2 << ";"
          << _flightData.gliderType << ";"
