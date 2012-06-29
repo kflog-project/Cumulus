@@ -147,7 +147,11 @@
 #define MapScalebarFontHeight 20
 
 // Map label font point size
-#define MapLabelFontPointSize 8
+#ifdef ANDROID
+#define MapLabelFontPointSize 7
+#else
+#define MapLabelFontPointSize 10
+#endif
 
 // Map city label font point size
 #define MapCityLabelFontPointSize 7
