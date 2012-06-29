@@ -1700,6 +1700,7 @@ void Map::__drawLabel( QPainter* painter,
 
   QString labelText = name;
   Altitude alt = ReachableList::getArrivalAltitude( origP );
+  QColor reachColor = ReachableList::getReachColor( origP );
 
   const bool drawLabelInfo = GeneralConfig::instance()->getMapShowLabelsExtraInfo();
 
@@ -1732,8 +1733,6 @@ void Map::__drawLabel( QPainter* painter,
       font.setBold(false);
     }
 
-  painter->setFont( font );
-
   // Check, if our point has a selection. In this case inverse drawing is used.
   bool isSelected = false;
 
@@ -1746,17 +1745,25 @@ void Map::__drawLabel( QPainter* painter,
         }
     }
 
+  int pw = 2;
+
+#if defined ANDROID || defined MAEMO
+    pw = 3;
+#endif
+
   if( ! isSelected )
     {
-      painter->setPen(QPen(Qt::black, 3, Qt::SolidLine));
+      painter->setPen(QPen(Qt::black, pw, Qt::SolidLine));
       painter->setBrush( Qt::white );
     }
   else
     {
       // draw selected waypoint label inverse
-      painter->setPen(QPen(Qt::white, 3, Qt::SolidLine));
+      painter->setPen(QPen(Qt::white, pw, Qt::SolidLine));
       painter->setBrush( Qt::black );
     }
+
+  painter->setFont( font );
 
   // calculate text bounding box
   QRect dRec( 0, 0, 400, 400 );
@@ -1795,20 +1802,10 @@ void Map::__drawLabel( QPainter* painter,
                    dispP.y() + yOffset,
                    textBox.width(), textBox.height() );
 
-  if( alt.getMeters() < 0 )
-    {
-      // the rectangle border color is depending on the arrival
-      // altitude. Under zero the color red is used
-      QPen cPen = painter->pen();
-      painter->setPen(QPen(Qt::red, 3, Qt::SolidLine));
-      painter->drawRect( textBox );
-      painter->setPen( cPen );
-    }
-  else
-    {
-      painter->drawRect( textBox );
-    }
-
+  QPen cPen = painter->pen();
+  painter->setPen(QPen(reachColor, pw, Qt::SolidLine));
+  painter->drawRect( textBox );
+  painter->setPen( cPen );
   painter->drawText( textBox, Qt::AlignCenter, labelText );
   painter->restore();
 }
