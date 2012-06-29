@@ -1,3 +1,25 @@
+cumulus (2.15.0) stable; urgency=low
+
+  * Map label boxes made a little bit smaller. Takeoff and landing is signaled
+    to the user as notification, if the logger works in auto mode.
+
+  * New functionality flight logbook added. It contains the basic data of a
+    flight (date, takeoff, landing, flight time, pilot). This feature works only,
+    if auto logging is enabled!
+    A new button logbook added on the pre-flight common page to open it. A user
+    can remove all or selected entries from the logbook, if he wants. 
+
+  * Proxy settings on different settings pages moved to personal
+    page. Only on that page an Internet proxy can be defined now.
+
+  * Altimeter settings dialog modified, that the altitude reference
+    (GPS/Pressure) can also be changed in it.
+
+  * The left map sidebar containing the info boxes can be toggled now in its
+    visibility by using the shortcut key D.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Fri, 29 Jun 2012 19:00:00 +0200
+
 cumulus (2.14.0) stable; urgency=low
 
   * New airspace status display added, that shows the user an overview, if
