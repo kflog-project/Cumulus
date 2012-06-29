@@ -143,6 +143,9 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
   logger = static_cast<IgcLogger *> (0);
 
+  // Overwrite old default.
+  GeneralConfig::instance()->setMapLowerLimit(5);
+
   // Get application font for user adaptions.
   QFont appFt = QApplication::font();
 
