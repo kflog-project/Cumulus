@@ -63,7 +63,7 @@
 #define MapScalebarFontHeight 22
 
 // Map label font point size
-#define MapLabelFontPointSize 20
+#define MapLabelFontPointSize 18
 
 // Map city label font point size
 #define MapCityLabelFontPointSize 11
@@ -147,7 +147,7 @@
 #define MapScalebarFontHeight 20
 
 // Map label font point size
-#define MapLabelFontPointSize 9
+#define MapLabelFontPointSize 8
 
 // Map city label font point size
 #define MapCityLabelFontPointSize 7
