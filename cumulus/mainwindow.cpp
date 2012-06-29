@@ -712,9 +712,13 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( logger, SIGNAL( logging( bool ) ),
            viewMap, SLOT( slot_setLoggerStatus() ) );
   connect( logger, SIGNAL( logging( bool ) ),
-           this, SLOT( slotLogging( bool ) ) );
+            SLOT( slotLogging( bool ) ) );
   connect( logger, SIGNAL( madeEntry() ),
            viewMap, SLOT( slot_LogEntry() ) );
+  connect( logger, SIGNAL( takeoffTime(QDateTime&) ),
+            SLOT( slotTakeoff(QDateTime&) ) );
+  connect( logger, SIGNAL( landingTime(QDateTime&) ),
+            SLOT( slotLanded(QDateTime&) ) );
 
   calculator->setPosition( _globalMapMatrix->getMapCenter( false ) );
 
@@ -2835,6 +2839,21 @@ void MainWindow::slotSubWidgetClosed()
 {
   // Set the root window flag
   _rootWindow = true;
+}
+
+/**
+ * Called if logger recognized takeoff.
+ */
+void MainWindow::slotTakeoff( QDateTime& dt )
+{
+  slotNotification( tr("takeoff") + dt.time().toString(" HH:mm"), true );
+}
+/**
+ * Called if logger recognized landing.
+ */
+void MainWindow::slotLanded( QDateTime& dt )
+{
+  slotNotification( tr("landed")+ dt.time().toString(" HH:mm"), true );
 }
 
 // resize the list view tabs, if requested

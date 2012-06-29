@@ -228,6 +228,14 @@ public slots:
    * Called if an opened subwidget is closed.
    */
   void slotSubWidgetClosed();
+  /**
+   * Called if logger recognized takeoff.
+   */
+  void slotTakeoff( QDateTime& dt );
+  /**
+   * Called if logger recognized landing.
+   */
+  void slotLanded( QDateTime& dt );
 
 protected:
 

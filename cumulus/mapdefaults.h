@@ -24,7 +24,7 @@
 #define HOME_DEFAULT_LON 8026500
 
 // the scale-borders
-#define VAL_BORDER_L                      10
+#define VAL_BORDER_L                       5
 #define VAL_BORDER_U                    1200
 #define VAL_BORDER_1                     100
 #define VAL_BORDER_2                     500
