@@ -47,7 +47,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   wpLowScaleLimitSpinBox = new QSpinBox( wpGroup );
   wpLowScaleLimitSpinBox->setPrefix( "< ");
   wpLowScaleLimitSpinBox->setRange(0, 1200);
-  wpLowScaleLimitSpinBox->setSingleStep(10);
+  wpLowScaleLimitSpinBox->setSingleStep(5);
 
   hspin = new VarSpinBox(wpLowScaleLimitSpinBox);
   hBox->addWidget( hspin );
@@ -61,7 +61,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   wpNormalScaleLimitSpinBox = new QSpinBox( wpGroup );
   wpNormalScaleLimitSpinBox->setPrefix( "< ");
   wpNormalScaleLimitSpinBox->setRange(0, 1200);
-  wpNormalScaleLimitSpinBox->setSingleStep(10);
+  wpNormalScaleLimitSpinBox->setSingleStep(5);
 
   hspin = new VarSpinBox(wpNormalScaleLimitSpinBox);
   hBox->addWidget( hspin );
@@ -75,7 +75,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   wpHighScaleLimitSpinBox = new QSpinBox( wpGroup );
   wpHighScaleLimitSpinBox->setPrefix( "< ");
   wpHighScaleLimitSpinBox->setRange(0, 1200);
-  wpHighScaleLimitSpinBox->setSingleStep(10);
+  wpHighScaleLimitSpinBox->setSingleStep(5);
 
   hspin = new VarSpinBox(wpHighScaleLimitSpinBox);
   hBox->addWidget( hspin );
