@@ -15,9 +15,13 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2012-06-29 AP: Cumulus 2.15.0 for Ubuntu and Maemo released.                   
+
 [+] 2012-06-29 AP: Map label boxes made a little bit smaller. Takeoff and
                    landing is signaled to the user as notification, if the
                    logger works in auto mode.
+
+[*] 2012-06-28 AP: Cumulus 2.15.0 for Android released.
 
 [+] 2012-06-28 AP: New functionality flight logbook added. It contains the basic
                    data of a flight (date, takeoff, landing, flight time, pilot).
