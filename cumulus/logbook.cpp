@@ -155,13 +155,13 @@ void Logbook::setTableHeader()
   QTableWidgetItem *item = new QTableWidgetItem( tr("Date") );
   m_table->setHorizontalHeaderItem( 0, item );
 
-  item = new QTableWidgetItem( tr("TO") );
+  item = new QTableWidgetItem( tr("To") );
   m_table->setHorizontalHeaderItem( 1, item );
 
-  item = new QTableWidgetItem( tr("LG") );
+  item = new QTableWidgetItem( tr("Lg") );
   m_table->setHorizontalHeaderItem( 2, item );
 
-  item = new QTableWidgetItem( tr("FT") );
+  item = new QTableWidgetItem( tr("Ft") );
   m_table->setHorizontalHeaderItem( 3, item );
 
   item = new QTableWidgetItem( tr("Pilot") );
