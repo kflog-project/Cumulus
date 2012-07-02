@@ -144,7 +144,7 @@ void Logbook::showEvent( QShowEvent *event )
     }
   else
     {
-      m_okButton->setEnabled( true );
+      m_okButton->setEnabled( false );
       m_deleteButton->setEnabled( true );
       m_deleteAllButton->setEnabled( true );
     }
@@ -287,6 +287,8 @@ void Logbook::slot_DeleteRows()
   m_table->resizeColumnsToContents();
   m_tableModified = true;
 
+  m_okButton->setEnabled( true );
+
   if( m_table->rowCount() == 0 )
     {
       m_deleteButton->setEnabled( false );
@@ -331,6 +333,7 @@ void Logbook::slot_DeleteAllRows()
     }
 
   m_table->resizeColumnsToContents();
+  m_okButton->setEnabled( true );
   m_deleteButton->setEnabled( false );
   m_deleteAllButton->setEnabled( false );
   m_tableModified = true;
