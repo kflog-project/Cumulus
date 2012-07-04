@@ -530,10 +530,10 @@ void AltimeterModeDialog::accept()
       int qnh = spinQnh->value();
 
       if( GpsNmea::gps->getDeliveredAltitude() == GpsNmea::PRESSURE &&
-          GpsNmea::gps->baroAltitudeSeen() && m_saveQnh != spinQnh->value() )
+          GpsNmea::gps->baroAltitudeSeen() &&  m_saveLeveling != spinLeveling->value() )
         {
-          // Calculate again the QNH to avoid wrong value, if the spin box
-          // has not been operated via the plus and minus bottons.
+          // Calculate again the QNH to avoid wrong value, if the leveling spin box
+          // has not been operated via the plus and minus buttons.
 
           // WE have pressure selected and got pressure altitude. So we can try
           // to calculate the QNH.
