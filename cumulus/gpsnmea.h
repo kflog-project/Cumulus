@@ -366,6 +366,14 @@ class GpsNmea : public QObject
       };
 
     /**
+     * Returns true, if barometric altitude is available.
+     */
+    bool baroAltitudeSeen()
+    {
+      return _baroAltitudeSeen;
+    }
+
+    /**
      * Puts all desired GPS message keys into the passed hash. This method is
      * thread safe.
      *
@@ -724,8 +732,12 @@ class GpsNmea : public QObject
 
     /** NMEA log file */
     QFile* nmeaLogFile;
-    /** Flag to indicate receive of GPRMC. */
+
+    /** Flag to indicate the receive of GPRMC. */
     bool _gprmcSeen;
+
+    /** Flag to indicate the receive of GPRMZ. */
+    bool _baroAltitudeSeen;
 
 #ifdef FLARM
 

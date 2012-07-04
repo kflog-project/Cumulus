@@ -23,6 +23,7 @@
 #include "altimetermodedialog.h"
 #include "calculator.h"
 #include "glider.h"
+#include "gpsnmea.h"
 #include "mapconfig.h"
 #include "layout.h"
 
@@ -477,7 +478,19 @@ void AltimeterModeDialog::slotChangeSpinValue()
       Altitude::setUnit( (Altitude::altitudeUnit) _unit );
 
       GeneralConfig *conf = GeneralConfig::instance();
-      conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters( spinLeveling->value()) );
+      Altitude newAlt = Altitude::convertToMeters( spinLeveling->value() );
+      conf->setGpsUserAltitudeCorrection( newAlt );
+
+      if( GpsNmea::gps->getDeliveredAltitude() == GpsNmea::PRESSURE &&
+          GpsNmea::gps->baroAltitudeSeen() )
+        {
+          // WE have pressure selected and got pressure altitude from Flarm.
+          // So we can try to calculate the QNH.
+          // The common approach is to expect a pressure difference of 1 hPa per
+          // 30ft until 18.000ft. 30ft are 9.1437m
+          int qnh = (int) rint( 1013.25 + newAlt.getFeet() / 30.0 );
+          spinQnh->setValue( qnh );
+        }
 
       emit newAltimeterMode();     // informs MapView
       emit newAltimeterSettings(); // informs GpsNmea
@@ -513,7 +526,24 @@ void AltimeterModeDialog::accept()
       conf->setAltimeterMode( _mode );
       conf->setGpsAltitude( _ref );
       conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters(spinLeveling->value()) );
-      conf->setQNH( spinQnh->value() );
+
+      int qnh = spinQnh->value();
+
+      if( GpsNmea::gps->getDeliveredAltitude() == GpsNmea::PRESSURE &&
+          GpsNmea::gps->baroAltitudeSeen() && m_saveQnh != spinQnh->value() )
+        {
+          // Calculate again the QNH to avoid wrong value, if the spin box
+          // has not been operated via the plus and minus bottons.
+
+          // WE have pressure selected and got pressure altitude. So we can try
+          // to calculate the QNH.
+          // The common approach is to expect a pressure difference of 1 hPa per
+          // 30ft until 18.000ft. 30ft are 9.1437m
+          Altitude newAlt = Altitude::convertToMeters( spinLeveling->value() );
+          qnh = (int) rint( 1013.25 + newAlt.getFeet() / 30.0 );
+        }
+
+      conf->setQNH( qnh );
       conf->save();
 
       emit newAltimeterMode();     // informs MapView

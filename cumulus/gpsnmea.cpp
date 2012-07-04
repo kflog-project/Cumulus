@@ -212,6 +212,7 @@ void GpsNmea::resetDataObjects()
 
   _ignoreConnectionLost = false;
   _gprmcSeen = false;
+  _baroAltitudeSeen = false;
 
   reportedUnknownKeys.clear();
 
@@ -771,6 +772,8 @@ void GpsNmea::__ExtractPgrmz( const QStringList& slst )
 
       if( ok )
         {
+          _baroAltitudeSeen = true;
+
           Altitude altitude;
 
           altitude.setFeet( num );
@@ -1176,6 +1179,8 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
 
       if( ok )
         {
+          _baroAltitudeSeen = true;
+
           Altitude altitude( num );
 
           if( _lastPressureAltitude != altitude || _reportAltitude == true )
@@ -1248,10 +1253,10 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
 }
 
 /**
-    Used by LX Navigation devices. The LXWP0 sentence format is:
+    Used by LX Navigation devices. The LXWP2 sentence format is:
 
     $LXWP2,<1>,<2>,<3>,<4>,<5>,<6>,<7>,*CS
-    0 - LXWP0 - Sentence ID
+    0 - LXWP2 - Sentence ID
     1 - McCready float in m/s
     2 - Bugs 0...100%
     ...

@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-07-04 AP: Calculate the QNH automatically, if altitude level is
+                   adjusted by the user and a pressure based altitude is
+                   delivered.
+
 [*] 2012-06-29 AP: Cumulus 2.15.0 for Ubuntu and Maemo released.                   
 
 [+] 2012-06-29 AP: Map label boxes made a little bit smaller. Takeoff and
