@@ -1,3 +1,14 @@
+cumulus (2.15.1) stable; urgency=low
+
+  * Flarm alarms are shown as popups over the map now. This feature can be
+    switched on/off via settings->information. It is not yet tested in all
+    details.
+
+  * Calculate the QNH automatically, if altitude level is adjusted by the user
+    and a pressure based altitude is delivered.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 05 Jul 2012 23:25:08 +0200
+
 cumulus (2.15.0) stable; urgency=low
 
   * Map label boxes made a little bit smaller. Takeoff and landing is signaled
