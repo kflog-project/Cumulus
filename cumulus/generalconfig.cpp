@@ -407,6 +407,7 @@ void GeneralConfig::load()
                                   WARNING_SUPPRESS_TIME_DEFAULT).toInt();
   _alarmSound            = value( "AlarmSound", ALARM_SOUND_DEFAULT ).toBool();
   _popupAirspaceWarnings = value( "Popup Airspace Warnings", true ).toBool();
+  _popupFlarmAlarms      = value( "PopupFlarmAlarms", true ).toBool();
   endGroup();
 
   beginGroup("GPS");
@@ -753,6 +754,7 @@ void GeneralConfig::save()
   setValue( "WarningSuppressTime", _warningSuppressTime );
   setValue( "AlarmSound", _alarmSound );
   setValue( "Popup Airspace Warnings", _popupAirspaceWarnings );
+  setValue( "PopupFlarmAlarms", _popupFlarmAlarms );
   endGroup();
 
   beginGroup("GPS");

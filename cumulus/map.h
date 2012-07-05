@@ -233,17 +233,26 @@ public slots:
   void slotZoomIn();
 
   /**
-   * sets a new scale. Will schedule a redraw.
+   * Sets a new scale. Will schedule a redraw.
    */
   void slotSetScale(const double& newScale);
 
-  /** called to redraw on switch of manual mode */
+  /** Called to redraw on switch of manual mode */
   void slotSwitchManualInFlight();
 
   /**
    * Shows the current airspace status to the user.
    */
   void slotShowAirspaceStatus();
+
+#ifdef FLARM
+
+  /**
+   * Called to show a Flarm traffic info.
+   */
+  void slotShowFlarmTrafficInfo( QString& info );
+
+#endif
 
 private slots:
 

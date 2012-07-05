@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,7 +24,7 @@
  *
  * This class parses Flarm sentences and provides the results to the caller.
  *
- * \date 2010
+ * \date 2010-2012
  */
 
 #ifndef FLARM_H
@@ -239,6 +239,13 @@ public:
    */
   void collectPflaaFinished();
 
+private:
+
+  /**
+   * Creates a traffic message in HTML format and emits this message as signal.
+   */
+  void createTrafficMessage();
+
 signals:
 
   /**
@@ -246,6 +253,11 @@ signals:
    * received.
    */
   void newFlarmPflaaData();
+
+  /**
+   * This signal is emitted if a new Flarm traffic info is available.
+   */
+  void flarmTrafficInfo( QString& info );
 
   /**
    * This signal is emitted, if no new Flarm data are received and the

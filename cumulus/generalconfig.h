@@ -1564,6 +1564,18 @@ class GeneralConfig : protected QSettings
   /** sets Popup Airspace Warnings */
   void setPopupAirspaceWarnings(const bool newValue);
 
+  /** gets Popup Flarm alarms */
+  bool getPopupFlarmAlarms() const
+  {
+    return _popupFlarmAlarms;
+  };
+
+  /** sets Popup Flarm alarms */
+  void setPopupFlarmAlarms(const bool newValue)
+  {
+    _popupFlarmAlarms = newValue;
+  };
+
   /** Gets the Gps Device */
   QString &getGpsDevice()
   {
@@ -2423,6 +2435,8 @@ class GeneralConfig : protected QSettings
   bool _alarmSound;
   // Popup Airspace Warnings
   bool _popupAirspaceWarnings;
+  // Popup Flarm Alarms
+  bool _popupFlarmAlarms;
 
   // Gps device
   QString _gpsDevice;

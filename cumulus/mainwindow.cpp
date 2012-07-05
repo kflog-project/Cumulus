@@ -636,6 +636,11 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( Map::instance, SIGNAL( newPosition( QPoint& ) ),
            calculator, SLOT( slot_changePosition( QPoint& ) ) );
 
+#ifdef FLARM
+  connect( Flarm::instance(), SIGNAL( flarmTrafficInfo( QString& ) ),
+            Map::instance, SLOT( slotShowFlarmTrafficInfo( QString& )) );
+#endif
+
   connect( viewMap, SIGNAL( toggleLDCalculation( const bool ) ),
            calculator, SLOT( slot_toggleLDCalculation(const bool) ) );
 

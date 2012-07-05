@@ -2756,7 +2756,6 @@ void Map::slotSetScale(const double& newScale)
     }
 }
 
-
 /**
  * This function draws a "direction line" on the map if a waypoint has been
  * selected. The QPoint is the projected & mapped coordinate of the position symbol
@@ -3505,6 +3504,25 @@ void Map::slotShowAirspaceStatus()
   box = new WhatsThat( this, text, showTime );
   box->show();
 }
+
+#ifdef FLARM
+
+void Map::slotShowFlarmTrafficInfo( QString& info )
+{
+  static QPointer<WhatsThat> box;
+
+  if( ! box.isNull() )
+    {
+      // This alarm is obsolete. Close the popup.
+      box->close();
+    }
+
+  int showTime = GeneralConfig::instance()->getWarningDisplayTime() * 1000;
+  box = new WhatsThat(this, info, showTime);
+  box->show();
+}
+
+#endif
 
 bool Map::mutex()
 {

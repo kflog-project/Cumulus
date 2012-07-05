@@ -113,6 +113,12 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   checkAlarmSound->setObjectName("checkAlarmSound");
   checkAlarmSound->setChecked(true);
   topLayout->addWidget( checkAlarmSound, row, 0 );
+
+
+  checkFlarmAlarms = new QCheckBox(tr("Flarm Alarms"), this);
+  checkFlarmAlarms->setObjectName("checkFlarmAlarms");
+  checkFlarmAlarms->setChecked(true);
+  topLayout->addWidget( checkFlarmAlarms, row, 1, 1, 2 );
   row++;
 
   calculateNearestSites = new QCheckBox(tr("Nearest Site Calculator"), this);
@@ -171,6 +177,7 @@ void SettingsPageInformation::slot_load()
   spinWarning->setValue( conf->getWarningDisplayTime() );
   spinSuppress->setValue( conf->getWarningSuppressTime() );
   checkAlarmSound->setChecked( conf->getAlarmSoundOn() );
+  checkFlarmAlarms->setChecked( conf->getPopupFlarmAlarms() );
   calculateNearestSites->setChecked( conf->getNearestSiteCalculatorSwitch() );
 }
 
@@ -189,6 +196,7 @@ void SettingsPageInformation::slot_save()
   conf->setWarningDisplayTime( spinWarning->value() );
   conf->setWarningSuppressTime( spinSuppress->value() );
   conf->setAlarmSoundOn( checkAlarmSound->isChecked() );
+  conf->setPopupFlarmAlarms( checkFlarmAlarms->isChecked() );
   conf->setNearestSiteCalculatorSwitch( calculateNearestSites->isChecked() );
 }
 
@@ -205,6 +213,7 @@ void SettingsPageInformation::slot_setFactoryDefault()
   spinWarning->setValue(WARNING_DISPLAY_TIME_DEFAULT);
   spinSuppress->setValue(WARNING_SUPPRESS_TIME_DEFAULT);
   checkAlarmSound->setChecked(ALARM_SOUND_DEFAULT);
+  checkFlarmAlarms->setChecked( true );
   calculateNearestSites->setChecked(NEAREST_SITE_CALCULATOR_DEFAULT);
 }
 

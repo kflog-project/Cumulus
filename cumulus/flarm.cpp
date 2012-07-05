@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -17,9 +17,11 @@
 
 #include <QtCore>
 
+#include "altitude.h"
 #include "flarm.h"
 #include "flarmdisplay.h"
 #include "flarmaliaslist.h"
+#include "generalconfig.h"
 
 // initialize static data items
 bool Flarm::collectPflaa = false;
@@ -133,6 +135,13 @@ bool Flarm::extractPflau( const QStringList& stringList )
   flarmStatus.ID = stringList[10];
 
   flarmStatus.valid = true;
+
+  if( flarmStatus.Alarm != No && flarmStatus.AlarmType != 0 &&
+      flarmStatus.RelativeBearing.isEmpty() == false &&
+      GeneralConfig::instance()->getPopupFlarmAlarms() == true )
+    {
+      createTrafficMessage();
+    }
 
   return true;
 }
@@ -378,4 +387,87 @@ void Flarm::slotTimeout()
     {
       emit flarmPflaaDataTimeout();
     }
+}
+
+void Flarm::createTrafficMessage()
+{
+  bool ok;
+  int dir = flarmStatus.RelativeBearing.toInt(&ok);
+  int ta;
+
+  if( ! ok )
+    {
+      return;
+    }
+
+  if( dir < 0 )
+    {
+      dir += 360;
+    }
+
+  // Traffic angle for arrow picture
+  ta = ((dir+5)/10) * 10;  // Quantizes modulo 10;
+
+  dir = (int) rint( ((double) dir) / 30.0 );
+
+  if( dir == 0 )
+    {
+      // Correct to 12 o'clock
+      dir = 12;
+    }
+
+  int rvert = flarmStatus.RelativeVertical.toInt(&ok);
+
+  QString rverts = (rvert > 0) ? "+" : "";
+
+  if( ! ok )
+    {
+      return;
+    }
+
+  int rdist = flarmStatus.RelativeDistance.toInt(&ok);
+
+  if( ! ok )
+    {
+      return;
+    }
+
+  QString almType = ( flarmStatus.AlarmType != 3 ) ? tr("Traffic") : tr("Obstacle");
+  QString almlevel;
+
+  switch( flarmStatus.Alarm )
+  {
+  case 1:
+    almlevel = tr("Info");
+    break;
+  case 2:
+    almlevel = tr("Warning");
+    break;
+  case 3:
+    almlevel = tr("Alarm");
+    break;
+  default:
+    break;
+  }
+
+  // Load an arrow pixmap to show the traffic direction more in detail.
+  QString arrow;
+  arrow.sprintf("%s/icons/windarrows/wind-arrow-80px-%03d.png",
+                 GeneralConfig::instance()->getAppRoot().toAscii().data(),
+                 ta );
+
+  QString text = "<html><table border=1 cellpadding=\"5\"><tr><th align=center colspan=\"2\">" +
+                 almType + "&nbsp;" + almlevel +
+                 "</th></tr>";
+
+  text += "<tr><td align=left valign=middle>" + tr("Direction") + "</td>" +
+          "<td align=right valign=middle>" + "<img src=\"" + arrow + "\">" +
+          QString::number(dir) + " " + tr("o'clock") + "</td></tr>" +
+          "<tr><td align=left>" + tr("Vertical") + "</td>" +
+          "<td align=right>" + rverts + Altitude::getText( rvert, true, 0 ) + "</td></tr>" +
+          "<tr><td align=left>" + tr("Distance") + "</td>" +
+          "<td align=right>" + Altitude::getText( rdist, true, 0 ) + "</td></tr>" +
+          "</table></html>";
+
+  emit flarmTrafficInfo( text );
 }

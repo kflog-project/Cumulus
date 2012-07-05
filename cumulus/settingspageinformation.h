@@ -96,6 +96,7 @@ class SettingsPageInformation : public QWidget
   QSpinBox*    spinInfo;
   QSpinBox*    spinSuppress;
   QCheckBox*   checkAlarmSound;
+  QCheckBox*   checkFlarmAlarms;
   QCheckBox*   calculateNearestSites;
   QPushButton* buttonReset;
 
