@@ -481,7 +481,8 @@ void AltimeterModeDialog::slotChangeSpinValue()
       Altitude newAlt = Altitude::convertToMeters( spinLeveling->value() );
       conf->setGpsUserAltitudeCorrection( newAlt );
 
-      if( GpsNmea::gps->getDeliveredAltitude() == GpsNmea::PRESSURE &&
+      if( _baro->isChecked() && _msl->isChecked() &&
+          GpsNmea::gps->getDeliveredAltitude() == GpsNmea::PRESSURE &&
           GpsNmea::gps->baroAltitudeSeen() )
         {
           // WE have pressure selected and got pressure altitude from Flarm.
@@ -529,11 +530,13 @@ void AltimeterModeDialog::accept()
 
       int qnh = spinQnh->value();
 
-      if( GpsNmea::gps->getDeliveredAltitude() == GpsNmea::PRESSURE &&
-          GpsNmea::gps->baroAltitudeSeen() &&  m_saveLeveling != spinLeveling->value() )
+      if( _baro->isChecked() && _msl->isChecked() &&
+          GpsNmea::gps->getDeliveredAltitude() == GpsNmea::PRESSURE &&
+          GpsNmea::gps->baroAltitudeSeen() )
         {
           // Calculate again the QNH to avoid wrong value, if the leveling spin box
-          // has not been operated via the plus and minus buttons.
+          // has not been operated via the plus and minus buttons or a radio button
+          // has been pressed as last.
 
           // We have pressure selected and get pressure altitude. So we can try
           // to calculate the QNH.
