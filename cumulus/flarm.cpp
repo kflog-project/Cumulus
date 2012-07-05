@@ -405,16 +405,10 @@ void Flarm::createTrafficMessage()
       dir += 360;
     }
 
+  dir = (dir + 15) / 30;
+
   // Traffic angle for arrow picture
-  ta = ((dir+5)/10) * 10;  // Quantizes modulo 10;
-
-  dir = (int) rint( ((double) dir) / 30.0 );
-
-  if( dir == 0 )
-    {
-      // Correct to 12 o'clock
-      dir = 12;
-    }
+  ta = (dir == 12) ? 0 : dir * 30;
 
   int rvert = flarmStatus.RelativeVertical.toInt(&ok);
 
@@ -457,7 +451,7 @@ void Flarm::createTrafficMessage()
                  ta );
 
   QString text = "<html><table border=1 cellpadding=\"5\"><tr><th align=center colspan=\"2\">" +
-                 almType + "&nbsp;" + almlevel +
+                  almlevel + "&nbsp;" + almType +
                  "</th></tr>";
 
   text += "<tr><td align=left valign=middle>" + tr("Direction") + "</td>" +

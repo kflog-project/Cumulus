@@ -631,8 +631,10 @@ void MainWindow::slotCreateApplicationWidgets()
            this, SLOT( slotFinishStartUp() ) );
   connect( Map::instance, SIGNAL( waypointSelected( Waypoint* ) ),
            this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
-  connect( Map::instance, SIGNAL( airspaceWarning( const QString&, const bool ) ),
+  connect( Map::instance, SIGNAL( alarm( const QString&, const bool ) ),
            this, SLOT( slotAlarm( const QString&, const bool ) ) );
+  connect( Map::instance, SIGNAL( notification( const QString&, const bool ) ),
+           this, SLOT( slotNotification( const QString&, const bool ) ) );
   connect( Map::instance, SIGNAL( newPosition( QPoint& ) ),
            calculator, SLOT( slot_changePosition( QPoint& ) ) );
 
@@ -954,24 +956,30 @@ void MainWindow::playSound( const char *name )
 #endif
 }
 
-void MainWindow::slotNotification( const QString& msg, const bool sound )
-{
-  if ( sound )
-    {
-      playSound("notify");
-    }
-
-  viewMap->slot_info( msg );
-}
-
 void MainWindow::slotAlarm( const QString& msg, const bool sound )
 {
-  if ( sound )
+  if( sound )
     {
       playSound("alarm");
     }
 
-  viewMap->slot_info( msg );
+  if( ! msg.isEmpty() )
+    {
+      viewMap->slot_info( msg );
+    }
+}
+
+void MainWindow::slotNotification( const QString& msg, const bool sound )
+{
+  if( sound )
+    {
+      playSound("notify");
+    }
+
+  if( ! msg.isEmpty() )
+    {
+      viewMap->slot_info( msg );
+    }
 }
 
 void MainWindow::createMenuBar()

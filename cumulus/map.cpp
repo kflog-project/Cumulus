@@ -3120,7 +3120,7 @@ void Map::checkAirspace(const QPoint& pos)
       {
           // show warning in status bar with alarm
         _lastAsType = msg;
-        // emit airspaceWarning( msg, true );
+        // emit alarm( msg, true );
       }
 
       QMapIterator<QString, int> j(newInsideAsMap);
@@ -3178,7 +3178,7 @@ void Map::checkAirspace(const QPoint& pos)
         {
             // show warning in status bar
           _lastAsType = msg;
-          // emit airspaceWarning( msg, true );
+          // emit alarm( msg, true );
         }
 
       QMapIterator<QString, int> j(newVeryNearAsMap);
@@ -3235,7 +3235,7 @@ void Map::checkAirspace(const QPoint& pos)
         {
           // show warning in status bar
           _lastAsType = msg;
-          // emit airspaceWarning( msg, true );
+          // emit alarm( msg, true );
         }
 
       QMapIterator<QString, int> j(newNearAsMap);
@@ -3303,7 +3303,7 @@ void Map::checkAirspace(const QPoint& pos)
         {
             // show warning in status bar without alarm
           _lastAsType = msg;
-          // emit airspaceWarning( msg, false );
+          // emit alarm( msg, false );
         }
 
       return;
@@ -3339,7 +3339,7 @@ void Map::checkAirspace(const QPoint& pos)
       {
          // show warning in status bar without alarm
         _lastAsType = msg;
-        // emit airspaceWarning( msg, false );
+        // emit alarm( msg, false );
       }
 
       return;
@@ -3375,7 +3375,7 @@ void Map::checkAirspace(const QPoint& pos)
       {
          // show warning in status bar without alarm
         _lastAsType = msg;
-        // emit airspaceWarning( msg, false );
+        // emit alarm( msg, false );
       }
 
       return;
@@ -3394,7 +3394,7 @@ void Map::checkAirspace(const QPoint& pos)
               // Reset warning in status bar without alarm, if no warning is active.
             _lastAsType = "";
             // Last message in status bar should not be cleared.
-            // emit airspaceWarning( " ", false );
+            // emit alarm( " ", false );
           }
         }
 
@@ -3410,7 +3410,7 @@ void Map::checkAirspace(const QPoint& pos)
 
       if( GeneralConfig::instance()->getPopupAirspaceWarnings() )
         {
-          emit airspaceWarning( " ", true );
+          emit alarm( "", true );
           WhatsThat *box = new WhatsThat(this, text, showTime);
           box->show();
           return;
@@ -3518,8 +3518,10 @@ void Map::slotShowFlarmTrafficInfo( QString& info )
     }
 
   int showTime = GeneralConfig::instance()->getWarningDisplayTime() * 1000;
-  box = new WhatsThat(this, info, showTime);
+  box = new WhatsThat( MainWindow::mainWindow(), info, showTime);
   box->show();
+
+  emit notification( "", true );
 }
 
 #endif

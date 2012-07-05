@@ -270,9 +270,14 @@ signals:
   void waypointSelected(Waypoint *);
 
   /**
-   * Is emitted when an airspace is entered or left behind
+   * Is emitted when an alarm has to be signaled to the user.
    */
-  void airspaceWarning(const QString&, const bool sound=true);
+  void alarm(const QString& text, const bool sound=true);
+
+  /**
+   * Is emitted when a notification has to be signaled to the user.
+   */
+  void notification(const QString& text, const bool sound=true);
 
   /**
    * Is emitted when the map starts and ends a redrawing sequence
