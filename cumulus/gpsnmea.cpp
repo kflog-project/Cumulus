@@ -2448,7 +2448,9 @@ void GpsNmea::slot_openNmeaLogFile()
 
   if( nmeaLogFile == 0 )
     {
-      if( QFileInfo(fname).exists() )
+      QFileInfo fi(fname);
+
+      if( fi.exists() && fi.size() > 0 )
         {
           QFile::remove( fname + ".old" );
           QFile::rename ( fname, fname + ".old" );
