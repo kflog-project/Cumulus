@@ -3277,12 +3277,12 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="settingspageinformation.cpp" line="118"/>
         <source>Flarm Alarms</source>
-        <translation></translation>
+        <translation>Flarm Alarme</translation>
     </message>
     <message>
         <location filename="settingspageinformation.cpp" line="124"/>
         <source>Nearest Site Calculator</source>
-        <translation>Ortsabstandsberechnung</translation>
+        <translation>Ortszielberechnung</translation>
     </message>
     <message>
         <location filename="settingspageinformation.cpp" line="232"/>
