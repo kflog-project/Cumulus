@@ -407,6 +407,12 @@ void Flarm::createTrafficMessage()
 
   dir = (dir + 15) / 30;
 
+  if( dir == 0 )
+    {
+      // zero must be translated as 12 o'clock
+      dir = 12;
+    }
+
   // Traffic angle for arrow picture
   ta = (dir == 12) ? 0 : dir * 30;
 
