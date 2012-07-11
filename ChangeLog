@@ -15,9 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-07-08 AP: Don't remove an old NMEA logfile, if its size is zero. That
+                   shall prevent that an existing backup file with content is 
+                   replaced by nothing.
+                   
 [+] 2012-07-05 AP: Flarm alarms are shown as popups over the map now. This
                    feature can be switched on/off via settings->information.
-                   It is not yet tested in all details.
 
 [o] 2012-07-04 AP: Calculate the QNH automatically, if altitude level is
                    adjusted by the user and a pressure based altitude is
