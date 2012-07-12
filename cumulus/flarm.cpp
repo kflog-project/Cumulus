@@ -466,8 +466,18 @@ void Flarm::createTrafficMessage()
           "<tr><td align=left>" + tr("Vertical") + "</td>" +
           "<td align=right>" + rverts + Altitude::getText( rvert, true, 0 ) + "</td></tr>" +
           "<tr><td align=left>" + tr("Distance") + "</td>" +
-          "<td align=right>" + Altitude::getText( rdist, true, 0 ) + "</td></tr>" +
-          "</table></html>";
+          "<td align=right>" + Altitude::getText( rdist, true, 0 ) + "</td></tr>";
+
+  // If an alias is known, it is added to the table
+  QString alias = FlarmAliasList::getAliasHash().value( flarmStatus.ID );
+
+  if( alias.isEmpty() == false )
+    {
+      text += "<tr><td align=left>" + tr("Alias") + "</td>" +
+              "<td align=right>" + alias + "</td></tr>";
+    }
+
+  text += "</table></html>";
 
   emit flarmTrafficInfo( text );
 }
