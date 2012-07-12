@@ -116,6 +116,13 @@ Logbook::Logbook( QWidget *parent ) :
 
   topLayout->addWidget( buttonBox );
 
+  QString style = "QTableView QTableCornerButton::section { background: gray }";
+  m_table->setStyleSheet( style );
+
+  QHeaderView *vHeader = m_table->verticalHeader();
+  style = "QHeaderView::section { width: 2em }";
+  vHeader->setStyleSheet( style );
+
   loadLogbookData();
 }
 
@@ -126,15 +133,6 @@ Logbook::~Logbook()
 void Logbook::showEvent( QShowEvent *event )
 {
   Q_UNUSED( event )
-
-  QString style = "QTableView QTableCornerButton::section { background: gray }";
-  m_table->setStyleSheet( style );
-
-  QHeaderView *vHeader = m_table->verticalHeader();
-  style = "QHeaderView::section { width: 2em }";
-  vHeader->setStyleSheet( style );
-
-  m_table->resizeColumnsToContents();
 
   if( m_table->rowCount() == 0 )
     {
@@ -148,6 +146,8 @@ void Logbook::showEvent( QShowEvent *event )
       m_deleteButton->setEnabled( true );
       m_deleteAllButton->setEnabled( true );
     }
+
+  m_table->resizeColumnsToContents();
 }
 
 void Logbook::setTableHeader()

@@ -1685,9 +1685,10 @@ void Calculator::slot_startTask()
  */
 bool Calculator::moving()
 {
-  const double Limit = 35000.0 / 3600.0; // 35Km/h as m/s
+  const double SpeedLimit = 35000.0 / 3600.0; // 35Km/h as m/s
+  const int TimeLimit = 7; // time limit in seconds
 
-  if( samplelist.count() < 5 )
+  if( samplelist.count() < TimeLimit )
     {
       // We need to have some samples in order to be able to analyze speed.
       return false;
@@ -1695,13 +1696,13 @@ bool Calculator::moving()
 
   double speed = 0.0;
 
-  for( int i = 0; i < 5; i++ )
+  for( int i = 0; i < TimeLimit; i++ )
     {
-      // average speed about 5s
+      // average speed about TimeLimit seconds
       speed += samplelist[i].vector.getSpeed().getMps();
     }
 
-  if( (speed / 5.0) >= Limit )
+  if( (speed / ((double) TimeLimit)) >= SpeedLimit )
     {
       return true;
     }
