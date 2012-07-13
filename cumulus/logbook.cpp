@@ -17,10 +17,12 @@
 
 #include <QtGui>
 
+#include "generalconfig.h"
 #include "igclogger.h"
 #include "logbook.h"
 #include "layout.h"
 #include "mainwindow.h"
+#include "rowdelegate.h"
 
 /**
  * Constructor
@@ -44,6 +46,7 @@ Logbook::Logbook( QWidget *parent ) :
 
   m_table = new QTableWidget( 0, 8, this );
   m_table->setSelectionBehavior( QAbstractItemView::SelectRows );
+  m_table->setAlternatingRowColors( true );
 
   // hide vertical headers
   // QHeaderView *vHeader = m_table->verticalHeader();
@@ -123,6 +126,11 @@ Logbook::Logbook( QWidget *parent ) :
   style = "QHeaderView::section { width: 2em }";
   vHeader->setStyleSheet( style );
 
+  // set new row height from configuration
+  int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
+  rowDelegate = new RowDelegate( m_table, afMargin );
+  m_table->setItemDelegate( rowDelegate );
+
   loadLogbookData();
 }
 
@@ -148,6 +156,7 @@ void Logbook::showEvent( QShowEvent *event )
     }
 
   m_table->resizeColumnsToContents();
+  m_table->resizeRowsToContents();
 }
 
 void Logbook::setTableHeader()
@@ -216,6 +225,7 @@ void Logbook::loadLogbookData()
     }
 
   m_table->resizeColumnsToContents();
+  m_table->resizeRowsToContents();
 }
 
 void Logbook::slot_DeleteRows()
@@ -285,6 +295,7 @@ void Logbook::slot_DeleteRows()
     }
 
   m_table->resizeColumnsToContents();
+  m_table->resizeRowsToContents();
   m_tableModified = true;
 
   m_okButton->setEnabled( true );
@@ -333,6 +344,7 @@ void Logbook::slot_DeleteAllRows()
     }
 
   m_table->resizeColumnsToContents();
+  m_table->resizeRowsToContents();
   m_okButton->setEnabled( true );
   m_deleteButton->setEnabled( false );
   m_deleteAllButton->setEnabled( false );

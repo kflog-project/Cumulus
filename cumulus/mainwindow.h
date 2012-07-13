@@ -425,26 +425,33 @@ private:
   QAction* actionMenuBarToggle;
   QAction* actionOpenContextMenu;
   QAction* actionFileQuit;
+
   QAction* actionViewInfo;
   QAction* actionViewWaypoints;
   QAction* actionViewAirfields;
   QAction* actionViewReachpoints;
   QAction* actionViewTaskpoints;
-  QAction* actionViewGPSStatus;
-  QAction* actionViewASStatus;
-  QAction* actionToggleStatusbar;
+
+#ifdef FLARM
+  QAction* actionViewFlarm;
+#endif
+
+  QAction* actionStatusGPS;
+  QAction* actionStatusAirspace;
+
   QAction* actionZoomInZ;
   QAction* actionZoomOutZ;
 
+  QAction* actionToggleStatusbar;
   QAction* actionToggleWindowSize;
   QAction* actionToggleAfLabels;
   QAction* actionToggleOlLabels;
   QAction* actionToggleTpLabels;
   QAction* actionToggleWpLabels;
   QAction* actionToggleLabelsInfo;
-
   QAction* actionToggleLogging;
   QAction* actionToggleTrailDrawing;
+
   QAction* actionEnsureVisible;
   QAction* actionSelectTask;
   QAction* actionPreFlight;
@@ -470,6 +477,8 @@ private:
   QMenu *viewMenu;
   /** mapMenu contains all items of the menu entry "Map" */
   QMenu *mapMenu;
+  /** statusMenu contains all items of the menu entry "Status" */
+  QMenu *statusMenu;
   /** labelMenu is a main menu */
   QMenu *labelMenu;
   /** labelSubMenu contains all items of the menu entry "Label" */

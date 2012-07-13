@@ -17,11 +17,12 @@
 
 #include <QtGui>
 
-#include "target.h"
-#include "generalconfig.h"
 #include "flarmaliaslist.h"
 #include "flarmdisplay.h"
 #include "layout.h"
+#include "generalconfig.h"
+#include "rowdelegate.h"
+#include "target.h"
 
 QHash<QString, QString> FlarmAliasList::aliasHash;
 
@@ -41,6 +42,18 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
 
   list = new QTableWidget( 0, 2, this );
   list->setSelectionBehavior( QAbstractItemView::SelectItems );
+  list->setAlternatingRowColors( true );
+
+  QString style = "QTableView QTableCornerButton::section { background: gray }";
+  list->setStyleSheet( style );
+  QHeaderView *vHeader = list->verticalHeader();
+  style = "QHeaderView::section { width: 2em }";
+  vHeader->setStyleSheet( style );
+
+  // set new row height from configuration
+  int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
+  rowDelegate = new RowDelegate( list, afMargin );
+  list->setItemDelegate( rowDelegate );
 
   // hide vertical headers
   // QHeaderView *vHeader = list->verticalHeader();
@@ -151,15 +164,7 @@ void FlarmAliasList::showEvent( QShowEvent *event )
   Q_UNUSED( event )
 
   list->resizeColumnToContents( 0 );
-
-  QString style = "QTableView QTableCornerButton::section { background: gray }";
-  list->setStyleSheet( style );
-
-  QHeaderView *vHeader = list->verticalHeader();
-
-  style = "QHeaderView::section { width: 2em }";
-
-  vHeader->setStyleSheet( style );
+  list->resizeRowsToContents();
 }
 
 void FlarmAliasList::slot_AddRow( QString col0, QString col1 )

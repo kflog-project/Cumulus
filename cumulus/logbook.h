@@ -39,6 +39,7 @@
 class QPushButton;
 class QStringList;
 class QTableWidget;
+class RowDelegate;
 
 class Logbook : public QWidget
 {
@@ -108,9 +109,11 @@ private:
   /** ok button. */
   QPushButton* m_okButton;
 
-
   /** Logbook data as string list */
   QStringList m_logbook;
+
+  /** Adds additional space in the list. */
+  RowDelegate* rowDelegate;
 };
 
 #endif /* Logbook_h */

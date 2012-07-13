@@ -41,6 +41,7 @@ class QMutex;
 class QPushButton;
 class QString;
 class QTableWidget;
+class RowDelegate;
 
 class FlarmAliasList : public QWidget
 {
@@ -126,6 +127,9 @@ private:
 
   /** Table widget with two columns for alias entries. */
   QTableWidget* list;
+
+  /** Adds additional space in the list. */
+  RowDelegate* rowDelegate;
 
   /** Delete button. */
   QPushButton *deleteButton;

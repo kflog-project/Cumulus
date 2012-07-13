@@ -396,8 +396,6 @@ class MapView : public QWidget
     QPixmap _arrows;
     /** can be CuCalc::GPS or CuCalc::MAN */
     int lastPositionChangeSource;
-    /** pointer to main window */
-    MainWindow *_mainWindow;
 
   private slots:
 

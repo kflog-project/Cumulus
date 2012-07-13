@@ -138,6 +138,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   mapMenu = 0;
   labelMenu = 0;
   labelSubMenu = 0;
+  statusMenu = 0;
   setupMenu = 0;
   helpMenu = 0;
 
@@ -990,16 +991,19 @@ void MainWindow::createMenuBar()
   fileMenu->addAction( actionFileQuit );
 
   viewMenu = menuBar()->addMenu(tr("View"));
-  viewMenu->addAction( actionViewAirfields );
+
+#ifdef FLARM
+  viewMenu->addAction( actionViewFlarm );
+  viewMenu->addSeparator();
+#endif
+
   viewMenu->addAction( actionViewReachpoints );
+  viewMenu->addAction( actionViewAirfields );
   viewMenu->addAction( actionViewInfo );
   actionViewInfo->setEnabled( false );
   viewMenu->addAction( actionViewTaskpoints );
   actionViewTaskpoints->setEnabled( false );
   viewMenu->addAction( actionViewWaypoints );
-  viewMenu->addSeparator();
-  viewMenu->addAction( actionViewASStatus );
-  viewMenu->addAction( actionViewGPSStatus );
 
   labelMenu = menuBar()->addMenu( tr("Toggles"));
   labelSubMenu = labelMenu->addMenu( tr("Labels"));
@@ -1029,6 +1033,10 @@ void MainWindow::createMenuBar()
   mapMenu->addAction( actionManualNavMove2Home );
   mapMenu->addAction( actionNav2Home );
   mapMenu->addAction( actionEnsureVisible );
+
+  statusMenu = contextMenu->addMenu(tr("Status") + " ");
+  statusMenu->addAction( actionStatusAirspace );
+  statusMenu->addAction( actionStatusGPS );
 
   setupMenu = menuBar()->addMenu(tr("Setup"));
   setupMenu->addAction( actionSetupConfig );
@@ -1061,16 +1069,19 @@ void MainWindow::createContextMenu()
   fileMenu->addAction( actionFileQuit );
 
   viewMenu = contextMenu->addMenu(tr("View") + " ");
-  viewMenu->addAction( actionViewAirfields );
+
+#ifdef FLARM
+  viewMenu->addAction( actionViewFlarm );
+  viewMenu->addSeparator();
+#endif
+
   viewMenu->addAction( actionViewReachpoints );
+  viewMenu->addAction( actionViewAirfields );
   viewMenu->addAction( actionViewInfo );
   actionViewInfo->setEnabled( false );
   viewMenu->addAction( actionViewTaskpoints );
   actionViewTaskpoints->setEnabled( false );
   viewMenu->addAction( actionViewWaypoints );
-  viewMenu->addSeparator();
-  viewMenu->addAction( actionViewASStatus );
-  viewMenu->addAction( actionViewGPSStatus );
 
   labelMenu = contextMenu->addMenu( tr("Toggles") + " ");
   labelSubMenu = labelMenu->addMenu( tr("Labels") + " ");
@@ -1100,6 +1111,10 @@ void MainWindow::createContextMenu()
   mapMenu->addAction( actionManualNavMove2Home );
   mapMenu->addAction( actionNav2Home );
   mapMenu->addAction( actionEnsureVisible );
+
+  statusMenu = contextMenu->addMenu(tr("Status") + " ");
+  statusMenu->addAction( actionStatusAirspace );
+  statusMenu->addAction( actionStatusGPS );
 
   setupMenu = contextMenu->addMenu(tr("Setup") + " ");
   setupMenu->addAction( actionSetupConfig );
@@ -1150,6 +1165,7 @@ void MainWindow::slotSetMenuFontSize()
   if( fileMenu ) fileMenu->setFont( userFont );
   if( viewMenu ) viewMenu->setFont( userFont );
   if( mapMenu ) mapMenu->setFont( userFont );
+  if( statusMenu ) statusMenu->setFont( userFont );
   if( setupMenu ) setupMenu->setFont( userFont );
   if( helpMenu ) helpMenu->setFont( userFont );
   if( labelMenu ) labelMenu->setFont( userFont );
@@ -1318,6 +1334,13 @@ void MainWindow::createActions()
   connect( actionFileQuit, SIGNAL( triggered() ),
             this, SLOT( slotFileQuit() ) );
 
+#ifdef FLARM
+  actionViewFlarm = new QAction( tr( "Flarm Radar" ), this );
+  addAction( actionViewFlarm );
+  connect( actionViewFlarm, SIGNAL( triggered() ),
+            viewMap, SLOT( slot_OpenFlarmWidget() ) );
+#endif
+
   actionViewWaypoints = new QAction ( tr( "Waypoints" ), this );
   addAction( actionViewWaypoints );
   connect( actionViewWaypoints, SIGNAL( triggered() ),
@@ -1359,17 +1382,17 @@ void MainWindow::createActions()
   connect( actionToggleStatusbar, SIGNAL( toggled( bool ) ),
             this, SLOT( slotViewStatusBar( bool ) ) );
 
-  actionViewASStatus = new QAction( tr( "AS Status" ), this );
-  addAction( actionViewASStatus );
-  connect( actionViewASStatus, SIGNAL( triggered() ),
+  actionStatusAirspace = new QAction( tr( "Airspace" ), this );
+  addAction( actionStatusAirspace );
+  connect( actionStatusAirspace, SIGNAL( triggered() ),
             Map::instance, SLOT( slotShowAirspaceStatus() ) );
 
-  actionViewGPSStatus = new QAction( tr( "GPS Status" ), this );
+  actionStatusGPS = new QAction( tr( "GPS" ), this );
 #ifndef ANDROID
-  actionViewGPSStatus->setShortcut(Qt::Key_G);
+  actionStatusGPS->setShortcut(Qt::Key_G);
 #endif
-  addAction( actionViewGPSStatus );
-  connect( actionViewGPSStatus, SIGNAL( triggered() ),
+  addAction( actionStatusGPS );
+  connect( actionStatusGPS, SIGNAL( triggered() ),
             viewMap, SLOT( slot_gpsStatusDialog() ) );
 
   // Consider qwertz keyboards y <-> z are interchanged
@@ -1562,11 +1585,15 @@ void MainWindow::createActions()
 
 void  MainWindow::toggleActions( const bool toggle )
 {
-  qDebug() << "toggleActions" << toggle;
+
+#ifdef FLARM
+  actionViewFlarm->setEnabled( toggle );
+#endif
+
   actionViewWaypoints->setEnabled( toggle );
   actionViewAirfields->setEnabled( toggle );
-  actionViewASStatus->setEnabled( toggle );
-  actionViewGPSStatus->setEnabled( toggle );
+  actionStatusAirspace->setEnabled( toggle );
+  actionStatusGPS->setEnabled( toggle );
   actionZoomInZ->setEnabled( toggle );
   actionZoomOutZ->setEnabled( toggle );
   actionToggleAfLabels->setEnabled( toggle );
@@ -2726,7 +2753,7 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
       // Open GPS status window from Android menu
       if ( _rootWindow )
         {
-          actionViewGPSStatus->activate(QAction::Trigger);
+          actionStatusGPS->activate(QAction::Trigger);
         }
 
       return;

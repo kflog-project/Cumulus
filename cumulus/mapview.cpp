@@ -50,8 +50,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   setObjectName("MapView");
   setContentsMargins(-9, -9, -9, -9);
 
-  _mainWindow = (MainWindow *)parent;
-
   if( parent )
     {
       resize( parent->size() );
@@ -103,7 +101,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _waypoint->setValue("-");
   wayLayout->addWidget( _waypoint, 1 );
   connect(_waypoint, SIGNAL(mousePress()),
-          (MainWindow*)parent, SLOT(slotSwitchToWPListViewExt()));
+          MainWindow::mainWindow(), SLOT(slotSwitchToWPListViewExt()));
 
   //layout for Glide Path and Relative Bearing
   QBoxLayout *GRLayout = new QHBoxLayout;
@@ -120,7 +118,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   GRLayout->addWidget( _glidepath );
 
   connect(_glidepath, SIGNAL(mousePress()),
-          (MainWindow*)parent, SLOT(slotSwitchToReachListView()));
+          MainWindow::mainWindow(), SLOT(slotSwitchToReachListView()));
 
   // add Relative Bearing widget
   QPixmap arrow = _arrows.copy( 24*60+3, 3, 54, 54 );
@@ -131,7 +129,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 //  _rel_bearing->setPixmap( arrow );
 
   connect(_rel_bearing, SIGNAL(mousePress()),
-          (MainWindow*)parent, SLOT(slotRememberWaypoint()) );
+          MainWindow::mainWindow(), SLOT(slotRememberWaypoint()) );
 
   //layout for Distance/ETA and Bearing
   QBoxLayout *DEBLayout = new QHBoxLayout;
@@ -1068,8 +1066,7 @@ void MapView::slot_OpenFlarmWidget()
 {
   if( _theMap->isVisible() == true )
     {
-      extern MainWindow  *_globalMainWindow;
-      _globalMainWindow->setView( MainWindow::flarmView );
+      MainWindow::mainWindow()->setView( MainWindow::flarmView );
       _theMap->setVisible( false );
       _flarmWidget->setVisible( true );
     }
@@ -1080,8 +1077,7 @@ void MapView::slot_OpenMapView()
 {
   if( _theMap->isVisible() == false )
     {
-      extern MainWindow  *_globalMainWindow;
-      _globalMainWindow->setView( MainWindow::mapView );
+      MainWindow::mainWindow()->setView( MainWindow::mapView );
       _theMap->setVisible( true );
       _flarmWidget->setVisible( false );
     }
