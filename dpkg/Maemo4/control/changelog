@@ -8,7 +8,7 @@ cumulus (2.15.2) stable; urgency=low
     
   * Display issue fixed in flight logbook on N8x0.
 
--- Axel Pauli <kflog.cumulus@googlemail.com>  Fri, 13 Jul 2012 20:48:03 +0200
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Fri, 13 Jul 2012 20:48:03 +0200
 
 cumulus (2.15.1) stable; urgency=low
 

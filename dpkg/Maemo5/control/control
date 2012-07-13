@@ -11,7 +11,8 @@ Depends: ${shlibs:Depends}, alsa-utils (>= 1.0.20)
 Description: Cumulus is a flight computer for glider pilots.
  Cumulus features a full colored moving map display with elevations, airspace,
  terrain and airfields information. It can use waypoints, supports flight tasks
- and logs flights according to the IGC standard.
+ and logs flights according to the IGC standard. If a Flarm device is connected
+ with Cumulus you have also a radar view available with all seen contacts.
  .
  Cumulus can be used with different GPS receivers either with the built in
  or an external GPS device connected via serial, USB or BT.
