@@ -15,6 +15,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-07-13 AP: Display issue fixed in flight logbook on N8x0.
+
 [o] 2012-07-13 AP: Popup Menu modified. GPS and airspace status moved to an own
                    menu point called Status. New menu entry Flarm Radar added
                    under the menu point View.
@@ -22,7 +24,7 @@ Cumulus changelog
 [o] 2012-07-13 AP: Additional configurable space added to row height of Logbook
                    and Flarm alias list.
 
-[*] 2012-07-12 AP: Cumulus 2.15.1 released.
+[*] 2012-07-12 AP: Cumulus 2.15.1 for Android and Maemo4 released.
 
 [o] 2012-07-08 AP: Don't remove an old NMEA logfile, if its size is zero. That
                    shall prevent that an existing backup file with content is 

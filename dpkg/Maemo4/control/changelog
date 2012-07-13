@@ -1,3 +1,15 @@
+cumulus (2.15.2) stable; urgency=low
+
+  * Popup Menu modified. GPS and airspace status moved to an own menu point
+    called Status. New menu entry Flarm Radar added under the menu point View.
+                   
+  * Additional configurable space added to row height of Logbook and Flarm
+    alias list.
+    
+  * Display issue fixed in flight logbook on N8x0.
+
+-- Axel Pauli <kflog.cumulus@googlemail.com>  Fri, 13 Jul 2012 20:48:03 +0200
+
 cumulus (2.15.1) stable; urgency=low
 
   * Don't remove an old NMEA logfile, if its size is zero. That shall prevent
