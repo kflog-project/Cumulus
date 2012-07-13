@@ -15,6 +15,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2012-07-12 AP: Cumulus 2.15.1 released.
+
 [o] 2012-07-08 AP: Don't remove an old NMEA logfile, if its size is zero. That
                    shall prevent that an existing backup file with content is 
                    replaced by nothing.
