@@ -75,11 +75,12 @@ Cumulus changelog
                    page. Only on that page an Internet proxy can be defined now.                   
                   
 [-] 2012-06-25 AP: Wind calculation did not work under Android, if no NMEA
-                   raw data were available.
+                   raw data are available. Motorola Defy is an example for that. 
                    
 [+] 2012-06-25 AP: Android location data are forwarded to GPS status dialog
-                   terminal window, if no NMEA raw data were available. That
-                   makes an analysis possible also in that case.                 
+                   terminal window, if no NMEA raw data are available. That
+                   makes an analysis possible also in that case. Motorola
+                   Defy is an example for that.                
 
 [o] 2012-06-25 AP: Altimeter settings dialog modified, that the altitude
                    reference (GPS/Pressure) can also be changed in it.
