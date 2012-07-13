@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Id$ -->
-<manifest package="org.kflog.cumulus" android:versionCode="10" android:installLocation="auto" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="2.15.1_AV7a_GB">
+<manifest package="org.kflog.cumulus" android:versionCode="11" android:installLocation="auto" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="2.15.2_AV7a_GB">
     <supports-screens android:largeScreens="true" android:normalScreens="true" android:anyDensity="true" android:smallScreens="false"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
