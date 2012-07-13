@@ -53,7 +53,9 @@ Logbook::Logbook( QWidget *parent ) :
   // vHeader->setVisible(false);
 
   QHeaderView* hHeader = m_table->horizontalHeader();
-  hHeader->setStretchLastSection( true );
+
+  // that makes trouble on N810
+  // hHeader->setStretchLastSection( true );
   hHeader->setClickable( true );
 
   connect( hHeader, SIGNAL(sectionClicked(int)),
