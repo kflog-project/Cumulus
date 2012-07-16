@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-07-16 AP: Android BUGFIX: New wrapper method reportGpsStatus introduced
+                   to prevent an exception, if native C++ part is not yet loaded.
+                   Got a user stack trace via Google Play.
+
 [-] 2012-07-13 AP: Display issue fixed in flight logbook on N8x0.
 
 [o] 2012-07-13 AP: Popup Menu modified. GPS and airspace status moved to an own
