@@ -173,7 +173,7 @@ public class CumulusActivity extends QtActivity
                    switch (msg.arg1)
                      {
                        case BluetoothService.STATE_CONNECTED:
-                         nativeGpsStatus(1);
+                         reportGpsStatus(1);
                          break;
 
                        case BluetoothService.STATE_CONNECTING:
@@ -183,7 +183,7 @@ public class CumulusActivity extends QtActivity
                          break;
 
                        case BluetoothService.STATE_NONE:
-                         nativeGpsStatus(0);
+                         reportGpsStatus(0);
                          break;
                      }
                break;
@@ -224,7 +224,6 @@ public class CumulusActivity extends QtActivity
 
   public static native void nativeNmeaString(String nmea);
   public static native void nativeGpsStatus(int status);
-  public static native void keyboardAction(int action);
   public static native void nativeKeypress(char code);
   public static native boolean isRootWindow();
 
@@ -415,7 +414,14 @@ public class CumulusActivity extends QtActivity
                 if( gpsEnabled )
                   {
                     // Forward GPS data only, if user has enabled that.
-                    nativeNmeaString(nmea);
+                  	try
+                  		{
+                  			nativeNmeaString(nmea);
+                  		}
+                	  catch(UnsatisfiedLinkError e)
+                	    { 
+                	      // Ignore exception, if native part is not yet loaded.
+                	    }
                   }
               }
           };
@@ -427,13 +433,20 @@ public class CumulusActivity extends QtActivity
             {
               if( gpsEnabled == true && nmeaIsReceived == false )
               {
-               // If the GPS device do not deliver raw NMEA sentences, we
-               // forward these GPS data which is provided here. Otherwise
-               // our application gets no GPS data.
-                 nativeGpsFix( loc.getLatitude(), loc.getLongitude(),
-                               loc.getAltitude(),
-                               loc.getSpeed(), loc.getBearing(),
-                               loc.getAccuracy(), loc.getTime());
+                // If the GPS device do not deliver raw NMEA sentences, we
+                // forward these GPS data which is provided here. Otherwise
+                // our application gets no GPS data.
+              	try
+              		{
+                    nativeGpsFix( loc.getLatitude(), loc.getLongitude(),
+                                  loc.getAltitude(),
+                                  loc.getSpeed(), loc.getBearing(),
+                                  loc.getAccuracy(), loc.getTime());
+              		}
+            	  catch(UnsatisfiedLinkError e)
+            	    { 
+            	      // Ignore exception, if native part is not yet loaded.
+            	    }
                }
             }
 
@@ -451,7 +464,8 @@ public class CumulusActivity extends QtActivity
 
                 // GPS receiver is disconnected
                 Log.d(TAG, "onProviderDisabled: GPS=False");
-                nativeGpsStatus(0);
+                
+                reportGpsStatus(0);
                 gpsEnabled = false;
                 nmeaIsReceived = false;
               }
@@ -467,7 +481,7 @@ public class CumulusActivity extends QtActivity
                   // GPS receiver is connected
                   Log.d(TAG, "onProviderEnabled: GPS=True");
 
-                  nativeGpsStatus(1);
+                  reportGpsStatus(1);
                   gpsEnabled = true;
                   nmeaIsReceived = false;
                 }
@@ -488,7 +502,7 @@ public class CumulusActivity extends QtActivity
                       if( lastGpsStatus != status )
                         {
                           // GPS receiver is connected
-                          nativeGpsStatus(1);
+                        	reportGpsStatus(1);
                         }
                     }
                   else
@@ -496,7 +510,7 @@ public class CumulusActivity extends QtActivity
                       if( lastGpsStatus != status )
                         {
                           // GPS receiver is disconnected
-                          nativeGpsStatus(0);
+                        	reportGpsStatus(0);
                         }
                     }
 
@@ -997,7 +1011,8 @@ public class CumulusActivity extends QtActivity
     if( gpsEnabled == true )
       {
         Log.i(TAG, "Disable GPS");
-        nativeGpsStatus(0);
+        
+        reportGpsStatus(0);
         gpsEnabled = false;
 
         // Lock, if Bt Service is used. It will be terminated then.
@@ -1039,7 +1054,7 @@ public class CumulusActivity extends QtActivity
         }
       else
         {
-          nativeGpsStatus(1);
+          reportGpsStatus(1);
           gpsEnabled = true;
         }
     }
@@ -1167,6 +1182,25 @@ public class CumulusActivity extends QtActivity
 
     return version;
   }
+	
+	/**
+	 * Wrapper around native call nativeGpsStatus to prevent an exception, if native
+	 * C++ is not yet loaded.
+	 * 
+	 * @param status new status to be reported to native part.
+	 */
+	private void reportGpsStatus( int status )
+		{
+      try
+      	{
+      		// Call native C++ part to forward GPS status.
+      		nativeGpsStatus( status );
+      	}
+  	  catch(UnsatisfiedLinkError e)
+  	    { 
+  	      // Ignore exception, if native part is not yet loaded.
+  	    }
+		}
 
   private boolean installAppData( String appDir, AssetManager am )
   {
