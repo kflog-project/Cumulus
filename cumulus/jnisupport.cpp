@@ -218,12 +218,6 @@ static bool isRootWindow()
   return MainWindow::isRootWindow();
 }
 
-static void keyboardAction(JNIEnv * /*jniEnvironment*/, jobject /*myproxyobject*/, jint action)
-{
-  KeyboardActionEvent* ke = new KeyboardActionEvent(action);
-  QCoreApplication::postEvent(_globalMainWindow, ke);
-}
-
 /* The array of native methods to register.
  * The name string must match the "native" declaration in Java.
  * The parameter string must match the types in the "native" declaration
@@ -234,8 +228,7 @@ static JNINativeMethod methods[] = {
 	{"nativeGpsStatus", "(I)V", (void *)nativeGpsStatus},
 	{"nativeNmeaString","(Ljava/lang/String;)V", (void *)nativeNmeaString},
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
-	{"isRootWindow", "()Z", (bool *)isRootWindow},
-	{"keyboardAction", "(I)V", (void *)keyboardAction}
+  {"isRootWindow", "()Z", (bool *)isRootWindow}
 };
 
 /**
