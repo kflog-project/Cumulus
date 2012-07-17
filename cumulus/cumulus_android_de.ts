@@ -926,19 +926,19 @@
         <location filename="logbook.cpp" line="169"/>
         <source>To</source>
         <oldsource>TO</oldsource>
-        <translation>ST</translation>
+        <translation>St</translation>
     </message>
     <message>
         <location filename="logbook.cpp" line="172"/>
         <source>Lg</source>
         <oldsource>LG</oldsource>
-        <translation>LG</translation>
+        <translation>Lg</translation>
     </message>
     <message>
         <location filename="logbook.cpp" line="175"/>
         <source>Ft</source>
         <oldsource>FT</oldsource>
-        <translation>FZ</translation>
+        <translation>Fz</translation>
     </message>
     <message>
         <location filename="logbook.cpp" line="178"/>
@@ -958,7 +958,7 @@
     <message>
         <location filename="logbook.cpp" line="187"/>
         <source>Reg</source>
-        <translation></translation>
+        <translation>Kz</translation>
     </message>
     <message>
         <location filename="logbook.cpp" line="249"/>
@@ -1060,7 +1060,7 @@
         <location filename="mainwindow.cpp" line="1037"/>
         <location filename="mainwindow.cpp" line="1115"/>
         <source>Status</source>
-        <translation></translation>
+        <translation>Status</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1041"/>
@@ -1119,12 +1119,12 @@
     <message>
         <location filename="mainwindow.cpp" line="1242"/>
         <source>McCready up</source>
-        <translation></translation>
+        <translation>McCready +</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1248"/>
         <source>McCready down</source>
-        <translation></translation>
+        <translation>McCready -</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1276"/>
@@ -1181,12 +1181,12 @@
     <message>
         <location filename="mainwindow.cpp" line="2892"/>
         <source>takeoff</source>
-        <translation></translation>
+        <translation>gestartet</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="2899"/>
         <source>landed</source>
-        <translation></translation>
+        <translation>gelandet</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1485"/>
@@ -1304,7 +1304,7 @@
     <message>
         <location filename="mainwindow.cpp" line="1469"/>
         <source>Logging</source>
-        <translation></translation>
+        <translation>Loggen</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1478"/>
