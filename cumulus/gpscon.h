@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004-2010 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c):  2004-2012 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
  * passed in the constructor, that the gpsClient resp. gpsMaemoClient binary
  * can be found. It lays in the same directory as Cumulus.
  *
- * \date 2004-2010
+ * \date 2004-2012
  */
 
 #ifndef GPS_CON_H
@@ -111,8 +111,10 @@ class GpsCon : public QObject
      * Sends NMEA input sentence to GPS receiver. Checksum is calculated by
      * this routine. Don't add an asterix at the end of the passed sentence!
      * That is part of the check sum.
+     *
+     * \return true in case of success otherwise false.
      */
-    void sendSentence(const QString&);
+    bool sendSentence(const QString& sentence);
 
     /**
      * Device name and speed are sent to the client, that it

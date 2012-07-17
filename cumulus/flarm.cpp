@@ -26,7 +26,9 @@
 // initialize static data items
 bool Flarm::collectPflaa = false;
 
-Flarm::FlarmStatus Flarm::flarmStatus;
+Flarm::FlarmStatus  Flarm::flarmStatus;
+Flarm::FlarmVersion Flarm::flarmVersion;
+Flarm::FlarmError   Flarm::flarmError;
 
 QHash<QString, Flarm::FlarmAcft> Flarm::pflaaHash;
 
@@ -273,6 +275,87 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
         }
     }
 
+  return true;
+}
+
+bool Flarm::extractPflav(const QStringList& stringList)
+{
+  if ( stringList[0] != "$PFLAV" || stringList.size() < 5 )
+     {
+       qWarning("$PFLAV contains too less parameters!");
+       return false;
+     }
+
+  /**
+   PFLAV,<QueryType>,<HwVersion>,<SwVersion>,<ObstVersion>
+   $PFLAV,A,2.00,5.00,alps20110221_*
+  */
+  flarmVersion.hwVersion   = stringList[2];
+  flarmVersion.swVersion   = stringList[3];
+  flarmVersion.obstVersion = stringList[4];
+
+  emit flarmVersionInfo( flarmVersion );
+  return true;
+}
+
+bool Flarm::extractPflae(const QStringList& stringList)
+{
+  /**
+   * PFLAE,<QueryType>,<Severity>,<ErrorCode>
+   *
+   * <QueryType>
+      R = request FLARM to send status, disregard other fields then
+      A = FLARM sends status (requested and spontaneous)
+
+     <Severity>
+      0 = no error, i.e. normal operation, disregard other fields then
+      1 = information only, i.e. normal operation
+      2 = functionality may be reduced
+      3 = fatal problem, device will not work
+
+     <ErrorCode>
+      Two digit hex value
+      11 = Firmware timeout (requires valid GPS information, i.e. will not be available in the first minute after power-on)
+      21 = Power (e.g. voltage < 8V, might occur during operations)
+      31 = GPS communication
+      32 = Configuration of GPS module
+      41 = RF communication
+      51 = Communication
+      61 = Flash memory
+      71 = Pressure sensor
+      81 = Obstacle database
+      91 = Flight recorder A1 = Transponder receiver
+      F1 = Other
+
+     $PFLAE,A,2,81*
+   */
+
+  if( stringList[0] != "$PFLAE" || stringList.size() < 4 )
+    {
+      qWarning("$PFLAE contains too less parameters!");
+      return false;
+    }
+
+  flarmError.severity  = stringList[2];
+  flarmError.errorCode = stringList[3];
+
+  emit flarmErrorInfo( flarmError );
+  return true;
+}
+
+bool Flarm::extractPflac(const QStringList& stringList)
+{
+  /**
+   * PFLAC,<QueryType>,<Key>,<Value>
+   * Attention, resonse can be "$PFLAC,A,ERROR*"
+   */
+  if ( stringList[0] != "$PFLAC" || stringList.size() < 3 )
+      {
+        qWarning("$PFLAC contains too less parameters!");
+        return false;
+      }
+
+  emit flarmConfigurationInfo( stringList );
   return true;
 }
 

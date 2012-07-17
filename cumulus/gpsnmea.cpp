@@ -158,13 +158,16 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   gpsKeys.insert( "$GPDTM", 11);
 
 #ifdef FLARM
-  gpsKeys.insert( "$PFLAA", 12);
-  gpsKeys.insert( "$PFLAU", 13);
+  gpsKeys.insert( "$PFLAA", 20);
+  gpsKeys.insert( "$PFLAU", 21);
+  gpsKeys.insert( "$PFLAV", 22);
+  gpsKeys.insert( "$PFLAE", 23);
+  gpsKeys.insert( "$PFLAC", 24);
 #endif
 
 #ifdef MAEMO5
-  gpsKeys.insert( "$MAEMO0", 14);
-  gpsKeys.insert( "$MAEMO1", 15);
+  gpsKeys.insert( "$MAEMO0", 30);
+  gpsKeys.insert( "$MAEMO1", 31);
 #endif
 
   gpsKeys.squeeze();
@@ -513,27 +516,39 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
 #ifdef FLARM
 
-    case 12: // $PFLAA
+    case 20: // $PFLAA
       {
         Flarm::FlarmAcft aircraft;
         Flarm::instance()->extractPflaa( slst, aircraft );
         return;
       }
-    case 13: // $PFLAU
+    case 21: // $PFLAU
       __ExtractPflau( slst );
+      return;
+
+    case 22: // $PFLAV
+      Flarm::instance()->extractPflav( slst );
+      return;
+
+    case 23: // $PFLAE
+      Flarm::instance()->extractPflae( slst );
+      return;
+
+    case 24: // $PFLAC
+      Flarm::instance()->extractPflac( slst );
       return;
 
 #endif
 
 #ifdef MAEMO5
 
-    case 14:
+    case 50:
       // Handle sentences created by GPS Maemo Client process. These sentenceIns
       // contain no checksum items.
       __ExtractMaemo0( slst );
       return;
 
-    case 15:
+    case 51:
       // Handle sentences created by GPS Maemo Client process. These sentenceIns
       // contain no checksum items.
       __ExtractMaemo1( slst );
@@ -2073,6 +2088,17 @@ void GpsNmea::slot_reset()
 
 #endif
 
+}
+
+bool GpsNmea::sendSentence(const QString command)
+{
+  if( serial )
+    {
+      // Only a serial can forward commnds to the GPS.
+      return serial->sendSentence( command );
+    }
+
+  return false;
 }
 
 #if 0

@@ -927,14 +927,14 @@ void GpsCon::writeClientMessage( uint index, const char *msg  )
  * routine. Don't add an asterix at the end of the passed sentence! That is
  * part of the check sum.
  */
-void GpsCon::sendSentence(const QString& sentence)
+bool GpsCon::sendSentence(const QString& sentence)
 {
   QString method = "GPSCon::sendSentence():";
 
   // don't try to send anything if there is no valid file
   if( server.getClientSock(0) == -1 )
     {
-      return;
+      return false;
     }
 
   QString msg = QString("%1 %2").arg(MSG_SM).arg(sentence);
@@ -945,13 +945,14 @@ void GpsCon::sendSentence(const QString& sentence)
   if( msg == MSG_NEG )
     {
       qWarning() << method << msg << "failed!";
+      return false;
     }
-  else
-    {
+
 #ifdef DEBUG
-      qDebug() << method << msg << "succeeded!";
+  qDebug() << method << msg << "succeeded!";
 #endif
-    }
+
+  return true;
 }
 
 void GpsCon::sendGpsKeys()

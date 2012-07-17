@@ -36,6 +36,7 @@
 #include <QHash>
 #include <QPoint>
 
+class QStringList;
 class QTimer;
 
 class Flarm : public QObject
@@ -102,6 +103,41 @@ public:
   };
 
   /**
+   * \struct FlarmVersion
+   *
+   * \author Axel Pauli
+   *
+   * \brief FLARM version structure.
+   *
+   * FLARM version structure. It contains the version data reported by the Flarm.
+   *
+   * \date 2012
+   */
+  struct FlarmVersion
+  {
+    QString hwVersion;
+    QString swVersion;
+    QString obstVersion;
+  };
+
+  /**
+   * \struct FlarmError
+   *
+   * \author Axel Pauli
+   *
+   * \brief FLARM error structure.
+   *
+   * FLARM error structure. It contains the error status reported by the Flarm.
+   *
+   * \date 2012
+   */
+  struct FlarmError
+  {
+    QString severity;
+    QString errorCode;
+   };
+
+  /**
    * \struct FlarmAcft
    *
    * \author Axel Pauli
@@ -165,9 +201,25 @@ public:
   };
 
   /**
+   * @return the Flarm version structure
+   */
+  static const FlarmVersion& getFlarmVersion()
+  {
+    return flarmVersion;
+  };
+
+  /**
+   * @return the Flarm error structure
+   */
+  static const FlarmError& getFlarmError()
+  {
+    return flarmError;
+  };
+
+  /**
    * @param relativeBearing returns the relative bearing in degree from the
    * own position as integer -180...+180.
-   * @return true is a valid value exists otherwise false
+   * @return true if a valid value exists otherwise false
    */
   bool getFlarmRelativeBearing( int &relativeBearing );
 
@@ -175,21 +227,21 @@ public:
    * @param relativeVertical Returns the relative vertical separation in
    * meters from the own position as integer. Plus means above own position
    * minus means below own position.
-   * @return true is a valid value exists otherwise false
+   * @return true if a valid value exists otherwise false
    */
   bool getFlarmRelativeVertical( int &relativeVertical );
 
   /**
    * @param relativeDistance returns the relative horizontal distance in
    * meters from the own position as integer.
-   * @return true is a valid value exists otherwise false
+   * @return true if a valid value exists otherwise false
    */
   bool getFlarmRelativeDistance( int &relativeDistance );
 
   /**
    * Extracts all items from the $PFLAU sentence sent by the Flarm device.
    * @param stringList Flarm sentence $PFLAU as string list
-   * @return true is a valid value exists otherwise false
+   * @return true if a valid value exists otherwise false
    */
   bool extractPflau(const QStringList& stringList);
 
@@ -198,9 +250,30 @@ public:
    *
    * @param stringList Flarm sentence $PFLAA as string list
    * @param aircraft extracted aircraft data from sentence
-   * @return true is a valid value exists otherwise false
+   * @return true if a valid value exists otherwise false
    */
   bool extractPflaa( const QStringList& stringList, FlarmAcft& aircraft );
+
+  /**
+   * Extracts all items from the $PFLAV sentence sent by the Flarm device.
+   * @param stringList Flarm sentence $PFLAV as string list
+   * @return true if a valid value exists otherwise false
+   */
+  bool extractPflav(const QStringList& stringList);
+
+  /**
+   * Extracts all items from the $PFLAE sentence sent by the Flarm device.
+   * @param stringList Flarm sentence $PFLAV as string list
+   * @return true if a valid value exists otherwise false
+   */
+  bool extractPflae(const QStringList& stringList);
+
+  /**
+   * Extracts all items from the $PFLAC sentence sent by the Flarm device.
+   * @param stringList Flarm sentence $PFLAV as string list
+   * @return true if a valid value exists otherwise false
+   */
+  bool extractPflac(const QStringList& stringList);
 
   /**
    * Creates a hash key by using the passed parameters.
@@ -265,6 +338,21 @@ signals:
    */
   void flarmPflaaDataTimeout();
 
+  /**
+   * This signal is emitted if a new Flarm error info is available.
+   */
+  void flarmErrorInfo( const FlarmError& info );
+
+  /**
+   * This signal is emitted if a new Flarm version info is available.
+   */
+  void flarmVersionInfo( const FlarmVersion& info );
+
+  /**
+   * This signal is emitted if a new Flarm configuration info is available.
+   */
+  void flarmConfigurationInfo( const QStringList& info );
+
 private slots:
 
   /** Called if timer has expired. Used for Flarm data clearing. */
@@ -277,6 +365,16 @@ private:
    * sentence.
    */
   static FlarmStatus flarmStatus;
+
+  /**
+   * Flarm version data.
+   */
+  static FlarmVersion flarmVersion;
+
+  /**
+   * Flarm error data.
+   */
+  static struct FlarmError flarmError;
 
   /** Flag to switch on the collecting of PFLAA data. */
   static bool collectPflaa;

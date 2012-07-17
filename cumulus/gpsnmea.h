@@ -374,11 +374,19 @@ class GpsNmea : public QObject
     }
 
     /**
+      * Forwards a NMEA command sentence to the GPS receiver. The checksum is
+      * calculated by this routine. Don't add an asterix at the end of the
+      * passed sentence! That is part of the check sum.
+      *
+      * \return true in case of success otherwise false.
+      */
+    bool sendSentence(const QString command);
+
+    /**
      * Puts all desired GPS message keys into the passed hash. This method is
      * thread safe.
      *
      * @param gpsKeys hash table where the results are stored.
-     *
      */
     static void getGpsMessageKeys( QHash<QString, short>& gpsKeys );
 
