@@ -22,6 +22,7 @@
 #include "map.h"
 #include "mapcontents.h"
 #include "preflightgliderpage.h"
+#include "preflightflarmpage.h"
 #include "preflighttasklist.h"
 #include "preflightmiscpage.h"
 #include "preflightwaypointpage.h"
@@ -52,7 +53,7 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   tabWidget->addTab(wppage, "");
 
   connect( wppage, SIGNAL(waypointsAdded()),
-           Map::getInstance(), SLOT(slotRedraw()) );
+            Map::getInstance(), SLOT(slotRedraw()) );
 
   miscpage = new PreFlightMiscPage(this);
 
@@ -60,6 +61,18 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   sa->setWidgetResizable( true );
   sa->setFrameStyle( QFrame::NoFrame );
   sa->setWidget( miscpage );
+#ifdef QSCROLLER
+  QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
+#endif
+
+  tabWidget->addTab(sa, "");
+
+  flarmpage = new PreFlightFlarmPage(this);
+
+  sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( flarmpage );
 #ifdef QSCROLLER
   QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
 #endif
@@ -132,6 +145,7 @@ void PreFlightWidget::setLabels()
   tabWidget->setTabText( 1, tr("Task") );
   tabWidget->setTabText( 2, tr("Waypoints") );
   tabWidget->setTabText( 3, tr("Common") );
+  tabWidget->setTabText( 4, tr("Flarm") );
 }
 
 /** Used to handle language change events */
@@ -278,7 +292,7 @@ void PreFlightWidget::slot_keyRight()
     }
   else if (tabWidget->currentWidget() == taskpage)
     {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(miscpage));
+      tabWidget->setCurrentIndex(tabWidget->indexOf(wppage));
     }
   else if (tabWidget->currentWidget() == wppage)
     {
@@ -286,12 +300,20 @@ void PreFlightWidget::slot_keyRight()
     }
   else if (tabWidget->currentWidget() == miscpage)
     {
+      tabWidget->setCurrentIndex(tabWidget->indexOf(flarmpage));
+    }
+  else if (tabWidget->currentWidget() == flarmpage)
+    {
       tabWidget->setCurrentIndex(tabWidget->indexOf(gliderpage));
     }
 }
 
 void PreFlightWidget::slot_keyLeft()
 {
+  if (tabWidget->currentWidget() == flarmpage)
+    {
+      tabWidget->setCurrentIndex(tabWidget->indexOf(miscpage));
+    }
   if (tabWidget->currentWidget() == miscpage)
     {
       tabWidget->setCurrentIndex(tabWidget->indexOf(wppage));
@@ -306,6 +328,6 @@ void PreFlightWidget::slot_keyLeft()
     }
   else if (tabWidget->currentWidget() == gliderpage)
     {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(miscpage));
+      tabWidget->setCurrentIndex(tabWidget->indexOf(flarmpage));
     }
 }

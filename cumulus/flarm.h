@@ -341,12 +341,12 @@ signals:
   /**
    * This signal is emitted if a new Flarm error info is available.
    */
-  void flarmErrorInfo( const FlarmError& info );
+  void flarmErrorInfo( const Flarm::FlarmError& info );
 
   /**
    * This signal is emitted if a new Flarm version info is available.
    */
-  void flarmVersionInfo( const FlarmVersion& info );
+  void flarmVersionInfo( const Flarm::FlarmVersion& info );
 
   /**
    * This signal is emitted if a new Flarm configuration info is available.

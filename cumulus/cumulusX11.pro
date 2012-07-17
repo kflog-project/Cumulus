@@ -104,6 +104,7 @@ HEADERS = \
     polar.h \
     preflightwidget.h \
     preflightgliderpage.h \
+    preflightflarmpage.h \
     preflightmiscpage.h \
     preflightwaypointpage.h \
     preflighttasklist.h \
@@ -216,6 +217,7 @@ SOURCES = \
     polardialog.cpp \
     preflightwidget.cpp \
     preflightgliderpage.cpp \
+    preflightflarmpage.cpp \
     preflightmiscpage.cpp \
     preflightwaypointpage.cpp \
     preflighttasklist.cpp \

@@ -23,6 +23,7 @@
 #include <QTabWidget>
 
 class PreFlightGliderPage;
+class PreFlightFlarmPage;
 class PreFlightMiscPage;
 class PreFlightTaskList;
 class PreFlightWaypointPage;
@@ -38,7 +39,7 @@ class Waypoint;
  * This widget provides an interface to set all the pre-flight settings like
  * glider type, copilot, task, amount of water taken on, etc.
  *
- * \date 2003-2011
+ * \date 2003-2012
  */
 class PreFlightWidget : public QWidget
 {
@@ -126,6 +127,7 @@ private:
   PreFlightGliderPage *gliderpage;
   PreFlightMiscPage *miscpage;
   PreFlightWaypointPage *wppage;
+  PreFlightFlarmPage *flarmpage;
 
   QTabWidget* tabWidget;
 };
