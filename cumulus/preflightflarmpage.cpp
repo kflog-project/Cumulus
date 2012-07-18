@@ -94,40 +94,44 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   //----------------------------------------------------------------------------
 
   gridLayout = new QGridLayout;
+  int row = 0;
 
-  gridLayout->addWidget( new QLabel(tr("Pilot:")), 0, 0);
+  gridLayout->addWidget( new QLabel(tr("Pilot:")), row, 0);
   pilot = new QLineEdit;
-  gridLayout->addWidget( pilot, 0, 1 );
+  gridLayout->addWidget( pilot, row, 1 );
 
-  gridLayout->addWidget( new QLabel(tr("Co-Pilot:")), 0, 2);
+  gridLayout->addWidget( new QLabel(tr("Co-Pilot:")), row, 2);
   copil = new QLineEdit;
-  gridLayout->addWidget( copil, 0, 3 );
+  gridLayout->addWidget( copil, row, 3 );
+  row++;
 
   //----------------------------------------------------------------------------
 
-  gridLayout->addWidget( new QLabel(tr("Glider Id:")), 1, 0);
+  gridLayout->addWidget( new QLabel(tr("Glider Id:")), row, 0);
   gliderId = new QLineEdit;
-  gridLayout->addWidget( gliderId, 1, 1 );
+  gridLayout->addWidget( gliderId, row, 1 );
 
-  gridLayout->addWidget( new QLabel(tr("Glider Type:")), 1, 2);
+  gridLayout->addWidget( new QLabel(tr("Glider Type:")), row, 2);
   gliderType = new QLineEdit;
-  gridLayout->addWidget( gliderType, 1, 3 );
+  gridLayout->addWidget( gliderType, row, 3 );
+  row++;
 
   //----------------------------------------------------------------------------
 
-  gridLayout->addWidget( new QLabel(tr("Comp Id:"))), 2, 0;
+  gridLayout->addWidget( new QLabel(tr("Comp Id:")), row, 0 );
   compId = new QLineEdit;
-  gridLayout->addWidget( compId, 2, 1 );
+  gridLayout->addWidget( compId, row, 1 );
 
-  gridLayout->addWidget( new QLabel(tr("Comp Class:")), 2, 2);
+  gridLayout->addWidget( new QLabel(tr("Comp Class:")), row, 2);
   compClass = new QLineEdit;
-  gridLayout->addWidget( compClass, 2, 3 );
+  gridLayout->addWidget( compClass, row, 3 );
+  row++;
 
   //----------------------------------------------------------------------------
 
-  gridLayout->addWidget( new QLabel(tr("Task:")), 3, 0);
+  gridLayout->addWidget( new QLabel(tr("Task:")), row, 0);
   task = new QLabel;
-  gridLayout->addWidget( task, 3, 1 );
+  gridLayout->addWidget( task, row, 1 );
 
   if( m_ftask )
     {
