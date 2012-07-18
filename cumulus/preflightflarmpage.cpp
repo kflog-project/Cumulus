@@ -130,7 +130,8 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   //----------------------------------------------------------------------------
 
   gridLayout->addWidget( new QLabel(tr("Task:")), row, 0);
-  task = new QLabel;
+  task = new QLineEdit;
+  task->setReadOnly( true );
   gridLayout->addWidget( task, row, 1 );
 
   if( m_ftask )
@@ -162,6 +163,11 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
 
   hbbox->addSpacing( 10 );
 
+  cmd = new QPushButton(tr("Clear"), this);
+  hbbox->addWidget(cmd);
+  connect (cmd, SIGNAL(clicked()), this, SLOT(slotClearIgcData()));
+
+  hbbox->addSpacing( 10 );
   cmd = new QPushButton(tr("Write"), this);
   hbbox->addWidget(cmd);
   connect (cmd, SIGNAL(clicked()), this, SLOT(slotWriteFlarmData()));
@@ -224,6 +230,17 @@ void PreFlightFlarmPage::slotSetIgcData()
   gliderId->setText( glider->registration() );
   gliderType->setText( glider->type() );
   compId->setText( glider->callSign() );
+}
+
+void PreFlightFlarmPage::slotClearIgcData()
+{
+  logInt->setCurrentIndex ( 0 );
+  pilot->clear();
+  copil->clear();
+  gliderId->clear();
+  gliderType->clear();
+  compId->clear();
+  compClass->clear();
 }
 
 void PreFlightFlarmPage::slotRequestFlarmData()
@@ -364,12 +381,12 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       GpsNmea::gps->sendSentence( "$PFLAC,S,LOGINT," + logInt->currentText() );
     }
 
-  GpsNmea::gps->sendSentence( "$PFLAC,S,PILOT," + pilot->text() );
-  GpsNmea::gps->sendSentence( "$PFLAC,S,COPIL," + copil->text() );
-  GpsNmea::gps->sendSentence( "$PFLAC,S,GLIDERID," + gliderId->text() );
-  GpsNmea::gps->sendSentence( "$PFLAC,S,GLIDERTYPE," + gliderType->text() );
-  GpsNmea::gps->sendSentence( "$PFLAC,S,COMPID," + compId->text() );
-  GpsNmea::gps->sendSentence( "$PFLAC,S,COMPCLASS," + compClass->text() );
+  GpsNmea::gps->sendSentence( "$PFLAC,S,PILOT," + pilot->text().trimmed() );
+  GpsNmea::gps->sendSentence( "$PFLAC,S,COPIL," + copil->text().trimmed() );
+  GpsNmea::gps->sendSentence( "$PFLAC,S,GLIDERID," + gliderId->text().trimmed() );
+  GpsNmea::gps->sendSentence( "$PFLAC,S,GLIDERTYPE," + gliderType->text().trimmed() );
+  GpsNmea::gps->sendSentence( "$PFLAC,S,COMPID," + compId->text().trimmed() );
+  GpsNmea::gps->sendSentence( "$PFLAC,S,COMPCLASS," + compClass->text().trimmed() );
 
   if( m_ftask == 0 )
     {

@@ -172,6 +172,7 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   taskList->setRootIsDecorated(false);
   taskList->setItemsExpandable(false);
   taskList->setUniformRowHeights(true);
+  taskList->setAlternatingRowColors(true);
   taskList->setSortingEnabled(true);
   taskList->setSelectionBehavior(QAbstractItemView::SelectRows);
   taskList->setSelectionMode(QAbstractItemView::SingleSelection);

@@ -66,6 +66,9 @@ class PreFlightFlarmPage : public QWidget
  /** Sets all IGC data as defined in Cumulus. */
  void slotSetIgcData();
 
+ /** Clears all IGC data in the editable widgets. */
+ void slotClearIgcData();
+
  /** Called to update version info. */
   void slotUpdateVersions( const Flarm::FlarmVersion& info );
 
@@ -93,7 +96,7 @@ class PreFlightFlarmPage : public QWidget
   QLineEdit* gliderType;
   QLineEdit* compId;
   QLineEdit* compClass;
-  QLabel*    task;
+  QLineEdit* task;
 
   FlightTask* m_ftask;
 };
